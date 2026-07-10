@@ -1,0 +1,68 @@
+import type { Role, RoleId } from "./types";
+
+export const ROLES: Record<RoleId, Role> = {
+  warrior: {
+    id: "warrior",
+    name: "Warrior",
+    description: "Frontline bruiser. High health and defense, hits hard with steel.",
+    sprite: "hero_warrior",
+    baseStats: { maxHp: 42, maxMp: 8, strength: 9, intelligence: 3, dexterity: 5, defense: 5 },
+    growth: { maxHp: 7, maxMp: 1, strength: 3, intelligence: 1, dexterity: 1, defense: 2 },
+    skill: {
+      name: "Power Strike",
+      description: "A crushing blow dealing heavy physical damage.",
+      mpCost: 4,
+      kind: "damage",
+      multiplier: 1.9,
+      stat: "strength",
+    },
+  },
+  mage: {
+    id: "mage",
+    name: "Mage",
+    description: "Glass cannon. Fragile, but Fireball melts anything with a face.",
+    sprite: "hero_mage",
+    baseStats: { maxHp: 28, maxMp: 24, strength: 3, intelligence: 10, dexterity: 4, defense: 2 },
+    growth: { maxHp: 4, maxMp: 5, strength: 1, intelligence: 3, dexterity: 1, defense: 1 },
+    skill: {
+      name: "Fireball",
+      description: "Hurls a fireball for heavy magic damage.",
+      mpCost: 6,
+      kind: "damage",
+      multiplier: 2.2,
+      stat: "intelligence",
+    },
+  },
+  rogue: {
+    id: "rogue",
+    name: "Rogue",
+    description: "Fast and sneaky. Great at fleeing, deadly with a backstab.",
+    sprite: "hero_rogue",
+    baseStats: { maxHp: 34, maxMp: 12, strength: 6, intelligence: 4, dexterity: 10, defense: 3 },
+    growth: { maxHp: 5, maxMp: 2, strength: 2, intelligence: 1, dexterity: 3, defense: 1 },
+    skill: {
+      name: "Backstab",
+      description: "Strikes a vital spot for heavy dexterity damage.",
+      mpCost: 5,
+      kind: "damage",
+      multiplier: 2.0,
+      stat: "dexterity",
+    },
+  },
+  cleric: {
+    id: "cleric",
+    name: "Cleric",
+    description: "Holy support. Sturdy enough, and Mend keeps you in the fight.",
+    sprite: "hero_cleric",
+    baseStats: { maxHp: 38, maxMp: 18, strength: 6, intelligence: 7, dexterity: 4, defense: 4 },
+    growth: { maxHp: 6, maxMp: 4, strength: 2, intelligence: 2, dexterity: 1, defense: 2 },
+    skill: {
+      name: "Mend",
+      description: "Channels light to restore health.",
+      mpCost: 5,
+      kind: "heal",
+      multiplier: 2.5,
+      stat: "intelligence",
+    },
+  },
+};
