@@ -954,6 +954,18 @@ body {
 }
 
 /* ---------- options ---------- */
+.pause-panel {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  text-align: center;
+}
+.pause-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 .options-panel {
   width: 460px;
   max-height: min(84vh, 720px);
