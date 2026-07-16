@@ -1,32 +1,24 @@
 import {
-  applyLevelUps,
-  carriedWeight,
-  carryCapacity,
-  createHero,
-  gearByUid,
-  STAT_POINTS_PER_LEVEL,
-} from "../game/character";
-import { rollDrop } from "../game/drops";
-import { createGear, gearItem, gearName, gearValue } from "../game/rarity";
-import {
-  consumeStun,
-  fleeChance,
-  heroAttackDamage,
-  heroSkillDamage,
-  heroSkillPower,
-  isStunned,
-  monsterAttackDamage,
-  rollInfliction,
-  spawnMonster,
-  tickDamageEffects,
-} from "../game/combat";
+  advanceEncounter,
+  createDungeonBattle,
+  createWildBattle,
+  grantFloorRewards,
+  heroAttack,
+  heroFlee,
+  heroSkill,
+  heroStunGate,
+  monsterTurn,
+} from "../game/battleEngine";
+import { carriedWeight, carryCapacity, createHero, gearByUid } from "../game/character";
+import { createGear, gearItem, gearValue } from "../game/rarity";
+import { rollWildEncounter } from "../game/encounters";
+import { addItem, removeItem } from "../game/inventory";
 import { getItem } from "../game/items";
 import { getLevel, LEVELS } from "../game/levels";
 import { buyPrice, FORGE_BONUS_CAP, forgeCost, sellPriceAt, SHOP_MAPS, SHOPS, shopStock } from "../game/shop";
-import type { EquipSlot, GameState, Hero, RoleId, SpendableStat } from "../game/types";
-import { rollWildEncounter, WILD_REWARD_MULT } from "../game/encounters";
-import { canCraft, RECIPES, REGION_MATERIALS } from "../game/recipes";
-import { canBuyNode, getHeroSkills, getNode, getPassives } from "../game/skillTree";
+import type { EquipSlot, GameState, RoleId, SpendableStat } from "../game/types";
+import { canCraft, RECIPES } from "../game/recipes";
+import { canBuyNode, getHeroSkills, getNode } from "../game/skillTree";
 import { discoverAround } from "../world/discover";
 import { getMap } from "../world/maps";
 import { npcAt, NPCS } from "../world/npcs";
@@ -104,149 +96,6 @@ const DIRECTION_DELTAS: Record<Direction, { dx: number; dy: number }> = {
   right: { dx: 1, dy: 0 },
 };
 
-function addItem(inventory: Record<string, number>, itemId: string, count = 1): Record<string, number> {
-  return { ...inventory, [itemId]: (inventory[itemId] ?? 0) + count };
-}
-
-function removeItem(inventory: Record<string, number>, itemId: string, count = 1): Record<string, number> {
-  const next = { ...inventory };
-  const remaining = (next[itemId] ?? 0) - count;
-  if (remaining > 0) next[itemId] = remaining;
-  else delete next[itemId];
-  return next;
-}
-
-const EFFECT_VERBS: Record<string, string> = { poison: "Poison", burn: "Burning" };
-
-/**
- * Everything that happens after the hero's action: damage-over-time ticks on
- * the monster, the monster's attack (unless stunned) with its infliction roll,
- * then damage-over-time on the hero. Mutates the given draft slices.
- */
-function monsterTurn(state: GameState, hero: Hero, log: string[]): void {
-  const battle = state.battle!;
-  if (battle.monster.hp <= 0) return;
-
-  const monsterTick = tickDamageEffects(battle.monsterEffects);
-  battle.monsterEffects = monsterTick.effects;
-  for (const tick of monsterTick.ticks) {
-    battle.monster.hp = Math.max(0, battle.monster.hp - tick.damage);
-    log.push(`${EFFECT_VERBS[tick.kind]} deals ${tick.damage} damage to ${battle.monster.name}.`);
-  }
-  if (battle.monster.hp <= 0) {
-    onMonsterDefeated(state, hero, log);
-    return;
-  }
-
-  if (isStunned(battle.monsterEffects)) {
-    battle.monsterEffects = consumeStun(battle.monsterEffects);
-    log.push(`${battle.monster.name} is stunned and cannot act!`);
-  } else {
-    const dmg = monsterAttackDamage(battle.monster, hero, state.gear, state.equipped);
-    hero.hp = Math.max(0, hero.hp - dmg);
-    log.push(`${battle.monster.name} hits you for ${dmg} damage.`);
-    const monsterInflicts = battle.monster.def.inflicts;
-    const passives = getPassives(hero);
-    const resisted =
-      (monsterInflicts?.kind === "stun" && passives.stunResist) ||
-      (monsterInflicts?.kind === "poison" && passives.poisonResist);
-    const inflicted = resisted
-      ? { effects: battle.heroEffects, applied: false }
-      : rollInfliction(battle.heroEffects, monsterInflicts);
-    if (inflicted.applied) {
-      battle.heroEffects = inflicted.effects;
-      log.push(`You are afflicted by ${monsterInflicts!.kind}!`);
-    }
-    if (hero.hp <= 0) {
-      battle.phase = "lost";
-      log.push("You collapse. Everything goes dark...");
-      return;
-    }
-  }
-
-  const heroTick = tickDamageEffects(battle.heroEffects);
-  battle.heroEffects = heroTick.effects;
-  for (const tick of heroTick.ticks) {
-    hero.hp = Math.max(0, hero.hp - tick.damage);
-    log.push(`${EFFECT_VERBS[tick.kind]} deals ${tick.damage} damage to you.`);
-  }
-  if (hero.hp <= 0) {
-    battle.phase = "lost";
-    log.push("You succumb to your wounds. Everything goes dark...");
-  }
-}
-
-/**
- * If the hero is stunned, their action is wasted: the stun is consumed, the
- * monster still acts, and the caller must return immediately. Returns true
- * when the turn was skipped.
- */
-function heroStunGate(state: GameState, hero: Hero, log: string[]): boolean {
-  const battle = state.battle!;
-  if (!isStunned(battle.heroEffects)) return false;
-  battle.heroEffects = consumeStun(battle.heroEffects);
-  log.push("You are stunned and cannot act!");
-  monsterTurn(state, hero, log);
-  return true;
-}
-
-const BOSS_IDS = new Set(["dragon", "lich"]);
-
-function onMonsterDefeated(state: GameState, hero: Hero, log: string[]): void {
-  const battle = state.battle!;
-  const passives = getPassives(hero);
-  const { xp, name } = battle.monster;
-  const gold = Math.round(battle.monster.gold * (1 + passives.goldBonus));
-  log.push(`${name} is defeated! +${xp} XP, +${gold} gold.`);
-  hero.xp += xp;
-  state.gold += gold;
-  if (passives.killRefundMp > 0) {
-    hero.mp = Math.min(hero.stats.maxMp, hero.mp + passives.killRefundMp);
-  }
-  const gained = applyLevelUps(hero);
-  if (gained > 0) {
-    log.push(
-      `LEVEL UP! You are now level ${hero.level}. Fully restored. ` +
-        `+${gained * STAT_POINTS_PER_LEVEL} stat points and +${gained} skill point${gained > 1 ? "s" : ""} to spend.`,
-    );
-  }
-
-  const kind = BOSS_IDS.has(battle.monster.def.id) ? "boss" : battle.monster.elite ? "elite" : "normal";
-  const drop = rollDrop(battle.dungeonLevel, kind);
-  if (drop?.kind === "gear") {
-    state.gear.push(drop.gear);
-    log.push(`${name} drops: ${gearName(drop.gear)}!`);
-  } else if (drop?.kind === "stack") {
-    state.inventory = addItem(state.inventory, drop.itemId);
-    log.push(`${name} drops: ${getItem(drop.itemId).name}.`);
-  }
-
-  // Ailments do not linger between fights.
-  battle.heroEffects = [];
-  battle.monsterEffects = [];
-
-  if (battle.wild) {
-    battle.phase = "cleared";
-    log.push("The wilds fall quiet again.");
-    // Forage the region while the ground is still warm.
-    const material = battle.wildRegionId ? REGION_MATERIALS[battle.wildRegionId] : undefined;
-    if (material && Math.random() < 0.6) {
-      const count = 1 + (Math.random() < 0.35 ? 1 : 0);
-      state.inventory = addItem(state.inventory, material, count);
-      log.push(`You forage ${count} ${getItem(material).name}${count > 1 ? "s" : ""}.`);
-    }
-    return;
-  }
-
-  const dungeon = getLevel(battle.dungeonLevel);
-  if (battle.encounterIndex >= dungeon.encounters.length - 1) {
-    battle.phase = "cleared";
-    log.push(`${dungeon.name} cleared!`);
-  } else {
-    battle.phase = "won";
-  }
-}
-
 /** Terrain that can hide monsters; paths, bridges and buildings are safe. */
 const WILD_TILES = new Set<TileId>(["grass", "forest", "marsh", "ash", "sand"]);
 
@@ -295,48 +144,19 @@ export function gameReducer(state: GameState, action: Action): GameState {
     case "ENTER_LEVEL": {
       if (!state.hero || action.level > state.unlockedLevel) return state;
       if (carriedWeight(state.inventory, state.gear, state.equipped) > carryCapacity(state.hero)) return state;
-      const dungeon = getLevel(action.level);
-      const monster = spawnMonster(dungeon.encounters[0]);
       return {
         ...state,
         screen: "battle",
         inventoryOpen: false,
         shopOpen: false,
-        battle: {
-          dungeonLevel: action.level,
-          encounterIndex: 0,
-          monster,
-          phase: "player",
-          log: [`You enter ${dungeon.name}.`, `A ${monster.name} blocks your path!`],
-          heroEffects: [],
-          monsterEffects: [],
-        },
+        battle: createDungeonBattle(action.level),
       };
     }
 
     case "ATTACK": {
       if (!state.hero || state.battle?.phase !== "player") return state;
       const next = structuredClone(state);
-      const hero = next.hero!;
-      const battle = next.battle!;
-      if (heroStunGate(next, hero, battle.log)) return next;
-      const dmg = heroAttackDamage(hero, next.gear, next.equipped, battle.monster);
-      battle.monster.hp = Math.max(0, battle.monster.hp - dmg);
-      battle.log.push(`You strike ${battle.monster.name} for ${dmg} damage.`);
-      if (battle.monster.hp <= 0) {
-        onMonsterDefeated(next, hero, battle.log);
-      } else {
-        // Cinders-style passives can set the enemy alight on a plain attack.
-        const attackInflict = getPassives(hero).attackInflict;
-        if (attackInflict) {
-          const inflicted = rollInfliction(battle.monsterEffects, attackInflict);
-          if (inflicted.applied) {
-            battle.monsterEffects = inflicted.effects;
-            battle.log.push(`${battle.monster.name} is afflicted by ${attackInflict.kind}!`);
-          }
-        }
-        monsterTurn(next, hero, battle.log);
-      }
+      heroAttack(next);
       return next;
     }
 
@@ -347,51 +167,14 @@ export function gameReducer(state: GameState, action: Action): GameState {
       if (state.hero.mp < skill.mpCost) return state;
       if (skill.hpCost && state.hero.hp <= skill.hpCost) return state;
       const next = structuredClone(state);
-      const hero = next.hero!;
-      const battle = next.battle!;
-      if (heroStunGate(next, hero, battle.log)) return next;
-      hero.mp -= skill.mpCost;
-      if (skill.hpCost) hero.hp -= skill.hpCost;
-      if (skill.kind === "heal") {
-        const amount = heroSkillPower(hero, skill);
-        hero.hp = Math.min(hero.stats.maxHp, hero.hp + amount);
-        battle.log.push(`${skill.name} restores ${amount} HP.`);
-        if (skill.cleanse && battle.heroEffects.length > 0) {
-          battle.heroEffects = [];
-          battle.log.push("All ailments are purged!");
-        }
-        monsterTurn(next, hero, battle.log);
-      } else {
-        const dmg = heroSkillDamage(hero, skill, battle.monster);
-        battle.monster.hp = Math.max(0, battle.monster.hp - dmg);
-        battle.log.push(`${skill.name} hits ${battle.monster.name} for ${dmg} damage!`);
-        if (battle.monster.hp <= 0) {
-          onMonsterDefeated(next, hero, battle.log);
-        } else {
-          const inflicted = rollInfliction(battle.monsterEffects, skill.inflicts);
-          if (inflicted.applied) {
-            battle.monsterEffects = inflicted.effects;
-            battle.log.push(`${battle.monster.name} is afflicted by ${skill.inflicts!.kind}!`);
-          }
-          monsterTurn(next, hero, battle.log);
-        }
-      }
+      heroSkill(next, action.skillIndex);
       return next;
     }
 
     case "FLEE": {
       if (!state.hero || state.battle?.phase !== "player") return state;
       const next = structuredClone(state);
-      const hero = next.hero!;
-      const battle = next.battle!;
-      if (heroStunGate(next, hero, battle.log)) return next;
-      if (Math.random() < fleeChance(hero)) {
-        next.screen = battle.wild ? "world" : "dungeon_select";
-        next.battle = null;
-        return next;
-      }
-      battle.log.push("You fail to escape!");
-      monsterTurn(next, hero, battle.log);
+      heroFlee(next);
       return next;
     }
 
@@ -522,14 +305,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
     case "NEXT_ENCOUNTER": {
       if (!state.hero || state.battle?.phase !== "won") return state;
       const next = structuredClone(state);
-      const battle = next.battle!;
-      const dungeon = getLevel(battle.dungeonLevel);
-      battle.encounterIndex += 1;
-      battle.monster = spawnMonster(dungeon.encounters[battle.encounterIndex]);
-      battle.phase = "player";
-      battle.heroEffects = [];
-      battle.monsterEffects = [];
-      battle.log.push(`A ${battle.monster.name} appears!`);
+      advanceEncounter(next);
       return next;
     }
 
@@ -545,15 +321,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
       }
       const dungeon = getLevel(battle.dungeonLevel);
       const firstClear = !next.clearedLevels.includes(dungeon.level);
-      if (firstClear) {
-        next.clearedLevels.push(dungeon.level);
-        next.gold += dungeon.rewardGold;
-        for (const id of dungeon.rewardItemIds) {
-          if (getItem(id).slot) next.gear.push(createGear(id));
-          else next.inventory = addItem(next.inventory, id);
-        }
-        next.unlockedLevel = Math.max(next.unlockedLevel, Math.min(dungeon.level + 1, LEVELS.length));
-      }
+      if (firstClear) grantFloorRewards(next, dungeon.level);
       next.battle = null;
       // Clearing a floor steps you back out of the dungeon door.
       next.dungeonSelect = null;
@@ -746,25 +514,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
       if (state.hero && region && tile && WILD_TILES.has(tile)) {
         const encounter = rollWildEncounter(region);
         if (encounter) {
-          const monster = spawnMonster(encounter.def);
-          monster.xp = Math.round(monster.xp * WILD_REWARD_MULT);
-          monster.gold = Math.round(monster.gold * WILD_REWARD_MULT);
-          return {
-            ...moved,
-            screen: "battle",
-            battle: {
-              dungeonLevel: encounter.dropFloor,
-              encounterIndex: 0,
-              monster,
-              phase: "player",
-              log: [`A ${monster.name} ambushes you in ${encounter.regionName}!`],
-              heroEffects: [],
-              monsterEffects: [],
-              wild: true,
-              wildRegion: encounter.regionName,
-              wildRegionId: encounter.regionId,
-            },
-          };
+          return { ...moved, screen: "battle", battle: createWildBattle(encounter) };
         }
       }
       return moved;
