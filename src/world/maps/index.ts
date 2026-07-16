@@ -1,8 +1,13 @@
 import { isWalkable } from "../parseMap";
 import type { WorldMap } from "../types";
+import { OVERWORLD_MAP, TOWN_INN_MAP, TOWN_MAP, TOWN_SHOP_MAP } from "./ashenreach";
 import { DEMO_HUT_MAP, DEMO_MAP } from "./demo";
 
 export const MAPS: Record<string, WorldMap> = {
+  [OVERWORLD_MAP.id]: OVERWORLD_MAP,
+  [TOWN_MAP.id]: TOWN_MAP,
+  [TOWN_SHOP_MAP.id]: TOWN_SHOP_MAP,
+  [TOWN_INN_MAP.id]: TOWN_INN_MAP,
   [DEMO_MAP.id]: DEMO_MAP,
   [DEMO_HUT_MAP.id]: DEMO_HUT_MAP,
 };

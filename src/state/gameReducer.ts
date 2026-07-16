@@ -430,9 +430,13 @@ export function gameReducer(state: GameState, action: Action): GameState {
 
     case "ENTER_WORLD": {
       const map = getMap(action.mapId);
-      // Exploration memory survives across visits; only the position resets.
       const previous = state.world;
-      const position = { mapId: map.id, x: map.spawn.x, y: map.spawn.y, facing: "down" as const };
+      // Re-entering the map you left resumes in place; otherwise spawn there.
+      // Exploration memory always survives.
+      const position =
+        previous && previous.position.mapId === map.id
+          ? previous.position
+          : { mapId: map.id, x: map.spawn.x, y: map.spawn.y, facing: "down" as const };
       return {
         ...state,
         screen: "world",

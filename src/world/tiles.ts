@@ -8,6 +8,8 @@ export const TILES: Record<TileId, TileDef> = {
   path: { id: "path", sprite: "tile_path", walkable: true },
   sand: { id: "sand", sprite: "tile_sand", walkable: true },
   bridge: { id: "bridge", sprite: "tile_bridge", walkable: true },
+  marsh: { id: "marsh", sprite: "tile_marsh", walkable: true },
+  ash: { id: "ash", sprite: "tile_ash", walkable: true },
   wall: { id: "wall", sprite: "tile_wall", walkable: false },
   floor: { id: "floor", sprite: "tile_floor", walkable: true },
   roof: { id: "roof", sprite: "tile_roof", walkable: false },
