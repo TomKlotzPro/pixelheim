@@ -2,10 +2,26 @@ import { useEffect, useRef } from "react";
 import { getItem } from "../game/items";
 import { getLevel } from "../game/levels";
 import { ROLES } from "../game/roles";
-import type { GameState } from "../game/types";
+import type { GameState, StatusEffect } from "../game/types";
 import type { Action } from "../state/gameReducer";
 import { Sprite } from "./Sprite";
 import { StatBar } from "./StatBar";
+
+function EffectBadges({ effects }: { effects: StatusEffect[] }) {
+  return (
+    <div className="effect-badges">
+      {effects.map((effect) => (
+        <span
+          key={effect.kind}
+          className="effect-badge"
+          title={`${effect.kind}${effect.power ? `: ${effect.power} damage per turn` : ""}, ${effect.turnsLeft} turn(s) left`}
+        >
+          <Sprite name={`effect_${effect.kind}`} size={16} alt={effect.kind} /> {effect.turnsLeft}
+        </span>
+      ))}
+    </div>
+  );
+}
 
 type BattleProps = {
   state: GameState;
@@ -46,6 +62,7 @@ export function Battle({ state, dispatch }: BattleProps) {
           <div className="combatant-name">{hero.name}</div>
           <StatBar label="HP" value={hero.hp} max={hero.stats.maxHp} color="var(--hp)" />
           <StatBar label="MP" value={hero.mp} max={hero.stats.maxMp} color="var(--mp)" />
+          <EffectBadges effects={battle.heroEffects} />
         </div>
         <div className="vs">VS</div>
         <div className="combatant">
@@ -57,6 +74,7 @@ export function Battle({ state, dispatch }: BattleProps) {
           />
           <div className="combatant-name">{battle.monster.name}</div>
           <StatBar label="HP" value={battle.monster.hp} max={battle.monster.maxHp} color="var(--hp)" />
+          <EffectBadges effects={battle.monsterEffects} />
         </div>
       </div>
 
@@ -73,14 +91,19 @@ export function Battle({ state, dispatch }: BattleProps) {
           <button className="btn btn-primary" onClick={() => dispatch({ type: "ATTACK" })}>
             Attack
           </button>
-          <button
-            className="btn"
-            disabled={hero.mp < role.skill.mpCost}
-            onClick={() => dispatch({ type: "SKILL" })}
-            title={role.skill.description}
-          >
-            {role.skill.name} ({role.skill.mpCost} MP)
-          </button>
+          {role.skills.map((skill, index) =>
+            hero.level >= skill.unlockLevel ? (
+              <button
+                key={skill.name}
+                className="btn"
+                disabled={hero.mp < skill.mpCost || (skill.hpCost ?? 0) >= hero.hp}
+                onClick={() => dispatch({ type: "SKILL", skillIndex: index })}
+                title={skill.description}
+              >
+                {skill.name} ({skill.mpCost} MP{skill.hpCost ? ` + ${skill.hpCost} HP` : ""})
+              </button>
+            ) : null,
+          )}
           <button className="btn" onClick={() => dispatch({ type: "TOGGLE_INVENTORY" })} disabled={!hasConsumables}>
             Item
           </button>

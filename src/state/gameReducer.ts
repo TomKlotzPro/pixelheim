@@ -1,11 +1,15 @@
 import { applyLevelUps, carriedWeight, carryCapacity, createHero } from "../game/character";
 import {
+  consumeStun,
   fleeChance,
   heroAttackDamage,
   heroSkillDamage,
   heroSkillPower,
+  isStunned,
   monsterAttackDamage,
+  rollInfliction,
   spawnMonster,
+  tickDamageEffects,
 } from "../game/combat";
 import { getItem } from "../game/items";
 import { getLevel, LEVELS } from "../game/levels";
@@ -21,7 +25,7 @@ export type Action =
   | { type: "CREATE_HERO"; name: string; roleId: RoleId }
   | { type: "ENTER_LEVEL"; level: number }
   | { type: "ATTACK" }
-  | { type: "SKILL" }
+  | { type: "SKILL"; skillIndex: number }
   | { type: "FLEE" }
   | { type: "USE_ITEM"; itemId: string }
   | { type: "EQUIP"; itemId: string }
@@ -61,17 +65,71 @@ function removeItem(inventory: Record<string, number>, itemId: string, count = 1
   return next;
 }
 
-/** Monster retaliation + death check. Mutates the given draft slices. */
+const EFFECT_VERBS: Record<string, string> = { poison: "Poison", burn: "Burning" };
+
+/**
+ * Everything that happens after the hero's action: damage-over-time ticks on
+ * the monster, the monster's attack (unless stunned) with its infliction roll,
+ * then damage-over-time on the hero. Mutates the given draft slices.
+ */
 function monsterTurn(state: GameState, hero: Hero, log: string[]): void {
   const battle = state.battle!;
   if (battle.monster.hp <= 0) return;
-  const dmg = monsterAttackDamage(battle.monster, hero, state.equipped);
-  hero.hp = Math.max(0, hero.hp - dmg);
-  log.push(`${battle.monster.name} hits you for ${dmg} damage.`);
+
+  const monsterTick = tickDamageEffects(battle.monsterEffects);
+  battle.monsterEffects = monsterTick.effects;
+  for (const tick of monsterTick.ticks) {
+    battle.monster.hp = Math.max(0, battle.monster.hp - tick.damage);
+    log.push(`${EFFECT_VERBS[tick.kind]} deals ${tick.damage} damage to ${battle.monster.name}.`);
+  }
+  if (battle.monster.hp <= 0) {
+    onMonsterDefeated(state, hero, log);
+    return;
+  }
+
+  if (isStunned(battle.monsterEffects)) {
+    battle.monsterEffects = consumeStun(battle.monsterEffects);
+    log.push(`${battle.monster.name} is stunned and cannot act!`);
+  } else {
+    const dmg = monsterAttackDamage(battle.monster, hero, state.equipped);
+    hero.hp = Math.max(0, hero.hp - dmg);
+    log.push(`${battle.monster.name} hits you for ${dmg} damage.`);
+    const inflicted = rollInfliction(battle.heroEffects, battle.monster.def.inflicts);
+    if (inflicted.applied) {
+      battle.heroEffects = inflicted.effects;
+      log.push(`You are afflicted by ${battle.monster.def.inflicts!.kind}!`);
+    }
+    if (hero.hp <= 0) {
+      battle.phase = "lost";
+      log.push("You collapse. Everything goes dark...");
+      return;
+    }
+  }
+
+  const heroTick = tickDamageEffects(battle.heroEffects);
+  battle.heroEffects = heroTick.effects;
+  for (const tick of heroTick.ticks) {
+    hero.hp = Math.max(0, hero.hp - tick.damage);
+    log.push(`${EFFECT_VERBS[tick.kind]} deals ${tick.damage} damage to you.`);
+  }
   if (hero.hp <= 0) {
     battle.phase = "lost";
-    log.push("You collapse. Everything goes dark...");
+    log.push("You succumb to your wounds. Everything goes dark...");
   }
+}
+
+/**
+ * If the hero is stunned, their action is wasted: the stun is consumed, the
+ * monster still acts, and the caller must return immediately. Returns true
+ * when the turn was skipped.
+ */
+function heroStunGate(state: GameState, hero: Hero, log: string[]): boolean {
+  const battle = state.battle!;
+  if (!isStunned(battle.heroEffects)) return false;
+  battle.heroEffects = consumeStun(battle.heroEffects);
+  log.push("You are stunned and cannot act!");
+  monsterTurn(state, hero, log);
+  return true;
 }
 
 function onMonsterDefeated(state: GameState, hero: Hero, log: string[]): void {
@@ -82,6 +140,10 @@ function onMonsterDefeated(state: GameState, hero: Hero, log: string[]): void {
   state.gold += gold;
   const gained = applyLevelUps(hero);
   if (gained > 0) log.push(`LEVEL UP! You are now level ${hero.level}. Fully restored.`);
+
+  // Ailments do not linger between fights.
+  battle.heroEffects = [];
+  battle.monsterEffects = [];
 
   const dungeon = getLevel(battle.dungeonLevel);
   if (battle.encounterIndex >= dungeon.encounters.length - 1) {
@@ -140,6 +202,8 @@ export function gameReducer(state: GameState, action: Action): GameState {
           monster,
           phase: "player",
           log: [`You enter ${dungeon.name}.`, `A ${monster.name} blocks your path!`],
+          heroEffects: [],
+          monsterEffects: [],
         },
       };
     }
@@ -149,6 +213,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
       const next = structuredClone(state);
       const hero = next.hero!;
       const battle = next.battle!;
+      if (heroStunGate(next, hero, battle.log)) return next;
       const dmg = heroAttackDamage(hero, next.equipped, battle.monster);
       battle.monster.hp = Math.max(0, battle.monster.hp - dmg);
       battle.log.push(`You strike ${battle.monster.name} for ${dmg} damage.`);
@@ -159,23 +224,39 @@ export function gameReducer(state: GameState, action: Action): GameState {
 
     case "SKILL": {
       if (!state.hero || state.battle?.phase !== "player") return state;
-      const skill = ROLES[state.hero.roleId].skill;
+      const skill = ROLES[state.hero.roleId].skills[action.skillIndex];
+      if (!skill || state.hero.level < skill.unlockLevel) return state;
       if (state.hero.mp < skill.mpCost) return state;
+      if (skill.hpCost && state.hero.hp <= skill.hpCost) return state;
       const next = structuredClone(state);
       const hero = next.hero!;
       const battle = next.battle!;
+      if (heroStunGate(next, hero, battle.log)) return next;
       hero.mp -= skill.mpCost;
+      if (skill.hpCost) hero.hp -= skill.hpCost;
       if (skill.kind === "heal") {
-        const amount = heroSkillPower(hero);
+        const amount = heroSkillPower(hero, skill);
         hero.hp = Math.min(hero.stats.maxHp, hero.hp + amount);
         battle.log.push(`${skill.name} restores ${amount} HP.`);
+        if (skill.cleanse && battle.heroEffects.length > 0) {
+          battle.heroEffects = [];
+          battle.log.push("All ailments are purged!");
+        }
         monsterTurn(next, hero, battle.log);
       } else {
-        const dmg = heroSkillDamage(hero, battle.monster);
+        const dmg = heroSkillDamage(hero, skill, battle.monster);
         battle.monster.hp = Math.max(0, battle.monster.hp - dmg);
         battle.log.push(`${skill.name} hits ${battle.monster.name} for ${dmg} damage!`);
-        if (battle.monster.hp <= 0) onMonsterDefeated(next, hero, battle.log);
-        else monsterTurn(next, hero, battle.log);
+        if (battle.monster.hp <= 0) {
+          onMonsterDefeated(next, hero, battle.log);
+        } else {
+          const inflicted = rollInfliction(battle.monsterEffects, skill.inflicts);
+          if (inflicted.applied) {
+            battle.monsterEffects = inflicted.effects;
+            battle.log.push(`${battle.monster.name} is afflicted by ${skill.inflicts!.kind}!`);
+          }
+          monsterTurn(next, hero, battle.log);
+        }
       }
       return next;
     }
@@ -185,6 +266,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
       const next = structuredClone(state);
       const hero = next.hero!;
       const battle = next.battle!;
+      if (heroStunGate(next, hero, battle.log)) return next;
       if (Math.random() < fleeChance(hero)) {
         next.screen = "hub";
         next.battle = null;
@@ -204,6 +286,11 @@ export function gameReducer(state: GameState, action: Action): GameState {
       if (state.screen === "battle" && !inBattle) return state;
       const next = structuredClone(state);
       const hero = next.hero!;
+      // A stunned hero fumbles the bag: the turn is lost but nothing is consumed.
+      if (inBattle && heroStunGate(next, hero, next.battle!.log)) {
+        next.inventoryOpen = false;
+        return next;
+      }
       next.inventory = removeItem(next.inventory, action.itemId);
       const parts: string[] = [];
       if (item.restoreHp) {
@@ -281,6 +368,8 @@ export function gameReducer(state: GameState, action: Action): GameState {
       battle.encounterIndex += 1;
       battle.monster = spawnMonster(dungeon.encounters[battle.encounterIndex]);
       battle.phase = "player";
+      battle.heroEffects = [];
+      battle.monsterEffects = [];
       battle.log.push(`A ${battle.monster.name} appears!`);
       return next;
     }

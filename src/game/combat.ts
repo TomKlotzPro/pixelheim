@@ -1,7 +1,6 @@
 import { totalArmor, weaponOf } from "./character";
 import { getMonster } from "./monsters";
-import { ROLES } from "./roles";
-import type { BattleMonster, EncounterDef, Equipped, Hero } from "./types";
+import type { BattleMonster, EncounterDef, Equipped, Hero, Infliction, Skill, StatusEffect } from "./types";
 
 export function spawnMonster(def: EncounterDef): BattleMonster {
   const base = getMonster(def.monsterId);
@@ -30,13 +29,12 @@ export function heroAttackDamage(hero: Hero, equipped: Equipped, monster: Battle
   return Math.max(1, variance(raw) - monster.defense);
 }
 
-export function heroSkillPower(hero: Hero): number {
-  const skill = ROLES[hero.roleId].skill;
+export function heroSkillPower(hero: Hero, skill: Skill): number {
   return Math.round(hero.stats[skill.stat] * skill.multiplier);
 }
 
-export function heroSkillDamage(hero: Hero, monster: BattleMonster): number {
-  return Math.max(1, variance(heroSkillPower(hero)) - Math.floor(monster.defense / 2));
+export function heroSkillDamage(hero: Hero, skill: Skill, monster: BattleMonster): number {
+  return Math.max(1, variance(heroSkillPower(hero, skill)) - Math.floor(monster.defense / 2));
 }
 
 export function monsterAttackDamage(monster: BattleMonster, hero: Hero, equipped: Equipped): number {
@@ -46,4 +44,54 @@ export function monsterAttackDamage(monster: BattleMonster, hero: Hero, equipped
 
 export function fleeChance(hero: Hero): number {
   return Math.min(0.9, 0.4 + hero.stats.dexterity * 0.02);
+}
+
+// ---------------- status effects ----------------
+
+/**
+ * Rolls an infliction against a combatant's active effects. On success the
+ * effect is added, or refreshed if the same kind is already active (duration
+ * and power both take the higher value; they never stack additively).
+ */
+export function rollInfliction(
+  effects: StatusEffect[],
+  infliction: Infliction | undefined,
+): { effects: StatusEffect[]; applied: boolean } {
+  if (!infliction || Math.random() >= infliction.chance) return { effects, applied: false };
+  const current = effects.find((e) => e.kind === infliction.kind);
+  const refreshed: StatusEffect = {
+    kind: infliction.kind,
+    turnsLeft: Math.max(infliction.turns, current?.turnsLeft ?? 0),
+    power: Math.max(infliction.power, current?.power ?? 0),
+  };
+  return { effects: [...effects.filter((e) => e.kind !== infliction.kind), refreshed], applied: true };
+}
+
+/** Applies one tick of every damage-over-time effect and expires used-up ones. */
+export function tickDamageEffects(effects: StatusEffect[]): {
+  effects: StatusEffect[];
+  ticks: { kind: StatusEffect["kind"]; damage: number }[];
+} {
+  const ticks: { kind: StatusEffect["kind"]; damage: number }[] = [];
+  const remaining: StatusEffect[] = [];
+  for (const effect of effects) {
+    if (effect.kind === "stun") {
+      remaining.push(effect);
+      continue;
+    }
+    ticks.push({ kind: effect.kind, damage: effect.power });
+    if (effect.turnsLeft > 1) remaining.push({ ...effect, turnsLeft: effect.turnsLeft - 1 });
+  }
+  return { effects: remaining, ticks };
+}
+
+export function isStunned(effects: StatusEffect[]): boolean {
+  return effects.some((e) => e.kind === "stun");
+}
+
+/** Spends one stunned turn: decrements the stun and drops it once used up. */
+export function consumeStun(effects: StatusEffect[]): StatusEffect[] {
+  return effects
+    .map((e) => (e.kind === "stun" ? { ...e, turnsLeft: e.turnsLeft - 1 } : e))
+    .filter((e) => e.turnsLeft > 0);
 }

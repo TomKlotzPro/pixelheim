@@ -48,8 +48,15 @@ export function CharacterCreation({ onCreate }: CharacterCreationProps) {
           <span>DEF {role.baseStats.defense}</span>
         </div>
         <p className="skill-line">
-          Skill: <strong>{role.skill.name}</strong> ({role.skill.mpCost} MP) - {role.skill.description}
+          Skills:{" "}
+          {role.skills.map((skill, i) => (
+            <span key={skill.name}>
+              {i > 0 && ", "}
+              <strong>{skill.name}</strong> (Lv{skill.unlockLevel})
+            </span>
+          ))}
         </p>
+        <p className="skill-line">{role.skills[0].description}</p>
       </div>
       <button
         className="btn btn-primary"
