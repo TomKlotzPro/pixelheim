@@ -177,7 +177,7 @@ function heroStunGate(state: GameState, hero: Hero, log: string[]): boolean {
   return true;
 }
 
-const BOSS_IDS = ["dragon", "lich"];
+const BOSS_IDS = new Set(["dragon", "lich"]);
 
 function onMonsterDefeated(state: GameState, hero: Hero, log: string[]): void {
   const battle = state.battle!;
@@ -198,7 +198,7 @@ function onMonsterDefeated(state: GameState, hero: Hero, log: string[]): void {
     );
   }
 
-  const kind = BOSS_IDS.includes(battle.monster.def.id) ? "boss" : battle.monster.elite ? "elite" : "normal";
+  const kind = BOSS_IDS.has(battle.monster.def.id) ? "boss" : battle.monster.elite ? "elite" : "normal";
   const drop = rollDrop(battle.dungeonLevel, kind);
   if (drop?.kind === "gear") {
     state.gear.push(drop.gear);
@@ -228,7 +228,7 @@ function onMonsterDefeated(state: GameState, hero: Hero, log: string[]): void {
 }
 
 /** Terrain that can hide monsters; paths, bridges and buildings are safe. */
-const WILD_TILES: TileId[] = ["grass", "forest", "marsh", "ash", "sand"];
+const WILD_TILES = new Set<TileId>(["grass", "forest", "marsh", "ash", "sand"]);
 
 export function gameReducer(state: GameState, action: Action): GameState {
   switch (action.type) {
@@ -674,7 +674,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
       // drops the hero back on this exact tile.
       const region = regionAt(map, x, y);
       const tile = tileAt(map, x, y);
-      if (state.hero && region && tile && WILD_TILES.includes(tile)) {
+      if (state.hero && region && tile && WILD_TILES.has(tile)) {
         const encounter = rollWildEncounter(region);
         if (encounter) {
           const monster = spawnMonster(encounter.def);
