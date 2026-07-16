@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { carriedWeight, carryCapacity } from "../game/character";
 import { getItem } from "../game/items";
-import type { EquipSlot, GameState, Item, ItemCategory } from "../game/types";
+import { itemStatLine } from "../game/itemStats";
+import type { EquipSlot, GameState, ItemCategory } from "../game/types";
 import type { Action } from "../state/gameReducer";
 import { Sprite } from "./Sprite";
 
@@ -19,16 +20,6 @@ const SLOT_LABELS: Record<EquipSlot, string> = {
   body: "Body",
   offhand: "Off-hand",
 };
-
-function itemStatLine(item: Item): string {
-  const parts: string[] = [];
-  if (item.damage) parts.push(`DMG ${item.damage} (${item.scaling?.slice(0, 3).toUpperCase()})`);
-  if (item.armor) parts.push(`ARMOR ${item.armor}`);
-  if (item.restoreHp) parts.push(`+${item.restoreHp} HP`);
-  if (item.restoreMp) parts.push(`+${item.restoreMp} MP`);
-  parts.push(`${item.weight} wt`, `${item.value}g`);
-  return parts.join("  ");
-}
 
 type InventoryProps = {
   state: GameState;
@@ -112,7 +103,7 @@ export function Inventory({ state, dispatch }: InventoryProps) {
                     {item.name}
                     {count > 1 && <span className="item-count"> x{count}</span>}
                   </span>
-                  <span className="item-stats">{itemStatLine(item)}</span>
+                  <span className="item-stats">{itemStatLine(item, { withValue: true })}</span>
                   <span className="item-desc">{item.description}</span>
                 </div>
                 <div className="item-actions">
