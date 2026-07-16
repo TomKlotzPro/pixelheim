@@ -11,6 +11,17 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "1.2.0",
+    date: "2026-07-16",
+    codename: "Branches of Power",
+    notes: [
+      "Skill trees! One skill point per level, three branches per role",
+      "Learn new skills, upgrade old ones, or take passives: crits, resists, +DEF...",
+      "Open Skills from the HUD; your old skills are already in the tree",
+      "Veterans get their banked points retroactively. Spend wisely - no take-backs.",
+    ],
+  },
+  {
     version: "1.1.0",
     date: "2026-07-16",
     codename: "Your Hero, Your Rules",

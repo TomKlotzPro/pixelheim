@@ -65,7 +65,7 @@ test('leveling up banks 5 points, announced in the battle log', async ({ page })
     if (await attack.isVisible().catch(() => false)) await attack.click()
     await page.waitForTimeout(30)
   }
-  await expect(page.getByText(/\+5 stat points to spend/)).toBeVisible()
+  await expect(page.getByText(/\+5 stat points/)).toBeVisible()
   await page.getByRole('button', { name: 'Walk on' }).click()
   await expect(page.getByRole('button', { name: 'Stats +5' })).toBeVisible()
 })
