@@ -39,6 +39,7 @@ export type TileId =
   | "bed"
   | "hearth"
   | "door"
+  | "door_shut"
   | "cave"
   | "shrine";
 

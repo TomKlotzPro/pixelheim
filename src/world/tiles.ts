@@ -44,6 +44,7 @@ export const TILES: Record<TileId, TileDef> = {
   bed: { id: "bed", sprite: "tile_bed", walkable: false },
   hearth: { id: "hearth", sprite: "tile_hearth", walkable: false },
   door: { id: "door", sprite: "tile_door", walkable: true },
+  door_shut: { id: "door_shut", sprite: "tile_door_shut", walkable: false },
   cave: { id: "cave", sprite: "tile_cave", walkable: true },
   shrine: { id: "shrine", sprite: "tile_shrine", walkable: true },
 };
