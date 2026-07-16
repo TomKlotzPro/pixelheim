@@ -8,9 +8,13 @@ test('movement keys are ignored while a shop menu is open', async ({ page }) => 
   const errors: string[] = []
   page.on('pageerror', (error) => errors.push(String(error)))
 
-  // The smithy door in town; stepping up walks in and opens Hilda's counter.
+  // The smithy door in town; walk in, then up to Hilda, and talk to trade.
   await loadVeteranAt(page, 21, 5, 'town')
   await page.keyboard.press('ArrowUp')
+  for (const key of ['ArrowUp', 'ArrowUp', 'ArrowUp'] as const) {
+    await page.keyboard.press(key)
+  }
+  await page.keyboard.press('e')
   await expect(page.getByRole('heading', { name: 'Smith Hilda' })).toBeVisible()
 
   // Mash movement with the menu open: nothing should move, nothing should die.

@@ -2,7 +2,7 @@ import { lazy, Suspense, useEffect, useState } from "react";
 import { ROLES } from "../game/roles";
 import { dispatch, useGameState } from "../state/store";
 import { getMap } from "../world/maps";
-import { NPCS, npcPosition, npcsOn } from "../world/npcs";
+import { npcAt, NPCS, npcPosition, npcsOn } from "../world/npcs";
 import { regionAt } from "../world/parseMap";
 import { TILES } from "../world/tiles";
 import type { Direction, TileId } from "../world/types";
@@ -43,12 +43,26 @@ function useTileScale(): number {
   return scale;
 }
 
+const FACING_DELTAS: Record<Direction, { dx: number; dy: number }> = {
+  up: { dx: 0, dy: -1 },
+  down: { dx: 0, dy: 1 },
+  left: { dx: -1, dy: 0 },
+  right: { dx: 1, dy: 0 },
+};
+
 export function WorldScreen() {
   const state = useGameState();
   const world = state.world!.position;
   const map = getMap(world.mapId);
   const heroSprite = ROLES[state.hero?.roleId ?? "warrior"].sprite;
   const tilePx = ART_PX * useTileScale();
+
+  // Someone to talk to: a prompt floats over the NPC the hero is facing.
+  const { dx: fdx, dy: fdy } = FACING_DELTAS[world.facing];
+  const facingNpc =
+    state.hero && !state.dialogue && !state.shopOpen
+      ? npcAt(map.id, world.x + fdx, world.y + fdy, state.worldSteps)
+      : null;
 
   // Maps smaller than the viewport are centered; larger ones scroll, clamped at edges.
   const cameraX =
@@ -147,6 +161,19 @@ export function WorldScreen() {
           >
             <Sprite name={heroSprite} size={tilePx} alt="hero" />
           </div>
+          {facingNpc && (
+            <div
+              className="npc-prompt"
+              data-testid="npc-prompt"
+              style={{
+                left: (world.x + fdx) * tilePx,
+                top: (world.y + fdy) * tilePx - tilePx / 2,
+                width: tilePx,
+              }}
+            >
+              !
+            </div>
+          )}
         </div>
       </div>
       )}
