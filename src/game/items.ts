@@ -342,6 +342,33 @@ const list: Item[] = [
   },
   // ---------------- misc ----------------
   {
+    id: "forest_herb",
+    name: "Forest Herb",
+    category: "misc",
+    sprite: "herb",
+    weight: 0,
+    value: 6,
+    description: "Bitter leaves the healers swear by. Foraged in the forest.",
+  },
+  {
+    id: "marsh_reed",
+    name: "Marsh Reed",
+    category: "misc",
+    sprite: "reed",
+    weight: 0,
+    value: 6,
+    description: "Hollow, mana-soaked stems from the sunken marsh.",
+  },
+  {
+    id: "ember_shard",
+    name: "Ember Shard",
+    category: "misc",
+    sprite: "shard",
+    weight: 0,
+    value: 10,
+    description: "A pebble of the mountain's anger. Warm forever. Found in the ash fields.",
+  },
+  {
     id: "wolf_pelt",
     name: "Wolf Pelt",
     category: "misc",
