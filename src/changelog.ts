@@ -11,6 +11,17 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "1.6.0",
+    date: "2026-07-16",
+    codename: "Field Alchemy",
+    notes: [
+      "Crafting! A new Craft tab in the inventory turns materials into potions",
+      "Win wild battles to forage: herbs in the forest, reeds in the marsh, ember shards in the ash",
+      "Six recipes, from a humble health potion to a full elixir",
+      "Materials weigh nothing and sell for pocket change - brew, don't hoard",
+    ],
+  },
+  {
     version: "1.5.0",
     date: "2026-07-16",
     codename: "Neighbors",

@@ -25,6 +25,7 @@ import { getLevel, LEVELS } from "../game/levels";
 import { buyPrice, sellPrice, shopStock } from "../game/shop";
 import type { EquipSlot, GameState, Hero, RoleId, SpendableStat } from "../game/types";
 import { rollWildEncounter, WILD_REWARD_MULT } from "../game/encounters";
+import { canCraft, RECIPES, REGION_MATERIALS } from "../game/recipes";
 import { canBuyNode, getHeroSkills, getNode, getPassives } from "../game/skillTree";
 import { discoverAround } from "../world/discover";
 import { getMap } from "../world/maps";
@@ -63,7 +64,8 @@ export type Action =
   | { type: "INTERACT" }
   | { type: "ADVANCE_DIALOGUE" }
   | { type: "SPEND_STAT_POINT"; stat: SpendableStat }
-  | { type: "BUY_SKILL_NODE"; nodeId: string };
+  | { type: "BUY_SKILL_NODE"; nodeId: string }
+  | { type: "CRAFT"; recipeId: string };
 
 export const initialState: GameState = {
   screen: "title",
@@ -220,6 +222,13 @@ function onMonsterDefeated(state: GameState, hero: Hero, log: string[]): void {
   if (battle.wild) {
     battle.phase = "cleared";
     log.push("The wilds fall quiet again.");
+    // Forage the region while the ground is still warm.
+    const material = battle.wildRegionId ? REGION_MATERIALS[battle.wildRegionId] : undefined;
+    if (material && Math.random() < 0.6) {
+      const count = 1 + (Math.random() < 0.35 ? 1 : 0);
+      state.inventory = addItem(state.inventory, material, count);
+      log.push(`You forage ${count} ${getItem(material).name}${count > 1 ? "s" : ""}.`);
+    }
     return;
   }
 
@@ -584,6 +593,18 @@ export function gameReducer(state: GameState, action: Action): GameState {
       return next;
     }
 
+    case "CRAFT": {
+      if (!state.hero) return state;
+      const recipe = RECIPES.find((r) => r.id === action.recipeId);
+      if (!recipe || !canCraft(recipe, state.inventory)) return state;
+      let inventory = state.inventory;
+      for (const [itemId, count] of Object.entries(recipe.needs)) {
+        inventory = removeItem(inventory, itemId, count);
+      }
+      inventory = addItem(inventory, recipe.itemId);
+      return { ...state, inventory };
+    }
+
     case "BUY_SKILL_NODE": {
       if (!state.hero) return state;
       const node = getNode(state.hero.roleId, action.nodeId);
@@ -717,6 +738,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
               monsterEffects: [],
               wild: true,
               wildRegion: encounter.regionName,
+              wildRegionId: encounter.regionId,
             },
           };
         }
