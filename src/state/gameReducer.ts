@@ -16,7 +16,7 @@ import { getLevel, LEVELS } from "../game/levels";
 import { buyPrice, sellPrice, shopStock } from "../game/shop";
 import { ROLES } from "../game/roles";
 import type { EquipSlot, GameState, Hero, RoleId } from "../game/types";
-import { getMap } from "../world/maps/demo";
+import { getMap } from "../world/maps";
 import { isWalkable, portalAt } from "../world/parseMap";
 import type { Direction } from "../world/types";
 
@@ -43,6 +43,7 @@ export type Action =
   | { type: "REST" }
   | { type: "RETURN_TO_HUB" }
   | { type: "ENTER_WORLD"; mapId: string }
+  | { type: "EXIT_WORLD" }
   | { type: "MOVE"; direction: Direction };
 
 export const initialState: GameState = {
@@ -435,6 +436,11 @@ export function gameReducer(state: GameState, action: Action): GameState {
         shopOpen: false,
         world: { mapId: map.id, x: map.spawn.x, y: map.spawn.y, facing: "down" },
       };
+    }
+
+    case "EXIT_WORLD": {
+      if (state.screen !== "world") return state;
+      return { ...state, screen: state.hero ? "hub" : "title", world: null };
     }
 
     case "MOVE": {

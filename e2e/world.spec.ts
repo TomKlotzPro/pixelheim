@@ -29,12 +29,20 @@ test('mountains block movement but still turn the hero', async ({ page }) => {
   await expect(hero(page)).toHaveClass(/facing-up/)
 })
 
-test('walking through the hut door exits the demo', async ({ page }) => {
+test('doors travel between maps and Escape leaves the world', async ({ page }) => {
   await page.goto('./?world')
   await expect(hero(page)).toHaveAttribute('data-pos', '8,8')
   await pressTimes(page, 'ArrowRight', 9)
   await expect(hero(page)).toHaveAttribute('data-pos', '17,8')
+  // through the hut door: map-to-map portal drops us inside
   await pressTimes(page, 'ArrowUp', 4)
-  // the door portal exits to the title screen (no hero in the demo)
+  await expect(page.getByTestId('world-viewport')).toHaveAttribute('data-map', 'demo_hut')
+  await expect(hero(page)).toHaveAttribute('data-pos', '3,3')
+  // back out through the interior door
+  await page.keyboard.press('ArrowDown')
+  await expect(page.getByTestId('world-viewport')).toHaveAttribute('data-map', 'demo')
+  await expect(hero(page)).toHaveAttribute('data-pos', '17,5')
+  // Escape exits the demo to the title screen (no hero yet)
+  await page.keyboard.press('Escape')
   await expect(page.getByRole('button', { name: 'New Game' })).toBeVisible()
 })

@@ -1,7 +1,7 @@
 import { ROLES } from "../game/roles";
 import type { GameState } from "../game/types";
 import type { Action } from "../state/gameReducer";
-import { getMap } from "../world/maps/demo";
+import { getMap } from "../world/maps";
 import { TILES } from "../world/tiles";
 import type { Direction } from "../world/types";
 import { Sprite } from "./Sprite";
@@ -24,8 +24,15 @@ export function WorldScreen({ state, dispatch }: WorldScreenProps) {
   const map = getMap(world.mapId);
   const heroSprite = ROLES[state.hero?.roleId ?? "warrior"].sprite;
 
-  const cameraX = clamp(world.x - Math.floor(VIEW_W / 2), 0, Math.max(0, map.width - VIEW_W));
-  const cameraY = clamp(world.y - Math.floor(VIEW_H / 2), 0, Math.max(0, map.height - VIEW_H));
+  // Maps smaller than the viewport are centered; larger ones scroll, clamped at edges.
+  const cameraX =
+    map.width <= VIEW_W
+      ? -Math.floor((VIEW_W - map.width) / 2)
+      : clamp(world.x - Math.floor(VIEW_W / 2), 0, map.width - VIEW_W);
+  const cameraY =
+    map.height <= VIEW_H
+      ? -Math.floor((VIEW_H - map.height) / 2)
+      : clamp(world.y - Math.floor(VIEW_H / 2), 0, map.height - VIEW_H);
 
   const clickTile = (x: number, y: number) => {
     const dx = x - world.x;
@@ -40,6 +47,7 @@ export function WorldScreen({ state, dispatch }: WorldScreenProps) {
       <div
         className="world-viewport"
         data-testid="world-viewport"
+        data-map={map.id}
         style={{ width: VIEW_W * TILE_PX, height: VIEW_H * TILE_PX }}
       >
         <div
@@ -74,7 +82,7 @@ export function WorldScreen({ state, dispatch }: WorldScreenProps) {
           </div>
         </div>
       </div>
-      <p className="world-hint">Arrows / WASD to move, or tap an adjacent tile. Find the door.</p>
+      <p className="world-hint">Arrows / WASD to move, or tap an adjacent tile. Esc leaves the world.</p>
     </div>
   );
 }
