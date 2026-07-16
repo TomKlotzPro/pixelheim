@@ -966,6 +966,29 @@ body {
   flex-direction: column;
   gap: 10px;
 }
+.stat-row {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 6px;
+}
+.stat-row .options-row {
+  padding: 0;
+}
+.stat-blurb {
+  color: var(--text-dim);
+  font-size: 11px;
+  margin: 2px 0 0;
+}
+.stat-derived {
+  font-size: 11px;
+  margin: 2px 0 0;
+  font-variant-numeric: tabular-nums;
+}
+.stat-next {
+  color: var(--accent);
+}
+.stat-arrow {
+  color: var(--text-dim);
+}
 .options-panel {
   width: 460px;
   max-height: min(84vh, 720px);
