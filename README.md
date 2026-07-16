@@ -62,11 +62,17 @@ src/
     levels.ts      # the 10 floors and their rewards
     combat.ts      # damage formulas, flee chance, elite scaling
     character.ts   # hero creation, level ups, carry weight
+  world/           # the tile engine (open-world refonte in progress)
+    tiles.ts       # tile definitions and walkability
+    parseMap.ts    # ASCII grid parser with startup validation
+    maps/          # maps authored as text grids, like the sprites
   state/
     gameReducer.ts # the whole game loop as a reducer
     save.ts        # localStorage persistence
   components/      # one component per screen + inventory overlay
 ```
+
+Maps are ASCII art in source (`.` grass, `f` forest, `^` mountain, `~` water, `=` path, `#` wall, `D` door...). The parser validates every map at load and the e2e suite imports them all, so a malformed map fails CI with a precise message. Try the work-in-progress world with `?world` on the URL.
 
 ### The sprites
 

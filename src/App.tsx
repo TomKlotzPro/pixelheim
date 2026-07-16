@@ -6,9 +6,22 @@ import { Inventory } from "./components/Inventory";
 import { Shop } from "./components/Shop";
 import { TitleScreen } from "./components/TitleScreen";
 import { Victory } from "./components/Victory";
+import { WorldScreen } from "./components/WorldScreen";
 import type { GameState } from "./game/types";
 import { gameReducer, initialState } from "./state/gameReducer";
 import { clearSave, decodeSaveCode, encodeSaveCode, loadSave, persistSave } from "./state/save";
+import type { Direction } from "./world/types";
+
+const KEY_DIRECTIONS: Record<string, Direction> = {
+  ArrowUp: "up",
+  ArrowDown: "down",
+  ArrowLeft: "left",
+  ArrowRight: "right",
+  w: "up",
+  s: "down",
+  a: "left",
+  d: "right",
+};
 
 export default function App() {
   const [state, dispatch] = useReducer(gameReducer, initialState);
@@ -17,6 +30,29 @@ export default function App() {
   useEffect(() => {
     persistSave(state);
   }, [state]);
+
+  // Dev entry for the tile engine until the real world ships (PIX-25).
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).has("world")) {
+      dispatch({ type: "ENTER_WORLD", mapId: "demo" });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (state.screen !== "world") return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        dispatch({ type: "EXIT_WORLD" });
+        return;
+      }
+      const direction = KEY_DIRECTIONS[event.key];
+      if (!direction) return;
+      event.preventDefault();
+      dispatch({ type: "MOVE", direction });
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [state.screen]);
 
   return (
     <div className="crt">
@@ -70,6 +106,8 @@ function Screen({
       );
     case "battle":
       return <Battle state={state} dispatch={dispatch} />;
+    case "world":
+      return state.world ? <WorldScreen state={state} dispatch={dispatch} /> : null;
     case "victory":
       return <Victory hero={state.hero!} onContinue={() => dispatch({ type: "RETURN_TO_HUB" })} />;
     default:

@@ -16,6 +16,9 @@ import { getLevel, LEVELS } from "../game/levels";
 import { buyPrice, sellPrice, shopStock } from "../game/shop";
 import { ROLES } from "../game/roles";
 import type { EquipSlot, GameState, Hero, RoleId } from "../game/types";
+import { getMap } from "../world/maps";
+import { isWalkable, portalAt } from "../world/parseMap";
+import type { Direction } from "../world/types";
 
 export const REST_COST = 10;
 
@@ -38,7 +41,10 @@ export type Action =
   | { type: "NEXT_ENCOUNTER" }
   | { type: "COLLECT_AND_RETURN" }
   | { type: "REST" }
-  | { type: "RETURN_TO_HUB" };
+  | { type: "RETURN_TO_HUB" }
+  | { type: "ENTER_WORLD"; mapId: string }
+  | { type: "EXIT_WORLD" }
+  | { type: "MOVE"; direction: Direction };
 
 export const initialState: GameState = {
   screen: "title",
@@ -51,6 +57,14 @@ export const initialState: GameState = {
   battle: null,
   inventoryOpen: false,
   shopOpen: false,
+  world: null,
+};
+
+const DIRECTION_DELTAS: Record<Direction, { dx: number; dy: number }> = {
+  up: { dx: 0, dy: -1 },
+  down: { dx: 0, dy: 1 },
+  left: { dx: -1, dy: 0 },
+  right: { dx: 1, dy: 0 },
 };
 
 function addItem(inventory: Record<string, number>, itemId: string, count = 1): Record<string, number> {
@@ -411,6 +425,46 @@ export function gameReducer(state: GameState, action: Action): GameState {
       next.battle = null;
       next.screen = "hub";
       return next;
+    }
+
+    case "ENTER_WORLD": {
+      const map = getMap(action.mapId);
+      return {
+        ...state,
+        screen: "world",
+        inventoryOpen: false,
+        shopOpen: false,
+        world: { mapId: map.id, x: map.spawn.x, y: map.spawn.y, facing: "down" },
+      };
+    }
+
+    case "EXIT_WORLD": {
+      if (state.screen !== "world") return state;
+      return { ...state, screen: state.hero ? "hub" : "title", world: null };
+    }
+
+    case "MOVE": {
+      if (state.screen !== "world" || !state.world) return state;
+      const map = getMap(state.world.mapId);
+      const { dx, dy } = DIRECTION_DELTAS[action.direction];
+      const x = state.world.x + dx;
+      const y = state.world.y + dy;
+      // Bumping into something still turns the hero toward it.
+      if (!isWalkable(map, x, y)) {
+        return { ...state, world: { ...state.world, facing: action.direction } };
+      }
+      const portal = portalAt(map, x, y);
+      if (portal) {
+        if (portal.to.kind === "exit") {
+          return { ...state, screen: state.hero ? "hub" : "title", world: null };
+        }
+        const target = getMap(portal.to.mapId);
+        return {
+          ...state,
+          world: { mapId: target.id, x: portal.to.x, y: portal.to.y, facing: action.direction },
+        };
+      }
+      return { ...state, world: { ...state.world, x, y, facing: action.direction } };
     }
 
     default:
