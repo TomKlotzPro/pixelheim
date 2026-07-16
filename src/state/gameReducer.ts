@@ -18,10 +18,11 @@ import { getLevel, LEVELS } from "../game/levels";
 import { buyPrice, sellPrice, shopStock } from "../game/shop";
 import { ROLES } from "../game/roles";
 import type { EquipSlot, GameState, Hero, RoleId } from "../game/types";
+import { rollWildEncounter, WILD_REWARD_MULT } from "../game/encounters";
 import { discoverAround } from "../world/discover";
 import { getMap } from "../world/maps";
-import { isWalkable, portalAt } from "../world/parseMap";
-import type { Direction } from "../world/types";
+import { isWalkable, portalAt, regionAt, tileAt } from "../world/parseMap";
+import type { Direction, TileId } from "../world/types";
 
 export const REST_COST = 10;
 
@@ -177,6 +178,12 @@ function onMonsterDefeated(state: GameState, hero: Hero, log: string[]): void {
   battle.heroEffects = [];
   battle.monsterEffects = [];
 
+  if (battle.wild) {
+    battle.phase = "cleared";
+    log.push("The wilds fall quiet again.");
+    return;
+  }
+
   const dungeon = getLevel(battle.dungeonLevel);
   if (battle.encounterIndex >= dungeon.encounters.length - 1) {
     battle.phase = "cleared";
@@ -185,6 +192,9 @@ function onMonsterDefeated(state: GameState, hero: Hero, log: string[]): void {
     battle.phase = "won";
   }
 }
+
+/** Terrain that can hide monsters; paths, bridges and buildings are safe. */
+const WILD_TILES: TileId[] = ["grass", "forest", "marsh", "ash", "sand"];
 
 export function gameReducer(state: GameState, action: Action): GameState {
   switch (action.type) {
@@ -303,7 +313,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
       const battle = next.battle!;
       if (heroStunGate(next, hero, battle.log)) return next;
       if (Math.random() < fleeChance(hero)) {
-        next.screen = "hub";
+        next.screen = battle.wild ? "world" : "hub";
         next.battle = null;
         return next;
       }
@@ -435,6 +445,12 @@ export function gameReducer(state: GameState, action: Action): GameState {
       if (!state.hero || state.battle?.phase !== "cleared") return state;
       const next = structuredClone(state);
       const battle = next.battle!;
+      // Wild battles have no floor rewards; the hero walks on from the same tile.
+      if (battle.wild) {
+        next.battle = null;
+        next.screen = "world";
+        return next;
+      }
       const dungeon = getLevel(battle.dungeonLevel);
       const firstClear = !next.clearedLevels.includes(dungeon.level);
       if (firstClear) {
@@ -463,13 +479,20 @@ export function gameReducer(state: GameState, action: Action): GameState {
     case "RETURN_TO_HUB": {
       if (!state.hero) return state;
       const next = structuredClone(state);
+      const lostWild = next.battle?.phase === "lost" && next.battle?.wild;
       // Defeat is forgiving: you wake up in town at full health, purse intact.
       if (next.battle?.phase === "lost") {
         next.hero!.hp = next.hero!.stats.maxHp;
         next.hero!.mp = next.hero!.stats.maxMp;
       }
       next.battle = null;
-      next.screen = "hub";
+      if (lostWild && next.world) {
+        // Beaten in the wilds, you wake at the inn in Pixelheim village.
+        next.world.position = { mapId: "town", x: 12, y: 5, facing: "down" };
+        next.screen = "world";
+      } else {
+        next.screen = "hub";
+      }
       return next;
     }
 
@@ -527,7 +550,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
       if (portal && portal.to.kind === "exit") {
         return { ...state, screen: state.hero ? "hub" : "title" };
       }
-      return {
+      const moved: GameState = {
         ...state,
         world: {
           ...state.world,
@@ -535,6 +558,36 @@ export function gameReducer(state: GameState, action: Action): GameState {
           discovered: discoverAround(state.world.discovered, map, x, y),
         },
       };
+
+      // The wilds bite: stepping on wild terrain in a monster region can
+      // start a battle. The world position stays, so winning or fleeing
+      // drops the hero back on this exact tile.
+      const region = regionAt(map, x, y);
+      const tile = tileAt(map, x, y);
+      if (state.hero && region && tile && WILD_TILES.includes(tile)) {
+        const encounter = rollWildEncounter(region);
+        if (encounter) {
+          const monster = spawnMonster(encounter.def);
+          monster.xp = Math.round(monster.xp * WILD_REWARD_MULT);
+          monster.gold = Math.round(monster.gold * WILD_REWARD_MULT);
+          return {
+            ...moved,
+            screen: "battle",
+            battle: {
+              dungeonLevel: encounter.dropFloor,
+              encounterIndex: 0,
+              monster,
+              phase: "player",
+              log: [`A ${monster.name} ambushes you in ${encounter.regionName}!`],
+              heroEffects: [],
+              monsterEffects: [],
+              wild: true,
+              wildRegion: encounter.regionName,
+            },
+          };
+        }
+      }
+      return moved;
     }
 
     default:

@@ -48,12 +48,21 @@ export function Battle({ state, dispatch }: BattleProps) {
   return (
     <div className="screen battle-screen">
       <div className="battle-header">
-        <span>
-          Floor {battle.dungeonLevel}: {dungeon.name}
-        </span>
-        <span>
-          Fight {battle.encounterIndex + 1}/{dungeon.encounters.length}
-        </span>
+        {battle.wild ? (
+          <>
+            <span>The Wilds: {battle.wildRegion}</span>
+            <span>Ambush!</span>
+          </>
+        ) : (
+          <>
+            <span>
+              Floor {battle.dungeonLevel}: {dungeon.name}
+            </span>
+            <span>
+              Fight {battle.encounterIndex + 1}/{dungeon.encounters.length}
+            </span>
+          </>
+        )}
       </div>
 
       <div className="battle-arena">
@@ -121,7 +130,15 @@ export function Battle({ state, dispatch }: BattleProps) {
         </div>
       )}
 
-      {battle.phase === "cleared" && (
+      {battle.phase === "cleared" && battle.wild && (
+        <div className="battle-actions">
+          <button className="btn btn-primary" onClick={() => dispatch({ type: "COLLECT_AND_RETURN" })}>
+            Walk on
+          </button>
+        </div>
+      )}
+
+      {battle.phase === "cleared" && !battle.wild && (
         <div className="battle-actions battle-cleared">
           <div className="panel reward-panel">
             <div className="reward-title">Floor cleared!</div>
@@ -145,7 +162,7 @@ export function Battle({ state, dispatch }: BattleProps) {
       {battle.phase === "lost" && (
         <div className="battle-actions">
           <button className="btn btn-danger" onClick={() => dispatch({ type: "RETURN_TO_HUB" })}>
-            Wake up in town
+            {battle.wild ? "Wake up at the inn" : "Wake up in town"}
           </button>
         </div>
       )}
