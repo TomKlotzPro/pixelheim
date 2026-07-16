@@ -1,6 +1,7 @@
 import { ITEMS } from "../game/items";
 import { LEVELS } from "../game/levels";
 import { createGear } from "../game/rarity";
+import { SKILL_TREES } from "../game/skillTree";
 import type { GameState, GearInstance } from "../game/types";
 import { discoverAround } from "../world/discover";
 import { getMap } from "../world/maps";
@@ -86,6 +87,22 @@ function normalizeSave(state: unknown): GameState | null {
   // Heroes from before spendable growth start banking from their next level.
   if (save.hero && save.hero.statPoints === undefined) {
     save.hero = { ...save.hero, statPoints: 0 };
+  }
+  // Heroes from before the skill tree keep the skills their level had earned
+  // under the old gates (1/3/6) and bank the leftover points retroactively.
+  if (save.hero && save.hero.skillNodes === undefined) {
+    const hero = save.hero;
+    const tree = SKILL_TREES[hero.roleId];
+    const roots = tree.filter((n) => n.tier === 0).sort((a, b) => a.branch - b.branch);
+    const owned = [roots[0].id];
+    if (hero.level >= 3 && roots[1]) owned.push(roots[1].id);
+    if (hero.level >= 6 && roots[2]) owned.push(roots[2].id);
+    const spent = owned.length - 1; // the first skill was always free
+    save.hero = {
+      ...hero,
+      skillNodes: owned,
+      skillPoints: Math.max(0, hero.level - 1 - spent),
+    };
   }
   // Saves from the hub era have no world position: they wake up in town.
   if (!save.world) {

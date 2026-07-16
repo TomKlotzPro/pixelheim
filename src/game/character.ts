@@ -1,6 +1,7 @@
 import { getItem } from "./items";
 import { gearArmor, gearItem } from "./rarity";
 import { ROLES } from "./roles";
+import { getPassives, rootNode } from "./skillTree";
 import type { Equipped, GearInstance, Hero, RoleId } from "./types";
 
 export function xpToNext(level: number): number {
@@ -22,6 +23,8 @@ export function createHero(name: string, roleId: RoleId): Hero {
     mp: role.baseStats.maxMp,
     stats: { ...role.baseStats },
     statPoints: 0,
+    skillPoints: 0,
+    skillNodes: [rootNode(roleId).id],
   };
 }
 
@@ -39,6 +42,7 @@ export function applyLevelUps(hero: Hero): number {
     hero.stats.maxHp += role.growth.maxHp;
     hero.stats.maxMp += role.growth.maxMp;
     hero.statPoints += STAT_POINTS_PER_LEVEL;
+    hero.skillPoints += 1;
     hero.hp = hero.stats.maxHp;
     hero.mp = hero.stats.maxMp;
     gained += 1;
@@ -63,7 +67,12 @@ export function totalArmor(gear: GearInstance[], equipped: Equipped): number {
 }
 
 export function carryCapacity(hero: Hero): number {
-  return 60 + hero.stats.strength * 3;
+  return 60 + hero.stats.strength * 3 + getPassives(hero).carryBonus;
+}
+
+/** Innate defense plus armor plus passive skill effects. */
+export function totalDefense(hero: Hero, gear: GearInstance[], equipped: Equipped): number {
+  return hero.stats.defense + totalArmor(gear, equipped) + getPassives(hero).defense;
 }
 
 /** Stackables plus unequipped gear; what you wear does not weigh you down. */

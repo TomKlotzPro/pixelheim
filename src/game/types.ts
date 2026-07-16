@@ -136,6 +136,10 @@ export type Hero = {
   stats: Stats;
   /** Unspent points from level-ups, placed freely into combat stats. */
   statPoints: number;
+  /** Unspent skill points; one per level. */
+  skillPoints: number;
+  /** Owned skill-tree node ids. */
+  skillNodes: string[];
 };
 
 /** The four stats a point can be spent on. */

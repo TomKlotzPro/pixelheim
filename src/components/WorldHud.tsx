@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { totalArmor } from "../game/character";
+import { totalDefense } from "../game/character";
 import { ROLES } from "../game/roles";
 import type { GameState, SpendableStat } from "../game/types";
 import type { Action } from "../state/gameReducer";
+import { SkillTree } from "./SkillTree";
 import { Sprite } from "./Sprite";
 import { StatBar } from "./StatBar";
 
@@ -60,6 +61,7 @@ export function WorldHud({ state, dispatch }: WorldHudProps) {
   const hero = state.hero!;
   const role = ROLES[hero.roleId];
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [treeOpen, setTreeOpen] = useState(false);
   return (
     <div className="world-hud panel">
       <div className="hud-top">
@@ -67,7 +69,7 @@ export function WorldHud({ state, dispatch }: WorldHudProps) {
         <div className="hud-id">
           <span className="hero-name">{hero.name}</span>
           <span className="hero-role">
-            Lv {hero.level} {role.name} · DEF {hero.stats.defense + totalArmor(state.gear, state.equipped)}
+            Lv {hero.level} {role.name} · DEF {totalDefense(hero, state.gear, state.equipped)}
           </span>
         </div>
         <span className="gold-line">
@@ -84,8 +86,12 @@ export function WorldHud({ state, dispatch }: WorldHudProps) {
         <button className="btn btn-small" onClick={() => setSheetOpen(true)}>
           Stats{hero.statPoints > 0 && <span className="new-badge"> +{hero.statPoints}</span>}
         </button>
+        <button className="btn btn-small" onClick={() => setTreeOpen(true)}>
+          Skills{hero.skillPoints > 0 && <span className="new-badge"> +{hero.skillPoints}</span>}
+        </button>
       </div>
       {sheetOpen && <StatSheet state={state} dispatch={dispatch} onClose={() => setSheetOpen(false)} />}
+      {treeOpen && <SkillTree state={state} dispatch={dispatch} onClose={() => setTreeOpen(false)} />}
     </div>
   );
 }

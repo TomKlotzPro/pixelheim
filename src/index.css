@@ -675,6 +675,78 @@ body {
   font-size: 13px;
   margin: 0;
 }
+.skill-tree {
+  width: 720px;
+  max-width: 96vw;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+}
+.skill-branches {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.skill-branch {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  position: relative;
+}
+.skill-branch .skill-node:not(:first-child)::before {
+  content: "";
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  width: 2px;
+  height: 14px;
+  background: var(--border);
+}
+.skill-node {
+  position: relative;
+  border: 2px solid var(--border);
+  background: var(--bg-panel-2);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+}
+.skill-node.owned {
+  border-color: var(--xp);
+}
+.skill-node.buyable {
+  border-color: var(--accent);
+}
+.skill-node.locked {
+  opacity: 0.55;
+}
+.skill-node-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+}
+.skill-node-name {
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.skill-node-kind {
+  color: var(--text-dim);
+  font-size: 10px;
+}
+.skill-node-desc {
+  color: var(--text-dim);
+  margin: 0;
+  font-size: 11px;
+}
+.skill-node-locked {
+  color: var(--text-dim);
+  font-size: 10px;
+  font-style: italic;
+}
 .intro-panel {
   max-width: 460px;
   display: flex;
