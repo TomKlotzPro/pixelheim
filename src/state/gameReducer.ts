@@ -9,6 +9,7 @@ import {
 } from "../game/combat";
 import { getItem } from "../game/items";
 import { getLevel, LEVELS } from "../game/levels";
+import { buyPrice, sellPrice, shopStock } from "../game/shop";
 import { ROLES } from "../game/roles";
 import type { EquipSlot, GameState, Hero, RoleId } from "../game/types";
 
@@ -27,6 +28,9 @@ export type Action =
   | { type: "UNEQUIP"; slot: EquipSlot }
   | { type: "DROP"; itemId: string }
   | { type: "TOGGLE_INVENTORY" }
+  | { type: "TOGGLE_SHOP" }
+  | { type: "BUY_ITEM"; itemId: string }
+  | { type: "SELL_ITEM"; itemId: string }
   | { type: "NEXT_ENCOUNTER" }
   | { type: "COLLECT_AND_RETURN" }
   | { type: "REST" }
@@ -42,6 +46,7 @@ export const initialState: GameState = {
   clearedLevels: [],
   battle: null,
   inventoryOpen: false,
+  shopOpen: false,
 };
 
 function addItem(inventory: Record<string, number>, itemId: string, count = 1): Record<string, number> {
@@ -128,6 +133,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
         ...state,
         screen: "battle",
         inventoryOpen: false,
+        shopOpen: false,
         battle: {
           dungeonLevel: action.level,
           encounterIndex: 0,
@@ -246,6 +252,26 @@ export function gameReducer(state: GameState, action: Action): GameState {
 
     case "TOGGLE_INVENTORY":
       return { ...state, inventoryOpen: !state.inventoryOpen };
+
+    case "TOGGLE_SHOP": {
+      if (state.screen !== "hub") return state;
+      return { ...state, shopOpen: !state.shopOpen };
+    }
+
+    case "BUY_ITEM": {
+      if (!state.shopOpen) return state;
+      const item = getItem(action.itemId);
+      if (!shopStock(state.unlockedLevel).some((stocked) => stocked.id === item.id)) return state;
+      const price = buyPrice(item);
+      if (state.gold < price) return state;
+      return { ...state, gold: state.gold - price, inventory: addItem(state.inventory, item.id) };
+    }
+
+    case "SELL_ITEM": {
+      if (!state.shopOpen || (state.inventory[action.itemId] ?? 0) <= 0) return state;
+      const item = getItem(action.itemId);
+      return { ...state, gold: state.gold + sellPrice(item), inventory: removeItem(state.inventory, item.id) };
+    }
 
     case "NEXT_ENCOUNTER": {
       if (!state.hero || state.battle?.phase !== "won") return state;

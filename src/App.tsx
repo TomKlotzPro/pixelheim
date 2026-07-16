@@ -3,6 +3,7 @@ import { Battle } from "./components/Battle";
 import { CharacterCreation } from "./components/CharacterCreation";
 import { Hub } from "./components/Hub";
 import { Inventory } from "./components/Inventory";
+import { Shop } from "./components/Shop";
 import { TitleScreen } from "./components/TitleScreen";
 import { Victory } from "./components/Victory";
 import type { GameState } from "./game/types";
@@ -21,6 +22,7 @@ export default function App() {
     <div className="crt">
       <Screen state={state} save={save} dispatch={dispatch} />
       {state.inventoryOpen && state.hero && <Inventory state={state} dispatch={dispatch} />}
+      {state.shopOpen && state.hero && <Shop state={state} dispatch={dispatch} />}
     </div>
   );
 }
@@ -63,6 +65,7 @@ function Screen({
           onEnterLevel={(level) => dispatch({ type: "ENTER_LEVEL", level })}
           onRest={() => dispatch({ type: "REST" })}
           onOpenInventory={() => dispatch({ type: "TOGGLE_INVENTORY" })}
+          onOpenShop={() => dispatch({ type: "TOGGLE_SHOP" })}
         />
       );
     case "battle":
