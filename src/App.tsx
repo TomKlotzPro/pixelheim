@@ -1,4 +1,7 @@
-import { useEffect, useMemo, useReducer } from "react";
+import { useEffect, useMemo, useReducer, useRef, useState } from "react";
+import { playTrack, type TrackName } from "./audio/music";
+import { SFX } from "./audio/sfx";
+import { audioReady, initAudio, isMuted, setMuted } from "./audio/synth";
 import { Battle } from "./components/Battle";
 import { CharacterCreation } from "./components/CharacterCreation";
 import { Hub } from "./components/Hub";
@@ -11,6 +14,85 @@ import type { GameState } from "./game/types";
 import { gameReducer, initialState } from "./state/gameReducer";
 import { clearSave, decodeSaveCode, encodeSaveCode, loadSave, persistSave } from "./state/save";
 import type { Direction } from "./world/types";
+
+const SCREEN_TRACKS: Record<GameState["screen"], TrackName> = {
+  title: "title",
+  create: "title",
+  hub: "world",
+  world: "world",
+  battle: "battle",
+  victory: "world",
+  gameover: "title",
+};
+
+/** Audio is a pure side effect: watch state transitions, never touch the reducer. */
+function useAudio(state: GameState) {
+  const prev = useRef(state);
+  const screenRef = useRef(state.screen);
+  screenRef.current = state.screen;
+
+  useEffect(() => {
+    const unlock = () => {
+      initAudio();
+      playTrack(SCREEN_TRACKS[screenRef.current]);
+    };
+    window.addEventListener("pointerdown", unlock, { once: true });
+    window.addEventListener("keydown", unlock, { once: true });
+    return () => {
+      window.removeEventListener("pointerdown", unlock);
+      window.removeEventListener("keydown", unlock);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (audioReady()) playTrack(SCREEN_TRACKS[state.screen]);
+  }, [state.screen]);
+
+  useEffect(() => {
+    const p = prev.current;
+    prev.current = state;
+    if (!audioReady() || state === p) return;
+
+    if (state.hero && p.hero) {
+      const sameFight = state.battle && p.battle && state.battle.encounterIndex === p.battle.encounterIndex;
+      if (state.hero.level > p.hero.level) {
+        SFX.levelUp();
+      } else if (sameFight) {
+        if (state.battle!.monster.hp < p.battle!.monster.hp) SFX.hit();
+        if (state.hero.hp < p.hero.hp) SFX.hurt();
+        if (state.hero.hp > p.hero.hp) SFX.heal();
+      }
+      if (state.gold > p.gold) SFX.coin();
+      if (state.battle && p.battle && state.gear.length > p.gear.length) SFX.drop();
+      if (state.battle?.phase === "cleared" && p.battle?.phase !== "cleared") SFX.victory();
+      if (state.battle?.phase === "lost" && p.battle?.phase !== "lost") SFX.defeat();
+    }
+    if (state.screen === "world" && state.world && p.world) {
+      if (state.world.position.mapId !== p.world.position.mapId) SFX.door();
+      else if (state.world.position.x !== p.world.position.x || state.world.position.y !== p.world.position.y) {
+        SFX.step();
+      }
+    }
+  }, [state]);
+}
+
+function MuteButton() {
+  const [muted, setMutedState] = useState(isMuted);
+  return (
+    <button
+      className="mute-btn"
+      aria-label={muted ? "Unmute" : "Mute"}
+      title={muted ? "Unmute" : "Mute"}
+      onClick={() => {
+        initAudio();
+        setMuted(!muted);
+        setMutedState(!muted);
+      }}
+    >
+      {muted ? "\u{1F507}" : "\u{1F50A}"}
+    </button>
+  );
+}
 
 const KEY_DIRECTIONS: Record<string, Direction> = {
   ArrowUp: "up",
@@ -30,6 +112,8 @@ export default function App() {
   useEffect(() => {
     persistSave(state);
   }, [state]);
+
+  useAudio(state);
 
   // Dev entry for the tile engine until the real world ships (PIX-25).
   useEffect(() => {
@@ -56,6 +140,7 @@ export default function App() {
 
   return (
     <div className="crt">
+      <MuteButton />
       <Screen state={state} save={save} dispatch={dispatch} />
       {state.inventoryOpen && state.hero && <Inventory state={state} dispatch={dispatch} />}
       {state.shopOpen && state.hero && <Shop state={state} dispatch={dispatch} />}
