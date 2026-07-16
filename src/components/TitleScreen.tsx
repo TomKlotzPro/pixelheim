@@ -1,24 +1,25 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { GAME_VERSION, hasUnseenChanges, markChangesSeen } from "../changelog";
 import { Changelog } from "./Changelog";
 import { Sprite } from "./Sprite";
 
+const LINEUP = ["slime", "goblin", "skeleton", "dragon", "golem", "ghost", "wolf"];
+const EMBERS = [8, 22, 37, 55, 68, 84];
+const STARS = [
+  [6, 12], [15, 28], [24, 8], [33, 20], [45, 6], [52, 24], [63, 14], [72, 30], [83, 10], [91, 22],
+  [12, 40], [88, 42], [40, 34], [58, 38],
+];
+
 type TitleScreenProps = {
   canContinue: boolean;
-  saveCode: string | null;
   onNewGame: () => void;
   onContinue: () => void;
-  /** Returns false when the pasted code is not a valid save. */
-  onImportSave: (code: string) => boolean;
+  onOpenOptions: () => void;
 };
 
-export function TitleScreen({ canContinue, saveCode, onNewGame, onContinue, onImportSave }: TitleScreenProps) {
-  const [importOpen, setImportOpen] = useState(false);
-  const [importError, setImportError] = useState(false);
-  const [copied, setCopied] = useState(false);
+export function TitleScreen({ canContinue, onNewGame, onContinue, onOpenOptions }: TitleScreenProps) {
   const [changelogOpen, setChangelogOpen] = useState(false);
   const [showNewBadge, setShowNewBadge] = useState(hasUnseenChanges);
-  const codeRef = useRef<HTMLTextAreaElement>(null);
 
   const openChangelog = () => {
     markChangesSeen();
@@ -26,33 +27,28 @@ export function TitleScreen({ canContinue, saveCode, onNewGame, onContinue, onIm
     setChangelogOpen(true);
   };
 
-  const copySaveCode = async () => {
-    if (!saveCode) return;
-    try {
-      await navigator.clipboard.writeText(saveCode);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      // Clipboard unavailable (permissions, http); show the code for manual copy.
-      window.prompt("Copy your save code:", saveCode);
-    }
-  };
-
-  const importSave = () => {
-    const code = codeRef.current?.value ?? "";
-    if (!onImportSave(code)) setImportError(true);
-  };
-
   return (
     <div className="screen title-screen">
+      <div className="title-backdrop" aria-hidden="true">
+        {STARS.map(([x, y], i) => (
+          <span key={i} className="title-star" style={{ left: `${x}%`, top: `${y}%`, animationDelay: `${(i % 5) * 0.9}s` }} />
+        ))}
+        <div className="title-mountains" />
+        {EMBERS.map((x, i) => (
+          <span key={i} className="title-ember" style={{ left: `${x}%`, animationDelay: `${i * 1.7}s` }} />
+        ))}
+      </div>
+
       <div className="title-monsters">
-        <Sprite name="slime" size={48} />
-        <Sprite name="goblin" size={48} />
-        <Sprite name="skeleton" size={48} />
-        <Sprite name="dragon" size={72} />
-        <Sprite name="golem" size={48} />
-        <Sprite name="ghost" size={48} />
-        <Sprite name="wolf" size={48} />
+        {LINEUP.map((name, i) => (
+          <span
+            key={name}
+            className={`title-monster ${name === "dragon" ? "title-dragon" : ""}`}
+            style={{ animationDelay: `${i * 0.35}s` }}
+          >
+            <Sprite name={name} size={name === "dragon" ? 72 : 48} />
+          </span>
+        ))}
       </div>
       <h1 className="game-title">PIXELHEIM</h1>
       <p className="tagline">Fifteen floors. One dragon. Worse things below.</p>
@@ -65,36 +61,10 @@ export function TitleScreen({ canContinue, saveCode, onNewGame, onContinue, onIm
             Continue
           </button>
         )}
-        {canContinue && (
-          <button className="btn" onClick={copySaveCode}>
-            {copied ? "Copied!" : "Copy save code"}
-          </button>
-        )}
-        <button
-          className="btn"
-          onClick={() => {
-            setImportOpen((open) => !open);
-            setImportError(false);
-          }}
-        >
-          Import save code
+        <button className="btn" onClick={onOpenOptions}>
+          Options
         </button>
       </div>
-      {importOpen && (
-        <div className="panel import-panel">
-          <textarea
-            ref={codeRef}
-            className="import-input"
-            placeholder="Paste your save code (PXH1.…)"
-            rows={4}
-            onChange={() => setImportError(false)}
-          />
-          {importError && <p className="warning">That does not look like a valid save code.</p>}
-          <button className="btn btn-primary" onClick={importSave}>
-            Load save
-          </button>
-        </div>
-      )}
       <button className="changelog-link" onClick={openChangelog}>
         v{GAME_VERSION} - a retro RPG built with React + TypeScript
         {showNewBadge && <span className="new-badge">NEW</span>}

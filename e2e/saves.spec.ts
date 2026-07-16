@@ -101,6 +101,7 @@ test('a v3 save migrates gear counts and equipped ids into instances', async ({ 
 test('a v1-format save code still imports', async ({ page }) => {
   const v1Code = 'PXH1.' + Buffer.from(JSON.stringify(V1_SAVE)).toString('base64')
   await page.goto('./')
+  await page.getByRole('button', { name: 'Options' }).click()
   await page.getByRole('button', { name: 'Import save code' }).click()
   await page.locator('.import-input').fill(v1Code)
   await page.getByRole('button', { name: 'Load save' }).click()
@@ -110,6 +111,7 @@ test('a v1-format save code still imports', async ({ page }) => {
 test('save code round-trip: copy on one profile, import on a fresh one', async ({ page }) => {
   await createHero(page, 'Traveler')
   await page.reload()
+  await page.getByRole('button', { name: 'Options' }).click()
   await page.getByRole('button', { name: 'Copy save code' }).click()
   const code = await page.evaluate(() => navigator.clipboard.readText())
   expect(code).toMatch(/^PXH1\./)
@@ -117,6 +119,7 @@ test('save code round-trip: copy on one profile, import on a fresh one', async (
   await page.evaluate(() => localStorage.clear())
   await page.reload()
   await expect(page.getByRole('button', { name: 'Continue' })).toBeHidden()
+  await page.getByRole('button', { name: 'Options' }).click()
   await page.getByRole('button', { name: 'Import save code' }).click()
   await page.locator('.import-input').fill(code)
   await page.getByRole('button', { name: 'Load save' }).click()
@@ -151,6 +154,7 @@ test('a pre-Undermountain finisher save wakes up with floor 11 unlocked', async 
 
 test('garbage save codes are rejected with an error', async ({ page }) => {
   await page.goto('./')
+  await page.getByRole('button', { name: 'Options' }).click()
   await page.getByRole('button', { name: 'Import save code' }).click()
   await page.locator('.import-input').fill('garbage')
   await page.getByRole('button', { name: 'Load save' }).click()

@@ -2,6 +2,8 @@ import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { playTrack, type TrackName } from "./audio/music";
 import { SFX } from "./audio/sfx";
 import { audioReady, initAudio, isMuted, setMuted } from "./audio/synth";
+import { Options } from "./components/Options";
+import { loadSettings, type Settings } from "./settings";
 import { Battle } from "./components/Battle";
 import { CharacterCreation } from "./components/CharacterCreation";
 import { Hub } from "./components/Hub";
@@ -108,12 +110,22 @@ const KEY_DIRECTIONS: Record<string, Direction> = {
 export default function App() {
   const [state, dispatch] = useReducer(gameReducer, initialState);
   const save = useMemo(() => loadSave(), []);
+  const [settings, setSettings] = useState<Settings>(loadSettings);
+  const [optionsOpen, setOptionsOpen] = useState(false);
 
   useEffect(() => {
     persistSave(state);
   }, [state]);
 
+  useEffect(() => {
+    document.documentElement.classList.toggle("no-scanlines", !settings.scanlines);
+    document.documentElement.classList.toggle("reduce-motion", settings.reduceMotion);
+  }, [settings]);
+
   useAudio(state);
+
+  const hasSaveData = state.hero !== null || save !== null;
+  const saveCode = state.hero ? encodeSaveCode(state) : save ? encodeSaveCode(save) : null;
 
   // Dev entry for the tile engine until the real world ships (PIX-25).
   useEffect(() => {
@@ -140,10 +152,36 @@ export default function App() {
 
   return (
     <div className="crt">
-      <MuteButton />
-      <Screen state={state} save={save} dispatch={dispatch} />
+      <div className="corner-buttons">
+        <MuteButton />
+        <button className="mute-btn" aria-label="Settings" title="Settings" onClick={() => setOptionsOpen(true)}>
+          {"⚙️"}
+        </button>
+      </div>
+      <Screen state={state} save={save} dispatch={dispatch} onOpenOptions={() => setOptionsOpen(true)} />
       {state.inventoryOpen && state.hero && <Inventory state={state} dispatch={dispatch} />}
       {state.shopOpen && state.hero && <Shop state={state} dispatch={dispatch} />}
+      {optionsOpen && (
+        <Options
+          settings={settings}
+          onSettingsChange={setSettings}
+          canContinue={hasSaveData}
+          saveCode={saveCode}
+          onImportSave={(code) => {
+            const imported = decodeSaveCode(code);
+            if (!imported) return false;
+            persistSave(imported);
+            dispatch({ type: "LOAD", state: imported });
+            setOptionsOpen(false);
+            return true;
+          }}
+          onDeleteSave={() => {
+            clearSave();
+            window.location.reload();
+          }}
+          onClose={() => setOptionsOpen(false)}
+        />
+      )}
     </div>
   );
 }
@@ -152,29 +190,24 @@ function Screen({
   state,
   save,
   dispatch,
+  onOpenOptions,
 }: {
   state: GameState;
   save: GameState | null;
   dispatch: React.Dispatch<Parameters<typeof gameReducer>[1]>;
+  onOpenOptions: () => void;
 }) {
   switch (state.screen) {
     case "title":
       return (
         <TitleScreen
           canContinue={save !== null}
-          saveCode={save ? encodeSaveCode(save) : null}
           onNewGame={() => {
             clearSave();
             dispatch({ type: "NEW_GAME" });
           }}
           onContinue={() => save && dispatch({ type: "LOAD", state: save })}
-          onImportSave={(code) => {
-            const imported = decodeSaveCode(code);
-            if (!imported) return false;
-            persistSave(imported);
-            dispatch({ type: "LOAD", state: imported });
-            return true;
-          }}
+          onOpenOptions={onOpenOptions}
         />
       );
     case "create":
