@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { totalDefense } from "../game/character";
+import { statInfo } from "../game/statInfo";
 import { ROLES } from "../game/roles";
 import type { SpendableStat } from "../game/types";
 import { dispatch, useGameState, useHero } from "../state/store";
@@ -15,6 +16,7 @@ const SPENDABLE: { stat: SpendableStat; label: string }[] = [
 ];
 
 function StatSheet({ onClose }: { onClose: () => void }) {
+  const state = useGameState();
   const hero = useHero();
   return (
     <div className="overlay" onClick={onClose}>
@@ -30,21 +32,37 @@ function StatSheet({ onClose }: { onClose: () => void }) {
             ? `${hero.statPoints} stat point${hero.statPoints > 1 ? "s" : ""} to spend`
             : "No points to spend. Go level up."}
         </p>
-        {SPENDABLE.map(({ stat, label }) => (
-          <div key={stat} className="options-row">
-            <span>
-              {label} {hero.stats[stat]}
-            </span>
-            <button
-              className="btn btn-small"
-              disabled={hero.statPoints <= 0}
-              aria-label={`Increase ${label}`}
-              onClick={() => dispatch({ type: "SPEND_STAT_POINT", stat })}
-            >
-              +
-            </button>
-          </div>
-        ))}
+        {SPENDABLE.map(({ stat, label }) => {
+          const info = statInfo(stat, hero, state.gear, state.equipped);
+          return (
+            <div key={stat} className="stat-row">
+              <div className="options-row">
+                <span>
+                  {label} {hero.stats[stat]}
+                </span>
+                <button
+                  className="btn btn-small"
+                  disabled={hero.statPoints <= 0}
+                  aria-label={`Increase ${label}`}
+                  title={info.blurb}
+                  onClick={() => dispatch({ type: "SPEND_STAT_POINT", stat })}
+                >
+                  +
+                </button>
+              </div>
+              <p className="stat-blurb">{info.blurb}</p>
+              <p className="stat-derived">
+                {info.now}
+                {hero.statPoints > 0 && (
+                  <>
+                    {" "}
+                    <span className="stat-arrow">{"\u2192"}</span> <span className="stat-next">{info.next}</span>
+                  </>
+                )}
+              </p>
+            </div>
+          );
+        })}
         <p className="options-footer">Spent points are permanent. Choose like it matters.</p>
       </div>
     </div>
