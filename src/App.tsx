@@ -95,15 +95,12 @@ function MuteButton() {
   );
 }
 
-const KEY_DIRECTIONS: Record<string, Direction> = {
+/** Arrows always move regardless of custom bindings. */
+const ARROW_DIRECTIONS: Record<string, Direction> = {
   ArrowUp: "up",
   ArrowDown: "down",
   ArrowLeft: "left",
   ArrowRight: "right",
-  w: "up",
-  s: "down",
-  a: "left",
-  d: "right",
 };
 
 export default function App() {
@@ -131,28 +128,40 @@ export default function App() {
 
   useEffect(() => {
     if (state.screen !== "world") return;
+    const { bindings } = settings;
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         dispatch({ type: "EXIT_WORLD" });
         return;
       }
-      if (event.key === "i" || event.key === "I") {
+      if (event.code === bindings.inventory) {
         dispatch({ type: "TOGGLE_INVENTORY" });
         return;
       }
-      if (event.key === "e" || event.key === "E" || event.key === "Enter" || event.key === " ") {
+      // Enter and Space always interact, on top of the custom binding.
+      if (event.code === bindings.interact || event.key === "Enter" || event.key === " ") {
         event.preventDefault();
         dispatch({ type: "INTERACT" });
         return;
       }
-      const direction = KEY_DIRECTIONS[event.key];
+      const direction =
+        ARROW_DIRECTIONS[event.key] ??
+        (event.code === bindings.up
+          ? "up"
+          : event.code === bindings.down
+            ? "down"
+            : event.code === bindings.left
+              ? "left"
+              : event.code === bindings.right
+                ? "right"
+                : null);
       if (!direction) return;
       event.preventDefault();
       dispatch({ type: "MOVE", direction });
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [state.screen]);
+  }, [state.screen, settings]);
 
   return (
     <div className="crt">
