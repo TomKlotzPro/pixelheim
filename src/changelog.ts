@@ -11,6 +11,18 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "1.0.0",
+    date: "2026-07-16",
+    codename: "The Open World",
+    notes: [
+      "Pixelheim is an open-world game now: you live on the map, not in menus",
+      "New heroes wake in the village; walk to the shop, the inn, the mountain",
+      "Your hero rides along as a compact HUD; I opens the inventory",
+      "Old saves from any version wake up standing in town, progress intact",
+      "The hub screen retires with honor. It served well.",
+    ],
+  },
+  {
     version: "0.10.0",
     date: "2026-07-16",
     codename: "Doors in the Mountain",

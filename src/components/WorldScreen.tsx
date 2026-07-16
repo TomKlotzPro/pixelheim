@@ -6,6 +6,7 @@ import { getMap } from "../world/maps";
 import { TILES } from "../world/tiles";
 import type { Direction } from "../world/types";
 import { Sprite } from "./Sprite";
+import { WorldHud } from "./WorldHud";
 
 const ART_PX = 16;
 const VIEW_W = 15;
@@ -63,6 +64,19 @@ export function WorldScreen({ state, dispatch }: WorldScreenProps) {
 
   return (
     <div className="screen world-screen">
+      {state.hero && <WorldHud state={state} dispatch={dispatch} />}
+      {state.hero && !state.introSeen && (
+        <div className="overlay">
+          <div className="panel intro-panel">
+            <p>The mountain burned once. The village rebuilt. The monsters never left.</p>
+            <p>Pixelheim needs someone stubborn enough to climb the Ashen Mountain.</p>
+            <p>The gate is south. The merchant buys and sells. The inn is warm. Good luck.</p>
+            <button className="btn btn-primary" onClick={() => dispatch({ type: "DISMISS_INTRO" })}>
+              Set out
+            </button>
+          </div>
+        </div>
+      )}
       <div
         className="world-viewport"
         data-testid="world-viewport"
@@ -104,7 +118,11 @@ export function WorldScreen({ state, dispatch }: WorldScreenProps) {
           </div>
         </div>
       </div>
-      <p className="world-hint">Arrows / WASD to move, or tap an adjacent tile. Esc leaves the world.</p>
+      {state.worldMessage ? (
+        <p className="world-hint world-message">{state.worldMessage}</p>
+      ) : (
+        <p className="world-hint">Arrows / WASD to move, or tap an adjacent tile. I opens the inventory.</p>
+      )}
     </div>
   );
 }

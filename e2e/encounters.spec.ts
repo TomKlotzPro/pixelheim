@@ -1,19 +1,11 @@
 import { expect, test, type Page } from '@playwright/test'
-import { SAVE_KEY, VETERAN_SAVE } from './helpers'
+import { loadVeteranAt } from './helpers'
 
 const hero = (page: Page) => page.getByTestId('world-hero')
 
 test('wandering the forest triggers an ambush; winning returns to the same tile', async ({ page }) => {
   test.setTimeout(60_000)
-  await page.goto('./')
-  await page.evaluate(
-    ([key, save]) => localStorage.setItem(key as string, JSON.stringify(save)),
-    [SAVE_KEY, VETERAN_SAVE] as const,
-  )
-  await page.reload()
-  await page.getByRole('button', { name: 'Continue' }).click()
-  await page.getByRole('button', { name: 'World (beta)' }).click()
-  await expect(hero(page)).toHaveAttribute('data-pos', '24,19')
+  await loadVeteranAt(page, 24, 19)
 
   // head east into the forest region, then pace on wild grass until the
   // 10%-per-step roll fires; every move stays on row 19
@@ -46,15 +38,7 @@ test('wandering the forest triggers an ambush; winning returns to the same tile'
 })
 
 test('paths are safe: pacing the road never triggers a battle', async ({ page }) => {
-  await page.goto('./')
-  await page.evaluate(
-    ([key, save]) => localStorage.setItem(key as string, JSON.stringify(save)),
-    [SAVE_KEY, VETERAN_SAVE] as const,
-  )
-  await page.reload()
-  await page.getByRole('button', { name: 'Continue' }).click()
-  await page.getByRole('button', { name: 'World (beta)' }).click()
-  await expect(hero(page)).toHaveAttribute('data-pos', '24,19')
+  await loadVeteranAt(page, 24, 19)
 
   // 60 steps up and down the path column; region metadata is empty there
   for (let i = 0; i < 60; i++) {
