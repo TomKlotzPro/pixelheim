@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { ROLES } from "../game/roles";
 import { dispatch, useGameState } from "../state/store";
 import { getMap } from "../world/maps";
@@ -15,6 +15,13 @@ import { WorldHud } from "./WorldHud";
 const ART_PX = 16;
 const VIEW_W = 15;
 const VIEW_H = 11;
+
+/** Opt-in flag for the WebGL renderer while it grows to parity (PIX-51). */
+const USE_PIXI = new URLSearchParams(window.location.search).has("pixi");
+// Lazy so pixi.js stays out of the main bundle until the flag asks for it.
+const PixiWorldView = lazy(() =>
+  import("../render/PixiWorldView").then((m) => ({ default: m.PixiWorldView })),
+);
 
 function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
@@ -77,6 +84,11 @@ export function WorldScreen() {
           </div>
         </div>
       )}
+      {USE_PIXI ? (
+        <Suspense fallback={null}>
+          <PixiWorldView scale={tilePx / ART_PX} mapId={map.id} />
+        </Suspense>
+      ) : (
       <div
         className="world-viewport"
         data-testid="world-viewport"
@@ -138,6 +150,7 @@ export function WorldScreen() {
           </div>
         </div>
       </div>
+      )}
       {state.dialogue &&
         (() => {
           const npc = NPCS.find((n) => n.id === state.dialogue!.npcId);
