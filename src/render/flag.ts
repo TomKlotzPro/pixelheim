@@ -1,6 +1,14 @@
+import { loadSettings } from "../settings";
+
 /**
- * The WebGL renderers are the game (Painted World cutover, PIX-51). The
- * legacy DOM tile renderer stays reachable behind ?dom for one release as
- * insurance, then retires with PIX-53.
+ * WebGL is the default renderer and the Options screen owns the choice
+ * (persisted per device). URL params remain as overrides: ?dom forces the
+ * legacy DOM tiles (one pinned spec uses it), ?pixi forces WebGL. Changing
+ * the option reloads the page: renderers are chosen once at boot.
  */
-export const USE_PIXI = !new URLSearchParams(window.location.search).has("dom");
+const params = new URLSearchParams(window.location.search);
+export const USE_PIXI = params.has("dom")
+  ? false
+  : params.has("pixi")
+    ? true
+    : loadSettings().renderer !== "classic";
