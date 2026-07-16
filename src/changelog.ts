@@ -11,6 +11,17 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "1.1.0",
+    date: "2026-07-16",
+    codename: "Your Hero, Your Rules",
+    notes: [
+      "Level-ups now bank 5 stat points: spend them on STR, INT, DEX or DEF",
+      "Open the Stats sheet from the HUD; unspent points show as a badge",
+      "HP and MP still grow by role; the build is yours to shape",
+      "Spent points are permanent. Choose like it matters.",
+    ],
+  },
+  {
     version: "1.0.0",
     date: "2026-07-16",
     codename: "The Open World",
