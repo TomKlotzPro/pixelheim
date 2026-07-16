@@ -307,6 +307,27 @@ const sprites = {
       "MMMMMMMMMMMMMMMM",
     ],
   },
+  tile_door_shut: {
+    palette: { S: "#7a7268", M: "#454039", B: "#6b4a2b", D: "#4f371f", P: "#8a6238" },
+    rows: [
+      "SSSSSSSSSSSSSSSS",
+      "SSSMMMMMMMMMMSSS",
+      "SSMBBBBBBBBBBMSS",
+      "SSMBDBBBBBBDBMSS",
+      "SSMPPPPPPPPPPMSS",
+      "SSMBBDBBBBDBBMSS",
+      "SSMBBBBBBBBBBMSS",
+      "SSMBBBBBBBBBBMSS",
+      "SSMPPPPPPPPPPMSS",
+      "SSMBDBBBBBBDBMSS",
+      "SSMBBBBBBBBBBMSS",
+      "SSMBBDBBBBBBBMSS",
+      "SSMPPPPPPPPPPMSS",
+      "SSMBBBBBBBDBBMSS",
+      "SSMBBBBBBBBBBMSS",
+      "SSMBBBBBBBBBBMSS",
+    ],
+  },
   tile_door: {
     palette: { S: "#7a7268", M: "#454039", B: "#6b4a2b", D: "#4f371f", Y: "#e8c34a" },
     rows: [
