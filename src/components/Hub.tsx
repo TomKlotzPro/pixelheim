@@ -1,5 +1,6 @@
 import { Fragment } from "react";
 import { carriedWeight, carryCapacity, totalArmor, weaponOf } from "../game/character";
+import { gearName } from "../game/rarity";
 import { LEVELS } from "../game/levels";
 import { getMonster } from "../game/monsters";
 import { ROLES } from "../game/roles";
@@ -20,10 +21,10 @@ type HubProps = {
 export function Hub({ state, onEnterLevel, onRest, onOpenInventory, onOpenShop, onEnterWorld }: HubProps) {
   const hero = state.hero!;
   const role = ROLES[hero.roleId];
-  const weight = carriedWeight(state.inventory);
+  const weight = carriedWeight(state.inventory, state.gear, state.equipped);
   const capacity = carryCapacity(hero);
   const overEncumbered = weight > capacity;
-  const weapon = weaponOf(state.equipped);
+  const weapon = weaponOf(state.gear, state.equipped);
 
   return (
     <div className="screen hub-screen">
@@ -44,7 +45,7 @@ export function Hub({ state, onEnterLevel, onRest, onOpenInventory, onOpenShop, 
           <span>STR {hero.stats.strength}</span>
           <span>INT {hero.stats.intelligence}</span>
           <span>DEX {hero.stats.dexterity}</span>
-          <span>DEF {hero.stats.defense + totalArmor(state.equipped)}</span>
+          <span>DEF {hero.stats.defense + totalArmor(state.gear, state.equipped)}</span>
         </div>
         <div className="hero-meta">
           <span className="gold-line">
@@ -55,7 +56,10 @@ export function Hub({ state, onEnterLevel, onRest, onOpenInventory, onOpenShop, 
           </span>
         </div>
         <div className="hero-meta">
-          <span>Weapon: {weapon ? weapon.name : "Fists"}</span>
+          <span>
+            Weapon:{" "}
+            {weapon ? <span className={`rarity-${weapon.rarity}`}>{gearName(weapon)}</span> : "Fists"}
+          </span>
         </div>
         <div className="hub-actions">
           <button className="btn" onClick={onOpenInventory}>
