@@ -1,4 +1,6 @@
 import { useRef, useState } from "react";
+import { GAME_VERSION, hasUnseenChanges, markChangesSeen } from "../changelog";
+import { Changelog } from "./Changelog";
 import { Sprite } from "./Sprite";
 
 type TitleScreenProps = {
@@ -14,7 +16,15 @@ export function TitleScreen({ canContinue, saveCode, onNewGame, onContinue, onIm
   const [importOpen, setImportOpen] = useState(false);
   const [importError, setImportError] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [changelogOpen, setChangelogOpen] = useState(false);
+  const [showNewBadge, setShowNewBadge] = useState(hasUnseenChanges);
   const codeRef = useRef<HTMLTextAreaElement>(null);
+
+  const openChangelog = () => {
+    markChangesSeen();
+    setShowNewBadge(false);
+    setChangelogOpen(true);
+  };
 
   const copySaveCode = async () => {
     if (!saveCode) return;
@@ -85,7 +95,11 @@ export function TitleScreen({ canContinue, saveCode, onNewGame, onContinue, onIm
           </button>
         </div>
       )}
-      <p className="footnote">v0.4 - a retro RPG built with React + TypeScript</p>
+      <button className="changelog-link" onClick={openChangelog}>
+        v{GAME_VERSION} - a retro RPG built with React + TypeScript
+        {showNewBadge && <span className="new-badge">NEW</span>}
+      </button>
+      {changelogOpen && <Changelog onClose={() => setChangelogOpen(false)} />}
     </div>
   );
 }
