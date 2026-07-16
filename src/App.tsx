@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useReducer, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { playTrack, type TrackName } from "./audio/music";
 import { SFX } from "./audio/sfx";
 import { audioReady, initAudio, isMuted, setMuted } from "./audio/synth";
@@ -13,7 +13,7 @@ import { TitleScreen } from "./components/TitleScreen";
 import { Victory } from "./components/Victory";
 import { WorldScreen } from "./components/WorldScreen";
 import type { GameState } from "./game/types";
-import { gameReducer, initialState } from "./state/gameReducer";
+import { dispatch, useGameState } from "./state/store";
 import { clearSave, decodeSaveCode, encodeSaveCode, loadSave, persistSave } from "./state/save";
 import type { Direction } from "./world/types";
 
@@ -107,7 +107,7 @@ const KEY_DIRECTIONS: Record<string, Direction> = {
 };
 
 export default function App() {
-  const [state, dispatch] = useReducer(gameReducer, initialState);
+  const state = useGameState();
   const save = useMemo(() => loadSave(), []);
   const [settings, setSettings] = useState<Settings>(loadSettings);
   const [optionsOpen, setOptionsOpen] = useState(false);
@@ -166,7 +166,7 @@ export default function App() {
           {"⚙️"}
         </button>
       </div>
-      <Screen state={state} save={save} dispatch={dispatch} onOpenOptions={() => setOptionsOpen(true)} />
+      <Screen state={state} save={save} onOpenOptions={() => setOptionsOpen(true)} />
       {state.inventoryOpen && state.hero && <Inventory state={state} dispatch={dispatch} />}
       {state.shopOpen && state.hero && <Shop state={state} dispatch={dispatch} />}
       {optionsOpen && (
@@ -197,12 +197,10 @@ export default function App() {
 function Screen({
   state,
   save,
-  dispatch,
   onOpenOptions,
 }: {
   state: GameState;
   save: GameState | null;
-  dispatch: React.Dispatch<Parameters<typeof gameReducer>[1]>;
   onOpenOptions: () => void;
 }) {
   switch (state.screen) {
