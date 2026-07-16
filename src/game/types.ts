@@ -62,6 +62,20 @@ export type ItemCategory = "weapons" | "apparel" | "potions" | "food" | "misc";
 
 export type EquipSlot = "weapon" | "body" | "offhand";
 
+export type Rarity = "common" | "fine" | "epic";
+
+/**
+ * An owned piece of gear (weapon or apparel). Gear is instance-based so each
+ * piece can roll its own rarity bonus; stackables stay in `inventory`.
+ */
+export type GearInstance = {
+  uid: string;
+  itemId: string;
+  rarity: Rarity;
+  /** Flat bonus to the item's damage or armor, rolled from rarity. */
+  bonus: number;
+};
+
 export type Item = {
   id: string;
   name: string;
@@ -79,6 +93,8 @@ export type Item = {
   // consumables
   restoreHp?: number;
   restoreMp?: number;
+  /** Removes this status effect from the hero when used. */
+  cures?: StatusKind;
 };
 
 export type Monster = {
@@ -125,6 +141,7 @@ export type Equipped = Partial<Record<EquipSlot, string>>;
 export type BattleMonster = {
   def: Monster;
   name: string;
+  elite: boolean;
   hp: number;
   maxHp: number;
   attack: number;
@@ -151,8 +168,11 @@ export type GameState = {
   screen: Screen;
   hero: Hero | null;
   gold: number;
-  /** itemId -> count */
+  /** Stackables only (potions, food, misc): itemId -> count. */
   inventory: Record<string, number>;
+  /** Every owned weapon/apparel piece, equipped or not. */
+  gear: GearInstance[];
+  /** Slot -> gear uid. */
   equipped: Equipped;
   /** Highest dungeon level the hero can enter (1-10). */
   unlockedLevel: number;

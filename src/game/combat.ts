@@ -1,6 +1,7 @@
 import { totalArmor, weaponOf } from "./character";
 import { getMonster } from "./monsters";
-import type { BattleMonster, EncounterDef, Equipped, Hero, Infliction, Skill, StatusEffect } from "./types";
+import { gearDamage, gearItem } from "./rarity";
+import type { BattleMonster, EncounterDef, Equipped, GearInstance, Hero, Infliction, Skill, StatusEffect } from "./types";
 
 export function spawnMonster(def: EncounterDef): BattleMonster {
   const base = getMonster(def.monsterId);
@@ -9,6 +10,7 @@ export function spawnMonster(def: EncounterDef): BattleMonster {
   return {
     def: base,
     name: def.elite ? `Elite ${base.name}` : base.name,
+    elite: def.elite ?? false,
     hp: maxHp,
     maxHp,
     attack: Math.round(base.attack * mult),
@@ -22,10 +24,10 @@ function variance(base: number): number {
   return Math.max(1, Math.round(base * (0.85 + Math.random() * 0.3)));
 }
 
-export function heroAttackDamage(hero: Hero, equipped: Equipped, monster: BattleMonster): number {
-  const weapon = weaponOf(equipped);
-  const stat = hero.stats[weapon?.scaling ?? "strength"];
-  const raw = stat + (weapon?.damage ?? 2);
+export function heroAttackDamage(hero: Hero, gear: GearInstance[], equipped: Equipped, monster: BattleMonster): number {
+  const weapon = weaponOf(gear, equipped);
+  const stat = hero.stats[weapon ? (gearItem(weapon).scaling ?? "strength") : "strength"];
+  const raw = stat + (weapon ? gearDamage(weapon) : 2);
   return Math.max(1, variance(raw) - monster.defense);
 }
 
@@ -37,8 +39,8 @@ export function heroSkillDamage(hero: Hero, skill: Skill, monster: BattleMonster
   return Math.max(1, variance(heroSkillPower(hero, skill)) - Math.floor(monster.defense / 2));
 }
 
-export function monsterAttackDamage(monster: BattleMonster, hero: Hero, equipped: Equipped): number {
-  const mitigation = hero.stats.defense + totalArmor(equipped);
+export function monsterAttackDamage(monster: BattleMonster, hero: Hero, gear: GearInstance[], equipped: Equipped): number {
+  const mitigation = hero.stats.defense + totalArmor(gear, equipped);
   return Math.max(1, variance(monster.attack) - mitigation);
 }
 
