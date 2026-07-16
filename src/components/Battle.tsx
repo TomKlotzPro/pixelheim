@@ -3,8 +3,8 @@ import { getItem } from "../game/items";
 import { getLevel } from "../game/levels";
 import { ROLES } from "../game/roles";
 import { getHeroSkills } from "../game/skillTree";
-import type { GameState, StatusEffect } from "../game/types";
-import type { Action } from "../state/gameReducer";
+import type { StatusEffect } from "../game/types";
+import { dispatch, useGameState } from "../state/store";
 import { Sprite } from "./Sprite";
 import { StatBar } from "./StatBar";
 
@@ -24,12 +24,8 @@ function EffectBadges({ effects }: { effects: StatusEffect[] }) {
   );
 }
 
-type BattleProps = {
-  state: GameState;
-  dispatch: (action: Action) => void;
-};
-
-export function Battle({ state, dispatch }: BattleProps) {
+export function Battle() {
+  const state = useGameState();
   const hero = state.hero!;
   const battle = state.battle!;
   const role = ROLES[hero.roleId];

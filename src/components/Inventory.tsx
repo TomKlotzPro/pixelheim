@@ -4,8 +4,8 @@ import { getItem } from "../game/items";
 import { itemStatLine } from "../game/itemStats";
 import { gearItem, gearName, gearValue } from "../game/rarity";
 import { canCraft, RECIPES } from "../game/recipes";
-import type { EquipSlot, GameState, ItemCategory } from "../game/types";
-import type { Action } from "../state/gameReducer";
+import type { EquipSlot, ItemCategory } from "../game/types";
+import { dispatch, useGameState } from "../state/store";
 import { Sprite } from "./Sprite";
 
 const TABS: { id: ItemCategory | "all" | "craft"; label: string }[] = [
@@ -24,12 +24,8 @@ const SLOT_LABELS: Record<EquipSlot, string> = {
   offhand: "Off-hand",
 };
 
-type InventoryProps = {
-  state: GameState;
-  dispatch: (action: Action) => void;
-};
-
-export function Inventory({ state, dispatch }: InventoryProps) {
+export function Inventory() {
+  const state = useGameState();
   const [tab, setTab] = useState<ItemCategory | "all" | "craft">("all");
   const hero = state.hero!;
   const inBattle = state.screen === "battle";

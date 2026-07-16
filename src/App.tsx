@@ -163,8 +163,8 @@ export default function App() {
         </button>
       </div>
       <Screen state={state} save={save} onOpenOptions={() => setOptionsOpen(true)} />
-      {state.inventoryOpen && state.hero && <Inventory state={state} dispatch={dispatch} />}
-      {state.shopOpen && state.hero && <Shop state={state} dispatch={dispatch} />}
+      {state.inventoryOpen && state.hero && <Inventory />}
+      {state.shopOpen && state.hero && <Shop />}
       {optionsOpen && (
         <Options
           settings={settings}
@@ -215,11 +215,11 @@ function Screen({
     case "create":
       return <CharacterCreation onCreate={(name, roleId) => dispatch({ type: "CREATE_HERO", name, roleId })} />;
     case "battle":
-      return <Battle state={state} dispatch={dispatch} />;
+      return <Battle />;
     case "world":
-      return state.world ? <WorldScreen state={state} dispatch={dispatch} /> : null;
+      return state.world ? <WorldScreen /> : null;
     case "dungeon_select":
-      return state.dungeonSelect ? <DungeonSelect state={state} dispatch={dispatch} /> : null;
+      return state.dungeonSelect ? <DungeonSelect /> : null;
     case "victory":
       return <Victory hero={state.hero!} onContinue={() => dispatch({ type: "RETURN_TO_WORLD" })} />;
     default:

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { ROLES } from "../game/roles";
-import type { GameState } from "../game/types";
-import type { Action } from "../state/gameReducer";
+import { dispatch, useGameState } from "../state/store";
 import { getMap } from "../world/maps";
 import { NPCS, npcPosition, npcsOn } from "../world/npcs";
 import { regionAt } from "../world/parseMap";
@@ -38,12 +37,8 @@ function useTileScale(): number {
   return scale;
 }
 
-type WorldScreenProps = {
-  state: GameState;
-  dispatch: (action: Action) => void;
-};
-
-export function WorldScreen({ state, dispatch }: WorldScreenProps) {
+export function WorldScreen() {
+  const state = useGameState();
   const world = state.world!.position;
   const map = getMap(world.mapId);
   const heroSprite = ROLES[state.hero?.roleId ?? "warrior"].sprite;
@@ -69,7 +64,7 @@ export function WorldScreen({ state, dispatch }: WorldScreenProps) {
 
   return (
     <div className="screen world-screen">
-      {state.hero && <WorldHud state={state} dispatch={dispatch} />}
+      {state.hero && <WorldHud />}
       {state.hero && !state.introSeen && (
         <div className="overlay">
           <div className="panel intro-panel">
