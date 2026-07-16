@@ -5,7 +5,7 @@ import { WILD_TILES } from "../state/shared";
 import { getMap } from "../world/maps";
 import { npcAt, npcPosition, npcsOn, type Npc } from "../world/npcs";
 import { regionAt } from "../world/parseMap";
-import { TILES } from "../world/tiles";
+import { TILE_ANIMATIONS, TILES } from "../world/tiles";
 import type { WorldMap, WorldPosition } from "../world/types";
 
 export const ART = 16;
@@ -14,7 +14,6 @@ export const VIEW_H = 11;
 
 const WALK_MS = 160; // per walk frame
 const IDLE_MS = 500; // per idle frame
-const WATER_MS = 250; // per shimmer frame
 const WALK_LINGER_MS = 240; // keep the legs moving briefly after the last step
 
 /** Maps under the open sky; interiors stay lit and ember-free. */
@@ -102,7 +101,8 @@ export class WorldRenderer {
   private root = new Container();
   private mapC = new Container();
   private frames = new Map<string, Texture[]>();
-  private waterSprites: Sprite[] = [];
+  private animatedTiles: { sprite: Sprite; name: string }[] = [];
+  private animMs = new Map<string, number>();
   private npcSprites: { npc: Npc; sprite: Sprite; target: { x: number; y: number } }[] = [];
   private hero: Sprite | null = null;
   private heroFrames: Texture[] | null = null;
@@ -186,7 +186,7 @@ export class WorldRenderer {
         src: `${base}sprites/${anim.sheet}`,
       })),
     ]);
-    // Slice every sheet into per-frame textures once.
+    // Slice every sheet into per-frame textures once; remember each pace.
     for (const [name, anim] of Object.entries(atlas.animations)) {
       const source = (Assets.get(name) as Texture).source;
       this.frames.set(
@@ -196,6 +196,7 @@ export class WorldRenderer {
           (_, i) => new Texture({ source, frame: new Rectangle(i * ART, 0, ART, ART) }),
         ),
       );
+      this.animMs.set(name, 1000 / anim.fps);
     }
   }
 
@@ -243,7 +244,7 @@ export class WorldRenderer {
   private buildMap(map: WorldMap, state: GameState): void {
     this.mapC.removeChildren();
     this.lightC.removeChildren();
-    this.waterSprites = [];
+    this.animatedTiles = [];
     this.npcSprites = [];
     this.glows = [];
     this.embers = [];
@@ -253,12 +254,12 @@ export class WorldRenderer {
     for (let y = 0; y < map.height; y++) {
       for (let x = 0; x < map.width; x++) {
         const tile = map.tiles[y][x];
-        const sprite = new Sprite(
-          tile === "water" ? this.frames.get("water_shimmer")![0] : (Assets.get(TILES[tile].sprite) as Texture),
-        );
+        const animName = TILE_ANIMATIONS[tile];
+        const sheet = animName ? this.frames.get(animName) : undefined;
+        const sprite = new Sprite(sheet ? sheet[0] : (Assets.get(TILES[tile].sprite) as Texture));
         sprite.position.set(x * ART, y * ART);
         this.mapC.addChild(sprite);
-        if (tile === "water") this.waterSprites.push(sprite);
+        if (animName && sheet) this.animatedTiles.push({ sprite, name: animName });
         // Dangerous ground stays visible: wild-region tiles grow dark tufts.
         if (WILD_TILES.has(tile) && regionAt(map, x, y) !== null) {
           const tuft = new Sprite(Assets.get("overlay_wild") as Texture);
@@ -342,10 +343,10 @@ export class WorldRenderer {
       this.prompt.pivot.y = Math.round(Math.sin(this.clock / 150) * 1.5);
     }
 
-    const water = this.frames.get("water_shimmer");
-    if (water) {
-      const frame = water[Math.floor(this.clock / WATER_MS) % water.length];
-      for (const sprite of this.waterSprites) sprite.texture = frame;
+    for (const { sprite, name } of this.animatedTiles) {
+      const sheet = this.frames.get(name)!;
+      const ms = this.animMs.get(name) ?? 500;
+      sprite.texture = sheet[Math.floor(this.clock / ms) % sheet.length];
     }
 
     for (const { npc, sprite, target } of this.npcSprites) {

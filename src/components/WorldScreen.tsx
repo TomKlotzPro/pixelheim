@@ -98,9 +98,20 @@ export function WorldScreen() {
         </div>
       )}
       {USE_PIXI ? (
-        <Suspense fallback={null}>
-          <PixiWorldView scale={tilePx / ART_PX} mapId={map.id} />
-        </Suspense>
+        <>
+          <Suspense fallback={null}>
+            <PixiWorldView scale={tilePx / ART_PX} mapId={map.id} />
+          </Suspense>
+          {/* State mirror: 1px hooks the e2e suite asserts against, since the
+              canvas has no DOM to query. Purely derived, never interactive. */}
+          <div className="world-mirror" aria-hidden="true">
+            <div data-testid="world-hero" data-pos={`${world.x},${world.y}`} className={`facing-${world.facing}`} />
+            {npcsOn(map.id).map((npc) => (
+              <div key={npc.id} data-testid="world-npc" />
+            ))}
+            {facingNpc && <div data-testid="npc-prompt" />}
+          </div>
+        </>
       ) : (
       <div
         className="world-viewport"

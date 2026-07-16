@@ -166,6 +166,30 @@
       "frames": 4,
       "fps": 4,
       "loop": true
+    },
+    "grass_sway": {
+      "sheet": "grass_sway.png",
+      "frames": 2,
+      "fps": 2,
+      "loop": true
+    },
+    "forest_sway": {
+      "sheet": "forest_sway.png",
+      "frames": 2,
+      "fps": 2,
+      "loop": true
+    },
+    "flowers_sway": {
+      "sheet": "flowers_sway.png",
+      "frames": 2,
+      "fps": 2,
+      "loop": true
+    },
+    "marsh_sway": {
+      "sheet": "marsh_sway.png",
+      "frames": 2,
+      "fps": 2,
+      "loop": true
     }
   }
 }
