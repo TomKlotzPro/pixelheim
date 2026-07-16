@@ -18,8 +18,18 @@ export const CHANGELOG: Release[] = [
       "Five new floors beneath the mountain, for those who beat the dragon",
       "New monsters: Bone Knight, Shade, Mimic, Fire Imp, and Morvax the Deathless",
       "New gear: Obsidian Blade, Runic Armor, Greater Health Potions",
+      "Beat the dragon before this update? Floor 11 is already open for you",
+    ],
+  },
+  {
+    version: "0.3.0",
+    date: "2026-07-16",
+    codename: "Sharpened Steel",
+    notes: [
       "Status effects: poison and burn tick every turn, stun steals turns",
-      "Every role now learns three skills, unlocked at levels 1, 3 and 6",
+      "Monsters fight dirty now: wyverns poison, the dragon burns, golems stun",
+      "Every role learns three skills, unlocked at levels 1, 3 and 6",
+      "New skills include Berserk, Frost Nova, Poison Blade and Sanctuary",
     ],
   },
   {
