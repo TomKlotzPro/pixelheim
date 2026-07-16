@@ -7,7 +7,6 @@ import { Options } from "./components/Options";
 import { loadSettings, type Settings } from "./settings";
 import { Battle } from "./components/Battle";
 import { CharacterCreation } from "./components/CharacterCreation";
-import { Hub } from "./components/Hub";
 import { Inventory } from "./components/Inventory";
 import { Shop } from "./components/Shop";
 import { TitleScreen } from "./components/TitleScreen";
@@ -21,11 +20,9 @@ import type { Direction } from "./world/types";
 const SCREEN_TRACKS: Record<GameState["screen"], TrackName> = {
   title: "title",
   create: "title",
-  hub: "world",
   world: "world",
   battle: "battle",
   victory: "world",
-  gameover: "title",
   dungeon_select: "world",
 };
 
@@ -143,6 +140,10 @@ export default function App() {
         dispatch({ type: "EXIT_WORLD" });
         return;
       }
+      if (event.key === "i" || event.key === "I") {
+        dispatch({ type: "TOGGLE_INVENTORY" });
+        return;
+      }
       const direction = KEY_DIRECTIONS[event.key];
       if (!direction) return;
       event.preventDefault();
@@ -214,19 +215,6 @@ function Screen({
       );
     case "create":
       return <CharacterCreation onCreate={(name, roleId) => dispatch({ type: "CREATE_HERO", name, roleId })} />;
-    case "hub":
-      return (
-        <Hub
-          state={state}
-          onEnterLevel={(level) => dispatch({ type: "ENTER_LEVEL", level })}
-          onRest={() => dispatch({ type: "REST" })}
-          onOpenInventory={() => dispatch({ type: "TOGGLE_INVENTORY" })}
-          onOpenShop={() => dispatch({ type: "TOGGLE_SHOP" })}
-          onEnterWorld={() =>
-            dispatch({ type: "ENTER_WORLD", mapId: state.world?.position.mapId ?? "overworld" })
-          }
-        />
-      );
     case "battle":
       return <Battle state={state} dispatch={dispatch} />;
     case "world":
@@ -234,7 +222,7 @@ function Screen({
     case "dungeon_select":
       return state.dungeonSelect ? <DungeonSelect state={state} dispatch={dispatch} /> : null;
     case "victory":
-      return <Victory hero={state.hero!} onContinue={() => dispatch({ type: "RETURN_TO_HUB" })} />;
+      return <Victory hero={state.hero!} onContinue={() => dispatch({ type: "RETURN_TO_WORLD" })} />;
     default:
       return null;
   }

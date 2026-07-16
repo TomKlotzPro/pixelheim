@@ -29,31 +29,29 @@ test('mountains block movement but still turn the hero', async ({ page }) => {
   await expect(hero(page)).toHaveClass(/facing-up/)
 })
 
-test('the hub opens the Ashenreach and the town gate leads into the village', async ({ page }) => {
+test('new heroes wake in the village and the gate leads to the overworld', async ({ page }) => {
   await page.goto('./')
   await page.getByRole('button', { name: 'New Game' }).click()
   await page.getByPlaceholder('Dragonsbane...').fill('Wanderer')
   await page.getByRole('button', { name: 'Begin the climb' }).click()
+  // the three-line intro, then the village
+  await page.getByRole('button', { name: 'Set out' }).click()
+  await expect(page.getByTestId('world-viewport')).toHaveAttribute('data-map', 'town')
+  await expect(hero(page)).toHaveAttribute('data-pos', '9,8')
 
-  await page.getByRole('button', { name: 'World (beta)' }).click()
-  await expect(page.getByTestId('world-viewport')).toHaveAttribute('data-map', 'overworld')
-  await expect(hero(page)).toHaveAttribute('data-pos', '24,19')
-
-  // two steps south: through the town gate into the village
+  // out through the town gate onto the overworld road
   await pressTimes(page, 'ArrowDown', 2)
+  await expect(page.getByTestId('world-viewport')).toHaveAttribute('data-map', 'overworld')
+  await expect(hero(page)).toHaveAttribute('data-pos', '24,20')
+
+  // and back in through the gate to the south
+  await page.keyboard.press('ArrowDown')
   await expect(page.getByTestId('world-viewport')).toHaveAttribute('data-map', 'town')
   await expect(hero(page)).toHaveAttribute('data-pos', '9,9')
 
-  // out through the gate, back on the overworld path
-  await page.keyboard.press('ArrowDown')
-  await expect(page.getByTestId('world-viewport')).toHaveAttribute('data-map', 'overworld')
-  await expect(hero(page)).toHaveAttribute('data-pos', '24,20')
-
-  // Escape returns to the hub with the hero intact, and re-entering resumes in place
+  // Escape does nothing for a hero: the world IS the game now
   await page.keyboard.press('Escape')
-  await expect(page.getByText('The Ashen Mountain')).toBeVisible()
-  await page.getByRole('button', { name: 'World (beta)' }).click()
-  await expect(hero(page)).toHaveAttribute('data-pos', '24,20')
+  await expect(page.getByTestId('world-viewport')).toBeVisible()
 })
 
 test('doors travel between maps and Escape leaves the world', async ({ page }) => {

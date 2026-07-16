@@ -1,30 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
-import { SAVE_KEY, VETERAN_SAVE } from './helpers'
+import { loadVeteranAt } from './helpers'
 
 const hero = (page: Page) => page.getByTestId('world-hero')
-
-async function loadVeteranAt(page: Page, x: number, y: number) {
-  const save = {
-    ...VETERAN_SAVE,
-    state: {
-      ...VETERAN_SAVE.state,
-      world: {
-        position: { mapId: 'overworld', x, y, facing: 'up' },
-        discovered: {},
-        openedChests: [],
-      },
-    },
-  }
-  await page.goto('./')
-  await page.evaluate(
-    ([key, s]) => localStorage.setItem(key as string, JSON.stringify(s)),
-    [SAVE_KEY, save] as const,
-  )
-  await page.reload()
-  await page.getByRole('button', { name: 'Continue' }).click()
-  await page.getByRole('button', { name: 'World (beta)' }).click()
-  await expect(hero(page)).toHaveAttribute('data-pos', `${x},${y}`)
-}
 
 test('the mountain gate opens the floor select; clearing a floor returns to the door', async ({ page }) => {
   test.setTimeout(60_000)

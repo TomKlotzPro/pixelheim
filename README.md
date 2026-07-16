@@ -17,7 +17,7 @@
 
 ## The game
 
-You are an adventurer climbing the Ashen Mountain, ten floors of increasingly rude monsters, to slay **Fafnyr the Ashen** at the summit. Behind the dragon's hoard, a stairway descends: five more floors of the **Undermountain**, down to **Morvax the Deathless**.
+You wake in Pixelheim village, in an open world called **the Ashenreach**: walk the roads (safe) or the wilds (not safe), trade at the merchant's shop, sleep at the inn, and climb the Ashen Mountain - ten floors of increasingly rude monsters - to slay **Fafnyr the Ashen** at the summit. Behind the dragon's hoard, a stairway descends: five more floors of the **Undermountain**, down to **Morvax the Deathless**.
 
 - **4 playable roles**: Warrior, Mage, Rogue, Cleric, each with its own stats, growth, and three skills unlocked at levels 1, 3 and 6 (Berserk, Frost Nova, Poison Blade, Sanctuary...)
 - **Status effects**: poison and burn tick every turn, stun steals turns; monsters inflict them and so do your skills
@@ -72,7 +72,7 @@ src/
   components/      # one component per screen + inventory overlay
 ```
 
-Maps are ASCII art in source (`.` grass, `f` forest, `^` mountain, `~` water, `=` path, `#` wall, `D` door...). The parser validates every map at load and the e2e suite imports them all, so a malformed map fails CI with a precise message. Try the work-in-progress world with `?world` on the URL.
+Maps are ASCII art in source (`.` grass, `f` forest, `^` mountain, `~` water, `=` path, `#` wall, `D` door...). The parser validates every map at load and the e2e suite imports them all, so a malformed map fails CI with a precise message.
 
 ### The sprites
 
