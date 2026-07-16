@@ -1622,6 +1622,83 @@ for (const name of names) {
   writeFileSync(join(OUT, `${name}.png`), encodePng(w, h, buf));
 }
 
+// ---------------- animation sheets (G1) ----------------
+// Animations are generated the same way the art is: pure transforms over the
+// base 16x16 grids, composed into a horizontal strip PNG plus an atlas.json
+// the renderer reads. No hand-drawn frames, so the whole thing stays
+// deterministic for the CI sprite-sync check.
+const BLANK = ".".repeat(16);
+/** Slide the whole grid up by d rows (blanks fill the bottom). */
+const bobUp = (rows, d = 1) => rows.slice(d).concat(Array(d).fill(BLANK));
+/** Slide the whole grid down by d rows (blanks fill the top). */
+const bobDown = (rows, d = 1) => Array(d).fill(BLANK).concat(rows.slice(0, 16 - d));
+/** Wrap-shift horizontally; safe on seamless tiles, gives flowing water. */
+const shiftXWrap = (rows, dx) => {
+  const s = ((dx % 16) + 16) % 16;
+  return rows.map((r) => r.slice(16 - s) + r.slice(0, 16 - s));
+};
+/** Nudge just the bottom rows (feet) sideways for a walk step; non-wrapping. */
+const feet = (rows, dx) =>
+  rows.map((r, y) => {
+    if (y < 13) return r;
+    if (dx > 0) return ".".repeat(dx) + r.slice(0, 16 - dx);
+    if (dx < 0) return r.slice(-dx) + ".".repeat(-dx);
+    return r;
+  });
+
+const walkFrames = (b) => [b, feet(bobUp(b, 1), 1), b, feet(bobUp(b, 1), -1)];
+const idleFrames = (b) => [b, bobDown(b, 1)];
+const shimmerFrames = (b) => [b, shiftXWrap(b, 1), shiftXWrap(b, 2), shiftXWrap(b, 3)];
+
+const MONSTERS = [
+  "slime", "goblin", "skeleton", "wolf", "orc", "ghost", "golem", "troll",
+  "wyvern", "dragon", "boneknight", "shade", "mimic", "imp", "lich",
+];
+const NPCS = ["villager", "villager_woman", "elder", "innkeeper", "smith", "alchemist", "merchant"];
+const HEROES = ["hero_warrior", "hero_mage", "hero_rogue", "hero_cleric"];
+
+const anims = [
+  ...HEROES.map((base) => ({ name: `${base}_walk`, base, fps: 6, facing: "front", frames: walkFrames })),
+  ...NPCS.map((base) => ({ name: `${base}_idle`, base, fps: 2, frames: idleFrames })),
+  ...MONSTERS.map((base) => ({ name: `${base}_idle`, base, fps: 2, frames: idleFrames })),
+  { name: "water_shimmer", base: "tile_water", fps: 4, frames: shimmerFrames },
+];
+
+/** Lay frames left to right into one 16-tall strip. */
+function renderSheet(frames, palette) {
+  const W = 16 * frames.length;
+  const sheet = Buffer.alloc(W * 16 * 4);
+  frames.forEach((rows, i) => {
+    const { buf } = renderSprite(rows, palette);
+    const ox = i * 16;
+    for (let y = 0; y < 16; y++) {
+      for (let x = 0; x < 16; x++) {
+        const si = (y * 16 + x) * 4;
+        if (buf[si + 3] === 0) continue;
+        buf.copy(sheet, (y * W + ox + x) * 4, si, si + 4);
+      }
+    }
+  });
+  return { buf: sheet, w: W, h: 16 };
+}
+
+const atlas = { frameSize: 16, animations: {} };
+for (const anim of anims) {
+  const src = sprites[anim.base];
+  if (!src) throw new Error(`Animation ${anim.name} has no base sprite "${anim.base}"`);
+  const frames = anim.frames(src.rows);
+  const { buf, w, h } = renderSheet(frames, src.palette);
+  writeFileSync(join(OUT, `${anim.name}.png`), encodePng(w, h, buf));
+  atlas.animations[anim.name] = {
+    sheet: `${anim.name}.png`,
+    frames: frames.length,
+    fps: anim.fps,
+    loop: true,
+    ...(anim.facing ? { facing: anim.facing } : {}),
+  };
+}
+writeFileSync(join(OUT, "atlas.json"), JSON.stringify(atlas, null, 2) + "\n");
+
 // x8 preview sheet for eyeballing the art (not shipped in the app)
 const SCALE = 8, COLS = 7, CELL = 16 * SCALE + 8;
 const rowsCount = Math.ceil(names.length / COLS);
@@ -1641,4 +1718,6 @@ names.forEach((name, idx) => {
   }
 });
 writeFileSync(join(ROOT, "scripts", "preview.png"), encodePng(COLS * CELL, rowsCount * CELL, sheet));
-console.log(`Wrote ${names.length} sprites to public/sprites/ and scripts/preview.png`);
+console.log(
+  `Wrote ${names.length} sprites, ${anims.length} animation sheets + atlas.json to public/sprites/ and scripts/preview.png`,
+);
