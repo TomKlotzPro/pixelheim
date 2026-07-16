@@ -13,6 +13,38 @@ export async function createHero(page: Page, name: string, role?: string) {
 export const SAVE_KEY = 'pixelheim-save-v1'
 
 /**
+ * A veteran hero who cannot realistically lose an overworld fight, for specs
+ * that need deterministic battle outcomes. Spread and override as needed.
+ */
+export const VETERAN_SAVE = {
+  version: 4,
+  state: {
+    screen: 'hub',
+    hero: {
+      name: 'Ranger',
+      roleId: 'warrior',
+      level: 10,
+      xp: 0,
+      xpToNext: 200,
+      hp: 105,
+      mp: 17,
+      stats: { maxHp: 105, maxMp: 17, strength: 36, intelligence: 12, dexterity: 14, defense: 23 },
+    },
+    gold: 100,
+    inventory: { potion_hp: 5 },
+    gear: [{ uid: 'w1', itemId: 'dragonbane', rarity: 'common', bonus: 0 }],
+    equipped: { weapon: 'w1' },
+    unlockedLevel: 10,
+    clearedLevels: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    battle: null,
+    inventoryOpen: false,
+    shopOpen: false,
+    world: null,
+    dungeonSelect: null,
+  },
+}
+
+/**
  * A genuine v1 save: bare GameState, no version envelope, no shopOpen field.
  * FROZEN FOREVER. This is the regression fixture proving that saves from the
  * first release keep loading. Never update it to match new state shapes; that

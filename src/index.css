@@ -367,6 +367,14 @@ body {
   font-size: 12px;
 }
 
+/* ---------- dungeon select ---------- */
+.dungeon-select {
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
 /* ---------- battle ---------- */
 .battle-screen {
   display: flex;

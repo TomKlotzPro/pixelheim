@@ -1,34 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
-import { SAVE_KEY } from './helpers'
-
-// A veteran hero who cannot realistically lose a forest encounter, so the
-// win path is deterministic enough to test.
-const VETERAN_SAVE = {
-  version: 4,
-  state: {
-    screen: 'hub',
-    hero: {
-      name: 'Ranger',
-      roleId: 'warrior',
-      level: 10,
-      xp: 0,
-      xpToNext: 200,
-      hp: 105,
-      mp: 17,
-      stats: { maxHp: 105, maxMp: 17, strength: 36, intelligence: 12, dexterity: 14, defense: 23 },
-    },
-    gold: 100,
-    inventory: { potion_hp: 5 },
-    gear: [{ uid: 'w1', itemId: 'dragonbane', rarity: 'common', bonus: 0 }],
-    equipped: { weapon: 'w1' },
-    unlockedLevel: 10,
-    clearedLevels: [1, 2, 3, 4, 5, 6, 7, 8, 9],
-    battle: null,
-    inventoryOpen: false,
-    shopOpen: false,
-    world: null,
-  },
-}
+import { SAVE_KEY, VETERAN_SAVE } from './helpers'
 
 const hero = (page: Page) => page.getByTestId('world-hero')
 

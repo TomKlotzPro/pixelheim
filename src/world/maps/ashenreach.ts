@@ -45,8 +45,8 @@ export const OVERWORLD_MAP: WorldMap = parseMap(
   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   `,
   [
-    { x: 24, y: 3, to: { kind: "exit" } }, // Ashen Mountain gate (PIX-24: floor select)
-    { x: 12, y: 5, to: { kind: "exit" } }, // Undermountain cave (PIX-24: floor select)
+    { x: 24, y: 3, to: { kind: "dungeon", dungeon: "mountain" } },
+    { x: 12, y: 5, to: { kind: "dungeon", dungeon: "undermountain" } },
     { x: 24, y: 21, to: { kind: "map", mapId: "town", x: 9, y: 9 } },
   ],
   {
