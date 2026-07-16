@@ -2,6 +2,7 @@ import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { playTrack, type TrackName } from "./audio/music";
 import { SFX } from "./audio/sfx";
 import { audioReady, initAudio, isMuted, setMuted } from "./audio/synth";
+import { DungeonSelect } from "./components/DungeonSelect";
 import { Options } from "./components/Options";
 import { loadSettings, type Settings } from "./settings";
 import { Battle } from "./components/Battle";
@@ -25,6 +26,7 @@ const SCREEN_TRACKS: Record<GameState["screen"], TrackName> = {
   battle: "battle",
   victory: "world",
   gameover: "title",
+  dungeon_select: "world",
 };
 
 /** Audio is a pure side effect: watch state transitions, never touch the reducer. */
@@ -229,6 +231,8 @@ function Screen({
       return <Battle state={state} dispatch={dispatch} />;
     case "world":
       return state.world ? <WorldScreen state={state} dispatch={dispatch} /> : null;
+    case "dungeon_select":
+      return state.dungeonSelect ? <DungeonSelect state={state} dispatch={dispatch} /> : null;
     case "victory":
       return <Victory hero={state.hero!} onContinue={() => dispatch({ type: "RETURN_TO_HUB" })} />;
     default:

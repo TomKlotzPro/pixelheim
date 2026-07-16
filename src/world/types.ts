@@ -23,7 +23,12 @@ export type TileDef = {
   walkable: boolean;
 };
 
-export type PortalTarget = { kind: "exit" } | { kind: "map"; mapId: string; x: number; y: number };
+export type DungeonId = "mountain" | "undermountain";
+
+export type PortalTarget =
+  | { kind: "exit" }
+  | { kind: "map"; mapId: string; x: number; y: number }
+  | { kind: "dungeon"; dungeon: DungeonId };
 
 export type Portal = {
   x: number;

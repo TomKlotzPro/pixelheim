@@ -78,6 +78,7 @@ function normalizeSave(state: unknown): GameState | null {
     battle: null,
     inventoryOpen: false,
     shopOpen: false,
+    dungeonSelect: null,
   };
   // Recompute unlock progress: when new floors ship, players who had cleared
   // the old final floor were capped at the old LEVELS.length and would

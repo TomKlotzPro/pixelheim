@@ -50,7 +50,8 @@ export type Action =
   | { type: "RETURN_TO_HUB" }
   | { type: "ENTER_WORLD"; mapId: string }
   | { type: "EXIT_WORLD" }
-  | { type: "MOVE"; direction: Direction };
+  | { type: "MOVE"; direction: Direction }
+  | { type: "CLOSE_DUNGEON_SELECT" };
 
 export const initialState: GameState = {
   screen: "title",
@@ -65,6 +66,7 @@ export const initialState: GameState = {
   inventoryOpen: false,
   shopOpen: false,
   world: null,
+  dungeonSelect: null,
 };
 
 const DIRECTION_DELTAS: Record<Direction, { dx: number; dy: number }> = {
@@ -463,7 +465,10 @@ export function gameReducer(state: GameState, action: Action): GameState {
         next.unlockedLevel = Math.max(next.unlockedLevel, Math.min(dungeon.level + 1, LEVELS.length));
       }
       next.battle = null;
-      next.screen = dungeon.level === LEVELS.length && firstClear ? "victory" : "hub";
+      // Entered from a world entrance? Step back out of the dungeon door.
+      const returnScreen = next.dungeonSelect && next.world ? "world" : "hub";
+      if (returnScreen === "world") next.dungeonSelect = null;
+      next.screen = dungeon.level === LEVELS.length && firstClear ? "victory" : returnScreen;
       return next;
     }
 
@@ -479,16 +484,20 @@ export function gameReducer(state: GameState, action: Action): GameState {
     case "RETURN_TO_HUB": {
       if (!state.hero) return state;
       const next = structuredClone(state);
-      const lostWild = next.battle?.phase === "lost" && next.battle?.wild;
-      // Defeat is forgiving: you wake up in town at full health, purse intact.
-      if (next.battle?.phase === "lost") {
+      const wasLost = next.battle?.phase === "lost";
+      const wasWild = next.battle?.wild === true;
+      // Defeat is forgiving: you wake up at full health, purse intact.
+      if (wasLost) {
         next.hero!.hp = next.hero!.stats.maxHp;
         next.hero!.mp = next.hero!.stats.maxMp;
       }
       next.battle = null;
-      if (lostWild && next.world) {
-        // Beaten in the wilds, you wake at the inn in Pixelheim village.
-        next.world.position = { mapId: "town", x: 12, y: 5, facing: "down" };
+      const fromWorld = (wasWild || next.dungeonSelect !== null) && next.world !== null;
+      next.dungeonSelect = null;
+      if (fromWorld && next.world) {
+        // Beaten out in the world you wake at the village inn; otherwise you
+        // simply step back out of whatever door you came through.
+        if (wasLost) next.world.position = { mapId: "town", x: 12, y: 5, facing: "down" };
         next.screen = "world";
       } else {
         next.screen = "hub";
@@ -524,6 +533,11 @@ export function gameReducer(state: GameState, action: Action): GameState {
       return { ...state, screen: state.hero ? "hub" : "title" };
     }
 
+    case "CLOSE_DUNGEON_SELECT": {
+      if (state.screen !== "dungeon_select") return state;
+      return { ...state, screen: "world", dungeonSelect: null };
+    }
+
     case "MOVE": {
       if (state.screen !== "world" || !state.world) return state;
       const { position } = state.world;
@@ -549,6 +563,16 @@ export function gameReducer(state: GameState, action: Action): GameState {
       }
       if (portal && portal.to.kind === "exit") {
         return { ...state, screen: state.hero ? "hub" : "title" };
+      }
+      // Dungeon entrances open the floor select; the hero stays at the door.
+      if (portal && portal.to.kind === "dungeon") {
+        if (!state.hero) return state;
+        return {
+          ...state,
+          screen: "dungeon_select",
+          dungeonSelect: portal.to.dungeon,
+          world: { ...state.world, position: { ...position, facing: action.direction } },
+        };
       }
       const moved: GameState = {
         ...state,
