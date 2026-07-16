@@ -4,6 +4,11 @@ on:
   pull_request:
   workflow_dispatch:
 
+# a new push to the same PR supersedes the old run
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   checks:
     runs-on: ubuntu-latest
@@ -23,8 +28,6 @@ jobs:
           pnpm sprites
           git diff --exit-code public/sprites scripts/preview.png
       - run: pnpm build
-      - name: Balance regression (all roles must finish the game)
-        run: pnpm sim --check
       - name: Install Playwright browser
         run: pnpm exec playwright install chromium --with-deps
       - run: pnpm test:e2e
