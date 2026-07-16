@@ -1,13 +1,33 @@
 import { expect, type Page } from '@playwright/test'
 
-/** Creates a hero (default role: Warrior) and lands in the hub. */
+/** Creates a hero (default role: Warrior), dismisses the intro, lands in town. */
 export async function createHero(page: Page, name: string, role?: string) {
   await page.goto('./')
   await page.getByRole('button', { name: 'New Game' }).click()
   await page.getByPlaceholder('Dragonsbane...').fill(name)
   if (role) await page.getByRole('button', { name: role }).click()
   await page.getByRole('button', { name: 'Begin the climb' }).click()
-  await expect(page.getByText('The Ashen Mountain')).toBeVisible()
+  await page.getByRole('button', { name: 'Set out' }).click()
+  await expect(page.getByTestId('world-viewport')).toHaveAttribute('data-map', 'town')
+}
+
+/** Loads the veteran fixture standing at a specific overworld tile. */
+export async function loadVeteranAt(page: Page, x: number, y: number, mapId = 'overworld') {
+  const save = {
+    ...VETERAN_SAVE,
+    state: {
+      ...VETERAN_SAVE.state,
+      world: { position: { mapId, x, y, facing: 'up' }, discovered: {}, openedChests: [] },
+    },
+  }
+  await page.goto('./')
+  await page.evaluate(
+    ([key, s]) => localStorage.setItem(key as string, JSON.stringify(s)),
+    [SAVE_KEY, save] as const,
+  )
+  await page.reload()
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await expect(page.getByTestId('world-hero')).toHaveAttribute('data-pos', `${x},${y}`)
 }
 
 export const SAVE_KEY = 'pixelheim-save-v1'

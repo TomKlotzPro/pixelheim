@@ -1,9 +1,20 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
 import { createHero } from './helpers'
 
-test('buying and selling moves gold and inventory correctly', async ({ page }) => {
+async function walk(page: Page, key: string, times: number) {
+  for (let i = 0; i < times; i++) {
+    await page.keyboard.press(key)
+    await page.waitForTimeout(15)
+  }
+}
+
+test('walking into the merchant building opens the shop; gold math holds', async ({ page }) => {
   await createHero(page, 'Trader')
-  await page.getByRole('button', { name: 'Merchant' }).click()
+
+  // from the village square into the shop doorway
+  await walk(page, 'ArrowLeft', 4)
+  await walk(page, 'ArrowUp', 4)
+  await expect(page.getByText('Finest goods')).toBeVisible()
   const gold = page.locator('.inventory-header .gold-line')
   await expect(gold).toHaveText(/30/)
 
@@ -16,9 +27,12 @@ test('buying and selling moves gold and inventory correctly', async ({ page }) =
   await page.getByRole('button', { name: 'Sell 6g' }).click()
   await expect(gold).toHaveText(/32/)
 
-  // the bread we bought is in the inventory
+  // close the counter: we are standing inside the shop
   await page.getByRole('button', { name: 'Close' }).click()
-  await page.getByRole('button', { name: 'Inventory' }).click()
+  await expect(page.getByTestId('world-viewport')).toHaveAttribute('data-map', 'town_shop')
+
+  // the bread is in the satchel
+  await page.getByRole('button', { name: 'Inventory (I)' }).click()
   await expect(page.getByText('Bread Loaf')).toBeVisible()
   await expect(page.getByText('x3')).toBeVisible()
 })

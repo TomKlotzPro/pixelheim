@@ -161,8 +161,8 @@ export function Battle({ state, dispatch }: BattleProps) {
 
       {battle.phase === "lost" && (
         <div className="battle-actions">
-          <button className="btn btn-danger" onClick={() => dispatch({ type: "RETURN_TO_HUB" })}>
-            {battle.wild ? "Wake up at the inn" : "Wake up in town"}
+          <button className="btn btn-danger" onClick={() => dispatch({ type: "RETURN_TO_WORLD" })}>
+            Wake up at the inn
           </button>
         </div>
       )}
