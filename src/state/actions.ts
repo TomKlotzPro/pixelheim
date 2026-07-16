@@ -6,7 +6,8 @@ export type MetaAction =
   | { type: "NEW_GAME" }
   | { type: "LOAD"; state: GameState }
   | { type: "CREATE_HERO"; name: string; roleId: RoleId }
-  | { type: "DISMISS_INTRO" };
+  | { type: "DISMISS_INTRO" }
+  | { type: "QUIT_TO_TITLE" };
 
 /** Everything that happens on the battle screen. */
 export type BattleAction =
