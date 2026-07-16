@@ -47,6 +47,8 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
 
     case "INTERACT": {
       if (draft.screen !== "world" || !draft.world || !draft.hero) return;
+      // Menus are modal: no talking through the shop or the pack.
+      if (draft.shopOpen || draft.inventoryOpen) return;
       if (draft.dialogue) {
         worldReducer(draft, { type: "ADVANCE_DIALOGUE" });
         return;
@@ -73,7 +75,9 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
 
     case "MOVE": {
       if (draft.screen !== "world" || !draft.world) return;
-      if (draft.dialogue) return;
+      // Menus are modal: walking away with the shop open used to strand the
+      // overlay on a map with no shop and crash the tree (PIX-58).
+      if (draft.dialogue || draft.shopOpen || draft.inventoryOpen) return;
       const { position } = draft.world;
       const map = getMap(position.mapId);
       const { dx, dy } = DIRECTION_DELTAS[action.direction];
