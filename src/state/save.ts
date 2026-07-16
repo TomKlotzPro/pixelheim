@@ -83,6 +83,7 @@ function normalizeSave(state: unknown): GameState | null {
     shopOpen: false,
     dungeonSelect: null,
     worldMessage: null,
+    dialogue: null,
   };
   // Heroes from before spendable growth start banking from their next level.
   if (save.hero && save.hero.statPoints === undefined) {
