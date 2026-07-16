@@ -81,6 +81,47 @@ export const LEVELS: DungeonLevel[] = [
     rewardItemIds: ["dragon_scale", "gem"],
     rewardGold: 500,
   },
+  // ---------------- the Undermountain ----------------
+  {
+    level: 11,
+    name: "The Sunless Stair",
+    description: "Behind the dragon's hoard, a stairway descends into the dark.",
+    encounters: [{ monsterId: "wyvern" }, { monsterId: "boneknight" }, { monsterId: "boneknight", elite: true }],
+    rewardItemIds: ["greater_potion", "greater_potion"],
+    rewardGold: 300,
+  },
+  {
+    level: 12,
+    name: "Hall of Echoes",
+    description: "The dead of the deep kingdom whisper. Some of them still march.",
+    encounters: [{ monsterId: "boneknight" }, { monsterId: "shade" }, { monsterId: "shade", elite: true }],
+    rewardItemIds: ["obsidian_blade", "greater_potion"],
+    rewardGold: 350,
+  },
+  {
+    level: 13,
+    name: "The Vaulted Hoard",
+    description: "A treasury untouched for centuries. Some of the chests are hungry.",
+    encounters: [{ monsterId: "shade" }, { monsterId: "mimic" }, { monsterId: "mimic", elite: true }],
+    rewardItemIds: ["runic_armor", "gem"],
+    rewardGold: 420,
+  },
+  {
+    level: 14,
+    name: "Ember Warrens",
+    description: "The tunnels glow warm. The imps that dug them think you look flammable.",
+    encounters: [{ monsterId: "mimic" }, { monsterId: "imp" }, { monsterId: "imp", elite: true }],
+    rewardItemIds: ["elixir", "greater_potion", "gem"],
+    rewardGold: 500,
+  },
+  {
+    level: 15,
+    name: "Throne of the Deathless",
+    description: "Morvax has waited below since before the mountain had a name. End this. Again.",
+    encounters: [{ monsterId: "imp" }, { monsterId: "lich" }],
+    rewardItemIds: ["lich_crown", "gem"],
+    rewardGold: 1200,
+  },
 ];
 
 export function getLevel(level: number): DungeonLevel {

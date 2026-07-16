@@ -9,11 +9,11 @@ type VictoryProps = {
 export function Victory({ hero, onContinue }: VictoryProps) {
   return (
     <div className="screen victory-screen">
-      <Sprite name="dragon" size={128} className="fallen" alt="Defeated dragon" />
+      <Sprite name="lich" size={128} className="fallen" alt="Defeated lich" />
       <h1 className="game-title">VICTORY</h1>
       <p className="tagline">
-        {hero.name} has slain Fafnyr the Ashen. The mountain is quiet, the tavern is loud, and the cheese has never
-        tasted better.
+        {hero.name} slew Fafnyr the Ashen above and cast down Morvax the Deathless below. The mountain is quiet at
+        last, the tavern is loud, and the cheese has never tasted better.
       </p>
       <button className="btn btn-primary" onClick={onContinue}>
         Return to town
