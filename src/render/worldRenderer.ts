@@ -252,8 +252,8 @@ export class WorldRenderer {
           this.mapC.addChild(tuft);
         }
         if (this.outdoor && regionAt(map, x, y) === "ash") this.ashTiles.push({ x, y });
-        // Doors and the shrine glow after dark.
-        if (this.outdoor && this.glowTexture && (tile === "door" || tile === "shrine")) {
+        // Doors, lamps and the shrine glow after dark.
+        if (this.outdoor && this.glowTexture && (tile === "door" || tile === "shrine" || tile === "lamp")) {
           const glow = new Sprite(this.glowTexture);
           glow.anchor.set(0.5);
           glow.position.set(x * ART + ART / 2, y * ART + ART / 2);

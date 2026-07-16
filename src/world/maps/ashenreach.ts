@@ -89,30 +89,32 @@ export const OVERWORLD_MAP: WorldMap = parseMap(
 );
 
 /**
- * Pixelheim village, expanded: the shop and inn up top, houses below, a
- * shrine square in the middle, and an empty lot between the lower houses
- * waiting for the player's house (PIX-33).
+ * Pixelheim village, expanded: Main Street up top (Odo under his awning, the
+ * inn, Hilda's slate-roofed smithy), the violet-roofed alchemist and a mossy
+ * old house below, a shrine square in the middle, and an empty lot waiting
+ * for the player's house (PIX-33). Every trade hangs its sign by the door;
+ * lamps light the square after dark.
  */
 export const TOWN_MAP: WorldMap = parseMap(
   "town",
   `
   ############################
+  #..x.................x.....#
+  #.333333..rrrrrr...111111..#
+  #.333333..rrrrrr...111111..#
+  #.3gD333..rmDrrr...1hD111..#
   #..........................#
-  #.rrrrrr..rrrrrr...rrrrrr..#
-  #.rrrrrr..rrrrrr...rrrrrr..#
-  #.rrDrrr..rrDrrr...rrDrrr..#
-  #..........................#
-  #..........................#
+  #.........o......c.........#
   #.....================.....#
-  #............=W=...........#
+  #..L.........=W=........L..#
   #.....================.....#
+  #..........O...............#
+  #.22222..........44444.x...#
+  #.22222..........44444.....#
+  #.2pD22..........44444.....#
   #..........................#
-  #.rrrrr..........rrrrr.....#
-  #.rrrrr..........rrrrr.....#
-  #.rrDrr..........rrrrr.....#
-  #..........................#
-  #.............S............#
-  #..........................#
+  #.............S.......FF...#
+  #...x..................x...#
   ##############D#############
   `,
   [
