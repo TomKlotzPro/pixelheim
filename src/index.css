@@ -320,6 +320,10 @@ body {
   flex-direction: column;
   gap: 10px;
 }
+.undermountain-title {
+  margin: 18px 0 4px;
+  color: var(--mp);
+}
 .level-card {
   font: inherit;
   color: var(--text);

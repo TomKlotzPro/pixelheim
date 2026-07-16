@@ -50,6 +50,32 @@ test('save code round-trip: copy on one profile, import on a fresh one', async (
   await expect(page.getByText('Traveler')).toBeVisible()
 })
 
+test('a pre-Undermountain finisher save wakes up with floor 11 unlocked', async ({ page }) => {
+  // A v2 save from when floor 10 was the end: unlockedLevel capped at 10.
+  const finisher = {
+    version: 2,
+    state: {
+      ...V1_SAVE,
+      hero: { ...V1_SAVE.hero, level: 12, hp: 100, mp: 10 },
+      unlockedLevel: 10,
+      clearedLevels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+      shopOpen: false,
+    },
+  }
+  await page.goto('./')
+  await page.evaluate(
+    ([key, save]) => localStorage.setItem(key as string, JSON.stringify(save)),
+    [SAVE_KEY, finisher] as const,
+  )
+  await page.reload()
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await expect(page.getByText('The Undermountain')).toBeVisible()
+  await expect(page.getByRole('button', { name: /The Sunless Stair/ })).toBeEnabled()
+  // floor 12 must still be locked, and locked floors hide their name behind ???
+  await expect(page.getByText('Hall of Echoes')).toBeHidden()
+  await expect(page.getByText('???')).toHaveCount(4)
+})
+
 test('garbage save codes are rejected with an error', async ({ page }) => {
   await page.goto('./')
   await page.getByRole('button', { name: 'Import save code' }).click()
