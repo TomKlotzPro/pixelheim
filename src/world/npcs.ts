@@ -69,6 +69,32 @@ export const NPCS: Npc[] = [
     lines: ["Welcome, welcome! Finest goods this side of the mountain. The counter is always open."],
   },
   {
+    id: "smith",
+    mapId: "town_smith",
+    x: 4,
+    y: 1,
+    sprite: "smith",
+    name: "Smith Hilda",
+    wander: false,
+    lines: [
+      "The forge takes gold, not promises. Bring me a blade and coin and I will make both sharper.",
+      "Seven folds is the most any steel will take. After that it is the arm, not the iron.",
+    ],
+  },
+  {
+    id: "alchemist_vex",
+    mapId: "town_alchemist",
+    x: 4,
+    y: 1,
+    sprite: "alchemist",
+    name: "Alchemist Vex",
+    wander: false,
+    lines: [
+      "Herbs, reeds, shards - I pay full price for reagents. The wilds are a garden if you survive them.",
+      "The elixir recipe? One of each, child. Nature likes a balanced potion.",
+    ],
+  },
+  {
     id: "innkeeper",
     mapId: "town_inn",
     x: 4,

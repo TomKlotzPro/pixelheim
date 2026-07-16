@@ -22,7 +22,7 @@ import {
 } from "../game/combat";
 import { getItem } from "../game/items";
 import { getLevel, LEVELS } from "../game/levels";
-import { buyPrice, sellPrice, shopStock } from "../game/shop";
+import { buyPrice, FORGE_BONUS_CAP, forgeCost, sellPriceAt, SHOP_MAPS, SHOPS, shopStock } from "../game/shop";
 import type { EquipSlot, GameState, Hero, RoleId, SpendableStat } from "../game/types";
 import { rollWildEncounter, WILD_REWARD_MULT } from "../game/encounters";
 import { canCraft, RECIPES, REGION_MATERIALS } from "../game/recipes";
@@ -65,7 +65,13 @@ export type Action =
   | { type: "ADVANCE_DIALOGUE" }
   | { type: "SPEND_STAT_POINT"; stat: SpendableStat }
   | { type: "BUY_SKILL_NODE"; nodeId: string }
-  | { type: "CRAFT"; recipeId: string };
+  | { type: "CRAFT"; recipeId: string }
+  | { type: "UPGRADE_GEAR"; uid: string };
+
+/** The shop whose building the hero is standing in, if any. */
+export function activeShopId(state: GameState) {
+  return state.world ? (SHOP_MAPS[state.world.position.mapId] ?? null) : null;
+}
 
 export const initialState: GameState = {
   screen: "title",
@@ -457,12 +463,14 @@ export function gameReducer(state: GameState, action: Action): GameState {
     }
 
     case "SELL_GEAR": {
-      if (!state.shopOpen || Object.values(state.equipped).includes(action.uid)) return state;
+      const shopId = state.shopOpen ? activeShopId(state) : null;
+      if (!shopId || Object.values(state.equipped).includes(action.uid)) return state;
       const instance = gearByUid(state.gear, action.uid);
       if (!instance) return state;
+      const rate = SHOPS[shopId].buyRates[gearItem(instance).category] ?? 0.5;
       return {
         ...state,
-        gold: state.gold + Math.max(1, Math.floor(gearValue(instance) / 2)),
+        gold: state.gold + Math.max(1, Math.floor(gearValue(instance) * rate)),
         gear: state.gear.filter((g) => g.uid !== action.uid),
       };
     }
@@ -471,18 +479,19 @@ export function gameReducer(state: GameState, action: Action): GameState {
       return { ...state, inventoryOpen: !state.inventoryOpen };
 
     case "TOGGLE_SHOP": {
-      // The shop lives inside the merchant's building now.
-      if (state.screen !== "world" || state.world?.position.mapId !== "town_shop") return state;
+      // Shops live inside their keepers' buildings.
+      if (state.screen !== "world" || !activeShopId(state)) return state;
       return { ...state, shopOpen: !state.shopOpen };
     }
 
     case "BUY_ITEM": {
-      if (!state.shopOpen) return state;
+      const shopId = state.shopOpen ? activeShopId(state) : null;
+      if (!shopId) return state;
       const item = getItem(action.itemId);
-      if (!shopStock(state.unlockedLevel).some((stocked) => stocked.id === item.id)) return state;
+      if (!shopStock(shopId, state.unlockedLevel).some((stocked) => stocked.id === item.id)) return state;
       const price = buyPrice(item);
       if (state.gold < price) return state;
-      // The merchant sells honest common gear; the exciting rolls come from monsters.
+      // Shops sell honest common gear; the exciting rolls come from monsters.
       if (item.slot) {
         return { ...state, gold: state.gold - price, gear: [...state.gear, createGear(item.id)] };
       }
@@ -490,9 +499,24 @@ export function gameReducer(state: GameState, action: Action): GameState {
     }
 
     case "SELL_ITEM": {
-      if (!state.shopOpen || (state.inventory[action.itemId] ?? 0) <= 0) return state;
+      const shopId = state.shopOpen ? activeShopId(state) : null;
+      if (!shopId || (state.inventory[action.itemId] ?? 0) <= 0) return state;
       const item = getItem(action.itemId);
-      return { ...state, gold: state.gold + sellPrice(item), inventory: removeItem(state.inventory, item.id) };
+      return { ...state, gold: state.gold + sellPriceAt(shopId, item), inventory: removeItem(state.inventory, item.id) };
+    }
+
+    case "UPGRADE_GEAR": {
+      const shopId = state.shopOpen ? activeShopId(state) : null;
+      if (!shopId || !SHOPS[shopId].forge) return state;
+      const instance = gearByUid(state.gear, action.uid);
+      if (!instance || instance.bonus >= FORGE_BONUS_CAP) return state;
+      const cost = forgeCost(gearItem(instance), instance.bonus);
+      if (state.gold < cost) return state;
+      return {
+        ...state,
+        gold: state.gold - cost,
+        gear: state.gear.map((g) => (g.uid === action.uid ? { ...g, bonus: g.bonus + 1 } : g)),
+      };
     }
 
     case "NEXT_ENCOUNTER": {
@@ -670,8 +694,8 @@ export function gameReducer(state: GameState, action: Action): GameState {
             discovered: discoverAround(state.world.discovered, target, portal.to.x, portal.to.y),
           },
         };
-        // Entering the merchant's building opens the shop counter.
-        if (target.id === "town_shop" && state.hero) return { ...through, shopOpen: true };
+        // Entering a keeper's building opens their counter.
+        if (SHOP_MAPS[target.id] && state.hero) return { ...through, shopOpen: true };
         // Entering the inn rests the hero, for the usual price.
         if (target.id === "town_inn" && state.hero) {
           const hero = state.hero;
