@@ -38,13 +38,15 @@ export function Inventory({ state, dispatch }: InventoryProps) {
     .filter(({ item }) => tab === "all" || item.category === tab)
     // mid-fight you can only rummage for something drinkable or edible
     .filter(({ item }) => !inBattle || item.restoreHp || item.restoreMp || item.cures)
-    .sort((a, b) => a.item.category.localeCompare(b.item.category) || a.item.name.localeCompare(b.item.name));
+    .toSorted((a, b) => a.item.category.localeCompare(b.item.category) || a.item.name.localeCompare(b.item.name));
 
   const gearRows = inBattle
     ? []
     : state.gear
         .filter((g) => tab === "all" || gearItem(g).category === tab)
-        .sort((a, b) => gearItem(a).category.localeCompare(gearItem(b).category) || gearName(a).localeCompare(gearName(b)));
+        .toSorted(
+          (a, b) => gearItem(a).category.localeCompare(gearItem(b).category) || gearName(a).localeCompare(gearName(b)),
+        );
 
   const weight = carriedWeight(state.inventory, state.gear, state.equipped);
   const capacity = carryCapacity(hero);

@@ -1,5 +1,4 @@
-import type { WorldMap } from "./types";
-import type { WorldState } from "./types";
+import type { WorldMap, WorldState } from "./types";
 
 /** How far the hero sees around themselves, in tiles (Chebyshev distance). */
 const SIGHT_RADIUS = 2;

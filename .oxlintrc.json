@@ -1,8 +1,51 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
+  "plugins": ["react", "typescript", "import", "unicorn", "oxc", "promise"],
+  "env": {
+    "browser": true
+  },
+  "categories": {
+    "correctness": "error",
+    "suspicious": "error",
+    "perf": "error"
+  },
   "rules": {
+    "react/react-in-jsx-scope": "off",
+    "react/no-array-index-key": "off",
+    "import/no-unassigned-import": ["error", { "allow": ["**/*.css"] }],
     "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
+    "react/exhaustive-deps": "error",
+    "react/only-export-components": ["warn", { "allowConstantExport": true }],
+    "react/jsx-key": "error",
+    "typescript/consistent-type-imports": "error",
+    "typescript/no-explicit-any": "error",
+    "typescript/no-non-null-asserted-optional-chain": "error",
+    "import/no-cycle": "error",
+    "import/no-self-import": "error",
+    "import/no-duplicates": "error",
+    "eqeqeq": "error",
+    "prefer-const": "error",
+    "no-var": "error",
+    "no-console": "error",
+    "no-else-return": "warn",
+    "no-lonely-if": "warn",
+    "unicorn/no-useless-spread": "error",
+    "unicorn/prefer-array-some": "error",
+    "promise/no-nesting": "warn"
+  },
+  "overrides": [
+    {
+      "files": ["scripts/**", "e2e/**", "playwright.config.ts"],
+      "rules": {
+        "no-console": "off"
+      }
+    },
+    {
+      "files": ["e2e/**"],
+      "rules": {
+        "no-await-in-loop": "off"
+      }
+    }
+  ],
+  "ignorePatterns": ["dist", "test-results", "playwright-report", "node_modules"]
 }

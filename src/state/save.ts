@@ -93,7 +93,7 @@ function normalizeSave(state: unknown): GameState | null {
   if (save.hero && save.hero.skillNodes === undefined) {
     const hero = save.hero;
     const tree = SKILL_TREES[hero.roleId];
-    const roots = tree.filter((n) => n.tier === 0).sort((a, b) => a.branch - b.branch);
+    const roots = tree.filter((n) => n.tier === 0).toSorted((a, b) => a.branch - b.branch);
     const owned = [roots[0].id];
     if (hero.level >= 3 && roots[1]) owned.push(roots[1].id);
     if (hero.level >= 6 && roots[2]) owned.push(roots[2].id);
