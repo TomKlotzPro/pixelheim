@@ -14,9 +14,10 @@ type HubProps = {
   onRest: () => void;
   onOpenInventory: () => void;
   onOpenShop: () => void;
+  onEnterWorld: () => void;
 };
 
-export function Hub({ state, onEnterLevel, onRest, onOpenInventory, onOpenShop }: HubProps) {
+export function Hub({ state, onEnterLevel, onRest, onOpenInventory, onOpenShop, onEnterWorld }: HubProps) {
   const hero = state.hero!;
   const role = ROLES[hero.roleId];
   const weight = carriedWeight(state.inventory);
@@ -62,6 +63,9 @@ export function Hub({ state, onEnterLevel, onRest, onOpenInventory, onOpenShop }
           </button>
           <button className="btn" onClick={onOpenShop}>
             Merchant
+          </button>
+          <button className="btn" onClick={onEnterWorld}>
+            World (beta)
           </button>
           <button
             className="btn"

@@ -8,6 +8,8 @@ export type TileId =
   | "path"
   | "sand"
   | "bridge"
+  | "marsh"
+  | "ash"
   | "wall"
   | "floor"
   | "roof"
@@ -37,6 +39,8 @@ export type WorldMap = {
   tiles: TileId[][];
   spawn: { x: number; y: number };
   portals: Portal[];
+  /** Per-tile encounter region id (regions[y][x]), null where nothing lurks. */
+  regions: (string | null)[][] | null;
 };
 
 /** The hero's position in the world. */
