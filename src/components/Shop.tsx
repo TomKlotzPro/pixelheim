@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { getItem } from "../game/items";
 import { itemStatLine } from "../game/itemStats";
+import { gearItem, gearName, gearValue } from "../game/rarity";
 import { buyPrice, sellPrice, shopStock } from "../game/shop";
 import type { GameState } from "../game/types";
 import type { Action } from "../state/gameReducer";
@@ -15,6 +16,8 @@ export function Shop({ state, dispatch }: ShopProps) {
   const [tab, setTab] = useState<"buy" | "sell">("buy");
   const stock = shopStock(state.unlockedLevel);
   const owned = Object.entries(state.inventory).map(([id, count]) => ({ item: getItem(id), count }));
+  const equippedUids = new Set(Object.values(state.equipped));
+  const sellableGear = state.gear.filter((g) => !equippedUids.has(g.uid));
 
   return (
     <div className="overlay" onClick={() => dispatch({ type: "TOGGLE_SHOP" })}>
@@ -65,7 +68,25 @@ export function Shop({ state, dispatch }: ShopProps) {
                 </div>
               </div>
             ))}
-          {tab === "sell" && owned.length === 0 && <p className="empty-note">Nothing to sell. Go loot something.</p>}
+          {tab === "sell" && owned.length === 0 && sellableGear.length === 0 && (
+            <p className="empty-note">Nothing to sell. Go loot something.</p>
+          )}
+          {tab === "sell" &&
+            sellableGear.map((instance) => (
+              <div key={instance.uid} className="item-row">
+                <Sprite name={gearItem(instance).sprite} size={32} alt={gearName(instance)} />
+                <div className="item-info">
+                  <span className={`item-name rarity-${instance.rarity}`}>{gearName(instance)}</span>
+                  <span className="item-stats">{itemStatLine(gearItem(instance), { bonus: instance.bonus })}</span>
+                  <span className="item-desc">{gearItem(instance).description}</span>
+                </div>
+                <div className="item-actions">
+                  <button className="btn btn-small" onClick={() => dispatch({ type: "SELL_GEAR", uid: instance.uid })}>
+                    Sell {Math.max(1, Math.floor(gearValue(instance) / 2))}g
+                  </button>
+                </div>
+              </div>
+            ))}
           {tab === "sell" &&
             owned.map(({ item, count }) => (
               <div key={item.id} className="item-row">

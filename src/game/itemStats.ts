@@ -1,13 +1,22 @@
 import type { Item } from "./types";
 
+type StatLineOpts = {
+  /** Rarity bonus already applied on top of the base stat. */
+  bonus?: number;
+  /** Show a gold value at the end of the line. */
+  value?: number;
+};
+
 /** Compact one-line summary of an item's numbers, shown in inventory and shop rows. */
-export function itemStatLine(item: Item, { withValue = false } = {}): string {
+export function itemStatLine(item: Item, { bonus = 0, value }: StatLineOpts = {}): string {
   const parts: string[] = [];
-  if (item.damage) parts.push(`DMG ${item.damage} (${item.scaling?.slice(0, 3).toUpperCase()})`);
-  if (item.armor) parts.push(`ARMOR ${item.armor}`);
+  const plus = bonus > 0 ? `+${bonus}` : "";
+  if (item.damage) parts.push(`DMG ${item.damage + bonus}${plus && ` (${item.damage}${plus})`} ${item.scaling?.slice(0, 3).toUpperCase()}`);
+  if (item.armor) parts.push(`ARMOR ${item.armor + bonus}${plus && ` (${item.armor}${plus})`}`);
   if (item.restoreHp) parts.push(`+${item.restoreHp} HP`);
   if (item.restoreMp) parts.push(`+${item.restoreMp} MP`);
+  if (item.cures) parts.push(`cures ${item.cures}`);
   parts.push(`${item.weight} wt`);
-  if (withValue) parts.push(`${item.value}g`);
+  if (value !== undefined) parts.push(`${value}g`);
   return parts.join("  ");
 }

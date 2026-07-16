@@ -1,6 +1,7 @@
 import { getItem } from "./items";
+import { gearArmor, gearItem } from "./rarity";
 import { ROLES } from "./roles";
-import type { Equipped, Hero, RoleId, Stats } from "./types";
+import type { Equipped, GearInstance, Hero, RoleId, Stats } from "./types";
 
 export function xpToNext(level: number): number {
   return 20 + level * 18;
@@ -39,21 +40,33 @@ export function applyLevelUps(hero: Hero): number {
   return gained;
 }
 
-export function weaponOf(equipped: Equipped) {
-  return equipped.weapon ? getItem(equipped.weapon) : null;
+export function gearByUid(gear: GearInstance[], uid: string | undefined): GearInstance | null {
+  if (!uid) return null;
+  return gear.find((g) => g.uid === uid) ?? null;
 }
 
-export function totalArmor(equipped: Equipped): number {
-  return (["body", "offhand"] as const).reduce(
-    (sum, slot) => sum + (equipped[slot] ? (getItem(equipped[slot]!).armor ?? 0) : 0),
-    0,
-  );
+export function weaponOf(gear: GearInstance[], equipped: Equipped): GearInstance | null {
+  return gearByUid(gear, equipped.weapon);
+}
+
+export function totalArmor(gear: GearInstance[], equipped: Equipped): number {
+  return (["body", "offhand"] as const).reduce((sum, slot) => {
+    const instance = gearByUid(gear, equipped[slot]);
+    return sum + (instance ? gearArmor(instance) : 0);
+  }, 0);
 }
 
 export function carryCapacity(hero: Hero): number {
   return 60 + hero.stats.strength * 3;
 }
 
-export function carriedWeight(inventory: Record<string, number>): number {
-  return Object.entries(inventory).reduce((sum, [id, count]) => sum + getItem(id).weight * count, 0);
+/** Stackables plus unequipped gear; what you wear does not weigh you down. */
+export function carriedWeight(inventory: Record<string, number>, gear: GearInstance[], equipped: Equipped): number {
+  const equippedUids = new Set(Object.values(equipped));
+  const stacks = Object.entries(inventory).reduce((sum, [id, count]) => sum + getItem(id).weight * count, 0);
+  const carriedGear = gear.reduce(
+    (sum, instance) => sum + (equippedUids.has(instance.uid) ? 0 : gearItem(instance).weight),
+    0,
+  );
+  return stacks + carriedGear;
 }

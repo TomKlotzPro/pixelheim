@@ -11,6 +11,18 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.6.0",
+    date: "2026-07-16",
+    codename: "Fortune and Steel",
+    notes: [
+      "Monsters drop loot: gear now rolls Fine and Epic rarities with bonus stats",
+      "A dozen new items: bows, war hammers, wands, cloaks, tower shields...",
+      "Antidote and Ember Salve cure poison and burn mid-fight",
+      "Elites and bosses drop better; the dragon and the lich always drop",
+      "Trophies like wolf pelts and imp horns to sell at the shop",
+    ],
+  },
+  {
     version: "0.5.0",
     date: "2026-07-16",
     codename: "The Ashenreach",
