@@ -47,7 +47,7 @@ export function Battle({ state, dispatch }: BattleProps) {
   });
 
   return (
-    <div className="screen battle-screen">
+    <div className={`screen battle-screen ${battle.wild ? "battle-wild" : ""}`}>
       <div className="battle-header">
         {battle.wild ? (
           <>
@@ -68,6 +68,7 @@ export function Battle({ state, dispatch }: BattleProps) {
 
       <div className="battle-arena">
         <div className="combatant">
+          {battle.wild && <span className="ambush-mark" aria-hidden="true">!</span>}
           <Sprite name={role.sprite} size={96} alt={hero.name} className={battle.phase === "lost" ? "fallen" : ""} />
           <div className="combatant-name">{hero.name}</div>
           <StatBar label="HP" value={hero.hp} max={hero.stats.maxHp} color="var(--hp)" />
@@ -75,7 +76,7 @@ export function Battle({ state, dispatch }: BattleProps) {
           <EffectBadges effects={battle.heroEffects} />
         </div>
         <div className="vs">VS</div>
-        <div className="combatant">
+        <div className={`combatant ${battle.wild ? "combatant-lunge" : ""}`}>
           <Sprite
             name={battle.monster.def.sprite}
             size={96}

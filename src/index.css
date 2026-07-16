@@ -387,6 +387,52 @@ body {
   0% { filter: brightness(3) contrast(0.6); transform: scale(1.02); }
   100% { filter: none; transform: none; }
 }
+/* wild ambushes hit harder: shake the whole scene on entry */
+.battle-wild {
+  animation:
+    battle-in 0.35s steps(4),
+    ambush-shake 0.5s steps(2);
+}
+@keyframes ambush-shake {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-6px, 2px); }
+  40% { transform: translate(5px, -3px); }
+  60% { transform: translate(-4px, 2px); }
+  80% { transform: translate(3px, -1px); }
+  100% { transform: translate(0, 0); }
+}
+/* the monster lunges in from off-screen */
+.combatant-lunge {
+  animation: monster-lunge 0.45s steps(5);
+}
+@keyframes monster-lunge {
+  0% { transform: translateX(140px); opacity: 0; }
+  60% { transform: translateX(-12px); opacity: 1; }
+  100% { transform: translateX(0); }
+}
+/* the classic "!" over the ambushed hero, then it fades */
+.combatant {
+  position: relative;
+}
+.ambush-mark {
+  position: absolute;
+  top: -34px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 34px;
+  font-weight: 700;
+  color: var(--danger);
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  animation: ambush-mark 1.2s steps(3);
+  pointer-events: none;
+}
+@keyframes ambush-mark {
+  0% { opacity: 0; transform: translateX(-50%) translateY(8px) scale(0.6); }
+  15% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1.15); }
+  75% { opacity: 1; transform: translateX(-50%) scale(1); }
+  100% { opacity: 0; transform: translateX(-50%) scale(1); }
+}
 .battle-header {
   display: flex;
   justify-content: space-between;
