@@ -1,6 +1,7 @@
-import { totalArmor, weaponOf } from "./character";
+import { totalDefense, weaponOf } from "./character";
 import { getMonster } from "./monsters";
 import { gearDamage, gearItem } from "./rarity";
+import { getPassives } from "./skillTree";
 import type { BattleMonster, EncounterDef, Equipped, GearInstance, Hero, Infliction, Skill, StatusEffect } from "./types";
 
 export function spawnMonster(def: EncounterDef): BattleMonster {
@@ -27,7 +28,10 @@ function variance(base: number): number {
 export function heroAttackDamage(hero: Hero, gear: GearInstance[], equipped: Equipped, monster: BattleMonster): number {
   const weapon = weaponOf(gear, equipped);
   const stat = hero.stats[weapon ? (gearItem(weapon).scaling ?? "strength") : "strength"];
-  const raw = stat + (weapon ? gearDamage(weapon) : 2);
+  let raw = stat + (weapon ? gearDamage(weapon) : 2);
+  const passives = getPassives(hero);
+  if (passives.critChance > 0 && Math.random() < passives.critChance) raw *= 1.5;
+  if (passives.lowHpBonus > 0 && monster.hp / monster.maxHp < 0.3) raw *= 1 + passives.lowHpBonus;
   return Math.max(1, variance(raw) - monster.defense);
 }
 
@@ -40,12 +44,11 @@ export function heroSkillDamage(hero: Hero, skill: Skill, monster: BattleMonster
 }
 
 export function monsterAttackDamage(monster: BattleMonster, hero: Hero, gear: GearInstance[], equipped: Equipped): number {
-  const mitigation = hero.stats.defense + totalArmor(gear, equipped);
-  return Math.max(1, variance(monster.attack) - mitigation);
+  return Math.max(1, variance(monster.attack) - totalDefense(hero, gear, equipped));
 }
 
 export function fleeChance(hero: Hero): number {
-  return Math.min(0.9, 0.4 + hero.stats.dexterity * 0.02);
+  return Math.min(0.95, 0.4 + hero.stats.dexterity * 0.02 + getPassives(hero).fleeBonus);
 }
 
 // ---------------- status effects ----------------
