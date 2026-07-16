@@ -2,9 +2,9 @@ import { useState } from "react";
 import { getItem } from "../game/items";
 import { itemStatLine } from "../game/itemStats";
 import { gearItem, gearName, gearValue } from "../game/rarity";
-import { buyPrice, sellPrice, shopStock } from "../game/shop";
+import { buyPrice, FORGE_BONUS_CAP, forgeCost, sellPriceAt, SHOPS, shopStock } from "../game/shop";
 import type { GameState } from "../game/types";
-import type { Action } from "../state/gameReducer";
+import { activeShopId, type Action } from "../state/gameReducer";
 import { Sprite } from "./Sprite";
 
 type ShopProps = {
@@ -13,18 +13,20 @@ type ShopProps = {
 };
 
 export function Shop({ state, dispatch }: ShopProps) {
-  const [tab, setTab] = useState<"buy" | "sell">("buy");
-  const stock = shopStock(state.unlockedLevel);
+  const shopId = activeShopId(state)!;
+  const def = SHOPS[shopId];
+  const [tab, setTab] = useState<"buy" | "sell" | "forge">("buy");
+  const stock = shopStock(shopId, state.unlockedLevel);
   const owned = Object.entries(state.inventory).map(([id, count]) => ({ item: getItem(id), count }));
   const equippedUids = new Set(Object.values(state.equipped));
-  const sellableGear = state.gear.filter((g) => !equippedUids.has(g.uid));
+  const sellableGear = def.buyRates.weapons ? state.gear.filter((g) => !equippedUids.has(g.uid)) : [];
 
   return (
     <div className="overlay" onClick={() => dispatch({ type: "TOGGLE_SHOP" })}>
       <div className="panel inventory-panel" onClick={(e) => e.stopPropagation()}>
         <div className="inventory-header">
-          <Sprite name="merchant" size={40} alt="Merchant" />
-          <h2>Merchant</h2>
+          <Sprite name={def.sprite} size={40} alt={def.keeper} />
+          <h2>{def.keeper}</h2>
           <span className="gold-line">
             <Sprite name="gold" size={16} /> {state.gold}
           </span>
@@ -32,11 +34,7 @@ export function Shop({ state, dispatch }: ShopProps) {
             Close
           </button>
         </div>
-        <p className="merchant-line">
-          {tab === "buy"
-            ? "Finest goods this side of the mountain. New stock as you climb higher."
-            : "I pay half of what it is worth. That is the deal, take it or leave it."}
-        </p>
+        <p className="merchant-line">{def.greeting}</p>
 
         <div className="tabs">
           <button className={`tab ${tab === "buy" ? "active" : ""}`} onClick={() => setTab("buy")}>
@@ -45,6 +43,11 @@ export function Shop({ state, dispatch }: ShopProps) {
           <button className={`tab ${tab === "sell" ? "active" : ""}`} onClick={() => setTab("sell")}>
             Sell
           </button>
+          {def.forge && (
+            <button className={`tab ${tab === "forge" ? "active" : ""}`} onClick={() => setTab("forge")}>
+              Forge
+            </button>
+          )}
         </div>
 
         <div className="item-list">
@@ -78,11 +81,15 @@ export function Shop({ state, dispatch }: ShopProps) {
                 <div className="item-info">
                   <span className={`item-name rarity-${instance.rarity}`}>{gearName(instance)}</span>
                   <span className="item-stats">{itemStatLine(gearItem(instance), { bonus: instance.bonus })}</span>
-                  <span className="item-desc">{gearItem(instance).description}</span>
                 </div>
                 <div className="item-actions">
                   <button className="btn btn-small" onClick={() => dispatch({ type: "SELL_GEAR", uid: instance.uid })}>
-                    Sell {Math.max(1, Math.floor(gearValue(instance) / 2))}g
+                    Sell{" "}
+                    {Math.max(
+                      1,
+                      Math.floor(gearValue(instance) * (SHOPS[shopId].buyRates[gearItem(instance).category] ?? 0.5)),
+                    )}
+                    g
                   </button>
                 </div>
               </div>
@@ -96,16 +103,43 @@ export function Shop({ state, dispatch }: ShopProps) {
                     {item.name}
                     {count > 1 && <span className="item-count"> x{count}</span>}
                   </span>
-                  <span className="item-stats">{itemStatLine(item)}</span>
-                  <span className="item-desc">{item.description}</span>
+                  <span className="item-stats">{itemStatLine(item, { value: item.value })}</span>
                 </div>
                 <div className="item-actions">
                   <button className="btn btn-small" onClick={() => dispatch({ type: "SELL_ITEM", itemId: item.id })}>
-                    Sell {sellPrice(item)}g
+                    Sell {sellPriceAt(shopId, item)}g
                   </button>
                 </div>
               </div>
             ))}
+          {tab === "forge" && state.gear.length === 0 && <p className="empty-note">Bring me steel to work with.</p>}
+          {tab === "forge" &&
+            state.gear.map((instance) => {
+              const item = gearItem(instance);
+              const capped = instance.bonus >= FORGE_BONUS_CAP;
+              const cost = forgeCost(item, instance.bonus);
+              return (
+                <div key={instance.uid} className="item-row">
+                  <Sprite name={item.sprite} size={32} alt={gearName(instance)} />
+                  <div className="item-info">
+                    <span className={`item-name rarity-${instance.rarity}`}>
+                      {gearName(instance)}
+                      {equippedUids.has(instance.uid) && <span className="equipped-tag"> EQUIPPED</span>}
+                    </span>
+                    <span className="item-stats">{itemStatLine(item, { bonus: instance.bonus })}</span>
+                  </div>
+                  <div className="item-actions">
+                    <button
+                      className="btn btn-small"
+                      disabled={capped || state.gold < cost}
+                      onClick={() => dispatch({ type: "UPGRADE_GEAR", uid: instance.uid })}
+                    >
+                      {capped ? "Perfected" : `+1 for ${cost}g`}
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
         </div>
       </div>
     </div>
