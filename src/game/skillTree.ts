@@ -174,10 +174,10 @@ export function getHeroSkills(hero: Hero): Skill[] {
   return nodes
     .filter((n) => n.kind === "active" && owned.has(n.id))
     .map((node) => {
-      let skill = { ...node.skill! };
+      const skill = Object.assign({}, node.skill);
       for (const up of nodes) {
         if (up.kind === "upgrade" && owned.has(up.id) && up.requires === node.id) {
-          skill = { ...skill, ...up.patch };
+          Object.assign(skill, up.patch);
         }
       }
       return skill;
