@@ -11,6 +11,16 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "1.4.0",
+    date: "2026-07-16",
+    codename: "Danger, Visibly",
+    notes: [
+      "Dangerous ground is visible: wild terrain grows dark tufts on the map",
+      "Roads and town stay clean-looking because they ARE safe",
+      "Ambushes feel like ambushes: the monster lunges in, the screen shakes, !",
+    ],
+  },
+  {
     version: "1.3.0",
     date: "2026-07-16",
     codename: "A Fair Fight",

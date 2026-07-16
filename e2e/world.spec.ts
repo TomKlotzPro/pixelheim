@@ -54,6 +54,22 @@ test('new heroes wake in the village and the gate leads to the overworld', async
   await expect(page.getByTestId('world-viewport')).toBeVisible()
 })
 
+test('wild terrain is visually telegraphed; safe ground is not', async ({ page }) => {
+  await page.goto('./')
+  await page.getByRole('button', { name: 'New Game' }).click()
+  await page.getByPlaceholder('Dragonsbane...').fill('Scout')
+  await page.getByRole('button', { name: 'Begin the climb' }).click()
+  await page.getByRole('button', { name: 'Set out' }).click()
+
+  // the village has no encounter regions: nothing is marked dangerous
+  await expect(page.locator('.world-tile[data-danger]')).toHaveCount(0)
+
+  // out on the overworld, the wilds carry the danger overlay
+  await pressTimes(page, 'ArrowDown', 2)
+  await expect(page.getByTestId('world-viewport')).toHaveAttribute('data-map', 'overworld')
+  expect(await page.locator('.world-tile[data-danger]').count()).toBeGreaterThan(50)
+})
+
 test('doors travel between maps and Escape leaves the world', async ({ page }) => {
   await page.goto('./?world')
   await expect(hero(page)).toHaveAttribute('data-pos', '8,8')
