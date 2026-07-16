@@ -11,6 +11,17 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "1.3.0",
+    date: "2026-07-16",
+    codename: "A Fair Fight",
+    notes: [
+      "Balance pass, informed by simulating hundreds of playthroughs",
+      "Fafnyr and Morvax hit harder and last longer - bosses are events again",
+      "The Hall of Echoes death spike is softened: shades calmed down a little",
+      "Every role verified to be able to finish the game",
+    ],
+  },
+  {
     version: "1.2.0",
     date: "2026-07-16",
     codename: "Branches of Power",
