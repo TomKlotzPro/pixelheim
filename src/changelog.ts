@@ -11,6 +11,17 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.7.0",
+    date: "2026-07-16",
+    codename: "A Little Night Music",
+    notes: [
+      "The game has sound: hits, heals, coins, level-ups, loot drops",
+      "Three chiptune tracks: the title theme, the overworld, and battle",
+      "Everything is synthesized live in your browser, no audio files",
+      "Mute button top right; your choice is remembered",
+    ],
+  },
+  {
     version: "0.6.0",
     date: "2026-07-16",
     codename: "Fortune and Steel",
