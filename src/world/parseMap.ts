@@ -1,7 +1,7 @@
 import { TILES } from "./tiles";
 import type { Portal, TileId, WorldMap } from "./types";
 
-/** Characters shared by every map. `S` marks the spawn (on grass). */
+/** Characters shared by every map. `S` marks the spawn (on grass, `$` on floor). */
 const CHAR_TILES: Record<string, TileId> = {
   ".": "grass",
   S: "grass",
@@ -9,9 +9,20 @@ const CHAR_TILES: Record<string, TileId> = {
   "^": "mountain",
   "~": "water",
   "=": "path",
+  s: "sand",
+  b: "bridge",
   "#": "wall",
+  _: "floor",
+  $: "floor",
+  r: "roof",
   D: "door",
+  C: "cave",
+  W: "shrine",
 };
+
+const SPAWN_CHARS = ["S", "$"];
+/** Tiles that transport the hero; each occurrence must have a portal defined. */
+const PORTAL_CHARS = ["D", "C"];
 
 /**
  * Parses an ASCII grid into a WorldMap and validates it. Door characters must
@@ -37,24 +48,24 @@ export function parseMap(id: string, ascii: string, portals: Portal[]): WorldMap
     return [...row].map((char, x) => {
       const tile = CHAR_TILES[char];
       if (!tile) throw new Error(`Map "${id}" has unknown tile "${char}" at ${x},${y}`);
-      if (char === "S") {
+      if (SPAWN_CHARS.includes(char)) {
         if (spawn) throw new Error(`Map "${id}" has more than one spawn`);
         spawn = { x, y };
       }
-      if (char === "D") doors.push({ x, y });
+      if (PORTAL_CHARS.includes(char)) doors.push({ x, y });
       return tile;
     });
   });
 
-  if (!spawn) throw new Error(`Map "${id}" has no spawn (S)`);
+  if (!spawn) throw new Error(`Map "${id}" has no spawn (S or $)`);
   for (const door of doors) {
     if (!portals.some((p) => p.x === door.x && p.y === door.y)) {
-      throw new Error(`Map "${id}" door at ${door.x},${door.y} has no portal`);
+      throw new Error(`Map "${id}" door/cave at ${door.x},${door.y} has no portal`);
     }
   }
   for (const portal of portals) {
     if (!doors.some((d) => d.x === portal.x && d.y === portal.y)) {
-      throw new Error(`Map "${id}" portal at ${portal.x},${portal.y} is not on a door tile`);
+      throw new Error(`Map "${id}" portal at ${portal.x},${portal.y} is not on a door or cave tile`);
     }
   }
 

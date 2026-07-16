@@ -3,7 +3,8 @@ import type { WorldMap } from "../types";
 
 /**
  * Dev-only proving ground for the tile engine (reach it with ?world).
- * A lake, some woods, a path loop, and a hut whose door exits the demo.
+ * A lake with a sandy shore, woods, a path loop, a shrine, and a hut
+ * you can actually walk into.
  */
 export const DEMO_MAP: WorldMap = parseMap(
   "demo",
@@ -13,25 +14,27 @@ export const DEMO_MAP: WorldMap = parseMap(
   ^.~~~....ffff........^
   ^.~~~....ffff...###..^
   ^.~~~...........#D#..^
-  ^................=...^
+  ^.sss............=...^
   ^....==========..=...^
   ^....=........=..=...^
   ^....=..S.....====...^
   ^....=........=......^
   ^....==========......^
-  ^..ff............ff..^
+  ^..ff....W.......ff..^
   ^..ff............ff..^
   ^^^^^^^^^^^^^^^^^^^^^^
   `,
-  [{ x: 17, y: 4, to: { kind: "exit" } }],
+  [{ x: 17, y: 4, to: { kind: "map", mapId: "demo_hut", x: 3, y: 3 } }],
 );
 
-export const MAPS: Record<string, WorldMap> = {
-  demo: DEMO_MAP,
-};
-
-export function getMap(id: string): WorldMap {
-  const map = MAPS[id];
-  if (!map) throw new Error(`Unknown map: ${id}`);
-  return map;
-}
+export const DEMO_HUT_MAP: WorldMap = parseMap(
+  "demo_hut",
+  `
+  ########
+  #______#
+  #______#
+  #__$___#
+  ###D####
+  `,
+  [{ x: 3, y: 4, to: { kind: "map", mapId: "demo", x: 17, y: 5 } }],
+);

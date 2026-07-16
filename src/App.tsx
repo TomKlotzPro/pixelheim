@@ -41,6 +41,10 @@ export default function App() {
   useEffect(() => {
     if (state.screen !== "world") return;
     const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        dispatch({ type: "EXIT_WORLD" });
+        return;
+      }
       const direction = KEY_DIRECTIONS[event.key];
       if (!direction) return;
       event.preventDefault();

@@ -1,6 +1,19 @@
 export type Direction = "up" | "down" | "left" | "right";
 
-export type TileId = "grass" | "forest" | "mountain" | "water" | "path" | "wall" | "door";
+export type TileId =
+  | "grass"
+  | "forest"
+  | "mountain"
+  | "water"
+  | "path"
+  | "sand"
+  | "bridge"
+  | "wall"
+  | "floor"
+  | "roof"
+  | "door"
+  | "cave"
+  | "shrine";
 
 export type TileDef = {
   id: TileId;
