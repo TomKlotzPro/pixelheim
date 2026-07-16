@@ -11,6 +11,17 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.8.0",
+    date: "2026-07-16",
+    codename: "Polish and Knobs",
+    notes: [
+      "The title screen lives: stars, embers, bobbing monsters, a breathing dragon",
+      "Options menu: music and effects volume, CRT scanlines, reduced motion",
+      "Save codes and delete-save moved into Options",
+      "The world is much bigger on screen and scales to your window",
+    ],
+  },
+  {
     version: "0.7.0",
     date: "2026-07-16",
     codename: "A Little Night Music",
