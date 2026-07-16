@@ -373,6 +373,11 @@ body {
   flex-direction: column;
   gap: 16px;
   max-width: 720px;
+  animation: battle-in 0.35s steps(4);
+}
+@keyframes battle-in {
+  0% { filter: brightness(3) contrast(0.6); transform: scale(1.02); }
+  100% { filter: none; transform: none; }
 }
 .battle-header {
   display: flex;
