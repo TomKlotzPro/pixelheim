@@ -7,7 +7,7 @@ import { TitleScreen } from "./components/TitleScreen";
 import { Victory } from "./components/Victory";
 import type { GameState } from "./game/types";
 import { gameReducer, initialState } from "./state/gameReducer";
-import { clearSave, loadSave, persistSave } from "./state/save";
+import { clearSave, decodeSaveCode, encodeSaveCode, loadSave, persistSave } from "./state/save";
 
 export default function App() {
   const [state, dispatch] = useReducer(gameReducer, initialState);
@@ -39,11 +39,19 @@ function Screen({
       return (
         <TitleScreen
           canContinue={save !== null}
+          saveCode={save ? encodeSaveCode(save) : null}
           onNewGame={() => {
             clearSave();
             dispatch({ type: "NEW_GAME" });
           }}
           onContinue={() => save && dispatch({ type: "LOAD", state: save })}
+          onImportSave={(code) => {
+            const imported = decodeSaveCode(code);
+            if (!imported) return false;
+            persistSave(imported);
+            dispatch({ type: "LOAD", state: imported });
+            return true;
+          }}
         />
       );
     case "create":
