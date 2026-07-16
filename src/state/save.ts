@@ -1,5 +1,7 @@
+import { ITEMS } from "../game/items";
 import { LEVELS } from "../game/levels";
-import type { GameState } from "../game/types";
+import { createGear } from "../game/rarity";
+import type { GameState, GearInstance } from "../game/types";
 import { initialState } from "./gameReducer";
 
 const SAVE_KEY = "pixelheim-save-v1";
@@ -12,7 +14,7 @@ const CODE_PREFIX = "PXH1.";
  * normalizeSave rebases every save onto initialState, so new fields pick up
  * their defaults automatically.
  */
-const SAVE_VERSION = 3;
+const SAVE_VERSION = 4;
 
 type Envelope = { version: number; state: unknown };
 
@@ -32,6 +34,27 @@ const MIGRATIONS: Record<number, (state: Record<string, unknown>) => Record<stri
     const world = state.world as { mapId?: string } | null | undefined;
     if (!world || !world.mapId) return { ...state, world: null };
     return { ...state, world: { position: world, discovered: {}, openedChests: [] } };
+  },
+  // v3 -> v4: gear became instance-based for rarity rolls. Weapon/apparel
+  // counts in the old inventory turn into common instances, and equipped
+  // slots switch from item ids to instance uids.
+  3: (state) => {
+    const inventory = { ...(state.inventory as Record<string, number>) };
+    const equipped = { ...(state.equipped as Record<string, string>) };
+    const gear: GearInstance[] = [];
+    for (const [itemId, count] of Object.entries(inventory)) {
+      const item = ITEMS[itemId];
+      if (!item?.slot) continue;
+      for (let i = 0; i < count; i++) gear.push(createGear(itemId));
+      delete inventory[itemId];
+    }
+    for (const [slot, itemId] of Object.entries(equipped)) {
+      if (!itemId) continue;
+      const instance = createGear(itemId);
+      gear.push(instance);
+      equipped[slot] = instance.uid;
+    }
+    return { ...state, inventory, equipped, gear };
   },
 };
 

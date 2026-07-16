@@ -1,4 +1,6 @@
-import { applyLevelUps, carriedWeight, carryCapacity, createHero } from "../game/character";
+import { applyLevelUps, carriedWeight, carryCapacity, createHero, gearByUid } from "../game/character";
+import { rollDrop } from "../game/drops";
+import { createGear, gearItem, gearName, gearValue } from "../game/rarity";
 import {
   consumeStun,
   fleeChance,
@@ -32,9 +34,11 @@ export type Action =
   | { type: "SKILL"; skillIndex: number }
   | { type: "FLEE" }
   | { type: "USE_ITEM"; itemId: string }
-  | { type: "EQUIP"; itemId: string }
+  | { type: "EQUIP"; uid: string }
   | { type: "UNEQUIP"; slot: EquipSlot }
   | { type: "DROP"; itemId: string }
+  | { type: "DROP_GEAR"; uid: string }
+  | { type: "SELL_GEAR"; uid: string }
   | { type: "TOGGLE_INVENTORY" }
   | { type: "TOGGLE_SHOP" }
   | { type: "BUY_ITEM"; itemId: string }
@@ -52,6 +56,7 @@ export const initialState: GameState = {
   hero: null,
   gold: 0,
   inventory: {},
+  gear: [],
   equipped: {},
   unlockedLevel: 1,
   clearedLevels: [],
@@ -106,7 +111,7 @@ function monsterTurn(state: GameState, hero: Hero, log: string[]): void {
     battle.monsterEffects = consumeStun(battle.monsterEffects);
     log.push(`${battle.monster.name} is stunned and cannot act!`);
   } else {
-    const dmg = monsterAttackDamage(battle.monster, hero, state.equipped);
+    const dmg = monsterAttackDamage(battle.monster, hero, state.gear, state.equipped);
     hero.hp = Math.max(0, hero.hp - dmg);
     log.push(`${battle.monster.name} hits you for ${dmg} damage.`);
     const inflicted = rollInfliction(battle.heroEffects, battle.monster.def.inflicts);
@@ -147,6 +152,8 @@ function heroStunGate(state: GameState, hero: Hero, log: string[]): boolean {
   return true;
 }
 
+const BOSS_IDS = ["dragon", "lich"];
+
 function onMonsterDefeated(state: GameState, hero: Hero, log: string[]): void {
   const battle = state.battle!;
   const { xp, gold, name } = battle.monster;
@@ -155,6 +162,16 @@ function onMonsterDefeated(state: GameState, hero: Hero, log: string[]): void {
   state.gold += gold;
   const gained = applyLevelUps(hero);
   if (gained > 0) log.push(`LEVEL UP! You are now level ${hero.level}. Fully restored.`);
+
+  const kind = BOSS_IDS.includes(battle.monster.def.id) ? "boss" : battle.monster.elite ? "elite" : "normal";
+  const drop = rollDrop(battle.dungeonLevel, kind);
+  if (drop?.kind === "gear") {
+    state.gear.push(drop.gear);
+    log.push(`${name} drops: ${gearName(drop.gear)}!`);
+  } else if (drop?.kind === "stack") {
+    state.inventory = addItem(state.inventory, drop.itemId);
+    log.push(`${name} drops: ${getItem(drop.itemId).name}.`);
+  }
 
   // Ailments do not linger between fights.
   battle.heroEffects = [];
@@ -186,7 +203,9 @@ export function gameReducer(state: GameState, action: Action): GameState {
         cleric: "rusty_sword",
       };
       // Rogue/mage starters are strong; they begin with the humble rusty sword too.
-      const weapon = action.roleId === "warrior" || action.roleId === "cleric" ? starterWeapon[action.roleId] : "rusty_sword";
+      const weaponId =
+        action.roleId === "warrior" || action.roleId === "cleric" ? starterWeapon[action.roleId] : "rusty_sword";
+      const weapon = createGear(weaponId);
       let inventory: Record<string, number> = {};
       inventory = addItem(inventory, "potion_hp", 2);
       inventory = addItem(inventory, "bread", 2);
@@ -197,13 +216,14 @@ export function gameReducer(state: GameState, action: Action): GameState {
         hero,
         gold: 30,
         inventory,
-        equipped: { weapon },
+        gear: [weapon],
+        equipped: { weapon: weapon.uid },
       };
     }
 
     case "ENTER_LEVEL": {
       if (!state.hero || action.level > state.unlockedLevel) return state;
-      if (carriedWeight(state.inventory) > carryCapacity(state.hero)) return state;
+      if (carriedWeight(state.inventory, state.gear, state.equipped) > carryCapacity(state.hero)) return state;
       const dungeon = getLevel(action.level);
       const monster = spawnMonster(dungeon.encounters[0]);
       return {
@@ -229,7 +249,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
       const hero = next.hero!;
       const battle = next.battle!;
       if (heroStunGate(next, hero, battle.log)) return next;
-      const dmg = heroAttackDamage(hero, next.equipped, battle.monster);
+      const dmg = heroAttackDamage(hero, next.gear, next.equipped, battle.monster);
       battle.monster.hp = Math.max(0, battle.monster.hp - dmg);
       battle.log.push(`You strike ${battle.monster.name} for ${dmg} damage.`);
       if (battle.monster.hp <= 0) onMonsterDefeated(next, hero, battle.log);
@@ -296,7 +316,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
       if (!state.hero) return state;
       const item = getItem(action.itemId);
       if ((state.inventory[action.itemId] ?? 0) <= 0) return state;
-      if (!item.restoreHp && !item.restoreMp) return state;
+      if (!item.restoreHp && !item.restoreMp && !item.cures) return state;
       const inBattle = state.screen === "battle" && state.battle?.phase === "player";
       if (state.screen === "battle" && !inBattle) return state;
       const next = structuredClone(state);
@@ -320,7 +340,11 @@ export function gameReducer(state: GameState, action: Action): GameState {
       }
       if (inBattle) {
         const battle = next.battle!;
-        battle.log.push(`You use ${item.name}. Restored ${parts.join(", ")}.`);
+        if (item.cures && battle.heroEffects.some((e) => e.kind === item.cures)) {
+          battle.heroEffects = battle.heroEffects.filter((e) => e.kind !== item.cures);
+          parts.push(`cured ${item.cures}`);
+        }
+        battle.log.push(`You use ${item.name}. ${parts.length ? `Restored ${parts.join(", ")}.` : "Nothing happens."}`);
         next.inventoryOpen = false;
         monsterTurn(next, hero, battle.log);
       }
@@ -328,28 +352,42 @@ export function gameReducer(state: GameState, action: Action): GameState {
     }
 
     case "EQUIP": {
-      const item = getItem(action.itemId);
-      if (!item.slot || (state.inventory[action.itemId] ?? 0) <= 0) return state;
+      const instance = gearByUid(state.gear, action.uid);
+      if (!instance) return state;
+      const slot = gearItem(instance).slot;
+      if (!slot) return state;
       const next = structuredClone(state);
-      const current = next.equipped[item.slot];
-      next.inventory = removeItem(next.inventory, action.itemId);
-      if (current) next.inventory = addItem(next.inventory, current);
-      next.equipped[item.slot] = action.itemId;
+      next.equipped[slot] = action.uid;
       return next;
     }
 
     case "UNEQUIP": {
-      const current = state.equipped[action.slot];
-      if (!current) return state;
+      if (!state.equipped[action.slot]) return state;
       const next = structuredClone(state);
       delete next.equipped[action.slot];
-      next.inventory = addItem(next.inventory, current);
       return next;
     }
 
     case "DROP": {
       if ((state.inventory[action.itemId] ?? 0) <= 0) return state;
       return { ...state, inventory: removeItem(state.inventory, action.itemId) };
+    }
+
+    case "DROP_GEAR": {
+      if (Object.values(state.equipped).includes(action.uid)) return state;
+      if (!gearByUid(state.gear, action.uid)) return state;
+      return { ...state, gear: state.gear.filter((g) => g.uid !== action.uid) };
+    }
+
+    case "SELL_GEAR": {
+      if (!state.shopOpen || Object.values(state.equipped).includes(action.uid)) return state;
+      const instance = gearByUid(state.gear, action.uid);
+      if (!instance) return state;
+      return {
+        ...state,
+        gold: state.gold + Math.max(1, Math.floor(gearValue(instance) / 2)),
+        gear: state.gear.filter((g) => g.uid !== action.uid),
+      };
     }
 
     case "TOGGLE_INVENTORY":
@@ -366,6 +404,10 @@ export function gameReducer(state: GameState, action: Action): GameState {
       if (!shopStock(state.unlockedLevel).some((stocked) => stocked.id === item.id)) return state;
       const price = buyPrice(item);
       if (state.gold < price) return state;
+      // The merchant sells honest common gear; the exciting rolls come from monsters.
+      if (item.slot) {
+        return { ...state, gold: state.gold - price, gear: [...state.gear, createGear(item.id)] };
+      }
       return { ...state, gold: state.gold - price, inventory: addItem(state.inventory, item.id) };
     }
 
@@ -398,7 +440,10 @@ export function gameReducer(state: GameState, action: Action): GameState {
       if (firstClear) {
         next.clearedLevels.push(dungeon.level);
         next.gold += dungeon.rewardGold;
-        for (const id of dungeon.rewardItemIds) next.inventory = addItem(next.inventory, id);
+        for (const id of dungeon.rewardItemIds) {
+          if (getItem(id).slot) next.gear.push(createGear(id));
+          else next.inventory = addItem(next.inventory, id);
+        }
         next.unlockedLevel = Math.max(next.unlockedLevel, Math.min(dungeon.level + 1, LEVELS.length));
       }
       next.battle = null;

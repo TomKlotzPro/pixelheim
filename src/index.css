@@ -582,6 +582,20 @@ body {
 .item-count {
   color: var(--accent);
 }
+.rarity-common {
+  color: inherit;
+}
+.rarity-fine {
+  color: #4a9be6;
+}
+.rarity-epic {
+  color: #b45ae6;
+}
+.equipped-tag {
+  color: var(--xp);
+  font-size: 10px;
+  letter-spacing: 1px;
+}
 .item-stats {
   color: var(--accent);
   font-size: 11px;

@@ -20,11 +20,17 @@ test('a v1 save (pre-envelope) replays the full migration chain to the current v
   await expect(page.getByText('Elixir', { exact: true })).toBeVisible()
   await page.getByRole('button', { name: 'Close' }).click()
 
-  // v1 -> v2 (envelope) -> v3 (world state): the whole chain replays on load
+  // v1 -> v2 (envelope) -> v3 (world state) -> v4 (gear instances): the whole
+  // chain replays on load
   const persisted = await page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), SAVE_KEY)
-  expect(persisted.version).toBe(3)
+  expect(persisted.version).toBe(4)
   expect(persisted.state.hero.name).toBe('OldTimer')
   expect(persisted.state.world).toBeNull()
+  // the equipped iron sword became a common gear instance
+  expect(persisted.state.gear).toHaveLength(1)
+  expect(persisted.state.gear[0].itemId).toBe('iron_sword')
+  expect(persisted.state.gear[0].rarity).toBe('common')
+  expect(persisted.state.equipped.weapon).toBe(persisted.state.gear[0].uid)
 })
 
 test('a v2 save with a flat world position migrates to the v3 world state', async ({ page }) => {
@@ -47,10 +53,49 @@ test('a v2 save with a flat world position migrates to the v3 world state', asyn
   await expect(page.getByText('OldTimer')).toBeVisible()
 
   const persisted = await page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), SAVE_KEY)
-  expect(persisted.version).toBe(3)
+  expect(persisted.version).toBe(4)
   expect(persisted.state.world.position).toEqual({ mapId: 'demo', x: 5, y: 8, facing: 'left' })
   expect(persisted.state.world.discovered).toEqual({})
   expect(persisted.state.world.openedChests).toEqual([])
+})
+
+test('a v3 save migrates gear counts and equipped ids into instances', async ({ page }) => {
+  // Frozen v3-era shape: gear lived as inventory counts, equipped held item ids.
+  const v3Save = {
+    version: 3,
+    state: {
+      ...V1_SAVE,
+      shopOpen: false,
+      world: null,
+      inventory: { potion_hp: 2, iron_armor: 1, hunting_bow: 2 },
+      equipped: { weapon: 'rusty_sword' },
+    },
+  }
+  await page.goto('./')
+  await page.evaluate(
+    ([key, save]) => localStorage.setItem(key as string, JSON.stringify(save)),
+    [SAVE_KEY, v3Save] as const,
+  )
+  await page.reload()
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await expect(page.getByText('Rusty Sword')).toBeVisible()
+
+  const persisted = await page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), SAVE_KEY)
+  expect(persisted.version).toBe(4)
+  // 1 armor + 2 bows + the equipped sword = 4 instances, all common
+  expect(persisted.state.gear).toHaveLength(4)
+  expect(persisted.state.gear.every((g: { rarity: string }) => g.rarity === 'common')).toBe(true)
+  // stackables stay stacked; gear counts left the inventory
+  expect(persisted.state.inventory).toEqual({ potion_hp: 2 })
+  expect(persisted.state.equipped.weapon).toBeDefined()
+
+  // the migrated armor is equippable through the UI
+  await page.getByRole('button', { name: 'Inventory' }).click()
+  await page
+    .locator('.item-row', { hasText: 'Iron Armor' })
+    .getByRole('button', { name: 'Equip' })
+    .click()
+  await expect(page.locator('.equipped-slot', { hasText: 'Body' }).getByText('Iron Armor')).toBeVisible()
 })
 
 test('a v1-format save code still imports', async ({ page }) => {
