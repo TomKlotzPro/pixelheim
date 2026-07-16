@@ -3,8 +3,12 @@ import { ROLES } from "../game/roles";
 import type { GameState } from "../game/types";
 import type { Action } from "../state/gameReducer";
 import { getMap } from "../world/maps";
+import { regionAt } from "../world/parseMap";
 import { TILES } from "../world/tiles";
-import type { Direction } from "../world/types";
+import type { Direction, TileId } from "../world/types";
+
+/** Must mirror the reducer's encounter terrain: only these tiles grow tufts. */
+const WILD_TILES = new Set<TileId>(["grass", "forest", "marsh", "ash", "sand"]);
 import { Sprite } from "./Sprite";
 import { WorldHud } from "./WorldHud";
 
@@ -92,21 +96,28 @@ export function WorldScreen({ state, dispatch }: WorldScreenProps) {
           }}
         >
           {map.tiles.map((row, y) =>
-            row.map((tile, x) => (
-              <div
-                key={`${x},${y}`}
-                className="world-tile"
-                onClick={() => clickTile(x, y)}
-                style={{
-                  left: x * tilePx,
-                  top: y * tilePx,
-                  width: tilePx,
-                  height: tilePx,
-                  backgroundSize: `${tilePx}px ${tilePx}px`,
-                  backgroundImage: `url(${import.meta.env.BASE_URL}sprites/${TILES[tile].sprite}.png)`,
-                }}
-              />
-            )),
+            row.map((tile, x) => {
+              // Dangerous ground is visible: wild-region tiles grow dark tufts.
+              const dangerous = WILD_TILES.has(tile) && regionAt(map, x, y) !== null;
+              const terrain = `url(${import.meta.env.BASE_URL}sprites/${TILES[tile].sprite}.png)`;
+              const overlay = `url(${import.meta.env.BASE_URL}sprites/overlay_wild.png)`;
+              return (
+                <div
+                  key={`${x},${y}`}
+                  className="world-tile"
+                  data-danger={dangerous || undefined}
+                  onClick={() => clickTile(x, y)}
+                  style={{
+                    left: x * tilePx,
+                    top: y * tilePx,
+                    width: tilePx,
+                    height: tilePx,
+                    backgroundSize: `${tilePx}px ${tilePx}px`,
+                    backgroundImage: dangerous ? `${overlay}, ${terrain}` : terrain,
+                  }}
+                />
+              );
+            }),
           )}
           <div
             className={`world-hero facing-${world.facing}`}
