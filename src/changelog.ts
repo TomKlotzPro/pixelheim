@@ -11,6 +11,17 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.5.0",
+    date: "2026-07-16",
+    codename: "The Ashenreach",
+    notes: [
+      "First look at the open world: walk the Ashenreach from town (beta)",
+      "Pixelheim village, marshland, forest, ash fields, and a river bridge",
+      "Enter the village, poke around the shop and the inn",
+      "Exploration is remembered: where you have been persists in your save",
+    ],
+  },
+  {
     version: "0.4.0",
     date: "2026-07-16",
     codename: "The Undermountain",
