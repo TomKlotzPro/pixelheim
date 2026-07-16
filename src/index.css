@@ -924,6 +924,9 @@ body {
 /* ---------- options ---------- */
 .options-panel {
   width: 460px;
+  max-height: min(84vh, 720px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 .options-section {
   border-bottom: 1px solid var(--border);
@@ -951,6 +954,22 @@ body {
 .options-actions {
   justify-content: flex-start;
   flex-wrap: wrap;
+}
+.key-btn {
+  min-width: 96px;
+}
+.key-listening {
+  border-color: var(--accent);
+  animation: key-pulse 0.9s ease-in-out infinite;
+}
+@keyframes key-pulse {
+  50% {
+    opacity: 0.55;
+  }
+}
+.options-note {
+  color: var(--text-dim);
+  font-size: 11px;
 }
 .options-footer {
   color: var(--text-dim);

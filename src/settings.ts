@@ -1,6 +1,25 @@
+/** The game actions a key can be bound to. */
+export type BindableAction = "up" | "down" | "left" | "right" | "interact" | "inventory";
+
 /**
- * Device preferences: volumes, scanlines, motion. Deliberately NOT part of
- * the save (they should not travel with save codes across devices).
+ * Bindings hold `KeyboardEvent.code` values (physical key positions), so the
+ * defaults land on ZQSD for AZERTY players and WASD for QWERTY without any
+ * configuration. Arrows, Enter and Space stay hardwired on top of these.
+ */
+export type Bindings = Record<BindableAction, string>;
+
+export const DEFAULT_BINDINGS: Bindings = {
+  up: "KeyW",
+  down: "KeyS",
+  left: "KeyA",
+  right: "KeyD",
+  interact: "KeyE",
+  inventory: "KeyI",
+};
+
+/**
+ * Device preferences: volumes, scanlines, motion, controls. Deliberately NOT
+ * part of the save (they should not travel with save codes across devices).
  */
 export type Settings = {
   /** 0..1 */
@@ -9,6 +28,7 @@ export type Settings = {
   sfxVolume: number;
   scanlines: boolean;
   reduceMotion: boolean;
+  bindings: Bindings;
 };
 
 const SETTINGS_KEY = "pixelheim-settings";
@@ -18,16 +38,30 @@ export const DEFAULT_SETTINGS: Settings = {
   sfxVolume: 0.7,
   scanlines: true,
   reduceMotion: false,
+  bindings: { ...DEFAULT_BINDINGS },
 };
 
 export function loadSettings(): Settings {
   try {
     const raw = localStorage.getItem(SETTINGS_KEY);
-    if (!raw) return { ...DEFAULT_SETTINGS };
-    return { ...DEFAULT_SETTINGS, ...(JSON.parse(raw) as Partial<Settings>) };
+    if (!raw) return { ...DEFAULT_SETTINGS, bindings: { ...DEFAULT_BINDINGS } };
+    const parsed = JSON.parse(raw) as Partial<Settings>;
+    return {
+      ...DEFAULT_SETTINGS,
+      ...parsed,
+      bindings: { ...DEFAULT_BINDINGS, ...parsed.bindings },
+    };
   } catch {
-    return { ...DEFAULT_SETTINGS };
+    return { ...DEFAULT_SETTINGS, bindings: { ...DEFAULT_BINDINGS } };
   }
+}
+
+/** Human label for a KeyboardEvent.code, for the options screen. */
+export function keyLabel(code: string): string {
+  if (code.startsWith("Key")) return code.slice(3);
+  if (code.startsWith("Digit")) return code.slice(5);
+  const arrows: Record<string, string> = { ArrowUp: "↑", ArrowDown: "↓", ArrowLeft: "←", ArrowRight: "→" };
+  return arrows[code] ?? code;
 }
 
 export function saveSettings(settings: Settings): void {
