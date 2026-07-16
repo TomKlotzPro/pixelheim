@@ -47,7 +47,7 @@ export const OVERWORLD_MAP: WorldMap = parseMap(
   [
     { x: 24, y: 3, to: { kind: "dungeon", dungeon: "mountain" } },
     { x: 12, y: 5, to: { kind: "dungeon", dungeon: "undermountain" } },
-    { x: 24, y: 21, to: { kind: "map", mapId: "town", x: 9, y: 9 } },
+    { x: 24, y: 21, to: { kind: "map", mapId: "town", x: 14, y: 16 } },
   ],
   {
     grid: `
@@ -88,26 +88,37 @@ export const OVERWORLD_MAP: WorldMap = parseMap(
   },
 );
 
-/** Pixelheim village: the merchant's shop (west) and the inn (east). */
+/**
+ * Pixelheim village, expanded: the shop and inn up top, houses below, a
+ * shrine square in the middle, and an empty lot between the lower houses
+ * waiting for the player's house (PIX-33).
+ */
 export const TOWN_MAP: WorldMap = parseMap(
   "town",
   `
-  ####################
-  #..................#
-  #..rrrrr..rrrrr....#
-  #..rrrrr..rrrrr....#
-  #..rrDrr..rrDrr....#
-  #..................#
-  #.....W............#
-  #..................#
-  #........S.........#
-  #..................#
-  #########D##########
+  ############################
+  #..........................#
+  #.rrrrrr..rrrrrr...rrrrrr..#
+  #.rrrrrr..rrrrrr...rrrrrr..#
+  #.rrDrrr..rrDrrr...rrrrrr..#
+  #..........................#
+  #..........................#
+  #.....================.....#
+  #............=W=...........#
+  #.....================.....#
+  #..........................#
+  #.rrrrr..........rrrrr.....#
+  #.rrrrr..........rrrrr.....#
+  #.rrrrr..........rrrrr.....#
+  #..........................#
+  #.............S............#
+  #..........................#
+  ##############D#############
   `,
   [
-    { x: 5, y: 4, to: { kind: "map", mapId: "town_shop", x: 3, y: 3 } },
+    { x: 4, y: 4, to: { kind: "map", mapId: "town_shop", x: 3, y: 3 } },
     { x: 12, y: 4, to: { kind: "map", mapId: "town_inn", x: 3, y: 3 } },
-    { x: 9, y: 10, to: { kind: "map", mapId: "overworld", x: 24, y: 20 } },
+    { x: 14, y: 17, to: { kind: "map", mapId: "overworld", x: 24, y: 20 } },
   ],
 );
 
@@ -120,7 +131,7 @@ export const TOWN_SHOP_MAP: WorldMap = parseMap(
   #__$___#
   ###D####
   `,
-  [{ x: 3, y: 4, to: { kind: "map", mapId: "town", x: 5, y: 5 } }],
+  [{ x: 3, y: 4, to: { kind: "map", mapId: "town", x: 4, y: 5 } }],
 );
 
 export const TOWN_INN_MAP: WorldMap = parseMap(

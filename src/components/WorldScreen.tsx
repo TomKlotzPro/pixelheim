@@ -3,6 +3,7 @@ import { ROLES } from "../game/roles";
 import type { GameState } from "../game/types";
 import type { Action } from "../state/gameReducer";
 import { getMap } from "../world/maps";
+import { NPCS, npcPosition, npcsOn } from "../world/npcs";
 import { regionAt } from "../world/parseMap";
 import { TILES } from "../world/tiles";
 import type { Direction, TileId } from "../world/types";
@@ -119,6 +120,19 @@ export function WorldScreen({ state, dispatch }: WorldScreenProps) {
               );
             }),
           )}
+          {npcsOn(map.id).map((npc) => {
+            const pos = npcPosition(npc, state.worldSteps);
+            return (
+              <div
+                key={npc.id}
+                className="world-npc"
+                data-testid="world-npc"
+                style={{ left: pos.x * tilePx, top: pos.y * tilePx, width: tilePx, height: tilePx }}
+              >
+                <Sprite name={npc.sprite} size={tilePx} alt={npc.name} />
+              </div>
+            );
+          })}
           <div
             className={`world-hero facing-${world.facing}`}
             data-testid="world-hero"
@@ -129,6 +143,23 @@ export function WorldScreen({ state, dispatch }: WorldScreenProps) {
           </div>
         </div>
       </div>
+      {state.dialogue &&
+        (() => {
+          const npc = NPCS.find((n) => n.id === state.dialogue!.npcId);
+          if (!npc) return null;
+          return (
+            <div className="dialogue-box panel" data-testid="dialogue">
+              <Sprite name={npc.sprite} size={48} alt={npc.name} />
+              <div className="dialogue-body">
+                <span className="dialogue-name">{npc.name}</span>
+                <p className="dialogue-text">{npc.lines[state.dialogue.page]}</p>
+              </div>
+              <button className="btn btn-small" onClick={() => dispatch({ type: "ADVANCE_DIALOGUE" })}>
+                {state.dialogue.page >= npc.lines.length - 1 ? "Farewell" : "..."}
+              </button>
+            </div>
+          );
+        })()}
       {state.worldMessage ? (
         <p className="world-hint world-message">{state.worldMessage}</p>
       ) : (

@@ -37,7 +37,7 @@ test('new heroes wake in the village and the gate leads to the overworld', async
   // the three-line intro, then the village
   await page.getByRole('button', { name: 'Set out' }).click()
   await expect(page.getByTestId('world-viewport')).toHaveAttribute('data-map', 'town')
-  await expect(hero(page)).toHaveAttribute('data-pos', '9,8')
+  await expect(hero(page)).toHaveAttribute('data-pos', '14,15')
 
   // out through the town gate onto the overworld road
   await pressTimes(page, 'ArrowDown', 2)
@@ -47,7 +47,7 @@ test('new heroes wake in the village and the gate leads to the overworld', async
   // and back in through the gate to the south
   await page.keyboard.press('ArrowDown')
   await expect(page.getByTestId('world-viewport')).toHaveAttribute('data-map', 'town')
-  await expect(hero(page)).toHaveAttribute('data-pos', '9,9')
+  await expect(hero(page)).toHaveAttribute('data-pos', '14,16')
 
   // Escape does nothing for a hero: the world IS the game now
   await page.keyboard.press('Escape')

@@ -144,6 +144,11 @@ export default function App() {
         dispatch({ type: "TOGGLE_INVENTORY" });
         return;
       }
+      if (event.key === "e" || event.key === "E" || event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        dispatch({ type: "INTERACT" });
+        return;
+      }
       const direction = KEY_DIRECTIONS[event.key];
       if (!direction) return;
       event.preventDefault();
