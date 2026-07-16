@@ -1,4 +1,11 @@
-import { applyLevelUps, carriedWeight, carryCapacity, createHero, gearByUid } from "../game/character";
+import {
+  applyLevelUps,
+  carriedWeight,
+  carryCapacity,
+  createHero,
+  gearByUid,
+  STAT_POINTS_PER_LEVEL,
+} from "../game/character";
 import { rollDrop } from "../game/drops";
 import { createGear, gearItem, gearName, gearValue } from "../game/rarity";
 import {
@@ -17,7 +24,7 @@ import { getItem } from "../game/items";
 import { getLevel, LEVELS } from "../game/levels";
 import { buyPrice, sellPrice, shopStock } from "../game/shop";
 import { ROLES } from "../game/roles";
-import type { EquipSlot, GameState, Hero, RoleId } from "../game/types";
+import type { EquipSlot, GameState, Hero, RoleId, SpendableStat } from "../game/types";
 import { rollWildEncounter, WILD_REWARD_MULT } from "../game/encounters";
 import { discoverAround } from "../world/discover";
 import { getMap } from "../world/maps";
@@ -51,7 +58,8 @@ export type Action =
   | { type: "EXIT_WORLD" }
   | { type: "MOVE"; direction: Direction }
   | { type: "CLOSE_DUNGEON_SELECT" }
-  | { type: "DISMISS_INTRO" };
+  | { type: "DISMISS_INTRO" }
+  | { type: "SPEND_STAT_POINT"; stat: SpendableStat };
 
 export const initialState: GameState = {
   screen: "title",
@@ -170,7 +178,11 @@ function onMonsterDefeated(state: GameState, hero: Hero, log: string[]): void {
   hero.xp += xp;
   state.gold += gold;
   const gained = applyLevelUps(hero);
-  if (gained > 0) log.push(`LEVEL UP! You are now level ${hero.level}. Fully restored.`);
+  if (gained > 0) {
+    log.push(
+      `LEVEL UP! You are now level ${hero.level}. Fully restored. +${gained * STAT_POINTS_PER_LEVEL} stat points to spend.`,
+    );
+  }
 
   const kind = BOSS_IDS.includes(battle.monster.def.id) ? "boss" : battle.monster.elite ? "elite" : "normal";
   const drop = rollDrop(battle.dungeonLevel, kind);
@@ -532,6 +544,14 @@ export function gameReducer(state: GameState, action: Action): GameState {
 
     case "DISMISS_INTRO":
       return { ...state, introSeen: true };
+
+    case "SPEND_STAT_POINT": {
+      if (!state.hero || state.hero.statPoints <= 0) return state;
+      const next = structuredClone(state);
+      next.hero!.stats[action.stat] += 1;
+      next.hero!.statPoints -= 1;
+      return next;
+    }
 
     case "CLOSE_DUNGEON_SELECT": {
       if (state.screen !== "dungeon_select") return state;

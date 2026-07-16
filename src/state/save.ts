@@ -83,6 +83,10 @@ function normalizeSave(state: unknown): GameState | null {
     dungeonSelect: null,
     worldMessage: null,
   };
+  // Heroes from before spendable growth start banking from their next level.
+  if (save.hero && save.hero.statPoints === undefined) {
+    save.hero = { ...save.hero, statPoints: 0 };
+  }
   // Saves from the hub era have no world position: they wake up in town.
   if (!save.world) {
     const town = getMap(TOWN_SPAWN.mapId);
