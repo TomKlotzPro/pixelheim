@@ -11,13 +11,37 @@ export type Stats = {
 
 export type ScalingStat = "strength" | "intelligence" | "dexterity";
 
+export type StatusKind = "poison" | "burn" | "stun";
+
+/** An active effect on a combatant. `power` is damage per tick (0 for stun). */
+export type StatusEffect = {
+  kind: StatusKind;
+  turnsLeft: number;
+  power: number;
+};
+
+/** A chance to apply a status effect when an attack or skill lands. */
+export type Infliction = {
+  kind: StatusKind;
+  chance: number;
+  turns: number;
+  power: number;
+};
+
 export type Skill = {
   name: string;
   description: string;
   mpCost: number;
+  /** Extra health price, paid on cast (Berserk-style skills). */
+  hpCost?: number;
   kind: "damage" | "heal";
   multiplier: number;
   stat: ScalingStat;
+  /** Hero level required to use this skill. */
+  unlockLevel: number;
+  inflicts?: Infliction;
+  /** Heals only: also removes all status effects from the hero. */
+  cleanse?: boolean;
 };
 
 export type Role = {
@@ -28,7 +52,8 @@ export type Role = {
   baseStats: Stats;
   /** Stat gains applied on each level up. */
   growth: Stats;
-  skill: Skill;
+  /** Ordered by unlockLevel; index 0 is the starting skill. */
+  skills: Skill[];
 };
 
 export type ItemCategory = "weapons" | "apparel" | "potions" | "food" | "misc";
@@ -63,6 +88,8 @@ export type Monster = {
   defense: number;
   xp: number;
   gold: number;
+  /** Status effect this monster can apply when its attack lands. */
+  inflicts?: Infliction;
 };
 
 export type EncounterDef = {
@@ -112,6 +139,8 @@ export type BattleState = {
   monster: BattleMonster;
   log: string[];
   phase: BattlePhase;
+  heroEffects: StatusEffect[];
+  monsterEffects: StatusEffect[];
 };
 
 export type Screen = "title" | "create" | "hub" | "battle" | "gameover" | "victory";
