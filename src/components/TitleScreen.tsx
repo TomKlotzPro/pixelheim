@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { GAME_VERSION, hasUnseenChanges, markChangesSeen } from "../changelog";
-import { Changelog } from "./Changelog";
+import { ChangelogPage } from "./Changelog";
 import { Sprite } from "./Sprite";
 
 const LINEUP = ["slime", "goblin", "skeleton", "dragon", "golem", "ghost", "wolf"];
@@ -26,6 +26,9 @@ export function TitleScreen({ canContinue, onNewGame, onContinue, onOpenOptions 
     setShowNewBadge(false);
     setChangelogOpen(true);
   };
+
+  // The changelog is a page of its own, not an overlay.
+  if (changelogOpen) return <ChangelogPage onBack={() => setChangelogOpen(false)} />;
 
   return (
     <div className="screen title-screen">
@@ -69,7 +72,6 @@ export function TitleScreen({ canContinue, onNewGame, onContinue, onOpenOptions 
         v{GAME_VERSION} - a retro RPG built with React + TypeScript
         {showNewBadge && <span className="new-badge">NEW</span>}
       </button>
-      {changelogOpen && <Changelog onClose={() => setChangelogOpen(false)} />}
     </div>
   );
 }

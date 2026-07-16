@@ -1,34 +1,33 @@
 import { CHANGELOG } from "../changelog";
 
-type ChangelogProps = {
-  onClose: () => void;
+type ChangelogPageProps = {
+  onBack: () => void;
 };
 
-export function Changelog({ onClose }: ChangelogProps) {
+/** The full release history as its own page, newest first. */
+export function ChangelogPage({ onBack }: ChangelogPageProps) {
   return (
-    <div className="overlay" onClick={onClose}>
-      <div className="panel inventory-panel changelog-panel" onClick={(e) => e.stopPropagation()}>
-        <div className="inventory-header">
-          <h2>Changelog</h2>
-          <button className="btn btn-small" onClick={onClose}>
-            Close
-          </button>
-        </div>
-        <div className="item-list changelog-list">
-          {CHANGELOG.map((release) => (
-            <section key={release.version} className="release">
-              <h3 className="release-title">
-                v{release.version} - {release.codename}
-                <span className="release-date">{release.date}</span>
-              </h3>
-              <ul className="release-notes">
-                {release.notes.map((note) => (
-                  <li key={note}>{note}</li>
-                ))}
-              </ul>
-            </section>
-          ))}
-        </div>
+    <div className="screen changelog-page">
+      <div className="changelog-page-header">
+        <button className="btn btn-small" onClick={onBack}>
+          &lt; Back
+        </button>
+        <h1>Changelog</h1>
+      </div>
+      <div className="changelog-scroll">
+        {CHANGELOG.map((release) => (
+          <section key={release.version} className="release">
+            <h3 className="release-title">
+              v{release.version} - {release.codename}
+              <span className="release-date">{release.date}</span>
+            </h3>
+            <ul className="release-notes">
+              {release.notes.map((note) => (
+                <li key={note}>{note}</li>
+              ))}
+            </ul>
+          </section>
+        ))}
       </div>
     </div>
   );
