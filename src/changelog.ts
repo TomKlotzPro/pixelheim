@@ -11,6 +11,17 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "1.7.0",
+    date: "2026-07-16",
+    codename: "Main Street",
+    notes: [
+      "Two new shops: Smith Hilda sells steel, Alchemist Vex sells brews",
+      "The Forge: pay Hilda to sharpen any weapon or armor, up to +7",
+      "Vex pays FULL price for reagents and trophies; Hilda pays 60% for steel",
+      "Odo goes general goods: food, sundries, and he still buys anything",
+    ],
+  },
+  {
     version: "1.6.0",
     date: "2026-07-16",
     codename: "Field Alchemy",

@@ -7,7 +7,7 @@ type ChangelogProps = {
 export function Changelog({ onClose }: ChangelogProps) {
   return (
     <div className="overlay" onClick={onClose}>
-      <div className="panel inventory-panel" onClick={(e) => e.stopPropagation()}>
+      <div className="panel inventory-panel changelog-panel" onClick={(e) => e.stopPropagation()}>
         <div className="inventory-header">
           <h2>Changelog</h2>
           <button className="btn btn-small" onClick={onClose}>
