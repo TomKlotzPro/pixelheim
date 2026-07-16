@@ -112,6 +112,7 @@ export class WorldRenderer {
       Assets.load([
         ...tiles.map((name) => ({ alias: name, src: `${base}sprites/${name}.png` })),
         { alias: "overlay_wild", src: `${base}sprites/overlay_wild.png` },
+        { alias: "overlay_path_edge", src: `${base}sprites/overlay_path_edge.png` },
       ]) as Promise<Record<string, Texture>>,
     ]);
     return bank;
