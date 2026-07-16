@@ -864,6 +864,15 @@ body {
 .world-hero.facing-left img {
   transform: scaleX(-1);
 }
+/* Invisible-but-measurable state hooks for the e2e suite over the canvas. */
+.world-mirror,
+.world-mirror div {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
 .npc-prompt {
   position: absolute;
   z-index: 3;

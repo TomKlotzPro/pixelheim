@@ -1986,6 +1986,11 @@ const shiftXWrap = (rows, dx) => {
   const s = ((dx % 16) + 16) % 16;
   return rows.map((r) => r.slice(16 - s) + r.slice(0, 16 - s));
 };
+/** Wrap-shift vertically; combined with shiftXWrap it makes terrain shimmer. */
+const shiftYWrap = (rows, dy) => {
+  const s = ((dy % 16) + 16) % 16;
+  return rows.slice(16 - s).concat(rows.slice(0, 16 - s));
+};
 /** Nudge just the bottom rows (feet) sideways for a walk step; non-wrapping. */
 const feet = (rows, dx) =>
   rows.map((r, y) => {
@@ -1998,6 +2003,9 @@ const feet = (rows, dx) =>
 const walkFrames = (b) => [b, feet(bobUp(b, 1), 1), b, feet(bobUp(b, 1), -1)];
 const idleFrames = (b) => [b, bobDown(b, 1)];
 const shimmerFrames = (b) => [b, shiftXWrap(b, 1), shiftXWrap(b, 2), shiftXWrap(b, 3)];
+// Terrain sway wraps in both axes so tiles stay opaque and seamless: the
+// specks and blades jiggle diagonally, reading as wind at low fps.
+const swayFrames = (b) => [b, shiftXWrap(shiftYWrap(b, 1), 1)];
 
 const MONSTERS = [
   "slime", "goblin", "skeleton", "wolf", "orc", "ghost", "golem", "troll",
@@ -2011,6 +2019,10 @@ const anims = [
   ...NPCS.map((base) => ({ name: `${base}_idle`, base, fps: 2, frames: idleFrames })),
   ...MONSTERS.map((base) => ({ name: `${base}_idle`, base, fps: 2, frames: idleFrames })),
   { name: "water_shimmer", base: "tile_water", fps: 4, frames: shimmerFrames },
+  { name: "grass_sway", base: "tile_grass", fps: 2, frames: swayFrames },
+  { name: "forest_sway", base: "tile_forest", fps: 2, frames: swayFrames },
+  { name: "flowers_sway", base: "tile_flowers", fps: 2, frames: swayFrames },
+  { name: "marsh_sway", base: "tile_marsh", fps: 2, frames: swayFrames },
 ];
 
 /** Lay frames left to right into one 16-tall strip. */
