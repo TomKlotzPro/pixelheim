@@ -44,9 +44,8 @@ test('the innkeeper has a face and a stew', async ({ page }) => {
   await walk(page, 'ArrowLeft', 2)
   await walk(page, 'ArrowUp', 5)
   await expect(page.getByTestId('world-viewport')).toHaveAttribute('data-map', 'town_inn')
-  // the innkeeper stands behind the counter at (4,1); face her from (4,2)
-  await walk(page, 'ArrowRight', 1)
-  await page.keyboard.press('ArrowUp')
+  // the innkeeper stands at (4,1) in the bigger inn; walk up from the door and face her
+  await walk(page, 'ArrowUp', 3)
   await page.keyboard.press('e')
   await expect(page.getByTestId('dialogue')).toContainText('Innkeeper Sela')
 })

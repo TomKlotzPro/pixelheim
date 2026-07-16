@@ -22,10 +22,12 @@ test('a v1 save (pre-envelope) replays the full migration chain and wakes in tow
   await expect(page.locator('.world-hud')).toContainText('OldTimer')
   await expect(page.locator('.world-hud .gold-line')).toHaveText(/123/)
 
-  // shopOpen did not exist in v1; walk into the merchant's building
+  // shopOpen did not exist in v1; walk into the merchant's building and trade
   await walk(page, 'ArrowUp', 6)
   await walk(page, 'ArrowLeft', 10)
   await walk(page, 'ArrowUp', 5)
+  await walk(page, 'ArrowUp', 3)
+  await page.keyboard.press('e')
   await expect(page.getByText('General goods')).toBeVisible()
   // floor 4 was unlocked in the fixture, so floor-2 stock is available
   await expect(page.getByText('Dried Meat')).toBeVisible()
