@@ -16,6 +16,7 @@ import { getLevel, LEVELS } from "../game/levels";
 import { buyPrice, sellPrice, shopStock } from "../game/shop";
 import { ROLES } from "../game/roles";
 import type { EquipSlot, GameState, Hero, RoleId } from "../game/types";
+import { discoverAround } from "../world/discover";
 import { getMap } from "../world/maps";
 import { isWalkable, portalAt } from "../world/parseMap";
 import type { Direction } from "../world/types";
@@ -429,42 +430,62 @@ export function gameReducer(state: GameState, action: Action): GameState {
 
     case "ENTER_WORLD": {
       const map = getMap(action.mapId);
+      // Exploration memory survives across visits; only the position resets.
+      const previous = state.world;
+      const position = { mapId: map.id, x: map.spawn.x, y: map.spawn.y, facing: "down" as const };
       return {
         ...state,
         screen: "world",
         inventoryOpen: false,
         shopOpen: false,
-        world: { mapId: map.id, x: map.spawn.x, y: map.spawn.y, facing: "down" },
+        world: {
+          position,
+          discovered: discoverAround(previous?.discovered ?? {}, map, position.x, position.y),
+          openedChests: previous?.openedChests ?? [],
+        },
       };
     }
 
     case "EXIT_WORLD": {
       if (state.screen !== "world") return state;
-      return { ...state, screen: state.hero ? "hub" : "title", world: null };
+      // Keep the world state: discovered tiles and position persist in the save.
+      return { ...state, screen: state.hero ? "hub" : "title" };
     }
 
     case "MOVE": {
       if (state.screen !== "world" || !state.world) return state;
-      const map = getMap(state.world.mapId);
+      const { position } = state.world;
+      const map = getMap(position.mapId);
       const { dx, dy } = DIRECTION_DELTAS[action.direction];
-      const x = state.world.x + dx;
-      const y = state.world.y + dy;
+      const x = position.x + dx;
+      const y = position.y + dy;
       // Bumping into something still turns the hero toward it.
       if (!isWalkable(map, x, y)) {
-        return { ...state, world: { ...state.world, facing: action.direction } };
+        return { ...state, world: { ...state.world, position: { ...position, facing: action.direction } } };
       }
       const portal = portalAt(map, x, y);
-      if (portal) {
-        if (portal.to.kind === "exit") {
-          return { ...state, screen: state.hero ? "hub" : "title", world: null };
-        }
+      if (portal && portal.to.kind === "map") {
         const target = getMap(portal.to.mapId);
         return {
           ...state,
-          world: { mapId: target.id, x: portal.to.x, y: portal.to.y, facing: action.direction },
+          world: {
+            ...state.world,
+            position: { mapId: target.id, x: portal.to.x, y: portal.to.y, facing: action.direction },
+            discovered: discoverAround(state.world.discovered, target, portal.to.x, portal.to.y),
+          },
         };
       }
-      return { ...state, world: { ...state.world, x, y, facing: action.direction } };
+      if (portal && portal.to.kind === "exit") {
+        return { ...state, screen: state.hero ? "hub" : "title" };
+      }
+      return {
+        ...state,
+        world: {
+          ...state.world,
+          position: { ...position, x, y, facing: action.direction },
+          discovered: discoverAround(state.world.discovered, map, x, y),
+        },
+      };
     }
 
     default:

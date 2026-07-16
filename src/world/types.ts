@@ -39,10 +39,23 @@ export type WorldMap = {
   portals: Portal[];
 };
 
-/** The hero's position in the world, stored in GameState. */
+/** The hero's position in the world. */
 export type WorldPosition = {
   mapId: string;
   x: number;
   y: number;
   facing: Direction;
+};
+
+/**
+ * Everything the world remembers about the hero, stored in GameState and
+ * persisted in saves (SAVE_VERSION 3+). Exploration survives leaving the
+ * world screen; only `position` changes as the hero walks.
+ */
+export type WorldState = {
+  position: WorldPosition;
+  /** Seen tiles per map, as "x,y" keys. Feeds the fog-of-war map screen. */
+  discovered: Record<string, string[]>;
+  /** Opened chest ids, once chests exist. */
+  openedChests: string[];
 };
