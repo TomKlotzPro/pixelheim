@@ -3,17 +3,19 @@ import { carriedWeight, carryCapacity, gearByUid } from "../game/character";
 import { getItem } from "../game/items";
 import { itemStatLine } from "../game/itemStats";
 import { gearItem, gearName, gearValue } from "../game/rarity";
+import { canCraft, RECIPES } from "../game/recipes";
 import type { EquipSlot, GameState, ItemCategory } from "../game/types";
 import type { Action } from "../state/gameReducer";
 import { Sprite } from "./Sprite";
 
-const TABS: { id: ItemCategory | "all"; label: string }[] = [
+const TABS: { id: ItemCategory | "all" | "craft"; label: string }[] = [
   { id: "all", label: "All" },
   { id: "weapons", label: "Weapons" },
   { id: "apparel", label: "Apparel" },
   { id: "potions", label: "Potions" },
   { id: "food", label: "Food" },
   { id: "misc", label: "Misc" },
+  { id: "craft", label: "Craft" },
 ];
 
 const SLOT_LABELS: Record<EquipSlot, string> = {
@@ -28,7 +30,7 @@ type InventoryProps = {
 };
 
 export function Inventory({ state, dispatch }: InventoryProps) {
-  const [tab, setTab] = useState<ItemCategory | "all">("all");
+  const [tab, setTab] = useState<ItemCategory | "all" | "craft">("all");
   const hero = state.hero!;
   const inBattle = state.screen === "battle";
   const equippedUids = new Set(Object.values(state.equipped));
@@ -101,7 +103,35 @@ export function Inventory({ state, dispatch }: InventoryProps) {
         </div>
 
         <div className="item-list">
-          {stacks.length === 0 && gearRows.length === 0 && (
+          {tab === "craft" &&
+            RECIPES.map((recipe) => {
+              const result = getItem(recipe.itemId);
+              const craftable = canCraft(recipe, state.inventory) && !inBattle;
+              return (
+                <div key={recipe.id} className="item-row">
+                  <Sprite name={result.sprite} size={32} alt={result.name} />
+                  <div className="item-info">
+                    <span className="item-name">{result.name}</span>
+                    <span className="item-stats">
+                      {Object.entries(recipe.needs)
+                        .map(([id, count]) => `${count}x ${getItem(id).name} (${state.inventory[id] ?? 0})`)
+                        .join("  +  ")}
+                    </span>
+                    <span className="item-desc">{result.description}</span>
+                  </div>
+                  <div className="item-actions">
+                    <button
+                      className="btn btn-small"
+                      disabled={!craftable}
+                      onClick={() => dispatch({ type: "CRAFT", recipeId: recipe.id })}
+                    >
+                      Craft
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          {tab !== "craft" && stacks.length === 0 && gearRows.length === 0 && (
             <p className="empty-note">Nothing here. Go hit some monsters.</p>
           )}
           {gearRows.map((instance) => {

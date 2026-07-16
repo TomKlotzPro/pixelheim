@@ -50,6 +50,7 @@ const REGIONS: Record<string, RegionTable> = {
 
 export type WildEncounter = {
   def: EncounterDef;
+  regionId: string;
   regionName: string;
   dropFloor: number;
 };
@@ -70,6 +71,7 @@ export function rollWildEncounter(region: string): WildEncounter | null {
   }
   return {
     def: { monsterId, elite: Math.random() < table.eliteChance },
+    regionId: region,
     regionName: table.name,
     dropFloor: table.dropFloor,
   };

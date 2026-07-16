@@ -173,6 +173,8 @@ export type BattleState = {
   /** Set for random battles in the overworld; win/flee returns to the world. */
   wild?: boolean;
   wildRegion?: string;
+  /** Region key (forest/marsh/ash) for foraging on wild wins. */
+  wildRegionId?: string;
 };
 
 export type Screen = "title" | "create" | "battle" | "victory" | "world" | "dungeon_select";
