@@ -26,3 +26,31 @@ jobs:
       - name: Install Playwright browser
         run: pnpm exec playwright install chromium --with-deps
       - run: pnpm test:e2e
+
+  preview:
+    if: github.event_name == 'pull_request'
+    needs: checks
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    concurrency: preview-${{ github.ref }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Build with the preview base path
+        run: pnpm build
+        env:
+          VITE_BASE: /pixelheim/pr-preview/pr-${{ github.event.number }}/
+      - name: Deploy playable preview
+        uses: rossjrw/pr-preview-action@v1
+        with:
+          source-dir: dist
+          action: deploy

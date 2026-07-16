@@ -1,0 +1,21 @@
+name: PR preview cleanup
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency: preview-${{ github.ref }}
+
+jobs:
+  remove:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Remove playable preview
+        uses: rossjrw/pr-preview-action@v1
+        with:
+          action: remove
