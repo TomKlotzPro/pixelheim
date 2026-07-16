@@ -11,6 +11,18 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "1.5.0",
+    date: "2026-07-16",
+    codename: "Neighbors",
+    notes: [
+      "Pixelheim village grew into a real town: bigger, more houses, a shrine square",
+      "People live here now - talk to them with E, Enter or Space",
+      "Elder Maren remembers the fire; Ana doubts the elixirs; Bram guards his fence",
+      "Merchant Odo and Innkeeper Sela finally have faces",
+      "An empty lot sits between the lower houses. For sale? Soon.",
+    ],
+  },
+  {
     version: "1.4.0",
     date: "2026-07-16",
     codename: "Danger, Visibly",

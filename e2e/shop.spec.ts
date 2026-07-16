@@ -12,8 +12,9 @@ test('walking into the merchant building opens the shop; gold math holds', async
   await createHero(page, 'Trader')
 
   // from the village square into the shop doorway
-  await walk(page, 'ArrowLeft', 4)
-  await walk(page, 'ArrowUp', 4)
+  await walk(page, 'ArrowUp', 6)
+  await walk(page, 'ArrowLeft', 10)
+  await walk(page, 'ArrowUp', 5)
   await expect(page.getByText('Finest goods')).toBeVisible()
   const gold = page.locator('.inventory-header .gold-line')
   await expect(gold).toHaveText(/30/)

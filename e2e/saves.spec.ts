@@ -23,8 +23,9 @@ test('a v1 save (pre-envelope) replays the full migration chain and wakes in tow
   await expect(page.locator('.world-hud .gold-line')).toHaveText(/123/)
 
   // shopOpen did not exist in v1; walk into the merchant's building
-  await walk(page, 'ArrowLeft', 4)
-  await walk(page, 'ArrowUp', 4)
+  await walk(page, 'ArrowUp', 6)
+  await walk(page, 'ArrowLeft', 10)
+  await walk(page, 'ArrowUp', 5)
   await expect(page.getByText('Finest goods')).toBeVisible()
   // floor 4 was unlocked in the fixture, so the elixir is stocked
   await expect(page.getByText('Elixir', { exact: true })).toBeVisible()
