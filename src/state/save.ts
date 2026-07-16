@@ -4,18 +4,71 @@ import { initialState } from "./gameReducer";
 const SAVE_KEY = "pixelheim-save-v1";
 const CODE_PREFIX = "PXH1.";
 
+/**
+ * Bump this whenever the persisted GameState shape changes in a way a spread
+ * over initialState cannot absorb (renames, moved fields, changed meanings),
+ * and add a migration step below. Purely additive fields need NO version bump:
+ * normalizeSave rebases every save onto initialState, so new fields pick up
+ * their defaults automatically.
+ */
+const SAVE_VERSION = 2;
+
+type Envelope = { version: number; state: unknown };
+
+/**
+ * Each entry upgrades a save from `version` to `version + 1`. Old saves are
+ * replayed through every step between their version and SAVE_VERSION, so a
+ * player can skip any number of releases and still load.
+ */
+const MIGRATIONS: Record<number, (state: Record<string, unknown>) => Record<string, unknown>> = {
+  // v1 -> v2: v1 saves were a bare GameState with no version envelope.
+  // The shape itself did not change; v2 only introduced the envelope.
+  1: (state) => state,
+};
+
+function isEnvelope(value: unknown): value is Envelope {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    typeof (value as Envelope).version === "number" &&
+    "state" in value
+  );
+}
+
 /** Validates a parsed save and rebases it on the current initialState shape. */
-function normalizeSave(parsed: unknown): GameState | null {
-  if (!parsed || typeof parsed !== "object" || !(parsed as GameState).hero) return null;
+function normalizeSave(state: unknown): GameState | null {
+  if (!state || typeof state !== "object" || !(state as GameState).hero) return null;
   // Never resume mid-battle or mid-menu; wake up back in town.
-  return { ...initialState, ...(parsed as GameState), screen: "hub", battle: null, inventoryOpen: false };
+  return { ...initialState, ...(state as GameState), screen: "hub", battle: null, inventoryOpen: false, shopOpen: false };
+}
+
+/** Takes any historical save payload and upgrades it to the current version. */
+function migrate(raw: unknown): GameState | null {
+  let version = 1;
+  let state = raw;
+  if (isEnvelope(raw)) {
+    version = raw.version;
+    state = raw.state;
+  }
+  if (version > SAVE_VERSION || !state || typeof state !== "object") return null;
+  while (version < SAVE_VERSION) {
+    const step = MIGRATIONS[version];
+    if (!step) return null;
+    state = step(state as Record<string, unknown>);
+    version += 1;
+  }
+  return normalizeSave(state);
+}
+
+function serialize(state: GameState): string {
+  return JSON.stringify({ version: SAVE_VERSION, state } satisfies Envelope);
 }
 
 export function loadSave(): GameState | null {
   try {
     const raw = localStorage.getItem(SAVE_KEY);
     if (!raw) return null;
-    return normalizeSave(JSON.parse(raw));
+    return migrate(JSON.parse(raw));
   } catch {
     return null;
   }
@@ -24,7 +77,7 @@ export function loadSave(): GameState | null {
 export function persistSave(state: GameState): void {
   if (!state.hero) return;
   try {
-    localStorage.setItem(SAVE_KEY, JSON.stringify(state));
+    localStorage.setItem(SAVE_KEY, serialize(state));
   } catch {
     // Storage full or unavailable; playing without saves is fine.
   }
@@ -36,20 +89,20 @@ export function clearSave(): void {
 
 /** Serializes a save into a copy-pastable code, e.g. to move progress between devices. */
 export function encodeSaveCode(state: GameState): string {
-  const bytes = new TextEncoder().encode(JSON.stringify(state));
+  const bytes = new TextEncoder().encode(serialize(state));
   let binary = "";
   for (const byte of bytes) binary += String.fromCharCode(byte);
   return CODE_PREFIX + btoa(binary);
 }
 
-/** Parses a save code produced by encodeSaveCode. Returns null on anything invalid. */
+/** Parses a save code from any past version of the game. Returns null on anything invalid. */
 export function decodeSaveCode(code: string): GameState | null {
   try {
     const trimmed = code.trim();
     if (!trimmed.startsWith(CODE_PREFIX)) return null;
     const binary = atob(trimmed.slice(CODE_PREFIX.length));
     const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0));
-    return normalizeSave(JSON.parse(new TextDecoder().decode(bytes)));
+    return migrate(JSON.parse(new TextDecoder().decode(bytes)));
   } catch {
     return null;
   }

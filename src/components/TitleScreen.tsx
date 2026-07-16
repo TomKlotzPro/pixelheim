@@ -85,7 +85,7 @@ export function TitleScreen({ canContinue, saveCode, onNewGame, onContinue, onIm
           </button>
         </div>
       )}
-      <p className="footnote">v0.1 - a retro RPG built with React + TypeScript</p>
+      <p className="footnote">v0.2 - a retro RPG built with React + TypeScript</p>
     </div>
   );
 }
