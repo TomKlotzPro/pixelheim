@@ -128,4 +128,5 @@ export type GameState = {
   clearedLevels: number[];
   battle: BattleState | null;
   inventoryOpen: boolean;
+  shopOpen: boolean;
 };

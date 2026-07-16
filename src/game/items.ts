@@ -152,6 +152,17 @@ const list: Item[] = [
     description: "Restores 15 MP. Fizzy.",
     restoreMp: 15,
   },
+  {
+    id: "elixir",
+    name: "Elixir",
+    category: "potions",
+    sprite: "elixir",
+    weight: 1,
+    value: 60,
+    description: "Restores 30 HP and 20 MP. The merchant swears by it.",
+    restoreHp: 30,
+    restoreMp: 20,
+  },
   // ---------------- food ----------------
   {
     id: "bread",
