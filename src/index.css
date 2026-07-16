@@ -146,6 +146,27 @@ body {
   font-size: 11px;
   margin-top: 24px;
 }
+.import-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 380px;
+  max-width: 100%;
+}
+.import-input {
+  font: inherit;
+  font-size: 11px;
+  color: var(--text);
+  background: #0d0e13;
+  border: 2px solid var(--border);
+  padding: 8px;
+  resize: vertical;
+  word-break: break-all;
+  outline: none;
+}
+.import-input:focus {
+  border-color: var(--accent);
+}
 
 /* ---------- character creation ---------- */
 .create-screen {

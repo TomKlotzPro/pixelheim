@@ -11,6 +11,10 @@
 
 ---
 
+## Play it
+
+**https://tomklotzpro.github.io/pixelheim/** - deployed to GitHub Pages on every push to `main`.
+
 ## The game
 
 You are an adventurer climbing the Ashen Mountain, ten floors of increasingly rude monsters, to slay **Fafnyr the Ashen** at the summit.
@@ -21,6 +25,7 @@ You are an adventurer climbing the Ashen Mountain, ten floors of increasingly ru
 - **Skyrim-style inventory**: category tabs (Weapons / Apparel / Potions / Food / Misc), equip weapon + body + off-hand, carry weight with over-encumbrance, and yes, cheese wheels
 - **Progression**: XP, level ups with per-role stat growth, gold, loot rewards per floor, rest at the inn
 - **Auto-save**: progress persists in localStorage, continue where you left off
+- **Save codes**: copy your save as a `PXH1.…` code from the title screen and import it on any other device or browser
 
 | Title | Battle | Inventory |
 | --- | --- | --- |
