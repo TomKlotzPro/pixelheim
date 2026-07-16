@@ -1,8 +1,17 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SFX } from "../audio/sfx";
 import { initAudio, isMuted, setBusVolume, setMuted } from "../audio/synth";
 import { GAME_VERSION } from "../changelog";
-import { saveSettings, type Settings } from "../settings";
+import { type BindableAction, DEFAULT_BINDINGS, keyLabel, saveSettings, type Settings } from "../settings";
+
+const CONTROL_ROWS: { action: BindableAction; label: string }[] = [
+  { action: "up", label: "Move up" },
+  { action: "down", label: "Move down" },
+  { action: "left", label: "Move left" },
+  { action: "right", label: "Move right" },
+  { action: "interact", label: "Talk / interact" },
+  { action: "inventory", label: "Inventory" },
+];
 
 type OptionsProps = {
   settings: Settings;
@@ -28,6 +37,7 @@ export function Options({
   const [importOpen, setImportOpen] = useState(false);
   const [importError, setImportError] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [listening, setListening] = useState<BindableAction | null>(null);
   const codeRef = useRef<HTMLTextAreaElement>(null);
 
   const update = (patch: Partial<Settings>) => {
@@ -35,6 +45,21 @@ export function Options({
     saveSettings(next);
     onSettingsChange(next);
   };
+
+  // While a rebind is armed, the next key pressed becomes the binding.
+  useEffect(() => {
+    if (!listening) return;
+    const capture = (event: KeyboardEvent) => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (event.key !== "Escape") {
+        update({ bindings: { ...settings.bindings, [listening]: event.code } });
+      }
+      setListening(null);
+    };
+    window.addEventListener("keydown", capture, { capture: true });
+    return () => window.removeEventListener("keydown", capture, { capture: true });
+  });
 
   const copySaveCode = async () => {
     if (!saveCode) return;
@@ -119,6 +144,28 @@ export function Options({
               {settings.reduceMotion ? "On" : "Off"}
             </button>
           </label>
+        </div>
+
+        <div className="options-section">
+          <h3 className="options-title">Controls</h3>
+          {CONTROL_ROWS.map(({ action, label }) => (
+            <div key={action} className="options-row">
+              <span>{label}</span>
+              <button
+                className={`btn btn-small key-btn ${listening === action ? "key-listening" : ""}`}
+                aria-label={`Rebind ${label}`}
+                onClick={() => setListening(listening === action ? null : action)}
+              >
+                {listening === action ? "Press a key…" : keyLabel(settings.bindings[action])}
+              </button>
+            </div>
+          ))}
+          <div className="options-row">
+            <span className="options-note">Arrows always move. Enter and Space always interact.</span>
+            <button className="btn btn-small" onClick={() => update({ bindings: { ...DEFAULT_BINDINGS } })}>
+              Reset
+            </button>
+          </div>
         </div>
 
         <div className="options-section">
