@@ -2,6 +2,7 @@ import { useStore } from "zustand";
 import { createStore } from "zustand/vanilla";
 import type { GameState } from "../game/types";
 import { type Action, gameReducer, initialState } from "./gameReducer";
+import { persistSave } from "./save";
 
 /**
  * The game state lives in a vanilla store so anything without React (the
@@ -16,6 +17,10 @@ export type GameStore = ReturnType<typeof createGameStore>;
 
 /** The one store the app plays in. */
 export const gameStore = createGameStore();
+
+// Persistence is a store concern, not a render concern: every committed state
+// is written straight through (persistSave itself skips heroless states).
+gameStore.subscribe(persistSave);
 
 /** Dispatches an action against the live store. Stable identity, safe to pass anywhere. */
 export function dispatch(action: Action): void {
