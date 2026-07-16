@@ -55,7 +55,7 @@ function pick<T>(list: T[]): T {
 /** Rolls the after-battle drop. Returns null most of the time; that is the point. */
 export function rollDrop(dungeonLevel: number, kind: MonsterKind): Drop | null {
   if (Math.random() >= DROP_CHANCE[kind]) return null;
-  const pool = [...POOLS].reverse().find((p) => p.floor <= dungeonLevel) ?? POOLS[0];
+  const pool = POOLS.findLast((p) => p.floor <= dungeonLevel) ?? POOLS[0];
   // Gear is the exciting third of drops; the rest keeps the satchel stocked.
   if (Math.random() < 0.35) {
     return { kind: "gear", gear: createGear(pick(pool.gearIds), rollRarity(RARITY_WEIGHTS[kind])) };

@@ -1,7 +1,7 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
 import { SAVE_KEY, VETERAN_SAVE } from './helpers'
 
-async function loadVeteranInTown(page: import('@playwright/test').Page) {
+async function loadVeteranInTown(page: Page) {
   const save = {
     ...VETERAN_SAVE,
     state: {

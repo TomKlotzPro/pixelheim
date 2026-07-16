@@ -23,9 +23,9 @@ const CHAR_TILES: Record<string, TileId> = {
   W: "shrine",
 };
 
-const SPAWN_CHARS = ["S", "$", "*"];
+const SPAWN_CHARS = new Set(["S", "$", "*"]);
 /** Tiles that transport the hero; each occurrence must have a portal defined. */
-const PORTAL_CHARS = ["D", "C"];
+const PORTAL_CHARS = new Set(["D", "C"]);
 
 /**
  * Parses an ASCII grid into a WorldMap and validates it. Door characters must
@@ -62,11 +62,11 @@ export function parseMap(id: string, ascii: string, portals: Portal[], regionSpe
     return [...row].map((char, x) => {
       const tile = CHAR_TILES[char];
       if (!tile) throw new Error(`Map "${id}" has unknown tile "${char}" at ${x},${y}`);
-      if (SPAWN_CHARS.includes(char)) {
+      if (SPAWN_CHARS.has(char)) {
         if (spawn) throw new Error(`Map "${id}" has more than one spawn`);
         spawn = { x, y };
       }
-      if (PORTAL_CHARS.includes(char)) doors.push({ x, y });
+      if (PORTAL_CHARS.has(char)) doors.push({ x, y });
       return tile;
     });
   });
