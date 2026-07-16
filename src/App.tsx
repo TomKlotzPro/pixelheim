@@ -230,7 +230,7 @@ function Screen({
     case "dungeon_select":
       return state.dungeonSelect ? <DungeonSelect /> : null;
     case "victory":
-      return <Victory hero={state.hero!} onContinue={() => dispatch({ type: "RETURN_TO_WORLD" })} />;
+      return state.hero ? <Victory hero={state.hero} onContinue={() => dispatch({ type: "RETURN_TO_WORLD" })} /> : null;
     default:
       return null;
   }

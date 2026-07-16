@@ -26,6 +26,9 @@ export const initialState: GameState = {
 
 /** Where heroes wake up: the middle of Pixelheim village. */
 export const TOWN_SPAWN = { mapId: "town", x: 14, y: 15, facing: "down" as const };
+/** The inn interior: entering it rests the hero for coin. */
+export const INN_MAP_ID = "town_inn";
+
 /** Where a defeated hero comes to: a bed at the village inn. */
 export const INN_REST = { mapId: "town", x: 12, y: 5, facing: "down" as const };
 

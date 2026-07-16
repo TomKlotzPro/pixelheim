@@ -5,7 +5,7 @@ import { ROLES } from "../game/roles";
 import { getHeroSkills } from "../game/skillTree";
 import type { StatusEffect } from "../game/types";
 import { USE_PIXI } from "../render/flag";
-import { dispatch, useGameState } from "../state/store";
+import { dispatch, useBattle, useGameState, useHero } from "../state/store";
 import { Sprite } from "./Sprite";
 import { StatBar } from "./StatBar";
 
@@ -32,8 +32,8 @@ function EffectBadges({ effects }: { effects: StatusEffect[] }) {
 
 export function Battle() {
   const state = useGameState();
-  const hero = state.hero!;
-  const battle = state.battle!;
+  const hero = useHero();
+  const battle = useBattle();
   const role = ROLES[hero.roleId];
   const dungeon = getLevel(battle.dungeonLevel);
   const logRef = useRef<HTMLDivElement>(null);
