@@ -1,11 +1,14 @@
 import { getItem } from "./items";
 import { gearArmor, gearItem } from "./rarity";
 import { ROLES } from "./roles";
-import type { Equipped, GearInstance, Hero, RoleId, Stats } from "./types";
+import type { Equipped, GearInstance, Hero, RoleId } from "./types";
 
 export function xpToNext(level: number): number {
   return 20 + level * 18;
 }
+
+/** Combat-stat points banked per level, spent by the player. */
+export const STAT_POINTS_PER_LEVEL = 5;
 
 export function createHero(name: string, roleId: RoleId): Hero {
   const role = ROLES[roleId];
@@ -18,10 +21,14 @@ export function createHero(name: string, roleId: RoleId): Hero {
     hp: role.baseStats.maxHp,
     mp: role.baseStats.maxMp,
     stats: { ...role.baseStats },
+    statPoints: 0,
   };
 }
 
-/** Applies pending XP, returns the number of levels gained. Levels fully heal. */
+/**
+ * Applies pending XP, returns the number of levels gained. Levels fully heal,
+ * grow HP/MP by role, and bank stat points for the player to place.
+ */
 export function applyLevelUps(hero: Hero): number {
   const role = ROLES[hero.roleId];
   let gained = 0;
@@ -29,12 +36,11 @@ export function applyLevelUps(hero: Hero): number {
     hero.xp -= hero.xpToNext;
     hero.level += 1;
     hero.xpToNext = xpToNext(hero.level);
-    const stats = hero.stats as Stats;
-    for (const key of Object.keys(role.growth) as (keyof Stats)[]) {
-      stats[key] += role.growth[key];
-    }
-    hero.hp = stats.maxHp;
-    hero.mp = stats.maxMp;
+    hero.stats.maxHp += role.growth.maxHp;
+    hero.stats.maxMp += role.growth.maxMp;
+    hero.statPoints += STAT_POINTS_PER_LEVEL;
+    hero.hp = hero.stats.maxHp;
+    hero.mp = hero.stats.maxMp;
     gained += 1;
   }
   return gained;

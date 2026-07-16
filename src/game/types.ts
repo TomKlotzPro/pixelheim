@@ -52,8 +52,8 @@ export type Role = {
   description: string;
   sprite: string;
   baseStats: Stats;
-  /** Stat gains applied on each level up. */
-  growth: Stats;
+  /** Automatic per-level gains; combat stats come from spendable points. */
+  growth: { maxHp: number; maxMp: number };
   /** Ordered by unlockLevel; index 0 is the starting skill. */
   skills: Skill[];
 };
@@ -134,7 +134,12 @@ export type Hero = {
   hp: number;
   mp: number;
   stats: Stats;
+  /** Unspent points from level-ups, placed freely into combat stats. */
+  statPoints: number;
 };
+
+/** The four stats a point can be spent on. */
+export type SpendableStat = "strength" | "intelligence" | "dexterity" | "defense";
 
 export type Equipped = Partial<Record<EquipSlot, string>>;
 
