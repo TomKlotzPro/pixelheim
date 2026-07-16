@@ -44,6 +44,7 @@ pnpm dev       # play at http://localhost:5173
 pnpm build     # typecheck + production build
 pnpm preview   # serve the production build
 pnpm sprites   # regenerate the PNG sprites
+pnpm test:e2e  # Playwright suite against the production build
 ```
 
 ## How it works
