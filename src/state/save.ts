@@ -123,7 +123,8 @@ function normalizeSave(state: unknown): GameState | null {
 }
 
 /** Takes any historical save payload and upgrades it to the current version. */
-function migrate(raw: unknown): GameState | null {
+/** Exported for the unit tests: the whole upgrade path is pure. */
+export function migrate(raw: unknown): GameState | null {
   let version = 1;
   let state = raw;
   if (isEnvelope(raw)) {

@@ -23,6 +23,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
+      - run: pnpm test:unit
       - name: Check generated sprites are in sync
         run: |
           pnpm sprites
