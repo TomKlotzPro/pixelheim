@@ -40,6 +40,7 @@ const CHAR_TILES: Record<string, TileId> = {
   B: "bed",
   H: "hearth",
   D: "door",
+  d: "door_shut",
   C: "cave",
   W: "shrine",
 };
