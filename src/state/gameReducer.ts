@@ -28,6 +28,7 @@ function route(draft: GameState, action: Action): GameState | void {
     case "LOAD":
     case "CREATE_HERO":
     case "DISMISS_INTRO":
+    case "QUIT_TO_TITLE":
       return metaReducer(draft, action);
 
     case "ENTER_LEVEL":
