@@ -1,3 +1,4 @@
+import { LEVELS } from "../game/levels";
 import type { GameState } from "../game/types";
 import { initialState } from "./gameReducer";
 
@@ -39,7 +40,20 @@ function isEnvelope(value: unknown): value is Envelope {
 function normalizeSave(state: unknown): GameState | null {
   if (!state || typeof state !== "object" || !(state as GameState).hero) return null;
   // Never resume mid-battle or mid-menu; wake up back in town.
-  return { ...initialState, ...(state as GameState), screen: "hub", battle: null, inventoryOpen: false, shopOpen: false };
+  const save: GameState = {
+    ...initialState,
+    ...(state as GameState),
+    screen: "hub",
+    battle: null,
+    inventoryOpen: false,
+    shopOpen: false,
+  };
+  // Recompute unlock progress: when new floors ship, players who had cleared
+  // the old final floor were capped at the old LEVELS.length and would
+  // otherwise never see the new content.
+  const maxCleared = save.clearedLevels.reduce((max, level) => Math.max(max, level), 0);
+  save.unlockedLevel = Math.max(save.unlockedLevel, Math.min(maxCleared + 1, LEVELS.length));
+  return save;
 }
 
 /** Takes any historical save payload and upgrades it to the current version. */
