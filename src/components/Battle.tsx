@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { getItem } from "../game/items";
 import { getLevel } from "../game/levels";
 import { ROLES } from "../game/roles";
+import { getHeroSkills } from "../game/skillTree";
 import type { GameState, StatusEffect } from "../game/types";
 import type { Action } from "../state/gameReducer";
 import { Sprite } from "./Sprite";
@@ -100,19 +101,17 @@ export function Battle({ state, dispatch }: BattleProps) {
           <button className="btn btn-primary" onClick={() => dispatch({ type: "ATTACK" })}>
             Attack
           </button>
-          {role.skills.map((skill, index) =>
-            hero.level >= skill.unlockLevel ? (
-              <button
-                key={skill.name}
-                className="btn"
-                disabled={hero.mp < skill.mpCost || (skill.hpCost ?? 0) >= hero.hp}
-                onClick={() => dispatch({ type: "SKILL", skillIndex: index })}
-                title={skill.description}
-              >
-                {skill.name} ({skill.mpCost} MP{skill.hpCost ? ` + ${skill.hpCost} HP` : ""})
-              </button>
-            ) : null,
-          )}
+          {getHeroSkills(hero).map((skill, index) => (
+            <button
+              key={skill.name}
+              className="btn"
+              disabled={hero.mp < skill.mpCost || (skill.hpCost ?? 0) >= hero.hp}
+              onClick={() => dispatch({ type: "SKILL", skillIndex: index })}
+              title={skill.description}
+            >
+              {skill.name} ({skill.mpCost} MP{skill.hpCost ? ` + ${skill.hpCost} HP` : ""})
+            </button>
+          ))}
           <button className="btn" onClick={() => dispatch({ type: "TOGGLE_INVENTORY" })} disabled={!hasConsumables}>
             Item
           </button>

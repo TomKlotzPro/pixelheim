@@ -23,9 +23,9 @@ import {
 import { getItem } from "../game/items";
 import { getLevel, LEVELS } from "../game/levels";
 import { buyPrice, sellPrice, shopStock } from "../game/shop";
-import { ROLES } from "../game/roles";
 import type { EquipSlot, GameState, Hero, RoleId, SpendableStat } from "../game/types";
 import { rollWildEncounter, WILD_REWARD_MULT } from "../game/encounters";
+import { canBuyNode, getHeroSkills, getNode, getPassives } from "../game/skillTree";
 import { discoverAround } from "../world/discover";
 import { getMap } from "../world/maps";
 import { isWalkable, portalAt, regionAt, tileAt } from "../world/parseMap";
@@ -59,7 +59,8 @@ export type Action =
   | { type: "MOVE"; direction: Direction }
   | { type: "CLOSE_DUNGEON_SELECT" }
   | { type: "DISMISS_INTRO" }
-  | { type: "SPEND_STAT_POINT"; stat: SpendableStat };
+  | { type: "SPEND_STAT_POINT"; stat: SpendableStat }
+  | { type: "BUY_SKILL_NODE"; nodeId: string };
 
 export const initialState: GameState = {
   screen: "title",
@@ -131,10 +132,17 @@ function monsterTurn(state: GameState, hero: Hero, log: string[]): void {
     const dmg = monsterAttackDamage(battle.monster, hero, state.gear, state.equipped);
     hero.hp = Math.max(0, hero.hp - dmg);
     log.push(`${battle.monster.name} hits you for ${dmg} damage.`);
-    const inflicted = rollInfliction(battle.heroEffects, battle.monster.def.inflicts);
+    const monsterInflicts = battle.monster.def.inflicts;
+    const passives = getPassives(hero);
+    const resisted =
+      (monsterInflicts?.kind === "stun" && passives.stunResist) ||
+      (monsterInflicts?.kind === "poison" && passives.poisonResist);
+    const inflicted = resisted
+      ? { effects: battle.heroEffects, applied: false }
+      : rollInfliction(battle.heroEffects, monsterInflicts);
     if (inflicted.applied) {
       battle.heroEffects = inflicted.effects;
-      log.push(`You are afflicted by ${battle.monster.def.inflicts!.kind}!`);
+      log.push(`You are afflicted by ${monsterInflicts!.kind}!`);
     }
     if (hero.hp <= 0) {
       battle.phase = "lost";
@@ -173,14 +181,20 @@ const BOSS_IDS = ["dragon", "lich"];
 
 function onMonsterDefeated(state: GameState, hero: Hero, log: string[]): void {
   const battle = state.battle!;
-  const { xp, gold, name } = battle.monster;
+  const passives = getPassives(hero);
+  const { xp, name } = battle.monster;
+  const gold = Math.round(battle.monster.gold * (1 + passives.goldBonus));
   log.push(`${name} is defeated! +${xp} XP, +${gold} gold.`);
   hero.xp += xp;
   state.gold += gold;
+  if (passives.killRefundMp > 0) {
+    hero.mp = Math.min(hero.stats.maxMp, hero.mp + passives.killRefundMp);
+  }
   const gained = applyLevelUps(hero);
   if (gained > 0) {
     log.push(
-      `LEVEL UP! You are now level ${hero.level}. Fully restored. +${gained * STAT_POINTS_PER_LEVEL} stat points to spend.`,
+      `LEVEL UP! You are now level ${hero.level}. Fully restored. ` +
+        `+${gained * STAT_POINTS_PER_LEVEL} stat points and +${gained} skill point${gained > 1 ? "s" : ""} to spend.`,
     );
   }
 
@@ -289,15 +303,27 @@ export function gameReducer(state: GameState, action: Action): GameState {
       const dmg = heroAttackDamage(hero, next.gear, next.equipped, battle.monster);
       battle.monster.hp = Math.max(0, battle.monster.hp - dmg);
       battle.log.push(`You strike ${battle.monster.name} for ${dmg} damage.`);
-      if (battle.monster.hp <= 0) onMonsterDefeated(next, hero, battle.log);
-      else monsterTurn(next, hero, battle.log);
+      if (battle.monster.hp <= 0) {
+        onMonsterDefeated(next, hero, battle.log);
+      } else {
+        // Cinders-style passives can set the enemy alight on a plain attack.
+        const attackInflict = getPassives(hero).attackInflict;
+        if (attackInflict) {
+          const inflicted = rollInfliction(battle.monsterEffects, attackInflict);
+          if (inflicted.applied) {
+            battle.monsterEffects = inflicted.effects;
+            battle.log.push(`${battle.monster.name} is afflicted by ${attackInflict.kind}!`);
+          }
+        }
+        monsterTurn(next, hero, battle.log);
+      }
       return next;
     }
 
     case "SKILL": {
       if (!state.hero || state.battle?.phase !== "player") return state;
-      const skill = ROLES[state.hero.roleId].skills[action.skillIndex];
-      if (!skill || state.hero.level < skill.unlockLevel) return state;
+      const skill = getHeroSkills(state.hero)[action.skillIndex];
+      if (!skill) return state;
       if (state.hero.mp < skill.mpCost) return state;
       if (skill.hpCost && state.hero.hp <= skill.hpCost) return state;
       const next = structuredClone(state);
@@ -550,6 +576,25 @@ export function gameReducer(state: GameState, action: Action): GameState {
       const next = structuredClone(state);
       next.hero!.stats[action.stat] += 1;
       next.hero!.statPoints -= 1;
+      return next;
+    }
+
+    case "BUY_SKILL_NODE": {
+      if (!state.hero) return state;
+      const node = getNode(state.hero.roleId, action.nodeId);
+      if (!node || !canBuyNode(state.hero, node)) return state;
+      const next = structuredClone(state);
+      const hero = next.hero!;
+      hero.skillNodes.push(node.id);
+      hero.skillPoints -= 1;
+      if (node.grantStats?.maxHp) {
+        hero.stats.maxHp += node.grantStats.maxHp;
+        hero.hp += node.grantStats.maxHp;
+      }
+      if (node.grantStats?.maxMp) {
+        hero.stats.maxMp += node.grantStats.maxMp;
+        hero.mp += node.grantStats.maxMp;
+      }
       return next;
     }
 
