@@ -57,6 +57,12 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
       const { dx, dy } = DIRECTION_DELTAS[position.facing];
       const npc = npcAt(position.mapId, position.x + dx, position.y + dy, draft.worldSteps);
       if (!npc) return;
+      // Keepers trade instead of chatting: talking to whoever runs a shop
+      // opens their counter (the menu no longer jumps at you on entry).
+      if (SHOP_MAPS[position.mapId]) {
+        draft.shopOpen = true;
+        return;
+      }
       draft.dialogue = { npcId: npc.id, page: 0 };
       draft.worldMessage = null;
       return;
@@ -94,11 +100,6 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
         draft.worldMessage = null;
         draft.world.position = { mapId: target.id, x: portal.to.x, y: portal.to.y, facing: action.direction };
         draft.world.discovered = discoverAround(draft.world.discovered, target, portal.to.x, portal.to.y);
-        // Entering a keeper's building opens their counter.
-        if (SHOP_MAPS[target.id] && draft.hero) {
-          draft.shopOpen = true;
-          return;
-        }
         // Entering the inn rests the hero, for the usual price.
         if (target.id === "town_inn" && draft.hero) {
           const hero = draft.hero;

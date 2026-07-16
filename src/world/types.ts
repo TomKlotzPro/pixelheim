@@ -27,6 +27,13 @@ export type TileId =
   | "crate"
   | "well"
   | "lamp"
+  | "anvil"
+  | "forge"
+  | "shelf"
+  | "cauldron"
+  | "counter"
+  | "bed"
+  | "hearth"
   | "door"
   | "cave"
   | "shrine";
