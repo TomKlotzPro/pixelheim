@@ -9,9 +9,11 @@ import { Sprite } from "./Sprite";
 
 export function Shop() {
   const state = useGameState();
-  const shopId = activeShopId(state)!;
-  const def = SHOPS[shopId];
+  const shopId = activeShopId(state);
   const [tab, setTab] = useState<"buy" | "sell" | "forge">("buy");
+  // No shop on this map: render nothing rather than crash (PIX-58).
+  if (!shopId) return null;
+  const def = SHOPS[shopId];
   const stock = shopStock(shopId, state.unlockedLevel);
   const owned = Object.entries(state.inventory).map(([id, count]) => ({ item: getItem(id), count }));
   const equippedUids = new Set(Object.values(state.equipped));
