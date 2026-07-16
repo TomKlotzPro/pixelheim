@@ -1,21 +1,11 @@
-name: Deploy to GitHub Pages
+name: CI
 
 on:
-  push:
-    branches: [main]
+  pull_request:
   workflow_dispatch:
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: pages
-  cancel-in-progress: true
-
 jobs:
-  build:
+  checks:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -28,20 +18,11 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
+      - name: Check generated sprites are in sync
+        run: |
+          pnpm sprites
+          git diff --exit-code public/sprites scripts/preview.png
       - run: pnpm build
       - name: Install Playwright browser
         run: pnpm exec playwright install chromium --with-deps
       - run: pnpm test:e2e
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
