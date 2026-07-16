@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { totalDefense } from "../game/character";
 import { ROLES } from "../game/roles";
-import type { GameState, SpendableStat } from "../game/types";
-import type { Action } from "../state/gameReducer";
+import type { SpendableStat } from "../game/types";
+import { dispatch, useGameState } from "../state/store";
 import { SkillTree } from "./SkillTree";
 import { Sprite } from "./Sprite";
 import { StatBar } from "./StatBar";
@@ -14,8 +14,8 @@ const SPENDABLE: { stat: SpendableStat; label: string }[] = [
   { stat: "defense", label: "DEF" },
 ];
 
-function StatSheet({ state, dispatch, onClose }: WorldHudProps & { onClose: () => void }) {
-  const hero = state.hero!;
+function StatSheet({ onClose }: { onClose: () => void }) {
+  const hero = useGameState().hero!;
   return (
     <div className="overlay" onClick={onClose}>
       <div className="panel stat-sheet" onClick={(e) => e.stopPropagation()}>
@@ -51,13 +51,9 @@ function StatSheet({ state, dispatch, onClose }: WorldHudProps & { onClose: () =
   );
 }
 
-type WorldHudProps = {
-  state: GameState;
-  dispatch: (action: Action) => void;
-};
-
 /** Compact hero panel floating over the world viewport. */
-export function WorldHud({ state, dispatch }: WorldHudProps) {
+export function WorldHud() {
+  const state = useGameState();
   const hero = state.hero!;
   const role = ROLES[hero.roleId];
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -90,8 +86,8 @@ export function WorldHud({ state, dispatch }: WorldHudProps) {
           Skills{hero.skillPoints > 0 && <span className="new-badge"> +{hero.skillPoints}</span>}
         </button>
       </div>
-      {sheetOpen && <StatSheet state={state} dispatch={dispatch} onClose={() => setSheetOpen(false)} />}
-      {treeOpen && <SkillTree state={state} dispatch={dispatch} onClose={() => setTreeOpen(false)} />}
+      {sheetOpen && <StatSheet onClose={() => setSheetOpen(false)} />}
+      {treeOpen && <SkillTree onClose={() => setTreeOpen(false)} />}
     </div>
   );
 }

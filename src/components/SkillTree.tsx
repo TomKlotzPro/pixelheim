@@ -1,6 +1,5 @@
 import { canBuyNode, SKILL_TREES, type SkillNode } from "../game/skillTree";
-import type { GameState } from "../game/types";
-import type { Action } from "../state/gameReducer";
+import { dispatch, useGameState } from "../state/store";
 
 const KIND_LABELS: Record<SkillNode["kind"], string> = {
   active: "SKILL",
@@ -8,14 +7,8 @@ const KIND_LABELS: Record<SkillNode["kind"], string> = {
   passive: "PASSIVE",
 };
 
-type SkillTreeProps = {
-  state: GameState;
-  dispatch: (action: Action) => void;
-  onClose: () => void;
-};
-
-export function SkillTree({ state, dispatch, onClose }: SkillTreeProps) {
-  const hero = state.hero!;
+export function SkillTree({ onClose }: { onClose: () => void }) {
+  const hero = useGameState().hero!;
   const tree = SKILL_TREES[hero.roleId];
   const owned = new Set(hero.skillNodes);
   const branches = [0, 1, 2].map((branch) =>
