@@ -1,12 +1,18 @@
-import { useEffect, useRef } from "react";
+import { lazy, Suspense, useEffect, useRef } from "react";
 import { getItem } from "../game/items";
 import { getLevel } from "../game/levels";
 import { ROLES } from "../game/roles";
 import { getHeroSkills } from "../game/skillTree";
 import type { StatusEffect } from "../game/types";
+import { USE_PIXI } from "../render/flag";
 import { dispatch, useGameState } from "../state/store";
 import { Sprite } from "./Sprite";
 import { StatBar } from "./StatBar";
+
+// Lazy so pixi.js stays out of the main bundle until the flag asks for it.
+const BattleSceneView = lazy(() =>
+  import("../render/BattleSceneView").then((m) => ({ default: m.BattleSceneView })),
+);
 
 function EffectBadges({ effects }: { effects: StatusEffect[] }) {
   return (
@@ -62,23 +68,34 @@ export function Battle() {
         )}
       </div>
 
-      <div className="battle-arena">
+      {USE_PIXI && (
+        <div className="battle-stage">
+          <Suspense fallback={null}>
+            <BattleSceneView />
+          </Suspense>
+        </div>
+      )}
+      <div className={`battle-arena ${USE_PIXI ? "battle-arena-bars" : ""}`}>
         <div className="combatant">
-          {battle.wild && <span className="ambush-mark" aria-hidden="true">!</span>}
-          <Sprite name={role.sprite} size={96} alt={hero.name} className={battle.phase === "lost" ? "fallen" : ""} />
+          {battle.wild && !USE_PIXI && <span className="ambush-mark" aria-hidden="true">!</span>}
+          {!USE_PIXI && (
+            <Sprite name={role.sprite} size={96} alt={hero.name} className={battle.phase === "lost" ? "fallen" : ""} />
+          )}
           <div className="combatant-name">{hero.name}</div>
           <StatBar label="HP" value={hero.hp} max={hero.stats.maxHp} color="var(--hp)" />
           <StatBar label="MP" value={hero.mp} max={hero.stats.maxMp} color="var(--mp)" />
           <EffectBadges effects={battle.heroEffects} />
         </div>
         <div className="vs">VS</div>
-        <div className={`combatant ${battle.wild ? "combatant-lunge" : ""}`}>
-          <Sprite
-            name={battle.monster.def.sprite}
-            size={96}
-            alt={battle.monster.name}
-            className={battle.monster.hp <= 0 ? "fallen" : ""}
-          />
+        <div className={`combatant ${battle.wild && !USE_PIXI ? "combatant-lunge" : ""}`}>
+          {!USE_PIXI && (
+            <Sprite
+              name={battle.monster.def.sprite}
+              size={96}
+              alt={battle.monster.name}
+              className={battle.monster.hp <= 0 ? "fallen" : ""}
+            />
+          )}
           <div className="combatant-name">{battle.monster.name}</div>
           <StatBar label="HP" value={battle.monster.hp} max={battle.monster.maxHp} color="var(--hp)" />
           <EffectBadges effects={battle.monsterEffects} />

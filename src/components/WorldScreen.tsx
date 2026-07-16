@@ -9,6 +9,7 @@ import type { Direction, TileId } from "../world/types";
 
 /** Must mirror the reducer's encounter terrain: only these tiles grow tufts. */
 const WILD_TILES = new Set<TileId>(["grass", "forest", "marsh", "ash", "sand"]);
+import { USE_PIXI } from "../render/flag";
 import { Sprite } from "./Sprite";
 import { WorldHud } from "./WorldHud";
 
@@ -16,8 +17,6 @@ const ART_PX = 16;
 const VIEW_W = 15;
 const VIEW_H = 11;
 
-/** Opt-in flag for the WebGL renderer while it grows to parity (PIX-51). */
-const USE_PIXI = new URLSearchParams(window.location.search).has("pixi");
 // Lazy so pixi.js stays out of the main bundle until the flag asks for it.
 const PixiWorldView = lazy(() =>
   import("../render/PixiWorldView").then((m) => ({ default: m.PixiWorldView })),
