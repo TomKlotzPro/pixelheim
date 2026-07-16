@@ -24,6 +24,7 @@ const CATALOG: ShopEntry[] = [
   { itemId: "steel_axe", unlockLevel: 7 },
   { itemId: "iron_armor", unlockLevel: 7 },
   { itemId: "arch_staff", unlockLevel: 8 },
+  { itemId: "greater_potion", unlockLevel: 11 },
 ];
 
 export function shopStock(unlockedLevel: number): Item[] {

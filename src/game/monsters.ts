@@ -71,6 +71,42 @@ const list: Monster[] = [
     gold: 250,
     inflicts: { kind: "burn", chance: 0.45, turns: 2, power: 8 },
   },
+  // ---------------- the Undermountain (floors 11-15) ----------------
+  { id: "boneknight", name: "Bone Knight", sprite: "boneknight", maxHp: 130, attack: 34, defense: 11, xp: 95, gold: 70 },
+  {
+    id: "shade",
+    name: "Shade",
+    sprite: "shade",
+    maxHp: 120,
+    attack: 38,
+    defense: 8,
+    xp: 105,
+    gold: 80,
+    inflicts: { kind: "stun", chance: 0.3, turns: 1, power: 0 },
+  },
+  { id: "mimic", name: "Mimic", sprite: "mimic", maxHp: 160, attack: 37, defense: 12, xp: 120, gold: 170 },
+  {
+    id: "imp",
+    name: "Fire Imp",
+    sprite: "imp",
+    maxHp: 150,
+    attack: 42,
+    defense: 10,
+    xp: 140,
+    gold: 100,
+    inflicts: { kind: "burn", chance: 0.4, turns: 2, power: 9 },
+  },
+  {
+    id: "lich",
+    name: "Morvax the Deathless",
+    sprite: "lich",
+    maxHp: 260,
+    attack: 48,
+    defense: 12,
+    xp: 350,
+    gold: 700,
+    inflicts: { kind: "poison", chance: 0.45, turns: 3, power: 10 },
+  },
 ];
 
 export const MONSTERS: Record<string, Monster> = Object.fromEntries(list.map((m) => [m.id, m]));

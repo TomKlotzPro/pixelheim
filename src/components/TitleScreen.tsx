@@ -45,7 +45,7 @@ export function TitleScreen({ canContinue, saveCode, onNewGame, onContinue, onIm
         <Sprite name="wolf" size={48} />
       </div>
       <h1 className="game-title">PIXELHEIM</h1>
-      <p className="tagline">Ten floors. One dragon. Infinite cheese wheels.</p>
+      <p className="tagline">Fifteen floors. One dragon. Worse things below.</p>
       <div className="menu">
         <button className="btn btn-primary" onClick={onNewGame}>
           New Game
@@ -85,7 +85,7 @@ export function TitleScreen({ canContinue, saveCode, onNewGame, onContinue, onIm
           </button>
         </div>
       )}
-      <p className="footnote">v0.3 - a retro RPG built with React + TypeScript</p>
+      <p className="footnote">v0.4 - a retro RPG built with React + TypeScript</p>
     </div>
   );
 }

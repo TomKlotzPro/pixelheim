@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { carriedWeight, carryCapacity, totalArmor, weaponOf } from "../game/character";
 import { LEVELS } from "../game/levels";
 import { getMonster } from "../game/monsters";
@@ -80,8 +81,9 @@ export function Hub({ state, onEnterLevel, onRest, onOpenInventory, onOpenShop }
           const locked = lvl.level > state.unlockedLevel;
           const boss = getMonster(lvl.encounters[lvl.encounters.length - 1].monsterId);
           return (
+            <Fragment key={lvl.level}>
+            {lvl.level === 11 && <h2 className="screen-title undermountain-title">The Undermountain</h2>}
             <button
-              key={lvl.level}
               className={`level-card ${cleared ? "cleared" : ""} ${locked ? "locked" : ""}`}
               disabled={locked || overEncumbered}
               onClick={() => onEnterLevel(lvl.level)}
@@ -96,6 +98,7 @@ export function Hub({ state, onEnterLevel, onRest, onOpenInventory, onOpenShop }
               </span>
               {!locked && <Sprite name={boss.sprite} size={40} alt={boss.name} />}
             </button>
+            </Fragment>
           );
         })}
       </main>
