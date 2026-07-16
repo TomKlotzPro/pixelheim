@@ -6,7 +6,7 @@ async function loadVeteranInTown(page: Page) {
     ...VETERAN_SAVE,
     state: {
       ...VETERAN_SAVE.state,
-      world: { position: { mapId: 'town', x: 9, y: 8, facing: 'down' }, discovered: {}, openedChests: [] },
+      world: { position: { mapId: 'town', x: 14, y: 15, facing: 'down' }, discovered: {}, openedChests: [] },
     },
   }
   await page.goto('./')

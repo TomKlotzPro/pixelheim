@@ -201,4 +201,8 @@ export type GameState = {
   introSeen: boolean;
   /** One-line feedback shown under the world viewport (inn, gate...). Cleared on move. */
   worldMessage: string | null;
+  /** Total world steps taken; drives deterministic NPC wandering. */
+  worldSteps: number;
+  /** Open conversation, if any. */
+  dialogue: { npcId: string; page: number } | null;
 };

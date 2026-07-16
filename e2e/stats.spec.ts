@@ -7,7 +7,7 @@ test('banked stat points can be spent and persist', async ({ page }) => {
     state: {
       ...VETERAN_SAVE.state,
       hero: { ...VETERAN_SAVE.state.hero, statPoints: 3 },
-      world: { position: { mapId: 'town', x: 9, y: 8, facing: 'down' }, discovered: {}, openedChests: [] },
+      world: { position: { mapId: 'town', x: 14, y: 15, facing: 'down' }, discovered: {}, openedChests: [] },
     },
   }
   await page.goto('./')

@@ -28,6 +28,7 @@ import { rollWildEncounter, WILD_REWARD_MULT } from "../game/encounters";
 import { canBuyNode, getHeroSkills, getNode, getPassives } from "../game/skillTree";
 import { discoverAround } from "../world/discover";
 import { getMap } from "../world/maps";
+import { npcAt, NPCS } from "../world/npcs";
 import { isWalkable, portalAt, regionAt, tileAt } from "../world/parseMap";
 import type { Direction, TileId } from "../world/types";
 
@@ -59,6 +60,8 @@ export type Action =
   | { type: "MOVE"; direction: Direction }
   | { type: "CLOSE_DUNGEON_SELECT" }
   | { type: "DISMISS_INTRO" }
+  | { type: "INTERACT" }
+  | { type: "ADVANCE_DIALOGUE" }
   | { type: "SPEND_STAT_POINT"; stat: SpendableStat }
   | { type: "BUY_SKILL_NODE"; nodeId: string };
 
@@ -78,10 +81,12 @@ export const initialState: GameState = {
   dungeonSelect: null,
   introSeen: true,
   worldMessage: null,
+  worldSteps: 0,
+  dialogue: null,
 };
 
 /** Where heroes wake up: the middle of Pixelheim village. */
-export const TOWN_SPAWN = { mapId: "town", x: 9, y: 8, facing: "down" as const };
+export const TOWN_SPAWN = { mapId: "town", x: 14, y: 15, facing: "down" as const };
 const INN_REST = { mapId: "town", x: 12, y: 5, facing: "down" as const };
 
 const DIRECTION_DELTAS: Record<Direction, { dx: number; dy: number }> = {
@@ -603,15 +608,33 @@ export function gameReducer(state: GameState, action: Action): GameState {
       return { ...state, screen: "world", dungeonSelect: null };
     }
 
+    case "INTERACT": {
+      if (state.screen !== "world" || !state.world || !state.hero) return state;
+      if (state.dialogue) return gameReducer(state, { type: "ADVANCE_DIALOGUE" });
+      const { position } = state.world;
+      const { dx, dy } = DIRECTION_DELTAS[position.facing];
+      const npc = npcAt(position.mapId, position.x + dx, position.y + dy, state.worldSteps);
+      if (!npc) return state;
+      return { ...state, dialogue: { npcId: npc.id, page: 0 }, worldMessage: null };
+    }
+
+    case "ADVANCE_DIALOGUE": {
+      if (!state.dialogue) return state;
+      const npc = NPCS.find((n) => n.id === state.dialogue!.npcId);
+      if (!npc || state.dialogue.page >= npc.lines.length - 1) return { ...state, dialogue: null };
+      return { ...state, dialogue: { ...state.dialogue, page: state.dialogue.page + 1 } };
+    }
+
     case "MOVE": {
       if (state.screen !== "world" || !state.world) return state;
+      if (state.dialogue) return state;
       const { position } = state.world;
       const map = getMap(position.mapId);
       const { dx, dy } = DIRECTION_DELTAS[action.direction];
       const x = position.x + dx;
       const y = position.y + dy;
-      // Bumping into something still turns the hero toward it.
-      if (!isWalkable(map, x, y)) {
+      // Bumping into something (or someone) still turns the hero toward it.
+      if (!isWalkable(map, x, y) || npcAt(map.id, x, y, state.worldSteps)) {
         return { ...state, world: { ...state.world, position: { ...position, facing: action.direction } } };
       }
       const portal = portalAt(map, x, y);
@@ -662,6 +685,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
       const moved: GameState = {
         ...state,
         worldMessage: null,
+        worldSteps: state.worldSteps + 1,
         world: {
           ...state.world,
           position: { ...position, x, y, facing: action.direction },
