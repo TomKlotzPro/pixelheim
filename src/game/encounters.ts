@@ -1,3 +1,4 @@
+import type { RegionId } from "../world/types";
 import type { EncounterDef } from "./types";
 
 /**
@@ -15,7 +16,7 @@ type RegionTable = {
 export const ENCOUNTER_CHANCE = 0.1;
 export const WILD_REWARD_MULT = 0.65;
 
-const REGIONS: Record<string, RegionTable> = {
+const REGIONS: Record<RegionId, RegionTable> = {
   forest: {
     name: "the Whispering Forest",
     dropFloor: 1,
@@ -50,13 +51,13 @@ const REGIONS: Record<string, RegionTable> = {
 
 export type WildEncounter = {
   def: EncounterDef;
-  regionId: string;
+  regionId: RegionId;
   regionName: string;
   dropFloor: number;
 };
 
 /** Rolls one step's encounter for a region; null means the wilds stay quiet. */
-export function rollWildEncounter(region: string): WildEncounter | null {
+export function rollWildEncounter(region: RegionId): WildEncounter | null {
   const table = REGIONS[region];
   if (!table || Math.random() >= ENCOUNTER_CHANCE) return null;
   const total = table.monsters.reduce((sum, m) => sum + m.weight, 0);

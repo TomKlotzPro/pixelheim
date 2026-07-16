@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import { ROLES } from "../game/roles";
-import { dispatch, useGameState } from "../state/store";
+import { dispatch, useGameState, useWorld } from "../state/store";
 import { getMap } from "../world/maps";
 import { npcAt, NPCS, npcPosition, npcsOn } from "../world/npcs";
 import { regionAt } from "../world/parseMap";
@@ -52,7 +52,7 @@ const FACING_DELTAS: Record<Direction, { dx: number; dy: number }> = {
 
 export function WorldScreen() {
   const state = useGameState();
-  const world = state.world!.position;
+  const world = useWorld().position;
   const map = getMap(world.mapId);
   const heroSprite = ROLES[state.hero?.roleId ?? "warrior"].sprite;
   const tilePx = ART_PX * useTileScale();

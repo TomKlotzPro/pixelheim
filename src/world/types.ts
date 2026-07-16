@@ -1,5 +1,9 @@
 export type Direction = "up" | "down" | "left" | "right";
 
+/** Every encounter region in the game; maps may only reference these. */
+export const REGION_IDS = ["forest", "marsh", "ash"] as const;
+export type RegionId = (typeof REGION_IDS)[number];
+
 export type TileId =
   | "grass"
   | "forest"
@@ -66,7 +70,7 @@ export type WorldMap = {
   spawn: { x: number; y: number };
   portals: Portal[];
   /** Per-tile encounter region id (regions[y][x]), null where nothing lurks. */
-  regions: (string | null)[][] | null;
+  regions: (RegionId | null)[][] | null;
 };
 
 /** The hero's position in the world. */

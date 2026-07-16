@@ -7,7 +7,7 @@ import { getMap } from "../../world/maps";
 import { npcAt, NPCS } from "../../world/npcs";
 import { isWalkable, portalAt, regionAt, tileAt } from "../../world/parseMap";
 import type { WorldAction } from "../actions";
-import { DIRECTION_DELTAS, REST_COST, WILD_TILES } from "../shared";
+import { DIRECTION_DELTAS, INN_MAP_ID, REST_COST, WILD_TILES } from "../shared";
 
 export function worldReducer(draft: GameState, action: WorldAction): void {
   switch (action.type) {
@@ -101,7 +101,7 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
         draft.world.position = { mapId: target.id, x: portal.to.x, y: portal.to.y, facing: action.direction };
         draft.world.discovered = discoverAround(draft.world.discovered, target, portal.to.x, portal.to.y);
         // Entering the inn rests the hero, for the usual price.
-        if (target.id === "town_inn" && draft.hero) {
+        if (target.id === INN_MAP_ID && draft.hero) {
           const hero = draft.hero;
           if (hero.hp === hero.stats.maxHp && hero.mp === hero.stats.maxMp) {
             draft.worldMessage = "The innkeeper nods. You are already well rested.";
