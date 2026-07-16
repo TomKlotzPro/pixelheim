@@ -3,16 +3,12 @@ import { getItem } from "../game/items";
 import { itemStatLine } from "../game/itemStats";
 import { gearItem, gearName, gearValue } from "../game/rarity";
 import { buyPrice, FORGE_BONUS_CAP, forgeCost, sellPriceAt, SHOPS, shopStock } from "../game/shop";
-import type { GameState } from "../game/types";
-import { activeShopId, type Action } from "../state/gameReducer";
+import { activeShopId } from "../state/gameReducer";
+import { dispatch, useGameState } from "../state/store";
 import { Sprite } from "./Sprite";
 
-type ShopProps = {
-  state: GameState;
-  dispatch: (action: Action) => void;
-};
-
-export function Shop({ state, dispatch }: ShopProps) {
+export function Shop() {
+  const state = useGameState();
   const shopId = activeShopId(state)!;
   const def = SHOPS[shopId];
   const [tab, setTab] = useState<"buy" | "sell" | "forge">("buy");
