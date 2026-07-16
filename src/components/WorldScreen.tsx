@@ -20,7 +20,7 @@ type WorldScreenProps = {
 };
 
 export function WorldScreen({ state, dispatch }: WorldScreenProps) {
-  const world = state.world!;
+  const world = state.world!.position;
   const map = getMap(world.mapId);
   const heroSprite = ROLES[state.hero?.roleId ?? "warrior"].sprite;
 

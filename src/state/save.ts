@@ -12,7 +12,7 @@ const CODE_PREFIX = "PXH1.";
  * normalizeSave rebases every save onto initialState, so new fields pick up
  * their defaults automatically.
  */
-const SAVE_VERSION = 2;
+const SAVE_VERSION = 3;
 
 type Envelope = { version: number; state: unknown };
 
@@ -25,6 +25,14 @@ const MIGRATIONS: Record<number, (state: Record<string, unknown>) => Record<stri
   // v1 -> v2: v1 saves were a bare GameState with no version envelope.
   // The shape itself did not change; v2 only introduced the envelope.
   1: (state) => state,
+  // v2 -> v3: `world` grew from a flat position into { position, discovered,
+  // openedChests } so exploration persists. Flat positions get wrapped;
+  // saves that never entered the world keep world: null via the rebase.
+  2: (state) => {
+    const world = state.world as { mapId?: string } | null | undefined;
+    if (!world || !world.mapId) return { ...state, world: null };
+    return { ...state, world: { position: world, discovered: {}, openedChests: [] } };
+  },
 };
 
 function isEnvelope(value: unknown): value is Envelope {

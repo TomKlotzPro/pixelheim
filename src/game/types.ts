@@ -1,4 +1,4 @@
-import type { WorldPosition } from "../world/types";
+import type { WorldState } from "../world/types";
 
 export type RoleId = "warrior" | "mage" | "rogue" | "cleric";
 
@@ -160,6 +160,6 @@ export type GameState = {
   battle: BattleState | null;
   inventoryOpen: boolean;
   shopOpen: boolean;
-  /** Position in the tile world; null until the hero enters it. */
-  world: WorldPosition | null;
+  /** World position and exploration memory; null until the hero enters it. */
+  world: WorldState | null;
 };
