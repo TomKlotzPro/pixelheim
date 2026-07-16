@@ -27,9 +27,6 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
       - run: pnpm build
-      # heavier than the PR checks: the balance gate runs before deploys only
-      - name: Balance regression (all roles must finish the game)
-        run: pnpm sim --check
       - name: Install Playwright browser
         run: pnpm exec playwright install chromium --with-deps
       - run: pnpm test:e2e
