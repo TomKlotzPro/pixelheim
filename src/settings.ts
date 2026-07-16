@@ -28,6 +28,8 @@ export type Settings = {
   sfxVolume: number;
   scanlines: boolean;
   reduceMotion: boolean;
+  /** "webgl" is the game; "classic" is the legacy DOM tile renderer. */
+  renderer: "webgl" | "classic";
   bindings: Bindings;
 };
 
@@ -38,6 +40,7 @@ export const DEFAULT_SETTINGS: Settings = {
   sfxVolume: 0.7,
   scanlines: true,
   reduceMotion: false,
+  renderer: "webgl",
   bindings: { ...DEFAULT_BINDINGS },
 };
 
