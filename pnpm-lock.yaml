@@ -8,12 +8,18 @@ importers:
 
   .:
     dependencies:
+      immer:
+        specifier: ^11.1.15
+        version: 11.1.15
       react:
         specifier: ^19.2.7
         version: 19.2.7
       react-dom:
         specifier: ^19.2.7
         version: 19.2.7(react@19.2.7)
+      zustand:
+        specifier: ^5.0.14
+        version: 5.0.14(@types/react@19.2.17)(immer@11.1.15)(react@19.2.7)
     devDependencies:
       '@playwright/test':
         specifier: ^1.61.1
@@ -502,6 +508,9 @@ packages:
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
 
+  immer@11.1.15:
+    resolution: {integrity: sha512-VrNANlmnWQnh5COXIIOQXM9oOJw7naGKlBT74ZOOR6lpVXc3gFEu9FJLDFcpCJ2j+NWr8TIwtWD//T6ZX6TKiQ==}
+
   lightningcss-android-arm64@1.32.0:
     resolution: {integrity: sha512-YK7/ClTt4kAK0vo6w3X+Pnm0D2cf2vPHbhOXdoNti1Ga0al1P4TBZhwjATvjNwLEBCnKvjJc2jQgHXH0NEwlAg==}
     engines: {node: '>= 12.0.0'}
@@ -697,6 +706,24 @@ packages:
       tsx:
         optional: true
       yaml:
+        optional: true
+
+  zustand@5.0.14:
+    resolution: {integrity: sha512-/8tAspM5LMPr28b3fwLYrtdj77ECpfZviaP75CMTnwO8ISyaE4GDIG/9rDDYq/cH9D2Xw2A2RXglLInmVBQB/g==}
+    engines: {node: '>=12.20.0'}
+    peerDependencies:
+      '@types/react': '>=18.0.0'
+      immer: '>=9.0.6'
+      react: '>=18.0.0'
+      use-sync-external-store: '>=1.2.0'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      immer:
+        optional: true
+      react:
+        optional: true
+      use-sync-external-store:
         optional: true
 
 snapshots:
@@ -981,6 +1008,8 @@ snapshots:
   fsevents@2.3.3:
     optional: true
 
+  immer@11.1.15: {}
+
   lightningcss-android-arm64@1.32.0:
     optional: true
 
@@ -1134,3 +1163,9 @@ snapshots:
       esbuild: 0.28.1
       fsevents: 2.3.3
       tsx: 4.23.1
+
+  zustand@5.0.14(@types/react@19.2.17)(immer@11.1.15)(react@19.2.7):
+    optionalDependencies:
+      '@types/react': 19.2.17
+      immer: 11.1.15
+      react: 19.2.7
