@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test'
 import { createHero, SAVE_KEY, V1_SAVE } from './helpers'
 
-test('a v1 save (pre-envelope) loads and is re-persisted as a v2 envelope', async ({ page }) => {
+test('a v1 save (pre-envelope) replays the full migration chain to the current version', async ({ page }) => {
   await page.goto('./')
   await page.evaluate(
     ([key, save]) => localStorage.setItem(key as string, JSON.stringify(save)),
@@ -20,9 +20,37 @@ test('a v1 save (pre-envelope) loads and is re-persisted as a v2 envelope', asyn
   await expect(page.getByText('Elixir', { exact: true })).toBeVisible()
   await page.getByRole('button', { name: 'Close' }).click()
 
+  // v1 -> v2 (envelope) -> v3 (world state): the whole chain replays on load
   const persisted = await page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), SAVE_KEY)
-  expect(persisted.version).toBe(2)
+  expect(persisted.version).toBe(3)
   expect(persisted.state.hero.name).toBe('OldTimer')
+  expect(persisted.state.world).toBeNull()
+})
+
+test('a v2 save with a flat world position migrates to the v3 world state', async ({ page }) => {
+  // Frozen v2-era shape: world was a bare position with no exploration memory.
+  const v2Save = {
+    version: 2,
+    state: {
+      ...V1_SAVE,
+      shopOpen: false,
+      world: { mapId: 'demo', x: 5, y: 8, facing: 'left' },
+    },
+  }
+  await page.goto('./')
+  await page.evaluate(
+    ([key, save]) => localStorage.setItem(key as string, JSON.stringify(save)),
+    [SAVE_KEY, v2Save] as const,
+  )
+  await page.reload()
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await expect(page.getByText('OldTimer')).toBeVisible()
+
+  const persisted = await page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), SAVE_KEY)
+  expect(persisted.version).toBe(3)
+  expect(persisted.state.world.position).toEqual({ mapId: 'demo', x: 5, y: 8, facing: 'left' })
+  expect(persisted.state.world.discovered).toEqual({})
+  expect(persisted.state.world.openedChests).toEqual([])
 })
 
 test('a v1-format save code still imports', async ({ page }) => {
