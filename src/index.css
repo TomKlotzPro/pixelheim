@@ -141,11 +141,6 @@ body {
   gap: 12px;
   width: 220px;
 }
-.footnote {
-  color: var(--text-dim);
-  font-size: 11px;
-  margin-top: 24px;
-}
 .import-panel {
   display: flex;
   flex-direction: column;
@@ -602,6 +597,58 @@ body {
 .empty-note {
   color: var(--text-dim);
   text-align: center;
+}
+
+/* ---------- changelog ---------- */
+.changelog-link {
+  font: inherit;
+  font-size: 11px;
+  color: var(--text-dim);
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-top: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.changelog-link:hover {
+  color: var(--accent);
+}
+.new-badge {
+  background: var(--danger);
+  color: #fff;
+  font-size: 10px;
+  letter-spacing: 1px;
+  padding: 1px 5px;
+}
+.changelog-list {
+  padding-right: 4px;
+}
+.release-title {
+  color: var(--accent);
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 8px 0 4px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.release-date {
+  color: var(--text-dim);
+  font-size: 11px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.release-notes {
+  margin: 0 0 10px;
+  padding-left: 18px;
+  color: var(--text-dim);
+  font-size: 12px;
+}
+.release-notes li {
+  margin: 2px 0;
 }
 
 /* ---------- victory ---------- */
