@@ -113,10 +113,6 @@ export default function App() {
   const [optionsOpen, setOptionsOpen] = useState(false);
 
   useEffect(() => {
-    persistSave(state);
-  }, [state]);
-
-  useEffect(() => {
     document.documentElement.classList.toggle("no-scanlines", !settings.scanlines);
     document.documentElement.classList.toggle("reduce-motion", settings.reduceMotion);
   }, [settings]);
