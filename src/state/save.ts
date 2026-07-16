@@ -2,7 +2,9 @@ import { ITEMS } from "../game/items";
 import { LEVELS } from "../game/levels";
 import { createGear } from "../game/rarity";
 import type { GameState, GearInstance } from "../game/types";
-import { initialState } from "./gameReducer";
+import { discoverAround } from "../world/discover";
+import { getMap } from "../world/maps";
+import { initialState, TOWN_SPAWN } from "./gameReducer";
 
 const SAVE_KEY = "pixelheim-save-v1";
 const CODE_PREFIX = "PXH1.";
@@ -70,16 +72,26 @@ function isEnvelope(value: unknown): value is Envelope {
 /** Validates a parsed save and rebases it on the current initialState shape. */
 function normalizeSave(state: unknown): GameState | null {
   if (!state || typeof state !== "object" || !(state as GameState).hero) return null;
-  // Never resume mid-battle or mid-menu; wake up back in town.
+  // Never resume mid-battle or mid-menu; wake up back in the world.
   const save: GameState = {
     ...initialState,
     ...(state as GameState),
-    screen: "hub",
+    screen: "world",
     battle: null,
     inventoryOpen: false,
     shopOpen: false,
     dungeonSelect: null,
+    worldMessage: null,
   };
+  // Saves from the hub era have no world position: they wake up in town.
+  if (!save.world) {
+    const town = getMap(TOWN_SPAWN.mapId);
+    save.world = {
+      position: { ...TOWN_SPAWN },
+      discovered: discoverAround({}, town, TOWN_SPAWN.x, TOWN_SPAWN.y),
+      openedChests: [],
+    };
+  }
   // Recompute unlock progress: when new floors ship, players who had cleared
   // the old final floor were capped at the old LEVELS.length and would
   // otherwise never see the new content.

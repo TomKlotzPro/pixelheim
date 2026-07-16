@@ -166,15 +166,7 @@ export type BattleState = {
   wildRegion?: string;
 };
 
-export type Screen =
-  | "title"
-  | "create"
-  | "hub"
-  | "battle"
-  | "gameover"
-  | "victory"
-  | "world"
-  | "dungeon_select";
+export type Screen = "title" | "create" | "battle" | "victory" | "world" | "dungeon_select";
 
 export type GameState = {
   screen: Screen;
@@ -196,4 +188,8 @@ export type GameState = {
   world: WorldState | null;
   /** The dungeon entrance the hero is standing at (floor-select open or inside). */
   dungeonSelect: DungeonId | null;
+  /** False right after character creation until the intro is dismissed. */
+  introSeen: boolean;
+  /** One-line feedback shown under the world viewport (inn, gate...). Cleared on move. */
+  worldMessage: string | null;
 };
