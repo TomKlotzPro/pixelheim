@@ -153,6 +153,7 @@ export type BattleMonster = {
 export type BattlePhase = "player" | "won" | "lost" | "cleared";
 
 export type BattleState = {
+  /** For wild battles this is the drop-pool floor, not a dungeon. */
   dungeonLevel: number;
   encounterIndex: number;
   monster: BattleMonster;
@@ -160,6 +161,9 @@ export type BattleState = {
   phase: BattlePhase;
   heroEffects: StatusEffect[];
   monsterEffects: StatusEffect[];
+  /** Set for random battles in the overworld; win/flee returns to the world. */
+  wild?: boolean;
+  wildRegion?: string;
 };
 
 export type Screen = "title" | "create" | "hub" | "battle" | "gameover" | "victory" | "world";

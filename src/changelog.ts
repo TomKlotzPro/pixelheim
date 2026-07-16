@@ -11,6 +11,17 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.9.0",
+    date: "2026-07-16",
+    codename: "The Wilds Bite",
+    notes: [
+      "Random encounters in the open world: forests, marshes and ash fields are dangerous now",
+      "Each region has its own monsters; deeper regions hit harder and drop better",
+      "Paths, bridges and town stay safe - stray off the road at your own risk",
+      "Beaten in the wilds? You wake up at the inn, purse intact",
+    ],
+  },
+  {
     version: "0.8.0",
     date: "2026-07-16",
     codename: "Polish and Knobs",
