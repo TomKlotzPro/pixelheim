@@ -1,9 +1,9 @@
-import { Application, Assets, Container, Graphics, Rectangle, Sprite, Texture, TextureStyle } from "pixi.js";
+import { Application, Assets, Container, Graphics, Rectangle, Sprite, Text, Texture, TextureStyle } from "pixi.js";
 import { ROLES } from "../game/roles";
 import type { GameState } from "../game/types";
 import { WILD_TILES } from "../state/shared";
 import { getMap } from "../world/maps";
-import { npcPosition, npcsOn, type Npc } from "../world/npcs";
+import { npcAt, npcPosition, npcsOn, type Npc } from "../world/npcs";
 import { regionAt } from "../world/parseMap";
 import { TILES } from "../world/tiles";
 import type { WorldMap, WorldPosition } from "../world/types";
@@ -120,7 +120,8 @@ export class WorldRenderer {
   private lightC = new Container();
   private skyTarget = { color: 0, alpha: 0 };
   private glowTexture: Texture | null = null;
-  private glows: Sprite[] = [];
+  private glows: { sprite: Sprite; always: boolean }[] = [];
+  private prompt: Text | null = null;
   private embers: Ember[] = [];
   private ashTiles: { x: number; y: number }[] = [];
   private outdoor = false;
@@ -224,6 +225,19 @@ export class WorldRenderer {
       const at = npcPosition(entry.npc, state.worldSteps);
       entry.target = { x: at.x * ART, y: at.y * ART };
     }
+
+    // Someone to talk to: the prompt floats over the NPC the hero is facing.
+    if (this.prompt) {
+      const delta = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }[pos.facing];
+      const facing =
+        state.hero && !state.dialogue && !state.shopOpen && !state.inventoryOpen
+          ? npcAt(map.id, pos.x + delta[0], pos.y + delta[1], state.worldSteps)
+          : null;
+      this.prompt.visible = facing !== null;
+      if (facing) {
+        this.prompt.position.set((pos.x + delta[0]) * ART + ART / 2, (pos.y + delta[1]) * ART - 2);
+      }
+    }
   }
 
   private buildMap(map: WorldMap, state: GameState): void {
@@ -252,8 +266,11 @@ export class WorldRenderer {
           this.mapC.addChild(tuft);
         }
         if (this.outdoor && regionAt(map, x, y) === "ash") this.ashTiles.push({ x, y });
-        // Doors, lamps and the shrine glow after dark.
-        if (this.outdoor && this.glowTexture && (tile === "door" || tile === "shrine" || tile === "lamp")) {
+        // Doors, lamps and the shrine glow after dark; forges and hearths
+        // burn all day, indoors included.
+        const nightLight = this.outdoor && (tile === "door" || tile === "shrine" || tile === "lamp");
+        const alwaysLight = tile === "forge" || tile === "hearth";
+        if (this.glowTexture && (nightLight || alwaysLight)) {
           const glow = new Sprite(this.glowTexture);
           glow.anchor.set(0.5);
           glow.position.set(x * ART + ART / 2, y * ART + ART / 2);
@@ -262,7 +279,7 @@ export class WorldRenderer {
           glow.blendMode = "add";
           glow.alpha = 0;
           this.lightC.addChild(glow);
-          this.glows.push(glow);
+          this.glows.push({ sprite: glow, always: alwaysLight });
         }
       }
     }
@@ -281,6 +298,21 @@ export class WorldRenderer {
     this.hero = new Sprite(this.heroFrames?.[0]);
     this.hero.anchor.set(0.5, 0);
     this.mapC.addChild(this.hero);
+
+    this.prompt = new Text({
+      text: "!",
+      style: {
+        fontFamily: "monospace",
+        fontSize: 10,
+        fontWeight: "900",
+        fill: 0xffd469,
+        stroke: { color: 0x000000, width: 3 },
+      },
+    });
+    this.prompt.resolution = this.scale * 2;
+    this.prompt.anchor.set(0.5, 1);
+    this.prompt.visible = false;
+    this.mapC.addChild(this.prompt);
   }
 
   private tick(deltaMS: number): void {
@@ -298,11 +330,17 @@ export class WorldRenderer {
       this.sky.tint = this.skyTarget.color;
       this.sky.alpha += (this.skyTarget.alpha - this.sky.alpha) * (1 - Math.exp(-deltaMS / 400));
       const darkness = Math.min(1, this.sky.alpha / 0.36);
-      for (const glow of this.glows) {
-        glow.alpha = darkness * (0.75 + 0.25 * Math.sin(this.clock / 300 + glow.position.x));
+      for (const { sprite, always } of this.glows) {
+        const strength = always ? 0.8 : darkness;
+        sprite.alpha = strength * (0.75 + 0.25 * Math.sin(this.clock / 300 + sprite.position.x));
       }
     }
     this.tickEmbers(deltaMS);
+
+    // The talk prompt bobs over whoever the hero is facing.
+    if (this.prompt?.visible) {
+      this.prompt.pivot.y = Math.round(Math.sin(this.clock / 150) * 1.5);
+    }
 
     const water = this.frames.get("water_shimmer");
     if (water) {

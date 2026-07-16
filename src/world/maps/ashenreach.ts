@@ -118,10 +118,10 @@ export const TOWN_MAP: WorldMap = parseMap(
   ##############D#############
   `,
   [
-    { x: 4, y: 4, to: { kind: "map", mapId: "town_shop", x: 3, y: 3 } },
-    { x: 12, y: 4, to: { kind: "map", mapId: "town_inn", x: 3, y: 3 } },
-    { x: 21, y: 4, to: { kind: "map", mapId: "town_smith", x: 3, y: 3 } },
-    { x: 4, y: 13, to: { kind: "map", mapId: "town_alchemist", x: 3, y: 3 } },
+    { x: 4, y: 4, to: { kind: "map", mapId: "town_shop", x: 4, y: 4 } },
+    { x: 12, y: 4, to: { kind: "map", mapId: "town_inn", x: 4, y: 4 } },
+    { x: 21, y: 4, to: { kind: "map", mapId: "town_smith", x: 4, y: 4 } },
+    { x: 4, y: 13, to: { kind: "map", mapId: "town_alchemist", x: 4, y: 4 } },
     { x: 14, y: 17, to: { kind: "map", mapId: "overworld", x: 24, y: 20 } },
   ],
 );
@@ -129,47 +129,51 @@ export const TOWN_MAP: WorldMap = parseMap(
 export const TOWN_SMITH_MAP: WorldMap = parseMap(
   "town_smith",
   `
-  ########
-  #______#
-  #______#
-  #__$___#
-  ###D####
+  ##########
+  #ee____AA#
+  #________#
+  #nn____nn#
+  #___$____#
+  ####D#####
   `,
-  [{ x: 3, y: 4, to: { kind: "map", mapId: "town", x: 21, y: 5 } }],
+  [{ x: 4, y: 5, to: { kind: "map", mapId: "town", x: 21, y: 5 } }],
 );
 
 export const TOWN_ALCHEMIST_MAP: WorldMap = parseMap(
   "town_alchemist",
   `
-  ########
-  #______#
-  #______#
-  #__$___#
-  ###D####
+  ##########
+  #tt____uu#
+  #________#
+  #t______t#
+  #___$____#
+  ####D#####
   `,
-  [{ x: 3, y: 4, to: { kind: "map", mapId: "town", x: 4, y: 14 } }],
+  [{ x: 4, y: 5, to: { kind: "map", mapId: "town", x: 4, y: 14 } }],
 );
 
 export const TOWN_SHOP_MAP: WorldMap = parseMap(
   "town_shop",
   `
-  ########
-  #______#
-  #______#
-  #__$___#
-  ###D####
+  ##########
+  #tt____nn#
+  #________#
+  #nn______#
+  #___$____#
+  ####D#####
   `,
-  [{ x: 3, y: 4, to: { kind: "map", mapId: "town", x: 4, y: 5 } }],
+  [{ x: 4, y: 5, to: { kind: "map", mapId: "town", x: 4, y: 5 } }],
 );
 
 export const TOWN_INN_MAP: WorldMap = parseMap(
   "town_inn",
   `
-  ########
-  #______#
-  #______#
-  #__$___#
-  ###D####
+  ##########
+  #BB____HH#
+  #________#
+  #B_____nn#
+  #___$____#
+  ####D#####
   `,
-  [{ x: 3, y: 4, to: { kind: "map", mapId: "town", x: 12, y: 5 } }],
+  [{ x: 4, y: 5, to: { kind: "map", mapId: "town", x: 12, y: 5 } }],
 );

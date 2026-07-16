@@ -864,6 +864,29 @@ body {
 .world-hero.facing-left img {
   transform: scaleX(-1);
 }
+.npc-prompt {
+  position: absolute;
+  z-index: 3;
+  pointer-events: none;
+  text-align: center;
+  color: #ffd469;
+  font-family: inherit;
+  font-weight: 700;
+  text-shadow:
+    1px 1px 0 #000,
+    -1px 1px 0 #000,
+    1px -1px 0 #000,
+    -1px -1px 0 #000;
+  animation: prompt-bob 0.8s ease-in-out infinite;
+}
+@keyframes prompt-bob {
+  50% {
+    transform: translateY(-4px);
+  }
+}
+.reduce-motion .npc-prompt {
+  animation: none;
+}
 .world-npc {
   position: absolute;
   z-index: 1;
