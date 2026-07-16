@@ -1,4 +1,4 @@
-import type { WorldState } from "../world/types";
+import type { DungeonId, WorldState } from "../world/types";
 
 export type RoleId = "warrior" | "mage" | "rogue" | "cleric";
 
@@ -166,7 +166,15 @@ export type BattleState = {
   wildRegion?: string;
 };
 
-export type Screen = "title" | "create" | "hub" | "battle" | "gameover" | "victory" | "world";
+export type Screen =
+  | "title"
+  | "create"
+  | "hub"
+  | "battle"
+  | "gameover"
+  | "victory"
+  | "world"
+  | "dungeon_select";
 
 export type GameState = {
   screen: Screen;
@@ -186,4 +194,6 @@ export type GameState = {
   shopOpen: boolean;
   /** World position and exploration memory; null until the hero enters it. */
   world: WorldState | null;
+  /** The dungeon entrance the hero is standing at (floor-select open or inside). */
+  dungeonSelect: DungeonId | null;
 };
