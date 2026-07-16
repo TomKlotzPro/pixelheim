@@ -66,6 +66,16 @@ const upgrade = (
   patch: Partial<Skill>,
 ): SkillNode => ({ id, requires, branch, tier: 1, name, description, kind: "upgrade", patch });
 
+/** Tier-3 branch capstones: the payoff active at the end of a line. */
+const capstone = (
+  id: string,
+  requires: string,
+  branch: number,
+  name: string,
+  description: string,
+  skill: Omit<Skill, "unlockLevel">,
+): SkillNode => ({ id, requires, branch, tier: 3, name, description, kind: "active", skill: { ...skill, unlockLevel: 1 } });
+
 const passive = (
   id: string,
   requires: string,
@@ -95,6 +105,11 @@ export const SKILL_TREES: Record<RoleId, SkillNode[]> = {
     }),
     upgrade("warrior_blood_rage", "warrior_berserk", 2, "Blood Rage", "Berserk costs only 4 HP.", { hpCost: 4 }),
     passive("warrior_rampage", "warrior_blood_rage", 2, 2, "Rampage", "Kills refund 3 MP.", { killRefundMp: 3 }),
+    capstone("warrior_skullsplitter", "warrior_executioner", 0, "Skullsplitter", "One blow to end arguments: enormous STR damage.", {
+      name: "Skullsplitter", description: "One blow to end arguments.", mpCost: 12, kind: "damage", multiplier: 3.4, stat: "strength",
+    }),
+    passive("warrior_mountainheart", "warrior_unshakeable", 1, 3, "Mountainheart", "+30 max HP and +1 DEF, permanently.", { defense: 1 }, { maxHp: 30 }),
+    passive("warrior_warpath", "warrior_rampage", 2, 3, "Warpath", "+10% chance to crit for 1.5x damage.", { critChance: 0.1 }),
   ],
   mage: [
     active("mage_fireball", 0, "Fireball", "Hurls a fireball for heavy magic damage.", {
@@ -118,6 +133,11 @@ export const SKILL_TREES: Record<RoleId, SkillNode[]> = {
       inflicts: { kind: "stun", chance: 0.85, turns: 1, power: 0 },
     }),
     passive("mage_winters_grace", "mage_deep_freeze", 2, 2, "Winter's Grace", "+10% flee chance.", { fleeBonus: 0.1 }),
+    capstone("mage_meteor", "mage_cinders", 0, "Meteor", "Calls a piece of the sky down: colossal INT damage.", {
+      name: "Meteor", description: "A piece of the sky.", mpCost: 14, kind: "damage", multiplier: 3.6, stat: "intelligence",
+    }),
+    passive("mage_archmage", "mage_clarity", 1, 3, "Archmage", "+20 max MP and kills refund 2 more MP.", { killRefundMp: 2 }, { maxMp: 20 }),
+    passive("mage_rimeguard", "mage_winters_grace", 2, 3, "Rimeguard", "A sheath of ice: +2 DEF and +5% flee.", { defense: 2, fleeBonus: 0.05 }),
   ],
   rogue: [
     active("rogue_backstab", 0, "Backstab", "Strikes a vital spot for heavy dexterity damage.", {
@@ -138,6 +158,13 @@ export const SKILL_TREES: Record<RoleId, SkillNode[]> = {
     }),
     passive("rogue_fleet_foot", "rogue_shadowstep", 2, 1, "Fleet Foot", "+15% flee chance.", { fleeBonus: 0.15 }),
     passive("rogue_pickpocket", "rogue_fleet_foot", 2, 2, "Pickpocket", "+25% gold from kills.", { goldBonus: 0.25 }),
+    capstone("rogue_deathblow", "rogue_keen_edge", 0, "Deathblow", "The knife you never see: extreme DEX damage.", {
+      name: "Deathblow", description: "The knife you never see.", mpCost: 12, kind: "damage", multiplier: 3.5, stat: "dexterity",
+    }),
+    passive("rogue_venom_master", "rogue_toxin_ward", 1, 3, "Venom Master", "Plain attacks have a 25% chance to poison.", {
+      attackInflict: { kind: "poison", chance: 0.25, turns: 2, power: 5 },
+    }),
+    passive("rogue_ghostwalk", "rogue_pickpocket", 2, 3, "Ghostwalk", "+10% flee and +10% gold: leave rich, leave alive.", { fleeBonus: 0.1, goldBonus: 0.1 }),
   ],
   cleric: [
     active("cleric_mend", 0, "Mend", "Channels light to restore health.", {
@@ -155,6 +182,13 @@ export const SKILL_TREES: Record<RoleId, SkillNode[]> = {
     }),
     passive("cleric_aegis", "cleric_sanctuary", 2, 1, "Aegis", "+2 DEF, always.", { defense: 2 }),
     passive("cleric_serenity", "cleric_aegis", 2, 2, "Serenity", "You cannot be stunned.", { stunResist: true }),
+    capstone("cleric_divine_word", "cleric_martyr", 0, "Divine Word", "A word that unmakes wounds: massive heal and full cleanse.", {
+      name: "Divine Word", description: "Unmakes wounds.", mpCost: 14, kind: "heal", multiplier: 4.0, stat: "intelligence", cleanse: true,
+    }),
+    capstone("cleric_judgement", "cleric_zealotry", 1, "Judgement", "The light decides: huge INT damage.", {
+      name: "Judgement", description: "The light decides.", mpCost: 12, kind: "damage", multiplier: 3.2, stat: "intelligence",
+    }),
+    passive("cleric_sainthood", "cleric_serenity", 2, 3, "Sainthood", "+15 max HP, +10 max MP and +2 DEF, permanently.", { defense: 2 }, { maxHp: 15, maxMp: 10 }),
   ],
 };
 

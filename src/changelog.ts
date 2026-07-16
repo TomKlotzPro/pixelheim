@@ -11,7 +11,22 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
-    version: "1.7.0",
+    version: "0.19.0",
+    date: "2026-07-17",
+    codename: "The Painted World",
+    notes: [
+      "The world is WebGL now, no flag needed: walk cycles, flowing water, swaying grass, day and night, lantern glows, drifting embers",
+      "Battles got a stage: lunges, hit flashes and floating damage numbers",
+      "Escape pauses the game: copy your save code, open options, or quit to the title and resume in place",
+      "Controls are rebindable, and French keyboards get ZQSD out of the box",
+      "The stat sheet explains every stat with live numbers and previews what your next point buys",
+      "Every skill branch grew a tier-3 capstone: 12 nodes per role, from Skullsplitter to Divine Word",
+      "Pixelheim doubled east: new houses, a market corner, an orchard - and shops are rooms you walk into and trade by talking",
+      "Honest version numbers: we are not 1.0 yet, so the old 1.x releases are now 0.11 through 0.18",
+    ],
+  },
+  {
+    version: "0.18.0",
     date: "2026-07-16",
     codename: "Main Street",
     notes: [
@@ -22,7 +37,7 @@ export const CHANGELOG: Release[] = [
     ],
   },
   {
-    version: "1.6.0",
+    version: "0.17.0",
     date: "2026-07-16",
     codename: "Field Alchemy",
     notes: [
@@ -33,7 +48,7 @@ export const CHANGELOG: Release[] = [
     ],
   },
   {
-    version: "1.5.0",
+    version: "0.16.0",
     date: "2026-07-16",
     codename: "Neighbors",
     notes: [
@@ -45,7 +60,7 @@ export const CHANGELOG: Release[] = [
     ],
   },
   {
-    version: "1.4.0",
+    version: "0.15.0",
     date: "2026-07-16",
     codename: "Danger, Visibly",
     notes: [
@@ -55,7 +70,7 @@ export const CHANGELOG: Release[] = [
     ],
   },
   {
-    version: "1.3.0",
+    version: "0.14.0",
     date: "2026-07-16",
     codename: "A Fair Fight",
     notes: [
@@ -66,7 +81,7 @@ export const CHANGELOG: Release[] = [
     ],
   },
   {
-    version: "1.2.0",
+    version: "0.13.0",
     date: "2026-07-16",
     codename: "Branches of Power",
     notes: [
@@ -77,7 +92,7 @@ export const CHANGELOG: Release[] = [
     ],
   },
   {
-    version: "1.1.0",
+    version: "0.12.0",
     date: "2026-07-16",
     codename: "Your Hero, Your Rules",
     notes: [
@@ -88,7 +103,7 @@ export const CHANGELOG: Release[] = [
     ],
   },
   {
-    version: "1.0.0",
+    version: "0.11.0",
     date: "2026-07-16",
     codename: "The Open World",
     notes: [
