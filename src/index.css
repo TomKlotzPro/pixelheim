@@ -657,6 +657,23 @@ body {
   font-size: 12px;
 }
 
+/* ---------- audio ---------- */
+.mute-btn {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 60;
+  font-size: 18px;
+  background: var(--bg-panel);
+  border: 2px solid var(--border);
+  padding: 4px 8px;
+  cursor: pointer;
+  line-height: 1;
+}
+.mute-btn:hover {
+  border-color: var(--accent);
+}
+
 /* ---------- changelog ---------- */
 .changelog-link {
   font: inherit;
