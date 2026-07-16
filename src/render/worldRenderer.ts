@@ -1,4 +1,4 @@
-import { Application, Assets, Container, Rectangle, Sprite, Texture, TextureStyle } from "pixi.js";
+import { Application, Assets, Container, Graphics, Rectangle, Sprite, Texture, TextureStyle } from "pixi.js";
 import { ROLES } from "../game/roles";
 import type { GameState } from "../game/types";
 import { WILD_TILES } from "../state/shared";
@@ -16,6 +16,55 @@ const WALK_MS = 160; // per walk frame
 const IDLE_MS = 500; // per idle frame
 const WATER_MS = 250; // per shimmer frame
 const WALK_LINGER_MS = 240; // keep the legs moving briefly after the last step
+
+/** Maps under the open sky; interiors stay lit and ember-free. */
+const OUTDOOR_MAPS = new Set(["overworld", "town", "demo"]);
+const EMBER_CAP = 36;
+const EMBER_TINTS = [0xffa03c, 0xff7a28, 0xffc86e];
+
+/**
+ * The day/night wheel, turned by worldSteps (deterministic, saved). Each stop
+ * is [r, g, b, alpha] for a screen overlay; steps between stops interpolate.
+ */
+const DAY_CYCLE_STEPS = 480;
+const SKY_STOPS: { at: number; color: [number, number, number, number] }[] = [
+  { at: 0.0, color: [0, 0, 0, 0] }, // day
+  { at: 0.45, color: [0, 0, 0, 0] },
+  { at: 0.55, color: [255, 122, 50, 0.13] }, // dusk
+  { at: 0.65, color: [10, 16, 48, 0.36] }, // night
+  { at: 0.85, color: [10, 16, 48, 0.36] },
+  { at: 0.93, color: [255, 190, 110, 0.1] }, // dawn
+  { at: 1.0, color: [0, 0, 0, 0] },
+];
+
+function skyAt(steps: number): { color: number; alpha: number } {
+  const t = (steps % DAY_CYCLE_STEPS) / DAY_CYCLE_STEPS;
+  let i = 0;
+  while (i < SKY_STOPS.length - 2 && SKY_STOPS[i + 1].at < t) i++;
+  const a = SKY_STOPS[i];
+  const b = SKY_STOPS[i + 1];
+  const k = (t - a.at) / (b.at - a.at || 1);
+  const mix = a.color.map((v, c) => v + (b.color[c] - v) * k);
+  return { color: (Math.round(mix[0]) << 16) | (Math.round(mix[1]) << 8) | Math.round(mix[2]), alpha: mix[3] };
+}
+
+/** A soft radial light, drawn once on a 2D canvas and reused for every glow. */
+function makeGlowTexture(): Texture {
+  const size = 64;
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext("2d")!;
+  const gradient = ctx.createRadialGradient(size / 2, size / 2, 2, size / 2, size / 2, size / 2);
+  gradient.addColorStop(0, "rgba(255, 200, 110, 0.9)");
+  gradient.addColorStop(0.5, "rgba(255, 160, 70, 0.35)");
+  gradient.addColorStop(1, "rgba(255, 140, 50, 0)");
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, size, size);
+  return Texture.from(canvas);
+}
+
+type Ember = { sprite: Sprite; x: number; y: number; vy: number; sway: number; life: number; maxLife: number };
 
 type Atlas = {
   frameSize: number;
@@ -67,6 +116,14 @@ export class WorldRenderer {
   private scale = 2;
   private clock = 0;
   private destroyed = false;
+  private sky: Graphics | null = null;
+  private lightC = new Container();
+  private skyTarget = { color: 0, alpha: 0 };
+  private glowTexture: Texture | null = null;
+  private glows: Sprite[] = [];
+  private embers: Ember[] = [];
+  private ashTiles: { x: number; y: number }[] = [];
+  private outdoor = false;
 
   private onTileClick: (x: number, y: number) => void;
 
@@ -94,6 +151,13 @@ export class WorldRenderer {
 
     this.root.scale.set(scale);
     this.root.addChild(this.mapC);
+    // The sky overlay covers the viewport (not the map): night follows the camera.
+    this.sky = new Graphics().rect(0, 0, VIEW_W * ART, VIEW_H * ART).fill(0xffffff);
+    this.sky.alpha = 0;
+    this.root.addChild(this.sky);
+    // Lights and embers live above the darkness, world-anchored like the map.
+    this.root.addChild(this.lightC);
+    this.glowTexture = makeGlowTexture();
     app.stage.addChild(this.root);
 
     app.canvas.addEventListener("pointerdown", this.onPointerDown);
@@ -155,6 +219,7 @@ export class WorldRenderer {
     this.heroTarget = { x: pos.x * ART, y: pos.y * ART };
     this.heroFlip = pos.facing === "left";
     this.camTarget = cameraFor(map, pos);
+    this.skyTarget = this.outdoor ? skyAt(state.worldSteps) : { color: 0, alpha: 0 };
     for (const entry of this.npcSprites) {
       const at = npcPosition(entry.npc, state.worldSteps);
       entry.target = { x: at.x * ART, y: at.y * ART };
@@ -163,8 +228,13 @@ export class WorldRenderer {
 
   private buildMap(map: WorldMap, state: GameState): void {
     this.mapC.removeChildren();
+    this.lightC.removeChildren();
     this.waterSprites = [];
     this.npcSprites = [];
+    this.glows = [];
+    this.embers = [];
+    this.ashTiles = [];
+    this.outdoor = OUTDOOR_MAPS.has(map.id);
 
     for (let y = 0; y < map.height; y++) {
       for (let x = 0; x < map.width; x++) {
@@ -180,6 +250,19 @@ export class WorldRenderer {
           const tuft = new Sprite(Assets.get("overlay_wild") as Texture);
           tuft.position.set(x * ART, y * ART);
           this.mapC.addChild(tuft);
+        }
+        if (this.outdoor && regionAt(map, x, y) === "ash") this.ashTiles.push({ x, y });
+        // Doors and the shrine glow after dark.
+        if (this.outdoor && this.glowTexture && (tile === "door" || tile === "shrine")) {
+          const glow = new Sprite(this.glowTexture);
+          glow.anchor.set(0.5);
+          glow.position.set(x * ART + ART / 2, y * ART + ART / 2);
+          glow.width = ART * 3;
+          glow.height = ART * 3;
+          glow.blendMode = "add";
+          glow.alpha = 0;
+          this.lightC.addChild(glow);
+          this.glows.push(glow);
         }
       }
     }
@@ -208,6 +291,18 @@ export class WorldRenderer {
 
     this.cam = { x: ease(this.cam.x, this.camTarget.x), y: ease(this.cam.y, this.camTarget.y) };
     this.mapC.position.set(-this.cam.x * ART, -this.cam.y * ART);
+    this.lightC.position.copyFrom(this.mapC.position);
+
+    // Sky drifts toward its target so dusk falls rather than snaps.
+    if (this.sky) {
+      this.sky.tint = this.skyTarget.color;
+      this.sky.alpha += (this.skyTarget.alpha - this.sky.alpha) * (1 - Math.exp(-deltaMS / 400));
+      const darkness = Math.min(1, this.sky.alpha / 0.36);
+      for (const glow of this.glows) {
+        glow.alpha = darkness * (0.75 + 0.25 * Math.sin(this.clock / 300 + glow.position.x));
+      }
+    }
+    this.tickEmbers(deltaMS);
 
     const water = this.frames.get("water_shimmer");
     if (water) {
@@ -230,6 +325,42 @@ export class WorldRenderer {
         ? this.heroFrames[Math.floor(this.clock / WALK_MS) % this.heroFrames.length]
         : this.heroFrames[0];
     }
+  }
+
+  /** Embers drift up from ash ground, sway, fade, and are reborn elsewhere. */
+  private tickEmbers(deltaMS: number): void {
+    if (this.ashTiles.length === 0) return;
+    const cap = Math.min(EMBER_CAP, this.ashTiles.length * 2);
+    if (this.embers.length < cap && Math.random() < 0.3) {
+      const at = this.ashTiles[Math.floor(Math.random() * this.ashTiles.length)];
+      const sprite = new Sprite(Texture.WHITE);
+      sprite.width = 1.4;
+      sprite.height = 1.4;
+      sprite.tint = EMBER_TINTS[Math.floor(Math.random() * EMBER_TINTS.length)];
+      sprite.blendMode = "add";
+      this.lightC.addChild(sprite);
+      this.embers.push({
+        sprite,
+        x: at.x * ART + Math.random() * ART,
+        y: at.y * ART + ART,
+        vy: 4 + Math.random() * 5,
+        sway: Math.random() * Math.PI * 2,
+        life: 0,
+        maxLife: 2200 + Math.random() * 1600,
+      });
+    }
+    this.embers = this.embers.filter((ember) => {
+      ember.life += deltaMS;
+      if (ember.life >= ember.maxLife) {
+        ember.sprite.destroy();
+        return false;
+      }
+      const k = ember.life / ember.maxLife;
+      ember.y -= (ember.vy * deltaMS) / 1000;
+      ember.sprite.position.set(ember.x + Math.sin(ember.life / 400 + ember.sway) * 2.5, ember.y);
+      ember.sprite.alpha = k < 0.15 ? k / 0.15 : 1 - (k - 0.15) / 0.85;
+      return true;
+    });
   }
 
   destroy(): void {
