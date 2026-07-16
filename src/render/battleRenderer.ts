@@ -1,18 +1,15 @@
-import { Application, Assets, Container, Graphics, Rectangle, Sprite, Text, Texture, TextureStyle } from "pixi.js";
+import { Application, Assets, Container, Graphics, Sprite, type Text, type Texture } from "pixi.js";
 import { ROLES } from "../game/roles";
 import type { GameState } from "../game/types";
+import { retroText, sliceSheet } from "./pixiUtils";
 
 export const SCENE_W = 288;
 export const SCENE_H = 104;
-const ART = 16;
 const CHAR_SCALE = 4; // fighters draw at 64 art px
 const HERO_X = 72;
 const MONSTER_X = SCENE_W - 72;
 const GROUND_Y = 92;
 const IDLE_MS = 500;
-
-// Pixel art: never smooth a texel (idempotent; the world renderer sets it too).
-TextureStyle.defaultOptions.scaleMode = "nearest";
 
 type Fx =
   | { kind: "lunge"; who: "hero" | "monster"; t: number; dur: number }
@@ -23,13 +20,6 @@ type Fx =
   | { kind: "number"; text: Text; t: number; dur: number };
 
 type Snapshot = { heroHp: number; monsterHp: number; monsterSprite: string; encounterIndex: number; phase: string };
-
-function sliceSheet(sheet: Texture, frames: number): Texture[] {
-  return Array.from(
-    { length: frames },
-    (_, i) => new Texture({ source: sheet.source, frame: new Rectangle(i * ART, 0, ART, ART) }),
-  );
-}
 
 /**
  * The Pixi battle scene (Painted World G3): two fighters on one stage so
@@ -116,11 +106,7 @@ export class BattleRenderer {
 
   private spawnNumber(value: string, color: number, x: number): void {
     if (!this.app) return;
-    const text = new Text({
-      text: value,
-      style: { fontFamily: "monospace", fontSize: 12, fontWeight: "900", fill: color, stroke: { color: 0x000000, width: 3 } },
-    });
-    text.resolution = this.scale * 2;
+    const text = retroText(value, color, this.scale * 2, 12);
     text.anchor.set(0.5, 1);
     text.position.set(x, GROUND_Y - 56);
     this.root.addChild(text);
