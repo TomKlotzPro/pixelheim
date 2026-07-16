@@ -1,7 +1,7 @@
 import { carriedWeight, carryCapacity } from "../game/character";
 import { getLevel } from "../game/levels";
 import { getMonster } from "../game/monsters";
-import { dispatch, useGameState } from "../state/store";
+import { dispatch, useGameState, useHero } from "../state/store";
 import type { DungeonId } from "../world/types";
 import { Sprite } from "./Sprite";
 
@@ -20,7 +20,7 @@ const DUNGEONS: Record<DungeonId, { name: string; floors: number[]; sealed?: str
 export function DungeonSelect() {
   const state = useGameState();
   const dungeon = DUNGEONS[state.dungeonSelect!];
-  const hero = state.hero!;
+  const hero = useHero();
   const overEncumbered = carriedWeight(state.inventory, state.gear, state.equipped) > carryCapacity(hero);
   const anyUnlocked = dungeon.floors.some((floor) => floor <= state.unlockedLevel);
 

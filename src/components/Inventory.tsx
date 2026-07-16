@@ -5,7 +5,7 @@ import { itemStatLine } from "../game/itemStats";
 import { gearItem, gearName, gearValue } from "../game/rarity";
 import { canCraft, RECIPES } from "../game/recipes";
 import type { EquipSlot, ItemCategory } from "../game/types";
-import { dispatch, useGameState } from "../state/store";
+import { dispatch, useGameState, useHero } from "../state/store";
 import { Sprite } from "./Sprite";
 
 const TABS: { id: ItemCategory | "all" | "craft"; label: string }[] = [
@@ -27,7 +27,7 @@ const SLOT_LABELS: Record<EquipSlot, string> = {
 export function Inventory() {
   const state = useGameState();
   const [tab, setTab] = useState<ItemCategory | "all" | "craft">("all");
-  const hero = state.hero!;
+  const hero = useHero();
   const inBattle = state.screen === "battle";
   const equippedUids = new Set(Object.values(state.equipped));
 

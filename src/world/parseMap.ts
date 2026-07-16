@@ -1,5 +1,5 @@
 import { TILES } from "./tiles";
-import type { Portal, TileId, WorldMap } from "./types";
+import { REGION_IDS, type Portal, type RegionId, type TileId, type WorldMap } from "./types";
 
 /** Characters shared by every map. Spawn chars: `S` grass, `$` floor, `*` path. */
 const CHAR_TILES: Record<string, TileId> = {
@@ -58,7 +58,7 @@ export type RegionSpec = {
   /** Same dimensions as the tile grid; `-` means no region. */
   grid: string;
   /** Maps region grid chars to region ids used by encounter tables. */
-  legend: Record<string, string>;
+  legend: Record<string, RegionId>;
 };
 
 function trimGrid(ascii: string): string[] {
@@ -104,7 +104,7 @@ export function parseMap(id: string, ascii: string, portals: Portal[], regionSpe
     }
   }
 
-  let regions: (string | null)[][] | null = null;
+  let regions: (RegionId | null)[][] | null = null;
   if (regionSpec) {
     const regionRows = trimGrid(regionSpec.grid);
     if (regionRows.length !== rows.length) {
@@ -118,6 +118,9 @@ export function parseMap(id: string, ascii: string, portals: Portal[], regionSpe
         if (char === "-") return null;
         const region = regionSpec.legend[char];
         if (!region) throw new Error(`Map "${id}" has unknown region "${char}" at ${x},${y}`);
+        if (!REGION_IDS.includes(region)) {
+          throw new Error(`Map "${id}" legend maps "${char}" to unknown region id "${region}"`);
+        }
         return region;
       });
     });
@@ -126,7 +129,7 @@ export function parseMap(id: string, ascii: string, portals: Portal[], regionSpe
   return { id, width, height: rows.length, tiles, spawn, portals, regions };
 }
 
-export function regionAt(map: WorldMap, x: number, y: number): string | null {
+export function regionAt(map: WorldMap, x: number, y: number): RegionId | null {
   return map.regions?.[y]?.[x] ?? null;
 }
 

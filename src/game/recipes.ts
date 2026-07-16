@@ -1,3 +1,5 @@
+import type { RegionId } from "../world/types";
+
 /**
  * Crafting: turn foraged materials into consumables from the inventory's
  * Craft tab. Materials come from winning wild battles in their region.
@@ -24,7 +26,7 @@ export function canCraft(recipe: Recipe, inventory: Record<string, number>): boo
 }
 
 /** What a region yields when its monsters fall. */
-export const REGION_MATERIALS: Record<string, string> = {
+export const REGION_MATERIALS: Record<RegionId, string> = {
   forest: "forest_herb",
   marsh: "marsh_reed",
   ash: "ember_shard",

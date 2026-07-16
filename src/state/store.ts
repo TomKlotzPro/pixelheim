@@ -1,6 +1,7 @@
 import { useStore } from "zustand";
 import { createStore } from "zustand/vanilla";
-import type { GameState } from "../game/types";
+import type { BattleState, GameState, Hero } from "../game/types";
+import type { WorldState } from "../world/types";
 import { type Action, gameReducer, initialState } from "./gameReducer";
 import { persistSave } from "./save";
 
@@ -29,4 +30,28 @@ export function dispatch(action: Action): void {
 
 export function useGameState(): GameState {
   return useStore(gameStore);
+}
+
+/**
+ * Screen guards: hooks for screens that cannot exist without their slice.
+ * They throw (into the ErrorBoundary) instead of scattering `!` assertions;
+ * the reducer never routes to these screens without the data. Convention:
+ * no new non-null assertions on game state - reach for these instead.
+ */
+export function useHero(): Hero {
+  const hero = useStore(gameStore, (state) => state.hero);
+  if (!hero) throw new Error("useHero rendered on a heroless screen");
+  return hero;
+}
+
+export function useBattle(): BattleState {
+  const battle = useStore(gameStore, (state) => state.battle);
+  if (!battle) throw new Error("useBattle rendered outside a battle");
+  return battle;
+}
+
+export function useWorld(): WorldState {
+  const world = useStore(gameStore, (state) => state.world);
+  if (!world) throw new Error("useWorld rendered before the world exists");
+  return world;
 }
