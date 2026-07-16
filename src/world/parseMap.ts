@@ -1,7 +1,7 @@
 import { TILES } from "./tiles";
 import type { Portal, TileId, WorldMap } from "./types";
 
-/** Characters shared by every map. `S` marks the spawn (on grass, `$` on floor). */
+/** Characters shared by every map. Spawn chars: `S` grass, `$` floor, `*` path. */
 const CHAR_TILES: Record<string, TileId> = {
   ".": "grass",
   S: "grass",
@@ -9,8 +9,11 @@ const CHAR_TILES: Record<string, TileId> = {
   "^": "mountain",
   "~": "water",
   "=": "path",
+  "*": "path",
   s: "sand",
   b: "bridge",
+  w: "marsh",
+  a: "ash",
   "#": "wall",
   _: "floor",
   $: "floor",
@@ -20,7 +23,7 @@ const CHAR_TILES: Record<string, TileId> = {
   W: "shrine",
 };
 
-const SPAWN_CHARS = ["S", "$"];
+const SPAWN_CHARS = ["S", "$", "*"];
 /** Tiles that transport the hero; each occurrence must have a portal defined. */
 const PORTAL_CHARS = ["D", "C"];
 
@@ -30,11 +33,22 @@ const PORTAL_CHARS = ["D", "C"];
  * inconsistency; maps are static data, so this runs once at module load and a
  * bad map fails the build's smoke tests immediately.
  */
-export function parseMap(id: string, ascii: string, portals: Portal[]): WorldMap {
-  const rows = ascii
+export type RegionSpec = {
+  /** Same dimensions as the tile grid; `-` means no region. */
+  grid: string;
+  /** Maps region grid chars to region ids used by encounter tables. */
+  legend: Record<string, string>;
+};
+
+function trimGrid(ascii: string): string[] {
+  return ascii
     .split("\n")
     .map((row) => row.trim())
     .filter((row) => row.length > 0);
+}
+
+export function parseMap(id: string, ascii: string, portals: Portal[], regionSpec?: RegionSpec): WorldMap {
+  const rows = trimGrid(ascii);
   if (rows.length === 0) throw new Error(`Map "${id}" is empty`);
 
   const width = rows[0].length;
@@ -69,7 +83,30 @@ export function parseMap(id: string, ascii: string, portals: Portal[]): WorldMap
     }
   }
 
-  return { id, width, height: rows.length, tiles, spawn, portals };
+  let regions: (string | null)[][] | null = null;
+  if (regionSpec) {
+    const regionRows = trimGrid(regionSpec.grid);
+    if (regionRows.length !== rows.length) {
+      throw new Error(`Map "${id}" region grid has ${regionRows.length} rows, expected ${rows.length}`);
+    }
+    regions = regionRows.map((row, y) => {
+      if (row.length !== width) {
+        throw new Error(`Map "${id}" region row ${y} has width ${row.length}, expected ${width}`);
+      }
+      return [...row].map((char, x) => {
+        if (char === "-") return null;
+        const region = regionSpec.legend[char];
+        if (!region) throw new Error(`Map "${id}" has unknown region "${char}" at ${x},${y}`);
+        return region;
+      });
+    });
+  }
+
+  return { id, width, height: rows.length, tiles, spawn, portals, regions };
+}
+
+export function regionAt(map: WorldMap, x: number, y: number): string | null {
+  return map.regions?.[y]?.[x] ?? null;
 }
 
 export function tileAt(map: WorldMap, x: number, y: number): TileId | null {

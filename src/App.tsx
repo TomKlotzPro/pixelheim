@@ -102,6 +102,9 @@ function Screen({
           onRest={() => dispatch({ type: "REST" })}
           onOpenInventory={() => dispatch({ type: "TOGGLE_INVENTORY" })}
           onOpenShop={() => dispatch({ type: "TOGGLE_SHOP" })}
+          onEnterWorld={() =>
+            dispatch({ type: "ENTER_WORLD", mapId: state.world?.position.mapId ?? "overworld" })
+          }
         />
       );
     case "battle":
