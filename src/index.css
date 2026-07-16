@@ -653,11 +653,32 @@ body {
   background: transparent;
 }
 /* the changelog needs a fixed height so the list scrolls inside, not the page */
-.changelog-panel {
-  height: min(70vh, 640px);
+.changelog-page {
+  max-width: 720px;
+  margin: 0 auto;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 24px 16px;
 }
-.changelog-panel .item-list {
+.changelog-page-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.changelog-page-header h1 {
+  margin: 0;
+  font-size: 22px;
+}
+.changelog-scroll {
   flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding-right: 8px;
 }
 .item-row {
   display: flex;
