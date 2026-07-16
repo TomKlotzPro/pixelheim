@@ -11,6 +11,17 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.10.0",
+    date: "2026-07-16",
+    codename: "Doors in the Mountain",
+    notes: [
+      "Dungeons live in the world now: walk to the mountain gate to climb",
+      "The cave at the mountain's base leads below, once the dragon falls",
+      "Clearing a floor steps you back out of the door you entered",
+      "Fall in a dungeon you entered from the world? The inn takes you in",
+    ],
+  },
+  {
     version: "0.9.0",
     date: "2026-07-16",
     codename: "The Wilds Bite",
