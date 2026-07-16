@@ -1,3 +1,5 @@
+import type { WorldPosition } from "../world/types";
+
 export type RoleId = "warrior" | "mage" | "rogue" | "cleric";
 
 export type Stats = {
@@ -143,7 +145,7 @@ export type BattleState = {
   monsterEffects: StatusEffect[];
 };
 
-export type Screen = "title" | "create" | "hub" | "battle" | "gameover" | "victory";
+export type Screen = "title" | "create" | "hub" | "battle" | "gameover" | "victory" | "world";
 
 export type GameState = {
   screen: Screen;
@@ -158,4 +160,6 @@ export type GameState = {
   battle: BattleState | null;
   inventoryOpen: boolean;
   shopOpen: boolean;
+  /** Position in the tile world; null until the hero enters it. */
+  world: WorldPosition | null;
 };
