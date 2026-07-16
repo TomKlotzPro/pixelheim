@@ -450,6 +450,20 @@ body {
   border: 2px solid var(--border);
   padding: 24px 16px;
 }
+/* Pixi mode: the canvas stage draws the fighters; the arena keeps only the bars. */
+.battle-stage {
+  display: flex;
+  justify-content: center;
+  background: var(--bg-panel);
+  border: 2px solid var(--border);
+  border-bottom: none;
+}
+.battle-scene-host canvas {
+  display: block;
+}
+.battle-arena-bars {
+  padding: 10px 16px;
+}
 .combatant {
   display: flex;
   flex-direction: column;
