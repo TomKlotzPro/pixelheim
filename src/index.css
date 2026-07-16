@@ -621,6 +621,29 @@ body {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.item-list::-webkit-scrollbar,
+.skill-tree::-webkit-scrollbar {
+  width: 10px;
+}
+.item-list::-webkit-scrollbar-thumb,
+.skill-tree::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border: 2px solid var(--bg-panel);
+}
+.item-list::-webkit-scrollbar-track,
+.skill-tree::-webkit-scrollbar-track {
+  background: transparent;
+}
+/* the changelog needs a fixed height so the list scrolls inside, not the page */
+.changelog-panel {
+  height: min(70vh, 640px);
+}
+.changelog-panel .item-list {
+  flex: 1;
 }
 .item-row {
   display: flex;
@@ -1075,3 +1098,4 @@ body {
   text-align: center;
   gap: 16px;
 }
+.skill-tree { scrollbar-width: thin; scrollbar-color: var(--border) transparent; overscroll-behavior: contain; }
