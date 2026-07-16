@@ -8,12 +8,13 @@ import { loadSettings, type Settings } from "./settings";
 import { Battle } from "./components/Battle";
 import { CharacterCreation } from "./components/CharacterCreation";
 import { Inventory } from "./components/Inventory";
+import { PauseMenu } from "./components/PauseMenu";
 import { Shop } from "./components/Shop";
 import { TitleScreen } from "./components/TitleScreen";
 import { Victory } from "./components/Victory";
 import { WorldScreen } from "./components/WorldScreen";
 import type { GameState } from "./game/types";
-import { dispatch, useGameState } from "./state/store";
+import { dispatch, gameStore, useGameState } from "./state/store";
 import { clearSave, decodeSaveCode, encodeSaveCode, loadSave, persistSave } from "./state/save";
 import type { Direction } from "./world/types";
 
@@ -108,6 +109,7 @@ export default function App() {
   const save = useMemo(() => loadSave(), []);
   const [settings, setSettings] = useState<Settings>(loadSettings);
   const [optionsOpen, setOptionsOpen] = useState(false);
+  const [paused, setPaused] = useState(false);
 
   useEffect(() => {
     document.documentElement.classList.toggle("no-scanlines", !settings.scanlines);
@@ -130,10 +132,18 @@ export default function App() {
     if (state.screen !== "world") return;
     const { bindings } = settings;
     const onKeyDown = (event: KeyboardEvent) => {
+      // Escape peels back one layer at a time: menus first, then the pause
+      // screen. Fresh state via the store: this listener outlives renders.
       if (event.key === "Escape") {
-        dispatch({ type: "EXIT_WORLD" });
+        const now = gameStore.getState();
+        if (now.shopOpen) dispatch({ type: "TOGGLE_SHOP" });
+        else if (now.inventoryOpen) dispatch({ type: "TOGGLE_INVENTORY" });
+        else if (now.dialogue) dispatch({ type: "ADVANCE_DIALOGUE" });
+        else if (!now.hero) dispatch({ type: "EXIT_WORLD" });
+        else setPaused((open) => !open);
         return;
       }
+      if (paused) return;
       if (event.code === bindings.inventory) {
         dispatch({ type: "TOGGLE_INVENTORY" });
         return;
@@ -161,7 +171,7 @@ export default function App() {
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [state.screen, settings]);
+  }, [state.screen, settings, paused]);
 
   return (
     <div className="crt">
@@ -173,6 +183,15 @@ export default function App() {
       </div>
       <Screen state={state} save={save} onOpenOptions={() => setOptionsOpen(true)} />
       {state.inventoryOpen && state.hero && <Inventory />}
+      {paused && state.screen === "world" && state.hero && (
+        <PauseMenu
+          onClose={() => setPaused(false)}
+          onOpenOptions={() => {
+            setPaused(false);
+            setOptionsOpen(true);
+          }}
+        />
+      )}
       {state.shopOpen && state.hero && <Shop />}
       {optionsOpen && (
         <Options
@@ -212,12 +231,17 @@ function Screen({
     case "title":
       return (
         <TitleScreen
-          canContinue={save !== null}
+          canContinue={state.hero !== null || save !== null}
           onNewGame={() => {
             clearSave();
             dispatch({ type: "NEW_GAME" });
           }}
-          onContinue={() => save && dispatch({ type: "LOAD", state: save })}
+          onContinue={() => {
+            // A live hero (paused out to the title) resumes in place;
+            // otherwise load the persisted save.
+            if (state.hero) dispatch({ type: "RETURN_TO_WORLD" });
+            else if (save) dispatch({ type: "LOAD", state: save });
+          }}
           onOpenOptions={onOpenOptions}
         />
       );
