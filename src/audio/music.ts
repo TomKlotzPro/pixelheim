@@ -96,6 +96,7 @@ function schedule(): void {
           type: channel.kind === "lead" ? "square" : "triangle",
           volume: channel.kind === "lead" ? 0.035 : 0.05,
           at: channel.nextTime,
+          bus: "music",
         });
       }
       channel.nextTime += duration;
@@ -104,7 +105,7 @@ function schedule(): void {
   }
   if (hatsOn) {
     while (hatTime < horizon) {
-      playNoise({ duration: 0.03, volume: 0.012, at: hatTime });
+      playNoise({ duration: 0.03, volume: 0.012, at: hatTime, bus: "music" });
       hatTime += beat;
     }
   }

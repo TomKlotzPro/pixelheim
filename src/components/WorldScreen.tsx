@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { ROLES } from "../game/roles";
 import type { GameState } from "../game/types";
 import type { Action } from "../state/gameReducer";
@@ -6,12 +7,29 @@ import { TILES } from "../world/tiles";
 import type { Direction } from "../world/types";
 import { Sprite } from "./Sprite";
 
-export const TILE_PX = 32;
+const ART_PX = 16;
 const VIEW_W = 15;
 const VIEW_H = 11;
 
 function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
+}
+
+/** Largest integer art scale that fits the window; pixels stay crisp. */
+function computeScale(): number {
+  const availW = window.innerWidth - 48;
+  const availH = window.innerHeight - 150;
+  return Math.max(2, Math.min(Math.floor(availW / (VIEW_W * ART_PX)), Math.floor(availH / (VIEW_H * ART_PX))));
+}
+
+function useTileScale(): number {
+  const [scale, setScale] = useState(computeScale);
+  useEffect(() => {
+    const onResize = () => setScale(computeScale());
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+  return scale;
 }
 
 type WorldScreenProps = {
@@ -23,6 +41,7 @@ export function WorldScreen({ state, dispatch }: WorldScreenProps) {
   const world = state.world!.position;
   const map = getMap(world.mapId);
   const heroSprite = ROLES[state.hero?.roleId ?? "warrior"].sprite;
+  const tilePx = ART_PX * useTileScale();
 
   // Maps smaller than the viewport are centered; larger ones scroll, clamped at edges.
   const cameraX =
@@ -48,14 +67,14 @@ export function WorldScreen({ state, dispatch }: WorldScreenProps) {
         className="world-viewport"
         data-testid="world-viewport"
         data-map={map.id}
-        style={{ width: VIEW_W * TILE_PX, height: VIEW_H * TILE_PX }}
+        style={{ width: VIEW_W * tilePx, height: VIEW_H * tilePx }}
       >
         <div
           className="world-map"
           style={{
-            width: map.width * TILE_PX,
-            height: map.height * TILE_PX,
-            transform: `translate(${-cameraX * TILE_PX}px, ${-cameraY * TILE_PX}px)`,
+            width: map.width * tilePx,
+            height: map.height * tilePx,
+            transform: `translate(${-cameraX * tilePx}px, ${-cameraY * tilePx}px)`,
           }}
         >
           {map.tiles.map((row, y) =>
@@ -65,8 +84,11 @@ export function WorldScreen({ state, dispatch }: WorldScreenProps) {
                 className="world-tile"
                 onClick={() => clickTile(x, y)}
                 style={{
-                  left: x * TILE_PX,
-                  top: y * TILE_PX,
+                  left: x * tilePx,
+                  top: y * tilePx,
+                  width: tilePx,
+                  height: tilePx,
+                  backgroundSize: `${tilePx}px ${tilePx}px`,
                   backgroundImage: `url(${import.meta.env.BASE_URL}sprites/${TILES[tile].sprite}.png)`,
                 }}
               />
@@ -76,9 +98,9 @@ export function WorldScreen({ state, dispatch }: WorldScreenProps) {
             className={`world-hero facing-${world.facing}`}
             data-testid="world-hero"
             data-pos={`${world.x},${world.y}`}
-            style={{ left: world.x * TILE_PX, top: world.y * TILE_PX }}
+            style={{ left: world.x * tilePx, top: world.y * tilePx, width: tilePx, height: tilePx }}
           >
-            <Sprite name={heroSprite} size={TILE_PX} alt="hero" />
+            <Sprite name={heroSprite} size={tilePx} alt="hero" />
           </div>
         </div>
       </div>

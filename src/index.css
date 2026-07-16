@@ -634,15 +634,10 @@ body {
 }
 .world-tile {
   position: absolute;
-  width: 32px;
-  height: 32px;
-  background-size: 32px 32px;
   image-rendering: pixelated;
 }
 .world-hero {
   position: absolute;
-  width: 32px;
-  height: 32px;
   transition:
     left 140ms linear,
     top 140ms linear;
@@ -657,12 +652,16 @@ body {
   font-size: 12px;
 }
 
-/* ---------- audio ---------- */
-.mute-btn {
+/* ---------- corner buttons (mute, options) ---------- */
+.corner-buttons {
   position: fixed;
   top: 10px;
   right: 10px;
   z-index: 60;
+  display: flex;
+  gap: 6px;
+}
+.mute-btn {
   font-size: 18px;
   background: var(--bg-panel);
   border: 2px solid var(--border);
@@ -672,6 +671,135 @@ body {
 }
 .mute-btn:hover {
   border-color: var(--accent);
+}
+
+/* ---------- options ---------- */
+.options-panel {
+  width: 460px;
+}
+.options-section {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 10px;
+}
+.options-title {
+  color: var(--accent);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin: 4px 0 8px;
+}
+.options-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 6px 0;
+  font-size: 13px;
+}
+.options-row input[type="range"] {
+  width: 180px;
+  accent-color: var(--accent);
+}
+.options-actions {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+.options-footer {
+  color: var(--text-dim);
+  font-size: 11px;
+  text-align: center;
+  margin: 4px 0 0;
+}
+
+/* ---------- settings toggles ---------- */
+.no-scanlines .crt::after {
+  display: none;
+}
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* ---------- title backdrop ---------- */
+.title-backdrop {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+.title-screen > :not(.title-backdrop) {
+  position: relative;
+  z-index: 1;
+}
+.title-star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: #d8dce8;
+  animation: twinkle 4.5s ease-in-out infinite;
+}
+@keyframes twinkle {
+  0%, 100% { opacity: 0.15; }
+  50% { opacity: 0.9; }
+}
+.title-mountains {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 38%;
+  background: #0d0e13;
+  clip-path: polygon(
+    0% 100%, 0% 55%, 9% 38%, 16% 52%, 25% 24%, 33% 46%, 42% 30%, 50% 8%,
+    58% 34%, 67% 20%, 75% 44%, 83% 30%, 91% 50%, 100% 40%, 100% 100%
+  );
+}
+.title-ember {
+  position: absolute;
+  bottom: 28%;
+  width: 3px;
+  height: 3px;
+  background: #e87a2a;
+  border-radius: 50%;
+  opacity: 0;
+  animation: ember-rise 9s linear infinite;
+}
+@keyframes ember-rise {
+  0% { transform: translateY(0) translateX(0); opacity: 0; }
+  8% { opacity: 0.85; }
+  60% { opacity: 0.5; transform: translateY(-38vh) translateX(14px); }
+  100% { transform: translateY(-62vh) translateX(-8px); opacity: 0; }
+}
+.title-monster {
+  display: inline-flex;
+  align-items: flex-end;
+  animation: monster-bob 2.6s ease-in-out infinite;
+}
+@keyframes monster-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.title-dragon {
+  animation: dragon-breathe 3.4s ease-in-out infinite;
+}
+@keyframes dragon-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06) translateY(-4px); }
+}
+.game-title {
+  animation: title-glow 4s ease-in-out infinite;
+}
+@keyframes title-glow {
+  0%, 100% { text-shadow: 4px 4px 0 #4f371f, 8px 8px 0 rgba(0, 0, 0, 0.5); }
+  50% { text-shadow: 4px 4px 0 #4f371f, 8px 8px 0 rgba(0, 0, 0, 0.5), 0 0 26px rgba(232, 195, 74, 0.45); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .title-star, .title-ember, .title-monster, .title-dragon, .game-title {
+    animation: none;
+  }
 }
 
 /* ---------- changelog ---------- */
