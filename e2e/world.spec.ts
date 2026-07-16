@@ -54,8 +54,10 @@ test('new heroes wake in the village and the gate leads to the overworld', async
   await expect(page.getByTestId('world-viewport')).toBeVisible()
 })
 
+// Pinned to the legacy DOM renderer: it asserts per-tile danger markup, which
+// the canvas has no DOM for. Retires with the DOM renderer (PIX-53).
 test('wild terrain is visually telegraphed; safe ground is not', async ({ page }) => {
-  await page.goto('./')
+  await page.goto('./?dom')
   await page.getByRole('button', { name: 'New Game' }).click()
   await page.getByPlaceholder('Dragonsbane...').fill('Scout')
   await page.getByRole('button', { name: 'Begin the climb' }).click()

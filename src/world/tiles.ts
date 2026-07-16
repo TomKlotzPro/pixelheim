@@ -1,5 +1,14 @@
 import type { TileDef, TileId } from "./types";
 
+/** Terrain that breathes: tile id -> its animation sheet in atlas.json. */
+export const TILE_ANIMATIONS: Partial<Record<TileId, string>> = {
+  water: "water_shimmer",
+  grass: "grass_sway",
+  forest: "forest_sway",
+  flowers: "flowers_sway",
+  marsh: "marsh_sway",
+};
+
 export const TILES: Record<TileId, TileDef> = {
   grass: { id: "grass", sprite: "tile_grass", walkable: true },
   forest: { id: "forest", sprite: "tile_forest", walkable: true },
