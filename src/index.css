@@ -409,6 +409,22 @@ body {
   color: var(--accent);
   font-size: 20px;
 }
+.effect-badges {
+  display: flex;
+  gap: 6px;
+  min-height: 20px;
+  align-items: center;
+}
+.effect-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  color: var(--text-dim);
+  background: #0d0e13;
+  border: 1px solid var(--border);
+  padding: 1px 5px;
+}
 .fallen {
   filter: grayscale(1) brightness(0.6);
   transform: rotate(90deg);
