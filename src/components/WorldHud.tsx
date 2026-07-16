@@ -2,7 +2,7 @@ import { useState } from "react";
 import { totalDefense } from "../game/character";
 import { ROLES } from "../game/roles";
 import type { SpendableStat } from "../game/types";
-import { dispatch, useGameState } from "../state/store";
+import { dispatch, useGameState, useHero } from "../state/store";
 import { SkillTree } from "./SkillTree";
 import { Sprite } from "./Sprite";
 import { StatBar } from "./StatBar";
@@ -15,7 +15,7 @@ const SPENDABLE: { stat: SpendableStat; label: string }[] = [
 ];
 
 function StatSheet({ onClose }: { onClose: () => void }) {
-  const hero = useGameState().hero!;
+  const hero = useHero();
   return (
     <div className="overlay" onClick={onClose}>
       <div className="panel stat-sheet" onClick={(e) => e.stopPropagation()}>
@@ -54,7 +54,7 @@ function StatSheet({ onClose }: { onClose: () => void }) {
 /** Compact hero panel floating over the world viewport. */
 export function WorldHud() {
   const state = useGameState();
-  const hero = state.hero!;
+  const hero = useHero();
   const role = ROLES[hero.roleId];
   const [sheetOpen, setSheetOpen] = useState(false);
   const [treeOpen, setTreeOpen] = useState(false);

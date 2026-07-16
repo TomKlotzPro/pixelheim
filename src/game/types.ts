@@ -1,4 +1,4 @@
-import type { DungeonId, WorldState } from "../world/types";
+import type { DungeonId, WorldState, RegionId } from "../world/types";
 
 export type RoleId = "warrior" | "mage" | "rogue" | "cleric";
 
@@ -174,7 +174,7 @@ export type BattleState = {
   wild?: boolean;
   wildRegion?: string;
   /** Region key (forest/marsh/ash) for foraging on wild wins. */
-  wildRegionId?: string;
+  wildRegionId?: RegionId;
 };
 
 export type Screen = "title" | "create" | "battle" | "victory" | "world" | "dungeon_select";
