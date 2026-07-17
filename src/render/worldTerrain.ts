@@ -81,6 +81,34 @@ export class TerrainLayer {
             }
           }
         }
+        // Roofs stop being rectangles: outer corners get a grass bite, and a
+        // hashed few top tiles grow chimneys. All derived, no map edits.
+        if (tile.startsWith("roof")) {
+          const roofAt = (nx: number, ny: number) => (map.tiles[ny]?.[nx] ?? "").startsWith("roof");
+          const up = roofAt(x, y - 1);
+          const down = roofAt(x, y + 1);
+          const left = roofAt(x - 1, y);
+          const right = roofAt(x + 1, y);
+          const corners: [boolean, number][] = [
+            [!up && !left, 0],
+            [!up && !right, Math.PI / 2],
+            [!down && !right, Math.PI],
+            [!down && !left, -Math.PI / 2],
+          ];
+          for (const [cut, rotation] of corners) {
+            if (!cut) continue;
+            const bite = new Sprite(Assets.get("overlay_roofcut") as Texture);
+            bite.anchor.set(0.5);
+            bite.rotation = rotation;
+            bite.position.set(x * ART + ART / 2, y * ART + ART / 2);
+            container.addChild(bite);
+          }
+          if (!up && (x * 31 + y * 7) % 5 === 0) {
+            const chimney = new Sprite(Assets.get("overlay_chimney") as Texture);
+            chimney.position.set(x * ART, y * ART - 3);
+            container.addChild(chimney);
+          }
+        }
         // Dangerous ground stays visible: wild-region tiles grow dark tufts.
         if (WILD_TILES.has(tile) && regionAt(map, x, y) !== null) {
           const tuft = new Sprite(Assets.get("overlay_wild") as Texture);

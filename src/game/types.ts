@@ -219,6 +219,8 @@ export type GameState = {
   house: { owned: boolean; storage: Record<string, number> };
   /** The home storage panel (transient UI, like shopOpen). */
   storageOpen: boolean;
+  /** Quest ledger: accepted quests with kill progress and completion. Additive. */
+  quests: Record<string, { progress: number; done: boolean }>;
   /** Business deeds owned (shop map ids). Each pays rent on every victory. */
   properties: string[];
   /** Every owned weapon/apparel piece, equipped or not. */

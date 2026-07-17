@@ -213,6 +213,10 @@ export default function App() {
         dispatch({ type: "TOGGLE_INVENTORY" });
         return;
       }
+      if (event.code === "KeyJ" && state.hero) {
+        window.dispatchEvent(new CustomEvent("pixelheim:journal"));
+        return;
+      }
       if (event.code === bindings.map && state.hero) {
         setMapOpen((open) => !open);
         return;
