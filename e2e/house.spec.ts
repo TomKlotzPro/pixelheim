@@ -3,7 +3,7 @@ import { SAVE_KEY, VETERAN_SAVE } from './helpers'
 
 async function loadRichVeteranAt(page: Page, x: number, y: number) {
   const save = structuredClone(VETERAN_SAVE) as typeof VETERAN_SAVE & { state: { gold: number } }
-  save.state.gold = 2000
+  save.state.gold = 5000
   await page.goto('./')
   await page.evaluate(
     ([key, s, px, py]) => {
@@ -55,4 +55,19 @@ test('the deed, the door, the bed and the barrel', async ({ page }) => {
   await page.keyboard.press('ArrowUp') // bump: face a bed at the top wall
   await page.keyboard.press('e')
   await expect(page.locator('.world-message')).toContainText('Fully rested')
+})
+
+test('the keeper sells you the whole shop, then works for you', async ({ page }) => {
+  await loadRichVeteranAt(page, 14, 9)
+  // into Odo's: up the west road and through the GOODS door
+  for (const [key, n] of [['ArrowLeft', 10], ['ArrowUp', 5]] as const) {
+    for (let i = 0; i < n; i++) { await page.keyboard.press(key); await page.waitForTimeout(15) }
+  }
+  await expect(page.getByTestId('world-viewport')).toHaveAttribute('data-map', 'town_shop')
+  for (let i = 0; i < 3; i++) { await page.keyboard.press('ArrowUp'); await page.waitForTimeout(15) }
+  await page.keyboard.press('e')
+
+  await expect(page.getByTestId('property-offer')).toContainText("Odo's Emporium")
+  await page.getByRole('button', { name: 'Buy the deed' }).click()
+  await expect(page.getByTestId('property-owned')).toContainText('YOURS')
 })

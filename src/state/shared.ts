@@ -18,6 +18,7 @@ export const initialState: GameState = {
   shopOpen: false,
   storageOpen: false,
   house: { owned: false, storage: {} },
+  properties: [],
   world: null,
   dungeonSelect: null,
   introSeen: true,
@@ -29,6 +30,15 @@ export const initialState: GameState = {
 /** The player house: the shut door in town, and what the deed costs. */
 export const HOUSE_DOOR = { mapId: "town", x: 30, y: 13 };
 export const HOUSE_DEED_COST = 1500;
+
+/** Business deeds: buy the shop you stand in from its keeper. */
+export const PROPERTY_PRICES: Record<string, { name: string; cost: number }> = {
+  town_shop: { name: "Odo's Emporium", cost: 2500 },
+  town_smith: { name: "Hilda's Smithy", cost: 4000 },
+  town_alchemist: { name: "Vex's Workshop", cost: 3500 },
+};
+/** Gold each owned business pays after every victory. */
+export const RENT_PER_VICTORY = 2;
 
 /** Where heroes wake up: the middle of Pixelheim village. */
 export const TOWN_SPAWN = { mapId: "town", x: 14, y: 15, facing: "down" as const };

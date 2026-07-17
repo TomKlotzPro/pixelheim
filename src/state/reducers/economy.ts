@@ -7,7 +7,7 @@ import { doubleBrewChance, forgeCapFor, forgeCostFor, grantJobXp, JOB_STATIONS }
 import { buyPrice, sellPriceAt, SHOPS, shopStock } from "../../game/economy/shop";
 import type { GameState } from "../../game/types";
 import type { EconomyAction } from "../actions";
-import { HOUSE_DEED_COST, activeShopId } from "../shared";
+import { activeShopId, HOUSE_DEED_COST, PROPERTY_PRICES } from "../shared";
 
 export function economyReducer(draft: GameState, action: EconomyAction): void {
   switch (action.type) {
@@ -44,6 +44,16 @@ export function economyReducer(draft: GameState, action: EconomyAction): void {
       if (left > 0) draft.house.storage[action.itemId] = left;
       else delete draft.house.storage[action.itemId];
       draft.inventory = addItem(draft.inventory, action.itemId, count);
+      return;
+    }
+
+    case "BUY_PROPERTY": {
+      // Buy the business you stand in, from the keeper behind its counter.
+      const deed = PROPERTY_PRICES[action.mapId];
+      if (!deed || draft.properties.includes(action.mapId) || draft.gold < deed.cost) return;
+      if (draft.world?.position.mapId !== action.mapId) return;
+      draft.gold -= deed.cost;
+      draft.properties.push(action.mapId);
       return;
     }
 

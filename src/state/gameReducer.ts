@@ -48,6 +48,7 @@ function route(draft: GameState, action: Action): GameState | void {
     case "TOGGLE_INVENTORY":
       return inventoryReducer(draft, action);
 
+    case "BUY_PROPERTY":
     case "BUY_HOUSE":
     case "TOGGLE_STORAGE":
     case "STORE_ITEM":

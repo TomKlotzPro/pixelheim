@@ -11,6 +11,16 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.42.0",
+    date: "2026-07-18",
+    codename: "The Landlord",
+    notes: [
+      "Buy the street: Odo's Emporium (2,500g), Vex's Workshop (3,500g) and Hilda's Smithy (4,000g) each sell their deed - ask the keeper behind the counter",
+      "Owned businesses pay RENT: +2g each after every victory, straight into your purse with a line in the battle log",
+      "The keepers keep working. They just work for you now.",
+    ],
+  },
+  {
     version: "0.41.0",
     date: "2026-07-18",
     codename: "Welcome Home",
