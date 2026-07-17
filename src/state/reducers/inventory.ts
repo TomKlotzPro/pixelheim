@@ -1,6 +1,6 @@
-import { gearByUid } from "../../game/character";
-import { removeItem } from "../../game/inventory";
-import { gearItem } from "../../game/rarity";
+import { gearByUid } from "../../game/hero/character";
+import { removeItem } from "../../game/economy/inventory";
+import { gearItem } from "../../game/economy/rarity";
 import type { GameState } from "../../game/types";
 import type { InventoryAction } from "../actions";
 

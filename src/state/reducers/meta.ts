@@ -1,9 +1,9 @@
-import { createHero } from "../../game/character";
-import { addItem } from "../../game/inventory";
-import { createGear } from "../../game/rarity";
+import { createHero } from "../../game/hero/character";
+import { addItem } from "../../game/economy/inventory";
+import { createGear } from "../../game/economy/rarity";
 import type { GameState, RoleId } from "../../game/types";
 import { discoverAround } from "../../world/discover";
-import { getMap } from "../../world/maps";
+import { getMap } from "../../world/maps/index";
 import type { MetaAction } from "../actions";
 import { initialState, TOWN_SPAWN } from "../shared";
 

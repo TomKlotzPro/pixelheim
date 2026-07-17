@@ -1,4 +1,4 @@
-import { getMap } from "./maps";
+import { getMap } from "./maps/index";
 import { isWalkable, portalAt } from "./parseMap";
 
 /**

@@ -1,5 +1,5 @@
 import { Application, Assets, Container, Graphics, Sprite, type Texture } from "pixi.js";
-import { ROLES } from "../game/roles";
+import { ROLES } from "../game/hero/roles";
 import type { GameState } from "../game/types";
 import { sliceSheet } from "./pixiUtils";
 import { pixelText } from "./pixelFont";

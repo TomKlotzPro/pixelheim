@@ -1,12 +1,12 @@
-import { ITEMS } from "../game/items";
-import { LEVELS } from "../game/levels";
-import { createGear } from "../game/rarity";
-import { freshJobs } from "../game/jobs";
-import { ROLES } from "../game/roles";
-import { SKILL_TREES } from "../game/skillTree";
+import { ITEMS } from "../game/economy/items";
+import { LEVELS } from "../game/hero/levels";
+import { createGear } from "../game/economy/rarity";
+import { freshJobs } from "../game/economy/jobs";
+import { ROLES } from "../game/hero/roles";
+import { SKILL_TREES } from "../game/hero/skillTree";
 import type { GameState, GearInstance } from "../game/types";
 import { discoverAround } from "../world/discover";
-import { getMap } from "../world/maps";
+import { getMap } from "../world/maps/index";
 import { initialState, TOWN_SPAWN } from "./gameReducer";
 
 const SAVE_KEY = "pixelheim-save-v1";

@@ -4,7 +4,7 @@
  * a user gesture, so the context is created lazily by init().
  */
 
-import { loadSettings } from "../settings";
+import { loadSettings } from "../app/settings";
 
 let ctx: AudioContext | null = null;
 let master: GainNode | null = null;

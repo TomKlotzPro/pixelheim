@@ -1,9 +1,9 @@
 import { Application, Assets, Container, Graphics, Sprite, type Texture } from "pixi.js";
 import type { GameState } from "../game/types";
-import { getMap } from "../world/maps";
+import { getMap } from "../world/maps/index";
 import { TILES } from "../world/tiles";
 import type { WorldMap, WorldPosition } from "../world/types";
-import { loadSettings } from "../settings";
+import { loadSettings } from "../app/settings";
 import { ART, type FrameBank, loadFrameBank, makeVignetteTexture } from "./pixiUtils";
 import { ActorLayer } from "./worldActors";
 import { AtmosphereLayer } from "./worldAtmosphere";
