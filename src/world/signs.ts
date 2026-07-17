@@ -4,19 +4,19 @@ import { getMap } from "./maps/index";
  * Door signs: the town's buildings say what they are, so nobody wanders the
  * village hunting for the forge. Keyed by the map a door leads into.
  */
-export const DOOR_SIGNS: Record<string, string> = {
-  town_shop: "GOODS",
-  town_smith: "FORGE",
-  town_alchemist: "BREWS",
-  town_inn: "INN",
+export const DOOR_SIGNS: Record<string, { label: string; icon?: string }> = {
+  town_shop: { label: "GOODS" },
+  town_smith: { label: "FORGE", icon: "icon_anvil" },
+  town_alchemist: { label: "BREWS", icon: "icon_cauldron" },
+  town_inn: { label: "INN" },
 };
 
-export type DoorSign = { x: number; y: number; label: string };
+export type DoorSign = { x: number; y: number; label: string; icon?: string };
 
 export function signsOn(mapId: string): DoorSign[] {
   return getMap(mapId).portals.flatMap((portal) =>
     portal.to.kind === "map" && DOOR_SIGNS[portal.to.mapId]
-      ? [{ x: portal.x, y: portal.y, label: DOOR_SIGNS[portal.to.mapId] }]
+      ? [{ x: portal.x, y: portal.y, ...DOOR_SIGNS[portal.to.mapId] }]
       : [],
   );
 }

@@ -11,6 +11,18 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.33.0",
+    date: "2026-07-17",
+    codename: "Signposted",
+    notes: [
+      "The craft stations finally introduce themselves: an anvil hangs over the FORGE door, a bubbling cauldron over BREWS",
+      "Lost with a pocket full of pelts? The Craft tab now offers 'Travel to town' - one click to Pixelheim Gate",
+      "Standing at a station, the Craft tab says so in green: craft freely",
+      "Esc got manners: it closes the menu you are in, and only pauses when nothing else is open",
+      "Any stack can be dropped - one at a time, or the whole pile with Drop All",
+    ],
+  },
+  {
     version: "0.32.0",
     date: "2026-07-17",
     codename: "New Blood",

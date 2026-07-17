@@ -7,6 +7,7 @@ import { JOB_NAMES, JOB_STATIONS } from "../../game/economy/jobs";
 import { canCraft, RECIPES } from "../../game/economy/recipes";
 import type { EquippedSlot, GrantStat, ItemCategory } from "../../game/types";
 import { dispatch, useGameState, useHero } from "../../state/store";
+import { waypointDiscovered, WAYPOINTS } from "../../world/waypoints";
 import { Sprite } from "../widgets/Sprite";
 
 const TABS: { id: ItemCategory | "all" | "craft"; label: string }[] = [
@@ -31,6 +32,8 @@ const DOLL_SLOTS: { slot: EquippedSlot; label: string }[] = [
   { slot: "ring2", label: "Ring" },
   { slot: "feet", label: "Feet" },
 ];
+
+const TOWN_GATE = WAYPOINTS.find((w) => w.id === "town_gate");
 
 const GRANT_STATS: { stat: GrantStat; label: string }[] = [
   { stat: "strength", label: "STR" },
@@ -59,6 +62,12 @@ export function Inventory() {
         .toSorted(
           (a, b) => gearItem(a).category.localeCompare(gearItem(b).category) || gearName(a).localeCompare(gearName(b)),
         );
+
+  // Which station (if any) the hero is standing in, and whether town is reachable.
+  const atStationId = (Object.entries(JOB_STATIONS) as [keyof typeof JOB_STATIONS, { mapId: string }][]).find(
+    ([, station]) => state.world?.position.mapId === station.mapId,
+  )?.[0];
+  const townKnown = TOWN_GATE ? waypointDiscovered(TOWN_GATE, state.world?.discovered ?? {}) : false;
 
   const weight = carriedWeight(state.inventory, state.gear, state.equipped);
   const capacity = carryCapacity(hero, state.gear, state.equipped);
@@ -157,6 +166,27 @@ export function Inventory() {
         </div>
 
         <div className="item-list">
+          {tab === "craft" && atStationId && (
+            <p className="station-banner" data-testid="station-banner">
+              You are at {atStationId === "smithing" ? "Hilda's forge" : "Vex's cauldron"} - craft freely.
+            </p>
+          )}
+          {tab === "craft" && !atStationId && !inBattle && (
+            <div className="station-travel">
+              <span className="item-locked">The stations are in town: the FORGE and BREWS doors.</span>
+              <button
+                className="btn btn-small"
+                disabled={!townKnown}
+                title={townKnown ? "Fast travel to Pixelheim Gate" : "Discover Pixelheim Gate first"}
+                onClick={() => {
+                  dispatch({ type: "TOGGLE_INVENTORY" });
+                  dispatch({ type: "FAST_TRAVEL", waypointId: "town_gate" });
+                }}
+              >
+                Travel to town
+              </button>
+            </div>
+          )}
           {tab === "craft" &&
             RECIPES.map((recipe) => {
               const result = getItem(recipe.itemId);

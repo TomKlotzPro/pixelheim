@@ -112,6 +112,13 @@ export class ActorLayer {
 
     // Door signs: little wooden plates telling you what each building is.
     for (const sign of signsOn(map.id)) {
+      // Craft stations advertise their trade with an icon over the plate.
+      if (sign.icon) {
+        const icon = new Sprite(Assets.get(sign.icon) as Texture);
+        icon.anchor.set(0.5, 1);
+        icon.position.set(sign.x * ART + ART / 2, sign.y * ART - 10);
+        container.addChild(icon);
+      }
       const label = pixelText(sign.label, 0xe8c34a);
       const w = label.width + 4;
       const h = label.height + 2;

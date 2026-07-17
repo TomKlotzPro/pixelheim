@@ -139,7 +139,7 @@ export function WorldScreen() {
               />
             ))}
             {signsOn(map.id).map((sign) => (
-              <div key={`${sign.x},${sign.y}`} data-testid="door-sign" data-label={sign.label} />
+              <div key={`${sign.x},${sign.y}`} data-testid="door-sign" data-label={sign.label} data-icon={sign.icon} />
             ))}
             {(facingNpc || facingChest) && <div data-testid="npc-prompt" />}
           </div>
@@ -203,6 +203,7 @@ export function WorldScreen() {
               className="door-sign"
               style={{ left: (sign.x + 0.5) * tilePx, top: sign.y * tilePx }}
             >
+              {sign.icon && <Sprite name={sign.icon} size={16} alt="" />}
               {sign.label}
             </span>
           ))}

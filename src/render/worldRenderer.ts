@@ -123,6 +123,8 @@ export class WorldRenderer {
         { alias: "overlay_wild", src: `${base}sprites/overlay_wild.png` },
         { alias: "overlay_path_edge", src: `${base}sprites/overlay_path_edge.png` },
         { alias: "overlay_shore", src: `${base}sprites/overlay_shore.png` },
+        { alias: "icon_anvil", src: `${base}sprites/icon_anvil.png` },
+        { alias: "icon_cauldron", src: `${base}sprites/icon_cauldron.png` },
         ...["chest_closed", "chest_open", "road_glint", "herb_patch"].map((name) => ({
           alias: name,
           src: `${base}sprites/${name}.png`,
