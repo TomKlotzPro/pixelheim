@@ -122,6 +122,7 @@ export class WorldRenderer {
         ...tiles.map((name) => ({ alias: name, src: `${base}sprites/${name}.png` })),
         { alias: "overlay_wild", src: `${base}sprites/overlay_wild.png` },
         { alias: "overlay_path_edge", src: `${base}sprites/overlay_path_edge.png` },
+        { alias: "overlay_shore", src: `${base}sprites/overlay_shore.png` },
         ...["chest_closed", "chest_open", "road_glint", "herb_patch"].map((name) => ({
           alias: name,
           src: `${base}sprites/${name}.png`,
