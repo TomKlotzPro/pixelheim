@@ -1,10 +1,12 @@
 import { createWildBattle } from "../../game/battleEngine";
+import { carriedWeight, carryCapacity } from "../../game/character";
 import { rollWildEncounter } from "../../game/encounters";
 import { SHOP_MAPS } from "../../game/shop";
 import type { GameState } from "../../game/types";
 import { discoverAround } from "../../world/discover";
 import { getMap } from "../../world/maps";
 import { npcAt, NPCS } from "../../world/npcs";
+import { waypointDiscovered, WAYPOINTS } from "../../world/waypoints";
 import { isWalkable, portalAt, regionAt, tileAt } from "../../world/parseMap";
 import type { WorldAction } from "../actions";
 import { DIRECTION_DELTAS, INN_MAP_ID, REST_COST, WILD_TILES } from "../shared";
@@ -35,6 +37,23 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
       // Only the hero-less ?world demo can leave the world; it IS the game now.
       if (draft.screen !== "world" || draft.hero) return;
       draft.screen = "title";
+      return;
+    }
+
+    case "FAST_TRAVEL": {
+      if (draft.screen !== "world" || !draft.world || !draft.hero) return;
+      if (draft.dialogue || draft.shopOpen || draft.inventoryOpen) return;
+      // The classic rule: nobody teleports over-encumbered.
+      if (carriedWeight(draft.inventory, draft.gear, draft.equipped) > carryCapacity(draft.hero)) {
+        draft.worldMessage = "Too heavy to travel. Lighten the pack.";
+        return;
+      }
+      const waypoint = WAYPOINTS.find((w) => w.id === action.waypointId);
+      if (!waypoint || !waypointDiscovered(waypoint, draft.world.discovered)) return;
+      const map = getMap(waypoint.mapId);
+      draft.world.position = { mapId: waypoint.mapId, x: waypoint.arrival.x, y: waypoint.arrival.y, facing: "down" };
+      draft.world.discovered = discoverAround(draft.world.discovered, map, waypoint.arrival.x, waypoint.arrival.y);
+      draft.worldMessage = `You travel to ${waypoint.name}.`;
       return;
     }
 

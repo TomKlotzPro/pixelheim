@@ -8,6 +8,7 @@ import { loadSettings, type Settings } from "./settings";
 import { Battle } from "./components/Battle";
 import { CharacterCreation } from "./components/CharacterCreation";
 import { Inventory } from "./components/Inventory";
+import { MapScreen } from "./components/MapScreen";
 import { PauseMenu } from "./components/PauseMenu";
 import { Shop } from "./components/Shop";
 import { TitleScreen } from "./components/TitleScreen";
@@ -110,6 +111,7 @@ export default function App() {
   const [settings, setSettings] = useState<Settings>(loadSettings);
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [paused, setPaused] = useState(false);
+  const [mapOpen, setMapOpen] = useState(false);
   const [battleFlash, setBattleFlash] = useState(false);
   const lastScreen = useRef(state.screen);
 
@@ -149,7 +151,8 @@ export default function App() {
       // screen. Fresh state via the store: this listener outlives renders.
       if (event.key === "Escape") {
         const now = gameStore.getState();
-        if (now.shopOpen) dispatch({ type: "TOGGLE_SHOP" });
+        if (mapOpen) setMapOpen(false);
+        else if (now.shopOpen) dispatch({ type: "TOGGLE_SHOP" });
         else if (now.inventoryOpen) dispatch({ type: "TOGGLE_INVENTORY" });
         else if (now.dialogue) dispatch({ type: "ADVANCE_DIALOGUE" });
         else if (!now.hero) dispatch({ type: "EXIT_WORLD" });
@@ -161,6 +164,11 @@ export default function App() {
         dispatch({ type: "TOGGLE_INVENTORY" });
         return;
       }
+      if (event.code === bindings.map && state.hero) {
+        setMapOpen((open) => !open);
+        return;
+      }
+      if (mapOpen) return;
       // Enter and Space always interact, on top of the custom binding.
       if (event.code === bindings.interact || event.key === "Enter" || event.key === " ") {
         event.preventDefault();
@@ -184,7 +192,7 @@ export default function App() {
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [state.screen, settings, paused]);
+  }, [state.screen, settings, paused, mapOpen, state.hero]);
 
   return (
     <div className="crt">
@@ -197,6 +205,7 @@ export default function App() {
       <Screen state={state} save={save} onOpenOptions={() => setOptionsOpen(true)} />
       {state.inventoryOpen && state.hero && <Inventory />}
       {battleFlash && <div className="battle-flash" aria-hidden="true" />}
+      {mapOpen && state.screen === "world" && state.hero && <MapScreen onClose={() => setMapOpen(false)} />}
       {paused && state.screen === "world" && state.hero && (
         <PauseMenu
           onClose={() => setPaused(false)}
