@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { GAME_VERSION, hasUnseenChanges, markChangesSeen } from "../changelog";
 import { ChangelogPage } from "./Changelog";
-import { Sprite } from "./Sprite";
 
 const LINEUP = ["slime", "goblin", "skeleton", "dragon", "golem", "ghost", "wolf"];
 const EMBERS = [8, 22, 37, 55, 68, 84];
@@ -43,16 +42,33 @@ export function TitleScreen({ canContinue, onNewGame, onContinue, onOpenOptions 
       </div>
 
       <div className="title-monsters">
-        {LINEUP.map((name, i) => (
-          <span
-            key={name}
-            className={`title-monster ${name === "dragon" ? "title-dragon" : ""}`}
-            style={{ animationDelay: `${i * 0.35}s` }}
-          >
-            <Sprite name={name} size={name === "dragon" ? 72 : 48} />
-          </span>
-        ))}
+        {LINEUP.map((name, i) => {
+          const size = name === "dragon" ? 72 : 48;
+          return (
+            <span
+              key={name}
+              className={`title-monster ${name === "dragon" ? "title-dragon" : ""}`}
+              style={{ animationDelay: `${i * 0.35}s` }}
+            >
+              <span
+                className="title-idle"
+                style={{
+                  width: size,
+                  height: size,
+                  backgroundImage: `url(${import.meta.env.BASE_URL}sprites/${name}_idle.png)`,
+                  backgroundSize: `${size * 2}px ${size}px`,
+                  animationDelay: `${(i % 3) * 0.25}s`,
+                }}
+              />
+            </span>
+          );
+        })}
       </div>
+      <span
+        className="title-walker"
+        aria-hidden="true"
+        style={{ backgroundImage: `url(${import.meta.env.BASE_URL}sprites/hero_warrior_walk.png)` }}
+      />
       <h1 className="game-title">PIXELHEIM</h1>
       <p className="tagline">Fifteen floors. One dragon. Worse things below.</p>
       <div className="menu">
