@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { playTrack, trackForState } from "../audio/music";
 import { ambienceForState, setAmbience } from "../audio/ambience";
+import { rankIndex, rankTitle } from "../game/hero/ranks";
 import { SFX } from "../audio/sfx";
 import { audioReady, initAudio, isMuted, setMuted } from "../audio/synth";
 import { DungeonSelect } from "../ui/screens/DungeonSelect";
@@ -21,6 +22,25 @@ import { clearSave, decodeSaveCode, encodeSaveCode, loadSave, persistSave } from
 import type { Direction } from "../world/types";
 
 
+
+/** The ascension card: shows for a few seconds when the hero crosses a rank. */
+function useRankUp(state: GameState): string | null {
+  const [title, setTitle] = useState<string | null>(null);
+  const prevLevel = useRef(state.hero?.level ?? 0);
+  useEffect(() => {
+    const hero = state.hero;
+    if (!hero) return;
+    const before = prevLevel.current;
+    prevLevel.current = hero.level;
+    if (hero.level > before && before > 0 && rankIndex(hero.level) > rankIndex(before)) {
+      setTitle(rankTitle(hero));
+      SFX.evolve();
+      const timer = setTimeout(() => setTitle(null), 2800);
+      return () => clearTimeout(timer);
+    }
+  }, [state.hero]);
+  return title;
+}
 
 /** Audio is a pure side effect: watch state transitions, never touch the reducer. */
 function useAudio(state: GameState) {
@@ -142,6 +162,7 @@ export default function App() {
   }, [settings]);
 
   useAudio(state);
+  const rankUp = useRankUp(state);
 
   const hasSaveData = state.hero !== null || save !== null;
   const saveCode = state.hero ? encodeSaveCode(state) : save ? encodeSaveCode(save) : null;
@@ -246,6 +267,15 @@ export default function App() {
           }}
           onClose={() => setOptionsOpen(false)}
         />
+      )}
+      {rankUp && (
+        <div className="rankup-overlay" aria-live="polite">
+          <div className="rankup-card">
+            <span className="rankup-eyebrow">Ascension</span>
+            <span className="rankup-title">{rankUp}</span>
+            <span className="rankup-note">+1 bonus skill point</span>
+          </div>
+        </div>
       )}
     </div>
   );

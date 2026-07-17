@@ -11,6 +11,18 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.36.0",
+    date: "2026-07-18",
+    codename: "Ascension",
+    notes: [
+      "Rank evolution! Every 5 levels your hero ascends: Apprentice becomes Mage becomes Magus becomes ARCHMAGE - every class has its ladder",
+      "Ascension is a moment: a title card, a fanfare, and a bonus skill point on the spot",
+      "Rank shows on the hero: an aura that deepens with each ascension (silver, gold, radiant) and a touch more presence on the map",
+      "Your title lives on the HUD and the stat sheet - you are not 'Lv 12 Warrior', you are a Champion",
+      "Old saves are already ranked: rank derives from level, nothing stored",
+    ],
+  },
+  {
     version: "0.35.0",
     date: "2026-07-18",
     codename: "The Bard Arrives",
