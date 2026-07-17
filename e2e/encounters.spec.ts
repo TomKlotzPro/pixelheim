@@ -1,8 +1,6 @@
 import { expect, test, type Page } from '@playwright/test'
 import { loadVeteranAt } from './helpers'
 
-const hero = (page: Page) => page.getByTestId('world-hero')
-
 /** Chase the wandering spawn: press toward its 2x2 loop until the fight starts. */
 async function chase(page: Page, keys: string[]): Promise<void> {
   for (const key of keys) {
