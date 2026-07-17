@@ -85,7 +85,7 @@ export function Inventory() {
           <div className="doll-column">
             <div className="doll">
               <div className="doll-portrait" aria-hidden="true">
-                <Sprite name={ROLES[hero.roleId].sprite} size={80} />
+                <Sprite name={ROLES[hero.roleId].sprite} size={72} />
               </div>
               {DOLL_SLOTS.map(({ slot, label }, i) => {
                 const instance = gearByUid(state.gear, state.equipped[slot]);
