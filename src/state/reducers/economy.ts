@@ -3,7 +3,7 @@ import { addItem, removeItem } from "../../game/inventory";
 import { getItem } from "../../game/items";
 import { createGear, gearItem, gearValue } from "../../game/rarity";
 import { canCraft, RECIPES } from "../../game/recipes";
-import { doubleBrewChance, forgeCapFor, forgeCostFor, grantJobXp } from "../../game/jobs";
+import { doubleBrewChance, forgeCapFor, forgeCostFor, grantJobXp, JOB_STATIONS } from "../../game/jobs";
 import { buyPrice, sellPriceAt, SHOPS, shopStock } from "../../game/shop";
 import type { GameState } from "../../game/types";
 import type { EconomyAction } from "../actions";
@@ -69,6 +69,8 @@ export function economyReducer(draft: GameState, action: EconomyAction): void {
       if (!draft.hero) return;
       const recipe = RECIPES.find((r) => r.id === action.recipeId);
       if (!recipe || !canCraft(recipe, draft.inventory, draft.hero.jobs)) return;
+      // The craft happens at its station: smithing at the forge, brews at the cauldron.
+      if (draft.world?.position.mapId !== JOB_STATIONS[recipe.job.id].mapId) return;
       let inventory = draft.inventory;
       for (const [itemId, count] of Object.entries(recipe.needs)) {
         inventory = removeItem(inventory, itemId, count);
