@@ -3,6 +3,7 @@ import type { WorldMap } from "../types";
 import {
   OVERWORLD_MAP,
   TOWN_ALCHEMIST_MAP,
+  TOWN_HOUSE_MAP,
   TOWN_INN_MAP,
   TOWN_MAP,
   TOWN_SHOP_MAP,
@@ -20,6 +21,7 @@ export const MAPS: Record<string, WorldMap> = {
   [TOWN_INN_MAP.id]: TOWN_INN_MAP,
   [TOWN_SMITH_MAP.id]: TOWN_SMITH_MAP,
   [TOWN_ALCHEMIST_MAP.id]: TOWN_ALCHEMIST_MAP,
+  [TOWN_HOUSE_MAP.id]: TOWN_HOUSE_MAP,
   [DEMO_MAP.id]: DEMO_MAP,
   [DEMO_HUT_MAP.id]: DEMO_HUT_MAP,
 };
