@@ -11,6 +11,7 @@ const CONTROL_ROWS: { action: BindableAction; label: string }[] = [
   { action: "right", label: "Move right" },
   { action: "interact", label: "Talk / interact" },
   { action: "inventory", label: "Inventory" },
+  { action: "map", label: "World map" },
 ];
 
 type OptionsProps = {

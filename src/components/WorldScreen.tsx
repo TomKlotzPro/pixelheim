@@ -10,6 +10,7 @@ import type { Direction, TileId } from "../world/types";
 /** Must mirror the reducer's encounter terrain: only these tiles grow tufts. */
 const WILD_TILES = new Set<TileId>(["grass", "forest", "marsh", "ash", "sand"]);
 import { USE_PIXI } from "../render/flag";
+import { MiniMap } from "./MapScreen";
 import { Sprite } from "./Sprite";
 import { WorldHud } from "./WorldHud";
 
@@ -85,6 +86,7 @@ export function WorldScreen() {
   return (
     <div className="screen world-screen">
       {state.hero && <WorldHud />}
+      {state.hero && <MiniMap />}
       {state.hero && !state.introSeen && (
         <div className="overlay">
           <div className="panel intro-panel">
