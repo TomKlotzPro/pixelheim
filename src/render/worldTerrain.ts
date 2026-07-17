@@ -28,7 +28,7 @@ const FRINGE_SIDES: { dx: number; dy: number; rotation: number }[] = [
 
 /** The ground: tiles with variation, breathing tiles, framed paths, danger tufts. */
 export class TerrainLayer {
-  private animated: { sprite: Sprite; name: string }[] = [];
+  private animated: { sprite: Sprite; name: string; phase: number }[] = [];
   private bank: FrameBank;
 
   constructor(bank: FrameBank) {
@@ -45,7 +45,8 @@ export class TerrainLayer {
         const sprite = new Sprite(sheet ? sheet[0] : (Assets.get(TILES[tile].sprite) as Texture));
         sprite.position.set(x * ART, y * ART);
         container.addChild(sprite);
-        if (animName && sheet) this.animated.push({ sprite, name: animName });
+        // Position-hashed phase: each tuft of grass sways to its own wind.
+        if (animName && sheet) this.animated.push({ sprite, name: animName, phase: (x * 379 + y * 613) % 1200 });
         // Paths read as built roads: green fringes hang over from bordering grass.
         if (tile === "path") {
           for (const side of FRINGE_SIDES) {
@@ -70,10 +71,11 @@ export class TerrainLayer {
   }
 
   tick(clock: number): void {
-    for (const { sprite, name } of this.animated) {
+    for (const { sprite, name, phase } of this.animated) {
       const sheet = this.bank.frames.get(name)!;
-      const ms = this.bank.ms.get(name) ?? 500;
-      sprite.texture = sheet[Math.floor(clock / ms) % sheet.length];
+      // Terrain breathes slower than people move; sways get an extra half-beat.
+      const ms = (this.bank.ms.get(name) ?? 500) * (name.endsWith("_sway") ? 1.6 : 1);
+      sprite.texture = sheet[Math.floor((clock + phase) / ms) % sheet.length];
     }
   }
 }

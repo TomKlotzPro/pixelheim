@@ -3,6 +3,28 @@ import { ROLES } from "../game/roles";
 import type { RoleId } from "../game/types";
 import { Sprite } from "./Sprite";
 
+/** One-line pitch per role, for the class list. */
+const ROLE_PITCH: Record<RoleId, string> = {
+  warrior: "Steel and stubbornness",
+  mage: "Glass cannon, loud spells",
+  rogue: "Fast, sharp, gone",
+  cleric: "Holds the line, heals it too",
+};
+
+const STAT_ROWS = [
+  { key: "maxHp", label: "HP" },
+  { key: "maxMp", label: "MP" },
+  { key: "strength", label: "STR" },
+  { key: "intelligence", label: "INT" },
+  { key: "dexterity", label: "DEX" },
+  { key: "defense", label: "DEF" },
+] as const;
+
+// Bars are comparable across classes: each stat is scaled to the roster max.
+const STAT_MAX = Object.fromEntries(
+  STAT_ROWS.map((row) => [row.key, Math.max(...Object.values(ROLES).map((r) => r.baseStats[row.key]))]),
+) as Record<(typeof STAT_ROWS)[number]["key"], number>;
+
 type CharacterCreationProps = {
   onCreate: (name: string, roleId: RoleId) => void;
 };
@@ -11,60 +33,91 @@ export function CharacterCreation({ onCreate }: CharacterCreationProps) {
   const [name, setName] = useState("");
   const [roleId, setRoleId] = useState<RoleId>("warrior");
   const role = ROLES[roleId];
+  const base = import.meta.env.BASE_URL;
 
   return (
     <div className="screen create-screen">
+      <p className="create-eyebrow">The mountain is waiting</p>
       <h2 className="screen-title">Create your hero</h2>
-      <label className="name-field">
-        <span>Name</span>
-        <input
-          value={name}
-          maxLength={16}
-          placeholder="Dragonsbane..."
-          onChange={(e) => setName(e.target.value)}
-          autoFocus
-        />
-      </label>
-      <div className="role-grid">
-        {Object.values(ROLES).map((r) => (
-          <button
-            key={r.id}
-            className={`role-card ${r.id === roleId ? "selected" : ""}`}
-            onClick={() => setRoleId(r.id)}
-          >
-            <Sprite name={r.sprite} size={64} alt={r.name} />
-            <span className="role-name">{r.name}</span>
-          </button>
-        ))}
-      </div>
-      <div className="panel role-details">
-        <p>{role.description}</p>
-        <div className="role-stats">
-          <span>HP {role.baseStats.maxHp}</span>
-          <span>MP {role.baseStats.maxMp}</span>
-          <span>STR {role.baseStats.strength}</span>
-          <span>INT {role.baseStats.intelligence}</span>
-          <span>DEX {role.baseStats.dexterity}</span>
-          <span>DEF {role.baseStats.defense}</span>
-        </div>
-        <p className="skill-line">
-          Skills:{" "}
-          {role.skills.map((skill, i) => (
-            <span key={skill.name}>
-              {i > 0 && ", "}
-              <strong>{skill.name}</strong> (Lv{skill.unlockLevel})
-            </span>
+
+      <div className="create-layout">
+        <div className="role-list" role="radiogroup" aria-label="Class">
+          {Object.values(ROLES).map((r) => (
+            <button
+              key={r.id}
+              className={`role-card ${r.id === roleId ? "selected" : ""}`}
+              onClick={() => setRoleId(r.id)}
+            >
+              <Sprite name={r.sprite} size={40} alt="" />
+              <span className="role-card-text">
+                <span className="role-name">{r.name}</span>
+                <span className="role-pitch">{ROLE_PITCH[r.id]}</span>
+              </span>
+            </button>
           ))}
-        </p>
-        <p className="skill-line">{role.skills[0].description}</p>
+        </div>
+
+        <div className="panel role-details">
+          <div className="role-portrait">
+            <span
+              className="role-portrait-art"
+              style={{
+                backgroundImage: `url(${base}sprites/${role.sprite}_walk.png)`,
+                backgroundSize: "384px 96px",
+              }}
+            />
+            <span className="role-portrait-name">{name.trim() || "..."}</span>
+            <span className="role-portrait-class">{role.name}</span>
+          </div>
+          <div className="role-sheet">
+            <p className="role-blurb">{role.description}</p>
+            <div className="role-bars">
+              {STAT_ROWS.map((row) => (
+                <div key={row.key} className="role-bar-row">
+                  <span className="role-bar-label">{row.label}</span>
+                  <span className="role-bar-track">
+                    <span
+                      className="role-bar-fill"
+                      style={{ width: `${Math.round((role.baseStats[row.key] / STAT_MAX[row.key]) * 100)}%` }}
+                    />
+                  </span>
+                  <span className="role-bar-value">{role.baseStats[row.key]}</span>
+                </div>
+              ))}
+            </div>
+            <p className="skill-line">
+              Skills:{" "}
+              {role.skills.map((skill, i) => (
+                <span key={skill.name}>
+                  {i > 0 && ", "}
+                  <strong>{skill.name}</strong> (Lv{skill.unlockLevel})
+                </span>
+              ))}
+            </p>
+            <p className="skill-line">{role.skills[0].description}</p>
+          </div>
+        </div>
       </div>
-      <button
-        className="btn btn-primary"
-        disabled={name.trim().length === 0}
-        onClick={() => onCreate(name.trim(), roleId)}
-      >
-        Begin the climb
-      </button>
+
+      <div className="create-footer">
+        <label className="name-field">
+          <span>Name</span>
+          <input
+            value={name}
+            maxLength={16}
+            placeholder="Dragonsbane..."
+            onChange={(e) => setName(e.target.value)}
+            autoFocus
+          />
+        </label>
+        <button
+          className="btn btn-primary"
+          disabled={name.trim().length === 0}
+          onClick={() => onCreate(name.trim(), roleId)}
+        >
+          Begin the climb
+        </button>
+      </div>
     </div>
   );
 }

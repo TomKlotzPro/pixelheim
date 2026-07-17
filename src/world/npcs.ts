@@ -154,3 +154,30 @@ export function npcAt(mapId: string, x: number, y: number, steps: number): Npc |
     }) ?? null
   );
 }
+
+/** Facing tile first, then the other neighbors: E means "the NPC I obviously mean". */
+const BESIDE_ORDER: { facing: "up" | "down" | "left" | "right"; dx: number; dy: number }[] = [
+  { facing: "up", dx: 0, dy: -1 },
+  { facing: "down", dx: 0, dy: 1 },
+  { facing: "left", dx: -1, dy: 0 },
+  { facing: "right", dx: 1, dy: 0 },
+];
+
+/**
+ * The NPC beside the hero: the faced tile wins, any adjacent tile follows.
+ * Returns which way the hero should turn, so interacting also faces them.
+ */
+export function npcBeside(
+  mapId: string,
+  x: number,
+  y: number,
+  facing: "up" | "down" | "left" | "right",
+  steps: number,
+): { npc: Npc; facing: "up" | "down" | "left" | "right" } | null {
+  const order = BESIDE_ORDER.toSorted((a, b) => (b.facing === facing ? 1 : 0) - (a.facing === facing ? 1 : 0));
+  for (const side of order) {
+    const npc = npcAt(mapId, x + side.dx, y + side.dy, steps);
+    if (npc) return { npc, facing: side.facing };
+  }
+  return null;
+}
