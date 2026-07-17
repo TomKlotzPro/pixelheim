@@ -90,7 +90,7 @@ export function WorldScreen() {
           <div className="panel intro-panel">
             <p>The mountain burned once. The village rebuilt. The monsters never left.</p>
             <p>Pixelheim needs someone stubborn enough to climb the Ashen Mountain.</p>
-            <p>The gate is south. The merchant buys and sells. The inn is warm. Good luck.</p>
+            <p>The gate is north, past the inn. The merchant buys and sells. The inn is warm. Good luck.</p>
             <button className="btn btn-primary" onClick={() => dispatch({ type: "DISMISS_INTRO" })}>
               Set out
             </button>

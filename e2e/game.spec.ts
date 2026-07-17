@@ -12,8 +12,10 @@ test('a new hero walks from the village to the mountain and clears floor 1', asy
   test.setTimeout(60_000)
   await createHero(page, 'Smoke')
 
-  // out of the town gate onto the overworld road
-  await walk(page, 'ArrowDown', 2)
+  // out of the north gate onto the overworld road
+  await walk(page, 'ArrowUp', 10)
+  await walk(page, 'ArrowRight', 2)
+  await walk(page, 'ArrowUp', 5)
   await expect(page.getByTestId('world-viewport')).toHaveAttribute('data-map', 'overworld')
   // north along the safe path, over the bridge, into the mountain gate
   await walk(page, 'ArrowUp', 17)
