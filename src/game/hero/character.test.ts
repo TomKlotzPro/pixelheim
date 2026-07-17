@@ -1,5 +1,16 @@
 import { describe, expect, it } from "vitest";
-import { applyLevelUps, applyStatPoint, carryCapacity, carriedWeight, createHero, resourceLabel, staminaRegen, STAT_POINTS_PER_LEVEL, xpToNext, heroSprite } from "./character";
+import {
+  applyLevelUps,
+  applyStatPoint,
+  carryCapacity,
+  carriedWeight,
+  createHero,
+  resourceLabel,
+  staminaRegen,
+  STAT_POINTS_PER_LEVEL,
+  xpToNext,
+  heroSprite,
+} from "./character";
 import { getItem } from "../economy/items";
 import { createGear } from "../economy/rarity";
 import { rootNode } from "./skillTree";

@@ -97,7 +97,13 @@ export class ActorLayer {
       const sprite = new Sprite(sheet ? sheet[0] : (Assets.get(species.sprite) as Texture));
       const at = spawnPosition(spawn, state.worldSteps);
       sprite.position.set(at.x * ART, at.y * ART);
-      this.monsters.push({ spawn, sheet: sheetName, sprite, shadow: makeShadow(), target: { x: at.x * ART, y: at.y * ART } });
+      this.monsters.push({
+        spawn,
+        sheet: sheetName,
+        sprite,
+        shadow: makeShadow(),
+        target: { x: at.x * ART, y: at.y * ART },
+      });
     }
 
     this.heroShadow = makeShadow();

@@ -79,7 +79,9 @@ for (const spawn of SPAWNS) {
     const x = spawn.x + dx;
     const y = spawn.y + dy;
     const tile = map.tiles[y]?.[x];
-    return tile && isWalkable(map, x, y) && WILD_TILES.has(tile) && !portalAt(map, x, y) && regionAt(map, x, y) !== null;
+    return (
+      tile && isWalkable(map, x, y) && WILD_TILES.has(tile) && !portalAt(map, x, y) && regionAt(map, x, y) !== null
+    );
   });
   validOffsets.set(spawn.id, offsets.length > 0 ? offsets : [[0, 0]]);
 }

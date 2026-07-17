@@ -76,13 +76,27 @@ export function Battle() {
       )}
       <div className={`battle-arena ${USE_PIXI ? "battle-arena-bars" : ""}`}>
         <div className="combatant">
-          {battle.wild && !USE_PIXI && <span className="ambush-mark" aria-hidden="true">!</span>}
+          {battle.wild && !USE_PIXI && (
+            <span className="ambush-mark" aria-hidden="true">
+              !
+            </span>
+          )}
           {!USE_PIXI && (
-            <Sprite name={heroSpriteOf(hero)} size={96} alt={hero.name} className={battle.phase === "lost" ? "fallen" : ""} />
+            <Sprite
+              name={heroSpriteOf(hero)}
+              size={96}
+              alt={hero.name}
+              className={battle.phase === "lost" ? "fallen" : ""}
+            />
           )}
           <div className="combatant-name">{hero.name}</div>
           <StatBar label="HP" value={hero.hp} max={hero.stats.maxHp} color="var(--hp)" />
-          <StatBar label={resourceLabel(hero.roleId)} value={hero.mp} max={hero.stats.maxMp} color={resourceLabel(hero.roleId) === "EN" ? "var(--en)" : "var(--mp)"} />
+          <StatBar
+            label={resourceLabel(hero.roleId)}
+            value={hero.mp}
+            max={hero.stats.maxMp}
+            color={resourceLabel(hero.roleId) === "EN" ? "var(--en)" : "var(--mp)"}
+          />
           <EffectBadges effects={battle.heroEffects} />
         </div>
         <div className="vs">VS</div>
@@ -122,7 +136,8 @@ export function Battle() {
               onClick={() => dispatch({ type: "SKILL", skillIndex: index })}
               title={skill.description}
             >
-              {skill.name} ({skill.mpCost} {resourceLabel(hero.roleId)}{skill.hpCost ? ` + ${skill.hpCost} HP` : ""})
+              {skill.name} ({skill.mpCost} {resourceLabel(hero.roleId)}
+              {skill.hpCost ? ` + ${skill.hpCost} HP` : ""})
             </button>
           ))}
           <button className="btn" onClick={() => dispatch({ type: "TOGGLE_INVENTORY" })} disabled={!hasConsumables}>

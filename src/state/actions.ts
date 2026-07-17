@@ -58,10 +58,4 @@ export type WorldAction =
   | { type: "FAST_TRAVEL"; waypointId: string }
   | { type: "CLOSE_DUNGEON_SELECT" };
 
-export type Action =
-  | MetaAction
-  | BattleAction
-  | InventoryAction
-  | EconomyAction
-  | ProgressionAction
-  | WorldAction;
+export type Action = MetaAction | BattleAction | InventoryAction | EconomyAction | ProgressionAction | WorldAction;

@@ -25,9 +25,7 @@ export function SkillTree({ onClose }: { onClose: () => void }) {
   const tree = SKILL_TREES[hero.roleId];
   const owned = new Set(hero.skillNodes);
   const resource = resourceLabel(hero.roleId);
-  const branches = [0, 1, 2].map((branch) =>
-    tree.filter((n) => n.branch === branch).sort((a, b) => a.tier - b.tier),
-  );
+  const branches = [0, 1, 2].map((branch) => tree.filter((n) => n.branch === branch).sort((a, b) => a.tier - b.tier));
 
   return (
     <div className="overlay" onClick={onClose}>
@@ -86,10 +84,7 @@ export function SkillTree({ onClose }: { onClose: () => void }) {
                 const locked = !isOwned && !buyable;
                 const skill = node.skill;
                 return (
-                  <div
-                    key={node.id}
-                    className={`skill-node ${isOwned ? "owned" : buyable ? "buyable" : "locked"}`}
-                  >
+                  <div key={node.id} className={`skill-node ${isOwned ? "owned" : buyable ? "buyable" : "locked"}`}>
                     <div className="skill-node-head">
                       <span className="skill-node-tier">{TIER_BADGES[node.tier] ?? "?"}</span>
                       <span className="skill-node-name">{node.name}</span>

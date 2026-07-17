@@ -12,8 +12,8 @@ export function Victory({ hero, onContinue }: VictoryProps) {
       <Sprite name="lich" size={128} className="fallen" alt="Defeated lich" />
       <h1 className="game-title">VICTORY</h1>
       <p className="tagline">
-        {hero.name} slew Fafnyr the Ashen above and cast down Morvax the Deathless below. The mountain is quiet at
-        last, the tavern is loud, and the cheese has never tasted better.
+        {hero.name} slew Fafnyr the Ashen above and cast down Morvax the Deathless below. The mountain is quiet at last,
+        the tavern is loud, and the cheese has never tasted better.
       </p>
       <button className="btn btn-primary" onClick={onContinue}>
         Return to town

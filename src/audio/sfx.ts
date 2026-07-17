@@ -32,7 +32,13 @@ export const SFX = {
   },
   victory(): void {
     [67, 67, 67, 72].forEach((note, i) =>
-      playTone({ freq: midi(note), duration: i === 3 ? 0.4 : 0.1, type: "square", volume: 0.09, at: nowPlus(i * 0.12) }),
+      playTone({
+        freq: midi(note),
+        duration: i === 3 ? 0.4 : 0.1,
+        type: "square",
+        volume: 0.09,
+        at: nowPlus(i * 0.12),
+      }),
     );
   },
   defeat(): void {

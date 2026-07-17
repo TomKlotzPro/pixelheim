@@ -50,54 +50,54 @@ function StatSheet({ onClose }: { onClose: () => void }) {
           </button>
         </div>
         <div className="panel-body">
-        {SPENDABLE.map(({ stat, label }) => {
-          const info = statInfo(stat, hero, state.gear, state.equipped);
-          const worn =
-            stat === "strength" || stat === "intelligence" || stat === "dexterity"
-              ? grantedStat(state.gear, state.equipped, stat)
-              : 0;
-          return (
-            <div key={stat} className="stat-row">
-              <div className="options-row">
-                <span>
-                  {label} {hero.stats[stat]}
-                  {worn > 0 && <em className="doll-granted"> +{worn} worn</em>}
-                </span>
-                <button
-                  className="btn btn-small"
-                  disabled={hero.statPoints <= 0}
-                  aria-label={`Increase ${label}`}
-                  title={info.blurb}
-                  onClick={() => dispatch({ type: "SPEND_STAT_POINT", stat })}
-                >
-                  +
-                </button>
+          {SPENDABLE.map(({ stat, label }) => {
+            const info = statInfo(stat, hero, state.gear, state.equipped);
+            const worn =
+              stat === "strength" || stat === "intelligence" || stat === "dexterity"
+                ? grantedStat(state.gear, state.equipped, stat)
+                : 0;
+            return (
+              <div key={stat} className="stat-row">
+                <div className="options-row">
+                  <span>
+                    {label} {hero.stats[stat]}
+                    {worn > 0 && <em className="doll-granted"> +{worn} worn</em>}
+                  </span>
+                  <button
+                    className="btn btn-small"
+                    disabled={hero.statPoints <= 0}
+                    aria-label={`Increase ${label}`}
+                    title={info.blurb}
+                    onClick={() => dispatch({ type: "SPEND_STAT_POINT", stat })}
+                  >
+                    +
+                  </button>
+                </div>
+                <p className="stat-blurb">{info.blurb}</p>
+                <p className="stat-derived">
+                  {info.now}
+                  {hero.statPoints > 0 && (
+                    <>
+                      {" "}
+                      <span className="stat-arrow">{"\u2192"}</span> <span className="stat-next">{info.next}</span>
+                    </>
+                  )}
+                </p>
               </div>
-              <p className="stat-blurb">{info.blurb}</p>
-              <p className="stat-derived">
-                {info.now}
-                {hero.statPoints > 0 && (
-                  <>
-                    {" "}
-                    <span className="stat-arrow">{"\u2192"}</span> <span className="stat-next">{info.next}</span>
-                  </>
-                )}
-              </p>
+            );
+          })}
+          <h3 className="options-title">Professions</h3>
+          {(Object.keys(JOB_NAMES) as JobId[]).map((job) => (
+            <div key={job} className="options-row">
+              <span>
+                {JOB_NAMES[job]} {hero.jobs[job].level}
+              </span>
+              <span className="options-note">
+                {hero.jobs[job].xp}/{jobXpToNext(hero.jobs[job].level)} xp
+              </span>
             </div>
-          );
-        })}
-        <h3 className="options-title">Professions</h3>
-        {(Object.keys(JOB_NAMES) as JobId[]).map((job) => (
-          <div key={job} className="options-row">
-            <span>
-              {JOB_NAMES[job]} {hero.jobs[job].level}
-            </span>
-            <span className="options-note">
-              {hero.jobs[job].xp}/{jobXpToNext(hero.jobs[job].level)} xp
-            </span>
-          </div>
-        ))}
-        <p className="options-footer">Spent points are permanent. Choose like it matters.</p>
+          ))}
+          <p className="options-footer">Spent points are permanent. Choose like it matters.</p>
         </div>
       </div>
     </div>
@@ -127,13 +127,21 @@ export function WorldHud() {
         </span>
       </div>
       <StatBar label="HP" value={hero.hp} max={hero.stats.maxHp} color="var(--hp)" />
-      <StatBar label={resourceLabel(hero.roleId)} value={hero.mp} max={hero.stats.maxMp} color={resourceLabel(hero.roleId) === "EN" ? "var(--en)" : "var(--mp)"} />
+      <StatBar
+        label={resourceLabel(hero.roleId)}
+        value={hero.mp}
+        max={hero.stats.maxMp}
+        color={resourceLabel(hero.roleId) === "EN" ? "var(--en)" : "var(--mp)"}
+      />
       <StatBar label="XP" value={hero.xp} max={hero.xpToNext} color="var(--xp)" />
       <div className="hud-actions">
         <button className="btn btn-small" onClick={() => dispatch({ type: "TOGGLE_INVENTORY" })}>
           Inventory (I)
         </button>
-        <button className="btn btn-small" onClick={() => window.dispatchEvent(new KeyboardEvent("keydown", { code: "KeyM" }))}>
+        <button
+          className="btn btn-small"
+          onClick={() => window.dispatchEvent(new KeyboardEvent("keydown", { code: "KeyM" }))}
+        >
           Map (M)
         </button>
         <button className="btn btn-small" onClick={() => setSheetOpen(true)}>
