@@ -47,6 +47,26 @@ const REGIONS: Record<RegionId, RegionTable> = {
       { monsterId: "imp", weight: 2 },
     ],
   },
+  deepwood: {
+    name: "the Deepwood",
+    dropFloor: 8,
+    eliteChance: 0.18,
+    monsters: [
+      { monsterId: "troll", weight: 4 },
+      { monsterId: "golem", weight: 3 },
+      { monsterId: "shade", weight: 2 },
+    ],
+  },
+  mire: {
+    name: "the Mirefen",
+    dropFloor: 11,
+    eliteChance: 0.2,
+    monsters: [
+      { monsterId: "ghost", weight: 4 },
+      { monsterId: "skeleton", weight: 3 },
+      { monsterId: "mimic", weight: 2 },
+    ],
+  },
 };
 
 export type WildEncounter = {

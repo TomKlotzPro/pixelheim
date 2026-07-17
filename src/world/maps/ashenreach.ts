@@ -27,7 +27,7 @@ export const OVERWORLD_MAP: WorldMap = parseMap(
   ^aaaaaa^^aaaaaaaaaaaaaaa=aaaaaaaaaaaaaa^^aaaaaa^
   ^~~~~~~~~~~~~~~~~~~~~~~~b~~~~~~~~~~~~~~~~~~~~~~^
   ^~~~~~~~~~~~~~~~~~~~~~~~b~~~~~~~~~~~~~~~~~~~~~~^
-  ^.......................=......................^
+  C.......................=......................C
   ^.wwwww.................=.........ffff.........^
   ^.wwwww.................=........ffffff........^
   ^.......................*......................^
@@ -48,6 +48,8 @@ export const OVERWORLD_MAP: WorldMap = parseMap(
     { x: 24, y: 3, to: { kind: "dungeon", dungeon: "mountain" } },
     { x: 12, y: 5, to: { kind: "dungeon", dungeon: "undermountain" } },
     { x: 24, y: 21, to: { kind: "map", mapId: "town", x: 16, y: 1 } },
+    { x: 0, y: 16, to: { kind: "map", mapId: "mirefen", x: 28, y: 12 } },
+    { x: 47, y: 16, to: { kind: "map", mapId: "deepwood", x: 1, y: 12 } },
   ],
   {
     grid: `

@@ -1,0 +1,30 @@
+import { expect, test } from '@playwright/test'
+import { loadVeteranAt } from './helpers'
+
+// PIX-54: the frontier regions beyond the mountain ring.
+test('the east pass leads to the Deepwood and back without bouncing', async ({ page }) => {
+  await loadVeteranAt(page, 46, 16)
+
+  // through the pass, travel direction preserved
+  await page.keyboard.press('ArrowRight')
+  await expect(page.getByTestId('world-viewport')).toHaveAttribute('data-map', 'deepwood')
+  await expect(page.getByTestId('world-hero')).toHaveAttribute('data-pos', '1,12')
+  await page.keyboard.press('ArrowRight')
+  await expect(page.getByTestId('world-hero')).toHaveAttribute('data-pos', '2,12')
+
+  // and back out west
+  await page.keyboard.press('ArrowLeft')
+  await page.keyboard.press('ArrowLeft')
+  await expect(page.getByTestId('world-viewport')).toHaveAttribute('data-map', 'overworld')
+  await expect(page.getByTestId('world-hero')).toHaveAttribute('data-pos', '46,16')
+  // continuing away from the pass stays on the overworld
+  await page.keyboard.press('ArrowLeft')
+  await expect(page.getByTestId('world-viewport')).toHaveAttribute('data-map', 'overworld')
+})
+
+test('the west pass leads to the Mirefen causeway', async ({ page }) => {
+  await loadVeteranAt(page, 1, 16)
+  await page.keyboard.press('ArrowLeft')
+  await expect(page.getByTestId('world-viewport')).toHaveAttribute('data-map', 'mirefen')
+  await expect(page.getByTestId('world-hero')).toHaveAttribute('data-pos', '28,12')
+})

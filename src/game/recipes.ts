@@ -33,6 +33,10 @@ export const RECIPES: Recipe[] = [
   { id: "craft_emberwood_staff", itemId: "emberwood_staff", needs: { ember_shard: 3, forest_herb: 2 }, job: { id: "smithing", level: 4 } },
   { id: "craft_wyrmfang_dagger", itemId: "wyrmfang_dagger", needs: { dragon_scale: 1, imp_horn: 2 }, job: { id: "smithing", level: 5 } },
   { id: "craft_scaled_mail", itemId: "scaled_mail", needs: { dragon_scale: 2, wolf_pelt: 2 }, job: { id: "smithing", level: 6 } },
+  // frontier recipes - the new regions' forage feeding the top of both trades
+  { id: "brew_troll_salve", itemId: "troll_salve", needs: { deep_root: 2, forest_herb: 1 }, job: { id: "alchemy", level: 5 } },
+  { id: "craft_deeproot_bow", itemId: "deeproot_bow", needs: { deep_root: 3, wolf_pelt: 2 }, job: { id: "smithing", level: 7 } },
+  { id: "craft_grave_ward", itemId: "grave_ward", needs: { grave_moss: 3, dragon_scale: 1 }, job: { id: "smithing", level: 8 } },
 ];
 
 /** True when the pack holds the materials AND the hands know the craft. */
@@ -46,4 +50,6 @@ export const REGION_MATERIALS: Record<RegionId, string> = {
   forest: "forest_herb",
   marsh: "marsh_reed",
   ash: "ember_shard",
+  deepwood: "deep_root",
+  mire: "grave_moss",
 };

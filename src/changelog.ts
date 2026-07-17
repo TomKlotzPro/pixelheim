@@ -11,6 +11,18 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.24.0",
+    date: "2026-07-17",
+    codename: "Beyond the Ring",
+    notes: [
+      "Two new regions past the mountain ring: the old-growth Deepwood in the east, the drowned Mirefen in the west",
+      "Late-game hunting grounds: trolls and golems under the trees, ghosts and mimics in the bog - elites roam thick",
+      "New forage: Deep Root and Grave Moss feed three top-shelf recipes, from Troll Salve to the Grave Ward",
+      "The passes are fast-travel waypoints the moment you lay eyes on them",
+      "The world map already knows the way - the fog is yours to lift",
+    ],
+  },
+  {
     version: "0.23.0",
     date: "2026-07-17",
     codename: "The Cartographer",
