@@ -1,5 +1,6 @@
 import { Assets, type Container, Graphics, Sprite, type Texture } from "pixi.js";
 import { heroSprite } from "../game/hero/character";
+import { RANK_AURAS, rankIndex, rankPresence } from "../game/hero/ranks";
 import type { GameState } from "../game/types";
 import { spawnSpecies } from "../game/combat/encounters";
 import { getMonster } from "../game/combat/monsters";
@@ -8,7 +9,7 @@ import { npcBeside, npcPosition, npcsOn, type Npc } from "../world/npcs";
 import { signsOn } from "../world/signs";
 import { type MonsterSpawn, spawnPosition, spawnRegion, spawnsOn } from "../world/spawns";
 import type { WorldMap } from "../world/types";
-import { ART, type FrameBank, makeShadowTexture } from "./pixiUtils";
+import { ART, type FrameBank, makeGlowTexture, makeShadowTexture } from "./pixiUtils";
 import { pixelText } from "./pixelFont";
 
 const WALK_MS = 160; // per walk frame
@@ -42,6 +43,8 @@ export class ActorLayer {
   private chests: { chest: Chest; sprite: Sprite }[] = [];
   private hero: Sprite | null = null;
   private heroShadow: Sprite | null = null;
+  private heroAura: Sprite | null = null;
+  private heroPresence = 1;
   private shadowTexture = makeShadowTexture();
   private heroFrames: Texture[] | null = null;
   private heroTarget = { x: 0, y: 0 };
@@ -98,6 +101,18 @@ export class ActorLayer {
     // Shadows sit under everyone: add the walkers only after every shadow.
     for (const entry of this.npcs) container.addChild(entry.sprite);
     for (const entry of this.monsters) container.addChild(entry.sprite);
+
+    // Rank shows: an aura under the ascended, and a touch more presence.
+    const rank = state.hero ? rankIndex(state.hero.level) : 0;
+    this.heroPresence = state.hero ? rankPresence(state.hero.level) : 1;
+    const auraColor = RANK_AURAS[rank];
+    this.heroAura = new Sprite(makeGlowTexture());
+    this.heroAura.anchor.set(0.5, 0.5);
+    this.heroAura.width = ART * 2.2;
+    this.heroAura.height = ART * 1.4;
+    this.heroAura.alpha = auraColor ? 0.4 : 0;
+    if (auraColor) this.heroAura.tint = Number.parseInt(auraColor.slice(1), 16);
+    container.addChild(this.heroAura);
 
     const sheet = state.hero ? heroSprite(state.hero) : "hero_warrior";
     this.heroFrames = this.bank.frames.get(`${sheet}_walk`) ?? null;
@@ -205,12 +220,13 @@ export class ActorLayer {
     if (this.hero && this.heroFrames) {
       const cx = this.heroTarget.x + ART / 2;
       this.hero.position.set(ease(this.hero.position.x, cx), ease(this.hero.position.y, this.heroTarget.y));
-      this.hero.scale.x = this.heroFlip ? -1 : 1;
+      this.hero.scale.set(this.heroFlip ? -this.heroPresence : this.heroPresence, this.heroPresence);
       const walking = clock < this.walkUntil;
       this.hero.texture = walking
         ? this.heroFrames[Math.floor(clock / WALK_MS) % this.heroFrames.length]
         : this.heroFrames[0];
       this.heroShadow?.position.set(this.hero.position.x, this.hero.position.y + ART - 2);
+      this.heroAura?.position.set(this.hero.position.x, this.hero.position.y + ART - 3);
     }
 
     // The talk prompt bobs over whoever the hero is facing.

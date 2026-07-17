@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import { heroSprite as heroSpriteOf } from "../../game/hero/character";
+import { rankIndex, rankPresence } from "../../game/hero/ranks";
 import { dispatch, useGameState, useWorld } from "../../state/store";
 import { getMap } from "../../world/maps/index";
 import { spawnSpecies } from "../../game/combat/encounters";
@@ -120,7 +121,7 @@ export function WorldScreen() {
           {/* State mirror: 1px hooks the e2e suite asserts against, since the
               canvas has no DOM to query. Purely derived, never interactive. */}
           <div className="world-mirror" aria-hidden="true">
-            <div data-testid="world-hero" data-pos={`${world.x},${world.y}`} className={`facing-${world.facing}`} />
+            <div data-testid="world-hero" data-pos={`${world.x},${world.y}`} data-rank={state.hero ? rankIndex(state.hero.level) : 0} className={`facing-${world.facing}`} />
             {npcsOn(map.id).map((npc) => (
               <div key={npc.id} data-testid="world-npc" />
             ))}
@@ -239,7 +240,14 @@ export function WorldScreen() {
             className={`world-hero facing-${world.facing}`}
             data-testid="world-hero"
             data-pos={`${world.x},${world.y}`}
-            style={{ left: world.x * tilePx, top: world.y * tilePx, width: tilePx, height: tilePx }}
+            data-rank={state.hero ? rankIndex(state.hero.level) : 0}
+            style={{
+              left: world.x * tilePx,
+              top: world.y * tilePx,
+              width: tilePx,
+              height: tilePx,
+              transform: state.hero ? `scale(${rankPresence(state.hero.level)})` : undefined,
+            }}
           >
             <Sprite name={heroSprite} size={tilePx} alt="hero" />
           </div>

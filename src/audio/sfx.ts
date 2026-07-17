@@ -81,6 +81,14 @@ export const SFX = {
     playTone({ freq: 1560, duration: 0.08, type: "square", volume: 0.045, at: nowPlus(0.16) });
     playNoise({ duration: 0.05, volume: 0.025, at: nowPlus(0.16) });
   },
+  /** Ascension: a rank fanfare bigger than an ordinary level. */
+  evolve(): void {
+    [60, 64, 67, 72, 76, 79].forEach((note, i) =>
+      playTone({ freq: midi(note), duration: 0.11, type: "square", volume: 0.09, at: nowPlus(i * 0.08) }),
+    );
+    playTone({ freq: midi(84), duration: 0.5, type: "square", volume: 0.09, at: nowPlus(0.5) });
+    playTone({ freq: midi(72), duration: 0.5, type: "triangle", volume: 0.07, at: nowPlus(0.5) });
+  },
   /** Something notices you: a low growl before the battle screen. */
   bump(): void {
     playTone({ freq: 130, duration: 0.22, type: "sawtooth", slideTo: 80, volume: 0.06 });

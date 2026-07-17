@@ -2,6 +2,7 @@ import { useState } from "react";
 import { grantedStat, heroSprite, resourceLabel, totalDefense } from "../../game/hero/character";
 import { JOB_NAMES, jobXpToNext, type JobId } from "../../game/economy/jobs";
 import { statInfo } from "../../game/hero/statInfo";
+import { rankTitle } from "../../game/hero/ranks";
 import { ROLES } from "../../game/hero/roles";
 import type { SpendableStat } from "../../game/types";
 import { dispatch, useGameState, useHero } from "../../state/store";
@@ -32,7 +33,7 @@ function StatSheet({ onClose }: { onClose: () => void }) {
             <div className="sheet-identity-text">
               <h2>{hero.name}</h2>
               <span className="sheet-role">
-                Lv {hero.level} {role.name}
+                Lv {hero.level} {rankTitle(hero)} {role.name}
               </span>
             </div>
           </div>
@@ -114,7 +115,7 @@ export function WorldHud() {
         <div className="hud-id">
           <span className="hero-name">{hero.name}</span>
           <span className="hero-role">
-            Lv {hero.level} {role.name} · DEF {totalDefense(hero, state.gear, state.equipped)}
+            Lv {hero.level} {rankTitle(hero)} · DEF {totalDefense(hero, state.gear, state.equipped)}
           </span>
         </div>
         <span className="gold-line">
