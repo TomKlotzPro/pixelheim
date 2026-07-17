@@ -46,6 +46,7 @@ describe("migrate", () => {
     // compat seeding: banked points, the old level-gated skills, and grit
     expect(s.hero!.statPoints).toBe(0);
     expect(s.hero!.stats.endurance).toBe(8); // warrior base
+    expect(s.hero!.jobs.smithing.level).toBe(1); // professions seeded
     expect(s.hero!.skillNodes).toHaveLength(2); // level 3 owned the level-1 and level-3 skills
     expect(s.hero!.skillPoints).toBe(1); // level 3 = 2 earned, 1 spent on the second skill
 

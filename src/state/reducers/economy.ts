@@ -3,7 +3,8 @@ import { addItem, removeItem } from "../../game/inventory";
 import { getItem } from "../../game/items";
 import { createGear, gearItem, gearValue } from "../../game/rarity";
 import { canCraft, RECIPES } from "../../game/recipes";
-import { buyPrice, FORGE_BONUS_CAP, forgeCost, sellPriceAt, SHOPS, shopStock } from "../../game/shop";
+import { doubleBrewChance, forgeCapFor, forgeCostFor, grantJobXp } from "../../game/jobs";
+import { buyPrice, sellPriceAt, SHOPS, shopStock } from "../../game/shop";
 import type { GameState } from "../../game/types";
 import type { EconomyAction } from "../actions";
 import { activeShopId } from "../shared";
@@ -53,13 +54,14 @@ export function economyReducer(draft: GameState, action: EconomyAction): void {
 
     case "UPGRADE_GEAR": {
       const shopId = draft.shopOpen ? activeShopId(draft) : null;
-      if (!shopId || !SHOPS[shopId].forge) return;
+      if (!shopId || !SHOPS[shopId].forge || !draft.hero) return;
       const instance = gearByUid(draft.gear, action.uid);
-      if (!instance || instance.bonus >= FORGE_BONUS_CAP) return;
-      const cost = forgeCost(gearItem(instance), instance.bonus);
+      if (!instance || instance.bonus >= forgeCapFor(draft.hero.jobs.smithing.level)) return;
+      const cost = forgeCostFor(gearItem(instance), instance.bonus, draft.hero.jobs.smithing.level);
       if (draft.gold < cost) return;
       draft.gold -= cost;
       instance.bonus += 1;
+      grantJobXp(draft.hero, "smithing", 10);
       return;
     }
 
@@ -71,7 +73,10 @@ export function economyReducer(draft: GameState, action: EconomyAction): void {
       for (const [itemId, count] of Object.entries(recipe.needs)) {
         inventory = removeItem(inventory, itemId, count);
       }
-      draft.inventory = addItem(inventory, recipe.itemId);
+      // Skilled hands sometimes brew a second one for free.
+      const doubled = Math.random() < doubleBrewChance(draft.hero.jobs.alchemy.level);
+      draft.inventory = addItem(inventory, recipe.itemId, doubled ? 2 : 1);
+      grantJobXp(draft.hero, "alchemy", 8);
     }
   }
 }

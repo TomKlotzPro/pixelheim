@@ -1,6 +1,7 @@
 import { ITEMS } from "../game/items";
 import { LEVELS } from "../game/levels";
 import { createGear } from "../game/rarity";
+import { freshJobs } from "../game/jobs";
 import { ROLES } from "../game/roles";
 import { SKILL_TREES } from "../game/skillTree";
 import type { GameState, GearInstance } from "../game/types";
@@ -89,6 +90,10 @@ function normalizeSave(state: unknown): GameState | null {
   // Heroes from before spendable growth start banking from their next level.
   if (save.hero && save.hero.statPoints === undefined) {
     save.hero = { ...save.hero, statPoints: 0 };
+  }
+  // Heroes from before professions start every job at level 1.
+  if (save.hero && save.hero.jobs === undefined) {
+    save.hero = { ...save.hero, jobs: freshJobs() };
   }
   // Heroes from before the endurance stat get their role's base grit.
   if (save.hero && save.hero.stats.endurance === undefined) {
