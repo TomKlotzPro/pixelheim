@@ -47,7 +47,7 @@ export const OVERWORLD_MAP: WorldMap = parseMap(
   [
     { x: 24, y: 3, to: { kind: "dungeon", dungeon: "mountain" } },
     { x: 12, y: 5, to: { kind: "dungeon", dungeon: "undermountain" } },
-    { x: 24, y: 21, to: { kind: "map", mapId: "town", x: 14, y: 16 } },
+    { x: 24, y: 21, to: { kind: "map", mapId: "town", x: 16, y: 1 } },
   ],
   {
     grid: `
@@ -93,12 +93,14 @@ export const OVERWORLD_MAP: WorldMap = parseMap(
  * inn, Hilda's slate-roofed smithy), the violet-roofed alchemist and a mossy
  * old house below, a shrine square in the middle, and an empty lot waiting
  * for the player's house (PIX-33). Every trade hangs its sign by the door;
- * lamps light the square after dark.
+ * lamps light the square after dark. The gate sits
+ * in the NORTH wall so leaving town continues north onto the mountain road -
+ * travel direction is preserved through the portal, no held-key ping-pong.
  */
 export const TOWN_MAP: WorldMap = parseMap(
   "town",
   `
-  ########################################
+  ################D#######################
   #..x.................x...........x.....#
   #.333333..rrrrrr...111111...rrrrr.4444.#
   #.333333..rrrrrr...111111...rrrrr.4444.#
@@ -115,14 +117,14 @@ export const TOWN_MAP: WorldMap = parseMap(
   #......................................#
   #.............S.......FF....FFFF.......#
   #...x..................x....ffff..x....#
-  ##############D#########################
+  ########################################
   `,
   [
     { x: 4, y: 4, to: { kind: "map", mapId: "town_shop", x: 4, y: 4 } },
     { x: 12, y: 4, to: { kind: "map", mapId: "town_inn", x: 4, y: 4 } },
     { x: 21, y: 4, to: { kind: "map", mapId: "town_smith", x: 4, y: 4 } },
     { x: 4, y: 13, to: { kind: "map", mapId: "town_alchemist", x: 4, y: 4 } },
-    { x: 14, y: 17, to: { kind: "map", mapId: "overworld", x: 24, y: 20 } },
+    { x: 16, y: 0, to: { kind: "map", mapId: "overworld", x: 24, y: 20 } },
   ],
 );
 

@@ -39,15 +39,26 @@ test('new heroes wake in the village and the gate leads to the overworld', async
   await expect(page.getByTestId('world-viewport')).toHaveAttribute('data-map', 'town')
   await expect(hero(page)).toHaveAttribute('data-pos', '14,15')
 
-  // out through the town gate onto the overworld road
-  await pressTimes(page, 'ArrowDown', 2)
+  // out through the north gate onto the mountain road
+  await pressTimes(page, 'ArrowUp', 10)
+  await pressTimes(page, 'ArrowRight', 2)
+  await pressTimes(page, 'ArrowUp', 5)
   await expect(page.getByTestId('world-viewport')).toHaveAttribute('data-map', 'overworld')
   await expect(hero(page)).toHaveAttribute('data-pos', '24,20')
 
-  // and back in through the gate to the south
+  // travel direction is preserved: holding up keeps walking AWAY from the door
+  await page.keyboard.press('ArrowUp')
+  await expect(page.getByTestId('world-viewport')).toHaveAttribute('data-map', 'overworld')
+  await expect(hero(page)).toHaveAttribute('data-pos', '24,19')
+
+  // and deliberately back in through the gate
+  await pressTimes(page, 'ArrowDown', 2)
+  await expect(page.getByTestId('world-viewport')).toHaveAttribute('data-map', 'town')
+  await expect(hero(page)).toHaveAttribute('data-pos', '16,1')
+
+  // same going in: holding down walks INTO town, not back out
   await page.keyboard.press('ArrowDown')
   await expect(page.getByTestId('world-viewport')).toHaveAttribute('data-map', 'town')
-  await expect(hero(page)).toHaveAttribute('data-pos', '14,16')
 
   // Escape does nothing for a hero: the world IS the game now
   await page.keyboard.press('Escape')
@@ -67,7 +78,9 @@ test('wild terrain is visually telegraphed; safe ground is not', async ({ page }
   await expect(page.locator('.world-tile[data-danger]')).toHaveCount(0)
 
   // out on the overworld, the wilds carry the danger overlay
-  await pressTimes(page, 'ArrowDown', 2)
+  await pressTimes(page, 'ArrowUp', 10)
+  await pressTimes(page, 'ArrowRight', 2)
+  await pressTimes(page, 'ArrowUp', 5)
   await expect(page.getByTestId('world-viewport')).toHaveAttribute('data-map', 'overworld')
   expect(await page.locator('.world-tile[data-danger]').count()).toBeGreaterThan(50)
 })
