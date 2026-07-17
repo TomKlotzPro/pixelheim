@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { resourceLabel, totalDefense } from "../../game/hero/character";
+import { grantedStat, heroSprite, resourceLabel, totalDefense } from "../../game/hero/character";
 import { JOB_NAMES, jobXpToNext, type JobId } from "../../game/economy/jobs";
 import { statInfo } from "../../game/hero/statInfo";
 import { ROLES } from "../../game/hero/roles";
@@ -22,28 +22,42 @@ function StatSheet({ onClose }: { onClose: () => void }) {
   useEscapeClose(onClose);
   const state = useGameState();
   const hero = useHero();
+  const role = ROLES[hero.roleId];
   return (
     <div className="overlay" onClick={onClose}>
       <div className="panel stat-sheet" onClick={(e) => e.stopPropagation()}>
         <div className="inventory-header">
-          <h2>{hero.name}</h2>
+          <div className="sheet-identity">
+            <Sprite name={heroSprite(hero)} size={32} alt="" />
+            <div className="sheet-identity-text">
+              <h2>{hero.name}</h2>
+              <span className="sheet-role">
+                Lv {hero.level} {role.name}
+              </span>
+            </div>
+          </div>
+          <span className={`points-chip ${hero.statPoints > 0 ? "points-chip-live" : ""}`}>
+            {hero.statPoints > 0
+              ? `${hero.statPoints} stat point${hero.statPoints > 1 ? "s" : ""} to spend`
+              : "No points to spend"}
+          </span>
           <button className="btn btn-small" onClick={onClose}>
             Close
           </button>
         </div>
         <div className="panel-body">
-        <p className={hero.statPoints > 0 ? "stat-points" : "empty-note"}>
-          {hero.statPoints > 0
-            ? `${hero.statPoints} stat point${hero.statPoints > 1 ? "s" : ""} to spend`
-            : "No points to spend. Go level up."}
-        </p>
         {SPENDABLE.map(({ stat, label }) => {
           const info = statInfo(stat, hero, state.gear, state.equipped);
+          const worn =
+            stat === "strength" || stat === "intelligence" || stat === "dexterity"
+              ? grantedStat(state.gear, state.equipped, stat)
+              : 0;
           return (
             <div key={stat} className="stat-row">
               <div className="options-row">
                 <span>
                   {label} {hero.stats[stat]}
+                  {worn > 0 && <em className="doll-granted"> +{worn} worn</em>}
                 </span>
                 <button
                   className="btn btn-small"
