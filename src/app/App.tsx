@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { playTrack, trackForState } from "../audio/music";
 import { ambienceForState, setAmbience } from "../audio/ambience";
 import { rankIndex, rankTitle } from "../game/hero/ranks";
+import { canChooseSpec } from "../game/hero/specs";
 import { SFX } from "../audio/sfx";
 import { audioReady, initAudio, isMuted, setMuted } from "../audio/synth";
 import { DungeonSelect } from "../ui/screens/DungeonSelect";
@@ -274,6 +275,9 @@ export default function App() {
             <span className="rankup-eyebrow">Ascension</span>
             <span className="rankup-title">{rankUp}</span>
             <span className="rankup-note">+1 bonus skill point</span>
+            {state.hero && canChooseSpec(state.hero) && (
+              <span className="rankup-note">A specialization awaits in Skills</span>
+            )}
           </div>
         </div>
       )}

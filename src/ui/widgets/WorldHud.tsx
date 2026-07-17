@@ -3,6 +3,7 @@ import { grantedStat, heroSprite, resourceLabel, totalDefense } from "../../game
 import { JOB_NAMES, jobXpToNext, type JobId } from "../../game/economy/jobs";
 import { statInfo } from "../../game/hero/statInfo";
 import { rankTitle } from "../../game/hero/ranks";
+import { getSpec } from "../../game/hero/specs";
 import { ROLES } from "../../game/hero/roles";
 import type { SpendableStat } from "../../game/types";
 import { dispatch, useGameState, useHero } from "../../state/store";
@@ -34,6 +35,7 @@ function StatSheet({ onClose }: { onClose: () => void }) {
               <h2>{hero.name}</h2>
               <span className="sheet-role">
                 Lv {hero.level} {rankTitle(hero)} {role.name}
+                {getSpec(hero) && <em className="doll-granted"> · {getSpec(hero)!.name}</em>}
               </span>
             </div>
           </div>

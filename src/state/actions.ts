@@ -40,7 +40,8 @@ export type EconomyAction =
 /** Spending the points a level-up banked. */
 export type ProgressionAction =
   | { type: "SPEND_STAT_POINT"; stat: SpendableStat }
-  | { type: "BUY_SKILL_NODE"; nodeId: string };
+  | { type: "BUY_SKILL_NODE"; nodeId: string }
+  | { type: "CHOOSE_SPEC"; specId: string };
 
 /** Moving through the overworld, talking, and the doors it opens. */
 export type WorldAction =

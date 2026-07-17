@@ -1,5 +1,7 @@
 import { resourceLabel } from "../../game/hero/character";
+import { rankIndex } from "../../game/hero/ranks";
 import { canBuyNode, SKILL_TREES, type SkillNode } from "../../game/hero/skillTree";
+import { canChooseSpec, getSpec, specsFor } from "../../game/hero/specs";
 import { dispatch, useHero } from "../../state/store";
 import { useEscapeClose } from "../useEscapeClose";
 
@@ -39,6 +41,41 @@ export function SkillTree({ onClose }: { onClose: () => void }) {
             Close
           </button>
         </div>
+        {rankIndex(hero.level) >= 1 && (
+          <div className="spec-section">
+            {canChooseSpec(hero) ? (
+              <>
+                <h3 className="skill-branch-title">Your ascension demands a path</h3>
+                <div className="spec-choices">
+                  {specsFor(hero.roleId).map((spec) => (
+                    <div key={spec.id} className="spec-card" data-testid={`spec-${spec.id}`}>
+                      <span className="spec-name">{spec.name}</span>
+                      <p className="skill-node-desc">{spec.blurb}</p>
+                      <p className="skill-node-numbers">Signature: {spec.signature.name}</p>
+                      <button
+                        className="btn btn-small btn-primary"
+                        onClick={() => dispatch({ type: "CHOOSE_SPEC", specId: spec.id })}
+                      >
+                        Walk this path
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <p className="options-footer">A path is for life. Choose like it matters.</p>
+              </>
+            ) : (
+              (() => {
+                const spec = getSpec(hero);
+                return spec ? (
+                  <div className="spec-chosen" data-testid="spec-chosen">
+                    <span className="spec-name">{spec.name}</span>
+                    <span className="options-note">{spec.blurb}</span>
+                  </div>
+                ) : null;
+              })()
+            )}
+          </div>
+        )}
         <div className="skill-branches">
           {branches.map((nodes, i) => (
             <div key={i} className="skill-branch">
