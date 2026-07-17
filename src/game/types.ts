@@ -162,6 +162,8 @@ export type Hero = {
   skillNodes: string[];
   /** Profession progress: smithing, alchemy, foraging. */
   jobs: Jobs;
+  /** Appearance: palette-swap look index (0 = the classic). Additive; old saves default to 0. */
+  look?: number;
 };
 
 /** The four stats a point can be spent on. */

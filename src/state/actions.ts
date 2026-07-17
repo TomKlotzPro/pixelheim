@@ -5,7 +5,7 @@ import type { Direction } from "../world/types";
 export type MetaAction =
   | { type: "NEW_GAME" }
   | { type: "LOAD"; state: GameState }
-  | { type: "CREATE_HERO"; name: string; roleId: RoleId }
+  | { type: "CREATE_HERO"; name: string; roleId: RoleId; look?: number }
   | { type: "DISMISS_INTRO" }
   | { type: "QUIT_TO_TITLE" };
 
