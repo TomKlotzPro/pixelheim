@@ -24,7 +24,7 @@ export type BattleAction =
 export type InventoryAction =
   | { type: "EQUIP"; uid: string }
   | { type: "UNEQUIP"; slot: EquippedSlot }
-  | { type: "DROP"; itemId: string }
+  | { type: "DROP"; itemId: string; count?: number }
   | { type: "DROP_GEAR"; uid: string }
   | { type: "TOGGLE_INVENTORY" };
 

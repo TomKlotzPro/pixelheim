@@ -8,6 +8,7 @@ import { dispatch, useGameState, useHero } from "../../state/store";
 import { SkillTree } from "../panels/SkillTree";
 import { Sprite } from "./Sprite";
 import { StatBar } from "./StatBar";
+import { useEscapeClose } from "../useEscapeClose";
 
 const SPENDABLE: { stat: SpendableStat; label: string }[] = [
   { stat: "strength", label: "STR" },
@@ -18,6 +19,7 @@ const SPENDABLE: { stat: SpendableStat; label: string }[] = [
 ];
 
 function StatSheet({ onClose }: { onClose: () => void }) {
+  useEscapeClose(onClose);
   const state = useGameState();
   const hero = useHero();
   return (
