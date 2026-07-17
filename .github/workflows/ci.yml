@@ -24,6 +24,8 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
       - run: pnpm test:unit
+      - name: Balance regression (all roles must finish the game)
+        run: pnpm sim --check
       - name: Check generated sprites are in sync
         run: |
           pnpm sprites
