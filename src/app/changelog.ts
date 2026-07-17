@@ -11,6 +11,17 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.34.0",
+    date: "2026-07-18",
+    codename: "Know Thyself",
+    notes: [
+      "The skill tree looks like a tree: three named paths, tier badges from I to CAP, connector lines, and the numbers on every skill - multiplier, stat, cost - before you commit",
+      "Nodes you can afford glow. Learning them still feels as permanent as it is.",
+      "The stat sheet got an identity: your portrait, name and rank up top, jewelry bonuses shown as '+n worn' beside each stat",
+      "Points to spend live in a gold chip in the header of both menus",
+    ],
+  },
+  {
     version: "0.33.0",
     date: "2026-07-17",
     codename: "Signposted",
