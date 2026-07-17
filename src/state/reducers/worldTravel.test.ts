@@ -11,6 +11,7 @@ function travelerState(discovered: string[]): GameState {
     position: { mapId: "overworld", x: 24, y: 20, facing: "up" },
     discovered: { overworld: discovered },
     openedChests: [],
+    slain: [],
   };
   return s;
 }

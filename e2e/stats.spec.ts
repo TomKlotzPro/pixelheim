@@ -47,16 +47,16 @@ test('leveling up banks 5 points, announced in the battle log', async ({ page })
   await page.goto('./')
   await page.evaluate(
     ([key, s]) => localStorage.setItem(key as string, JSON.stringify(s)),
-    [SAVE_KEY, { ...save, state: { ...save.state, world: { position: { mapId: 'overworld', x: 24, y: 19, facing: 'up' }, discovered: {}, openedChests: [] } } }] as const,
+    [SAVE_KEY, { ...save, state: { ...save.state, world: { position: { mapId: 'overworld', x: 30, y: 17, facing: 'right' }, discovered: {}, openedChests: [] } } }] as const,
   )
   await page.reload()
   await page.getByRole('button', { name: 'Continue' }).click()
 
-  // pace the forest until something bites, then win
-  for (let i = 0; i < 130; i++) {
-    await page.keyboard.press(i < 9 ? 'ArrowRight' : i % 2 === 0 ? 'ArrowRight' : 'ArrowLeft')
-    await page.waitForTimeout(15)
-    if (await page.getByText('Ambush!').isVisible().catch(() => false)) break
+  // bump the forest spawn, then win
+  for (const key of ['ArrowRight', 'ArrowRight', 'ArrowDown', 'ArrowLeft', 'ArrowUp', 'ArrowRight', 'ArrowDown', 'ArrowRight', 'ArrowRight', 'ArrowLeft'] as string[]) {
+    if (await page.getByText(/The Wilds:/).isVisible().catch(() => false)) break
+    await page.keyboard.press(key)
+    await page.waitForTimeout(30)
   }
   for (let i = 0; i < 30; i++) {
     const walkOn = page.getByRole('button', { name: 'Walk on' })

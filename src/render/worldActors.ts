@@ -1,7 +1,10 @@
 import { Assets, type Container, Sprite, type Text, type Texture } from "pixi.js";
 import { ROLES } from "../game/roles";
 import type { GameState } from "../game/types";
+import { spawnSpecies } from "../game/encounters";
+import { getMonster } from "../game/monsters";
 import { npcAt, npcPosition, npcsOn, type Npc } from "../world/npcs";
+import { type MonsterSpawn, spawnPosition, spawnRegion, spawnsOn } from "../world/spawns";
 import type { WorldMap } from "../world/types";
 import { ART, type FrameBank, retroText } from "./pixiUtils";
 
@@ -15,6 +18,7 @@ const FACING_DELTAS = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] 
 export class ActorLayer {
   private bank: FrameBank;
   private npcs: { npc: Npc; sprite: Sprite; target: { x: number; y: number } }[] = [];
+  private monsters: { spawn: MonsterSpawn; sheet: string; sprite: Sprite; target: { x: number; y: number } }[] = [];
   private hero: Sprite | null = null;
   private heroFrames: Texture[] | null = null;
   private heroTarget = { x: 0, y: 0 };
@@ -36,6 +40,18 @@ export class ActorLayer {
       sprite.position.set(at.x * ART, at.y * ART);
       container.addChild(sprite);
       this.npcs.push({ npc, sprite, target: { x: at.x * ART, y: at.y * ART } });
+    }
+
+    this.monsters = [];
+    for (const spawn of spawnsOn(map.id)) {
+      const species = getMonster(spawnSpecies(spawnRegion(spawn), spawn.x * 31 + spawn.y));
+      const sheetName = `${species.sprite}_idle`;
+      const sheet = this.bank.frames.get(sheetName);
+      const sprite = new Sprite(sheet ? sheet[0] : (Assets.get(species.sprite) as Texture));
+      const at = spawnPosition(spawn, state.worldSteps);
+      sprite.position.set(at.x * ART, at.y * ART);
+      container.addChild(sprite);
+      this.monsters.push({ spawn, sheet: sheetName, sprite, target: { x: at.x * ART, y: at.y * ART } });
     }
 
     const role = ROLES[state.hero?.roleId ?? "warrior"];
@@ -70,6 +86,11 @@ export class ActorLayer {
       const at = npcPosition(entry.npc, state.worldSteps);
       entry.target = { x: at.x * ART, y: at.y * ART };
     }
+    for (const entry of this.monsters) {
+      entry.sprite.visible = !(state.world?.slain ?? []).includes(entry.spawn.id);
+      const at = spawnPosition(entry.spawn, state.worldSteps);
+      entry.target = { x: at.x * ART, y: at.y * ART };
+    }
 
     // Someone to talk to: the prompt floats over the NPC the hero is facing.
     if (this.prompt) {
@@ -90,6 +111,12 @@ export class ActorLayer {
       sprite.position.set(ease(sprite.position.x, target.x), ease(sprite.position.y, target.y));
       const sheet = this.bank.frames.get(`${npc.sprite}_idle`);
       if (sheet) sprite.texture = sheet[Math.floor(clock / IDLE_MS) % sheet.length];
+    }
+
+    for (const { sheet, sprite, target } of this.monsters) {
+      sprite.position.set(ease(sprite.position.x, target.x), ease(sprite.position.y, target.y));
+      const frames = this.bank.frames.get(sheet);
+      if (frames) sprite.texture = frames[Math.floor(clock / IDLE_MS) % frames.length];
     }
 
     if (this.hero && this.heroFrames) {

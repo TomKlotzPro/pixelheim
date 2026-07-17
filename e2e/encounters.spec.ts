@@ -3,25 +3,28 @@ import { loadVeteranAt } from './helpers'
 
 const hero = (page: Page) => page.getByTestId('world-hero')
 
-test('wandering the forest triggers an ambush; winning returns to the same tile', async ({ page }) => {
-  test.setTimeout(60_000)
-  await loadVeteranAt(page, 24, 19)
-
-  // head east into the forest region, then pace on wild grass until the
-  // 10%-per-step roll fires; every move stays on row 19
-  let ambushed = false
-  for (let i = 0; i < 130; i++) {
-    await page.keyboard.press(i < 9 ? 'ArrowRight' : i % 2 === 0 ? 'ArrowRight' : 'ArrowLeft')
-    await page.waitForTimeout(15)
-    if (await page.getByText('Ambush!').isVisible().catch(() => false)) {
-      ambushed = true
-      break
-    }
+/** Chase the wandering spawn: press toward its 2x2 loop until the fight starts. */
+async function chase(page: Page, keys: string[]): Promise<void> {
+  for (const key of keys) {
+    if (await page.getByText(/The Wilds:/).isVisible().catch(() => false)) return
+    await page.keyboard.press(key)
+    await page.waitForTimeout(30)
   }
-  expect(ambushed).toBe(true)
   await expect(page.getByText(/The Wilds:/)).toBeVisible()
+}
 
-  // the veteran wins, then walks on from the tile the fight started on
+test('a visible monster prowls the forest; bumping it starts the fight', async ({ page }) => {
+  test.setTimeout(60_000)
+  await loadVeteranAt(page, 30, 17)
+
+  // the spawn is visible before any fight
+  await expect(page.getByTestId('world-monster').first()).toBeVisible()
+
+  // walk into it (it paces a 2x2 loop around 31,17)
+  await chase(page, ['ArrowRight', 'ArrowRight', 'ArrowDown', 'ArrowLeft', 'ArrowUp', 'ArrowRight', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowRight'])
+  await expect(page.getByText('Wild battle')).toBeVisible()
+
+  // the veteran wins; the spawn is gone until the map is left and re-entered
   for (let i = 0; i < 30; i++) {
     const walkOn = page.getByRole('button', { name: 'Walk on' })
     if (await walkOn.isVisible().catch(() => false)) {
@@ -33,17 +36,18 @@ test('wandering the forest triggers an ambush; winning returns to the same tile'
     await page.waitForTimeout(30)
   }
   await expect(page.getByTestId('world-viewport')).toBeVisible()
-  // still standing in the wilds on the row he was walking, not teleported
-  expect(await hero(page).getAttribute('data-pos')).toMatch(/^\d+,19$/)
+  const remaining = await page.getByTestId('world-monster').count()
+  // one of the overworld's ten spawns is down
+  expect(remaining).toBe(9)
 })
 
-test('paths are safe: pacing the road never triggers a battle', async ({ page }) => {
-  await loadVeteranAt(page, 24, 19)
-
-  // 60 steps up and down the path column; region metadata is empty there
-  for (let i = 0; i < 60; i++) {
+test('the wilds no longer ambush: pacing wild grass starts nothing', async ({ page }) => {
+  await loadVeteranAt(page, 36, 21)
+  // 40 steps on forest-region grass, far from any spawn loop
+  for (let i = 0; i < 40; i++) {
     await page.keyboard.press(i % 2 === 0 ? 'ArrowUp' : 'ArrowDown')
     await page.waitForTimeout(10)
   }
   await expect(page.getByTestId('world-viewport')).toBeVisible()
+  await expect(page.getByText(/The Wilds:/)).not.toBeVisible()
 })
