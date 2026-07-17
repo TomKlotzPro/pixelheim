@@ -21,7 +21,15 @@ const PALETTES: Record<Exclude<AmbiencePlace, "none">, AmbientEvent[]> = {
       play: () => {
         const base = midi(Math.floor(rand(88, 96)));
         for (let i = 0; i < Math.floor(rand(2, 4)); i++) {
-          playTone({ freq: base * rand(0.95, 1.1), duration: 0.05, type: "sine", slideTo: base * 1.3, volume: 0.025, bus: "ambience", at: undefined });
+          playTone({
+            freq: base * rand(0.95, 1.1),
+            duration: 0.05,
+            type: "sine",
+            slideTo: base * 1.3,
+            volume: 0.025,
+            bus: "ambience",
+            at: undefined,
+          });
         }
       },
     },
@@ -52,12 +60,20 @@ const PALETTES: Record<Exclude<AmbiencePlace, "none">, AmbientEvent[]> = {
       // a drip
       chance: 0.2,
       play: () =>
-        playTone({ freq: rand(900, 1400), duration: 0.05, type: "sine", slideTo: rand(400, 600), volume: 0.025, bus: "ambience" }),
+        playTone({
+          freq: rand(900, 1400),
+          duration: 0.05,
+          type: "sine",
+          slideTo: rand(400, 600),
+          volume: 0.025,
+          bus: "ambience",
+        }),
     },
     {
       // a frog clears its throat
       chance: 0.1,
-      play: () => playTone({ freq: rand(90, 130), duration: 0.12, type: "sawtooth", slideTo: 70, volume: 0.02, bus: "ambience" }),
+      play: () =>
+        playTone({ freq: rand(90, 130), duration: 0.12, type: "sawtooth", slideTo: 70, volume: 0.02, bus: "ambience" }),
     },
     {
       // bog gas, politely

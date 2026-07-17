@@ -1,5 +1,13 @@
 import { useState } from "react";
-import { carriedWeight, carryCapacity, gearByUid, grantedStat, heroSprite as heroSpriteOf, totalDefense, weaponOf } from "../../game/hero/character";
+import {
+  carriedWeight,
+  carryCapacity,
+  gearByUid,
+  grantedStat,
+  heroSprite as heroSpriteOf,
+  totalDefense,
+  weaponOf,
+} from "../../game/hero/character";
 import { getItem } from "../../game/economy/items";
 import { itemStatLine } from "../../game/economy/itemStats";
 import { gearDamage, gearItem, gearName, gearValue } from "../../game/economy/rarity";
@@ -89,216 +97,227 @@ export function Inventory() {
         </div>
 
         <div className="inventory-body">
-        {!inBattle && (
-          <div className="doll-column">
-            <div className="doll">
-              <div className="doll-portrait" aria-hidden="true">
-                <Sprite name={heroSpriteOf(hero)} size={72} />
+          {!inBattle && (
+            <div className="doll-column">
+              <div className="doll">
+                <div className="doll-portrait" aria-hidden="true">
+                  <Sprite name={heroSpriteOf(hero)} size={72} />
+                </div>
+                {DOLL_SLOTS.map(({ slot, label }, i) => {
+                  const instance = gearByUid(state.gear, state.equipped[slot]);
+                  return (
+                    <button
+                      key={`${slot}${i}`}
+                      className={`doll-slot doll-${slot} ${instance ? "doll-filled" : ""}`}
+                      data-testid={`doll-${slot}`}
+                      title={instance ? `${gearName(instance)} - click to unequip` : `${label}: empty`}
+                      disabled={!instance}
+                      onClick={() => dispatch({ type: "UNEQUIP", slot })}
+                    >
+                      {instance ? (
+                        <Sprite name={gearItem(instance).sprite} size={28} alt={gearName(instance)} />
+                      ) : (
+                        <span className="doll-slot-label">{label}</span>
+                      )}
+                    </button>
+                  );
+                })}
               </div>
-              {DOLL_SLOTS.map(({ slot, label }, i) => {
-                const instance = gearByUid(state.gear, state.equipped[slot]);
-                return (
-                  <button
-                    key={`${slot}${i}`}
-                    className={`doll-slot doll-${slot} ${instance ? "doll-filled" : ""}`}
-                    data-testid={`doll-${slot}`}
-                    title={instance ? `${gearName(instance)} - click to unequip` : `${label}: empty`}
-                    disabled={!instance}
-                    onClick={() => dispatch({ type: "UNEQUIP", slot })}
-                  >
-                    {instance ? (
-                      <Sprite name={gearItem(instance).sprite} size={28} alt={gearName(instance)} />
-                    ) : (
-                      <span className="doll-slot-label">{label}</span>
-                    )}
-                  </button>
-                );
-              })}
+              <div className="doll-stats" data-testid="doll-stats">
+                <div className="doll-stat-row">
+                  <span>ATK</span>
+                  <strong>
+                    {(() => {
+                      const weapon = weaponOf(state.gear, state.equipped);
+                      const scaling = weapon ? (gearItem(weapon).scaling ?? "strength") : "strength";
+                      return (
+                        hero.stats[scaling] +
+                        grantedStat(state.gear, state.equipped, scaling) +
+                        (weapon ? gearDamage(weapon) : 2)
+                      );
+                    })()}
+                  </strong>
+                </div>
+                <div className="doll-stat-row">
+                  <span>DEF</span>
+                  <strong>{totalDefense(hero, state.gear, state.equipped)}</strong>
+                </div>
+                {GRANT_STATS.map(({ stat, label }) => {
+                  const granted = grantedStat(state.gear, state.equipped, stat);
+                  return (
+                    <div key={stat} className="doll-stat-row">
+                      <span>{label}</span>
+                      <strong>
+                        {hero.stats[stat]}
+                        {granted > 0 && <em className="doll-granted"> +{granted}</em>}
+                      </strong>
+                    </div>
+                  );
+                })}
+                <div className="doll-stat-row">
+                  <span>Carry</span>
+                  <strong>
+                    {weight}/{capacity}
+                  </strong>
+                </div>
+              </div>
             </div>
-            <div className="doll-stats" data-testid="doll-stats">
-              <div className="doll-stat-row">
-                <span>ATK</span>
-                <strong>
-                  {(() => {
-                    const weapon = weaponOf(state.gear, state.equipped);
-                    const scaling = weapon ? (gearItem(weapon).scaling ?? "strength") : "strength";
-                    return (
-                      hero.stats[scaling] +
-                      grantedStat(state.gear, state.equipped, scaling) +
-                      (weapon ? gearDamage(weapon) : 2)
-                    );
-                  })()}
-                </strong>
-              </div>
-              <div className="doll-stat-row">
-                <span>DEF</span>
-                <strong>{totalDefense(hero, state.gear, state.equipped)}</strong>
-              </div>
-              {GRANT_STATS.map(({ stat, label }) => {
-                const granted = grantedStat(state.gear, state.equipped, stat);
+          )}
+
+          <div className="inventory-main">
+            <div className="tabs">
+              {TABS.map((t) => (
+                <button key={t.id} className={`tab ${tab === t.id ? "active" : ""}`} onClick={() => setTab(t.id)}>
+                  {t.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="item-list">
+              {tab === "craft" && atStationId && (
+                <p className="station-banner" data-testid="station-banner">
+                  You are at {atStationId === "smithing" ? "Hilda's forge" : "Vex's cauldron"} - craft freely.
+                </p>
+              )}
+              {tab === "craft" && !atStationId && !inBattle && (
+                <div className="station-travel">
+                  <span className="item-locked">The stations are in town: the FORGE and BREWS doors.</span>
+                  <button
+                    className="btn btn-small"
+                    disabled={!townKnown}
+                    title={townKnown ? "Fast travel to Pixelheim Gate" : "Discover Pixelheim Gate first"}
+                    onClick={() => {
+                      dispatch({ type: "TOGGLE_INVENTORY" });
+                      dispatch({ type: "FAST_TRAVEL", waypointId: "town_gate" });
+                    }}
+                  >
+                    Travel to town
+                  </button>
+                </div>
+              )}
+              {tab === "craft" &&
+                RECIPES.map((recipe) => {
+                  const result = getItem(recipe.itemId);
+                  const jobOk = hero.jobs[recipe.job.id].level >= recipe.job.level;
+                  const atStation = state.world?.position.mapId === JOB_STATIONS[recipe.job.id].mapId;
+                  const craftable = canCraft(recipe, state.inventory, hero.jobs) && atStation && !inBattle;
+                  return (
+                    <div key={recipe.id} className="item-row">
+                      <Sprite name={result.sprite} size={32} alt={result.name} />
+                      <div className="item-info">
+                        <span className="item-name">{result.name}</span>
+                        <span className="item-stats">
+                          {Object.entries(recipe.needs)
+                            .map(([id, count]) => `${count}x ${getItem(id).name} (${state.inventory[id] ?? 0})`)
+                            .join("  +  ")}
+                        </span>
+                        <span className="item-desc">{result.description}</span>
+                        {!jobOk && (
+                          <span className="item-locked">
+                            Requires {JOB_NAMES[recipe.job.id]} {recipe.job.level}
+                          </span>
+                        )}
+                        {jobOk && !atStation && !inBattle && (
+                          <span className="item-locked">{JOB_STATIONS[recipe.job.id].hint}</span>
+                        )}
+                      </div>
+                      <div className="item-actions">
+                        <button
+                          className="btn btn-small"
+                          disabled={!craftable}
+                          onClick={() => dispatch({ type: "CRAFT", recipeId: recipe.id })}
+                        >
+                          Craft
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              {tab !== "craft" && stacks.length === 0 && gearRows.length === 0 && (
+                <p className="empty-note">Nothing here. Go hit some monsters.</p>
+              )}
+              {gearRows.map((instance) => {
+                const item = gearItem(instance);
+                const isEquipped = equippedUids.has(instance.uid);
                 return (
-                  <div key={stat} className="doll-stat-row">
-                    <span>{label}</span>
-                    <strong>
-                      {hero.stats[stat]}
-                      {granted > 0 && <em className="doll-granted"> +{granted}</em>}
-                    </strong>
+                  <div key={instance.uid} className="item-row">
+                    <Sprite name={item.sprite} size={32} alt={gearName(instance)} />
+                    <div className="item-info">
+                      <span className={`item-name rarity-${instance.rarity}`}>
+                        {gearName(instance)}
+                        {isEquipped && <span className="equipped-tag"> EQUIPPED</span>}
+                      </span>
+                      <span className="item-stats">
+                        {itemStatLine(item, { bonus: instance.bonus, value: gearValue(instance) })}
+                      </span>
+                      <span className="item-desc">{item.description}</span>
+                    </div>
+                    <div className="item-actions">
+                      {!isEquipped && (
+                        <button
+                          className="btn btn-small"
+                          onClick={() => dispatch({ type: "EQUIP", uid: instance.uid })}
+                        >
+                          Equip
+                        </button>
+                      )}
+                      {!isEquipped && (
+                        <button
+                          className="btn btn-small btn-danger"
+                          onClick={() => dispatch({ type: "DROP_GEAR", uid: instance.uid })}
+                        >
+                          Drop
+                        </button>
+                      )}
+                    </div>
                   </div>
                 );
               })}
-              <div className="doll-stat-row">
-                <span>Carry</span>
-                <strong>
-                  {weight}/{capacity}
-                </strong>
-              </div>
+              {stacks.map(({ item, count }) => {
+                const usable = Boolean(item.restoreHp || item.restoreMp || item.cures);
+                return (
+                  <div key={item.id} className="item-row">
+                    <Sprite name={item.sprite} size={32} alt={item.name} />
+                    <div className="item-info">
+                      <span className="item-name">
+                        {item.name}
+                        {count > 1 && <span className="item-count"> x{count}</span>}
+                      </span>
+                      <span className="item-stats">{itemStatLine(item, { value: item.value })}</span>
+                      <span className="item-desc">{item.description}</span>
+                    </div>
+                    <div className="item-actions">
+                      {usable && (
+                        <button
+                          className="btn btn-small"
+                          onClick={() => dispatch({ type: "USE_ITEM", itemId: item.id })}
+                        >
+                          Use
+                        </button>
+                      )}
+                      {!inBattle && (
+                        <button
+                          className="btn btn-small btn-danger"
+                          onClick={() => dispatch({ type: "DROP", itemId: item.id })}
+                        >
+                          Drop
+                        </button>
+                      )}
+                      {!inBattle && count > 1 && (
+                        <button
+                          className="btn btn-small btn-danger"
+                          title="Drop the whole stack"
+                          onClick={() => dispatch({ type: "DROP", itemId: item.id, count })}
+                        >
+                          All
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
-        )}
-
-        <div className="inventory-main">
-        <div className="tabs">
-          {TABS.map((t) => (
-            <button key={t.id} className={`tab ${tab === t.id ? "active" : ""}`} onClick={() => setTab(t.id)}>
-              {t.label}
-            </button>
-          ))}
-        </div>
-
-        <div className="item-list">
-          {tab === "craft" && atStationId && (
-            <p className="station-banner" data-testid="station-banner">
-              You are at {atStationId === "smithing" ? "Hilda's forge" : "Vex's cauldron"} - craft freely.
-            </p>
-          )}
-          {tab === "craft" && !atStationId && !inBattle && (
-            <div className="station-travel">
-              <span className="item-locked">The stations are in town: the FORGE and BREWS doors.</span>
-              <button
-                className="btn btn-small"
-                disabled={!townKnown}
-                title={townKnown ? "Fast travel to Pixelheim Gate" : "Discover Pixelheim Gate first"}
-                onClick={() => {
-                  dispatch({ type: "TOGGLE_INVENTORY" });
-                  dispatch({ type: "FAST_TRAVEL", waypointId: "town_gate" });
-                }}
-              >
-                Travel to town
-              </button>
-            </div>
-          )}
-          {tab === "craft" &&
-            RECIPES.map((recipe) => {
-              const result = getItem(recipe.itemId);
-              const jobOk = hero.jobs[recipe.job.id].level >= recipe.job.level;
-              const atStation = state.world?.position.mapId === JOB_STATIONS[recipe.job.id].mapId;
-              const craftable = canCraft(recipe, state.inventory, hero.jobs) && atStation && !inBattle;
-              return (
-                <div key={recipe.id} className="item-row">
-                  <Sprite name={result.sprite} size={32} alt={result.name} />
-                  <div className="item-info">
-                    <span className="item-name">{result.name}</span>
-                    <span className="item-stats">
-                      {Object.entries(recipe.needs)
-                        .map(([id, count]) => `${count}x ${getItem(id).name} (${state.inventory[id] ?? 0})`)
-                        .join("  +  ")}
-                    </span>
-                    <span className="item-desc">{result.description}</span>
-                    {!jobOk && (
-                      <span className="item-locked">
-                        Requires {JOB_NAMES[recipe.job.id]} {recipe.job.level}
-                      </span>
-                    )}
-                    {jobOk && !atStation && !inBattle && (
-                      <span className="item-locked">{JOB_STATIONS[recipe.job.id].hint}</span>
-                    )}
-                  </div>
-                  <div className="item-actions">
-                    <button
-                      className="btn btn-small"
-                      disabled={!craftable}
-                      onClick={() => dispatch({ type: "CRAFT", recipeId: recipe.id })}
-                    >
-                      Craft
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          {tab !== "craft" && stacks.length === 0 && gearRows.length === 0 && (
-            <p className="empty-note">Nothing here. Go hit some monsters.</p>
-          )}
-          {gearRows.map((instance) => {
-            const item = gearItem(instance);
-            const isEquipped = equippedUids.has(instance.uid);
-            return (
-              <div key={instance.uid} className="item-row">
-                <Sprite name={item.sprite} size={32} alt={gearName(instance)} />
-                <div className="item-info">
-                  <span className={`item-name rarity-${instance.rarity}`}>
-                    {gearName(instance)}
-                    {isEquipped && <span className="equipped-tag"> EQUIPPED</span>}
-                  </span>
-                  <span className="item-stats">{itemStatLine(item, { bonus: instance.bonus, value: gearValue(instance) })}</span>
-                  <span className="item-desc">{item.description}</span>
-                </div>
-                <div className="item-actions">
-                  {!isEquipped && (
-                    <button className="btn btn-small" onClick={() => dispatch({ type: "EQUIP", uid: instance.uid })}>
-                      Equip
-                    </button>
-                  )}
-                  {!isEquipped && (
-                    <button
-                      className="btn btn-small btn-danger"
-                      onClick={() => dispatch({ type: "DROP_GEAR", uid: instance.uid })}
-                    >
-                      Drop
-                    </button>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-          {stacks.map(({ item, count }) => {
-            const usable = Boolean(item.restoreHp || item.restoreMp || item.cures);
-            return (
-              <div key={item.id} className="item-row">
-                <Sprite name={item.sprite} size={32} alt={item.name} />
-                <div className="item-info">
-                  <span className="item-name">
-                    {item.name}
-                    {count > 1 && <span className="item-count"> x{count}</span>}
-                  </span>
-                  <span className="item-stats">{itemStatLine(item, { value: item.value })}</span>
-                  <span className="item-desc">{item.description}</span>
-                </div>
-                <div className="item-actions">
-                  {usable && (
-                    <button className="btn btn-small" onClick={() => dispatch({ type: "USE_ITEM", itemId: item.id })}>
-                      Use
-                    </button>
-                  )}
-                  {!inBattle && (
-                    <button className="btn btn-small btn-danger" onClick={() => dispatch({ type: "DROP", itemId: item.id })}>
-                      Drop
-                    </button>
-                  )}
-                  {!inBattle && count > 1 && (
-                    <button
-                      className="btn btn-small btn-danger"
-                      title="Drop the whole stack"
-                      onClick={() => dispatch({ type: "DROP", itemId: item.id, count })}
-                    >
-                      All
-                    </button>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-        </div>
         </div>
       </div>
     </div>

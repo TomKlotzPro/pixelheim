@@ -56,7 +56,10 @@ describe("tree integrity", () => {
       }
       // every branch reaches tier 3
       for (const branch of [0, 1, 2]) {
-        expect(tree.some((n) => n.branch === branch && n.tier === 3), `${roleId} branch ${branch} capstone`).toBe(true);
+        expect(
+          tree.some((n) => n.branch === branch && n.tier === 3),
+          `${roleId} branch ${branch} capstone`,
+        ).toBe(true);
       }
     }
   });

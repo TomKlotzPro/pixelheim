@@ -40,7 +40,12 @@ describe("property rent", () => {
     let s = structuredClone(initialState);
     s.hero = createHero("Landlord", "warrior");
     s.gold = 5000;
-    s.world = { position: { mapId: "town_shop", x: 4, y: 2, facing: "down" }, discovered: {}, openedChests: [], slain: [] };
+    s.world = {
+      position: { mapId: "town_shop", x: 4, y: 2, facing: "down" },
+      discovered: {},
+      openedChests: [],
+      slain: [],
+    };
     s = gameReducer(s, { type: "BUY_PROPERTY", mapId: "town_smith" }); // not standing there
     expect(s.properties).toHaveLength(0);
     s = gameReducer(s, { type: "BUY_PROPERTY", mapId: "town_shop" });

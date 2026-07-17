@@ -72,7 +72,16 @@ const list: Monster[] = [
     inflicts: { kind: "burn", chance: 0.45, turns: 2, power: 8 },
   },
   // ---------------- the Undermountain (floors 11-15) ----------------
-  { id: "boneknight", name: "Bone Knight", sprite: "boneknight", maxHp: 130, attack: 34, defense: 11, xp: 95, gold: 70 },
+  {
+    id: "boneknight",
+    name: "Bone Knight",
+    sprite: "boneknight",
+    maxHp: 130,
+    attack: 34,
+    defense: 11,
+    xp: 95,
+    gold: 70,
+  },
   {
     id: "shade",
     name: "Shade",

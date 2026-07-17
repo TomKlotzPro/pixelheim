@@ -10,7 +10,12 @@ function crafterState(stationMapId: string): GameState {
   const s = structuredClone(initialState);
   s.hero = createHero("Tess", "warrior");
   s.screen = "world";
-  s.world = { position: { mapId: stationMapId, x: 4, y: 2, facing: "down" }, discovered: {}, openedChests: [], slain: [] };
+  s.world = {
+    position: { mapId: stationMapId, x: 4, y: 2, facing: "down" },
+    discovered: {},
+    openedChests: [],
+    slain: [],
+  };
   return s;
 }
 

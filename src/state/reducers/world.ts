@@ -49,7 +49,10 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
       if (draft.screen !== "world" || !draft.world || !draft.hero) return;
       if (draft.dialogue || draft.shopOpen || draft.inventoryOpen) return;
       // The classic rule: nobody teleports over-encumbered.
-      if (carriedWeight(draft.inventory, draft.gear, draft.equipped) > carryCapacity(draft.hero, draft.gear, draft.equipped)) {
+      if (
+        carriedWeight(draft.inventory, draft.gear, draft.equipped) >
+        carryCapacity(draft.hero, draft.gear, draft.equipped)
+      ) {
         draft.worldMessage = "Too heavy to travel. Lighten the pack.";
         return;
       }
@@ -228,7 +231,6 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
       if (found && found.look !== "chest" && !draft.world.openedChests.includes(found.id)) {
         openChest(draft, found);
       }
-
     }
   }
 }
@@ -248,7 +250,8 @@ function openChest(draft: GameState, chest: Chest): void {
   if (loot.kind === "gold") {
     draft.gold += loot.amount;
     draft.world.openedChests.push(chest.id);
-    draft.worldMessage = chest.look === "glint" ? `Something glitters on the road: ${loot.amount}g.` : `The chest holds ${loot.amount}g.`;
+    draft.worldMessage =
+      chest.look === "glint" ? `Something glitters on the road: ${loot.amount}g.` : `The chest holds ${loot.amount}g.`;
     return;
   }
   const item = getItem(loot.itemId);

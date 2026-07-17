@@ -3,7 +3,16 @@ import { masteryBonus } from "../hero/mastery";
 import { getMonster } from "./monsters";
 import { gearDamage, gearItem } from "../economy/rarity";
 import { getPassives } from "../hero/skillTree";
-import type { BattleMonster, EncounterDef, Equipped, GearInstance, Hero, Infliction, Skill, StatusEffect } from "../types";
+import type {
+  BattleMonster,
+  EncounterDef,
+  Equipped,
+  GearInstance,
+  Hero,
+  Infliction,
+  Skill,
+  StatusEffect,
+} from "../types";
 
 export function spawnMonster(def: EncounterDef): BattleMonster {
   const base = getMonster(def.monsterId);
@@ -41,12 +50,23 @@ export function heroSkillPower(hero: Hero, skill: Skill, gear: GearInstance[], e
   return Math.round(effectiveStat(hero, gear, equipped, skill.stat) * skill.multiplier);
 }
 
-export function heroSkillDamage(hero: Hero, skill: Skill, gear: GearInstance[], equipped: Equipped, monster: BattleMonster): number {
+export function heroSkillDamage(
+  hero: Hero,
+  skill: Skill,
+  gear: GearInstance[],
+  equipped: Equipped,
+  monster: BattleMonster,
+): number {
   const raw = heroSkillPower(hero, skill, gear, equipped) * (1 + masteryBonus(hero, monster.def.id));
   return Math.max(1, variance(raw) - Math.floor(monster.defense / 2));
 }
 
-export function monsterAttackDamage(monster: BattleMonster, hero: Hero, gear: GearInstance[], equipped: Equipped): number {
+export function monsterAttackDamage(
+  monster: BattleMonster,
+  hero: Hero,
+  gear: GearInstance[],
+  equipped: Equipped,
+): number {
   return Math.max(1, variance(monster.attack) - totalDefense(hero, gear, equipped));
 }
 

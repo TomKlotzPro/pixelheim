@@ -65,10 +65,7 @@ const MIGRATIONS: Record<number, (state: Record<string, unknown>) => Record<stri
 
 function isEnvelope(value: unknown): value is Envelope {
   return (
-    typeof value === "object" &&
-    value !== null &&
-    typeof (value as Envelope).version === "number" &&
-    "state" in value
+    typeof value === "object" && value !== null && typeof (value as Envelope).version === "number" && "state" in value
   );
 }
 

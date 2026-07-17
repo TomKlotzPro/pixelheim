@@ -743,7 +743,6 @@ const list: Item[] = [
   },
 ];
 
-
 export const ITEMS: Record<string, Item> = Object.fromEntries(list.map((i) => [i.id, i]));
 
 export function getItem(id: string): Item {

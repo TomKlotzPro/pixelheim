@@ -571,8 +571,14 @@ body {
   animation: battle-in 0.35s steps(4);
 }
 @keyframes battle-in {
-  0% { filter: brightness(3) contrast(0.6); transform: scale(1.02); }
-  100% { filter: none; transform: none; }
+  0% {
+    filter: brightness(3) contrast(0.6);
+    transform: scale(1.02);
+  }
+  100% {
+    filter: none;
+    transform: none;
+  }
 }
 /* wild ambushes hit harder: shake the whole scene on entry */
 .battle-wild {
@@ -581,21 +587,41 @@ body {
     ambush-shake 0.5s steps(2);
 }
 @keyframes ambush-shake {
-  0% { transform: translate(0, 0); }
-  20% { transform: translate(-6px, 2px); }
-  40% { transform: translate(5px, -3px); }
-  60% { transform: translate(-4px, 2px); }
-  80% { transform: translate(3px, -1px); }
-  100% { transform: translate(0, 0); }
+  0% {
+    transform: translate(0, 0);
+  }
+  20% {
+    transform: translate(-6px, 2px);
+  }
+  40% {
+    transform: translate(5px, -3px);
+  }
+  60% {
+    transform: translate(-4px, 2px);
+  }
+  80% {
+    transform: translate(3px, -1px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
 }
 /* the monster lunges in from off-screen */
 .combatant-lunge {
   animation: monster-lunge 0.45s steps(5);
 }
 @keyframes monster-lunge {
-  0% { transform: translateX(140px); opacity: 0; }
-  60% { transform: translateX(-12px); opacity: 1; }
-  100% { transform: translateX(0); }
+  0% {
+    transform: translateX(140px);
+    opacity: 0;
+  }
+  60% {
+    transform: translateX(-12px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(0);
+  }
 }
 /* the classic "!" over the ambushed hero, then it fades */
 .combatant {
@@ -615,10 +641,22 @@ body {
   pointer-events: none;
 }
 @keyframes ambush-mark {
-  0% { opacity: 0; transform: translateX(-50%) translateY(8px) scale(0.6); }
-  15% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1.15); }
-  75% { opacity: 1; transform: translateX(-50%) scale(1); }
-  100% { opacity: 0; transform: translateX(-50%) scale(1); }
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(8px) scale(0.6);
+  }
+  15% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1.15);
+  }
+  75% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) scale(1);
+  }
 }
 .battle-header {
   display: flex;
@@ -828,9 +866,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background:
-    radial-gradient(ellipse at 50% 80%, rgba(232, 195, 74, 0.1), transparent 65%),
-    #0d0e13;
+  background: radial-gradient(ellipse at 50% 80%, rgba(232, 195, 74, 0.1), transparent 65%), #0d0e13;
   border: 1px solid var(--border);
 }
 .doll-slot {
@@ -857,15 +893,33 @@ body {
 .doll-filled:hover {
   border-color: var(--danger);
 }
-.doll-head { grid-area: head; }
-.doll-neck { grid-area: neck; }
-.doll-body { grid-area: body; }
-.doll-hands { grid-area: hands; }
-.doll-weapon { grid-area: weapon; }
-.doll-offhand { grid-area: offhand; }
-.doll-ring1 { grid-area: ring1; }
-.doll-ring2 { grid-area: ring2; }
-.doll-feet { grid-area: feet; }
+.doll-head {
+  grid-area: head;
+}
+.doll-neck {
+  grid-area: neck;
+}
+.doll-body {
+  grid-area: body;
+}
+.doll-hands {
+  grid-area: hands;
+}
+.doll-weapon {
+  grid-area: weapon;
+}
+.doll-offhand {
+  grid-area: offhand;
+}
+.doll-ring1 {
+  grid-area: ring1;
+}
+.doll-ring2 {
+  grid-area: ring2;
+}
+.doll-feet {
+  grid-area: feet;
+}
 .doll-slot-label {
   font-size: 8px;
   letter-spacing: 0.5px;
@@ -989,26 +1043,44 @@ body {
   animation: bar-rise 0.45s ease-out;
 }
 @keyframes bar-drop {
-  from { transform: translateY(-100%); }
+  from {
+    transform: translateY(-100%);
+  }
 }
 @keyframes bar-rise {
-  from { transform: translateY(100%); }
+  from {
+    transform: translateY(100%);
+  }
 }
 .rankup-rays {
   position: absolute;
   width: 420px;
   height: 420px;
   background: conic-gradient(
-    rgba(232, 195, 74, 0.16) 0deg, transparent 24deg, rgba(232, 195, 74, 0.16) 48deg, transparent 72deg,
-    rgba(232, 195, 74, 0.16) 96deg, transparent 120deg, rgba(232, 195, 74, 0.16) 144deg, transparent 168deg,
-    rgba(232, 195, 74, 0.16) 192deg, transparent 216deg, rgba(232, 195, 74, 0.16) 240deg, transparent 264deg,
-    rgba(232, 195, 74, 0.16) 288deg, transparent 312deg, rgba(232, 195, 74, 0.16) 336deg, transparent 360deg
+    rgba(232, 195, 74, 0.16) 0deg,
+    transparent 24deg,
+    rgba(232, 195, 74, 0.16) 48deg,
+    transparent 72deg,
+    rgba(232, 195, 74, 0.16) 96deg,
+    transparent 120deg,
+    rgba(232, 195, 74, 0.16) 144deg,
+    transparent 168deg,
+    rgba(232, 195, 74, 0.16) 192deg,
+    transparent 216deg,
+    rgba(232, 195, 74, 0.16) 240deg,
+    transparent 264deg,
+    rgba(232, 195, 74, 0.16) 288deg,
+    transparent 312deg,
+    rgba(232, 195, 74, 0.16) 336deg,
+    transparent 360deg
   );
   border-radius: 50%;
   animation: rays-turn 10s linear infinite;
 }
 @keyframes rays-turn {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 .rankup-hero {
   position: relative;
@@ -1085,15 +1157,26 @@ body {
   }
 }
 @keyframes rankup-fade {
-  0%, 75% { opacity: 1; }
-  100% { opacity: 0; }
+  0%,
+  75% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 .reduce-motion .rankup-overlay {
   animation: none;
 }
-.world-hero[data-rank="1"] { filter: drop-shadow(0 0 4px rgba(154, 176, 216, 0.7)); }
-.world-hero[data-rank="2"] { filter: drop-shadow(0 0 5px rgba(232, 195, 74, 0.75)); }
-.world-hero[data-rank="3"] { filter: drop-shadow(0 0 7px rgba(74, 230, 200, 0.8)); }
+.world-hero[data-rank="1"] {
+  filter: drop-shadow(0 0 4px rgba(154, 176, 216, 0.7));
+}
+.world-hero[data-rank="2"] {
+  filter: drop-shadow(0 0 5px rgba(232, 195, 74, 0.75));
+}
+.world-hero[data-rank="3"] {
+  filter: drop-shadow(0 0 7px rgba(74, 230, 200, 0.8));
+}
 .spec-section {
   display: flex;
   flex-direction: column;
@@ -1799,7 +1882,9 @@ body {
   text-align: center;
   gap: 16px;
 }
-.skill-tree { overscroll-behavior: contain; }
+.skill-tree {
+  overscroll-behavior: contain;
+}
 
 /* ---------- small screens: nothing overlaps at any width ---------- */
 @media (max-width: 760px) {
@@ -1909,8 +1994,21 @@ body {
   height: 34%;
   background: #222a42;
   clip-path: polygon(
-    0% 100%, 0% 62%, 8% 44%, 15% 58%, 24% 30%, 34% 52%, 43% 36%, 50% 6%,
-    57% 32%, 66% 18%, 74% 46%, 83% 28%, 92% 52%, 100% 38%, 100% 100%
+    0% 100%,
+    0% 62%,
+    8% 44%,
+    15% 58%,
+    24% 30%,
+    34% 52%,
+    43% 36%,
+    50% 6%,
+    57% 32%,
+    66% 18%,
+    74% 46%,
+    83% 28%,
+    92% 52%,
+    100% 38%,
+    100% 100%
   );
 }
 .title-ridge-mid {
@@ -1918,8 +2016,19 @@ body {
   height: 28%;
   background: #151a2b;
   clip-path: polygon(
-    0% 100%, 0% 40%, 10% 62%, 19% 34%, 30% 58%, 41% 26%, 52% 54%, 62% 38%,
-    72% 60%, 81% 30%, 90% 54%, 100% 44%, 100% 100%
+    0% 100%,
+    0% 40%,
+    10% 62%,
+    19% 34%,
+    30% 58%,
+    41% 26%,
+    52% 54%,
+    62% 38%,
+    72% 60%,
+    81% 30%,
+    90% 54%,
+    100% 44%,
+    100% 100%
   );
 }
 /* The Ashen Mountain smolders behind the middle ridge. */
@@ -1937,8 +2046,19 @@ body {
   height: 22%;
   background: #0c0f18;
   clip-path: polygon(
-    0% 100%, 0% 52%, 9% 66%, 18% 42%, 28% 64%, 39% 46%, 49% 68%, 60% 40%,
-    70% 62%, 80% 46%, 90% 66%, 100% 50%, 100% 100%
+    0% 100%,
+    0% 52%,
+    9% 66%,
+    18% 42%,
+    28% 64%,
+    39% 46%,
+    49% 68%,
+    60% 40%,
+    70% 62%,
+    80% 46%,
+    90% 66%,
+    100% 50%,
+    100% 100%
   );
 }
 .title-fog {
