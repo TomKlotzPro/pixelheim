@@ -1,5 +1,5 @@
-import { applyStatPoint } from "../../game/character";
-import { canBuyNode, getNode } from "../../game/skillTree";
+import { applyStatPoint } from "../../game/hero/character";
+import { canBuyNode, getNode } from "../../game/hero/skillTree";
 import type { GameState } from "../../game/types";
 import type { ProgressionAction } from "../actions";
 

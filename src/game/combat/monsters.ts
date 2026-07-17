@@ -1,0 +1,118 @@
+import type { Monster } from "../types";
+
+const list: Monster[] = [
+  { id: "slime", name: "Slime", sprite: "slime", maxHp: 14, attack: 5, defense: 0, xp: 8, gold: 4 },
+  {
+    id: "goblin",
+    name: "Goblin",
+    sprite: "goblin",
+    maxHp: 20,
+    attack: 7,
+    defense: 1,
+    xp: 12,
+    gold: 8,
+    inflicts: { kind: "poison", chance: 0.2, turns: 2, power: 2 },
+  },
+  { id: "skeleton", name: "Skeleton", sprite: "skeleton", maxHp: 26, attack: 9, defense: 2, xp: 17, gold: 12 },
+  { id: "wolf", name: "Dire Wolf", sprite: "wolf", maxHp: 32, attack: 12, defense: 2, xp: 23, gold: 14 },
+  { id: "orc", name: "Orc Raider", sprite: "orc", maxHp: 42, attack: 14, defense: 4, xp: 30, gold: 22 },
+  {
+    id: "ghost",
+    name: "Ghost",
+    sprite: "ghost",
+    maxHp: 38,
+    attack: 17,
+    defense: 3,
+    xp: 38,
+    gold: 26,
+    inflicts: { kind: "stun", chance: 0.25, turns: 1, power: 0 },
+  },
+  {
+    id: "golem",
+    name: "Stone Golem",
+    sprite: "golem",
+    maxHp: 60,
+    attack: 16,
+    defense: 8,
+    xp: 48,
+    gold: 34,
+    inflicts: { kind: "stun", chance: 0.3, turns: 1, power: 0 },
+  },
+  {
+    id: "troll",
+    name: "Cave Troll",
+    sprite: "troll",
+    maxHp: 74,
+    attack: 21,
+    defense: 6,
+    xp: 60,
+    gold: 45,
+    inflicts: { kind: "stun", chance: 0.25, turns: 1, power: 0 },
+  },
+  {
+    id: "wyvern",
+    name: "Wyvern",
+    sprite: "wyvern",
+    maxHp: 88,
+    attack: 25,
+    defense: 7,
+    xp: 75,
+    gold: 60,
+    inflicts: { kind: "poison", chance: 0.4, turns: 3, power: 5 },
+  },
+  {
+    id: "dragon",
+    name: "Fafnyr the Ashen",
+    sprite: "dragon",
+    maxHp: 150,
+    attack: 33,
+    defense: 9,
+    xp: 150,
+    gold: 250,
+    inflicts: { kind: "burn", chance: 0.45, turns: 2, power: 8 },
+  },
+  // ---------------- the Undermountain (floors 11-15) ----------------
+  { id: "boneknight", name: "Bone Knight", sprite: "boneknight", maxHp: 130, attack: 34, defense: 11, xp: 95, gold: 70 },
+  {
+    id: "shade",
+    name: "Shade",
+    sprite: "shade",
+    maxHp: 120,
+    attack: 34,
+    defense: 8,
+    xp: 105,
+    gold: 80,
+    inflicts: { kind: "stun", chance: 0.3, turns: 1, power: 0 },
+  },
+  { id: "mimic", name: "Mimic", sprite: "mimic", maxHp: 160, attack: 37, defense: 12, xp: 120, gold: 170 },
+  {
+    id: "imp",
+    name: "Fire Imp",
+    sprite: "imp",
+    maxHp: 150,
+    attack: 42,
+    defense: 10,
+    xp: 140,
+    gold: 100,
+    inflicts: { kind: "burn", chance: 0.4, turns: 2, power: 9 },
+  },
+  {
+    id: "lich",
+    name: "Morvax the Deathless",
+    sprite: "lich",
+    maxHp: 300,
+    attack: 52,
+    defense: 12,
+    xp: 350,
+    gold: 700,
+    inflicts: { kind: "poison", chance: 0.45, turns: 3, power: 10 },
+  },
+];
+
+export const MONSTERS: Record<string, Monster> = Object.fromEntries(list.map((m) => [m.id, m]));
+
+export function getMonster(id: string): Monster {
+  const monster = MONSTERS[id];
+  if (!monster) throw new Error(`Unknown monster: ${id}`);
+  return monster;
+}
