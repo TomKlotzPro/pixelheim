@@ -911,6 +911,23 @@ body {
     align-self: auto;
   }
 }
+.station-banner {
+  margin: 0;
+  padding: 6px 10px;
+  color: #8ae68a;
+  background: rgba(78, 192, 78, 0.08);
+  border: 1px solid rgba(78, 192, 78, 0.35);
+  font-size: 12px;
+}
+.station-travel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-panel-2);
+}
 .merchant-line {
   color: var(--text-dim);
   font-size: 12px;
