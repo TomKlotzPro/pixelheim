@@ -8,7 +8,7 @@ import type { GameState } from "../../game/types";
 import { type Chest, chestAt, chestRegion, solidChestAt } from "../../world/chests";
 import { discoverAround } from "../../world/discover";
 import { getMap } from "../../world/maps";
-import { npcAt, NPCS } from "../../world/npcs";
+import { npcAt, npcBeside, NPCS } from "../../world/npcs";
 import { monsterSpawnAt, spawnRegion } from "../../world/spawns";
 import { waypointDiscovered, WAYPOINTS } from "../../world/waypoints";
 import { isWalkable, portalAt } from "../../world/parseMap";
@@ -85,15 +85,18 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
         openChest(draft, chest);
         return;
       }
-      const npc = npcAt(position.mapId, position.x + dx, position.y + dy, draft.worldSteps);
-      if (!npc) return;
+      // Anyone beside the hero counts, faced tile first; no more pixel-perfect
+      // shuffling to line up a chat. Interacting turns the hero toward them.
+      const beside = npcBeside(position.mapId, position.x, position.y, position.facing, draft.worldSteps);
+      if (!beside) return;
+      position.facing = beside.facing;
       // Keepers trade instead of chatting: talking to whoever runs a shop
       // opens their counter (the menu no longer jumps at you on entry).
       if (SHOP_MAPS[position.mapId]) {
         draft.shopOpen = true;
         return;
       }
-      draft.dialogue = { npcId: npc.id, page: 0 };
+      draft.dialogue = { npcId: beside.npc.id, page: 0 };
       draft.worldMessage = null;
       return;
     }
