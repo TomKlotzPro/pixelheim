@@ -1337,3 +1337,65 @@ body {
     height: 10px;
   }
 }
+
+/* ---------- title v3: the first screen breathes ---------- */
+.title-idle {
+  display: inline-block;
+  image-rendering: pixelated;
+  background-repeat: no-repeat;
+  animation: title-idle-play 1s steps(2) infinite;
+}
+@keyframes title-idle-play {
+  to {
+    background-position-x: -200%;
+  }
+}
+.title-walker {
+  position: absolute;
+  bottom: 8vh;
+  left: -64px;
+  width: 48px;
+  height: 48px;
+  z-index: 3;
+  image-rendering: pixelated;
+  background-repeat: no-repeat;
+  background-size: 192px 48px;
+  animation:
+    title-walk-cross 26s linear infinite,
+    title-walk-step 0.7s steps(4) infinite;
+  pointer-events: none;
+}
+@keyframes title-walk-cross {
+  to {
+    transform: translateX(calc(100vw + 128px));
+  }
+}
+@keyframes title-walk-step {
+  to {
+    background-position-x: -192px;
+  }
+}
+.game-title {
+  animation: title-glow 3.2s ease-in-out infinite;
+}
+@keyframes title-glow {
+  0%,
+  100% {
+    text-shadow: 0 0 0 rgba(232, 195, 74, 0);
+  }
+  50% {
+    text-shadow: 0 0 18px rgba(232, 195, 74, 0.45);
+  }
+}
+.reduce-motion .title-idle,
+.reduce-motion .title-walker,
+.reduce-motion .game-title {
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .title-idle,
+  .title-walker,
+  .game-title {
+    animation: none;
+  }
+}
