@@ -21,6 +21,7 @@ import { createGear, gearName } from "../economy/rarity";
 import { REGION_MATERIALS } from "../economy/recipes";
 import { getHeroSkills, getPassives } from "../hero/skillTree";
 import type { BattleState, GameState, Hero } from "../types";
+import { recordKill } from "../hero/mastery";
 
 /**
  * The battle engine: the whole turn pipeline as functions over the game
@@ -142,6 +143,8 @@ export function heroStunGate(state: GameState, hero: Hero, log: string[]): boole
 }
 
 function onMonsterDefeated(state: GameState, hero: Hero, log: string[]): void {
+  const slain = recordKill(hero, state.battle!.monster.def.id);
+  if (slain) log.push(slain);
   const battle = state.battle!;
   const passives = getPassives(hero);
   const { xp, name } = battle.monster;
