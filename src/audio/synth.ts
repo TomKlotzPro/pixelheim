@@ -9,9 +9,11 @@ import { loadSettings } from "../app/settings";
 let ctx: AudioContext | null = null;
 let master: GainNode | null = null;
 let musicBus: GainNode | null = null;
+let musicFade: GainNode | null = null;
 let sfxBus: GainNode | null = null;
+let ambienceBus: GainNode | null = null;
 
-export type Bus = "music" | "sfx";
+export type Bus = "music" | "sfx" | "ambience";
 
 const MUTE_KEY = "pixelheim-muted";
 let muted = false;
@@ -30,20 +32,44 @@ export function initAudio(): void {
     master = ctx.createGain();
     master.gain.value = muted ? 0 : 1;
     master.connect(ctx.destination);
+    // music -> fade (crossfades) -> bus (user volume) -> master, plus a
+    // touch of feedback echo so the chip score has a room to live in
     musicBus = ctx.createGain();
     musicBus.gain.value = settings.musicVolume;
     musicBus.connect(master);
+    musicFade = ctx.createGain();
+    musicFade.gain.value = 1;
+    musicFade.connect(musicBus);
+    const delay = ctx.createDelay(1);
+    delay.delayTime.value = 0.27;
+    const feedback = ctx.createGain();
+    feedback.gain.value = 0.22;
+    const wet = ctx.createGain();
+    wet.gain.value = 0.16;
+    musicFade.connect(delay);
+    delay.connect(feedback).connect(delay);
+    delay.connect(wet).connect(musicBus);
     sfxBus = ctx.createGain();
     sfxBus.gain.value = settings.sfxVolume;
     sfxBus.connect(master);
+    // ambience rides the sfx volume, quieter: birdsong should never shout
+    ambienceBus = ctx.createGain();
+    ambienceBus.gain.value = settings.sfxVolume * 0.55;
+    ambienceBus.connect(master);
   } catch {
     ctx = null;
   }
 }
 
 export function setBusVolume(bus: Bus, volume: number): void {
-  const node = bus === "music" ? musicBus : sfxBus;
+  const node = bus === "music" ? musicBus : bus === "sfx" ? sfxBus : ambienceBus;
   if (node && ctx) node.gain.setTargetAtTime(volume, ctx.currentTime, 0.01);
+  if (bus === "sfx" && ambienceBus && ctx) ambienceBus.gain.setTargetAtTime(volume * 0.55, ctx.currentTime, 0.01);
+}
+
+/** Ramp the crossfade stage (0..1) without touching the user's volume. */
+export function rampMusicFade(to: number, seconds: number): void {
+  if (musicFade && ctx) musicFade.gain.setTargetAtTime(to, ctx.currentTime, seconds / 3);
 }
 
 export function audioReady(): boolean {
@@ -82,7 +108,7 @@ export type ToneOpts = {
 };
 
 function busNode(bus: Bus): GainNode | null {
-  return bus === "music" ? musicBus : sfxBus;
+  return bus === "music" ? musicFade : bus === "sfx" ? sfxBus : ambienceBus;
 }
 
 export function playTone({ freq, duration, type = "square", volume = 0.08, at, slideTo, bus = "sfx" }: ToneOpts): void {
@@ -106,11 +132,14 @@ export function playNoise({
   volume = 0.06,
   at,
   bus = "sfx",
+  lowpass,
 }: {
   duration: number;
   volume?: number;
   at?: number;
   bus?: Bus;
+  /** Filter cutoff in Hz; wind and rumble are noise through a small hole. */
+  lowpass?: number;
 }): void {
   const out = busNode(bus);
   if (!ctx || !out) return;
@@ -124,7 +153,14 @@ export function playNoise({
   const gain = ctx.createGain();
   gain.gain.setValueAtTime(volume, start);
   gain.gain.exponentialRampToValueAtTime(0.001, start + duration);
-  source.connect(gain).connect(out);
+  if (lowpass) {
+    const filter = ctx.createBiquadFilter();
+    filter.type = "lowpass";
+    filter.frequency.value = lowpass;
+    source.connect(filter).connect(gain).connect(out);
+  } else {
+    source.connect(gain).connect(out);
+  }
   source.start(start);
 }
 
