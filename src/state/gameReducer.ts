@@ -58,6 +58,7 @@ function route(draft: GameState, action: Action): GameState | void {
 
     case "SPEND_STAT_POINT":
     case "BUY_SKILL_NODE":
+    case "CHOOSE_SPEC":
       return progressionReducer(draft, action);
 
     case "ENTER_WORLD":

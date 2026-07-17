@@ -164,6 +164,8 @@ export type Hero = {
   jobs: Jobs;
   /** Appearance: palette-swap look index (0 = the classic). Additive; old saves default to 0. */
   look?: number;
+  /** Chosen specialization id (permanent fork at the first ascension). Additive. */
+  spec?: string;
 };
 
 /** The four stats a point can be spent on. */

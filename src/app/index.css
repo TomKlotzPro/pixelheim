@@ -1013,6 +1013,36 @@ body {
 .world-hero[data-rank="1"] { filter: drop-shadow(0 0 4px rgba(154, 176, 216, 0.7)); }
 .world-hero[data-rank="2"] { filter: drop-shadow(0 0 5px rgba(232, 195, 74, 0.75)); }
 .world-hero[data-rank="3"] { filter: drop-shadow(0 0 7px rgba(74, 230, 200, 0.8)); }
+.spec-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.spec-choices {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.spec-card {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 10px;
+  border: 2px solid rgba(232, 195, 74, 0.55);
+  background: rgba(232, 195, 74, 0.05);
+}
+.spec-name {
+  font-family: "Press Start 2P", "Courier New", monospace;
+  font-size: 10px;
+  color: var(--accent);
+}
+.spec-chosen {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid rgba(232, 195, 74, 0.4);
+}
 .merchant-line {
   color: var(--text-dim);
   font-size: 12px;
