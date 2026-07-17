@@ -11,6 +11,18 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.28.0",
+    date: "2026-07-17",
+    codename: "First Impressions",
+    notes: [
+      "The title screen is a living diorama: three mountain ridges deep, a smoldering summit, drifting fog, and the game's own monsters parading past - watch for the dragon",
+      "Character creation got the mirror-and-ledger treatment: your hero marches in place while stat bars compare every class at a glance",
+      "The town signs its doors: GOODS, FORGE, BREWS, INN - no more hunting for the craft stations",
+      "Talking is easy now: E finds whoever stands beside you and turns you toward them",
+      "The world stopped ticking on one metronome - every villager, beast and blade of grass moves to its own beat",
+    ],
+  },
+  {
     version: "0.27.0",
     date: "2026-07-17",
     codename: "Buried Riches",
