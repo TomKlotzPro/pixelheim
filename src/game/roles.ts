@@ -6,7 +6,8 @@ export const ROLES: Record<RoleId, Role> = {
     name: "Warrior",
     description: "Frontline bruiser. High health and defense, hits hard with steel.",
     sprite: "hero_warrior",
-    baseStats: { maxHp: 42, maxMp: 8, strength: 9, intelligence: 3, dexterity: 5, defense: 5 },
+    baseStats: { maxHp: 42, maxMp: 8, strength: 9, intelligence: 3, dexterity: 5, defense: 5, endurance: 8 },
+    resource: "endurance",
     growth: { maxHp: 7, maxMp: 1 },
     skills: [
       {
@@ -45,7 +46,8 @@ export const ROLES: Record<RoleId, Role> = {
     name: "Mage",
     description: "Glass cannon. Fragile, but Fireball melts anything with a face.",
     sprite: "hero_mage",
-    baseStats: { maxHp: 28, maxMp: 24, strength: 3, intelligence: 10, dexterity: 4, defense: 2 },
+    baseStats: { maxHp: 28, maxMp: 24, strength: 3, intelligence: 10, dexterity: 4, defense: 2, endurance: 3 },
+    resource: "mana",
     growth: { maxHp: 4, maxMp: 5 },
     skills: [
       {
@@ -84,7 +86,8 @@ export const ROLES: Record<RoleId, Role> = {
     name: "Rogue",
     description: "Fast and sneaky. Great at fleeing, deadly with a backstab.",
     sprite: "hero_rogue",
-    baseStats: { maxHp: 34, maxMp: 12, strength: 6, intelligence: 4, dexterity: 10, defense: 3 },
+    baseStats: { maxHp: 34, maxMp: 12, strength: 6, intelligence: 4, dexterity: 10, defense: 3, endurance: 6 },
+    resource: "endurance",
     growth: { maxHp: 5, maxMp: 2 },
     skills: [
       {
@@ -122,7 +125,8 @@ export const ROLES: Record<RoleId, Role> = {
     name: "Cleric",
     description: "Holy support. Sturdy enough, and Mend keeps you in the fight.",
     sprite: "hero_cleric",
-    baseStats: { maxHp: 38, maxMp: 18, strength: 6, intelligence: 7, dexterity: 4, defense: 4 },
+    baseStats: { maxHp: 38, maxMp: 18, strength: 6, intelligence: 7, dexterity: 4, defense: 4, endurance: 4 },
+    resource: "mana",
     growth: { maxHp: 6, maxMp: 4 },
     skills: [
       {

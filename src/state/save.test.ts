@@ -43,8 +43,9 @@ describe("migrate", () => {
     expect(s.gear[0].itemId).toBe("iron_sword");
     expect(s.equipped.weapon).toBe(s.gear[0].uid);
 
-    // compat seeding: banked points and the old level-gated skills
+    // compat seeding: banked points, the old level-gated skills, and grit
     expect(s.hero!.statPoints).toBe(0);
+    expect(s.hero!.stats.endurance).toBe(8); // warrior base
     expect(s.hero!.skillNodes).toHaveLength(2); // level 3 owned the level-1 and level-3 skills
     expect(s.hero!.skillPoints).toBe(1); // level 3 = 2 earned, 1 spent on the second skill
 

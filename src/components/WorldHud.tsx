@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { totalDefense } from "../game/character";
+import { resourceLabel, totalDefense } from "../game/character";
 import { statInfo } from "../game/statInfo";
 import { ROLES } from "../game/roles";
 import type { SpendableStat } from "../game/types";
@@ -13,6 +13,7 @@ const SPENDABLE: { stat: SpendableStat; label: string }[] = [
   { stat: "intelligence", label: "INT" },
   { stat: "dexterity", label: "DEX" },
   { stat: "defense", label: "DEF" },
+  { stat: "endurance", label: "END" },
 ];
 
 function StatSheet({ onClose }: { onClose: () => void }) {
@@ -91,7 +92,7 @@ export function WorldHud() {
         </span>
       </div>
       <StatBar label="HP" value={hero.hp} max={hero.stats.maxHp} color="var(--hp)" />
-      <StatBar label="MP" value={hero.mp} max={hero.stats.maxMp} color="var(--mp)" />
+      <StatBar label={resourceLabel(hero.roleId)} value={hero.mp} max={hero.stats.maxMp} color={resourceLabel(hero.roleId) === "EN" ? "var(--en)" : "var(--mp)"} />
       <StatBar label="XP" value={hero.xp} max={hero.xpToNext} color="var(--xp)" />
       <div className="hud-actions">
         <button className="btn btn-small" onClick={() => dispatch({ type: "TOGGLE_INVENTORY" })}>

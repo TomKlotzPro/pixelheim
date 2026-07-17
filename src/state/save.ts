@@ -1,6 +1,7 @@
 import { ITEMS } from "../game/items";
 import { LEVELS } from "../game/levels";
 import { createGear } from "../game/rarity";
+import { ROLES } from "../game/roles";
 import { SKILL_TREES } from "../game/skillTree";
 import type { GameState, GearInstance } from "../game/types";
 import { discoverAround } from "../world/discover";
@@ -88,6 +89,10 @@ function normalizeSave(state: unknown): GameState | null {
   // Heroes from before spendable growth start banking from their next level.
   if (save.hero && save.hero.statPoints === undefined) {
     save.hero = { ...save.hero, statPoints: 0 };
+  }
+  // Heroes from before the endurance stat get their role's base grit.
+  if (save.hero && save.hero.stats.endurance === undefined) {
+    save.hero = { ...save.hero, stats: { ...save.hero.stats, endurance: ROLES[save.hero.roleId].baseStats.endurance } };
   }
   // Heroes from before the skill tree keep the skills their level had earned
   // under the old gates (1/3/6) and bank the leftover points retroactively.
