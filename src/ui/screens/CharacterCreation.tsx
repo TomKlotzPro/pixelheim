@@ -9,6 +9,9 @@ const ROLE_PITCH: Record<RoleId, string> = {
   mage: "Glass cannon, loud spells",
   rogue: "Fast, sharp, gone",
   cleric: "Holds the line, heals it too",
+  ranger: "Death at a distance",
+  paladin: "Armor outside, faith inside",
+  necromancer: "Everything they touch keeps dying",
 };
 
 const STAT_ROWS = [

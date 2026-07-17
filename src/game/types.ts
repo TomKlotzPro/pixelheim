@@ -1,6 +1,6 @@
 import type { DungeonId, WorldState, RegionId } from "../world/types";
 
-export type RoleId = "warrior" | "mage" | "rogue" | "cleric";
+export type RoleId = "warrior" | "mage" | "rogue" | "cleric" | "ranger" | "paladin" | "necromancer";
 
 /** Professions: honest work levels up too. */
 export type JobId = "smithing" | "alchemy" | "foraging";

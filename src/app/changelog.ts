@@ -11,6 +11,16 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.32.0",
+    date: "2026-07-17",
+    codename: "New Blood",
+    notes: [
+      "Three new classes! The RANGER (death at a distance, poison arrows, unmatched escapes), the PALADIN (armor outside, faith inside - hits, heals and never flinches), and the NECROMANCER (everything they touch keeps dying)",
+      "Each comes with a full 12-node skill tree, its own look palette, and a proven path to the final boss - the balance sim clears the game with all seven classes",
+      "Old saves are untouched; new heroes just have more doors",
+    ],
+  },
+  {
     version: "0.31.0",
     date: "2026-07-17",
     codename: "Mirror Mirror",

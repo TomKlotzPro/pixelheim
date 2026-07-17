@@ -19,13 +19,15 @@ export function metaReducer(draft: GameState, action: MetaAction): GameState | v
       const hero = createHero(action.name, action.roleId, action.look);
       const starterWeapon: Record<RoleId, string> = {
         warrior: "rusty_sword",
-        mage: "apprentice_staff",
-        rogue: "shadow_dagger",
+        mage: "rusty_sword",
+        rogue: "rusty_sword",
         cleric: "rusty_sword",
+        ranger: "hunting_bow",
+        paladin: "rusty_sword",
+        necromancer: "rusty_sword",
       };
-      // Rogue/mage starters are strong; they begin with the humble rusty sword too.
-      const weaponId =
-        action.roleId === "warrior" || action.roleId === "cleric" ? starterWeapon[action.roleId] : "rusty_sword";
+      // Rogue/mage/necromancer skills are strong; they begin with the humble rusty sword.
+      const weaponId = starterWeapon[action.roleId];
       const weapon = createGear(weaponId);
       let inventory: Record<string, number> = {};
       inventory = addItem(inventory, "potion_hp", 2);
