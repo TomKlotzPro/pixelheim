@@ -188,6 +188,8 @@ export type BattleState = {
   wildRegion?: string;
   /** Region key (forest/marsh/ash) for foraging on wild wins. */
   wildRegionId?: RegionId;
+  /** The visible spawn this fight came from, cleared on victory. */
+  wildSpawnId?: string;
 };
 
 export type Screen = "title" | "create" | "battle" | "victory" | "world" | "dungeon_select";

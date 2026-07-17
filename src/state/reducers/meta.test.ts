@@ -7,7 +7,7 @@ describe("QUIT_TO_TITLE", () => {
     let state = structuredClone(initialState);
     state.hero = createHero("Tess", "warrior");
     state.screen = "world";
-    state.world = { position: { ...TOWN_SPAWN }, discovered: {}, openedChests: [] };
+    state.world = { position: { ...TOWN_SPAWN }, discovered: {}, openedChests: [], slain: [] };
     state.inventoryOpen = true;
 
     state = gameReducer(state, { type: "QUIT_TO_TITLE" });

@@ -1,15 +1,16 @@
 import { createWildBattle } from "../../game/battleEngine";
+import { encounterForSpawn, spawnSpecies } from "../../game/encounters";
 import { carriedWeight, carryCapacity } from "../../game/character";
-import { rollWildEncounter } from "../../game/encounters";
 import { SHOP_MAPS } from "../../game/shop";
 import type { GameState } from "../../game/types";
 import { discoverAround } from "../../world/discover";
 import { getMap } from "../../world/maps";
 import { npcAt, NPCS } from "../../world/npcs";
+import { monsterSpawnAt, spawnRegion } from "../../world/spawns";
 import { waypointDiscovered, WAYPOINTS } from "../../world/waypoints";
-import { isWalkable, portalAt, regionAt, tileAt } from "../../world/parseMap";
+import { isWalkable, portalAt } from "../../world/parseMap";
 import type { WorldAction } from "../actions";
-import { DIRECTION_DELTAS, INN_MAP_ID, REST_COST, WILD_TILES } from "../shared";
+import { DIRECTION_DELTAS, INN_MAP_ID, REST_COST } from "../shared";
 
 export function worldReducer(draft: GameState, action: WorldAction): void {
   switch (action.type) {
@@ -29,6 +30,7 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
         position,
         discovered: discoverAround(previous?.discovered ?? {}, map, position.x, position.y),
         openedChests: previous ? [...previous.openedChests] : [],
+        slain: [],
       };
       return;
     }
@@ -108,6 +110,19 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
       const { dx, dy } = DIRECTION_DELTAS[action.direction];
       const x = position.x + dx;
       const y = position.y + dy;
+      // A living spawn on the target tile: bumping into it IS the attack.
+      if (draft.hero) {
+        const spawn = monsterSpawnAt(map, x, y, draft.worldSteps, draft.world.slain ?? []);
+        if (spawn) {
+          position.facing = action.direction;
+          const region = spawnRegion(spawn);
+          const encounter = encounterForSpawn(region, spawnSpecies(region, spawn.x * 31 + spawn.y));
+          draft.screen = "battle";
+          draft.battle = createWildBattle(encounter);
+          draft.battle.wildSpawnId = spawn.id;
+          return;
+        }
+      }
       // Bumping into something (or someone) still turns the hero toward it.
       if (!isWalkable(map, x, y) || npcAt(map.id, x, y, draft.worldSteps)) {
         position.facing = action.direction;
@@ -117,6 +132,8 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
       if (portal && portal.to.kind === "map") {
         const target = getMap(portal.to.mapId);
         draft.worldMessage = null;
+        // fresh hunting grounds: cleared spawns return when you leave and come back
+        draft.world.slain = [];
         draft.world.position = { mapId: target.id, x: portal.to.x, y: portal.to.y, facing: action.direction };
         draft.world.discovered = discoverAround(draft.world.discovered, target, portal.to.x, portal.to.y);
         // Entering the inn rests the hero, for the usual price.
@@ -152,18 +169,6 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
       draft.world.position = { mapId: position.mapId, x, y, facing: action.direction };
       draft.world.discovered = discoverAround(draft.world.discovered, map, x, y);
 
-      // The wilds bite: stepping on wild terrain in a monster region can
-      // start a battle. The world position stays, so winning or fleeing
-      // drops the hero back on this exact tile.
-      const region = regionAt(map, x, y);
-      const tile = tileAt(map, x, y);
-      if (draft.hero && region && tile && WILD_TILES.has(tile)) {
-        const encounter = rollWildEncounter(region);
-        if (encounter) {
-          draft.screen = "battle";
-          draft.battle = createWildBattle(encounter);
-        }
-      }
     }
   }
 }
