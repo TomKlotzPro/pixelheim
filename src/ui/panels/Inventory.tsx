@@ -254,6 +254,15 @@ export function Inventory() {
                       Drop
                     </button>
                   )}
+                  {!inBattle && count > 1 && (
+                    <button
+                      className="btn btn-small btn-danger"
+                      title="Drop the whole stack"
+                      onClick={() => dispatch({ type: "DROP", itemId: item.id, count })}
+                    >
+                      All
+                    </button>
+                  )}
                 </div>
               </div>
             );

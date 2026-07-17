@@ -3,6 +3,7 @@ import { SFX } from "../../audio/sfx";
 import { initAudio, isMuted, setBusVolume, setMuted } from "../../audio/synth";
 import { GAME_VERSION } from "../../app/changelog";
 import { type BindableAction, DEFAULT_BINDINGS, keyLabel, saveSettings, type Settings } from "../../app/settings";
+import { useEscapeClose } from "../useEscapeClose";
 
 const CONTROL_ROWS: { action: BindableAction; label: string }[] = [
   { action: "up", label: "Move up" },
@@ -33,6 +34,7 @@ export function Options({
   onDeleteSave,
   onClose,
 }: OptionsProps) {
+  useEscapeClose(onClose);
   const [muted, setMutedState] = useState(isMuted);
   const [copied, setCopied] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
