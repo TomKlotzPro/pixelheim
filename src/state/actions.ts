@@ -49,6 +49,7 @@ export type WorldAction =
   | { type: "MOVE"; direction: Direction }
   | { type: "INTERACT" }
   | { type: "ADVANCE_DIALOGUE" }
+  | { type: "FAST_TRAVEL"; waypointId: string }
   | { type: "CLOSE_DUNGEON_SELECT" };
 
 export type Action =

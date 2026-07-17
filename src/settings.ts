@@ -1,5 +1,5 @@
 /** The game actions a key can be bound to. */
-export type BindableAction = "up" | "down" | "left" | "right" | "interact" | "inventory";
+export type BindableAction = "up" | "down" | "left" | "right" | "interact" | "inventory" | "map";
 
 /**
  * Bindings hold `KeyboardEvent.code` values (physical key positions), so the
@@ -15,6 +15,7 @@ export const DEFAULT_BINDINGS: Bindings = {
   right: "KeyD",
   interact: "KeyE",
   inventory: "KeyI",
+  map: "KeyM",
 };
 
 /**

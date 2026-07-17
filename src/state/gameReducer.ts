@@ -65,6 +65,7 @@ function route(draft: GameState, action: Action): GameState | void {
     case "MOVE":
     case "INTERACT":
     case "ADVANCE_DIALOGUE":
+    case "FAST_TRAVEL":
     case "CLOSE_DUNGEON_SELECT":
       return worldReducer(draft, action);
   }

@@ -112,6 +112,9 @@ export function WorldHud() {
         <button className="btn btn-small" onClick={() => dispatch({ type: "TOGGLE_INVENTORY" })}>
           Inventory (I)
         </button>
+        <button className="btn btn-small" onClick={() => window.dispatchEvent(new KeyboardEvent("keydown", { code: "KeyM" }))}>
+          Map (M)
+        </button>
         <button className="btn btn-small" onClick={() => setSheetOpen(true)}>
           Stats{hero.statPoints > 0 && <span className="new-badge"> +{hero.statPoints}</span>}
         </button>
