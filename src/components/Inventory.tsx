@@ -3,7 +3,7 @@ import { carriedWeight, carryCapacity, gearByUid } from "../game/character";
 import { getItem } from "../game/items";
 import { itemStatLine } from "../game/itemStats";
 import { gearItem, gearName, gearValue } from "../game/rarity";
-import { JOB_NAMES } from "../game/jobs";
+import { JOB_NAMES, JOB_STATIONS } from "../game/jobs";
 import { canCraft, RECIPES } from "../game/recipes";
 import type { EquipSlot, ItemCategory } from "../game/types";
 import { dispatch, useGameState, useHero } from "../state/store";
@@ -104,7 +104,8 @@ export function Inventory() {
             RECIPES.map((recipe) => {
               const result = getItem(recipe.itemId);
               const jobOk = hero.jobs[recipe.job.id].level >= recipe.job.level;
-              const craftable = canCraft(recipe, state.inventory, hero.jobs) && !inBattle;
+              const atStation = state.world?.position.mapId === JOB_STATIONS[recipe.job.id].mapId;
+              const craftable = canCraft(recipe, state.inventory, hero.jobs) && atStation && !inBattle;
               return (
                 <div key={recipe.id} className="item-row">
                   <Sprite name={result.sprite} size={32} alt={result.name} />
@@ -120,6 +121,9 @@ export function Inventory() {
                       <span className="item-locked">
                         Requires {JOB_NAMES[recipe.job.id]} {recipe.job.level}
                       </span>
+                    )}
+                    {jobOk && !atStation && !inBattle && (
+                      <span className="item-locked">{JOB_STATIONS[recipe.job.id].hint}</span>
                     )}
                   </div>
                   <div className="item-actions">
