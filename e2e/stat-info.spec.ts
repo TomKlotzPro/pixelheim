@@ -28,6 +28,9 @@ test('the stat sheet explains each stat and previews the next point', async ({ p
   await expect(page.getByText(/blocks \d+ per hit/)).toBeVisible()
   // the warrior's grit row: stamina pool and per-turn regen
   await expect(page.getByText(/EN \d+ · regen \d+\/turn/)).toBeVisible()
+  // professions live on the sheet too
+  await expect(page.getByText('Smithing 1')).toBeVisible()
+  await expect(page.getByText(/Foraging \d/)).toBeVisible()
 
   // the veteran has banked points, so the arrow preview is showing
   await expect(page.locator('.stat-next').first()).toBeVisible()

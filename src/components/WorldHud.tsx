@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { resourceLabel, totalDefense } from "../game/character";
+import { JOB_NAMES, jobXpToNext, type JobId } from "../game/jobs";
 import { statInfo } from "../game/statInfo";
 import { ROLES } from "../game/roles";
 import type { SpendableStat } from "../game/types";
@@ -64,6 +65,17 @@ function StatSheet({ onClose }: { onClose: () => void }) {
             </div>
           );
         })}
+        <h3 className="options-title">Professions</h3>
+        {(Object.keys(JOB_NAMES) as JobId[]).map((job) => (
+          <div key={job} className="options-row">
+            <span>
+              {JOB_NAMES[job]} {hero.jobs[job].level}
+            </span>
+            <span className="options-note">
+              {hero.jobs[job].xp}/{jobXpToNext(hero.jobs[job].level)} xp
+            </span>
+          </div>
+        ))}
         <p className="options-footer">Spent points are permanent. Choose like it matters.</p>
       </div>
     </div>

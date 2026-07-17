@@ -2,13 +2,15 @@ import { useState } from "react";
 import { getItem } from "../game/items";
 import { itemStatLine } from "../game/itemStats";
 import { gearItem, gearName, gearValue } from "../game/rarity";
-import { buyPrice, FORGE_BONUS_CAP, forgeCost, sellPriceAt, SHOPS, shopStock } from "../game/shop";
+import { forgeCapFor, forgeCostFor } from "../game/jobs";
+import { buyPrice, sellPriceAt, SHOPS, shopStock } from "../game/shop";
 import { activeShopId } from "../state/gameReducer";
-import { dispatch, useGameState } from "../state/store";
+import { dispatch, useGameState, useHero } from "../state/store";
 import { Sprite } from "./Sprite";
 
 export function Shop() {
   const state = useGameState();
+  const hero = useHero();
   const shopId = activeShopId(state);
   const [tab, setTab] = useState<"buy" | "sell" | "forge">("buy");
   // No shop on this map: render nothing rather than crash (PIX-58).
@@ -114,8 +116,8 @@ export function Shop() {
           {tab === "forge" &&
             state.gear.map((instance) => {
               const item = gearItem(instance);
-              const capped = instance.bonus >= FORGE_BONUS_CAP;
-              const cost = forgeCost(item, instance.bonus);
+              const capped = instance.bonus >= forgeCapFor(hero.jobs.smithing.level);
+              const cost = forgeCostFor(item, instance.bonus, hero.jobs.smithing.level);
               return (
                 <div key={instance.uid} className="item-row">
                   <Sprite name={item.sprite} size={32} alt={gearName(instance)} />

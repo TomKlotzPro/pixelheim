@@ -15,6 +15,7 @@ import { rollDrop } from "./drops";
 import { WILD_REWARD_MULT, type WildEncounter } from "./encounters";
 import { addItem } from "./inventory";
 import { getItem } from "./items";
+import { doubleForageChance, forageChance, grantJobXp } from "./jobs";
 import { getLevel, LEVELS } from "./levels";
 import { createGear, gearName } from "./rarity";
 import { REGION_MATERIALS } from "./recipes";
@@ -178,10 +179,13 @@ function onMonsterDefeated(state: GameState, hero: Hero, log: string[]): void {
     log.push("The wilds fall quiet again.");
     // Forage the region while the ground is still warm.
     const material = battle.wildRegionId ? REGION_MATERIALS[battle.wildRegionId] : undefined;
-    if (material && Math.random() < 0.6) {
-      const count = 1 + (Math.random() < 0.35 ? 1 : 0);
+    if (material && Math.random() < forageChance(hero.jobs.foraging.level)) {
+      const count = 1 + (Math.random() < doubleForageChance(hero.jobs.foraging.level) ? 1 : 0);
       state.inventory = addItem(state.inventory, material, count);
       log.push(`You forage ${count} ${getItem(material).name}${count > 1 ? "s" : ""}.`);
+      if (grantJobXp(hero, "foraging", 5) > 0) {
+        log.push(`Foraging reached ${hero.jobs.foraging.level}!`);
+      }
     }
     return;
   }
