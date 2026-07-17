@@ -110,6 +110,19 @@ export default function App() {
   const [settings, setSettings] = useState<Settings>(loadSettings);
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [paused, setPaused] = useState(false);
+  const [battleFlash, setBattleFlash] = useState(false);
+  const lastScreen = useRef(state.screen);
+
+  // Entering a fight blinks the screen: a beat of black between world and battle.
+  useEffect(() => {
+    const from = lastScreen.current;
+    lastScreen.current = state.screen;
+    if (from === "world" && state.screen === "battle" && !settings.reduceMotion) {
+      setBattleFlash(true);
+      const timer = setTimeout(() => setBattleFlash(false), 450);
+      return () => clearTimeout(timer);
+    }
+  }, [state.screen, settings.reduceMotion]);
 
   useEffect(() => {
     document.documentElement.classList.toggle("no-scanlines", !settings.scanlines);
@@ -183,6 +196,7 @@ export default function App() {
       </div>
       <Screen state={state} save={save} onOpenOptions={() => setOptionsOpen(true)} />
       {state.inventoryOpen && state.hero && <Inventory />}
+      {battleFlash && <div className="battle-flash" aria-hidden="true" />}
       {paused && state.screen === "world" && state.hero && (
         <PauseMenu
           onClose={() => setPaused(false)}
