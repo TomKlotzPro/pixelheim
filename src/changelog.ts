@@ -11,6 +11,17 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.26.0",
+    date: "2026-07-17",
+    codename: "Open Season",
+    notes: [
+      "No more ambushes. Monsters are VISIBLE in the wilds now - see them prowl, choose your fights",
+      "Every spawn belongs to its terrain: ash beasts in the ash, bog things in the Mirefen - the beast you see is the beast you fight",
+      "Bump into a monster to attack it; a slain spawn stays clear until you leave the map and return",
+      "Fleeing and forage work exactly as before - only the surprise is gone",
+    ],
+  },
+  {
     version: "0.25.0",
     date: "2026-07-17",
     codename: "At the Bench",

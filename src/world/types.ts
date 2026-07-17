@@ -93,4 +93,6 @@ export type WorldState = {
   discovered: Record<string, string[]>;
   /** Opened chest ids, once chests exist. */
   openedChests: string[];
+  /** Spawn ids cleared on the CURRENT map; resets when the map changes. */
+  slain: string[];
 };

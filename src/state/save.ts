@@ -115,6 +115,10 @@ function normalizeSave(state: unknown): GameState | null {
       skillPoints: Math.max(0, hero.level - 1 - spent),
     };
   }
+  // Saves from before visible monsters have no kill ledger for the map.
+  if (save.world && save.world.slain === undefined) {
+    save.world = { ...save.world, slain: [] };
+  }
   // Saves from the hub era have no world position: they wake up in town.
   if (!save.world) {
     const town = getMap(TOWN_SPAWN.mapId);
@@ -122,6 +126,7 @@ function normalizeSave(state: unknown): GameState | null {
       position: { ...TOWN_SPAWN },
       discovered: discoverAround({}, town, TOWN_SPAWN.x, TOWN_SPAWN.y),
       openedChests: [],
+      slain: [],
     };
   }
   // Recompute unlock progress: when new floors ship, players who had cleared

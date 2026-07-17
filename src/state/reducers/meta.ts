@@ -45,6 +45,7 @@ export function metaReducer(draft: GameState, action: MetaAction): GameState | v
           position: { ...TOWN_SPAWN },
           discovered: discoverAround({}, town, TOWN_SPAWN.x, TOWN_SPAWN.y),
           openedChests: [],
+          slain: [],
         },
       };
     }

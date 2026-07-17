@@ -55,7 +55,7 @@ export function Battle() {
         {battle.wild ? (
           <>
             <span>The Wilds: {battle.wildRegion}</span>
-            <span>Ambush!</span>
+            <span>Wild battle</span>
           </>
         ) : (
           <>

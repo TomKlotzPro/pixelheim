@@ -57,7 +57,7 @@ export function createWildBattle(encounter: WildEncounter): BattleState {
     encounterIndex: 0,
     monster,
     phase: "player",
-    log: [`A ${monster.name} ambushes you in ${encounter.regionName}!`],
+    log: [`A ${monster.name} turns to face you in ${encounter.regionName}!`],
     heroEffects: [],
     monsterEffects: [],
     wild: true,
@@ -177,6 +177,7 @@ function onMonsterDefeated(state: GameState, hero: Hero, log: string[]): void {
   if (battle.wild) {
     battle.phase = "cleared";
     log.push("The wilds fall quiet again.");
+    if (battle.wildSpawnId && state.world) state.world.slain.push(battle.wildSpawnId);
     // Forage the region while the ground is still warm.
     const material = battle.wildRegionId ? REGION_MATERIALS[battle.wildRegionId] : undefined;
     if (material && Math.random() < forageChance(hero.jobs.foraging.level)) {
