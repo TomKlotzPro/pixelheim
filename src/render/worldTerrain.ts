@@ -60,6 +60,19 @@ export class TerrainLayer {
             }
           }
         }
+        // Water meets land with a line of foam, rotated onto each shore side.
+        if (tile === "water") {
+          for (const side of FRINGE_SIDES) {
+            const neighbor = map.tiles[y + side.dy]?.[x + side.dx];
+            if (neighbor && neighbor !== "water") {
+              const foam = new Sprite(Assets.get("overlay_shore") as Texture);
+              foam.anchor.set(0.5);
+              foam.rotation = side.rotation;
+              foam.position.set(x * ART + ART / 2, y * ART + ART / 2);
+              container.addChild(foam);
+            }
+          }
+        }
         // Dangerous ground stays visible: wild-region tiles grow dark tufts.
         if (WILD_TILES.has(tile) && regionAt(map, x, y) !== null) {
           const tuft = new Sprite(Assets.get("overlay_wild") as Texture);

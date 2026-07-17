@@ -1,4 +1,4 @@
-import { Assets, Rectangle, Text, Texture, TextureStyle } from "pixi.js";
+import { Assets, Rectangle, Texture, TextureStyle } from "pixi.js";
 
 export const ART = 16;
 
@@ -40,6 +40,36 @@ export async function loadFrameBank(): Promise<FrameBank> {
   return bank;
 }
 
+/** A soft oval shadow, drawn once and reused under every actor. */
+export function makeShadowTexture(): Texture {
+  const canvas = document.createElement("canvas");
+  canvas.width = 16;
+  canvas.height = 6;
+  const ctx = canvas.getContext("2d")!;
+  ctx.fillStyle = "rgba(0, 0, 0, 0.32)";
+  ctx.beginPath();
+  ctx.ellipse(8, 3, 6, 2.4, 0, 0, Math.PI * 2);
+  ctx.fill();
+  return Texture.from(canvas);
+}
+
+/** Corner darkening for the world viewport: quiet depth, no drama. */
+export function makeVignetteTexture(width: number, height: number): Texture {
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext("2d")!;
+  const gradient = ctx.createRadialGradient(
+    width / 2, height / 2, Math.min(width, height) * 0.42,
+    width / 2, height / 2, Math.max(width, height) * 0.72,
+  );
+  gradient.addColorStop(0, "rgba(0, 0, 0, 0)");
+  gradient.addColorStop(1, "rgba(5, 6, 10, 0.42)");
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, width, height);
+  return Texture.from(canvas);
+}
+
 /** A soft radial light, drawn once on a 2D canvas and reused for every glow. */
 export function makeGlowTexture(): Texture {
   const size = 64;
@@ -56,12 +86,3 @@ export function makeGlowTexture(): Texture {
   return Texture.from(canvas);
 }
 
-/** Outlined pixel-style text for damage numbers and talk prompts. */
-export function retroText(content: string, fill: number, resolution: number, fontSize = 10): Text {
-  const text = new Text({
-    text: content,
-    style: { fontFamily: "monospace", fontSize, fontWeight: "900", fill, stroke: { color: 0x000000, width: 3 } },
-  });
-  text.resolution = resolution;
-  return text;
-}

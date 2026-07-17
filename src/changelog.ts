@@ -11,6 +11,18 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.30.0",
+    date: "2026-07-17",
+    codename: "A Fresh Coat",
+    notes: [
+      "The world got redrawn: mottled grass, real cobblestone roads, rippled sand, sunlit tree canopies, and water with depth, crests and foam where it meets the land",
+      "Every living thing wears a 1px outline now - heroes, villagers and monsters pop off the terrain instead of melting into it",
+      "In-world lettering is TRUE pixel text: door signs on wooden plates, the talk prompt and battle damage numbers use a hand-built bitmap font, crisp at any zoom",
+      "Press Start 2P headlines the title and panel headers (bundled, no CDN)",
+      "Everyone casts a shadow, and a quiet vignette frames the world",
+    ],
+  },
+  {
     version: "0.29.0",
     date: "2026-07-17",
     codename: "Dressed to Kill",

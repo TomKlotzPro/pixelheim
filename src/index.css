@@ -1,3 +1,9 @@
+@font-face {
+  font-family: "Press Start 2P";
+  src: url("./assets/fonts/press-start-2p.woff2") format("woff2");
+  font-display: swap;
+}
+
 :root {
   --bg: #14151c;
   --bg-panel: #1d1f2a;
@@ -56,8 +62,9 @@ body {
 .screen-title {
   color: var(--accent);
   text-transform: uppercase;
-  letter-spacing: 3px;
-  font-size: 18px;
+  letter-spacing: 2px;
+  font-size: 15px;
+  font-family: "Press Start 2P", "Courier New", monospace;
 }
 
 .panel {
@@ -763,8 +770,9 @@ body {
   flex: 1;
   color: var(--accent);
   text-transform: uppercase;
-  letter-spacing: 2px;
-  font-size: 16px;
+  letter-spacing: 1px;
+  font-size: 13px;
+  font-family: "Press Start 2P", "Courier New", monospace;
 }
 /* ---------- the paper doll: what the hero wears, laid on the body ---------- */
 .inventory-body {
@@ -1693,8 +1701,9 @@ body {
 }
 .game-title {
   display: flex;
-  font-size: 64px;
-  letter-spacing: 10px;
+  font-family: "Press Start 2P", "Courier New", monospace;
+  font-size: 40px;
+  letter-spacing: 8px;
   color: var(--accent);
   margin: 0;
 }
@@ -1781,8 +1790,8 @@ body {
 }
 @media (max-width: 640px) {
   .game-title {
-    font-size: 38px;
-    letter-spacing: 6px;
+    font-size: 22px;
+    letter-spacing: 4px;
   }
   .title-card {
     padding: 24px 20px;
