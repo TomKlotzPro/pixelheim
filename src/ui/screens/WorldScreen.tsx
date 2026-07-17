@@ -25,9 +25,7 @@ const VIEW_W = 15;
 const VIEW_H = 11;
 
 // Lazy so pixi.js stays out of the main bundle until the flag asks for it.
-const PixiWorldView = lazy(() =>
-  import("../../render/PixiWorldView").then((m) => ({ default: m.PixiWorldView })),
-);
+const PixiWorldView = lazy(() => import("../../render/PixiWorldView").then((m) => ({ default: m.PixiWorldView })));
 
 function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
@@ -121,7 +119,12 @@ export function WorldScreen() {
           {/* State mirror: 1px hooks the e2e suite asserts against, since the
               canvas has no DOM to query. Purely derived, never interactive. */}
           <div className="world-mirror" aria-hidden="true">
-            <div data-testid="world-hero" data-pos={`${world.x},${world.y}`} data-rank={state.hero ? rankIndex(state.hero.level) : 0} className={`facing-${world.facing}`} />
+            <div
+              data-testid="world-hero"
+              data-pos={`${world.x},${world.y}`}
+              data-rank={state.hero ? rankIndex(state.hero.level) : 0}
+              className={`facing-${world.facing}`}
+            />
             {npcsOn(map.id).map((npc) => (
               <div key={npc.id} data-testid="world-npc" />
             ))}
@@ -146,135 +149,140 @@ export function WorldScreen() {
           </div>
         </>
       ) : (
-      <div
-        className="world-viewport"
-        data-testid="world-viewport"
-        data-map={map.id}
-        style={{ width: VIEW_W * tilePx, height: VIEW_H * tilePx }}
-      >
         <div
-          className="world-map"
-          style={{
-            width: map.width * tilePx,
-            height: map.height * tilePx,
-            transform: `translate(${-cameraX * tilePx}px, ${-cameraY * tilePx}px)`,
-          }}
+          className="world-viewport"
+          data-testid="world-viewport"
+          data-map={map.id}
+          style={{ width: VIEW_W * tilePx, height: VIEW_H * tilePx }}
         >
-          {map.tiles.map((row, y) =>
-            row.map((tile, x) => {
-              // Dangerous ground is visible: wild-region tiles grow dark tufts.
-              const dangerous = WILD_TILES.has(tile) && regionAt(map, x, y) !== null;
-              const terrain = `url(${import.meta.env.BASE_URL}sprites/${TILES[tile].sprite}.png)`;
-              const overlay = `url(${import.meta.env.BASE_URL}sprites/overlay_wild.png)`;
+          <div
+            className="world-map"
+            style={{
+              width: map.width * tilePx,
+              height: map.height * tilePx,
+              transform: `translate(${-cameraX * tilePx}px, ${-cameraY * tilePx}px)`,
+            }}
+          >
+            {map.tiles.map((row, y) =>
+              row.map((tile, x) => {
+                // Dangerous ground is visible: wild-region tiles grow dark tufts.
+                const dangerous = WILD_TILES.has(tile) && regionAt(map, x, y) !== null;
+                const terrain = `url(${import.meta.env.BASE_URL}sprites/${TILES[tile].sprite}.png)`;
+                const overlay = `url(${import.meta.env.BASE_URL}sprites/overlay_wild.png)`;
+                return (
+                  <div
+                    key={`${x},${y}`}
+                    className="world-tile"
+                    data-danger={dangerous || undefined}
+                    onClick={() => clickTile(x, y)}
+                    style={{
+                      left: x * tilePx,
+                      top: y * tilePx,
+                      width: tilePx,
+                      height: tilePx,
+                      backgroundSize: `${tilePx}px ${tilePx}px`,
+                      backgroundImage: dangerous ? `${overlay}, ${terrain}` : terrain,
+                    }}
+                  />
+                );
+              }),
+            )}
+            {chestsOn(map.id).map((chest) => {
+              const sprite = chestSpriteName(chest, (state.world?.openedChests ?? []).includes(chest.id));
+              if (!sprite) return null;
               return (
                 <div
-                  key={`${x},${y}`}
-                  className="world-tile"
-                  data-danger={dangerous || undefined}
-                  onClick={() => clickTile(x, y)}
-                  style={{
-                    left: x * tilePx,
-                    top: y * tilePx,
-                    width: tilePx,
-                    height: tilePx,
-                    backgroundSize: `${tilePx}px ${tilePx}px`,
-                    backgroundImage: dangerous ? `${overlay}, ${terrain}` : terrain,
-                  }}
-                />
-              );
-            }),
-          )}
-          {chestsOn(map.id).map((chest) => {
-            const sprite = chestSpriteName(chest, (state.world?.openedChests ?? []).includes(chest.id));
-            if (!sprite) return null;
-            return (
-              <div
-                key={chest.id}
-                className="world-npc"
-                data-testid="world-chest"
-                style={{ left: chest.x * tilePx, top: chest.y * tilePx, width: tilePx, height: tilePx }}
-              >
-                <Sprite name={sprite} size={tilePx} alt="" />
-              </div>
-            );
-          })}
-          {signsOn(map.id).map((sign) => (
-            <span
-              key={`${sign.x},${sign.y}`}
-              className="door-sign"
-              style={{ left: (sign.x + 0.5) * tilePx, top: sign.y * tilePx }}
-            >
-              {sign.icon && <Sprite name={sign.icon} size={16} alt="" />}
-              {sign.label}
-            </span>
-          ))}
-          {spawnsOn(map.id)
-            .filter((spawn) => !(state.world?.slain ?? []).includes(spawn.id))
-            .map((spawn) => {
-              const at = spawnPosition(spawn, state.worldSteps);
-              const species = getMonster(spawnSpecies(spawnRegion(spawn), spawn.x * 31 + spawn.y));
-              return (
-                <div
-                  key={spawn.id}
+                  key={chest.id}
                   className="world-npc"
-                  style={{ left: at.x * tilePx, top: at.y * tilePx, width: tilePx, height: tilePx }}
+                  data-testid="world-chest"
+                  style={{ left: chest.x * tilePx, top: chest.y * tilePx, width: tilePx, height: tilePx }}
                 >
-                  <Sprite name={species.sprite} size={tilePx} alt={species.name} />
+                  <Sprite name={sprite} size={tilePx} alt="" />
                 </div>
               );
             })}
-          {npcsOn(map.id).map((npc) => {
-            const pos = npcPosition(npc, state.worldSteps);
-            return (
-              <div
-                key={npc.id}
-                className="world-npc"
-                data-testid="world-npc"
-                style={{ left: pos.x * tilePx, top: pos.y * tilePx, width: tilePx, height: tilePx }}
-              >
-                <Sprite name={npc.sprite} size={tilePx} alt={npc.name} />
-              </div>
-            );
-          })}
-          <div
-            className={`world-hero facing-${world.facing}`}
-            data-testid="world-hero"
-            data-pos={`${world.x},${world.y}`}
-            data-rank={state.hero ? rankIndex(state.hero.level) : 0}
-            style={{
-              left: world.x * tilePx,
-              top: world.y * tilePx,
-              width: tilePx,
-              height: tilePx,
-              transform: state.hero ? `scale(${rankPresence(state.hero.level)})` : undefined,
-            }}
-          >
-            <Sprite name={heroSprite} size={tilePx} alt="hero" />
-            {wornSprites(state.gear, state.equipped).map((worn) => (
+            {signsOn(map.id).map((sign) => (
               <span
-                key={worn.slot}
-                className="worn-item"
-                style={{ left: worn.x * tilePx, top: worn.y * tilePx, width: worn.size * tilePx, height: worn.size * tilePx }}
+                key={`${sign.x},${sign.y}`}
+                className="door-sign"
+                style={{ left: (sign.x + 0.5) * tilePx, top: sign.y * tilePx }}
               >
-                <Sprite name={worn.sprite} size={worn.size * tilePx} alt="" />
+                {sign.icon && <Sprite name={sign.icon} size={16} alt="" />}
+                {sign.label}
               </span>
             ))}
-          </div>
-          {(facingNpc || facingChest) && (
+            {spawnsOn(map.id)
+              .filter((spawn) => !(state.world?.slain ?? []).includes(spawn.id))
+              .map((spawn) => {
+                const at = spawnPosition(spawn, state.worldSteps);
+                const species = getMonster(spawnSpecies(spawnRegion(spawn), spawn.x * 31 + spawn.y));
+                return (
+                  <div
+                    key={spawn.id}
+                    className="world-npc"
+                    style={{ left: at.x * tilePx, top: at.y * tilePx, width: tilePx, height: tilePx }}
+                  >
+                    <Sprite name={species.sprite} size={tilePx} alt={species.name} />
+                  </div>
+                );
+              })}
+            {npcsOn(map.id).map((npc) => {
+              const pos = npcPosition(npc, state.worldSteps);
+              return (
+                <div
+                  key={npc.id}
+                  className="world-npc"
+                  data-testid="world-npc"
+                  style={{ left: pos.x * tilePx, top: pos.y * tilePx, width: tilePx, height: tilePx }}
+                >
+                  <Sprite name={npc.sprite} size={tilePx} alt={npc.name} />
+                </div>
+              );
+            })}
             <div
-              className="npc-prompt"
-              data-testid="npc-prompt"
+              className={`world-hero facing-${world.facing}`}
+              data-testid="world-hero"
+              data-pos={`${world.x},${world.y}`}
+              data-rank={state.hero ? rankIndex(state.hero.level) : 0}
               style={{
-                left: (world.x + fdx) * tilePx,
-                top: (world.y + fdy) * tilePx - tilePx / 2,
+                left: world.x * tilePx,
+                top: world.y * tilePx,
                 width: tilePx,
+                height: tilePx,
+                transform: state.hero ? `scale(${rankPresence(state.hero.level)})` : undefined,
               }}
             >
-              !
+              <Sprite name={heroSprite} size={tilePx} alt="hero" />
+              {wornSprites(state.gear, state.equipped).map((worn) => (
+                <span
+                  key={worn.slot}
+                  className="worn-item"
+                  style={{
+                    left: worn.x * tilePx,
+                    top: worn.y * tilePx,
+                    width: worn.size * tilePx,
+                    height: worn.size * tilePx,
+                  }}
+                >
+                  <Sprite name={worn.sprite} size={worn.size * tilePx} alt="" />
+                </span>
+              ))}
             </div>
-          )}
+            {(facingNpc || facingChest) && (
+              <div
+                className="npc-prompt"
+                data-testid="npc-prompt"
+                style={{
+                  left: (world.x + fdx) * tilePx,
+                  top: (world.y + fdy) * tilePx - tilePx / 2,
+                  width: tilePx,
+                }}
+              >
+                !
+              </div>
+            )}
+          </div>
         </div>
-      </div>
       )}
       {state.dialogue &&
         (() => {

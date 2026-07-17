@@ -1,12 +1,5 @@
 import { useState } from "react";
-import {
-  FAMILY_NAMES,
-  FAMILY_OF,
-  killsOf,
-  MASTERY_TIERS,
-  masteryTier,
-  type Family,
-} from "../../game/hero/mastery";
+import { FAMILY_NAMES, FAMILY_OF, killsOf, MASTERY_TIERS, masteryTier, type Family } from "../../game/hero/mastery";
 import { MONSTERS } from "../../game/combat/monsters";
 
 const BESTIARY = Object.values(MONSTERS);
@@ -81,7 +74,7 @@ export function Codex({ onClose }: { onClose: () => void }) {
                       <>
                         <span className="item-name">{monster.name}</span>
                         <span className="item-stats">
-                          HP {monster.maxHp}  ATK {monster.attack}  DEF {monster.defense}  {monster.xp} xp
+                          HP {monster.maxHp} ATK {monster.attack} DEF {monster.defense} {monster.xp} xp
                         </span>
                         <span className="item-desc">{FAMILY_NAMES[family]}</span>
                       </>

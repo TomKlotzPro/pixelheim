@@ -7,8 +7,4 @@ import { loadSettings } from "../app/settings";
  * the option reloads the page: renderers are chosen once at boot.
  */
 const params = new URLSearchParams(window.location.search);
-export const USE_PIXI = params.has("dom")
-  ? false
-  : params.has("pixi")
-    ? true
-    : loadSettings().renderer !== "classic";
+export const USE_PIXI = params.has("dom") ? false : params.has("pixi") ? true : loadSettings().renderer !== "classic";

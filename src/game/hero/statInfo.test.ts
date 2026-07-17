@@ -8,7 +8,9 @@ describe("statInfo", () => {
     const hero = createHero("Tess", "warrior");
     const sword = createGear("iron_sword");
     const info = statInfo("strength", hero, [sword], { weapon: sword.uid });
-    expect(info.now).toBe(`ATK ${hero.stats.strength + gearDamage(sword)} · carry ${carryCapacity(hero, [sword], { weapon: sword.uid })}`);
+    expect(info.now).toBe(
+      `ATK ${hero.stats.strength + gearDamage(sword)} · carry ${carryCapacity(hero, [sword], { weapon: sword.uid })}`,
+    );
     expect(info.next).toContain(`ATK ${hero.stats.strength + 1 + gearDamage(sword)}`);
   });
 
