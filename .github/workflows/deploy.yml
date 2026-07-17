@@ -27,6 +27,8 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
       - run: pnpm test:unit
+      - name: Balance regression (all roles must finish the game)
+        run: pnpm sim --check
       - run: pnpm build
       - name: Install Playwright browser
         run: pnpm exec playwright install chromium --with-deps

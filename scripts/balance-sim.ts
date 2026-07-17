@@ -34,6 +34,23 @@ function dispatch(state: GameState, action: Action): GameState {
   return gameReducer(state, action);
 }
 
+
+/**
+ * Headless-driver privilege: stand the hero in a keeper's shop with the
+ * counter open, run the trade, then put everything back. Since the shop
+ * split, transactions require actually being in the shop's map.
+ */
+function trade(state: GameState, shopMapId: string, act: (s: GameState) => GameState): GameState {
+  const before = state.world!;
+  let s: GameState = {
+    ...state,
+    shopOpen: true,
+    world: { ...before, position: { ...before.position, mapId: shopMapId } },
+  };
+  s = act(s);
+  return { ...s, shopOpen: false, world: { ...s.world!, position: { ...before.position } } };
+}
+
 /** Town chores between attempts: heal (inn price), shop, gear, points. */
 function townTurn(state: GameState): GameState {
   let s = state;
@@ -69,22 +86,30 @@ function townTurn(state: GameState): GameState {
   for (const g of Object.values(best)) {
     if (g && !Object.values(s.equipped).includes(g.uid)) s = dispatch(s, { type: "EQUIP", uid: g.uid });
   }
-  // sell spare gear, keep the satchel light
-  for (const g of s.gear) {
-    if (!Object.values(s.equipped).includes(g.uid) && !Object.values(best).some((b) => b?.uid === g.uid)) {
-      s = { ...s, shopOpen: true };
-      s = dispatch(s, { type: "SELL_GEAR", uid: g.uid });
-      s = { ...s, shopOpen: false };
-    }
+  // sell spare gear at the smithy, keep the satchel light
+  const spares = s.gear.filter(
+    (g) => !Object.values(s.equipped).includes(g.uid) && !Object.values(best).some((b) => b?.uid === g.uid),
+  );
+  if (spares.length > 0) {
+    s = trade(s, "town_smith", (inShop) => {
+      let t = inShop;
+      for (const g of spares) t = dispatch(t, { type: "SELL_GEAR", uid: g.uid });
+      return t;
+    });
   }
-  // stock up on the best affordable healing potion
+  // stock up on the best affordable healing potion at the alchemist
   const potion = (s.unlockedLevel >= 11 ? "greater_potion" : "potion_hp") as string;
   const price = potion === "greater_potion" ? 70 : 25;
-  while ((s.inventory[potion] ?? 0) < 5 && s.gold >= price + REST_COST) {
-    s = { ...s, shopOpen: true };
-    s = dispatch(s, { type: "BUY_ITEM", itemId: potion });
-    s = { ...s, shopOpen: false };
-  }
+  s = trade(s, "town_alchemist", (inShop) => {
+    let t = inShop;
+    while ((t.inventory[potion] ?? 0) < 5 && t.gold >= price + REST_COST) {
+      const before = t.inventory[potion] ?? 0;
+      t = dispatch(t, { type: "BUY_ITEM", itemId: potion });
+      // a no-op buy means the shop refused; never spin on it
+      if ((t.inventory[potion] ?? 0) === before) break;
+    }
+    return t;
+  });
   return s;
 }
 
