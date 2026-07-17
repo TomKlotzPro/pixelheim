@@ -29,6 +29,90 @@
       "loop": true,
       "facing": "front"
     },
+    "hero_warrior_l1_walk": {
+      "sheet": "hero_warrior_l1_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_warrior_l2_walk": {
+      "sheet": "hero_warrior_l2_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_warrior_l3_walk": {
+      "sheet": "hero_warrior_l3_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_mage_l1_walk": {
+      "sheet": "hero_mage_l1_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_mage_l2_walk": {
+      "sheet": "hero_mage_l2_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_mage_l3_walk": {
+      "sheet": "hero_mage_l3_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_rogue_l1_walk": {
+      "sheet": "hero_rogue_l1_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_rogue_l2_walk": {
+      "sheet": "hero_rogue_l2_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_rogue_l3_walk": {
+      "sheet": "hero_rogue_l3_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_cleric_l1_walk": {
+      "sheet": "hero_cleric_l1_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_cleric_l2_walk": {
+      "sheet": "hero_cleric_l2_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_cleric_l3_walk": {
+      "sheet": "hero_cleric_l3_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
     "villager_idle": {
       "sheet": "villager_idle.png",
       "frames": 2,

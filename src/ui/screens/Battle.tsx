@@ -1,8 +1,7 @@
 import { lazy, Suspense, useEffect, useRef } from "react";
 import { getItem } from "../../game/economy/items";
-import { resourceLabel } from "../../game/hero/character";
+import { heroSprite as heroSpriteOf, resourceLabel } from "../../game/hero/character";
 import { getLevel } from "../../game/hero/levels";
-import { ROLES } from "../../game/hero/roles";
 import { getHeroSkills } from "../../game/hero/skillTree";
 import type { StatusEffect } from "../../game/types";
 import { USE_PIXI } from "../../render/flag";
@@ -35,7 +34,6 @@ export function Battle() {
   const state = useGameState();
   const hero = useHero();
   const battle = useBattle();
-  const role = ROLES[hero.roleId];
   const dungeon = getLevel(battle.dungeonLevel);
   const logRef = useRef<HTMLDivElement>(null);
 
@@ -80,7 +78,7 @@ export function Battle() {
         <div className="combatant">
           {battle.wild && !USE_PIXI && <span className="ambush-mark" aria-hidden="true">!</span>}
           {!USE_PIXI && (
-            <Sprite name={role.sprite} size={96} alt={hero.name} className={battle.phase === "lost" ? "fallen" : ""} />
+            <Sprite name={heroSpriteOf(hero)} size={96} alt={hero.name} className={battle.phase === "lost" ? "fallen" : ""} />
           )}
           <div className="combatant-name">{hero.name}</div>
           <StatBar label="HP" value={hero.hp} max={hero.stats.maxHp} color="var(--hp)" />

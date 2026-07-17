@@ -2258,6 +2258,25 @@ const sprites = {
   },
 };
 
+// ---------------- hero looks: palette-swap appearance variants ----------------
+// Every sprite is a grid + palette, so appearance customization is nearly
+// free: same rows, swapped skin (F) and outfit (H/D) colors per look.
+const HERO_LOOKS = {
+  hero_warrior: [{}, { F: "#c98d5f" }, { H: "#b1926a", D: "#7d6644" }, { F: "#8a5a3b", H: "#6b7280", D: "#454b57" }],
+  hero_mage: [{}, { F: "#c98d5f" }, { H: "#8a4ad6", D: "#5b2d8f" }, { F: "#8a5a3b", H: "#3b8a4a", D: "#26592e" }],
+  hero_rogue: [{}, { F: "#c98d5f" }, { H: "#5a3a3f", D: "#38262a" }, { F: "#8a5a3b", H: "#2e3a5a", D: "#1e2740" }],
+  hero_cleric: [{}, { F: "#c98d5f" }, { H: "#d6c08a", D: "#a89058" }, { F: "#8a5a3b", H: "#8a93a5", D: "#5c6670" }],
+};
+const HERO_VARIANTS = [];
+for (const [base, looks] of Object.entries(HERO_LOOKS)) {
+  looks.forEach((swap, i) => {
+    if (i === 0) return; // look 0 is the original sprite
+    const name = `${base}_l${i}`;
+    sprites[name] = { palette: { ...sprites[base].palette, ...swap }, rows: sprites[base].rows };
+    HERO_VARIANTS.push(name);
+  });
+}
+
 // ---------------- actor outlines ----------------
 // Every living thing gets a 1px dark outline so it pops off the terrain,
 // baked into the base grid so animations and both renderers inherit it.
@@ -2266,7 +2285,7 @@ const MONSTERS = [
   "wyvern", "dragon", "boneknight", "shade", "mimic", "imp", "lich",
 ];
 const NPCS = ["villager", "villager_woman", "elder", "innkeeper", "smith", "alchemist", "merchant"];
-const HEROES = ["hero_warrior", "hero_mage", "hero_rogue", "hero_cleric"];
+const HEROES = ["hero_warrior", "hero_mage", "hero_rogue", "hero_cleric", ...HERO_VARIANTS];
 
 function outlined({ rows, palette }) {
   const out = rows.map((r) => r.split(""));

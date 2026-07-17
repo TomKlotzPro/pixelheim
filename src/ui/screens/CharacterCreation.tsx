@@ -25,13 +25,21 @@ const STAT_MAX = Object.fromEntries(
   STAT_ROWS.map((row) => [row.key, Math.max(...Object.values(ROLES).map((r) => r.baseStats[row.key]))]),
 ) as Record<(typeof STAT_ROWS)[number]["key"], number>;
 
+/** Palette-swap looks per role: 0 is the classic, 1-3 swap skin and outfit. */
+const LOOKS = [0, 1, 2, 3];
+
+function lookSprite(base: string, look: number): string {
+  return look ? `${base}_l${look}` : base;
+}
+
 type CharacterCreationProps = {
-  onCreate: (name: string, roleId: RoleId) => void;
+  onCreate: (name: string, roleId: RoleId, look: number) => void;
 };
 
 export function CharacterCreation({ onCreate }: CharacterCreationProps) {
   const [name, setName] = useState("");
   const [roleId, setRoleId] = useState<RoleId>("warrior");
+  const [look, setLook] = useState(0);
   const role = ROLES[roleId];
   const base = import.meta.env.BASE_URL;
 
@@ -62,10 +70,22 @@ export function CharacterCreation({ onCreate }: CharacterCreationProps) {
             <span
               className="role-portrait-art"
               style={{
-                backgroundImage: `url(${base}sprites/${role.sprite}_walk.png)`,
+                backgroundImage: `url(${base}sprites/${lookSprite(role.sprite, look)}_walk.png)`,
                 backgroundSize: "384px 96px",
               }}
             />
+            <div className="look-row" role="radiogroup" aria-label="Look">
+              {LOOKS.map((i) => (
+                <button
+                  key={i}
+                  className={`look-swatch ${i === look ? "selected" : ""}`}
+                  aria-label={`Look ${i + 1}`}
+                  onClick={() => setLook(i)}
+                >
+                  <Sprite name={lookSprite(role.sprite, i)} size={28} alt="" />
+                </button>
+              ))}
+            </div>
             <span className="role-portrait-name">{name.trim() || "..."}</span>
             <span className="role-portrait-class">{role.name}</span>
           </div>
@@ -113,7 +133,7 @@ export function CharacterCreation({ onCreate }: CharacterCreationProps) {
         <button
           className="btn btn-primary"
           disabled={name.trim().length === 0}
-          onClick={() => onCreate(name.trim(), roleId)}
+          onClick={() => onCreate(name.trim(), roleId, look)}
         >
           Begin the climb
         </button>

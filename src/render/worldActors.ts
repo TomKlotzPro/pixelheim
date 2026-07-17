@@ -1,5 +1,5 @@
 import { Assets, type Container, Graphics, Sprite, type Texture } from "pixi.js";
-import { ROLES } from "../game/hero/roles";
+import { heroSprite } from "../game/hero/character";
 import type { GameState } from "../game/types";
 import { spawnSpecies } from "../game/combat/encounters";
 import { getMonster } from "../game/combat/monsters";
@@ -99,8 +99,8 @@ export class ActorLayer {
     for (const entry of this.npcs) container.addChild(entry.sprite);
     for (const entry of this.monsters) container.addChild(entry.sprite);
 
-    const role = ROLES[state.hero?.roleId ?? "warrior"];
-    this.heroFrames = this.bank.frames.get(`${role.sprite}_walk`) ?? null;
+    const sheet = state.hero ? heroSprite(state.hero) : "hero_warrior";
+    this.heroFrames = this.bank.frames.get(`${sheet}_walk`) ?? null;
     this.hero = new Sprite(this.heroFrames?.[0]);
     this.hero.anchor.set(0.5, 0);
     container.addChild(this.hero);

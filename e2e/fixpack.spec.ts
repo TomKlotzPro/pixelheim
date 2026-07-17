@@ -53,3 +53,18 @@ test('a chat is one keypress away, even facing the wrong way', async ({ page }) 
   await page.keyboard.press('e')
   await expect(page.getByTestId('dialogue')).toContainText('Elder Maren')
 })
+
+test('a hero can pick a look and wears it into the world', async ({ page }) => {
+  await page.goto('./')
+  await page.getByRole('button', { name: 'New Game' }).click()
+  await expect(page.locator('.look-swatch')).toHaveCount(4)
+  await page.getByRole('button', { name: 'Look 3' }).click()
+  await page.getByPlaceholder('Dragonsbane...').fill('Styled')
+  await page.getByRole('button', { name: 'Begin the climb' }).click()
+  await page.getByRole('button', { name: 'Set out' }).click()
+  await expect(page.getByTestId('world-hero')).toBeVisible()
+  // the choice survives the save round-trip
+  await page.reload()
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await expect(page.getByTestId('world-hero')).toBeVisible()
+})
