@@ -3,6 +3,7 @@ import type { GameState } from "../game/types";
 import { getMap } from "../world/maps";
 import { TILES } from "../world/tiles";
 import type { WorldMap, WorldPosition } from "../world/types";
+import { loadSettings } from "../settings";
 import { ART, type FrameBank, loadFrameBank } from "./pixiUtils";
 import { ActorLayer } from "./worldActors";
 import { AtmosphereLayer } from "./worldAtmosphere";
@@ -48,6 +49,8 @@ export class WorldRenderer {
   private atmosphere: AtmosphereLayer | null = null;
   private cam = { x: 0, y: 0 };
   private camTarget = { x: 0, y: 0 };
+  private fade: Graphics | null = null;
+  private reduceMotion = loadSettings().reduceMotion;
   private mapId: string | null = null;
   private scale = 2;
   private clock = 0;
@@ -89,6 +92,10 @@ export class WorldRenderer {
     // Lights and embers live above the darkness, world-anchored like the map.
     this.root.addChild(this.lightC);
     this.atmosphere = new AtmosphereLayer(sky, this.lightC);
+    // Doors fade the world in: black above everything, eased away each tick.
+    this.fade = new Graphics().rect(0, 0, VIEW_W * ART, VIEW_H * ART).fill(0x0d0e13);
+    this.fade.alpha = 0;
+    this.root.addChild(this.fade);
     app.stage.addChild(this.root);
 
     app.canvas.addEventListener("pointerdown", this.onPointerDown);
@@ -128,9 +135,11 @@ export class WorldRenderer {
       this.terrain.build(this.mapC, map);
       this.actors.build(this.mapC, map, state, this.scale);
       this.atmosphere.build(map, OUTDOOR_MAPS.has(map.id));
+      const firstBuild = this.mapId === null;
       this.mapId = map.id;
       this.cam = cameraFor(map, pos);
       this.actors.snapTo(pos.x, pos.y);
+      if (this.fade && !firstBuild && !this.reduceMotion) this.fade.alpha = 1;
     }
     this.camTarget = cameraFor(map, pos);
     this.actors.update(map, state, this.clock);
@@ -150,6 +159,9 @@ export class WorldRenderer {
     this.terrain?.tick(this.clock);
     this.actors?.tick(this.clock, ease);
     this.atmosphere?.tick(deltaMS, this.clock);
+    if (this.fade && this.fade.alpha > 0) {
+      this.fade.alpha = Math.max(0, this.fade.alpha - deltaMS / 280);
+    }
   }
 
   destroy(): void {
