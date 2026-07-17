@@ -11,6 +11,16 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.40.0",
+    date: "2026-07-18",
+    codename: "Worn with Pride",
+    notes: [
+      "Your gear finally shows: the equipped weapon rides your hand, the shield your arm, the helm your head - in the world, in both renderers",
+      "Swap the rusty sword for Dragonbane and WATCH the swap - appearance is derived live from what you wear",
+      "Layers stack the right way: look, then rank, then steel",
+    ],
+  },
+  {
     version: "0.39.0",
     date: "2026-07-18",
     codename: "The Slayer's Ledger",

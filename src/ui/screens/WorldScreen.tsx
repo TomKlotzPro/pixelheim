@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useState } from "react";
-import { heroSprite as heroSpriteOf } from "../../game/hero/character";
+import { heroSprite as heroSpriteOf, wornSprites } from "../../game/hero/character";
 import { rankIndex, rankPresence } from "../../game/hero/ranks";
 import { dispatch, useGameState, useWorld } from "../../state/store";
 import { getMap } from "../../world/maps/index";
@@ -250,6 +250,15 @@ export function WorldScreen() {
             }}
           >
             <Sprite name={heroSprite} size={tilePx} alt="hero" />
+            {wornSprites(state.gear, state.equipped).map((worn) => (
+              <span
+                key={worn.slot}
+                className="worn-item"
+                style={{ left: worn.x * tilePx, top: worn.y * tilePx, width: worn.size * tilePx, height: worn.size * tilePx }}
+              >
+                <Sprite name={worn.sprite} size={worn.size * tilePx} alt="" />
+              </span>
+            ))}
           </div>
           {(facingNpc || facingChest) && (
             <div
