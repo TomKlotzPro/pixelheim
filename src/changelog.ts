@@ -15,11 +15,11 @@ export const CHANGELOG: Release[] = [
     date: "2026-07-17",
     codename: "A Fresh Coat",
     notes: [
-      "Real retro type everywhere: the UI runs on VT323 with Press Start 2P headlines - Courier New has been retired with honors",
-      "In-world lettering is TRUE pixel text now: door signs, the talk prompt and battle damage numbers use a hand-built bitmap font, crisp at any zoom",
-      "Door signs sit on proper wooden plates",
-      "Everyone casts a shadow: heroes, villagers and monsters are grounded on the map",
-      "A quiet vignette frames the world",
+      "The world got redrawn: mottled grass, real cobblestone roads, rippled sand, sunlit tree canopies, and water with depth, crests and foam where it meets the land",
+      "Every living thing wears a 1px outline now - heroes, villagers and monsters pop off the terrain instead of melting into it",
+      "In-world lettering is TRUE pixel text: door signs on wooden plates, the talk prompt and battle damage numbers use a hand-built bitmap font, crisp at any zoom",
+      "Press Start 2P headlines the title and panel headers (bundled, no CDN)",
+      "Everyone casts a shadow, and a quiet vignette frames the world",
     ],
   },
   {
