@@ -61,8 +61,13 @@ test('upgrades patch the battle skill they improve', async ({ page }) => {
     .click()
   await page.getByRole('button', { name: 'Close' }).click()
 
-  // walk out of town and pace the forest for a fight to check the button label
-  for (const key of ['ArrowDown', 'ArrowDown']) {
+  // walk out the north gate and pace the forest for a fight to check the button label
+  for (const key of [
+    ...Array(10).fill('ArrowUp'),
+    'ArrowRight',
+    'ArrowRight',
+    ...Array(5).fill('ArrowUp'),
+  ] as string[]) {
     await page.keyboard.press(key)
     await page.waitForTimeout(20)
   }
