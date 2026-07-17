@@ -1,5 +1,5 @@
 import { WILD_TILES } from "../state/shared";
-import { getMap } from "./maps";
+import { getMap } from "./maps/index";
 import { isWalkable, portalAt, regionAt } from "./parseMap";
 import type { RegionId, WorldMap } from "./types";
 

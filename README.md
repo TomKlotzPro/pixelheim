@@ -60,18 +60,12 @@ React 19 + TypeScript + PixiJS v8. The rules live in a pure reducer over a Zusta
 
 ```text
 src/
+  app/             # the shell: boot, App routing, settings, changelog, global css
   game/            # pure game data and rules (no React)
-    types.ts         # every type in the game
-    roles.ts         # the 4 playable roles
-    skillTree.ts     # 36 skill nodes: actives, upgrades, passives
-    items.ts         # weapons, apparel, potions, food, misc
-    gear.ts          # gear instances, rarities, drop tables
-    recipes.ts       # crafting recipes and regional materials
-    shop.ts          # the three shops, stock gating, the Forge
-    monsters.ts      # the bestiary
-    levels.ts        # the 15 floors and their rewards
-    combat.ts        # damage formulas, flee chance, elite scaling
-    character.ts     # hero creation, level ups, carry weight
+    types.ts         # every type in the game - the shared vocabulary
+    hero/            # character, roles, levels, skill tree, stat sheet math
+    combat/          # battle engine, damage formulas, bestiary, encounters, drops
+    economy/         # items, rarity, shops, crafting recipes, professions
   world/           # the tile engine
     tiles.ts         # tile definitions and walkability
     parseMap.ts      # ASCII grid parser with startup validation
@@ -84,7 +78,10 @@ src/
     gameReducer.ts   # a router over six domain reducers (Immer drafts)
     reducers/        # meta, battle, inventory, economy, progression, world
     save.ts          # versioned localStorage persistence + migrations
-  components/      # React UI: screens, menus, HUD, dialogue
+  ui/              # React on top of it all
+    screens/         # full-screen views: title, creation, world, battle...
+    panels/          # overlays: inventory, shop, skill tree, map, options
+    widgets/         # small reusable pieces: sprites, stat bars, the HUD
 ```
 
 Maps are ASCII art in source (`.` grass, `f` forest, `^` mountain, `~` water, `=` path, `#` wall, `D` door...). The parser validates every map at load and the e2e suite imports them all, so a malformed map fails CI with a precise message.

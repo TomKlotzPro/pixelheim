@@ -7,12 +7,12 @@ import {
   heroSkill,
   heroStunGate,
   monsterTurn,
-} from "../../game/battleEngine";
-import { carriedWeight, carryCapacity } from "../../game/character";
-import { removeItem } from "../../game/inventory";
-import { getItem } from "../../game/items";
-import { getLevel, LEVELS } from "../../game/levels";
-import { getHeroSkills } from "../../game/skillTree";
+} from "../../game/combat/battleEngine";
+import { carriedWeight, carryCapacity } from "../../game/hero/character";
+import { removeItem } from "../../game/economy/inventory";
+import { getItem } from "../../game/economy/items";
+import { getLevel, LEVELS } from "../../game/hero/levels";
+import { getHeroSkills } from "../../game/hero/skillTree";
 import type { GameState } from "../../game/types";
 import type { BattleAction } from "../actions";
 import { INN_REST } from "../shared";

@@ -1,10 +1,10 @@
-import { gearByUid } from "../../game/character";
-import { addItem, removeItem } from "../../game/inventory";
-import { getItem } from "../../game/items";
-import { createGear, gearItem, gearValue } from "../../game/rarity";
-import { canCraft, RECIPES } from "../../game/recipes";
-import { doubleBrewChance, forgeCapFor, forgeCostFor, grantJobXp, JOB_STATIONS } from "../../game/jobs";
-import { buyPrice, sellPriceAt, SHOPS, shopStock } from "../../game/shop";
+import { gearByUid } from "../../game/hero/character";
+import { addItem, removeItem } from "../../game/economy/inventory";
+import { getItem } from "../../game/economy/items";
+import { createGear, gearItem, gearValue } from "../../game/economy/rarity";
+import { canCraft, RECIPES } from "../../game/economy/recipes";
+import { doubleBrewChance, forgeCapFor, forgeCostFor, grantJobXp, JOB_STATIONS } from "../../game/economy/jobs";
+import { buyPrice, sellPriceAt, SHOPS, shopStock } from "../../game/economy/shop";
 import type { GameState } from "../../game/types";
 import type { EconomyAction } from "../actions";
 import { activeShopId } from "../shared";

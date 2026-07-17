@@ -1,4 +1,4 @@
-import { getMap } from "./maps";
+import { getMap } from "./maps/index";
 
 /**
  * Door signs: the town's buildings say what they are, so nobody wanders the

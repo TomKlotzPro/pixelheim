@@ -1,4 +1,4 @@
-import { SHOP_MAPS } from "../game/shop";
+import { SHOP_MAPS } from "../game/economy/shop";
 import type { GameState } from "../game/types";
 import type { Direction, TileId } from "../world/types";
 

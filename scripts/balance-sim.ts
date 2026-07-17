@@ -10,9 +10,9 @@
  * drops, dump stat points into the role's primary stat (1 in 5 into DEF),
  * and learn skill-tree nodes in a per-role priority order.
  */
-import { gearArmor, gearDamage, gearItem } from "../src/game/rarity";
-import { getHeroSkills, SKILL_TREES } from "../src/game/skillTree";
-import { LEVELS } from "../src/game/levels";
+import { gearArmor, gearDamage, gearItem } from "../src/game/economy/rarity";
+import { getHeroSkills, SKILL_TREES } from "../src/game/hero/skillTree";
+import { LEVELS } from "../src/game/hero/levels";
 import type { GameState, GearInstance, RoleId } from "../src/game/types";
 import { gameReducer, initialState, REST_COST, type Action } from "../src/state/gameReducer";
 
