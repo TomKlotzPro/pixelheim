@@ -166,6 +166,8 @@ export type Hero = {
   look?: number;
   /** Chosen specialization id (permanent fork at the first ascension). Additive. */
   spec?: string;
+  /** Monster-family kill counts feeding mastery bonuses. Additive. */
+  mastery?: Record<string, number>;
 };
 
 /** The four stats a point can be spent on. */
