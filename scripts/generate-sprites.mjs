@@ -2261,7 +2261,15 @@ const sprites = {
 // ---------------- hero looks: palette-swap appearance variants ----------------
 // Every sprite is a grid + palette, so appearance customization is nearly
 // free: same rows, swapped skin (F) and outfit (H/D) colors per look.
+// New classes reuse a proven silhouette with their own palette identity.
+sprites.hero_ranger = { palette: { ...sprites.hero_rogue.palette, H: "#3b6b2e", D: "#26471e", K: "#8a6238" }, rows: sprites.hero_rogue.rows };
+sprites.hero_paladin = { palette: { ...sprites.hero_warrior.palette, H: "#d8cfa8", D: "#a89058", R: "#4a6be6" }, rows: sprites.hero_warrior.rows };
+sprites.hero_necromancer = { palette: { ...sprites.hero_mage.palette, H: "#3b2d56", D: "#241a38", R: "#8a4ad6", Y: "#4ae6c8" }, rows: sprites.hero_mage.rows };
+
 const HERO_LOOKS = {
+  hero_ranger: [{}, { F: "#c98d5f" }, { H: "#6b4a2b", D: "#47301c" }, { F: "#8a5a3b", H: "#4a4f5a", D: "#2e323b" }],
+  hero_paladin: [{}, { F: "#c98d5f" }, { H: "#9aa5b1", D: "#5c6670" }, { F: "#8a5a3b", H: "#8a2d2d", D: "#571c1c" }],
+  hero_necromancer: [{}, { F: "#c98d5f" }, { H: "#2d4a56", D: "#1a2e38" }, { F: "#8a5a3b", H: "#4a1c1c", D: "#301111" }],
   hero_warrior: [{}, { F: "#c98d5f" }, { H: "#b1926a", D: "#7d6644" }, { F: "#8a5a3b", H: "#6b7280", D: "#454b57" }],
   hero_mage: [{}, { F: "#c98d5f" }, { H: "#8a4ad6", D: "#5b2d8f" }, { F: "#8a5a3b", H: "#3b8a4a", D: "#26592e" }],
   hero_rogue: [{}, { F: "#c98d5f" }, { H: "#5a3a3f", D: "#38262a" }, { F: "#8a5a3b", H: "#2e3a5a", D: "#1e2740" }],
@@ -2285,7 +2293,7 @@ const MONSTERS = [
   "wyvern", "dragon", "boneknight", "shade", "mimic", "imp", "lich",
 ];
 const NPCS = ["villager", "villager_woman", "elder", "innkeeper", "smith", "alchemist", "merchant"];
-const HEROES = ["hero_warrior", "hero_mage", "hero_rogue", "hero_cleric", ...HERO_VARIANTS];
+const HEROES = ["hero_warrior", "hero_mage", "hero_rogue", "hero_cleric", "hero_ranger", "hero_paladin", "hero_necromancer", ...HERO_VARIANTS];
 
 function outlined({ rows, palette }) {
   const out = rows.map((r) => r.split(""));

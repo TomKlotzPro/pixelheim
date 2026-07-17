@@ -190,6 +190,83 @@ export const SKILL_TREES: Record<RoleId, SkillNode[]> = {
     }),
     passive("cleric_sainthood", "cleric_serenity", 2, 3, "Sainthood", "+15 max HP, +10 max MP and +2 DEF, permanently.", { defense: 2 }, { maxHp: 15, maxMp: 10 }),
   ],
+  ranger: [
+    active("ranger_aimed_shot", 0, "Aimed Shot", "A measured arrow to a weak point.", {
+      name: "Aimed Shot", description: "A measured arrow.", mpCost: 4, kind: "damage", multiplier: 1.9, stat: "dexterity",
+    }),
+    upgrade("ranger_aimed_shot_2", "ranger_aimed_shot", 0, "Aimed Shot II", "Aimed Shot bites deeper.", { multiplier: 2.4 }),
+    passive("ranger_deadeye", "ranger_aimed_shot_2", 0, 2, "Deadeye", "+10% chance to crit for 1.5x damage.", { critChance: 0.1 }),
+    active("ranger_barbed_arrow", 1, "Barbed Arrow", "A cruel arrowhead that poisons the wound.", {
+      name: "Barbed Arrow", description: "Poisons the wound.", mpCost: 6, kind: "damage", multiplier: 1.1, stat: "dexterity",
+      inflicts: { kind: "poison", chance: 0.85, turns: 3, power: 5 },
+    }),
+    passive("ranger_fieldcraft", "ranger_barbed_arrow", 1, 1, "Fieldcraft", "+15 carry weight, always.", { carryBonus: 15 }),
+    passive("ranger_pathfinder", "ranger_fieldcraft", 1, 2, "Pathfinder", "+15% flee chance.", { fleeBonus: 0.15 }),
+    active("ranger_rain", 2, "Rain of Arrows", "The sky darkens over the enemy.", {
+      name: "Rain of Arrows", description: "The sky darkens.", mpCost: 10, kind: "damage", multiplier: 2.7, stat: "dexterity",
+    }),
+    upgrade("ranger_storm", "ranger_rain", 2, "Arrowstorm", "Rain of Arrows costs 7 EN.", { mpCost: 7 }),
+    passive("ranger_second_wind", "ranger_storm", 2, 2, "Second Wind", "Kills refund 3 EN.", { killRefundMp: 3 }),
+    capstone("ranger_heartseeker", "ranger_deadeye", 0, "Heartseeker", "One arrow, one answer: enormous DEX damage.", {
+      name: "Heartseeker", description: "One arrow, one answer.", mpCost: 12, kind: "damage", multiplier: 3.3, stat: "dexterity",
+    }),
+    passive("ranger_wolfblood", "ranger_pathfinder", 1, 3, "Wolfblood", "+20 max HP and poison never touches you.", { poisonResist: true }, { maxHp: 20 }),
+    passive("ranger_hunters_eye", "ranger_second_wind", 2, 3, "Hunter's Eye", "+40% damage against enemies below 30% HP.", { lowHpBonus: 0.4 }),
+  ],
+  paladin: [
+    active("paladin_judgement", 0, "Judgement", "A blessed blow of righteous strength.", {
+      name: "Judgement", description: "A blessed blow.", mpCost: 5, kind: "damage", multiplier: 1.7, stat: "strength",
+    }),
+    upgrade("paladin_judgement_2", "paladin_judgement", 0, "Judgement II", "Judgement lands heavier.", { multiplier: 2.2 }),
+    passive("paladin_retribution", "paladin_judgement_2", 0, 2, "Retribution", "+40% damage against enemies below 30% HP.", { lowHpBonus: 0.4 }),
+    active("paladin_lay_on_hands", 1, "Lay on Hands", "Healing light through gauntleted palms.", {
+      name: "Lay on Hands", description: "Healing light.", mpCost: 6, kind: "heal", multiplier: 2.0, stat: "intelligence",
+    }),
+    passive("paladin_bulwark", "paladin_lay_on_hands", 1, 1, "Bulwark", "+2 DEF, always.", { defense: 2 }),
+    passive("paladin_stalwart", "paladin_bulwark", 1, 2, "Stalwart", "You cannot be stunned.", { stunResist: true }),
+    active("paladin_consecrate", 2, "Consecrate", "Holy fire that clings.", {
+      name: "Consecrate", description: "Holy fire that clings.", mpCost: 9, kind: "damage", multiplier: 1.5, stat: "strength",
+      inflicts: { kind: "burn", chance: 0.85, turns: 3, power: 5 },
+    }),
+    upgrade("paladin_purifier", "paladin_consecrate", 2, "Purifier", "Consecrate burns hotter.", { inflicts: { kind: "burn", chance: 0.9, turns: 3, power: 8 } }),
+    passive("paladin_tithe", "paladin_purifier", 2, 2, "Tithe", "+15% gold from victories.", { goldBonus: 0.15 }),
+    capstone("paladin_wrath", "paladin_retribution", 0, "Wrath of Heaven", "The sky takes a side: massive STR damage.", {
+      name: "Wrath of Heaven", description: "The sky takes a side.", mpCost: 12, kind: "damage", multiplier: 3.2, stat: "strength",
+    }),
+    passive("paladin_sanctified", "paladin_stalwart", 1, 3, "Sanctified", "+25 max HP and +1 DEF, permanently.", { defense: 1 }, { maxHp: 25 }),
+    capstone("paladin_absolution", "paladin_tithe", 2, "Absolution", "A verdict of light: heal and full cleanse.", {
+      name: "Absolution", description: "A verdict of light.", mpCost: 12, kind: "heal", multiplier: 3.0, stat: "intelligence", cleanse: true,
+    }),
+  ],
+  necromancer: [
+    active("necro_soul_bolt", 0, "Soul Bolt", "A lash of stolen life.", {
+      name: "Soul Bolt", description: "A lash of stolen life.", mpCost: 5, kind: "damage", multiplier: 2.0, stat: "intelligence",
+    }),
+    upgrade("necro_soul_bolt_2", "necro_soul_bolt", 0, "Soul Bolt II", "Soul Bolt steals more.", { multiplier: 2.6 }),
+    passive("necro_grave_touch", "necro_soul_bolt_2", 0, 2, "Grave Touch", "Plain attacks have a 20% chance to poison.", {
+      attackInflict: { kind: "poison", chance: 0.2, turns: 2, power: 4 },
+    }),
+    active("necro_blight", 1, "Blight", "A creeping rot that poisons for turns.", {
+      name: "Blight", description: "A creeping rot.", mpCost: 7, kind: "damage", multiplier: 1.0, stat: "intelligence",
+      inflicts: { kind: "poison", chance: 0.9, turns: 4, power: 6 },
+    }),
+    passive("necro_marrow_well", "necro_blight", 1, 1, "Marrow Well", "+15 max MP, permanently.", {}, { maxMp: 15 }),
+    passive("necro_harvest", "necro_marrow_well", 1, 2, "Harvest", "Kills refund 3 MP.", { killRefundMp: 3 }),
+    active("necro_grave_chill", 2, "Grave Chill", "The cold of the tomb; the enemy may freeze.", {
+      name: "Grave Chill", description: "The cold of the tomb.", mpCost: 9, kind: "damage", multiplier: 1.4, stat: "intelligence",
+      inflicts: { kind: "stun", chance: 0.55, turns: 1, power: 0 },
+    }),
+    passive("necro_pallor", "necro_grave_chill", 2, 1, "Pallor", "Poison never touches you.", { poisonResist: true }),
+    passive("necro_deathward", "necro_pallor", 2, 2, "Deathward", "+2 DEF, always.", { defense: 2 }),
+    capstone("necro_soul_rend", "necro_grave_touch", 0, "Soul Rend", "Tears the seam between body and soul: enormous INT damage.", {
+      name: "Soul Rend", description: "Tears the seam.", mpCost: 13, kind: "damage", multiplier: 3.3, stat: "intelligence",
+    }),
+    capstone("necro_plague", "necro_harvest", 1, "Plaguebringer", "Rot given ambition: damage and a vicious lasting poison.", {
+      name: "Plaguebringer", description: "Rot given ambition.", mpCost: 12, kind: "damage", multiplier: 1.8, stat: "intelligence",
+      inflicts: { kind: "poison", chance: 0.95, turns: 5, power: 8 },
+    }),
+    passive("necro_lichbone", "necro_deathward", 2, 3, "Lichbone", "+20 max HP and +10 max MP, permanently.", {}, { maxHp: 20, maxMp: 10 }),
+  ],
 };
 
 export function getNode(roleId: RoleId, nodeId: string): SkillNode | null {
