@@ -11,6 +11,18 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.21.0",
+    date: "2026-07-17",
+    codename: "Honest Work",
+    notes: [
+      "Professions! Smithing, Alchemy and Foraging level up as you work them",
+      "Smithing shaves the Forge's prices and, at level 5, unlocks the +8 masterwork cap",
+      "Alchemy learns to brew doubles; Foraging finds more, and finds pairs",
+      "Job levels and progress live on the stat sheet, next to your stats",
+      "Also: the town gate moved to the north wall - no more door ping-pong when holding a key",
+    ],
+  },
+  {
     version: "0.20.0",
     date: "2026-07-17",
     codename: "Second Wind",
