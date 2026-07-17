@@ -11,6 +11,18 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.22.0",
+    date: "2026-07-17",
+    codename: "The Maker's Mark",
+    notes: [
+      "Eight new items, and five of them can ONLY be made, never bought: from the Reedwoven Buckler to Scaled Mail",
+      "Recipes now demand skill: Smithing forges gear, Alchemy brews, and locked recipes show what level they ask",
+      "Crafting difficulty comes from making, never wearing - no level requirements on gear, ever (the Skyrim rule)",
+      "New brews: Stamina Draughts for fighters, Hunter's Stew, and the scale-steeped Dragon Tonic",
+      "Monster trophies matter: pelts, horns and dragon scales are now the raw stuff of the best gear",
+    ],
+  },
+  {
     version: "0.21.0",
     date: "2026-07-17",
     codename: "Honest Work",
