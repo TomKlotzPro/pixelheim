@@ -6,12 +6,12 @@ import type { Hero, RoleId } from "../types";
  * Rank is derived from level (never stored), so old saves are already ranked.
  */
 export const RANK_TITLES: Record<RoleId, [string, string, string, string]> = {
-  warrior: ["Footman", "Warrior", "Champion", "Warlord"],
+  warrior: ["Footman", "Warrior", "Champion", "Warbringer"],
   mage: ["Apprentice", "Mage", "Magus", "Archmage"],
   rogue: ["Cutpurse", "Rogue", "Shadow", "Phantom"],
   cleric: ["Acolyte", "Cleric", "Prelate", "Saint"],
   ranger: ["Tracker", "Ranger", "Pathfinder", "Wildlord"],
-  paladin: ["Squire", "Paladin", "Justicar", "Crusader"],
+  paladin: ["Squire", "Paladin", "Knight", "Crusader"],
   necromancer: ["Gravedigger", "Necromancer", "Deathcaller", "Lichlord"],
 };
 

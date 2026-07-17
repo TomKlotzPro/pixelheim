@@ -11,6 +11,18 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.38.0",
+    date: "2026-07-18",
+    codename: "Dressed for Glory",
+    notes: [
+      "Ascension is a scene now: letterbox bars, turning light, your hero marching in their NEW look, the title stamped over it",
+      "Rank changes how you LOOK: garb brightens with every ascension and your outline turns from shadow to gold to radiant - across every class and every look",
+      "Fixed: the ascension card could get stuck on screen until the next fight - it leaves politely now",
+      "Fixed: a flaky load could leave the world pitch black until a reload - the renderer retries on its own",
+      "Renamed for clarity: the warrior now peaks as WARBRINGER and the paladin as Knight, so titles never collide with specialization names",
+    ],
+  },
+  {
     version: "0.37.0",
     date: "2026-07-18",
     codename: "The Fork in the Path",

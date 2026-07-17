@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { playTrack, trackForState } from "../audio/music";
 import { ambienceForState, setAmbience } from "../audio/ambience";
+import { heroSprite } from "../game/hero/character";
 import { rankIndex, rankTitle } from "../game/hero/ranks";
 import { canChooseSpec } from "../game/hero/specs";
 import { SFX } from "../audio/sfx";
@@ -28,18 +29,23 @@ import type { Direction } from "../world/types";
 function useRankUp(state: GameState): string | null {
   const [title, setTitle] = useState<string | null>(null);
   const prevLevel = useRef(state.hero?.level ?? 0);
+  const level = state.hero?.level ?? 0;
   useEffect(() => {
-    const hero = state.hero;
-    if (!hero) return;
     const before = prevLevel.current;
-    prevLevel.current = hero.level;
-    if (hero.level > before && before > 0 && rankIndex(hero.level) > rankIndex(before)) {
+    prevLevel.current = level;
+    const hero = gameStore.getState().hero;
+    if (level > before && before > 0 && rankIndex(level) > rankIndex(before) && hero) {
       setTitle(rankTitle(hero));
       SFX.evolve();
-      const timer = setTimeout(() => setTitle(null), 2800);
-      return () => clearTimeout(timer);
     }
-  }, [state.hero]);
+  }, [level]);
+  // The dismiss timer lives on the title alone: an hp tick or xp gain used
+  // to clean it up and strand the card on screen forever (PIX-100).
+  useEffect(() => {
+    if (!title) return;
+    const timer = setTimeout(() => setTitle(null), 4200);
+    return () => clearTimeout(timer);
+  }, [title]);
   return title;
 }
 
@@ -269,15 +275,21 @@ export default function App() {
           onClose={() => setOptionsOpen(false)}
         />
       )}
-      {rankUp && (
+      {rankUp && state.hero && (
         <div className="rankup-overlay" aria-live="polite">
+          <div className="rankup-bar rankup-bar-top" />
+          <div className="rankup-bar rankup-bar-bottom" />
+          <span className="rankup-rays" aria-hidden="true" />
+          <span
+            className="rankup-hero"
+            aria-hidden="true"
+            style={{ backgroundImage: `url(${import.meta.env.BASE_URL}sprites/${heroSprite(state.hero)}_walk.png)` }}
+          />
           <div className="rankup-card">
             <span className="rankup-eyebrow">Ascension</span>
             <span className="rankup-title">{rankUp}</span>
             <span className="rankup-note">+1 bonus skill point</span>
-            {state.hero && canChooseSpec(state.hero) && (
-              <span className="rankup-note">A specialization awaits in Skills</span>
-            )}
+            {canChooseSpec(state.hero) && <span className="rankup-note">A specialization awaits in Skills</span>}
           </div>
         </div>
       )}

@@ -26,11 +26,22 @@ export function PixiWorldView({ scale, mapId }: { scale: number; mapId: string }
     const renderer = new WorldRenderer(clickTile);
     let unsubscribe: (() => void) | null = null;
     let disposed = false;
-    const boot = async () => {
-      await renderer.init(host.current!, scale);
-      if (disposed) return;
-      renderer.update(gameStore.getState());
-      unsubscribe = gameStore.subscribe((state) => renderer.update(state));
+    // A flaky asset fetch used to leave the canvas black until a manual
+    // reload. Boot retries with backoff instead of giving up (PIX-100).
+    const boot = async (attempt = 0): Promise<void> => {
+      try {
+        await renderer.init(host.current!, scale);
+        if (disposed) return;
+        renderer.update(gameStore.getState());
+        unsubscribe = gameStore.subscribe((state) => renderer.update(state));
+      } catch (error) {
+        if (disposed || attempt >= 4) {
+          console.error("world renderer failed to boot", error);
+          return;
+        }
+        await new Promise((resolve) => setTimeout(resolve, 400 * 2 ** attempt));
+        if (!disposed) await boot(attempt + 1);
+      }
     };
     void boot();
     return () => {

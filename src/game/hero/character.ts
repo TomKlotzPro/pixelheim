@@ -59,7 +59,9 @@ export function applyLevelUps(hero: Hero): number {
 /** The hero's sprite, look applied: palette-swap variants share one grid. */
 export function heroSprite(hero: Hero): string {
   const base = ROLES[hero.roleId].sprite;
-  return hero.look ? `${base}_l${hero.look}` : base;
+  const look = hero.look ? `_l${hero.look}` : "";
+  const rank = rankIndex(hero.level);
+  return `${base}${look}${rank > 0 ? `_r${rank}` : ""}`;
 }
 
 export function gearByUid(gear: GearInstance[], uid: string | undefined): GearInstance | null {
