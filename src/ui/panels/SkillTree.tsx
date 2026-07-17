@@ -1,5 +1,6 @@
 import { canBuyNode, SKILL_TREES, type SkillNode } from "../../game/hero/skillTree";
 import { dispatch, useHero } from "../../state/store";
+import { useEscapeClose } from "../useEscapeClose";
 
 const KIND_LABELS: Record<SkillNode["kind"], string> = {
   active: "SKILL",
@@ -8,6 +9,7 @@ const KIND_LABELS: Record<SkillNode["kind"], string> = {
 };
 
 export function SkillTree({ onClose }: { onClose: () => void }) {
+  useEscapeClose(onClose);
   const hero = useHero();
   const tree = SKILL_TREES[hero.roleId];
   const owned = new Set(hero.skillNodes);
