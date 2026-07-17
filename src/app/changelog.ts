@@ -11,6 +11,18 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.35.0",
+    date: "2026-07-18",
+    codename: "The Bard Arrives",
+    notes: [
+      "Every place has its own music now: a warm folk tune in town, old minor wanderings in the Deepwood, drowned bells over the Mirefen, a cozy lull indoors, a pulse before the dungeon plunge - and bosses get their own menace",
+      "Tracks crossfade instead of cutting, and the whole score plays through a touch of echo",
+      "The world hums underneath: birdsong in the greenwood, drips and frogs in the bog, wind in the old trees, a crackling hearth indoors",
+      "Six new sounds: the clink of equipping steel, a chest's creak and shine, the fast-travel rush, a skill settling into the mind, the anvil's answer, and the growl of something noticing you",
+      "Still not a single audio file - every note is synthesized live, like the sprites",
+    ],
+  },
+  {
     version: "0.34.0",
     date: "2026-07-18",
     codename: "Know Thyself",
