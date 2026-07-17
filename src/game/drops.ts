@@ -21,17 +21,17 @@ const POOLS: DropPool[] = [
   },
   {
     floor: 4,
-    gearIds: ["iron_sword", "apprentice_staff", "moon_wand", "steel_shield", "leather_armor"],
+    gearIds: ["iron_sword", "apprentice_staff", "moon_wand", "steel_shield", "leather_armor", "leather_cap", "bone_charm"],
     stackIds: ["potion_hp", "potion_mp", "antidote", "dried_meat", "wolf_pelt"],
   },
   {
     floor: 7,
-    gearIds: ["steel_axe", "longbow", "shadow_dagger", "mage_robe", "iron_armor", "tower_shield"],
+    gearIds: ["steel_axe", "longbow", "shadow_dagger", "mage_robe", "iron_armor", "tower_shield", "iron_helm", "runed_grips", "moon_pendant"],
     stackIds: ["potion_hp", "potion_mp", "elixir", "antidote", "ember_salve", "gem"],
   },
   {
     floor: 11,
-    gearIds: ["war_hammer", "longbow", "arch_staff", "shadow_cloak", "runic_armor", "obsidian_blade"],
+    gearIds: ["war_hammer", "longbow", "arch_staff", "shadow_cloak", "runic_armor", "obsidian_blade", "wyrm_visor", "duelists_ring"],
     stackIds: ["greater_potion", "elixir", "antidote", "ember_salve", "imp_horn", "gem"],
   },
 ];

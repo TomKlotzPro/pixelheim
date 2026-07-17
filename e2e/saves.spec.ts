@@ -98,12 +98,12 @@ test('a v3 save migrates gear counts and equipped ids into instances', async ({ 
 
   // the migrated armor is equippable through the UI
   await page.getByRole('button', { name: 'Inventory (I)' }).click()
-  await expect(page.locator('.equipped-slot', { hasText: 'Weapon' }).getByText('Rusty Sword')).toBeVisible()
+  await expect(page.getByTestId('doll-weapon')).toHaveAttribute('title', /Rusty Sword/)
   await page
     .locator('.item-row', { hasText: 'Iron Armor' })
     .getByRole('button', { name: 'Equip' })
     .click()
-  await expect(page.locator('.equipped-slot', { hasText: 'Body' }).getByText('Iron Armor')).toBeVisible()
+  await expect(page.getByTestId('doll-body')).toHaveAttribute('title', /Iron Armor/)
 })
 
 test('a v1-format save code still imports', async ({ page }) => {

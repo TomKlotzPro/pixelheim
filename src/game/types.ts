@@ -71,7 +71,14 @@ export type Role = {
 
 export type ItemCategory = "weapons" | "apparel" | "potions" | "food" | "misc";
 
-export type EquipSlot = "weapon" | "body" | "offhand";
+/** Where an item can be worn. "ring" fits either finger. */
+export type EquipSlot = "weapon" | "body" | "offhand" | "head" | "hands" | "feet" | "neck" | "ring";
+
+/** The body's actual positions: rings resolve to a specific finger. */
+export type EquippedSlot = Exclude<EquipSlot, "ring"> | "ring1" | "ring2";
+
+/** Stats jewelry can grant while worn. */
+export type GrantStat = "strength" | "intelligence" | "dexterity";
 
 export type Rarity = "common" | "fine" | "epic";
 
@@ -101,6 +108,8 @@ export type Item = {
   // apparel
   armor?: number;
   slot?: EquipSlot;
+  /** Worn stat bonuses (jewelry, mostly): stat -> flat amount. */
+  grants?: Partial<Record<GrantStat, number>>;
   // consumables
   restoreHp?: number;
   restoreMp?: number;
@@ -158,7 +167,7 @@ export type Hero = {
 /** The four stats a point can be spent on. */
 export type SpendableStat = "strength" | "intelligence" | "dexterity" | "defense" | "endurance";
 
-export type Equipped = Partial<Record<EquipSlot, string>>;
+export type Equipped = Partial<Record<EquippedSlot, string>>;
 
 export type BattleMonster = {
   def: Monster;

@@ -766,26 +766,123 @@ body {
   letter-spacing: 2px;
   font-size: 16px;
 }
-.equipped-row {
+/* ---------- the paper doll: what the hero wears, laid on the body ---------- */
+.inventory-body {
   display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--border);
+  gap: 14px;
+  min-height: 0;
+  flex: 1;
 }
-.equipped-slot {
+.inventory-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+.doll-column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 196px;
+  flex-shrink: 0;
+}
+.doll {
+  display: grid;
+  grid-template-areas:
+    "head portrait weapon"
+    "neck portrait offhand"
+    "body portrait ring1"
+    "hands feet ring2";
+  grid-template-columns: 56px 1fr 56px;
+  gap: 6px;
+  padding: 10px;
+  background: var(--bg-panel-2);
+  border: 2px solid var(--border);
+}
+.doll-portrait {
+  grid-area: portrait;
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 12px;
+  justify-content: center;
+  background:
+    radial-gradient(ellipse at 50% 80%, rgba(232, 195, 74, 0.1), transparent 65%),
+    #0d0e13;
+  border: 1px solid var(--border);
 }
-.slot-label {
+.doll-slot {
+  font: inherit;
+  width: 56px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0d0e13;
+  border: 1px solid var(--border);
   color: var(--text-dim);
+  cursor: pointer;
+  padding: 0;
+}
+.doll-slot:disabled {
+  cursor: default;
+}
+.doll-filled {
+  border-color: rgba(232, 195, 74, 0.5);
+}
+.doll-filled:hover {
+  border-color: var(--danger);
+}
+.doll-head { grid-area: head; }
+.doll-neck { grid-area: neck; }
+.doll-body { grid-area: body; }
+.doll-hands { grid-area: hands; }
+.doll-weapon { grid-area: weapon; }
+.doll-offhand { grid-area: offhand; }
+.doll-ring1 { grid-area: ring1; }
+.doll-ring2 { grid-area: ring2; }
+.doll-feet { grid-area: feet; }
+.doll-slot-label {
+  font-size: 9px;
+  letter-spacing: 1px;
   text-transform: uppercase;
 }
-.slot-empty {
+.doll-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px;
+  background: var(--bg-panel-2);
+  border: 2px solid var(--border);
+  font-size: 12px;
+}
+.doll-stat-row {
+  display: flex;
+  justify-content: space-between;
+}
+.doll-stat-row span {
   color: var(--text-dim);
-  font-style: italic;
+}
+.doll-stat-row strong {
+  font-variant-numeric: tabular-nums;
+}
+.doll-granted {
+  color: var(--accent);
+  font-style: normal;
+}
+@media (max-width: 700px) {
+  .inventory-body {
+    flex-direction: column;
+  }
+  .doll-column {
+    width: 100%;
+    flex-direction: row;
+  }
+  .doll {
+    flex: 1;
+  }
+  .doll-stats {
+    width: 132px;
+  }
 }
 .merchant-line {
   color: var(--text-dim);
