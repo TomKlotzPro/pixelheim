@@ -233,7 +233,7 @@ export function heroSkill(state: GameState, skillIndex: number): void {
   hero.mp -= skill.mpCost;
   if (skill.hpCost) hero.hp -= skill.hpCost;
   if (skill.kind === "heal") {
-    const amount = heroSkillPower(hero, skill);
+    const amount = heroSkillPower(hero, skill, state.gear, state.equipped);
     hero.hp = Math.min(hero.stats.maxHp, hero.hp + amount);
     battle.log.push(`${skill.name} restores ${amount} HP.`);
     if (skill.cleanse && battle.heroEffects.length > 0) {
@@ -243,7 +243,7 @@ export function heroSkill(state: GameState, skillIndex: number): void {
     monsterTurn(state, hero, battle.log);
     return;
   }
-  const dmg = heroSkillDamage(hero, skill, battle.monster);
+  const dmg = heroSkillDamage(hero, skill, state.gear, state.equipped, battle.monster);
   battle.monster.hp = Math.max(0, battle.monster.hp - dmg);
   battle.log.push(`${skill.name} hits ${battle.monster.name} for ${dmg} damage!`);
   if (battle.monster.hp <= 0) {
@@ -263,7 +263,7 @@ export function heroFlee(state: GameState): void {
   const hero = state.hero!;
   const battle = state.battle!;
   if (heroStunGate(state, hero, battle.log)) return;
-  if (Math.random() < fleeChance(hero)) {
+  if (Math.random() < fleeChance(hero, state.gear, state.equipped)) {
     state.screen = battle.wild ? "world" : "dungeon_select";
     state.battle = null;
     return;

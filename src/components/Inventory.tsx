@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { carriedWeight, carryCapacity, gearByUid } from "../game/character";
+import { carriedWeight, carryCapacity, gearByUid, grantedStat, totalDefense, weaponOf } from "../game/character";
 import { getItem } from "../game/items";
 import { itemStatLine } from "../game/itemStats";
-import { gearItem, gearName, gearValue } from "../game/rarity";
+import { gearDamage, gearItem, gearName, gearValue } from "../game/rarity";
 import { JOB_NAMES, JOB_STATIONS } from "../game/jobs";
 import { canCraft, RECIPES } from "../game/recipes";
-import type { EquipSlot, ItemCategory } from "../game/types";
+import { ROLES } from "../game/roles";
+import type { EquippedSlot, GrantStat, ItemCategory } from "../game/types";
 import { dispatch, useGameState, useHero } from "../state/store";
 import { Sprite } from "./Sprite";
 
@@ -19,11 +20,24 @@ const TABS: { id: ItemCategory | "all" | "craft"; label: string }[] = [
   { id: "craft", label: "Craft" },
 ];
 
-const SLOT_LABELS: Record<EquipSlot, string> = {
-  weapon: "Weapon",
-  body: "Body",
-  offhand: "Off-hand",
-};
+/** The doll's positions, laid out around the hero: left column, then right. */
+const DOLL_SLOTS: { slot: EquippedSlot; label: string }[] = [
+  { slot: "head", label: "Head" },
+  { slot: "neck", label: "Neck" },
+  { slot: "body", label: "Body" },
+  { slot: "hands", label: "Hands" },
+  { slot: "weapon", label: "Weapon" },
+  { slot: "offhand", label: "Off-hand" },
+  { slot: "ring1", label: "Ring" },
+  { slot: "ring2", label: "Ring" },
+  { slot: "feet", label: "Feet" },
+];
+
+const GRANT_STATS: { stat: GrantStat; label: string }[] = [
+  { stat: "strength", label: "STR" },
+  { stat: "intelligence", label: "INT" },
+  { stat: "dexterity", label: "DEX" },
+];
 
 export function Inventory() {
   const state = useGameState();
@@ -48,7 +62,7 @@ export function Inventory() {
         );
 
   const weight = carriedWeight(state.inventory, state.gear, state.equipped);
-  const capacity = carryCapacity(hero);
+  const capacity = carryCapacity(hero, state.gear, state.equipped);
 
   return (
     <div className="overlay" onClick={() => dispatch({ type: "TOGGLE_INVENTORY" })}>
@@ -66,31 +80,75 @@ export function Inventory() {
           </button>
         </div>
 
+        <div className="inventory-body">
         {!inBattle && (
-          <div className="equipped-row">
-            {(Object.keys(SLOT_LABELS) as EquipSlot[]).map((slot) => {
-              const instance = gearByUid(state.gear, state.equipped[slot]);
-              return (
-                <div key={slot} className="equipped-slot">
-                  <span className="slot-label">{SLOT_LABELS[slot]}</span>
-                  {instance ? (
-                    <button
-                      className="btn btn-small"
-                      title="Unequip"
-                      onClick={() => dispatch({ type: "UNEQUIP", slot })}
-                    >
-                      <Sprite name={gearItem(instance).sprite} size={16} />{" "}
-                      <span className={`rarity-${instance.rarity}`}>{gearName(instance)}</span>
-                    </button>
-                  ) : (
-                    <span className="slot-empty">empty</span>
-                  )}
-                </div>
-              );
-            })}
+          <div className="doll-column">
+            <div className="doll">
+              <div className="doll-portrait" aria-hidden="true">
+                <Sprite name={ROLES[hero.roleId].sprite} size={80} />
+              </div>
+              {DOLL_SLOTS.map(({ slot, label }, i) => {
+                const instance = gearByUid(state.gear, state.equipped[slot]);
+                return (
+                  <button
+                    key={`${slot}${i}`}
+                    className={`doll-slot doll-${slot} ${instance ? "doll-filled" : ""}`}
+                    data-testid={`doll-${slot}`}
+                    title={instance ? `${gearName(instance)} - click to unequip` : `${label}: empty`}
+                    disabled={!instance}
+                    onClick={() => dispatch({ type: "UNEQUIP", slot })}
+                  >
+                    {instance ? (
+                      <Sprite name={gearItem(instance).sprite} size={28} alt={gearName(instance)} />
+                    ) : (
+                      <span className="doll-slot-label">{label}</span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+            <div className="doll-stats" data-testid="doll-stats">
+              <div className="doll-stat-row">
+                <span>ATK</span>
+                <strong>
+                  {(() => {
+                    const weapon = weaponOf(state.gear, state.equipped);
+                    const scaling = weapon ? (gearItem(weapon).scaling ?? "strength") : "strength";
+                    return (
+                      hero.stats[scaling] +
+                      grantedStat(state.gear, state.equipped, scaling) +
+                      (weapon ? gearDamage(weapon) : 2)
+                    );
+                  })()}
+                </strong>
+              </div>
+              <div className="doll-stat-row">
+                <span>DEF</span>
+                <strong>{totalDefense(hero, state.gear, state.equipped)}</strong>
+              </div>
+              {GRANT_STATS.map(({ stat, label }) => {
+                const granted = grantedStat(state.gear, state.equipped, stat);
+                return (
+                  <div key={stat} className="doll-stat-row">
+                    <span>{label}</span>
+                    <strong>
+                      {hero.stats[stat]}
+                      {granted > 0 && <em className="doll-granted"> +{granted}</em>}
+                    </strong>
+                  </div>
+                );
+              })}
+              <div className="doll-stat-row">
+                <span>Carry</span>
+                <strong>
+                  {weight}/{capacity}
+                </strong>
+              </div>
+            </div>
           </div>
         )}
 
+        <div className="inventory-main">
         <div className="tabs">
           {TABS.map((t) => (
             <button key={t.id} className={`tab ${tab === t.id ? "active" : ""}`} onClick={() => setTab(t.id)}>
@@ -201,6 +259,8 @@ export function Inventory() {
               </div>
             );
           })}
+        </div>
+        </div>
         </div>
       </div>
     </div>

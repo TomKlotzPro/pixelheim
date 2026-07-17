@@ -33,6 +33,12 @@ export const RECIPES: Recipe[] = [
   { id: "craft_emberwood_staff", itemId: "emberwood_staff", needs: { ember_shard: 3, forest_herb: 2 }, job: { id: "smithing", level: 4 } },
   { id: "craft_wyrmfang_dagger", itemId: "wyrmfang_dagger", needs: { dragon_scale: 1, imp_horn: 2 }, job: { id: "smithing", level: 5 } },
   { id: "craft_scaled_mail", itemId: "scaled_mail", needs: { dragon_scale: 2, wolf_pelt: 2 }, job: { id: "smithing", level: 6 } },
+  // the wardrobe - armor for the new slots (craft-only tiers)
+  { id: "craft_iron_helm", itemId: "iron_helm", needs: { wolf_pelt: 1, ember_shard: 1 }, job: { id: "smithing", level: 3 } },
+  { id: "craft_smith_gauntlets", itemId: "smith_gauntlets", needs: { wolf_pelt: 2, imp_horn: 1 }, job: { id: "smithing", level: 4 } },
+  { id: "craft_scaled_greaves", itemId: "scaled_greaves", needs: { dragon_scale: 1, wolf_pelt: 2 }, job: { id: "smithing", level: 6 } },
+  // steeped jewelry - Alchemy's side of the wardrobe
+  { id: "brew_wolfstooth_collar", itemId: "wolfstooth_collar", needs: { wolf_pelt: 2, grave_moss: 1 }, job: { id: "alchemy", level: 4 } },
   // frontier recipes - the new regions' forage feeding the top of both trades
   { id: "brew_troll_salve", itemId: "troll_salve", needs: { deep_root: 2, forest_herb: 1 }, job: { id: "alchemy", level: 5 } },
   { id: "craft_deeproot_bow", itemId: "deeproot_bow", needs: { deep_root: 3, wolf_pelt: 2 }, job: { id: "smithing", level: 7 } },

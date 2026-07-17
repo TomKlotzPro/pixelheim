@@ -11,6 +11,13 @@ export function inventoryReducer(draft: GameState, action: InventoryAction): voi
       if (!instance) return;
       const slot = gearItem(instance).slot;
       if (!slot) return;
+      if (Object.values(draft.equipped).includes(action.uid)) return;
+      // A ring fits either finger: first the empty one, else replace the first.
+      if (slot === "ring") {
+        const finger = !draft.equipped.ring1 ? "ring1" : !draft.equipped.ring2 ? "ring2" : "ring1";
+        draft.equipped[finger] = action.uid;
+        return;
+      }
       draft.equipped[slot] = action.uid;
       return;
     }

@@ -11,6 +11,18 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.29.0",
+    date: "2026-07-17",
+    codename: "Dressed to Kill",
+    notes: [
+      "The inventory grew a mirror: a paper doll of your hero with every worn piece laid on the body - click a piece to take it off",
+      "Six new places to wear something: helmet, gloves, boots, collar, and TWO rings",
+      "Jewelry grants stats while worn: +STR charms, +INT pendants, +DEX rings - and a strength charm literally helps you carry more",
+      "Sixteen new pieces across the tiers: shops stock the basics, the best drop deep or come off the bench (Scaled Greaves, Wolfstooth Collar)",
+      "A live stats panel beside the doll: ATK, DEF and every granted bonus, updating as you dress",
+    ],
+  },
+  {
     version: "0.28.0",
     date: "2026-07-17",
     codename: "First Impressions",

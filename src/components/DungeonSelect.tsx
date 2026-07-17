@@ -21,7 +21,7 @@ export function DungeonSelect() {
   const state = useGameState();
   const dungeon = DUNGEONS[state.dungeonSelect!];
   const hero = useHero();
-  const overEncumbered = carriedWeight(state.inventory, state.gear, state.equipped) > carryCapacity(hero);
+  const overEncumbered = carriedWeight(state.inventory, state.gear, state.equipped) > carryCapacity(hero, state.gear, state.equipped);
   const anyUnlocked = dungeon.floors.some((floor) => floor <= state.unlockedLevel);
 
   return (

@@ -13,6 +13,11 @@ export function itemStatLine(item: Item, { bonus = 0, value }: StatLineOpts = {}
   const plus = bonus > 0 ? `+${bonus}` : "";
   if (item.damage) parts.push(`DMG ${item.damage + bonus}${plus && ` (${item.damage}${plus})`} ${item.scaling?.slice(0, 3).toUpperCase()}`);
   if (item.armor) parts.push(`ARMOR ${item.armor + bonus}${plus && ` (${item.armor}${plus})`}`);
+  if (item.grants) {
+    for (const [stat, amount] of Object.entries(item.grants)) {
+      parts.push(`+${amount} ${stat.slice(0, 3).toUpperCase()}`);
+    }
+  }
   if (item.restoreHp) parts.push(`+${item.restoreHp} HP`);
   if (item.restoreMp) parts.push(`+${item.restoreMp} MP`);
   if (item.cures) parts.push(`cures ${item.cures}`);
