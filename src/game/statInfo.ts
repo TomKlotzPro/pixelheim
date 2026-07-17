@@ -1,4 +1,5 @@
-import { carryCapacity, totalDefense, weaponOf } from "./character";
+import { applyStatPoint, carryCapacity, resourceLabel, staminaRegen, totalDefense, weaponOf } from "./character";
+import { ROLES } from "./roles";
 import { fleeChance, heroSkillPower } from "./combat";
 import { gearDamage, gearItem } from "./rarity";
 import { getHeroSkills } from "./skillTree";
@@ -15,13 +16,17 @@ export type StatInfo = {
 
 const BLURBS: Record<SpendableStat, string> = {
   strength: "Melee attack with STR weapons, and how much you can carry.",
-  intelligence: "The power of your skills and heals (and INT weapons like staves).",
+  intelligence: "The power of your skills and heals - and for casters, the size of the mana pool.",
   dexterity: "Your chance to flee a fight you want no part of.",
   defense: "Damage shaved off every hit you take.",
+  endurance: "Grit: a little health for everyone, and for fighters the stamina pool and how fast it refills.",
 };
 
-function withStat(hero: Hero, stat: SpendableStat, value: number): Hero {
-  return { ...hero, stats: { ...hero.stats, [stat]: value } };
+/** The hero after truly spending one point: pools included, nothing re-derived. */
+function afterPoint(hero: Hero, stat: SpendableStat): Hero {
+  const clone = structuredClone(hero);
+  applyStatPoint(clone, stat);
+  return clone;
 }
 
 /**
@@ -44,6 +49,7 @@ function readout(stat: SpendableStat, hero: Hero, gear: GearInstance[], equipped
       const spells = getHeroSkills(hero).filter((skill) => skill.stat === "intelligence");
       const strongest = spells.map((skill) => heroSkillPower(hero, skill)).toSorted((a, b) => b - a)[0];
       if (strongest !== undefined) parts.push(`skill power ${strongest}`);
+      if (ROLES[hero.roleId].resource === "mana") parts.push(`MP ${hero.stats.maxMp}`);
       if (parts.length === 0) parts.push("powers INT skills");
       return parts.join(" · ");
     }
@@ -51,6 +57,13 @@ function readout(stat: SpendableStat, hero: Hero, gear: GearInstance[], equipped
       return `flee ${Math.round(fleeChance(hero) * 100)}%`;
     case "defense":
       return `blocks ${totalDefense(hero, gear, equipped)} per hit`;
+    case "endurance": {
+      const parts: string[] = [`HP ${hero.stats.maxHp}`];
+      if (ROLES[hero.roleId].resource === "endurance") {
+        parts.push(`${resourceLabel(hero.roleId)} ${hero.stats.maxMp}`, `regen ${staminaRegen(hero)}/turn`);
+      }
+      return parts.join(" · ");
+    }
   }
 }
 
@@ -59,6 +72,6 @@ export function statInfo(stat: SpendableStat, hero: Hero, gear: GearInstance[], 
   return {
     blurb: BLURBS[stat],
     now: readout(stat, hero, gear, equipped),
-    next: readout(stat, withStat(hero, stat, hero.stats[stat] + 1), gear, equipped),
+    next: readout(stat, afterPoint(hero, stat), gear, equipped),
   };
 }

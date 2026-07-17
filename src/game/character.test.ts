@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { applyLevelUps, carryCapacity, carriedWeight, createHero, STAT_POINTS_PER_LEVEL, xpToNext } from "./character";
+import { applyLevelUps, applyStatPoint, carryCapacity, carriedWeight, createHero, resourceLabel, staminaRegen, STAT_POINTS_PER_LEVEL, xpToNext } from "./character";
 import { getItem } from "./items";
 import { createGear } from "./rarity";
 import { rootNode } from "./skillTree";
@@ -55,5 +55,47 @@ describe("carry", () => {
     const wearingSword = carriedWeight({ cheese_wheel: 2 }, [sword], { weapon: sword.uid });
     expect(carriedAll).toBe(2 * cheeseWeight + swordWeight);
     expect(wearingSword).toBe(2 * cheeseWeight);
+  });
+});
+
+describe("resources", () => {
+  it("martials run on EN, casters on MP", () => {
+    expect(resourceLabel("warrior")).toBe("EN");
+    expect(resourceLabel("rogue")).toBe("EN");
+    expect(resourceLabel("mage")).toBe("MP");
+    expect(resourceLabel("cleric")).toBe("MP");
+  });
+
+  it("stamina regen scales with endurance and is zero for casters", () => {
+    const warrior = createHero("Tess", "warrior");
+    warrior.stats.endurance = 12;
+    expect(staminaRegen(warrior)).toBe(3);
+    const mage = createHero("Tess", "mage");
+    expect(staminaRegen(mage)).toBe(0);
+  });
+
+  it("INT points grow the mana pool for casters only", () => {
+    const mage = createHero("Tess", "mage");
+    const before = mage.stats.maxMp;
+    applyStatPoint(mage, "intelligence");
+    expect(mage.stats.maxMp).toBe(before + 2);
+    const warrior = createHero("Tess", "warrior");
+    const wBefore = warrior.stats.maxMp;
+    applyStatPoint(warrior, "intelligence");
+    expect(warrior.stats.maxMp).toBe(wBefore);
+  });
+
+  it("END points give everyone health, and fighters stamina on top", () => {
+    const warrior = createHero("Tess", "warrior");
+    const hp = warrior.stats.maxHp;
+    const pool = warrior.stats.maxMp;
+    applyStatPoint(warrior, "endurance");
+    expect(warrior.stats.maxHp).toBe(hp + 1);
+    expect(warrior.stats.maxMp).toBe(pool + 2);
+    const mage = createHero("Tess", "mage");
+    const mPool = mage.stats.maxMp;
+    applyStatPoint(mage, "endurance");
+    expect(mage.stats.maxHp).toBe(29);
+    expect(mage.stats.maxMp).toBe(mPool);
   });
 });

@@ -71,5 +71,5 @@ test('upgrades patch the battle skill they improve', async ({ page }) => {
     await page.waitForTimeout(15)
     if (await page.getByText('Ambush!').isVisible().catch(() => false)) break
   }
-  await expect(page.getByRole('button', { name: 'Berserk (5 MP + 4 HP)' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Berserk (5 EN + 4 HP)' })).toBeVisible()
 })

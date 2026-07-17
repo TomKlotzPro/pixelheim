@@ -11,6 +11,18 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.20.0",
+    date: "2026-07-17",
+    codename: "Second Wind",
+    notes: [
+      "Fighters run on Endurance now: Warrior and Rogue skills cost EN, and it trickles back every combat round - rhythm over potion-chugging",
+      "Endurance is a stat: a little health for everyone, stamina pool and faster regen for martials",
+      "Intelligence finally feeds the mana pool: casters gain +2 max MP per INT point",
+      "The stat sheet explains all of it with live numbers, as always",
+      "Old heroes are seeded their role's base grit automatically - no save lost",
+    ],
+  },
+  {
     version: "0.19.0",
     date: "2026-07-17",
     codename: "The Painted World",

@@ -26,6 +26,8 @@ test('the stat sheet explains each stat and previews the next point', async ({ p
   await expect(page.getByText(/Melee attack with STR weapons/)).toBeVisible()
   await expect(page.getByText(/flee \d+%/)).toBeVisible()
   await expect(page.getByText(/blocks \d+ per hit/)).toBeVisible()
+  // the warrior's grit row: stamina pool and per-turn regen
+  await expect(page.getByText(/EN \d+ · regen \d+\/turn/)).toBeVisible()
 
   // the veteran has banked points, so the arrow preview is showing
   await expect(page.locator('.stat-next').first()).toBeVisible()
