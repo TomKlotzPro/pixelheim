@@ -30,7 +30,7 @@ export function inventoryReducer(draft: GameState, action: InventoryAction): voi
 
     case "DROP": {
       if ((draft.inventory[action.itemId] ?? 0) <= 0) return;
-      draft.inventory = removeItem(draft.inventory, action.itemId);
+      draft.inventory = removeItem(draft.inventory, action.itemId, action.count ?? 1);
       return;
     }
 
