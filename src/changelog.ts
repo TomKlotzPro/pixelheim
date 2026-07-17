@@ -11,6 +11,18 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.30.0",
+    date: "2026-07-17",
+    codename: "A Fresh Coat",
+    notes: [
+      "Real retro type everywhere: the UI runs on VT323 with Press Start 2P headlines - Courier New has been retired with honors",
+      "In-world lettering is TRUE pixel text now: door signs, the talk prompt and battle damage numbers use a hand-built bitmap font, crisp at any zoom",
+      "Door signs sit on proper wooden plates",
+      "Everyone casts a shadow: heroes, villagers and monsters are grounded on the map",
+      "A quiet vignette frames the world",
+    ],
+  },
+  {
     version: "0.29.0",
     date: "2026-07-17",
     codename: "Dressed to Kill",
