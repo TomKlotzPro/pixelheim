@@ -3,6 +3,7 @@ import { carriedWeight, carryCapacity } from "../../game/hero/character";
 import { dispatch, useGameState, useHero, useWorld } from "../../state/store";
 import { paintMap, tileColor } from "../../world/mapColors";
 import { getMap } from "../../world/maps/index";
+import { signsOn } from "../../world/signs";
 import { waypointDiscovered, WAYPOINTS } from "../../world/waypoints";
 
 const TILE_PX = 8;
@@ -91,6 +92,7 @@ export function MapScreen({ onClose }: MapScreenProps) {
 /** The corner mini-map: the hero's surroundings, fog included. */
 export function MiniMap() {
   const world = useWorld();
+  const house = useGameState().house;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const WINDOW = 21;
   const PX = 4;
@@ -113,10 +115,22 @@ export function MiniMap() {
         ctx.fillRect((dx + half) * PX, (dy + half) * PX, PX, PX);
       }
     }
+    // landmarks: gold for the craft stations, green for your house
+    for (const sign of signsOn(map.id, house.owned)) {
+      const dx = sign.x - world.position.x;
+      const dy = sign.y - world.position.y;
+      if (Math.abs(dx) > half || Math.abs(dy) > half) continue;
+      ctx.fillStyle = sign.icon
+        ? "#e8c34a"
+        : sign.label === "HOME" || sign.label === "FOR SALE"
+          ? "#4ec04e"
+          : "#c8a8e8";
+      ctx.fillRect((dx + half) * PX, (dy + half) * PX, PX, PX);
+    }
     // the hero, dead center
     ctx.fillStyle = "#f0f0e8";
     ctx.fillRect(half * PX, half * PX, PX, PX);
-  }, [world]);
+  }, [world, house.owned]);
 
   return <canvas ref={canvasRef} className="mini-map" width={WINDOW * PX} height={WINDOW * PX} aria-hidden="true" />;
 }

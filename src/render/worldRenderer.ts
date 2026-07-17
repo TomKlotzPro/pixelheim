@@ -10,8 +10,8 @@ import { AtmosphereLayer } from "./worldAtmosphere";
 import { TerrainLayer } from "./worldTerrain";
 
 export { ART } from "./pixiUtils";
-export const VIEW_W = 15;
-export const VIEW_H = 11;
+export const VIEW_W = 21;
+export const VIEW_H = 13;
 
 /** Maps under the open sky; interiors stay lit and ember-free. */
 const OUTDOOR_MAPS = new Set(["overworld", "town", "demo", "deepwood", "mirefen"]);

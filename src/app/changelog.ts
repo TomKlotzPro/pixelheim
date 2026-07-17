@@ -11,6 +11,16 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.43.0",
+    date: "2026-07-18",
+    codename: "The Wide View",
+    notes: [
+      "The viewport grew from 15x11 to 21x13 tiles: you see MORE world at once, and the finer scale reads as sharper, denser pixel art",
+      "Your house announces itself: a FOR SALE sign hangs over the door, and turns to HOME once the deed is yours",
+      "The mini-map learned the landmarks: gold dots mark the forge and the cauldron, green marks your house",
+    ],
+  },
+  {
     version: "0.42.0",
     date: "2026-07-18",
     codename: "The Landlord",
