@@ -11,6 +11,16 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.25.0",
+    date: "2026-07-17",
+    codename: "At the Bench",
+    notes: [
+      "Crafting moved to the stations: forge gear at Hilda's, brew at Vex's cauldron - the Craft tab still browses recipes anywhere and tells you where to go",
+      "The mini-map no longer hides under the sound and settings buttons",
+      "A small-screen pass: panels fit, the HUD compacts, and nothing overlaps at any width",
+    ],
+  },
+  {
     version: "0.24.0",
     date: "2026-07-17",
     codename: "Beyond the Ring",

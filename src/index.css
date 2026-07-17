@@ -950,8 +950,8 @@ body {
 }
 .mini-map {
   position: absolute;
-  top: 14px;
-  right: 14px;
+  top: 56px;
+  right: 10px;
   z-index: 5;
   image-rendering: pixelated;
   border: 2px solid var(--border);
@@ -1300,3 +1300,40 @@ body {
   gap: 16px;
 }
 .skill-tree { overscroll-behavior: contain; }
+
+/* ---------- small screens: nothing overlaps at any width ---------- */
+@media (max-width: 760px) {
+  .mini-map {
+    display: none;
+  }
+  .world-hud {
+    max-width: 200px;
+    font-size: 12px;
+  }
+  .hud-actions {
+    flex-wrap: wrap;
+  }
+  .inventory-panel,
+  .options-panel,
+  .skill-tree,
+  .map-panel,
+  .stat-sheet {
+    width: 94vw;
+  }
+  .corner-buttons {
+    top: 6px;
+    right: 6px;
+  }
+  .battle-arena {
+    gap: 8px;
+    padding: 12px 8px;
+  }
+}
+@media (max-height: 620px) {
+  .mini-map {
+    display: none;
+  }
+  .world-hud .statbar {
+    height: 10px;
+  }
+}

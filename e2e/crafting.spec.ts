@@ -7,7 +7,7 @@ test('the craft tab brews potions from foraged materials', async ({ page }) => {
     state: {
       ...VETERAN_SAVE.state,
       inventory: { forest_herb: 3, marsh_reed: 1 },
-      world: { position: { mapId: 'town', x: 14, y: 15, facing: 'down' }, discovered: {}, openedChests: [] },
+      world: { position: { mapId: 'town_alchemist', x: 4, y: 2, facing: 'down' }, discovered: {}, openedChests: [] },
     },
   }
   await page.goto('./')
