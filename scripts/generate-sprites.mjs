@@ -2356,6 +2356,31 @@ for (const name of [...MONSTERS, ...NPCS, ...HEROES]) {
   sprites[name] = outlined(sprites[name]);
 }
 
+// ---------------- rank looks: the promoted wear it ----------------
+// Every hero variant gets three ascended forms: garb brightens with rank and
+// the outline turns from shadow to gold to radiant. Skin stays skin.
+const RANK_OUTLINES = [null, "#232838", "#4a3a12", "#0f3d35"];
+function brighten(hex, factor) {
+  const n = Number.parseInt(hex.slice(1), 16);
+  const lift = (shift) => Math.min(255, Math.round(((n >> shift) & 255) * factor));
+  return `#${((lift(16) << 16) | (lift(8) << 8) | lift(0)).toString(16).padStart(6, "0")}`;
+}
+const HERO_RANKS = [];
+for (const name of HEROES.slice()) {
+  for (let r = 1; r <= 3; r++) {
+    const src = sprites[name];
+    const palette = {};
+    for (const [ch, color] of Object.entries(src.palette)) {
+      if (ch === "F") palette[ch] = color;
+      else if (ch === "o") palette[ch] = RANK_OUTLINES[r];
+      else palette[ch] = brighten(color, 1 + r * 0.09);
+    }
+    sprites[`${name}_r${r}`] = { palette, rows: src.rows };
+    HERO_RANKS.push(`${name}_r${r}`);
+  }
+}
+HEROES.push(...HERO_RANKS);
+
 const names = Object.keys(sprites);
 for (const name of names) {
   const { rows, palette } = sprites[name];
