@@ -7,6 +7,7 @@ import { buyPrice, sellPriceAt, SHOPS, shopStock } from "../../game/economy/shop
 import { activeShopId } from "../../state/gameReducer";
 import { dispatch, useGameState, useHero } from "../../state/store";
 import { Sprite } from "../widgets/Sprite";
+import { PROPERTY_PRICES } from "../../state/shared";
 
 export function Shop() {
   const state = useGameState();
@@ -16,6 +17,9 @@ export function Shop() {
   // No shop on this map: render nothing rather than crash (PIX-58).
   if (!shopId) return null;
   const def = SHOPS[shopId];
+  const shopMapId = state.world?.position.mapId ?? "";
+  const deed = PROPERTY_PRICES[shopMapId];
+  const deedOwned = state.properties.includes(shopMapId);
   const stock = shopStock(shopId, state.unlockedLevel);
   const owned = Object.entries(state.inventory).map(([id, count]) => ({ item: getItem(id), count }));
   const equippedUids = new Set(Object.values(state.equipped));
@@ -35,6 +39,25 @@ export function Shop() {
           </button>
         </div>
         <p className="merchant-line">{def.greeting}</p>
+        {deed && !deedOwned && (
+          <div className="station-travel" data-testid="property-offer">
+            <span className="item-locked">
+              {deed.name} is for sale: {deed.cost}g. Rent flows with every victory.
+            </span>
+            <button
+              className="btn btn-small btn-primary"
+              disabled={state.gold < deed.cost}
+              onClick={() => dispatch({ type: "BUY_PROPERTY", mapId: state.world!.position.mapId })}
+            >
+              Buy the deed
+            </button>
+          </div>
+        )}
+        {deed && deedOwned && (
+          <p className="station-banner" data-testid="property-owned">
+            {deed.name} is YOURS. The keeper works for you now.
+          </p>
+        )}
 
         <div className="tabs">
           <button className={`tab ${tab === "buy" ? "active" : ""}`} onClick={() => setTab("buy")}>
