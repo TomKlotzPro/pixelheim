@@ -29,6 +29,7 @@ function StatSheet({ onClose }: { onClose: () => void }) {
             Close
           </button>
         </div>
+        <div className="panel-body">
         <p className={hero.statPoints > 0 ? "stat-points" : "empty-note"}>
           {hero.statPoints > 0
             ? `${hero.statPoints} stat point${hero.statPoints > 1 ? "s" : ""} to spend`
@@ -77,6 +78,7 @@ function StatSheet({ onClose }: { onClose: () => void }) {
           </div>
         ))}
         <p className="options-footer">Spent points are permanent. Choose like it matters.</p>
+        </div>
       </div>
     </div>
   );
