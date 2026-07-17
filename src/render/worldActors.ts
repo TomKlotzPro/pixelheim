@@ -4,7 +4,8 @@ import type { GameState } from "../game/types";
 import { spawnSpecies } from "../game/encounters";
 import { getMonster } from "../game/monsters";
 import { type Chest, chestSpriteName, chestsOn, solidChestAt } from "../world/chests";
-import { npcAt, npcPosition, npcsOn, type Npc } from "../world/npcs";
+import { npcBeside, npcPosition, npcsOn, type Npc } from "../world/npcs";
+import { signsOn } from "../world/signs";
 import { type MonsterSpawn, spawnPosition, spawnRegion, spawnsOn } from "../world/spawns";
 import type { WorldMap } from "../world/types";
 import { ART, type FrameBank, retroText } from "./pixiUtils";
@@ -12,6 +13,17 @@ import { ART, type FrameBank, retroText } from "./pixiUtils";
 const WALK_MS = 160; // per walk frame
 const IDLE_MS = 500; // per idle frame
 const WALK_LINGER_MS = 240; // keep the legs moving briefly after the last step
+
+/**
+ * Nobody breathes in unison: each actor gets its own idle phase and a slightly
+ * different period, so the village stops ticking on one global metronome
+ * (which read as the NPCs "moving with the grass").
+ */
+function idleBeat(id: string): { phase: number; period: number } {
+  let h = 0;
+  for (const c of id) h = (h * 31 + c.charCodeAt(0)) % 9973;
+  return { phase: h, period: IDLE_MS - 80 + (h % 5) * 45 };
+}
 
 const FACING_DELTAS = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] } as const;
 
@@ -77,6 +89,15 @@ export class ActorLayer {
     this.prompt.anchor.set(0.5, 1);
     this.prompt.visible = false;
     container.addChild(this.prompt);
+
+    // Door signs: the town tells you where the forge and the cauldron live.
+    for (const sign of signsOn(map.id)) {
+      const label = retroText(sign.label, 0xe8c34a, scale);
+      label.anchor.set(0.5, 1);
+      label.position.set(sign.x * ART + ART / 2, sign.y * ART - 1);
+      label.alpha = 0.9;
+      container.addChild(label);
+    }
   }
 
   /** Snap the hero into place after a map change. */
@@ -111,18 +132,17 @@ export class ActorLayer {
       if (name) entry.sprite.texture = Assets.get(name) as Texture;
     }
 
-    // Someone to talk to (or something to open): the prompt floats over the
-    // NPC or unopened chest the hero is facing.
+    // Someone to talk to (or something to open): an NPC beside the hero wins
+    // (faced tile first, any neighbor after), then the chest the hero faces.
     if (this.prompt) {
-      const delta = FACING_DELTAS[pos.facing];
       const idle = state.hero && !state.dialogue && !state.shopOpen && !state.inventoryOpen;
-      const chest = idle ? solidChestAt(map.id, pos.x + delta[0], pos.y + delta[1]) : null;
-      const facing = idle
-        ? (npcAt(map.id, pos.x + delta[0], pos.y + delta[1], state.worldSteps) ??
-          (chest && !(state.world?.openedChests ?? []).includes(chest.id) ? chest : null))
-        : null;
-      this.prompt.visible = facing !== null;
-      if (facing) {
+      const beside = idle ? npcBeside(map.id, pos.x, pos.y, pos.facing, state.worldSteps) : null;
+      const faced = FACING_DELTAS[pos.facing];
+      const chest = idle && !beside ? solidChestAt(map.id, pos.x + faced[0], pos.y + faced[1]) : null;
+      const openable = chest && !(state.world?.openedChests ?? []).includes(chest.id) ? chest : null;
+      this.prompt.visible = beside !== null || openable !== null;
+      if (beside || openable) {
+        const delta = beside ? FACING_DELTAS[beside.facing] : faced;
         this.prompt.position.set((pos.x + delta[0]) * ART + ART / 2, (pos.y + delta[1]) * ART - 2);
       }
     }
@@ -132,13 +152,15 @@ export class ActorLayer {
     for (const { npc, sprite, target } of this.npcs) {
       sprite.position.set(ease(sprite.position.x, target.x), ease(sprite.position.y, target.y));
       const sheet = this.bank.frames.get(`${npc.sprite}_idle`);
-      if (sheet) sprite.texture = sheet[Math.floor(clock / IDLE_MS) % sheet.length];
+      const beat = idleBeat(npc.id);
+      if (sheet) sprite.texture = sheet[Math.floor((clock + beat.phase) / beat.period) % sheet.length];
     }
 
-    for (const { sheet, sprite, target } of this.monsters) {
+    for (const { spawn, sheet, sprite, target } of this.monsters) {
       sprite.position.set(ease(sprite.position.x, target.x), ease(sprite.position.y, target.y));
       const frames = this.bank.frames.get(sheet);
-      if (frames) sprite.texture = frames[Math.floor(clock / IDLE_MS) % frames.length];
+      const beat = idleBeat(spawn.id);
+      if (frames) sprite.texture = frames[Math.floor((clock + beat.phase) / beat.period) % frames.length];
     }
 
     if (this.hero && this.heroFrames) {

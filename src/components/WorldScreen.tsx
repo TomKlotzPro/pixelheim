@@ -5,9 +5,10 @@ import { getMap } from "../world/maps";
 import { spawnSpecies } from "../game/encounters";
 import { getMonster } from "../game/monsters";
 import { chestSpriteName, chestsOn, solidChestAt } from "../world/chests";
-import { npcAt, NPCS, npcPosition, npcsOn } from "../world/npcs";
+import { npcBeside, NPCS, npcPosition, npcsOn } from "../world/npcs";
 import { spawnPosition, spawnRegion, spawnsOn } from "../world/spawns";
 import { regionAt } from "../world/parseMap";
+import { signsOn } from "../world/signs";
 import { TILES } from "../world/tiles";
 import type { Direction, TileId } from "../world/types";
 
@@ -62,14 +63,18 @@ export function WorldScreen() {
   const heroSprite = ROLES[state.hero?.roleId ?? "warrior"].sprite;
   const tilePx = ART_PX * useTileScale();
 
-  // Someone to talk to: a prompt floats over the NPC the hero is facing.
-  const { dx: fdx, dy: fdy } = FACING_DELTAS[world.facing];
-  const facingNpc =
+  // Someone to talk to: a prompt floats over the NPC beside the hero -
+  // the faced tile wins, but any neighbor is one keypress away.
+  const beside =
     state.hero && !state.dialogue && !state.shopOpen
-      ? npcAt(map.id, world.x + fdx, world.y + fdy, state.worldSteps)
+      ? npcBeside(map.id, world.x, world.y, world.facing, state.worldSteps)
       : null;
+  const facingNpc = beside?.npc ?? null;
+  const { dx: fdx, dy: fdy } = FACING_DELTAS[beside?.facing ?? world.facing];
+  // A chest only answers to the faced tile: it is furniture, you bump it anyway.
+  const { dx: cdx, dy: cdy } = FACING_DELTAS[world.facing];
   const facingChestEntity =
-    state.hero && !state.dialogue && !state.shopOpen ? solidChestAt(map.id, world.x + fdx, world.y + fdy) : null;
+    state.hero && !state.dialogue && !state.shopOpen ? solidChestAt(map.id, world.x + cdx, world.y + cdy) : null;
   const facingChest =
     facingChestEntity && !(state.world?.openedChests ?? []).includes(facingChestEntity.id) ? facingChestEntity : null;
 
@@ -133,6 +138,9 @@ export function WorldScreen() {
                 data-open={(state.world?.openedChests ?? []).includes(chest.id) || undefined}
               />
             ))}
+            {signsOn(map.id).map((sign) => (
+              <div key={`${sign.x},${sign.y}`} data-testid="door-sign" data-label={sign.label} />
+            ))}
             {(facingNpc || facingChest) && <div data-testid="npc-prompt" />}
           </div>
         </>
@@ -189,6 +197,15 @@ export function WorldScreen() {
               </div>
             );
           })}
+          {signsOn(map.id).map((sign) => (
+            <span
+              key={`${sign.x},${sign.y}`}
+              className="door-sign"
+              style={{ left: (sign.x + 0.5) * tilePx, top: sign.y * tilePx }}
+            >
+              {sign.label}
+            </span>
+          ))}
           {spawnsOn(map.id)
             .filter((spawn) => !(state.world?.slain ?? []).includes(spawn.id))
             .map((spawn) => {
