@@ -931,6 +931,34 @@ body {
 .world-hero.facing-left img {
   transform: scaleX(-1);
 }
+.map-panel {
+  width: 440px;
+  max-width: 94vw;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.map-canvas {
+  width: 100%;
+  image-rendering: pixelated;
+  border: 2px solid var(--border);
+}
+.map-waypoints {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.mini-map {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 5;
+  image-rendering: pixelated;
+  border: 2px solid var(--border);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
 /* Invisible-but-measurable state hooks for the e2e suite over the canvas. */
 .world-mirror,
 .world-mirror div {

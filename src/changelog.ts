@@ -11,6 +11,18 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.23.0",
+    date: "2026-07-17",
+    codename: "The Cartographer",
+    notes: [
+      "The world map is here: press M for the Ashenreach under fog of war - you only see what you have walked",
+      "Fast travel: any waypoint you have laid eyes on is one click away - seen once, reachable forever",
+      "No teleporting over-encumbered. Lighten the pack.",
+      "A mini-map rides in the corner of the world, fog included",
+      "The map key is rebindable like everything else",
+    ],
+  },
+  {
     version: "0.22.0",
     date: "2026-07-17",
     codename: "The Maker's Mark",
