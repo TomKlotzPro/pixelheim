@@ -44,7 +44,7 @@ describe("carry", () => {
   it("capacity grows with strength", () => {
     const hero = createHero("Tess", "warrior");
     hero.stats.strength = 10;
-    expect(carryCapacity(hero)).toBe(60 + 30);
+    expect(carryCapacity(hero, [], {})).toBe(60 + 30);
   });
 
   it("equipped gear weighs nothing; the pack does", () => {

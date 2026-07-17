@@ -36,6 +36,15 @@ const CATALOG: ShopEntry[] = [
   { itemId: "tower_shield", unlockLevel: 8 },
   { itemId: "shadow_cloak", unlockLevel: 9 },
   { itemId: "greater_potion", unlockLevel: 11 },
+  // the wardrobe and the jewelry counter
+  { itemId: "wool_gloves", unlockLevel: 1 },
+  { itemId: "worn_boots", unlockLevel: 1 },
+  { itemId: "leather_cap", unlockLevel: 2 },
+  { itemId: "bone_charm", unlockLevel: 3 },
+  { itemId: "marchers_boots", unlockLevel: 4 },
+  { itemId: "band_of_grit", unlockLevel: 5 },
+  { itemId: "ring_of_clarity", unlockLevel: 5 },
+  { itemId: "quickstep_ring", unlockLevel: 5 },
 ];
 
 export type ShopId = "odo" | "smith" | "alchemist";

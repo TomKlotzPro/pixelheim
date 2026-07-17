@@ -40,21 +40,21 @@ function readout(stat: SpendableStat, hero: Hero, gear: GearInstance[], equipped
     case "strength": {
       const parts: string[] = [];
       if (scaling === "strength") parts.push(`ATK ${hero.stats.strength + (weapon ? gearDamage(weapon) : 2)}`);
-      parts.push(`carry ${carryCapacity(hero)}`);
+      parts.push(`carry ${carryCapacity(hero, gear, equipped)}`);
       return parts.join(" · ");
     }
     case "intelligence": {
       const parts: string[] = [];
       if (scaling === "intelligence") parts.push(`ATK ${hero.stats.intelligence + gearDamage(weapon!)}`);
       const spells = getHeroSkills(hero).filter((skill) => skill.stat === "intelligence");
-      const strongest = spells.map((skill) => heroSkillPower(hero, skill)).toSorted((a, b) => b - a)[0];
+      const strongest = spells.map((skill) => heroSkillPower(hero, skill, gear, equipped)).toSorted((a, b) => b - a)[0];
       if (strongest !== undefined) parts.push(`skill power ${strongest}`);
       if (ROLES[hero.roleId].resource === "mana") parts.push(`MP ${hero.stats.maxMp}`);
       if (parts.length === 0) parts.push("powers INT skills");
       return parts.join(" · ");
     }
     case "dexterity":
-      return `flee ${Math.round(fleeChance(hero) * 100)}%`;
+      return `flee ${Math.round(fleeChance(hero, gear, equipped) * 100)}%`;
     case "defense":
       return `blocks ${totalDefense(hero, gear, equipped)} per hit`;
     case "endurance": {

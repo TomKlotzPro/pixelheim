@@ -21,7 +21,7 @@ export function battleReducer(draft: GameState, action: BattleAction): void {
   switch (action.type) {
     case "ENTER_LEVEL": {
       if (!draft.hero || action.level > draft.unlockedLevel) return;
-      if (carriedWeight(draft.inventory, draft.gear, draft.equipped) > carryCapacity(draft.hero)) return;
+      if (carriedWeight(draft.inventory, draft.gear, draft.equipped) > carryCapacity(draft.hero, draft.gear, draft.equipped)) return;
       draft.screen = "battle";
       draft.inventoryOpen = false;
       draft.shopOpen = false;

@@ -18,7 +18,7 @@ export function MapScreen({ onClose }: MapScreenProps) {
   const world = useWorld();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const overworld = getMap("overworld");
-  const encumbered = carriedWeight(state.inventory, state.gear, state.equipped) > carryCapacity(hero);
+  const encumbered = carriedWeight(state.inventory, state.gear, state.equipped) > carryCapacity(hero, state.gear, state.equipped);
 
   useEffect(() => {
     const ctx = canvasRef.current?.getContext("2d");

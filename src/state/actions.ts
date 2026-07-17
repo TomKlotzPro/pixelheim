@@ -1,4 +1,4 @@
-import type { EquipSlot, GameState, RoleId, SpendableStat } from "../game/types";
+import type { EquippedSlot, GameState, RoleId, SpendableStat } from "../game/types";
 import type { Direction } from "../world/types";
 
 /** Session lifecycle: starting, loading and creating a game. */
@@ -23,7 +23,7 @@ export type BattleAction =
 /** Managing gear and the pack, outside of any shop. */
 export type InventoryAction =
   | { type: "EQUIP"; uid: string }
-  | { type: "UNEQUIP"; slot: EquipSlot }
+  | { type: "UNEQUIP"; slot: EquippedSlot }
   | { type: "DROP"; itemId: string }
   | { type: "DROP_GEAR"; uid: string }
   | { type: "TOGGLE_INVENTORY" };
