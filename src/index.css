@@ -452,6 +452,25 @@ body {
   padding: 24px 16px;
 }
 /* Pixi mode: the canvas stage draws the fighters; the arena keeps only the bars. */
+.battle-flash {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  background: #05060a;
+  animation: battle-blink 0.45s steps(6) forwards;
+}
+@keyframes battle-blink {
+  0% {
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
 .battle-stage {
   display: flex;
   justify-content: center;
