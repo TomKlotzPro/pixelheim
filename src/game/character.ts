@@ -1,4 +1,5 @@
 import { getItem } from "./items";
+import { freshJobs } from "./jobs";
 import { gearArmor, gearItem } from "./rarity";
 import { ROLES } from "./roles";
 import { getPassives, rootNode } from "./skillTree";
@@ -25,6 +26,7 @@ export function createHero(name: string, roleId: RoleId): Hero {
     statPoints: 0,
     skillPoints: 0,
     skillNodes: [rootNode(roleId).id],
+    jobs: freshJobs(),
   };
 }
 

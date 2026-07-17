@@ -2,6 +2,11 @@ import type { DungeonId, WorldState, RegionId } from "../world/types";
 
 export type RoleId = "warrior" | "mage" | "rogue" | "cleric";
 
+/** Professions: honest work levels up too. */
+export type JobId = "smithing" | "alchemy" | "foraging";
+export type JobProgress = { level: number; xp: number };
+export type Jobs = Record<JobId, JobProgress>;
+
 export type Resource = "mana" | "endurance";
 
 export type Stats = {
@@ -146,6 +151,8 @@ export type Hero = {
   skillPoints: number;
   /** Owned skill-tree node ids. */
   skillNodes: string[];
+  /** Profession progress: smithing, alchemy, foraging. */
+  jobs: Jobs;
 };
 
 /** The four stats a point can be spent on. */
