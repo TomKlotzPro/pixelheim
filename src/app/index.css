@@ -753,7 +753,7 @@ body {
   z-index: 50;
 }
 .inventory-panel {
-  width: 640px;
+  width: 700px;
   max-width: 100%;
   max-height: 85vh;
   display: flex;
@@ -792,7 +792,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  width: 196px;
+  width: fit-content;
   flex-shrink: 0;
 }
 .doll {
@@ -802,7 +802,7 @@ body {
     "neck portrait offhand"
     "body portrait ring1"
     "hands feet ring2";
-  grid-template-columns: 56px 1fr 56px;
+  grid-template-columns: 52px 76px 52px;
   gap: 6px;
   padding: 10px;
   background: var(--bg-panel-2);
@@ -820,8 +820,10 @@ body {
 }
 .doll-slot {
   font: inherit;
-  width: 56px;
+  width: 100%;
+  min-width: 0;
   height: 44px;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -850,11 +852,13 @@ body {
 .doll-ring2 { grid-area: ring2; }
 .doll-feet { grid-area: feet; }
 .doll-slot-label {
-  font-size: 9px;
-  letter-spacing: 1px;
+  font-size: 8px;
+  letter-spacing: 0.5px;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 .doll-stats {
+  align-self: stretch;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -877,19 +881,19 @@ body {
   color: var(--accent);
   font-style: normal;
 }
-@media (max-width: 700px) {
+@media (max-width: 760px) {
   .inventory-body {
     flex-direction: column;
   }
   .doll-column {
     width: 100%;
     flex-direction: row;
-  }
-  .doll {
-    flex: 1;
+    justify-content: center;
+    flex-wrap: wrap;
   }
   .doll-stats {
-    width: 132px;
+    width: 148px;
+    align-self: auto;
   }
 }
 .merchant-line {
