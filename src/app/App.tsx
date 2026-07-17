@@ -28,6 +28,7 @@ import type { Direction } from "../world/types";
 /** The ascension card: shows for a few seconds when the hero crosses a rank. */
 function useRankUp(state: GameState): string | null {
   const [title, setTitle] = useState<string | null>(null);
+  const pending = useRef<string | null>(null);
   const prevLevel = useRef(state.hero?.level ?? 0);
   const level = state.hero?.level ?? 0;
   useEffect(() => {
@@ -35,10 +36,18 @@ function useRankUp(state: GameState): string | null {
     prevLevel.current = level;
     const hero = gameStore.getState().hero;
     if (level > before && before > 0 && rankIndex(level) > rankIndex(before) && hero) {
-      setTitle(rankTitle(hero));
-      SFX.evolve();
+      // Ascension waits for daylight: the scene plays on the map, never over
+      // the battle where the level actually landed (PIX-101).
+      pending.current = rankTitle(hero);
     }
   }, [level]);
+  useEffect(() => {
+    if (state.screen === "world" && pending.current) {
+      setTitle(pending.current);
+      pending.current = null;
+      SFX.evolve();
+    }
+  }, [state.screen, level]);
   // The dismiss timer lives on the title alone: an hp tick or xp gain used
   // to clean it up and strand the card on screen forever (PIX-100).
   useEffect(() => {
