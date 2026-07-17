@@ -1,3 +1,4 @@
+import { applyStatPoint } from "../../game/character";
 import { canBuyNode, getNode } from "../../game/skillTree";
 import type { GameState } from "../../game/types";
 import type { ProgressionAction } from "../actions";
@@ -6,7 +7,7 @@ export function progressionReducer(draft: GameState, action: ProgressionAction):
   switch (action.type) {
     case "SPEND_STAT_POINT": {
       if (!draft.hero || draft.hero.statPoints <= 0) return;
-      draft.hero.stats[action.stat] += 1;
+      applyStatPoint(draft.hero, action.stat);
       draft.hero.statPoints -= 1;
       return;
     }

@@ -1,4 +1,4 @@
-import { applyLevelUps, STAT_POINTS_PER_LEVEL } from "./character";
+import { applyLevelUps, STAT_POINTS_PER_LEVEL, staminaRegen } from "./character";
 import {
   consumeStun,
   fleeChance,
@@ -120,7 +120,10 @@ export function monsterTurn(state: GameState, hero: Hero, log: string[]): void {
   if (hero.hp <= 0) {
     battle.phase = "lost";
     log.push("You succumb to your wounds. Everything goes dark...");
+    return;
   }
+  // Martials catch their breath: endurance trickles back every round.
+  hero.mp = Math.min(hero.stats.maxMp, hero.mp + staminaRegen(hero));
 }
 
 /**
