@@ -1335,6 +1335,9 @@ body {
   }
   .world-hud .statbar {
     height: 10px;
+  }
+}
+
 /* ---------- title v3: the first screen breathes ---------- */
 .title-idle {
   display: inline-block;
