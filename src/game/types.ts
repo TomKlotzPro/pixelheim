@@ -2,6 +2,8 @@ import type { DungeonId, WorldState, RegionId } from "../world/types";
 
 export type RoleId = "warrior" | "mage" | "rogue" | "cleric";
 
+export type Resource = "mana" | "endurance";
+
 export type Stats = {
   maxHp: number;
   maxMp: number;
@@ -9,6 +11,8 @@ export type Stats = {
   intelligence: number;
   dexterity: number;
   defense: number;
+  /** Grit: feeds the stamina pool for martials, and a little health for all. */
+  endurance: number;
 };
 
 export type ScalingStat = "strength" | "intelligence" | "dexterity";
@@ -52,6 +56,8 @@ export type Role = {
   description: string;
   sprite: string;
   baseStats: Stats;
+  /** What this role spends on skills: casters burn Mana, martials Endurance. */
+  resource: Resource;
   /** Automatic per-level gains; combat stats come from spendable points. */
   growth: { maxHp: number; maxMp: number };
   /** Ordered by unlockLevel; index 0 is the starting skill. */
@@ -143,7 +149,7 @@ export type Hero = {
 };
 
 /** The four stats a point can be spent on. */
-export type SpendableStat = "strength" | "intelligence" | "dexterity" | "defense";
+export type SpendableStat = "strength" | "intelligence" | "dexterity" | "defense" | "endurance";
 
 export type Equipped = Partial<Record<EquipSlot, string>>;
 

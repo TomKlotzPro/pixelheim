@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useRef } from "react";
 import { getItem } from "../game/items";
+import { resourceLabel } from "../game/character";
 import { getLevel } from "../game/levels";
 import { ROLES } from "../game/roles";
 import { getHeroSkills } from "../game/skillTree";
@@ -83,7 +84,7 @@ export function Battle() {
           )}
           <div className="combatant-name">{hero.name}</div>
           <StatBar label="HP" value={hero.hp} max={hero.stats.maxHp} color="var(--hp)" />
-          <StatBar label="MP" value={hero.mp} max={hero.stats.maxMp} color="var(--mp)" />
+          <StatBar label={resourceLabel(hero.roleId)} value={hero.mp} max={hero.stats.maxMp} color={resourceLabel(hero.roleId) === "EN" ? "var(--en)" : "var(--mp)"} />
           <EffectBadges effects={battle.heroEffects} />
         </div>
         <div className="vs">VS</div>
@@ -123,7 +124,7 @@ export function Battle() {
               onClick={() => dispatch({ type: "SKILL", skillIndex: index })}
               title={skill.description}
             >
-              {skill.name} ({skill.mpCost} MP{skill.hpCost ? ` + ${skill.hpCost} HP` : ""})
+              {skill.name} ({skill.mpCost} {resourceLabel(hero.roleId)}{skill.hpCost ? ` + ${skill.hpCost} HP` : ""})
             </button>
           ))}
           <button className="btn" onClick={() => dispatch({ type: "TOGGLE_INVENTORY" })} disabled={!hasConsumables}>

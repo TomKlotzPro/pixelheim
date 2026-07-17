@@ -104,7 +104,7 @@ export const SKILL_TREES: Record<RoleId, SkillNode[]> = {
       name: "Berserk", description: "Reckless fury.", mpCost: 5, hpCost: 8, kind: "damage", multiplier: 2.7, stat: "strength",
     }),
     upgrade("warrior_blood_rage", "warrior_berserk", 2, "Blood Rage", "Berserk costs only 4 HP.", { hpCost: 4 }),
-    passive("warrior_rampage", "warrior_blood_rage", 2, 2, "Rampage", "Kills refund 3 MP.", { killRefundMp: 3 }),
+    passive("warrior_rampage", "warrior_blood_rage", 2, 2, "Rampage", "Kills refund 3 EN.", { killRefundMp: 3 }),
     capstone("warrior_skullsplitter", "warrior_executioner", 0, "Skullsplitter", "One blow to end arguments: enormous STR damage.", {
       name: "Skullsplitter", description: "One blow to end arguments.", mpCost: 12, kind: "damage", multiplier: 3.4, stat: "strength",
     }),

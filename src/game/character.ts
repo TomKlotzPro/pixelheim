@@ -2,7 +2,7 @@ import { getItem } from "./items";
 import { gearArmor, gearItem } from "./rarity";
 import { ROLES } from "./roles";
 import { getPassives, rootNode } from "./skillTree";
-import type { Equipped, GearInstance, Hero, RoleId } from "./types";
+import type { Equipped, GearInstance, Hero, RoleId, SpendableStat } from "./types";
 
 export function xpToNext(level: number): number {
   return 20 + level * 18;
@@ -84,4 +84,38 @@ export function carriedWeight(inventory: Record<string, number>, gear: GearInsta
     0,
   );
   return stacks + carriedGear;
+}
+
+/** What the hero's skill bar is made of: "MP" for casters, "EN" for martials. */
+export function resourceLabel(roleId: RoleId): "MP" | "EN" {
+  return ROLES[roleId].resource === "endurance" ? "EN" : "MP";
+}
+
+/** Martials catch their breath every combat round; casters do not. */
+export function staminaRegen(hero: Hero): number {
+  if (ROLES[hero.roleId].resource !== "endurance") return 0;
+  return 1 + Math.floor(hero.stats.endurance / 6);
+}
+
+/**
+ * One stat point, spent: the single source of truth for what a point buys,
+ * used by both the reducer and the stat sheet's +1 preview. INT grows the
+ * mana pool for casters; END grows the stamina pool for martials and gives
+ * everyone a little health.
+ */
+export function applyStatPoint(hero: Hero, stat: SpendableStat): void {
+  hero.stats[stat] += 1;
+  const resource = ROLES[hero.roleId].resource;
+  if (stat === "intelligence" && resource === "mana") {
+    hero.stats.maxMp += 2;
+    hero.mp += 2;
+  }
+  if (stat === "endurance") {
+    hero.stats.maxHp += 1;
+    hero.hp += 1;
+    if (resource === "endurance") {
+      hero.stats.maxMp += 2;
+      hero.mp += 2;
+    }
+  }
 }

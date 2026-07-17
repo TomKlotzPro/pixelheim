@@ -121,3 +121,17 @@ describe("grantFloorRewards", () => {
     expect(s.unlockedLevel).toBeGreaterThanOrEqual(2);
   });
 });
+
+describe("stamina regen", () => {
+  it("a fighting warrior gets endurance back each round; a mage does not", () => {
+    neutralRng();
+    const s = dungeonState();
+    s.hero!.stats.endurance = 12; // regen 3
+    s.hero!.stats.maxMp = 20;
+    s.hero!.mp = 10;
+    s.battle!.monster.hp = 9999;
+    s.battle!.monster.maxHp = 9999;
+    heroAttack(s);
+    expect(s.hero!.mp).toBe(13);
+  });
+});
