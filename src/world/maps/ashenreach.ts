@@ -156,6 +156,21 @@ export const TOWN_ALCHEMIST_MAP: WorldMap = parseMap(
   [{ x: 4, y: 5, to: { kind: "map", mapId: "town", x: 4, y: 14 } }],
 );
 
+/** The player's house: bought with the deed, entered through the shut door
+ * at (30,13) in town (the reducer special-cases it - no portal until owned). */
+export const TOWN_HOUSE_MAP: WorldMap = parseMap(
+  "town_house",
+  `
+  ##########
+  #BB____tt#
+  #_______H#
+  #___nn___#
+  #o__$____#
+  ####D#####
+  `,
+  [{ x: 4, y: 5, to: { kind: "map", mapId: "town", x: 30, y: 14 } }],
+);
+
 export const TOWN_SHOP_MAP: WorldMap = parseMap(
   "town_shop",
   `
