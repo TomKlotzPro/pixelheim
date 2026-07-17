@@ -81,9 +81,9 @@ describe("fleeChance", () => {
   it("scales with dexterity and caps at 95%", () => {
     const hero = createHero("T", "rogue");
     hero.stats.dexterity = 10;
-    expect(fleeChance(hero)).toBeCloseTo(0.6);
+    expect(fleeChance(hero, [], {})).toBeCloseTo(0.6);
     hero.stats.dexterity = 999;
-    expect(fleeChance(hero)).toBe(0.95);
+    expect(fleeChance(hero, [], {})).toBe(0.95);
   });
 });
 

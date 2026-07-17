@@ -3,7 +3,7 @@ import { freshJobs } from "./jobs";
 import { gearArmor, gearItem } from "./rarity";
 import { ROLES } from "./roles";
 import { getPassives, rootNode } from "./skillTree";
-import type { Equipped, GearInstance, Hero, RoleId, SpendableStat } from "./types";
+import type { Equipped, GearInstance, GrantStat, Hero, RoleId, SpendableStat } from "./types";
 
 export function xpToNext(level: number): number {
   return 20 + level * 18;
@@ -61,15 +61,31 @@ export function weaponOf(gear: GearInstance[], equipped: Equipped): GearInstance
   return gearByUid(gear, equipped.weapon);
 }
 
+/** Every worn position that can carry armor (everything but the weapon hand). */
+export const ARMOR_SLOTS = ["body", "offhand", "head", "hands", "feet", "neck", "ring1", "ring2"] as const;
+
 export function totalArmor(gear: GearInstance[], equipped: Equipped): number {
-  return (["body", "offhand"] as const).reduce((sum, slot) => {
+  return ARMOR_SLOTS.reduce((sum, slot) => {
     const instance = gearByUid(gear, equipped[slot]);
     return sum + (instance ? gearArmor(instance) : 0);
   }, 0);
 }
 
-export function carryCapacity(hero: Hero): number {
-  return 60 + hero.stats.strength * 3 + getPassives(hero).carryBonus;
+/** Flat stat bonus from everything worn - jewelry, mostly. */
+export function grantedStat(gear: GearInstance[], equipped: Equipped, stat: GrantStat): number {
+  return Object.values(equipped).reduce((sum, uid) => {
+    const instance = gearByUid(gear, uid);
+    return sum + (instance ? (gearItem(instance).grants?.[stat] ?? 0) : 0);
+  }, 0);
+}
+
+/** The stat the world actually feels: base plus everything worn. */
+export function effectiveStat(hero: Hero, gear: GearInstance[], equipped: Equipped, stat: GrantStat): number {
+  return hero.stats[stat] + grantedStat(gear, equipped, stat);
+}
+
+export function carryCapacity(hero: Hero, gear: GearInstance[], equipped: Equipped): number {
+  return 60 + effectiveStat(hero, gear, equipped, "strength") * 3 + getPassives(hero).carryBonus;
 }
 
 /** Innate defense plus armor plus passive skill effects. */

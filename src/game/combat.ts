@@ -1,4 +1,4 @@
-import { totalDefense, weaponOf } from "./character";
+import { effectiveStat, totalDefense, weaponOf } from "./character";
 import { getMonster } from "./monsters";
 import { gearDamage, gearItem } from "./rarity";
 import { getPassives } from "./skillTree";
@@ -27,7 +27,7 @@ function variance(base: number): number {
 
 export function heroAttackDamage(hero: Hero, gear: GearInstance[], equipped: Equipped, monster: BattleMonster): number {
   const weapon = weaponOf(gear, equipped);
-  const stat = hero.stats[weapon ? (gearItem(weapon).scaling ?? "strength") : "strength"];
+  const stat = effectiveStat(hero, gear, equipped, weapon ? (gearItem(weapon).scaling ?? "strength") : "strength");
   let raw = stat + (weapon ? gearDamage(weapon) : 2);
   const passives = getPassives(hero);
   if (passives.critChance > 0 && Math.random() < passives.critChance) raw *= 1.5;
@@ -35,20 +35,20 @@ export function heroAttackDamage(hero: Hero, gear: GearInstance[], equipped: Equ
   return Math.max(1, variance(raw) - monster.defense);
 }
 
-export function heroSkillPower(hero: Hero, skill: Skill): number {
-  return Math.round(hero.stats[skill.stat] * skill.multiplier);
+export function heroSkillPower(hero: Hero, skill: Skill, gear: GearInstance[], equipped: Equipped): number {
+  return Math.round(effectiveStat(hero, gear, equipped, skill.stat) * skill.multiplier);
 }
 
-export function heroSkillDamage(hero: Hero, skill: Skill, monster: BattleMonster): number {
-  return Math.max(1, variance(heroSkillPower(hero, skill)) - Math.floor(monster.defense / 2));
+export function heroSkillDamage(hero: Hero, skill: Skill, gear: GearInstance[], equipped: Equipped, monster: BattleMonster): number {
+  return Math.max(1, variance(heroSkillPower(hero, skill, gear, equipped)) - Math.floor(monster.defense / 2));
 }
 
 export function monsterAttackDamage(monster: BattleMonster, hero: Hero, gear: GearInstance[], equipped: Equipped): number {
   return Math.max(1, variance(monster.attack) - totalDefense(hero, gear, equipped));
 }
 
-export function fleeChance(hero: Hero): number {
-  return Math.min(0.95, 0.4 + hero.stats.dexterity * 0.02 + getPassives(hero).fleeBonus);
+export function fleeChance(hero: Hero, gear: GearInstance[], equipped: Equipped): number {
+  return Math.min(0.95, 0.4 + effectiveStat(hero, gear, equipped, "dexterity") * 0.02 + getPassives(hero).fleeBonus);
 }
 
 // ---------------- status effects ----------------

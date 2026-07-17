@@ -49,7 +49,7 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
       if (draft.screen !== "world" || !draft.world || !draft.hero) return;
       if (draft.dialogue || draft.shopOpen || draft.inventoryOpen) return;
       // The classic rule: nobody teleports over-encumbered.
-      if (carriedWeight(draft.inventory, draft.gear, draft.equipped) > carryCapacity(draft.hero)) {
+      if (carriedWeight(draft.inventory, draft.gear, draft.equipped) > carryCapacity(draft.hero, draft.gear, draft.equipped)) {
         draft.worldMessage = "Too heavy to travel. Lighten the pack.";
         return;
       }
@@ -210,7 +210,7 @@ function openChest(draft: GameState, chest: Chest): void {
   }
   const item = getItem(loot.itemId);
   const qty = loot.kind === "item" ? loot.qty : 1;
-  const capacity = carryCapacity(draft.hero);
+  const capacity = carryCapacity(draft.hero, draft.gear, draft.equipped);
   if (carriedWeight(draft.inventory, draft.gear, draft.equipped) + item.weight * qty > capacity) {
     draft.worldMessage = "Too heavy to carry. Lighten the pack and come back.";
     return;
