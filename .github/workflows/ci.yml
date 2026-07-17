@@ -23,6 +23,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
+      - run: pnpm format:check
       - run: pnpm test:unit
       - name: Balance regression (all roles must finish the game)
         run: pnpm sim --check

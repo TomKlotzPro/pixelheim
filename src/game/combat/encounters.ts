@@ -91,4 +91,3 @@ export function encounterForSpawn(region: RegionId, monsterId: string): WildEnco
     dropFloor: table.dropFloor,
   };
 }
-

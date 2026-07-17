@@ -11,9 +11,7 @@ import type { RegionId } from "./types";
  * chest gives exactly once per save. One chest in the Mirefen is a mimic.
  */
 export type ChestLoot =
-  | { kind: "gold"; amount: number }
-  | { kind: "item"; itemId: string; qty: number }
-  | { kind: "gear"; itemId: string };
+  { kind: "gold"; amount: number } | { kind: "item"; itemId: string; qty: number } | { kind: "gear"; itemId: string };
 
 export type Chest = {
   id: string;
@@ -34,11 +32,32 @@ export const CHESTS: Chest[] = [
   // the Ashenreach corners: gear a tier ahead of the road there
   { id: "ash_west", mapId: "overworld", x: 2, y: 6, look: "chest", loot: { kind: "gear", itemId: "iron_sword" } },
   { id: "ash_east", mapId: "overworld", x: 46, y: 7, look: "chest", loot: { kind: "gear", itemId: "iron_armor" } },
-  { id: "forest_corner", mapId: "overworld", x: 46, y: 30, look: "chest", loot: { kind: "gear", itemId: "steel_shield" } },
-  { id: "marsh_corner", mapId: "overworld", x: 1, y: 30, look: "chest", loot: { kind: "gear", itemId: "apprentice_staff" } },
+  {
+    id: "forest_corner",
+    mapId: "overworld",
+    x: 46,
+    y: 30,
+    look: "chest",
+    loot: { kind: "gear", itemId: "steel_shield" },
+  },
+  {
+    id: "marsh_corner",
+    mapId: "overworld",
+    x: 1,
+    y: 30,
+    look: "chest",
+    loot: { kind: "gear", itemId: "apprentice_staff" },
+  },
   // ground treasure on the south road belly
   { id: "road_glint", mapId: "overworld", x: 20, y: 29, look: "glint", loot: { kind: "gold", amount: 45 } },
-  { id: "herb_patch", mapId: "overworld", x: 28, y: 29, look: "herb", loot: { kind: "item", itemId: "forest_herb", qty: 3 } },
+  {
+    id: "herb_patch",
+    mapId: "overworld",
+    x: 28,
+    y: 29,
+    look: "herb",
+    loot: { kind: "item", itemId: "forest_herb", qty: 3 },
+  },
   // the frontier: the best finds hide deepest
   { id: "deep_courtyard", mapId: "deepwood", x: 17, y: 18, look: "chest", loot: { kind: "gear", itemId: "steel_axe" } },
   { id: "deep_corner", mapId: "deepwood", x: 28, y: 1, look: "chest", loot: { kind: "gear", itemId: "shadow_cloak" } },

@@ -51,7 +51,8 @@ function hexToRgba(hex) {
 }
 
 function renderSprite(rows, palette, scale = 1) {
-  const h = rows.length, w = rows[0].length;
+  const h = rows.length,
+    w = rows[0].length;
   const buf = Buffer.alloc(w * scale * h * scale * 4);
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
@@ -63,7 +64,10 @@ function renderSprite(rows, palette, scale = 1) {
       for (let sy = 0; sy < scale; sy++) {
         for (let sx = 0; sx < scale; sx++) {
           const i = ((y * scale + sy) * w * scale + x * scale + sx) * 4;
-          buf[i] = r; buf[i + 1] = g; buf[i + 2] = b; buf[i + 3] = a;
+          buf[i] = r;
+          buf[i + 1] = g;
+          buf[i + 2] = b;
+          buf[i + 3] = a;
         }
       }
     }
@@ -1099,7 +1103,16 @@ const sprites = {
   },
   // ---------------- heroes ----------------
   hero_warrior: {
-    palette: { H: "#9aa5b1", D: "#5c6670", F: SKIN, K: "#22242b", B: "#7d8894", L: "#4a4f5a", O: "#8a5a2b", R: "#c23b3b" },
+    palette: {
+      H: "#9aa5b1",
+      D: "#5c6670",
+      F: SKIN,
+      K: "#22242b",
+      B: "#7d8894",
+      L: "#4a4f5a",
+      O: "#8a5a2b",
+      R: "#c23b3b",
+    },
     rows: [
       "......RR........",
       ".....RRRR.......",
@@ -1120,7 +1133,16 @@ const sprites = {
     ],
   },
   hero_mage: {
-    palette: { H: "#3b5bd6", D: "#26398f", F: SKIN, K: "#22242b", R: "#4a6be6", L: "#26398f", W: "#d8d0c0", Y: "#e8c34a" },
+    palette: {
+      H: "#3b5bd6",
+      D: "#26398f",
+      F: SKIN,
+      K: "#22242b",
+      R: "#4a6be6",
+      L: "#26398f",
+      W: "#d8d0c0",
+      Y: "#e8c34a",
+    },
     rows: [
       ".......HH.......",
       "......HHHH......",
@@ -1183,7 +1205,16 @@ const sprites = {
     ],
   },
   merchant: {
-    palette: { H: "#8a5a2b", D: "#5f3d1c", F: SKIN, K: "#22242b", B: "#6b4a2b", A: "#c8a878", L: "#4f371f", Y: "#e8c34a" },
+    palette: {
+      H: "#8a5a2b",
+      D: "#5f3d1c",
+      F: SKIN,
+      K: "#22242b",
+      B: "#6b4a2b",
+      A: "#c8a878",
+      L: "#4f371f",
+      Y: "#e8c34a",
+    },
     rows: [
       "................",
       ".....HHHHHH.....",
@@ -1246,7 +1277,16 @@ const sprites = {
     ],
   },
   elder: {
-    palette: { H: "#d8d4c8", F: SKIN, K: "#22242b", B: "#6b5a8f", L: "#4a3d66", D: "#352c4a", W: "#b8b4a8", S: "#8a5a2b" },
+    palette: {
+      H: "#d8d4c8",
+      F: SKIN,
+      K: "#22242b",
+      B: "#6b5a8f",
+      L: "#4a3d66",
+      D: "#352c4a",
+      W: "#b8b4a8",
+      S: "#8a5a2b",
+    },
     rows: [
       "................",
       ".....HHHHHH.....",
@@ -1288,7 +1328,16 @@ const sprites = {
     ],
   },
   smith: {
-    palette: { H: "#8f3d2b", F: SKIN, K: "#22242b", B: "#5c6670", A: "#3a3f4a", L: "#4a4f5a", D: "#2e323b", O: "#e87a2a" },
+    palette: {
+      H: "#8f3d2b",
+      F: SKIN,
+      K: "#22242b",
+      B: "#5c6670",
+      A: "#3a3f4a",
+      L: "#4a4f5a",
+      D: "#2e323b",
+      O: "#e87a2a",
+    },
     rows: [
       "................",
       ".....HHHHHH.....",
@@ -2304,14 +2353,28 @@ const sprites = {
 // Every sprite is a grid + palette, so appearance customization is nearly
 // free: same rows, swapped skin (F) and outfit (H/D) colors per look.
 // New classes reuse a proven silhouette with their own palette identity.
-sprites.hero_ranger = { palette: { ...sprites.hero_rogue.palette, H: "#3b6b2e", D: "#26471e", K: "#8a6238" }, rows: sprites.hero_rogue.rows };
-sprites.hero_paladin = { palette: { ...sprites.hero_warrior.palette, H: "#d8cfa8", D: "#a89058", R: "#4a6be6" }, rows: sprites.hero_warrior.rows };
-sprites.hero_necromancer = { palette: { ...sprites.hero_mage.palette, H: "#3b2d56", D: "#241a38", R: "#8a4ad6", Y: "#4ae6c8" }, rows: sprites.hero_mage.rows };
+sprites.hero_ranger = {
+  palette: { ...sprites.hero_rogue.palette, H: "#3b6b2e", D: "#26471e", K: "#8a6238" },
+  rows: sprites.hero_rogue.rows,
+};
+sprites.hero_paladin = {
+  palette: { ...sprites.hero_warrior.palette, H: "#d8cfa8", D: "#a89058", R: "#4a6be6" },
+  rows: sprites.hero_warrior.rows,
+};
+sprites.hero_necromancer = {
+  palette: { ...sprites.hero_mage.palette, H: "#3b2d56", D: "#241a38", R: "#8a4ad6", Y: "#4ae6c8" },
+  rows: sprites.hero_mage.rows,
+};
 
 const HERO_LOOKS = {
   hero_ranger: [{}, { F: "#c98d5f" }, { H: "#6b4a2b", D: "#47301c" }, { F: "#8a5a3b", H: "#4a4f5a", D: "#2e323b" }],
   hero_paladin: [{}, { F: "#c98d5f" }, { H: "#9aa5b1", D: "#5c6670" }, { F: "#8a5a3b", H: "#8a2d2d", D: "#571c1c" }],
-  hero_necromancer: [{}, { F: "#c98d5f" }, { H: "#2d4a56", D: "#1a2e38" }, { F: "#8a5a3b", H: "#4a1c1c", D: "#301111" }],
+  hero_necromancer: [
+    {},
+    { F: "#c98d5f" },
+    { H: "#2d4a56", D: "#1a2e38" },
+    { F: "#8a5a3b", H: "#4a1c1c", D: "#301111" },
+  ],
   hero_warrior: [{}, { F: "#c98d5f" }, { H: "#b1926a", D: "#7d6644" }, { F: "#8a5a3b", H: "#6b7280", D: "#454b57" }],
   hero_mage: [{}, { F: "#c98d5f" }, { H: "#8a4ad6", D: "#5b2d8f" }, { F: "#8a5a3b", H: "#3b8a4a", D: "#26592e" }],
   hero_rogue: [{}, { F: "#c98d5f" }, { H: "#5a3a3f", D: "#38262a" }, { F: "#8a5a3b", H: "#2e3a5a", D: "#1e2740" }],
@@ -2331,18 +2394,45 @@ for (const [base, looks] of Object.entries(HERO_LOOKS)) {
 // Every living thing gets a 1px dark outline so it pops off the terrain,
 // baked into the base grid so animations and both renderers inherit it.
 const MONSTERS = [
-  "slime", "goblin", "skeleton", "wolf", "orc", "ghost", "golem", "troll",
-  "wyvern", "dragon", "boneknight", "shade", "mimic", "imp", "lich",
+  "slime",
+  "goblin",
+  "skeleton",
+  "wolf",
+  "orc",
+  "ghost",
+  "golem",
+  "troll",
+  "wyvern",
+  "dragon",
+  "boneknight",
+  "shade",
+  "mimic",
+  "imp",
+  "lich",
 ];
 const NPCS = ["villager", "villager_woman", "elder", "innkeeper", "smith", "alchemist", "merchant"];
-const HEROES = ["hero_warrior", "hero_mage", "hero_rogue", "hero_cleric", "hero_ranger", "hero_paladin", "hero_necromancer", ...HERO_VARIANTS];
+const HEROES = [
+  "hero_warrior",
+  "hero_mage",
+  "hero_rogue",
+  "hero_cleric",
+  "hero_ranger",
+  "hero_paladin",
+  "hero_necromancer",
+  ...HERO_VARIANTS,
+];
 
 function outlined({ rows, palette }) {
   const out = rows.map((r) => r.split(""));
   for (let y = 0; y < 16; y++) {
     for (let x = 0; x < 16; x++) {
       if (rows[y][x] !== ".") continue;
-      const solid = [[0, -1], [0, 1], [-1, 0], [1, 0]].some(([dx, dy]) => {
+      const solid = [
+        [0, -1],
+        [0, 1],
+        [-1, 0],
+        [1, 0],
+      ].some(([dx, dy]) => {
         const c = rows[y + dy]?.[x + dx];
         return c && c !== "." && c !== "o";
       });
@@ -2398,7 +2488,10 @@ const BLANK = ".".repeat(16);
 /** Slide the whole grid up by d rows (blanks fill the bottom). */
 const bobUp = (rows, d = 1) => rows.slice(d).concat(Array(d).fill(BLANK));
 /** Slide the whole grid down by d rows (blanks fill the top). */
-const bobDown = (rows, d = 1) => Array(d).fill(BLANK).concat(rows.slice(0, 16 - d));
+const bobDown = (rows, d = 1) =>
+  Array(d)
+    .fill(BLANK)
+    .concat(rows.slice(0, 16 - d));
 /** Wrap-shift horizontally; safe on seamless tiles, gives flowing water. */
 const shiftXWrap = (rows, dx) => {
   const s = ((dx % 16) + 16) % 16;
@@ -2424,7 +2517,6 @@ const shimmerFrames = (b) => [b, shiftXWrap(b, 1), shiftXWrap(b, 2), shiftXWrap(
 // Terrain sway wraps in both axes so tiles stay opaque and seamless: the
 // specks and blades jiggle diagonally, reading as wind at low fps.
 const swayFrames = (b) => [b, shiftXWrap(shiftYWrap(b, 1), 1)];
-
 
 const anims = [
   ...HEROES.map((base) => ({ name: `${base}_walk`, base, fps: 6, facing: "front", frames: walkFrames })),
@@ -2475,14 +2567,22 @@ for (const anim of anims) {
 writeFileSync(join(OUT, "atlas.json"), JSON.stringify(atlas, null, 2) + "\n");
 
 // x8 preview sheet for eyeballing the art (not shipped in the app)
-const SCALE = 8, COLS = 7, CELL = 16 * SCALE + 8;
+const SCALE = 8,
+  COLS = 7,
+  CELL = 16 * SCALE + 8;
 const rowsCount = Math.ceil(names.length / COLS);
 const sheet = Buffer.alloc(COLS * CELL * rowsCount * CELL * 4);
 // dark checker background so light sprites stay visible
-for (let i = 0; i < sheet.length; i += 4) { sheet[i] = 30; sheet[i + 1] = 32; sheet[i + 2] = 38; sheet[i + 3] = 255; }
+for (let i = 0; i < sheet.length; i += 4) {
+  sheet[i] = 30;
+  sheet[i + 1] = 32;
+  sheet[i + 2] = 38;
+  sheet[i + 3] = 255;
+}
 names.forEach((name, idx) => {
   const { buf, w, h } = renderSprite(sprites[name].rows, sprites[name].palette, SCALE);
-  const ox = (idx % COLS) * CELL + 4, oy = Math.floor(idx / COLS) * CELL + 4;
+  const ox = (idx % COLS) * CELL + 4,
+    oy = Math.floor(idx / COLS) * CELL + 4;
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
       const si = (y * w + x) * 4;

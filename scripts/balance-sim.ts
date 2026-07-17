@@ -37,7 +37,6 @@ function dispatch(state: GameState, action: Action): GameState {
   return gameReducer(state, action);
 }
 
-
 /**
  * Headless-driver privilege: stand the hero in a keeper's shop with the
  * counter open, run the trade, then put everything back. Since the shop
@@ -147,7 +146,8 @@ function battleTurn(state: GameState): GameState {
     }
   });
   const weapon = s.gear.find((g) => g.uid === s.equipped.weapon);
-  const attackPower = hero.stats[weapon ? (gearItem(weapon).scaling ?? "strength") : "strength"] + (weapon ? gearDamage(weapon) : 2);
+  const attackPower =
+    hero.stats[weapon ? (gearItem(weapon).scaling ?? "strength") : "strength"] + (weapon ? gearDamage(weapon) : 2);
   if (bestIndex >= 0 && bestPower > attackPower * 1.15) {
     return dispatch(s, { type: "SKILL", skillIndex: bestIndex });
   }

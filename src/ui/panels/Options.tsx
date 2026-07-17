@@ -86,158 +86,158 @@ export function Options({
         </div>
 
         <div className="panel-body">
-        <div className="options-section">
-          <h3 className="options-title">Audio</h3>
-          <label className="options-row">
-            <span>Sound</span>
-            <button
-              className="btn btn-small"
-              onClick={() => {
-                initAudio();
-                setMuted(!muted);
-                setMutedState(!muted);
-              }}
-            >
-              {muted ? "Muted" : "On"}
-            </button>
-          </label>
-          <label className="options-row">
-            <span>Music volume</span>
-            <input
-              type="range"
-              min={0}
-              max={100}
-              value={Math.round(settings.musicVolume * 100)}
-              onChange={(e) => {
-                initAudio();
-                const volume = Number(e.target.value) / 100;
-                setBusVolume("music", volume);
-                update({ musicVolume: volume });
-              }}
-            />
-          </label>
-          <label className="options-row">
-            <span>Effects volume</span>
-            <input
-              type="range"
-              min={0}
-              max={100}
-              value={Math.round(settings.sfxVolume * 100)}
-              onChange={(e) => {
-                initAudio();
-                const volume = Number(e.target.value) / 100;
-                setBusVolume("sfx", volume);
-                update({ sfxVolume: volume });
-              }}
-              onPointerUp={() => SFX.coin()}
-            />
-          </label>
-        </div>
-
-        <div className="options-section">
-          <h3 className="options-title">Video</h3>
-          <label className="options-row">
-            <span>CRT scanlines</span>
-            <button className="btn btn-small" onClick={() => update({ scanlines: !settings.scanlines })}>
-              {settings.scanlines ? "On" : "Off"}
-            </button>
-          </label>
-          <label className="options-row">
-            <span>Renderer</span>
-            <button
-              className="btn btn-small"
-              aria-label="Toggle renderer"
-              title="WebGL is the game: animations, lighting, particles. Classic is the legacy DOM renderer."
-              onClick={() => {
-                // Renderers are chosen once at boot; save the choice and restart.
-                saveSettings({ ...settings, renderer: settings.renderer === "classic" ? "webgl" : "classic" });
-                window.location.reload();
-              }}
-            >
-              {settings.renderer === "classic" ? "Classic" : "WebGL"}
-            </button>
-          </label>
-          <label className="options-row">
-            <span>Reduce motion</span>
-            <button className="btn btn-small" onClick={() => update({ reduceMotion: !settings.reduceMotion })}>
-              {settings.reduceMotion ? "On" : "Off"}
-            </button>
-          </label>
-        </div>
-
-        <div className="options-section">
-          <h3 className="options-title">Controls</h3>
-          {CONTROL_ROWS.map(({ action, label }) => (
-            <div key={action} className="options-row">
-              <span>{label}</span>
+          <div className="options-section">
+            <h3 className="options-title">Audio</h3>
+            <label className="options-row">
+              <span>Sound</span>
               <button
-                className={`btn btn-small key-btn ${listening === action ? "key-listening" : ""}`}
-                aria-label={`Rebind ${label}`}
-                onClick={() => setListening(listening === action ? null : action)}
-              >
-                {listening === action ? "Press a key…" : keyLabel(settings.bindings[action])}
-              </button>
-            </div>
-          ))}
-          <div className="options-row">
-            <span className="options-note">Arrows always move. Enter and Space always interact.</span>
-            <button className="btn btn-small" onClick={() => update({ bindings: { ...DEFAULT_BINDINGS } })}>
-              Reset
-            </button>
-          </div>
-        </div>
-
-        <div className="options-section">
-          <h3 className="options-title">Save data</h3>
-          <div className="options-row options-actions">
-            {canContinue && (
-              <button className="btn btn-small" onClick={copySaveCode}>
-                {copied ? "Copied!" : "Copy save code"}
-              </button>
-            )}
-            <button
-              className="btn btn-small"
-              onClick={() => {
-                setImportOpen((open) => !open);
-                setImportError(false);
-              }}
-            >
-              Import save code
-            </button>
-            {canContinue &&
-              (confirmDelete ? (
-                <button className="btn btn-small btn-danger" onClick={onDeleteSave}>
-                  Really delete?
-                </button>
-              ) : (
-                <button className="btn btn-small btn-danger" onClick={() => setConfirmDelete(true)}>
-                  Delete save
-                </button>
-              ))}
-          </div>
-          {importOpen && (
-            <div className="import-panel">
-              <textarea
-                ref={codeRef}
-                className="import-input"
-                placeholder="Paste your save code (PXH1.…)"
-                rows={3}
-                onChange={() => setImportError(false)}
-              />
-              {importError && <p className="warning">That does not look like a valid save code.</p>}
-              <button
-                className="btn btn-primary"
+                className="btn btn-small"
                 onClick={() => {
-                  if (!onImportSave(codeRef.current?.value ?? "")) setImportError(true);
+                  initAudio();
+                  setMuted(!muted);
+                  setMutedState(!muted);
                 }}
               >
-                Load save
+                {muted ? "Muted" : "On"}
+              </button>
+            </label>
+            <label className="options-row">
+              <span>Music volume</span>
+              <input
+                type="range"
+                min={0}
+                max={100}
+                value={Math.round(settings.musicVolume * 100)}
+                onChange={(e) => {
+                  initAudio();
+                  const volume = Number(e.target.value) / 100;
+                  setBusVolume("music", volume);
+                  update({ musicVolume: volume });
+                }}
+              />
+            </label>
+            <label className="options-row">
+              <span>Effects volume</span>
+              <input
+                type="range"
+                min={0}
+                max={100}
+                value={Math.round(settings.sfxVolume * 100)}
+                onChange={(e) => {
+                  initAudio();
+                  const volume = Number(e.target.value) / 100;
+                  setBusVolume("sfx", volume);
+                  update({ sfxVolume: volume });
+                }}
+                onPointerUp={() => SFX.coin()}
+              />
+            </label>
+          </div>
+
+          <div className="options-section">
+            <h3 className="options-title">Video</h3>
+            <label className="options-row">
+              <span>CRT scanlines</span>
+              <button className="btn btn-small" onClick={() => update({ scanlines: !settings.scanlines })}>
+                {settings.scanlines ? "On" : "Off"}
+              </button>
+            </label>
+            <label className="options-row">
+              <span>Renderer</span>
+              <button
+                className="btn btn-small"
+                aria-label="Toggle renderer"
+                title="WebGL is the game: animations, lighting, particles. Classic is the legacy DOM renderer."
+                onClick={() => {
+                  // Renderers are chosen once at boot; save the choice and restart.
+                  saveSettings({ ...settings, renderer: settings.renderer === "classic" ? "webgl" : "classic" });
+                  window.location.reload();
+                }}
+              >
+                {settings.renderer === "classic" ? "Classic" : "WebGL"}
+              </button>
+            </label>
+            <label className="options-row">
+              <span>Reduce motion</span>
+              <button className="btn btn-small" onClick={() => update({ reduceMotion: !settings.reduceMotion })}>
+                {settings.reduceMotion ? "On" : "Off"}
+              </button>
+            </label>
+          </div>
+
+          <div className="options-section">
+            <h3 className="options-title">Controls</h3>
+            {CONTROL_ROWS.map(({ action, label }) => (
+              <div key={action} className="options-row">
+                <span>{label}</span>
+                <button
+                  className={`btn btn-small key-btn ${listening === action ? "key-listening" : ""}`}
+                  aria-label={`Rebind ${label}`}
+                  onClick={() => setListening(listening === action ? null : action)}
+                >
+                  {listening === action ? "Press a key…" : keyLabel(settings.bindings[action])}
+                </button>
+              </div>
+            ))}
+            <div className="options-row">
+              <span className="options-note">Arrows always move. Enter and Space always interact.</span>
+              <button className="btn btn-small" onClick={() => update({ bindings: { ...DEFAULT_BINDINGS } })}>
+                Reset
               </button>
             </div>
-          )}
-        </div>
+          </div>
 
-        <p className="options-footer">Pixelheim v{GAME_VERSION}</p>
+          <div className="options-section">
+            <h3 className="options-title">Save data</h3>
+            <div className="options-row options-actions">
+              {canContinue && (
+                <button className="btn btn-small" onClick={copySaveCode}>
+                  {copied ? "Copied!" : "Copy save code"}
+                </button>
+              )}
+              <button
+                className="btn btn-small"
+                onClick={() => {
+                  setImportOpen((open) => !open);
+                  setImportError(false);
+                }}
+              >
+                Import save code
+              </button>
+              {canContinue &&
+                (confirmDelete ? (
+                  <button className="btn btn-small btn-danger" onClick={onDeleteSave}>
+                    Really delete?
+                  </button>
+                ) : (
+                  <button className="btn btn-small btn-danger" onClick={() => setConfirmDelete(true)}>
+                    Delete save
+                  </button>
+                ))}
+            </div>
+            {importOpen && (
+              <div className="import-panel">
+                <textarea
+                  ref={codeRef}
+                  className="import-input"
+                  placeholder="Paste your save code (PXH1.…)"
+                  rows={3}
+                  onChange={() => setImportError(false)}
+                />
+                {importError && <p className="warning">That does not look like a valid save code.</p>}
+                <button
+                  className="btn btn-primary"
+                  onClick={() => {
+                    if (!onImportSave(codeRef.current?.value ?? "")) setImportError(true);
+                  }}
+                >
+                  Load save
+                </button>
+              </div>
+            )}
+          </div>
+
+          <p className="options-footer">Pixelheim v{GAME_VERSION}</p>
         </div>
       </div>
     </div>

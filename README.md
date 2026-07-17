@@ -6,7 +6,7 @@
 
 <p align="center">
   <b>A retro pixel-art open-world RPG built with React, TypeScript and PixiJS. No game engine - a pure reducer for the rules, a WebGL canvas for the world.</b><br />
-  Fifteen floors. Two bosses. Infinite cheese wheels. Currently v0.19 - 1.0 has to be earned.
+  Fifteen floors. Two bosses. Infinite cheese wheels. Currently v0.42 - 1.0 has to be earned.
 </p>
 
 ---
@@ -21,12 +21,12 @@ You wake in Pixelheim village, in an open world called **the Ashenreach**: walk 
 
 - **A living open world**: a WebGL-rendered overworld with walk cycles, flowing water, swaying grass, a day/night cycle, lantern glows after dark and embers drifting over the ashen wastes
 - **A real village**: Main Street with signed shops you walk into and trade by talking to the keeper, houses with distinct roofs, a market corner, an orchard, and villagers with dialogue (a bobbing "!" shows who will talk)
-- **4 playable roles**: Warrior, Mage, Rogue, Cleric, each with its own stats, growth and skill kit
+- **7 playable classes**: Warrior, Mage, Rogue, Cleric, Ranger, Paladin, Necromancer - each with stats, growth, a 12-node skill tree, rank evolutions every 5 levels and a specialization fork
 - **Skill trees**: one skill point per level, spent across three branches per role - actives, upgrades and passives, each branch ending in a tier-3 capstone (48 nodes total). No respec. Retro rules
 - **Stat points that explain themselves**: 5 points per level, and the stat sheet shows what each stat does with live numbers and a preview of what the next point buys
 - **Turn-based combat on a canvas stage**: lunges, hit flashes and floating damage numbers. Poison and burn tick every turn, stun steals them, and fleeing is always an option (dexterity helps)
 - **Loot with rarities**: gear drops as common, fine or epic instances, and Smith Hilda's **Forge** upgrades a piece up to +7 for gold
-- **Crafting**: forage regional materials from the wilds (forest herbs, marsh reeds, ember shards) and craft potions, cures and upgrades at the shrine
+- **Crafting**: forage regional materials from the wilds and craft gear and brews at the town's stations - the forge and the cauldron
 - **Main Street**: three specialized shops - Odo's general goods, the smithy, and Alchemist Vex, who pays full price for reagents
 - **Skyrim-style inventory**: category tabs, equip weapon + body + off-hand, carry weight with over-encumbrance, and yes, cheese wheels
 - **Chiptune audio**: music and sound effects synthesized in the browser with the Web Audio API, no audio files, volume options included
@@ -83,6 +83,15 @@ src/
     panels/          # overlays: inventory, shop, skill tree, map, options
     widgets/         # small reusable pieces: sprites, stat bars, the HUD
 ```
+
+## Conventions
+
+* **The reducer is the game.** All rules live in pure `gameReducer` domain slices; components subscribe and dispatch, renderers draw and never decide. New actions register in BOTH the domain reducer and the `gameReducer` router.
+* **Saves grow, never break.** New state is additive with defaults (no version bump); renames/reshapes need a migration + `SAVE_VERSION` bump. The frozen fixtures in `e2e/helpers.ts` are never edited.
+* **Everything visual is generated.** Sprites, sheets, maps and even the bitmap font come from ASCII data (`pnpm sprites`), deterministic and diff-checked in CI. No binary art is hand-edited.
+* **The canvas testifies through the mirror.** New world entities add invisible mirror nodes (`data-testid` + data attributes) so Playwright can assert against the Pixi renderer.
+* **Panels own their Esc.** Any new overlay wires `useEscapeClose(onClose)` so Escape peels one layer, never stacks the pause menu.
+* **Style is enforced, not discussed.** `pnpm format` (Prettier) and `pnpm lint` (oxlint, deny-warnings) both gate CI.
 
 Maps are ASCII art in source (`.` grass, `f` forest, `^` mountain, `~` water, `=` path, `#` wall, `D` door...). The parser validates every map at load and the e2e suite imports them all, so a malformed map fails CI with a precise message.
 

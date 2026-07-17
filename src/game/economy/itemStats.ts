@@ -11,7 +11,10 @@ type StatLineOpts = {
 export function itemStatLine(item: Item, { bonus = 0, value }: StatLineOpts = {}): string {
   const parts: string[] = [];
   const plus = bonus > 0 ? `+${bonus}` : "";
-  if (item.damage) parts.push(`DMG ${item.damage + bonus}${plus && ` (${item.damage}${plus})`} ${item.scaling?.slice(0, 3).toUpperCase()}`);
+  if (item.damage)
+    parts.push(
+      `DMG ${item.damage + bonus}${plus && ` (${item.damage}${plus})`} ${item.scaling?.slice(0, 3).toUpperCase()}`,
+    );
   if (item.armor) parts.push(`ARMOR ${item.armor + bonus}${plus && ` (${item.armor}${plus})`}`);
   if (item.grants) {
     for (const [stat, amount] of Object.entries(item.grants)) {

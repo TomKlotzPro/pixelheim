@@ -94,7 +94,16 @@ export function pixelTextTexture(content: string, fill: number): Texture {
   };
 
   // the outline first (8 directions), then the face
-  for (const [ox, oy] of [[-1, 0], [1, 0], [0, -1], [0, 1], [-1, -1], [1, -1], [-1, 1], [1, 1]]) {
+  for (const [ox, oy] of [
+    [-1, 0],
+    [1, 0],
+    [0, -1],
+    [0, 1],
+    [-1, -1],
+    [1, -1],
+    [-1, 1],
+    [1, 1],
+  ]) {
     stamp(ox, oy, "#000000");
   }
   stamp(0, 0, toHex(fill));

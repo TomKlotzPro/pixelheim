@@ -1,36 +1,33 @@
-import { expect, type Page } from '@playwright/test'
+import { expect, type Page } from "@playwright/test";
 
 /** Creates a hero (default role: Warrior), dismisses the intro, lands in town. */
 export async function createHero(page: Page, name: string, role?: string) {
-  await page.goto('./')
-  await page.getByRole('button', { name: 'New Game' }).click()
-  await page.getByPlaceholder('Dragonsbane...').fill(name)
-  if (role) await page.getByRole('button', { name: role }).click()
-  await page.getByRole('button', { name: 'Begin the climb' }).click()
-  await page.getByRole('button', { name: 'Set out' }).click()
-  await expect(page.getByTestId('world-viewport')).toHaveAttribute('data-map', 'town')
+  await page.goto("./");
+  await page.getByRole("button", { name: "New Game" }).click();
+  await page.getByPlaceholder("Dragonsbane...").fill(name);
+  if (role) await page.getByRole("button", { name: role }).click();
+  await page.getByRole("button", { name: "Begin the climb" }).click();
+  await page.getByRole("button", { name: "Set out" }).click();
+  await expect(page.getByTestId("world-viewport")).toHaveAttribute("data-map", "town");
 }
 
 /** Loads the veteran fixture standing at a specific overworld tile. */
-export async function loadVeteranAt(page: Page, x: number, y: number, mapId = 'overworld') {
+export async function loadVeteranAt(page: Page, x: number, y: number, mapId = "overworld") {
   const save = {
     ...VETERAN_SAVE,
     state: {
       ...VETERAN_SAVE.state,
-      world: { position: { mapId, x, y, facing: 'up' }, discovered: {}, openedChests: [] },
+      world: { position: { mapId, x, y, facing: "up" }, discovered: {}, openedChests: [] },
     },
-  }
-  await page.goto('./')
-  await page.evaluate(
-    ([key, s]) => localStorage.setItem(key as string, JSON.stringify(s)),
-    [SAVE_KEY, save] as const,
-  )
-  await page.reload()
-  await page.getByRole('button', { name: 'Continue' }).click()
-  await expect(page.getByTestId('world-hero')).toHaveAttribute('data-pos', `${x},${y}`)
+  };
+  await page.goto("./");
+  await page.evaluate(([key, s]) => localStorage.setItem(key as string, JSON.stringify(s)), [SAVE_KEY, save] as const);
+  await page.reload();
+  await page.getByRole("button", { name: "Continue" }).click();
+  await expect(page.getByTestId("world-hero")).toHaveAttribute("data-pos", `${x},${y}`);
 }
 
-export const SAVE_KEY = 'pixelheim-save-v1'
+export const SAVE_KEY = "pixelheim-save-v1";
 
 /**
  * A veteran hero who cannot realistically lose an overworld fight, for specs
@@ -39,10 +36,10 @@ export const SAVE_KEY = 'pixelheim-save-v1'
 export const VETERAN_SAVE = {
   version: 4,
   state: {
-    screen: 'hub',
+    screen: "hub",
     hero: {
-      name: 'Ranger',
-      roleId: 'warrior',
+      name: "Ranger",
+      roleId: "warrior",
       level: 10,
       xp: 0,
       xpToNext: 200,
@@ -52,8 +49,8 @@ export const VETERAN_SAVE = {
     },
     gold: 100,
     inventory: { potion_hp: 5 },
-    gear: [{ uid: 'w1', itemId: 'dragonbane', rarity: 'common', bonus: 0 }],
-    equipped: { weapon: 'w1' },
+    gear: [{ uid: "w1", itemId: "dragonbane", rarity: "common", bonus: 0 }],
+    equipped: { weapon: "w1" },
     unlockedLevel: 10,
     clearedLevels: [1, 2, 3, 4, 5, 6, 7, 8, 9],
     battle: null,
@@ -62,7 +59,7 @@ export const VETERAN_SAVE = {
     world: null,
     dungeonSelect: null,
   },
-}
+};
 
 /**
  * A genuine v1 save: bare GameState, no version envelope, no shopOpen field.
@@ -71,10 +68,10 @@ export const VETERAN_SAVE = {
  * is what migrations are for.
  */
 export const V1_SAVE = {
-  screen: 'hub',
+  screen: "hub",
   hero: {
-    name: 'OldTimer',
-    roleId: 'warrior',
+    name: "OldTimer",
+    roleId: "warrior",
     level: 3,
     xp: 10,
     xpToNext: 74,
@@ -84,9 +81,9 @@ export const V1_SAVE = {
   },
   gold: 123,
   inventory: { potion_hp: 2, gem: 1 },
-  equipped: { weapon: 'iron_sword' },
+  equipped: { weapon: "iron_sword" },
   unlockedLevel: 4,
   clearedLevels: [1, 2, 3],
   battle: null,
   inventoryOpen: false,
-} as const
+} as const;

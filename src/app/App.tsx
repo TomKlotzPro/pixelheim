@@ -24,8 +24,6 @@ import { dispatch, gameStore, useGameState } from "../state/store";
 import { clearSave, decodeSaveCode, encodeSaveCode, loadSave, persistSave } from "../state/save";
 import type { Direction } from "../world/types";
 
-
-
 /** The ascension card: shows for a few seconds when the hero crosses a rank. */
 function useRankUp(state: GameState): string | null {
   const [title, setTitle] = useState<string | null>(null);
@@ -111,14 +109,16 @@ function useAudio(state: GameState) {
       if (state.equipped !== p.equipped) SFX.equip();
       if (state.hero.skillNodes.length > p.hero.skillNodes.length) SFX.learn();
       const jobsGrew = (Object.keys(state.hero.jobs) as (keyof typeof state.hero.jobs)[]).some(
-        (job) => state.hero!.jobs[job].xp > p.hero!.jobs[job].xp || state.hero!.jobs[job].level > p.hero!.jobs[job].level,
+        (job) =>
+          state.hero!.jobs[job].xp > p.hero!.jobs[job].xp || state.hero!.jobs[job].level > p.hero!.jobs[job].level,
       );
       if (jobsGrew && !state.battle) SFX.craft();
     }
     if (state.world && p.world && state.world.openedChests.length > p.world.openedChests.length) SFX.chest();
     if (state.screen === "battle" && p.screen === "world") SFX.bump();
     if (state.screen === "world" && state.world && p.world) {
-      const moved = Math.abs(state.world.position.x - p.world.position.x) + Math.abs(state.world.position.y - p.world.position.y);
+      const moved =
+        Math.abs(state.world.position.x - p.world.position.x) + Math.abs(state.world.position.y - p.world.position.y);
       if (state.world.position.mapId !== p.world.position.mapId) SFX.door();
       else if (moved > 2) SFX.travel();
       else if (moved > 0) SFX.step();
@@ -337,7 +337,9 @@ function Screen({
         />
       );
     case "create":
-      return <CharacterCreation onCreate={(name, roleId, look) => dispatch({ type: "CREATE_HERO", name, roleId, look })} />;
+      return (
+        <CharacterCreation onCreate={(name, roleId, look) => dispatch({ type: "CREATE_HERO", name, roleId, look })} />
+      );
     case "battle":
       return <Battle />;
     case "world":

@@ -9,7 +9,15 @@ import { ART, type FrameBank } from "./pixiUtils";
  * Grass repeats less: most tiles use the base sheet, some roll a denser or
  * pebblier variant, picked by position hash so the choice is stable.
  */
-const GRASS_SWAYS = ["grass_sway", "grass_sway", "grass_sway", "grass_sway", "grass_sway", "grass2_sway", "grass3_sway"];
+const GRASS_SWAYS = [
+  "grass_sway",
+  "grass_sway",
+  "grass_sway",
+  "grass_sway",
+  "grass_sway",
+  "grass2_sway",
+  "grass3_sway",
+];
 
 function grassVariant(x: number, y: number): string {
   const hash = Math.abs((x * 73856093) ^ (y * 19349663));

@@ -60,8 +60,12 @@ export function makeVignetteTexture(width: number, height: number): Texture {
   canvas.height = height;
   const ctx = canvas.getContext("2d")!;
   const gradient = ctx.createRadialGradient(
-    width / 2, height / 2, Math.min(width, height) * 0.42,
-    width / 2, height / 2, Math.max(width, height) * 0.72,
+    width / 2,
+    height / 2,
+    Math.min(width, height) * 0.42,
+    width / 2,
+    height / 2,
+    Math.max(width, height) * 0.72,
   );
   gradient.addColorStop(0, "rgba(0, 0, 0, 0)");
   gradient.addColorStop(1, "rgba(5, 6, 10, 0.42)");
@@ -85,4 +89,3 @@ export function makeGlowTexture(): Texture {
   ctx.fillRect(0, 0, size, size);
   return Texture.from(canvas);
 }
-
