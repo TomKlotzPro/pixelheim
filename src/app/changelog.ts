@@ -11,6 +11,16 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.31.0",
+    date: "2026-07-17",
+    codename: "Mirror Mirror",
+    notes: [
+      "Character customization! Pick your hero's look at creation: four palette styles per class - skin tones and outfit colors, the retro way",
+      "Your look follows you everywhere: the world, battles, the inventory doll",
+      "Old heroes keep their classic look; new ones choose",
+    ],
+  },
+  {
     version: "0.30.0",
     date: "2026-07-17",
     codename: "A Fresh Coat",

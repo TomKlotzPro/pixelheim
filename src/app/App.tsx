@@ -269,7 +269,7 @@ function Screen({
         />
       );
     case "create":
-      return <CharacterCreation onCreate={(name, roleId) => dispatch({ type: "CREATE_HERO", name, roleId })} />;
+      return <CharacterCreation onCreate={(name, roleId, look) => dispatch({ type: "CREATE_HERO", name, roleId, look })} />;
     case "battle":
       return <Battle />;
     case "world":

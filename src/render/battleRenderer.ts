@@ -1,6 +1,6 @@
 import { Application, Assets, Container, Graphics, Sprite, type Texture } from "pixi.js";
-import { ROLES } from "../game/hero/roles";
 import type { GameState } from "../game/types";
+import { heroSprite } from "../game/hero/character";
 import { sliceSheet } from "./pixiUtils";
 import { pixelText } from "./pixelFont";
 
@@ -58,10 +58,10 @@ export class BattleRenderer {
     this.app = app;
     host.appendChild(app.canvas);
 
-    const role = ROLES[state.hero?.roleId ?? "warrior"];
+    const heroName = state.hero ? heroSprite(state.hero) : "hero_warrior";
     const heroSheet: Texture = await Assets.load({
-      alias: `${role.sprite}_walk`,
-      src: `${import.meta.env.BASE_URL}sprites/${role.sprite}_walk.png`,
+      alias: `${heroName}_walk`,
+      src: `${import.meta.env.BASE_URL}sprites/${heroName}_walk.png`,
     });
     if (this.destroyed) return;
 
