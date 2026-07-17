@@ -1,7 +1,8 @@
-import { Application, Assets, Container, Graphics, Sprite, type Text, type Texture } from "pixi.js";
+import { Application, Assets, Container, Graphics, Sprite, type Texture } from "pixi.js";
 import { ROLES } from "../game/roles";
 import type { GameState } from "../game/types";
-import { retroText, sliceSheet } from "./pixiUtils";
+import { sliceSheet } from "./pixiUtils";
+import { pixelText } from "./pixelFont";
 
 export const SCENE_W = 288;
 export const SCENE_H = 104;
@@ -17,7 +18,7 @@ type Fx =
   | { kind: "shake"; t: number; dur: number }
   | { kind: "popin"; t: number; dur: number }
   | { kind: "death"; who: "hero" | "monster"; t: number; dur: number }
-  | { kind: "number"; text: Text; t: number; dur: number };
+  | { kind: "number"; text: Sprite; t: number; dur: number };
 
 type Snapshot = { heroHp: number; monsterHp: number; monsterSprite: string; encounterIndex: number; phase: string };
 
@@ -106,7 +107,7 @@ export class BattleRenderer {
 
   private spawnNumber(value: string, color: number, x: number): void {
     if (!this.app) return;
-    const text = retroText(value, color, this.scale * 2, 12);
+    const text = pixelText(value, color, 2);
     text.anchor.set(0.5, 1);
     text.position.set(x, GROUND_Y - 56);
     this.root.addChild(text);
