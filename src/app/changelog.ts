@@ -11,6 +11,17 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.39.0",
+    date: "2026-07-18",
+    codename: "The Slayer's Ledger",
+    notes: [
+      "Monster mastery! Every kill teaches: 10 slain of a family earns +5% damage against them, 25 earns +10%, 50 earns +15% - permanently",
+      "Five families keep the ledger readable: Beasts, Greenskins, the Undead, Constructs, the Fireborn",
+      "Crossing a threshold announces itself in the battle log: 'Beasts Slayer II'",
+      "The CODEX opens from the HUD: your mastery progress bars on one tab, a bestiary on the other - monsters reveal their numbers only once you've drawn their family's blood",
+    ],
+  },
+  {
     version: "0.38.0",
     date: "2026-07-18",
     codename: "Dressed for Glory",

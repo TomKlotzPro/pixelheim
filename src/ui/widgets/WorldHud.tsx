@@ -7,6 +7,7 @@ import { getSpec } from "../../game/hero/specs";
 import { ROLES } from "../../game/hero/roles";
 import type { SpendableStat } from "../../game/types";
 import { dispatch, useGameState, useHero } from "../../state/store";
+import { Codex } from "../panels/Codex";
 import { SkillTree } from "../panels/SkillTree";
 import { Sprite } from "./Sprite";
 import { StatBar } from "./StatBar";
@@ -110,6 +111,7 @@ export function WorldHud() {
   const role = ROLES[hero.roleId];
   const [sheetOpen, setSheetOpen] = useState(false);
   const [treeOpen, setTreeOpen] = useState(false);
+  const [codexOpen, setCodexOpen] = useState(false);
   return (
     <div className="world-hud panel">
       <div className="hud-top">
@@ -140,9 +142,13 @@ export function WorldHud() {
         <button className="btn btn-small" onClick={() => setTreeOpen(true)}>
           Skills{hero.skillPoints > 0 && <span className="new-badge"> +{hero.skillPoints}</span>}
         </button>
+        <button className="btn btn-small" onClick={() => setCodexOpen(true)}>
+          Codex
+        </button>
       </div>
       {sheetOpen && <StatSheet onClose={() => setSheetOpen(false)} />}
       {treeOpen && <SkillTree onClose={() => setTreeOpen(false)} />}
+      {codexOpen && <Codex onClose={() => setCodexOpen(false)} />}
     </div>
   );
 }

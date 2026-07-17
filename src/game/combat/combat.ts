@@ -1,4 +1,5 @@
 import { effectiveStat, totalDefense, weaponOf } from "../hero/character";
+import { masteryBonus } from "../hero/mastery";
 import { getMonster } from "./monsters";
 import { gearDamage, gearItem } from "../economy/rarity";
 import { getPassives } from "../hero/skillTree";
@@ -32,6 +33,7 @@ export function heroAttackDamage(hero: Hero, gear: GearInstance[], equipped: Equ
   const passives = getPassives(hero);
   if (passives.critChance > 0 && Math.random() < passives.critChance) raw *= 1.5;
   if (passives.lowHpBonus > 0 && monster.hp / monster.maxHp < 0.3) raw *= 1 + passives.lowHpBonus;
+  raw *= 1 + masteryBonus(hero, monster.def.id);
   return Math.max(1, variance(raw) - monster.defense);
 }
 
@@ -40,7 +42,8 @@ export function heroSkillPower(hero: Hero, skill: Skill, gear: GearInstance[], e
 }
 
 export function heroSkillDamage(hero: Hero, skill: Skill, gear: GearInstance[], equipped: Equipped, monster: BattleMonster): number {
-  return Math.max(1, variance(heroSkillPower(hero, skill, gear, equipped)) - Math.floor(monster.defense / 2));
+  const raw = heroSkillPower(hero, skill, gear, equipped) * (1 + masteryBonus(hero, monster.def.id));
+  return Math.max(1, variance(raw) - Math.floor(monster.defense / 2));
 }
 
 export function monsterAttackDamage(monster: BattleMonster, hero: Hero, gear: GearInstance[], equipped: Equipped): number {
