@@ -35,7 +35,11 @@ export type EconomyAction =
   | { type: "SELL_ITEM"; itemId: string }
   | { type: "SELL_GEAR"; uid: string }
   | { type: "UPGRADE_GEAR"; uid: string }
-  | { type: "CRAFT"; recipeId: string };
+  | { type: "CRAFT"; recipeId: string }
+  | { type: "BUY_HOUSE" }
+  | { type: "TOGGLE_STORAGE" }
+  | { type: "STORE_ITEM"; itemId: string; count?: number }
+  | { type: "TAKE_ITEM"; itemId: string; count?: number };
 
 /** Spending the points a level-up banked. */
 export type ProgressionAction =

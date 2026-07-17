@@ -1157,6 +1157,35 @@ body {
 .world-hero .worn-item {
   z-index: 1;
 }
+.storage-panel {
+  width: 620px;
+  max-width: 96vw;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.storage-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  overflow-y: auto;
+}
+.storage-column {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.storage-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+.storage-actions {
+  display: inline-flex;
+  gap: 4px;
+}
 .merchant-line {
   color: var(--text-dim);
   font-size: 12px;
