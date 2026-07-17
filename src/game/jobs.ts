@@ -15,6 +15,12 @@ export const JOB_NAMES: Record<JobId, string> = {
 
 export const JOB_LEVEL_CAP = 10;
 
+/** Where each craft happens: the trade's station, not the open road. */
+export const JOB_STATIONS: Record<"smithing" | "alchemy", { mapId: string; hint: string }> = {
+  smithing: { mapId: "town_smith", hint: "Craft at Hilda's forge" },
+  alchemy: { mapId: "town_alchemist", hint: "Craft at Vex's cauldron" },
+};
+
 /** XP the job needs to reach the next level. */
 export function jobXpToNext(level: number): number {
   return 20 + level * 15;
