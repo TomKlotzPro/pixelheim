@@ -32,6 +32,20 @@ export const WAYPOINTS: Waypoint[] = [
     arrival: { x: 24, y: 4 },
   },
   {
+    id: "deepwood_pass",
+    name: "The Deepwood Pass",
+    mapId: "overworld",
+    at: { x: 47, y: 16 },
+    arrival: { x: 46, y: 16 },
+  },
+  {
+    id: "mirefen_pass",
+    name: "The Mirefen Pass",
+    mapId: "overworld",
+    at: { x: 0, y: 16 },
+    arrival: { x: 1, y: 16 },
+  },
+  {
     id: "undermountain_cave",
     name: "The Undermountain",
     mapId: "overworld",

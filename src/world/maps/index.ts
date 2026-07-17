@@ -9,9 +9,12 @@ import {
   TOWN_SMITH_MAP,
 } from "./ashenreach";
 import { DEMO_HUT_MAP, DEMO_MAP } from "./demo";
+import { DEEPWOOD_MAP, MIREFEN_MAP } from "./frontier";
 
 export const MAPS: Record<string, WorldMap> = {
   [OVERWORLD_MAP.id]: OVERWORLD_MAP,
+  [DEEPWOOD_MAP.id]: DEEPWOOD_MAP,
+  [MIREFEN_MAP.id]: MIREFEN_MAP,
   [TOWN_MAP.id]: TOWN_MAP,
   [TOWN_SHOP_MAP.id]: TOWN_SHOP_MAP,
   [TOWN_INN_MAP.id]: TOWN_INN_MAP,

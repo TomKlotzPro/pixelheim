@@ -1,7 +1,7 @@
 export type Direction = "up" | "down" | "left" | "right";
 
 /** Every encounter region in the game; maps may only reference these. */
-export const REGION_IDS = ["forest", "marsh", "ash"] as const;
+export const REGION_IDS = ["forest", "marsh", "ash", "deepwood", "mire"] as const;
 export type RegionId = (typeof REGION_IDS)[number];
 
 export type TileId =
