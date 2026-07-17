@@ -64,6 +64,27 @@ export function heroSprite(hero: Hero): string {
   return `${base}${look}${rank > 0 ? `_r${rank}` : ""}`;
 }
 
+/**
+ * What shows ON the hero: the actual equipped items' sprites, worn at body
+ * offsets (weapon in hand, shield on the arm, helm on the head). Offsets are
+ * in 16px-art fractions so both renderers scale them identically.
+ */
+export const WORN_SLOTS = [
+  { slot: "offhand", x: 0.02, y: 0.42, size: 0.5 },
+  { slot: "head", x: 0.28, y: -0.18, size: 0.45 },
+  { slot: "weapon", x: 0.55, y: 0.3, size: 0.6 },
+] as const;
+
+export function wornSprites(
+  gear: GearInstance[],
+  equipped: Equipped,
+): { slot: string; sprite: string; x: number; y: number; size: number }[] {
+  return WORN_SLOTS.flatMap(({ slot, x, y, size }) => {
+    const instance = gearByUid(gear, equipped[slot]);
+    return instance ? [{ slot, sprite: gearItem(instance).sprite, x, y, size }] : [];
+  });
+}
+
 export function gearByUid(gear: GearInstance[], uid: string | undefined): GearInstance | null {
   if (!uid) return null;
   return gear.find((g) => g.uid === uid) ?? null;
