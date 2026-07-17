@@ -14,7 +14,7 @@ export const VIEW_W = 15;
 export const VIEW_H = 11;
 
 /** Maps under the open sky; interiors stay lit and ember-free. */
-const OUTDOOR_MAPS = new Set(["overworld", "town", "demo"]);
+const OUTDOOR_MAPS = new Set(["overworld", "town", "demo", "deepwood", "mirefen"]);
 
 function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
