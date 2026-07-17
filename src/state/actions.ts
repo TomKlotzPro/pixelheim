@@ -39,7 +39,8 @@ export type EconomyAction =
   | { type: "BUY_HOUSE" }
   | { type: "TOGGLE_STORAGE" }
   | { type: "STORE_ITEM"; itemId: string; count?: number }
-  | { type: "TAKE_ITEM"; itemId: string; count?: number };
+  | { type: "TAKE_ITEM"; itemId: string; count?: number }
+  | { type: "BUY_PROPERTY"; mapId: string };
 
 /** Spending the points a level-up banked. */
 export type ProgressionAction =

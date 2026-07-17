@@ -22,6 +22,7 @@ import { REGION_MATERIALS } from "../economy/recipes";
 import { getHeroSkills, getPassives } from "../hero/skillTree";
 import type { BattleState, GameState, Hero } from "../types";
 import { recordKill } from "../hero/mastery";
+import { RENT_PER_VICTORY } from "../../state/shared";
 
 /**
  * The battle engine: the whole turn pipeline as functions over the game
@@ -145,6 +146,12 @@ export function heroStunGate(state: GameState, hero: Hero, log: string[]): boole
 function onMonsterDefeated(state: GameState, hero: Hero, log: string[]): void {
   const slain = recordKill(hero, state.battle!.monster.def.id);
   if (slain) log.push(slain);
+  // The landlord's cut: every owned business pays its rent on a victory.
+  if (state.properties.length > 0) {
+    const rent = state.properties.length * RENT_PER_VICTORY;
+    state.gold += rent;
+    log.push(`Rent from your properties: +${rent}g.`);
+  }
   const battle = state.battle!;
   const passives = getPassives(hero);
   const { xp, name } = battle.monster;
