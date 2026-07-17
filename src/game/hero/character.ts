@@ -2,6 +2,7 @@ import { getItem } from "../economy/items";
 import { freshJobs } from "../economy/jobs";
 import { gearArmor, gearItem } from "../economy/rarity";
 import { ROLES } from "./roles";
+import { rankIndex } from "./ranks";
 import { getPassives, rootNode } from "./skillTree";
 import type { Equipped, GearInstance, GrantStat, Hero, RoleId, SpendableStat } from "../types";
 
@@ -46,6 +47,8 @@ export function applyLevelUps(hero: Hero): number {
     hero.stats.maxMp += role.growth.maxMp;
     hero.statPoints += STAT_POINTS_PER_LEVEL;
     hero.skillPoints += 1;
+    // Crossing a rank threshold grants a bonus point: ascension pays.
+    if (rankIndex(hero.level) > rankIndex(hero.level - 1)) hero.skillPoints += 1;
     hero.hp = hero.stats.maxHp;
     hero.mp = hero.stats.maxMp;
     gained += 1;
