@@ -1,27 +1,43 @@
+import type { Jobs, JobId } from "./types";
 import type { RegionId } from "../world/types";
 
 /**
- * Crafting: turn foraged materials into consumables from the inventory's
- * Craft tab. Materials come from winning wild battles in their region.
+ * Crafting: turn materials into items from the inventory's Craft tab. The
+ * gate is always the MAKING - job levels and rare materials - never the
+ * wearing: once a thing exists, anyone can equip or drink it.
  */
 export type Recipe = {
   id: string;
-  /** Item produced (always 1). */
+  /** Item produced (one per craft; skilled alchemists sometimes brew two). */
   itemId: string;
   /** itemId -> count consumed. */
   needs: Record<string, number>;
+  /** The profession that makes it, and the level the recipe demands. */
+  job: { id: Extract<JobId, "smithing" | "alchemy">; level: number };
 };
 
 export const RECIPES: Recipe[] = [
-  { id: "brew_potion_hp", itemId: "potion_hp", needs: { forest_herb: 1, marsh_reed: 1 } },
-  { id: "brew_potion_mp", itemId: "potion_mp", needs: { marsh_reed: 2 } },
-  { id: "brew_antidote", itemId: "antidote", needs: { forest_herb: 2 } },
-  { id: "brew_ember_salve", itemId: "ember_salve", needs: { ember_shard: 2 } },
-  { id: "brew_elixir", itemId: "elixir", needs: { forest_herb: 1, marsh_reed: 1, ember_shard: 1 } },
-  { id: "brew_greater", itemId: "greater_potion", needs: { forest_herb: 2, ember_shard: 2 } },
+  // brews - Alchemy
+  { id: "brew_potion_hp", itemId: "potion_hp", needs: { forest_herb: 1, marsh_reed: 1 }, job: { id: "alchemy", level: 1 } },
+  { id: "brew_potion_mp", itemId: "potion_mp", needs: { marsh_reed: 2 }, job: { id: "alchemy", level: 1 } },
+  { id: "brew_antidote", itemId: "antidote", needs: { forest_herb: 2 }, job: { id: "alchemy", level: 1 } },
+  { id: "brew_ember_salve", itemId: "ember_salve", needs: { ember_shard: 2 }, job: { id: "alchemy", level: 1 } },
+  { id: "brew_stamina", itemId: "stamina_draught", needs: { marsh_reed: 2, forest_herb: 1 }, job: { id: "alchemy", level: 2 } },
+  { id: "brew_stew", itemId: "hunters_stew", needs: { dried_meat: 1, forest_herb: 2 }, job: { id: "alchemy", level: 3 } },
+  { id: "brew_elixir", itemId: "elixir", needs: { forest_herb: 1, marsh_reed: 1, ember_shard: 1 }, job: { id: "alchemy", level: 4 } },
+  { id: "brew_greater", itemId: "greater_potion", needs: { forest_herb: 2, ember_shard: 2 }, job: { id: "alchemy", level: 5 } },
+  { id: "brew_dragon_tonic", itemId: "dragon_tonic", needs: { dragon_scale: 1, forest_herb: 2, marsh_reed: 2 }, job: { id: "alchemy", level: 6 } },
+  // gear - Smithing (craft-only: none of these ever appear in a shop)
+  { id: "craft_reed_buckler", itemId: "reed_buckler", needs: { marsh_reed: 4, wolf_pelt: 1 }, job: { id: "smithing", level: 2 } },
+  { id: "craft_beast_cleaver", itemId: "beast_cleaver", needs: { wolf_pelt: 2, imp_horn: 1 }, job: { id: "smithing", level: 3 } },
+  { id: "craft_emberwood_staff", itemId: "emberwood_staff", needs: { ember_shard: 3, forest_herb: 2 }, job: { id: "smithing", level: 4 } },
+  { id: "craft_wyrmfang_dagger", itemId: "wyrmfang_dagger", needs: { dragon_scale: 1, imp_horn: 2 }, job: { id: "smithing", level: 5 } },
+  { id: "craft_scaled_mail", itemId: "scaled_mail", needs: { dragon_scale: 2, wolf_pelt: 2 }, job: { id: "smithing", level: 6 } },
 ];
 
-export function canCraft(recipe: Recipe, inventory: Record<string, number>): boolean {
+/** True when the pack holds the materials AND the hands know the craft. */
+export function canCraft(recipe: Recipe, inventory: Record<string, number>, jobs: Jobs): boolean {
+  if (jobs[recipe.job.id].level < recipe.job.level) return false;
   return Object.entries(recipe.needs).every(([itemId, count]) => (inventory[itemId] ?? 0) >= count);
 }
 

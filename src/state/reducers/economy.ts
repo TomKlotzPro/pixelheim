@@ -68,15 +68,22 @@ export function economyReducer(draft: GameState, action: EconomyAction): void {
     case "CRAFT": {
       if (!draft.hero) return;
       const recipe = RECIPES.find((r) => r.id === action.recipeId);
-      if (!recipe || !canCraft(recipe, draft.inventory)) return;
+      if (!recipe || !canCraft(recipe, draft.inventory, draft.hero.jobs)) return;
       let inventory = draft.inventory;
       for (const [itemId, count] of Object.entries(recipe.needs)) {
         inventory = removeItem(inventory, itemId, count);
       }
-      // Skilled hands sometimes brew a second one for free.
-      const doubled = Math.random() < doubleBrewChance(draft.hero.jobs.alchemy.level);
-      draft.inventory = addItem(inventory, recipe.itemId, doubled ? 2 : 1);
-      grantJobXp(draft.hero, "alchemy", 8);
+      draft.inventory = inventory;
+      if (getItem(recipe.itemId).slot) {
+        // Smithing: forged pieces are gear instances, one at a time.
+        draft.gear.push(createGear(recipe.itemId));
+        grantJobXp(draft.hero, "smithing", 10);
+      } else {
+        // Alchemy: skilled hands sometimes brew a second one for free.
+        const doubled = Math.random() < doubleBrewChance(draft.hero.jobs.alchemy.level);
+        draft.inventory = addItem(draft.inventory, recipe.itemId, doubled ? 2 : 1);
+        grantJobXp(draft.hero, "alchemy", 8);
+      }
     }
   }
 }

@@ -1024,6 +1024,10 @@ body {
   margin: 2px 0 0;
   font-variant-numeric: tabular-nums;
 }
+.item-locked {
+  color: var(--en);
+  font-size: 11px;
+}
 .stat-next {
   color: var(--accent);
 }
