@@ -3,6 +3,7 @@ import { ROLES } from "../game/roles";
 import type { GameState } from "../game/types";
 import { spawnSpecies } from "../game/encounters";
 import { getMonster } from "../game/monsters";
+import { type Chest, chestSpriteName, chestsOn, solidChestAt } from "../world/chests";
 import { npcAt, npcPosition, npcsOn, type Npc } from "../world/npcs";
 import { type MonsterSpawn, spawnPosition, spawnRegion, spawnsOn } from "../world/spawns";
 import type { WorldMap } from "../world/types";
@@ -19,6 +20,7 @@ export class ActorLayer {
   private bank: FrameBank;
   private npcs: { npc: Npc; sprite: Sprite; target: { x: number; y: number } }[] = [];
   private monsters: { spawn: MonsterSpawn; sheet: string; sprite: Sprite; target: { x: number; y: number } }[] = [];
+  private chests: { chest: Chest; sprite: Sprite }[] = [];
   private hero: Sprite | null = null;
   private heroFrames: Texture[] | null = null;
   private heroTarget = { x: 0, y: 0 };
@@ -32,6 +34,17 @@ export class ActorLayer {
   }
 
   build(container: Container, map: WorldMap, state: GameState, scale: number): void {
+    // Treasure sits under everyone: the hero walks over glints, not behind them.
+    this.chests = [];
+    for (const chest of chestsOn(map.id)) {
+      const name = chestSpriteName(chest, (state.world?.openedChests ?? []).includes(chest.id));
+      const sprite = new Sprite(Assets.get(name ?? "chest_closed") as Texture);
+      sprite.position.set(chest.x * ART, chest.y * ART);
+      sprite.visible = name !== null;
+      container.addChild(sprite);
+      this.chests.push({ chest, sprite });
+    }
+
     this.npcs = [];
     for (const npc of npcsOn(map.id)) {
       const sheet = this.bank.frames.get(`${npc.sprite}_idle`);
@@ -92,13 +105,22 @@ export class ActorLayer {
       entry.target = { x: at.x * ART, y: at.y * ART };
     }
 
-    // Someone to talk to: the prompt floats over the NPC the hero is facing.
+    for (const entry of this.chests) {
+      const name = chestSpriteName(entry.chest, (state.world?.openedChests ?? []).includes(entry.chest.id));
+      entry.sprite.visible = name !== null;
+      if (name) entry.sprite.texture = Assets.get(name) as Texture;
+    }
+
+    // Someone to talk to (or something to open): the prompt floats over the
+    // NPC or unopened chest the hero is facing.
     if (this.prompt) {
       const delta = FACING_DELTAS[pos.facing];
-      const facing =
-        state.hero && !state.dialogue && !state.shopOpen && !state.inventoryOpen
-          ? npcAt(map.id, pos.x + delta[0], pos.y + delta[1], state.worldSteps)
-          : null;
+      const idle = state.hero && !state.dialogue && !state.shopOpen && !state.inventoryOpen;
+      const chest = idle ? solidChestAt(map.id, pos.x + delta[0], pos.y + delta[1]) : null;
+      const facing = idle
+        ? (npcAt(map.id, pos.x + delta[0], pos.y + delta[1], state.worldSteps) ??
+          (chest && !(state.world?.openedChests ?? []).includes(chest.id) ? chest : null))
+        : null;
       this.prompt.visible = facing !== null;
       if (facing) {
         this.prompt.position.set((pos.x + delta[0]) * ART + ART / 2, (pos.y + delta[1]) * ART - 2);
