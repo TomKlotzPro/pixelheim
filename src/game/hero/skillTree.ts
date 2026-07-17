@@ -196,7 +196,7 @@ export const SKILL_TREES: Record<RoleId, SkillNode[]> = {
       name: "Aimed Shot", description: "A measured arrow.", mpCost: 4, kind: "damage", multiplier: 1.9, stat: "dexterity",
     }),
     upgrade("ranger_aimed_shot_2", "ranger_aimed_shot", 0, "Aimed Shot II", "Aimed Shot bites deeper.", { multiplier: 2.4 }),
-    passive("ranger_deadeye", "ranger_aimed_shot_2", 0, 2, "Deadeye", "+10% chance to crit for 1.5x damage.", { critChance: 0.1 }),
+    passive("ranger_deadeye", "ranger_aimed_shot_2", 0, 2, "Marksman's Eye", "+10% chance to crit for 1.5x damage.", { critChance: 0.1 }),
     active("ranger_barbed_arrow", 1, "Barbed Arrow", "A cruel arrowhead that poisons the wound.", {
       name: "Barbed Arrow", description: "Poisons the wound.", mpCost: 6, kind: "damage", multiplier: 1.1, stat: "dexterity",
       inflicts: { kind: "poison", chance: 0.85, turns: 3, power: 5 },
