@@ -82,6 +82,7 @@ export function Options({
           </button>
         </div>
 
+        <div className="panel-body">
         <div className="options-section">
           <h3 className="options-title">Audio</h3>
           <label className="options-row">
@@ -234,6 +235,7 @@ export function Options({
         </div>
 
         <p className="options-footer">Pixelheim v{GAME_VERSION}</p>
+        </div>
       </div>
     </div>
   );

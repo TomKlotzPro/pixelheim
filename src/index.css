@@ -67,6 +67,45 @@ body {
   padding: 12px;
 }
 
+/* ---------- one chunky retro scrollbar, everywhere ---------- */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) var(--bg-panel);
+}
+::-webkit-scrollbar {
+  width: 14px;
+  height: 14px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-panel);
+  border-left: 2px solid var(--border);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border: 3px solid var(--bg-panel);
+  border-radius: 0;
+  box-shadow:
+    inset -2px -2px 0 rgba(0, 0, 0, 0.35),
+    inset 2px 2px 0 rgba(255, 255, 255, 0.12);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+::-webkit-scrollbar-corner {
+  background: var(--bg-panel);
+}
+
+/* Scroll-safe panels: the header stays pinned, the body scrolls beneath it. */
+.panel-body {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+  padding-right: 2px;
+}
+
 .btn {
   font: inherit;
   color: var(--text);
@@ -656,21 +695,6 @@ body {
   flex-direction: column;
   gap: 8px;
   overscroll-behavior: contain;
-  scrollbar-width: thin;
-  scrollbar-color: var(--border) transparent;
-}
-.item-list::-webkit-scrollbar,
-.skill-tree::-webkit-scrollbar {
-  width: 10px;
-}
-.item-list::-webkit-scrollbar-thumb,
-.skill-tree::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border: 2px solid var(--bg-panel);
-}
-.item-list::-webkit-scrollbar-track,
-.skill-tree::-webkit-scrollbar-track {
-  background: transparent;
 }
 /* the changelog needs a fixed height so the list scrolls inside, not the page */
 .changelog-page {
@@ -790,9 +814,11 @@ body {
 }
 .stat-sheet {
   width: 320px;
+  max-height: min(85vh, 700px);
   display: flex;
   flex-direction: column;
   gap: 8px;
+  overflow: hidden;
 }
 .stat-points {
   color: var(--accent);
@@ -1037,8 +1063,10 @@ body {
 .options-panel {
   width: 460px;
   max-height: min(84vh, 720px);
-  overflow-y: auto;
-  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: hidden;
 }
 .options-section {
   border-bottom: 1px solid var(--border);
@@ -1243,4 +1271,4 @@ body {
   text-align: center;
   gap: 16px;
 }
-.skill-tree { scrollbar-width: thin; scrollbar-color: var(--border) transparent; overscroll-behavior: contain; }
+.skill-tree { overscroll-behavior: contain; }
