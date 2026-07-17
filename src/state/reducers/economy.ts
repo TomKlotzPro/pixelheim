@@ -7,10 +7,46 @@ import { doubleBrewChance, forgeCapFor, forgeCostFor, grantJobXp, JOB_STATIONS }
 import { buyPrice, sellPriceAt, SHOPS, shopStock } from "../../game/economy/shop";
 import type { GameState } from "../../game/types";
 import type { EconomyAction } from "../actions";
-import { activeShopId } from "../shared";
+import { HOUSE_DEED_COST, activeShopId } from "../shared";
 
 export function economyReducer(draft: GameState, action: EconomyAction): void {
   switch (action.type) {
+    case "BUY_HOUSE": {
+      // The deed: 1,500g, once. The door at (30,13) is yours after.
+      if (draft.house.owned || draft.gold < HOUSE_DEED_COST) return;
+      draft.gold -= HOUSE_DEED_COST;
+      draft.house.owned = true;
+      draft.worldMessage = "The deed is yours. Welcome home.";
+      return;
+    }
+
+    case "TOGGLE_STORAGE": {
+      draft.storageOpen = !draft.storageOpen;
+      return;
+    }
+
+    case "STORE_ITEM": {
+      if (!draft.house.owned || !draft.storageOpen) return;
+      const have = draft.inventory[action.itemId] ?? 0;
+      const count = Math.min(action.count ?? 1, have);
+      if (count <= 0) return;
+      draft.inventory = removeItem(draft.inventory, action.itemId, count);
+      draft.house.storage[action.itemId] = (draft.house.storage[action.itemId] ?? 0) + count;
+      return;
+    }
+
+    case "TAKE_ITEM": {
+      if (!draft.house.owned || !draft.storageOpen) return;
+      const stored = draft.house.storage[action.itemId] ?? 0;
+      const count = Math.min(action.count ?? 1, stored);
+      if (count <= 0) return;
+      const left = stored - count;
+      if (left > 0) draft.house.storage[action.itemId] = left;
+      else delete draft.house.storage[action.itemId];
+      draft.inventory = addItem(draft.inventory, action.itemId, count);
+      return;
+    }
+
     case "TOGGLE_SHOP": {
       // Shops live inside their keepers' buildings.
       if (draft.screen !== "world" || !activeShopId(draft)) return;

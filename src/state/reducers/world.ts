@@ -13,7 +13,7 @@ import { monsterSpawnAt, spawnRegion } from "../../world/spawns";
 import { waypointDiscovered, WAYPOINTS } from "../../world/waypoints";
 import { isWalkable, portalAt } from "../../world/parseMap";
 import type { WorldAction } from "../actions";
-import { DIRECTION_DELTAS, INN_MAP_ID, REST_COST } from "../shared";
+import { DIRECTION_DELTAS, HOUSE_DEED_COST, HOUSE_DOOR, INN_MAP_ID, REST_COST } from "../shared";
 
 export function worldReducer(draft: GameState, action: WorldAction): void {
   switch (action.type) {
@@ -71,8 +71,8 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
 
     case "INTERACT": {
       if (draft.screen !== "world" || !draft.world || !draft.hero) return;
-      // Menus are modal: no talking through the shop or the pack.
-      if (draft.shopOpen || draft.inventoryOpen) return;
+      // Menus are modal: no talking through the shop, the pack or the chest.
+      if (draft.shopOpen || draft.inventoryOpen || draft.storageOpen) return;
       if (draft.dialogue) {
         worldReducer(draft, { type: "ADVANCE_DIALOGUE" });
         return;
@@ -84,6 +84,36 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
       if (chest && !draft.world.openedChests.includes(chest.id)) {
         openChest(draft, chest);
         return;
+      }
+      // The shut door in town: E buys the deed (or names the price).
+      if (
+        position.mapId === HOUSE_DOOR.mapId &&
+        position.x + dx === HOUSE_DOOR.x &&
+        position.y + dy === HOUSE_DOOR.y &&
+        !draft.house.owned
+      ) {
+        if (draft.gold >= HOUSE_DEED_COST) {
+          draft.gold -= HOUSE_DEED_COST;
+          draft.house.owned = true;
+          draft.worldMessage = "The deed is yours. Welcome home.";
+        } else {
+          draft.worldMessage = `For sale: this house. The deed costs ${HOUSE_DEED_COST}g.`;
+        }
+        return;
+      }
+      // Home furniture answers to E: the bed rests, the barrel stores.
+      if (position.mapId === "town_house") {
+        const homeTile = getMap(position.mapId).tiles[position.y + dy]?.[position.x + dx];
+        if (homeTile === "bed") {
+          draft.hero.hp = draft.hero.stats.maxHp;
+          draft.hero.mp = draft.hero.stats.maxMp;
+          draft.worldMessage = "Your own bed. Fully rested, free of charge.";
+          return;
+        }
+        if (homeTile === "barrel") {
+          draft.storageOpen = true;
+          return;
+        }
       }
       // Anyone beside the hero counts, faced tile first; no more pixel-perfect
       // shuffling to line up a chat. Interacting turns the hero toward them.
@@ -116,7 +146,7 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
       if (draft.screen !== "world" || !draft.world) return;
       // Menus are modal: walking away with the shop open used to strand the
       // overlay on a map with no shop and crash the tree (PIX-58).
-      if (draft.dialogue || draft.shopOpen || draft.inventoryOpen) return;
+      if (draft.dialogue || draft.shopOpen || draft.inventoryOpen || draft.storageOpen) return;
       const { position } = draft.world;
       const map = getMap(position.mapId);
       const { dx, dy } = DIRECTION_DELTAS[action.direction];
@@ -134,6 +164,19 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
           draft.battle.wildSpawnId = spawn.id;
           return;
         }
+      }
+      // The bought house opens: bumping its shut door walks you in.
+      if (map.id === HOUSE_DOOR.mapId && x === HOUSE_DOOR.x && y === HOUSE_DOOR.y) {
+        position.facing = action.direction;
+        if (draft.house.owned) {
+          draft.worldMessage = null;
+          draft.world.slain = [];
+          draft.world.position = { mapId: "town_house", x: 4, y: 4, facing: "up" };
+          draft.world.discovered = discoverAround(draft.world.discovered, getMap("town_house"), 4, 4);
+        } else {
+          draft.worldMessage = `For sale: this house. The deed costs ${HOUSE_DEED_COST}g. (E to buy)`;
+        }
+        return;
       }
       // Bumping into something (or someone) still turns the hero toward it.
       if (!isWalkable(map, x, y) || npcAt(map.id, x, y, draft.worldSteps) || solidChestAt(map.id, x, y)) {

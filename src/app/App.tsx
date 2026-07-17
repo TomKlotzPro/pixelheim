@@ -14,6 +14,7 @@ import { CharacterCreation } from "../ui/screens/CharacterCreation";
 import { Inventory } from "../ui/panels/Inventory";
 import { MapScreen } from "../ui/panels/MapScreen";
 import { PauseMenu } from "../ui/panels/PauseMenu";
+import { HouseStorage } from "../ui/panels/HouseStorage";
 import { Shop } from "../ui/panels/Shop";
 import { TitleScreen } from "../ui/screens/TitleScreen";
 import { Victory } from "../ui/screens/Victory";
@@ -199,6 +200,7 @@ export default function App() {
       if (event.key === "Escape") {
         const now = gameStore.getState();
         if (mapOpen) setMapOpen(false);
+        else if (now.storageOpen) dispatch({ type: "TOGGLE_STORAGE" });
         else if (now.shopOpen) dispatch({ type: "TOGGLE_SHOP" });
         else if (now.inventoryOpen) dispatch({ type: "TOGGLE_INVENTORY" });
         else if (now.dialogue) dispatch({ type: "ADVANCE_DIALOGUE" });
@@ -263,6 +265,7 @@ export default function App() {
         />
       )}
       {state.shopOpen && state.hero && <Shop />}
+      {state.storageOpen && state.hero && <HouseStorage />}
       {optionsOpen && (
         <Options
           settings={settings}

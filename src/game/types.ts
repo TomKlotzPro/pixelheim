@@ -215,6 +215,10 @@ export type GameState = {
   gold: number;
   /** Stackables only (potions, food, misc): itemId -> count. */
   inventory: Record<string, number>;
+  /** The roof over your head: the deed, and what the chest holds. */
+  house: { owned: boolean; storage: Record<string, number> };
+  /** The home storage panel (transient UI, like shopOpen). */
+  storageOpen: boolean;
   /** Every owned weapon/apparel piece, equipped or not. */
   gear: GearInstance[];
   /** Slot -> gear uid. */

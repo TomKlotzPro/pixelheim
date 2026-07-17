@@ -11,6 +11,17 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.41.0",
+    date: "2026-07-18",
+    codename: "Welcome Home",
+    notes: [
+      "You can own a HOUSE. The shut door in the south of town names its price: the deed costs 1,500g - press E and it's yours",
+      "Inside: your own bed (free rest, forever - the inn can keep its prices) and a storage barrel",
+      "Home storage is the answer to carry weight: stored goods weigh NOTHING on the road. Hoarding, finally legal",
+      "The first stone of Your Town: property, the city hall and the settlers come next",
+    ],
+  },
+  {
     version: "0.40.0",
     date: "2026-07-18",
     codename: "Worn with Pride",

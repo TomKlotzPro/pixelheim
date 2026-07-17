@@ -16,6 +16,8 @@ export const initialState: GameState = {
   battle: null,
   inventoryOpen: false,
   shopOpen: false,
+  storageOpen: false,
+  house: { owned: false, storage: {} },
   world: null,
   dungeonSelect: null,
   introSeen: true,
@@ -23,6 +25,10 @@ export const initialState: GameState = {
   worldSteps: 0,
   dialogue: null,
 };
+
+/** The player house: the shut door in town, and what the deed costs. */
+export const HOUSE_DOOR = { mapId: "town", x: 30, y: 13 };
+export const HOUSE_DEED_COST = 1500;
 
 /** Where heroes wake up: the middle of Pixelheim village. */
 export const TOWN_SPAWN = { mapId: "town", x: 14, y: 15, facing: "down" as const };
