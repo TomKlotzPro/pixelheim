@@ -11,6 +11,17 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.27.0",
+    date: "2026-07-17",
+    codename: "Buried Riches",
+    notes: [
+      "Exploration pays: 12 treasures hide across the maps - chests in the corners of the world, gold glinting on the road, an herb patch worth gathering",
+      "Chests are furniture: face one, press E, and it opens once per save - the corner finds hold gear a tier ahead of their region",
+      "Ground treasure is taken in stride: walk over a glint or herb patch and it is yours",
+      "One chest in the Mirefen is not a chest. Good luck.",
+    ],
+  },
+  {
     version: "0.26.0",
     date: "2026-07-17",
     codename: "Open Season",
