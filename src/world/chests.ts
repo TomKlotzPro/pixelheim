@@ -1,5 +1,5 @@
-import { getItem } from "../game/items";
-import { getMap } from "./maps";
+import { getItem } from "../game/economy/items";
+import { getMap } from "./maps/index";
 import { isWalkable, portalAt, regionAt } from "./parseMap";
 import { SPAWNS } from "./spawns";
 import type { RegionId } from "./types";

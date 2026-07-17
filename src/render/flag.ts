@@ -1,4 +1,4 @@
-import { loadSettings } from "../settings";
+import { loadSettings } from "../app/settings";
 
 /**
  * WebGL is the default renderer and the Options screen owns the choice

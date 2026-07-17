@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createHero } from "../../game/character";
+import { createHero } from "../../game/hero/character";
 import { gameReducer, initialState, TOWN_SPAWN } from "../gameReducer";
 
 describe("QUIT_TO_TITLE", () => {

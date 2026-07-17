@@ -1,8 +1,8 @@
 import { Assets, type Container, Graphics, Sprite, type Texture } from "pixi.js";
-import { ROLES } from "../game/roles";
+import { ROLES } from "../game/hero/roles";
 import type { GameState } from "../game/types";
-import { spawnSpecies } from "../game/encounters";
-import { getMonster } from "../game/monsters";
+import { spawnSpecies } from "../game/combat/encounters";
+import { getMonster } from "../game/combat/monsters";
 import { type Chest, chestSpriteName, chestsOn, solidChestAt } from "../world/chests";
 import { npcBeside, npcPosition, npcsOn, type Npc } from "../world/npcs";
 import { signsOn } from "../world/signs";

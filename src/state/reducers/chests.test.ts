@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { createHero } from "../../game/character";
+import { createHero } from "../../game/hero/character";
 import type { GameState } from "../../game/types";
 import { CHESTS } from "../../world/chests";
 import { gameReducer, initialState } from "../gameReducer";

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createHero } from "../../game/character";
+import { createHero } from "../../game/hero/character";
 import type { GameState } from "../../game/types";
 import { gameReducer, initialState } from "../gameReducer";
 import { npcBeside } from "../../world/npcs";
