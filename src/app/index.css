@@ -259,6 +259,21 @@ body {
     background-position-x: -384px;
   }
 }
+.look-row {
+  display: flex;
+  gap: 5px;
+}
+.look-swatch {
+  font: inherit;
+  padding: 3px;
+  background: #0d0e13;
+  border: 2px solid var(--border);
+  cursor: pointer;
+  line-height: 0;
+}
+.look-swatch.selected {
+  border-color: var(--accent);
+}
 .role-portrait-name {
   color: var(--accent);
   max-width: 124px;

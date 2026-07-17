@@ -12,11 +12,12 @@ export function xpToNext(level: number): number {
 /** Combat-stat points banked per level, spent by the player. */
 export const STAT_POINTS_PER_LEVEL = 5;
 
-export function createHero(name: string, roleId: RoleId): Hero {
+export function createHero(name: string, roleId: RoleId, look = 0): Hero {
   const role = ROLES[roleId];
   return {
     name,
     roleId,
+    look,
     level: 1,
     xp: 0,
     xpToNext: xpToNext(1),
@@ -50,6 +51,12 @@ export function applyLevelUps(hero: Hero): number {
     gained += 1;
   }
   return gained;
+}
+
+/** The hero's sprite, look applied: palette-swap variants share one grid. */
+export function heroSprite(hero: Hero): string {
+  const base = ROLES[hero.roleId].sprite;
+  return hero.look ? `${base}_l${hero.look}` : base;
 }
 
 export function gearByUid(gear: GearInstance[], uid: string | undefined): GearInstance | null {

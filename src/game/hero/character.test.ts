@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { applyLevelUps, applyStatPoint, carryCapacity, carriedWeight, createHero, resourceLabel, staminaRegen, STAT_POINTS_PER_LEVEL, xpToNext } from "./character";
+import { applyLevelUps, applyStatPoint, carryCapacity, carriedWeight, createHero, resourceLabel, staminaRegen, STAT_POINTS_PER_LEVEL, xpToNext, heroSprite } from "./character";
 import { getItem } from "../economy/items";
 import { createGear } from "../economy/rarity";
 import { rootNode } from "./skillTree";
@@ -97,5 +97,21 @@ describe("resources", () => {
     applyStatPoint(mage, "endurance");
     expect(mage.stats.maxHp).toBe(29);
     expect(mage.stats.maxMp).toBe(mPool);
+  });
+});
+
+describe("hero looks", () => {
+  it("stores the chosen look and resolves the variant sprite", () => {
+    const classic = createHero("Tess", "warrior");
+    expect(heroSprite(classic)).toBe("hero_warrior");
+    const styled = createHero("Tess", "mage", 2);
+    expect(styled.look).toBe(2);
+    expect(heroSprite(styled)).toBe("hero_mage_l2");
+  });
+
+  it("old saves without a look wear the classic", () => {
+    const hero = createHero("Vet", "rogue");
+    delete (hero as { look?: number }).look;
+    expect(heroSprite(hero)).toBe("hero_rogue");
   });
 });

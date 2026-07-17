@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { carriedWeight, carryCapacity, gearByUid, grantedStat, totalDefense, weaponOf } from "../../game/hero/character";
+import { carriedWeight, carryCapacity, gearByUid, grantedStat, heroSprite as heroSpriteOf, totalDefense, weaponOf } from "../../game/hero/character";
 import { getItem } from "../../game/economy/items";
 import { itemStatLine } from "../../game/economy/itemStats";
 import { gearDamage, gearItem, gearName, gearValue } from "../../game/economy/rarity";
 import { JOB_NAMES, JOB_STATIONS } from "../../game/economy/jobs";
 import { canCraft, RECIPES } from "../../game/economy/recipes";
-import { ROLES } from "../../game/hero/roles";
 import type { EquippedSlot, GrantStat, ItemCategory } from "../../game/types";
 import { dispatch, useGameState, useHero } from "../../state/store";
 import { Sprite } from "../widgets/Sprite";
@@ -85,7 +84,7 @@ export function Inventory() {
           <div className="doll-column">
             <div className="doll">
               <div className="doll-portrait" aria-hidden="true">
-                <Sprite name={ROLES[hero.roleId].sprite} size={72} />
+                <Sprite name={heroSpriteOf(hero)} size={72} />
               </div>
               {DOLL_SLOTS.map(({ slot, label }, i) => {
                 const instance = gearByUid(state.gear, state.equipped[slot]);

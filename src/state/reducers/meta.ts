@@ -16,7 +16,7 @@ export function metaReducer(draft: GameState, action: MetaAction): GameState | v
       return action.state;
 
     case "CREATE_HERO": {
-      const hero = createHero(action.name, action.roleId);
+      const hero = createHero(action.name, action.roleId, action.look);
       const starterWeapon: Record<RoleId, string> = {
         warrior: "rusty_sword",
         mage: "apprentice_staff",

@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useState } from "react";
-import { ROLES } from "../../game/hero/roles";
+import { heroSprite as heroSpriteOf } from "../../game/hero/character";
 import { dispatch, useGameState, useWorld } from "../../state/store";
 import { getMap } from "../../world/maps/index";
 import { spawnSpecies } from "../../game/combat/encounters";
@@ -60,7 +60,7 @@ export function WorldScreen() {
   const state = useGameState();
   const world = useWorld().position;
   const map = getMap(world.mapId);
-  const heroSprite = ROLES[state.hero?.roleId ?? "warrior"].sprite;
+  const heroSprite = state.hero ? heroSpriteOf(state.hero) : "hero_warrior";
   const tilePx = ART_PX * useTileScale();
 
   // Someone to talk to: a prompt floats over the NPC beside the hero -
