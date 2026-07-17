@@ -4,6 +4,7 @@ import { dispatch, useGameState, useWorld } from "../state/store";
 import { getMap } from "../world/maps";
 import { spawnSpecies } from "../game/encounters";
 import { getMonster } from "../game/monsters";
+import { chestSpriteName, chestsOn, solidChestAt } from "../world/chests";
 import { npcAt, NPCS, npcPosition, npcsOn } from "../world/npcs";
 import { spawnPosition, spawnRegion, spawnsOn } from "../world/spawns";
 import { regionAt } from "../world/parseMap";
@@ -67,6 +68,10 @@ export function WorldScreen() {
     state.hero && !state.dialogue && !state.shopOpen
       ? npcAt(map.id, world.x + fdx, world.y + fdy, state.worldSteps)
       : null;
+  const facingChestEntity =
+    state.hero && !state.dialogue && !state.shopOpen ? solidChestAt(map.id, world.x + fdx, world.y + fdy) : null;
+  const facingChest =
+    facingChestEntity && !(state.world?.openedChests ?? []).includes(facingChestEntity.id) ? facingChestEntity : null;
 
   // Maps smaller than the viewport are centered; larger ones scroll, clamped at edges.
   const cameraX =
@@ -120,7 +125,15 @@ export function WorldScreen() {
                 const at = spawnPosition(spawn, state.worldSteps);
                 return <div key={spawn.id} data-testid="world-monster" data-pos={`${at.x},${at.y}`} />;
               })}
-            {facingNpc && <div data-testid="npc-prompt" />}
+            {chestsOn(map.id).map((chest) => (
+              <div
+                key={chest.id}
+                data-testid="world-chest"
+                data-pos={`${chest.x},${chest.y}`}
+                data-open={(state.world?.openedChests ?? []).includes(chest.id) || undefined}
+              />
+            ))}
+            {(facingNpc || facingChest) && <div data-testid="npc-prompt" />}
           </div>
         </>
       ) : (
@@ -162,6 +175,20 @@ export function WorldScreen() {
               );
             }),
           )}
+          {chestsOn(map.id).map((chest) => {
+            const sprite = chestSpriteName(chest, (state.world?.openedChests ?? []).includes(chest.id));
+            if (!sprite) return null;
+            return (
+              <div
+                key={chest.id}
+                className="world-npc"
+                data-testid="world-chest"
+                style={{ left: chest.x * tilePx, top: chest.y * tilePx, width: tilePx, height: tilePx }}
+              >
+                <Sprite name={sprite} size={tilePx} alt="" />
+              </div>
+            );
+          })}
           {spawnsOn(map.id)
             .filter((spawn) => !(state.world?.slain ?? []).includes(spawn.id))
             .map((spawn) => {
@@ -198,7 +225,7 @@ export function WorldScreen() {
           >
             <Sprite name={heroSprite} size={tilePx} alt="hero" />
           </div>
-          {facingNpc && (
+          {(facingNpc || facingChest) && (
             <div
               className="npc-prompt"
               data-testid="npc-prompt"

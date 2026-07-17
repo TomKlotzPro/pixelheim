@@ -1,8 +1,11 @@
 import { createWildBattle } from "../../game/battleEngine";
 import { encounterForSpawn, spawnSpecies } from "../../game/encounters";
 import { carriedWeight, carryCapacity } from "../../game/character";
+import { getItem } from "../../game/items";
+import { createGear, gearName } from "../../game/rarity";
 import { SHOP_MAPS } from "../../game/shop";
 import type { GameState } from "../../game/types";
+import { type Chest, chestAt, chestRegion, solidChestAt } from "../../world/chests";
 import { discoverAround } from "../../world/discover";
 import { getMap } from "../../world/maps";
 import { npcAt, NPCS } from "../../world/npcs";
@@ -76,6 +79,12 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
       }
       const { position } = draft.world;
       const { dx, dy } = DIRECTION_DELTAS[position.facing];
+      // Treasure first: a chest the hero faces opens before anyone chats.
+      const chest = solidChestAt(position.mapId, position.x + dx, position.y + dy);
+      if (chest && !draft.world.openedChests.includes(chest.id)) {
+        openChest(draft, chest);
+        return;
+      }
       const npc = npcAt(position.mapId, position.x + dx, position.y + dy, draft.worldSteps);
       if (!npc) return;
       // Keepers trade instead of chatting: talking to whoever runs a shop
@@ -124,7 +133,7 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
         }
       }
       // Bumping into something (or someone) still turns the hero toward it.
-      if (!isWalkable(map, x, y) || npcAt(map.id, x, y, draft.worldSteps)) {
+      if (!isWalkable(map, x, y) || npcAt(map.id, x, y, draft.worldSteps) || solidChestAt(map.id, x, y)) {
         position.facing = action.direction;
         return;
       }
@@ -168,7 +177,49 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
       draft.worldSteps += 1;
       draft.world.position = { mapId: position.mapId, x, y, facing: action.direction };
       draft.world.discovered = discoverAround(draft.world.discovered, map, x, y);
+      // Ground treasure is taken in stride: glints and herbs, not furniture.
+      const found = draft.hero ? chestAt(map.id, x, y) : null;
+      if (found && found.look !== "chest" && !draft.world.openedChests.includes(found.id)) {
+        openChest(draft, found);
+      }
 
     }
   }
+}
+
+/** Grants a chest's payout: gold, items, a gear piece, or a mimic's teeth. */
+function openChest(draft: GameState, chest: Chest): void {
+  if (!draft.world || !draft.hero) return;
+  if (chest.mimic) {
+    // The chest was the monster all along. No refunds.
+    draft.world.openedChests.push(chest.id);
+    draft.screen = "battle";
+    draft.battle = createWildBattle(encounterForSpawn(chestRegion(chest)!, "mimic"));
+    draft.battle.log = ["The chest sprouts teeth. It was a mimic all along!"];
+    return;
+  }
+  const loot = chest.loot!;
+  if (loot.kind === "gold") {
+    draft.gold += loot.amount;
+    draft.world.openedChests.push(chest.id);
+    draft.worldMessage = chest.look === "glint" ? `Something glitters on the road: ${loot.amount}g.` : `The chest holds ${loot.amount}g.`;
+    return;
+  }
+  const item = getItem(loot.itemId);
+  const qty = loot.kind === "item" ? loot.qty : 1;
+  const capacity = carryCapacity(draft.hero);
+  if (carriedWeight(draft.inventory, draft.gear, draft.equipped) + item.weight * qty > capacity) {
+    draft.worldMessage = "Too heavy to carry. Lighten the pack and come back.";
+    return;
+  }
+  draft.world.openedChests.push(chest.id);
+  if (loot.kind === "gear") {
+    const gear = createGear(loot.itemId);
+    draft.gear.push(gear);
+    draft.worldMessage = `The chest holds ${gearName(gear)}!`;
+    return;
+  }
+  draft.inventory[loot.itemId] = (draft.inventory[loot.itemId] ?? 0) + qty;
+  draft.worldMessage =
+    chest.look === "herb" ? `You gather ${qty}x ${item.name}.` : `The chest holds ${qty}x ${item.name}.`;
 }
