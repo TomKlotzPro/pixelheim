@@ -19,13 +19,16 @@ import { gameReducer, initialState, REST_COST, type Action } from "../src/state/
 const CHECK_MODE = process.argv.includes("--check");
 const RUNS_PER_ROLE = CHECK_MODE ? 10 : 30;
 const MAX_ATTEMPTS_PER_FLOOR = 12;
-const ROLES: RoleId[] = ["warrior", "mage", "rogue", "cleric"];
+const ROLES: RoleId[] = ["warrior", "mage", "rogue", "cleric", "ranger", "paladin", "necromancer"];
 
 const PRIMARY: Record<RoleId, "strength" | "intelligence" | "dexterity"> = {
   warrior: "strength",
   mage: "intelligence",
   rogue: "dexterity",
   cleric: "intelligence",
+  ranger: "dexterity",
+  paladin: "strength",
+  necromancer: "intelligence",
 };
 
 type FloorStat = { attempts: number; deaths: number; clearLevel: number; clearGold: number };
