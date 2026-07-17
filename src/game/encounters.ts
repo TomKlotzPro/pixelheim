@@ -13,7 +13,6 @@ type RegionTable = {
   monsters: { monsterId: string; weight: number }[];
 };
 
-export const ENCOUNTER_CHANCE = 0.1;
 export const WILD_REWARD_MULT = 0.65;
 
 const REGIONS: Record<RegionId, RegionTable> = {
@@ -76,20 +75,15 @@ export type WildEncounter = {
   dropFloor: number;
 };
 
-/** Rolls one step's encounter for a region; null means the wilds stay quiet. */
-export function rollWildEncounter(region: RegionId): WildEncounter | null {
+/** The species living at a spawn: deterministic, so what you see is what you fight. */
+export function spawnSpecies(region: RegionId, seed: number): string {
   const table = REGIONS[region];
-  if (!table || Math.random() >= ENCOUNTER_CHANCE) return null;
-  const total = table.monsters.reduce((sum, m) => sum + m.weight, 0);
-  let roll = Math.random() * total;
-  let monsterId = table.monsters[0].monsterId;
-  for (const entry of table.monsters) {
-    roll -= entry.weight;
-    if (roll <= 0) {
-      monsterId = entry.monsterId;
-      break;
-    }
-  }
+  return table.monsters[seed % table.monsters.length].monsterId;
+}
+
+/** Builds the wild encounter for a visible spawn; only the elite roll is chance. */
+export function encounterForSpawn(region: RegionId, monsterId: string): WildEncounter {
+  const table = REGIONS[region];
   return {
     def: { monsterId, elite: Math.random() < table.eliteChance },
     regionId: region,
@@ -97,3 +91,4 @@ export function rollWildEncounter(region: RegionId): WildEncounter | null {
     dropFloor: table.dropFloor,
   };
 }
+

@@ -2,7 +2,10 @@ import { lazy, Suspense, useEffect, useState } from "react";
 import { ROLES } from "../game/roles";
 import { dispatch, useGameState, useWorld } from "../state/store";
 import { getMap } from "../world/maps";
+import { spawnSpecies } from "../game/encounters";
+import { getMonster } from "../game/monsters";
 import { npcAt, NPCS, npcPosition, npcsOn } from "../world/npcs";
+import { spawnPosition, spawnRegion, spawnsOn } from "../world/spawns";
 import { regionAt } from "../world/parseMap";
 import { TILES } from "../world/tiles";
 import type { Direction, TileId } from "../world/types";
@@ -111,6 +114,12 @@ export function WorldScreen() {
             {npcsOn(map.id).map((npc) => (
               <div key={npc.id} data-testid="world-npc" />
             ))}
+            {spawnsOn(map.id)
+              .filter((spawn) => !(state.world?.slain ?? []).includes(spawn.id))
+              .map((spawn) => {
+                const at = spawnPosition(spawn, state.worldSteps);
+                return <div key={spawn.id} data-testid="world-monster" data-pos={`${at.x},${at.y}`} />;
+              })}
             {facingNpc && <div data-testid="npc-prompt" />}
           </div>
         </>
@@ -153,6 +162,21 @@ export function WorldScreen() {
               );
             }),
           )}
+          {spawnsOn(map.id)
+            .filter((spawn) => !(state.world?.slain ?? []).includes(spawn.id))
+            .map((spawn) => {
+              const at = spawnPosition(spawn, state.worldSteps);
+              const species = getMonster(spawnSpecies(spawnRegion(spawn), spawn.x * 31 + spawn.y));
+              return (
+                <div
+                  key={spawn.id}
+                  className="world-npc"
+                  style={{ left: at.x * tilePx, top: at.y * tilePx, width: tilePx, height: tilePx }}
+                >
+                  <Sprite name={species.sprite} size={tilePx} alt={species.name} />
+                </div>
+              );
+            })}
           {npcsOn(map.id).map((npc) => {
             const pos = npcPosition(npc, state.worldSteps);
             return (

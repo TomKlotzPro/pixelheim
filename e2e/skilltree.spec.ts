@@ -61,20 +61,22 @@ test('upgrades patch the battle skill they improve', async ({ page }) => {
     .click()
   await page.getByRole('button', { name: 'Close' }).click()
 
-  // walk out the north gate and pace the forest for a fight to check the button label
+  // walk out the north gate and bump the forest spawn to check the button label
   for (const key of [
     ...Array(10).fill('ArrowUp'),
     'ArrowRight',
     'ArrowRight',
     ...Array(5).fill('ArrowUp'),
+    ...Array(6).fill('ArrowRight'),
+    ...Array(3).fill('ArrowUp'),
   ] as string[]) {
     await page.keyboard.press(key)
     await page.waitForTimeout(20)
   }
-  for (let i = 0; i < 130; i++) {
-    await page.keyboard.press(i < 10 ? 'ArrowRight' : i % 2 === 0 ? 'ArrowRight' : 'ArrowLeft')
-    await page.waitForTimeout(15)
-    if (await page.getByText('Ambush!').isVisible().catch(() => false)) break
+  for (const key of ['ArrowRight', 'ArrowRight', 'ArrowDown', 'ArrowLeft', 'ArrowUp', 'ArrowRight', 'ArrowDown', 'ArrowRight', 'ArrowRight', 'ArrowLeft'] as string[]) {
+    if (await page.getByText(/The Wilds:/).isVisible().catch(() => false)) break
+    await page.keyboard.press(key)
+    await page.waitForTimeout(30)
   }
   await expect(page.getByRole('button', { name: 'Berserk (5 EN + 4 HP)' })).toBeVisible()
 })
