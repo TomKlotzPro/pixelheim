@@ -11,6 +11,17 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.37.0",
+    date: "2026-07-18",
+    codename: "The Fork in the Path",
+    notes: [
+      "Specializations! At your first ascension, every class faces a choice of two paths - Juggernaut or Warlord, Pyromancer or Stormcaller, Plaguelord or Bonelord... fourteen identities across the roster",
+      "A path is a permanent identity: an always-on passive theme and a SIGNATURE SKILL no tree can teach",
+      "Choose in the Skills menu; your title on the stat sheet carries the path. A path is for life - choose like it matters",
+      "Old saves lose nothing: the fork simply waits in Skills for any hero past level 5",
+    ],
+  },
+  {
     version: "0.36.0",
     date: "2026-07-18",
     codename: "Ascension",

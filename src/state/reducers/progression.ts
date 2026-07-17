@@ -2,6 +2,7 @@ import { applyStatPoint } from "../../game/hero/character";
 import { canBuyNode, getNode } from "../../game/hero/skillTree";
 import type { GameState } from "../../game/types";
 import type { ProgressionAction } from "../actions";
+import { canChooseSpec, specsFor } from "../../game/hero/specs";
 
 export function progressionReducer(draft: GameState, action: ProgressionAction): void {
   switch (action.type) {
@@ -9,6 +10,15 @@ export function progressionReducer(draft: GameState, action: ProgressionAction):
       if (!draft.hero || draft.hero.statPoints <= 0) return;
       applyStatPoint(draft.hero, action.stat);
       draft.hero.statPoints -= 1;
+      return;
+    }
+
+    case "CHOOSE_SPEC": {
+      // The fork at the first ascension: role-checked, rank-gated, permanent.
+      if (!draft.hero || !canChooseSpec(draft.hero)) return;
+      const spec = specsFor(draft.hero.roleId).find((s) => s.id === action.specId);
+      if (!spec) return;
+      draft.hero.spec = spec.id;
       return;
     }
 

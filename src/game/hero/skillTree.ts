@@ -1,4 +1,5 @@
 import type { Hero, Infliction, RoleId, Skill } from "../types";
+import { getSpec } from "./specs";
 
 /**
  * The skill trees: 3 branches x 3 tiers per role. Tier-0 nodes are the old
@@ -282,7 +283,7 @@ export function rootNode(roleId: RoleId): SkillNode {
 export function getHeroSkills(hero: Hero): Skill[] {
   const owned = new Set(hero.skillNodes);
   const nodes = SKILL_TREES[hero.roleId];
-  return nodes
+  const skills = nodes
     .filter((n) => n.kind === "active" && owned.has(n.id))
     .map((node) => {
       const skill = Object.assign({}, node.skill);
@@ -293,27 +294,37 @@ export function getHeroSkills(hero: Hero): Skill[] {
       }
       return skill;
     });
+  // the specialization's signature skill: taught by identity, not the tree
+  const spec = getSpec(hero);
+  if (spec) skills.push(spec.signature);
+  return skills;
 }
 
 /** All owned passive effects, merged. */
 export function getPassives(hero: Hero): PassiveEffects {
   const merged = { ...NO_PASSIVES };
   const owned = new Set(hero.skillNodes);
+  const spec = getSpec(hero);
+  const sources: Partial<PassiveEffects>[] = spec ? [spec.passive] : [];
   for (const node of SKILL_TREES[hero.roleId]) {
     if (node.kind !== "passive" || !owned.has(node.id) || !node.passive) continue;
-    merged.defense += node.passive.defense ?? 0;
-    merged.fleeBonus += node.passive.fleeBonus ?? 0;
-    merged.carryBonus += node.passive.carryBonus ?? 0;
-    merged.critChance += node.passive.critChance ?? 0;
-    merged.killRefundMp += node.passive.killRefundMp ?? 0;
-    merged.goldBonus += node.passive.goldBonus ?? 0;
-    merged.lowHpBonus += node.passive.lowHpBonus ?? 0;
-    merged.stunResist = merged.stunResist || (node.passive.stunResist ?? false);
-    merged.poisonResist = merged.poisonResist || (node.passive.poisonResist ?? false);
-    merged.attackInflict = node.passive.attackInflict ?? merged.attackInflict;
+    sources.push(node.passive);
+  }
+  for (const effects of sources) {
+    merged.defense += effects.defense ?? 0;
+    merged.fleeBonus += effects.fleeBonus ?? 0;
+    merged.carryBonus += effects.carryBonus ?? 0;
+    merged.critChance += effects.critChance ?? 0;
+    merged.killRefundMp += effects.killRefundMp ?? 0;
+    merged.goldBonus += effects.goldBonus ?? 0;
+    merged.lowHpBonus += effects.lowHpBonus ?? 0;
+    merged.stunResist = merged.stunResist || (effects.stunResist ?? false);
+    merged.poisonResist = merged.poisonResist || (effects.poisonResist ?? false);
+    merged.attackInflict = effects.attackInflict ?? merged.attackInflict;
   }
   return merged;
 }
+
 
 export function canBuyNode(hero: Hero, node: SkillNode): boolean {
   if (hero.skillPoints <= 0) return false;
