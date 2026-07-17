@@ -139,7 +139,7 @@ export class ActorLayer {
     container.addChild(this.prompt);
 
     // Door signs: little wooden plates telling you what each building is.
-    for (const sign of signsOn(map.id)) {
+    for (const sign of signsOn(map.id, state.house.owned)) {
       // Craft stations advertise their trade with an icon over the plate.
       if (sign.icon) {
         const icon = new Sprite(Assets.get(sign.icon) as Texture);

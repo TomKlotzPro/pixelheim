@@ -21,8 +21,8 @@ import { Sprite } from "../widgets/Sprite";
 import { WorldHud } from "../widgets/WorldHud";
 
 const ART_PX = 16;
-const VIEW_W = 15;
-const VIEW_H = 11;
+const VIEW_W = 21;
+const VIEW_H = 13;
 
 // Lazy so pixi.js stays out of the main bundle until the flag asks for it.
 const PixiWorldView = lazy(() => import("../../render/PixiWorldView").then((m) => ({ default: m.PixiWorldView })));
@@ -142,7 +142,7 @@ export function WorldScreen() {
                 data-open={(state.world?.openedChests ?? []).includes(chest.id) || undefined}
               />
             ))}
-            {signsOn(map.id).map((sign) => (
+            {signsOn(map.id, state.house.owned).map((sign) => (
               <div key={`${sign.x},${sign.y}`} data-testid="door-sign" data-label={sign.label} data-icon={sign.icon} />
             ))}
             {(facingNpc || facingChest) && <div data-testid="npc-prompt" />}
@@ -201,7 +201,7 @@ export function WorldScreen() {
                 </div>
               );
             })}
-            {signsOn(map.id).map((sign) => (
+            {signsOn(map.id, state.house.owned).map((sign) => (
               <span
                 key={`${sign.x},${sign.y}`}
                 className="door-sign"

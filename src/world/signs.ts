@@ -13,10 +13,13 @@ export const DOOR_SIGNS: Record<string, { label: string; icon?: string }> = {
 
 export type DoorSign = { x: number; y: number; label: string; icon?: string };
 
-export function signsOn(mapId: string): DoorSign[] {
-  return getMap(mapId).portals.flatMap((portal) =>
+export function signsOn(mapId: string, houseOwned = false): DoorSign[] {
+  const signs = getMap(mapId).portals.flatMap((portal) =>
     portal.to.kind === "map" && DOOR_SIGNS[portal.to.mapId]
       ? [{ x: portal.x, y: portal.y, ...DOOR_SIGNS[portal.to.mapId] }]
       : [],
   );
+  // The buyable house has no portal until owned; its sign lives here.
+  if (mapId === "town") signs.push({ x: 30, y: 13, label: houseOwned ? "HOME" : "FOR SALE" });
+  return signs;
 }
