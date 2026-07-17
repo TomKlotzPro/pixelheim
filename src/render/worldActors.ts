@@ -1,4 +1,4 @@
-import { Assets, type Container, Sprite, type Text, type Texture } from "pixi.js";
+import { Assets, type Container, Graphics, Sprite, type Texture } from "pixi.js";
 import { ROLES } from "../game/roles";
 import type { GameState } from "../game/types";
 import { spawnSpecies } from "../game/encounters";
@@ -8,7 +8,8 @@ import { npcBeside, npcPosition, npcsOn, type Npc } from "../world/npcs";
 import { signsOn } from "../world/signs";
 import { type MonsterSpawn, spawnPosition, spawnRegion, spawnsOn } from "../world/spawns";
 import type { WorldMap } from "../world/types";
-import { ART, type FrameBank, retroText } from "./pixiUtils";
+import { ART, type FrameBank, makeShadowTexture } from "./pixiUtils";
+import { pixelText } from "./pixelFont";
 
 const WALK_MS = 160; // per walk frame
 const IDLE_MS = 500; // per idle frame
@@ -30,22 +31,30 @@ const FACING_DELTAS = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] 
 /** The people: the hero's walk cycle, wandering NPCs, and the talk prompt. */
 export class ActorLayer {
   private bank: FrameBank;
-  private npcs: { npc: Npc; sprite: Sprite; target: { x: number; y: number } }[] = [];
-  private monsters: { spawn: MonsterSpawn; sheet: string; sprite: Sprite; target: { x: number; y: number } }[] = [];
+  private npcs: { npc: Npc; sprite: Sprite; shadow: Sprite; target: { x: number; y: number } }[] = [];
+  private monsters: {
+    spawn: MonsterSpawn;
+    sheet: string;
+    sprite: Sprite;
+    shadow: Sprite;
+    target: { x: number; y: number };
+  }[] = [];
   private chests: { chest: Chest; sprite: Sprite }[] = [];
   private hero: Sprite | null = null;
+  private heroShadow: Sprite | null = null;
+  private shadowTexture = makeShadowTexture();
   private heroFrames: Texture[] | null = null;
   private heroTarget = { x: 0, y: 0 };
   private heroFlip = false;
   private walkUntil = 0;
   private lastPos: string | null = null;
-  private prompt: Text | null = null;
+  private prompt: Sprite | null = null;
 
   constructor(bank: FrameBank) {
     this.bank = bank;
   }
 
-  build(container: Container, map: WorldMap, state: GameState, scale: number): void {
+  build(container: Container, map: WorldMap, state: GameState, _scale: number): void {
     // Treasure sits under everyone: the hero walks over glints, not behind them.
     this.chests = [];
     for (const chest of chestsOn(map.id)) {
@@ -57,14 +66,21 @@ export class ActorLayer {
       this.chests.push({ chest, sprite });
     }
 
+    // Feet cast shadows: a shared oval under every walker sells the depth.
+    const makeShadow = () => {
+      const shadow = new Sprite(this.shadowTexture);
+      shadow.anchor.set(0.5, 0.5);
+      container.addChild(shadow);
+      return shadow;
+    };
+
     this.npcs = [];
     for (const npc of npcsOn(map.id)) {
       const sheet = this.bank.frames.get(`${npc.sprite}_idle`);
       const sprite = new Sprite(sheet ? sheet[0] : (Assets.get(npc.sprite) as Texture));
       const at = npcPosition(npc, state.worldSteps);
       sprite.position.set(at.x * ART, at.y * ART);
-      container.addChild(sprite);
-      this.npcs.push({ npc, sprite, target: { x: at.x * ART, y: at.y * ART } });
+      this.npcs.push({ npc, sprite, shadow: makeShadow(), target: { x: at.x * ART, y: at.y * ART } });
     }
 
     this.monsters = [];
@@ -75,9 +91,13 @@ export class ActorLayer {
       const sprite = new Sprite(sheet ? sheet[0] : (Assets.get(species.sprite) as Texture));
       const at = spawnPosition(spawn, state.worldSteps);
       sprite.position.set(at.x * ART, at.y * ART);
-      container.addChild(sprite);
-      this.monsters.push({ spawn, sheet: sheetName, sprite, target: { x: at.x * ART, y: at.y * ART } });
+      this.monsters.push({ spawn, sheet: sheetName, sprite, shadow: makeShadow(), target: { x: at.x * ART, y: at.y * ART } });
     }
+
+    this.heroShadow = makeShadow();
+    // Shadows sit under everyone: add the walkers only after every shadow.
+    for (const entry of this.npcs) container.addChild(entry.sprite);
+    for (const entry of this.monsters) container.addChild(entry.sprite);
 
     const role = ROLES[state.hero?.roleId ?? "warrior"];
     this.heroFrames = this.bank.frames.get(`${role.sprite}_walk`) ?? null;
@@ -85,18 +105,27 @@ export class ActorLayer {
     this.hero.anchor.set(0.5, 0);
     container.addChild(this.hero);
 
-    this.prompt = retroText("!", 0xffd469, scale * 2);
+    this.prompt = pixelText("!", 0xffd469);
     this.prompt.anchor.set(0.5, 1);
     this.prompt.visible = false;
     container.addChild(this.prompt);
 
-    // Door signs: the town tells you where the forge and the cauldron live.
+    // Door signs: little wooden plates telling you what each building is.
     for (const sign of signsOn(map.id)) {
-      const label = retroText(sign.label, 0xe8c34a, scale);
-      label.anchor.set(0.5, 1);
-      label.position.set(sign.x * ART + ART / 2, sign.y * ART - 1);
-      label.alpha = 0.9;
-      container.addChild(label);
+      const label = pixelText(sign.label, 0xe8c34a);
+      const w = label.width + 4;
+      const h = label.height + 2;
+      const plate = new Graphics()
+        .rect(0, 0, w, h)
+        .fill(0x2a2118)
+        .rect(0, 0, w, 1)
+        .fill(0x8a6238)
+        .rect(0, h - 1, w, 1)
+        .fill(0x5c3f24);
+      plate.position.set(sign.x * ART + ART / 2 - w / 2, sign.y * ART - h - 1);
+      label.position.set(2, 1);
+      plate.addChild(label);
+      container.addChild(plate);
     }
   }
 
@@ -149,15 +178,18 @@ export class ActorLayer {
   }
 
   tick(clock: number, ease: (from: number, to: number) => number): void {
-    for (const { npc, sprite, target } of this.npcs) {
+    for (const { npc, sprite, shadow, target } of this.npcs) {
       sprite.position.set(ease(sprite.position.x, target.x), ease(sprite.position.y, target.y));
+      shadow.position.set(sprite.position.x + ART / 2, sprite.position.y + ART - 2);
       const sheet = this.bank.frames.get(`${npc.sprite}_idle`);
       const beat = idleBeat(npc.id);
       if (sheet) sprite.texture = sheet[Math.floor((clock + beat.phase) / beat.period) % sheet.length];
     }
 
-    for (const { spawn, sheet, sprite, target } of this.monsters) {
+    for (const { spawn, sheet, sprite, shadow, target } of this.monsters) {
       sprite.position.set(ease(sprite.position.x, target.x), ease(sprite.position.y, target.y));
+      shadow.position.set(sprite.position.x + ART / 2, sprite.position.y + ART - 2);
+      shadow.visible = sprite.visible;
       const frames = this.bank.frames.get(sheet);
       const beat = idleBeat(spawn.id);
       if (frames) sprite.texture = frames[Math.floor((clock + beat.phase) / beat.period) % frames.length];
@@ -171,6 +203,7 @@ export class ActorLayer {
       this.hero.texture = walking
         ? this.heroFrames[Math.floor(clock / WALK_MS) % this.heroFrames.length]
         : this.heroFrames[0];
+      this.heroShadow?.position.set(this.hero.position.x, this.hero.position.y + ART - 2);
     }
 
     // The talk prompt bobs over whoever the hero is facing.

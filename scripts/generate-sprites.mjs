@@ -119,28 +119,28 @@ const signRows = (icon) => [
 const sprites = {
   // ---------------- terrain tiles (must tile seamlessly) ----------------
   tile_grass: {
-    palette: { G: "#3d7a35", L: "#4a8f40" },
+    palette: { G: "#3d7a35", L: "#4a8f40", D: "#35682e", Y: "#5aa04a" },
     rows: [
-      "GGGGGGGGGGGGGGGG",
+      "GGGGGGGGDDGGGGGG",
+      "GGYGGGGGDGGGLGGG",
       "GGLGGGGGGGGGLGGG",
-      "GGGGGGGGGGGGGGGG",
-      "GGGGGGGLGGGGGGGG",
-      "GGGGGGGGGGGGGGGG",
-      "GLGGGGGGGGGGGGLG",
-      "GGGGGGGGGGLGGGGG",
-      "GGGGGGGGGGGGGGGG",
-      "GGGGLGGGGGGGGGGG",
-      "GGGGGGGGGGGGGGGG",
-      "GGGGGGGGLGGGGGGG",
-      "GGLGGGGGGGGGGGGG",
-      "GGGGGGGGGGGGGLGG",
-      "GGGGGGGGGGGGGGGG",
-      "GGGGGGLGGGGGGGGG",
-      "GGGGGGGGGGGGGGGG",
+      "GGLGDDGGGGGGGGGG",
+      "GGGGDDGGYGGGGGGG",
+      "GDGGGGGGLGGGGDDG",
+      "GGGGGGGGLGGGGDGG",
+      "GGGGGYGGGGGGGGGG",
+      "GGGGGLGGGDDGGGGG",
+      "GGGGGLGGGDGGGGGG",
+      "GGYGGGGGGGGGGGGG",
+      "GGLGGGGGGGGGYGGG",
+      "GGGGGGDDGGGGLGGG",
+      "GGGGGGDDGGGGLGGG",
+      "GDGGGGGGGGGGGGGG",
+      "GLGGGGGGGGYGGGGG",
     ],
   },
   tile_grass2: {
-    palette: { G: "#3d7a35", L: "#4a8f40", D: "#35682e" },
+    palette: { G: "#3d7a35", L: "#4a8f40", D: "#35682e", Y: "#5aa04a" },
     rows: [
       "GGGGLGGGGGGGGGGG",
       "GGLGGGGGGGLGGGGG",
@@ -203,24 +203,24 @@ const sprites = {
     ],
   },
   tile_forest: {
-    palette: { G: "#3d7a35", D: "#1f4a1a", T: "#2a5f24", B: "#4f371f" },
+    palette: { G: "#3d7a35", D: "#1f4a1a", T: "#2a5f24", H: "#38762c", B: "#4f371f", S: "#2c5726" },
     rows: [
-      "GGGGGTTGGGGGGGGG",
-      "GGGGTTTTGGGGTTGG",
-      "GGGTTTTTTGGTTTTG",
-      "GGGTTDTTTGGTTDTG",
-      "GGTTTTTDTTGTTTTG",
-      "GGTTDTTTTTGGTTGG",
-      "GGGTTTTTDTGGGBGG",
-      "GGGGTDTTTGGGGGGG",
-      "GGGGGTTTGGGGGGGG",
-      "GGGGGGBGGGTTGGGG",
-      "GGGGGGBGGTTTTTGG",
-      "GGGGGGGGTTTDTTGG",
-      "GGTTGGGGTTDTTTGG",
-      "GTTTTGGGGTTTTGGG",
-      "GGTDTGGGGGTBGGGG",
-      "GGGBGGGGGGGGGGGG",
+      "GGGGHHTGGGGGGGGG",
+      "GGGHHTTTTGGGHTGG",
+      "GGHHTTTTTTGHHTTG",
+      "GGHTTTTDTTGHTTDG",
+      "GGHTTDTTTTGTTTTG",
+      "GGTTTTTTDTGGTDGG",
+      "GGGTTDTTTGGGGBGG",
+      "GGGGTTTDTGGGSSGG",
+      "GGGGGBBGGGGGGGGG",
+      "GGGGSBBSGGHHTGGG",
+      "GGGGGSSGGHHTTTGG",
+      "GGHTGGGGGHTTTDTG",
+      "GHHTTGGGGTTDTTTG",
+      "GHTTDTGGGTTTTTGG",
+      "GGTTTGGGGGTBTGGG",
+      "GGGBGGGGGGSBSGGG",
     ],
   },
   tile_mountain: {
@@ -245,45 +245,45 @@ const sprites = {
     ],
   },
   tile_water: {
-    palette: { B: "#2a4f8f", L: "#3d6bb8", W: "#5a8fd8" },
+    palette: { B: "#2a4f8f", L: "#3d6bb8", W: "#5a8fd8", D: "#22417a", F: "#a8ccf0" },
     rows: [
-      "BBBBBBBBBBBBBBBB",
-      "BBLWWLBBBBBBBBBB",
-      "BBBBBBBBBBLWWLBB",
-      "BBBBBBBBBBBBBBBB",
-      "BBBBBBBBBBBBBBBB",
-      "BLWWLBBBBBBBBBBB",
-      "BBBBBBBBLWWLBBBB",
-      "BBBBBBBBBBBBBBBB",
-      "BBBBBBBBBBBBBBBB",
+      "BBBBDDBBBBBBBBBB",
+      "BBLWWLBBBBDDDBBB",
+      "BBBLLBBBBBBDBBBB",
+      "BDBBBBBBLWWLBBBB",
+      "BDDBBBBBBLLBBBBB",
+      "BLWWLBBBBBBBBDDB",
+      "BBLLFBBBLWWLBBBB",
+      "BBBBBBBBBLLBBBBB",
+      "BBBBBDDBBBBBBBBB",
       "BBBLWWLBBBBBBLWB",
-      "BBBBBBBBBBBBBBBB",
-      "BBBBBBBBBBBBBBBB",
-      "BLWLBBBBBLWWLBBB",
-      "BBBBBBBBBBBBBBBB",
-      "BBBBBBBBBBBBBBBB",
-      "BBBBBLWWLBBBBBBB",
+      "BBBBLLBBBBDBBBLB",
+      "BDDBBBBBBBDDBBBB",
+      "BLWLBBBBBLWWLFBB",
+      "BBLBBBBBBBLLBBBB",
+      "BBBBBBDDBBBBBBBB",
+      "BBBBBLWWLBBBBDBB",
     ],
   },
   tile_path: {
-    palette: { P: "#b89a6a", D: "#a0855a", S: "#8f7550" },
+    palette: { P: "#b89a6a", H: "#c9ab77", D: "#a0855a", S: "#8f7550" },
     rows: [
+      "PHHDPPHHHDPHHHDP",
+      "PHDDPPHDDDPHDDDP",
+      "SSSSPSSSSSPSSSSP",
       "PPPPPPPPPPPPPPPP",
-      "PPDPPPPPPPPPSPPP",
-      "PPPPPPPPDPPPPPPP",
-      "PPPPPSPPPPPPPPPP",
-      "PPPPPPPPPPPPDPPP",
-      "PDPPPPPPPPPPPPPP",
-      "PPPPPPPSPPPPPPPP",
-      "PPPPPPPPPPPPPPSP",
-      "PPPSPPPPPPDPPPPP",
+      "HHDPHHHDPPHHDPHH",
+      "HDDPHDDDPPHDDPHD",
+      "SSSPSSSSPPSSSPSS",
       "PPPPPPPPPPPPPPPP",
-      "PPPPPPDPPPPPPPPP",
-      "PSPPPPPPPPPPPDPP",
-      "PPPPPPPPPSPPPPPP",
-      "PPPPDPPPPPPPPPPP",
-      "PPPPPPPPPPPPSPPP",
-      "PPDPPPPPPPPPPPPP",
+      "PHHHDPHHDPPHHHDP",
+      "PHDDDPHDDPPHDDDP",
+      "PSSSSPSSSPPSSSSP",
+      "PPPPPPPPPPPPPPPP",
+      "HHDPPHHHDPHHDPPH",
+      "HDDPPHDDDPHDDPPH",
+      "SSSPPSSSSPSSSPPS",
+      "PPPPPPPPPPPPPPPP",
     ],
   },
   tile_wall: {
@@ -353,21 +353,21 @@ const sprites = {
     palette: { S: "#d8c088", D: "#c0a870", L: "#e8d4a0" },
     rows: [
       "SSSSSSSSSSSSSSSS",
-      "SSDSSSSSSSSSLSSS",
+      "SDDDSSSSSSLSSSSS",
+      "SSSSDDSSSSSSSSSS",
+      "SSSSSSSSSDDDSSSS",
+      "SLSSSSSSSSSSDDSS",
       "SSSSSSSSSSSSSSSS",
-      "SSSSSLSSSSSSSSSS",
-      "SSSSSSSSSSSDSSSS",
-      "SDSSSSSSSSSSSSSS",
-      "SSSSSSSDSSSSSSSS",
-      "SSSSSSSSSSSSSSLS",
-      "SSSLSSSSSSSSSSSS",
-      "SSSSSSSSSSDSSSSS",
+      "SSSDDDSSSSSSSSLS",
+      "SSSSSSDDSSSSSSSS",
+      "SSLSSSSSSSDDDSSS",
+      "SSSSSSSSSSSSSDDS",
       "SSSSSSSSSSSSSSSS",
-      "SLSSSSDSSSSSSDSS",
+      "SDDDSSSSLSSSSSSS",
+      "SSSSDDSSSSSSSSSS",
+      "SSSSSSSSSSSDDDSS",
+      "SSLSSSSSSSSSSSDD",
       "SSSSSSSSSSSSSSSS",
-      "SSSSDSSSSSLSSSSS",
-      "SSSSSSSSSSSSSSSS",
-      "SSDSSSSSSSSSSDSS",
     ],
   },
   tile_bridge: {
@@ -841,6 +841,28 @@ const sprites = {
       "AAAADAAAAAAAAOAA",
       "AAAAAAAAAAAALAAA",
       "AADAAAAAAAAAAAAA",
+    ],
+  },
+  // Foam where water meets land; rotated onto each shore side at build time.
+  overlay_shore: {
+    palette: { F: "#a8ccf0", W: "#e8f4ff" },
+    rows: [
+      "FWFFFWFFWFFFWFFF",
+      ".F..F..F...F..F.",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
+      "................",
     ],
   },
   // Transparent overlay marking wild (encounter-prone) terrain: sparse tufts.
@@ -2236,6 +2258,35 @@ const sprites = {
   },
 };
 
+// ---------------- actor outlines ----------------
+// Every living thing gets a 1px dark outline so it pops off the terrain,
+// baked into the base grid so animations and both renderers inherit it.
+const MONSTERS = [
+  "slime", "goblin", "skeleton", "wolf", "orc", "ghost", "golem", "troll",
+  "wyvern", "dragon", "boneknight", "shade", "mimic", "imp", "lich",
+];
+const NPCS = ["villager", "villager_woman", "elder", "innkeeper", "smith", "alchemist", "merchant"];
+const HEROES = ["hero_warrior", "hero_mage", "hero_rogue", "hero_cleric"];
+
+function outlined({ rows, palette }) {
+  const out = rows.map((r) => r.split(""));
+  for (let y = 0; y < 16; y++) {
+    for (let x = 0; x < 16; x++) {
+      if (rows[y][x] !== ".") continue;
+      const solid = [[0, -1], [0, 1], [-1, 0], [1, 0]].some(([dx, dy]) => {
+        const c = rows[y + dy]?.[x + dx];
+        return c && c !== "." && c !== "o";
+      });
+      if (solid) out[y][x] = "o";
+    }
+  }
+  return { palette: { ...palette, o: "#14151c" }, rows: out.map((r) => r.join("")) };
+}
+for (const name of [...MONSTERS, ...NPCS, ...HEROES]) {
+  if (sprites[name].palette.o) throw new Error(`${name} already uses the outline char`);
+  sprites[name] = outlined(sprites[name]);
+}
+
 const names = Object.keys(sprites);
 for (const name of names) {
   const { rows, palette } = sprites[name];
@@ -2280,12 +2331,6 @@ const shimmerFrames = (b) => [b, shiftXWrap(b, 1), shiftXWrap(b, 2), shiftXWrap(
 // specks and blades jiggle diagonally, reading as wind at low fps.
 const swayFrames = (b) => [b, shiftXWrap(shiftYWrap(b, 1), 1)];
 
-const MONSTERS = [
-  "slime", "goblin", "skeleton", "wolf", "orc", "ghost", "golem", "troll",
-  "wyvern", "dragon", "boneknight", "shade", "mimic", "imp", "lich",
-];
-const NPCS = ["villager", "villager_woman", "elder", "innkeeper", "smith", "alchemist", "merchant"];
-const HEROES = ["hero_warrior", "hero_mage", "hero_rogue", "hero_cleric"];
 
 const anims = [
   ...HEROES.map((base) => ({ name: `${base}_walk`, base, fps: 6, facing: "front", frames: walkFrames })),

@@ -1,10 +1,10 @@
-import { Application, Assets, Container, Graphics, type Texture } from "pixi.js";
+import { Application, Assets, Container, Graphics, Sprite, type Texture } from "pixi.js";
 import type { GameState } from "../game/types";
 import { getMap } from "../world/maps";
 import { TILES } from "../world/tiles";
 import type { WorldMap, WorldPosition } from "../world/types";
 import { loadSettings } from "../settings";
-import { ART, type FrameBank, loadFrameBank } from "./pixiUtils";
+import { ART, type FrameBank, loadFrameBank, makeVignetteTexture } from "./pixiUtils";
 import { ActorLayer } from "./worldActors";
 import { AtmosphereLayer } from "./worldAtmosphere";
 import { TerrainLayer } from "./worldTerrain";
@@ -92,6 +92,8 @@ export class WorldRenderer {
     // Lights and embers live above the darkness, world-anchored like the map.
     this.root.addChild(this.lightC);
     this.atmosphere = new AtmosphereLayer(sky, this.lightC);
+    // Quiet corner darkening: the frame recedes, the center breathes.
+    this.root.addChild(new Sprite(makeVignetteTexture(VIEW_W * ART, VIEW_H * ART)));
     // Doors fade the world in: black above everything, eased away each tick.
     this.fade = new Graphics().rect(0, 0, VIEW_W * ART, VIEW_H * ART).fill(0x0d0e13);
     this.fade.alpha = 0;
@@ -120,6 +122,7 @@ export class WorldRenderer {
         ...tiles.map((name) => ({ alias: name, src: `${base}sprites/${name}.png` })),
         { alias: "overlay_wild", src: `${base}sprites/overlay_wild.png` },
         { alias: "overlay_path_edge", src: `${base}sprites/overlay_path_edge.png` },
+        { alias: "overlay_shore", src: `${base}sprites/overlay_shore.png` },
         ...["chest_closed", "chest_open", "road_glint", "herb_patch"].map((name) => ({
           alias: name,
           src: `${base}sprites/${name}.png`,
