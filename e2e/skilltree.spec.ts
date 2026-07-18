@@ -6,7 +6,7 @@ async function loadVeteranInTown(page: Page) {
     ...VETERAN_SAVE,
     state: {
       ...VETERAN_SAVE.state,
-      world: { position: { mapId: "town", x: 14, y: 15, facing: "down" }, discovered: {}, openedChests: [] },
+      world: { position: { mapId: "town", x: 28, y: 30, facing: "down" }, discovered: {}, openedChests: [] },
     },
   };
   await page.goto("./");
@@ -54,27 +54,24 @@ test("upgrades patch the battle skill they improve", async ({ page }) => {
 
   // walk out the north gate and bump the forest spawn to check the button label
   for (const key of [
+    ...Array(20).fill("ArrowUp"),
+    ...Array(4).fill("ArrowRight"),
     ...Array(10).fill("ArrowUp"),
-    "ArrowRight",
-    "ArrowRight",
-    ...Array(5).fill("ArrowUp"),
-    ...Array(6).fill("ArrowRight"),
-    ...Array(3).fill("ArrowUp"),
+    ...Array(12).fill("ArrowRight"),
+    ...Array(6).fill("ArrowUp"),
   ] as string[]) {
     await page.keyboard.press(key);
     await page.waitForTimeout(20);
   }
   for (const key of [
-    "ArrowRight",
-    "ArrowRight",
-    "ArrowDown",
-    "ArrowLeft",
-    "ArrowUp",
-    "ArrowRight",
-    "ArrowDown",
-    "ArrowRight",
-    "ArrowRight",
-    "ArrowLeft",
+    ...Array(4).fill("ArrowRight"),
+    ...Array(2).fill("ArrowDown"),
+    ...Array(2).fill("ArrowLeft"),
+    ...Array(2).fill("ArrowUp"),
+    ...Array(2).fill("ArrowRight"),
+    ...Array(2).fill("ArrowDown"),
+    ...Array(4).fill("ArrowRight"),
+    ...Array(2).fill("ArrowLeft"),
   ] as string[]) {
     if (
       await page

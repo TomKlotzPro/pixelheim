@@ -37,24 +37,24 @@ test("new heroes wake in the village and the gate leads to the overworld", async
   // the three-line intro, then the village
   await page.getByRole("button", { name: "Set out" }).click();
   await expect(page.getByTestId("world-viewport")).toHaveAttribute("data-map", "town");
-  await expect(hero(page)).toHaveAttribute("data-pos", "14,15");
+  await expect(hero(page)).toHaveAttribute("data-pos", "28,30");
 
   // out through the north gate onto the mountain road
+  await pressTimes(page, "ArrowUp", 20);
+  await pressTimes(page, "ArrowRight", 4);
   await pressTimes(page, "ArrowUp", 10);
-  await pressTimes(page, "ArrowRight", 2);
-  await pressTimes(page, "ArrowUp", 5);
   await expect(page.getByTestId("world-viewport")).toHaveAttribute("data-map", "overworld");
-  await expect(hero(page)).toHaveAttribute("data-pos", "24,20");
+  await expect(hero(page)).toHaveAttribute("data-pos", "48,40");
 
   // travel direction is preserved: holding up keeps walking AWAY from the door
   await page.keyboard.press("ArrowUp");
   await expect(page.getByTestId("world-viewport")).toHaveAttribute("data-map", "overworld");
-  await expect(hero(page)).toHaveAttribute("data-pos", "24,19");
+  await expect(hero(page)).toHaveAttribute("data-pos", "48,39");
 
   // and deliberately back in through the gate
-  await pressTimes(page, "ArrowDown", 2);
+  await pressTimes(page, "ArrowDown", 3);
   await expect(page.getByTestId("world-viewport")).toHaveAttribute("data-map", "town");
-  await expect(hero(page)).toHaveAttribute("data-pos", "16,1");
+  await expect(hero(page)).toHaveAttribute("data-pos", "32,2");
 
   // same going in: holding down walks INTO town, not back out
   await page.keyboard.press("ArrowDown");
@@ -78,9 +78,9 @@ test("wild terrain is visually telegraphed; safe ground is not", async ({ page }
   await expect(page.locator(".world-tile[data-danger]")).toHaveCount(0);
 
   // out on the overworld, the wilds carry the danger overlay
+  await pressTimes(page, "ArrowUp", 20);
+  await pressTimes(page, "ArrowRight", 4);
   await pressTimes(page, "ArrowUp", 10);
-  await pressTimes(page, "ArrowRight", 2);
-  await pressTimes(page, "ArrowUp", 5);
   await expect(page.getByTestId("world-viewport")).toHaveAttribute("data-map", "overworld");
   expect(await page.locator(".world-tile[data-danger]").count()).toBeGreaterThan(50);
 });

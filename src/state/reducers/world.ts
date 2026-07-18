@@ -179,7 +179,7 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
         if (draft.house.owned) {
           draft.worldMessage = null;
           draft.world.slain = [];
-          draft.world.position = { mapId: "town_house", x: 4, y: 4, facing: "up" };
+          draft.world.position = { mapId: "town_house", x: 8, y: 8, facing: "up" };
           draft.world.discovered = discoverAround(draft.world.discovered, getMap("town_house"), 4, 4);
         } else {
           draft.worldMessage = `For sale: this house. The deed costs ${HOUSE_DEED_COST}g. (E to buy)`;

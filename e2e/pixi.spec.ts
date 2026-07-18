@@ -57,7 +57,8 @@ test("the canvas battle scene draws and survives a fight", async ({ page }) => {
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(String(error)));
 
-  await loadCanvasVeteranAt(page, 24, 4);
+  await loadCanvasVeteranAt(page, 48, 8);
+  await page.keyboard.press("ArrowUp");
   await page.keyboard.press("ArrowUp");
   await page.getByRole("button", { name: /Mossy Cellar/ }).click();
 

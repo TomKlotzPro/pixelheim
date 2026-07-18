@@ -8,9 +8,9 @@ test("the map opens on M and fast travel jumps to a seen waypoint", async ({ pag
     state: {
       ...VETERAN_SAVE.state,
       world: {
-        position: { mapId: "overworld", x: 24, y: 20, facing: "up" },
+        position: { mapId: "overworld", x: 48, y: 40, facing: "up" },
         // the mountain gate has been seen; the cave has not
-        discovered: { overworld: ["24,20", "24,3"] },
+        discovered: { overworld: ["48,40", "48,6"] },
         openedChests: [],
       },
     },
@@ -30,7 +30,7 @@ test("the map opens on M and fast travel jumps to a seen waypoint", async ({ pag
   await mountainRow.getByRole("button", { name: "Travel" }).click();
 
   await expect(page.getByTestId("map-screen")).not.toBeVisible();
-  await expect(page.getByTestId("world-hero")).toHaveAttribute("data-pos", "24,4");
+  await expect(page.getByTestId("world-hero")).toHaveAttribute("data-pos", "48,8");
   await expect(page.getByText("You travel to The Ashen Mountain.")).toBeVisible();
 
   // the mini-map rides in the corner

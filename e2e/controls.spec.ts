@@ -4,11 +4,12 @@ import { loadVeteranAt } from "./helpers";
 // PIX-59: controls are rebindable and persist. Bindings hold physical key
 // codes, so the WASD defaults land on ZQSD for AZERTY players for free.
 test("a rebound key drives the game and survives a reload", async ({ page }) => {
-  await loadVeteranAt(page, 14, 15, "town");
+  await loadVeteranAt(page, 28, 30, "town");
 
   // The physical W-position key moves up out of the box (event.code based).
   await page.keyboard.press("w");
-  await expect(page.getByTestId("world-hero")).toHaveAttribute("data-pos", "14,14");
+  await page.keyboard.press("w");
+  await expect(page.getByTestId("world-hero")).toHaveAttribute("data-pos", "28,28");
 
   // Rebind inventory from I to P.
   await page.getByRole("button", { name: "Settings" }).click();

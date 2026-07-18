@@ -5,9 +5,10 @@ const hero = (page: Page) => page.getByTestId("world-hero");
 
 test("the mountain gate opens the floor select; clearing a floor returns to the door", async ({ page }) => {
   test.setTimeout(60_000);
-  await loadVeteranAt(page, 24, 4);
+  await loadVeteranAt(page, 48, 8);
 
   // step up into the gate
+  await page.keyboard.press("ArrowUp");
   await page.keyboard.press("ArrowUp");
   await expect(page.getByText("The Ashen Mountain")).toBeVisible();
   await expect(page.getByRole("button", { name: /Mossy Cellar/ })).toContainText("CLEARED");
@@ -32,20 +33,22 @@ test("the mountain gate opens the floor select; clearing a floor returns to the 
 
   // back in the world, still standing at the gate
   await expect(page.getByTestId("world-viewport")).toBeVisible();
-  await expect(hero(page)).toHaveAttribute("data-pos", "24,4");
+  await expect(hero(page)).toHaveAttribute("data-pos", "48,7");
 });
 
 test("stepping away from the gate returns to the world without entering", async ({ page }) => {
-  await loadVeteranAt(page, 24, 4);
+  await loadVeteranAt(page, 48, 8);
+  await page.keyboard.press("ArrowUp");
   await page.keyboard.press("ArrowUp");
   await expect(page.getByText("The Ashen Mountain")).toBeVisible();
   await page.getByRole("button", { name: "Step away" }).click();
   await expect(page.getByTestId("world-viewport")).toBeVisible();
-  await expect(hero(page)).toHaveAttribute("data-pos", "24,4");
+  await expect(hero(page)).toHaveAttribute("data-pos", "48,7");
 });
 
 test("the Undermountain cave stays sealed until the dragon falls", async ({ page }) => {
-  await loadVeteranAt(page, 13, 5);
+  await loadVeteranAt(page, 26, 10);
+  await page.keyboard.press("ArrowLeft");
   await page.keyboard.press("ArrowLeft");
   await expect(page.getByText("The Undermountain")).toBeVisible();
   await expect(page.getByText("The seal on the deep holds fast")).toBeVisible();

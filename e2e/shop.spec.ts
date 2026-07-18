@@ -12,14 +12,14 @@ test("talking to the merchant opens the shop; gold math holds", async ({ page })
   await createHero(page, "Trader");
 
   // from the village square into the shop doorway
-  await walk(page, "ArrowUp", 6);
-  await walk(page, "ArrowLeft", 10);
-  await walk(page, "ArrowUp", 5);
+  await walk(page, "ArrowUp", 12);
+  await walk(page, "ArrowLeft", 20);
+  await walk(page, "ArrowUp", 10);
 
   // inside the shop: no menu until you talk to Odo behind the counter
   await expect(page.getByTestId("world-viewport")).toHaveAttribute("data-map", "town_shop");
   await expect(page.getByText("General goods")).not.toBeVisible();
-  await walk(page, "ArrowUp", 3);
+  await walk(page, "ArrowUp", 6);
   // facing the keeper: the talk prompt appears, and Enter opens the counter
   await expect(page.getByTestId("npc-prompt")).toBeVisible();
   await page.keyboard.press("e");

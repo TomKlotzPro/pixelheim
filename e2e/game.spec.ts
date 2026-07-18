@@ -13,12 +13,12 @@ test("a new hero walks from the village to the mountain and clears floor 1", asy
   await createHero(page, "Smoke");
 
   // out of the north gate onto the overworld road
+  await walk(page, "ArrowUp", 20);
+  await walk(page, "ArrowRight", 4);
   await walk(page, "ArrowUp", 10);
-  await walk(page, "ArrowRight", 2);
-  await walk(page, "ArrowUp", 5);
   await expect(page.getByTestId("world-viewport")).toHaveAttribute("data-map", "overworld");
   // north along the safe path, over the bridge, into the mountain gate
-  await walk(page, "ArrowUp", 17);
+  await walk(page, "ArrowUp", 34);
   await expect(page.getByText("The Ashen Mountain")).toBeVisible();
   await expect(page.getByRole("button", { name: /Whispering Woods/ })).toBeHidden();
 
@@ -38,7 +38,7 @@ test("a new hero walks from the village to the mountain and clears floor 1", asy
   }
 
   // back outside the gate; floor 2 is now unlocked
-  await expect(page.getByTestId("world-hero")).toHaveAttribute("data-pos", "24,4");
+  await expect(page.getByTestId("world-hero")).toHaveAttribute("data-pos", "48,7");
   await page.keyboard.press("ArrowUp");
   await expect(page.getByRole("button", { name: /Mossy Cellar/ })).toContainText("CLEARED");
   await expect(page.getByRole("button", { name: /Whispering Woods/ })).toBeEnabled();

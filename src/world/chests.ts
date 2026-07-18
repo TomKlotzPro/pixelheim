@@ -27,42 +27,42 @@ export type Chest = {
 
 export const CHESTS: Chest[] = [
   // Pixelheim village: two starter finds for players who poke around
-  { id: "town_corner", mapId: "town", x: 1, y: 16, look: "chest", loot: { kind: "item", itemId: "potion_hp", qty: 2 } },
-  { id: "town_nook", mapId: "town", x: 31, y: 9, look: "chest", loot: { kind: "gold", amount: 60 } },
+  { id: "town_corner", mapId: "town", x: 2, y: 32, look: "chest", loot: { kind: "item", itemId: "potion_hp", qty: 2 } },
+  { id: "town_nook", mapId: "town", x: 62, y: 18, look: "chest", loot: { kind: "gold", amount: 60 } },
   // the Ashenreach corners: gear a tier ahead of the road there
-  { id: "ash_west", mapId: "overworld", x: 2, y: 6, look: "chest", loot: { kind: "gear", itemId: "iron_sword" } },
-  { id: "ash_east", mapId: "overworld", x: 46, y: 7, look: "chest", loot: { kind: "gear", itemId: "iron_armor" } },
+  { id: "ash_west", mapId: "overworld", x: 4, y: 12, look: "chest", loot: { kind: "gear", itemId: "iron_sword" } },
+  { id: "ash_east", mapId: "overworld", x: 92, y: 14, look: "chest", loot: { kind: "gear", itemId: "iron_armor" } },
   {
     id: "forest_corner",
     mapId: "overworld",
-    x: 46,
-    y: 30,
+    x: 92,
+    y: 60,
     look: "chest",
     loot: { kind: "gear", itemId: "steel_shield" },
   },
   {
     id: "marsh_corner",
     mapId: "overworld",
-    x: 1,
-    y: 30,
+    x: 2,
+    y: 60,
     look: "chest",
     loot: { kind: "gear", itemId: "apprentice_staff" },
   },
   // ground treasure on the south road belly
-  { id: "road_glint", mapId: "overworld", x: 20, y: 29, look: "glint", loot: { kind: "gold", amount: 45 } },
+  { id: "road_glint", mapId: "overworld", x: 40, y: 58, look: "glint", loot: { kind: "gold", amount: 45 } },
   {
     id: "herb_patch",
     mapId: "overworld",
-    x: 28,
-    y: 29,
+    x: 56,
+    y: 58,
     look: "herb",
     loot: { kind: "item", itemId: "forest_herb", qty: 3 },
   },
   // the frontier: the best finds hide deepest
-  { id: "deep_courtyard", mapId: "deepwood", x: 17, y: 18, look: "chest", loot: { kind: "gear", itemId: "steel_axe" } },
-  { id: "deep_corner", mapId: "deepwood", x: 28, y: 1, look: "chest", loot: { kind: "gear", itemId: "shadow_cloak" } },
-  { id: "mire_maze", mapId: "mirefen", x: 11, y: 17, look: "chest", loot: { kind: "gear", itemId: "obsidian_blade" } },
-  { id: "mire_mimic", mapId: "mirefen", x: 21, y: 6, look: "chest", mimic: true },
+  { id: "deep_courtyard", mapId: "deepwood", x: 34, y: 36, look: "chest", loot: { kind: "gear", itemId: "steel_axe" } },
+  { id: "deep_corner", mapId: "deepwood", x: 56, y: 2, look: "chest", loot: { kind: "gear", itemId: "shadow_cloak" } },
+  { id: "mire_maze", mapId: "mirefen", x: 22, y: 34, look: "chest", loot: { kind: "gear", itemId: "obsidian_blade" } },
+  { id: "mire_mimic", mapId: "mirefen", x: 42, y: 12, look: "chest", mimic: true },
 ];
 
 // Loud failure at load, like spawns and portals: bad treasure data must not

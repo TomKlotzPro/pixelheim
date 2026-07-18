@@ -19,7 +19,7 @@ async function chase(page: Page, keys: string[]): Promise<void> {
 
 test("a visible monster prowls the forest; bumping it starts the fight", async ({ page }) => {
   test.setTimeout(60_000);
-  await loadVeteranAt(page, 30, 17);
+  await loadVeteranAt(page, 60, 34);
 
   // the spawn is visible before any fight
   await expect(page.getByTestId("world-monster").first()).toBeVisible();
@@ -57,7 +57,7 @@ test("a visible monster prowls the forest; bumping it starts the fight", async (
 });
 
 test("the wilds no longer ambush: pacing wild grass starts nothing", async ({ page }) => {
-  await loadVeteranAt(page, 36, 21);
+  await loadVeteranAt(page, 72, 42);
   // 40 steps on forest-region grass, far from any spawn loop
   for (let i = 0; i < 40; i++) {
     await page.keyboard.press(i % 2 === 0 ? "ArrowUp" : "ArrowDown");

@@ -4,7 +4,7 @@ import { loadVeteranAt } from "./helpers";
 // The renderer is an Options choice, persisted per device. WebGL is the
 // default; Classic is the legacy DOM tile renderer kept as a fallback.
 test("the renderer toggle switches to Classic and back, surviving reloads", async ({ page }) => {
-  await loadVeteranAt(page, 14, 15, "town");
+  await loadVeteranAt(page, 28, 30, "town");
 
   // default: WebGL canvas
   await expect(page.getByTestId("world-viewport").locator("canvas")).toBeVisible();
