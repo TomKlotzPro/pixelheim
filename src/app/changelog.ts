@@ -11,6 +11,17 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.47.0",
+    date: "2026-07-18",
+    codename: "Dressed",
+    notes: [
+      "TRUE EQUIPMENT LAYERS: gear is drawn into your sprite now, pixel by pixel - plate on the torso, helm on the crown, shield on the arm, blade in the hand",
+      "Thirty wearables got hand-fitted overlays cut to the hero's anatomy - every sword, axe, bow, staff, robe, helm and shield, tiered by palette",
+      "One source of truth for what you look like: the world, the battle, the inventory doll, the HUD portrait and the stat sheet all wear the same outfit",
+      "Walk in armor: the overlays ride the walk-cycle bob, so your gear moves with you instead of floating over you",
+    ],
+  },
+  {
     version: "0.46.0",
     date: "2026-07-18",
     codename: "Tailored",

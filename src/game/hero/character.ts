@@ -64,25 +64,6 @@ export function heroSprite(hero: Hero): string {
   return `${base}${look}${rank > 0 ? `_r${rank}` : ""}`;
 }
 
-/**
- * What shows ON the hero: the actual equipped items' sprites, worn at body
- * offsets (weapon in hand, shield on the arm, helm on the head). Offsets are
- * in 16px-art fractions so both renderers scale them identically.
- */
-// Emptied until PIX-107's true equipment layers land: scaled item icons on
-// the sprite read as stickers, not clothing. The plumbing stays.
-export const WORN_SLOTS = [] as const;
-
-export function wornSprites(
-  gear: GearInstance[],
-  equipped: Equipped,
-): { slot: string; sprite: string; x: number; y: number; size: number }[] {
-  return WORN_SLOTS.flatMap(({ slot, x, y, size }) => {
-    const instance = gearByUid(gear, equipped[slot]);
-    return instance ? [{ slot, sprite: gearItem(instance).sprite, x, y, size }] : [];
-  });
-}
-
 export function gearByUid(gear: GearInstance[], uid: string | undefined): GearInstance | null {
   if (!uid) return null;
   return gear.find((g) => g.uid === uid) ?? null;
