@@ -11,6 +11,17 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.45.0",
+    date: "2026-07-18",
+    codename: "Centered",
+    notes: [
+      "The world sits centered on the screen, where a world belongs",
+      "The corner buttons speak pixel now: a proper gold speaker and gear instead of emoji",
+      "The controls moved into a legend at the side - every key at a glance, rebindable in Options",
+      "Entering the world shows 'Entering the Ashenreach...' instead of a silent black box while it loads",
+    ],
+  },
+  {
     version: "0.44.0",
     date: "2026-07-18",
     codename: "Promises and Rooftops",
