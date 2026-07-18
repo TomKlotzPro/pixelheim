@@ -1,5 +1,7 @@
 import { lazy, Suspense, useEffect, useState } from "react";
-import { heroSprite as heroSpriteOf, wornSprites } from "../../game/hero/character";
+import { heroSprite as heroSpriteOf } from "../../game/hero/character";
+import { outfitFor } from "../../game/economy/wearables";
+import { DressedSprite } from "../widgets/DressedSprite";
 import { rankIndex, rankPresence } from "../../game/hero/ranks";
 import { dispatch, useGameState, useWorld } from "../../state/store";
 import { getMap } from "../../world/maps/index";
@@ -60,6 +62,7 @@ export function WorldScreen() {
   const world = useWorld().position;
   const map = getMap(world.mapId);
   const heroSprite = state.hero ? heroSpriteOf(state.hero) : "hero_warrior";
+  const outfit = state.hero ? outfitFor(state.gear, state.equipped) : [];
   const tilePx = ART_PX * useTileScale();
 
   // Someone to talk to: a prompt floats over the NPC beside the hero -
@@ -137,6 +140,7 @@ export function WorldScreen() {
               data-testid="world-hero"
               data-pos={`${world.x},${world.y}`}
               data-rank={state.hero ? rankIndex(state.hero.level) : 0}
+              data-outfit={outfit.join("+")}
               className={`facing-${world.facing}`}
             />
             {npcsOn(map.id).map((npc) => (
@@ -258,6 +262,7 @@ export function WorldScreen() {
               data-testid="world-hero"
               data-pos={`${world.x},${world.y}`}
               data-rank={state.hero ? rankIndex(state.hero.level) : 0}
+              data-outfit={outfit.join("+")}
               style={{
                 left: world.x * tilePx,
                 top: world.y * tilePx,
@@ -266,21 +271,7 @@ export function WorldScreen() {
                 transform: state.hero ? `scale(${rankPresence(state.hero.level)})` : undefined,
               }}
             >
-              <Sprite name={heroSprite} size={tilePx} alt="hero" />
-              {wornSprites(state.gear, state.equipped).map((worn) => (
-                <span
-                  key={worn.slot}
-                  className="worn-item"
-                  style={{
-                    left: worn.x * tilePx,
-                    top: worn.y * tilePx,
-                    width: worn.size * tilePx,
-                    height: worn.size * tilePx,
-                  }}
-                >
-                  <Sprite name={worn.sprite} size={worn.size * tilePx} alt="" />
-                </span>
-              ))}
+              <DressedSprite name={heroSprite} outfit={outfit} size={tilePx} alt="hero" />
             </div>
             {(facingNpc || facingChest) && (
               <div

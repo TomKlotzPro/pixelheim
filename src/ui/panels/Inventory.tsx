@@ -17,6 +17,8 @@ import type { EquippedSlot, GrantStat, ItemCategory } from "../../game/types";
 import { dispatch, useGameState, useHero } from "../../state/store";
 import { waypointDiscovered, WAYPOINTS } from "../../world/waypoints";
 import { Sprite } from "../widgets/Sprite";
+import { DressedSprite } from "../widgets/DressedSprite";
+import { outfitFor } from "../../game/economy/wearables";
 
 const TABS: { id: ItemCategory | "all" | "craft"; label: string }[] = [
   { id: "all", label: "All" },
@@ -101,7 +103,7 @@ export function Inventory() {
             <div className="doll-column">
               <div className="doll">
                 <div className="doll-portrait" aria-hidden="true">
-                  <Sprite name={heroSpriteOf(hero)} size={72} />
+                  <DressedSprite name={heroSpriteOf(hero)} outfit={outfitFor(state.gear, state.equipped)} size={72} />
                 </div>
                 {DOLL_SLOTS.map(({ slot, label }, i) => {
                   const instance = gearByUid(state.gear, state.equipped[slot]);

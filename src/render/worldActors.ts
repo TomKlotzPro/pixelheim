@@ -1,5 +1,7 @@
-import { Assets, type Container, Graphics, Sprite, type Texture } from "pixi.js";
-import { heroSprite, wornSprites } from "../game/hero/character";
+import { Assets, type Container, Graphics, Sprite, Texture } from "pixi.js";
+import { heroSprite } from "../game/hero/character";
+import { outfitFor } from "../game/economy/wearables";
+import { composeWalkSheet, outfitKey } from "./outfit";
 import { RANK_AURAS, rankIndex, rankPresence } from "../game/hero/ranks";
 import type { GameState } from "../game/types";
 import { spawnSpecies } from "../game/combat/encounters";
@@ -9,7 +11,7 @@ import { npcBeside, npcPosition, npcsOn, type Npc } from "../world/npcs";
 import { signsOn } from "../world/signs";
 import { type MonsterSpawn, spawnPosition, spawnRegion, spawnsOn } from "../world/spawns";
 import type { WorldMap } from "../world/types";
-import { ART, type FrameBank, makeGlowTexture, makeShadowTexture } from "./pixiUtils";
+import { ART, type FrameBank, makeGlowTexture, makeShadowTexture, sliceSheet } from "./pixiUtils";
 import { pixelText } from "./pixelFont";
 
 const WALK_MS = 160; // per walk frame
@@ -44,10 +46,8 @@ export class ActorLayer {
   private hero: Sprite | null = null;
   private heroShadow: Sprite | null = null;
   private heroAura: Sprite | null = null;
-  private heroGear: { key: string; sprite: Sprite; x: number; y: number }[] = [];
-  private gearKey = "";
-  private gearHost: Container | null = null;
   private heroPresence = 1;
+  private heroOutfitKey = "";
   private shadowTexture = makeShadowTexture();
   private heroFrames: Texture[] | null = null;
   private heroTarget = { x: 0, y: 0 };
@@ -125,13 +125,10 @@ export class ActorLayer {
 
     const sheet = state.hero ? heroSprite(state.hero) : "hero_warrior";
     this.heroFrames = this.bank.frames.get(`${sheet}_walk`) ?? null;
+    this.heroOutfitKey = "";
     this.hero = new Sprite(this.heroFrames?.[0]);
     this.hero.anchor.set(0.5, 0);
     container.addChild(this.hero);
-
-    this.gearHost = container;
-    this.heroGear = [];
-    this.gearKey = "";
 
     this.prompt = pixelText("!", 0xffd469);
     this.prompt.anchor.set(0.5, 1);
@@ -196,27 +193,25 @@ export class ActorLayer {
       if (name) entry.sprite.texture = Assets.get(name) as Texture;
     }
 
-    // What the hero wears, worn: rebuild the little overlay sprites whenever
-    // the equipped set changes. Textures load lazily and settle in a frame.
-    const worn = state.hero ? wornSprites(state.gear, state.equipped) : [];
-    const wornKey = worn.map((w) => `${w.slot}:${w.sprite}`).join("|");
-    if (wornKey !== this.gearKey && this.gearHost) {
-      this.gearKey = wornKey;
-      for (const old of this.heroGear) old.sprite.destroy();
-      this.heroGear = [];
-      for (const w of worn) {
-        const sprite = new Sprite();
-        sprite.width = w.size * ART;
-        sprite.height = w.size * ART;
-        const src = `${import.meta.env.BASE_URL}sprites/${w.sprite}.png`;
-        void Assets.load({ alias: `item_${w.sprite}`, src }).then((texture) => {
-          sprite.texture = texture as Texture;
-          sprite.width = w.size * ART;
-          sprite.height = w.size * ART;
-          return null;
-        });
-        this.gearHost.addChild(sprite);
-        this.heroGear.push({ key: w.slot, sprite, x: w.x, y: w.y });
+    // The outfit is part of the sprite now: recompose the walk sheet whenever
+    // the equipped set changes, cached per combination (PIX-107).
+    if (state.hero) {
+      const sheetName = heroSprite(state.hero);
+      const outfit = outfitFor(state.gear, state.equipped);
+      const dressKey = outfitKey(sheetName, outfit);
+      if (dressKey !== this.heroOutfitKey) {
+        this.heroOutfitKey = dressKey;
+        if (outfit.length === 0) {
+          this.heroFrames = this.bank.frames.get(`${sheetName}_walk`) ?? null;
+        } else {
+          void composeWalkSheet(sheetName, outfit).then((canvas) => {
+            if (this.heroOutfitKey !== dressKey) return null;
+            const texture = Texture.from(canvas);
+            texture.source.scaleMode = "nearest";
+            this.heroFrames = sliceSheet(texture, 4);
+            return null;
+          });
+        }
       }
     }
 
@@ -264,13 +259,6 @@ export class ActorLayer {
         : this.heroFrames[0];
       this.heroShadow?.position.set(this.hero.position.x, this.hero.position.y + ART - 2);
       this.heroAura?.position.set(this.hero.position.x, this.hero.position.y + ART - 3);
-      const flip = this.heroFlip ? -1 : 1;
-      for (const worn of this.heroGear) {
-        worn.sprite.position.set(
-          this.hero.position.x + (worn.x - 0.5) * ART * flip * this.heroPresence + (flip < 0 ? -worn.sprite.width : 0),
-          this.hero.position.y + worn.y * ART * this.heroPresence,
-        );
-      }
     }
 
     // The talk prompt bobs over whoever the hero is facing.

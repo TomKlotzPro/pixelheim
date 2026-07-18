@@ -1,6 +1,8 @@
-import { Application, Assets, Container, Graphics, Sprite, type Texture } from "pixi.js";
+import { Application, Assets, Container, Graphics, Sprite, Texture } from "pixi.js";
 import type { GameState } from "../game/types";
 import { heroSprite } from "../game/hero/character";
+import { outfitFor } from "../game/economy/wearables";
+import { composeWalkSheet } from "./outfit";
 import { sliceSheet } from "./pixiUtils";
 import { pixelText } from "./pixelFont";
 
@@ -59,10 +61,17 @@ export class BattleRenderer {
     host.appendChild(app.canvas);
 
     const heroName = state.hero ? heroSprite(state.hero) : "hero_warrior";
-    const heroSheet: Texture = await Assets.load({
-      alias: `${heroName}_walk`,
-      src: `${import.meta.env.BASE_URL}sprites/${heroName}_walk.png`,
-    });
+    const outfit = state.hero ? outfitFor(state.gear, state.equipped) : [];
+    let heroSheet: Texture;
+    if (outfit.length > 0) {
+      heroSheet = Texture.from(await composeWalkSheet(heroName, outfit));
+      heroSheet.source.scaleMode = "nearest";
+    } else {
+      heroSheet = await Assets.load({
+        alias: `${heroName}_walk`,
+        src: `${import.meta.env.BASE_URL}sprites/${heroName}_walk.png`,
+      });
+    }
     if (this.destroyed) return;
 
     this.root.scale.set(scale);
