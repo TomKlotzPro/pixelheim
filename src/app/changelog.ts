@@ -17,6 +17,7 @@ export const CHANGELOG: Release[] = [
     notes: [
       "Worn gear got a fitting: the helm sits on the crown instead of floating, and equipped BODY ARMOR finally shows on the torso",
       "The inventory doll wears your gear live - equip a piece and watch your character change right there in the preview",
+      "The sound and settings buttons got proper glyphs, and loading is a big honest LOADING with marching dots",
     ],
   },
   {
