@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { grantedStat, heroSprite, resourceLabel, totalDefense } from "../../game/hero/character";
 import { JOB_NAMES, jobXpToNext, type JobId } from "../../game/economy/jobs";
 import { statInfo } from "../../game/hero/statInfo";
@@ -8,6 +8,7 @@ import { ROLES } from "../../game/hero/roles";
 import type { SpendableStat } from "../../game/types";
 import { dispatch, useGameState, useHero } from "../../state/store";
 import { Codex } from "../panels/Codex";
+import { Journal } from "../panels/Journal";
 import { SkillTree } from "../panels/SkillTree";
 import { Sprite } from "./Sprite";
 import { StatBar } from "./StatBar";
@@ -112,6 +113,12 @@ export function WorldHud() {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [treeOpen, setTreeOpen] = useState(false);
   const [codexOpen, setCodexOpen] = useState(false);
+  const [journalOpen, setJournalOpen] = useState(false);
+  useEffect(() => {
+    const open = () => setJournalOpen((v) => !v);
+    window.addEventListener("pixelheim:journal", open);
+    return () => window.removeEventListener("pixelheim:journal", open);
+  }, []);
   return (
     <div className="world-hud panel">
       <div className="hud-top">
@@ -153,10 +160,14 @@ export function WorldHud() {
         <button className="btn btn-small" onClick={() => setCodexOpen(true)}>
           Codex
         </button>
+        <button className="btn btn-small" onClick={() => setJournalOpen(true)}>
+          Journal (J)
+        </button>
       </div>
       {sheetOpen && <StatSheet onClose={() => setSheetOpen(false)} />}
       {treeOpen && <SkillTree onClose={() => setTreeOpen(false)} />}
       {codexOpen && <Codex onClose={() => setCodexOpen(false)} />}
+      {journalOpen && <Journal onClose={() => setJournalOpen(false)} />}
     </div>
   );
 }
