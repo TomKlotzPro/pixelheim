@@ -36,7 +36,8 @@ function StatSheet({ onClose }: { onClose: () => void }) {
             <div className="sheet-identity-text">
               <h2>{hero.name}</h2>
               <span className="sheet-role">
-                Lv {hero.level} {rankTitle(hero)} {role.name}
+                Lv {hero.level} {rankTitle(hero)}
+                {rankTitle(hero) !== role.name && ` ${role.name}`}
                 {getSpec(hero) && <em className="doll-granted"> · {getSpec(hero)!.name}</em>}
               </span>
             </div>
