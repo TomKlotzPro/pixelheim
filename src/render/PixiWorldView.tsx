@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { dispatch, gameStore } from "../state/store";
 import type { Direction } from "../world/types";
 import { ART, VIEW_H, VIEW_W, WorldRenderer } from "./worldRenderer";
@@ -21,6 +21,7 @@ function clickTile(x: number, y: number): void {
  */
 export function PixiWorldView({ scale, mapId }: { scale: number; mapId: string }) {
   const host = useRef<HTMLDivElement>(null);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     const renderer = new WorldRenderer(clickTile);
@@ -34,6 +35,7 @@ export function PixiWorldView({ scale, mapId }: { scale: number; mapId: string }
         if (disposed) return;
         renderer.update(gameStore.getState());
         unsubscribe = gameStore.subscribe((state) => renderer.update(state));
+        setReady(true);
       } catch (error) {
         if (disposed || attempt >= 4) {
           console.error("world renderer failed to boot", error);
@@ -58,7 +60,13 @@ export function PixiWorldView({ scale, mapId }: { scale: number; mapId: string }
       data-testid="world-viewport"
       data-map={mapId}
       data-renderer="pixi"
-      style={{ width: VIEW_W * ART * scale, height: VIEW_H * ART * scale }}
-    />
+      style={{ width: VIEW_W * ART * scale, height: VIEW_H * ART * scale, position: "relative" }}
+    >
+      {!ready && (
+        <div className="world-loading" aria-live="polite">
+          <span className="world-loading-text">Entering the Ashenreach...</span>
+        </div>
+      )}
+    </div>
   );
 }
