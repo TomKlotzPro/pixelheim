@@ -304,7 +304,34 @@ export function WorldScreen() {
       {state.worldMessage ? (
         <p className="world-hint world-message">{state.worldMessage}</p>
       ) : (
-        <p className="world-hint">Arrows / WASD to move, or tap an adjacent tile. I opens the inventory.</p>
+        <div className="controls-legend" aria-label="Controls">
+          <p className="controls-legend-title">Controls</p>
+          <span className="legend-row">
+            <span>Move</span>
+            <span className="legend-key">Arrows / WASD</span>
+          </span>
+          <span className="legend-row">
+            <span>Talk / open</span>
+            <span className="legend-key">E</span>
+          </span>
+          <span className="legend-row">
+            <span>Pack</span>
+            <span className="legend-key">I</span>
+          </span>
+          <span className="legend-row">
+            <span>Map</span>
+            <span className="legend-key">M</span>
+          </span>
+          <span className="legend-row">
+            <span>Journal</span>
+            <span className="legend-key">J</span>
+          </span>
+          <span className="legend-row">
+            <span>Pause</span>
+            <span className="legend-key">Esc</span>
+          </span>
+          <span className="legend-note">Rebind in Options</span>
+        </div>
       )}
     </div>
   );
