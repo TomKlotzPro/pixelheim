@@ -6,7 +6,7 @@
 
 <p align="center">
   <b>A retro pixel-art open-world RPG built with React, TypeScript and PixiJS. No game engine - a pure reducer for the rules, a WebGL canvas for the world.</b><br />
-  Fifteen floors. Two bosses. Infinite cheese wheels. Currently v0.42 - 1.0 has to be earned.
+  Fifteen floors. Two bosses. Infinite cheese wheels. Currently v0.46 - 1.0 has to be earned.
 </p>
 
 ---
@@ -19,23 +19,27 @@
 
 You wake in Pixelheim village, in an open world called **the Ashenreach**: walk the roads (safe) or the wilds (not safe), talk to villagers, forage for materials, trade on Main Street, and climb the Ashen Mountain - ten floors of increasingly rude monsters - to slay **Fafnyr the Ashen** at the summit. Behind the dragon's hoard, a stairway descends: five more floors of the **Undermountain**, down to **Morvax the Deathless**.
 
-- **A living open world**: a WebGL-rendered overworld with walk cycles, flowing water, swaying grass, a day/night cycle, lantern glows after dark and embers drifting over the ashen wastes
-- **A real village**: Main Street with signed shops you walk into and trade by talking to the keeper, houses with distinct roofs, a market corner, an orchard, and villagers with dialogue (a bobbing "!" shows who will talk)
-- **7 playable classes**: Warrior, Mage, Rogue, Cleric, Ranger, Paladin, Necromancer - each with stats, growth, a 12-node skill tree, rank evolutions every 5 levels and a specialization fork
-- **Skill trees**: one skill point per level, spent across three branches per role - actives, upgrades and passives, each branch ending in a tier-3 capstone (48 nodes total). No respec. Retro rules
-- **Stat points that explain themselves**: 5 points per level, and the stat sheet shows what each stat does with live numbers and a preview of what the next point buys
-- **Turn-based combat on a canvas stage**: lunges, hit flashes and floating damage numbers. Poison and burn tick every turn, stun steals them, and fleeing is always an option (dexterity helps)
-- **Loot with rarities**: gear drops as common, fine or epic instances, and Smith Hilda's **Forge** upgrades a piece up to +7 for gold
-- **Crafting**: forage regional materials from the wilds and craft gear and brews at the town's stations - the forge and the cauldron
-- **Main Street**: three specialized shops - Odo's general goods, the smithy, and Alchemist Vex, who pays full price for reagents
-- **Skyrim-style inventory**: category tabs, equip weapon + body + off-hand, carry weight with over-encumbrance, and yes, cheese wheels
-- **Chiptune audio**: music and sound effects synthesized in the browser with the Web Audio API, no audio files, volume options included
-- **Auto-save + save codes**: progress persists in localStorage, and a `PXH1.…` code moves your save to any other device. Saves are versioned and migrated forward on load, so day-one saves still work today
-- **Comfort**: Escape pauses (save code, options, quit-to-title that resumes in place), controls are rebindable, and AZERTY keyboards get ZQSD out of the box
+- **A living open world**: a WebGL-rendered 21x13 viewport with walk cycles, flowing water with foam shorelines, swaying grass, day/night, lantern glows, drifting embers - and shingled, chimneyed, rounded buildings
+- **Visible monsters, chosen fights**: no random ambushes - beasts prowl their own terrain, and bumping one starts the battle
+- **7 playable classes** that **ascend**: every 5 levels a rank evolution (Apprentice to Archmage) with a cinematic, an aura, a grander look - and at rank 1 a permanent **specialization fork** (14 identities) with its own signature skill
+- **Monster mastery + the Codex**: kills earn permanent family bonuses, tracked beside a blood-gated bestiary
+- **Quests and the journal**: promises made in dialogue, tracked on J, paid in gold and XP
+- **Your town**: buy your house (free bed, weightless home storage), then the shops themselves - owned businesses pay rent on every victory
+- **Skill trees with named paths**: 12 nodes per class in three visible branches, tier badges, live numbers before you commit
+- **Loot with rarities** and a paper-doll inventory: nine equip slots including two rings, jewelry that grants real stats, and a live stats panel
+- **Crafting at the stations**: forage the wilds, forge at Hilda's, brew at Vex's - the gate is the making, never the wearing
+- **A score per place**: town, Deepwood, Mirefen, interiors, bosses - all synthesized live, with terrain-keyed ambience under it
+- **Fog-of-war world map** with fast travel, a landmark-marking mini-map, and hand-placed treasure worth going off-road for
+- **Auto-save + save codes**: versioned, migrated forward on load - day-one saves still work today
+- **Comfort**: contextual Esc, rebindable keys (AZERTY-ready), a controls legend, reduced-motion support
 
-| Title | Battle | Inventory |
-| --- | --- | --- |
-| ![Title screen](docs/title.png) | ![Battle screen](docs/battle.png) | ![Inventory](docs/inventory.png) |
+| Title | The Ashenreach |
+| --- | --- |
+| ![Title screen](docs/title.png) | ![The world](docs/world.png) |
+
+| Battle | Inventory |
+| --- | --- |
+| ![Battle screen](docs/battle.png) | ![Inventory](docs/inventory.png) |
 
 ## Run it
 

@@ -1009,7 +1009,11 @@ body {
   flex-direction: column;
   gap: 1px;
 }
+.stat-sheet .inventory-header {
+  flex-wrap: wrap;
+}
 .sheet-role {
+  white-space: nowrap;
   color: var(--text-dim);
   font-size: 11px;
 }
