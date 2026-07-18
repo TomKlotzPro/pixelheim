@@ -113,7 +113,21 @@ export function WorldScreen() {
       )}
       {USE_PIXI ? (
         <>
-          <Suspense fallback={null}>
+          <Suspense
+            fallback={
+              <div
+                className="world-viewport world-loading-standalone"
+                style={{ width: VIEW_W * tilePx, height: VIEW_H * tilePx }}
+              >
+                <div className="world-loading">
+                  <span className="world-loading-text">
+                    Loading
+                    <span className="loading-dots" />
+                  </span>
+                </div>
+              </div>
+            }
+          >
             <PixiWorldView scale={tilePx / ART_PX} mapId={map.id} />
           </Suspense>
           {/* State mirror: 1px hooks the e2e suite asserts against, since the
