@@ -70,9 +70,10 @@ export function heroSprite(hero: Hero): string {
  * in 16px-art fractions so both renderers scale them identically.
  */
 export const WORN_SLOTS = [
-  { slot: "offhand", x: 0.02, y: 0.42, size: 0.5 },
-  { slot: "head", x: 0.28, y: -0.18, size: 0.45 },
-  { slot: "weapon", x: 0.55, y: 0.3, size: 0.6 },
+  { slot: "body", x: 0.3, y: 0.42, size: 0.42 },
+  { slot: "offhand", x: 0.0, y: 0.44, size: 0.46 },
+  { slot: "head", x: 0.32, y: -0.1, size: 0.36 },
+  { slot: "weapon", x: 0.58, y: 0.32, size: 0.55 },
 ] as const;
 
 export function wornSprites(

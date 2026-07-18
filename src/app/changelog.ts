@@ -11,6 +11,15 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.46.0",
+    date: "2026-07-18",
+    codename: "Tailored",
+    notes: [
+      "Worn gear got a fitting: the helm sits on the crown instead of floating, and equipped BODY ARMOR finally shows on the torso",
+      "The inventory doll wears your gear live - equip a piece and watch your character change right there in the preview",
+    ],
+  },
+  {
     version: "0.45.0",
     date: "2026-07-18",
     codename: "Centered",
