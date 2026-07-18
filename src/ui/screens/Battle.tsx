@@ -1,6 +1,8 @@
 import { lazy, Suspense, useEffect, useRef } from "react";
 import { getItem } from "../../game/economy/items";
 import { heroSprite as heroSpriteOf, resourceLabel } from "../../game/hero/character";
+import { outfitFor } from "../../game/economy/wearables";
+import { DressedSprite } from "../widgets/DressedSprite";
 import { getLevel } from "../../game/hero/levels";
 import { getHeroSkills } from "../../game/hero/skillTree";
 import type { StatusEffect } from "../../game/types";
@@ -82,8 +84,9 @@ export function Battle() {
             </span>
           )}
           {!USE_PIXI && (
-            <Sprite
+            <DressedSprite
               name={heroSpriteOf(hero)}
+              outfit={outfitFor(state.gear, state.equipped)}
               size={96}
               alt={hero.name}
               className={battle.phase === "lost" ? "fallen" : ""}

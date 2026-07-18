@@ -11,6 +11,8 @@ import { Codex } from "../panels/Codex";
 import { Journal } from "../panels/Journal";
 import { SkillTree } from "../panels/SkillTree";
 import { Sprite } from "./Sprite";
+import { DressedSprite } from "./DressedSprite";
+import { outfitFor } from "../../game/economy/wearables";
 import { StatBar } from "./StatBar";
 import { useEscapeClose } from "../useEscapeClose";
 
@@ -32,7 +34,7 @@ function StatSheet({ onClose }: { onClose: () => void }) {
       <div className="panel stat-sheet" onClick={(e) => e.stopPropagation()}>
         <div className="inventory-header">
           <div className="sheet-identity">
-            <Sprite name={heroSprite(hero)} size={32} alt="" />
+            <DressedSprite name={heroSprite(hero)} outfit={outfitFor(state.gear, state.equipped)} size={32} alt="" />
             <div className="sheet-identity-text">
               <h2>{hero.name}</h2>
               <span className="sheet-role">
@@ -123,7 +125,12 @@ export function WorldHud() {
   return (
     <div className="world-hud panel">
       <div className="hud-top">
-        <Sprite name={role.sprite} size={32} alt={role.name} />
+        <DressedSprite
+          name={heroSprite(hero)}
+          outfit={outfitFor(state.gear, state.equipped)}
+          size={32}
+          alt={role.name}
+        />
         <div className="hud-id">
           <span className="hero-name">{hero.name}</span>
           <span className="hero-role">
