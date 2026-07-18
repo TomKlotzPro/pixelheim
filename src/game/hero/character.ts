@@ -69,12 +69,9 @@ export function heroSprite(hero: Hero): string {
  * offsets (weapon in hand, shield on the arm, helm on the head). Offsets are
  * in 16px-art fractions so both renderers scale them identically.
  */
-export const WORN_SLOTS = [
-  { slot: "body", x: 0.3, y: 0.42, size: 0.42 },
-  { slot: "offhand", x: 0.0, y: 0.44, size: 0.46 },
-  { slot: "head", x: 0.32, y: -0.1, size: 0.36 },
-  { slot: "weapon", x: 0.58, y: 0.32, size: 0.55 },
-] as const;
+// Emptied until PIX-107's true equipment layers land: scaled item icons on
+// the sprite read as stickers, not clothing. The plumbing stays.
+export const WORN_SLOTS = [] as const;
 
 export function wornSprites(
   gear: GearInstance[],
