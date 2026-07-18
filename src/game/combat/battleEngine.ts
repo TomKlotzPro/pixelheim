@@ -22,6 +22,7 @@ import { REGION_MATERIALS } from "../economy/recipes";
 import { getHeroSkills, getPassives } from "../hero/skillTree";
 import type { BattleState, GameState, Hero } from "../types";
 import { recordKill } from "../hero/mastery";
+import { QUESTS } from "../quests";
 import { RENT_PER_VICTORY } from "../../state/shared";
 
 /**
@@ -146,6 +147,16 @@ export function heroStunGate(state: GameState, hero: Hero, log: string[]): boole
 function onMonsterDefeated(state: GameState, hero: Hero, log: string[]): void {
   const slain = recordKill(hero, state.battle!.monster.def.id);
   if (slain) log.push(slain);
+  // Accepted bounties tick on every matching kill.
+  for (const quest of QUESTS) {
+    const entry = state.quests[quest.id];
+    if (!entry || entry.done || quest.objective.kind !== "kill") continue;
+    if (quest.objective.monsterId !== state.battle!.monster.def.id) continue;
+    if (entry.progress < quest.objective.count) {
+      entry.progress += 1;
+      log.push(`${quest.name}: ${entry.progress}/${quest.objective.count}.`);
+    }
+  }
   // The landlord's cut: every owned business pays its rent on a victory.
   if (state.properties.length > 0) {
     const rent = state.properties.length * RENT_PER_VICTORY;

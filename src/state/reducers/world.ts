@@ -1,6 +1,6 @@
 import { createWildBattle } from "../../game/combat/battleEngine";
 import { encounterForSpawn, spawnSpecies } from "../../game/combat/encounters";
-import { carriedWeight, carryCapacity } from "../../game/hero/character";
+import { applyLevelUps, carriedWeight, carryCapacity } from "../../game/hero/character";
 import { getItem } from "../../game/economy/items";
 import { createGear, gearName } from "../../game/economy/rarity";
 import { SHOP_MAPS } from "../../game/economy/shop";
@@ -14,6 +14,8 @@ import { waypointDiscovered, WAYPOINTS } from "../../world/waypoints";
 import { isWalkable, portalAt } from "../../world/parseMap";
 import type { WorldAction } from "../actions";
 import { DIRECTION_DELTAS, HOUSE_DEED_COST, HOUSE_DOOR, INN_MAP_ID, REST_COST } from "../shared";
+import { addItem, removeItem } from "../../game/economy/inventory";
+import { questProgress, questReady, questsFor } from "../../game/quests";
 
 export function worldReducer(draft: GameState, action: WorldAction): void {
   switch (action.type) {
@@ -138,7 +140,10 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
       if (!draft.dialogue) return;
       const npc = NPCS.find((n) => n.id === draft.dialogue!.npcId);
       if (!npc || draft.dialogue.page >= npc.lines.length - 1) {
+        const giverId = draft.dialogue.npcId;
         draft.dialogue = null;
+        // The quest rides the conversation: closing it accepts or turns in.
+        if (draft.hero) resolveQuests(draft, giverId);
         return;
       }
       draft.dialogue.page += 1;
@@ -271,4 +276,31 @@ function openChest(draft: GameState, chest: Chest): void {
   draft.inventory[loot.itemId] = (draft.inventory[loot.itemId] ?? 0) + qty;
   draft.worldMessage =
     chest.look === "herb" ? `You gather ${qty}x ${item.name}.` : `The chest holds ${qty}x ${item.name}.`;
+}
+
+/** Accept the giver's untaken quest, or turn in a finished one. */
+function resolveQuests(draft: GameState, giverId: string): void {
+  for (const quest of questsFor(giverId)) {
+    const entry = draft.quests[quest.id];
+    if (entry?.done) continue;
+    if (!entry) {
+      draft.quests[quest.id] = { progress: 0, done: false };
+      draft.worldMessage = `Quest accepted - ${quest.name}: ${quest.accepted}`;
+      return;
+    }
+    if (questReady(draft, quest)) {
+      if (quest.objective.kind === "deliver") {
+        draft.inventory = removeItem(draft.inventory, quest.objective.itemId, quest.objective.count);
+      }
+      entry.done = true;
+      draft.gold += quest.reward.gold;
+      draft.hero!.xp += quest.reward.xp;
+      applyLevelUps(draft.hero!);
+      if (quest.reward.itemId) draft.inventory = addItem(draft.inventory, quest.reward.itemId);
+      draft.worldMessage = `Quest complete - ${quest.name}! +${quest.reward.gold}g, +${quest.reward.xp} xp. ${quest.completed}`;
+      return;
+    }
+    draft.worldMessage = `${quest.name}: ${questProgress(draft, quest)}/${quest.objective.count} ${quest.objective.label.toLowerCase()}.`;
+    return;
+  }
 }

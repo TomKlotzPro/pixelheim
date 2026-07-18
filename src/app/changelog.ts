@@ -11,6 +11,16 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.44.0",
+    date: "2026-07-18",
+    codename: "Promises and Rooftops",
+    notes: [
+      "QUESTS! Five promises around the village: slimes for Sela, cheese for Bram (of course), wolves for Ana, a troll for the elder, herbs for Vex - talk to accept, deliver or slay, talk again to collect",
+      "The JOURNAL (J) tracks every promise with progress bars and tells you who to see when it's ready",
+      "The village stopped being rectangles: shingled roof courses, rounded building corners, and chimneys with smoke wisps - form, not squares",
+    ],
+  },
+  {
     version: "0.43.0",
     date: "2026-07-18",
     codename: "The Wide View",
