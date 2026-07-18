@@ -64,7 +64,10 @@ export function PixiWorldView({ scale, mapId }: { scale: number; mapId: string }
     >
       {!ready && (
         <div className="world-loading" aria-live="polite">
-          <span className="world-loading-text">Entering the Ashenreach...</span>
+          <span className="world-loading-text">
+            Loading
+            <span className="loading-dots" />
+          </span>
         </div>
       )}
     </div>
