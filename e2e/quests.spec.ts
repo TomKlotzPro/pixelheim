@@ -12,8 +12,8 @@ test("the elder hands out the troll toll and the journal tracks it", async ({ pa
   await createHero(page, "Runner");
 
   // Elder Maren, static at (16,8) - the proven path
-  await walk(page, "ArrowUp", 6);
-  await walk(page, "ArrowRight", 2);
+  await walk(page, "ArrowUp", 12);
+  await walk(page, "ArrowRight", 4);
   await page.keyboard.press("ArrowUp");
   await page.keyboard.press("e");
   for (let i = 0; i < 3; i++) {

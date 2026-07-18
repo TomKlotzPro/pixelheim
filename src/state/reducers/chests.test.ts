@@ -22,7 +22,7 @@ describe("chests", () => {
 
   it("opens the chest the hero faces and gives exactly once", () => {
     // town_corner at (1,16): 2x potion_hp
-    let s = explorerState("town", 1, 15, "down");
+    let s = explorerState("town", 2, 31, "down");
     s = gameReducer(s, { type: "INTERACT" });
     expect(s.inventory.potion_hp).toBe(2);
     expect(s.world!.openedChests).toContain("town_corner");
@@ -32,14 +32,14 @@ describe("chests", () => {
   });
 
   it("pays gold from the town nook", () => {
-    let s = explorerState("town", 31, 8, "down");
+    let s = explorerState("town", 62, 17, "down");
     s = gameReducer(s, { type: "INTERACT" });
     expect(s.gold).toBe(initialState.gold + 60);
     expect(s.world!.openedChests).toContain("town_nook");
   });
 
   it("stays shut when the loot would break the hero's back", () => {
-    let s = explorerState("overworld", 3, 6, "left"); // ash_west: iron_sword gear
+    let s = explorerState("overworld", 5, 12, "left"); // ash_west: iron_sword gear
     s.inventory = { iron_armor: 20 }; // 320 weight, heavier than any capacity
     s = gameReducer(s, { type: "INTERACT" });
     expect(s.world!.openedChests).toHaveLength(0);
@@ -48,29 +48,29 @@ describe("chests", () => {
   });
 
   it("grants gear as an instance", () => {
-    let s = explorerState("overworld", 3, 6, "left");
+    let s = explorerState("overworld", 5, 12, "left");
     s = gameReducer(s, { type: "INTERACT" });
     expect(s.gear.map((g) => g.itemId)).toContain("iron_sword");
     expect(s.world!.openedChests).toContain("ash_west");
   });
 
   it("blocks walking through a chest but turns the hero toward it", () => {
-    let s = explorerState("town", 1, 15, "right");
+    let s = explorerState("town", 2, 31, "right");
     s = gameReducer(s, { type: "MOVE", direction: "down" });
-    expect(s.world!.position).toMatchObject({ x: 1, y: 15, facing: "down" });
+    expect(s.world!.position).toMatchObject({ x: 2, y: 31, facing: "down" });
   });
 
   it("takes ground treasure in stride", () => {
-    let s = explorerState("overworld", 19, 29, "right"); // road_glint at (20,29)
+    let s = explorerState("overworld", 39, 58, "right"); // road_glint at (20,29)
     s = gameReducer(s, { type: "MOVE", direction: "right" });
-    expect(s.world!.position).toMatchObject({ x: 20, y: 29 });
+    expect(s.world!.position).toMatchObject({ x: 40, y: 58 });
     expect(s.gold).toBe(initialState.gold + 45);
     expect(s.world!.openedChests).toContain("road_glint");
   });
 
   it("springs the mimic instead of paying out", () => {
     vi.spyOn(Math, "random").mockReturnValue(0.99); // no elite roll
-    let s = explorerState("mirefen", 22, 6, "left"); // mire_mimic at (21,6)
+    let s = explorerState("mirefen", 43, 12, "left"); // mire_mimic at (42,12)
     s = gameReducer(s, { type: "INTERACT" });
     expect(s.screen).toBe("battle");
     expect(s.battle!.monster.name).toMatch(/mimic/i);

@@ -22,8 +22,8 @@ async function loadRichVeteranAt(page: Page, x: number, y: number) {
 }
 
 test("the deed, the door, the bed and the barrel", async ({ page }) => {
-  // stand above the shut door at (30,13)
-  await loadRichVeteranAt(page, 30, 12);
+  // stand above the shut door at (60,26)
+  await loadRichVeteranAt(page, 60, 25);
 
   // bump the door: it names its price
   await page.keyboard.press("ArrowDown");
@@ -38,9 +38,7 @@ test("the deed, the door, the bed and the barrel", async ({ page }) => {
   await expect(page.getByTestId("world-viewport")).toHaveAttribute("data-map", "town_house");
 
   // store a potion in the barrel (it sits left of the spawn)
-  await page.keyboard.press("ArrowLeft");
-  await page.keyboard.press("ArrowLeft");
-  await page.keyboard.press("ArrowLeft"); // bump: face the barrel
+  for (let i = 0; i < 6; i++) await page.keyboard.press("ArrowLeft"); // last press bumps: face the barrel
   await page.keyboard.press("e");
   await expect(page.getByTestId("house-storage")).toBeVisible();
   const packRow = page.locator(".storage-column").first().locator(".options-row", { hasText: "Health Potion" });
@@ -53,8 +51,7 @@ test("the deed, the door, the bed and the barrel", async ({ page }) => {
   await expect(page.getByTestId("house-storage")).toBeHidden();
 
   // the bed rests for free
-  await page.keyboard.press("ArrowUp");
-  await page.keyboard.press("ArrowUp");
+  for (let i = 0; i < 5; i++) await page.keyboard.press("ArrowUp");
   await page.keyboard.press("ArrowLeft");
   await page.keyboard.press("ArrowUp"); // bump: face a bed at the top wall
   await page.keyboard.press("e");
@@ -62,11 +59,11 @@ test("the deed, the door, the bed and the barrel", async ({ page }) => {
 });
 
 test("the keeper sells you the whole shop, then works for you", async ({ page }) => {
-  await loadRichVeteranAt(page, 14, 9);
+  await loadRichVeteranAt(page, 28, 18);
   // into Odo's: up the west road and through the GOODS door
   for (const [key, n] of [
-    ["ArrowLeft", 10],
-    ["ArrowUp", 5],
+    ["ArrowLeft", 20],
+    ["ArrowUp", 10],
   ] as const) {
     for (let i = 0; i < n; i++) {
       await page.keyboard.press(key);
@@ -74,7 +71,7 @@ test("the keeper sells you the whole shop, then works for you", async ({ page })
     }
   }
   await expect(page.getByTestId("world-viewport")).toHaveAttribute("data-map", "town_shop");
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 6; i++) {
     await page.keyboard.press("ArrowUp");
     await page.waitForTimeout(15);
   }

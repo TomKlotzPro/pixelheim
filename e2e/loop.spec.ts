@@ -48,9 +48,9 @@ test("the full loop: a new hero quests, fights, shops and sleeps in one life", a
 
   // 1. take the elder's quest (static at 16,8)
   await walk(page, [
-    ["ArrowUp", 6],
-    ["ArrowRight", 2],
-    ["ArrowUp", 1],
+    ["ArrowUp", 12],
+    ["ArrowRight", 4],
+    ["ArrowUp", 2],
   ]);
   for (let i = 0; i < 4; i++) {
     await page.keyboard.press("e");
@@ -60,17 +60,17 @@ test("the full loop: a new hero quests, fights, shops and sleeps in one life", a
 
   // 2. around the elder, north through the gate into the Ashenreach
   await walk(page, [
-    ["ArrowRight", 1],
-    ["ArrowUp", 2],
-    ["ArrowLeft", 1],
-    ["ArrowUp", 8],
+    ["ArrowRight", 2],
+    ["ArrowUp", 4],
+    ["ArrowLeft", 2],
+    ["ArrowUp", 13],
   ]);
   await expect(page.getByTestId("world-viewport")).toHaveAttribute("data-map", "overworld");
 
   // 3. arrive at (24,20); north-east to the forest spawn around (31,17)
   await walk(page, [
-    ["ArrowUp", 3],
-    ["ArrowRight", 6],
+    ["ArrowUp", 6],
+    ["ArrowRight", 12],
   ]);
   await chase(page, [
     "ArrowRight",
@@ -83,6 +83,16 @@ test("the full loop: a new hero quests, fights, shops and sleeps in one life", a
     "ArrowLeft",
     "ArrowRight",
     "ArrowRight",
+    "ArrowDown",
+    "ArrowLeft",
+    "ArrowUp",
+    "ArrowRight",
+    "ArrowRight",
+    "ArrowDown",
+    "ArrowLeft",
+    "ArrowUp",
+    "ArrowRight",
+    "ArrowRight",
   ]);
   await expect(page.getByText("Wild battle")).toBeVisible();
   await fightOut(page);
@@ -90,15 +100,15 @@ test("the full loop: a new hero quests, fights, shops and sleeps in one life", a
 
   // 4. home through the gate, into Odo's, buy bread
   await walk(page, [
-    ["ArrowLeft", 7],
-    ["ArrowDown", 4],
+    ["ArrowLeft", 13],
+    ["ArrowDown", 8],
   ]);
   await expect(page.getByTestId("world-viewport")).toHaveAttribute("data-map", "town");
   await walk(page, [
-    ["ArrowDown", 8],
-    ["ArrowLeft", 12],
-    ["ArrowUp", 5],
-    ["ArrowUp", 3],
+    ["ArrowDown", 16],
+    ["ArrowLeft", 24],
+    ["ArrowUp", 10],
+    ["ArrowUp", 6],
   ]);
   await expect(page.getByTestId("world-viewport")).toHaveAttribute("data-map", "town_shop");
   await page.keyboard.press("e");

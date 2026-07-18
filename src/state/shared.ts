@@ -29,7 +29,7 @@ export const initialState: GameState = {
 };
 
 /** The player house: the shut door in town, and what the deed costs. */
-export const HOUSE_DOOR = { mapId: "town", x: 30, y: 13 };
+export const HOUSE_DOOR = { mapId: "town", x: 60, y: 26 };
 export const HOUSE_DEED_COST = 1500;
 
 /** Business deeds: buy the shop you stand in from its keeper. */
@@ -42,7 +42,7 @@ export const PROPERTY_PRICES: Record<string, { name: string; cost: number }> = {
 export const RENT_PER_VICTORY = 2;
 
 /** Where heroes wake up: the middle of Pixelheim village. */
-export const TOWN_SPAWN = { mapId: "town", x: 14, y: 15, facing: "down" as const };
+export const TOWN_SPAWN = { mapId: "town", x: 28, y: 30, facing: "down" as const };
 /** The inn interior: entering it rests the hero for coin. */
 export const INN_MAP_ID = "town_inn";
 

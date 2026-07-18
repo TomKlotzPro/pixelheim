@@ -33,7 +33,7 @@ test("the codex tracks masteries and reveals the bestiary", async ({ page }) => 
 });
 
 test("an unbloodied hero has an empty ledger", async ({ page }) => {
-  await loadVeteranAt(page, 24, 20);
+  await loadVeteranAt(page, 48, 40);
   await page.getByRole("button", { name: "Codex" }).click();
   await expect(page.getByTestId("mastery-beasts")).toContainText("0 slain");
 });

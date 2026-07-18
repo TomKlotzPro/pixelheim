@@ -45,9 +45,9 @@ test("a chat is one keypress away, even facing the wrong way", async ({ page }) 
   await createHero(page, "Chatty");
   // Elder Maren stands still at (16,8). Arrive at (16,9) walking RIGHT, so the
   // hero ends up beside her but facing sideways - E should still find her.
-  await walk(page, "ArrowUp", 6);
-  await walk(page, "ArrowRight", 2);
-  await expect(page.getByTestId("world-hero")).toHaveAttribute("data-pos", "16,9");
+  await walk(page, "ArrowUp", 13);
+  await walk(page, "ArrowRight", 4);
+  await expect(page.getByTestId("world-hero")).toHaveAttribute("data-pos", "32,17");
   await expect(page.getByTestId("world-hero")).toHaveClass(/facing-right/);
   await expect(page.getByTestId("npc-prompt")).toBeVisible(); // the prompt already knows
   await page.keyboard.press("e");

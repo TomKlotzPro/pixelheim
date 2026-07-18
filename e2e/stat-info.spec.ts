@@ -10,7 +10,7 @@ test("the stat sheet explains each stat and previews the next point", async ({ p
     state: {
       ...VETERAN_SAVE.state,
       hero: { ...VETERAN_SAVE.state.hero, statPoints: 3 },
-      world: { position: { mapId: "town", x: 14, y: 15, facing: "down" }, discovered: {}, openedChests: [] },
+      world: { position: { mapId: "town", x: 28, y: 30, facing: "down" }, discovered: {}, openedChests: [] },
     },
   };
   await page.goto("./");
