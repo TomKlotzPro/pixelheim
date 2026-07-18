@@ -23,6 +23,7 @@ import type { GameState } from "../game/types";
 import { dispatch, gameStore, useGameState } from "../state/store";
 import { clearSave, decodeSaveCode, encodeSaveCode, loadSave, persistSave } from "../state/save";
 import type { Direction } from "../world/types";
+import { Sprite } from "../ui/widgets/Sprite";
 
 /** The ascension card: shows for a few seconds when the hero crosses a rank. */
 function useRankUp(state: GameState): string | null {
@@ -139,7 +140,7 @@ function MuteButton() {
         setMutedState(!muted);
       }}
     >
-      {muted ? "\u{1F507}" : "\u{1F50A}"}
+      <Sprite name={muted ? "icon_speaker_off" : "icon_speaker"} size={20} alt="" />
     </button>
   );
 }
@@ -252,7 +253,7 @@ export default function App() {
       <div className="corner-buttons">
         <MuteButton />
         <button className="mute-btn" aria-label="Settings" title="Settings" onClick={() => setOptionsOpen(true)}>
-          {"⚙️"}
+          <Sprite name="icon_gear" size={20} alt="" />
         </button>
       </div>
       <Screen state={state} save={save} onOpenOptions={() => setOptionsOpen(true)} />
