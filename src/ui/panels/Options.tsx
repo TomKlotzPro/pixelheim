@@ -147,14 +147,16 @@ export function Options({
               <button
                 className="btn btn-small"
                 aria-label="Toggle renderer"
-                title="WebGL is the game: animations, lighting, particles. Classic is the legacy DOM renderer."
+                title="WebGL is the game: animations, lighting, particles. Voxel is the 3D diorama. Classic is the legacy DOM renderer."
                 onClick={() => {
                   // Renderers are chosen once at boot; save the choice and restart.
-                  saveSettings({ ...settings, renderer: settings.renderer === "classic" ? "webgl" : "classic" });
+                  const next =
+                    settings.renderer === "webgl" ? "voxel" : settings.renderer === "voxel" ? "classic" : "webgl";
+                  saveSettings({ ...settings, renderer: next });
                   window.location.reload();
                 }}
               >
-                {settings.renderer === "classic" ? "Classic" : "WebGL"}
+                {settings.renderer === "classic" ? "Classic" : settings.renderer === "voxel" ? "Voxel" : "WebGL"}
               </button>
             </label>
             <label className="options-row">
