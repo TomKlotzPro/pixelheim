@@ -11,6 +11,18 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.50.0",
+    date: "2026-07-20",
+    codename: "Polished Voxels",
+    notes: [
+      "THE DIORAMA SHINES: filmic color grading and a soft viewer-side fill light - your hero and every facade step out of the murk while the sun keeps doing the sculpting",
+      "Figures shed their 2D outline in 3D: brighter, chunkier heroes, villagers and monsters, grounded by a soft contact shadow",
+      "Buildings grew wooden door plates - INN, SHOP and the rest hang over their doorways, readable from across the square",
+      "Doors, cave mouths and shop signs now press flush against the walls behind them, like they were built there",
+      "Embers rise over the Ashenreach again, and the world's far edge fades gently into the dark",
+    ],
+  },
+  {
     version: "0.49.0",
     date: "2026-07-20",
     codename: "The Third Dimension",

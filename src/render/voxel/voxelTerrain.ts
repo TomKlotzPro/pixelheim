@@ -35,6 +35,21 @@ export const GROUND_TOP = 1;
 /** Walkable tiles that still stand up (you pass through them briefly). */
 const UPRIGHT_WALKABLE = new Set<TileId>(["door", "cave"]);
 
+/**
+ * Where an upright prop stands on its tile (z, in voxels). Doors, cave mouths
+ * and shop signs press against the building or cliff face behind them;
+ * free-standing props hold the middle.
+ */
+const UPRIGHT_Z: Partial<Record<TileId, number>> = {
+  door: 3,
+  door_shut: 3,
+  cave: 3,
+  sign_goods: 2,
+  sign_smith: 2,
+  sign_potion: 2,
+  sign_inn: 2,
+};
+
 /** Same stable hash as the Pixi terrain: grass repeats less. */
 const GRASS_VARIANTS = [
   "tile_grass",
@@ -99,7 +114,7 @@ export class VoxelTerrain {
       } else if (upright) {
         const { ground, prop } = splitGround(grid);
         extrudeFlat(builder, ground, GROUND_TOP, 0.8);
-        extrudeUpright(builder, prop, 2, 0, GROUND_TOP, ART / 2);
+        extrudeUpright(builder, prop, 2, 0, GROUND_TOP, UPRIGHT_Z[tile] ?? ART / 2);
       } else {
         extrudeFlat(builder, grid, FLAT_TOPS[tile] ?? GROUND_TOP, FLAT_RELIEF[tile] ?? DEFAULT_RELIEF);
       }
