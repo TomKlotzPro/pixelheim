@@ -163,9 +163,7 @@ export const OVERWORLD_MAP: WorldMap = parseMap(
  * in the NORTH wall so leaving town continues north onto the mountain road -
  * travel direction is preserved through the portal, no held-key ping-pong.
  */
-export const TOWN_MAP: WorldMap = parseMap(
-  "town",
-  `
+const TOWN_BASE = `
   ################################D###############################################
   ################################.###############################################
   ##....xx..................................xx......................xx..........##
@@ -202,14 +200,117 @@ export const TOWN_MAP: WorldMap = parseMap(
   ##......xx....................................xx........ffffffff....xx........##
   ################################################################################
   ################################################################################
+  `;
+
+/**
+ * Stamp a patch onto town rows (PIX-91): space keeps the base character, any
+ * other character must land on open grass or flowers - a collision with a
+ * building, road or spawn throws at module load, so a bad tier layout fails
+ * the suite immediately.
+ */
+function stamp(rows: string[], at: { x: number; y: number; patch: string[] }): string[] {
+  const out = rows.slice();
+  at.patch.forEach((line, dy) => {
+    const row = out[at.y + dy].split("");
+    for (let dx = 0; dx < line.length; dx++) {
+      const ch = line[dx];
+      if (ch === " ") continue;
+      const base = row[at.x + dx];
+      if (base !== "." && base !== "x") {
+        throw new Error(`town tier stamp collides at ${at.x + dx},${at.y + dy} (over "${base}")`);
+      }
+      row[at.x + dx] = ch;
+    }
+    out[at.y + dy] = row.join("");
+  });
+  return out;
+}
+
+const applyStamps = (rows: string[], stamps: { x: number; y: number; patch: string[] }[]) => stamps.reduce(stamp, rows);
+
+/** The city hall stands from the founding: slate-roofed, door on the south street. */
+const CITY_HALL_STAMP = [
+  {
+    x: 45,
+    y: 21,
+    patch: ["1111111111", "1111111111", "1111111111", "1111111111", "1111111111", "1111D11111"],
+  },
+];
+
+/** Tier 2, Village: lamps on the square, market stalls, flower beds. */
+const VILLAGE_STAMPS = [
+  { x: 16, y: 12, patch: ["L"] },
+  { x: 38, y: 12, patch: ["L"] },
+  { x: 10, y: 20, patch: ["L"] },
+  { x: 38, y: 20, patch: ["L"] },
+  { x: 18, y: 16, patch: ["n n", "o c"] },
+  { x: 24, y: 20, patch: ["xx"] },
+  { x: 36, y: 20, patch: ["xx"] },
+];
+
+/** Tier 3, Town: the fountain plaza, a new house, lamps down the south street. */
+const TOWN_STAMPS = [
+  { x: 28, y: 11, patch: ["=====", "==O==", "====="] },
+  { x: 24, y: 21, patch: ["22222222", "22222222", "222d2222"] },
+  { x: 22, y: 24, patch: ["L"] },
+  { x: 32, y: 24, patch: ["L"] },
+];
+
+/** Tier 4, City: paved avenues, two more houses, lamplight to the gate. */
+const CITY_STAMPS = [
+  { x: 4, y: 12, patch: ["33333333", "33333333", "33333333", "333d3333"] },
+  { x: 68, y: 12, patch: ["11111111", "11111111", "11111111", "111d1111"] },
+  { x: 30, y: 2, patch: ["L"] },
+  { x: 34, y: 2, patch: ["L"] },
+  { x: 14, y: 13, patch: ["======"] },
+  { x: 33, y: 13, patch: ["="] },
+  { x: 8, y: 16, patch: ["=========", "========="] },
+];
+
+const TOWN_PORTALS = [
+  { x: 8, y: 8, to: { kind: "map", mapId: "town_shop", x: 8, y: 8 } },
+  { x: 24, y: 8, to: { kind: "map", mapId: "town_inn", x: 8, y: 8 } },
+  { x: 42, y: 8, to: { kind: "map", mapId: "town_smith", x: 8, y: 8 } },
+  { x: 8, y: 26, to: { kind: "map", mapId: "town_alchemist", x: 8, y: 8 } },
+  { x: 49, y: 26, to: { kind: "map", mapId: "town_hall", x: 8, y: 8 } },
+  { x: 32, y: 0, to: { kind: "map", mapId: "overworld", x: 48, y: 40 } },
+] as const;
+
+const TOWN_BASE_ROWS = TOWN_BASE.split("\n")
+  .map((row) => row.trim())
+  .filter((row) => row.length > 0);
+
+/** The four ages of Pixelheim: Hamlet, Village, Town, City - cumulative redraws. */
+const HAMLET_ROWS = applyStamps(TOWN_BASE_ROWS, CITY_HALL_STAMP);
+const VILLAGE_ROWS = applyStamps(HAMLET_ROWS, VILLAGE_STAMPS);
+const TOWN_ROWS = applyStamps(VILLAGE_ROWS, TOWN_STAMPS);
+const CITY_ROWS = applyStamps(TOWN_ROWS, CITY_STAMPS);
+
+export const TOWN_MAPS: WorldMap[] = [HAMLET_ROWS, VILLAGE_ROWS, TOWN_ROWS, CITY_ROWS].map((rows) =>
+  parseMap("town", rows.join("\n"), structuredClone(TOWN_PORTALS) as never),
+);
+
+/** The founding town; the maps index serves the current tier via its mirror. */
+export const TOWN_MAP: WorldMap = TOWN_MAPS[0];
+
+/** The city hall: the ledger across the counter, the mayor behind it. */
+export const TOWN_HALL_MAP: WorldMap = parseMap(
+  "town_hall",
+  `
+  ####################
+  ####################
+  ##t#t_________c#c###
+  ##_#_____________###
+  ##________________##
+  ##________________##
+  ##n_n_________n_n###
+  ##_______________###
+  ##______$_________##
+  ##________________##
+  ########D###########
+  ####################
   `,
-  [
-    { x: 8, y: 8, to: { kind: "map", mapId: "town_shop", x: 8, y: 8 } },
-    { x: 24, y: 8, to: { kind: "map", mapId: "town_inn", x: 8, y: 8 } },
-    { x: 42, y: 8, to: { kind: "map", mapId: "town_smith", x: 8, y: 8 } },
-    { x: 8, y: 26, to: { kind: "map", mapId: "town_alchemist", x: 8, y: 8 } },
-    { x: 32, y: 0, to: { kind: "map", mapId: "overworld", x: 48, y: 40 } },
-  ],
+  [{ x: 8, y: 10, to: { kind: "map", mapId: "town", x: 49, y: 27 } }],
 );
 
 export const TOWN_SMITH_MAP: WorldMap = parseMap(

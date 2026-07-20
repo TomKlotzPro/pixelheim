@@ -9,6 +9,7 @@ export const DOOR_SIGNS: Record<string, { label: string; icon?: string }> = {
   town_smith: { label: "FORGE", icon: "icon_anvil" },
   town_alchemist: { label: "BREWS", icon: "icon_cauldron" },
   town_inn: { label: "INN" },
+  town_hall: { label: "HALL" },
 };
 
 export type DoorSign = { x: number; y: number; label: string; icon?: string };

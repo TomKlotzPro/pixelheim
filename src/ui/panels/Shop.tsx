@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { getItem } from "../../game/economy/items";
 import { itemStatLine } from "../../game/economy/itemStats";
-import { gearItem, gearName, gearValue } from "../../game/economy/rarity";
+import { gearItem, gearName } from "../../game/economy/rarity";
 import { forgeCapFor, forgeCostFor } from "../../game/economy/jobs";
-import { buyPrice, sellPriceAt, SHOPS, shopStock } from "../../game/economy/shop";
+import { buyPrice, gearSellPriceAt, sellPriceAt, SHOPS, shopStock } from "../../game/economy/shop";
+import { townTierOf } from "../../game/economy/town";
 import { activeShopId } from "../../state/gameReducer";
 import { dispatch, useGameState, useHero } from "../../state/store";
 import { Sprite } from "../widgets/Sprite";
@@ -107,12 +108,7 @@ export function Shop() {
                 </div>
                 <div className="item-actions">
                   <button className="btn btn-small" onClick={() => dispatch({ type: "SELL_GEAR", uid: instance.uid })}>
-                    Sell{" "}
-                    {Math.max(
-                      1,
-                      Math.floor(gearValue(instance) * (SHOPS[shopId].buyRates[gearItem(instance).category] ?? 0.5)),
-                    )}
-                    g
+                    Sell {gearSellPriceAt(shopId, instance, townTierOf(state))}g
                   </button>
                 </div>
               </div>
@@ -130,7 +126,7 @@ export function Shop() {
                 </div>
                 <div className="item-actions">
                   <button className="btn btn-small" onClick={() => dispatch({ type: "SELL_ITEM", itemId: item.id })}>
-                    Sell {sellPriceAt(shopId, item)}g
+                    Sell {sellPriceAt(shopId, item, townTierOf(state))}g
                   </button>
                 </div>
               </div>

@@ -227,6 +227,10 @@ export type GameState = {
   quests: Record<string, { progress: number; done: boolean }>;
   /** Business deeds owned (shop map ids). Each pays rent on every victory. */
   properties: string[];
+  /** Pixelheim's growth: 1 Hamlet - 4 City, funded at the city hall. Additive. */
+  townTier: number;
+  /** The city-hall ledger panel (transient UI, like shopOpen). */
+  hallOpen: boolean;
   /** Every owned weapon/apparel piece, equipped or not. */
   gear: GearInstance[];
   /** Slot -> gear uid. */

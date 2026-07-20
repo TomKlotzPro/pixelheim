@@ -19,6 +19,8 @@ export const initialState: GameState = {
   storageOpen: false,
   house: { owned: false, storage: {} },
   properties: [],
+  townTier: 1,
+  hallOpen: false,
   quests: {},
   world: null,
   dungeonSelect: null,
