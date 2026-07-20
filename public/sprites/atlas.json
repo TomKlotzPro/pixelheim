@@ -1121,6 +1121,12 @@
       "fps": 2,
       "loop": true
     },
+    "mayor_idle": {
+      "sheet": "mayor_idle.png",
+      "frames": 2,
+      "fps": 2,
+      "loop": true
+    },
     "slime_idle": {
       "sheet": "slime_idle.png",
       "frames": 2,

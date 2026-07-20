@@ -17,6 +17,7 @@ import { MapScreen } from "../ui/panels/MapScreen";
 import { PauseMenu } from "../ui/panels/PauseMenu";
 import { HouseStorage } from "../ui/panels/HouseStorage";
 import { Shop } from "../ui/panels/Shop";
+import { TownHall } from "../ui/panels/TownHall";
 import { TitleScreen } from "../ui/screens/TitleScreen";
 import { Victory } from "../ui/screens/Victory";
 import { WorldScreen } from "../ui/screens/WorldScreen";
@@ -277,6 +278,7 @@ export default function App() {
         />
       )}
       {state.shopOpen && state.hero && <Shop />}
+      {state.hallOpen && state.hero && <TownHall />}
       {state.storageOpen && state.hero && <HouseStorage />}
       {optionsOpen && (
         <Options

@@ -1,10 +1,11 @@
 import { gearByUid } from "../../game/hero/character";
 import { addItem, removeItem } from "../../game/economy/inventory";
 import { getItem } from "../../game/economy/items";
-import { createGear, gearItem, gearValue } from "../../game/economy/rarity";
+import { createGear, gearItem } from "../../game/economy/rarity";
 import { canCraft, RECIPES } from "../../game/economy/recipes";
 import { atJobStation, doubleBrewChance, forgeCapFor, forgeCostFor, grantJobXp } from "../../game/economy/jobs";
-import { buyPrice, sellPriceAt, SHOPS, shopStock } from "../../game/economy/shop";
+import { fundBlocker, nextTier, townTierOf } from "../../game/economy/town";
+import { buyPrice, gearSellPriceAt, sellPriceAt, SHOPS, shopStock } from "../../game/economy/shop";
 import type { GameState } from "../../game/types";
 import type { EconomyAction } from "../actions";
 import { activeShopId, HOUSE_DEED_COST, PROPERTY_PRICES } from "../shared";
@@ -64,6 +65,24 @@ export function economyReducer(draft: GameState, action: EconomyAction): void {
       return;
     }
 
+    case "TOGGLE_HALL": {
+      // The ledger lives across the mayor's counter, nowhere else.
+      if (draft.screen !== "world" || draft.world?.position.mapId !== "town_hall") return;
+      draft.hallOpen = !draft.hallOpen;
+      return;
+    }
+
+    case "FUND_TOWN": {
+      // The gold sink with a skyline (PIX-91): requirements checked, treasury
+      // paid, tier raised. The town redraws itself the moment you walk out.
+      const next = nextTier(draft);
+      if (!next || fundBlocker(draft) !== null) return;
+      draft.gold -= next.cost ?? 0;
+      draft.townTier = next.tier;
+      draft.worldMessage = `Pixelheim rises: the ${next.name.toUpperCase()} charter is signed. Walk outside.`;
+      return;
+    }
+
     case "BUY_ITEM": {
       const shopId = draft.shopOpen ? activeShopId(draft) : null;
       if (!shopId) return;
@@ -82,7 +101,7 @@ export function economyReducer(draft: GameState, action: EconomyAction): void {
       const shopId = draft.shopOpen ? activeShopId(draft) : null;
       if (!shopId || (draft.inventory[action.itemId] ?? 0) <= 0) return;
       const item = getItem(action.itemId);
-      draft.gold += sellPriceAt(shopId, item);
+      draft.gold += sellPriceAt(shopId, item, townTierOf(draft));
       draft.inventory = removeItem(draft.inventory, item.id);
       return;
     }
@@ -92,8 +111,7 @@ export function economyReducer(draft: GameState, action: EconomyAction): void {
       if (!shopId || Object.values(draft.equipped).includes(action.uid)) return;
       const instance = gearByUid(draft.gear, action.uid);
       if (!instance) return;
-      const rate = SHOPS[shopId].buyRates[gearItem(instance).category] ?? 0.5;
-      draft.gold += Math.max(1, Math.floor(gearValue(instance) * rate));
+      draft.gold += gearSellPriceAt(shopId, instance, townTierOf(draft));
       draft.gear = draft.gear.filter((g) => g.uid !== action.uid);
       return;
     }

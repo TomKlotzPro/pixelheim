@@ -36,9 +36,10 @@ test("character creation shows the marching hero and comparable stat bars", asyn
 
 test("the town signs its doors", async ({ page }) => {
   await createHero(page, "Wanderer");
-  // GOODS, FORGE, BREWS, INN + the FOR SALE house
-  await expect(page.getByTestId("door-sign")).toHaveCount(5);
+  // GOODS, FORGE, BREWS, INN, HALL + the FOR SALE house
+  await expect(page.getByTestId("door-sign")).toHaveCount(6);
   await expect(page.locator('[data-testid="door-sign"][data-label="FORGE"]')).toHaveCount(1);
+  await expect(page.locator('[data-testid="door-sign"][data-label="HALL"]')).toHaveCount(1);
 });
 
 test("a chat is one keypress away, even facing the wrong way", async ({ page }) => {
