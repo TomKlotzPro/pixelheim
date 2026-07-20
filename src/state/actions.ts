@@ -31,6 +31,8 @@ export type InventoryAction =
 /** Shops, the Forge and crafting: anything that spends or earns. */
 export type EconomyAction =
   | { type: "TOGGLE_SHOP" }
+  | { type: "TOGGLE_HALL" }
+  | { type: "FUND_TOWN" }
   | { type: "BUY_ITEM"; itemId: string }
   | { type: "SELL_ITEM"; itemId: string }
   | { type: "SELL_GEAR"; uid: string }

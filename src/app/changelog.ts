@@ -11,6 +11,18 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.55.0",
+    date: "2026-07-20",
+    codename: "The Patron",
+    notes: [
+      "CITY HALL: a new slate-roofed hall stands on the south street - inside, Mayor Aldric keeps the ledger of Pixelheim's four ages: Hamlet, Village, Town, City",
+      "FUND THE TOWN and watch it grow: every charter is a hand-drawn redraw - lamps and market stalls at Village, a singing fountain and new roofs at Town, paved avenues and full streets at City",
+      "Settlers move in as the town rises: Mira the Weaver, Old Tomas, Serra and Fenn each arrive with their tier - and their own things to say about you",
+      "Growth pays: Village rent +1g per property per victory, Town halves the inn's price for its patron, City merchants pay 20% more for everything you sell",
+      "Higher charters ask more than gold: the Town wants its patron to own a home; the City wants all three businesses under your name",
+    ],
+  },
+  {
     version: "0.54.0",
     date: "2026-07-20",
     codename: "Home Industry",

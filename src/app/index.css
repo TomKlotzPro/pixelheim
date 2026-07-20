@@ -1312,6 +1312,56 @@ body {
 .rankup-later {
   opacity: 0.8;
 }
+/* ---------- the city hall ledger (PIX-91) ---------- */
+.hall-panel {
+  width: 520px;
+  max-width: 96vw;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.hall-track {
+  display: flex;
+  gap: 6px;
+}
+.hall-age {
+  flex: 1;
+  text-align: center;
+  padding: 5px 0;
+  font-family: "Press Start 2P", "Courier New", monospace;
+  font-size: 8px;
+  letter-spacing: 1px;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+}
+.hall-age-past {
+  border-color: rgba(232, 195, 74, 0.4);
+  color: rgba(232, 195, 74, 0.6);
+}
+.hall-age-now {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(232, 195, 74, 0.08);
+}
+.hall-age-locked {
+  opacity: 0.55;
+}
+.hall-perks {
+  margin: 4px 0 0;
+  padding-left: 18px;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.hall-next {
+  align-items: flex-start;
+}
+.hall-next-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .codex-panel {
   width: 560px;
   max-width: 96vw;

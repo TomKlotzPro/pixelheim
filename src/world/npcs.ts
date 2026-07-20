@@ -1,4 +1,4 @@
-import { getMap } from "./maps/index";
+import { getMap, getTownTier } from "./maps/index";
 import { isWalkable, portalAt } from "./parseMap";
 
 /**
@@ -15,6 +15,8 @@ export type Npc = {
   name: string;
   lines: string[];
   wander: boolean;
+  /** Settlers arrive as Pixelheim grows: hidden until the town reaches this tier (PIX-91). */
+  minTownTier?: number;
 };
 
 export const NPCS: Npc[] = [
@@ -107,6 +109,76 @@ export const NPCS: Npc[] = [
       "It was the stew or the poultice. Probably the stew.",
     ],
   },
+  {
+    id: "mayor",
+    mapId: "town_hall",
+    x: 10,
+    y: 4,
+    sprite: "mayor",
+    name: "Mayor Aldric",
+    wander: false,
+    lines: [
+      "Pixelheim runs on two things: stubbornness and gold. The first we have. Bring the second to my ledger.",
+      "Every coin you invest, the town wears. Come back and see.",
+    ],
+  },
+  // ---------------- settlers: they arrive as the town grows (PIX-91) ----------------
+  {
+    id: "settler_mira",
+    mapId: "town",
+    x: 22,
+    y: 17,
+    sprite: "villager_woman",
+    name: "Mira the Weaver",
+    wander: true,
+    minTownTier: 2,
+    lines: [
+      "I came for the market stalls. Stayed for the lamplight. This place is going somewhere.",
+      "A village that pays its own way - the mayor talks about you, you know.",
+    ],
+  },
+  {
+    id: "settler_tomas",
+    mapId: "town",
+    x: 27,
+    y: 11,
+    sprite: "villager",
+    name: "Old Tomas",
+    wander: true,
+    minTownTier: 3,
+    lines: [
+      "A fountain! I hauled water forty years and now it leaps out of the ground on its own.",
+      "New roofs going up everywhere. My grandson has a TRADE now. A trade!",
+    ],
+  },
+  {
+    id: "settler_serra",
+    mapId: "town",
+    x: 70,
+    y: 17,
+    sprite: "villager_woman",
+    name: "Serra",
+    wander: true,
+    minTownTier: 4,
+    lines: [
+      "A city under the Ashen Mountain. My mother would not believe the streetlights.",
+      "They say the one who paid for all this walks around in plain armor. Imagine that.",
+    ],
+  },
+  {
+    id: "settler_fenn",
+    mapId: "town",
+    x: 8,
+    y: 17,
+    sprite: "villager",
+    name: "Fenn",
+    wander: true,
+    minTownTier: 4,
+    lines: [
+      "Paved streets! My cart has never rolled so smooth.",
+      "I sell to the merchants here now. City prices, friend. City prices.",
+    ],
+  },
 ];
 
 /** The pacing loop, clockwise around home. Filtered per NPC to walkable tiles. */
@@ -133,7 +205,8 @@ function idHash(id: string): number {
 }
 
 export function npcsOn(mapId: string): Npc[] {
-  return NPCS.filter((npc) => npc.mapId === mapId);
+  // Settlers gate on the town-tier mirror: the same one getMap serves from.
+  return NPCS.filter((npc) => npc.mapId === mapId && (npc.minTownTier ?? 1) <= getTownTier());
 }
 
 /** Where the NPC stands right now, given the player's total step count. */
