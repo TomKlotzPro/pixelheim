@@ -229,6 +229,10 @@ export type GameState = {
   properties: string[];
   /** Pixelheim's growth: 1 Hamlet - 4 City, funded at the city hall. Additive. */
   townTier: number;
+  /** Recruited settler ids: they live in town and serve its patron. Additive. */
+  settlers: string[];
+  /** The bard's marching song: +crit until the next battle ends. Additive. */
+  bardSong?: boolean;
   /** The city-hall ledger panel (transient UI, like shopOpen). */
   hallOpen: boolean;
   /** Every owned weapon/apparel piece, equipped or not. */

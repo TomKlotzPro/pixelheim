@@ -102,6 +102,8 @@ export function battleReducer(draft: GameState, action: BattleAction): void {
     case "COLLECT_AND_RETURN": {
       if (!draft.hero || draft.battle?.phase !== "cleared") return;
       const battle = draft.battle;
+      // the bard's song lasts one outing: it fades when the fighting stops
+      draft.bardSong = false;
       // Wild battles have no floor rewards; the hero walks on from the same tile.
       if (battle.wild) {
         draft.battle = null;
@@ -120,6 +122,8 @@ export function battleReducer(draft: GameState, action: BattleAction): void {
 
     case "RETURN_TO_WORLD": {
       if (!draft.hero || !draft.world) return;
+      // the song fades with the fight, won or lost
+      if (draft.battle) draft.bardSong = false;
       // Defeat is forgiving: you wake at the village inn, healed, purse intact.
       if (draft.battle?.phase === "lost") {
         draft.hero.hp = draft.hero.stats.maxHp;

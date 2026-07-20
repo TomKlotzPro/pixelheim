@@ -11,6 +11,18 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.56.0",
+    date: "2026-07-20",
+    codename: "New Faces",
+    notes: [
+      "SETTLERS: three wanderers wait out in the world, each with a story and a price - meet their ask and they move into Pixelheim for good",
+      "Iva the Healer sits in the Mirefen, three marsh reeds from home - settled by the shrine, her hands heal her patron for FREE, forever",
+      "Loras the Bard sings to trees in the Deepwood, but a hamlet is beneath him - fund the Village first, pay his 150g, and his marching song sharpens your next hunt (+12% crit)",
+      "Wren the Stablemaster walks horses by the gate - two wolf pelts for saddle leather and fast travel drops you straight at Pixelheim Square, no gate queue",
+      "Recruits leave the map they waited on and walk the town's streets like anyone born there",
+    ],
+  },
+  {
     version: "0.55.0",
     date: "2026-07-20",
     codename: "The Patron",

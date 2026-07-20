@@ -14,6 +14,8 @@ export type Waypoint = {
   at: { x: number; y: number };
   /** Where travel puts you. */
   arrival: { x: number; y: number };
+  /** Some posts need someone to run them: the settler id that staffs this stop (PIX-92). */
+  requiresSettler?: string;
 };
 
 export const WAYPOINTS: Waypoint[] = [
@@ -52,8 +54,22 @@ export const WAYPOINTS: Waypoint[] = [
     at: { x: 24, y: 10 },
     arrival: { x: 26, y: 10 },
   },
+  {
+    id: "town_square",
+    name: "Pixelheim Square",
+    mapId: "town",
+    at: { x: 28, y: 15 },
+    arrival: { x: 28, y: 15 },
+    requiresSettler: "settler_wren",
+  },
 ];
 
 export function waypointDiscovered(waypoint: Waypoint, discovered: WorldState["discovered"]): boolean {
   return (discovered[waypoint.mapId] ?? []).includes(`${waypoint.at.x},${waypoint.at.y}`);
+}
+
+/** Discovered AND staffed: a settler-run post only works once they moved in. */
+export function waypointUsable(waypoint: Waypoint, discovered: WorldState["discovered"], settlers: string[]): boolean {
+  if (!waypointDiscovered(waypoint, discovered)) return false;
+  return !waypoint.requiresSettler || settlers.includes(waypoint.requiresSettler);
 }
