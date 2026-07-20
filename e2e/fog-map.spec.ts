@@ -15,7 +15,7 @@ test("the map opens on M and fast travel jumps to a seen waypoint", async ({ pag
       },
     },
   };
-  await page.goto("./");
+  await page.goto("./?pixi");
   await page.evaluate(([key, s]) => localStorage.setItem(key as string, JSON.stringify(s)), [SAVE_KEY, save] as const);
   await page.reload();
   await page.getByRole("button", { name: "Continue" }).click();

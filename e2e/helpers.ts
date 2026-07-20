@@ -2,7 +2,7 @@ import { expect, type Page } from "@playwright/test";
 
 /** Creates a hero (default role: Warrior), dismisses the intro, lands in town. */
 export async function createHero(page: Page, name: string, role?: string) {
-  await page.goto("./");
+  await page.goto("./?pixi");
   await page.getByRole("button", { name: "New Game" }).click();
   await page.getByPlaceholder("Dragonsbane...").fill(name);
   if (role) await page.getByRole("button", { name: role }).click();
@@ -20,7 +20,7 @@ export async function loadVeteranAt(page: Page, x: number, y: number, mapId = "o
       world: { position: { mapId, x, y, facing: "up" }, discovered: {}, openedChests: [] },
     },
   };
-  await page.goto("./");
+  await page.goto("./?pixi");
   await page.evaluate(([key, s]) => localStorage.setItem(key as string, JSON.stringify(s)), [SAVE_KEY, save] as const);
   await page.reload();
   await page.getByRole("button", { name: "Continue" }).click();

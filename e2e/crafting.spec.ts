@@ -10,7 +10,7 @@ test("the craft tab brews potions from foraged materials", async ({ page }) => {
       world: { position: { mapId: "town_alchemist", x: 8, y: 4, facing: "down" }, discovered: {}, openedChests: [] },
     },
   };
-  await page.goto("./");
+  await page.goto("./?pixi");
   await page.evaluate(([key, s]) => localStorage.setItem(key as string, JSON.stringify(s)), [SAVE_KEY, save] as const);
   await page.reload();
   await page.getByRole("button", { name: "Continue" }).click();

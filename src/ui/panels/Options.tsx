@@ -147,7 +147,7 @@ export function Options({
               <button
                 className="btn btn-small"
                 aria-label="Toggle renderer"
-                title="WebGL is the game: animations, lighting, particles. Voxel is the 3D diorama. Classic is the legacy DOM renderer."
+                title="Voxel is the game: the 3D diorama. WebGL is the classic 2D canvas. Classic is the legacy DOM renderer."
                 onClick={() => {
                   // Renderers are chosen once at boot; save the choice and restart.
                   const next =
