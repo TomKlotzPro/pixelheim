@@ -43,7 +43,7 @@ function skyAt(steps: number): { color: Color; alpha: number } {
 }
 
 const SUN_DAY = new Color("#fff3dc");
-const SUN_ELEVATION = Math.PI * 0.24;
+const SUN_ELEVATION = Math.PI * 0.27;
 const SUN_DISTANCE = 420;
 const LIGHT_CAP = 32;
 
@@ -89,6 +89,9 @@ export class VoxelAtmosphere {
     this.sun.shadow.camera.far = SUN_DISTANCE * 2.5;
     this.sun.shadow.bias = -0.0004;
     this.sun.shadow.normalBias = 0.6;
+    // Shadows are a tone, not a hole: half-strength keeps the ground readable
+    // under long morning light (Tom: "the player is still too shadowy").
+    this.sun.shadow.intensity = 0.55;
     this.group.add(this.hemi, this.sun, this.sun.target);
   }
 
