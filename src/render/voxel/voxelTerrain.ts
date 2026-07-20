@@ -70,7 +70,6 @@ const ANIMATED: Partial<Record<TileId, { dx: number; dy: number; period: number 
   flowers: { dx: 1, dy: 1, period: 800 },
   forest: { dx: 1, dy: 1, period: 800 },
   marsh: { dx: 1, dy: 1, period: 800 },
-  water: { dx: 2, dy: 0, period: 420 },
 };
 
 /** Same stable hash as the Pixi terrain: grass repeats less. */
@@ -271,8 +270,14 @@ export class VoxelTerrain {
       const blockHeight = BLOCK_HEIGHTS[tile];
       const facadeHeight = FACADE_TILES[tile];
       const facade = facadeHeight !== undefined;
-      const upright = !facade && blockHeight === undefined && !TILES[tile].walkable;
-      if (facade) {
+      const upright = !facade && blockHeight === undefined && tile !== "water" && !TILES[tile].walkable;
+      if (tile === "water") {
+        // Calm waters (PIX-112): one still, glassy pane per tile - the mean
+        // of the sprite's blues, no speckle, no motion. Foam marks the banks.
+        // Top face only: neighboring panes meet seamlessly, and the banks are
+        // walled by the land tiles' own sides.
+        builder.box(0, 0, 0, ART, FLAT_TOPS.water ?? GROUND_TOP, ART, averageColor(grid), { top: true });
+      } else if (facade) {
         // The building or cliff face carries the door, cave mouth or sign.
         const { ground, prop } = splitGround(grid);
         builder.box(0, 0, 0, ART, facadeHeight, ART, averageColor(ground), {
