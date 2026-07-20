@@ -14,7 +14,8 @@ async function loadVoxelVeteranAt(page: Page, x: number, y: number, mapId = "ove
   await page.evaluate(([key, s]) => localStorage.setItem(key as string, JSON.stringify(s)), [SAVE_KEY, save] as const);
   await page.goto("./?voxel");
   await page.getByRole("button", { name: "Continue" }).click();
-  await expect(page.getByTestId("world-viewport").locator("canvas")).toBeVisible();
+  // three.js + voxels.json load lazily; CI runners need headroom on first boot
+  await expect(page.getByTestId("world-viewport").locator("canvas")).toBeVisible({ timeout: 20_000 });
 }
 
 // The voxel diorama (PIX-111): same reducer, third renderer. This smoke test
