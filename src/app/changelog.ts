@@ -11,6 +11,16 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.53.0",
+    date: "2026-07-20",
+    codename: "Clear Waters",
+    notes: [
+      "Your shadow stopped following you around like a curse: figures lost the double-dark contact blob and keep one honest sun shadow, with softer shade everywhere",
+      "DOORS ARE REAL: doorways are solid building faces now with the door set into them - walking in reads as stepping through, not sliding into a slot. Cave mouths got the same treatment in the mountainside",
+      "The water cleared: translucent shallows over the riverbed, and a lip of foam along every bank where water meets land",
+    ],
+  },
+  {
     version: "0.52.0",
     date: "2026-07-20",
     codename: "The Path Graph",
