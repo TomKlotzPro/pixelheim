@@ -333,10 +333,14 @@ function feetGrid(grid: ColorGrid, dx: number): ColorGrid {
   });
 }
 
-/** The 4-beat walk: plant, step-right, plant, step-left - as in 2D. */
+/**
+ * The 4-beat walk: plant, step-right, plant, step-left - the 2D transforms,
+ * doubled in amplitude so the stride reads at 3D scale (a 1-voxel shuffle is
+ * three pixels on screen; nobody sees three pixels).
+ */
 export function walkFrameGrids(grid: ColorGrid): ColorGrid[] {
-  const up = bobUpGrid(grid, 1);
-  return [grid, feetGrid(up, 1), grid, feetGrid(up, -1)];
+  const up = bobUpGrid(grid, 2);
+  return [grid, feetGrid(up, 2), grid, feetGrid(up, -2)];
 }
 
 /** The 2-beat idle breath. */
