@@ -51,6 +51,22 @@ export function overlayGrids(base: ColorGrid, overlays: ColorGrid[]): ColorGrid 
   return out;
 }
 
+/**
+ * Wrap-shift a grid, the same trick the generator's sway/shimmer frames use:
+ * seamless tiles stay seamless while their specks jiggle diagonally.
+ */
+export function shiftGrid(grid: ColorGrid, dx: number, dy: number): ColorGrid {
+  const h = grid.length;
+  const w = grid[0]?.length ?? 0;
+  const out: ColorGrid = [];
+  for (let y = 0; y < h; y++) {
+    const row: (string | null)[] = [];
+    for (let x = 0; x < w; x++) row.push(grid[(((y - dy) % h) + h) % h][(((x - dx) % w) + w) % w]);
+    out.push(row);
+  }
+  return out;
+}
+
 function hexToRgb(hex: string): [number, number, number] {
   const n = Number.parseInt(hex.slice(1), 16);
   return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
