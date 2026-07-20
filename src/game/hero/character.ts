@@ -3,6 +3,7 @@ import { freshJobs } from "../economy/jobs";
 import { gearArmor, gearItem } from "../economy/rarity";
 import { ROLES } from "./roles";
 import { rankIndex } from "./ranks";
+import { pathBranch } from "./paths";
 import { getPassives, rootNode } from "./skillTree";
 import type { Equipped, GearInstance, GrantStat, Hero, RoleId, SpendableStat } from "../types";
 
@@ -56,11 +57,17 @@ export function applyLevelUps(hero: Hero): number {
   return gained;
 }
 
-/** The hero's sprite, look applied: palette-swap variants share one grid. */
+/**
+ * The hero's sprite, look applied: palette-swap variants share one grid.
+ * A walked path claims the wardrobe (PIX-105): its branch colors replace the
+ * cosmetic look, deepening with rank - a Warlord LOOKS like a Warlord.
+ */
 export function heroSprite(hero: Hero): string {
   const base = ROLES[hero.roleId].sprite;
-  const look = hero.look ? `_l${hero.look}` : "";
   const rank = rankIndex(hero.level);
+  const branch = pathBranch(hero);
+  if (branch && rank > 0) return `${base}_p${branch}_r${rank}`;
+  const look = hero.look ? `_l${hero.look}` : "";
   return `${base}${look}${rank > 0 ? `_r${rank}` : ""}`;
 }
 

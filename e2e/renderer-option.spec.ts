@@ -17,7 +17,8 @@ test("the renderer choice cycles WebGL, Voxel, Classic, surviving reloads", asyn
   await expect(page.getByRole("button", { name: "Toggle renderer" })).toHaveText("WebGL");
   await page.getByRole("button", { name: "Toggle renderer" }).click();
   await page.getByRole("button", { name: "Continue" }).click();
-  await expect(page.getByTestId("world-viewport")).toHaveAttribute("data-renderer", "voxel");
+  // three.js + voxels.json load lazily; give the first voxel boot headroom
+  await expect(page.getByTestId("world-viewport")).toHaveAttribute("data-renderer", "voxel", { timeout: 20_000 });
   await expect(page.getByTestId("world-viewport").locator("canvas")).toBeVisible();
 
   // switch to Classic: the DOM tile renderer, no canvas

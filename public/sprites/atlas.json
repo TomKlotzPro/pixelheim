@@ -785,6 +785,300 @@
       "loop": true,
       "facing": "front"
     },
+    "hero_warrior_pa_r1_walk": {
+      "sheet": "hero_warrior_pa_r1_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_warrior_pa_r2_walk": {
+      "sheet": "hero_warrior_pa_r2_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_warrior_pa_r3_walk": {
+      "sheet": "hero_warrior_pa_r3_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_warrior_pb_r1_walk": {
+      "sheet": "hero_warrior_pb_r1_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_warrior_pb_r2_walk": {
+      "sheet": "hero_warrior_pb_r2_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_warrior_pb_r3_walk": {
+      "sheet": "hero_warrior_pb_r3_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_mage_pa_r1_walk": {
+      "sheet": "hero_mage_pa_r1_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_mage_pa_r2_walk": {
+      "sheet": "hero_mage_pa_r2_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_mage_pa_r3_walk": {
+      "sheet": "hero_mage_pa_r3_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_mage_pb_r1_walk": {
+      "sheet": "hero_mage_pb_r1_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_mage_pb_r2_walk": {
+      "sheet": "hero_mage_pb_r2_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_mage_pb_r3_walk": {
+      "sheet": "hero_mage_pb_r3_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_rogue_pa_r1_walk": {
+      "sheet": "hero_rogue_pa_r1_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_rogue_pa_r2_walk": {
+      "sheet": "hero_rogue_pa_r2_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_rogue_pa_r3_walk": {
+      "sheet": "hero_rogue_pa_r3_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_rogue_pb_r1_walk": {
+      "sheet": "hero_rogue_pb_r1_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_rogue_pb_r2_walk": {
+      "sheet": "hero_rogue_pb_r2_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_rogue_pb_r3_walk": {
+      "sheet": "hero_rogue_pb_r3_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_cleric_pa_r1_walk": {
+      "sheet": "hero_cleric_pa_r1_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_cleric_pa_r2_walk": {
+      "sheet": "hero_cleric_pa_r2_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_cleric_pa_r3_walk": {
+      "sheet": "hero_cleric_pa_r3_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_cleric_pb_r1_walk": {
+      "sheet": "hero_cleric_pb_r1_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_cleric_pb_r2_walk": {
+      "sheet": "hero_cleric_pb_r2_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_cleric_pb_r3_walk": {
+      "sheet": "hero_cleric_pb_r3_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_ranger_pa_r1_walk": {
+      "sheet": "hero_ranger_pa_r1_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_ranger_pa_r2_walk": {
+      "sheet": "hero_ranger_pa_r2_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_ranger_pa_r3_walk": {
+      "sheet": "hero_ranger_pa_r3_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_ranger_pb_r1_walk": {
+      "sheet": "hero_ranger_pb_r1_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_ranger_pb_r2_walk": {
+      "sheet": "hero_ranger_pb_r2_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_ranger_pb_r3_walk": {
+      "sheet": "hero_ranger_pb_r3_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_paladin_pa_r1_walk": {
+      "sheet": "hero_paladin_pa_r1_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_paladin_pa_r2_walk": {
+      "sheet": "hero_paladin_pa_r2_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_paladin_pa_r3_walk": {
+      "sheet": "hero_paladin_pa_r3_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_paladin_pb_r1_walk": {
+      "sheet": "hero_paladin_pb_r1_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_paladin_pb_r2_walk": {
+      "sheet": "hero_paladin_pb_r2_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_paladin_pb_r3_walk": {
+      "sheet": "hero_paladin_pb_r3_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_necromancer_pa_r1_walk": {
+      "sheet": "hero_necromancer_pa_r1_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_necromancer_pa_r2_walk": {
+      "sheet": "hero_necromancer_pa_r2_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_necromancer_pa_r3_walk": {
+      "sheet": "hero_necromancer_pa_r3_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_necromancer_pb_r1_walk": {
+      "sheet": "hero_necromancer_pb_r1_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_necromancer_pb_r2_walk": {
+      "sheet": "hero_necromancer_pb_r2_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
+    "hero_necromancer_pb_r3_walk": {
+      "sheet": "hero_necromancer_pb_r3_walk.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "front"
+    },
     "villager_idle": {
       "sheet": "villager_idle.png",
       "frames": 2,

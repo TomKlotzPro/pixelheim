@@ -11,6 +11,19 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.52.0",
+    date: "2026-07-20",
+    codename: "The Path Graph",
+    notes: [
+      "THE PATH GRAPH: your identity is a walk, not a checkbox - every class branches at each rank: pick a path at rank I, its advanced form (or CROSS OVER to the rival's) at rank II, and a capstone identity at rank III",
+      "28 new identities to earn: Bastion, Warfather, Sun Incarnate, The Unseen, Voice of Fate, Wild Sovereign, King in Bone and more - each with its own passive creed and signature skill that supersedes the last",
+      "The choice happens INSIDE the ascension: the letterboxed scene holds, the fork appears as cards, and your hero changes clothes the moment you pick",
+      "Paths claim the wardrobe: every path dyes your garb in its colors, deepening with each rank - a Warlord finally LOOKS like a Warlord",
+      "The Skills panel grew the full graph: nodes, ascension edges, your walked path aglow - and any missed choice can be claimed right there",
+      "The balance sim now walks every legal path chain through the whole game, so no identity is a trap",
+    ],
+  },
+  {
     version: "0.51.0",
     date: "2026-07-20",
     codename: "Fantastique",
