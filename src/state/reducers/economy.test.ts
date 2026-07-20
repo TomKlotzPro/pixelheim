@@ -61,3 +61,39 @@ describe("CRAFT", () => {
     expect(RECIPES.length).toBeGreaterThanOrEqual(14);
   });
 });
+
+describe("the home workbench (PIX-109)", () => {
+  function homeState(): GameState {
+    const s = crafterState("town_house");
+    s.house.owned = true;
+    s.hero!.jobs.smithing.level = 3;
+    s.inventory = { wolf_pelt: 2, imp_horn: 1 };
+    return s;
+  }
+
+  it("an owned house without a workbench is not a station", () => {
+    let s = homeState();
+    s = gameReducer(s, { type: "CRAFT", recipeId: "craft_beast_cleaver" });
+    expect(s.gear).toHaveLength(0);
+  });
+
+  it("the fitted workbench crafts both trades at home", () => {
+    let s = homeState();
+    s.house.workbench = true;
+    s = gameReducer(s, { type: "CRAFT", recipeId: "craft_beast_cleaver" });
+    expect(s.gear).toHaveLength(1);
+
+    // the reducer freezes its output; restock through a rebuilt state
+    s = { ...s, inventory: { forest_herb: 1, marsh_reed: 1 } };
+    s = gameReducer(s, { type: "CRAFT", recipeId: "brew_potion_hp" });
+    expect(s.inventory.potion_hp).toBe(1);
+  });
+
+  it("the workbench does not travel: other maps stay stationless", () => {
+    let s = homeState();
+    s.house.workbench = true;
+    s.world!.position.mapId = "town";
+    s = gameReducer(s, { type: "CRAFT", recipeId: "craft_beast_cleaver" });
+    expect(s.gear).toHaveLength(0);
+  });
+});

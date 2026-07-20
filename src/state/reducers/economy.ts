@@ -3,7 +3,7 @@ import { addItem, removeItem } from "../../game/economy/inventory";
 import { getItem } from "../../game/economy/items";
 import { createGear, gearItem, gearValue } from "../../game/economy/rarity";
 import { canCraft, RECIPES } from "../../game/economy/recipes";
-import { doubleBrewChance, forgeCapFor, forgeCostFor, grantJobXp, JOB_STATIONS } from "../../game/economy/jobs";
+import { atJobStation, doubleBrewChance, forgeCapFor, forgeCostFor, grantJobXp } from "../../game/economy/jobs";
 import { buyPrice, sellPriceAt, SHOPS, shopStock } from "../../game/economy/shop";
 import type { GameState } from "../../game/types";
 import type { EconomyAction } from "../actions";
@@ -115,8 +115,9 @@ export function economyReducer(draft: GameState, action: EconomyAction): void {
       if (!draft.hero) return;
       const recipe = RECIPES.find((r) => r.id === action.recipeId);
       if (!recipe || !canCraft(recipe, draft.inventory, draft.hero.jobs)) return;
-      // The craft happens at its station: smithing at the forge, brews at the cauldron.
-      if (draft.world?.position.mapId !== JOB_STATIONS[recipe.job.id].mapId) return;
+      // The craft happens at its station: the forge, the cauldron, or the
+      // fitted workbench at home (PIX-109).
+      if (!atJobStation(recipe.job.id, draft.world?.position.mapId, draft.house.workbench ?? false)) return;
       let inventory = draft.inventory;
       for (const [itemId, count] of Object.entries(recipe.needs)) {
         inventory = removeItem(inventory, itemId, count);
