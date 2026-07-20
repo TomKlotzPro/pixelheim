@@ -8,7 +8,7 @@ function travelerState(discovered: string[]): GameState {
   s.hero = createHero("Tess", "warrior");
   s.screen = "world";
   s.world = {
-    position: { mapId: "overworld", x: 24, y: 20, facing: "up" },
+    position: { mapId: "overworld", x: 48, y: 40, facing: "up" },
     discovered: { overworld: discovered },
     openedChests: [],
     slain: [],
@@ -18,23 +18,23 @@ function travelerState(discovered: string[]): GameState {
 
 describe("FAST_TRAVEL", () => {
   it("jumps to a waypoint the hero has seen", () => {
-    let s = travelerState(["24,3"]);
+    let s = travelerState(["48,6"]);
     s = gameReducer(s, { type: "FAST_TRAVEL", waypointId: "mountain_gate" });
-    expect(s.world!.position).toMatchObject({ mapId: "overworld", x: 24, y: 4 });
+    expect(s.world!.position).toMatchObject({ mapId: "overworld", x: 48, y: 8 });
     expect(s.worldMessage).toContain("Ashen Mountain");
   });
 
   it("refuses waypoints still under fog", () => {
     let s = travelerState([]);
     s = gameReducer(s, { type: "FAST_TRAVEL", waypointId: "mountain_gate" });
-    expect(s.world!.position.y).toBe(20);
+    expect(s.world!.position.y).toBe(40);
   });
 
   it("refuses the over-encumbered (the classic)", () => {
-    let s = travelerState(["24,3"]);
+    let s = travelerState(["48,6"]);
     s.inventory = { cheese_wheel: 999 };
     s = gameReducer(s, { type: "FAST_TRAVEL", waypointId: "mountain_gate" });
-    expect(s.world!.position.y).toBe(20);
+    expect(s.world!.position.y).toBe(40);
     expect(s.worldMessage).toContain("Too heavy");
   });
 });

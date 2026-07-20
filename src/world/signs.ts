@@ -20,6 +20,6 @@ export function signsOn(mapId: string, houseOwned = false): DoorSign[] {
       : [],
   );
   // The buyable house has no portal until owned; its sign lives here.
-  if (mapId === "town") signs.push({ x: 30, y: 13, label: houseOwned ? "HOME" : "FOR SALE" });
+  if (mapId === "town") signs.push({ x: 60, y: 26, label: houseOwned ? "HOME" : "FOR SALE" });
   return signs;
 }

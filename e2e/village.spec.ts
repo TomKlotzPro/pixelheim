@@ -15,8 +15,8 @@ test("villagers live in town and the elder tells her tale", async ({ page }) => 
   await expect(page.getByTestId("world-npc")).toHaveCount(3);
 
   // walk up to the shrine square and face Elder Maren (static at 16,8)
-  await walk(page, "ArrowUp", 6);
-  await walk(page, "ArrowRight", 2);
+  await walk(page, "ArrowUp", 12);
+  await walk(page, "ArrowRight", 4);
   await page.keyboard.press("ArrowUp"); // bump: face her without stepping through
   await page.keyboard.press("e");
 
@@ -34,18 +34,18 @@ test("villagers live in town and the elder tells her tale", async ({ page }) => 
   await expect(dialogue).toBeHidden();
 
   // movement is blocked mid-dialogue, not after
-  await expect(page.getByTestId("world-hero")).toHaveAttribute("data-pos", "16,9");
+  await expect(page.getByTestId("world-hero")).toHaveAttribute("data-pos", "32,17");
 });
 
 test("the innkeeper has a face and a stew", async ({ page }) => {
   await createHero(page, "Guest");
   // route: up the lot, across the plaza, into the inn door at (12,4)
-  await walk(page, "ArrowUp", 6);
-  await walk(page, "ArrowLeft", 2);
-  await walk(page, "ArrowUp", 5);
+  await walk(page, "ArrowUp", 12);
+  await walk(page, "ArrowLeft", 4);
+  await walk(page, "ArrowUp", 10);
   await expect(page.getByTestId("world-viewport")).toHaveAttribute("data-map", "town_inn");
   // the innkeeper stands at (4,1) in the bigger inn; walk up from the door and face her
-  await walk(page, "ArrowUp", 3);
+  await walk(page, "ArrowUp", 6);
   await page.keyboard.press("e");
   await expect(page.getByTestId("dialogue")).toContainText("Innkeeper Sela");
 });

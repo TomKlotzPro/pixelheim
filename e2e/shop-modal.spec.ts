@@ -9,11 +9,8 @@ test("movement keys are ignored while a shop menu is open", async ({ page }) => 
   page.on("pageerror", (error) => errors.push(String(error)));
 
   // The smithy door in town; walk in, then up to Hilda, and talk to trade.
-  await loadVeteranAt(page, 21, 5, "town");
-  await page.keyboard.press("ArrowUp");
-  for (const key of ["ArrowUp", "ArrowUp", "ArrowUp"] as const) {
-    await page.keyboard.press(key);
-  }
+  await loadVeteranAt(page, 42, 10, "town");
+  for (let i = 0; i < 7; i++) await page.keyboard.press("ArrowUp");
   await page.keyboard.press("e");
   await expect(page.getByRole("heading", { name: "Smith Hilda" })).toBeVisible();
 

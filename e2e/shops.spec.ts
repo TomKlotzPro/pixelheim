@@ -14,7 +14,7 @@ async function loadVeteranInTown(page: Page, extra: Record<string, unknown> = {}
     state: {
       ...VETERAN_SAVE.state,
       ...extra,
-      world: { position: { mapId: "town", x: 14, y: 15, facing: "down" }, discovered: {}, openedChests: [] },
+      world: { position: { mapId: "town", x: 28, y: 30, facing: "down" }, discovered: {}, openedChests: [] },
     },
   };
   await page.goto("./");
@@ -26,10 +26,10 @@ async function loadVeteranInTown(page: Page, extra: Record<string, unknown> = {}
 test("Hilda's forge upgrades gear for gold", async ({ page }) => {
   await loadVeteranInTown(page, { gold: 5000 });
   // route to the smithy: plaza, east, up into the third building, then Hilda
+  await walk(page, "ArrowUp", 12);
+  await walk(page, "ArrowRight", 14);
+  await walk(page, "ArrowUp", 10);
   await walk(page, "ArrowUp", 6);
-  await walk(page, "ArrowRight", 7);
-  await walk(page, "ArrowUp", 5);
-  await walk(page, "ArrowUp", 3);
   await page.keyboard.press("e");
   await expect(page.getByText("Smith Hilda")).toBeVisible();
 
@@ -48,9 +48,9 @@ test("Hilda's forge upgrades gear for gold", async ({ page }) => {
 test("Vex pays full price for reagents", async ({ page }) => {
   await loadVeteranInTown(page, { inventory: { forest_herb: 1, wolf_pelt: 1 } });
   // route to the alchemist: west along the bottom lane, up to Vex's cauldron
-  await walk(page, "ArrowLeft", 10);
-  await walk(page, "ArrowUp", 2);
-  await walk(page, "ArrowUp", 3);
+  await walk(page, "ArrowLeft", 20);
+  await walk(page, "ArrowUp", 4);
+  await walk(page, "ArrowUp", 6);
   await page.keyboard.press("e");
   await expect(page.getByText("Alchemist Vex")).toBeVisible();
 
