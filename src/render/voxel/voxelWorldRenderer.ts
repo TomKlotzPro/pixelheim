@@ -59,7 +59,7 @@ export class VoxelWorldRenderer {
   private camera: OrthographicCamera;
   private material = new MeshLambertMaterial({ vertexColors: true });
   private terrain = new VoxelTerrain(this.material);
-  private actors = new VoxelActors(this.material);
+  private actors = new VoxelActors();
   private atmosphere = new VoxelAtmosphere(loadSettings().reduceMotion);
   private sheet: VoxelSheet | null = null;
   private cam = { x: 0, y: 0 };
@@ -78,7 +78,7 @@ export class VoxelWorldRenderer {
    * and the sun alone leaves them in the dark half the day. No shadows -
    * it fills, the sun models.
    */
-  private fill = new DirectionalLight(0xfff0dd, 0.5);
+  private fill = new DirectionalLight(0xfff0dd, 0.72);
 
   constructor(onTileClick: (x: number, y: number) => void) {
     this.onTileClick = onTileClick;
@@ -132,7 +132,7 @@ export class VoxelWorldRenderer {
     if (this.mapId !== map.id) {
       this.terrain.build(this.sheet, map);
       this.actors.build(this.sheet, map, state);
-      this.atmosphere.build(map, OUTDOOR_MAPS.has(map.id));
+      this.atmosphere.build(map, OUTDOOR_MAPS.has(map.id), this.terrain.chimneyTops);
       this.mapId = map.id;
       this.cam = cameraFor(map, pos);
       this.actors.snapTo(pos.x, pos.y);
@@ -163,6 +163,7 @@ export class VoxelWorldRenderer {
     this.fill.position.copy(this.camera.position);
     this.fill.target.position.copy(this.center);
 
+    if (!this.reduceMotion) this.terrain.tick(this.clock);
     this.actors.tick(this.clock, ease, this.reduceMotion);
     this.atmosphere.tick(deltaMS, this.clock, this.center);
     this.renderer.render(this.scene, this.camera);

@@ -1,9 +1,10 @@
 import {
   CanvasTexture,
+  Color,
   Group,
   Mesh,
   MeshBasicMaterial,
-  type MeshLambertMaterial,
+  MeshLambertMaterial,
   NearestFilter,
   PlaneGeometry,
   Sprite as BillboardSprite,
@@ -100,7 +101,12 @@ type Walker = { mesh: Mesh; disc: Mesh; target: { x: number; z: number } };
  */
 export class VoxelActors {
   readonly group = new Group();
-  private material: MeshLambertMaterial;
+  /**
+   * Figures get their own material with a gentle emissive floor: the hero
+   * should read bright and heroic even when the sun is behind the building.
+   * Terrain keeps the plain material so shadows stay dramatic there.
+   */
+  private figureMaterial: MeshLambertMaterial;
   private promptMaterial = new MeshBasicMaterial({ vertexColors: true });
   private contactTexture = makeContactTexture();
   private discMaterial = new MeshBasicMaterial({
@@ -126,14 +132,14 @@ export class VoxelActors {
   private lastPos: string | null = null;
   private prompt: Mesh | null = null;
 
-  constructor(material: MeshLambertMaterial) {
-    this.material = material;
+  constructor() {
+    this.figureMaterial = new MeshLambertMaterial({ vertexColors: true, emissive: new Color(0x33333a) });
   }
 
   private figure(spriteName: string, depth = 2): Mesh {
     const sprite = this.sheet!.sprites[spriteName];
     const grid = sprite ? colorGrid(sprite, ACTOR_OMIT) : PROMPT_GRID;
-    const mesh = new Mesh(uprightGeometry(grid, depth), this.material);
+    const mesh = new Mesh(uprightGeometry(grid, depth), this.figureMaterial);
     mesh.castShadow = true;
     mesh.receiveShadow = true;
     return mesh;
@@ -240,7 +246,7 @@ export class VoxelActors {
       this.hero.geometry.dispose();
       this.hero.geometry = uprightGeometry(grid, 2);
     } else {
-      this.hero = new Mesh(uprightGeometry(grid, 2), this.material);
+      this.hero = new Mesh(uprightGeometry(grid, 2), this.figureMaterial);
       this.hero.castShadow = true;
       this.hero.receiveShadow = true;
       this.group.add(this.hero);
@@ -355,6 +361,7 @@ export class VoxelActors {
   destroy(): void {
     this.dispose();
     this.promptMaterial.dispose();
+    this.figureMaterial.dispose();
     this.discMaterial.dispose();
     this.discGeometry.dispose();
     this.contactTexture.dispose();
