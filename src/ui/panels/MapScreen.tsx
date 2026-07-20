@@ -4,7 +4,7 @@ import { dispatch, useGameState, useHero, useWorld } from "../../state/store";
 import { paintMap, tileColor } from "../../world/mapColors";
 import { getMap } from "../../world/maps/index";
 import { signsOn } from "../../world/signs";
-import { waypointDiscovered, WAYPOINTS } from "../../world/waypoints";
+import { waypointDiscovered, waypointUsable, WAYPOINTS } from "../../world/waypoints";
 
 const TILE_PX = 8;
 
@@ -28,7 +28,8 @@ export function MapScreen({ onClose }: MapScreenProps) {
     paintMap(ctx, overworld, world.discovered, TILE_PX);
     // discovered waypoints get a marker
     for (const waypoint of WAYPOINTS) {
-      if (!waypointDiscovered(waypoint, world.discovered)) continue;
+      // the canvas paints the overworld: only its own waypoints get markers
+      if (waypoint.mapId !== "overworld" || !waypointDiscovered(waypoint, world.discovered)) continue;
       ctx.fillStyle = "#e8c34a";
       ctx.fillRect(waypoint.at.x * TILE_PX - 2, waypoint.at.y * TILE_PX - 2, TILE_PX + 4, TILE_PX + 4);
       ctx.fillStyle = "#2a2118";
@@ -59,6 +60,7 @@ export function MapScreen({ onClose }: MapScreenProps) {
         <div className="map-waypoints">
           {WAYPOINTS.map((waypoint) => {
             const known = waypointDiscovered(waypoint, world.discovered);
+            const usable = waypointUsable(waypoint, world.discovered, state.settlers ?? []);
             const here =
               world.position.mapId === waypoint.mapId &&
               world.position.x === waypoint.arrival.x &&
@@ -68,8 +70,14 @@ export function MapScreen({ onClose }: MapScreenProps) {
                 <span className={known ? "" : "options-note"}>{known ? waypoint.name : "Unknown"}</span>
                 <button
                   className="btn btn-small"
-                  disabled={!known || here || encumbered}
-                  title={encumbered ? "Too heavy to travel" : undefined}
+                  disabled={!usable || here || encumbered}
+                  title={
+                    encumbered
+                      ? "Too heavy to travel"
+                      : known && !usable
+                        ? "The post stands empty - it needs its stablemaster"
+                        : undefined
+                  }
                   onClick={() => {
                     dispatch({ type: "FAST_TRAVEL", waypointId: waypoint.id });
                     onClose();
