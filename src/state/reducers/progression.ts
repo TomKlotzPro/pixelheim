@@ -2,7 +2,7 @@ import { applyStatPoint } from "../../game/hero/character";
 import { canBuyNode, getNode } from "../../game/hero/skillTree";
 import type { GameState } from "../../game/types";
 import type { ProgressionAction } from "../actions";
-import { canChooseSpec, specsFor } from "../../game/hero/specs";
+import { heroPath, pathChoices } from "../../game/hero/paths";
 
 export function progressionReducer(draft: GameState, action: ProgressionAction): void {
   switch (action.type) {
@@ -14,11 +14,19 @@ export function progressionReducer(draft: GameState, action: ProgressionAction):
     }
 
     case "CHOOSE_SPEC": {
-      // The fork at the first ascension: role-checked, rank-gated, permanent.
-      if (!draft.hero || !canChooseSpec(draft.hero)) return;
-      const spec = specsFor(draft.hero.roleId).find((s) => s.id === action.specId);
-      if (!spec) return;
-      draft.hero.spec = spec.id;
+      // Legacy alias for the tier-1 fork; the Path Graph owns the rules now.
+      progressionReducer(draft, { type: "CHOOSE_PATH", nodeId: action.specId });
+      return;
+    }
+
+    case "CHOOSE_PATH": {
+      // One step deeper into the graph: role-checked, tier-gated, edge-checked,
+      // permanent. `spec` mirrors the first step so pre-graph code keeps working.
+      if (!draft.hero) return;
+      const node = pathChoices(draft.hero).find((n) => n.id === action.nodeId);
+      if (!node) return;
+      draft.hero.path = [...heroPath(draft.hero), node.id];
+      draft.hero.spec = draft.hero.path[0];
       return;
     }
 

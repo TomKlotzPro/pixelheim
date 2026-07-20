@@ -1,5 +1,5 @@
 import type { Hero, Infliction, RoleId, Skill } from "../types";
-import { getSpec } from "./specs";
+import { activeNode } from "./paths";
 
 /**
  * The skill trees: 3 branches x 3 tiers per role. Tier-0 nodes are the old
@@ -630,9 +630,10 @@ export function getHeroSkills(hero: Hero): Skill[] {
       }
       return skill;
     });
-  // the specialization's signature skill: taught by identity, not the tree
-  const spec = getSpec(hero);
-  if (spec) skills.push(spec.signature);
+  // the path identity's signature skill: taught by who you are, not the tree.
+  // The deepest walked node supersedes everything before it.
+  const identity = activeNode(hero);
+  if (identity) skills.push(identity.signature);
   return skills;
 }
 
@@ -640,8 +641,8 @@ export function getHeroSkills(hero: Hero): Skill[] {
 export function getPassives(hero: Hero): PassiveEffects {
   const merged = { ...NO_PASSIVES };
   const owned = new Set(hero.skillNodes);
-  const spec = getSpec(hero);
-  const sources: Partial<PassiveEffects>[] = spec ? [spec.passive] : [];
+  const identity = activeNode(hero);
+  const sources: Partial<PassiveEffects>[] = identity ? [identity.passive] : [];
   for (const node of SKILL_TREES[hero.roleId]) {
     if (node.kind !== "passive" || !owned.has(node.id) || !node.passive) continue;
     sources.push(node.passive);
