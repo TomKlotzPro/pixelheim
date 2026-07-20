@@ -8,9 +8,10 @@ import type { GameState } from "../../game/types";
 import { type Chest, chestAt, chestRegion, solidChestAt } from "../../world/chests";
 import { discoverAround } from "../../world/discover";
 import { getMap } from "../../world/maps/index";
-import { npcAt, npcBeside, NPCS } from "../../world/npcs";
+import { npcAt, npcBeside, npcById } from "../../world/npcs";
+import { resolveSettler } from "../../game/settlers";
 import { monsterSpawnAt, spawnRegion } from "../../world/spawns";
-import { waypointDiscovered, WAYPOINTS } from "../../world/waypoints";
+import { waypointUsable, WAYPOINTS } from "../../world/waypoints";
 import { isWalkable, portalAt } from "../../world/parseMap";
 import type { WorldAction } from "../actions";
 import { DIRECTION_DELTAS, HOUSE_DEED_COST, HOUSE_DOOR, INN_MAP_ID, WORKBENCH_COST } from "../shared";
@@ -60,7 +61,7 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
         return;
       }
       const waypoint = WAYPOINTS.find((w) => w.id === action.waypointId);
-      if (!waypoint || !waypointDiscovered(waypoint, draft.world.discovered)) return;
+      if (!waypoint || !waypointUsable(waypoint, draft.world.discovered, draft.settlers ?? [])) return;
       const map = getMap(waypoint.mapId);
       draft.world.position = { mapId: waypoint.mapId, x: waypoint.arrival.x, y: waypoint.arrival.y, facing: "down" };
       draft.world.discovered = discoverAround(draft.world.discovered, map, waypoint.arrival.x, waypoint.arrival.y);
@@ -172,11 +173,13 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
 
     case "ADVANCE_DIALOGUE": {
       if (!draft.dialogue) return;
-      const npc = NPCS.find((n) => n.id === draft.dialogue!.npcId);
+      const npc = npcById(draft.dialogue!.npcId);
       if (!npc || draft.dialogue.page >= npc.lines.length - 1) {
         const giverId = draft.dialogue.npcId;
         draft.dialogue = null;
-        // The quest rides the conversation: closing it accepts or turns in.
+        // Settlers first (recruiting and services ride the close, PIX-92),
+        // then quests: closing a conversation accepts or turns in.
+        if (draft.hero && resolveSettler(draft, giverId)) return;
         if (draft.hero) resolveQuests(draft, giverId);
         return;
       }

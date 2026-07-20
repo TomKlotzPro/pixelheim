@@ -63,6 +63,17 @@ export function getTownTier(): number {
   return townTier;
 }
 
+/** The settlers mirror (PIX-92): same contract as the tier mirror above. */
+let settlers: string[] = [];
+
+export function setSettlers(ids: string[]): void {
+  settlers = ids;
+}
+
+export function getSettlers(): string[] {
+  return settlers;
+}
+
 export function getMap(id: string): WorldMap {
   if (id === "town") return TOWN_MAPS[townTier - 1];
   const map = MAPS[id];

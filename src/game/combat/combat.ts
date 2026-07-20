@@ -35,12 +35,20 @@ function variance(base: number): number {
   return Math.max(1, Math.round(base * (0.85 + Math.random() * 0.3)));
 }
 
-export function heroAttackDamage(hero: Hero, gear: GearInstance[], equipped: Equipped, monster: BattleMonster): number {
+export function heroAttackDamage(
+  hero: Hero,
+  gear: GearInstance[],
+  equipped: Equipped,
+  monster: BattleMonster,
+  inspired = false,
+): number {
   const weapon = weaponOf(gear, equipped);
   const stat = effectiveStat(hero, gear, equipped, weapon ? (gearItem(weapon).scaling ?? "strength") : "strength");
   let raw = stat + (weapon ? gearDamage(weapon) : 2);
   const passives = getPassives(hero);
-  if (passives.critChance > 0 && Math.random() < passives.critChance) raw *= 1.5;
+  // The bard's marching song steadies the blade: +12% crit while it lasts.
+  const critChance = passives.critChance + (inspired ? 0.12 : 0);
+  if (critChance > 0 && Math.random() < critChance) raw *= 1.5;
   if (passives.lowHpBonus > 0 && monster.hp / monster.maxHp < 0.3) raw *= 1 + passives.lowHpBonus;
   raw *= 1 + masteryBonus(hero, monster.def.id);
   return Math.max(1, variance(raw) - monster.defense);
