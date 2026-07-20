@@ -1,4 +1,17 @@
-import { Color, DirectionalLight, Group, HemisphereLight, PointLight, type Vector3 } from "three";
+import {
+  AdditiveBlending,
+  BufferAttribute,
+  BufferGeometry,
+  Color,
+  DirectionalLight,
+  Group,
+  HemisphereLight,
+  PointLight,
+  Points,
+  PointsMaterial,
+  type Vector3,
+} from "three";
+import { regionAt } from "../../world/parseMap";
 import type { WorldMap } from "../../world/types";
 import { ART } from "./voxelData";
 
@@ -34,6 +47,11 @@ const SUN_ELEVATION = Math.PI * 0.24;
 const SUN_DISTANCE = 420;
 const LIGHT_CAP = 32;
 
+const EMBER_CAP = 36;
+const EMBER_TINTS = [new Color(0xffa03c), new Color(0xff7a28), new Color(0xffc86e)];
+
+type Ember = { x: number; y: number; z: number; vy: number; sway: number; life: number; maxLife: number; tint: Color };
+
 /**
  * Sun, sky bounce, and fire: a directional sun whose angle and warmth follow
  * worldSteps, hemisphere fill that dims into the night, and point lights on
@@ -48,8 +66,13 @@ export class VoxelAtmosphere {
   private steps = 0;
   private darkness = 0;
   private darknessTarget = 0;
+  private reduceMotion: boolean;
+  private ashTiles: { x: number; y: number }[] = [];
+  private embers: Ember[] = [];
+  private emberPoints: Points | null = null;
 
-  constructor() {
+  constructor(reduceMotion = false) {
+    this.reduceMotion = reduceMotion;
     this.sun.castShadow = true;
     this.sun.shadow.mapSize.set(2048, 2048);
     const half = 12.5 * ART;
@@ -80,6 +103,39 @@ export class VoxelAtmosphere {
         this.fires.push({ light, always: alwaysLight });
       }
     }
+    this.buildEmbers(map, outdoor);
+  }
+
+  /** One recycled particle pool: embers drift up from ash ground, as in 2D. */
+  private buildEmbers(map: WorldMap, outdoor: boolean): void {
+    if (this.emberPoints) {
+      this.emberPoints.geometry.dispose();
+      (this.emberPoints.material as PointsMaterial).dispose();
+      this.group.remove(this.emberPoints);
+      this.emberPoints = null;
+    }
+    this.embers = [];
+    this.ashTiles = [];
+    if (!outdoor || this.reduceMotion) return;
+    for (let y = 0; y < map.height; y++) {
+      for (let x = 0; x < map.width; x++) {
+        if (regionAt(map, x, y) === "ash") this.ashTiles.push({ x, y });
+      }
+    }
+    if (this.ashTiles.length === 0) return;
+    const geometry = new BufferGeometry();
+    geometry.setAttribute("position", new BufferAttribute(new Float32Array(EMBER_CAP * 3), 3));
+    geometry.setAttribute("color", new BufferAttribute(new Float32Array(EMBER_CAP * 3), 3));
+    const material = new PointsMaterial({
+      size: 2.2,
+      vertexColors: true,
+      blending: AdditiveBlending,
+      transparent: true,
+      depthWrite: false,
+    });
+    this.emberPoints = new Points(geometry, material);
+    this.emberPoints.frustumCulled = false;
+    this.group.add(this.emberPoints);
   }
 
   update(worldSteps: number): void {
@@ -113,5 +169,47 @@ export class VoxelAtmosphere {
       const strength = always ? 1 : dark;
       light.intensity = strength * ART * ART * 0.55 * (0.8 + 0.2 * Math.sin(clock / 300 + light.position.x));
     }
+
+    this.tickEmbers(deltaMS);
+  }
+
+  /** Embers rise from ash ground, sway, fade, and are reborn elsewhere. */
+  private tickEmbers(deltaMS: number): void {
+    if (!this.emberPoints || this.ashTiles.length === 0) return;
+    const cap = Math.min(EMBER_CAP, this.ashTiles.length * 2);
+    if (this.embers.length < cap && Math.random() < 0.3) {
+      const at = this.ashTiles[Math.floor(Math.random() * this.ashTiles.length)];
+      this.embers.push({
+        x: at.x * ART + Math.random() * ART,
+        y: 1,
+        z: at.y * ART + Math.random() * ART,
+        vy: 4 + Math.random() * 5,
+        sway: Math.random() * Math.PI * 2,
+        life: 0,
+        maxLife: 2200 + Math.random() * 1600,
+        tint: EMBER_TINTS[Math.floor(Math.random() * EMBER_TINTS.length)],
+      });
+    }
+    this.embers = this.embers.filter((ember) => {
+      ember.life += deltaMS;
+      ember.y += (ember.vy * deltaMS) / 1000;
+      return ember.life < ember.maxLife;
+    });
+    const positions = this.emberPoints.geometry.getAttribute("position") as BufferAttribute;
+    const colors = this.emberPoints.geometry.getAttribute("color") as BufferAttribute;
+    for (let i = 0; i < EMBER_CAP; i++) {
+      const ember = this.embers[i];
+      if (!ember) {
+        colors.setXYZ(i, 0, 0, 0); // additive black: invisible
+        positions.setXYZ(i, 0, -50, 0);
+        continue;
+      }
+      const k = ember.life / ember.maxLife;
+      const fade = k < 0.15 ? k / 0.15 : 1 - (k - 0.15) / 0.85;
+      positions.setXYZ(i, ember.x + Math.sin(ember.life / 400 + ember.sway) * 2.5, ember.y, ember.z);
+      colors.setXYZ(i, ember.tint.r * fade, ember.tint.g * fade, ember.tint.b * fade);
+    }
+    positions.needsUpdate = true;
+    colors.needsUpdate = true;
   }
 }

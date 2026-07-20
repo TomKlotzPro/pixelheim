@@ -1,5 +1,8 @@
 import {
+  ACESFilmicToneMapping,
   Color,
+  DirectionalLight,
+  Fog,
   MeshLambertMaterial,
   OrthographicCamera,
   PCFSoftShadowMap,
@@ -57,7 +60,7 @@ export class VoxelWorldRenderer {
   private material = new MeshLambertMaterial({ vertexColors: true });
   private terrain = new VoxelTerrain(this.material);
   private actors = new VoxelActors(this.material);
-  private atmosphere = new VoxelAtmosphere();
+  private atmosphere = new VoxelAtmosphere(loadSettings().reduceMotion);
   private sheet: VoxelSheet | null = null;
   private cam = { x: 0, y: 0 };
   private camTarget = { x: 0, y: 0 };
@@ -70,13 +73,22 @@ export class VoxelWorldRenderer {
 
   private onTileClick: (x: number, y: number) => void;
 
+  /**
+   * A soft lamp riding on the camera: figures and facades face the viewer,
+   * and the sun alone leaves them in the dark half the day. No shadows -
+   * it fills, the sun models.
+   */
+  private fill = new DirectionalLight(0xfff0dd, 0.5);
+
   constructor(onTileClick: (x: number, y: number) => void) {
     this.onTileClick = onTileClick;
     const w = VIEW_W * ART;
     const h = VIEW_H * ART;
     this.camera = new OrthographicCamera(-w / 2, w / 2, h / 2, -h / 2, 1, 2500);
     this.scene.background = new Color(0x0d0e13);
-    this.scene.add(this.terrain.group, this.actors.group, this.atmosphere.group);
+    // A whisper of depth: the far edge of the diorama recedes into the frame.
+    this.scene.fog = new Fog(0x0d0e13, CAMERA_DISTANCE + 40, CAMERA_DISTANCE + 620);
+    this.scene.add(this.terrain.group, this.actors.group, this.atmosphere.group, this.fill, this.fill.target);
   }
 
   async init(host: HTMLElement, scale: number): Promise<void> {
@@ -87,6 +99,8 @@ export class VoxelWorldRenderer {
     renderer.setSize(VIEW_W * ART * scale, VIEW_H * ART * scale);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = PCFSoftShadowMap;
+    renderer.toneMapping = ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.25;
     this.renderer = renderer;
     host.appendChild(renderer.domElement);
     renderer.domElement.addEventListener("pointerdown", this.onPointerDown);
@@ -146,6 +160,8 @@ export class VoxelWorldRenderer {
       this.center.z + Math.cos(CAMERA_PITCH) * CAMERA_DISTANCE,
     );
     this.camera.lookAt(this.center);
+    this.fill.position.copy(this.camera.position);
+    this.fill.target.position.copy(this.center);
 
     this.actors.tick(this.clock, ease, this.reduceMotion);
     this.atmosphere.tick(deltaMS, this.clock, this.center);
