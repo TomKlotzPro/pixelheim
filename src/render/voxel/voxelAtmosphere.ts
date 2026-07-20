@@ -49,6 +49,8 @@ const LIGHT_CAP = 32;
 
 const EMBER_CAP = 36;
 const EMBER_TINTS = [new Color(0xffa03c), new Color(0xff7a28), new Color(0xffc86e)];
+const SMOKE_CAP = 24;
+const SMOKE_TINT = new Color(0x2e3138);
 
 type Ember = { x: number; y: number; z: number; vy: number; sway: number; life: number; maxLife: number; tint: Color };
 
@@ -70,6 +72,9 @@ export class VoxelAtmosphere {
   private ashTiles: { x: number; y: number }[] = [];
   private embers: Ember[] = [];
   private emberPoints: Points | null = null;
+  private chimneys: { x: number; y: number; z: number }[] = [];
+  private smoke: Ember[] = [];
+  private smokePoints: Points | null = null;
 
   constructor(reduceMotion = false) {
     this.reduceMotion = reduceMotion;
@@ -87,8 +92,9 @@ export class VoxelAtmosphere {
     this.group.add(this.hemi, this.sun, this.sun.target);
   }
 
-  build(map: WorldMap, outdoor: boolean): void {
+  build(map: WorldMap, outdoor: boolean, chimneys: { x: number; y: number; z: number }[] = []): void {
     this.outdoor = outdoor;
+    this.chimneys = chimneys;
     for (const { light } of this.fires) this.group.remove(light);
     this.fires = [];
     for (let y = 0; y < map.height && this.fires.length < LIGHT_CAP; y++) {
@@ -104,6 +110,32 @@ export class VoxelAtmosphere {
       }
     }
     this.buildEmbers(map, outdoor);
+    this.buildSmoke();
+  }
+
+  /** A second pool for the chimneys: pale wisps that widen as they climb. */
+  private buildSmoke(): void {
+    if (this.smokePoints) {
+      this.smokePoints.geometry.dispose();
+      (this.smokePoints.material as PointsMaterial).dispose();
+      this.group.remove(this.smokePoints);
+      this.smokePoints = null;
+    }
+    this.smoke = [];
+    if (this.chimneys.length === 0 || this.reduceMotion) return;
+    const geometry = new BufferGeometry();
+    geometry.setAttribute("position", new BufferAttribute(new Float32Array(SMOKE_CAP * 3), 3));
+    geometry.setAttribute("color", new BufferAttribute(new Float32Array(SMOKE_CAP * 3), 3));
+    const material = new PointsMaterial({
+      size: 3.4,
+      vertexColors: true,
+      blending: AdditiveBlending,
+      transparent: true,
+      depthWrite: false,
+    });
+    this.smokePoints = new Points(geometry, material);
+    this.smokePoints.frustumCulled = false;
+    this.group.add(this.smokePoints);
   }
 
   /** One recycled particle pool: embers drift up from ash ground, as in 2D. */
@@ -171,6 +203,47 @@ export class VoxelAtmosphere {
     }
 
     this.tickEmbers(deltaMS);
+    this.tickSmoke(deltaMS);
+  }
+
+  /** Wisps leave the chimney mouths, drift, and thin out into the sky. */
+  private tickSmoke(deltaMS: number): void {
+    if (!this.smokePoints || this.chimneys.length === 0) return;
+    const cap = Math.min(SMOKE_CAP, this.chimneys.length * 4);
+    if (this.smoke.length < cap && Math.random() < 0.18) {
+      const at = this.chimneys[Math.floor(Math.random() * this.chimneys.length)];
+      this.smoke.push({
+        x: at.x + Math.random() * 2 - 1,
+        y: at.y,
+        z: at.z + Math.random() * 2 - 1,
+        vy: 2.5 + Math.random() * 2,
+        sway: Math.random() * Math.PI * 2,
+        life: 0,
+        maxLife: 3200 + Math.random() * 1800,
+        tint: SMOKE_TINT,
+      });
+    }
+    this.smoke = this.smoke.filter((wisp) => {
+      wisp.life += deltaMS;
+      wisp.y += (wisp.vy * deltaMS) / 1000;
+      return wisp.life < wisp.maxLife;
+    });
+    const positions = this.smokePoints.geometry.getAttribute("position") as BufferAttribute;
+    const colors = this.smokePoints.geometry.getAttribute("color") as BufferAttribute;
+    for (let i = 0; i < SMOKE_CAP; i++) {
+      const wisp = this.smoke[i];
+      if (!wisp) {
+        colors.setXYZ(i, 0, 0, 0);
+        positions.setXYZ(i, 0, -50, 0);
+        continue;
+      }
+      const k = wisp.life / wisp.maxLife;
+      const fade = k < 0.2 ? k / 0.2 : 1 - (k - 0.2) / 0.8;
+      positions.setXYZ(i, wisp.x + Math.sin(wisp.life / 600 + wisp.sway) * 3, wisp.y, wisp.z);
+      colors.setXYZ(i, wisp.tint.r * fade, wisp.tint.g * fade, wisp.tint.b * fade);
+    }
+    positions.needsUpdate = true;
+    colors.needsUpdate = true;
   }
 
   /** Embers rise from ash ground, sway, fade, and are reborn elsewhere. */

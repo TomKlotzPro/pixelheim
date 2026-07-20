@@ -1755,12 +1755,22 @@ body {
     left 300ms linear,
     top 300ms linear;
 }
+/* The stage: the viewport plus everything that overlays it. */
+.world-stage {
+  position: relative;
+}
 .dialogue-box {
   display: flex;
   align-items: center;
   gap: 12px;
   width: 520px;
-  max-width: 92vw;
+  max-width: calc(100% - 24px);
+  /* In the frame, over the world: a stage subtitle, not a page footer. */
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 12;
 }
 .dialogue-body {
   flex: 1;

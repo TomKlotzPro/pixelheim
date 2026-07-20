@@ -11,6 +11,19 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.51.0",
+    date: "2026-07-20",
+    codename: "Fantastique",
+    notes: [
+      "THE WORLD GREW WILD: flower patches, standing stones and grass tufts scattered across the meadows, and the forests are full of round berry bushes - all grown from position math, no two maps alike",
+      "The breeze is back in 3D: grass, flowers, forest and marsh sway, water shimmers - the same two-frame breath as the classic renderer",
+      "Chimneys rose on the rooftops, and they smoke: pale wisps drift and thin over every hearth-warmed house",
+      "Shop signs are part of the building now - a proper facade with the placard hung high, no more floating planks",
+      "Talking happens IN the world: the dialogue box sits over the scene like a stage subtitle instead of below the frame",
+      "Your hero steps into the light: figures carry their own inner glow, so the champion of Pixelheim never disappears into a shadow",
+    ],
+  },
+  {
     version: "0.50.0",
     date: "2026-07-20",
     codename: "Polished Voxels",
