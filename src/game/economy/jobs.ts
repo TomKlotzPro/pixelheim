@@ -21,6 +21,15 @@ export const JOB_STATIONS: Record<"smithing" | "alchemy", { mapId: string; hint:
   alchemy: { mapId: "town_alchemist", hint: "Craft at Vex's cauldron - the BREWS door in town" },
 };
 
+/**
+ * Whether the hero may craft this trade here: the trade's own station, or -
+ * the homeowner perk (PIX-109) - the fitted workbench in their own house,
+ * which serves both trades.
+ */
+export function atJobStation(job: "smithing" | "alchemy", mapId: string | undefined, homeWorkbench: boolean): boolean {
+  return mapId === JOB_STATIONS[job].mapId || (homeWorkbench && mapId === "town_house");
+}
+
 /** XP the job needs to reach the next level. */
 export function jobXpToNext(level: number): number {
   return 20 + level * 15;

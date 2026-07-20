@@ -218,8 +218,9 @@ export type GameState = {
   gold: number;
   /** Stackables only (potions, food, misc): itemId -> count. */
   inventory: Record<string, number>;
-  /** The roof over your head: the deed, and what the chest holds. */
-  house: { owned: boolean; storage: Record<string, number> };
+  /** The roof over your head: the deed, what the chest holds, and whether a
+   *  workbench is fitted (craft at home, PIX-109). `workbench` is additive. */
+  house: { owned: boolean; storage: Record<string, number>; workbench?: boolean };
   /** The home storage panel (transient UI, like shopOpen). */
   storageOpen: boolean;
   /** Quest ledger: accepted quests with kill progress and completion. Additive. */
