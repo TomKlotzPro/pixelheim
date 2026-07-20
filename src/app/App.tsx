@@ -3,7 +3,8 @@ import { playTrack, trackForState } from "../audio/music";
 import { ambienceForState, setAmbience } from "../audio/ambience";
 import { heroSprite } from "../game/hero/character";
 import { rankIndex, rankTitle } from "../game/hero/ranks";
-import { canChooseSpec } from "../game/hero/specs";
+import { canChoosePath, pathChoices } from "../game/hero/paths";
+import { ROLES } from "../game/hero/roles";
 import { SFX } from "../audio/sfx";
 import { audioReady, initAudio, isMuted, setMuted } from "../audio/synth";
 import { DungeonSelect } from "../ui/screens/DungeonSelect";
@@ -25,8 +26,12 @@ import { clearSave, decodeSaveCode, encodeSaveCode, loadSave, persistSave } from
 import type { Direction } from "../world/types";
 import { Sprite } from "../ui/widgets/Sprite";
 
-/** The ascension card: shows for a few seconds when the hero crosses a rank. */
-function useRankUp(state: GameState): string | null {
+/**
+ * The ascension scene: shows when the hero crosses a rank. While a path
+ * choice is pending (PIX-105) the scene HOLDS - the cards are the moment -
+ * and the timer only starts once the walk is chosen (or the scene dismissed).
+ */
+function useRankUp(state: GameState, hold: boolean): { title: string | null; dismiss: () => void } {
   const [title, setTitle] = useState<string | null>(null);
   const pending = useRef<string | null>(null);
   const prevLevel = useRef(state.hero?.level ?? 0);
@@ -51,11 +56,11 @@ function useRankUp(state: GameState): string | null {
   // The dismiss timer lives on the title alone: an hp tick or xp gain used
   // to clean it up and strand the card on screen forever (PIX-100).
   useEffect(() => {
-    if (!title) return;
+    if (!title || hold) return;
     const timer = setTimeout(() => setTitle(null), 4200);
     return () => clearTimeout(timer);
-  }, [title]);
-  return title;
+  }, [title, hold]);
+  return { title, dismiss: () => setTitle(null) };
 }
 
 /** Audio is a pure side effect: watch state transitions, never touch the reducer. */
@@ -180,7 +185,9 @@ export default function App() {
   }, [settings]);
 
   useAudio(state);
-  const rankUp = useRankUp(state);
+  const pathPending = state.hero ? canChoosePath(state.hero) : false;
+  const { title: rankUp, dismiss: dismissRankUp } = useRankUp(state, pathPending);
+  const rankUpChoices = rankUp && state.hero && pathPending ? pathChoices(state.hero) : [];
 
   const hasSaveData = state.hero !== null || save !== null;
   const saveCode = state.hero ? encodeSaveCode(state) : save ? encodeSaveCode(save) : null;
@@ -293,7 +300,7 @@ export default function App() {
         />
       )}
       {rankUp && state.hero && (
-        <div className="rankup-overlay" aria-live="polite">
+        <div className={`rankup-overlay${rankUpChoices.length > 0 ? " rankup-choosing" : ""}`} aria-live="polite">
           <div className="rankup-bar rankup-bar-top" />
           <div className="rankup-bar rankup-bar-bottom" />
           <span className="rankup-rays" aria-hidden="true" />
@@ -306,8 +313,37 @@ export default function App() {
             <span className="rankup-eyebrow">Ascension</span>
             <span className="rankup-title">{rankUp}</span>
             <span className="rankup-note">+1 bonus skill point</span>
-            {canChooseSpec(state.hero) && <span className="rankup-note">A specialization awaits in Skills</span>}
           </div>
+          {rankUpChoices.length > 0 && (
+            <div className="rankup-paths">
+              <span className="rankup-eyebrow">The path forks</span>
+              <div className="rankup-path-cards">
+                {rankUpChoices.map((node) => (
+                  <button
+                    key={node.id}
+                    className="rankup-path-card"
+                    data-testid={`rankup-path-${node.id}`}
+                    onClick={() => {
+                      dispatch({ type: "CHOOSE_PATH", nodeId: node.id });
+                      SFX.learn();
+                    }}
+                  >
+                    <Sprite
+                      name={`${ROLES[state.hero!.roleId].sprite}_p${node.branch}_r${node.tier}`}
+                      size={32}
+                      alt=""
+                    />
+                    <span className="spec-name">{node.name}</span>
+                    <span className="rankup-path-blurb">{node.blurb}</span>
+                    <span className="skill-node-numbers">Signature: {node.signature.name}</span>
+                  </button>
+                ))}
+              </div>
+              <button className="btn btn-small rankup-later" onClick={dismissRankUp}>
+                Choose later, in Skills
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>

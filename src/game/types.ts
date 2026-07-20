@@ -164,8 +164,11 @@ export type Hero = {
   jobs: Jobs;
   /** Appearance: palette-swap look index (0 = the classic). Additive; old saves default to 0. */
   look?: number;
-  /** Chosen specialization id (permanent fork at the first ascension). Additive. */
+  /** Chosen specialization id (permanent fork at the first ascension). Additive.
+   *  Since the Path Graph (PIX-105) this mirrors path[0]; kept for old saves. */
   spec?: string;
+  /** The walked Path Graph: one chosen node id per tier, in order. Additive. */
+  path?: string[];
   /** Monster-family kill counts feeding mastery bonuses. Additive. */
   mastery?: Record<string, number>;
 };
