@@ -1,7 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { SAVE_KEY, VETERAN_SAVE } from "./helpers";
 
-/** loadVeteranAt against the default (WebGL) entry point. */
+/** loadVeteranAt against the classic WebGL canvas, pinned via ?pixi. */
 async function loadCanvasVeteranAt(page: Page, x: number, y: number, mapId = "overworld") {
   const save = {
     ...VETERAN_SAVE,
@@ -10,14 +10,15 @@ async function loadCanvasVeteranAt(page: Page, x: number, y: number, mapId = "ov
       world: { position: { mapId, x, y, facing: "up" }, discovered: {}, openedChests: [] },
     },
   };
-  await page.goto("./");
+  await page.goto("./?pixi");
   await page.evaluate(([key, s]) => localStorage.setItem(key as string, JSON.stringify(s)), [SAVE_KEY, save] as const);
-  await page.goto("./");
+  await page.goto("./?pixi");
   await page.getByRole("button", { name: "Continue" }).click();
   await expect(page.getByTestId("world-viewport").locator("canvas")).toBeVisible();
 }
 
-// The WebGL renderer IS the default since the PIX-51 cutover.
+// The classic WebGL canvas stays fully playable behind ?pixi (the voxel
+// diorama is the default since the PIX-112 cutover).
 // This smoke test proves it boots, draws, and survives play: assets load,
 // a canvas appears, and moving around (including through a door) throws
 // nothing. Visual parity is reviewed by eye; correctness stays with the
@@ -26,12 +27,12 @@ test("the canvas world renderer draws and survives movement", async ({ page }) =
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(String(error)));
 
-  await page.goto("./");
+  await page.goto("./?pixi");
   await page.evaluate(([key, save]) => localStorage.setItem(key as string, JSON.stringify(save)), [
     SAVE_KEY,
     VETERAN_SAVE,
   ] as const);
-  await page.goto("./");
+  await page.goto("./?pixi");
   await page.getByRole("button", { name: "Continue" }).click();
 
   const viewport = page.getByTestId("world-viewport");

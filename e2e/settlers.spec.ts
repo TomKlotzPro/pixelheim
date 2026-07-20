@@ -28,9 +28,9 @@ async function loadSettlerScene(page: Page, over: Overrides) {
   if (over.inventory) save.state.inventory = over.inventory;
   if (over.settlers) save.state.settlers = over.settlers;
   if (over.hp !== undefined) save.state.hero.hp = over.hp;
-  await page.goto("./");
+  await page.goto("./?pixi");
   await page.evaluate(([key, s]) => localStorage.setItem(key as string, JSON.stringify(s)), [SAVE_KEY, save] as const);
-  await page.goto("./");
+  await page.goto("./?pixi");
   await page.getByRole("button", { name: "Continue" }).click();
   await expect(page.getByTestId("world-hero")).toHaveAttribute("data-pos", `${over.x},${over.y}`);
 }

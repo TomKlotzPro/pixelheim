@@ -15,6 +15,7 @@ export const CHANGELOG: Release[] = [
     date: "2026-07-20",
     codename: "Light Feet",
     notes: [
+      "THE DIORAMA IS THE GAME: voxel is the default renderer now - Pixelheim opens in 3D. The classic WebGL canvas and DOM tiles stay one click away in Options",
       "THE VOXEL HERO WALKS FOR REAL: the same 4-beat stride as the 2D sheets - body bob, feet shuffling, gear riding every step - extruded frame by frame, with a slight lean into each stride",
       "Villagers and monsters breathe their true 2-beat idle instead of floating up and down",
       "Shadows became a tone, not a hole: half-strength and shorter under a higher sun - the long black smears are gone",

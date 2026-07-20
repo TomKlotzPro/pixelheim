@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 test("mute toggle works and the choice survives a reload", async ({ page }) => {
-  await page.goto("./");
+  await page.goto("./?pixi");
   const button = page.getByRole("button", { name: "Mute" });
   await expect(button).toBeVisible();
   await button.click();

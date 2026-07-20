@@ -11,7 +11,7 @@ async function loadJeweledVeteran(page: Page) {
     { uid: "r2", itemId: "quickstep_ring", rarity: "common", bonus: 0 },
     { uid: "n1", itemId: "bone_charm", rarity: "common", bonus: 0 },
   );
-  await page.goto("./");
+  await page.goto("./?pixi");
   await page.evaluate(([key, s]) => localStorage.setItem(key as string, JSON.stringify(s)), [SAVE_KEY, save] as const);
   await page.reload();
   await page.getByRole("button", { name: "Continue" }).click();
@@ -34,7 +34,7 @@ test("the outfit is drawn into the hero, and changes when the gear does", async 
     state: { gear: { uid: string; itemId: string; rarity: string; bonus: number }[] };
   };
   save.state.gear.push({ uid: "a1", itemId: "iron_armor", rarity: "common", bonus: 0 });
-  await page.goto("./");
+  await page.goto("./?pixi");
   await page.evaluate(([key, s]) => localStorage.setItem(key as string, JSON.stringify(s)), [SAVE_KEY, save] as const);
   await page.reload();
   await page.getByRole("button", { name: "Continue" }).click();

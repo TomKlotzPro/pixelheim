@@ -4,11 +4,12 @@ import { loadSettings } from "../app/settings";
 export type RendererKind = "pixi" | "voxel" | "dom";
 
 /**
- * WebGL is the default renderer and the Options screen owns the choice
- * (persisted per device). URL params remain as overrides: ?dom forces the
- * legacy DOM tiles (one pinned spec uses it), ?pixi forces WebGL, ?voxel
- * forces the 3D diorama. Changing the option reloads the page: renderers
- * are chosen once at boot.
+ * The voxel diorama is the default renderer (the PIX-111 verdict: Tom played
+ * it, Tom kept it) and the Options screen owns the choice (persisted per
+ * device). URL params remain as overrides: ?dom forces the legacy DOM tiles
+ * (one pinned spec uses it), ?pixi forces the classic WebGL canvas, ?voxel
+ * forces the diorama. Changing the option reloads the page: renderers are
+ * chosen once at boot.
  */
 function resolve(): RendererKind {
   const params = new URLSearchParams(window.location.search);
