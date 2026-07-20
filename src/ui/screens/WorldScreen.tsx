@@ -17,7 +17,7 @@ import type { Direction, TileId } from "../../world/types";
 
 /** Must mirror the reducer's encounter terrain: only these tiles grow tufts. */
 const WILD_TILES = new Set<TileId>(["grass", "forest", "marsh", "ash", "sand"]);
-import { USE_PIXI } from "../../render/flag";
+import { RENDERER } from "../../render/flag";
 import { MiniMap } from "../panels/MapScreen";
 import { Sprite } from "../widgets/Sprite";
 import { WorldHud } from "../widgets/WorldHud";
@@ -26,8 +26,11 @@ const ART_PX = 16;
 const VIEW_W = 21;
 const VIEW_H = 13;
 
-// Lazy so pixi.js stays out of the main bundle until the flag asks for it.
+// Lazy so pixi.js (and three.js) stay out of the main bundle until the flag asks.
 const PixiWorldView = lazy(() => import("../../render/PixiWorldView").then((m) => ({ default: m.PixiWorldView })));
+const VoxelWorldView = lazy(() =>
+  import("../../render/voxel/VoxelWorldView").then((m) => ({ default: m.VoxelWorldView })),
+);
 
 function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
@@ -114,7 +117,7 @@ export function WorldScreen() {
           </div>
         </div>
       )}
-      {USE_PIXI ? (
+      {RENDERER !== "dom" ? (
         <>
           <Suspense
             fallback={
@@ -131,7 +134,11 @@ export function WorldScreen() {
               </div>
             }
           >
-            <PixiWorldView scale={tilePx / ART_PX} mapId={map.id} />
+            {RENDERER === "voxel" ? (
+              <VoxelWorldView scale={tilePx / ART_PX} mapId={map.id} />
+            ) : (
+              <PixiWorldView scale={tilePx / ART_PX} mapId={map.id} />
+            )}
           </Suspense>
           {/* State mirror: 1px hooks the e2e suite asserts against, since the
               canvas has no DOM to query. Purely derived, never interactive. */}

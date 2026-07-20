@@ -11,6 +11,18 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.49.0",
+    date: "2026-07-20",
+    codename: "The Third Dimension",
+    notes: [
+      "VOXEL PIXELHEIM: a new 3D renderer in Options - the whole world extruded into a voxel diorama, every block grown from the same pixel art you already know",
+      "A real sun wheels over the world: dawn light, long dusk shadows, and true darkness answered by lamplight, door glow and hearth fire",
+      "Your gear rides into 3D: helm, plate and blade are part of your voxel figure, exactly as drawn",
+      "Grass, roofs and stone rise out of the ground pixel by pixel - brighter pixels stand taller, so the terrain reads like a hand-carved model",
+      "Try it: Options → Renderer → Voxel (WebGL stays the default; battles keep the classic stage for now)",
+    ],
+  },
+  {
     version: "0.48.0",
     date: "2026-07-18",
     codename: "The Great Expansion",

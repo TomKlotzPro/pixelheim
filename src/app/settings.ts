@@ -29,8 +29,8 @@ export type Settings = {
   sfxVolume: number;
   scanlines: boolean;
   reduceMotion: boolean;
-  /** "webgl" is the game; "classic" is the legacy DOM tile renderer. */
-  renderer: "webgl" | "classic";
+  /** "webgl" is the game; "voxel" is the 3D diorama; "classic" is the legacy DOM tile renderer. */
+  renderer: "webgl" | "classic" | "voxel";
   bindings: Bindings;
 };
 

@@ -2980,6 +2980,16 @@ for (const anim of anims) {
 }
 writeFileSync(join(OUT, "atlas.json"), JSON.stringify(atlas, null, 2) + "\n");
 
+// ---------------- voxel source (PIX-111) ----------------
+// The 3D renderer extrudes the same grids the PNGs are baked from: every
+// sprite's rows + palette, verbatim. One art source of truth - editing a
+// sprite here reshapes its voxel model with no extra work.
+const voxels = { art: 16, sprites: {} };
+for (const name of names) {
+  voxels.sprites[name] = { rows: sprites[name].rows, palette: sprites[name].palette };
+}
+writeFileSync(join(OUT, "voxels.json"), JSON.stringify(voxels) + "\n");
+
 // x8 preview sheet for eyeballing the art (not shipped in the app)
 const SCALE = 8,
   COLS = 7,
