@@ -31,6 +31,8 @@ export const initialState: GameState = {
 /** The player house: the shut door in town, and what the deed costs. */
 export const HOUSE_DOOR = { mapId: "town", x: 60, y: 26 };
 export const HOUSE_DEED_COST = 1500;
+/** Fitting a workbench + small cauldron into the house shelf (PIX-109). */
+export const WORKBENCH_COST = 800;
 
 /** Business deeds: buy the shop you stand in from its keeper. */
 export const PROPERTY_PRICES: Record<string, { name: string; cost: number }> = {

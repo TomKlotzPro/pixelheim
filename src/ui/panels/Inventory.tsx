@@ -11,7 +11,7 @@ import {
 import { getItem } from "../../game/economy/items";
 import { itemStatLine } from "../../game/economy/itemStats";
 import { gearDamage, gearItem, gearName, gearValue } from "../../game/economy/rarity";
-import { JOB_NAMES, JOB_STATIONS } from "../../game/economy/jobs";
+import { atJobStation, JOB_NAMES, JOB_STATIONS } from "../../game/economy/jobs";
 import { canCraft, RECIPES } from "../../game/economy/recipes";
 import type { EquippedSlot, GrantStat, ItemCategory } from "../../game/types";
 import { dispatch, useGameState, useHero } from "../../state/store";
@@ -74,9 +74,13 @@ export function Inventory() {
         );
 
   // Which station (if any) the hero is standing in, and whether town is reachable.
-  const atStationId = (Object.entries(JOB_STATIONS) as [keyof typeof JOB_STATIONS, { mapId: string }][]).find(
-    ([, station]) => state.world?.position.mapId === station.mapId,
-  )?.[0];
+  const homeWorkbench = state.house.workbench ?? false;
+  const atHomeBench = homeWorkbench && state.world?.position.mapId === "town_house";
+  const atStationId = atHomeBench
+    ? ("home" as const)
+    : (Object.entries(JOB_STATIONS) as [keyof typeof JOB_STATIONS, { mapId: string }][]).find(
+        ([, station]) => state.world?.position.mapId === station.mapId,
+      )?.[0];
   const townKnown = TOWN_GATE ? waypointDiscovered(TOWN_GATE, state.world?.discovered ?? {}) : false;
 
   const weight = carriedWeight(state.inventory, state.gear, state.equipped);
@@ -178,7 +182,13 @@ export function Inventory() {
             <div className="item-list">
               {tab === "craft" && atStationId && (
                 <p className="station-banner" data-testid="station-banner">
-                  You are at {atStationId === "smithing" ? "Hilda's forge" : "Vex's cauldron"} - craft freely.
+                  You are at{" "}
+                  {atStationId === "home"
+                    ? "your own workbench"
+                    : atStationId === "smithing"
+                      ? "Hilda's forge"
+                      : "Vex's cauldron"}{" "}
+                  - craft freely.
                 </p>
               )}
               {tab === "craft" && !atStationId && !inBattle && (
@@ -201,7 +211,7 @@ export function Inventory() {
                 RECIPES.map((recipe) => {
                   const result = getItem(recipe.itemId);
                   const jobOk = hero.jobs[recipe.job.id].level >= recipe.job.level;
-                  const atStation = state.world?.position.mapId === JOB_STATIONS[recipe.job.id].mapId;
+                  const atStation = atJobStation(recipe.job.id, state.world?.position.mapId, homeWorkbench);
                   const craftable = canCraft(recipe, state.inventory, hero.jobs) && atStation && !inBattle;
                   return (
                     <div key={recipe.id} className="item-row">

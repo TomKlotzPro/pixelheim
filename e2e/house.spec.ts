@@ -81,3 +81,40 @@ test("the keeper sells you the whole shop, then works for you", async ({ page })
   await page.getByRole("button", { name: "Buy the deed" }).click();
   await expect(page.getByTestId("property-owned")).toContainText("YOURS");
 });
+
+test("the shelf becomes a workbench and the pack crafts at home (PIX-109)", async ({ page }) => {
+  await loadRichVeteranAt(page, 60, 25);
+  await page.keyboard.press("ArrowDown"); // the door names its price
+  await page.keyboard.press("e"); // buy the deed
+  await page.keyboard.press("ArrowDown"); // step in
+  await expect(page.getByTestId("world-viewport")).toHaveAttribute("data-map", "town_house");
+
+  // idle furniture speaks: the hearth at (16,4), approached from below
+  for (let i = 0; i < 8; i++) {
+    await page.keyboard.press("ArrowRight");
+    await page.waitForTimeout(25);
+  }
+  for (let i = 0; i < 4; i++) {
+    await page.keyboard.press("ArrowUp");
+    await page.waitForTimeout(25);
+  }
+  await page.keyboard.press("e");
+  await expect(page.locator(".world-message")).toContainText("hearth crackles");
+
+  // the shelf at (14,2): two tiles left, face up, and E pays for the workbench
+  for (let i = 0; i < 2; i++) {
+    await page.keyboard.press("ArrowLeft");
+    await page.waitForTimeout(25);
+  }
+  for (let i = 0; i < 3; i++) {
+    await page.keyboard.press("ArrowUp"); // last press bumps: face the shelf
+    await page.waitForTimeout(25);
+  }
+  await page.keyboard.press("e");
+  await expect(page.locator(".world-message")).toContainText("Craft at home");
+
+  // E again opens the pack; the Craft tab knows the home station
+  await page.keyboard.press("e");
+  await page.getByRole("button", { name: "Craft", exact: true }).first().click();
+  await expect(page.getByTestId("station-banner")).toContainText("your own workbench");
+});

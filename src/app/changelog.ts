@@ -11,6 +11,16 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.54.0",
+    date: "2026-07-20",
+    codename: "Home Industry",
+    notes: [
+      "CRAFT AT HOME: fit a workbench and a small cauldron to your house shelf for 800g - smithing and alchemy, both trades, in your own four walls. The ultimate homeowner perk",
+      "The pack's Craft tab knows your home station: 'You are at your own workbench - craft freely'",
+      "Every piece of furniture answers to E now: the hearth crackles, the counter dreams of dinner - silence never reads as a bug again",
+    ],
+  },
+  {
     version: "0.53.0",
     date: "2026-07-20",
     codename: "Clear Waters",

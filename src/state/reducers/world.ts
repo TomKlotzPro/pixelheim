@@ -13,7 +13,7 @@ import { monsterSpawnAt, spawnRegion } from "../../world/spawns";
 import { waypointDiscovered, WAYPOINTS } from "../../world/waypoints";
 import { isWalkable, portalAt } from "../../world/parseMap";
 import type { WorldAction } from "../actions";
-import { DIRECTION_DELTAS, HOUSE_DEED_COST, HOUSE_DOOR, INN_MAP_ID, REST_COST } from "../shared";
+import { DIRECTION_DELTAS, HOUSE_DEED_COST, HOUSE_DOOR, INN_MAP_ID, REST_COST, WORKBENCH_COST } from "../shared";
 import { addItem, removeItem } from "../../game/economy/inventory";
 import { questProgress, questReady, questsFor } from "../../game/quests";
 
@@ -117,6 +117,34 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
         }
         if (homeTile === "barrel") {
           draft.storageOpen = true;
+          return;
+        }
+        // The shelf is where the workbench fits (PIX-109): E names the price,
+        // pays it deed-style, and afterwards opens the pack to craft from.
+        if (homeTile === "shelf") {
+          if (draft.house.workbench) {
+            draft.inventoryOpen = true;
+            draft.worldMessage = null;
+            return;
+          }
+          if (draft.gold >= WORKBENCH_COST) {
+            draft.gold -= WORKBENCH_COST;
+            draft.house.workbench = true;
+            draft.worldMessage = "A workbench and a small cauldron, fitted to the shelf. Craft at home, forever.";
+          } else {
+            draft.worldMessage = `A proper workbench would fit this shelf. Tools and parts cost ${WORKBENCH_COST}g.`;
+          }
+          return;
+        }
+        // Every piece of furniture answers to E: silence reads as a bug.
+        if (homeTile === "hearth") {
+          draft.worldMessage = draft.house.workbench
+            ? "The hearth roars beside your workbench. Home industry."
+            : "The hearth crackles, warm and idle. A workbench would fit by the shelf...";
+          return;
+        }
+        if (homeTile === "counter") {
+          draft.worldMessage = "Your kitchen counter. Clean, empty, hopeful.";
           return;
         }
       }
