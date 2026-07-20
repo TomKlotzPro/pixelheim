@@ -1,4 +1,5 @@
-import { getMap, getTownTier } from "./maps/index";
+import { getRecruit, RECRUITS, type Recruit } from "../game/settlers";
+import { getMap, getSettlers, getTownTier } from "./maps/index";
 import { isWalkable, portalAt } from "./parseMap";
 
 /**
@@ -189,13 +190,17 @@ const LOOP: [number, number][] = [
   [0, 1],
 ];
 
-const validOffsets = new Map<string, [number, number][]>();
-for (const npc of NPCS) {
+/**
+ * Walkable pacing offsets, computed against the CURRENT map on demand: NPC
+ * homes move (recruits settle in, town tiers redraw streets), so nothing is
+ * precomputed. Four walkability checks per wanderer per frame is nothing.
+ */
+function offsetsFor(npc: Npc): [number, number][] {
   const map = getMap(npc.mapId);
   const offsets = LOOP.filter(
     ([dx, dy]) => isWalkable(map, npc.x + dx, npc.y + dy) && !portalAt(map, npc.x + dx, npc.y + dy),
   );
-  validOffsets.set(npc.id, offsets.length > 0 ? offsets : [[0, 0]]);
+  return offsets.length > 0 ? offsets : [[0, 0]];
 }
 
 function idHash(id: string): number {
@@ -204,15 +209,55 @@ function idHash(id: string): number {
   return hash;
 }
 
+/** A recruit as a walking Npc: where they wait, or where they live once settled. */
+function recruitNpc(recruit: Recruit, settled: boolean): Npc {
+  return settled
+    ? {
+        id: recruit.id,
+        mapId: "town",
+        x: recruit.home.x,
+        y: recruit.home.y,
+        sprite: recruit.sprite,
+        name: recruit.name,
+        lines: recruit.townLines,
+        wander: recruit.home.wander,
+      }
+    : {
+        id: recruit.id,
+        mapId: recruit.found.mapId,
+        x: recruit.found.x,
+        y: recruit.found.y,
+        sprite: recruit.sprite,
+        name: recruit.name,
+        lines: recruit.meetLines,
+        wander: recruit.found.wander,
+      };
+}
+
 export function npcsOn(mapId: string): Npc[] {
-  // Settlers gate on the town-tier mirror: the same one getMap serves from.
-  return NPCS.filter((npc) => npc.mapId === mapId && (npc.minTownTier ?? 1) <= getTownTier());
+  // Tier-gated townsfolk ride the town-tier mirror; recruits ride the
+  // settlers mirror - waiting in the wilds, or home in town once recruited.
+  const settled = new Set(getSettlers());
+  const base = NPCS.filter((npc) => npc.mapId === mapId && (npc.minTownTier ?? 1) <= getTownTier());
+  const recruits = RECRUITS.map((recruit) => recruitNpc(recruit, settled.has(recruit.id))).filter(
+    (npc) => npc.mapId === mapId,
+  );
+  return [...base, ...recruits];
+}
+
+/** Any speaking character by id, recruits included (for the dialogue box). */
+export function npcById(id: string): Npc | null {
+  const fixed = NPCS.find((npc) => npc.id === id);
+  if (fixed) return fixed;
+  const recruit = getRecruit(id);
+  if (!recruit) return null;
+  return recruitNpc(recruit, new Set(getSettlers()).has(id));
 }
 
 /** Where the NPC stands right now, given the player's total step count. */
 export function npcPosition(npc: Npc, steps: number): { x: number; y: number } {
   if (!npc.wander) return { x: npc.x, y: npc.y };
-  const offsets = validOffsets.get(npc.id)!;
+  const offsets = offsetsFor(npc);
   // one pace every four player steps keeps them ambling, not vibrating
   const index = Math.floor((steps + idHash(npc.id)) / 4) % offsets.length;
   const [dx, dy] = offsets[index];

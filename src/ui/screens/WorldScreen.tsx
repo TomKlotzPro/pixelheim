@@ -8,7 +8,7 @@ import { getMap } from "../../world/maps/index";
 import { spawnSpecies } from "../../game/combat/encounters";
 import { getMonster } from "../../game/combat/monsters";
 import { chestSpriteName, chestsOn, solidChestAt } from "../../world/chests";
-import { npcBeside, NPCS, npcPosition, npcsOn } from "../../world/npcs";
+import { npcBeside, npcById, npcPosition, npcsOn } from "../../world/npcs";
 import { spawnPosition, spawnRegion, spawnsOn } from "../../world/spawns";
 import { regionAt } from "../../world/parseMap";
 import { signsOn } from "../../world/signs";
@@ -306,7 +306,7 @@ export function WorldScreen() {
         )}
         {state.dialogue &&
           (() => {
-            const npc = NPCS.find((n) => n.id === state.dialogue!.npcId);
+            const npc = npcById(state.dialogue!.npcId);
             if (!npc) return null;
             return (
               <div className="dialogue-box panel" data-testid="dialogue">

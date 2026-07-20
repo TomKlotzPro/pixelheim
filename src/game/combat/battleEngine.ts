@@ -227,7 +227,7 @@ export function heroAttack(state: GameState): void {
   const hero = state.hero!;
   const battle = state.battle!;
   if (heroStunGate(state, hero, battle.log)) return;
-  const dmg = heroAttackDamage(hero, state.gear, state.equipped, battle.monster);
+  const dmg = heroAttackDamage(hero, state.gear, state.equipped, battle.monster, state.bardSong ?? false);
   battle.monster.hp = Math.max(0, battle.monster.hp - dmg);
   battle.log.push(`You strike ${battle.monster.name} for ${dmg} damage.`);
   if (battle.monster.hp <= 0) {
