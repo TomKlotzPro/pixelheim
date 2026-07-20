@@ -303,7 +303,7 @@ export class VoxelActors {
         : this.heroFrames[0];
       // A slight lean into each stride: the 1-voxel foot shuffle reads small
       // at 3D scale, so the body sways with the beat to sell the walk.
-      this.hero.rotation.z = walking ? Math.sin((clock / WALK_MS) * Math.PI) * 0.07 : 0;
+      this.hero.rotation.z = walking ? Math.sin((clock / WALK_MS) * Math.PI) * 0.16 : 0;
       this.hero.position.set(
         ease(this.hero.position.x, this.heroTarget.x),
         GROUND_TOP,
