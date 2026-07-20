@@ -13,7 +13,8 @@ import { monsterSpawnAt, spawnRegion } from "../../world/spawns";
 import { waypointDiscovered, WAYPOINTS } from "../../world/waypoints";
 import { isWalkable, portalAt } from "../../world/parseMap";
 import type { WorldAction } from "../actions";
-import { DIRECTION_DELTAS, HOUSE_DEED_COST, HOUSE_DOOR, INN_MAP_ID, REST_COST, WORKBENCH_COST } from "../shared";
+import { DIRECTION_DELTAS, HOUSE_DEED_COST, HOUSE_DOOR, INN_MAP_ID, WORKBENCH_COST } from "../shared";
+import { restCostFor, townTierOf } from "../../game/economy/town";
 import { addItem, removeItem } from "../../game/economy/inventory";
 import { questProgress, questReady, questsFor } from "../../game/quests";
 
@@ -159,6 +160,11 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
         draft.shopOpen = true;
         return;
       }
+      // The mayor opens the town ledger instead of small talk (PIX-91).
+      if (position.mapId === "town_hall") {
+        draft.hallOpen = true;
+        return;
+      }
       draft.dialogue = { npcId: beside.npc.id, page: 0 };
       draft.worldMessage = null;
       return;
@@ -227,18 +233,20 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
         draft.world.slain = [];
         draft.world.position = { mapId: target.id, x: portal.to.x, y: portal.to.y, facing: action.direction };
         draft.world.discovered = discoverAround(draft.world.discovered, target, portal.to.x, portal.to.y);
-        // Entering the inn rests the hero, for the usual price.
+        // Entering the inn rests the hero. Tier-3 towns honor their patron:
+        // the price halves once the fountain sings (PIX-91).
         if (target.id === INN_MAP_ID && draft.hero) {
           const hero = draft.hero;
+          const restCost = restCostFor(townTierOf(draft));
           if (hero.hp === hero.stats.maxHp && hero.mp === hero.stats.maxMp) {
             draft.worldMessage = "The innkeeper nods. You are already well rested.";
-          } else if (draft.gold < REST_COST) {
-            draft.worldMessage = `No coin, no bed. (Rest costs ${REST_COST}g.)`;
+          } else if (draft.gold < restCost) {
+            draft.worldMessage = `No coin, no bed. (Rest costs ${restCost}g.)`;
           } else {
-            draft.gold -= REST_COST;
+            draft.gold -= restCost;
             hero.hp = hero.stats.maxHp;
             hero.mp = hero.stats.maxMp;
-            draft.worldMessage = `You rest at the inn. Fully restored. (-${REST_COST}g)`;
+            draft.worldMessage = `You rest at the inn. Fully restored. (-${restCost}g)`;
           }
         }
         return;

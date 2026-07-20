@@ -4,6 +4,7 @@ import type { BattleState, GameState, Hero } from "../game/types";
 import type { WorldState } from "../world/types";
 import { type Action, gameReducer, initialState } from "./gameReducer";
 import { persistSave } from "./save";
+import { setTownTier } from "../world/maps/index";
 
 /**
  * The game state lives in a vanilla store so anything without React (the
@@ -22,6 +23,10 @@ export const gameStore = createGameStore();
 // Persistence is a store concern, not a render concern: every committed state
 // is written straight through (persistSave itself skips heroless states).
 gameStore.subscribe(persistSave);
+
+// The town-tier mirror (PIX-91): getMap and npcsOn take only ids, so the
+// maps module keeps the current tier as a module variable, fed from here.
+gameStore.subscribe((state) => setTownTier(state.townTier ?? 1));
 
 /** Dispatches an action against the live store. Stable identity, safe to pass anywhere. */
 export function dispatch(action: Action): void {

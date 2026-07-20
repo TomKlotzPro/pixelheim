@@ -2824,7 +2824,20 @@ const MONSTERS = [
   "imp",
   "lich",
 ];
-const NPCS = ["villager", "villager_woman", "elder", "innkeeper", "smith", "alchemist", "merchant"];
+// The mayor wears the elder's cut in office colors: crimson robe, gold chain.
+sprites.mayor = {
+  palette: {
+    ...sprites.elder.palette,
+    B: "#a03a3a",
+    L: "#702828",
+    D: "#4a1c1c",
+    W: "#e8c34a",
+    S: "#c8a83a",
+  },
+  rows: sprites.elder.rows,
+};
+
+const NPCS = ["villager", "villager_woman", "elder", "innkeeper", "smith", "alchemist", "merchant", "mayor"];
 const HEROES = [
   "hero_warrior",
   "hero_mage",

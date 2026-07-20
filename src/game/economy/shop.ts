@@ -1,5 +1,12 @@
 import { getItem } from "./items";
-import type { Item, ItemCategory } from "../types";
+import { gearItem, gearValue } from "./rarity";
+import type { GearInstance, Item, ItemCategory } from "../types";
+
+/** City merchants (town tier 4) pay a premium on everything (PIX-91).
+ *  Lives here with the rest of pricing; town.ts re-exports it for the ledger. */
+export function sellMultiplier(townTier: number): number {
+  return townTier >= 4 ? 1.2 : 1;
+}
 
 type ShopEntry = {
   itemId: string;
@@ -108,10 +115,17 @@ export function buyPrice(item: Item): number {
   return item.value;
 }
 
-/** Base scrap rate is half; specialists pay their listed rates. */
-export function sellPriceAt(shopId: ShopId, item: Item): number {
+/** Base scrap rate is half; specialists pay their listed rates. City
+ *  merchants (town tier 4) pay a premium on everything (PIX-91). */
+export function sellPriceAt(shopId: ShopId, item: Item, townTier = 1): number {
   const rate = SHOPS[shopId].buyRates[item.category] ?? 0.5;
-  return Math.max(1, Math.floor(item.value * rate));
+  return Math.max(1, Math.floor(item.value * rate * sellMultiplier(townTier)));
+}
+
+/** The same ledger for gear instances: rarity and forge bonus priced in. */
+export function gearSellPriceAt(shopId: ShopId, instance: GearInstance, townTier = 1): number {
+  const rate = SHOPS[shopId].buyRates[gearItem(instance).category] ?? 0.5;
+  return Math.max(1, Math.floor(gearValue(instance) * rate * sellMultiplier(townTier)));
 }
 
 /** Forge: each +1 costs more as the piece grows. Bonus is capped at +7. */

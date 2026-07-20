@@ -54,6 +54,8 @@ function route(draft: GameState, action: Action): GameState | void {
     case "STORE_ITEM":
     case "TAKE_ITEM":
     case "TOGGLE_SHOP":
+    case "TOGGLE_HALL":
+    case "FUND_TOWN":
     case "BUY_ITEM":
     case "SELL_ITEM":
     case "SELL_GEAR":
