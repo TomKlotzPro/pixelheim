@@ -1,4 +1,14 @@
-import { Group, Mesh, MeshBasicMaterial, type MeshLambertMaterial } from "three";
+import {
+  CanvasTexture,
+  Group,
+  Mesh,
+  MeshBasicMaterial,
+  type MeshLambertMaterial,
+  NearestFilter,
+  PlaneGeometry,
+  Sprite as BillboardSprite,
+  SpriteMaterial,
+} from "three";
 import { heroSprite } from "../../game/hero/character";
 import { outfitFor } from "../../game/economy/wearables";
 import { outfitKey } from "../outfit";
@@ -9,9 +19,18 @@ import { getMonster } from "../../game/combat/monsters";
 import { type Chest, chestSpriteName, chestsOn, solidChestAt } from "../../world/chests";
 import { npcBeside, npcPosition, npcsOn, type Npc } from "../../world/npcs";
 import { type MonsterSpawn, spawnPosition, spawnRegion, spawnsOn } from "../../world/spawns";
+import { signsOn } from "../../world/signs";
 import type { WorldMap } from "../../world/types";
 import { GROUND_TOP } from "./voxelTerrain";
-import { ART, type ColorGrid, colorGrid, overlayGrids, uprightGeometry, type VoxelSheet } from "./voxelData";
+import {
+  ACTOR_OMIT,
+  ART,
+  type ColorGrid,
+  colorGrid,
+  overlayGrids,
+  uprightGeometry,
+  type VoxelSheet,
+} from "./voxelData";
 
 const WALK_MS = 160;
 const WALK_LINGER_MS = 240;
@@ -28,7 +47,51 @@ const FACING_DELTAS = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] 
 /** The talk prompt, as voxels: a bright "!" that ignores the night. */
 const PROMPT_GRID: ColorGrid = ["Y", "Y", "Y", "Y", ".", "Y"].map((ch) => [ch === "." ? null : "#ffd469"]);
 
-type Walker = { mesh: Mesh; target: { x: number; z: number } };
+/** A soft dark oval, drawn once: the contact shadow that grounds each figure. */
+function makeContactTexture(): CanvasTexture {
+  const size = 64;
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext("2d")!;
+  const gradient = ctx.createRadialGradient(size / 2, size / 2, 2, size / 2, size / 2, size / 2);
+  gradient.addColorStop(0, "rgba(0, 0, 0, 0.55)");
+  gradient.addColorStop(0.6, "rgba(0, 0, 0, 0.28)");
+  gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, size, size);
+  return new CanvasTexture(canvas);
+}
+
+/** The wooden door plate as a crisp canvas texture, same palette as Pixi's. */
+function makeSignTexture(label: string): { texture: CanvasTexture; w: number; h: number } {
+  const scale = 6;
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d")!;
+  ctx.font = `bold ${7 * scale}px monospace`;
+  const w = Math.ceil(ctx.measureText(label).width) + 6 * scale;
+  const h = 11 * scale;
+  canvas.width = w;
+  canvas.height = h;
+  const c = canvas.getContext("2d")!;
+  c.fillStyle = "#2a2118";
+  c.fillRect(0, 0, w, h);
+  c.fillStyle = "#8a6238";
+  c.fillRect(0, 0, w, scale);
+  c.fillStyle = "#5c3f24";
+  c.fillRect(0, h - scale, w, scale);
+  c.fillStyle = "#e8c34a";
+  c.font = `bold ${7 * scale}px monospace`;
+  c.textAlign = "center";
+  c.textBaseline = "middle";
+  c.fillText(label, w / 2, h / 2 + scale / 2);
+  const texture = new CanvasTexture(canvas);
+  texture.magFilter = NearestFilter;
+  texture.minFilter = NearestFilter;
+  return { texture, w: w / scale, h: h / scale };
+}
+
+type Walker = { mesh: Mesh; disc: Mesh; target: { x: number; z: number } };
 
 /**
  * The people as voxel figures, extruded from the same grids as their PNGs.
@@ -39,12 +102,22 @@ export class VoxelActors {
   readonly group = new Group();
   private material: MeshLambertMaterial;
   private promptMaterial = new MeshBasicMaterial({ vertexColors: true });
+  private contactTexture = makeContactTexture();
+  private discMaterial = new MeshBasicMaterial({
+    map: this.contactTexture,
+    transparent: true,
+    depthWrite: false,
+  });
+  private discGeometry = new PlaneGeometry(ART * 1.05, ART * 0.65).rotateX(-Math.PI / 2);
   private sheet: VoxelSheet | null = null;
 
   private npcs: (Walker & { npc: Npc })[] = [];
   private monsters: (Walker & { spawn: MonsterSpawn })[] = [];
   private chests: { chest: Chest; mesh: Mesh; shownSprite: string | null }[] = [];
+  private signs: BillboardSprite[] = [];
+  private signKey = "";
   private hero: Mesh | null = null;
+  private heroDisc: Mesh | null = null;
   private heroTarget = { x: 0, z: 0 };
   private heroFlip = false;
   private heroPresence = 1;
@@ -59,10 +132,18 @@ export class VoxelActors {
 
   private figure(spriteName: string, depth = 2): Mesh {
     const sprite = this.sheet!.sprites[spriteName];
-    const grid = sprite ? colorGrid(sprite) : PROMPT_GRID;
+    const grid = sprite ? colorGrid(sprite, ACTOR_OMIT) : PROMPT_GRID;
     const mesh = new Mesh(uprightGeometry(grid, depth), this.material);
     mesh.castShadow = true;
     mesh.receiveShadow = true;
+    return mesh;
+  }
+
+  /** The grounding disc under a figure; sits just over the tallest relief. */
+  private disc(): Mesh {
+    const mesh = new Mesh(this.discGeometry, this.discMaterial);
+    mesh.position.y = GROUND_TOP + 0.8;
+    this.group.add(mesh);
     return mesh;
   }
 
@@ -86,7 +167,7 @@ export class VoxelActors {
       const at = npcPosition(npc, state.worldSteps);
       mesh.position.set(at.x * ART + ART / 2, GROUND_TOP, at.y * ART + ART / 2);
       this.group.add(mesh);
-      this.npcs.push({ npc, mesh, target: { x: mesh.position.x, z: mesh.position.z } });
+      this.npcs.push({ npc, mesh, disc: this.disc(), target: { x: mesh.position.x, z: mesh.position.z } });
     }
 
     this.monsters = [];
@@ -96,16 +177,42 @@ export class VoxelActors {
       const at = spawnPosition(spawn, state.worldSteps);
       mesh.position.set(at.x * ART + ART / 2, GROUND_TOP, at.y * ART + ART / 2);
       this.group.add(mesh);
-      this.monsters.push({ spawn, mesh, target: { x: mesh.position.x, z: mesh.position.z } });
+      this.monsters.push({ spawn, mesh, disc: this.disc(), target: { x: mesh.position.x, z: mesh.position.z } });
     }
 
     this.heroKey = "";
     this.hero = null;
+    this.heroDisc = null;
     this.dressHero(state);
+
+    this.signKey = "";
+    this.rebuildSigns(map, state);
 
     this.prompt = new Mesh(uprightGeometry(PROMPT_GRID, 2), this.promptMaterial);
     this.prompt.visible = false;
     this.group.add(this.prompt);
+  }
+
+  /** Wooden plates over the doors, as camera-facing billboards. */
+  private rebuildSigns(map: WorldMap, state: GameState): void {
+    const signs = signsOn(map.id, state.house.owned);
+    const key = signs.map((sign) => `${sign.x},${sign.y}:${sign.label}`).join("|");
+    if (key === this.signKey) return;
+    this.signKey = key;
+    for (const sign of this.signs) {
+      sign.material.map?.dispose();
+      sign.material.dispose();
+      this.group.remove(sign);
+    }
+    this.signs = [];
+    for (const sign of signs) {
+      const { texture, w, h } = makeSignTexture(sign.label);
+      const plate = new BillboardSprite(new SpriteMaterial({ map: texture, transparent: true }));
+      plate.scale.set(w * 0.8, h * 0.8, 1);
+      plate.position.set(sign.x * ART + ART / 2, GROUND_TOP + ART + 4, sign.y * ART + ART / 2);
+      this.group.add(plate);
+      this.signs.push(plate);
+    }
   }
 
   /** Snap the hero into place after a map change. */
@@ -128,7 +235,7 @@ export class VoxelActors {
       .map((name) => this.sheet!.sprites[name])
       .filter((sprite) => sprite !== undefined)
       .map((sprite) => colorGrid(sprite));
-    const grid = overlayGrids(colorGrid(body), wears);
+    const grid = overlayGrids(colorGrid(body, ACTOR_OMIT), wears);
     if (this.hero) {
       this.hero.geometry.dispose();
       this.hero.geometry = uprightGeometry(grid, 2);
@@ -137,6 +244,7 @@ export class VoxelActors {
       this.hero.castShadow = true;
       this.hero.receiveShadow = true;
       this.group.add(this.hero);
+      this.heroDisc = this.disc();
     }
     this.heroPresence = state.hero ? rankPresence(state.hero.level) : 1;
   }
@@ -151,6 +259,7 @@ export class VoxelActors {
     this.heroTarget = { x: pos.x * ART + ART / 2, z: pos.y * ART + ART / 2 };
     this.heroFlip = pos.facing === "left";
     this.dressHero(state);
+    this.rebuildSigns(map, state);
 
     for (const entry of this.npcs) {
       const at = npcPosition(entry.npc, state.worldSteps);
@@ -192,15 +301,18 @@ export class VoxelActors {
   }
 
   tick(clock: number, ease: (from: number, to: number) => number, reduceMotion: boolean): void {
-    for (const { npc, mesh, target } of this.npcs) {
+    for (const { npc, mesh, disc, target } of this.npcs) {
       const beat = idleBeat(npc.id);
       const bob = reduceMotion ? 0 : Math.max(0, Math.sin((clock + beat.phase) / beat.period)) * 0.7;
       mesh.position.set(ease(mesh.position.x, target.x), GROUND_TOP + bob, ease(mesh.position.z, target.z));
+      disc.position.set(mesh.position.x, disc.position.y, mesh.position.z);
     }
-    for (const { spawn, mesh, target } of this.monsters) {
+    for (const { spawn, mesh, disc, target } of this.monsters) {
       const beat = idleBeat(spawn.id);
       const bob = reduceMotion ? 0 : Math.max(0, Math.sin((clock + beat.phase) / beat.period)) * 0.7;
       mesh.position.set(ease(mesh.position.x, target.x), GROUND_TOP + bob, ease(mesh.position.z, target.z));
+      disc.position.set(mesh.position.x, disc.position.y, mesh.position.z);
+      disc.visible = mesh.visible;
     }
 
     if (this.hero) {
@@ -212,6 +324,7 @@ export class VoxelActors {
         ease(this.hero.position.z, this.heroTarget.z),
       );
       this.hero.scale.set(this.heroFlip ? -this.heroPresence : this.heroPresence, this.heroPresence, 1);
+      this.heroDisc?.position.set(this.hero.position.x, this.heroDisc.position.y, this.hero.position.z);
     }
 
     if (this.prompt?.visible && !reduceMotion) {
@@ -220,19 +333,30 @@ export class VoxelActors {
   }
 
   dispose(): void {
+    for (const sign of this.signs) {
+      sign.material.map?.dispose();
+      sign.material.dispose();
+    }
+    this.signs = [];
+    this.signKey = "";
     for (const child of this.group.children) {
-      if (child instanceof Mesh) child.geometry.dispose();
+      // The disc geometry and material are shared; only figures own theirs.
+      if (child instanceof Mesh && child.geometry !== this.discGeometry) child.geometry.dispose();
     }
     this.group.clear();
     this.npcs = [];
     this.monsters = [];
     this.chests = [];
     this.hero = null;
+    this.heroDisc = null;
     this.prompt = null;
   }
 
   destroy(): void {
     this.dispose();
     this.promptMaterial.dispose();
+    this.discMaterial.dispose();
+    this.discGeometry.dispose();
+    this.contactTexture.dispose();
   }
 }

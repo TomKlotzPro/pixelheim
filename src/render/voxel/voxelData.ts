@@ -25,9 +25,18 @@ export function loadVoxelSheet(): Promise<VoxelSheet> {
 /** A 16x16 grid of resolved colors; null is transparent. Indexed [y][x]. */
 export type ColorGrid = (string | null)[][];
 
-export function colorGrid(sprite: VoxelSprite): ColorGrid {
-  return sprite.rows.map((row) => Array.from(row, (ch) => (ch === "." ? null : (sprite.palette[ch] ?? null))));
+export function colorGrid(sprite: VoxelSprite, omit = ""): ColorGrid {
+  return sprite.rows.map((row) =>
+    Array.from(row, (ch) => (ch === "." || omit.includes(ch) ? null : (sprite.palette[ch] ?? null))),
+  );
 }
+
+/**
+ * Actors keep their baked 1px outline in 2D so they pop off the terrain, but
+ * in 3D that outline becomes a rim of near-black voxels that swallows the
+ * light. Real shadows do the popping here, so figures shed the "o" char.
+ */
+export const ACTOR_OMIT = "o";
 
 /** Paint overlay grids (worn gear) over a base grid, PIX-107 style. */
 export function overlayGrids(base: ColorGrid, overlays: ColorGrid[]): ColorGrid {
