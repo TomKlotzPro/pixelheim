@@ -1,4 +1,5 @@
 import {
+  type BufferGeometry,
   CanvasTexture,
   Color,
   Group,
@@ -27,9 +28,11 @@ import {
   ART,
   type ColorGrid,
   colorGrid,
+  idleFrameGrids,
   overlayGrids,
   uprightGeometry,
   type VoxelSheet,
+  walkFrameGrids,
 } from "./voxelData";
 
 const WALK_MS = 160;
@@ -75,7 +78,7 @@ function makeSignTexture(label: string): { texture: CanvasTexture; w: number; h:
   return { texture, w: w / scale, h: h / scale };
 }
 
-type Walker = { mesh: Mesh; target: { x: number; z: number } };
+type Walker = { mesh: Mesh; frames: BufferGeometry[]; target: { x: number; z: number } };
 
 /**
  * The people as voxel figures, extruded from the same grids as their PNGs.
@@ -99,6 +102,7 @@ export class VoxelActors {
   private signs: BillboardSprite[] = [];
   private signKey = "";
   private hero: Mesh | null = null;
+  private heroFrames: BufferGeometry[] = [];
   private heroTarget = { x: 0, z: 0 };
   private heroFlip = false;
   private heroPresence = 1;
@@ -111,13 +115,15 @@ export class VoxelActors {
     this.figureMaterial = new MeshLambertMaterial({ vertexColors: true, emissive: new Color(0x33333a) });
   }
 
-  private figure(spriteName: string, depth = 2): Mesh {
+  /** A figure with its true 2-beat idle frames, extruded like the 2D sheets. */
+  private figure(spriteName: string, depth = 2): { mesh: Mesh; frames: BufferGeometry[] } {
     const sprite = this.sheet!.sprites[spriteName];
     const grid = sprite ? colorGrid(sprite, ACTOR_OMIT) : PROMPT_GRID;
-    const mesh = new Mesh(uprightGeometry(grid, depth), this.figureMaterial);
+    const frames = idleFrameGrids(grid).map((frame) => uprightGeometry(frame, depth));
+    const mesh = new Mesh(frames[0], this.figureMaterial);
     mesh.castShadow = true;
     mesh.receiveShadow = true;
-    return mesh;
+    return { mesh, frames };
   }
 
   build(sheet: VoxelSheet, map: WorldMap, state: GameState): void {
@@ -127,7 +133,8 @@ export class VoxelActors {
     this.chests = [];
     for (const chest of chestsOn(map.id)) {
       const shown = chestSpriteName(chest, (state.world?.openedChests ?? []).includes(chest.id));
-      const mesh = this.figure(shown ?? "chest_closed", 4);
+      const { mesh, frames } = this.figure(shown ?? "chest_closed", 4);
+      frames[1].dispose(); // furniture holds still
       mesh.position.set(chest.x * ART + ART / 2, GROUND_TOP, chest.y * ART + ART / 2);
       mesh.visible = shown !== null;
       this.group.add(mesh);
@@ -136,21 +143,21 @@ export class VoxelActors {
 
     this.npcs = [];
     for (const npc of npcsOn(map.id)) {
-      const mesh = this.figure(npc.sprite);
+      const { mesh, frames } = this.figure(npc.sprite);
       const at = npcPosition(npc, state.worldSteps);
       mesh.position.set(at.x * ART + ART / 2, GROUND_TOP, at.y * ART + ART / 2);
       this.group.add(mesh);
-      this.npcs.push({ npc, mesh, target: { x: mesh.position.x, z: mesh.position.z } });
+      this.npcs.push({ npc, mesh, frames, target: { x: mesh.position.x, z: mesh.position.z } });
     }
 
     this.monsters = [];
     for (const spawn of spawnsOn(map.id)) {
       const species = getMonster(spawnSpecies(spawnRegion(spawn), spawn.x * 31 + spawn.y));
-      const mesh = this.figure(species.sprite);
+      const { mesh, frames } = this.figure(species.sprite);
       const at = spawnPosition(spawn, state.worldSteps);
       mesh.position.set(at.x * ART + ART / 2, GROUND_TOP, at.y * ART + ART / 2);
       this.group.add(mesh);
-      this.monsters.push({ spawn, mesh, target: { x: mesh.position.x, z: mesh.position.z } });
+      this.monsters.push({ spawn, mesh, frames, target: { x: mesh.position.x, z: mesh.position.z } });
     }
 
     this.heroKey = "";
@@ -208,11 +215,14 @@ export class VoxelActors {
       .filter((sprite) => sprite !== undefined)
       .map((sprite) => colorGrid(sprite));
     const grid = overlayGrids(colorGrid(body, ACTOR_OMIT), wears);
+    // The 4-beat walk, extruded per frame: gear composes first, so plate and
+    // blade ride the step exactly as they do in the 2D sheets.
+    for (const frame of this.heroFrames) frame.dispose();
+    this.heroFrames = walkFrameGrids(grid).map((frame) => uprightGeometry(frame, 2));
     if (this.hero) {
-      this.hero.geometry.dispose();
-      this.hero.geometry = uprightGeometry(grid, 2);
+      this.hero.geometry = this.heroFrames[0];
     } else {
-      this.hero = new Mesh(uprightGeometry(grid, 2), this.figureMaterial);
+      this.hero = new Mesh(this.heroFrames[0], this.figureMaterial);
       this.hero.castShadow = true;
       this.hero.receiveShadow = true;
       this.group.add(this.hero);
@@ -272,23 +282,31 @@ export class VoxelActors {
   }
 
   tick(clock: number, ease: (from: number, to: number) => number, reduceMotion: boolean): void {
-    for (const { npc, mesh, target } of this.npcs) {
+    // True frame animation, not a bob: idle figures breathe on their own
+    // de-synced beat, exactly like the 2D idle sheets.
+    for (const { npc, mesh, frames, target } of this.npcs) {
       const beat = idleBeat(npc.id);
-      const bob = reduceMotion ? 0 : Math.max(0, Math.sin((clock + beat.phase) / beat.period)) * 0.7;
-      mesh.position.set(ease(mesh.position.x, target.x), GROUND_TOP + bob, ease(mesh.position.z, target.z));
+      mesh.geometry = reduceMotion ? frames[0] : frames[Math.floor((clock + beat.phase) / beat.period) % frames.length];
+      mesh.position.set(ease(mesh.position.x, target.x), GROUND_TOP, ease(mesh.position.z, target.z));
     }
-    for (const { spawn, mesh, target } of this.monsters) {
+    for (const { spawn, mesh, frames, target } of this.monsters) {
       const beat = idleBeat(spawn.id);
-      const bob = reduceMotion ? 0 : Math.max(0, Math.sin((clock + beat.phase) / beat.period)) * 0.7;
-      mesh.position.set(ease(mesh.position.x, target.x), GROUND_TOP + bob, ease(mesh.position.z, target.z));
+      mesh.geometry = reduceMotion ? frames[0] : frames[Math.floor((clock + beat.phase) / beat.period) % frames.length];
+      mesh.position.set(ease(mesh.position.x, target.x), GROUND_TOP, ease(mesh.position.z, target.z));
     }
 
-    if (this.hero) {
-      const walking = clock < this.walkUntil;
-      const bob = walking && !reduceMotion ? Math.abs(Math.sin((clock / WALK_MS) * Math.PI)) * 1.4 : 0;
+    if (this.hero && this.heroFrames.length > 0) {
+      // The 4-beat walk plays while steps land; standing rests on frame 0.
+      const walking = clock < this.walkUntil && !reduceMotion;
+      this.hero.geometry = walking
+        ? this.heroFrames[Math.floor(clock / WALK_MS) % this.heroFrames.length]
+        : this.heroFrames[0];
+      // A slight lean into each stride: the 1-voxel foot shuffle reads small
+      // at 3D scale, so the body sways with the beat to sell the walk.
+      this.hero.rotation.z = walking ? Math.sin((clock / WALK_MS) * Math.PI) * 0.07 : 0;
       this.hero.position.set(
         ease(this.hero.position.x, this.heroTarget.x),
-        GROUND_TOP + bob,
+        GROUND_TOP,
         ease(this.hero.position.z, this.heroTarget.z),
       );
       this.hero.scale.set(this.heroFlip ? -this.heroPresence : this.heroPresence, this.heroPresence, 1);
@@ -306,6 +324,10 @@ export class VoxelActors {
     }
     this.signs = [];
     this.signKey = "";
+    for (const entry of this.npcs) for (const frame of entry.frames) frame.dispose();
+    for (const entry of this.monsters) for (const frame of entry.frames) frame.dispose();
+    for (const frame of this.heroFrames) frame.dispose();
+    this.heroFrames = [];
     for (const child of this.group.children) {
       if (child instanceof Mesh) child.geometry.dispose();
     }
