@@ -58,7 +58,8 @@ export class VoxelWorldRenderer {
   private scene = new Scene();
   private camera: OrthographicCamera;
   private material = new MeshLambertMaterial({ vertexColors: true });
-  private terrain = new VoxelTerrain(this.material);
+  private waterMaterial = new MeshLambertMaterial({ vertexColors: true, transparent: true, opacity: 0.82 });
+  private terrain = new VoxelTerrain(this.material, this.waterMaterial);
   private actors = new VoxelActors();
   private atmosphere = new VoxelAtmosphere(loadSettings().reduceMotion);
   private sheet: VoxelSheet | null = null;
@@ -176,6 +177,7 @@ export class VoxelWorldRenderer {
     this.terrain.dispose();
     this.actors.destroy();
     this.material.dispose();
+    this.waterMaterial.dispose();
     this.renderer?.dispose();
     this.renderer?.domElement.remove();
     this.renderer = null;
