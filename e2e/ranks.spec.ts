@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 import { loadVeteranAt } from "./helpers";
 
 test("a level-10 veteran wears the Champion title and its aura", async ({ page }) => {
-  await loadVeteranAt(page, 24, 20);
+  await loadVeteranAt(page, 48, 40);
   // the HUD titles the hero by rank, not just class
   await expect(page.locator(".world-hud")).toContainText("Lv 10 Champion");
   // the mirror carries the rank for the renderers
@@ -10,7 +10,7 @@ test("a level-10 veteran wears the Champion title and its aura", async ({ page }
 });
 
 test("the ascended veteran chooses a path and keeps it", async ({ page }) => {
-  await loadVeteranAt(page, 24, 20);
+  await loadVeteranAt(page, 48, 40);
   await page.getByRole("button", { name: "Skills +7" }).click();
 
   // rank 2, no spec yet: the fork is waiting

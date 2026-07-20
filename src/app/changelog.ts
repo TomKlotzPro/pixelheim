@@ -11,6 +11,18 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.48.0",
+    date: "2026-07-18",
+    codename: "The Great Expansion",
+    notes: [
+      "THE WORLD DOUBLED: the Ashenreach is now 96x64 - broader ash fields, a wider river, longer roads, and mountains that take real walking to reach",
+      "Pixelheim town doubled too: wide streets, a proper market square, and room to grow for what's coming",
+      "The Deepwood and the Mirefen are twice as deep - forests you can actually get lost in, marshes worth a map",
+      "Every interior doubled: your house is a real home now, and the shops have proper floors to browse",
+      "Everything found its new place: chests, monsters, waypoints, signs and villagers all re-settled across the bigger world",
+    ],
+  },
+  {
     version: "0.47.0",
     date: "2026-07-18",
     codename: "Dressed",

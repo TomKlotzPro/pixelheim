@@ -7,7 +7,7 @@ test("banked stat points can be spent and persist", async ({ page }) => {
     state: {
       ...VETERAN_SAVE.state,
       hero: { ...VETERAN_SAVE.state.hero, statPoints: 3 },
-      world: { position: { mapId: "town", x: 14, y: 15, facing: "down" }, discovered: {}, openedChests: [] },
+      world: { position: { mapId: "town", x: 28, y: 30, facing: "down" }, discovered: {}, openedChests: [] },
     },
   };
   await page.goto("./");
@@ -48,7 +48,7 @@ test("leveling up banks 5 points, announced in the battle log", async ({ page })
       ...save,
       state: {
         ...save.state,
-        world: { position: { mapId: "overworld", x: 30, y: 17, facing: "right" }, discovered: {}, openedChests: [] },
+        world: { position: { mapId: "overworld", x: 60, y: 34, facing: "right" }, discovered: {}, openedChests: [] },
       },
     },
   ] as const);

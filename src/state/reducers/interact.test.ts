@@ -15,14 +15,14 @@ function townState(x: number, y: number, facing: "up" | "down" | "left" | "right
 describe("friendly interact range", () => {
   // Elder Maren stands still at (16,8).
   it("chats with the NPC beside you even when you face away", () => {
-    let s = townState(15, 8, "left");
+    let s = townState(31, 16, "left");
     s = gameReducer(s, { type: "INTERACT" });
     expect(s.dialogue?.npcId).toBe("elder");
     expect(s.world!.position.facing).toBe("right"); // the hero turned to face her
   });
 
   it("prefers the faced tile when two sides could answer", () => {
-    const beside = npcBeside("town", 15, 8, "right", 0);
+    const beside = npcBeside("town", 31, 16, "right", 0);
     expect(beside?.npc.id).toBe("elder");
     expect(beside?.facing).toBe("right");
   });

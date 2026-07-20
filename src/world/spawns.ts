@@ -18,28 +18,28 @@ export type MonsterSpawn = {
 
 export const SPAWNS: MonsterSpawn[] = [
   // the Ashenreach: ash fields up north
-  { id: "ash_1", mapId: "overworld", x: 18, y: 4 },
-  { id: "ash_2", mapId: "overworld", x: 7, y: 8 },
-  { id: "ash_3", mapId: "overworld", x: 29, y: 9 },
-  { id: "ash_4", mapId: "overworld", x: 46, y: 13 },
+  { id: "ash_1", mapId: "overworld", x: 36, y: 8 },
+  { id: "ash_2", mapId: "overworld", x: 14, y: 16 },
+  { id: "ash_3", mapId: "overworld", x: 58, y: 18 },
+  { id: "ash_4", mapId: "overworld", x: 92, y: 26 },
   // the eastern forest
-  { id: "forest_1", mapId: "overworld", x: 31, y: 17 },
-  { id: "forest_2", mapId: "overworld", x: 41, y: 21 },
-  { id: "forest_3", mapId: "overworld", x: 36, y: 26 },
+  { id: "forest_1", mapId: "overworld", x: 62, y: 34 },
+  { id: "forest_2", mapId: "overworld", x: 82, y: 42 },
+  { id: "forest_3", mapId: "overworld", x: 72, y: 52 },
   // the western marsh
-  { id: "marsh_1", mapId: "overworld", x: 1, y: 17 },
-  { id: "marsh_2", mapId: "overworld", x: 11, y: 21 },
-  { id: "marsh_3", mapId: "overworld", x: 6, y: 26 },
+  { id: "marsh_1", mapId: "overworld", x: 2, y: 34 },
+  { id: "marsh_2", mapId: "overworld", x: 22, y: 42 },
+  { id: "marsh_3", mapId: "overworld", x: 12, y: 52 },
   // the Deepwood
-  { id: "deep_1", mapId: "deepwood", x: 1, y: 8 },
-  { id: "deep_2", mapId: "deepwood", x: 7, y: 11 },
-  { id: "deep_3", mapId: "deepwood", x: 3, y: 15 },
-  { id: "deep_4", mapId: "deepwood", x: 28, y: 22 },
+  { id: "deep_1", mapId: "deepwood", x: 2, y: 16 },
+  { id: "deep_2", mapId: "deepwood", x: 14, y: 22 },
+  { id: "deep_3", mapId: "deepwood", x: 6, y: 30 },
+  { id: "deep_4", mapId: "deepwood", x: 56, y: 44 },
   // the Mirefen
-  { id: "mire_1", mapId: "mirefen", x: 2, y: 8 },
-  { id: "mire_2", mapId: "mirefen", x: 21, y: 11 },
-  { id: "mire_3", mapId: "mirefen", x: 24, y: 15 },
-  { id: "mire_4", mapId: "mirefen", x: 28, y: 22 },
+  { id: "mire_1", mapId: "mirefen", x: 4, y: 16 },
+  { id: "mire_2", mapId: "mirefen", x: 42, y: 22 },
+  { id: "mire_3", mapId: "mirefen", x: 48, y: 30 },
+  { id: "mire_4", mapId: "mirefen", x: 56, y: 44 },
 ];
 
 // Loud failure at load, like every other piece of map data: a spawn must sit

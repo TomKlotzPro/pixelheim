@@ -23,10 +23,10 @@ test("a v1 save (pre-envelope) replays the full migration chain and wakes in tow
   await expect(page.locator(".world-hud .gold-line")).toHaveText(/123/);
 
   // shopOpen did not exist in v1; walk into the merchant's building and trade
+  await walk(page, "ArrowUp", 12);
+  await walk(page, "ArrowLeft", 20);
+  await walk(page, "ArrowUp", 10);
   await walk(page, "ArrowUp", 6);
-  await walk(page, "ArrowLeft", 10);
-  await walk(page, "ArrowUp", 5);
-  await walk(page, "ArrowUp", 3);
   await page.keyboard.press("e");
   await expect(page.getByText("General goods")).toBeVisible();
   // floor 4 was unlocked in the fixture, so floor-2 stock is available
@@ -49,7 +49,7 @@ test("a v2 save with a flat world position migrates to the v3 world state", asyn
     state: {
       ...V1_SAVE,
       shopOpen: false,
-      world: { mapId: "demo", x: 5, y: 8, facing: "left" },
+      world: { mapId: "demo", x: 10, y: 16, facing: "left" },
     },
   };
   await page.goto("./");
@@ -63,7 +63,7 @@ test("a v2 save with a flat world position migrates to the v3 world state", asyn
 
   const persisted = await page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), SAVE_KEY);
   expect(persisted.version).toBe(4);
-  expect(persisted.state.world.position).toEqual({ mapId: "demo", x: 5, y: 8, facing: "left" });
+  expect(persisted.state.world.position).toEqual({ mapId: "demo", x: 10, y: 16, facing: "left" });
   expect(persisted.state.world.openedChests).toEqual([]);
 });
 
