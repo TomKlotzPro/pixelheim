@@ -183,8 +183,10 @@ export class VoxelAtmosphere {
     const sky = skyAt(this.steps);
     this.sun.color.copy(SUN_DAY);
     if (sky.alpha > 0.01) this.sun.color.lerp(sky.color, Math.min(1, sky.alpha * 2.4));
-    this.sun.intensity = this.outdoor ? 1.15 - 0.95 * dark : 0.95;
-    this.hemi.intensity = 0.9 - 0.55 * dark;
+    // Shade stays readable: the hemisphere reaches into shadowed ground, so
+    // a figure's cast shadow is a tone, not a hole (Tom: "always in shadow").
+    this.sun.intensity = this.outdoor ? 1.08 - 0.88 * dark : 0.95;
+    this.hemi.intensity = 0.98 - 0.55 * dark;
 
     // The sun wheels around the diorama over the day - east through south to
     // west, so the standing figures keep their faces lit; indoors it holds.

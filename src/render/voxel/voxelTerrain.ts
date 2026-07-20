@@ -42,23 +42,24 @@ const FLAT_RELIEF: Partial<Record<TileId, number>> = { water: 0, bridge: 0.3, pa
 const DEFAULT_RELIEF = 1.1;
 export const GROUND_TOP = 1;
 
-/** Walkable tiles that still stand up (you pass through them briefly). */
-const UPRIGHT_WALKABLE = new Set<TileId>(["door", "cave"]);
-
 /**
- * Hanging shop signs are PART of a building in the maps, so they render as a
- * full-height facade block with the sign extruded onto its street face -
- * not as a free-standing plank in a pit (that read as debris).
+ * Facade tiles are PART of a building or cliff in the maps: they render as a
+ * solid block with their art extruded onto the street face. Doors and cave
+ * mouths sit at ground level (walking in reads as stepping through them);
+ * hanging shop signs float high on the wall. Value = block height.
  */
-const FACADE_TILES = new Set<TileId>(["sign_goods", "sign_smith", "sign_potion", "sign_inn"]);
-const FACADE_H = 11;
-
-/**
- * Where an upright prop stands on its tile (z, in voxels). Doors and cave
- * mouths press against the building or cliff face behind them;
- * free-standing props hold the middle.
- */
-const UPRIGHT_Z: Partial<Record<TileId, number>> = { door: 3, door_shut: 3, cave: 3 };
+const FACADE_TILES: Partial<Record<TileId, number>> = {
+  sign_goods: 11,
+  sign_smith: 11,
+  sign_potion: 11,
+  sign_inn: 11,
+  door: 10,
+  door_shut: 10,
+  cave: 14,
+};
+/** Where the facade prop's feet land: doors on the ground, signs held high. */
+const FACADE_PROP_Y: Partial<Record<TileId, number>> = { door: 1, door_shut: 1, cave: 1 };
+const SIGN_PROP_Y = -1;
 
 /**
  * Terrain that breathes, matching the Pixi sway/shimmer sheets: frame B is
@@ -161,14 +162,22 @@ export class VoxelTerrain {
   /** Chimney mouths, for the atmosphere's smoke. */
   chimneyTops: { x: number; y: number; z: number }[] = [];
   private material: MeshLambertMaterial;
+  /** Water alone is translucent: the earth ghosts through the shallows. */
+  private waterMaterial: MeshLambertMaterial;
   private animated: SwayPair[] = [];
 
-  constructor(material: MeshLambertMaterial) {
+  constructor(material: MeshLambertMaterial, waterMaterial: MeshLambertMaterial) {
     this.material = material;
+    this.waterMaterial = waterMaterial;
   }
 
-  private instanced(builder: VoxelBuilder, cells: Cell[], castShadow: boolean): InstancedMesh {
-    const mesh = new InstancedMesh(builder.build(), this.material, cells.length);
+  private instanced(
+    builder: VoxelBuilder,
+    cells: Cell[],
+    castShadow: boolean,
+    material = this.material,
+  ): InstancedMesh {
+    const mesh = new InstancedMesh(builder.build(), material, cells.length);
     const matrix = new Matrix4();
     cells.forEach((cell, i) => {
       matrix.makeTranslation(cell.x * ART, 0, cell.y * ART);
@@ -189,6 +198,8 @@ export class VoxelTerrain {
     const decorCells = new Map<DecorKind, { x: number; y: number; ox: number; oz: number }[]>();
     const chimneys = new VoxelBuilder();
     let chimneyCount = 0;
+    const foam = new VoxelBuilder();
+    let foamCount = 0;
     for (let y = 0; y < map.height; y++) {
       for (let x = 0; x < map.width; x++) {
         const tile = map.tiles[y][x];
@@ -209,6 +220,31 @@ export class VoxelTerrain {
             decorCells.set(decor, list);
           }
           list.push({ x, y, ox: 5 + ((h >> 3) % 7), oz: 5 + ((h >> 7) % 7) });
+        }
+
+        // Water meets land with a line of foam, like the 2D shore overlay:
+        // a pale lip along every bank, riding just above the surface.
+        if (tile === "water") {
+          const wx = x * ART;
+          const wz = y * ART;
+          const top = FLAT_TOPS.water ?? 0.45;
+          const banks: [TileId | undefined, number, number, number, number][] = [
+            [map.tiles[y - 1]?.[x], wx, wz, ART, 1.1],
+            [map.tiles[y + 1]?.[x], wx, wz + ART - 1.1, ART, 1.1],
+            [map.tiles[y]?.[x - 1], wx, wz, 1.1, ART],
+            [map.tiles[y]?.[x + 1], wx + ART - 1.1, wz, 1.1, ART],
+          ];
+          for (const [neighbor, fx, fz, w, d] of banks) {
+            if (!neighbor || neighbor === "water") continue;
+            foam.box(fx, top, fz, w, 0.4, d, "#d9edf5", {
+              top: true,
+              north: true,
+              south: true,
+              west: true,
+              east: true,
+            });
+            foamCount++;
+          }
         }
 
         // Hashed chimneys on top-edge roofs, like the Pixi overlay - but with
@@ -233,30 +269,32 @@ export class VoxelTerrain {
       const grid = colorGrid(sprite);
       const builder = new VoxelBuilder();
       const blockHeight = BLOCK_HEIGHTS[tile];
-      const facade = FACADE_TILES.has(tile);
-      const upright = !facade && blockHeight === undefined && (!TILES[tile].walkable || UPRIGHT_WALKABLE.has(tile));
+      const facadeHeight = FACADE_TILES[tile];
+      const facade = facadeHeight !== undefined;
+      const upright = !facade && blockHeight === undefined && !TILES[tile].walkable;
       if (facade) {
-        // The building face carries the hanging sign, plank and chains.
+        // The building or cliff face carries the door, cave mouth or sign.
         const { ground, prop } = splitGround(grid);
-        builder.box(0, 0, 0, ART, FACADE_H, ART, averageColor(ground), {
+        builder.box(0, 0, 0, ART, facadeHeight, ART, averageColor(ground), {
           top: true,
           north: true,
           south: true,
           west: true,
           east: true,
         });
-        extrudeUpright(builder, prop, 2, 0, -1, ART - 1);
+        extrudeUpright(builder, prop, 2, 0, FACADE_PROP_Y[tile] ?? SIGN_PROP_Y, ART - 1);
       } else if (blockHeight !== undefined) {
         // Gentle relief: enough for shingle texture, no sawtooth roofline.
         extrudeFlat(builder, grid, blockHeight, 0.45);
       } else if (upright) {
         const { ground, prop } = splitGround(grid);
         extrudeFlat(builder, ground, GROUND_TOP, 0.8);
-        extrudeUpright(builder, prop, 2, 0, GROUND_TOP, UPRIGHT_Z[tile] ?? ART / 2);
+        extrudeUpright(builder, prop, 2, 0, GROUND_TOP, ART / 2);
       } else {
         extrudeFlat(builder, grid, FLAT_TOPS[tile] ?? GROUND_TOP, FLAT_RELIEF[tile] ?? DEFAULT_RELIEF);
       }
-      const mesh = this.instanced(builder, cells, blockHeight !== undefined || upright || facade);
+      const material = tile === "water" ? this.waterMaterial : this.material;
+      const mesh = this.instanced(builder, cells, blockHeight !== undefined || upright || facade, material);
 
       // The breeze: flat animated tiles get a second, wrap-shifted frame.
       const anim = !facade && blockHeight === undefined && !upright ? ANIMATED[tile] : undefined;
@@ -268,7 +306,7 @@ export class VoxelTerrain {
           FLAT_TOPS[tile] ?? GROUND_TOP,
           FLAT_RELIEF[tile] ?? DEFAULT_RELIEF,
         );
-        const meshB = this.instanced(alt, cells, false);
+        const meshB = this.instanced(alt, cells, false, material);
         meshB.visible = false;
         let phase = 0;
         for (const c of spriteName) phase = (phase * 31 + c.charCodeAt(0)) % 977;
@@ -293,6 +331,12 @@ export class VoxelTerrain {
     if (chimneyCount > 0) {
       const mesh = new Mesh(chimneys.build(), this.material);
       mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      this.group.add(mesh);
+    }
+
+    if (foamCount > 0) {
+      const mesh = new Mesh(foam.build(), this.material);
       mesh.receiveShadow = true;
       this.group.add(mesh);
     }
