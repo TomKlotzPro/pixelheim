@@ -11,6 +11,7 @@
  * and learn skill-tree nodes in a per-role priority order.
  */
 import { gearArmor, gearDamage, gearItem } from "../src/game/economy/rarity";
+import { canChoosePath, heroPath, pathChains } from "../src/game/hero/paths";
 import { getHeroSkills, SKILL_TREES } from "../src/game/hero/skillTree";
 import { LEVELS } from "../src/game/hero/levels";
 import type { GameState, GearInstance, RoleId } from "../src/game/types";
@@ -54,9 +55,18 @@ function trade(state: GameState, shopMapId: string, act: (s: GameState) => GameS
 }
 
 /** Town chores between attempts: heal (inn price), shop, gear, points. */
-function townTurn(state: GameState): GameState {
+function townTurn(state: GameState, chain: string[]): GameState {
   let s = state;
   const hero = s.hero!;
+  // walk the run's assigned path chain whenever an ascension tier is pending,
+  // so every legal identity walk gets sim coverage (PIX-105)
+  while (canChoosePath(s.hero!)) {
+    const nodeId = chain[heroPath(s.hero!).length];
+    if (!nodeId) break;
+    const before = heroPath(s.hero!).length;
+    s = dispatch(s, { type: "CHOOSE_PATH", nodeId });
+    if (heroPath(s.hero!).length === before) break; // refused: never spin
+  }
   // rest at the inn
   if (s.gold >= REST_COST && (hero.hp < hero.stats.maxHp || hero.mp < hero.stats.maxMp)) {
     s = { ...s, gold: s.gold - REST_COST, hero: { ...hero, hp: hero.stats.maxHp, mp: hero.stats.maxMp } };
@@ -156,12 +166,15 @@ function battleTurn(state: GameState): GameState {
 
 function runRole(roleId: RoleId): FloorStat[] {
   const floors: FloorStat[] = LEVELS.map(() => ({ attempts: 0, deaths: 0, clearLevel: 0, clearGold: 0 }));
+  const chains = pathChains(roleId);
   for (let run = 0; run < RUNS_PER_ROLE; run++) {
+    // cycle the legal path walks across runs: all of them must clear the game
+    const chain = chains[run % chains.length] ?? [];
     let s = dispatch(initialState, { type: "CREATE_HERO", name: "Bot", roleId });
     for (let floor = 1; floor <= LEVELS.length; floor++) {
       let cleared = false;
       for (let attempt = 0; attempt < MAX_ATTEMPTS_PER_FLOOR && !cleared; attempt++) {
-        s = townTurn(s);
+        s = townTurn(s, chain);
         floors[floor - 1].attempts++;
         s = dispatch(s, { type: "ENTER_LEVEL", level: floor });
         if (s.screen !== "battle") break; // over-encumbered or locked: bail

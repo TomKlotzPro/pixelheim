@@ -46,7 +46,8 @@ export type EconomyAction =
 export type ProgressionAction =
   | { type: "SPEND_STAT_POINT"; stat: SpendableStat }
   | { type: "BUY_SKILL_NODE"; nodeId: string }
-  | { type: "CHOOSE_SPEC"; specId: string };
+  | { type: "CHOOSE_SPEC"; specId: string }
+  | { type: "CHOOSE_PATH"; nodeId: string };
 
 /** Moving through the overworld, talking, and the doors it opens. */
 export type WorldAction =

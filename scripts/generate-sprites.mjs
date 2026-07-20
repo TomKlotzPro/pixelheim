@@ -2885,6 +2885,43 @@ for (const name of HEROES.slice()) {
 }
 HEROES.push(...HERO_RANKS);
 
+// ---------------- path looks: the walk claims the wardrobe (PIX-105) ----------------
+// A chosen path recolors the garb toward its branch hue, deepening with each
+// rank. Only the 7 base heroes get path variants - a path REPLACES the
+// cosmetic look, so the counts stay tractable. Skin stays skin.
+const PATH_HUES = {
+  hero_warrior: { a: "#5a7d9e", b: "#b23a2e" }, // juggernaut steel / warlord crimson
+  hero_mage: { a: "#e06428", b: "#3a7de0" }, // pyre flame / storm blue
+  hero_rogue: { a: "#6a3aa0", b: "#2ea88a" }, // night violet / trickster teal
+  hero_cleric: { a: "#d8a832", b: "#9ec7e8" }, // templar gold / oracle ice
+  hero_ranger: { a: "#c98a2e", b: "#3f7d3a" }, // deadeye amber / beast moss
+  hero_paladin: { a: "#e8c34a", b: "#8fa3c0" }, // justicar radiance / guardian silver
+  hero_necromancer: { a: "#63a03a", b: "#cfc8b4" }, // plague green / bone white
+};
+function towardHue(hex, hue, k) {
+  const a = Number.parseInt(hex.slice(1), 16);
+  const b = Number.parseInt(hue.slice(1), 16);
+  const mix = (shift) => Math.round(((a >> shift) & 255) * (1 - k) + ((b >> shift) & 255) * k);
+  return `#${((mix(16) << 16) | (mix(8) << 8) | mix(0)).toString(16).padStart(6, "0")}`;
+}
+const HERO_PATH_LOOKS = [];
+for (const [name, hues] of Object.entries(PATH_HUES)) {
+  const src = sprites[name];
+  for (const [branch, hue] of Object.entries(hues)) {
+    for (let r = 1; r <= 3; r++) {
+      const palette = {};
+      for (const [ch, color] of Object.entries(src.palette)) {
+        if (ch === "F") palette[ch] = color;
+        else if (ch === "o") palette[ch] = RANK_OUTLINES[r];
+        else palette[ch] = brighten(towardHue(color, hue, 0.3 + r * 0.1), 1 + r * 0.06);
+      }
+      sprites[`${name}_p${branch}_r${r}`] = { palette, rows: src.rows };
+      HERO_PATH_LOOKS.push(`${name}_p${branch}_r${r}`);
+    }
+  }
+}
+HEROES.push(...HERO_PATH_LOOKS);
+
 const names = Object.keys(sprites);
 for (const name of names) {
   const { rows, palette } = sprites[name];
