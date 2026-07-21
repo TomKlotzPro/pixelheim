@@ -29,12 +29,12 @@ describe("the town tiers (PIX-91)", () => {
       expect(map.id).toBe("town");
       expect(map.portals).toHaveLength(6);
     }
-    // the redraw is real: the fountain exists only from tier 3
-    expect(TOWN_MAPS[1].tiles[12][30]).toBe("grass");
-    expect(TOWN_MAPS[2].tiles[12][30]).toBe("well");
-    // the city paves its avenues at tier 4
-    expect(TOWN_MAPS[2].tiles[16][10]).toBe("grass");
-    expect(TOWN_MAPS[3].tiles[16][10]).toBe("path");
+    // the redraw is real: the fountain joins the shrine only from tier 3
+    expect(TOWN_MAPS[1].tiles[17][30]).toBe("grass");
+    expect(TOWN_MAPS[2].tiles[17][30]).toBe("well");
+    // the city raises a slate townhouse at tier 4
+    expect(TOWN_MAPS[2].tiles[21][67]).toBe("grass");
+    expect(TOWN_MAPS[3].tiles[21][67]).toBe("roof_slate");
   });
 
   it("funding pays gold, raises the tier, and respects requirements", () => {
@@ -64,11 +64,11 @@ describe("the town tiers (PIX-91)", () => {
 
   it("the mirror serves the tiered map and the settlers arrive on cue", () => {
     setTownTier(1);
-    expect(getMap("town").tiles[12][30]).toBe("grass");
+    expect(getMap("town").tiles[17][30]).toBe("grass");
     const founders = npcsOn("town").length;
 
     setTownTier(3);
-    expect(getMap("town").tiles[12][30]).toBe("well");
+    expect(getMap("town").tiles[17][30]).toBe("well");
     const townFolk = npcsOn("town").map((npc) => npc.id);
     expect(townFolk).toContain("settler_mira");
     expect(townFolk).toContain("settler_tomas");
