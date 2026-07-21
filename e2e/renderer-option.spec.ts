@@ -19,8 +19,8 @@ async function loadDefaultVeteranAt(page: Page, x: number, y: number, mapId: str
 
 // The renderer is an Options choice, persisted per device. The voxel diorama
 // IS the game since the PIX-112 cutover; WebGL is the classic 2D canvas and
-// Classic the legacy DOM tiles. The button cycles through all three.
-test("the renderer choice cycles Voxel, Classic, WebGL, surviving reloads", async ({ page }) => {
+// Classic the legacy DOM tiles. A dropdown picks between the three.
+test("the renderer dropdown picks Voxel, Classic and WebGL, surviving reloads", async ({ page }) => {
   test.setTimeout(90_000);
   await loadDefaultVeteranAt(page, 28, 30, "town");
 
@@ -30,24 +30,24 @@ test("the renderer choice cycles Voxel, Classic, WebGL, surviving reloads", asyn
 
   // switch to Classic: the DOM tile renderer, no canvas
   await page.getByRole("button", { name: "Settings" }).click();
-  await expect(page.getByRole("button", { name: "Toggle renderer" })).toHaveText("Voxel");
-  await page.getByRole("button", { name: "Toggle renderer" }).click();
+  await expect(page.getByLabel("Renderer")).toHaveValue("voxel");
+  await page.getByLabel("Renderer").selectOption("classic");
   await page.getByRole("button", { name: "Continue" }).click();
   await expect(page.locator(".world-tile").first()).toBeVisible();
   await expect(page.getByTestId("world-viewport").locator("canvas")).not.toBeVisible();
 
   // switch to WebGL: the classic 2D canvas
   await page.getByRole("button", { name: "Settings" }).click();
-  await expect(page.getByRole("button", { name: "Toggle renderer" })).toHaveText("Classic");
-  await page.getByRole("button", { name: "Toggle renderer" }).click();
+  await expect(page.getByLabel("Renderer")).toHaveValue("classic");
+  await page.getByLabel("Renderer").selectOption("webgl");
   await page.getByRole("button", { name: "Continue" }).click();
   await expect(page.getByTestId("world-viewport")).toHaveAttribute("data-renderer", "pixi");
   await expect(page.getByTestId("world-viewport").locator("canvas")).toBeVisible();
 
   // and back to the diorama
   await page.getByRole("button", { name: "Settings" }).click();
-  await expect(page.getByRole("button", { name: "Toggle renderer" })).toHaveText("WebGL");
-  await page.getByRole("button", { name: "Toggle renderer" }).click();
+  await expect(page.getByLabel("Renderer")).toHaveValue("webgl");
+  await page.getByLabel("Renderer").selectOption("voxel");
   await page.getByRole("button", { name: "Continue" }).click();
   await expect(page.getByTestId("world-viewport")).toHaveAttribute("data-renderer", "voxel", { timeout: 20_000 });
   await expect(page.getByTestId("world-viewport").locator("canvas")).toBeVisible();

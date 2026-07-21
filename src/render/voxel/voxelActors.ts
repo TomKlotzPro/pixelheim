@@ -35,7 +35,7 @@ import {
   walkFrameGrids,
 } from "./voxelData";
 
-const WALK_MS = 160;
+const WALK_MS = 140;
 const WALK_LINGER_MS = 240;
 
 /** Same de-synced idle beat as the Pixi actors: nobody breathes in unison. */
@@ -297,16 +297,16 @@ export class VoxelActors {
 
     if (this.hero && this.heroFrames.length > 0) {
       // The 4-beat walk plays while steps land; standing rests on frame 0.
+      // 3D can afford drama the 16px sprite could not: the frames carry the
+      // footwork, a hop carries the weight, and a waddle carries the charm.
       const walking = clock < this.walkUntil && !reduceMotion;
-      this.hero.geometry = walking
-        ? this.heroFrames[Math.floor(clock / WALK_MS) % this.heroFrames.length]
-        : this.heroFrames[0];
-      // A slight lean into each stride: the 1-voxel foot shuffle reads small
-      // at 3D scale, so the body sways with the beat to sell the walk.
-      this.hero.rotation.z = walking ? Math.sin((clock / WALK_MS) * Math.PI) * 0.16 : 0;
+      const beat = clock / WALK_MS;
+      this.hero.geometry = walking ? this.heroFrames[Math.floor(beat) % this.heroFrames.length] : this.heroFrames[0];
+      const hop = walking ? Math.abs(Math.sin(beat * Math.PI)) * 1.8 : 0;
+      this.hero.rotation.z = walking ? Math.sin(beat * Math.PI) * 0.18 : 0;
       this.hero.position.set(
         ease(this.hero.position.x, this.heroTarget.x),
-        GROUND_TOP,
+        GROUND_TOP + hop,
         ease(this.hero.position.z, this.heroTarget.z),
       );
       this.hero.scale.set(this.heroFlip ? -this.heroPresence : this.heroPresence, this.heroPresence, 1);
