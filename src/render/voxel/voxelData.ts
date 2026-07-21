@@ -227,6 +227,17 @@ export class VoxelBuilder {
     }
   }
 
+  /** Fold another builder's boxes into this one, offset by (dx, dy, dz). */
+  merge(other: VoxelBuilder, dx: number, dy: number, dz: number): void {
+    const base = this.positions.length / 3;
+    for (let i = 0; i < other.positions.length; i += 3) {
+      this.positions.push(other.positions[i] + dx, other.positions[i + 1] + dy, other.positions[i + 2] + dz);
+    }
+    this.normals.push(...other.normals);
+    this.colors.push(...other.colors);
+    for (const index of other.indices) this.indices.push(index + base);
+  }
+
   build(): BufferGeometry {
     const geometry = new BufferGeometry();
     geometry.setAttribute("position", new BufferAttribute(new Float32Array(this.positions), 3));
@@ -322,25 +333,47 @@ function bobDownGrid(grid: ColorGrid, d = 1): ColorGrid {
   return [...Array.from({ length: d }, () => blankRow(width)), ...grid.slice(0, grid.length - d)];
 }
 
-/** Nudge just the bottom rows (the feet) sideways; non-wrapping. */
-function feetGrid(grid: ColorGrid, dx: number): ColorGrid {
+/** Shift a whole grid horizontally, non-wrapping. */
+function shiftXGrid(grid: ColorGrid, dx: number): ColorGrid {
   const width = grid[0]?.length ?? ART;
-  return grid.map((row, y) => {
-    if (y < grid.length - 3) return row;
+  return grid.map((row) => {
     if (dx > 0) return [...blankRow(dx), ...row.slice(0, width - dx)];
     if (dx < 0) return [...row.slice(-dx), ...blankRow(-dx)];
     return row;
   });
 }
 
+/** Split the figure for the stride: torso above, one leg per side below. */
+function splitLegs(grid: ColorGrid): { body: ColorGrid; left: ColorGrid; right: ColorGrid } {
+  const rows = grid.length;
+  const width = grid[0]?.length ?? ART;
+  const legTop = rows - 5;
+  const body = grid.map((row, y) => (y < legTop ? row : blankRow(width)));
+  const left = grid.map((row, y) =>
+    y >= legTop ? row.map((hex, x) => (x < width / 2 ? hex : null)) : blankRow(width),
+  );
+  const right = grid.map((row, y) =>
+    y >= legTop ? row.map((hex, x) => (x >= width / 2 ? hex : null)) : blankRow(width),
+  );
+  return { body, left, right };
+}
+
 /**
- * The 4-beat walk: plant, step-right, plant, step-left - the 2D transforms,
- * doubled in amplitude so the stride reads at 3D scale (a 1-voxel shuffle is
- * three pixels on screen; nobody sees three pixels).
+ * The true stride (PIX-113): the legs SCISSOR - one swings ahead, the other
+ * trails, split in real depth - while the torso rides a beat higher. Four
+ * geometries: plant, stride, plant, mirrored stride.
  */
-export function walkFrameGrids(grid: ColorGrid): ColorGrid[] {
-  const up = bobUpGrid(grid, 2);
-  return [grid, feetGrid(up, 2), grid, feetGrid(up, -2)];
+export function strideGeometries(grid: ColorGrid, depth = 2): BufferGeometry[] {
+  const { body, left, right } = splitLegs(grid);
+  const ox = -(grid[0]?.length ?? ART) / 2;
+  const stride = (swing: 1 | -1): BufferGeometry => {
+    const builder = new VoxelBuilder();
+    extrudeUpright(builder, bobUpGrid(body, 1), depth, ox, 0, 0);
+    extrudeUpright(builder, shiftXGrid(left, -2 * swing), depth, ox, 0, 1.3 * swing);
+    extrudeUpright(builder, shiftXGrid(right, 2 * swing), depth, ox, 0, -1.3 * swing);
+    return builder.build();
+  };
+  return [uprightGeometry(grid, depth), stride(1), uprightGeometry(grid, depth), stride(-1)];
 }
 
 /** The 2-beat idle breath. */
