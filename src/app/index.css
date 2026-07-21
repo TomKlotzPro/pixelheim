@@ -1312,6 +1312,20 @@ body {
 .rankup-later {
   opacity: 0.8;
 }
+/* the renderer dropdown: a select dressed like the rest of the panel */
+.renderer-select {
+  background: var(--bg-panel);
+  color: var(--text);
+  border: 2px solid var(--border);
+  font: inherit;
+  font-size: 12px;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+.renderer-select:hover {
+  border-color: var(--accent);
+}
+
 /* ---------- the city hall ledger (PIX-91) ---------- */
 .hall-panel {
   width: 520px;

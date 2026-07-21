@@ -30,7 +30,7 @@ test("mountains block movement but still turn the hero", async ({ page }) => {
 });
 
 test("new heroes wake in the village and the gate leads to the overworld", async ({ page }) => {
-  await page.goto("./");
+  await page.goto("./?pixi");
   await page.getByRole("button", { name: "New Game" }).click();
   await page.getByPlaceholder("Dragonsbane...").fill("Wanderer");
   await page.getByRole("button", { name: "Begin the climb" }).click();

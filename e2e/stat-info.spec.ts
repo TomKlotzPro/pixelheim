@@ -13,7 +13,7 @@ test("the stat sheet explains each stat and previews the next point", async ({ p
       world: { position: { mapId: "town", x: 28, y: 30, facing: "down" }, discovered: {}, openedChests: [] },
     },
   };
-  await page.goto("./");
+  await page.goto("./?pixi");
   await page.evaluate(([key, s]) => localStorage.setItem(key as string, JSON.stringify(s)), [SAVE_KEY, save] as const);
   await page.reload();
   await page.getByRole("button", { name: "Continue" }).click();

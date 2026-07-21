@@ -302,3 +302,48 @@ export function uprightGeometry(grid: ColorGrid, depth = 2): BufferGeometry {
   extrudeUpright(builder, grid, depth, -(grid[0]?.length ?? ART) / 2);
   return builder.build();
 }
+
+// ---------------- animation frames, in grid space (PIX-112) ----------------
+// The SAME pure transforms the 2D generator bakes into its walk/idle sheets
+// (generate-sprites.mjs), applied to color grids so every frame extrudes into
+// its own voxel geometry. One motion source of truth, two dimensions.
+
+const blankRow = (width: number): (string | null)[] => Array.from({ length: width }, () => null);
+
+/** Slide the whole grid up by d rows (blanks fill the bottom). */
+function bobUpGrid(grid: ColorGrid, d = 1): ColorGrid {
+  const width = grid[0]?.length ?? ART;
+  return [...grid.slice(d), ...Array.from({ length: d }, () => blankRow(width))];
+}
+
+/** Slide the whole grid down by d rows (blanks fill the top). */
+function bobDownGrid(grid: ColorGrid, d = 1): ColorGrid {
+  const width = grid[0]?.length ?? ART;
+  return [...Array.from({ length: d }, () => blankRow(width)), ...grid.slice(0, grid.length - d)];
+}
+
+/** Nudge just the bottom rows (the feet) sideways; non-wrapping. */
+function feetGrid(grid: ColorGrid, dx: number): ColorGrid {
+  const width = grid[0]?.length ?? ART;
+  return grid.map((row, y) => {
+    if (y < grid.length - 3) return row;
+    if (dx > 0) return [...blankRow(dx), ...row.slice(0, width - dx)];
+    if (dx < 0) return [...row.slice(-dx), ...blankRow(-dx)];
+    return row;
+  });
+}
+
+/**
+ * The 4-beat walk: plant, step-right, plant, step-left - the 2D transforms,
+ * doubled in amplitude so the stride reads at 3D scale (a 1-voxel shuffle is
+ * three pixels on screen; nobody sees three pixels).
+ */
+export function walkFrameGrids(grid: ColorGrid): ColorGrid[] {
+  const up = bobUpGrid(grid, 2);
+  return [grid, feetGrid(up, 2), grid, feetGrid(up, -2)];
+}
+
+/** The 2-beat idle breath. */
+export function idleFrameGrids(grid: ColorGrid): ColorGrid[] {
+  return [grid, bobDownGrid(grid, 1)];
+}

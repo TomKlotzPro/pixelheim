@@ -11,9 +11,9 @@ async function loadAscendingVeteran(page: Page): Promise<void> {
       world: { position: { mapId: "overworld", x: 14, y: 19, facing: "up" }, discovered: {}, openedChests: [] },
     },
   };
-  await page.goto("./");
+  await page.goto("./?pixi");
   await page.evaluate(([key, s]) => localStorage.setItem(key as string, JSON.stringify(s)), [SAVE_KEY, save] as const);
-  await page.goto("./");
+  await page.goto("./?pixi");
   await page.getByRole("button", { name: "Continue" }).click();
   await expect(page.getByTestId("world-hero")).toHaveAttribute("data-pos", "14,19");
 }

@@ -9,7 +9,7 @@ async function walk(page: Page, key: string, times: number) {
 }
 
 test("a v1 save (pre-envelope) replays the full migration chain and wakes in town", async ({ page }) => {
-  await page.goto("./");
+  await page.goto("./?pixi");
   await page.evaluate(([key, save]) => localStorage.setItem(key as string, JSON.stringify(save)), [
     SAVE_KEY,
     V1_SAVE,
@@ -52,7 +52,7 @@ test("a v2 save with a flat world position migrates to the v3 world state", asyn
       world: { mapId: "demo", x: 10, y: 16, facing: "left" },
     },
   };
-  await page.goto("./");
+  await page.goto("./?pixi");
   await page.evaluate(([key, save]) => localStorage.setItem(key as string, JSON.stringify(save)), [
     SAVE_KEY,
     v2Save,
@@ -79,7 +79,7 @@ test("a v3 save migrates gear counts and equipped ids into instances", async ({ 
       equipped: { weapon: "rusty_sword" },
     },
   };
-  await page.goto("./");
+  await page.goto("./?pixi");
   await page.evaluate(([key, save]) => localStorage.setItem(key as string, JSON.stringify(save)), [
     SAVE_KEY,
     v3Save,
@@ -105,7 +105,7 @@ test("a v3 save migrates gear counts and equipped ids into instances", async ({ 
 
 test("a v1-format save code still imports", async ({ page }) => {
   const v1Code = "PXH1." + Buffer.from(JSON.stringify(V1_SAVE)).toString("base64");
-  await page.goto("./");
+  await page.goto("./?pixi");
   await page.getByRole("button", { name: "Options", exact: true }).click();
   await page.getByRole("button", { name: "Import save code" }).click();
   await page.locator(".import-input").fill(v1Code);
@@ -143,7 +143,7 @@ test("a pre-Undermountain finisher save unlocks floor 11 on load", async ({ page
       shopOpen: false,
     },
   };
-  await page.goto("./");
+  await page.goto("./?pixi");
   await page.evaluate(([key, save]) => localStorage.setItem(key as string, JSON.stringify(save)), [
     SAVE_KEY,
     finisher,
@@ -156,7 +156,7 @@ test("a pre-Undermountain finisher save unlocks floor 11 on load", async ({ page
 });
 
 test("garbage save codes are rejected with an error", async ({ page }) => {
-  await page.goto("./");
+  await page.goto("./?pixi");
   await page.getByRole("button", { name: "Options", exact: true }).click();
   await page.getByRole("button", { name: "Import save code" }).click();
   await page.locator(".import-input").fill("garbage");

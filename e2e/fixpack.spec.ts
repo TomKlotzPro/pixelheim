@@ -9,7 +9,7 @@ async function walk(page: Page, key: string, times: number) {
 }
 
 test("the title diorama parades and the menu works", async ({ page }) => {
-  await page.goto("./");
+  await page.goto("./?pixi");
   await expect(page.getByRole("heading", { name: "PIXELHEIM" })).toBeVisible();
   await expect(page.locator(".title-walker")).toHaveCount(6);
   await expect(page.locator(".title-ridge")).toHaveCount(3);
@@ -17,7 +17,7 @@ test("the title diorama parades and the menu works", async ({ page }) => {
 });
 
 test("character creation shows the marching hero and comparable stat bars", async ({ page }) => {
-  await page.goto("./");
+  await page.goto("./?pixi");
   await page.getByRole("button", { name: "New Game" }).click();
 
   // warrior selected by default; the ledger shows six stat bars
@@ -56,7 +56,7 @@ test("a chat is one keypress away, even facing the wrong way", async ({ page }) 
 });
 
 test("a hero can pick a look and wears it into the world", async ({ page }) => {
-  await page.goto("./");
+  await page.goto("./?pixi");
   await page.getByRole("button", { name: "New Game" }).click();
   await expect(page.locator(".look-swatch")).toHaveCount(4);
   await page.getByRole("button", { name: "Look 3" }).click();

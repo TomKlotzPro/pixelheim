@@ -7,7 +7,7 @@ test("the codex tracks masteries and reveals the bestiary", async ({ page }) => 
     state: { hero: { mastery?: Record<string, number> } };
   };
   save.state.hero.mastery = { beasts: 12 };
-  await page.goto("./");
+  await page.goto("./?pixi");
   await page.evaluate(([key, s]) => localStorage.setItem(key as string, JSON.stringify(s)), [SAVE_KEY, save] as const);
   await page.reload();
   await page.getByRole("button", { name: "Continue" }).click();
