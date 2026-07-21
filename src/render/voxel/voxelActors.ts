@@ -188,7 +188,9 @@ export class VoxelActors {
       const { texture, w, h } = makeSignTexture(sign.label);
       const plate = new BillboardSprite(new SpriteMaterial({ map: texture, transparent: true }));
       plate.scale.set(w * 0.8, h * 0.8, 1);
-      plate.position.set(sign.x * ART + ART / 2, GROUND_TOP + 12.5, sign.y * ART + ART / 2);
+      // hung against the facade above the door - never inside the wall, however
+      // tall the building (two-story walls swallowed centered plates, PIX-114)
+      plate.position.set(sign.x * ART + ART / 2, GROUND_TOP + 11.2, sign.y * ART + ART + 2.4);
       this.group.add(plate);
       this.signs.push(plate);
     }

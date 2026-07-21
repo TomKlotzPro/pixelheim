@@ -537,8 +537,11 @@ export class VoxelTerrain {
           put(0, 8.3, ART, wallH - 9.3, PLASTER, 1.1);
           put(0, 11.2, ART, 0.7, BEAM_DARK, 1.4);
         }
+        const isDoorFace = doorSet.has(key) && face.south;
         const railTop = tall ? 6.4 : 6.6;
-        if (facadeStyle === 0) {
+        if (isDoorFace) {
+          // the doorway owns this face: no braces crossing the frame
+        } else if (facadeStyle === 0) {
           // twin rails
           put(0, 3.4, ART, 0.7, BEAM_DARK);
           put(0, railTop, ART, 0.7, BEAM_DARK);
@@ -555,7 +558,6 @@ export class VoxelTerrain {
           put(0, 4.6, ART, 0.7, BEAM_DARK);
         }
 
-        const isDoorFace = doorSet.has(key) && face.south;
         if (isDoorFace) {
           // the crafted doorway: posts, lintel, plank door, knob, awning, step
           const px = wx;
