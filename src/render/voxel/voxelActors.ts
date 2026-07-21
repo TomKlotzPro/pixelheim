@@ -32,7 +32,7 @@ import {
   overlayGrids,
   uprightGeometry,
   type VoxelSheet,
-  walkFrameGrids,
+  strideGeometries,
 } from "./voxelData";
 
 const WALK_MS = 140;
@@ -188,7 +188,7 @@ export class VoxelActors {
       const { texture, w, h } = makeSignTexture(sign.label);
       const plate = new BillboardSprite(new SpriteMaterial({ map: texture, transparent: true }));
       plate.scale.set(w * 0.8, h * 0.8, 1);
-      plate.position.set(sign.x * ART + ART / 2, GROUND_TOP + ART + 4, sign.y * ART + ART / 2);
+      plate.position.set(sign.x * ART + ART / 2, GROUND_TOP + 12.5, sign.y * ART + ART / 2);
       this.group.add(plate);
       this.signs.push(plate);
     }
@@ -218,7 +218,7 @@ export class VoxelActors {
     // The 4-beat walk, extruded per frame: gear composes first, so plate and
     // blade ride the step exactly as they do in the 2D sheets.
     for (const frame of this.heroFrames) frame.dispose();
-    this.heroFrames = walkFrameGrids(grid).map((frame) => uprightGeometry(frame, 2));
+    this.heroFrames = strideGeometries(grid, 2);
     if (this.hero) {
       this.hero.geometry = this.heroFrames[0];
     } else {

@@ -27,7 +27,7 @@ export const VIEW_H = 13;
 /** Maps under the open sky; interiors keep a steady indoor rig. */
 const OUTDOOR_MAPS = new Set(["overworld", "town", "demo", "deepwood", "mirefen"]);
 
-const CAMERA_PITCH = Math.PI * 0.21; // ~38 degrees down: diorama on a table
+const CAMERA_PITCH = Math.PI * 0.19; // ~34 degrees down: facades in view
 const CAMERA_DISTANCE = 620;
 
 function clamp(value: number, min: number, max: number): number {
