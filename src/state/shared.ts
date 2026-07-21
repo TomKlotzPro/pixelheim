@@ -22,6 +22,7 @@ export const initialState: GameState = {
   townTier: 1,
   hallOpen: false,
   settlers: [],
+  bankOpen: false,
   quests: {},
   world: null,
   dungeonSelect: null,

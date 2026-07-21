@@ -24,6 +24,7 @@ import type { BattleState, GameState, Hero } from "../types";
 import { recordKill } from "../hero/mastery";
 import { QUESTS } from "../quests";
 import { rentPerProperty, townTierOf } from "../economy/town";
+import { expansionRent } from "../economy/bank";
 
 /**
  * The battle engine: the whole turn pipeline as functions over the game
@@ -160,7 +161,7 @@ function onMonsterDefeated(state: GameState, hero: Hero, log: string[]): void {
   // The landlord's cut: every owned business pays its rent on a victory.
   // A funded town pays better (PIX-91): tier 2 adds a coin per property.
   if (state.properties.length > 0) {
-    const rent = state.properties.length * rentPerProperty(townTierOf(state));
+    const rent = state.properties.length * rentPerProperty(townTierOf(state)) + expansionRent(state);
     state.gold += rent;
     log.push(`Rent from your properties: +${rent}g.`);
   }

@@ -56,6 +56,12 @@ function route(draft: GameState, action: Action): GameState | void {
     case "TOGGLE_SHOP":
     case "TOGGLE_HALL":
     case "FUND_TOWN":
+    case "TOGGLE_BANK":
+    case "BANK_DEPOSIT":
+    case "BANK_WITHDRAW":
+    case "FUND_VENTURE":
+    case "COLLECT_VENTURE":
+    case "EXPAND_PROPERTY":
     case "BUY_ITEM":
     case "SELL_ITEM":
     case "SELL_GEAR":

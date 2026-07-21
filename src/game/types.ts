@@ -233,6 +233,14 @@ export type GameState = {
   settlers: string[];
   /** The bard's marching song: +crit until the next battle ends. Additive. */
   bardSong?: boolean;
+  /** The bank's ledger: savings, one venture, business expansions. Additive. */
+  investments?: {
+    savings?: { principal: number; at: number };
+    venture?: { stake: number; at: number };
+    expansions: string[];
+  };
+  /** The bank panel (transient UI, like shopOpen). */
+  bankOpen: boolean;
   /** The city-hall ledger panel (transient UI, like shopOpen). */
   hallOpen: boolean;
   /** Every owned weapon/apparel piece, equipped or not. */
