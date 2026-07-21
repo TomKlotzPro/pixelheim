@@ -1,12 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { SAVE_KEY, VETERAN_SAVE } from "./helpers";
-
-async function walk(page: Page, key: string, times: number) {
-  for (let i = 0; i < times; i++) {
-    await page.keyboard.press(key);
-    await page.waitForTimeout(15);
-  }
-}
+import { SAVE_KEY, VETERAN_SAVE, walk } from "./helpers";
 
 async function loadVeteranInTown(page: Page, extra: Record<string, unknown> = {}) {
   const save = {

@@ -1,5 +1,8 @@
-import { expect, test, type Page } from "@playwright/test";
-import { SAVE_KEY, VETERAN_SAVE } from "./helpers";
+import { expect, test } from "@playwright/test";
+import { SAVE_KEY, VETERAN_SAVE, walk as sharedWalk } from "./helpers";
+
+/** The hall route is longer; the slower cadence keeps it reliable in CI. */
+const walk = (page: Page, key: string, times: number) => sharedWalk(page, key, times, 25);
 
 async function loadRichVeteranAt(page: Page, x: number, y: number) {
   const save = structuredClone(VETERAN_SAVE) as typeof VETERAN_SAVE & { state: { gold: number } };
@@ -19,13 +22,6 @@ async function loadRichVeteranAt(page: Page, x: number, y: number) {
   );
   await page.reload();
   await page.getByRole("button", { name: "Continue" }).click();
-}
-
-async function walk(page: Page, key: string, steps: number): Promise<void> {
-  for (let i = 0; i < steps; i++) {
-    await page.keyboard.press(key);
-    await page.waitForTimeout(25);
-  }
 }
 
 // The wow moment of PIX-91: pay the ledger, walk outside, and the town grew.

@@ -1,12 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { playTrack, trackForState } from "../audio/music";
-import { ambienceForState, setAmbience } from "../audio/ambience";
-import { heroSprite } from "../game/hero/character";
-import { rankIndex, rankTitle } from "../game/hero/ranks";
 import { canChoosePath, pathChoices } from "../game/hero/paths";
-import { ROLES } from "../game/hero/roles";
-import { SFX } from "../audio/sfx";
-import { audioReady, initAudio, isMuted, setMuted } from "../audio/synth";
+import { useAudio } from "../audio/useAudio";
+import { useRankUp } from "./useRankUp";
+import { useWorldKeys } from "./useWorldKeys";
+import { RankUpOverlay } from "../ui/RankUpOverlay";
+import { initAudio, isMuted, setMuted } from "../audio/synth";
 import { DungeonSelect } from "../ui/screens/DungeonSelect";
 import { Options } from "../ui/panels/Options";
 import { loadSettings, type Settings } from "./settings";
@@ -25,116 +23,9 @@ import { TitleScreen } from "../ui/screens/TitleScreen";
 import { Victory } from "../ui/screens/Victory";
 import { WorldScreen } from "../ui/screens/WorldScreen";
 import type { GameState } from "../game/types";
-import { dispatch, gameStore, useGameState } from "../state/store";
+import { dispatch, useGameState } from "../state/store";
 import { clearSave, decodeSaveCode, encodeSaveCode, loadSave, persistSave } from "../state/save";
-import type { Direction } from "../world/types";
 import { Sprite } from "../ui/widgets/Sprite";
-
-/**
- * The ascension scene: shows when the hero crosses a rank. While a path
- * choice is pending (PIX-105) the scene HOLDS - the cards are the moment -
- * and the timer only starts once the walk is chosen (or the scene dismissed).
- */
-function useRankUp(state: GameState, hold: boolean): { title: string | null; dismiss: () => void } {
-  const [title, setTitle] = useState<string | null>(null);
-  const pending = useRef<string | null>(null);
-  const prevLevel = useRef(state.hero?.level ?? 0);
-  const level = state.hero?.level ?? 0;
-  useEffect(() => {
-    const before = prevLevel.current;
-    prevLevel.current = level;
-    const hero = gameStore.getState().hero;
-    if (level > before && before > 0 && rankIndex(level) > rankIndex(before) && hero) {
-      // Ascension waits for daylight: the scene plays on the map, never over
-      // the battle where the level actually landed (PIX-101).
-      pending.current = rankTitle(hero);
-    }
-  }, [level]);
-  useEffect(() => {
-    if (state.screen === "world" && pending.current) {
-      setTitle(pending.current);
-      pending.current = null;
-      SFX.evolve();
-    }
-  }, [state.screen, level]);
-  // The dismiss timer lives on the title alone: an hp tick or xp gain used
-  // to clean it up and strand the card on screen forever (PIX-100).
-  useEffect(() => {
-    if (!title || hold) return;
-    const timer = setTimeout(() => setTitle(null), 4200);
-    return () => clearTimeout(timer);
-  }, [title, hold]);
-  return { title, dismiss: () => setTitle(null) };
-}
-
-/** Audio is a pure side effect: watch state transitions, never touch the reducer. */
-function useAudio(state: GameState) {
-  const prev = useRef(state);
-  const stateRef = useRef(state);
-  stateRef.current = state;
-
-  useEffect(() => {
-    const unlock = () => {
-      initAudio();
-      playTrack(trackForState(stateRef.current));
-      setAmbience(ambienceForState(stateRef.current));
-    };
-    window.addEventListener("pointerdown", unlock, { once: true });
-    window.addEventListener("keydown", unlock, { once: true });
-    return () => {
-      window.removeEventListener("pointerdown", unlock);
-      window.removeEventListener("keydown", unlock);
-    };
-  }, []);
-
-  const mapId = state.world?.position.mapId;
-  const monsterId = state.battle?.monster.def.id;
-  useEffect(() => {
-    if (!audioReady()) return;
-    playTrack(trackForState(stateRef.current));
-    setAmbience(ambienceForState(stateRef.current));
-  }, [state.screen, mapId, monsterId]);
-
-  useEffect(() => {
-    const p = prev.current;
-    prev.current = state;
-    if (!audioReady() || state === p) return;
-
-    if (state.hero && p.hero) {
-      const sameFight = state.battle && p.battle && state.battle.encounterIndex === p.battle.encounterIndex;
-      if (state.hero.level > p.hero.level) {
-        SFX.levelUp();
-      } else if (sameFight) {
-        if (state.battle!.monster.hp < p.battle!.monster.hp) SFX.hit();
-        if (state.hero.hp < p.hero.hp) SFX.hurt();
-        if (state.hero.hp > p.hero.hp) SFX.heal();
-      }
-      if (state.gold > p.gold) SFX.coin();
-      if (state.battle && p.battle && state.gear.length > p.gear.length) SFX.drop();
-      if (state.battle?.phase === "cleared" && p.battle?.phase !== "cleared") SFX.victory();
-      if (state.battle?.phase === "lost" && p.battle?.phase !== "lost") SFX.defeat();
-    }
-    if (state.hero && p.hero) {
-      // the wardrobe, the workshop, the mind: each has a voice now
-      if (state.equipped !== p.equipped) SFX.equip();
-      if (state.hero.skillNodes.length > p.hero.skillNodes.length) SFX.learn();
-      const jobsGrew = (Object.keys(state.hero.jobs) as (keyof typeof state.hero.jobs)[]).some(
-        (job) =>
-          state.hero!.jobs[job].xp > p.hero!.jobs[job].xp || state.hero!.jobs[job].level > p.hero!.jobs[job].level,
-      );
-      if (jobsGrew && !state.battle) SFX.craft();
-    }
-    if (state.world && p.world && state.world.openedChests.length > p.world.openedChests.length) SFX.chest();
-    if (state.screen === "battle" && p.screen === "world") SFX.bump();
-    if (state.screen === "world" && state.world && p.world) {
-      const moved =
-        Math.abs(state.world.position.x - p.world.position.x) + Math.abs(state.world.position.y - p.world.position.y);
-      if (state.world.position.mapId !== p.world.position.mapId) SFX.door();
-      else if (moved > 2) SFX.travel();
-      else if (moved > 0) SFX.step();
-    }
-  }, [state]);
-}
 
 function MuteButton() {
   const [muted, setMutedState] = useState(isMuted);
@@ -153,14 +44,6 @@ function MuteButton() {
     </button>
   );
 }
-
-/** Arrows always move regardless of custom bindings. */
-const ARROW_DIRECTIONS: Record<string, Direction> = {
-  ArrowUp: "up",
-  ArrowDown: "down",
-  ArrowLeft: "left",
-  ArrowRight: "right",
-};
 
 export default function App() {
   const state = useGameState();
@@ -203,61 +86,7 @@ export default function App() {
     }
   }, []);
 
-  useEffect(() => {
-    if (state.screen !== "world") return;
-    const { bindings } = settings;
-    const onKeyDown = (event: KeyboardEvent) => {
-      // Escape peels back one layer at a time: menus first, then the pause
-      // screen. Fresh state via the store: this listener outlives renders.
-      if (event.key === "Escape") {
-        const now = gameStore.getState();
-        if (mapOpen) setMapOpen(false);
-        else if (now.openPanel === "storage") dispatch({ type: "TOGGLE_STORAGE" });
-        else if (now.openPanel === "shop") dispatch({ type: "TOGGLE_SHOP" });
-        else if (now.openPanel === "inventory") dispatch({ type: "TOGGLE_INVENTORY" });
-        else if (now.dialogue) dispatch({ type: "ADVANCE_DIALOGUE" });
-        else if (!now.hero) dispatch({ type: "EXIT_WORLD" });
-        else setPaused((open) => !open);
-        return;
-      }
-      if (paused) return;
-      if (event.code === bindings.inventory) {
-        dispatch({ type: "TOGGLE_INVENTORY" });
-        return;
-      }
-      if (event.code === "KeyJ" && state.hero) {
-        window.dispatchEvent(new CustomEvent("pixelheim:journal"));
-        return;
-      }
-      if (event.code === bindings.map && state.hero) {
-        setMapOpen((open) => !open);
-        return;
-      }
-      if (mapOpen) return;
-      // Enter and Space always interact, on top of the custom binding.
-      if (event.code === bindings.interact || event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        dispatch({ type: "INTERACT" });
-        return;
-      }
-      const direction =
-        ARROW_DIRECTIONS[event.key] ??
-        (event.code === bindings.up
-          ? "up"
-          : event.code === bindings.down
-            ? "down"
-            : event.code === bindings.left
-              ? "left"
-              : event.code === bindings.right
-                ? "right"
-                : null);
-      if (!direction) return;
-      event.preventDefault();
-      dispatch({ type: "MOVE", direction });
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [state.screen, settings, paused, mapOpen, state.hero]);
+  useWorldKeys(state, settings, paused, setPaused, mapOpen, setMapOpen);
 
   return (
     <div className="crt">
@@ -308,51 +137,7 @@ export default function App() {
         />
       )}
       {rankUp && state.hero && (
-        <div className={`rankup-overlay${rankUpChoices.length > 0 ? " rankup-choosing" : ""}`} aria-live="polite">
-          <div className="rankup-bar rankup-bar-top" />
-          <div className="rankup-bar rankup-bar-bottom" />
-          <span className="rankup-rays" aria-hidden="true" />
-          <span
-            className="rankup-hero"
-            aria-hidden="true"
-            style={{ backgroundImage: `url(${import.meta.env.BASE_URL}sprites/${heroSprite(state.hero)}_walk.png)` }}
-          />
-          <div className="rankup-card">
-            <span className="rankup-eyebrow">Ascension</span>
-            <span className="rankup-title">{rankUp}</span>
-            <span className="rankup-note">+1 bonus skill point</span>
-          </div>
-          {rankUpChoices.length > 0 && (
-            <div className="rankup-paths">
-              <span className="rankup-eyebrow">The path forks</span>
-              <div className="rankup-path-cards">
-                {rankUpChoices.map((node) => (
-                  <button
-                    key={node.id}
-                    className="rankup-path-card"
-                    data-testid={`rankup-path-${node.id}`}
-                    onClick={() => {
-                      dispatch({ type: "CHOOSE_PATH", nodeId: node.id });
-                      SFX.learn();
-                    }}
-                  >
-                    <Sprite
-                      name={`${ROLES[state.hero!.roleId].sprite}_p${node.branch}_r${node.tier}`}
-                      size={32}
-                      alt=""
-                    />
-                    <span className="spec-name">{node.name}</span>
-                    <span className="rankup-path-blurb">{node.blurb}</span>
-                    <span className="skill-node-numbers">Signature: {node.signature.name}</span>
-                  </button>
-                ))}
-              </div>
-              <button className="btn btn-small rankup-later" onClick={dismissRankUp}>
-                Choose later, in Skills
-              </button>
-            </div>
-          )}
-        </div>
+        <RankUpOverlay hero={state.hero} title={rankUp} choices={rankUpChoices} onDismiss={dismissRankUp} />
       )}
     </div>
   );

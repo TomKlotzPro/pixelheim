@@ -1,3 +1,4 @@
+import { PanelShell } from "./PanelShell";
 import { useEffect, useRef } from "react";
 import { carriedWeight, carryCapacity } from "../../game/hero/character";
 import { dispatch, useGameState, useHero, useWorld } from "../../state/store";
@@ -43,57 +44,49 @@ export function MapScreen({ onClose }: MapScreenProps) {
   }, [overworld, world]);
 
   return (
-    <div className="overlay" onClick={onClose}>
-      <div className="panel map-panel" onClick={(e) => e.stopPropagation()} data-testid="map-screen">
-        <div className="inventory-header">
-          <h2>The Ashenreach</h2>
-          <button className="btn btn-small" onClick={onClose}>
-            Close
-          </button>
-        </div>
-        <canvas
-          ref={canvasRef}
-          className="map-canvas"
-          width={overworld.width * TILE_PX}
-          height={overworld.height * TILE_PX}
-        />
-        <div className="map-waypoints">
-          {WAYPOINTS.map((waypoint) => {
-            const known = waypointDiscovered(waypoint, world.discovered);
-            const usable = waypointUsable(waypoint, world.discovered, state.settlers ?? []);
-            const here =
-              world.position.mapId === waypoint.mapId &&
-              world.position.x === waypoint.arrival.x &&
-              world.position.y === waypoint.arrival.y;
-            return (
-              <div key={waypoint.id} className="options-row">
-                <span className={known ? "" : "options-note"}>{known ? waypoint.name : "Unknown"}</span>
-                <button
-                  className="btn btn-small"
-                  disabled={!usable || here || encumbered}
-                  title={
-                    encumbered
-                      ? "Too heavy to travel"
-                      : known && !usable
-                        ? "The post stands empty - it needs its stablemaster"
-                        : undefined
-                  }
-                  onClick={() => {
-                    dispatch({ type: "FAST_TRAVEL", waypointId: waypoint.id });
-                    onClose();
-                  }}
-                >
-                  {here ? "Here" : "Travel"}
-                </button>
-              </div>
-            );
-          })}
-        </div>
-        <p className="options-footer">
-          {encumbered ? "Too heavy to travel. Lighten the pack." : "Seen once, reachable forever."}
-        </p>
+    <PanelShell onClose={onClose} className="map-panel" testId="map-screen" title="The Ashenreach">
+      <canvas
+        ref={canvasRef}
+        className="map-canvas"
+        width={overworld.width * TILE_PX}
+        height={overworld.height * TILE_PX}
+      />
+      <div className="map-waypoints">
+        {WAYPOINTS.map((waypoint) => {
+          const known = waypointDiscovered(waypoint, world.discovered);
+          const usable = waypointUsable(waypoint, world.discovered, state.settlers ?? []);
+          const here =
+            world.position.mapId === waypoint.mapId &&
+            world.position.x === waypoint.arrival.x &&
+            world.position.y === waypoint.arrival.y;
+          return (
+            <div key={waypoint.id} className="options-row">
+              <span className={known ? "" : "options-note"}>{known ? waypoint.name : "Unknown"}</span>
+              <button
+                className="btn btn-small"
+                disabled={!usable || here || encumbered}
+                title={
+                  encumbered
+                    ? "Too heavy to travel"
+                    : known && !usable
+                      ? "The post stands empty - it needs its stablemaster"
+                      : undefined
+                }
+                onClick={() => {
+                  dispatch({ type: "FAST_TRAVEL", waypointId: waypoint.id });
+                  onClose();
+                }}
+              >
+                {here ? "Here" : "Travel"}
+              </button>
+            </div>
+          );
+        })}
       </div>
-    </div>
+      <p className="options-footer">
+        {encumbered ? "Too heavy to travel. Lighten the pack." : "Seen once, reachable forever."}
+      </p>
+    </PanelShell>
   );
 }
 

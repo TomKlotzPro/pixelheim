@@ -1,47 +1,7 @@
-import { expect, test, type Page } from "@playwright/test";
-import { createHero } from "./helpers";
+import { expect, test } from "@playwright/test";
+import { createHero, chase, fightOut, walkPath as walk } from "./helpers";
 
 /** Walk a path with small settles between steps. */
-async function walk(page: Page, steps: [string, number][]): Promise<void> {
-  for (const [key, n] of steps) {
-    for (let i = 0; i < n; i++) {
-      await page.keyboard.press(key);
-      await page.waitForTimeout(20);
-    }
-  }
-}
-
-/** Press keys until a wild battle starts (spawns pace a 2x2 loop). */
-async function chase(page: Page, keys: string[]): Promise<void> {
-  for (const key of keys) {
-    if (
-      await page
-        .getByText(/The Wilds:/)
-        .isVisible()
-        .catch(() => false)
-    )
-      return;
-    await page.keyboard.press(key);
-    await page.waitForTimeout(30);
-  }
-  await expect(page.getByText(/The Wilds:/)).toBeVisible();
-}
-
-/** Attack until the fight resolves one way or the other. */
-async function fightOut(page: Page): Promise<void> {
-  for (let i = 0; i < 40; i++) {
-    const walkOn = page.getByRole("button", { name: "Walk on" });
-    if (await walkOn.isVisible().catch(() => false)) {
-      await walkOn.click();
-      return;
-    }
-    const attack = page.getByRole("button", { name: "Attack", exact: true });
-    if (await attack.isVisible().catch(() => false)) await attack.click();
-    await page.waitForTimeout(60);
-  }
-  throw new Error("the fight never resolved");
-}
-
 test("the full loop: a new hero quests, fights, shops and sleeps in one life", async ({ page }) => {
   test.setTimeout(90_000);
   await createHero(page, "Loop");
