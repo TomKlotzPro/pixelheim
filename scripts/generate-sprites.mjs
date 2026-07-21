@@ -419,23 +419,23 @@ const sprites = {
     ],
   },
   tile_roof: {
-    palette: { R: "#a03a3a", D: "#7d2a2a", L: "#b84a4a" },
+    palette: { R: "#8a5638", D: "#6d4128", L: "#a06a45" },
     rows: ROOF_ROWS,
   },
   tile_roof_slate: {
-    palette: { R: "#5a6578", D: "#454e60", L: "#6e7a90" },
+    palette: { R: "#5c6673", D: "#48505c", L: "#717d8b" },
     rows: ROOF_ROWS,
   },
-  tile_roof_violet: {
-    palette: { R: "#7a4a8f", D: "#603a70", L: "#8f5ea8" },
+  tile_roof_thatch: {
+    palette: { R: "#b08c4c", D: "#8e6f3a", L: "#c6a361" },
     rows: ROOF_ROWS,
   },
   tile_roof_moss: {
-    palette: { R: "#6a7a3a", D: "#52602c", L: "#84965a" },
+    palette: { R: "#67713d", D: "#50592e", L: "#7d884f" },
     rows: ROOF_ROWS,
   },
   tile_roof_awning: {
-    palette: { A: "#3e8f5c", W: "#e8e0cc", D: "#2d6b44", w: "#b8b0a0" },
+    palette: { A: "#8a3d34", W: "#e2d6bd", D: "#6b2d27", w: "#b3a890" },
     rows: [
       "DDDDDDDDDDDDDDDD",
       "AAWWAAWWAAWWAAWW",

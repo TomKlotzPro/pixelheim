@@ -23,7 +23,7 @@ export const TILES: Record<TileId, TileDef> = {
   floor: { id: "floor", sprite: "tile_floor", walkable: true },
   roof: { id: "roof", sprite: "tile_roof", walkable: false },
   roof_slate: { id: "roof_slate", sprite: "tile_roof_slate", walkable: false },
-  roof_violet: { id: "roof_violet", sprite: "tile_roof_violet", walkable: false },
+  roof_thatch: { id: "roof_thatch", sprite: "tile_roof_thatch", walkable: false },
   roof_awning: { id: "roof_awning", sprite: "tile_roof_awning", walkable: false },
   roof_moss: { id: "roof_moss", sprite: "tile_roof_moss", walkable: false },
   sign_goods: { id: "sign_goods", sprite: "sign_goods", walkable: false },

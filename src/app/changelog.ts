@@ -11,6 +11,19 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.60.0",
+    date: "2026-07-21",
+    codename: "The Village Reborn",
+    notes: [
+      "THE ROOF CARNIVAL IS OVER: one weathered medieval family - oak shingle, slate, golden thatch, moss - replaces the red/purple/green patchwork, each building weathered its own way",
+      "NO TWO HOUSES ALIKE: gabled ridges on the long houses, hipped roofs on the square ones, two-story landmarks with jettied upper floors, and three timber facade styles - twin rails, cross-braces, close studs",
+      "Shingle courses laid across every roof plane - big roofs read as built, not painted",
+      "A REAL VILLAGE: the dirt road from the north gate opens into a paved square held by the shrine - market pockets, scalloped corners, the old well off its SW edge - with Main Street up top and a south lane serving every door",
+      "The land got lived-in: a fenced sheep pen, flower meadows, kitchen gardens behind the cottages, and a walled orchard behind the player's house",
+      "The four ages grew with it: stalls and lamps at Village, a fountain and a thatched row-house at Town, a slate townhouse and a farmhouse at City",
+    ],
+  },
+  {
     version: "0.59.0",
     date: "2026-07-21",
     codename: "Gold at Work",

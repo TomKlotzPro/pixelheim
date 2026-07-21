@@ -19,7 +19,7 @@ const CHAR_TILES: Record<string, TileId> = {
   $: "floor",
   r: "roof",
   "1": "roof_slate",
-  "2": "roof_violet",
+  "2": "roof_thatch",
   "3": "roof_awning",
   "4": "roof_moss",
   h: "sign_smith",
