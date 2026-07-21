@@ -35,7 +35,14 @@ const BLOCK_HEIGHTS: Partial<Record<TileId, number>> = {
 /** Ground that is not at the standard height; everything else lies at 1. */
 const FLAT_TOPS: Partial<Record<TileId, number>> = { water: 0.45, marsh: 0.8, bridge: 1.6 };
 /** How far a pixel's brightness pushes its column out of the ground. */
-const FLAT_RELIEF: Partial<Record<TileId, number>> = { water: 0, bridge: 0.3, path: 0.5, floor: 0.3, sand: 0.5 };
+const FLAT_RELIEF: Partial<Record<TileId, number>> = {
+  water: 0,
+  bridge: 0.3,
+  path: 0.5,
+  floor: 0.3,
+  sand: 0.5,
+  crops: 2,
+};
 const DEFAULT_RELIEF = 1.1;
 export const GROUND_TOP = 1;
 
@@ -46,7 +53,7 @@ const FACADE_TILES: Partial<Record<TileId, number>> = { cave: 14 };
 const BUILDING_TILES = new Set<TileId>([
   "roof",
   "roof_slate",
-  "roof_violet",
+  "roof_thatch",
   "roof_awning",
   "roof_moss",
   "door",
@@ -67,9 +74,24 @@ const DOOR_WOOD = "#7a5230";
 const DOOR_PLANK = "#5c3d20";
 const KNOB = "#e0b84a";
 const WALL_H = 10;
+/** Two-story houses: taller walls, a jettied upper floor proud of the ground one. */
+const WALL_H_TALL = 14;
 const ROOF_STEP = 2;
 const ROOF_MAX_LEVELS = 6;
 const OVERHANG = 2;
+
+/**
+ * Curated medieval roof hues (PIX-114): one weathered family - oak shingle,
+ * slate, golden thatch, moss - never sampled from sprite art, so the whole
+ * village agrees. Per-building weathering comes from a stable hash.
+ */
+const ROOF_HUES: Partial<Record<TileId, string>> = {
+  roof: "#8a5638",
+  roof_slate: "#59677c",
+  roof_thatch: "#a8823f",
+  roof_moss: "#67713d",
+  roof_awning: "#8a5638",
+};
 
 /**
  * Terrain that breathes, matching the Pixi sway sheets: frame B is the same
@@ -80,6 +102,7 @@ const ANIMATED: Partial<Record<TileId, { dx: number; dy: number; period: number 
   flowers: { dx: 1, dy: 1, period: 800 },
   forest: { dx: 1, dy: 1, period: 800 },
   marsh: { dx: 1, dy: 1, period: 800 },
+  crops: { dx: 1, dy: 0, period: 900 },
 };
 
 /** Same stable hash as the Pixi terrain: grass repeats less. */
@@ -269,7 +292,12 @@ const EARTH = new Color("#3a2c20");
 
 type Cell = { x: number; y: number; danger: boolean };
 type SwayPair = { a: InstancedMesh; b: InstancedMesh; period: number; phase: number };
-type Building = { cells: { x: number; y: number }[]; roofTile: TileId; doors: { x: number; y: number }[] };
+type Building = {
+  cells: { x: number; y: number }[];
+  roofTile: TileId;
+  doors: { x: number; y: number }[];
+  civic: boolean;
+};
 
 /**
  * The ground as a diorama (PIX-113, the medieval pass): open land is extruded
@@ -354,54 +382,90 @@ export class VoxelTerrain {
           consumed.add(`${c.x},${c.y}`);
         }
         const roofTile = [...roofCounts.entries()].toSorted((a, b) => b[1] - a[1])[0]?.[0] ?? "roof";
-        buildings.push({ cells, roofTile, doors });
+        // the town hall is civic: found by its portal, not by coordinates
+        const civic = doors.some((d) =>
+          map.portals.some((p) => p.x === d.x && p.y === d.y && p.to.kind === "map" && p.to.mapId === "town_hall"),
+        );
+        buildings.push({ cells, roofTile, doors, civic });
       }
     }
     return { buildings, consumed };
   }
 
   /**
-   * One medieval timber house over ANY footprint: per-cell plaster walls with
-   * beams on every street face, amber windows, crafted doorways, and a hipped
-   * roof whose height follows each cell's distance to the footprint edge.
+   * One medieval timber house over ANY footprint (PIX-114: no two alike).
+   * A stable hash of the footprint corner picks the building's character:
+   * one or two stories (large halls always two), a gabled ridge when the
+   * footprint runs long or a hipped roof when it sits square, one of three
+   * timber facades, and its own weathering of the curated roof hue.
    */
-  private buildHouse(sheet: VoxelSheet, building: Building): void {
+  private buildHouse(building: Building): void {
     const b = new VoxelBuilder();
     const inside = new Set(building.cells.map((c) => `${c.x},${c.y}`));
     const doorSet = new Set(building.doors.map((c) => `${c.x},${c.y}`));
-    const roofSprite = sheet.sprites[TILES[building.roofTile].sprite];
-    const roofHue = roofSprite ? averageColor(colorGrid(roofSprite)) : "#8a4a3a";
 
-    // roof levels: BFS distance to the outside, capped - a stepped hip roof
+    const minX = Math.min(...building.cells.map((c) => c.x));
+    const minY = Math.min(...building.cells.map((c) => c.y));
+    const spanX = Math.max(...building.cells.map((c) => c.x)) - minX + 1;
+    const spanY = Math.max(...building.cells.map((c) => c.y)) - minY + 1;
+    const seed = decorHash(minX * 7 + 1, minY * 13 + 3);
+    const roofHue = darken(ROOF_HUES[building.roofTile] ?? "#8a5638", [1, 0.93, 0.86][seed % 3]);
+    const tall = building.civic || building.cells.length >= 55 || seed % 4 === 0;
+    const wallH = tall ? WALL_H_TALL : WALL_H;
+    const facadeStyle = building.civic ? 0 : seed % 3;
+
+    // roof form: a gabled ridge when the footprint runs long, hipped when square
     const level = new Map<string, number>();
-    let frontier = building.cells.filter((c) =>
-      [
-        [1, 0],
-        [-1, 0],
-        [0, 1],
-        [0, -1],
-      ].some(([dx, dy]) => !inside.has(`${c.x + dx},${c.y + dy}`)),
-    );
-    for (const c of frontier) level.set(`${c.x},${c.y}`, 0);
-    let depth = 0;
-    while (frontier.length > 0) {
-      depth += 1;
-      const next: { x: number; y: number }[] = [];
-      for (const c of frontier) {
-        for (const [dx, dy] of [
+    const gableAxis = spanX >= spanY + 2 ? "x" : spanY >= spanX + 2 ? "y" : null;
+    if (gableAxis) {
+      // distance to the eave edges across the short axis: a straight ridge
+      const across = (c: { x: number; y: number }, dx: number, dy: number) => {
+        let d = 0;
+        let x = c.x + dx;
+        let y = c.y + dy;
+        while (inside.has(`${x},${y}`)) {
+          d += 1;
+          x += dx;
+          y += dy;
+        }
+        return d;
+      };
+      for (const c of building.cells) {
+        const d =
+          gableAxis === "x" ? Math.min(across(c, 0, 1), across(c, 0, -1)) : Math.min(across(c, 1, 0), across(c, -1, 0));
+        level.set(`${c.x},${c.y}`, d);
+      }
+    } else {
+      // BFS distance to the outside: a stepped hip roof over any shape
+      let frontier = building.cells.filter((c) =>
+        [
           [1, 0],
           [-1, 0],
           [0, 1],
           [0, -1],
-        ]) {
-          const k = `${c.x + dx},${c.y + dy}`;
-          if (inside.has(k) && !level.has(k)) {
-            level.set(k, depth);
-            next.push({ x: c.x + dx, y: c.y + dy });
+        ].some(([dx, dy]) => !inside.has(`${c.x + dx},${c.y + dy}`)),
+      );
+      for (const c of frontier) level.set(`${c.x},${c.y}`, 0);
+      let depth = 0;
+      while (frontier.length > 0) {
+        depth += 1;
+        const next: { x: number; y: number }[] = [];
+        for (const c of frontier) {
+          for (const [dx, dy] of [
+            [1, 0],
+            [-1, 0],
+            [0, 1],
+            [0, -1],
+          ]) {
+            const k = `${c.x + dx},${c.y + dy}`;
+            if (inside.has(k) && !level.has(k)) {
+              level.set(k, depth);
+              next.push({ x: c.x + dx, y: c.y + dy });
+            }
           }
         }
+        frontier = next;
       }
-      frontier = next;
     }
 
     let chimneyAt = building.cells[0];
@@ -417,12 +481,24 @@ export class VoxelTerrain {
       }
 
       // the plaster body of this cell
-      b.box(wx, 0, wz, ART, WALL_H, ART, PLASTER, { north: true, south: true, west: true, east: true });
+      b.box(wx, 0, wz, ART, wallH, ART, PLASTER, { north: true, south: true, west: true, east: true });
 
-      // the roof column: banded shingle courses climbing toward the middle
+      // the roof column: banded shingle courses climbing toward the ridge,
+      // with per-cell weathering so wide planes never read as one flat slab
       const roofH = (d + 1) * ROOF_STEP;
-      const color = d === ROOF_MAX_LEVELS - 1 ? darken(roofHue, 0.7) : d % 2 ? darken(roofHue, 0.74) : roofHue;
-      b.box(wx, WALL_H, wz, ART, roofH, ART, color);
+      const course = d === ROOF_MAX_LEVELS - 1 ? 0.7 : d % 2 ? 0.74 : 1;
+      const weather = 1 - ((cell.x * 3 + cell.y * 7) % 3) * 0.06;
+      const shade = course * weather;
+      b.box(wx, wallH, wz, ART, roofH, ART, darken(roofHue, shade));
+      // shingle course lines across the top plane, laid parallel to the ridge
+      const seam = darken(roofHue, shade * 0.78);
+      for (const o of [2.5, 7.5, 12.5]) {
+        if (gableAxis === "y") {
+          b.box(wx + o, wallH + roofH, wz, 1.2, 0.4, ART, seam);
+        } else {
+          b.box(wx, wallH + roofH, wz + o, ART, 0.4, 1.2, seam);
+        }
+      }
 
       // dress every exterior face
       const faces: { dx: number; dy: number; south?: boolean }[] = [
@@ -437,11 +513,11 @@ export class VoxelTerrain {
         const fo = face.dx > 0 || face.dy > 0 ? ART : 0;
         // eave lip over this face
         if (alongX) {
-          b.box(wx - 1, WALL_H, wz + fo - (face.dy > 0 ? 0 : OVERHANG), ART + 2, 1.2, OVERHANG, darken(roofHue, 0.62));
+          b.box(wx - 1, wallH, wz + fo - (face.dy > 0 ? 0 : OVERHANG), ART + 2, 1.2, OVERHANG, darken(roofHue, 0.62));
         } else {
-          b.box(wx + fo - (face.dx > 0 ? 0 : OVERHANG), WALL_H, wz - 1, OVERHANG, 1.2, ART + 2, darken(roofHue, 0.62));
+          b.box(wx + fo - (face.dx > 0 ? 0 : OVERHANG), wallH, wz - 1, OVERHANG, 1.2, ART + 2, darken(roofHue, 0.62));
         }
-        // stone footing and timber: plate, corner studs, twin rails
+        // stone footing and timber: plate, corner studs, then the facade style
         const t = 0.6;
         const put = (u0: number, y0: number, len: number, h: number, color2: string, extrude = t) => {
           if (alongX) {
@@ -450,14 +526,38 @@ export class VoxelTerrain {
             b.box(face.dx > 0 ? wx + ART - 0.2 : wx - extrude + 0.2, y0, wz + u0, extrude, h, len, color2);
           }
         };
-        put(0, 0, ART, 1.4, STONE, 1);
-        put(0, WALL_H - 1, ART, 1, BEAM, 0.9);
-        put(0, 0, 1.2, WALL_H, BEAM, 0.9);
-        put(ART - 1.2, 0, 1.2, WALL_H, BEAM, 0.9);
-        put(0, 3.4, ART, 0.7, BEAM_DARK);
-        put(0, 6.6, ART, 0.7, BEAM_DARK);
-
+        put(0, 0, ART, building.civic ? 3.6 : 1.4, STONE, 1);
+        put(0, wallH - 1, ART, 1, BEAM, 0.9);
+        put(0, 0, 1.2, wallH, BEAM, tall ? 1.5 : 0.9);
+        put(ART - 1.2, 0, 1.2, wallH, BEAM, tall ? 1.5 : 0.9);
+        if (tall) {
+          // the jettied upper floor: a plaster slab proud of the ground wall,
+          // riding a heavy jetty beam, with its own rail
+          put(-0.4, 7.2, ART + 0.8, 1.1, BEAM, 1.6);
+          put(0, 8.3, ART, wallH - 9.3, PLASTER, 1.1);
+          put(0, 11.2, ART, 0.7, BEAM_DARK, 1.4);
+        }
         const isDoorFace = doorSet.has(key) && face.south;
+        const railTop = tall ? 6.4 : 6.6;
+        if (isDoorFace) {
+          // the doorway owns this face: no braces crossing the frame
+        } else if (facadeStyle === 0) {
+          // twin rails
+          put(0, 3.4, ART, 0.7, BEAM_DARK);
+          put(0, railTop, ART, 0.7, BEAM_DARK);
+        } else if (facadeStyle === 1) {
+          // stepped cross-braces climbing both ways between the studs
+          for (let i = 0; i < 4; i++) {
+            put(2.2 + i * 2.9, 1.8 + i * 1.2, 2.9, 0.9, BEAM_DARK);
+            put(ART - 5.1 - i * 2.9, 1.8 + i * 1.2, 2.9, 0.9, BEAM_DARK);
+          }
+        } else {
+          // close-studded: two uprights and a single waist rail
+          put(5.1, 1.4, 0.9, railTop - 1.4, BEAM_DARK);
+          put(ART - 6, 1.4, 0.9, railTop - 1.4, BEAM_DARK);
+          put(0, 4.6, ART, 0.7, BEAM_DARK);
+        }
+
         if (isDoorFace) {
           // the crafted doorway: posts, lintel, plank door, knob, awning, step
           const px = wx;
@@ -473,29 +573,54 @@ export class VoxelTerrain {
           b.box(px + 2.5, 8.3, facez - 3, 11, 0.9, 3, roofHue);
           b.box(px + 4, 0, facez, 8, 0.7, 1.8, STONE);
         } else if (decorHash(cell.x + face.dx * 3, cell.y + face.dy * 3) % 3 !== 0) {
-          // an amber window: beam frame, stone sill, glowing pane
-          if (alongX) {
-            const facez = face.dy > 0 ? wz + ART - 0.3 : wz - 0.5;
-            b.box(wx + 4.5, 3, facez, 7, 5.4, 0.8, BEAM);
-            b.box(wx + 4.2, 2.4, facez, 7.6, 0.7, 0.9, STONE);
-            this.glass.box(wx + 5.5, 3.8, face.dy > 0 ? facez + 0.2 : facez - 0.2, 5, 3.8, 0.8, GLASS);
-            b.box(wx + 7.7, 3.8, face.dy > 0 ? facez + 0.4 : facez - 0.4, 0.6, 3.8, 0.6, BEAM);
-          } else {
-            const facex = face.dx > 0 ? wx + ART - 0.3 : wx - 0.5;
-            b.box(facex, 3, wz + 4.5, 0.8, 5.4, 7, BEAM);
-            this.glass.box(face.dx > 0 ? facex + 0.2 : facex - 0.2, 3.8, wz + 5.5, 0.8, 3.8, 5, GLASS);
+          // an amber window: beam frame, stone sill, glowing pane - and a
+          // second, smaller one upstairs on the jettied floor
+          const putGlass = (u0: number, y0: number, len: number, h: number, extrude: number) => {
+            if (alongX) {
+              this.glass.box(wx + u0, y0, face.dy > 0 ? wz + ART - 0.2 : wz - extrude + 0.2, len, h, extrude, GLASS);
+            } else {
+              this.glass.box(face.dx > 0 ? wx + ART - 0.2 : wx - extrude + 0.2, y0, wz + u0, extrude, h, len, GLASS);
+            }
+          };
+          const winTop = tall ? 6.8 : 8.4;
+          put(4.5, 3, 7, winTop - 3, BEAM, 0.8);
+          put(4.2, 2.4, 7.6, 0.7, STONE, 0.9);
+          putGlass(5.5, 3.6, 5, winTop - 4.4, 1);
+          put(7.7, 3.6, 0.6, winTop - 4.4, BEAM, 1.2);
+          if (tall) {
+            put(4.7, 9.4, 6.6, 3.4, BEAM, 1.6);
+            putGlass(5.6, 10, 4.8, 2.2, 1.8);
+            put(7.7, 10, 0.6, 2.2, BEAM, 2);
           }
         }
       }
     }
 
-    // one chimney on the highest ridge cell; the atmosphere smokes it
-    const chx = chimneyAt.x * ART + 6;
-    const chz = chimneyAt.y * ART + 6;
-    const chTop = WALL_H + (Math.min(chimneyLevel, ROOF_MAX_LEVELS - 1) + 1) * ROOF_STEP;
-    b.box(chx, chTop, chz, 4, 5, 4, "#6b4034");
-    b.box(chx - 1, chTop + 5, chz - 1, 6, 1, 6, "#3a2a26");
-    this.chimneyTops.push({ x: chx + 2, y: chTop + 6, z: chz + 2 });
+    const chTop = wallH + (Math.min(chimneyLevel, ROOF_MAX_LEVELS - 1) + 1) * ROOF_STEP;
+    if (building.civic) {
+      // the hall carries a bell tower on the ridge, banner flying
+      const tx = chimneyAt.x * ART + 4;
+      const tz = chimneyAt.y * ART + 4;
+      const slate = ROOF_HUES.roof_slate ?? "#59677c";
+      b.box(tx, chTop, tz, 8, 7, 8, PLASTER);
+      b.box(tx - 0.8, chTop, tz - 0.8, 1.4, 7, 1.4, BEAM);
+      b.box(tx + 7.4, chTop, tz - 0.8, 1.4, 7, 1.4, BEAM);
+      b.box(tx - 0.8, chTop, tz + 7.4, 1.4, 7, 1.4, BEAM);
+      b.box(tx + 7.4, chTop, tz + 7.4, 1.4, 7, 1.4, BEAM);
+      this.glass.box(tx + 2.5, chTop + 2.5, tz - 0.4, 3, 3, 0.8, GLASS);
+      b.box(tx - 1.2, chTop + 7, tz - 1.2, 10.4, 1, 10.4, STONE);
+      b.box(tx - 1.6, chTop + 8, tz - 1.6, 11.2, 2.4, 11.2, darken(slate, 0.9));
+      b.box(tx + 1, chTop + 10.4, tz + 1, 6, 2.2, 6, darken(slate, 0.72));
+      b.box(tx + 3.4, chTop + 12.6, tz + 3.4, 1.2, 6.5, 1.2, BEAM_DARK);
+      b.box(tx + 4.6, chTop + 16.2, tz + 3.7, 4.6, 2.6, 0.6, "#b03030");
+    } else {
+      // one chimney on the highest ridge cell; the atmosphere smokes it
+      const chx = chimneyAt.x * ART + 6;
+      const chz = chimneyAt.y * ART + 6;
+      b.box(chx, chTop, chz, 4, 5, 4, "#6b4034");
+      b.box(chx - 1, chTop + 5, chz - 1, 6, 1, 6, "#3a2a26");
+      this.chimneyTops.push({ x: chx + 2, y: chTop + 6, z: chz + 2 });
+    }
 
     const mesh = new Mesh(b.build(), this.material);
     mesh.castShadow = true;
@@ -507,7 +632,7 @@ export class VoxelTerrain {
     this.dispose();
 
     const { buildings, consumed } = this.findBuildings(map);
-    for (const building of buildings) this.buildHouse(sheet, building);
+    for (const building of buildings) this.buildHouse(building);
 
     const buckets = new Map<string, { tile: TileId; cells: Cell[] }>();
     const decorCells = new Map<DecorKind, { x: number; y: number; ox: number; oz: number }[]>();
