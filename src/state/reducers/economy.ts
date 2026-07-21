@@ -5,6 +5,15 @@ import { createGear, gearItem } from "../../game/economy/rarity";
 import { canCraft, RECIPES } from "../../game/economy/recipes";
 import { atJobStation, doubleBrewChance, forgeCapFor, forgeCostFor, grantJobXp } from "../../game/economy/jobs";
 import { fundBlocker, nextTier, townTierOf } from "../../game/economy/town";
+import {
+  EXPANSION_COST,
+  investmentsOf,
+  savingsValue,
+  VENTURE_COST,
+  ventureOutcome,
+  ventureReady,
+} from "../../game/economy/bank";
+import { isSettled } from "../../game/settlers";
 import { buyPrice, gearSellPriceAt, sellPriceAt, SHOPS, shopStock } from "../../game/economy/shop";
 import type { GameState } from "../../game/types";
 import type { EconomyAction } from "../actions";
@@ -69,6 +78,65 @@ export function economyReducer(draft: GameState, action: EconomyAction): void {
       // The ledger lives across the mayor's counter, nowhere else.
       if (draft.screen !== "world" || draft.world?.position.mapId !== "town_hall") return;
       draft.hallOpen = !draft.hallOpen;
+      return;
+    }
+
+    case "TOGGLE_BANK": {
+      // The ledger opens across Mirelle's counter in town, nowhere else.
+      if (draft.screen !== "world" || draft.world?.position.mapId !== "town") return;
+      if (!isSettled(draft, "settler_mirelle")) return;
+      draft.bankOpen = !draft.bankOpen;
+      return;
+    }
+
+    case "BANK_DEPOSIT": {
+      if (!draft.bankOpen || action.amount <= 0 || draft.gold < action.amount) return;
+      const inv = investmentsOf(draft);
+      // depositing folds any accrued interest into the new principal
+      const carried = inv.savings ? savingsValue(inv.savings, draft.worldSteps) : 0;
+      draft.gold -= action.amount;
+      draft.investments = { ...inv, savings: { principal: carried + action.amount, at: draft.worldSteps } };
+      return;
+    }
+
+    case "BANK_WITHDRAW": {
+      const inv = investmentsOf(draft);
+      if (!draft.bankOpen || !inv.savings) return;
+      const value = savingsValue(inv.savings, draft.worldSteps);
+      draft.gold += value;
+      draft.investments = { ...inv, savings: undefined };
+      draft.worldMessage = `Withdrawn: ${value}g. Mirelle stamps the ledger.`;
+      return;
+    }
+
+    case "FUND_VENTURE": {
+      const inv = investmentsOf(draft);
+      if (!draft.bankOpen || inv.venture || draft.gold < VENTURE_COST) return;
+      draft.gold -= VENTURE_COST;
+      draft.investments = { ...inv, venture: { stake: VENTURE_COST, at: draft.worldSteps } };
+      draft.worldMessage = "The caravan rolls out. Give it half a day on the road.";
+      return;
+    }
+
+    case "COLLECT_VENTURE": {
+      const inv = investmentsOf(draft);
+      if (!draft.bankOpen || !inv.venture || !ventureReady(inv.venture, draft.worldSteps)) return;
+      const { won, payout } = ventureOutcome(inv.venture);
+      draft.gold += payout;
+      draft.investments = { ...inv, venture: undefined };
+      draft.worldMessage = won
+        ? `The caravan returns heavy! +${payout}g.`
+        : `Raiders hit the caravan. ${payout}g salvaged from the wreck.`;
+      return;
+    }
+
+    case "EXPAND_PROPERTY": {
+      const inv = investmentsOf(draft);
+      if (!draft.bankOpen || !draft.properties.includes(action.mapId)) return;
+      if (inv.expansions.includes(action.mapId) || draft.gold < EXPANSION_COST) return;
+      draft.gold -= EXPANSION_COST;
+      draft.investments = { ...inv, expansions: [...inv.expansions, action.mapId] };
+      draft.worldMessage = "The expansion is funded: that business pays richer rent now.";
       return;
     }
 

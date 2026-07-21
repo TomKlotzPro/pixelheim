@@ -90,6 +90,26 @@ export const RECRUITS: Recruit[] = [
       "Horses hate the ash fields. Smart animals.",
     ],
   },
+  {
+    id: "settler_mirelle",
+    name: "Mirelle the Banker",
+    sprite: "alchemist",
+    found: { mapId: "overworld", x: 52, y: 36, wander: false },
+    home: { x: 46, y: 20, wander: false },
+    minTownTier: 3,
+    ask: { kind: "gold", amount: 500 },
+    meetLines: [
+      "I count coins for caravans that never stop anywhere worth banking in.",
+      "Give me a town with a fountain and 500 gold of founding capital, and I will make Pixelheim's money WORK.",
+    ],
+    askLine: "500 gold of founding capital, and the bank follows you home.",
+    tierLine: "A bank needs a TOWN, not a village fair. Fund the third charter and we will talk.",
+    joinedLine: "Capital received. Find my ledger by the city hall - bring your idle gold.",
+    townLines: [
+      "Idle gold is lazy gold. Savings, a caravan, an expansion - put it to work.",
+      "The mayor builds with your gold. I make it come BACK. We are not the same.",
+    ],
+  },
 ];
 
 export function getRecruit(id: string): Recruit | null {
