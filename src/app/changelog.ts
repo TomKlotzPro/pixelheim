@@ -11,6 +11,17 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.62.0",
+    date: "2026-07-21",
+    codename: "Load-Bearing Walls",
+    notes: [
+      "A code-quality pass under the floorboards: one panel system instead of seven scattered flags - menus are properly modal everywhere now, and a save taken with any panel open loads clean",
+      "The three renderers now share one camera, one day/night clock and one interaction-prompt rule - the classic renderer's prompt had quietly drifted; it agrees with the others again",
+      "The world's reaction to E moved into tidy rooms of its own; the balance sim and tests now see the same funded town the game does",
+      "New safety nets: the map parser and the loot tables got their first dedicated test suites",
+    ],
+  },
+  {
     version: "0.61.0",
     date: "2026-07-21",
     codename: "Home & Hearth",

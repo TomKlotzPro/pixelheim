@@ -21,10 +21,10 @@ import {
   trophySellMultiplier,
   trophyStatDelta,
 } from "../../game/economy/house";
-import { buyPrice, gearSellPriceAt, sellPriceAt, SHOPS, shopStock } from "../../game/economy/shop";
+import { activeShopId, buyPrice, gearSellPriceAt, sellPriceAt, SHOPS, shopStock } from "../../game/economy/shop";
 import type { GameState } from "../../game/types";
 import type { EconomyAction } from "../actions";
-import { activeShopId, HOUSE_DEED_COST, PROPERTY_PRICES } from "../shared";
+import { HOUSE_DEED_COST, PROPERTY_PRICES, togglePanel } from "../shared";
 
 export function economyReducer(draft: GameState, action: EconomyAction): void {
   switch (action.type) {
@@ -38,12 +38,12 @@ export function economyReducer(draft: GameState, action: EconomyAction): void {
     }
 
     case "TOGGLE_STORAGE": {
-      draft.storageOpen = !draft.storageOpen;
+      togglePanel(draft, "storage");
       return;
     }
 
     case "STORE_ITEM": {
-      if (!draft.house.owned || !draft.storageOpen) return;
+      if (!draft.house.owned || draft.openPanel !== "storage") return;
       const have = draft.inventory[action.itemId] ?? 0;
       const count = Math.min(action.count ?? 1, have);
       if (count <= 0) return;
@@ -53,7 +53,7 @@ export function economyReducer(draft: GameState, action: EconomyAction): void {
     }
 
     case "TAKE_ITEM": {
-      if (!draft.house.owned || !draft.storageOpen) return;
+      if (!draft.house.owned || draft.openPanel !== "storage") return;
       const stored = draft.house.storage[action.itemId] ?? 0;
       const count = Math.min(action.count ?? 1, stored);
       if (count <= 0) return;
@@ -77,14 +77,14 @@ export function economyReducer(draft: GameState, action: EconomyAction): void {
     case "TOGGLE_SHOP": {
       // Shops live inside their keepers' buildings.
       if (draft.screen !== "world" || !activeShopId(draft)) return;
-      draft.shopOpen = !draft.shopOpen;
+      togglePanel(draft, "shop");
       return;
     }
 
     case "TOGGLE_HALL": {
       // The ledger lives across the mayor's counter, nowhere else.
       if (draft.screen !== "world" || draft.world?.position.mapId !== "town_hall") return;
-      draft.hallOpen = !draft.hallOpen;
+      togglePanel(draft, "hall");
       return;
     }
 
@@ -92,12 +92,12 @@ export function economyReducer(draft: GameState, action: EconomyAction): void {
       // The ledger opens across Mirelle's counter in town, nowhere else.
       if (draft.screen !== "world" || draft.world?.position.mapId !== "town") return;
       if (!isSettled(draft, "settler_mirelle")) return;
-      draft.bankOpen = !draft.bankOpen;
+      togglePanel(draft, "bank");
       return;
     }
 
     case "BANK_DEPOSIT": {
-      if (!draft.bankOpen || action.amount <= 0 || draft.gold < action.amount) return;
+      if (draft.openPanel !== "bank" || action.amount <= 0 || draft.gold < action.amount) return;
       const inv = investmentsOf(draft);
       // depositing folds any accrued interest into the new principal
       const carried = inv.savings ? savingsValue(inv.savings, draft.worldSteps) : 0;
@@ -108,7 +108,7 @@ export function economyReducer(draft: GameState, action: EconomyAction): void {
 
     case "BANK_WITHDRAW": {
       const inv = investmentsOf(draft);
-      if (!draft.bankOpen || !inv.savings) return;
+      if (draft.openPanel !== "bank" || !inv.savings) return;
       const value = savingsValue(inv.savings, draft.worldSteps);
       draft.gold += value;
       draft.investments = { ...inv, savings: undefined };
@@ -118,7 +118,7 @@ export function economyReducer(draft: GameState, action: EconomyAction): void {
 
     case "FUND_VENTURE": {
       const inv = investmentsOf(draft);
-      if (!draft.bankOpen || inv.venture || draft.gold < VENTURE_COST) return;
+      if (draft.openPanel !== "bank" || inv.venture || draft.gold < VENTURE_COST) return;
       draft.gold -= VENTURE_COST;
       draft.investments = { ...inv, venture: { stake: VENTURE_COST, at: draft.worldSteps } };
       draft.worldMessage = "The caravan rolls out. Give it half a day on the road.";
@@ -127,7 +127,7 @@ export function economyReducer(draft: GameState, action: EconomyAction): void {
 
     case "COLLECT_VENTURE": {
       const inv = investmentsOf(draft);
-      if (!draft.bankOpen || !inv.venture || !ventureReady(inv.venture, draft.worldSteps)) return;
+      if (draft.openPanel !== "bank" || !inv.venture || !ventureReady(inv.venture, draft.worldSteps)) return;
       const { won, payout } = ventureOutcome(inv.venture);
       draft.gold += payout;
       draft.investments = { ...inv, venture: undefined };
@@ -139,7 +139,7 @@ export function economyReducer(draft: GameState, action: EconomyAction): void {
 
     case "EXPAND_PROPERTY": {
       const inv = investmentsOf(draft);
-      if (!draft.bankOpen || !draft.properties.includes(action.mapId)) return;
+      if (draft.openPanel !== "bank" || !draft.properties.includes(action.mapId)) return;
       if (inv.expansions.includes(action.mapId) || draft.gold < EXPANSION_COST) return;
       draft.gold -= EXPANSION_COST;
       draft.investments = { ...inv, expansions: [...inv.expansions, action.mapId] };
@@ -150,7 +150,7 @@ export function economyReducer(draft: GameState, action: EconomyAction): void {
     case "BUY_HOUSE_UPGRADE": {
       // Odo sells the bigger deeds (PIX-34): Cottage, then Manor. The new
       // interior is served by the house-tier mirror the moment you walk in.
-      const next = draft.shopOpen && activeShopId(draft) === "odo" ? nextHouseTier(draft) : null;
+      const next = draft.openPanel === "shop" && activeShopId(draft) === "odo" ? nextHouseTier(draft) : null;
       if (!next || draft.gold < next.cost) return;
       draft.gold -= next.cost;
       draft.house.tier = next.tier;
@@ -159,18 +159,18 @@ export function economyReducer(draft: GameState, action: EconomyAction): void {
     }
 
     case "TOGGLE_TROPHIES": {
-      draft.trophiesOpen = !draft.trophiesOpen;
+      togglePanel(draft, "trophies");
       return;
     }
 
     case "TOGGLE_NOOK": {
-      draft.nookOpen = !draft.nookOpen;
+      togglePanel(draft, "nook");
       return;
     }
 
     case "DISPLAY_TROPHY": {
       // Sell it for gold, or shelve it for power: the trophy finally decides.
-      if (!draft.trophiesOpen || !TROPHY_BUFFS[action.itemId]) return;
+      if (draft.openPanel !== "trophies" || !TROPHY_BUFFS[action.itemId]) return;
       const shown = draft.house.trophies ?? [];
       if (shown.includes(action.itemId) || (draft.inventory[action.itemId] ?? 0) <= 0) return;
       draft.inventory = removeItem(draft.inventory, action.itemId);
@@ -184,7 +184,7 @@ export function economyReducer(draft: GameState, action: EconomyAction): void {
     }
 
     case "TAKE_TROPHY": {
-      if (!draft.trophiesOpen || !(draft.house.trophies ?? []).includes(action.itemId)) return;
+      if (draft.openPanel !== "trophies" || !(draft.house.trophies ?? []).includes(action.itemId)) return;
       draft.house.trophies = (draft.house.trophies ?? []).filter((id) => id !== action.itemId);
       draft.inventory = addItem(draft.inventory, action.itemId);
       if (draft.hero) {
@@ -197,7 +197,7 @@ export function economyReducer(draft: GameState, action: EconomyAction): void {
 
     case "COMBINE_POTIONS": {
       // The manor's alchemy nook: two of a brew distill into one better one.
-      const recipe = draft.nookOpen ? NOOK_COMBINES.find((c) => c.from === action.itemId) : null;
+      const recipe = draft.openPanel === "nook" ? NOOK_COMBINES.find((c) => c.from === action.itemId) : null;
       if (!recipe || (draft.inventory[action.itemId] ?? 0) < 2) return;
       draft.inventory = removeItem(draft.inventory, recipe.from, 2);
       draft.inventory = addItem(draft.inventory, recipe.to);
@@ -217,7 +217,7 @@ export function economyReducer(draft: GameState, action: EconomyAction): void {
     }
 
     case "BUY_ITEM": {
-      const shopId = draft.shopOpen ? activeShopId(draft) : null;
+      const shopId = draft.openPanel === "shop" ? activeShopId(draft) : null;
       if (!shopId) return;
       const item = getItem(action.itemId);
       if (!shopStock(shopId, draft.unlockedLevel).some((stocked) => stocked.id === item.id)) return;
@@ -231,7 +231,7 @@ export function economyReducer(draft: GameState, action: EconomyAction): void {
     }
 
     case "SELL_ITEM": {
-      const shopId = draft.shopOpen ? activeShopId(draft) : null;
+      const shopId = draft.openPanel === "shop" ? activeShopId(draft) : null;
       if (!shopId || (draft.inventory[action.itemId] ?? 0) <= 0) return;
       const item = getItem(action.itemId);
       draft.gold += Math.floor(sellPriceAt(shopId, item, townTierOf(draft)) * trophySellMultiplier(draft));
@@ -240,7 +240,7 @@ export function economyReducer(draft: GameState, action: EconomyAction): void {
     }
 
     case "SELL_GEAR": {
-      const shopId = draft.shopOpen ? activeShopId(draft) : null;
+      const shopId = draft.openPanel === "shop" ? activeShopId(draft) : null;
       if (!shopId || Object.values(draft.equipped).includes(action.uid)) return;
       const instance = gearByUid(draft.gear, action.uid);
       if (!instance) return;
@@ -250,7 +250,7 @@ export function economyReducer(draft: GameState, action: EconomyAction): void {
     }
 
     case "UPGRADE_GEAR": {
-      const shopId = draft.shopOpen ? activeShopId(draft) : null;
+      const shopId = draft.openPanel === "shop" ? activeShopId(draft) : null;
       if (!shopId || !SHOPS[shopId].forge || !draft.hero) return;
       const instance = gearByUid(draft.gear, action.uid);
       if (!instance || instance.bonus >= forgeCapFor(draft.hero.jobs.smithing.level)) return;

@@ -1,5 +1,4 @@
-import { SHOP_MAPS } from "../game/economy/shop";
-import type { GameState } from "../game/types";
+import type { GameState, PanelId } from "../game/types";
 import type { Direction, TileId } from "../world/types";
 
 export const REST_COST = 10;
@@ -14,17 +13,11 @@ export const initialState: GameState = {
   unlockedLevel: 1,
   clearedLevels: [],
   battle: null,
-  inventoryOpen: false,
-  shopOpen: false,
-  storageOpen: false,
+  openPanel: null,
   house: { owned: false, storage: {} },
   properties: [],
   townTier: 1,
-  hallOpen: false,
   settlers: [],
-  bankOpen: false,
-  trophiesOpen: false,
-  nookOpen: false,
   quests: {},
   world: null,
   dungeonSelect: null,
@@ -67,7 +60,7 @@ export const DIRECTION_DELTAS: Record<Direction, { dx: number; dy: number }> = {
 /** Terrain that can hide monsters; paths, bridges and buildings are safe. */
 export const WILD_TILES = new Set<TileId>(["grass", "forest", "marsh", "ash", "sand"]);
 
-/** The shop whose building the hero is standing in, if any. */
-export function activeShopId(state: GameState) {
-  return state.world ? (SHOP_MAPS[state.world.position.mapId] ?? null) : null;
+/** Open if closed, close if it is the one showing - panels never stack. */
+export function togglePanel(state: GameState, panel: PanelId): void {
+  state.openPanel = state.openPanel === panel ? null : panel;
 }

@@ -20,6 +20,93 @@ import { restCostFor, townTierOf } from "../../game/economy/town";
 import { addItem, removeItem } from "../../game/economy/inventory";
 import { questProgress, questReady, questsFor } from "../../game/quests";
 
+/**
+ * Everything E can touch inside the player's house (PIX-33/34/109): placed
+ * furniture first, then the home tiles. Returns true when it handled the
+ * interaction so INTERACT can fall through to NPCs otherwise.
+ */
+function handleHouseInteract(draft: GameState, tx: number, ty: number): boolean {
+  if (!draft.world || !draft.hero || draft.world.position.mapId !== "town_house") return false;
+  // Placed furniture comes back to the pack with a touch (PIX-34).
+  const placed = furnitureAt(draft, "town_house", tx, ty);
+  if (placed) {
+    draft.house.furniture = (draft.house.furniture ?? []).filter((f) => f !== placed);
+    draft.inventory = addItem(draft.inventory, placed.itemId);
+    draft.worldMessage = `${getItem(placed.itemId).name} back in the pack.`;
+    return true;
+  }
+  const homeTile = getMap("town_house").tiles[ty]?.[tx];
+  switch (homeTile) {
+    case "bed":
+      draft.hero.hp = draft.hero.stats.maxHp;
+      draft.hero.mp = draft.hero.stats.maxMp;
+      draft.worldMessage = "Your own bed. Fully rested, free of charge.";
+      return true;
+    case "barrel":
+      draft.openPanel = "storage";
+      return true;
+    // The shelf is where the workbench fits (PIX-109): E names the price,
+    // pays it deed-style, and afterwards opens the pack to craft from.
+    case "shelf":
+      if (draft.house.workbench) {
+        draft.openPanel = "inventory";
+        draft.worldMessage = null;
+      } else if (draft.gold >= WORKBENCH_COST) {
+        draft.gold -= WORKBENCH_COST;
+        draft.house.workbench = true;
+        draft.worldMessage = "A workbench and a small cauldron, fitted to the shelf. Craft at home, forever.";
+      } else {
+        draft.worldMessage = `A proper workbench would fit this shelf. Tools and parts cost ${WORKBENCH_COST}g.`;
+      }
+      return true;
+    // Every piece of furniture answers to E: silence reads as a bug.
+    case "hearth":
+      draft.worldMessage = draft.house.workbench
+        ? "The hearth roars beside your workbench. Home industry."
+        : "The hearth crackles, warm and idle. A workbench would fit by the shelf...";
+      return true;
+    case "counter":
+      draft.worldMessage = "Your kitchen counter. Clean, empty, hopeful.";
+      return true;
+    // The cottage's shelf of honor (PIX-34): display trophies for buffs.
+    case "trophy_shelf":
+      draft.openPanel = "trophies";
+      return true;
+    // The manor garden ripens on victories; E reads its progress.
+    case "garden": {
+      const wins = draft.house.gardenWins ?? 0;
+      draft.worldMessage = `The garden drinks your victories: ${wins}/${GARDEN_WINS_PER_YIELD} until the next harvest.`;
+      return true;
+    }
+    // The manor's alchemy nook: two brews become a better one.
+    case "cauldron":
+      draft.openPanel = "nook";
+      return true;
+    default:
+      return false;
+  }
+}
+
+/**
+ * Entering the inn rests the hero. Tier-3 towns honor their patron: the
+ * price halves once the fountain sings (PIX-91).
+ */
+function restAtInn(draft: GameState): void {
+  const hero = draft.hero;
+  if (!hero) return;
+  const restCost = restCostFor(townTierOf(draft));
+  if (hero.hp === hero.stats.maxHp && hero.mp === hero.stats.maxMp) {
+    draft.worldMessage = "The innkeeper nods. You are already well rested.";
+  } else if (draft.gold < restCost) {
+    draft.worldMessage = `No coin, no bed. (Rest costs ${restCost}g.)`;
+  } else {
+    draft.gold -= restCost;
+    hero.hp = hero.stats.maxHp;
+    hero.mp = hero.stats.maxMp;
+    draft.worldMessage = `You rest at the inn. Fully restored. (-${restCost}g)`;
+  }
+}
+
 export function worldReducer(draft: GameState, action: WorldAction): void {
   switch (action.type) {
     case "ENTER_WORLD": {
@@ -32,8 +119,7 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
           ? { ...previous.position }
           : { mapId: map.id, x: map.spawn.x, y: map.spawn.y, facing: "down" as const };
       draft.screen = "world";
-      draft.inventoryOpen = false;
-      draft.shopOpen = false;
+      draft.openPanel = null;
       draft.world = {
         position,
         discovered: discoverAround(previous?.discovered ?? {}, map, position.x, position.y),
@@ -52,7 +138,7 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
 
     case "FAST_TRAVEL": {
       if (draft.screen !== "world" || !draft.world || !draft.hero) return;
-      if (draft.dialogue || draft.shopOpen || draft.inventoryOpen) return;
+      if (draft.dialogue || draft.openPanel) return;
       // The classic rule: nobody teleports over-encumbered.
       if (
         carriedWeight(draft.inventory, draft.gear, draft.equipped) >
@@ -80,7 +166,7 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
     case "INTERACT": {
       if (draft.screen !== "world" || !draft.world || !draft.hero) return;
       // Menus are modal: no talking through the shop, the pack or the chest.
-      if (draft.shopOpen || draft.inventoryOpen || draft.storageOpen) return;
+      if (draft.openPanel) return;
       if (draft.dialogue) {
         worldReducer(draft, { type: "ADVANCE_DIALOGUE" });
         return;
@@ -109,72 +195,8 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
         }
         return;
       }
-      // Home furniture answers to E: the bed rests, the barrel stores.
-      if (position.mapId === "town_house") {
-        // Placed furniture comes back to the pack with a touch (PIX-34).
-        const placed = furnitureAt(draft, position.mapId, position.x + dx, position.y + dy);
-        if (placed) {
-          draft.house.furniture = (draft.house.furniture ?? []).filter((f) => f !== placed);
-          draft.inventory = addItem(draft.inventory, placed.itemId);
-          draft.worldMessage = `${getItem(placed.itemId).name} back in the pack.`;
-          return;
-        }
-        const homeTile = getMap(position.mapId).tiles[position.y + dy]?.[position.x + dx];
-        if (homeTile === "bed") {
-          draft.hero.hp = draft.hero.stats.maxHp;
-          draft.hero.mp = draft.hero.stats.maxMp;
-          draft.worldMessage = "Your own bed. Fully rested, free of charge.";
-          return;
-        }
-        if (homeTile === "barrel") {
-          draft.storageOpen = true;
-          return;
-        }
-        // The shelf is where the workbench fits (PIX-109): E names the price,
-        // pays it deed-style, and afterwards opens the pack to craft from.
-        if (homeTile === "shelf") {
-          if (draft.house.workbench) {
-            draft.inventoryOpen = true;
-            draft.worldMessage = null;
-            return;
-          }
-          if (draft.gold >= WORKBENCH_COST) {
-            draft.gold -= WORKBENCH_COST;
-            draft.house.workbench = true;
-            draft.worldMessage = "A workbench and a small cauldron, fitted to the shelf. Craft at home, forever.";
-          } else {
-            draft.worldMessage = `A proper workbench would fit this shelf. Tools and parts cost ${WORKBENCH_COST}g.`;
-          }
-          return;
-        }
-        // Every piece of furniture answers to E: silence reads as a bug.
-        if (homeTile === "hearth") {
-          draft.worldMessage = draft.house.workbench
-            ? "The hearth roars beside your workbench. Home industry."
-            : "The hearth crackles, warm and idle. A workbench would fit by the shelf...";
-          return;
-        }
-        if (homeTile === "counter") {
-          draft.worldMessage = "Your kitchen counter. Clean, empty, hopeful.";
-          return;
-        }
-        // The cottage's shelf of honor (PIX-34): display trophies for buffs.
-        if (homeTile === "trophy_shelf") {
-          draft.trophiesOpen = true;
-          return;
-        }
-        // The manor garden ripens on victories; E reads its progress.
-        if (homeTile === "garden") {
-          const wins = draft.house.gardenWins ?? 0;
-          draft.worldMessage = `The garden drinks your victories: ${wins}/${GARDEN_WINS_PER_YIELD} until the next harvest.`;
-          return;
-        }
-        // The manor's alchemy nook: two brews become a better one.
-        if (homeTile === "cauldron") {
-          draft.nookOpen = true;
-          return;
-        }
-      }
+      // Everything home answers to E: furniture, bed, shelf, trophies, nook.
+      if (handleHouseInteract(draft, position.x + dx, position.y + dy)) return;
       // Anyone beside the hero counts, faced tile first; no more pixel-perfect
       // shuffling to line up a chat. Interacting turns the hero toward them.
       const beside = npcBeside(position.mapId, position.x, position.y, position.facing, draft.worldSteps);
@@ -183,18 +205,18 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
       // Keepers trade instead of chatting: talking to whoever runs a shop
       // opens their counter (the menu no longer jumps at you on entry).
       if (SHOP_MAPS[position.mapId]) {
-        draft.shopOpen = true;
+        draft.openPanel = "shop";
         return;
       }
       // The mayor opens the town ledger instead of small talk (PIX-91).
       if (position.mapId === "town_hall") {
-        draft.hallOpen = true;
+        draft.openPanel = "hall";
         return;
       }
       // A settled banker opens her ledger the same way (PIX-93); before she
       // joins, the conversation is the recruitment.
       if (beside.npc.id === "settler_mirelle" && isSettled(draft, "settler_mirelle")) {
-        draft.bankOpen = true;
+        draft.openPanel = "bank";
         return;
       }
       draft.dialogue = { npcId: beside.npc.id, page: 0 };
@@ -222,7 +244,7 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
       }
       draft.inventory = removeItem(draft.inventory, action.itemId);
       draft.house.furniture = [...(draft.house.furniture ?? []), { itemId: action.itemId, x: tx, y: ty }];
-      draft.inventoryOpen = false;
+      draft.openPanel = null;
       draft.worldMessage = `${getItem(action.itemId).name} placed. E takes it back.`;
       return;
     }
@@ -247,7 +269,7 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
       if (draft.screen !== "world" || !draft.world) return;
       // Menus are modal: walking away with the shop open used to strand the
       // overlay on a map with no shop and crash the tree (PIX-58).
-      if (draft.dialogue || draft.shopOpen || draft.inventoryOpen || draft.storageOpen) return;
+      if (draft.dialogue || draft.openPanel) return;
       const { position } = draft.world;
       const map = getMap(position.mapId);
       const { dx, dy } = DIRECTION_DELTAS[action.direction];
@@ -298,22 +320,7 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
         draft.world.slain = [];
         draft.world.position = { mapId: target.id, x: portal.to.x, y: portal.to.y, facing: action.direction };
         draft.world.discovered = discoverAround(draft.world.discovered, target, portal.to.x, portal.to.y);
-        // Entering the inn rests the hero. Tier-3 towns honor their patron:
-        // the price halves once the fountain sings (PIX-91).
-        if (target.id === INN_MAP_ID && draft.hero) {
-          const hero = draft.hero;
-          const restCost = restCostFor(townTierOf(draft));
-          if (hero.hp === hero.stats.maxHp && hero.mp === hero.stats.maxMp) {
-            draft.worldMessage = "The innkeeper nods. You are already well rested.";
-          } else if (draft.gold < restCost) {
-            draft.worldMessage = `No coin, no bed. (Rest costs ${restCost}g.)`;
-          } else {
-            draft.gold -= restCost;
-            hero.hp = hero.stats.maxHp;
-            hero.mp = hero.stats.maxMp;
-            draft.worldMessage = `You rest at the inn. Fully restored. (-${restCost}g)`;
-          }
-        }
+        if (target.id === INN_MAP_ID) restAtInn(draft);
         return;
       }
       if (portal && portal.to.kind === "exit") {

@@ -31,7 +31,11 @@ describe("the growing house (PIX-34)", () => {
     s = gameReducer(s, { type: "BUY_HOUSE_UPGRADE" });
     expect(houseTier(s)).toBe(1);
 
-    s = { ...s, world: { ...s.world!, position: { mapId: "town_shop", x: 8, y: 4, facing: "up" } }, shopOpen: true };
+    s = {
+      ...s,
+      world: { ...s.world!, position: { mapId: "town_shop", x: 8, y: 4, facing: "up" } },
+      openPanel: "shop" as const,
+    };
     s = gameReducer(s, { type: "BUY_HOUSE_UPGRADE" });
     expect(houseTier(s)).toBe(2);
     expect(s.gold).toBe(15_000);

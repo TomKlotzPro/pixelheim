@@ -16,7 +16,7 @@ function atHall(gold: number): GameState {
   s.hero = createHero("Patron", "warrior");
   s.screen = "world";
   s.gold = gold;
-  s.hallOpen = true;
+  s.openPanel = "hall";
   s.world = { position: { mapId: "town_hall", x: 8, y: 8, facing: "up" }, discovered: {}, openedChests: [], slain: [] };
   return s;
 }

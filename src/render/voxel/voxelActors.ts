@@ -17,10 +17,11 @@ import { rankPresence } from "../../game/hero/ranks";
 import type { GameState } from "../../game/types";
 import { spawnSpecies } from "../../game/combat/encounters";
 import { getMonster } from "../../game/combat/monsters";
-import { type Chest, chestSpriteName, chestsOn, solidChestAt } from "../../world/chests";
+import { type Chest, chestSpriteName, chestsOn } from "../../world/chests";
 import { furnitureOn } from "../../game/economy/house";
 import { getItem } from "../../game/economy/items";
-import { npcBeside, npcPosition, npcsOn, type Npc } from "../../world/npcs";
+import { npcPosition, npcsOn, type Npc } from "../../world/npcs";
+import { interactionPrompt } from "../../world/interactionPrompt";
 import { type MonsterSpawn, spawnPosition, spawnRegion, spawnsOn } from "../../world/spawns";
 import { signsOn } from "../../world/signs";
 import type { WorldMap } from "../../world/types";
@@ -46,8 +47,6 @@ function idleBeat(id: string): { phase: number; period: number } {
   for (const c of id) h = (h * 31 + c.charCodeAt(0)) % 9973;
   return { phase: h, period: 420 + (h % 5) * 45 };
 }
-
-const FACING_DELTAS = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] } as const;
 
 /** The talk prompt, as voxels: a bright "!" that ignores the night. */
 const PROMPT_GRID: ColorGrid = ["Y", "Y", "Y", "Y", ".", "Y"].map((ch) => [ch === "." ? null : "#ffd469"]);
@@ -303,20 +302,9 @@ export class VoxelActors {
 
     // Someone to talk to (or something to open): same rules as the 2D world.
     if (this.prompt) {
-      const idle = state.hero && !state.dialogue && !state.shopOpen && !state.inventoryOpen;
-      const beside = idle ? npcBeside(map.id, pos.x, pos.y, pos.facing, state.worldSteps) : null;
-      const faced = FACING_DELTAS[pos.facing];
-      const chest = idle && !beside ? solidChestAt(map.id, pos.x + faced[0], pos.y + faced[1]) : null;
-      const openable = chest && !(state.world?.openedChests ?? []).includes(chest.id) ? chest : null;
-      this.prompt.visible = beside !== null || openable !== null;
-      if (beside || openable) {
-        const delta = beside ? FACING_DELTAS[beside.facing] : faced;
-        this.prompt.position.set(
-          (pos.x + delta[0]) * ART + ART / 2,
-          GROUND_TOP + ART + 3,
-          (pos.y + delta[1]) * ART + ART / 2,
-        );
-      }
+      const at = interactionPrompt(state, map.id);
+      this.prompt.visible = at !== null;
+      if (at) this.prompt.position.set(at.x * ART + ART / 2, GROUND_TOP + ART + 3, at.y * ART + ART / 2);
     }
   }
 

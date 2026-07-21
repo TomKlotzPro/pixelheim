@@ -15,37 +15,16 @@ import {
 import { loadSettings } from "../../app/settings";
 import type { GameState } from "../../game/types";
 import { getMap } from "../../world/maps/index";
-import type { WorldMap, WorldPosition } from "../../world/types";
 import { VoxelActors } from "./voxelActors";
 import { VoxelAtmosphere } from "./voxelAtmosphere";
 import { ART, loadVoxelSheet, type VoxelSheet } from "./voxelData";
 import { GROUND_TOP, VoxelTerrain } from "./voxelTerrain";
+import { cameraFor, OUTDOOR_MAPS, VIEW_H, VIEW_W, type WorldRenderer } from "../worldCamera";
 
-export const VIEW_W = 21;
-export const VIEW_H = 13;
-
-/** Maps under the open sky; interiors keep a steady indoor rig. */
-const OUTDOOR_MAPS = new Set(["overworld", "town", "demo", "deepwood", "mirefen"]);
+export { VIEW_H, VIEW_W } from "../worldCamera";
 
 const CAMERA_PITCH = Math.PI * 0.19; // ~34 degrees down: facades in view
 const CAMERA_DISTANCE = 620;
-
-function clamp(value: number, min: number, max: number): number {
-  return Math.max(min, Math.min(max, value));
-}
-
-/** The same camera as the 2D renderers: center small maps, clamp large ones. */
-function cameraFor(map: WorldMap, pos: WorldPosition): { x: number; y: number } {
-  const x =
-    map.width <= VIEW_W
-      ? -Math.floor((VIEW_W - map.width) / 2)
-      : clamp(pos.x - Math.floor(VIEW_W / 2), 0, map.width - VIEW_W);
-  const y =
-    map.height <= VIEW_H
-      ? -Math.floor((VIEW_H - map.height) / 2)
-      : clamp(pos.y - Math.floor(VIEW_H / 2), 0, map.height - VIEW_H);
-  return { x, y };
-}
 
 /**
  * The voxel world renderer (PIX-111): a three.js scene extruded live from the
@@ -53,7 +32,7 @@ function cameraFor(map: WorldMap, pos: WorldPosition): { x: number; y: number } 
  * renderer - init/update/destroy plus onTileClick - so the store neither
  * knows nor cares which world it is drawing.
  */
-export class VoxelWorldRenderer {
+export class VoxelWorldRenderer implements WorldRenderer {
   private renderer: WebGLRenderer | null = null;
   private scene = new Scene();
   private camera: OrthographicCamera;
