@@ -33,6 +33,12 @@ export type EconomyAction =
   | { type: "TOGGLE_SHOP" }
   | { type: "TOGGLE_HALL" }
   | { type: "FUND_TOWN" }
+  | { type: "TOGGLE_BANK" }
+  | { type: "BANK_DEPOSIT"; amount: number }
+  | { type: "BANK_WITHDRAW" }
+  | { type: "FUND_VENTURE" }
+  | { type: "COLLECT_VENTURE" }
+  | { type: "EXPAND_PROPERTY"; mapId: string }
   | { type: "BUY_ITEM"; itemId: string }
   | { type: "SELL_ITEM"; itemId: string }
   | { type: "SELL_GEAR"; uid: string }

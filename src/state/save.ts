@@ -81,6 +81,7 @@ function normalizeSave(state: unknown): GameState | null {
     inventoryOpen: false,
     shopOpen: false,
     hallOpen: false,
+    bankOpen: false,
     dungeonSelect: null,
     worldMessage: null,
     dialogue: null,

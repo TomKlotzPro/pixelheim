@@ -11,6 +11,17 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.59.0",
+    date: "2026-07-21",
+    codename: "Gold at Work",
+    notes: [
+      "THE BANK OPENS: Mirelle the Banker waits on the overworld road - a City charter and 500 gold of founding capital bring her ledger home, right beside the city hall",
+      "SAVINGS with teeth: deposit gold and it earns 2% per in-game day, up to ten days - patience pays, parking doesn't",
+      "THE CARAVAN: stake 500 gold on a trade run and hear the news half a day later - most return heavy with profit, some meet raiders on the road",
+      "EXPANSIONS: pour 1,000 gold into a business you own and its rent grows with every victory",
+    ],
+  },
+  {
     version: "0.58.0",
     date: "2026-07-21",
     codename: "Timber & Stone",
