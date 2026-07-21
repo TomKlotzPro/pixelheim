@@ -9,7 +9,7 @@ import { type Chest, chestAt, chestRegion, solidChestAt } from "../../world/ches
 import { discoverAround } from "../../world/discover";
 import { getMap } from "../../world/maps/index";
 import { npcAt, npcBeside, npcById } from "../../world/npcs";
-import { resolveSettler } from "../../game/settlers";
+import { isSettled, resolveSettler } from "../../game/settlers";
 import { monsterSpawnAt, spawnRegion } from "../../world/spawns";
 import { waypointUsable, WAYPOINTS } from "../../world/waypoints";
 import { isWalkable, portalAt } from "../../world/parseMap";
@@ -164,6 +164,12 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
       // The mayor opens the town ledger instead of small talk (PIX-91).
       if (position.mapId === "town_hall") {
         draft.hallOpen = true;
+        return;
+      }
+      // A settled banker opens her ledger the same way (PIX-93); before she
+      // joins, the conversation is the recruitment.
+      if (beside.npc.id === "settler_mirelle" && isSettled(draft, "settler_mirelle")) {
+        draft.bankOpen = true;
         return;
       }
       draft.dialogue = { npcId: beside.npc.id, page: 0 };
