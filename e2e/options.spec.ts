@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 import { createHero } from "./helpers";
 
 test("options opens from the title menu and volume changes persist", async ({ page }) => {
-  await page.goto("./");
+  await page.goto("./?pixi");
   await page.getByRole("button", { name: "Options", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Options" })).toBeVisible();
 

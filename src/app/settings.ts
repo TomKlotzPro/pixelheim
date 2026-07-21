@@ -29,8 +29,10 @@ export type Settings = {
   sfxVolume: number;
   scanlines: boolean;
   reduceMotion: boolean;
-  /** "webgl" is the game; "voxel" is the 3D diorama; "classic" is the legacy DOM tile renderer. */
+  /** "voxel" is the game (the 3D diorama); "webgl" is the classic 2D canvas; "classic" is the legacy DOM tile renderer. */
   renderer: "webgl" | "classic" | "voxel";
+  /** Set once the voxel cutover ran: renderer choices made after it are deliberate and respected. */
+  voxelCutover?: boolean;
   bindings: Bindings;
 };
 
@@ -41,7 +43,7 @@ export const DEFAULT_SETTINGS: Settings = {
   sfxVolume: 0.7,
   scanlines: true,
   reduceMotion: false,
-  renderer: "webgl",
+  renderer: "voxel",
   bindings: { ...DEFAULT_BINDINGS },
 };
 
@@ -50,6 +52,12 @@ export function loadSettings(): Settings {
     const raw = localStorage.getItem(SETTINGS_KEY);
     if (!raw) return { ...DEFAULT_SETTINGS, bindings: { ...DEFAULT_BINDINGS } };
     const parsed = JSON.parse(raw) as Partial<Settings>;
+    // The voxel cutover (PIX-112): before the diorama became the game,
+    // "webgl" sat in everyone's persisted settings ambiently, never as a
+    // choice. Remap it once; a WebGL pick made in Options AFTER the cutover
+    // persists with the marker and is respected forever.
+    if (parsed.renderer === "webgl" && !parsed.voxelCutover) parsed.renderer = "voxel";
+    parsed.voxelCutover = true;
     return {
       ...DEFAULT_SETTINGS,
       ...parsed,

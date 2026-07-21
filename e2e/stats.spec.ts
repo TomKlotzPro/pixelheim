@@ -10,7 +10,7 @@ test("banked stat points can be spent and persist", async ({ page }) => {
       world: { position: { mapId: "town", x: 28, y: 30, facing: "down" }, discovered: {}, openedChests: [] },
     },
   };
-  await page.goto("./");
+  await page.goto("./?pixi");
   await page.evaluate(([key, s]) => localStorage.setItem(key as string, JSON.stringify(s)), [SAVE_KEY, save] as const);
   await page.reload();
   await page.getByRole("button", { name: "Continue" }).click();
@@ -41,7 +41,7 @@ test("leveling up banks 5 points, announced in the battle log", async ({ page })
       hero: { ...VETERAN_SAVE.state.hero, level: 1, xp: 37, xpToNext: 38, statPoints: 0 },
     },
   };
-  await page.goto("./");
+  await page.goto("./?pixi");
   await page.evaluate(([key, s]) => localStorage.setItem(key as string, JSON.stringify(s)), [
     SAVE_KEY,
     {

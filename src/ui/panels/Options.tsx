@@ -144,20 +144,21 @@ export function Options({
             </label>
             <label className="options-row">
               <span>Renderer</span>
-              <button
-                className="btn btn-small"
-                aria-label="Toggle renderer"
-                title="WebGL is the game: animations, lighting, particles. Voxel is the 3D diorama. Classic is the legacy DOM renderer."
-                onClick={() => {
+              <select
+                className="renderer-select"
+                aria-label="Renderer"
+                value={settings.renderer}
+                title="Voxel is the game: the 3D diorama. WebGL is the classic 2D canvas. Classic is the legacy DOM renderer."
+                onChange={(event) => {
                   // Renderers are chosen once at boot; save the choice and restart.
-                  const next =
-                    settings.renderer === "webgl" ? "voxel" : settings.renderer === "voxel" ? "classic" : "webgl";
-                  saveSettings({ ...settings, renderer: next });
+                  saveSettings({ ...settings, renderer: event.target.value as Settings["renderer"] });
                   window.location.reload();
                 }}
               >
-                {settings.renderer === "classic" ? "Classic" : settings.renderer === "voxel" ? "Voxel" : "WebGL"}
-              </button>
+                <option value="voxel">Voxel 3D</option>
+                <option value="webgl">WebGL</option>
+                <option value="classic">Classic</option>
+              </select>
             </label>
             <label className="options-row">
               <span>Reduce motion</span>

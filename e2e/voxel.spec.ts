@@ -23,6 +23,9 @@ async function loadVoxelVeteranAt(page: Page, x: number, y: number, mapId = "ove
 // appears, and moving around (including through a door) throws nothing.
 // Looks are reviewed by eye; correctness stays with the DOM-renderer specs.
 test("the voxel world renderer draws and survives movement", async ({ page }) => {
+  // CI runners boot the diorama slowly under parallel load; the 20s canvas
+  // headroom must not eat the whole test budget.
+  test.setTimeout(90_000);
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(String(error)));
 
@@ -45,6 +48,7 @@ test("the voxel world renderer draws and survives movement", async ({ page }) =>
 // Doors still lead somewhere: enter the inn and the renderer rebuilds the
 // interior scene without a page error.
 test("the voxel renderer survives walking through a door", async ({ page }) => {
+  test.setTimeout(90_000);
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(String(error)));
 

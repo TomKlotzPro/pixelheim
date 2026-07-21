@@ -4,7 +4,7 @@ import { SAVE_KEY, VETERAN_SAVE } from "./helpers";
 async function loadRichVeteranAt(page: Page, x: number, y: number) {
   const save = structuredClone(VETERAN_SAVE) as typeof VETERAN_SAVE & { state: { gold: number } };
   save.state.gold = 5000;
-  await page.goto("./");
+  await page.goto("./?pixi");
   await page.evaluate(
     ([key, s, px, py]) => {
       const parsed = s as { state: { world: unknown } };
