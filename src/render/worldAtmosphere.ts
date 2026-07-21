@@ -1,35 +1,13 @@
 import { type Container, type Graphics, Sprite, Texture } from "pixi.js";
 import { regionAt } from "../world/parseMap";
+import { EMBER_CAP, EMBER_TINT_INTS, skyAt } from "./dayNight";
 import type { WorldMap } from "../world/types";
 import { ART, makeGlowTexture } from "./pixiUtils";
 
-const EMBER_CAP = 36;
-const EMBER_TINTS = [0xffa03c, 0xff7a28, 0xffc86e];
-
-/**
- * The day/night wheel, turned by worldSteps (deterministic, saved). Each stop
- * is [r, g, b, alpha] for a screen overlay; steps between stops interpolate.
- */
-const DAY_CYCLE_STEPS = 480;
-const SKY_STOPS: { at: number; color: [number, number, number, number] }[] = [
-  { at: 0.0, color: [0, 0, 0, 0] }, // day
-  { at: 0.45, color: [0, 0, 0, 0] },
-  { at: 0.55, color: [255, 122, 50, 0.13] }, // dusk
-  { at: 0.65, color: [10, 16, 48, 0.36] }, // night
-  { at: 0.85, color: [10, 16, 48, 0.36] },
-  { at: 0.93, color: [255, 190, 110, 0.1] }, // dawn
-  { at: 1.0, color: [0, 0, 0, 0] },
-];
-
-function skyAt(steps: number): { color: number; alpha: number } {
-  const t = (steps % DAY_CYCLE_STEPS) / DAY_CYCLE_STEPS;
-  let i = 0;
-  while (i < SKY_STOPS.length - 2 && SKY_STOPS[i + 1].at < t) i++;
-  const a = SKY_STOPS[i];
-  const b = SKY_STOPS[i + 1];
-  const k = (t - a.at) / (b.at - a.at || 1);
-  const mix = a.color.map((v, c) => v + (b.color[c] - v) * k);
-  return { color: (Math.round(mix[0]) << 16) | (Math.round(mix[1]) << 8) | Math.round(mix[2]), alpha: mix[3] };
+/** Sky tint as Pixi wants it: packed int + alpha. */
+function skyTint(steps: number): { color: number; alpha: number } {
+  const { r, g, b, alpha } = skyAt(steps);
+  return { color: (Math.round(r) << 16) | (Math.round(g) << 8) | Math.round(b), alpha };
 }
 
 type Ember = { sprite: Sprite; x: number; y: number; vy: number; sway: number; life: number; maxLife: number };
@@ -81,7 +59,7 @@ export class AtmosphereLayer {
   }
 
   update(worldSteps: number): void {
-    this.skyTarget = this.outdoor ? skyAt(worldSteps) : { color: 0, alpha: 0 };
+    this.skyTarget = this.outdoor ? skyTint(worldSteps) : { color: 0, alpha: 0 };
   }
 
   tick(deltaMS: number, clock: number): void {
@@ -105,7 +83,7 @@ export class AtmosphereLayer {
       const sprite = new Sprite(Texture.WHITE);
       sprite.width = 1.4;
       sprite.height = 1.4;
-      sprite.tint = EMBER_TINTS[Math.floor(Math.random() * EMBER_TINTS.length)];
+      sprite.tint = EMBER_TINT_INTS[Math.floor(Math.random() * EMBER_TINT_INTS.length)];
       sprite.blendMode = "add";
       this.lightC.addChild(sprite);
       this.embers.push({

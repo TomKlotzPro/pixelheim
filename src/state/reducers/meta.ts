@@ -59,8 +59,7 @@ export function metaReducer(draft: GameState, action: MetaAction): GameState | v
     // Back to the title with everything intact: Continue resumes in place.
     case "QUIT_TO_TITLE":
       draft.screen = "title";
-      draft.inventoryOpen = false;
-      draft.shopOpen = false;
+      draft.openPanel = null;
       draft.dialogue = null;
   }
 }

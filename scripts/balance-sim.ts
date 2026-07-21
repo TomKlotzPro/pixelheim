@@ -47,11 +47,11 @@ function trade(state: GameState, shopMapId: string, act: (s: GameState) => GameS
   const before = state.world!;
   let s: GameState = {
     ...state,
-    shopOpen: true,
+    openPanel: "shop" as const,
     world: { ...before, position: { ...before.position, mapId: shopMapId } },
   };
   s = act(s);
-  return { ...s, shopOpen: false, world: { ...s.world!, position: { ...before.position } } };
+  return { ...s, openPanel: null, world: { ...s.world!, position: { ...before.position } } };
 }
 
 /** Town chores between attempts: heal (inn price), shop, gear, points. */

@@ -12,7 +12,20 @@ import { setHouseTier, setSettlers, setTownTier } from "../world/maps/index";
  * through useGameState.
  */
 export function createGameStore(state: GameState = initialState) {
-  return createStore<GameState>(() => state);
+  const store = createStore<GameState>(() => state);
+  // Every store keeps the world mirrors coherent, not just the app singleton
+  // (PIX-115): a sim or test that funds the town sees the town it funded.
+  store.subscribe(syncWorldMirrors);
+  syncWorldMirrors(store.getState());
+  return store;
+}
+
+/** The town mirrors (PIX-91/92/34): getMap and npcsOn take only ids, so the
+ *  maps module keeps tier, house tier and settlers as module variables. */
+function syncWorldMirrors(state: GameState): void {
+  setTownTier(state.townTier ?? 1);
+  setHouseTier(state.house.tier ?? 1);
+  setSettlers(state.settlers ?? []);
 }
 
 export type GameStore = ReturnType<typeof createGameStore>;
@@ -23,14 +36,6 @@ export const gameStore = createGameStore();
 // Persistence is a store concern, not a render concern: every committed state
 // is written straight through (persistSave itself skips heroless states).
 gameStore.subscribe(persistSave);
-
-// The town mirrors (PIX-91/92): getMap and npcsOn take only ids, so the maps
-// module keeps the current tier and settlers as module variables, fed here.
-gameStore.subscribe((state) => {
-  setTownTier(state.townTier ?? 1);
-  setHouseTier(state.house.tier ?? 1);
-  setSettlers(state.settlers ?? []);
-});
 
 /** Dispatches an action against the live store. Stable identity, safe to pass anywhere. */
 export function dispatch(action: Action): void {

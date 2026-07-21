@@ -9,7 +9,8 @@ import { progressionReducer } from "./reducers/progression";
 import { worldReducer } from "./reducers/world";
 
 export type { Action } from "./actions";
-export { activeShopId, initialState, REST_COST, TOWN_SPAWN } from "./shared";
+export { initialState, REST_COST, TOWN_SPAWN } from "./shared";
+export { activeShopId } from "../game/economy/shop";
 
 /**
  * The pure game loop: state in, state out. Immer turns the mutation-style

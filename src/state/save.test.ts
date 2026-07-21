@@ -21,7 +21,7 @@ const V1 = {
   unlockedLevel: 4,
   clearedLevels: [1, 2, 3],
   battle: null,
-  inventoryOpen: false,
+  openPanel: null,
 };
 
 describe("migrate", () => {
@@ -33,7 +33,7 @@ describe("migrate", () => {
     // never resume mid-menu; the world is the game now
     expect(s.screen).toBe("world");
     expect(s.battle).toBeNull();
-    expect(s.shopOpen).toBe(false);
+    expect(s.openPanel).toBeNull();
 
     // v3: heroes without a world wake up in the village
     expect(s.world?.position.mapId).toBe("town");

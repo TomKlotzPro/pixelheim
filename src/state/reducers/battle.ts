@@ -27,8 +27,7 @@ export function battleReducer(draft: GameState, action: BattleAction): void {
       )
         return;
       draft.screen = "battle";
-      draft.inventoryOpen = false;
-      draft.shopOpen = false;
+      draft.openPanel = null;
       draft.battle = createDungeonBattle(action.level);
       return;
     }
@@ -65,7 +64,7 @@ export function battleReducer(draft: GameState, action: BattleAction): void {
       const hero = draft.hero;
       // A stunned hero fumbles the bag: the turn is lost but nothing is consumed.
       if (inBattle && heroStunGate(draft, hero, draft.battle!.log)) {
-        draft.inventoryOpen = false;
+        draft.openPanel = null;
         return;
       }
       draft.inventory = removeItem(draft.inventory, action.itemId);
@@ -87,7 +86,7 @@ export function battleReducer(draft: GameState, action: BattleAction): void {
           parts.push(`cured ${item.cures}`);
         }
         battle.log.push(`You use ${item.name}. ${parts.length ? `Restored ${parts.join(", ")}.` : "Nothing happens."}`);
-        draft.inventoryOpen = false;
+        draft.openPanel = null;
         monsterTurn(draft, hero, battle.log);
       }
       return;

@@ -1,6 +1,6 @@
 import { getItem } from "./items";
 import { gearItem, gearValue } from "./rarity";
-import type { GearInstance, Item, ItemCategory } from "../types";
+import type { GameState, GearInstance, Item, ItemCategory } from "../types";
 
 /** City merchants (town tier 4) pay a premium on everything (PIX-91).
  *  Lives here with the rest of pricing; town.ts re-exports it for the ledger. */
@@ -139,4 +139,12 @@ export const FORGE_BONUS_CAP = 7;
 
 export function forgeCost(item: Item, currentBonus: number): number {
   return Math.max(20, Math.round(item.value * 0.25 * (currentBonus + 1)));
+}
+
+/**
+ * Which shop the hero is standing in, if any (moved from state/shared so the
+ * shared module stays a pure leaf - PIX-115).
+ */
+export function activeShopId(state: GameState): ShopId | null {
+  return state.world ? (SHOP_MAPS[state.world.position.mapId] ?? null) : null;
 }

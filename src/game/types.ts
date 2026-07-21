@@ -69,6 +69,8 @@ export type Role = {
   skills: Skill[];
 };
 
+export type PanelId = "inventory" | "shop" | "storage" | "hall" | "bank" | "trophies" | "nook";
+
 export type ItemCategory = "weapons" | "apparel" | "potions" | "food" | "misc" | "furniture";
 
 /** Where an item can be worn. "ring" fits either finger. */
@@ -231,8 +233,6 @@ export type GameState = {
     gardenHarvests?: number;
     furniture?: { itemId: string; x: number; y: number }[];
   };
-  /** The home storage panel (transient UI, like shopOpen). */
-  storageOpen: boolean;
   /** Quest ledger: accepted quests with kill progress and completion. Additive. */
   quests: Record<string, { progress: number; done: boolean }>;
   /** Business deeds owned (shop map ids). Each pays rent on every victory. */
@@ -249,12 +249,6 @@ export type GameState = {
     venture?: { stake: number; at: number };
     expansions: string[];
   };
-  /** The bank panel (transient UI, like shopOpen). */
-  bankOpen: boolean;
-  trophiesOpen: boolean;
-  nookOpen: boolean;
-  /** The city-hall ledger panel (transient UI, like shopOpen). */
-  hallOpen: boolean;
   /** Every owned weapon/apparel piece, equipped or not. */
   gear: GearInstance[];
   /** Slot -> gear uid. */
@@ -263,8 +257,12 @@ export type GameState = {
   unlockedLevel: number;
   clearedLevels: number[];
   battle: BattleState | null;
-  inventoryOpen: boolean;
-  shopOpen: boolean;
+  /**
+   * The one open modal panel, or null (PIX-115). A single field makes panels
+   * mutually exclusive by construction, gives the reducers one modal guard,
+   * and lets a save reset every panel in one line.
+   */
+  openPanel: PanelId | null;
   /** World position and exploration memory; null until the hero enters it. */
   world: WorldState | null;
   /** The dungeon entrance the hero is standing at (floor-select open or inside). */

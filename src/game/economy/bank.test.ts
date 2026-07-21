@@ -19,7 +19,7 @@ function atBank(gold: number): GameState {
   s.gold = gold;
   s.townTier = 3;
   s.settlers = ["settler_mirelle"];
-  s.bankOpen = true;
+  s.openPanel = "bank";
   s.worldSteps = 1000;
   s.world = { position: { mapId: "town", x: 45, y: 20, facing: "right" }, discovered: {}, openedChests: [], slain: [] };
   return s;
@@ -54,13 +54,13 @@ describe("the bank (PIX-93)", () => {
 
   it("the ledger only opens across Mirelle's counter", () => {
     let s = atBank(1000);
-    s = { ...s, bankOpen: false, settlers: [] };
+    s = { ...s, openPanel: null, settlers: [] };
     s = gameReducer(s, { type: "TOGGLE_BANK" });
-    expect(s.bankOpen).toBe(false); // no banker, no bank
+    expect(s.openPanel).toBeNull(); // no banker, no bank
 
     s = { ...s, settlers: ["settler_mirelle"] };
     s = gameReducer(s, { type: "TOGGLE_BANK" });
-    expect(s.bankOpen).toBe(true);
+    expect(s.openPanel).toBe("bank");
   });
 
   it("the caravan is sealed at departure and pays deterministically", () => {

@@ -12,6 +12,7 @@ import {
   type Vector3,
 } from "three";
 import { regionAt } from "../../world/parseMap";
+import { DAY_CYCLE_STEPS, EMBER_CAP, EMBER_TINT_INTS, skyAt } from "../dayNight";
 import type { WorldMap } from "../../world/types";
 import { ART } from "./voxelData";
 
@@ -20,26 +21,10 @@ import { ART } from "./voxelData";
  * by worldSteps. There the ramp tints a screen overlay; here it drives a real
  * light rig - the numbers stay in lockstep so both renderers share one clock.
  */
-const DAY_CYCLE_STEPS = 480;
-const SKY_STOPS: { at: number; color: [number, number, number, number] }[] = [
-  { at: 0.0, color: [0, 0, 0, 0] }, // day
-  { at: 0.45, color: [0, 0, 0, 0] },
-  { at: 0.55, color: [255, 122, 50, 0.13] }, // dusk
-  { at: 0.65, color: [10, 16, 48, 0.36] }, // night
-  { at: 0.85, color: [10, 16, 48, 0.36] },
-  { at: 0.93, color: [255, 190, 110, 0.1] }, // dawn
-  { at: 1.0, color: [0, 0, 0, 0] },
-];
-
-function skyAt(steps: number): { color: Color; alpha: number } {
-  const t = (steps % DAY_CYCLE_STEPS) / DAY_CYCLE_STEPS;
-  let i = 0;
-  while (i < SKY_STOPS.length - 2 && SKY_STOPS[i + 1].at < t) i++;
-  const a = SKY_STOPS[i];
-  const b = SKY_STOPS[i + 1];
-  const k = (t - a.at) / (b.at - a.at || 1);
-  const mix = a.color.map((v, c) => v + (b.color[c] - v) * k);
-  return { color: new Color(mix[0] / 255, mix[1] / 255, mix[2] / 255), alpha: mix[3] };
+/** Sky tint as three.js wants it: a Color + alpha. */
+function skyTint(steps: number): { color: Color; alpha: number } {
+  const { r, g, b, alpha } = skyAt(steps);
+  return { color: new Color(r / 255, g / 255, b / 255), alpha };
 }
 
 const SUN_DAY = new Color("#fff3dc");
@@ -47,8 +32,7 @@ const SUN_ELEVATION = Math.PI * 0.27;
 const SUN_DISTANCE = 420;
 const LIGHT_CAP = 32;
 
-const EMBER_CAP = 36;
-const EMBER_TINTS = [new Color(0xffa03c), new Color(0xff7a28), new Color(0xffc86e)];
+const EMBER_TINTS = EMBER_TINT_INTS.map((tint) => new Color(tint));
 const SMOKE_CAP = 24;
 const SMOKE_TINT = new Color(0x2e3138);
 
@@ -175,7 +159,7 @@ export class VoxelAtmosphere {
 
   update(worldSteps: number): void {
     this.steps = worldSteps;
-    this.darknessTarget = this.outdoor ? Math.min(1, skyAt(worldSteps).alpha / 0.36) : 0;
+    this.darknessTarget = this.outdoor ? Math.min(1, skyTint(worldSteps).alpha / 0.36) : 0;
   }
 
   /** Eases the sky and flickers the fires; the sun rides along with the camera. */
@@ -183,7 +167,7 @@ export class VoxelAtmosphere {
     this.darkness += (this.darknessTarget - this.darkness) * (1 - Math.exp(-deltaMS / 400));
     const dark = this.darkness;
 
-    const sky = skyAt(this.steps);
+    const sky = skyTint(this.steps);
     this.sun.color.copy(SUN_DAY);
     if (sky.alpha > 0.01) this.sun.color.lerp(sky.color, Math.min(1, sky.alpha * 2.4));
     // Shade stays readable: the hemisphere reaches into shadowed ground, so

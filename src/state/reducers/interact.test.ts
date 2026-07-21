@@ -66,7 +66,7 @@ describe("home furniture answers to E (PIX-109)", () => {
     let s = houseState(14, 3, 1000);
     s = gameReducer(s, { type: "INTERACT" });
     s = gameReducer(s, { type: "INTERACT" });
-    expect(s.inventoryOpen).toBe(true);
+    expect(s.openPanel).toBe("inventory");
   });
 
   it("the hearth and counter speak instead of staying silent", () => {

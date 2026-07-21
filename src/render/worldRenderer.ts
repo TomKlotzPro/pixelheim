@@ -2,44 +2,23 @@ import { Application, Assets, Container, Graphics, Sprite, type Texture } from "
 import type { GameState } from "../game/types";
 import { getMap } from "../world/maps/index";
 import { TILES } from "../world/tiles";
-import type { WorldMap, WorldPosition } from "../world/types";
 import { loadSettings } from "../app/settings";
 import { ART, type FrameBank, loadFrameBank, makeVignetteTexture } from "./pixiUtils";
 import { ActorLayer } from "./worldActors";
 import { AtmosphereLayer } from "./worldAtmosphere";
 import { TerrainLayer } from "./worldTerrain";
+import { cameraFor, OUTDOOR_MAPS, VIEW_H, VIEW_W, type WorldRenderer as WorldRendererContract } from "./worldCamera";
+
+export { VIEW_H, VIEW_W } from "./worldCamera";
 
 export { ART } from "./pixiUtils";
-export const VIEW_W = 21;
-export const VIEW_H = 13;
-
-/** Maps under the open sky; interiors stay lit and ember-free. */
-const OUTDOOR_MAPS = new Set(["overworld", "town", "demo", "deepwood", "mirefen"]);
-
-function clamp(value: number, min: number, max: number): number {
-  return Math.max(min, Math.min(max, value));
-}
-
-/** The camera: center small maps, clamp large ones. */
-function cameraFor(map: WorldMap, pos: WorldPosition): { x: number; y: number } {
-  const x =
-    map.width <= VIEW_W
-      ? -Math.floor((VIEW_W - map.width) / 2)
-      : clamp(pos.x - Math.floor(VIEW_W / 2), 0, map.width - VIEW_W);
-  const y =
-    map.height <= VIEW_H
-      ? -Math.floor((VIEW_H - map.height) / 2)
-      : clamp(pos.y - Math.floor(VIEW_H / 2), 0, map.height - VIEW_H);
-  return { x, y };
-}
-
 /**
  * The WebGL world renderer: a Pixi Application composing three scene layers -
  * terrain (ground), actors (people), atmosphere (light and weather) - plus
  * the camera. `update(state)` feeds it fresh game state; the ticker animates.
  * It never touches the store: input goes back out through onTileClick.
  */
-export class WorldRenderer {
+export class WorldRenderer implements WorldRendererContract {
   private app: Application | null = null;
   private root = new Container();
   private mapC = new Container();

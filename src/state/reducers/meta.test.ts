@@ -8,11 +8,11 @@ describe("QUIT_TO_TITLE", () => {
     state.hero = createHero("Tess", "warrior");
     state.screen = "world";
     state.world = { position: { ...TOWN_SPAWN }, discovered: {}, openedChests: [], slain: [] };
-    state.inventoryOpen = true;
+    state.openPanel = "inventory";
 
     state = gameReducer(state, { type: "QUIT_TO_TITLE" });
     expect(state.screen).toBe("title");
-    expect(state.inventoryOpen).toBe(false);
+    expect(state.openPanel).toBeNull();
     expect(state.hero?.name).toBe("Tess");
 
     // Continue resumes in place: RETURN_TO_WORLD puts the live hero back

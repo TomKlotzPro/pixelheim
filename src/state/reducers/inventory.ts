@@ -3,6 +3,7 @@ import { removeItem } from "../../game/economy/inventory";
 import { gearItem } from "../../game/economy/rarity";
 import type { GameState } from "../../game/types";
 import type { InventoryAction } from "../actions";
+import { togglePanel } from "../shared";
 
 export function inventoryReducer(draft: GameState, action: InventoryAction): void {
   switch (action.type) {
@@ -42,7 +43,7 @@ export function inventoryReducer(draft: GameState, action: InventoryAction): voi
     }
 
     case "TOGGLE_INVENTORY": {
-      draft.inventoryOpen = !draft.inventoryOpen;
+      togglePanel(draft, "inventory");
     }
   }
 }

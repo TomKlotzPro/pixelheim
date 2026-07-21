@@ -7,36 +7,31 @@ import { dispatch, useGameState, useWorld } from "../../state/store";
 import { getMap } from "../../world/maps/index";
 import { spawnSpecies } from "../../game/combat/encounters";
 import { getMonster } from "../../game/combat/monsters";
-import { chestSpriteName, chestsOn, solidChestAt } from "../../world/chests";
+import { chestSpriteName, chestsOn } from "../../world/chests";
 import { furnitureOn } from "../../game/economy/house";
 import { getItem } from "../../game/economy/items";
-import { npcBeside, npcById, npcPosition, npcsOn } from "../../world/npcs";
+import { npcById, npcPosition, npcsOn } from "../../world/npcs";
 import { spawnPosition, spawnRegion, spawnsOn } from "../../world/spawns";
 import { regionAt } from "../../world/parseMap";
 import { signsOn } from "../../world/signs";
 import { TILES } from "../../world/tiles";
-import type { Direction, TileId } from "../../world/types";
+import type { Direction } from "../../world/types";
 
-/** Must mirror the reducer's encounter terrain: only these tiles grow tufts. */
-const WILD_TILES = new Set<TileId>(["grass", "forest", "marsh", "ash", "sand"]);
 import { RENDERER } from "../../render/flag";
+import { WILD_TILES } from "../../state/shared";
+import { cameraFor, VIEW_H, VIEW_W } from "../../render/worldCamera";
+import { interactionPrompt } from "../../world/interactionPrompt";
 import { MiniMap } from "../panels/MapScreen";
 import { Sprite } from "../widgets/Sprite";
 import { WorldHud } from "../widgets/WorldHud";
 
 const ART_PX = 16;
-const VIEW_W = 21;
-const VIEW_H = 13;
 
 // Lazy so pixi.js (and three.js) stay out of the main bundle until the flag asks.
 const PixiWorldView = lazy(() => import("../../render/PixiWorldView").then((m) => ({ default: m.PixiWorldView })));
 const VoxelWorldView = lazy(() =>
   import("../../render/voxel/VoxelWorldView").then((m) => ({ default: m.VoxelWorldView })),
 );
-
-function clamp(value: number, min: number, max: number): number {
-  return Math.max(min, Math.min(max, value));
-}
 
 /** Largest integer art scale that fits the window; pixels stay crisp. */
 function computeScale(): number {
@@ -55,13 +50,6 @@ function useTileScale(): number {
   return scale;
 }
 
-const FACING_DELTAS: Record<Direction, { dx: number; dy: number }> = {
-  up: { dx: 0, dy: -1 },
-  down: { dx: 0, dy: 1 },
-  left: { dx: -1, dy: 0 },
-  right: { dx: 1, dy: 0 },
-};
-
 export function WorldScreen() {
   const state = useGameState();
   const world = useWorld().position;
@@ -70,30 +58,9 @@ export function WorldScreen() {
   const outfit = state.hero ? outfitFor(state.gear, state.equipped) : [];
   const tilePx = ART_PX * useTileScale();
 
-  // Someone to talk to: a prompt floats over the NPC beside the hero -
-  // the faced tile wins, but any neighbor is one keypress away.
-  const beside =
-    state.hero && !state.dialogue && !state.shopOpen
-      ? npcBeside(map.id, world.x, world.y, world.facing, state.worldSteps)
-      : null;
-  const facingNpc = beside?.npc ?? null;
-  const { dx: fdx, dy: fdy } = FACING_DELTAS[beside?.facing ?? world.facing];
-  // A chest only answers to the faced tile: it is furniture, you bump it anyway.
-  const { dx: cdx, dy: cdy } = FACING_DELTAS[world.facing];
-  const facingChestEntity =
-    state.hero && !state.dialogue && !state.shopOpen ? solidChestAt(map.id, world.x + cdx, world.y + cdy) : null;
-  const facingChest =
-    facingChestEntity && !(state.world?.openedChests ?? []).includes(facingChestEntity.id) ? facingChestEntity : null;
-
-  // Maps smaller than the viewport are centered; larger ones scroll, clamped at edges.
-  const cameraX =
-    map.width <= VIEW_W
-      ? -Math.floor((VIEW_W - map.width) / 2)
-      : clamp(world.x - Math.floor(VIEW_W / 2), 0, map.width - VIEW_W);
-  const cameraY =
-    map.height <= VIEW_H
-      ? -Math.floor((VIEW_H - map.height) / 2)
-      : clamp(world.y - Math.floor(VIEW_H / 2), 0, map.height - VIEW_H);
+  // The one prompt rule, shared with the canvas renderers (PIX-115).
+  const promptAt = interactionPrompt(state, map.id);
+  const { x: cameraX, y: cameraY } = cameraFor(map, world);
 
   const clickTile = (x: number, y: number) => {
     const dx = x - world.x;
@@ -188,7 +155,7 @@ export function WorldScreen() {
                   data-icon={sign.icon}
                 />
               ))}
-              {(facingNpc || facingChest) && <div data-testid="npc-prompt" />}
+              {promptAt && <div data-testid="npc-prompt" />}
             </div>
           </>
         ) : (
@@ -307,13 +274,13 @@ export function WorldScreen() {
               >
                 <DressedSprite name={heroSprite} outfit={outfit} size={tilePx} alt="hero" />
               </div>
-              {(facingNpc || facingChest) && (
+              {promptAt && (
                 <div
                   className="npc-prompt"
                   data-testid="npc-prompt"
                   style={{
-                    left: (world.x + fdx) * tilePx,
-                    top: (world.y + fdy) * tilePx - tilePx / 2,
+                    left: promptAt.x * tilePx,
+                    top: promptAt.y * tilePx - tilePx / 2,
                     width: tilePx,
                   }}
                 >

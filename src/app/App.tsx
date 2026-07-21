@@ -212,9 +212,9 @@ export default function App() {
       if (event.key === "Escape") {
         const now = gameStore.getState();
         if (mapOpen) setMapOpen(false);
-        else if (now.storageOpen) dispatch({ type: "TOGGLE_STORAGE" });
-        else if (now.shopOpen) dispatch({ type: "TOGGLE_SHOP" });
-        else if (now.inventoryOpen) dispatch({ type: "TOGGLE_INVENTORY" });
+        else if (now.openPanel === "storage") dispatch({ type: "TOGGLE_STORAGE" });
+        else if (now.openPanel === "shop") dispatch({ type: "TOGGLE_SHOP" });
+        else if (now.openPanel === "inventory") dispatch({ type: "TOGGLE_INVENTORY" });
         else if (now.dialogue) dispatch({ type: "ADVANCE_DIALOGUE" });
         else if (!now.hero) dispatch({ type: "EXIT_WORLD" });
         else setPaused((open) => !open);
@@ -268,7 +268,7 @@ export default function App() {
         </button>
       </div>
       <Screen state={state} save={save} onOpenOptions={() => setOptionsOpen(true)} />
-      {state.inventoryOpen && state.hero && <Inventory />}
+      {state.openPanel === "inventory" && state.hero && <Inventory />}
       {battleFlash && <div className="battle-flash" aria-hidden="true" />}
       {mapOpen && state.screen === "world" && state.hero && <MapScreen onClose={() => setMapOpen(false)} />}
       {paused && state.screen === "world" && state.hero && (
@@ -280,12 +280,12 @@ export default function App() {
           }}
         />
       )}
-      {state.shopOpen && state.hero && <Shop />}
-      {state.hallOpen && state.hero && <TownHall />}
-      {state.bankOpen && state.hero && <Bank />}
-      {state.trophiesOpen && state.hero && <Trophies />}
-      {state.nookOpen && state.hero && <Nook />}
-      {state.storageOpen && state.hero && <HouseStorage />}
+      {state.openPanel === "shop" && state.hero && <Shop />}
+      {state.openPanel === "hall" && state.hero && <TownHall />}
+      {state.openPanel === "bank" && state.hero && <Bank />}
+      {state.openPanel === "trophies" && state.hero && <Trophies />}
+      {state.openPanel === "nook" && state.hero && <Nook />}
+      {state.openPanel === "storage" && state.hero && <HouseStorage />}
       {optionsOpen && (
         <Options
           settings={settings}
