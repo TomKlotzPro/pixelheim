@@ -4,7 +4,7 @@ import type { BattleState, GameState, Hero } from "../game/types";
 import type { WorldState } from "../world/types";
 import { type Action, gameReducer, initialState } from "./gameReducer";
 import { persistSave } from "./save";
-import { setSettlers, setTownTier } from "../world/maps/index";
+import { setHouseTier, setSettlers, setTownTier } from "../world/maps/index";
 
 /**
  * The game state lives in a vanilla store so anything without React (the
@@ -28,6 +28,7 @@ gameStore.subscribe(persistSave);
 // module keeps the current tier and settlers as module variables, fed here.
 gameStore.subscribe((state) => {
   setTownTier(state.townTier ?? 1);
+  setHouseTier(state.house.tier ?? 1);
   setSettlers(state.settlers ?? []);
 });
 

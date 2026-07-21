@@ -351,9 +351,19 @@ export const TOWN_ALCHEMIST_MAP: WorldMap = parseMap(
 
 /** The player's house: bought with the deed, entered through the shut door
  * at (30,13) in town (the reducer special-cases it - no portal until owned). */
-export const TOWN_HOUSE_MAP: WorldMap = parseMap(
-  "town_house",
-  `
+/**
+ * The house grows with you (PIX-34): three interiors, one per deed. Entry is
+ * always (8,8) and the door home always sits on the south wall, so walking in
+ * and out feels identical whatever the tier. The buyable house's shut door is
+ * at (30,13) in town (the reducer special-cases it - no portal until owned).
+ */
+const houseExit = (doorY: number) => [{ x: 8, y: doorY, to: { kind: "map", mapId: "town", x: 60, y: 28 } }];
+
+export const HOUSE_MAPS: WorldMap[] = [
+  // Tier 1, the Cozy Hut: a bed, a shelf, a hearth, and room to dream.
+  parseMap(
+    "town_house",
+    `
   ####################
   ####################
   ##B#B_________t_t###
@@ -367,8 +377,52 @@ export const TOWN_HOUSE_MAP: WorldMap = parseMap(
   ########D###########
   ####################
   `,
-  [{ x: 8, y: 10, to: { kind: "map", mapId: "town", x: 60, y: 28 } }],
-);
+    houseExit(10) as never,
+  ),
+  // Tier 2, the Cottage: a second room, and the trophy shelf on the north wall.
+  parseMap(
+    "town_house",
+    `
+  ##########################
+  ##########################
+  ##B#B______TTT_______t_t##
+  ##_#__________________####
+  ##H____________________###
+  ##______________n_n_____##
+  ##______________________##
+  ##o_____$_______________##
+  ##______________________##
+  ##_______________________#
+  ########D#################
+  ##########################
+  `,
+    houseExit(10) as never,
+  ),
+  // Tier 3, the Manor: the garden takes the east wing, the nook bubbles beside it.
+  parseMap(
+    "town_house",
+    `
+  ##############################
+  ##############################
+  ##B#B______TTT_____u_____t_t##
+  ##_#______________________####
+  ##H________________________###
+  ##_________________GGGG_____##
+  ##______n_n________GGGG_____##
+  ##___________________________#
+  ##o_____$___________________##
+  ##___________________________#
+  ##___________________________#
+  ##___________________________#
+  ########D#####################
+  ##############################
+  `,
+    houseExit(12) as never,
+  ),
+];
+
+/** The founding hut; the maps index serves the deeded tier via its mirror. */
+export const TOWN_HOUSE_MAP: WorldMap = HOUSE_MAPS[0];
 
 export const TOWN_SHOP_MAP: WorldMap = parseMap(
   "town_shop",

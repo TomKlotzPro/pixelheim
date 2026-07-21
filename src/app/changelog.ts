@@ -11,6 +11,18 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.61.0",
+    date: "2026-07-21",
+    codename: "Home & Hearth",
+    notes: [
+      "THE HOUSE GROWS: Odo sells the bigger deeds - the COTTAGE (5,000g) opens a second room, the MANOR (12,000g) opens a wing - each with its own interior, served the moment you walk in",
+      "THE SHELF OF HONOR (Cottage): display the Dragon Scale (+2 DEF), the Crown of the Deathless (+2 to every stat) or the Flawless Emerald (+10% shop sell price) - sell your trophies for gold, or shelve them for power",
+      "THE GARDEN (Manor): drinks your victories and pours breakfast - every 6th win ripens into bread or cheese, turn and turn about",
+      "THE ALCHEMY NOOK (Manor): two of a brew distill into a better one - health potions into greater, greater into elixirs",
+      "FURNITURE: Odo stocks rugs, ferns, bookshelves, banners, candelabras and benches - place them on any free floor tile you face (a Place button in the pack's new Home tab), E takes them back; your layout saves with the house",
+    ],
+  },
+  {
     version: "0.60.0",
     date: "2026-07-21",
     codename: "The Village Reborn",

@@ -14,6 +14,13 @@ import {
   ventureReady,
 } from "../../game/economy/bank";
 import { isSettled } from "../../game/settlers";
+import {
+  nextHouseTier,
+  NOOK_COMBINES,
+  TROPHY_BUFFS,
+  trophySellMultiplier,
+  trophyStatDelta,
+} from "../../game/economy/house";
 import { buyPrice, gearSellPriceAt, sellPriceAt, SHOPS, shopStock } from "../../game/economy/shop";
 import type { GameState } from "../../game/types";
 import type { EconomyAction } from "../actions";
@@ -140,6 +147,64 @@ export function economyReducer(draft: GameState, action: EconomyAction): void {
       return;
     }
 
+    case "BUY_HOUSE_UPGRADE": {
+      // Odo sells the bigger deeds (PIX-34): Cottage, then Manor. The new
+      // interior is served by the house-tier mirror the moment you walk in.
+      const next = draft.shopOpen && activeShopId(draft) === "odo" ? nextHouseTier(draft) : null;
+      if (!next || draft.gold < next.cost) return;
+      draft.gold -= next.cost;
+      draft.house.tier = next.tier;
+      draft.worldMessage = `The ${next.name.toUpperCase()} deed is signed. Your house grew while you were out.`;
+      return;
+    }
+
+    case "TOGGLE_TROPHIES": {
+      draft.trophiesOpen = !draft.trophiesOpen;
+      return;
+    }
+
+    case "TOGGLE_NOOK": {
+      draft.nookOpen = !draft.nookOpen;
+      return;
+    }
+
+    case "DISPLAY_TROPHY": {
+      // Sell it for gold, or shelve it for power: the trophy finally decides.
+      if (!draft.trophiesOpen || !TROPHY_BUFFS[action.itemId]) return;
+      const shown = draft.house.trophies ?? [];
+      if (shown.includes(action.itemId) || (draft.inventory[action.itemId] ?? 0) <= 0) return;
+      draft.inventory = removeItem(draft.inventory, action.itemId);
+      draft.house.trophies = [...shown, action.itemId];
+      if (draft.hero) {
+        for (const [stat, delta] of Object.entries(trophyStatDelta(action.itemId))) {
+          draft.hero.stats[stat as "defense"] += delta;
+        }
+      }
+      return;
+    }
+
+    case "TAKE_TROPHY": {
+      if (!draft.trophiesOpen || !(draft.house.trophies ?? []).includes(action.itemId)) return;
+      draft.house.trophies = (draft.house.trophies ?? []).filter((id) => id !== action.itemId);
+      draft.inventory = addItem(draft.inventory, action.itemId);
+      if (draft.hero) {
+        for (const [stat, delta] of Object.entries(trophyStatDelta(action.itemId))) {
+          draft.hero.stats[stat as "defense"] -= delta;
+        }
+      }
+      return;
+    }
+
+    case "COMBINE_POTIONS": {
+      // The manor's alchemy nook: two of a brew distill into one better one.
+      const recipe = draft.nookOpen ? NOOK_COMBINES.find((c) => c.from === action.itemId) : null;
+      if (!recipe || (draft.inventory[action.itemId] ?? 0) < 2) return;
+      draft.inventory = removeItem(draft.inventory, recipe.from, 2);
+      draft.inventory = addItem(draft.inventory, recipe.to);
+      draft.worldMessage = `The nook bubbles: 2x ${getItem(recipe.from).name} became ${getItem(recipe.to).name}.`;
+      return;
+    }
+
     case "FUND_TOWN": {
       // The gold sink with a skyline (PIX-91): requirements checked, treasury
       // paid, tier raised. The town redraws itself the moment you walk out.
@@ -169,7 +234,7 @@ export function economyReducer(draft: GameState, action: EconomyAction): void {
       const shopId = draft.shopOpen ? activeShopId(draft) : null;
       if (!shopId || (draft.inventory[action.itemId] ?? 0) <= 0) return;
       const item = getItem(action.itemId);
-      draft.gold += sellPriceAt(shopId, item, townTierOf(draft));
+      draft.gold += Math.floor(sellPriceAt(shopId, item, townTierOf(draft)) * trophySellMultiplier(draft));
       draft.inventory = removeItem(draft.inventory, item.id);
       return;
     }
@@ -179,7 +244,7 @@ export function economyReducer(draft: GameState, action: EconomyAction): void {
       if (!shopId || Object.values(draft.equipped).includes(action.uid)) return;
       const instance = gearByUid(draft.gear, action.uid);
       if (!instance) return;
-      draft.gold += gearSellPriceAt(shopId, instance, townTierOf(draft));
+      draft.gold += Math.floor(gearSellPriceAt(shopId, instance, townTierOf(draft)) * trophySellMultiplier(draft));
       draft.gear = draft.gear.filter((g) => g.uid !== action.uid);
       return;
     }

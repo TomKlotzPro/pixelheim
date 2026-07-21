@@ -24,6 +24,7 @@ import type { BattleState, GameState, Hero } from "../types";
 import { recordKill } from "../hero/mastery";
 import { QUESTS } from "../quests";
 import { rentPerProperty, townTierOf } from "../economy/town";
+import { GARDEN_WINS_PER_YIELD, gardenYield, houseTier } from "../economy/house";
 import { expansionRent } from "../economy/bank";
 
 /**
@@ -164,6 +165,17 @@ function onMonsterDefeated(state: GameState, hero: Hero, log: string[]): void {
     const rent = state.properties.length * rentPerProperty(townTierOf(state)) + expansionRent(state);
     state.gold += rent;
     log.push(`Rent from your properties: +${rent}g.`);
+  }
+  // The manor garden drinks victories and pours breakfast (PIX-34).
+  if (houseTier(state) >= 3) {
+    state.house.gardenWins = (state.house.gardenWins ?? 0) + 1;
+    if (state.house.gardenWins >= GARDEN_WINS_PER_YIELD) {
+      state.house.gardenWins = 0;
+      const crop = gardenYield(state.house.gardenHarvests ?? 0);
+      state.house.gardenHarvests = (state.house.gardenHarvests ?? 0) + 1;
+      state.inventory = addItem(state.inventory, crop);
+      log.push(`Your garden ripens: +1 ${getItem(crop).name}.`);
+    }
   }
   const battle = state.battle!;
   const passives = getPassives(hero);

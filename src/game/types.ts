@@ -69,7 +69,7 @@ export type Role = {
   skills: Skill[];
 };
 
-export type ItemCategory = "weapons" | "apparel" | "potions" | "food" | "misc";
+export type ItemCategory = "weapons" | "apparel" | "potions" | "food" | "misc" | "furniture";
 
 /** Where an item can be worn. "ring" fits either finger. */
 export type EquipSlot = "weapon" | "body" | "offhand" | "head" | "hands" | "feet" | "neck" | "ring";
@@ -220,7 +220,17 @@ export type GameState = {
   inventory: Record<string, number>;
   /** The roof over your head: the deed, what the chest holds, and whether a
    *  workbench is fitted (craft at home, PIX-109). `workbench` is additive. */
-  house: { owned: boolean; storage: Record<string, number>; workbench?: boolean };
+  house: {
+    owned: boolean;
+    storage: Record<string, number>;
+    workbench?: boolean;
+    /** PIX-34, all additive: house level, displayed trophies, garden progress, placed furniture. */
+    tier?: number;
+    trophies?: string[];
+    gardenWins?: number;
+    gardenHarvests?: number;
+    furniture?: { itemId: string; x: number; y: number }[];
+  };
   /** The home storage panel (transient UI, like shopOpen). */
   storageOpen: boolean;
   /** Quest ledger: accepted quests with kill progress and completion. Additive. */
@@ -241,6 +251,8 @@ export type GameState = {
   };
   /** The bank panel (transient UI, like shopOpen). */
   bankOpen: boolean;
+  trophiesOpen: boolean;
+  nookOpen: boolean;
   /** The city-hall ledger panel (transient UI, like shopOpen). */
   hallOpen: boolean;
   /** Every owned weapon/apparel piece, equipped or not. */

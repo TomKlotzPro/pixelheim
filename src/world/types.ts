@@ -17,6 +17,8 @@ export type TileId =
   | "wall"
   | "floor"
   | "crops"
+  | "trophy_shelf"
+  | "garden"
   | "roof"
   | "roof_slate"
   | "roof_thatch"

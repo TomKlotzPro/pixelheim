@@ -10,6 +10,7 @@ import { discoverAround } from "../../world/discover";
 import { getMap } from "../../world/maps/index";
 import { npcAt, npcBeside, npcById } from "../../world/npcs";
 import { isSettled, resolveSettler } from "../../game/settlers";
+import { furnitureAt, furnitureBlocks, GARDEN_WINS_PER_YIELD } from "../../game/economy/house";
 import { monsterSpawnAt, spawnRegion } from "../../world/spawns";
 import { waypointUsable, WAYPOINTS } from "../../world/waypoints";
 import { isWalkable, portalAt } from "../../world/parseMap";
@@ -110,6 +111,14 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
       }
       // Home furniture answers to E: the bed rests, the barrel stores.
       if (position.mapId === "town_house") {
+        // Placed furniture comes back to the pack with a touch (PIX-34).
+        const placed = furnitureAt(draft, position.mapId, position.x + dx, position.y + dy);
+        if (placed) {
+          draft.house.furniture = (draft.house.furniture ?? []).filter((f) => f !== placed);
+          draft.inventory = addItem(draft.inventory, placed.itemId);
+          draft.worldMessage = `${getItem(placed.itemId).name} back in the pack.`;
+          return;
+        }
         const homeTile = getMap(position.mapId).tiles[position.y + dy]?.[position.x + dx];
         if (homeTile === "bed") {
           draft.hero.hp = draft.hero.stats.maxHp;
@@ -149,6 +158,22 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
           draft.worldMessage = "Your kitchen counter. Clean, empty, hopeful.";
           return;
         }
+        // The cottage's shelf of honor (PIX-34): display trophies for buffs.
+        if (homeTile === "trophy_shelf") {
+          draft.trophiesOpen = true;
+          return;
+        }
+        // The manor garden ripens on victories; E reads its progress.
+        if (homeTile === "garden") {
+          const wins = draft.house.gardenWins ?? 0;
+          draft.worldMessage = `The garden drinks your victories: ${wins}/${GARDEN_WINS_PER_YIELD} until the next harvest.`;
+          return;
+        }
+        // The manor's alchemy nook: two brews become a better one.
+        if (homeTile === "cauldron") {
+          draft.nookOpen = true;
+          return;
+        }
       }
       // Anyone beside the hero counts, faced tile first; no more pixel-perfect
       // shuffling to line up a chat. Interacting turns the hero toward them.
@@ -174,6 +199,31 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
       }
       draft.dialogue = { npcId: beside.npc.id, page: 0 };
       draft.worldMessage = null;
+      return;
+    }
+
+    case "PLACE_FURNITURE": {
+      // Furniture goes where you face (PIX-34): open floor only, one per tile.
+      if (draft.screen !== "world" || !draft.world || !draft.hero) return;
+      const { position } = draft.world;
+      if (position.mapId !== "town_house" || (draft.inventory[action.itemId] ?? 0) <= 0) return;
+      if (getItem(action.itemId).category !== "furniture") return;
+      const { dx, dy } = DIRECTION_DELTAS[position.facing];
+      const tx = position.x + dx;
+      const ty = position.y + dy;
+      const tile = getMap(position.mapId).tiles[ty]?.[tx];
+      if (tile !== "floor") {
+        draft.worldMessage = "It needs open floor. Face a free tile and try again.";
+        return;
+      }
+      if (furnitureAt(draft, position.mapId, tx, ty)) {
+        draft.worldMessage = "Something already stands there.";
+        return;
+      }
+      draft.inventory = removeItem(draft.inventory, action.itemId);
+      draft.house.furniture = [...(draft.house.furniture ?? []), { itemId: action.itemId, x: tx, y: ty }];
+      draft.inventoryOpen = false;
+      draft.worldMessage = `${getItem(action.itemId).name} placed. E takes it back.`;
       return;
     }
 
@@ -230,7 +280,13 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
         return;
       }
       // Bumping into something (or someone) still turns the hero toward it.
-      if (!isWalkable(map, x, y) || npcAt(map.id, x, y, draft.worldSteps) || solidChestAt(map.id, x, y)) {
+      const bump = furnitureAt(draft, map.id, x, y);
+      if (
+        !isWalkable(map, x, y) ||
+        npcAt(map.id, x, y, draft.worldSteps) ||
+        solidChestAt(map.id, x, y) ||
+        (bump && furnitureBlocks(bump.itemId))
+      ) {
         position.facing = action.direction;
         return;
       }

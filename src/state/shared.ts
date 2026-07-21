@@ -23,6 +23,8 @@ export const initialState: GameState = {
   hallOpen: false,
   settlers: [],
   bankOpen: false,
+  trophiesOpen: false,
+  nookOpen: false,
   quests: {},
   world: null,
   dungeonSelect: null,

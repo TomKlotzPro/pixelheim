@@ -19,6 +19,8 @@ const TILE_COLORS: Partial<Record<TileId, string>> = {
   shrine: "#4ae6c8",
   flowers: "#3d7a35",
   crops: "#c9a648",
+  trophy_shelf: "#7a5230",
+  garden: "#4a3524",
   lamp: "#3d7a35",
   well: "#8a8f9a",
 };
