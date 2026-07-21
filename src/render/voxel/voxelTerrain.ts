@@ -35,7 +35,14 @@ const BLOCK_HEIGHTS: Partial<Record<TileId, number>> = {
 /** Ground that is not at the standard height; everything else lies at 1. */
 const FLAT_TOPS: Partial<Record<TileId, number>> = { water: 0.45, marsh: 0.8, bridge: 1.6 };
 /** How far a pixel's brightness pushes its column out of the ground. */
-const FLAT_RELIEF: Partial<Record<TileId, number>> = { water: 0, bridge: 0.3, path: 0.5, floor: 0.3, sand: 0.5 };
+const FLAT_RELIEF: Partial<Record<TileId, number>> = {
+  water: 0,
+  bridge: 0.3,
+  path: 0.5,
+  floor: 0.3,
+  sand: 0.5,
+  crops: 2,
+};
 const DEFAULT_RELIEF = 1.1;
 export const GROUND_TOP = 1;
 
@@ -95,6 +102,7 @@ const ANIMATED: Partial<Record<TileId, { dx: number; dy: number; period: number 
   flowers: { dx: 1, dy: 1, period: 800 },
   forest: { dx: 1, dy: 1, period: 800 },
   marsh: { dx: 1, dy: 1, period: 800 },
+  crops: { dx: 1, dy: 0, period: 900 },
 };
 
 /** Same stable hash as the Pixi terrain: grass repeats less. */
@@ -284,7 +292,12 @@ const EARTH = new Color("#3a2c20");
 
 type Cell = { x: number; y: number; danger: boolean };
 type SwayPair = { a: InstancedMesh; b: InstancedMesh; period: number; phase: number };
-type Building = { cells: { x: number; y: number }[]; roofTile: TileId; doors: { x: number; y: number }[] };
+type Building = {
+  cells: { x: number; y: number }[];
+  roofTile: TileId;
+  doors: { x: number; y: number }[];
+  civic: boolean;
+};
 
 /**
  * The ground as a diorama (PIX-113, the medieval pass): open land is extruded
@@ -369,7 +382,11 @@ export class VoxelTerrain {
           consumed.add(`${c.x},${c.y}`);
         }
         const roofTile = [...roofCounts.entries()].toSorted((a, b) => b[1] - a[1])[0]?.[0] ?? "roof";
-        buildings.push({ cells, roofTile, doors });
+        // the town hall is civic: found by its portal, not by coordinates
+        const civic = doors.some((d) =>
+          map.portals.some((p) => p.x === d.x && p.y === d.y && p.to.kind === "map" && p.to.mapId === "town_hall"),
+        );
+        buildings.push({ cells, roofTile, doors, civic });
       }
     }
     return { buildings, consumed };
@@ -393,9 +410,9 @@ export class VoxelTerrain {
     const spanY = Math.max(...building.cells.map((c) => c.y)) - minY + 1;
     const seed = decorHash(minX * 7 + 1, minY * 13 + 3);
     const roofHue = darken(ROOF_HUES[building.roofTile] ?? "#8a5638", [1, 0.93, 0.86][seed % 3]);
-    const tall = building.cells.length >= 55 || seed % 4 === 0;
+    const tall = building.civic || building.cells.length >= 55 || seed % 4 === 0;
     const wallH = tall ? WALL_H_TALL : WALL_H;
-    const facadeStyle = seed % 3;
+    const facadeStyle = building.civic ? 0 : seed % 3;
 
     // roof form: a gabled ridge when the footprint runs long, hipped when square
     const level = new Map<string, number>();
@@ -509,7 +526,7 @@ export class VoxelTerrain {
             b.box(face.dx > 0 ? wx + ART - 0.2 : wx - extrude + 0.2, y0, wz + u0, extrude, h, len, color2);
           }
         };
-        put(0, 0, ART, 1.4, STONE, 1);
+        put(0, 0, ART, building.civic ? 3.6 : 1.4, STONE, 1);
         put(0, wallH - 1, ART, 1, BEAM, 0.9);
         put(0, 0, 1.2, wallH, BEAM, tall ? 1.5 : 0.9);
         put(ART - 1.2, 0, 1.2, wallH, BEAM, tall ? 1.5 : 0.9);
@@ -577,13 +594,31 @@ export class VoxelTerrain {
       }
     }
 
-    // one chimney on the highest ridge cell; the atmosphere smokes it
-    const chx = chimneyAt.x * ART + 6;
-    const chz = chimneyAt.y * ART + 6;
     const chTop = wallH + (Math.min(chimneyLevel, ROOF_MAX_LEVELS - 1) + 1) * ROOF_STEP;
-    b.box(chx, chTop, chz, 4, 5, 4, "#6b4034");
-    b.box(chx - 1, chTop + 5, chz - 1, 6, 1, 6, "#3a2a26");
-    this.chimneyTops.push({ x: chx + 2, y: chTop + 6, z: chz + 2 });
+    if (building.civic) {
+      // the hall carries a bell tower on the ridge, banner flying
+      const tx = chimneyAt.x * ART + 4;
+      const tz = chimneyAt.y * ART + 4;
+      const slate = ROOF_HUES.roof_slate ?? "#59677c";
+      b.box(tx, chTop, tz, 8, 7, 8, PLASTER);
+      b.box(tx - 0.8, chTop, tz - 0.8, 1.4, 7, 1.4, BEAM);
+      b.box(tx + 7.4, chTop, tz - 0.8, 1.4, 7, 1.4, BEAM);
+      b.box(tx - 0.8, chTop, tz + 7.4, 1.4, 7, 1.4, BEAM);
+      b.box(tx + 7.4, chTop, tz + 7.4, 1.4, 7, 1.4, BEAM);
+      this.glass.box(tx + 2.5, chTop + 2.5, tz - 0.4, 3, 3, 0.8, GLASS);
+      b.box(tx - 1.2, chTop + 7, tz - 1.2, 10.4, 1, 10.4, STONE);
+      b.box(tx - 1.6, chTop + 8, tz - 1.6, 11.2, 2.4, 11.2, darken(slate, 0.9));
+      b.box(tx + 1, chTop + 10.4, tz + 1, 6, 2.2, 6, darken(slate, 0.72));
+      b.box(tx + 3.4, chTop + 12.6, tz + 3.4, 1.2, 6.5, 1.2, BEAM_DARK);
+      b.box(tx + 4.6, chTop + 16.2, tz + 3.7, 4.6, 2.6, 0.6, "#b03030");
+    } else {
+      // one chimney on the highest ridge cell; the atmosphere smokes it
+      const chx = chimneyAt.x * ART + 6;
+      const chz = chimneyAt.y * ART + 6;
+      b.box(chx, chTop, chz, 4, 5, 4, "#6b4034");
+      b.box(chx - 1, chTop + 5, chz - 1, 6, 1, 6, "#3a2a26");
+      this.chimneyTops.push({ x: chx + 2, y: chTop + 6, z: chz + 2 });
+    }
 
     const mesh = new Mesh(b.build(), this.material);
     mesh.castShadow = true;

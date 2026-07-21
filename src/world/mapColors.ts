@@ -18,10 +18,11 @@ const TILE_COLORS: Partial<Record<TileId, string>> = {
   cave: "#16181e",
   shrine: "#4ae6c8",
   flowers: "#3d7a35",
+  crops: "#c9a648",
   lamp: "#3d7a35",
   well: "#8a8f9a",
 };
-const ROOF_COLOR = "#a03a3a";
+const ROOF_COLOR = "#8a5638";
 const FOG_COLOR = "#0b0c10";
 
 export function tileColor(tile: TileId): string {

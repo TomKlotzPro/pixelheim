@@ -21,6 +21,9 @@ export const CHANGELOG: Release[] = [
       "A REAL VILLAGE: the dirt road from the north gate opens into a paved square held by the shrine - market pockets, scalloped corners, the old well off its SW edge - with Main Street up top and a south lane serving every door",
       "The land got lived-in: a fenced sheep pen, flower meadows, kitchen gardens behind the cottages, and a walled orchard behind the player's house",
       "The four ages grew with it: stalls and lamps at Village, a fountain and a thatched row-house at Town, a slate townhouse and a farmhouse at City",
+      "WHEAT FIELDS: golden crops sway by the gate, under the hall and beside the sheep pen - a new tile, walkable, knee-deep in the voxel world",
+      "THE EDGE STOPPED BEING A RECTANGLE: a stream winds down the whole east side and bulges into a pond, forest creeps past the west and south walls - the village sits in country now",
+      "THE HALL EARNED ITS NAME: T-shaped with a lamped forecourt, stone-footed walls, and a bell tower flying a red banner over the ridge - found by its door, not its address",
     ],
   },
   {
