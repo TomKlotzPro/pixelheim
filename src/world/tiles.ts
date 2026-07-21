@@ -19,6 +19,7 @@ export const TILES: Record<TileId, TileDef> = {
   bridge: { id: "bridge", sprite: "tile_bridge", walkable: true },
   marsh: { id: "marsh", sprite: "tile_marsh", walkable: true },
   ash: { id: "ash", sprite: "tile_ash", walkable: true },
+  crops: { id: "crops", sprite: "tile_crops", walkable: true },
   wall: { id: "wall", sprite: "tile_wall", walkable: false },
   floor: { id: "floor", sprite: "tile_floor", walkable: true },
   roof: { id: "roof", sprite: "tile_roof", walkable: false },
