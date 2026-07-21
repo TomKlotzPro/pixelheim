@@ -11,6 +11,18 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.58.0",
+    date: "2026-07-21",
+    codename: "Timber & Stone",
+    notes: [
+      "HOUSES ARE HOUSES: every building rose again as a medieval timber home - plaster walls crossed with dark beams over stone footings, stepped hip roofs in each building's own hue, eaves, and a chimney on the ridge",
+      "AMBER WINDOWS that glow: honey-lit by day, warm lanterns down every street at night",
+      "Doors got a carpenter: beam posts and lintel, a plank door with a brass knob, a little shingled awning, a stone doorstep",
+      "The decor got real carpentry too: lamp posts with glowing lanterns, a roofed well, rail fences that connect, market stalls under striped awnings, round barrels, plank crates - and real trees in the deep woods",
+      "THE TRUE STRIDE: the hero's legs scissor now - one swings ahead, one trails behind, split in real depth - on top of the hop and the lean",
+    ],
+  },
+  {
     version: "0.57.0",
     date: "2026-07-20",
     codename: "Light Feet",
