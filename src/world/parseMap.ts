@@ -15,6 +15,8 @@ const CHAR_TILES: Record<string, TileId> = {
   w: "marsh",
   a: "ash",
   k: "crops",
+  T: "trophy_shelf",
+  G: "garden",
   "#": "wall",
   _: "floor",
   $: "floor",

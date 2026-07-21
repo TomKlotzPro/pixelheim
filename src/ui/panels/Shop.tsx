@@ -4,6 +4,7 @@ import { itemStatLine } from "../../game/economy/itemStats";
 import { gearItem, gearName } from "../../game/economy/rarity";
 import { forgeCapFor, forgeCostFor } from "../../game/economy/jobs";
 import { buyPrice, gearSellPriceAt, sellPriceAt, SHOPS, shopStock } from "../../game/economy/shop";
+import { nextHouseTier, trophySellMultiplier } from "../../game/economy/house";
 import { townTierOf } from "../../game/economy/town";
 import { activeShopId } from "../../state/gameReducer";
 import { dispatch, useGameState, useHero } from "../../state/store";
@@ -75,6 +76,26 @@ export function Shop() {
         </div>
 
         <div className="item-list">
+          {tab === "buy" && shopId === "odo" && state.house.owned && nextHouseTier(state) && (
+            <div className="item-row" data-testid="house-deed">
+              <Sprite name="tile_door_shut" size={32} alt="" />
+              <div className="item-info">
+                <span className="item-name">Deed: the {nextHouseTier(state)!.name}</span>
+                <span className="item-desc">
+                  Your house grows: more rooms, more to come home to. The builders work while you adventure.
+                </span>
+              </div>
+              <div className="item-actions">
+                <button
+                  className="btn btn-small btn-primary"
+                  disabled={state.gold < nextHouseTier(state)!.cost}
+                  onClick={() => dispatch({ type: "BUY_HOUSE_UPGRADE" })}
+                >
+                  Buy {nextHouseTier(state)!.cost}g
+                </button>
+              </div>
+            </div>
+          )}
           {tab === "buy" &&
             stock.map((item) => (
               <div key={item.id} className="item-row">
@@ -108,7 +129,8 @@ export function Shop() {
                 </div>
                 <div className="item-actions">
                   <button className="btn btn-small" onClick={() => dispatch({ type: "SELL_GEAR", uid: instance.uid })}>
-                    Sell {gearSellPriceAt(shopId, instance, townTierOf(state))}g
+                    Sell{" "}
+                    {Math.floor(gearSellPriceAt(shopId, instance, townTierOf(state)) * trophySellMultiplier(state))}g
                   </button>
                 </div>
               </div>
@@ -126,7 +148,7 @@ export function Shop() {
                 </div>
                 <div className="item-actions">
                   <button className="btn btn-small" onClick={() => dispatch({ type: "SELL_ITEM", itemId: item.id })}>
-                    Sell {sellPriceAt(shopId, item, townTierOf(state))}g
+                    Sell {Math.floor(sellPriceAt(shopId, item, townTierOf(state)) * trophySellMultiplier(state))}g
                   </button>
                 </div>
               </div>

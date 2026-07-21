@@ -7,6 +7,8 @@ import type { GameState } from "../game/types";
 import { spawnSpecies } from "../game/combat/encounters";
 import { getMonster } from "../game/combat/monsters";
 import { type Chest, chestSpriteName, chestsOn, solidChestAt } from "../world/chests";
+import { furnitureOn } from "../game/economy/house";
+import { getItem } from "../game/economy/items";
 import { npcBeside, npcPosition, npcsOn, type Npc } from "../world/npcs";
 import { signsOn } from "../world/signs";
 import { type MonsterSpawn, spawnPosition, spawnRegion, spawnsOn } from "../world/spawns";
@@ -43,6 +45,9 @@ export class ActorLayer {
     target: { x: number; y: number };
   }[] = [];
   private chests: { chest: Chest; sprite: Sprite }[] = [];
+  private furniture: Sprite[] = [];
+  private furnitureKey: string | null = null;
+  private container: Container | null = null;
   private hero: Sprite | null = null;
   private heroShadow: Sprite | null = null;
   private heroAura: Sprite | null = null;
@@ -61,6 +66,10 @@ export class ActorLayer {
   }
 
   build(container: Container, map: WorldMap, state: GameState, _scale: number): void {
+    this.container = container;
+    this.furnitureKey = null;
+    this.furniture = [];
+    this.syncFurniture(map, state);
     // Treasure sits under everyone: the hero walks over glints, not behind them.
     this.chests = [];
     for (const chest of chestsOn(map.id)) {
@@ -168,7 +177,25 @@ export class ActorLayer {
     this.lastPos = `${x},${y}`;
   }
 
+  /** Placed furniture (PIX-34): rebuilt whenever the layout changes, live. */
+  private syncFurniture(map: WorldMap, state: GameState): void {
+    const placed = furnitureOn(state, map.id);
+    const key = placed.map((f) => `${f.itemId}:${f.x},${f.y}`).join("|");
+    if (key === this.furnitureKey || !this.container) return;
+    this.furnitureKey = key;
+    for (const sprite of this.furniture) this.container.removeChild(sprite);
+    this.furniture = [];
+    for (const f of placed) {
+      const sprite = new Sprite(Assets.get(getItem(f.itemId).sprite) as Texture);
+      sprite.position.set(f.x * ART, f.y * ART);
+      // Rugs and company sit under every walker, like the treasure does.
+      this.container.addChildAt(sprite, 0);
+      this.furniture.push(sprite);
+    }
+  }
+
   update(map: WorldMap, state: GameState, clock: number): void {
+    this.syncFurniture(map, state);
     const pos = state.world!.position;
     const key = `${pos.x},${pos.y}`;
     if (key !== this.lastPos) {

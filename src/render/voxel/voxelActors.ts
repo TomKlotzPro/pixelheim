@@ -18,6 +18,8 @@ import type { GameState } from "../../game/types";
 import { spawnSpecies } from "../../game/combat/encounters";
 import { getMonster } from "../../game/combat/monsters";
 import { type Chest, chestSpriteName, chestsOn, solidChestAt } from "../../world/chests";
+import { furnitureOn } from "../../game/economy/house";
+import { getItem } from "../../game/economy/items";
 import { npcBeside, npcPosition, npcsOn, type Npc } from "../../world/npcs";
 import { type MonsterSpawn, spawnPosition, spawnRegion, spawnsOn } from "../../world/spawns";
 import { signsOn } from "../../world/signs";
@@ -99,6 +101,8 @@ export class VoxelActors {
   private npcs: (Walker & { npc: Npc })[] = [];
   private monsters: (Walker & { spawn: MonsterSpawn })[] = [];
   private chests: { chest: Chest; mesh: Mesh; shownSprite: string | null }[] = [];
+  private furniture: Mesh[] = [];
+  private furnitureKey: string | null = null;
   private signs: BillboardSprite[] = [];
   private signKey = "";
   private hero: Mesh | null = null;
@@ -140,6 +144,9 @@ export class VoxelActors {
       this.group.add(mesh);
       this.chests.push({ chest, mesh, shownSprite: shown });
     }
+    this.furnitureKey = null;
+    this.furniture = [];
+    this.syncFurniture(map, state);
 
     this.npcs = [];
     for (const npc of npcsOn(map.id)) {
@@ -232,7 +239,37 @@ export class VoxelActors {
     this.heroPresence = state.hero ? rankPresence(state.hero.level) : 1;
   }
 
+  /** Placed furniture (PIX-34): extruded like the actors, rugs laid flat. */
+  private syncFurniture(map: WorldMap, state: GameState): void {
+    const placed = furnitureOn(state, map.id);
+    const key = placed.map((f) => `${f.itemId}:${f.x},${f.y}`).join("|");
+    if (key === this.furnitureKey || !this.sheet) return;
+    this.furnitureKey = key;
+    for (const mesh of this.furniture) {
+      mesh.geometry.dispose();
+      this.group.remove(mesh);
+    }
+    this.furniture = [];
+    for (const f of placed) {
+      const sprite = this.sheet.sprites[getItem(f.itemId).sprite];
+      if (!sprite) continue;
+      const flat = f.itemId === "furn_rug";
+      const mesh = new Mesh(uprightGeometry(colorGrid(sprite), flat ? 1 : 3), this.figureMaterial);
+      if (flat) {
+        mesh.rotation.x = -Math.PI / 2;
+        mesh.position.set(f.x * ART + ART / 2, GROUND_TOP + 0.4, f.y * ART + ART);
+      } else {
+        mesh.position.set(f.x * ART + ART / 2, GROUND_TOP, f.y * ART + ART / 2);
+        mesh.castShadow = true;
+      }
+      mesh.receiveShadow = true;
+      this.group.add(mesh);
+      this.furniture.push(mesh);
+    }
+  }
+
   update(map: WorldMap, state: GameState, clock: number): void {
+    this.syncFurniture(map, state);
     const pos = state.world!.position;
     const key = `${pos.x},${pos.y}`;
     if (key !== this.lastPos) {

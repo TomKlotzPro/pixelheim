@@ -19,6 +19,8 @@ import { HouseStorage } from "../ui/panels/HouseStorage";
 import { Shop } from "../ui/panels/Shop";
 import { TownHall } from "../ui/panels/TownHall";
 import { Bank } from "../ui/panels/Bank";
+import { Trophies } from "../ui/panels/Trophies";
+import { Nook } from "../ui/panels/Nook";
 import { TitleScreen } from "../ui/screens/TitleScreen";
 import { Victory } from "../ui/screens/Victory";
 import { WorldScreen } from "../ui/screens/WorldScreen";
@@ -281,6 +283,8 @@ export default function App() {
       {state.shopOpen && state.hero && <Shop />}
       {state.hallOpen && state.hero && <TownHall />}
       {state.bankOpen && state.hero && <Bank />}
+      {state.trophiesOpen && state.hero && <Trophies />}
+      {state.nookOpen && state.hero && <Nook />}
       {state.storageOpen && state.hero && <HouseStorage />}
       {optionsOpen && (
         <Options

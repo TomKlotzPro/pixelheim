@@ -62,6 +62,12 @@ function route(draft: GameState, action: Action): GameState | void {
     case "FUND_VENTURE":
     case "COLLECT_VENTURE":
     case "EXPAND_PROPERTY":
+    case "BUY_HOUSE_UPGRADE":
+    case "TOGGLE_TROPHIES":
+    case "TOGGLE_NOOK":
+    case "DISPLAY_TROPHY":
+    case "TAKE_TROPHY":
+    case "COMBINE_POTIONS":
     case "BUY_ITEM":
     case "SELL_ITEM":
     case "SELL_GEAR":
@@ -79,6 +85,7 @@ function route(draft: GameState, action: Action): GameState | void {
     case "EXIT_WORLD":
     case "MOVE":
     case "INTERACT":
+    case "PLACE_FURNITURE":
     case "ADVANCE_DIALOGUE":
     case "FAST_TRAVEL":
     case "CLOSE_DUNGEON_SELECT":

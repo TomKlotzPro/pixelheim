@@ -1,6 +1,7 @@
 import { isWalkable } from "../parseMap";
 import type { WorldMap } from "../types";
 import {
+  HOUSE_MAPS,
   OVERWORLD_MAP,
   TOWN_ALCHEMIST_MAP,
   TOWN_HALL_MAP,
@@ -32,7 +33,7 @@ export const MAPS: Record<string, WorldMap> = {
 // Cross-map validation: every portal target must exist and be standable.
 // Runs at module load, so a broken link fails the test suite immediately.
 // Every town tier is validated: a tier redraw must never strand a portal.
-for (const map of [...Object.values(MAPS), ...TOWN_MAPS]) {
+for (const map of [...Object.values(MAPS), ...TOWN_MAPS, ...HOUSE_MAPS]) {
   for (const portal of map.portals) {
     if (portal.to.kind !== "map") continue;
     const target = MAPS[portal.to.mapId];
@@ -63,6 +64,17 @@ export function getTownTier(): number {
   return townTier;
 }
 
+/** The house-tier mirror (PIX-34): same contract as the town-tier mirror. */
+let houseTier = 1;
+
+export function setHouseTier(tier: number): void {
+  houseTier = Math.min(HOUSE_MAPS.length, Math.max(1, Math.floor(tier)));
+}
+
+export function getHouseTier(): number {
+  return houseTier;
+}
+
 /** The settlers mirror (PIX-92): same contract as the tier mirror above. */
 let settlers: string[] = [];
 
@@ -76,6 +88,7 @@ export function getSettlers(): string[] {
 
 export function getMap(id: string): WorldMap {
   if (id === "town") return TOWN_MAPS[townTier - 1];
+  if (id === "town_house") return HOUSE_MAPS[houseTier - 1];
   const map = MAPS[id];
   if (!map) throw new Error(`Unknown map: ${id}`);
   return map;

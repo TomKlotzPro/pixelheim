@@ -25,6 +25,7 @@ const TABS: { id: ItemCategory | "all" | "craft"; label: string }[] = [
   { id: "weapons", label: "Weapons" },
   { id: "apparel", label: "Apparel" },
   { id: "potions", label: "Potions" },
+  { id: "furniture", label: "Home" },
   { id: "food", label: "Food" },
   { id: "misc", label: "Misc" },
   { id: "craft", label: "Craft" },
@@ -299,6 +300,15 @@ export function Inventory() {
                       <span className="item-desc">{item.description}</span>
                     </div>
                     <div className="item-actions">
+                      {item.category === "furniture" && !inBattle && state.world?.position.mapId === "town_house" && (
+                        <button
+                          className="btn btn-small btn-primary"
+                          title="Places it on the floor tile you face"
+                          onClick={() => dispatch({ type: "PLACE_FURNITURE", itemId: item.id })}
+                        >
+                          Place
+                        </button>
+                      )}
                       {usable && (
                         <button
                           className="btn btn-small"

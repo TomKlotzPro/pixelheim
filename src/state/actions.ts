@@ -39,6 +39,12 @@ export type EconomyAction =
   | { type: "FUND_VENTURE" }
   | { type: "COLLECT_VENTURE" }
   | { type: "EXPAND_PROPERTY"; mapId: string }
+  | { type: "BUY_HOUSE_UPGRADE" }
+  | { type: "TOGGLE_TROPHIES" }
+  | { type: "TOGGLE_NOOK" }
+  | { type: "DISPLAY_TROPHY"; itemId: string }
+  | { type: "TAKE_TROPHY"; itemId: string }
+  | { type: "COMBINE_POTIONS"; itemId: string }
   | { type: "BUY_ITEM"; itemId: string }
   | { type: "SELL_ITEM"; itemId: string }
   | { type: "SELL_GEAR"; uid: string }
@@ -63,6 +69,7 @@ export type WorldAction =
   | { type: "EXIT_WORLD" }
   | { type: "MOVE"; direction: Direction }
   | { type: "INTERACT" }
+  | { type: "PLACE_FURNITURE"; itemId: string }
   | { type: "ADVANCE_DIALOGUE" }
   | { type: "FAST_TRAVEL"; waypointId: string }
   | { type: "CLOSE_DUNGEON_SELECT" };

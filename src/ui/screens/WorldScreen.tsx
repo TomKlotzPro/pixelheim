@@ -8,6 +8,8 @@ import { getMap } from "../../world/maps/index";
 import { spawnSpecies } from "../../game/combat/encounters";
 import { getMonster } from "../../game/combat/monsters";
 import { chestSpriteName, chestsOn, solidChestAt } from "../../world/chests";
+import { furnitureOn } from "../../game/economy/house";
+import { getItem } from "../../game/economy/items";
 import { npcBeside, npcById, npcPosition, npcsOn } from "../../world/npcs";
 import { spawnPosition, spawnRegion, spawnsOn } from "../../world/spawns";
 import { regionAt } from "../../world/parseMap";
@@ -170,6 +172,14 @@ export function WorldScreen() {
                   data-open={(state.world?.openedChests ?? []).includes(chest.id) || undefined}
                 />
               ))}
+              {furnitureOn(state, map.id).map((f) => (
+                <div
+                  key={`${f.x},${f.y}`}
+                  data-testid="world-furniture"
+                  data-pos={`${f.x},${f.y}`}
+                  data-item={f.itemId}
+                />
+              ))}
               {signsOn(map.id, state.house.owned).map((sign) => (
                 <div
                   key={`${sign.x},${sign.y}`}
@@ -234,6 +244,15 @@ export function WorldScreen() {
                   </div>
                 );
               })}
+              {furnitureOn(state, map.id).map((f) => (
+                <div
+                  key={`${f.x},${f.y}`}
+                  className="world-npc"
+                  style={{ left: f.x * tilePx, top: f.y * tilePx, width: tilePx, height: tilePx }}
+                >
+                  <Sprite name={getItem(f.itemId).sprite} size={tilePx} alt={getItem(f.itemId).name} />
+                </div>
+              ))}
               {signsOn(map.id, state.house.owned).map((sign) => (
                 <span
                   key={`${sign.x},${sign.y}`}
