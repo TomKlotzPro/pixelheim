@@ -26,6 +26,7 @@ export const CHANGELOG: Release[] = [
       "BETTER COLORIMETRY: brighter highlights and richer saturation across the heroes - vivid crimson tabards, royal blues, glowing golds, hotter rogue eyes",
       "STRIDES YOU CAN SEE FROM THE SADDLE: the walk poses got bold - legs scissor wide on contact, a knee lifts high on the passing step, robes sway twice as far - every step on a long walk reads as a different sprite",
       "ONE STEP, ONE POSE: the stride now advances with each TILE you cross, not with the clock - four steps show four different sprites, guaranteed - and standing settles on a true neutral pose instead of a mid-stride freeze; the hop calmed down to let the footwork lead",
+      "INKED: every living thing's outline now seals its corners in near-black - no more dotted edges - and shadow tones deepened inside the sprites; characters pop off grass and path alike, and the voxel figures glow a touch brighter",
     ],
   },
   {

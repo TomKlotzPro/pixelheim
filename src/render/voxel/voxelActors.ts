@@ -121,7 +121,7 @@ export class VoxelActors {
   private prompt: Mesh | null = null;
 
   constructor() {
-    this.figureMaterial = new MeshLambertMaterial({ vertexColors: true, emissive: new Color(0x33333a) });
+    this.figureMaterial = new MeshLambertMaterial({ vertexColors: true, emissive: new Color(0x3e3e4a) });
   }
 
   /** A figure with its true 2-beat idle frames, extruded like the 2D sheets. */

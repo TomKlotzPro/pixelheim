@@ -1403,7 +1403,7 @@ const sprites = {
   hero_warrior: {
     palette: {
       H: "#aab6c6",
-      D: "#525c68",
+      D: "#3e4652",
       F: SKIN,
       K: "#22242b",
       B: "#8a97a6",
@@ -1411,7 +1411,7 @@ const sprites = {
       O: "#a06a34",
       R: "#d84545",
       P: "#e2e8f2",
-      E: "#343a46",
+      E: "#262c36",
     },
     rows: [
       "......RR........",
@@ -1435,7 +1435,7 @@ const sprites = {
   hero_mage: {
     palette: {
       H: "#4468f0",
-      D: "#2c42aa",
+      D: "#22348c",
       F: SKIN,
       K: "#22242b",
       R: "#5578fa",
@@ -1463,7 +1463,7 @@ const sprites = {
     ],
   },
   hero_rogue: {
-    palette: { H: "#4a5162", D: "#2c303a", F: SKIN, K: "#ff5252", B: "#5a6172", L: "#3a3f4c", O: "#7d5a35" },
+    palette: { H: "#4a5162", D: "#20242c", F: SKIN, K: "#ff5252", B: "#5a6172", L: "#3a3f4c", O: "#7d5a35" },
     rows: [
       "................",
       ".....HHHHHH.....",
@@ -3045,11 +3045,17 @@ function outlined({ rows, palette }) {
   for (let y = 0; y < 16; y++) {
     for (let x = 0; x < 16; x++) {
       if (rows[y][x] !== ".") continue;
+      // All 8 neighbors: 4-way outlines leave dotted corners, and a broken
+      // line is half the pop. Diagonal coverage seals the silhouette.
       const solid = [
         [0, -1],
         [0, 1],
         [-1, 0],
         [1, 0],
+        [-1, -1],
+        [1, -1],
+        [-1, 1],
+        [1, 1],
       ].some(([dx, dy]) => {
         const c = rows[y + dy]?.[x + dx];
         return c && c !== "." && c !== "o";
@@ -3057,7 +3063,7 @@ function outlined({ rows, palette }) {
       if (solid) out[y][x] = "o";
     }
   }
-  return { palette: { ...palette, o: "#14151c" }, rows: out.map((r) => r.join("")) };
+  return { palette: { ...palette, o: "#07080d" }, rows: out.map((r) => r.join("")) };
 }
 for (const name of [...MONSTERS, ...NPCS, ...HEROES]) {
   if (sprites[name].palette.o) throw new Error(`${name} already uses the outline char`);
