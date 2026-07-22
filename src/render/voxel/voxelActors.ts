@@ -109,7 +109,9 @@ export class VoxelActors {
   private hero: Mesh | null = null;
   private heroFrames: BufferGeometry[] = [];
   private heroFramesUp: BufferGeometry[] = [];
+  private heroStand: BufferGeometry | null = null;
   private heroFacingUp = false;
+  private heroStep = 0;
   private heroTarget = { x: 0, z: 0 };
   private heroFlip = false;
   private heroPresence = 1;
@@ -226,6 +228,17 @@ export class VoxelActors {
     // first, so plate and blade ride the step exactly as the 2D sheets do.
     // Sheets without authored strides fall back to the synthesized gait.
     for (const frame of [...this.heroFrames, ...this.heroFramesUp]) frame.dispose();
+    this.heroStand?.dispose();
+    this.heroStand = uprightGeometry(
+      overlayGrids(
+        colorGrid(body, ACTOR_OMIT),
+        outfit
+          .map((name) => this.sheet!.sprites[name])
+          .filter(Boolean)
+          .map((sprite) => colorGrid(sprite!)),
+      ),
+      2,
+    );
     const drawn = heroStrideGrids(this.sheet, sheetName, body, outfit);
     this.heroFrames = drawn
       ? heroStrideGeometries(drawn, 2)
@@ -292,6 +305,7 @@ export class VoxelActors {
     this.heroTarget = { x: pos.x * ART + ART / 2, z: pos.y * ART + ART / 2 };
     this.heroFlip = pos.facing === "left";
     this.heroFacingUp = pos.facing === "up";
+    this.heroStep = state.worldSteps;
     this.dressHero(state);
     this.rebuildSigns(map, state);
 
@@ -343,11 +357,14 @@ export class VoxelActors {
       // footwork, a hop carries the weight, and a waddle carries the charm.
       const walking = clock < this.walkUntil && !reduceMotion;
       const beat = clock / WALK_MS;
-      // Walking away shows the hero's back (PIX-117), same as the 2D sheets.
+      // The frame advances ONCE PER TILE (worldSteps), the classic RPG
+      // stride - every move is a different sprite - and standing settles on
+      // the true neutral pose. Walking away shows the hero's back (PIX-117).
       const frames = this.heroFacingUp && this.heroFramesUp.length > 0 ? this.heroFramesUp : this.heroFrames;
-      this.hero.geometry = walking ? frames[Math.floor(beat) % frames.length] : frames[0];
-      const hop = walking ? Math.abs(Math.sin(beat * Math.PI)) * 1.8 : 0;
-      this.hero.rotation.z = walking ? Math.sin(beat * Math.PI) * 0.18 : 0;
+      this.hero.geometry = walking ? frames[this.heroStep % frames.length] : (this.heroStand ?? frames[1]);
+      // The footwork leads now; the hop and waddle only season it.
+      const hop = walking ? Math.abs(Math.sin(beat * Math.PI)) * 1.1 : 0;
+      this.hero.rotation.z = walking ? Math.sin(beat * Math.PI) * 0.12 : 0;
       this.hero.position.set(
         ease(this.hero.position.x, this.heroTarget.x),
         GROUND_TOP + hop,

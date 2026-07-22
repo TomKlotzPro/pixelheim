@@ -25,6 +25,7 @@ export const CHANGELOG: Release[] = [
       "RETINA SHARP: the WebGL canvas was rendering at half resolution on high-density screens and getting stretched - the blur is gone, every pixel lands on a device pixel",
       "BETTER COLORIMETRY: brighter highlights and richer saturation across the heroes - vivid crimson tabards, royal blues, glowing golds, hotter rogue eyes",
       "STRIDES YOU CAN SEE FROM THE SADDLE: the walk poses got bold - legs scissor wide on contact, a knee lifts high on the passing step, robes sway twice as far - every step on a long walk reads as a different sprite",
+      "ONE STEP, ONE POSE: the stride now advances with each TILE you cross, not with the clock - four steps show four different sprites, guaranteed - and standing settles on a true neutral pose instead of a mid-stride freeze; the hop calmed down to let the footwork lead",
     ],
   },
   {
