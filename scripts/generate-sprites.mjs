@@ -1410,24 +1410,26 @@ const sprites = {
       L: "#4a4f5a",
       O: "#8a5a2b",
       R: "#c23b3b",
+      P: "#c8ccd8",
+      E: "#2e323b",
     },
     rows: [
       "......RR........",
       ".....RRRR.......",
       "....HHHHHH......",
       "...HHHHHHHH.....",
-      "...HFFFFFFH.....",
-      "...HFKFFKFH.....",
-      "...HFFFFFFH.....",
-      "....FFFFFF......",
-      "...BBBBBBBB.....",
-      "..BBBBBBBBBB....",
-      ".FBBBBBBBBBBF...",
-      ".FBBOOOOOOBBF...",
-      "..BBBBBBBBBB....",
+      "...DHHHHHHD.....",
+      "...DHKFFKHD.....",
+      "...DFFFFFFD.....",
+      "..PDDFFFFDDP....",
+      ".PPBBBBBBBBPP...",
+      ".PBBBRRRRBBBP...",
+      ".FBBBRRRRBBBF...",
+      ".FBBOORROOBBF...",
+      "..BBBRRRRBBB....",
       "...LLL..LLL.....",
       "...LLL..LLL.....",
-      "...DD....DD.....",
+      "...EE....EE.....",
     ],
   },
   hero_mage: {
@@ -1444,16 +1446,16 @@ const sprites = {
     rows: [
       ".......HH.......",
       "......HHHH......",
+      "......HHHH......",
       ".....HHHHHH.....",
-      "....HHHHHHHH....",
       "..HHHHHHHHHHHH..",
       "...WFFFFFFFFW...",
       "...WFKFFFFKW....",
       "...WFFFFFFFW....",
       "....WWWWWWW.....",
-      "...RRRRRRRRR....",
-      "..RRRRYYRRRRR...",
-      ".FRRRRYYRRRRF...",
+      "...RRRRYRRRR....",
+      "..RRRRYYYRRRR...",
+      ".FRRRRRYRRRRF...",
       "..RRRRRRRRRR....",
       "..RRRRRRRRRR....",
       "..LLLLLLLLLL....",
@@ -1467,10 +1469,10 @@ const sprites = {
       ".....HHHHHH.....",
       "....HHHHHHHH....",
       "...HHHHHHHHHH...",
-      "...HHFFFFFFHH...",
-      "...HHFKFFKFHH...",
-      "...HHHFFFFHHH...",
-      "....HHHHHHHH....",
+      "...HHDDDDDDHH...",
+      "...HDDKDDKDDH...",
+      "...HHDDDDDDHH...",
+      "....HHOOOOHH....",
       "...BBBBBBBB.....",
       "..BBBBBBBBBB....",
       ".FBBBBBBBBBBF...",
@@ -1484,10 +1486,10 @@ const sprites = {
   hero_cleric: {
     palette: { H: "#e8e2d0", D: "#b8b0a0", F: SKIN, K: "#22242b", B: "#f0ead8", L: "#c8c0b0", Y: "#e8c34a" },
     rows: [
-      ".......YY.......",
-      ".....YYYYYY.....",
-      "....HHHHHHHH....",
-      "...HHHHHHHHHH...",
+      ".....HHHH.......",
+      "....HHYYHH......",
+      "....HHYYHH......",
+      "...HHHHHHHH.....",
       "...HFFFFFFFFH...",
       "...HFKFFFFKFH...",
       "...HFFFFFFFFH...",
@@ -3165,6 +3167,56 @@ const feet = (rows, dx) =>
   });
 
 const walkFrames = (b) => [b, feet(bobUp(b, 1), 1), b, feet(bobUp(b, 1), -1)];
+
+// ---------------- the true stride (PIX-117) ----------------
+// Hand-drawn leg poses (rows 13-15) per silhouette family: contact left,
+// passing (right knee up), contact right, passing (left knee up). Torso and
+// hands never move, so worn gear stays pinned; frames 1 and 3 bob the whole
+// body up a pixel, the convention the outfit compositor already follows.
+const HERO_STRIDE = {
+  hero_warrior: [
+    ["..LLL...LLL.....", "..LLL....LLL....", "..EE......EE...."],
+    ["...LLL..LLL.....", "...LLL..LL......", "...EE...E......."],
+    ["....LLL...LLL...", "...LLL....LLL...", "...EE......EE..."],
+    ["...LLL..LLL.....", "....LL..LLL.....", ".....E...EE....."],
+  ],
+  hero_rogue: [
+    ["..LLL...LLL.....", "..LLL....LLL....", "..DD......DD...."],
+    ["...LLL..LLL.....", "...LLL..LL......", "...DD...D......."],
+    ["....LLL...LLL...", "...LLL....LLL...", "...DD......DD..."],
+    ["...LLL..LLL.....", "....LL..LLL.....", ".....D...DD....."],
+  ],
+  hero_mage: [
+    [".RRRRRRRRRR.....", ".LLLLLLLLLL.....", "..DD......DD...."],
+    ["..RRRRRRRRRR....", "..LLLLLLLLLL....", "....DD..DD......"],
+    ["...RRRRRRRRRR...", "...LLLLLLLLLL...", "....DD......DD.."],
+    ["..RRRRRRRRRR....", "..LLLLLLLLLL....", ".....DD..DD....."],
+  ],
+  hero_cleric: [
+    [".BBBBBBBBBBB....", ".LLLLLLLLLLL....", "..DD.......DD..."],
+    ["..BBBBBBBBBBB...", "..LLLLLLLLLLL...", "....DD...DD....."],
+    ["...BBBBBBBBBBB..", "...LLLLLLLLLLL..", "....DD.......DD."],
+    ["..BBBBBBBBBBB...", "..LLLLLLLLLLL...", "......DD..DD...."],
+  ],
+};
+const STRIDE_FAMILY = {
+  hero_warrior: "hero_warrior",
+  hero_rogue: "hero_rogue",
+  hero_ranger: "hero_rogue",
+  hero_mage: "hero_mage",
+  hero_necromancer: "hero_mage",
+  hero_cleric: "hero_cleric",
+};
+const strideFamilyOf = (name) =>
+  STRIDE_FAMILY[Object.keys(STRIDE_FAMILY).find((base) => name === base || name.startsWith(base + "_"))] ?? null;
+/** Real drawn walk frames when the family has them; the old bob otherwise. */
+const heroWalkFrames = (name) => (rows) => {
+  const family = strideFamilyOf(name);
+  if (!family) return walkFrames(rows);
+  const splice = (i) => rows.slice(0, 13).concat(HERO_STRIDE[family][i]);
+  return [splice(0), bobUp(splice(1), 1), splice(2), bobUp(splice(3), 1)];
+};
+
 const idleFrames = (b) => [b, bobDown(b, 1)];
 const shimmerFrames = (b) => [b, shiftXWrap(b, 1), shiftXWrap(b, 2), shiftXWrap(b, 3)];
 // Terrain sway wraps in both axes so tiles stay opaque and seamless: the
@@ -3172,7 +3224,7 @@ const shimmerFrames = (b) => [b, shiftXWrap(b, 1), shiftXWrap(b, 2), shiftXWrap(
 const swayFrames = (b) => [b, shiftXWrap(shiftYWrap(b, 1), 1)];
 
 const anims = [
-  ...HEROES.map((base) => ({ name: `${base}_walk`, base, fps: 6, facing: "front", frames: walkFrames })),
+  ...HEROES.map((base) => ({ name: `${base}_walk`, base, fps: 6, facing: "front", frames: heroWalkFrames(base) })),
   ...NPCS.map((base) => ({ name: `${base}_idle`, base, fps: 2, frames: idleFrames })),
   ...MONSTERS.map((base) => ({ name: `${base}_idle`, base, fps: 2, frames: idleFrames })),
   { name: "water_shimmer", base: "tile_water", fps: 4, frames: shimmerFrames },
@@ -3223,7 +3275,7 @@ writeFileSync(join(OUT, "atlas.json"), JSON.stringify(atlas, null, 2) + "\n");
 // The 3D renderer extrudes the same grids the PNGs are baked from: every
 // sprite's rows + palette, verbatim. One art source of truth - editing a
 // sprite here reshapes its voxel model with no extra work.
-const voxels = { art: 16, sprites: {} };
+const voxels = { art: 16, sprites: {}, heroStride: HERO_STRIDE, strideFamily: STRIDE_FAMILY };
 for (const name of names) {
   voxels.sprites[name] = { rows: sprites[name].rows, palette: sprites[name].palette };
 }

@@ -31,6 +31,7 @@ import {
   ART,
   type ColorGrid,
   colorGrid,
+  heroStrideGrids,
   idleFrameGrids,
   overlayGrids,
   uprightGeometry,
@@ -222,11 +223,14 @@ export class VoxelActors {
       .map((name) => this.sheet!.sprites[name])
       .filter((sprite) => sprite !== undefined)
       .map((sprite) => colorGrid(sprite));
-    const grid = overlayGrids(colorGrid(body, ACTOR_OMIT), wears);
-    // The 4-beat walk, extruded per frame: gear composes first, so plate and
-    // blade ride the step exactly as they do in the 2D sheets.
+    // The drawn walk frames (PIX-117), extruded per frame: gear composes
+    // first, so plate and blade ride the step exactly as the 2D sheets do.
+    // Sheets without authored strides fall back to the synthesized gait.
     for (const frame of this.heroFrames) frame.dispose();
-    this.heroFrames = strideGeometries(grid, 2);
+    const drawn = heroStrideGrids(this.sheet, sheetName, body, wears);
+    this.heroFrames = drawn
+      ? drawn.map((frame) => uprightGeometry(frame, 2))
+      : strideGeometries(overlayGrids(colorGrid(body, ACTOR_OMIT), wears), 2);
     if (this.hero) {
       this.hero.geometry = this.heroFrames[0];
     } else {

@@ -11,6 +11,16 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.64.0",
+    date: "2026-07-21",
+    codename: "New Faces, True Steps",
+    notes: [
+      "THE HEROES GOT A REFONT: the warrior wears a crested visor helm, pauldrons and a war tabard; the mage a true pointed hat and a starred robe; the rogue vanishes into a deep hood with burning eyes; the cleric carries a gold-crossed mitre - and every look, rank and path variant inherits the new faces",
+      "REAL WALK CYCLES: four hand-drawn frames per silhouette - legs that actually stride and bend, robes that sway, feet that lift - replacing the old sliding-feet trick, in 2D and extruded voxel alike",
+      "Worn gear still rides every step: swords, plate and staves pin to hands that never leave their pixel",
+    ],
+  },
+  {
     version: "0.63.0",
     date: "2026-07-21",
     codename: "Fresh Plaster",

@@ -8,7 +8,13 @@ export const ART = 16;
  * directly. Same rows the PNGs are baked from - one art source (PIX-111).
  */
 export type VoxelSprite = { rows: string[]; palette: Record<string, string> };
-export type VoxelSheet = { art: number; sprites: Record<string, VoxelSprite> };
+export type VoxelSheet = {
+  art: number;
+  sprites: Record<string, VoxelSprite>;
+  /** Hand-drawn stride legs per silhouette family (PIX-117). */
+  heroStride?: Record<string, string[][]>;
+  strideFamily?: Record<string, string>;
+};
 
 let sheetPromise: Promise<VoxelSheet> | null = null;
 
@@ -356,6 +362,29 @@ function splitLegs(grid: ColorGrid): { body: ColorGrid; left: ColorGrid; right: 
     y >= legTop ? row.map((hex, x) => (x >= width / 2 ? hex : null)) : blankRow(width),
   );
   return { body, left, right };
+}
+
+/**
+ * The hero's four drawn walk frames, dressed (PIX-117): the authored leg
+ * poses splice under the body rows, gear composes onto every frame, and the
+ * passing frames rise a pixel - exactly what the 2D sheets bake. Returns
+ * null when the sheet predates authored strides so callers can fall back.
+ */
+export function heroStrideGrids(
+  sheet: VoxelSheet,
+  spriteName: string,
+  body: VoxelSprite,
+  wears: ColorGrid[],
+): ColorGrid[] | null {
+  if (!sheet.heroStride || !sheet.strideFamily) return null;
+  const base = Object.keys(sheet.strideFamily).find((name) => spriteName === name || spriteName.startsWith(name + "_"));
+  const frames = base ? sheet.heroStride[sheet.strideFamily[base]] : undefined;
+  if (!frames) return null;
+  return frames.map((legs, i) => {
+    const rows = body.rows.slice(0, 13).concat(legs);
+    const dressed = overlayGrids(colorGrid({ rows, palette: body.palette }, ACTOR_OMIT), wears);
+    return i % 2 === 1 ? bobUpGrid(dressed) : dressed;
+  });
 }
 
 /**
