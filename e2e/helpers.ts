@@ -87,3 +87,47 @@ export const V1_SAVE = {
   battle: null,
   inventoryOpen: false,
 } as const;
+
+/** Presses a movement key `times` times; `delay` throttles for slower routes. */
+export async function walk(page: Page, key: string, times: number, delay = 15) {
+  for (let i = 0; i < times; i++) {
+    await page.keyboard.press(key);
+    await page.waitForTimeout(delay);
+  }
+}
+
+/** Walks a route as [key, times] legs - the long-journey spelling. */
+export async function walkPath(page: Page, steps: [string, number][], delay = 15): Promise<void> {
+  for (const [key, times] of steps) await walk(page, key, times, delay);
+}
+
+/** Stalks a wild spawn until the battle banner appears (bump-only battles). */
+export async function chase(page: Page, keys: string[]): Promise<void> {
+  for (const key of keys) {
+    if (
+      await page
+        .getByText(/The Wilds:/)
+        .isVisible()
+        .catch(() => false)
+    )
+      return;
+    await page.keyboard.press(key);
+    await page.waitForTimeout(30);
+  }
+  await expect(page.getByText(/The Wilds:/)).toBeVisible();
+}
+
+/** Attack until the fight resolves one way or the other. */
+export async function fightOut(page: Page): Promise<void> {
+  for (let i = 0; i < 40; i++) {
+    const walkOn = page.getByRole("button", { name: "Walk on" });
+    if (await walkOn.isVisible().catch(() => false)) {
+      await walkOn.click();
+      return;
+    }
+    const attack = page.getByRole("button", { name: "Attack", exact: true });
+    if (await attack.isVisible().catch(() => false)) await attack.click();
+    await page.waitForTimeout(60);
+  }
+  throw new Error("the fight never resolved");
+}

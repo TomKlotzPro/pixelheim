@@ -1,12 +1,5 @@
-import { expect, test, type Page } from "@playwright/test";
-import { createHero, SAVE_KEY, V1_SAVE } from "./helpers";
-
-async function walk(page: Page, key: string, times: number) {
-  for (let i = 0; i < times; i++) {
-    await page.keyboard.press(key);
-    await page.waitForTimeout(15);
-  }
-}
+import { expect, test } from "@playwright/test";
+import { createHero, SAVE_KEY, V1_SAVE, walk } from "./helpers";
 
 test("a v1 save (pre-envelope) replays the full migration chain and wakes in town", async ({ page }) => {
   await page.goto("./?pixi");

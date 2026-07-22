@@ -1,12 +1,5 @@
-import { expect, test, type Page } from "@playwright/test";
-import { createHero } from "./helpers";
-
-async function walk(page: Page, key: string, times: number) {
-  for (let i = 0; i < times; i++) {
-    await page.keyboard.press(key);
-    await page.waitForTimeout(15);
-  }
-}
+import { expect, test } from "@playwright/test";
+import { createHero, walk } from "./helpers";
 
 test("villagers live in town and the elder tells her tale", async ({ page }) => {
   await createHero(page, "Neighbor");

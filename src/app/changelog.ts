@@ -11,6 +11,16 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.63.0",
+    date: "2026-07-21",
+    codename: "Fresh Plaster",
+    notes: [
+      "Audit phase two, still under the floorboards: ten panels now share one modal frame instead of hand-rolling their own - Escape, the close button and the gold line behave identically everywhere",
+      "The app shell slimmed from four hundred lines to a router: the soundscape, the ascension scene and the keyboard each live in their own room now",
+      "The test suite tightened its bolts: shared walking, chasing and fighting helpers replace a dozen private copies, and the equip/drop/skill-point wiring got its first direct tests",
+    ],
+  },
+  {
     version: "0.62.0",
     date: "2026-07-21",
     codename: "Load-Bearing Walls",

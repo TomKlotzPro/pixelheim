@@ -1,22 +1,7 @@
-import { expect, test, type Page } from "@playwright/test";
-import { loadVeteranAt } from "./helpers";
+import { expect, test } from "@playwright/test";
+import { loadVeteranAt, chase } from "./helpers";
 
 /** Chase the wandering spawn: press toward its 2x2 loop until the fight starts. */
-async function chase(page: Page, keys: string[]): Promise<void> {
-  for (const key of keys) {
-    if (
-      await page
-        .getByText(/The Wilds:/)
-        .isVisible()
-        .catch(() => false)
-    )
-      return;
-    await page.keyboard.press(key);
-    await page.waitForTimeout(30);
-  }
-  await expect(page.getByText(/The Wilds:/)).toBeVisible();
-}
-
 test("a visible monster prowls the forest; bumping it starts the fight", async ({ page }) => {
   test.setTimeout(60_000);
   await loadVeteranAt(page, 60, 34);
