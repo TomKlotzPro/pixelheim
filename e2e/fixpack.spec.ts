@@ -62,3 +62,22 @@ test("a hero can pick a look and wears it into the world", async ({ page }) => {
   await page.getByRole("button", { name: "Continue" }).click();
   await expect(page.getByTestId("world-hero")).toBeVisible();
 });
+
+test("the Map button charts the town you stand in", async ({ page }) => {
+  await createHero(page, "Charter");
+  // a few steps lift the fog around the spawn road
+  await walk(page, "ArrowUp", 3);
+  await page.getByRole("button", { name: "Map (M)" }).click();
+  const screen = page.getByTestId("map-screen");
+  await expect(screen).toBeVisible();
+  await expect(screen).toContainText("Pixelheim"); // the town, not the empty overworld
+  const painted = await page.evaluate(() => {
+    const canvas = document.querySelector(".map-canvas") as HTMLCanvasElement;
+    const data = canvas.getContext("2d")!.getImageData(0, 0, canvas.width, canvas.height).data;
+    for (let i = 0; i < data.length; i += 400) if (data[i] + data[i + 1] + data[i + 2] > 90) return true;
+    return false;
+  });
+  expect(painted).toBe(true);
+  await page.keyboard.press("Escape");
+  await expect(screen).toHaveCount(0);
+});

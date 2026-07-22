@@ -88,6 +88,14 @@ export default function App() {
 
   useWorldKeys(state, settings, paused, setPaused, mapOpen, setMapOpen);
 
+  // The HUD's Map button speaks the same event language as the Journal's -
+  // a synthetic KeyboardEvent broke silently whenever keys were rebound.
+  useEffect(() => {
+    const toggle = () => setMapOpen((open) => !open);
+    window.addEventListener("pixelheim:map", toggle);
+    return () => window.removeEventListener("pixelheim:map", toggle);
+  }, []);
+
   return (
     <div className="crt">
       <div className="corner-buttons">

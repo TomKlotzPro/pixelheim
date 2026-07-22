@@ -53,6 +53,19 @@ describe("inventory reducer wiring", () => {
   });
 });
 
+describe("battle reducer wiring", () => {
+  it("defeat wakes the hero inside the inn, healed and fog lifted", () => {
+    let s = fresh();
+    s.hero!.hp = 0;
+    s.battle = { phase: "lost" } as never;
+    s = gameReducer(s, { type: "RETURN_TO_WORLD" });
+    expect(s.world!.position).toMatchObject({ mapId: "town_inn", x: 2, y: 3 });
+    expect(s.hero!.hp).toBe(s.hero!.stats.maxHp);
+    expect(s.world!.discovered.town_inn?.length ?? 0).toBeGreaterThan(0);
+    expect(s.battle).toBeNull();
+  });
+});
+
 describe("progression reducer wiring", () => {
   it("stat points spend one at a time and stop at zero", () => {
     let s = fresh();

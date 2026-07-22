@@ -48,7 +48,9 @@ export const TOWN_SPAWN = { mapId: "town", x: 28, y: 30, facing: "down" as const
 export const INN_MAP_ID = "town_inn";
 
 /** Where a defeated hero comes to: a bed at the village inn. */
-export const INN_REST = { mapId: "town", x: 12, y: 5, facing: "down" as const };
+/** Where defeat wakes you: inside the inn, at the bedside (PIX-114 moved the
+ *  inn; the old town-square tile now sits under Odo's roof). */
+export const INN_REST = { mapId: "town_inn", x: 2, y: 3, facing: "down" as const };
 
 export const DIRECTION_DELTAS: Record<Direction, { dx: number; dy: number }> = {
   up: { dx: 0, dy: -1 },

@@ -16,6 +16,8 @@ import { getHeroSkills } from "../../game/hero/skillTree";
 import type { GameState } from "../../game/types";
 import type { BattleAction } from "../actions";
 import { INN_REST } from "../shared";
+import { discoverAround } from "../../world/discover";
+import { getMap } from "../../world/maps/index";
 
 export function battleReducer(draft: GameState, action: BattleAction): void {
   switch (action.type) {
@@ -128,6 +130,7 @@ export function battleReducer(draft: GameState, action: BattleAction): void {
         draft.hero.hp = draft.hero.stats.maxHp;
         draft.hero.mp = draft.hero.stats.maxMp;
         draft.world.position = { ...INN_REST };
+        draft.world.discovered = discoverAround(draft.world.discovered, getMap(INN_REST.mapId), INN_REST.x, INN_REST.y);
         draft.worldMessage = "You wake at the inn. The innkeeper says nothing. Kind of her.";
       }
       draft.battle = null;
