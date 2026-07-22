@@ -1079,6 +1079,1084 @@
       "loop": true,
       "facing": "front"
     },
+    "hero_warrior_walk_up": {
+      "sheet": "hero_warrior_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_mage_walk_up": {
+      "sheet": "hero_mage_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_rogue_walk_up": {
+      "sheet": "hero_rogue_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_cleric_walk_up": {
+      "sheet": "hero_cleric_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_ranger_walk_up": {
+      "sheet": "hero_ranger_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_paladin_walk_up": {
+      "sheet": "hero_paladin_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_necromancer_walk_up": {
+      "sheet": "hero_necromancer_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_ranger_l1_walk_up": {
+      "sheet": "hero_ranger_l1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_ranger_l2_walk_up": {
+      "sheet": "hero_ranger_l2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_ranger_l3_walk_up": {
+      "sheet": "hero_ranger_l3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_paladin_l1_walk_up": {
+      "sheet": "hero_paladin_l1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_paladin_l2_walk_up": {
+      "sheet": "hero_paladin_l2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_paladin_l3_walk_up": {
+      "sheet": "hero_paladin_l3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_necromancer_l1_walk_up": {
+      "sheet": "hero_necromancer_l1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_necromancer_l2_walk_up": {
+      "sheet": "hero_necromancer_l2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_necromancer_l3_walk_up": {
+      "sheet": "hero_necromancer_l3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_warrior_l1_walk_up": {
+      "sheet": "hero_warrior_l1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_warrior_l2_walk_up": {
+      "sheet": "hero_warrior_l2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_warrior_l3_walk_up": {
+      "sheet": "hero_warrior_l3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_mage_l1_walk_up": {
+      "sheet": "hero_mage_l1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_mage_l2_walk_up": {
+      "sheet": "hero_mage_l2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_mage_l3_walk_up": {
+      "sheet": "hero_mage_l3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_rogue_l1_walk_up": {
+      "sheet": "hero_rogue_l1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_rogue_l2_walk_up": {
+      "sheet": "hero_rogue_l2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_rogue_l3_walk_up": {
+      "sheet": "hero_rogue_l3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_cleric_l1_walk_up": {
+      "sheet": "hero_cleric_l1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_cleric_l2_walk_up": {
+      "sheet": "hero_cleric_l2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_cleric_l3_walk_up": {
+      "sheet": "hero_cleric_l3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_warrior_r1_walk_up": {
+      "sheet": "hero_warrior_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_warrior_r2_walk_up": {
+      "sheet": "hero_warrior_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_warrior_r3_walk_up": {
+      "sheet": "hero_warrior_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_mage_r1_walk_up": {
+      "sheet": "hero_mage_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_mage_r2_walk_up": {
+      "sheet": "hero_mage_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_mage_r3_walk_up": {
+      "sheet": "hero_mage_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_rogue_r1_walk_up": {
+      "sheet": "hero_rogue_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_rogue_r2_walk_up": {
+      "sheet": "hero_rogue_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_rogue_r3_walk_up": {
+      "sheet": "hero_rogue_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_cleric_r1_walk_up": {
+      "sheet": "hero_cleric_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_cleric_r2_walk_up": {
+      "sheet": "hero_cleric_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_cleric_r3_walk_up": {
+      "sheet": "hero_cleric_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_ranger_r1_walk_up": {
+      "sheet": "hero_ranger_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_ranger_r2_walk_up": {
+      "sheet": "hero_ranger_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_ranger_r3_walk_up": {
+      "sheet": "hero_ranger_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_paladin_r1_walk_up": {
+      "sheet": "hero_paladin_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_paladin_r2_walk_up": {
+      "sheet": "hero_paladin_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_paladin_r3_walk_up": {
+      "sheet": "hero_paladin_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_necromancer_r1_walk_up": {
+      "sheet": "hero_necromancer_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_necromancer_r2_walk_up": {
+      "sheet": "hero_necromancer_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_necromancer_r3_walk_up": {
+      "sheet": "hero_necromancer_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_ranger_l1_r1_walk_up": {
+      "sheet": "hero_ranger_l1_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_ranger_l1_r2_walk_up": {
+      "sheet": "hero_ranger_l1_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_ranger_l1_r3_walk_up": {
+      "sheet": "hero_ranger_l1_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_ranger_l2_r1_walk_up": {
+      "sheet": "hero_ranger_l2_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_ranger_l2_r2_walk_up": {
+      "sheet": "hero_ranger_l2_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_ranger_l2_r3_walk_up": {
+      "sheet": "hero_ranger_l2_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_ranger_l3_r1_walk_up": {
+      "sheet": "hero_ranger_l3_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_ranger_l3_r2_walk_up": {
+      "sheet": "hero_ranger_l3_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_ranger_l3_r3_walk_up": {
+      "sheet": "hero_ranger_l3_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_paladin_l1_r1_walk_up": {
+      "sheet": "hero_paladin_l1_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_paladin_l1_r2_walk_up": {
+      "sheet": "hero_paladin_l1_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_paladin_l1_r3_walk_up": {
+      "sheet": "hero_paladin_l1_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_paladin_l2_r1_walk_up": {
+      "sheet": "hero_paladin_l2_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_paladin_l2_r2_walk_up": {
+      "sheet": "hero_paladin_l2_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_paladin_l2_r3_walk_up": {
+      "sheet": "hero_paladin_l2_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_paladin_l3_r1_walk_up": {
+      "sheet": "hero_paladin_l3_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_paladin_l3_r2_walk_up": {
+      "sheet": "hero_paladin_l3_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_paladin_l3_r3_walk_up": {
+      "sheet": "hero_paladin_l3_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_necromancer_l1_r1_walk_up": {
+      "sheet": "hero_necromancer_l1_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_necromancer_l1_r2_walk_up": {
+      "sheet": "hero_necromancer_l1_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_necromancer_l1_r3_walk_up": {
+      "sheet": "hero_necromancer_l1_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_necromancer_l2_r1_walk_up": {
+      "sheet": "hero_necromancer_l2_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_necromancer_l2_r2_walk_up": {
+      "sheet": "hero_necromancer_l2_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_necromancer_l2_r3_walk_up": {
+      "sheet": "hero_necromancer_l2_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_necromancer_l3_r1_walk_up": {
+      "sheet": "hero_necromancer_l3_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_necromancer_l3_r2_walk_up": {
+      "sheet": "hero_necromancer_l3_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_necromancer_l3_r3_walk_up": {
+      "sheet": "hero_necromancer_l3_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_warrior_l1_r1_walk_up": {
+      "sheet": "hero_warrior_l1_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_warrior_l1_r2_walk_up": {
+      "sheet": "hero_warrior_l1_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_warrior_l1_r3_walk_up": {
+      "sheet": "hero_warrior_l1_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_warrior_l2_r1_walk_up": {
+      "sheet": "hero_warrior_l2_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_warrior_l2_r2_walk_up": {
+      "sheet": "hero_warrior_l2_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_warrior_l2_r3_walk_up": {
+      "sheet": "hero_warrior_l2_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_warrior_l3_r1_walk_up": {
+      "sheet": "hero_warrior_l3_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_warrior_l3_r2_walk_up": {
+      "sheet": "hero_warrior_l3_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_warrior_l3_r3_walk_up": {
+      "sheet": "hero_warrior_l3_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_mage_l1_r1_walk_up": {
+      "sheet": "hero_mage_l1_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_mage_l1_r2_walk_up": {
+      "sheet": "hero_mage_l1_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_mage_l1_r3_walk_up": {
+      "sheet": "hero_mage_l1_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_mage_l2_r1_walk_up": {
+      "sheet": "hero_mage_l2_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_mage_l2_r2_walk_up": {
+      "sheet": "hero_mage_l2_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_mage_l2_r3_walk_up": {
+      "sheet": "hero_mage_l2_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_mage_l3_r1_walk_up": {
+      "sheet": "hero_mage_l3_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_mage_l3_r2_walk_up": {
+      "sheet": "hero_mage_l3_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_mage_l3_r3_walk_up": {
+      "sheet": "hero_mage_l3_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_rogue_l1_r1_walk_up": {
+      "sheet": "hero_rogue_l1_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_rogue_l1_r2_walk_up": {
+      "sheet": "hero_rogue_l1_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_rogue_l1_r3_walk_up": {
+      "sheet": "hero_rogue_l1_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_rogue_l2_r1_walk_up": {
+      "sheet": "hero_rogue_l2_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_rogue_l2_r2_walk_up": {
+      "sheet": "hero_rogue_l2_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_rogue_l2_r3_walk_up": {
+      "sheet": "hero_rogue_l2_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_rogue_l3_r1_walk_up": {
+      "sheet": "hero_rogue_l3_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_rogue_l3_r2_walk_up": {
+      "sheet": "hero_rogue_l3_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_rogue_l3_r3_walk_up": {
+      "sheet": "hero_rogue_l3_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_cleric_l1_r1_walk_up": {
+      "sheet": "hero_cleric_l1_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_cleric_l1_r2_walk_up": {
+      "sheet": "hero_cleric_l1_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_cleric_l1_r3_walk_up": {
+      "sheet": "hero_cleric_l1_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_cleric_l2_r1_walk_up": {
+      "sheet": "hero_cleric_l2_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_cleric_l2_r2_walk_up": {
+      "sheet": "hero_cleric_l2_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_cleric_l2_r3_walk_up": {
+      "sheet": "hero_cleric_l2_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_cleric_l3_r1_walk_up": {
+      "sheet": "hero_cleric_l3_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_cleric_l3_r2_walk_up": {
+      "sheet": "hero_cleric_l3_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_cleric_l3_r3_walk_up": {
+      "sheet": "hero_cleric_l3_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_warrior_pa_r1_walk_up": {
+      "sheet": "hero_warrior_pa_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_warrior_pa_r2_walk_up": {
+      "sheet": "hero_warrior_pa_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_warrior_pa_r3_walk_up": {
+      "sheet": "hero_warrior_pa_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_warrior_pb_r1_walk_up": {
+      "sheet": "hero_warrior_pb_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_warrior_pb_r2_walk_up": {
+      "sheet": "hero_warrior_pb_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_warrior_pb_r3_walk_up": {
+      "sheet": "hero_warrior_pb_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_mage_pa_r1_walk_up": {
+      "sheet": "hero_mage_pa_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_mage_pa_r2_walk_up": {
+      "sheet": "hero_mage_pa_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_mage_pa_r3_walk_up": {
+      "sheet": "hero_mage_pa_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_mage_pb_r1_walk_up": {
+      "sheet": "hero_mage_pb_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_mage_pb_r2_walk_up": {
+      "sheet": "hero_mage_pb_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_mage_pb_r3_walk_up": {
+      "sheet": "hero_mage_pb_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_rogue_pa_r1_walk_up": {
+      "sheet": "hero_rogue_pa_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_rogue_pa_r2_walk_up": {
+      "sheet": "hero_rogue_pa_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_rogue_pa_r3_walk_up": {
+      "sheet": "hero_rogue_pa_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_rogue_pb_r1_walk_up": {
+      "sheet": "hero_rogue_pb_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_rogue_pb_r2_walk_up": {
+      "sheet": "hero_rogue_pb_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_rogue_pb_r3_walk_up": {
+      "sheet": "hero_rogue_pb_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_cleric_pa_r1_walk_up": {
+      "sheet": "hero_cleric_pa_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_cleric_pa_r2_walk_up": {
+      "sheet": "hero_cleric_pa_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_cleric_pa_r3_walk_up": {
+      "sheet": "hero_cleric_pa_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_cleric_pb_r1_walk_up": {
+      "sheet": "hero_cleric_pb_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_cleric_pb_r2_walk_up": {
+      "sheet": "hero_cleric_pb_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_cleric_pb_r3_walk_up": {
+      "sheet": "hero_cleric_pb_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_ranger_pa_r1_walk_up": {
+      "sheet": "hero_ranger_pa_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_ranger_pa_r2_walk_up": {
+      "sheet": "hero_ranger_pa_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_ranger_pa_r3_walk_up": {
+      "sheet": "hero_ranger_pa_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_ranger_pb_r1_walk_up": {
+      "sheet": "hero_ranger_pb_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_ranger_pb_r2_walk_up": {
+      "sheet": "hero_ranger_pb_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_ranger_pb_r3_walk_up": {
+      "sheet": "hero_ranger_pb_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_paladin_pa_r1_walk_up": {
+      "sheet": "hero_paladin_pa_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_paladin_pa_r2_walk_up": {
+      "sheet": "hero_paladin_pa_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_paladin_pa_r3_walk_up": {
+      "sheet": "hero_paladin_pa_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_paladin_pb_r1_walk_up": {
+      "sheet": "hero_paladin_pb_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_paladin_pb_r2_walk_up": {
+      "sheet": "hero_paladin_pb_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_paladin_pb_r3_walk_up": {
+      "sheet": "hero_paladin_pb_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_necromancer_pa_r1_walk_up": {
+      "sheet": "hero_necromancer_pa_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_necromancer_pa_r2_walk_up": {
+      "sheet": "hero_necromancer_pa_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_necromancer_pa_r3_walk_up": {
+      "sheet": "hero_necromancer_pa_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_necromancer_pb_r1_walk_up": {
+      "sheet": "hero_necromancer_pb_r1_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_necromancer_pb_r2_walk_up": {
+      "sheet": "hero_necromancer_pb_r2_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
+    "hero_necromancer_pb_r3_walk_up": {
+      "sheet": "hero_necromancer_pb_r3_walk_up.png",
+      "frames": 4,
+      "fps": 6,
+      "loop": true,
+      "facing": "back"
+    },
     "villager_idle": {
       "sheet": "villager_idle.png",
       "frames": 2,

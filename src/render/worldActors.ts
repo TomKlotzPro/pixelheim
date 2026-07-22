@@ -1,7 +1,7 @@
 import { Assets, type Container, Graphics, Sprite, Texture } from "pixi.js";
 import { heroSprite } from "../game/hero/character";
 import { outfitFor } from "../game/economy/wearables";
-import { composeWalkSheet, outfitKey } from "./outfit";
+import { composePortrait, composeWalkSheet, outfitKey } from "./outfit";
 import { RANK_AURAS, rankIndex, rankPresence } from "../game/hero/ranks";
 import type { GameState } from "../game/types";
 import { spawnSpecies } from "../game/combat/encounters";
@@ -17,7 +17,6 @@ import type { WorldMap } from "../world/types";
 import { ART, type FrameBank, makeGlowTexture, makeShadowTexture, sliceSheet } from "./pixiUtils";
 import { pixelText } from "./pixelFont";
 
-const WALK_MS = 160; // per walk frame
 const IDLE_MS = 500; // per idle frame
 const WALK_LINGER_MS = 240; // keep the legs moving briefly after the last step
 
@@ -54,6 +53,10 @@ export class ActorLayer {
   private heroOutfitKey = "";
   private shadowTexture = makeShadowTexture();
   private heroFrames: Texture[] | null = null;
+  private heroFramesUp: Texture[] | null = null;
+  private heroStand: Texture | null = null;
+  private heroFacingUp = false;
+  private heroStep = 0;
   private heroTarget = { x: 0, y: 0 };
   private heroFlip = false;
   private walkUntil = 0;
@@ -133,6 +136,8 @@ export class ActorLayer {
 
     const sheet = state.hero ? heroSprite(state.hero) : "hero_warrior";
     this.heroFrames = this.bank.frames.get(`${sheet}_walk`) ?? null;
+    this.heroFramesUp = this.bank.frames.get(`${sheet}_walk_up`) ?? null;
+    this.heroStand = (Assets.get(sheet) as Texture) ?? null;
     this.heroOutfitKey = "";
     this.hero = new Sprite(this.heroFrames?.[0]);
     this.hero.anchor.set(0.5, 0);
@@ -203,6 +208,8 @@ export class ActorLayer {
     }
     this.heroTarget = { x: pos.x * ART, y: pos.y * ART };
     this.heroFlip = pos.facing === "left";
+    this.heroFacingUp = pos.facing === "up";
+    this.heroStep = state.worldSteps;
     for (const entry of this.npcs) {
       const at = npcPosition(entry.npc, state.worldSteps);
       entry.target = { x: at.x * ART, y: at.y * ART };
@@ -229,12 +236,37 @@ export class ActorLayer {
         this.heroOutfitKey = dressKey;
         if (outfit.length === 0) {
           this.heroFrames = this.bank.frames.get(`${sheetName}_walk`) ?? null;
+          this.heroFramesUp = this.bank.frames.get(`${sheetName}_walk_up`) ?? null;
+          this.heroStand = (Assets.get(sheetName) as Texture) ?? null;
         } else {
+          void composePortrait(sheetName, outfit).then((dataUrl) => {
+            if (this.heroOutfitKey !== dressKey) return null;
+            const img = new Image();
+            img.addEventListener(
+              "load",
+              () => {
+                if (this.heroOutfitKey !== dressKey) return;
+                const texture = Texture.from(img);
+                texture.source.scaleMode = "nearest";
+                this.heroStand = texture;
+              },
+              { once: true },
+            );
+            img.src = dataUrl;
+            return null;
+          });
           void composeWalkSheet(sheetName, outfit).then((canvas) => {
             if (this.heroOutfitKey !== dressKey) return null;
             const texture = Texture.from(canvas);
             texture.source.scaleMode = "nearest";
             this.heroFrames = sliceSheet(texture, 4);
+            return null;
+          });
+          void composeWalkSheet(sheetName, outfit, "up").then((canvas) => {
+            if (this.heroOutfitKey !== dressKey) return null;
+            const texture = Texture.from(canvas);
+            texture.source.scaleMode = "nearest";
+            this.heroFramesUp = sliceSheet(texture, 4);
             return null;
           });
         }
@@ -273,9 +305,12 @@ export class ActorLayer {
       this.hero.position.set(ease(this.hero.position.x, cx), ease(this.hero.position.y, this.heroTarget.y));
       this.hero.scale.set(this.heroFlip ? -this.heroPresence : this.heroPresence, this.heroPresence);
       const walking = clock < this.walkUntil;
-      this.hero.texture = walking
-        ? this.heroFrames[Math.floor(clock / WALK_MS) % this.heroFrames.length]
-        : this.heroFrames[0];
+      // Walking away shows the hero's back (PIX-117): the up-sheet when it
+      // exists, the front sheet for every other direction. The frame advances
+      // ONCE PER TILE (worldSteps), the classic RPG stride - every move is a
+      // different sprite - and standing settles on the true neutral pose.
+      const frames = (this.heroFacingUp && this.heroFramesUp) || this.heroFrames;
+      this.hero.texture = walking ? frames[this.heroStep % frames.length] : (this.heroStand ?? frames[1]);
       this.heroShadow?.position.set(this.hero.position.x, this.hero.position.y + ART - 2);
       this.heroAura?.position.set(this.hero.position.x, this.hero.position.y + ART - 3);
     }

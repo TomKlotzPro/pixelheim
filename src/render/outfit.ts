@@ -7,6 +7,17 @@
 const ART = 16;
 /** The generator's walk cycle bobs frames 1 and 3 up a pixel; overlays follow. */
 const WALK_FRAME_DY = [0, -1, 0, -1];
+/** Held gear rides the pumping hand (PIX-117): right on frame 0, left on 2. */
+const RIGHT_HAND_DY = [1, 0, 0, 0];
+const LEFT_HAND_DY = [0, 0, 1, 0];
+const RIGHT_HAND = /^wear_(sword|dagger|axe|hammer|bow|staff|dragonbane)/;
+const LEFT_HAND = /^wear_shield/;
+
+function handDy(wearName: string, frame: number): number {
+  if (RIGHT_HAND.test(wearName)) return RIGHT_HAND_DY[frame % 4];
+  if (LEFT_HAND.test(wearName)) return LEFT_HAND_DY[frame % 4];
+  return 0;
+}
 
 const imageCache = new Map<string, Promise<HTMLImageElement>>();
 
@@ -39,13 +50,18 @@ const sheetCache = new Map<string, Promise<HTMLCanvasElement>>();
  * The hero's walk sheet with the outfit painted onto every frame.
  * Returns a canvas (4 frames x 16px); callers texture/slice it themselves.
  */
-export function composeWalkSheet(heroName: string, outfit: string[]): Promise<HTMLCanvasElement> {
-  const key = outfitKey(`${heroName}_walk`, outfit);
+export function composeWalkSheet(
+  heroName: string,
+  outfit: string[],
+  view: "front" | "up" = "front",
+): Promise<HTMLCanvasElement> {
+  const sheetName = view === "up" ? `${heroName}_walk_up` : `${heroName}_walk`;
+  const key = outfitKey(sheetName, outfit);
   let cached = sheetCache.get(key);
   if (!cached) {
     cached = (async () => {
       const [base, ...wears] = await Promise.all([
-        loadImage(spriteUrl(`${heroName}_walk`)),
+        loadImage(spriteUrl(sheetName)),
         ...outfit.map((wear) => loadImage(spriteUrl(wear))),
       ]);
       const frames = Math.max(1, Math.round(base.width / ART));
@@ -57,7 +73,9 @@ export function composeWalkSheet(heroName: string, outfit: string[]): Promise<HT
       ctx.drawImage(base, 0, 0);
       for (let frame = 0; frame < frames; frame++) {
         const dy = WALK_FRAME_DY[frame % WALK_FRAME_DY.length];
-        for (const wear of wears) ctx.drawImage(wear, frame * ART, dy);
+        for (let i = 0; i < wears.length; i++) {
+          ctx.drawImage(wears[i], frame * ART, dy + handDy(outfit[i], frame));
+        }
       }
       return canvas;
     })();

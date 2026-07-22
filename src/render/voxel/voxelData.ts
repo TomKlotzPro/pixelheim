@@ -8,7 +8,14 @@ export const ART = 16;
  * directly. Same rows the PNGs are baked from - one art source (PIX-111).
  */
 export type VoxelSprite = { rows: string[]; palette: Record<string, string> };
-export type VoxelSheet = { art: number; sprites: Record<string, VoxelSprite> };
+export type VoxelSheet = {
+  art: number;
+  sprites: Record<string, VoxelSprite>;
+  strideFamily?: Record<string, string>;
+  /** The four computed walk frames per family (PIX-117): arms, legs, no bob. */
+  heroFrames?: Record<string, string[][]>;
+  heroBackFrames?: Record<string, string[][]>;
+};
 
 let sheetPromise: Promise<VoxelSheet> | null = null;
 
@@ -356,6 +363,64 @@ function splitLegs(grid: ColorGrid): { body: ColorGrid; left: ColorGrid; right: 
     y >= legTop ? row.map((hex, x) => (x >= width / 2 ? hex : null)) : blankRow(width),
   );
   return { body, left, right };
+}
+
+/**
+ * The hero's four drawn walk frames, dressed (PIX-117): the authored leg
+ * poses splice under the body rows, gear composes onto every frame, and the
+ * passing frames rise a pixel - exactly what the 2D sheets bake. Returns
+ * null when the sheet predates authored strides so callers can fall back.
+ */
+const RIGHT_HAND = /^wear_(sword|dagger|axe|hammer|bow|staff|dragonbane)/;
+const LEFT_HAND = /^wear_shield/;
+const RIGHT_HAND_DY = [1, 0, 0, 0];
+const LEFT_HAND_DY = [0, 0, 1, 0];
+
+export function heroStrideGrids(
+  sheet: VoxelSheet,
+  spriteName: string,
+  body: VoxelSprite,
+  outfit: string[],
+  view: "front" | "up" = "front",
+): ColorGrid[] | null {
+  if (!sheet.heroFrames || !sheet.strideFamily) return null;
+  const base = Object.keys(sheet.strideFamily).find((name) => spriteName === name || spriteName.startsWith(name + "_"));
+  const family = base ? sheet.strideFamily[base] : undefined;
+  const frames = family ? (view === "up" ? sheet.heroBackFrames?.[family] : sheet.heroFrames[family]) : undefined;
+  if (!frames || !family) return null;
+  const wearGrids = outfit
+    .map((name) => ({ name, sprite: sheet.sprites[name] }))
+    .filter((w) => w.sprite !== undefined)
+    .map((w) => ({ name: w.name, grid: colorGrid(w.sprite!) }));
+  return frames.map((rows, i) => {
+    // Held gear rides its pumping hand, same offsets as the 2D compositor.
+    const wears = wearGrids.map(({ name, grid }) => {
+      const dy = RIGHT_HAND.test(name) ? RIGHT_HAND_DY[i] : LEFT_HAND.test(name) ? LEFT_HAND_DY[i] : 0;
+      return dy ? bobDownGrid(grid, dy) : grid;
+    });
+    const dressed = overlayGrids(colorGrid({ rows, palette: body.palette }, ACTOR_OMIT), wears);
+    return i % 2 === 1 ? bobUpGrid(dressed) : dressed;
+  });
+}
+
+/**
+ * The drawn stride as geometry, with the legs split at the hips and offset in
+ * depth per frame - the scissor that reads from the game's high camera, kept
+ * from the synthesized gait it replaces (PIX-117 round 2).
+ */
+export function heroStrideGeometries(grids: ColorGrid[], depth = 2): BufferGeometry[] {
+  const swings = [1, 0, -1, 0];
+  return grids.map((grid, i) => {
+    const body = grid.map((row, y) => (y < 13 ? row : row.map(() => null)));
+    const left = grid.map((row, y) => (y >= 13 ? row.map((c, x) => (x < 8 ? c : null)) : row.map(() => null)));
+    const right = grid.map((row, y) => (y >= 13 ? row.map((c, x) => (x >= 8 ? c : null)) : row.map(() => null)));
+    const builder = new VoxelBuilder();
+    const ox = -8;
+    extrudeUpright(builder, body, depth, ox, 0, 0);
+    extrudeUpright(builder, left, depth, ox, 0, 1.3 * swings[i]);
+    extrudeUpright(builder, right, depth, ox, 0, -1.3 * swings[i]);
+    return builder.build();
+  });
 }
 
 /**

@@ -1402,58 +1402,60 @@ const sprites = {
   // ---------------- heroes ----------------
   hero_warrior: {
     palette: {
-      H: "#9aa5b1",
-      D: "#5c6670",
+      H: "#aab6c6",
+      D: "#3e4652",
       F: SKIN,
       K: "#22242b",
-      B: "#7d8894",
-      L: "#4a4f5a",
-      O: "#8a5a2b",
-      R: "#c23b3b",
+      B: "#8a97a6",
+      L: "#565c6a",
+      O: "#a06a34",
+      R: "#d84545",
+      P: "#e2e8f2",
+      E: "#262c36",
     },
     rows: [
       "......RR........",
       ".....RRRR.......",
       "....HHHHHH......",
       "...HHHHHHHH.....",
-      "...HFFFFFFH.....",
-      "...HFKFFKFH.....",
-      "...HFFFFFFH.....",
-      "....FFFFFF......",
-      "...BBBBBBBB.....",
-      "..BBBBBBBBBB....",
-      ".FBBBBBBBBBBF...",
-      ".FBBOOOOOOBBF...",
-      "..BBBBBBBBBB....",
+      "...DHHHHHHD.....",
+      "...DHKFFKHD.....",
+      "...DFFFFFFD.....",
+      "..PDDFFFFDDP....",
+      ".PPBBBBBBBBPP...",
+      ".PBBBRRRRBBBP...",
+      ".FBBBRRRRBBBF...",
+      ".FBBOORROOBBF...",
+      "..BBBRRRRBBB....",
       "...LLL..LLL.....",
       "...LLL..LLL.....",
-      "...DD....DD.....",
+      "...EE....EE.....",
     ],
   },
   hero_mage: {
     palette: {
-      H: "#3b5bd6",
-      D: "#26398f",
+      H: "#4468f0",
+      D: "#22348c",
       F: SKIN,
       K: "#22242b",
-      R: "#4a6be6",
-      L: "#26398f",
-      W: "#d8d0c0",
-      Y: "#e8c34a",
+      R: "#5578fa",
+      L: "#2c42aa",
+      W: "#ece4d4",
+      Y: "#ffd75e",
     },
     rows: [
       ".......HH.......",
       "......HHHH......",
+      "......HHHH......",
       ".....HHHHHH.....",
-      "....HHHHHHHH....",
       "..HHHHHHHHHHHH..",
       "...WFFFFFFFFW...",
       "...WFKFFFFKW....",
       "...WFFFFFFFW....",
       "....WWWWWWW.....",
-      "...RRRRRRRRR....",
-      "..RRRRYYRRRRR...",
-      ".FRRRRYYRRRRF...",
+      "...RRRRYRRRR....",
+      "..RRRRYYYRRRR...",
+      ".FRRRRRYRRRRF...",
       "..RRRRRRRRRR....",
       "..RRRRRRRRRR....",
       "..LLLLLLLLLL....",
@@ -1461,16 +1463,16 @@ const sprites = {
     ],
   },
   hero_rogue: {
-    palette: { H: "#3a3f4a", D: "#23262e", F: SKIN, K: "#c23b3b", B: "#4a4f5a", L: "#2e323b", O: "#6b4a2b" },
+    palette: { H: "#4a5162", D: "#20242c", F: SKIN, K: "#ff5252", B: "#5a6172", L: "#3a3f4c", O: "#7d5a35" },
     rows: [
       "................",
       ".....HHHHHH.....",
       "....HHHHHHHH....",
       "...HHHHHHHHHH...",
-      "...HHFFFFFFHH...",
-      "...HHFKFFKFHH...",
-      "...HHHFFFFHHH...",
-      "....HHHHHHHH....",
+      "...HHDDDDDDHH...",
+      "...HDDKDDKDDH...",
+      "...HHDDDDDDHH...",
+      "....HHOOOOHH....",
       "...BBBBBBBB.....",
       "..BBBBBBBBBB....",
       ".FBBBBBBBBBBF...",
@@ -1482,12 +1484,12 @@ const sprites = {
     ],
   },
   hero_cleric: {
-    palette: { H: "#e8e2d0", D: "#b8b0a0", F: SKIN, K: "#22242b", B: "#f0ead8", L: "#c8c0b0", Y: "#e8c34a" },
+    palette: { H: "#f6f0e2", D: "#c2baa8", F: SKIN, K: "#22242b", B: "#f8f2e0", L: "#d2cab8", Y: "#ffd75e" },
     rows: [
-      ".......YY.......",
-      ".....YYYYYY.....",
-      "....HHHHHHHH....",
-      "...HHHHHHHHHH...",
+      ".....HHHH.......",
+      "....HHYYHH......",
+      "....HHYYHH......",
+      "...HHHHHHHH.....",
       "...HFFFFFFFFH...",
       "...HFKFFFFKFH...",
       "...HFFFFFFFFH...",
@@ -1517,16 +1519,16 @@ const sprites = {
       "................",
       ".....HHHHHH.....",
       "....HHHHHHHH....",
-      "...HHFFFFFFHH...",
-      "...HHFKFFKFHH...",
-      "...HHFFFFFFHH...",
-      "....HFFFFFFH....",
+      "...DDDDDDDDDD...",
+      "...HFFFFFFFFH...",
+      "...HFKFFFFKFH...",
+      "...HFFFFFFFFH...",
+      "....FFFFFFFF....",
       "....BBBBBBBB....",
       "...BBAAAAAABB...",
       "..FBBAAAAAABBF..",
       "..YBBAAAAAABBF..",
-      "..YYBAAAAAABB...",
-      "...BBBBBBBBBB...",
+      "..YYBBBBBBBBB...",
       "...LLL....LLL...",
       "...LLL....LLL...",
       "...DD......DD...",
@@ -1591,8 +1593,8 @@ const sprites = {
       "....HHHHHHHH....",
       "...HFFFFFFFFH...",
       "...HFKFFFFKFH...",
-      "...HFFFFFFFFH...",
-      "....FWWWWWWF....",
+      "...HFWWWWWWFH...",
+      "....WWWWWWWW....",
       "....WWWWWWWW....",
       "....BBBBBBBBS...",
       "...BBBBBBBBBBS..",
@@ -1607,7 +1609,7 @@ const sprites = {
   innkeeper: {
     palette: { H: "#3d2c1f", F: SKIN, K: "#22242b", B: "#f0ead8", L: "#8f6a3d", D: "#5c4527", A: "#c8b89a" },
     rows: [
-      "................",
+      "......HHHH......",
       ".....HHHHHH.....",
       "....HHHHHHHH....",
       "...HFFFFFFFFH...",
@@ -1619,7 +1621,7 @@ const sprites = {
       "..FBAAAAAAAABF..",
       "..FBAAAAAAAABF..",
       "...BAAAAAAAAB...",
-      "...LLL....LLL...",
+      "...BBBBBBBBBB...",
       "...LLL....LLL...",
       "...DD......DD...",
       "................",
@@ -1637,15 +1639,15 @@ const sprites = {
       O: "#e87a2a",
     },
     rows: [
-      "................",
+      "......HHHH......",
       ".....HHHHHH.....",
-      "....HHHHHHHH....",
+      "....OOOOOOOO....",
       "...HFFFFFFFFH...",
       "...HFKFFFFKFH...",
       "...HFFFFFFFFH...",
       "....FFFFFFFF....",
       "....BBBBBBBB....",
-      "...BAAAAAAAAB...",
+      "...BAABAABAAB...",
       "..FBAAAAAAAABF..",
       "..OBAAAAAAAABF..",
       "..OOAAAAAAAAB...",
@@ -1662,14 +1664,14 @@ const sprites = {
       "......HHHH......",
       ".....HHHHHH.....",
       "....HHHHHHHH....",
-      "..HHHHHHHHHHHH..",
+      "..DDDDDDDDDDDD..",
       "...HFFFFFFFFH...",
       "...HFKFFFFKFH...",
       "...HFFFFFFFFH...",
       "....BBBBBBBB....",
       "...BBBGGBBBBB...",
       "..FBBBGGBBBBBF..",
-      "..BBBBBBBBBBBB..",
+      "..BBBBBBBBBGB...",
       "..BBBBBBBBBBBB..",
       "..LLLLLLLLLLLL..",
       "...DD......DD...",
@@ -2660,7 +2662,7 @@ sprites.hero_paladin = {
   rows: sprites.hero_warrior.rows,
 };
 sprites.hero_necromancer = {
-  palette: { ...sprites.hero_mage.palette, H: "#3b2d56", D: "#241a38", R: "#8a4ad6", Y: "#4ae6c8" },
+  palette: { ...sprites.hero_mage.palette, H: "#5a4292", D: "#3a2a60", R: "#9a5ce6", Y: "#4ae6c8" },
   rows: sprites.hero_mage.rows,
 };
 
@@ -3043,11 +3045,17 @@ function outlined({ rows, palette }) {
   for (let y = 0; y < 16; y++) {
     for (let x = 0; x < 16; x++) {
       if (rows[y][x] !== ".") continue;
+      // All 8 neighbors: 4-way outlines leave dotted corners, and a broken
+      // line is half the pop. Diagonal coverage seals the silhouette.
       const solid = [
         [0, -1],
         [0, 1],
         [-1, 0],
         [1, 0],
+        [-1, -1],
+        [1, -1],
+        [-1, 1],
+        [1, 1],
       ].some(([dx, dy]) => {
         const c = rows[y + dy]?.[x + dx];
         return c && c !== "." && c !== "o";
@@ -3055,7 +3063,7 @@ function outlined({ rows, palette }) {
       if (solid) out[y][x] = "o";
     }
   }
-  return { palette: { ...palette, o: "#14151c" }, rows: out.map((r) => r.join("")) };
+  return { palette: { ...palette, o: "#07080d" }, rows: out.map((r) => r.join("")) };
 }
 for (const name of [...MONSTERS, ...NPCS, ...HEROES]) {
   if (sprites[name].palette.o) throw new Error(`${name} already uses the outline char`);
@@ -3165,6 +3173,161 @@ const feet = (rows, dx) =>
   });
 
 const walkFrames = (b) => [b, feet(bobUp(b, 1), 1), b, feet(bobUp(b, 1), -1)];
+
+// ---------------- the true stride (PIX-117) ----------------
+// Hand-drawn leg poses (rows 13-15) per silhouette family: contact left,
+// passing (right knee up), contact right, passing (left knee up). Torso and
+// hands never move, so worn gear stays pinned; frames 1 and 3 bob the whole
+// body up a pixel, the convention the outfit compositor already follows.
+const HERO_STRIDE = {
+  hero_warrior: [
+    [".LLL.....LLL....", ".LLL......LLL...", ".EE........EE..."],
+    ["...LLL..LLL.....", "...LLL..EE......", "...EE..........."],
+    ["....LLL.....LLL.", "...LLL......LLL.", "...EE........EE."],
+    ["...LLL..LLL.....", "....EE..LLL.....", ".........EE....."],
+  ],
+  hero_rogue: [
+    [".LLL.....LLL....", ".LLL......LLL...", ".DD........DD..."],
+    ["...LLL..LLL.....", "...LLL..DD......", "...DD..........."],
+    ["....LLL.....LLL.", "...LLL......LLL.", "...DD........DD."],
+    ["...LLL..LLL.....", "....DD..LLL.....", ".........DD....."],
+  ],
+  hero_mage: [
+    ["RRRRRRRRRR......", "LLLLLLLLLL......", ".DD......DD....."],
+    ["..RRRRRRRRRR....", "..LLLLLLLLLL....", "....DD..DD......"],
+    ["....RRRRRRRRRR..", "....LLLLLLLLLL..", ".....DD......DD."],
+    ["..RRRRRRRRRR....", "..LLLLLLLLLL....", "......DD..DD...."],
+  ],
+  hero_cleric: [
+    ["BBBBBBBBBBB.....", "LLLLLLLLLLL.....", ".DD.......DD...."],
+    ["..BBBBBBBBBBB...", "..LLLLLLLLLLL...", "....DD...DD....."],
+    ["....BBBBBBBBBBB.", "....LLLLLLLLLLL.", ".....DD.......DD"],
+    ["..BBBBBBBBBBB...", "..LLLLLLLLLLL...", "......DD..DD...."],
+  ],
+};
+const STRIDE_FAMILY = {
+  hero_warrior: "hero_warrior",
+  hero_rogue: "hero_rogue",
+  hero_ranger: "hero_rogue",
+  hero_mage: "hero_mage",
+  hero_necromancer: "hero_mage",
+  hero_cleric: "hero_cleric",
+};
+
+/**
+ * The arm pump (PIX-117 round 3): on each contact frame the striding side's
+ * hand drops a pixel - hands live outside the torso columns, so armor stays
+ * pinned while the arms visibly work. Held gear follows via HAND_DY, applied
+ * identically by the 2D compositor and the voxel builder.
+ */
+const swingArms = (rows, side) => {
+  const grid = rows.map((r) => r.split(""));
+  const cols = side === "right" ? [10, 11, 12, 13, 14] : [0, 1, 2, 3];
+  const hands = [];
+  for (let y = 9; y <= 12; y++) {
+    for (const x of cols) if (grid[y]?.[x] === "F") hands.push([y, x]);
+  }
+  for (const [y, x] of hands.toSorted((a, b) => b[0] - a[0])) {
+    grid[y][x] = ".";
+    grid[y + 1][x + (side === "right" ? 1 : -1)] = "F";
+  }
+  return grid.map((r) => r.join(""));
+};
+
+const strideFamilyOf = (name) =>
+  STRIDE_FAMILY[Object.keys(STRIDE_FAMILY).find((base) => name === base || name.startsWith(base + "_"))] ?? null;
+/** Real drawn walk frames when the family has them; the old bob otherwise. */
+const heroWalkFrames = (name) => (rows) => {
+  const family = strideFamilyOf(name);
+  if (!family) return walkFrames(rows);
+  const f = heroFramesFor(family, "front");
+  return [f[0], bobUp(f[1], 1), f[2], bobUp(f[3], 1)];
+};
+
+// The heroes from behind (PIX-117 round 2): walking away shows the helm's
+// back, the hood, the cape - not a face gliding backwards. Backs cover rows
+// 0-12; the stride legs splice underneath, same as the front.
+const HERO_BACK = {
+  hero_warrior: [
+    "......RR........",
+    ".....RRRR.......",
+    "....HHHHHH......",
+    "...HHHHHHHH.....",
+    "...DHHHHHHD.....",
+    "...DHHHHHHD.....",
+    "...DHHHHHHD.....",
+    "..PDDDDDDDDP....",
+    ".PPBBBBBBBBPP...",
+    ".PBBRRRRRRBBP...",
+    ".FBBRRRRRRBBF...",
+    ".FBBRRRRRRBBF...",
+    "..BBRRRRRRBB....",
+  ],
+  hero_mage: [
+    ".......HH.......",
+    "......HHHH......",
+    "......HHHH......",
+    ".....HHHHHH.....",
+    "..HHHHHHHHHHHH..",
+    "...WHHHHHHHHW...",
+    "...WHHHHHHHHW...",
+    "...WHHHHHHHW....",
+    "....WWWWWWW.....",
+    "...RRRRRRRRR....",
+    "..RRRRRRRRRRR...",
+    ".FRRRRRRRRRRF...",
+    "..RRRRRRRRRR....",
+  ],
+  hero_rogue: [
+    "................",
+    ".....HHHHHH.....",
+    "....HHHHHHHH....",
+    "...HHHHHHHHHH...",
+    "...HHHHHHHHHH...",
+    "...HHHDDHHHH....",
+    "...HHHHHHHHHH...",
+    "....HHHHHHHH....",
+    "...BBBBBBBB.....",
+    "..BBBBBBBBBB....",
+    ".FBBBBBBBBBBF...",
+    ".FBBOOOOOOBBF...",
+    "..BBBBBBBBBB....",
+  ],
+  hero_cleric: [
+    ".....HHHH.......",
+    "....HHHHHH......",
+    "....HHHHHH......",
+    "...HHHHHHHH.....",
+    "...HHHHHHHHHH...",
+    "...HHHHHHHHHH...",
+    "...HHHHHHHHHH...",
+    "....HHHHHHHH....",
+    "...BBBBBBBBBB...",
+    "..BBBBBBBBBBB...",
+    ".FBBBBBBBBBBBF..",
+    ".FBBBBYYBBBBBF..",
+    "..BBBBBBBBBBB...",
+  ],
+};
+
+/** The four computed walk frames per family and view: arms + legs, unbobbed. */
+const heroFramesFor = (family, view) => {
+  const body = view === "up" ? HERO_BACK[family] : sprites[family].rows.slice(0, 13);
+  const legs = HERO_STRIDE[family];
+  const arm = ["right", null, "left", null];
+  return [0, 1, 2, 3].map((i) => {
+    const upper = arm[i] ? swingArms(body, arm[i]) : body;
+    return upper.concat(legs[i]);
+  });
+};
+
+const heroBackWalkFrames = (name) => (rows) => {
+  const family = strideFamilyOf(name);
+  if (!family || !HERO_BACK[family]) return heroWalkFrames(name)(rows);
+  const f = heroFramesFor(family, "up");
+  return [f[0], bobUp(f[1], 1), f[2], bobUp(f[3], 1)];
+};
+
 const idleFrames = (b) => [b, bobDown(b, 1)];
 const shimmerFrames = (b) => [b, shiftXWrap(b, 1), shiftXWrap(b, 2), shiftXWrap(b, 3)];
 // Terrain sway wraps in both axes so tiles stay opaque and seamless: the
@@ -3172,7 +3335,14 @@ const shimmerFrames = (b) => [b, shiftXWrap(b, 1), shiftXWrap(b, 2), shiftXWrap(
 const swayFrames = (b) => [b, shiftXWrap(shiftYWrap(b, 1), 1)];
 
 const anims = [
-  ...HEROES.map((base) => ({ name: `${base}_walk`, base, fps: 6, facing: "front", frames: walkFrames })),
+  ...HEROES.map((base) => ({ name: `${base}_walk`, base, fps: 6, facing: "front", frames: heroWalkFrames(base) })),
+  ...HEROES.map((base) => ({
+    name: `${base}_walk_up`,
+    base,
+    fps: 6,
+    facing: "back",
+    frames: heroBackWalkFrames(base),
+  })),
   ...NPCS.map((base) => ({ name: `${base}_idle`, base, fps: 2, frames: idleFrames })),
   ...MONSTERS.map((base) => ({ name: `${base}_idle`, base, fps: 2, frames: idleFrames })),
   { name: "water_shimmer", base: "tile_water", fps: 4, frames: shimmerFrames },
@@ -3223,7 +3393,13 @@ writeFileSync(join(OUT, "atlas.json"), JSON.stringify(atlas, null, 2) + "\n");
 // The 3D renderer extrudes the same grids the PNGs are baked from: every
 // sprite's rows + palette, verbatim. One art source of truth - editing a
 // sprite here reshapes its voxel model with no extra work.
-const voxels = { art: 16, sprites: {} };
+const heroFrames = {};
+const heroBackFrames = {};
+for (const family of Object.keys(HERO_STRIDE)) {
+  heroFrames[family] = heroFramesFor(family, "front");
+  heroBackFrames[family] = heroFramesFor(family, "up");
+}
+const voxels = { art: 16, sprites: {}, strideFamily: STRIDE_FAMILY, heroFrames, heroBackFrames };
 for (const name of names) {
   voxels.sprites[name] = { rows: sprites[name].rows, palette: sprites[name].palette };
 }

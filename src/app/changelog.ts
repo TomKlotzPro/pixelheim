@@ -11,6 +11,25 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.64.0",
+    date: "2026-07-21",
+    codename: "New Faces, True Steps",
+    notes: [
+      "THE HEROES GOT A REFONT: the warrior wears a crested visor helm, pauldrons and a war tabard; the mage a true pointed hat and a starred robe; the rogue vanishes into a deep hood with burning eyes; the cleric carries a gold-crossed mitre - and every look, rank and path variant inherits the new faces",
+      "REAL WALK CYCLES: four hand-drawn frames per silhouette - legs that actually stride and bend, robes that sway, feet that lift - replacing the old sliding-feet trick, in 2D and extruded voxel alike",
+      "Worn gear still rides every step: swords, plate and staves pin to hands that never leave their pixel",
+      "WALK AWAY AND SEE A BACK: every hero has a drawn rear view now - helm backs, cape, hood, hat - shown whenever you head north, in 2D and voxel alike",
+      "The night classes stepped into the light: the necromancer's robes and the rogue's leathers brightened so they read on every lawn",
+      "THE TOWNSFOLK FRESHENED UP: Odo wears a proper cap over his coin pouch, Hilda a headband and apron straps, Vex a wide-brimmed hat, the Elder a longer beard, Sela a neat bun",
+      "ARMS THAT WORK: each stride pumps the striding side's hand, and held gear rides it - the sword swings with the arm now, in 2D and voxel alike",
+      "RETINA SHARP: the WebGL canvas was rendering at half resolution on high-density screens and getting stretched - the blur is gone, every pixel lands on a device pixel",
+      "BETTER COLORIMETRY: brighter highlights and richer saturation across the heroes - vivid crimson tabards, royal blues, glowing golds, hotter rogue eyes",
+      "STRIDES YOU CAN SEE FROM THE SADDLE: the walk poses got bold - legs scissor wide on contact, a knee lifts high on the passing step, robes sway twice as far - every step on a long walk reads as a different sprite",
+      "ONE STEP, ONE POSE: the stride now advances with each TILE you cross, not with the clock - four steps show four different sprites, guaranteed - and standing settles on a true neutral pose instead of a mid-stride freeze; the hop calmed down to let the footwork lead",
+      "INKED: every living thing's outline now seals its corners in near-black - no more dotted edges - and shadow tones deepened inside the sprites; characters pop off grass and path alike, and the voxel figures glow a touch brighter",
+    ],
+  },
+  {
     version: "0.63.0",
     date: "2026-07-21",
     codename: "Fresh Plaster",
