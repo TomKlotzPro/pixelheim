@@ -11,6 +11,16 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.65.0",
+    date: "2026-07-22",
+    codename: "Bed Rest",
+    notes: [
+      "DEFEAT TUCKS YOU IN PROPERLY: waking after a lost fight now puts you INSIDE the inn, at the bedside - the old wake-up tile had ended up under Odo's roof when the village was rebuilt",
+      "THE MAP CHARTS WHERE YOU STAND: opening it in town shows Pixelheim's streets as you have walked them - it used to always show the overworld, a wall of fog for anyone who had not left town yet",
+      "The HUD's Map button speaks a proper event now instead of faking an M keypress - it keeps working even after you rebind your keys",
+    ],
+  },
+  {
     version: "0.64.0",
     date: "2026-07-21",
     codename: "New Faces, True Steps",

@@ -153,10 +153,7 @@ export function WorldHud() {
         <button className="btn btn-small" onClick={() => dispatch({ type: "TOGGLE_INVENTORY" })}>
           Inventory (I)
         </button>
-        <button
-          className="btn btn-small"
-          onClick={() => window.dispatchEvent(new KeyboardEvent("keydown", { code: "KeyM" }))}
-        >
+        <button className="btn btn-small" onClick={() => window.dispatchEvent(new CustomEvent("pixelheim:map"))}>
           Map (M)
         </button>
         <button className="btn btn-small" onClick={() => setSheetOpen(true)}>

@@ -13,43 +13,65 @@ type MapScreenProps = {
   onClose: () => void;
 };
 
+/** The friendly names of the maps worth charting. */
+const MAP_NAMES: Record<string, string> = {
+  overworld: "The Ashenreach",
+  town: "Pixelheim",
+  deepwood: "The Deepwood",
+  mirefen: "The Mirefen",
+  demo: "The Proving Grounds",
+};
+
+/** The chart shows where you STAND (PIX-114 fallout: it always painted the
+ *  overworld, so opening it in town showed a wall of fog - "broken" to any
+ *  fresh save). Interiors chart their parent town; anywhere else, the world. */
+function chartedMapId(mapId: string): string {
+  if (MAP_NAMES[mapId]) return mapId;
+  return mapId.startsWith("town") ? "town" : "overworld";
+}
+
 /** The fog-of-war world map: what you have seen, and where you can jump. */
 export function MapScreen({ onClose }: MapScreenProps) {
   const state = useGameState();
   const hero = useHero();
   const world = useWorld();
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const overworld = getMap("overworld");
+  const charted = getMap(chartedMapId(world.position.mapId));
   const encumbered =
     carriedWeight(state.inventory, state.gear, state.equipped) > carryCapacity(hero, state.gear, state.equipped);
 
   useEffect(() => {
     const ctx = canvasRef.current?.getContext("2d");
     if (!ctx) return;
-    paintMap(ctx, overworld, world.discovered, TILE_PX);
+    paintMap(ctx, charted, world.discovered, TILE_PX);
     // discovered waypoints get a marker
     for (const waypoint of WAYPOINTS) {
-      // the canvas paints the overworld: only its own waypoints get markers
-      if (waypoint.mapId !== "overworld" || !waypointDiscovered(waypoint, world.discovered)) continue;
+      // only the charted map's own waypoints get markers
+      if (waypoint.mapId !== charted.id || !waypointDiscovered(waypoint, world.discovered)) continue;
       ctx.fillStyle = "#e8c34a";
       ctx.fillRect(waypoint.at.x * TILE_PX - 2, waypoint.at.y * TILE_PX - 2, TILE_PX + 4, TILE_PX + 4);
       ctx.fillStyle = "#2a2118";
       ctx.fillRect(waypoint.at.x * TILE_PX, waypoint.at.y * TILE_PX, TILE_PX, TILE_PX);
     }
     // the hero, if they are on this map
-    if (world.position.mapId === overworld.id) {
+    if (world.position.mapId === charted.id) {
       ctx.fillStyle = "#f0f0e8";
       ctx.fillRect(world.position.x * TILE_PX - 1, world.position.y * TILE_PX - 1, TILE_PX + 2, TILE_PX + 2);
     }
-  }, [overworld, world]);
+  }, [charted, world]);
 
   return (
-    <PanelShell onClose={onClose} className="map-panel" testId="map-screen" title="The Ashenreach">
+    <PanelShell
+      onClose={onClose}
+      className="map-panel"
+      testId="map-screen"
+      title={MAP_NAMES[charted.id] ?? "The Ashenreach"}
+    >
       <canvas
         ref={canvasRef}
         className="map-canvas"
-        width={overworld.width * TILE_PX}
-        height={overworld.height * TILE_PX}
+        width={charted.width * TILE_PX}
+        height={charted.height * TILE_PX}
       />
       <div className="map-waypoints">
         {WAYPOINTS.map((waypoint) => {
