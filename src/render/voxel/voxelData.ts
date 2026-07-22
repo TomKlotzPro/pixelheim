@@ -11,11 +11,10 @@ export type VoxelSprite = { rows: string[]; palette: Record<string, string> };
 export type VoxelSheet = {
   art: number;
   sprites: Record<string, VoxelSprite>;
-  /** Hand-drawn stride legs per silhouette family (PIX-117). */
-  heroStride?: Record<string, string[][]>;
   strideFamily?: Record<string, string>;
-  /** The heroes from behind (rows 0-12), for up-facing walks. */
-  heroBack?: Record<string, string[]>;
+  /** The four computed walk frames per family (PIX-117): arms, legs, no bob. */
+  heroFrames?: Record<string, string[][]>;
+  heroBackFrames?: Record<string, string[][]>;
 };
 
 let sheetPromise: Promise<VoxelSheet> | null = null;
@@ -372,22 +371,33 @@ function splitLegs(grid: ColorGrid): { body: ColorGrid; left: ColorGrid; right: 
  * passing frames rise a pixel - exactly what the 2D sheets bake. Returns
  * null when the sheet predates authored strides so callers can fall back.
  */
+const RIGHT_HAND = /^wear_(sword|dagger|axe|hammer|bow|staff|dragonbane)/;
+const LEFT_HAND = /^wear_shield/;
+const RIGHT_HAND_DY = [1, 0, 0, 0];
+const LEFT_HAND_DY = [0, 0, 1, 0];
+
 export function heroStrideGrids(
   sheet: VoxelSheet,
   spriteName: string,
   body: VoxelSprite,
-  wears: ColorGrid[],
+  outfit: string[],
   view: "front" | "up" = "front",
 ): ColorGrid[] | null {
-  if (!sheet.heroStride || !sheet.strideFamily) return null;
+  if (!sheet.heroFrames || !sheet.strideFamily) return null;
   const base = Object.keys(sheet.strideFamily).find((name) => spriteName === name || spriteName.startsWith(name + "_"));
   const family = base ? sheet.strideFamily[base] : undefined;
-  const frames = family ? sheet.heroStride[family] : undefined;
+  const frames = family ? (view === "up" ? sheet.heroBackFrames?.[family] : sheet.heroFrames[family]) : undefined;
   if (!frames || !family) return null;
-  const back = view === "up" ? sheet.heroBack?.[family] : undefined;
-  const bodyRows = back ?? body.rows.slice(0, 13);
-  return frames.map((legs, i) => {
-    const rows = bodyRows.concat(legs);
+  const wearGrids = outfit
+    .map((name) => ({ name, sprite: sheet.sprites[name] }))
+    .filter((w) => w.sprite !== undefined)
+    .map((w) => ({ name: w.name, grid: colorGrid(w.sprite!) }));
+  return frames.map((rows, i) => {
+    // Held gear rides its pumping hand, same offsets as the 2D compositor.
+    const wears = wearGrids.map(({ name, grid }) => {
+      const dy = RIGHT_HAND.test(name) ? RIGHT_HAND_DY[i] : LEFT_HAND.test(name) ? LEFT_HAND_DY[i] : 0;
+      return dy ? bobDownGrid(grid, dy) : grid;
+    });
     const dressed = overlayGrids(colorGrid({ rows, palette: body.palette }, ACTOR_OMIT), wears);
     return i % 2 === 1 ? bobUpGrid(dressed) : dressed;
   });

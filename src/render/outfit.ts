@@ -7,6 +7,17 @@
 const ART = 16;
 /** The generator's walk cycle bobs frames 1 and 3 up a pixel; overlays follow. */
 const WALK_FRAME_DY = [0, -1, 0, -1];
+/** Held gear rides the pumping hand (PIX-117): right on frame 0, left on 2. */
+const RIGHT_HAND_DY = [1, 0, 0, 0];
+const LEFT_HAND_DY = [0, 0, 1, 0];
+const RIGHT_HAND = /^wear_(sword|dagger|axe|hammer|bow|staff|dragonbane)/;
+const LEFT_HAND = /^wear_shield/;
+
+function handDy(wearName: string, frame: number): number {
+  if (RIGHT_HAND.test(wearName)) return RIGHT_HAND_DY[frame % 4];
+  if (LEFT_HAND.test(wearName)) return LEFT_HAND_DY[frame % 4];
+  return 0;
+}
 
 const imageCache = new Map<string, Promise<HTMLImageElement>>();
 
@@ -62,7 +73,9 @@ export function composeWalkSheet(
       ctx.drawImage(base, 0, 0);
       for (let frame = 0; frame < frames; frame++) {
         const dy = WALK_FRAME_DY[frame % WALK_FRAME_DY.length];
-        for (const wear of wears) ctx.drawImage(wear, frame * ART, dy);
+        for (let i = 0; i < wears.length; i++) {
+          ctx.drawImage(wears[i], frame * ART, dy + handDy(outfit[i], frame));
+        }
       }
       return canvas;
     })();

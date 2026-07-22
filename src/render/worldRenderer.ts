@@ -49,6 +49,10 @@ export class WorldRenderer implements WorldRendererContract {
       height: VIEW_H * ART * scale,
       background: 0x0d0e13,
       antialias: false,
+      // Retina screens got a half-resolution canvas stretched double - the
+      // "blurry" look. Render at device pixels; CSS keeps the layout size.
+      resolution: Math.min(window.devicePixelRatio || 1, 2),
+      autoDensity: true,
     });
     if (this.destroyed) {
       app.destroy(true, { children: true });

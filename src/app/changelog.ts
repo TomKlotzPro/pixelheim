@@ -21,6 +21,9 @@ export const CHANGELOG: Release[] = [
       "WALK AWAY AND SEE A BACK: every hero has a drawn rear view now - helm backs, cape, hood, hat - shown whenever you head north, in 2D and voxel alike",
       "The night classes stepped into the light: the necromancer's robes and the rogue's leathers brightened so they read on every lawn",
       "THE TOWNSFOLK FRESHENED UP: Odo wears a proper cap over his coin pouch, Hilda a headband and apron straps, Vex a wide-brimmed hat, the Elder a longer beard, Sela a neat bun",
+      "ARMS THAT WORK: each stride pumps the striding side's hand, and held gear rides it - the sword swings with the arm now, in 2D and voxel alike",
+      "RETINA SHARP: the WebGL canvas was rendering at half resolution on high-density screens and getting stretched - the blur is gone, every pixel lands on a device pixel",
+      "BETTER COLORIMETRY: brighter highlights and richer saturation across the heroes - vivid crimson tabards, royal blues, glowing golds, hotter rogue eyes",
     ],
   },
   {

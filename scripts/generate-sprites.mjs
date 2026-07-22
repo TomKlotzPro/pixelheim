@@ -1402,16 +1402,16 @@ const sprites = {
   // ---------------- heroes ----------------
   hero_warrior: {
     palette: {
-      H: "#9aa5b1",
-      D: "#5c6670",
+      H: "#aab6c6",
+      D: "#525c68",
       F: SKIN,
       K: "#22242b",
-      B: "#7d8894",
-      L: "#4a4f5a",
-      O: "#8a5a2b",
-      R: "#c23b3b",
-      P: "#c8ccd8",
-      E: "#2e323b",
+      B: "#8a97a6",
+      L: "#565c6a",
+      O: "#a06a34",
+      R: "#d84545",
+      P: "#e2e8f2",
+      E: "#343a46",
     },
     rows: [
       "......RR........",
@@ -1434,14 +1434,14 @@ const sprites = {
   },
   hero_mage: {
     palette: {
-      H: "#3b5bd6",
-      D: "#26398f",
+      H: "#4468f0",
+      D: "#2c42aa",
       F: SKIN,
       K: "#22242b",
-      R: "#4a6be6",
-      L: "#26398f",
-      W: "#d8d0c0",
-      Y: "#e8c34a",
+      R: "#5578fa",
+      L: "#2c42aa",
+      W: "#ece4d4",
+      Y: "#ffd75e",
     },
     rows: [
       ".......HH.......",
@@ -1463,7 +1463,7 @@ const sprites = {
     ],
   },
   hero_rogue: {
-    palette: { H: "#4a5162", D: "#2c303a", F: SKIN, K: "#e04848", B: "#5a6172", L: "#3a3f4c", O: "#7d5a35" },
+    palette: { H: "#4a5162", D: "#2c303a", F: SKIN, K: "#ff5252", B: "#5a6172", L: "#3a3f4c", O: "#7d5a35" },
     rows: [
       "................",
       ".....HHHHHH.....",
@@ -1484,7 +1484,7 @@ const sprites = {
     ],
   },
   hero_cleric: {
-    palette: { H: "#e8e2d0", D: "#b8b0a0", F: SKIN, K: "#22242b", B: "#f0ead8", L: "#c8c0b0", Y: "#e8c34a" },
+    palette: { H: "#f6f0e2", D: "#c2baa8", F: SKIN, K: "#22242b", B: "#f8f2e0", L: "#d2cab8", Y: "#ffd75e" },
     rows: [
       ".....HHHH.......",
       "....HHYYHH......",
@@ -3207,14 +3207,35 @@ const STRIDE_FAMILY = {
   hero_necromancer: "hero_mage",
   hero_cleric: "hero_cleric",
 };
+
+/**
+ * The arm pump (PIX-117 round 3): on each contact frame the striding side's
+ * hand drops a pixel - hands live outside the torso columns, so armor stays
+ * pinned while the arms visibly work. Held gear follows via HAND_DY, applied
+ * identically by the 2D compositor and the voxel builder.
+ */
+const swingArms = (rows, side) => {
+  const grid = rows.map((r) => r.split(""));
+  const cols = side === "right" ? [10, 11, 12, 13, 14] : [0, 1, 2, 3];
+  const hands = [];
+  for (let y = 9; y <= 12; y++) {
+    for (const x of cols) if (grid[y]?.[x] === "F") hands.push([y, x]);
+  }
+  for (const [y, x] of hands.toSorted((a, b) => b[0] - a[0])) {
+    grid[y][x] = ".";
+    grid[y + 1][x] = "F";
+  }
+  return grid.map((r) => r.join(""));
+};
+
 const strideFamilyOf = (name) =>
   STRIDE_FAMILY[Object.keys(STRIDE_FAMILY).find((base) => name === base || name.startsWith(base + "_"))] ?? null;
 /** Real drawn walk frames when the family has them; the old bob otherwise. */
 const heroWalkFrames = (name) => (rows) => {
   const family = strideFamilyOf(name);
   if (!family) return walkFrames(rows);
-  const splice = (i) => rows.slice(0, 13).concat(HERO_STRIDE[family][i]);
-  return [splice(0), bobUp(splice(1), 1), splice(2), bobUp(splice(3), 1)];
+  const f = heroFramesFor(family, "front");
+  return [f[0], bobUp(f[1], 1), f[2], bobUp(f[3], 1)];
 };
 
 // The heroes from behind (PIX-117 round 2): walking away shows the helm's
@@ -3282,11 +3303,23 @@ const HERO_BACK = {
     "..BBBBBBBBBBB...",
   ],
 };
+
+/** The four computed walk frames per family and view: arms + legs, unbobbed. */
+const heroFramesFor = (family, view) => {
+  const body = view === "up" ? HERO_BACK[family] : sprites[family].rows.slice(0, 13);
+  const legs = HERO_STRIDE[family];
+  const arm = ["right", null, "left", null];
+  return [0, 1, 2, 3].map((i) => {
+    const upper = arm[i] ? swingArms(body, arm[i]) : body;
+    return upper.concat(legs[i]);
+  });
+};
+
 const heroBackWalkFrames = (name) => (rows) => {
   const family = strideFamilyOf(name);
   if (!family || !HERO_BACK[family]) return heroWalkFrames(name)(rows);
-  const splice = (i) => HERO_BACK[family].concat(HERO_STRIDE[family][i]);
-  return [splice(0), bobUp(splice(1), 1), splice(2), bobUp(splice(3), 1)];
+  const f = heroFramesFor(family, "up");
+  return [f[0], bobUp(f[1], 1), f[2], bobUp(f[3], 1)];
 };
 
 const idleFrames = (b) => [b, bobDown(b, 1)];
@@ -3354,7 +3387,13 @@ writeFileSync(join(OUT, "atlas.json"), JSON.stringify(atlas, null, 2) + "\n");
 // The 3D renderer extrudes the same grids the PNGs are baked from: every
 // sprite's rows + palette, verbatim. One art source of truth - editing a
 // sprite here reshapes its voxel model with no extra work.
-const voxels = { art: 16, sprites: {}, heroStride: HERO_STRIDE, strideFamily: STRIDE_FAMILY, heroBack: HERO_BACK };
+const heroFrames = {};
+const heroBackFrames = {};
+for (const family of Object.keys(HERO_STRIDE)) {
+  heroFrames[family] = heroFramesFor(family, "front");
+  heroBackFrames[family] = heroFramesFor(family, "up");
+}
+const voxels = { art: 16, sprites: {}, strideFamily: STRIDE_FAMILY, heroFrames, heroBackFrames };
 for (const name of names) {
   voxels.sprites[name] = { rows: sprites[name].rows, palette: sprites[name].palette };
 }

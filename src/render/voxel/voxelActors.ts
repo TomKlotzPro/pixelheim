@@ -222,19 +222,24 @@ export class VoxelActors {
     if (dressKey === this.heroKey) return;
     this.heroKey = dressKey;
     const body = this.sheet.sprites[sheetName] ?? this.sheet.sprites.hero_warrior;
-    const wears = outfit
-      .map((name) => this.sheet!.sprites[name])
-      .filter((sprite) => sprite !== undefined)
-      .map((sprite) => colorGrid(sprite));
     // The drawn walk frames (PIX-117), extruded per frame: gear composes
     // first, so plate and blade ride the step exactly as the 2D sheets do.
     // Sheets without authored strides fall back to the synthesized gait.
     for (const frame of [...this.heroFrames, ...this.heroFramesUp]) frame.dispose();
-    const drawn = heroStrideGrids(this.sheet, sheetName, body, wears);
+    const drawn = heroStrideGrids(this.sheet, sheetName, body, outfit);
     this.heroFrames = drawn
       ? heroStrideGeometries(drawn, 2)
-      : strideGeometries(overlayGrids(colorGrid(body, ACTOR_OMIT), wears), 2);
-    const drawnUp = heroStrideGrids(this.sheet, sheetName, body, wears, "up");
+      : strideGeometries(
+          overlayGrids(
+            colorGrid(body, ACTOR_OMIT),
+            outfit
+              .map((name) => this.sheet!.sprites[name])
+              .filter(Boolean)
+              .map((sprite) => colorGrid(sprite!)),
+          ),
+          2,
+        );
+    const drawnUp = heroStrideGrids(this.sheet, sheetName, body, outfit, "up");
     this.heroFramesUp = drawnUp ? heroStrideGeometries(drawnUp, 2) : [];
     if (this.hero) {
       this.hero.geometry = this.heroFrames[0];
