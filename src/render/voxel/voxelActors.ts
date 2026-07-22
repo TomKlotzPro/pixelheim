@@ -32,6 +32,7 @@ import {
   type ColorGrid,
   colorGrid,
   heroStrideGrids,
+  heroStrideGeometries,
   idleFrameGrids,
   overlayGrids,
   uprightGeometry,
@@ -107,6 +108,8 @@ export class VoxelActors {
   private signKey = "";
   private hero: Mesh | null = null;
   private heroFrames: BufferGeometry[] = [];
+  private heroFramesUp: BufferGeometry[] = [];
+  private heroFacingUp = false;
   private heroTarget = { x: 0, z: 0 };
   private heroFlip = false;
   private heroPresence = 1;
@@ -226,11 +229,13 @@ export class VoxelActors {
     // The drawn walk frames (PIX-117), extruded per frame: gear composes
     // first, so plate and blade ride the step exactly as the 2D sheets do.
     // Sheets without authored strides fall back to the synthesized gait.
-    for (const frame of this.heroFrames) frame.dispose();
+    for (const frame of [...this.heroFrames, ...this.heroFramesUp]) frame.dispose();
     const drawn = heroStrideGrids(this.sheet, sheetName, body, wears);
     this.heroFrames = drawn
-      ? drawn.map((frame) => uprightGeometry(frame, 2))
+      ? heroStrideGeometries(drawn, 2)
       : strideGeometries(overlayGrids(colorGrid(body, ACTOR_OMIT), wears), 2);
+    const drawnUp = heroStrideGrids(this.sheet, sheetName, body, wears, "up");
+    this.heroFramesUp = drawnUp ? heroStrideGeometries(drawnUp, 2) : [];
     if (this.hero) {
       this.hero.geometry = this.heroFrames[0];
     } else {
@@ -281,6 +286,7 @@ export class VoxelActors {
     }
     this.heroTarget = { x: pos.x * ART + ART / 2, z: pos.y * ART + ART / 2 };
     this.heroFlip = pos.facing === "left";
+    this.heroFacingUp = pos.facing === "up";
     this.dressHero(state);
     this.rebuildSigns(map, state);
 
@@ -332,7 +338,9 @@ export class VoxelActors {
       // footwork, a hop carries the weight, and a waddle carries the charm.
       const walking = clock < this.walkUntil && !reduceMotion;
       const beat = clock / WALK_MS;
-      this.hero.geometry = walking ? this.heroFrames[Math.floor(beat) % this.heroFrames.length] : this.heroFrames[0];
+      // Walking away shows the hero's back (PIX-117), same as the 2D sheets.
+      const frames = this.heroFacingUp && this.heroFramesUp.length > 0 ? this.heroFramesUp : this.heroFrames;
+      this.hero.geometry = walking ? frames[Math.floor(beat) % frames.length] : frames[0];
       const hop = walking ? Math.abs(Math.sin(beat * Math.PI)) * 1.8 : 0;
       this.hero.rotation.z = walking ? Math.sin(beat * Math.PI) * 0.18 : 0;
       this.hero.position.set(

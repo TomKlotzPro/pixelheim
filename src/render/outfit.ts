@@ -39,13 +39,18 @@ const sheetCache = new Map<string, Promise<HTMLCanvasElement>>();
  * The hero's walk sheet with the outfit painted onto every frame.
  * Returns a canvas (4 frames x 16px); callers texture/slice it themselves.
  */
-export function composeWalkSheet(heroName: string, outfit: string[]): Promise<HTMLCanvasElement> {
-  const key = outfitKey(`${heroName}_walk`, outfit);
+export function composeWalkSheet(
+  heroName: string,
+  outfit: string[],
+  view: "front" | "up" = "front",
+): Promise<HTMLCanvasElement> {
+  const sheetName = view === "up" ? `${heroName}_walk_up` : `${heroName}_walk`;
+  const key = outfitKey(sheetName, outfit);
   let cached = sheetCache.get(key);
   if (!cached) {
     cached = (async () => {
       const [base, ...wears] = await Promise.all([
-        loadImage(spriteUrl(`${heroName}_walk`)),
+        loadImage(spriteUrl(sheetName)),
         ...outfit.map((wear) => loadImage(spriteUrl(wear))),
       ]);
       const frames = Math.max(1, Math.round(base.width / ART));

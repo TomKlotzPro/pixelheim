@@ -14,6 +14,8 @@ export type VoxelSheet = {
   /** Hand-drawn stride legs per silhouette family (PIX-117). */
   heroStride?: Record<string, string[][]>;
   strideFamily?: Record<string, string>;
+  /** The heroes from behind (rows 0-12), for up-facing walks. */
+  heroBack?: Record<string, string[]>;
 };
 
 let sheetPromise: Promise<VoxelSheet> | null = null;
@@ -375,15 +377,39 @@ export function heroStrideGrids(
   spriteName: string,
   body: VoxelSprite,
   wears: ColorGrid[],
+  view: "front" | "up" = "front",
 ): ColorGrid[] | null {
   if (!sheet.heroStride || !sheet.strideFamily) return null;
   const base = Object.keys(sheet.strideFamily).find((name) => spriteName === name || spriteName.startsWith(name + "_"));
-  const frames = base ? sheet.heroStride[sheet.strideFamily[base]] : undefined;
-  if (!frames) return null;
+  const family = base ? sheet.strideFamily[base] : undefined;
+  const frames = family ? sheet.heroStride[family] : undefined;
+  if (!frames || !family) return null;
+  const back = view === "up" ? sheet.heroBack?.[family] : undefined;
+  const bodyRows = back ?? body.rows.slice(0, 13);
   return frames.map((legs, i) => {
-    const rows = body.rows.slice(0, 13).concat(legs);
+    const rows = bodyRows.concat(legs);
     const dressed = overlayGrids(colorGrid({ rows, palette: body.palette }, ACTOR_OMIT), wears);
     return i % 2 === 1 ? bobUpGrid(dressed) : dressed;
+  });
+}
+
+/**
+ * The drawn stride as geometry, with the legs split at the hips and offset in
+ * depth per frame - the scissor that reads from the game's high camera, kept
+ * from the synthesized gait it replaces (PIX-117 round 2).
+ */
+export function heroStrideGeometries(grids: ColorGrid[], depth = 2): BufferGeometry[] {
+  const swings = [1, 0, -1, 0];
+  return grids.map((grid, i) => {
+    const body = grid.map((row, y) => (y < 13 ? row : row.map(() => null)));
+    const left = grid.map((row, y) => (y >= 13 ? row.map((c, x) => (x < 8 ? c : null)) : row.map(() => null)));
+    const right = grid.map((row, y) => (y >= 13 ? row.map((c, x) => (x >= 8 ? c : null)) : row.map(() => null)));
+    const builder = new VoxelBuilder();
+    const ox = -8;
+    extrudeUpright(builder, body, depth, ox, 0, 0);
+    extrudeUpright(builder, left, depth, ox, 0, 1.3 * swings[i]);
+    extrudeUpright(builder, right, depth, ox, 0, -1.3 * swings[i]);
+    return builder.build();
   });
 }
 

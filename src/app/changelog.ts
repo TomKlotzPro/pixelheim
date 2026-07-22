@@ -18,6 +18,9 @@ export const CHANGELOG: Release[] = [
       "THE HEROES GOT A REFONT: the warrior wears a crested visor helm, pauldrons and a war tabard; the mage a true pointed hat and a starred robe; the rogue vanishes into a deep hood with burning eyes; the cleric carries a gold-crossed mitre - and every look, rank and path variant inherits the new faces",
       "REAL WALK CYCLES: four hand-drawn frames per silhouette - legs that actually stride and bend, robes that sway, feet that lift - replacing the old sliding-feet trick, in 2D and extruded voxel alike",
       "Worn gear still rides every step: swords, plate and staves pin to hands that never leave their pixel",
+      "WALK AWAY AND SEE A BACK: every hero has a drawn rear view now - helm backs, cape, hood, hat - shown whenever you head north, in 2D and voxel alike",
+      "The night classes stepped into the light: the necromancer's robes and the rogue's leathers brightened so they read on every lawn",
+      "THE TOWNSFOLK FRESHENED UP: Odo wears a proper cap over his coin pouch, Hilda a headband and apron straps, Vex a wide-brimmed hat, the Elder a longer beard, Sela a neat bun",
     ],
   },
   {
