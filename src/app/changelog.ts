@@ -24,6 +24,7 @@ export const CHANGELOG: Release[] = [
       "ARMS THAT WORK: each stride pumps the striding side's hand, and held gear rides it - the sword swings with the arm now, in 2D and voxel alike",
       "RETINA SHARP: the WebGL canvas was rendering at half resolution on high-density screens and getting stretched - the blur is gone, every pixel lands on a device pixel",
       "BETTER COLORIMETRY: brighter highlights and richer saturation across the heroes - vivid crimson tabards, royal blues, glowing golds, hotter rogue eyes",
+      "STRIDES YOU CAN SEE FROM THE SADDLE: the walk poses got bold - legs scissor wide on contact, a knee lifts high on the passing step, robes sway twice as far - every step on a long walk reads as a different sprite",
     ],
   },
   {

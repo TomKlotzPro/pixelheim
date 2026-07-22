@@ -3175,27 +3175,27 @@ const walkFrames = (b) => [b, feet(bobUp(b, 1), 1), b, feet(bobUp(b, 1), -1)];
 // body up a pixel, the convention the outfit compositor already follows.
 const HERO_STRIDE = {
   hero_warrior: [
-    ["..LLL...LLL.....", "..LLL....LLL....", "..EE......EE...."],
-    ["...LLL..LLL.....", "...LLL..LL......", "...EE...E......."],
-    ["....LLL...LLL...", "...LLL....LLL...", "...EE......EE..."],
-    ["...LLL..LLL.....", "....LL..LLL.....", ".....E...EE....."],
+    [".LLL.....LLL....", ".LLL......LLL...", ".EE........EE..."],
+    ["...LLL..LLL.....", "...LLL..EE......", "...EE..........."],
+    ["....LLL.....LLL.", "...LLL......LLL.", "...EE........EE."],
+    ["...LLL..LLL.....", "....EE..LLL.....", ".........EE....."],
   ],
   hero_rogue: [
-    ["..LLL...LLL.....", "..LLL....LLL....", "..DD......DD...."],
-    ["...LLL..LLL.....", "...LLL..LL......", "...DD...D......."],
-    ["....LLL...LLL...", "...LLL....LLL...", "...DD......DD..."],
-    ["...LLL..LLL.....", "....LL..LLL.....", ".....D...DD....."],
+    [".LLL.....LLL....", ".LLL......LLL...", ".DD........DD..."],
+    ["...LLL..LLL.....", "...LLL..DD......", "...DD..........."],
+    ["....LLL.....LLL.", "...LLL......LLL.", "...DD........DD."],
+    ["...LLL..LLL.....", "....DD..LLL.....", ".........DD....."],
   ],
   hero_mage: [
-    [".RRRRRRRRRR.....", ".LLLLLLLLLL.....", "..DD......DD...."],
+    ["RRRRRRRRRR......", "LLLLLLLLLL......", ".DD......DD....."],
     ["..RRRRRRRRRR....", "..LLLLLLLLLL....", "....DD..DD......"],
-    ["...RRRRRRRRRR...", "...LLLLLLLLLL...", "....DD......DD.."],
-    ["..RRRRRRRRRR....", "..LLLLLLLLLL....", ".....DD..DD....."],
+    ["....RRRRRRRRRR..", "....LLLLLLLLLL..", ".....DD......DD."],
+    ["..RRRRRRRRRR....", "..LLLLLLLLLL....", "......DD..DD...."],
   ],
   hero_cleric: [
-    [".BBBBBBBBBBB....", ".LLLLLLLLLLL....", "..DD.......DD..."],
+    ["BBBBBBBBBBB.....", "LLLLLLLLLLL.....", ".DD.......DD...."],
     ["..BBBBBBBBBBB...", "..LLLLLLLLLLL...", "....DD...DD....."],
-    ["...BBBBBBBBBBB..", "...LLLLLLLLLLL..", "....DD.......DD."],
+    ["....BBBBBBBBBBB.", "....LLLLLLLLLLL.", ".....DD.......DD"],
     ["..BBBBBBBBBBB...", "..LLLLLLLLLLL...", "......DD..DD...."],
   ],
 };
@@ -3223,7 +3223,7 @@ const swingArms = (rows, side) => {
   }
   for (const [y, x] of hands.toSorted((a, b) => b[0] - a[0])) {
     grid[y][x] = ".";
-    grid[y + 1][x] = "F";
+    grid[y + 1][x + (side === "right" ? 1 : -1)] = "F";
   }
   return grid.map((r) => r.join(""));
 };
