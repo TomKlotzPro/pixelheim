@@ -33,6 +33,39 @@ jobs:
       - name: Install Playwright browser
         run: pnpm exec playwright install chromium --with-deps
       - run: pnpm test:e2e
+      # The Godot build ships alongside the web game at /godot/ on the
+      # Pages site (single-threaded export, no special headers needed).
+      - name: Cache Godot binary and export templates
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/godot-bin
+            ~/.local/share/godot/export_templates
+          key: godot-4.7.1
+      - name: Install Godot + web export templates
+        run: |
+          GODOT_VERSION="4.7.1"
+          if [ ! -x "$HOME/godot-bin/godot" ]; then
+            mkdir -p "$HOME/godot-bin"
+            curl -sL "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip" -o godot.zip
+            unzip -q godot.zip
+            mv "Godot_v${GODOT_VERSION}-stable_linux.x86_64" "$HOME/godot-bin/godot"
+          fi
+          TDIR="$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.stable"
+          if [ ! -f "$TDIR/web_nothreads_release.zip" ]; then
+            curl -sL "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_export_templates.tpz" -o templates.tpz
+            unzip -q templates.tpz 'templates/web_*'
+            mkdir -p "$TDIR"
+            mv templates/web_* "$TDIR/"
+          fi
+          echo "$HOME/godot-bin" >> "$GITHUB_PATH"
+      - name: Build Godot web export into dist/godot
+        run: |
+          godot --headless --path godot --import
+          mkdir -p godot/export/web
+          godot --headless --path godot --export-release Web export/web/index.html
+          mkdir -p dist/godot
+          cp -R godot/export/web/. dist/godot/
       # Publishes to the gh-pages branch root; PR previews live under
       # pr-preview/ and must survive production deploys.
       - uses: JamesIves/github-pages-deploy-action@v4
