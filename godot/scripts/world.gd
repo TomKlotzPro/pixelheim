@@ -57,9 +57,21 @@ func _build_tile_layer() -> TileMapLayer:
 	var source_ids := {}  # tile id -> atlas source id
 	for tile: String in WorldTiles.TILE_INFO:
 		var source := TileSetAtlasSource.new()
-		source.texture = load(WorldTiles.sprite_path(tile))
-		source.texture_region_size = Vector2i(TILE, TILE)
-		source.create_tile(Vector2i.ZERO)
+		var sheet: String = WorldTiles.TILE_ANIMATIONS.get(tile, "")
+		if sheet == "":
+			source.texture = load(WorldTiles.sprite_path(tile))
+			source.texture_region_size = Vector2i(TILE, TILE)
+			source.create_tile(Vector2i.ZERO)
+		else:
+			# Animated terrain: the sheet is a horizontal strip; consecutive
+			# columns become animation frames at the fps atlas.json declares.
+			var meta: Dictionary = WorldTiles.atlas_animations()[sheet]
+			source.texture = load("res://assets/sprites/%s.png" % sheet)
+			source.texture_region_size = Vector2i(TILE, TILE)
+			source.create_tile(Vector2i.ZERO)
+			source.set_tile_animation_frames_count(Vector2i.ZERO, int(meta["frames"]))
+			for i in int(meta["frames"]):
+				source.set_tile_animation_frame_duration(Vector2i.ZERO, i, 1.0 / float(meta["fps"]))
 		source_ids[tile] = tileset.add_source(source)
 		if not WorldTiles.is_walkable(tile):
 			var data := source.get_tile_data(Vector2i.ZERO, 0)

@@ -47,6 +47,23 @@ const MOB_HABITATS := {
 	"grass": "orc", "forest": "orc", "ash": "skeleton", "marsh": "skeleton",
 }
 
+## Terrain that breathes: tile id -> its animation sheet in atlas.json
+## (ported from TILE_ANIMATIONS in src/world/tiles.ts).
+const TILE_ANIMATIONS := {
+	"water": "water_shimmer", "grass": "grass_sway", "forest": "forest_sway",
+	"flowers": "flowers_sway", "marsh": "marsh_sway",
+}
+
+static var _atlas := {}
+
+
+## Animation metadata generated alongside the sprites (frames, fps per sheet).
+static func atlas_animations() -> Dictionary:
+	if _atlas.is_empty():
+		var raw := FileAccess.get_file_as_string("res://assets/sprites/atlas.json")
+		_atlas = JSON.parse_string(raw)
+	return _atlas["animations"]
+
 static func tile_for_char(character: String) -> String:
 	return CHAR_TILES.get(character, "grass")
 

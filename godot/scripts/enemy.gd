@@ -104,31 +104,9 @@ func _die() -> void:
 func _build_frames() -> SpriteFrames:
 	var frames := SpriteFrames.new()
 	frames.remove_animation("default")
-	_add_sheet(frames, "idle", "res://assets/crawler/%s_idle.png" % kind, 4.0, true)
-	_add_sheet(frames, "run", "res://assets/crawler/%s_run.png" % kind, 10.0, true)
-	_add_sheet(frames, "death", "res://assets/crawler/%s_death.png" % kind, 10.0, false)
+	for anim in [["idle", 4.0, true], ["run", 10.0, true], ["death", 10.0, false]]:
+		SheetFrames.add_normalized_strip(
+			frames, anim[0], "res://assets/crawler/%s_%s.png" % [kind, anim[0]],
+			anim[1], anim[2]
+		)
 	return frames
-
-static func _add_sheet(
-	frames: SpriteFrames, anim: String, path: String, fps: float, loop: bool
-) -> void:
-	frames.add_animation(anim)
-	frames.set_animation_speed(anim, fps)
-	frames.set_animation_loop(anim, loop)
-	# Sheets use square frames of varying canvas size but all anchor the body
-	# feet to the bottom edge. Normalize everything to a 48x48 bottom-anchored
-	# frame so animations don't jump when they switch.
-	var texture: Texture2D = load(path)
-	var frame_size := texture.get_height()
-	for i in int(texture.get_width() / float(frame_size)):
-		var frame := AtlasTexture.new()
-		frame.atlas = texture
-		match frame_size:
-			32:
-				frame.region = Rect2(i * 32, 0, 32, 32)
-				frame.margin = Rect2(8, 16, 16, 16)
-			48:
-				frame.region = Rect2(i * 48, 0, 48, 48)
-			_:
-				frame.region = Rect2(i * frame_size + 8, frame_size - 48, 48, 48)
-		frames.add_frame(anim, frame)
