@@ -62,9 +62,7 @@ function extractMap(source, name) {
   return lines.join("\n");
 }
 
-const spriteNames = readdirSync(SPRITES_SRC).filter((name) =>
-  SPRITE_PATTERNS.some((pattern) => pattern.test(name)),
-);
+const spriteNames = readdirSync(SPRITES_SRC).filter((name) => SPRITE_PATTERNS.some((pattern) => pattern.test(name)));
 for (const name of [...spriteNames, ...SPRITE_EXTRAS]) {
   sync(path.join(SPRITES_DST, name), readFileSync(path.join(SPRITES_SRC, name)));
 }
