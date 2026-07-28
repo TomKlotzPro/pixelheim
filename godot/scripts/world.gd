@@ -12,13 +12,17 @@ const MIN_SPAWN_DISTANCE_TILES := 8
 
 var map: MapData
 var tile_layer: TileMapLayer
+var props: Node2D
 var player: CharacterBody2D
 var camera: Camera2D
 var player_cell := Vector2i.ZERO
 var kills := 0
+var opened_chests: Array[String] = []  # session-only until saves land (PIX-122)
+var chest_sprites := {}  # chest id -> Sprite2D
 var hp_bar: ProgressBar
 var kills_label: Label
 var message_label: Label
+var prompt_label: Label
 
 func _ready() -> void:
 	_setup_input()
@@ -28,16 +32,29 @@ func _ready() -> void:
 	map = MapData.load_by_id(start)
 	_spawn_player()
 	_build_hud()
+	# World-space "!" that floats over a faced interactable.
+	prompt_label = Label.new()
+	prompt_label.text = "!"
+	prompt_label.add_theme_font_size_override("font_size", 10)
+	prompt_label.add_theme_color_override("font_color", Color(1, 0.9, 0.3))
+	prompt_label.add_theme_color_override("font_outline_color", Color(0.1, 0.08, 0.12))
+	prompt_label.add_theme_constant_override("outline_size", 3)
+	prompt_label.visible = false
+	add_child(prompt_label)
 	_enter_map(map, map.spawn)
 	_run_test_harness()
 
 func _process(_delta: float) -> void:
 	if player == null or player.dead:
 		return
+	if Input.is_action_just_pressed("interact"):
+		_try_interact()
+	_update_prompt()
 	var cell := Vector2i((player.position / TILE).floor())
 	if cell == player_cell:
 		return
 	player_cell = cell
+	_collect_ground_treasure(cell)
 	if map.portals.has(cell):
 		_use_portal(map.portals[cell])
 
@@ -80,9 +97,14 @@ func _enter_map(next: MapData, arrival: Vector2i) -> void:
 		mob.queue_free()
 	if tile_layer != null:
 		tile_layer.queue_free()
+	if props != null:
+		props.queue_free()
 	tile_layer = _build_tile_layer(next)
 	add_child(tile_layer)
-	# The layer is added after the player node exists — keep it behind actors.
+	props = _build_props(next)
+	add_child(props)
+	# Layers are added after the player node exists — keep them behind actors.
+	move_child(props, 0)
 	move_child(tile_layer, 0)
 	player.position = _cell_center(arrival)
 	player_cell = arrival
@@ -94,6 +116,91 @@ func _enter_map(next: MapData, arrival: Vector2i) -> void:
 
 func _cell_center(cell: Vector2i) -> Vector2:
 	return Vector2(cell * TILE) + Vector2(TILE, TILE) / 2.0
+
+## Chests, ground treasure, and door signs for the current map.
+func _build_props(data: MapData) -> Node2D:
+	var root := Node2D.new()
+	chest_sprites = {}
+	for chest: Dictionary in Interactables.chests_on(data.id):
+		var opened: bool = chest["id"] in opened_chests
+		var sprite_name := Interactables.sprite_name(chest, opened)
+		if sprite_name == "":
+			continue
+		var cell := Vector2i(int(chest["x"]), int(chest["y"]))
+		var sprite := Sprite2D.new()
+		sprite.texture = load("res://assets/sprites/%s.png" % sprite_name)
+		sprite.position = _cell_center(cell)
+		root.add_child(sprite)
+		chest_sprites[chest["id"]] = sprite
+		if chest["look"] == "chest":
+			# Furniture blocks the tile; ground treasure never does.
+			var body := StaticBody2D.new()
+			var shape := CollisionShape2D.new()
+			var rect := RectangleShape2D.new()
+			rect.size = Vector2(TILE, TILE)
+			shape.shape = rect
+			body.add_child(shape)
+			body.position = _cell_center(cell)
+			root.add_child(body)
+	for sign_def: Dictionary in Interactables.signs_on(data.id):
+		var label := Label.new()
+		label.text = sign_def["label"]
+		label.add_theme_font_size_override("font_size", 8)
+		label.add_theme_color_override("font_color", Color(1, 0.95, 0.75))
+		label.add_theme_color_override("font_outline_color", Color(0.1, 0.08, 0.12))
+		label.add_theme_constant_override("outline_size", 3)
+		label.custom_minimum_size = Vector2(64, 0)
+		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		label.position = Vector2(int(sign_def["x"]) * TILE + 8 - 32, int(sign_def["y"]) * TILE - 11)
+		root.add_child(label)
+	return root
+
+func _chest_at(cell: Vector2i) -> Dictionary:
+	for chest: Dictionary in Interactables.chests_on(map.id):
+		if int(chest["x"]) == cell.x and int(chest["y"]) == cell.y:
+			return chest
+	return {}
+
+func _facing_cell() -> Vector2i:
+	return player_cell + Vector2i(player.facing)
+
+func _try_interact() -> void:
+	var chest := _chest_at(_facing_cell())
+	if chest.is_empty() or chest["look"] != "chest" or chest["id"] in opened_chests:
+		return
+	_open_chest(chest)
+
+func _open_chest(chest: Dictionary) -> void:
+	opened_chests.append(chest["id"])
+	chest_sprites[chest["id"]].texture = load("res://assets/sprites/chest_open.png")
+	if chest.get("mimic", false):
+		_flash_message("The chest bares its teeth — a mimic!")
+		var ambush := player_cell + Vector2i(0, -1)
+		if not map.is_walkable(ambush):
+			ambush = player_cell + Vector2i(1, 0)
+		spawn_enemy("skeleton", ambush)
+		return
+	_flash_message(Interactables.loot_text(chest))
+
+func _collect_ground_treasure(cell: Vector2i) -> void:
+	var chest := _chest_at(cell)
+	if chest.is_empty() or chest["look"] == "chest" or chest["id"] in opened_chests:
+		return
+	opened_chests.append(chest["id"])
+	chest_sprites[chest["id"]].queue_free()
+	chest_sprites.erase(chest["id"])
+	_flash_message(Interactables.loot_text(chest))
+
+## The one interaction-prompt rule (ported from interactionPrompt.ts): a "!"
+## floats over a faced, unopened chest. NPCs join with PIX-123.
+func _update_prompt() -> void:
+	var chest := _chest_at(_facing_cell())
+	var show: bool = (
+		not chest.is_empty() and chest["look"] == "chest" and not chest["id"] in opened_chests
+	)
+	prompt_label.visible = show
+	if show:
+		prompt_label.position = Vector2(_facing_cell() * TILE) + Vector2(5, -14)
 
 func _build_tile_layer(data: MapData) -> TileMapLayer:
 	var tileset := TileSet.new()
@@ -191,6 +298,7 @@ func _setup_input() -> void:
 		"move_up": [KEY_UP, KEY_W], "move_down": [KEY_DOWN, KEY_S],
 		"move_left": [KEY_LEFT, KEY_A], "move_right": [KEY_RIGHT, KEY_D],
 		"attack": [KEY_SPACE, KEY_J],
+		"interact": [KEY_E, KEY_ENTER],
 	}
 	## action -> [stick axis, direction]
 	var pad_motions := {
@@ -213,6 +321,9 @@ func _setup_input() -> void:
 	var pad_attack := InputEventJoypadButton.new()
 	pad_attack.button_index = JOY_BUTTON_A
 	InputMap.action_add_event("attack", pad_attack)
+	var pad_interact := InputEventJoypadButton.new()
+	pad_interact.button_index = JOY_BUTTON_B
+	InputMap.action_add_event("interact", pad_interact)
 
 ## Agent verification harness (headless can't render, so this drives a real
 ## window briefly): `godot --path godot -- --screenshot [fight] [kill]
@@ -232,6 +343,13 @@ func _run_test_harness() -> void:
 			player.scripted_dir = Vector2(dirs[move])
 			await get_tree().create_timer(0.2).timeout
 		player.scripted_dir = Vector2.ZERO
+	if args.has("chest"):
+		# Pair with `--map town`: warp beside the nook chest, face it, open it.
+		player.position = _cell_center(Vector2i(61, 18))
+		player_cell = Vector2i(61, 18)
+		player.face(Vector2.RIGHT)
+		_try_interact()
+		await get_tree().create_timer(0.3).timeout
 	if args.has("fight"):
 		player.invulnerable = true
 		spawn_enemy("orc", player_cell + Vector2i(2, 0))
