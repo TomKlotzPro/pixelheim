@@ -48,8 +48,19 @@ jobs:
             mv templates/web_* "$TDIR/"
           fi
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
       - name: Check synced assets are current
-        run: node scripts/sync-godot-assets.mjs --check
+        run: |
+          node scripts/sync-godot-assets.mjs --check
+          pnpm exec tsx scripts/export-maps.ts --check
 
       - name: Import assets
         run: godot --headless --path godot --import

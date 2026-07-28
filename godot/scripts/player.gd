@@ -23,6 +23,7 @@ var attacking := false
 var invulnerable := false
 var dead := false
 var hit_this_swing: Array[Node] = []
+var scripted_dir := Vector2.ZERO  # test-harness movement override
 var sprite: AnimatedSprite2D
 var hitbox: Area2D
 
@@ -61,7 +62,9 @@ func _physics_process(_delta: float) -> void:
 				hit_this_swing.append(body)
 				body.take_hit(1, global_position)
 		return
-	var input := Input.get_vector("move_left", "move_right", "move_up", "move_down")
+	var input := scripted_dir
+	if input == Vector2.ZERO:
+		input = Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	velocity = input * SPEED
 	move_and_slide()
 	if input != Vector2.ZERO:

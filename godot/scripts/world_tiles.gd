@@ -1,22 +1,7 @@
 class_name WorldTiles
-## Tile tables ported verbatim from src/world/parseMap.ts and src/world/tiles.ts.
-## The web game remains the source of truth for these until it is sunset —
-## changes there must be mirrored here (PIX-120 wires an automated sync).
-
-const SPAWN_CHARS := ["S", "$", "*"]
-
-const CHAR_TILES := {
-	".": "grass", "S": "grass", "f": "forest", "^": "mountain", "~": "water",
-	"=": "path", "*": "path", "s": "sand", "b": "bridge", "w": "marsh",
-	"a": "ash", "k": "crops", "T": "trophy_shelf", "G": "garden", "#": "wall",
-	"_": "floor", "$": "floor", "r": "roof", "1": "roof_slate",
-	"2": "roof_thatch", "3": "roof_awning", "4": "roof_moss",
-	"h": "sign_smith", "m": "sign_inn", "p": "sign_potion", "g": "sign_goods",
-	"F": "fence", "x": "flowers", "o": "barrel", "c": "crate", "O": "well",
-	"L": "lamp", "A": "anvil", "e": "forge", "t": "shelf", "u": "cauldron",
-	"n": "counter", "B": "bed", "H": "hearth", "D": "door", "d": "door_shut",
-	"C": "cave", "W": "shrine",
-}
+## Tile tables ported verbatim from src/world/tiles.ts. The web game remains
+## the source of truth until it is sunset — map grids arrive pre-parsed as
+## tile ids via `pnpm godot:sync`, so no char table lives on this side.
 
 ## tile id -> [sprite basename, walkable]
 const TILE_INFO := {
@@ -63,9 +48,6 @@ static func atlas_animations() -> Dictionary:
 		var raw := FileAccess.get_file_as_string("res://assets/sprites/atlas.json")
 		_atlas = JSON.parse_string(raw)
 	return _atlas["animations"]
-
-static func tile_for_char(character: String) -> String:
-	return CHAR_TILES.get(character, "grass")
 
 static func is_walkable(tile: String) -> bool:
 	return TILE_INFO.has(tile) and TILE_INFO[tile][1]

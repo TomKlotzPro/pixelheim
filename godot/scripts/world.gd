@@ -1,27 +1,45 @@
 extends Node2D
-## World orchestration: builds the TileMapLayer from MapData, spawns the hero
-## and mobs, owns HUD/camera/respawn, and hosts the agent test harness.
-## Tile tables live in WorldTiles; parsing in MapData.
+## World orchestration: loads maps exported from the web game, builds their
+## TileMapLayer, moves the hero through portals, and spawns mobs in the wild.
+## Tile tables live in WorldTiles; map data in MapData.
 
 const TILE := 16
-const MAP_PATH := "res://assets/maps/overworld.txt"
+const START_MAP := "overworld"
+## Maps where mobs roam; interiors and the town stay safe.
+const WILD_MAPS := ["overworld", "deepwood", "mirefen"]
 const ENEMY_COUNT := 28
 const MIN_SPAWN_DISTANCE_TILES := 8
 
 var map: MapData
+var tile_layer: TileMapLayer
 var player: CharacterBody2D
+var camera: Camera2D
+var player_cell := Vector2i.ZERO
 var kills := 0
 var hp_bar: ProgressBar
 var kills_label: Label
+var message_label: Label
 
 func _ready() -> void:
 	_setup_input()
-	map = MapData.load_from(MAP_PATH)
-	add_child(_build_tile_layer())
+	var args := OS.get_cmdline_user_args()
+	var map_index := args.find("--map")
+	var start := args[map_index + 1] if map_index >= 0 and map_index + 1 < args.size() else START_MAP
+	map = MapData.load_by_id(start)
 	_spawn_player()
-	_spawn_enemies()
 	_build_hud()
+	_enter_map(map, map.spawn)
 	_run_test_harness()
+
+func _process(_delta: float) -> void:
+	if player == null or player.dead:
+		return
+	var cell := Vector2i((player.position / TILE).floor())
+	if cell == player_cell:
+		return
+	player_cell = cell
+	if map.portals.has(cell):
+		_use_portal(map.portals[cell])
 
 func is_walkable(cell: Vector2i) -> bool:
 	return map.is_walkable(cell)
@@ -35,6 +53,9 @@ func on_player_hp_changed(hp: int) -> void:
 
 func on_player_died() -> void:
 	await get_tree().create_timer(1.2).timeout
+	if map.id != START_MAP:
+		map = MapData.load_by_id(START_MAP)
+		_enter_map(map, map.spawn)
 	player.respawn(_cell_center(map.spawn))
 
 func spawn_enemy(kind: String, cell: Vector2i) -> void:
@@ -42,12 +63,39 @@ func spawn_enemy(kind: String, cell: Vector2i) -> void:
 	enemy.world = self
 	enemy.kind = kind
 	enemy.position = _cell_center(cell)
+	enemy.add_to_group("mobs")
 	add_child(enemy)
+
+func _use_portal(target: Dictionary) -> void:
+	match target["kind"]:
+		"map":
+			map = MapData.load_by_id(target["mapId"])
+			_enter_map(map, Vector2i(int(target["x"]), int(target["y"])))
+		_:
+			# Dungeons arrive with PIX-126.
+			_flash_message("The way is sealed... for now.")
+
+func _enter_map(next: MapData, arrival: Vector2i) -> void:
+	for mob in get_tree().get_nodes_in_group("mobs"):
+		mob.queue_free()
+	if tile_layer != null:
+		tile_layer.queue_free()
+	tile_layer = _build_tile_layer(next)
+	add_child(tile_layer)
+	# The layer is added after the player node exists — keep it behind actors.
+	move_child(tile_layer, 0)
+	player.position = _cell_center(arrival)
+	player_cell = arrival
+	camera.limit_right = next.size.x * TILE
+	camera.limit_bottom = next.size.y * TILE
+	camera.reset_smoothing()
+	if next.id in WILD_MAPS:
+		_spawn_enemies(next)
 
 func _cell_center(cell: Vector2i) -> Vector2:
 	return Vector2(cell * TILE) + Vector2(TILE, TILE) / 2.0
 
-func _build_tile_layer() -> TileMapLayer:
+func _build_tile_layer(data: MapData) -> TileMapLayer:
 	var tileset := TileSet.new()
 	tileset.tile_size = Vector2i(TILE, TILE)
 	tileset.add_physics_layer()
@@ -74,37 +122,34 @@ func _build_tile_layer() -> TileMapLayer:
 				source.set_tile_animation_frame_duration(Vector2i.ZERO, i, 1.0 / float(meta["fps"]))
 		source_ids[tile] = tileset.add_source(source)
 		if not WorldTiles.is_walkable(tile):
-			var data := source.get_tile_data(Vector2i.ZERO, 0)
-			data.add_collision_polygon(0)
-			data.set_collision_polygon_points(0, 0, box)
+			var data_tile := source.get_tile_data(Vector2i.ZERO, 0)
+			data_tile.add_collision_polygon(0)
+			data_tile.set_collision_polygon_points(0, 0, box)
 
 	var layer := TileMapLayer.new()
 	layer.tile_set = tileset
-	for cell: Vector2i in map.grid:
-		layer.set_cell(cell, source_ids[map.grid[cell]], Vector2i.ZERO)
+	for cell: Vector2i in data.grid:
+		layer.set_cell(cell, source_ids[data.grid[cell]], Vector2i.ZERO)
 	return layer
 
 func _spawn_player() -> void:
 	player = preload("res://scripts/player.gd").new()
 	player.world = self
-	player.position = _cell_center(map.spawn)
 	add_child(player)
 
-	var camera := Camera2D.new()
+	camera = Camera2D.new()
 	camera.zoom = Vector2(3, 3)
 	camera.position_smoothing_enabled = true
 	camera.position_smoothing_speed = 8.0
 	camera.limit_left = 0
 	camera.limit_top = 0
-	camera.limit_right = map.size.x * TILE
-	camera.limit_bottom = map.size.y * TILE
 	player.add_child(camera)
 
-func _spawn_enemies() -> void:
+func _spawn_enemies(data: MapData) -> void:
 	var habitats := {}  # mob kind -> Array[Vector2i]
-	for cell: Vector2i in map.grid:
-		var kind: String = WorldTiles.MOB_HABITATS.get(map.grid[cell], "")
-		var far_enough := cell.distance_to(map.spawn) >= MIN_SPAWN_DISTANCE_TILES
+	for cell: Vector2i in data.grid:
+		var kind: String = WorldTiles.MOB_HABITATS.get(data.grid[cell], "")
+		var far_enough := cell.distance_to(data.spawn) >= MIN_SPAWN_DISTANCE_TILES
 		if kind != "" and far_enough:
 			habitats.get_or_add(kind, []).append(cell)
 	for kind: String in habitats:
@@ -127,6 +172,19 @@ func _build_hud() -> void:
 	kills_label.text = "Slain: 0"
 	kills_label.position = Vector2(24, 50)
 	hud.add_child(kills_label)
+	message_label = Label.new()
+	message_label.position = Vector2(440, 640)
+	message_label.custom_minimum_size = Vector2(400, 0)
+	message_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	message_label.modulate.a = 0.0
+	hud.add_child(message_label)
+
+func _flash_message(text: String) -> void:
+	message_label.text = text
+	var tween := create_tween()
+	tween.tween_property(message_label, "modulate:a", 1.0, 0.15)
+	tween.tween_interval(1.6)
+	tween.tween_property(message_label, "modulate:a", 0.0, 0.4)
 
 func _setup_input() -> void:
 	var keys := {
@@ -158,8 +216,8 @@ func _setup_input() -> void:
 
 ## Agent verification harness (headless can't render, so this drives a real
 ## window briefly): `godot --path godot -- --screenshot [fight] [kill]
-## [--walk l,d,r,u,...]` scripts inputs, saves screenshot.png, quits.
-## Documented in godot/README.md.
+## [--map <id>] [--walk l,d,r,u,...]` scripts inputs, saves screenshot.png,
+## quits. Documented in godot/README.md.
 func _run_test_harness() -> void:
 	var args := OS.get_cmdline_user_args()
 	if not args.has("--screenshot"):
@@ -171,12 +229,12 @@ func _run_test_harness() -> void:
 			"l": Vector2i.LEFT, "r": Vector2i.RIGHT, "u": Vector2i.UP, "d": Vector2i.DOWN,
 		}
 		for move in args[walk_index + 1].split(","):
-			player.face(Vector2(dirs[move]))
-			player.velocity = Vector2(dirs[move]) * player.SPEED
+			player.scripted_dir = Vector2(dirs[move])
 			await get_tree().create_timer(0.2).timeout
+		player.scripted_dir = Vector2.ZERO
 	if args.has("fight"):
 		player.invulnerable = true
-		spawn_enemy("orc", map.spawn + Vector2i(2, 0))
+		spawn_enemy("orc", player_cell + Vector2i(2, 0))
 		player.face(Vector2.RIGHT)
 		# `kill` swings until the orc drops to verify death + the kill counter;
 		# plain `fight` captures mid-swing.
@@ -190,5 +248,5 @@ func _run_test_harness() -> void:
 		await get_tree().create_timer(0.2).timeout
 	await RenderingServer.frame_post_draw
 	get_viewport().get_texture().get_image().save_png("res://screenshot.png")
-	print("screenshot saved; grid=%s spawn=%s hp=%d" % [map.size, map.spawn, player.hp])
+	print("screenshot saved; map=%s cell=%s hp=%d" % [map.id, player_cell, player.hp])
 	get_tree().quit()

@@ -1,31 +1,38 @@
 class_name MapData
-## An ASCII map parsed into a tile grid — the Godot twin of parseMap.ts.
-## Pure data, no scene nodes, so it is unit-testable headless.
+## A world map loaded from the JSON the web game exports (pnpm godot:sync).
+## Tiles arrive as tile ids already parsed and validated by src/world/maps —
+## Godot never re-parses ASCII. Pure data, no scene nodes, unit-testable.
 
+var id := ""
 var grid := {}  # Vector2i -> tile id
 var size := Vector2i.ZERO
 var spawn := Vector2i.ZERO
+var portals := {}  # Vector2i -> target Dictionary ({kind, ...})
+
+
+static func load_by_id(map_id: String) -> MapData:
+	return load_from("res://assets/maps/%s.json" % map_id)
+
 
 static func load_from(path: String) -> MapData:
 	var data := MapData.new()
-	var lines := FileAccess.get_file_as_string(path).strip_edges().split("\n")
-	data.size = Vector2i(lines[0].length(), lines.size())
-	data.spawn = data.size / 2
-	var spawn_rank := SPAWN_UNSET
-	for y in lines.size():
-		for x in lines[y].length():
-			var character := lines[y][x]
-			data.grid[Vector2i(x, y)] = WorldTiles.tile_for_char(character)
-			var rank := WorldTiles.SPAWN_CHARS.find(character)
-			if rank != -1 and rank < spawn_rank:
-				spawn_rank = rank
-				data.spawn = Vector2i(x, y)
+	var doc: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(path))
+	data.id = doc["id"]
+	data.size = Vector2i(int(doc["width"]), int(doc["height"]))
+	data.spawn = Vector2i(int(doc["spawn"]["x"]), int(doc["spawn"]["y"]))
+	var tiles: Array = doc["tiles"]
+	for y in tiles.size():
+		var row: Array = tiles[y]
+		for x in row.size():
+			data.grid[Vector2i(x, y)] = row[x]
+	for portal: Dictionary in doc["portals"]:
+		data.portals[Vector2i(int(portal["x"]), int(portal["y"]))] = portal["to"]
 	return data
 
-const SPAWN_UNSET := 99
 
 func tile_at(cell: Vector2i) -> String:
 	return grid.get(cell, "")
+
 
 func is_walkable(cell: Vector2i) -> bool:
 	return WorldTiles.is_walkable(tile_at(cell))
