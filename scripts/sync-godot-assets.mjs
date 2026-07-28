@@ -12,9 +12,18 @@ const SPRITES_SRC = path.join(ROOT, "public/sprites");
 const SPRITES_DST = path.join(ROOT, "godot/assets/sprites");
 
 // What the Godot project consumes today; widen as migration phases land.
-const SPRITE_PATTERNS = [/^tile_.*\.png$/, /^sign_.*\.png$/, /_sway\.png$/, /^water_shimmer\.png$/];
+const SPRITE_PATTERNS = [
+  /^tile_.*\.png$/,
+  /^sign_.*\.png$/,
+  /^chest_.*\.png$/,
+  /^icon_.*\.png$/,
+  /_sway\.png$/,
+  /^water_shimmer\.png$/,
+];
 const SPRITE_EXTRAS = [
   "atlas.json",
+  "road_glint.png",
+  "herb_patch.png",
   "hero_warrior.png",
   "hero_warrior_walk.png",
   "hero_warrior_walk_up.png",
