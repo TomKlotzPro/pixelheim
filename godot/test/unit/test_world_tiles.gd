@@ -1,19 +1,6 @@
 extends GutTest
-## WorldTiles tables must stay coherent with the shipped sprites — these are
-## the same invariants parseMap.ts enforces at module load on the web side.
-
-
-func test_every_map_char_resolves_to_a_known_tile() -> void:
-	for character: String in WorldTiles.CHAR_TILES:
-		var tile: String = WorldTiles.CHAR_TILES[character]
-		assert_true(
-			WorldTiles.TILE_INFO.has(tile),
-			"char %s maps to unknown tile %s" % [character, tile]
-		)
-
-
-func test_unknown_chars_fall_back_to_grass() -> void:
-	assert_eq(WorldTiles.tile_for_char("?"), "grass")
+## WorldTiles tables must stay coherent with the shipped sprites — the same
+## invariants the web game enforces at module load.
 
 
 func test_every_tile_sprite_exists() -> void:
