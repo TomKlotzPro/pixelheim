@@ -152,13 +152,8 @@ func _build_frames() -> SpriteFrames:
 	for anim: String in ANIMS:
 		for dir in ["down", "side", "up"]:
 			var name := "%s_%s" % [anim, dir]
-			frames.add_animation(name)
-			frames.set_animation_speed(name, ANIMS[anim][0])
-			frames.set_animation_loop(name, ANIMS[anim][1])
-			var texture: Texture2D = load("res://assets/crawler/hero_%s.png" % name)
-			for i in int(texture.get_width() / 64.0):
-				var frame := AtlasTexture.new()
-				frame.atlas = texture
-				frame.region = Rect2(i * 64, 0, 64, 64)
-				frames.add_frame(name, frame)
+			SheetFrames.add_strip(
+				frames, name, "res://assets/crawler/hero_%s.png" % name,
+				ANIMS[anim][0], ANIMS[anim][1], 64
+			)
 	return frames

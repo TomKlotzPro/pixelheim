@@ -48,6 +48,9 @@ jobs:
             mv templates/web_* "$TDIR/"
           fi
 
+      - name: Check synced assets are current
+        run: node scripts/sync-godot-assets.mjs --check
+
       - name: Import assets
         run: godot --headless --path godot --import
 
