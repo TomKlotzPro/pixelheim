@@ -21,6 +21,27 @@ static func signs_on(map_id: String) -> Array:
 	return _data()["signs"].get(map_id, [])
 
 
+static func waypoints() -> Array:
+	return _data()["waypoints"]
+
+
+## A waypoint unlocks the moment its marker tile has been seen
+## (ported from src/world/waypoints.ts).
+static func waypoint_discovered(waypoint: Dictionary, discovered: Dictionary) -> bool:
+	var at := Vector2i(int(waypoint["at"]["x"]), int(waypoint["at"]["y"]))
+	return Discovery.is_discovered(discovered, waypoint["mapId"], at)
+
+
+## Discovered AND staffed: a settler-run post only works once they moved in.
+static func waypoint_usable(
+	waypoint: Dictionary, discovered: Dictionary, settlers: Array
+) -> bool:
+	if not waypoint_discovered(waypoint, discovered):
+		return false
+	var required: String = waypoint.get("requiresSettler", "")
+	return required == "" or required in settlers
+
+
 ## What to draw for this treasure right now; "" means nothing is left
 ## (ported from chestSpriteName in src/world/chests.ts).
 static func sprite_name(chest: Dictionary, opened: bool) -> String:

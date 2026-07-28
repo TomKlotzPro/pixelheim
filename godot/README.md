@@ -57,4 +57,5 @@ gzipped over the wire). CI deploys it to `/godot/` on the Pages site.
 - `scripts/player.gd` / `scripts/enemy.gd` — live combat actors
 - `assets/sprites/` — Pixelheim generated art (synced from `public/sprites/`)
 - `assets/crawler/` — [Pixel Crawler](https://anokolisa.itch.io/free-pixel-art-asset-pack-topdown-tileset-rpg-16x16-sprites) pack by Anokolisa; license in `TERMS.txt` (commercial use OK, no attribution required, do not resell the assets)
+- `assets/crawler/terrain/` — 16px fill tiles cut from the pack's sheets by `tools/extract_terrain.gd` (committed; re-run the tool if crop coordinates change)
 - `assets/maps/*.json` — all world maps (grid, spawn, portals) exported from `src/world/maps` by `scripts/export-maps.ts`; regenerate with `pnpm godot:sync`
