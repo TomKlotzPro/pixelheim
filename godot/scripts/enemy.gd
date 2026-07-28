@@ -18,6 +18,7 @@ var can_bite := true
 var wander_dir := Vector2.ZERO
 var wander_time := 0.0
 var sprite: AnimatedSprite2D
+var hurtbox: Area2D
 var health_bar: ColorRect
 var health_bar_back: ColorRect
 
@@ -35,6 +36,20 @@ func _ready() -> void:
 	rect.size = Vector2(10, 8)
 	shape.shape = rect
 	add_child(shape)
+
+	# Movement collides at the feet, but sword swings should land anywhere on
+	# the visible body — a taller hurtbox the player's hitbox scans for.
+	hurtbox = Area2D.new()
+	hurtbox.collision_layer = 4
+	hurtbox.collision_mask = 0
+	hurtbox.monitoring = false
+	var hurt_shape := CollisionShape2D.new()
+	var hurt_rect := RectangleShape2D.new()
+	hurt_rect.size = Vector2(16, 24)
+	hurt_shape.shape = hurt_rect
+	hurt_shape.position = Vector2(0, -8)
+	hurtbox.add_child(hurt_shape)
+	add_child(hurtbox)
 
 	# Health floats above the head, hidden until the mob is first scratched.
 	health_bar_back = ColorRect.new()
@@ -72,9 +87,10 @@ func _physics_process(delta: float) -> void:
 		velocity = wander_dir * WANDER_SPEED
 	move_and_slide()
 	sprite.play("run" if velocity.length() > 1 else "idle")
-	# Mob sheets face left in the pack; mirror when heading right.
+	# Mob sheets face right in the pack (verified frame-by-frame, PIX-121);
+	# mirror when heading left.
 	if absf(velocity.x) > 0.5:
-		sprite.flip_h = velocity.x > 0
+		sprite.flip_h = velocity.x < 0
 
 func take_hit(damage: int, from: Vector2) -> void:
 	if dying:
@@ -96,6 +112,7 @@ func _die() -> void:
 	world.on_enemy_died()
 	collision_layer = 0
 	collision_mask = 0
+	hurtbox.collision_layer = 0
 	health_bar.visible = false
 	health_bar_back.visible = false
 	sprite.play("death")

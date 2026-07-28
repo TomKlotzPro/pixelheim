@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url";
 import { CHESTS } from "../src/world/chests";
 import { MAPS } from "../src/world/maps";
 import { signsOn } from "../src/world/signs";
+import { WAYPOINTS } from "../src/world/waypoints";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = path.join(ROOT, "godot/assets/maps");
@@ -45,6 +46,7 @@ emit("interactables.json", {
   chests: CHESTS,
   // houseOwned=false until saves arrive (PIX-122): the sign reads FOR SALE.
   signs: Object.fromEntries(Object.keys(MAPS).map((id) => [id, signsOn(id)])),
+  waypoints: WAYPOINTS,
 });
 
 if (check && drifted.length > 0) {

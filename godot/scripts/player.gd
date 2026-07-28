@@ -42,22 +42,29 @@ func _ready() -> void:
 	add_child(shape)
 
 	hitbox = Area2D.new()
+	hitbox.collision_layer = 0
+	hitbox.collision_mask = 4  # mob hurtboxes
 	var hit_shape := CollisionShape2D.new()
 	var hit_rect := RectangleShape2D.new()
-	hit_rect.size = Vector2(22, 20)
+	hit_rect.size = Vector2(26, 26)
 	hit_shape.shape = hit_rect
 	hitbox.add_child(hit_shape)
 	hitbox.monitoring = false
 	add_child(hitbox)
 
 	sprite.animation_finished.connect(_on_animation_finished)
+	sprite.frame_changed.connect(_on_frame_changed)
 
 func _physics_process(_delta: float) -> void:
 	if dead:
 		return
 	if attacking:
-		# Swings root the hero; damage lands on whatever the arc reaches.
-		for body in hitbox.get_overlapping_bodies():
+		if not hitbox.monitoring:
+			return
+		# Swings root the hero; damage lands on any body whose hurtbox the
+		# arc reaches during the swing frames.
+		for area in hitbox.get_overlapping_areas():
+			var body := area.get_parent()
 			if body.has_method("take_hit") and body not in hit_this_swing:
 				hit_this_swing.append(body)
 				body.take_hit(1, global_position)
@@ -89,7 +96,6 @@ func attack() -> void:
 	hit_this_swing = []
 	velocity = Vector2.ZERO
 	hitbox.position = facing * 16
-	hitbox.monitoring = true
 	_play("slice")
 	get_tree().create_timer(ATTACK_COOLDOWN).timeout.connect(
 		func() -> void: attack_ready = true
@@ -139,14 +145,21 @@ func _on_animation_finished() -> void:
 	elif not dead and sprite.animation.begins_with("hit"):
 		_play("idle")
 
+## The blade only bites during the swing frames (3-6 of 8) — wind-up and
+## follow-through are safe, matching what the animation shows.
+func _on_frame_changed() -> void:
+	if attacking:
+		hitbox.monitoring = sprite.frame >= 3 and sprite.frame <= 6
+
 func _play(anim: String) -> void:
 	var dir := "down"
 	if facing == Vector2.UP:
 		dir = "up"
 	elif facing.x != 0:
 		dir = "side"
-	# Side sheets face left in the pack; mirror for rightward facing.
-	sprite.flip_h = facing == Vector2.RIGHT
+	# Side sheets face right in the pack (verified frame-by-frame, PIX-121);
+	# mirror for leftward facing.
+	sprite.flip_h = facing == Vector2.LEFT
 	sprite.play("%s_%s" % [anim, dir])
 
 func _build_frames() -> SpriteFrames:
