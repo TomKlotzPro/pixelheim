@@ -1,0 +1,19 @@
+; Pixelheim Godot spike (PIX-118).
+config_version=5
+
+[application]
+
+config/name="Pixelheim Godot Spike"
+run/main_scene="res://scenes/main.tscn"
+config/features=PackedStringArray("4.7")
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/stretch/mode="canvas_items"
+window/stretch/aspect="keep"
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0
