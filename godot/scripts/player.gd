@@ -27,16 +27,23 @@ var ailments := Ailments.new()
 var ailment_icon: Sprite2D
 ## PunyArt.hero spec: sheet, attack kind, tint.
 var art: Dictionary
+## The rank's glow under the hero's feet (silver, gold, radiant).
+var aura: Sprite2D
 
 func _ready() -> void:
 	hp = GameState.hero.hp
 	art = PunyArt.hero(GameState.hero.role_id)
+	aura = Sprite2D.new()
+	aura.texture = _glow()
+	aura.position = Vector2(0, 5)
+	add_child(aura)
 	sprite = AnimatedSprite2D.new()
 	sprite.sprite_frames = PunyArt.frames(art)
 	sprite.position = Vector2(0, PunyArt.lift(art))
 	sprite.self_modulate = art["tint"]
 	add_child(sprite)
 	_play("idle")
+	refresh_rank()
 
 	var shape := CollisionShape2D.new()
 	var rect := RectangleShape2D.new()
@@ -145,11 +152,38 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null) -> void:
 		func() -> void: invulnerable = false
 	)
 
+## Rank shows (worldActors): an aura under the ascended and a touch more
+## presence, from the hero's level.
+func refresh_rank() -> void:
+	var level := GameState.hero.level
+	sprite.scale = Vector2.ONE * Ranks.presence(level)
+	var glow: Variant = Ranks.aura(level)
+	aura.visible = glow != null
+	if glow != null:
+		aura.modulate = Color(glow, 0.4)
+
+
+## A soft oval of light, wider than tall, to sit under the feet.
+static func _glow() -> Texture2D:
+	var gradient := Gradient.new()
+	gradient.set_color(0, Color.WHITE)
+	gradient.set_color(1, Color(1, 1, 1, 0))
+	var texture := GradientTexture2D.new()
+	texture.gradient = gradient
+	texture.fill = GradientTexture2D.FILL_RADIAL
+	texture.fill_from = Vector2(0.5, 0.5)
+	texture.fill_to = Vector2(1.0, 0.5)
+	texture.width = 35
+	texture.height = 22
+	return texture
+
+
 ## Back in step with the hero's health after a rest, a healer or a level-up.
 func heal() -> void:
 	if dead:
 		return
 	hp = GameState.hero.hp
+	refresh_rank()
 
 ## Ticks poison/burn into the hero's health and shows what still ails them.
 func _tick_ailments(delta: float) -> void:

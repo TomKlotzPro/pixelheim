@@ -229,7 +229,12 @@ func _on_hp_changed(hp: int, max_hp: int) -> void:
 	hp_bar.value = hp
 	hp_label.text = "HP %d/%d" % [hp, max_hp]
 	var hero := GameState.hero
-	level_label.text = "Lv %d   XP %d/%d" % [hero.level, hero.xp, hero.xp_to_next]
+	# Titled by rank, the class named too while the two differ (WorldHud).
+	var title := Ranks.title(hero.role_id, hero.level)
+	var role: String = Catalog.role(hero.role_id)["name"]
+	level_label.text = "Lv %d %s%s   XP %d/%d" % [
+		hero.level, title, "" if title == role else " " + role, hero.xp, hero.xp_to_next,
+	]
 
 func _use_portal(target: Dictionary) -> void:
 	match target["kind"]:
@@ -248,6 +253,14 @@ func _use_portal(target: Dictionary) -> void:
 			add_child(screen)
 		"gate":
 			_leave_floor()
+
+
+## The ascension scene: a new title, and at a fork the path cards.
+func _ascend(title: String) -> void:
+	player.refresh_rank()
+	var scene := preload("res://scripts/rankup_screen.gd").new()
+	scene.title = title
+	add_child(scene)
 
 
 ## Back off a gate to the cell the hero came from (the web keeps them there).
@@ -878,6 +891,7 @@ func _build_hud() -> void:
 	GameState.gold_changed.connect(_on_gold_changed)
 	GameState.message.connect(_flash_message)
 	GameState.healed.connect(func() -> void: player.heal())
+	GameState.ranked_up.connect(_ascend)
 	GameState.settlers_changed.connect(_respawn_npcs)
 	message_label = Label.new()
 	message_label.position = Vector2(190, 610)
@@ -1051,6 +1065,23 @@ func _run_test_harness() -> void:
 		screen.world = self
 		add_child(screen)
 		await get_tree().create_timer(0.3).timeout
+	var level_index := args.find("--level")
+	if level_index >= 0 and level_index + 1 < args.size():
+		# A hero of that level: the rank's title, aura and presence.
+		GameState.hero.level = int(args[level_index + 1])
+		player.refresh_rank()
+		_on_hp_changed(GameState.hero.hp, int(GameState.hero.stats["maxHp"]))
+	if args.has("rankup"):
+		# Enough XP to cross into the next rank: the ascension plays.
+		var hero := GameState.hero
+		hero.level = (HeroRules.rank_index(hero.level) + 1) * 5 - 1
+		hero.xp_to_next = HeroState.xp_to_next_for(hero.level)
+		hero.xp = hero.xp_to_next
+		GameState._grant_levels()
+		await get_tree().create_timer(1.6).timeout
+		if args.has("walk-path"):
+			get_children().filter(func(node: Node) -> bool: return node.has_method("_walk"))[0]._walk()
+			await get_tree().create_timer(0.3).timeout
 	if args.has("quest"):
 		# A conversation with the elder closes: his quest is accepted.
 		GameState.finish_dialogue("elder")

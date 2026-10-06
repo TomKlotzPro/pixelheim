@@ -22,6 +22,8 @@ signal healed
 signal monster_slain(monster_id: String)
 ## The hero's HP changed (hits, rests, level-ups).
 signal hp_changed(hp: int, max_hp: int)
+## The hero crossed into a new rank (useRankUp): the ascension scene plays.
+signal ranked_up(title: String)
 
 ## Slot 0 never touches disk: harness runs and tests leave real saves alone.
 const NO_SLOT := 0
@@ -494,8 +496,7 @@ func resolve_quests(giver_id: String) -> String:
 			var reward: Dictionary = quest["reward"]
 			pack.gold += int(reward["gold"])
 			hero.xp += int(reward["xp"])
-			if HeroRules.apply_level_ups(hero) > 0:
-				healed.emit()
+			_grant_levels()
 			if reward.has("itemId"):
 				pack.add_item(reward["itemId"])
 			_pack_changed()
@@ -778,12 +779,11 @@ func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, fl
 	pack.gold += gold
 	if passives["killRefundMp"] > 0:
 		hero.mp = mini(int(hero.stats["maxMp"]), hero.mp + int(passives["killRefundMp"]))
-	var gained := HeroRules.apply_level_ups(hero)
+	var gained := _grant_levels()
 	if gained > 0:
 		log.append("LEVEL UP! You are now level %d. Fully restored. +%d stat points and +%d skill point%s to spend." % [
 			hero.level, gained * int(Bestiary._data()["statPointsPerLevel"]), gained, "s" if gained > 1 else "",
 		])
-		healed.emit()
 	var kind := "boss" if Bestiary.is_boss(fighter["id"]) else ("elite" if fighter["elite"] else "normal")
 	var drop := Bestiary.roll_drop(floor_level, kind, roll)
 	if drop.get("kind") == "gear":
@@ -805,6 +805,32 @@ func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, fl
 	_pack_changed()
 	hp_changed.emit(hero.hp, int(hero.stats["maxHp"]))
 	return log
+
+
+## Banked XP becomes levels: the hero is made whole, and crossing into a new
+## rank sends the ascension. Returns levels gained.
+func _grant_levels() -> int:
+	var rank_before := HeroRules.rank_index(hero.level)
+	var gained := HeroRules.apply_level_ups(hero)
+	if gained > 0:
+		healed.emit()
+		if HeroRules.rank_index(hero.level) > rank_before:
+			ranked_up.emit(Ranks.title(hero.role_id, hero.level))
+	return gained
+
+
+## One step deeper into the Path Graph (CHOOSE_PATH): only a node on offer,
+## and for good; `spec` mirrors the first step for older code and saves.
+func choose_path(node_id: String) -> bool:
+	var offered := Ranks.path_choices(hero).any(func(node: Dictionary) -> bool: return node["id"] == node_id)
+	if not offered:
+		return false
+	var path := HeroRules.walked(hero).duplicate()
+	path.append(node_id)
+	hero.path = path
+	hero.spec = path[0]
+	save_now()
+	return true
 
 
 ## A dungeon floor's last foe falls (COLLECT_AND_RETURN): the first clear
