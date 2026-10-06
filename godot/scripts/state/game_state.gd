@@ -504,6 +504,176 @@ func _resolve_settler(npc_id: String) -> String:
 	return ""
 
 
+## The shut door in town: E buys the deed, or names the price (BUY_HOUSE).
+func buy_house() -> String:
+	if owns_house():
+		return ""
+	var cost := int(Town._data()["houseDeedCost"])
+	if pack.gold < cost:
+		return "For sale: this house. The deed costs %dg." % cost
+	pack.gold -= cost
+	settlement.house["owned"] = true
+	_pack_changed()
+	save_now()
+	return "The deed is yours. Welcome home."
+
+
+## BUY_HOUSE_UPGRADE at Odo's counter: Cottage, then Manor. The new interior
+## is served the next time the hero walks in.
+func buy_house_upgrade() -> String:
+	var next := Town.next_house_tier(owns_house(), int(settlement.house.get("tier", 1)))
+	if next.is_empty() or active_shop() != "odo" or pack.gold < int(next["cost"]):
+		return ""
+	pack.gold -= int(next["cost"])
+	settlement.house["tier"] = next["tier"]
+	_pack_changed()
+	return "The %s deed is signed. Your house grew while you were out." % String(next["name"]).to_upper()
+
+
+## The storage barrel (STORE_ITEM / TAKE_ITEM): stacks move between pack and home.
+func store_item(item_id: String, count := 1) -> bool:
+	var moved := mini(count, pack.items.get(item_id, 0))
+	if not owns_house() or moved <= 0:
+		return false
+	pack.remove_item(item_id, moved)
+	var storage: Dictionary = settlement.house["storage"]
+	storage[item_id] = storage.get(item_id, 0) + moved
+	_pack_changed()
+	return true
+
+
+func take_item(item_id: String, count := 1) -> bool:
+	var storage: Dictionary = settlement.house["storage"]
+	var moved := mini(count, storage.get(item_id, 0))
+	if not owns_house() or moved <= 0:
+		return false
+	if storage[item_id] - moved > 0:
+		storage[item_id] -= moved
+	else:
+		storage.erase(item_id)
+	pack.add_item(item_id, moved)
+	_pack_changed()
+	return true
+
+
+func trophies() -> Array:
+	return settlement.house.get("trophies", [])
+
+
+## DISPLAY_TROPHY: on the shelf for power; its stats join the hero's at once.
+func display_trophy(item_id: String) -> bool:
+	if not Town.trophy_buffs().has(item_id) or item_id in trophies() or pack.items.get(item_id, 0) <= 0:
+		return false
+	pack.remove_item(item_id)
+	settlement.house["trophies"] = trophies() + [item_id]
+	_shift_stats(Town.trophy_stat_delta(item_id), 1)
+	_pack_changed()
+	return true
+
+
+## TAKE_TROPHY: back in the pack, and its stats leave with it.
+func take_trophy(item_id: String) -> bool:
+	if item_id not in trophies():
+		return false
+	settlement.house["trophies"] = trophies().filter(func(id: String) -> bool: return id != item_id)
+	pack.add_item(item_id)
+	_shift_stats(Town.trophy_stat_delta(item_id), -1)
+	_pack_changed()
+	return true
+
+
+func _shift_stats(delta: Dictionary, direction: int) -> void:
+	for stat: String in delta:
+		hero.stats[stat] = int(hero.stats.get(stat, 0)) + direction * int(delta[stat])
+
+
+## COMBINE_POTIONS at the manor's nook: two of a brew become one better.
+func combine_potions(item_id: String) -> String:
+	for combine: Dictionary in Town.nook_combines():
+		if combine["from"] == item_id and pack.items.get(item_id, 0) >= 2:
+			pack.remove_item(item_id, 2)
+			pack.add_item(combine["to"])
+			_pack_changed()
+			return "The nook bubbles: 2x %s became %s." % [Catalog.item_name(item_id), Catalog.item_name(combine["to"])]
+	return ""
+
+
+func furniture() -> Array:
+	return settlement.house.get("furniture", [])
+
+
+func furniture_at(cell: Vector2i) -> Dictionary:
+	for piece: Dictionary in furniture():
+		if piece["x"] == cell.x and piece["y"] == cell.y:
+			return piece
+	return {}
+
+
+## PLACE_FURNITURE on open floor in the house, one piece per tile.
+func place_furniture(item_id: String, cell: Vector2i, tile: String) -> String:
+	if world.map_id != "town_house" or pack.items.get(item_id, 0) <= 0:
+		return ""
+	if Catalog.item(item_id).get("category", "") != "furniture":
+		return ""
+	if tile != "floor":
+		return "It needs open floor. Face a free tile and try again."
+	if not furniture_at(cell).is_empty():
+		return "Something already stands there."
+	pack.remove_item(item_id)
+	settlement.house["furniture"] = furniture() + [{"itemId": item_id, "x": cell.x, "y": cell.y}]
+	_pack_changed()
+	return "%s placed. E takes it back." % Catalog.item_name(item_id)
+
+
+## What E does to a home tile (handleHouseInteract): returns {text, panel}.
+## Placed furniture comes back with a touch; every fixture answers.
+func house_interact(cell: Vector2i, tile: String) -> Dictionary:
+	if world.map_id != "town_house":
+		return {}
+	var placed := furniture_at(cell)
+	if not placed.is_empty():
+		settlement.house["furniture"] = furniture().filter(func(piece: Dictionary) -> bool: return piece != placed)
+		pack.add_item(placed["itemId"])
+		_pack_changed()
+		return {"text": "%s back in the pack." % Catalog.item_name(placed["itemId"])}
+	match tile:
+		"bed":
+			_make_whole()
+			return {"text": "Your own bed. Fully rested, free of charge."}
+		"barrel":
+			return {"panel": "storage"}
+		"shelf":
+			var cost := int(Town._data()["workbenchCost"])
+			if settlement.house.get("workbench", false):
+				return {"panel": "workbench"}
+			if pack.gold >= cost:
+				pack.gold -= cost
+				settlement.house["workbench"] = true
+				_pack_changed()
+				return {"text": "A workbench and a small cauldron, fitted to the shelf. Craft at home, forever."}
+			return {"text": "A proper workbench would fit this shelf. Tools and parts cost %dg." % cost}
+		"hearth":
+			return {"text": (
+				"The hearth roars beside your workbench. Home industry." if settlement.house.get("workbench", false)
+				else "The hearth crackles, warm and idle. A workbench would fit by the shelf..."
+			)}
+		"counter":
+			return {"text": "Your kitchen counter. Clean, empty, hopeful."}
+		"trophy_shelf":
+			return {"panel": "trophies"}
+		"garden":
+			return {"text": "The garden drinks your victories: %d/%d until the next harvest." % [
+				settlement.house.get("gardenWins", 0), Town._data()["gardenWinsPerYield"],
+			]}
+		"cauldron":
+			return {"panel": "nook"}
+		"floor":
+			for item_id: String in pack.items:
+				if Catalog.item(item_id).get("category", "") == "furniture":
+					return {"panel": "furniture"}
+	return {}
+
+
 func _make_whole() -> void:
 	hero.hp = hero.stats.get("maxHp", hero.hp)
 	hero.mp = hero.stats.get("maxMp", hero.mp)

@@ -19,6 +19,7 @@ const SPRITE_PATTERNS = [
   /^icon_.*\.png$/,
   /_sway\.png$/,
   /^water_shimmer\.png$/,
+  /^furniture_.*\.png$/,
 ];
 const SPRITE_EXTRAS = [
   "atlas.json",

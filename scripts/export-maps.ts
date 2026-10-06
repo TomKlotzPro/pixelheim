@@ -20,6 +20,7 @@ import { ROLES } from "../src/game/hero/roles";
 import { SKILL_TREES } from "../src/game/hero/skillTree";
 import {
   HOUSE_DEED_COST,
+  HOUSE_DOOR,
   INN_REST,
   PROPERTY_PRICES,
   RENT_PER_VICTORY,
@@ -36,6 +37,7 @@ import {
   VENTURE_COST,
   VENTURE_STEPS,
 } from "../src/game/economy/bank";
+import { GARDEN_WINS_PER_YIELD, HOUSE_TIERS, NOOK_COMBINES, TROPHY_BUFFS } from "../src/game/economy/house";
 import { TOWN_TIERS } from "../src/game/economy/town";
 import { CHESTS } from "../src/world/chests";
 import { NPCS } from "../src/world/npcs";
@@ -194,6 +196,12 @@ emit(
     }),
     properties: PROPERTY_PRICES,
     houseDeedCost: HOUSE_DEED_COST,
+    // The growing house (PIX-34): Odo's bigger deeds, trophies, the nook, the garden.
+    houseTiers: HOUSE_TIERS,
+    houseDoor: HOUSE_DOOR,
+    trophyBuffs: TROPHY_BUFFS,
+    nookCombines: NOOK_COMBINES,
+    gardenWinsPerYield: GARDEN_WINS_PER_YIELD,
     workbenchCost: WORKBENCH_COST,
     restCost: REST_COST,
     rentPerVictory: RENT_PER_VICTORY,

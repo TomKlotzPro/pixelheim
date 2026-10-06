@@ -110,3 +110,54 @@ static func recruit(id: String) -> Dictionary:
 		if entry["id"] == id:
 			return entry
 	return {}
+
+
+# ---- the growing house (house.ts) -----------------------------------------------
+
+## 0 without a deed, else the house level (houseTier).
+static func house_tier(owned: bool, tier: int) -> int:
+	return maxi(1, tier) if owned else 0
+
+
+## The next deed Odo can sell; {} without a house or at the Manor.
+static func next_house_tier(owned: bool, tier: int) -> Dictionary:
+	var current := house_tier(owned, tier)
+	if current == 0:
+		return {}
+	for entry: Dictionary in _data()["houseTiers"]:
+		if entry["tier"] == current + 1:
+			return entry
+	return {}
+
+
+## Stats a trophy lends while it stands on the shelf (trophyStatDelta).
+static func trophy_stat_delta(item_id: String) -> Dictionary:
+	match item_id:
+		"dragon_scale":
+			return {"defense": 2}
+		"lich_crown":
+			return {"strength": 2, "intelligence": 2, "dexterity": 2, "defense": 2}
+	return {}
+
+
+static func trophy_buffs() -> Dictionary:
+	return _data()["trophyBuffs"]
+
+
+static func nook_combines() -> Array:
+	return _data()["nookCombines"]
+
+
+## Rugs lie flat underfoot; everything else takes the tile.
+static func furniture_blocks(item_id: String) -> bool:
+	return item_id != "furn_rug"
+
+
+## Bread and cheese, turn and turn about (gardenYield).
+static func garden_yield(harvests: int) -> String:
+	return "bread" if harvests % 2 == 0 else "cheese_wheel"
+
+
+static func house_door() -> Vector2i:
+	var door: Dictionary = _data()["houseDoor"]
+	return Vector2i(door["x"], door["y"])

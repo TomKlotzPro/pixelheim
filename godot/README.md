@@ -63,6 +63,7 @@ godot --path godot -- --screenshot near --map town_hall   # stand beside them (t
 godot --path godot -- --screenshot shop --map town_smith --tab 2   # a keeper's counter (500g), tab by index
 godot --path godot -- --screenshot hall --map town_hall   # the town ledger (20000g); `bank` for Mirelle's
 godot --path godot -- --screenshot --map town --town-tier 4  # preview the village at another age
+godot --path godot -- --screenshot home --map town_house --house-tier 3 --mode nook  # a house fixture (storage|workbench|trophies|nook|furniture)
 godot --path godot -- --screenshot saves              # the saves screen
 godot --path godot -- --screenshot saves --web-save res://test/fixtures/web_save_v4.txt
                                                       # first-visit web import offer
@@ -93,6 +94,7 @@ gzipped over the wire). CI deploys it to `/godot/` on the Pages site.
 - `scripts/npcs.gd` / `scripts/npc.gd` / `scripts/dialogue_box.gd` — villagers: who lives where (ported from `src/world/npcs.ts`), their pacing, and conversations
 - `scripts/state/economy.gd` + `scripts/shop_screen.gd` — shops, forge and crafting rules (ported from `src/game/economy`) and the keeper's counter
 - `scripts/state/town.gd` + `scripts/{town_hall,bank}_screen.gd` (on `ledger_screen.gd`) — town tiers, deeds, the bank, recruits, the inn
+- `scripts/home_screen.gd` — the house's barrel, workbench, trophy shelf, nook and furniture placement (house rules live in `state/town.gd`)
 - `scripts/ui_style.gd` — the menus' shared palette and widgets until the UI suite (PIX-127)
 - `assets/sprites/` — Pixelheim generated art (synced from `public/sprites/`)
 - `assets/crawler/` — [Pixel Crawler](https://anokolisa.itch.io/free-pixel-art-asset-pack-topdown-tileset-rpg-16x16-sprites) pack by Anokolisa; license in `TERMS.txt` (commercial use OK, no attribution required, do not resell the assets)
