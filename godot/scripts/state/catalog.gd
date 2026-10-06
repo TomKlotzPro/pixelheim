@@ -30,14 +30,6 @@ static func skill_roots(role_id: String) -> Array:
 	return _data()["skillRoots"].get(role_id, [])
 
 
-static func skill_carry_bonus(node_id: String) -> int:
-	return _data()["carryBonus"]["skillNodes"].get(node_id, 0)
-
-
-static func path_carry_bonus(node_id: String) -> int:
-	return _data()["carryBonus"]["pathNodes"].get(node_id, 0)
-
-
 ## "The Ashenreach", "Pixelheim"...; interiors take their town's name.
 static func place_name(map_id: String) -> String:
 	return _data()["places"].get(map_id, map_id.capitalize())

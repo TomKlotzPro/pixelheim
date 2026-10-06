@@ -106,13 +106,14 @@ func test_overloaded_pack_leaves_the_chest_closed() -> void:
 
 func test_carry_passives_count_skills_and_only_the_deepest_path_step() -> void:
 	var hero := HeroState.create("Robin", "ranger")
-	assert_eq(hero.carry_bonus(), 0)
+	var carry := func() -> int: return HeroRules.passives(hero)["carryBonus"]
+	assert_eq(carry.call(), 0)
 	hero.skill_nodes.append("ranger_fieldcraft")
-	assert_eq(hero.carry_bonus(), 15)
+	assert_eq(carry.call(), 15)
 	hero.spec = "beastmaster"  # a pre-graph save walks its spec
-	assert_eq(hero.carry_bonus(), 35)
+	assert_eq(carry.call(), 35)
 	hero.path = ["beastmaster", "packlord"]
-	assert_eq(hero.carry_bonus(), 45)
+	assert_eq(carry.call(), 45)
 
 
 func test_mimics_bite() -> void:

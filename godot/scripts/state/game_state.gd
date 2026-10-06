@@ -18,6 +18,10 @@ signal message(text: String)
 signal settlers_changed
 ## The hero was made whole (inn, healer): the live body refills too.
 signal healed
+## A monster fell (quest bounties hook here, PIX-125).
+signal monster_slain(monster_id: String)
+## The hero's HP changed (hits, rests, level-ups).
+signal hp_changed(hp: int, max_hp: int)
 
 ## Slot 0 never touches disk: harness runs and tests leave real saves alone.
 const NO_SLOT := 0
@@ -234,7 +238,7 @@ func is_opened(chest: Dictionary) -> bool:
 ## 60 + 3 per point of strength (worn grants included) + carry passives.
 func carry_capacity() -> int:
 	var strength: int = hero.stats.get("strength", 0) + pack.granted_stat("strength")
-	return 60 + strength * 3 + hero.carry_bonus()
+	return 60 + strength * 3 + int(HeroRules.passives(hero)["carryBonus"])
 
 
 ## The shop the hero stands in (activeShopId); "" outside shops.
@@ -674,11 +678,112 @@ func house_interact(cell: Vector2i, tile: String) -> Dictionary:
 	return {}
 
 
+## A monster's blow lands on the hero; returns true when it was the last.
+func hurt(amount: int) -> bool:
+	hero.hp = maxi(0, hero.hp - amount)
+	mark_dirty()
+	hp_changed.emit(hero.hp, int(hero.stats["maxHp"]))
+	return hero.hp == 0
+
+
+## Defeat is forgiving (RETURN_TO_WORLD after a loss): wake at the village
+## inn, healed, purse intact. Returns where to wake.
+func wake_at_inn() -> Dictionary:
+	settlement.bard_song = false
+	var inn: Dictionary = Catalog._data()["innRest"]
+	_make_whole()
+	save_now()
+	message.emit("You wake at the inn. The innkeeper says nothing. Kind of her.")
+	return inn
+
+
+## A monster falls (onMonsterDefeated): mastery, bounties, rent, the garden,
+## xp and gold with level-ups, a drop, and for wild kills the slain ledger and
+## foraging. The bard's song fades with the fight. Returns the battle log.
+func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, floor_level: int) -> Array[String]:
+	var log: Array[String] = []
+	var mastery_line := _record_kill(fighter["id"])
+	if mastery_line != "":
+		log.append(mastery_line)
+	monster_slain.emit(fighter["id"])
+	if not settlement.properties.is_empty():
+		var inv := investments()
+		var expanded := 0
+		for map_id: String in inv["expansions"]:
+			if map_id in settlement.properties:
+				expanded += int(Town.bank("expansionRent"))
+		var rent := settlement.properties.size() * Town.rent_per_property(town_tier()) + expanded
+		pack.gold += rent
+		log.append("Rent from your properties: +%dg." % rent)
+	if Town.house_tier(owns_house(), int(settlement.house.get("tier", 1))) >= 3:
+		var wins: int = settlement.house.get("gardenWins", 0) + 1
+		settlement.house["gardenWins"] = wins
+		if wins >= int(Town._data()["gardenWinsPerYield"]):
+			settlement.house["gardenWins"] = 0
+			var harvests: int = settlement.house.get("gardenHarvests", 0)
+			var crop := Town.garden_yield(harvests)
+			settlement.house["gardenHarvests"] = harvests + 1
+			pack.add_item(crop)
+			log.append("Your garden ripens: +1 %s." % Catalog.item_name(crop))
+	var passives := HeroRules.passives(hero)
+	var gold := roundi(fighter["gold"] * (1 + passives["goldBonus"]))
+	log.append("%s is defeated! +%d XP, +%d gold." % [fighter["name"], fighter["xp"], gold])
+	hero.xp += int(fighter["xp"])
+	pack.gold += gold
+	if passives["killRefundMp"] > 0:
+		hero.mp = mini(int(hero.stats["maxMp"]), hero.mp + int(passives["killRefundMp"]))
+	var gained := HeroRules.apply_level_ups(hero)
+	if gained > 0:
+		log.append("LEVEL UP! You are now level %d. Fully restored. +%d stat points and +%d skill point%s to spend." % [
+			hero.level, gained * int(Bestiary._data()["statPointsPerLevel"]), gained, "s" if gained > 1 else "",
+		])
+		healed.emit()
+	var kind := "boss" if Bestiary.is_boss(fighter["id"]) else ("elite" if fighter["elite"] else "normal")
+	var drop := Bestiary.roll_drop(floor_level, kind, roll)
+	if drop.get("kind") == "gear":
+		pack.gear.append(drop["gear"])
+		log.append("%s drops: %s!" % [fighter["name"], InventoryState.gear_name(drop["gear"])])
+	elif drop.get("kind") == "stack":
+		pack.add_item(drop["itemId"])
+		log.append("%s drops: %s." % [fighter["name"], Catalog.item_name(drop["itemId"])])
+	if spawn_id != "":
+		world.slain.append(spawn_id)
+	var material: String = Bestiary._data()["regionMaterials"].get(region_id, "")
+	if material != "" and roll.call() < Bestiary.forage_chance(hero.jobs["foraging"]["level"]):
+		var count := 1 + (1 if roll.call() < Bestiary.double_forage_chance(hero.jobs["foraging"]["level"]) else 0)
+		pack.add_item(material, count)
+		log.append("You forage %d %s%s." % [count, Catalog.item_name(material), "s" if count > 1 else ""])
+		if Economy.grant_job_xp(hero.jobs, "foraging", 5) > 0:
+			log.append("Foraging reached %d!" % hero.jobs["foraging"]["level"])
+	settlement.bard_song = false
+	_pack_changed()
+	hp_changed.emit(hero.hp, int(hero.stats["maxHp"]))
+	return log
+
+
+## Counts a kill toward its family's mastery; the slayer line when a tier is crossed.
+func _record_kill(monster_id: String) -> String:
+	var family := Bestiary.family_of(monster_id)
+	if family == "":
+		return ""
+	if hero.mastery == null:
+		hero.mastery = {}
+	var before := Bestiary.mastery_tier(hero.mastery, family)
+	hero.mastery[family] = hero.mastery.get(family, 0) + 1
+	var after := Bestiary.mastery_tier(hero.mastery, family)
+	if after <= before:
+		return ""
+	var name: String = Bestiary._data()["familyNames"][family]
+	var bonus := roundi(float(Bestiary._data()["masteryTiers"][after - 1]["bonus"]) * 100)
+	return "Mastery: %s Slayer %s - +%d%% damage against %s!" % [name, ["I", "II", "III"][after - 1], bonus, name.to_lower()]
+
+
 func _make_whole() -> void:
 	hero.hp = hero.stats.get("maxHp", hero.hp)
 	hero.mp = hero.stats.get("maxMp", hero.mp)
 	mark_dirty()
 	healed.emit()
+	hp_changed.emit(hero.hp, int(hero.stats["maxHp"]))
 
 
 func _pack_changed() -> void:

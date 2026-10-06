@@ -8,6 +8,7 @@ var grid := {}  # Vector2i -> tile id
 var size := Vector2i.ZERO
 var spawn := Vector2i.ZERO
 var portals := {}  # Vector2i -> target Dictionary ({kind, ...})
+var regions := {}  # Vector2i -> encounter region id (forest, marsh, ash, ...)
 
 
 static func load_by_id(map_id: String) -> MapData:
@@ -38,11 +39,22 @@ static func load_from(path: String) -> MapData:
 			data.grid[Vector2i(x, y)] = row[x]
 	for portal: Dictionary in doc["portals"]:
 		data.portals[Vector2i(int(portal["x"]), int(portal["y"]))] = portal["to"]
+	var region_rows: Array = doc.get("regions", [])
+	for y in region_rows.size():
+		var row: Array = region_rows[y]
+		for x in row.size():
+			if row[x] != null:
+				data.regions[Vector2i(x, y)] = row[x]
 	return data
 
 
 func tile_at(cell: Vector2i) -> String:
 	return grid.get(cell, "")
+
+
+## Where monsters lurk and which kind (regionAt); "" on safe ground.
+func region_at(cell: Vector2i) -> String:
+	return regions.get(cell, "")
 
 
 func is_walkable(cell: Vector2i) -> bool:

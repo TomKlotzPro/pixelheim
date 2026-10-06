@@ -15,7 +15,7 @@ type RegionTable = {
 
 export const WILD_REWARD_MULT = 0.65;
 
-const REGIONS: Record<RegionId, RegionTable> = {
+export const REGIONS: Record<RegionId, RegionTable> = {
   forest: {
     name: "the Whispering Forest",
     dropFloor: 1,

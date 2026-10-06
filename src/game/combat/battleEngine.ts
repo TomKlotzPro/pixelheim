@@ -35,7 +35,7 @@ import { expansionRent } from "../economy/bank";
 
 const EFFECT_VERBS: Record<string, string> = { poison: "Poison", burn: "Burning" };
 
-const BOSS_IDS = new Set(["dragon", "lich"]);
+export const BOSS_IDS = new Set(["dragon", "lich"]);
 
 /** A fresh battle at the door of a dungeon floor. */
 export function createDungeonBattle(level: number): BattleState {

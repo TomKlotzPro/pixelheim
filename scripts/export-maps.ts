@@ -11,7 +11,7 @@ import { fileURLToPath } from "node:url";
 import { ITEMS } from "../src/game/economy/items";
 import { JOB_LEVEL_CAP, JOB_STATIONS } from "../src/game/economy/jobs";
 import { RARITIES } from "../src/game/economy/rarity";
-import { RECIPES } from "../src/game/economy/recipes";
+import { RECIPES, REGION_MATERIALS } from "../src/game/economy/recipes";
 import { FORGE_BONUS_CAP, SHOP_MAPS, SHOPS, shopStock } from "../src/game/economy/shop";
 import { RECRUITS } from "../src/game/settlers";
 import { LEVELS } from "../src/game/hero/levels";
@@ -39,6 +39,13 @@ import {
 } from "../src/game/economy/bank";
 import { GARDEN_WINS_PER_YIELD, HOUSE_TIERS, NOOK_COMBINES, TROPHY_BUFFS } from "../src/game/economy/house";
 import { TOWN_TIERS } from "../src/game/economy/town";
+import { BOSS_IDS } from "../src/game/combat/battleEngine";
+import { DROP_CHANCE, POOLS, RARITY_WEIGHTS } from "../src/game/combat/drops";
+import { REGIONS, WILD_REWARD_MULT } from "../src/game/combat/encounters";
+import { MONSTERS } from "../src/game/combat/monsters";
+import { STAT_POINTS_PER_LEVEL } from "../src/game/hero/character";
+import { FAMILY_NAMES, FAMILY_OF, MASTERY_TIERS } from "../src/game/hero/mastery";
+import { SPAWNS } from "../src/world/spawns";
 import { CHESTS } from "../src/world/chests";
 import { NPCS } from "../src/world/npcs";
 import { chartedMapId, MAP_NAMES } from "../src/world/mapNames";
@@ -75,6 +82,8 @@ const mapDoc = (map: (typeof MAPS)[string]) => ({
   spawn: map.spawn,
   portals: map.portals,
   tiles: map.tiles,
+  // Per-tile encounter region (forest, marsh, ash, ...) where monsters lurk.
+  ...(map.regions ? { regions: map.regions } : {}),
 });
 for (const map of Object.values(MAPS)) emit(`${map.id}.json`, mapDoc(map));
 
@@ -103,11 +112,10 @@ emit("interactables.json", {
   waypoints: WAYPOINTS,
 });
 
-// What the save layer must know to read, migrate and grow a web save: item
-// slots and weights (gear migration, carry limits), role base stats (new
-// heroes, the endurance backfill), each role's tier-0 skill roots in branch
-// order (the pre-skill-tree backfill), and every carry-weight passive.
-const carryBonus = (passive?: { carryBonus?: number }) => passive?.carryBonus ?? 0;
+// What the save layer must know to read, migrate and grow a web save: items,
+// role base stats (new heroes, the endurance backfill), and each role's tier-0
+// skill roots in branch order (the pre-skill-tree backfill). Passives live in
+// combat.json with the skill trees.
 emit(
   "catalog.json",
   {
@@ -128,19 +136,6 @@ emit(
           .map((node) => node.id),
       ]),
     ),
-    // Skill passives count when owned; a path node counts only as the hero's
-    // deepest step (activeNode in paths.ts).
-    carryBonus: {
-      skillNodes: Object.fromEntries(
-        Object.values(SKILL_TREES)
-          .flat()
-          .filter((node) => node.kind === "passive" && carryBonus(node.passive) > 0)
-          .map((node) => [node.id, carryBonus(node.passive)]),
-      ),
-      pathNodes: Object.fromEntries(
-        PATH_NODES.filter((node) => carryBonus(node.passive) > 0).map((node) => [node.id, carryBonus(node.passive)]),
-      ),
-    },
     // Every map's player-facing place name; interiors take their town's.
     places: Object.fromEntries(Object.keys(MAPS).map((id) => [id, MAP_NAMES[chartedMapId(id)]])),
     levelCount: LEVELS.length,
@@ -214,6 +209,31 @@ emit(
       expansionCost: EXPANSION_COST,
       expansionRent: EXPANSION_RENT,
     },
+  },
+  DATA_OUT,
+);
+
+// Combat (PIX-126): the bestiary, what lurks in each region and where it
+// stands, what the fallen drop, mastery, and the passive-bearing skill and
+// path nodes (getPassives) — the same tables the web battle engine reads.
+emit(
+  "combat.json",
+  {
+    monsters: MONSTERS,
+    regions: REGIONS,
+    wildRewardMult: WILD_REWARD_MULT,
+    spawns: SPAWNS,
+    bossIds: [...BOSS_IDS],
+    dropPools: POOLS,
+    rarityWeights: RARITY_WEIGHTS,
+    dropChance: DROP_CHANCE,
+    regionMaterials: REGION_MATERIALS,
+    families: FAMILY_OF,
+    familyNames: FAMILY_NAMES,
+    masteryTiers: MASTERY_TIERS,
+    statPointsPerLevel: STAT_POINTS_PER_LEVEL,
+    skillTrees: SKILL_TREES,
+    pathNodes: PATH_NODES,
   },
   DATA_OUT,
 );
