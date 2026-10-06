@@ -11,29 +11,23 @@ const PACK_SIZE := 3
 const LOG_LINES := 5
 const LOG_SECONDS := 4.0
 
-## Pixel Crawler decor scattered on terrain (PIX-121): trees over forest,
-## plants over grass/marsh/ash. [texture path, region]; picked by cell hash.
-const TREES := [
-	["res://assets/crawler/tree_m01_s02.png", Rect2(12, 0, 52, 64)],
-	["res://assets/crawler/tree_m01_s02.png", Rect2(76, 0, 52, 64)],
-	["res://assets/crawler/tree_m02_s02.png", Rect2(0, 0, 32, 48)],
-]
-const TREE_DENSITY := 55  # % of forest cells that grow a full tree
-## tile id -> [density %, sheet, [texture region choices]]
+## Puny World objects scattered on terrain (PIX-130), picked by cell hash:
+## tile id -> [density %, [Puny tile ids]]. Forests grow pines and round
+## trees, the blocked highlands carry pines and boulders, fields the odd
+## stone or stump, and crops stand in rows of wheat.
 const SCATTER := {
-	"grass": [6, "crawler/vegetation", [Rect2(0, 0, 32, 32), Rect2(80, 144, 16, 16), Rect2(96, 144, 16, 16)]],
-	"forest": [40, "crawler/vegetation", [Rect2(0, 0, 32, 32), Rect2(80, 144, 16, 16)]],
-	"marsh": [14, "crawler/vegetation", [Rect2(144, 160, 16, 16), Rect2(160, 160, 16, 16)]],
-	"ash": [5, "crawler/vegetation", [Rect2(96, 0, 32, 32)]],
-	"crops": [
-		100, "crawler/farm",
-		[Rect2(80, 16, 16, 16), Rect2(80, 48, 16, 16), Rect2(128, 80, 16, 16), Rect2(48, 80, 16, 16)],
-	],
+	"forest": [85, [197, 224, 251, 206, 233, 260, 705, 729, 732, 783, 810]],
+	"mountain": [30, [197, 224, 251, 783, 810, 702]],
+	"grass": [3, [702, 703, 730, 784]],
+	"ash": [6, [702, 703, 784, 811, 838]],
+	"marsh": [10, [703, 732, 838]],
+	"crops": [100, [756, 757]],
 }
 
 var map: MapData
-var ground: ColorRect
-var ground_noise: ImageTexture
+var ground: Node2D
+## Region tones (ash, mire) shared by the ground and the decor standing on it.
+var ground_tint: ShaderMaterial
 var tile_layer: TileMapLayer
 var props: Node2D
 var actors: Node2D
@@ -280,35 +274,48 @@ func travel_to(waypoint: Dictionary) -> void:
 func _cell_center(cell: Vector2i) -> Vector2:
 	return Vector2(cell * TILE) + Vector2(TILE, TILE) / 2.0
 
-## Walkable ground drawn by the Voronoi blending shader (one quad per map):
-## borders between grass/path/ash/marsh/sand meander instead of following the
-## grid, and a broad noise octave varies brightness across fields.
-func _build_ground(data: MapData) -> ColorRect:
-	var ids := Image.create(data.size.x, data.size.y, false, Image.FORMAT_R8)
+## The ground in Shade's Puny World tiles (PunyTerrain): grass, roads, sand,
+## cliffs and rippling water on the dual grid, half a tile up-left of the
+## cells so every terrain edge sits on a cell edge.
+func _build_ground(data: MapData) -> Node2D:
+	var root := Node2D.new()
+	var layer := TileMapLayer.new()
+	layer.tile_set = PunyTerrain.tileset()
+	layer.position = Vector2(-TILE, -TILE) / 2.0
+	var tiles := PunyTerrain.ground_tiles(data.grid, data.size)
+	for cell: Vector2i in tiles:
+		PunyTerrain.place(layer, cell, tiles[cell])
+	# Ash and mire are toned from Shade's dirt and grass, decor included.
+	ground_tint = ShaderMaterial.new()
+	ground_tint.shader = preload("res://shaders/region_tint.gdshader")
+	ground_tint.set_shader_parameter("tint_map", PunyTerrain.tint_map(data.grid, data.size))
+	ground_tint.set_shader_parameter("map_pixels", Vector2(data.size * TILE))
+	layer.material = ground_tint
+	root.add_child(layer)
+	var forest := TileMapLayer.new()
+	forest.tile_set = PunyTerrain.tileset()
+	forest.position = layer.position
+	var crowns := PunyTerrain.forest_tiles(data.grid, data.size)
+	for cell: Vector2i in crowns:
+		PunyTerrain.place(forest, cell, crowns[cell])
+	root.add_child(forest)
+	# Bridges, cave mouths, ramparts and (seen from afar) whole towns stand on
+	# that ground as Puny objects.
+	var objects := TileMapLayer.new()
+	objects.tile_set = PunyTerrain.tileset()
+	var outdoor := PunyTerrain.is_outdoor(data.grid)
 	for cell: Vector2i in data.grid:
-		var index: int = WorldTiles.GROUND_TILES.get(data.grid[cell], 0)
-		ids.set_pixelv(cell, Color(index / 255.0, 0, 0))
-	if ground_noise == null:
-		var noise := FastNoiseLite.new()
-		noise.noise_type = FastNoiseLite.TYPE_CELLULAR
-		noise.seed = 7
-		noise.frequency = 0.09
-		ground_noise = ImageTexture.create_from_image(noise.get_seamless_image(256, 256))
-	var material := ShaderMaterial.new()
-	material.shader = preload("res://shaders/ground.gdshader")
-	material.set_shader_parameter("id_map", ImageTexture.create_from_image(ids))
-	material.set_shader_parameter("noise_tex", ground_noise)
-	material.set_shader_parameter("fill_grass", load("res://assets/crawler/terrain/pc_grass.png"))
-	material.set_shader_parameter("fill_dirt", load("res://assets/crawler/terrain/pc_dirt.png"))
-	material.set_shader_parameter("fill_gravel", load("res://assets/crawler/terrain/pc_gravel.png"))
-	material.set_shader_parameter("fill_marsh", load("res://assets/sprites/tile_marsh.png"))
-	material.set_shader_parameter("fill_sand", load("res://assets/sprites/tile_sand.png"))
-	material.set_shader_parameter("map_size", Vector2(data.size))
-	var rect := ColorRect.new()
-	rect.material = material
-	rect.size = Vector2(data.size * TILE)
-	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	return rect
+		var object := PunyTerrain.object_at(data.grid, cell)
+		if outdoor and object < 0:
+			object = PunyTerrain.wall_piece(data.grid, cell)
+		if object >= 0:
+			PunyTerrain.place(objects, cell, object)
+	if data.id in PunyTerrain.SKYLINE_MAPS:
+		var skyline := PunyTerrain.skyline(data.grid)
+		for cell: Vector2i in skyline:
+			PunyTerrain.place(objects, cell, skyline[cell])
+	root.add_child(objects)
+	return root
 
 ## Chests and terrain decor live in the y-sorted actors layer.
 func _build_decor(data: MapData) -> void:
@@ -337,9 +344,13 @@ func _build_decor(data: MapData) -> void:
 			actors.add_child(body)
 	# Furniture and stations: one sprite per span of each horizontal run, so a
 	# 3-tile counter shows one 48px counter instead of three overlapping ones.
+	# Gates in outdoor ramparts are drawn by the Puny castle pieces.
+	var outdoor := PunyTerrain.is_outdoor(data.grid)
 	for cell: Vector2i in data.grid:
 		var tile: String = data.grid[cell]
 		if not WorldTiles.PROP_TILES.has(tile):
+			continue
+		if outdoor and PunyTerrain.wall_piece(data.grid, cell) == PunyTerrain.GATE:
 			continue
 		if data.grid.get(cell + Vector2i.LEFT, "") == tile:
 			continue  # not the run's left edge
@@ -354,17 +365,14 @@ func _build_decor(data: MapData) -> void:
 			i += span
 	for cell: Vector2i in data.grid:
 		var tile: String = data.grid[cell]
+		if not SCATTER.has(tile):
+			continue
 		var h := absi(hash(cell))
-		var roll := h % 100
-		if tile == "forest" and roll < TREE_DENSITY:
-			var pick: Array = TREES[(h >> 7) % TREES.size()]
-			_add_decor_sprite(pick[0], pick[1], cell, h)
-		elif SCATTER.has(tile) and roll - (TREE_DENSITY if tile == "forest" else 0) < SCATTER[tile][0]:
-			var choices: Array = SCATTER[tile][2]
-			_add_decor_sprite(
-				WorldTiles.sprite_file(SCATTER[tile][1]),
-				choices[(h >> 7) % choices.size()], cell, h
-			)
+		if h % 100 >= SCATTER[tile][0]:
+			continue
+		var choices: Array = SCATTER[tile][1]
+		_add_decor_sprite(PunyTerrain.SHEET, PunyTerrain.region(choices[(h >> 7) % choices.size()]), cell, h)
+		actors.get_child(-1).material = ground_tint
 
 ## Villagers who live on this map now: tier-gated townsfolk and recruits.
 func _spawn_npcs(data: MapData) -> void:
@@ -574,18 +582,27 @@ func _build_tile_layer(data: MapData) -> TileMapLayer:
 		Vector2(-8, -8), Vector2(8, -8), Vector2(8, 8), Vector2(-8, 8),
 	])
 	var source_ids := {}  # tile id -> atlas source id
+	var outdoor := PunyTerrain.is_outdoor(data.grid)
 	for tile: String in WorldTiles.TILE_INFO:
+		if WorldTiles.GROUND_TILES.has(tile):
+			continue  # the Puny ground draws these
 		var source := TileSetAtlasSource.new()
 		var sheet: String = WorldTiles.TILE_ANIMATIONS.get(tile, "")
+		var cut: bool = outdoor and tile in WorldTiles.GRASS_PROPS
 		if sheet == "":
-			source.texture = load(WorldTiles.sprite_path(tile))
+			var path := WorldTiles.sprite_path(tile)
+			if outdoor and tile == "floor":
+				source.texture = PunyTerrain.dungeon_tile(PunyTerrain.RUIN_FLOOR)
+			else:
+				source.texture = WorldTiles.cutout(path) if cut else load(path)
 			source.texture_region_size = Vector2i(TILE, TILE)
 			source.create_tile(Vector2i.ZERO)
 		else:
 			# Animated terrain: the sheet is a horizontal strip; consecutive
 			# columns become animation frames at the fps atlas.json declares.
 			var meta: Dictionary = WorldTiles.atlas_animations()[sheet]
-			source.texture = load("res://assets/sprites/%s.png" % sheet)
+			var path := "res://assets/sprites/%s.png" % sheet
+			source.texture = WorldTiles.cutout(path) if cut else load(path)
 			source.texture_region_size = Vector2i(TILE, TILE)
 			source.create_tile(Vector2i.ZERO)
 			source.set_tile_animation_frames_count(Vector2i.ZERO, int(meta["frames"]))
@@ -612,17 +629,16 @@ func _build_tile_layer(data: MapData) -> TileMapLayer:
 		data_tile.add_collision_polygon(0)
 		data_tile.set_collision_polygon_points(0, 0, box)
 
-	# Cliff faces: a second source used on a tile's bottom edge.
-	var face_ids := {}
-	for tile: String in WorldTiles.FACE_TILES:
-		var source := TileSetAtlasSource.new()
-		source.texture = load(WorldTiles.sprite_file(WorldTiles.FACE_TILES[tile]))
-		source.texture_region_size = Vector2i(TILE, TILE)
-		source.create_tile(Vector2i.ZERO)
-		face_ids[tile] = tileset.add_source(source)
-		var data_tile := source.get_tile_data(Vector2i.ZERO, 0)
-		data_tile.add_collision_polygon(0)
-		data_tile.set_collision_polygon_points(0, 0, box)
+	# Ground the Puny layer draws still blocks where the web says so (water,
+	# mountains): an invisible tile that only collides.
+	var blocker := TileSetAtlasSource.new()
+	blocker.texture = ImageTexture.create_from_image(Image.create(TILE, TILE, false, Image.FORMAT_RGBA8))
+	blocker.texture_region_size = Vector2i(TILE, TILE)
+	blocker.create_tile(Vector2i.ZERO)
+	var blocker_id := tileset.add_source(blocker)
+	var blocker_tile := blocker.get_tile_data(Vector2i.ZERO, 0)
+	blocker_tile.add_collision_polygon(0)
+	blocker_tile.set_collision_polygon_points(0, 0, box)
 
 	# Prop tiles show their base tile; the furniture sprite is y-sorted decor.
 	# Unwalkable props still need a colliding version of that base.
@@ -642,14 +658,20 @@ func _build_tile_layer(data: MapData) -> TileMapLayer:
 
 	var layer := TileMapLayer.new()
 	layer.tile_set = tileset
+	var skyline: bool = data.id in PunyTerrain.SKYLINE_MAPS
 	for cell: Vector2i in data.grid:
 		var tile: String = data.grid[cell]
-		if WorldTiles.GROUND_TILES.has(tile):
-			continue  # the ground shader draws these
+		var puny_drawn: bool = (
+			WorldTiles.GROUND_TILES.has(tile)
+			or (outdoor and PunyTerrain.wall_piece(data.grid, cell) >= 0)
+			or (skyline and WorldTiles.ROOF_TILES.has(tile))
+		)
+		if puny_drawn:
+			if not WorldTiles.is_walkable(tile):
+				layer.set_cell(cell, blocker_id, Vector2i.ZERO)
+			continue
 		var source_id: int = source_ids[tile]
-		if WorldTiles.FACE_TILES.has(tile) and data.grid.get(cell + Vector2i.DOWN, tile) != tile:
-			source_id = face_ids[tile]
-		elif (
+		if (
 			WorldTiles.ROOF_TILES.has(tile)
 			and not WorldTiles.ROOF_TILES.has(data.grid.get(cell + Vector2i.DOWN, ""))
 		):
@@ -854,6 +876,29 @@ func _run_test_harness() -> void:
 		player.scripted_dir = Vector2.ZERO
 	if args.has("night"):
 		GameState.world.steps = 0.7 * DayNight.DAY_CYCLE_STEPS
+	# Terrain review: `--at x,y` stands the hero on a cell, `--zoom Z` changes
+	# the camera, `overview` frames the whole map.
+	var at_index := args.find("--at")
+	if at_index >= 0 and at_index + 1 < args.size():
+		var at := args[at_index + 1].split(",")
+		player_cell = Vector2i(int(at[0]), int(at[1]))
+		player.position = _cell_center(player_cell)
+		camera.reset_smoothing()
+	var zoom_index := args.find("--zoom")
+	if zoom_index >= 0 and zoom_index + 1 < args.size():
+		camera.zoom = Vector2.ONE * float(args[zoom_index + 1])
+	if args.has("overview"):
+		var view := get_viewport_rect().size
+		var fit := minf(view.x / (map.size.x * TILE), view.y / (map.size.y * TILE))
+		camera.top_level = true
+		camera.zoom = Vector2(fit, fit)
+		camera.limit_right = 1 << 20
+		camera.limit_bottom = 1 << 20
+		camera.limit_left = -(1 << 20)
+		camera.limit_top = -(1 << 20)
+		camera.global_position = Vector2(map.size * TILE) / 2.0
+		camera.reset_smoothing()
+		await get_tree().create_timer(0.2).timeout
 	if args.has("worldmap"):
 		var screen := preload("res://scripts/map_screen.gd").new()
 		screen.world = self

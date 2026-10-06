@@ -5,13 +5,8 @@ extends SceneTree
 
 ## name -> [sheet, origin, size, desaturate]
 const CUTS := {
-	"pc_grass": ["floors_tiles", Vector2i(16, 160), Vector2i(16, 16), false],
-	"pc_dirt": ["floors_tiles", Vector2i(176, 160), Vector2i(16, 16), false],
-	"pc_gravel": ["floors_tiles", Vector2i(96, 160), Vector2i(16, 16), false],
 	"pc_brick": ["floors_tiles", Vector2i(256, 16), Vector2i(16, 16), false],
 	"pc_floor_warm": ["floors_tiles", Vector2i(96, 368), Vector2i(16, 16), false],
-	"pc_rock_top": ["wall_tiles", Vector2i(144, 32), Vector2i(16, 16), false],
-	"pc_rock_face": ["wall_tiles", Vector2i(116, 264), Vector2i(16, 16), false],
 	# Shingles are desaturated so roof tiles can tint them per roof type.
 	"pc_shingle": ["roofs", Vector2i(160, 160), Vector2i(16, 16), true],
 	"pc_shingle_eave": ["roofs", Vector2i(160, 192), Vector2i(16, 16), true],

@@ -1,4 +1,4 @@
-Character art by Shade (merchant-shade.itch.io), released under CC0 1.0
+Art by Shade (merchant-shade.itch.io), released under CC0 1.0
 Universal (public domain): free for any use, commercial or not, modification
 and redistribution allowed, no attribution required. The author states no
 generative AI was used.
@@ -6,6 +6,11 @@ generative AI was used.
 - characters/  "Free 16x16 Puny Character Sprites"   https://merchant-shade.itch.io/16x16-puny-characters
 - beasts/      "PunyMonsters" (same page)
 - mini/        "Free 16x16 Mini World Sprites"       https://merchant-shade.itch.io/16x16-mini-world-sprites
+- world/       "Free 16x16 Puny World Tileset"       https://merchant-shade.itch.io/16x16-puny-world
+- dungeon/     "Free 16x16 Puny Dungeon Tileset"     https://merchant-shade.itch.io/16x16-puny-dungeon
 
-Files are unmodified copies; Pixelheim picks which sheet plays which role in
-scripts/puny_art.gd.
+Files are unmodified copies, the Tiled tilesets (.tsx) included (their image
+paths point one folder up, as in Shade's zips; Pixelheim reads only the wang
+and animation data). Pixelheim picks which sheet plays which role in
+scripts/puny_art.gd and lays the tilesets over its maps in
+scripts/puny_terrain.gd.
