@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bjpad3riwi6b"
-path="res://.godot/imported/pc_rock_face.png-99ec150bfa7250b5b95effe0df72595f.ctex"
+uid="uid://capj8tkrbofhl"
+path="res://.godot/imported/punyworld-overworld-tileset.png-e74b59dd1fcf39ded8f5e136a5a5cae8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/crawler/terrain/pc_rock_face.png"
-dest_files=["res://.godot/imported/pc_rock_face.png-99ec150bfa7250b5b95effe0df72595f.ctex"]
+source_file="res://assets/puny/world/punyworld-overworld-tileset.png"
+dest_files=["res://.godot/imported/punyworld-overworld-tileset.png-e74b59dd1fcf39ded8f5e136a5a5cae8.ctex"]
 
 [params]
 

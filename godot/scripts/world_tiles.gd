@@ -3,15 +3,12 @@ class_name WorldTiles
 ## the source of truth until it is sunset — map grids arrive pre-parsed as
 ## tile ids via `pnpm godot:sync`, so no char table lives on this side.
 
-## tile id -> [sprite basename, walkable]
+## tile id -> [sprite basename, walkable]; "" where the Puny World ground
+## draws the tile (GROUND_TILES).
 const TILE_INFO := {
-	"grass": ["crawler/terrain/pc_grass", true],
-	"forest": ["crawler/terrain/pc_grass", true],
-	"mountain": ["crawler/terrain/pc_rock_top", false],
-	"water": ["tile_water", false],
-	"path": ["crawler/terrain/pc_dirt", true], "sand": ["tile_sand", true],
-	"bridge": ["tile_bridge", true], "marsh": ["tile_marsh", true],
-	"ash": ["crawler/terrain/pc_gravel", true], "crops": ["tile_crops", true],
+	"grass": ["", true], "forest": ["", true], "mountain": ["", false],
+	"water": ["", false], "path": ["", true], "sand": ["", true],
+	"bridge": ["", true], "marsh": ["", true], "ash": ["", true], "crops": ["", true],
 	"trophy_shelf": ["tile_trophy_shelf", false], "garden": ["tile_garden", false],
 	"wall": ["crawler/terrain/pc_brick", false],
 	"floor": ["crawler/terrain/pc_floor_warm", true],
@@ -31,22 +28,27 @@ const TILE_INFO := {
 	"cauldron": ["tile_cauldron", false], "counter": ["tile_counter", false],
 	"bed": ["tile_bed", false], "hearth": ["tile_hearth", false],
 	"door": ["tile_door", true], "door_shut": ["tile_door_shut", false],
-	"cave": ["tile_cave", true], "shrine": ["tile_shrine", true],
+	"cave": ["", true], "shrine": ["tile_shrine", true],
 }
 
 ## Terrain that breathes: tile id -> its animation sheet in atlas.json
 ## (from TILE_ANIMATIONS in src/world/tiles.ts; ground terrains dropped —
-## they render through the Voronoi ground shader now).
-const TILE_ANIMATIONS := {
-	"water": "water_shimmer", "flowers": "flowers_sway",
+## Puny World's water ripples on its own).
+const TILE_ANIMATIONS := {"flowers": "flowers_sway"}
+
+## Terrain the Puny World ground draws (PunyTerrain, PIX-130), so the tile
+## layer leaves it alone, except for an invisible blocker where it's
+## unwalkable (water, mountains).
+const GROUND_TILES := {
+	"grass": true, "forest": true, "path": true, "ash": true, "marsh": true,
+	"sand": true, "crops": true, "water": true, "mountain": true,
+	"bridge": true, "cave": true,
 }
 
-## Walkable ground rendered by the blending shader instead of tiles:
-## tile id -> terrain index in shaders/ground.gdshader.
-const GROUND_TILES := {
-	"grass": 0, "forest": 0, "path": 1, "ash": 2, "marsh": 3, "sand": 4,
-	"crops": 1,
-}
+## Web props painted on the web's grass (generate-sprites.mjs palette G/L).
+## Outdoors that grass is keyed out so they stand on Puny ground instead.
+const GRASS_PROPS := ["flowers", "lamp", "well", "shrine", "barrel", "crate", "fence"]
+const WEB_GRASS := ["3d7a35", "4a8f40"]
 
 ## Roof tiles share one desaturated shingle texture, tinted per type so every
 ## roof keeps its color identity. The bottom row of a roof gets the eave tile.
@@ -58,10 +60,6 @@ const ROOF_TILES := {
 	"roof_moss": Color(0.66, 0.98, 0.53),
 }
 const ROOF_EAVE := "crawler/terrain/pc_shingle_eave"
-
-## Tiles whose bottom edge shows a face when open ground lies below —
-## mountains become cliffs. tile id -> face sprite.
-const FACE_TILES := {"mountain": "crawler/terrain/pc_rock_face"}
 
 ## Furniture and stations drawn as y-sorted Pixel Crawler sprites on a base
 ## tile instead of flat tile art. tile id -> [sheet, region, base tile].
@@ -124,3 +122,19 @@ static func sprite_file(name: String) -> String:
 	if "/" in name:
 		return "res://assets/%s.png" % name
 	return "res://assets/sprites/%s.png" % name
+
+
+static var _cutouts := {}
+
+
+## A web prop sprite (or animation strip) with its painted grass removed.
+static func cutout(path: String) -> Texture2D:
+	if not _cutouts.has(path):
+		var image := (load(path) as Texture2D).get_image()
+		image.convert(Image.FORMAT_RGBA8)
+		for y in image.get_height():
+			for x in image.get_width():
+				if image.get_pixel(x, y).to_html(false) in WEB_GRASS:
+					image.set_pixel(x, y, Color.TRANSPARENT)
+		_cutouts[path] = ImageTexture.create_from_image(image)
+	return _cutouts[path]
