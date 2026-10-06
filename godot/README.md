@@ -8,6 +8,11 @@ The Godot 4.7 rewrite of Pixelheim ([Godot Migration](https://linear.app/pixelhe
 godot --path godot            # play (or open godot/ in the Godot editor)
 ```
 
+Combat runs on the web game's numbers: the hero's real HP and stats, each
+species' stats per region, elites, ailments (a web turn = 1 s), drops, xp and
+level-ups; defeat wakes you at the inn. Monsters stand in packs at the web's
+visible spawn points and stay cleared until you leave the map.
+
 Controls: WASD/arrows or left stick to move, Space/J or gamepad A to attack,
 E to talk or open chests, M/Tab for the map, Esc (gamepad Start) for saves.
 
@@ -57,7 +62,8 @@ godot --path godot -- --screenshot --slot 1           # resume (and write) slot 
 godot --path godot -- --screenshot --map town         # boot into another map
 godot --path godot -- --screenshot --walk l,d,d,d     # scripted steps first
 godot --path godot -- --screenshot fight              # orc fight, mid-swing
-godot --path godot -- --screenshot fight kill         # swing until it dies
+godot --path godot -- --screenshot fight kill         # swing until it dies (rewards in the battle log)
+godot --path godot -- --screenshot fight kill hurt --foe wyvern   # another foe, and let it bite back
 godot --path godot -- --screenshot talk --map town_shop   # talk to the map's first villager
 godot --path godot -- --screenshot near --map town_hall   # stand beside them (the "!" prompt)
 godot --path godot -- --screenshot shop --map town_smith --tab 2   # a keeper's counter (500g), tab by index

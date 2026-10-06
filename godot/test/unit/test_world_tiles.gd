@@ -11,11 +11,6 @@ func test_every_tile_sprite_exists() -> void:
 	assert_eq(missing, [], "tiles with missing sprite files")
 
 
-func test_mob_habitats_are_walkable_tiles() -> void:
-	for tile: String in WorldTiles.MOB_HABITATS:
-		assert_true(WorldTiles.is_walkable(tile), "mobs cannot roam unwalkable %s" % tile)
-
-
 func test_unknown_tile_is_not_walkable() -> void:
 	assert_false(WorldTiles.is_walkable(""))
 	assert_false(WorldTiles.is_walkable("lava"))
