@@ -31,6 +31,9 @@ var slots := SaveSlots.new()
 var settings := GameSettings.new()
 var slot := NO_SLOT
 var dirty := false
+## True when boot found no save in any slot: a first visit (offer the web hero).
+var first_run := false
+var _booted := false
 var _unsaved_seconds := 0.0
 
 
@@ -41,8 +44,12 @@ func _init() -> void:
 
 ## Picks the save to play: `--slot N` or the last slot played, else a new game
 ## written straight to that slot. Harness runs (`--screenshot`) play a fresh
-## throwaway hero unless a slot is named explicitly.
+## throwaway hero unless a slot is named explicitly. Runs once per session:
+## the world scene reloads after a slot switch and must not undo it.
 func boot(args: PackedStringArray) -> void:
+	if _booted:
+		return
+	_booted = true
 	settings.load_file()
 	var slot_index := args.find("--slot")
 	if slot_index >= 0 and slot_index + 1 < args.size():
@@ -52,6 +59,9 @@ func boot(args: PackedStringArray) -> void:
 	else:
 		slot = clampi(settings.last_slot, 1, SaveSlots.SLOT_COUNT)
 	var saved := slots.read(slot) if slot != NO_SLOT else {}
+	first_run = slot != NO_SLOT and range(1, SaveSlots.SLOT_COUNT + 1).all(
+		func(n: int) -> bool: return slots.summary(n).is_empty()
+	)
 	if saved.is_empty():
 		new_game()
 		save_now()
@@ -59,6 +69,56 @@ func boot(args: PackedStringArray) -> void:
 		apply(saved)
 	if slot != NO_SLOT and settings.last_slot != slot:
 		settings.last_slot = slot
+		settings.save_file()
+
+
+## Switches play to another slot: the current one is saved first, an empty
+## one starts a new hero. The caller reloads the world scene afterwards.
+func play_slot(target: int) -> void:
+	save_now()
+	_use_slot(target)
+	var saved := slots.read(target)
+	if saved.is_empty():
+		new_game()
+		save_now()
+	else:
+		apply(saved)
+
+
+## Writes a brand-new hero into a slot (replacing whatever was there) and plays it.
+func new_hero_in(target: int) -> void:
+	save_now()
+	_use_slot(target)
+	new_game()
+	save_now()
+
+
+## Brings a migrated save (the web game's, a pasted code) into a slot and plays it.
+func import_into(target: int, state: Dictionary) -> void:
+	save_now()
+	_use_slot(target)
+	apply(state)
+	save_now()
+
+
+## Empties a slot. The slot being played cannot be cleared from under the hero.
+func clear_slot(target: int) -> bool:
+	if target == slot:
+		return false
+	slots.erase(target)
+	return true
+
+
+## This hero as a PXH1 code: loads in the web game's Import too.
+func save_code() -> String:
+	return SaveCodec.encode_code(to_dict())
+
+
+func _use_slot(target: int) -> void:
+	slot = target
+	first_run = false
+	if settings.last_slot != target:
+		settings.last_slot = target
 		settings.save_file()
 
 

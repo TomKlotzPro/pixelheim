@@ -20,7 +20,7 @@ func _ready() -> void:
 	add_child(backdrop)
 
 	var title := Label.new()
-	title.text = world.map.id.capitalize()
+	title.text = Catalog.place_name(world.map.id)
 	title.add_theme_font_size_override("font_size", 24)
 	title.position = Vector2(80, 32)
 	add_child(title)

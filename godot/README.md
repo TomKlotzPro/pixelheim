@@ -8,7 +8,8 @@ The Godot 4.7 rewrite of Pixelheim ([Godot Migration](https://linear.app/pixelhe
 godot --path godot            # play (or open godot/ in the Godot editor)
 ```
 
-Controls: WASD/arrows or left stick to move, Space/J or gamepad A to attack.
+Controls: WASD/arrows or left stick to move, Space/J or gamepad A to attack,
+E to interact, M/Tab for the map, Esc (gamepad Start) for saves.
 
 ## Saves
 
@@ -22,6 +23,16 @@ the web game's save format, schema v4 — envelope, migrations and `PXH1.` save
 codes are ported in `save_codec.gd` — so a web save loads in Godot and a
 Godot save loads in the web game. Device settings live apart in
 `user://settings.cfg`.
+
+The saves screen (Esc) plays, starts or clears slots and brings heroes across
+from the web game (`scripts/saves_screen.gd`, `state/web_import.gd`):
+
+- **Same browser**: the Godot build is served from the web game's origin, so
+  it reads the web save from `localStorage` (`pixelheim-save-v1`). A first
+  visit with no Godot saves offers to bring that hero over right away.
+- **Anywhere else**: paste the code from the web game's Options → Copy save
+  code (raw save JSON works too). `C` copies a Godot hero's code back for the
+  web game's Import save code.
 
 ## Tests
 
@@ -47,6 +58,9 @@ godot --path godot -- --screenshot --map town         # boot into another map
 godot --path godot -- --screenshot --walk l,d,d,d     # scripted steps first
 godot --path godot -- --screenshot fight              # orc fight, mid-swing
 godot --path godot -- --screenshot fight kill         # swing until it dies
+godot --path godot -- --screenshot saves              # the saves screen
+godot --path godot -- --screenshot saves --web-save res://test/fixtures/web_save_v4.txt
+                                                      # first-visit web import offer
 ```
 
 The final `print` line reports current map id, hero cell, HP and gold for assertions.
