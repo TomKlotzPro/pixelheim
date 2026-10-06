@@ -88,7 +88,8 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	rays.rotation += delta * 0.25
+	if not GameState.settings.reduce_motion:
+		rays.rotation += delta * 0.25
 
 
 ## The fork's cards, or the timer that lets the moment pass.
