@@ -1,10 +1,13 @@
 extends Node2D
 ## World orchestration: loads maps exported from the web game, builds their
 ## TileMapLayer, moves the hero through portals, and spawns mobs in the wild.
-## Tile tables live in WorldTiles; map data in MapData.
+## Tile tables live in WorldTiles; map data in MapData; everything that
+## persists (position, discovery, chests, loot) in the GameState autoload.
 
 const TILE := 16
-const START_MAP := "overworld"
+## Defeat sends the hero back to the overworld spawn until combat v2 (PIX-126)
+## wakes them at the inn like the web game.
+const RESPAWN_MAP := "overworld"
 ## Maps where mobs roam; interiors and the town stay safe.
 const WILD_MAPS := ["overworld", "deepwood", "mirefen"]
 const ENEMY_COUNT := 28
@@ -40,14 +43,11 @@ var player: CharacterBody2D
 var camera: Camera2D
 var player_cell := Vector2i.ZERO
 var kills := 0
-var opened_chests: Array[String] = []  # session-only until saves land (PIX-122)
 var chest_sprites := {}  # chest id -> Sprite2D
-var discovered := {}  # map_id -> Dictionary(Vector2i -> true); saved by PIX-122
-var settlers: Array = []  # nobody recruited until the settlers port (PIX-124)
-var world_steps := 0.0  # tiles walked; turns the day/night wheel
 var last_player_position := Vector2.ZERO
 var hp_bar: ProgressBar
 var kills_label: Label
+var gold_label: Label
 var message_label: Label
 var prompt_label: Label
 var sky_overlay: ColorRect
@@ -55,15 +55,21 @@ var sky_overlay: ColorRect
 func _ready() -> void:
 	_setup_input()
 	var args := OS.get_cmdline_user_args()
+	GameState.boot(args)
+	# Resume where the save stands; `--map <id>` (harness) boots at that map's spawn.
 	var map_index := args.find("--map")
-	var start := args[map_index + 1] if map_index >= 0 and map_index + 1 < args.size() else START_MAP
-	map = MapData.load_by_id(start)
+	var override := map_index >= 0 and map_index + 1 < args.size()
+	map = MapData.load_by_id(args[map_index + 1] if override else GameState.world.map_id)
+	var arrival := map.spawn if override else GameState.world.cell
+	if not map.is_walkable(arrival):
+		arrival = map.spawn
 	# Hero, mobs, and decor share one y-sorted layer so the hero walks in
 	# front of trunks and behind canopies.
 	actors = Node2D.new()
 	actors.y_sort_enabled = true
 	add_child(actors)
 	_spawn_player()
+	player.face(WorldState.FACINGS.get(GameState.world.facing, Vector2.DOWN))
 	_build_hud()
 	# World-space "!" that floats over a faced interactable.
 	prompt_label = Label.new()
@@ -74,7 +80,7 @@ func _ready() -> void:
 	prompt_label.add_theme_constant_override("outline_size", 3)
 	prompt_label.visible = false
 	add_child(prompt_label)
-	_enter_map(map, map.spawn)
+	_enter_map(map, arrival)
 	_run_test_harness()
 
 func _process(_delta: float) -> void:
@@ -88,14 +94,14 @@ func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed("interact"):
 		_try_interact()
 	_update_prompt()
-	world_steps += player.position.distance_to(last_player_position) / TILE
+	GameState.walk(player.position.distance_to(last_player_position) / TILE)
 	last_player_position = player.position
-	sky_overlay.color = DayNight.sky_at(world_steps)
+	sky_overlay.color = DayNight.sky_at(GameState.world.steps)
 	var cell := Vector2i((player.position / TILE).floor())
 	if cell == player_cell:
 		return
 	player_cell = cell
-	Discovery.discover_around(discovered, map, cell)
+	GameState.move_to(map, cell, player.facing)
 	_collect_ground_treasure(cell)
 	if map.portals.has(cell):
 		_use_portal(map.portals[cell])
@@ -112,10 +118,12 @@ func on_player_hp_changed(hp: int) -> void:
 
 func on_player_died() -> void:
 	await get_tree().create_timer(1.2).timeout
-	if map.id != START_MAP:
-		map = MapData.load_by_id(START_MAP)
+	if map.id != RESPAWN_MAP:
+		map = MapData.load_by_id(RESPAWN_MAP)
 		_enter_map(map, map.spawn)
 	player.respawn(_cell_center(map.spawn))
+	last_player_position = player.position  # a respawn is not a walk
+	GameState.move_to(map, map.spawn, player.facing)
 
 func spawn_enemy(kind: String, cell: Vector2i) -> void:
 	var enemy := preload("res://scripts/enemy.gd").new()
@@ -157,7 +165,9 @@ func _enter_map(next: MapData, arrival: Vector2i) -> void:
 	player.position = _cell_center(arrival)
 	last_player_position = player.position
 	player_cell = arrival
-	Discovery.discover_around(discovered, next, arrival)
+	# Crossing into a map is a moment worth keeping: save at once.
+	GameState.move_to(next, arrival, player.facing)
+	GameState.save_now()
 	camera.limit_right = next.size.x * TILE
 	camera.limit_bottom = next.size.y * TILE
 	camera.reset_smoothing()
@@ -208,8 +218,7 @@ func _build_ground(data: MapData) -> ColorRect:
 func _build_decor(data: MapData) -> void:
 	chest_sprites = {}
 	for chest: Dictionary in Interactables.chests_on(data.id):
-		var opened: bool = chest["id"] in opened_chests
-		var sprite_name := Interactables.sprite_name(chest, opened)
+		var sprite_name := Interactables.sprite_name(chest, GameState.is_opened(chest))
 		if sprite_name == "":
 			continue
 		var cell := Vector2i(int(chest["x"]), int(chest["y"]))
@@ -288,7 +297,7 @@ func _add_decor_sprite(texture_path: String, region: Rect2, cell: Vector2i, h: i
 ## Door signs float above the world, outside the y-sort.
 func _build_props(data: MapData) -> Node2D:
 	var root := Node2D.new()
-	for sign_def: Dictionary in Interactables.signs_on(data.id):
+	for sign_def: Dictionary in Interactables.signs_on(data.id, GameState.owns_house()):
 		var label := Label.new()
 		label.text = sign_def["label"]
 		label.add_theme_font_size_override("font_size", 8)
@@ -313,37 +322,38 @@ func _facing_cell() -> Vector2i:
 
 func _try_interact() -> void:
 	var chest := _chest_at(_facing_cell())
-	if chest.is_empty() or chest["look"] != "chest" or chest["id"] in opened_chests:
+	if chest.is_empty() or chest["look"] != "chest" or GameState.is_opened(chest):
 		return
 	_open_chest(chest)
 
 func _open_chest(chest: Dictionary) -> void:
-	opened_chests.append(chest["id"])
+	var result := GameState.open_chest(chest)
+	_flash_message(result["message"])
+	if not result["opened"]:
+		return
 	chest_sprites[chest["id"]].texture = load("res://assets/sprites/chest_open.png")
-	if chest.get("mimic", false):
-		_flash_message("The chest bares its teeth — a mimic!")
+	if result["mimic"]:
 		var ambush := player_cell + Vector2i(0, -1)
 		if not map.is_walkable(ambush):
 			ambush = player_cell + Vector2i(1, 0)
 		spawn_enemy("skeleton", ambush)
-		return
-	_flash_message(Interactables.loot_text(chest))
 
 func _collect_ground_treasure(cell: Vector2i) -> void:
 	var chest := _chest_at(cell)
-	if chest.is_empty() or chest["look"] == "chest" or chest["id"] in opened_chests:
+	if chest.is_empty() or chest["look"] == "chest" or GameState.is_opened(chest):
 		return
-	opened_chests.append(chest["id"])
-	chest_sprites[chest["id"]].queue_free()
-	chest_sprites.erase(chest["id"])
-	_flash_message(Interactables.loot_text(chest))
+	var result := GameState.open_chest(chest)
+	_flash_message(result["message"])
+	if result["opened"]:
+		chest_sprites[chest["id"]].queue_free()
+		chest_sprites.erase(chest["id"])
 
 ## The one interaction-prompt rule (ported from interactionPrompt.ts): a "!"
 ## floats over a faced, unopened chest. NPCs join with PIX-123.
 func _update_prompt() -> void:
 	var chest := _chest_at(_facing_cell())
 	var show: bool = (
-		not chest.is_empty() and chest["look"] == "chest" and not chest["id"] in opened_chests
+		not chest.is_empty() and chest["look"] == "chest" and not GameState.is_opened(chest)
 	)
 	prompt_label.visible = show
 	if show:
@@ -490,12 +500,20 @@ func _build_hud() -> void:
 	kills_label.text = "Slain: 0"
 	kills_label.position = Vector2(24, 50)
 	hud.add_child(kills_label)
+	gold_label = Label.new()
+	gold_label.position = Vector2(24, 74)
+	hud.add_child(gold_label)
+	_on_gold_changed(GameState.pack.gold)
+	GameState.gold_changed.connect(_on_gold_changed)
 	message_label = Label.new()
 	message_label.position = Vector2(440, 640)
 	message_label.custom_minimum_size = Vector2(400, 0)
 	message_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	message_label.modulate.a = 0.0
 	hud.add_child(message_label)
+
+func _on_gold_changed(gold: int) -> void:
+	gold_label.text = "Gold: %d" % gold
 
 func _flash_message(text: String) -> void:
 	message_label.text = text
@@ -559,7 +577,7 @@ func _run_test_harness() -> void:
 			await get_tree().create_timer(0.2).timeout
 		player.scripted_dir = Vector2.ZERO
 	if args.has("night"):
-		world_steps = 0.7 * DayNight.DAY_CYCLE_STEPS
+		GameState.world.steps = 0.7 * DayNight.DAY_CYCLE_STEPS
 	if args.has("worldmap"):
 		var screen := preload("res://scripts/map_screen.gd").new()
 		screen.world = self
@@ -588,5 +606,5 @@ func _run_test_harness() -> void:
 		await get_tree().create_timer(0.2).timeout
 	await RenderingServer.frame_post_draw
 	get_viewport().get_texture().get_image().save_png("res://screenshot.png")
-	print("screenshot saved; map=%s cell=%s hp=%d" % [map.id, player_cell, player.hp])
+	print("screenshot saved; map=%s cell=%s hp=%d gold=%d" % [map.id, player_cell, player.hp, GameState.pack.gold])
 	get_tree().quit()

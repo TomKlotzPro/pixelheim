@@ -41,18 +41,3 @@ func test_town_signs_include_the_house_for_sale() -> void:
 	assert_has(labels, "INN")
 	assert_gte(labels.size(), 6)
 
-
-func test_loot_text_formats_every_kind() -> void:
-	assert_eq(
-		Interactables.loot_text({"loot": {"kind": "gold", "amount": 60}}),
-		"You found 60 gold!"
-	)
-	assert_eq(
-		Interactables.loot_text({"loot": {"kind": "item", "itemId": "potion_hp", "qty": 2}}),
-		"You found 2× Potion Hp!"
-	)
-	assert_eq(
-		Interactables.loot_text({"loot": {"kind": "gear", "itemId": "iron_sword"}}),
-		"You found Iron Sword!"
-	)
-	assert_eq(Interactables.loot_text({"mimic": true}), "")

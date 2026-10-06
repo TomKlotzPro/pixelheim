@@ -41,10 +41,12 @@ func _ready() -> void:
 
 	var y := 128.0
 	for waypoint: Dictionary in Interactables.waypoints():
-		if not Interactables.waypoint_discovered(waypoint, world.discovered):
+		if not Interactables.waypoint_discovered(waypoint, GameState.world.discovered):
 			continue
 		var row := Label.new()
-		var staffed := Interactables.waypoint_usable(waypoint, world.discovered, world.settlers)
+		var staffed := Interactables.waypoint_usable(
+			waypoint, GameState.world.discovered, GameState.settlement.settlers
+		)
 		row.text = waypoint["name"] + ("" if staffed else "  (unstaffed)")
 		row.position = Vector2(880, y)
 		add_child(row)
@@ -103,7 +105,7 @@ class Painting extends Control:
 	var tile_px := 4
 
 	func _draw() -> void:
-		var seen: Dictionary = world.discovered.get(world.map.id, {})
+		var seen: Dictionary = GameState.world.discovered.get(world.map.id, {})
 		for cell: Vector2i in world.map.grid:
 			var color: Color = (
 				WorldTiles.map_color(world.map.grid[cell])
@@ -113,7 +115,7 @@ class Painting extends Control:
 		for waypoint: Dictionary in Interactables.waypoints():
 			if waypoint["mapId"] != world.map.id:
 				continue
-			if not Interactables.waypoint_discovered(waypoint, world.discovered):
+			if not Interactables.waypoint_discovered(waypoint, GameState.world.discovered):
 				continue
 			var at := Vector2(int(waypoint["at"]["x"]), int(waypoint["at"]["y"]))
 			draw_circle(at * tile_px + Vector2.ONE * tile_px / 2.0, tile_px * 0.9, Color(1, 0.85, 0.3))

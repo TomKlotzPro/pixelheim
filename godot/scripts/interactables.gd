@@ -17,7 +17,10 @@ static func chests_on(map_id: String) -> Array:
 	return _data()["chests"].filter(func(chest: Dictionary) -> bool: return chest["mapId"] == map_id)
 
 
-static func signs_on(map_id: String) -> Array:
+## Door signs; the house sign reads HOME instead of FOR SALE once it is owned.
+static func signs_on(map_id: String, house_owned := false) -> Array:
+	if house_owned and _data()["signsHouseOwned"].has(map_id):
+		return _data()["signsHouseOwned"][map_id]
 	return _data()["signs"].get(map_id, [])
 
 
@@ -51,20 +54,3 @@ static func sprite_name(chest: Dictionary, opened: bool) -> String:
 		return ""
 	return "road_glint" if chest["look"] == "glint" else "herb_patch"
 
-
-## "iron_sword" -> "Iron Sword"; placeholder until the economy port (PIX-124)
-## brings real item names across.
-static func item_label(item_id: String) -> String:
-	return item_id.capitalize()
-
-
-static func loot_text(chest: Dictionary) -> String:
-	var loot: Dictionary = chest.get("loot", {})
-	match loot.get("kind", ""):
-		"gold":
-			return "You found %d gold!" % int(loot["amount"])
-		"item":
-			return "You found %d× %s!" % [int(loot["qty"]), item_label(loot["itemId"])]
-		"gear":
-			return "You found %s!" % item_label(loot["itemId"])
-	return ""
