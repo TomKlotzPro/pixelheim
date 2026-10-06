@@ -819,6 +819,76 @@ func _grant_levels() -> int:
 	return gained
 
 
+## Puts on a gear piece (EQUIP): into its slot, a ring onto the empty finger
+## (else the first). Whatever was there goes back to the pack.
+func equip(uid: String) -> bool:
+	var instance := pack.gear_by_uid(uid)
+	if instance.is_empty() or pack.is_equipped(uid):
+		return false
+	var slot: String = Catalog.item(instance["itemId"]).get("slot", "")
+	if slot == "":
+		return false
+	if slot == "ring":
+		slot = "ring1" if not pack.equipped.has("ring1") else ("ring2" if not pack.equipped.has("ring2") else "ring1")
+	pack.equipped[slot] = uid
+	_pack_changed()
+	hp_changed.emit(hero.hp, int(hero.stats["maxHp"]))
+	return true
+
+
+## Takes off whatever fills a slot (UNEQUIP).
+func unequip(slot: String) -> bool:
+	if not pack.equipped.has(slot):
+		return false
+	pack.equipped.erase(slot)
+	_pack_changed()
+	return true
+
+
+## Leaves items on the road (DROP): one, or `count` of them.
+func drop_item(item_id: String, count := 1) -> bool:
+	if pack.items.get(item_id, 0) <= 0:
+		return false
+	pack.remove_item(item_id, count)
+	_pack_changed()
+	return true
+
+
+## Leaves a gear piece behind (DROP_GEAR); never one being worn.
+func drop_gear(uid: String) -> bool:
+	if pack.is_equipped(uid) or pack.gear_by_uid(uid).is_empty():
+		return false
+	pack.gear.assign(pack.gear.filter(func(piece: Dictionary) -> bool: return piece["uid"] != uid))
+	_pack_changed()
+	return true
+
+
+## Drinks or eats something (USE_ITEM): health and mana up to their caps.
+## The cure, if any, is for the world to apply to the hero's live ailments.
+## Returns {used, text, cures}.
+func use_item(item_id: String) -> Dictionary:
+	var item := Catalog.item(item_id)
+	if pack.items.get(item_id, 0) <= 0 or not (item.has("restoreHp") or item.has("restoreMp") or item.has("cures")):
+		return {"used": false, "text": "", "cures": ""}
+	pack.remove_item(item_id)
+	var parts: Array[String] = []
+	if item.has("restoreHp"):
+		var healed := mini(int(hero.stats["maxHp"]), hero.hp + int(item["restoreHp"])) - hero.hp
+		hero.hp += healed
+		parts.append("%d HP" % healed)
+	if item.has("restoreMp"):
+		var restored := mini(int(hero.stats["maxMp"]), hero.mp + int(item["restoreMp"])) - hero.mp
+		hero.mp += restored
+		parts.append("%d %s" % [restored, Skills.resource_label(hero.role_id)])
+	_pack_changed()
+	healed.emit()
+	hp_changed.emit(hero.hp, int(hero.stats["maxHp"]))
+	var text := "You use %s." % item["name"]
+	if not parts.is_empty():
+		text += " Restored %s." % ", ".join(parts)
+	return {"used": true, "text": text, "cures": item.get("cures", "")}
+
+
 ## A stat point, spent (SPEND_STAT_POINT).
 func spend_stat_point(stat: String) -> bool:
 	if hero.stat_points <= 0 or stat not in Skills.STATS:
