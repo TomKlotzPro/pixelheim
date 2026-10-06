@@ -143,7 +143,7 @@ func _card() -> void:
 	add_child(title)
 	var word := "PIXELHEIM"
 	for i in word.length():
-		var letter := UiStyle.label(word[i], 72, UiStyle.LAMP)
+		var letter := UiStyle.heading(word[i], 60, UiStyle.LAMP)
 		letter.add_theme_color_override("font_outline_color", Color("2a1a08"))
 		letter.add_theme_constant_override("outline_size", 10)
 		letter.modulate.a = 0.0

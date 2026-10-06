@@ -37,7 +37,7 @@ func _ready() -> void:
 	backdrop.color = UiStyle.BACKDROP
 	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(backdrop)
-	add_child(UiStyle.label("Inventory", 24, UiStyle.INK, Vector2(80, 24)))
+	add_child(UiStyle.heading("Inventory", 20, UiStyle.INK, Vector2(80, 24)))
 	header = UiStyle.label("", 16, UiStyle.INK, Vector2(490, 32))
 	add_child(header)
 
@@ -167,7 +167,10 @@ func _row(index: int) -> Control:
 		name = String(item["name"]) + ("  x%d" % row["count"] if row["count"] > 1 else "")
 		stats = stat_line(item, 0, int(item["value"]))
 	text.add_child(UiStyle.label(name, 15, _rarity_color(row)))
-	text.add_child(UiStyle.label("%s    %s" % [stats, item.get("description", "")], 12, UiStyle.FADED))
+	var detail := UiStyle.label("%s    %s" % [stats, item.get("description", "")], 12, UiStyle.FADED)
+	detail.clip_text = true
+	detail.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	text.add_child(detail)
 	line.add_child(UiStyle.label(_primary_label(row), 13, UiStyle.LAMP if chosen else UiStyle.FADED))
 	return panel
 

@@ -37,7 +37,7 @@ func _ready() -> void:
 	backdrop.color = UiStyle.BACKDROP
 	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(backdrop)
-	add_child(UiStyle.label(shop["keeper"], 24, UiStyle.INK, Vector2(80, 32)))
+	add_child(UiStyle.heading(shop["keeper"], 18, UiStyle.INK, Vector2(80, 32)))
 	add_child(UiStyle.label(shop["greeting"], 14, UiStyle.FADED, Vector2(80, 66)))
 	gold_label = UiStyle.label("", 18, UiStyle.LAMP, Vector2(1060, 36))
 	add_child(gold_label)

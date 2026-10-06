@@ -55,8 +55,8 @@ func _ready() -> void:
 	card.custom_minimum_size = Vector2(view.x, 0)
 	card.alignment = BoxContainer.ALIGNMENT_CENTER
 	add_child(card)
-	for line: Array in [["Ascension", 15, UiStyle.FADED], [title, 34, UiStyle.LAMP], ["+1 bonus skill point", 15, UiStyle.INK]]:
-		var label := UiStyle.label(line[0], line[1], line[2])
+	for line: Array in [["Ascension", 15, UiStyle.FADED], [title, 30, UiStyle.LAMP], ["+1 bonus skill point", 15, UiStyle.INK]]:
+		var label := UiStyle.heading(line[0], line[1], line[2]) if line[0] == title else UiStyle.label(line[0], line[1], line[2])
 		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		label.add_theme_color_override("font_outline_color", Color(0.05, 0.04, 0.06))
 		label.add_theme_constant_override("outline_size", 6)
