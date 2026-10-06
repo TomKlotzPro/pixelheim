@@ -2,17 +2,14 @@ extends CharacterBody2D
 ## A monster in the field: wanders near its spawn, chases the hero on sight,
 ## bites on contact. Its numbers are the web bestiary's (`fighter` from
 ## Bestiary.spawn): hits land through Bestiary's damage formulas, and its
-## death pays out through GameState.defeat_monster (via the world).
+## death pays out through GameState.defeat_monster (via the world). It wears
+## the Puny sheet PunyArt assigns its species, walking the way it moves.
 
 const WANDER_SPEED := 22.0
 const CHASE_SPEED := 55.0
 const SIGHT_RADIUS := 96.0
 const CONTACT_RADIUS := 13.0
 const CONTACT_COOLDOWN := 0.9
-## Species drawn with the Pixel Crawler pack's animated sheets; every other
-## species wears its own generated two-beat idle sheet at 2x (art call: PIX-126).
-const CRAWLER_SHEETS := ["orc", "skeleton"]
-const GENERATED_SCALE := 2.0
 const ELITE_TINT := Color(1.0, 0.82, 0.7)
 
 var world: Node2D
@@ -31,21 +28,21 @@ var health_bar: ColorRect
 var health_bar_back: ColorRect
 ## Poison, burn and stun from the hero's afflicting passives.
 var ailments := Ailments.new()
+## PunyArt.monster spec, and the way it last faced.
+var art: Dictionary
+var facing := "down"
 
 
 func _ready() -> void:
-	var crawler: bool = fighter["id"] in CRAWLER_SHEETS
+	art = PunyArt.monster(fighter["id"])
 	sprite = AnimatedSprite2D.new()
-	sprite.sprite_frames = _build_frames(crawler)
-	var size := 1.0 if crawler else GENERATED_SCALE
-	if fighter["elite"]:
-		size *= 1.2
-		sprite.self_modulate = ELITE_TINT
+	sprite.sprite_frames = PunyArt.frames(art)
+	var size: float = art.get("scale", 1.0) * (1.2 if fighter["elite"] else 1.0)
+	var tint: Color = art.get("tint", Color.WHITE)
+	sprite.self_modulate = tint * ELITE_TINT if fighter["elite"] else tint
 	sprite.scale = Vector2.ONE * size
-	# Feet just below the node's center: crawler frames are normalized 48x48
-	# bottom-anchored; generated frames are 16px.
-	sprite.offset = Vector2(0, -17) if crawler else Vector2(0, -5)
-	sprite.play("idle")
+	sprite.position = Vector2(0, PunyArt.lift(art) * size)
+	_play("idle")
 	add_child(sprite)
 
 	var shape := CollisionShape2D.new()
@@ -71,13 +68,13 @@ func _ready() -> void:
 	health_bar_back = ColorRect.new()
 	health_bar_back.color = Color(0, 0, 0, 0.6)
 	health_bar_back.size = Vector2(16, 2)
-	health_bar_back.position = Vector2(-8, -34)
+	health_bar_back.position = Vector2(-8, -20 * size)
 	health_bar_back.visible = false
 	add_child(health_bar_back)
 	health_bar = ColorRect.new()
 	health_bar.color = Color(1, 0.8, 0.3) if fighter["elite"] else Color(0.9, 0.25, 0.25)
 	health_bar.size = Vector2(16, 2)
-	health_bar.position = Vector2(-8, -34)
+	health_bar.position = Vector2(-8, -20 * size)
 	health_bar.visible = false
 	add_child(health_bar)
 
@@ -90,7 +87,7 @@ func _physics_process(delta: float) -> void:
 		if dying:
 			return
 	if ailments.is_stunned():
-		sprite.play("idle")
+		_play("idle")
 		return
 	var player: CharacterBody2D = world.player
 	var to_player := player.global_position - global_position
@@ -98,6 +95,7 @@ func _physics_process(delta: float) -> void:
 		velocity = to_player.normalized() * CHASE_SPEED
 		if to_player.length() < CONTACT_RADIUS and can_bite:
 			can_bite = false
+			_play("attack" if sprite.sprite_frames.has_animation("attack_" + facing) else "sword")
 			player.take_hit(
 				Bestiary.monster_attack_damage(fighter, GameState.hero, GameState.pack, GameState.roll),
 				global_position, fighter.get("inflicts")
@@ -113,10 +111,12 @@ func _physics_process(delta: float) -> void:
 			wander_dir = dirs.pick_random()
 		velocity = wander_dir * WANDER_SPEED
 	move_and_slide()
-	sprite.play("run" if velocity.length() > 1 else "idle")
-	# Sheets face right; mirror when heading left.
-	if absf(velocity.x) > 0.5:
-		sprite.flip_h = velocity.x < 0
+	if velocity.length() > 1:
+		facing = _dir_of(velocity)
+	# Let a bite or a hurt finish before walking resumes.
+	if sprite.is_playing() and not sprite.sprite_frames.get_animation_loop(sprite.animation):
+		return
+	_play("walk" if velocity.length() > 1 else "idle")
 
 
 ## A landed swing: `damage` is already Bestiary.hero_attack_damage's verdict;
@@ -136,7 +136,7 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null) -> void:
 
 func _lose(damage: int, color: Color) -> void:
 	fighter["hp"] = maxi(0, int(fighter["hp"]) - damage)
-	world.float_number(damage, global_position + Vector2(0, -26), color)
+	world.float_number(damage, global_position + Vector2(0, -18), color)
 	health_bar.size.x = 16.0 * fighter["hp"] / fighter["maxHp"]
 	health_bar.visible = true
 	health_bar_back.visible = true
@@ -152,8 +152,9 @@ func _die() -> void:
 	hurtbox.collision_layer = 0
 	health_bar.visible = false
 	health_bar_back.visible = false
-	if sprite.sprite_frames.has_animation("death"):
-		sprite.play("death")
+	var death := "death_" + facing
+	if sprite.sprite_frames.has_animation(death):
+		sprite.play(death)
 		sprite.animation_finished.connect(func() -> void: queue_free())
 	else:
 		var tween := create_tween()
@@ -161,17 +162,13 @@ func _die() -> void:
 		tween.tween_callback(queue_free)
 
 
-func _build_frames(crawler: bool) -> SpriteFrames:
-	var frames := SpriteFrames.new()
-	frames.remove_animation("default")
-	if crawler:
-		for anim in [["idle", 4.0, true], ["run", 10.0, true], ["death", 10.0, false]]:
-			SheetFrames.add_normalized_strip(
-				frames, anim[0], "res://assets/crawler/%s_%s.png" % [fighter["id"], anim[0]],
-				anim[1], anim[2]
-			)
-	else:
-		var sheet := "res://assets/sprites/%s_idle.png" % Bestiary.monster(fighter["id"])["sprite"]
-		SheetFrames.add_strip(frames, "idle", sheet, 2.0, true)
-		SheetFrames.add_strip(frames, "run", sheet, 6.0, true)
-	return frames
+func _play(anim: String) -> void:
+	var name := PunyArt.pick(sprite.sprite_frames, anim, facing)
+	if sprite.animation != name or not sprite.is_playing():
+		sprite.play(name)
+
+
+static func _dir_of(motion: Vector2) -> String:
+	if absf(motion.x) >= absf(motion.y):
+		return "right" if motion.x >= 0 else "left"
+	return "down" if motion.y >= 0 else "up"

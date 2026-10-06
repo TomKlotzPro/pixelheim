@@ -551,13 +551,12 @@ func _collect_ground_treasure(cell: Vector2i) -> void:
 		chest_sprites.erase(chest["id"])
 
 ## The one interaction-prompt rule (interactionPrompt.ts): a villager beside
-## the hero wins, then a faced unopened chest. Villagers stand two tiles tall,
-## so their "!" floats higher.
+## the hero wins, then a faced unopened chest; the "!" floats over their head.
 func _update_prompt() -> void:
 	var beside := _npc_beside()
 	if not beside.is_empty():
 		prompt_label.visible = true
-		prompt_label.position = Vector2((player_cell + Vector2i(beside["side"])) * TILE) + Vector2(5, -30)
+		prompt_label.position = Vector2((player_cell + Vector2i(beside["side"])) * TILE) + Vector2(5, -20)
 		return
 	var chest := _chest_at(_facing_cell())
 	var show: bool = (
@@ -668,7 +667,8 @@ func _spawn_player() -> void:
 	actors.add_child(player)
 
 	camera = Camera2D.new()
-	camera.zoom = Vector2(3, 3)
+	# Shade's figures are 16px: 4x shows ~20x11 tiles, close to the web game's view.
+	camera.zoom = Vector2(4, 4)
 	camera.position_smoothing_enabled = true
 	camera.position_smoothing_speed = 8.0
 	camera.limit_left = 0
@@ -805,6 +805,39 @@ func _setup_input() -> void:
 ## window briefly): `godot --path godot -- --screenshot [fight] [kill] [saves]
 ## [--map <id>] [--walk l,d,r,u,...] [--web-save <file>]` scripts inputs,
 ## saves screenshot.png, quits. Documented in godot/README.md.
+## Harness `lineup`: the cast PunyArt assigns, side by side with names.
+func _lineup() -> void:
+	for node in get_tree().get_nodes_in_group("mobs") + get_tree().get_nodes_in_group("npcs"):
+		node.queue_free()
+	camera.zoom = Vector2(2.6, 2.6)
+	var rows := [
+		PunyArt.HEROES.keys().map(func(role: String) -> Array: return [role, PunyArt.hero(role)]),
+		PunyArt.VILLAGERS.keys().map(func(id: String) -> Array: return [id, PunyArt.villager(id)]),
+		PunyArt.MONSTERS.keys().map(func(id: String) -> Array: return [id, PunyArt.monster(id)]),
+	]
+	var origin := player.position + Vector2(-210, -100)
+	var y := 0
+	for row: Array in rows:
+		for dir in ["down", "right"]:
+			var x := 0
+			for entry: Array in row:
+				var spec: Dictionary = entry[1]
+				var sprite := AnimatedSprite2D.new()
+				sprite.sprite_frames = PunyArt.frames(spec)
+				sprite.play(PunyArt.pick(sprite.sprite_frames, "walk", dir))
+				sprite.scale = Vector2.ONE * spec.get("scale", 1.0)
+				sprite.self_modulate = spec.get("tint", Color.WHITE)
+				sprite.position = origin + Vector2(x * 28, y * 34)
+				add_child(sprite)
+				if dir == "down":
+					var label := Label.new()
+					label.text = entry[0]
+					label.add_theme_font_size_override("font_size", 5)
+					label.position = sprite.position + Vector2(-12, 9)
+					add_child(label)
+				x += 1
+			y += 1
+
 func _run_test_harness() -> void:
 	var args := OS.get_cmdline_user_args()
 	if not args.has("--screenshot"):
@@ -826,6 +859,10 @@ func _run_test_harness() -> void:
 		screen.world = self
 		add_child(screen)
 		await get_tree().create_timer(0.3).timeout
+	if args.has("lineup"):
+		# Every hero role, villager and monster sheet, walking down then right.
+		_lineup()
+		await get_tree().create_timer(0.5).timeout
 	if args.has("shop"):
 		# Pair with `--map town_shop|town_smith|town_alchemist`; `--tab N` picks a tab.
 		GameState.pack.gold = 500

@@ -75,10 +75,7 @@ func test_every_villager_stands_on_walkable_ground_with_a_sprite() -> void:
 	for npc in everyone:
 		var map := MapData.load_by_id(npc["mapId"])
 		assert_true(map.is_walkable(Vector2i(npc["x"], npc["y"])), "%s stands in a wall" % npc["id"])
-		assert_true(
-			ResourceLoader.exists("res://assets/sprites/%s_idle.png" % npc["sprite"]),
-			"%s idle sheet not synced" % npc["sprite"]
-		)
+		assert_true(PunyArt.VILLAGERS.has(npc["sprite"]), "%s has no Puny sheet" % npc["sprite"])
 		assert_gt(npc["lines"].size(), 0, "%s has nothing to say" % npc["id"])
 
 

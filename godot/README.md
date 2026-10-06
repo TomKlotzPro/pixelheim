@@ -70,6 +70,7 @@ godot --path godot -- --screenshot shop --map town_smith --tab 2   # a keeper's 
 godot --path godot -- --screenshot hall --map town_hall   # the town ledger (20000g); `bank` for Mirelle's
 godot --path godot -- --screenshot --map town --town-tier 4  # preview the village at another age
 godot --path godot -- --screenshot home --map town_house --house-tier 3 --mode nook  # a house fixture (storage|workbench|trophies|nook|furniture)
+godot --path godot -- --screenshot lineup             # every hero role, villager and monster sheet, walking down and right
 godot --path godot -- --screenshot saves              # the saves screen
 godot --path godot -- --screenshot saves --web-save res://test/fixtures/web_save_v4.txt
                                                       # first-visit web import offer
@@ -103,7 +104,8 @@ gzipped over the wire). CI deploys it to `/godot/` on the Pages site.
 - `scripts/home_screen.gd` — the house's barrel, workbench, trophy shelf, nook and furniture placement (house rules live in `state/town.gd`)
 - `scripts/ui_style.gd` — the menus' shared palette and widgets until the UI suite (PIX-127)
 - `assets/sprites/` — Pixelheim generated art (synced from `public/sprites/`)
-- `assets/crawler/` — [Pixel Crawler](https://anokolisa.itch.io/free-pixel-art-asset-pack-topdown-tileset-rpg-16x16-sprites) pack by Anokolisa; license in `TERMS.txt` (commercial use OK, no attribution required, do not resell the assets)
+- `assets/puny/` — characters (hero, villagers, bestiary) by Shade: [Puny Characters + PunyMonsters](https://merchant-shade.itch.io/16x16-puny-characters) and [Mini World Sprites](https://merchant-shade.itch.io/16x16-mini-world-sprites), CC0 (`LICENSE.txt`); `scripts/puny_art.gd` assigns who wears which sheet and knows each sheet family's layout
+- `assets/crawler/` — terrain and furniture from the [Pixel Crawler](https://anokolisa.itch.io/free-pixel-art-asset-pack-topdown-tileset-rpg-16x16-sprites) pack by Anokolisa; license in `TERMS.txt` (commercial use OK, no attribution required, do not resell the assets)
 - `assets/crawler/terrain/` — 16px fill tiles cut from the pack's sheets by `tools/extract_terrain.gd` (committed; re-run the tool if crop coordinates change)
 - `assets/maps/*.json` — all world maps (grid, spawn, portals) exported from `src/world/maps` by `scripts/export-maps.ts`; regenerate with `pnpm godot:sync`
 - `assets/data/catalog.json` — item, role and skill data the save layer needs, exported by the same script

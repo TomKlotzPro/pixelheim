@@ -1,18 +1,14 @@
 extends CharacterBody2D
-## Action hero using Pixel Crawler Body_A sheets: idle/run/slice/hit/death in
-## three directions (side flips for left). The slice animation carries its own
-## weapon, so the hitbox simply tracks facing while the swing frames play.
-## Frames are 64x64 with feet anchored at y=48.
+## The action hero, drawn from Shade's Puny sheet for the hero's role
+## (PunyArt, PIX-130): idle/walk/hurt/death in four directions, and the role's
+## own attack (sword, staff or bow). The attack animation carries the weapon,
+## so the hitbox tracks facing while the striking frames play.
 
 const SPEED := 95.0
 const ATTACK_COOLDOWN := 0.45
 const INVULNERABLE_SECONDS := 0.8
-
-## anim -> [fps, loops]
-const ANIMS := {
-	"idle": [5.0, true], "run": [10.0, true], "slice": [20.0, false],
-	"hit": [12.0, false], "death": [10.0, false],
-}
+## Frames of each attack where the weapon bites; wind-up and follow-through are safe.
+const STRIKE_FRAMES := {"sword": [1, 2], "staff": [1, 2], "bow": [2, 3]}
 
 var world: Node2D
 ## Mirrors GameState.hero.hp, the web hero's real health (PIX-126).
@@ -29,12 +25,16 @@ var hitbox: Area2D
 ## Poison, burn and stun on the hero (web turns run on a 1s clock).
 var ailments := Ailments.new()
 var ailment_icon: Sprite2D
+## PunyArt.hero spec: sheet, attack kind, tint.
+var art: Dictionary
 
 func _ready() -> void:
 	hp = GameState.hero.hp
+	art = PunyArt.hero(GameState.hero.role_id)
 	sprite = AnimatedSprite2D.new()
-	sprite.sprite_frames = _build_frames()
-	sprite.offset = Vector2(0, -11)
+	sprite.sprite_frames = PunyArt.frames(art)
+	sprite.position = Vector2(0, PunyArt.lift(art))
+	sprite.self_modulate = art["tint"]
 	add_child(sprite)
 	_play("idle")
 
@@ -59,7 +59,7 @@ func _ready() -> void:
 	sprite.animation_finished.connect(_on_animation_finished)
 	sprite.frame_changed.connect(_on_frame_changed)
 	ailment_icon = Sprite2D.new()
-	ailment_icon.position = Vector2(0, -40)
+	ailment_icon.position = Vector2(0, -22)
 	ailment_icon.visible = false
 	add_child(ailment_icon)
 
@@ -95,7 +95,7 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	if input != Vector2.ZERO:
 		face(input)
-		_play("run")
+		_play("walk")
 	else:
 		_play("idle")
 	if Input.is_action_just_pressed("attack"):
@@ -115,7 +115,7 @@ func attack() -> void:
 	hit_this_swing = []
 	velocity = Vector2.ZERO
 	hitbox.position = facing * 16
-	_play("slice")
+	_play(art["attack"])
 	get_tree().create_timer(ATTACK_COOLDOWN).timeout.connect(
 		func() -> void: attack_ready = true
 	)
@@ -126,7 +126,7 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null) -> void:
 		return
 	GameState.hurt(damage)
 	hp = GameState.hero.hp
-	world.float_number(damage, global_position + Vector2(0, -30), Color(1, 0.35, 0.35))
+	world.float_number(damage, global_position + Vector2(0, -22), Color(1, 0.35, 0.35))
 	if hp > 0 and ailments.inflict(infliction, GameState.roll, HeroRules.passives(GameState.hero)):
 		world.log_line("You are afflicted by %s!" % infliction["kind"])
 		_show_ailment()
@@ -136,7 +136,7 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null) -> void:
 		_die()
 		return
 	if not attacking:
-		_play("hit")
+		_play("hurt")
 	invulnerable = true
 	var tween := create_tween().set_loops(4)
 	tween.tween_property(sprite, "modulate:a", 0.3, 0.1)
@@ -156,7 +156,7 @@ func _tick_ailments(delta: float) -> void:
 	for tick in ailments.tick(delta):
 		GameState.hurt(tick["damage"])
 		hp = GameState.hero.hp
-		world.float_number(tick["damage"], global_position + Vector2(0, -30), Color(0.75, 0.5, 1))
+		world.float_number(tick["damage"], global_position + Vector2(0, -22), Color(0.75, 0.5, 1))
 		if hp == 0:
 			ailments.clear()
 			_die()
@@ -191,34 +191,24 @@ func _on_animation_finished() -> void:
 		attacking = false
 		hitbox.monitoring = false
 		_play("idle")
-	elif not dead and sprite.animation.begins_with("hit"):
+	elif not dead and sprite.animation.begins_with("hurt"):
 		_play("idle")
 
-## The blade only bites during the swing frames (3-6 of 8) — wind-up and
-## follow-through are safe, matching what the animation shows.
+## The weapon only bites on the striking frames, matching what the sheet shows.
 func _on_frame_changed() -> void:
 	if attacking:
-		hitbox.monitoring = sprite.frame >= 3 and sprite.frame <= 6
+		var strike: Array = STRIKE_FRAMES.get(art["attack"], [1, 2])
+		hitbox.monitoring = sprite.frame >= strike[0] and sprite.frame <= strike[1]
 
+## Shade draws all four directions, so there's no mirroring.
 func _play(anim: String) -> void:
 	var dir := "down"
 	if facing == Vector2.UP:
 		dir = "up"
-	elif facing.x != 0:
-		dir = "side"
-	# Side sheets face right in the pack (verified frame-by-frame, PIX-121);
-	# mirror for leftward facing.
-	sprite.flip_h = facing == Vector2.LEFT
-	sprite.play("%s_%s" % [anim, dir])
-
-func _build_frames() -> SpriteFrames:
-	var frames := SpriteFrames.new()
-	frames.remove_animation("default")
-	for anim: String in ANIMS:
-		for dir in ["down", "side", "up"]:
-			var name := "%s_%s" % [anim, dir]
-			SheetFrames.add_strip(
-				frames, name, "res://assets/crawler/hero_%s.png" % name,
-				ANIMS[anim][0], ANIMS[anim][1], 64
-			)
-	return frames
+	elif facing == Vector2.RIGHT:
+		dir = "right"
+	elif facing == Vector2.LEFT:
+		dir = "left"
+	var name := PunyArt.pick(sprite.sprite_frames, anim, dir)
+	if sprite.animation != name or not sprite.is_playing():
+		sprite.play(name)

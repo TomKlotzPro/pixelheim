@@ -5,7 +5,7 @@ extends CanvasLayer
 ## confirms anything destructive), every action also clickable. Pauses the
 ## world while open; switching heroes reloads the world scene.
 
-const PORTRAIT := Rect2(20, 16, 24, 34)  # hero body within the 64px idle frame
+const PORTRAIT := Rect2(8, 6, 16, 20)  # hero body within a 32px Puny idle frame
 
 ## A save found in this browser's web game (or passed in by the harness).
 var web_save := {}
@@ -249,13 +249,14 @@ func _fill_card(card: PanelContainer, index: int) -> void:
 	card.add_child(row)
 
 	var portrait := TextureRect.new()
-	portrait.custom_minimum_size = PORTRAIT.size * 2
+	portrait.custom_minimum_size = PORTRAIT.size * 3
 	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	if not summary.is_empty():
 		var frame := AtlasTexture.new()
-		frame.atlas = load("res://assets/crawler/hero_idle_down.png")
+		# The slot's own hero: their role's Puny sheet, facing down.
+		frame.atlas = load(PunyArt.path(PunyArt.hero(summary["roleId"])["sheet"]))
 		frame.region = PORTRAIT
 		portrait.texture = frame
 	row.add_child(portrait)

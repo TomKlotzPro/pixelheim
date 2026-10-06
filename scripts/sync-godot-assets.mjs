@@ -22,30 +22,7 @@ const SPRITE_PATTERNS = [
   /^furniture_.*\.png$/,
   /^effect_.*\.png$/,
 ];
-const SPRITE_EXTRAS = [
-  "atlas.json",
-  "road_glint.png",
-  "herb_patch.png",
-  "hero_warrior.png",
-  "hero_warrior_walk.png",
-  "hero_warrior_walk_up.png",
-  "slime.png",
-  "wolf.png",
-  // the bestiary's two-beat idle sheets (PIX-126)
-  ...["slime", "goblin", "skeleton", "wolf", "orc", "ghost", "golem", "troll", "wyvern", "dragon"].map(
-    (id) => `${id}_idle.png`,
-  ),
-  ...["boneknight", "shade", "mimic", "imp", "lich"].map((id) => `${id}_idle.png`),
-  // villagers' two-beat idle sheets (PIX-123)
-  "elder_idle.png",
-  "villager_idle.png",
-  "villager_woman_idle.png",
-  "merchant_idle.png",
-  "smith_idle.png",
-  "alchemist_idle.png",
-  "innkeeper_idle.png",
-  "mayor_idle.png",
-];
+const SPRITE_EXTRAS = ["atlas.json", "road_glint.png", "herb_patch.png"];
 
 const check = process.argv.includes("--check");
 const drifted = [];
