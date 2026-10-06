@@ -681,6 +681,25 @@ func _build_props(data: MapData) -> Node2D:
 		# Above the 2-tile-tall arch doors.
 		label.position = Vector2(int(sign_def["x"]) * TILE + 8 - 32, int(sign_def["y"]) * TILE - 26)
 		root.add_child(label)
+		# Craft stations advertise their trade with an icon over the name, on
+		# a little plate in the web's sign wood so it reads against any wall.
+		if sign_def.has("icon"):
+			var texture: Texture2D = load("res://assets/sprites/%s.png" % sign_def["icon"])
+			var size := texture.get_size() + Vector2(4, 4)
+			var plate := ColorRect.new()
+			plate.color = Color("2a2118")
+			plate.size = size
+			plate.position = Vector2(int(sign_def["x"]) * TILE + 8 - size.x / 2, label.position.y - size.y + 1)
+			var rim := ColorRect.new()
+			rim.color = Color("8a6238")
+			rim.size = Vector2(size.x, 1)
+			plate.add_child(rim)
+			var icon := TextureRect.new()
+			icon.texture = texture
+			icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+			icon.position = Vector2(2, 2)
+			plate.add_child(icon)
+			root.add_child(plate)
 	return root
 
 func _chest_at(cell: Vector2i) -> Dictionary:
@@ -1201,7 +1220,11 @@ func _run_test_harness() -> void:
 		creation.name_field.text = "Robin"
 		creation._refresh()
 		await get_tree().create_timer(0.4).timeout
-	if args.has("pause") or args.has("options"):
+	if args.has("title") and args.has("options"):
+		# Options over the title, before any hero is made.
+		get_children().filter(func(node: Node) -> bool: return node.has_method("as_splash"))[0]._options()
+		await get_tree().create_timer(0.3).timeout
+	elif args.has("pause") or args.has("options"):
 		if args.has("scanlines"):
 			GameState.settings.scanlines = true
 			apply_video()

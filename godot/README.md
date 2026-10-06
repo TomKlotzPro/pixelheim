@@ -77,6 +77,7 @@ godot --path godot -- --screenshot saves --web-save res://test/fixtures/web_save
 godot --path godot -- --screenshot --map town portal  # walk into the nearest doorway
 godot --path godot -- --screenshot die                # fall, then wake at the inn
 godot --path godot -- --screenshot title splash       # the title as the boot splash
+godot --path godot -- --screenshot title options     # options over the title, before any hero
 ```
 
 The final `print` line reports current map id, hero cell, HP and gold for assertions.
