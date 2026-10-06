@@ -361,12 +361,19 @@ func _try_interact() -> void:
 	var beside := _npc_beside()
 	if not beside.is_empty():
 		player.face(Vector2(beside["side"]))
-		_talk(beside["npc"])
+		# Keepers trade instead of chatting: anyone in a shop opens its counter.
+		if GameState.active_shop() != "":
+			_open_shop()
+		else:
+			_talk(beside["npc"])
 		return
 	var chest := _chest_at(_facing_cell())
 	if chest.is_empty() or chest["look"] != "chest" or GameState.is_opened(chest):
 		return
 	_open_chest(chest)
+
+func _open_shop() -> void:
+	add_child(preload("res://scripts/shop_screen.gd").new())
 
 func _talk(npc: Dictionary) -> void:
 	var box := preload("res://scripts/dialogue_box.gd").new()
@@ -639,6 +646,15 @@ func _run_test_harness() -> void:
 		var screen := preload("res://scripts/map_screen.gd").new()
 		screen.world = self
 		add_child(screen)
+		await get_tree().create_timer(0.3).timeout
+	if args.has("shop"):
+		# Pair with `--map town_shop|town_smith|town_alchemist`; `--tab N` picks a tab.
+		GameState.pack.gold = 500
+		var screen: Node = preload("res://scripts/shop_screen.gd").new()
+		add_child(screen)
+		var tab_index := args.find("--tab")
+		if tab_index >= 0 and tab_index + 1 < args.size():
+			screen._switch(int(args[tab_index + 1]))
 		await get_tree().create_timer(0.3).timeout
 	if args.has("saves"):
 		# `--web-save <file>` stands in for a browser's web save (a code or JSON)

@@ -39,7 +39,7 @@ The React/Pixi web game (`src/`) is being ported to Godot 4.7 (`godot/`), one Li
 ```sh
 godot --headless --path godot --import                        # after new assets/scripts
 godot --headless --path godot -s res://addons/gut/gut_cmdln.gd # GUT; ALSO grep the output for "Parse Error"
-godot --path godot -- --screenshot [--map <id>] [--walk l,d,r,u] [fight] [kill] [chest] [talk] [near] [saves] [night] [worldmap] [--slot N]
+godot --path godot -- --screenshot [--map <id>] [--walk l,d,r,u] [fight] [kill] [chest] [talk] [near] [shop [--tab N]] [saves] [night] [worldmap] [--slot N]
 ```
 
 - GUT **exits 0 when a test file fails to parse** (the whole suite is silently skipped); CI greps for it, do the same locally.

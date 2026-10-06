@@ -54,6 +54,26 @@ func add_item(item_id: String, count := 1) -> void:
 	items[item_id] = items.get(item_id, 0) + count
 
 
+## Takes up to `count`; an emptied stack disappears (removeItem).
+func remove_item(item_id: String, count := 1) -> void:
+	var left: int = items.get(item_id, 0) - count
+	if left > 0:
+		items[item_id] = left
+	else:
+		items.erase(item_id)
+
+
+func gear_by_uid(uid: String) -> Dictionary:
+	for instance in gear:
+		if instance["uid"] == uid:
+			return instance
+	return {}
+
+
+func is_equipped(uid: String) -> bool:
+	return uid in equipped.values()
+
+
 ## Stackables plus unequipped gear; what you wear does not weigh you down.
 func carried_weight() -> int:
 	var worn := equipped.values()

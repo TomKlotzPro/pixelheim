@@ -60,6 +60,7 @@ godot --path godot -- --screenshot fight              # orc fight, mid-swing
 godot --path godot -- --screenshot fight kill         # swing until it dies
 godot --path godot -- --screenshot talk --map town_shop   # talk to the map's first villager
 godot --path godot -- --screenshot near --map town_hall   # stand beside them (the "!" prompt)
+godot --path godot -- --screenshot shop --map town_smith --tab 2   # a keeper's counter (500g), tab by index
 godot --path godot -- --screenshot saves              # the saves screen
 godot --path godot -- --screenshot saves --web-save res://test/fixtures/web_save_v4.txt
                                                       # first-visit web import offer
@@ -88,6 +89,7 @@ gzipped over the wire). CI deploys it to `/godot/` on the Pages site.
 - `scripts/state/` — the `GameState` autoload and its typed sections (hero, pack, settlement, progression, world), the save codec, slots and settings
 - `scripts/player.gd` / `scripts/enemy.gd` — live combat actors
 - `scripts/npcs.gd` / `scripts/npc.gd` / `scripts/dialogue_box.gd` — villagers: who lives where (ported from `src/world/npcs.ts`), their pacing, and conversations
+- `scripts/state/economy.gd` + `scripts/shop_screen.gd` — shops, forge and crafting rules (ported from `src/game/economy`) and the keeper's counter
 - `scripts/ui_style.gd` — the menus' shared palette and widgets until the UI suite (PIX-127)
 - `assets/sprites/` — Pixelheim generated art (synced from `public/sprites/`)
 - `assets/crawler/` — [Pixel Crawler](https://anokolisa.itch.io/free-pixel-art-asset-pack-topdown-tileset-rpg-16x16-sprites) pack by Anokolisa; license in `TERMS.txt` (commercial use OK, no attribution required, do not resell the assets)
@@ -95,3 +97,4 @@ gzipped over the wire). CI deploys it to `/godot/` on the Pages site.
 - `assets/maps/*.json` — all world maps (grid, spawn, portals) exported from `src/world/maps` by `scripts/export-maps.ts`; regenerate with `pnpm godot:sync`
 - `assets/data/catalog.json` — item, role and skill data the save layer needs, exported by the same script
 - `assets/data/npcs.json` — villagers and recruits with their lines, exported by the same script
+- `assets/data/economy.json` — shops and their stock per unlocked floor, recipes, stations, rarities

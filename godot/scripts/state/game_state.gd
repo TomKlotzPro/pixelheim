@@ -34,6 +34,8 @@ var slots := SaveSlots.new()
 var settings := GameSettings.new()
 var slot := NO_SLOT
 var dirty := false
+## Dice for chance rolls (double brews); tests swap in a loaded die.
+var roll: Callable = func() -> float: return randf()
 ## True when boot found no save in any slot: a first visit (offer the web hero).
 var first_run := false
 var _booted := false
@@ -227,6 +229,114 @@ func is_opened(chest: Dictionary) -> bool:
 func carry_capacity() -> int:
 	var strength: int = hero.stats.get("strength", 0) + pack.granted_stat("strength")
 	return 60 + strength * 3 + hero.carry_bonus()
+
+
+## The shop the hero stands in (activeShopId); "" outside shops.
+func active_shop() -> String:
+	return Economy.shop_at(world.map_id)
+
+
+func town_tier() -> int:
+	return clampi(settlement.town_tier, 1, 4)
+
+
+## A gem on the trophy shelf sweetens every sale by 10% (trophySellMultiplier).
+func trophy_sell_multiplier() -> float:
+	return 1.1 if "gem" in settlement.house.get("trophies", []) else 1.0
+
+
+## BUY_ITEM: in stock here at this progress, and affordable. Shops sell honest
+## common gear; the exciting rolls come from monsters.
+func buy_item(item_id: String) -> bool:
+	var shop_id := active_shop()
+	if shop_id == "" or item_id not in Economy.shop_stock(shop_id, progression.unlocked_level):
+		return false
+	var price := Economy.buy_price(item_id)
+	if pack.gold < price:
+		return false
+	pack.gold -= price
+	if Catalog.item(item_id).has("slot"):
+		pack.gear.append(InventoryState.create_gear(item_id))
+	else:
+		pack.add_item(item_id)
+	_pack_changed()
+	return true
+
+
+## SELL_ITEM: one of a stack, at this shop's rate. Returns the gold earned (0 = refused).
+func sell_item(item_id: String) -> int:
+	var shop_id := active_shop()
+	if shop_id == "" or pack.items.get(item_id, 0) <= 0:
+		return 0
+	var price := floori(Economy.sell_price_at(shop_id, item_id, town_tier()) * trophy_sell_multiplier())
+	pack.gold += price
+	pack.remove_item(item_id)
+	_pack_changed()
+	return price
+
+
+## SELL_GEAR: never what the hero is wearing. Returns the gold earned (0 = refused).
+func sell_gear(uid: String) -> int:
+	var shop_id := active_shop()
+	var instance := pack.gear_by_uid(uid)
+	if shop_id == "" or instance.is_empty() or pack.is_equipped(uid):
+		return 0
+	var price := floori(
+		Economy.gear_sell_price_at(shop_id, instance, town_tier()) * trophy_sell_multiplier()
+	)
+	pack.gold += price
+	pack.gear.erase(instance)
+	_pack_changed()
+	return price
+
+
+## UPGRADE_GEAR at the forge: +1 bonus for gold, up to the smithing cap; pays smithing xp.
+func upgrade_gear(uid: String) -> bool:
+	var shop_id := active_shop()
+	var instance := pack.gear_by_uid(uid)
+	if shop_id == "" or not Economy.shop(shop_id).get("forge", false) or instance.is_empty():
+		return false
+	var smithing: int = hero.jobs["smithing"]["level"]
+	if instance["bonus"] >= Economy.forge_cap_for(smithing):
+		return false
+	var cost := Economy.forge_cost_for(instance["itemId"], instance["bonus"], smithing)
+	if pack.gold < cost:
+		return false
+	pack.gold -= cost
+	instance["bonus"] += 1
+	Economy.grant_job_xp(hero.jobs, "smithing", 10)
+	_pack_changed()
+	return true
+
+
+## CRAFT at the trade's station: materials in, the item out. Forged pieces are
+## gear instances; skilled alchemists sometimes brew two. Returns {made, count}.
+func craft(recipe_id: String) -> Dictionary:
+	var entry := Economy.recipe(recipe_id)
+	if entry.is_empty() or not Economy.can_craft(entry, pack.items, hero.jobs):
+		return {"made": false, "count": 0}
+	var job: String = entry["job"]["id"]
+	if not Economy.at_job_station(job, world.map_id, settlement.house.get("workbench", false)):
+		return {"made": false, "count": 0}
+	for item_id: String in entry["needs"]:
+		pack.remove_item(item_id, entry["needs"][item_id])
+	var count := 1
+	if Catalog.item(entry["itemId"]).has("slot"):
+		pack.gear.append(InventoryState.create_gear(entry["itemId"]))
+		Economy.grant_job_xp(hero.jobs, "smithing", 10)
+	else:
+		if roll.call() < Economy.double_brew_chance(hero.jobs["alchemy"]["level"]):
+			count = 2
+		pack.add_item(entry["itemId"], count)
+		Economy.grant_job_xp(hero.jobs, "alchemy", 8)
+	_pack_changed()
+	return {"made": true, "count": count}
+
+
+func _pack_changed() -> void:
+	mark_dirty()
+	gold_changed.emit(pack.gold)
+	inventory_changed.emit()
 
 
 ## Grants a chest's payout (openChest in reducers/world.ts): gold, a stack, a
