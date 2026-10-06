@@ -47,5 +47,5 @@
       }
     }
   ],
-  "ignorePatterns": ["dist", "test-results", "playwright-report", "node_modules"]
+  "ignorePatterns": ["dist", "test-results", "playwright-report", "node_modules", "godot/assets"]
 }
