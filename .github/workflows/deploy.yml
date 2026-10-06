@@ -33,8 +33,14 @@ jobs:
       - name: Install Playwright browser
         run: pnpm exec playwright install chromium --with-deps
       - run: pnpm test:e2e
-      # The Godot build ships alongside the web game at /godot/ on the
-      # Pages site (single-threaded export, no special headers needed).
+      # The site (PIX-129): the Godot build at the root, the web game as the
+      # classic edition at /classic/ (same origin, so the Godot build can
+      # still bring a web hero across), and old /godot/ links forwarding to
+      # the root. The single-threaded export needs no special headers.
+      - name: Build the classic web edition
+        run: pnpm exec vite build --outDir site/classic
+        env:
+          VITE_BASE: /pixelheim/classic/
       - name: Cache Godot binary and export templates
         uses: actions/cache@v4
         with:
@@ -59,18 +65,26 @@ jobs:
             mv templates/web_* "$TDIR/"
           fi
           echo "$HOME/godot-bin" >> "$GITHUB_PATH"
-      - name: Build Godot web export into dist/godot
+      - name: Build the Godot web export at the site root
         run: |
           godot --headless --path godot --import
           mkdir -p godot/export/web
           godot --headless --path godot --export-release Web export/web/index.html
-          mkdir -p dist/godot
-          cp -R godot/export/web/. dist/godot/
+          cp -R godot/export/web/. site/
+          mkdir -p site/godot
+          cat > site/godot/index.html <<'HTML'
+          <!doctype html>
+          <meta charset="utf-8">
+          <title>Pixelheim</title>
+          <meta http-equiv="refresh" content="0; url=../">
+          <link rel="canonical" href="../">
+          <p>Pixelheim has moved to <a href="../">its home</a>.</p>
+          HTML
       # Publishes to the gh-pages branch root; PR previews live under
       # pr-preview/ and must survive production deploys.
       - uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: dist
+          folder: site
           branch: gh-pages
           clean-exclude: pr-preview/
           force: false

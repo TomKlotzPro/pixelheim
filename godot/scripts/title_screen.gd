@@ -166,6 +166,7 @@ func _card() -> void:
 		options.append({"label": "Continue  -  %s, Lv %d" % [GameState.hero.hero_name, GameState.hero.level], "action": _continue})
 	options.append({"label": "New Game", "action": _new_game})
 	options.append({"label": "Saves", "action": _saves})
+	options.append({"label": "Classic edition", "action": _classic})
 	_draw_menu()
 	var version: String = SaveCodec.parse_json(FileAccess.get_file_as_string("res://assets/data/meta.json"))["version"]
 	var footer := UiStyle.label("v%s - a retro RPG, now in Godot" % version, 13, UiStyle.FADED, Vector2(0, 690))
@@ -225,6 +226,15 @@ func _new_game() -> void:
 func _saves() -> void:
 	_leave()
 	world._open_saves()
+
+
+## The web game this build grew from, still playable at /classic/ (same
+## site, so its heroes can be brought across from Saves).
+func _classic() -> void:
+	if OS.has_feature("web"):
+		JavaScriptBridge.eval("window.location.href = 'classic/'")
+	else:
+		OS.shell_open("https://tomklotzpro.github.io/pixelheim/classic/")
 
 
 func _leave() -> void:

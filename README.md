@@ -13,7 +13,9 @@
 
 ## Play it
 
-**https://tomklotzpro.github.io/pixelheim/** - deployed to GitHub Pages on every push to `main`. Every pull request gets its own playable preview.
+**https://tomklotzpro.github.io/pixelheim/** - the Godot 4.7 edition ([`godot/`](godot/README.md)), deployed to GitHub Pages on every push to `main`.
+
+**https://tomklotzpro.github.io/pixelheim/classic/** - the classic React/PixiJS edition described below. Both share one origin, so a classic hero can move into the Godot edition from its saves screen. Every pull request gets its own playable preview of the classic edition. Where each feature stands in Godot: [docs/godot-parity.md](docs/godot-parity.md).
 
 ## The game
 

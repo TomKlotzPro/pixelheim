@@ -133,6 +133,11 @@ export function TitleScreen({ canContinue, onNewGame, onContinue, onOpenOptions 
             Options
           </button>
         </div>
+        {import.meta.env.BASE_URL.endsWith("/classic/") && (
+          <a className="changelog-link" href="../">
+            This is the classic web edition. Play Pixelheim in its new home
+          </a>
+        )}
         <button className="changelog-link" onClick={openChangelog}>
           v{GAME_VERSION} - a retro RPG built with React + TypeScript
           {showNewBadge && <span className="new-badge">NEW</span>}
