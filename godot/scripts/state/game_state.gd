@@ -50,6 +50,11 @@ var dirty := false
 var roll: Callable = func() -> float: return randf()
 ## True when boot found no save in any slot: a first visit (offer the web hero).
 var first_run := false
+## The title has been passed this session (it greets the first load only).
+var title_seen := false
+## A plain launch found no hero in its slot: a stand-in plays behind the title
+## and is never written, until a hero is made or brought in.
+var standing_in := false
 var _booted := false
 var _unsaved_seconds := 0.0
 
@@ -81,6 +86,8 @@ func boot(args: PackedStringArray) -> void:
 	)
 	if saved.is_empty():
 		new_game()
+		# A plain launch waits for the title's hero; a named slot starts at once.
+		standing_in = slot_index < 0
 		save_now()
 	else:
 		apply(saved)
@@ -103,11 +110,25 @@ func play_slot(target: int) -> void:
 
 
 ## Writes a brand-new hero into a slot (replacing whatever was there) and plays it.
-func new_hero_in(target: int) -> void:
+func new_hero_in(target: int, name := DEFAULT_HERO_NAME, role_id := DEFAULT_ROLE, look := 0) -> void:
 	save_now()
 	_use_slot(target)
-	new_game()
+	new_game(name, role_id, look)
 	save_now()
+	if settings.last_slot != target:
+		settings.last_slot = target
+		settings.save_file()
+
+
+## Where a new hero should live: the slot in hand while a stand-in holds it,
+## else the first empty one; 0 when all are taken.
+func free_slot() -> int:
+	if standing_in:
+		return slot
+	for n in range(1, SaveSlots.SLOT_COUNT + 1):
+		if slots.summary(n).is_empty():
+			return n
+	return 0
 
 
 ## Brings a migrated save (the web game's, a pasted code) into a slot and plays it.
@@ -134,17 +155,18 @@ func save_code() -> String:
 func _use_slot(target: int) -> void:
 	slot = target
 	first_run = false
+	standing_in = false
 	if settings.last_slot != target:
 		settings.last_slot = target
 		settings.save_file()
 
 
 ## A fresh level-1 hero waking in the village (CREATE_HERO).
-func new_game(name := DEFAULT_HERO_NAME, role_id := DEFAULT_ROLE) -> void:
+func new_game(name := DEFAULT_HERO_NAME, role_id := DEFAULT_ROLE, look := 0) -> void:
 	var state := SaveCodec.initial_state()
 	state.merge(SaveCodec.RESUME_INTO, true)
 	var weapon := InventoryState.create_gear(STARTER_WEAPONS.get(role_id, "rusty_sword"))
-	state["hero"] = HeroState.create(name, role_id).to_dict()
+	state["hero"] = HeroState.create(name, role_id, look).to_dict()
 	state["gold"] = STARTER_GOLD
 	state["inventory"] = STARTER_ITEMS.duplicate()
 	state["gear"] = [weapon]
@@ -186,7 +208,8 @@ func mark_dirty() -> void:
 func save_now() -> void:
 	dirty = false
 	_unsaved_seconds = 0.0
-	if slot != NO_SLOT:
+	# The title's stand-in hero is never written; a made or brought hero is.
+	if slot != NO_SLOT and not standing_in:
 		slots.write(slot, to_dict())
 
 

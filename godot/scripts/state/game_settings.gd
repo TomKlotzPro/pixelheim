@@ -36,4 +36,5 @@ func save_file() -> void:
 	config.set_value(SECTION, "sfx_volume", sfx_volume)
 	config.set_value(SECTION, "reduce_motion", reduce_motion)
 	config.set_value(SECTION, "last_slot", last_slot)
+	DirAccess.make_dir_recursive_absolute(path.get_base_dir())
 	config.save(path)

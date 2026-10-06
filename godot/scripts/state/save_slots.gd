@@ -47,6 +47,7 @@ func summary(slot: int) -> Dictionary:
 	return {
 		"name": state["hero"]["name"],
 		"roleId": state["hero"]["roleId"],
+		"look": state["hero"].get("look", 0),
 		"level": state["hero"]["level"],
 		"gold": state["gold"],
 		"mapId": state["world"]["position"]["mapId"],

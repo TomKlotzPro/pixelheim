@@ -55,3 +55,14 @@ func test_pick_falls_back_to_what_the_sheet_draws() -> void:
 
 func test_frames_are_shared_per_sheet() -> void:
 	assert_same(PunyArt.frames(PunyArt.monster("skeleton")), PunyArt.frames(PunyArt.monster("skeleton")))
+
+
+func test_looks_pick_the_roles_colourways() -> void:
+	assert_eq(PunyArt.hero("ranger")["sheet"], "characters/Archer-Green.png", "look 0 is the classic")
+	assert_eq(PunyArt.hero("ranger", 1)["sheet"], "characters/Archer-Purple.png")
+	assert_eq(PunyArt.hero("ranger", 3)["sheet"], "characters/Archer-Purple.png", "the web's four looks wrap")
+	assert_eq(PunyArt.hero("rogue", null)["sheet"], "characters/Soldier-Red.png", "older saves have no look")
+	assert_eq(PunyArt.looks("rogue"), 3)
+	for role_id: String in PunyArt.HEROES:
+		for look in PunyArt.looks(role_id):
+			assert_true(ResourceLoader.exists(PunyArt.path(PunyArt.hero(role_id, look)["sheet"])), "%s look %d" % [role_id, look])

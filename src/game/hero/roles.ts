@@ -283,3 +283,14 @@ export const ROLES: Record<RoleId, Role> = {
 export function unlockedSkills(roleId: RoleId, level: number) {
   return ROLES[roleId].skills.filter((skill) => level >= skill.unlockLevel);
 }
+
+/** One-line pitch per role, for the class list at hero creation. */
+export const ROLE_PITCH: Record<RoleId, string> = {
+  warrior: "Steel and stubbornness",
+  mage: "Glass cannon, loud spells",
+  rogue: "Fast, sharp, gone",
+  cleric: "Holds the line, heals it too",
+  ranger: "Death at a distance",
+  paladin: "Armor outside, faith inside",
+  necromancer: "Everything they touch keeps dying",
+};

@@ -92,7 +92,9 @@ func test_boot_starts_a_new_game_in_the_last_slot_then_resumes_it() -> void:
 	var first := _fresh_state()
 	first.boot(PackedStringArray())
 	assert_eq(first.slot, 1)
-	assert_true(FileAccess.file_exists(slots.path_for(1)), "a new game is saved at once")
+	assert_false(FileAccess.file_exists(slots.path_for(1)), "the title's stand-in isn't written")
+	first.new_hero_in(first.free_slot(), "Robin", "warrior")
+	assert_true(FileAccess.file_exists(slots.path_for(1)), "the hero made at the title is")
 	first.pack.gold = 999
 	first.save_now()
 	var second := _fresh_state()
@@ -127,13 +129,23 @@ func test_boot_runs_once_per_session() -> void:
 	assert_eq(state.slot, 2, "a reload must not undo the switch")
 
 
-func test_first_run_means_no_slot_had_a_save() -> void:
+func test_a_first_visit_lasts_until_a_hero_is_made() -> void:
 	var first := _fresh_state()
 	first.boot(PackedStringArray())
 	assert_true(first.first_run)
+	first.save_now()
 	var second := _fresh_state()
 	second.boot(PackedStringArray())
-	assert_false(second.first_run, "slot 1 was written by the first boot")
+	assert_true(second.first_run, "the stand-in behind the title is never written")
+	assert_eq(second.free_slot(), second.slot, "the new hero takes the slot in hand")
+	second.new_hero_in(second.free_slot(), "Robin", "ranger", 1)
+	var third := _fresh_state()
+	third.boot(PackedStringArray())
+	assert_false(third.first_run)
+	assert_eq(third.hero.hero_name, "Robin")
+	assert_eq(third.hero.role_id, "ranger")
+	assert_eq(third.hero.look, 1)
+	assert_eq(third.free_slot(), 2, "the next hero would take the first empty slot")
 
 
 func test_playing_an_empty_slot_starts_a_hero_and_keeps_the_last_one() -> void:

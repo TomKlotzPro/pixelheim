@@ -38,16 +38,17 @@ const FAMILIES := {
 	"strip": {"frame": 32, "anims": {"idle": [0, 4, 6.0, true], "walk": [0, 8, 10.0, true]}},
 }
 
-## Hero sheet and attack by role: blades swing, casters strike with the staff,
-## rangers draw the bow.
+## Hero sheets and attack by role: blades swing, casters strike with the
+## staff, rangers draw the bow. The web's looks (hero.look 0-3) pick among the
+## role's colourways, first one the classic.
 const HEROES := {
-	"warrior": ["characters/Warrior-Red.png", "sword"],
-	"paladin": ["characters/Warrior-Blue.png", "sword"],
-	"rogue": ["characters/Soldier-Red.png", "sword"],
-	"cleric": ["characters/Soldier-Yellow.png", "staff"],
-	"mage": ["characters/Mage-Red.png", "staff"],
-	"necromancer": ["characters/Mage-Red.png", "staff"],
-	"ranger": ["characters/Archer-Green.png", "bow"],
+	"warrior": [["characters/Warrior-Red.png", "characters/Warrior-Blue.png"], "sword"],
+	"paladin": [["characters/Warrior-Blue.png", "characters/Human-Soldier-Cyan.png", "characters/Human-Soldier-Red.png"], "sword"],
+	"rogue": [["characters/Soldier-Red.png", "characters/Soldier-Blue.png", "characters/Soldier-Yellow.png"], "sword"],
+	"cleric": [["characters/Soldier-Yellow.png", "characters/Soldier-Blue.png"], "staff"],
+	"mage": [["characters/Mage-Red.png", "characters/Mage-Cyan.png"], "staff"],
+	"necromancer": [["characters/Mage-Red.png", "characters/Mage-Cyan.png"], "staff"],
+	"ranger": [["characters/Archer-Green.png", "characters/Archer-Purple.png"], "bow"],
 }
 ## Necromancers wear the mage's robe in grave colors.
 const HERO_TINTS := {"necromancer": Color(0.72, 0.6, 1.0)}
@@ -91,9 +92,16 @@ static func path(sheet: String) -> String:
 	return "res://assets/puny/" + sheet
 
 
-static func hero(role_id: String) -> Dictionary:
+static func hero(role_id: String, look: Variant = 0) -> Dictionary:
 	var entry: Array = HEROES.get(role_id, HEROES["warrior"])
-	return {"sheet": entry[0], "family": "puny", "attack": entry[1], "tint": HERO_TINTS.get(role_id, Color.WHITE)}
+	var sheets: Array = entry[0]
+	var index := int(look) % sheets.size() if look != null else 0
+	return {"sheet": sheets[index], "family": "puny", "attack": entry[1], "tint": HERO_TINTS.get(role_id, Color.WHITE)}
+
+
+## How many looks a role offers (its colourways).
+static func looks(role_id: String) -> int:
+	return (HEROES.get(role_id, HEROES["warrior"])[0] as Array).size()
 
 
 static func villager(sprite: String) -> Dictionary:

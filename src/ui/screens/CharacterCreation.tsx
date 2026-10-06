@@ -1,18 +1,7 @@
 import { useState } from "react";
-import { ROLES } from "../../game/hero/roles";
+import { ROLE_PITCH, ROLES } from "../../game/hero/roles";
 import type { RoleId } from "../../game/types";
 import { Sprite } from "../widgets/Sprite";
-
-/** One-line pitch per role, for the class list. */
-const ROLE_PITCH: Record<RoleId, string> = {
-  warrior: "Steel and stubbornness",
-  mage: "Glass cannon, loud spells",
-  rogue: "Fast, sharp, gone",
-  cleric: "Holds the line, heals it too",
-  ranger: "Death at a distance",
-  paladin: "Armor outside, faith inside",
-  necromancer: "Everything they touch keeps dying",
-};
 
 const STAT_ROWS = [
   { key: "maxHp", label: "HP" },
