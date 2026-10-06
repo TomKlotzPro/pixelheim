@@ -152,3 +152,9 @@ func test_owned_house_sign_reads_home() -> void:
 	assert_does_not_have(labels, "FOR SALE")
 	state.settlement.house["owned"] = true
 	assert_true(state.owns_house())
+
+
+func test_a_late_game_web_save_survives_godot_untouched() -> void:
+	var imported := SaveCodec.decode_code(FileAccess.get_file_as_string("res://test/fixtures/web_save_late.txt"))
+	state.apply(imported)
+	assert_eq(state.to_dict(), imported)

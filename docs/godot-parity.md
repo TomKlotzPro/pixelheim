@@ -32,18 +32,25 @@ This is where each web feature stands in Godot.
 | Codex and bestiary                                             | `codex_screen.gd`                                               |                                                                            |
 | World map, fog of war, fast travel                             | `map_screen.gd`, `discovery.gd`                                 |                                                                            |
 | Music, stingers, ambience                                      | `sound.gd`                                                      | Web synth rendered to WAV by `pnpm audio:render`                           |
-| Saves: autosave, three slots, save codes, migrations           | `state/save_codec.gd`, `saves_screen.gd`, `state/web_import.gd` | Web v4 format, byte for byte                                               |
+| Saves: autosave, three slots, save codes, migrations           | `state/save_codec.gd`, `saves_screen.gd`, `state/web_import.gd` | Web v4 format; a late-game web save re-encodes byte for byte               |
 | Pause, options, rebindable keys, gamepad                       | `pause_screen.gd`, `options_screen.gd`, `controls.gd`           | Adds scanlines and fullscreen                                              |
+| Reduced motion                                                 | `options_screen.gd`, `title_screen.gd`, `rankup_screen.gd`      | An option, not the browser's setting; stills the title and the rank-up     |
 
 ## Not yet in Godot
 
-| Web feature                                | Status                                                                            |
-| ------------------------------------------ | --------------------------------------------------------------------------------- |
-| Mini-map in the corner of the world screen | Not ported; the world map (M) covers it                                           |
-| Changelog page                             | Not ported; the classic edition still has it                                      |
-| Reduced-motion support                     | Not ported                                                                        |
-| Touch controls                             | No virtual stick; the web export needs a keyboard or a gamepad                    |
-| Town buildings and interiors in Puny art   | Still Pixel Crawler; the matching Puny pack is paid, pending a decision (PIX-130) |
+| Web feature                                | Status                                                                                                                  |
+| ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| Mini-map in the corner of the world screen | Not ported; the world map (M) covers it                                                                                 |
+| Changelog page                             | Not ported; the classic edition still has it                                                                            |
+| Touch controls                             | No virtual stick; the web export needs a keyboard or a gamepad                                                          |
+| Town buildings and interiors in Puny art   | Still Pixel Crawler (the inn's hearth is a furnace frame); the matching Puny pack is paid, pending a decision (PIX-130) |
+
+## Release checks
+
+- `godot/tools/flows.sh` drives the ten flows a release must not break through the screenshot harness: spawn, portal, chest, shop, craft, quest, rank-up, fight, death and the inn, saves. Each one checks the harness report and leaves a picture in `godot/flows/`.
+- `test_save_codec.gd` loads a late-game save made by the web's own reducer (level 18, all fifteen floors, house, village, a business, savings) and checks Godot writes back exactly what the web writes.
+- The web build loads behind the title's own night scene (`godot/tools/splash.sh`), with the loading bar where the menu appears.
+- Draw calls, as the harness reports them: 76 in any map (tiles batch by texture, even zoomed out over the whole overworld), about 160 with a full screen like the inventory open, 158 on the title.
 
 ## Known issues shared with the web
 
