@@ -1,21 +1,8 @@
 import { carriedWeight, carryCapacity } from "../../game/hero/character";
-import { getLevel } from "../../game/hero/levels";
+import { DUNGEONS, getLevel } from "../../game/hero/levels";
 import { getMonster } from "../../game/combat/monsters";
 import { dispatch, useGameState, useHero } from "../../state/store";
-import type { DungeonId } from "../../world/types";
 import { Sprite } from "../widgets/Sprite";
-
-const DUNGEONS: Record<DungeonId, { name: string; floors: number[]; sealed?: string }> = {
-  mountain: {
-    name: "The Ashen Mountain",
-    floors: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-  },
-  undermountain: {
-    name: "The Undermountain",
-    floors: [11, 12, 13, 14, 15],
-    sealed: "The seal on the deep holds fast. The dragon above still reigns.",
-  },
-};
 
 export function DungeonSelect() {
   const state = useGameState();

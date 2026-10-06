@@ -9,6 +9,8 @@ var size := Vector2i.ZERO
 var spawn := Vector2i.ZERO
 var portals := {}  # Vector2i -> target Dictionary ({kind, ...})
 var regions := {}  # Vector2i -> encounter region id (forest, marsh, ash, ...)
+## A dungeon floor's number (DungeonFloor); 0 for the web's own maps.
+var floor_level := 0
 
 
 static func load_by_id(map_id: String) -> MapData:

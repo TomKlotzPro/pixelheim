@@ -52,7 +52,7 @@ func test_water_ripples_in_frames_four_rows_apart() -> void:
 	var layer := TileMapLayer.new()
 	layer.tile_set = PunyTerrain.tileset()
 	PunyTerrain.place(layer, Vector2i.ZERO, 270)
-	var slot: Array = PunyTerrain._slots[270]
+	var slot: Array = PunyTerrain.sheet().slot(270)
 	var source := PunyTerrain.tileset().get_source(slot[0]) as TileSetAtlasSource
 	assert_eq(source.get_tile_animation_frames_count(slot[1]), 4)
 	assert_eq(source.get_tile_animation_separation(slot[1]), Vector2i(0, 3), "separation counts tiles")

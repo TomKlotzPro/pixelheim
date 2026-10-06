@@ -10,6 +10,8 @@ const TILE := 16
 const PACK_SIZE := 3
 const LOG_LINES := 5
 const LOG_SECONDS := 4.0
+## The dark under the mountain, whatever the hour above.
+const DUNGEON_GLOOM := Color(0.04, 0.02, 0.08, 0.28)
 
 ## Puny World objects scattered on terrain (PIX-130), picked by cell hash:
 ## tile id -> [density %, [Puny tile ids]]. Forests grow pines and round
@@ -43,6 +45,10 @@ var level_label: Label
 var log_box: VBoxContainer
 ## spawn id -> monsters of its pack still standing
 var pack_alive := {}
+## Foes still standing on the dungeon floor the hero walks (0 when cleared).
+var floor_foes := 0
+## Torches, barrels, stairs on a dungeon floor; a cleared floor's way up joins them.
+var dungeon_objects: TileMapLayer
 var kills_label: Label
 var gold_label: Label
 var message_label: Label
@@ -100,6 +106,9 @@ func _process(_delta: float) -> void:
 		_open_saves()
 		return
 	if Input.is_action_just_pressed("map"):
+		if map.floor_level > 0:
+			_flash_message("No map reaches this deep.")
+			return
 		var screen := preload("res://scripts/map_screen.gd").new()
 		screen.world = self
 		add_child(screen)
@@ -109,12 +118,14 @@ func _process(_delta: float) -> void:
 	_update_prompt()
 	GameState.walk(player.position.distance_to(last_player_position) / TILE)
 	last_player_position = player.position
-	sky_overlay.color = DayNight.sky_at(GameState.world.steps)
+	sky_overlay.color = DUNGEON_GLOOM if map.floor_level > 0 else DayNight.sky_at(GameState.world.steps)
 	var cell := Vector2i((player.position / TILE).floor())
 	if cell == player_cell:
 		return
 	player_cell = cell
-	GameState.move_to(map, cell, player.facing)
+	# Down a dungeon the save keeps the hero at its gate, as the web does.
+	if map.floor_level == 0:
+		GameState.move_to(map, cell, player.facing)
 	# Walking into the bought house's shut door walks you in.
 	if map.id == "town" and cell + Vector2i(player.facing) == Town.house_door() and GameState.owns_house():
 		_enter_house()
@@ -141,9 +152,15 @@ func on_enemy_died(enemy: Node) -> void:
 		if pack_alive[enemy.spawn_id] <= 0:
 			cleared = enemy.spawn_id
 	var floor_level := int(Bestiary.region(enemy.region).get("dropFloor", 1)) if enemy.region != "" else 1
+	if map.floor_level > 0:
+		floor_level = map.floor_level
 	_log(GameState.defeat_monster(enemy.fighter, enemy.region, cleared, floor_level))
 	if cleared != "":
 		_log(["The wilds fall quiet again."])
+	if map.floor_level > 0 and floor_foes > 0:
+		floor_foes -= 1
+		if floor_foes == 0:
+			_floor_cleared(Vector2i((enemy.position / TILE).floor()))
 
 func on_player_died() -> void:
 	await get_tree().create_timer(1.2).timeout
@@ -219,9 +236,66 @@ func _use_portal(target: Dictionary) -> void:
 			# Stepping into the inn takes a bed for coin, as on the web.
 			if map.id == "town_inn":
 				_flash_message(GameState.rest_at_inn())
-		_:
-			# Dungeons arrive with PIX-126.
-			_flash_message("The way is sealed... for now.")
+		"dungeon":
+			# The floor select opens while the hero waits at the door.
+			_step_back()
+			var screen := preload("res://scripts/dungeon_screen.gd").new()
+			screen.world = self
+			screen.dungeon_id = target["dungeon"]
+			add_child(screen)
+		"gate":
+			_leave_floor()
+
+
+## Back off a gate to the cell the hero came from (the web keeps them there).
+func _step_back() -> void:
+	var back := player_cell - Vector2i(player.facing)
+	if not map.is_walkable(back):
+		return
+	player_cell = back
+	player.position = _cell_center(back)
+	last_player_position = player.position
+	GameState.move_to(map, back, player.facing)
+
+
+## Down to a dungeon floor (DungeonFloor): its foes one per room, the
+## guardian last. The save still holds the gate the hero entered by.
+func enter_floor(level: int) -> void:
+	var plan := DungeonFloor.plan(level)
+	map = plan["map"]
+	_enter_map(map, map.spawn)
+	floor_foes = plan["foes"].size()
+	for foe: Dictionary in plan["foes"]:
+		spawn_enemy(foe["id"], foe["cell"], "", "", foe["elite"], false)
+	var floor_def := Dungeons.floor_def(level)
+	_log(["Floor %d: %s" % [level, floor_def["name"]], String(floor_def["description"])])
+
+
+## Up the stairs, back to the gate the save remembers.
+func _leave_floor() -> void:
+	map = _load_map(GameState.world.map_id)
+	_enter_map(map, Vector2i(GameState.world.cell))
+
+
+## The floor's last foe fell: its hoard on a first clear, and a way up where
+## the guardian stood, so the hero needn't walk the halls back.
+func _floor_cleared(at: Vector2i) -> void:
+	var result := GameState.clear_floor(map.floor_level)
+	_log(result["lines"])
+	var stairs := at
+	if not map.is_walkable(stairs) or map.portals.has(stairs):
+		stairs = player_cell
+	map.grid[stairs] = "cave"
+	map.portals[stairs] = {"kind": "gate"}
+	PunyDungeon.sheet().place(dungeon_objects, stairs, PunyDungeon.STAIRS)
+	if result["victory"]:
+		_talk({
+			"id": "victory", "name": "Victory",
+			"lines": [
+				"%s slew Fafnyr the Ashen above and cast down Morvax the Deathless below." % GameState.hero.name,
+				"The mountain is quiet at last, the tavern is loud, and the cheese has never tasted better.",
+			],
+		})
 
 func _enter_map(next: MapData, arrival: Vector2i) -> void:
 	for stale in get_tree().get_nodes_in_group("mobs") + get_tree().get_nodes_in_group("decor"):
@@ -232,7 +306,7 @@ func _enter_map(next: MapData, arrival: Vector2i) -> void:
 		props.queue_free()
 	if ground != null:
 		ground.queue_free()
-	ground = _build_ground(next)
+	ground = _build_dungeon(next) if next.floor_level > 0 else _build_ground(next)
 	add_child(ground)
 	tile_layer = _build_tile_layer(next)
 	add_child(tile_layer)
@@ -249,9 +323,12 @@ func _enter_map(next: MapData, arrival: Vector2i) -> void:
 	player.ailments.clear()
 	last_player_position = player.position
 	player_cell = arrival
-	# Crossing into a map is a moment worth keeping: save at once.
-	GameState.move_to(next, arrival, player.facing)
-	GameState.save_now()
+	# Crossing into a map is a moment worth keeping: save at once. Dungeon
+	# floors aren't web maps: the save keeps the gate.
+	if next.floor_level == 0:
+		GameState.move_to(next, arrival, player.facing)
+		GameState.save_now()
+	floor_foes = 0
 	camera.limit_right = next.size.x * TILE
 	camera.limit_bottom = next.size.y * TILE
 	camera.reset_smoothing()
@@ -315,6 +392,38 @@ func _build_ground(data: MapData) -> Node2D:
 		for cell: Vector2i in skyline:
 			PunyTerrain.place(objects, cell, skyline[cell])
 	root.add_child(objects)
+	return root
+
+## A dungeon floor in Shade's Puny Dungeon: stone, walls by his grammar and
+## the dark beyond, torches flickering on their blocks, barrels, pots and the
+## stairs up.
+func _build_dungeon(data: MapData) -> Node2D:
+	var root := Node2D.new()
+	var dungeon := PunyDungeon.sheet()
+	var layer := TileMapLayer.new()
+	layer.tile_set = dungeon.tileset
+	dungeon_objects = TileMapLayer.new()
+	dungeon_objects.tile_set = dungeon.tileset
+	for cell: Vector2i in data.grid:
+		var tile: String = data.grid[cell]
+		match tile:
+			"wall":
+				dungeon.place(layer, cell, PunyDungeon.wall_tile(data.grid, cell))
+				continue
+			"lamp":
+				dungeon.place(layer, cell, PunyDungeon.TORCH_BLOCK)
+				dungeon.place(dungeon_objects, cell, PunyDungeon.TORCH)
+				continue
+		dungeon.place(layer, cell, PunyDungeon.floor_tile(cell))
+		match tile:
+			"barrel":
+				dungeon.place(dungeon_objects, cell, PunyDungeon.BARRELS[absi(hash(cell)) % 2])
+			"crate":
+				dungeon.place(dungeon_objects, cell, PunyDungeon.POT)
+			"cave":
+				dungeon.place(dungeon_objects, cell, PunyDungeon.STAIRS)
+	root.add_child(layer)
+	root.add_child(dungeon_objects)
 	return root
 
 ## Chests and terrain decor live in the y-sorted actors layer.
@@ -592,7 +701,7 @@ func _build_tile_layer(data: MapData) -> TileMapLayer:
 		if sheet == "":
 			var path := WorldTiles.sprite_path(tile)
 			if outdoor and tile == "floor":
-				source.texture = PunyTerrain.dungeon_tile(PunyTerrain.RUIN_FLOOR)
+				source.texture = PunyDungeon.sheet().tile_texture(PunyDungeon.FLOOR)
 			else:
 				source.texture = WorldTiles.cutout(path) if cut else load(path)
 			source.texture_region_size = Vector2i(TILE, TILE)
@@ -662,7 +771,8 @@ func _build_tile_layer(data: MapData) -> TileMapLayer:
 	for cell: Vector2i in data.grid:
 		var tile: String = data.grid[cell]
 		var puny_drawn: bool = (
-			WorldTiles.GROUND_TILES.has(tile)
+			data.floor_level > 0
+			or WorldTiles.GROUND_TILES.has(tile)
 			or (outdoor and PunyTerrain.wall_piece(data.grid, cell) >= 0)
 			or (skyline and WorldTiles.ROOF_TILES.has(tile))
 		)
@@ -865,6 +975,32 @@ func _run_test_harness() -> void:
 	if not args.has("--screenshot"):
 		return
 	await get_tree().create_timer(0.4).timeout
+	# Dungeons: `--floor N` walks down floor N, `gate [--dungeon id]` opens a
+	# gate's floor select (mountain by default).
+	var floor_index := args.find("--floor")
+	if floor_index >= 0 and floor_index + 1 < args.size():
+		enter_floor(int(args[floor_index + 1]))
+		await get_tree().create_timer(0.3).timeout
+	if args.has("clear"):
+		# Fell every foe on the floor at once: the clear, its hoard, the way up.
+		for foe in get_tree().get_nodes_in_group("mobs"):
+			foe.take_hit(99999, foe.global_position + Vector2.LEFT)
+		await get_tree().create_timer(0.6).timeout
+	if args.has("gate"):
+		var dungeon_index := args.find("--dungeon")
+		_use_portal({
+			"kind": "dungeon",
+			"dungeon": args[dungeon_index + 1] if dungeon_index >= 0 else "mountain",
+		})
+		await get_tree().create_timer(0.3).timeout
+		if args.has("descend"):
+			# Take the selected floor, as E would.
+			get_children().filter(func(node: Node) -> bool: return node.has_method("_descend"))[0]._act()
+			await get_tree().create_timer(0.4).timeout
+	if args.has("leave"):
+		# Up the stairs, back to the gate.
+		_use_portal({"kind": "gate"})
+		await get_tree().create_timer(0.3).timeout
 	var walk_index := args.find("--walk")
 	if walk_index >= 0 and walk_index + 1 < args.size():
 		var dirs := {
@@ -977,5 +1113,7 @@ func _run_test_harness() -> void:
 		await get_tree().create_timer(0.2).timeout
 	await RenderingServer.frame_post_draw
 	get_viewport().get_texture().get_image().save_png("res://screenshot.png")
-	print("screenshot saved; map=%s cell=%s hp=%d gold=%d" % [map.id, player_cell, player.hp, GameState.pack.gold])
+	print("screenshot saved; map=%s cell=%s hp=%d gold=%d save=%s%s" % [
+		map.id, player_cell, player.hp, GameState.pack.gold, GameState.world.map_id, GameState.world.cell,
+	])
 	get_tree().quit()

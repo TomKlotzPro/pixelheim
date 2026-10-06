@@ -14,7 +14,7 @@ import { RARITIES } from "../src/game/economy/rarity";
 import { RECIPES, REGION_MATERIALS } from "../src/game/economy/recipes";
 import { FORGE_BONUS_CAP, SHOP_MAPS, SHOPS, shopStock } from "../src/game/economy/shop";
 import { RECRUITS } from "../src/game/settlers";
-import { LEVELS } from "../src/game/hero/levels";
+import { DUNGEONS, LEVELS } from "../src/game/hero/levels";
 import { PATH_NODES } from "../src/game/hero/paths";
 import { ROLES } from "../src/game/hero/roles";
 import { SKILL_TREES } from "../src/game/hero/skillTree";
@@ -214,8 +214,9 @@ emit(
 );
 
 // Combat (PIX-126): the bestiary, what lurks in each region and where it
-// stands, what the fallen drop, mastery, and the passive-bearing skill and
-// path nodes (getPassives) — the same tables the web battle engine reads.
+// stands, what the fallen drop, mastery, the passive-bearing skill and path
+// nodes (getPassives), and the dungeons' floors with their encounters and
+// first-clear rewards — the same tables the web battle engine reads.
 emit(
   "combat.json",
   {
@@ -234,6 +235,8 @@ emit(
     statPointsPerLevel: STAT_POINTS_PER_LEVEL,
     skillTrees: SKILL_TREES,
     pathNodes: PATH_NODES,
+    levels: LEVELS,
+    dungeons: DUNGEONS,
   },
   DATA_OUT,
 );

@@ -39,11 +39,12 @@ The React/Pixi web game (`src/`) is being ported to Godot 4.7 (`godot/`), one Li
 ```sh
 godot --headless --path godot --import                        # after new assets/scripts
 godot --headless --path godot -s res://addons/gut/gut_cmdln.gd # GUT; ALSO grep the output for "Parse Error"
-godot --path godot -- --screenshot [--map <id>] [--walk l,d,r,u] [fight [kill] [hurt] [--foe <species>]] [chest] [talk] [near] [shop [--tab N]] [hall] [bank] [home --mode M] [--town-tier N] [--house-tier N] [lineup] [saves] [night] [worldmap] [overview] [--at x,y] [--zoom Z] [--slot N]
+godot --path godot -- --screenshot [--map <id>] [--walk l,d,r,u] [fight [kill] [hurt] [--foe <species>]] [chest] [talk] [near] [shop [--tab N]] [hall] [bank] [home --mode M] [--town-tier N] [--house-tier N] [lineup] [saves] [night] [worldmap] [overview] [--at x,y] [--zoom Z] [--floor N] [clear] [gate [--dungeon id] [descend]] [leave] [--slot N]
 ```
 
 - GUT **exits 0 when a test file fails to parse** (the whole suite is silently skipped); CI greps for it, do the same locally.
 - The harness writes `godot/screenshot.png` (gitignored) and prints `map=… cell=… hp=… gold=…`. Read the PNG; the owner judges looks from screenshots.
+- Dungeons: `--floor N` walks down floor N, `clear` fells every foe on the map (the floor's clear and hoard), `gate` opens a floor select (`descend` takes the selected floor), `leave` climbs back to the gate. The printed `save=` shows where the save stands (it stays at the gate while below).
 - Terrain review: `overview` frames the whole map, `--at x,y` stands the hero on a cell, `--zoom Z` sets the camera (play zoom is 4).
 - `--slot N` writes real saves to `~/Library/Application Support/pixelheim/`; delete what you created afterwards.
 - Web-only behavior (localStorage import, IndexedDB saves): `godot --headless --path godot --export-release Web export/web/index.html`, serve `godot/export/web` with `python3 -m http.server`, drive it with Playwright, and inspect IndexedDB `/userfs`.
@@ -57,6 +58,9 @@ godot --path godot -- --screenshot [--map <id>] [--walk l,d,r,u] [fight [kill] [
 - `TileSetAtlasSource` animation separation counts **tiles**, not pixels; Puny water frames sit 2-4 rows apart and may overlap other tiles' strips, so `PunyTerrain._slot` opens a new source on the same sheet when one is full.
 - In a `canvas_item` shader, `COLOR` in `fragment()` already holds texel × modulate; sampling `TEXTURE` again squares it (everything goes dark).
 - Non-resource files (`.tsx`, `.txt`) only reach the web build through `include_filter` in `export_presets.cfg`.
+- Dungeon floors (`MapData.floor_level > 0`) are not web maps: never `GameState.move_to` them, or a save would point at a map the web game can't load.
+- A static func named like a GDScript builtin (`floor`, `round`...) is shadowed by the builtin inside its own class: `floor(level)` there calls math `floor`. Name them apart (`floor_def`).
+- Shade's animations that pause or loop back can't be TileSet atlas animations; `PunySheet` holds them on their first frame.
 - `--map <id>` boots at that map's spawn, not the save's position; `GameState.boot` runs once per session (slot switches reload the scene).
 - Interiors chart under their town's place name (`Catalog.place_name`).
 - The village and the house redraw per tier: load runtime maps through `world._load_map` (→ `MapData.load_tiered`), never `MapData.load_by_id`, or a funded town shows its old self.

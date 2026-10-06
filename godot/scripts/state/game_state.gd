@@ -760,6 +760,37 @@ func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, fl
 	return log
 
 
+## A dungeon floor's last foe falls (COLLECT_AND_RETURN): the first clear
+## pays the floor's gold and items (gear arrives as fresh pieces, whatever the
+## pack weighs) and opens the next floor; later clears pay only their kills.
+## The bard's song fades with the outing. Returns {first, lines, victory}.
+func clear_floor(level: int) -> Dictionary:
+	settlement.bard_song = false
+	var floor_def := Dungeons.floor_def(level)
+	var lines: Array[String] = ["%s is cleared!" % floor_def["name"]]
+	var first: bool = level not in progression.cleared_levels
+	if first:
+		progression.cleared_levels.append(level)
+		pack.gold += int(floor_def["rewardGold"])
+		var found: Array[String] = ["%dg" % floor_def["rewardGold"]]
+		for item_id: String in floor_def["rewardItemIds"]:
+			if Catalog.item(item_id).has("slot"):
+				var piece := InventoryState.create_gear(item_id)
+				pack.gear.append(piece)
+				found.append(InventoryState.gear_name(piece))
+			else:
+				pack.add_item(item_id)
+				found.append(Catalog.item_name(item_id))
+		lines.append("The floor's hoard: %s." % ", ".join(found))
+		var before := progression.unlocked_level
+		progression.unlocked_level = Dungeons.unlocked_after(level, before)
+		if progression.unlocked_level > before:
+			lines.append("A deeper way opens: %s." % Dungeons.floor_def(progression.unlocked_level)["name"])
+		_pack_changed()
+	save_now()
+	return {"first": first, "lines": lines, "victory": first and Dungeons.is_final(level)}
+
+
 ## Counts a kill toward its family's mastery; the slayer line when a tier is crossed.
 func _record_kill(monster_id: String) -> String:
 	var family := Bestiary.family_of(monster_id)
