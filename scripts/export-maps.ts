@@ -15,6 +15,7 @@ import { ROLES } from "../src/game/hero/roles";
 import { SKILL_TREES } from "../src/game/hero/skillTree";
 import { INN_REST, TOWN_SPAWN } from "../src/state/shared";
 import { CHESTS } from "../src/world/chests";
+import { chartedMapId, MAP_NAMES } from "../src/world/mapNames";
 import { MAPS } from "../src/world/maps";
 import { signsOn } from "../src/world/signs";
 import { WAYPOINTS } from "../src/world/waypoints";
@@ -113,6 +114,8 @@ emit(
         PATH_NODES.filter((node) => carryBonus(node.passive) > 0).map((node) => [node.id, carryBonus(node.passive)]),
       ),
     },
+    // Every map's player-facing place name; interiors take their town's.
+    places: Object.fromEntries(Object.keys(MAPS).map((id) => [id, MAP_NAMES[chartedMapId(id)]])),
     levelCount: LEVELS.length,
     townSpawn: TOWN_SPAWN,
     innRest: INN_REST,

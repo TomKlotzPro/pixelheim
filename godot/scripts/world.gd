@@ -81,10 +81,19 @@ func _ready() -> void:
 	prompt_label.visible = false
 	add_child(prompt_label)
 	_enter_map(map, arrival)
+	# A first visit to the Godot build that finds a web game hero in this
+	# browser offers to bring them along before anything else.
+	if GameState.first_run:
+		var found := WebImport.find_in_browser()
+		if not found.is_empty():
+			_open_saves(found, true)
 	_run_test_harness()
 
 func _process(_delta: float) -> void:
 	if player == null or player.dead:
+		return
+	if Input.is_action_just_pressed("menu"):
+		_open_saves()
 		return
 	if Input.is_action_just_pressed("map"):
 		var screen := preload("res://scripts/map_screen.gd").new()
@@ -173,6 +182,13 @@ func _enter_map(next: MapData, arrival: Vector2i) -> void:
 	camera.reset_smoothing()
 	if next.id in WILD_MAPS:
 		_spawn_enemies(next)
+
+## The saves screen; `web_save` defaults to whatever this browser's web game holds.
+func _open_saves(web_save := {}, welcome := false) -> void:
+	var screen := preload("res://scripts/saves_screen.gd").new()
+	screen.web_save = web_save if not web_save.is_empty() else WebImport.find_in_browser()
+	screen.welcome = welcome
+	add_child(screen)
 
 ## Fast travel from the map screen; the waypoint is already usability-checked.
 func travel_to(waypoint: Dictionary) -> void:
@@ -529,6 +545,7 @@ func _setup_input() -> void:
 		"attack": [KEY_SPACE, KEY_J],
 		"interact": [KEY_E, KEY_ENTER],
 		"map": [KEY_M, KEY_TAB],
+		"menu": [KEY_ESCAPE],
 	}
 	## action -> [stick axis, direction]
 	var pad_motions := {
@@ -557,11 +574,14 @@ func _setup_input() -> void:
 	var pad_map := InputEventJoypadButton.new()
 	pad_map.button_index = JOY_BUTTON_Y
 	InputMap.action_add_event("map", pad_map)
+	var pad_menu := InputEventJoypadButton.new()
+	pad_menu.button_index = JOY_BUTTON_START
+	InputMap.action_add_event("menu", pad_menu)
 
 ## Agent verification harness (headless can't render, so this drives a real
-## window briefly): `godot --path godot -- --screenshot [fight] [kill]
-## [--map <id>] [--walk l,d,r,u,...]` scripts inputs, saves screenshot.png,
-## quits. Documented in godot/README.md.
+## window briefly): `godot --path godot -- --screenshot [fight] [kill] [saves]
+## [--map <id>] [--walk l,d,r,u,...] [--web-save <file>]` scripts inputs,
+## saves screenshot.png, quits. Documented in godot/README.md.
 func _run_test_harness() -> void:
 	var args := OS.get_cmdline_user_args()
 	if not args.has("--screenshot"):
@@ -582,6 +602,14 @@ func _run_test_harness() -> void:
 		var screen := preload("res://scripts/map_screen.gd").new()
 		screen.world = self
 		add_child(screen)
+		await get_tree().create_timer(0.3).timeout
+	if args.has("saves"):
+		# `--web-save <file>` stands in for a browser's web save (a code or JSON)
+		# and opens the first-visit offer.
+		var web_index := args.find("--web-save")
+		var web_file := args[web_index + 1] if web_index >= 0 and web_index + 1 < args.size() else ""
+		var stand_in := WebImport.parse_any(FileAccess.get_file_as_string(web_file)) if web_file != "" else {}
+		_open_saves(stand_in, not stand_in.is_empty())
 		await get_tree().create_timer(0.3).timeout
 	if args.has("chest"):
 		# Pair with `--map town`: warp beside the nook chest, face it, open it.

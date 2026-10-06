@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 import { carriedWeight, carryCapacity } from "../../game/hero/character";
 import { dispatch, useGameState, useHero, useWorld } from "../../state/store";
 import { paintMap, tileColor } from "../../world/mapColors";
+import { chartedMapId, MAP_NAMES } from "../../world/mapNames";
 import { getMap } from "../../world/maps/index";
 import { signsOn } from "../../world/signs";
 import { waypointDiscovered, waypointUsable, WAYPOINTS } from "../../world/waypoints";
@@ -12,23 +13,6 @@ const TILE_PX = 8;
 type MapScreenProps = {
   onClose: () => void;
 };
-
-/** The friendly names of the maps worth charting. */
-const MAP_NAMES: Record<string, string> = {
-  overworld: "The Ashenreach",
-  town: "Pixelheim",
-  deepwood: "The Deepwood",
-  mirefen: "The Mirefen",
-  demo: "The Proving Grounds",
-};
-
-/** The chart shows where you STAND (PIX-114 fallout: it always painted the
- *  overworld, so opening it in town showed a wall of fog - "broken" to any
- *  fresh save). Interiors chart their parent town; anywhere else, the world. */
-function chartedMapId(mapId: string): string {
-  if (MAP_NAMES[mapId]) return mapId;
-  return mapId.startsWith("town") ? "town" : "overworld";
-}
 
 /** The fog-of-war world map: what you have seen, and where you can jump. */
 export function MapScreen({ onClose }: MapScreenProps) {

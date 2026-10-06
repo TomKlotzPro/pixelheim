@@ -117,3 +117,71 @@ func test_harness_runs_never_touch_saves() -> void:
 	state.save_now()
 	for slot in range(1, SaveSlots.SLOT_COUNT + 1):
 		assert_false(FileAccess.file_exists(slots.path_for(slot)))
+
+
+func test_boot_runs_once_per_session() -> void:
+	var state := _fresh_state()
+	state.boot(PackedStringArray(["--slot", "1"]))
+	state.play_slot(2)
+	state.boot(PackedStringArray(["--slot", "1"]))  # the world scene reloaded
+	assert_eq(state.slot, 2, "a reload must not undo the switch")
+
+
+func test_first_run_means_no_slot_had_a_save() -> void:
+	var first := _fresh_state()
+	first.boot(PackedStringArray())
+	assert_true(first.first_run)
+	var second := _fresh_state()
+	second.boot(PackedStringArray())
+	assert_false(second.first_run, "slot 1 was written by the first boot")
+
+
+func test_playing_an_empty_slot_starts_a_hero_and_keeps_the_last_one() -> void:
+	var state := _fresh_state()
+	state.boot(PackedStringArray(["--slot", "1"]))
+	state.pack.gold = 777
+	state.play_slot(3)
+	assert_eq(state.slot, 3)
+	assert_eq(state.pack.gold, 30, "a fresh hero")
+	assert_eq(slots.summary(1)["gold"], 777, "the hero left behind was saved")
+	assert_eq(slots.summary(3)["gold"], 30)
+	state.play_slot(1)
+	assert_eq(state.pack.gold, 777)
+
+
+func test_importing_writes_the_slot_and_plays_it() -> void:
+	var state := _fresh_state()
+	state.boot(PackedStringArray(["--slot", "1"]))
+	var imported := WebImport.parse_any(FileAccess.get_file_as_string("res://test/fixtures/web_save_v4.txt"))
+	state.import_into(2, imported)
+	assert_eq(state.slot, 2)
+	assert_eq(state.hero.hero_name, "Brann")
+	assert_eq(slots.read(2), imported)
+	var settings := GameSettings.new(DIR + "/settings.cfg")
+	settings.load_file()
+	assert_eq(settings.last_slot, 2, "the next launch continues the imported hero")
+
+
+func test_new_hero_replaces_a_slot() -> void:
+	var state := _fresh_state()
+	state.boot(PackedStringArray(["--slot", "1"]))
+	state.pack.gold = 500
+	state.save_now()
+	state.new_hero_in(1)
+	assert_eq(slots.summary(1)["gold"], 30)
+
+
+func test_the_slot_in_play_cannot_be_cleared() -> void:
+	var state := _fresh_state()
+	state.boot(PackedStringArray(["--slot", "1"]))
+	state.play_slot(2)
+	assert_false(state.clear_slot(2))
+	assert_true(state.clear_slot(1))
+	assert_eq(slots.read(1), {})
+
+
+func test_save_code_carries_the_hero_to_the_web() -> void:
+	var state := _fresh_state()
+	state.pack.gold = 321
+	var decoded := SaveCodec.decode_code(state.save_code())
+	assert_eq(decoded, state.to_dict())
