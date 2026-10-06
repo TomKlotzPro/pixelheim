@@ -5,7 +5,6 @@ extends CharacterBody2D
 ## Frames are 64x64 with feet anchored at y=48.
 
 const SPEED := 95.0
-const MAX_HP := 6
 const ATTACK_COOLDOWN := 0.45
 const INVULNERABLE_SECONDS := 0.8
 
@@ -16,7 +15,8 @@ const ANIMS := {
 }
 
 var world: Node2D
-var hp := MAX_HP
+## Mirrors GameState.hero.hp, the web hero's real health (PIX-126).
+var hp := 0
 var facing := Vector2.DOWN
 var attack_ready := true
 var attacking := false
@@ -26,8 +26,12 @@ var hit_this_swing: Array[Node] = []
 var scripted_dir := Vector2.ZERO  # test-harness movement override
 var sprite: AnimatedSprite2D
 var hitbox: Area2D
+## Poison, burn and stun on the hero (web turns run on a 1s clock).
+var ailments := Ailments.new()
+var ailment_icon: Sprite2D
 
 func _ready() -> void:
+	hp = GameState.hero.hp
 	sprite = AnimatedSprite2D.new()
 	sprite.sprite_frames = _build_frames()
 	sprite.offset = Vector2(0, -11)
@@ -54,9 +58,20 @@ func _ready() -> void:
 
 	sprite.animation_finished.connect(_on_animation_finished)
 	sprite.frame_changed.connect(_on_frame_changed)
+	ailment_icon = Sprite2D.new()
+	ailment_icon.position = Vector2(0, -40)
+	ailment_icon.visible = false
+	add_child(ailment_icon)
 
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	if dead:
+		return
+	_tick_ailments(delta)
+	if dead:
+		return
+	if ailments.is_stunned():
+		velocity = Vector2.ZERO
+		_play("idle")
 		return
 	if attacking:
 		if not hitbox.monitoring:
@@ -67,7 +82,11 @@ func _physics_process(_delta: float) -> void:
 			var body := area.get_parent()
 			if body.has_method("take_hit") and body not in hit_this_swing:
 				hit_this_swing.append(body)
-				body.take_hit(1, global_position)
+				# The web's swing: scaling stat + weapon, crits, mastery, minus armor.
+				body.take_hit(Bestiary.hero_attack_damage(
+					GameState.hero, GameState.pack, body.fighter,
+					GameState.settlement.bard_song == true, GameState.roll
+				), global_position, HeroRules.passives(GameState.hero)["attackInflict"])
 		return
 	var input := scripted_dir
 	if input == Vector2.ZERO:
@@ -101,11 +120,16 @@ func attack() -> void:
 		func() -> void: attack_ready = true
 	)
 
-func take_hit(damage: int, from: Vector2) -> void:
+## A blow lands; `infliction` is the attacker's ailment roll, if it carries one.
+func take_hit(damage: int, from: Vector2, infliction: Variant = null) -> void:
 	if invulnerable or dead:
 		return
-	hp = maxi(0, hp - damage)
-	world.on_player_hp_changed(hp)
+	GameState.hurt(damage)
+	hp = GameState.hero.hp
+	world.float_number(damage, global_position + Vector2(0, -30), Color(1, 0.35, 0.35))
+	if hp > 0 and ailments.inflict(infliction, GameState.roll, HeroRules.passives(GameState.hero)):
+		world.log_line("You are afflicted by %s!" % infliction["kind"])
+		_show_ailment()
 	velocity = (global_position - from).normalized() * 180
 	move_and_slide()
 	if hp == 0:
@@ -121,19 +145,37 @@ func take_hit(damage: int, from: Vector2) -> void:
 		func() -> void: invulnerable = false
 	)
 
-## Back to full health where the hero stands (the inn, Iva's hands).
+## Back in step with the hero's health after a rest, a healer or a level-up.
 func heal() -> void:
 	if dead:
 		return
-	hp = MAX_HP
-	world.on_player_hp_changed(hp)
+	hp = GameState.hero.hp
+
+## Ticks poison/burn into the hero's health and shows what still ails them.
+func _tick_ailments(delta: float) -> void:
+	for tick in ailments.tick(delta):
+		GameState.hurt(tick["damage"])
+		hp = GameState.hero.hp
+		world.float_number(tick["damage"], global_position + Vector2(0, -30), Color(0.75, 0.5, 1))
+		if hp == 0:
+			ailments.clear()
+			_die()
+			break
+	_show_ailment()
+
+func _show_ailment() -> void:
+	var kinds := ailments.kinds()
+	ailment_icon.visible = not kinds.is_empty()
+	if ailment_icon.visible:
+		ailment_icon.texture = load("res://assets/sprites/effect_%s.png" % kinds[0])
 
 func respawn(at: Vector2) -> void:
+	ailments.clear()
+	_show_ailment()
 	position = at
-	hp = MAX_HP
+	hp = GameState.hero.hp
 	dead = false
 	sprite.modulate = Color.WHITE
-	world.on_player_hp_changed(hp)
 	facing = Vector2.DOWN
 	_play("idle")
 

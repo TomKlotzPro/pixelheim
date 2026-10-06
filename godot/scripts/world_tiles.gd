@@ -34,11 +34,6 @@ const TILE_INFO := {
 	"cave": ["tile_cave", true], "shrine": ["tile_shrine", true],
 }
 
-## tile id -> mob kind that roams there
-const MOB_HABITATS := {
-	"grass": "orc", "forest": "orc", "ash": "skeleton", "marsh": "skeleton",
-}
-
 ## Terrain that breathes: tile id -> its animation sheet in atlas.json
 ## (from TILE_ANIMATIONS in src/world/tiles.ts; ground terrains dropped —
 ## they render through the Voronoi ground shader now).

@@ -5,13 +5,11 @@ extends Node2D
 ## persists (position, discovery, chests, loot) in the GameState autoload.
 
 const TILE := 16
-## Defeat sends the hero back to the overworld spawn until combat v2 (PIX-126)
-## wakes them at the inn like the web game.
-const RESPAWN_MAP := "overworld"
-## Maps where mobs roam; interiors and the town stay safe.
-const WILD_MAPS := ["overworld", "deepwood", "mirefen"]
-const ENEMY_COUNT := 28
-const MIN_SPAWN_DISTANCE_TILES := 8
+## Monsters at each of the web's visible spawn points: a small pack of the
+## species that lives there, so the real-time fight has bodies to swing at.
+const PACK_SIZE := 3
+const LOG_LINES := 5
+const LOG_SECONDS := 4.0
 
 ## Pixel Crawler decor scattered on terrain (PIX-121): trees over forest,
 ## plants over grass/marsh/ash. [texture path, region]; picked by cell hash.
@@ -46,6 +44,11 @@ var kills := 0
 var chest_sprites := {}  # chest id -> Sprite2D
 var last_player_position := Vector2.ZERO
 var hp_bar: ProgressBar
+var hp_label: Label
+var level_label: Label
+var log_box: VBoxContainer
+## spawn id -> monsters of its pack still standing
+var pack_alive := {}
 var kills_label: Label
 var gold_label: Label
 var message_label: Label
@@ -133,29 +136,86 @@ func _load_map(map_id: String) -> MapData:
 func is_walkable(cell: Vector2i) -> bool:
 	return map.is_walkable(cell)
 
-func on_enemy_died() -> void:
+## A monster fell: the web's victory pays out, and the last of a spawn's pack
+## clears that spawn until the hero leaves the map.
+func on_enemy_died(enemy: Node) -> void:
 	kills += 1
 	kills_label.text = "Slain: %d" % kills
-
-func on_player_hp_changed(hp: int) -> void:
-	hp_bar.value = hp
+	var cleared := ""
+	if enemy.spawn_id != "":
+		pack_alive[enemy.spawn_id] = pack_alive.get(enemy.spawn_id, 1) - 1
+		if pack_alive[enemy.spawn_id] <= 0:
+			cleared = enemy.spawn_id
+	var floor_level := int(Bestiary.region(enemy.region).get("dropFloor", 1)) if enemy.region != "" else 1
+	_log(GameState.defeat_monster(enemy.fighter, enemy.region, cleared, floor_level))
+	if cleared != "":
+		_log(["The wilds fall quiet again."])
 
 func on_player_died() -> void:
 	await get_tree().create_timer(1.2).timeout
-	if map.id != RESPAWN_MAP:
-		map = _load_map(RESPAWN_MAP)
-		_enter_map(map, map.spawn)
-	player.respawn(_cell_center(map.spawn))
+	# Defeat is forgiving: wake at the inn, healed, purse intact.
+	var inn: Dictionary = GameState.wake_at_inn()
+	var bed := Vector2i(inn["x"], inn["y"])
+	map = _load_map(inn["mapId"])
+	_enter_map(map, bed)
+	player.respawn(_cell_center(bed))
 	last_player_position = player.position  # a respawn is not a walk
-	GameState.move_to(map, map.spawn, player.facing)
 
-func spawn_enemy(kind: String, cell: Vector2i) -> void:
+## One monster of `species` at `cell`; wild ones pay the reduced wild rewards.
+func spawn_enemy(species: String, cell: Vector2i, region := "", spawn_id := "", elite := false, wild := true) -> void:
 	var enemy := preload("res://scripts/enemy.gd").new()
 	enemy.world = self
-	enemy.kind = kind
+	var fighter := Bestiary.spawn(species, elite)
+	enemy.fighter = Bestiary.wild(fighter) if wild else fighter
+	enemy.region = region
+	enemy.spawn_id = spawn_id
 	enemy.position = _cell_center(cell)
 	enemy.add_to_group("mobs")
 	actors.add_child(enemy)
+
+## A number that rises and fades where a blow landed.
+func float_number(value: int, at: Vector2, color: Color) -> void:
+	var label := Label.new()
+	label.text = str(value)
+	label.add_theme_font_size_override("font_size", 9)
+	label.add_theme_color_override("font_color", color)
+	label.add_theme_color_override("font_outline_color", Color(0.1, 0.08, 0.12))
+	label.add_theme_constant_override("outline_size", 3)
+	label.position = at - Vector2(6, 0)
+	label.z_index = 10
+	add_child(label)
+	var tween := create_tween().set_parallel()
+	tween.tween_property(label, "position:y", label.position.y - 12, 0.6).set_ease(Tween.EASE_OUT)
+	tween.tween_property(label, "modulate:a", 0.0, 0.6).set_delay(0.25)
+	tween.chain().tween_callback(label.queue_free)
+
+func log_line(line: String) -> void:
+	_log([line])
+
+## The battle log: recent lines stack bottom-left and fade.
+func _log(lines: Array) -> void:
+	for line: String in lines:
+		var label := Label.new()
+		label.text = line
+		label.add_theme_font_size_override("font_size", 14)
+		label.add_theme_color_override("font_outline_color", Color(0.05, 0.05, 0.08))
+		label.add_theme_constant_override("outline_size", 4)
+		log_box.add_child(label)
+		var tween := label.create_tween()
+		tween.tween_interval(LOG_SECONDS)
+		tween.tween_property(label, "modulate:a", 0.0, 0.6)
+		tween.tween_callback(label.queue_free)
+	while log_box.get_child_count() > LOG_LINES:
+		var oldest := log_box.get_child(0)
+		log_box.remove_child(oldest)
+		oldest.queue_free()
+
+func _on_hp_changed(hp: int, max_hp: int) -> void:
+	hp_bar.max_value = max_hp
+	hp_bar.value = hp
+	hp_label.text = "HP %d/%d" % [hp, max_hp]
+	var hero := GameState.hero
+	level_label.text = "Lv %d   XP %d/%d" % [hero.level, hero.xp, hero.xp_to_next]
 
 func _use_portal(target: Dictionary) -> void:
 	match target["kind"]:
@@ -164,7 +224,7 @@ func _use_portal(target: Dictionary) -> void:
 			_enter_map(map, Vector2i(int(target["x"]), int(target["y"])))
 			# Stepping into the inn takes a bed for coin, as on the web.
 			if map.id == "town_inn":
-				_flash_message(GameState.rest_at_inn(player.hp < player.MAX_HP))
+				_flash_message(GameState.rest_at_inn())
 		_:
 			# Dungeons arrive with PIX-126.
 			_flash_message("The way is sealed... for now.")
@@ -192,6 +252,7 @@ func _enter_map(next: MapData, arrival: Vector2i) -> void:
 	_build_furniture()
 	_spawn_npcs(next)
 	player.position = _cell_center(arrival)
+	player.ailments.clear()
 	last_player_position = player.position
 	player_cell = arrival
 	# Crossing into a map is a moment worth keeping: save at once.
@@ -200,8 +261,7 @@ func _enter_map(next: MapData, arrival: Vector2i) -> void:
 	camera.limit_right = next.size.x * TILE
 	camera.limit_bottom = next.size.y * TILE
 	camera.reset_smoothing()
-	if next.id in WILD_MAPS:
-		_spawn_enemies(next)
+	_spawn_enemies(next)
 
 ## The saves screen; `web_save` defaults to whatever this browser's web game holds.
 func _open_saves(web_save := {}, welcome := false) -> void:
@@ -478,7 +538,7 @@ func _open_chest(chest: Dictionary) -> void:
 		var ambush := player_cell + Vector2i(0, -1)
 		if not map.is_walkable(ambush):
 			ambush = player_cell + Vector2i(1, 0)
-		spawn_enemy("skeleton", ambush)
+		spawn_enemy("mimic", ambush, map.region_at(ambush), "", false, true)
 
 func _collect_ground_treasure(cell: Vector2i) -> void:
 	var chest := _chest_at(cell)
@@ -615,17 +675,26 @@ func _spawn_player() -> void:
 	camera.limit_top = 0
 	player.add_child(camera)
 
+## Packs at the web's visible spawns (spawns.ts): the species its region and
+## position decide, an elite roll each, none where the slain ledger says the
+## spawn was cleared on this visit.
 func _spawn_enemies(data: MapData) -> void:
-	var habitats := {}  # mob kind -> Array[Vector2i]
-	for cell: Vector2i in data.grid:
-		var kind: String = WorldTiles.MOB_HABITATS.get(data.grid[cell], "")
-		var far_enough := cell.distance_to(data.spawn) >= MIN_SPAWN_DISTANCE_TILES
-		if kind != "" and far_enough:
-			habitats.get_or_add(kind, []).append(cell)
-	for kind: String in habitats:
-		var cells: Array = habitats[kind]
-		for i in ENEMY_COUNT / habitats.size():
-			spawn_enemy(kind, cells.pick_random())
+	pack_alive = {}
+	for spawn: Dictionary in Bestiary.spawns_on(data.id):
+		if spawn["id"] in GameState.world.slain:
+			continue
+		var home := Vector2i(spawn["x"], spawn["y"])
+		var region := data.region_at(home)
+		var species := Bestiary.species_at(region, home)
+		var elite_chance := float(Bestiary.region(region)["eliteChance"])
+		var cells: Array[Vector2i] = [home]
+		for offset in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1), Vector2i(1, 1), Vector2i(-1, -1)]:
+			var cell: Vector2i = home + offset
+			if cells.size() < PACK_SIZE and data.is_walkable(cell) and data.region_at(cell) != "" and not data.portals.has(cell):
+				cells.append(cell)
+		for cell in cells:
+			spawn_enemy(species, cell, region, spawn["id"], GameState.roll.call() < elite_chance)
+		pack_alive[spawn["id"]] = cells.size()
 
 func _build_hud() -> void:
 	var hud := CanvasLayer.new()
@@ -638,19 +707,38 @@ func _build_hud() -> void:
 	hud.add_child(sky_overlay)
 	hp_bar = ProgressBar.new()
 	hp_bar.position = Vector2(24, 24)
-	hp_bar.custom_minimum_size = Vector2(180, 20)
-	hp_bar.max_value = player.MAX_HP
-	hp_bar.value = player.hp
+	hp_bar.custom_minimum_size = Vector2(180, 18)
 	hp_bar.show_percentage = false
-	hp_bar.modulate = Color(1, 0.45, 0.45)
+	var fill := StyleBoxFlat.new()
+	fill.bg_color = Color(0.82, 0.22, 0.24)
+	var back := StyleBoxFlat.new()
+	back.bg_color = Color(0.1, 0.08, 0.1, 0.8)
+	back.border_color = Color(0.05, 0.04, 0.05)
+	back.set_border_width_all(2)
+	hp_bar.add_theme_stylebox_override("fill", fill)
+	hp_bar.add_theme_stylebox_override("background", back)
 	hud.add_child(hp_bar)
+	hp_label = Label.new()
+	hp_label.position = Vector2(30, 24)
+	hp_label.add_theme_font_size_override("font_size", 12)
+	hud.add_child(hp_label)
+	level_label = Label.new()
+	level_label.position = Vector2(24, 46)
+	hud.add_child(level_label)
 	kills_label = Label.new()
 	kills_label.text = "Slain: 0"
-	kills_label.position = Vector2(24, 50)
+	kills_label.position = Vector2(24, 94)
 	hud.add_child(kills_label)
 	gold_label = Label.new()
-	gold_label.position = Vector2(24, 74)
+	gold_label.position = Vector2(24, 70)
 	hud.add_child(gold_label)
+	log_box = VBoxContainer.new()
+	log_box.position = Vector2(24, 520)
+	log_box.custom_minimum_size = Vector2(700, 0)
+	log_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hud.add_child(log_box)
+	_on_hp_changed(GameState.hero.hp, int(GameState.hero.stats["maxHp"]))
+	GameState.hp_changed.connect(_on_hp_changed)
 	_on_gold_changed(GameState.pack.gold)
 	GameState.gold_changed.connect(_on_gold_changed)
 	GameState.message.connect(_flash_message)
@@ -786,17 +874,23 @@ func _run_test_harness() -> void:
 		_try_interact()
 		await get_tree().create_timer(0.3).timeout
 	if args.has("fight"):
-		player.invulnerable = true
-		spawn_enemy("orc", player_cell + Vector2i(2, 0))
+		# `--foe <species>` picks the opponent (default orc); `hurt` lets it bite.
+		var foe_index := args.find("--foe")
+		var foe: String = args[foe_index + 1] if foe_index >= 0 and foe_index + 1 < args.size() else "orc"
+		player.invulnerable = not args.has("hurt")
+		spawn_enemy(foe, player_cell + Vector2i(2, 0), "ash")
 		player.face(Vector2.RIGHT)
-		# `kill` swings until the orc drops to verify death + the kill counter;
-		# plain `fight` captures mid-swing.
-		var swings := 5 if args.has("kill") else 1
+		# `kill` swings until the foe drops (or 12 swings); plain `fight`
+		# captures mid-swing.
+		var swings := 12 if args.has("kill") else 1
+		var kills_before := kills
 		for i in swings:
 			player.attack()
 			if i < swings - 1:
 				await get_tree().create_timer(0.45).timeout
-		await get_tree().create_timer(0.1).timeout
+			if kills > kills_before:
+				break
+		await get_tree().create_timer(0.4 if args.has("kill") else 0.1).timeout
 	else:
 		await get_tree().create_timer(0.2).timeout
 	await RenderingServer.frame_post_draw

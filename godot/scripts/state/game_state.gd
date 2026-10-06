@@ -343,13 +343,12 @@ func craft(recipe_id: String) -> Dictionary:
 	return {"made": true, "count": count}
 
 
-## The inn: a bed for coin, half price in a town (restAtInn). `hurt` is the
-## live combat body's state, which until combat v2 (PIX-126) is the HP that
-## actually drops. Returns the innkeeper's line.
-func rest_at_inn(hurt: bool) -> String:
+## The inn: a bed for coin, half price in a town (restAtInn). Returns the
+## innkeeper's line.
+func rest_at_inn() -> String:
 	var cost := Town.rest_cost_for(town_tier())
 	var whole: bool = hero.hp == hero.stats.get("maxHp", hero.hp) and hero.mp == hero.stats.get("maxMp", hero.mp)
-	if whole and not hurt:
+	if whole:
 		return "The innkeeper nods. You are already well rested."
 	if pack.gold < cost:
 		return "No coin, no bed. (Rest costs %dg.)" % cost

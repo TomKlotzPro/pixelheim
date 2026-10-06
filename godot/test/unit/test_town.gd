@@ -187,12 +187,16 @@ func test_closing_any_conversation_is_announced() -> void:
 # ---- GameState: the inn -----------------------------------------------------------
 
 func test_the_inn_charges_only_the_hurt_and_halves_in_a_town() -> void:
-	assert_eq(state.rest_at_inn(false), "The innkeeper nods. You are already well rested.")
+	assert_eq(state.rest_at_inn(), "The innkeeper nods. You are already well rested.")
 	assert_eq(state.pack.gold, 30)
-	assert_eq(state.rest_at_inn(true), "You rest at the inn. Fully restored. (-10g)")
+	state.hero.hp = 1
+	assert_eq(state.rest_at_inn(), "You rest at the inn. Fully restored. (-10g)")
 	assert_eq(state.pack.gold, 20)
+	assert_eq(state.hero.hp, state.hero.stats["maxHp"])
 	state.settlement.town_tier = 3
-	state.rest_at_inn(true)
+	state.hero.hp = 1
+	state.rest_at_inn()
 	assert_eq(state.pack.gold, 15)
 	state.pack.gold = 0
-	assert_eq(state.rest_at_inn(true), "No coin, no bed. (Rest costs 5g.)")
+	state.hero.hp = 1
+	assert_eq(state.rest_at_inn(), "No coin, no bed. (Rest costs 5g.)")
