@@ -18,11 +18,29 @@ import { LEVELS } from "../src/game/hero/levels";
 import { PATH_NODES } from "../src/game/hero/paths";
 import { ROLES } from "../src/game/hero/roles";
 import { SKILL_TREES } from "../src/game/hero/skillTree";
-import { INN_REST, TOWN_SPAWN } from "../src/state/shared";
+import {
+  HOUSE_DEED_COST,
+  INN_REST,
+  PROPERTY_PRICES,
+  RENT_PER_VICTORY,
+  REST_COST,
+  TOWN_SPAWN,
+  WORKBENCH_COST,
+} from "../src/state/shared";
+import {
+  DAY_STEPS,
+  EXPANSION_COST,
+  EXPANSION_RENT,
+  SAVINGS_MAX_DAYS,
+  SAVINGS_RATE,
+  VENTURE_COST,
+  VENTURE_STEPS,
+} from "../src/game/economy/bank";
+import { TOWN_TIERS } from "../src/game/economy/town";
 import { CHESTS } from "../src/world/chests";
 import { NPCS } from "../src/world/npcs";
 import { chartedMapId, MAP_NAMES } from "../src/world/mapNames";
-import { MAPS } from "../src/world/maps";
+import { getMap, MAPS, setHouseTier, setTownTier } from "../src/world/maps";
 import { signsOn } from "../src/world/signs";
 import { WAYPOINTS } from "../src/world/waypoints";
 
@@ -48,16 +66,28 @@ function emit(name: string, data: unknown, dir = OUT): void {
 
 mkdirSync(OUT, { recursive: true });
 mkdirSync(DATA_OUT, { recursive: true });
-for (const map of Object.values(MAPS)) {
-  emit(`${map.id}.json`, {
-    id: map.id,
-    width: map.width,
-    height: map.height,
-    spawn: map.spawn,
-    portals: map.portals,
-    tiles: map.tiles,
-  });
+const mapDoc = (map: (typeof MAPS)[string]) => ({
+  id: map.id,
+  width: map.width,
+  height: map.height,
+  spawn: map.spawn,
+  portals: map.portals,
+  tiles: map.tiles,
+});
+for (const map of Object.values(MAPS)) emit(`${map.id}.json`, mapDoc(map));
+
+// The town redraws itself as it grows (PIX-91) and the house as it is upgraded
+// (PIX-34): tier variants above the base export as `<id>@<tier>.json`.
+for (let tier = 2; tier <= TOWN_TIERS.length; tier++) {
+  setTownTier(tier);
+  emit(`town@${tier}.json`, mapDoc(getMap("town")));
 }
+for (let tier = 2; tier <= 3; tier++) {
+  setHouseTier(tier);
+  emit(`town_house@${tier}.json`, mapDoc(getMap("town_house")));
+}
+setTownTier(1);
+setHouseTier(1);
 
 emit("interactables.json", {
   chests: CHESTS,
@@ -147,6 +177,35 @@ emit(
     jobLevelCap: JOB_LEVEL_CAP,
     forgeBonusCap: FORGE_BONUS_CAP,
     rarities: RARITIES,
+  },
+  DATA_OUT,
+);
+
+// The settlement (PIX-124): town tiers and what reaching them requires (the
+// web's predicates become keys GDScript checks), deeds, rest, the bank.
+emit(
+  "town.json",
+  {
+    tiers: TOWN_TIERS.map(({ tier, name, blurb, perks, cost, requires }) => {
+      const doc: Record<string, unknown> = { tier, name, blurb, perks };
+      if (cost !== undefined) doc.cost = cost;
+      if (requires) doc.requires = { line: requires.line, key: tier === 3 ? "own_house" : "own_all_properties" };
+      return doc;
+    }),
+    properties: PROPERTY_PRICES,
+    houseDeedCost: HOUSE_DEED_COST,
+    workbenchCost: WORKBENCH_COST,
+    restCost: REST_COST,
+    rentPerVictory: RENT_PER_VICTORY,
+    bank: {
+      daySteps: DAY_STEPS,
+      savingsRate: SAVINGS_RATE,
+      savingsMaxDays: SAVINGS_MAX_DAYS,
+      ventureCost: VENTURE_COST,
+      ventureSteps: VENTURE_STEPS,
+      expansionCost: EXPANSION_COST,
+      expansionRent: EXPANSION_RENT,
+    },
   },
   DATA_OUT,
 );

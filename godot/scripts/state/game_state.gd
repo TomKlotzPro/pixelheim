@@ -12,6 +12,12 @@ signal inventory_changed
 ## A conversation ended: settlers (PIX-124) and quests (PIX-125) answer here,
 ## like the web game resolves them when its dialogue closes.
 signal dialogue_closed(npc_id: String)
+## One line of feedback for the world (the web's worldMessage).
+signal message(text: String)
+## Who lives where changed: a recruit left the wilds for town.
+signal settlers_changed
+## The hero was made whole (inn, healer): the live body refills too.
+signal healed
 
 ## Slot 0 never touches disk: harness runs and tests leave real saves alone.
 const NO_SLOT := 0
@@ -331,6 +337,178 @@ func craft(recipe_id: String) -> Dictionary:
 		Economy.grant_job_xp(hero.jobs, "alchemy", 8)
 	_pack_changed()
 	return {"made": true, "count": count}
+
+
+## The inn: a bed for coin, half price in a town (restAtInn). `hurt` is the
+## live combat body's state, which until combat v2 (PIX-126) is the HP that
+## actually drops. Returns the innkeeper's line.
+func rest_at_inn(hurt: bool) -> String:
+	var cost := Town.rest_cost_for(town_tier())
+	var whole: bool = hero.hp == hero.stats.get("maxHp", hero.hp) and hero.mp == hero.stats.get("maxMp", hero.mp)
+	if whole and not hurt:
+		return "The innkeeper nods. You are already well rested."
+	if pack.gold < cost:
+		return "No coin, no bed. (Rest costs %dg.)" % cost
+	pack.gold -= cost
+	_make_whole()
+	_pack_changed()
+	return "You rest at the inn. Fully restored. (-%dg)" % cost
+
+
+## FUND_TOWN at the hall: requirements checked, treasury paid, tier raised.
+## The town redraws itself the moment the hero walks out.
+func fund_town() -> String:
+	if Town.fund_blocker(town_tier(), pack.gold, owns_house(), settlement.properties) != "":
+		return ""
+	var next := Town.next_tier(town_tier())
+	pack.gold -= int(next.get("cost", 0))
+	settlement.town_tier = next["tier"]
+	_pack_changed()
+	settlers_changed.emit()
+	return "Pixelheim rises: the %s charter is signed. Walk outside." % String(next["name"]).to_upper()
+
+
+## BUY_PROPERTY: the business you stand in, from its keeper.
+func buy_property(map_id: String) -> bool:
+	var deed: Dictionary = Town.deeds().get(map_id, {})
+	if deed.is_empty() or map_id in settlement.properties or world.map_id != map_id:
+		return false
+	if pack.gold < int(deed["cost"]):
+		return false
+	pack.gold -= int(deed["cost"])
+	settlement.properties.append(map_id)
+	_pack_changed()
+	return true
+
+
+func steps_now() -> int:
+	return int(world.steps)
+
+
+func investments() -> Dictionary:
+	if settlement.investments == null:
+		settlement.investments = {"expansions": []}
+	return settlement.investments
+
+
+## BANK_DEPOSIT: any accrued interest folds into the new principal.
+func bank_deposit(amount: int) -> bool:
+	if amount <= 0 or pack.gold < amount:
+		return false
+	var inv := investments()
+	var savings: Dictionary = inv.get("savings", {})
+	var carried := 0 if savings.is_empty() else Town.savings_value(savings["principal"], savings["at"], steps_now())
+	pack.gold -= amount
+	inv["savings"] = {"principal": carried + amount, "at": steps_now()}
+	_pack_changed()
+	return true
+
+
+## BANK_WITHDRAW: the whole pot, interest included. Returns the gold paid out.
+func bank_withdraw() -> int:
+	var inv := investments()
+	var savings: Dictionary = inv.get("savings", {})
+	if savings.is_empty():
+		return 0
+	var value := Town.savings_value(savings["principal"], savings["at"], steps_now())
+	pack.gold += value
+	inv.erase("savings")
+	_pack_changed()
+	return value
+
+
+## FUND_VENTURE: one caravan on the road at a time.
+func fund_venture() -> bool:
+	var inv := investments()
+	var cost := int(Town.bank("ventureCost"))
+	if inv.has("venture") or pack.gold < cost:
+		return false
+	pack.gold -= cost
+	inv["venture"] = {"stake": cost, "at": steps_now()}
+	_pack_changed()
+	return true
+
+
+## COLLECT_VENTURE once it's back: {won, payout} or {} if not ready.
+func collect_venture() -> Dictionary:
+	var inv := investments()
+	var venture: Dictionary = inv.get("venture", {})
+	if venture.is_empty() or not Town.venture_ready(venture["at"], steps_now()):
+		return {}
+	var outcome := Town.venture_outcome(venture["stake"], venture["at"])
+	pack.gold += outcome["payout"]
+	inv.erase("venture")
+	_pack_changed()
+	return outcome
+
+
+## EXPAND_PROPERTY: an owned business, once, for richer rent.
+func expand_property(map_id: String) -> bool:
+	var inv := investments()
+	var cost := int(Town.bank("expansionCost"))
+	if map_id not in settlement.properties or map_id in inv["expansions"] or pack.gold < cost:
+		return false
+	pack.gold -= cost
+	inv["expansions"].append(map_id)
+	_pack_changed()
+	return true
+
+
+func is_settled(id: String) -> bool:
+	return id in settlement.settlers
+
+
+## A conversation closed: recruits answer (resolveSettler), then the quest
+## hooks (PIX-125) get their turn through dialogue_closed.
+func finish_dialogue(npc_id: String) -> void:
+	var text := _resolve_settler(npc_id)
+	dialogue_closed.emit(npc_id)
+	if text != "":
+		message.emit(text)
+
+
+## Recruiting where they wait; services once they live in town.
+func _resolve_settler(npc_id: String) -> String:
+	var recruit := Town.recruit(npc_id)
+	if recruit.is_empty():
+		return ""
+	if not is_settled(npc_id):
+		match Town.recruit_blocker(recruit, town_tier(), pack.gold, pack.items):
+			"tier":
+				return "%s: %s" % [recruit["name"], recruit.get("tierLine", "The town is not ready for me yet.")]
+			"ask":
+				var ask: Dictionary = recruit["ask"]
+				var price: String = (
+					"%dg" % ask["amount"] if ask["kind"] == "gold"
+					else "%dx %s" % [ask["count"], Catalog.item_name(ask["itemId"])]
+				)
+				return "%s asks: %s. (%s)" % [recruit["name"], price, recruit["askLine"]]
+		var ask: Dictionary = recruit["ask"]
+		if ask["kind"] == "gold":
+			pack.gold -= int(ask["amount"])
+		else:
+			pack.remove_item(ask["itemId"], ask["count"])
+		settlement.settlers.append(npc_id)
+		_pack_changed()
+		settlers_changed.emit()
+		save_now()
+		return "%s joins Pixelheim! %s" % [recruit["name"], recruit["joinedLine"]]
+	if world.map_id == "town":
+		if npc_id == "settler_iva":
+			_make_whole()
+			return "Iva's hands glow warm. Fully healed, free of charge."
+		if npc_id == "settler_loras":
+			settlement.bard_song = true
+			mark_dirty()
+			return "Loras plays you a marching song. Your next hunt strikes truer. (+12% crit)"
+	return ""
+
+
+func _make_whole() -> void:
+	hero.hp = hero.stats.get("maxHp", hero.hp)
+	hero.mp = hero.stats.get("maxMp", hero.mp)
+	mark_dirty()
+	healed.emit()
 
 
 func _pack_changed() -> void:

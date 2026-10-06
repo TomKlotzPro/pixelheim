@@ -14,6 +14,17 @@ static func load_by_id(map_id: String) -> MapData:
 	return load_from("res://assets/maps/%s.json" % map_id)
 
 
+## The map as the town has grown: the village redraws per town tier and the
+## house per house tier (getMap's mirrors); tier variants export as id@tier.
+static func load_tiered(map_id: String, town_tier: int, house_tier: int) -> MapData:
+	var tier := town_tier if map_id == "town" else (house_tier if map_id == "town_house" else 1)
+	if tier <= 1:
+		return load_by_id(map_id)
+	var data := load_from("res://assets/maps/%s@%d.json" % [map_id, tier])
+	data.id = map_id
+	return data
+
+
 static func load_from(path: String) -> MapData:
 	var data := MapData.new()
 	var doc: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(path))
