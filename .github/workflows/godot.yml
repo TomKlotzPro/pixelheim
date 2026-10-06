@@ -66,7 +66,16 @@ jobs:
         run: godot --headless --path godot --import
 
       - name: Unit tests (GUT)
-        run: godot --headless --path godot -s res://addons/gut/gut_cmdln.gd
+        # GUT skips a test script that fails to parse and still exits 0, so a
+        # typo would silently drop a whole suite: fail the job on it instead.
+        run: |
+          godot --headless --path godot -s res://addons/gut/gut_cmdln.gd 2>&1 | tee gut.log
+          status=${PIPESTATUS[0]}
+          if grep -qE "Parse Error|Failed to load script" gut.log; then
+            echo "::error::a GUT test script failed to load"
+            exit 1
+          fi
+          exit $status
 
       - name: Export web build
         run: |
