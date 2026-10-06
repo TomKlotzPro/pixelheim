@@ -89,6 +89,13 @@ static func mastery_bonus(mastery: Variant, monster_id: String) -> float:
 	return float(_data()["masteryTiers"][tier - 1]["bonus"]) if tier > 0 else 0.0
 
 
+## A skill that lands (heroSkillDamage): the skill's power, sharpened by
+## mastery of the foe's family, through the variance, minus half its armor.
+static func hero_skill_damage(hero: HeroState, pack: InventoryState, skill: Dictionary, fighter: Dictionary, roll: Callable) -> int:
+	var raw := Skills.skill_power(hero, pack, skill) * (1.0 + mastery_bonus(hero.mastery, fighter["id"]))
+	return maxi(1, variance(raw, roll) - floori(int(fighter["defense"]) / 2.0))
+
+
 ## A swing that lands (heroAttackDamage): scaling stat plus weapon, crits,
 ## execution bonus, mastery, minus the monster's defense.
 static func hero_attack_damage(hero: HeroState, pack: InventoryState, fighter: Dictionary, inspired: bool, roll: Callable) -> int:

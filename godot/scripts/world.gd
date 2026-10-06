@@ -316,6 +316,26 @@ func _hear_hp(hp: int, _max_hp: int) -> void:
 	heard_hp = hp
 
 
+## A fight is on: something has hunted the hero in the last few seconds.
+func in_fight() -> bool:
+	return Time.get_ticks_msec() / 1000.0 - hunted_at < COMBAT_LINGER_S
+
+
+## A skill's light where it lands: a soft burst that swells and fades.
+func skill_flash(at: Vector2, color: Color) -> void:
+	var burst := Sprite2D.new()
+	burst.texture = preload("res://scripts/player.gd")._glow()
+	burst.modulate = Color(color, 0.85)
+	burst.global_position = at
+	burst.scale = Vector2(0.4, 0.6)
+	burst.z_index = 5
+	add_child(burst)
+	var bloom := create_tween().set_parallel()
+	bloom.tween_property(burst, "scale", Vector2(1.6, 2.2), 0.35).set_ease(Tween.EASE_OUT)
+	bloom.tween_property(burst, "modulate:a", 0.0, 0.35)
+	bloom.chain().tween_callback(burst.queue_free)
+
+
 ## Something has seen the hero: a growl (SFX.bump), not more than once a beat.
 func on_enemy_noticed(enemy: Node) -> void:
 	var now := Time.get_ticks_msec() / 1000.0
@@ -956,6 +976,9 @@ func _build_hud() -> void:
 	hud_panel = preload("res://scripts/hud_panel.gd").new()
 	hud_panel.world = self
 	hud.add_child(hud_panel)
+	var skill_bar := preload("res://scripts/skill_bar.gd").new()
+	skill_bar.world = self
+	hud.add_child(skill_bar)
 	log_box = VBoxContainer.new()
 	log_box.position = Vector2(24, 520)
 	log_box.custom_minimum_size = Vector2(700, 0)
@@ -1267,6 +1290,14 @@ func _run_test_harness() -> void:
 		player.face(Vector2.RIGHT)
 		_try_interact()
 		await get_tree().create_timer(0.3).timeout
+	if args.has("cast"):
+		# A foe two steps away, then the first skill: the strike, the flash, the log.
+		player.invulnerable = true
+		spawn_enemy("orc", player_cell + Vector2i(2, 0), "ash")
+		player.face(Vector2.RIGHT)
+		await get_tree().create_timer(0.2).timeout
+		player.cast(0)
+		await get_tree().create_timer(0.15).timeout
 	if args.has("fight"):
 		# `--foe <species>` picks the opponent (default orc); `hurt` lets it bite.
 		var foe_index := args.find("--foe")
@@ -1293,7 +1324,7 @@ func _run_test_harness() -> void:
 		map.id, player_cell, player.hp, GameState.pack.gold, GameState.world.map_id, GameState.world.cell,
 	])
 	# Let the audio server let go of the music before the engine shuts down.
-	Sound.stop_music()
-	Sound.set_ambience("")
+	get_tree().paused = true  # nothing may start a track again
+	Sound.stop_all()
 	await get_tree().create_timer(0.1).timeout
 	get_tree().quit()

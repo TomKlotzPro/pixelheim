@@ -80,6 +80,18 @@ static func hero_skills(hero: HeroState) -> Array:
 	return skills
 
 
+## Why a skill can't be cast right now, "" when it can: its level, its
+## mana or stamina, and the health price some skills take (heroSkill's checks).
+static func cast_block(hero: HeroState, skill: Dictionary) -> String:
+	if hero.level < int(skill.get("unlockLevel", 1)):
+		return "%s needs level %d." % [skill["name"], skill["unlockLevel"]]
+	if hero.mp < int(skill["mpCost"]):
+		return "Not enough %s for %s." % [resource_label(hero.role_id), skill["name"]]
+	if int(skill.get("hpCost", 0)) > 0 and hero.hp <= int(skill["hpCost"]):
+		return "Too hurt to pay %s's price." % skill["name"]
+	return ""
+
+
 static func skill_power(hero: HeroState, pack: InventoryState, skill: Dictionary) -> int:
 	return roundi(HeroRules.effective_stat(hero, pack, skill["stat"]) * float(skill["multiplier"]))
 

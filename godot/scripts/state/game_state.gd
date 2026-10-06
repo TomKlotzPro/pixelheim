@@ -915,6 +915,39 @@ func use_item(item_id: String) -> Dictionary:
 	return {"used": true, "text": text, "cures": item.get("cures", "")}
 
 
+## A skill's price, paid (heroSkill): its mana or stamina, and its health
+## price if it has one. False when it can't be paid.
+func pay_for_skill(skill: Dictionary) -> bool:
+	if Skills.cast_block(hero, skill) != "":
+		return false
+	hero.mp -= int(skill["mpCost"])
+	hero.hp -= int(skill.get("hpCost", 0))
+	mark_dirty()
+	hp_changed.emit(hero.hp, int(hero.stats["maxHp"]))
+	return true
+
+
+## A heal that lands, up to the cap; returns how much took.
+func heal_hero(amount: int) -> int:
+	var healed_by := mini(int(hero.stats["maxHp"]), hero.hp + amount) - hero.hp
+	hero.hp += healed_by
+	mark_dirty()
+	healed.emit()
+	hp_changed.emit(hero.hp, int(hero.stats["maxHp"]))
+	return healed_by
+
+
+## A fighter's stamina comes back each turn of a fight (staminaRegen, from
+## monsterTurn); casters' mana does not. Returns what came back.
+func regen_stamina() -> int:
+	var back := mini(int(hero.stats["maxMp"]), hero.mp + Skills.stamina_regen(hero)) - hero.mp
+	if back > 0:
+		hero.mp += back
+		mark_dirty()
+		hp_changed.emit(hero.hp, int(hero.stats["maxHp"]))
+	return back
+
+
 ## A stat point, spent (SPEND_STAT_POINT).
 func spend_stat_point(stat: String) -> bool:
 	if hero.stat_points <= 0 or stat not in Skills.STATS:

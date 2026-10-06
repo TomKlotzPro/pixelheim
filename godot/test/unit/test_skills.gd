@@ -109,3 +109,61 @@ func test_owned_skills_carry_their_upgrades_and_the_paths_signature() -> void:
 	hero.level = 5
 	state.choose_path("juggernaut")
 	assert_eq(Skills.hero_skills(hero)[-1]["name"], "Immovable", "the identity teaches its signature")
+
+
+## A loaded die that always rolls `value`.
+func _die(value: float) -> Callable:
+	return func() -> float: return value
+
+
+func test_skill_strikes_land_like_the_webs() -> void:
+	# Printed from heroSkillDamage with Math.random pinned to 0.1, 0.5, 0.9.
+	var cases := [
+		["warrior", "rusty_sword", "slime", {}, [15, 17, 19]],
+		["mage", "apprentice_staff", "skeleton", {"undead": 30}, [20, 23, 26]],
+		["ranger", "hunting_bow", "wolf", {}, [14, 16, 18]],
+	]
+	for case: Array in cases:
+		var kit := _equipped(case[0], case[1])
+		var hero: HeroState = kit[0]
+		if not (case[3] as Dictionary).is_empty():
+			hero.mastery = case[3]
+		var pack: InventoryState = kit[1]
+		pack.equipped.erase("body")
+		var skill: Dictionary = Skills.hero_skills(hero)[0]
+		var foe := Bestiary.spawn(case[2])
+		var got := [0.1, 0.5, 0.9].map(func(roll: float) -> int:
+			return Bestiary.hero_skill_damage(hero, pack, skill, foe, _die(roll))
+		)
+		assert_eq(got, case[4], "%s %s vs %s" % [case[0], skill["name"], case[2]])
+
+
+func test_a_skill_needs_its_level_its_resource_and_its_price() -> void:
+	var hero: HeroState = state.hero
+	var strike: Dictionary = Skills.hero_skills(hero)[0]
+	assert_eq(Skills.cast_block(hero, strike), "")
+	hero.mp = int(strike["mpCost"]) - 1
+	assert_string_contains(Skills.cast_block(hero, strike), "Not enough EN")
+	var berserk: Dictionary = Skills.node("warrior", "warrior_berserk")["skill"]
+	hero.mp = 99
+	hero.hp = int(berserk["hpCost"])
+	assert_string_contains(Skills.cast_block(hero, berserk), "Too hurt")
+	var later := {"name": "Later", "mpCost": 0, "unlockLevel": 5}
+	assert_string_contains(Skills.cast_block(hero, later), "needs level 5")
+
+
+func test_casting_pays_heals_cap_and_stamina_returns_in_fights() -> void:
+	var hero: HeroState = state.hero
+	var berserk: Dictionary = Skills.node("warrior", "warrior_berserk")["skill"]
+	var mp: int = hero.mp
+	var hp: int = hero.hp
+	assert_true(state.pay_for_skill(berserk))
+	assert_eq(hero.mp, mp - int(berserk["mpCost"]))
+	assert_eq(hero.hp, hp - int(berserk["hpCost"]))
+	assert_eq(state.heal_hero(999), int(berserk["hpCost"]), "a heal tops out at max HP")
+	hero.mp = 0
+	assert_eq(state.regen_stamina(), Skills.stamina_regen(hero), "a fighter's stamina comes back")
+	var mage: Node = autofree(GameStateScript.new())
+	mage.new_game("Ilse", "mage")
+	mage.hero.mp = 0
+	assert_eq(mage.regen_stamina(), 0, "mana does not")
