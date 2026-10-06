@@ -38,7 +38,7 @@ body {
 }
 
 #status {
-	background-color: #242424;
+	background-color: #000000;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -92,7 +92,7 @@ body {
 		</style>
 		<link id="-gd-engine-icon" rel="icon" type="image/png" href="index.icon.png" />
 <link rel="apple-touch-icon" href="index.apple-touch-icon.png"/>
-
+<style>#status-progress{top:calc(50% - min(2.73vw,4.86vh));bottom:auto;width:min(20.3vw,36.1vh);height:min(.63vw,1.11vh);-webkit-appearance:none;appearance:none;border:2px solid #524233;background:#1f1a16}#status-progress::-webkit-progress-bar{background:#1f1a16}#status-progress::-webkit-progress-value{background:#ffd94d}#status-progress::-moz-progress-bar{background:#ffd94d}</style>
 	</head>
 	<body>
 		<canvas id="canvas">
@@ -104,14 +104,14 @@ body {
 		</noscript>
 
 		<div id="status">
-			<img id="status-splash" class="show-image--true fullsize--true use-filter--true" src="index.png" alt="">
+			<img id="status-splash" class="show-image--true fullsize--true use-filter--false" src="index.png" alt="">
 			<progress id="status-progress"></progress>
 			<div id="status-notice"></div>
 		</div>
 
 		<script src="index.js"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":4711528,"index.wasm":39513091},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":4759456,"index.wasm":39513091},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 
