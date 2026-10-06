@@ -253,10 +253,12 @@ func _act() -> void:
 	var entry: Dictionary = cell["entry"]
 	if cell["kind"] == "path":
 		if GameState.choose_path(entry["id"]):
+			Sound.play("learn")
 			status.text = "You walk the path of the %s." % entry["name"]
 		else:
 			status.text = "That path isn't yours to walk now."
 	elif GameState.buy_skill_node(entry["id"]):
+		Sound.play("learn")
 		status.text = "Learned: %s." % entry["name"]
 	elif entry["id"] in GameState.hero.skill_nodes:
 		status.text = "Already learned."

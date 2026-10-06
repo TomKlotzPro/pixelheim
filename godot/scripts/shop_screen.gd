@@ -289,7 +289,9 @@ func _sold(gold: int) -> void:
 func _crafted(result: Dictionary, entry: Dictionary) -> void:
 	if not result["made"]:
 		status.text = "Missing materials or skill."
-	elif result["count"] > 1:
+		return
+	Sound.play("craft")
+	if result["count"] > 1:
 		status.text = "A lucky brew: 2x %s!" % Catalog.item_name(entry["itemId"])
 	else:
 		status.text = "Made %s." % Catalog.item_name(entry["itemId"])

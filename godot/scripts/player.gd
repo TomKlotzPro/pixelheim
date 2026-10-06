@@ -215,6 +215,7 @@ func respawn(at: Vector2) -> void:
 
 func _die() -> void:
 	dead = true
+	Sound.play("defeat")
 	attacking = false
 	hitbox.monitoring = false
 	_play("death")

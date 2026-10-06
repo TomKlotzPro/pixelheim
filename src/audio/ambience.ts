@@ -11,9 +11,9 @@ export type AmbiencePlace = "greenwood" | "deepforest" | "marsh" | "indoor" | "n
 const rand = (lo: number, hi: number) => lo + Math.random() * (hi - lo);
 
 /** One ambient event: chance per tick, and the sound it makes. */
-type AmbientEvent = { chance: number; play: () => void };
+export type AmbientEvent = { chance: number; play: () => void };
 
-const PALETTES: Record<Exclude<AmbiencePlace, "none">, AmbientEvent[]> = {
+export const PALETTES: Record<Exclude<AmbiencePlace, "none">, AmbientEvent[]> = {
   greenwood: [
     {
       // a bird, two or three quick high chirps
@@ -108,7 +108,7 @@ export function ambienceForState(state: GameState): AmbiencePlace {
 let current: AmbiencePlace = "none";
 let timer: ReturnType<typeof setInterval> | null = null;
 
-const TICK_MS = 700;
+export const TICK_MS = 700;
 
 export function setAmbience(place: AmbiencePlace): void {
   if (current === place) return;

@@ -6,7 +6,7 @@
 
 import { loadSettings } from "../app/settings";
 
-let ctx: AudioContext | null = null;
+let ctx: BaseAudioContext | null = null;
 let master: GainNode | null = null;
 let musicBus: GainNode | null = null;
 let musicFade: GainNode | null = null;
@@ -27,38 +27,49 @@ try {
 export function initAudio(): void {
   if (ctx) return;
   try {
-    const settings = loadSettings();
-    ctx = new AudioContext();
-    master = ctx.createGain();
-    master.gain.value = muted ? 0 : 1;
-    master.connect(ctx.destination);
-    // music -> fade (crossfades) -> bus (user volume) -> master, plus a
-    // touch of feedback echo so the chip score has a room to live in
-    musicBus = ctx.createGain();
-    musicBus.gain.value = settings.musicVolume;
-    musicBus.connect(master);
-    musicFade = ctx.createGain();
-    musicFade.gain.value = 1;
-    musicFade.connect(musicBus);
-    const delay = ctx.createDelay(1);
-    delay.delayTime.value = 0.27;
-    const feedback = ctx.createGain();
-    feedback.gain.value = 0.22;
-    const wet = ctx.createGain();
-    wet.gain.value = 0.16;
-    musicFade.connect(delay);
-    delay.connect(feedback).connect(delay);
-    delay.connect(wet).connect(musicBus);
-    sfxBus = ctx.createGain();
-    sfxBus.gain.value = settings.sfxVolume;
-    sfxBus.connect(master);
-    // ambience rides the sfx volume, quieter: birdsong should never shout
-    ambienceBus = ctx.createGain();
-    ambienceBus.gain.value = settings.sfxVolume * 0.55;
-    ambienceBus.connect(master);
+    initAudioWith(new AudioContext());
   } catch {
     ctx = null;
   }
+}
+
+/**
+ * Builds the bus graph on any context. The game uses a live AudioContext;
+ * scripts/render-audio.ts renders the same sounds on an OfflineAudioContext
+ * for the Godot build (PIX-128), so both play exactly this synth.
+ */
+export function initAudioWith(context: BaseAudioContext, volumes?: { music: number; sfx: number }): void {
+  const settings = volumes ? null : loadSettings();
+  const musicVolume = volumes?.music ?? settings!.musicVolume;
+  const sfxVolume = volumes?.sfx ?? settings!.sfxVolume;
+  ctx = context;
+  master = ctx.createGain();
+  master.gain.value = muted ? 0 : 1;
+  master.connect(ctx.destination);
+  // music -> fade (crossfades) -> bus (user volume) -> master, plus a
+  // touch of feedback echo so the chip score has a room to live in
+  musicBus = ctx.createGain();
+  musicBus.gain.value = musicVolume;
+  musicBus.connect(master);
+  musicFade = ctx.createGain();
+  musicFade.gain.value = 1;
+  musicFade.connect(musicBus);
+  const delay = ctx.createDelay(1);
+  delay.delayTime.value = 0.27;
+  const feedback = ctx.createGain();
+  feedback.gain.value = 0.22;
+  const wet = ctx.createGain();
+  wet.gain.value = 0.16;
+  musicFade.connect(delay);
+  delay.connect(feedback).connect(delay);
+  delay.connect(wet).connect(musicBus);
+  sfxBus = ctx.createGain();
+  sfxBus.gain.value = sfxVolume;
+  sfxBus.connect(master);
+  // ambience rides the sfx volume, quieter: birdsong should never shout
+  ambienceBus = ctx.createGain();
+  ambienceBus.gain.value = sfxVolume * 0.55;
+  ambienceBus.connect(master);
 }
 
 export function setBusVolume(bus: Bus, volume: number): void {

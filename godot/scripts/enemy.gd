@@ -31,6 +31,8 @@ var ailments := Ailments.new()
 ## PunyArt.monster spec, and the way it last faced.
 var art: Dictionary
 var facing := "down"
+## True while it has the hero in sight; the first sighting is heard (bump).
+var hunting := false
 
 
 func _ready() -> void:
@@ -92,6 +94,9 @@ func _physics_process(delta: float) -> void:
 	var player: CharacterBody2D = world.player
 	var to_player := player.global_position - global_position
 	if to_player.length() < SIGHT_RADIUS and not player.dead:
+		if not hunting:
+			hunting = true
+			world.on_enemy_noticed(self)
 		velocity = to_player.normalized() * CHASE_SPEED
 		if to_player.length() < CONTACT_RADIUS and can_bite:
 			can_bite = false
@@ -104,6 +109,7 @@ func _physics_process(delta: float) -> void:
 				func() -> void: can_bite = true
 			)
 	else:
+		hunting = false
 		wander_time -= delta
 		if wander_time <= 0:
 			wander_time = randf_range(0.8, 2.0)
@@ -124,6 +130,7 @@ func _physics_process(delta: float) -> void:
 func take_hit(damage: int, from: Vector2, infliction: Variant = null) -> void:
 	if dying:
 		return
+	Sound.play("hit")
 	velocity = (global_position - from).normalized() * 220
 	move_and_slide()
 	var tween := create_tween()

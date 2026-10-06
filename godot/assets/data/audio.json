@@ -1,0 +1,110 @@
+{
+  "stingers": [
+    "hit",
+    "hurt",
+    "heal",
+    "coin",
+    "levelUp",
+    "victory",
+    "defeat",
+    "step",
+    "door",
+    "drop",
+    "equip",
+    "chest",
+    "travel",
+    "learn",
+    "craft",
+    "evolve",
+    "bump"
+  ],
+  "tracks": {
+    "title": {
+      "seconds": 19.2,
+      "beats": 32
+    },
+    "town": {
+      "seconds": 17.77777777777778,
+      "beats": 32
+    },
+    "world": {
+      "seconds": 7.2727272727272725,
+      "beats": 16
+    },
+    "deepwood": {
+      "seconds": 20.869565217391305,
+      "beats": 32
+    },
+    "mirefen": {
+      "seconds": 25.263157894736842,
+      "beats": 32
+    },
+    "interior": {
+      "seconds": 20,
+      "beats": 32
+    },
+    "descent": {
+      "seconds": 8,
+      "beats": 16
+    },
+    "battle": {
+      "seconds": 6.4,
+      "beats": 16
+    },
+    "boss": {
+      "seconds": 5.853658536585366,
+      "beats": 16
+    },
+    "victory": {
+      "seconds": 9.23076923076923,
+      "beats": 16
+    }
+  },
+  "ambience": {
+    "greenwood": [
+      {
+        "chance": 0.18,
+        "variants": 4
+      },
+      {
+        "chance": 0.1,
+        "variants": 4
+      }
+    ],
+    "deepforest": [
+      {
+        "chance": 0.1,
+        "variants": 4
+      },
+      {
+        "chance": 0.14,
+        "variants": 4
+      }
+    ],
+    "marsh": [
+      {
+        "chance": 0.2,
+        "variants": 4
+      },
+      {
+        "chance": 0.1,
+        "variants": 4
+      },
+      {
+        "chance": 0.06,
+        "variants": 4
+      }
+    ],
+    "indoor": [
+      {
+        "chance": 0.22,
+        "variants": 4
+      },
+      {
+        "chance": 0.04,
+        "variants": 4
+      }
+    ]
+  },
+  "ambienceTick": 0.7
+}

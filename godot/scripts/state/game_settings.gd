@@ -12,6 +12,7 @@ var music_volume := 0.7
 ## 0..1
 var sfx_volume := 0.7
 var reduce_motion := false
+var muted := false
 var scanlines := false
 var fullscreen := false
 ## Rebound primary keys: action -> physical keycode (Controls).
@@ -33,6 +34,7 @@ func load_file() -> void:
 	reduce_motion = config.get_value(SECTION, "reduce_motion", reduce_motion)
 	last_slot = config.get_value(SECTION, "last_slot", last_slot)
 	scanlines = config.get_value(SECTION, "scanlines", scanlines)
+	muted = config.get_value(SECTION, "muted", muted)
 	fullscreen = config.get_value(SECTION, "fullscreen", fullscreen)
 	var saved: Variant = config.get_value(SECTION, "bindings", {})
 	bindings = {}
@@ -49,6 +51,7 @@ func save_file() -> void:
 	config.set_value(SECTION, "reduce_motion", reduce_motion)
 	config.set_value(SECTION, "last_slot", last_slot)
 	config.set_value(SECTION, "scanlines", scanlines)
+	config.set_value(SECTION, "muted", muted)
 	config.set_value(SECTION, "fullscreen", fullscreen)
 	config.set_value(SECTION, "bindings", bindings)
 	DirAccess.make_dir_recursive_absolute(path.get_base_dir())

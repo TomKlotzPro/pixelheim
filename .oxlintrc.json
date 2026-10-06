@@ -41,7 +41,7 @@
       }
     },
     {
-      "files": ["e2e/**"],
+      "files": ["e2e/**", "scripts/render-audio.ts"],
       "rules": {
         "no-await-in-loop": "off"
       }

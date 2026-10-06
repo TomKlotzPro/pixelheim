@@ -24,6 +24,8 @@ signal monster_slain(monster_id: String)
 signal hp_changed(hp: int, max_hp: int)
 ## The hero crossed into a new rank (useRankUp): the ascension scene plays.
 signal ranked_up(title: String)
+## Levels were gained (the level-up fanfare).
+signal leveled_up(level: int)
 
 ## Slot 0 never touches disk: harness runs and tests leave real saves alone.
 const NO_SLOT := 0
@@ -836,6 +838,7 @@ func _grant_levels() -> int:
 	var rank_before := HeroRules.rank_index(hero.level)
 	var gained := HeroRules.apply_level_ups(hero)
 	if gained > 0:
+		leveled_up.emit(hero.level)
 		healed.emit()
 		if HeroRules.rank_index(hero.level) > rank_before:
 			ranked_up.emit(Ranks.title(hero.role_id, hero.level))

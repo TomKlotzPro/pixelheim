@@ -27,6 +27,7 @@ The React/Pixi web game (`src/`) is being ported to Godot 4.7 (`godot/`), one Li
 - Signals up, calls down: `GameState` emits (`loaded`, `gold_changed`, `inventory_changed`, `dialogue_closed`); world and UI listen.
 - Menus/overlays are `CanvasLayer`s with `process_mode = ALWAYS` that pause the tree while open, and use `UiStyle` (`scripts/ui_style.gd`) for palette, boxes, labels, buttons; screen titles use `UiStyle.heading` (Press Start 2P). Body type is Courier Prime via `gui/theme/custom_font` in project.godot (a root `theme` does not reach Controls under a CanvasLayer). Courier is wide: clip long lines (`clip_text` + ellipsis) and check screenshots. Open the hero's screens through `world.open_screen(name)`.
 - Input in menus: build the command, `get_viewport().set_input_as_handled()` **first**, then run it; an action that reloads the scene frees the menu (calling it after logs `!is_inside_tree`).
+- Sounds are the web synth rendered to WAV (`pnpm audio:render`); play them by the web's names (`Sound.play("coin")`), never hand-make audio. A changed `src/audio` needs a re-render (not CI-checked: noise is random).
 - Keys live in `Controls` (defaults, alternates, pad) and `GameSettings.bindings`; never `InputMap.add_action` elsewhere. A new screen's hotkey is a new `Controls.BINDABLE` entry.
 
 ## State and saves
