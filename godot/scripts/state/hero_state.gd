@@ -100,14 +100,3 @@ func to_dict() -> Dictionary:
 		out["mastery"] = mastery.duplicate()
 	return out
 
-
-## Carry-weight passives: every owned skill passive, plus the deepest step of
-## the walked path (getPassives + activeNode; pre-graph saves walk their spec).
-func carry_bonus() -> int:
-	var bonus := 0
-	for node_id in skill_nodes:
-		bonus += Catalog.skill_carry_bonus(node_id)
-	var walked: Array = path if path is Array and not path.is_empty() else ([spec] if spec else [])
-	if not walked.is_empty():
-		bonus += Catalog.path_carry_bonus(walked[-1])
-	return bonus

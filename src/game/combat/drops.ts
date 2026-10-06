@@ -13,7 +13,7 @@ type DropPool = {
   stackIds: string[];
 };
 
-const POOLS: DropPool[] = [
+export const POOLS: DropPool[] = [
   {
     floor: 1,
     gearIds: ["rusty_sword", "hunting_bow", "traveler_cloak", "leather_armor"],
@@ -63,13 +63,13 @@ const POOLS: DropPool[] = [
   },
 ];
 
-const RARITY_WEIGHTS: Record<"normal" | "elite" | "boss", Record<Rarity, number>> = {
+export const RARITY_WEIGHTS: Record<"normal" | "elite" | "boss", Record<Rarity, number>> = {
   normal: { common: 0.75, fine: 0.22, epic: 0.03 },
   elite: { common: 0.55, fine: 0.35, epic: 0.1 },
   boss: { common: 0.3, fine: 0.5, epic: 0.2 },
 };
 
-const DROP_CHANCE = { normal: 0.22, elite: 0.4, boss: 1 };
+export const DROP_CHANCE = { normal: 0.22, elite: 0.4, boss: 1 };
 
 export type MonsterKind = keyof typeof DROP_CHANCE;
 

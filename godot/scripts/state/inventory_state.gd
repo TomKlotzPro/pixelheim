@@ -23,9 +23,17 @@ static func gear_uid() -> String:
 	return "g%s%d%s" % [String.num_int64(millis, 36), _uid_counter, String.num_int64(randi() % 1679616, 36)]
 
 
-## A fresh common piece (createGear with the default rarity: no bonus roll).
-static func create_gear(item_id: String) -> Dictionary:
-	return {"uid": gear_uid(), "itemId": item_id, "rarity": "common", "bonus": 0}
+## A fresh piece (createGear): common pieces carry no bonus; fine and epic
+## ones roll theirs from the rarity's range (weapon or armor) with `roll`.
+static func create_gear(item_id: String, rarity := "common", roll: Callable = Callable()) -> Dictionary:
+	var bonus := 0
+	if rarity != "common":
+		var def: Dictionary = Economy._data()["rarities"][rarity]
+		var weapon: bool = Catalog.item(item_id).get("category", "") == "weapons"
+		var bounds: Array = def["weaponBonus"] if weapon else def["armorBonus"]
+		var value: float = roll.call() if roll.is_valid() else randf()
+		bonus = int(bounds[0]) + floori(value * (int(bounds[1]) - int(bounds[0]) + 1))
+	return {"uid": gear_uid(), "itemId": item_id, "rarity": rarity, "bonus": bonus}
 
 
 static func gear_name(instance: Dictionary) -> String:
