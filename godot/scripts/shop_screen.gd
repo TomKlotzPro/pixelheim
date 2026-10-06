@@ -145,6 +145,17 @@ func _build_rows() -> Array[Dictionary]:
 					"verb": "Buy the deed", "enabled": not owned and pack.gold >= int(deed["cost"]),
 					"action": func() -> void: _after(GameState.buy_property(map_id), "The deed is yours.", "Not enough gold."),
 				})
+			# Odo also sells the bigger house deeds (BUY_HOUSE_UPGRADE).
+			var bigger := Town.next_house_tier(GameState.owns_house(), int(GameState.settlement.house.get("tier", 1)))
+			if shop_id == "odo" and not bigger.is_empty():
+				out.append({
+					"label": "Deed: %s" % bigger["name"], "price": "%dg" % bigger["cost"],
+					"detail": "%s\nA bigger house: its new rooms wait the next time you walk in." % bigger["name"],
+					"verb": "Sign the deed", "enabled": pack.gold >= int(bigger["cost"]),
+					"action": func() -> void:
+						var text := GameState.buy_house_upgrade()
+						status.text = text if text != "" else "Not enough gold.",
+				})
 			for item_id in Economy.shop_stock(shop_id, GameState.progression.unlocked_level):
 				var price := Economy.buy_price(item_id)
 				out.append({

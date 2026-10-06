@@ -8,6 +8,7 @@ var rows: Array[Dictionary] = []
 var selected := 0
 var list: VBoxContainer
 var info: Label
+var info_card: PanelContainer
 var gold_label: Label
 var status: Label
 
@@ -26,6 +27,7 @@ func _ready() -> void:
 	add_child(gold_label)
 
 	var card := PanelContainer.new()
+	info_card = card
 	card.position = Vector2(80, 110)
 	card.custom_minimum_size = Vector2(520, 440)
 	card.add_theme_stylebox_override("panel", UiStyle.box(UiStyle.CARD, UiStyle.RIM, 16))
@@ -103,6 +105,7 @@ func _act() -> void:
 func _refresh() -> void:
 	gold_label.text = "Gold: %d" % GameState.pack.gold
 	info.text = _info()
+	info_card.visible = info.text != ""
 	rows = _rows()
 	selected = clampi(selected, 0, maxi(0, rows.size() - 1))
 	for child in list.get_children():

@@ -60,6 +60,9 @@ func _ready() -> void:
 	var tier_index := args.find("--town-tier")
 	if tier_index >= 0 and tier_index + 1 < args.size():
 		GameState.settlement.town_tier = int(args[tier_index + 1])
+	var house_index := args.find("--house-tier")
+	if house_index >= 0 and house_index + 1 < args.size():
+		GameState.settlement.house["tier"] = int(args[house_index + 1])
 	# Resume where the save stands; `--map <id>` (harness) boots at that map's spawn.
 	var map_index := args.find("--map")
 	var override := map_index >= 0 and map_index + 1 < args.size()
@@ -115,6 +118,10 @@ func _process(_delta: float) -> void:
 		return
 	player_cell = cell
 	GameState.move_to(map, cell, player.facing)
+	# Walking into the bought house's shut door walks you in.
+	if map.id == "town" and cell + Vector2i(player.facing) == Town.house_door() and GameState.owns_house():
+		_enter_house()
+		return
 	_collect_ground_treasure(cell)
 	if map.portals.has(cell):
 		_use_portal(map.portals[cell])
@@ -182,6 +189,7 @@ func _enter_map(next: MapData, arrival: Vector2i) -> void:
 	move_child(tile_layer, 0)
 	move_child(ground, 0)
 	_build_decor(next)
+	_build_furniture()
 	_spawn_npcs(next)
 	player.position = _cell_center(arrival)
 	last_player_position = player.position
@@ -372,9 +380,22 @@ func _chest_at(cell: Vector2i) -> Dictionary:
 func _facing_cell() -> Vector2i:
 	return player_cell + Vector2i(player.facing)
 
-## E talks to the villager beside the hero first (turning to face them),
-## then opens a faced chest — the web's INTERACT order.
+## E in the web's INTERACT order: a faced chest, the house door, the house's
+## fixtures, then the villager beside the hero (turning to face them).
 func _try_interact() -> void:
+	var faced := _facing_cell()
+	var chest := _chest_at(faced)
+	if not chest.is_empty() and chest["look"] == "chest" and not GameState.is_opened(chest):
+		_open_chest(chest)
+		return
+	if map.id == "town" and faced == Town.house_door():
+		if GameState.owns_house():
+			_enter_house()
+		else:
+			_flash_message(GameState.buy_house())
+		return
+	if map.id == "town_house" and _house_interact(faced):
+		return
 	var beside := _npc_beside()
 	if not beside.is_empty():
 		player.face(Vector2(beside["side"]))
@@ -389,10 +410,55 @@ func _try_interact() -> void:
 		else:
 			_talk(beside["npc"])
 		return
-	var chest := _chest_at(_facing_cell())
-	if chest.is_empty() or chest["look"] != "chest" or GameState.is_opened(chest):
+
+func _enter_house() -> void:
+	map = _load_map("town_house")
+	_enter_map(map, Vector2i(8, 8))
+
+## The house's fixtures and furniture; true when E meant one of them.
+func _house_interact(cell: Vector2i) -> bool:
+	var result := GameState.house_interact(cell, map.tile_at(cell))
+	if result.is_empty():
+		return false
+	if result.has("text"):
+		_flash_message(result["text"])
+	if result.has("panel"):
+		var screen := preload("res://scripts/home_screen.gd").new()
+		screen.mode = result["panel"]
+		screen.cell = cell
+		screen.on_placed = _build_furniture
+		add_child(screen)
+	_build_furniture()
+	return true
+
+## Placed furniture in the house: y-sorted sprites that block (rugs lie flat).
+func _build_furniture() -> void:
+	for piece in get_tree().get_nodes_in_group("furniture"):
+		piece.queue_free()
+	if map.id != "town_house":
 		return
-	_open_chest(chest)
+	for placed: Dictionary in GameState.furniture():
+		var item_id: String = placed["itemId"]
+		var cell := Vector2i(placed["x"], placed["y"])
+		var sprite := Sprite2D.new()
+		sprite.texture = load("res://assets/sprites/%s.png" % Catalog.item(item_id)["sprite"])
+		sprite.position = _cell_center(cell)
+		sprite.add_to_group("furniture")
+		sprite.add_to_group("decor")
+		if not Town.furniture_blocks(item_id):
+			sprite.z_index = -1  # underfoot
+		actors.add_child(sprite)
+		if Town.furniture_blocks(item_id):
+			var body := StaticBody2D.new()
+			var shape := CollisionShape2D.new()
+			var rect := RectangleShape2D.new()
+			rect.size = Vector2(TILE, TILE)
+			shape.shape = rect
+			body.add_child(shape)
+			body.position = _cell_center(cell)
+			body.add_to_group("furniture")
+			body.add_to_group("decor")
+			actors.add_child(body)
 
 func _open_shop() -> void:
 	add_child(preload("res://scripts/shop_screen.gd").new())
@@ -680,6 +746,15 @@ func _run_test_harness() -> void:
 		var tab_index := args.find("--tab")
 		if tab_index >= 0 and tab_index + 1 < args.size():
 			screen._switch(int(args[tab_index + 1]))
+		await get_tree().create_timer(0.3).timeout
+	if args.has("home"):
+		# Pair with `--map town_house`; `--mode storage|workbench|trophies|nook|furniture`.
+		GameState.settlement.house["owned"] = true
+		GameState.pack.items.merge({"furn_plant": 1, "furn_rug": 1, "potion_hp": 4, "gem": 1})
+		var mode_index := args.find("--mode")
+		var screen := preload("res://scripts/home_screen.gd").new()
+		screen.mode = args[mode_index + 1] if mode_index >= 0 else "storage"
+		add_child(screen)
 		await get_tree().create_timer(0.3).timeout
 	if args.has("hall") or args.has("bank"):
 		GameState.pack.gold = 20000
