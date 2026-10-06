@@ -9,12 +9,14 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { ITEMS } from "../src/game/economy/items";
+import { RECRUITS } from "../src/game/settlers";
 import { LEVELS } from "../src/game/hero/levels";
 import { PATH_NODES } from "../src/game/hero/paths";
 import { ROLES } from "../src/game/hero/roles";
 import { SKILL_TREES } from "../src/game/hero/skillTree";
 import { INN_REST, TOWN_SPAWN } from "../src/state/shared";
 import { CHESTS } from "../src/world/chests";
+import { NPCS } from "../src/world/npcs";
 import { chartedMapId, MAP_NAMES } from "../src/world/mapNames";
 import { MAPS } from "../src/world/maps";
 import { signsOn } from "../src/world/signs";
@@ -122,6 +124,10 @@ emit(
   },
   DATA_OUT,
 );
+
+// Villagers (PIX-123): the fixed townsfolk, tier-gated settlers included, and
+// the recruits who wait in the wilds until they move to town (PIX-92).
+emit("npcs.json", { npcs: NPCS, recruits: RECRUITS }, DATA_OUT);
 
 if (check && drifted.length > 0) {
   console.error(`godot maps out of sync — run \`pnpm godot:sync\`:\n  ${drifted.join("\n  ")}`);

@@ -9,6 +9,9 @@ extends Node
 signal loaded
 signal gold_changed(gold: int)
 signal inventory_changed
+## A conversation ended: settlers (PIX-124) and quests (PIX-125) answer here,
+## like the web game resolves them when its dialogue closes.
+signal dialogue_closed(npc_id: String)
 
 ## Slot 0 never touches disk: harness runs and tests leave real saves alone.
 const NO_SLOT := 0

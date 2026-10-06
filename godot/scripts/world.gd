@@ -171,6 +171,7 @@ func _enter_map(next: MapData, arrival: Vector2i) -> void:
 	move_child(tile_layer, 0)
 	move_child(ground, 0)
 	_build_decor(next)
+	_spawn_npcs(next)
 	player.position = _cell_center(arrival)
 	last_player_position = player.position
 	player_cell = arrival
@@ -286,6 +287,24 @@ func _build_decor(data: MapData) -> void:
 				choices[(h >> 7) % choices.size()], cell, h
 			)
 
+## Villagers who live on this map now: tier-gated townsfolk and recruits.
+func _spawn_npcs(data: MapData) -> void:
+	var settlers := GameState.settlement.settlers
+	for npc: Dictionary in Npcs.on_map(data.id, GameState.settlement.town_tier, settlers):
+		var villager := preload("res://scripts/npc.gd").new()
+		villager.world = self
+		villager.data = npc
+		villager.add_to_group("decor")
+		villager.add_to_group("npcs")
+		actors.add_child(villager)
+
+## The villager beside the hero, faced side first: {npc, side} or {}.
+func _npc_beside() -> Dictionary:
+	var occupied := {}
+	for villager in get_tree().get_nodes_in_group("npcs"):
+		occupied[villager.cell] = villager.data
+	return Npcs.beside(occupied, player_cell, Vector2i(player.facing))
+
 func _add_prop_sprite(sheet: String, region: Rect2, cell: Vector2i) -> void:
 	var atlas := AtlasTexture.new()
 	atlas.atlas = load(WorldTiles.sprite_file(sheet))
@@ -336,11 +355,23 @@ func _chest_at(cell: Vector2i) -> Dictionary:
 func _facing_cell() -> Vector2i:
 	return player_cell + Vector2i(player.facing)
 
+## E talks to the villager beside the hero first (turning to face them),
+## then opens a faced chest — the web's INTERACT order.
 func _try_interact() -> void:
+	var beside := _npc_beside()
+	if not beside.is_empty():
+		player.face(Vector2(beside["side"]))
+		_talk(beside["npc"])
+		return
 	var chest := _chest_at(_facing_cell())
 	if chest.is_empty() or chest["look"] != "chest" or GameState.is_opened(chest):
 		return
 	_open_chest(chest)
+
+func _talk(npc: Dictionary) -> void:
+	var box := preload("res://scripts/dialogue_box.gd").new()
+	box.npc = npc
+	add_child(box)
 
 func _open_chest(chest: Dictionary) -> void:
 	var result := GameState.open_chest(chest)
@@ -364,9 +395,15 @@ func _collect_ground_treasure(cell: Vector2i) -> void:
 		chest_sprites[chest["id"]].queue_free()
 		chest_sprites.erase(chest["id"])
 
-## The one interaction-prompt rule (ported from interactionPrompt.ts): a "!"
-## floats over a faced, unopened chest. NPCs join with PIX-123.
+## The one interaction-prompt rule (interactionPrompt.ts): a villager beside
+## the hero wins, then a faced unopened chest. Villagers stand two tiles tall,
+## so their "!" floats higher.
 func _update_prompt() -> void:
+	var beside := _npc_beside()
+	if not beside.is_empty():
+		prompt_label.visible = true
+		prompt_label.position = Vector2((player_cell + Vector2i(beside["side"])) * TILE) + Vector2(5, -30)
+		return
 	var chest := _chest_at(_facing_cell())
 	var show: bool = (
 		not chest.is_empty() and chest["look"] == "chest" and not GameState.is_opened(chest)
@@ -610,6 +647,15 @@ func _run_test_harness() -> void:
 		var web_file := args[web_index + 1] if web_index >= 0 and web_index + 1 < args.size() else ""
 		var stand_in := WebImport.parse_any(FileAccess.get_file_as_string(web_file)) if web_file != "" else {}
 		_open_saves(stand_in, not stand_in.is_empty())
+		await get_tree().create_timer(0.3).timeout
+	if args.has("talk") or args.has("near"):
+		# Stand below the map's first villager facing up; `talk` also presses E.
+		var villager: Node = get_tree().get_first_node_in_group("npcs")
+		player.position = _cell_center(villager.cell + Vector2i.DOWN)
+		player_cell = villager.cell + Vector2i.DOWN
+		player.face(Vector2.UP)
+		if args.has("talk"):
+			_try_interact()
 		await get_tree().create_timer(0.3).timeout
 	if args.has("chest"):
 		# Pair with `--map town`: warp beside the nook chest, face it, open it.
