@@ -66,6 +66,13 @@ func kinds() -> Array[String]:
 	return out
 
 
+## A remedy takes one ailment away (an antidote, a salve).
+func cure(kind: String) -> bool:
+	var before := effects.size()
+	effects = effects.filter(func(effect: Dictionary) -> bool: return effect["kind"] != kind)
+	return effects.size() < before
+
+
 func clear() -> void:
 	effects.clear()
 	_clock = 0.0

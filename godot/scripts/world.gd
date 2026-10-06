@@ -117,6 +117,9 @@ func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed("codex"):
 		add_child(preload("res://scripts/codex_screen.gd").new())
 		return
+	if Input.is_action_just_pressed("inventory"):
+		_open_inventory()
+		return
 	if Input.is_action_just_pressed("map"):
 		if map.floor_level > 0:
 			_flash_message("No map reaches this deep.")
@@ -262,6 +265,21 @@ func _use_portal(target: Dictionary) -> void:
 			add_child(screen)
 		"gate":
 			_leave_floor()
+
+
+func _open_inventory() -> void:
+	var screen := preload("res://scripts/inventory_screen.gd").new()
+	screen.world = self
+	add_child(screen)
+
+
+## Furniture from the pack onto the floor tile the hero faces (PLACE_FURNITURE).
+func place_from_pack(item_id: String) -> void:
+	var cell := _facing_cell()
+	var text := GameState.place_furniture(item_id, cell, map.tile_at(cell))
+	if text != "":
+		_flash_message(text)
+	_build_furniture()
 
 
 ## The ascension scene: a new title, and at a fork the path cards.
@@ -937,6 +955,9 @@ func _setup_input() -> void:
 		"stats": [KEY_C],
 		"skills": [KEY_K],
 		"codex": [KEY_B],
+		"inventory": [KEY_I],
+		"drop": [KEY_X],
+		"drop_all": [KEY_Z],
 		"menu": [KEY_ESCAPE],
 	}
 	## action -> [stick axis, direction]
@@ -1100,6 +1121,17 @@ func _run_test_harness() -> void:
 		GameState.hero.skill_points = 3
 		var sheet := "stats_screen" if args.has("stats") else "skills_screen"
 		add_child(load("res://scripts/%s.gd" % sheet).new())
+		await get_tree().create_timer(0.3).timeout
+	if args.has("inventory"):
+		# A pack worth reading: a fine sword, armor worn, potions and an antidote.
+		var sword := InventoryState.create_gear("iron_sword", "fine")
+		var armor := InventoryState.create_gear("leather_armor")
+		var ring := InventoryState.create_gear("band_of_grit")
+		GameState.pack.gear.append_array([sword, armor, ring])
+		GameState.equip(armor["uid"])
+		GameState.equip(ring["uid"])
+		GameState.pack.items.merge({"potion_hp": 3, "antidote": 1, "wolf_pelt": 2})
+		_open_inventory()
 		await get_tree().create_timer(0.3).timeout
 	if args.has("codex"):
 		# A record to read: twelve beasts (Slayer I) and a few undead.

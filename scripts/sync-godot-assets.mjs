@@ -23,6 +23,12 @@ const SPRITE_PATTERNS = [
   /^effect_.*\.png$/,
 ];
 const SPRITE_EXTRAS = ["atlas.json", "road_glint.png", "herb_patch.png"];
+// Item icons for the pack and the paperdoll (PIX-127): every sprite the
+// exported catalog names (scripts/export-maps.ts writes it, and it's committed).
+const CATALOG = path.join(ROOT, "godot/assets/data/catalog.json");
+const ITEM_ICONS = existsSync(CATALOG)
+  ? [...new Set(Object.values(JSON.parse(readFileSync(CATALOG, "utf8")).items).map((item) => `${item.sprite}.png`))]
+  : [];
 
 const check = process.argv.includes("--check");
 const drifted = [];
@@ -42,7 +48,7 @@ function sync(destination, content) {
 // Maps are exported separately by scripts/export-maps.ts, which imports the
 // real map modules (programmatic maps and portal validation included).
 const spriteNames = readdirSync(SPRITES_SRC).filter((name) => SPRITE_PATTERNS.some((pattern) => pattern.test(name)));
-for (const name of [...spriteNames, ...SPRITE_EXTRAS]) {
+for (const name of new Set([...spriteNames, ...SPRITE_EXTRAS, ...ITEM_ICONS])) {
   sync(path.join(SPRITES_DST, name), readFileSync(path.join(SPRITES_SRC, name)));
 }
 
