@@ -31,6 +31,15 @@ const SPRITE_EXTRAS = [
   "slime_idle.png",
   "wolf.png",
   "wolf_idle.png",
+  // villagers' two-beat idle sheets (PIX-123)
+  "elder_idle.png",
+  "villager_idle.png",
+  "villager_woman_idle.png",
+  "merchant_idle.png",
+  "smith_idle.png",
+  "alchemist_idle.png",
+  "innkeeper_idle.png",
+  "mayor_idle.png",
 ];
 
 const check = process.argv.includes("--check");

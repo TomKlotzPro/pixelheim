@@ -5,14 +5,6 @@ extends CanvasLayer
 ## confirms anything destructive), every action also clickable. Pauses the
 ## world while open; switching heroes reloads the world scene.
 
-## The map screen's night backdrop and its waypoint gold, so the two menus
-## read as one family until the UI suite (PIX-127) themes everything.
-const BACKDROP := Color(0.043, 0.047, 0.063, 0.97)
-const LAMP := Color(1, 0.85, 0.3)
-const CARD := Color(0.12, 0.1, 0.085)
-const RIM := Color(0.32, 0.26, 0.2)
-const INK := Color(0.95, 0.91, 0.83)
-const FADED := Color(0.95, 0.91, 0.83, 0.55)
 const PORTRAIT := Rect2(20, 16, 24, 34)  # hero body within the 64px idle frame
 
 ## A save found in this browser's web game (or passed in by the harness).
@@ -35,11 +27,11 @@ func _ready() -> void:
 	selected = clampi(GameState.slot - 1, 0, SaveSlots.SLOT_COUNT - 1)
 
 	var backdrop := ColorRect.new()
-	backdrop.color = BACKDROP
+	backdrop.color = UiStyle.BACKDROP
 	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(backdrop)
 
-	add_child(_label("Saves", 24, INK, Vector2(80, 32)))
+	add_child(UiStyle.label("Saves", 24, UiStyle.INK, Vector2(80, 32)))
 	for index in SaveSlots.SLOT_COUNT:
 		var card := PanelContainer.new()
 		card.position = Vector2(80, 88 + index * 112)
@@ -51,58 +43,58 @@ func _ready() -> void:
 	var actions := HBoxContainer.new()
 	actions.position = Vector2(80, 432)
 	actions.add_theme_constant_override("separation", 12)
-	actions.add_child(_button("E  Play", _play))
-	actions.add_child(_button("N  New hero", _new_hero))
-	actions.add_child(_button("X  Clear slot", _clear))
+	actions.add_child(UiStyle.button("E  Play", _play))
+	actions.add_child(UiStyle.button("N  New hero", _new_hero))
+	actions.add_child(UiStyle.button("X  Clear slot", _clear))
 	add_child(actions)
 
-	add_child(_label("From the web game", 18, INK, Vector2(760, 88)))
+	add_child(UiStyle.label("From the web game", 18, UiStyle.INK, Vector2(760, 88)))
 	if web_save.is_empty():
 		var hint := (
 			"No web game save in this browser." if OS.has_feature("web")
 			else "Copy your save code from Options in the web game, then paste it below."
 		)
-		var none := _label(hint, 14, FADED, Vector2(760, 122))
+		var none := UiStyle.label(hint, 14, UiStyle.FADED, Vector2(760, 122))
 		none.custom_minimum_size = Vector2(440, 0)
 		none.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		add_child(none)
 	else:
-		var found := _label(
-			"%s, %d gold" % [WebImport.describe(web_save), web_save["gold"]], 14, INK, Vector2(760, 122)
+		var found := UiStyle.label(
+			"%s, %d gold" % [WebImport.describe(web_save), web_save["gold"]], 14, UiStyle.INK, Vector2(760, 122)
 		)
 		add_child(found)
-		bring_button = _button("", _bring)
+		bring_button = UiStyle.button("", _bring)
 		bring_button.position = Vector2(760, 150)
 		if welcome:
 			# The one thing a first visit is for: make it the brightest control.
-			bring_button.add_theme_stylebox_override("normal", _box(CARD, LAMP))
-			bring_button.add_theme_color_override("font_color", LAMP)
+			bring_button.add_theme_stylebox_override("normal", UiStyle.box(UiStyle.CARD, UiStyle.LAMP))
+			bring_button.add_theme_color_override("font_color", UiStyle.LAMP)
 		add_child(bring_button)
 
-	add_child(_label("Save code", 18, INK, Vector2(760, 240)))
+	add_child(UiStyle.label("Save code", 18, UiStyle.INK, Vector2(760, 240)))
 	code_field = LineEdit.new()
 	code_field.placeholder_text = "Paste a save code"
 	code_field.position = Vector2(760, 274)
 	code_field.custom_minimum_size = Vector2(440, 0)
-	code_field.add_theme_color_override("font_color", INK)
-	code_field.add_theme_stylebox_override("normal", _box(CARD, RIM))
-	code_field.add_theme_stylebox_override("focus", _box(CARD, LAMP))
+	code_field.add_theme_color_override("font_color", UiStyle.INK)
+	code_field.add_theme_stylebox_override("normal", UiStyle.box(UiStyle.CARD, UiStyle.RIM))
+	code_field.add_theme_stylebox_override("focus", UiStyle.box(UiStyle.CARD, UiStyle.LAMP))
 	code_field.text_submitted.connect(func(_text: String) -> void: _load_code())
 	add_child(code_field)
-	load_button = _button("", _load_code)
+	load_button = UiStyle.button("", _load_code)
 	load_button.position = Vector2(760, 318)
 	add_child(load_button)
-	var copy := _button("C  Copy this hero's code", _copy)
+	var copy := UiStyle.button("C  Copy this hero's code", _copy)
 	copy.position = Vector2(760, 372)
 	add_child(copy)
 
-	status = _label("", 14, LAMP, Vector2(80, 496))
+	status = UiStyle.label("", 14, UiStyle.LAMP, Vector2(80, 496))
 	status.custom_minimum_size = Vector2(1120, 0)
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(status)
-	var keys := _label(
+	var keys := UiStyle.label(
 		"Esc  close      W/S  choose      E  play      N  new hero      X  clear      P  paste      C  copy",
-		14, FADED, Vector2(80, 660)
+		14, UiStyle.FADED, Vector2(80, 660)
 	)
 	add_child(keys)
 
@@ -248,8 +240,8 @@ func _fill_card(card: PanelContainer, index: int) -> void:
 		child.queue_free()
 	var summary := GameState.slots.summary(index + 1)
 	var chosen := index == selected
-	card.add_theme_stylebox_override("panel", _box(
-		CARD if not summary.is_empty() else Color(CARD, 0.4), LAMP if chosen else RIM, 14
+	card.add_theme_stylebox_override("panel", UiStyle.box(
+		UiStyle.CARD if not summary.is_empty() else Color(UiStyle.CARD, 0.4), UiStyle.LAMP if chosen else UiStyle.RIM, 14
 	))
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 16)
@@ -273,18 +265,18 @@ func _fill_card(card: PanelContainer, index: int) -> void:
 	lines.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_child(lines)
 	if summary.is_empty():
-		lines.add_child(_label("Empty slot", 20, FADED))
-		lines.add_child(_label("N starts a new hero here.", 14, FADED))
+		lines.add_child(UiStyle.label("Empty slot", 20, UiStyle.FADED))
+		lines.add_child(UiStyle.label("N starts a new hero here.", 14, UiStyle.FADED))
 	else:
 		var role: String = Catalog.role(summary["roleId"]).get("name", "").to_lower()
-		lines.add_child(_label(summary["name"], 20, INK))
-		lines.add_child(_label(
-			"Level %d %s in %s" % [summary["level"], role, Catalog.place_name(summary["mapId"])], 14, FADED
+		lines.add_child(UiStyle.label(summary["name"], 20, UiStyle.INK))
+		lines.add_child(UiStyle.label(
+			"Level %d %s in %s" % [summary["level"], role, Catalog.place_name(summary["mapId"])], 14, UiStyle.FADED
 		))
-		lines.add_child(_label("%d gold, saved %s" % [summary["gold"], _ago(summary["savedAt"])], 14, FADED))
+		lines.add_child(UiStyle.label("%d gold, saved %s" % [summary["gold"], _ago(summary["savedAt"])], 14, UiStyle.FADED))
 
-	var tag := _label("Playing" if index + 1 == GameState.slot else "Slot %d" % (index + 1), 14,
-		LAMP if index + 1 == GameState.slot else FADED)
+	var tag := UiStyle.label("Playing" if index + 1 == GameState.slot else "Slot %d" % (index + 1), 14,
+		UiStyle.LAMP if index + 1 == GameState.slot else UiStyle.FADED)
 	tag.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	row.add_child(tag)
 
@@ -299,38 +291,6 @@ static func _ago(saved_at: int) -> String:
 		return "1 hour ago" if hours == 1 else "%d hours ago" % hours
 	var days := seconds / 86400
 	return "yesterday" if days == 1 else "%d days ago" % days
-
-func _label(text: String, font_size: int, color: Color, at := Vector2.ZERO) -> Label:
-	var label := Label.new()
-	label.text = text
-	label.position = at
-	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	label.add_theme_font_size_override("font_size", font_size)
-	label.add_theme_color_override("font_color", color)
-	return label
-
-## Square-cornered pixel panels: a flat fill and a 2px rim.
-func _box(fill: Color, rim: Color, padding := 8) -> StyleBoxFlat:
-	var box := StyleBoxFlat.new()
-	box.bg_color = fill
-	box.border_color = rim
-	box.set_border_width_all(2)
-	box.set_content_margin_all(padding)
-	return box
-
-## Clickable twins of the key commands; keyboard focus stays with the screen.
-func _button(text: String, action: Callable) -> Button:
-	var button := Button.new()
-	button.text = text
-	button.focus_mode = Control.FOCUS_NONE
-	button.add_theme_font_size_override("font_size", 14)
-	button.add_theme_color_override("font_color", INK)
-	button.add_theme_color_override("font_hover_color", LAMP)
-	button.add_theme_stylebox_override("normal", _box(Color(0, 0, 0, 0), RIM))
-	button.add_theme_stylebox_override("hover", _box(Color(0, 0, 0, 0), LAMP))
-	button.add_theme_stylebox_override("pressed", _box(CARD, LAMP))
-	button.pressed.connect(action)
-	return button
 
 func _reload() -> void:
 	get_tree().paused = false
