@@ -9,6 +9,10 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { ITEMS } from "../src/game/economy/items";
+import { JOB_LEVEL_CAP, JOB_STATIONS } from "../src/game/economy/jobs";
+import { RARITIES } from "../src/game/economy/rarity";
+import { RECIPES } from "../src/game/economy/recipes";
+import { FORGE_BONUS_CAP, SHOP_MAPS, SHOPS, shopStock } from "../src/game/economy/shop";
 import { RECRUITS } from "../src/game/settlers";
 import { LEVELS } from "../src/game/hero/levels";
 import { PATH_NODES } from "../src/game/hero/paths";
@@ -75,19 +79,8 @@ const carryBonus = (passive?: { carryBonus?: number }) => passive?.carryBonus ??
 emit(
   "catalog.json",
   {
-    items: Object.fromEntries(
-      Object.values(ITEMS).map((item) => [
-        item.id,
-        {
-          name: item.name,
-          category: item.category,
-          weight: item.weight,
-          value: item.value,
-          ...(item.slot ? { slot: item.slot } : {}),
-          ...(item.grants ? { grants: item.grants } : {}),
-        },
-      ]),
-    ),
+    // Every item, whole: shops, the pack and combat all read it (id is the key).
+    items: Object.fromEntries(Object.values(ITEMS).map(({ id, ...item }) => [id, item])),
     roles: Object.fromEntries(
       Object.values(ROLES).map((role) => [
         role.id,
@@ -121,6 +114,39 @@ emit(
     levelCount: LEVELS.length,
     townSpawn: TOWN_SPAWN,
     innRest: INN_REST,
+  },
+  DATA_OUT,
+);
+
+// The town economy (PIX-124): shops and what they stock per unlocked floor,
+// which building hosts which shop, recipes, where each trade crafts.
+const MAX_FLOOR = 15;
+emit(
+  "economy.json",
+  {
+    shops: Object.fromEntries(
+      Object.values(SHOPS).map((shop) => [
+        shop.id,
+        {
+          ...shop,
+          // itemId -> the first unlocked floor at which this shop stocks it
+          stock: Object.fromEntries(
+            shopStock(shop.id, MAX_FLOOR).map((item) => [
+              item.id,
+              Array.from({ length: MAX_FLOOR }, (_, i) => i + 1).find((floor) =>
+                shopStock(shop.id, floor).some((stocked) => stocked.id === item.id),
+              ),
+            ]),
+          ),
+        },
+      ]),
+    ),
+    shopMaps: SHOP_MAPS,
+    recipes: RECIPES,
+    jobStations: JOB_STATIONS,
+    jobLevelCap: JOB_LEVEL_CAP,
+    forgeBonusCap: FORGE_BONUS_CAP,
+    rarities: RARITIES,
   },
   DATA_OUT,
 );
