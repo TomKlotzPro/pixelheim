@@ -2,8 +2,8 @@ extends CanvasLayer
 ## The title (TitleScreen.tsx): a night over the Ashenreach, three ridges
 ## deep, fog and embers, and the bestiary marching across the grass on its
 ## own clocks; PIXELHEIM drops in letter by letter. Continue, New Game (hero
-## creation) or the saves. W/S choose, E or Enter takes it. The world waits
-## paused behind.
+## creation), the saves, options, or the classic edition. W/S choose, E or
+## Enter takes it. The world waits paused behind.
 
 const PARADE := [
 	["slime", 46.0, -8.0], ["wolf", 34.0, -20.0], ["goblin", 40.0, -2.0],
@@ -167,6 +167,7 @@ func _card() -> void:
 		options.append({"label": "Continue  -  %s, Lv %d" % [GameState.hero.hero_name, GameState.hero.level], "action": _continue})
 	options.append({"label": "New Game", "action": _new_game})
 	options.append({"label": "Saves", "action": _saves})
+	options.append({"label": "Options", "action": _options})
 	options.append({"label": "Classic edition", "action": _classic})
 	_draw_menu()
 	var version: String = SaveCodec.parse_json(FileAccess.get_file_as_string("res://assets/data/meta.json"))["version"]
@@ -237,6 +238,14 @@ func _new_game() -> void:
 func _saves() -> void:
 	_leave()
 	world._open_saves()
+
+
+## Options over the title, so sound and keys can be set before a hero
+## exists; Esc hands back to the menu.
+func _options() -> void:
+	var screen := preload("res://scripts/options_screen.gd").new()
+	screen.world = world
+	add_child(screen)
 
 
 ## The web game this build grew from, still playable at /classic/ (same
