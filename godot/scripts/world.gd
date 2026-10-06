@@ -56,10 +56,14 @@ func _ready() -> void:
 	_setup_input()
 	var args := OS.get_cmdline_user_args()
 	GameState.boot(args)
+	# Harness: `--town-tier N` previews the village at another age.
+	var tier_index := args.find("--town-tier")
+	if tier_index >= 0 and tier_index + 1 < args.size():
+		GameState.settlement.town_tier = int(args[tier_index + 1])
 	# Resume where the save stands; `--map <id>` (harness) boots at that map's spawn.
 	var map_index := args.find("--map")
 	var override := map_index >= 0 and map_index + 1 < args.size()
-	map = MapData.load_by_id(args[map_index + 1] if override else GameState.world.map_id)
+	map = _load_map(args[map_index + 1] if override else GameState.world.map_id)
 	var arrival := map.spawn if override else GameState.world.cell
 	if not map.is_walkable(arrival):
 		arrival = map.spawn
@@ -115,6 +119,10 @@ func _process(_delta: float) -> void:
 	if map.portals.has(cell):
 		_use_portal(map.portals[cell])
 
+## Maps as the town has grown: the village and the house redraw per tier.
+func _load_map(map_id: String) -> MapData:
+	return MapData.load_tiered(map_id, GameState.town_tier(), int(GameState.settlement.house.get("tier", 1)))
+
 func is_walkable(cell: Vector2i) -> bool:
 	return map.is_walkable(cell)
 
@@ -128,7 +136,7 @@ func on_player_hp_changed(hp: int) -> void:
 func on_player_died() -> void:
 	await get_tree().create_timer(1.2).timeout
 	if map.id != RESPAWN_MAP:
-		map = MapData.load_by_id(RESPAWN_MAP)
+		map = _load_map(RESPAWN_MAP)
 		_enter_map(map, map.spawn)
 	player.respawn(_cell_center(map.spawn))
 	last_player_position = player.position  # a respawn is not a walk
@@ -145,8 +153,11 @@ func spawn_enemy(kind: String, cell: Vector2i) -> void:
 func _use_portal(target: Dictionary) -> void:
 	match target["kind"]:
 		"map":
-			map = MapData.load_by_id(target["mapId"])
+			map = _load_map(target["mapId"])
 			_enter_map(map, Vector2i(int(target["x"]), int(target["y"])))
+			# Stepping into the inn takes a bed for coin, as on the web.
+			if map.id == "town_inn":
+				_flash_message(GameState.rest_at_inn(player.hp < player.MAX_HP))
 		_:
 			# Dungeons arrive with PIX-126.
 			_flash_message("The way is sealed... for now.")
@@ -195,7 +206,7 @@ func _open_saves(web_save := {}, welcome := false) -> void:
 func travel_to(waypoint: Dictionary) -> void:
 	var arrival := Vector2i(int(waypoint["arrival"]["x"]), int(waypoint["arrival"]["y"]))
 	if waypoint["mapId"] != map.id:
-		map = MapData.load_by_id(waypoint["mapId"])
+		map = _load_map(waypoint["mapId"])
 	_enter_map(map, arrival)
 
 func _cell_center(cell: Vector2i) -> Vector2:
@@ -298,6 +309,12 @@ func _spawn_npcs(data: MapData) -> void:
 		villager.add_to_group("npcs")
 		actors.add_child(villager)
 
+## A recruit settled or the town grew: redraw who stands on this map.
+func _respawn_npcs() -> void:
+	for villager in get_tree().get_nodes_in_group("npcs"):
+		villager.queue_free()
+	_spawn_npcs(map)
+
 ## The villager beside the hero, faced side first: {npc, side} or {}.
 func _npc_beside() -> Dictionary:
 	var occupied := {}
@@ -361,9 +378,14 @@ func _try_interact() -> void:
 	var beside := _npc_beside()
 	if not beside.is_empty():
 		player.face(Vector2(beside["side"]))
-		# Keepers trade instead of chatting: anyone in a shop opens its counter.
+		# Keepers trade instead of chatting: anyone in a shop opens its counter,
+		# the mayor opens the town ledger, a settled Mirelle her bank.
 		if GameState.active_shop() != "":
 			_open_shop()
+		elif map.id == "town_hall":
+			add_child(preload("res://scripts/town_hall_screen.gd").new())
+		elif beside["npc"]["id"] == "settler_mirelle" and GameState.is_settled("settler_mirelle"):
+			add_child(preload("res://scripts/bank_screen.gd").new())
 		else:
 			_talk(beside["npc"])
 		return
@@ -565,6 +587,9 @@ func _build_hud() -> void:
 	hud.add_child(gold_label)
 	_on_gold_changed(GameState.pack.gold)
 	GameState.gold_changed.connect(_on_gold_changed)
+	GameState.message.connect(_flash_message)
+	GameState.healed.connect(func() -> void: player.heal())
+	GameState.settlers_changed.connect(_respawn_npcs)
 	message_label = Label.new()
 	message_label.position = Vector2(440, 640)
 	message_label.custom_minimum_size = Vector2(400, 0)
@@ -655,6 +680,11 @@ func _run_test_harness() -> void:
 		var tab_index := args.find("--tab")
 		if tab_index >= 0 and tab_index + 1 < args.size():
 			screen._switch(int(args[tab_index + 1]))
+		await get_tree().create_timer(0.3).timeout
+	if args.has("hall") or args.has("bank"):
+		GameState.pack.gold = 20000
+		var ledger := "town_hall_screen" if args.has("hall") else "bank_screen"
+		add_child(load("res://scripts/%s.gd" % ledger).new())
 		await get_tree().create_timer(0.3).timeout
 	if args.has("saves"):
 		# `--web-save <file>` stands in for a browser's web save (a code or JSON)

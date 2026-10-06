@@ -39,7 +39,7 @@ The React/Pixi web game (`src/`) is being ported to Godot 4.7 (`godot/`), one Li
 ```sh
 godot --headless --path godot --import                        # after new assets/scripts
 godot --headless --path godot -s res://addons/gut/gut_cmdln.gd # GUT; ALSO grep the output for "Parse Error"
-godot --path godot -- --screenshot [--map <id>] [--walk l,d,r,u] [fight] [kill] [chest] [talk] [near] [shop [--tab N]] [saves] [night] [worldmap] [--slot N]
+godot --path godot -- --screenshot [--map <id>] [--walk l,d,r,u] [fight] [kill] [chest] [talk] [near] [shop [--tab N]] [hall] [bank] [--town-tier N] [saves] [night] [worldmap] [--slot N]
 ```
 
 - GUT **exits 0 when a test file fails to parse** (the whole suite is silently skipped); CI greps for it, do the same locally.
@@ -54,3 +54,4 @@ godot --path godot -- --screenshot [--map <id>] [--walk l,d,r,u] [fight] [kill] 
 - Generated web villagers are 16 px and drawn at `DRAW_SCALE` 2.0 next to the ~30 px hero; the villager/hero art call is still open (PIX-126).
 - `--map <id>` boots at that map's spawn, not the save's position; `GameState.boot` runs once per session (slot switches reload the scene).
 - Interiors chart under their town's place name (`Catalog.place_name`).
+- The village and the house redraw per tier: load runtime maps through `world._load_map` (→ `MapData.load_tiered`), never `MapData.load_by_id`, or a funded town shows its old self.

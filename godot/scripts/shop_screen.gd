@@ -134,6 +134,17 @@ func _build_rows() -> Array[Dictionary]:
 	var pack := GameState.pack
 	match tabs[tab]:
 		"Buy":
+			# The business itself is for sale too (BUY_PROPERTY): rent after every victory.
+			var map_id := GameState.world.map_id
+			var deed: Dictionary = Town.deeds().get(map_id, {})
+			if not deed.is_empty():
+				var owned := map_id in GameState.settlement.properties
+				out.append({
+					"label": "Deed: %s" % deed["name"], "price": "owned" if owned else "%dg" % deed["cost"],
+					"detail": "%s\nOwn this business: it pays you %dg rent after every victory." % [deed["name"], Town.rent_per_property(GameState.town_tier())],
+					"verb": "Buy the deed", "enabled": not owned and pack.gold >= int(deed["cost"]),
+					"action": func() -> void: _after(GameState.buy_property(map_id), "The deed is yours.", "Not enough gold."),
+				})
 			for item_id in Economy.shop_stock(shop_id, GameState.progression.unlocked_level):
 				var price := Economy.buy_price(item_id)
 				out.append({

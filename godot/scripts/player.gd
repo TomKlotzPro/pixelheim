@@ -121,6 +121,13 @@ func take_hit(damage: int, from: Vector2) -> void:
 		func() -> void: invulnerable = false
 	)
 
+## Back to full health where the hero stands (the inn, Iva's hands).
+func heal() -> void:
+	if dead:
+		return
+	hp = MAX_HP
+	world.on_player_hp_changed(hp)
+
 func respawn(at: Vector2) -> void:
 	position = at
 	hp = MAX_HP

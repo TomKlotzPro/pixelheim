@@ -59,5 +59,5 @@ func _show() -> void:
 
 func _close() -> void:
 	get_tree().paused = false
-	GameState.dialogue_closed.emit(npc["id"])
 	queue_free()
+	GameState.finish_dialogue(npc["id"])
