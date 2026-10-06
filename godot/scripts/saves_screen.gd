@@ -256,7 +256,7 @@ func _fill_card(card: PanelContainer, index: int) -> void:
 	if not summary.is_empty():
 		var frame := AtlasTexture.new()
 		# The slot's own hero: their role's Puny sheet, facing down.
-		frame.atlas = load(PunyArt.path(PunyArt.hero(summary["roleId"])["sheet"]))
+		frame.atlas = load(PunyArt.path(PunyArt.hero(summary["roleId"], summary.get("look", 0))["sheet"]))
 		frame.region = PORTRAIT
 		portrait.texture = frame
 	row.add_child(portrait)

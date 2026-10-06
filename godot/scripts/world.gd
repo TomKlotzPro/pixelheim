@@ -93,11 +93,23 @@ func _ready() -> void:
 	_enter_map(map, arrival)
 	# A first visit to the Godot build that finds a web game hero in this
 	# browser offers to bring them along before anything else.
+	var greeted := false
 	if GameState.first_run:
 		var found := WebImport.find_in_browser()
 		if not found.is_empty():
 			_open_saves(found, true)
+			greeted = true
+	# The title greets a launch (not a slot switch or a reload, and not the harness).
+	var harness := OS.get_cmdline_user_args().has("--screenshot")
+	if not greeted and not GameState.title_seen and (not harness or OS.get_cmdline_user_args().has("title")):
+		_open_title()
 	_run_test_harness()
+
+
+func _open_title() -> void:
+	var title := preload("res://scripts/title_screen.gd").new()
+	title.world = self
+	add_child(title)
 
 func _process(_delta: float) -> void:
 	if player == null or player.dead:
@@ -1122,6 +1134,17 @@ func _run_test_harness() -> void:
 		var sheet := "stats_screen" if args.has("stats") else "skills_screen"
 		add_child(load("res://scripts/%s.gd" % sheet).new())
 		await get_tree().create_timer(0.3).timeout
+	if args.has("create"):
+		# Hero creation over the title, a role picked and a name typed.
+		var creation := preload("res://scripts/create_screen.gd").new()
+		creation.world = self
+		creation.role_index = 4
+		creation.look = 1
+		add_child(creation)
+		await get_tree().create_timer(0.1).timeout
+		creation.name_field.text = "Robin"
+		creation._refresh()
+		await get_tree().create_timer(0.4).timeout
 	if args.has("inventory"):
 		# A pack worth reading: a fine sword, armor worn, potions and an antidote.
 		var sword := InventoryState.create_gear("iron_sword", "fine")

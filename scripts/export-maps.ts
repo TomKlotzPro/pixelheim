@@ -18,7 +18,7 @@ import { RECRUITS } from "../src/game/settlers";
 import { DUNGEONS, LEVELS } from "../src/game/hero/levels";
 import { PATH_NODES } from "../src/game/hero/paths";
 import { RANK_AURAS, RANK_TITLES } from "../src/game/hero/ranks";
-import { ROLES } from "../src/game/hero/roles";
+import { ROLE_PITCH, ROLES } from "../src/game/hero/roles";
 import { SKILL_TREES } from "../src/game/hero/skillTree";
 import {
   HOUSE_DEED_COST,
@@ -126,7 +126,15 @@ emit(
     roles: Object.fromEntries(
       Object.values(ROLES).map((role) => [
         role.id,
-        { name: role.name, baseStats: role.baseStats, growth: role.growth, resource: role.resource },
+        {
+          name: role.name,
+          description: role.description,
+          pitch: ROLE_PITCH[role.id],
+          baseStats: role.baseStats,
+          growth: role.growth,
+          resource: role.resource,
+          skills: role.skills.map(({ name, description, unlockLevel }) => ({ name, description, unlockLevel })),
+        },
       ]),
     ),
     skillRoots: Object.fromEntries(
@@ -246,6 +254,9 @@ emit(
 // Villagers (PIX-123): the fixed townsfolk, tier-gated settlers included, and
 // the recruits who wait in the wilds until they move to town (PIX-92).
 emit("npcs.json", { npcs: NPCS, recruits: RECRUITS }, DATA_OUT);
+
+// The game's version, for the title screen.
+emit("meta.json", { version: JSON.parse(readFileSync(path.join(ROOT, "package.json"), "utf8")).version }, DATA_OUT);
 
 // The long game (PIX-125): the villagers' quests and the hero's rank titles.
 emit("progression.json", { quests: QUESTS, rankTitles: RANK_TITLES, rankAuras: RANK_AURAS }, DATA_OUT);

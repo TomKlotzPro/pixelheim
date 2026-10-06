@@ -39,7 +39,7 @@ The React/Pixi web game (`src/`) is being ported to Godot 4.7 (`godot/`), one Li
 ```sh
 godot --headless --path godot --import                        # after new assets/scripts
 godot --headless --path godot -s res://addons/gut/gut_cmdln.gd # GUT; ALSO grep the output for "Parse Error"
-godot --path godot -- --screenshot [--map <id>] [--walk l,d,r,u] [fight [kill] [hurt] [--foe <species>]] [chest] [talk] [near] [shop [--tab N]] [hall] [bank] [home --mode M] [--town-tier N] [--house-tier N] [lineup] [saves] [night] [worldmap] [overview] [--at x,y] [--zoom Z] [--floor N] [clear] [gate [--dungeon id] [descend]] [leave] [quest] [journal] [--level N] [rankup [walk-path]] [stats] [skills] [codex [bestiary]] [inventory] [--slot N]
+godot --path godot -- --screenshot [--map <id>] [--walk l,d,r,u] [fight [kill] [hurt] [--foe <species>]] [chest] [talk] [near] [shop [--tab N]] [hall] [bank] [home --mode M] [--town-tier N] [--house-tier N] [lineup] [saves] [night] [worldmap] [overview] [--at x,y] [--zoom Z] [--floor N] [clear] [gate [--dungeon id] [descend]] [leave] [quest] [journal] [--level N] [rankup [walk-path]] [stats] [skills] [codex [bestiary]] [inventory] [title] [create] [--slot N]
 ```
 
 - GUT **exits 0 when a test file fails to parse** (the whole suite is silently skipped); CI greps for it, do the same locally.
@@ -58,6 +58,7 @@ godot --path godot -- --screenshot [--map <id>] [--walk l,d,r,u] [fight [kill] [
 - `TileSetAtlasSource` animation separation counts **tiles**, not pixels; Puny water frames sit 2-4 rows apart and may overlap other tiles' strips, so `PunyTerrain._slot` opens a new source on the same sheet when one is full.
 - In a `canvas_item` shader, `COLOR` in `fragment()` already holds texel × modulate; sampling `TEXTURE` again squares it (everything goes dark).
 - Non-resource files (`.tsx`, `.txt`) only reach the web build through `include_filter` in `export_presets.cfg`.
+- A plain launch shows the title (harness runs skip it unless `title`); with no hero in the slot, a stand-in plays behind it and `GameState.save_now` writes nothing until `new_hero_in` / `import_into` / `play_slot` (`standing_in`).
 - Dungeon floors (`MapData.floor_level > 0`) are not web maps: never `GameState.move_to` them, or a save would point at a map the web game can't load.
 - A static func named like a GDScript builtin (`floor`, `round`...) is shadowed by the builtin inside its own class: `floor(level)` there calls math `floor`. Name them apart (`floor_def`).
 - Shade's animations that pause or loop back can't be TileSet atlas animations; `PunySheet` holds them on their first frame.

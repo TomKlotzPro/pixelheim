@@ -32,7 +32,7 @@ var aura: Sprite2D
 
 func _ready() -> void:
 	hp = GameState.hero.hp
-	art = PunyArt.hero(GameState.hero.role_id)
+	art = PunyArt.hero(GameState.hero.role_id, GameState.hero.look)
 	aura = Sprite2D.new()
 	aura.texture = _glow()
 	aura.position = Vector2(0, 5)
