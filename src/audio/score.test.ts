@@ -3,7 +3,7 @@ import { createHero } from "../game/hero/character";
 import type { GameState } from "../game/types";
 import { initialState } from "../state/gameReducer";
 import { ambienceForState } from "./ambience";
-import { trackForState } from "./music";
+import { loopBeats, TRACK_NAMES, trackForState } from "./music";
 
 function at(mapId: string, screen: GameState["screen"] = "world"): GameState {
   const s = structuredClone(initialState);
@@ -42,5 +42,14 @@ describe("the score knows where you are", () => {
     expect(ambienceForState(at("mirefen"))).toBe("marsh");
     expect(ambienceForState(at("town_smith"))).toBe("indoor");
     expect(ambienceForState(at("town", "battle"))).toBe("none");
+  });
+});
+
+describe("seamless loops for the Godot renders", () => {
+  it("lasts until every channel lines up again", () => {
+    expect(loopBeats("town")).toBe(32);
+    expect(loopBeats("battle")).toBe(16);
+    expect(loopBeats("world")).toBe(16);
+    for (const name of TRACK_NAMES) expect(loopBeats(name)).toBeGreaterThanOrEqual(8);
   });
 });

@@ -23,6 +23,8 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	layer = 7
 	get_tree().paused = true
+	Sound.play_track("title")
+	Sound.set_ambience("")
 	_scene()
 	_card()
 
@@ -229,3 +231,4 @@ func _leave() -> void:
 	GameState.title_seen = true
 	get_tree().paused = false
 	queue_free()
+	world._update_music()

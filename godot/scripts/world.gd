@@ -12,6 +12,8 @@ const LOG_LINES := 5
 const LOG_SECONDS := 4.0
 ## The dark under the mountain, whatever the hour above.
 const DUNGEON_GLOOM := Color(0.04, 0.02, 0.08, 0.28)
+## Fight music holds this long after the last hunter gives up.
+const COMBAT_LINGER_S := 3.0
 
 ## Puny World objects scattered on terrain (PIX-130), picked by cell hash:
 ## tile id -> [density %, [Puny tile ids]]. Forests grow pines and round
@@ -44,6 +46,13 @@ var hud_panel: PanelContainer
 var log_box: VBoxContainer
 ## spawn id -> monsters of its pack still standing
 var pack_alive := {}
+## Sound's view of the hero: what changed is heard (coin, heal, hurt).
+var heard_gold := 0
+var heard_hp := 0
+## When something last hunted the hero, and whether a boss did.
+var hunted_at := -100.0
+var hunted_by_boss := false
+var noticed_at := -100.0
 ## Foes still standing on the dungeon floor the hero walks (0 when cleared).
 var floor_foes := 0
 ## Torches, barrels, stairs on a dungeon floor; a cleared floor's way up joins them.
@@ -55,6 +64,7 @@ var sky_overlay: ColorRect
 func _ready() -> void:
 	var args := OS.get_cmdline_user_args()
 	GameState.boot(args)
+	Sound.apply_volumes()
 	_setup_input()
 	apply_video.call_deferred()
 	# Harness: `--town-tier N` previews the village at another age.
@@ -130,10 +140,12 @@ func _process(_delta: float) -> void:
 	GameState.walk(player.position.distance_to(last_player_position) / TILE)
 	last_player_position = player.position
 	sky_overlay.color = DUNGEON_GLOOM if map.floor_level > 0 else DayNight.sky_at(GameState.world.steps)
+	_update_music()
 	var cell := Vector2i((player.position / TILE).floor())
 	if cell == player_cell:
 		return
 	player_cell = cell
+	Sound.play("step")
 	# Down a dungeon the save keeps the hero at its gate, as the web does.
 	if map.floor_level == 0:
 		GameState.move_to(map, cell, player.facing)
@@ -164,7 +176,10 @@ func on_enemy_died(enemy: Node) -> void:
 	var floor_level := int(Bestiary.region(enemy.region).get("dropFloor", 1)) if enemy.region != "" else 1
 	if map.floor_level > 0:
 		floor_level = map.floor_level
+	var gear_before := GameState.pack.gear.size()
 	_log(GameState.defeat_monster(enemy.fighter, enemy.region, cleared, floor_level))
+	if GameState.pack.gear.size() > gear_before:
+		Sound.play("drop")
 	if cleared != "":
 		_log(["The wilds fall quiet again."])
 	if map.floor_level > 0 and floor_foes > 0:
@@ -286,8 +301,54 @@ func place_from_pack(item_id: String) -> void:
 	_build_furniture()
 
 
+## Gold that grows rings (SFX.coin); health heard rising or falling.
+func _hear_gold(gold: int) -> void:
+	if gold > heard_gold:
+		Sound.play("coin")
+	heard_gold = gold
+
+
+func _hear_hp(hp: int, _max_hp: int) -> void:
+	if hp < heard_hp:
+		Sound.play("hurt")
+	elif hp > heard_hp:
+		Sound.play("heal")
+	heard_hp = hp
+
+
+## Something has seen the hero: a growl (SFX.bump), not more than once a beat.
+func on_enemy_noticed(enemy: Node) -> void:
+	var now := Time.get_ticks_msec() / 1000.0
+	if now - noticed_at > 1.5:
+		Sound.play("bump")
+	noticed_at = now
+	hunted_at = now
+	hunted_by_boss = hunted_by_boss or Bestiary.is_boss(enemy.fighter["id"])
+
+
+## The place's theme, or the fight's while anything hunts the hero (and a
+## few seconds after), the boss's when a boss does; and the place's weather.
+func _update_music() -> void:
+	if not GameState.title_seen and not OS.get_cmdline_user_args().has("--screenshot"):
+		return  # the title plays its own
+	var now := Time.get_ticks_msec() / 1000.0
+	for enemy in get_tree().get_nodes_in_group("mobs"):
+		if enemy.hunting and not enemy.dying:
+			hunted_at = now
+			hunted_by_boss = hunted_by_boss or Bestiary.is_boss(enemy.fighter["id"])
+	var fight := ""
+	if now - hunted_at < COMBAT_LINGER_S:
+		fight = "boss" if hunted_by_boss else "battle"
+	else:
+		hunted_by_boss = false
+	if Sound.track != "victory" or fight != "":
+		Sound.play_track(Sound.track_for(map.id, map.floor_level, fight))
+	Sound.set_ambience(Sound.ambience_for(map.id, map.floor_level))
+
+
 ## The ascension scene: a new title, and at a fork the path cards.
 func _ascend(title: String) -> void:
+	Sound.play("evolve")
 	player.refresh_rank()
 	var scene := preload("res://scripts/rankup_screen.gd").new()
 	scene.title = title
@@ -328,6 +389,7 @@ func _leave_floor() -> void:
 ## the guardian stood, so the hero needn't walk the halls back.
 func _floor_cleared(at: Vector2i) -> void:
 	var result := GameState.clear_floor(map.floor_level)
+	Sound.play("victory")
 	_log(result["lines"])
 	var stairs := at
 	if not map.is_walkable(stairs) or map.portals.has(stairs):
@@ -336,6 +398,7 @@ func _floor_cleared(at: Vector2i) -> void:
 	map.portals[stairs] = {"kind": "gate"}
 	PunyDungeon.sheet().place(dungeon_objects, stairs, PunyDungeon.STAIRS)
 	if result["victory"]:
+		Sound.play_track("victory")
 		_talk({
 			"id": "victory", "name": "Victory",
 			"lines": [
@@ -345,6 +408,9 @@ func _floor_cleared(at: Vector2i) -> void:
 		})
 
 func _enter_map(next: MapData, arrival: Vector2i) -> void:
+	if tile_layer != null:
+		Sound.play("door")
+	hunted_at = -100.0
 	for stale in get_tree().get_nodes_in_group("mobs") + get_tree().get_nodes_in_group("decor"):
 		stale.queue_free()
 	if tile_layer != null:
@@ -380,6 +446,7 @@ func _enter_map(next: MapData, arrival: Vector2i) -> void:
 	camera.limit_bottom = next.size.y * TILE
 	camera.reset_smoothing()
 	_spawn_enemies(next)
+	_update_music()
 
 ## The saves screen; `web_save` defaults to whatever this browser's web game holds.
 func _open_saves(web_save := {}, welcome := false) -> void:
@@ -390,6 +457,7 @@ func _open_saves(web_save := {}, welcome := false) -> void:
 
 ## Fast travel from the map screen; the waypoint is already usability-checked.
 func travel_to(waypoint: Dictionary) -> void:
+	Sound.play("travel")
 	var arrival := Vector2i(int(waypoint["arrival"]["x"]), int(waypoint["arrival"]["y"]))
 	if waypoint["mapId"] != map.id:
 		map = _load_map(waypoint["mapId"])
@@ -698,6 +766,7 @@ func _open_chest(chest: Dictionary) -> void:
 	if not result["opened"]:
 		return
 	chest_sprites[chest["id"]].texture = load("res://assets/sprites/chest_open.png")
+	Sound.play("chest")
 	if result["mimic"]:
 		var ambush := player_cell + Vector2i(0, -1)
 		if not map.is_walkable(ambush):
@@ -893,6 +962,18 @@ func _build_hud() -> void:
 	log_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hud.add_child(log_box)
 	GameState.hp_changed.connect(_on_hp_changed)
+	heard_gold = GameState.pack.gold
+	heard_hp = GameState.hero.hp
+	GameState.gold_changed.connect(_hear_gold)
+	GameState.hp_changed.connect(_hear_hp)
+	GameState.leveled_up.connect(func(_level: int) -> void:
+		Sound.play("levelUp")
+		heard_hp = GameState.hero.hp
+	)
+	GameState.loaded.connect(func() -> void:
+		heard_gold = GameState.pack.gold
+		heard_hp = GameState.hero.hp
+	)
 	GameState.gold_changed.connect(func(_gold: int) -> void: hud_panel.refresh())
 	GameState.inventory_changed.connect(hud_panel.refresh)
 	GameState.healed.connect(hud_panel.refresh)
@@ -1211,4 +1292,8 @@ func _run_test_harness() -> void:
 	print("screenshot saved; map=%s cell=%s hp=%d gold=%d save=%s%s" % [
 		map.id, player_cell, player.hp, GameState.pack.gold, GameState.world.map_id, GameState.world.cell,
 	])
+	# Let the audio server let go of the music before the engine shuts down.
+	Sound.stop_music()
+	Sound.set_ambience("")
+	await get_tree().create_timer(0.1).timeout
 	get_tree().quit()

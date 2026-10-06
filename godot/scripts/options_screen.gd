@@ -48,13 +48,13 @@ func _build() -> Array[Dictionary]:
 	var settings := GameState.settings
 	var out: Array[Dictionary] = []
 	out.append({"heading": "Sound"})
+	out.append({"label": "Sound", "value": "Muted" if settings.muted else "On", "adjust": _flip.bind("muted")})
 	out.append({"label": "Music volume", "value": "%d%%" % roundi(settings.music_volume * 100), "adjust": _volume.bind("music")})
 	out.append({"label": "Effects volume", "value": "%d%%" % roundi(settings.sfx_volume * 100), "adjust": _volume.bind("sfx")})
 	out.append({"heading": "Video"})
 	out.append({"label": "CRT scanlines", "value": "On" if settings.scanlines else "Off", "adjust": _flip.bind("scanlines")})
 	out.append({"label": "Fullscreen", "value": "On" if settings.fullscreen else "Off", "adjust": _flip.bind("fullscreen")})
 	out.append({"label": "Reduce motion", "value": "On" if settings.reduce_motion else "Off", "adjust": _flip.bind("reduce_motion")})
-	out.append({"note": "Music and effects arrive with the audio; the levels are kept until then."})
 	out.append({"heading": "Controls", "column": 1})
 	for action: String in Controls.BINDABLE:
 		var waiting := listening == action
@@ -177,12 +177,16 @@ func _volume(direction: int, bus: String) -> void:
 	else:
 		settings.sfx_volume = clampf(snappedf(settings.sfx_volume + direction * 0.1, 0.1), 0.0, 1.0)
 	settings.save_file()
+	Sound.apply_volumes()
+	if bus == "sfx":
+		Sound.play("coin")
 
 
 func _flip(_direction: int, setting: String) -> void:
 	var settings := GameState.settings
 	settings.set(setting, not settings.get(setting))
 	settings.save_file()
+	Sound.apply_volumes()
 	if world != null:
 		world.apply_video()
 

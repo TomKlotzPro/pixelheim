@@ -13,6 +13,7 @@ config/custom_user_dir_name="pixelheim"
 [autoload]
 
 GameState="*res://scripts/state/game_state.gd"
+Sound="*res://scripts/sound.gd"
 
 [display]
 

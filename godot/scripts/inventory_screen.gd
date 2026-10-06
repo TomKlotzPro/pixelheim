@@ -282,6 +282,7 @@ func _slot(slot: String, label: String) -> Control:
 		box.gui_input.connect(func(event: InputEvent) -> void:
 			if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 				GameState.unequip(slot)
+				Sound.play("equip")
 				_refresh()
 		)
 	return box
@@ -336,8 +337,10 @@ func _primary() -> void:
 					GameState.unequip(slot)
 					break
 			status.text = "%s goes back in the pack." % InventoryState.gear_name(piece)
+			Sound.play("equip")
 		elif GameState.equip(piece["uid"]):
 			status.text = "You put on %s." % InventoryState.gear_name(piece)
+			Sound.play("equip")
 		else:
 			status.text = "That can't be worn."
 	else:

@@ -671,43 +671,105 @@ function snare(at: number): void {
   playTone({ freq: 190, duration: 0.05, type: "triangle", slideTo: 120, volume: 0.03, at, bus: "music" });
 }
 
+/** One note of a channel; returns how long it holds. Shared by the live scheduler and scheduleLoop. */
+function playNote(
+  kind: "lead" | "bass" | "harmony",
+  [note, beats]: Note,
+  at: number,
+  beat: number,
+  types: { lead: OscillatorType; harmony: OscillatorType },
+): number {
+  const duration = beats * beat;
+  if (note > 0) {
+    playTone({
+      freq: midi(note),
+      duration: Math.min(duration * 0.9, duration - 0.02),
+      type: kind === "lead" ? types.lead : kind === "harmony" ? types.harmony : "triangle",
+      volume: CHANNEL_VOLUME[kind],
+      at,
+      bus: "music",
+    });
+  }
+  return duration;
+}
+
+function playHat(at: number): void {
+  playNoise({ duration: 0.03, volume: 0.012, at, bus: "music" });
+}
+
+function playDrum(hit: string, at: number): void {
+  if (hit === "k") kick(at);
+  if (hit === "s") snare(at);
+}
+
 function schedule(): void {
   if (!audioReady()) return;
   const horizon = now() + LOOKAHEAD_S;
   const beat = 60 / bpm;
   for (const channel of channelBeats) {
     while (channel.nextTime < horizon) {
-      const [note, beats] = channel.notes[channel.index];
-      const duration = beats * beat;
-      if (note > 0) {
-        playTone({
-          freq: midi(note),
-          duration: Math.min(duration * 0.9, duration - 0.02),
-          type: channel.kind === "lead" ? leadType : channel.kind === "harmony" ? harmonyType : "triangle",
-          volume: CHANNEL_VOLUME[channel.kind],
-          at: channel.nextTime,
-          bus: "music",
-        });
-      }
-      channel.nextTime += duration;
+      const note = channel.notes[channel.index];
+      channel.nextTime += playNote(channel.kind, note, channel.nextTime, beat, {
+        lead: leadType,
+        harmony: harmonyType,
+      });
       channel.index = (channel.index + 1) % channel.notes.length;
     }
   }
   if (hatsOn) {
     while (hatTime < horizon) {
-      playNoise({ duration: 0.03, volume: 0.012, at: hatTime, bus: "music" });
+      playHat(hatTime);
       hatTime += beat;
     }
   }
   if (drums) {
     while (drumTime < horizon) {
-      const hit = drums[drumIndex % drums.length];
-      if (hit === "k") kick(drumTime);
-      if (hit === "s") snare(drumTime);
+      playDrum(drums[drumIndex % drums.length], drumTime);
       drumIndex += 1;
       drumTime += beat;
     }
   }
+}
+
+export const TRACK_NAMES = Object.keys(TRACKS) as TrackName[];
+
+const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b));
+
+/** Beats until every channel of a track lines up again: one seamless loop. */
+export function loopBeats(name: TrackName): number {
+  const track = TRACKS[name];
+  // Note lengths come in half beats; count in halves to stay integral.
+  const halves = [track.lead, track.bass, track.harmony ?? []]
+    .filter((notes) => notes.length > 0)
+    .map((notes) => Math.round(notes.reduce((sum, [, beats]) => sum + beats, 0) * 2));
+  if (track.drums) halves.push(track.drums.length * 2);
+  return halves.reduce((a, b) => (a * b) / gcd(a, b)) / 2;
+}
+
+/**
+ * Schedules exactly one loop of a track from `start` through the same note,
+ * hat and drum calls as the live scheduler; returns its length in seconds.
+ * The Godot build renders this offline (scripts/render-audio.ts).
+ */
+export function scheduleLoop(name: TrackName, start: number): number {
+  const track = TRACKS[name];
+  const beat = 60 / track.bpm;
+  const end = start + loopBeats(name) * beat;
+  const types = { lead: track.leadType ?? "square", harmony: track.harmonyType ?? "square" };
+  const channels: ["lead" | "bass" | "harmony", Note[]][] = [
+    ["lead", track.lead],
+    ["bass", track.bass],
+  ];
+  if (track.harmony) channels.push(["harmony", track.harmony]);
+  for (const [kind, notes] of channels) {
+    let at = start;
+    for (let i = 0; at < end - 1e-6; i = (i + 1) % notes.length) at += playNote(kind, notes[i], at, beat, types);
+  }
+  for (let i = 0, at = start; at < end - 1e-6; i++, at += beat) {
+    if (track.hats) playHat(at);
+    if (track.drums) playDrum(track.drums[i % track.drums.length], at);
+  }
+  return end - start;
 }
 
 function startTrack(name: TrackName): void {
