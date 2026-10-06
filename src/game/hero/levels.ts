@@ -1,4 +1,18 @@
 import type { DungeonLevel } from "../types";
+import type { DungeonId } from "../../world/types";
+
+/** The two dungeons behind the overworld's gates and the floors each holds. */
+export const DUNGEONS: Record<DungeonId, { name: string; floors: number[]; sealed?: string }> = {
+  mountain: {
+    name: "The Ashen Mountain",
+    floors: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+  },
+  undermountain: {
+    name: "The Undermountain",
+    floors: [11, 12, 13, 14, 15],
+    sealed: "The seal on the deep holds fast. The dragon above still reigns.",
+  },
+};
 
 export const LEVELS: DungeonLevel[] = [
   {

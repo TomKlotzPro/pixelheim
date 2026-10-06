@@ -5,8 +5,9 @@ class_name PunyTerrain
 ## four quarters belong to the four cells meeting there. A terrain boundary
 ## therefore falls on the very cell edges the hero collides on.
 ##
-## The wang tables come straight from Shade's Tiled tileset (.tsx): which
-## tile has which terrain in each corner, and how the water animates.
+## The wang tables come straight from Shade's Tiled tileset (.tsx) through
+## PunySheet: which tile has which terrain in each corner, and how the water
+## animates.
 
 const SHEET := "res://assets/puny/world/punyworld-overworld-tileset.png"
 const TSX := "res://assets/puny/world/punyworld-overworld-tiles.tsx"
@@ -23,12 +24,6 @@ const GROUND := {
 ## corner, the first of these keeps its corners and the rest fall back to
 ## grass: cliffs stand over water, water over roads, roads over sand.
 const STRENGTH := ["cliff", "river", "dirt", "sand", "trees"]
-## Puny Dungeon (assets/puny/dungeon, CC0): its plain stone paves floors
-## under the open sky (ruins), cut to one tile for the tile layer.
-const DUNGEON_SHEET := "res://assets/puny/dungeon/punyworld-dungeon-tileset.png"
-const DUNGEON_COLUMNS := 26
-const RUIN_FLOOR := 4
-
 ## Regions Shade didn't paint, toned from his grass and dirt by
 ## shaders/region_tint.gdshader: tile id -> hue. Ash wastes go a burnt warm
 ## grey, the mire a murky green.
@@ -61,54 +56,18 @@ const HOUSES := [
 ## The keep, 2x2 from its top-left.
 const KEEP := [[Vector2i(0, 0), 714], [Vector2i(1, 0), 715], [Vector2i(0, 1), 741], [Vector2i(1, 1), 742]]
 
-## "tl,tr,br,bl" terrain names -> tile ids drawing that corner set.
-static var _combos := {}
-## tile id -> [[frame tile id, seconds], ...] (the water ripples).
-static var _animations := {}
-static var _tileset: TileSet
-## tile id -> [atlas source id, atlas coords] in _tileset.
-static var _slots := {}
+static var _sheet: PunySheet
 
 
-static func _load() -> void:
-	if not _combos.is_empty():
-		return
-	var parser := XMLParser.new()
-	if parser.open(TSX) != OK:
-		push_error("PunyTerrain: cannot read %s" % TSX)
-		return
-	var tile_id := -1
-	var wangset := ""
-	var colors: Array[String] = []
-	while parser.read() == OK:
-		if parser.get_node_type() != XMLParser.NODE_ELEMENT:
-			continue
-		match parser.get_node_name():
-			"tile":
-				tile_id = int(parser.get_named_attribute_value("id"))
-			"frame":
-				var frames: Array = _animations.get_or_add(tile_id, [])
-				frames.append([
-					int(parser.get_named_attribute_value("tileid")),
-					float(parser.get_named_attribute_value("duration")) / 1000.0,
-				])
-			"wangset":
-				wangset = parser.get_named_attribute_value("name")
-				colors = []
-			"wangcolor":
-				colors.append(parser.get_named_attribute_value("name"))
-			"wangtile":
-				if wangset != "overworld":
-					continue
-				# Tiled's wangid runs clockwise from the top edge:
-				# top, top-right, right, bottom-right, bottom, bottom-left, left, top-left.
-				var ids := parser.get_named_attribute_value("wangid").split(",")
-				var key := ",".join([
-					colors[int(ids[7]) - 1], colors[int(ids[1]) - 1],
-					colors[int(ids[3]) - 1], colors[int(ids[5]) - 1],
-				])
-				var tiles: Array = _combos.get_or_add(key, [])
-				tiles.append(int(parser.get_named_attribute_value("tileid")))
+## Shade's overworld sheet, read once.
+static func sheet() -> PunySheet:
+	if _sheet == null:
+		_sheet = PunySheet.new(SHEET, TSX, COLUMNS)
+	return _sheet
+
+
+static func _combos() -> Dictionary:
+	return sheet().corners.get("overworld", {})
 
 
 ## The ground terrain a cell of ours is drawn as.
@@ -119,11 +78,10 @@ static func ground_of(tile: String) -> String:
 ## The tile for four corner terrains [tl, tr, br, bl]; `pick` chooses among
 ## equal tiles (grass has nine) so fields don't repeat.
 static func corner_tile(corners: Array, pick: int) -> int:
-	_load()
 	var key := ",".join(corners)
-	if not _combos.has(key):
+	if not _combos().has(key):
 		key = ",".join(settle(corners))
-	var tiles: Array = _combos[key]
+	var tiles: Array = _combos()[key]
 	return tiles[absi(pick) % tiles.size()]
 
 
@@ -132,14 +90,13 @@ static func corner_tile(corners: Array, pick: int) -> int:
 ## missing (water touching only diagonally) floods with the strong terrain so
 ## no blocked cell ever looks walkable.
 static func settle(corners: Array) -> Array:
-	_load()
 	var strongest := "grass"
 	for terrain: String in STRENGTH:
 		if terrain in corners:
 			strongest = terrain
 			break
 	var settled := corners.map(func(c: String) -> String: return c if c == strongest else "grass")
-	if not _combos.has(",".join(settled)):
+	if not _combos().has(",".join(settled)):
 		settled = [strongest, strongest, strongest, strongest]
 	return settled
 
@@ -289,77 +246,21 @@ static func object_at(grid: Dictionary, cell: Vector2i) -> int:
 	return -1
 
 
-## One Puny Dungeon tile as its own texture.
-static func dungeon_tile(tile_id: int) -> Texture2D:
-	var sheet := (load(DUNGEON_SHEET) as Texture2D).get_image()
-	var at := Vector2i(tile_id % DUNGEON_COLUMNS, tile_id / DUNGEON_COLUMNS) * TILE
-	return ImageTexture.create_from_image(sheet.get_region(Rect2i(at, Vector2i(TILE, TILE))))
-
-
 ## A Puny tile's rectangle on the sheet, for sprites cut from it.
 static func region(tile_id: int) -> Rect2:
-	return Rect2((tile_id % COLUMNS) * TILE, (tile_id / COLUMNS) * TILE, TILE, TILE)
+	return sheet().region(tile_id)
 
 
 ## The animation frames of a tile ([] when it holds still).
 static func animation(tile_id: int) -> Array:
-	_load()
-	return _animations.get(tile_id, [])
+	return sheet().animation(tile_id)
 
 
 ## One TileSet over the Puny sheet, its tiles created on first use.
 static func tileset() -> TileSet:
-	if _tileset == null:
-		_tileset = TileSet.new()
-		_tileset.tile_size = Vector2i(TILE, TILE)
-	return _tileset
+	return sheet().tileset
 
 
 ## Sets `cell` of `layer` (built on tileset()) to Puny tile `tile_id`.
 static func place(layer: TileMapLayer, cell: Vector2i, tile_id: int) -> void:
-	var slot := _slot(tile_id)
-	layer.set_cell(cell, slot[0], slot[1])
-
-
-## Where a tile lives in the TileSet. Animated water keeps its frames 2-4 rows
-## apart on Shade's sheet, so frame strips can cross other tiles: a tile that
-## doesn't fit an existing atlas source gets a fresh source on the same sheet.
-static func _slot(tile_id: int) -> Array:
-	if _slots.has(tile_id):
-		return _slots[tile_id]
-	var coords := Vector2i(tile_id % COLUMNS, tile_id / COLUMNS)
-	var frames := animation(tile_id)
-	var count := maxi(1, frames.size())
-	var columns := 0
-	var separation := Vector2i.ZERO
-	if count > 1:
-		var stride: int = frames[1][0] - frames[0][0]
-		# Separation counts whole tiles between frames.
-		if stride >= COLUMNS:
-			columns = 1  # frames run down the sheet
-			separation = Vector2i(0, stride / COLUMNS - 1)
-		else:
-			separation = Vector2i(stride - 1, 0)
-	var atlas := tileset()
-	var source: TileSetAtlasSource = null
-	var source_id := -1
-	for i in atlas.get_source_count():
-		var candidate := atlas.get_source(atlas.get_source_id(i)) as TileSetAtlasSource
-		if candidate.has_room_for_tile(coords, Vector2i.ONE, columns, separation, count):
-			source = candidate
-			source_id = atlas.get_source_id(i)
-			break
-	if source == null:
-		source = TileSetAtlasSource.new()
-		source.texture = load(SHEET)
-		source.texture_region_size = Vector2i(TILE, TILE)
-		source_id = atlas.add_source(source)
-	source.create_tile(coords)
-	if count > 1:
-		source.set_tile_animation_columns(coords, columns)
-		source.set_tile_animation_separation(coords, separation)
-		source.set_tile_animation_frames_count(coords, count)
-		for i in count:
-			source.set_tile_animation_frame_duration(coords, i, frames[i][1])
-	_slots[tile_id] = [source_id, coords]
-	return _slots[tile_id]
+	sheet().place(layer, cell, tile_id)
