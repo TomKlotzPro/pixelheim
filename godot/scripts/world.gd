@@ -39,9 +39,8 @@ var player_cell := Vector2i.ZERO
 var kills := 0
 var chest_sprites := {}  # chest id -> Sprite2D
 var last_player_position := Vector2.ZERO
-var hp_bar: ProgressBar
-var hp_label: Label
-var level_label: Label
+## The hero panel: health, resource, xp, gold, the screens (HudPanel).
+var hud_panel: PanelContainer
 var log_box: VBoxContainer
 ## spawn id -> monsters of its pack still standing
 var pack_alive := {}
@@ -49,8 +48,6 @@ var pack_alive := {}
 var floor_foes := 0
 ## Torches, barrels, stairs on a dungeon floor; a cleared floor's way up joins them.
 var dungeon_objects: TileMapLayer
-var kills_label: Label
-var gold_label: Label
 var message_label: Label
 var prompt_label: Label
 var sky_overlay: ColorRect
@@ -120,28 +117,12 @@ func _process(_delta: float) -> void:
 		pause.world = self
 		add_child(pause)
 		return
-	if Input.is_action_just_pressed("journal"):
-		add_child(preload("res://scripts/journal_screen.gd").new())
-		return
-	if Input.is_action_just_pressed("stats"):
-		add_child(preload("res://scripts/stats_screen.gd").new())
-		return
-	if Input.is_action_just_pressed("skills"):
-		add_child(preload("res://scripts/skills_screen.gd").new())
-		return
-	if Input.is_action_just_pressed("codex"):
-		add_child(preload("res://scripts/codex_screen.gd").new())
-		return
-	if Input.is_action_just_pressed("inventory"):
-		_open_inventory()
-		return
-	if Input.is_action_just_pressed("map"):
-		if map.floor_level > 0:
-			_flash_message("No map reaches this deep.")
+	for screen: String in ["journal", "stats", "skills", "codex", "inventory"]:
+		if Input.is_action_just_pressed(screen):
+			open_screen(screen)
 			return
-		var screen := preload("res://scripts/map_screen.gd").new()
-		screen.world = self
-		add_child(screen)
+	if Input.is_action_just_pressed("map"):
+		open_screen("map")
 		return
 	if Input.is_action_just_pressed("interact"):
 		_try_interact()
@@ -175,7 +156,6 @@ func is_walkable(cell: Vector2i) -> bool:
 ## clears that spawn until the hero leaves the map.
 func on_enemy_died(enemy: Node) -> void:
 	kills += 1
-	kills_label.text = "Slain: %d" % kills
 	var cleared := ""
 	if enemy.spawn_id != "":
 		pack_alive[enemy.spawn_id] = pack_alive.get(enemy.spawn_id, 1) - 1
@@ -251,17 +231,8 @@ func _log(lines: Array) -> void:
 		log_box.remove_child(oldest)
 		oldest.queue_free()
 
-func _on_hp_changed(hp: int, max_hp: int) -> void:
-	hp_bar.max_value = max_hp
-	hp_bar.value = hp
-	hp_label.text = "HP %d/%d" % [hp, max_hp]
-	var hero := GameState.hero
-	# Titled by rank, the class named too while the two differ (WorldHud).
-	var title := Ranks.title(hero.role_id, hero.level)
-	var role: String = Catalog.role(hero.role_id)["name"]
-	level_label.text = "Lv %d %s%s   XP %d/%d" % [
-		hero.level, title, "" if title == role else " " + role, hero.xp, hero.xp_to_next,
-	]
+func _on_hp_changed(_hp: int, _max_hp: int) -> void:
+	hud_panel.refresh()
 
 func _use_portal(target: Dictionary) -> void:
 	match target["kind"]:
@@ -280,6 +251,24 @@ func _use_portal(target: Dictionary) -> void:
 			add_child(screen)
 		"gate":
 			_leave_floor()
+
+
+## One of the hero's screens, from its key or the panel's button.
+func open_screen(screen: String) -> void:
+	if player.dead or get_tree().paused:
+		return
+	match screen:
+		"inventory":
+			_open_inventory()
+		"map":
+			if map.floor_level > 0:
+				_flash_message("No map reaches this deep.")
+				return
+			var chart := preload("res://scripts/map_screen.gd").new()
+			chart.world = self
+			add_child(chart)
+		_:
+			add_child(load("res://scripts/%s_screen.gd" % screen).new())
 
 
 func _open_inventory() -> void:
@@ -895,42 +884,18 @@ func _build_hud() -> void:
 	sky_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
 	sky_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hud.add_child(sky_overlay)
-	hp_bar = ProgressBar.new()
-	hp_bar.position = Vector2(24, 24)
-	hp_bar.custom_minimum_size = Vector2(180, 18)
-	hp_bar.show_percentage = false
-	var fill := StyleBoxFlat.new()
-	fill.bg_color = Color(0.82, 0.22, 0.24)
-	var back := StyleBoxFlat.new()
-	back.bg_color = Color(0.1, 0.08, 0.1, 0.8)
-	back.border_color = Color(0.05, 0.04, 0.05)
-	back.set_border_width_all(2)
-	hp_bar.add_theme_stylebox_override("fill", fill)
-	hp_bar.add_theme_stylebox_override("background", back)
-	hud.add_child(hp_bar)
-	hp_label = Label.new()
-	hp_label.position = Vector2(30, 24)
-	hp_label.add_theme_font_size_override("font_size", 12)
-	hud.add_child(hp_label)
-	level_label = Label.new()
-	level_label.position = Vector2(24, 46)
-	hud.add_child(level_label)
-	kills_label = Label.new()
-	kills_label.text = "Slain: 0"
-	kills_label.position = Vector2(24, 94)
-	hud.add_child(kills_label)
-	gold_label = Label.new()
-	gold_label.position = Vector2(24, 70)
-	hud.add_child(gold_label)
+	hud_panel = preload("res://scripts/hud_panel.gd").new()
+	hud_panel.world = self
+	hud.add_child(hud_panel)
 	log_box = VBoxContainer.new()
 	log_box.position = Vector2(24, 520)
 	log_box.custom_minimum_size = Vector2(700, 0)
 	log_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hud.add_child(log_box)
-	_on_hp_changed(GameState.hero.hp, int(GameState.hero.stats["maxHp"]))
 	GameState.hp_changed.connect(_on_hp_changed)
-	_on_gold_changed(GameState.pack.gold)
-	GameState.gold_changed.connect(_on_gold_changed)
+	GameState.gold_changed.connect(func(_gold: int) -> void: hud_panel.refresh())
+	GameState.inventory_changed.connect(hud_panel.refresh)
+	GameState.healed.connect(hud_panel.refresh)
 	GameState.message.connect(_flash_message)
 	GameState.healed.connect(func() -> void: player.heal())
 	GameState.ranked_up.connect(_ascend)
@@ -947,9 +912,6 @@ func _build_hud() -> void:
 	message_label.add_theme_constant_override("outline_size", 4)
 	message_label.modulate.a = 0.0
 	hud.add_child(message_label)
-
-func _on_gold_changed(gold: int) -> void:
-	gold_label.text = "Gold: %d" % gold
 
 ## A line for the hero, held long enough to read (quests say a lot).
 func _flash_message(text: String) -> void:

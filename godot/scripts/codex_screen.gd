@@ -19,7 +19,7 @@ func _ready() -> void:
 	backdrop.color = UiStyle.BACKDROP
 	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(backdrop)
-	add_child(UiStyle.label("Codex", 24, UiStyle.INK, Vector2(80, 24)))
+	add_child(UiStyle.heading("Codex", 20, UiStyle.INK, Vector2(80, 24)))
 	tabs_row = HBoxContainer.new()
 	tabs_row.position = Vector2(80, 64)
 	tabs_row.add_theme_constant_override("separation", 10)

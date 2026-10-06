@@ -25,7 +25,7 @@ func _ready() -> void:
 	var column := VBoxContainer.new()
 	column.add_theme_constant_override("separation", 12)
 	card.add_child(column)
-	var title := UiStyle.label("Paused", 26, UiStyle.INK)
+	var title := UiStyle.heading("Paused", 20, UiStyle.INK)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	column.add_child(title)
 	menu = VBoxContainer.new()

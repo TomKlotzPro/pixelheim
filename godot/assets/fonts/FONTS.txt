@@ -1,0 +1,9 @@
+Fonts for the Godot build, both under the SIL Open Font License 1.1.
+
+- press-start-2p.woff2  Press Start 2P by CodeMan38. Synced from the web game
+  (src/assets/fonts) by scripts/sync-godot-assets.mjs. Headings and the logo
+  only, as on the web.
+- CourierPrime-*.ttf    Courier Prime by The Courier Prime Project Authors
+  (github.com/quoteunquoteapps/CourierPrime), via Google Fonts; licence in
+  OFL-CourierPrime.txt. The body type: the web game sets Courier New, a
+  system font a web export can't reach, so the build carries this cut of it.

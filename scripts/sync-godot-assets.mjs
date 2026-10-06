@@ -52,6 +52,12 @@ for (const name of new Set([...spriteNames, ...SPRITE_EXTRAS, ...ITEM_ICONS])) {
   sync(path.join(SPRITES_DST, name), readFileSync(path.join(SPRITES_SRC, name)));
 }
 
+// The web's pixel font (Press Start 2P, headings and the logo only).
+sync(
+  path.join(ROOT, "godot/assets/fonts/press-start-2p.woff2"),
+  readFileSync(path.join(ROOT, "src/assets/fonts/press-start-2p.woff2")),
+);
+
 if (check && drifted.length > 0) {
   console.error(`godot assets out of sync — run \`pnpm godot:sync\`:\n  ${drifted.join("\n  ")}`);
   process.exit(1);

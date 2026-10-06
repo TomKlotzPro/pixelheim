@@ -28,13 +28,13 @@ func _ready() -> void:
 	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(backdrop)
 	add_child(UiStyle.label("The mountain is waiting", 14, UiStyle.FADED, Vector2(80, 24)))
-	add_child(UiStyle.label("Create your hero", 26, UiStyle.INK, Vector2(80, 42)))
+	add_child(UiStyle.heading("Create your hero", 20, UiStyle.INK, Vector2(80, 42)))
 	roles_box = VBoxContainer.new()
 	roles_box.position = Vector2(80, 96)
 	roles_box.add_theme_constant_override("separation", 4)
 	add_child(roles_box)
 	details = Control.new()
-	details.position = Vector2(440, 96)
+	details.position = Vector2(445, 96)
 	details.size = Vector2(760, 500)
 	add_child(details)
 
@@ -59,7 +59,7 @@ func _ready() -> void:
 	footer.add_child(begin)
 	status = UiStyle.label("", 14, UiStyle.LAMP, Vector2(80, 664))
 	add_child(status)
-	add_child(UiStyle.label("Up/Down  role      PgUp/PgDn  look      Enter  begin      Esc  back", 13, UiStyle.FADED, Vector2(780, 690)))
+	add_child(UiStyle.label("Up/Down  role    PgUp/PgDn  look    Enter  begin    Esc  back", 13, UiStyle.FADED, Vector2(700, 690)))
 	_refresh()
 	name_field.grab_focus.call_deferred()
 
@@ -84,7 +84,7 @@ func _role_card(index: int) -> Control:
 	var role := Catalog.role(role_id)
 	var chosen := index == role_index
 	var panel := PanelContainer.new()
-	panel.custom_minimum_size = Vector2(330, 56)
+	panel.custom_minimum_size = Vector2(345, 56)
 	panel.add_theme_stylebox_override("panel", UiStyle.box(
 		UiStyle.CARD if chosen else Color(UiStyle.CARD, 0.5), UiStyle.LAMP if chosen else UiStyle.RIM, 6
 	))
@@ -126,7 +126,7 @@ func _fill_details() -> void:
 	var role_id := _role()
 	var role := Catalog.role(role_id)
 	var card := PanelContainer.new()
-	card.custom_minimum_size = Vector2(760, 500)
+	card.custom_minimum_size = Vector2(755, 500)
 	card.add_theme_stylebox_override("panel", UiStyle.box(UiStyle.CARD, UiStyle.RIM, 18))
 	details.add_child(card)
 	var columns := HBoxContainer.new()

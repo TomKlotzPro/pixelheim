@@ -31,7 +31,7 @@ func _ready() -> void:
 	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(backdrop)
 
-	add_child(UiStyle.label("Saves", 24, UiStyle.INK, Vector2(80, 32)))
+	add_child(UiStyle.heading("Saves", 20, UiStyle.INK, Vector2(80, 32)))
 	for index in SaveSlots.SLOT_COUNT:
 		var card := PanelContainer.new()
 		card.position = Vector2(80, 88 + index * 112)
