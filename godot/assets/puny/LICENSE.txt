@@ -1,0 +1,11 @@
+Character art by Shade (merchant-shade.itch.io), released under CC0 1.0
+Universal (public domain): free for any use, commercial or not, modification
+and redistribution allowed, no attribution required. The author states no
+generative AI was used.
+
+- characters/  "Free 16x16 Puny Character Sprites"   https://merchant-shade.itch.io/16x16-puny-characters
+- beasts/      "PunyMonsters" (same page)
+- mini/        "Free 16x16 Mini World Sprites"       https://merchant-shade.itch.io/16x16-mini-world-sprites
+
+Files are unmodified copies; Pixelheim picks which sheet plays which role in
+scripts/puny_art.gd.

@@ -1,15 +1,13 @@
 extends AnimatableBody2D
-## A villager: the generated two-beat idle sheet, a body the hero bumps into,
-## and — for wanderers — an amble around the pacing loop. Who they are and
-## where they may step comes from Npcs; the world only hosts them.
+## A villager: their Puny sheet (PunyArt, PIX-130), a body the hero bumps
+## into, and — for wanderers — an amble around the pacing loop, walking the
+## way they step. Who they are and where they may step comes from Npcs; the
+## world only hosts them.
 
 const TILE := 16
 ## A pace every four beats: villagers amble roughly every 1.6 s.
 const BEAT_SECONDS := 0.4
 const STEP_SECONDS := 0.35
-## Generated villagers are 16px; drawn at 2x they stand as tall as the Pixel
-## Crawler hero (an art-direction call, see PIX-123).
-const DRAW_SCALE := 2.0
 
 var world: Node2D
 var data: Dictionary
@@ -26,15 +24,11 @@ func _ready() -> void:
 	cell = home + Npcs.pace_offset(data, offsets, _beat())
 	position = _center(cell)
 
+	var art := PunyArt.villager(data["sprite"])
 	sprite = AnimatedSprite2D.new()
-	var frames := SpriteFrames.new()
-	frames.remove_animation("default")
-	SheetFrames.add_strip(frames, "idle", "res://assets/sprites/%s_idle.png" % data["sprite"], 2.0, true)
-	sprite.sprite_frames = frames
-	sprite.scale = Vector2.ONE * DRAW_SCALE
-	# Feet on the bottom of the tile, like every other actor.
-	sprite.position = Vector2(0, TILE / 2.0 - TILE / 2.0 * DRAW_SCALE)
-	sprite.play("idle")
+	sprite.sprite_frames = PunyArt.frames(art)
+	sprite.position = Vector2(0, PunyArt.lift(art))
+	sprite.play(PunyArt.pick(sprite.sprite_frames, "idle", "down"))
 	# Offset the idle phase per villager so the square doesn't breathe in unison.
 	sprite.frame = Npcs.id_hash(data["id"]) % 2
 	add_child(sprite)
@@ -54,9 +48,13 @@ func _process(_delta: float) -> void:
 	# Never step onto the hero; wait for the next pace instead.
 	if next == cell or next == world.player_cell:
 		return
+	var step := next - cell
 	cell = next
+	var dir := "down" if step.y > 0 else ("up" if step.y < 0 else ("right" if step.x > 0 else "left"))
+	sprite.play(PunyArt.pick(sprite.sprite_frames, "walk", dir))
 	var tween := create_tween()
 	tween.tween_property(self, "position", _center(cell), STEP_SECONDS)
+	tween.tween_callback(func() -> void: sprite.play(PunyArt.pick(sprite.sprite_frames, "idle", "down")))
 
 
 func _beat() -> int:
