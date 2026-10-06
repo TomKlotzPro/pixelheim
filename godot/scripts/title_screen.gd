@@ -48,6 +48,8 @@ func _scene() -> void:
 		star.position = Vector2(rng.randf_range(0, VIEW.x), rng.randf_range(0, 300))
 		star.color = Color(1, 0.96, 0.85, rng.randf_range(0.4, 0.9))
 		add_child(star)
+		if GameState.settings.reduce_motion:
+			continue
 		var twinkle := create_tween().set_loops()
 		twinkle.tween_property(star, "modulate:a", 0.25, rng.randf_range(1.2, 2.6)).set_delay(rng.randf_range(0, 2))
 		twinkle.tween_property(star, "modulate:a", 1.0, rng.randf_range(1.2, 2.6))
@@ -87,8 +89,8 @@ func _scene() -> void:
 	fog.position = Vector2(0, 470)
 	fog.size = Vector2(VIEW.x, 90)
 	add_child(fog)
-	# Embers drifting up from the Ashenreach.
-	for i in 8:
+	# Embers drifting up from the Ashenreach (still air with reduced motion).
+	for i in 0 if GameState.settings.reduce_motion else 8:
 		var ember := ColorRect.new()
 		ember.size = Vector2(2, 2)
 		ember.color = Color(1, 0.55, 0.2, 0.9)

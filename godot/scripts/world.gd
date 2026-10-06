@@ -56,9 +56,10 @@ var prompt_label: Label
 var sky_overlay: ColorRect
 
 func _ready() -> void:
-	_setup_input()
 	var args := OS.get_cmdline_user_args()
 	GameState.boot(args)
+	_setup_input()
+	apply_video.call_deferred()
 	# Harness: `--town-tier N` previews the village at another age.
 	var tier_index := args.find("--town-tier")
 	if tier_index >= 0 and tier_index + 1 < args.size():
@@ -115,7 +116,9 @@ func _process(_delta: float) -> void:
 	if player == null or player.dead:
 		return
 	if Input.is_action_just_pressed("menu"):
-		_open_saves()
+		var pause := preload("res://scripts/pause_screen.gd").new()
+		pause.world = self
+		add_child(pause)
 		return
 	if Input.is_action_just_pressed("journal"):
 		add_child(preload("res://scripts/journal_screen.gd").new())
@@ -956,52 +959,35 @@ func _flash_message(text: String) -> void:
 	tween.tween_interval(clampf(text.length() / 22.0, 1.6, 6.0))
 	tween.tween_property(message_label, "modulate:a", 0.0, 0.4)
 
+## The keys, as the player bound them (Controls, GameSettings).
 func _setup_input() -> void:
-	var keys := {
-		"move_up": [KEY_UP, KEY_W], "move_down": [KEY_DOWN, KEY_S],
-		"move_left": [KEY_LEFT, KEY_A], "move_right": [KEY_RIGHT, KEY_D],
-		"attack": [KEY_SPACE, KEY_J],
-		"interact": [KEY_E, KEY_ENTER],
-		"map": [KEY_M, KEY_TAB],
-		"journal": [KEY_Q],
-		"stats": [KEY_C],
-		"skills": [KEY_K],
-		"codex": [KEY_B],
-		"inventory": [KEY_I],
-		"drop": [KEY_X],
-		"drop_all": [KEY_Z],
-		"menu": [KEY_ESCAPE],
-	}
-	## action -> [stick axis, direction]
-	var pad_motions := {
-		"move_up": [JOY_AXIS_LEFT_Y, -1.0], "move_down": [JOY_AXIS_LEFT_Y, 1.0],
-		"move_left": [JOY_AXIS_LEFT_X, -1.0], "move_right": [JOY_AXIS_LEFT_X, 1.0],
-	}
-	for action: String in keys:
-		if InputMap.has_action(action):
-			continue
-		InputMap.add_action(action)
-		for key: Key in keys[action]:
-			var event := InputEventKey.new()
-			event.physical_keycode = key
-			InputMap.action_add_event(action, event)
-		if pad_motions.has(action):
-			var motion := InputEventJoypadMotion.new()
-			motion.axis = pad_motions[action][0]
-			motion.axis_value = pad_motions[action][1]
-			InputMap.action_add_event(action, motion)
-	var pad_attack := InputEventJoypadButton.new()
-	pad_attack.button_index = JOY_BUTTON_A
-	InputMap.action_add_event("attack", pad_attack)
-	var pad_interact := InputEventJoypadButton.new()
-	pad_interact.button_index = JOY_BUTTON_B
-	InputMap.action_add_event("interact", pad_interact)
-	var pad_map := InputEventJoypadButton.new()
-	pad_map.button_index = JOY_BUTTON_Y
-	InputMap.action_add_event("map", pad_map)
-	var pad_menu := InputEventJoypadButton.new()
-	pad_menu.button_index = JOY_BUTTON_START
-	InputMap.action_add_event("menu", pad_menu)
+	Controls.apply(GameState.settings.bindings)
+
+
+var crt: CanvasLayer
+
+## The CRT scanlines over everything, and fullscreen (never in harness runs).
+func apply_video() -> void:
+	var settings := GameState.settings
+	if settings.scanlines and crt == null:
+		crt = CanvasLayer.new()
+		crt.layer = 20
+		var lines := ColorRect.new()
+		lines.set_anchors_preset(Control.PRESET_FULL_RECT)
+		lines.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var material := ShaderMaterial.new()
+		material.shader = preload("res://shaders/crt.gdshader")
+		lines.material = material
+		crt.add_child(lines)
+		add_child(crt)
+	elif not settings.scanlines and crt != null:
+		crt.queue_free()
+		crt = null
+	if OS.get_cmdline_user_args().has("--screenshot"):
+		return
+	var mode := DisplayServer.WINDOW_MODE_FULLSCREEN if settings.fullscreen else DisplayServer.WINDOW_MODE_WINDOWED
+	if DisplayServer.window_get_mode() != mode:
+		DisplayServer.window_set_mode(mode)
 
 ## Agent verification harness (headless can't render, so this drives a real
 ## window briefly): `godot --path godot -- --screenshot [fight] [kill] [saves]
@@ -1145,6 +1131,16 @@ func _run_test_harness() -> void:
 		creation.name_field.text = "Robin"
 		creation._refresh()
 		await get_tree().create_timer(0.4).timeout
+	if args.has("pause") or args.has("options"):
+		if args.has("scanlines"):
+			GameState.settings.scanlines = true
+			apply_video()
+		var pause := preload("res://scripts/pause_screen.gd").new()
+		pause.world = self
+		add_child(pause)
+		if args.has("options"):
+			pause._options()
+		await get_tree().create_timer(0.3).timeout
 	if args.has("inventory"):
 		# A pack worth reading: a fine sword, armor worn, potions and an antidote.
 		var sword := InventoryState.create_gear("iron_sword", "fine")

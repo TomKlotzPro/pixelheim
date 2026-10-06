@@ -27,6 +27,7 @@ The React/Pixi web game (`src/`) is being ported to Godot 4.7 (`godot/`), one Li
 - Signals up, calls down: `GameState` emits (`loaded`, `gold_changed`, `inventory_changed`, `dialogue_closed`); world and UI listen.
 - Menus/overlays are `CanvasLayer`s with `process_mode = ALWAYS` that pause the tree while open, and use `UiStyle` (`scripts/ui_style.gd`) for palette, boxes, labels, buttons until the UI suite themes everything.
 - Input in menus: build the command, `get_viewport().set_input_as_handled()` **first**, then run it; an action that reloads the scene frees the menu (calling it after logs `!is_inside_tree`).
+- Keys live in `Controls` (defaults, alternates, pad) and `GameSettings.bindings`; never `InputMap.add_action` elsewhere. A new screen's hotkey is a new `Controls.BINDABLE` entry.
 
 ## State and saves
 
@@ -39,7 +40,7 @@ The React/Pixi web game (`src/`) is being ported to Godot 4.7 (`godot/`), one Li
 ```sh
 godot --headless --path godot --import                        # after new assets/scripts
 godot --headless --path godot -s res://addons/gut/gut_cmdln.gd # GUT; ALSO grep the output for "Parse Error"
-godot --path godot -- --screenshot [--map <id>] [--walk l,d,r,u] [fight [kill] [hurt] [--foe <species>]] [chest] [talk] [near] [shop [--tab N]] [hall] [bank] [home --mode M] [--town-tier N] [--house-tier N] [lineup] [saves] [night] [worldmap] [overview] [--at x,y] [--zoom Z] [--floor N] [clear] [gate [--dungeon id] [descend]] [leave] [quest] [journal] [--level N] [rankup [walk-path]] [stats] [skills] [codex [bestiary]] [inventory] [title] [create] [--slot N]
+godot --path godot -- --screenshot [--map <id>] [--walk l,d,r,u] [fight [kill] [hurt] [--foe <species>]] [chest] [talk] [near] [shop [--tab N]] [hall] [bank] [home --mode M] [--town-tier N] [--house-tier N] [lineup] [saves] [night] [worldmap] [overview] [--at x,y] [--zoom Z] [--floor N] [clear] [gate [--dungeon id] [descend]] [leave] [quest] [journal] [--level N] [rankup [walk-path]] [stats] [skills] [codex [bestiary]] [inventory] [title] [create] [pause [scanlines]] [options] [--slot N]
 ```
 
 - GUT **exits 0 when a test file fails to parse** (the whole suite is silently skipped); CI greps for it, do the same locally.
