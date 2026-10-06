@@ -13,9 +13,11 @@ import { JOB_LEVEL_CAP, JOB_STATIONS } from "../src/game/economy/jobs";
 import { RARITIES } from "../src/game/economy/rarity";
 import { RECIPES, REGION_MATERIALS } from "../src/game/economy/recipes";
 import { FORGE_BONUS_CAP, SHOP_MAPS, SHOPS, shopStock } from "../src/game/economy/shop";
+import { QUESTS } from "../src/game/quests";
 import { RECRUITS } from "../src/game/settlers";
 import { DUNGEONS, LEVELS } from "../src/game/hero/levels";
 import { PATH_NODES } from "../src/game/hero/paths";
+import { RANK_AURAS, RANK_TITLES } from "../src/game/hero/ranks";
 import { ROLES } from "../src/game/hero/roles";
 import { SKILL_TREES } from "../src/game/hero/skillTree";
 import {
@@ -244,6 +246,9 @@ emit(
 // Villagers (PIX-123): the fixed townsfolk, tier-gated settlers included, and
 // the recruits who wait in the wilds until they move to town (PIX-92).
 emit("npcs.json", { npcs: NPCS, recruits: RECRUITS }, DATA_OUT);
+
+// The long game (PIX-125): the villagers' quests and the hero's rank titles.
+emit("progression.json", { quests: QUESTS, rankTitles: RANK_TITLES, rankAuras: RANK_AURAS }, DATA_OUT);
 
 if (check && drifted.length > 0) {
   console.error(`godot maps out of sync — run \`pnpm godot:sync\`:\n  ${drifted.join("\n  ")}`);

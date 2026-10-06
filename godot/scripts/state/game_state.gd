@@ -464,10 +464,48 @@ func is_settled(id: String) -> bool:
 ## A conversation closed: recruits answer (resolveSettler), then the quest
 ## hooks (PIX-125) get their turn through dialogue_closed.
 func finish_dialogue(npc_id: String) -> void:
+	# Settlers first (recruiting and services ride the close), then quests.
 	var text := _resolve_settler(npc_id)
+	if text == "":
+		text = resolve_quests(npc_id)
 	dialogue_closed.emit(npc_id)
 	if text != "":
 		message.emit(text)
+
+
+## Closing a conversation with a giver (resolveQuests): accept their first
+## untaken quest, or turn in a finished one (deliveries leave the pack), or
+## say how far along it stands. "" when they give no open quest.
+func resolve_quests(giver_id: String) -> String:
+	var entries := progression.quests
+	for quest: Dictionary in Quests.for_giver(giver_id):
+		var entry: Dictionary = entries.get(quest["id"], {})
+		if entry.get("done", false):
+			continue
+		if entry.is_empty():
+			entries[quest["id"]] = {"progress": 0, "done": false}
+			save_now()
+			return "Quest accepted - %s: %s" % [quest["name"], quest["accepted"]]
+		var objective: Dictionary = quest["objective"]
+		if Quests.is_ready(quest, entries, pack.items):
+			if objective["kind"] == "deliver":
+				pack.remove_item(objective["itemId"], int(objective["count"]))
+			entry["done"] = true
+			var reward: Dictionary = quest["reward"]
+			pack.gold += int(reward["gold"])
+			hero.xp += int(reward["xp"])
+			if HeroRules.apply_level_ups(hero) > 0:
+				healed.emit()
+			if reward.has("itemId"):
+				pack.add_item(reward["itemId"])
+			_pack_changed()
+			save_now()
+			return "Quest complete - %s! +%dg, +%d xp. %s" % [quest["name"], reward["gold"], reward["xp"], quest["completed"]]
+		return "%s: %d/%d %s." % [
+			quest["name"], Quests.progress(quest, entries, pack.items), objective["count"],
+			String(objective["label"]).to_lower(),
+		]
+	return ""
 
 
 ## Recruiting where they wait; services once they live in town.
@@ -704,6 +742,15 @@ func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, fl
 	var mastery_line := _record_kill(fighter["id"])
 	if mastery_line != "":
 		log.append(mastery_line)
+	# Accepted bounties tick on every matching kill.
+	for quest: Dictionary in Quests.all():
+		var entry: Dictionary = progression.quests.get(quest["id"], {})
+		var objective: Dictionary = quest["objective"]
+		if entry.is_empty() or entry["done"] or objective["kind"] != "kill" or objective["monsterId"] != fighter["id"]:
+			continue
+		if entry["progress"] < objective["count"]:
+			entry["progress"] += 1
+			log.append("%s: %d/%d." % [quest["name"], entry["progress"], objective["count"]])
 	monster_slain.emit(fighter["id"])
 	if not settlement.properties.is_empty():
 		var inv := investments()
