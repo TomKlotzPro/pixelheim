@@ -7,6 +7,14 @@ extends CharacterBody2D
 const SPEED := 95.0
 const ATTACK_COOLDOWN := 0.45
 const INVULNERABLE_SECONDS := 0.8
+## How far a skill reaches for its target, and how long a cast takes: one
+## of the web's battle turns.
+const SKILL_RANGE := 88.0
+const SKILL_TURN := 1.0
+## Hue of a skill's flash by the stat it draws on.
+const SKILL_COLORS := {
+	"strength": Color(1.0, 0.6, 0.25), "intelligence": Color(0.7, 0.5, 1.0), "dexterity": Color(0.45, 0.9, 0.5),
+}
 ## Frames of each attack where the weapon bites; wind-up and follow-through are safe.
 const STRIKE_FRAMES := {"sword": [1, 2], "staff": [1, 2], "bow": [2, 3]}
 
@@ -16,6 +24,10 @@ var hp := 0
 var facing := Vector2.DOWN
 var attack_ready := true
 var attacking := false
+## A skill's cast: the attack animation plays, the blade stays still.
+var casting := false
+var skill_ready := true
+var regen_clock := 0.0
 var invulnerable := false
 var dead := false
 var hit_this_swing: Array[Node] = []
@@ -76,6 +88,10 @@ func _physics_process(delta: float) -> void:
 	_tick_ailments(delta)
 	if dead:
 		return
+	_regen(delta)
+	for index in Controls.SKILL_KEYS.size():
+		if Input.is_action_just_pressed("skill_%d" % (index + 1)):
+			cast(index)
 	if ailments.is_stunned():
 		velocity = Vector2.ZERO
 		_play("idle")
@@ -178,6 +194,80 @@ static func _glow() -> Texture2D:
 	return texture
 
 
+## A skill by its place in the hero's list (getHeroSkills): its price paid,
+## then a heal on the hero or a strike on the nearest foe in reach, through
+## the web's formulas; ailments and cleansing as the skill says.
+func cast(index: int) -> void:
+	if dead or attacking or not skill_ready or ailments.is_stunned():
+		return
+	var skills := Skills.hero_skills(GameState.hero)
+	if index >= skills.size():
+		world._flash_message("No skill in that place yet. Learn more in Skills.")
+		return
+	var skill: Dictionary = skills[index]
+	var block := Skills.cast_block(GameState.hero, skill)
+	if block != "":
+		world._flash_message(block)
+		return
+	var target: Node = null
+	if skill["kind"] == "damage":
+		target = _nearest_foe()
+		if target == null:
+			world._flash_message("No foe in reach for %s." % skill["name"])
+			return
+		face(target.global_position - global_position)
+	GameState.pay_for_skill(skill)
+	skill_ready = false
+	get_tree().create_timer(SKILL_TURN).timeout.connect(func() -> void: skill_ready = true)
+	attacking = true
+	casting = true
+	velocity = Vector2.ZERO
+	_play(art["attack"])
+	var color: Color = SKILL_COLORS.get(skill["stat"], Color.WHITE)
+	if skill["kind"] == "heal":
+		var restored := GameState.heal_hero(Skills.skill_power(GameState.hero, GameState.pack, skill))
+		if skill.get("cleanse", false) and not ailments.kinds().is_empty():
+			ailments.clear()
+			_show_ailment()
+			world.log_line("All ailments are purged!")
+		world.skill_flash(global_position, Color(0.5, 1.0, 0.6))
+		world.float_number(restored, global_position + Vector2(0, -22), Color(0.5, 1, 0.6))
+		world.log_line("%s restores %d HP." % [skill["name"], restored])
+		return
+	var damage := Bestiary.hero_skill_damage(GameState.hero, GameState.pack, skill, target.fighter, GameState.roll)
+	world.skill_flash(target.global_position, color)
+	world.log_line("%s hits %s for %d damage!" % [skill["name"], target.fighter["name"], damage])
+	target.take_hit(damage, global_position, skill.get("inflicts"))
+
+
+## The closest living foe within reach, those ahead of the hero first.
+func _nearest_foe() -> Node:
+	var best: Node = null
+	var best_score := INF
+	for enemy in get_tree().get_nodes_in_group("mobs"):
+		if enemy.dying:
+			continue
+		var offset: Vector2 = enemy.global_position - global_position
+		if offset.length() > SKILL_RANGE:
+			continue
+		var score := offset.length() - (12.0 if offset.normalized().dot(facing) > 0.5 else 0.0)
+		if score < best_score:
+			best_score = score
+			best = enemy
+	return best
+
+
+## Stamina comes back a turn's worth each second while a fight is on.
+func _regen(delta: float) -> void:
+	if not world.in_fight():
+		regen_clock = 0.0
+		return
+	regen_clock += delta
+	while regen_clock >= SKILL_TURN:
+		regen_clock -= SKILL_TURN
+		GameState.regen_stamina()
+
+
 ## Back in step with the hero's health after a rest, a healer or a level-up.
 func heal() -> void:
 	if dead:
@@ -224,6 +314,7 @@ func _die() -> void:
 func _on_animation_finished() -> void:
 	if attacking:
 		attacking = false
+		casting = false
 		hitbox.monitoring = false
 		_play("idle")
 	elif not dead and sprite.animation.begins_with("hurt"):
@@ -231,7 +322,7 @@ func _on_animation_finished() -> void:
 
 ## The weapon only bites on the striking frames, matching what the sheet shows.
 func _on_frame_changed() -> void:
-	if attacking:
+	if attacking and not casting:
 		var strike: Array = STRIKE_FRAMES.get(art["attack"], [1, 2])
 		hitbox.monitoring = sprite.frame >= strike[0] and sprite.frame <= strike[1]
 

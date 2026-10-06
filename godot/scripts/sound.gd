@@ -114,6 +114,14 @@ func stop_music() -> void:
 	_fading.stop()
 
 
+## Silence: music, weather and every stinger still ringing.
+func stop_all() -> void:
+	stop_music()
+	ambience = ""
+	for voice in _voices + _ambient_voices:
+		voice.stop()
+
+
 ## The weather of a place: "greenwood", "deepforest", "marsh", "indoor" or "".
 func set_ambience(place: String) -> void:
 	ambience = place if _doc["ambience"].has(place) else ""

@@ -25,6 +25,8 @@ const ALTERNATES := {
 	"attack": [KEY_SPACE], "interact": [KEY_ENTER], "map": [KEY_TAB],
 	"drop": [KEY_X], "drop_all": [KEY_Z], "menu": [KEY_ESCAPE],
 }
+## Skills by their place in the hero's list: the number row, fixed.
+const SKILL_KEYS := [KEY_1, KEY_2, KEY_3, KEY_4, KEY_5, KEY_6]
 const PAD_BUTTONS := {
 	"attack": JOY_BUTTON_A, "interact": JOY_BUTTON_B, "map": JOY_BUTTON_Y, "menu": JOY_BUTTON_START,
 	"inventory": JOY_BUTTON_X,
@@ -64,12 +66,16 @@ static func apply(bindings: Dictionary) -> void:
 		actions[action] = true
 	for action: String in ALTERNATES:
 		actions[action] = true
+	for index in SKILL_KEYS.size():
+		actions["skill_%d" % (index + 1)] = true
 	for action: String in actions:
 		if InputMap.has_action(action):
 			InputMap.action_erase_events(action)
 		else:
 			InputMap.add_action(action)
 		var keys: Array = ALTERNATES.get(action, []).duplicate()
+		if action.begins_with("skill_"):
+			keys = [SKILL_KEYS[int(action.substr(6)) - 1]]
 		if BINDABLE.has(action):
 			keys.push_front(key_for(action, bindings))
 		for key: int in keys:
