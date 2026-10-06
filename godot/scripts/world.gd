@@ -108,6 +108,12 @@ func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed("journal"):
 		add_child(preload("res://scripts/journal_screen.gd").new())
 		return
+	if Input.is_action_just_pressed("stats"):
+		add_child(preload("res://scripts/stats_screen.gd").new())
+		return
+	if Input.is_action_just_pressed("skills"):
+		add_child(preload("res://scripts/skills_screen.gd").new())
+		return
 	if Input.is_action_just_pressed("map"):
 		if map.floor_level > 0:
 			_flash_message("No map reaches this deep.")
@@ -925,6 +931,8 @@ func _setup_input() -> void:
 		"interact": [KEY_E, KEY_ENTER],
 		"map": [KEY_M, KEY_TAB],
 		"journal": [KEY_Q],
+		"stats": [KEY_C],
+		"skills": [KEY_K],
 		"menu": [KEY_ESCAPE],
 	}
 	## action -> [stick axis, direction]
@@ -1082,6 +1090,13 @@ func _run_test_harness() -> void:
 		if args.has("walk-path"):
 			get_children().filter(func(node: Node) -> bool: return node.has_method("_walk"))[0]._walk()
 			await get_tree().create_timer(0.3).timeout
+	if args.has("stats") or args.has("skills"):
+		# Points to spend: a few of each.
+		GameState.hero.stat_points = 5
+		GameState.hero.skill_points = 3
+		var sheet := "stats_screen" if args.has("stats") else "skills_screen"
+		add_child(load("res://scripts/%s.gd" % sheet).new())
+		await get_tree().create_timer(0.3).timeout
 	if args.has("quest"):
 		# A conversation with the elder closes: his quest is accepted.
 		GameState.finish_dialogue("elder")

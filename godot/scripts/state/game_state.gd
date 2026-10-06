@@ -819,6 +819,37 @@ func _grant_levels() -> int:
 	return gained
 
 
+## A stat point, spent (SPEND_STAT_POINT).
+func spend_stat_point(stat: String) -> bool:
+	if hero.stat_points <= 0 or stat not in Skills.STATS:
+		return false
+	Skills.apply_stat_point(hero, stat)
+	hero.stat_points -= 1
+	hp_changed.emit(hero.hp, int(hero.stats["maxHp"]))
+	mark_dirty()
+	return true
+
+
+## A skill node learned for a point (BUY_SKILL_NODE): permanent, and some
+## grow the hero's pools for good.
+func buy_skill_node(node_id: String) -> bool:
+	var entry := Skills.node(hero.role_id, node_id)
+	if entry.is_empty() or not Skills.can_buy(hero, entry):
+		return false
+	hero.skill_nodes.append(node_id)
+	hero.skill_points -= 1
+	var grants: Dictionary = entry.get("grantStats", {})
+	if grants.has("maxHp"):
+		hero.stats["maxHp"] = int(hero.stats["maxHp"]) + int(grants["maxHp"])
+		hero.hp += int(grants["maxHp"])
+	if grants.has("maxMp"):
+		hero.stats["maxMp"] = int(hero.stats["maxMp"]) + int(grants["maxMp"])
+		hero.mp += int(grants["maxMp"])
+	hp_changed.emit(hero.hp, int(hero.stats["maxHp"]))
+	save_now()
+	return true
+
+
 ## One step deeper into the Path Graph (CHOOSE_PATH): only a node on offer,
 ## and for good; `spec` mirrors the first step for older code and saves.
 func choose_path(node_id: String) -> bool:
