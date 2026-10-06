@@ -105,6 +105,9 @@ func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed("menu"):
 		_open_saves()
 		return
+	if Input.is_action_just_pressed("journal"):
+		add_child(preload("res://scripts/journal_screen.gd").new())
+		return
 	if Input.is_action_just_pressed("map"):
 		if map.floor_level > 0:
 			_flash_message("No map reaches this deep.")
@@ -877,20 +880,27 @@ func _build_hud() -> void:
 	GameState.healed.connect(func() -> void: player.heal())
 	GameState.settlers_changed.connect(_respawn_npcs)
 	message_label = Label.new()
-	message_label.position = Vector2(440, 640)
-	message_label.custom_minimum_size = Vector2(400, 0)
+	message_label.position = Vector2(190, 610)
+	message_label.custom_minimum_size = Vector2(900, 0)
+	message_label.size = Vector2(900, 0)
 	message_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	message_label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+	message_label.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	message_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	message_label.add_theme_color_override("font_outline_color", Color(0.1, 0.08, 0.12))
+	message_label.add_theme_constant_override("outline_size", 4)
 	message_label.modulate.a = 0.0
 	hud.add_child(message_label)
 
 func _on_gold_changed(gold: int) -> void:
 	gold_label.text = "Gold: %d" % gold
 
+## A line for the hero, held long enough to read (quests say a lot).
 func _flash_message(text: String) -> void:
 	message_label.text = text
 	var tween := create_tween()
 	tween.tween_property(message_label, "modulate:a", 1.0, 0.15)
-	tween.tween_interval(1.6)
+	tween.tween_interval(clampf(text.length() / 22.0, 1.6, 6.0))
 	tween.tween_property(message_label, "modulate:a", 0.0, 0.4)
 
 func _setup_input() -> void:
@@ -900,6 +910,7 @@ func _setup_input() -> void:
 		"attack": [KEY_SPACE, KEY_J],
 		"interact": [KEY_E, KEY_ENTER],
 		"map": [KEY_M, KEY_TAB],
+		"journal": [KEY_Q],
 		"menu": [KEY_ESCAPE],
 	}
 	## action -> [stick axis, direction]
@@ -1039,6 +1050,20 @@ func _run_test_harness() -> void:
 		var screen := preload("res://scripts/map_screen.gd").new()
 		screen.world = self
 		add_child(screen)
+		await get_tree().create_timer(0.3).timeout
+	if args.has("quest"):
+		# A conversation with the elder closes: his quest is accepted.
+		GameState.finish_dialogue("elder")
+		await get_tree().create_timer(0.3).timeout
+	if args.has("journal"):
+		# A few promises in hand: slimes half done, the cheese ready, the troll kept.
+		GameState.progression.quests.merge({
+			"slime_trouble": {"progress": 2, "done": false},
+			"cheese_run": {"progress": 0, "done": false},
+			"troll_toll": {"progress": 1, "done": true},
+		})
+		GameState.pack.add_item("cheese_wheel")
+		add_child(preload("res://scripts/journal_screen.gd").new())
 		await get_tree().create_timer(0.3).timeout
 	if args.has("lineup"):
 		# Every hero role, villager and monster sheet, walking down then right.
