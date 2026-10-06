@@ -114,6 +114,9 @@ func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed("skills"):
 		add_child(preload("res://scripts/skills_screen.gd").new())
 		return
+	if Input.is_action_just_pressed("codex"):
+		add_child(preload("res://scripts/codex_screen.gd").new())
+		return
 	if Input.is_action_just_pressed("map"):
 		if map.floor_level > 0:
 			_flash_message("No map reaches this deep.")
@@ -933,6 +936,7 @@ func _setup_input() -> void:
 		"journal": [KEY_Q],
 		"stats": [KEY_C],
 		"skills": [KEY_K],
+		"codex": [KEY_B],
 		"menu": [KEY_ESCAPE],
 	}
 	## action -> [stick axis, direction]
@@ -1096,6 +1100,13 @@ func _run_test_harness() -> void:
 		GameState.hero.skill_points = 3
 		var sheet := "stats_screen" if args.has("stats") else "skills_screen"
 		add_child(load("res://scripts/%s.gd" % sheet).new())
+		await get_tree().create_timer(0.3).timeout
+	if args.has("codex"):
+		# A record to read: twelve beasts (Slayer I) and a few undead.
+		GameState.hero.mastery = {"beasts": 12, "undead": 3}
+		var codex := preload("res://scripts/codex_screen.gd").new()
+		codex.tab = 1 if args.has("bestiary") else 0
+		add_child(codex)
 		await get_tree().create_timer(0.3).timeout
 	if args.has("quest"):
 		# A conversation with the elder closes: his quest is accepted.
