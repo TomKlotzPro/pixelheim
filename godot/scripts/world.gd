@@ -1186,6 +1186,10 @@ func _run_test_harness() -> void:
 		var sheet := "stats_screen" if args.has("stats") else "skills_screen"
 		add_child(load("res://scripts/%s.gd" % sheet).new())
 		await get_tree().create_timer(0.3).timeout
+	if args.has("splash"):
+		# Pair with `title`: the boot splash, once every letter has landed.
+		get_children().filter(func(node: Node) -> bool: return node.has_method("as_splash"))[0].as_splash()
+		await get_tree().create_timer(1.2).timeout
 	if args.has("create"):
 		# Hero creation over the title, a role picked and a name typed.
 		var creation := preload("res://scripts/create_screen.gd").new()
@@ -1290,6 +1294,31 @@ func _run_test_harness() -> void:
 		player.face(Vector2.RIGHT)
 		_try_interact()
 		await get_tree().create_timer(0.3).timeout
+	if args.has("portal"):
+		# Walk into the map's nearest doorway from a free side, as a player would.
+		var doors := map.portals.keys()
+		doors.sort_custom(func(a: Vector2i, b: Vector2i) -> bool:
+			return a.distance_squared_to(player_cell) < b.distance_squared_to(player_cell)
+		)
+		for door: Vector2i in doors:
+			var sides := [Vector2i.DOWN, Vector2i.UP, Vector2i.LEFT, Vector2i.RIGHT].filter(
+				func(side: Vector2i) -> bool:
+					return map.is_walkable(door + side) and not map.portals.has(door + side)
+			)
+			if sides.is_empty():
+				continue
+			var side: Vector2i = sides[0]
+			player.position = _cell_center(door + side)
+			player_cell = door + side
+			player.scripted_dir = Vector2(-side)
+			await get_tree().create_timer(0.4).timeout
+			player.scripted_dir = Vector2.ZERO
+			break
+		await get_tree().create_timer(0.3).timeout
+	if args.has("die"):
+		# A blow no hero survives: the fall, then waking at the inn.
+		player.take_hit(99999, player.global_position + Vector2.LEFT)
+		await get_tree().create_timer(1.8).timeout
 	if args.has("cast"):
 		# A foe two steps away, then the first skill: the strike, the flash, the log.
 		player.invulnerable = true
@@ -1320,8 +1349,9 @@ func _run_test_harness() -> void:
 		await get_tree().create_timer(0.2).timeout
 	await RenderingServer.frame_post_draw
 	get_viewport().get_texture().get_image().save_png("res://screenshot.png")
-	print("screenshot saved; map=%s cell=%s hp=%d gold=%d save=%s%s" % [
+	print("screenshot saved; map=%s cell=%s hp=%d gold=%d save=%s%s draws=%d" % [
 		map.id, player_cell, player.hp, GameState.pack.gold, GameState.world.map_id, GameState.world.cell,
+		Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME),
 	])
 	# Let the audio server let go of the music before the engine shuts down.
 	get_tree().paused = true  # nothing may start a track again

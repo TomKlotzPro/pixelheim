@@ -129,3 +129,35 @@ func test_godot_serializes_integers_the_way_the_web_wrote_them() -> void:
 	var json := SaveCodec.serialize(SaveCodec.decode_code(code))
 	assert_false(json.contains(".0,"), "no float-formatted integers")
 	assert_true(json.contains("\"gold\":4321"))
+
+
+## A late-game save made by the web game's own reducer at v0.65: the balance
+## sim's bot played a warrior through all fifteen floors, then bought the
+## house, funded the village, bought the general store, banked some gold and
+## stored a potion. What a veteran player brings across.
+const LATE := "res://test/fixtures/web_save_late.txt"
+
+
+func test_a_late_game_web_save_loads_intact() -> void:
+	var s := SaveCodec.decode_code(FileAccess.get_file_as_string(LATE))
+	assert_false(s.is_empty())
+	assert_eq(s["hero"]["name"], "Hrafna")
+	assert_eq(s["hero"]["level"], 18)
+	assert_eq(s["hero"]["path"], ["juggernaut", "bastion", "unbroken"])
+	assert_eq(s["hero"]["skillNodes"].size(), 12)
+	assert_eq(s["clearedLevels"].size(), 15)
+	assert_eq(s["unlockedLevel"], 15)
+	assert_eq(s["house"], {"owned": true, "storage": {"potion_hp": 1}})
+	assert_eq(s["properties"], ["town_shop"])
+	assert_eq(s["townTier"], 2)
+	assert_eq(s["investments"]["savings"]["principal"], 200)
+	assert_eq(s["gear"].size(), 4)
+	assert_eq(s["gold"], 2234)
+
+
+## The web decoding that same code and writing it back (decodeSaveCode, then
+## encodeSaveCode): Godot must write the very same text.
+func test_a_late_game_web_save_reencodes_byte_for_byte() -> void:
+	var web_json := FileAccess.get_file_as_string("res://test/fixtures/web_save_late_reencoded.json").strip_edges()
+	var godot_json := SaveCodec.serialize(SaveCodec.decode_code(FileAccess.get_file_as_string(LATE)))
+	assert_eq(godot_json, web_json)

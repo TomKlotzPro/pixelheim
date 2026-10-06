@@ -33,7 +33,7 @@ The React/Pixi web game (`src/`) is being ported to Godot 4.7 (`godot/`), one Li
 ## State and saves
 
 - Everything that persists lives in `GameState` (typed sections `hero`, `pack`, `settlement`, `progression`, `world`) and changes only through its methods, which keep the web reducers' invariants and call `mark_dirty()` / `save_now()`.
-- Saves are the **web v4 save format**, byte for byte: a Godot slot file loads in the web game and vice versa. `SaveCodec` ports `save.ts` (migrations, normalize, `PXH1.` codes). Every web field round-trips, even ones Godot doesn't play yet. Parse JSON with `SaveCodec.parse_json` (it restores integers; plain JSON makes them floats and Godot would write `123.0`).
+- Saves are the **web v4 save format**, byte for byte: a Godot slot file loads in the web game and vice versa. `SaveCodec` ports `save.ts` (migrations, normalize, `PXH1.` codes). Every web field round-trips, even ones Godot doesn't play yet. Parse JSON with `SaveCodec.parse_json` (it restores integers; plain JSON makes them floats and Godot would write `123.0`), and write it with `SaveCodec.serialize` (it keeps key order; `JSON.stringify` sorts keys by default). `test_save_codec.gd` pins a late-game web save and the web's own re-encode of it (`fixtures/web_save_late*`).
 - Slots: `user://saves/slot_<n>.json`, atomic temp+rename. The user dir is pinned (`config/custom_user_dir_name="pixelheim"`): never change it, or players lose saves. Slot 0 (harness runs) never touches disk.
 
 ## Verify
@@ -41,7 +41,9 @@ The React/Pixi web game (`src/`) is being ported to Godot 4.7 (`godot/`), one Li
 ```sh
 godot --headless --path godot --import                        # after new assets/scripts
 godot --headless --path godot -s res://addons/gut/gut_cmdln.gd # GUT; ALSO grep the output for "Parse Error"
-godot --path godot -- --screenshot [--map <id>] [--walk l,d,r,u] [fight [kill] [hurt] [--foe <species>]] [chest] [talk] [near] [shop [--tab N]] [hall] [bank] [home --mode M] [--town-tier N] [--house-tier N] [lineup] [saves] [night] [worldmap] [overview] [--at x,y] [--zoom Z] [--floor N] [clear] [gate [--dungeon id] [descend]] [leave] [quest] [journal] [--level N] [rankup [walk-path]] [stats] [skills] [codex [bestiary]] [cast] [inventory] [title] [create] [pause [scanlines]] [options] [--slot N]
+godot --path godot -- --screenshot [--map <id>] [--walk l,d,r,u] [fight [kill] [hurt] [--foe <species>]] [chest] [talk] [near] [shop [--tab N]] [hall] [bank] [home --mode M] [--town-tier N] [--house-tier N] [lineup] [saves] [night] [worldmap] [overview] [--at x,y] [--zoom Z] [--floor N] [clear] [gate [--dungeon id] [descend]] [leave] [quest] [journal] [--level N] [rankup [walk-path]] [stats] [skills] [codex [bestiary]] [cast] [inventory] [title [splash]] [create] [pause [scanlines]] [options] [portal] [die] [--slot N]
+godot/tools/flows.sh [name...]   # the ten release flows; pictures in godot/flows/
+godot/tools/splash.sh            # re-render the web boot splash after title changes
 ```
 
 - GUT **exits 0 when a test file fails to parse** (the whole suite is silently skipped); CI greps for it, do the same locally.

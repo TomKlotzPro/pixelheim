@@ -51,8 +51,10 @@ static func intify(value: Variant) -> Variant:
 	return value
 
 
+## Keys keep the order the save came with (Godot sorts them by default), so a
+## web save Godot loads and writes back is the very text the web would write.
 static func serialize(state: Dictionary) -> String:
-	return JSON.stringify({"version": SAVE_VERSION, "state": state})
+	return JSON.stringify({"version": SAVE_VERSION, "state": state}, "", false)
 
 
 ## Takes any historical save payload and upgrades it to the current version.

@@ -74,9 +74,27 @@ godot --path godot -- --screenshot lineup             # every hero role, village
 godot --path godot -- --screenshot saves              # the saves screen
 godot --path godot -- --screenshot saves --web-save res://test/fixtures/web_save_v4.txt
                                                       # first-visit web import offer
+godot --path godot -- --screenshot --map town portal  # walk into the nearest doorway
+godot --path godot -- --screenshot die                # fall, then wake at the inn
+godot --path godot -- --screenshot title splash       # the title as the boot splash
 ```
 
 The final `print` line reports current map id, hero cell, HP and gold for assertions.
+
+### Release flows
+
+`godot/tools/flows.sh` runs the ten flows a release must not break (spawn,
+portal, chest, shop, craft, quest, rank-up, fight, death and the inn, saves)
+through the harness. Each one checks the harness's report line and leaves its
+picture in `godot/flows/<name>.png` (gitignored). `godot/tools/flows.sh fight die`
+runs just those. It needs a window, so it runs locally, not in CI.
+
+### Boot splash
+
+The web build loads behind `assets/splash.png`, which is the title screen
+without its menu or parade, and the loading bar sits where the menu will
+appear (`html/head_include` in `export_presets.cfg`). Rerun
+`godot/tools/splash.sh` whenever the title changes.
 
 ## Web export
 
@@ -88,7 +106,8 @@ python3 -m http.server -d godot/export/web            # play in a browser
 
 Single-threaded preset (`export_presets.cfg`): no cross-origin-isolation
 headers needed, so any static host works — GitHub Pages included (~9.6 MB
-gzipped over the wire). CI deploys it to `/godot/` on the Pages site.
+gzipped over the wire). CI deploys it to the root of the Pages site, with the
+classic web edition at `/classic/` ([docs/godot-parity.md](../docs/godot-parity.md)).
 
 ## Layout
 

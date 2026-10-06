@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# The ten flows a release must not break (PIX-129), each driven through the
+# screenshot harness on a throwaway hero: spawn, portal, chest, shop, craft,
+# quest, rank-up, fight, death and the inn, saves. Every flow leaves its
+# picture in godot/flows/<name>.png for a human to look at, and the harness's
+# report line must match what the flow promises or the run fails.
+#
+#   godot/tools/flows.sh            # all of them
+#   godot/tools/flows.sh fight die  # just these
+set -uo pipefail
+
+cd "$(dirname "$0")/.."
+mkdir -p flows
+
+# name | harness arguments | what the report line must show
+FLOWS=(
+	"spawn|--map town|map=town cell"
+	"portal|--map town portal|map=town_"
+	"chest|--map town chest|map=town cell=\(61, 18\) .*gold=90"
+	"shop|--map town_shop shop|map=town_shop"
+	"craft|--map town_alchemist shop --tab 2|map=town_alchemist"
+	"quest|--map town quest|map=town cell"
+	"rankup|rankup|screenshot saved"
+	"fight|fight kill|screenshot saved"
+	"die|die|map=town_inn cell=\(2, 3\)"
+	"saves|saves|screenshot saved"
+)
+
+failed=0
+for flow in "${FLOWS[@]}"; do
+	IFS="|" read -r name args expect <<<"$flow"
+	if [[ $# -gt 0 && ! " $* " == *" $name "* ]]; then
+		continue
+	fi
+	rm -f screenshot.png
+	# shellcheck disable=SC2086 # the arguments are meant to split
+	report=$(godot --path . -- --screenshot $args 2>&1 | grep "screenshot saved")
+	if [[ -f screenshot.png ]] && grep -qE "$expect" <<<"$report"; then
+		mv screenshot.png "flows/$name.png"
+		printf "ok    %-7s %s\n" "$name" "${report#screenshot saved; }"
+	else
+		failed=1
+		printf "FAIL  %-7s expected /%s/, got: %s\n" "$name" "$expect" "${report:-no report}"
+	fi
+done
+exit $failed

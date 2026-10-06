@@ -16,6 +16,7 @@ var world: Node
 var options: Array[Dictionary] = []
 var selected := 0
 var menu: VBoxContainer
+var footer: Label
 var walkers: Array[Dictionary] = []
 
 
@@ -169,10 +170,20 @@ func _card() -> void:
 	options.append({"label": "Classic edition", "action": _classic})
 	_draw_menu()
 	var version: String = SaveCodec.parse_json(FileAccess.get_file_as_string("res://assets/data/meta.json"))["version"]
-	var footer := UiStyle.label("v%s - a retro RPG, now in Godot" % version, 13, UiStyle.FADED, Vector2(0, 690))
+	footer = UiStyle.label("v%s - a retro RPG, now in Godot" % version, 13, UiStyle.FADED, Vector2(0, 690))
 	footer.custom_minimum_size = Vector2(VIEW.x, 0)
 	footer.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(footer)
+
+
+## The boot splash (tools/splash.sh renders it): the same night and name the
+## title opens on, with nothing yet to press and no one walking, so loading
+## hands over to the title without a jump.
+func as_splash() -> void:
+	menu.visible = false
+	footer.visible = false
+	for walker: Dictionary in walkers:
+		walker["node"].visible = false
 
 
 func _draw_menu() -> void:
