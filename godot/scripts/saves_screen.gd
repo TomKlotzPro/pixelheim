@@ -92,10 +92,7 @@ func _ready() -> void:
 	status.custom_minimum_size = Vector2(1120, 0)
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(status)
-	var keys := UiStyle.label(
-		"Esc  close      W/S  choose      E  play      N  new hero      X  clear      P  paste      C  copy",
-		14, UiStyle.FADED, Vector2(80, 660)
-	)
+	var keys := UiStyle.footer("Esc  close      W/S  choose      E  play      N  new hero      X  clear      P  paste      C  copy", Vector2(80, 660))
 	add_child(keys)
 
 	if welcome:

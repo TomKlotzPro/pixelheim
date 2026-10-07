@@ -37,7 +37,7 @@ func _ready() -> void:
 	add_child(details)
 	status = UiStyle.label("", 14, UiStyle.LAMP, Vector2(640, 24))
 	add_child(status)
-	add_child(UiStyle.label("Arrows  choose      E  learn / walk      K / Esc  close", 13, UiStyle.FADED, Vector2(80, 696)))
+	add_child(UiStyle.footer("Arrows  choose      E  learn / walk      K / Esc  close", Vector2(80, 696)))
 	add_child(UiStyle.label("One point per level. Learning is permanent.", 13, UiStyle.FADED, Vector2(820, 696)))
 	# Start on the first pending path step, else the first learnable node.
 	_layout()

@@ -80,10 +80,7 @@ func _ready() -> void:
 
 	status = UiStyle.label("", 14, UiStyle.LAMP, Vector2(80, 580))
 	add_child(status)
-	add_child(UiStyle.label(
-		"Esc  close      A/D  tab      W/S  choose      E  %s" % "/".join(tabs).to_lower(),
-		14, UiStyle.FADED, Vector2(80, 660)
-	))
+	add_child(UiStyle.footer("Esc  close      A/D  tab      W/S  choose      E  %s" % "/".join(tabs).to_lower(), Vector2(80, 660)))
 	_refresh()
 
 

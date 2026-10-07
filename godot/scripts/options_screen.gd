@@ -39,7 +39,7 @@ func _ready() -> void:
 		columns.append(column)
 	status = UiStyle.label("", 14, UiStyle.LAMP, Vector2(80, 640))
 	add_child(status)
-	add_child(UiStyle.label("W/S  choose      A/D  adjust      E  rebind / toggle      Esc  close", 13, UiStyle.FADED, Vector2(80, 680)))
+	add_child(UiStyle.footer("W/S  choose      A/D  adjust      E  rebind / toggle      Esc  close", Vector2(80, 680)))
 	_refresh()
 
 

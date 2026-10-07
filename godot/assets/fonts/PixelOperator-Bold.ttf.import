@@ -2,18 +2,18 @@
 
 importer="font_data_dynamic"
 type="FontFile"
-uid="uid://dmc5jrn1u7y63"
-path="res://.godot/imported/CourierPrime-Bold.ttf-976e7168a9bd68d3075217c154f4000e.fontdata"
+uid="uid://dtswahef881ou"
+path="res://.godot/imported/PixelOperator-Bold.ttf-1148fc4eadf3a6db194b8f5160e03888.fontdata"
 
 [deps]
 
-source_file="res://assets/fonts/CourierPrime-Bold.ttf"
-dest_files=["res://.godot/imported/CourierPrime-Bold.ttf-976e7168a9bd68d3075217c154f4000e.fontdata"]
+source_file="res://assets/fonts/PixelOperator-Bold.ttf"
+dest_files=["res://.godot/imported/PixelOperator-Bold.ttf-1148fc4eadf3a6db194b8f5160e03888.fontdata"]
 
 [params]
 
 Rendering=null
-antialiasing=1
+antialiasing=0
 generate_mipmaps=false
 disable_embedded_bitmaps=true
 multichannel_signed_distance_field=false

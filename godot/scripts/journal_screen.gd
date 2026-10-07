@@ -25,7 +25,7 @@ func _ready() -> void:
 	card.add_child(body)
 	_fill()
 	add_child(UiStyle.label("A promise is a route marked on the heart.", 14, UiStyle.FADED, Vector2(80, 640)))
-	add_child(UiStyle.label("Esc / Q  close", 14, UiStyle.FADED, Vector2(1060, 640)))
+	add_child(UiStyle.footer("Esc / Q  close", Vector2(1060, 640)))
 
 
 func _fill() -> void:

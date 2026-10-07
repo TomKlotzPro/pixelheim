@@ -69,10 +69,7 @@ func _ready() -> void:
 	status.custom_minimum_size = Vector2(710, 0)
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(status)
-	add_child(UiStyle.label(
-		"A/D  tabs      W/S  choose      E  equip / use      X  drop      Z  drop all      I / Esc  close",
-		13, UiStyle.FADED, Vector2(80, 660)
-	))
+	add_child(UiStyle.footer("A/D  tabs      W/S  choose      E  equip / use      X  drop      Z  drop all      I / Esc  close", Vector2(80, 660)))
 	_refresh()
 
 

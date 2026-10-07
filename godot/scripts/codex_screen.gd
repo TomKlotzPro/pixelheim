@@ -33,7 +33,7 @@ func _ready() -> void:
 	body.add_theme_constant_override("separation", 6)
 	card.add_child(body)
 	add_child(UiStyle.label("Every kill teaches. Families over faces.", 13, UiStyle.FADED, Vector2(80, 660)))
-	add_child(UiStyle.label("A/D  tabs      B / Esc  close", 13, UiStyle.FADED, Vector2(1000, 660)))
+	add_child(UiStyle.footer("A/D  tabs      B / Esc  close", Vector2(1000, 660)))
 	_show()
 
 
