@@ -11,6 +11,9 @@ var portals := {}  # Vector2i -> target Dictionary ({kind, ...})
 var regions := {}  # Vector2i -> encounter region id (forest, marsh, ash, ...)
 ## A dungeon floor's number (DungeonFloor); 0 for the web's own maps.
 var floor_level := 0
+## Cells something drawn stands on although the web's tile is open ground
+## (a fountain's basin, a well's second half, a statue): they block too.
+var covered := {}
 
 
 static func load_by_id(map_id: String) -> MapData:
@@ -60,4 +63,4 @@ func region_at(cell: Vector2i) -> String:
 
 
 func is_walkable(cell: Vector2i) -> bool:
-	return WorldTiles.is_walkable(tile_at(cell))
+	return WorldTiles.is_walkable(tile_at(cell)) and not covered.has(cell)
