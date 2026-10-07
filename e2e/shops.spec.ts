@@ -44,6 +44,14 @@ test("Vex pays full price for reagents", async ({ page }) => {
   await walk(page, "ArrowLeft", 20);
   await walk(page, "ArrowUp", 4);
   await walk(page, "ArrowUp", 6);
+  // His quest waits for a word first: he talks, and closing the talk takes it.
+  await page.keyboard.press("e");
+  for (let i = 0; i < 2; i++) {
+    await page.keyboard.press("e");
+    await page.waitForTimeout(30);
+  }
+  await expect(page.locator(".world-message")).toContainText("Quest accepted - Greens for the Cauldron");
+  // The next word opens his counter.
   await page.keyboard.press("e");
   await expect(page.getByText("Alchemist Vex")).toBeVisible();
 
