@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-# The ten flows a release must not break (PIX-129), each driven through the
+# The flows a release must not break (PIX-129), each driven through the
 # screenshot harness on a throwaway hero: spawn, portal, chest, shop, craft,
-# quest, rank-up, fight, death and the inn, saves. Every flow leaves its
+# quest, rank-up, fight, death and the inn, saves, and leaving a conversation
+# with real key presses (PIX-131). Every flow leaves its
 # picture in godot/flows/<name>.png for a human to look at, and the harness's
 # report line must match what the flow promises or the run fails.
 #
@@ -24,6 +25,8 @@ FLOWS=(
 	"fight|fight kill|screenshot saved"
 	"die|die|map=town_inn cell=\(2, 3\)"
 	"saves|saves|screenshot saved"
+	"talk|--map town talk --keys e,e,e|open=none"
+	"leave|--map town talk --keys e,esc|open=none"
 )
 
 failed=0
@@ -34,7 +37,8 @@ for flow in "${FLOWS[@]}"; do
 	fi
 	rm -f screenshot.png
 	# shellcheck disable=SC2086 # the arguments are meant to split
-	report=$(godot --path . -- --screenshot $args 2>&1 | grep "screenshot saved")
+	# A watchdog: a run that never quits fails instead of stalling the rest.
+	report=$(perl -e 'alarm 60; exec @ARGV' godot --path . -- --screenshot $args 2>&1 | grep "screenshot saved")
 	if [[ -f screenshot.png ]] && grep -qE "$expect" <<<"$report"; then
 		mv screenshot.png "flows/$name.png"
 		printf "ok    %-7s %s\n" "$name" "${report#screenshot saved; }"

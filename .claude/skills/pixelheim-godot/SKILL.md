@@ -27,6 +27,8 @@ The React/Pixi web game (`src/`) is being ported to Godot 4.7 (`godot/`), one Li
 - Signals up, calls down: `GameState` emits (`loaded`, `gold_changed`, `inventory_changed`, `dialogue_closed`); world and UI listen.
 - Menus/overlays are `CanvasLayer`s with `process_mode = ALWAYS` that pause the tree while open, and use `UiStyle` (`scripts/ui_style.gd`) for palette, boxes, labels, buttons; screen titles use `UiStyle.heading` (Press Start 2P). Body type is Courier Prime via `gui/theme/custom_font` in project.godot (a root `theme` does not reach Controls under a CanvasLayer). Courier is wide: clip long lines (`clip_text` + ellipsis) and check screenshots. Open the hero's screens through `world.open_screen(name)`.
 - Input in menus: build the command, `get_viewport().set_input_as_handled()` **first**, then run it; an action that reloads the scene frees the menu (calling it after logs `!is_inside_tree`).
+- **Never poll `Input.is_action_just_pressed` for a key a menu or conversation can take** (world, attack, skills): a modal that closes on a key event unpauses the tree in that same frame, and the poll still sees the key, so E reopened every conversation and Esc opened the pause menu behind it (PIX-131). Take keys in `_unhandled_input` and mark them handled. Polling is only for held input (`Input.get_vector`).
+- InputMap bindings are for all devices (`Controls.ALL_DEVICES`); the harness presses keys with `--keys e,esc,...` (`world._press`: `Input.action_press` plus `viewport.push_input`, stamped `HARNESS_DEVICE`), because an unfocused window's keys are dropped by the display server.
 - Sounds are the web synth rendered to WAV (`pnpm audio:render`); play them by the web's names (`Sound.play("coin")`), never hand-make audio. A changed `src/audio` needs a re-render (not CI-checked: noise is random).
 - Keys live in `Controls` (defaults, alternates, pad) and `GameSettings.bindings`; never `InputMap.add_action` elsewhere. A new screen's hotkey is a new `Controls.BINDABLE` entry.
 
@@ -41,7 +43,7 @@ The React/Pixi web game (`src/`) is being ported to Godot 4.7 (`godot/`), one Li
 ```sh
 godot --headless --path godot --import                        # after new assets/scripts
 godot --headless --path godot -s res://addons/gut/gut_cmdln.gd # GUT; ALSO grep the output for "Parse Error"
-godot --path godot -- --screenshot [--map <id>] [--walk l,d,r,u] [fight [kill] [hurt] [--foe <species>]] [chest] [talk] [near] [shop [--tab N]] [hall] [bank] [home --mode M] [--town-tier N] [--house-tier N] [lineup] [saves] [night] [worldmap] [overview] [--at x,y] [--zoom Z] [--floor N] [clear] [gate [--dungeon id] [descend]] [leave] [quest] [journal] [--level N] [rankup [walk-path]] [stats] [skills] [codex [bestiary]] [cast] [inventory] [title [splash]] [create] [pause [scanlines]] [options] [portal] [die] [--slot N]
+godot --path godot -- --screenshot [--map <id>] [--walk l,d,r,u] [fight [kill] [hurt] [--foe <species>]] [chest] [talk] [near] [shop [--tab N]] [hall] [bank] [home --mode M] [--town-tier N] [--house-tier N] [lineup] [saves] [night] [worldmap] [overview] [--at x,y] [--zoom Z] [--floor N] [clear] [gate [--dungeon id] [descend]] [leave] [quest] [journal] [--level N] [rankup [walk-path]] [stats] [skills] [codex [bestiary]] [cast] [inventory] [title [splash]] [create] [pause [scanlines]] [options] [portal] [die] [talk --keys e,esc] [--slot N]
 godot/tools/flows.sh [name...]   # the ten release flows; pictures in godot/flows/
 godot/tools/splash.sh            # re-render the web boot splash after title changes
 ```
@@ -50,6 +52,7 @@ godot/tools/splash.sh            # re-render the web boot splash after title cha
 - The harness writes `godot/screenshot.png` (gitignored) and prints `map=… cell=… hp=… gold=…`. Read the PNG; the owner judges looks from screenshots.
 - Dungeons: `--floor N` walks down floor N, `clear` fells every foe on the map (the floor's clear and hoard), `gate` opens a floor select (`descend` takes the selected floor), `leave` climbs back to the gate. The printed `save=` shows where the save stands (it stays at the gate while below).
 - Terrain review: `overview` frames the whole map, `--at x,y` stands the hero on a cell, `--zoom Z` sets the camera (play zoom is 4).
+- Harness windows are always-on-top and never take focus (macOS stops drawing a covered window, so a run behind another app never reached its screenshot, and keys you type elsewhere used to land in the game); `_input` drops every event but the harness's own.
 - `--slot N` writes real saves to `~/Library/Application Support/pixelheim/`; delete what you created afterwards.
 - Web-only behavior (localStorage import, IndexedDB saves): `godot --headless --path godot --export-release Web export/web/index.html`, serve `godot/export/web` with `python3 -m http.server`, drive it with Playwright, and inspect IndexedDB `/userfs`.
 - macOS has no `timeout`; don't wrap commands in it.

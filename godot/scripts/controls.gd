@@ -27,6 +27,8 @@ const ALTERNATES := {
 }
 ## Skills by their place in the hero's list: the number row, fixed.
 const SKILL_KEYS := [KEY_1, KEY_2, KEY_3, KEY_4, KEY_5, KEY_6]
+## InputMap's "any device" (Godot's InputMap::ALL_DEVICES).
+const ALL_DEVICES := -1
 const PAD_BUTTONS := {
 	"attack": JOY_BUTTON_A, "interact": JOY_BUTTON_B, "map": JOY_BUTTON_Y, "menu": JOY_BUTTON_START,
 	"inventory": JOY_BUTTON_X,
@@ -78,16 +80,21 @@ static func apply(bindings: Dictionary) -> void:
 			keys = [SKILL_KEYS[int(action.substr(6)) - 1]]
 		if BINDABLE.has(action):
 			keys.push_front(key_for(action, bindings))
+		# Every binding answers any keyboard or pad (device -1), not only the
+		# first one plugged in.
 		for key: int in keys:
 			var event := InputEventKey.new()
 			event.physical_keycode = key
+			event.device = ALL_DEVICES
 			InputMap.action_add_event(action, event)
 		if PAD_BUTTONS.has(action):
 			var button := InputEventJoypadButton.new()
 			button.button_index = PAD_BUTTONS[action]
+			button.device = ALL_DEVICES
 			InputMap.action_add_event(action, button)
 		if PAD_STICK.has(action):
 			var motion := InputEventJoypadMotion.new()
 			motion.axis = PAD_STICK[action][0]
 			motion.axis_value = PAD_STICK[action][1]
+			motion.device = ALL_DEVICES
 			InputMap.action_add_event(action, motion)

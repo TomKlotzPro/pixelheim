@@ -12,6 +12,8 @@ const LOG_LINES := 5
 const LOG_SECONDS := 4.0
 ## The dark under the mountain, whatever the hour above.
 const DUNGEON_GLOOM := Color(0.04, 0.02, 0.08, 0.28)
+## The device id the harness stamps on the keys it presses (`--keys`).
+const HARNESS_DEVICE := 77
 ## Fight music holds this long after the last hunter gives up.
 const COMBAT_LINGER_S := 3.0
 
@@ -60,9 +62,19 @@ var dungeon_objects: TileMapLayer
 var message_label: Label
 var prompt_label: Label
 var sky_overlay: ColorRect
+## A `--screenshot` run: the harness drives, nobody else.
+var harness := false
 
 func _ready() -> void:
 	var args := OS.get_cmdline_user_args()
+	harness = args.has("--screenshot")
+	if harness:
+		# The harness window opens on the desktop of someone who may be typing
+		# elsewhere: it doesn't take the keyboard (and _input drops anything but
+		# the harness's own presses), and it stays on top, because macOS stops
+		# drawing a covered window and the run would never reach its screenshot.
+		DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_NO_FOCUS, true)
+		DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_ALWAYS_ON_TOP, true)
 	GameState.boot(args)
 	Sound.apply_volumes()
 	_setup_input()
@@ -108,7 +120,6 @@ func _ready() -> void:
 			_open_saves(found, true)
 			greeted = true
 	# The title greets a launch (not a slot switch or a reload, and not the harness).
-	var harness := OS.get_cmdline_user_args().has("--screenshot")
 	if not greeted and not GameState.title_seen and (not harness or OS.get_cmdline_user_args().has("title")):
 		_open_title()
 	_run_test_harness()
@@ -119,23 +130,37 @@ func _open_title() -> void:
 	title.world = self
 	add_child(title)
 
+func _input(event: InputEvent) -> void:
+	if harness and event.device != HARNESS_DEVICE:
+		get_viewport().set_input_as_handled()
+
+## Keys arrive as events, never polled: a key a conversation or a menu
+## already took (E on the last line, Esc to leave, I to close the pack) stops
+## there, instead of reopening the talk or the pause menu behind it in the
+## same frame. A paused world hears nothing.
+func _unhandled_input(event: InputEvent) -> void:
+	if player == null or player.dead:
+		return
+	var command := Callable()
+	if event.is_action_pressed("menu"):
+		command = func() -> void:
+			var pause := preload("res://scripts/pause_screen.gd").new()
+			pause.world = self
+			add_child(pause)
+	elif event.is_action_pressed("interact"):
+		command = _try_interact
+	else:
+		for screen: String in ["journal", "stats", "skills", "codex", "inventory", "map"]:
+			if event.is_action_pressed(screen):
+				command = open_screen.bind(screen)
+				break
+	if command.is_valid():
+		get_viewport().set_input_as_handled()
+		command.call()
+
 func _process(_delta: float) -> void:
 	if player == null or player.dead:
 		return
-	if Input.is_action_just_pressed("menu"):
-		var pause := preload("res://scripts/pause_screen.gd").new()
-		pause.world = self
-		add_child(pause)
-		return
-	for screen: String in ["journal", "stats", "skills", "codex", "inventory"]:
-		if Input.is_action_just_pressed(screen):
-			open_screen(screen)
-			return
-	if Input.is_action_just_pressed("map"):
-		open_screen("map")
-		return
-	if Input.is_action_just_pressed("interact"):
-		_try_interact()
 	_update_prompt()
 	GameState.walk(player.position.distance_to(last_player_position) / TILE)
 	last_player_position = player.position
@@ -1078,6 +1103,24 @@ func apply_video() -> void:
 ## window briefly): `godot --path godot -- --screenshot [fight] [kill] [saves]
 ## [--map <id>] [--walk l,d,r,u,...] [--web-save <file>]` scripts inputs,
 ## saves screenshot.png, quits. Documented in godot/README.md.
+## A harness key press, as a player's would land: the Input singleton's
+## actions (what polling reads) and the event itself, straight to the
+## viewport, which needs no window focus (an unfocused window's keys are
+## dropped by the display server).
+func _press(keycode: Key, pressed: bool) -> void:
+	var event := InputEventKey.new()
+	event.physical_keycode = keycode
+	event.keycode = keycode
+	event.pressed = pressed
+	event.device = HARNESS_DEVICE
+	for action: StringName in InputMap.get_actions():
+		if InputMap.event_is_action(event, action, true):
+			if pressed:
+				Input.action_press(action)
+			else:
+				Input.action_release(action)
+	get_viewport().push_input(event)
+
 ## Harness `lineup`: the cast PunyArt assigns, side by side with names.
 func _lineup() -> void:
 	for node in get_tree().get_nodes_in_group("mobs") + get_tree().get_nodes_in_group("npcs"):
@@ -1310,6 +1353,17 @@ func _run_test_harness() -> void:
 		if args.has("talk"):
 			_try_interact()
 		await get_tree().create_timer(0.3).timeout
+		# `--keys e,e,esc,...` presses real keys at the conversation, one at a
+		# time, the way a player leaves it (the report lists what stays open).
+		var keys_index := args.find("--keys")
+		if keys_index >= 0 and keys_index + 1 < args.size():
+			var codes := {"e": KEY_E, "esc": KEY_ESCAPE, "space": KEY_SPACE, "enter": KEY_ENTER, "s": KEY_S}
+			for key: String in args[keys_index + 1].split(","):
+				for pressed: bool in [true, false]:
+					_press(codes[key], pressed)
+					await get_tree().process_frame
+					await get_tree().process_frame
+			await get_tree().create_timer(0.2).timeout
 	if args.has("chest"):
 		# Pair with `--map town`: warp beside the nook chest, face it, open it.
 		player.position = _cell_center(Vector2i(61, 18))
@@ -1372,9 +1426,17 @@ func _run_test_harness() -> void:
 		await get_tree().create_timer(0.2).timeout
 	await RenderingServer.frame_post_draw
 	get_viewport().get_texture().get_image().save_png("res://screenshot.png")
-	print("screenshot saved; map=%s cell=%s hp=%d gold=%d save=%s%s draws=%d" % [
+	# The menus and conversations still open over the world, by script name.
+	var open := get_children().filter(func(node: Node) -> bool:
+		return node is CanvasLayer and node.get_script() != null and (
+			node.get_script().resource_path.ends_with("_screen.gd")
+			or node.get_script().resource_path.ends_with("dialogue_box.gd")
+		)
+	).map(func(node: Node) -> String: return node.get_script().resource_path.get_file().get_basename())
+	print("screenshot saved; map=%s cell=%s hp=%d gold=%d save=%s%s draws=%d open=%s" % [
 		map.id, player_cell, player.hp, GameState.pack.gold, GameState.world.map_id, GameState.world.cell,
 		Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME),
+		",".join(open) if not open.is_empty() else "none",
 	])
 	# Let the audio server let go of the music before the engine shuts down.
 	get_tree().paused = true  # nothing may start a track again

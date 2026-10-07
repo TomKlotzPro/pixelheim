@@ -89,9 +89,6 @@ func _physics_process(delta: float) -> void:
 	if dead:
 		return
 	_regen(delta)
-	for index in Controls.SKILL_KEYS.size():
-		if Input.is_action_just_pressed("skill_%d" % (index + 1)):
-			cast(index)
 	if ailments.is_stunned():
 		velocity = Vector2.ZERO
 		_play("idle")
@@ -121,8 +118,22 @@ func _physics_process(delta: float) -> void:
 		_play("walk")
 	else:
 		_play("idle")
-	if Input.is_action_just_pressed("attack"):
-		attack()
+
+## The swing and the skills answer key events, so a key that closed a
+## conversation (Space) never swings the sword behind it.
+func _unhandled_input(event: InputEvent) -> void:
+	if dead:
+		return
+	if event.is_action_pressed("attack"):
+		get_viewport().set_input_as_handled()
+		if not ailments.is_stunned():
+			attack()
+		return
+	for index in Controls.SKILL_KEYS.size():
+		if event.is_action_pressed("skill_%d" % (index + 1)):
+			get_viewport().set_input_as_handled()
+			cast(index)
+			return
 
 func face(direction: Vector2) -> void:
 	if absf(direction.x) >= absf(direction.y):
