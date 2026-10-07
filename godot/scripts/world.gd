@@ -39,7 +39,7 @@ var chest_sprites := {}  # chest id -> Sprite2D
 var furniture_cells: Array[Vector2i] = []
 var last_player_position := Vector2.ZERO
 ## The hero panel: health, resource, xp, gold, the screens (HudPanel).
-var hud_panel: PanelContainer
+var dock: Control
 var log_box: VBoxContainer
 ## spawn id -> monsters of its pack still standing
 var pack_alive := {}
@@ -265,7 +265,7 @@ func log_line(line: String) -> void:
 ## The battle log: recent lines stack bottom-left and fade.
 func _log(lines: Array) -> void:
 	for line: String in lines:
-		var label := UiStyle.label(line, 12, UiStyle.INK)
+		var label := UiStyle.label(line, 12, UiStyle.CREAM)
 		label.add_theme_color_override("font_outline_color", UiStyle.NIGHT)
 		label.add_theme_constant_override("outline_size", 4)
 		log_box.add_child(label)
@@ -279,7 +279,7 @@ func _log(lines: Array) -> void:
 		oldest.queue_free()
 
 func _on_hp_changed(_hp: int, _max_hp: int) -> void:
-	hud_panel.refresh()
+	dock.refresh()
 
 func _use_portal(target: Dictionary) -> void:
 	match target["kind"]:
@@ -1274,14 +1274,12 @@ func _build_hud() -> void:
 	sky_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
 	sky_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hud.add_child(sky_overlay)
-	hud_panel = preload("res://scripts/hud_panel.gd").new()
-	hud_panel.world = self
-	hud.add_child(hud_panel)
-	var skill_bar := preload("res://scripts/skill_bar.gd").new()
-	skill_bar.world = self
-	hud.add_child(skill_bar)
+	# The hero's dock along the bottom; the battle log floats above its left.
+	dock = preload("res://scripts/hud_dock.gd").new()
+	dock.world = self
+	hud.add_child(dock)
 	log_box = VBoxContainer.new()
-	log_box.position = Vector2(24, 520)
+	log_box.position = Vector2(24, 506)
 	log_box.custom_minimum_size = Vector2(700, 0)
 	log_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hud.add_child(log_box)
@@ -1298,9 +1296,9 @@ func _build_hud() -> void:
 		heard_gold = GameState.pack.gold
 		heard_hp = GameState.hero.hp
 	)
-	GameState.gold_changed.connect(func(_gold: int) -> void: hud_panel.refresh())
-	GameState.inventory_changed.connect(hud_panel.refresh)
-	GameState.healed.connect(hud_panel.refresh)
+	GameState.gold_changed.connect(func(_gold: int) -> void: dock.refresh())
+	GameState.inventory_changed.connect(dock.refresh)
+	GameState.healed.connect(dock.refresh)
 	GameState.message.connect(_flash_message)
 	GameState.healed.connect(func() -> void: player.heal())
 	GameState.ranked_up.connect(_ascend)
@@ -1329,7 +1327,7 @@ func _build_hud() -> void:
 	message_label.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	message_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	UiStyle.sized(message_label, 16)
-	message_label.add_theme_color_override("font_color", UiStyle.INK)
+	message_label.add_theme_color_override("font_color", UiStyle.CREAM)
 	message_label.add_theme_color_override("font_outline_color", UiStyle.NIGHT)
 	message_label.add_theme_constant_override("outline_size", 6)
 	message_label.modulate.a = 0.0
