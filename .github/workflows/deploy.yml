@@ -65,6 +65,19 @@ jobs:
             mv templates/web_* "$TDIR/"
           fi
           echo "$HOME/godot-bin" >> "$GITHUB_PATH"
+      # Paid art (PIX-133) lives in the private pixelheim-assets repo, read
+      # with a deploy key; it goes into the build, never into this repo.
+      - name: Fetch the private art
+        uses: actions/checkout@v4
+        with:
+          repository: TomKlotzPro/pixelheim-assets
+          ssh-key: ${{ secrets.PIXELHEIM_ASSETS_KEY }}
+          path: private-assets
+      - name: Install the private art
+        run: |
+          mkdir -p godot/assets/puny/medieval
+          cp private-assets/puny-world-medieval/punyworld-atlas.png godot/assets/puny/medieval/
+          rm -rf private-assets
       - name: Build the Godot web export at the site root
         run: |
           godot --headless --path godot --import

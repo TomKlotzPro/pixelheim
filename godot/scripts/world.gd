@@ -35,6 +35,9 @@ var ground: Node2D
 ## Region tones (ash, mire) shared by the ground and the decor standing on it.
 var ground_tint: ShaderMaterial
 var tile_layer: TileMapLayer
+## The town's houses from the Medieval Age pack (PunyTown.compose): their
+## pieces, chimneys, and so which cells they cover. Empty elsewhere.
+var buildings := {"pieces": {}, "decor": {}, "freed": []}
 var props: Node2D
 var actors: Node2D
 var player: CharacterBody2D
@@ -463,6 +466,15 @@ func _enter_map(next: MapData, arrival: Vector2i) -> void:
 		props.queue_free()
 	if ground != null:
 		ground.queue_free()
+	# Far off (the overworld's skyline) a town stays one Puny house icon.
+	var near := next.floor_level == 0 and next.id not in PunyTerrain.SKYLINE_MAPS
+	buildings = PunyTown.compose(next.grid) if near else {"pieces": {}, "decor": {}, "freed": []}
+	for cell: Vector2i in buildings["freed"]:
+		next.grid[cell] = "grass"
+	# What a house covers is house: its corners stop the hero and villagers too.
+	for cell: Vector2i in buildings["pieces"]:
+		if not String(next.grid.get(cell, "")).begins_with("door"):
+			next.grid[cell] = "roof"
 	ground = _build_dungeon(next) if next.floor_level > 0 else _build_ground(next)
 	add_child(ground)
 	tile_layer = _build_tile_layer(next)
@@ -551,6 +563,15 @@ func _build_ground(data: MapData) -> Node2D:
 		for cell: Vector2i in skyline:
 			PunyTerrain.place(objects, cell, skyline[cell])
 	root.add_child(objects)
+	# The houses, then what stands on their roofs (chimneys).
+	for part: String in ["pieces", "decor"]:
+		if buildings[part].is_empty():
+			continue
+		var houses := TileMapLayer.new()
+		houses.tile_set = PunyTown.tileset()
+		for cell: Vector2i in buildings[part]:
+			PunyTown.place(houses, cell, buildings[part][cell])
+		root.add_child(houses)
 	return root
 
 ## A dungeon floor in Shade's Puny Dungeon: stone, walls by his grammar and
@@ -620,6 +641,8 @@ func _build_decor(data: MapData) -> void:
 			continue
 		if outdoor and PunyTerrain.wall_piece(data.grid, cell) == PunyTerrain.GATE:
 			continue
+		if buildings["pieces"].has(cell):
+			continue  # the house draws its own door (PunyTown)
 		if data.grid.get(cell + Vector2i.LEFT, "") == tile:
 			continue  # not the run's left edge
 		var run := 0
@@ -694,30 +717,32 @@ func _add_decor_sprite(texture_path: String, region: Rect2, cell: Vector2i, h: i
 func _build_props(data: MapData) -> Node2D:
 	var root := Node2D.new()
 	for sign_def: Dictionary in Interactables.signs_on(data.id, GameState.owns_house()):
+		var door := Vector2(int(sign_def["x"]) * TILE + TILE / 2.0, int(sign_def["y"]) * TILE)
+		# A wooden shop board over the door, in the web's sign wood: the name
+		# in the pixel type, and the trade's icon above it for craft stations.
+		var board := PanelContainer.new()
+		board.add_theme_stylebox_override("panel", _sign_wood())
+		board.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		var label := Label.new()
 		label.text = sign_def["label"]
+		label.add_theme_font_override("font", UiStyle.chunky_font())
 		label.add_theme_font_size_override("font_size", 8)
-		label.add_theme_color_override("font_color", Color(1, 0.95, 0.75))
-		label.add_theme_color_override("font_outline_color", Color(0.1, 0.08, 0.12))
-		label.add_theme_constant_override("outline_size", 3)
-		label.custom_minimum_size = Vector2(64, 0)
-		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		# Above the 2-tile-tall arch doors.
-		label.position = Vector2(int(sign_def["x"]) * TILE + 8 - 32, int(sign_def["y"]) * TILE - 26)
-		root.add_child(label)
-		# Craft stations advertise their trade with an icon over the name, on
-		# a little plate in the web's sign wood so it reads against any wall.
+		label.add_theme_color_override("font_color", Color("e8c34a"))
+		board.add_child(label)
+		root.add_child(board)
+		board.reset_size()
+		# Over the eave just above the door (Puny houses), or above the old
+		# two-tile arch doors.
+		var lift := 10.0 if buildings["pieces"].has(Vector2i(sign_def["x"], sign_def["y"])) else 26.0
+		board.position = (door - Vector2(board.size.x / 2.0, lift + board.size.y - 8)).round()
 		if sign_def.has("icon"):
 			var texture: Texture2D = load("res://assets/sprites/%s.png" % sign_def["icon"])
 			var size := texture.get_size() + Vector2(4, 4)
-			var plate := ColorRect.new()
-			plate.color = Color("2a2118")
+			var plate := Panel.new()
+			plate.add_theme_stylebox_override("panel", _sign_wood())
+			plate.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			plate.size = size
-			plate.position = Vector2(int(sign_def["x"]) * TILE + 8 - size.x / 2, label.position.y - size.y + 1)
-			var rim := ColorRect.new()
-			rim.color = Color("8a6238")
-			rim.size = Vector2(size.x, 1)
-			plate.add_child(rim)
+			plate.position = Vector2(door.x - size.x / 2.0, board.position.y - size.y + 1).round()
 			var icon := TextureRect.new()
 			icon.texture = texture
 			icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
@@ -725,6 +750,18 @@ func _build_props(data: MapData) -> Node2D:
 			plate.add_child(icon)
 			root.add_child(plate)
 	return root
+
+## Sign wood (the web's door signs): a dark plank, a lit top edge, a shadow.
+func _sign_wood() -> StyleBoxFlat:
+	var wood := StyleBoxFlat.new()
+	wood.bg_color = Color("2a2118")
+	wood.border_color = Color("8a6238")
+	wood.border_width_top = 1
+	wood.border_width_bottom = 1
+	wood.set_content_margin_all(2)
+	wood.content_margin_top = 1
+	wood.content_margin_bottom = 0
+	return wood
 
 func _chest_at(cell: Vector2i) -> Dictionary:
 	for chest: Dictionary in Interactables.chests_on(map.id):
@@ -951,6 +988,7 @@ func _build_tile_layer(data: MapData) -> TileMapLayer:
 		var tile: String = data.grid[cell]
 		var puny_drawn: bool = (
 			data.floor_level > 0
+			or buildings["pieces"].has(cell)
 			or WorldTiles.GROUND_TILES.has(tile)
 			or (outdoor and PunyTerrain.wall_piece(data.grid, cell) >= 0)
 			or (skyline and WorldTiles.ROOF_TILES.has(tile))
