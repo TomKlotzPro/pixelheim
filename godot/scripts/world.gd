@@ -15,18 +15,6 @@ const DUNGEON_GLOOM := Color(0.04, 0.02, 0.08, 0.28)
 ## Fight music holds this long after the last hunter gives up.
 const COMBAT_LINGER_S := 3.0
 
-## Puny World objects scattered on terrain (PIX-130), picked by cell hash:
-## tile id -> [density %, [Puny tile ids]]. Forests grow pines and round
-## trees, the blocked highlands carry pines and boulders, fields the odd
-## stone or stump, and crops stand in rows of wheat.
-const SCATTER := {
-	"forest": [85, [197, 224, 251, 206, 233, 260, 705, 729, 732, 783, 810]],
-	"mountain": [30, [197, 224, 251, 783, 810, 702]],
-	"grass": [3, [702, 703, 730, 784]],
-	"ash": [6, [702, 703, 784, 811, 838]],
-	"marsh": [10, [703, 732, 838]],
-	"crops": [100, [756, 757]],
-}
 
 var map: MapData
 var ground: Node2D
@@ -38,6 +26,8 @@ var tile_layer: TileMapLayer
 var buildings := {"pieces": {}, "decor": {}, "freed": []}
 ## Shade's props on the outdoor ground (PunyProps.compose).
 var outdoor_props := {"props": [], "flat": {}, "drawn": {}}
+## Field decor that blocks on this map: cell -> Puny World tile.
+var solid_scatter := {}
 var props: Node2D
 var actors: Node2D
 var player: CharacterBody2D
@@ -45,6 +35,8 @@ var camera: Camera2D
 var player_cell := Vector2i.ZERO
 var kills := 0
 var chest_sprites := {}  # chest id -> Sprite2D
+## Cells the house's placed furniture stands on (in map.covered while placed).
+var furniture_cells: Array[Vector2i] = []
 var last_player_position := Vector2.ZERO
 ## The hero panel: health, resource, xp, gold, the screens (HudPanel).
 var hud_panel: PanelContainer
@@ -335,7 +327,7 @@ func _open_inventory() -> void:
 ## Furniture from the pack onto the floor tile the hero faces (PLACE_FURNITURE).
 func place_from_pack(item_id: String) -> void:
 	var cell := _facing_cell()
-	var text := GameState.place_furniture(item_id, cell, map.tile_at(cell))
+	var text := GameState.place_furniture(item_id, cell, _tile_in_hand(cell))
 	if text != "":
 		_flash_message(text)
 	_build_furniture()
@@ -494,7 +486,7 @@ func _enter_map(next: MapData, arrival: Vector2i) -> void:
 	# blocks it, like the rest of the furniture.
 	if PunyTown.available() and PunyInterior.is_room(next.id):
 		var room: Dictionary = PunyInterior.plan(next.id, next.grid)
-		buildings = {"pieces": room["pieces"], "decor": {}, "freed": [], "floor": room["floor"], "void": room["void"]}
+		buildings = {"pieces": room["pieces"], "decor": {}, "freed": [], "floor": room["floor"], "void": room["void"], "over": room["over"]}
 		for cell: Vector2i in room["blocked"]:
 			next.grid[cell] = "wall"
 	# Outdoors, Shade's props stand where the web's did (PunyProps): what they
@@ -508,6 +500,9 @@ func _enter_map(next: MapData, arrival: Vector2i) -> void:
 				next.covered[cell] = true
 	if not next.is_walkable(arrival):
 		arrival = next.spawn
+	solid_scatter = _solid_scatter(next, arrival)
+	for cell: Vector2i in solid_scatter:
+		next.covered[cell] = true
 	ground = _build_dungeon(next) if next.floor_level > 0 else _build_ground(next)
 	add_child(ground)
 	tile_layer = _build_tile_layer(next)
@@ -680,7 +675,9 @@ func _build_decor(data: MapData) -> void:
 		actors.add_child(sprite)
 		chest_sprites[chest["id"]] = sprite
 		if chest["look"] == "chest":
-			# Furniture blocks the tile; ground treasure never does.
+			# Furniture blocks the tile; ground treasure never does. The grid
+			# knows too, so nothing spawns or paces into it.
+			data.covered[cell] = true
 			var body := StaticBody2D.new()
 			var shape := CollisionShape2D.new()
 			var rect := RectangleShape2D.new()
@@ -716,15 +713,57 @@ func _build_decor(data: MapData) -> void:
 	for prop: Dictionary in outdoor_props["props"]:
 		_add_puny_prop(prop)
 	for cell: Vector2i in data.grid:
-		var tile: String = data.grid[cell]
-		if not SCATTER.has(tile):
+		var choice := Scatter.choice(data.grid, cell)
+		if choice < 0 or outdoor_props["drawn"].has(cell):
 			continue
 		var h := absi(hash(cell))
-		if h % 100 >= SCATTER[tile][0]:
-			continue
-		var choices: Array = SCATTER[tile][1]
-		_add_decor_sprite(PunyTerrain.SHEET, PunyTerrain.region(choices[(h >> 7) % choices.size()]), cell, h)
-		actors.get_child(-1).material = ground_tint
+		if solid_scatter.has(cell):
+			_add_solid_decor(choice, cell)
+		elif choice in Scatter.FLAT and data.grid[cell] != "forest":
+			# Flat on the ground: the hero steps over it.
+			var flat := Sprite2D.new()
+			flat.texture = PunyTerrain.sheet().tile_texture(choice)
+			flat.position = _cell_center(cell) + Vector2((h >> 12) % 7 - 3, (h >> 16) % 5 - 2)
+			flat.material = ground_tint
+			flat.add_to_group("decor")
+			ground.add_child(flat)
+		else:
+			_add_decor_sprite(PunyTerrain.SHEET, PunyTerrain.region(choice), cell, h)
+			actors.get_child(-1).material = ground_tint
+
+## Field decor that blocks (Scatter.solid), kept off the cell the hero
+## arrives on, villagers' homes and chests.
+func _solid_scatter(data: MapData, arrival: Vector2i) -> Dictionary:
+	if data.floor_level > 0 or not PunyTerrain.is_outdoor(data.grid):
+		return {}
+	var kept := {arrival: true}
+	for npc: Dictionary in Npcs.on_map(data.id, GameState.settlement.town_tier, GameState.settlement.settlers):
+		kept[Vector2i(int(npc["x"]), int(npc["y"]))] = true
+	for chest: Dictionary in Interactables.chests_on(data.id):
+		kept[Vector2i(int(chest["x"]), int(chest["y"]))] = true
+	return Scatter.solid(data, kept, outdoor_props["drawn"])
+
+## A bush, stump or tree that blocks: on its cell's centre (no jitter, so the
+## body sits under it), sorted and stopped at its foot.
+func _add_solid_decor(choice: int, cell: Vector2i) -> void:
+	var root := Node2D.new()
+	root.position = Vector2(cell * TILE) + Vector2(0, Scatter.FOOT.end.y)
+	root.add_to_group("decor")
+	var sprite := Sprite2D.new()
+	sprite.texture = PunyTerrain.sheet().tile_texture(choice)
+	sprite.centered = false
+	sprite.position = Vector2(0, -Scatter.FOOT.end.y)
+	sprite.material = ground_tint
+	root.add_child(sprite)
+	var body := StaticBody2D.new()
+	var shape := CollisionShape2D.new()
+	var rect := RectangleShape2D.new()
+	rect.size = Scatter.FOOT.size
+	shape.shape = rect
+	shape.position = Scatter.FOOT.get_center() - Vector2(0, Scatter.FOOT.end.y)
+	body.add_child(shape)
+	root.add_child(body)
+	actors.add_child(root)
 
 ## Villagers who live on this map now: tier-gated townsfolk and recruits.
 func _spawn_npcs(data: MapData) -> void:
@@ -931,13 +970,19 @@ func _try_interact() -> void:
 			_talk(beside["npc"])
 		return
 
+## What the hero's hands meet on a cell: the furniture drawn over it (a
+## bed's foot is the bed: E rests there, nothing can be set on it), else the
+## web's tile.
+func _tile_in_hand(cell: Vector2i) -> String:
+	return buildings.get("over", {}).get(cell, map.tile_at(cell))
+
 func _enter_house() -> void:
 	map = _load_map("town_house")
 	_enter_map(map, Vector2i(8, 8))
 
 ## The house's fixtures and furniture; true when E meant one of them.
 func _house_interact(cell: Vector2i) -> bool:
-	var result := GameState.house_interact(cell, map.tile_at(cell))
+	var result := GameState.house_interact(cell, _tile_in_hand(cell))
 	if result.is_empty():
 		return false
 	if result.has("text"):
@@ -955,6 +1000,9 @@ func _house_interact(cell: Vector2i) -> bool:
 func _build_furniture() -> void:
 	for piece in get_tree().get_nodes_in_group("furniture"):
 		piece.queue_free()
+	for cell: Vector2i in furniture_cells:
+		map.covered.erase(cell)
+	furniture_cells = []
 	if map.id != "town_house":
 		return
 	for placed: Dictionary in GameState.furniture():
@@ -966,8 +1014,13 @@ func _build_furniture() -> void:
 		sprite.add_to_group("furniture")
 		sprite.add_to_group("decor")
 		if not Town.furniture_blocks(item_id):
-			sprite.z_index = -1  # underfoot
+			# Underfoot (the rug): on the floor, under everyone. (In the actors
+			# layer under z 0 it went under the floor too, and never showed.)
+			ground.add_child(sprite)
+			continue
 		actors.add_child(sprite)
+		furniture_cells.append(cell)
+		map.covered[cell] = true
 		if Town.furniture_blocks(item_id):
 			var body := StaticBody2D.new()
 			var shape := CollisionShape2D.new()
