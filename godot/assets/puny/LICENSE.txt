@@ -14,3 +14,11 @@ paths point one folder up, as in Shade's zips; Pixelheim reads only the wang
 and animation data). Pixelheim picks which sheet plays which role in
 scripts/puny_art.gd and lays the tilesets over its maps in
 scripts/puny_terrain.gd.
+
+Not in this repository: medieval/ holds Shade's paid "16x16 Puny World
+Tileset Medieval Age" (https://merchant-shade.itch.io/puny-world-medieval),
+licensed to Tom Klotz for use in commercial projects, modification allowed,
+no redistribution or resale. It is fetched from the private
+TomKlotzPro/pixelheim-assets repository (pnpm godot:art locally, a deploy key
+in CI) and git-ignored here; scripts/puny_town.gd builds the town's houses
+from it.

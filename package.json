@@ -10,6 +10,7 @@
     "preview": "vite preview",
     "sprites": "node scripts/generate-sprites.mjs && pnpm godot:sync",
     "godot:sync": "node scripts/sync-godot-assets.mjs && tsx scripts/export-maps.ts",
+    "godot:art": "bash scripts/fetch-private-art.sh",
     "test:e2e": "playwright test",
     "test:unit": "vitest run",
     "sim": "tsx scripts/balance-sim.ts",

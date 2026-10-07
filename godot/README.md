@@ -5,8 +5,20 @@ The Godot 4.7 rewrite of Pixelheim ([Godot Migration](https://linear.app/pixelhe
 ## Run
 
 ```sh
+pnpm godot:art                # once: the paid art (below)
 godot --path godot            # play (or open godot/ in the Godot editor)
 ```
+
+### Paid art
+
+The town's houses come from Shade's paid **Puny World Medieval Age** pack
+(`scripts/puny_town.gd`, PIX-133). Its licence forbids redistributing the
+pack, so it is not in this repository: it lives in the private
+`TomKlotzPro/pixelheim-assets` repo. `pnpm godot:art` installs the atlas into
+`godot/assets/puny/medieval/` (git-ignored) with your GitHub login; the deploy
+and the Godot CI fetch it with a read-only deploy key (secret
+`PIXELHEIM_ASSETS_KEY`). Without it the game runs with the town's old
+buildings.
 
 Combat runs on the web game's numbers: the hero's real HP and stats, each
 species' stats per region, elites, ailments (a web turn = 1 s), drops, xp and

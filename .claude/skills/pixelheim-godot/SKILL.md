@@ -40,6 +40,12 @@ The React/Pixi web game (`src/`) is being ported to Godot 4.7 (`godot/`), one Li
 - Saves are the **web v4 save format**, byte for byte: a Godot slot file loads in the web game and vice versa. `SaveCodec` ports `save.ts` (migrations, normalize, `PXH1.` codes). Every web field round-trips, even ones Godot doesn't play yet. Parse JSON with `SaveCodec.parse_json` (it restores integers; plain JSON makes them floats and Godot would write `123.0`), and write it with `SaveCodec.serialize` (it keeps key order; `JSON.stringify` sorts keys by default). `test_save_codec.gd` pins a late-game web save and the web's own re-encode of it (`fixtures/web_save_late*`).
 - Slots: `user://saves/slot_<n>.json`, atomic temp+rename. The user dir is pinned (`config/custom_user_dir_name="pixelheim"`): never change it, or players lose saves. Slot 0 (harness runs) never touches disk.
 
+## Paid art (PIX-133)
+
+- Shade's paid **Puny World Medieval Age** atlas (town houses, `scripts/puny_town.gd`) is NOT in this public repo: it lives in the private `TomKlotzPro/pixelheim-assets` repo, is installed by `pnpm godot:art` into git-ignored `godot/assets/puny/medieval/`, and CI fetches it with the deploy key secret `PIXELHEIM_ASSETS_KEY`. Never commit its PNGs, its sample maps, or anything cut from them.
+- Code must keep working without it (`PunyTown.available()` false: old buildings); test pure logic through `PunyTown.plan()`, which needs no art.
+- Houses: each web roof cluster becomes a 9-wide gable centred on the door (Shade's cottage grammar, height by repeating body rows) plus hip-roofed wings for the remaining columns; roof colours are fixed row shifts into the pack's colour blocks (`ROOF_ROWS`). Cells a house covers become `roof` in the grid, roof cells it leaves become `grass` (`freed`).
+
 ## Verify
 
 ```sh
