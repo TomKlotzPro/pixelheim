@@ -65,8 +65,10 @@ Config in `.gutconfig.json`; tests live in `test/unit/`.
 ## Agent verification harness
 
 Headless Godot cannot render, so visual verification drives a real window
-briefly, saves `screenshot.png` into `godot/`, and quits. Harness runs play a
-fresh throwaway hero and never touch save slots unless `--slot N` is passed:
+briefly, saves `screenshot.png` into `godot/`, and quits. It lives in
+`scripts/harness.gd`, which `world.gd` adds only when `--screenshot` is
+passed. Harness runs play a fresh throwaway hero and never touch save slots
+unless `--slot N` is passed:
 
 ```sh
 godot --path godot -- --screenshot                    # new hero in the village
@@ -129,7 +131,8 @@ classic web edition at `/classic/` ([docs/godot-parity.md](../docs/godot-parity.
 - `scenes/main.tscn` — entry scene; all other nodes are built in code
 - `scripts/world_tiles.gd` — tile tables ported from `src/world/tiles.ts`
 - `scripts/map_data.gd` — loads the JSON maps exported by `pnpm godot:sync` (pure data, unit-tested)
-- `scripts/world.gd` — scene orchestration: tilemap, spawns, HUD, harness
+- `scripts/world.gd` — scene orchestration: tilemap, spawns, HUD, interaction
+- `scripts/harness.gd` — the screenshot harness below, added only for `--screenshot` runs
 - `scripts/state/` — the `GameState` autoload and its typed sections (hero, pack, settlement, progression, world), the save codec, slots and settings
 - `scripts/player.gd` / `scripts/enemy.gd` — live combat actors
 - `scripts/npcs.gd` / `scripts/npc.gd` / `scripts/dialogue_box.gd` — villagers: who lives where (ported from `src/world/npcs.ts`), their pacing, and conversations
