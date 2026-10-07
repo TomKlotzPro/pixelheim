@@ -2,7 +2,8 @@
 # The flows a release must not break (PIX-129), each driven through the
 # screenshot harness on a throwaway hero: spawn, portal, chest, shop, craft,
 # quest, rank-up, fight, death and the inn, saves, and leaving a conversation
-# with real key presses (PIX-131). Every flow leaves its
+# with real key presses (PIX-131), and walking without the camera shake
+# (PIX-135). Every flow leaves its
 # picture in godot/flows/<name>.png for a human to look at, and the harness's
 # report line must match what the flow promises or the run fails.
 #
@@ -27,6 +28,7 @@ FLOWS=(
 	"saves|saves|screenshot saved"
 	"talk|--map town talk --keys e,e,e|open=none"
 	"leave|--map town talk --keys e,esc|open=none"
+	"motion|--map town motion|backsteps=[01]$"
 )
 
 failed=0

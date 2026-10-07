@@ -30,6 +30,12 @@ window/stretch/aspect="keep"
 
 theme/custom_font="res://assets/fonts/PixelOperator.ttf"
 
+[physics]
+
+; Motion is drawn between physics ticks (actors only, see world.gd): no
+; stutter on screens faster than the 60 Hz physics.
+common/physics_interpolation=true
+
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0

@@ -308,6 +308,7 @@ func respawn(at: Vector2) -> void:
 	ailments.clear()
 	_show_ailment()
 	position = at
+	reset_physics_interpolation()
 	hp = GameState.hero.hp
 	dead = false
 	sprite.modulate = Color.WHITE

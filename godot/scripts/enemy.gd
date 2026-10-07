@@ -36,6 +36,8 @@ var hunting := false
 
 
 func _ready() -> void:
+	# Placed before entering the tree: start interpolating from here.
+	reset_physics_interpolation()
 	art = PunyArt.monster(fighter["id"])
 	sprite = AnimatedSprite2D.new()
 	sprite.sprite_frames = PunyArt.frames(art)

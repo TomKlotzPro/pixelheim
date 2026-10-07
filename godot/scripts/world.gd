@@ -75,6 +75,11 @@ var harness := false
 
 func _ready() -> void:
 	UiStyle.setup()
+	# Only what physics moves is interpolated between ticks (the actors and
+	# the camera riding the hero); the ground and the UI hold still.
+	physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
+	# The world's physics step runs after the actors', to note where the hero ended.
+	process_physics_priority = 10
 	var args := OS.get_cmdline_user_args()
 	harness = args.has("--screenshot")
 	if harness:
@@ -106,6 +111,7 @@ func _ready() -> void:
 	# front of trunks and behind canopies.
 	actors = Node2D.new()
 	actors.y_sort_enabled = true
+	actors.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_ON
 	add_child(actors)
 	_spawn_player()
 	player.face(WorldState.FACINGS.get(GameState.world.facing, Vector2.DOWN))
@@ -167,7 +173,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 		command.call()
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	_follow_hero(delta)
 	if player == null or player.dead:
 		return
 	_update_prompt()
@@ -415,6 +422,7 @@ func _step_back() -> void:
 		return
 	player_cell = back
 	player.position = _cell_center(back)
+	_teleported()
 	last_player_position = player.position
 	GameState.move_to(map, back, player.facing)
 
@@ -503,6 +511,7 @@ func _enter_map(next: MapData, arrival: Vector2i) -> void:
 	_build_furniture()
 	_spawn_npcs(next)
 	player.position = _cell_center(arrival)
+	_teleported()
 	player.ailments.clear()
 	last_player_position = player.position
 	player_cell = arrival
@@ -1059,13 +1068,17 @@ func _spawn_player() -> void:
 	actors.add_child(player)
 
 	camera = Camera2D.new()
-	# Shade's figures are 16px: 4x shows ~20x11 tiles, close to the web game's view.
-	camera.zoom = Vector2(4, 4)
-	camera.position_smoothing_enabled = true
-	camera.position_smoothing_speed = 8.0
 	camera.limit_left = 0
 	camera.limit_top = 0
+	# The camera follows where the hero is drawn (between physics ticks), not
+	# where physics last put them: attached to the hero it would lag the drawn
+	# sprite by up to a tick and snap back, a shake that blurs every step.
+	camera.top_level = true
+	camera.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
 	player.add_child(camera)
+	_fit_zoom()
+	get_tree().root.size_changed.connect(_fit_zoom)
+	_teleported()
 
 ## Packs at the web's visible spawns (spawns.ts): the species its region and
 ## position decide, an elite roll each, none where the slain ledger says the
@@ -1157,6 +1170,63 @@ func _build_hud() -> void:
 	message_label.add_theme_constant_override("outline_size", 6)
 	message_label.modulate.a = 0.0
 	hud.add_child(message_label)
+
+## The hero's position after the last two physics ticks (recorded after the
+## hero has moved, see _physics_process), so the camera can stand exactly
+## where the hero is drawn this frame.
+var _hero_tick_from := Vector2.ZERO
+var _hero_tick_to := Vector2.ZERO
+## False while something else frames the shot (the harness overview).
+var camera_follows := true
+## Shade's figures are 16px: about 4x shows ~20x11 tiles, close to the web
+## game's view. The exact zoom keeps an art pixel a whole number of screen
+## pixels at any window size (_fit_zoom).
+const ZOOM := 4.0
+## How fast the camera catches up with the hero (per second, eased).
+const CAMERA_EASE := 8.0
+## Where the camera eases to stand, before it settles on a whole pixel.
+var _camera_at := Vector2.ZERO
+
+func _physics_process(_delta: float) -> void:
+	if player == null:
+		return
+	_hero_tick_from = _hero_tick_to
+	_hero_tick_to = player.position
+
+## The hero was placed, not walked: no interpolating from the old spot, and
+## the camera cuts there.
+func _teleported() -> void:
+	player.reset_physics_interpolation()
+	_hero_tick_from = player.position
+	_hero_tick_to = player.position
+	if camera != null:
+		_camera_at = player.position
+		camera.global_position = player.position
+		camera.reset_smoothing()
+
+## The camera eases toward where the hero is drawn this frame (between the
+## last two ticks, as the physics interpolation draws them) and stands on a
+## whole screen pixel, so the world scrolls crisp, all of a piece.
+func _follow_hero(delta: float) -> void:
+	if camera == null or not camera_follows:
+		return
+	var drawn := _hero_tick_from.lerp(_hero_tick_to, Engine.get_physics_interpolation_fraction())
+	_camera_at = _camera_at.lerp(drawn, 1.0 - exp(-CAMERA_EASE * delta))
+	var pixels_per_unit := camera.zoom.x * _stretch()
+	camera.global_position = (_camera_at * pixels_per_unit).round() / pixels_per_unit
+
+## Screen pixels per pixel of the 1280x720 canvas (the window's stretch).
+func _stretch() -> float:
+	return get_tree().root.get_final_transform().get_scale().x
+
+## The zoom nearest ZOOM at which an art pixel covers a whole number of
+## screen pixels: no uneven 4-and-5-pixel columns shimmering as the world
+## scrolls.
+func _fit_zoom() -> void:
+	if camera == null or not camera_follows:
+		return
+	var scale := _stretch()
+	camera.zoom = Vector2.ONE * maxf(1.0, roundf(ZOOM * scale)) / scale
 
 ## The nameplate of the sign the hero stands near (two tiles or so): the
 ## place's name and who keeps it, over the board, in the UI's window style.
@@ -1315,6 +1385,43 @@ func _run_test_harness() -> void:
 		# Up the stairs, back to the gate.
 		_use_portal({"kind": "gate"})
 		await get_tree().create_timer(0.3).timeout
+	var motion_report := ""
+	if args.has("motion"):
+		# `motion` (PIX-135): what the screen shows each rendered frame while
+		# the hero walks right: the hero found by its horns' red in the image
+		# (a still frame of the walk, so only motion moves it), and the
+		# world's scroll from the camera. A hero who steps back on screen
+		# while walking forward is the shake that blurred every step.
+		player.scripted_dir = Vector2.RIGHT
+		player.sprite.speed_scale = 0.0
+		var hero_x: Array[float] = []
+		var scroll_x: Array[float] = []
+		for i in 45:
+			await RenderingServer.frame_post_draw
+			var image := get_viewport().get_texture().get_image()
+			var sum := 0.0
+			var n := 0
+			# Only near the hero (the town's grass has red flowers too).
+			var around := (get_viewport().get_canvas_transform() * player.global_position) * (image.get_width() / get_viewport().get_visible_rect().size.x)
+			for y in range(int(around.y) - 90, int(around.y) + 30):
+				for x in range(int(around.x) - 50, int(around.x) + 50):
+					if image.get_pixel(x, y).to_html(false) == "ae0000":
+						sum += x
+						n += 1
+			hero_x.append(sum / maxf(n, 1))
+			scroll_x.append(get_viewport().get_canvas_transform().origin.x)
+		player.scripted_dir = Vector2.ZERO
+		var hero_steps: Array = []
+		var scroll_steps: Array = []
+		for i in range(1, hero_x.size()):
+			hero_steps.append(snappedf(hero_x[i] - hero_x[i - 1], 0.1))
+			scroll_steps.append(snappedf(scroll_x[i] - scroll_x[i - 1], 0.1))
+		var back := hero_steps.filter(func(d: float) -> bool: return d < -0.05).size()
+		var frozen := scroll_steps.filter(func(d: float) -> bool: return absf(d) < 0.05).size()
+		print("MOTION fps=%d hero_backsteps=%d scroll_frozen=%d hero=%s scroll=%s" % [
+			Engine.get_frames_per_second(), back, frozen, str(hero_steps.slice(5, 17)), str(scroll_steps.slice(5, 17))])
+		# The release flow reads it off the report line (PIX-135).
+		motion_report = " backsteps=%d" % back
 	var walk_index := args.find("--walk")
 	if walk_index >= 0 and walk_index + 1 < args.size():
 		var dirs := {
@@ -1333,6 +1440,7 @@ func _run_test_harness() -> void:
 		var at := args[at_index + 1].split(",")
 		player_cell = Vector2i(int(at[0]), int(at[1]))
 		player.position = _cell_center(player_cell)
+		_teleported()
 		camera.reset_smoothing()
 	var zoom_index := args.find("--zoom")
 	if zoom_index >= 0 and zoom_index + 1 < args.size():
@@ -1340,7 +1448,7 @@ func _run_test_harness() -> void:
 	if args.has("overview"):
 		var view := get_viewport_rect().size
 		var fit := minf(view.x / (map.size.x * TILE), view.y / (map.size.y * TILE))
-		camera.top_level = true
+		camera_follows = false
 		camera.zoom = Vector2(fit, fit)
 		camera.limit_right = 1 << 20
 		camera.limit_bottom = 1 << 20
@@ -1478,6 +1586,7 @@ func _run_test_harness() -> void:
 		# Stand below the map's first villager facing up; `talk` also presses E.
 		var villager: Node = get_tree().get_first_node_in_group("npcs")
 		player.position = _cell_center(villager.cell + Vector2i.DOWN)
+		_teleported()
 		player_cell = villager.cell + Vector2i.DOWN
 		player.face(Vector2.UP)
 		if args.has("talk"):
@@ -1497,6 +1606,7 @@ func _run_test_harness() -> void:
 	if args.has("chest"):
 		# Pair with `--map town`: warp beside the nook chest, face it, open it.
 		player.position = _cell_center(Vector2i(61, 18))
+		_teleported()
 		player_cell = Vector2i(61, 18)
 		player.face(Vector2.RIGHT)
 		_try_interact()
@@ -1516,6 +1626,7 @@ func _run_test_harness() -> void:
 				continue
 			var side: Vector2i = sides[0]
 			player.position = _cell_center(door + side)
+			_teleported()
 			player_cell = door + side
 			player.scripted_dir = Vector2(-side)
 			await get_tree().create_timer(0.4).timeout
@@ -1567,7 +1678,7 @@ func _run_test_harness() -> void:
 		map.id, player_cell, player.hp, GameState.pack.gold, GameState.world.map_id, GameState.world.cell,
 		Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME),
 		",".join(open) if not open.is_empty() else "none",
-	])
+	] + motion_report)
 	# Let the audio server let go of the music before the engine shuts down.
 	get_tree().paused = true  # nothing may start a track again
 	Sound.stop_all()
