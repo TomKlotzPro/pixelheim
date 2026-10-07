@@ -34,11 +34,17 @@ func _ready() -> void:
 	_show()
 
 
+## E, Enter, Space or a click turns the page (and closes after the last);
+## Esc or a step in any direction leaves at any line.
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("interact") or event.is_action_pressed("ui_accept"):
+	var click: bool = event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT
+	var leave: bool = event.is_action_pressed("ui_cancel") or event.is_action_pressed("menu")
+	for move: String in ["move_up", "move_down", "move_left", "move_right"]:
+		leave = leave or event.is_action_pressed(move)
+	if click or event.is_action_pressed("interact") or event.is_action_pressed("ui_accept"):
 		get_viewport().set_input_as_handled()
 		_advance()
-	elif event.is_action_pressed("ui_cancel") or event.is_action_pressed("menu"):
+	elif leave:
 		get_viewport().set_input_as_handled()
 		_close()
 
@@ -54,7 +60,7 @@ func _advance() -> void:
 func _show() -> void:
 	text.text = npc["lines"][page]
 	var last: bool = page >= npc["lines"].size() - 1
-	hint.text = "E  close" if last else "E  next   %d/%d" % [page + 1, npc["lines"].size()]
+	hint.text = "E  close" if last else "%d/%d     E  next     Esc  leave" % [page + 1, npc["lines"].size()]
 
 
 func _close() -> void:
