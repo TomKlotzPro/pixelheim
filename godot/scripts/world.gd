@@ -63,6 +63,11 @@ var floor_foes := 0
 ## Torches, barrels, stairs on a dungeon floor; a cleared floor's way up joins them.
 var dungeon_objects: TileMapLayer
 var message_label: Label
+## The doors with signs on this map: {door, name, about}; the nameplate over
+## the one the hero walks up to (ShopSign).
+var door_signs: Array = []
+var nameplate: PanelContainer
+var nameplate_door := Vector2i(-1, -1)
 var prompt_label: Label
 var sky_overlay: ColorRect
 ## A `--screenshot` run: the harness drives, nobody else.
@@ -166,6 +171,7 @@ func _process(_delta: float) -> void:
 	if player == null or player.dead:
 		return
 	_update_prompt()
+	_update_nameplate()
 	GameState.walk(player.position.distance_to(last_player_position) / TILE)
 	last_player_position = player.position
 	sky_overlay.color = DUNGEON_GLOOM if map.floor_level > 0 else DayNight.sky_at(GameState.world.steps)
@@ -742,6 +748,16 @@ func _add_decor_sprite(texture_path: String, region: Rect2, cell: Vector2i, h: i
 ## Door signs float above the world, outside the y-sort.
 func _build_props(data: MapData) -> Node2D:
 	var root := Node2D.new()
+	door_signs = []
+	if ShopSign.available():
+		# Hanging boards with the trade's icon; the name rises on approach.
+		for sign_def: Dictionary in Interactables.signs_on(data.id, GameState.owns_house()):
+			var door := Vector2i(int(sign_def["x"]), int(sign_def["y"]))
+			var target: Dictionary = data.portals.get(door, {})
+			root.add_child(ShopSign.build(sign_def["label"], door))
+			var told := ShopSign.about(sign_def["label"], String(target.get("mapId", "")), GameState.owns_house())
+			door_signs.append({"door": door, "name": told["name"], "about": told["about"]})
+		return root
 	for sign_def: Dictionary in Interactables.signs_on(data.id, GameState.owns_house()):
 		var door := Vector2(int(sign_def["x"]) * TILE + TILE / 2.0, int(sign_def["y"]) * TILE)
 		# A wooden shop board over the door, in the web's sign wood: the name
@@ -1112,6 +1128,21 @@ func _build_hud() -> void:
 	GameState.healed.connect(func() -> void: player.heal())
 	GameState.ranked_up.connect(_ascend)
 	GameState.settlers_changed.connect(_respawn_npcs)
+	nameplate = PanelContainer.new()
+	nameplate.add_theme_stylebox_override("panel", UiStyle.window(8))
+	nameplate.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	nameplate.visible = false
+	var lines := VBoxContainer.new()
+	lines.add_theme_constant_override("separation", 0)
+	lines.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	nameplate.add_child(lines)
+	var title := UiStyle.strong("", 16, UiStyle.LAMP)
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lines.add_child(title)
+	var keeper := UiStyle.label("", 12, UiStyle.INK)
+	keeper.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lines.add_child(keeper)
+	hud.add_child(nameplate)
 	message_label = Label.new()
 	message_label.position = Vector2(190, 610)
 	message_label.custom_minimum_size = Vector2(900, 0)
@@ -1126,6 +1157,39 @@ func _build_hud() -> void:
 	message_label.add_theme_constant_override("outline_size", 6)
 	message_label.modulate.a = 0.0
 	hud.add_child(message_label)
+
+## The nameplate of the sign the hero stands near (two tiles or so): the
+## place's name and who keeps it, over the board, in the UI's window style.
+func _update_nameplate() -> void:
+	var near := {}
+	var best := 2.6 * TILE
+	for entry: Dictionary in door_signs:
+		var at := Vector2(entry["door"] * TILE) + Vector2(TILE / 2.0, TILE / 2.0)
+		var distance := player.position.distance_to(at)
+		if distance < best:
+			best = distance
+			near = entry
+	if near.is_empty():
+		if nameplate.visible and nameplate_door != Vector2i(-1, -1):
+			nameplate_door = Vector2i(-1, -1)
+			var fade := nameplate.create_tween()
+			fade.tween_property(nameplate, "modulate:a", 0.0, 0.15)
+			fade.tween_callback(nameplate.hide)
+		return
+	if near["door"] != nameplate_door:
+		nameplate_door = near["door"]
+		(nameplate.get_child(0).get_child(0) as Label).text = near["name"]
+		(nameplate.get_child(0).get_child(1) as Label).text = near["about"]
+		nameplate.get_child(0).get_child(1).visible = near["about"] != ""
+		nameplate.reset_size()
+		nameplate.show()
+		nameplate.modulate.a = 1.0 if GameState.settings.reduce_motion else 0.0
+		if not GameState.settings.reduce_motion:
+			nameplate.create_tween().tween_property(nameplate, "modulate:a", 1.0, 0.15)
+	# Over the board, wherever the camera has the door on screen.
+	var top := Vector2(nameplate_door.x * TILE + TILE / 2.0, nameplate_door.y * TILE - ShopSign.BOARD.y - 10)
+	var screen := get_viewport().get_canvas_transform() * top
+	nameplate.position = (screen - Vector2(nameplate.size.x / 2.0, nameplate.size.y)).round()
 
 ## A line for the hero, held long enough to read (quests say a lot).
 func _flash_message(text: String) -> void:
