@@ -11,6 +11,69 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.71.0",
+    date: "2026-10-07",
+    codename: "Steady Steps",
+    notes: [
+      "WALKING IS SHARP AGAIN: the camera used to chase the hero a beat behind and shake them a pixel back and forth every frame - it now eases to exactly where the hero is drawn and stands on whole screen pixels",
+      "SMOOTH ON FAST SCREENS: heroes, monsters and villagers glide between physics steps on 120 Hz displays instead of moving every other frame; doors and the inn still cut cleanly",
+      "EVEN PIXELS: the zoom fits your window so every art pixel is a whole number of screen pixels - no more uneven columns shimmering as the world scrolls",
+    ],
+  },
+  {
+    version: "0.70.0",
+    date: "2026-10-07",
+    codename: "Timber and Plaster",
+    notes: [
+      "THE TOWN, REBUILT: every house in Pixelheim is now one of Shade's medieval cottages - gabled roofs in terracotta, golden thatch, moss or slate, timber-framed walls, windows and chimneys - in every age of the town",
+      "ROOMS WORTH ENTERING: plank floors and rugs, plaster walls with windows, and real furniture - beds, bread ovens, the smithy's furnace and anvils, Vex's bubbling pot, bottle cabinets, planters and trophy shields",
+      "SIGNS YOU CAN READ FROM THE ROAD: a carved board hangs on chains over every door, painted with its trade - cheese, tankard, anvil, brewing pot, ledger, key - and the place's name and keeper rise as you walk up",
+      "A lost fight still wakes you tucked into the inn's bed",
+    ],
+  },
+  {
+    version: "0.69.0",
+    date: "2026-10-07",
+    codename: "A Game's Face",
+    notes: [
+      "A NEW LOOK FOR EVERY SCREEN: pixel-art windows on the title's night sky, pixel fonts drawn at whole sizes, gold for whatever has focus, keycaps for every key",
+      "A HERO PLATE: your portrait, pixel bars for health, mana and experience, your gold, and each screen one click or key away",
+      "CONVERSATIONS WITH FACES: the speaker's portrait, a gold name tab, and the keys that move it on",
+      "A MAP IN A FRAME: unexplored ground shows as night, waypoints as cards you can travel from",
+      "The title menu and the saves screen sit in the middle of the screen, however long your hero's name",
+    ],
+  },
+  {
+    version: "0.68.0",
+    date: "2026-10-07",
+    codename: "Let Me Go",
+    notes: [
+      "CONVERSATIONS LET YOU GO: E on the last line used to start the talk all over again, and Esc opened the pause menu behind it - now E reads on and closes, Esc or a step leaves at any line, and a click turns the page",
+      "Space no longer swings your sword as you close a conversation, and I closes the pack for good",
+    ],
+  },
+  {
+    version: "0.67.0",
+    date: "2026-10-06",
+    codename: "Checked and Loaded",
+    notes: [
+      "A LOADING SCREEN THAT IS THE GAME: the web build loads behind the title's own night sky, with the bar where the menu will appear",
+      "YOUR WEB HERO, TO THE LETTER: a hero brought over from the classic edition saves back exactly as the web game would write it, however far they have come",
+      "OPTIONS FROM THE TITLE: set sound and keys before you make a hero",
+    ],
+  },
+  {
+    version: "0.66.0",
+    date: "2026-10-06",
+    codename: "A New Engine",
+    notes: [
+      "PIXELHEIM MOVES TO GODOT: the game at the address you know now runs on the Godot engine - the React edition lives on as the classic edition, one click from the title, and your hero comes across from the saves screen",
+      "ONE ARTIST, ONE WORLD: hero, villagers, monsters, terrain and dungeons are all Shade's Puny art now",
+      "REAL-TIME FIGHTS: monsters prowl in packs and hunt you, and you swing and cast as you move - on the same numbers as ever",
+      "EVERYTHING CAME ALONG: quests and the journal, ranks and paths, the skill trees, the codex, the shops and crafting, the bank, the house and the town's growth, the score and the weather",
+    ],
+  },
+  {
     version: "0.65.0",
     date: "2026-07-22",
     codename: "Bed Rest",

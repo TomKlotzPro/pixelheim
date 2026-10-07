@@ -176,9 +176,18 @@ func _card() -> void:
 	options.append({"label": "Classic edition", "action": _classic})
 	_draw_menu()
 	var version: String = SaveCodec.parse_json(FileAccess.get_file_as_string("res://assets/data/meta.json"))["version"]
-	footer = UiStyle.label("v%s - a retro RPG, now in Godot" % version, 13, UiStyle.FADED, Vector2(0, 690))
+	# The version line opens What's new (the web's changelog link).
+	footer = UiStyle.label("v%s - a retro RPG, now in Godot  ·  What's new" % version, 13, UiStyle.FADED, Vector2(0, 690))
 	footer.custom_minimum_size = Vector2(VIEW.x, 0)
 	footer.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	footer.mouse_filter = Control.MOUSE_FILTER_STOP
+	footer.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	footer.mouse_entered.connect(func() -> void: footer.add_theme_color_override("font_color", UiStyle.LAMP))
+	footer.mouse_exited.connect(func() -> void: footer.add_theme_color_override("font_color", UiStyle.FADED))
+	footer.gui_input.connect(func(event: InputEvent) -> void:
+		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+			_whats_new()
+	)
 	add_child(footer)
 
 
@@ -243,6 +252,11 @@ func _new_game() -> void:
 func _saves() -> void:
 	_leave()
 	world._open_saves()
+
+
+## Every release's notes, over the title (Esc hands back).
+func _whats_new() -> void:
+	add_child(preload("res://scripts/changelog_screen.gd").new())
 
 
 ## Options over the title, so sound and keys can be set before a hero

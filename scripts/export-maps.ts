@@ -8,6 +8,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { CHANGELOG, GAME_VERSION } from "../src/app/changelog";
 import { ITEMS } from "../src/game/economy/items";
 import { JOB_LEVEL_CAP, JOB_STATIONS } from "../src/game/economy/jobs";
 import { RARITIES } from "../src/game/economy/rarity";
@@ -255,8 +256,10 @@ emit(
 // the recruits who wait in the wilds until they move to town (PIX-92).
 emit("npcs.json", { npcs: NPCS, recruits: RECRUITS }, DATA_OUT);
 
-// The game's version, for the title screen.
-emit("meta.json", { version: JSON.parse(readFileSync(path.join(ROOT, "package.json"), "utf8")).version }, DATA_OUT);
+// The game's version, for the title screen, and its release notes for the
+// "What's new" screen: the changelog is the one source of both.
+emit("meta.json", { version: GAME_VERSION }, DATA_OUT);
+emit("changelog.json", { releases: CHANGELOG }, DATA_OUT);
 
 // The long game (PIX-125): the villagers' quests and the hero's rank titles.
 emit("progression.json", { quests: QUESTS, rankTitles: RANK_TITLES, rankAuras: RANK_AURAS }, DATA_OUT);

@@ -5,7 +5,11 @@ description: Pixelheim's Godot 4.7 port (godot/) - how data flows from the web g
 
 # Pixelheim in Godot
 
-The React/Pixi web game (`src/`) is being ported to Godot 4.7 (`godot/`), one Linear phase at a time (project "Godot Migration"). Until the web build is sunset, **the web code is the source of truth for data and rules**; Godot ports them and proves the port with tests.
+Pixelheim is a Godot 4.7 game (`godot/`), live at the Pages root since PIX-129. The React/Pixi game it grew from (`src/`) is **the classic edition: frozen, bug fixes only** (Tom's call, 2026-10-07), still playable at `/classic/`.
+
+- **Godot owns the rules now.** New features and rule changes are made in GDScript, not ported from `src/`.
+- **`src/` is still the source of the *data*** (maps, items, roles, quests...) through `pnpm godot:sync`, until that data moves into `godot/`. Changing the data there changes both editions.
+- **Releases:** add an entry at the top of `src/app/changelog.ts` (newest first, the classic CAPS-lead style). Its version is the game's version in both editions (`meta.json` and the What's new screen come from it via `pnpm godot:sync`); bump `package.json` to match. Mirror each release in the Linear document "Changelog" (project Godot Migration). Keep `README.md` current with what the game does.
 
 ## Data flows one way: web → Godot
 
