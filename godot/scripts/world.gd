@@ -12,8 +12,6 @@ const LOG_LINES := 5
 const LOG_SECONDS := 4.0
 ## The dark under the mountain, whatever the hour above.
 const DUNGEON_GLOOM := Color(0.04, 0.02, 0.08, 0.28)
-## The device id the harness stamps on the keys it presses (`--keys`).
-const HARNESS_DEVICE := 77
 ## Fight music holds this long after the last hunter gives up.
 const COMBAT_LINGER_S := 3.0
 
@@ -84,9 +82,9 @@ func _ready() -> void:
 	harness = args.has("--screenshot")
 	if harness:
 		# The harness window opens on the desktop of someone who may be typing
-		# elsewhere: it doesn't take the keyboard (and _input drops anything but
-		# the harness's own presses), and it stays on top, because macOS stops
-		# drawing a covered window and the run would never reach its screenshot.
+		# elsewhere: it doesn't take the keyboard (and harness.gd drops anything
+		# but its own presses), and it stays on top, because macOS stops drawing
+		# a covered window and the run would never reach its screenshot.
 		DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_NO_FOCUS, true)
 		DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_ALWAYS_ON_TOP, true)
 	GameState.boot(args)
@@ -148,10 +146,6 @@ func _open_title() -> void:
 	var title := preload("res://scripts/title_screen.gd").new()
 	title.world = self
 	add_child(title)
-
-func _input(event: InputEvent) -> void:
-	if harness and event.device != HARNESS_DEVICE:
-		get_viewport().set_input_as_handled()
 
 ## Keys arrive as events, never polled: a key a conversation or a menu
 ## already took (E on the last line, Esc to leave, I to close the pack) stops

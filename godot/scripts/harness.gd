@@ -7,11 +7,29 @@ extends Node
 ## [--walk l,d,r,u,...] [--web-save <file>] ...`. Every flag is documented in
 ## godot/README.md; the release flows (tools/flows.sh) drive it.
 
+## The device id the harness stamps on the keys it presses (`--keys`).
+const DEVICE := 77
+
 var world: Node
 
 
 func _ready() -> void:
 	_run_test_harness()
+
+
+## Keys from anyone but the harness are dropped, paused or not: the window
+## opens on the desktop of someone who may be typing elsewhere, and a stray D
+## would walk the hero or close a conversation mid-shot. (The world used to
+## filter, but a paused world hears nothing, so a conversation took them.)
+## The Input singleton has already counted the key, so its actions are let
+## go too, or movement, which reads them, would still walk.
+func _input(event: InputEvent) -> void:
+	if event.device == DEVICE:
+		return
+	get_viewport().set_input_as_handled()
+	for action: StringName in InputMap.get_actions():
+		if event.is_action(action, true):
+			Input.action_release(action)
 
 
 ## A harness key press, as a player's would land: the Input singleton's
@@ -23,7 +41,7 @@ func _press(keycode: Key, pressed: bool) -> void:
 	event.physical_keycode = keycode
 	event.keycode = keycode
 	event.pressed = pressed
-	event.device = world.HARNESS_DEVICE
+	event.device = DEVICE
 	for action: StringName in InputMap.get_actions():
 		if InputMap.event_is_action(event, action, true):
 			if pressed:
