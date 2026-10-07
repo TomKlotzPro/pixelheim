@@ -801,7 +801,7 @@ func _treasure_texture(chest: Dictionary, opened: bool) -> Texture2D:
 ## One of Shade's props among the actors (PunyProps): sorted on the bottom of
 ## its foot, so the hero passes behind it from the north and in front from
 ## the south, with a body exactly where the foot is.
-func _add_puny_prop(prop: Dictionary) -> void:
+func _add_puny_prop(prop: Dictionary) -> Node2D:
 	var foot: Rect2 = prop["foot"]
 	var sort_y := foot.end.y if foot.has_area() else float(TILE)
 	var root := Node2D.new()
@@ -842,6 +842,7 @@ func _add_puny_prop(prop: Dictionary) -> void:
 		body.add_child(shape)
 		root.add_child(body)
 	actors.add_child(root)
+	return root
 
 func _add_prop_sprite(sheet: String, region: Rect2, cell: Vector2i) -> void:
 	var atlas := AtlasTexture.new()
@@ -1008,6 +1009,9 @@ func _build_furniture() -> void:
 	for placed: Dictionary in GameState.furniture():
 		var item_id: String = placed["itemId"]
 		var cell := Vector2i(placed["x"], placed["y"])
+		if PunyTown.available() and PunyInterior.PLACED.has(item_id):
+			_place_puny_furniture(item_id, cell)
+			continue
 		var sprite := Sprite2D.new()
 		sprite.texture = load("res://assets/sprites/%s.png" % Catalog.item(item_id)["sprite"])
 		sprite.position = _cell_center(cell)
@@ -1032,6 +1036,28 @@ func _build_furniture() -> void:
 			body.add_to_group("furniture")
 			body.add_to_group("decor")
 			actors.add_child(body)
+
+## A piece the hero placed, in Shade's furniture (PunyInterior.PLACED): the
+## rug on the floor under everyone, the rest standing on their cell like any
+## prop, a whole cell their foot.
+func _place_puny_furniture(item_id: String, cell: Vector2i) -> void:
+	var tiles: Array = PunyInterior.PLACED[item_id]
+	if not Town.furniture_blocks(item_id):
+		for piece: Array in tiles:
+			var rug := Sprite2D.new()
+			rug.texture = PunyProps.texture(piece[1])
+			rug.centered = false
+			rug.position = Vector2((cell + piece[0]) * TILE)
+			rug.add_to_group("furniture")
+			ground.add_child(rug)
+		return
+	var root := _add_puny_prop({
+		"kind": item_id, "cell": cell, "tiles": tiles, "sheet": "medieval", "frames": [],
+		"foot": Rect2(0, 0, TILE, TILE), "covers": [cell],
+	})
+	root.add_to_group("furniture")
+	furniture_cells.append(cell)
+	map.covered[cell] = true
 
 func _open_shop() -> void:
 	add_child(preload("res://scripts/shop_screen.gd").new())

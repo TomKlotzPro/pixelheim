@@ -37,6 +37,17 @@ const FURNITURE := {
 	"trophy_shelf": [[Vector2i(0, 0), 1904]],
 	"garden": [[Vector2i(0, 0), 1242]],
 }
+## The furniture the hero buys and places at home, by item: [[offset from
+## its cell, tile]]. A bookshelf rises a cell above its own; the banner
+## hangs from a post.
+const PLACED := {
+	"furn_rug": [[Vector2i(0, 0), 10248]],
+	"furn_plant": [[Vector2i(0, 0), 1235]],
+	"furn_bookshelf": [[Vector2i(0, -1), 3215], [Vector2i(0, 0), 3435]],
+	"furn_banner": [[Vector2i(0, -1), 9373], [Vector2i(0, 0), 3199]],
+	"furn_candles": [[Vector2i(0, 0), 808]],
+	"furn_bench": [[Vector2i(0, 0), 1659]],
+}
 ## Runs of these draw as one piece with ends: [left end, middle, right end].
 const RUNS := {
 	"counter": [5180, 5181, 5182],
