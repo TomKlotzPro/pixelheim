@@ -52,12 +52,14 @@ static func is_room(map_id: String) -> bool:
 
 ## {"floor": {cell: tile}, "pieces": {cell: tile} (walls, door, furniture),
 ## "void": [cells] (wall beyond the room), "blocked": [cells] (floor the
-## furniture now covers)}.
+## furniture now covers), "over": {cell: web tile} (the furniture drawn over
+## a cell beyond its own, a bed's foot included)}.
 static func plan(map_id: String, grid: Dictionary) -> Dictionary:
 	var floor := {}
 	var pieces := {}
 	var beyond: Array[Vector2i] = []
 	var blocked: Array[Vector2i] = []
+	var over := {}
 	var stone := map_id == "town_smith"
 	# Doors stand in the wall line, so they are not room.
 	var inside := func(cell: Vector2i) -> bool:
@@ -116,11 +118,13 @@ static func plan(map_id: String, grid: Dictionary) -> Dictionary:
 			for part: Array in FURNITURE[tile]:
 				var at: Vector2i = cell + part[0]
 				pieces[at] = part[1]
+				if at != cell:
+					over[at] = tile
 				# Furniture spreading onto open floor blocks it, but a bed's
 				# foot stays walkable: the inn wakes its guests there.
 				if at != cell and tile != "bed" and grid.get(at, "") == "floor":
 					blocked.append(at)
-	return {"floor": floor, "pieces": pieces, "void": beyond, "blocked": blocked}
+	return {"floor": floor, "pieces": pieces, "void": beyond, "blocked": blocked, "over": over}
 
 
 ## A rug down the middle of the open floor in the inn, the house and the hall.

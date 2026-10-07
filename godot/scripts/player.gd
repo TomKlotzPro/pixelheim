@@ -43,6 +43,8 @@ var art: Dictionary
 var aura: Sprite2D
 
 func _ready() -> void:
+	# Top-down: no floor, no walls by angle, just slide along what blocks.
+	motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
 	hp = GameState.hero.hp
 	art = PunyArt.hero(GameState.hero.role_id, GameState.hero.look)
 	aura = Sprite2D.new()

@@ -34,11 +34,16 @@ func _ready() -> void:
 	sprite.frame = Npcs.id_hash(data["id"]) % 2
 	add_child(sprite)
 
+	# The body is the villager's feet and the ground before them, so the hero,
+	# whose box is only their feet, stops a step away instead of standing half
+	# inside them (from the south the hero's sprite covered the villager's).
+	# It ends 6 px into the cell below: the hero, standing there to talk or
+	# walking past along that row, clears it by a pixel.
 	var shape := CollisionShape2D.new()
 	var rect := RectangleShape2D.new()
-	rect.size = Vector2(12, 10)
+	rect.size = Vector2(12, 17)
 	shape.shape = rect
-	shape.position = Vector2(0, 2)
+	shape.position = Vector2(0, 5.5)
 	add_child(shape)
 
 
