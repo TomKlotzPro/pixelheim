@@ -6,7 +6,7 @@
 
 <p align="center">
   <b>A retro pixel-art open-world RPG in Godot 4.7: one hero, one village, fifteen floors of a mountain and what lies under it.</b><br />
-  Fifteen floors. Two bosses. Infinite cheese wheels. Currently v0.72 - 1.0 has to be earned.
+  Fifteen floors. Two bosses. Infinite cheese wheels. Currently v0.73 - 1.0 has to be earned.
 </p>
 
 ---
@@ -32,6 +32,7 @@ You wake in Pixelheim village, in an open world called **the Ashenreach**: walk 
 - **Crafting** at the forge, the cauldron and your own workbench; foraging in the wilds
 - **Music, stingers and weather** for every place, rendered from the game's own chiptune synth
 - **Saves that never break**: three slots, autosave, save codes, and heroes brought over from the classic edition byte for byte
+- **A UI like a village ledger**: parchment pages in carved wooden frames, a wooden dock along the bottom with your bars, skills and gold, and screens that ease in with the sound of turning paper
 - **Comfort**: rebindable keys, gamepad, options from the title, reduced motion, CRT scanlines, a fog-of-war map with fast travel
 
 | The village                                | Inside                          |

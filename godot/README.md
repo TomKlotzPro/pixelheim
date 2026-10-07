@@ -95,6 +95,8 @@ godot --path godot -- --screenshot --map town portal  # walk into the nearest do
 godot --path godot -- --screenshot die                # fall, then wake at the inn
 godot --path godot -- --screenshot title splash       # the title as the boot splash
 godot --path godot -- --screenshot title options     # options over the title, before any hero
+godot --path godot -- --screenshot title --wait 2.5    # hold the shot (the title's logo still dropping in)
+godot --path godot -- --screenshot dockmenu           # the dock's menu of screens, open
 ```
 
 The final `print` line reports current map id, hero cell, HP and gold for assertions.
