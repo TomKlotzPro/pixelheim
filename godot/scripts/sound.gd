@@ -72,6 +72,69 @@ func _stream(path: String) -> AudioStreamWAV:
 	return _streams[path]
 
 
+## The pages' own sounds (PIX-138): a swish of paper as a screen opens, a
+## pen's tick as a choice moves, a soft fall as it closes. Made here, not in
+## the web synth (the classic edition is frozen), in its chiptune voice:
+## [seconds, wave, from Hz, to Hz, volume] per blip, played in turn.
+const UI_SOUNDS := {
+	"open": [[0.05, "noise", 0.0, 0.0, 0.10], [0.05, "triangle", 660.0, 880.0, 0.10]],
+	"tick": [[0.025, "square", 1320.0, 1320.0, 0.05]],
+	"close": [[0.07, "triangle", 620.0, 360.0, 0.10]],
+}
+const UI_RATE := 22050
+
+
+## One of the pages' sounds (open, tick, close).
+func play_ui(name: String) -> void:
+	if not UI_SOUNDS.has(name):
+		return
+	var key := "ui:" + name
+	if not _streams.has(key):
+		_streams[key] = _synth(UI_SOUNDS[name])
+	for voice in _voices:
+		if not voice.playing:
+			voice.stream = _streams[key]
+			voice.play()
+			return
+
+
+## Blips to 16-bit mono PCM, each fading out as it ends.
+static func _synth(blips: Array) -> AudioStreamWAV:
+	var data := PackedByteArray()
+	var noise := RandomNumberGenerator.new()
+	noise.seed = 7
+	for blip: Array in blips:
+		var count := int(float(blip[0]) * UI_RATE)
+		var phase := 0.0
+		for i in count:
+			var t := float(i) / count
+			var freq: float = lerpf(blip[2], blip[3], t)
+			phase = fmod(phase + freq / UI_RATE, 1.0)
+			var wave := 0.0
+			match String(blip[1]):
+				"square": wave = 1.0 if phase < 0.5 else -1.0
+				"triangle": wave = 4.0 * absf(phase - 0.5) - 1.0
+				"noise": wave = noise.randf_range(-1.0, 1.0)
+			var sample := int(clampf(wave * float(blip[4]) * (1.0 - t), -1.0, 1.0) * 32767.0)
+			data.append(sample & 0xFF)
+			data.append((sample >> 8) & 0xFF)
+	var stream := AudioStreamWAV.new()
+	stream.format = AudioStreamWAV.FORMAT_16_BITS
+	stream.mix_rate = UI_RATE
+	stream.data = data
+	return stream
+
+
+## While a screen holds the game (the tree is paused), moving the choice ticks.
+func _input(event: InputEvent) -> void:
+	if not get_tree().paused or not event.is_pressed() or event.is_echo():
+		return
+	for action: String in ["move_up", "move_down", "move_left", "move_right"]:
+		if event.is_action_pressed(action):
+			play_ui("tick")
+			return
+
+
 ## A stinger by the web's name (SFX.hit, SFX.coin...).
 func play(sfx: String) -> void:
 	if not _doc["stingers"].has(sfx):

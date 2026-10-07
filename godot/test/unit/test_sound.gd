@@ -46,3 +46,21 @@ func test_music_loops_its_whole_render() -> void:
 	assert_eq(stream.loop_mode, AudioStreamWAV.LOOP_FORWARD)
 	assert_gt(stream.loop_end, 0)
 	Sound.stop_music()
+
+
+func test_the_pages_sounds_are_short_audible_blips() -> void:
+	var script := preload("res://scripts/sound.gd")
+	for name: String in script.UI_SOUNDS:
+		var stream: AudioStreamWAV = script._synth(script.UI_SOUNDS[name])
+		var seconds := 0.0
+		var samples := 0
+		for blip: Array in script.UI_SOUNDS[name]:
+			seconds += float(blip[0])
+			samples += int(float(blip[0]) * script.UI_RATE)
+		assert_eq(stream.data.size(), samples * 2, "%s: 16-bit mono, every blip in turn" % name)
+		assert_lt(seconds, 0.15, "%s stays a blip" % name)
+		var loud := 0
+		for i in range(0, stream.data.size(), 2):
+			var sample := stream.data.decode_s16(i)
+			loud = maxi(loud, absi(sample))
+		assert_gt(loud, 1000, "%s can be heard" % name)
