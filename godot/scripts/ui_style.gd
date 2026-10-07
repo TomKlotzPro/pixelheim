@@ -247,13 +247,18 @@ static func arrow() -> TextureRect:
 
 ## A screen's key footer from its hint line, "Esc  close      W/S  choose":
 ## commands apart by four spaces or more, each a key, two spaces, what it does.
-static func footer(line: String, at: Vector2) -> HBoxContainer:
+## `centered` spreads it across the screen's middle (at.x is ignored).
+static func footer(line: String, at: Vector2, centered := false) -> HBoxContainer:
 	var pairs := []
 	for command in RegEx.create_from_string(" {4,}").sub(line.strip_edges(), "\t", true).split("\t"):
 		var cut := command.find("  ")
 		pairs.append_array([command.substr(0, cut).strip_edges(), command.substr(cut).strip_edges()] if cut > 0 else ["", command])
 	var row := hints(pairs)
 	row.position = at
+	if centered:
+		row.position.x = 0
+		row.custom_minimum_size = Vector2(1280, 0)
+		row.alignment = BoxContainer.ALIGNMENT_CENTER
 	return row
 
 

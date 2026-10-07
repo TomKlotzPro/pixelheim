@@ -6,6 +6,7 @@ extends CanvasLayer
 ## world while open; switching heroes reloads the world scene.
 
 const PORTRAIT := Rect2(8, 6, 16, 20)  # hero body within a 32px Puny idle frame
+const WINDOW := Vector2(1080, 0)
 
 ## A save found in this browser's web game (or passed in by the harness).
 var web_save := {}
@@ -31,73 +32,113 @@ func _ready() -> void:
 	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(backdrop)
 
-	add_child(UiStyle.heading("Saves", 20, UiStyle.INK, Vector2(80, 32)))
+	# One window in the middle of the screen: the slots on the left, the way
+	# across from the web game on the right, what just happened underneath.
+	var middle := CenterContainer.new()
+	middle.set_anchors_preset(Control.PRESET_FULL_RECT)
+	middle.offset_bottom = -48  # clear of the key footer
+	add_child(middle)
+	var stack := VBoxContainer.new()
+	stack.add_theme_constant_override("separation", 18)
+	middle.add_child(stack)
+	var title := UiStyle.heading("Saves", 20, UiStyle.INK)
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	stack.add_child(title)
+	var window := PanelContainer.new()
+	window.custom_minimum_size = Vector2(WINDOW.x, 0)
+	window.add_theme_stylebox_override("panel", UiStyle.window(22))
+	stack.add_child(window)
+	var body := VBoxContainer.new()
+	body.add_theme_constant_override("separation", 16)
+	window.add_child(body)
+	var columns := HBoxContainer.new()
+	columns.add_theme_constant_override("separation", 32)
+	body.add_child(columns)
+
+	var left := VBoxContainer.new()
+	left.add_theme_constant_override("separation", 10)
+	left.custom_minimum_size = Vector2(560, 0)
+	columns.add_child(left)
 	for index in SaveSlots.SLOT_COUNT:
 		var card := PanelContainer.new()
-		card.position = Vector2(80, 88 + index * 112)
-		card.custom_minimum_size = Vector2(600, 100)
+		card.custom_minimum_size = Vector2(560, 96)
 		card.gui_input.connect(_on_card_input.bind(index))
-		add_child(card)
+		left.add_child(card)
 		cards.append(card)
-
 	var actions := HBoxContainer.new()
-	actions.position = Vector2(80, 432)
-	actions.add_theme_constant_override("separation", 12)
+	actions.add_theme_constant_override("separation", 10)
 	actions.add_child(UiStyle.button("E  Play", _play))
 	actions.add_child(UiStyle.button("N  New hero", _new_hero))
 	actions.add_child(UiStyle.button("X  Clear slot", _clear))
-	add_child(actions)
+	left.add_child(actions)
 
-	add_child(UiStyle.label("From the web game", 18, UiStyle.INK, Vector2(760, 88)))
+	var right := VBoxContainer.new()
+	right.add_theme_constant_override("separation", 10)
+	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	columns.add_child(right)
+	var web := PanelContainer.new()
+	web.add_theme_stylebox_override("panel", UiStyle.box(UiStyle.CARD, UiStyle.LAMP if welcome else UiStyle.RIM, 10))
+	right.add_child(web)
+	var web_lines := VBoxContainer.new()
+	web_lines.add_theme_constant_override("separation", 8)
+	web.add_child(web_lines)
+	web_lines.add_child(UiStyle.strong(
+		"Welcome back" if welcome else "From the web game", 16, UiStyle.LAMP if welcome else UiStyle.INK
+	))
 	if web_save.is_empty():
 		var hint := (
 			"No web game save in this browser." if OS.has_feature("web")
 			else "Copy your save code from Options in the web game, then paste it below."
 		)
-		var none := UiStyle.label(hint, 14, UiStyle.FADED, Vector2(760, 122))
-		none.custom_minimum_size = Vector2(440, 0)
+		var none := UiStyle.label(hint, 14, UiStyle.FADED)
 		none.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		add_child(none)
+		web_lines.add_child(none)
 	else:
 		var found := UiStyle.label(
-			"%s, %d gold" % [WebImport.describe(web_save), web_save["gold"]], 14, UiStyle.INK, Vector2(760, 122)
+			"Your web game hero %s, %d gold." % [WebImport.describe(web_save), web_save["gold"]], 14, UiStyle.INK
 		)
-		add_child(found)
+		found.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		web_lines.add_child(found)
 		bring_button = UiStyle.button("", _bring)
-		bring_button.position = Vector2(760, 150)
 		if welcome:
 			# The one thing a first visit is for: make it the brightest control.
-			bring_button.add_theme_stylebox_override("normal", UiStyle.box(UiStyle.CARD, UiStyle.LAMP))
+			bring_button.add_theme_stylebox_override("normal", UiStyle.box(UiStyle.CARD, UiStyle.LAMP, 6))
 			bring_button.add_theme_color_override("font_color", UiStyle.LAMP)
-		add_child(bring_button)
+		web_lines.add_child(bring_button)
 
-	add_child(UiStyle.label("Save code", 18, UiStyle.INK, Vector2(760, 240)))
+	var code := PanelContainer.new()
+	code.add_theme_stylebox_override("panel", UiStyle.box(UiStyle.CARD, UiStyle.RIM, 10))
+	right.add_child(code)
+	var code_lines := VBoxContainer.new()
+	code_lines.add_theme_constant_override("separation", 8)
+	code.add_child(code_lines)
+	code_lines.add_child(UiStyle.strong("Save code", 16, UiStyle.INK))
 	code_field = LineEdit.new()
 	code_field.placeholder_text = "Paste a save code"
-	code_field.position = Vector2(760, 274)
-	code_field.custom_minimum_size = Vector2(440, 0)
 	code_field.add_theme_color_override("font_color", UiStyle.INK)
-	code_field.add_theme_stylebox_override("normal", UiStyle.box(UiStyle.CARD, UiStyle.RIM))
-	code_field.add_theme_stylebox_override("focus", UiStyle.box(UiStyle.CARD, UiStyle.LAMP))
+	code_field.add_theme_stylebox_override("normal", UiStyle.box(UiStyle.WINDOW, UiStyle.RIM, 6))
+	code_field.add_theme_stylebox_override("focus", UiStyle.box(UiStyle.WINDOW, UiStyle.LAMP, 6))
 	code_field.text_submitted.connect(func(_text: String) -> void: _load_code())
-	add_child(code_field)
+	code_lines.add_child(code_field)
+	var code_actions := HBoxContainer.new()
+	code_actions.add_theme_constant_override("separation", 10)
 	load_button = UiStyle.button("", _load_code)
-	load_button.position = Vector2(760, 318)
-	add_child(load_button)
-	var copy := UiStyle.button("C  Copy this hero's code", _copy)
-	copy.position = Vector2(760, 372)
-	add_child(copy)
+	code_actions.add_child(load_button)
+	code_actions.add_child(UiStyle.button("C  Copy mine", _copy))
+	code_lines.add_child(code_actions)
 
-	status = UiStyle.label("", 14, UiStyle.LAMP, Vector2(80, 496))
-	status.custom_minimum_size = Vector2(1120, 0)
+	status = UiStyle.label("", 14, UiStyle.LAMP)
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	add_child(status)
-	var keys := UiStyle.footer("Esc  close      W/S  choose      E  play      N  new hero      X  clear      P  paste      C  copy", Vector2(80, 660))
-	add_child(keys)
+	status.custom_minimum_size = Vector2(WINDOW.x - 44, 0)
+	body.add_child(status)
+	add_child(UiStyle.footer(
+		"Esc  close      W/S  choose      E  play      N  new hero      X  clear      P  paste      C  copy",
+		Vector2(0, 664), true
+	))
 
 	if welcome:
 		status.text = (
-			"Found %s, in this browser's web game. Press B to bring them here, or Esc to start a new hero."
+			"Found %s in this browser's web game. Press B to bring them here, or Esc to start a new hero."
 			% WebImport.describe(web_save)
 		)
 	_refresh()
@@ -273,7 +314,7 @@ func _fill_card(card: PanelContainer, index: int) -> void:
 		))
 		lines.add_child(UiStyle.label("%d gold, saved %s" % [summary["gold"], _ago(summary["savedAt"])], 14, UiStyle.FADED))
 
-	var tag := UiStyle.label("Playing" if index + 1 == GameState.slot else "Slot %d" % (index + 1), 14,
+	var tag := UiStyle.label("Playing" if index + 1 == GameState.slot else "Slot %d" % (index + 1), 12,
 		UiStyle.LAMP if index + 1 == GameState.slot else UiStyle.FADED)
 	tag.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	row.add_child(tag)
