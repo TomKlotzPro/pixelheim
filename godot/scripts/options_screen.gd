@@ -22,7 +22,7 @@ func _ready() -> void:
 	backdrop.color = UiStyle.BACKDROP
 	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(backdrop)
-	add_child(UiStyle.heading("Options", 20, UiStyle.INK, Vector2(80, 24)))
+	add_child(UiStyle.heading("Options", 20, UiStyle.CREAM, Vector2(80, 24)))
 	var card := PanelContainer.new()
 	card.position = Vector2(80, 70)
 	card.custom_minimum_size = Vector2(1120, 560)

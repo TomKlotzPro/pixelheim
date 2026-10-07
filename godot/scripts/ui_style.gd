@@ -1,9 +1,11 @@
 class_name UiStyle
-## The game's one look (PIX-132): retro RPG windows on the title's night. A
-## deep navy fill inside a cream frame with a dark outline and a bevel, cards
-## and rows in a lighter navy with a periwinkle rim, gold for whatever has
-## focus. Every frame is pixel art drawn here from the palette at 1x and shown
-## at UI_SCALE, so the chrome sits on a pixel grid like the world does.
+## The game's one look (PIX-138): pages of a village ledger. Parchment in a
+## carved wooden frame with brass studs at the corners, in the wood of the
+## shop signs; rows and slots inked onto the page; brown-black ink for text
+## and rubric red, the scribes' red, for whatever has focus. Around the
+## windows the world dims to a warm dark where text is cream and focus gold.
+## Every frame is pixel art drawn here from the palette at 1x and shown at
+## UI_SCALE, so the chrome sits on a pixel grid like the world does.
 ## Type, all pixel fonts rendered at their own size and scaled by whole
 ## numbers only, so nothing is ever smoothed: below 16 a screen asks for dense
 ## text (rows, descriptions, hints) and gets Pixel Operator at 1x; 16 and up
@@ -17,16 +19,34 @@ const UI_SCALE := 2
 const BODY_PX := 16
 const HEADING_PX := 8
 
-const NIGHT := Color("0e1024")
-const BACKDROP := Color(0.035, 0.04, 0.1, 0.93)
-const WINDOW := Color("1f2347")
-const CARD := Color("2a2f5c")
-const RIM := Color("5a62a0")
-const FRAME := Color("eadfc2")
-const BEVEL := Color("8f8cb8")
-const LAMP := Color("ffd94d")
-const INK := Color("f6f0de")
-const FADED := Color("a9acd3")
+## The dark: outlines, shadows, and what the world dims to behind a screen.
+const NIGHT := Color("1c120a")
+const BACKDROP := Color(0.08, 0.05, 0.03, 0.9)
+## The page: a window's parchment, a row's or slot's darker sheet, its inked rim.
+const WINDOW := Color("ead6a6")
+const CARD := Color("dcc391")
+const RIM := Color("a8854e")
+## The frame: the shop signs' wood, and brass for the studs.
+const WOOD_LIGHT := Color("b47c44")
+const WOOD := Color("8c5a2e")
+const WOOD_DARK := Color("5e3b1d")
+const BRASS_LIGHT := Color("f6dc8a")
+const BRASS := Color("d9a441")
+const BRASS_DARK := Color("8a6420")
+## Text on the page: ink, faded ink, and rubric red for focus.
+const INK := Color("3a2414")
+const FADED := Color("7d5f3e")
+const LAMP := Color("b03a1e")
+## Text on the dark (titles over the dimmed world, key footers, the title
+## screen): cream, dusk, and gold for focus.
+const CREAM := Color("f3e6c4")
+const DUSK := Color("c9b48a")
+const GOLD := Color("f2c14e")
+## Rarity, inked: fine pieces in blue, epic in purple.
+const FINE := Color("1f5a9a")
+const EPIC := Color("6e2d8c")
+## Grain flecks in the parchment.
+const GRAIN := Color("e0c995")
 
 static var _frames := {}
 static var _heading_font: FontFile
@@ -112,20 +132,62 @@ static func box(fill: Color, rim: Color, padding := 8) -> StyleBoxTexture:
 	return _style(_card(fill, rim), 2, padding)
 
 
-## The main window: navy in a cream frame, a dark outline, a bevel inside.
+## The main window: parchment in a carved wooden frame (lit top and left,
+## shaded bottom and right), a dark outline, an inked line inside it, brass
+## studs at the corners and flecks of grain in the page, which tiles rather
+## than stretches. A dark `fill` is a plate of wood instead of a page (the
+## dialogue's name tab).
 static func window(padding := 16, fill := WINDOW) -> StyleBoxTexture:
 	var key := "window %s" % fill.to_html()
 	if not _frames.has(key):
-		var art := Image.create(12, 12, false, Image.FORMAT_RGBA8)
+		var size := 28  # a 6-pixel frame around a 16-pixel tile of page
+		var art := Image.create(size, size, false, Image.FORMAT_RGBA8)
 		art.fill(fill)
+		if fill == WINDOW:
+			for fleck: Vector2i in [
+				Vector2i(8, 9), Vector2i(15, 7), Vector2i(19, 13), Vector2i(11, 16),
+				Vector2i(17, 20), Vector2i(7, 21), Vector2i(21, 8), Vector2i(13, 11),
+			]:
+				art.set_pixelv(fleck, GRAIN)
 		_ring(art, 0, NIGHT, true)
-		_ring(art, 1, FRAME, false)
-		_ring(art, 2, BEVEL, false)
-		# Rounded corners: the outline steps in, the frame turns inside it.
+		for i in range(1, size - 1):
+			# The wood: lit along the top and left, shaded along the bottom and right.
+			art.set_pixel(i, 1, WOOD_LIGHT)
+			art.set_pixel(1, i, WOOD_LIGHT)
+			for row: int in [2, 3]:
+				art.set_pixel(i, row, WOOD)
+				art.set_pixel(row, i, WOOD)
+				art.set_pixel(i, size - 1 - row, WOOD)
+				art.set_pixel(size - 1 - row, i, WOOD)
+			art.set_pixel(i, size - 2, WOOD_DARK)
+			art.set_pixel(size - 2, i, WOOD_DARK)
+		_ring(art, 4, NIGHT, false)
+		_ring(art, 5, RIM, false)
+		# A brass stud in each corner: lit top-left, shaded bottom-right.
+		for corner: Vector2i in [Vector2i(1, 1), Vector2i(size - 4, 1), Vector2i(1, size - 4), Vector2i(size - 4, size - 4)]:
+			art.set_pixelv(corner, BRASS_LIGHT)
+			art.set_pixelv(corner + Vector2i(1, 0), BRASS)
+			art.set_pixelv(corner + Vector2i(0, 1), BRASS)
+			art.set_pixelv(corner + Vector2i(1, 1), BRASS_DARK)
+		# Rounded corners: the outline steps in.
 		for corner: Vector2i in _corners(art, 1):
 			art.set_pixelv(corner, NIGHT)
 		_frames[key] = _texture(art)
-	return _style(_frames[key], 3, padding)
+	var style := _style(_frames[key], 6, padding)
+	style.axis_stretch_horizontal = StyleBoxTexture.AXIS_STRETCH_MODE_TILE
+	style.axis_stretch_vertical = StyleBoxTexture.AXIS_STRETCH_MODE_TILE
+	return style
+
+
+## A page laid behind a screen's content, `rect` in canvas pixels: the
+## window, not a container, so rows and words already placed sit on it.
+static func page(rect: Rect2) -> Panel:
+	var node := Panel.new()
+	node.position = rect.position
+	node.size = rect.size
+	node.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	node.add_theme_stylebox_override("panel", window(0))
+	return node
 
 
 ## A card, row or slot: its fill inside a one-pixel rim and the outline.
@@ -135,10 +197,11 @@ static func _card(fill: Color, rim: Color) -> ImageTexture:
 		var art := Image.create(8, 8, false, Image.FORMAT_RGBA8)
 		art.fill(fill)
 		if rim.a > 0.0:
-			_ring(art, 0, Color(NIGHT, minf(1.0, fill.a + rim.a)), true)
-			_ring(art, 1, rim, false)
-			for corner: Vector2i in _corners(art, 1):
-				art.set_pixelv(corner, Color(NIGHT, minf(1.0, fill.a + rim.a)))
+			# Inked onto the page: the rim is the line, no outline beyond it
+			# (focus doubles it, a rubric box).
+			_ring(art, 0, rim, true)
+			if rim == LAMP:
+				_ring(art, 1, rim, false)
 		_frames[key] = _texture(art)
 	return _frames[key]
 
@@ -183,14 +246,39 @@ static func button(text: String, action: Callable) -> Button:
 	node.text = text
 	node.focus_mode = Control.FOCUS_NONE
 	sized(node, BODY_PX)
-	node.add_theme_color_override("font_color", INK)
-	node.add_theme_color_override("font_hover_color", LAMP)
-	node.add_theme_color_override("font_pressed_color", LAMP)
-	node.add_theme_stylebox_override("normal", box(CARD, RIM, 6))
-	node.add_theme_stylebox_override("hover", box(CARD, LAMP, 6))
-	node.add_theme_stylebox_override("pressed", box(WINDOW, LAMP, 6))
+	node.add_theme_color_override("font_color", CREAM)
+	node.add_theme_color_override("font_hover_color", GOLD)
+	node.add_theme_color_override("font_pressed_color", GOLD)
+	node.add_theme_stylebox_override("normal", plank(false, 6))
+	node.add_theme_stylebox_override("hover", plank(true, 6))
+	node.add_theme_stylebox_override("pressed", plank(true, 6))
+	node.add_theme_stylebox_override("disabled", plank(false, 6, true))
+	node.add_theme_color_override("font_disabled_color", Color(DUSK, 0.7))
 	node.pressed.connect(action)
 	return node
+
+
+## A button with focus (the chosen tab or menu line): the plank lit brass, its
+## words in gold.
+static func focus(button: Button, on := true) -> void:
+	button.add_theme_stylebox_override("normal", plank(on, 6))
+	button.add_theme_color_override("font_color", GOLD if on else CREAM)
+
+
+## A wooden plank (buttons, the menu): wood with a lit top edge and a dark
+## outline; `lit` gives it a brass rim (hover, focus), `dim` darkens it (a
+## button that can't be pressed now).
+static func plank(lit: bool, padding := 6, dim := false) -> StyleBoxTexture:
+	var key := "plank %s %s" % [lit, dim]
+	if not _frames.has(key):
+		var art := Image.create(8, 8, false, Image.FORMAT_RGBA8)
+		art.fill(WOOD_DARK if dim else WOOD)
+		for i in range(1, 7):
+			art.set_pixel(i, 1, WOOD if dim else WOOD_LIGHT)
+			art.set_pixel(i, 6, NIGHT if dim else WOOD_DARK)
+		_ring(art, 0, BRASS if lit else NIGHT, true)
+		_frames[key] = _texture(art)
+	return _style(_frames[key], 2, padding)
 
 
 ## The pixel font for headings: crisp, never smoothed.
@@ -205,9 +293,11 @@ static func heading(text: String, font_size: int, color: Color, at := Vector2.ZE
 	var node := label(text, font_size, color, at)
 	node.add_theme_font_override("font", heading_font())
 	node.add_theme_font_size_override("font_size", font_size)
-	node.add_theme_color_override("font_shadow_color", NIGHT)
-	node.add_theme_constant_override("shadow_offset_x", UI_SCALE)
-	node.add_theme_constant_override("shadow_offset_y", UI_SCALE)
+	# A shadow lifts a heading off the dark; on the page ink lies flat.
+	if color not in [INK, FADED, LAMP]:
+		node.add_theme_color_override("font_shadow_color", NIGHT)
+		node.add_theme_constant_override("shadow_offset_x", UI_SCALE)
+		node.add_theme_constant_override("shadow_offset_y", UI_SCALE)
 	return node
 
 
@@ -216,7 +306,7 @@ static func heading(text: String, font_size: int, color: Color, at := Vector2.ZE
 static func keycap(key: String, small := false) -> PanelContainer:
 	var cap := PanelContainer.new()
 	cap.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	cap.add_theme_stylebox_override("panel", _style(_card(INK, BEVEL), 2, 2 if small else 4))
+	cap.add_theme_stylebox_override("panel", _style(_card(CREAM, NIGHT), 2, 2 if small else 4))
 	var text := strong(key, 12 if small else BODY_PX, NIGHT)
 	text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	text.custom_minimum_size = Vector2(8, 0)
@@ -247,13 +337,14 @@ static func arrow() -> TextureRect:
 
 ## A screen's key footer from its hint line, "Esc  close      W/S  choose":
 ## commands apart by four spaces or more, each a key, two spaces, what it does.
-## `centered` spreads it across the screen's middle (at.x is ignored).
+## `centered` spreads it across the screen's middle (at.x is ignored). It
+## sits on the dark under the windows.
 static func footer(line: String, at: Vector2, centered := false) -> HBoxContainer:
 	var pairs := []
 	for command in RegEx.create_from_string(" {4,}").sub(line.strip_edges(), "\t", true).split("\t"):
 		var cut := command.find("  ")
 		pairs.append_array([command.substr(0, cut).strip_edges(), command.substr(cut).strip_edges()] if cut > 0 else ["", command])
-	var row := hints(pairs)
+	var row := hints(pairs, true)
 	row.position = at
 	if centered:
 		row.position.x = 0
@@ -262,8 +353,9 @@ static func footer(line: String, at: Vector2, centered := false) -> HBoxContaine
 	return row
 
 
-## A row of key hints: keycap, what it does, keycap, what it does...
-static func hints(pairs: Array) -> HBoxContainer:
+## A row of key hints: keycap, what it does, keycap, what it does... on the
+## page, or `on_dark` under the windows.
+static func hints(pairs: Array, on_dark := false) -> HBoxContainer:
 	var row := HBoxContainer.new()
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_theme_constant_override("separation", 6)
@@ -274,5 +366,5 @@ static func hints(pairs: Array) -> HBoxContainer:
 			row.add_child(gap)
 		if pairs[i] != "":
 			row.add_child(keycap(pairs[i], true))
-		row.add_child(label(pairs[i + 1], 12, FADED))
+		row.add_child(label(pairs[i + 1], 12, DUSK if on_dark else FADED))
 	return row

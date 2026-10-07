@@ -21,7 +21,7 @@ func _ready() -> void:
 	backdrop.color = Color(UiStyle.BACKDROP, 1.0)
 	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(backdrop)
-	var title := UiStyle.heading("What's new", 20, UiStyle.INK, Vector2(0, 28))
+	var title := UiStyle.heading("What's new", 20, UiStyle.CREAM, Vector2(0, 28))
 	title.custom_minimum_size = Vector2(1280, 0)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(title)

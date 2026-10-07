@@ -37,9 +37,11 @@ func _ready() -> void:
 	backdrop.color = UiStyle.BACKDROP
 	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(backdrop)
-	add_child(UiStyle.heading(shop["keeper"], 18, UiStyle.INK, Vector2(80, 32)))
-	add_child(UiStyle.label(shop["greeting"], 14, UiStyle.FADED, Vector2(80, 66)))
-	gold_label = UiStyle.label("", 18, UiStyle.LAMP, Vector2(1060, 36))
+	# The counter's ledger: a page under the tabs, the wares and the news.
+	add_child(UiStyle.page(Rect2(60, 90, 740, 530)))
+	add_child(UiStyle.heading(shop["keeper"], 18, UiStyle.CREAM, Vector2(80, 32)))
+	add_child(UiStyle.label(shop["greeting"], 14, UiStyle.DUSK, Vector2(80, 66)))
+	gold_label = UiStyle.label("", 18, UiStyle.GOLD, Vector2(1060, 36))
 	add_child(gold_label)
 
 	var tab_row := HBoxContainer.new()
@@ -65,7 +67,7 @@ func _ready() -> void:
 	var side := PanelContainer.new()
 	side.position = Vector2(820, 150)
 	side.custom_minimum_size = Vector2(380, LIST_SIZE.y)
-	side.add_theme_stylebox_override("panel", UiStyle.box(UiStyle.CARD, UiStyle.RIM, 16))
+	side.add_theme_stylebox_override("panel", UiStyle.window(18))
 	add_child(side)
 	var side_box := VBoxContainer.new()
 	side_box.add_theme_constant_override("separation", 14)
@@ -208,10 +210,7 @@ func _build_rows() -> Array[Dictionary]:
 
 func _refresh() -> void:
 	for index in tab_buttons.size():
-		var active := index == tab
-		tab_buttons[index].add_theme_stylebox_override(
-			"normal", UiStyle.box(UiStyle.CARD if active else Color(0, 0, 0, 0), UiStyle.LAMP if active else UiStyle.RIM)
-		)
+		UiStyle.focus(tab_buttons[index], index == tab)
 	gold_label.text = "Gold: %d" % GameState.pack.gold
 	rows = _build_rows()
 	selected = clampi(selected, 0, maxi(0, rows.size() - 1))

@@ -14,7 +14,7 @@ func _ready() -> void:
 	backdrop.color = UiStyle.BACKDROP
 	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(backdrop)
-	add_child(UiStyle.heading("Journal", 20, UiStyle.INK, Vector2(80, 32)))
+	add_child(UiStyle.heading("Journal", 20, UiStyle.CREAM, Vector2(80, 32)))
 	var card := PanelContainer.new()
 	card.position = Vector2(80, 80)
 	card.custom_minimum_size = Vector2(1120, 540)
@@ -24,7 +24,7 @@ func _ready() -> void:
 	body.add_theme_constant_override("separation", 10)
 	card.add_child(body)
 	_fill()
-	add_child(UiStyle.label("A promise is a route marked on the heart.", 14, UiStyle.FADED, Vector2(80, 640)))
+	add_child(UiStyle.label("A promise is a route marked on the heart.", 14, UiStyle.DUSK, Vector2(80, 640)))
 	add_child(UiStyle.footer("Esc / Q  close", Vector2(1060, 640)))
 
 

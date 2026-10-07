@@ -22,7 +22,7 @@ func _ready() -> void:
 	backdrop.color = UiStyle.BACKDROP
 	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(backdrop)
-	add_child(UiStyle.heading(Catalog.place_name(world.map.id), 20, UiStyle.INK, Vector2(64, 28)))
+	add_child(UiStyle.heading(Catalog.place_name(world.map.id), 20, UiStyle.CREAM, Vector2(64, 28)))
 
 	var frame := PanelContainer.new()
 	frame.position = Vector2(56, 72)

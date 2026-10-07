@@ -50,9 +50,7 @@ func _draw() -> void:
 		var button := UiStyle.button(options[index]["label"], _take.bind(index))
 		button.custom_minimum_size = Vector2(296, 40)
 		button.add_theme_font_size_override("font_size", 17)
-		if index == selected:
-			button.add_theme_stylebox_override("normal", UiStyle.box(UiStyle.CARD, UiStyle.LAMP))
-			button.add_theme_color_override("font_color", UiStyle.LAMP)
+		UiStyle.focus(button, index == selected)
 		menu.add_child(button)
 
 
