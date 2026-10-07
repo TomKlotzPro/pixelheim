@@ -1501,6 +1501,10 @@ func _run_test_harness() -> void:
 		creation.name_field.text = "Robin"
 		creation._refresh()
 		await get_tree().create_timer(0.4).timeout
+	if args.has("title") and args.has("whatsnew"):
+		# What's new over the title, as the version line opens it.
+		get_children().filter(func(node: Node) -> bool: return node.has_method("as_splash"))[0]._whats_new()
+		await get_tree().create_timer(0.3).timeout
 	if args.has("title") and args.has("options"):
 		# Options over the title, before any hero is made.
 		get_children().filter(func(node: Node) -> bool: return node.has_method("as_splash"))[0]._options()
