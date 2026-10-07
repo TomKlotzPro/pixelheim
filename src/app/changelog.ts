@@ -11,6 +11,17 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.73.0",
+    date: "2026-10-08",
+    codename: "The Village Ledger",
+    notes: [
+      "A NEW FACE FOR EVERY SCREEN: parchment pages in carved wooden frames with brass studs, ink on the page, rubric red for whatever has your attention, and wooden planks for buttons that light brass when chosen",
+      "THE DOCK: your portrait, health and energy, six skill slots and your gold now sit in one wooden dock along the bottom, with experience as a gold line across its top - the rest of the screen is the world; its Menu lists every screen with its key and lights up when points are waiting",
+      "PAGES THAT TURN: screens ease in as they open, with a swish of paper, a pen's tick as your choice moves and a soft close (Reduce motion makes them appear at once)",
+      "Easier to read: lists sit on pages instead of the dimmed world, fine and epic gear wear their colours in ink, and the battle log floats clear above the dock",
+    ],
+  },
+  {
     version: "0.72.0",
     date: "2026-10-07",
     codename: "Stone and Water",

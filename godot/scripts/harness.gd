@@ -406,6 +406,10 @@ func _run_test_harness() -> void:
 		await get_tree().create_timer(0.4 if args.has("kill") else 0.1).timeout
 	else:
 		await get_tree().create_timer(0.2).timeout
+	# `--wait S` holds the shot (an entrance still playing: the title's logo).
+	var wait_index := args.find("--wait")
+	if wait_index >= 0 and wait_index + 1 < args.size():
+		await get_tree().create_timer(float(args[wait_index + 1])).timeout
 	await RenderingServer.frame_post_draw
 	get_viewport().get_texture().get_image().save_png("res://screenshot.png")
 	# The menus and conversations still open over the world, by script name.
