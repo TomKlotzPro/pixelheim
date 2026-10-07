@@ -11,14 +11,16 @@ godot --path godot            # play (or open godot/ in the Godot editor)
 
 ### Paid art
 
-The town's houses come from Shade's paid **Puny World Medieval Age** pack
-(`scripts/puny_town.gd`, PIX-133). Its licence forbids redistributing the
+The town's houses, the rooms behind their doors and the props outdoors
+(wells, the fountain, torches, fences, stalls, chests) come from Shade's paid
+**Puny World Medieval Age** pack (`scripts/puny_town.gd`, `puny_interior.gd`,
+`puny_props.gd`; PIX-133, PIX-137). Its licence forbids redistributing the
 pack, so it is not in this repository: it lives in the private
 `TomKlotzPro/pixelheim-assets` repo. `pnpm godot:art` installs the atlas into
 `godot/assets/puny/medieval/` (git-ignored) with your GitHub login; the deploy
 and the Godot CI fetch it with a read-only deploy key (secret
 `PIXELHEIM_ASSETS_KEY`). Without it the game runs with the town's old
-buildings.
+buildings and props.
 
 Combat runs on the web game's numbers: the hero's real HP and stats, each
 species' stats per region, elites, ailments (a web turn = 1 s), drops, xp and
@@ -75,6 +77,7 @@ godot --path godot -- --screenshot                    # new hero in the village
 godot --path godot -- --screenshot --slot 1           # resume (and write) slot 1
 godot --path godot -- --screenshot --map town         # boot into another map
 godot --path godot -- --screenshot --walk l,d,d,d     # scripted steps first
+godot --path godot -- --screenshot --at 30,21 --walk u,u,u  # stand on a cell, then walk: what stops you
 godot --path godot -- --screenshot fight              # orc fight, mid-swing
 godot --path godot -- --screenshot fight kill         # swing until it dies (rewards in the battle log)
 godot --path godot -- --screenshot fight kill hurt --foe wyvern   # another foe, and let it bite back

@@ -36,6 +36,8 @@ var tile_layer: TileMapLayer
 ## The town's houses from the Medieval Age pack (PunyTown.compose): their
 ## pieces, chimneys, and so which cells they cover. Empty elsewhere.
 var buildings := {"pieces": {}, "decor": {}, "freed": []}
+## Shade's props on the outdoor ground (PunyProps.compose).
+var outdoor_props := {"props": [], "flat": {}, "drawn": {}}
 var props: Node2D
 var actors: Node2D
 var player: CharacterBody2D
@@ -495,6 +497,17 @@ func _enter_map(next: MapData, arrival: Vector2i) -> void:
 		buildings = {"pieces": room["pieces"], "decor": {}, "freed": [], "floor": room["floor"], "void": room["void"]}
 		for cell: Vector2i in room["blocked"]:
 			next.grid[cell] = "wall"
+	# Outdoors, Shade's props stand where the web's did (PunyProps): what they
+	# stand on blocks, even ground the web left open (the fountain's basin).
+	var outdoor := next.floor_level == 0 and PunyTerrain.is_outdoor(next.grid)
+	outdoor_props = PunyProps.compose(next.grid) if outdoor else {"props": [], "flat": {}, "drawn": {}}
+	next.covered = {}
+	for prop: Dictionary in outdoor_props["props"]:
+		if (prop["foot"] as Rect2).has_area():
+			for cell: Vector2i in prop["covers"]:
+				next.covered[cell] = true
+	if not next.is_walkable(arrival):
+		arrival = next.spawn
 	ground = _build_dungeon(next) if next.floor_level > 0 else _build_ground(next)
 	add_child(ground)
 	tile_layer = _build_tile_layer(next)
@@ -586,6 +599,13 @@ func _build_ground(data: MapData) -> Node2D:
 		for cell: Vector2i in skyline:
 			PunyTerrain.place(objects, cell, skyline[cell])
 	root.add_child(objects)
+	# Shade's flowers, flat on the ground (the hero walks through them).
+	if not outdoor_props["flat"].is_empty():
+		var flowers := TileMapLayer.new()
+		flowers.tile_set = PunyTown.tileset()
+		for cell: Vector2i in outdoor_props["flat"]:
+			PunyTown.place(flowers, cell, outdoor_props["flat"][cell])
+		root.add_child(flowers)
 	# The houses, then what stands on their roofs (chimneys).
 	for part: String in ["pieces", "decor"]:
 		if buildings[part].is_empty():
@@ -649,12 +669,12 @@ func _build_dungeon(data: MapData) -> Node2D:
 func _build_decor(data: MapData) -> void:
 	chest_sprites = {}
 	for chest: Dictionary in Interactables.chests_on(data.id):
-		var sprite_name := Interactables.sprite_name(chest, GameState.is_opened(chest))
-		if sprite_name == "":
+		var texture := _treasure_texture(chest, GameState.is_opened(chest))
+		if texture == null:
 			continue
 		var cell := Vector2i(int(chest["x"]), int(chest["y"]))
 		var sprite := Sprite2D.new()
-		sprite.texture = load("res://assets/sprites/%s.png" % sprite_name)
+		sprite.texture = texture
 		sprite.position = _cell_center(cell)
 		sprite.add_to_group("decor")
 		actors.add_child(sprite)
@@ -680,8 +700,8 @@ func _build_decor(data: MapData) -> void:
 			continue
 		if outdoor and PunyTerrain.wall_piece(data.grid, cell) == PunyTerrain.GATE:
 			continue
-		if buildings["pieces"].has(cell):
-			continue  # the house draws its own door (PunyTown)
+		if buildings["pieces"].has(cell) or outdoor_props["drawn"].has(cell):
+			continue  # the house draws its own door (PunyTown), PunyProps its stalls
 		if data.grid.get(cell + Vector2i.LEFT, "") == tile:
 			continue  # not the run's left edge
 		var run := 0
@@ -693,6 +713,8 @@ func _build_decor(data: MapData) -> void:
 		while i < run:
 			_add_prop_sprite(config[0], config[1], cell + Vector2i(i, 0))
 			i += span
+	for prop: Dictionary in outdoor_props["props"]:
+		_add_puny_prop(prop)
 	for cell: Vector2i in data.grid:
 		var tile: String = data.grid[cell]
 		if not SCATTER.has(tile):
@@ -727,6 +749,60 @@ func _npc_beside() -> Dictionary:
 	for villager in get_tree().get_nodes_in_group("npcs"):
 		occupied[villager.cell] = villager.data
 	return Npcs.beside(occupied, player_cell, Vector2i(player.facing))
+
+## A chest or ground treasure as it stands: Shade's chest, pouch or herbs
+## (PunyProps), or the web's sprites without the pack; null when it's gone.
+func _treasure_texture(chest: Dictionary, opened: bool) -> Texture2D:
+	if PunyProps.available():
+		var tile := PunyProps.treasure_tile(chest["look"], opened)
+		return PunyProps.texture(tile) if tile >= 0 else null
+	var sprite_name := Interactables.sprite_name(chest, opened)
+	return load("res://assets/sprites/%s.png" % sprite_name) if sprite_name != "" else null
+
+## One of Shade's props among the actors (PunyProps): sorted on the bottom of
+## its foot, so the hero passes behind it from the north and in front from
+## the south, with a body exactly where the foot is.
+func _add_puny_prop(prop: Dictionary) -> void:
+	var foot: Rect2 = prop["foot"]
+	var sort_y := foot.end.y if foot.has_area() else float(TILE)
+	var root := Node2D.new()
+	root.position = Vector2(prop["cell"] * TILE) + Vector2(0, sort_y)
+	root.add_to_group("decor")
+	if prop["kind"] == "fountain":
+		var jet := AnimatedSprite2D.new()
+		jet.sprite_frames = PunyProps.fountain_sprite_frames()
+		jet.centered = false
+		jet.position = Vector2(0, -TILE / 2.0 - sort_y)
+		jet.play()
+		root.add_child(jet)
+	else:
+		for piece: Array in prop["tiles"]:
+			var sprite: Node2D
+			if not prop["frames"].is_empty():
+				var flame := AnimatedSprite2D.new()
+				flame.sprite_frames = PunyProps.animation(prop["frames"], PunyProps.LAMP_FPS)
+				flame.centered = false
+				# Each torch flickers on its own beat.
+				flame.play()
+				flame.frame = absi(hash(prop["cell"])) % prop["frames"].size()
+				sprite = flame
+			else:
+				var still := Sprite2D.new()
+				still.texture = PunyDungeon.sheet().tile_texture(piece[1]) if prop["sheet"] == "dungeon" else PunyProps.texture(piece[1])
+				still.centered = false
+				sprite = still
+			sprite.position = Vector2(piece[0] * TILE) - Vector2(0, sort_y)
+			root.add_child(sprite)
+	if foot.has_area():
+		var body := StaticBody2D.new()
+		var shape := CollisionShape2D.new()
+		var rect := RectangleShape2D.new()
+		rect.size = foot.size
+		shape.shape = rect
+		shape.position = foot.get_center() - Vector2(0, sort_y)
+		body.add_child(shape)
+		root.add_child(body)
+	actors.add_child(root)
 
 func _add_prop_sprite(sheet: String, region: Rect2, cell: Vector2i) -> void:
 	var atlas := AtlasTexture.new()
@@ -914,7 +990,7 @@ func _open_chest(chest: Dictionary) -> void:
 	_flash_message(result["message"])
 	if not result["opened"]:
 		return
-	chest_sprites[chest["id"]].texture = load("res://assets/sprites/chest_open.png")
+	chest_sprites[chest["id"]].texture = _treasure_texture(chest, true)
 	Sound.play("chest")
 	if result["mimic"]:
 		var ambush := player_cell + Vector2i(0, -1)
@@ -1035,6 +1111,14 @@ func _build_tile_layer(data: MapData) -> TileMapLayer:
 	var skyline: bool = data.id in PunyTerrain.SKYLINE_MAPS
 	for cell: Vector2i in data.grid:
 		var tile: String = data.grid[cell]
+		if outdoor_props["drawn"].has(cell):
+			# Shade's prop stands here, with its own body (PunyProps); in a ruin
+			# it stands on the ruin's floor, not the grass beyond.
+			if [Vector2i.UP, Vector2i.RIGHT, Vector2i.DOWN, Vector2i.LEFT].any(
+				func(step: Vector2i) -> bool: return data.grid.get(cell + step, "") == "floor"
+			):
+				layer.set_cell(cell, source_ids["floor"], Vector2i.ZERO)
+			continue
 		var puny_drawn: bool = (
 			data.floor_level > 0
 			or buildings.has("floor")

@@ -154,6 +154,19 @@ func _run_test_harness() -> void:
 			Engine.get_frames_per_second(), back, frozen, str(hero_steps.slice(5, 17)), str(scroll_steps.slice(5, 17))])
 		# The release flow reads it off the report line (PIX-135).
 		motion_report = " backsteps=%d" % back
+	# Terrain review: `--at x,y` stands the hero on a cell (before `--walk`,
+	# so a walk can test what stops them), `--zoom Z` changes the camera;
+	# `overview` (below) frames the whole map.
+	var at_index := args.find("--at")
+	if at_index >= 0 and at_index + 1 < args.size():
+		var at := args[at_index + 1].split(",")
+		world.player_cell = Vector2i(int(at[0]), int(at[1]))
+		world.player.position = world._cell_center(world.player_cell)
+		world._teleported()
+		world.camera.reset_smoothing()
+	var zoom_index := args.find("--zoom")
+	if zoom_index >= 0 and zoom_index + 1 < args.size():
+		world.camera.zoom = Vector2.ONE * float(args[zoom_index + 1])
 	var walk_index := args.find("--walk")
 	if walk_index >= 0 and walk_index + 1 < args.size():
 		var dirs := {
@@ -165,18 +178,6 @@ func _run_test_harness() -> void:
 		world.player.scripted_dir = Vector2.ZERO
 	if args.has("night"):
 		GameState.world.steps = 0.7 * DayNight.DAY_CYCLE_STEPS
-	# Terrain review: `--at x,y` stands the hero on a cell, `--zoom Z` changes
-	# the camera, `overview` frames the whole map.
-	var at_index := args.find("--at")
-	if at_index >= 0 and at_index + 1 < args.size():
-		var at := args[at_index + 1].split(",")
-		world.player_cell = Vector2i(int(at[0]), int(at[1]))
-		world.player.position = world._cell_center(world.player_cell)
-		world._teleported()
-		world.camera.reset_smoothing()
-	var zoom_index := args.find("--zoom")
-	if zoom_index >= 0 and zoom_index + 1 < args.size():
-		world.camera.zoom = Vector2.ONE * float(args[zoom_index + 1])
 	if args.has("overview"):
 		var view := get_viewport().get_visible_rect().size
 		var fit := minf(view.x / (world.map.size.x * world.TILE), view.y / (world.map.size.y * world.TILE))
