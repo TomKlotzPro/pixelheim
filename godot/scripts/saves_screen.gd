@@ -41,7 +41,7 @@ func _ready() -> void:
 	var stack := VBoxContainer.new()
 	stack.add_theme_constant_override("separation", 18)
 	middle.add_child(stack)
-	var title := UiStyle.heading("Saves", 20, UiStyle.INK)
+	var title := UiStyle.heading("Saves", 20, UiStyle.CREAM)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	stack.add_child(title)
 	var window := PanelContainer.new()
@@ -102,8 +102,7 @@ func _ready() -> void:
 		bring_button = UiStyle.button("", _bring)
 		if welcome:
 			# The one thing a first visit is for: make it the brightest control.
-			bring_button.add_theme_stylebox_override("normal", UiStyle.box(UiStyle.CARD, UiStyle.LAMP, 6))
-			bring_button.add_theme_color_override("font_color", UiStyle.LAMP)
+			UiStyle.focus(bring_button)
 		web_lines.add_child(bring_button)
 
 	var code := PanelContainer.new()

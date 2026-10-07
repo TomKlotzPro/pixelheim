@@ -146,7 +146,7 @@ func _card() -> void:
 	add_child(title)
 	var word := "PIXELHEIM"
 	for i in word.length():
-		var letter := UiStyle.heading(word[i], 60, UiStyle.LAMP)
+		var letter := UiStyle.heading(word[i], 60, UiStyle.GOLD)
 		letter.add_theme_color_override("font_outline_color", Color("2a1a08"))
 		letter.add_theme_constant_override("outline_size", 10)
 		letter.modulate.a = 0.0
@@ -154,7 +154,7 @@ func _card() -> void:
 		var drop := create_tween()
 		drop.tween_interval(0.25 + i * 0.07)
 		drop.tween_property(letter, "modulate:a", 1.0, 0.25)
-	var tagline := UiStyle.label("Fifteen floors. One dragon. Worse things below.", 18, UiStyle.INK, Vector2(0, 252))
+	var tagline := UiStyle.label("Fifteen floors. One dragon. Worse things below.", 18, UiStyle.CREAM, Vector2(0, 252))
 	tagline.custom_minimum_size = Vector2(VIEW.x, 0)
 	tagline.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(tagline)
@@ -177,13 +177,13 @@ func _card() -> void:
 	_draw_menu()
 	var version: String = SaveCodec.parse_json(FileAccess.get_file_as_string("res://assets/data/meta.json"))["version"]
 	# The version line opens What's new (the web's changelog link).
-	footer = UiStyle.label("v%s - a retro RPG, now in Godot  ·  What's new" % version, 13, UiStyle.FADED, Vector2(0, 690))
+	footer = UiStyle.label("v%s - a retro RPG, now in Godot  ·  What's new" % version, 13, UiStyle.DUSK, Vector2(0, 690))
 	footer.custom_minimum_size = Vector2(VIEW.x, 0)
 	footer.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	footer.mouse_filter = Control.MOUSE_FILTER_STOP
 	footer.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	footer.mouse_entered.connect(func() -> void: footer.add_theme_color_override("font_color", UiStyle.LAMP))
-	footer.mouse_exited.connect(func() -> void: footer.add_theme_color_override("font_color", UiStyle.FADED))
+	footer.mouse_entered.connect(func() -> void: footer.add_theme_color_override("font_color", UiStyle.GOLD))
+	footer.mouse_exited.connect(func() -> void: footer.add_theme_color_override("font_color", UiStyle.DUSK))
 	footer.gui_input.connect(func(event: InputEvent) -> void:
 		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 			_whats_new()
@@ -209,11 +209,7 @@ func _draw_menu() -> void:
 		var button := UiStyle.button(options[index]["label"], _take.bind(index))
 		button.custom_minimum_size = Vector2(260, 40)
 		button.add_theme_font_size_override("font_size", 18)
-		if chosen:
-			button.add_theme_stylebox_override("normal", UiStyle.box(Color(UiStyle.CARD, 0.9), UiStyle.LAMP))
-			button.add_theme_color_override("font_color", UiStyle.LAMP)
-		else:
-			button.add_theme_stylebox_override("normal", UiStyle.box(Color(UiStyle.CARD, 0.6), UiStyle.RIM))
+		UiStyle.focus(button, chosen)
 		menu.add_child(button)
 
 

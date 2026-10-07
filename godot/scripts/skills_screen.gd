@@ -27,18 +27,20 @@ func _ready() -> void:
 	backdrop.color = UiStyle.BACKDROP
 	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(backdrop)
+	# The paths are written on one page; the details read below it.
+	add_child(UiStyle.page(Rect2(60, 60, 1160, 562)))
 	view = Control.new()
 	view.set_anchors_preset(Control.PRESET_FULL_RECT)
 	view.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(view)
-	details = UiStyle.label("", 13, UiStyle.INK, Vector2(80, 632))
+	details = UiStyle.label("", 13, UiStyle.CREAM, Vector2(80, 632))
 	details.custom_minimum_size = Vector2(1120, 0)
 	details.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(details)
-	status = UiStyle.label("", 14, UiStyle.LAMP, Vector2(640, 24))
+	status = UiStyle.label("", 14, UiStyle.GOLD, Vector2(640, 24))
 	add_child(status)
 	add_child(UiStyle.footer("Arrows  choose      E  learn / walk      K / Esc  close", Vector2(80, 696)))
-	add_child(UiStyle.label("One point per level. Learning is permanent.", 13, UiStyle.FADED, Vector2(820, 696)))
+	add_child(UiStyle.label("One point per level. Learning is permanent.", 13, UiStyle.DUSK, Vector2(820, 696)))
 	# Start on the first pending path step, else the first learnable node.
 	_layout()
 	for cell: Vector2i in cells:
@@ -58,10 +60,10 @@ func _layout() -> void:
 		child.queue_free()
 	cells = {}
 	var hero := GameState.hero
-	view.add_child(UiStyle.heading("Skills", 20, UiStyle.INK, Vector2(80, 24)))
+	view.add_child(UiStyle.heading("Skills", 20, UiStyle.CREAM, Vector2(80, 24)))
 	var points := hero.skill_points
 	view.add_child(UiStyle.label(
-		"%d skill point%s" % [points, "" if points == 1 else "s"], 18, UiStyle.LAMP if points > 0 else UiStyle.FADED,
+		"%d skill point%s" % [points, "" if points == 1 else "s"], 18, UiStyle.GOLD if points > 0 else UiStyle.DUSK,
 		Vector2(1000, 30)
 	))
 	var top := 80

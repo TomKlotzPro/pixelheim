@@ -37,14 +37,16 @@ func _ready() -> void:
 	backdrop.color = UiStyle.BACKDROP
 	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(backdrop)
-	add_child(UiStyle.heading("Inventory", 20, UiStyle.INK, Vector2(80, 24)))
-	header = UiStyle.label("", 16, UiStyle.INK, Vector2(490, 32))
+	# The pack's ledger: a page under the tabs and the list.
+	add_child(UiStyle.page(Rect2(474, 58, 742, 572)))
+	add_child(UiStyle.heading("Inventory", 20, UiStyle.CREAM, Vector2(80, 24)))
+	header = UiStyle.label("", 16, UiStyle.GOLD, Vector2(490, 22))
 	add_child(header)
 
 	var doll_card := PanelContainer.new()
 	doll_card.position = Vector2(80, 70)
 	doll_card.custom_minimum_size = Vector2(380, 560)
-	doll_card.add_theme_stylebox_override("panel", UiStyle.box(UiStyle.CARD, UiStyle.RIM, 10))
+	doll_card.add_theme_stylebox_override("panel", UiStyle.window(10))
 	add_child(doll_card)
 	doll = Control.new()
 	doll.position = Vector2(80, 70)
@@ -52,11 +54,11 @@ func _ready() -> void:
 	add_child(doll)
 
 	tab_row = HBoxContainer.new()
-	tab_row.position = Vector2(490, 70)
+	tab_row.position = Vector2(490, 72)
 	tab_row.add_theme_constant_override("separation", 6)
 	add_child(tab_row)
 	scroll = ScrollContainer.new()
-	scroll.position = Vector2(490, 110)
+	scroll.position = Vector2(490, 114)
 	scroll.custom_minimum_size = LIST
 	scroll.size = LIST
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -65,7 +67,7 @@ func _ready() -> void:
 	list.custom_minimum_size = Vector2(LIST.x - 14, 0)
 	list.add_theme_constant_override("separation", 4)
 	scroll.add_child(list)
-	status = UiStyle.label("", 14, UiStyle.LAMP, Vector2(490, 590))
+	status = UiStyle.label("", 14, UiStyle.LAMP, Vector2(490, 596))
 	status.custom_minimum_size = Vector2(710, 0)
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(status)
@@ -79,15 +81,13 @@ func _refresh() -> void:
 	var weight := pack.carried_weight()
 	var capacity := Skills.carry_capacity(hero, pack)
 	header.text = "Weight %d/%d      Gold %d" % [weight, capacity, pack.gold]
-	header.add_theme_color_override("font_color", Color(1, 0.45, 0.4) if weight > capacity else UiStyle.INK)
+	header.add_theme_color_override("font_color", Color(1, 0.45, 0.4) if weight > capacity else UiStyle.CREAM)
 	_build_doll()
 	for child in tab_row.get_children():
 		child.queue_free()
 	for index in TABS.size():
 		var button := UiStyle.button(TABS[index][1], _switch.bind(index))
-		if index == tab:
-			button.add_theme_stylebox_override("normal", UiStyle.box(UiStyle.CARD, UiStyle.LAMP))
-			button.add_theme_color_override("font_color", UiStyle.LAMP)
+		UiStyle.focus(button, index == tab)
 		tab_row.add_child(button)
 	rows = _rows()
 	selected = clampi(selected, 0, maxi(0, rows.size() - 1))
@@ -178,9 +178,9 @@ func _rarity_color(row: Dictionary) -> Color:
 		return UiStyle.INK
 	match String(row["piece"]["rarity"]):
 		"fine":
-			return Color(0.45, 0.8, 1.0)
+			return UiStyle.FINE
 		"epic":
-			return Color(0.85, 0.55, 1.0)
+			return UiStyle.EPIC
 	return UiStyle.INK
 
 

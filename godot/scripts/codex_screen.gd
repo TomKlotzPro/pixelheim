@@ -19,7 +19,7 @@ func _ready() -> void:
 	backdrop.color = UiStyle.BACKDROP
 	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(backdrop)
-	add_child(UiStyle.heading("Codex", 20, UiStyle.INK, Vector2(80, 24)))
+	add_child(UiStyle.heading("Codex", 20, UiStyle.CREAM, Vector2(80, 24)))
 	tabs_row = HBoxContainer.new()
 	tabs_row.position = Vector2(80, 64)
 	tabs_row.add_theme_constant_override("separation", 10)
@@ -32,7 +32,7 @@ func _ready() -> void:
 	body = VBoxContainer.new()
 	body.add_theme_constant_override("separation", 6)
 	card.add_child(body)
-	add_child(UiStyle.label("Every kill teaches. Families over faces.", 13, UiStyle.FADED, Vector2(80, 660)))
+	add_child(UiStyle.label("Every kill teaches. Families over faces.", 13, UiStyle.DUSK, Vector2(80, 660)))
 	add_child(UiStyle.footer("A/D  tabs      B / Esc  close", Vector2(1000, 660)))
 	_show()
 
@@ -42,10 +42,8 @@ func _show() -> void:
 		child.queue_free()
 	for index in TABS.size():
 		var chip := PanelContainer.new()
-		chip.add_theme_stylebox_override("panel", UiStyle.box(
-			UiStyle.CARD if index == tab else Color(0, 0, 0, 0), UiStyle.LAMP if index == tab else UiStyle.RIM, 6
-		))
-		chip.add_child(UiStyle.label(TABS[index], 16, UiStyle.LAMP if index == tab else UiStyle.FADED))
+		chip.add_theme_stylebox_override("panel", UiStyle.plank(index == tab, 6))
+		chip.add_child(UiStyle.label(TABS[index], 16, UiStyle.GOLD if index == tab else UiStyle.CREAM))
 		tabs_row.add_child(chip)
 	if tab == 0:
 		_masteries()

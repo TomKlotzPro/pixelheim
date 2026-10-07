@@ -11,6 +11,7 @@ var info: Label
 var info_card: PanelContainer
 var gold_label: Label
 var status: Label
+var page: Panel
 
 
 func _ready() -> void:
@@ -21,16 +22,19 @@ func _ready() -> void:
 	backdrop.color = UiStyle.BACKDROP
 	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(backdrop)
-	add_child(UiStyle.heading(_title(), 20, UiStyle.INK, Vector2(80, 32)))
-	add_child(UiStyle.label(_intro(), 14, UiStyle.FADED, Vector2(80, 66)))
-	gold_label = UiStyle.label("", 18, UiStyle.LAMP, Vector2(1060, 36))
+	# The choices are written on a page beside the card.
+	page = UiStyle.page(Rect2(624, 94, 592, 470))
+	add_child(page)
+	add_child(UiStyle.heading(_title(), 20, UiStyle.CREAM, Vector2(80, 32)))
+	add_child(UiStyle.label(_intro(), 14, UiStyle.DUSK, Vector2(80, 66)))
+	gold_label = UiStyle.label("", 18, UiStyle.GOLD, Vector2(1060, 36))
 	add_child(gold_label)
 
 	var card := PanelContainer.new()
 	info_card = card
 	card.position = Vector2(80, 110)
 	card.custom_minimum_size = Vector2(520, 440)
-	card.add_theme_stylebox_override("panel", UiStyle.box(UiStyle.CARD, UiStyle.RIM, 16))
+	card.add_theme_stylebox_override("panel", UiStyle.window(18))
 	add_child(card)
 	info = UiStyle.label("", 14, UiStyle.INK)
 	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -44,7 +48,7 @@ func _ready() -> void:
 	list.add_theme_constant_override("separation", 6)
 	add_child(list)
 
-	status = UiStyle.label("", 14, UiStyle.LAMP, Vector2(80, 580))
+	status = UiStyle.label("", 14, UiStyle.GOLD, Vector2(80, 604))
 	status.custom_minimum_size = Vector2(1120, 0)
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(status)
@@ -111,6 +115,10 @@ func _refresh() -> void:
 		child.queue_free()
 	for index in rows.size():
 		list.add_child(_row(index))
+	# The page grows with a long list (the mountain's floors), never shrinks
+	# below the card beside it.
+	var fit := func() -> void: page.size.y = maxf(470.0, list.get_combined_minimum_size().y + 32.0)
+	fit.call_deferred()
 
 
 func _row(index: int) -> Control:
