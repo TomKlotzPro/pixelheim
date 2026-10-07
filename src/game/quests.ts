@@ -94,3 +94,14 @@ export function questReady(state: GameState, quest: Quest): boolean {
   const entry = state.quests[quest.id];
   return !!entry && !entry.done && questProgress(state, quest) >= quest.objective.count;
 }
+
+/**
+ * Whether a giver has a quest to offer or to take back: the first one not
+ * done is untaken, or ready to turn in. A keeper behind a counter talks
+ * first only then (Vex's herbs could never be taken while every word opened
+ * the counter).
+ */
+export function questAwaitsWord(state: GameState, giverId: string): boolean {
+  const quest = questsFor(giverId).find((q) => !state.quests[q.id]?.done);
+  return !!quest && (!state.quests[quest.id] || questReady(state, quest));
+}

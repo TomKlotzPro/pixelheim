@@ -840,9 +840,12 @@ func _try_interact() -> void:
 	var beside := _npc_beside()
 	if not beside.is_empty():
 		player.face(Vector2(beside["side"]))
-		# Keepers trade instead of chatting: anyone in a shop opens its counter,
-		# the mayor opens the town ledger, a settled Mirelle her bank.
-		if GameState.active_shop() != "":
+		# Keepers trade instead of chatting: anyone in a shop opens its counter
+		# (unless they have a quest to offer or take back: then they talk, and
+		# the next word opens the counter), the mayor opens the town ledger, a
+		# settled Mirelle her bank.
+		var quest_word := Quests.awaits_word(beside["npc"]["id"], GameState.progression.quests, GameState.pack.items)
+		if GameState.active_shop() != "" and not quest_word:
 			_open_shop()
 		elif map.id == "town_hall":
 			add_child(preload("res://scripts/town_hall_screen.gd").new())

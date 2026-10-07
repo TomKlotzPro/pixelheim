@@ -82,3 +82,19 @@ func test_closing_a_conversation_resolves_quests() -> void:
 	state.message.connect(func(text: String) -> void: said.append(text))
 	state.finish_dialogue("elder")
 	assert_eq(said, ["Quest accepted - The Troll Toll: It squats where the old road bends. Mind your kneecaps."])
+
+
+func test_vex_talks_before_his_counter_only_while_his_quest_waits() -> void:
+	var waits := func() -> bool:
+		return Quests.awaits_word("alchemist_vex", state.progression.quests, state.pack.items)
+	assert_true(waits.call(), "untaken: he offers it")
+	state.finish_dialogue("alchemist_vex")
+	assert_eq(state.progression.quests["herbs_for_vex"], {"progress": 0, "done": false})
+	assert_false(waits.call(), "under way: the counter")
+	state.pack.add_item("forest_herb", 3)
+	assert_true(waits.call(), "herbs in hand: he takes them")
+	state.finish_dialogue("alchemist_vex")
+	assert_true(state.progression.quests["herbs_for_vex"]["done"])
+	assert_eq(state.pack.items.get("greater_potion", 0), 1)
+	assert_false(waits.call(), "done: the counter")
+	assert_false(Quests.awaits_word("shopkeeper", state.progression.quests, state.pack.items), "Odo gives no quest")

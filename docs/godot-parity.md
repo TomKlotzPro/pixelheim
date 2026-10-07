@@ -139,11 +139,11 @@ Each test of the web game's Playwright suite (`e2e/*.spec.ts`), and where it sta
 
 ## Release checks
 
-- `godot/tools/flows.sh` drives the ten flows a release must not break through the screenshot harness: spawn, portal, chest, shop, craft, quest, rank-up, fight, death and the inn, saves. Each one checks the harness report and leaves a picture in `godot/flows/`.
+- `godot/tools/flows.sh` drives the thirteen flows a release must not break through the screenshot harness: spawn, portal, chest, shop, craft, quest, rank-up, fight, death and the inn, saves, a conversation, leaving one, and smooth walking. Each one checks the harness report and leaves a picture in `godot/flows/`.
 - `test_save_codec.gd` loads a late-game save made by the web's own reducer (level 18, all fifteen floors, house, village, a business, savings) and checks Godot writes back exactly what the web writes.
 - The web build loads behind the title's own night scene (`godot/tools/splash.sh`), with the loading bar where the menu appears.
 - Draw calls, as the harness reports them: 76 in any map (tiles batch by texture, even zoomed out over the whole overworld), about 160 with a full screen like the inventory open, 158 on the title.
 
-## Known issues shared with the web
+## Fixed in both editions
 
-- Alchemist Vex's quest _Greens for the Cauldron_ can't be accepted in either edition: talking to him opens his counter, so his dialogue never closes and the quest never starts (PIX-125).
+- Alchemist Vex's quest _Greens for the Cauldron_ could never be accepted: talking to him always opened his counter, so no conversation closed and the quest never started. A keeper with a quest to offer or take back now talks first, and the next word opens the counter (`test_quests.gd::test_vex_talks_before_his_counter_only_while_his_quest_waits`, `quests.test.ts`).

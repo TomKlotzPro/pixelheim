@@ -43,6 +43,41 @@ describe("quests", () => {
     expect(s.worldMessage).not.toMatch(/Quest accepted/);
   });
 
+  it("Vex talks before his counter while his quest waits for a word", () => {
+    let s = structuredClone(initialState);
+    s.screen = "world";
+    s.hero = createHero("Gatherer", "warrior");
+    s.world = {
+      position: { mapId: "town_alchemist", x: 8, y: 3, facing: "up" },
+      discovered: {},
+      openedChests: [],
+      slain: [],
+    };
+    // His quest untaken: E is a conversation, and closing it takes the quest.
+    s = gameReducer(s, { type: "INTERACT" });
+    expect(s.dialogue?.npcId).toBe("alchemist_vex");
+    expect(s.openPanel).toBeFalsy();
+    s = talkedOut(s, "alchemist_vex");
+    expect(s.quests.herbs_for_vex).toEqual({ progress: 0, done: false });
+
+    // Under way: the counter, as for every keeper.
+    s = gameReducer(s, { type: "INTERACT" });
+    expect(s.openPanel).toBe("shop");
+    s = { ...s, openPanel: null, inventory: { forest_herb: 3 } };
+
+    // Herbs in hand: he talks again, and closing turns them in.
+    s = gameReducer(s, { type: "INTERACT" });
+    expect(s.dialogue?.npcId).toBe("alchemist_vex");
+    s = talkedOut(s, "alchemist_vex");
+    expect(s.quests.herbs_for_vex.done).toBe(true);
+    expect(s.inventory.forest_herb).toBeUndefined();
+    expect(s.inventory.greater_potion).toBe(1);
+
+    // Done: back to the counter.
+    s = gameReducer(s, { type: "INTERACT" });
+    expect(s.openPanel).toBe("shop");
+  });
+
   it("kill quests tick from battle victories", () => {
     let s = structuredClone(initialState);
     s.hero = createHero("Slayer", "warrior");
