@@ -23,6 +23,7 @@ func _ready() -> void:
 	offsets = Npcs.offsets_for(data, world.map)
 	cell = home + Npcs.pace_offset(data, offsets, _beat())
 	position = _center(cell)
+	reset_physics_interpolation()
 
 	var art := PunyArt.villager(data["sprite"])
 	sprite = AnimatedSprite2D.new()
@@ -52,7 +53,8 @@ func _process(_delta: float) -> void:
 	cell = next
 	var dir := "down" if step.y > 0 else ("up" if step.y < 0 else ("right" if step.x > 0 else "left"))
 	sprite.play(PunyArt.pick(sprite.sprite_frames, "walk", dir))
-	var tween := create_tween()
+	# Stepped on physics ticks, so the step is interpolated like any walk.
+	var tween := create_tween().set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)
 	tween.tween_property(self, "position", _center(cell), STEP_SECONDS)
 	tween.tween_callback(func() -> void: sprite.play(PunyArt.pick(sprite.sprite_frames, "idle", "down")))
 

@@ -98,7 +98,8 @@ The final `print` line reports current map id, hero cell, HP and gold for assert
 
 `godot/tools/flows.sh` runs the flows a release must not break (spawn,
 portal, chest, shop, craft, quest, rank-up, fight, death and the inn, saves,
-reading a conversation to its end and leaving one with Esc)
+reading a conversation to its end, leaving one with Esc, and walking without
+the camera shake)
 through the harness. Each one checks the harness's report line and leaves its
 picture in `godot/flows/<name>.png` (gitignored). `godot/tools/flows.sh fight die`
 runs just those. It needs a window, so it runs locally, not in CI.
