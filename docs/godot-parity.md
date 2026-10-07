@@ -38,14 +38,13 @@ This is where each web feature stands in Godot.
 
 ## Not yet in Godot
 
-| Web feature                                | Status                                                                                                                                        |
-| ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| Mini-map in the corner of the world screen | Not ported; the world map (M) covers it                                                                                                       |
-| Worn gear drawn on the hero                | The hero is the role's Puny sheet; new armor or a weapon changes nothing you can see in the world                                             |
-| A craft guide in the pack                  | Nothing in the pack says crafting happens at Vex's and Hilda's counters or the home workbench                                                 |
-| Changelog page                             | Not ported; the classic edition still has it                                                                                                  |
-| Touch controls                             | No virtual stick; the web export needs a keyboard or a gamepad                                                                                |
-| Interiors in Puny art                      | The town's houses are Shade's Medieval Age pack now (PIX-133); the rooms inside still use Pixel Crawler (the inn's hearth is a furnace frame) |
+| Web feature                                | Status                                                                                            |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------- |
+| Mini-map in the corner of the world screen | Not ported; the world map (M) covers it                                                           |
+| Worn gear drawn on the hero                | The hero is the role's Puny sheet; new armor or a weapon changes nothing you can see in the world |
+| A craft guide in the pack                  | Nothing in the pack says crafting happens at Vex's and Hilda's counters or the home workbench     |
+| Changelog page                             | Not ported; the classic edition still has it                                                      |
+| Touch controls                             | No virtual stick; the web export needs a keyboard or a gamepad                                    |
 
 ## E2E spec by spec
 
