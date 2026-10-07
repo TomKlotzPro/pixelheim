@@ -44,3 +44,16 @@ static func progress(quest: Dictionary, entries: Dictionary, items: Dictionary) 
 static func is_ready(quest: Dictionary, entries: Dictionary, items: Dictionary) -> bool:
 	var entry: Dictionary = entries.get(quest["id"], {})
 	return not entry.is_empty() and not entry["done"] and progress(quest, entries, items) >= int(quest["objective"]["count"])
+
+
+## Whether a giver has a quest to offer or to take back (questAwaitsWord):
+## the first one not done is untaken, or ready to turn in. A keeper behind a
+## counter talks first only then (Vex's herbs could never be taken while
+## every word opened the counter).
+static func awaits_word(giver: String, entries: Dictionary, items: Dictionary) -> bool:
+	for quest: Dictionary in for_giver(giver):
+		var entry: Dictionary = entries.get(quest["id"], {})
+		if entry.get("done", false):
+			continue
+		return entry.is_empty() or is_ready(quest, entries, items)
+	return false

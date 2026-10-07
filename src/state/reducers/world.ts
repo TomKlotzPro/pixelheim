@@ -18,7 +18,7 @@ import type { WorldAction } from "../actions";
 import { DIRECTION_DELTAS, HOUSE_DEED_COST, HOUSE_DOOR, INN_MAP_ID, WORKBENCH_COST } from "../shared";
 import { restCostFor, townTierOf } from "../../game/economy/town";
 import { addItem, removeItem } from "../../game/economy/inventory";
-import { questProgress, questReady, questsFor } from "../../game/quests";
+import { questAwaitsWord, questProgress, questReady, questsFor } from "../../game/quests";
 
 /**
  * Everything E can touch inside the player's house (PIX-33/34/109): placed
@@ -203,8 +203,10 @@ export function worldReducer(draft: GameState, action: WorldAction): void {
       if (!beside) return;
       position.facing = beside.facing;
       // Keepers trade instead of chatting: talking to whoever runs a shop
-      // opens their counter (the menu no longer jumps at you on entry).
-      if (SHOP_MAPS[position.mapId]) {
+      // opens their counter (the menu no longer jumps at you on entry),
+      // unless they have a quest to offer or take back: then they talk, and
+      // the next word opens the counter.
+      if (SHOP_MAPS[position.mapId] && !questAwaitsWord(draft, beside.npc.id)) {
         draft.openPanel = "shop";
         return;
       }
