@@ -319,6 +319,30 @@ static func keycap_text(cap: PanelContainer, key: String) -> void:
 	(cap.get_child(0) as Label).text = key
 
 
+## A screen eases in once built: the dark fades up and the pages rise a few
+## pixels into place, a fifth of a second (at once with reduce motion).
+static func enter(layer: CanvasLayer) -> void:
+	if not is_instance_valid(layer):
+		return
+	Sound.play_ui("open")
+	layer.tree_exiting.connect(Sound.play_ui.bind("close"), CONNECT_ONE_SHOT)
+	if GameState.settings.reduce_motion:
+		return
+	var tween := layer.create_tween().set_parallel()
+	for child in layer.get_children():
+		if not child is CanvasItem:
+			continue
+		var item := child as CanvasItem
+		item.modulate.a = 0.0
+		tween.tween_property(item, "modulate:a", 1.0, 0.14)
+		# The backdrop only fades; what stands on it rises.
+		if child is Control and not child is ColorRect:
+			var control := child as Control
+			var settled := control.position
+			control.position = settled + Vector2(0, 10)
+			tween.tween_property(control, "position", settled, 0.2).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+
+
 ## A gold coin: brass rim, lit face, a stamped mark (the purse in the dock).
 static func coin() -> ImageTexture:
 	if not _frames.has("coin"):
