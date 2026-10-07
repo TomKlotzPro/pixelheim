@@ -284,6 +284,10 @@ func _run_test_harness() -> void:
 		GameState.pack.add_item("cheese_wheel")
 		world.add_child(preload("res://scripts/journal_screen.gd").new())
 		await get_tree().create_timer(0.3).timeout
+	if args.has("dockmenu"):
+		# The dock's menu of screens, opened as its button would.
+		world.dock._toggle_menu()
+		await get_tree().create_timer(0.2).timeout
 	if args.has("lineup"):
 		# Every hero role, villager and monster sheet, walking down then right.
 		_lineup()

@@ -319,6 +319,30 @@ static func keycap_text(cap: PanelContainer, key: String) -> void:
 	(cap.get_child(0) as Label).text = key
 
 
+## A gold coin: brass rim, lit face, a stamped mark (the purse in the dock).
+static func coin() -> ImageTexture:
+	if not _frames.has("coin"):
+		var rows := [
+			"..ooo..",
+			".oLLGo.",
+			"oLGGGBo",
+			"oLGBGBo",
+			"oGGGBBo",
+			".oBBBo.",
+			"..ooo..",
+		]
+		var colors := {"o": NIGHT, "L": BRASS_LIGHT, "G": GOLD, "B": BRASS}
+		var art := Image.create(7, 7, false, Image.FORMAT_RGBA8)
+		art.fill(Color(0, 0, 0, 0))
+		for y in rows.size():
+			for x in String(rows[y]).length():
+				var key: String = rows[y][x]
+				if colors.has(key):
+					art.set_pixel(x, y, colors[key])
+		_frames["coin"] = _texture(art)
+	return _frames["coin"]
+
+
 ## The gold "more to read" arrow under a page: pixel art, blinking elsewhere.
 static func arrow() -> TextureRect:
 	if not _frames.has("arrow"):
