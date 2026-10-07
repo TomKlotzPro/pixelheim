@@ -158,13 +158,18 @@ func _card() -> void:
 	tagline.custom_minimum_size = Vector2(VIEW.x, 0)
 	tagline.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(tagline)
+	# The menu is centred by a full-width container, so a long first line
+	# ("Continue - name, Lv N") widens it both ways instead of to the right.
+	var middle := CenterContainer.new()
+	middle.position = Vector2(0, 310)
+	middle.custom_minimum_size = Vector2(VIEW.x, 0)
+	add_child(middle)
 	menu = VBoxContainer.new()
-	menu.position = Vector2(VIEW.x / 2 - 130, 310)
-	menu.custom_minimum_size = Vector2(260, 0)
+	menu.custom_minimum_size = Vector2(300, 0)
 	menu.add_theme_constant_override("separation", 10)
-	add_child(menu)
+	middle.add_child(menu)
 	if not GameState.standing_in:
-		options.append({"label": "Continue  -  %s, Lv %d" % [GameState.hero.hero_name, GameState.hero.level], "action": _continue})
+		options.append({"label": "Continue  %s, Lv %d" % [GameState.hero.hero_name, GameState.hero.level], "action": _continue})
 	options.append({"label": "New Game", "action": _new_game})
 	options.append({"label": "Saves", "action": _saves})
 	options.append({"label": "Options", "action": _options})
