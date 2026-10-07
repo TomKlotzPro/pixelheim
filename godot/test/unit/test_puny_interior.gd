@@ -78,3 +78,9 @@ func test_the_inn_wakes_its_guests_in_an_open_bed() -> void:
 	var bed_foot := Vector2i(int(rest["x"]), int(rest["y"]))
 	assert_false(plan["blocked"].has(bed_foot), "where defeat wakes the hero stays walkable")
 	assert_eq(plan["pieces"].get(bed_foot), 1482, "and it is the bed's foot")
+
+
+func test_every_piece_of_furniture_has_shades_art() -> void:
+	for id: String in Catalog._data()["items"]:
+		if Catalog.item(id).get("category", "") == "furniture":
+			assert_true(PunyInterior.PLACED.has(id), "%s needs a PunyInterior.PLACED entry" % id)

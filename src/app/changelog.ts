@@ -11,6 +11,18 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.72.0",
+    date: "2026-10-07",
+    codename: "Stone and Water",
+    notes: [
+      "THE SQUARE'S FOUNTAIN: a stone basin of clear water with a jet at its heart, where a plain old sprite used to stand - and the village well wears a little roof",
+      "THE VILLAGE, FINISHED: lamps are flickering torches, the shrine a stone knight, the market stalls crates of greens and reds, fences join into log fences, and chests, flowers, the road's dropped pouch and the wild herbs all match the houses at last",
+      "YOU BUMP INTO WHAT YOU SEE: walk behind the well's roof and stop at the fountain's rim, bushes and stumps in the fields stand in your way (never where they'd close one), logs and twigs lie flat to step over, and villagers keep a polite step away instead of letting you stand inside them",
+      "A HOME IN THE SAME HAND: the rug, planter, bookshelf, banner, candelabra and bench you place at home are drawn like the rest of the village, the rug actually shows, and a bed's foot is the bed - rest there, but nothing can be set on it",
+      "Vex's quest can finally be taken: he talks before he trades while Greens for the Cauldron waits, in both editions",
+    ],
+  },
+  {
     version: "0.71.0",
     date: "2026-10-07",
     codename: "Steady Steps",

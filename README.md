@@ -6,7 +6,7 @@
 
 <p align="center">
   <b>A retro pixel-art open-world RPG in Godot 4.7: one hero, one village, fifteen floors of a mountain and what lies under it.</b><br />
-  Fifteen floors. Two bosses. Infinite cheese wheels. Currently v0.71 - 1.0 has to be earned.
+  Fifteen floors. Two bosses. Infinite cheese wheels. Currently v0.72 - 1.0 has to be earned.
 </p>
 
 ---
@@ -23,7 +23,7 @@ What changed release by release: the **What's new** link under the title menu, o
 
 You wake in Pixelheim village, in an open world called **the Ashenreach**: walk the roads (safe) or the wilds (not safe), talk to villagers, forage, trade, and climb the Ashen Mountain - ten floors of increasingly rude monsters - to slay **Fafnyr the Ashen** at the summit. Behind the dragon's hoard a stairway descends: five more floors of the **Undermountain**, down to **Morvax the Deathless**.
 
-- **One hand-drawn world**: hero, villagers, monsters, terrain and dungeons in Shade's Puny art; the town's timber houses and the rooms behind their doors from his Medieval Age set
+- **One hand-drawn world**: hero, villagers, monsters, terrain and dungeons in Shade's Puny art; the town's timber houses, its wells, fountain, torches and fences, and the rooms behind its doors from his Medieval Age set
 - **Real-time fights**: monsters prowl in packs and hunt you; swing, cast your skills on the number keys, and watch the ailments land - on the same numbers the game has always used
 - **7 classes that ascend**: every 5 levels a rank and its aura, and from the first rank a path that forks into 14 identities, each with a signature skill
 - **Skill trees, stats and gear**: three named paths per class, stat points that explain themselves, loot with rarities on a nine-slot paper doll
@@ -59,7 +59,7 @@ godot/tools/flows.sh                                          # the release flow
 pnpm godot:sync                                               # re-export maps and data from src/
 ```
 
-**Paid art.** The town's houses and rooms use Shade's paid _Puny World Medieval Age_ pack, which may not be redistributed, so it lives in the private `TomKlotzPro/pixelheim-assets` repository. `pnpm godot:art` installs it with your GitHub login, and the deploy fetches it with a read-only deploy key. Without it the game still runs, with plainer buildings.
+**Paid art.** The town's houses, props and rooms use Shade's paid _Puny World Medieval Age_ pack, which may not be redistributed, so it lives in the private `TomKlotzPro/pixelheim-assets` repository. `pnpm godot:art` installs it with your GitHub login, and the deploy fetches it with a read-only deploy key. Without it the game still runs, with plainer buildings and props.
 
 More on the Godot project - the save format, the screenshot harness, the release flows, web export - in [`godot/README.md`](godot/README.md).
 
@@ -72,7 +72,7 @@ godot/                 the game (Godot 4.7, GDScript)
                        - SaveCodec, Bestiary, Economy, Skills, Quests, Town... - tested with GUT
     world.gd           the world: maps, actors, the HUD, interaction
     *_screen.gd        menus and screens, all styled by ui_style.gd
-    puny_*.gd          Shade's art laid over the maps: terrain, dungeons, the town, rooms
+    puny_*.gd          Shade's art laid over the maps: terrain, dungeons, the town, props, rooms
   assets/              art (CC0 Puny packs), fonts, audio, and data exported from src/
   test/unit/           GUT tests
   tools/flows.sh       the release flows through the screenshot harness
