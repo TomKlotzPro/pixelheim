@@ -469,12 +469,20 @@ func _enter_map(next: MapData, arrival: Vector2i) -> void:
 	# Far off (the overworld's skyline) a town stays one Puny house icon.
 	var near := next.floor_level == 0 and next.id not in PunyTerrain.SKYLINE_MAPS
 	buildings = PunyTown.compose(next.grid) if near else {"pieces": {}, "decor": {}, "freed": []}
-	for cell: Vector2i in buildings["freed"]:
-		next.grid[cell] = "grass"
-	# What a house covers is house: its corners stop the hero and villagers too.
+	# What a house covers is house: its corners stop the hero and villagers
+	# too; the roof cells it leaves open are ground.
 	for cell: Vector2i in buildings["pieces"]:
 		if not String(next.grid.get(cell, "")).begins_with("door"):
 			next.grid[cell] = "roof"
+	for cell: Vector2i in buildings["freed"]:
+		next.grid[cell] = "grass"
+	# Inside, Shade's rooms (PunyInterior): furniture spreading onto the floor
+	# blocks it, like the rest of the furniture.
+	if PunyTown.available() and PunyInterior.is_room(next.id):
+		var room: Dictionary = PunyInterior.plan(next.id, next.grid)
+		buildings = {"pieces": room["pieces"], "decor": {}, "freed": [], "floor": room["floor"], "void": room["void"]}
+		for cell: Vector2i in room["blocked"]:
+			next.grid[cell] = "wall"
 	ground = _build_dungeon(next) if next.floor_level > 0 else _build_ground(next)
 	add_child(ground)
 	tile_layer = _build_tile_layer(next)
@@ -526,6 +534,8 @@ func _cell_center(cell: Vector2i) -> Vector2:
 ## cliffs and rippling water on the dual grid, half a tile up-left of the
 ## cells so every terrain edge sits on a cell edge.
 func _build_ground(data: MapData) -> Node2D:
+	if buildings.has("floor"):
+		return _build_room(data)
 	var root := Node2D.new()
 	var layer := TileMapLayer.new()
 	layer.tile_set = PunyTerrain.tileset()
@@ -572,6 +582,22 @@ func _build_ground(data: MapData) -> Node2D:
 		for cell: Vector2i in buildings[part]:
 			PunyTown.place(houses, cell, buildings[part][cell])
 		root.add_child(houses)
+	return root
+
+## A room in Shade's Medieval Age pack (PunyInterior): the dark beyond its
+## walls, the floor and rug, then walls, door and furniture.
+func _build_room(data: MapData) -> Node2D:
+	var root := Node2D.new()
+	var dark := ColorRect.new()
+	dark.color = Color("0b0a0e")
+	dark.size = Vector2(data.size * TILE)
+	root.add_child(dark)
+	for part: String in ["floor", "pieces"]:
+		var layer := TileMapLayer.new()
+		layer.tile_set = PunyTown.tileset()
+		for cell: Vector2i in buildings[part]:
+			PunyTown.place(layer, cell, buildings[part][cell])
+		root.add_child(layer)
 	return root
 
 ## A dungeon floor in Shade's Puny Dungeon: stone, walls by his grammar and
@@ -988,6 +1014,7 @@ func _build_tile_layer(data: MapData) -> TileMapLayer:
 		var tile: String = data.grid[cell]
 		var puny_drawn: bool = (
 			data.floor_level > 0
+			or buildings.has("floor")
 			or buildings["pieces"].has(cell)
 			or WorldTiles.GROUND_TILES.has(tile)
 			or (outdoor and PunyTerrain.wall_piece(data.grid, cell) >= 0)

@@ -21,4 +21,4 @@ licensed to Tom Klotz for use in commercial projects, modification allowed,
 no redistribution or resale. It is fetched from the private
 TomKlotzPro/pixelheim-assets repository (pnpm godot:art locally, a deploy key
 in CI) and git-ignored here; scripts/puny_town.gd builds the town's houses
-from it.
+and scripts/puny_interior.gd their rooms from it.
