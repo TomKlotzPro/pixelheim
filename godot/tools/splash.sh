@@ -6,7 +6,7 @@ set -euo pipefail
 
 cd "$(dirname "$0")/.."
 rm -f screenshot.png
-godot --path . -- --screenshot title splash | grep "screenshot saved"
+perl -e "alarm 60; exec @ARGV" godot --path . -- --screenshot title splash | grep "screenshot saved"
 mv screenshot.png assets/splash.png
 godot --headless --path . --import >/dev/null 2>&1
 echo "assets/splash.png"

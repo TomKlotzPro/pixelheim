@@ -48,9 +48,7 @@ func _ready() -> void:
 	status.custom_minimum_size = Vector2(1120, 0)
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(status)
-	add_child(UiStyle.label(
-		"Esc  close      W/S  choose      E  do it", 14, UiStyle.FADED, Vector2(80, 660)
-	))
+	add_child(UiStyle.footer("Esc  close      W/S  choose      E  do it", Vector2(80, 660)))
 	_refresh()
 
 

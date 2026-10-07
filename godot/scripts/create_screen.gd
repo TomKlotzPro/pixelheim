@@ -59,7 +59,7 @@ func _ready() -> void:
 	footer.add_child(begin)
 	status = UiStyle.label("", 14, UiStyle.LAMP, Vector2(80, 664))
 	add_child(status)
-	add_child(UiStyle.label("Up/Down  role    PgUp/PgDn  look    Enter  begin    Esc  back", 13, UiStyle.FADED, Vector2(700, 690)))
+	add_child(UiStyle.footer("Up/Down  role    PgUp/PgDn  look    Enter  begin    Esc  back", Vector2(700, 690)))
 	_refresh()
 	name_field.grab_focus.call_deferred()
 

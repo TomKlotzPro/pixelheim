@@ -1,9 +1,12 @@
-Fonts for the Godot build, both under the SIL Open Font License 1.1.
+Fonts for the Godot build. All are pixel fonts, rendered at their own pixel
+size and scaled by whole numbers only (scripts/ui_style.gd).
 
-- press-start-2p.woff2  Press Start 2P by CodeMan38. Synced from the web game
-  (src/assets/fonts) by scripts/sync-godot-assets.mjs. Headings and the logo
-  only, as on the web.
-- CourierPrime-*.ttf    Courier Prime by The Courier Prime Project Authors
-  (github.com/quoteunquoteapps/CourierPrime), via Google Fonts; licence in
-  OFL-CourierPrime.txt. The body type: the web game sets Courier New, a
-  system font a web export can't reach, so the build carries this cut of it.
+- PixelOperator*.ttf     Pixel Operator by Jayvee Enaguas, CC0 1.0 (licence in
+  PixelOperator-LICENSE.txt), via dafont.com/pixel-operator.font. The body
+  type: PixelOperator(-Bold) at 16px for dense text (rows, descriptions,
+  hints), PixelOperator8(-Bold) at 2x for what is read at a glance
+  (dialogue, names, menus, values). PixelOperator.ttf is the project's
+  default font (gui/theme/custom_font).
+- press-start-2p.woff2   Press Start 2P by CodeMan38, SIL Open Font License 1.1.
+  Synced from the web game (src/assets/fonts) by scripts/sync-godot-assets.mjs.
+  Headings and the logo, as on the web.

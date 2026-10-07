@@ -28,7 +28,7 @@ window/stretch/aspect="keep"
 
 [gui]
 
-theme/custom_font="res://assets/fonts/CourierPrime-Bold.ttf"
+theme/custom_font="res://assets/fonts/PixelOperator.ttf"
 
 [rendering]
 

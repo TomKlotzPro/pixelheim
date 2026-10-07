@@ -66,6 +66,7 @@ var sky_overlay: ColorRect
 var harness := false
 
 func _ready() -> void:
+	UiStyle.setup()
 	var args := OS.get_cmdline_user_args()
 	harness = args.has("--screenshot")
 	if harness:
@@ -256,10 +257,8 @@ func log_line(line: String) -> void:
 ## The battle log: recent lines stack bottom-left and fade.
 func _log(lines: Array) -> void:
 	for line: String in lines:
-		var label := Label.new()
-		label.text = line
-		label.add_theme_font_size_override("font_size", 14)
-		label.add_theme_color_override("font_outline_color", Color(0.05, 0.05, 0.08))
+		var label := UiStyle.label(line, 12, UiStyle.INK)
+		label.add_theme_color_override("font_outline_color", UiStyle.NIGHT)
 		label.add_theme_constant_override("outline_size", 4)
 		log_box.add_child(label)
 		var tween := label.create_tween()
@@ -1056,8 +1055,10 @@ func _build_hud() -> void:
 	message_label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
 	message_label.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	message_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	message_label.add_theme_color_override("font_outline_color", Color(0.1, 0.08, 0.12))
-	message_label.add_theme_constant_override("outline_size", 4)
+	UiStyle.sized(message_label, 16)
+	message_label.add_theme_color_override("font_color", UiStyle.INK)
+	message_label.add_theme_color_override("font_outline_color", UiStyle.NIGHT)
+	message_label.add_theme_constant_override("outline_size", 6)
 	message_label.modulate.a = 0.0
 	hud.add_child(message_label)
 
