@@ -26,7 +26,7 @@ FLOWS=(
 	"fight|fight kill|screenshot saved"
 	"die|die|map=town_inn cell=\(2, 3\)"
 	"saves|saves|screenshot saved"
-	"talk|--map town talk --keys e,e,e|open=none"
+	"talk|--map town talk --keys e,e,e,e|open=none"
 	"leave|--map town talk --keys e,esc|open=none"
 	"mimic|--map mirefen mimic --wait 0.75|map=mirefen cell=\(42, 13\) hp=42"
 	"motion|--map town motion|backsteps=[01]$"

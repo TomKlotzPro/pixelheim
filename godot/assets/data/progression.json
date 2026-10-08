@@ -159,5 +159,133 @@
     "#9ab0d8",
     "#e8c34a",
     "#4ae6c8"
-  ]
+  ],
+  "mainQuest": {
+    "chapters": [
+      {
+        "title": "Under the Mountain",
+        "steps": [
+          {
+            "id": "ask_sela",
+            "when": {
+              "kind": "questTaken",
+              "questId": "slime_trouble"
+            },
+            "text": "Ask Sela at the inn for work",
+            "hint": "Sela at the inn always has a job going. Start there - a hero has to eat."
+          },
+          {
+            "id": "slimes",
+            "when": {
+              "kind": "questDone",
+              "questId": "slime_trouble"
+            },
+            "text": "Flatten three slimes in the fields east of town, then see Sela",
+            "hint": "Slimes nest in the fields east of the town gate. Three of them, and Sela pays."
+          },
+          {
+            "id": "cellar",
+            "when": {
+              "kind": "cleared",
+              "level": 1
+            },
+            "text": "Clear the Mossy Cellar, the mountain's first floor",
+            "hint": "The gate to the Ashen Mountain stands north of town, past the bridge. The first floor is only a cellar."
+          },
+          {
+            "id": "first_brew",
+            "when": {
+              "kind": "questDone",
+              "questId": "herbs_for_vex"
+            },
+            "text": "Brew a first potion at Vex's cauldron",
+            "hint": "Vex behind the BREWS door will show you the cauldron. Potions you brew cost you a herb, not a fortune."
+          },
+          {
+            "id": "crypt",
+            "when": {
+              "kind": "cleared",
+              "level": 3
+            },
+            "text": "Clear the Barrow Crypt (floor 3)",
+            "hint": "Below the woods lies the Barrow Crypt. The dead there don't stay down without help."
+          }
+        ]
+      },
+      {
+        "title": "The Ashen Throne",
+        "steps": [
+          {
+            "id": "watchtower",
+            "when": {
+              "kind": "cleared",
+              "level": 5
+            },
+            "text": "Clear the Ruined Watchtower (floor 5)",
+            "hint": "Orcs hold the old watchtower now. Floor five. Bring potions."
+          },
+          {
+            "id": "forge",
+            "when": {
+              "kind": "cleared",
+              "level": 7
+            },
+            "text": "Clear the Sunken Forge (floor 7)",
+            "hint": "The golems of the Sunken Forge still work the bellows for no one. Floor seven."
+          },
+          {
+            "id": "aerie",
+            "when": {
+              "kind": "cleared",
+              "level": 9
+            },
+            "text": "Clear the Stormcrag Aerie (floor 9)",
+            "hint": "Wyverns nest in the Stormcrag Aerie, one floor below the dragon. Mind the sky."
+          },
+          {
+            "id": "fafnyr",
+            "when": {
+              "kind": "cleared",
+              "level": 10
+            },
+            "text": "Slay Fafnyr on the Ashen Throne (floor 10)",
+            "hint": "Fafnyr sleeps on the hoard at the top of the mountain. Ten floors up. End it."
+          }
+        ]
+      },
+      {
+        "title": "The Deathless",
+        "steps": [
+          {
+            "id": "stair",
+            "when": {
+              "kind": "cleared",
+              "level": 11
+            },
+            "text": "Take the stair below the hoard: clear the Sunless Stair (floor 11)",
+            "hint": "You beat the dragon. Then you've seen the stair behind its hoard. That's where the whispers come from."
+          },
+          {
+            "id": "hoard",
+            "when": {
+              "kind": "cleared",
+              "level": 13
+            },
+            "text": "Clear the Vaulted Hoard (floor 13)",
+            "hint": "Deeper still, a vault the dead keep for their master. Mind the chests that bite."
+          },
+          {
+            "id": "morvax",
+            "when": {
+              "kind": "cleared",
+              "level": 15
+            },
+            "text": "Cast down Morvax on the Throne of the Deathless (floor 15)",
+            "hint": "Morvax was one of us once, a hero of Pixelheim. Whatever he is now, it ends at the bottom."
+          }
+        ]
+      }
+    ],
+    "done": "Pixelheim is safe. The mountain is quiet, and the tavern isn't."
+  }
 }
