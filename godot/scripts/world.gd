@@ -648,6 +648,9 @@ func _enter_map(next: MapData, arrival: Vector2i) -> void:
 		GameState.save_now()
 	floor_foes = 0
 	_prologue_arrive(next)
+	# A festival day: confetti over the square (PIX-159).
+	if next.id == "town" and GameState.festival_on():
+		_festival()
 	_play_reveals.call_deferred()
 	_keep_hours(true)
 	camera.limit_right = next.size.x * TILE
@@ -681,6 +684,11 @@ func _spawn_npcs(data: MapData) -> void:
 	# On the night of the fire only the survivors are about (PIX-152).
 	if GameState.progression.prologue != Prologue.DONE and data.id == "town":
 		folk = Prologue.survivors()
+	# A festival day's barker runs the ring toss on the square (PIX-159).
+	if data.id == "town" and GameState.festival_on() and GameState.progression.prologue == Prologue.DONE:
+		var barker: Dictionary = Npcs._data()["festivalBarker"].duplicate()
+		barker.merge({"x": int(Town.festival("barker")["x"]), "y": int(Town.festival("barker")["y"])})
+		folk.append(barker)
 	for npc: Dictionary in folk:
 		var villager := preload("res://scripts/npc.gd").new()
 		villager.world = self
@@ -830,6 +838,10 @@ func _talk(npc: Dictionary) -> void:
 	if npc["id"] in ["elder", "mayor"]:
 		npc = npc.duplicate()
 		npc["lines"] = npc["lines"] + [MainQuest.hint(GameState.progression, GameState.settlement)]
+	# The festival's barker has his say, then the ring toss (PIX-159).
+	if npc["id"] == "festival_barker":
+		GameState.dialogue_closed.connect(func(_who: String) -> void:
+			add_child(preload("res://scripts/ring_toss_screen.gd").new()), CONNECT_ONE_SHOT)
 	# The mayor has his say, then opens the projects ledger (PIX-145).
 	if npc["id"] == "mayor":
 		GameState.dialogue_closed.connect(func(_who: String) -> void:
@@ -1033,13 +1045,36 @@ func hit_stop(seconds: float) -> void:
 func _keep_hours(arriving := false) -> void:
 	var night := DayNight.is_night(GameState.world.steps)
 	view.set_night(night)
+	# At dusk, and all day on a festival, the town's folk walk to the square
+	# (PIX-159); each takes a spot of its own.
+	var gathering: bool = map.id == "town" and not night and GameState.progression.prologue == Prologue.DONE \
+		and (DayNight.is_dusk(GameState.world.steps) or GameState.festival_on())
+	var spots := Town.gathering_spots(map) if gathering else ([] as Array[Vector2i])
+	var taken := {}
 	for villager in get_tree().get_nodes_in_group("npcs"):
 		if villager.is_queued_for_deletion():
 			continue
-		if not villager.data.get("wander", false) and not String(villager.data["id"]).begins_with("worker_"):
+		var id := String(villager.data["id"])
+		if not villager.data.get("wander", false) and not id.begins_with("worker_"):
 			continue
-		if villager.away != night and (arriving or not in_view(villager.position, TILE)):
+		var home_seen := in_view(_cell_center(villager.home), TILE)
+		if villager.away != night and (arriving or (not in_view(villager.position, TILE) and (night or not home_seen))):
 			villager.set_away(night)
+		if villager.away or id.begins_with("worker_") or not villager.data.get("wander", false):
+			continue
+		if gathering and villager.gather_at == villager.NOWHERE and taken.size() < spots.size():
+			var index := Npcs.id_hash(id) % spots.size()
+			while taken.has(index):
+				index = (index + 1) % spots.size()
+			taken[index] = true
+			villager.gather_at = spots[index]
+			if arriving or (not in_view(villager.position, TILE) and not in_view(_cell_center(spots[index]), TILE)):
+				villager.place_at(spots[index])
+		elif gathering and villager.gather_at != villager.NOWHERE:
+			taken[spots.find(villager.gather_at)] = true
+		elif not gathering and villager.gather_at != villager.NOWHERE and not in_view(villager.position, TILE) and not home_seen:
+			# The gathering's over by day (a night skipped at the inn): home.
+			villager.set_away(false)
 
 
 ## The ending (PIX-150): home to the square, the camera touring each age's
@@ -1166,6 +1201,11 @@ func _play_reveals() -> void:
 					"at": _cell_center(Town.project_board() + Vector2i(0, 5)),
 					"line": "Pixelheim is a %s now." % String(Town.tier(int(key))["name"]).to_lower(),
 				})
+				if GameState.festival_on():
+					stops.append({
+						"at": _cell_center(Vector2i(int(Town.festival("barker")["x"]), int(Town.festival("barker")["y"]))),
+						"line": "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw.",
+					})
 			"home":
 				stops.append({"at": _cell_center(Town.project_board() + Vector2i(0, 5)), "line": Town.homecoming(int(key))})
 			"hunt":

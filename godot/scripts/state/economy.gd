@@ -22,14 +22,25 @@ static func shop_at(map_id: String) -> String:
 	return _data()["shopMaps"].get(map_id, "")
 
 
-## Item ids a shop stocks once `unlocked_level` floors are open, catalog order.
-static func shop_stock(shop_id: String, unlocked_level: int) -> Array[String]:
+## Item ids a shop stocks once `unlocked_level` floors are open, catalog
+## order; then what the town's age has brought (PIX-159): stock the shop
+## carries early once Pixelheim has grown, and each age's signature item.
+static func shop_stock(shop_id: String, unlocked_level: int, town_tier := 0) -> Array[String]:
 	var stock: Array[String] = []
 	var entries: Dictionary = shop(shop_id).get("stock", {})
 	for item_id: String in entries:
 		if int(entries[item_id]) <= unlocked_level:
 			stock.append(item_id)
+	var by_age: Dictionary = shop(shop_id).get("ageStock", {})
+	for item_id: String in by_age:
+		if int(by_age[item_id]) <= town_tier and item_id not in stock:
+			stock.append(item_id)
 	return stock
+
+
+## The age that brings an item to a shop, or 0.
+static func age_of(shop_id: String, item_id: String) -> int:
+	return int(shop(shop_id).get("ageStock", {}).get(item_id, 0))
 
 
 static func buy_price(item_id: String) -> int:

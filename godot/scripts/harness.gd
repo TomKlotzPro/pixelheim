@@ -235,6 +235,20 @@ func _run_test_harness() -> void:
 		GameState.progression.unlocked_level = maxi(GameState.progression.unlocked_level, mini(deepest + 1, Dungeons.floor_count()))
 		# The named monsters those floors post come out to their lairs (PIX-156).
 		world.spawn_lairs()
+	if args.has("festival"):
+		# A festival day (PIX-159): the town comes back with its stalls, its
+		# barker and confetti, everyone on the square.
+		GameState._start_festival(maxi(1, GameState.town_tier()))
+		world.map = world._load_map("town")
+		world._enter_map(world.map, world.player_cell)
+		await get_tree().create_timer(0.3).timeout
+	if args.has("dusk"):
+		# Evening (PIX-159): the town's folk on the square.
+		GameState.world.steps = 0.5 * DayNight.DAY_CYCLE_STEPS
+		world._keep_hours(true)
+	if args.has("ringtoss"):
+		world.add_child(preload("res://scripts/ring_toss_screen.gd").new())
+		await get_tree().create_timer(0.3).timeout
 	if args.has("worldmap"):
 		# After `--cleared`: the lairs it posts are on the map.
 		var screen := preload("res://scripts/map_screen.gd").new()

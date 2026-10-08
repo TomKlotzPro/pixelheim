@@ -489,5 +489,16 @@
       "They say you killed {beast}. I'll believe it when I see the head. ...Oh. That's the head.",
       "{beast}, gone! My mother won't believe it. I barely believe it."
     ]
+  },
+  "festivalBarker": {
+    "id": "festival_barker",
+    "mapId": "town",
+    "sprite": "merchant",
+    "name": "Barker Jory",
+    "wander": false,
+    "lines": [
+      "Roll up, roll up! Three rings, three pegs - land two and the prize is yours!",
+      "Free to play on a festival day. The mayor's paying, so throw as often as you like."
+    ]
   }
 }

@@ -22,6 +22,13 @@
         "furn_bench": 2,
         "furn_banner": 4,
         "furn_bookshelf": 4
+      },
+      "ageStock": {
+        "furn_banner": 2,
+        "lamplighters_supper": 2,
+        "furn_bookshelf": 3,
+        "fountain_roast": 3,
+        "city_banquet": 4
       }
     },
     "smith": {
@@ -64,6 +71,14 @@
         "band_of_grit": 5,
         "ring_of_clarity": 5,
         "quickstep_ring": 5
+      },
+      "ageStock": {
+        "steel_shield": 2,
+        "lamplit_blade": 2,
+        "iron_armor": 3,
+        "fountain_guard": 3,
+        "tower_shield": 4,
+        "city_plate": 4
       }
     },
     "alchemist": {
@@ -84,6 +99,14 @@
         "elixir": 4,
         "ember_salve": 4,
         "greater_potion": 11
+      },
+      "ageStock": {
+        "elixir": 2,
+        "ember_salve": 2,
+        "lantern_draught": 2,
+        "fountain_tonic": 3,
+        "greater_potion": 4,
+        "phoenix_draught": 4
       }
     }
   },

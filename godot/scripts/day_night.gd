@@ -24,6 +24,12 @@ static func is_night(steps: float) -> bool:
 	return t >= 0.58 and t < 0.92
 
 
+## The evening before it (PIX-159): the hour the town gathers on the square.
+static func is_dusk(steps: float) -> bool:
+	var t := fposmod(steps, float(DAY_CYCLE_STEPS)) / DAY_CYCLE_STEPS
+	return t >= 0.47 and t < 0.58
+
+
 static func sky_at(steps: float) -> Color:
 	var t := fposmod(steps, float(DAY_CYCLE_STEPS)) / DAY_CYCLE_STEPS
 	var i := 0

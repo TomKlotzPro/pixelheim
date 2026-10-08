@@ -333,7 +333,7 @@ func trophy_sell_multiplier() -> float:
 ## common gear; the exciting rolls come from monsters.
 func buy_item(item_id: String) -> bool:
 	var shop_id := active_shop()
-	if shop_id == "" or item_id not in Economy.shop_stock(shop_id, progression.unlocked_level):
+	if shop_id == "" or item_id not in Economy.shop_stock(shop_id, progression.unlocked_level, town_tier()):
 		return false
 	var price := Economy.buy_price(item_id)
 	if pack.gold < price:
@@ -463,6 +463,7 @@ func fund_project(project_id: String) -> String:
 		settlement.town_tier = tier_number
 		reveals.append("age:%d" % tier_number)
 		line = "%s: built - and Pixelheim is a %s now." % [entry["name"], String(Town.tier(tier_number)["name"]).to_lower()]
+		_start_festival(tier_number)
 	_pack_changed()
 	settlers_changed.emit()
 	save_now()
@@ -557,6 +558,36 @@ func expand_property(map_id: String) -> bool:
 
 func is_settled(id: String) -> bool:
 	return id in settlement.settlers
+
+
+## The festival day (PIX-159): an age complete, the town celebrates for a
+## day - stalls and confetti on the square, everyone out, and a ring toss
+## with a prize for the best throw (once per festival).
+func _start_festival(age: int) -> void:
+	settlement.festival = {
+		"until": int(world.steps) + int(Town.festival("days")) * DayNight.DAY_CYCLE_STEPS,
+		"age": age,
+		"won": false,
+	}
+
+
+func festival_on() -> bool:
+	return not settlement.festival.is_empty() and world.steps < float(settlement.festival["until"])
+
+
+## The ring toss's prize, the first win of a festival: gold by the age and
+## festival pies. Returns the line, or "" when this festival's is already won.
+func win_ring_toss() -> String:
+	if not festival_on() or settlement.festival.get("won", false):
+		return ""
+	settlement.festival["won"] = true
+	var gold := int(Town.festival("prizeGold")) * int(settlement.festival["age"])
+	var pies := int(Town.festival("prizeCount"))
+	pack.gold += gold
+	pack.add_item(Town.festival("prizeItem"), pies)
+	_pack_changed()
+	save_now()
+	return "The prize is yours: +%dg and %d %ss!" % [gold, pies, Catalog.item_name(Town.festival("prizeItem"))]
 
 
 ## A settler living here whose arc is done (PIX-157): their perk has grown.
