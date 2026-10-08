@@ -18,7 +18,18 @@
         "Fafnyr came down off the mountain and the village burned in one night. We are what's left.",
         "Odo, Hilda and Vex trade from the square until they have roofs again. Sela keeps a tent for anyone who needs a bed.",
         "The mayor's ledger survived. Rebuild us, and then - then we go up that mountain."
-      ]
+      ],
+      "prologue": {
+        "x": 29,
+        "y": 16,
+        "step": 5,
+        "lines": [
+          "You came up the road as the fire came down the mountain. Who are you?",
+          "(You hand her the letter.) Vellmar's seal. I wrote to them three times.",
+          "(She reads it twice.) Then no one is coming.",
+          "(She looks up at the mountain for a long time.) Rest. We'll talk at dawn."
+        ]
+      }
     },
     {
       "id": "villager_ana",
@@ -45,7 +56,17 @@
         "I saw a wolf take a whole cheese wheel off a traveler once. Rolled it away and everything.",
         "Me? Climb the mountain? I have a perfectly good fence to lean on right here."
       ],
-      "minTownTier": 0
+      "minTownTier": 0,
+      "prologue": {
+        "x": 34,
+        "y": 5,
+        "step": 3,
+        "lines": [
+          "(A man lies pinned under a burning beam. You put your shoulder to it. It shifts - then rolls away.)",
+          "The beam - you got it off - thank you. Thank you. I'm Bram. I'll live, I think. Probably.",
+          "Sela's set up a tent on the square for the hurt. Go. I'll follow when my legs remember how."
+        ]
+      }
     },
     {
       "id": "shopkeeper",
@@ -116,6 +137,16 @@
         "x": 33,
         "y": 18,
         "project": "the_inn"
+      },
+      "prologue": {
+        "x": 33,
+        "y": 18,
+        "step": 4,
+        "lines": [
+          "Sit. You're bleeding and you haven't even noticed. ... There.",
+          "I'm Sela. I kept the inn, when there was an inn. Now I keep a tent and more hurt than I have cloth for.",
+          "Maren's at the shrine. She's the elder - she'll want to know who you are, walking in out of the fire."
+        ]
       }
     },
     {

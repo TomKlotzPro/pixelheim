@@ -88,12 +88,36 @@ static func _texture(src: String) -> Texture2D:
 	return icon
 
 
+## One of Shade's animated effects (icons.json "effects": the flame, the
+## embers, the smoke; PIX-151) as frames of 16 px cut along its strip, or
+## null when the paid pack isn't installed (callers fall back).
+static func effect(name: String, fps := 10.0, loop := true) -> SpriteFrames:
+	var key := "effect:%s" % name
+	if _cache.has(key):
+		return _cache[key]
+	var src: String = _data().get("effects", {}).get(name, "")
+	var path := PRIVATE + src
+	if src == "" or not ResourceLoader.exists(path):
+		return null
+	var strip: Texture2D = load(path)
+	var frames := SpriteFrames.new()
+	frames.set_animation_speed("default", fps)
+	frames.set_animation_loop("default", loop)
+	for i in strip.get_width() / 16:
+		var cell := AtlasTexture.new()
+		cell.atlas = strip
+		cell.region = Rect2(i * 16, 0, 16, 16)
+		frames.add_frame("default", cell)
+	_cache[key] = frames
+	return frames
+
+
 ## Every file the paid packs must provide, relative to retro-rpg/shade/ (what
 ## the fetch script copies).
 static func private_files() -> Array[String]:
 	var files: Array[String] = []
-	for group: String in ["items", "ailments"]:
-		for src: String in _data()[group].values():
+	for group: String in ["items", "ailments", "effects"]:
+		for src: String in _data().get(group, {}).values():
 			if not src.begins_with("free/") and not src.begins_with("medieval@"):
 				var file := src.get_slice("@", 0)
 				if file not in files:

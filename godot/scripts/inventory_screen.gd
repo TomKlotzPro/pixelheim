@@ -596,6 +596,8 @@ func _drop(whole_stack: bool) -> void:
 			status.text = "You leave %s behind." % InventoryState.gear_name(piece)
 		else:
 			status.text = "Take it off before you drop it."
+	elif Catalog.item(row["item_id"]).get("quest", false):
+		status.text = "You'd better hold on to that."
 	else:
 		var count: int = row["count"] if whole_stack else 1
 		GameState.drop_item(row["item_id"], count)

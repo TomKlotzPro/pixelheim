@@ -172,6 +172,9 @@ func _build_rows() -> Array[Dictionary]:
 				})
 		"Sell":
 			for item_id: String in pack.items:
+				# What the story gave you isn't for sale (the letter, PIX-152).
+				if Catalog.item(item_id).get("quest", false):
+					continue
 				var each := floori(Economy.sell_price_at(shop_id, item_id, GameState.town_tier()) * GameState.trophy_sell_multiplier())
 				out.append({
 					"label": "%s  x%d" % [Catalog.item_name(item_id), pack.items[item_id]], "price": "%dg" % each, "icon": item_id,

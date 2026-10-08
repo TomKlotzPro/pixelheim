@@ -32,6 +32,8 @@ FLOWS=(
 	"mayor|--map town_hall talk --keys e,e,e|open=town_hall_screen"
 	"board|--map town --at 31,12 --keys w,e|open=town_hall_screen"
 	"stall|--map town --town-tier 0 --at 24,14 --keys a,e|open=shop_screen"
+	"road|--prologue 1|map=overworld cell=\(48, 34\)"
+	"dawn|--map town --prologue 5 --at 29,17 --keys w,e,e,e,e,e --wait 1.5|open=reveal_screen"
 	"motion|--map town motion|backsteps=[01]$"
 )
 

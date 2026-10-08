@@ -12,6 +12,8 @@ const LOG_LINES := 5
 const LOG_SECONDS := 4.0
 ## The dark under the mountain, whatever the hour above.
 const DUNGEON_GLOOM := Color(0.04, 0.02, 0.08, 0.28)
+## The sky the night Pixelheim burns (PIX-152): dark, lit red from below.
+const NIGHT_OF_ASH := Color(0.16, 0.03, 0.04, 0.42)
 ## Fight music holds this long after the last hunter gives up.
 const COMBAT_LINGER_S := 3.0
 
@@ -94,6 +96,25 @@ func _ready() -> void:
 		GameState.settlement.town_tier = int(args[tier_index + 1])
 	elif args.has("--screenshot") and GameState.settlement.projects.is_empty():
 		GameState.settlement.town_tier = maxi(1, GameState.settlement.town_tier)
+	# Harness runs skip the Night of Ash (their flows were written for the
+	# town by day) unless `--prologue N` puts them at its step N.
+	if args.has("--screenshot"):
+		var prologue_index := args.find("--prologue")
+		if prologue_index >= 0 and prologue_index + 1 < args.size():
+			GameState.progression.prologue = int(args[prologue_index + 1])
+			GameState.settlement.town_tier = 0
+			GameState.world.steps = Prologue.night_steps()
+			if GameState.progression.prologue == Prologue.SCAVENGER:
+				var start := Prologue.start()
+				GameState.world.map_id = start["mapId"]
+				GameState.world.cell = Vector2i(start["x"], start["y"])
+		elif GameState.progression.prologue != Prologue.DONE:
+			# A slot from a real run (--slot N) mid-night: start it by day.
+			GameState.progression.prologue = Prologue.DONE
+			GameState.world.steps = 0.0
+			GameState.world.map_id = "town"
+			GameState.world.cell = Vector2i(28, 30)
+			GameState.pack.remove_item("chancellors_letter")
 	var house_index := args.find("--house-tier")
 	if house_index >= 0 and house_index + 1 < args.size():
 		GameState.settlement.house["tier"] = int(args[house_index + 1])
@@ -178,7 +199,9 @@ func _process(delta: float) -> void:
 	_update_nameplate()
 	GameState.walk(player.position.distance_to(last_player_position) / TILE)
 	last_player_position = player.position
-	sky_overlay.color = DUNGEON_GLOOM if map.floor_level > 0 else DayNight.sky_at(GameState.world.steps)
+	sky_overlay.color = DUNGEON_GLOOM if map.floor_level > 0 else (
+		NIGHT_OF_ASH if GameState.progression.prologue != Prologue.DONE else DayNight.sky_at(GameState.world.steps)
+	)
 	_update_music()
 	respawn_check -= delta
 	if respawn_check <= 0:
@@ -225,6 +248,8 @@ func on_enemy_died(enemy: Node) -> void:
 		floor_level = map.floor_level
 	var gear_before := GameState.pack.gear.size()
 	_log(GameState.defeat_monster(enemy.fighter, enemy.region, cleared, floor_level))
+	if enemy.has_meta("prologue"):
+		_flash_message(GameState.prologue_pouch())
 	if GameState.pack.gear.size() > gear_before:
 		Sound.play("drop")
 	if cleared != "":
@@ -552,6 +577,7 @@ func _enter_map(next: MapData, arrival: Vector2i) -> void:
 		GameState.move_to(next, arrival, player.facing)
 		GameState.save_now()
 	floor_foes = 0
+	_prologue_arrive(next)
 	_play_reveals.call_deferred()
 	_keep_hours(true)
 	camera.limit_right = next.size.x * TILE
@@ -581,7 +607,11 @@ func _cell_center(cell: Vector2i) -> Vector2:
 ## Villagers who live on this map now: tier-gated townsfolk and recruits.
 func _spawn_npcs(data: MapData) -> void:
 	var settlers := GameState.settlement.settlers
-	for npc: Dictionary in Npcs.on_map(data.id, GameState.settlement.town_tier, settlers, Town.done_projects(GameState.settlement)):
+	var folk := Npcs.on_map(data.id, GameState.settlement.town_tier, settlers, Town.done_projects(GameState.settlement))
+	# On the night of the fire only the survivors are about (PIX-152).
+	if GameState.progression.prologue != Prologue.DONE and data.id == "town":
+		folk = Prologue.survivors()
+	for npc: Dictionary in folk:
 		var villager := preload("res://scripts/npc.gd").new()
 		villager.world = self
 		villager.data = npc
@@ -700,6 +730,11 @@ func _open_stall(shop_id: String) -> void:
 
 func _talk(npc: Dictionary) -> void:
 	var box := preload("res://scripts/dialogue_box.gd").new()
+	# On the night of the fire the survivors say only the night's lines.
+	if GameState.progression.prologue != Prologue.DONE:
+		box.npc = npc
+		add_child(box)
+		return
 	# Townsfolk talk about the hero's latest deed first (PIX-149).
 	var reaction := Npcs.reaction(npc, GameState.last_deed)
 	if reaction != "":
@@ -786,6 +821,8 @@ func appear(enemy: Node) -> void:
 func _update_objective() -> void:
 	var step := MainQuest.next_step(GameState.progression, GameState.settlement)
 	var text: String = step.get("text", "")
+	if GameState.progression.prologue != Prologue.DONE:
+		text = Prologue.objective(GameState.progression.prologue)
 	if text != objective_label.text:
 		objective_label.text = text
 		objective_box.reset_size()
@@ -804,6 +841,39 @@ func _notification(what: int) -> void:
 		objective_box.visible = false
 	elif what == NOTIFICATION_UNPAUSED:
 		objective_box.visible = true
+
+
+## The Night of Ash on arriving somewhere (PIX-152): on the road, the
+## scavenger feeding at the gate (and the night's first words); through the
+## gate, the village is the next step.
+func _prologue_arrive(next: MapData) -> void:
+	match GameState.progression.prologue:
+		Prologue.SCAVENGER:
+			if next.id == "overworld":
+				var at: Dictionary = Prologue.data()["scavenger"]
+				var scavenger := spawn_enemy(at["monsterId"], Vector2i(at["x"], at["y"]), "forest", "", false, true)
+				scavenger.set_meta("prologue", true)
+				_flash_message.call_deferred(String(Prologue.data()["arrival"]))
+		Prologue.GATE:
+			if next.id == "town":
+				GameState.prologue_reached_town()
+
+
+## Dawn after the Night of Ash: the survivors on the square, the letter read,
+## the choice to rebuild - told over the real burnt town - and then the day.
+func _play_dawn() -> void:
+	var square := _cell_center(Town.project_board() + Vector2i(0, 5))
+	var stops: Array[Dictionary] = []
+	for line: String in Prologue.data()["dawn"]:
+		stops.append({"at": square, "line": line})
+	var dawn := preload("res://scripts/reveal_screen.gd").new()
+	dawn.world = self
+	dawn.stops = stops
+	dawn.on_done = func() -> void:
+		GameState.finish_prologue()
+		map = _load_map("town")
+		_enter_map(map, player_cell)
+	add_child(dawn)
 
 
 ## The village's hours (PIX-149): lamps and windows lit at night, and the
@@ -1058,6 +1128,7 @@ func _build_hud() -> void:
 	GameState.message.connect(_flash_message)
 	GameState.healed.connect(func() -> void: player.heal())
 	GameState.ranked_up.connect(_ascend)
+	GameState.prologue_dawn.connect(_play_dawn)
 	GameState.settlers_changed.connect(_respawn_npcs)
 	nameplate = PanelContainer.new()
 	nameplate.add_theme_stylebox_override("panel", UiStyle.window(8))

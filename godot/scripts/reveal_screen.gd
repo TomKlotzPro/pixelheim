@@ -55,7 +55,8 @@ func _next() -> void:
 		caption.text = stop["line"]
 		Sound.play("coin")
 	)
-	_tour.tween_interval(2.2)
+	# Long enough to read the line (the dawn's are long).
+	_tour.tween_interval(clampf(String(stop["line"]).length() / 22.0, 2.2, 6.0))
 	_tour.tween_callback(_next)
 
 
