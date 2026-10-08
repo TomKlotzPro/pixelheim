@@ -2,8 +2,8 @@ extends CanvasLayer
 ## The title (TitleScreen.tsx): a night over the Ashenreach, three ridges
 ## deep, fog and embers, and the bestiary marching across the grass on its
 ## own clocks; PIXELHEIM drops in letter by letter. Continue, New Game (hero
-## creation), the saves, options, or the classic edition. W/S choose, E or
-## Enter takes it. The world waits paused behind.
+## creation), the saves, options, or What's new. W/S choose, E or Enter
+## takes it. The world waits paused behind.
 
 const PARADE := [
 	["slime", 46.0, -8.0], ["wolf", 34.0, -20.0], ["goblin", 40.0, -2.0],
@@ -17,7 +17,7 @@ var options: Array[Dictionary] = []
 var selected := 0
 var menu: VBoxContainer
 var footer: Label
-## The game's version (meta.json, from the web's changelog).
+## The game's version: the newest release in What's new.
 var version := ""
 var walkers: Array[Dictionary] = []
 
@@ -170,17 +170,16 @@ func _card() -> void:
 	menu.custom_minimum_size = Vector2(300, 0)
 	menu.add_theme_constant_override("separation", 10)
 	middle.add_child(menu)
-	version = SaveCodec.parse_json(FileAccess.get_file_as_string("res://assets/data/meta.json"))["version"]
+	version = load("res://scripts/changelog_screen.gd").releases()[0]["version"]
 	if not GameState.standing_in:
 		options.append({"label": "Continue  %s, Lv %d" % [GameState.hero.hero_name, GameState.hero.level], "action": _continue})
 	options.append({"label": "New Game", "action": _new_game})
 	options.append({"label": "Saves", "action": _saves})
 	options.append({"label": "Options", "action": _options})
-	options.append({"label": "Classic edition", "action": _classic})
 	options.append({"label": "What's new", "action": _whats_new})
 	_draw_menu()
 	# The version line opens What's new (the web's changelog link).
-	footer = UiStyle.label("v%s - a retro RPG, now in Godot  ·  What's new" % version, 13, UiStyle.DUSK, Vector2(0, 690))
+	footer = UiStyle.label("v%s  ·  What's new" % version, 13, UiStyle.DUSK, Vector2(0, 690))
 	footer.custom_minimum_size = Vector2(VIEW.x, 0)
 	footer.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	footer.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -287,15 +286,6 @@ func _options() -> void:
 	var screen := preload("res://scripts/options_screen.gd").new()
 	screen.world = world
 	add_child(screen)
-
-
-## The web game this build grew from, still playable at /classic/ (same
-## site, so its heroes can be brought across from Saves).
-func _classic() -> void:
-	if OS.has_feature("web"):
-		JavaScriptBridge.eval("window.location.href = 'classic/'")
-	else:
-		OS.shell_open("https://tomklotzpro.github.io/pixelheim/classic/")
 
 
 func _leave() -> void:

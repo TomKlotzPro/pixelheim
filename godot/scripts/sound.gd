@@ -1,7 +1,7 @@
 extends Node
-## The game's ears (src/audio, PIX-128). Every sound is the web synth's own,
-## rendered to WAVs by scripts/render-audio.ts: the stingers, each place's
-## chiptune loop and the ambient one-shots. Music crossfades between themes
+## The game's ears (PIX-128). The stingers, each place's chiptune loop and
+## the ambient one-shots are WAVs in assets/audio/, rendered once from the
+## classic edition's synth (assets/data/audio.json lists them). Music crossfades between themes
 ## (out, then in, as the web's playTrack does) and keeps playing under the
 ## menus; ambience rolls its chances every tick like ambience.ts. Volumes are
 ## the player's (GameSettings), on Music, SFX and Ambience buses.
@@ -73,8 +73,8 @@ func _stream(path: String) -> AudioStreamWAV:
 
 
 ## The pages' own sounds (PIX-138): a swish of paper as a screen opens, a
-## pen's tick as a choice moves, a soft fall as it closes. Made here, not in
-## the web synth (the classic edition is frozen), in its chiptune voice:
+## pen's tick as a choice moves, a soft fall as it closes. Made here, in the
+## rendered sounds' chiptune voice:
 ## [seconds, wave, from Hz, to Hz, volume] per blip, played in turn.
 const UI_SOUNDS := {
 	"open": [[0.05, "noise", 0.0, 0.0, 0.10], [0.05, "triangle", 660.0, 880.0, 0.10]],

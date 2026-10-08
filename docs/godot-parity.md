@@ -1,5 +1,7 @@
 # Godot parity
 
+> **A record.** The web edition this checklist compares against was removed in v0.75 (2026-10-08); its code lives on in git history. The game itself is the reference now.
+
 Since PIX-129 the Godot build is the game at **https://tomklotzpro.github.io/pixelheim/**.
 The React/Pixi game lives on at **/pixelheim/classic/** on the same origin, so the
 two editions share one `localStorage`: a classic hero can be brought into Godot

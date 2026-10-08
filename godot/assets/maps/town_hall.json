@@ -1,1 +1,35 @@
-{"id":"town_hall","width":20,"height":12,"spawn":{"x":8,"y":8},"portals":[{"x":8,"y":10,"to":{"kind":"map","mapId":"town","x":49,"y":27}}],"tiles":[["wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall"],["wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall"],["wall","wall","shelf","wall","shelf","floor","floor","floor","floor","floor","floor","floor","floor","floor","crate","wall","crate","wall","wall","wall"],["wall","wall","floor","wall","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","wall","wall","wall"],["wall","wall","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","wall","wall"],["wall","wall","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","wall","wall"],["wall","wall","counter","floor","counter","floor","floor","floor","floor","floor","floor","floor","floor","floor","counter","floor","counter","wall","wall","wall"],["wall","wall","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","wall","wall","wall"],["wall","wall","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","wall","wall"],["wall","wall","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","floor","wall","wall"],["wall","wall","wall","wall","wall","wall","wall","wall","door","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall"],["wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall"]]}
+{
+  "id": "town_hall",
+  "width": 20,
+  "height": 12,
+  "spawn": {
+    "x": 8,
+    "y": 8
+  },
+  "portals": [
+    {
+      "x": 8,
+      "y": 10,
+      "to": {
+        "kind": "map",
+        "mapId": "town",
+        "x": 49,
+        "y": 27
+      }
+    }
+  ],
+  "tiles": [
+    ["wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall"],
+    ["wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall"],
+    ["wall", "wall", "shelf", "wall", "shelf", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "crate", "wall", "crate", "wall", "wall", "wall"],
+    ["wall", "wall", "floor", "wall", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "wall", "wall", "wall"],
+    ["wall", "wall", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "wall", "wall"],
+    ["wall", "wall", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "wall", "wall"],
+    ["wall", "wall", "counter", "floor", "counter", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "counter", "floor", "counter", "wall", "wall", "wall"],
+    ["wall", "wall", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "wall", "wall", "wall"],
+    ["wall", "wall", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "wall", "wall"],
+    ["wall", "wall", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "wall", "wall"],
+    ["wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "door", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall"],
+    ["wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall"]
+  ]
+}

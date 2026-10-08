@@ -2,9 +2,6 @@ name: Godot CI
 
 on:
   pull_request:
-    paths:
-      - "godot/**"
-      - ".github/workflows/godot.yml"
   workflow_dispatch:
 
 concurrency:
@@ -48,22 +45,9 @@ jobs:
             mv templates/web_* "$TDIR/"
           fi
 
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-
-      - name: Check synced assets are current
-        run: |
-          node scripts/sync-godot-assets.mjs --check
-          pnpm exec tsx scripts/export-maps.ts --check
-
-      # The paid art (PIX-133, PIX-138), as the deploy fetches it: proves the deploy key
-      # works before main does. Forks have no key and build the old houses.
+      # The paid art (PIX-133, PIX-138), as the deploy fetches it: proves the
+      # deploy key works before main does. Forks have no key and build on
+      # Shade's CC0 art alone.
       - name: Fetch the private art
         id: art
         continue-on-error: true
