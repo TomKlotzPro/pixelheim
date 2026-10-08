@@ -117,10 +117,15 @@ func _refresh() -> void:
 		child.queue_free()
 	for index in rows.size():
 		list.add_child(_row(index))
-	# The page grows with a long list (the mountain's floors), never shrinks
-	# below the card beside it.
-	var fit := func() -> void: page.size.y = maxf(470.0, list.get_combined_minimum_size().y + 32.0)
-	fit.call_deferred()
+	# A method, not a lambda: if the ledger closes first, the deferred
+	# call is dropped with it.
+	_fit.call_deferred()
+
+
+## The page grows with a long list (the mountain's floors), never shrinks
+## below the card beside it.
+func _fit() -> void:
+	page.size.y = maxf(470.0, list.get_combined_minimum_size().y + 32.0)
 
 
 func _row(index: int) -> Control:

@@ -14,10 +14,21 @@
 #
 #   godot/tools/flows.sh            # all of them
 #   godot/tools/flows.sh fight die  # just these
+#   godot/tools/flows.sh --quiet    # no window, no sound, no pictures
+#
+# --quiet runs every flow headless with the audio off: nothing opens on the
+# screen or plays out loud, the report lines are still checked. The motion
+# flow measures pixels, so it needs a window and is skipped.
 set -uo pipefail
 
 cd "$(dirname "$0")/.."
 mkdir -p flows
+
+quiet=0
+if [[ ${1:-} == --quiet ]]; then
+	quiet=1
+	shift
+fi
 
 # name | harness arguments | what the report line must show
 FLOWS=(
@@ -63,17 +74,30 @@ for flow in "${FLOWS[@]}"; do
 	if [[ $# -gt 0 && ! " $* " == *" $name "* ]]; then
 		continue
 	fi
+	if [[ $quiet == 1 && $name == motion ]]; then
+		printf "skip  %-7s needs a window\n" "$name"
+		continue
+	fi
 	rm -f screenshot.png
 	# shellcheck disable=SC2086 # the arguments are meant to split
 	# A watchdog: a run that never quits fails instead of stalling the rest.
-	output=$(perl -e 'alarm 60; exec @ARGV' godot --path . -- --screenshot $args 2>&1)
+	if [[ $quiet == 1 ]]; then
+		output=$(perl -e 'alarm 60; exec @ARGV' godot --headless --audio-driver Dummy --path . -- --screenshot $args 2>&1)
+	else
+		output=$(perl -e 'alarm 60; exec @ARGV' godot --path . -- --screenshot $args 2>&1)
+	fi
 	report=$(grep "screenshot saved" <<<"$output")
-	# Smooth walking is timed frame by frame, and a long run's load can
-	# hitch one: it gets a second try, so only a real regression fails.
-	if [[ $name == motion ]] && ! grep -qE "$expect" <<<"$report"; then
+	# Smooth walking is timed frame by frame, and the festival's and the
+	# board's conversations by the clock: a long run's load can hitch one,
+	# so they get a second try and only a real regression fails.
+	if [[ " motion festival board " == *" $name "* ]] && ! grep -qE "$expect" <<<"$report"; then
 		rm -f screenshot.png
 		# shellcheck disable=SC2086
-		output=$(perl -e 'alarm 60; exec @ARGV' godot --path . -- --screenshot $args 2>&1)
+		if [[ $quiet == 1 ]]; then
+			output=$(perl -e 'alarm 60; exec @ARGV' godot --headless --audio-driver Dummy --path . -- --screenshot $args 2>&1)
+		else
+			output=$(perl -e 'alarm 60; exec @ARGV' godot --path . -- --screenshot $args 2>&1)
+		fi
 		report=$(grep "screenshot saved" <<<"$output")
 	fi
 	# A script error fails the flow even when the report looks right: a broken
@@ -83,8 +107,8 @@ for flow in "${FLOWS[@]}"; do
 	if [[ -n "$errors" ]]; then
 		failed=1
 		printf "FAIL  %-7s %s\n" "$name" "$errors"
-	elif [[ -f screenshot.png ]] && grep -qE "$expect" <<<"$report"; then
-		mv screenshot.png "flows/$name.png"
+	elif [[ ( $quiet == 1 || -f screenshot.png ) ]] && grep -qE "$expect" <<<"$report"; then
+		[[ -f screenshot.png ]] && mv screenshot.png "flows/$name.png"
 		printf "ok    %-7s %s\n" "$name" "${report#screenshot saved; }"
 	else
 		failed=1

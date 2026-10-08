@@ -63,7 +63,9 @@ var objective_label: Label
 ## The nameplate over the signed door the hero walks up to (ShopSign).
 var nameplate: PanelContainer
 var nameplate_door := Vector2i(-1, -1)
-var prompt_label: Label
+## What floats over a faced villager, chest or fishing spot: the interact
+## key as a keycap (PIX-193), or "!" on a phone, which has its Use button.
+var prompt_label: Control
 var sky_overlay: ColorRect
 ## A `--screenshot` run: the harness drives, nobody else.
 var harness := false
@@ -148,14 +150,18 @@ func _ready() -> void:
 	_spawn_player()
 	player.face(WorldState.FACINGS.get(GameState.world.facing, Vector2.DOWN))
 	_build_hud()
-	# World-space "!" that floats over a faced interactable.
-	prompt_label = Label.new()
-	prompt_label.text = "!"
-	prompt_label.add_theme_font_size_override("font_size", 10)
-	prompt_label.add_theme_color_override("font_color", Color(1, 0.9, 0.3))
-	prompt_label.add_theme_color_override("font_outline_color", Color(0.1, 0.08, 0.12))
-	prompt_label.add_theme_constant_override("outline_size", 3)
+	if Touch.enabled():
+		var mark := Label.new()
+		mark.text = "!"
+		mark.add_theme_font_size_override("font_size", 10)
+		mark.add_theme_color_override("font_color", Color(1, 0.9, 0.3))
+		mark.add_theme_color_override("font_outline_color", Color(0.1, 0.08, 0.12))
+		mark.add_theme_constant_override("outline_size", 3)
+		prompt_label = mark
+	else:
+		prompt_label = UiStyle.world_keycap(_interact_key())
 	prompt_label.visible = false
+	prompt_label.z_index = 50
 	add_child(prompt_label)
 	_enter_map(map, arrival)
 	# A first visit to the Godot build that finds a web game hero in this
@@ -1367,16 +1373,32 @@ func _collect_ground_treasure(cell: Vector2i) -> void:
 func _update_prompt() -> void:
 	var beside := _npc_beside()
 	if not beside.is_empty():
-		prompt_label.visible = true
-		prompt_label.position = Vector2((player_cell + Vector2i(beside["side"])) * TILE) + Vector2(5, -20)
+		_show_prompt(player_cell + Vector2i(beside["side"]), -18)
 		return
 	var chest := _chest_at(_facing_cell())
 	var show: bool = (
 		not chest.is_empty() and chest["look"] == "chest" and not GameState.is_opened(chest)
 	) or _fishing_here()
-	prompt_label.visible = show
 	if show:
-		prompt_label.position = Vector2(_facing_cell() * TILE) + Vector2(5, -14)
+		_show_prompt(_facing_cell(), -12)
+	else:
+		prompt_label.visible = false
+
+
+## The prompt over `cell`, its bottom `rise` pixels above the cell's top,
+## bobbing a pixel; the key read fresh (it may have been rebound).
+func _show_prompt(cell: Vector2i, rise: int) -> void:
+	if prompt_label is Keycap and not prompt_label.visible:
+		(prompt_label as Keycap).show_key(_interact_key())
+		prompt_label.reset_size()
+	prompt_label.visible = true
+	var bob := roundf(sin(Time.get_ticks_msec() / 260.0)) if not GameState.settings.reduce_motion else 0.0
+	var size := prompt_label.size
+	prompt_label.position = Vector2(cell * TILE) + Vector2(roundf((TILE - size.x) / 2.0), rise - size.y + 16 + bob)
+
+
+func _interact_key() -> String:
+	return Controls.key_label(Controls.key_for("interact", GameState.settings.bindings))
 
 func _spawn_player() -> void:
 	player = preload("res://scripts/player.gd").new()

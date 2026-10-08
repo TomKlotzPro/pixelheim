@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.122.0",
+      "date": "2026-10-08",
+      "codename": "Keys That Look Like Keys",
+      "notes": [
+        "KEYS THAT LOOK LIKE KEYS: every key the game shows you - in a screen's footer, under a conversation, in the menu - is drawn as a raised key with a lit edge and a lip, and it dips when you press it. Pairs sit side by side (W S), choices take a slash (I / Esc), and the arrow keys show their arrows",
+        "WHAT TO PRESS, WHERE YOU ARE: the \"!\" over a villager, a chest or a fishing spot is now the key that does it, on the world's own pixels - and it follows your key if you rebind it. On a phone it stays a \"!\" beside the Use button"
+      ]
+    },
+    {
       "version": "0.121.0",
       "date": "2026-10-08",
       "codename": "All Three Phases",

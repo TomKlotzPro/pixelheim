@@ -44,6 +44,11 @@ const LAMP := Color("b03a1e")
 const CREAM := Color("f3e6c4")
 const DUSK := Color("c9b48a")
 const GOLD := Color("f2c14e")
+## A keycap's lit edge and shaded side (PIX-193).
+const KEY_LIGHT := Color("fffaea")
+const KEY_SHADE := Color("e2cfa2")
+## Arrow keys by name, as their caps read.
+const ARROWS := {"Up": "↑", "Down": "↓", "Left": "←", "Right": "→"}
 ## Rarity, inked: fine pieces in blue, epic in purple.
 const FINE := Color("1f5a9a")
 const EPIC := Color("6e2d8c")
@@ -305,22 +310,121 @@ static func heading(text: String, font_size: int, color: Color, at := Vector2.ZE
 	return node
 
 
-## The key a command answers to, as a little keycap: "E", "Esc". `small`
-## caps carry the dense type (HUD chips).
+## The key a command answers to, as a keycap (PIX-193): "E", "Esc", "↑".
+## `small` caps sit tighter (the dock's menu, footers).
 static func keycap(key: String, small := false) -> PanelContainer:
-	var cap := PanelContainer.new()
+	var cap := Keycap.new()
+	cap.small = small
 	cap.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	cap.add_theme_stylebox_override("panel", _style(_card(CREAM, NIGHT), 2, 2 if small else 4))
-	var text := strong(key, TEXT, NIGHT)
-	text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	text.custom_minimum_size = Vector2(8, 0)
-	cap.add_child(text)
+	cap.add_theme_stylebox_override("panel", keycap_style(false, small))
+	cap.label = strong(key, TEXT, INK)
+	cap.label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	cap.label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	cap.add_child(cap.label)
+	# A one-letter key stands square; a word grows wider.
+	cap.custom_minimum_size = Vector2(30 if small else 34, 0)
+	cap.show_key(key)
+	return cap
+
+
+## A keycap on the world's own pixel grid (the prompt over a villager or a
+## chest): the same key at 1x, its label in the font's own pixels, scaled
+## with the world by the camera.
+static func world_keycap(key: String) -> PanelContainer:
+	var cap := Keycap.new()
+	cap.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	cap.world = true
+	cap.add_theme_stylebox_override("panel", keycap_style(false, false, 1))
+	cap.label = Label.new()
+	cap.label.add_theme_font_override("font", bold_font())
+	cap.label.add_theme_font_size_override("font_size", BODY_PX)
+	cap.label.add_theme_color_override("font_color", INK)
+	cap.label.add_theme_constant_override("line_spacing", -2)
+	cap.label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	cap.label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	cap.add_child(cap.label)
+	cap.custom_minimum_size = Vector2(11, 0)
+	cap.show_key(key)
 	return cap
 
 
 ## Relabels a keycap (a rebound key).
 static func keycap_text(cap: PanelContainer, key: String) -> void:
-	(cap.get_child(0) as Label).text = key
+	(cap as Keycap).show_key(key)
+
+
+## A keycap's frame, up or `pressed`, at UI_SCALE (or `scale` 1 for one in
+## the world, on its pixel grid): the face, lit along its top and left
+## edges, a darker lip below it, a dark outline with stepped corners.
+## Pressed, the face drops a pixel onto a thinner lip, so its label dips.
+static func keycap_style(pressed: bool, small := false, scale := UI_SCALE) -> StyleBoxTexture:
+	var key := "keycap %s %d" % [pressed, scale]
+	if not _frames.has(key):
+		var w := 8
+		var h := 12
+		var art := Image.create(w, h, false, Image.FORMAT_RGBA8)
+		art.fill(Color(0, 0, 0, 0))
+		var top := 1 if pressed else 0
+		var lip := h - (3 if pressed else 5)
+		for y in range(top, h):
+			for x in w:
+				var color := CREAM
+				if x == 0 or x == w - 1 or y == top or y == h - 1:
+					color = NIGHT
+				elif y >= lip:
+					color = DUSK if y == lip else RIM
+				elif y == top + 1 or x == 1:
+					color = KEY_LIGHT
+				elif x == w - 2:
+					color = KEY_SHADE
+				if pressed and color in [CREAM, KEY_LIGHT, KEY_SHADE]:
+					color = color.darkened(0.06)
+				art.set_pixel(x, y, color)
+		# Stepped corners: the outline turns in, the very corner is clear.
+		for corner: Vector2i in [Vector2i(0, top), Vector2i(w - 1, top), Vector2i(0, h - 1), Vector2i(w - 1, h - 1)]:
+			art.set_pixelv(corner, Color(0, 0, 0, 0))
+		for corner: Vector2i in [Vector2i(1, top + 1), Vector2i(w - 2, top + 1), Vector2i(1, h - 2), Vector2i(w - 2, h - 2)]:
+			art.set_pixelv(corner, NIGHT)
+		if scale > 1:
+			art.resize(w * scale, h * scale, Image.INTERPOLATE_NEAREST)
+		_frames[key] = ImageTexture.create_from_image(art)
+	var style := StyleBoxTexture.new()
+	style.texture = _frames[key]
+	var top_rows := 3 if pressed else 2
+	var bottom_rows := 3 if pressed else 5
+	style.texture_margin_left = 2 * scale
+	style.texture_margin_right = 2 * scale
+	style.texture_margin_top = top_rows * scale
+	style.texture_margin_bottom = bottom_rows * scale
+	if scale == 1:
+		style.content_margin_left = 3
+		style.content_margin_right = 3
+		style.content_margin_top = 1 + (1 if pressed else 0)
+		style.content_margin_bottom = 4 - (1 if pressed else 0)
+	else:
+		var side := 7 if small else 9
+		style.content_margin_left = side
+		style.content_margin_right = side
+		style.content_margin_top = (2 if small else 4) + (UI_SCALE if pressed else 0)
+		style.content_margin_bottom = (9 if small else 11) - (UI_SCALE if pressed else 0)
+	return style
+
+
+## The caps for a command's keys (PIX-193): "W/S" is a pair of keys side by
+## side, "I / Esc" either one (a faded slash between), the arrows' names
+## their glyphs.
+static func keys(spec: String, on_dark := false) -> HBoxContainer:
+	var row := HBoxContainer.new()
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_theme_constant_override("separation", 4)
+	var choices := spec.split(" / ")
+	for c in choices.size():
+		if c > 0:
+			row.add_child(label("/", 12, DUSK if on_dark else FADED))
+		var names: Array = ["←", "↑", "↓", "→"] if choices[c].strip_edges() == "Arrows" else Array(choices[c].strip_edges().split("/"))
+		for name: String in names:
+			row.add_child(keycap(String(ARROWS.get(name, name)), true))
+	return row
 
 
 ## A screen eases in once built: the dark fades up and the pages rise a few
@@ -417,6 +521,6 @@ static func hints(pairs: Array, on_dark := false) -> HBoxContainer:
 			gap.custom_minimum_size = Vector2(10, 0)
 			row.add_child(gap)
 		if pairs[i] != "":
-			row.add_child(keycap(pairs[i], true))
+			row.add_child(keys(pairs[i], on_dark))
 		row.add_child(label(pairs[i + 1], 12, DUSK if on_dark else FADED))
 	return row

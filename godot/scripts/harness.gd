@@ -45,8 +45,16 @@ func _keys(args: PackedStringArray) -> void:
 	for key: String in args[keys_index + 1].split(","):
 		for pressed: bool in [true, false]:
 			_press(codes[key], pressed)
+			# Held through two physics ticks too: walking and facing are read
+			# there, and a quiet run's frames come faster than its ticks.
 			await get_tree().process_frame
+			await get_tree().physics_frame
+			await get_tree().physics_frame
 			await get_tree().process_frame
+		# Paced in time as well as frames, as a hand is: a quiet (headless)
+		# run draws frames far faster than a window, and a screen that
+		# ignores the press that opened it would miss the next.
+		await get_tree().create_timer(0.08).timeout
 	await get_tree().create_timer(0.2).timeout
 
 
@@ -548,8 +556,13 @@ func _run_test_harness() -> void:
 	var wait_index := args.find("--wait")
 	if wait_index >= 0 and wait_index + 1 < args.size():
 		await get_tree().create_timer(float(args[wait_index + 1])).timeout
-	await RenderingServer.frame_post_draw
-	get_viewport().get_texture().get_image().save_png("res://screenshot.png")
+	# A quiet run (--headless: no window, nothing drawn) still reports; only
+	# a windowed run has a picture to save.
+	if DisplayServer.get_name() == "headless":
+		await get_tree().process_frame
+	else:
+		await RenderingServer.frame_post_draw
+		get_viewport().get_texture().get_image().save_png("res://screenshot.png")
 	# The menus and conversations still open over the world, by script name.
 	var open := world.get_children().filter(func(node: Node) -> bool:
 		return node is CanvasLayer and node.get_script() != null and (
