@@ -1,1 +1,37 @@
-{"id":"demo","width":22,"height":14,"spawn":{"x":8,"y":8},"portals":[{"x":17,"y":4,"to":{"kind":"map","mapId":"demo_hut","x":3,"y":3}}],"tiles":[["mountain","mountain","mountain","mountain","mountain","mountain","mountain","mountain","mountain","mountain","mountain","mountain","mountain","mountain","mountain","mountain","mountain","mountain","mountain","mountain","mountain","mountain"],["mountain","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","mountain"],["mountain","grass","water","water","water","grass","grass","grass","grass","forest","forest","forest","forest","grass","grass","grass","grass","grass","grass","grass","grass","mountain"],["mountain","grass","water","water","water","grass","grass","grass","grass","forest","forest","forest","forest","grass","grass","grass","wall","wall","wall","grass","grass","mountain"],["mountain","grass","water","water","water","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","wall","door","wall","grass","grass","mountain"],["mountain","grass","sand","sand","sand","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","path","grass","grass","grass","mountain"],["mountain","grass","grass","grass","grass","path","path","path","path","path","path","path","path","path","path","grass","grass","path","grass","grass","grass","mountain"],["mountain","grass","grass","grass","grass","path","grass","grass","grass","grass","grass","grass","grass","grass","path","grass","grass","path","grass","grass","grass","mountain"],["mountain","grass","grass","grass","grass","path","grass","grass","grass","grass","grass","grass","grass","grass","path","path","path","path","grass","grass","grass","mountain"],["mountain","grass","grass","grass","grass","path","grass","grass","grass","grass","grass","grass","grass","grass","path","grass","grass","grass","grass","grass","grass","mountain"],["mountain","grass","grass","grass","grass","path","path","path","path","path","path","path","path","path","path","grass","grass","grass","grass","grass","grass","mountain"],["mountain","grass","grass","forest","forest","grass","grass","grass","grass","shrine","grass","grass","grass","grass","grass","grass","grass","forest","forest","grass","grass","mountain"],["mountain","grass","grass","forest","forest","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","forest","forest","grass","grass","mountain"],["mountain","mountain","mountain","mountain","mountain","mountain","mountain","mountain","mountain","mountain","mountain","mountain","mountain","mountain","mountain","mountain","mountain","mountain","mountain","mountain","mountain","mountain"]]}
+{
+  "id": "demo",
+  "width": 22,
+  "height": 14,
+  "spawn": {
+    "x": 8,
+    "y": 8
+  },
+  "portals": [
+    {
+      "x": 17,
+      "y": 4,
+      "to": {
+        "kind": "map",
+        "mapId": "demo_hut",
+        "x": 3,
+        "y": 3
+      }
+    }
+  ],
+  "tiles": [
+    ["mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain"],
+    ["mountain", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "mountain"],
+    ["mountain", "grass", "water", "water", "water", "grass", "grass", "grass", "grass", "forest", "forest", "forest", "forest", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "mountain"],
+    ["mountain", "grass", "water", "water", "water", "grass", "grass", "grass", "grass", "forest", "forest", "forest", "forest", "grass", "grass", "grass", "wall", "wall", "wall", "grass", "grass", "mountain"],
+    ["mountain", "grass", "water", "water", "water", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "wall", "door", "wall", "grass", "grass", "mountain"],
+    ["mountain", "grass", "sand", "sand", "sand", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "path", "grass", "grass", "grass", "mountain"],
+    ["mountain", "grass", "grass", "grass", "grass", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "grass", "grass", "path", "grass", "grass", "grass", "mountain"],
+    ["mountain", "grass", "grass", "grass", "grass", "path", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "path", "grass", "grass", "path", "grass", "grass", "grass", "mountain"],
+    ["mountain", "grass", "grass", "grass", "grass", "path", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "path", "path", "path", "path", "grass", "grass", "grass", "mountain"],
+    ["mountain", "grass", "grass", "grass", "grass", "path", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "path", "grass", "grass", "grass", "grass", "grass", "grass", "mountain"],
+    ["mountain", "grass", "grass", "grass", "grass", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "grass", "grass", "grass", "grass", "grass", "grass", "mountain"],
+    ["mountain", "grass", "grass", "forest", "forest", "grass", "grass", "grass", "grass", "shrine", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "forest", "forest", "grass", "grass", "mountain"],
+    ["mountain", "grass", "grass", "forest", "forest", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "forest", "forest", "grass", "grass", "mountain"],
+    ["mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain"]
+  ]
+}

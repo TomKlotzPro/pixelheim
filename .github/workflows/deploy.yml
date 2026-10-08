@@ -17,30 +17,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm lint
-      - run: pnpm test:unit
-      - name: Balance regression (all roles must finish the game)
-        run: pnpm sim --check
-      - run: pnpm build
-      - name: Install Playwright browser
-        run: pnpm exec playwright install chromium --with-deps
-      - run: pnpm test:e2e
-      # The site (PIX-129): the Godot build at the root, the web game as the
-      # classic edition at /classic/ (same origin, so the Godot build can
-      # still bring a web hero across), and old /godot/ links forwarding to
-      # the root. The single-threaded export needs no special headers.
-      - name: Build the classic web edition
-        run: pnpm exec vite build --outDir site/classic
-        env:
-          VITE_BASE: /pixelheim/classic/
       - name: Cache Godot binary and export templates
         uses: actions/cache@v4
         with:
@@ -80,18 +56,31 @@ jobs:
       - name: Build the Godot web export at the site root
         run: |
           godot --headless --path godot --import
+          # The unit tests gate the deploy (GUT exits 0 on a script that fails
+          # to parse, so that fails it too).
+          godot --headless --path godot -s res://addons/gut/gut_cmdln.gd 2>&1 | tee gut.log
+          status=${PIPESTATUS[0]}
+          if [ "$status" -ne 0 ] || grep -qE "Parse Error|Failed to load script" gut.log; then
+            echo "::error::unit tests failed"
+            exit 1
+          fi
           mkdir -p godot/export/web
           godot --headless --path godot --export-release Web export/web/index.html
+          mkdir -p site
           cp -R godot/export/web/. site/
-          mkdir -p site/godot
-          cat > site/godot/index.html <<'HTML'
+          # Old links: /godot/ (the beta) and /classic/ (the retired web
+          # edition, whose saves the game still imports) lead home.
+          for old in godot classic; do
+            mkdir -p "site/$old"
+            cat > "site/$old/index.html" <<'HTML'
           <!doctype html>
           <meta charset="utf-8">
           <title>Pixelheim</title>
           <meta http-equiv="refresh" content="0; url=../">
           <link rel="canonical" href="../">
-          <p>Pixelheim has moved to <a href="../">its home</a>.</p>
+          <p>Pixelheim lives at <a href="../">its home</a> now; your heroes come with you.</p>
           HTML
+          done
       # Publishes to the gh-pages branch root; PR previews live under
       # pr-preview/ and must survive production deploys.
       - uses: JamesIves/github-pages-deploy-action@v4

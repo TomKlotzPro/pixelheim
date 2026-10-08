@@ -1,11 +1,11 @@
 # Pixelheim — Godot
 
-The Godot 4.7 rewrite of Pixelheim ([Godot Migration](https://linear.app/pixelheim/project/godot-migration-4ba6c77b3226) project). The React/Pixi web game in the repo root stays the source of truth for game data (maps, tiles, balance) until it is sunset.
+Pixelheim in Godot 4.7 ([Godot Migration](https://linear.app/pixelheim/project/godot-migration-4ba6c77b3226) project). It began as a React/Pixi web game, retired in v0.75; its maps and data tables now live here (`assets/maps/`, `assets/data/`) and are edited directly.
 
 ## Run
 
 ```sh
-pnpm godot:art                # once: the paid art (below)
+../scripts/fetch-private-art.sh  # once: the paid art (below)
 godot --path godot            # play (or open godot/ in the Godot editor)
 ```
 
@@ -19,7 +19,7 @@ his paid Survival, Armor, Jewelry and Puny Skills packs and his free CC0 icon
 sheets, mapped in `assets/puny/icons.json` (`scripts/item_icons.gd`,
 PIX-138). Their licences forbid redistributing the packs, so they are not in
 this repository: they live in the private `TomKlotzPro/pixelheim-assets` repo
-under `retro-rpg/shade/`. `pnpm godot:art` (`scripts/fetch-private-art.sh`)
+under `retro-rpg/shade/`. `scripts/fetch-private-art.sh`
 installs the atlas into `godot/assets/puny/medieval/` and every icon
 `icons.json` names into `godot/assets/puny/shade/` (both git-ignored) with your
 GitHub login; the deploy and the Godot CI run the same script on a checkout
@@ -27,7 +27,7 @@ made with a read-only deploy key (secret `PIXELHEIM_ASSETS_KEY`). Without it
 the game runs with the town's old buildings and props and the web's item
 icons.
 
-Combat runs on the web game's numbers: the hero's real HP and stats, each
+Combat runs on the web game's numbers, kept: the hero's real HP and stats, each
 species' stats per region, elites, ailments (a web turn = 1 s), drops, xp and
 level-ups; defeat wakes you at the inn. Monsters stand in packs at the web's
 visible spawn points and stay cleared until you leave the map.
@@ -43,20 +43,18 @@ autoload (`scripts/state/`) and autosaves within 3 s of any change, at once on
 map changes and loot, and when the window closes or loses focus.
 
 Slot files (`user://saves/slot_<n>.json`; IndexedDB on the web export) use
-the web game's save format, schema v4 — envelope, migrations and `PXH1.` save
-codes are ported in `save_codec.gd` — so a web save loads in Godot and a
-Godot save loads in the web game. Device settings live apart in
-`user://settings.cfg`.
+the old web game's save format, schema v4 — envelope, migrations and `PXH1.`
+save codes are ported in `save_codec.gd` — so its heroes load here. Device
+settings live apart in `user://settings.cfg`.
 
 The saves screen (Esc) plays, starts or clears slots and brings heroes across
-from the web game (`scripts/saves_screen.gd`, `state/web_import.gd`):
+from the retired web game (`scripts/saves_screen.gd`, `state/web_import.gd`):
 
-- **Same browser**: the Godot build is served from the web game's origin, so
-  it reads the web save from `localStorage` (`pixelheim-save-v1`). A first
-  visit with no Godot saves offers to bring that hero over right away.
-- **Anywhere else**: paste the code from the web game's Options → Copy save
-  code (raw save JSON works too). `C` copies a Godot hero's code back for the
-  web game's Import save code.
+- **Same browser**: the game is served from the web game's old origin, so it
+  still reads that hero from `localStorage` (`pixelheim-save-v1`). A first
+  visit with no saves offers to bring them over right away.
+- **Anywhere else**: paste a save code (raw save JSON works too). `C` copies a
+  hero's code.
 
 ## Tests
 
@@ -140,14 +138,14 @@ python3 -m http.server -d godot/export/web            # play in a browser
 
 Single-threaded preset (`export_presets.cfg`): no cross-origin-isolation
 headers needed, so any static host works — GitHub Pages included (~9.6 MB
-gzipped over the wire). CI deploys it to the root of the Pages site, with the
-classic web edition at `/classic/` ([docs/godot-parity.md](../docs/godot-parity.md)).
+gzipped over the wire). The deploy puts it at the root of the Pages site; old
+`/classic/` and `/godot/` links lead there.
 
 ## Layout
 
 - `scenes/main.tscn` — entry scene; all other nodes are built in code
-- `scripts/world_tiles.gd` — tile tables ported from `src/world/tiles.ts`
-- `scripts/map_data.gd` — loads the JSON maps exported by `pnpm godot:sync` (pure data, unit-tested)
+- `scripts/world_tiles.gd` — what each tile lets the hero do (walkability) and its colour on the map
+- `scripts/map_data.gd` — loads the JSON maps in `assets/maps/` (pure data, unit-tested)
 - `scripts/world.gd` — scene orchestration: tilemap, spawns, HUD, interaction
 - `scripts/harness.gd` — the screenshot harness below, added only for `--screenshot` runs
 - `scripts/state/` — the `GameState` autoload and its typed sections (hero, pack, settlement, progression, world), the save codec, slots and settings
@@ -160,18 +158,19 @@ classic web edition at `/classic/` ([docs/godot-parity.md](../docs/godot-parity.
 - `scripts/state/skills.gd` + `scripts/stats_screen.gd` + `scripts/skills_screen.gd` — the stat sheet (ported from `hero/statInfo.ts`, `applyStatPoint`) on C and the skill tree with the Path Graph (`hero/skillTree.ts`, `SkillTree.tsx`) on K; points are spent through `GameState.spend_stat_point` / `buy_skill_node`
 - `scripts/title_screen.gd` + `scripts/create_screen.gd` — the title (ported from `TitleScreen.tsx`: the night diorama, the bestiary's parade, Continue / New Game / Saves) and hero creation (`CharacterCreation.tsx`: role, look among Shade's colourways, name). A plain launch with no hero keeps an unsaved stand-in behind the title (`GameState.standing_in`) until one is made
 - `scripts/pause_screen.gd` + `scripts/options_screen.gd` + `scripts/controls.gd` — Esc's pause menu (Resume, Saves, Options, Quit to title) and the options (volumes, CRT scanlines, fullscreen, reduced motion, key rebinding); `Controls` rebuilds the InputMap from `GameSettings.bindings` (one rebindable primary per action plus fixed alternates and the pad)
-- `scripts/inventory_screen.gd` — the pack and paperdoll on I (ported from `Inventory.tsx`): nine slots around the hero and the numbers gear makes, everything carried by category; equip, take off, drink, place furniture, drop (`GameState.equip` / `unequip` / `use_item` / `drop_item` / `drop_gear`). Item icons are the web's, synced by name from the catalog
+- `scripts/inventory_screen.gd` — the pack and paperdoll on I (ported from `Inventory.tsx`): nine slots around the hero and the numbers gear makes, everything carried by category; equip, take off, drink, place furniture, drop (`GameState.equip` / `unequip` / `use_item` / `drop_item` / `drop_gear`). item icons are Shade's (`scripts/item_icons.gd`, `assets/puny/icons.json`), and a Craft tab guides crafting
 - `scripts/codex_screen.gd` — the codex on B (ported from `Codex.tsx`): family masteries with their Slayer tiers, and the bestiary of every monster whose family the hero has met
 - `scripts/state/dungeons.gd` + `scripts/dungeon_screen.gd` + `scripts/dungeon_floor.gd` — the two dungeons and their fifteen floors (ported from `src/game/hero/levels.ts`), the gate's floor select, and the floors the hero walks: generated from the floor number, one room per web encounter with the guardian last; the save keeps the hero at the gate while below (`GameState.clear_floor` pays a first clear)
 - `scripts/puny_sheet.gd` / `scripts/puny_dungeon.gd` — one Shade tileset with its `.tsx` (animations, wang corners, a lazily built TileSet), and Puny Dungeon's wall grammar, stone, torches, barrels and stairs
 - `scripts/home_screen.gd` — the house's barrel, workbench, trophy shelf, nook and furniture placement (house rules live in `state/town.gd`)
 - `scripts/ui_style.gd` — the one look (PIX-138): parchment pages in carved wooden frames, ink on the page and cream on the dark, pixel fonts at whole scales, Press Start 2P headings
 - `scripts/hud_dock.gd` — the hero's dock centred along the bottom: experience along its top, portrait, rank, health and energy, the six skill slots by their number keys (a click casts too), gold and a menu of every screen with its key and waiting points
-- `scripts/sound.gd` (autoload `Sound`) + `assets/audio/` — the web synth's own sounds (`src/audio`), rendered offline by `pnpm audio:render` (`scripts/render-audio.ts`, headless Chromium, OfflineAudioContext): 17 stingers, a seamless loop per theme, ambient one-shots with variants (`assets/data/audio.json`). Music crossfades per place, battle/boss while something hunts the hero; Music/SFX/Ambience buses follow the options. Re-render after changing `src/audio` (noise is random, so CI does not check the files)
-- `assets/fonts/` — Press Start 2P (synced from the web) and Courier Prime, both OFL (`FONTS.txt`)
+- `scripts/sound.gd` (autoload `Sound`) + `assets/audio/` — 17 stingers, a seamless loop per theme and ambient one-shots with variants (`assets/data/audio.json`), rendered once from the old web game's synth, plus the pages' UI sounds synthesized at start. Music crossfades per place, battle/boss while something hunts the hero; Music/SFX/Ambience buses follow the options
+- `assets/fonts/` — Pixel Operator (CC0) and Press Start 2P (OFL) (`FONTS.txt`)
 - `assets/puny/` — art by Shade, CC0 (`LICENSE.txt`): characters (hero, villagers, bestiary) from [Puny Characters + PunyMonsters](https://merchant-shade.itch.io/16x16-puny-characters) and [Mini World Sprites](https://merchant-shade.itch.io/16x16-mini-world-sprites), the overworld from [Puny World](https://merchant-shade.itch.io/16x16-puny-world) and stone from [Puny Dungeon](https://merchant-shade.itch.io/16x16-puny-dungeon). `scripts/puny_art.gd` assigns who wears which sheet; `scripts/puny_terrain.gd` lays Puny World over the maps (wang corners on the dual grid, read from Shade's Tiled `.tsx`), raises ramparts, bridges and skylines, and `shaders/region_tint.gdshader` tones ash and mire
-- `assets/maps/*.json` — all world maps (grid, spawn, portals) exported from `src/world/maps` by `scripts/export-maps.ts`; regenerate with `pnpm godot:sync`
-- `assets/data/catalog.json` — item, role and skill data the save layer needs, exported by the same script
-- `assets/data/npcs.json` — villagers and recruits with their lines, exported by the same script
+- `assets/maps/*.json` — all world maps (grid one row per line, spawn, portals), and `interactables.json` (chests, signs, waypoints); edit them directly
+- `assets/data/catalog.json` — items, roles and skill data
+- `assets/data/npcs.json` — villagers and recruits with their lines
+- `assets/data/changelog.json` — every release, newest first: What's new, and the game's version
 - `assets/data/economy.json` — shops and their stock per unlocked floor, recipes, stations, rarities
 - `assets/data/town.json` — town tiers, deeds, rest and bank tuning; `assets/maps/town@N.json` / `town_house@N.json` are the tier redraws
