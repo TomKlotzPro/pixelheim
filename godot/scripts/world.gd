@@ -56,6 +56,14 @@ var soundscape_left := 0.0
 ## Foes still standing on the dungeon floor the hero walks (0 when cleared).
 var floor_foes := 0
 var message_label: Label
+## The message's plate and its tag (PIX-194): "Quest accepted", "Level up"...
+var message_box: PanelContainer
+var message_tag: Label
+var message_fade: Tween
+## Tags a message may open with, set in gold on its plate.
+const MESSAGE_TAGS := ["Quest accepted", "Quest complete", "Level up", "Mastery"]
+## The widest a message's words run before they wrap.
+const MESSAGE_WIDTH := 860.0
 ## The main quest's next step, quietly above the dock (PIX-144): a dark
 ## pill holding "Next" and the step.
 var objective_box: PanelContainer
@@ -359,9 +367,11 @@ func in_view(at: Vector2, margin := 0.0) -> bool:
 func float_text(text: String, at: Vector2, color: Color) -> void:
 	var label := Label.new()
 	label.text = text
-	label.add_theme_font_size_override("font_size", 9)
+	# The UI's bold pixel face at its own size, outlined in the night (PIX-194).
+	label.add_theme_font_override("font", UiStyle.bold_font())
+	label.add_theme_font_size_override("font_size", UiStyle.BODY_PX)
 	label.add_theme_color_override("font_color", color)
-	label.add_theme_color_override("font_outline_color", Color(0.1, 0.08, 0.12))
+	label.add_theme_color_override("font_outline_color", UiStyle.NIGHT)
 	label.add_theme_constant_override("outline_size", 3)
 	label.position = at - Vector2(14, 0)
 	label.z_index = 10
@@ -375,9 +385,11 @@ func float_text(text: String, at: Vector2, color: Color) -> void:
 func float_number(value: int, at: Vector2, color: Color) -> void:
 	var label := Label.new()
 	label.text = str(value)
-	label.add_theme_font_size_override("font_size", 9)
+	# The UI's bold pixel face at its own size, outlined in the night (PIX-194).
+	label.add_theme_font_override("font", UiStyle.bold_font())
+	label.add_theme_font_size_override("font_size", UiStyle.BODY_PX)
 	label.add_theme_color_override("font_color", color)
-	label.add_theme_color_override("font_outline_color", Color(0.1, 0.08, 0.12))
+	label.add_theme_color_override("font_outline_color", UiStyle.NIGHT)
 	label.add_theme_constant_override("outline_size", 3)
 	label.position = at - Vector2(6, 0)
 	label.z_index = 10
@@ -393,14 +405,17 @@ func log_line(line: String) -> void:
 ## The battle log: recent lines stack bottom-left and fade.
 func _log(lines: Array) -> void:
 	for line: String in lines:
-		var label := UiStyle.label(line, UiStyle.reading(12), UiStyle.CREAM)
-		label.add_theme_color_override("font_outline_color", UiStyle.NIGHT)
-		label.add_theme_constant_override("outline_size", 4)
-		log_box.add_child(label)
-		var tween := label.create_tween()
+		# Each line on its own small plate, like the objective's (PIX-194).
+		var chip := PanelContainer.new()
+		chip.add_theme_stylebox_override("panel", UiStyle.plate(8))
+		chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		chip.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+		chip.add_child(UiStyle.label(line, UiStyle.reading(12), UiStyle.CREAM))
+		log_box.add_child(chip)
+		var tween := chip.create_tween()
 		tween.tween_interval(LOG_SECONDS)
-		tween.tween_property(label, "modulate:a", 0.0, 0.6)
-		tween.tween_callback(label.queue_free)
+		tween.tween_property(chip, "modulate:a", 0.0, 0.6)
+		tween.tween_callback(chip.queue_free)
 	while log_box.get_child_count() > LOG_LINES:
 		var oldest := log_box.get_child(0)
 		log_box.remove_child(oldest)
@@ -506,7 +521,7 @@ func skill_flash(at: Vector2, color: Color) -> void:
 ## Something has seen the hero: a growl (SFX.bump), not more than once a beat.
 func on_enemy_noticed(enemy: Node) -> void:
 	var now := Time.get_ticks_msec() / 1000.0
-	hint("dodge", {"key": Controls.key_label(Controls.key_for("dodge", GameState.settings.bindings))})
+	hint("dodge")
 	# A named monster roars (PIX-158); anything else bumps.
 	if enemy.fighter.has("named"):
 		Sound.play("roar")
@@ -602,7 +617,7 @@ func hint(id: String, values := {}, key := "") -> void:
 	if _hint_doc.is_empty():
 		_hint_doc = JSON.parse_string(FileAccess.get_file_as_string("res://assets/data/hints.json"))
 	var title := String(_hint_doc[id]["title"])
-	var text := String(_hint_doc[id]["text"])
+	var text := Controls.say(String(_hint_doc[id]["text"]))
 	for name: String in values:
 		title = title.replace("{%s}" % name, str(values[name]))
 		text = text.replace("{%s}" % name, str(values[name]))
@@ -1056,8 +1071,10 @@ func _update_objective() -> void:
 	log_box.position.y = objective_box.position.y - 6 - log_box.size.y
 	# A message stands where the objective line does and grows upward too, so
 	# a long one (a barred gate, a quest's words) never runs under the dock.
-	message_label.position.y = objective_box.position.y + objective_box.size.y - message_label.size.y
-	var show := text != "" and not in_fight() and message_label.modulate.a < 0.05
+	if message_box.modulate.a > 0.0:
+		_fit_message()
+	message_box.position.y = objective_box.position.y + objective_box.size.y - message_box.size.y
+	var show := text != "" and not in_fight() and message_box.modulate.a < 0.05
 	var target := 1.0 if show else 0.0
 	if objective_box.get_meta("fading_to", -1.0) != target:
 		objective_box.set_meta("fading_to", target)
@@ -1508,6 +1525,7 @@ func _build_hud() -> void:
 	dock.world = self
 	hud.add_child(dock)
 	log_box = VBoxContainer.new()
+	log_box.add_theme_constant_override("separation", 3)
 	log_box.position = Vector2(24, 506)
 	log_box.custom_minimum_size = Vector2(700, 0)
 	log_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -1560,37 +1578,33 @@ func _build_hud() -> void:
 	keeper.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lines.add_child(keeper)
 	hud.add_child(nameplate)
-	message_label = Label.new()
-	message_label.position = Vector2(190, 610)
-	message_label.custom_minimum_size = Vector2(900, 0)
-	message_label.size = Vector2(900, 0)
-	message_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	message_label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
-	message_label.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	# A message stands on the objective's plate, its tag in gold (PIX-194).
+	message_box = PanelContainer.new()
+	message_box.add_theme_stylebox_override("panel", UiStyle.plate())
+	message_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	message_box.modulate.a = 0.0
+	var message_row := HBoxContainer.new()
+	message_row.add_theme_constant_override("separation", 8)
+	message_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	message_box.add_child(message_row)
+	message_tag = UiStyle.plate_tag("")
+	message_tag.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	message_row.add_child(message_tag)
+	message_label = UiStyle.plate_text("")
 	message_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	UiStyle.sized(message_label, UiStyle.reading(16))
-	message_label.add_theme_color_override("font_color", UiStyle.CREAM)
-	message_label.add_theme_color_override("font_outline_color", UiStyle.NIGHT)
-	message_label.add_theme_constant_override("outline_size", 6)
-	message_label.modulate.a = 0.0
-	hud.add_child(message_label)
+	message_row.add_child(message_label)
+	message_box.resized.connect(func() -> void: message_box.position.x = roundf((1280 - message_box.size.x) / 2.0))
+	hud.add_child(message_box)
 	objective_box = PanelContainer.new()
-	var pill := StyleBoxFlat.new()
-	pill.bg_color = Color(UiStyle.NIGHT, 0.6)
-	pill.set_corner_radius_all(8)
-	pill.content_margin_left = 12
-	pill.content_margin_right = 12
-	pill.content_margin_top = 2
-	pill.content_margin_bottom = 4
-	objective_box.add_theme_stylebox_override("panel", pill)
+	objective_box.add_theme_stylebox_override("panel", UiStyle.plate())
 	objective_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	objective_box.modulate.a = 0.0
 	var objective_row := HBoxContainer.new()
 	objective_row.add_theme_constant_override("separation", 8)
 	objective_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	objective_box.add_child(objective_row)
-	objective_row.add_child(UiStyle.strong("Next", 16, UiStyle.GOLD))
-	objective_label = UiStyle.label("", UiStyle.reading(16), UiStyle.CREAM)
+	objective_row.add_child(UiStyle.plate_tag("Next"))
+	objective_label = UiStyle.plate_text("")
 	objective_row.add_child(objective_label)
 	# Centred over the dock whatever the step's length.
 	objective_box.resized.connect(func() -> void: objective_box.position.x = roundf((1280 - objective_box.size.x) / 2.0))
@@ -1691,13 +1705,41 @@ func _update_nameplate() -> void:
 	nameplate.position = (screen - Vector2(nameplate.size.x / 2.0, nameplate.size.y)).round()
 
 ## A line for the hero, held long enough to read (quests say a lot).
+## The message's plate, shrunk round its words (a container only grows).
+func _fit_message() -> void:
+	message_box.size = Vector2.ZERO
+	message_box.reset_size()
+
+
+## On the objective's plate (PIX-194): a known tag before its first colon
+## ("Quest accepted: ...") is set in gold, the rest wraps beside it.
 func _flash_message(text: String) -> void:
+	var tag := ""
+	for known: String in MESSAGE_TAGS:
+		if text.begins_with(known + ": "):
+			tag = known
+			text = text.substr(known.length() + 2)
+			text = text[0].to_upper() + text.substr(1)
+			break
+	message_tag.text = tag
+	message_tag.visible = tag != ""
 	message_label.text = text
-	message_label.reset_size()
-	var tween := create_tween()
-	tween.tween_property(message_label, "modulate:a", 1.0, 0.15)
-	tween.tween_interval(clampf(text.length() / 22.0, 1.6, 6.0))
-	tween.tween_property(message_label, "modulate:a", 0.0, 0.4)
+	# Wraps at a reading width, never wider than it needs.
+	var wide := 0.0
+	for line in text.split("\n"):
+		wide = maxf(wide, UiStyle.body_font().get_string_size(line, HORIZONTAL_ALIGNMENT_LEFT, -1, message_label.get_theme_font_size("font_size")).x)
+	var width := minf(ceilf(wide) + 2, MESSAGE_WIDTH - (message_tag.get_minimum_size().x + 8 if tag != "" else 0))
+	# A wrapping label measures its height at the width it has: give it the
+	# width first, then fit the plate round it.
+	message_label.custom_minimum_size.x = width
+	message_label.size = Vector2(width, 0)
+	_fit_message()
+	if message_fade != null:
+		message_fade.kill()
+	message_fade = create_tween()
+	message_fade.tween_property(message_box, "modulate:a", 1.0, 0.15)
+	message_fade.tween_interval(clampf(text.length() / 22.0, 1.6, 6.0))
+	message_fade.tween_property(message_box, "modulate:a", 0.0, 0.4)
 
 ## The keys, as the player bound them (Controls, GameSettings).
 func _setup_input() -> void:
@@ -1712,6 +1754,7 @@ func apply_video() -> void:
 	# Large reading text (PIX-160) applies at once to what's on the HUD.
 	if message_label != null:
 		UiStyle.sized(message_label, UiStyle.reading(16))
+		message_box.reset_size()
 		UiStyle.sized(objective_label, UiStyle.reading(16))
 		objective_box.reset_size()
 	if settings.scanlines and crt == null:

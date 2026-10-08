@@ -310,6 +310,34 @@ static func heading(text: String, font_size: int, color: Color, at := Vector2.ZE
 	return node
 
 
+## What the HUD says over the world (PIX-194) - the next step, a message, a
+## line of the log - sits on one plate: the night's dark, a shade lighter at
+## its rim, stepped corners, on the UI's pixel grid. Words on it are cream,
+## a tag before them gold.
+static func plate(padding_x := 12) -> StyleBoxTexture:
+	if not _frames.has("plate"):
+		var art := Image.create(6, 6, false, Image.FORMAT_RGBA8)
+		art.fill(Color(NIGHT, 0.82))
+		_ring(art, 0, Color(WOOD_DARK, 0.95), true)
+		_frames["plate"] = _texture(art)
+	var style := _style(_frames["plate"], 2, 0)
+	style.content_margin_left = padding_x
+	style.content_margin_right = padding_x
+	style.content_margin_top = 3
+	style.content_margin_bottom = 5
+	return style
+
+
+## A plate's words: cream, the reading size.
+static func plate_text(text: String) -> Label:
+	return label(text, reading(16), CREAM)
+
+
+## A plate's tag ("Next", "Quest accepted"): gold, bold.
+static func plate_tag(text: String) -> Label:
+	return strong(text, 16, GOLD)
+
+
 ## The key a command answers to, as a keycap (PIX-193): "E", "Esc", "↑".
 ## `small` caps sit tighter (the dock's menu, footers).
 static func keycap(key: String, small := false) -> PanelContainer:

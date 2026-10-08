@@ -73,7 +73,7 @@ func test_the_level_up_line_counts_what_there_is_to_spend() -> void:
 	state.hero.xp_to_next = HeroState.xp_to_next_for(4)
 	assert_eq(state.earn_xp(1), "")
 	var line: String = state.earn_xp(state.hero.xp_to_next)
-	assert_eq(line, "LEVEL UP! You are now level 5. +3 stat points and +2 skill points to spend.")
+	assert_eq(line, "Level up: you are now level 5. +3 stat points and +2 skill points to spend.")
 
 
 func test_skill_tiers_open_with_levels() -> void:

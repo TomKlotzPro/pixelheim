@@ -1270,19 +1270,19 @@
       "y": 37
     },
     "arrival": "The letter was for Elder Maren of Pixelheim. You could see the fire from the last hill.",
-    "pouch": "The slime was carrying a traveller's pouch: a health potion. Press I for your pack.",
+    "pouch": "The slime was carrying a traveller's pouch: a health potion. {key:inventory} opens your pack.",
     "steps": [
       {
         "id": "scavenger",
-        "text": "Something is feeding at the road - drive it off (Space to strike)"
+        "text": "Drive off what's feeding at the road ({key:attack} to strike)"
       },
       {
         "id": "gate",
-        "text": "Get into Pixelheim - the gate is just south"
+        "text": "Get into Pixelheim: the gate is just south"
       },
       {
         "id": "bram",
-        "text": "Someone is calling for help by the north road (E to help)"
+        "text": "Help whoever is calling by the north road ({key:interact} to help)"
       },
       {
         "id": "sela",

@@ -57,9 +57,26 @@ static func rebind(bindings: Dictionary, action: String, key: int) -> Dictionary
 	return next
 
 
-## A key's name for the screen ("W", "Space", "Escape").
+## A key's name for the screen ("W", "Space", "Esc"): short where a cap is
+## small (Keycap.SHORT).
 static func key_label(key: int) -> String:
-	return OS.get_keycode_string(key)
+	var name := OS.get_keycode_string(key)
+	return String(Keycap.SHORT.get(name, name))
+
+
+## Text that names keys by action (PIX-194): "{key:interact} to help" reads
+## "E to help", or whatever the player bound, so no line names a key the
+## player has moved. `bindings` defaults to the player's.
+static func say(text: String, bindings: Variant = null) -> String:
+	if not "{key:" in text:
+		return text
+	var bound: Dictionary = bindings if bindings is Dictionary else GameState.settings.bindings
+	var out := text
+	for found in RegEx.create_from_string("\\{key:([a-z_]+)\\}").search_all(text):
+		var action := found.get_string(1)
+		if BINDABLE.has(action):
+			out = out.replace(found.get_string(), key_label(key_for(action, bound)))
+	return out
 
 
 ## Rebuilds the InputMap from scratch: primaries, alternates, the pad.

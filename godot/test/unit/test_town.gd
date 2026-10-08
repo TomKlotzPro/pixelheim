@@ -55,7 +55,7 @@ func test_a_project_waits_for_its_age_then_for_its_price() -> void:
 	assert_string_contains(blocker.call(), "settler")
 	state.settlement.settlers.append("settler_iva")
 	state.pack.gold = 100
-	assert_eq(blocker.call(), "The treasury asks 150g.")
+	assert_eq(blocker.call(), "The treasury asks 150 gold.")
 	state.pack.gold = 1000
 	assert_eq(blocker.call(), "It takes 3 Marsh Reed.")
 	state.pack.items["marsh_reed"] = 3
@@ -184,13 +184,13 @@ func test_a_recruits_story_is_a_quest_that_brings_them_home() -> void:
 	var messages: Array[String] = []
 	state.message.connect(func(text: String) -> void: messages.append(text))
 	state.finish_dialogue("settler_iva")
-	assert_string_starts_with(messages[0], "Quest accepted - Reeds for a Healer:")
+	assert_string_starts_with(messages[0], "Quest accepted: Reeds for a Healer.")
 	assert_false(state.is_settled("settler_iva"))
 	state.pack.items["marsh_reed"] = 3
 	var moved := [false]
 	state.settlers_changed.connect(func() -> void: moved[0] = true)
 	state.finish_dialogue("settler_iva")
-	assert_string_starts_with(messages[1], "Quest complete - Reeds for a Healer! +25 xp. Reeds enough")
+	assert_string_starts_with(messages[1], "Quest complete: Reeds for a Healer. +25 XP. \u201cReeds enough")
 	assert_true(state.is_settled("settler_iva"))
 	assert_false(state.pack.items.has("marsh_reed"), "the reeds were handed over")
 	assert_true(moved[0])
@@ -257,7 +257,7 @@ func test_the_inn_charges_only_the_hurt_and_halves_in_a_town() -> void:
 	assert_eq(state.rest_at_inn(), "The innkeeper nods. You are already well rested.")
 	assert_eq(state.pack.gold, 30)
 	state.hero.hp = 1
-	assert_eq(state.rest_at_inn(), "You rest at the inn. Fully restored. (-10g)")
+	assert_eq(state.rest_at_inn(), "You rest at the inn and wake fully restored. -10 gold.")
 	assert_eq(state.pack.gold, 20)
 	assert_eq(state.hero.hp, state.hero.stats["maxHp"])
 	state.settlement.town_tier = 3
@@ -266,4 +266,4 @@ func test_the_inn_charges_only_the_hurt_and_halves_in_a_town() -> void:
 	assert_eq(state.pack.gold, 15)
 	state.pack.gold = 0
 	state.hero.hp = 1
-	assert_eq(state.rest_at_inn(), "No coin, no bed. (Rest costs 5g.)")
+	assert_eq(state.rest_at_inn(), "No coin, no bed: a night costs 5 gold.")

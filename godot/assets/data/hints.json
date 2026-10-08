@@ -1,7 +1,7 @@
 {
   "dodge": {
     "title": "Dodge",
-    "text": "Something's coming for you. Press {key} to roll out of the way - for a blink nothing can touch you, and a patch of ground marked for a blow is always worth leaving."
+    "text": "Something's coming for you. Press {key:dodge} to roll out of the way - for a blink nothing can touch you, and a patch of ground marked for a blow is always worth leaving."
   },
   "skill": {
     "title": "{skill}",
@@ -9,7 +9,7 @@
   },
   "board": {
     "title": "The notice board",
-    "text": "Face it and press E: fund the village's projects here, and Pixelheim grows the moment you step outside."
+    "text": "Face it and press {key:interact}: fund the village's projects here, and Pixelheim grows the moment you step outside."
   },
   "bounty": {
     "title": "The bounty board",

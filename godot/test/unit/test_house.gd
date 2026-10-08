@@ -18,7 +18,7 @@ func _own_house(gold := 0) -> void:
 
 
 func test_the_shut_door_sells_the_deed_or_names_the_price() -> void:
-	assert_eq(state.buy_house(), "For sale: this house. The deed costs 1500g.")
+	assert_eq(state.buy_house(), "For sale: this house. The deed costs 1500 gold.")
 	state.pack.gold = 2000
 	assert_eq(state.buy_house(), "The deed is yours. Welcome home.")
 	assert_true(state.owns_house())
@@ -32,9 +32,9 @@ func test_odo_sells_the_bigger_deeds_in_order_and_gated_on_gold() -> void:
 	state.world.map_id = "town_smith"
 	assert_eq(state.buy_house_upgrade(), "", "only Odo sells deeds")
 	state.world.map_id = "town_shop"
-	assert_string_contains(state.buy_house_upgrade(), "COTTAGE")
+	assert_string_contains(state.buy_house_upgrade(), "Cottage")
 	assert_eq(int(state.settlement.house["tier"]), 2)
-	assert_string_contains(state.buy_house_upgrade(), "MANOR")
+	assert_string_contains(state.buy_house_upgrade(), "Manor")
 	assert_eq(state.pack.gold, 20000 - 5000 - 12000)
 	assert_eq(state.buy_house_upgrade(), "", "the Manor is the top")
 
@@ -118,7 +118,7 @@ func test_fixtures_answer_to_e() -> void:
 func test_the_shelf_sells_then_hosts_the_workbench() -> void:
 	_own_house(500)
 	state.world.map_id = "town_house"
-	assert_string_contains(state.house_interact(Vector2i.ZERO, "shelf")["text"], "800g")
+	assert_string_contains(state.house_interact(Vector2i.ZERO, "shelf")["text"], "800 gold")
 	state.pack.gold = 900
 	assert_string_contains(state.house_interact(Vector2i.ZERO, "shelf")["text"], "Craft at home, forever")
 	assert_true(state.settlement.house["workbench"])

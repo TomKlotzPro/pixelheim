@@ -41,7 +41,7 @@ func test_the_gate_is_barred_until_the_relics_are_home() -> void:
 	assert_string_contains(state.resolve_quests("elder"), "3/4")
 	assert_false(Relics.gate_open(state.progression))
 	_win("tidecaller")
-	assert_string_contains(state.resolve_quests("elder"), "Quest complete - The Five Relics")
+	assert_string_contains(state.resolve_quests("elder"), "Quest complete: The Five Relics")
 	assert_true(Relics.gate_open(state.progression))
 	assert_eq(Relics.found(state.progression), 4)
 	for relic: Dictionary in Relics.all():

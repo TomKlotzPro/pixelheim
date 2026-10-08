@@ -22,7 +22,8 @@ func _slay(monster_id: String) -> Array[String]:
 func test_a_givers_first_word_accepts_their_quest() -> void:
 	assert_eq(
 		state.resolve_quests("innkeeper"),
-		"Quest accepted - Slime Trouble: Three fewer slimes in the world and there's coin in it for you."
+		"Quest accepted: Slime Trouble. Sela's cellar smells of slime. Thin the forest's supply of them.",
+		"PIX-194: the task, not the words just said"
 	)
 	assert_eq(state.progression.quests["slime_trouble"], {"progress": 0, "done": false})
 	assert_eq(state.resolve_quests("innkeeper"), "Slime Trouble: 0/3 slimes flattened.")
@@ -49,8 +50,8 @@ func test_turning_in_pays_and_closes_the_quest() -> void:
 	var xp: int = state.hero.xp
 	assert_eq(
 		state.resolve_quests("innkeeper"),
-		"Quest complete - Slime Trouble! +60g, +30 xp. The cellar thanks you. So does my nose. Here - you've earned it."
-		+ " LEVEL UP! You are now level 2. +3 stat points and +1 skill point to spend.",
+		"Quest complete: Slime Trouble. +60 gold, +30 XP. \u201cThe cellar thanks you. So does my nose. Here - you've earned it.\u201d"
+		+ "\nLevel up: you are now level 2. +3 stat points and +1 skill point to spend.",
 		"the three slimes and the reward make a level"
 	)
 	assert_eq(state.pack.gold, gold + 60)
@@ -66,7 +67,7 @@ func test_deliveries_count_the_pack_and_leave_it_on_turn_in() -> void:
 	assert_eq(state.resolve_quests("villager_bram"), "The Cheese Run: 0/1 cheese wheels delivered.")
 	state.pack.add_item("cheese_wheel", 2)
 	assert_true(Quests.is_ready(Quests.by_id("cheese_run"), state.progression.quests, state.pack.items))
-	assert_string_starts_with(state.resolve_quests("villager_bram"), "Quest complete - The Cheese Run! +25g, +15 xp.")
+	assert_string_starts_with(state.resolve_quests("villager_bram"), "Quest complete: The Cheese Run. +25 gold, +15 XP.")
 	assert_eq(state.pack.items.get("cheese_wheel", 0), 1, "one wheel handed over")
 
 
@@ -84,7 +85,7 @@ func test_closing_a_conversation_resolves_quests() -> void:
 	state.finish_dialogue("elder")
 	# Since the gate was barred (PIX-170) Maren's first ask is the relics.
 	assert_eq(said.size(), 1)
-	assert_string_contains(said[0], "Quest accepted - The Five Relics: The gate's barred")
+	assert_string_contains(said[0], "Quest accepted: The Five Relics. Only what the five climbers left behind")
 
 
 func test_vex_talks_before_his_counter_only_while_his_quest_waits() -> void:

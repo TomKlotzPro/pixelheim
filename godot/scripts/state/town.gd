@@ -127,7 +127,7 @@ static func project_blocker(project_id: String, progression: ProgressionState, s
 	if not blockers.is_empty():
 		return blockers[0] + "."
 	if gold < int(entry["cost"]["gold"]):
-		return "The treasury asks %dg." % entry["cost"]["gold"]
+		return "The treasury asks %d gold." % entry["cost"]["gold"]
 	for item_id: String in entry["cost"]["items"]:
 		if int(items.get(item_id, 0)) < int(entry["cost"]["items"][item_id]):
 			return "It takes %d %s." % [entry["cost"]["items"][item_id], Catalog.item_name(item_id)]

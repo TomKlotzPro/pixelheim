@@ -22,7 +22,7 @@ static func data() -> Dictionary:
 ## What the line above the dock says at a step, "" outside the prologue.
 static func objective(step: int) -> String:
 	var steps: Array = data()["steps"]
-	return String(steps[step - 1]["text"]) if step >= 1 and step <= steps.size() else ""
+	return Controls.say(String(steps[step - 1]["text"])) if step >= 1 and step <= steps.size() else ""
 
 
 ## The survivors on the square that night, where the fire put them, saying
