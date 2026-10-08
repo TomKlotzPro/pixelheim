@@ -23,7 +23,7 @@ func test_new_game_matches_the_web_create_hero() -> void:
 	assert_eq(state.hero.hero_name, "Wanderer")
 	assert_eq(state.hero.role_id, "warrior")
 	assert_eq(state.hero.level, 1)
-	assert_eq(state.hero.xp_to_next, 38)
+	assert_eq(state.hero.xp_to_next, 46)
 	assert_eq(state.hero.hp, 42, "warrior base maxHp")
 	assert_eq(state.hero.skill_nodes, ["warrior_power_strike"])
 	assert_eq(state.pack.gold, 30)

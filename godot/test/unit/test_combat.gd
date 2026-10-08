@@ -77,16 +77,20 @@ func test_armor_and_monster_hits_match_the_web() -> void:
 	assert_eq(Bestiary.monster_attack_damage(Bestiary.spawn("slime"), w[0], w[1], _dice([0.5])), 1, "never less than 1")
 
 
-func test_level_ups_match_the_web() -> void:
+## PIX-141: the curve climbs (46, 70, 102...), a level banks 3 stat points
+## and heals half, not all.
+func test_level_ups_climb_the_curve_and_heal_half() -> void:
 	var hero := HeroState.create("L", "warrior")
 	hero.xp = 200
-	assert_eq(HeroRules.apply_level_ups(hero), 3)
-	assert_eq([hero.level, hero.xp, hero.xp_to_next, hero.stats["maxHp"], hero.stats["maxMp"]], [4, 32, 92, 63, 11])
-	assert_eq([hero.stat_points, hero.skill_points, hero.hp], [15, 3, 63])
+	hero.hp = 1
+	assert_eq(HeroRules.apply_level_ups(hero), 2)
+	assert_eq([hero.level, hero.xp, hero.xp_to_next, hero.stats["maxHp"]], [3, 84, 102, 56])
+	assert_eq([hero.stat_points, hero.skill_points], [6, 2])
+	assert_eq(hero.hp, 1 + 25 + 28, "half of each new max, not a refill")
 	var ranked := HeroState.create("L", "warrior")
 	ranked.level = 4
-	ranked.xp_to_next = 92
-	ranked.xp = 92
+	ranked.xp_to_next = HeroState.xp_to_next_for(4)
+	ranked.xp = ranked.xp_to_next
 	HeroRules.apply_level_ups(ranked)
 	assert_eq([ranked.level, ranked.skill_points], [5, 2], "a new rank pays a bonus point")
 
@@ -116,8 +120,8 @@ func test_a_kill_pays_xp_gold_rent_and_clears_the_spawn() -> void:
 	state.monster_slain.connect(func(id: String) -> void: slain.append(id))
 	var log: Array[String] = state.defeat_monster(wolf, "forest", "forest_2", 1)
 	assert_has(log, "Rent from your properties: +2g.")
-	assert_has(log, "Dire Wolf is defeated! +15 XP, +9 gold.")
-	assert_eq(state.hero.xp, 15)
+	assert_has(log, "Dire Wolf is defeated! +8 XP, +9 gold.")
+	assert_eq(state.hero.xp, 8)
 	assert_eq(state.pack.gold, 30 + 2 + 9)
 	assert_eq(state.world.slain, ["forest_2"])
 	assert_eq(slain, ["wolf"])

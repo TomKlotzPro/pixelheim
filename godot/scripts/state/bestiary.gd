@@ -55,12 +55,22 @@ static func species_at(region_id: String, cell: Vector2i) -> String:
 	return monsters[(cell.x * 31 + cell.y) % monsters.size()]["monsterId"]
 
 
-## Wild kills pay reduced xp/gold: dungeons stay the main progression.
+## Wild kills pay reduced xp and gold: dungeons stay the main progression
+## (XP more so than gold, PIX-141: the wilds are for gathering, not farming).
 static func wild(fighter: Dictionary) -> Dictionary:
-	var mult := float(_data()["wildRewardMult"])
-	fighter["xp"] = roundi(fighter["xp"] * mult)
-	fighter["gold"] = roundi(fighter["gold"] * mult)
+	fighter["xp"] = roundi(fighter["xp"] * float(_data()["wildXpMult"]))
+	fighter["gold"] = roundi(fighter["gold"] * float(_data()["wildRewardMult"]))
 	return fighter
+
+
+## The XP a kill pays a hero of `hero_level` (PIX-141): full against a match,
+## 15% less per level the hero stands above the monster, never under a tenth.
+static func xp_for(fighter: Dictionary, hero_level: int) -> int:
+	var gap: Dictionary = _data()["xpGap"]
+	var monster: Dictionary = _data()["monsters"].get(fighter["id"], {})
+	var above := hero_level - int(monster.get("level", hero_level))
+	var share := clampf(1.0 - float(gap["falloff"]) * maxi(0, above), float(gap["floor"]), 1.0)
+	return roundi(int(fighter["xp"]) * share)
 
 
 static func variance(base: float, roll: Callable) -> int:

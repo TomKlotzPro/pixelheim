@@ -51,7 +51,7 @@ func _info() -> String:
 	if level in GameState.progression.cleared_levels:
 		lines.append("Cleared. Its hoard is already yours.")
 	else:
-		var hoard: Array[String] = ["%dg" % floor_def["rewardGold"]]
+		var hoard: Array[String] = ["%d XP" % Dungeons.clear_xp(level), "%dg" % floor_def["rewardGold"]]
 		for item_id: String in floor_def["rewardItemIds"]:
 			hoard.append(Catalog.item_name(item_id))
 		lines.append("First clear: %s" % ", ".join(hoard))

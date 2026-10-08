@@ -13,6 +13,11 @@ static func floor_def(level: int) -> Dictionary:
 	return Bestiary._data()["levels"][level - 1]
 
 
+## XP for clearing a floor the first time (clearXpPerFloor per floor deep).
+static func clear_xp(level: int) -> int:
+	return int(Bestiary._data()["clearXpPerFloor"]) * level
+
+
 static func floor_count() -> int:
 	return Bestiary._data()["levels"].size()
 

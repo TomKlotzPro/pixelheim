@@ -1,6 +1,18 @@
 {
   "releases": [
     {
+      "version": "0.83.0",
+      "date": "2026-10-08",
+      "codename": "Hard Earned",
+      "notes": [
+        "LEVELS TAKE LONGER: each level asks for more XP than the last, so a hero arrives at the Ashen Throne around level 10 and at the bottom of the Undermountain around 14",
+        "GO DEEPER TO GROW: clearing a floor for the first time pays XP on top of its hoard - 12 for every floor down - while monsters below your level pay 15% less for each level between you",
+        "THE WILDS ARE FOR GATHERING: monsters outside the dungeons pay about a third of their XP (gold is unchanged)",
+        "A LEVEL IS A LIFT, NOT A REFILL: levelling up heals half your HP and mana instead of all of it, and brings 3 stat points instead of 5",
+        "SKILLS OPEN WITH LEVELS: a tree's second row opens at level 3, the third at 6 and the last at 10; locked cards say which level they need"
+      ]
+    },
+    {
       "version": "0.82.0",
       "date": "2026-10-08",
       "codename": "Fanfare",
