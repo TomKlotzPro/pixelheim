@@ -7,8 +7,8 @@ class_name ItemIcons
 ##   fetch-private-art.sh copies from the private pixelheim-assets repo into
 ##   assets/puny/shade/ (git-ignored), "@c,r" picking a cell of a sheet.
 ## Skills map a skill's name to "<theme>/<n>" in the Puny Skills pack.
-## Without the paid art an icon falls back to the web's sprite (a skill to
-## nothing: the dock shows its initials).
+## Without the paid art a paid icon is missing (null): the slot stays empty,
+## the dock shows a skill's initials.
 
 const MAP := "res://assets/puny/icons.json"
 const FREE := "res://assets/puny/icons/"
@@ -43,19 +43,14 @@ static func resolve(src: String) -> Dictionary:
 	return {"path": path, "cell": cell, "tile": -1}
 
 
-## An item's icon, 16x16; the web's sprite without the paid art.
+## An item's icon, 16x16, or null (no paid art for it here).
 static func texture(item_id: String) -> Texture2D:
-	var icon := _texture(source(item_id))
-	if icon != null:
-		return icon
-	return load("res://assets/sprites/%s.png" % Catalog.item(item_id)["sprite"])
+	return _texture(source(item_id))
 
 
-## The mark over the hero for an ailment (poison, burn, stun); the web's
-## without the paid art.
+## The mark over the hero for an ailment (poison, burn, stun), or null.
 static func ailment(kind: String) -> Texture2D:
-	var icon := _texture(_data()["ailments"].get(kind, ""))
-	return icon if icon != null else load("res://assets/sprites/effect_%s.png" % kind)
+	return _texture(_data()["ailments"].get(kind, ""))
 
 
 ## A skill's icon by its name, or null (no icon, or no paid art).

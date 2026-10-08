@@ -14,7 +14,7 @@ Pixelheim is a Godot 4.7 game (`godot/`), live at the Pages root since PIX-129. 
 ## Data flows one way: web → Godot
 
 - Maps, chests, signs, waypoints, items, roles, skill roots, place names, villagers: exported by `scripts/export-maps.ts` into `godot/assets/maps/*.json` and `godot/assets/data/*.json` by importing the real web modules (so web-side validation runs too).
-- Generated sprites: copied from `public/sprites/` by `scripts/sync-godot-assets.mjs` (patterns + `SPRITE_EXTRAS`; widen them when a phase needs new art).
+- No generated sprites: the Godot game draws only Shade's art (PIX-137); `scripts/sync-godot-assets.mjs` now syncs just the pixel font.
 - Run `pnpm godot:sync` after any change; CI runs both scripts with `--check` and fails on drift. **Never hand-edit the exported JSON or synced PNGs.**
 - New data a phase needs → add an `emit(...)` to `export-maps.ts` (into `DATA_OUT`), read it from a static GDScript class with a cached `static var _doc`.
 

@@ -1,27 +1,12 @@
 extends GutTest
-## Assets synced from the web game (pnpm godot:sync) must be complete and
-## coherent: every animated tile has its sheet + atlas metadata, every
-## exported map parses into known tiles, and every portal link resolves —
+## Maps exported from the web game (pnpm godot:sync) must be coherent: every
+## exported map parses into known tiles, and every portal link resolves -
 ## the same validation src/world/maps/index.ts runs at module load.
 
 const MAP_IDS := [
 	"overworld", "deepwood", "mirefen", "town", "town_shop", "town_inn",
 	"town_smith", "town_alchemist", "town_house", "town_hall", "demo", "demo_hut",
 ]
-
-
-func test_animated_tiles_have_sheets_and_atlas_entries() -> void:
-	var animations := WorldTiles.atlas_animations()
-	for tile: String in WorldTiles.TILE_ANIMATIONS:
-		var sheet: String = WorldTiles.TILE_ANIMATIONS[tile]
-		assert_true(WorldTiles.TILE_INFO.has(tile), "unknown animated tile %s" % tile)
-		assert_true(
-			ResourceLoader.exists("res://assets/sprites/%s.png" % sheet),
-			"missing sheet %s" % sheet
-		)
-		assert_true(animations.has(sheet), "atlas.json lacks %s" % sheet)
-		assert_gt(int(animations[sheet]["frames"]), 1)
-		assert_gt(float(animations[sheet]["fps"]), 0.0)
 
 
 func test_every_exported_map_parses_into_known_tiles() -> void:

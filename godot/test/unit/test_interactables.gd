@@ -18,9 +18,10 @@ func test_chests_sit_on_walkable_portal_free_cells() -> void:
 	assert_gt(count, 0)
 
 
-func test_every_treasure_sprite_exists() -> void:
-	for sprite_name in ["chest_closed", "chest_open", "road_glint", "herb_patch"]:
-		assert_true(ResourceLoader.exists("res://assets/sprites/%s.png" % sprite_name))
+func test_every_treasure_look_has_shades_art() -> void:
+	for look: String in ["chest", "glint", "herb"]:
+		assert_gt(PunyProps.treasure_tile(look, false), -1, look)
+	assert_gt(PunyProps.treasure_tile("chest", true), -1, "an opened chest stays")
 
 
 func test_sprite_name_follows_the_web_rules() -> void:
