@@ -139,7 +139,7 @@ func _pixel(parent: Node, at: Vector2, color: Color) -> void:
 ## lower left, in stepped rings of light.
 func _moon() -> void:
 	var halo := Sprite2D.new()
-	halo.texture = _glow_texture(56, Color("f4ecd0"), 0.1, 4)
+	halo.texture = glow_texture(56, Color("f4ecd0"), 0.1, 4)
 	halo.position = MOON
 	add_child(halo)
 	var r := 17.5
@@ -276,8 +276,8 @@ class Ridge:
 ## mountain, so its shoulders stand dark against it); the glow breathes.
 func _glow_behind() -> void:
 	summit_glow = Sprite2D.new()
-	summit_glow.texture = _glow_texture(34, Color("ff5a20"), 0.5, 6)
-	summit_glow.material = _additive()
+	summit_glow.texture = glow_texture(34, Color("ff5a20"), 0.5, 6)
+	summit_glow.material = additive()
 	summit_glow.position = SUMMIT + Vector2(0, 6)
 	add_child(summit_glow)
 	layers.append([summit_glow, summit_glow.position.x, 6.0])
@@ -296,7 +296,7 @@ func _fire() -> void:
 	layers.append([smoke, at.x, 6.0])
 	var embers := _particles(at, 10, 4.5, Color("ffa040"), Vector2(-1.2, -1.5), 8.0, 0.25, 0.25)
 	embers.spread = 50.0
-	embers.material = _additive()
+	embers.material = additive()
 	add_child(embers)
 	layers.append([embers, at.x, 6.0])
 
@@ -344,7 +344,7 @@ static func _puff_texture() -> ImageTexture:
 
 
 ## A light in stepped rings, the way pixel games draw glow.
-static func _glow_texture(radius: int, color: Color, peak: float, steps: int) -> ImageTexture:
+static func glow_texture(radius: int, color: Color, peak: float, steps: int) -> ImageTexture:
 	var size := radius * 2
 	var image := Image.create(size, size, false, Image.FORMAT_RGBA8)
 	for y in size:
@@ -357,7 +357,7 @@ static func _glow_texture(radius: int, color: Color, peak: float, steps: int) ->
 	return ImageTexture.create_from_image(image)
 
 
-static func _additive() -> CanvasItemMaterial:
+static func additive() -> CanvasItemMaterial:
 	var material := CanvasItemMaterial.new()
 	material.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
 	return material
@@ -492,8 +492,8 @@ func _village() -> void:
 	watchman.add_child(guard)
 	lantern = Sprite2D.new()
 	lantern.position = watchman.position + Vector2(5, -4)
-	lantern.texture = _glow_texture(30, Color("ffb050"), 0.38, 5)
-	lantern.material = _additive()
+	lantern.texture = glow_texture(30, Color("ffb050"), 0.38, 5)
+	lantern.material = additive()
 	lights.add_child(lantern)
 	if still:
 		guard.stop()
@@ -532,8 +532,8 @@ func _torch(street: Node, lights: Node, at: Vector2) -> void:
 	flame.frame = absi(int(at.x)) % PunyProps.LAMP_FRAMES.size()
 	lights.add_child(flame)
 	var glow := Sprite2D.new()
-	glow.texture = _glow_texture(36, Color("ff9a40"), 0.42, 6)
-	glow.material = _additive()
+	glow.texture = glow_texture(36, Color("ff9a40"), 0.42, 6)
+	glow.material = additive()
 	glow.position = at + Vector2(8, 4)
 	lights.add_child(glow)
 	flames.append([glow, at.x * 0.37])
@@ -547,8 +547,8 @@ func _lit_window(lights: Node, at: Vector2) -> void:
 	panes.position = at
 	lights.add_child(panes)
 	var glow := Sprite2D.new()
-	glow.texture = _glow_texture(22, Color("ffb050"), 0.3, 4)
-	glow.material = _additive()
+	glow.texture = glow_texture(22, Color("ffb050"), 0.3, 4)
+	glow.material = additive()
 	glow.position = at + Vector2(8, 6)
 	lights.add_child(glow)
 
@@ -577,11 +577,11 @@ static func _panes_texture() -> ImageTexture:
 func _fireflies(lights: Node) -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 42
-	var texture := _glow_texture(3, Color("e4ff8a"), 1.0, 2)
+	var texture := glow_texture(3, Color("e4ff8a"), 1.0, 2)
 	for i in 16:
 		var fly := Sprite2D.new()
 		fly.texture = texture
-		fly.material = _additive()
+		fly.material = additive()
 		var home := Vector2(rng.randf_range(0, ART.x), rng.randf_range(262, 300))
 		fly.position = home
 		fly.modulate.a = 0.6
