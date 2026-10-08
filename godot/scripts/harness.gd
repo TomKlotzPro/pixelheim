@@ -40,6 +40,7 @@ func _keys(args: PackedStringArray) -> void:
 	var codes := {
 		"e": KEY_E, "esc": KEY_ESCAPE, "space": KEY_SPACE, "enter": KEY_ENTER, "s": KEY_S, "w": KEY_W,
 		"i": KEY_I, "q": KEY_Q, "k": KEY_K, "c": KEY_C, "m": KEY_M, "b": KEY_B,
+		"r": KEY_R, "a": KEY_A, "d": KEY_D, "z": KEY_Z, "x": KEY_X,
 	}
 	for key: String in args[keys_index + 1].split(","):
 		for pressed: bool in [true, false]:

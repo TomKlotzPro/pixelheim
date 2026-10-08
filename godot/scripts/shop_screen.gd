@@ -17,6 +17,7 @@ var list: VBoxContainer
 var scroll: ScrollContainer
 var detail: Label
 var act_button: Button
+var stack_button: Button
 var gold_label: Label
 var status: Label
 
@@ -71,13 +72,18 @@ func _open() -> void:
 	detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	detail.custom_minimum_size = Vector2(340, 0)
 	side_box.add_child(detail)
+	var actions := HBoxContainer.new()
+	actions.add_theme_constant_override("separation", 10)
+	side_box.add_child(actions)
 	act_button = UiStyle.button("", _act)
-	act_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	side_box.add_child(act_button)
+	actions.add_child(act_button)
+	# A stack also sells whole (Z), for the mouse too.
+	stack_button = UiStyle.button("", _sell_stack)
+	actions.add_child(stack_button)
 
 	status = UiStyle.label("", 14, UiStyle.LAMP, Vector2(80, 580))
 	add_child(status)
-	add_child(UiStyle.footer("Esc  close      A/D  tab      W/S  choose      E  %s" % "/".join(tabs).to_lower(), Vector2(80, 660)))
+	add_child(UiStyle.footer("Esc  close      A/D  tab      W/S  choose      E  %s      Z  sell a stack" % "/".join(tabs).to_lower(), Vector2(80, 660)))
 	_refresh()
 
 
@@ -93,7 +99,18 @@ func _command(event: InputEvent) -> Callable:
 		command = _select.bind(selected + 1)
 	elif event.is_action_pressed("interact"):
 		command = _act
+	elif event.is_action_pressed("drop_all") and not rows.is_empty() and rows[selected].has("stack"):
+		command = _sell_stack
 	return command
+
+
+## Z on the Sell tab: the whole stack at once (PIX-89).
+func _sell_stack() -> void:
+	var item_id: String = rows[selected]["stack"]
+	var count: int = GameState.pack.items.get(item_id, 0)
+	var gold := GameState.sell_item(item_id, count)
+	status.text = "Sold %d %s for %dg." % [count, Catalog.item_name(item_id), gold] if gold > 0 else "Not for sale."
+	_refresh()
 
 
 func _switch(index: int) -> void:
@@ -158,7 +175,7 @@ func _build_rows() -> Array[Dictionary]:
 				var each := floori(Economy.sell_price_at(shop_id, item_id, GameState.town_tier()) * GameState.trophy_sell_multiplier())
 				out.append({
 					"label": "%s  x%d" % [Catalog.item_name(item_id), pack.items[item_id]], "price": "%dg" % each, "icon": item_id,
-					"detail": _describe(item_id), "verb": "Sell one", "enabled": true,
+					"detail": _describe(item_id), "verb": "Sell one", "enabled": true, "stack": item_id,
 					"action": func() -> void: _sold(GameState.sell_item(item_id)),
 				})
 			for instance in pack.gear:
@@ -217,6 +234,9 @@ func _refresh() -> void:
 	act_button.visible = not row.is_empty()
 	act_button.text = "E  %s" % row.get("verb", "")
 	act_button.disabled = not row.get("enabled", false)
+	var stacked: int = GameState.pack.items.get(row.get("stack", ""), 0)
+	stack_button.visible = stacked > 1
+	stack_button.text = "Z  Sell all %d" % stacked
 	if not rows.is_empty():
 		# Deferred until layout. Old rows leave the list at once on refresh, so
 		# looking the row up by index then always finds the current one.

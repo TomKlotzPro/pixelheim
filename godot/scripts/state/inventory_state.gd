@@ -71,6 +71,43 @@ func remove_item(item_id: String, count := 1) -> void:
 		items.erase(item_id)
 
 
+## The orders the pack can list in (PIX-89): by kind (gear, then stacks, each
+## by category and name), dearest first, heaviest first, or by name.
+const SORTS := ["kind", "value", "weight", "name"]
+
+
+## What the pack holds in a category ("all" for everything), in a SORTS
+## order: rows {"kind": "gear", "piece", "item_id"} or {"kind": "stack",
+## "item_id", "count"}.
+func listing(category: String, sort := "kind") -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	for piece: Dictionary in gear:
+		if category == "all" or Catalog.item(piece["itemId"])["category"] == category:
+			out.append({"kind": "gear", "piece": piece, "item_id": piece["itemId"]})
+	for item_id: String in items:
+		if category == "all" or Catalog.item(item_id)["category"] == category:
+			out.append({"kind": "stack", "item_id": item_id, "count": items[item_id]})
+	var name_of := func(row: Dictionary) -> String:
+		return gear_name(row["piece"]) if row["kind"] == "gear" else String(Catalog.item_name(row["item_id"]))
+	var key_of := func(row: Dictionary) -> Variant:
+		match sort:
+			"value":
+				return -(Economy.gear_value(row["piece"]) if row["kind"] == "gear" else int(Catalog.item(row["item_id"])["value"]))
+			"weight":
+				return -int(Catalog.item(row["item_id"]).get("weight", 0))
+			"name":
+				return 0
+		return [0 if row["kind"] == "gear" else 1, String(Catalog.item(row["item_id"])["category"])]
+	out.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		var ka: Variant = key_of.call(a)
+		var kb: Variant = key_of.call(b)
+		if ka != kb:
+			return ka < kb
+		return name_of.call(a) < name_of.call(b)
+	)
+	return out
+
+
 ## What is worn where: slot -> item id (what the hero is drawn in).
 func worn_items() -> Dictionary:
 	var worn := {}

@@ -304,16 +304,19 @@ func buy_item(item_id: String) -> bool:
 	return true
 
 
-## SELL_ITEM: one of a stack, at this shop's rate. Returns the gold earned (0 = refused).
-func sell_item(item_id: String) -> int:
+## SELL_ITEM: `count` of a stack (one by default; the web sold one at a time),
+## at this shop's rate. Returns the gold earned (0 = refused).
+func sell_item(item_id: String, count := 1) -> int:
 	var shop_id := active_shop()
-	if shop_id == "" or pack.items.get(item_id, 0) <= 0:
+	var have: int = pack.items.get(item_id, 0)
+	if shop_id == "" or have <= 0:
 		return 0
+	var sold := mini(count, have)
 	var price := floori(Economy.sell_price_at(shop_id, item_id, town_tier()) * trophy_sell_multiplier())
-	pack.gold += price
-	pack.remove_item(item_id)
+	pack.gold += price * sold
+	pack.remove_item(item_id, sold)
 	_pack_changed()
-	return price
+	return price * sold
 
 
 ## SELL_GEAR: never what the hero is wearing. Returns the gold earned (0 = refused).

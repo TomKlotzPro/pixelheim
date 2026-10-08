@@ -95,3 +95,33 @@ func test_rows_print_the_webs_stat_line() -> void:
 	for item_id: String in expected:
 		var row: Array = expected[item_id]
 		assert_eq(InventoryScreen.stat_line(Catalog.item(item_id), row[0], row[1]), row[2], item_id)
+
+
+## The pack's listing (PIX-89): a tab's rows in the chosen order.
+func test_the_pack_lists_by_kind_value_weight_or_name() -> void:
+	state.pack.gear.clear()
+	state.pack.equipped.clear()
+	_piece("rusty_sword")
+	_piece("iron_armor")
+	state.pack.items = {"potion_hp": 2, "wolf_pelt": 1, "bread": 3}
+	var names := func(rows: Array) -> Array:
+		return rows.map(func(row: Dictionary) -> String: return String(row["item_id"]))
+	var by_kind: Array = names.call(state.pack.listing("all", "kind"))
+	assert_eq(by_kind.slice(0, 2), ["iron_armor", "rusty_sword"], "gear first, by category then name")
+	var by_value: Array = state.pack.listing("all", "value")
+	for i in by_value.size() - 1:
+		assert_true(_value(by_value[i]) >= _value(by_value[i + 1]), "dearest first")
+	var by_weight: Array = state.pack.listing("all", "weight")
+	for i in by_weight.size() - 1:
+		assert_true(int(Catalog.item(by_weight[i]["item_id"])["weight"]) >= int(Catalog.item(by_weight[i + 1]["item_id"])["weight"]), "heaviest first")
+	var by_name: Array = names.call(state.pack.listing("all", "name"))
+	var labels := by_name.map(func(id: String) -> String: return Catalog.item_name(id))
+	var sorted := labels.duplicate()
+	sorted.sort()
+	assert_eq(labels, sorted)
+	assert_eq(names.call(state.pack.listing("potions", "value")), ["potion_hp"], "a tab keeps to its category")
+
+
+func _value(row: Dictionary) -> int:
+	return Economy.gear_value(row["piece"]) if row["kind"] == "gear" else int(Catalog.item(row["item_id"])["value"])
+

@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.79.0",
+      "date": "2026-10-08",
+      "codename": "A Tidy Pack",
+      "notes": [
+        "SORT THE PACK: R orders it by kind, by value, by weight or by name, and it remembers your choice",
+        "COUNTS ON THE TABS: each tab shows how much it holds, Craft shows what you can make right now, and empty tabs step back",
+        "A WEIGHT BAR: how full the pack is sits beside the weight, and it turns red near the limit",
+        "SELL A STACK: Z (or the Sell all button) sells a whole stack at the counter, at the same price as one by one"
+      ]
+    },
+    {
       "version": "0.78.0",
       "date": "2026-10-08",
       "codename": "Dressed for the Climb",
