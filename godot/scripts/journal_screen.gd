@@ -100,7 +100,7 @@ func _main() -> void:
 		body.add_child(UiStyle.strong("The story is told", 18, UiStyle.LAMP))
 		body.add_child(UiStyle.label(MainQuest.hint(GameState.progression, GameState.settlement), 16, UiStyle.INK))
 		return
-	body.add_child(UiStyle.strong("Chapter %d: %s" % [step["chapter_number"], step["chapter"]], 18, UiStyle.LAMP))
+	body.add_child(UiStyle.strong(Text.t("Chapter %d: %s") % [step["chapter_number"], step["chapter"]], 18, UiStyle.LAMP))
 	body.add_child(UiStyle.label(step["text"], 16, UiStyle.INK))
 	body.add_child(_wrapped(step["hint"], 14, UiStyle.FADED))
 	body.add_child(_rule())
@@ -109,7 +109,7 @@ func _main() -> void:
 			continue
 		var met := MainQuest.is_met(entry, GameState.progression, GameState.settlement)
 		var line := HBoxContainer.new()
-		var text := UiStyle.label(("%s (optional)" % entry["text"]) if entry.get("optional", false) else entry["text"], 14,
+		var text := UiStyle.label((Text.t("%s (optional)") % entry["text"]) if entry.get("optional", false) else entry["text"], 14,
 			UiStyle.FADED if met else (UiStyle.LAMP if entry["id"] == step["id"] else UiStyle.INK))
 		text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		line.add_child(text)
@@ -137,7 +137,7 @@ func _side() -> void:
 	if open.is_empty():
 		body.add_child(UiStyle.label("No side promises open. The map marks who has something to ask.", 16, UiStyle.FADED))
 	else:
-		var heading := "Side promises - %d open" % open.size()
+		var heading := Text.t("Side promises - %d open") % open.size()
 		if open.size() > SHOWN:
 			heading += "   (W/S to scroll)"
 		body.add_child(UiStyle.strong(heading, 18, UiStyle.LAMP))
@@ -150,17 +150,17 @@ func _side() -> void:
 		var last: Array[String] = []
 		for quest: Dictionary in kept.slice(maxi(0, kept.size() - 3)):
 			last.append(quest["name"])
-		body.add_child(_wrapped("Kept: %d promises, the latest %s." % [kept.size(), ", ".join(last)], 14, UiStyle.FADED))
+		body.add_child(_wrapped(Text.t("Kept: %d promises, the latest %s.") % [kept.size(), ", ".join(last)], 14, UiStyle.FADED))
 
 
 ## The bounty board's notices (PIX-156) and where each one's lair is, and
 ## how deep the hero has hunted below the throne (PIX-161).
 func _bounties() -> void:
 	if GameState.progression.deepest > 0:
-		body.add_child(UiStyle.strong("The Deep Hunt: deepest depth %d" % GameState.progression.deepest, 18, UiStyle.LAMP))
+		body.add_child(UiStyle.strong(Text.t("The Deep Hunt: deepest depth %d") % GameState.progression.deepest, 18, UiStyle.LAMP))
 	var notices := Hunts.notices(GameState.board_floors(), GameState.progression.hunted)
 	if notices.is_empty():
-		body.add_child(_wrapped("No notices on the bounty board yet. The first goes up when %s." % BountyScreen._when(Hunts.next_notice(GameState.board_floors())), 16, UiStyle.FADED))
+		body.add_child(_wrapped(Text.t("No notices on the bounty board yet. The first goes up when %s.") % BountyScreen._when(Hunts.next_notice(GameState.board_floors())), 16, UiStyle.FADED))
 		return
 	for entry: Dictionary in notices:
 		var slain: bool = entry["id"] in GameState.progression.hunted
@@ -171,11 +171,11 @@ func _bounties() -> void:
 		line.add_child(UiStyle.label("SLAIN" if slain else "%dg" % int(entry["bounty"]), 16, UiStyle.LAMP))
 		body.add_child(line)
 		if not slain:
-			body.add_child(_wrapped("Its lair: %s. %s." % [entry["where"], Hunts.reward_line(entry)], 14, UiStyle.FADED))
+			body.add_child(_wrapped(Text.t("Its lair: %s. %s.") % [entry["where"], Hunts.reward_line(entry)], 14, UiStyle.FADED))
 	var next := Hunts.next_notice(GameState.board_floors())
 	if not next.is_empty():
 		body.add_child(_rule())
-		body.add_child(_wrapped("Another notice goes up when %s." % BountyScreen._when(next), 14, UiStyle.FADED))
+		body.add_child(_wrapped(Text.t("Another notice goes up when %s.") % BountyScreen._when(next), 14, UiStyle.FADED))
 
 
 ## The pages of Liane's journal the hero has found, in order (PIX-153).
@@ -184,7 +184,7 @@ func _story() -> void:
 	if pages.is_empty():
 		body.add_child(UiStyle.label("No pages yet. Someone climbed this mountain before you - and wrote it down.", 16, UiStyle.FADED))
 		return
-	var heading := "Liane's journal - %d of %d pages" % [pages.size(), Story.lore().size()]
+	var heading := Text.t("Liane's journal - %d of %d pages") % [pages.size(), Story.lore().size()]
 	if pages.size() > SHOWN:
 		heading += "   (W/S to turn)"
 	body.add_child(UiStyle.strong(heading, 18, UiStyle.LAMP))
@@ -205,7 +205,7 @@ func _promise(quest: Dictionary, entries: Dictionary) -> Control:
 	var line := HBoxContainer.new()
 	var ready := Quests.is_ready(quest, entries, GameState.pack.items)
 	var name := UiStyle.label(
-		"%s%s" % [quest["name"], "   READY - see %s" % giver if ready else ""], 16, UiStyle.LAMP if ready else UiStyle.INK
+		"%s%s" % [quest["name"], Text.t("   READY - see %s") % giver if ready else ""], 16, UiStyle.LAMP if ready else UiStyle.INK
 	)
 	name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	line.add_child(name)

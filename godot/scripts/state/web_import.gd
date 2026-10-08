@@ -37,4 +37,4 @@ static func parse_any(text: String) -> Dictionary:
 static func describe(state: Dictionary) -> String:
 	var hero: Dictionary = state["hero"]
 	var role: String = Catalog.role(hero["roleId"]).get("name", hero["roleId"]).to_lower()
-	return "%s, level %d %s" % [hero["name"], hero["level"], role]
+	return Text.t("%s, level %d %s") % [hero["name"], hero["level"], role]

@@ -54,7 +54,7 @@ static func deep_def(depth: int) -> Dictionary:
 	var descriptions: Array = rules["descriptions"]
 	_deep[depth] = {
 		"level": floor_count() + depth,
-		"name": "%s, depth %d" % [rules["names"][0], depth],
+		"name": Text.t("%s, depth %d") % [rules["names"][0], depth],
 		"description": descriptions[(depth - 1) % descriptions.size()],
 		"encounters": encounters,
 		"rewardItemIds": ["greater_potion", "gem"] if depth % int(rules["eliteEvery"]) == 0 else ["greater_potion"],

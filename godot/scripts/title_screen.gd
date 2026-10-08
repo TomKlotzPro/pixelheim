@@ -140,14 +140,14 @@ func _card() -> void:
 	middle.add_child(menu)
 	version = load("res://scripts/changelog_screen.gd").releases()[0]["version"]
 	if not GameState.standing_in:
-		options.append({"label": "Continue  %s, Lv %d" % [GameState.hero.hero_name, GameState.hero.level], "action": _continue})
+		options.append({"label": Text.t("Continue  %s, Lv %d") % [GameState.hero.hero_name, GameState.hero.level], "action": _continue})
 	options.append({"label": "New Game", "action": _new_game})
 	options.append({"label": "Saves", "action": _saves})
 	options.append({"label": "Options", "action": _options})
 	options.append({"label": "What's new", "action": _whats_new})
 	_draw_menu()
 	# The version line opens What's new (the web's changelog link).
-	footer = UiStyle.label("v%s  ·  What's new" % version, 13, UiStyle.DUSK, Vector2(0, 690))
+	footer = UiStyle.label(Text.t("v%s  ·  What's new") % version, 13, UiStyle.DUSK, Vector2(0, 690))
 	footer.custom_minimum_size = Vector2(VIEW.x, 0)
 	footer.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	footer.mouse_filter = Control.MOUSE_FILTER_STOP

@@ -51,6 +51,7 @@ var noticed_at := -100.0
 var hud_root: CanvasLayer
 var hint_card: PanelContainer
 static var _hint_doc := {}
+static var _hint_generation := 0
 ## Seconds until the soundscape is looked at again (PIX-158).
 var soundscape_left := 0.0
 ## Foes still standing on the dungeon floor the hero walks (0 when cleared).
@@ -626,8 +627,9 @@ func hint(id: String, values := {}, key := "") -> void:
 		return
 	settings.hints_seen.append(seen_id)
 	settings.save_file()
-	if _hint_doc.is_empty():
-		_hint_doc = JSON.parse_string(FileAccess.get_file_as_string("res://assets/data/hints.json"))
+	if _hint_doc.is_empty() or _hint_generation != Text.generation:
+		_hint_doc = Text.localize(JSON.parse_string(FileAccess.get_file_as_string("res://assets/data/hints.json")))
+		_hint_generation = Text.generation
 	var title := String(_hint_doc[id]["title"])
 	var text := Controls.say(String(_hint_doc[id]["text"]))
 	for name: String in values:
@@ -708,7 +710,7 @@ func enter_floor(level: int) -> void:
 		spawn_enemy(foe["id"], foe["cell"], "", "", foe["elite"], false, Vector2i(-1, -1), foe["lift"])
 	view.add_patch(plan["patch"], Gathering.floor_spot_id(level), Gathering.floor_material(level))
 	var floor_def := Dungeons.floor_def(level)
-	_log([String(floor_def["name"]) if Dungeons.is_deep(level) else "Floor %d: %s" % [level, floor_def["name"]], String(floor_def["description"])])
+	_log([String(floor_def["name"]) if Dungeons.is_deep(level) else Text.t("Floor %d: %s") % [level, floor_def["name"]], String(floor_def["description"])])
 	# A boss's floor: its intro, the first time only (PIX-32).
 	play_story(Cutscene.moment("boss:%s" % Dungeons.boss_of(level)["monsterId"]))
 
@@ -1397,11 +1399,11 @@ func _play_reveals() -> void:
 		var key := entry.get_slice(":", 1)
 		match entry.get_slice(":", 0):
 			"project":
-				stops.append({"at": _cell_center(Town.project_center(key)), "line": "%s: built." % Town.project(key)["name"]})
+				stops.append({"at": _cell_center(Town.project_center(key)), "line": Text.t("%s: built.") % Town.project(key)["name"]})
 			"age":
 				stops.append({
 					"at": _cell_center(Town.square()),
-					"line": "Pixelheim is a %s now." % String(Town.tier(int(key))["name"]).to_lower(),
+					"line": Text.t("Pixelheim is a %s now.") % String(Town.tier(int(key))["name"]).to_lower(),
 				})
 				if GameState.festival_on():
 					stops.append({

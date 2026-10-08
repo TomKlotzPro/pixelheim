@@ -83,7 +83,7 @@ static func next_step(progression: ProgressionState, settlement: SettlementState
 ## The line above the dock: "Next: ...", or "" once the story is done.
 static func objective(progression: ProgressionState, settlement: SettlementState) -> String:
 	var step := next_step(progression, settlement)
-	return "Next: %s" % step["text"] if not step.is_empty() else ""
+	return Text.t("Next: %s") % step["text"] if not step.is_empty() else ""
 
 
 ## What the elder and the mayor say about it.

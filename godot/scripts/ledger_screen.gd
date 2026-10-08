@@ -71,7 +71,7 @@ func _verb() -> String:
 
 ## The keys along the bottom.
 func _footer() -> String:
-	return "Esc  close      W/S  choose      E  %s" % _verb()
+	return Text.t("Esc  close      W/S  choose      E  %s") % _verb()
 
 
 ## Each row: {label, note, enabled, action: Callable returning a status line}.
@@ -106,7 +106,7 @@ func _act() -> void:
 
 
 func _refresh() -> void:
-	gold_label.text = "Gold: %d" % GameState.pack.gold
+	gold_label.text = Text.t("Gold: %d") % GameState.pack.gold
 	# The rows first: the info may speak of the chosen one.
 	rows = _rows()
 	selected = clampi(selected, 0, maxi(0, rows.size() - 1))

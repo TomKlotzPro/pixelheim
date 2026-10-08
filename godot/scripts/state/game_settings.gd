@@ -30,6 +30,9 @@ var large_text := false
 var clear_warnings := false
 var hints := true
 var hints_seen: Array[String] = []
+## The language the game speaks (PIX-195): a Text.LANGUAGES code, or ""
+## to follow the system's.
+var language := ""
 ## Harness runs read the player's settings but never write them.
 var read_only := false
 
@@ -54,6 +57,7 @@ func load_file() -> void:
 	large_text = config.get_value(SECTION, "large_text", large_text)
 	clear_warnings = config.get_value(SECTION, "clear_warnings", clear_warnings)
 	hints = config.get_value(SECTION, "hints", hints)
+	language = str(config.get_value(SECTION, "language", language))
 	hints_seen.assign(config.get_value(SECTION, "hints_seen", []))
 	var saved: Variant = config.get_value(SECTION, "bindings", {})
 	bindings = {}
@@ -78,6 +82,7 @@ func save_file() -> void:
 	config.set_value(SECTION, "pack_sort", pack_sort)
 	config.set_value(SECTION, "large_text", large_text)
 	config.set_value(SECTION, "clear_warnings", clear_warnings)
+	config.set_value(SECTION, "language", language)
 	config.set_value(SECTION, "hints", hints)
 	config.set_value(SECTION, "hints_seen", hints_seen)
 	config.set_value(SECTION, "bindings", bindings)

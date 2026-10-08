@@ -9,7 +9,7 @@ static var _doc := {}
 
 static func _data() -> Dictionary:
 	if _doc.is_empty():
-		_doc = SaveCodec.parse_json(FileAccess.get_file_as_string("res://assets/data/economy.json"))
+		_doc = Text.localize(SaveCodec.parse_json(FileAccess.get_file_as_string("res://assets/data/economy.json")))
 	return _doc
 
 
@@ -123,8 +123,8 @@ static func craft_xp(job: String) -> int:
 static func job_line(jobs: Dictionary, job: String) -> String:
 	var progress: Dictionary = jobs[job]
 	if int(progress["level"]) >= int(_data()["jobLevelCap"]):
-		return "%s %d (mastered)" % [job.capitalize(), progress["level"]]
-	return "%s %d (%d/%d XP)" % [job.capitalize(), progress["level"], progress["xp"], job_xp_to_next(progress["level"])]
+		return Text.t("%s %d (mastered)") % [job.capitalize(), progress["level"]]
+	return Text.t("%s %d (%d/%d XP)") % [job.capitalize(), progress["level"], progress["xp"], job_xp_to_next(progress["level"])]
 
 
 ## Where a material comes from (PIX-143), best leads first: [{kind, text}],
@@ -143,13 +143,13 @@ static func material_sources(item_id: String) -> Array[Dictionary]:
 			]})
 	for region_id: String in combat["regionMaterials"]:
 		if combat["regionMaterials"][region_id] == item_id:
-			out.append({"kind": "forage", "text": "foraged after fights in %s" % Bestiary.region(region_id)["name"]})
+			out.append({"kind": "forage", "text": Text.t("foraged after fights in %s") % Bestiary.region(region_id)["name"]})
 	for shop_id: String in _data()["shops"]:
 		if shop(shop_id).get("stock", {}).has(item_id):
-			out.append({"kind": "shop", "text": "sold by %s" % shop(shop_id)["keeper"]})
+			out.append({"kind": "shop", "text": Text.t("sold by %s") % shop(shop_id)["keeper"]})
 	for pool: Dictionary in combat["dropPools"]:
 		if item_id in pool["stackIds"]:
-			out.append({"kind": "loot", "text": "now and then in loot from floor %d on" % pool["floor"]})
+			out.append({"kind": "loot", "text": Text.t("now and then in loot from floor %d on") % pool["floor"]})
 			break
 	# What comes up on a line (PIX-165): fishing at Saltmere.
 	for entry: Array in combat.get("fishing", {}).get("catches", []):
@@ -157,7 +157,7 @@ static func material_sources(item_id: String) -> Array[Dictionary]:
 			out.append({"kind": "fishing", "text": "caught fishing off Saltmere's jetty and rocks"})
 	for level in range(1, combat["levels"].size() + 1):
 		if item_id in combat["levels"][level - 1].get("rewardItemIds", []):
-			out.append({"kind": "hoard", "text": "the hoard of %s" % combat["levels"][level - 1]["name"]})
+			out.append({"kind": "hoard", "text": Text.t("the hoard of %s") % combat["levels"][level - 1]["name"]})
 	return out
 
 

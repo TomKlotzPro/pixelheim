@@ -46,7 +46,7 @@ static func about(label: String, target: String, house_owned: bool) -> Dictionar
 	if label == "HOME" or (target == "" and house_owned):
 		return {"name": "Home", "about": "Your house"}
 	if label == "FOR SALE":
-		return {"name": "For sale", "about": "A house: %dg, at the door" % int(Town._data()["houseDeedCost"])}
+		return {"name": "For sale", "about": Text.t("A house: %dg, at the door") % int(Town._data()["houseDeedCost"])}
 	return {"name": label.capitalize(), "about": ""}
 
 

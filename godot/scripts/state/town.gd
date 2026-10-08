@@ -12,7 +12,7 @@ static var _doc := {}
 
 static func _data() -> Dictionary:
 	if _doc.is_empty():
-		_doc = SaveCodec.parse_json(FileAccess.get_file_as_string("res://assets/data/town.json"))
+		_doc = Text.localize(SaveCodec.parse_json(FileAccess.get_file_as_string("res://assets/data/town.json")))
 	return _doc
 
 
@@ -122,15 +122,15 @@ static func project_blocker(project_id: String, progression: ProgressionState, s
 		return "Already built."
 	var tier_number := age_of(project_id)
 	if tier_number != current_age(settlement):
-		return "Finish the %s first." % tier(current_age(settlement))["name"]
+		return Text.t("Finish the %s first.") % tier(current_age(settlement))["name"]
 	var blockers := age_blockers(tier_number, progression, settlement)
 	if not blockers.is_empty():
 		return blockers[0] + "."
 	if gold < int(entry["cost"]["gold"]):
-		return "The treasury asks %d gold." % entry["cost"]["gold"]
+		return Text.t("The treasury asks %d gold.") % entry["cost"]["gold"]
 	for item_id: String in entry["cost"]["items"]:
 		if int(items.get(item_id, 0)) < int(entry["cost"]["items"][item_id]):
-			return "It takes %d %s." % [entry["cost"]["items"][item_id], Catalog.item_name(item_id)]
+			return Text.t("It takes %d %s.") % [entry["cost"]["items"][item_id], Catalog.item_name(item_id)]
 	return ""
 
 
@@ -301,7 +301,7 @@ static func site_workers(done: Array) -> Array[Dictionary]:
 			"sprite": "worker" if out.size() % 2 == 0 else "worker_alt",
 			"lines": [
 				String(entry["blurb"]),
-				"All it wants is %s. The board on the square takes it, and we'll have it up by the time you're back." % cost_line(entry["id"]),
+				Text.t("All it wants is %s. The board on the square takes it, and we'll have it up by the time you're back.") % cost_line(entry["id"]),
 			],
 		})
 	return out

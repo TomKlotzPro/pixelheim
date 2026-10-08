@@ -11,7 +11,7 @@ var scroll: ScrollContainer
 
 
 static func releases() -> Array:
-	return SaveCodec.parse_json(FileAccess.get_file_as_string("res://assets/data/changelog.json"))["releases"]
+	return Text.localize(SaveCodec.parse_json(FileAccess.get_file_as_string("res://assets/data/changelog.json")))["releases"]
 
 
 func _open() -> void:

@@ -9,7 +9,7 @@ static var _doc := {}
 
 static func _data() -> Dictionary:
 	if _doc.is_empty():
-		_doc = SaveCodec.parse_json(FileAccess.get_file_as_string("res://assets/data/progression.json"))
+		_doc = Text.localize(SaveCodec.parse_json(FileAccess.get_file_as_string("res://assets/data/progression.json")))
 	return _doc
 
 
@@ -87,19 +87,19 @@ static func where(quest: Dictionary) -> String:
 	var objective: Dictionary = quest["objective"]
 	match String(objective["kind"]):
 		"hunt":
-			return "In %s." % Hunts.named(objective["named"]).get("where", "the wilds")
+			return Text.t("In %s.") % Hunts.named(objective["named"]).get("where", "the wilds")
 		"kill":
 			var places := Bestiary.where_found(objective["monsterId"])
-			return "Found in %s." % ", ".join(places.slice(0, 3)) if not places.is_empty() else ""
+			return Text.t("Found in %s.") % ", ".join(places.slice(0, 3)) if not places.is_empty() else ""
 		"deliver":
 			for chest: Dictionary in Interactables._data()["chests"]:
 				if chest.get("loot", {}).get("itemId", "") == objective["itemId"]:
-					return "In a chest somewhere in %s." % Catalog.place_name(chest["mapId"])
+					return Text.t("In a chest somewhere in %s.") % Catalog.place_name(chest["mapId"])
 			var lead := Economy.where_to_find(objective["itemId"])
 			return lead + "." if lead != "" else ""
 		"relics":
 			var out: Array[String] = []
 			for relic: Dictionary in Relics.all():
 				out.append(relic["place"])
-			return "The five left them in %s." % ", ".join(out)
+			return Text.t("The five left them in %s.") % ", ".join(out)
 	return ""

@@ -309,7 +309,7 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null) -> void:
 			hunting = true
 			world.on_enemy_noticed(self)
 	if not dying and ailments.inflict(infliction, GameState.roll):
-		world.log_line("%s is afflicted by %s!" % [fighter["name"], infliction["kind"]])
+		world.log_line(Text.t("%s is afflicted by %s!") % [fighter["name"], infliction["kind"]])
 
 
 func _lose(damage: int, color: Color) -> void:

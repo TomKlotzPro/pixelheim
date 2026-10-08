@@ -9,7 +9,7 @@ static var _doc := {}
 static func _data() -> Dictionary:
 	if _doc.is_empty():
 		var raw := FileAccess.get_file_as_string("res://assets/maps/interactables.json")
-		_doc = JSON.parse_string(raw)
+		_doc = Text.localize(JSON.parse_string(raw))
 	return _doc
 
 

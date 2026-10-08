@@ -9,7 +9,7 @@ static var _doc := {}
 
 static func _data() -> Dictionary:
 	if _doc.is_empty():
-		_doc = SaveCodec.parse_json(FileAccess.get_file_as_string("res://assets/data/catalog.json"))
+		_doc = Text.localize(SaveCodec.parse_json(FileAccess.get_file_as_string("res://assets/data/catalog.json")))
 	return _doc
 
 
@@ -61,6 +61,6 @@ static func set_line(set_id: String, worn: int) -> String:
 		for stat: String in bonuses[at].get("grants", {}):
 			gives.append("+%d %s" % [int(bonuses[at]["grants"][stat]), stat.substr(0, 3).to_upper()])
 		if int(bonuses[at].get("armor", 0)) > 0:
-			gives.append("+%d armor" % int(bonuses[at]["armor"]))
-		parts.append("%s pieces %s" % [at, ", ".join(gives)])
+			gives.append(Text.t("+%d armor") % int(bonuses[at]["armor"]))
+		parts.append(Text.t("%s pieces %s") % [at, ", ".join(gives)])
 	return "%s (%d/%d): %s" % [entry.get("name", set_id), worn, entry.get("pieces", []).size(), "; ".join(parts)]

@@ -120,4 +120,4 @@ static func fighter(named_id: String) -> Dictionary:
 
 ## What the town knows of one: where, what it pays, what it leaves.
 static func reward_line(entry: Dictionary) -> String:
-	return "Bounty %dg, and %s" % [int(entry["bounty"]), Catalog.item_name(entry["drop"])]
+	return Text.t("Bounty %dg, and %s") % [int(entry["bounty"]), Catalog.item_name(entry["drop"])]

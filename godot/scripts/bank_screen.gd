@@ -20,25 +20,25 @@ func _info() -> String:
 	var lines: Array[String] = ["Savings"]
 	var savings: Dictionary = inv.get("savings", {})
 	if savings.is_empty():
-		lines.append("Nothing deposited. %d%% a day, up to %d days." % [
+		lines.append(Text.t("Nothing deposited. %d%% a day, up to %d days.") % [
 			roundi(float(Town.arc("mirelleRate") if GameState.perk_grown("settler_mirelle") else Town.bank("savingsRate")) * 100), Town.bank("savingsMaxDays"),
 		])
 	else:
-		lines.append("%dg deposited, worth %dg now (%d of %d days)." % [
+		lines.append(Text.t("%dg deposited, worth %dg now (%d of %d days).") % [
 			savings["principal"], Town.savings_value(savings["principal"], savings["at"], steps, GameState.perk_grown("settler_mirelle")),
 			Town.savings_days(savings["at"], steps), Town.bank("savingsMaxDays"),
 		])
 	lines.append_array(["", "Caravan"])
 	var venture: Dictionary = inv.get("venture", {})
 	if venture.is_empty():
-		lines.append("No caravan on the road. Stake %dg: two roads in three come home heavy." % Town.bank("ventureCost"))
+		lines.append(Text.t("No caravan on the road. Stake %dg: two roads in three come home heavy.") % Town.bank("ventureCost"))
 	elif Town.venture_ready(venture["at"], steps):
 		lines.append("The caravan is back. Collect what it brought.")
 	else:
-		lines.append("On the road: %dg staked, back in %d steps." % [
+		lines.append(Text.t("On the road: %dg staked, back in %d steps.") % [
 			venture["stake"], int(Town.bank("ventureSteps")) - (steps - int(venture["at"])),
 		])
-	lines.append_array(["", "Expansions (+%dg rent per victory each)" % Town.bank("expansionRent")])
+	lines.append_array(["", Text.t("Expansions (+%dg rent per victory each)") % Town.bank("expansionRent")])
 	if GameState.settlement.properties.is_empty():
 		lines.append("Own a business first: buy its deed from the keeper.")
 	return "\n".join(lines)
@@ -49,22 +49,22 @@ func _rows() -> Array[Dictionary]:
 	var inv := GameState.investments()
 	for amount: int in DEPOSITS:
 		out.append({
-			"label": "Deposit %dg" % amount, "note": "", "enabled": GameState.pack.gold >= amount,
+			"label": Text.t("Deposit %dg") % amount, "note": "", "enabled": GameState.pack.gold >= amount,
 			"why": "Not enough gold.",
-			"action": func() -> String: return "Deposited %dg." % amount if GameState.bank_deposit(amount) else "",
+			"action": func() -> String: return Text.t("Deposited %dg.") % amount if GameState.bank_deposit(amount) else "",
 		})
 	var savings: Dictionary = inv.get("savings", {})
 	out.append({
 		"label": "Withdraw all", "enabled": not savings.is_empty(), "why": "Nothing to withdraw.",
 		"note": "" if savings.is_empty() else "%dg" % Town.savings_value(savings["principal"], savings["at"], GameState.steps_now(), GameState.perk_grown("settler_mirelle")),
-		"action": func() -> String: return "Withdrawn: %dg. Mirelle stamps the ledger." % GameState.bank_withdraw(),
+		"action": func() -> String: return Text.t("Withdrawn: %dg. Mirelle stamps the ledger.") % GameState.bank_withdraw(),
 	})
 	var venture: Dictionary = inv.get("venture", {})
 	if venture.is_empty():
 		var cost := int(Town.bank("ventureCost"))
 		out.append({
 			"label": "Send a caravan", "note": "%dg" % cost, "enabled": GameState.pack.gold >= cost,
-			"why": "The caravan needs %dg." % cost,
+			"why": Text.t("The caravan needs %dg.") % cost,
 			"action": func() -> String: return "The caravan rolls out. Give it half a day on the road." if GameState.fund_venture() else "",
 		})
 	else:
@@ -75,7 +75,7 @@ func _rows() -> Array[Dictionary]:
 				var outcome := GameState.collect_venture()
 				if outcome.is_empty():
 					return ""
-				return "The caravan returns heavy! +%dg." % outcome["payout"] if outcome["won"] else "Raiders hit the caravan. %dg salvaged from the wreck." % outcome["payout"],
+				return Text.t("The caravan returns heavy! +%dg.") % outcome["payout"] if outcome["won"] else Text.t("Raiders hit the caravan. %dg salvaged from the wreck.") % outcome["payout"],
 		})
 	var expansions: Array = inv["expansions"]
 	for map_id: String in GameState.settlement.properties:
@@ -83,9 +83,9 @@ func _rows() -> Array[Dictionary]:
 		var done := map_id in expansions
 		var cost := int(Town.bank("expansionCost"))
 		out.append({
-			"label": "Expand %s" % deed["name"], "note": "expanded" if done else "%dg" % cost,
+			"label": Text.t("Expand %s") % deed["name"], "note": "expanded" if done else "%dg" % cost,
 			"enabled": not done and GameState.pack.gold >= cost,
-			"why": "Already expanded." if done else "An expansion costs %dg." % cost,
+			"why": "Already expanded." if done else Text.t("An expansion costs %dg.") % cost,
 			"action": func() -> String: return "The expansion is funded: that business pays richer rent now." if GameState.expand_property(map_id) else "",
 		})
 	return out
