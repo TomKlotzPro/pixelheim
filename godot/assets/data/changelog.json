@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.81.1",
+      "date": "2026-10-08",
+      "codename": "Unfrozen",
+      "notes": [
+        "THE OPENING PLAYS THROUGH: in the browser the story froze as it turned from the whispers below to the title - it now runs to the end and on to making your hero",
+        "ONE DRAGON: the story's sky no longer flies a second dragon behind its own"
+      ]
+    },
+    {
       "version": "0.81.0",
       "date": "2026-10-08",
       "codename": "Once Upon a Mountain",

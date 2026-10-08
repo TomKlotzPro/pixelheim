@@ -189,7 +189,9 @@ func _stage(name: String) -> void:
 	caption.text = ""
 	match name:
 		"village":
-			stage.add_child(TitleScene.new())
+			var village := TitleScene.new()
+			village.dragon_rounds = false
+			stage.add_child(village)
 		"path":
 			stage.add_child(_path())
 		_:
@@ -281,7 +283,8 @@ func _actor(step: Dictionary) -> void:
 	actors.add_child(sprite)
 	if moving:
 		var to: Array = step["to"]
-		create_tween().tween_property(sprite, "position", Vector2(to[0], to[1]), float(step.get("seconds", 4.0)))
+		# Its own tween, gone with it when the stage changes mid-crossing.
+		sprite.create_tween().tween_property(sprite, "position", Vector2(to[0], to[1]), float(step.get("seconds", 4.0)))
 
 
 ## Two eyes in the dark, breathing light.
@@ -300,7 +303,9 @@ func _eyes(step: Dictionary) -> void:
 		eye.position = Vector2(at[0] + side * 22, at[1])
 		actors.add_child(eye)
 		if not still:
-			var breathe := create_tween().set_loops()
+			# Bound to the eye: a looping tween that outlives what it animates
+			# spins forever in a release build (the web froze here).
+			var breathe := eye.create_tween().set_loops()
 			breathe.tween_property(eye, "modulate:a", 0.35, 1.2).from(1.0)
 			breathe.tween_property(eye, "modulate:a", 1.0, 1.2)
 

@@ -67,6 +67,8 @@ python3 godot/tools/favicon.py   # redraw the game's icon (assets/icon.png)
 
 ## Pitfalls already paid for
 
+- **Bind every tween to the node it animates** (`node.create_tween()`), above all a looping one: a `set_loops()` tween owned by a parent that outlives its target spins forever once the target is freed. The editor's debug build stops it, but the web's release build freezes (v0.81's opening froze at its stage change). Desktop harness runs can't catch this: check story or animation changes in the web export too.
+
 - Characters are Shade's Puny family at 1x (PIX-130): `PunyArt` maps roles, villagers and species to sheets. Row orders differ per family: Puny Characters turn clockwise (down 0, right 2, up 4, left 6), PunyMonsters the other way (left 2, right 6), Mini World rows are down/up/left/right. Check any new sheet with `--screenshot lineup` before trusting a direction.
 - A new villager sprite id or monster species needs a `PunyArt` entry; `test_puny_art` fails otherwise.
 - **Story moments are data (PIX-31)**: a cutscene is a scene in `godot/assets/data/story.json` (steps of `Cutscene.KINDS`) played by `scripts/cutscene.gd`; write or change one there, not in code, and `test_cutscene.gd` checks every step. Play it from code with `Cutscene.new()`, `scene_id`, `on_done`, then `add_child`.

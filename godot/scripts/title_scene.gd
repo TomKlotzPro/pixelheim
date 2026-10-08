@@ -46,6 +46,8 @@ var layers: Array = []
 var clouds: Array = []
 var dragon: AnimatedSprite2D
 var dragon_at := DRAGON_FIRST_S
+## False when a story borrows the scene and brings its own dragon (Cutscene).
+var dragon_rounds := true
 var summit_glow: Sprite2D
 ## [node, home, phase]
 var fireflies: Array = []
@@ -627,6 +629,8 @@ func _watch(delta: float) -> void:
 
 
 func _fly(delta: float) -> void:
+	if not dragon_rounds:
+		return
 	if not dragon.visible:
 		if clock >= dragon_at:
 			dragon.visible = true
