@@ -98,7 +98,8 @@ godot --path godot -- --screenshot --map town portal  # walk into the nearest do
 godot --path godot -- --screenshot die                # fall, then wake at the inn
 godot --path godot -- --screenshot title splash       # the title as the boot splash
 godot --path godot -- --screenshot title options     # options over the title, before any hero
-godot --path godot -- --screenshot title --wait 2.5    # hold the shot (the title's logo still dropping in)
+godot --path godot -- --screenshot title --wait 8      # hold the shot (the dragon crosses the moon about 8 s in)
+godot --path godot -- --screenshot title still        # with Reduce motion on (no sway, drift, dragon or shine)
 godot --path godot -- --screenshot dockmenu           # the dock's menu of screens, open
 ```
 
@@ -156,7 +157,7 @@ gzipped over the wire). The deploy puts it at the root of the Pages site; old
 - `scripts/state/quests.gd` + `scripts/journal_screen.gd` — the villagers' quests (ported from `src/game/quests.ts`): a giver's first word accepts, kills tick bounties, deliveries leave the pack on turn-in (`GameState.resolve_quests`); Q opens the journal
 - `scripts/state/ranks.gd` + `scripts/rankup_screen.gd` — rank titles, auras and presence every five levels (ported from `src/game/hero/ranks.ts`), the Path Graph's choices (`hero/paths.ts`, `GameState.choose_path`), and the ascension scene that plays when a rank is crossed, holding at a fork for the path cards
 - `scripts/state/skills.gd` + `scripts/stats_screen.gd` + `scripts/skills_screen.gd` — the stat sheet (ported from `hero/statInfo.ts`, `applyStatPoint`) on C and the skill tree with the Path Graph (`hero/skillTree.ts`, `SkillTree.tsx`) on K; points are spent through `GameState.spend_stat_point` / `buy_skill_node`
-- `scripts/title_screen.gd` + `scripts/create_screen.gd` — the title (ported from `TitleScreen.tsx`: the night diorama, the bestiary's parade, Continue / New Game / Saves) and hero creation (`CharacterCreation.tsx`: role, look among Shade's colourways, name). A plain launch with no hero keeps an unsaved stand-in behind the title (`GameState.standing_in`) until one is made
+- `scripts/title_screen.gd` + `scripts/title_scene.gd` + `scripts/create_screen.gd` — the title (PIX-139: Pixelheim's street at night under the smoking Ashen Mountain, built from Shade's art at 2x, with lit windows, torches, the watchman's round, the hero in the street and the dragon crossing the moon; the gold logo; Continue / New Game / Saves / Options / What's new) and hero creation (`CharacterCreation.tsx`: role, look among Shade's colourways, name). A plain launch with no hero keeps an unsaved stand-in behind the title (`GameState.standing_in`) until one is made
 - `scripts/pause_screen.gd` + `scripts/options_screen.gd` + `scripts/controls.gd` — Esc's pause menu (Resume, Saves, Options, Quit to title) and the options (volumes, CRT scanlines, fullscreen, reduced motion, key rebinding); `Controls` rebuilds the InputMap from `GameSettings.bindings` (one rebindable primary per action plus fixed alternates and the pad)
 - `scripts/inventory_screen.gd` — the pack and paperdoll on I (ported from `Inventory.tsx`): nine slots around the hero and the numbers gear makes, everything carried by category; equip, take off, drink, place furniture, drop (`GameState.equip` / `unequip` / `use_item` / `drop_item` / `drop_gear`). item icons are Shade's (`scripts/item_icons.gd`, `assets/puny/icons.json`), and a Craft tab guides crafting
 - `scripts/codex_screen.gd` — the codex on B (ported from `Codex.tsx`): family masteries with their Slayer tiers, and the bestiary of every monster whose family the hero has met
