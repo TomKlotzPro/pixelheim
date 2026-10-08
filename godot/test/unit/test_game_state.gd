@@ -61,7 +61,7 @@ func test_gold_chest_pays_once() -> void:
 	var nook := _chest("town_nook")
 	var result: Dictionary = state.open_chest(nook)
 	assert_true(result["opened"])
-	assert_eq(result["message"], "The chest holds 60g.")
+	assert_eq(result["message"], "The chest holds 60 gold.")
 	assert_eq(state.pack.gold, 90)
 	assert_true(state.is_opened(nook))
 	assert_false(state.open_chest(nook)["opened"], "an opened chest stays empty")
@@ -69,7 +69,7 @@ func test_gold_chest_pays_once() -> void:
 
 
 func test_ground_treasure_speaks_in_its_own_words() -> void:
-	assert_eq(state.open_chest(_chest("road_glint"))["message"], "Something glitters on the road: 45g.")
+	assert_eq(state.open_chest(_chest("road_glint"))["message"], "Something glitters on the road: 45 gold.")
 	var herb := {}
 	for chest: Dictionary in Interactables._data()["chests"]:
 		if chest["look"] == "herb":

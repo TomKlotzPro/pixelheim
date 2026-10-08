@@ -73,4 +73,4 @@ func test_a_first_brew_for_vex_and_a_buckler_for_hilda() -> void:
 	state.roll = func() -> float: return 0.99
 	assert_true(state.craft("brew_potion_hp")["made"])
 	assert_true(Quests.is_ready(Quests.by_id("herbs_for_vex"), state.progression.quests, state.pack.items), "one brewed")
-	assert_string_starts_with(state.resolve_quests("alchemist_vex"), "Quest complete - A First Brew!")
+	assert_string_starts_with(state.resolve_quests("alchemist_vex"), "Quest complete: A First Brew.")

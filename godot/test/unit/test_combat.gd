@@ -112,7 +112,7 @@ func test_mastery_announces_a_crossed_tier() -> void:
 	state.hero.mastery = {"beasts": 9}
 	state.roll = _dice([0.99, 0.99])  # no drop, no forage
 	var log: Array[String] = state.defeat_monster(Bestiary.wild(Bestiary.spawn("wolf")), "forest", "forest_2", 1)
-	assert_eq(log[0], "Mastery: Beasts Slayer I - +5% damage against beasts!")
+	assert_eq(log[0], "Mastery: Beasts Slayer I. +5% damage against beasts.")
 	assert_almost_eq(Bestiary.mastery_bonus(state.hero.mastery, "slime"), 0.05, 0.0001)
 
 
@@ -124,7 +124,7 @@ func test_a_kill_pays_xp_gold_rent_and_clears_the_spawn() -> void:
 	var slain := []
 	state.monster_slain.connect(func(id: String) -> void: slain.append(id))
 	var log: Array[String] = state.defeat_monster(wolf, "forest", "forest_2", 1)
-	assert_has(log, "Rent from your properties: +2g.")
+	assert_has(log, "Rent from your properties: +2 gold.")
 	assert_has(log, "Dire Wolf is defeated! +8 XP, +9 gold.")
 	assert_eq(state.hero.xp, 8)
 	assert_eq(state.pack.gold, 30 + 2 + 9)

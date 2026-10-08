@@ -20,7 +20,7 @@ func test_a_new_hero_arrives_on_the_road_at_night_with_the_letter() -> void:
 	assert_true(DayNight.is_night(state.world.steps))
 	assert_eq(state.pack.items.get("chancellors_letter", 0), 1)
 	assert_true(Catalog.item("chancellors_letter").get("quest", false), "not for sale")
-	assert_eq(Prologue.objective(Prologue.SCAVENGER), "Something is feeding at the road - drive it off (Space to strike)")
+	assert_eq(Prologue.objective(Prologue.SCAVENGER), "Drive off what's feeding at the road (J to strike)", "the key as bound (J by default)")
 
 
 func test_the_night_moves_only_through_its_steps() -> void:

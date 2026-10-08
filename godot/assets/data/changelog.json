@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.123.0",
+      "date": "2026-10-08",
+      "codename": "One Voice",
+      "notes": [
+        "ONE PLATE FOR WHAT THE GAME TELLS YOU: the next step, a message and every line of the battle log now sit on the same dark plate, readable over grass and snow alike, with a gold word in front where it helps (Next, Quest accepted, Quest complete, Level up, Mastery)",
+        "SHORTER, CLEARER MESSAGES: taking a quest names the task instead of repeating what the giver just said; gold is written as gold everywhere it's told (+60 gold, not +60g); level ups no longer shout",
+        "THE KEYS YOU CHOSE: every line that names a key - the Night of Ash's steps, the hints, the journal page among the bones, the festival's ring toss - names the key you bound. The bones' page used to say J, which strikes; it now says the journal's key"
+      ]
+    },
+    {
       "version": "0.122.0",
       "date": "2026-10-08",
       "codename": "Keys That Look Like Keys",

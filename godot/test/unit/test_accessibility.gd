@@ -44,7 +44,7 @@ func test_every_hint_has_a_title_and_words() -> void:
 		assert_true(hints.has(id), id)
 		assert_ne(String(hints[id]["title"]), "")
 		assert_gt(String(hints[id]["text"]).length(), 20)
-	assert_string_contains(hints["dodge"]["text"], "{key}", "names the player's own key")
+	assert_string_contains(hints["dodge"]["text"], "{key:dodge}", "names the player's own key")
 
 
 func test_a_skill_learned_is_announced() -> void:
