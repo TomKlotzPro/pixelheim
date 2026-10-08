@@ -47,6 +47,9 @@ var tell_left := -1.0
 var mark: PanelContainer
 ## An undead elite's raised guard (PIX-155): blows mostly glance off.
 var guarding := false
+## Busy where it stands (the Night of Ash's scavenger at its meal): it
+## doesn't wander, and only notices a hero at arm's length or a blow.
+var feeding := false
 ## A named monster's entry (Hunts, PIX-156), or {}.
 var named := {}
 ## The health bar's full width: a named monster's is longer.
@@ -268,6 +271,9 @@ func _settle() -> void:
 
 ## A step this way or that, never past the leash.
 func _wander(delta: float) -> void:
+	if feeding:
+		velocity = Vector2.ZERO
+		return
 	wander_time -= delta
 	if wander_time <= 0:
 		wander_time = randf_range(0.8, 2.0)

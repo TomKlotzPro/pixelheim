@@ -93,8 +93,15 @@ func plan(arrival: Vector2i) -> Vector2i:
 	# blocks it, like the rest of the furniture.
 	if PunyTown.available() and PunyInterior.is_room(data.id):
 		var room: Dictionary = PunyInterior.plan(data.id, data.grid)
-		buildings = {"pieces": room["pieces"], "decor": {}, "freed": [], "floor": room["floor"], "void": room["void"], "over": room["over"]}
-		for cell: Vector2i in room["blocked"]:
+		# Then Shade's furnished corners (PIX-163), clear of the way in, the
+		# keepers and the hero's own furniture.
+		var placed: Array = GameState.furniture() if data.id == "town_house" else []
+		var dressed := PunyInterior.furnish(data.id + data.variant, data.grid, PunyInterior.reserved(data, placed))
+		buildings = {
+			"pieces": room["pieces"], "decor": {}, "freed": [], "floor": room["floor"], "void": room["void"], "over": room["over"],
+			"rug": dressed["rug"], "objects": dressed["objects"], "tops": dressed["tops"], "lifted": dressed["lifted"],
+		}
+		for cell: Vector2i in room["blocked"] + dressed["blocked"]:
 			data.grid[cell] = "wall"
 	# Outdoors, Shade's props stand where the web's did (PunyProps): what they
 	# stand on blocks, even ground the web left open (the fountain's basin).
@@ -222,20 +229,25 @@ func _build_ground(data: MapData) -> Node2D:
 
 
 ## A room in Shade's Medieval Age pack (PunyInterior): the dark beyond its
-## walls, the floor and rug, then walls, door and furniture.
+## walls, the floor and rugs, then walls, door and furniture, then his
+## furnished corners (PIX-163): what stands, what stands on it, and what
+## sits on that, 6 px up as in his samples.
 func _build_room(data: MapData) -> Node2D:
 	var root := Node2D.new()
 	var dark := ColorRect.new()
 	dark.color = Color("0b0a0e")
 	dark.size = Vector2(data.size * TILE)
 	root.add_child(dark)
-	for part: String in ["floor", "pieces"]:
+	for part: String in ["floor", "rug", "pieces", "objects", "tops", "lifted"]:
 		var layer := TileMapLayer.new()
 		layer.tile_set = PunyTown.tileset()
-		for cell: Vector2i in buildings[part]:
+		for cell: Vector2i in buildings.get(part, {}):
 			PunyTown.place(layer, cell, buildings[part][cell])
+		if part == "lifted":
+			layer.position.y = -6
 		root.add_child(layer)
 	return root
+
 
 
 ## A dungeon floor in Shade's Puny Dungeon: stone, walls by his grammar and

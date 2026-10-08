@@ -1,17 +1,17 @@
 class_name PunyInterior
 ## The rooms behind the town's doors in Shade's Puny World Medieval Age
 ## (PIX-133), the way his sample cottages and smithy are furnished: plank
-## floors (stone in the smithy) with a rug, his cream walls one tile thick
+## floors (stone in the smithy), his cream walls one tile thick
 ## around the room (the web's thicker walls beyond them are dark), windows
 ## along the back wall, his door, and his furniture on the web's furniture
-## cells. Pure: tile ids only; PunyTown draws them (same atlas).
+## cells - and since PIX-163 his furnished corners and rugs (furnish).
+## Pure: tile ids only; PunyTown draws them (same atlas).
 
 ## Interiors this restyles (the web's room maps; house tiers share an id).
 const ROOMS := ["town_inn", "town_shop", "town_smith", "town_alchemist", "town_hall", "town_house"]
 
 const PLANKS := [5342, 5565, 3550]
 const STONE := [1792, 2233, 2453]
-const RUGS := {"town_inn": 10248, "town_house": 6728, "town_hall": 11128}
 
 ## Cream walls by which neighbours are walls too (N=1, E=2, S=4, W=8), read
 ## off the sample villages' wall layers.
@@ -61,6 +61,92 @@ static func is_room(map_id: String) -> bool:
 	return map_id in ROOMS
 
 
+# ---- furnishing (PIX-163) ----------------------------------------------------
+
+static var _doc := {}
+
+
+## assets/data/interiors.json: Shade's furnished corners lifted from his
+## sample maps (tools/vignettes.py), his rugs, and each room's layout.
+static func interiors() -> Dictionary:
+	if _doc.is_empty():
+		_doc = SaveCodec.parse_json(FileAccess.get_file_as_string("res://assets/data/interiors.json"))
+	return _doc
+
+
+## Where a room's dressing may not go: the keepers and the cells about
+## them, the way in from each door and the spawn, and the furniture the
+## hero has placed ([{x, y}]).
+static func reserved(data: MapData, placed: Array) -> Dictionary:
+	var out := {data.spawn: true}
+	for cell: Vector2i in data.portals:
+		for step in [Vector2i.ZERO, Vector2i.UP, Vector2i.UP * 2]:
+			out[cell + step] = true
+	for npc: Dictionary in Npcs._data()["npcs"]:
+		if npc.get("mapId", "") == data.id:
+			var at := Vector2i(int(npc["x"]), int(npc["y"]))
+			for step in [Vector2i.ZERO, Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT]:
+				out[at + step] = true
+	for piece: Dictionary in placed:
+		out[Vector2i(int(piece["x"]), int(piece["y"]))] = true
+	return out
+
+
+## A room dressed (PIX-163): each vignette of its layout ([name, x, y], x/y
+## where its floor rows begin; rows above hang on the back wall) and each
+## rug ([family, x, y, w, h], bordered). A vignette goes in whole or not at
+## all: never off the floor, onto a wall that isn't the back wall's, onto
+## `reserved` cells (keepers, the way in, the hero's own furniture) or onto
+## another piece. {"rug", "objects", "tops", "lifted": {cell: tile},
+## "blocked": [cells], "skipped": [names]}.
+static func furnish(room_key: String, grid: Dictionary, reserved: Dictionary) -> Dictionary:
+	var out := {"rug": {}, "objects": {}, "tops": {}, "lifted": {}, "blocked": [], "skipped": []}
+	var layout: Dictionary = interiors()["rooms"].get(room_key, {})
+	for rug: Array in layout.get("rugs", []):
+		var tiles: Array = interiors()["rugFamilies"][rug[0]]
+		var w := int(rug[3])
+		var h := int(rug[4])
+		for dy in h:
+			for dx in w:
+				var cell := Vector2i(int(rug[1]) + dx, int(rug[2]) + dy)
+				if grid.get(cell, "") != "floor":
+					continue
+				var col := 0 if dx == 0 else (2 if dx == w - 1 else 1)
+				var row := 0 if dy == 0 else (2 if dy == h - 1 else 1)
+				out["rug"][cell] = int(tiles[row * 3 + col])
+	var taken := {}
+	for placement: Array in layout.get("pieces", []):
+		var piece: Dictionary = interiors()["vignettes"][placement[0]]
+		var origin := Vector2i(int(placement[1]), int(placement[2]) - int(piece["floorRow"]))
+		var cells := {}
+		var fits := true
+		for kind: String in ["rug", "objects", "tops", "lifted"]:
+			for part: Array in piece[kind]:
+				var cell := origin + Vector2i(int(part[0]), int(part[1]))
+				var on_wall := int(part[1]) < int(piece["floorRow"])
+				var tile: String = grid.get(cell, "")
+				if on_wall:
+					fits = fits and tile == "wall" and grid.get(cell + Vector2i.DOWN, "") != "wall"
+				else:
+					fits = fits and tile == "floor" and not reserved.has(cell) and not taken.has(cell)
+				cells[cell] = on_wall
+		if not fits:
+			out["skipped"].append(placement[0])
+			continue
+		for kind: String in ["rug", "objects", "tops", "lifted"]:
+			for part: Array in piece[kind]:
+				var cell := origin + Vector2i(int(part[0]), int(part[1]))
+				out[kind][cell] = int(part[2])
+				if kind in ["objects", "tops"] and not cells[cell]:
+					taken[cell] = true
+		for cell: Vector2i in cells:
+			taken[cell] = true
+	for cell: Vector2i in taken:
+		if out["objects"].has(cell) or out["tops"].has(cell):
+			out["blocked"].append(cell)
+	return out
+
+
 ## {"floor": {cell: tile}, "pieces": {cell: tile} (walls, door, furniture),
 ## "void": [cells] (wall beyond the room), "blocked": [cells] (floor the
 ## furniture now covers), "over": {cell: web tile} (the furniture drawn over
@@ -82,7 +168,6 @@ static func plan(map_id: String, grid: Dictionary) -> Dictionary:
 			room.append(cell)
 			var choices: Array = STONE if stone else PLANKS
 			floor[cell] = choices[absi(cell.x * 7 + cell.y * 13) % choices.size()]
-	_rug(map_id, grid, room, floor)
 	# Walls touching the room are its walls; the rest is the dark beyond.
 	var ring := {}
 	for cell: Vector2i in grid:
@@ -136,20 +221,3 @@ static func plan(map_id: String, grid: Dictionary) -> Dictionary:
 				if at != cell and tile != "bed" and grid.get(at, "") == "floor":
 					blocked.append(at)
 	return {"floor": floor, "pieces": pieces, "void": beyond, "blocked": blocked, "over": over}
-
-
-## A rug down the middle of the open floor in the inn, the house and the hall.
-static func _rug(map_id: String, grid: Dictionary, room: Array, floor: Dictionary) -> void:
-	if not RUGS.has(map_id) or room.is_empty():
-		return
-	var lo := Vector2i(1 << 20, 1 << 20)
-	var hi := Vector2i(-1, -1)
-	for cell: Vector2i in room:
-		lo = Vector2i(mini(lo.x, cell.x), mini(lo.y, cell.y))
-		hi = Vector2i(maxi(hi.x, cell.x), maxi(hi.y, cell.y))
-	var centre := (lo + hi) / 2
-	for y in range(centre.y - 1, centre.y + 2):
-		for x in range(centre.x - 3, centre.x + 3):
-			var cell := Vector2i(x, y)
-			if grid.get(cell, "") == "floor":
-				floor[cell] = RUGS[map_id]
