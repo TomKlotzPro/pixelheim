@@ -54,6 +54,16 @@ const HEROES := {
 }
 ## Necromancers wear the mage's robe in grave colors.
 const HERO_TINTS := {"necromancer": Color(0.72, 0.6, 1.0)}
+## The attack a worn weapon swings (PIX-172), by its catalog sprite: blades,
+## daggers and heads swing (Shade's throw columns draw no weapon, so a dagger
+## slashes), bows draw, staves and wands cast. Bare hands keep the role's own.
+const WEAPON_ATTACKS := {
+	"sword": "sword", "axe": "sword", "hammer": "sword", "dagger": "sword",
+	"bow": "bow", "staff": "staff", "wand": "staff",
+}
+## Where the weapons are drawn in the puny family's columns: sword 4-7, bow
+## 8-11, staff 12-14. Shade drew the same weapon in every sheet.
+const WEAPON_COLUMNS := [4, 15]
 
 ## Worn gear drawn on the hero (PIX-129). Shade drew every human on one
 ## template, so a helmet is another sheet's head and armour another sheet's
@@ -183,18 +193,27 @@ static func dressed(role_id: String, look: Variant, worn: Dictionary) -> Diction
 	var spec := hero(role_id, look)
 	var head: String = HEADS.get(worn.get("head", ""), spec["sheet"])
 	var body: String = BODIES.get(worn.get("body", ""), spec["sheet"])
-	if head == spec["sheet"] and body == spec["sheet"]:
+	# The weapon in hand picks the swing and colours the blade (PIX-172).
+	var tint := Color.WHITE
+	var weapon: Dictionary = Catalog.item(worn.get("weapon", "")) if worn.get("weapon", "") != "" else {}
+	if not weapon.is_empty():
+		spec["attack"] = WEAPON_ATTACKS.get(weapon.get("sprite", ""), spec["attack"])
+		if weapon.has("tint"):
+			var shade: Array = weapon["tint"]
+			tint = Color(float(shade[0]), float(shade[1]), float(shade[2]))
+	if head == spec["sheet"] and body == spec["sheet"] and tint == Color.WHITE:
 		return spec
 	spec["head"] = head
 	spec["body"] = body
-	spec["sheet"] = "outfit|%s|%s" % [head, body]
+	spec["weapon_tint"] = tint
+	spec["sheet"] = "outfit|%s|%s|%s" % [head, body, tint.to_html(false)]
 	return spec
 
 
 ## A dressed spec's sheet: every frame the body sheet's rows below the neck
 ## and the head sheet's rows to it. Built once per outfit.
-static func outfit_texture(head: String, body: String) -> Texture2D:
-	var key := head + "|" + body
+static func outfit_texture(head: String, body: String, weapon_tint := Color.WHITE) -> Texture2D:
+	var key := "%s|%s|%s" % [head, body, weapon_tint.to_html(false)]
 	if not _outfits.has(key):
 		var heads: Image = (load(path(head)) as Texture2D).get_image()
 		var bodies: Image = (load(path(body)) as Texture2D).get_image()
@@ -210,8 +229,46 @@ static func outfit_texture(head: String, body: String) -> Texture2D:
 				var neck: int = necks[row * columns + column]
 				sheet.blit_rect(bodies, Rect2i(at + Vector2i(0, neck), Vector2i(32, 32 - neck)), at + Vector2i(0, neck))
 				sheet.blit_rect(heads, Rect2i(at, Vector2i(32, neck)), at)
+		if weapon_tint != Color.WHITE:
+			_tint_weapon(sheet, weapon_tint)
 		_outfits[key] = ImageTexture.create_from_image(sheet)
 	return _outfits[key]
+
+
+static var _weapon_pixels := {}
+
+
+## The weapon's pixels in the attack columns: the template's own colours
+## there that its idle and walk frames never use (the blade, the bow, the
+## staff and its gem), as cell -> template colour.
+static func _weapon_mask() -> Dictionary:
+	if _weapon_pixels.is_empty():
+		var base: Image = (load(path(BASE)) as Texture2D).get_image()
+		base.convert(Image.FORMAT_RGBA8)
+		var body_colours := {}
+		for y in base.get_height():
+			for x in WEAPON_COLUMNS[0] * 32:
+				var colour := base.get_pixel(x, y)
+				if colour.a > 0.0:
+					body_colours[colour.to_html()] = true
+		for y in base.get_height():
+			for x in range(WEAPON_COLUMNS[0] * 32, WEAPON_COLUMNS[1] * 32):
+				var colour := base.get_pixel(x, y)
+				if colour.a > 0.0 and not body_colours.has(colour.to_html()):
+					_weapon_pixels[Vector2i(x, y)] = colour
+	return _weapon_pixels
+
+
+## The worn weapon's colour over Shade's generic one, wherever the sheet still
+## shows the template's weapon pixel (an arm in front keeps its own).
+static func _tint_weapon(sheet: Image, tint: Color) -> void:
+	var mask := _weapon_mask()
+	for cell: Vector2i in mask:
+		if cell.x >= sheet.get_width() or cell.y >= sheet.get_height():
+			continue
+		var here := sheet.get_pixelv(cell)
+		if here.is_equal_approx(mask[cell]):
+			sheet.set_pixelv(cell, Color(here.r * tint.r, here.g * tint.g, here.b * tint.b, here.a).clamp())
 
 
 ## Per frame of the template, the first row below the head (frames bob).
@@ -251,7 +308,7 @@ static func frames(spec: Dictionary) -> SpriteFrames:
 		return _frames_cache[key]
 	var family: Dictionary = FAMILIES[spec["family"]]
 	var size := frame_size(spec)
-	var texture: Texture2D = outfit_texture(spec["head"], spec["body"]) if spec.has("head") else load(path(spec["sheet"]))
+	var texture: Texture2D = outfit_texture(spec["head"], spec["body"], spec.get("weapon_tint", Color.WHITE)) if spec.has("head") else load(path(spec["sheet"]))
 	var columns := texture.get_width() / size
 	var sheet := SpriteFrames.new()
 	sheet.remove_animation("default")

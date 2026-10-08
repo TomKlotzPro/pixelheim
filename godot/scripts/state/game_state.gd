@@ -38,8 +38,9 @@ const AUTOSAVE_SECONDS := 3.0
 const DEFAULT_HERO_NAME := "Wanderer"
 const DEFAULT_ROLE := "warrior"
 ## Starting kits (CREATE_HERO in reducers/meta.ts): rangers string a bow,
+## casters carry a staff (PIX-172: the weapon you hold is the one you swing),
 ## everyone else begins with the humble rusty sword.
-const STARTER_WEAPONS := {"ranger": "hunting_bow"}
+const STARTER_WEAPONS := {"ranger": "hunting_bow", "mage": "apprentice_staff", "cleric": "apprentice_staff", "necromancer": "apprentice_staff"}
 const STARTER_ITEMS := {"potion_hp": 2, "bread": 2, "cheese_wheel": 1}
 const STARTER_GOLD := 30
 

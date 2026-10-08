@@ -1,7 +1,8 @@
 extends CharacterBody2D
 ## The action hero, drawn from Shade's Puny sheet for the hero's role
-## (PunyArt, PIX-130): idle/walk/hurt/death in four directions, and the role's
-## own attack (sword, staff or bow). The attack animation carries the weapon,
+## (PunyArt, PIX-130): idle/walk/hurt/death in four directions, and the attack
+## of the weapon in hand (sword, staff or bow, PIX-172; the role's own when
+## bare-handed). The attack animation carries the weapon,
 ## so the hitbox tracks facing while the striking frames play.
 
 const SPEED := 95.0
