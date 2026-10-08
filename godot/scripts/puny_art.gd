@@ -45,7 +45,7 @@ const FAMILIES := {
 ## role's colourways, first one the classic.
 const HEROES := {
 	"warrior": [["characters/Warrior-Red.png", "characters/Warrior-Blue.png"], "sword"],
-	"paladin": [["characters/Warrior-Blue.png", "characters/Human-Soldier-Cyan.png", "characters/Human-Soldier-Red.png"], "sword"],
+	"paladin": [["characters/Warrior-Blue.png", "characters/aligned/Human-Soldier-Cyan.png", "characters/aligned/Human-Soldier-Red.png"], "sword"],
 	"rogue": [["characters/Soldier-Red.png", "characters/Soldier-Blue.png", "characters/Soldier-Yellow.png"], "sword"],
 	"cleric": [["characters/Soldier-Yellow.png", "characters/Soldier-Blue.png"], "staff"],
 	"mage": [["characters/Mage-Red.png", "characters/Mage-Cyan.png"], "staff"],
@@ -67,30 +67,33 @@ const WEAPON_COLUMNS := [4, 15]
 
 ## Worn gear drawn on the hero (PIX-129). Shade drew every human on one
 ## template, so a helmet is another sheet's head and armour another sheet's
-## body, cut at the neck: item id -> the sheet that draws it. Leather is his
-## green archer in browns, the wyrm visor his warrior's helm blackened and
-## gilded (tools/outfits.py).
+## body, cut at the neck: item id -> the sheet that draws it. Every piece has
+## a colourway of its own (PIX-173, tools/outfits.py), none a hero's own
+## sheet, so whatever goes on shows: leather browns, Saltmere's oilcloth,
+## Blackiron soot, Greyhold slate, Frostgate ice, the City's gold.
 const HEADS := {
 	"leather_cap": "characters/Archer-Leather.png",
-	"iron_helm": "characters/Human-Soldier-Cyan.png",
+	"iron_helm": "characters/Guard-Iron.png",
 	"wyrm_visor": "characters/Warrior-Wyrm.png",
-	"oilskin_hood": "characters/Archer-Leather.png",
-	"blackiron_helm": "characters/Warrior-Wyrm.png",
-	"warden_helm": "characters/Human-Soldier-Cyan.png",
-	"frost_hood": "characters/Mage-Cyan.png",
+	"greymaw_hood": "characters/Archer-Greymaw.png",
+	"oilskin_hood": "characters/Archer-Oilskin.png",
+	"blackiron_helm": "characters/Warrior-Blackiron.png",
+	"warden_helm": "characters/Guard-Warden.png",
+	"frost_hood": "characters/Mage-Frost.png",
 }
 const BODIES := {
 	"leather_armor": "characters/Archer-Leather.png",
-	"traveler_cloak": "characters/Archer-Green.png",
-	"shadow_cloak": "characters/Archer-Purple.png",
-	"mage_robe": "characters/Mage-Cyan.png",
-	"iron_armor": "characters/Soldier-Blue.png",
-	"scaled_mail": "characters/Warrior-Red.png",
-	"runic_armor": "characters/Human-Soldier-Cyan.png",
-	"oilskin_coat": "characters/Archer-Leather.png",
-	"blackiron_plate": "characters/Warrior-Blue.png",
-	"warden_hauberk": "characters/Human-Soldier-Cyan.png",
-	"frostweave_robe": "characters/Mage-Cyan.png",
+	"traveler_cloak": "characters/Archer-Traveler.png",
+	"shadow_cloak": "characters/Archer-Shadow.png",
+	"mage_robe": "characters/Mage-Midnight.png",
+	"iron_armor": "characters/Soldier-Iron.png",
+	"scaled_mail": "characters/Warrior-Scaled.png",
+	"runic_armor": "characters/Guard-Runic.png",
+	"city_plate": "characters/Warrior-Gilded.png",
+	"oilskin_coat": "characters/Archer-Oilskin.png",
+	"blackiron_plate": "characters/Warrior-Blackiron.png",
+	"warden_hauberk": "characters/Guard-Warden.png",
+	"frostweave_robe": "characters/Mage-Frost.png",
 }
 ## The bare template whose frames say where each head ends.
 const BASE := "characters/Character-Base.png"
@@ -111,11 +114,11 @@ const VILLAGERS := {
 	# The builders at the village's construction sites (PIX-147).
 	"worker": {"sheet": "mini/FarmerLime.png", "family": "mini"},
 	"worker_alt": {"sheet": "mini/FarmerCyan.png", "family": "mini"},
-	"merchant": {"sheet": "characters/Human-Worker-Red.png", "family": "puny"},
-	"smith": {"sheet": "characters/Human-Soldier-Red.png", "family": "puny"},
+	"merchant": {"sheet": "characters/aligned/Human-Worker-Red.png", "family": "puny"},
+	"smith": {"sheet": "characters/aligned/Human-Soldier-Red.png", "family": "puny"},
 	"alchemist": {"sheet": "characters/Mage-Cyan.png", "family": "puny"},
-	"innkeeper": {"sheet": "characters/Human-Worker-Cyan.png", "family": "puny"},
-	"mayor": {"sheet": "characters/Human-Soldier-Cyan.png", "family": "puny"},
+	"innkeeper": {"sheet": "characters/aligned/Human-Worker-Cyan.png", "family": "puny"},
+	"mayor": {"sheet": "characters/aligned/Human-Soldier-Cyan.png", "family": "puny"},
 	# Saltmere's folk (PIX-165), and Rook, the smuggler who talks.
 	"fisher": {"sheet": "mini/FarmerCyan.png", "family": "mini"},
 	"fisher_alt": {"sheet": "mini/FarmerLime.png", "family": "mini"},
@@ -131,8 +134,8 @@ const VILLAGERS := {
 ## scaled where one sheet stands in for a kin (bone knights, ghosts, shades).
 const MONSTERS := {
 	"slime": {"sheet": "characters/Slime.png", "family": "strip"},
-	"goblin": {"sheet": "characters/Orc-Peon-Red.png", "family": "puny", "attack": "sword"},
-	"orc": {"sheet": "characters/Orc-Grunt.png", "family": "puny", "attack": "sword"},
+	"goblin": {"sheet": "characters/aligned/Orc-Peon-Red.png", "family": "puny", "attack": "sword"},
+	"orc": {"sheet": "characters/aligned/Orc-Grunt.png", "family": "puny", "attack": "sword"},
 	"troll": {"sheet": "mini/Minotaur.png", "family": "mini", "scale": 1.25},
 	"wolf": {"sheet": "beasts/Gray-Wolf-32x32.png", "family": "beast"},
 	"skeleton": {"sheet": "mini/Skeleton-Soldier.png", "family": "mini"},
