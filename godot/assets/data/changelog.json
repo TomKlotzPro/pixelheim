@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.114.0",
+      "date": "2026-10-08",
+      "codename": "Pocket Pixelheim",
+      "notes": [
+        "PLAY ON YOUR PHONE: on a phone or tablet a thumbstick sits under your left thumb and the hero's buttons under your right - hit, roll, use and your first three skills",
+        "MENUS BY TAP: every screen gets a row of buttons on a phone - the arrows, OK and Back - in the room beside the page, so it never covers what you're reading. The dock's Menu and the rows themselves answer a tap too",
+        "ANY WAY UP: the game fills a phone's screen held sideways or upright instead of sitting in a letterbox, the dock along the bottom and the pages in the middle. Upright, the art stays big enough to see the hero; sideways reads best, and the game says so once",
+        "On a computer nothing changes"
+      ]
+    },
+    {
       "version": "0.113.0",
       "date": "2026-10-08",
       "codename": "The Deep Hunt",

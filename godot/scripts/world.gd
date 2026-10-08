@@ -85,6 +85,12 @@ func _ready() -> void:
 	process_physics_priority = 10
 	var args := OS.get_cmdline_user_args()
 	harness = args.has("--screenshot")
+	# The phone version (PIX-162): on a touch screen (or a harness run with
+	# `touch`) the canvas fills the screen's own shape instead of
+	# letterboxing it.
+	Touch.forced = args.has("touch")
+	if Touch.enabled():
+		get_tree().root.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_EXPAND
 	if harness:
 		# The harness window opens on the desktop of someone who may be typing
 		# elsewhere: it doesn't take the keyboard (and harness.gd drops anything
@@ -317,12 +323,13 @@ func can_notice(enemy: Node) -> bool:
 func view_rect(margin := 0.0) -> Rect2:
 	if camera == null:
 		return Rect2()
-	var half := Vector2(640, 360) / camera.zoom.x
+	var view := Touch.view_size(self)
+	var half := view / 2.0 / camera.zoom.x
 	# Where the camera stands, held inside the map as its limits hold it.
 	var center := camera.global_position
 	center.x = clampf(center.x, camera.limit_left + half.x, maxf(camera.limit_left + half.x, camera.limit_right - half.x))
 	center.y = clampf(center.y, camera.limit_top + half.y, maxf(camera.limit_top + half.y, camera.limit_bottom - half.y))
-	return Rect2(center - half, Vector2(1280, _dock_top()) / camera.zoom.x).grow(margin)
+	return Rect2(center - half, Vector2(view.x, view.y - (720.0 - _dock_top())) / camera.zoom.x).grow(margin)
 
 
 ## Where the dock begins on the 1280x720 canvas (the bottom, before it is built).
@@ -562,6 +569,17 @@ func _fishing_here() -> bool:
 	if Gathering.fishing_spot_at(map.id, player_cell).is_empty():
 		return false
 	return map.tile_at(_facing_cell()) in PunyTerrain.WATERS
+
+
+## The HUD's 1280x720 layout on the screen as it is (PIX-162): along the
+## bottom, centred across, with the sky's tint edge to edge. On a desktop the
+## canvas is 1280x720 and nothing moves.
+func _place_hud() -> void:
+	if hud_root == null:
+		return
+	hud_root.offset = Touch.hud_offset(self)
+	sky_overlay.position = -hud_root.offset
+	sky_overlay.size = Touch.view_size(self)
 
 
 ## A first-time hint (PIX-160): a card under the top of the screen that
@@ -1372,6 +1390,7 @@ func _spawn_player() -> void:
 	player.add_child(camera)
 	_fit_zoom()
 	get_tree().root.size_changed.connect(_fit_zoom)
+	get_tree().root.size_changed.connect(_place_hud)
 	_teleported()
 
 ## Packs at their homes (the spawns): the species its region and position
@@ -1456,7 +1475,6 @@ func _build_hud() -> void:
 	# Day/night tint sits under the HUD widgets, over the world.
 	sky_overlay = ColorRect.new()
 	sky_overlay.color = Color(0, 0, 0, 0)
-	sky_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
 	sky_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hud.add_child(sky_overlay)
 	# The hero's dock along the bottom; the battle log floats above its left.
@@ -1492,6 +1510,14 @@ func _build_hud() -> void:
 		hint("skill", {"skill": entry["name"], "what": entry.get("description", "")}, "skill:" + String(entry["id"]))
 	)
 	hud_root = hud
+	_place_hud()
+	# Thumbs instead of keys on a phone (PIX-162), and a word for whoever
+	# holds it upright: the game reads best sideways.
+	if Touch.enabled():
+		add_child(preload("res://scripts/touch_controls.gd").new())
+		var size := Touch.view_size(self)
+		if size.y > size.x:
+			hint.call_deferred("turn")
 	GameState.settlers_changed.connect(_respawn_npcs)
 	nameplate = PanelContainer.new()
 	nameplate.add_theme_stylebox_override("panel", UiStyle.window(8))
@@ -1600,7 +1626,10 @@ func _fit_zoom() -> void:
 	if camera == null or not camera_follows:
 		return
 	var scale := _stretch()
-	camera.zoom = Vector2.ONE * maxf(1.0, roundf(ZOOM * scale)) / scale
+	# A phone's small screen still gets art pixels two screen pixels big
+	# (PIX-162): a hero you can see.
+	var least := 2.0 if Touch.enabled() else 1.0
+	camera.zoom = Vector2.ONE * maxf(least, roundf(ZOOM * scale)) / scale
 
 ## The nameplate of the sign the hero stands near (two tiles or so): the
 ## place's name and who keeps it, over the board, in the UI's window style.
