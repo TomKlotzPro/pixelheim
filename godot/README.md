@@ -100,6 +100,7 @@ godot --path godot -- --screenshot title splash       # the title as the boot sp
 godot --path godot -- --screenshot title options     # options over the title, before any hero
 godot --path godot -- --screenshot title --wait 8      # hold the shot (the dragon crosses the moon about 8 s in)
 godot --path godot -- --screenshot title still        # with Reduce motion on (no sway, drift, dragon or shine)
+godot --path godot -- --screenshot title --keys s,s,s # walk the title's menu with real keys (w, s, e, enter, esc, space)
 godot --path godot -- --screenshot dockmenu           # the dock's menu of screens, open
 ```
 

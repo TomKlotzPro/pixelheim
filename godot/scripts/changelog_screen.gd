@@ -2,8 +2,8 @@ extends CanvasLayer
 ## What's new (the web's Changelog page): every release, newest first, its
 ## version, codename and date over its notes, in one scrolling window. Opened
 ## from the version line on the title. W/S or the wheel scroll; Esc closes.
-## The notes come from src/app/changelog.ts (exported as changelog.json), the
-## same list that sets the game's version.
+## The notes come from assets/data/changelog.json, whose newest release is
+## the game's version.
 
 const SCROLL_STEP := 48
 
