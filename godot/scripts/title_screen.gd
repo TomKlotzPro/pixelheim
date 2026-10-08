@@ -17,6 +17,8 @@ var options: Array[Dictionary] = []
 var selected := 0
 var menu: VBoxContainer
 var footer: Label
+## The game's version (meta.json, from the web's changelog).
+var version := ""
 var walkers: Array[Dictionary] = []
 
 
@@ -168,14 +170,15 @@ func _card() -> void:
 	menu.custom_minimum_size = Vector2(300, 0)
 	menu.add_theme_constant_override("separation", 10)
 	middle.add_child(menu)
+	version = SaveCodec.parse_json(FileAccess.get_file_as_string("res://assets/data/meta.json"))["version"]
 	if not GameState.standing_in:
 		options.append({"label": "Continue  %s, Lv %d" % [GameState.hero.hero_name, GameState.hero.level], "action": _continue})
 	options.append({"label": "New Game", "action": _new_game})
 	options.append({"label": "Saves", "action": _saves})
 	options.append({"label": "Options", "action": _options})
 	options.append({"label": "Classic edition", "action": _classic})
+	options.append({"label": "What's new", "action": _whats_new})
 	_draw_menu()
-	var version: String = SaveCodec.parse_json(FileAccess.get_file_as_string("res://assets/data/meta.json"))["version"]
 	# The version line opens What's new (the web's changelog link).
 	footer = UiStyle.label("v%s - a retro RPG, now in Godot  ·  What's new" % version, 13, UiStyle.DUSK, Vector2(0, 690))
 	footer.custom_minimum_size = Vector2(VIEW.x, 0)
@@ -210,7 +213,25 @@ func _draw_menu() -> void:
 		button.custom_minimum_size = Vector2(260, 40)
 		button.add_theme_font_size_override("font_size", 18)
 		UiStyle.focus(button, chosen)
+		if options[index]["action"] == _whats_new and GameState.settings.seen_version != version:
+			button.add_child(_new_badge())
 		menu.add_child(button)
+
+
+## NEW, in rubric red on the plank's right end: notes not yet read.
+func _new_badge() -> Control:
+	var badge := PanelContainer.new()
+	badge.add_theme_stylebox_override("panel", UiStyle.box(UiStyle.LAMP, UiStyle.NIGHT, 3))
+	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	badge.add_child(UiStyle.strong("NEW", 12, UiStyle.CREAM))
+	# Pinned 10 px inside the plank's right end, growing leftward once its
+	# word has a size.
+	badge.set_anchors_preset(Control.PRESET_CENTER_RIGHT)
+	badge.offset_left = -10
+	badge.offset_right = -10
+	badge.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	badge.grow_vertical = Control.GROW_DIRECTION_BOTH
+	return badge
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -253,6 +274,11 @@ func _saves() -> void:
 ## Every release's notes, over the title (Esc hands back).
 func _whats_new() -> void:
 	add_child(preload("res://scripts/changelog_screen.gd").new())
+	# Read: the badge goes, until the next version.
+	if GameState.settings.seen_version != version:
+		GameState.settings.seen_version = version
+		GameState.settings.save_file()
+		_draw_menu()
 
 
 ## Options over the title, so sound and keys can be set before a hero
