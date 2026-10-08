@@ -123,6 +123,13 @@ without its menu or parade, and the loading bar sits where the menu will
 appear (`html/head_include` in `export_presets.cfg`). Rerun
 `godot/tools/splash.sh` whenever the title changes.
 
+### Icon
+
+`assets/icon.png` is the game's icon: the web build's favicon and home-screen
+icon, and the desktop window's (`config/icon`). It is the title's gold P on the
+title's night, drawn pixel by pixel on a 32x32 grid by `godot/tools/favicon.py`
+(Pillow) and saved at 16x so every size Godot makes from it stays crisp.
+
 ## Web export
 
 ```sh

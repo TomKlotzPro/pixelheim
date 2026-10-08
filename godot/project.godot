@@ -9,6 +9,9 @@ config/features=PackedStringArray("4.7")
 ; Pinned so renaming the project never orphans player saves in user://.
 config/use_custom_user_dir=true
 config/custom_user_dir_name="pixelheim"
+; The gold P on the title's night (tools/favicon.py): the web build's favicon,
+; its home-screen icon and the desktop window's.
+config/icon="res://assets/icon.png"
 ; The title's own night while the web build loads (tools/splash.sh).
 boot_splash/bg_color=Color(0, 0, 0, 1)
 boot_splash/image="res://assets/splash.png"
