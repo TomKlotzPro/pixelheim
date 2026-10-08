@@ -60,7 +60,7 @@ func test_a_cleared_pack_stays_down_until_its_time_or_the_inn() -> void:
 
 func test_a_door_keeps_the_ledger_and_a_night_at_the_inn_clears_it() -> void:
 	state.clear_pack("forest_1")
-	state.move_to(MapData.load_by_id("town"), Vector2i(28, 30), Vector2.DOWN)
+	state.move_to(MapData.load_by_id("town"), Vector2i(40, 30), Vector2.DOWN)
 	state.move_to(MapData.load_by_id("overworld"), Vector2i(48, 40), Vector2.UP)
 	assert_true(Packs.is_down(state.world, "forest_1"), "no free respawn through a door")
 	state.hero.hp = 1

@@ -435,9 +435,9 @@ func _run_test_harness() -> void:
 		await _keys(args)
 	if args.has("chest"):
 		# Pair with `--map town`: warp beside the nook chest, face it, open it.
-		world.player.position = world._cell_center(Vector2i(61, 18))
+		world.player.position = world._cell_center(Vector2i(79, 4))
 		world._teleported()
-		world.player_cell = Vector2i(61, 18)
+		world.player_cell = Vector2i(79, 4)
 		world.player.face(Vector2.RIGHT)
 		world._try_interact()
 		await get_tree().create_timer(0.3).timeout

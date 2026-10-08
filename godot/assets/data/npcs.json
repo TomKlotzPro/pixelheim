@@ -3,8 +3,8 @@
     {
       "id": "elder",
       "mapId": "town",
-      "x": 32,
-      "y": 16,
+      "x": 12,
+      "y": 6,
       "sprite": "elder",
       "name": "Elder Maren",
       "wander": false,
@@ -20,8 +20,8 @@
         "The mayor's ledger survived. Rebuild us, and then - then we go up that mountain."
       ],
       "prologue": {
-        "x": 29,
-        "y": 16,
+        "x": 11,
+        "y": 7,
         "step": 5,
         "lines": [
           "You came up the road as the fire came down the mountain. Who are you?",
@@ -34,7 +34,7 @@
     {
       "id": "villager_ana",
       "mapId": "town",
-      "x": 12,
+      "x": 16,
       "y": 12,
       "sprite": "villager_woman",
       "name": "Ana",
@@ -47,7 +47,7 @@
     {
       "id": "villager_bram",
       "mapId": "town",
-      "x": 36,
+      "x": 34,
       "y": 28,
       "sprite": "villager",
       "name": "Bram",
@@ -58,8 +58,8 @@
       ],
       "minTownTier": 0,
       "prologue": {
-        "x": 34,
-        "y": 5,
+        "x": 38,
+        "y": 6,
         "step": 3,
         "lines": [
           "(A man lies pinned under a burning beam. You put your shoulder to it. It shifts - then rolls away.)",
@@ -80,8 +80,8 @@
         "Welcome, welcome! Finest goods this side of the mountain. The counter is always open."
       ],
       "stall": {
-        "x": 23,
-        "y": 14,
+        "x": 34,
+        "y": 25,
         "project": "odos_store"
       }
     },
@@ -98,8 +98,8 @@
         "Seven folds is the most any steel will take. After that it is the arm, not the iron."
       ],
       "stall": {
-        "x": 33,
-        "y": 14,
+        "x": 46,
+        "y": 25,
         "project": "hildas_forge"
       }
     },
@@ -116,8 +116,8 @@
         "The elixir recipe? One of each, child. Nature likes a balanced potion."
       ],
       "stall": {
-        "x": 23,
-        "y": 17,
+        "x": 34,
+        "y": 27,
         "project": "vexs_brewery"
       }
     },
@@ -134,13 +134,13 @@
         "It was the stew or the poultice. Probably the stew."
       ],
       "stall": {
-        "x": 33,
-        "y": 18,
+        "x": 46,
+        "y": 27,
         "project": "the_inn"
       },
       "prologue": {
-        "x": 33,
-        "y": 18,
+        "x": 46,
+        "y": 27,
         "step": 4,
         "lines": [
           "Sit. You're bleeding and you haven't even noticed. ... There.",
@@ -170,8 +170,8 @@
     {
       "id": "settler_mira",
       "mapId": "town",
-      "x": 22,
-      "y": 17,
+      "x": 10,
+      "y": 20,
       "sprite": "villager_woman",
       "name": "Mira the Weaver",
       "wander": true,
@@ -194,8 +194,8 @@
     {
       "id": "settler_tomas",
       "mapId": "town",
-      "x": 27,
-      "y": 11,
+      "x": 36,
+      "y": 13,
       "sprite": "villager",
       "name": "Old Tomas",
       "wander": true,
@@ -214,8 +214,8 @@
     {
       "id": "settler_serra",
       "mapId": "town",
-      "x": 70,
-      "y": 17,
+      "x": 73,
+      "y": 19,
       "sprite": "villager_woman",
       "name": "Serra",
       "wander": true,
@@ -228,8 +228,8 @@
     {
       "id": "settler_fenn",
       "mapId": "town",
-      "x": 8,
-      "y": 17,
+      "x": 6,
+      "y": 19,
       "sprite": "villager",
       "name": "Fenn",
       "wander": true,
@@ -242,8 +242,8 @@
     {
       "id": "town_cat",
       "mapId": "town",
-      "x": 36,
-      "y": 20,
+      "x": 58,
+      "y": 12,
       "sprite": "cat",
       "name": "The cat",
       "wander": true,
@@ -255,8 +255,8 @@
     {
       "id": "town_dog",
       "mapId": "town",
-      "x": 20,
-      "y": 20,
+      "x": 44,
+      "y": 31,
       "sprite": "dog",
       "name": "The dog",
       "wander": true,
@@ -268,8 +268,8 @@
     {
       "id": "kid_pip",
       "mapId": "town",
-      "x": 25,
-      "y": 18,
+      "x": 36,
+      "y": 32,
       "sprite": "child",
       "name": "Pip",
       "wander": true,
@@ -281,8 +281,8 @@
     {
       "id": "kid_nell",
       "mapId": "town",
-      "x": 33,
-      "y": 12,
+      "x": 46,
+      "y": 31,
       "sprite": "child_alt",
       "name": "Nell",
       "wander": true,
@@ -513,8 +513,8 @@
         "wander": false
       },
       "home": {
-        "x": 34,
-        "y": 16,
+        "x": 13,
+        "y": 7,
         "wander": false
       },
       "ask": {
@@ -560,8 +560,8 @@
         "wander": true
       },
       "home": {
-        "x": 26,
-        "y": 10,
+        "x": 52,
+        "y": 12,
         "wander": true
       },
       "minTownTier": 2,
@@ -604,8 +604,8 @@
         "wander": true
       },
       "home": {
-        "x": 31,
-        "y": 3,
+        "x": 38,
+        "y": 4,
         "wander": true
       },
       "ask": {
@@ -648,7 +648,7 @@
       },
       "home": {
         "x": 46,
-        "y": 20,
+        "y": 14,
         "wander": false
       },
       "minTownTier": 3,

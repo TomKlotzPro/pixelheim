@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.124.0",
+      "date": "2026-10-09",
+      "codename": "A Village by Design",
+      "notes": [
+        "PIXELHEIM, REBUILT BY DESIGN: the village is laid out anew on a bend of the river at the mountain's foot. The gate road runs straight to the Town Hall, which faces the square; the inn and Odo's store flank the way in; Maren's shrine stands in a grove under the cliffs; Hilda's forge sits on Forge Lane down to a bridge, with the orchard, the fields and a new barn across it; Vex brews beside her herb garden; the homes keep to Hearth Lane; and the green runs down past the old well to a fishing dock on the bend",
+        "THE AGES BUILD ON PLANNED LOTS: new cottages rise by the river walk, the barn across the bridge, lamps along Upper Street and then the gate road, and the fountain at the square's heart. A walled garden hides between the homes and the river - and someone left something in it"
+      ]
+    },
+    {
       "version": "0.123.0",
       "date": "2026-10-08",
       "codename": "One Voice",

@@ -34,9 +34,9 @@ func test_new_game_matches_the_web_create_hero() -> void:
 	assert_false(state.progression.intro_seen)
 	# wakes in the village square, its surroundings already seen
 	assert_eq(state.world.map_id, "town")
-	assert_eq(state.world.cell, Vector2i(28, 30))
-	assert_true(Discovery.is_discovered(state.world.discovered, "town", Vector2i(30, 32)))
-	assert_false(Discovery.is_discovered(state.world.discovered, "town", Vector2i(31, 30)))
+	assert_eq(state.world.cell, Vector2i(40, 30))
+	assert_true(Discovery.is_discovered(state.world.discovered, "town", Vector2i(42, 32)))
+	assert_false(Discovery.is_discovered(state.world.discovered, "town", Vector2i(43, 30)))
 
 
 func test_rangers_string_a_bow() -> void:

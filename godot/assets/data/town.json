@@ -61,14 +61,14 @@
           "ruins": [
             {
               "rect": [
-                4,
-                3,
-                12,
-                8
+                26,
+                5,
+                34,
+                10
               ],
               "door": [
-                8,
-                8
+                30,
+                10
               ]
             }
           ]
@@ -87,14 +87,14 @@
           "ruins": [
             {
               "rect": [
-                38,
-                2,
-                47,
-                8
+                51,
+                13,
+                60,
+                18
               ],
               "door": [
-                42,
-                8
+                55,
+                18
               ]
             }
           ]
@@ -113,14 +113,14 @@
           "ruins": [
             {
               "rect": [
-                4,
-                21,
-                12,
-                26
+                19,
+                14,
+                27,
+                19
               ],
               "door": [
-                8,
-                26
+                23,
+                19
               ]
             }
           ]
@@ -128,7 +128,7 @@
         {
           "id": "the_inn",
           "name": "The inn and the homes",
-          "blurb": "Sela's inn with real beds, and roofs over the square's families.",
+          "blurb": "Sela's inn with real beds, and roofs over Upper Street's and Hearth Lane's families.",
           "cost": {
             "gold": 150,
             "items": {
@@ -139,54 +139,54 @@
           "ruins": [
             {
               "rect": [
-                18,
-                2,
-                30,
-                8
+                44,
+                3,
+                56,
+                10
               ],
               "door": [
+                50,
+                10
+              ]
+            },
+            {
+              "rect": [
+                19,
+                6,
                 24,
-                8
+                10
               ]
             },
             {
               "rect": [
-                57,
-                4,
+                58,
+                6,
                 63,
-                8
+                10
               ]
             },
             {
               "rect": [
-                67,
-                5,
-                72,
-                8
-              ]
-            },
-            {
-              "rect": [
-                56,
+                4,
                 21,
-                64,
-                26
+                9,
+                25
               ]
             },
             {
               "rect": [
-                34,
+                11,
+                21,
+                19,
+                25
+              ]
+            },
+            {
+              "rect": [
                 22,
-                38,
-                26
-              ]
-            },
-            {
-              "rect": [
-                40,
-                23,
-                42,
-                26
+                22,
+                27,
+                25
               ]
             }
           ]
@@ -212,7 +212,7 @@
         {
           "id": "street_lamps",
           "name": "Street lamps",
-          "blurb": "Torches along the streets and the square, so the night has edges.",
+          "blurb": "Torches along Upper Street and by the square, so the night has edges.",
           "cost": {
             "gold": 150,
             "items": {
@@ -221,33 +221,33 @@
           },
           "tiles": [
             [
+              18,
+              13,
+              "lamp"
+            ],
+            [
+              28,
+              13,
+              "lamp"
+            ],
+            [
+              37,
+              13,
+              "lamp"
+            ],
+            [
+              44,
+              13,
+              "lamp"
+            ],
+            [
+              63,
+              13,
+              "lamp"
+            ],
+            [
+              51,
               21,
-              12,
-              "lamp"
-            ],
-            [
-              35,
-              12,
-              "lamp"
-            ],
-            [
-              21,
-              19,
-              "lamp"
-            ],
-            [
-              35,
-              19,
-              "lamp"
-            ],
-            [
-              21,
-              22,
-              "lamp"
-            ],
-            [
-              29,
-              22,
               "lamp"
             ]
           ]
@@ -264,23 +264,23 @@
           },
           "tiles": [
             [
-              25,
-              13,
+              33,
+              23,
               "counter"
             ],
             [
-              26,
-              13,
+              34,
+              23,
               "crate"
             ],
             [
-              30,
-              13,
+              46,
+              23,
               "counter"
             ],
             [
-              31,
-              13,
+              47,
+              23,
               "barrel"
             ]
           ]
@@ -288,7 +288,7 @@
         {
           "id": "thatch_cottage",
           "name": "A thatched cottage",
-          "blurb": "A new roof south of the square, for whoever comes next.",
+          "blurb": "A new roof by the river walk, for whoever comes next.",
           "cost": {
             "gold": 400,
             "items": {
@@ -297,106 +297,136 @@
           },
           "tiles": [
             [
-              22,
-              21,
+              5,
+              29,
               "roof_thatch"
             ],
             [
-              23,
-              21,
+              6,
+              29,
               "roof_thatch"
             ],
             [
-              24,
-              21,
+              7,
+              29,
               "roof_thatch"
             ],
             [
-              25,
-              21,
+              8,
+              29,
               "roof_thatch"
             ],
             [
-              26,
-              21,
+              9,
+              29,
               "roof_thatch"
             ],
             [
-              27,
-              21,
+              10,
+              29,
               "roof_thatch"
             ],
             [
-              22,
-              22,
+              5,
+              30,
               "roof_thatch"
             ],
             [
-              23,
-              22,
+              6,
+              30,
               "roof_thatch"
             ],
             [
-              24,
-              22,
+              7,
+              30,
               "roof_thatch"
             ],
             [
-              25,
-              22,
+              8,
+              30,
               "roof_thatch"
             ],
             [
-              26,
-              22,
+              9,
+              30,
               "roof_thatch"
             ],
             [
-              27,
-              22,
+              10,
+              30,
               "roof_thatch"
             ],
             [
-              22,
-              23,
+              5,
+              31,
               "roof_thatch"
             ],
             [
-              23,
-              23,
+              6,
+              31,
               "roof_thatch"
             ],
             [
-              24,
-              23,
+              7,
+              31,
+              "roof_thatch"
+            ],
+            [
+              8,
+              31,
+              "roof_thatch"
+            ],
+            [
+              9,
+              31,
+              "roof_thatch"
+            ],
+            [
+              10,
+              31,
+              "roof_thatch"
+            ],
+            [
+              5,
+              32,
+              "roof_thatch"
+            ],
+            [
+              6,
+              32,
+              "roof_thatch"
+            ],
+            [
+              7,
+              32,
               "door_shut"
             ],
             [
-              25,
-              23,
+              8,
+              32,
               "roof_thatch"
             ],
             [
-              26,
-              23,
+              9,
+              32,
               "roof_thatch"
             ],
             [
-              27,
-              23,
+              10,
+              32,
               "roof_thatch"
             ]
           ],
           "site": [
-            22,
-            21,
-            27,
-            23
+            5,
+            29,
+            10,
+            32
           ],
           "worker": {
             "name": "Builder Joss",
-            "x": 24,
-            "y": 24
+            "x": 11,
+            "y": 33
           }
         }
       ]
@@ -424,67 +454,67 @@
           },
           "tiles": [
             [
-              29,
-              16,
+              39,
+              23,
               "path"
             ],
             [
-              30,
-              16,
+              40,
+              23,
               "path"
             ],
             [
-              31,
-              16,
+              41,
+              23,
               "path"
             ],
             [
-              29,
-              17,
+              39,
+              24,
               "path"
             ],
             [
-              30,
-              17,
+              40,
+              24,
               "well"
             ],
             [
-              31,
-              17,
+              41,
+              24,
               "path"
             ],
             [
-              29,
-              18,
+              39,
+              25,
               "path"
             ],
             [
-              30,
-              18,
+              40,
+              25,
               "path"
             ],
             [
-              31,
-              18,
+              41,
+              25,
               "path"
             ]
           ],
           "site": [
-            29,
-            16,
-            31,
-            18
+            39,
+            23,
+            41,
+            25
           ],
           "worker": {
             "name": "Mason Dorran",
-            "x": 30,
-            "y": 19
+            "x": 42,
+            "y": 26
           }
         },
         {
           "id": "slate_hall",
           "name": "The slate hall",
-          "blurb": "A long slate-roofed hall on the east road, built to last.",
+          "blurb": "A long slate-roofed barn across the bridge, built to last.",
           "cost": {
             "gold": 900,
             "items": {
@@ -493,172 +523,142 @@
           },
           "tiles": [
             [
-              67,
-              21,
+              72,
+              12,
               "roof_slate"
             ],
             [
-              68,
-              21,
+              73,
+              12,
               "roof_slate"
             ],
             [
-              69,
-              21,
+              74,
+              12,
               "roof_slate"
             ],
             [
-              70,
-              21,
-              "roof_slate"
-            ],
-            [
-              71,
-              21,
+              75,
+              12,
               "roof_slate"
             ],
             [
               72,
-              21,
+              13,
               "roof_slate"
             ],
             [
-              67,
-              22,
+              73,
+              13,
               "roof_slate"
             ],
             [
-              68,
-              22,
+              74,
+              13,
               "roof_slate"
             ],
             [
-              69,
-              22,
-              "roof_slate"
-            ],
-            [
-              70,
-              22,
-              "roof_slate"
-            ],
-            [
-              71,
-              22,
+              75,
+              13,
               "roof_slate"
             ],
             [
               72,
-              22,
+              14,
               "roof_slate"
             ],
             [
-              67,
-              23,
+              73,
+              14,
               "roof_slate"
             ],
             [
-              68,
-              23,
+              74,
+              14,
               "roof_slate"
             ],
             [
-              69,
-              23,
-              "roof_slate"
-            ],
-            [
-              70,
-              23,
-              "roof_slate"
-            ],
-            [
-              71,
-              23,
+              75,
+              14,
               "roof_slate"
             ],
             [
               72,
-              23,
+              15,
               "roof_slate"
             ],
             [
-              67,
-              24,
+              73,
+              15,
               "roof_slate"
             ],
             [
-              68,
-              24,
+              74,
+              15,
               "roof_slate"
             ],
             [
-              69,
-              24,
-              "roof_slate"
-            ],
-            [
-              70,
-              24,
-              "roof_slate"
-            ],
-            [
-              71,
-              24,
+              75,
+              15,
               "roof_slate"
             ],
             [
               72,
-              24,
+              16,
               "roof_slate"
             ],
             [
-              67,
-              25,
+              73,
+              16,
               "roof_slate"
             ],
             [
-              68,
-              25,
+              74,
+              16,
               "roof_slate"
             ],
             [
-              69,
-              25,
+              75,
+              16,
+              "roof_slate"
+            ],
+            [
+              72,
+              17,
+              "roof_slate"
+            ],
+            [
+              73,
+              17,
+              "roof_slate"
+            ],
+            [
+              74,
+              17,
               "door_shut"
             ],
             [
-              70,
-              25,
-              "roof_slate"
-            ],
-            [
-              71,
-              25,
-              "roof_slate"
-            ],
-            [
-              72,
-              25,
+              75,
+              17,
               "roof_slate"
             ]
           ],
           "site": [
-            67,
-            21,
             72,
-            25
+            12,
+            75,
+            17
           ],
           "worker": {
             "name": "Mason Pell",
-            "x": 69,
-            "y": 26
+            "x": 74,
+            "y": 18
           }
         },
         {
           "id": "moss_cottage",
-          "name": "A cottage by the wall",
-          "blurb": "Mossy roofs by the south wall. Builders whistle now.",
+          "name": "A cottage on the bend",
+          "blurb": "Mossy roofs on the river's bend. Builders whistle now.",
           "cost": {
             "gold": 700,
             "items": {
@@ -795,7 +795,7 @@
           ],
           "worker": {
             "name": "Builder Ilka",
-            "x": 16,
+            "x": 20,
             "y": 33
           }
         }
@@ -823,33 +823,33 @@
           },
           "tiles": [
             [
-              30,
-              2,
+              38,
+              3,
               "lamp"
             ],
             [
-              34,
-              2,
+              42,
+              3,
               "lamp"
             ],
             [
-              31,
-              4,
+              38,
+              6,
               "lamp"
             ],
             [
-              33,
-              4,
+              42,
+              6,
               "lamp"
             ],
             [
-              31,
-              7,
+              38,
+              9,
               "lamp"
             ],
             [
-              33,
-              7,
+              42,
+              9,
               "lamp"
             ]
           ]
@@ -866,43 +866,43 @@
           },
           "tiles": [
             [
-              16,
-              14,
+              34,
+              15,
               "flowers"
             ],
             [
-              17,
-              14,
-              "flowers"
-            ],
-            [
-              36,
-              14,
-              "flowers"
-            ],
-            [
-              37,
-              14,
-              "flowers"
-            ],
-            [
-              16,
+              34,
               16,
               "flowers"
             ],
             [
-              17,
+              46,
+              15,
+              "flowers"
+            ],
+            [
+              46,
               16,
               "flowers"
             ],
             [
-              36,
-              16,
+              29,
+              31,
               "flowers"
             ],
             [
-              37,
-              16,
+              28,
+              31,
+              "flowers"
+            ],
+            [
+              51,
+              31,
+              "flowers"
+            ],
+            [
+              52,
+              31,
               "flowers"
             ]
           ]
@@ -911,8 +911,8 @@
     }
   ],
   "projectBoard": {
-    "x": 31,
-    "y": 11
+    "x": 37,
+    "y": 21
   },
   "properties": {
     "town_shop": {
@@ -948,8 +948,8 @@
   ],
   "houseDoor": {
     "mapId": "town",
-    "x": 60,
-    "y": 26
+    "x": 15,
+    "y": 25
   },
   "trophyBuffs": {
     "dragon_scale": {
@@ -991,8 +991,8 @@
   },
   "ashesCamp": {
     "tent": {
-      "x": 34,
-      "y": 18
+      "x": 45,
+      "y": 27
     }
   },
   "homecomings": {
@@ -1000,8 +1000,8 @@
     "15": "The square is full and nobody is working. Tonight Pixelheim drinks to the hero who went all the way down."
   },
   "bountyBoard": {
-    "x": 32,
-    "y": 11
+    "x": 43,
+    "y": 21
   },
   "settlerArcs": {
     "ivaPotions": 3,
@@ -1018,19 +1018,45 @@
     "prizeCount": 3,
     "stalls": [
       {
-        "x": 23,
-        "y": 13,
+        "x": 34,
+        "y": 21,
         "tile": 895
       },
       {
-        "x": 35,
-        "y": 13,
+        "x": 46,
+        "y": 21,
         "tile": 905
       }
     ],
     "barker": {
-      "x": 34,
-      "y": 15
+      "x": 43,
+      "y": 26
     }
-  }
+  },
+  "square": {
+    "x": 40,
+    "y": 24
+  },
+  "lanterns": [
+    {
+      "x": 38,
+      "y": 21
+    },
+    {
+      "x": 39,
+      "y": 21
+    },
+    {
+      "x": 40,
+      "y": 21
+    },
+    {
+      "x": 41,
+      "y": 21
+    },
+    {
+      "x": 42,
+      "y": 21
+    }
+  ]
 }
