@@ -122,10 +122,11 @@ func play_slot(target: int) -> bool:
 
 
 ## Writes a brand-new hero into a slot (replacing whatever was there) and plays it.
-func new_hero_in(target: int, name := DEFAULT_HERO_NAME, role_id := DEFAULT_ROLE, look := 0) -> void:
+## `night`: begin with the Night of Ash (a returning player may skip it).
+func new_hero_in(target: int, name := DEFAULT_HERO_NAME, role_id := DEFAULT_ROLE, look := 0, night := true) -> void:
 	save_now()
 	_use_slot(target)
-	new_game(name, role_id, look, true)
+	new_game(name, role_id, look, night)
 	save_now()
 	if settings.last_slot != target:
 		settings.last_slot = target
@@ -1105,13 +1106,17 @@ func _prologue_talk(npc_id: String) -> void:
 	match progression.prologue:
 		Prologue.SELA:
 			_make_whole()
+			# And a cap to wear (PIX-197: the pack and worn gear, taught).
+			var cap := InventoryState.create_gear(String(Prologue.data()["cap"]["itemId"]))
+			pack.gear.append(cap)
+			_pack_changed()
+			message.emit(String(Prologue.data()["cap"]["given"]))
 		Prologue.MAREN:
 			pack.remove_item("chancellors_letter")
 			_pack_changed()
 			prologue_dawn.emit()
 			return
-	progression.prologue += 1
-	save_now()
+	_prologue_on()
 
 
 ## The scavenger at the gate fell: its pouch, and on to the village.
@@ -1128,13 +1133,42 @@ func prologue_pouch() -> String:
 ## Through the gate into the burning village.
 func prologue_reached_town() -> void:
 	if progression.prologue == Prologue.GATE:
-		progression.prologue = Prologue.BRAM
-		save_now()
+		_prologue_on()
+
+
+## The night's next beat (Prologue.ORDER), saved.
+func _prologue_on() -> void:
+	progression.prologue = Prologue.next(progression.prologue)
+	save_now()
+
+
+## A wave of the night's foes is down (the hounds, the embers): on, with
+## the line that says where to next.
+func prologue_wave_cleared() -> String:
+	var wave := Prologue.wave(progression.prologue)
+	if wave.is_empty():
+		return ""
+	_prologue_on()
+	return String(wave["cleared"])
+
+
+## A burning home put out with the well's water (PIX-197); the line to say.
+func prologue_douse(ruin: int) -> String:
+	if progression.prologue != Prologue.FIRES or ruin in progression.prologue_doused:
+		return ""
+	progression.prologue_doused.append(ruin)
+	var fires: Dictionary = Prologue.data()["fires"]
+	if progression.prologue_doused.size() >= Prologue.fires_needed():
+		_prologue_on()
+		return String(fires["done"])
+	save_now()
+	return "%s (%d/%d)" % [fires["doused"], progression.prologue_doused.size(), Prologue.fires_needed()]
 
 
 ## Dawn: the night is over and the game proper begins.
 func finish_prologue() -> void:
 	progression.prologue = Prologue.DONE
+	progression.prologue_doused.clear()
 	world.steps = Prologue.dawn_steps()
 	pack.remove_item("chancellors_letter")
 	_pack_changed()
@@ -1221,6 +1255,10 @@ func equip(uid: String) -> bool:
 	pack.equipped[slot] = uid
 	_pack_changed()
 	hp_changed.emit(hero.hp, int(hero.stats["maxHp"]))
+	# Sela's cap on (PIX-197): the night moves on to the fires.
+	if progression.prologue == Prologue.CAP and slot == "head":
+		_prologue_on()
+		message.emit(Prologue.objective(progression.prologue))
 	return true
 
 

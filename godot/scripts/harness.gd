@@ -577,10 +577,12 @@ func _run_test_harness() -> void:
 			or node.get_script().resource_path.ends_with("dialogue_box.gd")
 		)
 	).map(func(node: Node) -> String: return node.get_script().resource_path.get_file().get_basename())
-	print("screenshot saved; map=%s cell=%s hp=%d gold=%d save=%s%s draws=%d paused=%s open=%s" % [
+	var mobs := get_tree().get_nodes_in_group("mobs").filter(func(mob: Node) -> bool: return not mob.dying).size()
+	print("screenshot saved; map=%s cell=%s hp=%d gold=%d save=%s%s draws=%d paused=%s open=%s night=%d mobs=%d" % [
 		world.map.id, world.player_cell, world.player.hp, GameState.pack.gold, GameState.world.map_id, GameState.world.cell,
 		Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME), get_tree().paused,
 		",".join(open) if not open.is_empty() else "none",
+		GameState.progression.prologue, mobs,
 	] + motion_report)
 	# Let the audio server let go of the music before the engine shuts down.
 	get_tree().paused = true  # nothing may start a track again

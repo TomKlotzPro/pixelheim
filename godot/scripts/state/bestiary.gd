@@ -26,7 +26,9 @@ static func is_boss(id: String) -> bool:
 ## real time, where a hero swings every 0.45 s).
 static func spawn(monster_id: String, elite := false, lift := 0) -> Dictionary:
 	var base := monster(monster_id)
-	if lift > 0:
+	# Lifted above its kind on the mountain, or below it on the Night of
+	# Ash (PIX-197: the hounds and embers a first-night hero can take).
+	if lift != 0:
 		base = lifted(base, lift)
 	var mult := 1.5 if elite else 1.0
 	var max_hp := roundi(base["maxHp"] * (float(_data()["eliteHp"]) if elite else 1.0))
@@ -42,7 +44,7 @@ static func spawn(monster_id: String, elite := false, lift := 0) -> Dictionary:
 		"gold": roundi(base["gold"] * mult),
 		"inflicts": base.get("inflicts"),
 	}
-	if lift > 0:
+	if lift != 0:
 		fighter["level"] = base["level"]
 	return fighter
 

@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.126.0",
+      "date": "2026-10-09",
+      "codename": "The First Night",
+      "notes": [
+        "THE NIGHT OF ASH TEACHES THE GAME: the first night is now a walk through everything a hero needs, one thing at a time. Ash hounds come out of the fire inside the gate - one tells a lunge to roll through; Bram is pinned under a beam on Upper Street; Sela binds your cuts and hands you a leather cap to wear from your pack; you carry water from the well on the green to three burning homes, and each fire dies as you douse it; embers swarm the square for your first skill; and Maren waits at the shrine. Hurt on the way, and the game shows you how to drink a potion",
+        "A FIRST NIGHT YOU CAN SKIP: hero creation has a First night toggle (Tab) for players who have walked it before"
+      ]
+    },
+    {
       "version": "0.125.0",
       "date": "2026-10-09",
       "codename": "A Dawn You Watch",

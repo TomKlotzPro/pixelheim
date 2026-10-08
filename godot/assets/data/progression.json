@@ -1282,7 +1282,7 @@
       },
       {
         "id": "bram",
-        "text": "Help whoever is calling by the north road ({key:interact} to help)"
+        "text": "Help whoever is calling on Upper Street ({key:interact} to help)"
       },
       {
         "id": "sela",
@@ -1291,6 +1291,22 @@
       {
         "id": "maren",
         "text": "Bring the letter to Elder Maren at the shrine"
+      },
+      {
+        "id": "hounds",
+        "text": "Ash hounds come out of the fire: roll through a lunge ({key:dodge} to roll)"
+      },
+      {
+        "id": "cap",
+        "text": "Wear the cap Sela gave you ({key:inventory} opens your pack)"
+      },
+      {
+        "id": "fires",
+        "text": "Carry water from the well to the burning homes ({fires})"
+      },
+      {
+        "id": "embers",
+        "text": "Embers swarm the square: drive them off ({key:skill_1} for your skill)"
       }
     ],
     "dawn": [
@@ -1323,6 +1339,55 @@
     "dayCard": {
       "title": "Pixelheim",
       "subtitle": "Day one"
+    },
+    "hounds": {
+      "monsterId": "wolf",
+      "level": 1,
+      "elite": true,
+      "name": "Ash Hound",
+      "cells": [
+        [
+          38,
+          8
+        ],
+        [
+          42,
+          9
+        ]
+      ],
+      "cleared": "The hounds crumble into cinders. Someone is calling from Upper Street."
+    },
+    "embers": {
+      "monsterId": "imp",
+      "level": 1,
+      "elite": false,
+      "name": "Ember",
+      "cells": [
+        [
+          37,
+          23
+        ],
+        [
+          43,
+          23
+        ],
+        [
+          40,
+          27
+        ]
+      ],
+      "cleared": "The last ember gutters out on the stones. Maren is waiting at the shrine."
+    },
+    "cap": {
+      "itemId": "leather_cap",
+      "given": "Sela binds your cuts and presses a leather cap into your hands. \"It's not much. Wear it.\""
+    },
+    "fires": {
+      "needed": 3,
+      "well": "You fill a bucket at the well.",
+      "empty": "Your hands are empty: the well is on the green, below the square.",
+      "doused": "The fire hisses out.",
+      "done": "The last of the fires you can reach is out. The square is glowing - embers, blown off the roofs."
     }
   },
   "relics": {

@@ -57,6 +57,8 @@ var soundscape_left := 0.0
 var floor_foes := 0
 var message_label: Label
 ## The message's plate and its tag (PIX-194): "Quest accepted", "Level up"...
+## A bucket of the well's water in hand, on the Night of Ash (PIX-197).
+var prologue_bucket := false
 var message_box: PanelContainer
 var message_tag: Label
 var message_fade: Tween
@@ -281,6 +283,12 @@ func on_enemy_died(enemy: Node) -> void:
 	_log(GameState.defeat_monster(enemy.fighter, enemy.region, cleared, floor_level))
 	if enemy.has_meta("prologue"):
 		_flash_message(GameState.prologue_pouch())
+	# The last of a wave of the night's foes: on to the next beat.
+	if enemy.has_meta("prologue_wave"):
+		var left := get_tree().get_nodes_in_group("mobs").filter(func(mob: Node) -> bool:
+			return mob != enemy and mob.has_meta("prologue_wave") and not mob.dying)
+		if left.is_empty():
+			_flash_message(GameState.prologue_wave_cleared())
 	if enemy.fighter.has("named"):
 		Sound.play("bounty")
 	if GameState.pack.gear.size() > gear_before:
@@ -422,8 +430,11 @@ func _log(lines: Array) -> void:
 		log_box.remove_child(oldest)
 		oldest.queue_free()
 
-func _on_hp_changed(_hp: int, _max_hp: int) -> void:
+func _on_hp_changed(hp: int, max_hp: int) -> void:
 	dock.refresh()
+	# Hurt on the first night: how to drink a potion, once (PIX-197).
+	if GameState.progression.prologue != Prologue.DONE and hp * 2 < max_hp and hp > 0:
+		hint("potion")
 
 func _use_portal(target: Dictionary) -> void:
 	match target["kind"]:
@@ -851,6 +862,8 @@ func _facing_cell() -> Vector2i:
 ## fixtures, then the villager beside the hero (turning to face them).
 func _try_interact() -> void:
 	var faced := _facing_cell()
+	if map.id == "town" and GameState.progression.prologue == Prologue.FIRES and _carry_water(faced):
+		return
 	var chest := _chest_at(faced)
 	if not chest.is_empty() and chest["look"] == "chest" and not GameState.is_opened(chest):
 		_open_chest(chest)
@@ -1061,7 +1074,7 @@ func _update_objective() -> void:
 	var step := MainQuest.next_step(GameState.progression, GameState.settlement)
 	var text: String = step.get("text", "")
 	if GameState.progression.prologue != Prologue.DONE:
-		text = Prologue.objective(GameState.progression.prologue)
+		text = Prologue.objective(GameState.progression.prologue, GameState.progression.prologue_doused.size())
 	if text != objective_label.text:
 		objective_label.text = text
 		objective_box.reset_size()
@@ -1108,6 +1121,53 @@ func _prologue_arrive(next: MapData) -> void:
 		Prologue.GATE:
 			if next.id == "town":
 				GameState.prologue_reached_town()
+				_prologue_wave.call_deferred()
+		Prologue.HOUNDS, Prologue.EMBERS:
+			if next.id == "town":
+				_prologue_wave.call_deferred()
+
+
+## The fires beat (PIX-197): the well fills a bucket; a burning home's
+## frame, faced with one, puts that fire out. True when the cell was either.
+func _carry_water(faced: Vector2i) -> bool:
+	var fires: Dictionary = Prologue.data()["fires"]
+	if map.tile_at(faced) == "well":
+		prologue_bucket = true
+		Sound.play("drop")
+		_flash_message(String(fires["well"]))
+		return true
+	var ruins := Town.ruins(Town.done_projects(GameState.settlement))
+	for i in ruins.size():
+		var rect: Rect2i = ruins[i]["rect"]
+		if not rect.has_point(faced) or i in GameState.progression.prologue_doused:
+			continue
+		if not prologue_bucket:
+			_flash_message(String(fires["empty"]))
+			return true
+		prologue_bucket = false
+		view.douse_ruin(i)
+		Sound.play("heal")
+		_flash_message(GameState.prologue_douse(i))
+		if GameState.progression.prologue == Prologue.EMBERS:
+			_prologue_wave.call_deferred()
+		return true
+	return false
+
+
+## The night's foes for this beat (PIX-197): the ash hounds inside the gate,
+## the embers on the square - below their kind's level, one told lunge
+## among the hounds for the roll.
+func _prologue_wave() -> void:
+	var wave := Prologue.wave(GameState.progression.prologue)
+	if wave.is_empty() or map.id != "town":
+		return
+	var kind := Bestiary.monster(wave["monsterId"])
+	for at: Array in wave["cells"]:
+		var cell := Vector2i(int(at[0]), int(at[1]))
+		var foe := spawn_enemy(wave["monsterId"], cell, "", "", bool(wave.get("elite", false)), false, cell, int(wave["level"]) - int(kind["level"]))
+		foe.fighter["name"] = wave["name"]
+		foe.set_meta("prologue_wave", true)
+		appear(foe)
 
 
 ## Dawn after the Night of Ash (PIX-197): played on the town itself - the

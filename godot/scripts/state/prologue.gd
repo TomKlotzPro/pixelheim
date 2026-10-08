@@ -13,16 +13,51 @@ const GATE := 2
 const BRAM := 3
 const SELA := 4
 const MAREN := 5
+## The night as the tutorial (PIX-197): beats added after the first five,
+## numbered on so a save made mid-night still means what it meant.
+const HOUNDS := 6
+const CAP := 7
+const FIRES := 8
+const EMBERS := 9
+## The order the night is played in; each beat teaches one thing: strike,
+## enter, roll, help, rest, wear, carry, use a skill, deliver.
+const ORDER := [SCAVENGER, GATE, HOUNDS, BRAM, SELA, CAP, FIRES, EMBERS, MAREN]
+
+
+## The beat after `step` (DONE after the last).
+static func next(step: int) -> int:
+	var at := ORDER.find(step)
+	return ORDER[at + 1] if at >= 0 and at + 1 < ORDER.size() else DONE
+
+
+## How many burning homes the hero puts out with the well's water.
+static func fires_needed() -> int:
+	return int(data()["fires"]["needed"])
 
 
 static func data() -> Dictionary:
 	return Quests._data()["prologue"]
 
 
-## What the line above the dock says at a step, "" outside the prologue.
-static func objective(step: int) -> String:
+## What the line above the dock says at a step, "" outside the prologue;
+## `doused`: the fires out so far (the carrying beat counts them).
+static func objective(step: int, doused := 0) -> String:
 	var steps: Array = data()["steps"]
-	return Controls.say(String(steps[step - 1]["text"])) if step >= 1 and step <= steps.size() else ""
+	if step < 1 or step > steps.size():
+		return ""
+	var text := String(steps[step - 1]["text"]).replace("{fires}", "%d/%d" % [doused, fires_needed()])
+	return Controls.say(text)
+
+
+## A wave of the night's foes (the hounds at the gate, the embers on the
+## square): {monsterId, level, elite, name, cells}.
+static func wave(step: int) -> Dictionary:
+	match step:
+		HOUNDS:
+			return data()["hounds"]
+		EMBERS:
+			return data()["embers"]
+	return {}
 
 
 ## The survivors on the square that night, where the fire put them, saying

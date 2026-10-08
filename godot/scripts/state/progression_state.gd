@@ -15,6 +15,9 @@ var story_seen: Array[String] = []
 ## The Night of Ash's step while it runs (Prologue, PIX-152); 0 when done,
 ## and saved only while it isn't.
 var prologue := 0
+## The burning homes put out with the well's water on that night (their
+## ruin indices, PIX-197); saved only while there are some and it runs.
+var prologue_doused: Array[int] = []
 ## The named monsters killed (Hunts, PIX-156): they stay dead. Saved only
 ## once there is one.
 var hunted: Array[String] = []
@@ -31,6 +34,7 @@ static func from_dict(data: Dictionary) -> ProgressionState:
 	progress.intro_seen = data["introSeen"]
 	progress.story_seen.assign(data.get("storySeen", []))
 	progress.prologue = int(data.get("prologue", 0))
+	progress.prologue_doused.assign(data.get("prologueDoused", []))
 	progress.hunted.assign(data.get("hunted", []))
 	progress.deepest = int(data.get("deepHunt", 0))
 	return progress
@@ -45,6 +49,8 @@ func write_into(state: Dictionary) -> void:
 		state["storySeen"] = story_seen.duplicate()
 	if prologue > 0:
 		state["prologue"] = prologue
+		if not prologue_doused.is_empty():
+			state["prologueDoused"] = prologue_doused.duplicate()
 	if not hunted.is_empty():
 		state["hunted"] = hunted.duplicate()
 	if deepest > 0:
