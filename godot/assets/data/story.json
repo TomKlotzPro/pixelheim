@@ -349,12 +349,12 @@
       },
       {
         "kind": "caption",
-        "text": "Morvax's last words were for someone else: \"Tell Maren... she was right to run.\"",
+        "text": "You bring the blade down. Morvax the Deathless breaks like old glass, and the dark takes what is left of him.",
         "hold": 4.0
       },
       {
         "kind": "caption",
-        "text": "{hero} slew Fafnyr the Ashen above and cast down Morvax the Deathless below.",
+        "text": "{hero} slew Fafnyr the Ashen above and destroyed Morvax the Deathless below.",
         "hold": 4.0
       },
       {
@@ -601,6 +601,73 @@
         "to": "black",
         "seconds": 0.8
       }
+    ],
+    "ending_rest": [
+      {
+        "kind": "stage",
+        "stage": "village"
+      },
+      {
+        "kind": "fade",
+        "to": "clear",
+        "seconds": 1.6
+      },
+      {
+        "kind": "caption",
+        "text": "You read him Liane's last page. When you say their names - Tam, Oskar, Liane, Maren - Morvax lowers his hands.",
+        "hold": 4.0
+      },
+      {
+        "kind": "caption",
+        "text": "\"Tell Maren... she was right to run.\" Then he is only dust, and the dead around the throne lie down.",
+        "hold": 4.0
+      },
+      {
+        "kind": "caption",
+        "text": "{hero} slew Fafnyr the Ashen above and laid Morvax, once a hero of Pixelheim, to rest below.",
+        "hold": 4.0
+      },
+      {
+        "kind": "caption",
+        "text": "Five lanterns burn on the square tonight. The tavern is loud, and the cheese has never tasted better.",
+        "hold": 4.0
+      },
+      {
+        "kind": "fade",
+        "to": "black",
+        "seconds": 0.8
+      },
+      {
+        "kind": "stage",
+        "stage": "dark"
+      },
+      {
+        "kind": "fade",
+        "to": "clear",
+        "seconds": 0.2
+      },
+      {
+        "kind": "credits",
+        "seconds": 32,
+        "before": [
+          "PIXELHEIM",
+          "",
+          "A game by Tom Klotz",
+          "Art by Shade (merchant-shade.itch.io)",
+          "",
+          "Starring"
+        ],
+        "after": [
+          "and Infinite Cheese Wheels as themselves",
+          "",
+          "Thank you for climbing."
+        ]
+      },
+      {
+        "kind": "fade",
+        "to": "black",
+        "seconds": 0.8
+      }
     ]
   },
   "moments": {
@@ -609,7 +676,8 @@
     "cleared:10": "descent",
     "victory": "ending",
     "cleared:3": "crypt",
-    "cleared:7": "forge"
+    "cleared:7": "forge",
+    "victory:rest": "ending_rest"
   },
   "lore": [
     {
@@ -697,6 +765,17 @@
       "lines": [
         "He said I was right to run? ...Then maybe I can stop running.",
         "Sit with me a while. The fire's warm, and for once the mountain is quiet."
+      ],
+      "ending": "rest"
+    },
+    {
+      "after": 15,
+      "id": "maren_after",
+      "ending": "destroy",
+      "lines": [
+        "So he's gone. Truly gone.",
+        "Fifty years I hated him, courier. I thought I'd feel lighter when he was dust. ...Maybe tomorrow.",
+        "Go on, the festival is for you. I'll sit by the fire a while."
       ]
     }
   ],

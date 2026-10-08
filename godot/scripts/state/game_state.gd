@@ -498,7 +498,7 @@ func bank_deposit(amount: int) -> bool:
 		return false
 	var inv := investments()
 	var savings: Dictionary = inv.get("savings", {})
-	var carried := 0 if savings.is_empty() else Town.savings_value(savings["principal"], savings["at"], steps_now())
+	var carried := 0 if savings.is_empty() else _savings_now(savings)
 	pack.gold -= amount
 	inv["savings"] = {"principal": carried + amount, "at": steps_now()}
 	_pack_changed()
@@ -511,7 +511,7 @@ func bank_withdraw() -> int:
 	var savings: Dictionary = inv.get("savings", {})
 	if savings.is_empty():
 		return 0
-	var value := Town.savings_value(savings["principal"], savings["at"], steps_now())
+	var value := _savings_now(savings)
 	pack.gold += value
 	inv.erase("savings")
 	_pack_changed()
@@ -559,6 +559,25 @@ func is_settled(id: String) -> bool:
 	return id in settlement.settlers
 
 
+## A settler living here whose arc is done (PIX-157): their perk has grown.
+func perk_grown(id: String) -> bool:
+	return is_settled(id) and Town.perk_upgraded(id, progression.quests)
+
+
+## What Loras's song adds to the crit chance: more once he has his horn.
+func song_crit() -> float:
+	return float(Town.arc("lorasCrit")) if perk_grown("settler_loras") else 0.12
+
+
+## How much faster the hero walks above ground: Wren's riders taught them.
+func walk_bonus() -> float:
+	return float(Town.arc("wrenWalk")) if perk_grown("settler_wren") else 0.0
+
+
+func _savings_now(savings: Dictionary) -> int:
+	return Town.savings_value(savings["principal"], savings["at"], steps_now(), perk_grown("settler_mirelle"))
+
+
 ## A conversation closed: recruits answer (resolveSettler), then the quest
 ## hooks (PIX-125) get their turn through dialogue_closed.
 func finish_dialogue(npc_id: String) -> void:
@@ -567,10 +586,14 @@ func finish_dialogue(npc_id: String) -> void:
 		_prologue_talk(npc_id)
 		dialogue_closed.emit(npc_id)
 		return
-	# Settlers first (recruiting and services ride the close), then quests.
+	# Settlers first (recruiting and services ride the close), then quests;
+	# a settler with an ask of their arc to make or take back (PIX-157) says
+	# it after their service.
 	var text := _resolve_settler(npc_id)
 	if text == "":
 		text = resolve_quests(npc_id)
+	elif is_settled(npc_id) and Quests.awaits_word(npc_id, progression.quests, pack.items):
+		text += " " + resolve_quests(npc_id)
 	dialogue_closed.emit(npc_id)
 	if text != "":
 		message.emit(text)
@@ -633,12 +656,30 @@ func _resolve_settler(npc_id: String) -> String:
 	if world.map_id == "town":
 		if npc_id == "settler_iva":
 			_make_whole()
-			return "Iva's hands glow warm. Fully healed, free of charge."
+			var line := "Iva's hands glow warm. Fully healed, free of charge."
+			var topped := _top_up_potions()
+			if topped > 0:
+				line += " She tucks %d healing potion%s in your pack." % [topped, "s" if topped > 1 else ""]
+			return line
 		if npc_id == "settler_loras":
 			settlement.bard_song = true
 			mark_dirty()
-			return "Loras plays you a marching song. Your next hunt strikes truer. (+12% crit)"
+			return "Loras plays you a marching song%s. Your next hunt strikes truer. (+%d%% crit)" % [
+				" on his war-horn" if perk_grown("settler_loras") else "", roundi(song_crit() * 100),
+			]
 	return ""
+
+
+## Iva's grown perk: healing potions up to three. Returns how many she gave.
+func _top_up_potions() -> int:
+	if not perk_grown("settler_iva"):
+		return 0
+	var short := int(Town.arc("ivaPotions")) - int(pack.items.get("potion_hp", 0))
+	if short <= 0:
+		return 0
+	pack.add_item("potion_hp", short)
+	_pack_changed()
+	return short
 
 
 ## The shut door in town: E buys the deed, or names the price (BUY_HOUSE).

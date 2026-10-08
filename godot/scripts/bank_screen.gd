@@ -21,11 +21,11 @@ func _info() -> String:
 	var savings: Dictionary = inv.get("savings", {})
 	if savings.is_empty():
 		lines.append("Nothing deposited. %d%% a day, up to %d days." % [
-			roundi(float(Town.bank("savingsRate")) * 100), Town.bank("savingsMaxDays"),
+			roundi(float(Town.arc("mirelleRate") if GameState.perk_grown("settler_mirelle") else Town.bank("savingsRate")) * 100), Town.bank("savingsMaxDays"),
 		])
 	else:
 		lines.append("%dg deposited, worth %dg now (%d of %d days)." % [
-			savings["principal"], Town.savings_value(savings["principal"], savings["at"], steps),
+			savings["principal"], Town.savings_value(savings["principal"], savings["at"], steps, GameState.perk_grown("settler_mirelle")),
 			Town.savings_days(savings["at"], steps), Town.bank("savingsMaxDays"),
 		])
 	lines.append_array(["", "Caravan"])
@@ -56,7 +56,7 @@ func _rows() -> Array[Dictionary]:
 	var savings: Dictionary = inv.get("savings", {})
 	out.append({
 		"label": "Withdraw all", "enabled": not savings.is_empty(), "why": "Nothing to withdraw.",
-		"note": "" if savings.is_empty() else "%dg" % Town.savings_value(savings["principal"], savings["at"], GameState.steps_now()),
+		"note": "" if savings.is_empty() else "%dg" % Town.savings_value(savings["principal"], savings["at"], GameState.steps_now(), GameState.perk_grown("settler_mirelle")),
 		"action": func() -> String: return "Withdrawn: %dg. Mirelle stamps the ledger." % GameState.bank_withdraw(),
 	})
 	var venture: Dictionary = inv.get("venture", {})

@@ -39,7 +39,7 @@ func _info() -> String:
 ## under the projects.
 func _refresh() -> void:
 	super._refresh()
-	var perks := Town.settler_perks(GameState.settlement.settlers)
+	var perks := Town.settler_perks(GameState.settlement.settlers, GameState.progression.quests)
 	if perks.is_empty():
 		return
 	var spacer := Control.new()

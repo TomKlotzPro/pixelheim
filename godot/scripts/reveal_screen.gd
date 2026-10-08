@@ -7,6 +7,8 @@ extends Screen
 
 ## [{at: Vector2 (map pixels), line: String}]
 var stops: Array[Dictionary] = []
+## Where the caption's last line ends: just above the dock.
+const CAPTION_FOOT := 594.0
 var world: Node
 ## What comes after the last stop (the ending's credits).
 var on_done := Callable()
@@ -53,6 +55,9 @@ func _next() -> void:
 	_tour.tween_property(world.camera, "global_position", stop["at"], 0.0 if GameState.settings.reduce_motion else 0.9).set_trans(Tween.TRANS_SINE)
 	_tour.tween_callback(func() -> void:
 		caption.text = stop["line"]
+		# Standing on the dock's top edge, however many lines it takes.
+		caption.size = Vector2(1000, 0)
+		caption.position.y = CAPTION_FOOT - caption.get_minimum_size().y
 		Sound.play("coin")
 	)
 	# Long enough to read the line (the dawn's are long).

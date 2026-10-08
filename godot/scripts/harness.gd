@@ -412,9 +412,22 @@ func _run_test_harness() -> void:
 		world._play_reveals()
 		await get_tree().create_timer(1.4).timeout
 	if args.has("ending"):
-		# The ending (PIX-150): home to the festival and the tour's first stop.
-		world._play_ending()
+		# The ending (PIX-150): home to the festival and the tour's first stop;
+		# `rest` the ending where Morvax is laid to rest (PIX-157).
+		world._play_ending("rest" if args.has("rest") else "destroy")
 		await get_tree().create_timer(1.4).timeout
+	var seen_index := args.find("--seen")
+	if seen_index >= 0 and seen_index + 1 < args.size():
+		# `--seen maren_confession`: stories already told this hero.
+		for story_id: String in args[seen_index + 1].split(","):
+			GameState.mark_seen(story_id)
+	if args.has("throne"):
+		# Morvax beaten (PIX-157): the choice. Pair with `--cleared 15` and
+		# `--seen maren_confession` to have "lay him to rest" open.
+		var throne := preload("res://scripts/throne_screen.gd").new()
+		throne.on_choice = world._play_ending
+		world.add_child(throne)
+		await get_tree().create_timer(0.3).timeout
 	if args.has("mimic"):
 		# Pair with `--map mirefen`: open the mire's mimic chest; `--wait`
 		# catches its shudder (under 0.6 s) or the ambush after.

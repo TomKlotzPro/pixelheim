@@ -563,8 +563,11 @@ func _floor_cleared(at: Vector2i) -> void:
 	map.grid[stairs] = "cave"
 	map.portals[stairs] = {"kind": "gate"}
 	PunyDungeon.sheet().place(view.dungeon_objects, stairs, PunyDungeon.STAIRS)
-	if result["victory"] and not GameState.has_seen(Cutscene.moment("victory")):
-		_play_ending()
+	if result["victory"] and Story.ending_of(GameState.progression.story_seen) == "":
+		# Morvax kneels: the hero decides how it ends (PIX-157).
+		var throne := preload("res://scripts/throne_screen.gd").new()
+		throne.on_choice = _play_ending
+		add_child(throne)
 	elif result["first"]:
 		play_story(Cutscene.moment("cleared:%d" % map.floor_level))
 
@@ -702,7 +705,8 @@ func _try_interact() -> void:
 		player.face(Vector2(beside["side"]))
 		# Keepers trade instead of chatting: anyone in a shop opens its counter
 		# (unless they have a quest to offer or take back: then they talk, and
-		# the next word opens the counter), a settled Mirelle her bank. The
+		# the next word opens the counter), a settled Mirelle her bank (her
+		# arc's asks first, PIX-157). The
 		# mayor talks, then opens the projects ledger (see _talk).
 		var quest_word := Quests.awaits_word(beside["npc"]["id"], GameState.progression.quests, GameState.pack.items)
 		var at_stall: bool = map.id == "town" and beside["npc"].has("stall") and beside["npc"]["mapId"] == "town"
@@ -716,7 +720,7 @@ func _try_interact() -> void:
 				_open_stall(Economy.shop_at(String(Npcs.by_id(beside["npc"]["id"], []).get("mapId", ""))))
 		elif GameState.active_shop() != "" and not quest_word:
 			_open_shop()
-		elif beside["npc"]["id"] == "settler_mirelle" and GameState.is_settled("settler_mirelle"):
+		elif beside["npc"]["id"] == "settler_mirelle" and GameState.is_settled("settler_mirelle") and not quest_word:
 			add_child(preload("res://scripts/bank_screen.gd").new())
 		else:
 			_talk(beside["npc"])
@@ -996,17 +1000,22 @@ func _keep_hours(arriving := false) -> void:
 			villager.set_away(night)
 
 
-## The ending (PIX-150): home to a festival on the square, the camera
-## showing what Pixelheim became - a stop for each age the hero raised it
-## through, then the square - and then the story's ending and credits.
-func _play_ending() -> void:
-	var scene_id := Cutscene.moment("victory")
+## The ending (PIX-150): home to the square, the camera touring each age's
+## landmark the hero built, then the square - and then the story's ending
+## and credits. How Morvax ended (PIX-157) sets the evening: a festival
+## with confetti for the one destroyed, five lanterns for the five who
+## climbed for the one laid to rest.
+func _play_ending(choice := "destroy") -> void:
+	var scene_id := Story.ending_scene(choice)
 	GameState.mark_seen(scene_id)
 	GameState.reveals.clear()
 	map = _load_map("town")
 	var square := Town.project_board() + Vector2i(0, 4)
 	_enter_map(map, square)
-	_festival()
+	if choice == "rest":
+		_lanterns()
+	else:
+		_festival()
 	Sound.play_track("victory")
 	var stops: Array[Dictionary] = []
 	var done := Town.done_projects(GameState.settlement)
@@ -1019,11 +1028,11 @@ func _play_ending() -> void:
 			"at": _cell_center(Town.project_center(landmark["id"])),
 			"line": "%s - %s" % [landmark["name"], String(landmark["blurb"]).to_lower()],
 		})
+	var town_name := String(Town.tier(GameState.town_tier())["name"]).to_lower()
 	stops.append({
 		"at": _cell_center(square),
-		"line": "Pixelheim, a %s raised from the ashes. Tonight it celebrates %s." % [
-			String(Town.tier(GameState.town_tier())["name"]).to_lower(), GameState.hero.hero_name,
-		],
+		"line": ("Five lanterns on the square, one for each of the five who climbed. Tonight the %s remembers them - and %s."
+			if choice == "rest" else "Pixelheim, a %s raised from the ashes. Tonight it celebrates %s.") % [town_name, GameState.hero.hero_name],
 	})
 	var tour := preload("res://scripts/reveal_screen.gd").new()
 	tour.world = self
@@ -1033,6 +1042,37 @@ func _play_ending() -> void:
 		ending.scene_id = scene_id
 		add_child(ending)
 	add_child(tour)
+
+
+## Five lanterns in a row on the square (PIX-157), for Maren, Oskar,
+## Liane, Tam and Morvax: Shade's flame on a post, or a warm square.
+func _lanterns() -> void:
+	var row := Town.project_board() + Vector2i(-2, 2)
+	for i in 5:
+		var lantern := Node2D.new()
+		lantern.position = _cell_center(row + Vector2i(i, 0))
+		lantern.add_to_group("decor")
+		var post := ColorRect.new()
+		post.color = Color("4a3426")
+		post.size = Vector2(2, 9)
+		post.position = Vector2(-1, -7)
+		lantern.add_child(post)
+		var frames := ItemIcons.effect("flame", 10.0)
+		if frames != null:
+			var flame := AnimatedSprite2D.new()
+			flame.sprite_frames = frames
+			flame.scale = Vector2.ONE * 0.5
+			flame.position = Vector2(0, -11)
+			flame.frame = i
+			flame.play()
+			lantern.add_child(flame)
+		else:
+			var glow := ColorRect.new()
+			glow.color = Color(1.0, 0.75, 0.35)
+			glow.size = Vector2(4, 4)
+			glow.position = Vector2(-2, -12)
+			lantern.add_child(glow)
+		actors.add_child(lantern)
 
 
 ## Confetti over the square: the town's festival, until the hero leaves.

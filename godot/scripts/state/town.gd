@@ -328,8 +328,10 @@ static func savings_days(at: int, steps: int) -> int:
 	return mini(int(bank("savingsMaxDays")), maxi(0, floori((steps - at) / float(bank("daySteps")))))
 
 
-static func savings_value(principal: int, at: int, steps: int) -> int:
-	return floori(principal * (1 + float(bank("savingsRate")) * savings_days(at, steps)))
+## `upgraded`: Mirelle's caravans run safe (PIX-157), her savings pay more.
+static func savings_value(principal: int, at: int, steps: int, upgraded := false) -> int:
+	var rate := float(arc("mirelleRate")) if upgraded else float(bank("savingsRate"))
+	return floori(principal * (1 + rate * savings_days(at, steps)))
 
 
 static func venture_ready(at: int, steps: int) -> bool:
@@ -354,13 +356,29 @@ static func recruit_blocker(recruit: Dictionary, town_tier: int) -> String:
 	return "tier" if int(recruit.get("minTownTier", 1)) > town_tier else ""
 
 
-## The recruits who live in town now, with the perk each brings (PIX-148).
-static func settler_perks(settlers: Array) -> Array[String]:
+## The recruits who live in town now, with the perk each brings (PIX-148),
+## grown where their arc is done (PIX-157).
+static func settler_perks(settlers: Array, quests := {}) -> Array[String]:
 	var out: Array[String] = []
 	for recruit_entry: Dictionary in Npcs._data()["recruits"]:
 		if recruit_entry["id"] in settlers:
-			out.append(String(recruit_entry["perk"]))
+			var grown := perk_upgraded(recruit_entry["id"], quests)
+			out.append(String(recruit_entry["perkUp" if grown else "perk"]))
 	return out
+
+
+## A settler's arc (PIX-157): after moving in, two more asks, the last of
+## which grows their perk. True once that last one is turned in.
+static func perk_upgraded(recruit_id: String, quests: Dictionary) -> bool:
+	for quest: Dictionary in Quests.all():
+		if quest.get("upgrades", "") == recruit_id:
+			return quests.get(quest["id"], {}).get("done", false)
+	return false
+
+
+## The grown perks' numbers (town.json "settlerArcs").
+static func arc(key: String) -> Variant:
+	return _data()["settlerArcs"][key]
 
 
 static func recruit(id: String) -> Dictionary:

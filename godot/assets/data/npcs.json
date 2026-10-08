@@ -337,7 +337,8 @@
           "A city needs a hospice. I've asked the mayor. He said 'after the flower beds'.",
           "Sit. Breathe. There - whole again."
         ]
-      }
+      },
+      "perkUp": "Iva heals you whole, free, whenever you're in town, and tops your healing potions up to three"
     },
     {
       "id": "settler_loras",
@@ -380,7 +381,8 @@
           "A city deserves an anthem. I have the tune. I need the ending - Morvax's, ideally.",
           "A song before you march! Carry that fire into the fight."
         ]
-      }
+      },
+      "perkUp": "Loras plays a marching song with a war-horn before a hunt: +20% crit until it ends"
     },
     {
       "id": "settler_wren",
@@ -422,7 +424,8 @@
           "Lamps all the way to the mountain gate. I ride the night shift for fun now.",
           "Fast travel to the gate drops you on the square - my post runs like a dream."
         ]
-      }
+      },
+      "perkUp": "Wren's post: travel to the town gate lands you on the square, and you walk a tenth faster above ground"
     },
     {
       "id": "settler_mirelle",
@@ -461,7 +464,8 @@
           "City prices, city deposits. Pixelheim's gold finally comes back to Pixelheim.",
           "Idle gold is lazy gold. Savings, a caravan, an expansion - put it to work."
         ]
-      }
+      },
+      "perkUp": "Mirelle's bank: savings that grow 3% a day, caravans and expansions"
     }
   ],
   "reactions": {
