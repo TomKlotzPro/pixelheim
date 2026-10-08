@@ -480,6 +480,10 @@
     "settler": [
       "{settler} moved in! Pixelheim is filling up again.",
       "Did you hear? {settler} is one of us now."
+    ],
+    "hunt": [
+      "They say you killed {beast}. I'll believe it when I see the head. ...Oh. That's the head.",
+      "{beast}, gone! My mother won't believe it. I barely believe it."
     ]
   }
 }

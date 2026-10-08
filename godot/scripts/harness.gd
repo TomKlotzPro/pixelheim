@@ -220,11 +220,6 @@ func _run_test_harness() -> void:
 		world.camera.global_position = Vector2(world.map.size * world.TILE) / 2.0
 		world.camera.reset_smoothing()
 		await get_tree().create_timer(0.2).timeout
-	if args.has("worldmap"):
-		var screen := preload("res://scripts/map_screen.gd").new()
-		screen.world = world
-		world.add_child(screen)
-		await get_tree().create_timer(0.3).timeout
 	var settlers_index := args.find("--settlers")
 	if settlers_index >= 0 and settlers_index + 1 < args.size():
 		# `--settlers iva,wren`: recruits already living in town.
@@ -238,6 +233,14 @@ func _run_test_harness() -> void:
 			if level not in GameState.progression.cleared_levels:
 				GameState.progression.cleared_levels.append(level)
 		GameState.progression.unlocked_level = maxi(GameState.progression.unlocked_level, mini(deepest + 1, Dungeons.floor_count()))
+		# The named monsters those floors post come out to their lairs (PIX-156).
+		world.spawn_lairs()
+	if args.has("worldmap"):
+		# After `--cleared`: the lairs it posts are on the map.
+		var screen := preload("res://scripts/map_screen.gd").new()
+		screen.world = world
+		world.add_child(screen)
+		await get_tree().create_timer(0.3).timeout
 	var level_index := args.find("--level")
 	if level_index >= 0 and level_index + 1 < args.size():
 		# A hero of that level: the rank's title, aura and presence.
@@ -393,10 +396,19 @@ func _run_test_harness() -> void:
 		world.player.face(Vector2.RIGHT)
 		world._try_interact()
 		await get_tree().create_timer(0.3).timeout
+	var hunted_index := args.find("--hunted")
+	if hunted_index >= 0 and hunted_index + 1 < args.size():
+		# `--hunted greymaw,cinderjaw`: named monsters already slain (PIX-156).
+		for named_id: String in args[hunted_index + 1].split(","):
+			GameState.progression.hunted.append(named_id)
 	if args.has("reveal"):
 		# The town risen (PIX-147): pair with `--map town --town-tier 2`; the
-		# lamps' stop, then the age's.
-		GameState.reveals.assign(["project:street_lamps", "age:2"])
+		# lamps' stop, then the age's. With `--hunted`, the first one's
+		# homecoming instead (PIX-156).
+		if hunted_index >= 0:
+			GameState.reveals.assign(["hunt:" + GameState.progression.hunted[0]])
+		else:
+			GameState.reveals.assign(["project:street_lamps", "age:2"])
 		world._play_reveals()
 		await get_tree().create_timer(1.4).timeout
 	if args.has("ending"):
@@ -454,8 +466,17 @@ func _run_test_harness() -> void:
 		# `--foe-distance N` stands it N cells off (an elite's opener from range).
 		var distance_index := args.find("--foe-distance")
 		var foe_distance := int(args[distance_index + 1]) if distance_index >= 0 and distance_index + 1 < args.size() else 2
-		world.spawn_enemy(foe, world.player_cell + Vector2i(foe_distance, 0), "ash", "", args.has("elite"))
+		# A named monster's id (`--foe greymaw`) brings it out of its lair (PIX-156).
+		var opponent: Node
+		if not Hunts.named(foe).is_empty():
+			opponent = world.spawn_named(foe, world.player_cell + Vector2i(foe_distance, 0))
+		else:
+			opponent = world.spawn_enemy(foe, world.player_cell + Vector2i(foe_distance, 0), "ash", "", args.has("elite"))
 		world.player.face(Vector2.RIGHT)
+		if args.has("slay"):
+			# Felled outright: what its death pays (a named one's bounty).
+			await get_tree().create_timer(0.2).timeout
+			opponent.take_hit(99999, opponent.global_position + Vector2.LEFT)
 		# `kill` swings until the foe drops (or 12 swings); plain `fight`
 		# captures mid-swing.
 		var swings := 12 if args.has("kill") else 1

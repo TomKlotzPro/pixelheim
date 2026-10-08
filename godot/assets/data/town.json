@@ -996,5 +996,9 @@
   "homecomings": {
     "10": "The bells ring as you walk in. Pixelheim knows what fell on the mountain - and Bram has been telling everyone he always knew.",
     "15": "The square is full and nobody is working. Tonight Pixelheim drinks to the hero who went all the way down."
+  },
+  "bountyBoard": {
+    "x": 32,
+    "y": 11
   }
 }

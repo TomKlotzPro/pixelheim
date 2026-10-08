@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.99.0",
+      "date": "2026-10-08",
+      "codename": "Wanted",
+      "notes": [
+        "THE BOUNTY BOARD: a second board on the square, with a wanted poster on it, posts the wilds' named monsters one by one as you clear the mountain's floors",
+        "FIVE NAMED MONSTERS: Old Greymaw in the Whispering Forest, the Drowned Knight in the Sunken Marsh, Cinderjaw on the Ash Fields, Mossback in the Deepwood and Grandmother Gulp in the Mirefen. Each is its kind grown huge, keeps to a lair marked on your map, and has its family's trick plus one of its own: a howl that calls wolves, hands from the bog, fire spat three ways, a thrown stone, a leap",
+        "THE REWARD: the bounty is paid where it falls, with a piece of gear nothing else drops. Pixelheim talks about it when you get home. A named monster stays dead",
+        "THE BATTLE LOG now stands above the quest line and grows upward, so a long fight's lines never run under the dock"
+      ]
+    },
+    {
       "version": "0.98.0",
       "date": "2026-10-08",
       "codename": "Light on Your Feet",
