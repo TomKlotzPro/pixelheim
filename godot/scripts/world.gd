@@ -418,6 +418,8 @@ func _use_portal(target: Dictionary) -> void:
 			add_child(screen)
 		"gate":
 			_leave_floor()
+		"deeper":
+			enter_floor(map.floor_level + 1)
 
 
 ## One of the hero's screens, from its key or the panel's button.
@@ -652,10 +654,10 @@ func enter_floor(level: int) -> void:
 	_enter_map(map, map.spawn)
 	floor_foes = plan["foes"].size()
 	for foe: Dictionary in plan["foes"]:
-		spawn_enemy(foe["id"], foe["cell"], "", "", foe["elite"], false, Vector2i(-1, -1), Dungeons.lift(level))
+		spawn_enemy(foe["id"], foe["cell"], "", "", foe["elite"], false, Vector2i(-1, -1), foe["lift"])
 	view.add_patch(plan["patch"], Gathering.floor_spot_id(level), Gathering.floor_material(level))
 	var floor_def := Dungeons.floor_def(level)
-	_log(["Floor %d: %s" % [level, floor_def["name"]], String(floor_def["description"])])
+	_log([String(floor_def["name"]) if Dungeons.is_deep(level) else "Floor %d: %s" % [level, floor_def["name"]], String(floor_def["description"])])
 	# A boss's floor: its intro, the first time only (PIX-32).
 	play_story(Cutscene.moment("boss:%s" % Dungeons.boss_of(level)["monsterId"]))
 
@@ -669,7 +671,8 @@ func _leave_floor() -> void:
 ## The floor's last foe fell: its hoard on a first clear, and a way up where
 ## the guardian stood, so the hero needn't walk the halls back.
 func _floor_cleared(at: Vector2i) -> void:
-	var result := GameState.clear_floor(map.floor_level)
+	var deep := Dungeons.is_deep(map.floor_level)
+	var result := GameState.clear_deep(map.floor_level) if deep else GameState.clear_floor(map.floor_level)
 	Sound.play("victory")
 	_log(result["lines"])
 	var stairs := at
@@ -678,6 +681,15 @@ func _floor_cleared(at: Vector2i) -> void:
 	map.grid[stairs] = "cave"
 	map.portals[stairs] = {"kind": "gate"}
 	PunyDungeon.sheet().place(view.dungeon_objects, stairs, PunyDungeon.STAIRS)
+	# The Deep Hunt (PIX-161) goes on: a hole into the dark beside the way up.
+	if deep or Dungeons.is_final(map.floor_level):
+		for side: Vector2i in [Vector2i(2, 0), Vector2i(-2, 0), Vector2i(0, 2), Vector2i(0, -2)]:
+			var down := stairs + side
+			if map.is_walkable(down) and not map.portals.has(down):
+				map.grid[down] = "cave"
+				map.portals[down] = {"kind": "deeper"}
+				PunyDungeon.sheet().place(view.dungeon_objects, down, PunyDungeon.VOID)
+				break
 	if result["victory"] and Story.ending_of(GameState.progression.story_seen) == "":
 		# Morvax kneels: the hero decides how it ends (PIX-157).
 		var throne := preload("res://scripts/throne_screen.gd").new()

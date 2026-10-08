@@ -1412,6 +1412,9 @@ func clear_floor(level: int) -> Dictionary:
 			last_deed = {"kind": "boss", "boss": Bestiary.monster(boss_id)["name"]}
 		else:
 			last_deed = {"kind": "cleared", "floor": "the " + String(floor_def["name"]).trim_prefix("The ")}
+		# Below the throne the stair goes on (PIX-161).
+		if Dungeons.is_final(level):
+			lines.append("Behind the throne, a stair goes on down into the dark: the Deep Hunt.")
 		var before := progression.unlocked_level
 		progression.unlocked_level = Dungeons.unlocked_after(level, before)
 		if progression.unlocked_level > before:
@@ -1419,6 +1422,35 @@ func clear_floor(level: int) -> Dictionary:
 		_pack_changed()
 	save_now()
 	return {"first": first, "lines": lines, "victory": first and Dungeons.is_final(level)}
+
+
+## A depth of the Deep Hunt cleared (PIX-161): a new deepest depth is
+## recorded and pays its hoard and the way down; a depth already beaten pays
+## only its fights.
+func clear_deep(level: int) -> Dictionary:
+	settlement.bard_song = false
+	var depth := Dungeons.depth_of(level)
+	var floor_def := Dungeons.floor_def(level)
+	var lines: Array[String] = ["Depth %d of the Deep Hunt is cleared!" % depth]
+	var record := depth > progression.deepest
+	if record:
+		progression.deepest = depth
+		pack.gold += int(floor_def["rewardGold"])
+		var found: Array[String] = ["%dg" % floor_def["rewardGold"]]
+		for item_id: String in floor_def["rewardItemIds"]:
+			pack.add_item(item_id)
+			found.append(Catalog.item_name(item_id))
+		lines.append("The deepest yet. Its hoard: %s." % ", ".join(found))
+		var clear_xp := Dungeons.clear_xp(level)
+		lines.append("+%d XP for the way down." % clear_xp)
+		var level_line := earn_xp(clear_xp)
+		if level_line != "":
+			lines.append(level_line)
+		last_deed = {"kind": "cleared", "floor": "depth %d of the Deep Hunt" % depth}
+		_pack_changed()
+	lines.append("A hole into the dark opens beside the way up: depth %d waits below." % (depth + 1))
+	save_now()
+	return {"first": record, "lines": lines, "victory": false}
 
 
 ## Counts a kill toward its family's mastery; the slayer line when a tier is crossed.

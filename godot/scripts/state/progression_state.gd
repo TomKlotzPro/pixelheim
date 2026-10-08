@@ -18,6 +18,9 @@ var prologue := 0
 ## The named monsters killed (Hunts, PIX-156): they stay dead. Saved only
 ## once there is one.
 var hunted: Array[String] = []
+## The deepest depth of the Deep Hunt cleared (PIX-161); saved only once
+## there is one.
+var deepest := 0
 
 
 static func from_dict(data: Dictionary) -> ProgressionState:
@@ -29,6 +32,7 @@ static func from_dict(data: Dictionary) -> ProgressionState:
 	progress.story_seen.assign(data.get("storySeen", []))
 	progress.prologue = int(data.get("prologue", 0))
 	progress.hunted.assign(data.get("hunted", []))
+	progress.deepest = int(data.get("deepHunt", 0))
 	return progress
 
 
@@ -43,3 +47,5 @@ func write_into(state: Dictionary) -> void:
 		state["prologue"] = prologue
 	if not hunted.is_empty():
 		state["hunted"] = hunted.duplicate()
+	if deepest > 0:
+		state["deepHunt"] = deepest

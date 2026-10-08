@@ -10,7 +10,57 @@ static func dungeon(dungeon_id: String) -> Dictionary:
 
 
 static func floor_def(level: int) -> Dictionary:
+	if is_deep(level):
+		return deep_def(level - floor_count())
 	return Bestiary._data()["levels"][level - 1]
+
+
+## Below the fifteenth floor lies the Deep Hunt (PIX-161), once Morvax is
+## down: depths without end, one floor level each past 15.
+static func is_deep(level: int) -> bool:
+	return level > floor_count()
+
+
+static func depth_of(level: int) -> int:
+	return level - floor_count()
+
+
+static var _deep := {}
+
+
+## A depth of the Deep Hunt, generated from its number so it's the same
+## every visit: more foes the deeper (three to six), drawn from every family,
+## each lifted to the depth's level; every few depths an elite guards it.
+static func deep_def(depth: int) -> Dictionary:
+	if _deep.has(depth):
+		return _deep[depth]
+	var rules: Dictionary = Bestiary._data()["deepHunt"]
+	var rng := RandomNumberGenerator.new()
+	rng.seed = depth * 104729 + 3
+	var foes: Array = rules["foes"]
+	var target := int(rules["startLevel"]) + depth - 1
+	var count := mini(3 + depth / 3, 6)
+	var encounters: Array = []
+	var start := rng.randi_range(0, foes.size() - 1)
+	for i in count:
+		# Stepping through the list by a prime keeps neighbours apart: one
+		# depth's foes come from many families.
+		var monster_id: String = foes[(start + i * 7) % foes.size()]
+		var encounter := {"monsterId": monster_id, "lift": maxi(0, target - int(Bestiary.monster(monster_id)["level"]))}
+		if i == count - 1 and depth % int(rules["eliteEvery"]) == 0:
+			encounter["elite"] = true
+		encounters.append(encounter)
+	var gold: Array = rules["rewardGold"]
+	var descriptions: Array = rules["descriptions"]
+	_deep[depth] = {
+		"level": floor_count() + depth,
+		"name": "%s, depth %d" % [rules["names"][0], depth],
+		"description": descriptions[(depth - 1) % descriptions.size()],
+		"encounters": encounters,
+		"rewardItemIds": ["greater_potion", "gem"] if depth % int(rules["eliteEvery"]) == 0 else ["greater_potion"],
+		"rewardGold": int(gold[0]) + int(gold[1]) * depth,
+	}
+	return _deep[depth]
 
 
 ## How many levels above their kind a floor's foes stand (PIX-170).
