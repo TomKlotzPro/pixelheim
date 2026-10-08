@@ -81,6 +81,9 @@ func _masteries() -> void:
 			int(next["kills"]) - kills, roundi(float(next["bonus"]) * 100),
 		]
 		body.add_child(UiStyle.label(note, 13, UiStyle.FADED))
+		var gap := Control.new()
+		gap.custom_minimum_size = Vector2(0, 8)
+		body.add_child(gap)
 
 
 ## Every monster, in the bestiary's order: the met ones in full.

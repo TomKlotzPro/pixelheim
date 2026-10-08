@@ -29,13 +29,12 @@ func _open() -> void:
 
 	# One window in the middle of the screen: the slots on the left, the way
 	# across from the web game on the right, what just happened underneath.
-	var middle := CenterContainer.new()
-	middle.set_anchors_preset(Control.PRESET_FULL_RECT)
-	middle.offset_bottom = -48  # clear of the key footer
-	add_child(middle)
+	# Placed, not centred by a container: a wrapping line measures itself tall
+	# before it knows its width, and a centring container would grow with it.
 	var stack := VBoxContainer.new()
+	stack.position = Vector2((1280 - WINDOW.x) / 2, 56)
 	stack.add_theme_constant_override("separation", 18)
-	middle.add_child(stack)
+	add_child(stack)
 	var title := UiStyle.heading("Saves", 20, UiStyle.CREAM)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	stack.add_child(title)
@@ -78,12 +77,13 @@ func _open() -> void:
 	web_lines.add_theme_constant_override("separation", 8)
 	web.add_child(web_lines)
 	web_lines.add_child(UiStyle.strong(
-		"Welcome back" if welcome else "From the web game", 16, UiStyle.LAMP if welcome else UiStyle.INK
+		"Welcome back" if welcome else "From the old web edition", 16, UiStyle.LAMP if welcome else UiStyle.INK
 	))
 	if web_save.is_empty():
 		var hint := (
-			"No web game save in this browser." if OS.has_feature("web")
-			else "Copy your save code from Options in the web game, then paste it below."
+			"No hero from the old web edition in this browser. One you saved as a code comes across below."
+			if OS.has_feature("web")
+			else "A hero from the old web edition comes across by their save code: paste it below."
 		)
 		var none := UiStyle.label(hint, 14, UiStyle.FADED)
 		none.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART

@@ -114,7 +114,7 @@ func _hero() -> Control:
 	who.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	lines.add_child(who)
 	name_label = UiStyle.strong("", 12, UiStyle.CREAM)
-	name_label.custom_minimum_size = Vector2(96, 0)
+	name_label.custom_minimum_size = Vector2(128, 0)
 	name_label.clip_text = true
 	name_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	who.add_child(name_label)

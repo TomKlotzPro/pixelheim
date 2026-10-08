@@ -6,18 +6,20 @@ class_name UiStyle
 ## windows the world dims to a warm dark where text is cream and focus gold.
 ## Every frame is pixel art drawn here from the palette at 1x and shown at
 ## UI_SCALE, so the chrome sits on a pixel grid like the world does.
-## Type, all pixel fonts rendered at their own size and scaled by whole
-## numbers only, so nothing is ever smoothed: below 16 a screen asks for dense
-## text (rows, descriptions, hints) and gets Pixel Operator at 1x; 16 and up
-## is read at a glance (dialogue, names, menus, values) and gets the chunkier
-## Pixel Operator 8 at 2x, on the frames' grid (3x from 24); headings are
-## Press Start 2P. All CC0 or OFL.
+## Type, all pixel fonts on the frames' grid: every letter at 2x or 3x of its
+## own pixels, never 1x, so text is as crisp and as heavy as the chrome round
+## it: Pixeloid Sans (and Bold) for everything, 18 on the canvas, or 27 for
+## screen titles and what is read across the room. The title's logo keeps
+## Press Start 2P (`logo_font`). Both OFL.
 
 ## Canvas pixels per pixel of UI art.
 const UI_SCALE := 2
 ## The fonts' own pixel sizes: what fixed-size rendering scales from.
-const BODY_PX := 16
-const HEADING_PX := 8
+const BODY_PX := 9
+const LOGO_PX := 8
+## Text on the canvas: what's read, and what's read at a glance.
+const TEXT := 18
+const BIG := 27
 
 ## The dark: outlines, shadows, and what the world dims to behind a screen.
 const NIGHT := Color("1c120a")
@@ -49,16 +51,22 @@ const EPIC := Color("6e2d8c")
 const GRAIN := Color("e0c995")
 
 static var _frames := {}
-static var _heading_font: FontFile
+static var _logo_font: FontFile
+static var _body_font: FontFile
 static var _bold_font: FontFile
-static var _chunky_font: FontFile
-static var _chunky_bold_font: FontFile
 
 
 ## Once, before any screen is built: the body font (the project's default,
-## gui/theme/custom_font) renders at its pixel size and scales whole.
+## gui/theme/custom_font) renders at its pixel size and scales whole, and a
+## control nobody sized reads at TEXT.
 static func setup() -> void:
-	_pixel_font(load("res://assets/fonts/PixelOperator.ttf"), BODY_PX)
+	ThemeDB.fallback_font = body_font()
+	ThemeDB.fallback_font_size = TEXT
+	var root := (Engine.get_main_loop() as SceneTree).root
+	if root.theme == null:
+		root.theme = Theme.new()
+	root.theme.default_font = body_font()
+	root.theme.default_font_size = TEXT
 
 
 static func _pixel_font(font: FontFile, pixels: int) -> FontFile:
@@ -80,16 +88,11 @@ static func label(text: String, font_size: int, color: Color, at := Vector2.ZERO
 	return node
 
 
-## The type a size asks for (see above), on any control: dense 1x below 16,
-## chunky 2x from 16, 3x from 24.
+## The type a size asks for (see above), on any control: TEXT below 24,
+## BIG from 24.
 static func sized(node: Control, font_size: int, bold := false) -> Control:
-	if font_size < 16:
-		if bold:
-			node.add_theme_font_override("font", bold_font())
-		node.add_theme_font_size_override("font_size", BODY_PX)
-	else:
-		node.add_theme_font_override("font", chunky_bold_font() if bold else chunky_font())
-		node.add_theme_font_size_override("font_size", 24 if font_size >= 24 else 16)
+	node.add_theme_font_override("font", bold_font() if bold else body_font())
+	node.add_theme_font_size_override("font_size", BIG if font_size >= 24 else TEXT)
 	return node
 
 
@@ -100,22 +103,16 @@ static func strong(text: String, font_size: int, color: Color, at := Vector2.ZER
 	return node
 
 
+static func body_font() -> FontFile:
+	if _body_font == null:
+		_body_font = _pixel_font(load("res://assets/fonts/PixeloidSans.ttf"), BODY_PX)
+	return _body_font
+
+
 static func bold_font() -> FontFile:
 	if _bold_font == null:
-		_bold_font = _pixel_font(load("res://assets/fonts/PixelOperator-Bold.ttf"), BODY_PX)
+		_bold_font = _pixel_font(load("res://assets/fonts/PixeloidSans-Bold.ttf"), BODY_PX)
 	return _bold_font
-
-
-static func chunky_font() -> FontFile:
-	if _chunky_font == null:
-		_chunky_font = _pixel_font(load("res://assets/fonts/PixelOperator8.ttf"), 8)
-	return _chunky_font
-
-
-static func chunky_bold_font() -> FontFile:
-	if _chunky_bold_font == null:
-		_chunky_bold_font = _pixel_font(load("res://assets/fonts/PixelOperator8-Bold.ttf"), 8)
-	return _chunky_bold_font
 
 
 ## A framed surface. Screens describe it by colour and padding, as they
@@ -245,7 +242,7 @@ static func button(text: String, action: Callable) -> Button:
 	var node := Button.new()
 	node.text = text
 	node.focus_mode = Control.FOCUS_NONE
-	sized(node, BODY_PX)
+	sized(node, TEXT)
 	node.add_theme_color_override("font_color", CREAM)
 	node.add_theme_color_override("font_hover_color", GOLD)
 	node.add_theme_color_override("font_pressed_color", GOLD)
@@ -282,17 +279,18 @@ static func plank(lit: bool, padding := 6, dim := false) -> StyleBoxTexture:
 
 
 ## The pixel font for headings: crisp, never smoothed.
-static func heading_font() -> FontFile:
-	if _heading_font == null:
-		_heading_font = _pixel_font(load("res://assets/fonts/press-start-2p.woff2"), HEADING_PX)
-	return _heading_font
+## The logo's arcade capitals (the title screen).
+static func logo_font() -> FontFile:
+	if _logo_font == null:
+		_logo_font = _pixel_font(load("res://assets/fonts/press-start-2p.woff2"), LOGO_PX)
+	return _logo_font
 
 
-## A heading in the pixel font (screen titles, the logo, the ascension).
+## A heading in the bold cut: from 18 a screen's title, at BIG; below, a
+## section's, at TEXT.
 static func heading(text: String, font_size: int, color: Color, at := Vector2.ZERO) -> Label:
 	var node := label(text, font_size, color, at)
-	node.add_theme_font_override("font", heading_font())
-	node.add_theme_font_size_override("font_size", font_size)
+	sized(node, BIG if font_size >= 18 else TEXT, true)
 	# A shadow lifts a heading off the dark; on the page ink lies flat.
 	if color not in [INK, FADED, LAMP]:
 		node.add_theme_color_override("font_shadow_color", NIGHT)
@@ -307,7 +305,7 @@ static func keycap(key: String, small := false) -> PanelContainer:
 	var cap := PanelContainer.new()
 	cap.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	cap.add_theme_stylebox_override("panel", _style(_card(CREAM, NIGHT), 2, 2 if small else 4))
-	var text := strong(key, 12 if small else BODY_PX, NIGHT)
+	var text := strong(key, TEXT, NIGHT)
 	text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	text.custom_minimum_size = Vector2(8, 0)
 	cap.add_child(text)

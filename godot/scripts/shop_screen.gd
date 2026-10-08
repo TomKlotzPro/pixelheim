@@ -149,7 +149,7 @@ func _build_rows() -> Array[Dictionary]:
 			for item_id in Economy.shop_stock(shop_id, GameState.progression.unlocked_level):
 				var price := Economy.buy_price(item_id)
 				out.append({
-					"label": Catalog.item_name(item_id), "price": "%dg" % price,
+					"label": Catalog.item_name(item_id), "price": "%dg" % price, "icon": item_id,
 					"detail": _describe(item_id), "verb": "Buy", "enabled": pack.gold >= price,
 					"action": func() -> void: _after(GameState.buy_item(item_id), "Bought %s." % Catalog.item_name(item_id), "Not enough gold."),
 				})
@@ -157,7 +157,7 @@ func _build_rows() -> Array[Dictionary]:
 			for item_id: String in pack.items:
 				var each := floori(Economy.sell_price_at(shop_id, item_id, GameState.town_tier()) * GameState.trophy_sell_multiplier())
 				out.append({
-					"label": "%s  x%d" % [Catalog.item_name(item_id), pack.items[item_id]], "price": "%dg" % each,
+					"label": "%s  x%d" % [Catalog.item_name(item_id), pack.items[item_id]], "price": "%dg" % each, "icon": item_id,
 					"detail": _describe(item_id), "verb": "Sell one", "enabled": true,
 					"action": func() -> void: _sold(GameState.sell_item(item_id)),
 				})
@@ -167,7 +167,7 @@ func _build_rows() -> Array[Dictionary]:
 				var uid: String = instance["uid"]
 				var price := floori(Economy.gear_sell_price_at(shop_id, instance, GameState.town_tier()) * GameState.trophy_sell_multiplier())
 				out.append({
-					"label": _gear_label(instance), "price": "%dg" % price,
+					"label": _gear_label(instance), "price": "%dg" % price, "icon": instance["itemId"],
 					"detail": _describe(instance["itemId"], instance), "verb": "Sell", "enabled": true,
 					"action": func() -> void: _sold(GameState.sell_gear(uid)),
 				})
@@ -178,7 +178,7 @@ func _build_rows() -> Array[Dictionary]:
 				var maxed: bool = instance["bonus"] >= Economy.forge_cap_for(smithing)
 				var cost := Economy.forge_cost_for(instance["itemId"], instance["bonus"], smithing)
 				out.append({
-					"label": _gear_label(instance) + ("  (worn)" if pack.is_equipped(uid) else ""),
+					"label": _gear_label(instance) + ("  (worn)" if pack.is_equipped(uid) else ""), "icon": instance["itemId"],
 					"price": "max" if maxed else "%dg" % cost,
 					"detail": _describe(instance["itemId"], instance), "verb": "Temper +1",
 					"enabled": not maxed and pack.gold >= cost,
@@ -190,7 +190,7 @@ func _build_rows() -> Array[Dictionary]:
 					continue
 				var recipe_id: String = entry["id"]
 				out.append({
-					"label": Catalog.item_name(entry["itemId"]),
+					"label": Catalog.item_name(entry["itemId"]), "icon": entry["itemId"],
 					"price": "%s %d" % [String(entry["job"]["id"]).capitalize(), entry["job"]["level"]],
 					"detail": _describe_recipe(entry), "verb": "Craft",
 					"enabled": Economy.can_craft(entry, pack.items, GameState.hero.jobs),
@@ -237,7 +237,17 @@ func _row(index: int) -> Control:
 	panel.gui_input.connect(_on_row_input.bind(index))
 	var line := HBoxContainer.new()
 	line.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	line.add_theme_constant_override("separation", 10)
 	panel.add_child(line)
+	# The item's own icon, as in the pack (deeds have none).
+	if row.has("icon"):
+		var icon := TextureRect.new()
+		icon.texture = ItemIcons.texture(row["icon"])
+		icon.custom_minimum_size = Vector2(32, 32)
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		icon.modulate.a = 1.0 if row["enabled"] else 0.55
+		line.add_child(icon)
 	var color := UiStyle.INK if row["enabled"] else UiStyle.FADED
 	var name := UiStyle.label(row["label"], 16, color)
 	name.size_flags_horizontal = Control.SIZE_EXPAND_FILL

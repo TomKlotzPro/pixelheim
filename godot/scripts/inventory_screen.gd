@@ -18,8 +18,14 @@ const STATIONS := {"smithing": "Hilda's forge", "alchemy": "Vex's cauldron"}
 ## Slots down the doll's left, then its right.
 const DOLL_LEFT := [["head", "Head"], ["neck", "Neck"], ["body", "Body"], ["hands", "Hands"], ["feet", "Feet"]]
 const DOLL_RIGHT := [["weapon", "Weapon"], ["offhand", "Off-hand"], ["ring1", "Ring"], ["ring2", "Ring"]]
-const LIST := Vector2(710, 470)
+const LIST := Vector2(710, 412)
 const ROW_HEIGHT := 50
+## What an empty slot shows, faintly: the kind of thing that goes there.
+const GHOSTS := {
+	"head": "leather_cap", "neck": "bone_charm", "body": "leather_armor", "hands": "wool_gloves",
+	"feet": "worn_boots", "weapon": "rusty_sword", "offhand": "tower_shield", "ring1": "band_of_grit",
+	"ring2": "band_of_grit",
+}
 
 ## The world: for curing live ailments and placing furniture.
 var world: Node
@@ -31,6 +37,8 @@ var tab_row: HBoxContainer
 var list: VBoxContainer
 var scroll: ScrollContainer
 var header: Label
+## The chosen row in full: an item's description, a recipe's station.
+var about: Label
 var status: Label
 
 
@@ -68,7 +76,16 @@ func _open() -> void:
 	list.custom_minimum_size = Vector2(LIST.x - 14, 0)
 	list.add_theme_constant_override("separation", 4)
 	scroll.add_child(list)
-	status = UiStyle.label("", 14, UiStyle.LAMP, Vector2(490, 596))
+	var rule := ColorRect.new()
+	rule.color = UiStyle.RIM
+	rule.position = Vector2(490, 530)
+	rule.size = Vector2(LIST.x, 2)
+	add_child(rule)
+	about = UiStyle.label("", 14, UiStyle.FADED, Vector2(490, 536))
+	about.custom_minimum_size = Vector2(LIST.x, 0)
+	about.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	add_child(about)
+	status = UiStyle.label("", 14, UiStyle.LAMP, Vector2(490, 590))
 	status.custom_minimum_size = Vector2(710, 0)
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(status)
@@ -99,6 +116,7 @@ func _refresh() -> void:
 		list.add_child(UiStyle.label("Nothing here. Go hit some monsters.", 15, UiStyle.FADED))
 	for index in rows.size():
 		list.add_child(_row(index))
+	about.text = _about(rows[selected]) if not rows.is_empty() else ""
 	if not rows.is_empty():
 		scroll.scroll_vertical = clampi(scroll.scroll_vertical, (selected + 1) * (ROW_HEIGHT + 4) - int(LIST.y), selected * (ROW_HEIGHT + 4))
 
@@ -217,8 +235,8 @@ func _row(index: int) -> Control:
 	else:
 		name = String(item["name"]) + ("  x%d" % row["count"] if row["count"] > 1 else "")
 		stats = stat_line(item, 0, int(item["value"]))
-	text.add_child(UiStyle.label(name, 15, _rarity_color(row)))
-	var detail := UiStyle.label("%s    %s" % [stats, item.get("description", "")], 12, UiStyle.FADED)
+	text.add_child(UiStyle.strong(name, 15, _rarity_color(row)))
+	var detail := UiStyle.label(stats, 12, UiStyle.FADED)
 	detail.clip_text = true
 	detail.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	text.add_child(detail)
@@ -268,16 +286,31 @@ func _craft_row(index: int) -> Control:
 			needs.append("%s %d/%d" % [Catalog.item_name(need), mini(pack.items.get(need, 0), entry["needs"][need]), entry["needs"][need]])
 		var job: String = entry["job"]["id"]
 		title = Catalog.item_name(row["item_id"])
-		detail = "%s    %s %d, at %s" % [", ".join(needs), job.capitalize(), entry["job"]["level"], STATIONS[job]]
+		detail = ", ".join(needs)
 		ink = UiStyle.INK if Economy.can_craft(entry, pack.items, GameState.hero.jobs) else UiStyle.FADED
 	line.add_child(text)
-	text.add_child(UiStyle.label(title, 15, ink))
+	text.add_child(UiStyle.strong(title, 15, ink))
 	var small := UiStyle.label(detail, 12, UiStyle.FADED)
 	small.clip_text = true
 	small.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	text.add_child(small)
 	line.add_child(UiStyle.label(_primary_label(row), 13, UiStyle.LAMP if chosen else UiStyle.FADED))
 	return panel
+
+
+## The chosen row in full, under the list: what an item is, where a recipe
+## is made and what it makes, or the craft guide's whole advice.
+func _about(row: Dictionary) -> String:
+	match String(row["kind"]):
+		"guide":
+			return _guide_lines()[1]
+		"recipe":
+			var entry: Dictionary = row["entry"]
+			var job: String = entry["job"]["id"]
+			return "%s %d, at %s. %s" % [
+				job.capitalize(), entry["job"]["level"], STATIONS[job], Catalog.item(row["item_id"]).get("description", ""),
+			]
+	return String(Catalog.item(row["item_id"]).get("description", ""))
 
 
 ## Fine and epic pieces wear their rarity in the name's colour.
@@ -377,17 +410,18 @@ func _build_doll() -> void:
 	doll.add_child(numbers)
 
 
-## One slot: the worn piece's icon (click to take it off) or the slot's name.
+## One slot: the worn piece's icon (click to take it off), or a faint one of
+## what goes there, its name on hover.
 func _slot(slot: String, label: String) -> Control:
 	var instance := GameState.pack.gear_by_uid(GameState.pack.equipped.get(slot, ""))
 	var box := PanelContainer.new()
 	box.custom_minimum_size = Vector2(52, 52)
 	box.add_theme_stylebox_override("panel", UiStyle.box(UiStyle.CARD, UiStyle.LAMP if not instance.is_empty() else UiStyle.RIM, 4))
 	if instance.is_empty():
-		var name := UiStyle.label(label, 10, UiStyle.FADED)
-		name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		name.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		box.add_child(name)
+		var ghost := _icon(GHOSTS[slot])
+		ghost.modulate = Color(UiStyle.INK, 0.28)
+		box.add_child(ghost)
+		box.tooltip_text = label
 	else:
 		box.add_child(_icon(instance["itemId"]))
 		box.tooltip_text = "%s - click to take off" % InventoryState.gear_name(instance)

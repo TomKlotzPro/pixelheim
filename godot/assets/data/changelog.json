@@ -1,6 +1,18 @@
 {
   "releases": [
     {
+      "version": "0.77.0",
+      "date": "2026-10-08",
+      "codename": "Clear Ink",
+      "notes": [
+        "TEXT YOU CAN READ: every word is now set in Pixeloid, a clear pixel type, at twice its size - the small thin print in the pack, the skills, the stats and the options is gone",
+        "ONE TYPE FOR EVERYTHING: screen titles, rows, keys and the dock all share it, so no screen looks borrowed from another",
+        "A TIDIER PACK: each row shows an item's name and numbers, the chosen one's whole description waits under the list, and empty slots on the paper doll show a faint outline of what goes there",
+        "THE SHOP SHOWS ITS WARES: everything on the counter wears its icon",
+        "UNDER THE HOOD: every menu, page and conversation now opens, closes and holds the world still the same way"
+      ]
+    },
+    {
       "version": "0.76.0",
       "date": "2026-10-08",
       "codename": "Under the Ashen Mountain",

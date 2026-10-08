@@ -24,7 +24,7 @@ func _open() -> void:
 	layer = 8
 	dim(1.0)
 	# The roles are written on a page beside the hero's card.
-	add_child(UiStyle.page(Rect2(64, 82, 374, 520)))
+	add_child(UiStyle.page(Rect2(64, 82, 446, 520)))
 	add_child(UiStyle.label("The mountain is waiting", 14, UiStyle.DUSK, Vector2(80, 24)))
 	add_child(UiStyle.heading("Create your hero", 20, UiStyle.CREAM, Vector2(80, 42)))
 	roles_box = VBoxContainer.new()
@@ -32,8 +32,8 @@ func _open() -> void:
 	roles_box.add_theme_constant_override("separation", 4)
 	add_child(roles_box)
 	details = Control.new()
-	details.position = Vector2(445, 96)
-	details.size = Vector2(760, 500)
+	details.position = Vector2(522, 96)
+	details.size = Vector2(694, 500)
 	add_child(details)
 
 	var footer := HBoxContainer.new()
@@ -58,9 +58,9 @@ func _open() -> void:
 	begin.custom_minimum_size = Vector2(220, 38)
 	begin.add_theme_font_size_override("font_size", 18)
 	footer.add_child(begin)
-	status = UiStyle.label("", 14, UiStyle.GOLD, Vector2(80, 664))
+	status = UiStyle.label("", 14, UiStyle.GOLD, Vector2(720, 626))
 	add_child(status)
-	add_child(UiStyle.footer("Up/Down  role    PgUp/PgDn  look    Enter  begin    Esc  back", Vector2(700, 690)))
+	add_child(UiStyle.footer("Up/Down  role    PgUp/PgDn  look    Enter  begin    Esc  back", Vector2(0, 684), true))
 	_refresh()
 	name_field.grab_focus.call_deferred()
 
@@ -85,7 +85,7 @@ func _role_card(index: int) -> Control:
 	var role := Catalog.role(role_id)
 	var chosen := index == role_index
 	var panel := PanelContainer.new()
-	panel.custom_minimum_size = Vector2(345, 56)
+	panel.custom_minimum_size = Vector2(404, 56)
 	panel.add_theme_stylebox_override("panel", UiStyle.box(
 		UiStyle.CARD if chosen else Color(UiStyle.CARD, 0.5), UiStyle.LAMP if chosen else UiStyle.RIM, 6
 	))
@@ -127,14 +127,14 @@ func _fill_details() -> void:
 	var role_id := _role()
 	var role := Catalog.role(role_id)
 	var card := PanelContainer.new()
-	card.custom_minimum_size = Vector2(755, 500)
+	card.custom_minimum_size = Vector2(694, 500)
 	card.add_theme_stylebox_override("panel", UiStyle.box(UiStyle.CARD, UiStyle.RIM, 18))
 	details.add_child(card)
 	var columns := HBoxContainer.new()
 	columns.add_theme_constant_override("separation", 28)
 	card.add_child(columns)
 	var portrait := VBoxContainer.new()
-	portrait.custom_minimum_size = Vector2(220, 0)
+	portrait.custom_minimum_size = Vector2(190, 0)
 	portrait.add_theme_constant_override("separation", 8)
 	columns.add_child(portrait)
 	var big := _figure(role_id, look, 6.0, "walk")
@@ -158,12 +158,12 @@ func _fill_details() -> void:
 	portrait.add_child(UiStyle.label(role["name"], 15, UiStyle.FADED))
 
 	var sheet := VBoxContainer.new()
-	sheet.custom_minimum_size = Vector2(470, 0)
+	sheet.custom_minimum_size = Vector2(440, 0)
 	sheet.add_theme_constant_override("separation", 8)
 	columns.add_child(sheet)
 	var blurb := UiStyle.label(role["description"], 15, UiStyle.INK)
 	blurb.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	blurb.custom_minimum_size = Vector2(460, 0)
+	blurb.custom_minimum_size = Vector2(440, 0)
 	sheet.add_child(blurb)
 	for row: Array in STAT_ROWS:
 		var value := int(role["baseStats"][row[0]])
@@ -173,14 +173,14 @@ func _fill_details() -> void:
 		var line := HBoxContainer.new()
 		line.add_theme_constant_override("separation", 10)
 		var label := UiStyle.label(row[1], 14, UiStyle.FADED)
-		label.custom_minimum_size = Vector2(40, 0)
+		label.custom_minimum_size = Vector2(44, 0)
 		line.add_child(label)
 		var track := ColorRect.new()
 		track.color = UiStyle.RIM
-		track.custom_minimum_size = Vector2(340, 10)
+		track.custom_minimum_size = Vector2(320, 10)
 		var fill := ColorRect.new()
 		fill.color = UiStyle.LAMP
-		fill.size = Vector2(340.0 * value / maxi(1, most), 10)
+		fill.size = Vector2(320.0 * value / maxi(1, most), 10)
 		track.add_child(fill)
 		line.add_child(track)
 		line.add_child(UiStyle.label(str(value), 14, UiStyle.INK))
@@ -189,10 +189,13 @@ func _fill_details() -> void:
 	var names := skills.map(func(skill: Dictionary) -> String: return "%s (Lv%d)" % [skill["name"], skill["unlockLevel"]])
 	var skill_line := UiStyle.label("Skills: %s" % ", ".join(names), 13, UiStyle.INK)
 	skill_line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	skill_line.custom_minimum_size = Vector2(460, 0)
+	skill_line.custom_minimum_size = Vector2(440, 0)
 	sheet.add_child(skill_line)
 	if not skills.is_empty():
-		sheet.add_child(UiStyle.label(skills[0]["description"], 13, UiStyle.FADED))
+		var first := UiStyle.label(skills[0]["description"], 13, UiStyle.FADED)
+		first.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		first.custom_minimum_size = Vector2(440, 0)
+		sheet.add_child(first)
 
 
 func _pick_role(index: int) -> void:

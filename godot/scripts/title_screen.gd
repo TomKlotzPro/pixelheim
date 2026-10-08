@@ -56,7 +56,7 @@ func _vignette() -> void:
 ## bronze, a lighter top to the face, and a shine that crosses it now and then.
 func _logo() -> void:
 	var font := FontVariation.new()
-	font.base_font = UiStyle.heading_font()
+	font.base_font = UiStyle.logo_font()
 	font.spacing_glyph = 4
 	var logo := Control.new()
 	logo.position = Vector2(0, LOGO_Y)
@@ -186,7 +186,7 @@ func _draw_menu() -> void:
 		var button := Button.new()
 		button.text = options[index]["label"]
 		button.focus_mode = Control.FOCUS_NONE
-		button.add_theme_font_override("font", UiStyle.heading_font())
+		button.add_theme_font_override("font", UiStyle.logo_font())
 		button.add_theme_font_size_override("font_size", 16)
 		for state: String in ["normal", "hover", "pressed", "focus"]:
 			button.add_theme_stylebox_override(state, StyleBoxEmpty.new())
