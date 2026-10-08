@@ -11,6 +11,17 @@ export type Release = {
  */
 export const CHANGELOG: Release[] = [
   {
+    version: "0.74.0",
+    date: "2026-10-08",
+    codename: "A Satchel of Icons",
+    notes: [
+      "EVERY ITEM IN ITS OWN ICON: the pack and the paper doll show Shade's art for all 74 items - a rusty sword looks rusty, Dragonbane looks like a legend, and rings and amulets wear their gems",
+      "SKILLS WITH FACES: the dock's slots show each skill's icon - a fireball for Fireball, a shield for Shield Slam, a fist for Berserk - and poison, burns and stuns show his marks over your head",
+      "THE CRAFT TAB: the pack lists every recipe with what you carry of its materials and where it's made; at the forge, the cauldron or your workbench E crafts it, and away from them it tells you where to go and takes you to the town gate",
+      "What's new is on the title menu now, keys and gamepads included, with a NEW badge until you've read the latest notes",
+    ],
+  },
+  {
     version: "0.73.0",
     date: "2026-10-08",
     codename: "The Village Ledger",
