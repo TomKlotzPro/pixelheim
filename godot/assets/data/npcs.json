@@ -12,6 +12,12 @@
         "The mountain burned before you were born. We rebuilt the village; the monsters rebuilt too.",
         "The gate to the Ashen Mountain is north, past the bridge. Ten floors of teeth and worse manners.",
         "And if you beat the dragon... come see me. There are older things below. I hear them some nights."
+      ],
+      "minTownTier": 0,
+      "ashesLines": [
+        "Fafnyr came down off the mountain and the village burned in one night. We are what's left.",
+        "Odo, Hilda and Vex trade from the square until they have roofs again. Sela keeps a tent for anyone who needs a bed.",
+        "The mayor's ledger survived. Rebuild us, and then - then we go up that mountain."
       ]
     },
     {
@@ -38,7 +44,8 @@
       "lines": [
         "I saw a wolf take a whole cheese wheel off a traveler once. Rolled it away and everything.",
         "Me? Climb the mountain? I have a perfectly good fence to lean on right here."
-      ]
+      ],
+      "minTownTier": 0
     },
     {
       "id": "shopkeeper",
@@ -50,7 +57,12 @@
       "wander": false,
       "lines": [
         "Welcome, welcome! Finest goods this side of the mountain. The counter is always open."
-      ]
+      ],
+      "stall": {
+        "x": 23,
+        "y": 14,
+        "project": "odos_store"
+      }
     },
     {
       "id": "smith",
@@ -63,7 +75,12 @@
       "lines": [
         "The forge takes gold, not promises. Bring me a blade and coin and I will make both sharper.",
         "Seven folds is the most any steel will take. After that it is the arm, not the iron."
-      ]
+      ],
+      "stall": {
+        "x": 33,
+        "y": 14,
+        "project": "hildas_forge"
+      }
     },
     {
       "id": "alchemist_vex",
@@ -76,7 +93,12 @@
       "lines": [
         "Herbs, reeds, shards - I pay full price for reagents. The wilds are a garden if you survive them.",
         "The elixir recipe? One of each, child. Nature likes a balanced potion."
-      ]
+      ],
+      "stall": {
+        "x": 23,
+        "y": 17,
+        "project": "vexs_brewery"
+      }
     },
     {
       "id": "innkeeper",
@@ -89,7 +111,12 @@
       "lines": [
         "Ten gold for a bed and no questions. The bards say my stew brought a man back from the brink.",
         "It was the stew or the poultice. Probably the stew."
-      ]
+      ],
+      "stall": {
+        "x": 33,
+        "y": 18,
+        "project": "the_inn"
+      }
     },
     {
       "id": "mayor",
@@ -102,6 +129,11 @@
       "lines": [
         "Pixelheim runs on two things: stubbornness and gold. The first we have. Bring the second to my ledger.",
         "Every coin you invest, the town wears. Come back and see."
+      ],
+      "minTownTier": 0,
+      "ashesLines": [
+        "The hall stood. Stone does that. Everything else is cinders and stubbornness.",
+        "The board on the square lists what we need to rebuild. Coin and a little from the wilds - we'll do the rest."
       ]
     },
     {

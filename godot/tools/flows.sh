@@ -31,6 +31,7 @@ FLOWS=(
 	"mimic|--map mirefen mimic --wait 0.75|map=mirefen cell=\(42, 13\) hp=42"
 	"mayor|--map town_hall talk --keys e,e,e|open=town_hall_screen"
 	"board|--map town --at 31,12 --keys w,e|open=town_hall_screen"
+	"stall|--map town --town-tier 0 --at 24,14 --keys a,e|open=shop_screen"
 	"motion|--map town motion|backsteps=[01]$"
 )
 

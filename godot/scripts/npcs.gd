@@ -21,10 +21,23 @@ static func _data() -> Dictionary:
 
 ## Who is on a map right now (npcsOn): townsfolk the town has grown enough
 ## for, and recruits where they wait — or at home in town once settled.
-static func on_map(map_id: String, town_tier: int, settlers: Array) -> Array[Dictionary]:
+## While a keeper's building is still rubble (PIX-146, `done` the projects
+## built; null skips it), they trade from a stall on the town square; in the
+## Ashes the elder and the mayor say their Ashes lines.
+static func on_map(map_id: String, town_tier: int, settlers: Array, done: Variant = null) -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	for npc: Dictionary in _data()["npcs"]:
+		var stall: Dictionary = npc.get("stall", {})
+		if done != null and not stall.is_empty() and stall["project"] not in done:
+			if map_id == "town":
+				var at_stall := npc.duplicate()
+				at_stall.merge({"mapId": "town", "x": stall["x"], "y": stall["y"], "wander": false}, true)
+				out.append(at_stall)
+			continue
 		if npc["mapId"] == map_id and int(npc.get("minTownTier", 1)) <= town_tier:
+			if town_tier == 0 and npc.has("ashesLines"):
+				npc = npc.duplicate()
+				npc["lines"] = npc["ashesLines"]
 			out.append(npc)
 	for recruit: Dictionary in _data()["recruits"]:
 		var npc := as_npc(recruit, recruit["id"] in settlers)

@@ -86,10 +86,14 @@ func _ready() -> void:
 	Sound.apply_volumes()
 	_setup_input()
 	apply_video.call_deferred()
-	# Harness: `--town-tier N` previews the village at another age.
+	# Harness: `--town-tier N` previews the village at another age; without it
+	# a run shows the Hamlet its flows were written for (`--town-tier 0` is a
+	# new hero's Ashes).
 	var tier_index := args.find("--town-tier")
 	if tier_index >= 0 and tier_index + 1 < args.size():
 		GameState.settlement.town_tier = int(args[tier_index + 1])
+	elif args.has("--screenshot") and GameState.settlement.projects.is_empty():
+		GameState.settlement.town_tier = maxi(1, GameState.settlement.town_tier)
 	var house_index := args.find("--house-tier")
 	if house_index >= 0 and house_index + 1 < args.size():
 		GameState.settlement.house["tier"] = int(args[house_index + 1])
@@ -574,7 +578,7 @@ func _cell_center(cell: Vector2i) -> Vector2:
 ## Villagers who live on this map now: tier-gated townsfolk and recruits.
 func _spawn_npcs(data: MapData) -> void:
 	var settlers := GameState.settlement.settlers
-	for npc: Dictionary in Npcs.on_map(data.id, GameState.settlement.town_tier, settlers):
+	for npc: Dictionary in Npcs.on_map(data.id, GameState.settlement.town_tier, settlers, Town.done_projects(GameState.settlement)):
 		var villager := preload("res://scripts/npc.gd").new()
 		villager.world = self
 		villager.data = npc
@@ -613,7 +617,9 @@ func _try_interact() -> void:
 		_open_chest(chest)
 		return
 	if map.id == "town" and faced == Town.house_door():
-		if GameState.owns_house():
+		if Town.ashes_tent(Town.done_projects(GameState.settlement)).x >= 0:
+			_flash_message("Only cinders where the house stood. The board on the square can change that.")
+		elif GameState.owns_house():
 			_enter_house()
 		else:
 			_flash_message(GameState.buy_house())
@@ -632,7 +638,15 @@ func _try_interact() -> void:
 		# the next word opens the counter), a settled Mirelle her bank. The
 		# mayor talks, then opens the projects ledger (see _talk).
 		var quest_word := Quests.awaits_word(beside["npc"]["id"], GameState.progression.quests, GameState.pack.items)
-		if GameState.active_shop() != "" and not quest_word:
+		var at_stall: bool = map.id == "town" and beside["npc"].has("stall") and beside["npc"]["mapId"] == "town"
+		if at_stall and not quest_word:
+			# A keeper on the burnt square (PIX-146): Sela's tent takes a
+			# guest for the night, the others trade from their stalls.
+			if beside["npc"]["id"] == "innkeeper":
+				_flash_message(GameState.rest_at_inn())
+			else:
+				_open_stall(Economy.shop_at(String(Npcs.by_id(beside["npc"]["id"], []).get("mapId", ""))))
+		elif GameState.active_shop() != "" and not quest_word:
 			_open_shop()
 		elif beside["npc"]["id"] == "settler_mirelle" and GameState.is_settled("settler_mirelle"):
 			add_child(preload("res://scripts/bank_screen.gd").new())
@@ -668,6 +682,14 @@ func _house_interact(cell: Vector2i) -> bool:
 
 func _open_shop() -> void:
 	add_child(preload("res://scripts/shop_screen.gd").new())
+
+
+## A stall's counter: the shop as if in its building, until the screen closes.
+func _open_stall(shop_id: String) -> void:
+	GameState.stall_shop = shop_id
+	var screen := preload("res://scripts/shop_screen.gd").new()
+	screen.tree_exited.connect(func() -> void: GameState.stall_shop = "")
+	add_child(screen)
 
 func _talk(npc: Dictionary) -> void:
 	var box := preload("res://scripts/dialogue_box.gd").new()

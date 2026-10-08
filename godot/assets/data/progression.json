@@ -171,8 +171,8 @@
               "kind": "questTaken",
               "questId": "slime_trouble"
             },
-            "text": "Ask Sela at the inn for work",
-            "hint": "Sela at the inn always has a job going. Start there - a hero has to eat."
+            "text": "Ask Sela the innkeeper for work",
+            "hint": "Sela keeps the inn - or a tent on the square, if that's all there is. She always has a job going."
           },
           {
             "id": "slimes",
@@ -191,6 +191,16 @@
             },
             "text": "Clear the Mossy Cellar, the mountain's first floor",
             "hint": "The gate to the Ashen Mountain stands north of town, past the bridge. The first floor is only a cellar."
+          },
+          {
+            "id": "rebuild",
+            "when": {
+              "kind": "project",
+              "projectId": "the_inn"
+            },
+            "optional": true,
+            "text": "Help rebuild the inn: fund it at the board on the square",
+            "hint": "The board on the square lists what Pixelheim needs to rise again. Sela's inn and the homes around the square first."
           },
           {
             "id": "first_brew",

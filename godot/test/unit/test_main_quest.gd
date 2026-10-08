@@ -40,7 +40,7 @@ func test_every_step_names_a_real_quest_or_floor() -> void:
 
 func test_the_story_starts_at_the_inn_and_follows_the_real_rules() -> void:
 	assert_eq(_next(), "ask_sela")
-	assert_eq(MainQuest.objective(state.progression, state.settlement), "Next: Ask Sela at the inn for work")
+	assert_eq(MainQuest.objective(state.progression, state.settlement), "Next: Ask Sela the innkeeper for work")
 	state.resolve_quests("innkeeper")
 	assert_eq(_next(), "slimes")
 	state.roll = func() -> float: return 0.99
@@ -49,6 +49,8 @@ func test_the_story_starts_at_the_inn_and_follows_the_real_rules() -> void:
 	state.resolve_quests("innkeeper")
 	assert_eq(_next(), "cellar")
 	state.clear_floor(1)
+	assert_eq(_next(), "rebuild", "a new hero's town is ashes: rebuild the inn")
+	state.settlement.town_tier = 1
 	assert_eq(_next(), "first_brew")
 
 

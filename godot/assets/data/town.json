@@ -1,11 +1,17 @@
 {
   "tiers": [
     {
+      "tier": 0,
+      "name": "Ashes",
+      "blurb": "What Fafnyr left: footings, cinders, and the people too stubborn to leave.",
+      "perks": []
+    },
+    {
       "tier": 1,
       "name": "Hamlet",
-      "blurb": "A stubborn cluster of roofs under the mountain. It held. Now it can grow.",
+      "blurb": "Rebuilt from the ashes, roof by stubborn roof. Now it can grow.",
       "perks": [
-        "The founding stone: shops, an inn, and people who stayed"
+        "Every door open again: the store, the forge, the brewery and the inn"
       ]
     },
     {
@@ -37,6 +43,156 @@
     }
   ],
   "ages": [
+    {
+      "tier": 1,
+      "requires": [],
+      "projects": [
+        {
+          "id": "odos_store",
+          "name": "Odo's store",
+          "blurb": "Odo's shop out of the cinders, and his stall back indoors.",
+          "cost": {
+            "gold": 60,
+            "items": {
+              "marsh_reed": 2
+            }
+          },
+          "tiles": [],
+          "ruins": [
+            {
+              "rect": [
+                4,
+                3,
+                12,
+                8
+              ],
+              "door": [
+                8,
+                8
+              ]
+            }
+          ]
+        },
+        {
+          "id": "hildas_forge",
+          "name": "Hilda's forge",
+          "blurb": "A roof over the anvil again. Hilda says the steel sings better indoors.",
+          "cost": {
+            "gold": 120,
+            "items": {
+              "wolf_pelt": 2
+            }
+          },
+          "tiles": [],
+          "ruins": [
+            {
+              "rect": [
+                38,
+                2,
+                47,
+                8
+              ],
+              "door": [
+                42,
+                8
+              ]
+            }
+          ]
+        },
+        {
+          "id": "vexs_brewery",
+          "name": "Vex's brewery",
+          "blurb": "Four walls around the cauldron, and the smell kept mostly inside.",
+          "cost": {
+            "gold": 100,
+            "items": {
+              "forest_herb": 3
+            }
+          },
+          "tiles": [],
+          "ruins": [
+            {
+              "rect": [
+                4,
+                21,
+                12,
+                26
+              ],
+              "door": [
+                8,
+                26
+              ]
+            }
+          ]
+        },
+        {
+          "id": "the_inn",
+          "name": "The inn and the homes",
+          "blurb": "Sela's inn with real beds, and roofs over the square's families.",
+          "cost": {
+            "gold": 150,
+            "items": {
+              "marsh_reed": 4
+            }
+          },
+          "tiles": [],
+          "ruins": [
+            {
+              "rect": [
+                18,
+                2,
+                30,
+                8
+              ],
+              "door": [
+                24,
+                8
+              ]
+            },
+            {
+              "rect": [
+                57,
+                4,
+                63,
+                8
+              ]
+            },
+            {
+              "rect": [
+                67,
+                5,
+                72,
+                8
+              ]
+            },
+            {
+              "rect": [
+                56,
+                21,
+                64,
+                26
+              ]
+            },
+            {
+              "rect": [
+                34,
+                22,
+                38,
+                26
+              ]
+            },
+            {
+              "rect": [
+                40,
+                23,
+                42,
+                26
+              ]
+            }
+          ]
+        }
+      ]
+    },
     {
       "tier": 2,
       "requires": [
@@ -786,5 +942,11 @@
     "ventureSteps": 240,
     "expansionCost": 1000,
     "expansionRent": 2
+  },
+  "ashesCamp": {
+    "tent": {
+      "x": 34,
+      "y": 18
+    }
   }
 }

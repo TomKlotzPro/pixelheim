@@ -185,6 +185,9 @@ func new_game(name := DEFAULT_HERO_NAME, role_id := DEFAULT_ROLE, look := 0) -> 
 	state["equipped"] = {"weapon": weapon["uid"]}
 	state["introSeen"] = false
 	state["world"] = SaveCodec.fresh_world()
+	# A new hero finds Pixelheim in ashes (PIX-146); heroes from before keep
+	# the town they had.
+	state["townTier"] = 0
 	apply(state)
 
 
@@ -278,11 +281,24 @@ func carry_capacity() -> int:
 
 ## The shop the hero stands in (activeShopId); "" outside shops.
 func active_shop() -> String:
-	return Economy.shop_at(world.map_id)
+	return stall_shop if stall_shop != "" else Economy.shop_at(world.map_id)
+
+
+## The shop of the stall the hero is trading at on the burnt square (PIX-146),
+## while its keeper's building is rubble; "" anywhere else.
+var stall_shop := ""
+
+
+## Whether the hero can craft a trade here: at its station, at the house's
+## workbench, or at its keeper's stall while the station is rubble.
+func at_station(job: String) -> bool:
+	if Economy.at_job_station(job, world.map_id, settlement.house.get("workbench", false)):
+		return true
+	return stall_shop != "" and stall_shop == Economy.station_shop(job)
 
 
 func town_tier() -> int:
-	return clampi(settlement.town_tier, 1, 4)
+	return clampi(settlement.town_tier, 0, Town.MAX_TIER)
 
 
 ## A gem on the trophy shelf sweetens every sale by 10% (trophySellMultiplier).
@@ -364,7 +380,7 @@ func craft(recipe_id: String) -> Dictionary:
 	if entry.is_empty() or not Economy.can_craft(entry, pack.items, hero.jobs):
 		return {"made": false, "count": 0}
 	var job: String = entry["job"]["id"]
-	if not Economy.at_job_station(job, world.map_id, settlement.house.get("workbench", false)):
+	if not at_station(job):
 		return {"made": false, "count": 0}
 	for item_id: String in entry["needs"]:
 		pack.remove_item(item_id, entry["needs"][item_id])
@@ -783,6 +799,10 @@ func hurt(amount: int) -> bool:
 func wake_at_inn() -> Dictionary:
 	settlement.bard_song = false
 	var inn: Dictionary = Catalog._data()["innRest"]
+	# With the inn still rubble, Sela's tent on the square takes them in.
+	var tent := Town.ashes_tent(Town.done_projects(settlement))
+	if tent.x >= 0:
+		inn = {"mapId": "town", "x": tent.x, "y": tent.y + 1, "facing": "down"}
 	_make_whole()
 	wake_the_wilds()
 	save_now()

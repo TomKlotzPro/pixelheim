@@ -1,6 +1,19 @@
 {
   "releases": [
     {
+      "version": "0.90.0",
+      "date": "2026-10-08",
+      "codename": "From the Ashes",
+      "notes": [
+        "PIXELHEIM BURNS: a new story now ends with Fafnyr setting the village alight - and a new hero starts in what's left of it",
+        "THE ASHES: the store, the forge, the brewery, the inn and the homes are charred frames with smoke still rising; only the stone hall stood",
+        "TRADE ON THE SQUARE: Odo, Hilda and Vex sell from stalls on the square until their roofs are back, and Hilda and Vex craft there too; Sela keeps a tent for anyone who needs a bed",
+        "REBUILD IT: the Hamlet is four projects on the board - Odo's store, Hilda's forge, Vex's brewery, and the inn with the homes - each one cheap, and each one opens its doors again",
+        "THE SURVIVORS SPEAK: Elder Maren and Mayor Aldric remember the fire, and the town's first age now reads as rebuilt, not spared",
+        "YOUR VILLAGE IS SAFE: a hero from before keeps every roof they had"
+      ]
+    },
+    {
       "version": "0.89.0",
       "date": "2026-10-08",
       "codename": "Raise the Roof",

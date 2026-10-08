@@ -103,6 +103,10 @@ func plan(arrival: Vector2i) -> Vector2i:
 	camps = plan_camps(data)
 	if data.id == "town":
 		camps[Town.project_board()] = {"kind": "board", "tile": PROJECT_BOARD}
+		# Sela's tent on the square while the inn is rubble (PIX-146).
+		var tent := Town.ashes_tent(Town.done_projects(GameState.settlement))
+		if tent.x >= 0:
+			camps[tent] = {"kind": "tent", "tile": TENTS["marsh"]}
 	for cell: Vector2i in camps:
 		data.covered[cell] = true
 	patches = {}
@@ -256,6 +260,9 @@ func _build_dungeon(data: MapData) -> Node2D:
 func _build_decor(data: MapData) -> void:
 	for cell: Vector2i in camps:
 		_add_camp_piece(cell, camps[cell])
+	if data.id == "town":
+		for ruin: Dictionary in Town.ruins(Town.done_projects(GameState.settlement)):
+			_add_smoke(ruin["rect"])
 	patch_sprites = {}
 	for cell: Vector2i in patches:
 		_add_patch_sprite(cell)
@@ -312,7 +319,7 @@ func _solid_scatter(data: MapData, arrival: Vector2i) -> Dictionary:
 	if data.floor_level > 0 or not PunyTerrain.is_outdoor(data.grid):
 		return {}
 	var kept := {arrival: true}
-	for npc: Dictionary in Npcs.on_map(data.id, GameState.settlement.town_tier, GameState.settlement.settlers):
+	for npc: Dictionary in Npcs.on_map(data.id, GameState.settlement.town_tier, GameState.settlement.settlers, Town.done_projects(GameState.settlement)):
 		kept[Vector2i(int(npc["x"]), int(npc["y"]))] = true
 	for chest: Dictionary in Interactables.chests_on(data.id):
 		kept[Vector2i(int(chest["x"]), int(chest["y"]))] = true
@@ -351,6 +358,36 @@ static func plan_camps(map: MapData) -> Dictionary:
 				out[cell] = {"kind": "torch", "tile": CAMP_TORCH[0]}
 				break
 	return out
+
+
+## Smoke and embers over a burnt house (PIX-146): pixel motes drifting up
+## from its footing, the embers quicker and fewer. Still with Reduce motion.
+func _add_smoke(rect: Rect2i) -> void:
+	if GameState.settings.reduce_motion:
+		return
+	var middle := Vector2(rect.position * TILE) + Vector2(rect.size * TILE) / 2.0
+	var extents := Vector2(rect.size * TILE) / 2.0 - Vector2(10, 10)
+	for ember in [false, true]:
+		var motes := CPUParticles2D.new()
+		motes.position = middle
+		motes.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+		motes.emission_rect_extents = extents
+		motes.amount = 4 if ember else 12
+		motes.lifetime = 1.6 if ember else 3.5
+		motes.direction = Vector2.UP
+		motes.spread = 20.0
+		motes.gravity = Vector2(3, -4)
+		motes.initial_velocity_min = 10.0 if ember else 5.0
+		motes.initial_velocity_max = 18.0 if ember else 10.0
+		motes.scale_amount_min = 1.0 if ember else 2.0
+		motes.scale_amount_max = 1.0 if ember else 3.0
+		var fade := Gradient.new()
+		fade.set_color(0, Color(1.0, 0.55, 0.15, 0.95) if ember else Color(0.32, 0.3, 0.3, 0.55))
+		fade.set_color(1, Color(1.0, 0.3, 0.05, 0.0) if ember else Color(0.4, 0.38, 0.38, 0.0))
+		motes.color_ramp = fade
+		motes.z_index = 6
+		motes.add_to_group("decor")
+		props.add_child(motes)
 
 
 ## A patch the world adds after planning (a dungeon floor's).
@@ -538,8 +575,12 @@ func _build_props(data: MapData) -> Node2D:
 	door_signs = []
 	if not ShopSign.available():
 		return root
+	var ruins := Town.ruins(Town.done_projects(GameState.settlement)) if data.id == "town" else []
 	for sign_def: Dictionary in Interactables.signs_on(data.id, GameState.owns_house()):
 		var door := Vector2i(int(sign_def["x"]), int(sign_def["y"]))
+		# A burnt house has lost its sign with its roof (PIX-146).
+		if ruins.any(func(ruin: Dictionary) -> bool: return (ruin["rect"] as Rect2i).has_point(door)):
+			continue
 		var target: Dictionary = data.portals.get(door, {})
 		root.add_child(ShopSign.build(sign_def["label"], door))
 		var told := ShopSign.about(sign_def["label"], String(target.get("mapId", "")), GameState.owns_house())

@@ -151,6 +151,7 @@ func test_the_manor_garden_ripens_on_the_sixth_win() -> void:
 
 
 func test_defeat_wakes_the_hero_at_the_inn() -> void:
+	state.settlement.town_tier = 1
 	state.settlement.bard_song = true
 	assert_false(state.hurt(5))
 	assert_true(state.hurt(999))
@@ -159,3 +160,11 @@ func test_defeat_wakes_the_hero_at_the_inn() -> void:
 	assert_eq([inn["mapId"], inn["x"], inn["y"]], ["town_inn", 2, 3])
 	assert_eq(state.hero.hp, state.hero.stats["maxHp"])
 	assert_eq(state.settlement.bard_song, false)
+
+
+## In the Ashes (PIX-146) the inn is rubble: Sela's tent on the square.
+func test_in_the_ashes_the_hero_wakes_by_selas_tent() -> void:
+	state.settlement.town_tier = 0
+	var inn: Dictionary = state.wake_at_inn()
+	var tent := Town.ashes_tent([])
+	assert_eq([inn["mapId"], inn["x"], inn["y"]], ["town", tent.x, tent.y + 1])
