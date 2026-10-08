@@ -31,7 +31,7 @@ const GRASS := [1, 2, 28, 29]
 ## A road with grass along its top edge, then plain dirt.
 const ROAD_EDGE := 5
 const ROAD := [13, 14]
-const WATCHMAN := "characters/Human-Soldier-Cyan.png"
+const WATCHMAN := "characters/aligned/Human-Soldier-Cyan.png"
 ## One sway takes this long; the dragon comes this soon, then this often (s).
 const SWAY_S := 80.0
 const DRAGON_FIRST_S := 4.0

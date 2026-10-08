@@ -96,3 +96,68 @@ func test_the_pack_says_what_is_worn_where() -> void:
 	pack.gear.append_array([helm, robe])
 	pack.equipped = {"head": helm["uid"], "body": robe["uid"], "feet": "gone"}
 	assert_eq(pack.worn_items(), {"head": "iron_helm", "body": "mage_robe"})
+
+
+## The share of a frame's lower body (legs and belt) one sheet has in common
+## with another: 1.0 for the same pose.
+func _lower_body_overlap(a: Image, b: Image, column: int, row: int) -> float:
+	var common := 0
+	var either := 0
+	for y in range(16, 32):
+		for x in 32:
+			var in_a := a.get_pixel(column * 32 + x, row * 32 + y).a > 0.0
+			var in_b := b.get_pixel(column * 32 + x, row * 32 + y).a > 0.0
+			common += int(in_a and in_b)
+			either += int(in_a or in_b)
+	return float(common) / maxf(1.0, either)
+
+
+func test_every_worn_and_hero_sheet_keeps_the_templates_poses() -> void:
+	# PIX-173: a head from one sheet on a body from another must share the
+	# frame's pose; the Human Soldier sheets were drawn a column late.
+	var base: Image = (load(PunyArt.path(PunyArt.BASE)) as Texture2D).get_image()
+	var sheets := {}
+	for table: Dictionary in [PunyArt.HEADS, PunyArt.BODIES]:
+		for item_id: String in table:
+			sheets[table[item_id]] = true
+	for role_id: String in PunyArt.HEROES:
+		for sheet: String in PunyArt.HEROES[role_id][0]:
+			sheets[sheet] = true
+	for sheet: String in sheets:
+		var image: Image = (load(PunyArt.path(sheet)) as Texture2D).get_image()
+		var total := 0.0
+		var frames := 0
+		for row in [0, 2, 4, 6]:
+			for column in range(2, 22):
+				total += _lower_body_overlap(base, image, column, row)
+				frames += 1
+		assert_gt(total / frames, 0.9, "%s keeps the template's poses" % sheet)
+
+
+func test_every_piece_has_a_look_of_its_own() -> void:
+	# No two helms, and no two bodies, look alike, and none is a hero's own
+	# sheet (on which it would change nothing).
+	var own := {}
+	for role_id: String in PunyArt.HEROES:
+		for sheet: String in PunyArt.HEROES[role_id][0]:
+			own[sheet] = true
+	for table: Dictionary in [PunyArt.HEADS, PunyArt.BODIES]:
+		var seen := {}
+		for item_id: String in table:
+			var sheet: String = table[item_id]
+			assert_false(own.has(sheet), "%s isn't any hero's own look" % item_id)
+			assert_false(seen.has(sheet), "%s and %s share a look" % [item_id, seen.get(sheet, "")])
+			seen[sheet] = item_id
+	# Every helm and body in the catalogue is drawn.
+	for item_id: String in Catalog._data()["items"]:
+		var slot: String = Catalog.item(item_id).get("slot", "")
+		if slot == "head":
+			assert_true(PunyArt.HEADS.has(item_id), "%s is drawn" % item_id)
+		elif slot == "body":
+			assert_true(PunyArt.BODIES.has(item_id), "%s is drawn" % item_id)
+	# Every hero, whatever their look, changes when armour goes on.
+	for role_id: String in PunyArt.HEROES:
+		for look in PunyArt.looks(role_id):
+			var plain: String = PunyArt.hero(role_id, look)["sheet"]
+			for item_id: String in PunyArt.BODIES:
+				assert_ne(PunyArt.dressed(role_id, look, {"body": item_id})["sheet"], plain, "%s on %s %d" % [item_id, role_id, look])

@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.116.0",
+      "date": "2026-10-08",
+      "codename": "Dressed to Match",
+      "notes": [
+        "EVERY HELM AND BODY HAS A LOOK OF ITS OWN: Saltmere's oilskin is tarred sea-green, Blackiron soot-black with ember-hot horns, the Warden Greyhold slate with a cyan plume, Frostweave ice white, the City Plate gold on royal blue, Scaled Mail copper on dragon green, Greymaw's Hood wolf grey - and the cloaks, robes and iron each their own",
+        "NOTHING YOU PUT ON IS INVISIBLE ANY MORE: Greymaw's Hood and the City Plate now show, and armour that happened to match your hero's own colours (scaled mail on a red warrior, the mage robe on a cyan mage) has its own look",
+        "Paladins in soldier's steel, the mayor, Hilda, Odo, Sela and the goblins and orcs no longer step one frame out of time: their swings, stumbles and falls play the frames they were drawn for"
+      ]
+    },
+    {
       "version": "0.115.0",
       "date": "2026-10-08",
       "codename": "In Hand",
