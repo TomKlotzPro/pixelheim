@@ -45,6 +45,8 @@ var alert_left := 0.0
 ## Seconds until a told bite lands; negative while no bite is coming.
 var tell_left := -1.0
 var mark: PanelContainer
+## An undead elite's raised guard (PIX-155): blows mostly glance off.
+var guarding := false
 
 
 func _ready() -> void:
@@ -61,9 +63,12 @@ func _ready() -> void:
 	sprite.position = Vector2(0, PunyArt.lift(art) * size)
 	_play("idle")
 	add_child(sprite)
-	# Fafnyr and Morvax fight with their own attacks too (PIX-150).
+	# Fafnyr and Morvax fight with their own attacks too (PIX-150); an elite
+	# has its family's one trick (PIX-155).
 	if Bestiary._data()["bossPatterns"].has(fighter["id"]):
 		add_child(preload("res://scripts/boss_brain.gd").new())
+	elif fighter["elite"] and Bestiary._data()["eliteMoves"].has(Bestiary.family_of(fighter["id"])):
+		add_child(preload("res://scripts/elite_brain.gd").new())
 
 	var shape := CollisionShape2D.new()
 	var rect := RectangleShape2D.new()
@@ -246,6 +251,9 @@ func _wander(delta: float) -> void:
 func take_hit(damage: int, from: Vector2, infliction: Variant = null) -> void:
 	if dying:
 		return
+	if guarding:
+		damage = maxi(1, roundi(damage * float(Bestiary._data()["eliteMoves"]["undead"]["block"])))
+		world.float_text("blocked", global_position + Vector2(0, -26), Color(0.7, 0.85, 1.0))
 	Sound.play("hit")
 	velocity = (global_position - from).normalized() * 220
 	move_and_slide()
@@ -253,6 +261,8 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null) -> void:
 	tween.tween_property(sprite, "modulate", Color(1, 0.4, 0.4), 0.06)
 	tween.tween_property(sprite, "modulate", Color.WHITE, 0.12)
 	_lose(damage, Color(1, 0.95, 0.85))
+	world.hit_stop(0.035)
+	world.shake(1.5, 0.1)
 	# Struck from anywhere, it turns on the hero at once.
 	if not dying and mode != "chase":
 		mode = "chase"

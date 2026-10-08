@@ -193,6 +193,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _process(delta: float) -> void:
 	_follow_hero(delta)
+	_apply_shake(delta)
 	if player == null or player.dead:
 		return
 	_update_prompt()
@@ -328,6 +329,23 @@ func in_view(at: Vector2, margin := 0.0) -> bool:
 	return view_rect(margin).has_point(at)
 
 ## A number that rises and fades where a blow landed.
+## A word that rises and fades (PIX-155: "dodged", "blocked").
+func float_text(text: String, at: Vector2, color: Color) -> void:
+	var label := Label.new()
+	label.text = text
+	label.add_theme_font_size_override("font_size", 9)
+	label.add_theme_color_override("font_color", color)
+	label.add_theme_color_override("font_outline_color", Color(0.1, 0.08, 0.12))
+	label.add_theme_constant_override("outline_size", 3)
+	label.position = at - Vector2(14, 0)
+	label.z_index = 10
+	add_child(label)
+	var tween := label.create_tween().set_parallel()
+	tween.tween_property(label, "position:y", label.position.y - 12, 0.6).set_ease(Tween.EASE_OUT)
+	tween.tween_property(label, "modulate:a", 0.0, 0.6).set_delay(0.25)
+	tween.chain().tween_callback(label.queue_free)
+
+
 func float_number(value: int, at: Vector2, color: Color) -> void:
 	var label := Label.new()
 	label.text = str(value)
@@ -805,19 +823,13 @@ func _mimic_wakes(sprite: Sprite2D, chest: Dictionary) -> void:
 	mimic.notice()
 
 
-## Dust where a monster comes into sight (PIX-142): a ring of motes kicked up
-## from its feet as it fades in, so nothing simply pops into being.
-func appear(enemy: Node) -> void:
-	if not in_view(enemy.position, TILE):
-		return
-	enemy.modulate.a = 0.0
-	var fade_in := enemy.create_tween()
-	fade_in.tween_property(enemy, "modulate:a", 1.0, 0.3)
+## A ring of dust motes kicked up from `at` (a monster appearing, a dodge).
+func dust(at: Vector2) -> void:
 	for i in 8:
 		var mote := ColorRect.new()
 		mote.color = Color(0.86, 0.8, 0.68, 0.9) if i % 2 == 0 else Color(0.7, 0.64, 0.52, 0.9)
 		mote.size = Vector2(2, 2)
-		mote.position = enemy.position + Vector2(-1, 1)
+		mote.position = at + Vector2(-1, 1)
 		mote.z_index = 4
 		mote.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		add_child(mote)
@@ -826,6 +838,17 @@ func appear(enemy: Node) -> void:
 		drift.tween_property(mote, "position", mote.position + away + Vector2(0, -3), 0.45).set_ease(Tween.EASE_OUT)
 		drift.tween_property(mote, "modulate:a", 0.0, 0.45).set_delay(0.15)
 		drift.chain().tween_callback(mote.queue_free)
+
+
+## Dust where a monster comes into sight (PIX-142): a ring of motes kicked up
+## from its feet as it fades in, so nothing simply pops into being.
+func appear(enemy: Node) -> void:
+	if not in_view(enemy.position, TILE):
+		return
+	enemy.modulate.a = 0.0
+	var fade_in := enemy.create_tween()
+	fade_in.tween_property(enemy, "modulate:a", 1.0, 0.3)
+	dust(enemy.position)
 
 ## The line above the dock (PIX-144): the main quest's next step, faded out
 ## in a fight, under a flashing message and once the story is done; hidden
@@ -894,6 +917,52 @@ func _dream() -> void:
 	if GameState.progression.prologue != Prologue.DONE:
 		return
 	play_story(Story.next_dream(GameState.progression.cleared_levels, GameState.progression.story_seen))
+
+
+## The screen shakes (PIX-155): `strength` pixels at first, easing out over
+## `seconds`. Reduce motion keeps it still.
+var _shake_left := 0.0
+var _shake_total := 0.0
+var _shake_strength := 0.0
+
+
+func shake(strength: float, seconds: float) -> void:
+	if GameState.settings.reduce_motion or camera == null:
+		return
+	if strength * seconds < _shake_strength * _shake_left:
+		return
+	_shake_strength = strength
+	_shake_total = seconds
+	_shake_left = seconds
+
+
+func _apply_shake(delta: float) -> void:
+	if camera == null:
+		return
+	if _shake_left <= 0.0:
+		# Only once: writing the offset every frame re-settles the camera.
+		if camera.offset != Vector2.ZERO:
+			camera.offset = Vector2.ZERO
+		return
+	_shake_left = maxf(0.0, _shake_left - delta)
+	var power := _shake_strength * _shake_left / _shake_total / camera.zoom.x
+	camera.offset = Vector2(randf_range(-1, 1), randf_range(-1, 1)) * power
+
+
+## A blow lands: the world holds its breath for a few hundredths of a second
+## (PIX-155), counted in real time so the stop can end itself.
+var _stopped := false
+
+
+func hit_stop(seconds: float) -> void:
+	if _stopped or GameState.settings.reduce_motion:
+		return
+	_stopped = true
+	Engine.time_scale = 0.08
+	get_tree().create_timer(seconds, true, false, true).timeout.connect(func() -> void:
+		Engine.time_scale = 1.0
+		_stopped = false
+	)
 
 
 ## The village's hours (PIX-149): lamps and windows lit at night, and the

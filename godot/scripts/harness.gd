@@ -39,7 +39,7 @@ func _keys(args: PackedStringArray) -> void:
 		return
 	var codes := {
 		"e": KEY_E, "esc": KEY_ESCAPE, "space": KEY_SPACE, "enter": KEY_ENTER, "s": KEY_S, "w": KEY_W,
-		"i": KEY_I, "q": KEY_Q, "k": KEY_K, "c": KEY_C, "m": KEY_M, "b": KEY_B,
+		"i": KEY_I, "q": KEY_Q, "k": KEY_K, "c": KEY_C, "m": KEY_M, "b": KEY_B, "shift": KEY_SHIFT,
 		"r": KEY_R, "a": KEY_A, "d": KEY_D, "z": KEY_Z, "x": KEY_X, "f": KEY_F,
 	}
 	for key: String in args[keys_index + 1].split(","):
@@ -451,7 +451,10 @@ func _run_test_harness() -> void:
 		var foe_index := args.find("--foe")
 		var foe: String = args[foe_index + 1] if foe_index >= 0 and foe_index + 1 < args.size() else "orc"
 		world.player.invulnerable = not args.has("hurt")
-		world.spawn_enemy(foe, world.player_cell + Vector2i(2, 0), "ash")
+		# `--foe-distance N` stands it N cells off (an elite's opener from range).
+		var distance_index := args.find("--foe-distance")
+		var foe_distance := int(args[distance_index + 1]) if distance_index >= 0 and distance_index + 1 < args.size() else 2
+		world.spawn_enemy(foe, world.player_cell + Vector2i(foe_distance, 0), "ash", "", args.has("elite"))
 		world.player.face(Vector2.RIGHT)
 		# `kill` swings until the foe drops (or 12 swings); plain `fight`
 		# captures mid-swing.
