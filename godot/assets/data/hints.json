@@ -14,5 +14,9 @@
   "bounty": {
     "title": "The bounty board",
     "text": "Named monsters, where they lair (marked on your map) and what they pay. Kill one and the bounty is yours on the spot."
+  },
+  "turn": {
+    "title": "Turn sideways",
+    "text": "Pixelheim plays best in landscape: turn your phone sideways for bigger text and more room to fight."
   }
 }
