@@ -129,6 +129,9 @@ func _run_test_harness() -> void:
 		await get_tree().create_timer(0.3).timeout
 	if args.has("gate"):
 		var dungeon_index := args.find("--dungeon")
+		# The floor select, not the barred gate (PIX-170): the relics are home.
+		if not Relics.gate_open(GameState.progression):
+			GameState.progression.quests[Relics.quest_id()] = {"progress": Relics.all().size(), "done": true}
 		world._use_portal({
 			"kind": "dungeon",
 			"dungeon": args[dungeon_index + 1] if dungeon_index >= 0 else "mountain",

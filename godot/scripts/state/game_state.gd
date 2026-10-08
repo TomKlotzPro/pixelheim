@@ -592,6 +592,12 @@ func win_ring_toss() -> String:
 	return "The prize is yours: +%dg and %d %ss!" % [gold, pies, Catalog.item_name(Town.festival("prizeItem"))]
 
 
+## The floors the bounty board counts (PIX-170): the hero's own, and the
+## notices the relics won have earned out in the Reach.
+func board_floors() -> Array:
+	return Hunts.board_floors(progression.cleared_levels, Relics.found(progression))
+
+
 ## A settler living here whose arc is done (PIX-157): their perk has grown.
 func perk_grown(id: String) -> bool:
 	return is_settled(id) and Town.perk_upgraded(id, progression.quests)
@@ -641,6 +647,10 @@ func resolve_quests(giver_id: String) -> String:
 		var entry: Dictionary = entries.get(quest["id"], {})
 		if entry.get("done", false):
 			continue
+		# Maren's relics are no errand for a hero who climbed before the gate
+		# was barred (PIX-170): she goes on to her next ask.
+		if entry.is_empty() and quest.get("unlessGateOpen", false) and Relics.gate_open(progression):
+			continue
 		if entry.is_empty():
 			# A hunt whose quarry already fell counts at once (PIX-165).
 			var already: bool = quest["objective"]["kind"] == "hunt" and quest["objective"]["named"] in progression.hunted
@@ -651,6 +661,10 @@ func resolve_quests(giver_id: String) -> String:
 		if Quests.is_ready(quest, entries, pack.items):
 			if objective["kind"] == "deliver":
 				pack.remove_item(objective["itemId"], int(objective["count"]))
+			elif objective["kind"] == "relics":
+				# They go into the mountain's gate (PIX-170).
+				for item_id: String in objective["items"]:
+					pack.remove_item(item_id)
 			entry["done"] = true
 			var reward: Dictionary = quest["reward"]
 			pack.gold += int(reward["gold"])

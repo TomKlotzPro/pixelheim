@@ -55,6 +55,31 @@
       "completed": "I walked the whole road today and nothing bit me. Take this."
     },
     {
+      "id": "maren_relics",
+      "giver": "elder",
+      "name": "The Five Relics",
+      "brief": "Only what the five climbers left behind will open the mountain's gate.",
+      "objective": {
+        "kind": "relics",
+        "items": [
+          "tams_ladle",
+          "black_ingot",
+          "oskars_shield",
+          "lianes_lantern"
+        ],
+        "count": 4,
+        "label": "Relics brought home"
+      },
+      "reward": {
+        "gold": 0,
+        "xp": 300,
+        "itemId": "marens_promise"
+      },
+      "accepted": "The gate's barred, courier. The old wardens sealed it when the five never came home, and only what the five left behind will open it: Tam's ladle in Saltmere, the black iron at Blackiron, Oskar's shield at Greyhold and Liane's lantern on the Frostgate. Bring them home to me.",
+      "completed": "Tam, the iron, Oskar, Liane. And the fifth is mine: my promise that someone would finish what we started. Take it. The gate is open, courier - climb.",
+      "unlessGateOpen": true
+    },
+    {
       "id": "troll_toll",
       "giver": "elder",
       "name": "The Troll Toll",
@@ -419,7 +444,7 @@
       },
       "reward": {
         "gold": 40,
-        "xp": 40
+        "xp": 20
       },
       "accepted": "Drive off three of them and the rest will talk. They always do.",
       "completed": "They say a thing called the Tidecaller nests in the sea cave under the headland, and keeps what the sea brings in. Tam's things too, maybe."
@@ -437,7 +462,7 @@
       },
       "reward": {
         "gold": 100,
-        "xp": 120
+        "xp": 60
       },
       "accepted": "The cave mouth is under the western headland, past the lagoon. Mind the steps - and come back.",
       "completed": "That's his ladle. That's Tam's. He stirred soup with it and conducted the whole tavern with it after. Keep it - Maren will know what it means."
@@ -455,7 +480,7 @@
       },
       "reward": {
         "gold": 50,
-        "xp": 35
+        "xp": 20
       },
       "accepted": "Four of the big ones. Go for the legs, not the shell.",
       "completed": "Ha! The nets are ours again. Saltmere owes you a supper."
@@ -473,7 +498,7 @@
       },
       "reward": {
         "gold": 60,
-        "xp": 40,
+        "xp": 20,
         "itemId": "potion_hp"
       },
       "accepted": "Three pieces of sea glass, clear as you can find. They wash up on the beaches and in the cave.",
@@ -492,7 +517,7 @@
       },
       "reward": {
         "gold": 30,
-        "xp": 25
+        "xp": 10
       },
       "accepted": "Two fish - your own, mind. The end of the jetty is the easy spot.",
       "completed": "Not bad for a landlubber! Keep the rod. The sea's always got more."
@@ -510,7 +535,7 @@
       },
       "reward": {
         "gold": 120,
-        "xp": 60
+        "xp": 30
       },
       "accepted": "North-east beach, sitting on his chests like a hen. He bites.",
       "completed": "Ha! Saltmere breathes easier. And so do I. Here's your share - fair's fair."
@@ -528,7 +553,7 @@
       },
       "reward": {
         "gold": 40,
-        "xp": 30
+        "xp": 15
       },
       "accepted": "Three fresh fish, please! Saltmere's down the cliffs, south of the marsh - follow the path out of the reeds. Mind the crabs.",
       "completed": "She's eating! Look at her go. You can keep the bones."
@@ -546,7 +571,7 @@
       },
       "reward": {
         "gold": 60,
-        "xp": 60
+        "xp": 30
       },
       "accepted": "Four of the diggers, and the crew can get out. The shaft mouth's at the north end of the valley.",
       "completed": "They're out - dusty, hungry, alive. And they say the deep seam is open again, and something is guarding it."
@@ -564,7 +589,7 @@
       },
       "reward": {
         "gold": 150,
-        "xp": 160
+        "xp": 80
       },
       "accepted": "Down past the cart hall, the deep seam. Whatever's there has been there a long while.",
       "completed": "Black iron, stamped with five marks - the same seam the Ember Seal was poured from. That ingot's theirs as much as ours. Keep it."
@@ -582,7 +607,7 @@
       },
       "reward": {
         "gold": 70,
-        "xp": 45
+        "xp": 20
       },
       "accepted": "Four lumps of blackiron. The veins glint in the shafts' dead ends.",
       "completed": "Good ore, that. Hilda can make you something that'll outlast us both."
@@ -600,7 +625,7 @@
       },
       "reward": {
         "gold": 80,
-        "xp": 60
+        "xp": 30
       },
       "accepted": "Two of the walking stones. Hit the joints.",
       "completed": "The carts are running! Listen to that racket. Beautiful."
@@ -618,7 +643,7 @@
       },
       "reward": {
         "gold": 40,
-        "xp": 30,
+        "xp": 15,
         "itemId": "potion_hp"
       },
       "accepted": "Off the west gallery, last I heard her. Small cage. Mind your fingers.",
@@ -637,7 +662,7 @@
       },
       "reward": {
         "gold": 90,
-        "xp": 80
+        "xp": 40
       },
       "accepted": "Five of the red cloaks, and the yard's ours again. The gate's round the south side - or climb a breach, if you're nimble.",
       "completed": "The yard's quiet. First time in years. Now the keep: its door goes down to the cellars, and something down there won't let anyone near the captain's hall."
@@ -655,7 +680,7 @@
       },
       "reward": {
         "gold": 180,
-        "xp": 200
+        "xp": 100
       },
       "accepted": "Down the keep's stair, through the crypt, to the captain's hall. That's where Oskar's shield hung. Whatever's there has kept it all this while.",
       "completed": "Captain Hale. He swore to keep Oskar's shield till Oskar came home, and he kept it fifty years. Take it to Oskar, up the mountain. Hale would want it to go home."
@@ -673,7 +698,7 @@
       },
       "reward": {
         "gold": 70,
-        "xp": 70
+        "xp": 35
       },
       "accepted": "Three of the old guard, still at their posts in the cellars. Give them the order they never got.",
       "completed": "They're at rest. I heard the bell, though there's been no bell here for forty years."
@@ -691,7 +716,7 @@
       },
       "reward": {
         "gold": 60,
-        "xp": 40,
+        "xp": 20,
         "itemId": "potion_hp"
       },
       "accepted": "Old steel - the garrison's broken blades. It's all over the yard and the cellars, if you look.",
@@ -710,7 +735,7 @@
       },
       "reward": {
         "gold": 50,
-        "xp": 35
+        "xp": 20
       },
       "accepted": "My sister's locket. They took it when they threw me in the cells - the end cell, under the straw.",
       "completed": "That's hers. That's... thank you. Here - it's not much. It's all the turncoats didn't find."
@@ -728,7 +753,7 @@
       },
       "reward": {
         "gold": 90,
-        "xp": 80
+        "xp": 40
       },
       "accepted": "Four of them, and the caravan can breathe again. They den west of the lake.",
       "completed": "Good. Now - you didn't climb up here for wolves. You want Liane's observatory. The way down to the ice cave is through her door, and something has moved in."
@@ -746,7 +771,7 @@
       },
       "reward": {
         "gold": 200,
-        "xp": 220
+        "xp": 110
       },
       "accepted": "Through her door and down the stair, to the glass hall at the back. Her lantern's there - the last thing she lit before the climb. Mind the cold it breathes.",
       "completed": "Her lantern. She said she'd blow it out herself when they all came home. Take it up the mountain, courier. Let it see the way she went."
@@ -764,7 +789,7 @@
       },
       "reward": {
         "gold": 120,
-        "xp": 60
+        "xp": 30
       },
       "accepted": "Tracks went up toward the observatory. If there's a den in that cave, my box is in it.",
       "completed": "Still locked! The yetis must have given up on it. Here - your share, and then some."
@@ -782,7 +807,7 @@
       },
       "reward": {
         "gold": 70,
-        "xp": 50,
+        "xp": 25,
         "itemId": "potion_mp"
       },
       "accepted": "Four of them. They grow where the snow lies thick - and in the cave, where it never melts. I'll see they get to Vex.",
@@ -801,7 +826,7 @@
       },
       "reward": {
         "gold": 50,
-        "xp": 40
+        "xp": 20
       },
       "accepted": "There's a hole cut in the lake ice, out past the middle. Stand at its edge, face the water and be patient. Icefin, three of them.",
       "completed": "Supper! Real supper. Gunnar will stop complaining for a whole hour."
@@ -860,7 +885,7 @@
   "mainQuest": {
     "chapters": [
       {
-        "title": "Under the Mountain",
+        "title": "Out of the Ashes",
         "steps": [
           {
             "id": "ask_sela",
@@ -881,13 +906,13 @@
             "hint": "Slimes nest in the fields east of the town gate. Three of them, and Sela pays."
           },
           {
-            "id": "cellar",
+            "id": "relics_taken",
             "when": {
-              "kind": "cleared",
-              "level": 1
+              "kind": "questTaken",
+              "questId": "maren_relics"
             },
-            "text": "Clear the Mossy Cellar, the mountain's first floor",
-            "hint": "The gate to the Ashen Mountain stands north of town, past the bridge. The first floor is only a cellar."
+            "text": "Ask Maren about the barred mountain gate",
+            "hint": "The mountain's gate has been barred since the fire. Maren knows why, and what opens it - ask her."
           },
           {
             "id": "rebuild",
@@ -908,6 +933,94 @@
             "text": "Brew a first potion at Vex's cauldron",
             "hint": "Vex behind the BREWS door will show you the cauldron. Potions you brew cost you a herb, not a fortune.",
             "optional": true
+          }
+        ]
+      },
+      {
+        "title": "The Five Relics",
+        "steps": [
+          {
+            "id": "ladle",
+            "when": {
+              "kind": "hunted",
+              "named": "tidecaller"
+            },
+            "optional": true,
+            "text": "Win Tam's Ladle back from the Tidecaller, in Saltmere's sea cave",
+            "hint": "Saltmere is down the cliffs south of the marsh. Old Wenna there is Tam's sister - start with her."
+          },
+          {
+            "id": "settler",
+            "when": {
+              "kind": "settlers",
+              "count": 1
+            },
+            "text": "Bring a settler home to Pixelheim",
+            "hint": "Iva the healer waits in the Mirefen, and Wren hunts the fields east of town. Help one of them, and they'll come and live here.",
+            "optional": true
+          },
+          {
+            "id": "ingot",
+            "when": {
+              "kind": "hunted",
+              "named": "seam_warden"
+            },
+            "optional": true,
+            "text": "Take the Black Ingot from the Seam Warden, deep in the Blackiron shafts",
+            "hint": "The Blackiron road leaves the west edge of the Ash Fields. Foreman Garrick runs the miners' camp."
+          },
+          {
+            "id": "lamps",
+            "when": {
+              "kind": "project",
+              "projectId": "street_lamps"
+            },
+            "text": "Fund the street lamps at the board on the square",
+            "hint": "The board on the square lists what Pixelheim needs next. Lamps first: some coin and three marsh reeds.",
+            "optional": true
+          },
+          {
+            "id": "shield",
+            "when": {
+              "kind": "hunted",
+              "named": "hollow_captain"
+            },
+            "optional": true,
+            "text": "Bring Oskar's Shield out of Greyhold's cellars",
+            "hint": "Greyhold stands off the east edge of the Ash Fields. Sergeant Ulla keeps the old guard's camp by the road."
+          },
+          {
+            "id": "lantern",
+            "when": {
+              "kind": "hunted",
+              "named": "rimefang"
+            },
+            "optional": true,
+            "text": "Find Liane's Lantern under her observatory on the Frostgate pass",
+            "hint": "The Frostgate road climbs north out of the Ash Fields. Aske the hermit has kept Liane's door for fifty years."
+          },
+          {
+            "id": "gate",
+            "when": {
+              "kind": "questDone",
+              "questId": "maren_relics"
+            },
+            "text": "Bring the four relics home to Maren",
+            "hint": "Bring them to me, all four, and I'll open the gate with the last of them: my promise."
+          }
+        ]
+      },
+      {
+        "title": "The Ashen Throne",
+        "steps": [
+          {
+            "id": "cellar",
+            "when": {
+              "kind": "cleared",
+              "level": 1
+            },
+            "text": "Clear the Mossy Cellar, the mountain's first floor",
+            "hint": "The gate's open. The Ashen Mountain stands north of town, past the bridge; its first floor is the Mossy Cellar."
           },
           {
             "id": "crypt",
@@ -927,12 +1040,7 @@
             },
             "text": "Ask Maren about the graves in the crypt",
             "hint": "Three names on a grave in the crypt, and a fourth chiselled away. Maren knew them, I think."
-          }
-        ]
-      },
-      {
-        "title": "The Ashen Throne",
-        "steps": [
+          },
           {
             "id": "watchtower",
             "when": {
@@ -941,26 +1049,6 @@
             },
             "text": "Clear the Ruined Watchtower (floor 5)",
             "hint": "Orcs hold the old watchtower now. Floor five. Bring potions."
-          },
-          {
-            "id": "settler",
-            "when": {
-              "kind": "settlers",
-              "count": 1
-            },
-            "text": "Bring a settler home to Pixelheim",
-            "hint": "Iva the healer waits in the Mirefen, and Wren hunts the fields east of town. Help one of them, and they'll come and live here.",
-            "optional": true
-          },
-          {
-            "id": "lamps",
-            "when": {
-              "kind": "project",
-              "projectId": "street_lamps"
-            },
-            "text": "Fund the street lamps at the board on the square",
-            "hint": "The board on the square lists what Pixelheim needs next. Lamps first: some coin and three marsh reeds.",
-            "optional": true
           },
           {
             "id": "forge",
@@ -1089,5 +1177,31 @@
       "Maren turned to you. \"You carried bad news a long way, and you didn't run from the fire. Stay a while.\"",
       "\"Fafnyr will come back for what's left of us. Unless someone climbs.\""
     ]
+  },
+  "relics": {
+    "questId": "maren_relics",
+    "items": [
+      {
+        "itemId": "tams_ladle",
+        "named": "tidecaller",
+        "place": "Saltmere"
+      },
+      {
+        "itemId": "black_ingot",
+        "named": "seam_warden",
+        "place": "the Blackiron Mines"
+      },
+      {
+        "itemId": "oskars_shield",
+        "named": "hollow_captain",
+        "place": "Greyhold"
+      },
+      {
+        "itemId": "lianes_lantern",
+        "named": "rimefang",
+        "place": "the Frostgate pass"
+      }
+    ],
+    "barred": "The mountain's gate is barred with old iron and older wards. Nothing passes. Maren will know what opens it."
   }
 }

@@ -1,14 +1,37 @@
 extends GutTest
-## XP pacing (PIX-141): levels come from going deeper, not from farming what
-## is already beaten. A hero who clears each floor once, does the quests and
-## sweeps each wild region once on reaching it stands near level 10 at the
-## Ashen Throne and near 14 at the Throne of the Deathless.
+## XP pacing (PIX-141; rewritten for the mountain last, PIX-170): levels come
+## from going on, not from farming what is already beaten. A hero who does
+## the town's errands and sweeps each wild region once, takes the Reach's four
+## chapters in turn (their packs, their quests, their chapter boss), brings
+## the relics home and then climbs - each floor cleared once, the floors'
+## quests handed in - stands near level 5 on the road to Saltmere, near 12 at
+## the gate and near 18 at the Throne of the Deathless, every floor's
+## guardian about their match.
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
 ## Foes in a wild pack (world.gd PACK_SIZE).
 const PACK := 3
-## The floor a hero is on when each quest is handed in.
-const QUEST_FLOORS := {"slime_trouble": 1, "cheese_run": 1, "wolf_watch": 4, "herbs_for_vex": 2, "hildas_buckler": 4, "troll_toll": 8, "iva_reeds": 4, "wren_leather": 2, "loras_lute": 8, "mirelle_vault": 10, "ash_orcs": 6, "bram_imps": 12, "mira_moss": 11, "tomas_golems": 10, "iva_herbs": 5, "iva_fever": 7, "wren_apples": 3, "wren_road": 6, "loras_verse": 9, "loras_horn": 12, "mirelle_ink": 10, "mirelle_caravan": 11, "wenna_smugglers": 5, "wenna_tidecaller": 7, "brin_crabs": 5, "brin_lens": 6, "ola_catch": 5, "rook_captain": 6, "pip_fish": 5, "garrick_crew": 11, "garrick_seam": 12, "dagny_ore": 11, "dagny_carts": 12, "pell_canary": 11, "ulla_turncoats": 12, "ulla_captain": 13, "teo_rest": 13, "teo_steel": 12, "fenwick_locket": 13, "aske_wolves": 15, "aske_rimefang": 15, "gunnar_strongbox": 15, "linnea_lilies": 15, "linnea_icefin": 15}
+## The Reach in the order a hero takes it: the wild regions swept there, the
+## quests handed in and the chapter boss laid low.
+const STAGES := [
+	{"id": "town", "sweep": ["forest", "marsh"], "hunt": "", "quests": [
+		"slime_trouble", "cheese_run", "herbs_for_vex", "hildas_buckler", "wren_leather", "iva_reeds", "wren_apples", "iva_herbs", "wolf_watch"]},
+	{"id": "coast", "sweep": ["coast", "seacave"], "hunt": "tidecaller", "quests": [
+		"wenna_smugglers", "wenna_tidecaller", "brin_crabs", "brin_lens", "ola_catch", "rook_captain", "pip_fish"]},
+	{"id": "road", "sweep": [], "hunt": "", "quests": ["ash_orcs", "wren_road", "iva_fever"]},
+	{"id": "mines", "sweep": ["mines", "shafts"], "hunt": "seam_warden", "quests": [
+		"garrick_crew", "garrick_seam", "dagny_ore", "dagny_carts", "pell_canary"]},
+	{"id": "deepwood", "sweep": ["deepwood"], "hunt": "", "quests": ["troll_toll", "loras_lute", "tomas_golems", "mirelle_caravan", "mira_moss"]},
+	{"id": "castle", "sweep": ["castle", "cellars"], "hunt": "hollow_captain", "quests": [
+		"ulla_turncoats", "ulla_captain", "teo_rest", "teo_steel", "fenwick_locket"]},
+	{"id": "frost", "sweep": ["frost", "icecave"], "hunt": "rimefang", "quests": [
+		"aske_wolves", "aske_rimefang", "gunnar_strongbox", "linnea_lilies", "linnea_icefin"]},
+	{"id": "gate", "sweep": [], "hunt": "", "quests": ["maren_relics"]},
+]
+## On the climb: the floor a hero is on when each of the rest is handed in,
+## and when the hardest wilds (wyverns and imps, the mire's mimic) are swept.
+const FLOOR_QUESTS := {"mirelle_ink": 2, "loras_verse": 3, "mirelle_vault": 10, "loras_horn": 12, "bram_imps": 12}
+const FLOOR_SWEEPS := {9: ["ash"], 12: ["mire"]}
 
 var maps := {}
 
@@ -67,30 +90,66 @@ func test_skill_tiers_open_with_levels() -> void:
 	assert_true(Skills.can_buy(hero, second))
 
 
-func test_going_deeper_levels_the_hero_on_pace() -> void:
+func test_the_reach_then_the_mountain_levels_the_hero_on_pace() -> void:
 	var hero := HeroState.create("Pace", "warrior")
-	var quests := {}
-	for quest: Dictionary in Quests.all():
-		quests[quest["id"]] = int(quest["reward"]["xp"])
-	assert_eq(quests.keys().size(), QUEST_FLOORS.size(), "every quest has a floor in the model")
+	var modelled: Array[String] = []
+	var swept: Array[String] = []
+	for stage: Dictionary in STAGES:
+		modelled.append_array(stage["quests"])
+		swept.append_array(stage["sweep"])
+	modelled.append_array(FLOOR_QUESTS.keys())
+	for regions: Array in FLOOR_SWEEPS.values():
+		swept.append_array(regions)
+	var every: Array = Quests.all().map(func(quest: Dictionary) -> String: return quest["id"])
+	every.sort()
+	modelled.sort()
+	assert_eq(modelled, every, "every quest is in the model once")
+	var regions: Array = Bestiary._data()["regions"].keys()
+	regions.sort()
+	swept.sort()
+	assert_eq(swept, regions, "every region is swept once")
 	var arrived := {}
+	for stage: Dictionary in STAGES:
+		arrived[stage["id"]] = hero.level
+		for region_id: String in stage["sweep"]:
+			_sweep(hero, region_id)
+		for quest_id: String in stage["quests"]:
+			_earn(hero, int(Quests.by_id(quest_id)["reward"]["xp"]))
+		if stage["hunt"] != "":
+			_earn(hero, Bestiary.xp_for(Hunts.fighter(stage["hunt"]), hero.level))
+	var guardians := {}
 	for level in range(1, Dungeons.floor_count() + 1):
-		for region_id: String in Bestiary._data()["regions"]:
-			if int(Bestiary.region(region_id)["dropFloor"]) == level:
-				_sweep(hero, region_id)
+		for region_id: String in FLOOR_SWEEPS.get(level, []):
+			_sweep(hero, region_id)
 		arrived[level] = hero.level
 		for encounter: Dictionary in Dungeons.floor_def(level)["encounters"]:
-			_earn(hero, Bestiary.xp_for(Bestiary.spawn(encounter["monsterId"], encounter.get("elite", false)), hero.level))
+			var foe := Bestiary.spawn(encounter["monsterId"], encounter.get("elite", false), Dungeons.lift(level))
+			guardians[level] = int(foe["level"])
+			_earn(hero, Bestiary.xp_for(foe, hero.level))
 		_earn(hero, Dungeons.clear_xp(level))
-		for quest_id: String in QUEST_FLOORS:
-			if QUEST_FLOORS[quest_id] == level:
-				_earn(hero, quests[quest_id])
-	gut.p("level on arriving at each floor: %s" % arrived)
-	assert_between(int(arrived[10]), 9, 11, "about level 10 at the Ashen Throne")
-	# The four region chapters (PIX-165..169) add a level by the bottom; the
-	# mountain-last retune (PIX-170) rewrites this model around them.
-	assert_between(int(arrived[15]), 13, 16, "about level 14 at the Throne of the Deathless")
-	assert_lt(int(arrived[5]), 7, "no runaway start")
+		for quest_id: String in FLOOR_QUESTS:
+			if FLOOR_QUESTS[quest_id] == level:
+				_earn(hero, int(Quests.by_id(quest_id)["reward"]["xp"]))
+	gut.p("level on arriving: %s" % arrived)
+	assert_between(int(arrived["coast"]), 4, 6, "about level 5 on the road to Saltmere")
+	assert_lt(int(arrived["mines"]), int(arrived["castle"]), "each chapter a step up")
+	assert_lt(int(arrived["castle"]), int(arrived["gate"]))
+	assert_between(int(arrived["gate"]), 11, 13, "about level 12 at the gate")
+	assert_between(int(arrived[10]), 15, 17, "about level 16 at the Ashen Throne")
+	assert_between(int(arrived[15]), 17, 19, "about level 18 at the Throne of the Deathless")
+	for level: int in guardians:
+		assert_between(int(arrived[level]) - int(guardians[level]), -2, 2, "floor %d's guardian is about the hero's match" % level)
+
+
+func test_a_floors_foes_stand_above_their_kind() -> void:
+	var slime := Bestiary.spawn("slime", false, Dungeons.lift(1))
+	assert_eq(int(slime["level"]), 1 + Dungeons.lift(1))
+	assert_gt(int(slime["maxHp"]), 100, "the cellar's slimes are no field slimes")
+	assert_gt(int(slime["xp"]), 50)
+	assert_false(Bestiary.spawn("slime").has("level"), "a field slime is its kind")
+	# The deepest floors lift least: Morvax is near his own strength.
+	assert_lt(Dungeons.lift(15), Dungeons.lift(1))
+	assert_eq(Dungeons.drop_floor(1), mini(1 + Dungeons.lift(1), Dungeons.floor_count()), "the mountain drops the mountain's loot")
 
 
 ## One kill of every foe in every pack of a region, where the world puts them.
@@ -102,7 +161,7 @@ func _sweep(hero: HeroState, region_id: String) -> void:
 		var home := Vector2i(spawn["x"], spawn["y"])
 		if map.region_at(home) != region_id:
 			continue
-		for i in PACK:
+		for i in int(spawn.get("size", PACK)):
 			_earn(hero, Bestiary.xp_for(Bestiary.wild(Bestiary.spawn(Bestiary.species_of(spawn, region_id))), hero.level))
 
 

@@ -1,6 +1,21 @@
 {
   "releases": [
     {
+      "version": "0.111.0",
+      "date": "2026-10-08",
+      "codename": "The Barred Gate",
+      "notes": [
+        "THE MOUNTAIN COMES LAST: since the Night of Ash the mountain's gate is barred. Maren knows what opens it - the four relics the five climbers left in the Reach. Win them back from Saltmere, Blackiron, Greyhold and the Frostgate in any order, bring them home, and she opens the gate with the fifth: her promise",
+        "THE STORY IN CHAPTERS: Out of the Ashes, The Five Relics, The Ashen Throne, The Deathless. The line above the dock points at the next relic still out there",
+        "MAREN REMEMBERS: each relic you win brings her story of its owner - Tam's stew in the snow, the five marks on the black iron, Oskar's shield and Liane's lantern",
+        "THE MOUNTAIN, RETUNED: its floors now start around level 12 and end around 18. The Mossy Cellar's slimes are no field slimes any more, every guardian shows its level at the gate, the floors drop the mountain's best loot, and the early hoards are gems, rings and potions worth having",
+        "THE REACH GROWS THE TOWN: two relics open the Village age and all four the Town, and the bounty board posts its notices as relics are won",
+        "The region chapters' quests and bosses pay half the XP they did, so a hero arrives at each one about its match",
+        "Long messages now grow upward instead of running under the dock",
+        "A hero from before keeps everything: whoever has cleared a floor finds the gate open, and Maren goes straight to her next ask"
+      ]
+    },
+    {
       "version": "0.110.0",
       "date": "2026-10-08",
       "codename": "The Frostgate",

@@ -82,7 +82,9 @@ func test_closing_a_conversation_resolves_quests() -> void:
 	var said: Array[String] = []
 	state.message.connect(func(text: String) -> void: said.append(text))
 	state.finish_dialogue("elder")
-	assert_eq(said, ["Quest accepted - The Troll Toll: It squats where the old road bends. Mind your kneecaps."])
+	# Since the gate was barred (PIX-170) Maren's first ask is the relics.
+	assert_eq(said.size(), 1)
+	assert_string_contains(said[0], "Quest accepted - The Five Relics: The gate's barred")
 
 
 func test_vex_talks_before_his_counter_only_while_his_quest_waits() -> void:

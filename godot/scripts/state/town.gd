@@ -96,6 +96,10 @@ static func age_blockers(tier_number: int, progression: ProgressionState, settle
 				met = int(need["level"]) in progression.cleared_levels
 			"settlers":
 				met = settlement.settlers.size() >= int(need["count"])
+			"relics":
+				# The ages come from the Reach's chapters too (PIX-170); a
+				# hero who climbed first still has the floor that did it.
+				met = Relics.found(progression) >= int(need["count"]) or int(need.get("orCleared", 0)) in progression.cleared_levels
 		if not met:
 			out.append(need["line"])
 	return out

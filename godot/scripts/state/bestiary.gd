@@ -22,11 +22,13 @@ static func is_boss(id: String) -> bool:
 
 
 ## A fighting monster (spawnMonster): elites hit and pay half again, and armor up 30%.
-static func spawn(monster_id: String, elite := false) -> Dictionary:
+static func spawn(monster_id: String, elite := false, lift := 0) -> Dictionary:
 	var base := monster(monster_id)
+	if lift > 0:
+		base = lifted(base, lift)
 	var mult := 1.5 if elite else 1.0
 	var max_hp := roundi(base["maxHp"] * mult)
-	return {
+	var fighter := {
 		"id": monster_id,
 		"name": "Elite %s" % base["name"] if elite else String(base["name"]),
 		"elite": elite,
@@ -38,6 +40,24 @@ static func spawn(monster_id: String, elite := false) -> Dictionary:
 		"gold": roundi(base["gold"] * mult),
 		"inflicts": base.get("inflicts"),
 	}
+	if lift > 0:
+		fighter["level"] = base["level"]
+	return fighter
+
+
+## A monster `lift` levels above its kind (PIX-170: the mountain's floors,
+## climbed last): each stat grows by the ratio of combat.json's floorLift
+## curve at the new level to the curve at its own.
+static func lifted(base: Dictionary, lift: int) -> Dictionary:
+	var out := base.duplicate()
+	var level := int(base["level"])
+	var curves: Dictionary = _data()["floorLift"]["curves"]
+	for stat: String in curves:
+		var curve: Array = curves[stat]
+		var at := func(l: int) -> float: return float(curve[0]) + float(curve[1]) * l + float(curve[2]) * l * l
+		out[stat] = roundi(float(base[stat]) * at.call(level + lift) / at.call(level))
+	out["level"] = level + lift
+	return out
 
 
 static func region(region_id: String) -> Dictionary:

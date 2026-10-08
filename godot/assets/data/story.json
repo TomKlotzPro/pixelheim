@@ -751,6 +751,42 @@
   ],
   "elderLines": [
     {
+      "id": "maren_tam",
+      "hunted": "tidecaller",
+      "lines": [
+        "Tam's ladle. Gods. He cooked for us all the way up - stew on a mountain, in the snow.",
+        "He said a hero who eats well fights well. He was the first to laugh and the first to stand when it went wrong.",
+        "Wenna's brother. I should have gone down to Saltmere years ago and told her. I'll go. When this is done, I'll go."
+      ]
+    },
+    {
+      "id": "maren_ingot",
+      "hunted": "seam_warden",
+      "lines": [
+        "Black iron with our five marks on it. We dug the seal's iron at Blackiron ourselves.",
+        "Oskar swung the pick, Liane did the sums, Tam fed the miners and Morvax paid. I set my mark last.",
+        "I was so proud of that mark. Look at it. Still there."
+      ]
+    },
+    {
+      "id": "maren_oskar",
+      "hunted": "hollow_captain",
+      "lines": [
+        "Oskar's shield. He left it at Greyhold and told his captain to keep it till he came home.",
+        "He carried Liane the last mile up and complained the whole way. And Hale kept it fifty years?",
+        "...Of course he did. That was Greyhold."
+      ]
+    },
+    {
+      "id": "maren_liane",
+      "hunted": "rimefang",
+      "lines": [
+        "Her lantern. Liane lit it the night before we climbed and said she'd blow it out herself when we were all home.",
+        "She wrote everything down, you know. Every day of it.",
+        "If you find her pages up there, read them. She'd want someone to."
+      ]
+    },
+    {
       "after": 3,
       "id": "maren_graves",
       "lines": [
