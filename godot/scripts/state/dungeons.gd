@@ -13,6 +13,17 @@ static func floor_def(level: int) -> Dictionary:
 	return Bestiary._data()["levels"][level - 1]
 
 
+## How many levels above their kind a floor's foes stand (PIX-170).
+static func lift(level: int) -> int:
+	return int(floor_def(level).get("lift", 0))
+
+
+## The loot a floor's kills roll from: the pools of the depth its foes now
+## fight at, the mountain's best.
+static func drop_floor(level: int) -> int:
+	return mini(level + lift(level), floor_count())
+
+
 ## XP for clearing a floor the first time (clearXpPerFloor per floor deep).
 static func clear_xp(level: int) -> int:
 	return int(Bestiary._data()["clearXpPerFloor"]) * level

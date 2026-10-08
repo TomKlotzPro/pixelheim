@@ -46,7 +46,7 @@ func _info() -> String:
 		"Floor %d: %s" % [level, floor_def["name"]],
 		String(floor_def["description"]),
 		"",
-		"Guardian: %s%s" % ["Elite " if guardian.get("elite", false) else "", guardian_name],
+		"Guardian: %s%s, level %d" % ["Elite " if guardian.get("elite", false) else "", guardian_name, int(Bestiary.monster(guardian["monsterId"])["level"]) + Dungeons.lift(level)],
 	]
 	if level in GameState.progression.cleared_levels:
 		lines.append("Cleared. Its hoard is already yours.")

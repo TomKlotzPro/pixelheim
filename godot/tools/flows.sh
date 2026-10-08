@@ -7,9 +7,10 @@
 # Morvax's throne (PIX-157), a festival's ring toss (PIX-159), the road to
 # Saltmere (PIX-164), its sea cave (PIX-165), the Blackiron mines (PIX-167),
 # Greyhold with its cellars (PIX-168) and the Frostgate pass with its ice cave
-# (PIX-169). Every flow leaves its picture in godot/flows/<name>.png for a
-# human to look at, and the harness's report line must match what the flow
-# promises or the run fails.
+# (PIX-169), and the mountain's gate barred to a new hero (PIX-170). Every
+# flow leaves its picture in godot/flows/<name>.png for a human to look at,
+# and the harness's report line must match what the flow promises or the run
+# fails.
 #
 #   godot/tools/flows.sh            # all of them
 #   godot/tools/flows.sh fight die  # just these
@@ -50,6 +51,7 @@ FLOWS=(
 	"cellars|--map greyhold --at 37,13 --walk u --wait 0.4|map=cellars"
 	"pass|--map overworld --at 68,2 --walk u,u,u --wait 0.4|map=frostgate"
 	"icecave|--map frostgate --at 27,7 --walk u --wait 0.4|map=icecave"
+	"gate|--map overworld --at 48,8 --walk u,u --wait 0.3|map=overworld cell=\\(48, 7\\).*open=none"
 	"dawn|--map town --prologue 5 --at 29,17 --keys w,e,e,e,e,e --wait 1.5|open=reveal_screen"
 	"motion|--map town motion|backsteps=[01]$"
 )

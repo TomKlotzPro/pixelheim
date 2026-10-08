@@ -36,15 +36,16 @@ func test_floors_open_one_after_another() -> void:
 func test_a_first_clear_pays_the_hoard_and_opens_the_next_floor() -> void:
 	var gold: int = state.pack.gold
 	var gear_before: int = state.pack.gear.size()
-	var result: Dictionary = state.clear_floor(2)
+	# The Ruined Watchtower's hoard (retuned for the mountain last, PIX-170).
+	var result: Dictionary = state.clear_floor(5)
 	assert_true(result["first"])
 	assert_false(result["victory"])
-	assert_eq(state.pack.gold, gold + 30)
-	assert_eq(state.pack.gear.size(), gear_before + 1, "the leather armor arrives as a piece")
-	assert_eq(state.pack.gear[-1]["itemId"], "leather_armor")
-	assert_eq(state.pack.items.get("potion_hp", 0), 1 + _starting("potion_hp"))
-	assert_eq(state.progression.cleared_levels, [2])
-	assert_eq(state.progression.unlocked_level, 3)
+	assert_eq(state.pack.gold, gold + int(Dungeons.floor_def(5)["rewardGold"]))
+	assert_eq(state.pack.gear.size(), gear_before + 1, "the wyrm visor arrives as a piece")
+	assert_eq(state.pack.gear[-1]["itemId"], "wyrm_visor")
+	assert_eq(state.pack.items.get("elixir", 0), 1 + _starting("elixir"))
+	assert_eq(state.progression.cleared_levels, [5])
+	assert_eq(state.progression.unlocked_level, 6)
 
 
 func test_a_floor_pays_its_hoard_once() -> void:

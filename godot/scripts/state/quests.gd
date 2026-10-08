@@ -2,7 +2,7 @@ class_name Quests
 ## The villagers' quests (src/game/quests.ts): talking to a giver accepts
 ## their quest, talking again with the objective met turns it in. Bounties
 ## count kills; deliveries count what the pack holds and hand it over on
-## turn-in. Pure, over the exported progression.json; GameState applies them.
+## turn-in, as do Maren's relics (one of each, PIX-170). Pure, over the exported progression.json; GameState applies them.
 
 static var _doc := {}
 
@@ -36,7 +36,13 @@ static func progress(quest: Dictionary, entries: Dictionary, items: Dictionary) 
 	if entry.is_empty():
 		return 0
 	var objective: Dictionary = quest["objective"]
-	var have: int = items.get(objective["itemId"], 0) if objective["kind"] == "deliver" else int(entry["progress"])
+	var have := int(entry["progress"])
+	match String(objective["kind"]):
+		"deliver":
+			have = items.get(objective["itemId"], 0)
+		"relics":
+			# Maren's ask (PIX-170): one of each relic, in any order.
+			have = objective["items"].filter(func(item_id: String) -> bool: return int(items.get(item_id, 0)) > 0).size()
 	return mini(int(objective["count"]), have)
 
 

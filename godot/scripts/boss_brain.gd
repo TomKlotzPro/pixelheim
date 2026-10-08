@@ -105,7 +105,7 @@ func _summon(attack: Dictionary) -> void:
 		var spot: Vector2i = cell + offsets[i % offsets.size()]
 		if not world.map.is_walkable(spot):
 			spot = cell
-		var add: Node = world.spawn_enemy(pattern["summon"], spot, "", "", false, false, cell)
+		var add: Node = world.spawn_enemy(pattern["summon"], spot, "", "", false, false, cell, Dungeons.lift(world.map.floor_level) if world.map.floor_level > 0 else 0)
 		add.add_to_group("summoned")
 		world.appear(add)
 		add.notice()

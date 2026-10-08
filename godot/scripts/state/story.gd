@@ -47,14 +47,21 @@ static func next_dream(cleared_levels: Array, seen: Array) -> String:
 	return ""
 
 
-## What Maren has to tell now: the deepest of her stories the hero's floors
-## have reached ({id, lines}), or {} before the crypt. Each is told once
-## (its id goes in the story ledger); after that she talks as usual. Her
-## last words depend on the ending the hero chose (PIX-157).
-static func elder_story(cleared_levels: Array, seen: Array) -> Dictionary:
+## What Maren has to tell now: a relic's story once its boss is laid low
+## (PIX-170: Tam, the iron, Oskar, Liane - whichever came home first), else
+## the deepest of her stories the hero's floors have reached ({id, lines}),
+## or {} before the crypt. Each is told once (its id goes in the story
+## ledger); after that she talks as usual. Her last words depend on the
+## ending the hero chose (PIX-157).
+static func elder_story(cleared_levels: Array, seen: Array, hunted := []) -> Dictionary:
+	for entry: Dictionary in _data()["elderLines"]:
+		if entry.has("hunted") and entry["hunted"] in hunted and entry["id"] not in seen:
+			return entry
 	var latest := {}
 	var ending := ending_of(seen)
 	for entry: Dictionary in _data()["elderLines"]:
+		if not entry.has("after"):
+			continue
 		if entry.has("ending") and entry["ending"] != ending:
 			continue
 		if int(entry["after"]) in cleared_levels:

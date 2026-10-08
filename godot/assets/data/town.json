@@ -197,9 +197,10 @@
       "tier": 2,
       "requires": [
         {
-          "kind": "cleared",
-          "level": 5,
-          "line": "The road is safe enough: clear the Ruined Watchtower (floor 5)"
+          "kind": "relics",
+          "count": 2,
+          "orCleared": 5,
+          "line": "Hope comes home: win two of the five relics (or clear the Ruined Watchtower)"
         },
         {
           "kind": "settlers",
@@ -404,9 +405,10 @@
       "tier": 3,
       "requires": [
         {
-          "kind": "cleared",
-          "level": 10,
-          "line": "The mountain is quiet: slay Fafnyr on the Ashen Throne"
+          "kind": "relics",
+          "count": 4,
+          "orCleared": 10,
+          "line": "The five come home: bring all four relics to Maren (or slay Fafnyr)"
         }
       ],
       "projects": [

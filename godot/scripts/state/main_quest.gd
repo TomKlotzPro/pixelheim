@@ -52,6 +52,9 @@ static func is_met(step: Dictionary, progression: ProgressionState, settlement: 
 			return when["projectId"] in Town.done_projects(settlement)
 		"seen":
 			return when["sceneId"] in progression.story_seen
+		"hunted":
+			# A relic's chapter boss laid low (PIX-170).
+			return when["named"] in progression.hunted
 	push_warning("MainQuest: unknown step kind %s" % when["kind"])
 	return false
 

@@ -655,7 +655,7 @@
     },
     "castle": {
       "name": "Greyhold",
-      "dropFloor": 11,
+      "dropFloor": 8,
       "eliteChance": 0.12,
       "monsters": [
         {
@@ -674,7 +674,7 @@
     },
     "cellars": {
       "name": "the Greyhold cellars",
-      "dropFloor": 12,
+      "dropFloor": 9,
       "eliteChance": 0.15,
       "monsters": [
         {
@@ -693,7 +693,7 @@
     },
     "frost": {
       "name": "the Frostgate pass",
-      "dropFloor": 13,
+      "dropFloor": 9,
       "eliteChance": 0.12,
       "monsters": [
         {
@@ -712,7 +712,7 @@
     },
     "icecave": {
       "name": "the ice cave",
-      "dropFloor": 14,
+      "dropFloor": 10,
       "eliteChance": 0.15,
       "monsters": [
         {
@@ -4185,10 +4185,11 @@
         }
       ],
       "rewardItemIds": [
-        "potion_hp",
-        "bread"
+        "greater_potion",
+        "elixir"
       ],
-      "rewardGold": 20
+      "rewardGold": 55,
+      "lift": 11
     },
     {
       "level": 2,
@@ -4207,10 +4208,11 @@
         }
       ],
       "rewardItemIds": [
-        "leather_armor",
-        "potion_hp"
+        "greater_potion",
+        "gem"
       ],
-      "rewardGold": 30
+      "rewardGold": 75,
+      "lift": 10
     },
     {
       "level": 3,
@@ -4229,10 +4231,11 @@
         }
       ],
       "rewardItemIds": [
-        "iron_sword",
-        "potion_mp"
+        "duelists_ring",
+        "greater_potion"
       ],
-      "rewardGold": 45
+      "rewardGold": 110,
+      "lift": 10
     },
     {
       "level": 4,
@@ -4251,11 +4254,12 @@
         }
       ],
       "rewardItemIds": [
-        "apprentice_staff",
         "cheese_wheel",
-        "potion_hp"
+        "gem",
+        "greater_potion"
       ],
-      "rewardGold": 60
+      "rewardGold": 140,
+      "lift": 9
     },
     {
       "level": 5,
@@ -4274,11 +4278,11 @@
         }
       ],
       "rewardItemIds": [
-        "steel_shield",
-        "potion_hp",
-        "potion_mp"
+        "wyrm_visor",
+        "elixir"
       ],
-      "rewardGold": 85
+      "rewardGold": 200,
+      "lift": 9
     },
     {
       "level": 6,
@@ -4297,11 +4301,11 @@
         }
       ],
       "rewardItemIds": [
-        "mage_robe",
-        "shadow_dagger",
-        "potion_hp"
+        "moon_pendant",
+        "greater_potion"
       ],
-      "rewardGold": 110
+      "rewardGold": 240,
+      "lift": 8
     },
     {
       "level": 7,
@@ -4320,11 +4324,11 @@
         }
       ],
       "rewardItemIds": [
-        "steel_axe",
-        "iron_armor",
-        "potion_mp"
+        "scaled_greaves",
+        "gem"
       ],
-      "rewardGold": 140
+      "rewardGold": 310,
+      "lift": 8
     },
     {
       "level": 8,
@@ -4343,12 +4347,12 @@
         }
       ],
       "rewardItemIds": [
-        "arch_staff",
         "gem",
-        "potion_hp",
-        "potion_hp"
+        "greater_potion",
+        "elixir"
       ],
-      "rewardGold": 180
+      "rewardGold": 370,
+      "lift": 7
     },
     {
       "level": 9,
@@ -4372,7 +4376,8 @@
         "potion_mp",
         "cheese_wheel"
       ],
-      "rewardGold": 240
+      "rewardGold": 490,
+      "lift": 7
     },
     {
       "level": 10,
@@ -4390,7 +4395,8 @@
         "dragon_scale",
         "gem"
       ],
-      "rewardGold": 500
+      "rewardGold": 950,
+      "lift": 6
     },
     {
       "level": 11,
@@ -4412,7 +4418,8 @@
         "greater_potion",
         "greater_potion"
       ],
-      "rewardGold": 300
+      "rewardGold": 570,
+      "lift": 6
     },
     {
       "level": 12,
@@ -4434,7 +4441,8 @@
         "obsidian_blade",
         "greater_potion"
       ],
-      "rewardGold": 350
+      "rewardGold": 610,
+      "lift": 5
     },
     {
       "level": 13,
@@ -4456,7 +4464,8 @@
         "runic_armor",
         "gem"
       ],
-      "rewardGold": 420
+      "rewardGold": 735,
+      "lift": 5
     },
     {
       "level": 14,
@@ -4479,7 +4488,8 @@
         "greater_potion",
         "gem"
       ],
-      "rewardGold": 500
+      "rewardGold": 800,
+      "lift": 4
     },
     {
       "level": 15,
@@ -4497,7 +4507,8 @@
         "lich_crown",
         "gem"
       ],
-      "rewardGold": 1200
+      "rewardGold": 1740,
+      "lift": 3
     }
   ],
   "dungeons": {
@@ -4579,7 +4590,8 @@
       "where": "the south-east corner of the Whispering Forest",
       "notice": "A grey wolf as big as a pony has taken three sheep from the forest farms, and a shepherd's boot with the shepherd still in it. The old ones call it Greymaw. It howls and the forest answers.",
       "seen": "Old Greymaw lifts its head and howls!",
-      "homecoming": "The shepherds have hung Greymaw's tail over the well. The sheep sleep easy tonight."
+      "homecoming": "The shepherds have hung Greymaw's tail over the well. The sheep sleep easy tonight.",
+      "postedRelics": 1
     },
     "drowned_knight": {
       "name": "The Drowned Knight",
@@ -4624,7 +4636,8 @@
       "where": "the drowned road at the south of the Sunken Marsh",
       "notice": "A knight in rusted mail walks the drowned road at the bottom of the marsh. He was buried in the bog a hundred years ago and has not noticed. The hands of the bog come up where he points.",
       "seen": "The Drowned Knight points, and the bog reaches for you!",
-      "homecoming": "The marsh-cutters are singing again. Someone has set a candle at the edge of the bog for the Drowned Knight."
+      "homecoming": "The marsh-cutters are singing again. Someone has set a candle at the edge of the bog for the Drowned Knight.",
+      "postedRelics": 2
     },
     "cinderjaw": {
       "name": "Cinderjaw",
@@ -4665,7 +4678,8 @@
       "where": "the high ash at the north-east of the Ash Fields",
       "notice": "Fafnyr's last brood-wyrm still nests on the high ash. It spits fire three ways at once and the caravans have stopped coming over the ridge.",
       "seen": "Cinderjaw screams and the air fills with fire!",
-      "homecoming": "The caravans are back over the ridge. Hilda says the first one brought iron enough for a year."
+      "homecoming": "The caravans are back over the ridge. Hilda says the first one brought iron enough for a year.",
+      "postedRelics": 3
     },
     "mossback": {
       "name": "Mossback",
@@ -4704,7 +4718,8 @@
       "where": "the walled glade at the heart of the Deepwood",
       "notice": "A troll so old that moss grows on its back sleeps in the walled glade of the Deepwood. When it wakes it throws the glade's stones at whoever woke it.",
       "seen": "Mossback wakes and tears a stone from the wall!",
-      "homecoming": "The woodcutters are going back into the Deepwood. Fenn swears he heard the trees sigh."
+      "homecoming": "The woodcutters are going back into the Deepwood. Fenn swears he heard the trees sigh.",
+      "postedRelics": 4
     },
     "gulp": {
       "name": "Grandmother Gulp",
@@ -4759,7 +4774,7 @@
       "maxHp": 220,
       "attack": 17,
       "defense": 4,
-      "xp": 260,
+      "xp": 130,
       "gold": 60,
       "bounty": 0,
       "drop": "tams_ladle",
@@ -4799,7 +4814,7 @@
       "maxHp": 360,
       "attack": 26,
       "defense": 9,
-      "xp": 420,
+      "xp": 210,
       "gold": 90,
       "bounty": 0,
       "drop": "black_ingot",
@@ -4838,7 +4853,7 @@
       "maxHp": 400,
       "attack": 29,
       "defense": 10,
-      "xp": 480,
+      "xp": 240,
       "gold": 100,
       "bounty": 0,
       "drop": "oskars_shield",
@@ -4877,7 +4892,7 @@
       "maxHp": 480,
       "attack": 32,
       "defense": 10,
-      "xp": 560,
+      "xp": 280,
       "gold": 120,
       "bounty": 0,
       "drop": "lianes_lantern",
@@ -4970,5 +4985,35 @@
         10
       ]
     ]
+  },
+  "floorLift": {
+    "about": "PIX-170: the mountain comes last, so each floor's foes stand `lift` levels above their kind. A stat grows by the ratio of its curve (a + b*L + c*L*L) at the lifted level to its curve at the kind's own; XP grows gentler than the rest.",
+    "curves": {
+      "maxHp": [
+        4,
+        10,
+        0
+      ],
+      "attack": [
+        2,
+        2.7,
+        0
+      ],
+      "defense": [
+        1,
+        0.8,
+        0
+      ],
+      "xp": [
+        7,
+        0,
+        0.45
+      ],
+      "gold": [
+        2,
+        0,
+        0.3
+      ]
+    }
   }
 }

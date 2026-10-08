@@ -2,7 +2,7 @@ class_name Hunts
 ## The named monsters (PIX-156): one notorious creature per wild region, each
 ## bigger and meaner than its kind, with a lair it keeps to and one move of
 ## its own. The bounty board on the square posts each once the hero has
-## cleared the floor its notice waits for; the bounty is paid where it falls,
+## cleared the floor its notice waits for, or won enough relics (PIX-170); the bounty is paid where it falls,
 ## with a drop nothing else gives, and Pixelheim talks about it. A named
 ## monster killed stays dead (ProgressionState.hunted). Pure, over
 ## combat.json's "named"; the world spawns them and enemy.gd fights them.
@@ -34,6 +34,17 @@ static func named(named_id: String) -> Dictionary:
 ## PIX-165: the Tidecaller) is in its lair from the start.
 static func is_posted(entry: Dictionary, cleared: Array) -> bool:
 	return int(entry["postedAfter"]) == 0 or int(entry["postedAfter"]) in cleared
+
+
+## The floors the board counts as cleared (PIX-170): the hero's own, and a
+## notice's floor once enough relics are won ("postedRelics"), so a hero out
+## in the Reach before the mountain gets the bounties too.
+static func board_floors(cleared: Array, relics: int) -> Array:
+	var out := cleared.duplicate()
+	for entry in all():
+		if entry.has("postedRelics") and relics >= int(entry["postedRelics"]) and int(entry["postedAfter"]) not in out:
+			out.append(int(entry["postedAfter"]))
+	return out
 
 
 ## Whether the bounty board lists it: a chapter's boss is a quest, not a bounty.

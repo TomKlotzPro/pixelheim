@@ -255,7 +255,7 @@ func on_enemy_died(enemy: Node) -> void:
 			cleared = enemy.spawn_id
 	var floor_level := int(Bestiary.region(enemy.region).get("dropFloor", 1)) if enemy.region != "" else 1
 	if map.floor_level > 0:
-		floor_level = map.floor_level
+		floor_level = Dungeons.drop_floor(map.floor_level)
 	var gear_before := GameState.pack.gear.size()
 	_log(GameState.defeat_monster(enemy.fighter, enemy.region, cleared, floor_level))
 	if enemy.has_meta("prologue"):
@@ -284,10 +284,10 @@ func on_player_died() -> void:
 
 ## One monster of `species` at `cell`, at home there unless `home` says where
 ## its pack lives; wild ones pay the reduced wild rewards.
-func spawn_enemy(species: String, cell: Vector2i, region := "", spawn_id := "", elite := false, wild := true, home := Vector2i(-1, -1)) -> Node:
+func spawn_enemy(species: String, cell: Vector2i, region := "", spawn_id := "", elite := false, wild := true, home := Vector2i(-1, -1), lift := 0) -> Node:
 	var enemy := preload("res://scripts/enemy.gd").new()
 	enemy.world = self
-	var fighter := Bestiary.spawn(species, elite)
+	var fighter := Bestiary.spawn(species, elite, lift)
 	enemy.fighter = Bestiary.wild(fighter) if wild else fighter
 	enemy.region = region
 	enemy.spawn_id = spawn_id
@@ -408,6 +408,10 @@ func _use_portal(target: Dictionary) -> void:
 		"dungeon":
 			# The floor select opens while the hero waits at the door.
 			_step_back()
+			# Barred since the Night of Ash until the relics come home (PIX-170).
+			if target["dungeon"] == "mountain" and not Relics.gate_open(GameState.progression):
+				_flash_message(Relics.barred_line())
+				return
 			var screen := preload("res://scripts/dungeon_screen.gd").new()
 			screen.world = self
 			screen.dungeon_id = target["dungeon"]
@@ -607,7 +611,7 @@ func _hint_boards() -> void:
 	if Vector2(player_cell).distance_to(Vector2(Town.project_board())) <= 3.0:
 		hint("board")
 	if Vector2(player_cell).distance_to(Vector2(Town.bounty_board())) <= 2.0 \
-			and not Hunts.notices(GameState.progression.cleared_levels, GameState.progression.hunted).is_empty():
+			and not Hunts.notices(GameState.board_floors(), GameState.progression.hunted).is_empty():
 		hint("bounty")
 
 
@@ -648,7 +652,7 @@ func enter_floor(level: int) -> void:
 	_enter_map(map, map.spawn)
 	floor_foes = plan["foes"].size()
 	for foe: Dictionary in plan["foes"]:
-		spawn_enemy(foe["id"], foe["cell"], "", "", foe["elite"], false)
+		spawn_enemy(foe["id"], foe["cell"], "", "", foe["elite"], false, Vector2i(-1, -1), Dungeons.lift(level))
 	view.add_patch(plan["patch"], Gathering.floor_spot_id(level), Gathering.floor_material(level))
 	var floor_def := Dungeons.floor_def(level)
 	_log(["Floor %d: %s" % [level, floor_def["name"]], String(floor_def["description"])])
@@ -897,7 +901,7 @@ func _talk(npc: Dictionary) -> void:
 		return
 	# Maren tells what the hero's floors have earned, once each (PIX-153).
 	if npc["id"] == "elder":
-		var told := Story.elder_story(GameState.progression.cleared_levels, GameState.progression.story_seen)
+		var told := Story.elder_story(GameState.progression.cleared_levels, GameState.progression.story_seen, GameState.progression.hunted)
 		if not told.is_empty():
 			npc = npc.duplicate()
 			npc["lines"] = told["lines"]
@@ -1010,6 +1014,9 @@ func _update_objective() -> void:
 	# long kill (a bounty's five lines) never runs into it or the dock.
 	log_box.reset_size()
 	log_box.position.y = objective_box.position.y - 6 - log_box.size.y
+	# A message stands where the objective line does and grows upward too, so
+	# a long one (a barred gate, a quest's words) never runs under the dock.
+	message_label.position.y = objective_box.position.y + objective_box.size.y - message_label.size.y
 	var show := text != "" and not in_fight() and message_label.modulate.a < 0.05
 	var target := 1.0 if show else 0.0
 	if objective_box.get_meta("fading_to", -1.0) != target:
@@ -1379,7 +1386,7 @@ func spawn_lairs() -> void:
 	for enemy in get_tree().get_nodes_in_group("mobs"):
 		if not enemy.is_queued_for_deletion():
 			out.append(enemy.fighter.get("named", ""))
-	for entry in Hunts.living_on(map.id, GameState.progression.cleared_levels, GameState.progression.hunted):
+	for entry in Hunts.living_on(map.id, GameState.board_floors(), GameState.progression.hunted):
 		if entry["id"] not in out:
 			spawn_named(entry["id"])
 
@@ -1619,6 +1626,7 @@ func _update_nameplate() -> void:
 ## A line for the hero, held long enough to read (quests say a lot).
 func _flash_message(text: String) -> void:
 	message_label.text = text
+	message_label.reset_size()
 	var tween := create_tween()
 	tween.tween_property(message_label, "modulate:a", 1.0, 0.15)
 	tween.tween_interval(clampf(text.length() / 22.0, 1.6, 6.0))

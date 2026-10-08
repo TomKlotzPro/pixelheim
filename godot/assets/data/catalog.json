@@ -1343,6 +1343,15 @@
       "damage": 16,
       "scaling": "intelligence",
       "slot": "weapon"
+    },
+    "marens_promise": {
+      "name": "Maren's Promise",
+      "category": "misc",
+      "sprite": "brooch",
+      "weight": 0,
+      "value": 0,
+      "quest": true,
+      "description": "A tarnished brooch with five marks, the last one hers. She wore it fifty years. It's a promise that someone would finish what the five started. The fifth relic."
     }
   },
   "roles": {

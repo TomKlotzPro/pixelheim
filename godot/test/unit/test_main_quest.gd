@@ -36,6 +36,10 @@ func test_every_step_names_a_real_quest_or_floor() -> void:
 			"seen":
 				var stories: Array = Story._data()["elderLines"].map(func(entry: Dictionary) -> String: return entry["id"])
 				assert_has(stories, when["sceneId"], "%s: one of Maren's stories" % step["id"])
+			"hunted":
+				var relic: Array = Relics.all().filter(func(entry: Dictionary) -> bool: return entry["named"] == when["named"])
+				assert_eq(relic.size(), 1, "%s: a relic's chapter boss" % step["id"])
+				assert_true(step.get("optional", false), "%s: the relics come in any order" % step["id"])
 			_:
 				fail_test("%s: unknown kind %s" % [step["id"], when["kind"]])
 		assert_ne(step["hint"], "")
@@ -50,8 +54,8 @@ func test_the_story_starts_at_the_inn_and_follows_the_real_rules() -> void:
 	for i in 3:
 		state.defeat_monster(Bestiary.spawn("slime"), "forest", "", 1)
 	state.resolve_quests("innkeeper")
-	assert_eq(_next(), "cellar")
-	state.clear_floor(1)
+	assert_eq(_next(), "relics_taken", "the mountain's barred: Maren knows why")
+	state.resolve_quests("elder")
 	assert_eq(_next(), "rebuild", "a new hero's town is ashes: rebuild the inn")
 	state.settlement.town_tier = 1
 	assert_eq(_next(), "first_brew")
