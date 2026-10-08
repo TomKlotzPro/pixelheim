@@ -35,7 +35,7 @@ var chest_sprites := {}
 var door_signs: Array = []
 var furniture_cells: Array[Vector2i] = []
 ## Each wild pack's camp (PIX-142): cell -> {"kind": "tent"|"torch", "tile"},
-## a tent in its region's colour up-left of its home and a torch up-right.
+## a tent in its region's colour behind its home and a torch beside it.
 var camps := {}
 
 ## Puny World tents by region: green in the woods, straw in the wetlands,
@@ -43,6 +43,13 @@ var camps := {}
 const TENTS := {"forest": 895, "deepwood": 895, "marsh": 706, "mire": 706, "ash": 905}
 ## The CC0 dungeon sheet's torch flame, planted in the ground by a camp.
 const CAMP_TORCH := [16, 17, 18, 19, 20, 21, 22, 23]
+## Where a camp's pieces may stand around its home, best first: behind it,
+## then beside, then in front (the pack itself takes the home and its sides).
+const CAMP_RING := [
+	Vector2i(-1, -1), Vector2i(1, -1), Vector2i(-2, 0), Vector2i(2, 0), Vector2i(-1, 1), Vector2i(1, 1),
+	Vector2i(-2, -1), Vector2i(2, -1), Vector2i(-1, 2), Vector2i(1, 2), Vector2i(0, 2), Vector2i(-2, 1),
+	Vector2i(2, 1), Vector2i(0, -2),
+]
 const TENT_FOOT := Rect2(1, 5, 14, 11)
 const TORCH_FOOT := Rect2(5, 9, 6, 7)
 
@@ -301,8 +308,8 @@ func _solid_scatter(data: MapData, arrival: Vector2i) -> Dictionary:
 	return Scatter.solid(data, kept, outdoor_props["drawn"])
 
 
-## Where each wild pack's camp stands: a tent and a torch on the open cells
-## of its region diagonally behind its home, whichever of them fit.
+## Where each wild pack's camp stands: a tent on the first open cell of its
+## region in CAMP_RING, and a torch on the next one within two of the tent.
 static func plan_camps(map: MapData) -> Dictionary:
 	var out := {}
 	if map.floor_level > 0:
@@ -310,14 +317,21 @@ static func plan_camps(map: MapData) -> Dictionary:
 	for spawn: Dictionary in Bestiary.spawns_on(map.id):
 		var home := Vector2i(spawn["x"], spawn["y"])
 		var region := map.region_at(home)
-		var pieces := [
-			[home + Vector2i(-1, -1), {"kind": "tent", "tile": TENTS.get(region, 706)}],
-			[home + Vector2i(1, -1), {"kind": "torch", "tile": CAMP_TORCH[0]}],
-		]
-		for piece: Array in pieces:
-			var cell: Vector2i = piece[0]
-			if map.is_walkable(cell) and map.region_at(cell) == region and not map.portals.has(cell):
-				out[cell] = piece[1]
+		var fits := func(cell: Vector2i) -> bool:
+			return map.is_walkable(cell) and map.region_at(cell) == region and not map.portals.has(cell) and not out.has(cell)
+		var tent := Vector2i(-1, -1)
+		for offset: Vector2i in CAMP_RING:
+			if fits.call(home + offset):
+				tent = home + offset
+				out[tent] = {"kind": "tent", "tile": TENTS.get(region, 706)}
+				break
+		if tent.x < 0:
+			continue
+		for offset: Vector2i in CAMP_RING:
+			var cell: Vector2i = home + offset
+			if fits.call(cell) and maxi(absi(cell.x - tent.x), absi(cell.y - tent.y)) <= 2:
+				out[cell] = {"kind": "torch", "tile": CAMP_TORCH[0]}
+				break
 	return out
 
 
