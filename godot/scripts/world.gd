@@ -735,6 +735,16 @@ func _talk(npc: Dictionary) -> void:
 		box.npc = npc
 		add_child(box)
 		return
+	# Maren tells what the hero's floors have earned, once each (PIX-153).
+	if npc["id"] == "elder":
+		var told := Story.elder_story(GameState.progression.cleared_levels, GameState.progression.story_seen)
+		if not told.is_empty():
+			npc = npc.duplicate()
+			npc["lines"] = told["lines"]
+			GameState.dialogue_closed.connect(func(_who: String) -> void: GameState.mark_seen(told["id"]), CONNECT_ONE_SHOT)
+			box.npc = npc
+			add_child(box)
+			return
 	# Townsfolk talk about the hero's latest deed first (PIX-149).
 	var reaction := Npcs.reaction(npc, GameState.last_deed)
 	if reaction != "":

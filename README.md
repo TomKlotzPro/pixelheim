@@ -6,7 +6,7 @@
 
 <p align="center">
   <b>A retro pixel-art open-world RPG in Godot 4.7: one hero, one village, fifteen floors of a mountain and what lies under it.</b><br />
-  Fifteen floors. Two bosses. Infinite cheese wheels. Currently v0.95 - 1.0 has to be earned.
+  Fifteen floors. Two bosses. Infinite cheese wheels. Currently v0.96 - 1.0 has to be earned.
 </p>
 
 ---

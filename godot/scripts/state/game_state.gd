@@ -1231,6 +1231,10 @@ func clear_floor(level: int) -> Dictionary:
 				pack.add_item(item_id)
 				found.append(Catalog.item_name(item_id))
 		lines.append("The floor's hoard: %s." % ", ".join(found))
+		# A page of Liane's journal, dropped on the way down (PIX-153).
+		var page := Story.page_for(level)
+		if not page.is_empty():
+			lines.append("Among the bones: a page of an old journal (%s). J reads it." % page["title"])
 		# A first clear is worth more than its fights (PIX-141): going deeper
 		# levels the hero, farming what's beaten doesn't.
 		var clear_xp := Dungeons.clear_xp(level)
