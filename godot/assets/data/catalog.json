@@ -945,6 +945,81 @@
       "value": 0,
       "quest": true,
       "description": "A cook's ladle, black iron, the handle wrapped in sailcloth. Tam carried it up the mountain fifty years ago. One of the five relics."
+    },
+    "oilskin_hood": {
+      "name": "Oilskin Hood",
+      "category": "apparel",
+      "sprite": "helm",
+      "weight": 2,
+      "value": 90,
+      "description": "Waxed sailcloth, stiff with salt. The rain runs off it, and so do most crabs. Crafted, never sold.",
+      "armor": 2,
+      "slot": "head",
+      "set": "oilskin",
+      "grants": {
+        "dexterity": 1
+      }
+    },
+    "oilskin_coat": {
+      "name": "Oilskin Coat",
+      "category": "apparel",
+      "sprite": "cloak",
+      "weight": 5,
+      "value": 160,
+      "description": "A fisher's long coat, oiled until the sea gives up on it. Crafted, never sold.",
+      "armor": 4,
+      "slot": "body",
+      "set": "oilskin",
+      "grants": {
+        "dexterity": 1
+      }
+    },
+    "oilskin_gloves": {
+      "name": "Oilskin Gloves",
+      "category": "apparel",
+      "sprite": "gloves",
+      "weight": 2,
+      "value": 90,
+      "description": "Fingerless, for the knots. Saltmere's net-menders swear by them. Crafted, never sold.",
+      "armor": 1,
+      "slot": "hands",
+      "set": "oilskin",
+      "grants": {
+        "dexterity": 1
+      }
+    },
+    "oilskin_boots": {
+      "name": "Oilskin Boots",
+      "category": "apparel",
+      "sprite": "boots",
+      "weight": 2,
+      "value": 90,
+      "description": "Sealed at the seams with pitch. Your feet stay dry; nothing else does. Crafted, never sold.",
+      "armor": 2,
+      "slot": "feet",
+      "set": "oilskin"
+    },
+    "saltwood_buckler": {
+      "name": "Saltwood Buckler",
+      "category": "apparel",
+      "sprite": "shield",
+      "weight": 2,
+      "value": 90,
+      "description": "Driftwood, bleached and banded with sea glass. Light enough to dance with. Crafted, never sold.",
+      "armor": 3,
+      "slot": "offhand",
+      "set": "oilskin"
+    },
+    "tidecutter": {
+      "name": "Tidecutter",
+      "category": "weapons",
+      "sprite": "dagger",
+      "weight": 3,
+      "value": 200,
+      "description": "A blade of sea-glass edge on a pearl grip. It hums like a shell held to the ear. Crafted, never sold.",
+      "damage": 12,
+      "scaling": "dexterity",
+      "slot": "weapon"
     }
   },
   "roles": {
@@ -1266,5 +1341,31 @@
     "x": 2,
     "y": 3,
     "facing": "down"
+  },
+  "sets": {
+    "oilskin": {
+      "name": "Saltmere Oilskin",
+      "region": "coast",
+      "pieces": [
+        "oilskin_hood",
+        "oilskin_coat",
+        "oilskin_gloves",
+        "oilskin_boots",
+        "saltwood_buckler"
+      ],
+      "bonuses": {
+        "3": {
+          "grants": {
+            "dexterity": 2
+          }
+        },
+        "5": {
+          "grants": {
+            "dexterity": 3
+          },
+          "armor": 3
+        }
+      }
+    }
   }
 }

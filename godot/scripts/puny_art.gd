@@ -64,6 +64,7 @@ const HEADS := {
 	"leather_cap": "characters/Archer-Leather.png",
 	"iron_helm": "characters/Human-Soldier-Cyan.png",
 	"wyrm_visor": "characters/Warrior-Wyrm.png",
+	"oilskin_hood": "characters/Archer-Leather.png",
 }
 const BODIES := {
 	"leather_armor": "characters/Archer-Leather.png",
@@ -73,6 +74,7 @@ const BODIES := {
 	"iron_armor": "characters/Soldier-Blue.png",
 	"scaled_mail": "characters/Warrior-Red.png",
 	"runic_armor": "characters/Human-Soldier-Cyan.png",
+	"oilskin_coat": "characters/Archer-Leather.png",
 }
 ## The bare template whose frames say where each head ends.
 const BASE := "characters/Character-Base.png"

@@ -363,7 +363,10 @@ func _about(row: Dictionary) -> String:
 			if missing.is_empty():
 				return about + " " + String(Catalog.item(row["item_id"]).get("description", ""))
 			return about + " " + "; ".join(missing) + "."
-	return String(Catalog.item(row["item_id"]).get("description", ""))
+	var item := Catalog.item(row["item_id"])
+	if item.has("set"):
+		return "%s %s." % [item.get("description", ""), Catalog.set_line(item["set"], int(GameState.pack.set_counts().get(item["set"], 0)))]
+	return String(item.get("description", ""))
 
 
 ## Fine and epic pieces wear their rarity in the name's colour.

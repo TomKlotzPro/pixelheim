@@ -34,7 +34,8 @@ static func gear_damage(instance: Dictionary) -> int:
 
 
 static func total_armor(pack: InventoryState) -> int:
-	var total := 0
+	# A worn set's own armour bonus (PIX-166) on top of its pieces'.
+	var total := int(pack.set_bonus()["armor"])
 	for slot: String in ARMOR_SLOTS:
 		var instance := pack.gear_by_uid(pack.equipped.get(slot, ""))
 		if not instance.is_empty():

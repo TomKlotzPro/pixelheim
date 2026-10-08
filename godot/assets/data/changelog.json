@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.107.0",
+      "date": "2026-10-08",
+      "codename": "Oilskin",
+      "notes": [
+        "ARMOUR SETS: pieces of one set worn together give more - at three pieces and again at five. The bonus shows on every piece (what you wear of it, what more would give) and on the stats page",
+        "THE SALTMERE OILSKIN: hood, coat, gloves, boots and a saltwood buckler, light and quick (+DEX), and the Tidecutter, a sea-glass dagger on a pearl grip. Hilda crafts them from what the coast gives: sea glass, pelts, fish and pearls",
+        "Every region still to come brings its own set",
+        "The craft guide now knows fishing: it tells you where the fish and pearls a recipe needs come from"
+      ]
+    },
+    {
       "version": "0.106.0",
       "date": "2026-10-08",
       "codename": "The Tidecaller",

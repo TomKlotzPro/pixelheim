@@ -365,6 +365,78 @@
         "id": "smithing",
         "level": 8
       }
+    },
+    {
+      "id": "craft_oilskin_hood",
+      "itemId": "oilskin_hood",
+      "needs": {
+        "sea_glass": 2,
+        "wolf_pelt": 1
+      },
+      "job": {
+        "id": "smithing",
+        "level": 2
+      }
+    },
+    {
+      "id": "craft_oilskin_gloves",
+      "itemId": "oilskin_gloves",
+      "needs": {
+        "sea_glass": 2,
+        "fresh_fish": 1
+      },
+      "job": {
+        "id": "smithing",
+        "level": 2
+      }
+    },
+    {
+      "id": "craft_oilskin_boots",
+      "itemId": "oilskin_boots",
+      "needs": {
+        "sea_glass": 2,
+        "wolf_pelt": 1
+      },
+      "job": {
+        "id": "smithing",
+        "level": 2
+      }
+    },
+    {
+      "id": "craft_oilskin_coat",
+      "itemId": "oilskin_coat",
+      "needs": {
+        "sea_glass": 3,
+        "wolf_pelt": 2
+      },
+      "job": {
+        "id": "smithing",
+        "level": 3
+      }
+    },
+    {
+      "id": "craft_saltwood_buckler",
+      "itemId": "saltwood_buckler",
+      "needs": {
+        "sea_glass": 3,
+        "marsh_reed": 2
+      },
+      "job": {
+        "id": "smithing",
+        "level": 3
+      }
+    },
+    {
+      "id": "craft_tidecutter",
+      "itemId": "tidecutter",
+      "needs": {
+        "pearl": 1,
+        "sea_glass": 2
+      },
+      "job": {
+        "id": "smithing",
+        "level": 4
+      }
     }
   ],
   "jobStations": {

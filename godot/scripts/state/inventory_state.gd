@@ -147,4 +147,32 @@ func granted_stat(stat: String) -> int:
 	for instance in gear:
 		if instance["uid"] in equipped.values():
 			total += int(Catalog.item(instance["itemId"]).get("grants", {}).get(stat, 0))
-	return total
+	return total + int(set_bonus()["grants"].get(stat, 0))
+
+
+## Pieces of each armour set worn now (PIX-166): set id -> count.
+func set_counts() -> Dictionary:
+	var counts := {}
+	for instance in gear:
+		if instance["uid"] in equipped.values():
+			var set_id: String = Catalog.item(instance["itemId"]).get("set", "")
+			if set_id != "":
+				counts[set_id] = int(counts.get(set_id, 0)) + 1
+	return counts
+
+
+## What the worn sets give together: every bonus a set's count has reached
+## ("3", "5" pieces), {grants: {stat: n}, armor: n}.
+func set_bonus() -> Dictionary:
+	var out := {"grants": {}, "armor": 0}
+	var counts := set_counts()
+	for set_id: String in counts:
+		var bonuses: Dictionary = Catalog.armour_set(set_id).get("bonuses", {})
+		for at: String in bonuses:
+			if int(counts[set_id]) < int(at):
+				continue
+			var bonus: Dictionary = bonuses[at]
+			out["armor"] += int(bonus.get("armor", 0))
+			for stat: String in bonus.get("grants", {}):
+				out["grants"][stat] = int(out["grants"].get(stat, 0)) + int(bonus["grants"][stat])
+	return out

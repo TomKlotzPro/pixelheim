@@ -366,6 +366,9 @@ static func _describe(item_id: String, instance := {}) -> String:
 		lines.append("Armor %d" % (int(item["armor"]) + bonus))
 	for stat: String in item.get("grants", {}):
 		lines.append("+%d %s" % [item["grants"][stat], stat])
+	# A set piece says its set and what wearing more of it gives (PIX-166).
+	if item.has("set"):
+		lines.append(Catalog.set_line(item["set"], int(GameState.pack.set_counts().get(item["set"], 0))))
 	if item.has("restoreHp"):
 		lines.append("Restores %d HP" % item["restoreHp"])
 	if item.has("restoreMp"):
