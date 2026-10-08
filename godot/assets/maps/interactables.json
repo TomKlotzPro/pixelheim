@@ -126,8 +126,8 @@
     {
       "id": "mire_mimic",
       "mapId": "mirefen",
-      "x": 42,
-      "y": 12,
+      "x": 6,
+      "y": 30,
       "look": "chest",
       "mimic": true
     },

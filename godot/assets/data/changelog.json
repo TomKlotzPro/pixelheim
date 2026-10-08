@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.119.0",
+      "date": "2026-10-08",
+      "codename": "Safe Roads",
+      "notes": [
+        "ROADS ACROSS THE ASH FIELDS: paved roads now run from the mountain path west to Blackiron, east to Greyhold and north up the pass to the Frostgate. The orc and wyvern packs that sat beside them have moved off, and Cinderjaw nests in a scorched hollow away from the Frostgate road",
+        "A SAFER MIREFEN AND DEEPWOOD: the Mirefen's mimic pack is gone (its trapped chest waits in the far west, by Grandmother Gulp), and the Deepwood's trolls no longer stand at its gate",
+        "ENERGY COMES BACK: out of a fight, every hero's mana or stamina slowly returns - casters can walk to the next fight with their spells"
+      ]
+    },
+    {
       "version": "0.118.1",
       "date": "2026-10-08",
       "codename": "Nobody Home",

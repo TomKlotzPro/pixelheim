@@ -742,14 +742,16 @@
     {
       "id": "ash_2",
       "mapId": "overworld",
-      "x": 14,
-      "y": 16
+      "x": 16,
+      "y": 12,
+      "species": "orc"
     },
     {
       "id": "ash_3",
       "mapId": "overworld",
       "x": 58,
-      "y": 18
+      "y": 25,
+      "species": "wyvern"
     },
     {
       "id": "ash_4",
@@ -798,8 +800,9 @@
     {
       "id": "deep_1",
       "mapId": "deepwood",
-      "x": 2,
-      "y": 16
+      "x": 20,
+      "y": 8,
+      "species": "troll"
     },
     {
       "id": "deep_2",
@@ -810,8 +813,9 @@
     {
       "id": "deep_3",
       "mapId": "deepwood",
-      "x": 3,
-      "y": 33
+      "x": 20,
+      "y": 42,
+      "species": "troll"
     },
     {
       "id": "deep_4",
@@ -823,7 +827,8 @@
       "id": "mire_1",
       "mapId": "mirefen",
       "x": 4,
-      "y": 16
+      "y": 16,
+      "species": "ghost"
     },
     {
       "id": "mire_2",
@@ -4644,8 +4649,8 @@
       "monsterId": "wyvern",
       "mapId": "overworld",
       "lair": {
-        "x": 70,
-        "y": 10
+        "x": 72,
+        "y": 26
       },
       "postedAfter": 7,
       "level": 10,
@@ -4675,7 +4680,7 @@
         "speed": 120,
         "power": 0.9
       },
-      "where": "the high ash at the north-east of the Ash Fields",
+      "where": "the scorched hollow in the Ash Fields' south-east",
       "notice": "Fafnyr's last brood-wyrm still nests on the high ash. It spits fire three ways at once and the caravans have stopped coming over the ridge.",
       "seen": "Cinderjaw screams and the air fills with fire!",
       "homecoming": "The caravans are back over the ridge. Hilda says the first one brought iron enough for a year.",

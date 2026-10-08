@@ -1298,6 +1298,17 @@ func heal_hero(amount: int) -> int:
 	return healed_by
 
 
+## Out of a fight every hero's mana or stamina trickles back (PIX-187): a
+## twentieth of it each rest tick, at least one. Returns what came back.
+func regen_resting() -> int:
+	var back := mini(int(hero.stats["maxMp"]), hero.mp + maxi(1, ceili(int(hero.stats["maxMp"]) * 0.05))) - hero.mp
+	if back > 0:
+		hero.mp += back
+		mark_dirty()
+		hp_changed.emit(hero.hp, int(hero.stats["maxHp"]))
+	return back
+
+
 ## A fighter's stamina comes back each turn of a fight (staminaRegen, from
 ## monsterTurn); casters' mana does not. Returns what came back.
 func regen_stamina() -> int:

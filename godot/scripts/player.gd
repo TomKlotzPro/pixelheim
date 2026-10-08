@@ -12,6 +12,8 @@ const INVULNERABLE_SECONDS := 0.8
 ## of the web's battle turns.
 const SKILL_RANGE := 88.0
 const SKILL_TURN := 1.0
+## Out of a fight, a little energy comes back this often (PIX-187).
+const REST_TICK := 2.0
 ## Hue of a skill's flash by the stat it draws on.
 const SKILL_COLORS := {
 	"strength": Color(1.0, 0.6, 0.25), "intelligence": Color(0.7, 0.5, 1.0), "dexterity": Color(0.45, 0.9, 0.5),
@@ -24,6 +26,7 @@ var world: Node2D
 var hp := 0
 var facing := Vector2.DOWN
 var attack_ready := true
+var rest_clock := 0.0
 var attacking := false
 ## A skill's cast: the attack animation plays, the blade stays still.
 var casting := false
@@ -334,11 +337,18 @@ func _nearest_foe() -> Node:
 	return best
 
 
-## Stamina comes back a turn's worth each second while a fight is on.
+## Stamina comes back a turn's worth each second while a fight is on; out of
+## one, every hero's mana or stamina trickles back (PIX-187), so a caster
+## isn't left swinging a staff at crabs.
 func _regen(delta: float) -> void:
 	if not world.in_fight():
 		regen_clock = 0.0
+		rest_clock += delta
+		while rest_clock >= REST_TICK:
+			rest_clock -= REST_TICK
+			GameState.regen_resting()
 		return
+	rest_clock = 0.0
 	regen_clock += delta
 	while regen_clock >= SKILL_TURN:
 		regen_clock -= SKILL_TURN
