@@ -167,3 +167,46 @@ func test_casting_pays_heals_cap_and_stamina_returns_in_fights() -> void:
 	mage.new_game("Ilse", "mage")
 	mage.hero.mp = 0
 	assert_eq(mage.regen_stamina(), 0, "mana does not")
+
+
+## Forgetting (PIX-86): bought skills for their points back, in the village,
+## for 20 gold a skill; the skill a hero starts with stays.
+func test_forgetting_gives_the_points_back_and_keeps_the_born_skill() -> void:
+	state.world.map_id = "town_inn"
+	var born: String = Catalog.skill_roots("warrior")[0]
+	state.hero.skill_points = 2
+	assert_true(state.buy_skill_node("warrior_power_strike_2"))
+	assert_true(state.buy_skill_node("warrior_shield_slam"))
+	state.pack.gold = 100
+	assert_eq(Skills.forget_cost(state.hero), 40)
+	assert_true(state.forget_skills())
+	assert_eq(state.hero.skill_nodes, [born] as Array[String])
+	assert_eq(state.hero.skill_points, 2)
+	assert_eq(state.pack.gold, 60)
+	assert_false(state.forget_skills(), "nothing bought is left to forget")
+
+
+func test_forgetting_shrinks_what_a_skill_grew() -> void:
+	state.world.map_id = "town"
+	var before := int(state.hero.stats["maxHp"])
+	state.hero.skill_nodes.append_array(["warrior_shield_slam", "warrior_iron_skin", "warrior_unshakeable"])
+	state.hero.skill_points = 1
+	assert_true(state.buy_skill_node("warrior_mountainheart"))
+	assert_eq(int(state.hero.stats["maxHp"]), before + 30)
+	state.pack.gold = 1000
+	assert_true(state.forget_skills())
+	assert_eq(int(state.hero.stats["maxHp"]), before)
+	assert_true(state.hero.hp <= before)
+
+
+func test_forgetting_takes_the_village_and_the_gold() -> void:
+	state.hero.skill_points = 1
+	assert_true(state.buy_skill_node("warrior_power_strike_2"))
+	state.pack.gold = 100
+	state.world.map_id = "overworld"
+	assert_false(state.forget_skills(), "not out in the wilds")
+	state.world.map_id = "town"
+	state.pack.gold = 19
+	assert_false(state.forget_skills(), "20g a skill")
+	assert_eq(state.hero.skill_points, 0)
+

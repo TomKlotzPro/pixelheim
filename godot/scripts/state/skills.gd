@@ -27,6 +27,29 @@ static func node(role_id: String, node_id: String) -> Dictionary:
 	return {}
 
 
+## Forgetting (PIX-86): every bought skill, for its point back, at 20 gold a
+## skill; the one a hero starts with stays. Only in the village, whose quiet
+## lets a fighter unlearn (any of its maps, inside or out).
+const FORGET_GOLD_PER_SKILL := 20
+
+
+static func forgettable(hero: HeroState) -> Array[String]:
+	var born: String = Catalog.skill_roots(hero.role_id)[0]
+	var out: Array[String] = []
+	for node_id: String in hero.skill_nodes:
+		if node_id != born:
+			out.append(node_id)
+	return out
+
+
+static func forget_cost(hero: HeroState) -> int:
+	return FORGET_GOLD_PER_SKILL * forgettable(hero).size()
+
+
+static func can_forget_at(map_id: String) -> bool:
+	return map_id.begins_with("town")
+
+
 ## A point to spend, not yet owned, its parent owned (canBuyNode).
 static func can_buy(hero: HeroState, entry: Dictionary) -> bool:
 	if hero.skill_points <= 0 or entry["id"] in hero.skill_nodes:
