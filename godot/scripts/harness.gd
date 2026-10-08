@@ -32,6 +32,20 @@ func _input(event: InputEvent) -> void:
 			Input.action_release(action)
 
 
+## `--keys e,e,esc,...` presses real keys, one at a time, as a player would.
+func _keys(args: PackedStringArray) -> void:
+	var keys_index := args.find("--keys")
+	if keys_index < 0 or keys_index + 1 >= args.size():
+		return
+	var codes := {"e": KEY_E, "esc": KEY_ESCAPE, "space": KEY_SPACE, "enter": KEY_ENTER, "s": KEY_S, "w": KEY_W}
+	for key: String in args[keys_index + 1].split(","):
+		for pressed: bool in [true, false]:
+			_press(codes[key], pressed)
+			await get_tree().process_frame
+			await get_tree().process_frame
+	await get_tree().create_timer(0.2).timeout
+
+
 ## A harness key press, as a player's would land: the Input singleton's
 ## actions (what polling reads) and the event itself, straight to the
 ## viewport, which needs no window focus (an unfocused window's keys are
@@ -234,6 +248,9 @@ func _run_test_harness() -> void:
 		creation.name_field.text = "Robin"
 		creation._refresh()
 		await get_tree().create_timer(0.4).timeout
+	if args.has("title") and not args.has("talk"):
+		# `title --keys s,s,s`: walk the title's menu.
+		await _keys(args)
 	if args.has("title") and args.has("whatsnew"):
 		# What's new over the title, as the version line opens it.
 		world.get_children().filter(func(node: Node) -> bool: return node.has_method("as_splash"))[0]._whats_new()
@@ -337,17 +354,8 @@ func _run_test_harness() -> void:
 		if args.has("talk"):
 			world._try_interact()
 		await get_tree().create_timer(0.3).timeout
-		# `--keys e,e,esc,...` presses real keys at the conversation, one at a
-		# time, the way a player leaves it (the report lists what stays open).
-		var keys_index := args.find("--keys")
-		if keys_index >= 0 and keys_index + 1 < args.size():
-			var codes := {"e": KEY_E, "esc": KEY_ESCAPE, "space": KEY_SPACE, "enter": KEY_ENTER, "s": KEY_S}
-			for key: String in args[keys_index + 1].split(","):
-				for pressed: bool in [true, false]:
-					_press(codes[key], pressed)
-					await get_tree().process_frame
-					await get_tree().process_frame
-			await get_tree().create_timer(0.2).timeout
+		# The way a player leaves it (the report lists what stays open).
+		await _keys(args)
 	if args.has("chest"):
 		# Pair with `--map town`: warp beside the nook chest, face it, open it.
 		world.player.position = world._cell_center(Vector2i(61, 18))

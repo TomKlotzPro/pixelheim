@@ -197,16 +197,12 @@ func _draw_menu() -> void:
 		button.mouse_entered.connect(_point.bind(index))
 		button.pressed.connect(_take.bind(index))
 		line.add_child(button)
-		# NEW follows its line; a blank as wide leads it, so the words stay centred.
-		if options[index]["action"] == _whats_new and GameState.settings.seen_version != version:
-			var badge := _new_badge()
-			var blank := Control.new()
-			blank.custom_minimum_size = badge.get_combined_minimum_size()
-			line.add_child(badge)
-			line.add_child(blank)
-			line.move_child(blank, 0)
 		var right := _marker(true)
 		line.add_child(right)
+		# NEW floats past the line's right marker: it takes no part in the
+		# line's layout, so these words centre exactly as every other line's.
+		if options[index]["action"] == _whats_new and GameState.settings.seen_version != version:
+			right.add_child(_new_badge())
 		menu.add_child(line)
 		lines.append([button, left, right])
 	_show_choice()
@@ -221,8 +217,9 @@ func _show_choice() -> void:
 		var button: Button = lines[index][0]
 		for key: String in ["font_color", "font_hover_color", "font_pressed_color"]:
 			button.add_theme_color_override(key, UiStyle.GOLD if chosen else UiStyle.CREAM)
+		# self_modulate: a marker's NEW badge stays visible when it hides.
 		for marker: TextureRect in [lines[index][1], lines[index][2]]:
-			marker.modulate.a = 1.0 if chosen else 0.0
+			marker.self_modulate.a = 1.0 if chosen else 0.0
 
 
 ## A gold marker beside the chosen line, pointing in at it (hidden, but
@@ -252,13 +249,18 @@ func _point(index: int) -> void:
 		_show_choice()
 
 
-## NEW, in rubric red after its line: notes not yet read.
+## NEW, in rubric red past its line: notes not yet read.
 func _new_badge() -> Control:
 	var badge := PanelContainer.new()
 	badge.add_theme_stylebox_override("panel", UiStyle.box(UiStyle.LAMP, UiStyle.NIGHT, 3))
 	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	badge.add_child(UiStyle.strong("NEW", 12, UiStyle.CREAM))
-	badge.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	# Beside the marker it hangs from, middles level, growing rightward.
+	badge.set_anchors_preset(Control.PRESET_CENTER_LEFT)
+	badge.offset_left = 20
+	badge.offset_right = 20
+	badge.grow_horizontal = Control.GROW_DIRECTION_END
+	badge.grow_vertical = Control.GROW_DIRECTION_BOTH
 	return badge
 
 
