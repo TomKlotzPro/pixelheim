@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.113.0",
+      "date": "2026-10-08",
+      "codename": "The Deep Hunt",
+      "notes": [
+        "THE DEEP HUNT: once Morvax is down, the stair behind his throne goes on into the dark. Depth after depth without end, each harder than the last, with foes from every family - wyverns beside wendigos, iron demons beside cutthroats - and an elite guarding every third depth",
+        "Every cleared depth opens a hole into the dark beside the way up: keep going, or climb out. The Undermountain's gate offers the first depth and the next one past your deepest",
+        "YOUR DEEPEST DEPTH is kept in your save and shown on the bounty board and in the journal. A new deepest pays its hoard; a depth you've beaten pays only its fights"
+      ]
+    },
+    {
       "version": "0.112.0",
       "date": "2026-10-08",
       "codename": "Errands",

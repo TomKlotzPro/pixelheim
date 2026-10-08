@@ -5015,5 +5015,44 @@
         0.3
       ]
     }
+  },
+  "deepHunt": {
+    "about": "PIX-161: below Morvax's throne, generated depths without end. Depth d's foes stand at startLevel + d - 1, drawn from every family; every eliteEvery-th depth an elite guards the stair down. The hoard pays once per new deepest depth.",
+    "startLevel": 19,
+    "eliteEvery": 3,
+    "foes": [
+      "ghost",
+      "golem",
+      "troll",
+      "wyvern",
+      "boneknight",
+      "shade",
+      "imp",
+      "iron_demon",
+      "goblin_spear",
+      "pirate_captain",
+      "turncoat",
+      "cutthroat",
+      "hollow_guard",
+      "yeti",
+      "wendigo",
+      "frost_mammoth",
+      "frost_wolf",
+      "king_slime",
+      "orc"
+    ],
+    "rewardGold": [
+      150,
+      45
+    ],
+    "names": [
+      "The Deep Hunt"
+    ],
+    "descriptions": [
+      "The stair below the throne goes on down. Nobody built this far.",
+      "Things that fled the light came here to wait. They're done waiting.",
+      "The air is warm and old. Something below is breathing.",
+      "Bones of every kind, gnawed by every kind."
+    ]
   }
 }

@@ -10,7 +10,9 @@ func _title() -> String:
 
 
 func _intro() -> String:
-	return "Kill a named monster and the bounty is yours where it falls."
+	var deepest := GameState.progression.deepest
+	var record := "   Deepest Hunt: depth %d." % deepest if deepest > 0 else ""
+	return "Kill a named monster and the bounty is yours where it falls.%s" % record
 
 
 func _info() -> String:

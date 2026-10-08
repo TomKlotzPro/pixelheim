@@ -153,8 +153,11 @@ func _side() -> void:
 		body.add_child(_wrapped("Kept: %d promises, the latest %s." % [kept.size(), ", ".join(last)], 14, UiStyle.FADED))
 
 
-## The bounty board's notices (PIX-156) and where each one's lair is.
+## The bounty board's notices (PIX-156) and where each one's lair is, and
+## how deep the hero has hunted below the throne (PIX-161).
 func _bounties() -> void:
+	if GameState.progression.deepest > 0:
+		body.add_child(UiStyle.strong("The Deep Hunt: deepest depth %d" % GameState.progression.deepest, 18, UiStyle.LAMP))
 	var notices := Hunts.notices(GameState.board_floors(), GameState.progression.hunted)
 	if notices.is_empty():
 		body.add_child(_wrapped("No notices on the bounty board yet. The first goes up when %s." % BountyScreen._when(Hunts.next_notice(GameState.board_floors())), 16, UiStyle.FADED))

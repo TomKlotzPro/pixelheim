@@ -71,6 +71,8 @@ static func plan(level: int) -> Dictionary:
 			"id": encounter["monsterId"],
 			"elite": encounter.get("elite", false),
 			"cell": room.position + room.size / 2,
+			# The floor's lift, or the Deep Hunt's own per foe (PIX-161).
+			"lift": int(encounter.get("lift", Dungeons.lift(level))),
 		})
 	# A patch of something worth picking in the first hall, clear of its foe.
 	var hall := rooms[1]
