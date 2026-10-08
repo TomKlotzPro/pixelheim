@@ -38,7 +38,8 @@ var facing := "down"
 var hunting := false
 ## Where it lives: wanders around it, gives up a chase too far from it.
 var home := Vector2.ZERO
-## "idle" (at home), "alert" (the "!" wind-up), "chase", "homeward".
+## "idle" (at home), "alert" (the "!" wind-up), "chase", "homeward", and
+## for a boss "cast" (standing still while its attack is told, PIX-150).
 var mode := "idle"
 var alert_left := 0.0
 ## Seconds until a told bite lands; negative while no bite is coming.
@@ -60,6 +61,9 @@ func _ready() -> void:
 	sprite.position = Vector2(0, PunyArt.lift(art) * size)
 	_play("idle")
 	add_child(sprite)
+	# Fafnyr and Morvax fight with their own attacks too (PIX-150).
+	if Bestiary._data()["bossPatterns"].has(fighter["id"]):
+		add_child(preload("res://scripts/boss_brain.gd").new())
 
 	var shape := CollisionShape2D.new()
 	var rect := RectangleShape2D.new()
@@ -118,6 +122,8 @@ func _physics_process(delta: float) -> void:
 				_give_up()
 			else:
 				_chase(to_player, delta)
+		"cast":
+			velocity = Vector2.ZERO
 		"homeward":
 			var back := home - global_position
 			velocity = back.normalized() * HOMEWARD_SPEED

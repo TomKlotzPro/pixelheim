@@ -8,6 +8,8 @@ extends Screen
 ## [{at: Vector2 (map pixels), line: String}]
 var stops: Array[Dictionary] = []
 var world: Node
+## What comes after the last stop (the ending's credits).
+var on_done := Callable()
 var caption: Label
 var _index := -1
 var _tour: Tween
@@ -64,3 +66,5 @@ func close() -> void:
 	world.camera_follows = true
 	world._teleported()
 	super.close()
+	if on_done.is_valid():
+		on_done.call()

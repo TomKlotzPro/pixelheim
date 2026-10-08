@@ -229,7 +229,8 @@ func on_enemy_died(enemy: Node) -> void:
 		Sound.play("drop")
 	if cleared != "":
 		_log(["The wilds fall quiet again."])
-	if map.floor_level > 0 and floor_foes > 0:
+	# The dead a boss summons aren't the floor's own foes (PIX-150).
+	if map.floor_level > 0 and floor_foes > 0 and not enemy.is_in_group("summoned"):
 		floor_foes -= 1
 		if floor_foes == 0:
 			_floor_cleared(Vector2i((enemy.position / TILE).floor()))
@@ -511,9 +512,8 @@ func _floor_cleared(at: Vector2i) -> void:
 	map.grid[stairs] = "cave"
 	map.portals[stairs] = {"kind": "gate"}
 	PunyDungeon.sheet().place(view.dungeon_objects, stairs, PunyDungeon.STAIRS)
-	if result["victory"]:
-		Sound.play_track("victory")
-		play_story(Cutscene.moment("victory"))
+	if result["victory"] and not GameState.has_seen(Cutscene.moment("victory")):
+		_play_ending()
 	elif result["first"]:
 		play_story(Cutscene.moment("cleared:%d" % map.floor_level))
 
@@ -820,6 +820,69 @@ func _keep_hours(arriving := false) -> void:
 			continue
 		if villager.away != night and (arriving or not in_view(villager.position, TILE)):
 			villager.set_away(night)
+
+
+## The ending (PIX-150): home to a festival on the square, the camera
+## showing what Pixelheim became - a stop for each age the hero raised it
+## through, then the square - and then the story's ending and credits.
+func _play_ending() -> void:
+	var scene_id := Cutscene.moment("victory")
+	GameState.mark_seen(scene_id)
+	GameState.reveals.clear()
+	map = _load_map("town")
+	var square := Town.project_board() + Vector2i(0, 4)
+	_enter_map(map, square)
+	_festival()
+	Sound.play_track("victory")
+	var stops: Array[Dictionary] = []
+	var done := Town.done_projects(GameState.settlement)
+	for entry: Dictionary in Town.ages():
+		var built: Array = entry["projects"].filter(func(project_entry: Dictionary) -> bool: return project_entry["id"] in done)
+		if built.is_empty():
+			continue
+		var landmark: Dictionary = built[-1]
+		stops.append({
+			"at": _cell_center(Town.project_center(landmark["id"])),
+			"line": "%s - %s" % [landmark["name"], String(landmark["blurb"]).to_lower()],
+		})
+	stops.append({
+		"at": _cell_center(square),
+		"line": "Pixelheim, a %s raised from the ashes. Tonight it celebrates %s." % [
+			String(Town.tier(GameState.town_tier())["name"]).to_lower(), GameState.hero.hero_name,
+		],
+	})
+	var tour := preload("res://scripts/reveal_screen.gd").new()
+	tour.world = self
+	tour.stops = stops
+	tour.on_done = func() -> void:
+		var ending := Cutscene.new()
+		ending.scene_id = scene_id
+		add_child(ending)
+	add_child(tour)
+
+
+## Confetti over the square: the town's festival, until the hero leaves.
+func _festival() -> void:
+	if GameState.settings.reduce_motion:
+		return
+	for color: Color in [Color("f2c14e"), Color("d8433f"), Color("4f7cff"), Color("5cbf4a")]:
+		var confetti := CPUParticles2D.new()
+		confetti.position = _cell_center(Town.project_board() + Vector2i(0, -2))
+		confetti.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+		confetti.emission_rect_extents = Vector2(14 * TILE, TILE)
+		confetti.amount = 18
+		confetti.lifetime = 4.0
+		confetti.direction = Vector2.DOWN
+		confetti.spread = 25.0
+		confetti.gravity = Vector2(0, 14)
+		confetti.initial_velocity_min = 4.0
+		confetti.initial_velocity_max = 10.0
+		confetti.scale_amount_min = 1.0
+		confetti.scale_amount_max = 2.0
+		confetti.color = color
+		confetti.z_index = 7
+		confetti.add_to_group("decor")
+		add_child(confetti)
 
 
 ## Back from the board with something built: the town redraws around the

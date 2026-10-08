@@ -611,6 +611,90 @@
     "dragon",
     "lich"
   ],
+  "bossPatterns": {
+    "dragon": {
+      "every": [
+        3.6,
+        2.9,
+        2.3
+      ],
+      "phases": [
+        [
+          "breath"
+        ],
+        [
+          "breath",
+          "embers"
+        ],
+        [
+          "embers",
+          "breath",
+          "embers"
+        ]
+      ],
+      "roars": [
+        "Fafnyr rears up - the air shimmers with heat!",
+        "Fafnyr's scales split with fire - the cave is burning!"
+      ]
+    },
+    "lich": {
+      "every": [
+        4.0,
+        3.2,
+        2.6
+      ],
+      "phases": [
+        [
+          "ring"
+        ],
+        [
+          "ring",
+          "summon"
+        ],
+        [
+          "summon",
+          "ring",
+          "ring"
+        ]
+      ],
+      "summon": "skeleton",
+      "roars": [
+        "Morvax raises a bony hand - the dead answer!",
+        "Morvax laughs, and the floor goes cold beneath you!"
+      ]
+    }
+  },
+  "bossAttacks": {
+    "breath": {
+      "shape": "line",
+      "length": 7,
+      "width": 2.5,
+      "tell": 0.9,
+      "power": 1.4,
+      "inflicts": true
+    },
+    "embers": {
+      "shape": "circles",
+      "count": 4,
+      "radius": 1.2,
+      "spread": 3.0,
+      "tell": 1.1,
+      "power": 0.9
+    },
+    "ring": {
+      "shape": "circle",
+      "radius": 3.2,
+      "tell": 1.0,
+      "power": 1.3,
+      "inflicts": true
+    },
+    "summon": {
+      "shape": "summon",
+      "count": 2,
+      "max": 4,
+      "tell": 0.6
+    }
+  },
   "dropPools": [
     {
       "floor": 1,

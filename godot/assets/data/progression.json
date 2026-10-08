@@ -184,6 +184,79 @@
       },
       "accepted": "Two gems for the vault's first shelf. Dragons hoard them; so do the deep floors.",
       "completed": "A vault with something in it is a bank. Find my ledger by the hall - bring your idle gold."
+    },
+    {
+      "id": "ash_orcs",
+      "giver": "villager_ana",
+      "name": "Raiders on the Ash Road",
+      "brief": "Orcs from the Ash Fields have been stopping the valley carts.",
+      "objective": {
+        "kind": "kill",
+        "monsterId": "orc",
+        "count": 3,
+        "label": "Orc raiders sent packing"
+      },
+      "reward": {
+        "gold": 120,
+        "xp": 40
+      },
+      "accepted": "Three of them, north of town where the grass turns grey. The carts bring my thread.",
+      "completed": "The carts came through this morning. Every spool. Take this."
+    },
+    {
+      "id": "bram_imps",
+      "giver": "villager_bram",
+      "name": "Imp-ossible",
+      "brief": "Bram swears imps from the Ash Fields stole his best cheese knife.",
+      "objective": {
+        "kind": "kill",
+        "monsterId": "imp",
+        "count": 2,
+        "label": "Imps taught a lesson"
+      },
+      "reward": {
+        "gold": 300,
+        "xp": 90
+      },
+      "accepted": "Two imps. Little red, horns, laughing. One of them has my knife. I'd know it anywhere.",
+      "completed": "No knife? Doesn't matter. The principle of the thing. Here - and a wedge of the good stuff, later."
+    },
+    {
+      "id": "mira_moss",
+      "giver": "settler_mira",
+      "name": "Dye for the Looms",
+      "brief": "Mira's new dye needs grave moss from the Mirefen. She will not go there herself.",
+      "objective": {
+        "kind": "deliver",
+        "itemId": "grave_moss",
+        "count": 3,
+        "label": "Grave moss brought"
+      },
+      "reward": {
+        "gold": 150,
+        "xp": 50,
+        "itemId": "antidote"
+      },
+      "accepted": "Three clumps of grave moss. It grows where the fen is quietest. Too quiet, if you ask me.",
+      "completed": "That green! The whole valley will want it. Take an antidote - the fen leaves a taste."
+    },
+    {
+      "id": "tomas_golems",
+      "giver": "settler_tomas",
+      "name": "Stones That Walk",
+      "brief": "Old Tomas says the Deepwood's walking stones trample the mushrooms he forages.",
+      "objective": {
+        "kind": "kill",
+        "monsterId": "golem",
+        "count": 2,
+        "label": "Walking stones stilled"
+      },
+      "reward": {
+        "gold": 250,
+        "xp": 80
+      },
+      "accepted": "Two of the big grey brutes in the Deepwood. Forty years I foraged there in peace.",
+      "completed": "Mushrooms for the whole winter! My grandson will be sick of them by spring."
     }
   ],
   "rankTitles": {
