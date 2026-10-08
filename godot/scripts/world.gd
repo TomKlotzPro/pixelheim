@@ -422,6 +422,8 @@ func enter_floor(level: int) -> void:
 		spawn_enemy(foe["id"], foe["cell"], "", "", foe["elite"], false)
 	var floor_def := Dungeons.floor_def(level)
 	_log(["Floor %d: %s" % [level, floor_def["name"]], String(floor_def["description"])])
+	# A boss's floor: its intro, the first time only (PIX-32).
+	play_story(Cutscene.moment("boss:%s" % Dungeons.boss_of(level)["monsterId"]))
 
 
 ## Up the stairs, back to the gate the save remembers.
@@ -444,13 +446,20 @@ func _floor_cleared(at: Vector2i) -> void:
 	PunyDungeon.sheet().place(view.dungeon_objects, stairs, PunyDungeon.STAIRS)
 	if result["victory"]:
 		Sound.play_track("victory")
-		_talk({
-			"id": "victory", "name": "Victory",
-			"lines": [
-				"%s slew Fafnyr the Ashen above and cast down Morvax the Deathless below." % GameState.hero.name,
-				"The mountain is quiet at last, the tavern is loud, and the cheese has never tasted better.",
-			],
-		})
+		play_story(Cutscene.moment("victory"))
+	elif result["first"]:
+		play_story(Cutscene.moment("cleared:%d" % map.floor_level))
+
+
+## A story moment over the world (Cutscene, PIX-32), once per hero; "" or a
+## moment already seen plays nothing.
+func play_story(scene_id: String) -> void:
+	if scene_id == "" or GameState.has_seen(scene_id):
+		return
+	GameState.mark_seen(scene_id)
+	var scene := Cutscene.new()
+	scene.scene_id = scene_id
+	add_child(scene)
 
 func _enter_map(next: MapData, arrival: Vector2i) -> void:
 	if view != null:

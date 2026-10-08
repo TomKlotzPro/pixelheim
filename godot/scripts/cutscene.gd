@@ -14,7 +14,9 @@ const BAR := 76
 ## Seconds per letter as a caption types itself out.
 const TYPE_S := 0.035
 ## What a step can be.
-const KINDS := ["stage", "fade", "caption", "tint", "ash", "shake", "actor", "eyes", "logo", "wait"]
+const KINDS := ["stage", "fade", "caption", "card", "tint", "ash", "shake", "actor", "eyes", "logo", "credits", "wait"]
+## The stages a scene can set.
+const STAGES := ["village", "path", "lair", "dark"]
 
 ## Which scene to play, and what to do after (skipped or not).
 var scene_id := "opening"
@@ -35,7 +37,17 @@ var black: ColorRect
 
 ## Every scene, by id: its steps (see KINDS).
 static func scenes() -> Dictionary:
-	return SaveCodec.parse_json(FileAccess.get_file_as_string("res://assets/data/story.json"))["scenes"]
+	return _story()["scenes"]
+
+
+## The scene a moment of play calls for ("boss:dragon", "cleared:10",
+## "victory"), or "" (PIX-32).
+static func moment(key: String) -> String:
+	return String(_story()["moments"].get(key, ""))
+
+
+static func _story() -> Dictionary:
+	return SaveCodec.parse_json(FileAccess.get_file_as_string("res://assets/data/story.json"))
 
 
 func _open() -> void:
@@ -124,7 +136,11 @@ func _run(step: Dictionary) -> void:
 		"fade":
 			await _fade(1.0 if step["to"] == "black" else 0.0, float(step.get("seconds", 0.6)))
 		"caption":
-			await _caption(step["text"], float(step.get("hold", 3.0)))
+			await _caption(String(step["text"]).replace("{hero}", GameState.hero.hero_name), float(step.get("hold", 3.0)))
+		"card":
+			_card(step["text"], String(step.get("sub", "")))
+		"credits":
+			await _credits(step)
 		"tint":
 			var color := Color(step["color"])
 			color.a = float(step.get("alpha", 0.3))
@@ -194,6 +210,8 @@ func _stage(name: String) -> void:
 			stage.add_child(village)
 		"path":
 			stage.add_child(_path())
+		"lair":
+			stage.add_child(_lair())
 		_:
 			stage.add_child(_sheet(Color("07060c")))
 
@@ -256,6 +274,127 @@ func _path() -> Control:
 		pine.modulate = Color(0.12, 0.1, 0.2)
 		root.add_child(pine)
 	return root
+
+
+## A boss's lair: black going to embers at the floor, sparks rising.
+func _lair() -> Control:
+	var root := Control.new()
+	root.size = VIEW
+	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var heat := Gradient.new()
+	heat.set_color(0, Color("050204"))
+	heat.set_color(1, Color("4a1206"))
+	var fill := GradientTexture2D.new()
+	fill.gradient = heat
+	fill.fill_to = Vector2(0, 1)
+	var back := TextureRect.new()
+	back.texture = fill
+	back.size = VIEW
+	root.add_child(back)
+	var glow := Sprite2D.new()
+	glow.texture = TitleScene.glow_texture(220, Color("ff5a20"), 0.35, 6)
+	glow.material = TitleScene.additive()
+	glow.position = Vector2(VIEW.x / 2, VIEW.y - 60)
+	root.add_child(glow)
+	var sparks := CPUParticles2D.new()
+	sparks.position = Vector2(VIEW.x / 2, VIEW.y - BAR)
+	sparks.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+	sparks.emission_rect_extents = Vector2(VIEW.x / 2, 4)
+	sparks.amount = 40
+	sparks.lifetime = 4.0
+	sparks.preprocess = 4.0
+	sparks.direction = Vector2.UP
+	sparks.spread = 25.0
+	sparks.gravity = Vector2(0, -12)
+	sparks.initial_velocity_min = 30.0
+	sparks.initial_velocity_max = 70.0
+	sparks.scale_amount_min = 2.0
+	sparks.scale_amount_max = 3.0
+	sparks.color = Color("ff9a40")
+	sparks.material = TitleScene.additive()
+	if still:
+		sparks.speed_scale = 0.0
+	root.add_child(sparks)
+	return root
+
+
+## A name to remember, in the logo's capitals over the scene, a line beneath.
+func _card(text: String, sub: String) -> void:
+	var card := VBoxContainer.new()
+	card.position = Vector2(0, BAR + 40)
+	card.custom_minimum_size = Vector2(VIEW.x, 0)
+	card.add_theme_constant_override("separation", 14)
+	card.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var name := Label.new()
+	name.text = text.to_upper()
+	name.add_theme_font_override("font", UiStyle.logo_font())
+	name.add_theme_font_size_override("font_size", 32)
+	name.add_theme_color_override("font_color", UiStyle.GOLD)
+	name.add_theme_color_override("font_outline_color", Color("140a03"))
+	name.add_theme_constant_override("outline_size", 10)
+	name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	card.add_child(name)
+	if sub != "":
+		var line := UiStyle.label(sub, 18, UiStyle.CREAM)
+		line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		card.add_child(line)
+	actors.add_child(card)
+	if not still:
+		card.modulate.a = 0.0
+		card.create_tween().tween_property(card, "modulate:a", 1.0, 0.5)
+
+
+## The roll: lines, then the cast (every creature of the bestiary in its
+## own sprite and name), then more lines, rising over `seconds`.
+func _credits(step: Dictionary) -> void:
+	var roll := VBoxContainer.new()
+	roll.custom_minimum_size = Vector2(VIEW.x, 0)
+	roll.add_theme_constant_override("separation", 18)
+	roll.position = Vector2(0, VIEW.y - BAR)
+	for line: String in step.get("before", []):
+		roll.add_child(_credit_line(line))
+	for monster_id: String in Bestiary._data()["monsters"]:
+		roll.add_child(_cast_member(monster_id))
+	for line: String in step.get("after", []):
+		roll.add_child(_credit_line(line))
+	front.add_child(roll)
+	var seconds := float(step.get("seconds", 30.0))
+	if still:
+		# Page by page instead of a crawl.
+		roll.position.y = BAR + 20
+	else:
+		var crawl := roll.create_tween()
+		crawl.tween_property(roll, "position:y", float(BAR) - roll.get_combined_minimum_size().y, seconds)
+	await _linger(seconds)
+
+
+func _credit_line(text: String) -> Label:
+	var line := UiStyle.heading(text, 18 if text == "PIXELHEIM" else 16, UiStyle.GOLD if text == "PIXELHEIM" else UiStyle.CREAM)
+	line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	line.custom_minimum_size = Vector2(VIEW.x, 24)
+	return line
+
+
+## One of the cast: the creature walking in place, its name beside it.
+func _cast_member(monster_id: String) -> Control:
+	var row := HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 24)
+	var spec := PunyArt.monster(monster_id)
+	var holder := Control.new()
+	holder.custom_minimum_size = Vector2(64, 64)
+	var sprite := AnimatedSprite2D.new()
+	sprite.sprite_frames = PunyArt.frames(spec)
+	sprite.play(PunyArt.pick(sprite.sprite_frames, "walk", "down"))
+	sprite.scale = Vector2.ONE * 2.0 * float(spec.get("scale", 1.0)) * (32.0 / PunyArt.frame_size(spec) if PunyArt.frame_size(spec) < 32 else 1.0)
+	sprite.self_modulate = spec.get("tint", Color.WHITE)
+	sprite.position = Vector2(32, 36)
+	holder.add_child(sprite)
+	row.add_child(holder)
+	var name := UiStyle.label(String(Bestiary._data()["monsters"][monster_id]["name"]), 18, UiStyle.CREAM)
+	name.custom_minimum_size = Vector2(320, 0)
+	row.add_child(name)
+	return row
 
 
 ## One of Shade's sprites on stage: still at `at` (its last frame with

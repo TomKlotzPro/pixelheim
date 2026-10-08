@@ -1,32 +1,368 @@
 {
   "scenes": {
     "opening": [
-      { "kind": "stage", "stage": "village" },
-      { "kind": "fade", "to": "clear", "seconds": 1.4 },
-      { "kind": "caption", "text": "Pixelheim. A village under a mountain, and glad of it.", "hold": 3.2 },
-      { "kind": "tint", "color": "#ff3a1a", "alpha": 0.28, "seconds": 1.2 },
-      { "kind": "ash" },
-      { "kind": "shake", "strength": 6, "seconds": 1.1 },
-      { "kind": "actor", "sheet": "mini/RedDragon.png", "family": "mini", "frame": 32, "anim": "walk", "dir": "left", "scale": 3, "silhouette": true, "from": [1380, 120], "to": [-120, 170], "seconds": 5.5 },
-      { "kind": "caption", "text": "Then the Ashen Mountain woke, and Fafnyr with it.", "hold": 3.6 },
-      { "kind": "fade", "to": "black", "seconds": 0.7 },
-      { "kind": "stage", "stage": "path" },
-      { "kind": "actor", "sheet": "characters/Soldier-Blue.png", "family": "puny", "anim": "death", "dir": "right", "last": true, "scale": 4, "at": [430, 556] },
-      { "kind": "actor", "sheet": "characters/Archer-Green.png", "family": "puny", "anim": "death", "dir": "left", "last": true, "scale": 4, "at": [700, 572] },
-      { "kind": "actor", "sheet": "characters/Mage-Red.png", "family": "puny", "anim": "death", "dir": "right", "last": true, "scale": 4, "at": [930, 544] },
-      { "kind": "fade", "to": "clear", "seconds": 0.8 },
-      { "kind": "caption", "text": "Heroes climbed for its hoard. None came back.", "hold": 3.6 },
-      { "kind": "fade", "to": "black", "seconds": 0.7 },
-      { "kind": "stage", "stage": "dark" },
-      { "kind": "fade", "to": "clear", "seconds": 0.1 },
-      { "kind": "wait", "seconds": 0.8 },
-      { "kind": "eyes", "at": [640, 300], "color": "#b46cff" },
-      { "kind": "caption", "text": "And now the whispers come from below.", "hold": 3.6 },
-      { "kind": "fade", "to": "black", "seconds": 0.5 },
-      { "kind": "stage", "stage": "dark" },
-      { "kind": "fade", "to": "clear", "seconds": 0.1 },
-      { "kind": "logo", "hold": 2.4 },
-      { "kind": "fade", "to": "black", "seconds": 0.8 }
+      {
+        "kind": "stage",
+        "stage": "village"
+      },
+      {
+        "kind": "fade",
+        "to": "clear",
+        "seconds": 1.4
+      },
+      {
+        "kind": "caption",
+        "text": "Pixelheim. A village under a mountain, and glad of it.",
+        "hold": 3.2
+      },
+      {
+        "kind": "tint",
+        "color": "#ff3a1a",
+        "alpha": 0.28,
+        "seconds": 1.2
+      },
+      {
+        "kind": "ash"
+      },
+      {
+        "kind": "shake",
+        "strength": 6,
+        "seconds": 1.1
+      },
+      {
+        "kind": "actor",
+        "sheet": "mini/RedDragon.png",
+        "family": "mini",
+        "frame": 32,
+        "anim": "walk",
+        "dir": "left",
+        "scale": 3,
+        "silhouette": true,
+        "from": [
+          1380,
+          120
+        ],
+        "to": [
+          -120,
+          170
+        ],
+        "seconds": 5.5
+      },
+      {
+        "kind": "caption",
+        "text": "Then the Ashen Mountain woke, and Fafnyr with it.",
+        "hold": 3.6
+      },
+      {
+        "kind": "fade",
+        "to": "black",
+        "seconds": 0.7
+      },
+      {
+        "kind": "stage",
+        "stage": "path"
+      },
+      {
+        "kind": "actor",
+        "sheet": "characters/Soldier-Blue.png",
+        "family": "puny",
+        "anim": "death",
+        "dir": "right",
+        "last": true,
+        "scale": 4,
+        "at": [
+          430,
+          556
+        ]
+      },
+      {
+        "kind": "actor",
+        "sheet": "characters/Archer-Green.png",
+        "family": "puny",
+        "anim": "death",
+        "dir": "left",
+        "last": true,
+        "scale": 4,
+        "at": [
+          700,
+          572
+        ]
+      },
+      {
+        "kind": "actor",
+        "sheet": "characters/Mage-Red.png",
+        "family": "puny",
+        "anim": "death",
+        "dir": "right",
+        "last": true,
+        "scale": 4,
+        "at": [
+          930,
+          544
+        ]
+      },
+      {
+        "kind": "fade",
+        "to": "clear",
+        "seconds": 0.8
+      },
+      {
+        "kind": "caption",
+        "text": "Heroes climbed for its hoard. None came back.",
+        "hold": 3.6
+      },
+      {
+        "kind": "fade",
+        "to": "black",
+        "seconds": 0.7
+      },
+      {
+        "kind": "stage",
+        "stage": "dark"
+      },
+      {
+        "kind": "fade",
+        "to": "clear",
+        "seconds": 0.1
+      },
+      {
+        "kind": "wait",
+        "seconds": 0.8
+      },
+      {
+        "kind": "eyes",
+        "at": [
+          640,
+          300
+        ],
+        "color": "#b46cff"
+      },
+      {
+        "kind": "caption",
+        "text": "And now the whispers come from below.",
+        "hold": 3.6
+      },
+      {
+        "kind": "fade",
+        "to": "black",
+        "seconds": 0.5
+      },
+      {
+        "kind": "stage",
+        "stage": "dark"
+      },
+      {
+        "kind": "fade",
+        "to": "clear",
+        "seconds": 0.1
+      },
+      {
+        "kind": "logo",
+        "hold": 2.4
+      },
+      {
+        "kind": "fade",
+        "to": "black",
+        "seconds": 0.8
+      }
+    ],
+    "fafnyr": [
+      {
+        "kind": "stage",
+        "stage": "lair"
+      },
+      {
+        "kind": "fade",
+        "to": "clear",
+        "seconds": 0.5
+      },
+      {
+        "kind": "shake",
+        "strength": 8,
+        "seconds": 1.2
+      },
+      {
+        "kind": "actor",
+        "sheet": "mini/RedDragon.png",
+        "family": "mini",
+        "frame": 32,
+        "anim": "walk",
+        "dir": "down",
+        "scale": 7,
+        "at": [
+          640,
+          380
+        ]
+      },
+      {
+        "kind": "card",
+        "text": "Fafnyr the Ashen",
+        "sub": "He has slept on the hoard for a hundred years."
+      },
+      {
+        "kind": "caption",
+        "text": "The summit is his. So is everything the heroes carried up.",
+        "hold": 3.0
+      },
+      {
+        "kind": "fade",
+        "to": "black",
+        "seconds": 0.4
+      }
+    ],
+    "descent": [
+      {
+        "kind": "stage",
+        "stage": "dark"
+      },
+      {
+        "kind": "fade",
+        "to": "clear",
+        "seconds": 0.4
+      },
+      {
+        "kind": "eyes",
+        "at": [
+          640,
+          300
+        ],
+        "color": "#b46cff"
+      },
+      {
+        "kind": "caption",
+        "text": "Behind the hoard, a stairway runs down into the dark.",
+        "hold": 3.2
+      },
+      {
+        "kind": "caption",
+        "text": "The Undermountain is open.",
+        "hold": 2.4
+      },
+      {
+        "kind": "fade",
+        "to": "black",
+        "seconds": 0.4
+      }
+    ],
+    "morvax": [
+      {
+        "kind": "stage",
+        "stage": "dark"
+      },
+      {
+        "kind": "tint",
+        "color": "#5a2a8a",
+        "alpha": 0.3,
+        "seconds": 0.8
+      },
+      {
+        "kind": "fade",
+        "to": "clear",
+        "seconds": 0.5
+      },
+      {
+        "kind": "eyes",
+        "at": [
+          640,
+          250
+        ],
+        "color": "#b46cff"
+      },
+      {
+        "kind": "actor",
+        "sheet": "mini/Necromancer.png",
+        "family": "mini",
+        "anim": "walk",
+        "dir": "down",
+        "scale": 7,
+        "at": [
+          640,
+          400
+        ]
+      },
+      {
+        "kind": "shake",
+        "strength": 6,
+        "seconds": 0.8
+      },
+      {
+        "kind": "card",
+        "text": "Morvax the Deathless",
+        "sub": "Once a hero of Pixelheim. Now its oldest debt."
+      },
+      {
+        "kind": "caption",
+        "text": "Below the hoard, the dead keep their own court.",
+        "hold": 3.0
+      },
+      {
+        "kind": "fade",
+        "to": "black",
+        "seconds": 0.4
+      }
+    ],
+    "ending": [
+      {
+        "kind": "stage",
+        "stage": "village"
+      },
+      {
+        "kind": "fade",
+        "to": "clear",
+        "seconds": 1.6
+      },
+      {
+        "kind": "caption",
+        "text": "{hero} slew Fafnyr the Ashen above and cast down Morvax the Deathless below.",
+        "hold": 4.0
+      },
+      {
+        "kind": "caption",
+        "text": "The mountain is quiet at last, the tavern is loud, and the cheese has never tasted better.",
+        "hold": 4.0
+      },
+      {
+        "kind": "fade",
+        "to": "black",
+        "seconds": 0.8
+      },
+      {
+        "kind": "stage",
+        "stage": "dark"
+      },
+      {
+        "kind": "fade",
+        "to": "clear",
+        "seconds": 0.2
+      },
+      {
+        "kind": "credits",
+        "seconds": 32,
+        "before": [
+          "PIXELHEIM",
+          "",
+          "A game by Tom Klotz",
+          "Art by Shade (merchant-shade.itch.io)",
+          "",
+          "Starring"
+        ],
+        "after": [
+          "and Infinite Cheese Wheels as themselves",
+          "",
+          "Thank you for climbing."
+        ]
+      },
+      {
+        "kind": "fade",
+        "to": "black",
+        "seconds": 0.8
+      }
     ]
+  },
+  "moments": {
+    "boss:dragon": "fafnyr",
+    "boss:lich": "morvax",
+    "cleared:10": "descent",
+    "victory": "ending"
   }
 }

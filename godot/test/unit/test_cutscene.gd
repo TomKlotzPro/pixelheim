@@ -13,7 +13,7 @@ func _press(action: StringName) -> InputEventAction:
 func test_every_step_is_a_kind_the_player_knows_with_what_it_needs() -> void:
 	var needs := {
 		"stage": ["stage"], "fade": ["to"], "caption": ["text"], "tint": ["color"],
-		"actor": ["sheet", "family"], "eyes": ["at"],
+		"actor": ["sheet", "family"], "eyes": ["at"], "card": ["text"], "credits": ["seconds"],
 	}
 	for scene_id: String in Cutscene.scenes():
 		var steps: Array = Cutscene.scenes()[scene_id]
@@ -26,7 +26,7 @@ func test_every_step_is_a_kind_the_player_knows_with_what_it_needs() -> void:
 				assert_true(ResourceLoader.exists(PunyArt.path(step["sheet"])), "%s is one of Shade's sheets" % step["sheet"])
 				assert_true(step.has("at") or (step.has("from") and step.has("to")), "an actor stands or crosses")
 			if step["kind"] == "stage":
-				assert_true(String(step["stage"]) in ["village", "path", "dark"], "%s is a stage" % step["stage"])
+				assert_true(String(step["stage"]) in Cutscene.STAGES, "%s is a stage" % step["stage"])
 
 
 func test_the_opening_ends_on_black_before_hero_creation() -> void:
@@ -55,3 +55,33 @@ func test_e_moves_on_without_ending() -> void:
 	next.call()
 	assert_true(scene.advance)
 	assert_false(scene.finished)
+
+
+## The story's big moments (PIX-32): each names a scene that exists, and the
+## floors' bosses have theirs.
+func test_every_moment_plays_a_scene_that_exists() -> void:
+	for key: String in ["boss:dragon", "boss:lich", "cleared:10", "victory"]:
+		var scene_id := Cutscene.moment(key)
+		assert_ne(scene_id, "", "%s has a moment" % key)
+		assert_true(Cutscene.scenes().has(scene_id), "%s plays %s" % [key, scene_id])
+	assert_eq(Cutscene.moment("boss:%s" % Dungeons.boss_of(10)["monsterId"]), "fafnyr")
+	assert_eq(Cutscene.moment("boss:%s" % Dungeons.boss_of(15)["monsterId"]), "morvax")
+	assert_eq(Cutscene.moment("boss:slime"), "", "an ordinary floor has none")
+
+
+func test_a_seen_moment_is_kept_in_the_save_and_only_once() -> void:
+	var state := ProgressionState.new()
+	var bare := {}
+	state.write_into(bare)
+	assert_false(bare.has("storySeen"), "saves from before stay byte for byte")
+	state.story_seen.append("fafnyr")
+	var written := {}
+	state.write_into(written)
+	assert_eq(written["storySeen"], ["fafnyr"])
+	written["unlockedLevel"] = 1
+	written["clearedLevels"] = []
+	written["quests"] = {}
+	written["introSeen"] = true
+	var back := ProgressionState.from_dict(written)
+	assert_eq(back.story_seen, ["fafnyr"] as Array[String])
+

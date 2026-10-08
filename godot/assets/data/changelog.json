@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.82.0",
+      "date": "2026-10-08",
+      "codename": "Fanfare",
+      "notes": [
+        "THE BOSSES RISE: the first time you reach the Ashen Throne, Fafnyr rises from his hoard with his name in gold; Morvax the Deathless greets you the same way at the bottom of the Undermountain",
+        "THE WAY DOWN: clearing the Ashen Throne for the first time shows the stairway behind the hoard instead of a line in the log",
+        "THE ENDING: slaying Morvax plays the ending over the village, then the credits - starring every creature you fought, and Infinite Cheese Wheels as themselves",
+        "ONCE EACH, YOURS TO SKIP: every moment plays once per hero and E or Esc moves past it"
+      ]
+    },
+    {
       "version": "0.81.2",
       "date": "2026-10-08",
       "codename": "Clean Slate",

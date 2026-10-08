@@ -6,7 +6,7 @@
 
 <p align="center">
   <b>A retro pixel-art open-world RPG in Godot 4.7: one hero, one village, fifteen floors of a mountain and what lies under it.</b><br />
-  Fifteen floors. Two bosses. Infinite cheese wheels. Currently v0.81.2 - 1.0 has to be earned.
+  Fifteen floors. Two bosses. Infinite cheese wheels. Currently v0.82 - 1.0 has to be earned.
 </p>
 
 ---
@@ -30,7 +30,7 @@ You wake in Pixelheim village, in an open world called **the Ashenreach**: walk 
 - **Crafting** at the forge, the cauldron and your own workbench; foraging in the wilds
 - **Music, stingers and weather** for every place, rendered from the game's own chiptune synth
 - **Saves that never break**: three slots, autosave, save codes, and heroes from the old web edition brought over byte for byte
-- **An opening that sets the stakes**: New Game plays a short, skippable story - the village, the mountain waking, the heroes who never came back, the whispers below
+- **A story told in moments**: New Game opens on the village, the mountain waking and the heroes who never came back; each boss rises with its name before you fight it, the stairway below is found, and the ending rolls credits starring every creature you fought - all skippable
 - **A title to arrive at**: Pixelheim's street at night under the Ashen Mountain, lit windows and chimney smoke below, the dragon's fire smouldering in the crater above, and your hero in the street looking up at it
 - **A UI like a village ledger**: one clear pixel type throughout, parchment pages in carved wooden frames, a wooden dock along the bottom with your bars, skills and gold, and screens that ease in with the sound of turning paper
 - **Comfort**: rebindable keys, gamepad, options from the title, reduced motion, CRT scanlines, a fog-of-war map with fast travel
