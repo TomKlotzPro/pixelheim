@@ -288,7 +288,7 @@ static func _initials(name: String) -> String:
 func _describe(skill: Dictionary) -> String:
 	var cost := "%d %s" % [skill["mpCost"], Skills.resource_label(GameState.hero.role_id)]
 	if int(skill.get("hpCost", 0)) > 0:
-		cost += " +%d HP" % skill["hpCost"]
+		cost += Text.t(" +%d HP") % skill["hpCost"]
 	return "%s  -  %s" % [skill["name"], cost]
 
 
@@ -301,7 +301,7 @@ func refresh() -> void:
 	portrait.self_modulate = art["tint"]
 	portrait.play(PunyArt.pick(portrait.sprite_frames, "idle", "down"))
 	name_label.text = hero.hero_name
-	rank_label.text = "Lv %d %s" % [hero.level, Ranks.title(hero.role_id, hero.level)]
+	rank_label.text = Text.t("Lv %d %s") % [hero.level, Ranks.title(hero.role_id, hero.level)]
 	gold_label.text = str(pack.gold)
 	var resource := Skills.resource_label(hero.role_id)
 	_set_bar("hp", "HP", hero.hp, int(hero.stats["maxHp"]), BARS["hp"])

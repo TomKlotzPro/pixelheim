@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.127.0",
+      "date": "2026-10-09",
+      "codename": "Many Tongues",
+      "notes": [
+        "READY FOR OTHER LANGUAGES: every word the game shows - its menus, messages, quests, dialogue, items and story - can now be translated, and Options has a Language row (it follows your system's language unless you pick one). French is on its way",
+        "FOOTERS THAT FIT: a screen's row of keys closes up when its words run long, so a wordier language never pushes it off the edge"
+      ]
+    },
+    {
       "version": "0.126.0",
       "date": "2026-10-09",
       "codename": "The First Night",

@@ -530,11 +530,28 @@ static func footer(line: String, at: Vector2, centered := false) -> HBoxContaine
 		pairs.append_array([command.substr(0, cut).strip_edges(), command.substr(cut).strip_edges()] if cut > 0 else ["", command])
 	var row := hints(pairs, true)
 	row.position = at
+	# A longer language (PIX-195) mustn't run off the screen: once laid
+	# out, a footer too wide closes up its gaps, then slides left.
+	row.ready.connect(_fit_footer.bind(row, centered), CONNECT_ONE_SHOT | CONNECT_DEFERRED)
 	if centered:
 		row.position.x = 0
 		row.custom_minimum_size = Vector2(1280, 0)
 		row.alignment = BoxContainer.ALIGNMENT_CENTER
 	return row
+
+
+static func _fit_footer(row: HBoxContainer, centered: bool) -> void:
+	if not is_instance_valid(row):
+		return
+	var room := 1280.0 - 32.0 - (0.0 if centered else row.position.x)
+	if row.get_combined_minimum_size().x <= room:
+		return
+	row.add_theme_constant_override("separation", 3)
+	for child in row.get_children():
+		if child.get_class() == "Control":
+			child.custom_minimum_size.x = 4
+	if not centered and row.get_combined_minimum_size().x > room:
+		row.position.x = maxf(16.0, 1280.0 - 16.0 - row.get_combined_minimum_size().x)
 
 
 ## A row of key hints: keycap, what it does, keycap, what it does... on the

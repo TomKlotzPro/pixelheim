@@ -54,32 +54,32 @@ func _info() -> String:
 		return ""
 	var level: int = floors[selected]
 	if not _is_open(level):
-		return "Floor %d\n\nClear the previous floor to unlock." % level
+		return Text.t("Floor %d\n\nClear the previous floor to unlock.") % level
 	var floor_def := Dungeons.floor_def(level)
 	var guardian := Dungeons.boss_of(level)
 	var guardian_name: String = Bestiary.monster(guardian["monsterId"])["name"]
 	var lines: Array[String] = [
-		floor_def["name"] if Dungeons.is_deep(level) else "Floor %d: %s" % [level, floor_def["name"]],
+		floor_def["name"] if Dungeons.is_deep(level) else Text.t("Floor %d: %s") % [level, floor_def["name"]],
 		String(floor_def["description"]),
 		"",
-		"Guardian: %s%s, level %d" % ["Elite " if guardian.get("elite", false) else "", guardian_name, int(Bestiary.monster(guardian["monsterId"])["level"]) + int(guardian.get("lift", Dungeons.lift(level)))],
+		Text.t("Guardian: %s%s, level %d") % ["Elite " if guardian.get("elite", false) else "", guardian_name, int(Bestiary.monster(guardian["monsterId"])["level"]) + int(guardian.get("lift", Dungeons.lift(level)))],
 	]
 	if Dungeons.is_deep(level):
-		lines.append("Deepest cleared so far: depth %d." % GameState.progression.deepest if GameState.progression.deepest > 0 else "No one has gone this deep and come back.")
+		lines.append(Text.t("Deepest cleared so far: depth %d.") % GameState.progression.deepest if GameState.progression.deepest > 0 else "No one has gone this deep and come back.")
 		if Dungeons.depth_of(level) <= GameState.progression.deepest:
 			lines.append("Beaten before: only its fights pay now.")
 		else:
-			var deep_hoard: Array[String] = ["%d XP" % Dungeons.clear_xp(level), "%dg" % floor_def["rewardGold"]]
+			var deep_hoard: Array[String] = [Text.t("%d XP") % Dungeons.clear_xp(level), "%dg" % floor_def["rewardGold"]]
 			for item_id: String in floor_def["rewardItemIds"]:
 				deep_hoard.append(Catalog.item_name(item_id))
-			lines.append("A new deepest: %s" % ", ".join(deep_hoard))
+			lines.append(Text.t("A new deepest: %s") % ", ".join(deep_hoard))
 	elif level in GameState.progression.cleared_levels:
 		lines.append("Cleared. Its hoard is already yours.")
 	else:
-		var hoard: Array[String] = ["%d XP" % Dungeons.clear_xp(level), "%dg" % floor_def["rewardGold"]]
+		var hoard: Array[String] = [Text.t("%d XP") % Dungeons.clear_xp(level), "%dg" % floor_def["rewardGold"]]
 		for item_id: String in floor_def["rewardItemIds"]:
 			hoard.append(Catalog.item_name(item_id))
-		lines.append("First clear: %s" % ", ".join(hoard))
+		lines.append(Text.t("First clear: %s") % ", ".join(hoard))
 	return "\n".join(lines)
 
 
@@ -91,7 +91,7 @@ func _rows() -> Array[Dictionary]:
 		var deep := Dungeons.is_deep(level)
 		rows_out.append({
 			"label": ("    %s" if deep else "%2d  %s") % ([Dungeons.floor_def(level)["name"]] if deep else [level, Dungeons.floor_def(level)["name"] if open else "???"]),
-			"note": ("DEEPEST %d" % GameState.progression.deepest if GameState.progression.deepest > 0 and level == Dungeons.floor_count() + 1 else "") if deep else ("CLEARED" if level in GameState.progression.cleared_levels else ""),
+			"note": (Text.t("DEEPEST %d") % GameState.progression.deepest if GameState.progression.deepest > 0 and level == Dungeons.floor_count() + 1 else "") if deep else ("CLEARED" if level in GameState.progression.cleared_levels else ""),
 			"enabled": open and not heavy,
 			"why": "Over-encumbered! Drop something before venturing in." if open else "Clear the previous floor to unlock.",
 			"action": _descend.bind(level),

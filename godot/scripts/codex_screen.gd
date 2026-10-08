@@ -58,12 +58,12 @@ func _masteries() -> void:
 		var next: Dictionary = tiers[tier] if tier < tiers.size() else {}
 		var line := HBoxContainer.new()
 		var name := UiStyle.label(
-			"%s%s" % [data["familyNames"][family], "   Slayer %s" % ["I", "II", "III"][tier - 1] if tier > 0 else ""],
+			"%s%s" % [data["familyNames"][family], Text.t("   Slayer %s") % ["I", "II", "III"][tier - 1] if tier > 0 else ""],
 			16, UiStyle.LAMP if tier > 0 else UiStyle.INK
 		)
 		name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		line.add_child(name)
-		line.add_child(UiStyle.label("%d slain" % kills, 15, UiStyle.FADED))
+		line.add_child(UiStyle.label(Text.t("%d slain") % kills, 15, UiStyle.FADED))
 		body.add_child(line)
 		var track := ColorRect.new()
 		track.color = UiStyle.RIM
@@ -76,8 +76,8 @@ func _masteries() -> void:
 		body.add_child(track)
 		var note := ""
 		if tier > 0:
-			note = "+%d%% damage against them. " % roundi(float(tiers[tier - 1]["bonus"]) * 100)
-		note += "Nothing left to teach you." if next.is_empty() else "%d more for +%d%%." % [
+			note = Text.t("+%d%% damage against them. ") % roundi(float(tiers[tier - 1]["bonus"]) * 100)
+		note += "Nothing left to teach you." if next.is_empty() else Text.t("%d more for +%d%%.") % [
 			int(next["kills"]) - kills, roundi(float(next["bonus"]) * 100),
 		]
 		body.add_child(UiStyle.label(note, 13, UiStyle.FADED))
@@ -103,7 +103,7 @@ func _bestiary() -> void:
 			name.custom_minimum_size = Vector2(220, 0)
 			line.add_child(name)
 			var numbers := UiStyle.label(
-				"HP %d  ATK %d  DEF %d  %d xp" % [monster["maxHp"], monster["attack"], monster["defense"], monster["xp"]],
+				Text.t("HP %d  ATK %d  DEF %d  %d xp") % [monster["maxHp"], monster["attack"], monster["defense"], monster["xp"]],
 				14, UiStyle.INK
 			)
 			numbers.custom_minimum_size = Vector2(360, 0)

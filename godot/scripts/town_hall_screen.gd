@@ -17,18 +17,18 @@ func _intro() -> String:
 func _info() -> String:
 	var now := Town.tier(GameState.town_tier())
 	var lines: Array[String] = [
-		"Pixelheim today: %s (age %d of %d)" % [now["name"], now["tier"], Town.MAX_TIER],
+		Text.t("Pixelheim today: %s (age %d of %d)") % [now["name"], now["tier"], Town.MAX_TIER],
 		String(now["blurb"]),
 	]
 	var building := Town.current_age(GameState.settlement)
 	if building == 0:
 		lines.append_array(["", "Every project is built. Pixelheim stands at its full height."])
 		return "\n".join(lines)
-	lines.append_array(["", "Building the %s" % Town.tier(building)["name"]])
+	lines.append_array(["", Text.t("Building the %s") % Town.tier(building)["name"]])
 	var blockers := Town.age_blockers(building, GameState.progression, GameState.settlement)
 	for need: Dictionary in Town.age(building)["requires"]:
 		lines.append("%s %s" % ["Needed:" if need["line"] in blockers else "Done:", need["line"]])
-	lines.append("When it's done: %s." % "; ".join(Town.tier(building)["perks"]).to_lower())
+	lines.append(Text.t("When it's done: %s.") % "; ".join(Town.tier(building)["perks"]).to_lower())
 	var chosen := _chosen_project()
 	if not chosen.is_empty():
 		lines.append_array(["", "%s: %s" % [chosen["name"], chosen["blurb"]]])

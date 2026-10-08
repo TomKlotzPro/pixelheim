@@ -117,12 +117,12 @@ func _refresh() -> void:
 	var pack := GameState.pack
 	var weight := pack.carried_weight()
 	var capacity := Skills.carry_capacity(hero, pack)
-	header.text = "Weight %d/%d" % [weight, capacity]
+	header.text = Text.t("Weight %d/%d") % [weight, capacity]
 	header.add_theme_color_override("font_color", Color(1, 0.45, 0.4) if weight > capacity else UiStyle.CREAM)
 	var share := clampf(float(weight) / maxi(1, capacity), 0.0, 1.0)
 	weight_fill.size = Vector2(120 * share, 8)
 	weight_fill.color = UiStyle.LAMP if share >= 0.9 else UiStyle.GOLD
-	sort_label.text = "Gold %d      Sorted by %s" % [pack.gold, GameState.settings.pack_sort]
+	sort_label.text = Text.t("Gold %d      Sorted by %s") % [pack.gold, GameState.settings.pack_sort]
 	_build_doll()
 	for child in tab_row.get_children():
 		child.queue_free()
@@ -199,7 +199,7 @@ func _guide_lines() -> Array[String]:
 	var here := _jobs_here()
 	if not here.is_empty():
 		var where: String = "your workbench" if GameState.world.map_id == "town_house" else STATIONS[here[0]]
-		return ["At %s" % where, "E crafts any recipe below you have the makings for."]
+		return [Text.t("At %s") % where, "E crafts any recipe below you have the makings for."]
 	var away := "Hilda forges behind the FORGE door, Vex brews behind BREWS; a bought house can fit a workbench."
 	if not _town_gate().is_empty():
 		return ["The stations are in town", away + " E travels to the gate."]
@@ -352,9 +352,9 @@ func _about(row: Dictionary) -> String:
 		"recipe":
 			var entry: Dictionary = row["entry"]
 			var job: String = entry["job"]["id"]
-			var about := "%s %d, at %s." % [job.capitalize(), entry["job"]["level"], STATIONS[job]]
+			var about := Text.t("%s %d, at %s.") % [job.capitalize(), entry["job"]["level"], STATIONS[job]]
 			if int(GameState.hero.jobs[job]["level"]) < int(entry["job"]["level"]):
-				about += " You are %s." % Economy.job_line(GameState.hero.jobs, job)
+				about += Text.t(" You are %s.") % Economy.job_line(GameState.hero.jobs, job)
 			# What's missing and where it comes from (PIX-143), else what it is.
 			var missing: Array[String] = []
 			for need: String in entry["needs"]:
@@ -399,18 +399,18 @@ static func stat_line(item: Dictionary, bonus: int, value: int) -> String:
 	var plus := "+%d" % bonus if bonus > 0 else ""
 	if item.has("damage"):
 		var scaling: String = item.get("scaling", "strength")
-		parts.append("DMG %d%s %s" % [int(item["damage"]) + bonus, " (%d%s)" % [item["damage"], plus] if plus != "" else "", scaling.substr(0, 3).to_upper()])
+		parts.append(Text.t("DMG %d%s %s") % [int(item["damage"]) + bonus, " (%d%s)" % [item["damage"], plus] if plus != "" else "", scaling.substr(0, 3).to_upper()])
 	if item.has("armor"):
-		parts.append("ARMOR %d%s" % [int(item["armor"]) + bonus, " (%d%s)" % [item["armor"], plus] if plus != "" else ""])
+		parts.append(Text.t("ARMOR %d%s") % [int(item["armor"]) + bonus, " (%d%s)" % [item["armor"], plus] if plus != "" else ""])
 	for stat: String in item.get("grants", {}):
 		parts.append("+%d %s" % [item["grants"][stat], stat.substr(0, 3).to_upper()])
 	if item.has("restoreHp"):
-		parts.append("+%d HP" % item["restoreHp"])
+		parts.append(Text.t("+%d HP") % item["restoreHp"])
 	if item.has("restoreMp"):
-		parts.append("+%d MP" % item["restoreMp"])
+		parts.append(Text.t("+%d MP") % item["restoreMp"])
 	if item.has("cures"):
-		parts.append("cures %s" % item["cures"])
-	parts.append("%d wt" % item["weight"])
+		parts.append(Text.t("cures %s") % item["cures"])
+	parts.append(Text.t("%d wt") % item["weight"])
 	parts.append("%dg" % value)
 	return "  ".join(parts)
 
@@ -457,11 +457,11 @@ func _build_doll() -> void:
 	var weapon := HeroRules.weapon(pack)
 	var scaling: String = Catalog.item(weapon["itemId"]).get("scaling", "strength") if not weapon.is_empty() else "strength"
 	var attack := HeroRules.effective_stat(hero, pack, scaling) + (HeroRules.gear_damage(weapon) if not weapon.is_empty() else 2)
-	var lines: Array[String] = ["ATK %d" % attack, "DEF %d" % HeroRules.total_defense(hero, pack)]
+	var lines: Array[String] = [Text.t("ATK %d") % attack, Text.t("DEF %d") % HeroRules.total_defense(hero, pack)]
 	for stat: String in ["strength", "intelligence", "dexterity"]:
 		var granted := pack.granted_stat(stat)
 		lines.append("%s %d%s" % [Skills.ABBR[stat], hero.stats[stat], "  +%d" % granted if granted > 0 else ""])
-	lines.append("Carry %d/%d" % [pack.carried_weight(), Skills.carry_capacity(hero, pack)])
+	lines.append(Text.t("Carry %d/%d") % [pack.carried_weight(), Skills.carry_capacity(hero, pack)])
 	var numbers := UiStyle.label("\n".join(lines), 15, UiStyle.INK, Vector2(24, 340))
 	doll.add_child(numbers)
 
@@ -480,7 +480,7 @@ func _slot(slot: String, label: String) -> Control:
 		box.tooltip_text = label
 	else:
 		box.add_child(_icon(instance["itemId"]))
-		box.tooltip_text = "%s - click to take off" % InventoryState.gear_name(instance)
+		box.tooltip_text = Text.t("%s - click to take off") % InventoryState.gear_name(instance)
 		box.gui_input.connect(func(event: InputEvent) -> void:
 			if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 				GameState.unequip(slot)
@@ -534,7 +534,7 @@ func _primary() -> void:
 		if not gate.is_empty() and world != null:
 			close()
 			world.travel_to(gate)
-			world._flash_message("You travel to %s." % gate["name"])
+			world._flash_message(Text.t("You travel to %s.") % gate["name"])
 		return
 	if row["kind"] == "recipe":
 		_craft(row["entry"])
@@ -547,10 +547,10 @@ func _primary() -> void:
 				if GameState.pack.equipped[slot] == piece["uid"]:
 					GameState.unequip(slot)
 					break
-			status.text = "%s goes back in the pack." % InventoryState.gear_name(piece)
+			status.text = Text.t("%s goes back in the pack.") % InventoryState.gear_name(piece)
 			Sound.play("equip")
 		elif GameState.equip(piece["uid"]):
-			status.text = "You put on %s." % InventoryState.gear_name(piece)
+			status.text = Text.t("You put on %s.") % InventoryState.gear_name(piece)
 			Sound.play("equip")
 		else:
 			status.text = "That can't be worn."
@@ -567,7 +567,7 @@ func _primary() -> void:
 		else:
 			status.text = used["text"]
 			if used["cures"] != "" and world != null and world.player.ailments.cure(used["cures"]):
-				status.text += " Cured %s." % used["cures"]
+				status.text += Text.t(" Cured %s.") % used["cures"]
 	_refresh()
 
 
@@ -579,12 +579,12 @@ func _craft(entry: Dictionary) -> void:
 		return
 	if not Economy.can_craft(entry, GameState.pack.items, GameState.hero.jobs):
 		var level := int(entry["job"]["level"])
-		status.text = "You need %s %d for that." % [job.capitalize(), level] if GameState.hero.jobs[job]["level"] < level else "Still missing: %s." % ", ".join(Economy.missing_names(entry, GameState.pack.items))
+		status.text = Text.t("You need %s %d for that.") % [job.capitalize(), level] if GameState.hero.jobs[job]["level"] < level else Text.t("Still missing: %s.") % ", ".join(Economy.missing_names(entry, GameState.pack.items))
 		return
 	var made := GameState.craft(entry["id"])
 	if made["made"]:
 		Sound.play("craft")
-		status.text = "You craft %s%s. %s" % [Catalog.item_name(entry["itemId"]), " (two!)" if made["count"] > 1 else "", made["level_line"]]
+		status.text = Text.t("You craft %s%s. %s") % [Catalog.item_name(entry["itemId"]), " (two!)" if made["count"] > 1 else "", made["level_line"]]
 
 
 func _drop(whole_stack: bool) -> void:
@@ -596,7 +596,7 @@ func _drop(whole_stack: bool) -> void:
 	if row["kind"] == "gear":
 		var piece: Dictionary = row["piece"]
 		if GameState.drop_gear(piece["uid"]):
-			status.text = "You leave %s behind." % InventoryState.gear_name(piece)
+			status.text = Text.t("You leave %s behind.") % InventoryState.gear_name(piece)
 		else:
 			status.text = "Take it off before you drop it."
 	elif Catalog.item(row["item_id"]).get("quest", false):
@@ -604,5 +604,5 @@ func _drop(whole_stack: bool) -> void:
 	else:
 		var count: int = row["count"] if whole_stack else 1
 		GameState.drop_item(row["item_id"], count)
-		status.text = "You drop %dx %s." % [count, Catalog.item_name(row["item_id"])]
+		status.text = Text.t("You drop %dx %s.") % [count, Catalog.item_name(row["item_id"])]
 	_refresh()

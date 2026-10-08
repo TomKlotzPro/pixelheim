@@ -83,7 +83,7 @@ func _open() -> void:
 
 	status = UiStyle.label("", 14, UiStyle.LAMP, Vector2(80, 580))
 	add_child(status)
-	add_child(UiStyle.footer("Esc  close      A/D  tab      W/S  choose      E  %s      Z  sell a stack" % "/".join(tabs).to_lower(), Vector2(80, 660)))
+	add_child(UiStyle.footer(Text.t("Esc  close      A/D  tab      W/S  choose      E  %s      Z  sell a stack") % "/".join(tabs).to_lower(), Vector2(80, 660)))
 	_refresh()
 
 
@@ -109,7 +109,7 @@ func _sell_stack() -> void:
 	var item_id: String = rows[selected]["stack"]
 	var count: int = GameState.pack.items.get(item_id, 0)
 	var gold := GameState.sell_item(item_id, count)
-	status.text = "Sold %d %s for %dg." % [count, Catalog.item_name(item_id), gold] if gold > 0 else "Not for sale."
+	status.text = Text.t("Sold %d %s for %dg.") % [count, Catalog.item_name(item_id), gold] if gold > 0 else "Not for sale."
 	_refresh()
 
 
@@ -147,8 +147,8 @@ func _build_rows() -> Array[Dictionary]:
 			if not deed.is_empty():
 				var owned := map_id in GameState.settlement.properties
 				out.append({
-					"label": "Deed: %s" % deed["name"], "price": "owned" if owned else "%dg" % deed["cost"],
-					"detail": "%s\nOwn this business: it pays you %dg rent after every victory." % [deed["name"], Town.rent_per_property(GameState.town_tier())],
+					"label": Text.t("Deed: %s") % deed["name"], "price": "owned" if owned else "%dg" % deed["cost"],
+					"detail": Text.t("%s\nOwn this business: it pays you %dg rent after every victory.") % [deed["name"], Town.rent_per_property(GameState.town_tier())],
 					"verb": "Buy the deed", "enabled": not owned and pack.gold >= int(deed["cost"]),
 					"action": func() -> void: _after(GameState.buy_property(map_id), "The deed is yours.", "Not enough gold."),
 				})
@@ -156,8 +156,8 @@ func _build_rows() -> Array[Dictionary]:
 			var bigger := Town.next_house_tier(GameState.owns_house(), int(GameState.settlement.house.get("tier", 1)))
 			if shop_id == "odo" and not bigger.is_empty():
 				out.append({
-					"label": "Deed: %s" % bigger["name"], "price": "%dg" % bigger["cost"],
-					"detail": "%s\nA bigger house: its new rooms wait the next time you walk in." % bigger["name"],
+					"label": Text.t("Deed: %s") % bigger["name"], "price": "%dg" % bigger["cost"],
+					"detail": Text.t("%s\nA bigger house: its new rooms wait the next time you walk in.") % bigger["name"],
 					"verb": "Sign the deed", "enabled": pack.gold >= int(bigger["cost"]),
 					"action": func() -> void:
 						var text := GameState.buy_house_upgrade()
@@ -169,7 +169,7 @@ func _build_rows() -> Array[Dictionary]:
 				var signature: bool = Catalog.item(item_id).get("signature", false)
 				var detail := _describe(item_id)
 				if signature:
-					detail += "\nThe %s's own, since Pixelheim became a %s." % [
+					detail += Text.t("\nThe %s's own, since Pixelheim became a %s.") % [
 						"shop" if shop_id == "odo" else ("forge" if shop_id == "smith" else "workshop"),
 						String(Town.tier(Economy.age_of(shop_id, item_id))["name"]).to_lower(),
 					]
@@ -177,7 +177,7 @@ func _build_rows() -> Array[Dictionary]:
 					"label": Catalog.item_name(item_id), "price": "%dg" % price, "icon": item_id,
 					"tag": "Pixelheim's own" if signature else "",
 					"detail": detail, "verb": "Buy", "enabled": pack.gold >= price,
-					"action": func() -> void: _after(GameState.buy_item(item_id), "Bought %s." % Catalog.item_name(item_id), "Not enough gold."),
+					"action": func() -> void: _after(GameState.buy_item(item_id), Text.t("Bought %s.") % Catalog.item_name(item_id), "Not enough gold."),
 				})
 		"Sell":
 			for item_id: String in pack.items:
@@ -236,7 +236,7 @@ func _build_rows() -> Array[Dictionary]:
 func _refresh() -> void:
 	for index in tab_buttons.size():
 		UiStyle.focus(tab_buttons[index], index == tab)
-	gold_label.text = "Gold: %d" % GameState.pack.gold
+	gold_label.text = Text.t("Gold: %d") % GameState.pack.gold
 	rows = _build_rows()
 	selected = clampi(selected, 0, maxi(0, rows.size() - 1))
 	for child in list.get_children():
@@ -253,7 +253,7 @@ func _refresh() -> void:
 	act_button.disabled = not row.get("enabled", false)
 	var stacked: int = GameState.pack.items.get(row.get("stack", ""), 0)
 	stack_button.visible = stacked > 1
-	stack_button.text = "Z  Sell all %d" % stacked
+	stack_button.text = Text.t("Z  Sell all %d") % stacked
 	if not rows.is_empty():
 		# Deferred until layout. Old rows leave the list at once on refresh, so
 		# looking the row up by index then always finds the current one.
@@ -320,22 +320,22 @@ func _after(ok: bool, done: String, refused: String) -> void:
 
 
 func _sold(gold: int) -> void:
-	status.text = "Sold for %dg." % gold if gold > 0 else "Not for sale."
+	status.text = Text.t("Sold for %dg.") % gold if gold > 0 else "Not for sale."
 
 
 func _crafted(result: Dictionary, entry: Dictionary) -> void:
 	if not result["made"]:
 		var job: String = entry["job"]["id"]
 		if int(GameState.hero.jobs[job]["level"]) < int(entry["job"]["level"]):
-			status.text = "That takes %s %d." % [job.capitalize(), entry["job"]["level"]]
+			status.text = Text.t("That takes %s %d.") % [job.capitalize(), entry["job"]["level"]]
 		else:
-			status.text = "Still missing: %s." % ", ".join(Economy.missing_names(entry, GameState.pack.items))
+			status.text = Text.t("Still missing: %s.") % ", ".join(Economy.missing_names(entry, GameState.pack.items))
 		return
 	Sound.play("craft")
 	if result["count"] > 1:
-		status.text = "A lucky brew: 2x %s! %s" % [Catalog.item_name(entry["itemId"]), result["level_line"]]
+		status.text = Text.t("A lucky brew: 2x %s! %s") % [Catalog.item_name(entry["itemId"]), result["level_line"]]
 	else:
-		status.text = "Made %s. %s" % [Catalog.item_name(entry["itemId"]), result["level_line"]]
+		status.text = Text.t("Made %s. %s") % [Catalog.item_name(entry["itemId"]), result["level_line"]]
 
 
 func _empty_note() -> String:
@@ -361,19 +361,19 @@ static func _describe(item_id: String, instance := {}) -> String:
 	]
 	var bonus: int = instance.get("bonus", 0)
 	if item.has("damage"):
-		lines.append("Damage %d" % (int(item["damage"]) + bonus))
+		lines.append(Text.t("Damage %d") % (int(item["damage"]) + bonus))
 	if item.has("armor"):
-		lines.append("Armor %d" % (int(item["armor"]) + bonus))
+		lines.append(Text.t("Armor %d") % (int(item["armor"]) + bonus))
 	for stat: String in item.get("grants", {}):
 		lines.append("+%d %s" % [item["grants"][stat], stat])
 	# A set piece says its set and what wearing more of it gives (PIX-166).
 	if item.has("set"):
 		lines.append(Catalog.set_line(item["set"], int(GameState.pack.set_counts().get(item["set"], 0))))
 	if item.has("restoreHp"):
-		lines.append("Restores %d HP" % item["restoreHp"])
+		lines.append(Text.t("Restores %d HP") % item["restoreHp"])
 	if item.has("restoreMp"):
-		lines.append("Restores %d MP" % item["restoreMp"])
-	lines.append("Weight %d" % item["weight"])
+		lines.append(Text.t("Restores %d MP") % item["restoreMp"])
+	lines.append(Text.t("Weight %d") % item["weight"])
 	return "\n".join(lines)
 
 
@@ -381,12 +381,12 @@ static func _describe_recipe(entry: Dictionary) -> String:
 	var lines: Array[String] = [_describe(entry["itemId"]), "", "Needs:"]
 	for need: String in entry["needs"]:
 		var have: int = GameState.pack.items.get(need, 0)
-		lines.append("  %d x %s  (have %d)" % [entry["needs"][need], Catalog.item_name(need), have])
+		lines.append(Text.t("  %d x %s  (have %d)") % [entry["needs"][need], Catalog.item_name(need), have])
 		# Where a missing one comes from (PIX-143).
 		if have < int(entry["needs"][need]):
 			var sources := Economy.material_sources(need)
 			if not sources.is_empty():
 				lines.append("    " + String(sources[0]["text"]))
 	var job: String = entry["job"]["id"]
-	lines.append("%s level %d - you are %s" % [job.capitalize(), entry["job"]["level"], Economy.job_line(GameState.hero.jobs, job)])
+	lines.append(Text.t("%s level %d - you are %s") % [job.capitalize(), entry["job"]["level"], Economy.job_line(GameState.hero.jobs, job)])
 	return "\n".join(lines)

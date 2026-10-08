@@ -15,7 +15,7 @@ static var _doc := {}
 
 static func _data() -> Dictionary:
 	if _doc.is_empty():
-		_doc = SaveCodec.parse_json(FileAccess.get_file_as_string("res://assets/data/npcs.json"))
+		_doc = Text.localize(SaveCodec.parse_json(FileAccess.get_file_as_string("res://assets/data/npcs.json")))
 	return _doc
 
 

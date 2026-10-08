@@ -117,7 +117,7 @@ func _card(node: Dictionary, chosen: bool) -> Control:
 	blurb.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	blurb.custom_minimum_size = Vector2(300, 0)
 	lines.add_child(blurb)
-	lines.add_child(UiStyle.label("Signature: %s" % node["signature"]["name"], 13, UiStyle.FADED))
+	lines.add_child(UiStyle.label(Text.t("Signature: %s") % node["signature"]["name"], 13, UiStyle.FADED))
 	return panel
 
 

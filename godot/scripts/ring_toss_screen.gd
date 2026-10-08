@@ -139,4 +139,4 @@ func _new_round() -> void:
 
 
 func _score() -> void:
-	score.text = "On the peg: %d of %d" % [hits, throws]
+	score.text = Text.t("On the peg: %d of %d") % [hits, throws]

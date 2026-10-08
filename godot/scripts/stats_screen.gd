@@ -11,8 +11,8 @@ func _title() -> String:
 func _intro() -> String:
 	var points := GameState.hero.stat_points
 	if points == 0:
-		return "Every level brings %d stat points to spend." % Bestiary._data()["statPointsPerLevel"]
-	return "%d stat point%s to spend. Spending is permanent." % [points, "" if points == 1 else "s"]
+		return Text.t("Every level brings %d stat points to spend.") % Bestiary._data()["statPointsPerLevel"]
+	return Text.t("%d stat point%s to spend. Spending is permanent.") % [points, "" if points == 1 else "s"]
 
 
 func _info() -> String:
@@ -23,10 +23,10 @@ func _info() -> String:
 	var resource := Skills.resource_label(hero.role_id)
 	var lines: Array[String] = [
 		"%s, %s" % [hero.hero_name, identity],
-		"Lv %d %s" % [hero.level, Ranks.title(hero.role_id, hero.level)],
+		Text.t("Lv %d %s") % [hero.level, Ranks.title(hero.role_id, hero.level)],
 		"",
-		"HP %d/%d    %s %d/%d" % [hero.hp, hero.stats["maxHp"], resource, hero.mp, hero.stats["maxMp"]],
-		"DEF %d    Carry %d/%d" % [HeroRules.total_defense(hero, pack), pack.carried_weight(), Skills.carry_capacity(hero, pack)],
+		Text.t("HP %d/%d    %s %d/%d") % [hero.hp, hero.stats["maxHp"], resource, hero.mp, hero.stats["maxMp"]],
+		Text.t("DEF %d    Carry %d/%d") % [HeroRules.total_defense(hero, pack), pack.carried_weight(), Skills.carry_capacity(hero, pack)],
 	]
 	# Armour sets worn (PIX-166): what each gives at the pieces worn.
 	var sets := pack.set_counts()
@@ -37,7 +37,7 @@ func _info() -> String:
 		var info := Skills.info(stat, hero, pack)
 		lines.append_array([
 			"", "%s %d" % [Skills.ABBR[stat], hero.stats[stat]], String(info["blurb"]),
-			"Now: %s" % info["now"], "With a point: %s" % info["next"],
+			Text.t("Now: %s") % info["now"], Text.t("With a point: %s") % info["next"],
 		])
 	return "\n".join(lines)
 

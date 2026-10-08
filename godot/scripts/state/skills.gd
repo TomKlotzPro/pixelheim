@@ -114,11 +114,11 @@ static func hero_skills(hero: HeroState) -> Array:
 ## mana or stamina, and the health price some skills take (heroSkill's checks).
 static func cast_block(hero: HeroState, skill: Dictionary) -> String:
 	if hero.level < int(skill.get("unlockLevel", 1)):
-		return "%s needs level %d." % [skill["name"], skill["unlockLevel"]]
+		return Text.t("%s needs level %d.") % [skill["name"], skill["unlockLevel"]]
 	if hero.mp < int(skill["mpCost"]):
-		return "Not enough %s for %s." % [resource_label(hero.role_id), skill["name"]]
+		return Text.t("Not enough %s for %s.") % [resource_label(hero.role_id), skill["name"]]
 	if int(skill.get("hpCost", 0)) > 0 and hero.hp <= int(skill["hpCost"]):
-		return "Too hurt to pay %s's price." % skill["name"]
+		return Text.t("Too hurt to pay %s's price.") % skill["name"]
 	return ""
 
 
@@ -142,33 +142,33 @@ static func readout(stat: String, hero: HeroState, pack: InventoryState) -> Stri
 	match stat:
 		"strength":
 			if scaling == "strength":
-				parts.append("ATK %d" % (int(hero.stats["strength"]) + (HeroRules.gear_damage(weapon) if not weapon.is_empty() else 2)))
-			parts.append("carry %d" % carry_capacity(hero, pack))
+				parts.append(Text.t("ATK %d") % (int(hero.stats["strength"]) + (HeroRules.gear_damage(weapon) if not weapon.is_empty() else 2)))
+			parts.append(Text.t("carry %d") % carry_capacity(hero, pack))
 		"intelligence":
 			if scaling == "intelligence":
-				parts.append("ATK %d" % (int(hero.stats["intelligence"]) + HeroRules.gear_damage(weapon)))
+				parts.append(Text.t("ATK %d") % (int(hero.stats["intelligence"]) + HeroRules.gear_damage(weapon)))
 			var strongest := -1
 			for skill: Dictionary in hero_skills(hero):
 				if skill.get("stat") == "intelligence":
 					strongest = maxi(strongest, skill_power(hero, pack, skill))
 			if strongest >= 0:
-				parts.append("skill power %d" % strongest)
+				parts.append(Text.t("skill power %d") % strongest)
 			if Catalog.role(hero.role_id)["resource"] == "mana":
-				parts.append("MP %d" % hero.stats["maxMp"])
+				parts.append(Text.t("MP %d") % hero.stats["maxMp"])
 			if parts.is_empty():
 				parts.append("powers INT skills")
 		"dexterity":
-			parts.append("flee %d%%" % roundi(flee_chance(hero, pack) * 100))
+			parts.append(Text.t("flee %d%%") % roundi(flee_chance(hero, pack) * 100))
 		"defense":
 			# Measured against a foe of the hero's own level (PIX-185).
 			var defense := HeroRules.total_defense(hero, pack)
-			parts.append("DEF %d" % defense)
-			parts.append("turns aside %d%% of a level-%d hit" % [roundi(Bestiary.turned_aside(Bestiary.matched_attack(hero.level), defense) * 100), hero.level])
+			parts.append(Text.t("DEF %d") % defense)
+			parts.append(Text.t("turns aside %d%% of a level-%d hit") % [roundi(Bestiary.turned_aside(Bestiary.matched_attack(hero.level), defense) * 100), hero.level])
 		"endurance":
-			parts.append("HP %d" % hero.stats["maxHp"])
+			parts.append(Text.t("HP %d") % hero.stats["maxHp"])
 			if Catalog.role(hero.role_id)["resource"] == "endurance":
 				parts.append("%s %d" % [resource_label(hero.role_id), hero.stats["maxMp"]])
-				parts.append("regen %d/turn" % stamina_regen(hero))
+				parts.append(Text.t("regen %d/turn") % stamina_regen(hero))
 	return " · ".join(parts)
 
 

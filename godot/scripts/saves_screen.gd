@@ -93,7 +93,7 @@ func _open() -> void:
 		web_lines.add_child(none)
 	else:
 		var found := UiStyle.label(
-			"Your web game hero %s, %d gold." % [WebImport.describe(web_save), web_save["gold"]], 14, UiStyle.INK
+			Text.t("Your web game hero %s, %d gold.") % [WebImport.describe(web_save), web_save["gold"]], 14, UiStyle.INK
 		)
 		found.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		web_lines.add_child(found)
@@ -204,7 +204,7 @@ func _play() -> void:
 
 func _new_hero() -> void:
 	var summary := GameState.slots.summary(_target())
-	if not summary.is_empty() and not _confirm("new", "Replace %s with a new hero?" % summary["name"], "N"):
+	if not summary.is_empty() and not _confirm("new", Text.t("Replace %s with a new hero?") % summary["name"], "N"):
 		return
 	_create_in(_target())
 
@@ -219,16 +219,16 @@ func _create_in(target: int) -> void:
 func _clear() -> void:
 	var summary := GameState.slots.summary(_target())
 	if summary.is_empty():
-		_say("Slot %d is already empty." % _target())
+		_say(Text.t("Slot %d is already empty.") % _target())
 	elif _target() == GameState.slot:
 		# The hero in hand goes too: back to the title with no one loaded.
-		if _confirm("clear", "Clear %s, the hero in hand, for good? You'll go back to the title." % summary["name"], "X"):
+		if _confirm("clear", Text.t("Clear %s, the hero in hand, for good? You'll go back to the title.") % summary["name"], "X"):
 			GameState.clear_slot(_target())
 			GameState.title_seen = false
 			_reload()
-	elif _confirm("clear", "Clear %s from slot %d for good?" % [summary["name"], _target()], "X"):
+	elif _confirm("clear", Text.t("Clear %s from slot %d for good?") % [summary["name"], _target()], "X"):
 		GameState.clear_slot(_target())
-		_say("Slot %d is empty now." % _target())
+		_say(Text.t("Slot %d is empty now.") % _target())
 		_refresh()
 
 func _bring() -> void:
@@ -257,7 +257,7 @@ func _may_replace(action: String, key: String, incoming: Dictionary, source: Str
 	var summary := GameState.slots.summary(_target())
 	if summary.is_empty():
 		return true
-	var question := "Replace %s in slot %d with %s %s? Their progress here would be lost." % [
+	var question := Text.t("Replace %s in slot %d with %s %s? Their progress here would be lost.") % [
 		summary["name"], _target(), WebImport.describe(incoming), source,
 	]
 	return _confirm(action, question, key)
@@ -268,7 +268,7 @@ func _confirm(action: String, question: String, key: String) -> bool:
 		pending = ""
 		return true
 	pending = action
-	status.text = "%s Press %s again to confirm." % [question, key]
+	status.text = Text.t("%s Press %s again to confirm.") % [question, key]
 	return false
 
 func _say(text: String) -> void:
@@ -279,8 +279,8 @@ func _refresh() -> void:
 	for index in cards.size():
 		_fill_card(cards[index], index)
 	if bring_button != null:
-		bring_button.text = "B  Bring %s to slot %d" % [web_save["hero"]["name"], _target()]
-	load_button.text = "Load into slot %d" % _target()
+		bring_button.text = Text.t("B  Bring %s to slot %d") % [web_save["hero"]["name"], _target()]
+	load_button.text = Text.t("Load into slot %d") % _target()
 
 func _fill_card(card: PanelContainer, index: int) -> void:
 	for child in card.get_children():
@@ -320,11 +320,11 @@ func _fill_card(card: PanelContainer, index: int) -> void:
 		var role: String = Catalog.role(summary["roleId"]).get("name", "").to_lower()
 		lines.add_child(UiStyle.label(summary["name"], 20, UiStyle.INK))
 		lines.add_child(UiStyle.label(
-			"Level %d %s in %s" % [summary["level"], role, Catalog.place_name(summary["mapId"])], 14, UiStyle.FADED
+			Text.t("Level %d %s in %s") % [summary["level"], role, Catalog.place_name(summary["mapId"])], 14, UiStyle.FADED
 		))
-		lines.add_child(UiStyle.label("%d gold, saved %s" % [summary["gold"], _ago(summary["savedAt"])], 14, UiStyle.FADED))
+		lines.add_child(UiStyle.label(Text.t("%d gold, saved %s") % [summary["gold"], _ago(summary["savedAt"])], 14, UiStyle.FADED))
 
-	var tag := UiStyle.label("Playing" if index + 1 == GameState.slot else "Slot %d" % (index + 1), 12,
+	var tag := UiStyle.label("Playing" if index + 1 == GameState.slot else Text.t("Slot %d") % (index + 1), 12,
 		UiStyle.LAMP if index + 1 == GameState.slot else UiStyle.FADED)
 	tag.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	row.add_child(tag)
@@ -334,12 +334,12 @@ static func _ago(saved_at: int) -> String:
 	if saved_at <= 0 or seconds < 60:
 		return "just now"
 	if seconds < 3600:
-		return "%d min ago" % (seconds / 60)
+		return Text.t("%d min ago") % (seconds / 60)
 	if seconds < 86400:
 		var hours := seconds / 3600
-		return "1 hour ago" if hours == 1 else "%d hours ago" % hours
+		return "1 hour ago" if hours == 1 else Text.t("%d hours ago") % hours
 	var days := seconds / 86400
-	return "yesterday" if days == 1 else "%d days ago" % days
+	return "yesterday" if days == 1 else Text.t("%d days ago") % days
 
 func _reload() -> void:
 	get_tree().paused = false

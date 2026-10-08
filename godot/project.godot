@@ -33,6 +33,10 @@ window/stretch/aspect="keep"
 
 theme/custom_font="res://assets/fonts/PixeloidSans.ttf"
 
+[internationalization]
+
+locale/translations=PackedStringArray("res://locale/fr.po")
+
 [physics]
 
 ; Motion is drawn between physics ticks (actors only, see world.gd): no

@@ -9,7 +9,7 @@ static var _doc := {}
 
 static func _data() -> Dictionary:
 	if _doc.is_empty():
-		_doc = SaveCodec.parse_json(FileAccess.get_file_as_string("res://assets/data/combat.json"))
+		_doc = Text.localize(SaveCodec.parse_json(FileAccess.get_file_as_string("res://assets/data/combat.json")))
 	return _doc
 
 
@@ -34,7 +34,7 @@ static func spawn(monster_id: String, elite := false, lift := 0) -> Dictionary:
 	var max_hp := roundi(base["maxHp"] * (float(_data()["eliteHp"]) if elite else 1.0))
 	var fighter := {
 		"id": monster_id,
-		"name": "Elite %s" % base["name"] if elite else String(base["name"]),
+		"name": Text.t("Elite %s") % base["name"] if elite else String(base["name"]),
 		"elite": elite,
 		"hp": max_hp,
 		"maxHp": max_hp,
@@ -124,7 +124,7 @@ static func where_found(monster_id: String) -> Array[String]:
 		for level in range(1, _data()["levels"].size() + 1):
 			for encounter: Dictionary in _data()["levels"][level - 1]["encounters"]:
 				var places: Array = _found.get(encounter["monsterId"], [])
-				var floor_name := "floor %d" % level
+				var floor_name := Text.t("floor %d") % level
 				if floor_name not in places:
 					places.append(floor_name)
 				_found[encounter["monsterId"]] = places

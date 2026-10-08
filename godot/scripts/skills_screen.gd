@@ -65,7 +65,7 @@ func _layout() -> void:
 	view.add_child(UiStyle.heading("Skills", 20, UiStyle.CREAM, Vector2(80, 24)))
 	var points := hero.skill_points
 	view.add_child(UiStyle.label(
-		"%d skill point%s" % [points, "" if points == 1 else "s"], 18, UiStyle.GOLD if points > 0 else UiStyle.DUSK,
+		Text.t("%d skill point%s") % [points, "" if points == 1 else "s"], 18, UiStyle.GOLD if points > 0 else UiStyle.DUSK,
 		Vector2(1000, 30)
 	))
 	var top := 80
@@ -78,7 +78,7 @@ func _layout() -> void:
 		nodes.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return a["tier"] < b["tier"])
 		var root: Dictionary = nodes[0]
 		var head: String = root["skill"]["name"] if root.has("skill") else root["name"]
-		view.add_child(UiStyle.label("Path of %s" % head, 16, UiStyle.LAMP, Vector2(COLUMN_X[branch], top)))
+		view.add_child(UiStyle.label(Text.t("Path of %s") % head, 16, UiStyle.LAMP, Vector2(COLUMN_X[branch], top)))
 		for entry: Dictionary in nodes:
 			var cell := Vector2i(branch, 2 + int(entry["tier"]))
 			cells[cell] = {"kind": "node", "entry": entry}
@@ -123,7 +123,7 @@ func _path_graph(hero: HeroState) -> void:
 
 func _path_card(node: Dictionary, walked: Array, chosen: bool) -> Control:
 	var current: bool = not walked.is_empty() and walked[-1] == node["id"]
-	var state := "Current" if current else ("Walked" if node["id"] in walked else ("Walk this path" if _claimable({"kind": "path", "entry": node}) else "Rank %d" % node["tier"]))
+	var state := "Current" if current else ("Walked" if node["id"] in walked else ("Walk this path" if _claimable({"kind": "path", "entry": node}) else Text.t("Rank %d") % node["tier"]))
 	var lit: bool = current or node["id"] in walked or state == "Walk this path"
 	var panel := _panel(PATH_CARD, chosen, lit)
 	var lines := VBoxContainer.new()
@@ -174,8 +174,8 @@ func _numbers(entry: Dictionary) -> String:
 		return ""
 	var cost := "%s %s" % [skill["mpCost"], Skills.resource_label(GameState.hero.role_id)]
 	if skill.get("hpCost", 0) > 0:
-		cost += " + %d HP" % skill["hpCost"]
-	return "%sx %s %s · %s" % [skill["multiplier"], Skills.ABBR.get(skill["stat"], skill["stat"]), verb, cost]
+		cost += Text.t(" + %d HP") % skill["hpCost"]
+	return Text.t("%sx %s %s · %s") % [skill["multiplier"], Skills.ABBR.get(skill["stat"], skill["stat"]), verb, cost]
 
 
 func _panel(size: Vector2, chosen: bool, lit: bool) -> PanelContainer:
@@ -202,7 +202,7 @@ func _describe() -> void:
 		return
 	var entry: Dictionary = cell["entry"]
 	if cell["kind"] == "path":
-		details.text = "%s: %s  Signature: %s - %s" % [entry["name"], entry["blurb"], entry["signature"]["name"], entry["signature"]["description"]]
+		details.text = Text.t("%s: %s  Signature: %s - %s") % [entry["name"], entry["blurb"], entry["signature"]["name"], entry["signature"]["description"]]
 	else:
 		details.text = "%s: %s" % [entry["name"], entry["description"]]
 
@@ -238,19 +238,19 @@ func _forget() -> void:
 	elif not Skills.can_forget_at(GameState.world.map_id):
 		status.text = "Forgetting takes the village's quiet. Come back to Pixelheim."
 	elif GameState.pack.gold < cost:
-		status.text = "Forgetting %s costs %dg." % [_skills(count), cost]
+		status.text = Text.t("Forgetting %s costs %dg.") % [_skills(count), cost]
 	elif not forget_armed:
 		armed = true
-		status.text = "Forget %s for %dg and get the points back? F again to agree." % [_skills(count), cost]
+		status.text = Text.t("Forget %s for %dg and get the points back? F again to agree.") % [_skills(count), cost]
 	elif GameState.forget_skills():
 		Sound.play("learn")
-		status.text = "Forgotten. %s to spend again." % ("1 point" if count == 1 else "%d points" % count)
+		status.text = Text.t("Forgotten. %s to spend again.") % ("1 point" if count == 1 else Text.t("%d points") % count)
 		_layout()
 	forget_armed = armed
 
 
 func _skills(count: int) -> String:
-	return "1 skill" if count == 1 else "%d skills" % count
+	return "1 skill" if count == 1 else Text.t("%d skills") % count
 
 
 ## To the next card that way: same column first, else the nearest one.
@@ -283,12 +283,12 @@ func _act() -> void:
 	if cell["kind"] == "path":
 		if GameState.choose_path(entry["id"]):
 			Sound.play("learn")
-			status.text = "You walk the path of the %s." % entry["name"]
+			status.text = Text.t("You walk the path of the %s.") % entry["name"]
 		else:
 			status.text = "That path isn't yours to walk now."
 	elif GameState.buy_skill_node(entry["id"]):
 		Sound.play("learn")
-		status.text = "Learned: %s." % entry["name"]
+		status.text = Text.t("Learned: %s.") % entry["name"]
 	elif entry["id"] in GameState.hero.skill_nodes:
 		status.text = "Already learned."
 	else:
@@ -302,5 +302,5 @@ func _why_not(entry: Dictionary) -> String:
 	if entry.has("requires") and entry["requires"] not in hero.skill_nodes:
 		return "Requires the skill above"
 	if hero.level < Skills.tier_level(entry):
-		return "Needs level %d" % Skills.tier_level(entry)
+		return Text.t("Needs level %d") % Skills.tier_level(entry)
 	return "No skill points to spend"

@@ -11,24 +11,24 @@ func _title() -> String:
 
 func _intro() -> String:
 	var deepest := GameState.progression.deepest
-	var record := "   Deepest Hunt: depth %d." % deepest if deepest > 0 else ""
-	return "Kill a named monster and the bounty is yours where it falls.%s" % record
+	var record := Text.t("   Deepest Hunt: depth %d.") % deepest if deepest > 0 else ""
+	return Text.t("Kill a named monster and the bounty is yours where it falls.%s") % record
 
 
 func _info() -> String:
 	var chosen := _chosen()
 	if chosen.is_empty():
 		var first := Hunts.next_notice(GameState.board_floors())
-		return "No notices yet. The board waits for word from the wilds.\n\nThe first one goes up when %s." % _when(first)
+		return Text.t("No notices yet. The board waits for word from the wilds.\n\nThe first one goes up when %s.") % _when(first)
 	var slain: bool = chosen["id"] in GameState.progression.hunted
 	var lines: Array[String] = ["%s: %s" % ["Slain" if slain else "Wanted", chosen["name"]], "", String(chosen["notice"]), ""]
-	lines.append("Its lair: %s." % chosen["where"])
+	lines.append(Text.t("Its lair: %s.") % chosen["where"])
 	lines.append("%s." % Hunts.reward_line(chosen))
 	if slain:
 		lines.append_array(["", String(chosen["homecoming"])])
 	var next := Hunts.next_notice(GameState.board_floors())
 	if not next.is_empty():
-		lines.append_array(["", "Another notice goes up when %s." % _when(next)])
+		lines.append_array(["", Text.t("Another notice goes up when %s.") % _when(next)])
 	return "\n".join(lines)
 
 
@@ -46,7 +46,7 @@ func _rows() -> Array[Dictionary]:
 			"note": "SLAIN" if slain else "%dg" % int(entry["bounty"]),
 			"enabled": not slain,
 			"why": "Slain. Pixelheim still talks about it.",
-			"action": func() -> String: return "%s keeps to %s. Its lair is marked on your map." % [entry["name"], entry["where"]],
+			"action": func() -> String: return Text.t("%s keeps to %s. Its lair is marked on your map.") % [entry["name"], entry["where"]],
 		})
 	return out
 
@@ -61,13 +61,13 @@ func _chosen() -> Dictionary:
 ## When a notice goes up: its floor cleared, or enough of the five relics
 ## won out in the Reach (PIX-170).
 static func _when(entry: Dictionary) -> String:
-	var cleared := "%s is cleared" % _floor_name(int(entry["postedAfter"]))
+	var cleared := Text.t("%s is cleared") % _floor_name(int(entry["postedAfter"]))
 	if not entry.has("postedRelics"):
 		return cleared
 	var relics := int(entry["postedRelics"])
-	return "%s of the five relics %s won, or %s" % [["one", "two", "three", "four"][relics - 1], "is" if relics == 1 else "are", cleared]
+	return Text.t("%s of the five relics %s won, or %s") % [["one", "two", "three", "four"][relics - 1], "is" if relics == 1 else "are", cleared]
 
 
 static func _floor_name(level: int) -> String:
 	var floor_def: Dictionary = Bestiary._data()["levels"][level - 1]
-	return "the %s (floor %d)" % [String(floor_def["name"]).trim_prefix("The "), level]
+	return Text.t("the %s (floor %d)") % [String(floor_def["name"]).trim_prefix("The "), level]

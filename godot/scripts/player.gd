@@ -231,7 +231,7 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null) -> void:
 	world.shake(3.0, 0.2)
 	world.hit_stop(0.05)
 	if hp > 0 and ailments.inflict(infliction, GameState.roll, HeroRules.passives(GameState.hero)):
-		world.log_line("You are afflicted by %s!" % infliction["kind"])
+		world.log_line(Text.t("You are afflicted by %s!") % infliction["kind"])
 		_show_ailment()
 	velocity = (global_position - from).normalized() * 180
 	move_and_slide()
@@ -293,7 +293,7 @@ func cast(index: int) -> void:
 	if skill["kind"] == "damage":
 		target = _nearest_foe()
 		if target == null:
-			world._flash_message("No foe in reach for %s." % skill["name"])
+			world._flash_message(Text.t("No foe in reach for %s.") % skill["name"])
 			return
 		face(target.global_position - global_position)
 	GameState.pay_for_skill(skill)
@@ -312,11 +312,11 @@ func cast(index: int) -> void:
 			world.log_line("All ailments are purged!")
 		world.skill_flash(global_position, Color(0.5, 1.0, 0.6))
 		world.float_number(restored, global_position + Vector2(0, -22), Color(0.5, 1, 0.6))
-		world.log_line("%s restores %d HP." % [skill["name"], restored])
+		world.log_line(Text.t("%s restores %d HP.") % [skill["name"], restored])
 		return
 	var damage := Bestiary.hero_skill_damage(GameState.hero, GameState.pack, skill, target.fighter, GameState.roll)
 	world.skill_flash(target.global_position, color)
-	world.log_line("%s hits %s for %d damage!" % [skill["name"], target.fighter["name"], damage])
+	world.log_line(Text.t("%s hits %s for %d damage!") % [skill["name"], target.fighter["name"], damage])
 	target.take_hit(damage, global_position, skill.get("inflicts"))
 
 

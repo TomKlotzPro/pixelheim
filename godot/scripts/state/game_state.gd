@@ -80,6 +80,17 @@ func boot(args: PackedStringArray) -> void:
 		return
 	_booted = true
 	settings.load_file()
+	# The game speaks the player's language from the first screen (PIX-195);
+	# `--lang xx` (harness) picks one for the run.
+	var lang_index := args.find("--lang")
+	Text.apply(args[lang_index + 1] if lang_index >= 0 and lang_index + 1 < args.size() else settings.language)
+	# `--pseudo` (harness): every string stretched a third longer and
+	# accented, to see where a longer language would overflow (PIX-195).
+	if args.has("--pseudo"):
+		ProjectSettings.set_setting("internationalization/pseudolocalization/expansion_ratio", 0.35)
+		TranslationServer.pseudolocalization_enabled = true
+		TranslationServer.set_locale("fr")
+		Text.forget()
 	var slot_index := args.find("--slot")
 	if slot_index >= 0 and slot_index + 1 < args.size():
 		slot = clampi(int(args[slot_index + 1]), 1, SaveSlots.SLOT_COUNT)
@@ -434,7 +445,7 @@ func craft(recipe_id: String) -> Dictionary:
 		if not taken.is_empty() and not taken["done"] and objective["kind"] == "craft" and objective["itemId"] == entry["itemId"]:
 			taken["progress"] = mini(int(objective["count"]), int(taken["progress"]) + count)
 	_pack_changed()
-	var level_line := "%s reached %d!" % [job.capitalize(), hero.jobs[job]["level"]] if gained > 0 else ""
+	var level_line := Text.t("%s reached %d!") % [job.capitalize(), hero.jobs[job]["level"]] if gained > 0 else ""
 	return {"made": true, "count": count, "level_line": level_line}
 
 
@@ -446,12 +457,12 @@ func rest_at_inn() -> String:
 	if whole:
 		return "The innkeeper nods. You are already well rested."
 	if pack.gold < cost:
-		return "No coin, no bed: a night costs %d gold." % cost
+		return Text.t("No coin, no bed: a night costs %d gold.") % cost
 	pack.gold -= cost
 	_make_whole()
 	wake_the_wilds()
 	_pack_changed()
-	return "You rest at the inn and wake fully restored. -%d gold." % cost
+	return Text.t("You rest at the inn and wake fully restored. -%d gold.") % cost
 
 
 ## Funds a village project (PIX-145): gold and materials paid, the project
@@ -466,13 +477,13 @@ func fund_project(project_id: String) -> String:
 		pack.remove_item(item_id, int(entry["cost"]["items"][item_id]))
 	var tier_number := Town.age_of(project_id)
 	settlement.projects.assign(Town.done_projects(settlement) + [project_id])
-	var line := "%s: built. Walk outside and see." % entry["name"]
+	var line := Text.t("%s: built. Walk outside and see.") % entry["name"]
 	reveals.append("project:%s" % project_id)
 	last_deed = {"kind": "project", "project": String(entry["name"]).to_lower().trim_prefix("the ").trim_prefix("a ")}
 	if Town.age(tier_number)["projects"].all(func(candidate: Dictionary) -> bool: return candidate["id"] in settlement.projects):
 		settlement.town_tier = tier_number
 		reveals.append("age:%d" % tier_number)
-		line = "%s: built - and Pixelheim is a %s now." % [entry["name"], String(Town.tier(tier_number)["name"]).to_lower()]
+		line = Text.t("%s: built - and Pixelheim is a %s now.") % [entry["name"], String(Town.tier(tier_number)["name"]).to_lower()]
 		_start_festival(tier_number)
 	_pack_changed()
 	settlers_changed.emit()
@@ -597,7 +608,7 @@ func win_ring_toss() -> String:
 	pack.add_item(Town.festival("prizeItem"), pies)
 	_pack_changed()
 	save_now()
-	return "The prize is yours: +%d gold and %d %ss!" % [gold, pies, Catalog.item_name(Town.festival("prizeItem"))]
+	return Text.t("The prize is yours: +%d gold and %d %ss!") % [gold, pies, Catalog.item_name(Town.festival("prizeItem"))]
 
 
 ## Whether a quest may be offered yet (PIX-171): its "opensAfter" is met,
@@ -687,7 +698,7 @@ func resolve_quests(giver_id: String) -> String:
 			entries[quest["id"]] = {"progress": int(quest["objective"]["count"]) if already else 0, "done": false}
 			save_now()
 			# The giver's words were just said; the line names the task (PIX-194).
-			return "Quest accepted: %s. %s" % [quest["name"], quest["brief"]]
+			return Text.t("Quest accepted: %s. %s") % [quest["name"], quest["brief"]]
 		var objective: Dictionary = quest["objective"]
 		if Quests.is_ready(quest, entries, pack.items):
 			if objective["kind"] == "deliver":
@@ -711,9 +722,9 @@ func resolve_quests(giver_id: String) -> String:
 			save_now()
 			var paid: Array[String] = []
 			if int(reward["gold"]) > 0:
-				paid.append("+%d gold" % reward["gold"])
-			paid.append("+%d XP" % reward["xp"])
-			var done := "Quest complete: %s. %s. \u201c%s\u201d" % [quest["name"], ", ".join(paid), quest["completed"]]
+				paid.append(Text.t("+%d gold") % reward["gold"])
+			paid.append(Text.t("+%d XP") % reward["xp"])
+			var done := Text.t("Quest complete: %s. %s. \u201c%s\u201d") % [quest["name"], ", ".join(paid), quest["completed"]]
 			return done + ("\n" + level_line if level_line != "" else "")
 		return "%s: %d/%d %s." % [
 			quest["name"], Quests.progress(quest, entries, pack.items), objective["count"],
@@ -739,12 +750,12 @@ func _resolve_settler(npc_id: String) -> String:
 			var line := "Iva's hands glow warm. Fully healed, free of charge."
 			var topped := _top_up_potions()
 			if topped > 0:
-				line += " She tucks %d healing potion%s in your pack." % [topped, "s" if topped > 1 else ""]
+				line += Text.t(" She tucks %d healing potion%s in your pack.") % [topped, "s" if topped > 1 else ""]
 			return line
 		if npc_id == "settler_loras":
 			settlement.bard_song = true
 			mark_dirty()
-			return "Loras plays you a marching song%s. Your next hunt strikes truer. (+%d%% crit)" % [
+			return Text.t("Loras plays you a marching song%s. Your next hunt strikes truer. (+%d%% crit)") % [
 				" on his war-horn" if perk_grown("settler_loras") else "", roundi(song_crit() * 100),
 			]
 	return ""
@@ -768,7 +779,7 @@ func buy_house() -> String:
 		return ""
 	var cost := int(Town._data()["houseDeedCost"])
 	if pack.gold < cost:
-		return "For sale: this house. The deed costs %d gold." % cost
+		return Text.t("For sale: this house. The deed costs %d gold.") % cost
 	pack.gold -= cost
 	settlement.house["owned"] = true
 	_pack_changed()
@@ -785,7 +796,7 @@ func buy_house_upgrade() -> String:
 	pack.gold -= int(next["cost"])
 	settlement.house["tier"] = next["tier"]
 	_pack_changed()
-	return "The %s deed is signed. Your house grew while you were out." % String(next["name"])
+	return Text.t("The %s deed is signed. Your house grew while you were out.") % String(next["name"])
 
 
 ## The storage barrel (STORE_ITEM / TAKE_ITEM): stacks move between pack and home.
@@ -852,7 +863,7 @@ func combine_potions(item_id: String) -> String:
 			pack.remove_item(item_id, 2)
 			pack.add_item(combine["to"])
 			_pack_changed()
-			return "The nook bubbles: 2x %s became %s." % [Catalog.item_name(item_id), Catalog.item_name(combine["to"])]
+			return Text.t("The nook bubbles: 2x %s became %s.") % [Catalog.item_name(item_id), Catalog.item_name(combine["to"])]
 	return ""
 
 
@@ -880,7 +891,7 @@ func place_furniture(item_id: String, cell: Vector2i, tile: String) -> String:
 	pack.remove_item(item_id)
 	settlement.house["furniture"] = furniture() + [{"itemId": item_id, "x": cell.x, "y": cell.y}]
 	_pack_changed()
-	return Controls.say("%s placed. {key:interact} takes it back." % Catalog.item_name(item_id))
+	return Controls.say(Text.t("%s placed. {key:interact} takes it back.") % Catalog.item_name(item_id))
 
 
 ## What E does to a home tile (handleHouseInteract): returns {text, panel}.
@@ -893,7 +904,7 @@ func house_interact(cell: Vector2i, tile: String) -> Dictionary:
 		settlement.house["furniture"] = furniture().filter(func(piece: Dictionary) -> bool: return piece != placed)
 		pack.add_item(placed["itemId"])
 		_pack_changed()
-		return {"text": "%s back in the pack." % Catalog.item_name(placed["itemId"])}
+		return {"text": Text.t("%s back in the pack.") % Catalog.item_name(placed["itemId"])}
 	match tile:
 		"bed":
 			_make_whole()
@@ -909,7 +920,7 @@ func house_interact(cell: Vector2i, tile: String) -> Dictionary:
 				settlement.house["workbench"] = true
 				_pack_changed()
 				return {"text": "A workbench and a small cauldron, fitted to the shelf. Craft at home, forever."}
-			return {"text": "A proper workbench would fit this shelf. Tools and parts cost %d gold." % cost}
+			return {"text": Text.t("A proper workbench would fit this shelf. Tools and parts cost %d gold.") % cost}
 		"hearth":
 			return {"text": (
 				"The hearth roars beside your workbench. Home industry." if settlement.house.get("workbench", false)
@@ -920,7 +931,7 @@ func house_interact(cell: Vector2i, tile: String) -> Dictionary:
 		"trophy_shelf":
 			return {"panel": "trophies"}
 		"garden":
-			return {"text": "The garden drinks your victories: %d/%d until the next harvest." % [
+			return {"text": Text.t("The garden drinks your victories: %d/%d until the next harvest.") % [
 				settlement.house.get("gardenWins", 0), Town._data()["gardenWinsPerYield"],
 			]}
 		"cauldron":
@@ -987,7 +998,7 @@ func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, fl
 				expanded += int(Town.bank("expansionRent"))
 		var rent := settlement.properties.size() * Town.rent_per_property(town_tier()) + expanded
 		pack.gold += rent
-		log.append("Rent from your properties: +%d gold." % rent)
+		log.append(Text.t("Rent from your properties: +%d gold.") % rent)
 	if Town.house_tier(owns_house(), int(settlement.house.get("tier", 1))) >= 3:
 		var wins: int = settlement.house.get("gardenWins", 0) + 1
 		settlement.house["gardenWins"] = wins
@@ -997,11 +1008,11 @@ func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, fl
 			var crop := Town.garden_yield(harvests)
 			settlement.house["gardenHarvests"] = harvests + 1
 			pack.add_item(crop)
-			log.append("Your garden ripens: +1 %s." % Catalog.item_name(crop))
+			log.append(Text.t("Your garden ripens: +1 %s.") % Catalog.item_name(crop))
 	var passives := HeroRules.passives(hero)
 	var gold := roundi(fighter["gold"] * (1 + passives["goldBonus"]))
 	var xp := Bestiary.xp_for(fighter, hero.level)
-	log.append("%s is defeated! +%d XP, +%d gold." % [fighter["name"], xp, gold])
+	log.append(Text.t("%s is defeated! +%d XP, +%d gold.") % [fighter["name"], xp, gold])
 	pack.gold += gold
 	if passives["killRefundMp"] > 0:
 		hero.mp = mini(int(hero.stats["maxMp"]), hero.mp + int(passives["killRefundMp"]))
@@ -1012,26 +1023,26 @@ func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, fl
 	for carried: Dictionary in Bestiary.drops_of(fighter["id"]):
 		if roll.call() < float(carried["chance"]):
 			pack.add_item(carried["itemId"])
-			log.append("%s drops: %s." % [fighter["name"], Catalog.item_name(carried["itemId"])])
+			log.append(Text.t("%s drops: %s.") % [fighter["name"], Catalog.item_name(carried["itemId"])])
 	if fighter.has("named"):
 		log.append_array(_hunted(fighter["named"]))
 	var kind := "boss" if Bestiary.is_boss(fighter["id"]) else ("elite" if fighter["elite"] else "normal")
 	var drop := Bestiary.roll_drop(floor_level, kind, roll)
 	if drop.get("kind") == "gear":
 		pack.gear.append(drop["gear"])
-		log.append("%s drops: %s!" % [fighter["name"], InventoryState.gear_name(drop["gear"])])
+		log.append(Text.t("%s drops: %s!") % [fighter["name"], InventoryState.gear_name(drop["gear"])])
 	elif drop.get("kind") == "stack":
 		pack.add_item(drop["itemId"])
-		log.append("%s drops: %s." % [fighter["name"], Catalog.item_name(drop["itemId"])])
+		log.append(Text.t("%s drops: %s.") % [fighter["name"], Catalog.item_name(drop["itemId"])])
 	if spawn_id != "":
 		clear_pack(spawn_id)
 	var material: String = Bestiary._data()["regionMaterials"].get(region_id, "")
 	if material != "" and roll.call() < Bestiary.forage_chance(hero.jobs["foraging"]["level"]):
 		var count := 1 + (1 if roll.call() < Bestiary.double_forage_chance(hero.jobs["foraging"]["level"]) else 0)
 		pack.add_item(material, count)
-		log.append("You forage %d %s%s." % [count, Catalog.item_name(material), "s" if count > 1 else ""])
+		log.append(Text.t("You forage %d %s%s.") % [count, Catalog.item_name(material), "s" if count > 1 else ""])
 		if Economy.grant_job_xp(hero.jobs, "foraging", 5) > 0:
-			log.append("Foraging reached %d!" % hero.jobs["foraging"]["level"])
+			log.append(Text.t("Foraging reached %d!") % hero.jobs["foraging"]["level"])
 	settlement.bard_song = false
 	_pack_changed()
 	hp_changed.emit(hero.hp, int(hero.stats["maxHp"]))
@@ -1047,7 +1058,7 @@ func earn_xp(amount: int) -> String:
 	if _grant_levels() == 0:
 		return ""
 	var skills_won := hero.skill_points - skill_before
-	return "Level up: you are now level %d. +%d stat points and +%d skill point%s to spend." % [
+	return Text.t("Level up: you are now level %d. +%d stat points and +%d skill point%s to spend.") % [
 		hero.level, hero.stat_points - stat_before, skills_won, "s" if skills_won > 1 else "",
 	]
 
@@ -1075,9 +1086,9 @@ func gather(spot_id: String, item_id: String) -> Array[String]:
 	var count := 1 + (1 if roll.call() < Bestiary.double_forage_chance(hero.jobs["foraging"]["level"]) else 0)
 	pack.add_item(item_id, count)
 	world.gathered_at[spot_id] = int(world.steps)
-	lines.append("You gather %d %s%s." % [count, Catalog.item_name(item_id), "s" if count > 1 else ""])
+	lines.append(Text.t("You gather %d %s%s.") % [count, Catalog.item_name(item_id), "s" if count > 1 else ""])
 	if Economy.grant_job_xp(hero.jobs, "foraging", int(Gathering.rules()["jobXp"])) > 0:
-		lines.append("Foraging reached %d!" % hero.jobs["foraging"]["level"])
+		lines.append(Text.t("Foraging reached %d!") % hero.jobs["foraging"]["level"])
 	_pack_changed()
 	return lines
 
@@ -1090,9 +1101,9 @@ func fish(spot_id: String) -> String:
 	var caught := Gathering.catch(roll, Gathering.fishing_spot(spot_id))
 	pack.add_item(caught)
 	world.gathered_at[spot_id] = int(world.steps)
-	var line := "You cast, wait... and land %s!" % Catalog.item_name(caught).to_lower() if caught != "old_boot" else "You cast, wait... and haul up an old boot."
+	var line := Text.t("You cast, wait... and land %s!") % Catalog.item_name(caught).to_lower() if caught != "old_boot" else "You cast, wait... and haul up an old boot."
 	if Economy.grant_job_xp(hero.jobs, "foraging", int(Gathering.rules()["jobXp"])) > 0:
-		line += " Foraging reached %d!" % hero.jobs["foraging"]["level"]
+		line += Text.t(" Foraging reached %d!") % hero.jobs["foraging"]["level"]
 	_pack_changed()
 	return line
 
@@ -1194,7 +1205,7 @@ func _hunted(named_id: String) -> Array[String]:
 	var lines: Array[String] = []
 	if int(entry["bounty"]) > 0:
 		pack.gold += int(entry["bounty"])
-		lines.append("The bounty on %s is yours: +%d gold." % [entry["name"], int(entry["bounty"])])
+		lines.append(Text.t("The bounty on %s is yours: +%d gold.") % [entry["name"], int(entry["bounty"])])
 	# Gear comes as a fresh piece; anything else (a relic) into the pack.
 	var prize_name := Catalog.item_name(entry["drop"])
 	if Catalog.item(entry["drop"]).has("slot"):
@@ -1203,7 +1214,7 @@ func _hunted(named_id: String) -> Array[String]:
 		prize_name = InventoryState.gear_name(prize)
 	else:
 		pack.add_item(entry["drop"])
-	lines.append("%s leaves you %s!" % [entry["name"], prize_name])
+	lines.append(Text.t("%s leaves you %s!") % [entry["name"], prize_name])
 	last_deed = {"kind": "hunt", "beast": entry["name"]}
 	if entry.has("homecoming"):
 		reveals.append("hunt:%s" % named_id)
@@ -1301,7 +1312,7 @@ func use_item(item_id: String) -> Dictionary:
 	if item.has("restoreHp"):
 		var healed := mini(int(hero.stats["maxHp"]), hero.hp + int(item["restoreHp"])) - hero.hp
 		hero.hp += healed
-		parts.append("%d HP" % healed)
+		parts.append(Text.t("%d HP") % healed)
 	if item.has("restoreMp"):
 		var restored := mini(int(hero.stats["maxMp"]), hero.mp + int(item["restoreMp"])) - hero.mp
 		hero.mp += restored
@@ -1309,9 +1320,9 @@ func use_item(item_id: String) -> Dictionary:
 	_pack_changed()
 	healed.emit()
 	hp_changed.emit(hero.hp, int(hero.stats["maxHp"]))
-	var text := "You use %s." % item["name"]
+	var text := Text.t("You use %s.") % item["name"]
 	if not parts.is_empty():
-		text += " Restored %s." % ", ".join(parts)
+		text += Text.t(" Restored %s.") % ", ".join(parts)
 	return {"used": true, "text": text, "cures": item.get("cures", "")}
 
 
@@ -1436,12 +1447,12 @@ func choose_path(node_id: String) -> bool:
 func clear_floor(level: int) -> Dictionary:
 	settlement.bard_song = false
 	var floor_def := Dungeons.floor_def(level)
-	var lines: Array[String] = ["%s is cleared!" % floor_def["name"]]
+	var lines: Array[String] = [Text.t("%s is cleared!") % floor_def["name"]]
 	var first: bool = level not in progression.cleared_levels
 	if first:
 		progression.cleared_levels.append(level)
 		pack.gold += int(floor_def["rewardGold"])
-		var found: Array[String] = ["%d gold" % floor_def["rewardGold"]]
+		var found: Array[String] = [Text.t("%d gold") % floor_def["rewardGold"]]
 		for item_id: String in floor_def["rewardItemIds"]:
 			if Catalog.item(item_id).has("slot"):
 				var piece := InventoryState.create_gear(item_id)
@@ -1450,15 +1461,15 @@ func clear_floor(level: int) -> Dictionary:
 			else:
 				pack.add_item(item_id)
 				found.append(Catalog.item_name(item_id))
-		lines.append("The floor's hoard: %s." % ", ".join(found))
+		lines.append(Text.t("The floor's hoard: %s.") % ", ".join(found))
 		# A page of Liane's journal, dropped on the way down (PIX-153).
 		var page := Story.page_for(level)
 		if not page.is_empty():
-			lines.append(Controls.say("Among the bones: a page of an old journal (%s). {key:journal} reads it." % page["title"]))
+			lines.append(Controls.say(Text.t("Among the bones: a page of an old journal (%s). {key:journal} reads it.") % page["title"]))
 		# A first clear is worth more than its fights (PIX-141): going deeper
 		# levels the hero, farming what's beaten doesn't.
 		var clear_xp := Dungeons.clear_xp(level)
-		lines.append("+%d XP for the way down." % clear_xp)
+		lines.append(Text.t("+%d XP for the way down.") % clear_xp)
 		var level_line := earn_xp(clear_xp)
 		if level_line != "":
 			lines.append(level_line)
@@ -1475,7 +1486,7 @@ func clear_floor(level: int) -> Dictionary:
 		var before := progression.unlocked_level
 		progression.unlocked_level = Dungeons.unlocked_after(level, before)
 		if progression.unlocked_level > before:
-			lines.append("A deeper way opens: %s." % Dungeons.floor_def(progression.unlocked_level)["name"])
+			lines.append(Text.t("A deeper way opens: %s.") % Dungeons.floor_def(progression.unlocked_level)["name"])
 		_pack_changed()
 	save_now()
 	return {"first": first, "lines": lines, "victory": first and Dungeons.is_final(level)}
@@ -1488,24 +1499,24 @@ func clear_deep(level: int) -> Dictionary:
 	settlement.bard_song = false
 	var depth := Dungeons.depth_of(level)
 	var floor_def := Dungeons.floor_def(level)
-	var lines: Array[String] = ["Depth %d of the Deep Hunt is cleared!" % depth]
+	var lines: Array[String] = [Text.t("Depth %d of the Deep Hunt is cleared!") % depth]
 	var record := depth > progression.deepest
 	if record:
 		progression.deepest = depth
 		pack.gold += int(floor_def["rewardGold"])
-		var found: Array[String] = ["%d gold" % floor_def["rewardGold"]]
+		var found: Array[String] = [Text.t("%d gold") % floor_def["rewardGold"]]
 		for item_id: String in floor_def["rewardItemIds"]:
 			pack.add_item(item_id)
 			found.append(Catalog.item_name(item_id))
-		lines.append("The deepest yet. Its hoard: %s." % ", ".join(found))
+		lines.append(Text.t("The deepest yet. Its hoard: %s.") % ", ".join(found))
 		var clear_xp := Dungeons.clear_xp(level)
-		lines.append("+%d XP for the way down." % clear_xp)
+		lines.append(Text.t("+%d XP for the way down.") % clear_xp)
 		var level_line := earn_xp(clear_xp)
 		if level_line != "":
 			lines.append(level_line)
-		last_deed = {"kind": "cleared", "floor": "depth %d of the Deep Hunt" % depth}
+		last_deed = {"kind": "cleared", "floor": Text.t("depth %d of the Deep Hunt") % depth}
 		_pack_changed()
-	lines.append("A hole into the dark opens beside the way up: depth %d waits below." % (depth + 1))
+	lines.append(Text.t("A hole into the dark opens beside the way up: depth %d waits below.") % (depth + 1))
 	save_now()
 	return {"first": record, "lines": lines, "victory": false}
 
@@ -1524,7 +1535,7 @@ func _record_kill(monster_id: String) -> String:
 		return ""
 	var name: String = Bestiary._data()["familyNames"][family]
 	var bonus := roundi(float(Bestiary._data()["masteryTiers"][after - 1]["bonus"]) * 100)
-	return "Mastery: %s Slayer %s. +%d%% damage against %s." % [name, ["I", "II", "III"][after - 1], bonus, name.to_lower()]
+	return Text.t("Mastery: %s Slayer %s. +%d%% damage against %s.") % [name, ["I", "II", "III"][after - 1], bonus, name.to_lower()]
 
 
 func _make_whole() -> void:
@@ -1556,8 +1567,8 @@ func open_chest(chest: Dictionary) -> Dictionary:
 	if loot["kind"] == "gold":
 		pack.gold += loot["amount"]
 		message = (
-			"Something glitters on the road: %d gold." % loot["amount"] if chest["look"] == "glint"
-			else "The chest holds %d gold." % loot["amount"]
+			Text.t("Something glitters on the road: %d gold.") % loot["amount"] if chest["look"] == "glint"
+			else Text.t("The chest holds %d gold.") % loot["amount"]
 		)
 		gold_changed.emit(pack.gold)
 	else:
@@ -1572,13 +1583,13 @@ func open_chest(chest: Dictionary) -> Dictionary:
 		if loot["kind"] == "gear":
 			var instance := InventoryState.create_gear(loot["itemId"])
 			pack.gear.append(instance)
-			message = "The chest holds %s!" % InventoryState.gear_name(instance)
+			message = Text.t("The chest holds %s!") % InventoryState.gear_name(instance)
 		else:
 			pack.add_item(loot["itemId"], qty)
 			var name := Catalog.item_name(loot["itemId"])
 			message = (
-				"You gather %dx %s." % [qty, name] if chest["look"] == "herb"
-				else "The chest holds %dx %s." % [qty, name]
+				Text.t("You gather %dx %s.") % [qty, name] if chest["look"] == "herb"
+				else Text.t("The chest holds %dx %s.") % [qty, name]
 			)
 		inventory_changed.emit()
 	world.opened_chests.append(chest["id"])

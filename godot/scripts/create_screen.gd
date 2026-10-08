@@ -197,8 +197,8 @@ func _fill_details() -> void:
 		line.add_child(UiStyle.label(str(value), 14, UiStyle.INK))
 		sheet.add_child(line)
 	var skills: Array = role["skills"]
-	var names := skills.map(func(skill: Dictionary) -> String: return "%s (Lv%d)" % [skill["name"], skill["unlockLevel"]])
-	var skill_line := UiStyle.label("Skills: %s" % ", ".join(names), 13, UiStyle.INK)
+	var names := skills.map(func(skill: Dictionary) -> String: return Text.t("%s (Lv%d)") % [skill["name"], skill["unlockLevel"]])
+	var skill_line := UiStyle.label(Text.t("Skills: %s") % ", ".join(names), 13, UiStyle.INK)
 	skill_line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	skill_line.custom_minimum_size = Vector2(440, 0)
 	sheet.add_child(skill_line)

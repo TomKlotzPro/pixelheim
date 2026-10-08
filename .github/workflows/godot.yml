@@ -77,6 +77,10 @@ jobs:
           fi
           exit $status
 
+      - name: Translation catalogue is current
+        # Every string a player reads is in godot/locale/messages.pot (PIX-195).
+        run: python3 godot/tools/i18n.py --check
+
       - name: Export web build
         run: |
           mkdir -p godot/export/web

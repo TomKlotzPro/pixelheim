@@ -51,6 +51,8 @@ func _build() -> Array[Dictionary]:
 	out.append({"label": "Fullscreen", "value": "On" if settings.fullscreen else "Off", "adjust": _flip.bind("fullscreen")})
 	out.append({"label": "Reduce motion", "value": "On" if settings.reduce_motion else "Off", "adjust": _flip.bind("reduce_motion")})
 	# Accessibility (PIX-160).
+	out.append({"heading": "Language"})
+	out.append({"label": "Language", "value": _language_name(settings.language), "adjust": _language})
 	out.append({"heading": "Reading and help"})
 	out.append({"label": "Large reading text", "value": "On" if settings.large_text else "Off", "adjust": _flip.bind("large_text")})
 	out.append({"label": "Clear warnings", "value": "On" if settings.clear_warnings else "Off", "adjust": _flip.bind("clear_warnings")})
@@ -102,6 +104,25 @@ func _refresh() -> void:
 		list.add_child(line)
 
 
+## "" follows the system's language: shown as what that is.
+func _language_name(code: String) -> String:
+	if Text.LANGUAGES.has(code):
+		return Text.LANGUAGES[code]
+	return tr("System (%s)") % Text.LANGUAGES[Text.language_for("")]
+
+
+## The next language (or the system's), spoken at once: the town reloads in it.
+func _language(step: int) -> void:
+	var choices: Array = [""] + Text.LANGUAGES.keys()
+	var settings := GameState.settings
+	settings.language = choices[wrapi(choices.find(settings.language) + step, 0, choices.size())]
+	settings.save_file()
+	Text.apply(settings.language)
+	GameState.save_now()
+	get_tree().paused = false
+	get_tree().reload_current_scene()
+
+
 ## Row indices that can be chosen (not the headings).
 func _choosable() -> Array[int]:
 	var out: Array[int] = []
@@ -129,7 +150,7 @@ func _input(event: InputEvent) -> void:
 		settings.bindings = Controls.rebind(settings.bindings, listening, key)
 		settings.save_file()
 		Controls.apply(settings.bindings)
-		status.text = "%s is now %s." % [Controls.BINDABLE[listening][0], Controls.key_label(key)]
+		status.text = Text.t("%s is now %s.") % [Controls.BINDABLE[listening][0], Controls.key_label(key)]
 	listening = ""
 	_refresh()
 
@@ -160,7 +181,7 @@ func _act(direction: int) -> void:
 		row["adjust"].call(direction)
 	elif row.has("rebind"):
 		listening = row["rebind"]
-		status.text = "Press the new key for %s (Esc keeps the old one)." % row["label"]
+		status.text = Text.t("Press the new key for %s (Esc keeps the old one).") % row["label"]
 	elif row.has("act"):
 		row["act"].call()
 	_refresh()
