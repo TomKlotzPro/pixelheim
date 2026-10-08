@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.80.0",
+      "date": "2026-10-08",
+      "codename": "Second Thoughts",
+      "notes": [
+        "FORGET AND TRY AGAIN: in the Skills screen F forgets every skill you bought and gives the points back - 20 gold a skill, and only in the village, whose quiet lets a fighter unlearn",
+        "YOUR FIRST SKILL STAYS: the one you start with is never forgotten, and whatever a skill grew (a Mountainheart's health) shrinks back with it",
+        "THE RULE, SPELLED OUT: the Skills screen now says how points come - one each level, one more each rank"
+      ]
+    },
+    {
       "version": "0.79.0",
       "date": "2026-10-08",
       "codename": "A Tidy Pack",

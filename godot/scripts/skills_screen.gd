@@ -17,6 +17,8 @@ var selected := Vector2i(0, 2)
 var view: Control
 var details: Label
 var status: Label
+## F asked once: a second F forgets (any other key thinks better of it).
+var forget_armed := false
 
 
 func _open() -> void:
@@ -33,10 +35,14 @@ func _open() -> void:
 	details.custom_minimum_size = Vector2(1120, 0)
 	details.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(details)
-	status = UiStyle.label("", 14, UiStyle.GOLD, Vector2(640, 24))
+	status = UiStyle.label("", 14, UiStyle.GOLD, Vector2(260, 30))
+	status.custom_minimum_size = Vector2(720, 0)
 	add_child(status)
-	add_child(UiStyle.footer("Arrows  choose      E  learn / walk      K / Esc  close", Vector2(80, 696)))
-	add_child(UiStyle.label("One point per level. Learning is permanent.", 13, UiStyle.DUSK, Vector2(820, 696)))
+	add_child(UiStyle.footer("Arrows  choose      E  learn / walk      F  forget      K / Esc  close", Vector2(80, 672)))
+	var rule := UiStyle.label("A point each level, one more each rank.", 13, UiStyle.DUSK, Vector2(800, 678))
+	rule.custom_minimum_size = Vector2(416, 0)
+	rule.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	add_child(rule)
 	# Start on the first pending path step, else the first learnable node.
 	_layout()
 	for cell: Vector2i in cells:
@@ -215,7 +221,38 @@ func _command(event: InputEvent) -> Callable:
 		command = _move.bind(Vector2i.RIGHT)
 	elif event.is_action_pressed("interact"):
 		command = _act
+	elif event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_F:
+		command = _forget
+	if command.is_valid() and command != _forget:
+		forget_armed = false
 	return command
+
+
+## F: forget every bought skill for its point back (PIX-86), in the village and
+## for gold; it asks first, and a second F agrees.
+func _forget() -> void:
+	var hero := GameState.hero
+	var count := Skills.forgettable(hero).size()
+	var cost := Skills.forget_cost(hero)
+	var armed := false
+	if count == 0:
+		status.text = "Nothing learned to forget yet."
+	elif not Skills.can_forget_at(GameState.world.map_id):
+		status.text = "Forgetting takes the village's quiet. Come back to Pixelheim."
+	elif GameState.pack.gold < cost:
+		status.text = "Forgetting %s costs %dg." % [_skills(count), cost]
+	elif not forget_armed:
+		armed = true
+		status.text = "Forget %s for %dg and get the points back? F again to agree." % [_skills(count), cost]
+	elif GameState.forget_skills():
+		Sound.play("learn")
+		status.text = "Forgotten. %s to spend again." % ("1 point" if count == 1 else "%d points" % count)
+		_layout()
+	forget_armed = armed
+
+
+func _skills(count: int) -> String:
+	return "1 skill" if count == 1 else "%d skills" % count
 
 
 ## To the next card that way: same column first, else the nearest one.

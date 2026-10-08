@@ -971,8 +971,31 @@ func spend_stat_point(stat: String) -> bool:
 	return true
 
 
-## A skill node learned for a point (BUY_SKILL_NODE): permanent, and some
-## grow the hero's pools for good.
+## Every bought skill forgotten for its point back (PIX-86): in the village,
+## for Skills.forget_cost gold. What a skill grew (max HP or MP) shrinks back.
+func forget_skills() -> bool:
+	var forgotten := Skills.forgettable(hero)
+	var cost := Skills.forget_cost(hero)
+	if forgotten.is_empty() or not Skills.can_forget_at(world.map_id) or pack.gold < cost:
+		return false
+	for node_id: String in forgotten:
+		var grants: Dictionary = Skills.node(hero.role_id, node_id).get("grantStats", {})
+		for stat: String in ["maxHp", "maxMp"]:
+			if grants.has(stat):
+				hero.stats[stat] = int(hero.stats[stat]) - int(grants[stat])
+		hero.skill_nodes.erase(node_id)
+	hero.hp = mini(hero.hp, int(hero.stats["maxHp"]))
+	hero.mp = mini(hero.mp, int(hero.stats["maxMp"]))
+	hero.skill_points += forgotten.size()
+	pack.gold -= cost
+	_pack_changed()
+	hp_changed.emit(hero.hp, int(hero.stats["maxHp"]))
+	save_now()
+	return true
+
+
+## A skill node learned for a point (BUY_SKILL_NODE): kept until forgotten
+## (forget_skills), and some grow the hero's pools while they're known.
 func buy_skill_node(node_id: String) -> bool:
 	var entry := Skills.node(hero.role_id, node_id)
 	if entry.is_empty() or not Skills.can_buy(hero, entry):
