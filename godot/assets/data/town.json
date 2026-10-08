@@ -1000,5 +1000,11 @@
   "bountyBoard": {
     "x": 32,
     "y": 11
+  },
+  "settlerArcs": {
+    "ivaPotions": 3,
+    "lorasCrit": 0.2,
+    "wrenWalk": 0.1,
+    "mirelleRate": 0.03
   }
 }

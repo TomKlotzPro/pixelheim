@@ -1,6 +1,18 @@
 {
   "releases": [
     {
+      "version": "0.100.0",
+      "date": "2026-10-08",
+      "codename": "How It Ends",
+      "notes": [
+        "THE THRONE BELOW: when Morvax falls he kneels, and you decide. Destroy him - or, if Maren told you her story of the five and you carry Liane's last page, lay him to rest",
+        "TWO ENDINGS: each has its own words at the throne, its own evening in town (a festival with confetti, or five lanterns on the square for the five who climbed) and Maren's own last words",
+        "SETTLER ARCS: Iva, Wren, Loras and Mirelle each have two more asks once they live in town, and the last one grows their perk. Iva tops your healing potions up to three, Wren's riders make you a tenth faster above ground, Loras's war-horn lifts his song to +20% crit, and Mirelle's savings grow 3% a day",
+        "A settler with something to ask still heals you or plays first, then asks",
+        "The town tour's captions now always sit above the dock, however long they run"
+      ]
+    },
+    {
       "version": "0.99.0",
       "date": "2026-10-08",
       "codename": "Wanted",

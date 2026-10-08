@@ -129,13 +129,15 @@ func _physics_process(delta: float) -> void:
 				# The web's swing: scaling stat + weapon, crits, mastery, minus armor.
 				body.take_hit(Bestiary.hero_attack_damage(
 					GameState.hero, GameState.pack, body.fighter,
-					GameState.settlement.bard_song == true, GameState.roll
+					GameState.settlement.bard_song == true, GameState.roll, GameState.song_crit()
 				), global_position, HeroRules.passives(GameState.hero)["attackInflict"])
 		return
 	var input := scripted_dir
 	if input == Vector2.ZERO:
 		input = Input.get_vector("move_left", "move_right", "move_up", "move_down")
-	velocity = input * SPEED
+	# Wren's riders taught the hero to travel light (PIX-157): above ground only.
+	var pace := SPEED * (1.0 + (GameState.walk_bonus() if world.map.floor_level == 0 else 0.0))
+	velocity = input * pace
 	move_and_slide()
 	if input != Vector2.ZERO:
 		face(input)

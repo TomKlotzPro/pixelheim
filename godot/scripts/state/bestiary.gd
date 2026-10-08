@@ -153,12 +153,13 @@ static func hero_skill_damage(hero: HeroState, pack: InventoryState, skill: Dict
 
 ## A swing that lands (heroAttackDamage): scaling stat plus weapon, crits,
 ## execution bonus, mastery, minus the monster's defense.
-static func hero_attack_damage(hero: HeroState, pack: InventoryState, fighter: Dictionary, inspired: bool, roll: Callable) -> int:
+## `song_crit`: what Loras's song adds when `inspired` (more with his horn, PIX-157).
+static func hero_attack_damage(hero: HeroState, pack: InventoryState, fighter: Dictionary, inspired: bool, roll: Callable, song_crit := 0.12) -> int:
 	var held := HeroRules.weapon(pack)
 	var scaling: String = Catalog.item(held["itemId"]).get("scaling", "strength") if not held.is_empty() else "strength"
 	var raw := float(HeroRules.effective_stat(hero, pack, scaling) + (HeroRules.gear_damage(held) if not held.is_empty() else 2))
 	var passives := HeroRules.passives(hero)
-	var crit: float = passives["critChance"] + (0.12 if inspired else 0.0)
+	var crit: float = passives["critChance"] + (song_crit if inspired else 0.0)
 	if crit > 0 and roll.call() < crit:
 		raw *= 1.5
 	if passives["lowHpBonus"] > 0 and float(fighter["hp"]) / fighter["maxHp"] < 0.3:

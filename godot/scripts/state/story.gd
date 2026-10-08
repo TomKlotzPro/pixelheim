@@ -1,9 +1,10 @@
 class_name Story
 ## The Ember Seal told through play (PIX-153): the pages of Liane's journal
 ## found on the floors (one per floor's first clear, kept in the journal's
-## Story tab), and what Maren has to say as the hero learns more - the
-## graves, the seal, her confession, and peace. Pure, over story.json's
-## "lore" and "elderLines"; scenes and moments stay with Cutscene.
+## Story tab), what Maren has to say as the hero learns more - the graves,
+## the seal, her confession, and her last words - and how the hero chose to
+## end it at Morvax's throne (PIX-157). Pure, over story.json's "lore" and
+## "elderLines"; scenes and moments stay with Cutscene.
 
 static var _doc := {}
 
@@ -48,12 +49,39 @@ static func next_dream(cleared_levels: Array, seen: Array) -> String:
 
 ## What Maren has to tell now: the deepest of her stories the hero's floors
 ## have reached ({id, lines}), or {} before the crypt. Each is told once
-## (its id goes in the story ledger); after that she talks as usual.
+## (its id goes in the story ledger); after that she talks as usual. Her
+## last words depend on the ending the hero chose (PIX-157).
 static func elder_story(cleared_levels: Array, seen: Array) -> Dictionary:
 	var latest := {}
+	var ending := ending_of(seen)
 	for entry: Dictionary in _data()["elderLines"]:
+		if entry.has("ending") and entry["ending"] != ending:
+			continue
 		if int(entry["after"]) in cleared_levels:
 			latest = entry
 	if latest.is_empty() or latest["id"] in seen:
 		return {}
 	return latest
+
+
+## How the hero ended it at Morvax's throne (PIX-157): "rest", "destroy",
+## or "" before. The ending played is in the story ledger; a hero who saw
+## the old single ending destroyed him.
+static func ending_of(seen: Array) -> String:
+	if Cutscene.moment("victory:rest") in seen:
+		return "rest"
+	if Cutscene.moment("victory") in seen:
+		return "destroy"
+	return ""
+
+
+## The ending scene for a choice.
+static func ending_scene(choice: String) -> String:
+	return Cutscene.moment("victory:rest" if choice == "rest" else "victory")
+
+
+## Whether the hero knows enough of Morvax to lay him to rest: Maren's
+## story of the five, and Liane's last page.
+static func can_lay_to_rest(cleared_levels: Array, seen: Array) -> bool:
+	var last_page: Dictionary = lore()[-1]
+	return "maren_confession" in seen and int(last_page["floor"]) in cleared_levels

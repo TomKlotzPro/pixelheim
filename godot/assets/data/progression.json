@@ -129,6 +129,43 @@
       "completed": "Reeds enough to start with. Find me by the shrine - and come to me before you climb."
     },
     {
+      "id": "iva_herbs",
+      "giver": "settler_iva",
+      "name": "Herbs for the Shrine",
+      "brief": "Iva's sick-beds by the shrine need fresh forest herbs.",
+      "objective": {
+        "kind": "deliver",
+        "itemId": "forest_herb",
+        "count": 4,
+        "label": "Forest herbs brought"
+      },
+      "reward": {
+        "gold": 60,
+        "xp": 40
+      },
+      "accepted": "Four forest herbs, fresh, from the patches in the Whispering Forest. The shrine's beds are never empty for long.",
+      "completed": "These will do nicely. One more thing, and I can do more for you than patch you up."
+    },
+    {
+      "id": "iva_fever",
+      "giver": "settler_iva",
+      "upgrades": "settler_iva",
+      "name": "The Fen Fever",
+      "brief": "The Mirefen's ghosts carry a fever into town on the mist.",
+      "objective": {
+        "kind": "kill",
+        "monsterId": "ghost",
+        "count": 3,
+        "label": "Fever-ghosts laid"
+      },
+      "reward": {
+        "gold": 0,
+        "xp": 80
+      },
+      "accepted": "The fen's ghosts bring a fever in on the mist. Lay three of them and I can brew against it.",
+      "completed": "The mist is clean again, and I have brewing to spare. From now on, when I heal you, I top your healing potions up to three."
+    },
+    {
       "id": "wren_leather",
       "giver": "settler_wren",
       "settles": "settler_wren",
@@ -146,6 +183,43 @@
       },
       "accepted": "Two wolf pelts for saddle leather. The wolves den in the fields east of here - mind their teeth.",
       "completed": "Leather enough! The post stands by the north road - the square is a whistle away now."
+    },
+    {
+      "id": "wren_apples",
+      "giver": "settler_wren",
+      "name": "Feed for the Post",
+      "brief": "The post horses are thin, and Wren's coin is thinner.",
+      "objective": {
+        "kind": "deliver",
+        "itemId": "apple",
+        "count": 5,
+        "label": "Apples brought"
+      },
+      "reward": {
+        "gold": 50,
+        "xp": 30
+      },
+      "accepted": "Five apples. Odo sells them, the horses love them, and I can't afford either.",
+      "completed": "Look at them eat! Now, about the road north..."
+    },
+    {
+      "id": "wren_road",
+      "giver": "settler_wren",
+      "upgrades": "settler_wren",
+      "name": "The North Road",
+      "brief": "Orc raiders on the Ash Fields keep spooking Wren's riders.",
+      "objective": {
+        "kind": "kill",
+        "monsterId": "orc",
+        "count": 3,
+        "label": "Raiders driven off"
+      },
+      "reward": {
+        "gold": 0,
+        "xp": 80
+      },
+      "accepted": "Three fewer raiders on the Ash Fields and my riders can go out again. Mind the big ones.",
+      "completed": "The road is clear. My riders taught you to travel light: from now on you walk a tenth faster above ground."
     },
     {
       "id": "loras_lute",
@@ -167,6 +241,43 @@
       "completed": "My lute! Slightly chewed. It adds character. Pixelheim gains its first verse tonight."
     },
     {
+      "id": "loras_verse",
+      "giver": "settler_loras",
+      "name": "A Verse of Fire",
+      "brief": "Every ballad needs a dragon. Loras can't afford a dragon.",
+      "objective": {
+        "kind": "kill",
+        "monsterId": "wyvern",
+        "count": 1,
+        "label": "Wyverns for the verse"
+      },
+      "reward": {
+        "gold": 80,
+        "xp": 60
+      },
+      "accepted": "Kill me a wyvern and tell me how it went. In detail. Wings, fire, your face at the time.",
+      "completed": "Wings like sails, fire like - no, don't tell me. I'll find the word."
+    },
+    {
+      "id": "loras_horn",
+      "giver": "settler_loras",
+      "upgrades": "settler_loras",
+      "name": "A War-Horn",
+      "brief": "A marching song needs a horn, and Loras knows just the one.",
+      "objective": {
+        "kind": "deliver",
+        "itemId": "imp_horn",
+        "count": 1,
+        "label": "Imp horns brought"
+      },
+      "reward": {
+        "gold": 0,
+        "xp": 90
+      },
+      "accepted": "A fire imp's horn, hollowed out, sounds like the end of the world. Bring me one.",
+      "completed": "Hear that? From now on my marching song comes with a horn: +20% crit on your next hunt."
+    },
+    {
       "id": "mirelle_vault",
       "giver": "settler_mirelle",
       "settles": "settler_mirelle",
@@ -184,6 +295,43 @@
       },
       "accepted": "Two gems for the vault's first shelf. Dragons hoard them; so do the deep floors.",
       "completed": "A vault with something in it is a bank. Find my ledger by the hall - bring your idle gold."
+    },
+    {
+      "id": "mirelle_ink",
+      "giver": "settler_mirelle",
+      "name": "Ink Nobody Can Copy",
+      "brief": "Mirelle's bank notes need an ink no forger can match.",
+      "objective": {
+        "kind": "deliver",
+        "itemId": "ember_shard",
+        "count": 2,
+        "label": "Ember shards brought"
+      },
+      "reward": {
+        "gold": 100,
+        "xp": 50
+      },
+      "accepted": "Two ember shards, ground fine, make an ink that glows under a candle. No forger can match it.",
+      "completed": "Perfect. Now the notes are safe. The caravans are another matter."
+    },
+    {
+      "id": "mirelle_caravan",
+      "giver": "settler_mirelle",
+      "upgrades": "settler_mirelle",
+      "name": "Caravan Guard",
+      "brief": "Deepwood trolls tax Mirelle's caravans in blood and silver.",
+      "objective": {
+        "kind": "kill",
+        "monsterId": "troll",
+        "count": 2,
+        "label": "Toll-trolls removed"
+      },
+      "reward": {
+        "gold": 0,
+        "xp": 100
+      },
+      "accepted": "The caravan road runs through the Deepwood and the trolls take their cut. Two trolls fewer and the bank can pay better.",
+      "completed": "The caravans come through whole. Your savings grow faster now: 3% a day, not 2%."
     },
     {
       "id": "ash_orcs",
