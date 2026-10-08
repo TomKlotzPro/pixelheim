@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.118.0",
+      "date": "2026-10-08",
+      "codename": "Open for Trade",
+      "notes": [
+        "SHOPS FOLLOW THE STORY: Hilda's, Vex's and Odo's shelves now fill as you win the relics out in the Reach, not only as you climb the mountain - iron, staves and leather from the start, steel and better rings with each relic",
+        "MANA AND CURES FROM DAY ONE: Vex sells mana potions and antidotes from the first morning, and Odo dried meat",
+        "A TRADER IN EVERY REGION: Marta the Chandler in Saltmere, Quartermaster Brann at the Blackiron camp, Mabel the Sutler by Greyhold's road, and Gunnar's caravan on the Frostgate pass - each with their own pack and one rare piece"
+      ]
+    },
+    {
       "version": "0.117.0",
       "date": "2026-10-08",
       "codename": "Head to Toe",

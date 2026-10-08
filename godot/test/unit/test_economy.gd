@@ -21,11 +21,11 @@ func _stand_in(map_id: String) -> void:
 
 func test_stock_matches_the_web() -> void:
 	var expected := {
-		"odo@1": "bread,cheese_wheel,apple,furn_candles,furn_plant",
+		"odo@1": "bread,cheese_wheel,apple,dried_meat,furn_candles,furn_plant",
 		"odo@3": "bread,cheese_wheel,apple,dried_meat,furn_candles,furn_plant,furn_rug,furn_bench",
 		"smith@1": "rusty_sword,hunting_bow,traveler_cloak,wool_gloves,worn_boots",
 		"smith@3": "rusty_sword,hunting_bow,traveler_cloak,leather_armor,iron_sword,apprentice_staff,wool_gloves,worn_boots,leather_cap,bone_charm",
-		"alchemist@1": "potion_hp",
+		"alchemist@1": "potion_hp,potion_mp,antidote",
 		"alchemist@3": "potion_hp,potion_mp,antidote",
 		"alchemist@15": "potion_hp,potion_mp,antidote,elixir,ember_salve,greater_potion",
 	}
@@ -35,7 +35,7 @@ func test_stock_matches_the_web() -> void:
 
 
 func test_every_shop_only_stocks_its_own_trade_and_never_shrinks() -> void:
-	for shop_id in ["odo", "smith", "alchemist"]:
+	for shop_id in Economy._data()["shops"]:
 		var sells: Array = Economy.shop(shop_id)["sells"]
 		var late := Economy.shop_stock(shop_id, 15)
 		for item_id in late:
@@ -134,7 +134,7 @@ func test_buying_needs_the_shop_the_stock_and_the_gold() -> void:
 	assert_false(state.buy_item("bread"), "no shop on the street")
 	_stand_in("town_shop")
 	assert_false(state.buy_item("iron_sword"), "Odo doesn't sell steel")
-	assert_false(state.buy_item("dried_meat"), "floor 2 stock")
+	assert_false(state.buy_item("furn_banner"), "stock for later in the story (PIX-176)")
 	assert_true(state.buy_item("bread"))
 	assert_eq(state.pack.gold, 30 - Economy.buy_price("bread"))
 	assert_eq(state.pack.items["bread"], 3)

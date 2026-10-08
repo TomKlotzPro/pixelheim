@@ -22,7 +22,7 @@ static func shop_at(map_id: String) -> String:
 	return _data()["shopMaps"].get(map_id, "")
 
 
-## Item ids a shop stocks once `unlocked_level` floors are open, catalog
+## Item ids a shop stocks at a stage (`stock_stage`: floors or relics), catalog
 ## order; then what the town's age has brought (PIX-159): stock the shop
 ## carries early once Pixelheim has grown, and each age's signature item.
 static func shop_stock(shop_id: String, unlocked_level: int, town_tier := 0) -> Array[String]:
@@ -36,6 +36,14 @@ static func shop_stock(shop_id: String, unlocked_level: int, town_tier := 0) -> 
 		if int(by_age[item_id]) <= town_tier and item_id not in stock:
 			stock.append(item_id)
 	return stock
+
+
+## How far along the shops' stock is (PIX-176): the floors climbed, or -
+## out in the Reach before the mountain - the relics won, each a step up
+## (economy.json "stockByRelics"), whichever is further.
+static func stock_stage(unlocked_level: int, relics: int) -> int:
+	var steps: Array = _data()["stockByRelics"]
+	return maxi(unlocked_level, int(steps[clampi(relics, 0, steps.size() - 1)]))
 
 
 ## The age that brings an item to a shop, or 0.

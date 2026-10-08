@@ -295,6 +295,11 @@ func carry_capacity() -> int:
 
 
 ## The shop the hero stands in (activeShopId); "" outside shops.
+## The shops' stage (PIX-176): floors climbed or relics won.
+func stock_stage() -> int:
+	return Economy.stock_stage(progression.unlocked_level, Relics.found(progression))
+
+
 func active_shop() -> String:
 	return stall_shop if stall_shop != "" else Economy.shop_at(world.map_id)
 
@@ -336,7 +341,7 @@ func trophy_sell_multiplier() -> float:
 ## common gear; the exciting rolls come from monsters.
 func buy_item(item_id: String) -> bool:
 	var shop_id := active_shop()
-	if shop_id == "" or item_id not in Economy.shop_stock(shop_id, progression.unlocked_level, town_tier()):
+	if shop_id == "" or item_id not in Economy.shop_stock(shop_id, stock_stage(), town_tier()):
 		return false
 	var price := Economy.buy_price(item_id)
 	if pack.gold < price:

@@ -163,7 +163,7 @@ func _build_rows() -> Array[Dictionary]:
 						var text := GameState.buy_house_upgrade()
 						status.text = text if text != "" else "Not enough gold.",
 				})
-			for item_id in Economy.shop_stock(shop_id, GameState.progression.unlocked_level, GameState.town_tier()):
+			for item_id in Economy.shop_stock(shop_id, GameState.stock_stage(), GameState.town_tier()):
 				var price := Economy.buy_price(item_id)
 				# What only Pixelheim sells, since the age that brought it (PIX-159).
 				var signature: bool = Catalog.item(item_id).get("signature", false)
