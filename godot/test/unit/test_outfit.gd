@@ -161,3 +161,42 @@ func test_every_piece_has_a_look_of_its_own() -> void:
 			var plain: String = PunyArt.hero(role_id, look)["sheet"]
 			for item_id: String in PunyArt.BODIES:
 				assert_ne(PunyArt.dressed(role_id, look, {"body": item_id})["sheet"], plain, "%s on %s %d" % [item_id, role_id, look])
+
+
+func test_gloves_boots_and_shields_show() -> void:
+	# PIX-174: every hand, foot and off-hand piece has a colour, and the
+	# off hand a shape, and wearing it changes the hero.
+	for item_id: String in Catalog._data()["items"]:
+		var item: Dictionary = Catalog.item(item_id)
+		var slot: String = item.get("slot", "")
+		if slot in ["hands", "feet", "offhand"]:
+			assert_true(item.has("tint"), "%s has a colour" % item_id)
+			assert_ne(PunyArt.dressed("warrior", 0, {slot: item_id})["sheet"], PunyArt.hero("warrior", 0)["sheet"], "%s shows" % item_id)
+		if slot == "offhand":
+			assert_true(PunyArt.SHIELDS.has(item.get("shape", "")), "%s has a shape" % item_id)
+	var plain: Image = (load(PunyArt.path(PunyArt.hero("warrior", 0)["sheet"])) as Texture2D).get_image()
+	var spec := PunyArt.dressed("warrior", 0, {"hands": "blackiron_gauntlets", "feet": "frost_boots", "offhand": "warden_kite"})
+	var worn := PunyArt.outfit_texture(spec["head"], spec["body"], spec["weapon_tint"], spec["gear"]).get_image()
+	# The first frame: the hands (rows 19-20) are no longer skin, the boots
+	# (the last two rows) no longer leather, and a shield hangs on the off hand.
+	var skin := 0
+	var leather := 0
+	for y in range(19, 23):
+		for x in 32:
+			var code := worn.get_pixel(x, y).to_html(false)
+			skin += int(code in PunyArt.SKIN_RAMP and y < 21)
+			leather += int(code in PunyArt.BOOT_RAMP and y >= 21)
+	assert_eq(skin, 0, "gloves over the hands")
+	assert_eq(leather, 0, "boots over the boots")
+	var changed := 0
+	for y in 32:
+		for x in 32:
+			changed += int(worn.get_pixel(x, y) != plain.get_pixel(x, y))
+	assert_gt(changed, 20)
+	# A bow drawn puts the shield away: the bow columns match the plain sheet
+	# but for the gloves and boots.
+	var bow_spec := PunyArt.dressed("warrior", 0, {"offhand": "warden_kite"})
+	var bow_sheet := PunyArt.outfit_texture(bow_spec["head"], bow_spec["body"], bow_spec["weapon_tint"], bow_spec["gear"]).get_image()
+	for y in 32:
+		for x in range(8 * 32, 9 * 32):
+			assert_eq(bow_sheet.get_pixel(x, y), plain.get_pixel(x, y))
