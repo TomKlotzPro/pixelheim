@@ -1,6 +1,18 @@
 {
   "releases": [
     {
+      "version": "0.95.0",
+      "date": "2026-10-08",
+      "codename": "The Night of Ash",
+      "notes": [
+        "A PROPER BEGINNING: a new hero no longer just appears in town. You are a courier carrying a letter to Elder Maren, and you arrive on the road the night Pixelheim burns",
+        "PLAY THE NIGHT: drive off a scavenger at the gate, walk into the burning village, pull Bram from under a beam, let Sela bandage you, and give Maren the letter",
+        "THE VILLAGE ON FIRE: Shade's own flames and drifting embers burn in the ruins under a red night sky",
+        "DAWN: the survivors gather on the square, Maren reads the Crown's answer aloud, and Pixelheim decides to rebuild - with you",
+        "HEROES FROM BEFORE: your existing heroes skip the night and carry on where they were"
+      ]
+    },
+    {
       "version": "0.94.0",
       "date": "2026-10-08",
       "codename": "The Bosses Fight Back",

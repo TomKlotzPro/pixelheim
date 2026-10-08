@@ -728,6 +728,15 @@
       "description": "A mantle of moss and scale that death declines to touch. Crafted, never sold.",
       "armor": 6,
       "slot": "offhand"
+    },
+    "chancellors_letter": {
+      "name": "The Chancellor's Letter",
+      "category": "misc",
+      "sprite": "letter",
+      "weight": 0,
+      "value": 0,
+      "quest": true,
+      "description": "Sealed with the Crown's red wax, addressed to Elder Maren of Pixelheim. You were paid to carry it, not to read it."
     }
   },
   "roles": {

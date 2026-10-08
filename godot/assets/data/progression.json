@@ -477,5 +477,49 @@
       }
     ],
     "done": "Pixelheim is safe. The mountain is quiet, and the tavern isn't."
+  },
+  "prologue": {
+    "start": {
+      "mapId": "overworld",
+      "x": 48,
+      "y": 34,
+      "facing": "down"
+    },
+    "scavenger": {
+      "monsterId": "slime",
+      "x": 48,
+      "y": 37
+    },
+    "arrival": "The letter was for Elder Maren of Pixelheim. You could see the fire from the last hill.",
+    "pouch": "The slime was carrying a traveller's pouch: a health potion. Press I for your pack.",
+    "steps": [
+      {
+        "id": "scavenger",
+        "text": "Something is feeding at the road - drive it off (Space to strike)"
+      },
+      {
+        "id": "gate",
+        "text": "Get into Pixelheim - the gate is just south"
+      },
+      {
+        "id": "bram",
+        "text": "Someone is calling for help by the north road (E to help)"
+      },
+      {
+        "id": "sela",
+        "text": "Find Sela's tent on the square"
+      },
+      {
+        "id": "maren",
+        "text": "Bring the letter to Elder Maren at the shrine"
+      }
+    ],
+    "dawn": [
+      "Dawn came grey over the ashes, and the survivors gathered on the square.",
+      "Maren read the Chancellor's letter aloud. \"The Crown can no longer defend the Ashenreach.\" Nobody spoke for a while.",
+      "\"Then we rebuild,\" said the mayor at last. \"With what, I couldn't tell you.\"",
+      "Maren turned to you. \"You carried bad news a long way, and you didn't run from the fire. Stay a while.\"",
+      "\"Fafnyr will come back for what's left of us. Unless someone climbs.\""
+    ]
   }
 }

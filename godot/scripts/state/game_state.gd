@@ -12,6 +12,8 @@ signal inventory_changed
 ## A conversation ended: settlers (PIX-124) and quests (PIX-125) answer here,
 ## like the web game resolves them when its dialogue closes.
 signal dialogue_closed(npc_id: String)
+## The letter is in Maren's hands: the world plays the dawn (PIX-152).
+signal prologue_dawn
 ## One line of feedback for the world (the web's worldMessage).
 signal message(text: String)
 ## Who lives where changed: a recruit left the wilds for town.
@@ -119,7 +121,7 @@ func play_slot(target: int) -> void:
 func new_hero_in(target: int, name := DEFAULT_HERO_NAME, role_id := DEFAULT_ROLE, look := 0) -> void:
 	save_now()
 	_use_slot(target)
-	new_game(name, role_id, look)
+	new_game(name, role_id, look, true)
 	save_now()
 	if settings.last_slot != target:
 		settings.last_slot = target
@@ -174,7 +176,9 @@ func _use_slot(target: int) -> void:
 
 
 ## A fresh level-1 hero waking in the village (CREATE_HERO).
-func new_game(name := DEFAULT_HERO_NAME, role_id := DEFAULT_ROLE, look := 0) -> void:
+## `prologue`: a hero made at the title begins with the Night of Ash
+## (PIX-152); the stand-ins (no save yet, tests, harness runs) start in town.
+func new_game(name := DEFAULT_HERO_NAME, role_id := DEFAULT_ROLE, look := 0, prologue := false) -> void:
 	var state := SaveCodec.initial_state()
 	state.merge(SaveCodec.RESUME_INTO, true)
 	var weapon := InventoryState.create_gear(STARTER_WEAPONS.get(role_id, "rusty_sword"))
@@ -188,6 +192,14 @@ func new_game(name := DEFAULT_HERO_NAME, role_id := DEFAULT_ROLE, look := 0) -> 
 	# A new hero finds Pixelheim in ashes (PIX-146); heroes from before keep
 	# the town they had.
 	state["townTier"] = 0
+	# ... and arrives on the road the night it burns, with the letter they
+	# were paid to carry (the Night of Ash, PIX-152).
+	if prologue:
+		state["prologue"] = Prologue.SCAVENGER
+		var start := Prologue.start()
+		state["world"]["position"] = {"mapId": start["mapId"], "x": start["x"], "y": start["y"], "facing": start["facing"]}
+		state["worldSteps"] = int(Prologue.night_steps())
+		state["inventory"]["chancellors_letter"] = 1
 	apply(state)
 
 
@@ -550,6 +562,11 @@ func is_settled(id: String) -> bool:
 ## A conversation closed: recruits answer (resolveSettler), then the quest
 ## hooks (PIX-125) get their turn through dialogue_closed.
 func finish_dialogue(npc_id: String) -> void:
+	# On the night of the fire, talking is the night's next step (PIX-152).
+	if progression.prologue != Prologue.DONE:
+		_prologue_talk(npc_id)
+		dialogue_closed.emit(npc_id)
+		return
 	# Settlers first (recruiting and services ride the close), then quests.
 	var text := _resolve_settler(npc_id)
 	if text == "":
@@ -935,6 +952,51 @@ func gather(spot_id: String, item_id: String) -> Array[String]:
 		lines.append("Foraging reached %d!" % hero.jobs["foraging"]["level"])
 	_pack_changed()
 	return lines
+
+
+## The Night of Ash moves on when the survivor whose turn it is has spoken:
+## Bram freed, Sela's bandages (she heals), the letter in Maren's hands, and
+## then the dawn (the world plays it, then calls finish_prologue).
+func _prologue_talk(npc_id: String) -> void:
+	if Prologue.step_of(npc_id) != progression.prologue:
+		return
+	match progression.prologue:
+		Prologue.SELA:
+			_make_whole()
+		Prologue.MAREN:
+			pack.remove_item("chancellors_letter")
+			_pack_changed()
+			prologue_dawn.emit()
+			return
+	progression.prologue += 1
+	save_now()
+
+
+## The scavenger at the gate fell: its pouch, and on to the village.
+func prologue_pouch() -> String:
+	if progression.prologue != Prologue.SCAVENGER:
+		return ""
+	pack.add_item("potion_hp")
+	progression.prologue = Prologue.GATE
+	_pack_changed()
+	save_now()
+	return String(Prologue.data()["pouch"])
+
+
+## Through the gate into the burning village.
+func prologue_reached_town() -> void:
+	if progression.prologue == Prologue.GATE:
+		progression.prologue = Prologue.BRAM
+		save_now()
+
+
+## Dawn: the night is over and the game proper begins.
+func finish_prologue() -> void:
+	progression.prologue = Prologue.DONE
+	world.steps = Prologue.dawn_steps()
+	pack.remove_item("chancellors_letter")
+	_pack_changed()
+	save_now()
 
 
 ## A spawn's pack is cleared: it stays down for Packs' respawnSteps (PIX-142).

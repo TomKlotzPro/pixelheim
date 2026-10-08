@@ -74,7 +74,8 @@
     "furn_bookshelf": "medieval@3435",
     "furn_banner": "medieval@9373",
     "furn_candles": "medieval@808",
-    "furn_bench": "medieval@1659"
+    "furn_bench": "medieval@1659",
+    "chancellors_letter": "survival-rpg-icons/Wood/Paper-03.png"
   },
   "ailments": {
     "poison": "puny-skills/Indicators/Symbol Indicator/Poisoned-Indicator.png",
@@ -154,5 +155,10 @@
     "Tomb Legion": "Dark/18",
     "Extinction Bloom": "Flora/3",
     "Ossuary Throne": "Dark/1"
+  },
+  "effects": {
+    "flame": "puny-skills/Animation Spritesheets/Fire/Flame-Anim(Looped).png",
+    "embers": "puny-skills/Animation Spritesheets/Fire/Status-Burned-Anim(Looped).png",
+    "smoke": "puny-skills/Animation Spritesheets/Fire/Smokescreen-Anim.png"
   }
 }

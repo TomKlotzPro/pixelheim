@@ -268,8 +268,12 @@ func _build_decor(data: MapData) -> void:
 	for cell: Vector2i in camps:
 		_add_camp_piece(cell, camps[cell])
 	if data.id == "town":
+		var burning := GameState.progression.prologue != Prologue.DONE
 		for ruin: Dictionary in Town.ruins(Town.done_projects(GameState.settlement)):
 			_add_smoke(ruin["rect"])
+			# The night of the fire: the ruins still burning (PIX-151).
+			if burning:
+				_add_fire(ruin["rect"])
 	patch_sprites = {}
 	for cell: Vector2i in patches:
 		_add_patch_sprite(cell)
@@ -372,6 +376,54 @@ static func plan_camps(map: MapData) -> Dictionary:
 				out[cell] = {"kind": "torch", "tile": CAMP_TORCH[0]}
 				break
 	return out
+
+
+## Flames on a house that's still burning (the Night of Ash): Shade's looped
+## flame on a handful of its cells and his embers drifting over it; without
+## the paid pack, an orange flicker of motes instead.
+func _add_fire(rect: Rect2i) -> void:
+	var flame := ItemIcons.effect("flame", 10.0)
+	var embers := ItemIcons.effect("embers", 8.0)
+	for y in range(rect.position.y, rect.end.y):
+		for x in range(rect.position.x, rect.end.x):
+			if (x * 5 + y * 11) % 6 != 0:
+				continue
+			var at := center(Vector2i(x, y))
+			if flame != null:
+				var fire := AnimatedSprite2D.new()
+				fire.sprite_frames = flame
+				fire.position = at + Vector2(0, -4)
+				fire.frame = absi(x * 3 + y) % flame.get_frame_count("default")
+				fire.play()
+				fire.z_index = 4
+				fire.add_to_group("decor")
+				props.add_child(fire)
+				_add_glow(at, 14, 0.4)
+			if embers != null and (x + y) % 3 == 0:
+				var drift := AnimatedSprite2D.new()
+				drift.sprite_frames = embers
+				drift.position = at + Vector2(0, -14)
+				drift.play()
+				drift.z_index = 6
+				drift.add_to_group("decor")
+				props.add_child(drift)
+	if flame == null:
+		var motes := CPUParticles2D.new()
+		motes.position = Vector2(rect.position * TILE) + Vector2(rect.size * TILE) / 2.0
+		motes.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+		motes.emission_rect_extents = Vector2(rect.size * TILE) / 2.0
+		motes.amount = 16
+		motes.lifetime = 0.9
+		motes.direction = Vector2.UP
+		motes.gravity = Vector2(0, -20)
+		motes.initial_velocity_min = 8.0
+		motes.initial_velocity_max = 16.0
+		motes.scale_amount_min = 2.0
+		motes.scale_amount_max = 3.0
+		motes.color = Color(1.0, 0.5, 0.12, 0.9)
+		motes.z_index = 6
+		motes.add_to_group("decor")
+		props.add_child(motes)
 
 
 ## Smoke and embers over a burnt house (PIX-146): pixel motes drifting up
