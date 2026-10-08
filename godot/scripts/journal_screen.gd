@@ -25,6 +25,7 @@ func _open() -> void:
 
 
 func _fill() -> void:
+	_main_quest()
 	var entries := GameState.progression.quests
 	var known := Quests.all().filter(func(quest: Dictionary) -> bool: return entries.has(quest["id"]))
 	if known.is_empty():
@@ -45,6 +46,26 @@ func _fill() -> void:
 			line.add_child(name)
 			line.add_child(UiStyle.label("DONE", 16, UiStyle.LAMP))
 			body.add_child(line)
+
+
+## The main quest leads (PIX-144): its chapter, the next step, and what the
+## elder would say about it; then the promises made along the way.
+func _main_quest() -> void:
+	var step := MainQuest.next_step(GameState.progression, GameState.settlement)
+	if step.is_empty():
+		body.add_child(UiStyle.strong("The story is told", 18, UiStyle.LAMP))
+		body.add_child(UiStyle.label(MainQuest.hint(GameState.progression, GameState.settlement), 16, UiStyle.INK))
+	else:
+		body.add_child(UiStyle.strong("Chapter %d: %s" % [step["chapter_number"], step["chapter"]], 18, UiStyle.LAMP))
+		body.add_child(UiStyle.label(step["text"], 16, UiStyle.INK))
+		var hint := UiStyle.label(step["hint"], 14, UiStyle.FADED)
+		hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		hint.custom_minimum_size = Vector2(1080, 0)
+		body.add_child(hint)
+	var rule := ColorRect.new()
+	rule.color = Color(UiStyle.RIM, 0.6)
+	rule.custom_minimum_size = Vector2(1080, 2)
+	body.add_child(rule)
 
 
 ## One open quest: its name (READY when it can be turned in), the count, a

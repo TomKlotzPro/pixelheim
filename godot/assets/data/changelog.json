@@ -1,6 +1,18 @@
 {
   "releases": [
     {
+      "version": "0.88.0",
+      "date": "2026-10-08",
+      "codename": "Next Steps",
+      "notes": [
+        "A STORY TO FOLLOW: Pixelheim now has a main quest in three chapters - Under the Mountain, The Ashen Throne and The Deathless - from Sela's first job to Morvax's throne",
+        "ALWAYS KNOW WHAT'S NEXT: a quiet line above the dock names your next step, and steps aside in fights and menus",
+        "THE JOURNAL LEADS WITH IT: your chapter, your next step and a word of advice come first, then the promises you've made",
+        "ASK THE ELDER: Elder Maren and Mayor Aldric now end every conversation with what you should do next",
+        "RUN AHEAD IF YOU LIKE: a hero who goes deeper early is never sent back for an errand"
+      ]
+    },
+    {
       "version": "0.87.0",
       "date": "2026-10-08",
       "codename": "Green Thumbs",

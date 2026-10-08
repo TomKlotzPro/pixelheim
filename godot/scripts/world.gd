@@ -46,6 +46,10 @@ var noticed_at := -100.0
 ## Foes still standing on the dungeon floor the hero walks (0 when cleared).
 var floor_foes := 0
 var message_label: Label
+## The main quest's next step, quietly above the dock (PIX-144): a dark
+## pill holding "Next" and the step.
+var objective_box: PanelContainer
+var objective_label: Label
 ## The nameplate over the signed door the hero walks up to (ShopSign).
 var nameplate: PanelContainer
 var nameplate_door := Vector2i(-1, -1)
@@ -177,6 +181,7 @@ func _process(delta: float) -> void:
 		respawn_check = 1.0
 		_revive_packs()
 		view.refresh_patches()
+	_update_objective()
 	var cell := Vector2i((player.position / TILE).floor())
 	if cell == player_cell:
 		return
@@ -664,6 +669,10 @@ func _open_shop() -> void:
 
 func _talk(npc: Dictionary) -> void:
 	var box := preload("res://scripts/dialogue_box.gd").new()
+	# The elder and the mayor always know what comes next (PIX-144).
+	if npc["id"] in ["elder", "mayor"]:
+		npc = npc.duplicate()
+		npc["lines"] = npc["lines"] + [MainQuest.hint(GameState.progression, GameState.settlement)]
 	box.npc = npc
 	add_child(box)
 
@@ -730,6 +739,32 @@ func appear(enemy: Node) -> void:
 		drift.tween_property(mote, "position", mote.position + away + Vector2(0, -3), 0.45).set_ease(Tween.EASE_OUT)
 		drift.tween_property(mote, "modulate:a", 0.0, 0.45).set_delay(0.15)
 		drift.chain().tween_callback(mote.queue_free)
+
+## The line above the dock (PIX-144): the main quest's next step, faded out
+## in a fight, under a flashing message and once the story is done; hidden
+## while the world is paused (menus, conversations, cutscenes).
+func _update_objective() -> void:
+	var step := MainQuest.next_step(GameState.progression, GameState.settlement)
+	var text: String = step.get("text", "")
+	if text != objective_label.text:
+		objective_label.text = text
+		objective_box.reset_size()
+	objective_box.position.y = (dock.top() if dock != null and dock.top() > 0 else 690.0) - 38
+	var show := text != "" and not in_fight() and message_label.modulate.a < 0.05
+	var target := 1.0 if show else 0.0
+	if objective_box.get_meta("fading_to", -1.0) != target:
+		objective_box.set_meta("fading_to", target)
+		objective_box.create_tween().tween_property(objective_box, "modulate:a", target, 0.3)
+
+
+func _notification(what: int) -> void:
+	if objective_box == null:
+		return
+	if what == NOTIFICATION_PAUSED:
+		objective_box.visible = false
+	elif what == NOTIFICATION_UNPAUSED:
+		objective_box.visible = true
+
 
 ## A patch underfoot is picked (PIX-143).
 func _gather_at(cell: Vector2i) -> void:
@@ -898,6 +933,27 @@ func _build_hud() -> void:
 	message_label.add_theme_constant_override("outline_size", 6)
 	message_label.modulate.a = 0.0
 	hud.add_child(message_label)
+	objective_box = PanelContainer.new()
+	var pill := StyleBoxFlat.new()
+	pill.bg_color = Color(UiStyle.NIGHT, 0.6)
+	pill.set_corner_radius_all(8)
+	pill.content_margin_left = 12
+	pill.content_margin_right = 12
+	pill.content_margin_top = 2
+	pill.content_margin_bottom = 4
+	objective_box.add_theme_stylebox_override("panel", pill)
+	objective_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	objective_box.modulate.a = 0.0
+	var objective_row := HBoxContainer.new()
+	objective_row.add_theme_constant_override("separation", 8)
+	objective_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	objective_box.add_child(objective_row)
+	objective_row.add_child(UiStyle.strong("Next", 16, UiStyle.GOLD))
+	objective_label = UiStyle.label("", 16, UiStyle.CREAM)
+	objective_row.add_child(objective_label)
+	# Centred over the dock whatever the step's length.
+	objective_box.resized.connect(func() -> void: objective_box.position.x = roundf((1280 - objective_box.size.x) / 2.0))
+	hud.add_child(objective_box)
 
 ## The hero's position after the last two physics ticks (recorded after the
 ## hero has moved, see _physics_process), so the camera can stand exactly

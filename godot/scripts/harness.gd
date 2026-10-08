@@ -225,6 +225,14 @@ func _run_test_harness() -> void:
 		screen.world = world
 		world.add_child(screen)
 		await get_tree().create_timer(0.3).timeout
+	var cleared_index := args.find("--cleared")
+	if cleared_index >= 0 and cleared_index + 1 < args.size():
+		# `--cleared N`: floors 1 to N beaten, for the main quest's later chapters.
+		var deepest := int(args[cleared_index + 1])
+		for level in range(1, deepest + 1):
+			if level not in GameState.progression.cleared_levels:
+				GameState.progression.cleared_levels.append(level)
+		GameState.progression.unlocked_level = maxi(GameState.progression.unlocked_level, mini(deepest + 1, Dungeons.floor_count()))
 	var level_index := args.find("--level")
 	if level_index >= 0 and level_index + 1 < args.size():
 		# A hero of that level: the rank's title, aura and presence.
