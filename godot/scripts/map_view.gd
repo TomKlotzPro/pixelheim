@@ -575,7 +575,9 @@ func _build_props(data: MapData) -> Node2D:
 	door_signs = []
 	if not ShopSign.available():
 		return root
-	var ruins := Town.ruins(Town.done_projects(GameState.settlement)) if data.id == "town" else []
+	var ruins: Array[Dictionary] = []
+	if data.id == "town":
+		ruins = Town.ruins(Town.done_projects(GameState.settlement))
 	for sign_def: Dictionary in Interactables.signs_on(data.id, GameState.owns_house()):
 		var door := Vector2i(int(sign_def["x"]), int(sign_def["y"]))
 		# A burnt house has lost its sign with its roof (PIX-146).

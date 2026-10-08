@@ -342,16 +342,19 @@ static func venture_outcome(stake: int, at: int) -> Dictionary:
 	return {"won": won, "payout": floori(stake * (1.6 if won else 0.4))}
 
 
-## What still blocks a recruit from joining: "tier", "ask" or "" (recruitBlocker).
-static func recruit_blocker(recruit: Dictionary, town_tier: int, gold: int, items: Dictionary) -> String:
-	if int(recruit.get("minTownTier", 1)) > town_tier:
-		return "tier"
-	var ask: Dictionary = recruit["ask"]
-	if ask["kind"] == "gold" and gold < ask["amount"]:
-		return "ask"
-	if ask["kind"] == "deliver" and items.get(ask["itemId"], 0) < ask["count"]:
-		return "ask"
-	return ""
+## What still blocks a recruit from taking up their story: "tier" or "".
+## Their price is their quest now (PIX-148).
+static func recruit_blocker(recruit: Dictionary, town_tier: int) -> String:
+	return "tier" if int(recruit.get("minTownTier", 1)) > town_tier else ""
+
+
+## The recruits who live in town now, with the perk each brings (PIX-148).
+static func settler_perks(settlers: Array) -> Array[String]:
+	var out: Array[String] = []
+	for recruit_entry: Dictionary in Npcs._data()["recruits"]:
+		if recruit_entry["id"] in settlers:
+			out.append(String(recruit_entry["perk"]))
+	return out
 
 
 static func recruit(id: String) -> Dictionary:

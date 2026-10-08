@@ -38,9 +38,12 @@ static func on_map(map_id: String, town_tier: int, settlers: Array, done: Varian
 			if town_tier == 0 and npc.has("ashesLines"):
 				npc = npc.duplicate()
 				npc["lines"] = npc["ashesLines"]
+			elif npc.has("linesByTier"):
+				npc = npc.duplicate()
+				npc["lines"] = lines_for_tier(npc["linesByTier"], town_tier, npc["lines"])
 			out.append(npc)
 	for recruit: Dictionary in _data()["recruits"]:
-		var npc := as_npc(recruit, recruit["id"] in settlers)
+		var npc := as_npc(recruit, recruit["id"] in settlers, town_tier)
 		if npc["mapId"] == map_id:
 			out.append(npc)
 	# Builders at the village's construction sites (PIX-147).
@@ -49,9 +52,19 @@ static func on_map(map_id: String, town_tier: int, settlers: Array, done: Varian
 	return out
 
 
+## The lines for the town's age (PIX-148): the latest age's at or below it,
+## else `fallback`.
+static func lines_for_tier(by_tier: Dictionary, town_tier: int, fallback: Array) -> Array:
+	var best := -1
+	for key: String in by_tier:
+		if int(key) <= town_tier and int(key) > best:
+			best = int(key)
+	return by_tier[str(best)] if best >= 0 else fallback
+
+
 ## A recruit as a walking villager: where they wait, or where they live once
-## settled (recruitNpc).
-static func as_npc(recruit: Dictionary, settled: bool) -> Dictionary:
+## settled (recruitNpc), saying what the town's age has them say.
+static func as_npc(recruit: Dictionary, settled: bool, town_tier := 1) -> Dictionary:
 	var spot: Dictionary = recruit["home"] if settled else recruit["found"]
 	return {
 		"id": recruit["id"],
@@ -60,7 +73,7 @@ static func as_npc(recruit: Dictionary, settled: bool) -> Dictionary:
 		"y": spot["y"],
 		"sprite": recruit["sprite"],
 		"name": recruit["name"],
-		"lines": recruit["townLines"] if settled else recruit["meetLines"],
+		"lines": lines_for_tier(recruit.get("townLinesByTier", {}), town_tier, recruit["townLines"]) if settled else recruit["meetLines"],
 		"wander": spot["wander"],
 	}
 
