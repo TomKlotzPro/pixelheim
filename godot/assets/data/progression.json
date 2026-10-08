@@ -623,6 +623,97 @@
       },
       "accepted": "Off the west gallery, last I heard her. Small cage. Mind your fingers.",
       "completed": "There's my girl! Cross as ever. Thank you - the air's safe to breathe as long as she's singing."
+    },
+    {
+      "id": "ulla_turncoats",
+      "giver": "greyhold_ulla",
+      "name": "The Turncoats",
+      "brief": "Turncoats hold Greyhold's yard.",
+      "objective": {
+        "kind": "kill",
+        "monsterId": "turncoat",
+        "count": 5,
+        "label": "Turncoats driven out"
+      },
+      "reward": {
+        "gold": 90,
+        "xp": 80
+      },
+      "accepted": "Five of the red cloaks, and the yard's ours again. The gate's round the south side - or climb a breach, if you're nimble.",
+      "completed": "The yard's quiet. First time in years. Now the keep: its door goes down to the cellars, and something down there won't let anyone near the captain's hall."
+    },
+    {
+      "id": "ulla_captain",
+      "giver": "greyhold_ulla",
+      "name": "The Hollow Captain",
+      "brief": "Something keeps Oskar's shield in the cellars.",
+      "objective": {
+        "kind": "hunt",
+        "named": "hollow_captain",
+        "count": 1,
+        "label": "Hollow Captain laid to rest"
+      },
+      "reward": {
+        "gold": 180,
+        "xp": 200
+      },
+      "accepted": "Down the keep's stair, through the crypt, to the captain's hall. That's where Oskar's shield hung. Whatever's there has kept it all this while.",
+      "completed": "Captain Hale. He swore to keep Oskar's shield till Oskar came home, and he kept it fifty years. Take it to Oskar, up the mountain. Hale would want it to go home."
+    },
+    {
+      "id": "teo_rest",
+      "giver": "greyhold_teo",
+      "name": "Stand Down",
+      "brief": "Greyhold's dead garrison still keeps watch below.",
+      "objective": {
+        "kind": "kill",
+        "monsterId": "hollow_guard",
+        "count": 3,
+        "label": "Hollow guards stood down"
+      },
+      "reward": {
+        "gold": 70,
+        "xp": 70
+      },
+      "accepted": "Three of the old guard, still at their posts in the cellars. Give them the order they never got.",
+      "completed": "They're at rest. I heard the bell, though there's been no bell here for forty years."
+    },
+    {
+      "id": "teo_steel",
+      "giver": "greyhold_teo",
+      "name": "The Chapel Bell",
+      "brief": "Brother Teo wants old steel to mend the chapel bell.",
+      "objective": {
+        "kind": "deliver",
+        "itemId": "old_steel",
+        "count": 4,
+        "label": "Old steel brought"
+      },
+      "reward": {
+        "gold": 60,
+        "xp": 40,
+        "itemId": "potion_hp"
+      },
+      "accepted": "Old steel - the garrison's broken blades. It's all over the yard and the cellars, if you look.",
+      "completed": "That'll ring. Not well, but it'll ring. Hilda in Pixelheim could make you something from the rest."
+    },
+    {
+      "id": "fenwick_locket",
+      "giver": "greyhold_fenwick",
+      "name": "Fenwick's Locket",
+      "brief": "Fenwick left something in the cells.",
+      "objective": {
+        "kind": "deliver",
+        "itemId": "fenwicks_locket",
+        "count": 1,
+        "label": "Locket found"
+      },
+      "reward": {
+        "gold": 50,
+        "xp": 35
+      },
+      "accepted": "My sister's locket. They took it when they threw me in the cells - the end cell, under the straw.",
+      "completed": "That's hers. That's... thank you. Here - it's not much. It's all the turncoats didn't find."
     }
   ],
   "rankTitles": {

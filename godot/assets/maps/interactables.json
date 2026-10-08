@@ -187,6 +187,29 @@
         "kind": "gold",
         "amount": 120
       }
+    },
+    {
+      "id": "cellars_locket",
+      "mapId": "cellars",
+      "x": 10,
+      "y": 4,
+      "look": "chest",
+      "loot": {
+        "kind": "item",
+        "itemId": "fenwicks_locket",
+        "qty": 1
+      }
+    },
+    {
+      "id": "cellars_armoury",
+      "mapId": "cellars",
+      "x": 44,
+      "y": 24,
+      "look": "chest",
+      "loot": {
+        "kind": "gold",
+        "amount": 150
+      }
     }
   ],
   "signs": {
@@ -238,7 +261,9 @@
     "saltmere": [],
     "seacave": [],
     "blackiron": [],
-    "shafts": []
+    "shafts": [],
+    "greyhold": [],
+    "cellars": []
   },
   "signsHouseOwned": {
     "town": [

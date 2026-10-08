@@ -381,6 +381,45 @@
         "My canary's down there. She tells us when the air goes bad. Without her we're digging blind.",
         "Last I heard her singing, it was off the west gallery. Small cage. Very cross bird."
       ]
+    },
+    {
+      "id": "greyhold_ulla",
+      "mapId": "greyhold",
+      "x": 14,
+      "y": 26,
+      "sprite": "guard",
+      "name": "Sergeant Ulla",
+      "wander": false,
+      "lines": [
+        "Greyhold was Oskar's fort before it was anyone's ruin. We keep this camp because somebody has to.",
+        "Turncoats hold the yard now - the ones who sold the garrison's stores and stayed for the walls."
+      ]
+    },
+    {
+      "id": "greyhold_teo",
+      "mapId": "greyhold",
+      "x": 10,
+      "y": 24,
+      "sprite": "monk",
+      "name": "Brother Teo",
+      "wander": false,
+      "lines": [
+        "The dead below don't rest. They were good men. Nobody ever gave them the order to stand down.",
+        "If you go down, mind the crypt. And say a word for them, if you know one."
+      ]
+    },
+    {
+      "id": "greyhold_fenwick",
+      "mapId": "greyhold",
+      "x": 19,
+      "y": 25,
+      "sprite": "villager",
+      "name": "Fenwick",
+      "wander": true,
+      "lines": [
+        "I wore the red cloak, once. Then they threw me in the cells for asking where the pay went.",
+        "Ulla let me stay. I fetch the water. It's a living."
+      ]
     }
   ],
   "recruits": [

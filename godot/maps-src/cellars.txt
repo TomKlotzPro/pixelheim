@@ -1,0 +1,46 @@
+# The Greyhold cellars (PIX-168): the stair landing, the guardroom, the old
+# cells, the crypt of the garrison's dead, and the captain's hall where
+# Oskar's shield has hung for fifty years - and its keeper still stands guard.
+id cellars
+style cave
+spawn 4 27
+portal 3 28 map greyhold 37 13
+key X wall -
+key . floor cellars
+key L lamp -
+key b barrel -
+key k crate -
+key c cave cellars
+map
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXLXXXLXXXXX
+XXXXXXXLXXXXXXXXLXXXXXXXLXXXXXXXXXX...........XX
+XX...X..X...XX.................XXXX...........XX
+XX...X..X...XX.................XXXX..X.....X..XX
+XX...X..X...XX.................XXXX...........XX
+XX...X..X...XX....X...X...X....XXXX...........XX
+XX...X..X...XX................................XX
+XX...X..X...XX................................XX
+XX..........XX.................XXXX...........XX
+XX..........XX....X...X...X....XXXX..X.....X..XX
+XX.............................XXXX...........XX
+XX.............................XXXX...........XX
+XX..........XX.................XXXX...........XX
+XX..........XXXXXX..XXXXXXXXXXXXXXX...........XX
+XXXX..XXXXXXXXXXXX..XXXXXXXXXXXXXXXXXXXX..XXXXXX
+XXXX..XXXXXXXXXXXX..XXXXXXXXXXXXXXXXXXXX..XXXXXX
+XXXX..XXXXXXXXXXXX..XXXXXXXXXXXXXXXXXXXX..XXXXXX
+XXXX..XXXXXXXXXXXX..XXXXXXXXXXXXXXXXXXXX..XXXXXX
+XXXX..XXXXXXXXXXXX..XXXXXXXXXXXXXXXXXXXX..XXXXXX
+XXXX..XXXXXXXXXXLX..XLXXXXXXXXXXXXXXXXLX..XLXXXX
+XXXX..XXXXXXXXbk........XXXXXXXXXXXXb.........XX
+XXXX..LXXXXXXX..........XXXXXXXXXXXX..........XX
+XX........XXXX..........XXXXXXXXXXXX..........XX
+XX........XXXX..........XXXXXXXXXXXX..........XX
+XX........XXXX..........XXXXXXXXXXXX..........XX
+XX............................................XX
+XX............................................XX
+XX.c......XXXX..........XXXXXXXXXXXX..........XX
+XX.......kXXXX........bkXXXXXXXXXXXXk........bXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX

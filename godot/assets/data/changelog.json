@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.109.0",
+      "date": "2026-10-08",
+      "codename": "Greyhold",
+      "notes": [
+        "GREYHOLD: a new road leaves the north-east of the Ash Fields for Oskar's old fort on its hill - breached walls, a stone yard, his statue, and the keep where turncoats in red cloaks have made themselves at home",
+        "THE OLD GUARD'S CAMP: Sergeant Ulla, Brother Teo and Fenwick, a turncoat who changed his mind, keep a guardhouse by the road with five quests between them",
+        "THE CELLARS: down the keep's stair to the guardroom, the old cells, the crypt and the captain's hall, where Greyhold's dead garrison still stands watch - and the Hollow Captain keeps Oskar's Shield, the third of the five relics",
+        "THE GREYHOLD WARDEN: helm, hauberk, gauntlets, boots and a kite shield (+STR and +DEX), and the Warden's Longsword - forged at Hilda's from the fort's old steel"
+      ]
+    },
+    {
       "version": "0.108.0",
       "date": "2026-10-08",
       "codename": "Black Iron",
