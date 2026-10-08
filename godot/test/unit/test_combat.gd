@@ -45,7 +45,8 @@ func test_spawn_species() -> void:
 func test_elites_match_the_web() -> void:
 	var orc := Bestiary.spawn("orc", true)
 	assert_eq(orc["name"], "Elite Orc Raider")
-	assert_eq([orc["hp"], orc["attack"], orc["defense"], orc["xp"], orc["gold"]], [63, 21, 5, 45, 33])
+	# PIX-186: an elite's health grows 2.25 times for real time (the web's 1.5 made it 63).
+	assert_eq([orc["hp"], orc["attack"], orc["defense"], orc["xp"], orc["gold"]], [95, 21, 5, 45, 33])
 
 
 func test_hero_damage_matches_the_web() -> void:

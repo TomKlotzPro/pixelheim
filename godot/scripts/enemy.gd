@@ -83,6 +83,9 @@ func _ready() -> void:
 	# Fafnyr and Morvax fight with their own attacks too (PIX-150); an elite
 	# has its family's one trick (PIX-155), a named monster one of its own
 	# besides (PIX-156).
+	# A boss or an elite shakes stuns off (PIX-186).
+	var guards: Dictionary = Bestiary._data()["stunGuard"]
+	ailments.stun_guard = float(guards["boss"]) if Bestiary.is_boss(fighter["id"]) else (float(guards["elite"]) if fighter["elite"] or not named.is_empty() else 0.0)
 	if Bestiary._data()["bossPatterns"].has(fighter["id"]):
 		add_child(preload("res://scripts/boss_brain.gd").new())
 	elif not named.is_empty() or (fighter["elite"] and Bestiary._data()["eliteMoves"].has(Bestiary.family_of(fighter["id"]))):

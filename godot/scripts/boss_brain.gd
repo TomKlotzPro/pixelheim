@@ -29,7 +29,8 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if enemy.dying or enemy.mode not in ["chase", "cast"]:
+	# Stunned, it casts nothing (PIX-186); marks already told still strike.
+	if enemy.dying or enemy.mode not in ["chase", "cast"] or enemy.ailments.is_stunned():
 		return
 	_check_phase()
 	if enemy.mode == "cast":
@@ -105,7 +106,8 @@ func _summon(attack: Dictionary) -> void:
 		var spot: Vector2i = cell + offsets[i % offsets.size()]
 		if not world.map.is_walkable(spot):
 			spot = cell
-		var add: Node = world.spawn_enemy(pattern["summon"], spot, "", "", false, false, cell, Dungeons.lift(world.map.floor_level) if world.map.floor_level > 0 else 0)
+		# The dead rise at their master's level (PIX-186), not the floor's lift.
+		var add: Node = world.spawn_enemy(pattern["summon"], spot, "", "", false, false, cell, Bestiary.lift_to(pattern["summon"], int(enemy.fighter.get("level", Bestiary.monster(enemy.fighter["id"])["level"]))))
 		add.add_to_group("summoned")
 		world.appear(add)
 		add.notice()

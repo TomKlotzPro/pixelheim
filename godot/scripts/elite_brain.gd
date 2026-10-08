@@ -33,7 +33,8 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if enemy.dying or enemy.mode != "chase":
+	# Stunned, it tries no trick (PIX-186).
+	if enemy.dying or enemy.mode != "chase" or enemy.ailments.is_stunned():
 		return
 	for slot in moves:
 		slot["cooldown"] -= delta

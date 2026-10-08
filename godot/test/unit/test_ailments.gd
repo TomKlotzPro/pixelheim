@@ -55,3 +55,22 @@ func test_clear_wipes_everything() -> void:
 	ail.inflict(STUN, always)
 	ail.clear()
 	assert_eq(ail.kinds(), [])
+
+
+## PIX-186: a boss or an elite shrugs off a second stun while the first is
+## remembered, and takes one again after a calm.
+func test_a_guarded_monster_shrugs_off_stuns_for_a_while() -> void:
+	var guarded := Ailments.new()
+	guarded.stun_guard = 6.0
+	var stun := {"kind": "stun", "chance": 1.0, "turns": 1, "power": 0}
+	var sure := func() -> float: return 0.0
+	assert_true(guarded.inflict(stun, sure), "the first stun holds")
+	guarded.tick(1.0)
+	assert_false(guarded.is_stunned())
+	assert_false(guarded.inflict(stun, sure), "a second, soon after, is shrugged off")
+	guarded.tick(5.5)
+	assert_true(guarded.inflict(stun, sure), "after a calm, it can be stunned again")
+	var plain := Ailments.new()
+	assert_true(plain.inflict(stun, sure))
+	plain.tick(1.0)
+	assert_true(plain.inflict(stun, sure), "an ordinary monster has no guard")

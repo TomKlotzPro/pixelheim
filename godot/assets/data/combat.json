@@ -139,7 +139,7 @@
       "id": "dragon",
       "name": "Fafnyr the Ashen",
       "sprite": "dragon",
-      "maxHp": 150,
+      "maxHp": 975,
       "attack": 33,
       "defense": 9,
       "xp": 150,
@@ -224,7 +224,7 @@
       "id": "lich",
       "name": "Morvax the Deathless",
       "sprite": "lich",
-      "maxHp": 300,
+      "maxHp": 1500,
       "attack": 52,
       "defense": 12,
       "xp": 350,
@@ -4549,6 +4549,12 @@
   "armor": {
     "about": "PIX-185: armour turns aside a share of every hit instead of a flat amount, so it always helps and never makes anyone immune: a hit of `raw` against armour `a` lands raw*raw/(raw + weight*a). Both ways - the hero's swings against a monster's defense, a monster's against the hero's.",
     "weight": 1.25
+  },
+  "eliteHp": 2.25,
+  "stunGuard": {
+    "about": "PIX-186: after a stun takes hold, a boss or an elite (named monsters too) halves the next for this many seconds - a one-turn stun is shrugged off - so Frost Nova can't hold them in place.",
+    "elite": 6.0,
+    "boss": 12.0
   },
   "xpGap": {
     "falloff": 0.15,
