@@ -200,13 +200,23 @@ func test_new_hero_replaces_a_slot() -> void:
 	assert_eq(slots.summary(1)["gold"], 30)
 
 
-func test_the_slot_in_play_cannot_be_cleared() -> void:
+func test_any_slot_clears_and_the_hero_in_hand_becomes_a_stand_in() -> void:
 	var state := _fresh_state()
 	state.boot(PackedStringArray(["--slot", "1"]))
 	state.play_slot(2)
-	assert_false(state.clear_slot(2))
 	assert_true(state.clear_slot(1))
 	assert_eq(slots.read(1), {})
+	assert_false(state.clear_slot(1), "already empty")
+	# The hero in hand (Tom couldn't clear the slot Continue loads): gone for
+	# good, and the stand-in left behind is never written back.
+	state.pack.gold = 999
+	assert_true(state.clear_slot(2))
+	assert_eq(slots.read(2), {})
+	assert_true(state.standing_in)
+	state.mark_dirty()
+	state.save_now()
+	assert_eq(slots.read(2), {}, "nothing writes the cleared hero back")
+	assert_eq(state.free_slot(), 2, "the next hero takes the cleared slot")
 
 
 func test_save_code_carries_the_hero_to_the_web() -> void:

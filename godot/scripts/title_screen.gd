@@ -305,9 +305,14 @@ func _create_hero() -> void:
 	add_child(creation)
 
 
+## The saves over the title, like Options: Esc comes back here, and playing
+## the hero in hand is Continue.
 func _saves() -> void:
-	_leave()
-	world._open_saves()
+	var screen := preload("res://scripts/saves_screen.gd").new()
+	screen.web_save = WebImport.find_in_browser()
+	screen.on_play_current = _continue
+	add_child(screen)
+	screen.layer = layer + 1
 
 
 ## Every release's notes, over the title (Esc hands back).

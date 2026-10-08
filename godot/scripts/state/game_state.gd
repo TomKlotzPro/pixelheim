@@ -145,11 +145,17 @@ func import_into(target: int, state: Dictionary) -> void:
 	save_now()
 
 
-## Empties a slot. The slot being played cannot be cleared from under the hero.
+## Empties a slot; false when it already was.
 func clear_slot(target: int) -> bool:
-	if target == slot:
+	if slots.summary(target).is_empty():
 		return false
 	slots.erase(target)
+	# The hero in play goes too: what's left is the title's unsaved stand-in,
+	# so no autosave can write them back.
+	if target == slot:
+		new_game()
+		standing_in = true
+		dirty = false
 	return true
 
 

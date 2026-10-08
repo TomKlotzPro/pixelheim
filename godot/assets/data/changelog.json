@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.81.2",
+      "date": "2026-10-08",
+      "codename": "Clean Slate",
+      "notes": [
+        "CLEAR ANY SLOT: the hero Continue would load can now be cleared too - X asks first, then clears them and takes you back to the title with no hero loaded",
+        "SAVES FROM THE TITLE STAY ON THE TITLE: opening Saves there no longer drops you into the game; Esc comes back to the menu, and Play on the hero in hand is Continue"
+      ]
+    },
+    {
       "version": "0.81.1",
       "date": "2026-10-08",
       "codename": "Unfrozen",
