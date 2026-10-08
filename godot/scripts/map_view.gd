@@ -41,6 +41,9 @@ var patch_sprites := {}
 ## a tent in its region's colour behind its home and a torch beside it.
 var camps := {}
 
+## The projects board on the square (PIX-145): a Puny World notice board.
+const PROJECT_BOARD := 846
+const BOARD_FOOT := Rect2(1, 8, 14, 8)
 ## Puny World tents by region: green in the woods, straw in the wetlands,
 ## red on the ash.
 const TENTS := {"forest": 895, "deepwood": 895, "marsh": 706, "mire": 706, "ash": 905}
@@ -98,6 +101,8 @@ func plan(arrival: Vector2i) -> Vector2i:
 			for cell: Vector2i in prop["covers"]:
 				data.covered[cell] = true
 	camps = plan_camps(data)
+	if data.id == "town":
+		camps[Town.project_board()] = {"kind": "board", "tile": PROJECT_BOARD}
 	for cell: Vector2i in camps:
 		data.covered[cell] = true
 	patches = {}
@@ -388,7 +393,7 @@ func refresh_patches() -> void:
 
 ## A camp's tent or torch: sorted among the actors at its foot, which blocks.
 func _add_camp_piece(cell: Vector2i, piece: Dictionary) -> void:
-	var foot: Rect2 = TENT_FOOT if piece["kind"] == "tent" else TORCH_FOOT
+	var foot: Rect2 = {"tent": TENT_FOOT, "board": BOARD_FOOT}.get(piece["kind"], TORCH_FOOT)
 	var root := Node2D.new()
 	root.position = Vector2(cell * TILE) + Vector2(0, foot.end.y)
 	root.add_to_group("decor")

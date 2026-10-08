@@ -40,11 +40,11 @@ func test_odo_sells_the_bigger_deeds_in_order_and_gated_on_gold() -> void:
 
 
 func test_each_tier_has_its_own_interior() -> void:
-	var sizes := [1, 2, 3].map(func(tier: int) -> Vector2i: return MapData.load_tiered("town_house", 1, tier).size)
+	var sizes := [1, 2, 3].map(func(tier: int) -> Vector2i: return MapData.load_tiered("town_house", [], tier).size)
 	assert_eq(sizes[0], Vector2i(20, 12))
 	assert_eq(sizes[1], Vector2i(26, 12))
 	assert_eq(sizes[2], Vector2i(30, 14))
-	assert_true(MapData.load_tiered("town_house", 1, 3).grid.values().has("cauldron"))
+	assert_true(MapData.load_tiered("town_house", [], 3).grid.values().has("cauldron"))
 
 
 func test_storage_moves_stacks_between_pack_and_home() -> void:

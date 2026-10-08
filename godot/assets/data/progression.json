@@ -199,7 +199,8 @@
               "questId": "herbs_for_vex"
             },
             "text": "Brew a first potion at Vex's cauldron",
-            "hint": "Vex behind the BREWS door will show you the cauldron. Potions you brew cost you a herb, not a fortune."
+            "hint": "Vex behind the BREWS door will show you the cauldron. Potions you brew cost you a herb, not a fortune.",
+            "optional": true
           },
           {
             "id": "crypt",
@@ -223,6 +224,26 @@
             },
             "text": "Clear the Ruined Watchtower (floor 5)",
             "hint": "Orcs hold the old watchtower now. Floor five. Bring potions."
+          },
+          {
+            "id": "settler",
+            "when": {
+              "kind": "settlers",
+              "count": 1
+            },
+            "text": "Bring a settler home to Pixelheim",
+            "hint": "Iva the healer waits in the Mirefen, and Wren hunts the fields east of town. Help one of them, and they'll come and live here.",
+            "optional": true
+          },
+          {
+            "id": "lamps",
+            "when": {
+              "kind": "project",
+              "projectId": "street_lamps"
+            },
+            "text": "Fund the street lamps at the board on the square",
+            "hint": "The board on the square lists what Pixelheim needs next. Lamps first: some coin and three marsh reeds.",
+            "optional": true
           },
           {
             "id": "forge",
@@ -256,6 +277,16 @@
       {
         "title": "The Deathless",
         "steps": [
+          {
+            "id": "fountain",
+            "when": {
+              "kind": "project",
+              "projectId": "fountain"
+            },
+            "text": "Set Fafnyr's scale in a fountain on the square",
+            "hint": "Fafnyr's scale belongs on the square, where everyone can see it. The board will tell you what else the fountain takes.",
+            "optional": true
+          },
           {
             "id": "stair",
             "when": {

@@ -2,9 +2,11 @@ class_name MainQuest
 ## The main quest (PIX-144): chapters of steps read from the save, so the
 ## game can always say what comes next - on the line above the dock, in the
 ## journal, from the elder and the mayor. A step is met by the save's own
-## records (a quest taken or kept, a floor cleared, a town tier, a settler);
+## records (a quest taken or kept, a floor cleared, a project, a settler);
 ## the next step is the first unmet one after the furthest met, so a hero who
-## runs ahead is never sent back for a side errand. Pure, over
+## runs ahead is never sent back for a side errand. Optional steps (errands
+## and village projects) never count as the furthest: a town grown before
+## its hero went deep doesn't skip the mountain. Pure, over
 ## progression.json's "mainQuest"; Phase 2's village projects slot in as
 ## more kinds of step.
 
@@ -44,6 +46,10 @@ static func is_met(step: Dictionary, progression: ProgressionState, settlement: 
 			return settlement.town_tier >= int(when["tier"])
 		"settler":
 			return when["settlerId"] in settlement.settlers
+		"settlers":
+			return settlement.settlers.size() >= int(when["count"])
+		"project":
+			return when["projectId"] in Town.done_projects(settlement)
 	push_warning("MainQuest: unknown step kind %s" % when["kind"])
 	return false
 
@@ -53,7 +59,7 @@ static func next_step(progression: ProgressionState, settlement: SettlementState
 	var all := steps()
 	var furthest := -1
 	for index in all.size():
-		if is_met(all[index], progression, settlement):
+		if not all[index].get("optional", false) and is_met(all[index], progression, settlement):
 			furthest = index
 	for index in range(furthest + 1, all.size()):
 		if not is_met(all[index], progression, settlement):

@@ -15,8 +15,7 @@
       "perks": [
         "Market stalls and street lamps dress the square",
         "Rent rises: +1g per property after every victory"
-      ],
-      "cost": 2500
+      ]
     },
     {
       "tier": 3,
@@ -25,28 +24,694 @@
       "perks": [
         "A fountain plaza and new houses",
         "The inn honors its patron: rest costs half"
-      ],
-      "cost": 7000,
-      "requires": {
-        "line": "The council funds a patron who lives here: own your house",
-        "key": "own_house"
-      }
+      ]
     },
     {
       "tier": 4,
       "name": "City",
-      "blurb": "Paved streets, lamplit avenues, full houses. Pixelheim, city of the Ashenreach.",
+      "blurb": "Lamplit avenues, flowers on the square, full houses. Pixelheim, city of the Ashenreach.",
       "perks": [
-        "Paved avenues, more homes, more citizens",
+        "A lamplit avenue to the mountain gate and flowers around the square",
         "Merchants pay 20% more for everything you sell"
-      ],
-      "cost": 15000,
-      "requires": {
-        "line": "A city stands on commerce: own all three businesses",
-        "key": "own_all_properties"
-      }
+      ]
     }
   ],
+  "ages": [
+    {
+      "tier": 2,
+      "requires": [
+        {
+          "kind": "cleared",
+          "level": 5,
+          "line": "The road is safe enough: clear the Ruined Watchtower (floor 5)"
+        },
+        {
+          "kind": "settlers",
+          "count": 1,
+          "line": "Someone has chosen to live here: bring one settler home"
+        }
+      ],
+      "projects": [
+        {
+          "id": "street_lamps",
+          "name": "Street lamps",
+          "blurb": "Torches along the streets and the square, so the night has edges.",
+          "cost": {
+            "gold": 150,
+            "items": {
+              "marsh_reed": 3
+            }
+          },
+          "tiles": [
+            [
+              21,
+              12,
+              "lamp"
+            ],
+            [
+              35,
+              12,
+              "lamp"
+            ],
+            [
+              21,
+              19,
+              "lamp"
+            ],
+            [
+              35,
+              19,
+              "lamp"
+            ],
+            [
+              21,
+              22,
+              "lamp"
+            ],
+            [
+              29,
+              22,
+              "lamp"
+            ]
+          ]
+        },
+        {
+          "id": "market_stalls",
+          "name": "Market stalls",
+          "blurb": "Two stalls on the square, and somewhere to haggle.",
+          "cost": {
+            "gold": 250,
+            "items": {
+              "wolf_pelt": 2
+            }
+          },
+          "tiles": [
+            [
+              25,
+              13,
+              "counter"
+            ],
+            [
+              26,
+              13,
+              "crate"
+            ],
+            [
+              30,
+              13,
+              "counter"
+            ],
+            [
+              31,
+              13,
+              "barrel"
+            ]
+          ]
+        },
+        {
+          "id": "thatch_cottage",
+          "name": "A thatched cottage",
+          "blurb": "A new roof south of the square, for whoever comes next.",
+          "cost": {
+            "gold": 400,
+            "items": {
+              "marsh_reed": 5
+            }
+          },
+          "tiles": [
+            [
+              22,
+              21,
+              "roof_thatch"
+            ],
+            [
+              23,
+              21,
+              "roof_thatch"
+            ],
+            [
+              24,
+              21,
+              "roof_thatch"
+            ],
+            [
+              25,
+              21,
+              "roof_thatch"
+            ],
+            [
+              26,
+              21,
+              "roof_thatch"
+            ],
+            [
+              27,
+              21,
+              "roof_thatch"
+            ],
+            [
+              22,
+              22,
+              "roof_thatch"
+            ],
+            [
+              23,
+              22,
+              "roof_thatch"
+            ],
+            [
+              24,
+              22,
+              "roof_thatch"
+            ],
+            [
+              25,
+              22,
+              "roof_thatch"
+            ],
+            [
+              26,
+              22,
+              "roof_thatch"
+            ],
+            [
+              27,
+              22,
+              "roof_thatch"
+            ],
+            [
+              22,
+              23,
+              "roof_thatch"
+            ],
+            [
+              23,
+              23,
+              "roof_thatch"
+            ],
+            [
+              24,
+              23,
+              "door_shut"
+            ],
+            [
+              25,
+              23,
+              "roof_thatch"
+            ],
+            [
+              26,
+              23,
+              "roof_thatch"
+            ],
+            [
+              27,
+              23,
+              "roof_thatch"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "tier": 3,
+      "requires": [
+        {
+          "kind": "cleared",
+          "level": 10,
+          "line": "The mountain is quiet: slay Fafnyr on the Ashen Throne"
+        }
+      ],
+      "projects": [
+        {
+          "id": "fountain",
+          "name": "The fountain",
+          "blurb": "A fountain on the square, Fafnyr's scale set in its basin.",
+          "cost": {
+            "gold": 600,
+            "items": {
+              "dragon_scale": 1
+            }
+          },
+          "tiles": [
+            [
+              29,
+              16,
+              "path"
+            ],
+            [
+              30,
+              16,
+              "path"
+            ],
+            [
+              31,
+              16,
+              "path"
+            ],
+            [
+              29,
+              17,
+              "path"
+            ],
+            [
+              30,
+              17,
+              "well"
+            ],
+            [
+              31,
+              17,
+              "path"
+            ],
+            [
+              29,
+              18,
+              "path"
+            ],
+            [
+              30,
+              18,
+              "path"
+            ],
+            [
+              31,
+              18,
+              "path"
+            ]
+          ]
+        },
+        {
+          "id": "slate_hall",
+          "name": "The slate hall",
+          "blurb": "A long slate-roofed hall on the east road, built to last.",
+          "cost": {
+            "gold": 900,
+            "items": {
+              "deep_root": 4
+            }
+          },
+          "tiles": [
+            [
+              67,
+              21,
+              "roof_slate"
+            ],
+            [
+              68,
+              21,
+              "roof_slate"
+            ],
+            [
+              69,
+              21,
+              "roof_slate"
+            ],
+            [
+              70,
+              21,
+              "roof_slate"
+            ],
+            [
+              71,
+              21,
+              "roof_slate"
+            ],
+            [
+              72,
+              21,
+              "roof_slate"
+            ],
+            [
+              67,
+              22,
+              "roof_slate"
+            ],
+            [
+              68,
+              22,
+              "roof_slate"
+            ],
+            [
+              69,
+              22,
+              "roof_slate"
+            ],
+            [
+              70,
+              22,
+              "roof_slate"
+            ],
+            [
+              71,
+              22,
+              "roof_slate"
+            ],
+            [
+              72,
+              22,
+              "roof_slate"
+            ],
+            [
+              67,
+              23,
+              "roof_slate"
+            ],
+            [
+              68,
+              23,
+              "roof_slate"
+            ],
+            [
+              69,
+              23,
+              "roof_slate"
+            ],
+            [
+              70,
+              23,
+              "roof_slate"
+            ],
+            [
+              71,
+              23,
+              "roof_slate"
+            ],
+            [
+              72,
+              23,
+              "roof_slate"
+            ],
+            [
+              67,
+              24,
+              "roof_slate"
+            ],
+            [
+              68,
+              24,
+              "roof_slate"
+            ],
+            [
+              69,
+              24,
+              "roof_slate"
+            ],
+            [
+              70,
+              24,
+              "roof_slate"
+            ],
+            [
+              71,
+              24,
+              "roof_slate"
+            ],
+            [
+              72,
+              24,
+              "roof_slate"
+            ],
+            [
+              67,
+              25,
+              "roof_slate"
+            ],
+            [
+              68,
+              25,
+              "roof_slate"
+            ],
+            [
+              69,
+              25,
+              "door_shut"
+            ],
+            [
+              70,
+              25,
+              "roof_slate"
+            ],
+            [
+              71,
+              25,
+              "roof_slate"
+            ],
+            [
+              72,
+              25,
+              "roof_slate"
+            ]
+          ]
+        },
+        {
+          "id": "moss_cottage",
+          "name": "A cottage by the wall",
+          "blurb": "Mossy roofs by the south wall. Builders whistle now.",
+          "cost": {
+            "gold": 700,
+            "items": {
+              "forest_herb": 4
+            }
+          },
+          "tiles": [
+            [
+              14,
+              29,
+              "roof_moss"
+            ],
+            [
+              15,
+              29,
+              "roof_moss"
+            ],
+            [
+              16,
+              29,
+              "roof_moss"
+            ],
+            [
+              17,
+              29,
+              "roof_moss"
+            ],
+            [
+              18,
+              29,
+              "roof_moss"
+            ],
+            [
+              19,
+              29,
+              "roof_moss"
+            ],
+            [
+              14,
+              30,
+              "roof_moss"
+            ],
+            [
+              15,
+              30,
+              "roof_moss"
+            ],
+            [
+              16,
+              30,
+              "roof_moss"
+            ],
+            [
+              17,
+              30,
+              "roof_moss"
+            ],
+            [
+              18,
+              30,
+              "roof_moss"
+            ],
+            [
+              19,
+              30,
+              "roof_moss"
+            ],
+            [
+              14,
+              31,
+              "roof_moss"
+            ],
+            [
+              15,
+              31,
+              "roof_moss"
+            ],
+            [
+              16,
+              31,
+              "roof_moss"
+            ],
+            [
+              17,
+              31,
+              "roof_moss"
+            ],
+            [
+              18,
+              31,
+              "roof_moss"
+            ],
+            [
+              19,
+              31,
+              "roof_moss"
+            ],
+            [
+              14,
+              32,
+              "roof_moss"
+            ],
+            [
+              15,
+              32,
+              "roof_moss"
+            ],
+            [
+              16,
+              32,
+              "door_shut"
+            ],
+            [
+              17,
+              32,
+              "roof_moss"
+            ],
+            [
+              18,
+              32,
+              "roof_moss"
+            ],
+            [
+              19,
+              32,
+              "roof_moss"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "tier": 4,
+      "requires": [
+        {
+          "kind": "cleared",
+          "level": 15,
+          "line": "Nothing stirs below: cast down Morvax"
+        }
+      ],
+      "projects": [
+        {
+          "id": "grand_avenue",
+          "name": "The grand avenue",
+          "blurb": "Lamps all the way to the mountain gate. Pixelheim walks at night now.",
+          "cost": {
+            "gold": 1500,
+            "items": {
+              "ember_shard": 8
+            }
+          },
+          "tiles": [
+            [
+              30,
+              2,
+              "lamp"
+            ],
+            [
+              34,
+              2,
+              "lamp"
+            ],
+            [
+              31,
+              4,
+              "lamp"
+            ],
+            [
+              33,
+              4,
+              "lamp"
+            ],
+            [
+              31,
+              7,
+              "lamp"
+            ],
+            [
+              33,
+              7,
+              "lamp"
+            ]
+          ]
+        },
+        {
+          "id": "flower_beds",
+          "name": "Flower beds",
+          "blurb": "Flowers around the square. Nobody needed them. Everybody loves them.",
+          "cost": {
+            "gold": 1200,
+            "items": {
+              "grave_moss": 3
+            }
+          },
+          "tiles": [
+            [
+              16,
+              14,
+              "flowers"
+            ],
+            [
+              17,
+              14,
+              "flowers"
+            ],
+            [
+              36,
+              14,
+              "flowers"
+            ],
+            [
+              37,
+              14,
+              "flowers"
+            ],
+            [
+              16,
+              16,
+              "flowers"
+            ],
+            [
+              17,
+              16,
+              "flowers"
+            ],
+            [
+              36,
+              16,
+              "flowers"
+            ],
+            [
+              37,
+              16,
+              "flowers"
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "projectBoard": {
+    "x": 31,
+    "y": 11
+  },
   "properties": {
     "town_shop": {
       "name": "Odo's Emporium",

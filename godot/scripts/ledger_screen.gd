@@ -97,10 +97,11 @@ func _act() -> void:
 
 func _refresh() -> void:
 	gold_label.text = "Gold: %d" % GameState.pack.gold
-	info.text = _info()
-	info_card.visible = info.text != ""
+	# The rows first: the info may speak of the chosen one.
 	rows = _rows()
 	selected = clampi(selected, 0, maxi(0, rows.size() - 1))
+	info.text = _info()
+	info_card.visible = info.text != ""
 	for child in list.get_children():
 		list.remove_child(child)
 		child.queue_free()

@@ -10,7 +10,7 @@ const MAPS := ["town", "town@2", "town@3", "town@4", "overworld", "deepwood", "m
 ## The map as world.gd enters it: houses block and free their cells, props
 ## cover theirs.
 func _as_entered(id: String) -> MapData:
-	var data := MapData.load_from("res://assets/maps/%s.json" % id)
+	var data := _load(id)
 	var houses := PunyTown.plan(data.grid) if id.begins_with("town") else {"pieces": {}, "freed": []}
 	for cell: Vector2i in houses["pieces"]:
 		if not String(data.grid[cell]).begins_with("door"):
@@ -64,3 +64,10 @@ func test_only_field_decor_blocks_and_never_where_kept() -> void:
 
 func test_a_solid_foot_covers_the_middle_of_its_cell() -> void:
 	assert_true(Scatter.FOOT.encloses(Rect2(4, 7, 8, 8)), "the hero's position never enters a blocked cell")
+
+
+## A town as grown through an age ("town@3"), or any other map by id.
+func _load(id: String) -> MapData:
+	if id.begins_with("town@"):
+		return MapData.load_tiered("town", Town.projects_through(int(id.get_slice("@", 1))), 1)
+	return MapData.load_by_id(id)

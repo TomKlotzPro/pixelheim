@@ -405,17 +405,26 @@ func rest_at_inn() -> String:
 	return "You rest at the inn. Fully restored. (-%dg)" % cost
 
 
-## FUND_TOWN at the hall: requirements checked, treasury paid, tier raised.
-## The town redraws itself the moment the hero walks out.
-func fund_town() -> String:
-	if Town.fund_blocker(town_tier(), pack.gold, owns_house(), settlement.properties) != "":
+## Funds a village project (PIX-145): gold and materials paid, the project
+## built (the town redraws as the hero next sees it), and the last of an age
+## raises the town to that age. Returns the ledger's line, "" if it can't.
+func fund_project(project_id: String) -> String:
+	if Town.project_blocker(project_id, progression, settlement, pack.gold, pack.items) != "":
 		return ""
-	var next := Town.next_tier(town_tier())
-	pack.gold -= int(next.get("cost", 0))
-	settlement.town_tier = next["tier"]
+	var entry := Town.project(project_id)
+	pack.gold -= int(entry["cost"]["gold"])
+	for item_id: String in entry["cost"]["items"]:
+		pack.remove_item(item_id, int(entry["cost"]["items"][item_id]))
+	var tier_number := Town.age_of(project_id)
+	settlement.projects.assign(Town.done_projects(settlement) + [project_id])
+	var line := "%s: built. Walk outside and see." % entry["name"]
+	if Town.age(tier_number)["projects"].all(func(candidate: Dictionary) -> bool: return candidate["id"] in settlement.projects):
+		settlement.town_tier = tier_number
+		line = "%s: built - and Pixelheim is a %s now." % [entry["name"], String(Town.tier(tier_number)["name"]).to_lower()]
 	_pack_changed()
 	settlers_changed.emit()
-	return "Pixelheim rises: the %s charter is signed. Walk outside." % String(next["name"]).to_upper()
+	save_now()
+	return line
 
 
 ## BUY_PROPERTY: the business you stand in, from its keeper.
