@@ -291,7 +291,15 @@ func _continue() -> void:
 	_leave()
 
 
+## New Game: the opening (PIX-31), skippable, then hero creation.
 func _new_game() -> void:
+	var opening := Cutscene.new()
+	opening.scene_id = "opening"
+	opening.on_done = _create_hero
+	add_child(opening)
+
+
+func _create_hero() -> void:
 	var creation := preload("res://scripts/create_screen.gd").new()
 	creation.world = world
 	add_child(creation)

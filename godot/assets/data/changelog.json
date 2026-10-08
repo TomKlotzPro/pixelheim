@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.81.0",
+      "date": "2026-10-08",
+      "codename": "Once Upon a Mountain",
+      "notes": [
+        "THE OPENING: New Game now begins with the story - Pixelheim at peace, the Ashen Mountain waking with Fafnyr in its smoke, the heroes who climbed and never came back, and the whispers that rise from below",
+        "YOURS TO SKIP: E moves on to the next line and Esc skips straight to making your hero; with Reduce motion the words stay and the movement goes",
+        "UNDER THE HOOD: a cutscene is now a page of data, so the boss intros and the ending can follow"
+      ]
+    },
+    {
       "version": "0.80.0",
       "date": "2026-10-08",
       "codename": "Second Thoughts",
