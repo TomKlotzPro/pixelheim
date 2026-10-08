@@ -508,6 +508,78 @@
         "id": "smithing",
         "level": 6
       }
+    },
+    {
+      "id": "craft_warden_helm",
+      "itemId": "warden_helm",
+      "needs": {
+        "old_steel": 3,
+        "wolf_pelt": 1
+      },
+      "job": {
+        "id": "smithing",
+        "level": 5
+      }
+    },
+    {
+      "id": "craft_warden_gloves",
+      "itemId": "warden_gloves",
+      "needs": {
+        "old_steel": 2,
+        "wolf_pelt": 1
+      },
+      "job": {
+        "id": "smithing",
+        "level": 5
+      }
+    },
+    {
+      "id": "craft_warden_boots",
+      "itemId": "warden_boots",
+      "needs": {
+        "old_steel": 2,
+        "deep_root": 1
+      },
+      "job": {
+        "id": "smithing",
+        "level": 5
+      }
+    },
+    {
+      "id": "craft_warden_hauberk",
+      "itemId": "warden_hauberk",
+      "needs": {
+        "old_steel": 5,
+        "blackiron_ore": 2
+      },
+      "job": {
+        "id": "smithing",
+        "level": 6
+      }
+    },
+    {
+      "id": "craft_warden_kite",
+      "itemId": "warden_kite",
+      "needs": {
+        "old_steel": 4,
+        "deep_root": 2
+      },
+      "job": {
+        "id": "smithing",
+        "level": 6
+      }
+    },
+    {
+      "id": "craft_warden_longsword",
+      "itemId": "warden_longsword",
+      "needs": {
+        "old_steel": 4,
+        "blackiron_ore": 2
+      },
+      "job": {
+        "id": "smithing",
+        "level": 6
+      }
     }
   ],
   "jobStations": {

@@ -336,6 +336,68 @@
       "xp": 60,
       "gold": 30,
       "level": 8
+    },
+    "turncoat": {
+      "id": "turncoat",
+      "name": "Turncoat",
+      "sprite": "turncoat",
+      "maxHp": 46,
+      "attack": 18,
+      "defense": 5,
+      "xp": 40,
+      "gold": 24,
+      "level": 8,
+      "drops": [
+        {
+          "itemId": "old_steel",
+          "chance": 0.25
+        }
+      ]
+    },
+    "turncoat_bowman": {
+      "id": "turncoat_bowman",
+      "name": "Turncoat Bowman",
+      "sprite": "turncoat_bowman",
+      "maxHp": 38,
+      "attack": 20,
+      "defense": 3,
+      "xp": 42,
+      "gold": 26,
+      "level": 8
+    },
+    "cutthroat": {
+      "id": "cutthroat",
+      "name": "Cutthroat",
+      "sprite": "cutthroat",
+      "maxHp": 50,
+      "attack": 22,
+      "defense": 4,
+      "xp": 50,
+      "gold": 32,
+      "level": 9,
+      "inflicts": {
+        "kind": "poison",
+        "chance": 0.25,
+        "turns": 3,
+        "power": 5
+      }
+    },
+    "hollow_guard": {
+      "id": "hollow_guard",
+      "name": "Hollow Guard",
+      "sprite": "hollow_guard",
+      "maxHp": 58,
+      "attack": 21,
+      "defense": 7,
+      "xp": 52,
+      "gold": 20,
+      "level": 9,
+      "drops": [
+        {
+          "itemId": "old_steel",
+          "chance": 0.3
+        }
+      ]
     }
   },
   "regions": {
@@ -502,6 +564,44 @@
         },
         {
           "monsterId": "golem",
+          "weight": 2
+        }
+      ]
+    },
+    "castle": {
+      "name": "Greyhold",
+      "dropFloor": 11,
+      "eliteChance": 0.12,
+      "monsters": [
+        {
+          "monsterId": "turncoat",
+          "weight": 4
+        },
+        {
+          "monsterId": "turncoat_bowman",
+          "weight": 2
+        },
+        {
+          "monsterId": "cutthroat",
+          "weight": 1
+        }
+      ]
+    },
+    "cellars": {
+      "name": "the Greyhold cellars",
+      "dropFloor": 12,
+      "eliteChance": 0.15,
+      "monsters": [
+        {
+          "monsterId": "hollow_guard",
+          "weight": 3
+        },
+        {
+          "monsterId": "skeleton",
+          "weight": 2
+        },
+        {
+          "monsterId": "ghost",
           "weight": 2
         }
       ]
@@ -732,6 +832,76 @@
       "x": 37,
       "y": 24,
       "species": "goblin_spear"
+    },
+    {
+      "id": "greyhold_1",
+      "mapId": "greyhold",
+      "x": 27,
+      "y": 10,
+      "species": "turncoat"
+    },
+    {
+      "id": "greyhold_2",
+      "mapId": "greyhold",
+      "x": 45,
+      "y": 12,
+      "species": "turncoat_bowman"
+    },
+    {
+      "id": "greyhold_3",
+      "mapId": "greyhold",
+      "x": 30,
+      "y": 22,
+      "species": "cutthroat"
+    },
+    {
+      "id": "greyhold_4",
+      "mapId": "greyhold",
+      "x": 44,
+      "y": 23,
+      "species": "turncoat"
+    },
+    {
+      "id": "greyhold_5",
+      "mapId": "greyhold",
+      "x": 50,
+      "y": 34,
+      "species": "turncoat"
+    },
+    {
+      "id": "cellars_1",
+      "mapId": "cellars",
+      "x": 7,
+      "y": 11,
+      "species": "hollow_guard"
+    },
+    {
+      "id": "cellars_2",
+      "mapId": "cellars",
+      "x": 22,
+      "y": 8,
+      "species": "ghost"
+    },
+    {
+      "id": "cellars_3",
+      "mapId": "cellars",
+      "x": 19,
+      "y": 25,
+      "species": "skeleton"
+    },
+    {
+      "id": "cellars_4",
+      "mapId": "cellars",
+      "x": 40,
+      "y": 25,
+      "species": "hollow_guard"
+    },
+    {
+      "id": "cellars_5",
+      "mapId": "cellars",
+      "x": 28,
+      "y": 4,
+      "species": "ghost"
     }
   ],
   "packs": {
@@ -944,6 +1114,36 @@
       "mapId": "blackiron",
       "x": 8,
       "y": 20
+    },
+    {
+      "id": "castle_patch_1",
+      "mapId": "greyhold",
+      "x": 26,
+      "y": 5
+    },
+    {
+      "id": "castle_patch_2",
+      "mapId": "greyhold",
+      "x": 48,
+      "y": 25
+    },
+    {
+      "id": "cellars_patch_1",
+      "mapId": "cellars",
+      "x": 2,
+      "y": 14
+    },
+    {
+      "id": "cellars_patch_2",
+      "mapId": "cellars",
+      "x": 45,
+      "y": 3
+    },
+    {
+      "id": "cellars_patch_3",
+      "mapId": "cellars",
+      "x": 14,
+      "y": 29
     }
   ],
   "bossIds": [
@@ -1220,7 +1420,9 @@
     "coast": "sea_glass",
     "seacave": "sea_glass",
     "mines": "blackiron_ore",
-    "shafts": "blackiron_ore"
+    "shafts": "blackiron_ore",
+    "castle": "old_steel",
+    "cellars": "old_steel"
   },
   "families": {
     "slime": "beasts",
@@ -1245,7 +1447,11 @@
     "pirate_captain": "outlaws",
     "goblin_digger": "greenskins",
     "goblin_spear": "greenskins",
-    "iron_demon": "fireborn"
+    "iron_demon": "fireborn",
+    "turncoat": "outlaws",
+    "turncoat_bowman": "outlaws",
+    "cutthroat": "outlaws",
+    "hollow_guard": "undead"
   },
   "familyNames": {
     "beasts": "Beasts",
@@ -4389,6 +4595,45 @@
       "where": "the deep seam at the bottom of the Blackiron shafts",
       "notice": "",
       "seen": "The Seam Warden tears a lump of black iron from the wall!"
+    },
+    "hollow_captain": {
+      "name": "The Hollow Captain",
+      "monsterId": "hollow_guard",
+      "mapId": "cellars",
+      "lair": {
+        "x": 40,
+        "y": 7
+      },
+      "postedAfter": 0,
+      "board": false,
+      "level": 10,
+      "maxHp": 400,
+      "attack": 29,
+      "defense": 10,
+      "xp": 480,
+      "gold": 100,
+      "bounty": 0,
+      "drop": "oskars_shield",
+      "scale": 1.5,
+      "tint": [
+        0.8,
+        0.95,
+        1.15
+      ],
+      "move": {
+        "move": "leap",
+        "every": 5.5,
+        "tell": 0.85,
+        "range": [
+          2.0,
+          6.5
+        ],
+        "radius": 1.5,
+        "power": 1.3
+      },
+      "where": "the captain's hall at the far end of the Greyhold cellars",
+      "notice": "",
+      "seen": "The Hollow Captain rises from his chair. \"None pass. Not till Oskar comes home.\""
     }
   },
   "fishingSpots": [

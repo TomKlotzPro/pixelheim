@@ -66,6 +66,7 @@ const HEADS := {
 	"wyrm_visor": "characters/Warrior-Wyrm.png",
 	"oilskin_hood": "characters/Archer-Leather.png",
 	"blackiron_helm": "characters/Warrior-Wyrm.png",
+	"warden_helm": "characters/Human-Soldier-Cyan.png",
 }
 const BODIES := {
 	"leather_armor": "characters/Archer-Leather.png",
@@ -77,6 +78,7 @@ const BODIES := {
 	"runic_armor": "characters/Human-Soldier-Cyan.png",
 	"oilskin_coat": "characters/Archer-Leather.png",
 	"blackiron_plate": "characters/Warrior-Blue.png",
+	"warden_hauberk": "characters/Human-Soldier-Cyan.png",
 }
 ## The bare template whose frames say where each head ends.
 const BASE := "characters/Character-Base.png"
@@ -106,6 +108,9 @@ const VILLAGERS := {
 	"fisher": {"sheet": "mini/FarmerCyan.png", "family": "mini"},
 	"fisher_alt": {"sheet": "mini/FarmerLime.png", "family": "mini"},
 	"smuggler": {"sheet": "mini/PirateGrunt.png", "family": "mini"},
+	# Greyhold's old guard in the fort's cyan, and the chapel's monk (PIX-168).
+	"guard": {"sheet": "mini/SwordsmanCyan.png", "family": "mini"},
+	"monk": {"sheet": "mini/MagePurple.png", "family": "mini"},
 }
 
 ## The bestiary by monster id: the closest creature Shade drew, tinted or
@@ -136,6 +141,12 @@ const MONSTERS := {
 	"goblin_digger": {"sheet": "mini/ClubGoblin.png", "family": "mini"},
 	"goblin_spear": {"sheet": "mini/SpearGoblin.png", "family": "mini"},
 	"iron_demon": {"sheet": "mini/ArmouredRedDemon.png", "family": "mini", "scale": 1.2},
+	# Greyhold (PIX-168): turncoats in the red cloaks, and the fort's dead
+	# garrison, the same cyan as the living guard, gone pale.
+	"turncoat": {"sheet": "mini/SwordsmanRed.png", "family": "mini"},
+	"turncoat_bowman": {"sheet": "mini/BowmanRed.png", "family": "mini"},
+	"cutthroat": {"sheet": "mini/AssasinRed.png", "family": "mini"},
+	"hollow_guard": {"sheet": "mini/SwordsmanCyan.png", "family": "mini", "tint": Color(0.72, 0.88, 1.0, 0.78)},
 }
 
 static var _frames_cache := {}

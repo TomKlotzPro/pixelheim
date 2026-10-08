@@ -1118,6 +1118,110 @@
       "damage": 18,
       "scaling": "strength",
       "slot": "weapon"
+    },
+    "old_steel": {
+      "name": "Old Steel",
+      "category": "misc",
+      "sprite": "ingot",
+      "weight": 2,
+      "value": 20,
+      "description": "Broken blades and rusted mail from Greyhold's armoury. Good steel under the rust."
+    },
+    "oskars_shield": {
+      "name": "Oskar's Shield",
+      "category": "misc",
+      "sprite": "shield",
+      "weight": 8,
+      "value": 0,
+      "quest": true,
+      "description": "A bronze-rimmed shield, dented and polished. Oskar left it at Greyhold when he climbed the mountain: \"Keep it till I'm home.\" One of the five relics."
+    },
+    "fenwicks_locket": {
+      "name": "Fenwick's Locket",
+      "category": "misc",
+      "sprite": "amulet",
+      "weight": 0,
+      "value": 0,
+      "quest": true,
+      "description": "A small brass locket with a red stone. Inside, a girl's face, worn soft by a thumb."
+    },
+    "warden_helm": {
+      "name": "Warden's Helm",
+      "category": "apparel",
+      "sprite": "helm",
+      "weight": 5,
+      "value": 160,
+      "description": "Greyhold's old pattern: a steel cap, a slit to see by. Crafted, never sold.",
+      "armor": 3,
+      "slot": "head",
+      "set": "warden",
+      "grants": {
+        "dexterity": 1
+      }
+    },
+    "warden_hauberk": {
+      "name": "Warden's Hauberk",
+      "category": "apparel",
+      "sprite": "armor",
+      "weight": 16,
+      "value": 330,
+      "description": "Mail over padding, the way the fort's guard wore it. It moves with you. Crafted, never sold.",
+      "armor": 7,
+      "slot": "body",
+      "set": "warden",
+      "grants": {
+        "strength": 1
+      }
+    },
+    "warden_gloves": {
+      "name": "Warden's Gauntlets",
+      "category": "apparel",
+      "sprite": "gloves",
+      "weight": 4,
+      "value": 150,
+      "description": "Steel-backed and soft in the palm, for a sure grip on a wet hilt. Crafted, never sold.",
+      "armor": 2,
+      "slot": "hands",
+      "set": "warden",
+      "grants": {
+        "dexterity": 1
+      }
+    },
+    "warden_boots": {
+      "name": "Warden's Boots",
+      "category": "apparel",
+      "sprite": "boots",
+      "weight": 4,
+      "value": 150,
+      "description": "Made for walking walls all night. Crafted, never sold.",
+      "armor": 2,
+      "slot": "feet",
+      "set": "warden",
+      "grants": {
+        "strength": 1
+      }
+    },
+    "warden_kite": {
+      "name": "Warden's Kite Shield",
+      "category": "apparel",
+      "sprite": "shield",
+      "weight": 10,
+      "value": 260,
+      "description": "Long enough to kneel behind. Greyhold's tower is still painted on it, faintly. Crafted, never sold.",
+      "armor": 5,
+      "slot": "offhand",
+      "set": "warden"
+    },
+    "warden_longsword": {
+      "name": "Warden's Longsword",
+      "category": "weapons",
+      "sprite": "sword",
+      "weight": 10,
+      "value": 340,
+      "description": "Reforged from the garrison's broken blades. It remembers what it was for. Crafted, never sold.",
+      "damage": 20,
+      "scaling": "strength",
+      "slot": "weapon"
     }
   },
   "roles": {
@@ -1427,7 +1531,9 @@
     "saltmere": "Saltmere",
     "seacave": "The Sea Cave",
     "blackiron": "The Blackiron Valley",
-    "shafts": "The Blackiron Shafts"
+    "shafts": "The Blackiron Shafts",
+    "greyhold": "Greyhold",
+    "cellars": "The Greyhold Cellars"
   },
   "levelCount": 15,
   "townSpawn": {
@@ -1488,6 +1594,32 @@
             "strength": 3
           },
           "armor": 4
+        }
+      }
+    },
+    "warden": {
+      "name": "Greyhold Warden",
+      "region": "castle",
+      "pieces": [
+        "warden_helm",
+        "warden_hauberk",
+        "warden_gloves",
+        "warden_boots",
+        "warden_kite"
+      ],
+      "bonuses": {
+        "3": {
+          "grants": {
+            "strength": 1,
+            "dexterity": 1
+          }
+        },
+        "5": {
+          "grants": {
+            "strength": 2,
+            "dexterity": 2
+          },
+          "armor": 3
         }
       }
     }

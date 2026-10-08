@@ -1,0 +1,66 @@
+# Greyhold (PIX-168): Oskar's old fort on its hill, walls breached in three
+# places, the keep's door down to the cellars, a well and his statue in the
+# yard. The road from the Ash Fields comes in from the west past the old
+# guard's camp and round to the south gate.
+id greyhold
+spawn 2 30
+portal 0 30 map overworld 93 15
+portal 37 12 map cellars 4 27
+key ^ mountain -
+key T forest castle
+key f flowers castle
+key . grass castle
+key o stone castle
+key : path castle
+key W wall -
+key g door castle
+key r roof_slate -
+key d door_shut -
+key D door castle
+key w well -
+key S shrine castle
+key L lamp -
+key F fence -
+key b barrel -
+key k crate -
+map
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^...T.TTTTTTTTT.TT.TT.....T.T..TTT..T.TTT.TTTTT..TTTT.TTT^^
+^^...TT...T.TTT...f.T..T.TTTTT..TTTTT.TT.TT....T...TTT..T.^^
+^^T.....................WWWWWWWWWWWWWWWWooWWWWWWWWW.....T.^^
+^^.T.T...............T..WoooooooooooooooooooooooooW......T^^
+^^.T....................WoooooooooooooooooooooooooW....TT.^^
+^^TT....................WooWoooooooooooooooooooWooW......T^^
+^^T.....................WoooooooorrrrrrrrrooooooooW.....T.^^
+^^T..T......f.......f...WoooooooorrrrrrrrrooooooooW.fT..TT^^
+^^TT..........TT........WoooooooorrrrrrrrrooooooooW..T.f.T^^
+^^.T..T...............f.WoooooooorrrrrrrrrooooooooW......T^^
+^^T...........T...T.....WoooooooorrrrDrrrrooooooooW.....T.^^
+^^.T.f......T..ff.......WoooooooooooL:LoooooooooooW.......^^
+^^.T....................Woooooooooooo:ooooooooooooW.....TT^^
+^^T.........f...........ooooooooooooo:ooooooooooooW..T..TT^^
+^^T....f.......f........ooooooSoooooo:ooooooooooooW.....T.^^
+^^TT................T...Woooooooooooo:ooooooooooooW.....TT^^
+^^T.....................Wo:::::::::::::::::::::::oW.....TT^^
+^^TT....................Woooooooooooo:ooooooooooooW......T^^
+^^.T....................Woooooooooooo:oooooowoooooo...T..T^^
+^^........rrrrr.FFF.....Woooooooooooo:ooooooooooooo.....T.^^
+^^TT.....brrrrr.F.F.....Woooooooooooo:ooooooooooooW.....T.^^
+^^T......krrdrr.FFF.....WooWooooooooo:oooooooooWooW.....T.^^
+^^TT........:...........Woooooooooooo:ooooooooooooW.T.....^^
+^^T.....b...:..b........WoooooooooooL:LoooooooooooW......T^^
+^^T.....k..L:...........WWWWWWWWWWWWWgWWWWWWWWWWWWW.....T.^^
+^^T.........:......................T.:....................^^
+^^..........:......L.................:.............f.....T^^
+^^..........:........................:..............T....T^^
+::::::::::::::::::::::::::::::::::::::.....T............fT^^
+^^......................................................T.^^
+^^......T.......f....f..................................T.^^
+^^......................................................TT^^
+^^......T...............................................TT^^
+^^.......................................T..............TT^^
+^^TTTT..TTT.TT...T.Tf...TT.TTTTT..T.TT.T.TTTTTT.T...TTT.TT^^
+^^TT.T.T...T...T..T.TT....TT....T..T.TTT.T.T......T.T.T.T.^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
