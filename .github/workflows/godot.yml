@@ -76,7 +76,7 @@ jobs:
         if: steps.art.outcome == 'success'
         run: |
           mkdir -p godot/assets/puny/medieval
-          cp private-assets/puny-world-medieval/punyworld-atlas.png godot/assets/puny/medieval/
+          cp private-assets/retro-rpg/shade/puny-world-medieval/punyworld-atlas.png godot/assets/puny/medieval/
           rm -rf private-assets
 
       - name: Import assets

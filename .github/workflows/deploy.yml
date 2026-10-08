@@ -76,7 +76,7 @@ jobs:
       - name: Install the private art
         run: |
           mkdir -p godot/assets/puny/medieval
-          cp private-assets/puny-world-medieval/punyworld-atlas.png godot/assets/puny/medieval/
+          cp private-assets/retro-rpg/shade/puny-world-medieval/punyworld-atlas.png godot/assets/puny/medieval/
           rm -rf private-assets
       - name: Build the Godot web export at the site root
         run: |
