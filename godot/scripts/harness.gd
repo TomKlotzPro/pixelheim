@@ -399,6 +399,10 @@ func _run_test_harness() -> void:
 		GameState.reveals.assign(["project:street_lamps", "age:2"])
 		world._play_reveals()
 		await get_tree().create_timer(1.4).timeout
+	if args.has("ending"):
+		# The ending (PIX-150): home to the festival and the tour's first stop.
+		world._play_ending()
+		await get_tree().create_timer(1.4).timeout
 	if args.has("mimic"):
 		# Pair with `--map mirefen`: open the mire's mimic chest; `--wait`
 		# catches its shudder (under 0.6 s) or the ambush after.

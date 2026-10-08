@@ -1,6 +1,18 @@
 {
   "releases": [
     {
+      "version": "0.94.0",
+      "date": "2026-10-08",
+      "codename": "The Bosses Fight Back",
+      "notes": [
+        "FAFNYR BREATHES FIRE: the dragon sweeps a line of flame at you and rains embers in his later fury - every attack marked on the ground first, so you can step out",
+        "MORVAX CALLS THE DEAD: the lich rings himself with death and raises skeletons to his side as he weakens",
+        "THREE PHASES EACH: both bosses roar at two thirds and one third of their health, and fight faster every time",
+        "THE ENDING SHOWS YOUR TOWN: slay Morvax and you walk home to a festival - the camera shows the Pixelheim you built, age by age, before the credits roll",
+        "MORE TO DO IN THE WILDS: Ana, Bram, Mira and Old Tomas have new jobs - orc raiders on the ash road, imps with a cheese knife, grave moss for the looms, walking stones in the Deepwood"
+      ]
+    },
+    {
       "version": "0.93.0",
       "date": "2026-10-08",
       "codename": "Lamplight",
