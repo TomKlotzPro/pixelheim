@@ -8,7 +8,7 @@ const TILE := 16
 ## Monsters at each of the web's visible spawn points: a small pack of the
 ## species that lives there, so the real-time fight has bodies to swing at.
 const PACK_SIZE := 3
-const LOG_LINES := 5
+const LOG_LINES := 6
 const LOG_SECONDS := 4.0
 ## The dark under the mountain, whatever the hour above.
 const DUNGEON_GLOOM := Color(0.04, 0.02, 0.08, 0.28)
@@ -478,7 +478,14 @@ func on_enemy_noticed(enemy: Node) -> void:
 		Sound.play("bump")
 	noticed_at = now
 	hunted_at = now
-	hunted_by_boss = hunted_by_boss or Bestiary.is_boss(enemy.fighter["id"])
+	hunted_by_boss = hunted_by_boss or _fights_like_boss(enemy)
+	if enemy.fighter.has("named"):
+		_log([Hunts.named(enemy.fighter["named"])["seen"]])
+
+
+## A boss or a named monster (PIX-156): the boss's music plays.
+func _fights_like_boss(enemy: Node) -> bool:
+	return Bestiary.is_boss(enemy.fighter["id"]) or enemy.fighter.has("named")
 
 
 ## The place's theme, or the fight's while anything hunts the hero (and a
@@ -490,7 +497,7 @@ func _update_music() -> void:
 	for enemy in get_tree().get_nodes_in_group("mobs"):
 		if enemy.hunting and not enemy.dying:
 			hunted_at = now
-			hunted_by_boss = hunted_by_boss or Bestiary.is_boss(enemy.fighter["id"])
+			hunted_by_boss = hunted_by_boss or _fights_like_boss(enemy)
 	var fight := ""
 	if now - hunted_at < COMBAT_LINGER_S:
 		fight = "boss" if hunted_by_boss else "battle"
@@ -686,6 +693,10 @@ func _try_interact() -> void:
 		ledger.tree_exited.connect(_after_board)
 		add_child(ledger)
 		return
+	# Beside it, the bounties on the named monsters (PIX-156).
+	if map.id == "town" and faced == Town.bounty_board():
+		add_child(preload("res://scripts/bounty_screen.gd").new())
+		return
 	var beside := _npc_beside()
 	if not beside.is_empty():
 		player.face(Vector2(beside["side"]))
@@ -862,6 +873,10 @@ func _update_objective() -> void:
 		objective_label.text = text
 		objective_box.reset_size()
 	objective_box.position.y = (dock.top() if dock != null and dock.top() > 0 else 690.0) - 38
+	# The battle log stands on the objective line and grows upward, so a
+	# long kill (a bounty's five lines) never runs into it or the dock.
+	log_box.reset_size()
+	log_box.position.y = objective_box.position.y - 6 - log_box.size.y
 	var show := text != "" and not in_fight() and message_label.modulate.a < 0.05
 	var target := 1.0 if show else 0.0
 	if objective_box.get_meta("fading_to", -1.0) != target:
@@ -1071,6 +1086,8 @@ func _play_reveals() -> void:
 				})
 			"home":
 				stops.append({"at": _cell_center(Town.project_board() + Vector2i(0, 5)), "line": Town.homecoming(int(key))})
+			"hunt":
+				stops.append({"at": _cell_center(Town.bounty_board() + Vector2i(0, 3)), "line": Hunts.named(key)["homecoming"]})
 	GameState.reveals.clear()
 	if stops.is_empty() or (harness and not OS.get_cmdline_user_args().has("reveal")):
 		return
@@ -1147,8 +1164,39 @@ func _spawn_enemies(data: MapData) -> void:
 		if spawn["id"] in GameState.world.slain:
 			continue
 		_spawn_pack(data, spawn)
+	spawn_lairs()
 	respawn_check = 0.0
 	_revive_packs()
+
+
+## The named monsters the board has posted, each in its lair on this map
+## unless already out (PIX-156).
+func spawn_lairs() -> void:
+	if map.floor_level > 0:
+		return
+	var out := []
+	for enemy in get_tree().get_nodes_in_group("mobs"):
+		if not enemy.is_queued_for_deletion():
+			out.append(enemy.fighter.get("named", ""))
+	for entry in Hunts.living_on(map.id, GameState.progression.cleared_levels, GameState.progression.hunted):
+		if entry["id"] not in out:
+			spawn_named(entry["id"])
+
+
+## A named monster in its lair (PIX-156), or at `cell` (the harness): never
+## a pack, never respawned once dead; a chase it gives up ends with it home
+## and whole again.
+func spawn_named(named_id: String, cell := Vector2i(-1, -1)) -> Node:
+	var at := Hunts.lair(Hunts.named(named_id)) if cell == Vector2i(-1, -1) else cell
+	var enemy := preload("res://scripts/enemy.gd").new()
+	enemy.world = self
+	enemy.fighter = Hunts.fighter(named_id)
+	enemy.region = map.region_at(at)
+	enemy.position = _cell_center(at)
+	enemy.home = _cell_center(at)
+	enemy.add_to_group("mobs")
+	actors.add_child(enemy)
+	return enemy
 
 
 ## Cleared packs whose time is up, back at homes out of view.

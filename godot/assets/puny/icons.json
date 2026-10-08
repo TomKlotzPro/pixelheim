@@ -75,7 +75,12 @@
     "furn_banner": "medieval@9373",
     "furn_candles": "medieval@808",
     "furn_bench": "medieval@1659",
-    "chancellors_letter": "survival-rpg-icons/Wood/Paper-03.png"
+    "chancellors_letter": "survival-rpg-icons/Wood/Paper-03.png",
+    "greymaw_hood": "survival-rpg-icons/Armour/Leather-Cap-02.png",
+    "drowned_signet": "jewelry-rpg-icons/Rings/Ring-42.png",
+    "cinderscale_shield": "survival-rpg-icons/Armour/Metal-Shield-11.png",
+    "mossback_maul": "survival-rpg-icons/Tools/Hammer-10.png",
+    "gulp_tooth": "jewelry-rpg-icons/Necklaces/Necklace-19.png"
   },
   "ailments": {
     "poison": "puny-skills/Indicators/Symbol Indicator/Poisoned-Indicator.png",

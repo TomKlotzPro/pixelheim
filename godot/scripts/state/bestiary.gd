@@ -112,7 +112,8 @@ static func wild(fighter: Dictionary) -> Dictionary:
 static func xp_for(fighter: Dictionary, hero_level: int) -> int:
 	var gap: Dictionary = _data()["xpGap"]
 	var monster: Dictionary = _data()["monsters"].get(fighter["id"], {})
-	var above := hero_level - int(monster.get("level", hero_level))
+	# A named monster (PIX-156) stands at its own level, not its kind's.
+	var above := hero_level - int(fighter.get("level", monster.get("level", hero_level)))
 	var share := clampf(1.0 - float(gap["falloff"]) * maxi(0, above), float(gap["floor"]), 1.0)
 	return roundi(int(fighter["xp"]) * share)
 

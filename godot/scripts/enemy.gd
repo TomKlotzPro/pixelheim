@@ -47,6 +47,10 @@ var tell_left := -1.0
 var mark: PanelContainer
 ## An undead elite's raised guard (PIX-155): blows mostly glance off.
 var guarding := false
+## A named monster's entry (Hunts, PIX-156), or {}.
+var named := {}
+## The health bar's full width: a named monster's is longer.
+var bar_width := 16.0
 
 
 func _ready() -> void:
@@ -56,18 +60,29 @@ func _ready() -> void:
 	art = PunyArt.monster(fighter["id"])
 	sprite = AnimatedSprite2D.new()
 	sprite.sprite_frames = PunyArt.frames(art)
-	var size: float = art.get("scale", 1.0) * (1.2 if fighter["elite"] else 1.0)
+	# How much bigger than its kind: an elite a little, a named monster huge
+	# and in its own colour (PIX-156).
+	var grown := 1.2 if fighter["elite"] else 1.0
 	var tint: Color = art.get("tint", Color.WHITE)
 	sprite.self_modulate = tint * ELITE_TINT if fighter["elite"] else tint
+	if fighter.has("named"):
+		named = Hunts.named(fighter["named"])
+		grown = float(named["scale"])
+		var own: Array = named["tint"]
+		# Its own colour may brighten past its kind's (Greymaw's silver).
+		sprite.self_modulate = tint * Color(float(own[0]), float(own[1]), float(own[2]))
+		bar_width = 28.0
+	var size: float = art.get("scale", 1.0) * grown
 	sprite.scale = Vector2.ONE * size
 	sprite.position = Vector2(0, PunyArt.lift(art) * size)
 	_play("idle")
 	add_child(sprite)
 	# Fafnyr and Morvax fight with their own attacks too (PIX-150); an elite
-	# has its family's one trick (PIX-155).
+	# has its family's one trick (PIX-155), a named monster one of its own
+	# besides (PIX-156).
 	if Bestiary._data()["bossPatterns"].has(fighter["id"]):
 		add_child(preload("res://scripts/boss_brain.gd").new())
-	elif fighter["elite"] and Bestiary._data()["eliteMoves"].has(Bestiary.family_of(fighter["id"])):
+	elif not named.is_empty() or (fighter["elite"] and Bestiary._data()["eliteMoves"].has(Bestiary.family_of(fighter["id"]))):
 		add_child(preload("res://scripts/elite_brain.gd").new())
 
 	var shape := CollisionShape2D.new()
@@ -83,7 +98,7 @@ func _ready() -> void:
 	hurtbox.monitoring = false
 	var hurt_shape := CollisionShape2D.new()
 	var hurt_rect := RectangleShape2D.new()
-	hurt_rect.size = Vector2(16, 24) * (1.2 if fighter["elite"] else 1.0)
+	hurt_rect.size = Vector2(16, 24) * grown
 	hurt_shape.shape = hurt_rect
 	hurt_shape.position = Vector2(0, -8)
 	hurtbox.add_child(hurt_shape)
@@ -92,16 +107,18 @@ func _ready() -> void:
 	# Health floats above the head, hidden until first scratched; elites in gold.
 	health_bar_back = ColorRect.new()
 	health_bar_back.color = Color(0, 0, 0, 0.6)
-	health_bar_back.size = Vector2(16, 2)
-	health_bar_back.position = Vector2(-8, -20 * size)
+	health_bar_back.size = Vector2(bar_width, 2)
+	health_bar_back.position = Vector2(-bar_width / 2.0, -20 * size)
 	health_bar_back.visible = false
 	add_child(health_bar_back)
 	health_bar = ColorRect.new()
 	health_bar.color = Color(1, 0.8, 0.3) if fighter["elite"] else Color(0.9, 0.25, 0.25)
-	health_bar.size = Vector2(16, 2)
-	health_bar.position = Vector2(-8, -20 * size)
+	health_bar.size = Vector2(bar_width, 2)
+	health_bar.position = Vector2(-bar_width / 2.0, -20 * size)
 	health_bar.visible = false
 	add_child(health_bar)
+	if not named.is_empty():
+		add_child(_name_plate(-20 * size - 1))
 
 
 func _physics_process(delta: float) -> void:
@@ -169,6 +186,19 @@ func notice() -> void:
 	hop.tween_property(sprite, "position:y", rest.y, alert_left * 0.6).set_ease(Tween.EASE_IN)
 
 
+## A named monster's name over its head in the boss's red: the UI's type at
+## a quarter, so at the usual zoom one font pixel is one screen pixel.
+func _name_plate(lift: float) -> Label:
+	var plate := UiStyle.strong(fighter["name"], 16, Color("ffb3a1"))
+	plate.add_theme_color_override("font_outline_color", Color(0.12, 0.04, 0.03))
+	plate.add_theme_constant_override("outline_size", 4)
+	plate.scale = Vector2.ONE * 0.25
+	plate.z_index = 10
+	plate.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	plate.resized.connect(func() -> void: plate.position = Vector2(-plate.size.x * 0.125, lift - plate.size.y * 0.25))
+	return plate
+
+
 ## A "!" in a white bubble over the head, built at the UI's size and drawn
 ## at half of it: one art pixel per font pixel.
 func _alert_bubble() -> PanelContainer:
@@ -233,7 +263,7 @@ func _settle() -> void:
 	fighter["hp"] = fighter["maxHp"]
 	health_bar.visible = false
 	health_bar_back.visible = false
-	health_bar.size.x = 16.0
+	health_bar.size.x = bar_width
 
 
 ## A step this way or that, never past the leash.
@@ -276,7 +306,7 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null) -> void:
 func _lose(damage: int, color: Color) -> void:
 	fighter["hp"] = maxi(0, int(fighter["hp"]) - damage)
 	world.float_number(damage, global_position + Vector2(0, -18), color)
-	health_bar.size.x = 16.0 * fighter["hp"] / fighter["maxHp"]
+	health_bar.size.x = bar_width * fighter["hp"] / fighter["maxHp"]
 	health_bar.visible = true
 	health_bar_back.visible = true
 	if fighter["hp"] == 0:

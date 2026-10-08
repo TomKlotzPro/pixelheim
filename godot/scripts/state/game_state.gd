@@ -887,6 +887,8 @@ func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, fl
 		if roll.call() < float(carried["chance"]):
 			pack.add_item(carried["itemId"])
 			log.append("%s drops: %s." % [fighter["name"], Catalog.item_name(carried["itemId"])])
+	if fighter.has("named"):
+		log.append_array(_hunted(fighter["named"]))
 	var kind := "boss" if Bestiary.is_boss(fighter["id"]) else ("elite" if fighter["elite"] else "normal")
 	var drop := Bestiary.roll_drop(floor_level, kind, roll)
 	if drop.get("kind") == "gear":
@@ -1005,6 +1007,25 @@ func clear_pack(spawn_id: String) -> void:
 		world.slain.append(spawn_id)
 	world.slain_at[spawn_id] = int(world.steps)
 	mark_dirty()
+
+
+## A named monster down for good (PIX-156): the bounty paid on the spot, the
+## drop nothing else gives, and the town told - the villagers' talk, and the
+## board's notice shown slain when the hero next walks into Pixelheim.
+func _hunted(named_id: String) -> Array[String]:
+	if named_id in progression.hunted:
+		return []
+	var entry := Hunts.named(named_id)
+	progression.hunted.append(named_id)
+	pack.gold += int(entry["bounty"])
+	var prize := InventoryState.create_gear(entry["drop"])
+	pack.gear.append(prize)
+	last_deed = {"kind": "hunt", "beast": entry["name"]}
+	reveals.append("hunt:%s" % named_id)
+	return [
+		"The bounty on %s is yours: +%d gold." % [entry["name"], int(entry["bounty"])],
+		"%s leaves you %s!" % [entry["name"], InventoryState.gear_name(prize)],
+	]
 
 
 ## A cleared pack is back at its home.

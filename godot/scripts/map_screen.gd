@@ -1,7 +1,8 @@
 extends Screen
 ## The map screen (M/Tab): the current map in a window, painted with the
 ## tiles' map colours where the hero has been and night where they haven't
-## (mapColors.ts port), the hero and discovered waypoints marked; beside it
+## (mapColors.ts port), the hero, discovered waypoints and the lairs the
+## bounty board has posted (PIX-156) marked; beside it
 ## the waypoints, and fast travel to the staffed ones. Pauses the world.
 
 const MAP_BOX := Vector2(760, 540)
@@ -68,7 +69,10 @@ func _open() -> void:
 	var legend := HBoxContainer.new()
 	legend.add_theme_constant_override("separation", 16)
 	legend.position = Vector2(64, 630)
-	for mark: Array in [[Color.WHITE, "You"], [UiStyle.LAMP, "Waypoint"]]:
+	var marks: Array = [[Color.WHITE, "You"], [UiStyle.LAMP, "Waypoint"]]
+	if not Hunts.living_on(world.map.id, GameState.progression.cleared_levels, GameState.progression.hunted).is_empty():
+		marks.append([Painting.LAIR, "Lair"])
+	for mark: Array in marks:
 		var swatch := ColorRect.new()
 		swatch.color = mark[0]
 		swatch.custom_minimum_size = Vector2(10, 10)
@@ -114,6 +118,7 @@ func _highlight() -> void:
 
 
 class Painting extends Control:
+	const LAIR := Color("c071ff")
 	var world: Node2D
 	var tile_px := 4
 
@@ -133,6 +138,9 @@ class Painting extends Control:
 				continue
 			var at := Vector2(int(waypoint["at"]["x"]), int(waypoint["at"]["y"]))
 			_marker(at * tile_px + Vector2.ONE * tile_px / 2.0, mark, UiStyle.LAMP)
+		# The lairs of the named monsters the board has posted (PIX-156).
+		for entry in Hunts.living_on(world.map.id, GameState.progression.cleared_levels, GameState.progression.hunted):
+			_marker(Vector2(Hunts.lair(entry)) * tile_px + Vector2.ONE * tile_px / 2.0, mark, LAIR)
 		_marker(Vector2(world.player_cell) * tile_px + Vector2.ONE * tile_px / 2.0, mark, Color.WHITE)
 
 	func _marker(center: Vector2, size: float, color: Color) -> void:

@@ -737,6 +737,66 @@
       "value": 0,
       "quest": true,
       "description": "Sealed with the Crown's red wax, addressed to Elder Maren of Pixelheim. You were paid to carry it, not to read it."
+    },
+    "greymaw_hood": {
+      "name": "Greymaw's Hood",
+      "category": "apparel",
+      "sprite": "helm",
+      "weight": 2,
+      "value": 120,
+      "description": "Old Greymaw's grey head, worn as a hood. The forest goes quiet when you walk by. Hunted, never sold.",
+      "armor": 3,
+      "grants": {
+        "dexterity": 1
+      },
+      "slot": "head"
+    },
+    "drowned_signet": {
+      "name": "Drowned Signet",
+      "category": "apparel",
+      "sprite": "ring",
+      "weight": 0,
+      "value": 200,
+      "description": "A knight's seal ring, a hundred years under the bog. It still remembers its oath. Hunted, never sold.",
+      "grants": {
+        "strength": 2,
+        "dexterity": 1
+      },
+      "slot": "ring"
+    },
+    "cinderscale_shield": {
+      "name": "Cinderscale Shield",
+      "category": "apparel",
+      "sprite": "shield",
+      "weight": 10,
+      "value": 320,
+      "description": "Cinderjaw's scales hammered over oak. It is still warm on the inside. Hunted, never sold.",
+      "armor": 7,
+      "slot": "offhand"
+    },
+    "mossback_maul": {
+      "name": "Mossback Maul",
+      "category": "weapons",
+      "sprite": "hammer",
+      "weight": 15,
+      "value": 420,
+      "description": "The stone Mossback threw at you, on a handle. The moss keeps growing. Hunted, never sold.",
+      "damage": 21,
+      "scaling": "strength",
+      "slot": "weapon"
+    },
+    "gulp_tooth": {
+      "name": "Gulp's Gilded Tooth",
+      "category": "apparel",
+      "sprite": "amulet",
+      "weight": 0,
+      "value": 500,
+      "description": "One of Grandmother Gulp's gold teeth, on a chain. It bites, a little, when it is hungry. Hunted, never sold.",
+      "grants": {
+        "intelligence": 3,
+        "strength": 1
+      },
+      "slot": "neck"
     }
   },
   "roles": {

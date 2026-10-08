@@ -47,7 +47,7 @@ func _open() -> void:
 	status.custom_minimum_size = Vector2(1120, 0)
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(status)
-	add_child(UiStyle.footer("Esc  close      W/S  choose      E  do it", Vector2(80, 660)))
+	add_child(UiStyle.footer("Esc  close      W/S  choose      E  %s" % _verb(), Vector2(80, 660)))
 	_refresh()
 
 
@@ -62,6 +62,11 @@ func _intro() -> String:
 
 func _info() -> String:
 	return ""
+
+
+## What E does, for the footer.
+func _verb() -> String:
+	return "do it"
 
 
 ## Each row: {label, note, enabled, action: Callable returning a status line}.

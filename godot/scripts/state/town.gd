@@ -150,6 +150,12 @@ static func project_board() -> Vector2i:
 	return Vector2i(int(at["x"]), int(at["y"]))
 
 
+## The bounty board beside it, where the named monsters are posted (PIX-156).
+static func bounty_board() -> Vector2i:
+	var at: Dictionary = _data()["bountyBoard"]
+	return Vector2i(int(at["x"]), int(at["y"]))
+
+
 ## What Fafnyr left (PIX-146): each Hamlet project not yet built stands as
 ## ruins - [{rect: Rect2i, door: Vector2i (-1, -1 for a house with none),
 ## project}] - its doors shut.

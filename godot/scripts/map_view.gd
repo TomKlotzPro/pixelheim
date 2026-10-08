@@ -108,6 +108,8 @@ func plan(arrival: Vector2i) -> Vector2i:
 	camps = plan_camps(data)
 	if data.id == "town":
 		camps[Town.project_board()] = {"kind": "board", "tile": PROJECT_BOARD}
+		# Its neighbour wears a wanted poster: the bounties (PIX-156).
+		camps[Town.bounty_board()] = {"kind": "board", "tile": PROJECT_BOARD, "wanted": true}
 		# Sela's tent on the square while the inn is rubble (PIX-146).
 		var tent := Town.ashes_tent(Town.done_projects(GameState.settlement))
 		if tent.x >= 0:
@@ -575,6 +577,12 @@ func _add_camp_piece(cell: Vector2i, piece: Dictionary) -> void:
 	sprite.set("centered", false)
 	sprite.position = Vector2(0, -foot.end.y)
 	root.add_child(sprite)
+	if piece.get("wanted", false):
+		var poster := Sprite2D.new()
+		poster.texture = _wanted_poster()
+		poster.centered = false
+		poster.position = Vector2(5, 5)
+		sprite.add_child(poster)
 	var body := StaticBody2D.new()
 	var shape := CollisionShape2D.new()
 	var rect := RectangleShape2D.new()
@@ -587,6 +595,24 @@ func _add_camp_piece(cell: Vector2i, piece: Dictionary) -> void:
 
 
 static var _torch_frames: SpriteFrames
+static var _poster: ImageTexture
+
+
+## A wanted poster pinned over the board's notes: a red header, a dark face.
+static func _wanted_poster() -> ImageTexture:
+	if _poster == null:
+		var art := Image.create(6, 7, false, Image.FORMAT_RGBA8)
+		art.fill(Color("f1e3c0"))
+		for x in range(1, 5):
+			art.set_pixel(x, 1, Color("b33a2c"))
+		for cell: Vector2i in [Vector2i(2, 3), Vector2i(3, 3), Vector2i(2, 4), Vector2i(3, 4), Vector2i(1, 4), Vector2i(4, 4)]:
+			art.set_pixel(cell.x, cell.y, Color("4a3426"))
+		for x in 6:
+			art.set_pixel(x, 6, Color("c9b48a"))
+		art.set_pixel(0, 0, Color("8a2a20"))
+		art.set_pixel(5, 0, Color("8a2a20"))
+		_poster = ImageTexture.create_from_image(art)
+	return _poster
 
 
 static func _camp_torch_frames() -> SpriteFrames:
