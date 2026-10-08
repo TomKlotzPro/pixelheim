@@ -43,3 +43,24 @@ func test_a_dungeon_floor_plans_no_houses_or_scatter() -> void:
 
 func test_a_cell_centre_is_half_a_tile_in() -> void:
 	assert_eq(MapView.center(Vector2i(2, 3)), Vector2(40, 56))
+
+
+## Camps (PIX-142): each wild pack's tent and torch stand on open ground of
+## its region, never on its home or a door, and block like the art they are.
+func test_packs_camp_beside_their_homes() -> void:
+	var map := MapData.load_by_id("overworld")
+	var view := MapView.new(map, null)
+	view.plan(map.spawn)
+	var tents := 0
+	for spawn: Dictionary in Bestiary.spawns_on("overworld"):
+		var home := Vector2i(spawn["x"], spawn["y"])
+		assert_false(view.camps.has(home), "%s's home stays open" % spawn["id"])
+		assert_true(map.is_walkable(home))
+		var tent := home + Vector2i(-1, -1)
+		if view.camps.has(tent):
+			tents += 1
+			assert_eq(view.camps[tent]["tile"], MapView.TENTS[map.region_at(home)])
+	assert_gt(tents, 5, "most packs have room for a tent")
+	for cell: Vector2i in view.camps:
+		assert_true(map.covered.has(cell), "a camp at %s blocks" % cell)
+		assert_false(map.portals.has(cell))

@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.85.0",
+      "date": "2026-10-08",
+      "codename": "Pitched Tents",
+      "notes": [
+        "CAMPS IN THE WILDS: every pack lives by its own camp - a tent in its land's colours and a torch burning beside it - so you can see where trouble waits before it sees you",
+        "THE MIMIC GIVES ITSELF AWAY: its chest shudders for a moment before it bursts out beside you, already hunting",
+        "NOTHING POPS IN: a monster that comes into sight fades in on a puff of dust",
+        "NO MORE WHITE SLIMES: walking slimes no longer blink white every few hops, and a slain slime now splats instead of fading"
+      ]
+    },
+    {
       "version": "0.84.0",
       "date": "2026-10-08",
       "codename": "Homebodies",

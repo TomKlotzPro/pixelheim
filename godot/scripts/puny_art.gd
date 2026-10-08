@@ -35,7 +35,9 @@ const FAMILIES := {
 		"frame": 16, "rows": {"down": 0, "up": 1, "left": 2, "right": 3}, "attack_row_offset": 4,
 		"anims": {"idle": [0, 2, 3.0, true], "walk": [0, 4, 8.0, true], "attack": [0, 3, 10.0, false]},
 	},
-	"strip": {"frame": 32, "anims": {"idle": [0, 4, 6.0, true], "walk": [0, 8, 10.0, true]}},
+	# The slime's strip: six frames of bounce, its white hit flash at 6 and 9
+	# (never in a loop, or every hop flashes white), and a splat from 9.
+	"strip": {"frame": 32, "anims": {"idle": [0, 3, 5.0, true], "walk": [0, 6, 10.0, true], "death": [9, 6, 12.0, false]}},
 }
 
 ## Hero sheets and attack by role: blades swing, casters strike with the

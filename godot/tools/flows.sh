@@ -28,6 +28,7 @@ FLOWS=(
 	"saves|saves|screenshot saved"
 	"talk|--map town talk --keys e,e,e|open=none"
 	"leave|--map town talk --keys e,esc|open=none"
+	"mimic|--map mirefen mimic --wait 0.75|map=mirefen cell=\(42, 13\) hp=42"
 	"motion|--map town motion|backsteps=[01]$"
 )
 

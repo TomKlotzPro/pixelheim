@@ -34,6 +34,17 @@ var chest_sprites := {}
 ## The door signs: {door, name, about}, for the nameplate.
 var door_signs: Array = []
 var furniture_cells: Array[Vector2i] = []
+## Each wild pack's camp (PIX-142): cell -> {"kind": "tent"|"torch", "tile"},
+## a tent in its region's colour up-left of its home and a torch up-right.
+var camps := {}
+
+## Puny World tents by region: green in the woods, straw in the wetlands,
+## red on the ash.
+const TENTS := {"forest": 895, "deepwood": 895, "marsh": 706, "mire": 706, "ash": 905}
+## The CC0 dungeon sheet's torch flame, planted in the ground by a camp.
+const CAMP_TORCH := [16, 17, 18, 19, 20, 21, 22, 23]
+const TENT_FOOT := Rect2(1, 5, 14, 11)
+const TORCH_FOOT := Rect2(5, 9, 6, 7)
 
 
 func _init(map_data: MapData, actor_layer: Node2D) -> void:
@@ -76,6 +87,9 @@ func plan(arrival: Vector2i) -> Vector2i:
 		if (prop["foot"] as Rect2).has_area():
 			for cell: Vector2i in prop["covers"]:
 				data.covered[cell] = true
+	camps = plan_camps(data)
+	for cell: Vector2i in camps:
+		data.covered[cell] = true
 	if not data.is_walkable(arrival):
 		arrival = data.spawn
 	solid_scatter = _solid_scatter(data, arrival)
@@ -220,6 +234,8 @@ func _build_dungeon(data: MapData) -> Node2D:
 
 ## Chests and terrain decor live in the y-sorted actors layer.
 func _build_decor(data: MapData) -> void:
+	for cell: Vector2i in camps:
+		_add_camp_piece(cell, camps[cell])
 	chest_sprites = {}
 	for chest: Dictionary in Interactables.chests_on(data.id):
 		var texture := treasure_texture(chest, GameState.is_opened(chest))
@@ -277,7 +293,76 @@ func _solid_scatter(data: MapData, arrival: Vector2i) -> Dictionary:
 		kept[Vector2i(int(npc["x"]), int(npc["y"]))] = true
 	for chest: Dictionary in Interactables.chests_on(data.id):
 		kept[Vector2i(int(chest["x"]), int(chest["y"]))] = true
+	# A pack's home and the cells around it stay open for the pack.
+	for spawn: Dictionary in Bestiary.spawns_on(data.id):
+		for dy in [-1, 0, 1]:
+			for dx in [-1, 0, 1]:
+				kept[Vector2i(spawn["x"] + dx, spawn["y"] + dy)] = true
 	return Scatter.solid(data, kept, outdoor_props["drawn"])
+
+
+## Where each wild pack's camp stands: a tent and a torch on the open cells
+## of its region diagonally behind its home, whichever of them fit.
+static func plan_camps(map: MapData) -> Dictionary:
+	var out := {}
+	if map.floor_level > 0:
+		return out
+	for spawn: Dictionary in Bestiary.spawns_on(map.id):
+		var home := Vector2i(spawn["x"], spawn["y"])
+		var region := map.region_at(home)
+		var pieces := [
+			[home + Vector2i(-1, -1), {"kind": "tent", "tile": TENTS.get(region, 706)}],
+			[home + Vector2i(1, -1), {"kind": "torch", "tile": CAMP_TORCH[0]}],
+		]
+		for piece: Array in pieces:
+			var cell: Vector2i = piece[0]
+			if map.is_walkable(cell) and map.region_at(cell) == region and not map.portals.has(cell):
+				out[cell] = piece[1]
+	return out
+
+
+## A camp's tent or torch: sorted among the actors at its foot, which blocks.
+func _add_camp_piece(cell: Vector2i, piece: Dictionary) -> void:
+	var foot: Rect2 = TENT_FOOT if piece["kind"] == "tent" else TORCH_FOOT
+	var root := Node2D.new()
+	root.position = Vector2(cell * TILE) + Vector2(0, foot.end.y)
+	root.add_to_group("decor")
+	var sprite: Node2D
+	if piece["kind"] == "torch":
+		var flame := AnimatedSprite2D.new()
+		flame.sprite_frames = _camp_torch_frames()
+		flame.play()
+		# Each camp's fire flickers on its own beat.
+		flame.frame = absi(hash(cell)) % CAMP_TORCH.size()
+		sprite = flame
+	else:
+		var tent := Sprite2D.new()
+		tent.texture = PunyTerrain.sheet().tile_texture(piece["tile"])
+		sprite = tent
+	sprite.set("centered", false)
+	sprite.position = Vector2(0, -foot.end.y)
+	root.add_child(sprite)
+	var body := StaticBody2D.new()
+	var shape := CollisionShape2D.new()
+	var rect := RectangleShape2D.new()
+	rect.size = foot.size
+	shape.shape = rect
+	shape.position = foot.get_center() - Vector2(0, foot.end.y)
+	body.add_child(shape)
+	root.add_child(body)
+	actors.add_child(root)
+
+
+static var _torch_frames: SpriteFrames
+
+
+static func _camp_torch_frames() -> SpriteFrames:
+	if _torch_frames == null:
+		_torch_frames = SpriteFrames.new()
+		_torch_frames.set_animation_speed("default", 8.0)
+		for tile: int in CAMP_TORCH:
+			_torch_frames.add_frame("default", PunyDungeon.sheet().tile_texture(tile))
+	return _torch_frames
 
 
 ## A bush, stump or tree that blocks: on its cell's centre (no jitter, so the
