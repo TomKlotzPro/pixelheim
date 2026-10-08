@@ -1,4 +1,4 @@
-extends CanvasLayer
+extends Screen
 ## A keeper's counter (talk to anyone in a shop): Buy, Sell, the Forge at the
 ## smithy, and Craft at the forge and the cauldron. Crafting lives in the web
 ## game's pack screen; until the UI suite brings that screen (PIX-127) the
@@ -21,10 +21,8 @@ var gold_label: Label
 var status: Label
 
 
-func _ready() -> void:
-	process_mode = Node.PROCESS_MODE_ALWAYS
+func _open() -> void:
 	layer = 5
-	get_tree().paused = true
 	shop_id = GameState.active_shop()
 	var shop := Economy.shop(shop_id)
 	tabs = ["Buy", "Sell"]
@@ -33,10 +31,7 @@ func _ready() -> void:
 	if _craft_job() != "":
 		tabs.append("Craft")
 
-	var backdrop := ColorRect.new()
-	backdrop.color = UiStyle.BACKDROP
-	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(backdrop)
+	dim()
 	# The counter's ledger: a page under the tabs, the wares and the news.
 	add_child(UiStyle.page(Rect2(60, 90, 740, 530)))
 	add_child(UiStyle.heading(shop["keeper"], 18, UiStyle.CREAM, Vector2(80, 32)))
@@ -86,11 +81,9 @@ func _ready() -> void:
 	_refresh()
 
 
-func _unhandled_input(event: InputEvent) -> void:
+func _command(event: InputEvent) -> Callable:
 	var command := Callable()
-	if event.is_action_pressed("ui_cancel") or event.is_action_pressed("menu"):
-		command = _close
-	elif event.is_action_pressed("move_left"):
+	if event.is_action_pressed("move_left"):
 		command = _switch.bind(tab - 1)
 	elif event.is_action_pressed("move_right"):
 		command = _switch.bind(tab + 1)
@@ -100,9 +93,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		command = _select.bind(selected + 1)
 	elif event.is_action_pressed("interact"):
 		command = _act
-	if command.is_valid():
-		get_viewport().set_input_as_handled()
-		command.call()
+	return command
 
 
 func _switch(index: int) -> void:
@@ -335,8 +326,3 @@ static func _describe_recipe(entry: Dictionary) -> String:
 		lines.append("  %d x %s  (have %d)" % [entry["needs"][need], Catalog.item_name(need), GameState.pack.items.get(need, 0)])
 	lines.append("%s level %d" % [String(entry["job"]["id"]).capitalize(), entry["job"]["level"]])
 	return "\n".join(lines)
-
-
-func _close() -> void:
-	get_tree().paused = false
-	queue_free()

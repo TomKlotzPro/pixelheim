@@ -1,4 +1,4 @@
-extends CanvasLayer
+extends Screen
 ## The pack and the paperdoll (Inventory.tsx): the hero dressed in what they
 ## wear, nine slots around them and the numbers that gear makes; beside it
 ## everything carried, by category. E equips, takes off, drinks or places;
@@ -34,14 +34,10 @@ var header: Label
 var status: Label
 
 
-func _ready() -> void:
-	process_mode = Node.PROCESS_MODE_ALWAYS
+func _open() -> void:
+	closing_actions = [&"inventory"]
 	layer = 5
-	get_tree().paused = true
-	var backdrop := ColorRect.new()
-	backdrop.color = UiStyle.BACKDROP
-	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(backdrop)
+	dim()
 	# The pack's ledger: a page under the tabs and the list.
 	add_child(UiStyle.page(Rect2(474, 58, 742, 572)))
 	add_child(UiStyle.heading("Inventory", 20, UiStyle.CREAM, Vector2(80, 24)))
@@ -404,11 +400,9 @@ func _slot(slot: String, label: String) -> Control:
 	return box
 
 
-func _unhandled_input(event: InputEvent) -> void:
+func _command(event: InputEvent) -> Callable:
 	var command := Callable()
-	if event.is_action_pressed("ui_cancel") or event.is_action_pressed("menu") or event.is_action_pressed("inventory"):
-		command = _close
-	elif event.is_action_pressed("move_left"):
+	if event.is_action_pressed("move_left"):
 		command = _switch.bind(tab - 1)
 	elif event.is_action_pressed("move_right"):
 		command = _switch.bind(tab + 1)
@@ -422,9 +416,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		command = _drop.bind(false)
 	elif event.is_action_pressed("drop_all"):
 		command = _drop.bind(true)
-	if command.is_valid():
-		get_viewport().set_input_as_handled()
-		command.call()
+	return command
 
 
 func _switch(index: int) -> void:
@@ -448,7 +440,7 @@ func _primary() -> void:
 	if row["kind"] == "guide":
 		var gate := _town_gate()
 		if not gate.is_empty() and world != null:
-			_close()
+			close()
 			world.travel_to(gate)
 			world._flash_message("You travel to %s." % gate["name"])
 		return
@@ -474,7 +466,7 @@ func _primary() -> void:
 		var item_id: String = row["item_id"]
 		var item := Catalog.item(item_id)
 		if item["category"] == "furniture" and GameState.world.map_id == "town_house" and world != null:
-			_close()
+			close()
 			world.place_from_pack(item_id)
 			return
 		var used := GameState.use_item(item_id)
@@ -520,8 +512,3 @@ func _drop(whole_stack: bool) -> void:
 		GameState.drop_item(row["item_id"], count)
 		status.text = "You drop %dx %s." % [count, Catalog.item_name(row["item_id"])]
 	_refresh()
-
-
-func _close() -> void:
-	get_tree().paused = false
-	queue_free()

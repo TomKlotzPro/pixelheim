@@ -1,4 +1,4 @@
-extends CanvasLayer
+extends Screen
 ## A conversation: the speaker in a portrait slot and a gold name tab on the
 ## window's edge, one line at a time in the chunky type, and the keys that
 ## move it on (ADVANCE_DIALOGUE). The world holds still while it is open, like
@@ -17,10 +17,8 @@ var hints: HBoxContainer
 var more: TextureRect
 
 
-func _ready() -> void:
-	process_mode = Node.PROCESS_MODE_ALWAYS
+func _open() -> void:
 	layer = 4
-	get_tree().paused = true
 
 	var panel := PanelContainer.new()
 	panel.position = AT
@@ -94,17 +92,16 @@ func _portrait(sprite: String) -> Control:
 
 ## E, Enter, Space or a click turns the page (and closes after the last);
 ## Esc or a step in any direction leaves at any line.
-func _unhandled_input(event: InputEvent) -> void:
+func _command(event: InputEvent) -> Callable:
 	var click: bool = event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT
 	var leave: bool = event.is_action_pressed("ui_cancel") or event.is_action_pressed("menu")
 	for move: String in ["move_up", "move_down", "move_left", "move_right"]:
 		leave = leave or event.is_action_pressed(move)
 	if click or event.is_action_pressed("interact") or event.is_action_pressed("ui_accept"):
-		get_viewport().set_input_as_handled()
-		_advance()
-	elif leave:
-		get_viewport().set_input_as_handled()
-		_close()
+		return _advance
+	if leave:
+		return _close
+	return Callable()
 
 
 func _advance() -> void:
@@ -126,6 +123,5 @@ func _show() -> void:
 
 
 func _close() -> void:
-	get_tree().paused = false
-	queue_free()
+	close()
 	GameState.finish_dialogue(npc["id"])

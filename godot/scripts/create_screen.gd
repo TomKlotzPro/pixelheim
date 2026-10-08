@@ -1,4 +1,4 @@
-extends CanvasLayer
+extends Screen
 ## Hero creation (CharacterCreation.tsx): seven roles with their pitch, the
 ## chosen one walking in their colours, the stats against the whole roster,
 ## the skills they start toward, and a name. Up/Down pick a role, Page
@@ -20,13 +20,9 @@ var details: Control
 var status: Label
 
 
-func _ready() -> void:
-	process_mode = Node.PROCESS_MODE_ALWAYS
+func _open() -> void:
 	layer = 8
-	var backdrop := ColorRect.new()
-	backdrop.color = Color(UiStyle.BACKDROP, 1.0)
-	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(backdrop)
+	dim(1.0)
 	# The roles are written on a page beside the hero's card.
 	add_child(UiStyle.page(Rect2(64, 82, 374, 520)))
 	add_child(UiStyle.label("The mountain is waiting", 14, UiStyle.DUSK, Vector2(80, 24)))
@@ -205,11 +201,9 @@ func _pick_role(index: int) -> void:
 	_refresh()
 
 
-func _unhandled_input(event: InputEvent) -> void:
+func _command(event: InputEvent) -> Callable:
 	var command := Callable()
-	if event.is_action_pressed("ui_cancel"):
-		command = queue_free
-	elif event is InputEventKey and event.pressed and not event.echo:
+	if event is InputEventKey and event.pressed and not event.echo:
 		match event.keycode:
 			KEY_UP:
 				command = _pick_role.bind(role_index - 1)
@@ -220,9 +214,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				command = func() -> void:
 					look = wrapi(look + step, 0, PunyArt.looks(_role()))
 					_refresh()
-	if command.is_valid():
-		get_viewport().set_input_as_handled()
-		command.call()
+	return command
 
 
 ## The hero takes the slot in hand on a first visit, else the first empty

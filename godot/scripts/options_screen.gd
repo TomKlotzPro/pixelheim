@@ -1,4 +1,4 @@
-extends CanvasLayer
+extends Screen
 ## Options (Options.tsx): sound, the CRT scanlines, fullscreen, reduced
 ## motion, and the keys. W/S choose a row, A/D move a slider or flip a
 ## switch, E rebinds a key (the next key pressed takes it; Esc cancels).
@@ -14,14 +14,9 @@ var columns: Array[VBoxContainer] = []
 var status: Label
 
 
-func _ready() -> void:
-	process_mode = Node.PROCESS_MODE_ALWAYS
+func _open() -> void:
 	layer = 7
-	get_tree().paused = true
-	var backdrop := ColorRect.new()
-	backdrop.color = UiStyle.BACKDROP
-	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(backdrop)
+	dim()
 	add_child(UiStyle.heading("Options", 20, UiStyle.CREAM, Vector2(80, 24)))
 	var card := PanelContainer.new()
 	card.position = Vector2(80, 70)
@@ -134,11 +129,9 @@ func _input(event: InputEvent) -> void:
 	_refresh()
 
 
-func _unhandled_input(event: InputEvent) -> void:
+func _command(event: InputEvent) -> Callable:
 	var command := Callable()
-	if event.is_action_pressed("ui_cancel") or event.is_action_pressed("menu"):
-		command = _close
-	elif event.is_action_pressed("move_up") or event.is_action_pressed("ui_up"):
+	if event.is_action_pressed("move_up") or event.is_action_pressed("ui_up"):
 		command = _move.bind(-1)
 	elif event.is_action_pressed("move_down") or event.is_action_pressed("ui_down"):
 		command = _move.bind(1)
@@ -148,9 +141,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		command = _act.bind(1)
 	elif event.is_action_pressed("interact") or event.is_action_pressed("ui_accept"):
 		command = _act.bind(1)
-	if command.is_valid():
-		get_viewport().set_input_as_handled()
-		command.call()
+	return command
 
 
 func _move(step: int) -> void:
@@ -196,10 +187,3 @@ func _reset_keys() -> void:
 	GameState.settings.save_file()
 	Controls.apply({})
 	status.text = "Keys are back to the defaults."
-
-
-func _close() -> void:
-	queue_free()
-	# Over the pause menu the world stays paused; on its own it resumes.
-	if not (get_parent() is CanvasLayer):
-		get_tree().paused = false

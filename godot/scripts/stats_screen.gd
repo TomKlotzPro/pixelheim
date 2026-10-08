@@ -57,9 +57,6 @@ func _spend(stat: String) -> String:
 	return "%s %d: %s" % [Skills.ABBR[stat], GameState.hero.stats[stat], Skills.readout(stat, GameState.hero, GameState.pack)]
 
 
-func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("stats"):
-		get_viewport().set_input_as_handled()
-		_close()
-		return
-	super(event)
+func _open() -> void:
+	closing_actions = [&"stats"]
+	super()

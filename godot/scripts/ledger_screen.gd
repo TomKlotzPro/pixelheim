@@ -1,4 +1,4 @@
-extends CanvasLayer
+extends Screen
 ## Shared frame for the town's ledgers (town hall, bank): a title, a column of
 ## info text, and a list of actions to choose with W/S and take with E — every
 ## row clickable too. Subclasses fill `_title`, `_intro` and `_rows`. Pauses
@@ -14,14 +14,9 @@ var status: Label
 var page: Panel
 
 
-func _ready() -> void:
-	process_mode = Node.PROCESS_MODE_ALWAYS
+func _open() -> void:
 	layer = 5
-	get_tree().paused = true
-	var backdrop := ColorRect.new()
-	backdrop.color = UiStyle.BACKDROP
-	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(backdrop)
+	dim()
 	# The choices are written on a page beside the card.
 	page = UiStyle.page(Rect2(624, 94, 592, 470))
 	add_child(page)
@@ -74,19 +69,15 @@ func _rows() -> Array[Dictionary]:
 	return []
 
 
-func _unhandled_input(event: InputEvent) -> void:
+func _command(event: InputEvent) -> Callable:
 	var command := Callable()
-	if event.is_action_pressed("ui_cancel") or event.is_action_pressed("menu"):
-		command = _close
-	elif event.is_action_pressed("move_up"):
+	if event.is_action_pressed("move_up"):
 		command = _select.bind(selected - 1)
 	elif event.is_action_pressed("move_down"):
 		command = _select.bind(selected + 1)
 	elif event.is_action_pressed("interact"):
 		command = _act
-	if command.is_valid():
-		get_viewport().set_input_as_handled()
-		command.call()
+	return command
 
 
 func _select(index: int) -> void:
@@ -144,8 +135,3 @@ func _row(index: int) -> Control:
 	line.add_child(name)
 	line.add_child(UiStyle.label(row.get("note", ""), 16, UiStyle.LAMP if row["enabled"] else UiStyle.FADED))
 	return panel
-
-
-func _close() -> void:
-	get_tree().paused = false
-	queue_free()

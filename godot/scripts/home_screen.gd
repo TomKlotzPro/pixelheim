@@ -95,7 +95,7 @@ func _rows() -> Array[Dictionary]:
 						var text := GameState.place_furniture(id, cell, "floor")
 						if on_placed.is_valid():
 							on_placed.call()
-						_close.call_deferred()
+						close.call_deferred()
 						return text))
 	if out.is_empty():
 		out.append(_row_for("Nothing to do here yet.", "", false, func() -> String: return "", "Nothing to do here yet."))

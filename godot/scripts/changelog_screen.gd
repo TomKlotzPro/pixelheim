@@ -1,4 +1,4 @@
-extends CanvasLayer
+extends Screen
 ## What's new (the web's Changelog page): every release, newest first, its
 ## version, codename and date over its notes, in one scrolling window. Opened
 ## from the version line on the title. W/S or the wheel scroll; Esc closes.
@@ -14,13 +14,9 @@ static func releases() -> Array:
 	return SaveCodec.parse_json(FileAccess.get_file_as_string("res://assets/data/changelog.json"))["releases"]
 
 
-func _ready() -> void:
-	process_mode = Node.PROCESS_MODE_ALWAYS
+func _open() -> void:
 	layer = 8
-	var backdrop := ColorRect.new()
-	backdrop.color = Color(UiStyle.BACKDROP, 1.0)
-	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(backdrop)
+	dim(1.0)
 	var title := UiStyle.heading("What's new", 20, UiStyle.CREAM, Vector2(0, 28))
 	title.custom_minimum_size = Vector2(1280, 0)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -65,14 +61,10 @@ func _release(release: Dictionary) -> Control:
 	return card
 
 
-func _unhandled_input(event: InputEvent) -> void:
+func _command(event: InputEvent) -> Callable:
 	var command := Callable()
-	if event.is_action_pressed("ui_cancel") or event.is_action_pressed("menu"):
-		command = queue_free
-	elif event.is_action_pressed("move_down") or event.is_action_pressed("ui_down"):
+	if event.is_action_pressed("move_down") or event.is_action_pressed("ui_down"):
 		command = func() -> void: scroll.scroll_vertical += SCROLL_STEP
 	elif event.is_action_pressed("move_up") or event.is_action_pressed("ui_up"):
 		command = func() -> void: scroll.scroll_vertical -= SCROLL_STEP
-	if command.is_valid():
-		get_viewport().set_input_as_handled()
-		command.call()
+	return command

@@ -1,4 +1,4 @@
-extends CanvasLayer
+extends Screen
 ## The ascension (RankUpOverlay.tsx, useRankUp): letterbox bars close in,
 ## rays turn behind the marching hero, and the title card names the new rank
 ## and its bonus skill point. At a fork in the Path Graph the cards hold the
@@ -17,10 +17,8 @@ var note: Label
 var closing := false
 
 
-func _ready() -> void:
-	process_mode = Node.PROCESS_MODE_ALWAYS
+func _open() -> void:
 	layer = 6
-	get_tree().paused = true
 	var view := Vector2(1280, 720)
 	var shade := ColorRect.new()
 	shade.color = Color(0.02, 0.02, 0.04, 0.86)
@@ -123,7 +121,7 @@ func _card(node: Dictionary, chosen: bool) -> Control:
 	return panel
 
 
-func _unhandled_input(event: InputEvent) -> void:
+func _command(event: InputEvent) -> Callable:
 	var command := Callable()
 	if event.is_action_pressed("ui_cancel") or event.is_action_pressed("menu"):
 		command = _close
@@ -136,9 +134,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		command = _pick.bind(selected + 1)
 	elif event.is_action_pressed("interact"):
 		command = _walk
-	if command.is_valid():
-		get_viewport().set_input_as_handled()
-		command.call()
+	return command
 
 
 func _pick(index: int) -> void:
@@ -158,5 +154,4 @@ func _close() -> void:
 	if closing:
 		return
 	closing = true
-	get_tree().paused = false
-	queue_free()
+	close()

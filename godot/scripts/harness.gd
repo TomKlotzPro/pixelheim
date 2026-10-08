@@ -37,7 +37,10 @@ func _keys(args: PackedStringArray) -> void:
 	var keys_index := args.find("--keys")
 	if keys_index < 0 or keys_index + 1 >= args.size():
 		return
-	var codes := {"e": KEY_E, "esc": KEY_ESCAPE, "space": KEY_SPACE, "enter": KEY_ENTER, "s": KEY_S, "w": KEY_W}
+	var codes := {
+		"e": KEY_E, "esc": KEY_ESCAPE, "space": KEY_SPACE, "enter": KEY_ENTER, "s": KEY_S, "w": KEY_W,
+		"i": KEY_I, "q": KEY_Q, "k": KEY_K, "c": KEY_C, "m": KEY_M, "b": KEY_B,
+	}
 	for key: String in args[keys_index + 1].split(","):
 		for pressed: bool in [true, false]:
 			_press(codes[key], pressed)
@@ -418,6 +421,10 @@ func _run_test_harness() -> void:
 		await get_tree().create_timer(0.4 if args.has("kill") else 0.1).timeout
 	else:
 		await get_tree().create_timer(0.2).timeout
+	# `--keys` at whatever screen the run opened (talk and title press theirs
+	# earlier): `inventory --keys esc` checks it closes and lets the world go.
+	if not args.has("talk") and not args.has("title"):
+		await _keys(args)
 	# `--wait S` holds the shot (an entrance still playing: the title's logo).
 	var wait_index := args.find("--wait")
 	if wait_index >= 0 and wait_index + 1 < args.size():
@@ -431,9 +438,9 @@ func _run_test_harness() -> void:
 			or node.get_script().resource_path.ends_with("dialogue_box.gd")
 		)
 	).map(func(node: Node) -> String: return node.get_script().resource_path.get_file().get_basename())
-	print("screenshot saved; map=%s cell=%s hp=%d gold=%d save=%s%s draws=%d open=%s" % [
+	print("screenshot saved; map=%s cell=%s hp=%d gold=%d save=%s%s draws=%d paused=%s open=%s" % [
 		world.map.id, world.player_cell, world.player.hp, GameState.pack.gold, GameState.world.map_id, GameState.world.cell,
-		Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME),
+		Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME), get_tree().paused,
 		",".join(open) if not open.is_empty() else "none",
 	] + motion_report)
 	# Let the audio server let go of the music before the engine shuts down.
