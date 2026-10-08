@@ -342,6 +342,45 @@
         "Don't look at me like that. I'm the honest kind of smuggler. I only rob other smugglers.",
         "Their captain sits on the north-east beach counting what isn't his. Someone ought to send him on his way."
       ]
+    },
+    {
+      "id": "mines_garrick",
+      "mapId": "blackiron",
+      "x": 20,
+      "y": 18,
+      "sprite": "smith",
+      "name": "Foreman Garrick",
+      "wander": false,
+      "lines": [
+        "Blackiron's the best iron in the Reach and the worst place to dig it. Goblins in the upper shafts, something worse below.",
+        "Fifty years back five strangers came up this road for a cartload of black iron. Said it was for a seal. Paid in gold, too."
+      ]
+    },
+    {
+      "id": "mines_dagny",
+      "mapId": "blackiron",
+      "x": 33,
+      "y": 20,
+      "sprite": "worker",
+      "name": "Dagny",
+      "wander": true,
+      "lines": [
+        "Hilda in Pixelheim would kill for this ore. Bring her some and see her smile. Once a year, she smiles.",
+        "The stone golems have taken to the cart hall. Rails don't run themselves."
+      ]
+    },
+    {
+      "id": "mines_pell",
+      "mapId": "blackiron",
+      "x": 16,
+      "y": 18,
+      "sprite": "villager",
+      "name": "Old Pell",
+      "wander": false,
+      "lines": [
+        "My canary's down there. She tells us when the air goes bad. Without her we're digging blind.",
+        "Last I heard her singing, it was off the west gallery. Small cage. Very cross bird."
+      ]
     }
   ],
   "recruits": [

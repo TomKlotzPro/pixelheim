@@ -297,6 +297,45 @@
       "xp": 40,
       "gold": 20,
       "level": 6
+    },
+    "goblin_digger": {
+      "id": "goblin_digger",
+      "name": "Goblin Digger",
+      "sprite": "goblin_digger",
+      "maxHp": 34,
+      "attack": 12,
+      "defense": 3,
+      "xp": 26,
+      "gold": 14,
+      "level": 5,
+      "drops": [
+        {
+          "itemId": "blackiron_ore",
+          "chance": 0.2
+        }
+      ]
+    },
+    "goblin_spear": {
+      "id": "goblin_spear",
+      "name": "Goblin Spearman",
+      "sprite": "goblin_spear",
+      "maxHp": 38,
+      "attack": 15,
+      "defense": 3,
+      "xp": 32,
+      "gold": 18,
+      "level": 6
+    },
+    "iron_demon": {
+      "id": "iron_demon",
+      "name": "Iron Demon",
+      "sprite": "iron_demon",
+      "maxHp": 80,
+      "attack": 18,
+      "defense": 7,
+      "xp": 60,
+      "gold": 30,
+      "level": 8
     }
   },
   "regions": {
@@ -429,6 +468,40 @@
         },
         {
           "monsterId": "slime",
+          "weight": 2
+        }
+      ]
+    },
+    "mines": {
+      "name": "the Blackiron valley",
+      "dropFloor": 6,
+      "eliteChance": 0.12,
+      "monsters": [
+        {
+          "monsterId": "goblin_digger",
+          "weight": 4
+        },
+        {
+          "monsterId": "goblin_spear",
+          "weight": 2
+        }
+      ]
+    },
+    "shafts": {
+      "name": "the Blackiron shafts",
+      "dropFloor": 7,
+      "eliteChance": 0.15,
+      "monsters": [
+        {
+          "monsterId": "goblin_digger",
+          "weight": 3
+        },
+        {
+          "monsterId": "goblin_spear",
+          "weight": 3
+        },
+        {
+          "monsterId": "golem",
           "weight": 2
         }
       ]
@@ -610,6 +683,55 @@
       "x": 34,
       "y": 21,
       "species": "skeleton"
+    },
+    {
+      "id": "mines_1",
+      "mapId": "blackiron",
+      "x": 9,
+      "y": 6,
+      "species": "goblin_digger"
+    },
+    {
+      "id": "mines_2",
+      "mapId": "blackiron",
+      "x": 38,
+      "y": 12,
+      "species": "goblin_digger"
+    },
+    {
+      "id": "mines_3",
+      "mapId": "blackiron",
+      "x": 38,
+      "y": 30,
+      "species": "goblin_spear"
+    },
+    {
+      "id": "shafts_1",
+      "mapId": "shafts",
+      "x": 18,
+      "y": 26,
+      "species": "goblin_digger"
+    },
+    {
+      "id": "shafts_2",
+      "mapId": "shafts",
+      "x": 6,
+      "y": 17,
+      "species": "goblin_spear"
+    },
+    {
+      "id": "shafts_3",
+      "mapId": "shafts",
+      "x": 20,
+      "y": 14,
+      "species": "golem"
+    },
+    {
+      "id": "shafts_4",
+      "mapId": "shafts",
+      "x": 37,
+      "y": 24,
+      "species": "goblin_spear"
     }
   ],
   "packs": {
@@ -792,6 +914,36 @@
       "mapId": "seacave",
       "x": 32,
       "y": 5
+    },
+    {
+      "id": "shafts_patch_1",
+      "mapId": "shafts",
+      "x": 2,
+      "y": 11
+    },
+    {
+      "id": "shafts_patch_2",
+      "mapId": "shafts",
+      "x": 19,
+      "y": 7
+    },
+    {
+      "id": "shafts_patch_3",
+      "mapId": "shafts",
+      "x": 44,
+      "y": 23
+    },
+    {
+      "id": "shafts_patch_4",
+      "mapId": "shafts",
+      "x": 22,
+      "y": 30
+    },
+    {
+      "id": "mines_patch_1",
+      "mapId": "blackiron",
+      "x": 8,
+      "y": 20
     }
   ],
   "bossIds": [
@@ -1066,7 +1218,9 @@
     "deepwood": "deep_root",
     "mire": "grave_moss",
     "coast": "sea_glass",
-    "seacave": "sea_glass"
+    "seacave": "sea_glass",
+    "mines": "blackiron_ore",
+    "shafts": "blackiron_ore"
   },
   "families": {
     "slime": "beasts",
@@ -1088,7 +1242,10 @@
     "king_slime": "beasts",
     "pirate": "outlaws",
     "pirate_gunner": "outlaws",
-    "pirate_captain": "outlaws"
+    "pirate_captain": "outlaws",
+    "goblin_digger": "greenskins",
+    "goblin_spear": "greenskins",
+    "iron_demon": "fireborn"
   },
   "familyNames": {
     "beasts": "Beasts",
@@ -4193,6 +4350,45 @@
       "where": "the grotto at the back of the sea cave",
       "notice": "",
       "seen": "The Tidecaller rises from its pool, and the cave fills with the sound of the sea!"
+    },
+    "seam_warden": {
+      "name": "The Seam Warden",
+      "monsterId": "iron_demon",
+      "mapId": "shafts",
+      "lair": {
+        "x": 38,
+        "y": 7
+      },
+      "postedAfter": 0,
+      "board": false,
+      "level": 9,
+      "maxHp": 360,
+      "attack": 26,
+      "defense": 9,
+      "xp": 420,
+      "gold": 90,
+      "bounty": 0,
+      "drop": "black_ingot",
+      "scale": 1.6,
+      "tint": [
+        0.72,
+        0.72,
+        0.82
+      ],
+      "move": {
+        "move": "boulder",
+        "every": 5.0,
+        "tell": 0.9,
+        "range": [
+          1.5,
+          7.0
+        ],
+        "radius": 1.6,
+        "power": 1.5
+      },
+      "where": "the deep seam at the bottom of the Blackiron shafts",
+      "notice": "",
+      "seen": "The Seam Warden tears a lump of black iron from the wall!"
     }
   },
   "fishingSpots": [

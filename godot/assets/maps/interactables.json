@@ -164,6 +164,29 @@
         "kind": "gold",
         "amount": 80
       }
+    },
+    {
+      "id": "shafts_canary",
+      "mapId": "shafts",
+      "x": 1,
+      "y": 9,
+      "look": "chest",
+      "loot": {
+        "kind": "item",
+        "itemId": "canary",
+        "qty": 1
+      }
+    },
+    {
+      "id": "shafts_seam",
+      "mapId": "shafts",
+      "x": 43,
+      "y": 11,
+      "look": "chest",
+      "loot": {
+        "kind": "gold",
+        "amount": 120
+      }
     }
   ],
   "signs": {
@@ -213,7 +236,9 @@
     "demo": [],
     "demo_hut": [],
     "saltmere": [],
-    "seacave": []
+    "seacave": [],
+    "blackiron": [],
+    "shafts": []
   },
   "signsHouseOwned": {
     "town": [

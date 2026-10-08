@@ -1,6 +1,18 @@
 {
   "releases": [
     {
+      "version": "0.108.0",
+      "date": "2026-10-08",
+      "codename": "Black Iron",
+      "notes": [
+        "THE BLACKIRON MINES: a new road leaves the west edge of the Ash Fields into a valley of spoil and scrub, with a miners' camp on the road and the shaft mouth in the northern cliff",
+        "THE SHAFTS: torchlit galleries of goblin diggers and spearmen, stone golems in the cart hall, ore veins in the dead ends - and the Seam Warden, an iron demon guarding the deep seam. It leaves the Black Ingot, the second of the five relics",
+        "MINERS' QUESTS: Foreman Garrick's lost crew and the black seam, Dagny's ore and cart hall, and Old Pell's canary, lost somewhere off the west gallery",
+        "THE BLACKIRON PLATE: helm, plate, gauntlets, sabatons and a bulwark (+STR, heavy), and the Blackiron Axe - forged at Hilda's from the seam's ore",
+        "The release flows give the camera-smoothness check a second try, so a busy machine no longer fails it"
+      ]
+    },
+    {
       "version": "0.107.0",
       "date": "2026-10-08",
       "codename": "Oilskin",

@@ -532,6 +532,97 @@
       },
       "accepted": "Three fresh fish, please! Saltmere's down the cliffs, south of the marsh - follow the path out of the reeds. Mind the crabs.",
       "completed": "She's eating! Look at her go. You can keep the bones."
+    },
+    {
+      "id": "garrick_crew",
+      "giver": "mines_garrick",
+      "name": "The Lost Crew",
+      "brief": "Goblins hold the upper shafts, and a crew is trapped behind them.",
+      "objective": {
+        "kind": "kill",
+        "monsterId": "goblin_digger",
+        "count": 4,
+        "label": "Goblin diggers driven off"
+      },
+      "reward": {
+        "gold": 60,
+        "xp": 60
+      },
+      "accepted": "Four of the diggers, and the crew can get out. The shaft mouth's at the north end of the valley.",
+      "completed": "They're out - dusty, hungry, alive. And they say the deep seam is open again, and something is guarding it."
+    },
+    {
+      "id": "garrick_seam",
+      "giver": "mines_garrick",
+      "name": "The Black Seam",
+      "brief": "Something guards the seam the Ember Seal's iron came from.",
+      "objective": {
+        "kind": "hunt",
+        "named": "seam_warden",
+        "count": 1,
+        "label": "Seam Warden laid low"
+      },
+      "reward": {
+        "gold": 150,
+        "xp": 160
+      },
+      "accepted": "Down past the cart hall, the deep seam. Whatever's there has been there a long while.",
+      "completed": "Black iron, stamped with five marks - the same seam the Ember Seal was poured from. That ingot's theirs as much as ours. Keep it."
+    },
+    {
+      "id": "dagny_ore",
+      "giver": "mines_dagny",
+      "name": "Ore for Pixelheim",
+      "brief": "Dagny wants the forge in Pixelheim fed.",
+      "objective": {
+        "kind": "deliver",
+        "itemId": "blackiron_ore",
+        "count": 4,
+        "label": "Blackiron ore brought"
+      },
+      "reward": {
+        "gold": 70,
+        "xp": 45
+      },
+      "accepted": "Four lumps of blackiron. The veins glint in the shafts' dead ends.",
+      "completed": "Good ore, that. Hilda can make you something that'll outlast us both."
+    },
+    {
+      "id": "dagny_carts",
+      "giver": "mines_dagny",
+      "name": "The Cart Hall",
+      "brief": "Stone golems have taken the cart hall.",
+      "objective": {
+        "kind": "kill",
+        "monsterId": "golem",
+        "count": 2,
+        "label": "Golems stopped"
+      },
+      "reward": {
+        "gold": 80,
+        "xp": 60
+      },
+      "accepted": "Two of the walking stones. Hit the joints.",
+      "completed": "The carts are running! Listen to that racket. Beautiful."
+    },
+    {
+      "id": "pell_canary",
+      "giver": "mines_pell",
+      "name": "The Missing Canary",
+      "brief": "Old Pell's canary is lost in the shafts.",
+      "objective": {
+        "kind": "deliver",
+        "itemId": "canary",
+        "count": 1,
+        "label": "Canary found"
+      },
+      "reward": {
+        "gold": 40,
+        "xp": 30,
+        "itemId": "potion_hp"
+      },
+      "accepted": "Off the west gallery, last I heard her. Small cage. Mind your fingers.",
+      "completed": "There's my girl! Cross as ever. Thank you - the air's safe to breathe as long as she's singing."
     }
   ],
   "rankTitles": {

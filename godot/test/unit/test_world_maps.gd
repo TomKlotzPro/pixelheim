@@ -3,7 +3,7 @@ extends GutTest
 ## regions exist, every road out lands on open ground and back, and every
 ## pack and patch stands where the hero can reach it.
 
-const OUTDOOR := ["overworld", "deepwood", "mirefen", "saltmere"]
+const OUTDOOR := ["overworld", "deepwood", "mirefen", "saltmere", "seacave", "blackiron", "shafts"]
 
 
 func test_every_tile_is_known_and_every_region_exists() -> void:
