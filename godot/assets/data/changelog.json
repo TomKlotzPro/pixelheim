@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.97.0",
+      "date": "2026-10-08",
+      "codename": "Bad Dreams",
+      "notes": [
+        "SOMETHING SPEAKS IN YOUR SLEEP: resting at the inn - or in Sela's tent - now and then brings a dream of the stair below, and a voice that knows your name",
+        "THREE DREAMS: the first night after the fire, after the Barrow Crypt and after the Sunken Forge; each comes once, in order"
+      ]
+    },
+    {
       "version": "0.96.0",
       "date": "2026-10-08",
       "codename": "The Ember Seal",

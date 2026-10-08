@@ -466,6 +466,141 @@
         "to": "black",
         "seconds": 0.5
       }
+    ],
+    "dream_courier": [
+      {
+        "kind": "stage",
+        "stage": "dark"
+      },
+      {
+        "kind": "tint",
+        "color": "#3a1a5a",
+        "alpha": 0.35,
+        "seconds": 0.8
+      },
+      {
+        "kind": "fade",
+        "to": "clear",
+        "seconds": 0.8
+      },
+      {
+        "kind": "caption",
+        "text": "You dream of a stair, going down and down, and of something waiting at the bottom.",
+        "hold": 4.0
+      },
+      {
+        "kind": "eyes",
+        "at": [
+          640,
+          280
+        ],
+        "color": "#b46cff"
+      },
+      {
+        "kind": "caption",
+        "text": "\"You're late, courier. Fifty years late.\"",
+        "hold": 3.4
+      },
+      {
+        "kind": "caption",
+        "text": "You wake to the smell of smoke and Sela snoring.",
+        "hold": 3.0
+      },
+      {
+        "kind": "fade",
+        "to": "black",
+        "seconds": 0.8
+      }
+    ],
+    "dream_five": [
+      {
+        "kind": "stage",
+        "stage": "dark"
+      },
+      {
+        "kind": "tint",
+        "color": "#3a1a5a",
+        "alpha": 0.35,
+        "seconds": 0.8
+      },
+      {
+        "kind": "fade",
+        "to": "clear",
+        "seconds": 0.8
+      },
+      {
+        "kind": "caption",
+        "text": "You dream of five torches climbing the mountain in the dark.",
+        "hold": 3.6
+      },
+      {
+        "kind": "eyes",
+        "at": [
+          640,
+          280
+        ],
+        "color": "#b46cff"
+      },
+      {
+        "kind": "caption",
+        "text": "\"Five went up. Four came down. One went further.\"",
+        "hold": 3.6
+      },
+      {
+        "kind": "caption",
+        "text": "One by one, four torches go out.",
+        "hold": 3.0
+      },
+      {
+        "kind": "fade",
+        "to": "black",
+        "seconds": 0.8
+      }
+    ],
+    "dream_door": [
+      {
+        "kind": "stage",
+        "stage": "dark"
+      },
+      {
+        "kind": "tint",
+        "color": "#3a1a5a",
+        "alpha": 0.35,
+        "seconds": 0.8
+      },
+      {
+        "kind": "fade",
+        "to": "clear",
+        "seconds": 0.8
+      },
+      {
+        "kind": "caption",
+        "text": "You dream of a great door in the mountain, and of a dragon asleep against it.",
+        "hold": 4.0
+      },
+      {
+        "kind": "eyes",
+        "at": [
+          640,
+          280
+        ],
+        "color": "#b46cff"
+      },
+      {
+        "kind": "caption",
+        "text": "\"The dragon was only ever my door, courier. Thank you for opening it.\"",
+        "hold": 4.0
+      },
+      {
+        "kind": "caption",
+        "text": "You wake with your hand on your sword.",
+        "hold": 2.8
+      },
+      {
+        "kind": "fade",
+        "to": "black",
+        "seconds": 0.8
+      }
     ]
   },
   "moments": {
@@ -563,6 +698,20 @@
         "He said I was right to run? ...Then maybe I can stop running.",
         "Sit with me a while. The fire's warm, and for once the mountain is quiet."
       ]
+    }
+  ],
+  "dreams": [
+    {
+      "id": "dream_courier",
+      "after": 0
+    },
+    {
+      "id": "dream_five",
+      "after": 3
+    },
+    {
+      "id": "dream_door",
+      "after": 7
     }
   ]
 }

@@ -373,6 +373,7 @@ func _use_portal(target: Dictionary) -> void:
 			# Stepping into the inn takes a bed for coin, as on the web.
 			if map.id == "town_inn":
 				_flash_message(GameState.rest_at_inn())
+				_dream()
 		"dungeon":
 			# The floor select opens while the hero waits at the door.
 			_step_back()
@@ -681,6 +682,7 @@ func _try_interact() -> void:
 			# guest for the night, the others trade from their stalls.
 			if beside["npc"]["id"] == "innkeeper":
 				_flash_message(GameState.rest_at_inn())
+				_dream()
 			else:
 				_open_stall(Economy.shop_at(String(Npcs.by_id(beside["npc"]["id"], []).get("mapId", ""))))
 		elif GameState.active_shop() != "" and not quest_word:
@@ -884,6 +886,14 @@ func _play_dawn() -> void:
 		map = _load_map("town")
 		_enter_map(map, player_cell)
 	add_child(dawn)
+
+
+## A night under Sela's roof (or canvas) brings Morvax's voice, once per
+## dream, in the order the story earns them (PIX-154).
+func _dream() -> void:
+	if GameState.progression.prologue != Prologue.DONE:
+		return
+	play_story(Story.next_dream(GameState.progression.cleared_levels, GameState.progression.story_seen))
 
 
 ## The village's hours (PIX-149): lamps and windows lit at night, and the
