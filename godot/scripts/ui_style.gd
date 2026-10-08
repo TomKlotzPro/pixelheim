@@ -96,6 +96,12 @@ static func sized(node: Control, font_size: int, bold := false) -> Control:
 	return node
 
 
+## The size for what's read at length - dialogue, story, hints, the log
+## (PIX-160): the big type when the player asked for large reading text.
+static func reading(font_size: int) -> int:
+	return BIG if GameState.settings.large_text else font_size
+
+
 ## A label in the bold cut (names, amounts, what a row is).
 static func strong(text: String, font_size: int, color: Color, at := Vector2.ZERO) -> Label:
 	var node := label(text, font_size, color, at)

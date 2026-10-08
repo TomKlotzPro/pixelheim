@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.104.0",
+      "date": "2026-10-08",
+      "codename": "Easy on the Eyes",
+      "notes": [
+        "CLEAR WARNINGS: a new option in Options paints every boss's and elite's warning mark in gold-and-dark hazard stripes with a heavy outline, so it reads by its pattern whatever colours you see",
+        "LARGE READING TEXT: everything you read at length - conversations, the story's captions, the town tour, hints, the quest line, the battle log and messages - in the big type. Long lines grow the window upward instead of running off the screen",
+        "HINTS: the first time something hunts you, the game tells you about the dodge roll (with your own key); each new skill says what it does when you learn it; the notice board and the bounty board explain themselves the first time you walk up. Once each, and Hints in Options turns them off",
+        "Story captions now wrap instead of running past the edge of the screen"
+      ]
+    },
+    {
       "version": "0.103.0",
       "date": "2026-10-08",
       "codename": "Lived In",

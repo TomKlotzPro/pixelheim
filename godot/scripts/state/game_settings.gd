@@ -24,6 +24,12 @@ var last_slot := 1
 var seen_version := ""
 ## How the pack lists what it holds (InventoryState.SORTS).
 var pack_sort := "kind"
+## Accessibility (PIX-160): what's read in the big type, attack marks in
+## hazard stripes, and the first-time hints (with the ones already given).
+var large_text := false
+var clear_warnings := false
+var hints := true
+var hints_seen: Array[String] = []
 ## Harness runs read the player's settings but never write them.
 var read_only := false
 
@@ -45,6 +51,10 @@ func load_file() -> void:
 	fullscreen = config.get_value(SECTION, "fullscreen", fullscreen)
 	seen_version = str(config.get_value(SECTION, "seen_version", seen_version))
 	pack_sort = str(config.get_value(SECTION, "pack_sort", pack_sort))
+	large_text = config.get_value(SECTION, "large_text", large_text)
+	clear_warnings = config.get_value(SECTION, "clear_warnings", clear_warnings)
+	hints = config.get_value(SECTION, "hints", hints)
+	hints_seen.assign(config.get_value(SECTION, "hints_seen", []))
 	var saved: Variant = config.get_value(SECTION, "bindings", {})
 	bindings = {}
 	if saved is Dictionary:
@@ -66,6 +76,10 @@ func save_file() -> void:
 	config.set_value(SECTION, "fullscreen", fullscreen)
 	config.set_value(SECTION, "seen_version", seen_version)
 	config.set_value(SECTION, "pack_sort", pack_sort)
+	config.set_value(SECTION, "large_text", large_text)
+	config.set_value(SECTION, "clear_warnings", clear_warnings)
+	config.set_value(SECTION, "hints", hints)
+	config.set_value(SECTION, "hints_seen", hints_seen)
 	config.set_value(SECTION, "bindings", bindings)
 	DirAccess.make_dir_recursive_absolute(path.get_base_dir())
 	config.save(path)
