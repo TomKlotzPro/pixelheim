@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.101.0",
+      "date": "2026-10-08",
+      "codename": "Crackle and Hum",
+      "notes": [
+        "THE WORLD SOUNDS ALIVE: birds by day and crickets by night outdoors, the town chattering once it has folk again, fire crackling by the camps' torches, at Hilda's forge and through the burning village, and wind moaning down the mountain's floors (deeper and lower in the Undermountain)",
+        "STORY THEMES: Fafnyr and Morvax each have a theme of their own as they first appear, the dawn after the Night of Ash has one, and each ending has its own before the victory music takes over",
+        "NEW SOUNDS: the dodge roll whooshes, a named monster roars when it sees you, and a bounty jingles when it's yours",
+        "Every new sound is made in code (godot/tools/synth.py) in the same chiptune voice as the rest"
+      ]
+    },
+    {
       "version": "0.100.0",
       "date": "2026-10-08",
       "codename": "How It Ends",

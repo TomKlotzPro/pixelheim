@@ -6,7 +6,7 @@
 
 <p align="center">
   <b>A retro pixel-art open-world RPG in Godot 4.7: one hero, one village, fifteen floors of a mountain and what lies under it.</b><br />
-  Fifteen floors. Two bosses. Infinite cheese wheels. Currently v0.100 - 1.0 has to be earned.
+  Fifteen floors. Two bosses. Infinite cheese wheels. Currently v0.101 - 1.0 has to be earned.
 </p>
 
 ---
@@ -56,6 +56,7 @@ godot --path godot             # play (or open godot/ in the Godot editor)
 godot --headless --path godot --import                        # after adding assets or scripts
 godot --headless --path godot -s res://addons/gut/gut_cmdln.gd # the unit tests (GUT)
 godot/tools/flows.sh                                          # the release flows, with screenshots
+python3 godot/tools/synth.py                                  # re-render the generated sounds and themes
 ```
 
 **Paid art.** The town's houses, props and rooms use Shade's paid _Puny World Medieval Age_ pack, and the item, skill and ailment icons come from his paid icon packs (with his free CC0 ones). None of the paid art may be redistributed, so it lives in the private `TomKlotzPro/pixelheim-assets` repository (`retro-rpg/shade/`). `scripts/fetch-private-art.sh` installs it with your GitHub login, and the deploy fetches it with a read-only deploy key. Without it the game still runs on Shade's free art alone: the town's houses, props and paid icons are missing.
@@ -77,7 +78,7 @@ godot/                 the game (Godot 4.7, GDScript)
     data/              items, monsters, quests, villagers, the town, the changelog (JSON)
     maps/              every map, one row of tiles per line (JSON)
   test/unit/           GUT tests
-  tools/               the release flows, the boot splash, the icon
+  tools/               the release flows, the boot splash, the icon, the sound synth
 scripts/               fetch-private-art.sh, which installs the paid art
 docs/                  screenshots, and godot-parity.md: the record of the port
 ```

@@ -16,7 +16,10 @@
     "learn",
     "craft",
     "evolve",
-    "bump"
+    "bump",
+    "dodge",
+    "roar",
+    "bounty"
   ],
   "tracks": {
     "title": {
@@ -106,5 +109,137 @@
       }
     ]
   },
-  "ambienceTick": 0.7
+  "ambienceTick": 0.7,
+  "ambienceExtras": {
+    "birds": {
+      "chance": 0.16,
+      "variants": 4
+    },
+    "crickets": {
+      "chance": 0.35,
+      "variants": 4
+    },
+    "chatter": {
+      "chance": 0.12,
+      "variants": 4
+    },
+    "fire": {
+      "chance": 0.65,
+      "variants": 4
+    }
+  },
+  "beds": [
+    "wind",
+    "deepwind"
+  ],
+  "themes": {
+    "fafnyr": {
+      "bpm": 92,
+      "voices": [
+        {
+          "wave": "square",
+          "duty": 0.25,
+          "vol": 0.45,
+          "notes": "D4:1 -:0.5 D4:0.5 F4:1 A4:1 G#4:2 A4:2 D5:1 C5:1 A4:1 F4:1 E4:2 D4:2"
+        },
+        {
+          "wave": "triangle",
+          "vol": 0.8,
+          "notes": "D2:2 D2:2 D2:2 C#2:2 A#1:2 A#1:2 A1:2 D2:2"
+        },
+        {
+          "wave": "noise",
+          "vol": 0.5,
+          "notes": "x:1 -:1 x:0.5 x:0.5 -:1 x:1 -:1 x:0.5 x:0.5 -:1 x:1 -:1 x:0.5 x:0.5 -:1 x:1 -:1 x:0.5 x:0.5 -:1"
+        }
+      ]
+    },
+    "morvax": {
+      "bpm": 72,
+      "voices": [
+        {
+          "wave": "triangle",
+          "vol": 0.6,
+          "vibrato": 0.012,
+          "notes": "E4:1.5 G4:0.5 F#4:1 A#4:1 B4:2 -:1 E5:1 D5:1.5 A#4:0.5 G4:1 F#4:1 E4:3 -:1"
+        },
+        {
+          "wave": "square",
+          "duty": 0.125,
+          "vol": 0.18,
+          "release": 0.6,
+          "notes": "E3:4 A#2:4 C3:4 E3:4"
+        },
+        {
+          "wave": "triangle",
+          "vol": 0.7,
+          "notes": "E2:4 A#1:4 C2:4 E2:4"
+        }
+      ]
+    },
+    "dawn": {
+      "bpm": 84,
+      "voices": [
+        {
+          "wave": "triangle",
+          "vol": 0.55,
+          "notes": "G4:1 C5:1 E5:1 D5:1 C5:2 G4:2 A4:1 B4:1 C5:1 E5:1 D5:4"
+        },
+        {
+          "wave": "square",
+          "duty": 0.125,
+          "vol": 0.14,
+          "notes": "C5:0.5 E5:0.5 G5:0.5 E5:0.5 C5:0.5 E5:0.5 G5:0.5 E5:0.5 A4:0.5 C5:0.5 E5:0.5 C5:0.5 A4:0.5 C5:0.5 E5:0.5 C5:0.5 F4:0.5 A4:0.5 C5:0.5 A4:0.5 F4:0.5 A4:0.5 C5:0.5 A4:0.5 G4:0.5 B4:0.5 D5:0.5 B4:0.5 G4:0.5 B4:0.5 D5:0.5 B4:0.5"
+        },
+        {
+          "wave": "triangle",
+          "vol": 0.7,
+          "notes": "C3:4 A2:4 F2:4 G2:4"
+        }
+      ]
+    },
+    "ending": {
+      "bpm": 120,
+      "voices": [
+        {
+          "wave": "square",
+          "duty": 0.5,
+          "vol": 0.4,
+          "notes": "G4:0.5 C5:0.5 E5:1 D5:0.5 C5:0.5 G5:1 F5:1 E5:1 D5:1 E5:1 C5:1 E5:1 G5:1 C6:1 B5:1 D6:1 C6:2"
+        },
+        {
+          "wave": "triangle",
+          "vol": 0.75,
+          "notes": "C3:2 G2:2 F2:2 G2:2 A2:2 E2:2 F2:1 G2:1 C3:2"
+        },
+        {
+          "wave": "noise",
+          "vol": 0.45,
+          "notes": "x:1 -:0.5 x:0.5 x:1 -:1 x:1 -:0.5 x:0.5 x:1 -:1 x:1 -:0.5 x:0.5 x:1 -:1 x:1 -:0.5 x:0.5 x:1 -:1"
+        }
+      ]
+    },
+    "ending_rest": {
+      "bpm": 72,
+      "voices": [
+        {
+          "wave": "triangle",
+          "vol": 0.55,
+          "notes": "E5:1.5 D5:0.5 C5:1 B4:1 A4:2 E4:2 F4:1 A4:1 C5:1 B4:1 C5:4"
+        },
+        {
+          "wave": "square",
+          "duty": 0.125,
+          "vol": 0.15,
+          "release": 0.6,
+          "notes": "C5:2 B4:2 A4:2 G#4:2 A4:2 G4:2 G4:4"
+        },
+        {
+          "wave": "triangle",
+          "vol": 0.7,
+          "notes": "A2:4 F2:4 D2:2 G2:2 C3:4"
+        }
+      ]
+    }
+  }
 }
