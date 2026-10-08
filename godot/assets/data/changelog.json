@@ -1,6 +1,19 @@
 {
   "releases": [
     {
+      "version": "0.86.0",
+      "date": "2026-10-08",
+      "codename": "Know Your Trade",
+      "notes": [
+        "MONSTERS CARRY WHAT YOU NEED: dire wolves drop a pelt half the time, imps a horn about a third of the time, and Fafnyr leaves a scale every time he falls",
+        "WOLVES IN THE WOODS: a wolf pack now lives in the Whispering Forest and another in the Sunken Marsh",
+        "A FIRST JOB AT THE FORGE: the Reedwoven Buckler takes 3 marsh reeds at Smithing 1, the Iron Helm opens at Smithing 2, and Scaled Mail needs one dragon scale, not two",
+        "WHERE TO FIND IT: a recipe you can't make yet says where each missing material comes from, in the pack's Craft tab and at Hilda's and Vex's counters",
+        "YOUR TRADES IN VIEW: the Craft tab shows your Smithing and Alchemy levels and XP, and a craft that levels a trade says so",
+        "FIX: the Wolfstooth Collar, brewed at the cauldron, now teaches alchemy instead of smithing"
+      ]
+    },
+    {
       "version": "0.85.0",
       "date": "2026-10-08",
       "codename": "Pitched Tents",

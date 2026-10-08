@@ -804,7 +804,7 @@ func _revive_packs() -> void:
 func _spawn_pack(data: MapData, spawn: Dictionary) -> void:
 	var home := Vector2i(spawn["x"], spawn["y"])
 	var region := data.region_at(home)
-	var species := Bestiary.species_at(region, home)
+	var species := Bestiary.species_of(spawn, region)
 	var elite_chance := float(Bestiary.region(region)["eliteChance"])
 	var cells: Array[Vector2i] = [home]
 	for offset in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1), Vector2i(1, 1), Vector2i(-1, -1)]:

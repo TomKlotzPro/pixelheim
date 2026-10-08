@@ -48,7 +48,13 @@
       "defense": 2,
       "xp": 23,
       "gold": 14,
-      "level": 4
+      "level": 4,
+      "drops": [
+        {
+          "itemId": "wolf_pelt",
+          "chance": 0.5
+        }
+      ]
     },
     "orc": {
       "id": "orc",
@@ -139,6 +145,12 @@
       "xp": 150,
       "gold": 250,
       "level": 10,
+      "drops": [
+        {
+          "itemId": "dragon_scale",
+          "chance": 1.0
+        }
+      ],
       "inflicts": {
         "kind": "burn",
         "chance": 0.45,
@@ -195,6 +207,12 @@
       "xp": 140,
       "gold": 100,
       "level": 14,
+      "drops": [
+        {
+          "itemId": "imp_horn",
+          "chance": 0.3
+        }
+      ],
       "inflicts": {
         "kind": "burn",
         "chance": 0.4,
@@ -360,7 +378,8 @@
       "id": "forest_3",
       "mapId": "overworld",
       "x": 72,
-      "y": 52
+      "y": 52,
+      "species": "wolf"
     },
     {
       "id": "marsh_1",
@@ -378,7 +397,8 @@
       "id": "marsh_3",
       "mapId": "overworld",
       "x": 12,
-      "y": 52
+      "y": 52,
+      "species": "wolf"
     },
     {
       "id": "deep_1",

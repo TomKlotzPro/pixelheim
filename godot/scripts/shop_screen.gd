@@ -202,9 +202,14 @@ func _build_rows() -> Array[Dictionary]:
 					"action": func() -> void: _after(GameState.upgrade_gear(uid), "Hilda tempers it: +1.", "Not enough gold, or it can take no more."),
 				})
 		"Craft":
-			for entry: Dictionary in Economy.recipes():
-				if entry["job"]["id"] != _craft_job():
-					continue
+			# This station's recipes, easiest first.
+			var entries := Economy.recipes().filter(func(entry: Dictionary) -> bool: return entry["job"]["id"] == _craft_job())
+			entries.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+				return int(a["job"]["level"]) < int(b["job"]["level"]) or (
+					a["job"]["level"] == b["job"]["level"] and Catalog.item_name(a["itemId"]) < Catalog.item_name(b["itemId"])
+				)
+			)
+			for entry: Dictionary in entries:
 				var recipe_id: String = entry["id"]
 				out.append({
 					"label": Catalog.item_name(entry["itemId"]), "icon": entry["itemId"],
@@ -305,13 +310,17 @@ func _sold(gold: int) -> void:
 
 func _crafted(result: Dictionary, entry: Dictionary) -> void:
 	if not result["made"]:
-		status.text = "Missing materials or skill."
+		var job: String = entry["job"]["id"]
+		if int(GameState.hero.jobs[job]["level"]) < int(entry["job"]["level"]):
+			status.text = "That takes %s %d." % [job.capitalize(), entry["job"]["level"]]
+		else:
+			status.text = "Still missing: %s." % ", ".join(Economy.missing_names(entry, GameState.pack.items))
 		return
 	Sound.play("craft")
 	if result["count"] > 1:
-		status.text = "A lucky brew: 2x %s!" % Catalog.item_name(entry["itemId"])
+		status.text = "A lucky brew: 2x %s! %s" % [Catalog.item_name(entry["itemId"]), result["level_line"]]
 	else:
-		status.text = "Made %s." % Catalog.item_name(entry["itemId"])
+		status.text = "Made %s. %s" % [Catalog.item_name(entry["itemId"]), result["level_line"]]
 
 
 func _empty_note() -> String:
@@ -353,6 +362,13 @@ static func _describe(item_id: String, instance := {}) -> String:
 static func _describe_recipe(entry: Dictionary) -> String:
 	var lines: Array[String] = [_describe(entry["itemId"]), "", "Needs:"]
 	for need: String in entry["needs"]:
-		lines.append("  %d x %s  (have %d)" % [entry["needs"][need], Catalog.item_name(need), GameState.pack.items.get(need, 0)])
-	lines.append("%s level %d" % [String(entry["job"]["id"]).capitalize(), entry["job"]["level"]])
+		var have: int = GameState.pack.items.get(need, 0)
+		lines.append("  %d x %s  (have %d)" % [entry["needs"][need], Catalog.item_name(need), have])
+		# Where a missing one comes from (PIX-143).
+		if have < int(entry["needs"][need]):
+			var sources := Economy.material_sources(need)
+			if not sources.is_empty():
+				lines.append("    " + String(sources[0]["text"]))
+	var job: String = entry["job"]["id"]
+	lines.append("%s level %d - you are %s" % [job.capitalize(), entry["job"]["level"], Economy.job_line(GameState.hero.jobs, job)])
 	return "\n".join(lines)
