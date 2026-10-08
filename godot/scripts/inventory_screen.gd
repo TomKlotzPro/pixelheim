@@ -4,12 +4,17 @@ extends CanvasLayer
 ## everything carried, by category. E equips, takes off, drinks or places;
 ## X drops one, Z the whole stack. A/D switch tabs, W/S choose, I or Esc
 ## closes, and every row and slot is clickable. The world holds still.
-## (Crafting lives at the forge and the cauldron, and at the home workbench.)
+## The Craft tab is the guide to crafting (the web's craft tab): every recipe
+## with its bill of materials and its station, crafted here with E at the
+## forge, the cauldron or the home workbench, and away from them a first row
+## that says where to go (and travels to the town gate once it's known).
 
 const TABS := [
 	["all", "All"], ["weapons", "Weapons"], ["apparel", "Apparel"], ["potions", "Potions"],
-	["furniture", "Home"], ["food", "Food"], ["misc", "Misc"],
+	["furniture", "Home"], ["food", "Food"], ["misc", "Misc"], ["craft", "Craft"],
 ]
+## Who keeps each trade's station, for the Craft tab.
+const STATIONS := {"smithing": "Hilda's forge", "alchemy": "Vex's cauldron"}
 ## Slots down the doll's left, then its right.
 const DOLL_LEFT := [["head", "Head"], ["neck", "Neck"], ["body", "Body"], ["hands", "Hands"], ["feet", "Feet"]]
 const DOLL_RIGHT := [["weapon", "Weapon"], ["offhand", "Off-hand"], ["ring1", "Ring"], ["ring2", "Ring"]]
@@ -105,6 +110,8 @@ func _refresh() -> void:
 ## Gear first, then stacks, each by category then name; the tab filters.
 func _rows() -> Array[Dictionary]:
 	var category: String = TABS[tab][0]
+	if category == "craft":
+		return _craft_rows()
 	var pack := GameState.pack
 	var out: Array[Dictionary] = []
 	var gear := pack.gear.duplicate()
@@ -128,8 +135,59 @@ func _rows() -> Array[Dictionary]:
 	return out
 
 
+## The Craft tab: where to craft, then every recipe by trade and level.
+func _craft_rows() -> Array[Dictionary]:
+	var out: Array[Dictionary] = [{"kind": "guide", "item_id": ""}]
+	var entries := Economy.recipes().duplicate()
+	var here := _jobs_here()
+	# What can be made here first, then each trade by level and name.
+	entries.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		var a_here: bool = a["job"]["id"] in here
+		if a_here != (b["job"]["id"] in here):
+			return a_here
+		if a["job"]["id"] != b["job"]["id"]:
+			return a["job"]["id"] < b["job"]["id"]
+		return int(a["job"]["level"]) < int(b["job"]["level"]) or (
+			a["job"]["level"] == b["job"]["level"] and Catalog.item_name(a["itemId"]) < Catalog.item_name(b["itemId"])
+		)
+	)
+	for entry: Dictionary in entries:
+		out.append({"kind": "recipe", "item_id": entry["itemId"], "entry": entry})
+	return out
+
+
+## The trades that craft where the hero stands.
+func _jobs_here() -> Array[String]:
+	return Economy.jobs_here(GameState.world.map_id, GameState.settlement.house.get("workbench", false))
+
+
+## The town gate, when it's known and the hero is away from town: where the
+## guide row travels.
+func _town_gate() -> Dictionary:
+	if GameState.world.map_id.begins_with("town"):
+		return {}
+	for waypoint: Dictionary in Interactables.waypoints():
+		if waypoint["id"] == "town_gate" and Interactables.waypoint_usable(waypoint, GameState.world.discovered, GameState.settlement.settlers):
+			return waypoint
+	return {}
+
+
+## The guide: at a station it says so; away from them it says where they are.
+func _guide_lines() -> Array[String]:
+	var here := _jobs_here()
+	if not here.is_empty():
+		var where: String = "your workbench" if GameState.world.map_id == "town_house" else STATIONS[here[0]]
+		return ["At %s" % where, "E crafts any recipe below you have the makings for."]
+	var away := "Hilda forges behind the FORGE door, Vex brews behind BREWS; a bought house can fit a workbench."
+	if not _town_gate().is_empty():
+		return ["The stations are in town", away + " E travels to the gate."]
+	return ["The stations are in town", away]
+
+
 func _row(index: int) -> Control:
 	var row: Dictionary = rows[index]
+	if row["kind"] in ["guide", "recipe"]:
+		return _craft_row(index)
 	var item := Catalog.item(row["item_id"])
 	var chosen := index == selected
 	var panel := PanelContainer.new()
@@ -168,6 +226,60 @@ func _row(index: int) -> Control:
 	detail.clip_text = true
 	detail.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	text.add_child(detail)
+	line.add_child(UiStyle.label(_primary_label(row), 13, UiStyle.LAMP if chosen else UiStyle.FADED))
+	return panel
+
+
+## A Craft tab row: the guide, or a recipe with its materials (each with
+## how many are carried), its trade and level, and where it's made.
+func _craft_row(index: int) -> Control:
+	var row: Dictionary = rows[index]
+	var chosen := index == selected
+	var panel := PanelContainer.new()
+	panel.custom_minimum_size = Vector2(LIST.x - 14, ROW_HEIGHT)
+	panel.add_theme_stylebox_override("panel", UiStyle.box(
+		UiStyle.CARD if chosen else Color(UiStyle.CARD, 0.5), UiStyle.LAMP if chosen else UiStyle.RIM, 6
+	))
+	panel.gui_input.connect(func(event: InputEvent) -> void:
+		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+			if event.double_click and index == selected:
+				_primary()
+			else:
+				_select(index)
+	)
+	var line := HBoxContainer.new()
+	line.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	line.add_theme_constant_override("separation", 10)
+	panel.add_child(line)
+	var text := VBoxContainer.new()
+	text.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	text.add_theme_constant_override("separation", 0)
+	text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var title := ""
+	var detail := ""
+	var ink := UiStyle.INK
+	if row["kind"] == "guide":
+		var lines := _guide_lines()
+		title = lines[0]
+		detail = lines[1]
+		ink = UiStyle.LAMP
+	else:
+		var entry: Dictionary = row["entry"]
+		line.add_child(_icon(row["item_id"]))
+		var pack := GameState.pack
+		var needs: Array[String] = []
+		for need: String in entry["needs"]:
+			needs.append("%s %d/%d" % [Catalog.item_name(need), mini(pack.items.get(need, 0), entry["needs"][need]), entry["needs"][need]])
+		var job: String = entry["job"]["id"]
+		title = Catalog.item_name(row["item_id"])
+		detail = "%s    %s %d, at %s" % [", ".join(needs), job.capitalize(), entry["job"]["level"], STATIONS[job]]
+		ink = UiStyle.INK if Economy.can_craft(entry, pack.items, GameState.hero.jobs) else UiStyle.FADED
+	line.add_child(text)
+	text.add_child(UiStyle.label(title, 15, ink))
+	var small := UiStyle.label(detail, 12, UiStyle.FADED)
+	small.clip_text = true
+	small.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	text.add_child(small)
 	line.add_child(UiStyle.label(_primary_label(row), 13, UiStyle.LAMP if chosen else UiStyle.FADED))
 	return panel
 
@@ -221,6 +333,12 @@ static func stat_line(item: Dictionary, bonus: int, value: int) -> String:
 ## What E does to a row: equip or take off gear, use a drinkable or edible,
 ## place furniture at home.
 func _primary_label(row: Dictionary) -> String:
+	if row["kind"] == "guide":
+		return "E  travel" if not _town_gate().is_empty() else ""
+	if row["kind"] == "recipe":
+		var entry: Dictionary = row["entry"]
+		var here := String(entry["job"]["id"]) in _jobs_here()
+		return "E  craft" if here and Economy.can_craft(entry, GameState.pack.items, GameState.hero.jobs) else ""
 	if row["kind"] == "gear":
 		return "E  take off" if GameState.pack.is_equipped(row["piece"]["uid"]) else "E  equip"
 	var item := Catalog.item(row["item_id"])
@@ -327,6 +445,17 @@ func _primary() -> void:
 	if rows.is_empty():
 		return
 	var row: Dictionary = rows[selected]
+	if row["kind"] == "guide":
+		var gate := _town_gate()
+		if not gate.is_empty() and world != null:
+			_close()
+			world.travel_to(gate)
+			world._flash_message("You travel to %s." % gate["name"])
+		return
+	if row["kind"] == "recipe":
+		_craft(row["entry"])
+		_refresh()
+		return
 	if row["kind"] == "gear":
 		var piece: Dictionary = row["piece"]
 		if GameState.pack.is_equipped(piece["uid"]):
@@ -358,10 +487,28 @@ func _primary() -> void:
 	_refresh()
 
 
+## A recipe crafted where the hero stands, or why it can't be.
+func _craft(entry: Dictionary) -> void:
+	var job: String = entry["job"]["id"]
+	if job not in _jobs_here():
+		status.text = Economy.station_hint(job) + "."
+		return
+	if not Economy.can_craft(entry, GameState.pack.items, GameState.hero.jobs):
+		var level := int(entry["job"]["level"])
+		status.text = "You need %s %d for that." % [job.capitalize(), level] if GameState.hero.jobs[job]["level"] < level else "You're missing what it takes."
+		return
+	var made := GameState.craft(entry["id"])
+	if made["made"]:
+		Sound.play("craft")
+		status.text = "You craft %s%s." % [Catalog.item_name(entry["itemId"]), " (two!)" if made["count"] > 1 else ""]
+
+
 func _drop(whole_stack: bool) -> void:
 	if rows.is_empty():
 		return
 	var row: Dictionary = rows[selected]
+	if row["kind"] in ["guide", "recipe"]:
+		return
 	if row["kind"] == "gear":
 		var piece: Dictionary = row["piece"]
 		if GameState.drop_gear(piece["uid"]):
