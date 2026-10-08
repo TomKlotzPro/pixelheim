@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.115.0",
+      "date": "2026-10-08",
+      "codename": "In Hand",
+      "notes": [
+        "THE WEAPON YOU HOLD IS THE WEAPON YOU SWING: a warrior who picks up a bow draws it, a mage with a war hammer swings it, and a ranger with a staff casts. Bare-handed, every hero keeps their own way of fighting",
+        "BLADES IN THEIR OWN COLOURS: Dragonbane swings red, the Obsidian Blade violet, the Blackiron Axe soot-dark, the Warden's Longsword Greyhold steel, Tidecutter sea-green - and bows and staves take their wood and stone too",
+        "Mages, clerics and necromancers start with an apprentice staff instead of a rusty sword"
+      ]
+    },
+    {
       "version": "0.114.0",
       "date": "2026-10-08",
       "codename": "Pocket Pixelheim",

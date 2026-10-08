@@ -5,9 +5,48 @@ extends GutTest
 
 func test_nothing_drawable_worn_keeps_the_look() -> void:
 	var plain := PunyArt.hero("warrior", 0)
-	var spec := PunyArt.dressed("warrior", 0, {"weapon": "rusty_sword", "ring1": "band_of_grit"})
+	# An iron sword is Shade's own blade: nothing to recolour.
+	var spec := PunyArt.dressed("warrior", 0, {"weapon": "iron_sword", "ring1": "band_of_grit"})
 	assert_eq(spec["sheet"], plain["sheet"])
 	assert_false(spec.has("head"))
+
+
+func test_the_weapon_in_hand_is_the_weapon_swung() -> void:
+	# PIX-172: the attack follows the weapon, not the role.
+	assert_eq(PunyArt.dressed("warrior", 0, {"weapon": "hunting_bow"})["attack"], "bow")
+	assert_eq(PunyArt.dressed("mage", 0, {"weapon": "war_hammer"})["attack"], "sword")
+	assert_eq(PunyArt.dressed("ranger", 0, {"weapon": "shadow_dagger"})["attack"], "sword", "a dagger slashes")
+	assert_eq(PunyArt.dressed("ranger", 0, {"weapon": "arch_staff"})["attack"], "staff")
+	assert_eq(PunyArt.dressed("cleric", 0, {})["attack"], "staff", "bare hands keep the role's own")
+	for item_id: String in Catalog._data()["items"]:
+		var item: Dictionary = Catalog.item(item_id)
+		if item.get("slot", "") == "weapon":
+			assert_true(PunyArt.WEAPON_ATTACKS.has(item["sprite"]), "%s swings something" % item_id)
+
+
+func test_a_coloured_weapon_recolours_the_blade_and_nothing_else() -> void:
+	var spec := PunyArt.dressed("warrior", 0, {"weapon": "dragonbane"})
+	assert_ne(spec["sheet"], PunyArt.hero("warrior", 0)["sheet"], "dragonbane has its own colour")
+	var sheet := PunyArt.outfit_texture(spec["head"], spec["body"], spec["weapon_tint"]).get_image()
+	var plain: Image = (load(PunyArt.path(spec["body"])) as Texture2D).get_image()
+	var changed := 0
+	for cell: Vector2i in PunyArt._weapon_mask():
+		if sheet.get_pixelv(cell) != plain.get_pixelv(cell):
+			changed += 1
+	assert_gt(changed, 50, "the blade takes the colour")
+	# The idle and walk columns are untouched.
+	for y in range(0, 32):
+		for x in range(0, 4 * 32):
+			if sheet.get_pixel(x, y) != plain.get_pixel(x, y):
+				fail_test("idle pixel %d,%d changed" % [x, y])
+				return
+
+
+func test_casters_start_with_a_staff() -> void:
+	var state: Node = autofree(preload("res://scripts/state/game_state.gd").new())
+	for role_id: String in ["mage", "cleric", "necromancer"]:
+		state.new_game("Robin", role_id)
+		assert_eq(state.pack.worn_items().get("weapon", ""), "apprentice_staff", role_id)
 
 
 func test_a_helmet_brings_its_head_and_keeps_the_body() -> void:
