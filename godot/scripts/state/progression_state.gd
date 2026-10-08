@@ -9,6 +9,9 @@ var cleared_levels: Array[int] = []
 ## quest id -> {progress, done}
 var quests := {}
 var intro_seen := true
+## Story moments already played for this hero (PIX-32: boss intros once).
+## Saved only once there is one, so saves from before stay byte for byte.
+var story_seen: Array[String] = []
 
 
 static func from_dict(data: Dictionary) -> ProgressionState:
@@ -17,6 +20,7 @@ static func from_dict(data: Dictionary) -> ProgressionState:
 	progress.cleared_levels.assign(data["clearedLevels"])
 	progress.quests = data["quests"].duplicate(true)
 	progress.intro_seen = data["introSeen"]
+	progress.story_seen.assign(data.get("storySeen", []))
 	return progress
 
 
@@ -25,3 +29,5 @@ func write_into(state: Dictionary) -> void:
 	state["clearedLevels"] = cleared_levels.duplicate()
 	state["quests"] = quests.duplicate(true)
 	state["introSeen"] = intro_seen
+	if not story_seen.is_empty():
+		state["storySeen"] = story_seen.duplicate()

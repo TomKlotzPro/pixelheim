@@ -858,6 +858,18 @@ func _grant_levels() -> int:
 	return gained
 
 
+## Whether this hero has seen a story moment (Cutscene scenes, PIX-32).
+func has_seen(scene_id: String) -> bool:
+	return scene_id in progression.story_seen
+
+
+## Marks a story moment seen, for good.
+func mark_seen(scene_id: String) -> void:
+	if not has_seen(scene_id):
+		progression.story_seen.append(scene_id)
+		mark_dirty()
+
+
 ## The hero as drawn: the role's look in whatever is worn (PunyArt.dressed).
 func hero_art() -> Dictionary:
 	return PunyArt.dressed(hero.role_id, hero.look, pack.worn_items())

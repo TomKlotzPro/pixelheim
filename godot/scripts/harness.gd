@@ -115,6 +115,11 @@ func _run_test_harness() -> void:
 	if floor_index >= 0 and floor_index + 1 < args.size():
 		world.enter_floor(int(args[floor_index + 1]))
 		await get_tree().create_timer(0.3).timeout
+	# `--story <id>`: a story scene from assets/data/story.json, over the world.
+	var story_index := args.find("--story")
+	if story_index >= 0 and story_index + 1 < args.size():
+		world.play_story(args[story_index + 1])
+		await get_tree().create_timer(0.3).timeout
 	if args.has("gate"):
 		var dungeon_index := args.find("--dungeon")
 		world._use_portal({
