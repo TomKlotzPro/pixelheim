@@ -43,3 +43,14 @@ func test_the_main_quest_asks_for_her_stories_on_the_side() -> void:
 	assert_eq(MainQuest.next_step(state.progression, state.settlement)["id"], "graves")
 	state.mark_seen("maren_graves")
 	assert_ne(MainQuest.next_step(state.progression, state.settlement)["id"], "graves")
+
+
+## Dreams at the inn (PIX-154): one per night's rest, in the order earned.
+func test_dreams_come_in_order_once_each() -> void:
+	assert_eq(Story.next_dream([], []), "dream_courier", "the first night after the fire")
+	assert_eq(Story.next_dream([], ["dream_courier"]), "", "nothing more until the crypt")
+	assert_eq(Story.next_dream([1, 2, 3], ["dream_courier"]), "dream_five")
+	assert_eq(Story.next_dream(range(1, 8), ["dream_courier"]), "dream_five", "earliest first")
+	assert_eq(Story.next_dream(range(1, 8), ["dream_courier", "dream_five"]), "dream_door")
+	for dream: Dictionary in Story._data()["dreams"]:
+		assert_true(Cutscene.scenes().has(dream["id"]), "%s is a scene" % dream["id"])
