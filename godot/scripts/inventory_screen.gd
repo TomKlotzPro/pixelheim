@@ -148,7 +148,7 @@ func _row(index: int) -> Control:
 	line.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	line.add_theme_constant_override("separation", 10)
 	panel.add_child(line)
-	line.add_child(_icon(item))
+	line.add_child(_icon(row["item_id"]))
 	var text := VBoxContainer.new()
 	text.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text.add_theme_constant_override("separation", 0)
@@ -184,9 +184,10 @@ func _rarity_color(row: Dictionary) -> Color:
 	return UiStyle.INK
 
 
-static func _icon(item: Dictionary) -> TextureRect:
+## An item's icon (Shade's, ItemIcons), twice life size.
+static func _icon(item_id: String) -> TextureRect:
 	var icon := TextureRect.new()
-	icon.texture = load("res://assets/sprites/%s.png" % item["sprite"])
+	icon.texture = ItemIcons.texture(item_id)
 	icon.custom_minimum_size = Vector2(32, 32)
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
@@ -274,7 +275,7 @@ func _slot(slot: String, label: String) -> Control:
 		name.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		box.add_child(name)
 	else:
-		box.add_child(_icon(Catalog.item(instance["itemId"])))
+		box.add_child(_icon(instance["itemId"]))
 		box.tooltip_text = "%s - click to take off" % InventoryState.gear_name(instance)
 		box.gui_input.connect(func(event: InputEvent) -> void:
 			if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:

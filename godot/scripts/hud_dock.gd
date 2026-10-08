@@ -153,9 +153,9 @@ func _bar(key: String) -> Control:
 	return line
 
 
-## Six square slots, one per skill key: lit brass when the skill can be cast,
-## dim while it can't; a click casts it too. Until the skills have icons, the
-## slot shows the skill's initials.
+## Six square slots, one per skill key: the skill's icon (Shade's, ItemIcons),
+## lit brass when it can be cast, dim while it can't; a click casts it too.
+## Without the paid icons a slot shows the skill's initials.
 func _skills() -> Control:
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 4)
@@ -178,12 +178,20 @@ func _skills() -> Control:
 		mark.set_anchors_preset(Control.PRESET_FULL_RECT)
 		mark.offset_top = 6
 		face.add_child(mark)
+		var art := TextureRect.new()
+		art.custom_minimum_size = Vector2(32, 32)
+		art.size = Vector2(32, 32)
+		art.position = Vector2(4, 4)
+		art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		art.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		face.add_child(art)
 		# The key in the slot's corner, as action bars number theirs.
 		var key := UiStyle.strong(str(index + 1), 12, UiStyle.FADED)
 		key.position = Vector2(0, -4)
 		face.add_child(key)
 		row.add_child(slot)
-		slots.append({"slot": slot, "mark": mark})
+		slots.append({"slot": slot, "mark": mark, "art": art})
 	return row
 
 
@@ -262,7 +270,10 @@ func _process(_delta: float) -> void:
 		# Ready to cast: a brass rim; spent, too dear or not yet reached: dim.
 		slot.add_theme_stylebox_override("panel", UiStyle.box(UiStyle.WINDOW if has else UiStyle.CARD, UiStyle.BRASS if ready else UiStyle.RIM, 4))
 		slot.modulate.a = 1.0 if ready or not has else 0.55
-		mark.text = _initials(skills[index]["name"]) if has else ""
+		var icon := ItemIcons.skill(skills[index]["name"]) if has else null
+		var art: TextureRect = slots[index]["art"]
+		art.texture = icon
+		mark.text = _initials(skills[index]["name"]) if has and icon == null else ""
 		slot.tooltip_text = _describe(skills[index]) if has else ""
 
 

@@ -60,7 +60,7 @@ godot/tools/flows.sh                                          # the release flow
 pnpm godot:sync                                               # re-export maps and data from src/
 ```
 
-**Paid art.** The town's houses, props and rooms use Shade's paid _Puny World Medieval Age_ pack, which may not be redistributed, so it lives in the private `TomKlotzPro/pixelheim-assets` repository. `pnpm godot:art` installs it with your GitHub login, and the deploy fetches it with a read-only deploy key. Without it the game still runs, with plainer buildings and props.
+**Paid art.** The town's houses, props and rooms use Shade's paid _Puny World Medieval Age_ pack, and the item, skill and ailment icons come from his paid icon packs (with his free CC0 ones). None of the paid art may be redistributed, so it lives in the private `TomKlotzPro/pixelheim-assets` repository (`retro-rpg/shade/`). `pnpm godot:art` installs it with your GitHub login, and the deploy fetches it with a read-only deploy key. Without it the game still runs, with plainer buildings and props.
 
 More on the Godot project - the save format, the screenshot harness, the release flows, web export - in [`godot/README.md`](godot/README.md).
 

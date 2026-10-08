@@ -14,13 +14,18 @@ godot --path godot            # play (or open godot/ in the Godot editor)
 The town's houses, the rooms behind their doors and the props outdoors
 (wells, the fountain, torches, fences, stalls, chests) come from Shade's paid
 **Puny World Medieval Age** pack (`scripts/puny_town.gd`, `puny_interior.gd`,
-`puny_props.gd`; PIX-133, PIX-137). Its licence forbids redistributing the
-pack, so it is not in this repository: it lives in the private
-`TomKlotzPro/pixelheim-assets` repo. `pnpm godot:art` installs the atlas into
-`godot/assets/puny/medieval/` (git-ignored) with your GitHub login; the deploy
-and the Godot CI fetch it with a read-only deploy key (secret
-`PIXELHEIM_ASSETS_KEY`). Without it the game runs with the town's old
-buildings and props.
+`puny_props.gd`; PIX-133, PIX-137). Item, skill and ailment icons come from
+his paid Survival, Armor, Jewelry and Puny Skills packs and his free CC0 icon
+sheets, mapped in `assets/puny/icons.json` (`scripts/item_icons.gd`,
+PIX-138). Their licences forbid redistributing the packs, so they are not in
+this repository: they live in the private `TomKlotzPro/pixelheim-assets` repo
+under `retro-rpg/shade/`. `pnpm godot:art` (`scripts/fetch-private-art.sh`)
+installs the atlas into `godot/assets/puny/medieval/` and every icon
+`icons.json` names into `godot/assets/puny/shade/` (both git-ignored) with your
+GitHub login; the deploy and the Godot CI run the same script on a checkout
+made with a read-only deploy key (secret `PIXELHEIM_ASSETS_KEY`). Without it
+the game runs with the town's old buildings and props and the web's item
+icons.
 
 Combat runs on the web game's numbers: the hero's real HP and stats, each
 species' stats per region, elites, ailments (a web turn = 1 s), drops, xp and
