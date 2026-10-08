@@ -9,12 +9,12 @@ func _ids(npcs: Array[Dictionary]) -> Array:
 
 
 func test_town_folk_follow_the_town_tier() -> void:
-	assert_eq(_ids(Npcs.on_map("town", 1, [])), ["elder", "villager_ana", "villager_bram"])
+	assert_eq(_ids(Npcs.on_map("town", 1, [])), ["elder", "villager_ana", "villager_bram", "town_cat", "town_dog"])
 	assert_eq(
 		_ids(Npcs.on_map("town", 4, [])),
 		[
 			"elder", "villager_ana", "villager_bram", "settler_mira", "settler_tomas",
-			"settler_serra", "settler_fenn",
+			"settler_serra", "settler_fenn", "town_cat", "town_dog", "kid_pip", "kid_nell",
 		]
 	)
 
@@ -89,3 +89,21 @@ func test_the_faced_villager_wins_then_any_neighbor() -> void:
 	assert_eq(found["npc"]["id"], "north")
 	assert_eq(found["side"], Vector2i.UP)
 	assert_eq(Npcs.beside({}, hero, Vector2i.UP), {})
+
+
+## A living village (PIX-149): the town's own folk talk about the hero's
+## latest deed first, each in their own words; keepers, builders, animals,
+## the elder and the mayor keep to their business.
+func test_the_town_talks_about_the_last_deed() -> void:
+	var bram := Npcs.by_id("villager_bram", [])
+	assert_eq(Npcs.reaction(bram, {}), "")
+	var line := Npcs.reaction(bram, {"kind": "cleared", "floor": "the Mossy Cellar"})
+	assert_string_contains(line, "the Mossy Cellar")
+	assert_eq(Npcs.reaction(Npcs.by_id("elder", []), {"kind": "boss", "boss": "Fafnyr the Ashen"}), "")
+	assert_eq(Npcs.reaction(Npcs.by_id("town_cat", []), {"kind": "boss", "boss": "Fafnyr the Ashen"}), "", "the cat doesn't care")
+
+
+func test_the_hours_turn_from_day_to_night() -> void:
+	assert_false(DayNight.is_night(0.0), "the day starts bright")
+	assert_true(DayNight.is_night(0.7 * DayNight.DAY_CYCLE_STEPS))
+	assert_false(DayNight.is_night(0.95 * DayNight.DAY_CYCLE_STEPS), "morning")

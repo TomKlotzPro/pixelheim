@@ -185,6 +185,7 @@ func _process(delta: float) -> void:
 		respawn_check = 1.0
 		_revive_packs()
 		view.refresh_patches()
+		_keep_hours()
 	_update_objective()
 	var cell := Vector2i((player.position / TILE).floor())
 	if cell == player_cell:
@@ -552,6 +553,7 @@ func _enter_map(next: MapData, arrival: Vector2i) -> void:
 		GameState.save_now()
 	floor_foes = 0
 	_play_reveals.call_deferred()
+	_keep_hours(true)
 	camera.limit_right = next.size.x * TILE
 	camera.limit_bottom = next.size.y * TILE
 	camera.reset_smoothing()
@@ -597,7 +599,8 @@ func _respawn_npcs() -> void:
 func _npc_beside() -> Dictionary:
 	var occupied := {}
 	for villager in get_tree().get_nodes_in_group("npcs"):
-		occupied[villager.cell] = villager.data
+		if not villager.away:
+			occupied[villager.cell] = villager.data
 	return Npcs.beside(occupied, player_cell, Vector2i(player.facing))
 
 func _chest_at(cell: Vector2i) -> Dictionary:
@@ -697,6 +700,11 @@ func _open_stall(shop_id: String) -> void:
 
 func _talk(npc: Dictionary) -> void:
 	var box := preload("res://scripts/dialogue_box.gd").new()
+	# Townsfolk talk about the hero's latest deed first (PIX-149).
+	var reaction := Npcs.reaction(npc, GameState.last_deed)
+	if reaction != "":
+		npc = npc.duplicate()
+		npc["lines"] = [reaction] + npc["lines"]
 	# The elder and the mayor always know what comes next (PIX-144).
 	if npc["id"] in ["elder", "mayor"]:
 		npc = npc.duplicate()
@@ -796,6 +804,22 @@ func _notification(what: int) -> void:
 		objective_box.visible = false
 	elif what == NOTIFICATION_UNPAUSED:
 		objective_box.visible = true
+
+
+## The village's hours (PIX-149): lamps and windows lit at night, and the
+## folk who wander - villagers, builders, children, the cat and the dog - go
+## home after dark and come back in the morning, never vanishing in view.
+## On arriving, everyone is simply where the hour puts them.
+func _keep_hours(arriving := false) -> void:
+	var night := DayNight.is_night(GameState.world.steps)
+	view.set_night(night)
+	for villager in get_tree().get_nodes_in_group("npcs"):
+		if villager.is_queued_for_deletion():
+			continue
+		if not villager.data.get("wander", false) and not String(villager.data["id"]).begins_with("worker_"):
+			continue
+		if villager.away != night and (arriving or not in_view(villager.position, TILE)):
+			villager.set_away(night)
 
 
 ## Back from the board with something built: the town redraws around the
