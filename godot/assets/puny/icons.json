@@ -90,7 +90,8 @@
     "lantern_draught": "survival-rpg-icons/Liquid/Large-Potion-09.png",
     "fountain_tonic": "survival-rpg-icons/Liquid/Large-Potion-14.png",
     "phoenix_draught": "survival-rpg-icons/Liquid/Large-Potion-06.png",
-    "festival_pie": "medieval@798"
+    "festival_pie": "medieval@798",
+    "sea_glass": "survival-rpg-icons/Gem/Crystal-Fragment-14.png"
   },
   "ailments": {
     "poison": "puny-skills/Indicators/Symbol Indicator/Poisoned-Indicator.png",

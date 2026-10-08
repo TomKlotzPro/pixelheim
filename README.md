@@ -6,7 +6,7 @@
 
 <p align="center">
   <b>A retro pixel-art open-world RPG in Godot 4.7: one hero, one village, fifteen floors of a mountain and what lies under it.</b><br />
-  Fifteen floors. Two bosses. Infinite cheese wheels. Currently v0.104 - 1.0 has to be earned.
+  Fifteen floors. Two bosses. Infinite cheese wheels. Currently v0.105 - 1.0 has to be earned.
 </p>
 
 ---
@@ -58,6 +58,7 @@ godot --headless --path godot -s res://addons/gut/gut_cmdln.gd # the unit tests 
 godot/tools/flows.sh                                          # the release flows, with screenshots
 python3 godot/tools/synth.py                                  # re-render the generated sounds and themes
 python3 godot/tools/vignettes.py <pixelheim-assets checkout>  # re-lift Shade's furnished corners for the rooms
+python3 godot/tools/mapgen.py                                 # maps from their sketches in godot/maps-src/
 ```
 
 **Paid art.** The town's houses, props and rooms use Shade's paid _Puny World Medieval Age_ pack, and the item, skill and ailment icons come from his paid icon packs (with his free CC0 ones). None of the paid art may be redistributed, so it lives in the private `TomKlotzPro/pixelheim-assets` repository (`retro-rpg/shade/`). `scripts/fetch-private-art.sh` installs it with your GitHub login, and the deploy fetches it with a read-only deploy key. Without it the game still runs on Shade's free art alone: the town's houses, props and paid icons are missing.
@@ -77,7 +78,7 @@ godot/                 the game (Godot 4.7, GDScript)
     puny_*.gd          Shade's art laid over the maps: terrain, dungeons, the town, props, rooms
   assets/              art (Shade's CC0 packs), fonts, audio, and the game's data:
     data/              items, monsters, quests, villagers, the town, the changelog (JSON)
-    maps/              every map, one row of tiles per line (JSON)
+    maps/              every map, one row of tiles per line (JSON); new ones drawn as sketches in godot/maps-src/
   test/unit/           GUT tests
   tools/               the release flows, the boot splash, the icon, the sound synth, the room vignettes
 scripts/               fetch-private-art.sh, which installs the paid art

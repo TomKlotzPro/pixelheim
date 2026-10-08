@@ -333,6 +333,25 @@
           "weight": 2
         }
       ]
+    },
+    "coast": {
+      "name": "the Saltmere coast",
+      "dropFloor": 2,
+      "eliteChance": 0.1,
+      "monsters": [
+        {
+          "monsterId": "slime",
+          "weight": 4
+        },
+        {
+          "monsterId": "goblin",
+          "weight": 3
+        },
+        {
+          "monsterId": "skeleton",
+          "weight": 2
+        }
+      ]
     }
   },
   "wildRewardMult": 0.65,
@@ -447,6 +466,32 @@
       "mapId": "mirefen",
       "x": 56,
       "y": 44
+    },
+    {
+      "id": "coast_1",
+      "mapId": "saltmere",
+      "x": 12,
+      "y": 6
+    },
+    {
+      "id": "coast_2",
+      "mapId": "saltmere",
+      "x": 44,
+      "y": 5
+    },
+    {
+      "id": "coast_3",
+      "mapId": "saltmere",
+      "x": 46,
+      "y": 24,
+      "species": "skeleton"
+    },
+    {
+      "id": "coast_4",
+      "mapId": "saltmere",
+      "x": 9,
+      "y": 15,
+      "species": "goblin"
     }
   ],
   "packs": {
@@ -605,6 +650,24 @@
       "mapId": "mirefen",
       "x": 51,
       "y": 42
+    },
+    {
+      "id": "coast_patch_1",
+      "mapId": "saltmere",
+      "x": 17,
+      "y": 20
+    },
+    {
+      "id": "coast_patch_2",
+      "mapId": "saltmere",
+      "x": 44,
+      "y": 20
+    },
+    {
+      "id": "coast_patch_3",
+      "mapId": "saltmere",
+      "x": 8,
+      "y": 25
     }
   ],
   "bossIds": [
@@ -865,7 +928,8 @@
     "marsh": "marsh_reed",
     "ash": "ember_shard",
     "deepwood": "deep_root",
-    "mire": "grave_moss"
+    "mire": "grave_moss",
+    "coast": "sea_glass"
   },
   "families": {
     "slime": "beasts",

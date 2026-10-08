@@ -538,7 +538,7 @@ func _soundscape() -> Array[String]:
 	if map.floor_level > 0:
 		return out
 	var burning := map.id == "town" and GameState.progression.prologue != Prologue.DONE
-	var outdoors := map.id in ["town", "overworld", "deepwood", "mirefen", "demo"]
+	var outdoors := map.id == "town" or (PunyTerrain.is_outdoor(map.grid) and not map.id.begins_with("town_"))
 	if outdoors and not burning:
 		out.append("crickets" if DayNight.is_night(GameState.world.steps) else "birds")
 		if map.id == "town" and GameState.town_tier() >= 1 and not DayNight.is_night(GameState.world.steps):
