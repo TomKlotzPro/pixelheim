@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.91.0",
+      "date": "2026-10-08",
+      "codename": "Hard Hats",
+      "notes": [
+        "PLOTS YOU CAN SEE: the next age's houses and the fountain are staked out where they'll stand, a log fence and a crate of materials on each",
+        "BUILDERS WAITING: a builder stands by every plot - talk to them and they'll tell you what it is and exactly what it still needs",
+        "THE TOWN RISES: fund a project and the camera shows you what went up the moment you're back in town - and says so when Pixelheim becomes a village, a town or a city",
+        "COMING HOME: walk back into town after Fafnyr or Morvax and Pixelheim lets you know it noticed"
+      ]
+    },
+    {
       "version": "0.90.0",
       "date": "2026-10-08",
       "codename": "From the Ashes",

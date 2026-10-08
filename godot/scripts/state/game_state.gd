@@ -284,6 +284,12 @@ func active_shop() -> String:
 	return stall_shop if stall_shop != "" else Economy.shop_at(world.map_id)
 
 
+## What the town has to show the hero next time they're in it (PIX-147):
+## "project:<id>" built, "age:<tier>" reached, "home:<floor>" a boss's floor
+## cleared. Not saved: a reload simply skips the tour.
+var reveals: Array[String] = []
+
+
 ## The shop of the stall the hero is trading at on the burnt square (PIX-146),
 ## while its keeper's building is rubble; "" anywhere else.
 var stall_shop := ""
@@ -434,8 +440,10 @@ func fund_project(project_id: String) -> String:
 	var tier_number := Town.age_of(project_id)
 	settlement.projects.assign(Town.done_projects(settlement) + [project_id])
 	var line := "%s: built. Walk outside and see." % entry["name"]
+	reveals.append("project:%s" % project_id)
 	if Town.age(tier_number)["projects"].all(func(candidate: Dictionary) -> bool: return candidate["id"] in settlement.projects):
 		settlement.town_tier = tier_number
+		reveals.append("age:%d" % tier_number)
 		line = "%s: built - and Pixelheim is a %s now." % [entry["name"], String(Town.tier(tier_number)["name"]).to_lower()]
 	_pack_changed()
 	settlers_changed.emit()
@@ -1168,6 +1176,8 @@ func clear_floor(level: int) -> Dictionary:
 		var level_line := earn_xp(clear_xp)
 		if level_line != "":
 			lines.append(level_line)
+		if Town.homecoming(level) != "":
+			reveals.append("home:%d" % level)
 		var before := progression.unlocked_level
 		progression.unlocked_level = Dungeons.unlocked_after(level, before)
 		if progression.unlocked_level > before:

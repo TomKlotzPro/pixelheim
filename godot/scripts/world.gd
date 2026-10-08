@@ -551,6 +551,7 @@ func _enter_map(next: MapData, arrival: Vector2i) -> void:
 		GameState.move_to(next, arrival, player.facing)
 		GameState.save_now()
 	floor_foes = 0
+	_play_reveals.call_deferred()
 	camera.limit_right = next.size.x * TILE
 	camera.limit_bottom = next.size.y * TILE
 	camera.reset_smoothing()
@@ -626,9 +627,12 @@ func _try_interact() -> void:
 		return
 	if map.id == "town_house" and _house_interact(faced):
 		return
-	# The projects board on the square opens the village's ledger (PIX-145).
+	# The projects board on the square opens the village's ledger (PIX-145);
+	# what it built, the town shows off as it closes (PIX-147).
 	if map.id == "town" and faced == Town.project_board():
-		add_child(preload("res://scripts/town_hall_screen.gd").new())
+		var ledger := preload("res://scripts/town_hall_screen.gd").new()
+		ledger.tree_exited.connect(_after_board)
+		add_child(ledger)
 		return
 	var beside := _npc_beside()
 	if not beside.is_empty():
@@ -792,6 +796,42 @@ func _notification(what: int) -> void:
 		objective_box.visible = false
 	elif what == NOTIFICATION_UNPAUSED:
 		objective_box.visible = true
+
+
+## Back from the board with something built: the town redraws around the
+## hero, then shows it.
+func _after_board() -> void:
+	if GameState.reveals.is_empty() or map.id != "town":
+		return
+	map = _load_map("town")
+	_enter_map(map, player_cell)
+
+
+## The town risen (PIX-147): what was built since the hero last saw the town,
+## the age it reached, a homecoming - the camera tours them, then hands back.
+func _play_reveals() -> void:
+	if GameState.reveals.is_empty() or map.id != "town" or not is_inside_tree():
+		return
+	var stops: Array[Dictionary] = []
+	for entry: String in GameState.reveals:
+		var key := entry.get_slice(":", 1)
+		match entry.get_slice(":", 0):
+			"project":
+				stops.append({"at": _cell_center(Town.project_center(key)), "line": "%s: built." % Town.project(key)["name"]})
+			"age":
+				stops.append({
+					"at": _cell_center(Town.project_board() + Vector2i(0, 5)),
+					"line": "Pixelheim is a %s now." % String(Town.tier(int(key))["name"]).to_lower(),
+				})
+			"home":
+				stops.append({"at": _cell_center(Town.project_board() + Vector2i(0, 5)), "line": Town.homecoming(int(key))})
+	GameState.reveals.clear()
+	if stops.is_empty() or (harness and not OS.get_cmdline_user_args().has("reveal")):
+		return
+	var tour := preload("res://scripts/reveal_screen.gd").new()
+	tour.world = self
+	tour.stops = stops
+	add_child(tour)
 
 
 ## A patch underfoot is picked (PIX-143).

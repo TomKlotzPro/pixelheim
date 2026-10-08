@@ -43,6 +43,9 @@ static func on_map(map_id: String, town_tier: int, settlers: Array, done: Varian
 		var npc := as_npc(recruit, recruit["id"] in settlers)
 		if npc["mapId"] == map_id:
 			out.append(npc)
+	# Builders at the village's construction sites (PIX-147).
+	if done != null and map_id == "town":
+		out.append_array(Town.site_workers(done))
 	return out
 
 
