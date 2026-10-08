@@ -47,6 +47,7 @@ func test_perks_match_the_web() -> void:
 ## project asks gold and a region's material, and the last raises the age.
 func test_a_project_waits_for_its_age_then_for_its_price() -> void:
 	state.new_game("Robin", "warrior")
+	state.settlement.town_tier = 1
 	var blocker := func() -> String:
 		return Town.project_blocker("street_lamps", state.progression, state.settlement, state.pack.gold, state.pack.items)
 	assert_string_contains(blocker.call(), "Ruined Watchtower")
@@ -64,6 +65,7 @@ func test_a_project_waits_for_its_age_then_for_its_price() -> void:
 
 func test_the_last_project_of_an_age_raises_the_town() -> void:
 	state.new_game("Robin", "warrior")
+	state.settlement.town_tier = 1
 	state.progression.cleared_levels.append(5)
 	state.settlement.settlers.append("settler_iva")
 	state.pack.gold = 5000
@@ -110,7 +112,7 @@ func test_each_project_changes_the_town_at_once() -> void:
 func test_the_projects_fit_what_the_game_pays() -> void:
 	# A hero earns about 900g by floor 5, 4000g by Fafnyr and 9500g by Morvax
 	# in one pass (fights, hoards and quests; PIX-145's estimate).
-	var budget := {2: 900, 3: 4000, 4: 9500}
+	var budget := {1: 600, 2: 900, 3: 4000, 4: 9500}
 	for entry: Dictionary in Town.ages():
 		var total := 0
 		for candidate: Dictionary in entry["projects"]:
@@ -176,6 +178,7 @@ func test_investments_round_trip_in_the_web_shape() -> void:
 # ---- GameState: recruits and services (settlers.test.ts) --------------------------
 
 func test_an_unmet_ask_refuses_politely_and_names_the_price() -> void:
+	state.settlement.town_tier = 1
 	var messages: Array[String] = []
 	state.message.connect(func(text: String) -> void: messages.append(text))
 	state.finish_dialogue("settler_iva")
@@ -184,6 +187,7 @@ func test_an_unmet_ask_refuses_politely_and_names_the_price() -> void:
 
 
 func test_a_met_ask_recruits_and_the_settler_moves_to_town() -> void:
+	state.settlement.town_tier = 1
 	state.pack.items["marsh_reed"] = 3
 	var moved := [false]
 	state.settlers_changed.connect(func() -> void: moved[0] = true)

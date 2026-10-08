@@ -167,6 +167,11 @@ static func at_job_station(job: String, map_id: String, home_workbench: bool) ->
 	return map_id == _data()["jobStations"][job]["mapId"] or (home_workbench and map_id == "town_house")
 
 
+## The shop whose keeper runs a trade's station (smithing: Hilda's).
+static func station_shop(job: String) -> String:
+	return shop_at(_data()["jobStations"][job]["mapId"])
+
+
 ## The trades a hero can craft where they stand (the pack's Craft tab).
 static func jobs_here(map_id: String, home_workbench: bool) -> Array[String]:
 	var jobs: Array[String] = []

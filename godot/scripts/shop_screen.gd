@@ -130,7 +130,7 @@ func _select(index: int) -> void:
 ## The trade this station crafts, if any (the smithy forges, Vex brews).
 func _craft_job() -> String:
 	for job: String in ["smithing", "alchemy"]:
-		if Economy.at_job_station(job, GameState.world.map_id, false):
+		if GameState.at_station(job) and Economy.station_shop(job) == shop_id:
 			return job
 	return ""
 

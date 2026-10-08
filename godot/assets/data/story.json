@@ -54,6 +54,22 @@
         "hold": 3.6
       },
       {
+        "kind": "tint",
+        "color": "#ff5a1a",
+        "alpha": 0.5,
+        "seconds": 0.8
+      },
+      {
+        "kind": "shake",
+        "strength": 9,
+        "seconds": 1.4
+      },
+      {
+        "kind": "caption",
+        "text": "In one night he burned Pixelheim to the ground.",
+        "hold": 3.4
+      },
+      {
         "kind": "fade",
         "to": "black",
         "seconds": 0.7

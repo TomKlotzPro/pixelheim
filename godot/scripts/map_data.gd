@@ -29,6 +29,9 @@ static func load_tiered(map_id: String, projects: Array, house_tier: int) -> Map
 		var patches := Town.town_patches(projects)
 		for cell: Vector2i in patches:
 			town.grid[cell] = patches[cell]
+		# A burnt house has no way in (PIX-146).
+		for ruin: Dictionary in Town.ruins(projects):
+			town.portals.erase(ruin["door"])
 		return town
 	if map_id != "town_house" or house_tier <= 1:
 		return load_by_id(map_id)

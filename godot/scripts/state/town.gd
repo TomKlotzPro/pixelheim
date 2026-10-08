@@ -16,8 +16,9 @@ static func _data() -> Dictionary:
 	return _doc
 
 
+## A town age by number, 0 (the Ashes, PIX-146) to MAX_TIER (the City).
 static func tier(number: int) -> Dictionary:
-	return _data()["tiers"][clampi(number, 1, MAX_TIER) - 1]
+	return _data()["tiers"][clampi(number, 0, MAX_TIER)]
 
 
 ## The tier the ledger offers next; {} at the cap.
@@ -144,9 +145,72 @@ static func project_board() -> Vector2i:
 	return Vector2i(int(at["x"]), int(at["y"]))
 
 
-## The town map's cells a set of finished projects changes: cell -> tile.
+## What Fafnyr left (PIX-146): each Hamlet project not yet built stands as
+## ruins - [{rect: Rect2i, door: Vector2i (-1, -1 for a house with none),
+## project}] - its doors shut.
+static func ruins(done: Array) -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	for project_entry: Dictionary in age(1).get("projects", []):
+		if project_entry["id"] in done:
+			continue
+		for ruin: Dictionary in project_entry.get("ruins", []):
+			var r: Array = ruin["rect"]
+			var door: Array = ruin.get("door", [-1, -1])
+			out.append({
+				"rect": Rect2i(int(r[0]), int(r[1]), int(r[2]) - int(r[0]) + 1, int(r[3]) - int(r[1]) + 1),
+				"door": Vector2i(int(door[0]), int(door[1])),
+				"project": project_entry["id"],
+			})
+	return out
+
+
+## A ruin as tiles: ash where the house stood, its burnt frame as a log fence
+## (open where the door was), rubble here and there inside.
+static func ruin_tiles(ruin: Dictionary) -> Dictionary:
+	var out := {}
+	var rect: Rect2i = ruin["rect"]
+	for y in range(rect.position.y, rect.end.y):
+		for x in range(rect.position.x, rect.end.x):
+			var cell := Vector2i(x, y)
+			var edge := x == rect.position.x or x == rect.end.x - 1 or y == rect.position.y or y == rect.end.y - 1
+			if cell == ruin["door"]:
+				out[cell] = "ash"
+			elif edge:
+				out[cell] = "fence"
+			elif (x * 7 + y * 13) % 9 == 0:
+				out[cell] = "crate" if (x + y) % 2 == 0 else "barrel"
+			else:
+				out[cell] = "ash"
+	return out
+
+
+## Where the keepers stand at their stalls while their roofs are rubble, a
+## crate of their wares beside them; and Sela's tent, while the inn is.
+static func stall_crates(done: Array) -> Dictionary:
+	var out := {}
+	for npc: Dictionary in Npcs._data()["npcs"]:
+		var stall: Dictionary = npc.get("stall", {})
+		if stall.is_empty() or stall["project"] in done or npc["id"] == "innkeeper":
+			continue
+		var side := -1 if int(stall["x"]) < 28 else 1
+		out[Vector2i(int(stall["x"]) + side, int(stall["y"]))] = "crate"
+	return out
+
+
+static func ashes_tent(done: Array) -> Vector2i:
+	if "the_inn" in done:
+		return Vector2i(-1, -1)
+	var tent: Dictionary = _data()["ashesCamp"]["tent"]
+	return Vector2i(int(tent["x"]), int(tent["y"]))
+
+
+## The town map's cells a set of finished projects changes: cell -> tile,
+## the ruins of what isn't rebuilt yet included.
 static func town_patches(done: Array) -> Dictionary:
 	var out := {}
+	for ruin: Dictionary in ruins(done):
+		out.merge(ruin_tiles(ruin), true)
+	out.merge(stall_crates(done), true)
 	for entry: Dictionary in ages():
 		for candidate: Dictionary in entry["projects"]:
 			if candidate["id"] in done:
