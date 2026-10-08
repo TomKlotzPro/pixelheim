@@ -143,6 +143,10 @@ static func material_sources(item_id: String) -> Array[Dictionary]:
 		if item_id in pool["stackIds"]:
 			out.append({"kind": "loot", "text": "now and then in loot from floor %d on" % pool["floor"]})
 			break
+	# What comes up on a line (PIX-165): fishing at Saltmere.
+	for entry: Array in combat.get("fishing", {}).get("catches", []):
+		if entry[0] == item_id:
+			out.append({"kind": "fishing", "text": "caught fishing off Saltmere's jetty and rocks"})
 	for level in range(1, combat["levels"].size() + 1):
 		if item_id in combat["levels"][level - 1].get("rewardItemIds", []):
 			out.append({"kind": "hoard", "text": "the hoard of %s" % combat["levels"][level - 1]["name"]})

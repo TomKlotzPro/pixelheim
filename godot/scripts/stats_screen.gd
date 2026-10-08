@@ -28,6 +28,10 @@ func _info() -> String:
 		"HP %d/%d    %s %d/%d" % [hero.hp, hero.stats["maxHp"], resource, hero.mp, hero.stats["maxMp"]],
 		"DEF %d    Carry %d/%d" % [HeroRules.total_defense(hero, pack), pack.carried_weight(), Skills.carry_capacity(hero, pack)],
 	]
+	# Armour sets worn (PIX-166): what each gives at the pieces worn.
+	var sets := pack.set_counts()
+	for set_id: String in sets:
+		lines.append(Catalog.set_line(set_id, int(sets[set_id])))
 	if selected < Skills.STATS.size():
 		var stat: String = Skills.STATS[selected]
 		var info := Skills.info(stat, hero, pack)

@@ -42,3 +42,25 @@ static func level_count() -> int:
 ## {mapId, x, y, facing}: where new heroes wake (TOWN_SPAWN in shared.ts).
 static func town_spawn() -> Dictionary:
 	return _data()["townSpawn"]
+
+
+## An armour set (PIX-166): {name, pieces: [item ids], bonuses: {"3": {...},
+## "5": {...}}}, or {}.
+static func armour_set(set_id: String) -> Dictionary:
+	return _data().get("sets", {}).get(set_id, {})
+
+
+## One line saying what a set gives and how much of it is worn: "Saltmere
+## Oilskin (3/5): 3 pieces +2 DEX; 5 pieces +3 DEX, +3 armor".
+static func set_line(set_id: String, worn: int) -> String:
+	var entry := armour_set(set_id)
+	var parts: Array[String] = []
+	var bonuses: Dictionary = entry.get("bonuses", {})
+	for at: String in bonuses:
+		var gives: Array[String] = []
+		for stat: String in bonuses[at].get("grants", {}):
+			gives.append("+%d %s" % [int(bonuses[at]["grants"][stat]), stat.substr(0, 3).to_upper()])
+		if int(bonuses[at].get("armor", 0)) > 0:
+			gives.append("+%d armor" % int(bonuses[at]["armor"]))
+		parts.append("%s pieces %s" % [at, ", ".join(gives)])
+	return "%s (%d/%d): %s" % [entry.get("name", set_id), worn, entry.get("pieces", []).size(), "; ".join(parts)]

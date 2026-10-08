@@ -95,7 +95,13 @@
     "fresh_fish": "survival-rpg-icons/Food/Fish-01.png",
     "pearl": "survival-rpg-icons/Gem/Crystal-Fragment-02.png",
     "old_boot": "survival-rpg-icons/Armour/Leather-Boots-19.png",
-    "tams_ladle": "survival-rpg-icons/Metal/Metal-Large-Cup-01.png"
+    "tams_ladle": "survival-rpg-icons/Metal/Metal-Large-Cup-01.png",
+    "oilskin_hood": "survival-rpg-icons/Armour/Leather-Cap-12.png",
+    "oilskin_coat": "survival-rpg-icons/Armour/Leather-Jacket-12.png",
+    "oilskin_gloves": "survival-rpg-icons/Armour/Leather-Gloves-12.png",
+    "oilskin_boots": "survival-rpg-icons/Armour/Leather-Boots-12.png",
+    "saltwood_buckler": "survival-rpg-icons/Armour/Wooden-Shield-09.png",
+    "tidecutter": "survival-rpg-icons/Tools/Knife-09.png"
   },
   "ailments": {
     "poison": "puny-skills/Indicators/Symbol Indicator/Poisoned-Indicator.png",
