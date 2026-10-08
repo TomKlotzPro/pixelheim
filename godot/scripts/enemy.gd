@@ -1,14 +1,17 @@
 extends CharacterBody2D
-## A monster in the field: wanders near its spawn, chases the hero on sight,
-## bites on contact. Its numbers are the web bestiary's (`fighter` from
+## A monster in the field: wanders near its home, notices a hero it can see
+## (a "!" and a hop first), chases, bites after a tell, and gives up a chase
+## that strays too far, walking home to heal (PIX-142). Its numbers are the web bestiary's (`fighter` from
 ## Bestiary.spawn): hits land through Bestiary's damage formulas, and its
 ## death pays out through GameState.defeat_monster (via the world). It wears
 ## the Puny sheet PunyArt assigns its species, walking the way it moves.
 
 const WANDER_SPEED := 22.0
 const CHASE_SPEED := 55.0
-const SIGHT_RADIUS := 96.0
+const HOMEWARD_SPEED := 70.0
 const CONTACT_RADIUS := 13.0
+## A bite that was told lands if the hero is still this close.
+const BITE_REACH := 20.0
 const CONTACT_COOLDOWN := 0.9
 const ELITE_TINT := Color(1.0, 0.82, 0.7)
 
@@ -31,8 +34,16 @@ var ailments := Ailments.new()
 ## PunyArt.monster spec, and the way it last faced.
 var art: Dictionary
 var facing := "down"
-## True while it has the hero in sight; the first sighting is heard (bump).
+## True from the alert until it gives up; the alert is heard (bump).
 var hunting := false
+## Where it lives: wanders around it, gives up a chase too far from it.
+var home := Vector2.ZERO
+## "idle" (at home), "alert" (the "!" wind-up), "chase", "homeward".
+var mode := "idle"
+var alert_left := 0.0
+## Seconds until a told bite lands; negative while no bite is coming.
+var tell_left := -1.0
+var mark: PanelContainer
 
 
 func _ready() -> void:
@@ -96,29 +107,27 @@ func _physics_process(delta: float) -> void:
 		return
 	var player: CharacterBody2D = world.player
 	var to_player := player.global_position - global_position
-	if to_player.length() < SIGHT_RADIUS and not player.dead:
-		if not hunting:
-			hunting = true
-			world.on_enemy_noticed(self)
-		velocity = to_player.normalized() * CHASE_SPEED
-		if to_player.length() < CONTACT_RADIUS and can_bite:
-			can_bite = false
-			_play("attack" if sprite.sprite_frames.has_animation("attack_" + facing) else "sword")
-			player.take_hit(
-				Bestiary.monster_attack_damage(fighter, GameState.hero, GameState.pack, GameState.roll),
-				global_position, fighter.get("inflicts")
-			)
-			get_tree().create_timer(CONTACT_COOLDOWN).timeout.connect(
-				func() -> void: can_bite = true
-			)
-	else:
-		hunting = false
-		wander_time -= delta
-		if wander_time <= 0:
-			wander_time = randf_range(0.8, 2.0)
-			var dirs := [Vector2.ZERO, Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT]
-			wander_dir = dirs.pick_random()
-		velocity = wander_dir * WANDER_SPEED
+	match mode:
+		"alert":
+			velocity = Vector2.ZERO
+			alert_left -= delta
+			if alert_left <= 0:
+				mode = "chase"
+		"chase":
+			if player.dead or Packs.gives_up(home, global_position, player.global_position):
+				_give_up()
+			else:
+				_chase(to_player, delta)
+		"homeward":
+			var back := home - global_position
+			velocity = back.normalized() * HOMEWARD_SPEED
+			if back.length() < 4:
+				_settle()
+		_:
+			if not player.dead and world.can_notice(self):
+				notice()
+			else:
+				_wander(delta)
 	move_and_slide()
 	if velocity.length() > 1:
 		facing = _dir_of(velocity)
@@ -126,6 +135,104 @@ func _physics_process(delta: float) -> void:
 	if sprite.is_playing() and not sprite.sprite_frames.get_animation_loop(sprite.animation):
 		return
 	_play("walk" if velocity.length() > 1 else "idle")
+
+
+## The hero is seen: a "!" over the head and a hop, then the chase.
+func notice() -> void:
+	mode = "alert"
+	hunting = true
+	alert_left = float(Packs.rules()["windUpSeconds"])
+	world.on_enemy_noticed(self)
+	_play("idle")
+	if mark == null:
+		mark = _alert_bubble()
+		add_child(mark)
+	mark.modulate.a = 1.0
+	mark.visible = true
+	var fade := mark.create_tween()
+	fade.tween_interval(alert_left + 0.5)
+	fade.tween_property(mark, "modulate:a", 0.0, 0.25)
+	var hop := sprite.create_tween()
+	var rest := sprite.position
+	hop.tween_property(sprite, "position:y", rest.y - 5, alert_left * 0.4).set_ease(Tween.EASE_OUT)
+	hop.tween_property(sprite, "position:y", rest.y, alert_left * 0.6).set_ease(Tween.EASE_IN)
+
+
+## A "!" in a white bubble over the head, built at the UI's size and drawn
+## at half of it: one art pixel per font pixel.
+func _alert_bubble() -> PanelContainer:
+	var bubble := PanelContainer.new()
+	var box := StyleBoxFlat.new()
+	box.bg_color = Color("fff6dc")
+	box.border_color = Color(0.12, 0.07, 0.05)
+	box.set_border_width_all(2)
+	box.set_corner_radius_all(4)
+	box.content_margin_left = 6
+	box.content_margin_right = 6
+	box.content_margin_top = 0
+	box.content_margin_bottom = 0
+	bubble.add_theme_stylebox_override("panel", box)
+	bubble.add_child(UiStyle.strong("!", 18, Color("d8433f")))
+	bubble.scale = Vector2.ONE * 0.5
+	bubble.z_index = 10
+	bubble.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var lift := -20.0 * sprite.scale.y - 16
+	bubble.resized.connect(func() -> void: bubble.position = Vector2(-bubble.size.x * 0.25, lift))
+	return bubble
+
+
+## Straight at the hero; in reach, a flash tells the bite, which lands if the
+## hero is still close when the tell is done.
+func _chase(to_player: Vector2, delta: float) -> void:
+	velocity = to_player.normalized() * CHASE_SPEED
+	if tell_left >= 0:
+		velocity *= 0.3
+		tell_left -= delta
+		if tell_left < 0:
+			_bite(to_player)
+	elif to_player.length() < CONTACT_RADIUS and can_bite:
+		tell_left = float(Packs.rules()["biteTellSeconds"])
+		var flash := sprite.create_tween()
+		flash.tween_property(sprite, "modulate", Color(1.7, 1.7, 1.5), tell_left * 0.5)
+		flash.tween_property(sprite, "modulate", Color.WHITE, tell_left * 0.5)
+
+
+func _bite(to_player: Vector2) -> void:
+	if to_player.length() > BITE_REACH:
+		return
+	can_bite = false
+	_play("attack" if sprite.sprite_frames.has_animation("attack_" + facing) else "sword")
+	world.player.take_hit(
+		Bestiary.monster_attack_damage(fighter, GameState.hero, GameState.pack, GameState.roll),
+		global_position, fighter.get("inflicts")
+	)
+	get_tree().create_timer(CONTACT_COOLDOWN).timeout.connect(func() -> void: can_bite = true)
+
+
+## Too far from home or behind: back home, deaf to the hero on the way.
+func _give_up() -> void:
+	mode = "homeward"
+	hunting = false
+	tell_left = -1.0
+
+
+## Home again: whole, and watching.
+func _settle() -> void:
+	mode = "idle"
+	fighter["hp"] = fighter["maxHp"]
+	health_bar.visible = false
+	health_bar_back.visible = false
+	health_bar.size.x = 16.0
+
+
+## A step this way or that, never past the leash.
+func _wander(delta: float) -> void:
+	wander_time -= delta
+	if wander_time <= 0:
+		wander_time = randf_range(0.8, 2.0)
+		var dirs := [Vector2.ZERO, Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT]
+		wander_dir = Packs.wander_dir(home, global_position, dirs.pick_random())
+	velocity = wander_dir * WANDER_SPEED
 
 
 ## A landed swing: `damage` is already Bestiary.hero_attack_damage's verdict;
@@ -140,6 +247,12 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null) -> void:
 	tween.tween_property(sprite, "modulate", Color(1, 0.4, 0.4), 0.06)
 	tween.tween_property(sprite, "modulate", Color.WHITE, 0.12)
 	_lose(damage, Color(1, 0.95, 0.85))
+	# Struck from anywhere, it turns on the hero at once.
+	if not dying and mode != "chase":
+		mode = "chase"
+		if not hunting:
+			hunting = true
+			world.on_enemy_noticed(self)
 	if not dying and ailments.inflict(infliction, GameState.roll):
 		world.log_line("%s is afflicted by %s!" % [fighter["name"], infliction["kind"]])
 

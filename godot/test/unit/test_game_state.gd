@@ -135,7 +135,7 @@ func test_moving_remembers_position_and_sight() -> void:
 	assert_true(Discovery.is_discovered(state.world.discovered, "town", Vector2i(18, 32)))
 	assert_eq(state.world.slain, ["town_spawn_1"], "same map keeps its slain ledger")
 	state.move_to(MapData.load_by_id("overworld"), Vector2i(48, 40), Vector2.UP)
-	assert_eq(state.world.slain, [], "a new map clears it")
+	assert_eq(state.world.slain, ["town_spawn_1"], "a door no longer clears it (PIX-142)")
 	assert_true(state.dirty)
 
 

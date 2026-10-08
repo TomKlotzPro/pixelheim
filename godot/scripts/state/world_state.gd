@@ -11,8 +11,12 @@ var cell := Vector2i.ZERO
 var facing := "down"
 var discovered := {}
 var opened_chests: Array[String] = []
-## Visible-spawn ids cleared on the CURRENT map (web semantics); reset on map change.
+## Visible-spawn ids whose packs are cleared, on any map (PIX-142: no longer
+## reset at every door). A pack comes back after Packs' respawnSteps or a
+## night at the inn.
 var slain: Array[String] = []
+## Spawn id -> the step it was cleared on (saved as slainAt, only when kept).
+var slain_at := {}
 ## Tiles walked: turns the day/night wheel. Fractional in play, whole in saves.
 var steps := 0.0
 
@@ -56,6 +60,9 @@ static func from_dict(data: Dictionary) -> WorldState:
 	world.discovered = discovered_from_json(world_data.get("discovered", {}))
 	world.opened_chests.assign(world_data.get("openedChests", []))
 	world.slain.assign(world_data.get("slain", []))
+	var cleared: Dictionary = world_data.get("slainAt", {})
+	for spawn_id: String in cleared:
+		world.slain_at[spawn_id] = int(cleared[spawn_id])
 	world.steps = data.get("worldSteps", 0)
 	return world
 
@@ -67,4 +74,6 @@ func write_into(state: Dictionary) -> void:
 		"openedChests": opened_chests.duplicate(),
 		"slain": slain.duplicate(),
 	}
+	if not slain_at.is_empty():
+		state["world"]["slainAt"] = slain_at.duplicate()
 	state["worldSteps"] = int(steps)

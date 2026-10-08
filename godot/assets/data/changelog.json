@@ -1,6 +1,19 @@
 {
   "releases": [
     {
+      "version": "0.84.0",
+      "date": "2026-10-08",
+      "codename": "Homebodies",
+      "notes": [
+        "MONSTERS HAVE HOMES: each pack lives at its own spot and wanders a few steps from it; lead one too far and it gives up and walks home to heal",
+        "NO MORE SURPRISES: a monster notices you only when it is on your screen, within five tiles and with nothing solid between you - and it shows it, with a \"!\" over its head and a hop before it charges",
+        "A TELL BEFORE THE BITE: monsters flash before they bite, and the bite misses if you step away in time",
+        "SAFE ARRIVALS: no pack lives within 8 tiles of a door or a waypoint, and nothing notices you in the first moment after you arrive",
+        "CLEARED STAYS CLEARED: walking through a door no longer brings every pack back; a cleared pack returns after about 500 steps or a night at the inn, and never where you can watch it appear",
+        "THE VIEW CLEARS THE DOCK: the camera centres your hero in the world above the dock, not behind it"
+      ]
+    },
+    {
       "version": "0.83.0",
       "date": "2026-10-08",
       "codename": "Hard Earned",

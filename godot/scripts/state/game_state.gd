@@ -245,11 +245,9 @@ func _notification(what: int) -> void:
 		save_now()
 
 
-## The hero stands on a new cell: remember it, see around it. Changing maps
-## clears the slain ledger (it only ever describes the current map).
+## The hero stands on a new cell: remember it, see around it. The slain
+## ledger outlives the door (PIX-142): packs come back on their own time.
 func move_to(map: MapData, cell: Vector2i, facing: Vector2) -> void:
-	if map.id != world.map_id:
-		world.slain.clear()
 	world.map_id = map.id
 	world.cell = cell
 	world.facing = WorldState.facing_name(facing)
@@ -394,6 +392,7 @@ func rest_at_inn() -> String:
 		return "No coin, no bed. (Rest costs %dg.)" % cost
 	pack.gold -= cost
 	_make_whole()
+	wake_the_wilds()
 	_pack_changed()
 	return "You rest at the inn. Fully restored. (-%dg)" % cost
 
@@ -768,6 +767,7 @@ func wake_at_inn() -> Dictionary:
 	settlement.bard_song = false
 	var inn: Dictionary = Catalog._data()["innRest"]
 	_make_whole()
+	wake_the_wilds()
 	save_now()
 	message.emit("You wake at the inn. The innkeeper says nothing. Kind of her.")
 	return inn
@@ -829,7 +829,7 @@ func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, fl
 		pack.add_item(drop["itemId"])
 		log.append("%s drops: %s." % [fighter["name"], Catalog.item_name(drop["itemId"])])
 	if spawn_id != "":
-		world.slain.append(spawn_id)
+		clear_pack(spawn_id)
 	var material: String = Bestiary._data()["regionMaterials"].get(region_id, "")
 	if material != "" and roll.call() < Bestiary.forage_chance(hero.jobs["foraging"]["level"]):
 		var count := 1 + (1 if roll.call() < Bestiary.double_forage_chance(hero.jobs["foraging"]["level"]) else 0)
@@ -868,6 +868,28 @@ func _grant_levels() -> int:
 		if HeroRules.rank_index(hero.level) > rank_before:
 			ranked_up.emit(Ranks.title(hero.role_id, hero.level))
 	return gained
+
+
+## A spawn's pack is cleared: it stays down for Packs' respawnSteps (PIX-142).
+func clear_pack(spawn_id: String) -> void:
+	if spawn_id not in world.slain:
+		world.slain.append(spawn_id)
+	world.slain_at[spawn_id] = int(world.steps)
+	mark_dirty()
+
+
+## A cleared pack is back at its home.
+func revive_pack(spawn_id: String) -> void:
+	world.slain.erase(spawn_id)
+	world.slain_at.erase(spawn_id)
+	mark_dirty()
+
+
+## A night at the inn: every cleared pack is home again by morning.
+func wake_the_wilds() -> void:
+	world.slain.clear()
+	world.slain_at.clear()
+	mark_dirty()
 
 
 ## Whether this hero has seen a story moment (Cutscene scenes, PIX-32).
