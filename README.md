@@ -68,7 +68,8 @@ godot/                 the game (Godot 4.7, GDScript)
   scripts/
     state/             the rules and the save: GameState (autoload) and pure static classes
                        - SaveCodec, Bestiary, Economy, Skills, Quests, Town... - tested with GUT
-    world.gd           the world: maps, actors, the HUD, interaction
+    world.gd           the play: actors, the HUD, interaction, combat, music
+    map_view.gd        a map as drawn: ground, houses, rooms, dungeons, props, chests
     *_screen.gd        menus and screens, all styled by ui_style.gd
     puny_*.gd          Shade's art laid over the maps: terrain, dungeons, the town, props, rooms
   assets/              art (Shade's CC0 packs), fonts, audio, and the game's data:

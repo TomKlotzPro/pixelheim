@@ -149,7 +149,8 @@ gzipped over the wire). The deploy puts it at the root of the Pages site; old
 - `scenes/main.tscn` — entry scene; all other nodes are built in code
 - `scripts/world_tiles.gd` — what each tile lets the hero do (walkability) and its colour on the map
 - `scripts/map_data.gd` — loads the JSON maps in `assets/maps/` (pure data, unit-tested)
-- `scripts/world.gd` — scene orchestration: tilemap, spawns, HUD, interaction
+- `scripts/world.gd` — the play: entering maps, the hero, villagers and monsters, the HUD, interaction, combat, music
+- `scripts/map_view.gd` — one visit to a map as drawn (PIX-136): Shade's ground, houses, rooms and dungeons, props, field scatter, chests, door signs, the house's furniture and the invisible blockers; `plan` marks what all that covers on the map before anything is drawn, `build` draws it behind the world's y-sorted actors
 - `scripts/harness.gd` — the screenshot harness below, added only for `--screenshot` runs
 - `scripts/state/` — the `GameState` autoload and its typed sections (hero, pack, settlement, progression, world), the save codec, slots and settings
 - `scripts/player.gd` / `scripts/enemy.gd` — live combat actors
