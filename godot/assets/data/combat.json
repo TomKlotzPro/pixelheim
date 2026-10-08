@@ -341,8 +341,8 @@
     {
       "id": "ash_4",
       "mapId": "overworld",
-      "x": 92,
-      "y": 26
+      "x": 89,
+      "y": 23
     },
     {
       "id": "forest_1",
@@ -365,8 +365,8 @@
     {
       "id": "marsh_1",
       "mapId": "overworld",
-      "x": 2,
-      "y": 34
+      "x": 4,
+      "y": 41
     },
     {
       "id": "marsh_2",
@@ -395,8 +395,8 @@
     {
       "id": "deep_3",
       "mapId": "deepwood",
-      "x": 6,
-      "y": 30
+      "x": 3,
+      "y": 33
     },
     {
       "id": "deep_4",
@@ -413,14 +413,14 @@
     {
       "id": "mire_2",
       "mapId": "mirefen",
-      "x": 42,
-      "y": 22
+      "x": 39,
+      "y": 19
     },
     {
       "id": "mire_3",
       "mapId": "mirefen",
-      "x": 48,
-      "y": 30
+      "x": 45,
+      "y": 33
     },
     {
       "id": "mire_4",
@@ -429,6 +429,16 @@
       "y": 44
     }
   ],
+  "packs": {
+    "wanderTiles": 3,
+    "noticeTiles": 5,
+    "giveUpTiles": 8,
+    "safeTiles": 8,
+    "respawnSteps": 500,
+    "graceSeconds": 1.5,
+    "windUpSeconds": 0.4,
+    "biteTellSeconds": 0.25
+  },
   "bossIds": [
     "dragon",
     "lich"

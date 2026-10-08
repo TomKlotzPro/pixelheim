@@ -31,6 +31,11 @@ var dock: Control
 var log_box: VBoxContainer
 ## spawn id -> monsters of its pack still standing
 var pack_alive := {}
+## When the hero last arrived somewhere: a moment's grace before anything
+## notices them (Packs graceSeconds).
+var arrived_at := -100.0
+## Seconds until the next look for packs due to come home.
+var respawn_check := 0.0
 ## Sound's view of the hero: what changed is heard (coin, heal, hurt).
 var heard_gold := 0
 var heard_hp := 0
@@ -167,6 +172,10 @@ func _process(delta: float) -> void:
 	last_player_position = player.position
 	sky_overlay.color = DUNGEON_GLOOM if map.floor_level > 0 else DayNight.sky_at(GameState.world.steps)
 	_update_music()
+	respawn_check -= delta
+	if respawn_check <= 0:
+		respawn_check = 1.0
+		_revive_packs()
 	var cell := Vector2i((player.position / TILE).floor())
 	if cell == player_cell:
 		return
@@ -223,8 +232,9 @@ func on_player_died() -> void:
 	player.respawn(_cell_center(bed))
 	last_player_position = player.position  # a respawn is not a walk
 
-## One monster of `species` at `cell`; wild ones pay the reduced wild rewards.
-func spawn_enemy(species: String, cell: Vector2i, region := "", spawn_id := "", elite := false, wild := true) -> void:
+## One monster of `species` at `cell`, at home there unless `home` says where
+## its pack lives; wild ones pay the reduced wild rewards.
+func spawn_enemy(species: String, cell: Vector2i, region := "", spawn_id := "", elite := false, wild := true, home := Vector2i(-1, -1)) -> Node:
 	var enemy := preload("res://scripts/enemy.gd").new()
 	enemy.world = self
 	var fighter := Bestiary.spawn(species, elite)
@@ -232,8 +242,52 @@ func spawn_enemy(species: String, cell: Vector2i, region := "", spawn_id := "", 
 	enemy.region = region
 	enemy.spawn_id = spawn_id
 	enemy.position = _cell_center(cell)
+	enemy.home = _cell_center(home if home != Vector2i(-1, -1) else cell)
 	enemy.add_to_group("mobs")
 	actors.add_child(enemy)
+	return enemy
+
+
+## Whether a monster may notice the hero now (PIX-142): not in the moment
+## after an arrival, only close by, only where the player can see it (on
+## screen, above the dock) and only with nothing solid between them.
+func can_notice(enemy: Node) -> bool:
+	if Time.get_ticks_msec() / 1000.0 - arrived_at < float(Packs.rules()["graceSeconds"]):
+		return false
+	var at: Vector2 = enemy.global_position
+	if not Packs.within_notice(at, player.global_position) or not in_view(at):
+		return false
+	return Packs.can_see(map, Vector2i((at / TILE).floor()), Vector2i((player.position / TILE).floor()))
+
+
+## The world the player can see: the screen above the dock, widened by
+## `margin` world pixels on every side.
+func view_rect(margin := 0.0) -> Rect2:
+	if camera == null:
+		return Rect2()
+	var half := Vector2(640, 360) / camera.zoom.x
+	# Where the camera stands, held inside the map as its limits hold it.
+	var center := camera.global_position
+	center.x = clampf(center.x, camera.limit_left + half.x, maxf(camera.limit_left + half.x, camera.limit_right - half.x))
+	center.y = clampf(center.y, camera.limit_top + half.y, maxf(camera.limit_top + half.y, camera.limit_bottom - half.y))
+	return Rect2(center - half, Vector2(1280, _dock_top()) / camera.zoom.x).grow(margin)
+
+
+## Where the dock begins on the 1280x720 canvas (the bottom, before it is built).
+func _dock_top() -> float:
+	return dock.top() if dock != null and dock.top() > 0 else 720.0
+
+
+## How far below the hero the camera stands, so the hero is centred in the
+## world above the dock rather than on the whole screen (PIX-142).
+func _frame_lift() -> float:
+	if camera == null:
+		return 0.0
+	return roundf((720.0 - _dock_top()) / 2.0 / camera.zoom.y)
+
+
+func in_view(at: Vector2, margin := 0.0) -> bool:
+	return view_rect(margin).has_point(at)
 
 ## A number that rises and fades where a blow landed.
 func float_number(value: int, at: Vector2, color: Color) -> void:
@@ -465,6 +519,7 @@ func _enter_map(next: MapData, arrival: Vector2i) -> void:
 	if view != null:
 		Sound.play("door")
 	hunted_at = -100.0
+	arrived_at = Time.get_ticks_msec() / 1000.0
 	for stale in get_tree().get_nodes_in_group("mobs") + get_tree().get_nodes_in_group("decor"):
 		stale.queue_free()
 	if view != null:
@@ -620,7 +675,7 @@ func _open_chest(chest: Dictionary) -> void:
 		var ambush := player_cell + Vector2i(0, -1)
 		if not map.is_walkable(ambush):
 			ambush = player_cell + Vector2i(1, 0)
-		spawn_enemy("mimic", ambush, map.region_at(ambush), "", false, true)
+		spawn_enemy("mimic", ambush, map.region_at(ambush), "", false, true).notice()
 
 func _collect_ground_treasure(cell: Vector2i) -> void:
 	var chest := _chest_at(cell)
@@ -666,26 +721,48 @@ func _spawn_player() -> void:
 	get_tree().root.size_changed.connect(_fit_zoom)
 	_teleported()
 
-## Packs at the web's visible spawns (spawns.ts): the species its region and
-## position decide, an elite roll each, none where the slain ledger says the
-## spawn was cleared on this visit.
+## Packs at their homes (the spawns): the species its region and position
+## decide, an elite roll each. A pack the slain ledger keeps down stays away;
+## one whose time is up comes home only where the hero can't see it appear
+## (PIX-142), now or on a later look (_revive_packs).
 func _spawn_enemies(data: MapData) -> void:
 	pack_alive = {}
 	for spawn: Dictionary in Bestiary.spawns_on(data.id):
 		if spawn["id"] in GameState.world.slain:
 			continue
-		var home := Vector2i(spawn["x"], spawn["y"])
-		var region := data.region_at(home)
-		var species := Bestiary.species_at(region, home)
-		var elite_chance := float(Bestiary.region(region)["eliteChance"])
-		var cells: Array[Vector2i] = [home]
-		for offset in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1), Vector2i(1, 1), Vector2i(-1, -1)]:
-			var cell: Vector2i = home + offset
-			if cells.size() < PACK_SIZE and data.is_walkable(cell) and data.region_at(cell) != "" and not data.portals.has(cell):
-				cells.append(cell)
-		for cell in cells:
-			spawn_enemy(species, cell, region, spawn["id"], GameState.roll.call() < elite_chance)
-		pack_alive[spawn["id"]] = cells.size()
+		_spawn_pack(data, spawn)
+	respawn_check = 0.0
+	_revive_packs()
+
+
+## Cleared packs whose time is up, back at homes out of view.
+func _revive_packs() -> void:
+	if map.floor_level > 0:
+		return
+	for spawn: Dictionary in Bestiary.spawns_on(map.id):
+		if not Packs.is_due(GameState.world, spawn["id"]):
+			continue
+		var home := _cell_center(Vector2i(spawn["x"], spawn["y"]))
+		if in_view(home, 2 * TILE):
+			continue
+		GameState.revive_pack(spawn["id"])
+		_spawn_pack(map, spawn)
+
+
+## One pack around its home: up to PACK_SIZE on open cells of its region.
+func _spawn_pack(data: MapData, spawn: Dictionary) -> void:
+	var home := Vector2i(spawn["x"], spawn["y"])
+	var region := data.region_at(home)
+	var species := Bestiary.species_at(region, home)
+	var elite_chance := float(Bestiary.region(region)["eliteChance"])
+	var cells: Array[Vector2i] = [home]
+	for offset in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1), Vector2i(1, 1), Vector2i(-1, -1)]:
+		var cell: Vector2i = home + offset
+		if cells.size() < PACK_SIZE and data.is_walkable(cell) and data.region_at(cell) != "" and not data.portals.has(cell):
+			cells.append(cell)
+	for cell in cells:
+		spawn_enemy(species, cell, region, spawn["id"], GameState.roll.call() < elite_chance, true, home)
+	pack_alive[spawn["id"]] = cells.size()
 
 func _build_hud() -> void:
 	var hud := CanvasLayer.new()
@@ -784,8 +861,8 @@ func _teleported() -> void:
 	_hero_tick_from = player.position
 	_hero_tick_to = player.position
 	if camera != null:
-		_camera_at = player.position
-		camera.global_position = player.position
+		_camera_at = player.position + Vector2(0, _frame_lift())
+		camera.global_position = _camera_at
 		camera.reset_smoothing()
 
 ## The camera eases toward where the hero is drawn this frame (between the
@@ -795,6 +872,7 @@ func _follow_hero(delta: float) -> void:
 	if camera == null or not camera_follows:
 		return
 	var drawn := _hero_tick_from.lerp(_hero_tick_to, Engine.get_physics_interpolation_fraction())
+	drawn.y += _frame_lift()
 	_camera_at = _camera_at.lerp(drawn, 1.0 - exp(-CAMERA_EASE * delta))
 	var pixels_per_unit := camera.zoom.x * _stretch()
 	camera.global_position = (_camera_at * pixels_per_unit).round() / pixels_per_unit
