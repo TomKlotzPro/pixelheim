@@ -1222,6 +1222,127 @@
       "damage": 20,
       "scaling": "strength",
       "slot": "weapon"
+    },
+    "frost_lily": {
+      "name": "Frost Lily",
+      "category": "misc",
+      "sprite": "herb",
+      "weight": 0,
+      "value": 16,
+      "description": "A pale flower that only opens in the snow. Vex says it keeps a spell cold."
+    },
+    "yeti_fur": {
+      "name": "Yeti Fur",
+      "category": "misc",
+      "sprite": "pelt",
+      "weight": 2,
+      "value": 22,
+      "description": "Thick, white and warm, and it smells exactly like a yeti."
+    },
+    "icefin": {
+      "name": "Icefin",
+      "category": "food",
+      "sprite": "fish",
+      "weight": 1,
+      "value": 18,
+      "restoreHp": 35,
+      "description": "Restores 35 HP. A pale fish from under the Frostgate ice. Sweet, and cold to the bone."
+    },
+    "caravan_strongbox": {
+      "name": "Gunnar's Strongbox",
+      "category": "misc",
+      "sprite": "chest",
+      "weight": 6,
+      "value": 0,
+      "quest": true,
+      "description": "An iron-bound box with a caravan's mark. Something has chewed one corner."
+    },
+    "lianes_lantern": {
+      "name": "Liane's Lantern",
+      "category": "misc",
+      "sprite": "lantern",
+      "weight": 2,
+      "value": 0,
+      "quest": true,
+      "description": "A brass storm-lantern, its glass etched with stars. Liane lit it the night before the climb so the five could find their way home. One of the five relics."
+    },
+    "frost_hood": {
+      "name": "Frostweave Hood",
+      "category": "apparel",
+      "sprite": "hood",
+      "weight": 1,
+      "value": 150,
+      "description": "Yeti fur lined with lily-woven cloth. Your thoughts stay sharp in the cold. Crafted, never sold.",
+      "armor": 2,
+      "slot": "head",
+      "set": "frostweave",
+      "grants": {
+        "intelligence": 1
+      }
+    },
+    "frostweave_robe": {
+      "name": "Frostweave Robe",
+      "category": "apparel",
+      "sprite": "robe",
+      "weight": 4,
+      "value": 320,
+      "description": "White as the pass and just as quiet. Spells cast in it come out crisp. Crafted, never sold.",
+      "armor": 5,
+      "slot": "body",
+      "set": "frostweave",
+      "grants": {
+        "intelligence": 1
+      }
+    },
+    "frost_mitts": {
+      "name": "Frostweave Mitts",
+      "category": "apparel",
+      "sprite": "gloves",
+      "weight": 1,
+      "value": 140,
+      "description": "Fingerless, so the hands can still shape a spell. Crafted, never sold.",
+      "armor": 1,
+      "slot": "hands",
+      "set": "frostweave",
+      "grants": {
+        "intelligence": 1
+      }
+    },
+    "frost_boots": {
+      "name": "Frostweave Boots",
+      "category": "apparel",
+      "sprite": "boots",
+      "weight": 2,
+      "value": 140,
+      "description": "Fur boots that never slip on ice. Mostly. Crafted, never sold.",
+      "armor": 2,
+      "slot": "feet",
+      "set": "frostweave"
+    },
+    "frost_ward": {
+      "name": "Rime Orb",
+      "category": "apparel",
+      "sprite": "orb",
+      "weight": 2,
+      "value": 260,
+      "description": "A ball of ice that never melts, held in the off hand. Blows come slower near it. Crafted, never sold.",
+      "armor": 3,
+      "slot": "offhand",
+      "set": "frostweave",
+      "grants": {
+        "intelligence": 1
+      }
+    },
+    "rime_staff": {
+      "name": "Rime Staff",
+      "category": "weapons",
+      "sprite": "staff",
+      "weight": 4,
+      "value": 330,
+      "description": "A white staff tipped with frost lily ice. It hums when it's cold, which is always. Crafted, never sold.",
+      "damage": 16,
+      "scaling": "intelligence",
+      "slot": "weapon"
     }
   },
   "roles": {
@@ -1533,7 +1654,9 @@
     "blackiron": "The Blackiron Valley",
     "shafts": "The Blackiron Shafts",
     "greyhold": "Greyhold",
-    "cellars": "The Greyhold Cellars"
+    "cellars": "The Greyhold Cellars",
+    "frostgate": "The Frostgate Pass",
+    "icecave": "The Ice Cave"
   },
   "levelCount": 15,
   "townSpawn": {
@@ -1620,6 +1743,30 @@
             "dexterity": 2
           },
           "armor": 3
+        }
+      }
+    },
+    "frostweave": {
+      "name": "Frostweave",
+      "region": "frost",
+      "pieces": [
+        "frost_hood",
+        "frostweave_robe",
+        "frost_mitts",
+        "frost_boots",
+        "frost_ward"
+      ],
+      "bonuses": {
+        "3": {
+          "grants": {
+            "intelligence": 2
+          }
+        },
+        "5": {
+          "grants": {
+            "intelligence": 3
+          },
+          "armor": 2
         }
       }
     }

@@ -1042,7 +1042,7 @@ func gather(spot_id: String, item_id: String) -> Array[String]:
 func fish(spot_id: String) -> String:
 	if not Gathering.fish_ready(world, spot_id):
 		return "Nothing's biting here yet. Try again in a while, or somewhere else."
-	var caught := Gathering.catch(roll)
+	var caught := Gathering.catch(roll, Gathering.fishing_spot(spot_id))
 	pack.add_item(caught)
 	world.gathered_at[spot_id] = int(world.steps)
 	var line := "You cast, wait... and land %s!" % Catalog.item_name(caught).to_lower() if caught != "old_boot" else "You cast, wait... and haul up an old boot."

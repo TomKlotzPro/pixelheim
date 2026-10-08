@@ -308,9 +308,9 @@ static func track_for(map_id: String, floor_level: int, fight: String) -> String
 	match map_id:
 		"deepwood", "mirefen", "town":
 			return map_id
-		"seacave", "shafts", "cellars":
+		"seacave", "shafts", "cellars", "icecave":
 			return "descent"
-		"overworld", "demo", "saltmere", "blackiron", "greyhold":
+		"overworld", "demo", "saltmere", "blackiron", "greyhold", "frostgate":
 			return "world"
 	return "interior"
 

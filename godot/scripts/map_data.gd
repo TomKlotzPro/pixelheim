@@ -19,6 +19,8 @@ var variant := ""
 ## How a map is drawn when it isn't the open air: "cave" draws it in dungeon
 ## stone (the sea cave, PIX-165).
 var style := ""
+## A cast over the whole map's ground (the ice cave's frost, PIX-169).
+var tint := Color.WHITE
 
 
 static func load_by_id(map_id: String) -> MapData:
@@ -53,6 +55,9 @@ static func load_from(path: String) -> MapData:
 	data.size = Vector2i(int(doc["width"]), int(doc["height"]))
 	data.spawn = Vector2i(int(doc["spawn"]["x"]), int(doc["spawn"]["y"]))
 	data.style = String(doc.get("style", ""))
+	if doc.has("tint"):
+		var tint: Array = doc["tint"]
+		data.tint = Color(float(tint[0]), float(tint[1]), float(tint[2]))
 	var tiles: Array = doc["tiles"]
 	for y in tiles.size():
 		var row: Array = tiles[y]

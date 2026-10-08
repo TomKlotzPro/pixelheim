@@ -5,6 +5,7 @@
 # A sketch (godot/maps-src/<id>.txt):
 #   id saltmere
 #   style cave                           (optional: drawn in dungeon stone)
+#   tint 0.8 0.92 1.1                    (optional: a cast over the ground)
 #   spawn 4 20
 #   portal 0 20 map overworld 16 61      (x y map <mapId> <x> <y>)
 #   portal 30 5 dungeon seacave          (x y dungeon <dungeonId>)
@@ -41,6 +42,8 @@ def parse(path):
             doc["id"] = word[1]
         elif word[0] == "style":
             doc["style"] = word[1]
+        elif word[0] == "tint":
+            doc["tint"] = [float(w) for w in word[1:4]]
         elif word[0] == "spawn":
             doc["spawn"] = {"x": int(word[1]), "y": int(word[2])}
         elif word[0] == "portal":
@@ -72,6 +75,8 @@ def write(doc):
     out = ["{", '  "id": %s,' % json.dumps(doc["id"]), '  "width": %d,' % len(rows[0]), '  "height": %d,' % len(rows)]
     if doc.get("style"):
         out.append('  "style": %s,' % json.dumps(doc["style"]))
+    if doc.get("tint"):
+        out.append('  "tint": %s,' % json.dumps(doc["tint"]))
     out.append('  "spawn": %s,' % json.dumps(doc["spawn"], indent=2).replace("\n", "\n  "))
     out.append('  "portals": %s,' % json.dumps(doc["portals"], indent=2).replace("\n", "\n  "))
     out.append('  "tiles": [')

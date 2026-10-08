@@ -37,11 +37,12 @@ func test_village_door_is_the_town_portal() -> void:
 func test_overworld_has_all_its_portals() -> void:
 	# The mountain, the undermountain, the town, the two passes, and the
 	# roads out to the bigger Reach (PIX-164: Saltmere; PIX-167: the mines;
-	# PIX-168: Greyhold).
-	assert_eq(map.portals.size(), 8)
+	# PIX-168: Greyhold; PIX-169: the Frostgate pass).
+	assert_eq(map.portals.size(), 9)
 	assert_eq(map.portals[Vector2i(16, 63)]["mapId"], "saltmere")
 	assert_eq(map.portals[Vector2i(0, 20)]["mapId"], "blackiron")
 	assert_eq(map.portals[Vector2i(95, 15)]["mapId"], "greyhold")
+	assert_eq(map.portals[Vector2i(68, 0)]["mapId"], "frostgate")
 
 
 func test_map_corners_are_impassable_mountains() -> void:

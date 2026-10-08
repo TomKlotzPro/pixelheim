@@ -210,6 +210,29 @@
         "kind": "gold",
         "amount": 150
       }
+    },
+    {
+      "id": "icecave_strongbox",
+      "mapId": "icecave",
+      "x": 41,
+      "y": 26,
+      "look": "chest",
+      "loot": {
+        "kind": "item",
+        "itemId": "caravan_strongbox",
+        "qty": 1
+      }
+    },
+    {
+      "id": "icecave_cache",
+      "mapId": "icecave",
+      "x": 3,
+      "y": 4,
+      "look": "chest",
+      "loot": {
+        "kind": "gold",
+        "amount": 160
+      }
     }
   ],
   "signs": {
@@ -263,7 +286,9 @@
     "blackiron": [],
     "shafts": [],
     "greyhold": [],
-    "cellars": []
+    "cellars": [],
+    "frostgate": [],
+    "icecave": []
   },
   "signsHouseOwned": {
     "town": [

@@ -50,6 +50,14 @@ static func fishing_spot_at(map_id: String, cell: Vector2i) -> Dictionary:
 	return {}
 
 
+## A fishing spot by its id, empty if there is none.
+static func fishing_spot(spot_id: String) -> Dictionary:
+	for spot: Dictionary in Bestiary._data().get("fishingSpots", []):
+		if spot["id"] == spot_id:
+			return spot
+	return {}
+
+
 ## A spot bites again once enough steps have passed since its last catch.
 static func fish_ready(world: WorldState, spot_id: String) -> bool:
 	if not world.gathered_at.has(spot_id):
@@ -57,9 +65,10 @@ static func fish_ready(world: WorldState, spot_id: String) -> bool:
 	return world.steps - float(world.gathered_at[spot_id]) >= float(Bestiary._data()["fishing"]["regrowSteps"])
 
 
-## What comes up on the line: a weighted pick of combat.json "fishing".
-static func catch(roll: Callable) -> String:
-	var catches: Array = Bestiary._data()["fishing"]["catches"]
+## What comes up on the line: a weighted pick of combat.json "fishing", or
+## of the spot's own "catches" (the ice hole's icefin, PIX-169).
+static func catch(roll: Callable, spot := {}) -> String:
+	var catches: Array = spot.get("catches", Bestiary._data()["fishing"]["catches"])
 	var total := 0
 	for entry: Array in catches:
 		total += int(entry[1])

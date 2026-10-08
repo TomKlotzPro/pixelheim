@@ -420,6 +420,45 @@
         "I wore the red cloak, once. Then they threw me in the cells for asking where the pay went.",
         "Ulla let me stay. I fetch the water. It's a living."
       ]
+    },
+    {
+      "id": "frost_aske",
+      "mapId": "frostgate",
+      "x": 11,
+      "y": 40,
+      "sprite": "hermit",
+      "name": "Aske the Hermit",
+      "wander": false,
+      "lines": [
+        "Liane paid me to keep her lamp oil dry and her door shut. Fifty years on, I'm still doing it. Nobody told me to stop.",
+        "She built the observatory over the old ice cave. Said the cold kept her glass true."
+      ]
+    },
+    {
+      "id": "frost_gunnar",
+      "mapId": "frostgate",
+      "x": 37,
+      "y": 41,
+      "sprite": "merchant",
+      "name": "Gunnar",
+      "wander": false,
+      "lines": [
+        "Three wagons up, one wagon down, and the down one's stuck. That's the Frostgate for you.",
+        "The yetis took the strongbox and left the furs. Even they know what's worth stealing."
+      ]
+    },
+    {
+      "id": "frost_linnea",
+      "mapId": "frostgate",
+      "x": 41,
+      "y": 38,
+      "sprite": "villager_woman",
+      "name": "Linnea",
+      "wander": true,
+      "lines": [
+        "I'm the caravan's herbalist. Up here that mostly means rubbing snow on frostbite.",
+        "Frost lilies only open in the snow. Vex in Pixelheim swears by them."
+      ]
     }
   ],
   "recruits": [

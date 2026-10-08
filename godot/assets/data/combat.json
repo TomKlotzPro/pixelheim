@@ -398,6 +398,91 @@
           "chance": 0.3
         }
       ]
+    },
+    "frost_wolf": {
+      "id": "frost_wolf",
+      "name": "Frost Wolf",
+      "sprite": "frost_wolf",
+      "maxHp": 52,
+      "attack": 21,
+      "defense": 4,
+      "xp": 46,
+      "gold": 18,
+      "level": 9,
+      "drops": [
+        {
+          "itemId": "wolf_pelt",
+          "chance": 0.4
+        }
+      ]
+    },
+    "yeti": {
+      "id": "yeti",
+      "name": "Yeti",
+      "sprite": "yeti",
+      "maxHp": 72,
+      "attack": 24,
+      "defense": 6,
+      "xp": 58,
+      "gold": 24,
+      "level": 10,
+      "drops": [
+        {
+          "itemId": "yeti_fur",
+          "chance": 0.35
+        }
+      ]
+    },
+    "wendigo": {
+      "id": "wendigo",
+      "name": "Wendigo",
+      "sprite": "wendigo",
+      "maxHp": 64,
+      "attack": 26,
+      "defense": 5,
+      "xp": 60,
+      "gold": 26,
+      "level": 10,
+      "inflicts": {
+        "kind": "stun",
+        "chance": 0.2,
+        "turns": 1,
+        "power": 0
+      }
+    },
+    "frost_mammoth": {
+      "id": "frost_mammoth",
+      "name": "Frost Mammoth",
+      "sprite": "frost_mammoth",
+      "maxHp": 120,
+      "attack": 26,
+      "defense": 10,
+      "xp": 80,
+      "gold": 30,
+      "level": 11,
+      "drops": [
+        {
+          "itemId": "yeti_fur",
+          "chance": 0.5
+        }
+      ]
+    },
+    "frost_drake": {
+      "id": "frost_drake",
+      "name": "Frost Drake",
+      "sprite": "frost_drake",
+      "maxHp": 140,
+      "attack": 30,
+      "defense": 9,
+      "xp": 110,
+      "gold": 60,
+      "level": 12,
+      "inflicts": {
+        "kind": "stun",
+        "chance": 0.2,
+        "turns": 1,
+        "power": 0
+      }
     }
   },
   "regions": {
@@ -602,6 +687,44 @@
         },
         {
           "monsterId": "ghost",
+          "weight": 2
+        }
+      ]
+    },
+    "frost": {
+      "name": "the Frostgate pass",
+      "dropFloor": 13,
+      "eliteChance": 0.12,
+      "monsters": [
+        {
+          "monsterId": "frost_wolf",
+          "weight": 4
+        },
+        {
+          "monsterId": "yeti",
+          "weight": 2
+        },
+        {
+          "monsterId": "wendigo",
+          "weight": 1
+        }
+      ]
+    },
+    "icecave": {
+      "name": "the ice cave",
+      "dropFloor": 14,
+      "eliteChance": 0.15,
+      "monsters": [
+        {
+          "monsterId": "yeti",
+          "weight": 3
+        },
+        {
+          "monsterId": "wendigo",
+          "weight": 2
+        },
+        {
+          "monsterId": "frost_mammoth",
           "weight": 2
         }
       ]
@@ -902,6 +1025,62 @@
       "x": 28,
       "y": 4,
       "species": "ghost"
+    },
+    {
+      "id": "frost_1",
+      "mapId": "frostgate",
+      "x": 12,
+      "y": 24,
+      "species": "frost_wolf"
+    },
+    {
+      "id": "frost_2",
+      "mapId": "frostgate",
+      "x": 14,
+      "y": 15,
+      "species": "frost_wolf"
+    },
+    {
+      "id": "frost_3",
+      "mapId": "frostgate",
+      "x": 46,
+      "y": 14,
+      "species": "yeti"
+    },
+    {
+      "id": "frost_4",
+      "mapId": "frostgate",
+      "x": 48,
+      "y": 30,
+      "species": "wendigo"
+    },
+    {
+      "id": "icecave_1",
+      "mapId": "icecave",
+      "x": 20,
+      "y": 24,
+      "species": "yeti"
+    },
+    {
+      "id": "icecave_2",
+      "mapId": "icecave",
+      "x": 20,
+      "y": 4,
+      "species": "wendigo"
+    },
+    {
+      "id": "icecave_3",
+      "mapId": "icecave",
+      "x": 36,
+      "y": 24,
+      "species": "frost_mammoth"
+    },
+    {
+      "id": "icecave_4",
+      "mapId": "icecave",
+      "x": 6,
+      "y": 6,
+      "species": "yeti"
     }
   ],
   "packs": {
@@ -1144,6 +1323,48 @@
       "mapId": "cellars",
       "x": 14,
       "y": 29
+    },
+    {
+      "id": "frost_patch_1",
+      "mapId": "frostgate",
+      "x": 9,
+      "y": 30
+    },
+    {
+      "id": "frost_patch_2",
+      "mapId": "frostgate",
+      "x": 36,
+      "y": 13
+    },
+    {
+      "id": "frost_patch_3",
+      "mapId": "frostgate",
+      "x": 48,
+      "y": 40
+    },
+    {
+      "id": "frost_patch_4",
+      "mapId": "frostgate",
+      "x": 18,
+      "y": 43
+    },
+    {
+      "id": "icecave_patch_1",
+      "mapId": "icecave",
+      "x": 24,
+      "y": 27
+    },
+    {
+      "id": "icecave_patch_2",
+      "mapId": "icecave",
+      "x": 42,
+      "y": 3
+    },
+    {
+      "id": "icecave_patch_3",
+      "mapId": "icecave",
+      "x": 3,
+      "y": 11
     }
   ],
   "bossIds": [
@@ -1422,7 +1643,9 @@
     "mines": "blackiron_ore",
     "shafts": "blackiron_ore",
     "castle": "old_steel",
-    "cellars": "old_steel"
+    "cellars": "old_steel",
+    "frost": "frost_lily",
+    "icecave": "frost_lily"
   },
   "families": {
     "slime": "beasts",
@@ -1451,7 +1674,12 @@
     "turncoat": "outlaws",
     "turncoat_bowman": "outlaws",
     "cutthroat": "outlaws",
-    "hollow_guard": "undead"
+    "hollow_guard": "undead",
+    "frost_wolf": "beasts",
+    "yeti": "beasts",
+    "wendigo": "undead",
+    "frost_mammoth": "beasts",
+    "frost_drake": "beasts"
   },
   "familyNames": {
     "beasts": "Beasts",
@@ -4634,6 +4862,52 @@
       "where": "the captain's hall at the far end of the Greyhold cellars",
       "notice": "",
       "seen": "The Hollow Captain rises from his chair. \"None pass. Not till Oskar comes home.\""
+    },
+    "rimefang": {
+      "name": "Rimefang",
+      "monsterId": "frost_drake",
+      "mapId": "icecave",
+      "lair": {
+        "x": 38,
+        "y": 7
+      },
+      "postedAfter": 0,
+      "board": false,
+      "level": 12,
+      "maxHp": 480,
+      "attack": 32,
+      "defense": 10,
+      "xp": 560,
+      "gold": 120,
+      "bounty": 0,
+      "drop": "lianes_lantern",
+      "scale": 1.3,
+      "tint": [
+        0.9,
+        0.97,
+        1.1
+      ],
+      "move": {
+        "move": "firefan",
+        "every": 5.0,
+        "tell": 0.55,
+        "range": [
+          0.0,
+          7.0
+        ],
+        "count": 3,
+        "spread": 0.32,
+        "speed": 110,
+        "power": 0.9,
+        "tint": [
+          0.45,
+          0.8,
+          1.6
+        ]
+      },
+      "where": "the glass hall at the back of the ice cave",
+      "notice": "",
+      "seen": "Rimefang uncoils from the ice, and the air turns to needles!"
     }
   },
   "fishingSpots": [
@@ -4654,6 +4928,26 @@
       "mapId": "saltmere",
       "x": 41,
       "y": 24
+    },
+    {
+      "id": "frostgate_hole",
+      "mapId": "frostgate",
+      "x": 39,
+      "y": 24,
+      "catches": [
+        [
+          "icefin",
+          55
+        ],
+        [
+          "fresh_fish",
+          30
+        ],
+        [
+          "old_boot",
+          15
+        ]
+      ]
     }
   ],
   "fishing": {
