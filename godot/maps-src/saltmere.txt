@@ -6,6 +6,7 @@ spawn 30 2
 portal 30 0 map overworld 16 61
 portal 29 0 map overworld 16 61
 portal 31 0 map overworld 16 61
+portal 6 23 map seacave 5 25
 key . grass coast
 key f flowers coast
 key T forest coast

@@ -405,6 +405,133 @@
       },
       "accepted": "Two of the big grey brutes in the Deepwood. Forty years I foraged there in peace.",
       "completed": "Mushrooms for the whole winter! My grandson will be sick of them by spring."
+    },
+    {
+      "id": "wenna_smugglers",
+      "giver": "saltmere_wenna",
+      "name": "The Smugglers' Story",
+      "brief": "Old Wenna wants to know what the smugglers found of her brother Tam.",
+      "objective": {
+        "kind": "kill",
+        "monsterId": "pirate",
+        "count": 3,
+        "label": "Smugglers taught manners"
+      },
+      "reward": {
+        "gold": 40,
+        "xp": 40
+      },
+      "accepted": "Drive off three of them and the rest will talk. They always do.",
+      "completed": "They say a thing called the Tidecaller nests in the sea cave under the headland, and keeps what the sea brings in. Tam's things too, maybe."
+    },
+    {
+      "id": "wenna_tidecaller",
+      "giver": "saltmere_wenna",
+      "name": "The Tidecaller",
+      "brief": "Something in the sea cave keeps what the tide brings in - maybe Tam's things too.",
+      "objective": {
+        "kind": "hunt",
+        "named": "tidecaller",
+        "count": 1,
+        "label": "Tidecaller laid low"
+      },
+      "reward": {
+        "gold": 100,
+        "xp": 120
+      },
+      "accepted": "The cave mouth is under the western headland, past the lagoon. Mind the steps - and come back.",
+      "completed": "That's his ladle. That's Tam's. He stirred soup with it and conducted the whole tavern with it after. Keep it - Maren will know what it means."
+    },
+    {
+      "id": "brin_crabs",
+      "giver": "saltmere_brin",
+      "name": "Crabs on the Jetty",
+      "brief": "The giant crabs have taken the beach, and the nets with it.",
+      "objective": {
+        "kind": "kill",
+        "monsterId": "crab",
+        "count": 4,
+        "label": "Crabs cracked"
+      },
+      "reward": {
+        "gold": 50,
+        "xp": 35
+      },
+      "accepted": "Four of the big ones. Go for the legs, not the shell.",
+      "completed": "Ha! The nets are ours again. Saltmere owes you a supper."
+    },
+    {
+      "id": "brin_lens",
+      "giver": "saltmere_brin",
+      "name": "The Lighthouse Lens",
+      "brief": "Brin wants the old lighthouse lit again.",
+      "objective": {
+        "kind": "deliver",
+        "itemId": "sea_glass",
+        "count": 3,
+        "label": "Sea glass brought"
+      },
+      "reward": {
+        "gold": 60,
+        "xp": 40,
+        "itemId": "potion_hp"
+      },
+      "accepted": "Three pieces of sea glass, clear as you can find. They wash up on the beaches and in the cave.",
+      "completed": "The lamp's lit. Every boat in the bay saw it last night. Thank you."
+    },
+    {
+      "id": "ola_catch",
+      "giver": "saltmere_ola",
+      "name": "First Catch",
+      "brief": "Ola wants to see you fish.",
+      "objective": {
+        "kind": "deliver",
+        "itemId": "fresh_fish",
+        "count": 2,
+        "label": "Fish caught"
+      },
+      "reward": {
+        "gold": 30,
+        "xp": 25
+      },
+      "accepted": "Two fish - your own, mind. The end of the jetty is the easy spot.",
+      "completed": "Not bad for a landlubber! Keep the rod. The sea's always got more."
+    },
+    {
+      "id": "rook_captain",
+      "giver": "saltmere_rook",
+      "name": "The Captain's Due",
+      "brief": "Rook wants the smugglers' captain gone - and his take.",
+      "objective": {
+        "kind": "kill",
+        "monsterId": "pirate_captain",
+        "count": 1,
+        "label": "Captains retired"
+      },
+      "reward": {
+        "gold": 120,
+        "xp": 60
+      },
+      "accepted": "North-east beach, sitting on his chests like a hen. He bites.",
+      "completed": "Ha! Saltmere breathes easier. And so do I. Here's your share - fair's fair."
+    },
+    {
+      "id": "pip_fish",
+      "giver": "kid_pip",
+      "name": "Fish for the Cat",
+      "brief": "Since the fire, the town cat eats nothing but fresh fish, and Pip has none.",
+      "objective": {
+        "kind": "deliver",
+        "itemId": "fresh_fish",
+        "count": 3,
+        "label": "Fresh fish brought"
+      },
+      "reward": {
+        "gold": 40,
+        "xp": 30
+      },
+      "accepted": "Three fresh fish, please! Saltmere's down the cliffs, south of the marsh - follow the path out of the reeds. Mind the crabs.",
+      "completed": "She's eating! Look at her go. You can keep the bones."
     }
   ],
   "rankTitles": {

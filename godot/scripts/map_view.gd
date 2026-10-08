@@ -146,7 +146,7 @@ func plan(arrival: Vector2i) -> Vector2i:
 ## children of `root` (behind the actors layer), then what stands among the
 ## actors, then the house's furniture.
 func build(root: Node) -> void:
-	ground = _build_dungeon(data) if data.floor_level > 0 else _build_ground(data)
+	ground = _build_dungeon(data) if data.floor_level > 0 or data.style == "cave" else _build_ground(data)
 	tile_layer = _build_tile_layer(data)
 	props = _build_props(data)
 	for layer: Node in [props, tile_layer, ground]:
@@ -375,7 +375,7 @@ func _solid_scatter(data: MapData, arrival: Vector2i) -> Dictionary:
 ## region in CAMP_RING, and a torch on the next one within two of the tent.
 static func plan_camps(map: MapData) -> Dictionary:
 	var out := {}
-	if map.floor_level > 0:
+	if map.floor_level > 0 or map.style == "cave":
 		return out
 	for spawn: Dictionary in Bestiary.spawns_on(map.id):
 		var home := Vector2i(spawn["x"], spawn["y"])

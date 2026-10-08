@@ -30,9 +30,15 @@ static func named(named_id: String) -> Dictionary:
 	return entry
 
 
-## On the board: its floor is cleared.
+## On the board: its floor is cleared. A chapter's boss (postedAfter 0,
+## PIX-165: the Tidecaller) is in its lair from the start.
 static func is_posted(entry: Dictionary, cleared: Array) -> bool:
-	return int(entry["postedAfter"]) in cleared
+	return int(entry["postedAfter"]) == 0 or int(entry["postedAfter"]) in cleared
+
+
+## Whether the bounty board lists it: a chapter's boss is a quest, not a bounty.
+static func on_board(entry: Dictionary) -> bool:
+	return entry.get("board", true)
 
 
 ## "wanted" (posted, alive), "slain", or "" (not posted yet).
@@ -56,6 +62,8 @@ static func notices(cleared: Array, hunted: Array) -> Array[Dictionary]:
 	var wanted: Array[Dictionary] = []
 	var slain: Array[Dictionary] = []
 	for entry in all():
+		if not on_board(entry):
+			continue
 		match status(entry, cleared, hunted):
 			"wanted":
 				wanted.append(entry)
@@ -68,7 +76,7 @@ static func notices(cleared: Array, hunted: Array) -> Array[Dictionary]:
 ## The next notice the board will post, or {} when all are up.
 static func next_notice(cleared: Array) -> Dictionary:
 	for entry in all():
-		if not is_posted(entry, cleared):
+		if on_board(entry) and not is_posted(entry, cleared):
 			return entry
 	return {}
 

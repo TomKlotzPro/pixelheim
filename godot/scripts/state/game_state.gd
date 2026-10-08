@@ -642,7 +642,9 @@ func resolve_quests(giver_id: String) -> String:
 		if entry.get("done", false):
 			continue
 		if entry.is_empty():
-			entries[quest["id"]] = {"progress": 0, "done": false}
+			# A hunt whose quarry already fell counts at once (PIX-165).
+			var already: bool = quest["objective"]["kind"] == "hunt" and quest["objective"]["named"] in progression.hunted
+			entries[quest["id"]] = {"progress": int(quest["objective"]["count"]) if already else 0, "done": false}
 			save_now()
 			return "Quest accepted - %s: %s" % [quest["name"], quest["accepted"]]
 		var objective: Dictionary = quest["objective"]
@@ -917,11 +919,16 @@ func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, fl
 	var mastery_line := _record_kill(fighter["id"])
 	if mastery_line != "":
 		log.append(mastery_line)
-	# Accepted bounties tick on every matching kill.
+	# Accepted bounties tick on every matching kill; a hunt (PIX-165) only on
+	# the one named monster it names.
 	for quest: Dictionary in Quests.all():
 		var entry: Dictionary = progression.quests.get(quest["id"], {})
 		var objective: Dictionary = quest["objective"]
-		if entry.is_empty() or entry["done"] or objective["kind"] != "kill" or objective["monsterId"] != fighter["id"]:
+		if entry.is_empty() or entry["done"]:
+			continue
+		var counts: bool = (objective["kind"] == "kill" and objective["monsterId"] == fighter["id"] and not fighter.has("named")) \
+			or (objective["kind"] == "hunt" and objective["named"] == fighter.get("named", ""))
+		if not counts:
 			continue
 		if entry["progress"] < objective["count"]:
 			entry["progress"] += 1
@@ -1030,6 +1037,21 @@ func gather(spot_id: String, item_id: String) -> Array[String]:
 	return lines
 
 
+## A cast from a fishing spot (PIX-165): a catch if they're biting there,
+## foraging's job xp with it. "" when the spot is resting.
+func fish(spot_id: String) -> String:
+	if not Gathering.fish_ready(world, spot_id):
+		return "Nothing's biting here yet. Try again in a while, or somewhere else."
+	var caught := Gathering.catch(roll)
+	pack.add_item(caught)
+	world.gathered_at[spot_id] = int(world.steps)
+	var line := "You cast, wait... and land %s!" % Catalog.item_name(caught).to_lower() if caught != "old_boot" else "You cast, wait... and haul up an old boot."
+	if Economy.grant_job_xp(hero.jobs, "foraging", int(Gathering.rules()["jobXp"])) > 0:
+		line += " Foraging reached %d!" % hero.jobs["foraging"]["level"]
+	_pack_changed()
+	return line
+
+
 ## The Night of Ash moves on when the survivor whose turn it is has spoken:
 ## Bram freed, Sela's bandages (she heals), the letter in Maren's hands, and
 ## then the dawn (the world plays it, then calls finish_prologue).
@@ -1091,15 +1113,23 @@ func _hunted(named_id: String) -> Array[String]:
 		return []
 	var entry := Hunts.named(named_id)
 	progression.hunted.append(named_id)
-	pack.gold += int(entry["bounty"])
-	var prize := InventoryState.create_gear(entry["drop"])
-	pack.gear.append(prize)
+	var lines: Array[String] = []
+	if int(entry["bounty"]) > 0:
+		pack.gold += int(entry["bounty"])
+		lines.append("The bounty on %s is yours: +%d gold." % [entry["name"], int(entry["bounty"])])
+	# Gear comes as a fresh piece; anything else (a relic) into the pack.
+	var prize_name := Catalog.item_name(entry["drop"])
+	if Catalog.item(entry["drop"]).has("slot"):
+		var prize := InventoryState.create_gear(entry["drop"])
+		pack.gear.append(prize)
+		prize_name = InventoryState.gear_name(prize)
+	else:
+		pack.add_item(entry["drop"])
+	lines.append("%s leaves you %s!" % [entry["name"], prize_name])
 	last_deed = {"kind": "hunt", "beast": entry["name"]}
-	reveals.append("hunt:%s" % named_id)
-	return [
-		"The bounty on %s is yours: +%d gold." % [entry["name"], int(entry["bounty"])],
-		"%s leaves you %s!" % [entry["name"], InventoryState.gear_name(prize)],
-	]
+	if entry.has("homecoming"):
+		reveals.append("hunt:%s" % named_id)
+	return lines
 
 
 ## A cleared pack is back at its home.

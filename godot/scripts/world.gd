@@ -206,7 +206,7 @@ func _process(delta: float) -> void:
 	_update_nameplate()
 	GameState.walk(player.position.distance_to(last_player_position) / TILE)
 	last_player_position = player.position
-	sky_overlay.color = DUNGEON_GLOOM if map.floor_level > 0 else (
+	sky_overlay.color = DUNGEON_GLOOM if map.floor_level > 0 or map.style == "cave" else (
 		NIGHT_OF_ASH if GameState.progression.prologue != Prologue.DONE else DayNight.sky_at(GameState.world.steps)
 	)
 	_update_music()
@@ -526,7 +526,7 @@ func _update_music() -> void:
 	if soundscape_left <= 0.0:
 		soundscape_left = 0.5
 		Sound.set_extras(_soundscape())
-		Sound.set_bed(("deepwind" if map.floor_level > 10 else "wind") if map.floor_level > 0 else "")
+		Sound.set_bed(("deepwind" if map.floor_level > 10 else "wind") if map.floor_level > 0 or map.style == "cave" else "")
 
 
 ## What else the hero hears here (PIX-158): birds by day and crickets by
@@ -546,6 +546,13 @@ func _soundscape() -> Array[String]:
 	if burning or map.id == "town_smith" or _near_camp_fire():
 		out.append("fire")
 	return out
+
+
+## On a fishing spot, facing the water (PIX-165).
+func _fishing_here() -> bool:
+	if Gathering.fishing_spot_at(map.id, player_cell).is_empty():
+		return false
+	return map.tile_at(_facing_cell()) in PunyTerrain.WATERS
 
 
 ## A first-time hint (PIX-160): a card under the top of the screen that
@@ -798,6 +805,11 @@ func _try_interact() -> void:
 			_flash_message(GameState.buy_house())
 		return
 	if map.id == "town_house" and _house_interact(faced):
+		return
+	# A fishing spot facing the water: cast (PIX-165).
+	if _fishing_here():
+		Sound.play("drop")
+		_flash_message(GameState.fish(Gathering.fishing_spot_at(map.id, player_cell)["id"]))
 		return
 	# The projects board on the square opens the village's ledger (PIX-145);
 	# what it built, the town shows off as it closes (PIX-147).
@@ -1317,7 +1329,7 @@ func _update_prompt() -> void:
 	var chest := _chest_at(_facing_cell())
 	var show: bool = (
 		not chest.is_empty() and chest["look"] == "chest" and not GameState.is_opened(chest)
-	)
+	) or _fishing_here()
 	prompt_label.visible = show
 	if show:
 		prompt_label.position = Vector2(_facing_cell() * TILE) + Vector2(5, -14)
@@ -1410,6 +1422,8 @@ func _spawn_pack(data: MapData, spawn: Dictionary) -> void:
 		var cell: Vector2i = home + offset
 		if cells.size() < PACK_SIZE and data.is_walkable(cell) and data.region_at(cell) != "" and not data.portals.has(cell):
 			cells.append(cell)
+	# A spawn may name its size: one captain, not three (PIX-165).
+	cells.resize(mini(cells.size(), int(spawn.get("size", PACK_SIZE))))
 	for cell in cells:
 		spawn_enemy(species, cell, region, spawn["id"], GameState.roll.call() < elite_chance, true, home)
 	pack_alive[spawn["id"]] = cells.size()

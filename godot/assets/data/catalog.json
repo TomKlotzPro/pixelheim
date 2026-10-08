@@ -911,6 +911,40 @@
       "weight": 0,
       "value": 12,
       "description": "Green and frosted, washed smooth by the tide off Saltmere. Crafters prize it."
+    },
+    "fresh_fish": {
+      "name": "Fresh Fish",
+      "category": "food",
+      "sprite": "fish",
+      "weight": 1,
+      "value": 10,
+      "description": "Restores 20 HP. Caught off Saltmere this morning, or near enough.",
+      "restoreHp": 20
+    },
+    "pearl": {
+      "name": "Pearl",
+      "category": "misc",
+      "sprite": "gem",
+      "weight": 0,
+      "value": 90,
+      "description": "A fat white pearl from the Saltmere shallows. Odo will want it; so will Mirelle."
+    },
+    "old_boot": {
+      "name": "Old Boot",
+      "category": "misc",
+      "sprite": "boots",
+      "weight": 2,
+      "value": 1,
+      "description": "Every fisher catches one. Nobody knows whose they were."
+    },
+    "tams_ladle": {
+      "name": "Tam's Ladle",
+      "category": "misc",
+      "sprite": "ladle",
+      "weight": 1,
+      "value": 0,
+      "quest": true,
+      "description": "A cook's ladle, black iron, the handle wrapped in sailcloth. Tam carried it up the mountain fifty years ago. One of the five relics."
     }
   },
   "roles": {
@@ -1217,7 +1251,8 @@
     "town_hall": "Pixelheim",
     "demo": "The Proving Grounds",
     "demo_hut": "The Ashenreach",
-    "saltmere": "Saltmere"
+    "saltmere": "Saltmere",
+    "seacave": "The Sea Cave"
   },
   "levelCount": 15,
   "townSpawn": {

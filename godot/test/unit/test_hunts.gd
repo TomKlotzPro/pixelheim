@@ -1,5 +1,5 @@
 extends GutTest
-## Named monsters (PIX-156): one per wild region, each in a lair of its own
+## The board's named monsters (PIX-156): one per wild region, each in a lair of its own
 ## away from the packs, posted as the hero clears floors; the bounty, the
 ## drop nothing else gives and the town's talk come with the kill, and a
 ## named monster killed stays dead in the save.
@@ -7,6 +7,15 @@ extends GutTest
 const GameStateScript := preload("res://scripts/state/game_state.gd")
 ## The moves elite_brain.gd knows.
 const MOVES := ["lunge", "cleave", "stamp", "guard", "firebolt", "howl", "grasp", "boulder", "leap", "firefan"]
+
+
+## The bounty board's own: a chapter's boss (the Tidecaller) is a quest's.
+func _board() -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	for entry in Hunts.all():
+		if Hunts.on_board(entry):
+			out.append(entry)
+	return out
 
 var state: Node
 
@@ -17,9 +26,9 @@ func before_each() -> void:
 
 
 func test_one_named_monster_per_wild_region_in_board_order() -> void:
-	var ids := Hunts.all().map(func(entry: Dictionary) -> String: return entry["id"])
+	var ids := _board().map(func(entry: Dictionary) -> String: return entry["id"])
 	assert_eq(ids, ["greymaw", "drowned_knight", "cinderjaw", "mossback", "gulp"])
-	var regions := Hunts.all().map(func(entry: Dictionary) -> String:
+	var regions := _board().map(func(entry: Dictionary) -> String:
 		return MapData.load_by_id(entry["mapId"]).region_at(Hunts.lair(entry))
 	)
 	assert_eq(regions, ["forest", "marsh", "ash", "deepwood", "mire"])
@@ -37,7 +46,7 @@ func test_each_lair_is_open_ground_well_away_from_the_packs() -> void:
 
 
 func test_each_is_its_kind_grown_with_a_move_and_a_drop_of_its_own() -> void:
-	for entry in Hunts.all():
+	for entry in _board():
 		var kind := Bestiary.monster(entry["monsterId"])
 		assert_false(kind.is_empty(), "%s is a %s" % [entry["id"], entry["monsterId"]])
 		assert_gt(int(entry["maxHp"]), int(kind["maxHp"]) * 3, "%s outlasts three of its kind" % entry["id"])
@@ -47,7 +56,7 @@ func test_each_is_its_kind_grown_with_a_move_and_a_drop_of_its_own() -> void:
 		assert_true(drop.has("slot"), "%s drops gear" % entry["id"])
 		assert_string_contains(String(drop["description"]), "Hunted, never sold")
 		assert_ne(ItemIcons.source(entry["drop"]), "", "%s's drop has an icon" % entry["id"])
-	var moves := Hunts.all().map(func(entry: Dictionary) -> String: return entry["move"]["move"])
+	var moves := _board().map(func(entry: Dictionary) -> String: return entry["move"]["move"])
 	assert_eq(moves.size(), 5)
 	for move: String in moves:
 		assert_eq(moves.count(move), 1, "%s is one monster's own" % move)
