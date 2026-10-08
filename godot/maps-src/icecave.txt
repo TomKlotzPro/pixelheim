@@ -1,0 +1,46 @@
+# The ice cave under Liane's observatory (PIX-169): the landing at the foot
+# of her stair, the galleries, the yetis' den where the caravan's strongbox
+# ended up, Liane's old store, and the glass hall where something white has
+# curled up on her lantern.
+id icecave
+style cave
+tint 0.8 0.92 1.12
+spawn 4 25
+portal 3 26 map frostgate 27 7
+key X wall -
+key . floor icecave
+key L lamp -
+key b barrel -
+key k crate -
+key c cave icecave
+map
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXLXXXXXLXXXX
+XXXXXLXXXXXXXXXLXXXXXXXXXLXXXXXXX...........XX
+XX.......bXX.................XXXX...........XX
+XX........XX.................XXXX...........XX
+XX........XX.................XXXX...X...X...XX
+XX........XX....X...X...X...................XX
+XX..........................................XX
+XX...........................XXXX...........XX
+XX........XX....X...X...X....XXXX...........XX
+XX........XX.................XXXX...X...X...XX
+XX........XX.................XXXX...........XX
+XXk.......XXXXXXXXX..XXXXXXXXXXXX...........XX
+XXXX..XXXXXXXXXXXXX..XXXXXXXXXXXX...........XX
+XXXX..XXXXXXXXXXXXX..XXXXXXXXXXXXXXXX..XXXXXXX
+XXXX..XXXXXXXXXXXXX..XXXXXXXXXXXXXXXX..XXXXXXX
+XXXX..XXXXXXXXXXXXX..XXXXXXXXXXXXXXXX..XXXXXXX
+XXXX..XXXXXXXXXXXXX..XXXXXXXXXXXXXXXX..XXXXXXX
+XXXX..XXXXXXXXXXXLX..XXLXXXXXXXXXXXXX..XXXXXXX
+XXXX..XXXXXXXXXb..........XXXXXXXLXXX..XLXXXXX
+XXXX..XXXXXXXXX...........XXXX............bXXX
+XXXX..LXXXXXXXX...........XXXX.............XXX
+XX........XXXXX...X...X...XXXX.............XXX
+XX........XXXXX............................XXX
+XX.........................................XXX
+XX................X...X...XXXX.............XXX
+XX.c......XXXXX...........XXXX.............XXX
+XX.......kXXXXX...........XXXXk............XXX
+XXXXXXXXXXXXXXX..........kXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX

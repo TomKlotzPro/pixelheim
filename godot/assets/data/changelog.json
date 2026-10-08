@@ -1,6 +1,18 @@
 {
   "releases": [
     {
+      "version": "0.110.0",
+      "date": "2026-10-08",
+      "codename": "The Frostgate",
+      "notes": [
+        "THE FROSTGATE PASS: a narrow road climbs north out of the Ash Fields into snow - pines on white ridges, a frozen lake, and at the head of the pass Liane's observatory, built over the old ice cave. Up here the wind blows where the birds would sing",
+        "THE HERMIT AND THE CARAVAN: Aske keeps Liane's door fifty years on; Gunnar's caravan is stuck by the road, and Linnea, its herbalist, picks frost lilies for Vex",
+        "THE ICE CAVE: down the observatory's stair, yetis, wendigos and frost mammoths in frosted galleries - and Rimefang, a white drake that breathes frost, curled up on Liane's Lantern, the fourth of the five relics",
+        "ICE FISHING: stand at the hole cut in the lake's ice, face the water and press E for icefin",
+        "THE FROSTWEAVE: hood, robe, mitts, boots and a rime orb (+INT), and the Rime Staff - woven at Vex's cauldron from frost lilies and yeti fur"
+      ]
+    },
+    {
       "version": "0.109.0",
       "date": "2026-10-08",
       "codename": "Greyhold",

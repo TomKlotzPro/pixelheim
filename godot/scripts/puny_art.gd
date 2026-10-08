@@ -67,6 +67,7 @@ const HEADS := {
 	"oilskin_hood": "characters/Archer-Leather.png",
 	"blackiron_helm": "characters/Warrior-Wyrm.png",
 	"warden_helm": "characters/Human-Soldier-Cyan.png",
+	"frost_hood": "characters/Mage-Cyan.png",
 }
 const BODIES := {
 	"leather_armor": "characters/Archer-Leather.png",
@@ -79,6 +80,7 @@ const BODIES := {
 	"oilskin_coat": "characters/Archer-Leather.png",
 	"blackiron_plate": "characters/Warrior-Blue.png",
 	"warden_hauberk": "characters/Human-Soldier-Cyan.png",
+	"frostweave_robe": "characters/Mage-Cyan.png",
 }
 ## The bare template whose frames say where each head ends.
 const BASE := "characters/Character-Base.png"
@@ -111,6 +113,8 @@ const VILLAGERS := {
 	# Greyhold's old guard in the fort's cyan, and the chapel's monk (PIX-168).
 	"guard": {"sheet": "mini/SwordsmanCyan.png", "family": "mini"},
 	"monk": {"sheet": "mini/MagePurple.png", "family": "mini"},
+	# The Frostgate's hermit, in his big hat (PIX-169).
+	"hermit": {"sheet": "mini/Gangblanc.png", "family": "mini"},
 }
 
 ## The bestiary by monster id: the closest creature Shade drew, tinted or
@@ -147,6 +151,13 @@ const MONSTERS := {
 	"turncoat_bowman": {"sheet": "mini/BowmanRed.png", "family": "mini"},
 	"cutthroat": {"sheet": "mini/AssasinRed.png", "family": "mini"},
 	"hollow_guard": {"sheet": "mini/SwordsmanCyan.png", "family": "mini", "tint": Color(0.72, 0.88, 1.0, 0.78)},
+	# The Frostgate pass (PIX-169): Mini World's frostborn as themselves, a
+	# wolf gone white, and the white dragon as a frost drake.
+	"frost_wolf": {"sheet": "beasts/Gray-Wolf-32x32.png", "family": "beast", "tint": Color(0.9, 0.96, 1.12)},
+	"yeti": {"sheet": "mini/Yeti.png", "family": "mini"},
+	"wendigo": {"sheet": "mini/Wendigo.png", "family": "mini"},
+	"frost_mammoth": {"sheet": "mini/Mammoth.png", "family": "mini", "scale": 1.2},
+	"frost_drake": {"sheet": "mini/WhiteDragon.png", "family": "mini", "frame": 32, "scale": 0.85},
 }
 
 static var _frames_cache := {}

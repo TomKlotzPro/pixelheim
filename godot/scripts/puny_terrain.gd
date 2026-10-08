@@ -41,6 +41,9 @@ const TINTS := {
 ## Regions whose every ground cell takes a tone, trees' included (the pass's
 ## snow under its pines).
 const REGION_TINTS := {"frost": "snow"}
+## And their roads, which would whiten to a glare: the pass's road is trodden
+## grey.
+const REGION_PATHS := {"frost": "stone"}
 ## What a bridge or a dock spans.
 const WATERS := ["water", "shore", "sea", "deep_sea"]
 ## Ground the hero can walk out onto; maps with none are interiors.
@@ -155,11 +158,19 @@ static func tint_map(grid: Dictionary, size: Vector2i, regions := {}) -> ImageTe
 	image.fill(Color(0, 0, 0, 0))
 	for cell: Vector2i in grid:
 		var tile: String = grid[cell]
-		if not TINTS.has(tile) and REGION_TINTS.has(regions.get(cell, "")):
-			tile = REGION_TINTS[regions[cell]]
+		var region: String = regions.get(cell, "")
+		if tile == "path" and REGION_PATHS.has(region):
+			tile = REGION_PATHS[region]
+		elif not TINTS.has(tile) and REGION_TINTS.has(region):
+			tile = REGION_TINTS[region]
 		if TINTS.has(tile):
 			image.set_pixelv(cell, TINTS[tile])
 	return ImageTexture.create_from_image(image)
+
+
+## Whether a region of the map tones every cell, the mountains' pines too.
+static func region_toned(regions: Dictionary) -> bool:
+	return regions.values().any(func(region: String) -> bool: return REGION_TINTS.has(region))
 
 
 ## Whether a map lies under the sky (any grass, forest, marsh, ash or sand).

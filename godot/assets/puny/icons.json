@@ -119,7 +119,18 @@
     "warden_gloves": "survival-rpg-icons/Armour/Metal-Gauntlets-05.png",
     "warden_boots": "survival-rpg-icons/Armour/Metal-Sabatons-05.png",
     "warden_kite": "survival-rpg-icons/Armour/Metal-Shield-05.png",
-    "warden_longsword": "survival-rpg-icons/Tools/Sword-06.png"
+    "warden_longsword": "survival-rpg-icons/Tools/Sword-06.png",
+    "frost_lily": "survival-rpg-icons/Plants & Alchemy/Flower-01.png",
+    "yeti_fur": "survival-rpg-icons/Textile/Fur-05.png",
+    "icefin": "survival-rpg-icons/Food/Fish-11.png",
+    "caravan_strongbox": "free/chests.png@0,3",
+    "lianes_lantern": "medieval@1901",
+    "frost_hood": "survival-rpg-icons/Armour/Leather-Cap-06.png",
+    "frostweave_robe": "survival-rpg-icons/Armour/Leather-Jacket-06.png",
+    "frost_mitts": "survival-rpg-icons/Armour/Leather-Gloves-06.png",
+    "frost_boots": "survival-rpg-icons/Armour/Leather-Boots-06.png",
+    "frost_ward": "survival-rpg-icons/Gem/Gem-Sphere-01.png",
+    "rime_staff": "survival-rpg-icons/Tools/Magic-Staff-02.png"
   },
   "ailments": {
     "poison": "puny-skills/Indicators/Symbol Indicator/Poisoned-Indicator.png",

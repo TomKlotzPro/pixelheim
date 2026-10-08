@@ -16,6 +16,8 @@ const DUNGEON_GLOOM := Color(0.04, 0.02, 0.08, 0.28)
 const NIGHT_OF_ASH := Color(0.16, 0.03, 0.04, 0.42)
 ## Fight music holds this long after the last hunter gives up.
 const COMBAT_LINGER_S := 3.0
+## Open-air maps too high and cold for birdsong: wind instead (PIX-169).
+const WINDY_MAPS := ["frostgate"]
 
 
 var map: MapData
@@ -526,7 +528,8 @@ func _update_music() -> void:
 	if soundscape_left <= 0.0:
 		soundscape_left = 0.5
 		Sound.set_extras(_soundscape())
-		Sound.set_bed(("deepwind" if map.floor_level > 10 else "wind") if map.floor_level > 0 or map.style == "cave" else "")
+		var windy := map.floor_level > 0 or map.style == "cave" or map.id in WINDY_MAPS
+		Sound.set_bed(("deepwind" if map.floor_level > 10 else "wind") if windy else "")
 
 
 ## What else the hero hears here (PIX-158): birds by day and crickets by
@@ -539,7 +542,7 @@ func _soundscape() -> Array[String]:
 		return out
 	var burning := map.id == "town" and GameState.progression.prologue != Prologue.DONE
 	var outdoors := map.id == "town" or (PunyTerrain.is_outdoor(map.grid) and not map.id.begins_with("town_"))
-	if outdoors and not burning:
+	if outdoors and not burning and map.id not in WINDY_MAPS:
 		out.append("crickets" if DayNight.is_night(GameState.world.steps) else "birds")
 		if map.id == "town" and GameState.town_tier() >= 1 and not DayNight.is_night(GameState.world.steps):
 			out.append("chatter")

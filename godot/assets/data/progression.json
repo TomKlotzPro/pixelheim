@@ -714,6 +714,97 @@
       },
       "accepted": "My sister's locket. They took it when they threw me in the cells - the end cell, under the straw.",
       "completed": "That's hers. That's... thank you. Here - it's not much. It's all the turncoats didn't find."
+    },
+    {
+      "id": "aske_wolves",
+      "giver": "frost_aske",
+      "name": "Wolves on the Pass",
+      "brief": "The pass's wolves have gone bold with the cold.",
+      "objective": {
+        "kind": "kill",
+        "monsterId": "frost_wolf",
+        "count": 4,
+        "label": "Frost wolves driven off"
+      },
+      "reward": {
+        "gold": 90,
+        "xp": 80
+      },
+      "accepted": "Four of them, and the caravan can breathe again. They den west of the lake.",
+      "completed": "Good. Now - you didn't climb up here for wolves. You want Liane's observatory. The way down to the ice cave is through her door, and something has moved in."
+    },
+    {
+      "id": "aske_rimefang",
+      "giver": "frost_aske",
+      "name": "Liane's Lantern",
+      "brief": "Something white sleeps on Liane's lantern under the observatory.",
+      "objective": {
+        "kind": "hunt",
+        "named": "rimefang",
+        "count": 1,
+        "label": "Rimefang laid low"
+      },
+      "reward": {
+        "gold": 200,
+        "xp": 220
+      },
+      "accepted": "Through her door and down the stair, to the glass hall at the back. Her lantern's there - the last thing she lit before the climb. Mind the cold it breathes.",
+      "completed": "Her lantern. She said she'd blow it out herself when they all came home. Take it up the mountain, courier. Let it see the way she went."
+    },
+    {
+      "id": "gunnar_strongbox",
+      "giver": "frost_gunnar",
+      "name": "The Lost Strongbox",
+      "brief": "Yetis carried off the caravan's strongbox.",
+      "objective": {
+        "kind": "deliver",
+        "itemId": "caravan_strongbox",
+        "count": 1,
+        "label": "Strongbox recovered"
+      },
+      "reward": {
+        "gold": 120,
+        "xp": 60
+      },
+      "accepted": "Tracks went up toward the observatory. If there's a den in that cave, my box is in it.",
+      "completed": "Still locked! The yetis must have given up on it. Here - your share, and then some."
+    },
+    {
+      "id": "linnea_lilies",
+      "giver": "frost_linnea",
+      "name": "Frost Lilies for Vex",
+      "brief": "Vex in Pixelheim pays well for frost lilies.",
+      "objective": {
+        "kind": "deliver",
+        "itemId": "frost_lily",
+        "count": 4,
+        "label": "Frost lilies picked"
+      },
+      "reward": {
+        "gold": 70,
+        "xp": 50,
+        "itemId": "potion_mp"
+      },
+      "accepted": "Four of them. They grow where the snow lies thick - and in the cave, where it never melts. I'll see they get to Vex.",
+      "completed": "Lovely. Vex will be insufferable about these. Keep a few for yourself - she can weave them into cloth, if you ask nicely."
+    },
+    {
+      "id": "linnea_icefin",
+      "giver": "frost_linnea",
+      "name": "The Ice Hole",
+      "brief": "Someone has to fish for the caravan's supper.",
+      "objective": {
+        "kind": "deliver",
+        "itemId": "icefin",
+        "count": 3,
+        "label": "Icefin caught"
+      },
+      "reward": {
+        "gold": 50,
+        "xp": 40
+      },
+      "accepted": "There's a hole cut in the lake ice, out past the middle. Stand at its edge, face the water and be patient. Icefin, three of them.",
+      "completed": "Supper! Real supper. Gunnar will stop complaining for a whole hour."
     }
   ],
   "rankTitles": {

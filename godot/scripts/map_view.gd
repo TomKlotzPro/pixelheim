@@ -147,6 +147,7 @@ func plan(arrival: Vector2i) -> Vector2i:
 ## actors, then the house's furniture.
 func build(root: Node) -> void:
 	ground = _build_dungeon(data) if data.floor_level > 0 or data.style == "cave" else _build_ground(data)
+	ground.modulate = data.tint
 	tile_layer = _build_tile_layer(data)
 	props = _build_props(data)
 	for layer: Node in [props, tile_layer, ground]:
@@ -192,6 +193,9 @@ func _build_ground(data: MapData) -> Node2D:
 	var crowns := PunyTerrain.forest_tiles(data.grid, data.size)
 	for cell: Vector2i in crowns:
 		PunyTerrain.place(forest, cell, crowns[cell])
+	# Under snow the pines on the ridges whiten with the ground (PIX-169).
+	if PunyTerrain.region_toned(data.regions):
+		forest.material = ground_tint
 	root.add_child(forest)
 	# Bridges, cave mouths, ramparts and (seen from afar) whole towns stand on
 	# that ground as Puny objects.

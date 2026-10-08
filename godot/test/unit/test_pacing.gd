@@ -8,7 +8,7 @@ const GameStateScript := preload("res://scripts/state/game_state.gd")
 ## Foes in a wild pack (world.gd PACK_SIZE).
 const PACK := 3
 ## The floor a hero is on when each quest is handed in.
-const QUEST_FLOORS := {"slime_trouble": 1, "cheese_run": 1, "wolf_watch": 4, "herbs_for_vex": 2, "hildas_buckler": 4, "troll_toll": 8, "iva_reeds": 4, "wren_leather": 2, "loras_lute": 8, "mirelle_vault": 10, "ash_orcs": 6, "bram_imps": 12, "mira_moss": 11, "tomas_golems": 10, "iva_herbs": 5, "iva_fever": 7, "wren_apples": 3, "wren_road": 6, "loras_verse": 9, "loras_horn": 12, "mirelle_ink": 10, "mirelle_caravan": 11, "wenna_smugglers": 5, "wenna_tidecaller": 7, "brin_crabs": 5, "brin_lens": 6, "ola_catch": 5, "rook_captain": 6, "pip_fish": 5, "garrick_crew": 11, "garrick_seam": 12, "dagny_ore": 11, "dagny_carts": 12, "pell_canary": 11, "ulla_turncoats": 12, "ulla_captain": 13, "teo_rest": 13, "teo_steel": 12, "fenwick_locket": 13}
+const QUEST_FLOORS := {"slime_trouble": 1, "cheese_run": 1, "wolf_watch": 4, "herbs_for_vex": 2, "hildas_buckler": 4, "troll_toll": 8, "iva_reeds": 4, "wren_leather": 2, "loras_lute": 8, "mirelle_vault": 10, "ash_orcs": 6, "bram_imps": 12, "mira_moss": 11, "tomas_golems": 10, "iva_herbs": 5, "iva_fever": 7, "wren_apples": 3, "wren_road": 6, "loras_verse": 9, "loras_horn": 12, "mirelle_ink": 10, "mirelle_caravan": 11, "wenna_smugglers": 5, "wenna_tidecaller": 7, "brin_crabs": 5, "brin_lens": 6, "ola_catch": 5, "rook_captain": 6, "pip_fish": 5, "garrick_crew": 11, "garrick_seam": 12, "dagny_ore": 11, "dagny_carts": 12, "pell_canary": 11, "ulla_turncoats": 12, "ulla_captain": 13, "teo_rest": 13, "teo_steel": 12, "fenwick_locket": 13, "aske_wolves": 15, "aske_rimefang": 15, "gunnar_strongbox": 15, "linnea_lilies": 15, "linnea_icefin": 15}
 
 var maps := {}
 
@@ -87,7 +87,9 @@ func test_going_deeper_levels_the_hero_on_pace() -> void:
 				_earn(hero, quests[quest_id])
 	gut.p("level on arriving at each floor: %s" % arrived)
 	assert_between(int(arrived[10]), 9, 11, "about level 10 at the Ashen Throne")
-	assert_between(int(arrived[15]), 13, 15, "about level 14 at the Throne of the Deathless")
+	# The four region chapters (PIX-165..169) add a level by the bottom; the
+	# mountain-last retune (PIX-170) rewrites this model around them.
+	assert_between(int(arrived[15]), 13, 16, "about level 14 at the Throne of the Deathless")
 	assert_lt(int(arrived[5]), 7, "no runaway start")
 
 

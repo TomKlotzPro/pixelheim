@@ -580,6 +580,78 @@
         "id": "smithing",
         "level": 6
       }
+    },
+    {
+      "id": "craft_frost_hood",
+      "itemId": "frost_hood",
+      "needs": {
+        "yeti_fur": 2,
+        "frost_lily": 1
+      },
+      "job": {
+        "id": "alchemy",
+        "level": 4
+      }
+    },
+    {
+      "id": "craft_frost_mitts",
+      "itemId": "frost_mitts",
+      "needs": {
+        "yeti_fur": 1,
+        "frost_lily": 1
+      },
+      "job": {
+        "id": "alchemy",
+        "level": 4
+      }
+    },
+    {
+      "id": "craft_frost_boots",
+      "itemId": "frost_boots",
+      "needs": {
+        "yeti_fur": 2,
+        "wolf_pelt": 1
+      },
+      "job": {
+        "id": "alchemy",
+        "level": 4
+      }
+    },
+    {
+      "id": "craft_frostweave_robe",
+      "itemId": "frostweave_robe",
+      "needs": {
+        "yeti_fur": 3,
+        "frost_lily": 3
+      },
+      "job": {
+        "id": "alchemy",
+        "level": 5
+      }
+    },
+    {
+      "id": "craft_frost_ward",
+      "itemId": "frost_ward",
+      "needs": {
+        "frost_lily": 3,
+        "sea_glass": 2
+      },
+      "job": {
+        "id": "alchemy",
+        "level": 5
+      }
+    },
+    {
+      "id": "craft_rime_staff",
+      "itemId": "rime_staff",
+      "needs": {
+        "frost_lily": 3,
+        "deep_root": 2
+      },
+      "job": {
+        "id": "alchemy",
+        "level": 6
+      }
     }
   ],
   "jobStations": {

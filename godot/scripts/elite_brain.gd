@@ -144,9 +144,13 @@ func _flash(move: Dictionary, then: Callable) -> void:
 	)
 
 
-## A bolt of fire flying `heading` from the caster.
+## A bolt of fire flying `heading` from the caster; a move's "tint" turns
+## the flame (Rimefang's frost, PIX-169).
 func _bolt(move: Dictionary, heading: Vector2) -> void:
 	var bolt := preload("res://scripts/firebolt.gd").new()
+	if move.has("tint"):
+		var tint: Array = move["tint"]
+		bolt.modulate = Color(float(tint[0]), float(tint[1]), float(tint[2]))
 	bolt.world = world
 	bolt.caster = enemy.fighter.duplicate()
 	bolt.power = float(move["power"])
