@@ -369,6 +369,16 @@
             },
             "text": "Clear the Barrow Crypt (floor 3)",
             "hint": "Below the woods lies the Barrow Crypt. The dead there don't stay down without help."
+          },
+          {
+            "id": "graves",
+            "optional": true,
+            "when": {
+              "kind": "seen",
+              "sceneId": "maren_graves"
+            },
+            "text": "Ask Maren about the graves in the crypt",
+            "hint": "Three names on a grave in the crypt, and a fourth chiselled away. Maren knew them, I think."
           }
         ]
       },
@@ -445,6 +455,16 @@
             "text": "Set Fafnyr's scale in a fountain on the square",
             "hint": "Fafnyr's scale belongs on the square, where everyone can see it. The board will tell you what else the fountain takes.",
             "optional": true
+          },
+          {
+            "id": "confession",
+            "optional": true,
+            "when": {
+              "kind": "seen",
+              "sceneId": "maren_confession"
+            },
+            "text": "Tell Maren what Fafnyr said about the voice below",
+            "hint": "Fafnyr spoke of a voice below. Maren will want to hear it - and she owes you a story."
           },
           {
             "id": "stair",

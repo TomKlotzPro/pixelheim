@@ -1,6 +1,18 @@
 {
   "releases": [
     {
+      "version": "0.96.0",
+      "date": "2026-10-08",
+      "codename": "The Ember Seal",
+      "notes": [
+        "THE STORY UNDER THE MOUNTAIN: three graves in the Barrow Crypt with a fourth name chiselled away, a broken seal on the Sunken Forge's anvil, and Fafnyr's last words about the voice below",
+        "LIANE'S JOURNAL: ten pages lie on the floors, one per first clear, telling how five heroes of Pixelheim climbed to renew the Ember Seal fifty years ago - read them in the journal's new Story tab",
+        "MAREN REMEMBERS: as you go deeper, Elder Maren tells you about the graves, the seal, and finally the truth about the five",
+        "MORVAX KNOWS YOU: the lich greets you by name, and his last words are for someone else",
+        "THE QUEST FOLLOWS THE STORY: asking Maren about the graves and telling her what Fafnyr said join the main quest as side steps"
+      ]
+    },
+    {
       "version": "0.95.0",
       "date": "2026-10-08",
       "codename": "The Night of Ash",

@@ -246,6 +246,16 @@
       },
       {
         "kind": "caption",
+        "text": "Fafnyr's last breath rattles out of him, and with it, words.",
+        "hold": 3.2
+      },
+      {
+        "kind": "card",
+        "text": "\"The voice below...\"",
+        "sub": "\"...promised me your village. It lied - to us both.\""
+      },
+      {
+        "kind": "caption",
         "text": "Behind the hoard, a stairway runs down into the dark.",
         "hold": 3.2
       },
@@ -308,6 +318,16 @@
       },
       {
         "kind": "caption",
+        "text": "\"You're late, courier. Fifty years late.\"",
+        "hold": 3.0
+      },
+      {
+        "kind": "caption",
+        "text": "\"I carried a letter,\" you say. \"You broke a seal.\"",
+        "hold": 3.0
+      },
+      {
+        "kind": "caption",
         "text": "Below the hoard, the dead keep their own court.",
         "hold": 3.0
       },
@@ -326,6 +346,11 @@
         "kind": "fade",
         "to": "clear",
         "seconds": 1.6
+      },
+      {
+        "kind": "caption",
+        "text": "Morvax's last words were for someone else: \"Tell Maren... she was right to run.\"",
+        "hold": 4.0
       },
       {
         "kind": "caption",
@@ -373,12 +398,171 @@
         "to": "black",
         "seconds": 0.8
       }
+    ],
+    "crypt": [
+      {
+        "kind": "stage",
+        "stage": "dark"
+      },
+      {
+        "kind": "fade",
+        "to": "clear",
+        "seconds": 0.5
+      },
+      {
+        "kind": "caption",
+        "text": "Behind the Barrow Crypt's guardian: three graves under one stone, and a fourth name chiselled away.",
+        "hold": 4.0
+      },
+      {
+        "kind": "card",
+        "text": "Oskar, Liane and Tam",
+        "sub": "of the Ember Five, who held the stair."
+      },
+      {
+        "kind": "caption",
+        "text": "On the wall above them hangs a shield, its paint gone grey: MORVAX OF PIXELHEIM.",
+        "hold": 4.0
+      },
+      {
+        "kind": "fade",
+        "to": "black",
+        "seconds": 0.5
+      }
+    ],
+    "forge": [
+      {
+        "kind": "stage",
+        "stage": "dark"
+      },
+      {
+        "kind": "tint",
+        "color": "#ff6a2a",
+        "alpha": 0.18,
+        "seconds": 0.6
+      },
+      {
+        "kind": "fade",
+        "to": "clear",
+        "seconds": 0.5
+      },
+      {
+        "kind": "caption",
+        "text": "The Sunken Forge's great mould is cold. Something was cast here once - a disc of black iron the size of a cartwheel.",
+        "hold": 4.2
+      },
+      {
+        "kind": "caption",
+        "text": "On the anvil lies its twin: an old seal, cracked clean through.",
+        "hold": 3.4
+      },
+      {
+        "kind": "caption",
+        "text": "The crack runs from beneath. Someone broke it from below.",
+        "hold": 3.6
+      },
+      {
+        "kind": "fade",
+        "to": "black",
+        "seconds": 0.5
+      }
     ]
   },
   "moments": {
     "boss:dragon": "fafnyr",
     "boss:lich": "morvax",
     "cleared:10": "descent",
-    "victory": "ending"
-  }
+    "victory": "ending",
+    "cleared:3": "crypt",
+    "cleared:7": "forge"
+  },
+  "lore": [
+    {
+      "floor": 1,
+      "title": "Page I",
+      "text": "We set out at first light, five of us, to renew the Ember Seal. Morvax says it will hold another hundred years once it's done. Tam brought cheese. Of course Tam brought cheese."
+    },
+    {
+      "floor": 3,
+      "title": "Page II",
+      "text": "The crypt is older than the village. I read the walls: kings were buried here before the mountain had a name. Morvax lingered by the gold. He always lingers by the gold."
+    },
+    {
+      "floor": 4,
+      "title": "Page III",
+      "text": "Frosthowl. Oskar carried me the last mile and complained the whole way. Maren laughed for the first time since we left. I'm writing that down so I remember it."
+    },
+    {
+      "floor": 5,
+      "title": "Page IV",
+      "text": "The old seal is cracking. It sits on Fafnyr's chain, a disc of black iron, warm like something asleep. We have to forge a new one in the Sunken Forge and carry it up."
+    },
+    {
+      "floor": 7,
+      "title": "Page V",
+      "text": "We cast the new seal from the old one's mould. Morvax watched the fire for a long time and said: 'Imagine what else could be forged down here.' Nobody answered him."
+    },
+    {
+      "floor": 9,
+      "title": "Page VI",
+      "text": "Fafnyr sleeps. It took all five of us to lift the seal onto the chain. Then Morvax found a stair behind the hoard, going down."
+    },
+    {
+      "floor": 11,
+      "title": "Page VII",
+      "text": "He says the deep holds a power to rebuild the old kingdom. Oskar told him kingdoms are built of people, not gold. They haven't spoken since."
+    },
+    {
+      "floor": 12,
+      "title": "Page VIII",
+      "text": "We followed him down. I wish we hadn't. The dead don't stay dead here. They wait, and they listen to him."
+    },
+    {
+      "floor": 13,
+      "title": "Page IX",
+      "text": "I'm writing in the dark. Tam fell holding the stair. Oskar is still fighting. I told Maren to run, and she ran. Good. Morvax didn't even look back."
+    },
+    {
+      "floor": 14,
+      "title": "Page X",
+      "text": "If anyone finds this: Maren got out. Tell her it wasn't her fault. Tell her to seal the stair. - Liane"
+    }
+  ],
+  "elderLines": [
+    {
+      "after": 3,
+      "id": "maren_graves",
+      "lines": [
+        "You found the graves in the crypt. Oskar, Liane, Tam.",
+        "Old names. Old graves. Leave them be, courier - some names are heavier than they look."
+      ]
+    },
+    {
+      "after": 5,
+      "id": "maren_seal",
+      "lines": [
+        "Sit. You've earned the story. The Ember Seal: black iron, forged in the Sunken Forge, set on Fafnyr's chain at the top of the mountain.",
+        "It kept him asleep a hundred years. Fifty years ago it cracked, and five fools climbed to make a new one.",
+        "I was one of the five. Don't look at me like that. Climb, and you'll understand."
+      ]
+    },
+    {
+      "after": 10,
+      "id": "maren_confession",
+      "lines": [
+        "Fafnyr spoke of a voice below. I know whose voice.",
+        "There were five of us. Morvax led. When the seal was set, he went down the stair behind the hoard, and we followed him.",
+        "Tam, Liane, Oskar - they held the stair so I could run. I came home alone and called it a rockfall. Fifty years I've called it a rockfall.",
+        "He isn't dead, courier. He's waiting. Go down and end it - for them, if not for me."
+      ]
+    },
+    {
+      "after": 15,
+      "id": "maren_peace",
+      "lines": [
+        "He said I was right to run? ...Then maybe I can stop running.",
+        "Sit with me a while. The fire's warm, and for once the mountain is quiet."
+      ]
+    }
+  ]
 }

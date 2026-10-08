@@ -50,6 +50,8 @@ static func is_met(step: Dictionary, progression: ProgressionState, settlement: 
 			return settlement.settlers.size() >= int(when["count"])
 		"project":
 			return when["projectId"] in Town.done_projects(settlement)
+		"seen":
+			return when["sceneId"] in progression.story_seen
 	push_warning("MainQuest: unknown step kind %s" % when["kind"])
 	return false
 

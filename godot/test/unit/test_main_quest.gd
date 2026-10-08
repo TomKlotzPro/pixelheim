@@ -33,6 +33,9 @@ func test_every_step_names_a_real_quest_or_floor() -> void:
 				assert_false(Town.project(when["projectId"]).is_empty(), "%s: a real project" % step["id"])
 			"settlers":
 				assert_gt(int(when["count"]), 0)
+			"seen":
+				var stories: Array = Story._data()["elderLines"].map(func(entry: Dictionary) -> String: return entry["id"])
+				assert_has(stories, when["sceneId"], "%s: one of Maren's stories" % step["id"])
 			_:
 				fail_test("%s: unknown kind %s" % [step["id"], when["kind"]])
 		assert_ne(step["hint"], "")
@@ -57,7 +60,9 @@ func test_the_story_starts_at_the_inn_and_follows_the_real_rules() -> void:
 func test_running_ahead_never_sends_the_hero_back() -> void:
 	state.progression.unlocked_level = 3
 	state.clear_floor(3)
-	assert_eq(_next(), "watchtower", "the brew and the inn are behind now")
+	assert_eq(_next(), "graves", "the brew and the inn are behind now; the graves are news")
+	state.mark_seen("maren_graves")
+	assert_eq(_next(), "watchtower")
 	state.progression.unlocked_level = 10
 	state.clear_floor(10)
 	assert_eq(_next(), "fountain", "Fafnyr's scale goes on the square first")
