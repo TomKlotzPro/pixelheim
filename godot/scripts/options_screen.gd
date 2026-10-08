@@ -50,6 +50,11 @@ func _build() -> Array[Dictionary]:
 	out.append({"label": "CRT scanlines", "value": "On" if settings.scanlines else "Off", "adjust": _flip.bind("scanlines")})
 	out.append({"label": "Fullscreen", "value": "On" if settings.fullscreen else "Off", "adjust": _flip.bind("fullscreen")})
 	out.append({"label": "Reduce motion", "value": "On" if settings.reduce_motion else "Off", "adjust": _flip.bind("reduce_motion")})
+	# Accessibility (PIX-160).
+	out.append({"heading": "Reading and help"})
+	out.append({"label": "Large reading text", "value": "On" if settings.large_text else "Off", "adjust": _flip.bind("large_text")})
+	out.append({"label": "Clear warnings", "value": "On" if settings.clear_warnings else "Off", "adjust": _flip.bind("clear_warnings")})
+	out.append({"label": "Hints", "value": "On" if settings.hints else "Off", "adjust": _flip.bind("hints")})
 	out.append({"heading": "Controls", "column": 1})
 	for action: String in Controls.BINDABLE:
 		var waiting := listening == action

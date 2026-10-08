@@ -45,6 +45,10 @@ var heard_hp := 0
 var hunted_at := -100.0
 var hunted_by_boss := false
 var noticed_at := -100.0
+## The HUD's layer, and the first-time hint on it now (PIX-160).
+var hud_root: CanvasLayer
+var hint_card: PanelContainer
+static var _hint_doc := {}
 ## Seconds until the soundscape is looked at again (PIX-158).
 var soundscape_left := 0.0
 ## Foes still standing on the dungeon floor the hero walks (0 when cleared).
@@ -212,6 +216,7 @@ func _process(delta: float) -> void:
 		_revive_packs()
 		view.refresh_patches()
 		_keep_hours()
+		_hint_boards()
 	_update_objective()
 	var cell := Vector2i((player.position / TILE).floor())
 	if cell == player_cell:
@@ -373,7 +378,7 @@ func log_line(line: String) -> void:
 ## The battle log: recent lines stack bottom-left and fade.
 func _log(lines: Array) -> void:
 	for line: String in lines:
-		var label := UiStyle.label(line, 12, UiStyle.CREAM)
+		var label := UiStyle.label(line, UiStyle.reading(12), UiStyle.CREAM)
 		label.add_theme_color_override("font_outline_color", UiStyle.NIGHT)
 		label.add_theme_constant_override("outline_size", 4)
 		log_box.add_child(label)
@@ -480,6 +485,7 @@ func skill_flash(at: Vector2, color: Color) -> void:
 ## Something has seen the hero: a growl (SFX.bump), not more than once a beat.
 func on_enemy_noticed(enemy: Node) -> void:
 	var now := Time.get_ticks_msec() / 1000.0
+	hint("dodge", {"key": Controls.key_label(Controls.key_for("dodge", GameState.settings.bindings))})
 	# A named monster roars (PIX-158); anything else bumps.
 	if enemy.fighter.has("named"):
 		Sound.play("roar")
@@ -540,6 +546,59 @@ func _soundscape() -> Array[String]:
 	if burning or map.id == "town_smith" or _near_camp_fire():
 		out.append("fire")
 	return out
+
+
+## A first-time hint (PIX-160): a card under the top of the screen that
+## says what something is, once per player (GameSettings.hints_seen, `key`
+## when one hint has many, a skill each) and never with hints off. It doesn't
+## stop the game, and fades by itself.
+func hint(id: String, values := {}, key := "") -> void:
+	var settings := GameState.settings
+	var seen_id := key if key != "" else id
+	if not settings.hints or seen_id in settings.hints_seen or hud_root == null:
+		return
+	settings.hints_seen.append(seen_id)
+	settings.save_file()
+	if _hint_doc.is_empty():
+		_hint_doc = JSON.parse_string(FileAccess.get_file_as_string("res://assets/data/hints.json"))
+	var title := String(_hint_doc[id]["title"])
+	var text := String(_hint_doc[id]["text"])
+	for name: String in values:
+		title = title.replace("{%s}" % name, str(values[name]))
+		text = text.replace("{%s}" % name, str(values[name]))
+	if hint_card != null:
+		hint_card.queue_free()
+	hint_card = PanelContainer.new()
+	hint_card.add_theme_stylebox_override("panel", UiStyle.window(12))
+	hint_card.position = Vector2(340, 18)
+	hint_card.custom_minimum_size = Vector2(600, 0)
+	hint_card.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var lines := VBoxContainer.new()
+	lines.add_theme_constant_override("separation", 4)
+	hint_card.add_child(lines)
+	lines.add_child(UiStyle.strong(title, 16, UiStyle.LAMP))
+	var body := UiStyle.label(text, UiStyle.reading(14), UiStyle.INK)
+	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	body.custom_minimum_size = Vector2(570, 0)
+	lines.add_child(body)
+	hud_root.add_child(hint_card)
+	hint_card.modulate.a = 0.0
+	var show := hint_card.create_tween()
+	show.tween_property(hint_card, "modulate:a", 1.0, 0.3)
+	show.tween_interval(10.0 if settings.large_text else 7.0)
+	show.tween_property(hint_card, "modulate:a", 0.0, 0.6)
+	show.tween_callback(hint_card.queue_free)
+
+
+## The boards on the square, explained the first time the hero walks up.
+func _hint_boards() -> void:
+	if map.id != "town" or GameState.progression.prologue != Prologue.DONE:
+		return
+	if Vector2(player_cell).distance_to(Vector2(Town.project_board())) <= 3.0:
+		hint("board")
+	if Vector2(player_cell).distance_to(Vector2(Town.bounty_board())) <= 2.0 \
+			and not Hunts.notices(GameState.progression.cleared_levels, GameState.progression.hunted).is_empty():
+		hint("bounty")
 
 
 ## A camp's torch within a few tiles of the hero.
@@ -1393,6 +1452,10 @@ func _build_hud() -> void:
 	GameState.healed.connect(func() -> void: player.heal())
 	GameState.ranked_up.connect(_ascend)
 	GameState.prologue_dawn.connect(_play_dawn)
+	GameState.skill_learned.connect(func(entry: Dictionary) -> void:
+		hint("skill", {"skill": entry["name"], "what": entry.get("description", "")}, "skill:" + String(entry["id"]))
+	)
+	hud_root = hud
 	GameState.settlers_changed.connect(_respawn_npcs)
 	nameplate = PanelContainer.new()
 	nameplate.add_theme_stylebox_override("panel", UiStyle.window(8))
@@ -1417,7 +1480,7 @@ func _build_hud() -> void:
 	message_label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
 	message_label.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	message_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	UiStyle.sized(message_label, 16)
+	UiStyle.sized(message_label, UiStyle.reading(16))
 	message_label.add_theme_color_override("font_color", UiStyle.CREAM)
 	message_label.add_theme_color_override("font_outline_color", UiStyle.NIGHT)
 	message_label.add_theme_constant_override("outline_size", 6)
@@ -1439,7 +1502,7 @@ func _build_hud() -> void:
 	objective_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	objective_box.add_child(objective_row)
 	objective_row.add_child(UiStyle.strong("Next", 16, UiStyle.GOLD))
-	objective_label = UiStyle.label("", 16, UiStyle.CREAM)
+	objective_label = UiStyle.label("", UiStyle.reading(16), UiStyle.CREAM)
 	objective_row.add_child(objective_label)
 	# Centred over the dock whatever the step's length.
 	objective_box.resized.connect(func() -> void: objective_box.position.x = roundf((1280 - objective_box.size.x) / 2.0))
@@ -1554,6 +1617,11 @@ var crt: CanvasLayer
 ## The CRT scanlines over everything, and fullscreen (never in harness runs).
 func apply_video() -> void:
 	var settings := GameState.settings
+	# Large reading text (PIX-160) applies at once to what's on the HUD.
+	if message_label != null:
+		UiStyle.sized(message_label, UiStyle.reading(16))
+		UiStyle.sized(objective_label, UiStyle.reading(16))
+		objective_box.reset_size()
 	if settings.scanlines and crt == null:
 		crt = CanvasLayer.new()
 		crt.layer = 20

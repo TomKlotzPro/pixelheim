@@ -28,6 +28,8 @@ signal hp_changed(hp: int, max_hp: int)
 signal ranked_up(title: String)
 ## Levels were gained (the level-up fanfare).
 signal leveled_up(level: int)
+## A skill the hero can now use (PIX-160: its first-time hint).
+signal skill_learned(entry: Dictionary)
 
 ## Slot 0 never touches disk: harness runs and tests leave real saves alone.
 const NO_SLOT := 0
@@ -1276,6 +1278,8 @@ func buy_skill_node(node_id: String) -> bool:
 		return false
 	hero.skill_nodes.append(node_id)
 	hero.skill_points -= 1
+	if entry.get("kind", "") == "active":
+		skill_learned.emit(entry)
 	var grants: Dictionary = entry.get("grantStats", {})
 	if grants.has("maxHp"):
 		hero.stats["maxHp"] = int(hero.stats["maxHp"]) + int(grants["maxHp"])

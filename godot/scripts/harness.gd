@@ -109,6 +109,13 @@ func _run_test_harness() -> void:
 	if not args.has("--screenshot"):
 		return
 	await get_tree().create_timer(0.4).timeout
+	# `--set large_text,clear_warnings`: those settings on for this run only
+	# (the harness never writes the player's settings).
+	var set_index := args.find("--set")
+	if set_index >= 0 and set_index + 1 < args.size():
+		for setting: String in args[set_index + 1].split(","):
+			GameState.settings.set(setting, true)
+		world.apply_video()
 	# Dungeons: `--floor N` walks down floor N, `gate [--dungeon id]` opens a
 	# gate's floor select (mountain by default).
 	var floor_index := args.find("--floor")

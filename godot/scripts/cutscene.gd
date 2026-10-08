@@ -73,8 +73,9 @@ func _open() -> void:
 		bar.size = Vector2(VIEW.x, BAR)
 		bar.position.y = 0 if top else VIEW.y - BAR
 		add_child(bar)
-	caption = UiStyle.label("", 18, UiStyle.CREAM, Vector2(90, VIEW.y - BAR + 26))
+	caption = UiStyle.label("", UiStyle.reading(18), UiStyle.CREAM, Vector2(90, VIEW.y - BAR + 26))
 	caption.custom_minimum_size = Vector2(VIEW.x - 180, 0)
+	caption.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(caption)
 	var skip := UiStyle.hints(["E", "next", "Esc", "skip"], true)
@@ -187,6 +188,10 @@ func _fade(alpha: float, seconds: float) -> void:
 ## A line typing itself into the lower bar, then held while it's read.
 func _caption(text: String, hold: float) -> void:
 	caption.text = text
+	# A long line (the large type above all, PIX-160) wraps and rises from
+	# the bottom edge.
+	caption.size = Vector2(VIEW.x - 180, 0)
+	caption.position.y = VIEW.y - 14 - caption.get_minimum_size().y
 	caption.visible_ratio = 1.0 if still else 0.0
 	var typing: Tween
 	if not still:

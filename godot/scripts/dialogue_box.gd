@@ -15,12 +15,14 @@ var text: Label
 var counter: Label
 var hints: HBoxContainer
 var more: TextureRect
+var panel: PanelContainer
+var tab: PanelContainer
 
 
 func _open() -> void:
 	layer = 4
 
-	var panel := PanelContainer.new()
+	panel = PanelContainer.new()
 	panel.position = AT
 	panel.custom_minimum_size = SIZE
 	panel.add_theme_stylebox_override("panel", UiStyle.window(18))
@@ -38,7 +40,7 @@ func _open() -> void:
 	var spacer := Control.new()
 	spacer.custom_minimum_size = Vector2(0, 8)
 	column.add_child(spacer)
-	text = UiStyle.label("", 16, UiStyle.INK)
+	text = UiStyle.label("", UiStyle.reading(16), UiStyle.INK)
 	text.add_theme_constant_override("line_spacing", 6)
 	text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	text.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -59,7 +61,7 @@ func _open() -> void:
 		blink.tween_property(more, "modulate:a", 1.0, 0.45)
 
 	# The name tab sits on the window's top edge, over the frame.
-	var tab := PanelContainer.new()
+	tab = PanelContainer.new()
 	tab.add_theme_stylebox_override("panel", UiStyle.plank(true, 8))
 	tab.position = AT + Vector2(PORTRAIT + 36 if npc.has("sprite") else 24, -22)
 	tab.add_child(UiStyle.strong(npc["name"], 16, UiStyle.GOLD))
@@ -120,6 +122,14 @@ func _show() -> void:
 		child.queue_free()
 	hints.add_child(UiStyle.hints(["E", "close"] if last else ["E", "next", "Esc", "leave"]))
 	more.visible = not last
+	_fit.call_deferred()
+
+
+## A long line in the large type grows the window upward, never off screen.
+func _fit() -> void:
+	panel.reset_size()
+	panel.position.y = minf(AT.y, AT.y + SIZE.y - panel.size.y)
+	tab.position.y = panel.position.y - 22
 
 
 func _close() -> void:
