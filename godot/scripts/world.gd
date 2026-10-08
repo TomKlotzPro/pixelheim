@@ -1110,21 +1110,18 @@ func _prologue_arrive(next: MapData) -> void:
 				GameState.prologue_reached_town()
 
 
-## Dawn after the Night of Ash: the survivors on the square, the letter read,
-## the choice to rebuild - told over the real burnt town - and then the day.
+## Dawn after the Night of Ash (PIX-197): played on the town itself - the
+## fires going out, the survivors on the square, the letter read, Fafnyr's
+## shadow - and then the day.
 func _play_dawn() -> void:
-	var square := _cell_center(Town.square())
-	var stops: Array[Dictionary] = []
-	for line: String in Prologue.data()["dawn"]:
-		stops.append({"at": square, "line": line})
-	var dawn := preload("res://scripts/reveal_screen.gd").new()
+	var dawn := preload("res://scripts/dawn_screen.gd").new()
 	dawn.world = self
-	dawn.stops = stops
-	Sound.play_theme("dawn")
 	dawn.on_done = func() -> void:
 		GameState.finish_prologue()
 		map = _load_map("town")
-		_enter_map(map, player_cell)
+		# The day begins on the square, below the hall, whether the dawn
+		# was watched or skipped.
+		_enter_map(map, Town.square() + Vector2i(0, 2))
 	add_child(dawn)
 
 

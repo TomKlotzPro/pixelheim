@@ -64,7 +64,7 @@ FLOWS=(
 	"icecave|--map frostgate --at 27,7 --walk u --wait 0.4|map=icecave"
 	"gate|--map overworld --at 48,8 --walk u,u --wait 0.3|map=overworld cell=\\(48, 7\\).*open=none"
 	"deep|--floor 16 clear --wait 0.3|map=floor_16"
-	"dawn|--map town --prologue 5 --at 11,8 --keys w,e,e,e,e,e --wait 1.5|open=reveal_screen"
+	"dawn|--map town --prologue 5 --at 11,8 --keys w,e,e,e,e,e --wait 1.5|open=dawn_screen"
 	"motion|--map town motion|backsteps=[01]$"
 )
 
