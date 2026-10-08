@@ -695,29 +695,6 @@ func _build_decor(data: MapData) -> void:
 			body.position = _cell_center(cell)
 			body.add_to_group("decor")
 			actors.add_child(body)
-	# Furniture and stations: one sprite per span of each horizontal run, so a
-	# 3-tile counter shows one 48px counter instead of three overlapping ones.
-	# Gates in outdoor ramparts are drawn by the Puny castle pieces.
-	var outdoor := PunyTerrain.is_outdoor(data.grid)
-	for cell: Vector2i in data.grid:
-		var tile: String = data.grid[cell]
-		if not WorldTiles.PROP_TILES.has(tile):
-			continue
-		if outdoor and PunyTerrain.wall_piece(data.grid, cell) == PunyTerrain.GATE:
-			continue
-		if buildings["pieces"].has(cell) or outdoor_props["drawn"].has(cell):
-			continue  # the house draws its own door (PunyTown), PunyProps its stalls
-		if data.grid.get(cell + Vector2i.LEFT, "") == tile:
-			continue  # not the run's left edge
-		var run := 0
-		while data.grid.get(cell + Vector2i(run, 0), "") == tile:
-			run += 1
-		var config: Array = WorldTiles.PROP_TILES[tile]
-		var span := maxi(1, ceili((config[1] as Rect2).size.x / TILE))
-		var i := 0
-		while i < run:
-			_add_prop_sprite(config[0], config[1], cell + Vector2i(i, 0))
-			i += span
 	for prop: Dictionary in outdoor_props["props"]:
 		_add_puny_prop(prop)
 	for cell: Vector2i in data.grid:
@@ -798,13 +775,15 @@ func _npc_beside() -> Dictionary:
 	return Npcs.beside(occupied, player_cell, Vector2i(player.facing))
 
 ## A chest or ground treasure as it stands: Shade's chest, pouch or herbs
-## (PunyProps), or the web's sprites without the pack; null when it's gone.
+## (PunyProps); without the paid pack his CC0 dungeon chest, and nothing for
+## ground treasure. Null when it's gone.
 func _treasure_texture(chest: Dictionary, opened: bool) -> Texture2D:
 	if PunyProps.available():
 		var tile := PunyProps.treasure_tile(chest["look"], opened)
 		return PunyProps.texture(tile) if tile >= 0 else null
-	var sprite_name := Interactables.sprite_name(chest, opened)
-	return load("res://assets/sprites/%s.png" % sprite_name) if sprite_name != "" else null
+	if chest["look"] != "chest":
+		return null
+	return PunyDungeon.sheet().tile_texture(PunyDungeon.CHEST_OPEN if opened else PunyDungeon.CHEST)
 
 ## One of Shade's props among the actors (PunyProps): sorted on the bottom of
 ## its foot, so the hero passes behind it from the north and in front from
@@ -852,18 +831,6 @@ func _add_puny_prop(prop: Dictionary) -> Node2D:
 	actors.add_child(root)
 	return root
 
-func _add_prop_sprite(sheet: String, region: Rect2, cell: Vector2i) -> void:
-	var atlas := AtlasTexture.new()
-	atlas.atlas = load(WorldTiles.sprite_file(sheet))
-	atlas.region = region
-	var sprite := Sprite2D.new()
-	sprite.texture = atlas
-	sprite.centered = false
-	sprite.position = Vector2(cell * TILE) + Vector2(0, TILE)
-	sprite.offset = Vector2(0, -region.size.y)
-	sprite.add_to_group("decor")
-	actors.add_child(sprite)
-
 func _add_decor_sprite(texture_path: String, region: Rect2, cell: Vector2i, h: int) -> void:
 	var atlas := AtlasTexture.new()
 	atlas.atlas = load(texture_path)
@@ -876,65 +843,21 @@ func _add_decor_sprite(texture_path: String, region: Rect2, cell: Vector2i, h: i
 	sprite.add_to_group("decor")
 	actors.add_child(sprite)
 
-## Door signs float above the world, outside the y-sort.
+## Door signs float above the world, outside the y-sort: Shade's hanging
+## boards (ShopSign), the place's name rising as the hero walks up. They are
+## the paid pack's; without it the doors stand bare.
 func _build_props(data: MapData) -> Node2D:
 	var root := Node2D.new()
 	door_signs = []
-	if ShopSign.available():
-		# Hanging boards with the trade's icon; the name rises on approach.
-		for sign_def: Dictionary in Interactables.signs_on(data.id, GameState.owns_house()):
-			var door := Vector2i(int(sign_def["x"]), int(sign_def["y"]))
-			var target: Dictionary = data.portals.get(door, {})
-			root.add_child(ShopSign.build(sign_def["label"], door))
-			var told := ShopSign.about(sign_def["label"], String(target.get("mapId", "")), GameState.owns_house())
-			door_signs.append({"door": door, "name": told["name"], "about": told["about"]})
+	if not ShopSign.available():
 		return root
 	for sign_def: Dictionary in Interactables.signs_on(data.id, GameState.owns_house()):
-		var door := Vector2(int(sign_def["x"]) * TILE + TILE / 2.0, int(sign_def["y"]) * TILE)
-		# A wooden shop board over the door, in the web's sign wood: the name
-		# in the pixel type, and the trade's icon above it for craft stations.
-		var board := PanelContainer.new()
-		board.add_theme_stylebox_override("panel", _sign_wood())
-		board.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		var label := Label.new()
-		label.text = sign_def["label"]
-		label.add_theme_font_override("font", UiStyle.chunky_font())
-		label.add_theme_font_size_override("font_size", 8)
-		label.add_theme_color_override("font_color", Color("e8c34a"))
-		board.add_child(label)
-		root.add_child(board)
-		board.reset_size()
-		# Over the eave just above the door (Puny houses), or above the old
-		# two-tile arch doors.
-		var lift := 10.0 if buildings["pieces"].has(Vector2i(sign_def["x"], sign_def["y"])) else 26.0
-		board.position = (door - Vector2(board.size.x / 2.0, lift + board.size.y - 8)).round()
-		if sign_def.has("icon"):
-			var texture: Texture2D = load("res://assets/sprites/%s.png" % sign_def["icon"])
-			var size := texture.get_size() + Vector2(4, 4)
-			var plate := Panel.new()
-			plate.add_theme_stylebox_override("panel", _sign_wood())
-			plate.mouse_filter = Control.MOUSE_FILTER_IGNORE
-			plate.size = size
-			plate.position = Vector2(door.x - size.x / 2.0, board.position.y - size.y + 1).round()
-			var icon := TextureRect.new()
-			icon.texture = texture
-			icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-			icon.position = Vector2(2, 2)
-			plate.add_child(icon)
-			root.add_child(plate)
+		var door := Vector2i(int(sign_def["x"]), int(sign_def["y"]))
+		var target: Dictionary = data.portals.get(door, {})
+		root.add_child(ShopSign.build(sign_def["label"], door))
+		var told := ShopSign.about(sign_def["label"], String(target.get("mapId", "")), GameState.owns_house())
+		door_signs.append({"door": door, "name": told["name"], "about": told["about"]})
 	return root
-
-## Sign wood (the web's door signs): a dark plank, a lit top edge, a shadow.
-func _sign_wood() -> StyleBoxFlat:
-	var wood := StyleBoxFlat.new()
-	wood.bg_color = Color("2a2118")
-	wood.border_color = Color("8a6238")
-	wood.border_width_top = 1
-	wood.border_width_bottom = 1
-	wood.set_content_margin_all(2)
-	wood.content_margin_top = 1
-	wood.content_margin_bottom = 0
-	return wood
 
 func _chest_at(cell: Vector2i) -> Dictionary:
 	for chest: Dictionary in Interactables.chests_on(map.id):
@@ -1017,33 +940,25 @@ func _build_furniture() -> void:
 	for placed: Dictionary in GameState.furniture():
 		var item_id: String = placed["itemId"]
 		var cell := Vector2i(placed["x"], placed["y"])
-		if PunyTown.available() and PunyInterior.PLACED.has(item_id):
+		if PunyTown.available():
 			_place_puny_furniture(item_id, cell)
 			continue
-		var sprite := Sprite2D.new()
-		sprite.texture = load("res://assets/sprites/%s.png" % Catalog.item(item_id)["sprite"])
-		sprite.position = _cell_center(cell)
-		sprite.add_to_group("furniture")
-		sprite.add_to_group("decor")
+		# Without the paid pack the piece isn't drawn, but it still stands
+		# in the way.
 		if not Town.furniture_blocks(item_id):
-			# Underfoot (the rug): on the floor, under everyone. (In the actors
-			# layer under z 0 it went under the floor too, and never showed.)
-			ground.add_child(sprite)
 			continue
-		actors.add_child(sprite)
 		furniture_cells.append(cell)
 		map.covered[cell] = true
-		if Town.furniture_blocks(item_id):
-			var body := StaticBody2D.new()
-			var shape := CollisionShape2D.new()
-			var rect := RectangleShape2D.new()
-			rect.size = Vector2(TILE, TILE)
-			shape.shape = rect
-			body.add_child(shape)
-			body.position = _cell_center(cell)
-			body.add_to_group("furniture")
-			body.add_to_group("decor")
-			actors.add_child(body)
+		var body := StaticBody2D.new()
+		var shape := CollisionShape2D.new()
+		var rect := RectangleShape2D.new()
+		rect.size = Vector2(TILE, TILE)
+		shape.shape = rect
+		body.add_child(shape)
+		body.position = _cell_center(cell)
+		body.add_to_group("furniture")
+		body.add_to_group("decor")
+		actors.add_child(body)
 
 ## A piece the hero placed, in Shade's furniture (PunyInterior.PLACED): the
 ## rug on the floor under everyone, the rest standing on their cell like any
@@ -1114,6 +1029,10 @@ func _update_prompt() -> void:
 	if show:
 		prompt_label.position = Vector2(_facing_cell() * TILE) + Vector2(5, -14)
 
+## What the cells add to Shade's layers (ground, houses, rooms, props,
+## dungeons draw everything else): an invisible box on every unwalkable cell
+## (a prop's own body stands in for its cells), and outdoors the stone floor
+## of the ruins, in his dungeon stone, under whatever stands on it.
 func _build_tile_layer(data: MapData) -> TileMapLayer:
 	var tileset := TileSet.new()
 	tileset.tile_size = Vector2i(TILE, TILE)
@@ -1121,56 +1040,11 @@ func _build_tile_layer(data: MapData) -> TileMapLayer:
 	var box := PackedVector2Array([
 		Vector2(-8, -8), Vector2(8, -8), Vector2(8, 8), Vector2(-8, 8),
 	])
-	var source_ids := {}  # tile id -> atlas source id
-	var outdoor := PunyTerrain.is_outdoor(data.grid)
-	for tile: String in WorldTiles.TILE_INFO:
-		if WorldTiles.GROUND_TILES.has(tile):
-			continue  # the Puny ground draws these
-		var source := TileSetAtlasSource.new()
-		var sheet: String = WorldTiles.TILE_ANIMATIONS.get(tile, "")
-		var cut: bool = outdoor and tile in WorldTiles.GRASS_PROPS
-		if sheet == "":
-			var path := WorldTiles.sprite_path(tile)
-			if outdoor and tile == "floor":
-				source.texture = PunyDungeon.sheet().tile_texture(PunyDungeon.FLOOR)
-			else:
-				source.texture = WorldTiles.cutout(path) if cut else load(path)
-			source.texture_region_size = Vector2i(TILE, TILE)
-			source.create_tile(Vector2i.ZERO)
-		else:
-			# Animated terrain: the sheet is a horizontal strip; consecutive
-			# columns become animation frames at the fps atlas.json declares.
-			var meta: Dictionary = WorldTiles.atlas_animations()[sheet]
-			var path := "res://assets/sprites/%s.png" % sheet
-			source.texture = WorldTiles.cutout(path) if cut else load(path)
-			source.texture_region_size = Vector2i(TILE, TILE)
-			source.create_tile(Vector2i.ZERO)
-			source.set_tile_animation_frames_count(Vector2i.ZERO, int(meta["frames"]))
-			for i in int(meta["frames"]):
-				source.set_tile_animation_frame_duration(Vector2i.ZERO, i, 1.0 / float(meta["fps"]))
-		source_ids[tile] = tileset.add_source(source)
-		if not WorldTiles.is_walkable(tile):
-			var data_tile := source.get_tile_data(Vector2i.ZERO, 0)
-			data_tile.add_collision_polygon(0)
-			data_tile.set_collision_polygon_points(0, 0, box)
-		if WorldTiles.ROOF_TILES.has(tile):
-			source.get_tile_data(Vector2i.ZERO, 0).modulate = WorldTiles.ROOF_TILES[tile]
-
-	# Roof eaves: tinted shingle edge for the bottom row of each roof.
-	var eave_ids := {}
-	for tile: String in WorldTiles.ROOF_TILES:
-		var source := TileSetAtlasSource.new()
-		source.texture = load(WorldTiles.sprite_file(WorldTiles.ROOF_EAVE))
-		source.texture_region_size = Vector2i(TILE, TILE)
-		source.create_tile(Vector2i.ZERO)
-		eave_ids[tile] = tileset.add_source(source)
-		var data_tile := source.get_tile_data(Vector2i.ZERO, 0)
-		data_tile.modulate = WorldTiles.ROOF_TILES[tile]
-		data_tile.add_collision_polygon(0)
-		data_tile.set_collision_polygon_points(0, 0, box)
-
-	# Ground the Puny layer draws still blocks where the web says so (water,
-	# mountains): an invisible tile that only collides.
+	var stone := TileSetAtlasSource.new()
+	stone.texture = PunyDungeon.sheet().tile_texture(PunyDungeon.FLOOR)
+	stone.texture_region_size = Vector2i(TILE, TILE)
+	stone.create_tile(Vector2i.ZERO)
+	var stone_id := tileset.add_source(stone)
 	var blocker := TileSetAtlasSource.new()
 	blocker.texture = ImageTexture.create_from_image(Image.create(TILE, TILE, false, Image.FORMAT_RGBA8))
 	blocker.texture_region_size = Vector2i(TILE, TILE)
@@ -1180,58 +1054,19 @@ func _build_tile_layer(data: MapData) -> TileMapLayer:
 	blocker_tile.add_collision_polygon(0)
 	blocker_tile.set_collision_polygon_points(0, 0, box)
 
-	# Prop tiles show their base tile; the furniture sprite is y-sorted decor.
-	# Unwalkable props still need a colliding version of that base.
-	var blocked_base_ids := {}
-	for tile: String in WorldTiles.PROP_TILES:
-		var base: String = WorldTiles.PROP_TILES[tile][2]
-		if WorldTiles.is_walkable(tile) or blocked_base_ids.has(base):
-			continue
-		var source := TileSetAtlasSource.new()
-		source.texture = load(WorldTiles.sprite_path(base))
-		source.texture_region_size = Vector2i(TILE, TILE)
-		source.create_tile(Vector2i.ZERO)
-		blocked_base_ids[base] = tileset.add_source(source)
-		var data_tile := source.get_tile_data(Vector2i.ZERO, 0)
-		data_tile.add_collision_polygon(0)
-		data_tile.set_collision_polygon_points(0, 0, box)
-
 	var layer := TileMapLayer.new()
 	layer.tile_set = tileset
-	var skyline: bool = data.id in PunyTerrain.SKYLINE_MAPS
+	var ruins := data.floor_level == 0 and PunyTerrain.is_outdoor(data.grid)
 	for cell: Vector2i in data.grid:
 		var tile: String = data.grid[cell]
-		if outdoor_props["drawn"].has(cell):
-			# Shade's prop stands here, with its own body (PunyProps); in a ruin
-			# it stands on the ruin's floor, not the grass beyond.
-			if [Vector2i.UP, Vector2i.RIGHT, Vector2i.DOWN, Vector2i.LEFT].any(
-				func(step: Vector2i) -> bool: return data.grid.get(cell + step, "") == "floor"
-			):
-				layer.set_cell(cell, source_ids["floor"], Vector2i.ZERO)
+		var prop: bool = outdoor_props["drawn"].has(cell)
+		if ruins and (tile == "floor" or (prop and [Vector2i.UP, Vector2i.RIGHT, Vector2i.DOWN, Vector2i.LEFT].any(
+			func(step: Vector2i) -> bool: return data.grid.get(cell + step, "") == "floor"
+		))):
+			layer.set_cell(cell, stone_id, Vector2i.ZERO)
 			continue
-		var puny_drawn: bool = (
-			data.floor_level > 0
-			or buildings.has("floor")
-			or buildings["pieces"].has(cell)
-			or WorldTiles.GROUND_TILES.has(tile)
-			or (outdoor and PunyTerrain.wall_piece(data.grid, cell) >= 0)
-			or (skyline and WorldTiles.ROOF_TILES.has(tile))
-		)
-		if puny_drawn:
-			if not WorldTiles.is_walkable(tile):
-				layer.set_cell(cell, blocker_id, Vector2i.ZERO)
-			continue
-		var source_id: int = source_ids[tile]
-		if (
-			WorldTiles.ROOF_TILES.has(tile)
-			and not WorldTiles.ROOF_TILES.has(data.grid.get(cell + Vector2i.DOWN, ""))
-		):
-			source_id = eave_ids[tile]
-		elif WorldTiles.PROP_TILES.has(tile):
-			var base: String = WorldTiles.PROP_TILES[tile][2]
-			var blocked: bool = not WorldTiles.is_walkable(tile)
-			source_id = blocked_base_ids[base] if blocked else source_ids[base]
-		layer.set_cell(cell, source_id, Vector2i.ZERO)
+		if not prop and not WorldTiles.is_walkable(tile):
+			layer.set_cell(cell, blocker_id, Vector2i.ZERO)
 	return layer
 
 func _spawn_player() -> void:
