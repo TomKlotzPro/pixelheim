@@ -5,7 +5,7 @@ extends GutTest
 ## rebuilds it as the Hamlet's projects. Heroes from before keep their town.
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
-const RUINED_DOORS := [Vector2i(8, 8), Vector2i(24, 8), Vector2i(42, 8), Vector2i(8, 26)]
+const RUINED_DOORS := [Vector2i(30, 10), Vector2i(50, 10), Vector2i(55, 18), Vector2i(23, 19)]
 
 var state: Node
 
@@ -28,8 +28,8 @@ func test_a_new_hero_finds_the_town_in_ashes() -> void:
 	var map := _town()
 	for door: Vector2i in RUINED_DOORS:
 		assert_false(map.portals.has(door), "the door at %s is cinders" % door)
-	assert_true(map.portals.has(Vector2i(49, 26)), "the hall stood")
-	assert_eq(map.tile_at(Vector2i(4, 3)), "fence", "a burnt frame")
+	assert_true(map.portals.has(Vector2i(40, 19)), "the hall stood")
+	assert_eq(map.tile_at(Vector2i(26, 5)), "fence", "a burnt frame")
 
 
 func test_the_ashes_can_be_walked_from_the_spawn_to_the_gate_and_the_hall() -> void:
@@ -44,8 +44,8 @@ func test_the_ashes_can_be_walked_from_the_spawn_to_the_gate_and_the_hall() -> v
 				seen[next] = true
 				if map.is_walkable(next):
 					queue.append(next)
-	assert_true(seen.has(Vector2i(32, 0)), "the gate")
-	assert_true(seen.has(Vector2i(49, 26)), "the hall")
+	assert_true(seen.has(Vector2i(40, 0)), "the gate")
+	assert_true(seen.has(Vector2i(40, 19)), "the hall")
 	assert_true(seen.has(Town.project_board() + Vector2i.DOWN), "the board")
 
 
@@ -61,7 +61,7 @@ func test_the_keepers_trade_from_stalls_and_sela_keeps_a_tent() -> void:
 	var elder: Dictionary = on_square[ids.find("elder")]
 	assert_string_contains(elder["lines"][0], "burned")
 	var map := _town()
-	assert_eq(map.tile_at(Vector2i(22, 14)), "crate", "Odo's stall")
+	assert_eq(map.tile_at(Vector2i(33, 25)), "crate", "Odo's stall")
 	assert_ne(Town.ashes_tent([]), Vector2i(-1, -1))
 
 

@@ -3,8 +3,8 @@
     {
       "id": "town_corner",
       "mapId": "town",
-      "x": 2,
-      "y": 32,
+      "x": 26,
+      "y": 30,
       "look": "chest",
       "loot": {
         "kind": "item",
@@ -15,8 +15,8 @@
     {
       "id": "town_nook",
       "mapId": "town",
-      "x": 62,
-      "y": 18,
+      "x": 80,
+      "y": 4,
       "look": "chest",
       "loot": {
         "kind": "gold",
@@ -277,35 +277,35 @@
     "mirefen": [],
     "town": [
       {
-        "x": 8,
-        "y": 8,
+        "x": 30,
+        "y": 10,
         "label": "GOODS"
       },
       {
-        "x": 24,
-        "y": 8,
+        "x": 50,
+        "y": 10,
         "label": "INN"
       },
       {
-        "x": 42,
-        "y": 8,
+        "x": 55,
+        "y": 18,
         "label": "FORGE",
         "icon": "icon_anvil"
       },
       {
-        "x": 8,
-        "y": 26,
+        "x": 23,
+        "y": 19,
         "label": "BREWS",
         "icon": "icon_cauldron"
       },
       {
-        "x": 49,
-        "y": 26,
+        "x": 40,
+        "y": 19,
         "label": "HALL"
       },
       {
-        "x": 60,
-        "y": 26,
+        "x": 15,
+        "y": 25,
         "label": "FOR SALE"
       }
     ],
@@ -329,35 +329,35 @@
   "signsHouseOwned": {
     "town": [
       {
-        "x": 8,
-        "y": 8,
+        "x": 30,
+        "y": 10,
         "label": "GOODS"
       },
       {
-        "x": 24,
-        "y": 8,
+        "x": 50,
+        "y": 10,
         "label": "INN"
       },
       {
-        "x": 42,
-        "y": 8,
+        "x": 55,
+        "y": 18,
         "label": "FORGE",
         "icon": "icon_anvil"
       },
       {
-        "x": 8,
-        "y": 26,
+        "x": 23,
+        "y": 19,
         "label": "BREWS",
         "icon": "icon_cauldron"
       },
       {
-        "x": 49,
-        "y": 26,
+        "x": 40,
+        "y": 19,
         "label": "HALL"
       },
       {
-        "x": 60,
-        "y": 26,
+        "x": 15,
+        "y": 25,
         "label": "HOME"
       }
     ]
@@ -433,12 +433,12 @@
       "name": "Pixelheim Square",
       "mapId": "town",
       "at": {
-        "x": 28,
-        "y": 15
+        "x": 40,
+        "y": 27
       },
       "arrival": {
-        "x": 28,
-        "y": 15
+        "x": 40,
+        "y": 27
       },
       "requiresSettler": "settler_wren"
     }

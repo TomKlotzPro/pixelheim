@@ -80,7 +80,7 @@ godot --path godot -- --screenshot                    # new hero in the village
 godot --path godot -- --screenshot --slot 1           # resume (and write) slot 1
 godot --path godot -- --screenshot --map town         # boot into another map
 godot --path godot -- --screenshot --walk l,d,d,d     # scripted steps first
-godot --path godot -- --screenshot --at 30,21 --walk u,u,u  # stand on a cell, then walk: what stops you
+godot --path godot -- --screenshot --at 40,27 --walk u,u,u  # stand on a cell, then walk: what stops you
 godot --path godot -- --screenshot fight              # orc fight, mid-swing
 godot --path godot -- --screenshot fight kill         # swing until it dies (rewards in the battle log)
 godot --path godot -- --screenshot fight kill hurt --foe wyvern   # another foe, and let it bite back

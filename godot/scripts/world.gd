@@ -137,7 +137,8 @@ func _ready() -> void:
 			GameState.progression.prologue = Prologue.DONE
 			GameState.world.steps = 0.0
 			GameState.world.map_id = "town"
-			GameState.world.cell = Vector2i(28, 30)
+			var spawn: Dictionary = Catalog._data()["townSpawn"]
+			GameState.world.cell = Vector2i(int(spawn["x"]), int(spawn["y"]))
 			GameState.pack.remove_item("chancellors_letter")
 	var house_index := args.find("--house-tier")
 	if house_index >= 0 and house_index + 1 < args.size():
@@ -1112,7 +1113,7 @@ func _prologue_arrive(next: MapData) -> void:
 ## Dawn after the Night of Ash: the survivors on the square, the letter read,
 ## the choice to rebuild - told over the real burnt town - and then the day.
 func _play_dawn() -> void:
-	var square := _cell_center(Town.project_board() + Vector2i(0, 5))
+	var square := _cell_center(Town.square())
 	var stops: Array[Dictionary] = []
 	for line: String in Prologue.data()["dawn"]:
 		stops.append({"at": square, "line": line})
@@ -1230,7 +1231,8 @@ func _play_ending(choice := "destroy") -> void:
 	GameState.mark_seen(scene_id)
 	GameState.reveals.clear()
 	map = _load_map("town")
-	var square := Town.project_board() + Vector2i(0, 4)
+	# Below the fountain, facing the hall.
+	var square := Town.square() + Vector2i(0, 3)
 	_enter_map(map, square)
 	if choice == "rest":
 		_lanterns()
@@ -1267,10 +1269,10 @@ func _play_ending(choice := "destroy") -> void:
 ## Five lanterns in a row on the square (PIX-157), for Maren, Oskar,
 ## Liane, Tam and Morvax: Shade's flame on a post, or a warm square.
 func _lanterns() -> void:
-	var row := Town.project_board() + Vector2i(-2, 2)
-	for i in 5:
+	var spots := Town.lanterns()
+	for i in spots.size():
 		var lantern := Node2D.new()
-		lantern.position = _cell_center(row + Vector2i(i, 0))
+		lantern.position = _cell_center(spots[i])
 		lantern.add_to_group("decor")
 		var post := ColorRect.new()
 		post.color = Color("4a3426")
@@ -1301,7 +1303,7 @@ func _festival() -> void:
 		return
 	for color: Color in [Color("f2c14e"), Color("d8433f"), Color("4f7cff"), Color("5cbf4a")]:
 		var confetti := CPUParticles2D.new()
-		confetti.position = _cell_center(Town.project_board() + Vector2i(0, -2))
+		confetti.position = _cell_center(Town.square() + Vector2i(0, -4))
 		confetti.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
 		confetti.emission_rect_extents = Vector2(14 * TILE, TILE)
 		confetti.amount = 18
@@ -1341,7 +1343,7 @@ func _play_reveals() -> void:
 				stops.append({"at": _cell_center(Town.project_center(key)), "line": "%s: built." % Town.project(key)["name"]})
 			"age":
 				stops.append({
-					"at": _cell_center(Town.project_board() + Vector2i(0, 5)),
+					"at": _cell_center(Town.square()),
 					"line": "Pixelheim is a %s now." % String(Town.tier(int(key))["name"]).to_lower(),
 				})
 				if GameState.festival_on():
@@ -1350,7 +1352,7 @@ func _play_reveals() -> void:
 						"line": "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw.",
 					})
 			"home":
-				stops.append({"at": _cell_center(Town.project_board() + Vector2i(0, 5)), "line": Town.homecoming(int(key))})
+				stops.append({"at": _cell_center(Town.square()), "line": Town.homecoming(int(key))})
 			"hunt":
 				stops.append({"at": _cell_center(Town.bounty_board() + Vector2i(0, 3)), "line": Hunts.named(key)["homecoming"]})
 	GameState.reveals.clear()

@@ -148,6 +148,21 @@ static func homecoming(level: int) -> String:
 	return String(_data()["homecomings"].get(str(level), ""))
 
 
+## The heart of the square (PIX-198): where the fountain rises, the town
+## gathers at dusk and the ending's tour stands. town.json "square".
+static func square() -> Vector2i:
+	var at: Dictionary = _data()["square"]
+	return Vector2i(int(at["x"]), int(at["y"]))
+
+
+## The five lanterns of the ending (PIX-157), on the square: town.json "lanterns".
+static func lanterns() -> Array[Vector2i]:
+	var out: Array[Vector2i] = []
+	for at: Dictionary in _data()["lanterns"]:
+		out.append(Vector2i(int(at["x"]), int(at["y"])))
+	return out
+
+
 ## The notice board on the square that opens the projects ledger.
 static func project_board() -> Vector2i:
 	var at: Dictionary = _data()["projectBoard"]
@@ -160,9 +175,9 @@ static func festival(key: String) -> Variant:
 
 
 ## Where the town stands about at dusk (PIX-159): a loose ring around the
-## square below the boards, open ground only.
+## square's heart, open ground only.
 static func gathering_spots(map: MapData) -> Array[Vector2i]:
-	var square := project_board() + Vector2i(0, 5)
+	var square := square()
 	var out: Array[Vector2i] = []
 	for offset: Vector2i in [
 		Vector2i(-2, -1), Vector2i(2, -1), Vector2i(-3, 1), Vector2i(3, 1), Vector2i(-1, 2), Vector2i(1, 2),
@@ -227,7 +242,8 @@ static func stall_crates(done: Array) -> Dictionary:
 		var stall: Dictionary = npc.get("stall", {})
 		if stall.is_empty() or stall["project"] in done or npc["id"] == "innkeeper":
 			continue
-		var side := -1 if int(stall["x"]) < 28 else 1
+		# The crate stands on the side away from the square's heart.
+		var side := -1 if int(stall["x"]) < square().x else 1
 		out[Vector2i(int(stall["x"]) + side, int(stall["y"]))] = "crate"
 	return out
 
@@ -301,7 +317,7 @@ static func project_center(project_id: String) -> Vector2i:
 		var r: Array = ruin["rect"]
 		cells.append_array([Vector2i(int(r[0]), int(r[1])), Vector2i(int(r[2]), int(r[3]))])
 	if cells.is_empty():
-		return project_board()
+		return square()
 	var low := cells[0]
 	var high := cells[0]
 	for cell in cells:

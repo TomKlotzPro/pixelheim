@@ -43,7 +43,7 @@ func test_waypoints_unlock_by_discovery_and_staffing() -> void:
 	assert_eq(square["requiresSettler"], "settler_wren")
 	var town := MapData.load_by_id("town")
 	var town_seen := {}
-	Discovery.discover_around(town_seen, town, Vector2i(28, 15))
+	Discovery.discover_around(town_seen, town, Vector2i(40, 27))
 	assert_false(Interactables.waypoint_usable(square, town_seen, []))
 	assert_true(Interactables.waypoint_usable(square, town_seen, ["settler_wren"]))
 

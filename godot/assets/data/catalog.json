@@ -1922,7 +1922,7 @@
   "levelCount": 15,
   "townSpawn": {
     "mapId": "town",
-    "x": 28,
+    "x": 40,
     "y": 30,
     "facing": "down"
   },
