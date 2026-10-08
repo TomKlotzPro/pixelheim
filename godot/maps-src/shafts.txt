@@ -1,0 +1,46 @@
+# The Blackiron shafts (PIX-167): the landing by the stair, the goblins' camp,
+# the galleries, the cart hall and the deep seam where the black iron was dug
+# for the Ember Seal - and where something still guards it.
+id shafts
+style cave
+spawn 4 27
+portal 3 28 map blackiron 26 5
+key X wall -
+key . floor shafts
+key L lamp -
+key b barrel -
+key k crate -
+key c cave shafts
+map
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXLXXXXXXXXXXLXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX..............XXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.............kXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX..............XXX
+XXXXXXXXXXXXXXXXXXX..XXXXXXXXXX..............XXX
+XXXXXXXXXXXXXXXXXXX..XXXXXXXXXX..............XXX
+XXXXXXXXXXXXXXXXXXX..XXXXXXXXXX..............XXX
+X...XXXXXXXXXXXXXXX..XXXXXXXXXX..............XXX
+X...XXXXXXXXXXXXLXX..XXXXLXXXXX..............XXX
+X...XXXXXXXXXXX............XXXX..............XXX
+X...LXXXXLXXXXX.k..........XXXX.k............XXX
+XXX........XXXX.............XXX..............XXX
+XXX.k......XXXX.............XXXXXXXX..XXXXXXXXXX
+XXX.........................XXXXXXXX..XXXXXXXXXX
+XXX.........................XXXXXXXX..XXXXXXXXXX
+XXX........XXXX.............XXXXXXXX..XXXXXXXXXX
+XXX........XXXX.............XXXXXXXX..XXXXXXXXXX
+XXX........XXXXXXXXXXXXXXX......LXXX..XXXLXXXXXX
+XXX........XXXXXXXXXXXXXXX.................XXXXX
+XXXXXX..XXXXXXXXXXXXXXXXXXXXXXX..k......b..XXXXX
+XXXXXX..XXXXXXXXXXXXXXXXXXXXXXX............XXXXX
+XXXXXX..XXXXXXXLXXXXXXXLXXXXXXX...............XX
+XXXLXX..XLXXXX...........XXXXXX...............XX
+XX.........XXX..b........XXXXXX............XXXXX
+XX...............................b.........XXXXX
+XX.........................................XXXXX
+XX.c.......XXX.........b.XXXXXXXXXXXXXXXXXXXXXXX
+XX.........XXX...........XXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXX..XXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX

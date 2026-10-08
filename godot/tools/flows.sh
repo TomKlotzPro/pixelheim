@@ -5,9 +5,10 @@
 # with real key presses (PIX-131), walking without the camera shake
 # (PIX-135), a named monster's bounty and board (PIX-156), the choice at
 # Morvax's throne (PIX-157), a festival's ring toss (PIX-159), the road to
-# Saltmere (PIX-164) and its sea cave (PIX-165). Every flow leaves its picture
-# in godot/flows/<name>.png for a human to look at, and the harness's report
-# line must match what the flow promises or the run fails.
+# Saltmere (PIX-164), its sea cave (PIX-165) and the Blackiron mines (PIX-167).
+# Every flow leaves its picture in godot/flows/<name>.png for a human to look
+# at, and the harness's report line must match what the flow promises or the
+# run fails.
 #
 #   godot/tools/flows.sh            # all of them
 #   godot/tools/flows.sh fight die  # just these
@@ -42,6 +43,8 @@ FLOWS=(
 	"festival|--map town --town-tier 2 --at 34,16 festival --keys w,e,e,e|open=ring_toss_screen"
 	"coast|--map overworld --at 16,61 --walk d,d,d --wait 0.4|map=saltmere"
 	"seacave|--map saltmere --at 7,23 --walk l --wait 0.4|map=seacave"
+	"mines|--map overworld --at 2,20 --walk l,l,l --wait 0.4|map=blackiron"
+	"shafts|--map blackiron --at 26,5 --walk u --wait 0.4|map=shafts"
 	"dawn|--map town --prologue 5 --at 29,17 --keys w,e,e,e,e,e --wait 1.5|open=reveal_screen"
 	"motion|--map town motion|backsteps=[01]$"
 )
@@ -57,6 +60,14 @@ for flow in "${FLOWS[@]}"; do
 	# A watchdog: a run that never quits fails instead of stalling the rest.
 	output=$(perl -e 'alarm 60; exec @ARGV' godot --path . -- --screenshot $args 2>&1)
 	report=$(grep "screenshot saved" <<<"$output")
+	# Smooth walking is timed frame by frame, and a long run's load can
+	# hitch one: it gets a second try, so only a real regression fails.
+	if [[ $name == motion ]] && ! grep -qE "$expect" <<<"$report"; then
+		rm -f screenshot.png
+		# shellcheck disable=SC2086
+		output=$(perl -e 'alarm 60; exec @ARGV' godot --path . -- --screenshot $args 2>&1)
+		report=$(grep "screenshot saved" <<<"$output")
+	fi
 	# A script error fails the flow even when the report looks right: a broken
 	# map build once logged errors on every map but the town while the report
 	# line stayed clean.

@@ -1020,6 +1020,104 @@
       "damage": 12,
       "scaling": "dexterity",
       "slot": "weapon"
+    },
+    "blackiron_ore": {
+      "name": "Blackiron Ore",
+      "category": "misc",
+      "sprite": "ore",
+      "weight": 2,
+      "value": 18,
+      "description": "Dark, heavy, faintly warm. The Ember Seal was poured from this seam fifty years ago."
+    },
+    "black_ingot": {
+      "name": "The Black Ingot",
+      "category": "misc",
+      "sprite": "ingot",
+      "weight": 3,
+      "value": 0,
+      "quest": true,
+      "description": "An ingot from the seam the Ember Seal was cast from, stamped with five marks. The five took a cartload; this one waited. One of the five relics."
+    },
+    "canary": {
+      "name": "Pell's Canary",
+      "category": "misc",
+      "sprite": "bird",
+      "weight": 0,
+      "value": 0,
+      "quest": true,
+      "description": "A very small, very cross yellow bird. It wants to go home."
+    },
+    "blackiron_helm": {
+      "name": "Blackiron Helm",
+      "category": "apparel",
+      "sprite": "helm",
+      "weight": 6,
+      "value": 150,
+      "description": "Hammered from the seam's own iron, dark as a cellar. Crafted, never sold.",
+      "armor": 4,
+      "slot": "head",
+      "set": "blackiron",
+      "grants": {
+        "strength": 1
+      }
+    },
+    "blackiron_plate": {
+      "name": "Blackiron Plate",
+      "category": "apparel",
+      "sprite": "armor",
+      "weight": 22,
+      "value": 320,
+      "description": "Heavy enough to anchor a boat. Warm, somehow, even in snow. Crafted, never sold.",
+      "armor": 8,
+      "slot": "body",
+      "set": "blackiron"
+    },
+    "blackiron_gauntlets": {
+      "name": "Blackiron Gauntlets",
+      "category": "apparel",
+      "sprite": "gloves",
+      "weight": 6,
+      "value": 150,
+      "description": "Knuckles like anvils. Crafted, never sold.",
+      "armor": 3,
+      "slot": "hands",
+      "set": "blackiron",
+      "grants": {
+        "strength": 1
+      }
+    },
+    "blackiron_sabatons": {
+      "name": "Blackiron Sabatons",
+      "category": "apparel",
+      "sprite": "boots",
+      "weight": 6,
+      "value": 150,
+      "description": "Every step rings. Sneaking is for other people. Crafted, never sold.",
+      "armor": 3,
+      "slot": "feet",
+      "set": "blackiron"
+    },
+    "blackiron_bulwark": {
+      "name": "Blackiron Bulwark",
+      "category": "apparel",
+      "sprite": "shield",
+      "weight": 16,
+      "value": 260,
+      "description": "A door of black iron with a handle. Goblins have broken teeth on it. Crafted, never sold.",
+      "armor": 6,
+      "slot": "offhand",
+      "set": "blackiron"
+    },
+    "blackiron_axe": {
+      "name": "Blackiron Axe",
+      "category": "weapons",
+      "sprite": "axe",
+      "weight": 13,
+      "value": 300,
+      "description": "The miners' axe, reforged for war. It bites like the cold. Crafted, never sold.",
+      "damage": 18,
+      "scaling": "strength",
+      "slot": "weapon"
     }
   },
   "roles": {
@@ -1327,7 +1425,9 @@
     "demo": "The Proving Grounds",
     "demo_hut": "The Ashenreach",
     "saltmere": "Saltmere",
-    "seacave": "The Sea Cave"
+    "seacave": "The Sea Cave",
+    "blackiron": "The Blackiron Valley",
+    "shafts": "The Blackiron Shafts"
   },
   "levelCount": 15,
   "townSpawn": {
@@ -1364,6 +1464,30 @@
             "dexterity": 3
           },
           "armor": 3
+        }
+      }
+    },
+    "blackiron": {
+      "name": "Blackiron Plate",
+      "region": "mines",
+      "pieces": [
+        "blackiron_helm",
+        "blackiron_plate",
+        "blackiron_gauntlets",
+        "blackiron_sabatons",
+        "blackiron_bulwark"
+      ],
+      "bonuses": {
+        "3": {
+          "grants": {
+            "strength": 2
+          }
+        },
+        "5": {
+          "grants": {
+            "strength": 3
+          },
+          "armor": 4
         }
       }
     }

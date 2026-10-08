@@ -101,7 +101,16 @@
     "oilskin_gloves": "survival-rpg-icons/Armour/Leather-Gloves-12.png",
     "oilskin_boots": "survival-rpg-icons/Armour/Leather-Boots-12.png",
     "saltwood_buckler": "survival-rpg-icons/Armour/Wooden-Shield-09.png",
-    "tidecutter": "survival-rpg-icons/Tools/Knife-09.png"
+    "tidecutter": "survival-rpg-icons/Tools/Knife-09.png",
+    "blackiron_ore": "survival-rpg-icons/Metal/Metal-Ore-02.png",
+    "black_ingot": "survival-rpg-icons/Metal/Metal-Ingot-02.png",
+    "canary": "survival-rpg-icons/Food/Fowl-02.png",
+    "blackiron_helm": "survival-rpg-icons/Armour/Metal-Helm-02.png",
+    "blackiron_plate": "survival-rpg-icons/Armour/Metal-Chestplate-02.png",
+    "blackiron_gauntlets": "survival-rpg-icons/Armour/Metal-Gauntlets-02.png",
+    "blackiron_sabatons": "survival-rpg-icons/Armour/Metal-Sabatons-02.png",
+    "blackiron_bulwark": "survival-rpg-icons/Armour/Metal-Shield-02.png",
+    "blackiron_axe": "survival-rpg-icons/Tools/Axe-02.png"
   },
   "ailments": {
     "poison": "puny-skills/Indicators/Symbol Indicator/Poisoned-Indicator.png",

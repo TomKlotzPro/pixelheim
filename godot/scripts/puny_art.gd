@@ -65,6 +65,7 @@ const HEADS := {
 	"iron_helm": "characters/Human-Soldier-Cyan.png",
 	"wyrm_visor": "characters/Warrior-Wyrm.png",
 	"oilskin_hood": "characters/Archer-Leather.png",
+	"blackiron_helm": "characters/Warrior-Wyrm.png",
 }
 const BODIES := {
 	"leather_armor": "characters/Archer-Leather.png",
@@ -75,6 +76,7 @@ const BODIES := {
 	"scaled_mail": "characters/Warrior-Red.png",
 	"runic_armor": "characters/Human-Soldier-Cyan.png",
 	"oilskin_coat": "characters/Archer-Leather.png",
+	"blackiron_plate": "characters/Warrior-Blue.png",
 }
 ## The bare template whose frames say where each head ends.
 const BASE := "characters/Character-Base.png"
@@ -130,6 +132,10 @@ const MONSTERS := {
 	"pirate_gunner": {"sheet": "mini/PirateGunner.png", "family": "mini"},
 	"pirate_captain": {"sheet": "mini/PirateCaptain.png", "family": "mini", "scale": 1.15},
 	"king_slime": {"sheet": "mini/KingSlimeBlue.png", "family": "mini", "scale": 1.3},
+	# The Blackiron shafts (PIX-167).
+	"goblin_digger": {"sheet": "mini/ClubGoblin.png", "family": "mini"},
+	"goblin_spear": {"sheet": "mini/SpearGoblin.png", "family": "mini"},
+	"iron_demon": {"sheet": "mini/ArmouredRedDemon.png", "family": "mini", "scale": 1.2},
 }
 
 static var _frames_cache := {}

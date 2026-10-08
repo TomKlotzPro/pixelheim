@@ -1,0 +1,52 @@
+# The Blackiron valley (PIX-167): spoil heaps and scrub on stone, a miners'
+# camp on the road, the shaft mouth in the northern cliff. The road east leads
+# back to the Ash Fields.
+id blackiron
+spawn 53 18
+portal 55 18 map overworld 2 20
+portal 55 19 map overworld 2 20
+portal 26 4 map shafts 4 28
+key ^ mountain -
+key s ash mines
+key . grass mines
+key : path mines
+key r roof_slate -
+key d door_shut -
+key c cave mines
+map
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^ssssss^sss^^^ss^ssss^^s^^^^ssssssss^ssss^^^^ssssss^^^^
+^^ssss^ss^^^ss^^^^s^ss^s^s^^^^ss^s^sss^s^^s^^^^s^sssss^^
+^^ssssssssssssssss.sssssssc^ssssssss.ssssss.ssssssss^^^^
+^^sss.ssssssssssssssssssss::ssssssssssssssssssssssss^^^^
+^^ssssssssssssssssssssssss::sssssss.sss^^^ssssssssss^s^^
+^^ssssssssssssssssssssss.s::ssssssssss^^^^^ssssssssss^^^
+^^^ssssssss^^^ss.sss.sssss::sssssss.ss^^^^^sssssssss^s^^
+^^^sssssss^^^^^sssssssssss::ssssssssss^^^^^s.sss.ssss^^^
+^^^sssssss^^^^^sssssssssss::sssssssssss^^^s.ssssssss^^^^
+^^ssssssss^^^^^sssssssssss::sssssssssssssssssssssssss^^^
+^^s^sssssss^^^ssssssssssss::s.sssssss.s.ssssssssssss^^^^
+^^s^sssssssssssssrrrrrssss::ssss^^^ssssssssssss.ssss^s^^
+^^s^sssssssssssssrrrrrssss::ssss^^^sssssssssssssssssss^^
+^^sssssssssssssssrrdrrssss::ssss^^^sssssssssssssssssss^^
+^^^^s.ssssssssss::::::::ss::ssssssssssssss.sssssssss^s^^
+^^ssssssssssssss::::::::s.::sssss.sss.ssssss.sssssss^s^^
+^^ssssssssssssssss.sssssss::sssssssssssssssssssss:::::::
+^^^sssssss.s.ssssss.sssss^^^:::::::sssss.s::::::::::::::
+^^ssss.ssssss.sssssssss::::::::::::::::::::::::::s.sss^^
+^^sss.ss.ssss.sssssssss:::::s.rrrrr:::::::ssssssss.sss^^
+^^ssssssssssssssssssssssssssssrrrrrsssssssssssssss.sss^^
+^^ssssssssssssssssssssssssssssrrdrrs.sssssssssssssssss^^
+^^^ssssss^^^sssssssssssssssssssssssssssssss^^^ssssssss^^
+^^ssssss^^^^^ssssssssss.s.ssssssssssssssss^^^^^sssssss^^
+^^ssssss^^^^^sss.sss.ssssssssssssssssssss.^^^^^.ssss^s^^
+^^^sssss^^^^^sssssssssss.sssssssssssssssss^^^^^ssssss^^^
+^^sssssss^^^sssssssssssssssssssssssssssssss^^^ss.sssss^^
+^^^^ssssssssssssssssssssssssssssssssssssssssssssssss^s^^
+^^^^ssssssssssssssssss.sssssssssssssssssssssssssssssss^^
+^^sssssssss.sssssssssss.ssss.sssssssssssssssssssssss^s^^
+^^^ssssss^^sssss^^s^^sss^sss^^s^ss^s^^s^s^^^sssssss^s^^^
+^^^ss^^^sssssss^ss^ssssssssss^ssss^sssss^ss^^ssss^s^s^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

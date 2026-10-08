@@ -437,6 +437,77 @@
         "id": "smithing",
         "level": 4
       }
+    },
+    {
+      "id": "craft_blackiron_helm",
+      "itemId": "blackiron_helm",
+      "needs": {
+        "blackiron_ore": 3,
+        "wolf_pelt": 1
+      },
+      "job": {
+        "id": "smithing",
+        "level": 4
+      }
+    },
+    {
+      "id": "craft_blackiron_gauntlets",
+      "itemId": "blackiron_gauntlets",
+      "needs": {
+        "blackiron_ore": 2,
+        "wolf_pelt": 1
+      },
+      "job": {
+        "id": "smithing",
+        "level": 4
+      }
+    },
+    {
+      "id": "craft_blackiron_sabatons",
+      "itemId": "blackiron_sabatons",
+      "needs": {
+        "blackiron_ore": 3
+      },
+      "job": {
+        "id": "smithing",
+        "level": 4
+      }
+    },
+    {
+      "id": "craft_blackiron_plate",
+      "itemId": "blackiron_plate",
+      "needs": {
+        "blackiron_ore": 5,
+        "ember_shard": 2
+      },
+      "job": {
+        "id": "smithing",
+        "level": 5
+      }
+    },
+    {
+      "id": "craft_blackiron_bulwark",
+      "itemId": "blackiron_bulwark",
+      "needs": {
+        "blackiron_ore": 4,
+        "marsh_reed": 2
+      },
+      "job": {
+        "id": "smithing",
+        "level": 5
+      }
+    },
+    {
+      "id": "craft_blackiron_axe",
+      "itemId": "blackiron_axe",
+      "needs": {
+        "blackiron_ore": 4,
+        "ember_shard": 1
+      },
+      "job": {
+        "id": "smithing",
+        "level": 6
+      }
     }
   ],
   "jobStations": {
