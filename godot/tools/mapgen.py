@@ -4,6 +4,7 @@
 #
 # A sketch (godot/maps-src/<id>.txt):
 #   id saltmere
+#   style cave                           (optional: drawn in dungeon stone)
 #   spawn 4 20
 #   portal 0 20 map overworld 16 61      (x y map <mapId> <x> <y>)
 #   portal 30 5 dungeon seacave          (x y dungeon <dungeonId>)
@@ -38,6 +39,8 @@ def parse(path):
         word = line.split()
         if word[0] == "id":
             doc["id"] = word[1]
+        elif word[0] == "style":
+            doc["style"] = word[1]
         elif word[0] == "spawn":
             doc["spawn"] = {"x": int(word[1]), "y": int(word[2])}
         elif word[0] == "portal":
@@ -67,6 +70,8 @@ def write(doc):
     tiles = [[doc["keys"][c][0] for c in row] for row in rows]
     regions = [[doc["keys"][c][1] for c in row] for row in rows]
     out = ["{", '  "id": %s,' % json.dumps(doc["id"]), '  "width": %d,' % len(rows[0]), '  "height": %d,' % len(rows)]
+    if doc.get("style"):
+        out.append('  "style": %s,' % json.dumps(doc["style"]))
     out.append('  "spawn": %s,' % json.dumps(doc["spawn"], indent=2).replace("\n", "\n  "))
     out.append('  "portals": %s,' % json.dumps(doc["portals"], indent=2).replace("\n", "\n  "))
     out.append('  "tiles": [')

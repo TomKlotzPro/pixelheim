@@ -38,3 +38,34 @@ static func is_ready(world: WorldState, spot_id: String) -> bool:
 	if not world.gathered_at.has(spot_id):
 		return true
 	return world.steps - float(world.gathered_at[spot_id]) >= float(rules()["regrowSteps"])
+
+
+# ---- fishing (PIX-165) -------------------------------------------------------
+
+## The places to fish from: stand there facing the water and press E.
+static func fishing_spot_at(map_id: String, cell: Vector2i) -> Dictionary:
+	for spot: Dictionary in Bestiary._data().get("fishingSpots", []):
+		if spot["mapId"] == map_id and Vector2i(int(spot["x"]), int(spot["y"])) == cell:
+			return spot
+	return {}
+
+
+## A spot bites again once enough steps have passed since its last catch.
+static func fish_ready(world: WorldState, spot_id: String) -> bool:
+	if not world.gathered_at.has(spot_id):
+		return true
+	return world.steps - float(world.gathered_at[spot_id]) >= float(Bestiary._data()["fishing"]["regrowSteps"])
+
+
+## What comes up on the line: a weighted pick of combat.json "fishing".
+static func catch(roll: Callable) -> String:
+	var catches: Array = Bestiary._data()["fishing"]["catches"]
+	var total := 0
+	for entry: Array in catches:
+		total += int(entry[1])
+	var pick: float = roll.call() * total
+	for entry: Array in catches:
+		pick -= int(entry[1])
+		if pick < 0:
+			return entry[0]
+	return catches[0][0]

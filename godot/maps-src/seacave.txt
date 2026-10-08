@@ -1,0 +1,44 @@
+# The Sea Cave under Saltmere's western headland (PIX-165): six chambers in
+# dungeon stone, the Tidecaller's grotto at the back, the stair up to the beach
+# by the entrance.
+id seacave
+style cave
+spawn 5 25
+portal 3 26 map saltmere 7 23
+key X wall -
+key . floor seacave
+key L lamp -
+key b barrel -
+key k crate -
+key c cave seacave
+map
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXLXXXXXXXXLXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXX............XXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXX...........kXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXX............XXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXX............XXX
+XXXXXXXXXXXXXXXXXLXXXXXXLXXXX............XXX
+XXXXXXXXXXXXXXXX..........XXX............XXX
+XXXXXLXXXXXLXXXX.k........XXX............XXX
+XXXX.........XXX.........................XXX
+XXXX.k.......XXX.........................XXX
+XXXX......................XXX............XXX
+XXXX......................XXX.b..........XXX
+XXXX.........XXX..........XXXXXXXXXXXXXXXXXX
+XXXX.........XXX.........kXXXXXXXXXXXXXXXXXX
+XXXX........kXXXXXXX..XXXXXXXXXXXXXXXXXXXXXX
+XXXXXXX..XXXXXXXXXXX..XXXXXXXXXLXXXXXXLXXXXX
+XXXXXXX..XXXXXXXXXXX..XXXXXXXX..........XXXX
+XXXXXXX..XXXXXXLXXXX..LXXXXXXX.........kXXXX
+XXXXXXX..XXXXX..........XXXXXX..........XXXX
+XXXLXXX..LXXXX..........XXXXXX..........XXXX
+XX.........XXX..........................XXXX
+XX.k.......XXX..........................XXXX
+XX......................XXXXXX.........bXXXX
+XX......................XXXXXXXXXXXXXXXXXXXX
+XX.c.......XXX..........XXXXXXXXXXXXXXXXXXXX
+XX........bXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX

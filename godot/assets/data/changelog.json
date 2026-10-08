@@ -1,6 +1,18 @@
 {
   "releases": [
     {
+      "version": "0.106.0",
+      "date": "2026-10-08",
+      "codename": "The Tidecaller",
+      "notes": [
+        "SALTMERE'S PEOPLE: Old Wenna, whose brother Tam climbed the mountain fifty years ago and never came back; Harbourmaster Brin; Ola the Fisher; and Rook, the honest kind of smuggler",
+        "THE SEA CAVE under the western headland: six torchlit chambers of drowned skeletons, slimes and crabs, two chests - and the Tidecaller in its grotto. It leaves Tam's Ladle, the first of the five relics",
+        "QUESTS on the coast: the smugglers' story and the Tidecaller for Wenna, crabs on the jetty and the lighthouse lens for Brin, your first catch for Ola, the smugglers' captain for Rook - and in Pixelheim, Pip's cat wants fresh fish",
+        "FISHING: stand at the end of Saltmere's jetty, by the lagoon or on the eastern rocks, face the water and press E. Fish, sea glass, the odd pearl - and the odd boot",
+        "NEW FOES from Shade's Mini World: giant crabs, smugglers, gunners, their captain and the slime king"
+      ]
+    },
+    {
       "version": "0.105.0",
       "date": "2026-10-08",
       "codename": "Salt on the Wind",

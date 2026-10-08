@@ -290,6 +290,58 @@
       "lines": [
         "Tag! You're it! ...You're not going to chase me, are you. Grown-ups never chase."
       ]
+    },
+    {
+      "id": "saltmere_wenna",
+      "mapId": "saltmere",
+      "x": 22,
+      "y": 16,
+      "sprite": "villager_woman",
+      "name": "Old Wenna",
+      "wander": false,
+      "lines": [
+        "My brother Tam went up that mountain fifty years ago with a ladle in his belt and a joke for everyone. He never came back.",
+        "The smugglers pick over every wreck on this beach. If anyone knows what the sea gave back of him, it's them."
+      ]
+    },
+    {
+      "id": "saltmere_brin",
+      "mapId": "saltmere",
+      "x": 33,
+      "y": 19,
+      "sprite": "fisher_alt",
+      "name": "Harbourmaster Brin",
+      "wander": false,
+      "lines": [
+        "Saltmere's small, but she's honest. Mostly. The crabs aren't, and neither are the smugglers.",
+        "The lighthouse on the point went dark years ago. A town that can't see the sea shouldn't live by it."
+      ]
+    },
+    {
+      "id": "saltmere_ola",
+      "mapId": "saltmere",
+      "x": 28,
+      "y": 20,
+      "sprite": "fisher",
+      "name": "Ola the Fisher",
+      "wander": true,
+      "lines": [
+        "Fishing? Stand at the end of the jetty, face the water, press E. The fish come back every little while.",
+        "The lagoon's good, and the rocks out east. Every so often the sea gives you a pearl. Or a boot."
+      ]
+    },
+    {
+      "id": "saltmere_rook",
+      "mapId": "saltmere",
+      "x": 13,
+      "y": 19,
+      "sprite": "smuggler",
+      "name": "Rook",
+      "wander": false,
+      "lines": [
+        "Don't look at me like that. I'm the honest kind of smuggler. I only rob other smugglers.",
+        "Their captain sits on the north-east beach counting what isn't his. Someone ought to send him on his way."
+      ]
     }
   ],
   "recruits": [

@@ -16,6 +16,9 @@ var floor_level := 0
 var covered := {}
 ## Which drawing of the map this is: "@2", "@3" for the bigger houses.
 var variant := ""
+## How a map is drawn when it isn't the open air: "cave" draws it in dungeon
+## stone (the sea cave, PIX-165).
+var style := ""
 
 
 static func load_by_id(map_id: String) -> MapData:
@@ -49,6 +52,7 @@ static func load_from(path: String) -> MapData:
 	data.id = doc["id"]
 	data.size = Vector2i(int(doc["width"]), int(doc["height"]))
 	data.spawn = Vector2i(int(doc["spawn"]["x"]), int(doc["spawn"]["y"]))
+	data.style = String(doc.get("style", ""))
 	var tiles: Array = doc["tiles"]
 	for y in tiles.size():
 		var row: Array = tiles[y]

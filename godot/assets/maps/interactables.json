@@ -130,6 +130,40 @@
       "y": 12,
       "look": "chest",
       "mimic": true
+    },
+    {
+      "id": "seacave_wreck",
+      "mapId": "seacave",
+      "x": 38,
+      "y": 20,
+      "look": "chest",
+      "loot": {
+        "kind": "gear",
+        "itemId": "reed_buckler"
+      }
+    },
+    {
+      "id": "seacave_west",
+      "mapId": "seacave",
+      "x": 5,
+      "y": 15,
+      "look": "chest",
+      "loot": {
+        "kind": "item",
+        "itemId": "potion_hp",
+        "qty": 3
+      }
+    },
+    {
+      "id": "saltmere_cove",
+      "mapId": "saltmere",
+      "x": 49,
+      "y": 7,
+      "look": "chest",
+      "loot": {
+        "kind": "gold",
+        "amount": 80
+      }
     }
   ],
   "signs": {
@@ -177,7 +211,9 @@
     "town_house": [],
     "town_hall": [],
     "demo": [],
-    "demo_hut": []
+    "demo_hut": [],
+    "saltmere": [],
+    "seacave": []
   },
   "signsHouseOwned": {
     "town": [

@@ -98,6 +98,10 @@ const VILLAGERS := {
 	"alchemist": {"sheet": "characters/Mage-Cyan.png", "family": "puny"},
 	"innkeeper": {"sheet": "characters/Human-Worker-Cyan.png", "family": "puny"},
 	"mayor": {"sheet": "characters/Human-Soldier-Cyan.png", "family": "puny"},
+	# Saltmere's folk (PIX-165), and Rook, the smuggler who talks.
+	"fisher": {"sheet": "mini/FarmerCyan.png", "family": "mini"},
+	"fisher_alt": {"sheet": "mini/FarmerLime.png", "family": "mini"},
+	"smuggler": {"sheet": "mini/PirateGrunt.png", "family": "mini"},
 }
 
 ## The bestiary by monster id: the closest creature Shade drew, tinted or
@@ -118,6 +122,12 @@ const MONSTERS := {
 	"wyvern": {"sheet": "mini/YellowDragon.png", "family": "mini", "frame": 32, "scale": 0.8},
 	"dragon": {"sheet": "mini/RedDragon.png", "family": "mini", "frame": 32, "scale": 1.15},
 	"mimic": {"sheet": "beasts/Purple-Spider-32x32.png", "family": "beast"},
+	# Saltmere's coast (PIX-165): Mini World's crabs, smugglers and a slime king.
+	"crab": {"sheet": "mini/GiantCrab.png", "family": "mini"},
+	"pirate": {"sheet": "mini/PirateGrunt.png", "family": "mini"},
+	"pirate_gunner": {"sheet": "mini/PirateGunner.png", "family": "mini"},
+	"pirate_captain": {"sheet": "mini/PirateCaptain.png", "family": "mini", "scale": 1.15},
+	"king_slime": {"sheet": "mini/KingSlimeBlue.png", "family": "mini", "scale": 1.3},
 }
 
 static var _frames_cache := {}

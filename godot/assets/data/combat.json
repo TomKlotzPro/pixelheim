@@ -236,6 +236,67 @@
         "turns": 3,
         "power": 10
       }
+    },
+    "crab": {
+      "id": "crab",
+      "name": "Giant Crab",
+      "sprite": "crab",
+      "maxHp": 26,
+      "attack": 9,
+      "defense": 4,
+      "xp": 18,
+      "gold": 8,
+      "level": 3,
+      "drops": [
+        {
+          "itemId": "sea_glass",
+          "chance": 0.25
+        }
+      ]
+    },
+    "pirate": {
+      "id": "pirate",
+      "name": "Smuggler",
+      "sprite": "pirate",
+      "maxHp": 30,
+      "attack": 11,
+      "defense": 2,
+      "xp": 22,
+      "gold": 16,
+      "level": 4
+    },
+    "pirate_gunner": {
+      "id": "pirate_gunner",
+      "name": "Smuggler Gunner",
+      "sprite": "pirate_gunner",
+      "maxHp": 26,
+      "attack": 13,
+      "defense": 1,
+      "xp": 26,
+      "gold": 18,
+      "level": 5
+    },
+    "pirate_captain": {
+      "id": "pirate_captain",
+      "name": "Smuggler Captain",
+      "sprite": "pirate_captain",
+      "maxHp": 64,
+      "attack": 15,
+      "defense": 4,
+      "xp": 60,
+      "gold": 50,
+      "level": 6
+    },
+    "king_slime": {
+      "id": "king_slime",
+      "name": "King Slime",
+      "sprite": "king_slime",
+      "maxHp": 60,
+      "attack": 13,
+      "defense": 3,
+      "xp": 40,
+      "gold": 20,
+      "level": 6
     }
   },
   "regions": {
@@ -340,15 +401,34 @@
       "eliteChance": 0.1,
       "monsters": [
         {
-          "monsterId": "slime",
+          "monsterId": "crab",
           "weight": 4
         },
         {
-          "monsterId": "goblin",
+          "monsterId": "pirate",
+          "weight": 3
+        },
+        {
+          "monsterId": "pirate_gunner",
+          "weight": 1
+        }
+      ]
+    },
+    "seacave": {
+      "name": "the Sea Cave",
+      "dropFloor": 4,
+      "eliteChance": 0.15,
+      "monsters": [
+        {
+          "monsterId": "crab",
           "weight": 3
         },
         {
           "monsterId": "skeleton",
+          "weight": 3
+        },
+        {
+          "monsterId": "slime",
           "weight": 2
         }
       ]
@@ -471,27 +551,65 @@
       "id": "coast_1",
       "mapId": "saltmere",
       "x": 12,
-      "y": 6
+      "y": 6,
+      "species": "crab"
     },
     {
       "id": "coast_2",
       "mapId": "saltmere",
       "x": 44,
-      "y": 5
+      "y": 5,
+      "species": "pirate"
     },
     {
       "id": "coast_3",
       "mapId": "saltmere",
       "x": 46,
       "y": 24,
-      "species": "skeleton"
+      "species": "crab"
     },
     {
       "id": "coast_4",
       "mapId": "saltmere",
       "x": 9,
       "y": 15,
-      "species": "goblin"
+      "species": "pirate_gunner"
+    },
+    {
+      "id": "coast_captain",
+      "mapId": "saltmere",
+      "x": 47,
+      "y": 9,
+      "species": "pirate_captain",
+      "size": 1
+    },
+    {
+      "id": "seacave_1",
+      "mapId": "seacave",
+      "x": 18,
+      "y": 23,
+      "species": "crab"
+    },
+    {
+      "id": "seacave_2",
+      "mapId": "seacave",
+      "x": 8,
+      "y": 13,
+      "species": "skeleton"
+    },
+    {
+      "id": "seacave_3",
+      "mapId": "seacave",
+      "x": 20,
+      "y": 11,
+      "species": "slime"
+    },
+    {
+      "id": "seacave_4",
+      "mapId": "seacave",
+      "x": 34,
+      "y": 21,
+      "species": "skeleton"
     }
   ],
   "packs": {
@@ -668,6 +786,12 @@
       "mapId": "saltmere",
       "x": 8,
       "y": 25
+    },
+    {
+      "id": "seacave_patch_1",
+      "mapId": "seacave",
+      "x": 32,
+      "y": 5
     }
   ],
   "bossIds": [
@@ -820,6 +944,18 @@
       ],
       "speed": 120,
       "power": 1.0
+    },
+    "outlaws": {
+      "move": "cleave",
+      "every": 3.8,
+      "tell": 0.6,
+      "range": [
+        0,
+        2.2
+      ],
+      "length": 2.0,
+      "width": 2.6,
+      "power": 1.4
     }
   },
   "dropPools": [
@@ -929,7 +1065,8 @@
     "ash": "ember_shard",
     "deepwood": "deep_root",
     "mire": "grave_moss",
-    "coast": "sea_glass"
+    "coast": "sea_glass",
+    "seacave": "sea_glass"
   },
   "families": {
     "slime": "beasts",
@@ -946,14 +1083,20 @@
     "mimic": "constructs",
     "imp": "fireborn",
     "wyvern": "fireborn",
-    "dragon": "fireborn"
+    "dragon": "fireborn",
+    "crab": "beasts",
+    "king_slime": "beasts",
+    "pirate": "outlaws",
+    "pirate_gunner": "outlaws",
+    "pirate_captain": "outlaws"
   },
   "familyNames": {
     "beasts": "Beasts",
     "greenskins": "Greenskins",
     "undead": "The Undead",
     "constructs": "Constructs",
-    "fireborn": "The Fireborn"
+    "fireborn": "The Fireborn",
+    "outlaws": "Outlaws"
   },
   "masteryTiers": [
     {
@@ -4010,6 +4153,87 @@
       "notice": "The mother of every mimic in the fen sits on the west bank looking like a treasure chest the size of a cart. She leaps. Bring a friend you don't like.",
       "seen": "Grandmother Gulp springs open - she has seen you!",
       "homecoming": "Odo has counted the treasure that came back from Grandmother Gulp twice. He is smiling, which nobody has seen before."
+    },
+    "tidecaller": {
+      "name": "The Tidecaller",
+      "monsterId": "king_slime",
+      "mapId": "seacave",
+      "lair": {
+        "x": 35,
+        "y": 8
+      },
+      "postedAfter": 0,
+      "board": false,
+      "level": 6,
+      "maxHp": 220,
+      "attack": 17,
+      "defense": 4,
+      "xp": 260,
+      "gold": 60,
+      "bounty": 0,
+      "drop": "tams_ladle",
+      "scale": 2.2,
+      "tint": [
+        0.7,
+        1.0,
+        1.1
+      ],
+      "move": {
+        "move": "howl",
+        "every": 8.0,
+        "tell": 0.6,
+        "range": [
+          0,
+          7.0
+        ],
+        "monsterId": "slime",
+        "count": 2,
+        "max": 3
+      },
+      "where": "the grotto at the back of the sea cave",
+      "notice": "",
+      "seen": "The Tidecaller rises from its pool, and the cave fills with the sound of the sea!"
     }
+  },
+  "fishingSpots": [
+    {
+      "id": "saltmere_jetty",
+      "mapId": "saltmere",
+      "x": 31,
+      "y": 31
+    },
+    {
+      "id": "saltmere_lagoon",
+      "mapId": "saltmere",
+      "x": 16,
+      "y": 21
+    },
+    {
+      "id": "saltmere_point",
+      "mapId": "saltmere",
+      "x": 41,
+      "y": 24
+    }
+  ],
+  "fishing": {
+    "regrowSteps": 120,
+    "catches": [
+      [
+        "fresh_fish",
+        70
+      ],
+      [
+        "sea_glass",
+        15
+      ],
+      [
+        "pearl",
+        5
+      ],
+      [
+        "old_boot",
+        10
+      ]
+    ]
   }
 }
