@@ -1294,12 +1294,36 @@
       }
     ],
     "dawn": [
-      "Dawn came grey over the ashes, and the survivors gathered on the square.",
-      "Maren read the Chancellor's letter aloud. \"The Crown can no longer defend the Ashenreach.\" Nobody spoke for a while.",
-      "\"Then we rebuild,\" said the mayor at last. \"With what, I couldn't tell you.\"",
-      "Maren turned to you. \"You carried bad news a long way, and you didn't run from the fire. Stay a while.\"",
-      "\"Fafnyr will come back for what's left of us. Unless someone climbs.\""
-    ]
+      {
+        "who": "",
+        "line": "Dawn came grey over the ashes. One by one the fires gave up, and the survivors gathered on the square."
+      },
+      {
+        "who": "elder",
+        "line": "\"The Crown can no longer defend the Ashenreach.\" That's the whole of the Chancellor's letter."
+      },
+      {
+        "who": "",
+        "line": "Nobody spoke for a while."
+      },
+      {
+        "who": "mayor",
+        "line": "Then we rebuild. With what, I couldn't tell you."
+      },
+      {
+        "who": "elder",
+        "line": "You carried bad news a long way, and you didn't run from the fire. Stay a while."
+      },
+      {
+        "who": "elder",
+        "line": "Fafnyr will come back for what's left of us. Unless someone climbs.",
+        "shadow": true
+      }
+    ],
+    "dayCard": {
+      "title": "Pixelheim",
+      "subtitle": "Day one"
+    }
   },
   "relics": {
     "questId": "maren_relics",

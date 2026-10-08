@@ -60,3 +60,19 @@ static func night_steps() -> float:
 
 static func dawn_steps() -> float:
 	return 0.95 * DayNight.DAY_CYCLE_STEPS
+
+
+## The dawn after the night (PIX-197), beat by beat: [{who, line, shadow?}],
+## `who` a survivor's id (or the mayor's), "" for the telling.
+static func dawn() -> Array:
+	return data()["dawn"]
+
+
+## Where each survivor stands on the square at dawn, round its heart: the
+## elder before the hall, the mayor beside her, Bram and Sela either side.
+static func dawn_places() -> Dictionary:
+	var heart := Town.square()
+	return {
+		"elder": heart + Vector2i(0, -1), "mayor": heart + Vector2i(-2, 0),
+		"villager_bram": heart + Vector2i(-3, 2), "innkeeper": heart + Vector2i(3, 2),
+	}

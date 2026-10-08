@@ -38,6 +38,9 @@ var furniture_cells: Array[Vector2i] = []
 ## the warm glows of lamps and windows; set_night shows one or the other.
 var lamps: Array[Dictionary] = []
 var night_glows: Array[Node2D] = []
+## The ruins burning on the Night of Ash (PIX-197): [{rect, nodes}], in
+## Town.ruins' order, so the dawn can put them out one by one.
+var fires: Array[Dictionary] = []
 var _night := -1
 ## Gathering patches (PIX-143): cell -> {"id", "item"}, and each one's sprite.
 var patches := {}
@@ -297,7 +300,7 @@ func _build_decor(data: MapData) -> void:
 			_add_smoke(ruin["rect"])
 			# The night of the fire: the ruins still burning (PIX-151).
 			if burning:
-				_add_fire(ruin["rect"])
+				fires.append({"rect": ruin["rect"], "nodes": _add_fire(ruin["rect"])})
 	patch_sprites = {}
 	for cell: Vector2i in patches:
 		_add_patch_sprite(cell)
@@ -405,7 +408,8 @@ static func plan_camps(map: MapData) -> Dictionary:
 ## Flames on a house that's still burning (the Night of Ash): Shade's looped
 ## flame on a handful of its cells and his embers drifting over it; without
 ## the paid pack, an orange flicker of motes instead.
-func _add_fire(rect: Rect2i) -> void:
+func _add_fire(rect: Rect2i) -> Array[Node2D]:
+	var nodes: Array[Node2D] = []
 	var flame := ItemIcons.effect("flame", 10.0)
 	var embers := ItemIcons.effect("embers", 8.0)
 	for y in range(rect.position.y, rect.end.y):
@@ -422,7 +426,8 @@ func _add_fire(rect: Rect2i) -> void:
 				fire.z_index = 4
 				fire.add_to_group("decor")
 				props.add_child(fire)
-				_add_glow(at, 14, 0.4)
+				nodes.append(fire)
+				nodes.append(_add_glow(at, 14, 0.4))
 			if embers != null and (x + y) % 3 == 0:
 				var drift := AnimatedSprite2D.new()
 				drift.sprite_frames = embers
@@ -431,6 +436,7 @@ func _add_fire(rect: Rect2i) -> void:
 				drift.z_index = 6
 				drift.add_to_group("decor")
 				props.add_child(drift)
+				nodes.append(drift)
 	if flame == null:
 		var motes := CPUParticles2D.new()
 		motes.position = Vector2(rect.position * TILE) + Vector2(rect.size * TILE) / 2.0
@@ -448,6 +454,50 @@ func _add_fire(rect: Rect2i) -> void:
 		motes.z_index = 6
 		motes.add_to_group("decor")
 		props.add_child(motes)
+		nodes.append(motes)
+	return nodes
+
+
+## The fire on one burning ruin (the Night of Ash's dawn, PIX-197) gutters
+## out: its flames shrink and fade over `seconds`, a last breath of smoke
+## goes up, and they're gone.
+func douse(index: int, seconds := 1.2) -> void:
+	if index < 0 or index >= fires.size():
+		return
+	var fire: Dictionary = fires[index]
+	for node: Node2D in fire["nodes"]:
+		if not is_instance_valid(node):
+			continue
+		night_glows.erase(node)
+		var out := node.create_tween().set_parallel()
+		out.tween_property(node, "scale", node.scale * Vector2(0.2, 0.05), seconds).set_ease(Tween.EASE_IN)
+		out.tween_property(node, "modulate:a", 0.0, seconds)
+		out.chain().tween_callback(node.queue_free)
+	var rect: Rect2i = fire["rect"]
+	var puff := CPUParticles2D.new()
+	puff.position = Vector2(rect.position * TILE) + Vector2(rect.size * TILE) / 2.0
+	puff.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+	puff.emission_rect_extents = Vector2(rect.size * TILE) / 2.0
+	puff.amount = 24
+	puff.lifetime = 2.6
+	puff.one_shot = true
+	puff.explosiveness = 0.6
+	puff.direction = Vector2.UP
+	puff.spread = 25.0
+	puff.gravity = Vector2(4, -6)
+	puff.initial_velocity_min = 6.0
+	puff.initial_velocity_max = 14.0
+	puff.scale_amount_min = 2.0
+	puff.scale_amount_max = 4.0
+	var fade := Gradient.new()
+	fade.set_color(0, Color(0.55, 0.52, 0.5, 0.7))
+	fade.set_color(1, Color(0.6, 0.58, 0.56, 0.0))
+	puff.color_ramp = fade
+	puff.z_index = 6
+	puff.add_to_group("decor")
+	props.add_child(puff)
+	puff.finished.connect(puff.queue_free)
+	puff.emitting = true
 
 
 ## Smoke and embers over a burnt house (PIX-146): pixel motes drifting up
@@ -484,7 +534,7 @@ static var _glow_textures := {}
 
 
 ## A warm, stepped glow (the title's lamplight), shown only at night.
-func _add_glow(at: Vector2, radius: int, peak: float) -> void:
+func _add_glow(at: Vector2, radius: int, peak: float) -> Sprite2D:
 	var key := "%d:%f" % [radius, peak]
 	if not _glow_textures.has(key):
 		_glow_textures[key] = TitleScene.glow_texture(radius, Color(1.0, 0.72, 0.38), peak, 4)
@@ -496,6 +546,7 @@ func _add_glow(at: Vector2, radius: int, peak: float) -> void:
 	glow.add_to_group("decor")
 	props.add_child(glow)
 	night_glows.append(glow)
+	return glow
 
 
 ## Lamps and windows for the hour: lit from dusk's end to dawn, cold by day.

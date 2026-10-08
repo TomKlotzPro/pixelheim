@@ -552,6 +552,13 @@ func _run_test_harness() -> void:
 	# earlier): `inventory --keys esc` checks it closes and lets the world go.
 	if not args.has("talk") and not args.has("title"):
 		await _keys(args)
+	# `--dawn-beat N`: the Night of Ash's dawn (PIX-197) jumped to beat N.
+	var beat_index := args.find("--dawn-beat")
+	if beat_index >= 0 and beat_index + 1 < args.size():
+		for node in world.get_children():
+			if node.has_method("jump_to"):
+				node.jump_to(int(args[beat_index + 1]))
+		await get_tree().create_timer(0.6).timeout
 	# `--wait S` holds the shot (an entrance still playing: the title's logo).
 	var wait_index := args.find("--wait")
 	if wait_index >= 0 and wait_index + 1 < args.size():

@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.125.0",
+      "date": "2026-10-09",
+      "codename": "A Dawn You Watch",
+      "notes": [
+        "A DAWN YOU WATCH: when Maren has the letter, the Night of Ash ends on the town itself. The camera drifts from the shrine across Pixelheim as the fires gutter out one by one and the red night greys toward morning; the survivors stand together on the square and speak in their own voices - Maren, the mayor out of his hall, Bram and Sela beside you - and when Fafnyr is named, he roars, and his shadow sweeps over the town. Then the day begins: Pixelheim, day one",
+        "E moves the talk on and Esc skips to the morning; with Reduce motion the camera cuts and nothing shakes"
+      ]
+    },
+    {
       "version": "0.124.0",
       "date": "2026-10-09",
       "codename": "A Village by Design",

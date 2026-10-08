@@ -64,3 +64,29 @@ func test_only_the_survivors_are_about_and_they_say_the_nights_lines() -> void:
 	for npc: Dictionary in Prologue.survivors():
 		assert_true(town.is_walkable(Vector2i(npc["x"], npc["y"])), "%s stands on open ground" % npc["id"])
 		assert_false(npc.has("stall"), "no trading tonight")
+
+
+## PIX-197: the dawn is played on the square, each line said by someone who
+## is there (or told), Fafnyr's shadow on his name, and everyone has a place.
+func test_the_dawn_is_said_by_those_on_the_square() -> void:
+	var beats := Prologue.dawn()
+	assert_gt(beats.size(), 3)
+	assert_eq(String(beats[0]["who"]), "", "it opens on the telling, while the fires go out")
+	var places := Prologue.dawn_places()
+	var shadows := 0
+	for beat: Dictionary in beats:
+		var who := String(beat["who"])
+		assert_true(who == "" or places.has(who), "%s stands on the square" % who)
+		if beat.get("shadow", false):
+			shadows += 1
+			assert_string_contains(String(beat["line"]), "Fafnyr")
+	assert_eq(shadows, 1, "his shadow passes once")
+	var map := MapData.load_by_id("town")
+	var seen := {}
+	for who: String in places:
+		var cell: Vector2i = places[who]
+		assert_true(map.is_walkable(cell), "%s's place at %s" % [who, cell])
+		assert_false(seen.has(cell), "one each")
+		seen[cell] = true
+	assert_false(seen.has(Town.square() + Vector2i(0, 2)), "the hero's place is free")
+	assert_false(String(Prologue.data()["dayCard"]["title"]).is_empty())
