@@ -1,6 +1,18 @@
 {
   "releases": [
     {
+      "version": "0.76.0",
+      "date": "2026-10-08",
+      "codename": "Under the Ashen Mountain",
+      "notes": [
+        "A NIGHT IN PIXELHEIM: the title opens on the village street after dark - lit windows, smoking chimneys, torches, the fountain, and the watchman on his round with his lantern",
+        "THE MOUNTAIN WAITS: the Ashen Mountain smoulders over the rooftops with Fafnyr's fire in its crater, and now and then the dragon crosses the moon",
+        "YOUR HERO IN THE STREET: whoever you play stands by the fountain, looking up at the mountain",
+        "A NAME CUT IN GOLD: PIXELHEIM in deep gold letters that catch the light, over a menu of words chosen in gold - point with the mouse or use the keys",
+        "THE LOADING SCREEN IS THE NIGHT: the web build loads on the same scene, and Reduce motion holds it still"
+      ]
+    },
+    {
       "version": "0.75.0",
       "date": "2026-10-08",
       "codename": "One Game",

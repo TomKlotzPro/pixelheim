@@ -81,6 +81,9 @@ func boot(args: PackedStringArray) -> void:
 	elif args.has("--screenshot"):
 		slot = NO_SLOT
 		settings.read_only = true
+		# `still`: the run with Reduce motion on, as a player can set it.
+		if args.has("still"):
+			settings.reduce_motion = true
 	else:
 		slot = clampi(settings.last_slot, 1, SaveSlots.SLOT_COUNT)
 	var saved := slots.read(slot) if slot != NO_SLOT else {}

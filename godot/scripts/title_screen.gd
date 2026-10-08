@@ -1,25 +1,26 @@
 extends CanvasLayer
-## The title (TitleScreen.tsx): a night over the Ashenreach, three ridges
-## deep, fog and embers, and the bestiary marching across the grass on its
-## own clocks; PIXELHEIM drops in letter by letter. Continue, New Game (hero
-## creation), the saves, options, or What's new. W/S choose, E or Enter
-## takes it. The world waits paused behind.
+## The title (PIX-139): Pixelheim's street at night under the Ashen Mountain
+## (TitleScene), PIXELHEIM cut in gold above it, and the menu: Continue, New
+## Game (hero creation), the saves, options, or What's new. W/S choose, E or
+## Enter takes it. The world waits paused behind.
 
-const PARADE := [
-	["slime", 46.0, -8.0], ["wolf", 34.0, -20.0], ["goblin", 40.0, -2.0],
-	["skeleton", 52.0, -33.0], ["ghost", 38.0, -15.0], ["golem", 64.0, -40.0],
-]
 const VIEW := Vector2(1280, 720)
-const GROUND_Y := 640.0
+const LOGO_Y := 84.0
+## The shine crosses the logo this long after the title opens, then this often (s).
+const SHINE_FIRST_S := 0.7
+const SHINE_EVERY_S := 8.0
 
 var world: Node
+var scene: TitleScene
 var options: Array[Dictionary] = []
 var selected := 0
 var menu: VBoxContainer
+## Per line: [button, left marker, right marker].
+var lines: Array = []
 var footer: Label
+var shine: ColorRect
 ## The game's version: the newest release in What's new.
 var version := ""
-var walkers: Array[Dictionary] = []
 
 
 func _ready() -> void:
@@ -28,147 +29,116 @@ func _ready() -> void:
 	get_tree().paused = true
 	Sound.play_track("title")
 	Sound.set_ambience("")
-	_scene()
+	scene = TitleScene.new()
+	add_child(scene)
+	_vignette()
+	_logo()
 	_card()
+	_arrive()
 
 
-func _scene() -> void:
-	var sky := TextureRect.new()
-	var gradient := Gradient.new()
-	gradient.set_color(0, Color("0b1026"))
-	gradient.set_color(1, Color("2b2347"))
+## The corners fall into night, so the eye rests on the middle.
+func _vignette() -> void:
+	var shade := Gradient.new()
+	shade.offsets = PackedFloat32Array([0.0, 0.55, 1.0])
+	shade.colors = PackedColorArray([Color(0.02, 0.01, 0.05, 0.0), Color(0.02, 0.01, 0.05, 0.12), Color(0.02, 0.01, 0.05, 0.6)])
 	var texture := GradientTexture2D.new()
-	texture.gradient = gradient
-	texture.fill_from = Vector2(0, 0)
-	texture.fill_to = Vector2(0, 1)
-	sky.texture = texture
-	sky.size = VIEW
-	add_child(sky)
-	var rng := RandomNumberGenerator.new()
-	rng.seed = 1984
-	for i in 40:
-		var star := ColorRect.new()
-		var px := 2.0 if rng.randf() < 0.7 else 3.0
-		star.size = Vector2(px, px)
-		star.position = Vector2(rng.randf_range(0, VIEW.x), rng.randf_range(0, 300))
-		star.color = Color(1, 0.96, 0.85, rng.randf_range(0.4, 0.9))
-		add_child(star)
-		if GameState.settings.reduce_motion:
-			continue
-		var twinkle := create_tween().set_loops()
-		twinkle.tween_property(star, "modulate:a", 0.25, rng.randf_range(1.2, 2.6)).set_delay(rng.randf_range(0, 2))
-		twinkle.tween_property(star, "modulate:a", 1.0, rng.randf_range(1.2, 2.6))
-	var moon := Sprite2D.new()
-	var glow := Gradient.new()
-	glow.offsets = PackedFloat32Array([0.0, 0.55, 0.62, 1.0])
-	glow.colors = PackedColorArray([
-		Color("f4ecd0"), Color("f4ecd0"), Color(0.96, 0.92, 0.8, 0.18), Color(0.96, 0.92, 0.8, 0),
-	])
-	var disc := GradientTexture2D.new()
-	disc.gradient = glow
-	disc.fill = GradientTexture2D.FILL_RADIAL
-	disc.fill_from = Vector2(0.5, 0.5)
-	disc.fill_to = Vector2(1, 0.5)
-	disc.width = 140
-	disc.height = 140
-	moon.texture = disc
-	moon.position = Vector2(1010, 140)
-	add_child(moon)
-	# Three ridges, far to near, each darker and more jagged.
-	for ridge: Array in [[Color("232546"), 360.0, 70.0, 11], [Color("1a1b36"), 430.0, 90.0, 23], [Color("111226"), 520.0, 70.0, 37]]:
-		var shape := Polygon2D.new()
-		var points := PackedVector2Array([Vector2(0, VIEW.y)])
-		var step := 80.0
-		var x := 0.0
-		var peaks := RandomNumberGenerator.new()
-		peaks.seed = ridge[3]
-		while x <= VIEW.x + step:
-			points.append(Vector2(x, ridge[1] - peaks.randf_range(0, ridge[2])))
-			x += step * peaks.randf_range(0.6, 1.3)
-		points.append(Vector2(VIEW.x, VIEW.y))
-		shape.polygon = points
-		shape.color = ridge[0]
-		add_child(shape)
-	var fog := ColorRect.new()
-	fog.color = Color(0.6, 0.55, 0.75, 0.08)
-	fog.position = Vector2(0, 470)
-	fog.size = Vector2(VIEW.x, 90)
-	add_child(fog)
-	# Embers drifting up from the Ashenreach (still air with reduced motion).
-	for i in 0 if GameState.settings.reduce_motion else 8:
-		var ember := ColorRect.new()
-		ember.size = Vector2(2, 2)
-		ember.color = Color(1, 0.55, 0.2, 0.9)
-		ember.position = Vector2(110 + i * 150, GROUND_Y)
-		add_child(ember)
-		var rise := create_tween().set_loops()
-		rise.tween_property(ember, "position:y", 380.0, 7.0).set_delay(i * 0.9)
-		rise.parallel().tween_property(ember, "modulate:a", 0.0, 7.0).set_delay(i * 0.9)
-		rise.tween_callback(func() -> void:
-			ember.position.y = GROUND_Y
-			ember.modulate.a = 1.0
-		)
-	# Puny grass underfoot, then the parade.
-	var grass := TextureRect.new()
-	var tile := AtlasTexture.new()
-	tile.atlas = load(PunyTerrain.SHEET)
-	tile.region = PunyTerrain.region(1)
-	grass.texture = tile
-	grass.stretch_mode = TextureRect.STRETCH_TILE
-	grass.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	grass.position = Vector2(0, GROUND_Y)
-	grass.size = Vector2(VIEW.x / 4.0, (VIEW.y - GROUND_Y) / 4.0)
-	grass.scale = Vector2(4, 4)
-	add_child(grass)
-	for entry: Array in PARADE:
-		var spec := PunyArt.monster(entry[0])
-		var walker := AnimatedSprite2D.new()
-		walker.sprite_frames = PunyArt.frames(spec)
-		walker.play(PunyArt.pick(walker.sprite_frames, "walk", "right"))
-		walker.scale = Vector2.ONE * 4.0 * spec.get("scale", 1.0)
-		walker.self_modulate = spec.get("tint", Color.WHITE)
-		add_child(walker)
-		walkers.append({"node": walker, "seconds": entry[1], "clock": -float(entry[2])})
+	texture.gradient = shade
+	texture.fill = GradientTexture2D.FILL_RADIAL
+	texture.fill_from = Vector2(0.5, 0.45)
+	texture.fill_to = Vector2(1.15, 0.45)
+	var vignette := TextureRect.new()
+	vignette.texture = texture
+	vignette.size = VIEW
+	vignette.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(vignette)
 
 
-func _process(delta: float) -> void:
-	# Each walker crosses on its own clock, already mid-march at the start.
-	for walker: Dictionary in walkers:
-		walker["clock"] = fmod(walker["clock"] + delta, walker["seconds"])
-		var node: AnimatedSprite2D = walker["node"]
-		node.position = Vector2(lerpf(-80, VIEW.x + 80, walker["clock"] / walker["seconds"]), GROUND_Y - 6)
+## PIXELHEIM cut deep in gold: a block of letters stepping back into dark
+## bronze, a lighter top to the face, and a shine that crosses it now and then.
+func _logo() -> void:
+	var font := FontVariation.new()
+	font.base_font = UiStyle.heading_font()
+	font.spacing_glyph = 4
+	var logo := Control.new()
+	logo.position = Vector2(0, LOGO_Y)
+	logo.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(logo)
+	var depth := 8
+	for step in range(depth, 0, -2):
+		var back := _logo_word(font, Color("4a2408") if step > depth / 2 else Color("8a4f14"))
+		back.position.y = step
+		if step == depth:
+			back.add_theme_color_override("font_outline_color", Color("140a03"))
+			back.add_theme_constant_override("outline_size", 14)
+		logo.add_child(back)
+	var face := _logo_word(font, UiStyle.GOLD)
+	face.clip_children = CanvasItem.CLIP_CHILDREN_AND_DRAW
+	logo.add_child(face)
+	var top := ColorRect.new()
+	top.color = Color("ffe08f")
+	top.size = Vector2(VIEW.x, 30)
+	top.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	face.add_child(top)
+	shine = ColorRect.new()
+	shine.color = Color(1, 0.98, 0.9, 0.75)
+	shine.size = Vector2(18, 140)
+	shine.position = Vector2(-200, -30)
+	shine.rotation = 0.4
+	shine.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	face.add_child(shine)
+	var tagline := UiStyle.label("Fifteen floors. One dragon. Worse things below.", 18, UiStyle.CREAM, Vector2(0, LOGO_Y + 92))
+	tagline.custom_minimum_size = Vector2(VIEW.x, 0)
+	tagline.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	tagline.add_theme_color_override("font_shadow_color", Color(0.02, 0.01, 0.05, 0.9))
+	tagline.add_theme_constant_override("shadow_offset_x", 2)
+	tagline.add_theme_constant_override("shadow_offset_y", 2)
+	add_child(tagline)
+
+
+func _logo_word(font: Font, color: Color) -> Label:
+	var word := Label.new()
+	word.text = "PIXELHEIM"
+	word.add_theme_font_override("font", font)
+	word.add_theme_font_size_override("font_size", 64)
+	word.add_theme_color_override("font_color", color)
+	word.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	word.size = Vector2(VIEW.x, 72)
+	word.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return word
+
+
+## The one entrance: the scene is already there (it is the boot splash), the
+## menu rises in line by line, then the shine crosses the name.
+func _arrive() -> void:
+	if GameState.settings.reduce_motion:
+		return
+	# The menu's container rises (the menu itself is placed by it), line by line.
+	var middle: Control = menu.get_parent()
+	create_tween().tween_property(middle, "position:y", middle.position.y, 0.5).from(middle.position.y + 12).set_trans(Tween.TRANS_QUART).set_ease(Tween.EASE_OUT)
+	for i in menu.get_child_count():
+		var line: Control = menu.get_child(i)
+		line.modulate.a = 0.0
+		var show := create_tween()
+		show.tween_interval(0.08 * i)
+		show.tween_property(line, "modulate:a", 1.0, 0.3)
+	footer.modulate.a = 0.0
+	create_tween().tween_property(footer, "modulate:a", 1.0, 0.6).set_delay(0.4)
+	var sweep := create_tween().set_loops()
+	sweep.tween_interval(SHINE_FIRST_S)
+	sweep.tween_property(shine, "position:x", VIEW.x + 200, 1.1).from(-200.0).set_trans(Tween.TRANS_SINE)
+	sweep.tween_interval(SHINE_EVERY_S - SHINE_FIRST_S)
 
 
 func _card() -> void:
-	var title := HBoxContainer.new()
-	title.position = Vector2(0, 150)
-	title.custom_minimum_size = Vector2(VIEW.x, 0)
-	title.alignment = BoxContainer.ALIGNMENT_CENTER
-	title.add_theme_constant_override("separation", 6)
-	add_child(title)
-	var word := "PIXELHEIM"
-	for i in word.length():
-		var letter := UiStyle.heading(word[i], 60, UiStyle.GOLD)
-		letter.add_theme_color_override("font_outline_color", Color("2a1a08"))
-		letter.add_theme_constant_override("outline_size", 10)
-		letter.modulate.a = 0.0
-		title.add_child(letter)
-		var drop := create_tween()
-		drop.tween_interval(0.25 + i * 0.07)
-		drop.tween_property(letter, "modulate:a", 1.0, 0.25)
-	var tagline := UiStyle.label("Fifteen floors. One dragon. Worse things below.", 18, UiStyle.CREAM, Vector2(0, 252))
-	tagline.custom_minimum_size = Vector2(VIEW.x, 0)
-	tagline.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	add_child(tagline)
 	# The menu is centred by a full-width container, so a long first line
 	# ("Continue - name, Lv N") widens it both ways instead of to the right.
 	var middle := CenterContainer.new()
-	middle.position = Vector2(0, 310)
+	middle.position = Vector2(0, 268)
 	middle.custom_minimum_size = Vector2(VIEW.x, 0)
 	add_child(middle)
 	menu = VBoxContainer.new()
-	menu.custom_minimum_size = Vector2(300, 0)
-	menu.add_theme_constant_override("separation", 10)
+	menu.add_theme_constant_override("separation", 14)
 	middle.add_child(menu)
 	version = load("res://scripts/changelog_screen.gd").releases()[0]["version"]
 	if not GameState.standing_in:
@@ -193,43 +163,102 @@ func _card() -> void:
 	add_child(footer)
 
 
-## The boot splash (tools/splash.sh renders it): the same night and name the
-## title opens on, with nothing yet to press and no one walking, so loading
+## The boot splash (tools/splash.sh renders it): the scene and the name the
+## title opens on, with nothing yet to press and no one about, so loading
 ## hands over to the title without a jump.
 func as_splash() -> void:
 	menu.visible = false
 	footer.visible = false
-	for walker: Dictionary in walkers:
-		walker["node"].visible = false
+	scene.as_splash()
 
 
+## The menu as words over the scene, in the name's pixel type: cream, the
+## chosen line gold between two gold markers. The mouse chooses by pointing.
 func _draw_menu() -> void:
 	for child in menu.get_children():
 		child.queue_free()
+	lines.clear()
 	for index in options.size():
-		var chosen := index == selected
-		var button := UiStyle.button(options[index]["label"], _take.bind(index))
-		button.custom_minimum_size = Vector2(260, 40)
-		button.add_theme_font_size_override("font_size", 18)
-		UiStyle.focus(button, chosen)
+		var line := HBoxContainer.new()
+		line.alignment = BoxContainer.ALIGNMENT_CENTER
+		line.custom_minimum_size.y = 26
+		line.add_theme_constant_override("separation", 16)
+		var left := _marker(false)
+		line.add_child(left)
+		var button := Button.new()
+		button.text = options[index]["label"]
+		button.focus_mode = Control.FOCUS_NONE
+		button.add_theme_font_override("font", UiStyle.heading_font())
+		button.add_theme_font_size_override("font_size", 16)
+		for state: String in ["normal", "hover", "pressed", "focus"]:
+			button.add_theme_stylebox_override(state, StyleBoxEmpty.new())
+		button.add_theme_color_override("font_outline_color", Color("120a06"))
+		button.add_theme_constant_override("outline_size", 8)
+		button.mouse_entered.connect(_point.bind(index))
+		button.pressed.connect(_take.bind(index))
+		line.add_child(button)
+		# NEW follows its line; a blank as wide leads it, so the words stay centred.
 		if options[index]["action"] == _whats_new and GameState.settings.seen_version != version:
-			button.add_child(_new_badge())
-		menu.add_child(button)
+			var badge := _new_badge()
+			var blank := Control.new()
+			blank.custom_minimum_size = badge.get_combined_minimum_size()
+			line.add_child(badge)
+			line.add_child(blank)
+			line.move_child(blank, 0)
+		var right := _marker(true)
+		line.add_child(right)
+		menu.add_child(line)
+		lines.append([button, left, right])
+	_show_choice()
 
 
-## NEW, in rubric red on the plank's right end: notes not yet read.
+## The chosen line in gold between its markers; the rest cream. Lines are
+## recoloured, not rebuilt, so a pointer resting on the menu never takes the
+## choice back from the keys.
+func _show_choice() -> void:
+	for index in lines.size():
+		var chosen := index == selected
+		var button: Button = lines[index][0]
+		for key: String in ["font_color", "font_hover_color", "font_pressed_color"]:
+			button.add_theme_color_override(key, UiStyle.GOLD if chosen else UiStyle.CREAM)
+		for marker: TextureRect in [lines[index][1], lines[index][2]]:
+			marker.modulate.a = 1.0 if chosen else 0.0
+
+
+## A gold marker beside the chosen line, pointing in at it (hidden, but
+## holding its place, on the others).
+func _marker(right: bool) -> TextureRect:
+	var art := Image.create(4, 7, false, Image.FORMAT_RGBA8)
+	for y in 7:
+		for x in mini(y, 6 - y) + 1:
+			var edge := x == mini(y, 6 - y)
+			art.set_pixel(3 - x if right else x, y, UiStyle.BRASS_DARK if edge else UiStyle.GOLD)
+	var marker := TextureRect.new()
+	marker.texture = ImageTexture.create_from_image(art)
+	marker.custom_minimum_size = Vector2(8, 14)
+	marker.stretch_mode = TextureRect.STRETCH_SCALE
+	marker.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	marker.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	marker.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return marker
+
+
+func _point(index: int) -> void:
+	# Harness runs drive keys only: the desktop's pointer must not choose.
+	if world != null and world.harness:
+		return
+	if index != selected:
+		selected = index
+		_show_choice()
+
+
+## NEW, in rubric red after its line: notes not yet read.
 func _new_badge() -> Control:
 	var badge := PanelContainer.new()
 	badge.add_theme_stylebox_override("panel", UiStyle.box(UiStyle.LAMP, UiStyle.NIGHT, 3))
 	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	badge.add_child(UiStyle.strong("NEW", 12, UiStyle.CREAM))
-	# Pinned 10 px inside the plank's right end, growing leftward once its
-	# word has a size.
-	badge.set_anchors_preset(Control.PRESET_CENTER_RIGHT)
-	badge.offset_left = -10
-	badge.offset_right = -10
-	badge.grow_horizontal = Control.GROW_DIRECTION_BEGIN
-	badge.grow_vertical = Control.GROW_DIRECTION_BOTH
+	badge.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	return badge
 
 
@@ -238,11 +267,11 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("move_up") or event.is_action_pressed("ui_up"):
 		command = func() -> void:
 			selected = wrapi(selected - 1, 0, options.size())
-			_draw_menu()
+			_show_choice()
 	elif event.is_action_pressed("move_down") or event.is_action_pressed("ui_down"):
 		command = func() -> void:
 			selected = wrapi(selected + 1, 0, options.size())
-			_draw_menu()
+			_show_choice()
 	elif event.is_action_pressed("interact") or event.is_action_pressed("ui_accept"):
 		command = _take.bind(selected)
 	if command.is_valid():
