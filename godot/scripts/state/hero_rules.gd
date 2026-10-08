@@ -89,8 +89,10 @@ static func rank_index(level: int) -> int:
 	return mini(3, floori(level / 5.0))
 
 
-## Applies pending XP; returns levels gained. Levels fully heal, grow HP/MP by
-## role, bank 5 stat points and a skill point (two on reaching a new rank).
+## Applies pending XP; returns levels gained. A level grows HP/MP by role,
+## heals half of them (levelUpHeal, PIX-141: a level is a lift, not a free
+## refill mid-fight), banks the stat points (statPointsPerLevel) and a skill
+## point (two on reaching a new rank).
 static func apply_level_ups(hero: HeroState) -> int:
 	var growth: Dictionary = Catalog.role(hero.role_id)["growth"]
 	var points := int(_combat()["statPointsPerLevel"])
@@ -105,7 +107,8 @@ static func apply_level_ups(hero: HeroState) -> int:
 		hero.skill_points += 1
 		if rank_index(hero.level) > rank_index(hero.level - 1):
 			hero.skill_points += 1
-		hero.hp = hero.stats["maxHp"]
-		hero.mp = hero.stats["maxMp"]
+		var heal := float(_combat()["levelUpHeal"])
+		hero.hp = mini(int(hero.stats["maxHp"]), hero.hp + ceili(int(hero.stats["maxHp"]) * heal))
+		hero.mp = mini(int(hero.stats["maxMp"]), hero.mp + ceili(int(hero.stats["maxMp"]) * heal))
 		gained += 1
 	return gained

@@ -10,7 +10,7 @@ var hero_name := ""
 var role_id := "warrior"
 var level := 1
 var xp := 0
-var xp_to_next := 38
+var xp_to_next := 46
 var hp := 0
 var mp := 0
 ## maxHp, maxMp, strength, intelligence, dexterity, defense, endurance
@@ -27,8 +27,10 @@ var path: Variant = null
 var mastery: Variant = null
 
 
+## XP from one level to the next (PIX-141): it climbs, so kills that pay
+## more deeper down don't shrink each level to a fight or two.
 static func xp_to_next_for(at_level: int) -> int:
-	return 20 + at_level * 18
+	return 30 + 12 * at_level + 4 * at_level * at_level
 
 
 static func fresh_jobs() -> Dictionary:

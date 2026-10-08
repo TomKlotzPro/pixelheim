@@ -159,9 +159,7 @@ func _node_card(entry: Dictionary, chosen: bool) -> Control:
 	var numbers := _numbers(entry)
 	if numbers != "":
 		lines.add_child(UiStyle.label(numbers, 12, UiStyle.INK if owned or buyable else UiStyle.FADED))
-	var state := "OWNED" if owned else ("Learn (1 pt)" if buyable else (
-		"Requires the skill above" if entry.has("requires") and entry["requires"] not in hero.skill_nodes else "No points"
-	))
+	var state := "OWNED" if owned else ("Learn (1 pt)" if buyable else _why_not(entry))
 	lines.add_child(UiStyle.label(state, 12, UiStyle.LAMP if owned or buyable else UiStyle.FADED))
 	return panel
 
@@ -294,5 +292,15 @@ func _act() -> void:
 	elif entry["id"] in GameState.hero.skill_nodes:
 		status.text = "Already learned."
 	else:
-		status.text = "Requires the skill above." if entry.has("requires") and entry["requires"] not in GameState.hero.skill_nodes else "No skill points to spend."
+		status.text = _why_not(entry) + "."
 	_layout()
+
+
+## Why a node can't be learned yet, in the order the hero would fix it.
+func _why_not(entry: Dictionary) -> String:
+	var hero := GameState.hero
+	if entry.has("requires") and entry["requires"] not in hero.skill_nodes:
+		return "Requires the skill above"
+	if hero.level < Skills.tier_level(entry):
+		return "Needs level %d" % Skills.tier_level(entry)
+	return "No skill points to spend"

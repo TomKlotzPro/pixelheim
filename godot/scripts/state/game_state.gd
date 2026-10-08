@@ -533,13 +533,13 @@ func resolve_quests(giver_id: String) -> String:
 			entry["done"] = true
 			var reward: Dictionary = quest["reward"]
 			pack.gold += int(reward["gold"])
-			hero.xp += int(reward["xp"])
-			_grant_levels()
+			var level_line := earn_xp(int(reward["xp"]))
 			if reward.has("itemId"):
 				pack.add_item(reward["itemId"])
 			_pack_changed()
 			save_now()
-			return "Quest complete - %s! +%dg, +%d xp. %s" % [quest["name"], reward["gold"], reward["xp"], quest["completed"]]
+			var done := "Quest complete - %s! +%dg, +%d xp. %s" % [quest["name"], reward["gold"], reward["xp"], quest["completed"]]
+			return done + (" " + level_line if level_line != "" else "")
 		return "%s: %d/%d %s." % [
 			quest["name"], Quests.progress(quest, entries, pack.items), objective["count"],
 			String(objective["label"]).to_lower(),
@@ -812,16 +812,14 @@ func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, fl
 			log.append("Your garden ripens: +1 %s." % Catalog.item_name(crop))
 	var passives := HeroRules.passives(hero)
 	var gold := roundi(fighter["gold"] * (1 + passives["goldBonus"]))
-	log.append("%s is defeated! +%d XP, +%d gold." % [fighter["name"], fighter["xp"], gold])
-	hero.xp += int(fighter["xp"])
+	var xp := Bestiary.xp_for(fighter, hero.level)
+	log.append("%s is defeated! +%d XP, +%d gold." % [fighter["name"], xp, gold])
 	pack.gold += gold
 	if passives["killRefundMp"] > 0:
 		hero.mp = mini(int(hero.stats["maxMp"]), hero.mp + int(passives["killRefundMp"]))
-	var gained := _grant_levels()
-	if gained > 0:
-		log.append("LEVEL UP! You are now level %d. Fully restored. +%d stat points and +%d skill point%s to spend." % [
-			hero.level, gained * int(Bestiary._data()["statPointsPerLevel"]), gained, "s" if gained > 1 else "",
-		])
+	var level_line := earn_xp(xp)
+	if level_line != "":
+		log.append(level_line)
 	var kind := "boss" if Bestiary.is_boss(fighter["id"]) else ("elite" if fighter["elite"] else "normal")
 	var drop := Bestiary.roll_drop(floor_level, kind, roll)
 	if drop.get("kind") == "gear":
@@ -845,8 +843,22 @@ func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, fl
 	return log
 
 
-## Banked XP becomes levels: the hero is made whole, and crossing into a new
-## rank sends the ascension. Returns levels gained.
+## XP earned, and the levels it makes: the LEVEL UP line with what there is
+## to spend now, or "" when no level came of it.
+func earn_xp(amount: int) -> String:
+	hero.xp += amount
+	var stat_before := hero.stat_points
+	var skill_before := hero.skill_points
+	if _grant_levels() == 0:
+		return ""
+	var skills_won := hero.skill_points - skill_before
+	return "LEVEL UP! You are now level %d. +%d stat points and +%d skill point%s to spend." % [
+		hero.level, hero.stat_points - stat_before, skills_won, "s" if skills_won > 1 else "",
+	]
+
+
+## Banked XP becomes levels: the hero is lifted (HeroRules.apply_level_ups),
+## and crossing into a new rank sends the ascension. Returns levels gained.
 func _grant_levels() -> int:
 	var rank_before := HeroRules.rank_index(hero.level)
 	var gained := HeroRules.apply_level_ups(hero)
@@ -1068,6 +1080,13 @@ func clear_floor(level: int) -> Dictionary:
 				pack.add_item(item_id)
 				found.append(Catalog.item_name(item_id))
 		lines.append("The floor's hoard: %s." % ", ".join(found))
+		# A first clear is worth more than its fights (PIX-141): going deeper
+		# levels the hero, farming what's beaten doesn't.
+		var clear_xp := Dungeons.clear_xp(level)
+		lines.append("+%d XP for the way down." % clear_xp)
+		var level_line := earn_xp(clear_xp)
+		if level_line != "":
+			lines.append(level_line)
 		var before := progression.unlocked_level
 		progression.unlocked_level = Dungeons.unlocked_after(level, before)
 		if progression.unlocked_level > before:

@@ -50,11 +50,18 @@ static func can_forget_at(map_id: String) -> bool:
 	return map_id.begins_with("town")
 
 
-## A point to spend, not yet owned, its parent owned (canBuyNode).
+## A point to spend, not yet owned, its parent owned (canBuyNode), and the
+## level its tier asks (PIX-141: tiers open at levels 1, 3, 6 and 10).
 static func can_buy(hero: HeroState, entry: Dictionary) -> bool:
-	if hero.skill_points <= 0 or entry["id"] in hero.skill_nodes:
+	if hero.skill_points <= 0 or entry["id"] in hero.skill_nodes or hero.level < tier_level(entry):
 		return false
 	return not entry.has("requires") or entry["requires"] in hero.skill_nodes
+
+
+## The level a node's tier opens at (skillTierLevels).
+static func tier_level(entry: Dictionary) -> int:
+	var levels: Array = Bestiary._data()["skillTierLevels"]
+	return int(levels[clampi(int(entry.get("tier", 0)), 0, levels.size() - 1)])
 
 
 ## Casters spend mana, fighters endurance (resourceLabel).

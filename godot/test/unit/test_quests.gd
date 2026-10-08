@@ -50,6 +50,8 @@ func test_turning_in_pays_and_closes_the_quest() -> void:
 	assert_eq(
 		state.resolve_quests("innkeeper"),
 		"Quest complete - Slime Trouble! +60g, +30 xp. The cellar thanks you. So does my nose. Here - you've earned it."
+		+ " LEVEL UP! You are now level 2. +3 stat points and +1 skill point to spend.",
+		"the three slimes and the reward make a level"
 	)
 	assert_eq(state.pack.gold, gold + 60)
 	assert_true(state.hero.xp == xp + 30 or state.hero.level > 1, "xp paid (a level-up may spend it)")
