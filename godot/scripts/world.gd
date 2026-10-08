@@ -201,7 +201,7 @@ func _process(delta: float) -> void:
 
 ## Maps as the town has grown: the village and the house redraw per tier.
 func _load_map(map_id: String) -> MapData:
-	return MapData.load_tiered(map_id, GameState.town_tier(), int(GameState.settlement.house.get("tier", 1)))
+	return MapData.load_tiered(map_id, Town.done_projects(GameState.settlement), int(GameState.settlement.house.get("tier", 1)))
 
 func is_walkable(cell: Vector2i) -> bool:
 	return map.is_walkable(cell)
@@ -620,18 +620,20 @@ func _try_interact() -> void:
 		return
 	if map.id == "town_house" and _house_interact(faced):
 		return
+	# The projects board on the square opens the village's ledger (PIX-145).
+	if map.id == "town" and faced == Town.project_board():
+		add_child(preload("res://scripts/town_hall_screen.gd").new())
+		return
 	var beside := _npc_beside()
 	if not beside.is_empty():
 		player.face(Vector2(beside["side"]))
 		# Keepers trade instead of chatting: anyone in a shop opens its counter
 		# (unless they have a quest to offer or take back: then they talk, and
-		# the next word opens the counter), the mayor opens the town ledger, a
-		# settled Mirelle her bank.
+		# the next word opens the counter), a settled Mirelle her bank. The
+		# mayor talks, then opens the projects ledger (see _talk).
 		var quest_word := Quests.awaits_word(beside["npc"]["id"], GameState.progression.quests, GameState.pack.items)
 		if GameState.active_shop() != "" and not quest_word:
 			_open_shop()
-		elif map.id == "town_hall":
-			add_child(preload("res://scripts/town_hall_screen.gd").new())
 		elif beside["npc"]["id"] == "settler_mirelle" and GameState.is_settled("settler_mirelle"):
 			add_child(preload("res://scripts/bank_screen.gd").new())
 		else:
@@ -673,6 +675,10 @@ func _talk(npc: Dictionary) -> void:
 	if npc["id"] in ["elder", "mayor"]:
 		npc = npc.duplicate()
 		npc["lines"] = npc["lines"] + [MainQuest.hint(GameState.progression, GameState.settlement)]
+	# The mayor has his say, then opens the projects ledger (PIX-145).
+	if npc["id"] == "mayor":
+		GameState.dialogue_closed.connect(func(_who: String) -> void:
+			add_child(preload("res://scripts/town_hall_screen.gd").new()), CONNECT_ONE_SHOT)
 	box.npc = npc
 	add_child(box)
 

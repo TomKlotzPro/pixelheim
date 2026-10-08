@@ -29,6 +29,10 @@ func test_every_step_names_a_real_quest_or_floor() -> void:
 			"cleared":
 				assert_between(int(when["level"]), 1, Dungeons.floor_count())
 				assert_string_contains(step["text"], Dungeons.floor_def(int(when["level"]))["name"].trim_prefix("The "))
+			"project":
+				assert_false(Town.project(when["projectId"]).is_empty(), "%s: a real project" % step["id"])
+			"settlers":
+				assert_gt(int(when["count"]), 0)
 			_:
 				fail_test("%s: unknown kind %s" % [step["id"], when["kind"]])
 		assert_ne(step["hint"], "")
@@ -54,8 +58,19 @@ func test_running_ahead_never_sends_the_hero_back() -> void:
 	assert_eq(_next(), "watchtower", "the brew and the inn are behind now")
 	state.progression.unlocked_level = 10
 	state.clear_floor(10)
-	assert_eq(_next(), "stair")
+	assert_eq(_next(), "fountain", "Fafnyr's scale goes on the square first")
+	state.progression.unlocked_level = 11
+	state.clear_floor(11)
+	assert_eq(_next(), "hoard")
 	assert_eq(MainQuest.steps()[MainQuest.steps().map(func(s: Dictionary) -> String: return s["id"]).find("stair")]["chapter"], "The Deathless")
+
+
+func test_a_grown_town_never_skips_the_mountain() -> void:
+	state.settlement.town_tier = 4
+	assert_eq(_next(), "ask_sela", "the projects are done, the floors aren't")
+	state.progression.unlocked_level = 9
+	state.clear_floor(9)
+	assert_eq(_next(), "fafnyr")
 
 
 func test_the_end_is_quiet() -> void:

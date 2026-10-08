@@ -1,6 +1,20 @@
 {
   "releases": [
     {
+      "version": "0.89.0",
+      "date": "2026-10-08",
+      "codename": "Raise the Roof",
+      "notes": [
+        "VILLAGE PROJECTS: the town's charters are gone - each age of Pixelheim is now a handful of projects you fund one by one, with gold and a material from the wilds",
+        "THE TOWN CHANGES AT ONCE: street lamps, market stalls, cottages, the fountain, a slate hall, the grand avenue and flower beds each appear the moment you fund them",
+        "PRICED FOR A HERO: the Village costs 800g in all, the Town 2200g, the City 2700g - instead of 2500g, 7000g and 15000g",
+        "EARNED, NOT BOUGHT: the Village opens once the Ruined Watchtower is cleared and a settler has come home, the Town once Fafnyr is slain, the City once Morvax is cast down",
+        "A BOARD ON THE SQUARE: a notice board by the square lists what Pixelheim needs; Mayor Aldric now talks before he opens his books",
+        "YOUR TOWN IS SAFE: a hero from before keeps every project their town had reached",
+        "THE STORY KNOWS: bringing a settler home, lighting the streets and setting Fafnyr's scale in the fountain join the main quest - as side steps, never in the mountain's way"
+      ]
+    },
+    {
       "version": "0.88.0",
       "date": "2026-10-08",
       "codename": "Next Steps",

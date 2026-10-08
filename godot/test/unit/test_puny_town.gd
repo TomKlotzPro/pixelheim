@@ -77,7 +77,7 @@ func test_a_lone_side_column_is_a_low_lean_to() -> void:
 
 func test_every_town_tier_keeps_its_doors_and_roads() -> void:
 	for tier: String in TIERS:
-		var data := MapData.load_from("res://assets/maps/%s.json" % tier)
+		var data := _load(tier)
 		var plan := PunyTown.plan(data.grid)
 		var pieces: Dictionary = plan["pieces"]
 		assert_gt(pieces.size(), 200, "%s has its houses" % tier)
@@ -103,3 +103,10 @@ func test_the_pack_draws_when_installed() -> void:
 	PunyTown.place(layer, Vector2i(3, 4), PunyTown.DOOR)
 	assert_eq(layer.get_cell_atlas_coords(Vector2i(3, 4)), Vector2i(PunyTown.DOOR % PunyTown.COLUMNS, PunyTown.DOOR / PunyTown.COLUMNS))
 	layer.free()
+
+
+## A town as grown through an age ("town@3"), or any other map by id.
+func _load(id: String) -> MapData:
+	if id.begins_with("town@"):
+		return MapData.load_tiered("town", Town.projects_through(int(id.get_slice("@", 1))), 1)
+	return MapData.load_by_id(id)

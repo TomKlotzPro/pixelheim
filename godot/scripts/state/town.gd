@@ -25,27 +25,134 @@ static func next_tier(current: int) -> Dictionary:
 	return {} if current >= MAX_TIER else tier(current + 1)
 
 
-## The web's requirement predicates, by key (TOWN_TIERS[].requires.met).
-static func requirement_met(key: String, house_owned: bool, properties: Array) -> bool:
-	match key:
-		"own_house":
-			return house_owned
-		"own_all_properties":
-			return deeds().keys().all(func(map_id: String) -> bool: return map_id in properties)
-	return true
+# ---- village projects (PIX-145) ------------------------------------------------
+# Each age past the Hamlet is a handful of projects, each paid in gold and a
+# region's material, each changing the town the moment it's funded; the last
+# of an age raises the town to that age (and its perks). They replace the
+# web's charters, which cost more than the game ever paid and changed a few
+# cells of the map.
+
+## The ages, from the Village up: {tier, requires: [{kind, line, ...}], projects}.
+static func ages() -> Array:
+	return _data()["ages"]
 
 
-## Why the next tier can't be funded, or "" when it can (fundBlocker).
-static func fund_blocker(current: int, gold: int, house_owned: bool, properties: Array) -> String:
-	var next := next_tier(current)
-	if next.is_empty():
-		return "Pixelheim stands at its full height."
-	var requires: Dictionary = next.get("requires", {})
-	if not requires.is_empty() and not requirement_met(requires["key"], house_owned, properties):
-		return requires["line"]
-	if gold < int(next.get("cost", 0)):
-		return "The treasury asks %dg." % next["cost"]
+static func age(tier_number: int) -> Dictionary:
+	for entry: Dictionary in ages():
+		if int(entry["tier"]) == tier_number:
+			return entry
+	return {}
+
+
+static func project(project_id: String) -> Dictionary:
+	for entry: Dictionary in ages():
+		for candidate: Dictionary in entry["projects"]:
+			if candidate["id"] == project_id:
+				return candidate
+	return {}
+
+
+## The age a project belongs to.
+static func age_of(project_id: String) -> int:
+	for entry: Dictionary in ages():
+		for candidate: Dictionary in entry["projects"]:
+			if candidate["id"] == project_id:
+				return int(entry["tier"])
+	return 0
+
+
+## The projects done: the save's list, or for a save from before projects
+## every project of the ages its town tier had reached.
+static func done_projects(settlement: SettlementState) -> Array[String]:
+	var out: Array[String] = []
+	if not settlement.projects.is_empty():
+		out.assign(settlement.projects)
+		return out
+	for entry: Dictionary in ages():
+		if int(entry["tier"]) <= settlement.town_tier:
+			for candidate: Dictionary in entry["projects"]:
+				out.append(candidate["id"])
+	return out
+
+
+## Every project of the ages up to `tier_number` (a town grown that far).
+static func projects_through(tier_number: int) -> Array[String]:
+	var out: Array[String] = []
+	for entry: Dictionary in ages():
+		if int(entry["tier"]) <= tier_number:
+			for candidate: Dictionary in entry["projects"]:
+				out.append(candidate["id"])
+	return out
+
+
+## The age's requirements still unmet, as their lines.
+static func age_blockers(tier_number: int, progression: ProgressionState, settlement: SettlementState) -> Array[String]:
+	var out: Array[String] = []
+	for need: Dictionary in age(tier_number).get("requires", []):
+		var met := true
+		match String(need["kind"]):
+			"cleared":
+				met = int(need["level"]) in progression.cleared_levels
+			"settlers":
+				met = settlement.settlers.size() >= int(need["count"])
+		if not met:
+			out.append(need["line"])
+	return out
+
+
+## The age the ledger works on: the first not finished, or 0 when all are.
+static func current_age(settlement: SettlementState) -> int:
+	var done := done_projects(settlement)
+	for entry: Dictionary in ages():
+		for candidate: Dictionary in entry["projects"]:
+			if candidate["id"] not in done:
+				return int(entry["tier"])
+	return 0
+
+
+## Why a project can't be funded now, or "".
+static func project_blocker(project_id: String, progression: ProgressionState, settlement: SettlementState, gold: int, items: Dictionary) -> String:
+	var entry := project(project_id)
+	if project_id in done_projects(settlement):
+		return "Already built."
+	var tier_number := age_of(project_id)
+	if tier_number != current_age(settlement):
+		return "Finish the %s first." % tier(current_age(settlement))["name"]
+	var blockers := age_blockers(tier_number, progression, settlement)
+	if not blockers.is_empty():
+		return blockers[0] + "."
+	if gold < int(entry["cost"]["gold"]):
+		return "The treasury asks %dg." % entry["cost"]["gold"]
+	for item_id: String in entry["cost"]["items"]:
+		if int(items.get(item_id, 0)) < int(entry["cost"]["items"][item_id]):
+			return "It takes %d %s." % [entry["cost"]["items"][item_id], Catalog.item_name(item_id)]
 	return ""
+
+
+## A project's price as one line: "250g, 2 Wolf Pelt".
+static func cost_line(project_id: String) -> String:
+	var cost: Dictionary = project(project_id)["cost"]
+	var parts: Array[String] = ["%dg" % cost["gold"]]
+	for item_id: String in cost["items"]:
+		parts.append("%d %s" % [cost["items"][item_id], Catalog.item_name(item_id)])
+	return ", ".join(parts)
+
+
+## The notice board on the square that opens the projects ledger.
+static func project_board() -> Vector2i:
+	var at: Dictionary = _data()["projectBoard"]
+	return Vector2i(int(at["x"]), int(at["y"]))
+
+
+## The town map's cells a set of finished projects changes: cell -> tile.
+static func town_patches(done: Array) -> Dictionary:
+	var out := {}
+	for entry: Dictionary in ages():
+		for candidate: Dictionary in entry["projects"]:
+			if candidate["id"] in done:
+				for cell: Array in candidate["tiles"]:
+					out[Vector2i(int(cell[0]), int(cell[1]))] = cell[2]
+	return out
 
 
 ## Village rent: one coin more per property from tier 2 (rentPerProperty).

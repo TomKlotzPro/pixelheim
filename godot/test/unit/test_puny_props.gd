@@ -107,7 +107,7 @@ func test_treasure_shows_as_the_web_shows_it() -> void:
 ## the foot, so the hero's position never ends up inside a blocked cell.
 func test_every_foot_covers_the_core_of_each_cell_it_blocks_on_every_tier() -> void:
 	for id: String in TIERS:
-		var data := MapData.load_from("res://assets/maps/%s.json" % id)
+		var data := _load(id)
 		var plan := PunyProps.plan(data.grid)
 		assert_gt(plan["props"].size(), 10, id)
 		for prop: Dictionary in plan["props"]:
@@ -120,17 +120,24 @@ func test_every_foot_covers_the_core_of_each_cell_it_blocks_on_every_tier() -> v
 
 func test_the_grown_town_has_its_fountain_and_both_stalls() -> void:
 	var kinds := {}
-	for prop: Dictionary in PunyProps.plan(MapData.load_from("res://assets/maps/town@4.json").grid)["props"]:
+	for prop: Dictionary in PunyProps.plan(_load("town@4").grid)["props"]:
 		kinds[prop["kind"]] = kinds.get(prop["kind"], 0) + 1
 	assert_eq(kinds.get("fountain", 0), 1)
 	assert_eq(kinds.get("well", 0), 1, "the old well by the square, roofed")
 	assert_eq(kinds.get("stall", 0), 2)
-	assert_eq(kinds.get("lamp", 0), 12)
+	assert_eq(kinds.get("lamp", 0), 16, "the web's twelve and the grand avenue's four")
 
 
 func test_covered_cells_stop_walkers() -> void:
-	var data := MapData.load_from("res://assets/maps/town@4.json")
+	var data := _load("town@4")
 	var fountain := Vector2i(31, 18)
 	assert_true(data.is_walkable(fountain), "the web paves it")
 	data.covered[fountain] = true
 	assert_false(data.is_walkable(fountain), "the basin stands on it")
+
+
+## A town as grown through an age ("town@3"), or any other map by id.
+func _load(id: String) -> MapData:
+	if id.begins_with("town@"):
+		return MapData.load_tiered("town", Town.projects_through(int(id.get_slice("@", 1))), 1)
+	return MapData.load_by_id(id)

@@ -10,6 +10,9 @@ var house := {"owned": false, "storage": {}}
 var properties: Array[String] = []
 var town_tier := 1
 var settlers: Array[String] = []
+## Village projects funded (PIX-145; saved as "projects" once there is one).
+## Empty on a save from before them: Town.done_projects reads the tier.
+var projects: Array[String] = []
 ## Additive web fields: null means absent.
 var bard_song: Variant = null
 var investments: Variant = null
@@ -21,6 +24,7 @@ static func from_dict(data: Dictionary) -> SettlementState:
 	town.properties.assign(data["properties"])
 	town.town_tier = data["townTier"]
 	town.settlers.assign(data["settlers"])
+	town.projects.assign(data.get("projects", []))
 	town.bard_song = data.get("bardSong")
 	town.investments = data.get("investments")
 	return town
@@ -31,6 +35,8 @@ func write_into(state: Dictionary) -> void:
 	state["properties"] = properties.duplicate()
 	state["townTier"] = town_tier
 	state["settlers"] = settlers.duplicate()
+	if not projects.is_empty():
+		state["projects"] = projects.duplicate()
 	if bard_song != null:
 		state["bardSong"] = bard_song
 	if investments != null:

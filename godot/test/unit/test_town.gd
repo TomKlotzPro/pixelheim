@@ -43,38 +43,84 @@ func test_perks_match_the_web() -> void:
 	assert_eq([1, 2, 3, 4].map(Town.rest_cost_for), [10, 10, 5, 5])
 
 
-func test_funding_respects_requirements_and_gold() -> void:
-	assert_eq(Town.fund_blocker(1, 100, false, []), "The treasury asks 2500g.")
-	assert_eq(Town.fund_blocker(1, 2500, false, []), "")
-	assert_string_contains(Town.fund_blocker(2, 99999, false, []), "own your house")
-	assert_eq(Town.fund_blocker(2, 7000, true, []), "")
-	assert_string_contains(Town.fund_blocker(3, 99999, true, ["town_shop"]), "three businesses")
-	assert_eq(Town.fund_blocker(3, 15000, true, ["town_shop", "town_smith", "town_alchemist"]), "")
-	assert_eq(Town.fund_blocker(4, 99999, true, []), "Pixelheim stands at its full height.")
+## Village projects (PIX-145): an age opens with its requirements, each
+## project asks gold and a region's material, and the last raises the age.
+func test_a_project_waits_for_its_age_then_for_its_price() -> void:
+	state.new_game("Robin", "warrior")
+	var blocker := func() -> String:
+		return Town.project_blocker("street_lamps", state.progression, state.settlement, state.pack.gold, state.pack.items)
+	assert_string_contains(blocker.call(), "Ruined Watchtower")
+	state.progression.cleared_levels.append(5)
+	assert_string_contains(blocker.call(), "settler")
+	state.settlement.settlers.append("settler_iva")
+	state.pack.gold = 100
+	assert_eq(blocker.call(), "The treasury asks 150g.")
+	state.pack.gold = 1000
+	assert_eq(blocker.call(), "It takes 3 Marsh Reed.")
+	state.pack.items["marsh_reed"] = 3
+	assert_eq(blocker.call(), "")
+	assert_string_contains(Town.project_blocker("fountain", state.progression, state.settlement, 99999, {"dragon_scale": 9}), "Finish the Village")
 
 
-func test_every_town_age_is_a_whole_map_with_its_doors() -> void:
+func test_the_last_project_of_an_age_raises_the_town() -> void:
+	state.new_game("Robin", "warrior")
+	state.progression.cleared_levels.append(5)
+	state.settlement.settlers.append("settler_iva")
+	state.pack.gold = 5000
+	state.pack.items.merge({"marsh_reed": 8, "wolf_pelt": 2})
+	assert_eq(state.fund_project("street_lamps"), "Street lamps: built. Walk outside and see.")
+	assert_eq(state.pack.items["marsh_reed"], 5)
+	assert_eq(state.town_tier(), 1, "one of three")
+	state.fund_project("market_stalls")
+	assert_eq(state.fund_project("thatch_cottage"), "A thatched cottage: built - and Pixelheim is a village now.")
+	assert_eq(state.town_tier(), 2)
+	assert_eq(state.pack.gold, 5000 - 150 - 250 - 400)
+	assert_eq(state.fund_project("thatch_cottage"), "", "once")
+	assert_eq(Town.current_age(state.settlement), 3)
+
+
+func test_a_save_from_before_projects_keeps_its_town() -> void:
+	var town := SettlementState.new()
+	town.town_tier = 3
+	assert_eq(Town.done_projects(town), Town.projects_through(3))
+	assert_eq(Town.current_age(town), 4)
+	var written := {}
+	town.write_into(written)
+	assert_false(written.has("projects"), "saves from before stay byte for byte")
+	town.projects.assign(["street_lamps"])
+	town.write_into(written)
+	assert_eq(written["projects"], ["street_lamps"])
+
+
+func test_each_project_changes_the_town_at_once() -> void:
 	var base := MapData.load_by_id("town")
+	for project_id: String in Town.projects_through(4):
+		var map := MapData.load_tiered("town", [project_id], 1)
+		assert_ne(map.grid, base.grid, "%s changes the map" % project_id)
 	for tier in range(1, 5):
-		var map := MapData.load_tiered("town", tier, 1)
+		var map := MapData.load_tiered("town", Town.projects_through(tier), 1)
 		assert_eq(map.id, "town")
-		assert_eq(map.portals.keys().size(), base.portals.keys().size(), "tier %d keeps every door" % tier)
+		assert_eq(map.portals.keys().size(), base.portals.keys().size(), "age %d keeps every door" % tier)
 		for cell: Vector2i in map.portals:
-			assert_true(map.is_walkable(cell), "tier %d door %s blocked" % [tier, cell])
+			assert_true(map.is_walkable(cell), "age %d door %s blocked" % [tier, cell])
 	for tier in range(1, 4):
-		assert_eq(MapData.load_tiered("town_house", 1, tier).id, "town_house")
-	assert_ne(MapData.load_tiered("town", 4, 1).grid, base.grid, "the city really is redrawn")
+		assert_eq(MapData.load_tiered("town_house", [], tier).id, "town_house")
+
+
+func test_the_projects_fit_what_the_game_pays() -> void:
+	# A hero earns about 900g by floor 5, 4000g by Fafnyr and 9500g by Morvax
+	# in one pass (fights, hoards and quests; PIX-145's estimate).
+	var budget := {2: 900, 3: 4000, 4: 9500}
+	for entry: Dictionary in Town.ages():
+		var total := 0
+		for candidate: Dictionary in entry["projects"]:
+			total += int(candidate["cost"]["gold"])
+			for item_id: String in candidate["cost"]["items"]:
+				assert_false(Economy.material_sources(item_id).is_empty(), "%s can be had" % item_id)
+		assert_lt(total, budget[int(entry["tier"])], "age %d costs %dg" % [entry["tier"], total])
 
 
 # ---- GameState: hall, deeds, bank -----------------------------------------------
-
-func test_funding_pays_and_raises_the_tier() -> void:
-	state.pack.gold = 3000
-	assert_eq(state.fund_town(), "Pixelheim rises: the VILLAGE charter is signed. Walk outside.")
-	assert_eq(state.town_tier(), 2)
-	assert_eq(state.pack.gold, 500)
-	assert_eq(state.fund_town(), "", "the town charter wants a house owner")
-
 
 func test_deeds_sell_only_where_you_stand() -> void:
 	state.pack.gold = 10000
