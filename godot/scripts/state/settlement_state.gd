@@ -13,6 +13,9 @@ var settlers: Array[String] = []
 ## Village projects funded (PIX-145; saved as "projects" once there is one).
 ## Empty on a save from before them: Town.done_projects reads the tier.
 var projects: Array[String] = []
+## The festival day an age's completion brings (PIX-159): {until (steps),
+## age, won}; saved only while there is one.
+var festival := {}
 ## Additive web fields: null means absent.
 var bard_song: Variant = null
 var investments: Variant = null
@@ -27,6 +30,7 @@ static func from_dict(data: Dictionary) -> SettlementState:
 	town.projects.assign(data.get("projects", []))
 	town.bard_song = data.get("bardSong")
 	town.investments = data.get("investments")
+	town.festival = data.get("festival", {}).duplicate()
 	return town
 
 
@@ -41,3 +45,5 @@ func write_into(state: Dictionary) -> void:
 		state["bardSong"] = bard_song
 	if investments != null:
 		state["investments"] = investments.duplicate(true)
+	if not festival.is_empty():
+		state["festival"] = festival.duplicate()

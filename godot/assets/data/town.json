@@ -1006,5 +1006,29 @@
     "lorasCrit": 0.2,
     "wrenWalk": 0.1,
     "mirelleRate": 0.03
+  },
+  "festival": {
+    "days": 1,
+    "throws": 3,
+    "hitsToWin": 2,
+    "prizeGold": 30,
+    "prizeItem": "festival_pie",
+    "prizeCount": 3,
+    "stalls": [
+      {
+        "x": 23,
+        "y": 13,
+        "tile": 895
+      },
+      {
+        "x": 35,
+        "y": 13,
+        "tile": 905
+      }
+    ],
+    "barker": {
+      "x": 34,
+      "y": 15
+    }
   }
 }

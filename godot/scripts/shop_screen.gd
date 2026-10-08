@@ -163,11 +163,20 @@ func _build_rows() -> Array[Dictionary]:
 						var text := GameState.buy_house_upgrade()
 						status.text = text if text != "" else "Not enough gold.",
 				})
-			for item_id in Economy.shop_stock(shop_id, GameState.progression.unlocked_level):
+			for item_id in Economy.shop_stock(shop_id, GameState.progression.unlocked_level, GameState.town_tier()):
 				var price := Economy.buy_price(item_id)
+				# What only Pixelheim sells, since the age that brought it (PIX-159).
+				var signature: bool = Catalog.item(item_id).get("signature", false)
+				var detail := _describe(item_id)
+				if signature:
+					detail += "\nThe %s's own, since Pixelheim became a %s." % [
+						"shop" if shop_id == "odo" else ("forge" if shop_id == "smith" else "workshop"),
+						String(Town.tier(Economy.age_of(shop_id, item_id))["name"]).to_lower(),
+					]
 				out.append({
 					"label": Catalog.item_name(item_id), "price": "%dg" % price, "icon": item_id,
-					"detail": _describe(item_id), "verb": "Buy", "enabled": pack.gold >= price,
+					"tag": "Pixelheim's own" if signature else "",
+					"detail": detail, "verb": "Buy", "enabled": pack.gold >= price,
 					"action": func() -> void: _after(GameState.buy_item(item_id), "Bought %s." % Catalog.item_name(item_id), "Not enough gold."),
 				})
 		"Sell":
@@ -280,6 +289,9 @@ func _row(index: int) -> Control:
 	var name := UiStyle.label(row["label"], 16, color)
 	name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	line.add_child(name)
+	# A signature item's mark (PIX-159), before its price.
+	if row.get("tag", "") != "":
+		line.add_child(UiStyle.label(row["tag"], 16, UiStyle.FADED))
 	line.add_child(UiStyle.label(row["price"], 16, UiStyle.LAMP if row["enabled"] else UiStyle.FADED))
 	return panel
 

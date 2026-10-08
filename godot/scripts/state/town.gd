@@ -150,6 +150,26 @@ static func project_board() -> Vector2i:
 	return Vector2i(int(at["x"]), int(at["y"]))
 
 
+## The festival day's numbers and places (town.json "festival").
+static func festival(key: String) -> Variant:
+	return _data()["festival"][key]
+
+
+## Where the town stands about at dusk (PIX-159): a loose ring around the
+## square below the boards, open ground only.
+static func gathering_spots(map: MapData) -> Array[Vector2i]:
+	var square := project_board() + Vector2i(0, 5)
+	var out: Array[Vector2i] = []
+	for offset: Vector2i in [
+		Vector2i(-2, -1), Vector2i(2, -1), Vector2i(-3, 1), Vector2i(3, 1), Vector2i(-1, 2), Vector2i(1, 2),
+		Vector2i(-2, 3), Vector2i(2, 3), Vector2i(0, -2), Vector2i(-4, -1), Vector2i(4, -1), Vector2i(0, 4),
+	]:
+		var cell := square + offset
+		if map.is_walkable(cell) and not map.covered.has(cell) and not map.portals.has(cell):
+			out.append(cell)
+	return out
+
+
 ## The bounty board beside it, where the named monsters are posted (PIX-156).
 static func bounty_board() -> Vector2i:
 	var at: Dictionary = _data()["bountyBoard"]

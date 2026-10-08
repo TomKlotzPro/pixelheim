@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.102.0",
+      "date": "2026-10-08",
+      "codename": "Market Day",
+      "notes": [
+        "DUSK ON THE SQUARE: as the sun goes down the townsfolk walk to the square and stand about the well, then go home for the night",
+        "SHOPS GROW WITH THE TOWN: each new age brings Odo, Hilda and Vex more stock, and a signature item you can only buy in Pixelheim - Lamplighter's Sausages and the Lamplit Blade in the Village, a Fountain Day Roast, the Fountain Guard and a Fountain Tonic in the Town, Banquet Ribs, City Plate and a Phoenix Draught in the City",
+        "FESTIVAL DAYS: finish an age and Pixelheim celebrates for a day - confetti, stalls, everyone out on the square, and Barker Jory's ring toss. Land two rings of three for a prize of gold and festival pies"
+      ]
+    },
+    {
       "version": "0.101.0",
       "date": "2026-10-08",
       "codename": "Crackle and Hum",

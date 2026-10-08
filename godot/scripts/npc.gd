@@ -53,21 +53,69 @@ func _ready() -> void:
 ## Home for the night (PIX-149): out of sight and out of the way.
 var away := false
 var body: CollisionShape2D
+## Where they're headed on the square at dusk or on a festival day
+## (PIX-159), or NOWHERE.
+const NOWHERE := Vector2i(-1, -1)
+var gather_at := NOWHERE
+var _last_beat := -1
 
 
+## Gone for the night, or back: back means at home, wherever the evening
+## left them.
 func set_away(gone: bool) -> void:
 	away = gone
 	visible = not gone
 	body.set_deferred("disabled", gone)
+	if not gone:
+		gather_at = NOWHERE
+		place_at(home + Npcs.pace_offset(data, offsets, _beat()))
+
+
+## Straight to `at` (only ever where nobody's watching).
+func place_at(at: Vector2i) -> void:
+	cell = at
+	position = _center(cell)
+	reset_physics_interpolation()
 
 
 func _process(_delta: float) -> void:
-	if not data["wander"] or away:
+	if away:
+		return
+	if gather_at != NOWHERE:
+		_walk_to_square()
+		return
+	if not data["wander"]:
 		return
 	var next: Vector2i = home + Npcs.pace_offset(data, offsets, _beat())
 	# Never step onto the hero; wait for the next pace instead.
 	if next == cell or next == world.player_cell:
 		return
+	_step_to(next)
+
+
+## A step a beat toward their spot on the square: the longer way first, the
+## other if that's blocked; they wait where both are.
+func _walk_to_square() -> void:
+	var beat := _beat()
+	if beat == _last_beat or cell == gather_at:
+		return
+	_last_beat = beat
+	var to := gather_at - cell
+	var tries: Array[Vector2i] = []
+	if to.x != 0:
+		tries.append(Vector2i(signi(to.x), 0))
+	if to.y != 0:
+		tries.append(Vector2i(0, signi(to.y)))
+	if absi(to.y) > absi(to.x):
+		tries.reverse()
+	for step in tries:
+		var next := cell + step
+		if world.map.is_walkable(next) and not world.map.covered.has(next) and not world.map.portals.has(next) and next != world.player_cell:
+			_step_to(next)
+			return
+
+
+func _step_to(next: Vector2i) -> void:
 	var step := next - cell
 	cell = next
 	var dir := "down" if step.y > 0 else ("up" if step.y < 0 else ("right" if step.x > 0 else "left"))

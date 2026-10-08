@@ -80,7 +80,17 @@
     "drowned_signet": "jewelry-rpg-icons/Rings/Ring-42.png",
     "cinderscale_shield": "survival-rpg-icons/Armour/Metal-Shield-11.png",
     "mossback_maul": "survival-rpg-icons/Tools/Hammer-10.png",
-    "gulp_tooth": "jewelry-rpg-icons/Necklaces/Necklace-19.png"
+    "gulp_tooth": "jewelry-rpg-icons/Necklaces/Necklace-19.png",
+    "lamplighters_supper": "survival-rpg-icons/Food/Sausage-02.png",
+    "fountain_roast": "survival-rpg-icons/Food/Chicken-04.png",
+    "city_banquet": "survival-rpg-icons/Food/Ribs-01.png",
+    "lamplit_blade": "survival-rpg-icons/Tools/Sword-14.png",
+    "fountain_guard": "survival-rpg-icons/Armour/Metal-Shield-09.png",
+    "city_plate": "survival-rpg-icons/Armour/Metal-Chestplate-04.png",
+    "lantern_draught": "survival-rpg-icons/Liquid/Large-Potion-09.png",
+    "fountain_tonic": "survival-rpg-icons/Liquid/Large-Potion-14.png",
+    "phoenix_draught": "survival-rpg-icons/Liquid/Large-Potion-06.png",
+    "festival_pie": "medieval@798"
   },
   "ailments": {
     "poison": "puny-skills/Indicators/Symbol Indicator/Poisoned-Indicator.png",

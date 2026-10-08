@@ -110,6 +110,12 @@ func plan(arrival: Vector2i) -> Vector2i:
 		camps[Town.project_board()] = {"kind": "board", "tile": PROJECT_BOARD}
 		# Its neighbour wears a wanted poster: the bounties (PIX-156).
 		camps[Town.bounty_board()] = {"kind": "board", "tile": PROJECT_BOARD, "wanted": true}
+		# A festival day's stalls (PIX-159), wherever the ground is open.
+		if GameState.festival_on():
+			for stall: Dictionary in Town.festival("stalls"):
+				var at := Vector2i(int(stall["x"]), int(stall["y"]))
+				if data.is_walkable(at) and not data.covered.has(at) and not camps.has(at):
+					camps[at] = {"kind": "tent", "tile": int(stall["tile"])}
 		# Sela's tent on the square while the inn is rubble (PIX-146).
 		var tent := Town.ashes_tent(Town.done_projects(GameState.settlement))
 		if tent.x >= 0:

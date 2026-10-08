@@ -797,6 +797,112 @@
         "strength": 1
       },
       "slot": "neck"
+    },
+    "lamplighters_supper": {
+      "name": "Lamplighter's Sausages",
+      "category": "food",
+      "sprite": "meat",
+      "weight": 1,
+      "value": 28,
+      "signature": true,
+      "description": "Restores 40 HP. Odo cooks them on the lamps' first night, and every night since.",
+      "restoreHp": 40
+    },
+    "fountain_roast": {
+      "name": "Fountain Day Roast",
+      "category": "food",
+      "sprite": "meat",
+      "weight": 2,
+      "value": 45,
+      "signature": true,
+      "description": "Restores 60 HP and 10 MP. A whole bird, roasted the way the town did on the day the fountain first ran.",
+      "restoreHp": 60,
+      "restoreMp": 10
+    },
+    "city_banquet": {
+      "name": "Banquet Ribs",
+      "category": "food",
+      "sprite": "meat",
+      "weight": 2,
+      "value": 90,
+      "signature": true,
+      "description": "Restores 100 HP and 30 MP. The city eats well, and Odo makes sure of it.",
+      "restoreHp": 100,
+      "restoreMp": 30
+    },
+    "lamplit_blade": {
+      "name": "Lamplit Blade",
+      "category": "weapons",
+      "sprite": "sword",
+      "weight": 9,
+      "value": 260,
+      "signature": true,
+      "description": "Hilda's first sword for the Village, its fuller polished bright enough to read by.",
+      "damage": 15,
+      "scaling": "strength",
+      "slot": "weapon"
+    },
+    "fountain_guard": {
+      "name": "Fountain Guard",
+      "category": "apparel",
+      "sprite": "shield",
+      "weight": 11,
+      "value": 360,
+      "signature": true,
+      "description": "A round shield in the town's blue, its rim beaten from the old gate's hinges.",
+      "armor": 7,
+      "slot": "offhand"
+    },
+    "city_plate": {
+      "name": "City Plate",
+      "category": "apparel",
+      "sprite": "armor",
+      "weight": 20,
+      "value": 720,
+      "signature": true,
+      "description": "Hilda's masterwork: the city's crest on the breast, her mark inside the collar.",
+      "armor": 11,
+      "slot": "body"
+    },
+    "lantern_draught": {
+      "name": "Lantern Draught",
+      "category": "potions",
+      "sprite": "potion_mp",
+      "weight": 1,
+      "value": 55,
+      "signature": true,
+      "description": "Restores 40 MP. It glows faintly in the bottle, which Vex insists is normal.",
+      "restoreMp": 40
+    },
+    "fountain_tonic": {
+      "name": "Fountain Tonic",
+      "category": "potions",
+      "sprite": "elixir",
+      "weight": 1,
+      "value": 70,
+      "signature": true,
+      "description": "Restores 50 HP and 20 MP. Drawn from the new fountain and brewed twice.",
+      "restoreHp": 50,
+      "restoreMp": 20
+    },
+    "phoenix_draught": {
+      "name": "Phoenix Draught",
+      "category": "potions",
+      "sprite": "potion_hp",
+      "weight": 1,
+      "value": 150,
+      "signature": true,
+      "description": "Restores 120 HP. Vex won't say what's in it, only that it was hard to catch.",
+      "restoreHp": 120
+    },
+    "festival_pie": {
+      "name": "Festival Pie",
+      "category": "food",
+      "sprite": "pie",
+      "weight": 1,
+      "value": 20,
+      "description": "Restores 50 HP. Baked for the festival, won at the ring toss, eaten far too fast.",
+      "restoreHp": 50
     }
   },
   "roles": {
