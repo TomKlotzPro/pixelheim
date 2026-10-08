@@ -184,6 +184,10 @@
     ],
     "fafnyr": [
       {
+        "kind": "theme",
+        "name": "fafnyr"
+      },
+      {
         "kind": "stage",
         "stage": "lair"
       },
@@ -272,6 +276,10 @@
     ],
     "morvax": [
       {
+        "kind": "theme",
+        "name": "morvax"
+      },
+      {
         "kind": "stage",
         "stage": "dark"
       },
@@ -346,6 +354,11 @@
         "kind": "fade",
         "to": "clear",
         "seconds": 1.6
+      },
+      {
+        "kind": "theme",
+        "name": "ending",
+        "then": "victory"
       },
       {
         "kind": "caption",
@@ -611,6 +624,11 @@
         "kind": "fade",
         "to": "clear",
         "seconds": 1.6
+      },
+      {
+        "kind": "theme",
+        "name": "ending_rest",
+        "then": "victory"
       },
       {
         "kind": "caption",

@@ -45,6 +45,8 @@ var heard_hp := 0
 var hunted_at := -100.0
 var hunted_by_boss := false
 var noticed_at := -100.0
+## Seconds until the soundscape is looked at again (PIX-158).
+var soundscape_left := 0.0
 ## Foes still standing on the dungeon floor the hero walks (0 when cleared).
 var floor_foes := 0
 var message_label: Label
@@ -251,6 +253,8 @@ func on_enemy_died(enemy: Node) -> void:
 	_log(GameState.defeat_monster(enemy.fighter, enemy.region, cleared, floor_level))
 	if enemy.has_meta("prologue"):
 		_flash_message(GameState.prologue_pouch())
+	if enemy.fighter.has("named"):
+		Sound.play("bounty")
 	if GameState.pack.gear.size() > gear_before:
 		Sound.play("drop")
 	if cleared != "":
@@ -474,7 +478,10 @@ func skill_flash(at: Vector2, color: Color) -> void:
 ## Something has seen the hero: a growl (SFX.bump), not more than once a beat.
 func on_enemy_noticed(enemy: Node) -> void:
 	var now := Time.get_ticks_msec() / 1000.0
-	if now - noticed_at > 1.5:
+	# A named monster roars (PIX-158); anything else bumps.
+	if enemy.fighter.has("named"):
+		Sound.play("roar")
+	elif now - noticed_at > 1.5:
 		Sound.play("bump")
 	noticed_at = now
 	hunted_at = now
@@ -506,6 +513,39 @@ func _update_music() -> void:
 	if Sound.track != "victory" or fight != "":
 		Sound.play_track(Sound.track_for(map.id, map.floor_level, fight))
 	Sound.set_ambience(Sound.ambience_for(map.id, map.floor_level))
+	# The soundscape changes slowly: twice a second is plenty.
+	soundscape_left -= get_process_delta_time()
+	if soundscape_left <= 0.0:
+		soundscape_left = 0.5
+		Sound.set_extras(_soundscape())
+		Sound.set_bed(("deepwind" if map.floor_level > 10 else "wind") if map.floor_level > 0 else "")
+
+
+## What else the hero hears here (PIX-158): birds by day and crickets by
+## night outdoors, the town talking by day once it has folk again, and fire
+## close by - a camp's torch, the forge, the village burning on the Night of
+## Ash.
+func _soundscape() -> Array[String]:
+	var out: Array[String] = []
+	if map.floor_level > 0:
+		return out
+	var burning := map.id == "town" and GameState.progression.prologue != Prologue.DONE
+	var outdoors := map.id in ["town", "overworld", "deepwood", "mirefen", "demo"]
+	if outdoors and not burning:
+		out.append("crickets" if DayNight.is_night(GameState.world.steps) else "birds")
+		if map.id == "town" and GameState.town_tier() >= 1 and not DayNight.is_night(GameState.world.steps):
+			out.append("chatter")
+	if burning or map.id == "town_smith" or _near_camp_fire():
+		out.append("fire")
+	return out
+
+
+## A camp's torch within a few tiles of the hero.
+func _near_camp_fire() -> bool:
+	for cell: Vector2i in view.camps:
+		if view.camps[cell]["kind"] == "torch" and Vector2(cell).distance_to(Vector2(player_cell)) <= 4.0:
+			return true
+	return false
 
 
 ## The ascension scene: a new title, and at a fork the path cards.
@@ -586,6 +626,7 @@ func _enter_map(next: MapData, arrival: Vector2i) -> void:
 	if view != null:
 		Sound.play("door")
 	hunted_at = -100.0
+	soundscape_left = 0.0
 	arrived_at = Time.get_ticks_msec() / 1000.0
 	for stale in get_tree().get_nodes_in_group("mobs") + get_tree().get_nodes_in_group("decor"):
 		stale.queue_free()
@@ -923,6 +964,7 @@ func _play_dawn() -> void:
 	var dawn := preload("res://scripts/reveal_screen.gd").new()
 	dawn.world = self
 	dawn.stops = stops
+	Sound.play_theme("dawn")
 	dawn.on_done = func() -> void:
 		GameState.finish_prologue()
 		map = _load_map("town")

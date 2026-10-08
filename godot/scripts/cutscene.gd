@@ -3,8 +3,8 @@ extends Screen
 ## A story moment (PIX-31): a scene from assets/data/story.json played as
 ## ordered steps over a letterboxed stage, so writing one is editing data.
 ## Steps that hold the scene (a caption, a fade, the logo, a wait) play in
-## turn; the rest (a tint, falling ash, a shake, an actor crossing) start and
-## run alongside. E, Space or Enter moves on to the next line; Esc skips to
+## turn; the rest (a tint, falling ash, a shake, an actor crossing, a story
+## theme starting) start and run alongside. E, Space or Enter moves on to the next line; Esc skips to
 ## the end. With Reduce motion nothing moves or shakes and fades are cuts,
 ## but every line still holds long enough to read.
 
@@ -14,7 +14,7 @@ const BAR := 76
 ## Seconds per letter as a caption types itself out.
 const TYPE_S := 0.035
 ## What a step can be.
-const KINDS := ["stage", "fade", "caption", "card", "tint", "ash", "shake", "actor", "eyes", "logo", "credits", "wait"]
+const KINDS := ["stage", "fade", "caption", "card", "tint", "ash", "shake", "actor", "eyes", "logo", "credits", "wait", "theme"]
 ## The stages a scene can set.
 const STAGES := ["village", "path", "lair", "dark"]
 
@@ -161,6 +161,9 @@ func _run(step: Dictionary) -> void:
 			await _logo(float(step.get("hold", 2.0)))
 		"wait":
 			await _linger(float(step.get("seconds", 1.0)))
+		"theme":
+			# A story theme (PIX-158), once through, then `then` if named.
+			Sound.play_theme(step["name"], String(step.get("then", "")))
 
 
 ## Waits `seconds`, or less when the player moves on (or skips).

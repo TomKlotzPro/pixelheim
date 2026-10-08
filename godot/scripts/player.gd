@@ -197,7 +197,7 @@ func dodge() -> void:
 	face(dodge_dir)
 	dodging = true
 	dodge_ready = false
-	Sound.play("step")
+	Sound.play("dodge")
 	_play("walk")
 	# A blur: the hero half-seen, a puff of dust where they left from.
 	var blur := sprite.create_tween()

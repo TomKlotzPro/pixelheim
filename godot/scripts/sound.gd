@@ -1,10 +1,15 @@
 extends Node
 ## The game's ears (PIX-128). The stingers, each place's chiptune loop and
 ## the ambient one-shots are WAVs in assets/audio/, rendered once from the
-## classic edition's synth (assets/data/audio.json lists them). Music crossfades between themes
-## (out, then in, as the web's playTrack does) and keeps playing under the
-## menus; ambience rolls its chances every tick like ambience.ts. Volumes are
-## the player's (GameSettings), on Music, SFX and Ambience buses.
+## classic edition's synth (assets/data/audio.json lists them); the newer
+## ones (PIX-158: the dodge, a roar, a bounty, the story themes, birds,
+## crickets, chatter, fire and the floors' wind) are rendered by
+## tools/synth.py. Music crossfades between themes (out, then in, as the
+## web's playTrack does) and keeps playing under the menus; a story theme
+## plays once, then what it names or the place's music. Ambience rolls its
+## chances every tick like ambience.ts, the extras the world asks for with
+## it, over a looping bed (wind). Volumes are the player's (GameSettings),
+## on Music, SFX and Ambience buses.
 ## Autoload `Sound`.
 
 const FADE_S := 0.35
@@ -22,6 +27,14 @@ var track := ""
 var ambience := ""
 var _ambience_clock := 0.0
 var _fade: Tween
+## The extra ambience the world asks for now ("birds", "fire"...).
+var extras: Array[String] = []
+## The looping bed under it ("wind", "deepwind" or "").
+var bed := ""
+var _bed: AudioStreamPlayer
+var _bed_fade: Tween
+## What a story theme hands over to when it ends ("" - the place's music).
+var _after_theme := ""
 
 
 func _ready() -> void:
@@ -38,13 +51,18 @@ func _ready() -> void:
 		_voices.append(_player("SFX"))
 	for i in 3:
 		_ambient_voices.append(_player("Ambience"))
+	_bed = _player("Ambience")
+	for player in [_music, _fading]:
+		player.finished.connect(_theme_over.bind(player))
 	apply_volumes()
 
 
 func _exit_tree() -> void:
 	if _fade != null:
 		_fade.kill()
-	for player in [_music, _fading] + _voices + _ambient_voices:
+	if _bed_fade != null:
+		_bed_fade.kill()
+	for player in [_music, _fading, _bed] + _voices + _ambient_voices:
 		player.stop()
 		player.stream = null
 	_streams.clear()
@@ -156,6 +174,31 @@ func play_track(name: String) -> void:
 	stream.loop_mode = AudioStreamWAV.LOOP_FORWARD
 	stream.loop_begin = 0
 	stream.loop_end = roundi(float(_doc["tracks"][name]["seconds"]) * stream.mix_rate)
+	_crossfade(stream)
+
+
+## A story theme (PIX-158: a boss's intro, the dawn, an ending), once
+## through; then `then` (a track), or nothing and the world's music returns.
+func play_theme(name: String, then := "") -> void:
+	if not _doc["themes"].has(name):
+		return
+	track = "theme:" + name
+	_after_theme = then
+	var stream := _stream("res://assets/audio/music/theme_%s.wav" % name)
+	stream.loop_mode = AudioStreamWAV.LOOP_DISABLED
+	_crossfade(stream)
+
+
+func _theme_over(player: AudioStreamPlayer) -> void:
+	if player != _music or not track.begins_with("theme:"):
+		return
+	track = ""
+	if _after_theme != "":
+		play_track(_after_theme)
+	_after_theme = ""
+
+
+func _crossfade(stream: AudioStreamWAV) -> void:
 	if _fade != null:
 		_fade.kill()
 	var outgoing := _music
@@ -181,8 +224,44 @@ func stop_music() -> void:
 func stop_all() -> void:
 	stop_music()
 	ambience = ""
+	extras.clear()
+	set_bed("")
 	for voice in _voices + _ambient_voices:
 		voice.stop()
+
+
+## The extra ambience the world asks for (PIX-158): birds or crickets,
+## chatter, fire. Unknown names are ignored.
+func set_extras(names: Array[String]) -> void:
+	extras.assign(names.filter(func(name: String) -> bool: return _doc["ambienceExtras"].has(name)))
+
+
+## A looping bed under the ambience ("wind", "deepwind", or "" for none),
+## faded in and out.
+func set_bed(name: String) -> void:
+	if name not in _doc["beds"]:
+		name = ""
+	if name == bed:
+		return
+	bed = name
+	if _bed_fade != null:
+		_bed_fade.kill()
+	_bed_fade = create_tween()
+	if _bed.playing:
+		_bed_fade.tween_property(_bed, "volume_db", -40.0, FADE_S * 2)
+		_bed_fade.tween_callback(_bed.stop)
+	if name == "":
+		return
+	var stream := _stream("res://assets/audio/ambience/bed_%s.wav" % name)
+	stream.loop_mode = AudioStreamWAV.LOOP_FORWARD
+	stream.loop_begin = 0
+	stream.loop_end = roundi(stream.get_length() * stream.mix_rate)
+	_bed_fade.tween_callback(func() -> void:
+		_bed.stream = stream
+		_bed.volume_db = -40.0
+		_bed.play()
+	)
+	_bed_fade.tween_property(_bed, "volume_db", 0.0, FADE_S * 3)
 
 
 ## The weather of a place: "greenwood", "deepforest", "marsh", "indoor" or "".
@@ -191,22 +270,30 @@ func set_ambience(place: String) -> void:
 
 
 func _process(delta: float) -> void:
-	if ambience == "":
+	if ambience == "" and extras.is_empty():
 		return
 	_ambience_clock += delta
 	var tick: float = _doc["ambienceTick"]
 	while _ambience_clock >= tick:
 		_ambience_clock -= tick
-		var events: Array = _doc["ambience"][ambience]
+		var events: Array = _doc["ambience"].get(ambience, [])
 		for index in events.size():
 			if randf() < float(events[index]["chance"]):
 				_ambient(index, randi() % int(events[index]["variants"]))
+		for name in extras:
+			var extra: Dictionary = _doc["ambienceExtras"][name]
+			if randf() < float(extra["chance"]):
+				_ambient_file("res://assets/audio/ambience/%s_%d.wav" % [name, randi() % int(extra["variants"])])
 
 
 func _ambient(index: int, variant: int) -> void:
+	_ambient_file("res://assets/audio/ambience/%s_%d_%d.wav" % [ambience, index, variant])
+
+
+func _ambient_file(path: String) -> void:
 	for voice in _ambient_voices:
 		if not voice.playing:
-			voice.stream = _stream("res://assets/audio/ambience/%s_%d_%d.wav" % [ambience, index, variant])
+			voice.stream = _stream(path)
 			voice.play()
 			return
 
