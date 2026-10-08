@@ -308,7 +308,7 @@ static func track_for(map_id: String, floor_level: int, fight: String) -> String
 	match map_id:
 		"deepwood", "mirefen", "town":
 			return map_id
-		"overworld", "demo":
+		"overworld", "demo", "saltmere":
 			return "world"
 	return "interior"
 
@@ -318,7 +318,7 @@ static func ambience_for(map_id: String, floor_level: int) -> String:
 	if floor_level > 0:
 		return "indoor"
 	match map_id:
-		"overworld", "town", "demo":
+		"overworld", "town", "demo", "saltmere":
 			return "greenwood"
 		"deepwood":
 			return "deepforest"

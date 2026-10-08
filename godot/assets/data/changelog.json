@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.105.0",
+      "date": "2026-10-08",
+      "codename": "Salt on the Wind",
+      "notes": [
+        "THE REACH GROWS: a new road leaves the bottom of the marsh, down through the cliffs to SALTMERE - dunes and pines, a fishing hamlet on the beach, a lagoon, a jetty out into the sea and a cave under the western headland",
+        "THE COAST is wild: slimes, goblin smugglers and drowned skeletons keep their camps on its dunes and beaches, and sea glass washes up to gather - a new crafting material",
+        "Saltmere's doors are shut for now: its people, their quests and the sea cave come with the coast's own chapter",
+        "Behind the scenes: new ground for the regions to come (Shade's sea in three depths, docks, snow, ice and cobbled stone) and a tool that turns a drawn sketch into a map"
+      ]
+    },
+    {
       "version": "0.104.0",
       "date": "2026-10-08",
       "codename": "Easy on the Eyes",

@@ -182,7 +182,7 @@ func _build_ground(data: MapData) -> Node2D:
 	# Ash and mire are toned from Shade's dirt and grass, decor included.
 	ground_tint = ShaderMaterial.new()
 	ground_tint.shader = preload("res://shaders/region_tint.gdshader")
-	ground_tint.set_shader_parameter("tint_map", PunyTerrain.tint_map(data.grid, data.size))
+	ground_tint.set_shader_parameter("tint_map", PunyTerrain.tint_map(data.grid, data.size, data.regions))
 	ground_tint.set_shader_parameter("map_pixels", Vector2(data.size * TILE))
 	layer.material = ground_tint
 	root.add_child(layer)

@@ -19,20 +19,32 @@ const TILE := 16
 const GROUND := {
 	"water": "river", "bridge": "river", "mountain": "cliff",
 	"path": "dirt", "ash": "dirt", "sand": "sand",
+	# PIX-164: Shade's sea in three depths (it meets sand, then itself);
+	# snow is his grass whitened, ice his sand frosted, stone his dirt greyed.
+	"shore": "seawater-light", "dock": "seawater-light", "sea": "seawater-medium", "deep_sea": "seawater-deep",
+	"snow": "grass", "ice": "sand", "stone": "dirt",
 }
 ## Shade pairs every terrain with grass only. Where two others meet at one
 ## corner, the first of these keeps its corners and the rest fall back to
 ## grass: cliffs stand over water, water over roads, roads over sand.
-const STRENGTH := ["cliff", "river", "dirt", "sand", "trees"]
+const STRENGTH := ["cliff", "seawater-deep", "seawater-medium", "seawater-light", "river", "dirt", "sand", "trees"]
 ## Regions Shade didn't paint, toned from his grass and dirt by
 ## shaders/region_tint.gdshader: tile id -> hue. Ash wastes go a burnt warm
 ## grey, the mire a murky green.
 const TINTS := {
 	"ash": Color(0.47, 0.45, 0.43),
 	"marsh": Color(0.30, 0.42, 0.34),
+	"snow": Color(0.8, 0.84, 0.9),
+	"ice": Color(0.5, 0.66, 0.78),
+	"stone": Color(0.56, 0.56, 0.58),
 }
+## Regions whose every ground cell takes a tone, trees' included (the pass's
+## snow under its pines).
+const REGION_TINTS := {"frost": "snow"}
+## What a bridge or a dock spans.
+const WATERS := ["water", "shore", "sea", "deep_sea"]
 ## Ground the hero can walk out onto; maps with none are interiors.
-const OUTDOOR := ["grass", "forest", "marsh", "ash", "sand"]
+const OUTDOOR := ["grass", "forest", "marsh", "ash", "sand", "snow", "stone"]
 
 ## Ramparts in Shade's castle pieces: towers on corners and every few steps
 ## along a run, crenellated runs across and down, a dark gate in the door.
@@ -138,12 +150,15 @@ static func _dual_tiles(size: Vector2i, terrain_at: Callable) -> Dictionary:
 
 ## The per-cell mask region_tint.gdshader reads: a region's hue with full
 ## coverage, premultiplied so blending between cells keeps the hue true.
-static func tint_map(grid: Dictionary, size: Vector2i) -> ImageTexture:
+static func tint_map(grid: Dictionary, size: Vector2i, regions := {}) -> ImageTexture:
 	var image := Image.create(size.x, size.y, false, Image.FORMAT_RGBA8)
 	image.fill(Color(0, 0, 0, 0))
 	for cell: Vector2i in grid:
-		if TINTS.has(grid[cell]):
-			image.set_pixelv(cell, TINTS[grid[cell]])
+		var tile: String = grid[cell]
+		if not TINTS.has(tile) and REGION_TINTS.has(regions.get(cell, "")):
+			tile = REGION_TINTS[regions[cell]]
+		if TINTS.has(tile):
+			image.set_pixelv(cell, TINTS[tile])
 	return ImageTexture.create_from_image(image)
 
 
@@ -223,12 +238,12 @@ static func skyline(grid: Dictionary) -> Dictionary:
 ## longer side; square spans cross the water) and cave mouths.
 static func object_at(grid: Dictionary, cell: Vector2i) -> int:
 	match grid.get(cell, ""):
-		"bridge":
-			var span := ["bridge"]
+		"bridge", "dock":
+			var span := ["bridge", "dock"]
 			var across := _run(grid, cell, Vector2i.LEFT, span) + _run(grid, cell, Vector2i.RIGHT, span) + 1
 			var down := _run(grid, cell, Vector2i.UP, span) + _run(grid, cell, Vector2i.DOWN, span) + 1
 			var water_runs_down: bool = (
-				grid.get(cell + Vector2i.UP, "") == "water" or grid.get(cell + Vector2i.DOWN, "") == "water"
+				grid.get(cell + Vector2i.UP, "") in WATERS or grid.get(cell + Vector2i.DOWN, "") in WATERS
 			)
 			if across > down or (across == down and water_runs_down):
 				if across == 1:

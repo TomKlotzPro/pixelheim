@@ -34,8 +34,11 @@ func test_village_door_is_the_town_portal() -> void:
 	assert_eq(target["mapId"], "town")
 
 
-func test_overworld_has_all_five_portals() -> void:
-	assert_eq(map.portals.size(), 5)
+func test_overworld_has_all_its_portals() -> void:
+	# The mountain, the undermountain, the town, the two passes, and the
+	# roads out to the bigger Reach (PIX-164: Saltmere).
+	assert_eq(map.portals.size(), 6)
+	assert_eq(map.portals[Vector2i(16, 63)]["mapId"], "saltmere")
 
 
 func test_map_corners_are_impassable_mountains() -> void:

@@ -903,6 +903,14 @@
       "value": 20,
       "description": "Restores 50 HP. Baked for the festival, won at the ring toss, eaten far too fast.",
       "restoreHp": 50
+    },
+    "sea_glass": {
+      "name": "Sea Glass",
+      "category": "misc",
+      "sprite": "gem",
+      "weight": 0,
+      "value": 12,
+      "description": "Green and frosted, washed smooth by the tide off Saltmere. Crafters prize it."
     }
   },
   "roles": {
@@ -1208,7 +1216,8 @@
     "town_house": "Pixelheim",
     "town_hall": "Pixelheim",
     "demo": "The Proving Grounds",
-    "demo_hut": "The Ashenreach"
+    "demo_hut": "The Ashenreach",
+    "saltmere": "Saltmere"
   },
   "levelCount": 15,
   "townSpawn": {

@@ -16,6 +16,11 @@ const TILE_INFO := {
 	"lamp": false, "anvil": false, "forge": false, "shelf": false, "cauldron": false,
 	"counter": false, "bed": false, "hearth": false, "door": true, "door_shut": false,
 	"cave": true, "shrine": true,
+	# The bigger Reach (PIX-164): the coast's shallows and sea, its docks;
+	# snow and walkable ice on the pass; cobbled stone in the mines and the
+	# castle.
+	"shore": false, "sea": false, "deep_sea": false, "dock": true,
+	"snow": true, "ice": true, "stone": true,
 }
 
 ## Terrain the Puny World ground draws (PunyTerrain, PIX-130).
@@ -23,6 +28,7 @@ const GROUND_TILES := {
 	"grass": true, "forest": true, "path": true, "ash": true, "marsh": true,
 	"sand": true, "crops": true, "water": true, "mountain": true,
 	"bridge": true, "cave": true,
+	"shore": true, "sea": true, "deep_sea": true, "dock": true, "snow": true, "ice": true, "stone": true,
 }
 
 ## One color per tile for map paintings (ported from src/world/mapColors.ts);
@@ -35,6 +41,8 @@ const TILE_COLORS := {
 	"door_shut": "8a6238", "cave": "16181e", "shrine": "4ae6c8",
 	"flowers": "3d7a35", "crops": "c9a648", "trophy_shelf": "7a5230",
 	"garden": "4a3524", "lamp": "3d7a35", "well": "8a8f9a",
+	"shore": "5aa0c8", "sea": "2a6fa8", "deep_sea": "1d4a7a", "dock": "8a6238",
+	"snow": "e8eef2", "ice": "a8d0e0", "stone": "8a8680",
 }
 const ROOF_COLOR := "8a5638"
 const FALLBACK_COLOR := "4a4e58"
