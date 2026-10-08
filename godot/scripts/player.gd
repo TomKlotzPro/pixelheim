@@ -304,7 +304,7 @@ func _show_ailment() -> void:
 	var kinds := ailments.kinds()
 	ailment_icon.visible = not kinds.is_empty()
 	if ailment_icon.visible:
-		ailment_icon.texture = load("res://assets/sprites/effect_%s.png" % kinds[0])
+		ailment_icon.texture = ItemIcons.ailment(kinds[0])
 
 func respawn(at: Vector2) -> void:
 	ailments.clear()

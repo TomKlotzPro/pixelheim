@@ -62,7 +62,7 @@ jobs:
           node scripts/sync-godot-assets.mjs --check
           pnpm exec tsx scripts/export-maps.ts --check
 
-      # The paid art (PIX-133), as the deploy fetches it: proves the deploy key
+      # The paid art (PIX-133, PIX-138), as the deploy fetches it: proves the deploy key
       # works before main does. Forks have no key and build the old houses.
       - name: Fetch the private art
         id: art
@@ -75,8 +75,7 @@ jobs:
       - name: Install the private art
         if: steps.art.outcome == 'success'
         run: |
-          mkdir -p godot/assets/puny/medieval
-          cp private-assets/retro-rpg/shade/puny-world-medieval/punyworld-atlas.png godot/assets/puny/medieval/
+          bash scripts/fetch-private-art.sh private-assets
           rm -rf private-assets
 
       - name: Import assets

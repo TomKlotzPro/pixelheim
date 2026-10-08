@@ -8,6 +8,11 @@ generative AI was used.
 - mini/        "Free 16x16 Mini World Sprites"       https://merchant-shade.itch.io/16x16-mini-world-sprites
 - world/       "Free 16x16 Puny World Tileset"       https://merchant-shade.itch.io/16x16-puny-world
 - dungeon/     "Free 16x16 Puny Dungeon Tileset"     https://merchant-shade.itch.io/16x16-puny-dungeon
+- icons/       "Free 16x16 Weapon RPG Icons"         https://merchant-shade.itch.io/free-16x16-weapon-rpg-icons
+               (iron-, steel-, bronze-, gold-weapons.png) and
+               "Free 16x16 Assorted RPG Icons"       https://merchant-shade.itch.io/16x16-mixed-rpg-icons
+               (armours, potions, consumables, books, chests; its weapons.png
+               renamed assorted-weapons.png)
 
 Files are unmodified copies, the Tiled tilesets (.tsx) included (their image
 paths point one folder up, as in Shade's zips; Pixelheim reads only the wang
@@ -15,10 +20,15 @@ and animation data). Pixelheim picks which sheet plays which role in
 scripts/puny_art.gd and lays the tilesets over its maps in
 scripts/puny_terrain.gd.
 
-Not in this repository: medieval/ holds Shade's paid "16x16 Puny World
-Tileset Medieval Age" (https://merchant-shade.itch.io/puny-world-medieval),
-licensed to Tom Klotz for use in commercial projects, modification allowed,
-no redistribution or resale. It is fetched from the private
-TomKlotzPro/pixelheim-assets repository (pnpm godot:art locally, a deploy key
-in CI) and git-ignored here; scripts/puny_town.gd builds the town's houses
-and scripts/puny_interior.gd their rooms from it.
+Not in this repository, Shade's paid packs, licensed to Tom Klotz for use in
+commercial projects, modification allowed, no redistribution or resale.
+They live in the private TomKlotzPro/pixelheim-assets repository under
+retro-rpg/shade/, are fetched by scripts/fetch-private-art.sh (pnpm
+godot:art locally, a deploy key in CI) and git-ignored here:
+- medieval/  "16x16 Puny World Tileset Medieval Age": the town's houses
+  (scripts/puny_town.gd), their rooms (scripts/puny_interior.gd), the
+  outdoor props (scripts/puny_props.gd) and shop signs.
+- shade/     the icons icons.json names from "16x16 Survival RPG Icons",
+  "16x16 Armor RPG Icons", "16x16 Jewelry RPG Icons" and "16x16 RPG Puny
+  Skill Icons & Skill FX": items, skills and ailment marks
+  (scripts/item_icons.gd).
