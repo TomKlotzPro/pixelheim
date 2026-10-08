@@ -669,13 +669,64 @@ func _open_chest(chest: Dictionary) -> void:
 	_flash_message(result["message"])
 	if not result["opened"]:
 		return
-	view.chest_sprites[chest["id"]].texture = MapView.treasure_texture(chest, true)
-	Sound.play("chest")
+	var sprite: Sprite2D = view.chest_sprites[chest["id"]]
 	if result["mimic"]:
-		var ambush := player_cell + Vector2i(0, -1)
-		if not map.is_walkable(ambush):
-			ambush = player_cell + Vector2i(1, 0)
-		spawn_enemy("mimic", ambush, map.region_at(ambush), "", false, true).notice()
+		_mimic_wakes(sprite, chest)
+		return
+	sprite.texture = MapView.treasure_texture(chest, true)
+	Sound.play("chest")
+
+
+## A mimic's chest shudders before it bites (PIX-142): a beat to step back,
+## then it bursts out beside the chest, nearest the hero, already hunting.
+func _mimic_wakes(sprite: Sprite2D, chest: Dictionary) -> void:
+	var visit := view
+	var rest := sprite.position
+	var shudder := sprite.create_tween()
+	for i in 7:
+		shudder.tween_property(sprite, "position:x", rest.x + (1.0 if i % 2 == 0 else -1.0), 0.07)
+	shudder.tween_property(sprite, "position:x", rest.x, 0.07)
+	await shudder.finished
+	if view != visit:
+		return
+	sprite.texture = MapView.treasure_texture(chest, true)
+	Sound.play("chest")
+	var at := Vector2i(int(chest["x"]), int(chest["y"]))
+	var ambush := Vector2i(-1, -1)
+	for step: Vector2i in [Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i(-1, 1), Vector2i(1, 1)]:
+		var cell := at + step
+		if not map.is_walkable(cell) or cell == player_cell:
+			continue
+		if ambush.x < 0 or cell.distance_to(player_cell) < ambush.distance_to(player_cell):
+			ambush = cell
+	if ambush.x < 0:
+		ambush = player_cell + Vector2i.RIGHT
+	var mimic := spawn_enemy("mimic", ambush, map.region_at(ambush), "", false, true)
+	appear(mimic)
+	mimic.notice()
+
+
+## Dust where a monster comes into sight (PIX-142): a ring of motes kicked up
+## from its feet as it fades in, so nothing simply pops into being.
+func appear(enemy: Node) -> void:
+	if not in_view(enemy.position, TILE):
+		return
+	enemy.modulate.a = 0.0
+	var fade_in := enemy.create_tween()
+	fade_in.tween_property(enemy, "modulate:a", 1.0, 0.3)
+	for i in 8:
+		var mote := ColorRect.new()
+		mote.color = Color(0.86, 0.8, 0.68, 0.9) if i % 2 == 0 else Color(0.7, 0.64, 0.52, 0.9)
+		mote.size = Vector2(2, 2)
+		mote.position = enemy.position + Vector2(-1, 1)
+		mote.z_index = 4
+		mote.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		add_child(mote)
+		var away := Vector2.RIGHT.rotated(TAU * i / 8.0) * Vector2(9, 4)
+		var drift := mote.create_tween().set_parallel()
+		drift.tween_property(mote, "position", mote.position + away + Vector2(0, -3), 0.45).set_ease(Tween.EASE_OUT)
+		drift.tween_property(mote, "modulate:a", 0.0, 0.45).set_delay(0.15)
+		drift.chain().tween_callback(mote.queue_free)
 
 func _collect_ground_treasure(cell: Vector2i) -> void:
 	var chest := _chest_at(cell)

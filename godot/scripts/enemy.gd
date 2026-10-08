@@ -276,6 +276,8 @@ func _die() -> void:
 	health_bar.visible = false
 	health_bar_back.visible = false
 	var death := "death_" + facing
+	if not sprite.sprite_frames.has_animation(death):
+		death = "death"
 	if sprite.sprite_frames.has_animation(death):
 		sprite.play(death)
 		sprite.animation_finished.connect(func() -> void: queue_free())

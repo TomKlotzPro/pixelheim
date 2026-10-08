@@ -66,3 +66,29 @@ func test_looks_pick_the_roles_colourways() -> void:
 	for role_id: String in PunyArt.HEROES:
 		for look in PunyArt.looks(role_id):
 			assert_true(ResourceLoader.exists(PunyArt.path(PunyArt.hero(role_id, look)["sheet"])), "%s look %d" % [role_id, look])
+
+
+## No loop holds a sheet's white hit flash (Slime.png keeps one in its strip
+## at frame 6): walking monsters never blink white.
+func test_no_loop_flashes_white() -> void:
+	for monster_id: String in PunyArt.MONSTERS:
+		var frames := PunyArt.frames(PunyArt.monster(monster_id))
+		for anim: String in frames.get_animation_names():
+			if not frames.get_animation_loop(anim):
+				continue
+			for i in frames.get_frame_count(anim):
+				assert_false(_all_white(frames.get_frame_texture(anim, i)), "%s %s frame %d" % [monster_id, anim, i])
+
+
+func _all_white(texture: Texture2D) -> bool:
+	var image := texture.get_image()
+	var opaque := 0
+	for y in image.get_height():
+		for x in image.get_width():
+			var pixel := image.get_pixel(x, y)
+			if pixel.a < 0.5:
+				continue
+			opaque += 1
+			if pixel.r < 0.85 or pixel.g < 0.85 or pixel.b < 0.85:
+				return false
+	return opaque > 0
