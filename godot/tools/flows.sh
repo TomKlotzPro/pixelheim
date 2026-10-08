@@ -66,6 +66,8 @@ FLOWS=(
 	"deep|--floor 16 clear --wait 0.3|map=floor_16"
 	"dawn|--map town --prologue 5 --at 11,8 --keys w,e,e,e,e,e --wait 1.5|open=dawn_screen"
 	"motion|--map town motion|backsteps=[01]$"
+	"hounds|--map town --prologue 6|night=6 mobs=2"
+	"embers|--map town --prologue 9|night=9 mobs=3"
 )
 
 failed=0

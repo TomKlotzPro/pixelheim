@@ -58,8 +58,8 @@
       ],
       "minTownTier": 0,
       "prologue": {
-        "x": 38,
-        "y": 6,
+        "x": 60,
+        "y": 12,
         "step": 3,
         "lines": [
           "(A man lies pinned under a burning beam. You put your shoulder to it. It shifts - then rolls away.)",

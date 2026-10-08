@@ -18,5 +18,9 @@
   "turn": {
     "title": "Turn sideways",
     "text": "Pixelheim plays best in landscape: turn your phone sideways for bigger text and more room to fight."
+  },
+  "potion": {
+    "title": "A potion",
+    "text": "Hurt? Open your pack ({key:inventory}), pick the health potion and press {key:interact} to drink it."
   }
 }

@@ -296,11 +296,13 @@ func _build_decor(data: MapData) -> void:
 		_add_camp_piece(cell, camps[cell])
 	if data.id == "town":
 		var burning := GameState.progression.prologue != Prologue.DONE
-		for ruin: Dictionary in Town.ruins(Town.done_projects(GameState.settlement)):
-			_add_smoke(ruin["rect"])
-			# The night of the fire: the ruins still burning (PIX-151).
-			if burning:
-				fires.append({"rect": ruin["rect"], "nodes": _add_fire(ruin["rect"])})
+		var ruins := Town.ruins(Town.done_projects(GameState.settlement))
+		for i in ruins.size():
+			_add_smoke(ruins[i]["rect"])
+			# The night of the fire: the ruins still burning (PIX-151), but
+			# for the ones the hero put out (PIX-197).
+			if burning and i not in GameState.progression.prologue_doused:
+				fires.append({"rect": ruins[i]["rect"], "nodes": _add_fire(ruins[i]["rect"]), "ruin": i})
 	patch_sprites = {}
 	for cell: Vector2i in patches:
 		_add_patch_sprite(cell)
@@ -458,6 +460,13 @@ func _add_fire(rect: Rect2i) -> Array[Node2D]:
 	return nodes
 
 
+## The fire on ruin `ruin` (Town.ruins' order), if it still burns.
+func douse_ruin(ruin: int, seconds := 1.2) -> void:
+	for i in fires.size():
+		if int(fires[i].get("ruin", -1)) == ruin:
+			douse(i, seconds)
+
+
 ## The fire on one burning ruin (the Night of Ash's dawn, PIX-197) gutters
 ## out: its flames shrink and fade over `seconds`, a last breath of smoke
 ## goes up, and they're gone.
@@ -465,6 +474,9 @@ func douse(index: int, seconds := 1.2) -> void:
 	if index < 0 or index >= fires.size():
 		return
 	var fire: Dictionary = fires[index]
+	if fire.get("out", false):
+		return
+	fire["out"] = true
 	for node: Node2D in fire["nodes"]:
 		if not is_instance_valid(node):
 			continue

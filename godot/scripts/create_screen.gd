@@ -14,6 +14,9 @@ var world: Node
 ## The slot this hero goes into (Saves: an empty slot played, or one to
 ## replace); 0 for the first free one.
 var target_slot := 0
+## Begin with the Night of Ash, the first night and the tutorial (PIX-197).
+var play_night := true
+var night_toggle: Button
 var role_index := 0
 var look := 0
 var name_field: LineEdit
@@ -57,13 +60,18 @@ func _open() -> void:
 	name_field.text_changed.connect(func(_text: String) -> void: _refresh())
 	name_field.text_submitted.connect(func(_text: String) -> void: _begin())
 	footer.add_child(name_field)
+	# A returning player may skip the first night, the tutorial (PIX-197).
+	night_toggle = UiStyle.button("", _toggle_night)
+	night_toggle.custom_minimum_size = Vector2(250, 38)
+	footer.add_child(night_toggle)
+	_show_night()
 	begin = UiStyle.button("Begin the climb", _begin)
 	begin.custom_minimum_size = Vector2(220, 38)
 	begin.add_theme_font_size_override("font_size", 18)
 	footer.add_child(begin)
 	status = UiStyle.label("", 14, UiStyle.GOLD, Vector2(720, 626))
 	add_child(status)
-	add_child(UiStyle.footer("Up/Down  role    PgUp/PgDn  look    Enter  begin    Esc  back", Vector2(0, 684), true))
+	add_child(UiStyle.footer("Up/Down  role    PgUp/PgDn  look    Tab  first night    Enter  begin    Esc  back", Vector2(0, 684), true))
 	_refresh()
 	name_field.grab_focus.call_deferred()
 
@@ -207,6 +215,16 @@ func _pick_role(index: int) -> void:
 	_refresh()
 
 
+## The first night on or off: on for a first hero, a choice after that.
+func _toggle_night() -> void:
+	play_night = not play_night
+	_show_night()
+
+
+func _show_night() -> void:
+	night_toggle.text = "First night: play it" if play_night else "First night: skip it"
+
+
 func _command(event: InputEvent) -> Callable:
 	var command := Callable()
 	if event is InputEventKey and event.pressed and not event.echo:
@@ -215,6 +233,8 @@ func _command(event: InputEvent) -> Callable:
 				command = _pick_role.bind(role_index - 1)
 			KEY_DOWN:
 				command = _pick_role.bind(role_index + 1)
+			KEY_TAB:
+				command = _toggle_night
 			KEY_PAGEUP, KEY_PAGEDOWN:
 				var step := -1 if event.keycode == KEY_PAGEUP else 1
 				command = func() -> void:
@@ -234,7 +254,7 @@ func _begin() -> void:
 	if target == 0:
 		status.text = "Every slot holds a hero. Clear one in Saves first."
 		return
-	GameState.new_hero_in(target, name, _role(), look)
+	GameState.new_hero_in(target, name, _role(), look, play_night)
 	GameState.title_seen = true
 	get_tree().paused = false
 	get_tree().reload_current_scene()

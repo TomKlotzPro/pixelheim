@@ -76,6 +76,8 @@ static func say(text: String, bindings: Variant = null) -> String:
 		var action := found.get_string(1)
 		if BINDABLE.has(action):
 			out = out.replace(found.get_string(), key_label(key_for(action, bound)))
+		elif action.begins_with("skill_") and int(action.substr(6)) in range(1, SKILL_KEYS.size() + 1):
+			out = out.replace(found.get_string(), key_label(SKILL_KEYS[int(action.substr(6)) - 1]))
 	return out
 
 
