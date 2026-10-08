@@ -176,6 +176,7 @@ func _process(delta: float) -> void:
 	if respawn_check <= 0:
 		respawn_check = 1.0
 		_revive_packs()
+		view.refresh_patches()
 	var cell := Vector2i((player.position / TILE).floor())
 	if cell == player_cell:
 		return
@@ -189,6 +190,7 @@ func _process(delta: float) -> void:
 		_enter_house()
 		return
 	_collect_ground_treasure(cell)
+	_gather_at(cell)
 	if map.portals.has(cell):
 		_use_portal(map.portals[cell])
 
@@ -474,6 +476,7 @@ func enter_floor(level: int) -> void:
 	floor_foes = plan["foes"].size()
 	for foe: Dictionary in plan["foes"]:
 		spawn_enemy(foe["id"], foe["cell"], "", "", foe["elite"], false)
+	view.add_patch(plan["patch"], Gathering.floor_spot_id(level), Gathering.floor_material(level))
 	var floor_def := Dungeons.floor_def(level)
 	_log(["Floor %d: %s" % [level, floor_def["name"]], String(floor_def["description"])])
 	# A boss's floor: its intro, the first time only (PIX-32).
@@ -727,6 +730,19 @@ func appear(enemy: Node) -> void:
 		drift.tween_property(mote, "position", mote.position + away + Vector2(0, -3), 0.45).set_ease(Tween.EASE_OUT)
 		drift.tween_property(mote, "modulate:a", 0.0, 0.45).set_delay(0.15)
 		drift.chain().tween_callback(mote.queue_free)
+
+## A patch underfoot is picked (PIX-143).
+func _gather_at(cell: Vector2i) -> void:
+	var patch: Dictionary = view.patches.get(cell, {})
+	if patch.is_empty():
+		return
+	var lines := GameState.gather(patch["id"], patch["item"])
+	if lines.is_empty():
+		return
+	Sound.play("drop")
+	_log(lines)
+	view.refresh_patches()
+
 
 func _collect_ground_treasure(cell: Vector2i) -> void:
 	var chest := _chest_at(cell)

@@ -1,6 +1,18 @@
 {
   "releases": [
     {
+      "version": "0.87.0",
+      "date": "2026-10-08",
+      "codename": "Green Thumbs",
+      "notes": [
+        "PATCHES TO PICK: herbs, reeds, ember shards, deep roots and grave moss grow in patches around each wild region - walk over one to gather it, and it grows back after a while",
+        "SOMETHING ON EVERY FLOOR: each dungeon floor hides one patch too, of rarer stuff the deeper you go",
+        "GATHERING TEACHES FORAGING: every patch you pick trains it, and a better forager often picks two",
+        "A FIRST BREW: Vex's quest now asks you to brew your first health potion at her cauldron",
+        "A SHIELD OF REEDS: Hilda has a job for you too - weave a Reedwoven Buckler at her forge, and keep it"
+      ]
+    },
+    {
       "version": "0.86.0",
       "date": "2026-10-08",
       "codename": "Know Your Trade",

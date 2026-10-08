@@ -75,21 +75,39 @@
     {
       "id": "herbs_for_vex",
       "giver": "alchemist_vex",
-      "name": "Greens for the Cauldron",
-      "brief": "Vex is out of forest herbs and out of patience.",
+      "name": "A First Brew",
+      "brief": "Vex wants proof you can work a cauldron before she trusts you with the good stuff.",
       "objective": {
-        "kind": "deliver",
-        "itemId": "forest_herb",
-        "count": 3,
-        "label": "Forest herbs delivered"
+        "kind": "craft",
+        "itemId": "potion_hp",
+        "count": 1,
+        "label": "Health potions brewed"
       },
       "reward": {
         "gold": 70,
         "xp": 35,
         "itemId": "greater_potion"
       },
-      "accepted": "Three sprigs, forest-fresh. The cauldron waits for no one.",
-      "completed": "Green as they should be. Here - the good stuff, brewed proper."
+      "accepted": "One health potion, brewed by your own hand: a forest herb, a marsh reed, my cauldron. Then we talk.",
+      "completed": "Not bad for a first brew. Here - the good stuff, brewed proper."
+    },
+    {
+      "id": "hildas_buckler",
+      "giver": "smith",
+      "name": "A Shield of Reeds",
+      "brief": "Hilda wants to see you work the forge before she calls you a smith.",
+      "objective": {
+        "kind": "craft",
+        "itemId": "reed_buckler",
+        "count": 1,
+        "label": "Reedwoven bucklers made"
+      },
+      "reward": {
+        "gold": 60,
+        "xp": 30
+      },
+      "accepted": "Three marsh reeds, woven tight, at my forge. Make me a buckler and keep it - it's yours.",
+      "completed": "Tight weave. You'll do. Take this for the reeds."
     }
   ],
   "rankTitles": {

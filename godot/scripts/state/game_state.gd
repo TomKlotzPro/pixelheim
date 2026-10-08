@@ -378,6 +378,12 @@ func craft(recipe_id: String) -> Dictionary:
 	# The trade that made it learns from it (PIX-143: an amulet brewed at
 	# the cauldron is alchemy, not smithing).
 	var gained := Economy.grant_job_xp(hero.jobs, job, Economy.craft_xp(job))
+	# Accepted crafting quests count what the hero makes (PIX-143).
+	for quest: Dictionary in Quests.all():
+		var taken: Dictionary = progression.quests.get(quest["id"], {})
+		var objective: Dictionary = quest["objective"]
+		if not taken.is_empty() and not taken["done"] and objective["kind"] == "craft" and objective["itemId"] == entry["itemId"]:
+			taken["progress"] = mini(int(objective["count"]), int(taken["progress"]) + count)
 	_pack_changed()
 	var level_line := "%s reached %d!" % [job.capitalize(), hero.jobs[job]["level"]] if gained > 0 else ""
 	return {"made": true, "count": count, "level_line": level_line}
@@ -875,6 +881,23 @@ func _grant_levels() -> int:
 		if HeroRules.rank_index(hero.level) > rank_before:
 			ranked_up.emit(Ranks.title(hero.role_id, hero.level))
 	return gained
+
+
+## Picks a gathering spot (PIX-143): its material, a second one as often as
+## foraging allows, foraging XP; the patch grows back after regrowSteps.
+## Returns the log lines, none when there was nothing to pick.
+func gather(spot_id: String, item_id: String) -> Array[String]:
+	var lines: Array[String] = []
+	if item_id == "" or not Gathering.is_ready(world, spot_id):
+		return lines
+	var count := 1 + (1 if roll.call() < Bestiary.double_forage_chance(hero.jobs["foraging"]["level"]) else 0)
+	pack.add_item(item_id, count)
+	world.gathered_at[spot_id] = int(world.steps)
+	lines.append("You gather %d %s%s." % [count, Catalog.item_name(item_id), "s" if count > 1 else ""])
+	if Economy.grant_job_xp(hero.jobs, "foraging", int(Gathering.rules()["jobXp"])) > 0:
+		lines.append("Foraging reached %d!" % hero.jobs["foraging"]["level"])
+	_pack_changed()
+	return lines
 
 
 ## A spawn's pack is cleared: it stays down for Packs' respawnSteps (PIX-142).

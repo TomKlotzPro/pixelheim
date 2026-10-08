@@ -17,6 +17,9 @@ var opened_chests: Array[String] = []
 var slain: Array[String] = []
 ## Spawn id -> the step it was cleared on (saved as slainAt, only when kept).
 var slain_at := {}
+## Gathering spot id -> the step it was picked on (saved as gatheredAt, only
+## when kept; PIX-143).
+var gathered_at := {}
 ## Tiles walked: turns the day/night wheel. Fractional in play, whole in saves.
 var steps := 0.0
 
@@ -63,6 +66,9 @@ static func from_dict(data: Dictionary) -> WorldState:
 	var cleared: Dictionary = world_data.get("slainAt", {})
 	for spawn_id: String in cleared:
 		world.slain_at[spawn_id] = int(cleared[spawn_id])
+	var picked: Dictionary = world_data.get("gatheredAt", {})
+	for spot_id: String in picked:
+		world.gathered_at[spot_id] = int(picked[spot_id])
 	world.steps = data.get("worldSteps", 0)
 	return world
 
@@ -76,4 +82,6 @@ func write_into(state: Dictionary) -> void:
 	}
 	if not slain_at.is_empty():
 		state["world"]["slainAt"] = slain_at.duplicate()
+	if not gathered_at.is_empty():
+		state["world"]["gatheredAt"] = gathered_at.duplicate()
 	state["worldSteps"] = int(steps)

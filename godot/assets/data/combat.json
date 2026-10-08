@@ -459,6 +459,154 @@
     "windUpSeconds": 0.4,
     "biteTellSeconds": 0.25
   },
+  "gathering": {
+    "regrowSteps": 300,
+    "jobXp": 5,
+    "floorMaterials": [
+      [
+        1,
+        "forest_herb"
+      ],
+      [
+        4,
+        "marsh_reed"
+      ],
+      [
+        7,
+        "ember_shard"
+      ],
+      [
+        11,
+        "deep_root"
+      ],
+      [
+        14,
+        "grave_moss"
+      ]
+    ]
+  },
+  "gatherSpots": [
+    {
+      "id": "ash_patch_1",
+      "mapId": "overworld",
+      "x": 6,
+      "y": 26
+    },
+    {
+      "id": "ash_patch_2",
+      "mapId": "overworld",
+      "x": 26,
+      "y": 15
+    },
+    {
+      "id": "ash_patch_3",
+      "mapId": "overworld",
+      "x": 29,
+      "y": 23
+    },
+    {
+      "id": "ash_patch_4",
+      "mapId": "overworld",
+      "x": 38,
+      "y": 15
+    },
+    {
+      "id": "forest_patch_1",
+      "mapId": "overworld",
+      "x": 63,
+      "y": 54
+    },
+    {
+      "id": "forest_patch_2",
+      "mapId": "overworld",
+      "x": 85,
+      "y": 36
+    },
+    {
+      "id": "forest_patch_3",
+      "mapId": "overworld",
+      "x": 87,
+      "y": 56
+    },
+    {
+      "id": "forest_patch_4",
+      "mapId": "overworld",
+      "x": 92,
+      "y": 36
+    },
+    {
+      "id": "marsh_patch_1",
+      "mapId": "overworld",
+      "x": 4,
+      "y": 50
+    },
+    {
+      "id": "marsh_patch_2",
+      "mapId": "overworld",
+      "x": 18,
+      "y": 36
+    },
+    {
+      "id": "marsh_patch_3",
+      "mapId": "overworld",
+      "x": 28,
+      "y": 34
+    },
+    {
+      "id": "marsh_patch_4",
+      "mapId": "overworld",
+      "x": 29,
+      "y": 41
+    },
+    {
+      "id": "deepwood_patch_1",
+      "mapId": "deepwood",
+      "x": 34,
+      "y": 25
+    },
+    {
+      "id": "deepwood_patch_2",
+      "mapId": "deepwood",
+      "x": 47,
+      "y": 16
+    },
+    {
+      "id": "deepwood_patch_3",
+      "mapId": "deepwood",
+      "x": 52,
+      "y": 39
+    },
+    {
+      "id": "deepwood_patch_4",
+      "mapId": "deepwood",
+      "x": 56,
+      "y": 28
+    },
+    {
+      "id": "mire_patch_1",
+      "mapId": "mirefen",
+      "x": 11,
+      "y": 3
+    },
+    {
+      "id": "mire_patch_2",
+      "mapId": "mirefen",
+      "x": 30,
+      "y": 38
+    },
+    {
+      "id": "mire_patch_3",
+      "mapId": "mirefen",
+      "x": 51,
+      "y": 28
+    },
+    {
+      "id": "mire_patch_4",
+      "mapId": "mirefen",
+      "x": 51,
+      "y": 42
+    }
+  ],
   "bossIds": [
     "dragon",
     "lich"
