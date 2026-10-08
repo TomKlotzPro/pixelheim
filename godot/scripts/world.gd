@@ -298,6 +298,8 @@ func can_notice(enemy: Node) -> bool:
 	if Time.get_ticks_msec() / 1000.0 - arrived_at < float(Packs.rules()["graceSeconds"]):
 		return false
 	var at: Vector2 = enemy.global_position
+	if enemy.feeding and at.distance_to(player.global_position) > TILE * 1.5:
+		return false
 	if not Packs.within_notice(at, player.global_position) or not in_view(at):
 		return false
 	return Packs.can_see(map, Vector2i((at / TILE).floor()), Vector2i((player.position / TILE).floor()))
@@ -960,6 +962,9 @@ func _prologue_arrive(next: MapData) -> void:
 				var at: Dictionary = Prologue.data()["scavenger"]
 				var scavenger := spawn_enemy(at["monsterId"], Vector2i(at["x"], at["y"]), "forest", "", false, true)
 				scavenger.set_meta("prologue", true)
+				# It keeps to its meal until the hero walks up or strikes:
+				# the night's first fight is the hero's to start.
+				scavenger.feeding = true
 				_flash_message.call_deferred(String(Prologue.data()["arrival"]))
 		Prologue.GATE:
 			if next.id == "town":

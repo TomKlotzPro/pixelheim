@@ -14,6 +14,8 @@ var floor_level := 0
 ## Cells something drawn stands on although the web's tile is open ground
 ## (a fountain's basin, a well's second half, a statue): they block too.
 var covered := {}
+## Which drawing of the map this is: "@2", "@3" for the bigger houses.
+var variant := ""
 
 
 static func load_by_id(map_id: String) -> MapData:
@@ -37,6 +39,7 @@ static func load_tiered(map_id: String, projects: Array, house_tier: int) -> Map
 		return load_by_id(map_id)
 	var data := load_from("res://assets/maps/%s@%d.json" % [map_id, house_tier])
 	data.id = map_id
+	data.variant = "@%d" % house_tier
 	return data
 
 
