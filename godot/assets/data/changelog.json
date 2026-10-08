@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.118.1",
+      "date": "2026-10-08",
+      "codename": "Nobody Home",
+      "notes": [
+        "FIX: playing an empty save slot dropped a nameless warrior straight into the world, past hero creation and the Night of Ash. An empty slot now opens hero creation for that slot - Esc goes back to your saves, Begin starts the new hero from the very beginning",
+        "New hero (N) on a slot goes through creation too, instead of making a default warrior"
+      ]
+    },
+    {
       "version": "0.118.0",
       "date": "2026-10-08",
       "codename": "Open for Trade",

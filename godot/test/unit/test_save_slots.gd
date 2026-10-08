@@ -141,7 +141,7 @@ func test_harness_runs_never_touch_saves() -> void:
 func test_boot_runs_once_per_session() -> void:
 	var state := _fresh_state()
 	state.boot(PackedStringArray(["--slot", "1"]))
-	state.play_slot(2)
+	state.new_hero_in(2, "Robin", "warrior")
 	state.boot(PackedStringArray(["--slot", "1"]))  # the world scene reloaded
 	assert_eq(state.slot, 2, "a reload must not undo the switch")
 
@@ -165,16 +165,22 @@ func test_a_first_visit_lasts_until_a_hero_is_made() -> void:
 	assert_eq(third.free_slot(), 2, "the next hero would take the first empty slot")
 
 
-func test_playing_an_empty_slot_starts_a_hero_and_keeps_the_last_one() -> void:
+func test_an_empty_slot_is_no_hero_to_play() -> void:
+	# Tom: playing an empty slot dropped a nameless warrior into the world,
+	# past creation and the Night of Ash. Now it's refused (the saves screen
+	# opens creation for it instead).
 	var state := _fresh_state()
 	state.boot(PackedStringArray(["--slot", "1"]))
 	state.pack.gold = 777
-	state.play_slot(3)
+	assert_false(state.play_slot(3))
+	assert_eq(state.slot, 1, "the hero in hand stays")
+	assert_eq(state.pack.gold, 777)
+	assert_eq(slots.read(3), {}, "nothing written to the empty slot")
+	state.new_hero_in(3, "Robin", "mage")
 	assert_eq(state.slot, 3)
-	assert_eq(state.pack.gold, 30, "a fresh hero")
+	assert_eq(state.progression.prologue, Prologue.SCAVENGER, "a made hero starts on the Night of Ash")
 	assert_eq(slots.summary(1)["gold"], 777, "the hero left behind was saved")
-	assert_eq(slots.summary(3)["gold"], 30)
-	state.play_slot(1)
+	assert_true(state.play_slot(1))
 	assert_eq(state.pack.gold, 777)
 
 
@@ -203,7 +209,7 @@ func test_new_hero_replaces_a_slot() -> void:
 func test_any_slot_clears_and_the_hero_in_hand_becomes_a_stand_in() -> void:
 	var state := _fresh_state()
 	state.boot(PackedStringArray(["--slot", "1"]))
-	state.play_slot(2)
+	state.new_hero_in(2, "Robin", "warrior")
 	assert_true(state.clear_slot(1))
 	assert_eq(slots.read(1), {})
 	assert_false(state.clear_slot(1), "already empty")

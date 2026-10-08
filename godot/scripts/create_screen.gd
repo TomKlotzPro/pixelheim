@@ -11,6 +11,9 @@ const STAT_ROWS := [
 ]
 
 var world: Node
+## The slot this hero goes into (Saves: an empty slot played, or one to
+## replace); 0 for the first free one.
+var target_slot := 0
 var role_index := 0
 var look := 0
 var name_field: LineEdit
@@ -227,7 +230,7 @@ func _begin() -> void:
 	if name == "":
 		status.text = "A hero needs a name."
 		return
-	var target := GameState.free_slot()
+	var target := target_slot if target_slot > 0 else GameState.free_slot()
 	if target == 0:
 		status.text = "Every slot holds a hero. Clear one in Saves first."
 		return
