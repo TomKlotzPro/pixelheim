@@ -207,6 +207,58 @@
         "Paved streets! My cart has never rolled so smooth.",
         "I sell to the merchants here now. City prices, friend. City prices."
       ]
+    },
+    {
+      "id": "town_cat",
+      "mapId": "town",
+      "x": 36,
+      "y": 20,
+      "sprite": "cat",
+      "name": "The cat",
+      "wander": true,
+      "minTownTier": 1,
+      "lines": [
+        "The cat looks at you, then at your boots, then away. You have been judged."
+      ]
+    },
+    {
+      "id": "town_dog",
+      "mapId": "town",
+      "x": 20,
+      "y": 20,
+      "sprite": "dog",
+      "name": "The dog",
+      "wander": true,
+      "minTownTier": 1,
+      "lines": [
+        "The dog leans its whole weight on your leg and sighs, very content."
+      ]
+    },
+    {
+      "id": "kid_pip",
+      "mapId": "town",
+      "x": 25,
+      "y": 18,
+      "sprite": "child",
+      "name": "Pip",
+      "wander": true,
+      "minTownTier": 2,
+      "lines": [
+        "Are you the one who fights the monsters? I fight monsters too. Mostly the goose."
+      ]
+    },
+    {
+      "id": "kid_nell",
+      "mapId": "town",
+      "x": 33,
+      "y": 12,
+      "sprite": "child_alt",
+      "name": "Nell",
+      "wander": true,
+      "minTownTier": 2,
+      "lines": [
+        "Tag! You're it! ...You're not going to chase me, are you. Grown-ups never chase."
+      ]
     }
   ],
   "recruits": [
@@ -380,5 +432,23 @@
         ]
       }
     }
-  ]
+  ],
+  "reactions": {
+    "cleared": [
+      "You came back from {floor}? Everyone said nobody comes back from there.",
+      "{floor}, was it? My uncle went down there once. Once."
+    ],
+    "boss": [
+      "The whole town heard about {boss}. Bram's telling it like he was there.",
+      "Is it true about {boss}? You look... normal. I expected taller."
+    ],
+    "project": [
+      "Have you seen the {project}? Of course you have - you paid for it.",
+      "The {project}! I walked past it three times this morning."
+    ],
+    "settler": [
+      "{settler} moved in! Pixelheim is filling up again.",
+      "Did you hear? {settler} is one of us now."
+    ]
+  }
 }

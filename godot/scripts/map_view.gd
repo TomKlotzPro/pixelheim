@@ -34,6 +34,11 @@ var chest_sprites := {}
 ## The door signs: {door, name, about}, for the nameplate.
 var door_signs: Array = []
 var furniture_cells: Array[Vector2i] = []
+## Night (PIX-149): each lamp's flame and its cold torch for the day, and
+## the warm glows of lamps and windows; set_night shows one or the other.
+var lamps: Array[Dictionary] = []
+var night_glows: Array[Node2D] = []
+var _night := -1
 ## Gathering patches (PIX-143): cell -> {"id", "item"}, and each one's sprite.
 var patches := {}
 var patch_sprites := {}
@@ -134,6 +139,8 @@ func build(root: Node) -> void:
 		root.move_child(layer, 0)
 	_build_decor(data)
 	furnish()
+	_night = -1
+	set_night(DayNight.is_night(GameState.world.steps))
 
 
 ## Takes the drawing down (what stands among the actors is in the "decor"
@@ -266,6 +273,13 @@ func _build_decor(data: MapData) -> void:
 	patch_sprites = {}
 	for cell: Vector2i in patches:
 		_add_patch_sprite(cell)
+	# Lit windows at night, smoke from every finished house (PIX-149).
+	for cell: Vector2i in buildings["pieces"]:
+		var tile: int = buildings["pieces"][cell]
+		if tile == PunyTown.WINDOW:
+			_add_glow(center(cell), 10, 0.5)
+		elif tile == PunyTown.DOOR:
+			_add_chimney_smoke(cell)
 	chest_sprites = {}
 	for chest: Dictionary in Interactables.chests_on(data.id):
 		var texture := treasure_texture(chest, GameState.is_opened(chest))
@@ -388,6 +402,66 @@ func _add_smoke(rect: Rect2i) -> void:
 		motes.z_index = 6
 		motes.add_to_group("decor")
 		props.add_child(motes)
+
+
+static var _glow_textures := {}
+
+
+## A warm, stepped glow (the title's lamplight), shown only at night.
+func _add_glow(at: Vector2, radius: int, peak: float) -> void:
+	var key := "%d:%f" % [radius, peak]
+	if not _glow_textures.has(key):
+		_glow_textures[key] = TitleScene.glow_texture(radius, Color(1.0, 0.72, 0.38), peak, 4)
+	var glow := Sprite2D.new()
+	glow.texture = _glow_textures[key]
+	glow.material = TitleScene.additive()
+	glow.position = at
+	glow.z_index = 5
+	glow.add_to_group("decor")
+	props.add_child(glow)
+	night_glows.append(glow)
+
+
+## Lamps and windows for the hour: lit from dusk's end to dawn, cold by day.
+func set_night(night: bool) -> void:
+	if int(night) == _night:
+		return
+	_night = int(night)
+	for lamp: Dictionary in lamps:
+		if is_instance_valid(lamp["flame"]):
+			lamp["flame"].visible = night
+			lamp["unlit"].visible = not night
+	for glow in night_glows:
+		if is_instance_valid(glow):
+			glow.visible = night
+
+
+## A thread of smoke from a house's chimney: up from its door to the roof's
+## top, a little to the side. Still with Reduce motion.
+func _add_chimney_smoke(door: Vector2i) -> void:
+	if GameState.settings.reduce_motion:
+		return
+	var top := door
+	while buildings["pieces"].has(top + Vector2i.UP):
+		top += Vector2i.UP
+	var motes := CPUParticles2D.new()
+	motes.position = Vector2(top * TILE) + Vector2(TILE * 1.5, 2)
+	motes.amount = 5
+	motes.lifetime = 3.5
+	motes.direction = Vector2.UP
+	motes.spread = 12.0
+	motes.gravity = Vector2(3, -3)
+	motes.initial_velocity_min = 4.0
+	motes.initial_velocity_max = 8.0
+	motes.scale_amount_min = 2.0
+	motes.scale_amount_max = 3.0
+	var fade := Gradient.new()
+	fade.set_color(0, Color(0.82, 0.8, 0.78, 0.5))
+	fade.set_color(1, Color(0.85, 0.84, 0.82, 0.0))
+	motes.color_ramp = fade
+	motes.z_index = 6
+	motes.add_to_group("decor")
+	props.add_child(motes)
 
 
 ## A patch the world adds after planning (a dungeon floor's).
@@ -527,7 +601,15 @@ func _add_puny_prop(prop: Dictionary) -> Node2D:
 		for piece: Array in prop["tiles"]:
 			var sprite: Node2D
 			if not prop["frames"].is_empty():
+				# Lit at night only, a cold torch by day, a warm glow around it.
+				var unlit := Sprite2D.new()
+				unlit.texture = PunyProps.texture(PunyProps.LAMP_UNLIT)
+				unlit.centered = false
+				unlit.position = Vector2(piece[0] * TILE) - Vector2(0, sort_y)
+				root.add_child(unlit)
 				var flame := AnimatedSprite2D.new()
+				lamps.append({"flame": flame, "unlit": unlit})
+				_add_glow(Vector2(prop["cell"] * TILE) + Vector2(TILE / 2.0, 4), 22, 0.35)
 				flame.sprite_frames = PunyProps.animation(prop["frames"], PunyProps.LAMP_FPS)
 				flame.centered = false
 				# Each torch flickers on its own beat.

@@ -284,6 +284,11 @@ func active_shop() -> String:
 	return stall_shop if stall_shop != "" else Economy.shop_at(world.map_id)
 
 
+## The hero's latest deed, for the town's gossip (PIX-149): {kind: cleared |
+## boss | project | settler, and the name to say}. Not saved.
+var last_deed := {}
+
+
 ## What the town has to show the hero next time they're in it (PIX-147):
 ## "project:<id>" built, "age:<tier>" reached, "home:<floor>" a boss's floor
 ## cleared. Not saved: a reload simply skips the tour.
@@ -441,6 +446,7 @@ func fund_project(project_id: String) -> String:
 	settlement.projects.assign(Town.done_projects(settlement) + [project_id])
 	var line := "%s: built. Walk outside and see." % entry["name"]
 	reveals.append("project:%s" % project_id)
+	last_deed = {"kind": "project", "project": String(entry["name"]).to_lower().trim_prefix("the ").trim_prefix("a ")}
 	if Town.age(tier_number)["projects"].all(func(candidate: Dictionary) -> bool: return candidate["id"] in settlement.projects):
 		settlement.town_tier = tier_number
 		reveals.append("age:%d" % tier_number)
@@ -579,6 +585,7 @@ func resolve_quests(giver_id: String) -> String:
 			# A recruit's story ends with them moving to town (PIX-148).
 			if quest.has("settles") and quest["settles"] not in settlement.settlers:
 				settlement.settlers.append(quest["settles"])
+				last_deed = {"kind": "settler", "settler": String(Town.recruit(quest["settles"])["name"]).get_slice(" the ", 0)}
 				settlers_changed.emit()
 			_pack_changed()
 			save_now()
@@ -1171,6 +1178,11 @@ func clear_floor(level: int) -> Dictionary:
 			lines.append(level_line)
 		if Town.homecoming(level) != "":
 			reveals.append("home:%d" % level)
+		var boss_id: String = Dungeons.boss_of(level)["monsterId"]
+		if Bestiary.is_boss(boss_id):
+			last_deed = {"kind": "boss", "boss": Bestiary.monster(boss_id)["name"]}
+		else:
+			last_deed = {"kind": "cleared", "floor": "the " + String(floor_def["name"]).trim_prefix("The ")}
 		var before := progression.unlocked_level
 		progression.unlocked_level = Dungeons.unlocked_after(level, before)
 		if progression.unlocked_level > before:

@@ -15,6 +15,8 @@ class_name PunyProps
 ## Props by the web's tile. Offsets are cells from the prop's cell; a foot is
 ## in pixels from that cell's top-left corner.
 const LAMP_FRAMES := [151, 152, 153, 154, 155, 156, 157]
+## The same torch, cold: the lamps by day (PIX-149).
+const LAMP_UNLIT := 150
 const LAMP_FPS := 8.0
 const WELL := [[Vector2i(0, -2), 3007], [Vector2i(1, -2), 3008], [Vector2i(0, -1), 3227], [Vector2i(1, -1), 3228], [Vector2i(0, 0), 3447], [Vector2i(1, 0), 3448]]
 const SMALL_WELL := 3444

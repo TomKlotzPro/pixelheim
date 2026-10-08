@@ -84,6 +84,12 @@ const VILLAGERS := {
 	"elder": {"sheet": "mini/Okomo.png", "family": "mini"},
 	"villager": {"sheet": "mini/FarmerRed.png", "family": "mini"},
 	"villager_woman": {"sheet": "mini/FarmerPurple.png", "family": "mini"},
+	# A living village (PIX-149): Shade's cat and dog, and the farmers drawn
+	# small as children.
+	"cat": {"sheet": "beasts/Orange-Cat-32x32.png", "family": "beast", "scale": 0.7},
+	"dog": {"sheet": "beasts/Blonde-Dog-32x32.png", "family": "beast", "scale": 0.75},
+	"child": {"sheet": "mini/FarmerRed.png", "family": "mini", "scale": 0.75},
+	"child_alt": {"sheet": "mini/FarmerPurple.png", "family": "mini", "scale": 0.75},
 	# The builders at the village's construction sites (PIX-147).
 	"worker": {"sheet": "mini/FarmerLime.png", "family": "mini"},
 	"worker_alt": {"sheet": "mini/FarmerCyan.png", "family": "mini"},

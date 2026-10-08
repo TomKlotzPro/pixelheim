@@ -1,6 +1,18 @@
 {
   "releases": [
     {
+      "version": "0.93.0",
+      "date": "2026-10-08",
+      "codename": "Lamplight",
+      "notes": [
+        "LAMPS AT NIGHT: the town's torches stand cold by day and burn after dusk, with a warm glow around each, and the windows light up too",
+        "SMOKE FROM THE CHIMNEYS: every finished house has a thread of smoke rising from its roof",
+        "A CAT, A DOG AND TWO CHILDREN: Pixelheim has a cat that judges you, a dog that leans on you, and - once it's a village - Pip and Nell running about the square",
+        "HOME AFTER DARK: villagers, builders, the children and the animals go home at night and are back in the morning (never vanishing while you watch)",
+        "THE TOWN TALKS: the villagers bring up your latest deed first - the floor you came back from, the boss you felled, the project you paid for, the settler who moved in"
+      ]
+    },
+    {
       "version": "0.92.0",
       "date": "2026-10-08",
       "codename": "Come Home",

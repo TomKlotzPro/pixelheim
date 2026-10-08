@@ -26,9 +26,11 @@ func _ready() -> void:
 	reset_physics_interpolation()
 
 	var art := PunyArt.villager(data["sprite"])
+	var size: float = art.get("scale", 1.0)
 	sprite = AnimatedSprite2D.new()
 	sprite.sprite_frames = PunyArt.frames(art)
-	sprite.position = Vector2(0, PunyArt.lift(art))
+	sprite.scale = Vector2.ONE * size
+	sprite.position = Vector2(0, PunyArt.lift(art) * size)
 	sprite.play(PunyArt.pick(sprite.sprite_frames, "idle", "down"))
 	# Offset the idle phase per villager so the square doesn't breathe in unison.
 	sprite.frame = Npcs.id_hash(data["id"]) % 2
@@ -45,10 +47,22 @@ func _ready() -> void:
 	shape.shape = rect
 	shape.position = Vector2(0, 5.5)
 	add_child(shape)
+	body = shape
+
+
+## Home for the night (PIX-149): out of sight and out of the way.
+var away := false
+var body: CollisionShape2D
+
+
+func set_away(gone: bool) -> void:
+	away = gone
+	visible = not gone
+	body.set_deferred("disabled", gone)
 
 
 func _process(_delta: float) -> void:
-	if not data["wander"]:
+	if not data["wander"] or away:
 		return
 	var next: Vector2i = home + Npcs.pace_offset(data, offsets, _beat())
 	# Never step onto the hero; wait for the next pace instead.

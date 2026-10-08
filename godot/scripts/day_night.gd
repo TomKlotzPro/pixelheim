@@ -17,6 +17,13 @@ const SKY_STOPS := [
 ]
 
 
+## Whether it's dark enough for lamps and windows (PIX-149): from dusk's end
+## to dawn.
+static func is_night(steps: float) -> bool:
+	var t := fposmod(steps, float(DAY_CYCLE_STEPS)) / DAY_CYCLE_STEPS
+	return t >= 0.58 and t < 0.92
+
+
 static func sky_at(steps: float) -> Color:
 	var t := fposmod(steps, float(DAY_CYCLE_STEPS)) / DAY_CYCLE_STEPS
 	var i := 0

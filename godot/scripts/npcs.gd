@@ -52,6 +52,24 @@ static func on_map(map_id: String, town_tier: int, settlers: Array, done: Varian
 	return out
 
 
+## What a villager says about the hero's latest deed (PIX-149), or "": only
+## the town's own folk (not keepers, builders or animals) gossip, each
+## picking one of the deed's lines by who they are.
+static func reaction(npc: Dictionary, deed: Dictionary) -> String:
+	if deed.is_empty() or npc.get("mapId", "") != "town" or npc.has("stall"):
+		return ""
+	var id: String = npc["id"]
+	if id.begins_with("worker_") or id.begins_with("town_") or id in ["elder", "mayor"]:
+		return ""
+	var lines: Array = _data()["reactions"].get(deed["kind"], [])
+	if lines.is_empty():
+		return ""
+	var line: String = lines[id_hash(id) % lines.size()]
+	for key: String in deed:
+		line = line.replace("{%s}" % key, str(deed[key]))
+	return line
+
+
 ## The lines for the town's age (PIX-148): the latest age's at or below it,
 ## else `fallback`.
 static func lines_for_tier(by_tier: Dictionary, town_tier: int, fallback: Array) -> Array:
