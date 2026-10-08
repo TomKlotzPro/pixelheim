@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.78.0",
+      "date": "2026-10-08",
+      "codename": "Dressed for the Climb",
+      "notes": [
+        "WHAT YOU WEAR, YOU WEAR: helmets and armour now show on your hero - an iron helm's plume, the wyrm visor's gilded horns, a leather cap, plate, scaled mail, robes and cloaks",
+        "EVERYWHERE AT ONCE: in the world, on the dock's portrait and on the paper doll, the moment a piece goes on or comes off",
+        "STILL SHADE'S HAND: every look is cut from his own characters, who all share one figure, so a soldier's helm sits on a ranger as if drawn there",
+        "UNDER THE HOOD: the map you walk is now drawn by its own part of the game, apart from the play"
+      ]
+    },
+    {
       "version": "0.77.0",
       "date": "2026-10-08",
       "codename": "Clear Ink",

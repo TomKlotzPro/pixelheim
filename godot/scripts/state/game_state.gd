@@ -849,6 +849,11 @@ func _grant_levels() -> int:
 	return gained
 
 
+## The hero as drawn: the role's look in whatever is worn (PunyArt.dressed).
+func hero_art() -> Dictionary:
+	return PunyArt.dressed(hero.role_id, hero.look, pack.worn_items())
+
+
 ## Puts on a gear piece (EQUIP): into its slot, a ring onto the empty finger
 ## (else the first). Whatever was there goes back to the pack.
 func equip(uid: String) -> bool:

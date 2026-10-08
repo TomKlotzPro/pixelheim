@@ -46,7 +46,7 @@ func _ready() -> void:
 	# Top-down: no floor, no walls by angle, just slide along what blocks.
 	motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
 	hp = GameState.hero.hp
-	art = PunyArt.hero(GameState.hero.role_id, GameState.hero.look)
+	art = GameState.hero_art()
 	aura = Sprite2D.new()
 	aura.texture = _glow()
 	aura.position = Vector2(0, 5)
@@ -58,6 +58,7 @@ func _ready() -> void:
 	add_child(sprite)
 	_play("idle")
 	refresh_rank()
+	GameState.inventory_changed.connect(dress)
 
 	var shape := CollisionShape2D.new()
 	var rect := RectangleShape2D.new()
@@ -83,6 +84,19 @@ func _ready() -> void:
 	ailment_icon.position = Vector2(0, -22)
 	ailment_icon.visible = false
 	add_child(ailment_icon)
+
+## Puts on what is worn now (PIX-129): a new helmet or armour shows at once,
+## mid-step.
+func dress() -> void:
+	var next := GameState.hero_art()
+	if next["sheet"] == art["sheet"]:
+		return
+	art = next
+	var playing := sprite.animation
+	var at := sprite.frame
+	sprite.sprite_frames = PunyArt.frames(art)
+	sprite.play(playing if sprite.sprite_frames.has_animation(playing) else PunyArt.pick(sprite.sprite_frames, "idle", "down"))
+	sprite.frame = at
 
 func _physics_process(delta: float) -> void:
 	if dead:

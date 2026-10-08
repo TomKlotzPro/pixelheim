@@ -6,7 +6,7 @@
 
 <p align="center">
   <b>A retro pixel-art open-world RPG in Godot 4.7: one hero, one village, fifteen floors of a mountain and what lies under it.</b><br />
-  Fifteen floors. Two bosses. Infinite cheese wheels. Currently v0.77 - 1.0 has to be earned.
+  Fifteen floors. Two bosses. Infinite cheese wheels. Currently v0.78 - 1.0 has to be earned.
 </p>
 
 ---
@@ -24,7 +24,7 @@ You wake in Pixelheim village, in an open world called **the Ashenreach**: walk 
 - **One hand-drawn world**: hero, villagers, monsters, terrain and dungeons in Shade's Puny art; the town's timber houses, its wells, fountain, torches and fences, and the rooms behind its doors from his Medieval Age set
 - **Real-time fights**: monsters prowl in packs and hunt you; swing, cast your skills on the number keys, and watch the ailments land - on the same numbers the game has always used
 - **7 classes that ascend**: every 5 levels a rank and its aura, and from the first rank a path that forks into 14 identities, each with a signature skill
-- **Skill trees, stats and gear**: three named paths per class, stat points that explain themselves, loot with rarities on a nine-slot paper doll
+- **Skill trees, stats and gear**: three named paths per class, stat points that explain themselves, loot with rarities on a nine-slot paper doll, and helmets and armour you can see on your hero
 - **Quests and the journal**, the **codex** of every beast you have fought, and mastery bonuses for the families you hunt
 - **A town that grows**: buy the house and furnish it, buy the shops and collect rent, fund the village into a city, bank and send caravans, recruit settlers from the wilds
 - **Crafting** at the forge, the cauldron and your own workbench; foraging in the wilds
@@ -97,7 +97,7 @@ Pixelheim began as a React + TypeScript + PixiJS game in the browser, with a pur
 - [x] Skill trees, ranks and paths
 - [x] Music, ambience and sound
 - [x] The move to Godot, with one artist for the whole world
-- [ ] Worn gear drawn on the hero
+- [x] Worn gear drawn on the hero
 - [ ] Touch controls for phones
 - [ ] More regions beyond the Ashenreach
 - [ ] 1.0, eventually - it has to be earned
