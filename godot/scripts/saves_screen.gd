@@ -20,6 +20,9 @@ var code_field: LineEdit
 var bring_button: Button
 var load_button: Button
 var pending := ""
+## What playing the hero already in hand means here: just closing (over the
+## world), or the title's Continue (over the title).
+var on_play_current: Callable
 
 func _open() -> void:
 	layer = 5
@@ -188,6 +191,8 @@ func _target() -> int:
 func _play() -> void:
 	if _target() == GameState.slot:
 		close()
+		if on_play_current.is_valid():
+			on_play_current.call()
 		return
 	GameState.play_slot(_target())
 	_reload()
@@ -204,7 +209,11 @@ func _clear() -> void:
 	if summary.is_empty():
 		_say("Slot %d is already empty." % _target())
 	elif _target() == GameState.slot:
-		_say("You are playing this slot. Switch to another hero before clearing it.")
+		# The hero in hand goes too: back to the title with no one loaded.
+		if _confirm("clear", "Clear %s, the hero in hand, for good? You'll go back to the title." % summary["name"], "X"):
+			GameState.clear_slot(_target())
+			GameState.title_seen = false
+			_reload()
 	elif _confirm("clear", "Clear %s from slot %d for good?" % [summary["name"], _target()], "X"):
 		GameState.clear_slot(_target())
 		_say("Slot %d is empty now." % _target())
