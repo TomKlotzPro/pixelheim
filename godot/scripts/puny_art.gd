@@ -84,6 +84,9 @@ const VILLAGERS := {
 	"elder": {"sheet": "mini/Okomo.png", "family": "mini"},
 	"villager": {"sheet": "mini/FarmerRed.png", "family": "mini"},
 	"villager_woman": {"sheet": "mini/FarmerPurple.png", "family": "mini"},
+	# The builders at the village's construction sites (PIX-147).
+	"worker": {"sheet": "mini/FarmerLime.png", "family": "mini"},
+	"worker_alt": {"sheet": "mini/FarmerCyan.png", "family": "mini"},
 	"merchant": {"sheet": "characters/Human-Worker-Red.png", "family": "puny"},
 	"smith": {"sheet": "characters/Human-Soldier-Red.png", "family": "puny"},
 	"alchemist": {"sheet": "characters/Mage-Cyan.png", "family": "puny"},

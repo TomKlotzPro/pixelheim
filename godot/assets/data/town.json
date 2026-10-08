@@ -385,7 +385,18 @@
               23,
               "roof_thatch"
             ]
-          ]
+          ],
+          "site": [
+            22,
+            21,
+            27,
+            23
+          ],
+          "worker": {
+            "name": "Builder Joss",
+            "x": 24,
+            "y": 24
+          }
         }
       ]
     },
@@ -455,7 +466,18 @@
               18,
               "path"
             ]
-          ]
+          ],
+          "site": [
+            29,
+            16,
+            31,
+            18
+          ],
+          "worker": {
+            "name": "Mason Dorran",
+            "x": 30,
+            "y": 19
+          }
         },
         {
           "id": "slate_hall",
@@ -618,7 +640,18 @@
               25,
               "roof_slate"
             ]
-          ]
+          ],
+          "site": [
+            67,
+            21,
+            72,
+            25
+          ],
+          "worker": {
+            "name": "Mason Pell",
+            "x": 69,
+            "y": 26
+          }
         },
         {
           "id": "moss_cottage",
@@ -751,7 +784,18 @@
               32,
               "roof_moss"
             ]
-          ]
+          ],
+          "site": [
+            14,
+            29,
+            19,
+            32
+          ],
+          "worker": {
+            "name": "Builder Ilka",
+            "x": 16,
+            "y": 33
+          }
         }
       ]
     },
@@ -948,5 +992,9 @@
       "x": 34,
       "y": 18
     }
+  },
+  "homecomings": {
+    "10": "The bells ring as you walk in. Pixelheim knows what fell on the mountain - and Bram has been telling everyone he always knew.",
+    "15": "The square is full and nobody is working. Tonight Pixelheim drinks to the hero who went all the way down."
   }
 }

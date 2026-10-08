@@ -388,6 +388,12 @@ func _run_test_harness() -> void:
 		world.player.face(Vector2.RIGHT)
 		world._try_interact()
 		await get_tree().create_timer(0.3).timeout
+	if args.has("reveal"):
+		# The town risen (PIX-147): pair with `--map town --town-tier 2`; the
+		# lamps' stop, then the age's.
+		GameState.reveals.assign(["project:street_lamps", "age:2"])
+		world._play_reveals()
+		await get_tree().create_timer(1.4).timeout
 	if args.has("mimic"):
 		# Pair with `--map mirefen`: open the mire's mimic chest; `--wait`
 		# catches its shudder (under 0.6 s) or the ambush after.

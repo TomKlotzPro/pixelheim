@@ -139,6 +139,11 @@ static func cost_line(project_id: String) -> String:
 	return ", ".join(parts)
 
 
+## What the town says when a hero comes home from a boss's floor (PIX-147).
+static func homecoming(level: int) -> String:
+	return String(_data()["homecomings"].get(str(level), ""))
+
+
 ## The notice board on the square that opens the projects ledger.
 static func project_board() -> Vector2i:
 	var at: Dictionary = _data()["projectBoard"]
@@ -204,13 +209,86 @@ static func ashes_tent(done: Array) -> Vector2i:
 	return Vector2i(int(tent["x"]), int(tent["y"]))
 
 
+## The age the town is building given what's built (current_age's rule).
+static func building_age(done: Array) -> int:
+	for entry: Dictionary in ages():
+		for candidate: Dictionary in entry["projects"]:
+			if candidate["id"] not in done:
+				return int(entry["tier"])
+	return 0
+
+
+## The construction sites (PIX-147): the building age's unbuilt projects that
+## have a plot - [{project, rect: Rect2i}] - staked out with a log fence and
+## a crate of materials until they're funded.
+static func sites(done: Array) -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	for candidate: Dictionary in age(building_age(done)).get("projects", []):
+		if candidate["id"] in done or not candidate.has("site"):
+			continue
+		var r: Array = candidate["site"]
+		out.append({"project": candidate["id"], "rect": Rect2i(int(r[0]), int(r[1]), int(r[2]) - int(r[0]) + 1, int(r[3]) - int(r[1]) + 1)})
+	return out
+
+
+static func site_tiles(site: Dictionary) -> Dictionary:
+	var out := {}
+	var rect: Rect2i = site["rect"]
+	for y in range(rect.position.y, rect.end.y):
+		for x in range(rect.position.x, rect.end.x):
+			if x == rect.position.x or x == rect.end.x - 1 or y == rect.position.y or y == rect.end.y - 1:
+				out[Vector2i(x, y)] = "fence"
+	out[rect.get_center()] = "crate"
+	return out
+
+
+## A builder by each site, waiting on the ledger: who they are, and what the
+## project still asks (as villagers for Npcs.on_map).
+static func site_workers(done: Array) -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	for site: Dictionary in sites(done):
+		var entry := project(site["project"])
+		var worker: Dictionary = entry["worker"]
+		out.append({
+			"id": "worker_%s" % entry["id"], "mapId": "town", "name": worker["name"],
+			"x": worker["x"], "y": worker["y"], "wander": false,
+			"sprite": "worker" if out.size() % 2 == 0 else "worker_alt",
+			"lines": [
+				String(entry["blurb"]),
+				"All it wants is %s. The board on the square takes it, and we'll have it up by the time you're back." % cost_line(entry["id"]),
+			],
+		})
+	return out
+
+
+## Where a project stands on the map, for the camera to show it built.
+static func project_center(project_id: String) -> Vector2i:
+	var entry := project(project_id)
+	var cells: Array[Vector2i] = []
+	for cell: Array in entry["tiles"]:
+		cells.append(Vector2i(int(cell[0]), int(cell[1])))
+	for ruin: Dictionary in entry.get("ruins", []):
+		var r: Array = ruin["rect"]
+		cells.append_array([Vector2i(int(r[0]), int(r[1])), Vector2i(int(r[2]), int(r[3]))])
+	if cells.is_empty():
+		return project_board()
+	var low := cells[0]
+	var high := cells[0]
+	for cell in cells:
+		low = Vector2i(mini(low.x, cell.x), mini(low.y, cell.y))
+		high = Vector2i(maxi(high.x, cell.x), maxi(high.y, cell.y))
+	return (low + high) / 2
+
+
 ## The town map's cells a set of finished projects changes: cell -> tile,
-## the ruins of what isn't rebuilt yet included.
+## the ruins of what isn't rebuilt yet and the sites of what's planned included.
 static func town_patches(done: Array) -> Dictionary:
 	var out := {}
 	for ruin: Dictionary in ruins(done):
 		out.merge(ruin_tiles(ruin), true)
 	out.merge(stall_crates(done), true)
+	for site: Dictionary in sites(done):
+		out.merge(site_tiles(site), true)
 	for entry: Dictionary in ages():
 		for candidate: Dictionary in entry["projects"]:
 			if candidate["id"] in done:
