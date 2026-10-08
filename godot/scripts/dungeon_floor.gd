@@ -21,7 +21,8 @@ const MARGIN := 2
 const STAGGER := 5
 
 
-## {map: MapData, foes: [{id, elite, cell}], rooms: [Rect2i], stairs: Vector2i}
+## {map: MapData, foes: [{id, elite, cell}], rooms: [Rect2i], stairs: Vector2i,
+## patch: Vector2i (the floor's gathering patch, PIX-143)}
 static func plan(level: int) -> Dictionary:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = level * 7919 + 17
@@ -71,7 +72,16 @@ static func plan(level: int) -> Dictionary:
 			"elite": encounter.get("elite", false),
 			"cell": room.position + room.size / 2,
 		})
-	return {"map": map, "foes": foes, "rooms": rooms, "stairs": stairs}
+	# A patch of something worth picking in the first hall, clear of its foe.
+	var hall := rooms[1]
+	var open: Array[Vector2i] = []
+	for cy in range(hall.position.y + 1, hall.end.y - 1):
+		for cx in range(hall.position.x + 1, hall.end.x - 1):
+			var cell := Vector2i(cx, cy)
+			if map.grid[cell] == "floor" and cell.distance_to(foes[0]["cell"]) >= 2.5:
+				open.append(cell)
+	var patch: Vector2i = open[rng.randi() % open.size()] if not open.is_empty() else map.spawn
+	return {"map": map, "foes": foes, "rooms": rooms, "stairs": stairs, "patch": patch}
 
 
 static func _carve(map: MapData, rect: Rect2i) -> void:

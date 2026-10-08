@@ -34,6 +34,9 @@ var chest_sprites := {}
 ## The door signs: {door, name, about}, for the nameplate.
 var door_signs: Array = []
 var furniture_cells: Array[Vector2i] = []
+## Gathering patches (PIX-143): cell -> {"id", "item"}, and each one's sprite.
+var patches := {}
+var patch_sprites := {}
 ## Each wild pack's camp (PIX-142): cell -> {"kind": "tent"|"torch", "tile"},
 ## a tent in its region's colour behind its home and a torch beside it.
 var camps := {}
@@ -97,6 +100,11 @@ func plan(arrival: Vector2i) -> Vector2i:
 	camps = plan_camps(data)
 	for cell: Vector2i in camps:
 		data.covered[cell] = true
+	patches = {}
+	if data.floor_level == 0:
+		for spot: Dictionary in Gathering.spots_on(data.id):
+			var at := Vector2i(spot["x"], spot["y"])
+			patches[at] = {"id": spot["id"], "item": Gathering.material_at(data, at)}
 	if not data.is_walkable(arrival):
 		arrival = data.spawn
 	solid_scatter = _solid_scatter(data, arrival)
@@ -243,6 +251,9 @@ func _build_dungeon(data: MapData) -> Node2D:
 func _build_decor(data: MapData) -> void:
 	for cell: Vector2i in camps:
 		_add_camp_piece(cell, camps[cell])
+	patch_sprites = {}
+	for cell: Vector2i in patches:
+		_add_patch_sprite(cell)
 	chest_sprites = {}
 	for chest: Dictionary in Interactables.chests_on(data.id):
 		var texture := treasure_texture(chest, GameState.is_opened(chest))
@@ -300,6 +311,8 @@ func _solid_scatter(data: MapData, arrival: Vector2i) -> Dictionary:
 		kept[Vector2i(int(npc["x"]), int(npc["y"]))] = true
 	for chest: Dictionary in Interactables.chests_on(data.id):
 		kept[Vector2i(int(chest["x"]), int(chest["y"]))] = true
+	for cell: Vector2i in patches:
+		kept[cell] = true
 	# A pack's home and the cells around it stay open for the pack.
 	for spawn: Dictionary in Bestiary.spawns_on(data.id):
 		for dy in [-1, 0, 1]:
@@ -333,6 +346,44 @@ static func plan_camps(map: MapData) -> Dictionary:
 				out[cell] = {"kind": "torch", "tile": CAMP_TORCH[0]}
 				break
 	return out
+
+
+## A patch the world adds after planning (a dungeon floor's).
+func add_patch(cell: Vector2i, spot_id: String, item_id: String) -> void:
+	patches[cell] = {"id": spot_id, "item": item_id}
+	_add_patch_sprite(cell)
+
+
+## A patch on the ground: its material, with a glint that comes and goes so
+## it reads as something to pick; hidden while it grows back.
+func _add_patch_sprite(cell: Vector2i) -> void:
+	var patch: Dictionary = patches[cell]
+	var root := Node2D.new()
+	root.position = center(cell)
+	root.add_to_group("decor")
+	var sprite := Sprite2D.new()
+	sprite.texture = ItemIcons.texture(patch["item"])
+	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	root.add_child(sprite)
+	var glint := ColorRect.new()
+	glint.color = Color(1, 1, 0.9)
+	glint.size = Vector2(1, 1)
+	glint.position = Vector2(3, -5)
+	glint.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(glint)
+	# The glint's own tween: it goes when the glint goes.
+	var twinkle := glint.create_tween().set_loops()
+	twinkle.tween_property(glint, "modulate:a", 0.0, 0.6).set_delay(absf(sin(cell.x * 12.9 + cell.y * 78.2)) * 1.5)
+	twinkle.tween_property(glint, "modulate:a", 1.0, 0.25)
+	ground.add_child(root)
+	patch_sprites[patch["id"]] = root
+	root.visible = Gathering.is_ready(GameState.world, patch["id"])
+
+
+## Patches that have grown back show again.
+func refresh_patches() -> void:
+	for spot_id: String in patch_sprites:
+		patch_sprites[spot_id].visible = Gathering.is_ready(GameState.world, spot_id)
 
 
 ## A camp's tent or torch: sorted among the actors at its foot, which blocks.

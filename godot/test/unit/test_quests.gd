@@ -26,7 +26,7 @@ func test_a_givers_first_word_accepts_their_quest() -> void:
 	)
 	assert_eq(state.progression.quests["slime_trouble"], {"progress": 0, "done": false})
 	assert_eq(state.resolve_quests("innkeeper"), "Slime Trouble: 0/3 slimes flattened.")
-	assert_eq(state.resolve_quests("smith"), "", "no quest to give")
+	assert_eq(state.resolve_quests("shopkeeper"), "", "no quest to give")
 
 
 func test_bounties_count_matching_kills_up_to_the_goal() -> void:
@@ -72,11 +72,10 @@ func test_deliveries_count_the_pack_and_leave_it_on_turn_in() -> void:
 
 func test_some_quests_pay_an_item_too() -> void:
 	state.resolve_quests("alchemist_vex")
-	state.pack.add_item("forest_herb", 3)
+	state.progression.quests["herbs_for_vex"]["progress"] = 1
 	var potions: int = state.pack.items.get("greater_potion", 0)
 	state.resolve_quests("alchemist_vex")
 	assert_eq(state.pack.items.get("greater_potion", 0), potions + 1)
-	assert_eq(state.pack.items.get("forest_herb", 0), 0)
 
 
 func test_closing_a_conversation_resolves_quests() -> void:
@@ -93,8 +92,12 @@ func test_vex_talks_before_his_counter_only_while_his_quest_waits() -> void:
 	state.finish_dialogue("alchemist_vex")
 	assert_eq(state.progression.quests["herbs_for_vex"], {"progress": 0, "done": false})
 	assert_false(waits.call(), "under way: the counter")
-	state.pack.add_item("forest_herb", 3)
-	assert_true(waits.call(), "herbs in hand: he takes them")
+	# A first brew at the cauldron (PIX-143) makes it ready.
+	state.world.map_id = "town_alchemist"
+	state.pack.items.merge({"forest_herb": 1, "marsh_reed": 1})
+	state.roll = func() -> float: return 0.99
+	state.craft("brew_potion_hp")
+	assert_true(waits.call(), "potion brewed: he takes word of it")
 	state.finish_dialogue("alchemist_vex")
 	assert_true(state.progression.quests["herbs_for_vex"]["done"])
 	assert_eq(state.pack.items.get("greater_potion", 0), 1)
