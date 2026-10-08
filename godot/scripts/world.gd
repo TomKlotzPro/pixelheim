@@ -837,7 +837,7 @@ func _try_interact() -> void:
 		# the next word opens the counter), a settled Mirelle her bank (her
 		# arc's asks first, PIX-157). The
 		# mayor talks, then opens the projects ledger (see _talk).
-		var quest_word := Quests.awaits_word(beside["npc"]["id"], GameState.progression.quests, GameState.pack.items)
+		var quest_word := Quests.awaits_word(beside["npc"]["id"], GameState.progression.quests, GameState.pack.items, GameState.quest_open)
 		var at_stall: bool = map.id == "town" and beside["npc"].has("stall") and beside["npc"]["mapId"] == "town"
 		if at_stall and not quest_word:
 			# A keeper on the burnt square (PIX-146): Sela's tent takes a

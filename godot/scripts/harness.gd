@@ -352,14 +352,27 @@ func _run_test_harness() -> void:
 		GameState.finish_dialogue("elder")
 		await get_tree().create_timer(0.3).timeout
 	if args.has("journal"):
-		# A few promises in hand: slimes half done, the cheese ready, the troll kept.
+		# A few promises in hand: slimes half done, the cheese ready, the troll
+		# kept; Maren's relics asked for, the ladle won, the iron still out
+		# there (PIX-171). `--tab side|bounties|story` opens that chapter.
 		GameState.progression.quests.merge({
 			"slime_trouble": {"progress": 2, "done": false},
 			"cheese_run": {"progress": 0, "done": false},
 			"troll_toll": {"progress": 1, "done": true},
+			"maren_relics": {"progress": 0, "done": false},
+			"garrick_crew": {"progress": 4, "done": true},
+			"garrick_seam": {"progress": 0, "done": false},
+			"sela_rum": {"progress": 0, "done": false},
 		})
+		if "tidecaller" not in GameState.progression.hunted:
+			GameState.progression.hunted.append("tidecaller")
 		GameState.pack.add_item("cheese_wheel")
-		world.add_child(preload("res://scripts/journal_screen.gd").new())
+		GameState.pack.add_item("tams_ladle")
+		var journal := preload("res://scripts/journal_screen.gd").new()
+		var tab_index := args.find("--tab")
+		if tab_index >= 0 and tab_index + 1 < args.size():
+			journal.tab = args[tab_index + 1]
+		world.add_child(journal)
 		await get_tree().create_timer(0.3).timeout
 	if args.has("dockmenu"):
 		# The dock's menu of screens, opened as its button would.

@@ -233,6 +233,42 @@
         "kind": "gold",
         "amount": 160
       }
+    },
+    {
+      "id": "seacave_rum",
+      "mapId": "seacave",
+      "x": 25,
+      "y": 8,
+      "look": "chest",
+      "loot": {
+        "kind": "item",
+        "itemId": "smugglers_rum",
+        "qty": 1
+      }
+    },
+    {
+      "id": "shafts_cheese",
+      "mapId": "shafts",
+      "x": 19,
+      "y": 6,
+      "look": "chest",
+      "loot": {
+        "kind": "item",
+        "itemId": "shaft_cheese",
+        "qty": 1
+      }
+    },
+    {
+      "id": "cellars_badge",
+      "mapId": "cellars",
+      "x": 23,
+      "y": 22,
+      "look": "chest",
+      "loot": {
+        "kind": "item",
+        "itemId": "guard_badge",
+        "qty": 1
+      }
     }
   ],
   "signs": {

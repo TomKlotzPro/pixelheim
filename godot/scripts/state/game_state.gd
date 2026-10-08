@@ -592,6 +592,25 @@ func win_ring_toss() -> String:
 	return "The prize is yours: +%dg and %d %ss!" % [gold, pies, Catalog.item_name(Town.festival("prizeItem"))]
 
 
+## Whether a quest may be offered yet (PIX-171): its "opensAfter" is met,
+## and Maren's relics aren't asked of a hero who climbed before the gate
+## was barred.
+func quest_open(quest: Dictionary) -> bool:
+	if quest.get("unlessGateOpen", false) and Relics.gate_open(progression) and not progression.quests.has(quest["id"]):
+		return false
+	return Quests.is_open(quest, progression, settlement)
+
+
+## The givers on a map with a word for the hero (PIX-171): a quest to offer
+## or one to turn in. The map marks them.
+func givers_waiting(npcs: Array) -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	for npc: Dictionary in npcs:
+		if Quests.awaits_word(npc["id"], progression.quests, pack.items, quest_open):
+			out.append(npc)
+	return out
+
+
 ## The floors the bounty board counts (PIX-170): the hero's own, and the
 ## notices the relics won have earned out in the Reach.
 func board_floors() -> Array:
@@ -631,7 +650,7 @@ func finish_dialogue(npc_id: String) -> void:
 	var text := _resolve_settler(npc_id)
 	if text == "":
 		text = resolve_quests(npc_id)
-	elif is_settled(npc_id) and Quests.awaits_word(npc_id, progression.quests, pack.items):
+	elif is_settled(npc_id) and Quests.awaits_word(npc_id, progression.quests, pack.items, quest_open):
 		text += " " + resolve_quests(npc_id)
 	dialogue_closed.emit(npc_id)
 	if text != "":
@@ -651,6 +670,9 @@ func resolve_quests(giver_id: String) -> String:
 		# was barred (PIX-170): she goes on to her next ask.
 		if entry.is_empty() and quest.get("unlessGateOpen", false) and Relics.gate_open(progression):
 			continue
+		# A side quest waits for the story to reach it (PIX-171).
+		if entry.is_empty() and not quest_open(quest):
+			return ""
 		if entry.is_empty():
 			# A hunt whose quarry already fell counts at once (PIX-165).
 			var already: bool = quest["objective"]["kind"] == "hunt" and quest["objective"]["named"] in progression.hunted

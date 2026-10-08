@@ -89,7 +89,7 @@ func test_closing_a_conversation_resolves_quests() -> void:
 
 func test_vex_talks_before_his_counter_only_while_his_quest_waits() -> void:
 	var waits := func() -> bool:
-		return Quests.awaits_word("alchemist_vex", state.progression.quests, state.pack.items)
+		return Quests.awaits_word("alchemist_vex", state.progression.quests, state.pack.items, state.quest_open)
 	assert_true(waits.call(), "untaken: he offers it")
 	state.finish_dialogue("alchemist_vex")
 	assert_eq(state.progression.quests["herbs_for_vex"], {"progress": 0, "done": false})

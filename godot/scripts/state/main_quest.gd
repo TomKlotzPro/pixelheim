@@ -32,6 +32,14 @@ static func steps() -> Array[Dictionary]:
 	return out
 
 
+## A step by its id, {} if there is none.
+static func step(step_id: String) -> Dictionary:
+	for entry: Dictionary in steps():
+		if entry["id"] == step_id:
+			return entry
+	return {}
+
+
 ## Whether the save has met a step.
 static func is_met(step: Dictionary, progression: ProgressionState, settlement: SettlementState) -> bool:
 	var when: Dictionary = step["when"]

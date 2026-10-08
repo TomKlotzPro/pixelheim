@@ -131,7 +131,10 @@
     "frost_boots": "survival-rpg-icons/Armour/Leather-Boots-06.png",
     "frost_ward": "survival-rpg-icons/Gem/Gem-Sphere-01.png",
     "rime_staff": "survival-rpg-icons/Tools/Magic-Staff-02.png",
-    "marens_promise": "jewelry-rpg-icons/Brooches/Brooch-07.png"
+    "marens_promise": "jewelry-rpg-icons/Brooches/Brooch-07.png",
+    "smugglers_rum": "survival-rpg-icons/Liquid/Brew-05.png",
+    "shaft_cheese": "medieval@800",
+    "guard_badge": "jewelry-rpg-icons/Brooches/Brooch-03.png"
   },
   "ailments": {
     "poison": "puny-skills/Indicators/Symbol Indicator/Poisoned-Indicator.png",
