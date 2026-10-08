@@ -445,7 +445,8 @@
       "lines": [
         "Three wagons up, one wagon down, and the down one's stuck. That's the Frostgate for you.",
         "The yetis took the strongbox and left the furs. Even they know what's worth stealing."
-      ]
+      ],
+      "shop": "caravan"
     },
     {
       "id": "frost_linnea",
@@ -458,6 +459,45 @@
       "lines": [
         "I'm the caravan's herbalist. Up here that mostly means rubbing snow on frostbite.",
         "Frost lilies only open in the snow. Vex in Pixelheim swears by them."
+      ]
+    },
+    {
+      "id": "saltmere_marta",
+      "mapId": "saltmere",
+      "x": 26,
+      "y": 17,
+      "sprite": "villager_woman",
+      "name": "Marta the Chandler",
+      "wander": false,
+      "shop": "chandler",
+      "lines": [
+        "Rope, tar and lamp oil. And fish. Mostly fish."
+      ]
+    },
+    {
+      "id": "mines_brann",
+      "mapId": "blackiron",
+      "x": 24,
+      "y": 18,
+      "sprite": "worker",
+      "name": "Quartermaster Brann",
+      "wander": false,
+      "shop": "quartermaster",
+      "lines": [
+        "The mine pays in iron, I sell in iron."
+      ]
+    },
+    {
+      "id": "greyhold_mabel",
+      "mapId": "greyhold",
+      "x": 16,
+      "y": 28,
+      "sprite": "villager_woman",
+      "name": "Mabel the Sutler",
+      "wander": false,
+      "shop": "sutler",
+      "lines": [
+        "I sell what keeps soldiers alive."
       ]
     }
   ],

@@ -869,7 +869,11 @@ func _try_interact() -> void:
 		# mayor talks, then opens the projects ledger (see _talk).
 		var quest_word := Quests.awaits_word(beside["npc"]["id"], GameState.progression.quests, GameState.pack.items, GameState.quest_open)
 		var at_stall: bool = map.id == "town" and beside["npc"].has("stall") and beside["npc"]["mapId"] == "town"
-		if at_stall and not quest_word:
+		# A trader out in the Reach (PIX-176) sells from their own pack.
+		var trader: String = beside["npc"].get("shop", "")
+		if trader != "" and not quest_word:
+			_open_stall(trader)
+		elif at_stall and not quest_word:
 			# A keeper on the burnt square (PIX-146): Sela's tent takes a
 			# guest for the night, the others trade from their stalls.
 			if beside["npc"]["id"] == "innkeeper":
