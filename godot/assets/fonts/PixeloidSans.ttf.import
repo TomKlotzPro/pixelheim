@@ -2,18 +2,18 @@
 
 importer="font_data_dynamic"
 type="FontFile"
-uid="uid://bvkpge2d8w6ja"
-path="res://.godot/imported/PixelOperator8-Bold.ttf-74faf550739674ad3170f08e646e0614.fontdata"
+uid="uid://cg1mkvpcys02g"
+path="res://.godot/imported/PixeloidSans.ttf-814bbefeca85d51f6673fab7cdd43ac0.fontdata"
 
 [deps]
 
-source_file="res://assets/fonts/PixelOperator8-Bold.ttf"
-dest_files=["res://.godot/imported/PixelOperator8-Bold.ttf-74faf550739674ad3170f08e646e0614.fontdata"]
+source_file="res://assets/fonts/PixeloidSans.ttf"
+dest_files=["res://.godot/imported/PixeloidSans.ttf-814bbefeca85d51f6673fab7cdd43ac0.fontdata"]
 
 [params]
 
 Rendering=null
-antialiasing=0
+antialiasing=1
 generate_mipmaps=false
 disable_embedded_bitmaps=true
 multichannel_signed_distance_field=false
