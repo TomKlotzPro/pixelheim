@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.121.0",
+      "date": "2026-10-08",
+      "codename": "All Three Phases",
+      "notes": [
+        "BOSSES THAT LAST: Fafnyr and Morvax used to fall in a few seconds, before most of their attacks were ever seen. Now a hero of their level needs about half a minute, long enough for all three phases. Floor guardians and every elite stand up to more blows too",
+        "STUNS HAVE LIMITS: a stunned monster no longer casts or uses its tricks, but bosses and elites shake off a second stun for a while after the first - Frost Nova can't hold them in place",
+        "MATCHING SUMMONS AND POISONS: the dead Morvax raises stand at his level, and monsters on the mountain's floors poison and burn as hard as their level, not their kind's"
+      ]
+    },
+    {
       "version": "0.120.0",
       "date": "2026-10-08",
       "codename": "Turned Aside",

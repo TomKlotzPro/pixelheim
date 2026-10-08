@@ -21,13 +21,15 @@ static func is_boss(id: String) -> bool:
 	return id in _data()["bossIds"]
 
 
-## A fighting monster (spawnMonster): elites hit and pay half again, and armor up 30%.
+## A fighting monster (spawnMonster): elites hit and pay half again, and armor
+## up 30%; their health grows by combat.json's eliteHp (PIX-186: sized for
+## real time, where a hero swings every 0.45 s).
 static func spawn(monster_id: String, elite := false, lift := 0) -> Dictionary:
 	var base := monster(monster_id)
 	if lift > 0:
 		base = lifted(base, lift)
 	var mult := 1.5 if elite else 1.0
-	var max_hp := roundi(base["maxHp"] * mult)
+	var max_hp := roundi(base["maxHp"] * (float(_data()["eliteHp"]) if elite else 1.0))
 	var fighter := {
 		"id": monster_id,
 		"name": "Elite %s" % base["name"] if elite else String(base["name"]),
@@ -48,16 +50,31 @@ static func spawn(monster_id: String, elite := false, lift := 0) -> Dictionary:
 ## A monster `lift` levels above its kind (PIX-170: the mountain's floors,
 ## climbed last): each stat grows by the ratio of combat.json's floorLift
 ## curve at the new level to the curve at its own.
+## Its poison and burn bite harder by the attack curve's ratio (PIX-186: a
+## floor-2 goblin at level 12 no longer poisons for 2).
 static func lifted(base: Dictionary, lift: int) -> Dictionary:
 	var out := base.duplicate()
 	var level := int(base["level"])
 	var curves: Dictionary = _data()["floorLift"]["curves"]
 	for stat: String in curves:
-		var curve: Array = curves[stat]
-		var at := func(l: int) -> float: return float(curve[0]) + float(curve[1]) * l + float(curve[2]) * l * l
-		out[stat] = roundi(float(base[stat]) * at.call(level + lift) / at.call(level))
+		out[stat] = roundi(float(base[stat]) * _grown(curves[stat], level, level + lift))
+	if base.get("inflicts") is Dictionary:
+		var inflicts: Dictionary = base["inflicts"].duplicate()
+		inflicts["power"] = roundi(float(inflicts["power"]) * _grown(curves["attack"], level, level + lift))
+		out["inflicts"] = inflicts
 	out["level"] = level + lift
 	return out
+
+
+## A curve (a + b*L + c*L*L) at `to` over at `from`.
+static func _grown(curve: Array, from: int, to: int) -> float:
+	var at := func(l: int) -> float: return float(curve[0]) + float(curve[1]) * l + float(curve[2]) * l * l
+	return at.call(to) / at.call(from)
+
+
+## The lift that brings `monster_id` to `level` (none below its own).
+static func lift_to(monster_id: String, level: int) -> int:
+	return maxi(0, level - int(monster(monster_id).get("level", level)))
 
 
 static func region(region_id: String) -> Dictionary:

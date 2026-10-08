@@ -11,6 +11,12 @@ const VERBS := {"poison": "Poison", "burn": "The burn"}
 ## {kind, turnsLeft, power}
 var effects: Array[Dictionary] = []
 var _clock := 0.0
+## Bosses and elites shake stuns off (PIX-186): for `stun_guard` seconds
+## after a stun takes hold, the next is halved (a one-turn stun shrugged
+## off); a calm that long and the count is forgotten. 0 for the rest.
+var stun_guard := 0.0
+var _stuns := 0
+var _since_stun := 0.0
 
 
 ## Rolls an infliction (`{kind, chance, turns, power}` or null); resisted
@@ -23,10 +29,17 @@ func inflict(infliction: Variant, roll: Callable, passives := {}) -> bool:
 		return false
 	if roll.call() >= float(infliction["chance"]):
 		return false
+	var turns := int(infliction["turns"])
+	if kind == "stun" and stun_guard > 0:
+		turns = turns >> _stuns
+		if turns < 1:
+			return false
+		_stuns += 1
+		_since_stun = 0.0
 	var current := _find(kind)
 	var refreshed := {
 		"kind": kind,
-		"turnsLeft": maxi(int(infliction["turns"]), int(current.get("turnsLeft", 0))),
+		"turnsLeft": maxi(turns, int(current.get("turnsLeft", 0))),
 		"power": maxi(int(infliction["power"]), int(current.get("power", 0))),
 	}
 	effects = effects.filter(func(effect: Dictionary) -> bool: return effect["kind"] != kind)
@@ -38,6 +51,9 @@ func inflict(infliction: Variant, roll: Callable, passives := {}) -> bool:
 ## effect (stun included) spends a turn. Returns [{kind, damage}] ticks.
 func tick(delta: float) -> Array[Dictionary]:
 	var ticks: Array[Dictionary] = []
+	_since_stun += delta
+	if _since_stun >= stun_guard:
+		_stuns = 0
 	if effects.is_empty():
 		_clock = 0.0
 		return ticks
@@ -76,6 +92,7 @@ func cure(kind: String) -> bool:
 func clear() -> void:
 	effects.clear()
 	_clock = 0.0
+	_stuns = 0
 
 
 func _find(kind: String) -> Dictionary:
