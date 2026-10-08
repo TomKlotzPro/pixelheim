@@ -11,7 +11,7 @@ const BLURBS := {
 	"intelligence": "The power of your skills and heals - and for casters, the size of the mana pool.",
 	# Real-time fights have no fleeing yet; DEX keeps its web meaning for now.
 	"dexterity": "Your chance to flee a fight you want no part of (turn-based battles; none yet in real time).",
-	"defense": "Damage shaved off every hit you take.",
+	"defense": "The share of every hit you turn aside: each point helps, a little less than the last.",
 	"endurance": "Grit: a little health for everyone, and for fighters the stamina pool and how fast it refills.",
 }
 
@@ -160,7 +160,10 @@ static func readout(stat: String, hero: HeroState, pack: InventoryState) -> Stri
 		"dexterity":
 			parts.append("flee %d%%" % roundi(flee_chance(hero, pack) * 100))
 		"defense":
-			parts.append("blocks %d per hit" % HeroRules.total_defense(hero, pack))
+			# Measured against a foe of the hero's own level (PIX-185).
+			var defense := HeroRules.total_defense(hero, pack)
+			parts.append("DEF %d" % defense)
+			parts.append("turns aside %d%% of a level-%d hit" % [roundi(Bestiary.turned_aside(Bestiary.matched_attack(hero.level), defense) * 100), hero.level])
 		"endurance":
 			parts.append("HP %d" % hero.stats["maxHp"])
 			if Catalog.role(hero.role_id)["resource"] == "endurance":

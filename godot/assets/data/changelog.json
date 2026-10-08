@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.120.0",
+      "date": "2026-10-08",
+      "codename": "Turned Aside",
+      "notes": [
+        "ARMOUR TURNS ASIDE A SHARE: armour no longer subtracts a flat amount from each hit, it turns aside a share of it. More armour always helps, each point a little less than the last, and no hero is ever immune - a warrior in Blackiron at the gate takes about a third of a hit, not 1. The stat sheet shows how much of a hit of your level your DEF turns aside",
+        "STURDIER CASTERS AND ROGUES: mages, necromancers and rogues grow 6 health a level, and cloth wards better (the Mage Robe, the Traveler's Cloak and the whole Frostweave set). Heroes who levelled before catch up when their save loads. Every hero now takes about 6 to 15 hits from a foe of their own level, at every stage"
+      ]
+    },
+    {
       "version": "0.119.0",
       "date": "2026-10-08",
       "codename": "Safe Roads",

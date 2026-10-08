@@ -4546,6 +4546,10 @@
   },
   "clearXpPerFloor": 12,
   "levelUpHeal": 0.5,
+  "armor": {
+    "about": "PIX-185: armour turns aside a share of every hit instead of a flat amount, so it always helps and never makes anyone immune: a hit of `raw` against armour `a` lands raw*raw/(raw + weight*a). Both ways - the hero's swings against a monster's defense, a monster's against the hero's.",
+    "weight": 1.25
+  },
   "xpGap": {
     "falloff": 0.15,
     "floor": 0.1

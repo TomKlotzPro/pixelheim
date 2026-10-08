@@ -143,6 +143,12 @@ static func normalize(state: Dictionary) -> Dictionary:
 			owned.append(roots[2])
 		hero["skillNodes"] = owned
 		hero["skillPoints"] = maxi(0, hero["level"] - 1 - (owned.size() - 1))
+	# Heroes who levelled before casters and rogues grew sturdier (PIX-185)
+	# catch up, the difference healed in too; it only ever raises.
+	var grown := HeroRules.grown_hp(hero)
+	if grown > int(hero["stats"]["maxHp"]):
+		hero["hp"] = int(hero["hp"]) + grown - int(hero["stats"]["maxHp"])
+		hero["stats"]["maxHp"] = grown
 	# Saves from before visible monsters have no kill ledger for the map.
 	if save["world"] is Dictionary and not save["world"].has("slain"):
 		save["world"]["slain"] = []

@@ -89,7 +89,7 @@ func test_rows_print_the_webs_stat_line() -> void:
 		"band_of_grit": [0, 55, "+1 STR  0 wt  55g"],
 		"antidote": [0, 30, "+5 HP  cures poison  1 wt  30g"],
 		"potion_hp": [0, 25, "+25 HP  1 wt  25g"],
-		"mage_robe": [1, 99, "ARMOR 5 (4+1)  4 wt  99g"],
+		"mage_robe": [1, 99, "ARMOR 7 (6+1)  4 wt  99g"],
 		"apprentice_staff": [0, 40, "DMG 7 INT  5 wt  40g"],
 	}
 	for item_id: String in expected:
