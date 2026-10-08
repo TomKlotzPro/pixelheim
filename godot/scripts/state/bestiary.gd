@@ -50,6 +50,50 @@ static func spawns_on(map_id: String) -> Array:
 
 
 ## Who lives at a spawn, fixed per spawn: what you see is what you fight (spawnSpecies).
+## A spawn's species: the one its data names (PIX-143: the forest's wolves),
+## else what its region and position decide.
+static func species_of(spawn: Dictionary, region_id: String) -> String:
+	if spawn.has("species"):
+		return spawn["species"]
+	return species_at(region_id, Vector2i(spawn["x"], spawn["y"]))
+
+
+## What a monster may drop besides the floor's loot (PIX-143): [{itemId,
+## chance}] - a wolf's pelt, an imp's horn, Fafnyr's scale.
+static func drops_of(monster_id: String) -> Array:
+	return monster(monster_id).get("drops", [])
+
+
+static var _found := {}
+
+
+## Where a monster lives: the wild regions with a pack of it, then the floors
+## that field it (for "where to find" hints).
+static func where_found(monster_id: String) -> Array[String]:
+	if _found.is_empty():
+		var maps := {}
+		for spawn: Dictionary in _data()["spawns"]:
+			if not maps.has(spawn["mapId"]):
+				maps[spawn["mapId"]] = MapData.load_by_id(spawn["mapId"])
+			var region_id: String = maps[spawn["mapId"]].region_at(Vector2i(spawn["x"], spawn["y"]))
+			var species := species_of(spawn, region_id)
+			var name: String = region(region_id).get("name", region_id)
+			var places: Array = _found.get(species, [])
+			if name not in places:
+				places.append(name)
+			_found[species] = places
+		for level in range(1, _data()["levels"].size() + 1):
+			for encounter: Dictionary in _data()["levels"][level - 1]["encounters"]:
+				var places: Array = _found.get(encounter["monsterId"], [])
+				var floor_name := "floor %d" % level
+				if floor_name not in places:
+					places.append(floor_name)
+				_found[encounter["monsterId"]] = places
+	var out: Array[String] = []
+	out.assign(_found.get(monster_id, []))
+	return out
+
+
 static func species_at(region_id: String, cell: Vector2i) -> String:
 	var monsters: Array = region(region_id)["monsters"]
 	return monsters[(cell.x * 31 + cell.y) % monsters.size()]["monsterId"]

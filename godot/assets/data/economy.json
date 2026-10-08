@@ -204,12 +204,11 @@
       "id": "craft_reed_buckler",
       "itemId": "reed_buckler",
       "needs": {
-        "marsh_reed": 4,
-        "wolf_pelt": 1
+        "marsh_reed": 3
       },
       "job": {
         "id": "smithing",
-        "level": 2
+        "level": 1
       }
     },
     {
@@ -252,7 +251,7 @@
       "id": "craft_scaled_mail",
       "itemId": "scaled_mail",
       "needs": {
-        "dragon_scale": 2,
+        "dragon_scale": 1,
         "wolf_pelt": 2
       },
       "job": {
@@ -269,7 +268,7 @@
       },
       "job": {
         "id": "smithing",
-        "level": 3
+        "level": 2
       }
     },
     {

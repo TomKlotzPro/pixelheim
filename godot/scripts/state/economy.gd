@@ -95,6 +95,67 @@ static func grant_job_xp(jobs: Dictionary, job: String, xp: int) -> int:
 	return gained
 
 
+## What one craft teaches its trade: the forge 10, the cauldron 8.
+static func craft_xp(job: String) -> int:
+	return 10 if job == "smithing" else 8
+
+
+## A trade's standing for the Craft tab: "Smithing 2 (15/50 XP)".
+static func job_line(jobs: Dictionary, job: String) -> String:
+	var progress: Dictionary = jobs[job]
+	if int(progress["level"]) >= int(_data()["jobLevelCap"]):
+		return "%s %d (mastered)" % [job.capitalize(), progress["level"]]
+	return "%s %d (%d/%d XP)" % [job.capitalize(), progress["level"], progress["xp"], job_xp_to_next(progress["level"])]
+
+
+## Where a material comes from (PIX-143), best leads first: [{kind, text}],
+## kind one of drop, forage, shop, loot, hoard (once per hero).
+static func material_sources(item_id: String) -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	var combat := Bestiary._data()
+	for monster_id: String in combat["monsters"]:
+		for carried: Dictionary in Bestiary.drops_of(monster_id):
+			if carried["itemId"] != item_id:
+				continue
+			var places := Bestiary.where_found(monster_id)
+			var odds := "every time" if float(carried["chance"]) >= 1.0 else "%d%%" % roundi(float(carried["chance"]) * 100)
+			out.append({"kind": "drop", "text": "%s, %s%s" % [
+				Bestiary.monster(monster_id)["name"], odds, " (%s)" % ", ".join(places.slice(0, 3)) if not places.is_empty() else "",
+			]})
+	for region_id: String in combat["regionMaterials"]:
+		if combat["regionMaterials"][region_id] == item_id:
+			out.append({"kind": "forage", "text": "foraged after fights in %s" % Bestiary.region(region_id)["name"]})
+	for shop_id: String in _data()["shops"]:
+		if shop(shop_id).get("stock", {}).has(item_id):
+			out.append({"kind": "shop", "text": "sold by %s" % shop(shop_id)["keeper"]})
+	for pool: Dictionary in combat["dropPools"]:
+		if item_id in pool["stackIds"]:
+			out.append({"kind": "loot", "text": "now and then in loot from floor %d on" % pool["floor"]})
+			break
+	for level in range(1, combat["levels"].size() + 1):
+		if item_id in combat["levels"][level - 1].get("rewardItemIds", []):
+			out.append({"kind": "hoard", "text": "the hoard of %s" % combat["levels"][level - 1]["name"]})
+	return out
+
+
+## The materials a recipe still lacks, as "2 Marsh Reed".
+static func missing_names(entry: Dictionary, items: Dictionary) -> Array[String]:
+	var out: Array[String] = []
+	for need: String in entry["needs"]:
+		var short := int(entry["needs"][need]) - int(items.get(need, 0))
+		if short > 0:
+			out.append("%d %s" % [short, Catalog.item_name(need)])
+	return out
+
+
+## The best lead for a material, as one line: "Wolf Pelt: Dire Wolf, 50% (...)".
+static func where_to_find(item_id: String) -> String:
+	var sources := material_sources(item_id)
+	if sources.is_empty():
+		return ""
+	return "%s: %s" % [Catalog.item_name(item_id), sources[0]["text"]]
+
+
 ## Alchemy: 6% per level to brew a second one free, capped at 50%.
 static func double_brew_chance(alchemy: int) -> float:
 	return minf(0.5, 0.06 * (alchemy - 1))

@@ -371,14 +371,16 @@ func craft(recipe_id: String) -> Dictionary:
 	var count := 1
 	if Catalog.item(entry["itemId"]).has("slot"):
 		pack.gear.append(InventoryState.create_gear(entry["itemId"]))
-		Economy.grant_job_xp(hero.jobs, "smithing", 10)
 	else:
 		if roll.call() < Economy.double_brew_chance(hero.jobs["alchemy"]["level"]):
 			count = 2
 		pack.add_item(entry["itemId"], count)
-		Economy.grant_job_xp(hero.jobs, "alchemy", 8)
+	# The trade that made it learns from it (PIX-143: an amulet brewed at
+	# the cauldron is alchemy, not smithing).
+	var gained := Economy.grant_job_xp(hero.jobs, job, Economy.craft_xp(job))
 	_pack_changed()
-	return {"made": true, "count": count}
+	var level_line := "%s reached %d!" % [job.capitalize(), hero.jobs[job]["level"]] if gained > 0 else ""
+	return {"made": true, "count": count, "level_line": level_line}
 
 
 ## The inn: a bed for coin, half price in a town (restAtInn). Returns the
@@ -820,6 +822,11 @@ func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, fl
 	var level_line := earn_xp(xp)
 	if level_line != "":
 		log.append(level_line)
+	# What the monster itself carries (PIX-143): a wolf's pelt, an imp's horn.
+	for carried: Dictionary in Bestiary.drops_of(fighter["id"]):
+		if roll.call() < float(carried["chance"]):
+			pack.add_item(carried["itemId"])
+			log.append("%s drops: %s." % [fighter["name"], Catalog.item_name(carried["itemId"])])
 	var kind := "boss" if Bestiary.is_boss(fighter["id"]) else ("elite" if fighter["elite"] else "normal")
 	var drop := Bestiary.roll_drop(floor_level, kind, roll)
 	if drop.get("kind") == "gear":

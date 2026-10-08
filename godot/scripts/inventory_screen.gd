@@ -281,9 +281,9 @@ func _craft_row(index: int) -> Control:
 	var detail := ""
 	var ink := UiStyle.INK
 	if row["kind"] == "guide":
-		var lines := _guide_lines()
-		title = lines[0]
-		detail = lines[1]
+		title = _guide_lines()[0]
+		# The trades' standing, always in view (PIX-143).
+		detail = "%s    %s" % [Economy.job_line(GameState.hero.jobs, "smithing"), Economy.job_line(GameState.hero.jobs, "alchemy")]
 		ink = UiStyle.LAMP
 	else:
 		var entry: Dictionary = row["entry"]
@@ -352,9 +352,17 @@ func _about(row: Dictionary) -> String:
 		"recipe":
 			var entry: Dictionary = row["entry"]
 			var job: String = entry["job"]["id"]
-			return "%s %d, at %s. %s" % [
-				job.capitalize(), entry["job"]["level"], STATIONS[job], Catalog.item(row["item_id"]).get("description", ""),
-			]
+			var about := "%s %d, at %s." % [job.capitalize(), entry["job"]["level"], STATIONS[job]]
+			if int(GameState.hero.jobs[job]["level"]) < int(entry["job"]["level"]):
+				about += " You are %s." % Economy.job_line(GameState.hero.jobs, job)
+			# What's missing and where it comes from (PIX-143), else what it is.
+			var missing: Array[String] = []
+			for need: String in entry["needs"]:
+				if GameState.pack.items.get(need, 0) < entry["needs"][need]:
+					missing.append(Economy.where_to_find(need))
+			if missing.is_empty():
+				return about + " " + String(Catalog.item(row["item_id"]).get("description", ""))
+			return about + " " + "; ".join(missing) + "."
 	return String(Catalog.item(row["item_id"]).get("description", ""))
 
 
@@ -568,12 +576,12 @@ func _craft(entry: Dictionary) -> void:
 		return
 	if not Economy.can_craft(entry, GameState.pack.items, GameState.hero.jobs):
 		var level := int(entry["job"]["level"])
-		status.text = "You need %s %d for that." % [job.capitalize(), level] if GameState.hero.jobs[job]["level"] < level else "You're missing what it takes."
+		status.text = "You need %s %d for that." % [job.capitalize(), level] if GameState.hero.jobs[job]["level"] < level else "Still missing: %s." % ", ".join(Economy.missing_names(entry, GameState.pack.items))
 		return
 	var made := GameState.craft(entry["id"])
 	if made["made"]:
 		Sound.play("craft")
-		status.text = "You craft %s%s." % [Catalog.item_name(entry["itemId"]), " (two!)" if made["count"] > 1 else ""]
+		status.text = "You craft %s%s. %s" % [Catalog.item_name(entry["itemId"]), " (two!)" if made["count"] > 1 else "", made["level_line"]]
 
 
 func _drop(whole_stack: bool) -> void:

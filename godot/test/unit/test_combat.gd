@@ -30,14 +30,15 @@ func _warrior() -> Array:
 	return [hero, pack]
 
 
-func test_spawn_species_match_the_web() -> void:
-	var expected := "ash_1=imp ash_2=orc ash_3=wyvern ash_4=wyvern forest_1=slime forest_2=goblin forest_3=goblin marsh_1=skeleton marsh_2=ghost marsh_3=ghost deep_1=troll deep_2=troll deep_3=troll deep_4=golem mire_1=mimic mire_2=skeleton mire_3=ghost mire_4=skeleton"
+## The web's packs, but for the wolves PIX-143 sets in the forest and marsh.
+func test_spawn_species() -> void:
+	var expected := "ash_1=imp ash_2=orc ash_3=wyvern ash_4=wyvern forest_1=slime forest_2=goblin forest_3=wolf marsh_1=skeleton marsh_2=ghost marsh_3=wolf deep_1=troll deep_2=troll deep_3=troll deep_4=golem mire_1=mimic mire_2=skeleton mire_3=ghost mire_4=skeleton"
 	var got: Array[String] = []
 	for map_id in ["overworld", "deepwood", "mirefen"]:
 		var map := MapData.load_by_id(map_id)
 		for spawn: Dictionary in Bestiary.spawns_on(map_id):
 			var cell := Vector2i(spawn["x"], spawn["y"])
-			got.append("%s=%s" % [spawn["id"], Bestiary.species_at(map.region_at(cell), cell)])
+			got.append("%s=%s" % [spawn["id"], Bestiary.species_of(spawn, map.region_at(cell))])
 	assert_eq(" ".join(got), expected)
 
 

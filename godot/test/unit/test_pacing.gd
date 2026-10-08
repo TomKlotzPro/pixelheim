@@ -101,7 +101,7 @@ func _sweep(hero: HeroState, region_id: String) -> void:
 		if map.region_at(home) != region_id:
 			continue
 		for i in PACK:
-			_earn(hero, Bestiary.xp_for(Bestiary.wild(Bestiary.spawn(Bestiary.species_at(region_id, home))), hero.level))
+			_earn(hero, Bestiary.xp_for(Bestiary.wild(Bestiary.spawn(Bestiary.species_of(spawn, region_id))), hero.level))
 
 
 func _earn(hero: HeroState, xp: int) -> void:
