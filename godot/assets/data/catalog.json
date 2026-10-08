@@ -1352,6 +1352,33 @@
       "value": 0,
       "quest": true,
       "description": "A tarnished brooch with five marks, the last one hers. She wore it fifty years. It's a promise that someone would finish what the five started. The fifth relic."
+    },
+    "smugglers_rum": {
+      "name": "Smugglers' Rum",
+      "category": "misc",
+      "sprite": "bottle",
+      "weight": 2,
+      "value": 0,
+      "quest": true,
+      "description": "A small cask stamped with a skull that someone has tried to scrape off. It sloshes ominously."
+    },
+    "shaft_cheese": {
+      "name": "Shaft Cheese",
+      "category": "misc",
+      "sprite": "cheese",
+      "weight": 1,
+      "value": 0,
+      "quest": true,
+      "description": "A black-rinded cheese aged deep in the Blackiron shafts. It hums, faintly. Bram will be beside himself."
+    },
+    "guard_badge": {
+      "name": "Greyhold Badge",
+      "category": "misc",
+      "sprite": "badge",
+      "weight": 0,
+      "value": 0,
+      "quest": true,
+      "description": "A soldier's badge from Greyhold, the tower on it worn smooth by a thumb."
     }
   },
   "roles": {

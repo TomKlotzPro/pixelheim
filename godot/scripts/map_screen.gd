@@ -72,6 +72,8 @@ func _open() -> void:
 	var marks: Array = [[Color.WHITE, "You"], [UiStyle.LAMP, "Waypoint"]]
 	if not Hunts.living_on(world.map.id, GameState.board_floors(), GameState.progression.hunted).is_empty():
 		marks.append([Painting.LAIR, "Lair"])
+	if not Painting.givers(world).is_empty():
+		marks.append([Painting.QUEST, "Quest"])
 	for mark: Array in marks:
 		var swatch := ColorRect.new()
 		swatch.color = mark[0]
@@ -119,8 +121,18 @@ func _highlight() -> void:
 
 class Painting extends Control:
 	const LAIR := Color("c071ff")
+	const QUEST := Color("5fdc7a")
 	var world: Node2D
 	var tile_px := 4
+
+	## The villagers here with a word for the hero (PIX-171): a quest to
+	## offer, or one ready to turn in.
+	static func givers(on: Node2D) -> Array[Node]:
+		var out: Array[Node] = []
+		for villager in on.get_tree().get_nodes_in_group("npcs"):
+			if not villager.away and Quests.awaits_word(villager.data["id"], GameState.progression.quests, GameState.pack.items, GameState.quest_open):
+				out.append(villager)
+		return out
 
 	func _draw() -> void:
 		var seen: Dictionary = GameState.world.discovered.get(world.map.id, {})
@@ -141,6 +153,9 @@ class Painting extends Control:
 		# The lairs of the named monsters the board has posted (PIX-156).
 		for entry in Hunts.living_on(world.map.id, GameState.board_floors(), GameState.progression.hunted):
 			_marker(Vector2(Hunts.lair(entry)) * tile_px + Vector2.ONE * tile_px / 2.0, mark, LAIR)
+		for villager in givers(world):
+			var cell := Vector2i((villager.position / 16.0).floor())
+			_marker(Vector2(cell) * tile_px + Vector2.ONE * tile_px / 2.0, mark, QUEST)
 		_marker(Vector2(world.player_cell) * tile_px + Vector2.ONE * tile_px / 2.0, mark, Color.WHITE)
 
 	func _marker(center: Vector2, size: float, color: Color) -> void:

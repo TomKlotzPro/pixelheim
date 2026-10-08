@@ -19,6 +19,25 @@
       "completed": "The cellar thanks you. So does my nose. Here - you've earned it."
     },
     {
+      "id": "sela_rum",
+      "giver": "innkeeper",
+      "name": "Smugglers' Rum",
+      "brief": "Sela has heard of a cask of rum in Saltmere's sea cave.",
+      "objective": {
+        "kind": "deliver",
+        "itemId": "smugglers_rum",
+        "count": 1,
+        "label": "Rum found"
+      },
+      "reward": {
+        "gold": 70,
+        "xp": 30
+      },
+      "accepted": "Rook in Saltmere swears the smugglers left a cask of their rum in the sea cave. If it's real, I want it behind my bar.",
+      "completed": "Real, and terrible, and the regulars will love it. Your drinks are on the house. Well - the first one.",
+      "opensAfter": "relics_taken"
+    },
+    {
       "id": "cheese_run",
       "giver": "villager_bram",
       "name": "The Cheese Run",
@@ -117,6 +136,26 @@
       "completed": "Not bad for a first brew. Here - the good stuff, brewed proper."
     },
     {
+      "id": "vex_glass",
+      "giver": "alchemist_vex",
+      "name": "Sea Glass for the Still",
+      "brief": "Vex wants Saltmere's sea glass for clearer potions.",
+      "objective": {
+        "kind": "deliver",
+        "itemId": "sea_glass",
+        "count": 3,
+        "label": "Sea glass brought"
+      },
+      "reward": {
+        "gold": 50,
+        "xp": 30,
+        "itemId": "greater_potion"
+      },
+      "accepted": "Saltmere's beaches are thick with sea glass, they say. Ground fine, it clears a potion like nothing else. Three pieces, please.",
+      "completed": "Look how it catches the light. My potions will be the envy of the Reach. Here - the first of the clear ones.",
+      "opensAfter": "relics_taken"
+    },
+    {
       "id": "hildas_buckler",
       "giver": "smith",
       "name": "A Shield of Reeds",
@@ -133,6 +172,26 @@
       },
       "accepted": "Three marsh reeds, woven tight, at my forge. Make me a buckler and keep it - it's yours.",
       "completed": "Tight weave. You'll do. Take this for the reeds."
+    },
+    {
+      "id": "hildas_ore",
+      "giver": "smith",
+      "name": "Black Iron for the Forge",
+      "brief": "Hilda wants Blackiron ore on her anvil.",
+      "objective": {
+        "kind": "deliver",
+        "itemId": "blackiron_ore",
+        "count": 3,
+        "label": "Blackiron ore brought"
+      },
+      "reward": {
+        "gold": 60,
+        "xp": 35,
+        "itemId": "ember_shard"
+      },
+      "accepted": "Garrick's lot at Blackiron dig the best iron in the Reach. Bring me three lumps of it and I'll show you what a forge is for.",
+      "completed": "Feel the weight of that. I'll make something worth it - and take these embers, I've no use for fire I didn't light.",
+      "opensAfter": "relics_taken"
     },
     {
       "id": "iva_reeds",
@@ -377,6 +436,46 @@
       "completed": "The carts came through this morning. Every spool. Take this."
     },
     {
+      "id": "ana_badge",
+      "giver": "villager_ana",
+      "name": "Father's Badge",
+      "brief": "Ana's father served at Greyhold.",
+      "objective": {
+        "kind": "deliver",
+        "itemId": "guard_badge",
+        "count": 1,
+        "label": "Badge found"
+      },
+      "reward": {
+        "gold": 60,
+        "xp": 35,
+        "itemId": "gem"
+      },
+      "accepted": "My father wore Greyhold's badge till the day the fort fell. If his is still down in those cellars - the guardroom, he always said - I'd like it home.",
+      "completed": "That's his. The tower's worn right off it from his thumb. Thank you. He kept this for a rainy day, and it's raining.",
+      "opensAfter": "relics_taken"
+    },
+    {
+      "id": "bram_shaftcheese",
+      "giver": "villager_bram",
+      "name": "Cheese from the Deep",
+      "brief": "The Blackiron miners age a cheese down their shafts.",
+      "objective": {
+        "kind": "deliver",
+        "itemId": "shaft_cheese",
+        "count": 1,
+        "label": "Shaft cheese found"
+      },
+      "reward": {
+        "gold": 40,
+        "xp": 30,
+        "itemId": "cheese_wheel"
+      },
+      "accepted": "The miners at Blackiron age a cheese down the shafts. Black rind, they say, and it hums. I need it. For science.",
+      "completed": "It does hum! Oh, it's perfect. A wheel of my own for your trouble - a fair trade between cheese people.",
+      "opensAfter": "relics_taken"
+    },
+    {
       "id": "bram_imps",
       "giver": "villager_bram",
       "name": "Imp-ossible",
@@ -412,6 +511,26 @@
       },
       "accepted": "Three clumps of grave moss. It grows where the fen is quietest. Too quiet, if you ask me.",
       "completed": "That green! The whole valley will want it. Take an antidote - the fen leaves a taste."
+    },
+    {
+      "id": "mira_fur",
+      "giver": "settler_mira",
+      "name": "Wool from the Pass",
+      "brief": "Mira wants yeti fur for her loom.",
+      "objective": {
+        "kind": "deliver",
+        "itemId": "yeti_fur",
+        "count": 2,
+        "label": "Yeti fur brought"
+      },
+      "reward": {
+        "gold": 60,
+        "xp": 35,
+        "itemId": "elixir"
+      },
+      "accepted": "Yeti fur spins into the warmest thread there is. The Frostgate's full of yetis, I hear. Two pelts' worth?",
+      "completed": "Smells awful. Spins beautifully. Here - a little something from my stores while I get weaving.",
+      "opensAfter": "relics_taken"
     },
     {
       "id": "tomas_golems",
@@ -538,7 +657,8 @@
         "xp": 30
       },
       "accepted": "North-east beach, sitting on his chests like a hen. He bites.",
-      "completed": "Ha! Saltmere breathes easier. And so do I. Here's your share - fair's fair."
+      "completed": "Ha! Saltmere breathes easier. And so do I. Here's your share - fair's fair.",
+      "opensAfter": "wenna_smugglers"
     },
     {
       "id": "pip_fish",
@@ -647,7 +767,8 @@
         "itemId": "potion_hp"
       },
       "accepted": "Off the west gallery, last I heard her. Small cage. Mind your fingers.",
-      "completed": "There's my girl! Cross as ever. Thank you - the air's safe to breathe as long as she's singing."
+      "completed": "There's my girl! Cross as ever. Thank you - the air's safe to breathe as long as she's singing.",
+      "opensAfter": "garrick_crew"
     },
     {
       "id": "ulla_turncoats",
@@ -738,7 +859,8 @@
         "xp": 20
       },
       "accepted": "My sister's locket. They took it when they threw me in the cells - the end cell, under the straw.",
-      "completed": "That's hers. That's... thank you. Here - it's not much. It's all the turncoats didn't find."
+      "completed": "That's hers. That's... thank you. Here - it's not much. It's all the turncoats didn't find.",
+      "opensAfter": "ulla_turncoats"
     },
     {
       "id": "aske_wolves",
@@ -792,7 +914,8 @@
         "xp": 30
       },
       "accepted": "Tracks went up toward the observatory. If there's a den in that cave, my box is in it.",
-      "completed": "Still locked! The yetis must have given up on it. Here - your share, and then some."
+      "completed": "Still locked! The yetis must have given up on it. Here - your share, and then some.",
+      "opensAfter": "aske_wolves"
     },
     {
       "id": "linnea_lilies",

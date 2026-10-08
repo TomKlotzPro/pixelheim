@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.112.0",
+      "date": "2026-10-08",
+      "codename": "Errands",
+      "notes": [
+        "THE TOWN SENDS YOU OUT: once Maren has asked for the relics, Pixelheim's folk have errands in the Reach - Hilda wants Blackiron ore, Vex wants Saltmere's sea glass, Sela has heard of the smugglers' rum, Bram needs the miners' humming cheese, Ana her father's badge from Greyhold and Mira yeti fur from the Frostgate. They pay in embers, potions, gems and cheese",
+        "SIDE QUESTS FOLLOW THE STORY: a hub's side quests wait for its first word - Rook after Wenna's smugglers, Pell after the lost crew, Fenwick once the yard is clear, Gunnar once the wolves are gone",
+        "THE JOURNAL IN CHAPTERS: Main (the chapter, its steps, the promises that carry it), Side, Bounties and Story. A/D turns the chapter, W/S scrolls, and every promise says where to go",
+        "THE MAP MARKS WHO IS WAITING: villagers with a quest to give or take back show as green squares on the map"
+      ]
+    },
+    {
       "version": "0.111.0",
       "date": "2026-10-08",
       "codename": "The Barred Gate",

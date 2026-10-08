@@ -53,13 +53,53 @@ static func is_ready(quest: Dictionary, entries: Dictionary, items: Dictionary) 
 
 
 ## Whether a giver has a quest to offer or to take back (questAwaitsWord):
-## the first one not done is untaken, or ready to turn in. A keeper behind a
-## counter talks first only then (Vex's herbs could never be taken while
-## every word opened the counter).
-static func awaits_word(giver: String, entries: Dictionary, items: Dictionary) -> bool:
+## the first one not done is untaken (and open, `opened`), or ready to turn
+## in. A keeper behind a counter talks first only then (Vex's herbs could
+## never be taken while every word opened the counter).
+static func awaits_word(giver: String, entries: Dictionary, items: Dictionary, opened := Callable()) -> bool:
 	for quest: Dictionary in for_giver(giver):
 		var entry: Dictionary = entries.get(quest["id"], {})
 		if entry.get("done", false):
 			continue
+		if entry.is_empty() and opened.is_valid() and not opened.call(quest):
+			return false
 		return entry.is_empty() or is_ready(quest, entries, items)
 	return false
+
+
+## Whether a quest may be offered yet (PIX-171): side quests open as the
+## story moves on - "opensAfter" names a main quest step, or another quest
+## that must be done first.
+static func is_open(quest: Dictionary, progression: ProgressionState, settlement: SettlementState) -> bool:
+	var after: String = quest.get("opensAfter", "")
+	if after == "":
+		return true
+	var step := MainQuest.step(after)
+	if not step.is_empty():
+		return MainQuest.is_met(step, progression, settlement)
+	return progression.quests.get(after, {}).get("done", false)
+
+
+## Where a quest sends the hero (PIX-171), one line for the journal: the
+## named monster's lair, the regions a quarry roams, the chest that holds
+## what's wanted or the best lead for a material; "" when there's none.
+static func where(quest: Dictionary) -> String:
+	var objective: Dictionary = quest["objective"]
+	match String(objective["kind"]):
+		"hunt":
+			return "In %s." % Hunts.named(objective["named"]).get("where", "the wilds")
+		"kill":
+			var places := Bestiary.where_found(objective["monsterId"])
+			return "Found in %s." % ", ".join(places.slice(0, 3)) if not places.is_empty() else ""
+		"deliver":
+			for chest: Dictionary in Interactables._data()["chests"]:
+				if chest.get("loot", {}).get("itemId", "") == objective["itemId"]:
+					return "In a chest somewhere in %s." % Catalog.place_name(chest["mapId"])
+			var lead := Economy.where_to_find(objective["itemId"])
+			return lead + "." if lead != "" else ""
+		"relics":
+			var out: Array[String] = []
+			for relic: Dictionary in Relics.all():
+				out.append(relic["place"])
+			return "The five left them in %s." % ", ".join(out)
+	return ""
