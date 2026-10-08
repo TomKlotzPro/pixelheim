@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.117.0",
+      "date": "2026-10-08",
+      "codename": "Head to Toe",
+      "notes": [
+        "GLOVES, BOOTS AND SHIELDS SHOW: gauntlets colour your hands, boots your feet, and the shield you carry hangs on your off hand - a round buckler, a kite or a tower, in its own colours, in front of you or behind as you turn, put away while you draw a bow or cast",
+        "EVERY SET FROM HEAD TO TOE: Saltmere's oilskin with its saltwood buckler, Blackiron's soot plate and black bulwark, the Warden's slate and kite, Frostweave's white with the rime orb glowing at your side",
+        "The paper doll and the dock's portrait wear it all too"
+      ]
+    },
+    {
       "version": "0.116.0",
       "date": "2026-10-08",
       "codename": "Dressed to Match",

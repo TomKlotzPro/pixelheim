@@ -95,6 +95,30 @@ const BODIES := {
 	"warden_hauberk": "characters/Guard-Warden.png",
 	"frostweave_robe": "characters/Mage-Frost.png",
 }
+## Gloves and boots (PIX-174): Shade's hands are the skin below the neck,
+## his boots the two leather browns along the figure's last rows. Worn ones
+## take the item's colour over them, light to dark.
+const SKIN_RAMP := ["f6a954", "d97f40", "aa5a33", "84482a"]
+const BOOT_RAMP := ["5d4717", "3f3013"]
+const BOOT_ROWS := 2
+## Below the neck by this many rows, skin is hands, not a chin.
+const HAND_FROM := 9
+## Shields on the off hand (PIX-174), in Shade's 1px-outlined style: o the
+## outline, r the lit rim, f the face, e the boss. Drawn in front of the
+## figure facing down or left, behind it facing right or up, and put away
+## while a bow is drawn, a staff cast or the hero falls.
+const SHIELDS := {
+	"buckler": [".ooo.", "orffo", "ofefo", "offfo", ".ooo."],
+	"kite": ["ooooo", "orffo", "ofefo", "offfo", ".ofo.", "..o.."],
+	"tower": ["ooooo", "orffo", "offfo", "ofefo", "offfo", "offfo", "ooooo"],
+	"orb": [".oo.", "orfo", "offo", ".oo."],
+}
+## Where the shield hangs per direction row (down 0, right 2, up 4, left 6):
+## [x from the figure's centre, y below its top, in front].
+const SHIELD_AT := {0: [4, 8, true], 2: [1, 8, false], 4: [-5, 8, false], 6: [-4, 8, true]}
+## Columns where both hands are busy or the hero lies down: no shield.
+const SHIELD_HIDDEN := [[8, 15], [21, 24]]
+
 ## The bare template whose frames say where each head ends.
 const BASE := "characters/Character-Base.png"
 ## A head is the figure's top seven rows, in every frame.
@@ -201,22 +225,44 @@ static func dressed(role_id: String, look: Variant, worn: Dictionary) -> Diction
 	var weapon: Dictionary = Catalog.item(worn.get("weapon", "")) if worn.get("weapon", "") != "" else {}
 	if not weapon.is_empty():
 		spec["attack"] = WEAPON_ATTACKS.get(weapon.get("sprite", ""), spec["attack"])
-		if weapon.has("tint"):
-			var shade: Array = weapon["tint"]
-			tint = Color(float(shade[0]), float(shade[1]), float(shade[2]))
-	if head == spec["sheet"] and body == spec["sheet"] and tint == Color.WHITE:
+		tint = _tint_of(weapon, Color.WHITE)
+	# Gloves, boots and the off hand show too (PIX-174).
+	var gear := {
+		"hands": _tint_of(Catalog.item(worn.get("hands", "")), Color.TRANSPARENT),
+		"feet": _tint_of(Catalog.item(worn.get("feet", "")), Color.TRANSPARENT),
+		"shield": String(Catalog.item(worn.get("offhand", "")).get("shape", "")),
+		"shield_tint": _tint_of(Catalog.item(worn.get("offhand", "")), Color.WHITE),
+	}
+	var plain_gear: bool = gear["hands"].a == 0.0 and gear["feet"].a == 0.0 and gear["shield"] == ""
+	if head == spec["sheet"] and body == spec["sheet"] and tint == Color.WHITE and plain_gear:
 		return spec
 	spec["head"] = head
 	spec["body"] = body
 	spec["weapon_tint"] = tint
-	spec["sheet"] = "outfit|%s|%s|%s" % [head, body, tint.to_html(false)]
+	spec["gear"] = gear
+	spec["sheet"] = "outfit|%s" % outfit_key(head, body, tint, gear)
 	return spec
+
+
+## An item's colour from the catalogue ("tint"), or `fallback` without one.
+static func _tint_of(item: Dictionary, fallback: Color) -> Color:
+	if not item.has("tint"):
+		return fallback
+	var shade: Array = item["tint"]
+	return Color(float(shade[0]), float(shade[1]), float(shade[2]))
+
+
+static func outfit_key(head: String, body: String, weapon_tint: Color, gear: Dictionary) -> String:
+	return "%s|%s|%s|%s|%s|%s|%s" % [
+		head, body, weapon_tint.to_html(false), Color(gear.get("hands", Color.TRANSPARENT)).to_html(),
+		Color(gear.get("feet", Color.TRANSPARENT)).to_html(), gear.get("shield", ""), Color(gear.get("shield_tint", Color.WHITE)).to_html(false),
+	]
 
 
 ## A dressed spec's sheet: every frame the body sheet's rows below the neck
 ## and the head sheet's rows to it. Built once per outfit.
-static func outfit_texture(head: String, body: String, weapon_tint := Color.WHITE) -> Texture2D:
-	var key := "%s|%s|%s" % [head, body, weapon_tint.to_html(false)]
+static func outfit_texture(head: String, body: String, weapon_tint := Color.WHITE, gear := {}) -> Texture2D:
+	var key := outfit_key(head, body, weapon_tint, gear)
 	if not _outfits.has(key):
 		var heads: Image = (load(path(head)) as Texture2D).get_image()
 		var bodies: Image = (load(path(body)) as Texture2D).get_image()
@@ -234,8 +280,86 @@ static func outfit_texture(head: String, body: String, weapon_tint := Color.WHIT
 				sheet.blit_rect(heads, Rect2i(at, Vector2i(32, neck)), at)
 		if weapon_tint != Color.WHITE:
 			_tint_weapon(sheet, weapon_tint)
+		if not gear.is_empty():
+			_wear(sheet, gear)
 		_outfits[key] = ImageTexture.create_from_image(sheet)
 	return _outfits[key]
+
+
+## A colour's ramp, light to dark, for recolouring Shade's ramps over it.
+static func _ramp(tint: Color, steps: int) -> Array[Color]:
+	var out: Array[Color] = []
+	for i in steps:
+		var amount := 0.22 - 0.5 * float(i) / maxf(1.0, steps - 1)
+		out.append(tint.lightened(amount) if amount > 0.0 else tint.darkened(-amount))
+	return out
+
+
+## Gloves over the hands, boots over the boots and the shield on the off
+## hand, in every frame of the sheet (PIX-174).
+static func _wear(sheet: Image, gear: Dictionary) -> void:
+	var hands: Color = gear.get("hands", Color.TRANSPARENT)
+	var feet: Color = gear.get("feet", Color.TRANSPARENT)
+	var shape: String = gear.get("shield", "")
+	var hand_swap := {}
+	if hands.a > 0.0:
+		var ramp := _ramp(hands, SKIN_RAMP.size())
+		for i in SKIN_RAMP.size():
+			hand_swap[Color(SKIN_RAMP[i]).to_html(false)] = ramp[i]
+	var boot_swap := {}
+	if feet.a > 0.0:
+		var ramp := _ramp(feet, BOOT_RAMP.size() + 1)
+		for i in BOOT_RAMP.size():
+			boot_swap[Color(BOOT_RAMP[i]).to_html(false)] = ramp[i + 1]
+	var columns := sheet.get_width() / 32
+	var rows := sheet.get_height() / 32
+	var necks := _neck_rows()
+	for row in rows:
+		for column in columns:
+			var cell := Rect2i(column * 32, row * 32, 32, 32)
+			var used := _figure(row * columns + column)
+			var neck: int = necks[row * columns + column]
+			var bottom := used.end.y
+			for y in range(neck + HAND_FROM - 7, bottom):
+				for x in 32:
+					var at := Vector2i(cell.position.x + x, cell.position.y + y)
+					var here := sheet.get_pixelv(at)
+					if here.a == 0.0:
+						continue
+					var code := here.to_html(false)
+					if y >= bottom - BOOT_ROWS and boot_swap.has(code):
+						sheet.set_pixelv(at, boot_swap[code])
+					elif y < bottom - BOOT_ROWS and hand_swap.has(code):
+						sheet.set_pixelv(at, hand_swap[code])
+			if shape != "" and SHIELDS.has(shape):
+				_shield(sheet, cell, used, row, column, shape, gear.get("shield_tint", Color.WHITE))
+
+
+## One frame's shield: hung by the off hand per direction, behind the
+## figure where the body would hide it.
+static func _shield(sheet: Image, cell: Rect2i, used: Rect2i, row: int, column: int, shape: String, tint: Color) -> void:
+	for span: Array in SHIELD_HIDDEN:
+		if column >= int(span[0]) and column < int(span[1]):
+			return
+	var place: Array = SHIELD_AT.get(row - row % 2, SHIELD_AT[0])
+	var grid: Array = SHIELDS[shape]
+	var colours := {
+		"o": Color("040404"), "r": tint.lightened(0.35), "f": tint, "e": tint.lightened(0.6),
+	}
+	var origin := cell.position + Vector2i(used.position.x + used.size.x / 2 + int(place[0]) - String(grid[0]).length() / 2, used.position.y + int(place[1]))
+	var in_front: bool = place[2]
+	for gy in grid.size():
+		var line: String = grid[gy]
+		for gx in line.length():
+			var key := line[gx]
+			if key == ".":
+				continue
+			var at := origin + Vector2i(gx, gy)
+			if not cell.has_point(at):
+				continue
+			if not in_front and sheet.get_pixelv(at).a > 0.0:
+				continue
+			sheet.set_pixelv(at, colours[key])
 
 
 static var _weapon_pixels := {}
@@ -283,7 +407,18 @@ static func _neck_rows() -> PackedInt32Array:
 				var frame := base.get_region(Rect2i(column * 32, row * 32, 32, 32))
 				var used := frame.get_used_rect()
 				_necks.append(used.position.y + HEAD_ROWS if used.has_area() else 16)
+				_figures.append(used if used.has_area() else Rect2i(8, 8, 16, 20))
 	return _necks
+
+
+static var _figures: Array[Rect2i] = []
+
+
+## The bare figure in each frame (the template's), so a plume or a swung
+## blade never moves where gloves, boots and shields go.
+static func _figure(index: int) -> Rect2i:
+	_neck_rows()
+	return _figures[index]
 
 
 ## How many looks a role offers (its colourways).
@@ -311,7 +446,7 @@ static func frames(spec: Dictionary) -> SpriteFrames:
 		return _frames_cache[key]
 	var family: Dictionary = FAMILIES[spec["family"]]
 	var size := frame_size(spec)
-	var texture: Texture2D = outfit_texture(spec["head"], spec["body"], spec.get("weapon_tint", Color.WHITE)) if spec.has("head") else load(path(spec["sheet"]))
+	var texture: Texture2D = outfit_texture(spec["head"], spec["body"], spec.get("weapon_tint", Color.WHITE), spec.get("gear", {})) if spec.has("head") else load(path(spec["sheet"]))
 	var columns := texture.get_width() / size
 	var sheet := SpriteFrames.new()
 	sheet.remove_animation("default")

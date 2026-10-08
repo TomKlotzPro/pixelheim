@@ -245,7 +245,13 @@
       "value": 300,
       "description": "Less a shield, more a portable wall.",
       "armor": 5,
-      "slot": "offhand"
+      "slot": "offhand",
+      "tint": [
+        0.6,
+        0.6,
+        0.66
+      ],
+      "shape": "tower"
     },
     "steel_shield": {
       "name": "Steel Shield",
@@ -255,7 +261,13 @@
       "value": 110,
       "description": "The best offense's roommate.",
       "armor": 3,
-      "slot": "offhand"
+      "slot": "offhand",
+      "tint": [
+        0.72,
+        0.74,
+        0.8
+      ],
+      "shape": "kite"
     },
     "potion_hp": {
       "name": "Health Potion",
@@ -430,7 +442,13 @@
       "value": 55,
       "description": "Marsh reeds woven tight enough to turn a blade. Crafted, never sold.",
       "armor": 4,
-      "slot": "offhand"
+      "slot": "offhand",
+      "tint": [
+        0.7,
+        0.64,
+        0.36
+      ],
+      "shape": "buckler"
     },
     "beast_cleaver": {
       "name": "Beast Cleaver",
@@ -597,7 +615,12 @@
       "value": 10,
       "description": "Warm. That is the whole review.",
       "armor": 1,
-      "slot": "hands"
+      "slot": "hands",
+      "tint": [
+        0.78,
+        0.7,
+        0.55
+      ]
     },
     "smith_gauntlets": {
       "name": "Smith's Gauntlets",
@@ -607,7 +630,12 @@
       "value": 85,
       "description": "Made to catch sparks; happy to catch blades.",
       "armor": 3,
-      "slot": "hands"
+      "slot": "hands",
+      "tint": [
+        0.55,
+        0.56,
+        0.6
+      ]
     },
     "runed_grips": {
       "name": "Runed Grips",
@@ -620,7 +648,12 @@
       "grants": {
         "intelligence": 1
       },
-      "slot": "hands"
+      "slot": "hands",
+      "tint": [
+        0.48,
+        0.38,
+        0.7
+      ]
     },
     "worn_boots": {
       "name": "Worn Boots",
@@ -630,7 +663,12 @@
       "value": 14,
       "description": "Someone walked far in these. Now it is your turn.",
       "armor": 1,
-      "slot": "feet"
+      "slot": "feet",
+      "tint": [
+        0.5,
+        0.36,
+        0.22
+      ]
     },
     "marchers_boots": {
       "name": "Marcher's Boots",
@@ -640,7 +678,12 @@
       "value": 65,
       "description": "Border-guard issue. The soles outlast the guards.",
       "armor": 2,
-      "slot": "feet"
+      "slot": "feet",
+      "tint": [
+        0.34,
+        0.24,
+        0.15
+      ]
     },
     "scaled_greaves": {
       "name": "Scaled Greaves",
@@ -650,7 +693,12 @@
       "value": 200,
       "description": "Dragon scale from the knee down. Crafted, never sold.",
       "armor": 4,
-      "slot": "feet"
+      "slot": "feet",
+      "tint": [
+        0.66,
+        0.44,
+        0.26
+      ]
     },
     "furn_rug": {
       "name": "Woven Rug",
@@ -792,7 +840,13 @@
       "value": 240,
       "description": "A mantle of moss and scale that death declines to touch. Crafted, never sold.",
       "armor": 6,
-      "slot": "offhand"
+      "slot": "offhand",
+      "tint": [
+        0.38,
+        0.32,
+        0.5
+      ],
+      "shape": "tower"
     },
     "chancellors_letter": {
       "name": "The Chancellor's Letter",
@@ -837,7 +891,13 @@
       "value": 320,
       "description": "Cinderjaw's scales hammered over oak. It is still warm on the inside. Hunted, never sold.",
       "armor": 7,
-      "slot": "offhand"
+      "slot": "offhand",
+      "tint": [
+        0.85,
+        0.38,
+        0.22
+      ],
+      "shape": "kite"
     },
     "mossback_maul": {
       "name": "Mossback Maul",
@@ -926,7 +986,13 @@
       "signature": true,
       "description": "A round shield in the town's blue, its rim beaten from the old gate's hinges.",
       "armor": 7,
-      "slot": "offhand"
+      "slot": "offhand",
+      "tint": [
+        0.9,
+        0.78,
+        0.42
+      ],
+      "shape": "kite"
     },
     "city_plate": {
       "name": "City Plate",
@@ -1061,7 +1127,12 @@
       "set": "oilskin",
       "grants": {
         "dexterity": 1
-      }
+      },
+      "tint": [
+        0.3,
+        0.46,
+        0.4
+      ]
     },
     "oilskin_boots": {
       "name": "Oilskin Boots",
@@ -1072,7 +1143,12 @@
       "description": "Sealed at the seams with pitch. Your feet stay dry; nothing else does. Crafted, never sold.",
       "armor": 2,
       "slot": "feet",
-      "set": "oilskin"
+      "set": "oilskin",
+      "tint": [
+        0.26,
+        0.4,
+        0.34
+      ]
     },
     "saltwood_buckler": {
       "name": "Saltwood Buckler",
@@ -1083,7 +1159,13 @@
       "description": "Driftwood, bleached and banded with sea glass. Light enough to dance with. Crafted, never sold.",
       "armor": 3,
       "slot": "offhand",
-      "set": "oilskin"
+      "set": "oilskin",
+      "tint": [
+        0.58,
+        0.44,
+        0.3
+      ],
+      "shape": "buckler"
     },
     "tidecutter": {
       "name": "Tidecutter",
@@ -1164,7 +1246,12 @@
       "set": "blackiron",
       "grants": {
         "strength": 1
-      }
+      },
+      "tint": [
+        0.26,
+        0.27,
+        0.32
+      ]
     },
     "blackiron_sabatons": {
       "name": "Blackiron Sabatons",
@@ -1175,7 +1262,12 @@
       "description": "Every step rings. Sneaking is for other people. Crafted, never sold.",
       "armor": 3,
       "slot": "feet",
-      "set": "blackiron"
+      "set": "blackiron",
+      "tint": [
+        0.22,
+        0.23,
+        0.28
+      ]
     },
     "blackiron_bulwark": {
       "name": "Blackiron Bulwark",
@@ -1186,7 +1278,13 @@
       "description": "A door of black iron with a handle. Goblins have broken teeth on it. Crafted, never sold.",
       "armor": 6,
       "slot": "offhand",
-      "set": "blackiron"
+      "set": "blackiron",
+      "tint": [
+        0.26,
+        0.27,
+        0.32
+      ],
+      "shape": "tower"
     },
     "blackiron_axe": {
       "name": "Blackiron Axe",
@@ -1270,7 +1368,12 @@
       "set": "warden",
       "grants": {
         "dexterity": 1
-      }
+      },
+      "tint": [
+        0.46,
+        0.53,
+        0.64
+      ]
     },
     "warden_boots": {
       "name": "Warden's Boots",
@@ -1284,7 +1387,12 @@
       "set": "warden",
       "grants": {
         "strength": 1
-      }
+      },
+      "tint": [
+        0.42,
+        0.48,
+        0.58
+      ]
     },
     "warden_kite": {
       "name": "Warden's Kite Shield",
@@ -1295,7 +1403,13 @@
       "description": "Long enough to kneel behind. Greyhold's tower is still painted on it, faintly. Crafted, never sold.",
       "armor": 5,
       "slot": "offhand",
-      "set": "warden"
+      "set": "warden",
+      "tint": [
+        0.46,
+        0.56,
+        0.7
+      ],
+      "shape": "kite"
     },
     "warden_longsword": {
       "name": "Warden's Longsword",
@@ -1396,7 +1510,12 @@
       "set": "frostweave",
       "grants": {
         "intelligence": 1
-      }
+      },
+      "tint": [
+        0.86,
+        0.93,
+        1.0
+      ]
     },
     "frost_boots": {
       "name": "Frostweave Boots",
@@ -1407,7 +1526,12 @@
       "description": "Fur boots that never slip on ice. Mostly. Crafted, never sold.",
       "armor": 2,
       "slot": "feet",
-      "set": "frostweave"
+      "set": "frostweave",
+      "tint": [
+        0.86,
+        0.92,
+        1.0
+      ]
     },
     "frost_ward": {
       "name": "Rime Orb",
@@ -1421,7 +1545,13 @@
       "set": "frostweave",
       "grants": {
         "intelligence": 1
-      }
+      },
+      "tint": [
+        0.72,
+        0.92,
+        1.0
+      ],
+      "shape": "orb"
     },
     "rime_staff": {
       "name": "Rime Staff",
