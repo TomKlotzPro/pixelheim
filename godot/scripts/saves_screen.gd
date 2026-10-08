@@ -1,4 +1,4 @@
-extends CanvasLayer
+extends Screen
 ## The saves screen (Esc): three slots to play, start fresh or clear, and the
 ## way across from the web game — its save found in this browser, or a pasted
 ## save code. Keyboard first (letters drive every action, the same key twice
@@ -21,16 +21,11 @@ var bring_button: Button
 var load_button: Button
 var pending := ""
 
-func _ready() -> void:
-	process_mode = Node.PROCESS_MODE_ALWAYS
+func _open() -> void:
 	layer = 5
-	get_tree().paused = true
 	selected = clampi(GameState.slot - 1, 0, SaveSlots.SLOT_COUNT - 1)
 
-	var backdrop := ColorRect.new()
-	backdrop.color = UiStyle.BACKDROP
-	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(backdrop)
+	dim()
 
 	# One window in the middle of the screen: the slots on the left, the way
 	# across from the web game on the right, what just happened underneath.
@@ -148,16 +143,11 @@ func _unhandled_input(event: InputEvent) -> void:
 			code_field.release_focus()
 			get_viewport().set_input_as_handled()
 		return
-	var command := _command_for(event)
-	if not command.is_valid():
-		return
-	# Handled first: playing or importing reloads the scene and frees this screen.
-	get_viewport().set_input_as_handled()
-	command.call()
+	# Screen marks the key handled before it runs: playing or importing
+	# reloads the scene and frees this screen.
+	super(event)
 
-func _command_for(event: InputEvent) -> Callable:
-	if event.is_action_pressed("ui_cancel") or event.is_action_pressed("menu"):
-		return _close
+func _command(event: InputEvent) -> Callable:
 	if event.is_action_pressed("move_up"):
 		return _select.bind(selected - 1)
 	if event.is_action_pressed("move_down"):
@@ -197,7 +187,7 @@ func _target() -> int:
 
 func _play() -> void:
 	if _target() == GameState.slot:
-		_close()
+		close()
 		return
 	GameState.play_slot(_target())
 	_reload()
@@ -333,7 +323,3 @@ static func _ago(saved_at: int) -> String:
 func _reload() -> void:
 	get_tree().paused = false
 	get_tree().reload_current_scene()
-
-func _close() -> void:
-	get_tree().paused = false
-	queue_free()

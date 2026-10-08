@@ -1,4 +1,4 @@
-extends CanvasLayer
+extends Screen
 ## The Escape menu (PauseMenu.tsx): resume, the saves (slots and codes),
 ## options, or back to the title. Progress saves itself. W/S choose, E or
 ## Enter takes it, Esc resumes. The world holds still.
@@ -9,14 +9,9 @@ var selected := 0
 var menu: VBoxContainer
 
 
-func _ready() -> void:
-	process_mode = Node.PROCESS_MODE_ALWAYS
+func _open() -> void:
 	layer = 6
-	get_tree().paused = true
-	var backdrop := ColorRect.new()
-	backdrop.color = Color(UiStyle.BACKDROP, 0.85)
-	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(backdrop)
+	dim(0.85)
 	var card := PanelContainer.new()
 	card.position = Vector2(470, 170)
 	card.custom_minimum_size = Vector2(340, 340)
@@ -54,11 +49,9 @@ func _draw() -> void:
 		menu.add_child(button)
 
 
-func _unhandled_input(event: InputEvent) -> void:
+func _command(event: InputEvent) -> Callable:
 	var command := Callable()
-	if event.is_action_pressed("ui_cancel") or event.is_action_pressed("menu"):
-		command = _resume
-	elif event.is_action_pressed("move_up") or event.is_action_pressed("ui_up"):
+	if event.is_action_pressed("move_up") or event.is_action_pressed("ui_up"):
 		command = func() -> void:
 			selected = wrapi(selected - 1, 0, options.size())
 			_draw()
@@ -68,9 +61,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			_draw()
 	elif event.is_action_pressed("interact") or event.is_action_pressed("ui_accept"):
 		command = _take.bind(selected)
-	if command.is_valid():
-		get_viewport().set_input_as_handled()
-		command.call()
+	return command
 
 
 func _take(index: int) -> void:
@@ -79,8 +70,7 @@ func _take(index: int) -> void:
 
 
 func _resume() -> void:
-	get_tree().paused = false
-	queue_free()
+	close()
 
 
 func _saves() -> void:

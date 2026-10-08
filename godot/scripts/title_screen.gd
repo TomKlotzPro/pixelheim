@@ -1,4 +1,4 @@
-extends CanvasLayer
+extends Screen
 ## The title (PIX-139): Pixelheim's street at night under the Ashen Mountain
 ## (TitleScene), PIXELHEIM cut in gold above it, and the menu: Continue, New
 ## Game (hero creation), the saves, options, or What's new. W/S choose, E or
@@ -23,10 +23,8 @@ var shine: ColorRect
 var version := ""
 
 
-func _ready() -> void:
-	process_mode = Node.PROCESS_MODE_ALWAYS
+func _open() -> void:
 	layer = 7
-	get_tree().paused = true
 	Sound.play_track("title")
 	Sound.set_ambience("")
 	scene = TitleScene.new()
@@ -264,7 +262,7 @@ func _new_badge() -> Control:
 	return badge
 
 
-func _unhandled_input(event: InputEvent) -> void:
+func _command(event: InputEvent) -> Callable:
 	var command := Callable()
 	if event.is_action_pressed("move_up") or event.is_action_pressed("ui_up"):
 		command = func() -> void:
@@ -276,9 +274,12 @@ func _unhandled_input(event: InputEvent) -> void:
 			_show_choice()
 	elif event.is_action_pressed("interact") or event.is_action_pressed("ui_accept"):
 		command = _take.bind(selected)
-	if command.is_valid():
-		get_viewport().set_input_as_handled()
-		command.call()
+	return command
+
+
+## Esc never closes the title: there is nowhere under it to go.
+func _closes_on(_event: InputEvent) -> bool:
+	return false
 
 
 func _take(index: int) -> void:
@@ -321,6 +322,5 @@ func _options() -> void:
 
 func _leave() -> void:
 	GameState.title_seen = true
-	get_tree().paused = false
-	queue_free()
+	close()
 	world._update_music()

@@ -1,4 +1,4 @@
-extends CanvasLayer
+extends Screen
 ## The journal (Journal.tsx): every promise made, how far along it stands
 ## and who to see about it; then the promises kept. Q or Esc closes it. The
 ## world holds still while it is open.
@@ -6,14 +6,10 @@ extends CanvasLayer
 var body: VBoxContainer
 
 
-func _ready() -> void:
-	process_mode = Node.PROCESS_MODE_ALWAYS
+func _open() -> void:
+	closing_actions = [&"journal"]
 	layer = 5
-	get_tree().paused = true
-	var backdrop := ColorRect.new()
-	backdrop.color = UiStyle.BACKDROP
-	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(backdrop)
+	dim()
 	add_child(UiStyle.heading("Journal", 20, UiStyle.CREAM, Vector2(80, 32)))
 	var card := PanelContainer.new()
 	card.position = Vector2(80, 80)
@@ -78,10 +74,3 @@ func _promise(quest: Dictionary, entries: Dictionary) -> Control:
 	block.add_child(track)
 	block.add_child(UiStyle.label("%s (%s)" % [quest["brief"], giver], 14, UiStyle.FADED))
 	return block
-
-
-func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("ui_cancel") or event.is_action_pressed("menu") or event.is_action_pressed("journal"):
-		get_viewport().set_input_as_handled()
-		get_tree().paused = false
-		queue_free()

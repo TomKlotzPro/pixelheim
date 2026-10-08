@@ -1,4 +1,4 @@
-extends CanvasLayer
+extends Screen
 ## The codex (Codex.tsx): the trophy case. Masteries shows each monster
 ## family's kills, the Slayer tier earned and what the next teaches; the
 ## Bestiary shows every monster whose family the hero has met, and keeps the
@@ -11,14 +11,10 @@ var body: VBoxContainer
 var tabs_row: HBoxContainer
 
 
-func _ready() -> void:
-	process_mode = Node.PROCESS_MODE_ALWAYS
+func _open() -> void:
+	closing_actions = [&"codex"]
 	layer = 5
-	get_tree().paused = true
-	var backdrop := ColorRect.new()
-	backdrop.color = UiStyle.BACKDROP
-	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(backdrop)
+	dim()
 	add_child(UiStyle.heading("Codex", 20, UiStyle.CREAM, Vector2(80, 24)))
 	tabs_row = HBoxContainer.new()
 	tabs_row.position = Vector2(80, 64)
@@ -129,19 +125,10 @@ func _portrait(monster_id: String, met: bool) -> Control:
 	return icon
 
 
-func _unhandled_input(event: InputEvent) -> void:
+func _command(event: InputEvent) -> Callable:
 	var command := Callable()
-	if event.is_action_pressed("ui_cancel") or event.is_action_pressed("menu") or event.is_action_pressed("codex"):
-		command = _close
-	elif event.is_action_pressed("move_left") or event.is_action_pressed("move_right"):
+	if event.is_action_pressed("move_left") or event.is_action_pressed("move_right"):
 		command = func() -> void:
 			tab = 1 - tab
 			_show()
-	if command.is_valid():
-		get_viewport().set_input_as_handled()
-		command.call()
-
-
-func _close() -> void:
-	get_tree().paused = false
-	queue_free()
+	return command

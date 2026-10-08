@@ -1,4 +1,4 @@
-extends CanvasLayer
+extends Screen
 ## The map screen (M/Tab): the current map in a window, painted with the
 ## tiles' map colours where the hero has been and night where they haven't
 ## (mapColors.ts port), the hero and discovered waypoints marked; beside it
@@ -13,15 +13,10 @@ var cards: Array[Dictionary] = []
 var usable: Array[Dictionary] = []
 
 
-func _ready() -> void:
-	process_mode = Node.PROCESS_MODE_ALWAYS
+func _open() -> void:
+	closing_actions = [&"map"]
 	layer = 5
-	get_tree().paused = true
-
-	var backdrop := ColorRect.new()
-	backdrop.color = UiStyle.BACKDROP
-	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(backdrop)
+	dim()
 	add_child(UiStyle.heading(Catalog.place_name(world.map.id), 20, UiStyle.CREAM, Vector2(64, 28)))
 
 	var frame := PanelContainer.new()
@@ -85,22 +80,23 @@ func _ready() -> void:
 	_highlight()
 
 
-func _process(_delta: float) -> void:
-	if Input.is_action_just_pressed("map") or Input.is_action_just_pressed("ui_cancel"):
-		_close()
-		return
+func _command(event: InputEvent) -> Callable:
 	if usable.is_empty():
-		return
-	if Input.is_action_just_pressed("move_down"):
-		selected = (selected + 1) % usable.size()
-		_highlight()
-	elif Input.is_action_just_pressed("move_up"):
-		selected = (selected - 1 + usable.size()) % usable.size()
-		_highlight()
-	elif Input.is_action_just_pressed("interact"):
-		var destination := usable[selected]
-		_close()
-		world.travel_to(destination)
+		return Callable()
+	if event.is_action_pressed("move_down"):
+		return func() -> void:
+			selected = (selected + 1) % usable.size()
+			_highlight()
+	if event.is_action_pressed("move_up"):
+		return func() -> void:
+			selected = (selected - 1 + usable.size()) % usable.size()
+			_highlight()
+	if event.is_action_pressed("interact"):
+		return func() -> void:
+			var destination := usable[selected]
+			close()
+			world.travel_to(destination)
+	return Callable()
 
 
 ## The chosen staffed waypoint wears the gold frame.
@@ -115,10 +111,6 @@ func _highlight() -> void:
 			UiStyle.CARD if entry["usable"] else Color(UiStyle.CARD, 0.4), UiStyle.LAMP if chosen else UiStyle.RIM, 8
 		))
 
-
-func _close() -> void:
-	get_tree().paused = false
-	queue_free()
 
 
 class Painting extends Control:

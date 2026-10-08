@@ -1,4 +1,4 @@
-extends CanvasLayer
+extends Screen
 ## The skill tree (SkillTree.tsx): once the hero has ranked, the Path Graph on
 ## top (six identities, walked edges lit, a pending step to claim), then the
 ## role's three branches of four tiers. Arrows move across the grid, E learns
@@ -19,14 +19,10 @@ var details: Label
 var status: Label
 
 
-func _ready() -> void:
-	process_mode = Node.PROCESS_MODE_ALWAYS
+func _open() -> void:
+	closing_actions = [&"skills"]
 	layer = 5
-	get_tree().paused = true
-	var backdrop := ColorRect.new()
-	backdrop.color = UiStyle.BACKDROP
-	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(backdrop)
+	dim()
 	# The paths are written on one page; the details read below it.
 	add_child(UiStyle.page(Rect2(60, 60, 1160, 562)))
 	view = Control.new()
@@ -207,11 +203,9 @@ func _describe() -> void:
 		details.text = "%s: %s" % [entry["name"], entry["description"]]
 
 
-func _unhandled_input(event: InputEvent) -> void:
+func _command(event: InputEvent) -> Callable:
 	var command := Callable()
-	if event.is_action_pressed("ui_cancel") or event.is_action_pressed("menu") or event.is_action_pressed("skills"):
-		command = _close
-	elif event.is_action_pressed("move_up"):
+	if event.is_action_pressed("move_up"):
 		command = _move.bind(Vector2i.UP)
 	elif event.is_action_pressed("move_down"):
 		command = _move.bind(Vector2i.DOWN)
@@ -221,9 +215,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		command = _move.bind(Vector2i.RIGHT)
 	elif event.is_action_pressed("interact"):
 		command = _act
-	if command.is_valid():
-		get_viewport().set_input_as_handled()
-		command.call()
+	return command
 
 
 ## To the next card that way: same column first, else the nearest one.
@@ -267,8 +259,3 @@ func _act() -> void:
 	else:
 		status.text = "Requires the skill above." if entry.has("requires") and entry["requires"] not in GameState.hero.skill_nodes else "No skill points to spend."
 	_layout()
-
-
-func _close() -> void:
-	get_tree().paused = false
-	queue_free()

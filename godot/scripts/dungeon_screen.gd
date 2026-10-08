@@ -9,7 +9,7 @@ var world: Node
 var dungeon_id := ""
 
 
-func _ready() -> void:
+func _open() -> void:
 	super()
 	# Start on the deepest open floor: where the hero is headed.
 	var floors: Array = Dungeons.dungeon(dungeon_id)["floors"]
@@ -76,12 +76,12 @@ func _rows() -> Array[Dictionary]:
 
 
 func _step_away() -> String:
-	_close()
+	close()
 	return ""
 
 
 func _descend(level: int) -> String:
-	_close()
+	close()
 	world.enter_floor(level)
 	return ""
 
