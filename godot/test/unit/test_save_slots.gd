@@ -88,6 +88,23 @@ func test_settings_persist_and_clamp() -> void:
 	assert_eq(reread.last_slot, 3)
 
 
+func test_the_notes_read_are_remembered_and_a_harness_run_writes_nothing() -> void:
+	DirAccess.make_dir_recursive_absolute(DIR)
+	var settings := GameSettings.new(DIR + "/settings.cfg")
+	assert_eq(settings.seen_version, "", "nothing read yet: the title flags What's new")
+	settings.seen_version = "0.73.0"
+	settings.save_file()
+	var reread := GameSettings.new(DIR + "/settings.cfg")
+	reread.load_file()
+	assert_eq(reread.seen_version, "0.73.0")
+	reread.read_only = true
+	reread.seen_version = "9.9.9"
+	reread.save_file()
+	var again := GameSettings.new(DIR + "/settings.cfg")
+	again.load_file()
+	assert_eq(again.seen_version, "0.73.0", "a read-only run leaves the player's file alone")
+
+
 func test_boot_starts_a_new_game_in_the_last_slot_then_resumes_it() -> void:
 	var first := _fresh_state()
 	first.boot(PackedStringArray())

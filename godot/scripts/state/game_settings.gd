@@ -19,6 +19,11 @@ var fullscreen := false
 var bindings := {}
 ## The save slot Continue resumes.
 var last_slot := 1
+## The newest version whose notes were read (What's new), so the title can
+## flag a new one (hasUnseenChanges); "" before any.
+var seen_version := ""
+## Harness runs read the player's settings but never write them.
+var read_only := false
 
 
 func _init(file_path := "user://settings.cfg") -> void:
@@ -36,6 +41,7 @@ func load_file() -> void:
 	scanlines = config.get_value(SECTION, "scanlines", scanlines)
 	muted = config.get_value(SECTION, "muted", muted)
 	fullscreen = config.get_value(SECTION, "fullscreen", fullscreen)
+	seen_version = str(config.get_value(SECTION, "seen_version", seen_version))
 	var saved: Variant = config.get_value(SECTION, "bindings", {})
 	bindings = {}
 	if saved is Dictionary:
@@ -45,6 +51,8 @@ func load_file() -> void:
 
 
 func save_file() -> void:
+	if read_only:
+		return
 	var config := ConfigFile.new()
 	config.set_value(SECTION, "music_volume", music_volume)
 	config.set_value(SECTION, "sfx_volume", sfx_volume)
@@ -53,6 +61,7 @@ func save_file() -> void:
 	config.set_value(SECTION, "scanlines", scanlines)
 	config.set_value(SECTION, "muted", muted)
 	config.set_value(SECTION, "fullscreen", fullscreen)
+	config.set_value(SECTION, "seen_version", seen_version)
 	config.set_value(SECTION, "bindings", bindings)
 	DirAccess.make_dir_recursive_absolute(path.get_base_dir())
 	config.save(path)

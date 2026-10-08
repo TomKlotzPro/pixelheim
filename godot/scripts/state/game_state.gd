@@ -80,6 +80,7 @@ func boot(args: PackedStringArray) -> void:
 		slot = clampi(int(args[slot_index + 1]), 1, SaveSlots.SLOT_COUNT)
 	elif args.has("--screenshot"):
 		slot = NO_SLOT
+		settings.read_only = true
 	else:
 		slot = clampi(settings.last_slot, 1, SaveSlots.SLOT_COUNT)
 	var saved := slots.read(slot) if slot != NO_SLOT else {}
