@@ -189,20 +189,32 @@ func _target() -> int:
 	return selected + 1
 
 func _play() -> void:
+	# An empty slot has no one to play: a hero is made for it, from the
+	# start (creation, then the Night of Ash).
+	if GameState.slots.summary(_target()).is_empty():
+		_create_in(_target())
+		return
 	if _target() == GameState.slot:
 		close()
 		if on_play_current.is_valid():
 			on_play_current.call()
 		return
-	GameState.play_slot(_target())
-	_reload()
+	if GameState.play_slot(_target()):
+		_reload()
 
 func _new_hero() -> void:
 	var summary := GameState.slots.summary(_target())
 	if not summary.is_empty() and not _confirm("new", "Replace %s with a new hero?" % summary["name"], "N"):
 		return
-	GameState.new_hero_in(_target())
-	_reload()
+	_create_in(_target())
+
+## Hero creation over this screen, for one slot; Esc there comes back here.
+func _create_in(target: int) -> void:
+	var creation := preload("res://scripts/create_screen.gd").new()
+	creation.world = get_tree().current_scene
+	creation.target_slot = target
+	add_child(creation)
+	creation.layer = layer + 1
 
 func _clear() -> void:
 	var summary := GameState.slots.summary(_target())

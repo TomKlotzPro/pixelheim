@@ -107,17 +107,18 @@ func boot(args: PackedStringArray) -> void:
 		settings.save_file()
 
 
-## Switches play to another slot: the current one is saved first, an empty
-## one starts a new hero. The caller reloads the world scene afterwards.
-func play_slot(target: int) -> void:
-	save_now()
-	_use_slot(target)
+## Switches play to another slot's hero (the current one is saved first) and
+## says whether there was one. The caller reloads the world scene afterwards.
+func play_slot(target: int) -> bool:
+	# An empty slot holds no one to play (Tom: playing one skipped the hero's
+	# making and the Night of Ash): a new hero is made, in creation.
 	var saved := slots.read(target)
 	if saved.is_empty():
-		new_game()
-		save_now()
-	else:
-		apply(saved)
+		return false
+	save_now()
+	_use_slot(target)
+	apply(saved)
+	return true
 
 
 ## Writes a brand-new hero into a slot (replacing whatever was there) and plays it.
