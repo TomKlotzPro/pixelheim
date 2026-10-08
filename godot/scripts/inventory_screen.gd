@@ -382,7 +382,7 @@ func _build_doll() -> void:
 	for child in doll.get_children():
 		child.queue_free()
 	var hero := GameState.hero
-	var art := PunyArt.hero(hero.role_id, hero.look)
+	var art := GameState.hero_art()
 	var figure := AnimatedSprite2D.new()
 	figure.sprite_frames = PunyArt.frames(art)
 	figure.self_modulate = art["tint"]

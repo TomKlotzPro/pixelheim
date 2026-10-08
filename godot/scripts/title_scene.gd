@@ -473,7 +473,7 @@ func _village() -> void:
 	fountain.position = Vector2(304, 296)
 	fountain.play()
 	street.add_child(fountain)
-	var hero_spec := PunyArt.hero(GameState.hero.role_id, GameState.hero.look)
+	var hero_spec := GameState.hero_art()
 	var hero := AnimatedSprite2D.new()
 	hero.sprite_frames = PunyArt.frames(hero_spec)
 	hero.play(PunyArt.pick(hero.sprite_frames, "idle", "up"))

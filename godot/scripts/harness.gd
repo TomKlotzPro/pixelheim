@@ -174,6 +174,13 @@ func _run_test_harness() -> void:
 	# Terrain review: `--at x,y` stands the hero on a cell (before `--walk`,
 	# so a walk can test what stops them), `--zoom Z` changes the camera;
 	# `overview` (below) frames the whole map.
+	# `--wear iron_helm,iron_armor`: gear put on the hero (drawn on them, PIX-129).
+	var wear_index := args.find("--wear")
+	if wear_index >= 0 and wear_index + 1 < args.size():
+		for item_id: String in args[wear_index + 1].split(","):
+			var piece := InventoryState.create_gear(item_id)
+			GameState.pack.gear.append(piece)
+			GameState.equip(piece["uid"])
 	var at_index := args.find("--at")
 	if at_index >= 0 and at_index + 1 < args.size():
 		var at := args[at_index + 1].split(",")

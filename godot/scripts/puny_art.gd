@@ -53,6 +53,30 @@ const HEROES := {
 ## Necromancers wear the mage's robe in grave colors.
 const HERO_TINTS := {"necromancer": Color(0.72, 0.6, 1.0)}
 
+## Worn gear drawn on the hero (PIX-129). Shade drew every human on one
+## template, so a helmet is another sheet's head and armour another sheet's
+## body, cut at the neck: item id -> the sheet that draws it. Leather is his
+## green archer in browns, the wyrm visor his warrior's helm blackened and
+## gilded (tools/outfits.py).
+const HEADS := {
+	"leather_cap": "characters/Archer-Leather.png",
+	"iron_helm": "characters/Human-Soldier-Cyan.png",
+	"wyrm_visor": "characters/Warrior-Wyrm.png",
+}
+const BODIES := {
+	"leather_armor": "characters/Archer-Leather.png",
+	"traveler_cloak": "characters/Archer-Green.png",
+	"shadow_cloak": "characters/Archer-Purple.png",
+	"mage_robe": "characters/Mage-Cyan.png",
+	"iron_armor": "characters/Soldier-Blue.png",
+	"scaled_mail": "characters/Warrior-Red.png",
+	"runic_armor": "characters/Human-Soldier-Cyan.png",
+}
+## The bare template whose frames say where each head ends.
+const BASE := "characters/Character-Base.png"
+## A head is the figure's top seven rows, in every frame.
+const HEAD_ROWS := 7
+
 ## Villagers by the web's sprite id (npcs.ts / settlers.ts).
 const VILLAGERS := {
 	"elder": {"sheet": "mini/Okomo.png", "family": "mini"},
@@ -86,6 +110,8 @@ const MONSTERS := {
 }
 
 static var _frames_cache := {}
+static var _outfits := {}
+static var _necks := PackedInt32Array()
 
 
 static func path(sheet: String) -> String:
@@ -97,6 +123,56 @@ static func hero(role_id: String, look: Variant = 0) -> Dictionary:
 	var sheets: Array = entry[0]
 	var index := int(look) % sheets.size() if look != null else 0
 	return {"sheet": sheets[index], "family": "puny", "attack": entry[1], "tint": HERO_TINTS.get(role_id, Color.WHITE)}
+
+
+## The hero as dressed: the role's look, a worn helmet's head and a worn
+## armour's body (`worn`: slot -> item id). Pieces without a drawing keep the
+## look's own.
+static func dressed(role_id: String, look: Variant, worn: Dictionary) -> Dictionary:
+	var spec := hero(role_id, look)
+	var head: String = HEADS.get(worn.get("head", ""), spec["sheet"])
+	var body: String = BODIES.get(worn.get("body", ""), spec["sheet"])
+	if head == spec["sheet"] and body == spec["sheet"]:
+		return spec
+	spec["head"] = head
+	spec["body"] = body
+	spec["sheet"] = "outfit|%s|%s" % [head, body]
+	return spec
+
+
+## A dressed spec's sheet: every frame the body sheet's rows below the neck
+## and the head sheet's rows to it. Built once per outfit.
+static func outfit_texture(head: String, body: String) -> Texture2D:
+	var key := head + "|" + body
+	if not _outfits.has(key):
+		var heads: Image = (load(path(head)) as Texture2D).get_image()
+		var bodies: Image = (load(path(body)) as Texture2D).get_image()
+		heads.convert(Image.FORMAT_RGBA8)
+		bodies.convert(Image.FORMAT_RGBA8)
+		var sheet := Image.create(bodies.get_width(), bodies.get_height(), false, Image.FORMAT_RGBA8)
+		var columns := bodies.get_width() / 32
+		var rows := bodies.get_height() / 32
+		var necks := _neck_rows()
+		for row in rows:
+			for column in columns:
+				var at := Vector2i(column * 32, row * 32)
+				var neck: int = necks[row * columns + column]
+				sheet.blit_rect(bodies, Rect2i(at + Vector2i(0, neck), Vector2i(32, 32 - neck)), at + Vector2i(0, neck))
+				sheet.blit_rect(heads, Rect2i(at, Vector2i(32, neck)), at)
+		_outfits[key] = ImageTexture.create_from_image(sheet)
+	return _outfits[key]
+
+
+## Per frame of the template, the first row below the head (frames bob).
+static func _neck_rows() -> PackedInt32Array:
+	if _necks.is_empty():
+		var base: Image = (load(path(BASE)) as Texture2D).get_image()
+		for row in base.get_height() / 32:
+			for column in base.get_width() / 32:
+				var frame := base.get_region(Rect2i(column * 32, row * 32, 32, 32))
+				var used := frame.get_used_rect()
+				_necks.append(used.position.y + HEAD_ROWS if used.has_area() else 16)
+	return _necks
 
 
 ## How many looks a role offers (its colourways).
@@ -124,7 +200,7 @@ static func frames(spec: Dictionary) -> SpriteFrames:
 		return _frames_cache[key]
 	var family: Dictionary = FAMILIES[spec["family"]]
 	var size := frame_size(spec)
-	var texture: Texture2D = load(path(spec["sheet"]))
+	var texture: Texture2D = outfit_texture(spec["head"], spec["body"]) if spec.has("head") else load(path(spec["sheet"]))
 	var columns := texture.get_width() / size
 	var sheet := SpriteFrames.new()
 	sheet.remove_animation("default")

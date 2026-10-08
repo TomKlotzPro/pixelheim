@@ -296,7 +296,7 @@ func _describe(skill: Dictionary) -> String:
 func refresh() -> void:
 	var hero := GameState.hero
 	var pack := GameState.pack
-	var art := PunyArt.hero(hero.role_id, hero.look)
+	var art := GameState.hero_art()
 	portrait.sprite_frames = PunyArt.frames(art)
 	portrait.self_modulate = art["tint"]
 	portrait.play(PunyArt.pick(portrait.sprite_frames, "idle", "down"))

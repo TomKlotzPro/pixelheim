@@ -71,6 +71,16 @@ func remove_item(item_id: String, count := 1) -> void:
 		items.erase(item_id)
 
 
+## What is worn where: slot -> item id (what the hero is drawn in).
+func worn_items() -> Dictionary:
+	var worn := {}
+	for slot: String in equipped:
+		var instance := gear_by_uid(equipped[slot])
+		if not instance.is_empty():
+			worn[slot] = instance["itemId"]
+	return worn
+
+
 func gear_by_uid(uid: String) -> Dictionary:
 	for instance in gear:
 		if instance["uid"] == uid:
