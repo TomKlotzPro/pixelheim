@@ -164,15 +164,45 @@ static func mastery_bonus(mastery: Variant, monster_id: String) -> float:
 	return float(_data()["masteryTiers"][tier - 1]["bonus"]) if tier > 0 else 0.0
 
 
+## What gets through armour (PIX-185): a hit loses the share
+## weight*armor / (raw + weight*armor) of itself, so every point of armour
+## helps, ever less, and none makes anyone immune.
+static func through_armor(raw: int, armor: float) -> int:
+	var weighted := float(_data()["armor"]["weight"]) * maxf(0.0, armor)
+	return maxi(1, roundi(float(raw) * raw / (raw + weighted)))
+
+
+## The share of a hit `armor` turns aside, 0..1.
+static func turned_aside(raw: float, armor: float) -> float:
+	var weighted := float(_data()["armor"]["weight"]) * maxf(0.0, armor)
+	return weighted / (raw + weighted) if raw + weighted > 0 else 0.0
+
+
+## How hard a foe of `level` hits: the median attack of every kind (bosses
+## aside) brought to that level along the floorLift curve. What the stat
+## sheet measures armour against, and the balance test fights.
+static func matched_attack(level: int) -> float:
+	var attacks: Array[int] = []
+	for id: String in _data()["monsters"]:
+		if is_boss(id):
+			continue
+		var base := monster(id)
+		attacks.append(int(lifted(base, level - int(base["level"]))["attack"]))
+	attacks.sort()
+	var middle := attacks.size() / 2
+	return attacks[middle] if attacks.size() % 2 == 1 else (attacks[middle - 1] + attacks[middle]) / 2.0
+
+
 ## A skill that lands (heroSkillDamage): the skill's power, sharpened by
-## mastery of the foe's family, through the variance, minus half its armor.
+## mastery of the foe's family, through the variance; skills pierce half
+## the foe's armour.
 static func hero_skill_damage(hero: HeroState, pack: InventoryState, skill: Dictionary, fighter: Dictionary, roll: Callable) -> int:
 	var raw := Skills.skill_power(hero, pack, skill) * (1.0 + mastery_bonus(hero.mastery, fighter["id"]))
-	return maxi(1, variance(raw, roll) - floori(int(fighter["defense"]) / 2.0))
+	return through_armor(variance(raw, roll), int(fighter["defense"]) / 2.0)
 
 
 ## A swing that lands (heroAttackDamage): scaling stat plus weapon, crits,
-## execution bonus, mastery, minus the monster's defense.
+## execution bonus, mastery, through the monster's defense.
 ## `song_crit`: what Loras's song adds when `inspired` (more with his horn, PIX-157).
 static func hero_attack_damage(hero: HeroState, pack: InventoryState, fighter: Dictionary, inspired: bool, roll: Callable, song_crit := 0.12) -> int:
 	var held := HeroRules.weapon(pack)
@@ -185,12 +215,12 @@ static func hero_attack_damage(hero: HeroState, pack: InventoryState, fighter: D
 	if passives["lowHpBonus"] > 0 and float(fighter["hp"]) / fighter["maxHp"] < 0.3:
 		raw *= 1 + passives["lowHpBonus"]
 	raw *= 1 + mastery_bonus(hero.mastery, fighter["id"])
-	return maxi(1, variance(raw, roll) - int(fighter["defense"]))
+	return through_armor(variance(raw, roll), int(fighter["defense"]))
 
 
-## A monster's hit on the hero (monsterAttackDamage), armor absorbing.
+## A monster's hit on the hero (monsterAttackDamage), through the hero's armour.
 static func monster_attack_damage(fighter: Dictionary, hero: HeroState, pack: InventoryState, roll: Callable) -> int:
-	return maxi(1, variance(fighter["attack"], roll) - HeroRules.total_defense(hero, pack))
+	return through_armor(variance(fighter["attack"], roll), HeroRules.total_defense(hero, pack))
 
 
 ## A kill's drop, or {} (rollDrop): chance by kind, the floor's pool, a third

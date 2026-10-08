@@ -90,6 +90,20 @@ static func rank_index(level: int) -> int:
 	return mini(3, floori(level / 5.0))
 
 
+## The health a hero of their level has grown into under today's growth
+## (PIX-185 made casters and rogues sturdier): the role's base, a level's
+## growth for every level past the first, a point per END spent, and what
+## owned skills grant. Saves from before catch up to it (SaveCodec).
+static func grown_hp(hero: Dictionary) -> int:
+	var role := Catalog.role(hero["roleId"])
+	var hp := int(role["baseStats"]["maxHp"]) + int(role["growth"]["maxHp"]) * (int(hero["level"]) - 1)
+	hp += maxi(0, int(hero["stats"].get("endurance", 0)) - int(role["baseStats"]["endurance"]))
+	for node: Dictionary in _combat()["skillTrees"].get(hero["roleId"], []):
+		if node["id"] in hero.get("skillNodes", []):
+			hp += int(node.get("grantStats", {}).get("maxHp", 0))
+	return hp
+
+
 ## Applies pending XP; returns levels gained. A level grows HP/MP by role,
 ## heals half of them (levelUpHeal, PIX-141: a level is a lift, not a free
 ## refill mid-fight), banks the stat points (statPointsPerLevel) and a skill

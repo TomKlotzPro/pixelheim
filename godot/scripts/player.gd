@@ -130,7 +130,7 @@ func _physics_process(delta: float) -> void:
 			var body := area.get_parent()
 			if body.has_method("take_hit") and body not in hit_this_swing:
 				hit_this_swing.append(body)
-				# The web's swing: scaling stat + weapon, crits, mastery, minus armor.
+				# The web's swing: scaling stat + weapon, crits, mastery, through armour (PIX-185).
 				body.take_hit(Bestiary.hero_attack_damage(
 					GameState.hero, GameState.pack, body.fighter,
 					GameState.settlement.bard_song == true, GameState.roll, GameState.song_crit()

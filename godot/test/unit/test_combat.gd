@@ -51,7 +51,8 @@ func test_elites_match_the_web() -> void:
 func test_hero_damage_matches_the_web() -> void:
 	var w := _warrior()
 	assert_eq(Bestiary.hero_attack_damage(w[0], w[1], Bestiary.spawn("orc"), false, _dice([0.5])), 9)
-	assert_eq(Bestiary.hero_attack_damage(w[0], w[1], Bestiary.spawn("orc"), false, _dice([0.0])), 7)
+	# PIX-185: armour takes a share, not a flat cut (the web's was 7).
+	assert_eq(Bestiary.hero_attack_damage(w[0], w[1], Bestiary.spawn("orc"), false, _dice([0.0])), 8)
 	assert_eq(Bestiary.hero_attack_damage(w[0], w[1], Bestiary.spawn("slime"), false, _dice([0.99])), 15)
 
 
@@ -71,11 +72,13 @@ func test_an_inspired_crit_matches_the_web() -> void:
 	assert_false(passives["stunResist"])
 
 
-func test_armor_and_monster_hits_match_the_web() -> void:
+## PIX-185: a hit of 14 against DEF 8 loses 10/(14+10) of itself (the web
+## cut it flat to 6, and a slime's to 1 whatever the armour).
+func test_armor_turns_aside_a_share_of_monster_hits() -> void:
 	var w := _warrior()
 	assert_eq(HeroRules.total_defense(w[0], w[1]), 8)
-	assert_eq(Bestiary.monster_attack_damage(Bestiary.spawn("orc"), w[0], w[1], _dice([0.5])), 6)
-	assert_eq(Bestiary.monster_attack_damage(Bestiary.spawn("slime"), w[0], w[1], _dice([0.5])), 1, "never less than 1")
+	assert_eq(Bestiary.monster_attack_damage(Bestiary.spawn("orc"), w[0], w[1], _dice([0.5])), 8)
+	assert_eq(Bestiary.monster_attack_damage(Bestiary.spawn("slime"), w[0], w[1], _dice([0.5])), 2)
 
 
 ## PIX-141: the curve climbs (46, 70, 102...), a level banks 3 stat points

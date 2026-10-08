@@ -204,7 +204,7 @@
       "weight": 4,
       "value": 130,
       "description": "Woven with wards. Machine wash cold.",
-      "armor": 4,
+      "armor": 6,
       "slot": "body"
     },
     "runic_armor": {
@@ -224,7 +224,7 @@
       "weight": 3,
       "value": 35,
       "description": "Smells of campfires and long roads.",
-      "armor": 2,
+      "armor": 3,
       "slot": "body"
     },
     "shadow_cloak": {
@@ -1477,7 +1477,7 @@
       "weight": 1,
       "value": 150,
       "description": "Yeti fur lined with lily-woven cloth. Your thoughts stay sharp in the cold. Crafted, never sold.",
-      "armor": 2,
+      "armor": 3,
       "slot": "head",
       "set": "frostweave",
       "grants": {
@@ -1491,7 +1491,7 @@
       "weight": 4,
       "value": 320,
       "description": "White as the pass and just as quiet. Spells cast in it come out crisp. Crafted, never sold.",
-      "armor": 5,
+      "armor": 8,
       "slot": "body",
       "set": "frostweave",
       "grants": {
@@ -1505,7 +1505,7 @@
       "weight": 1,
       "value": 140,
       "description": "Fingerless, so the hands can still shape a spell. Crafted, never sold.",
-      "armor": 1,
+      "armor": 2,
       "slot": "hands",
       "set": "frostweave",
       "grants": {
@@ -1524,7 +1524,7 @@
       "weight": 2,
       "value": 140,
       "description": "Fur boots that never slip on ice. Mostly. Crafted, never sold.",
-      "armor": 2,
+      "armor": 3,
       "slot": "feet",
       "set": "frostweave",
       "tint": [
@@ -1540,7 +1540,7 @@
       "weight": 2,
       "value": 260,
       "description": "A ball of ice that never melts, held in the off hand. Blows come slower near it. Crafted, never sold.",
-      "armor": 3,
+      "armor": 5,
       "slot": "offhand",
       "set": "frostweave",
       "grants": {
@@ -1657,7 +1657,7 @@
         "endurance": 3
       },
       "growth": {
-        "maxHp": 4,
+        "maxHp": 6,
         "maxMp": 5
       },
       "resource": "mana",
@@ -1693,7 +1693,7 @@
         "endurance": 6
       },
       "growth": {
-        "maxHp": 5,
+        "maxHp": 6,
         "maxMp": 2
       },
       "resource": "endurance",
@@ -1837,7 +1837,7 @@
         "endurance": 3
       },
       "growth": {
-        "maxHp": 4,
+        "maxHp": 6,
         "maxMp": 5
       },
       "resource": "mana",
@@ -2027,7 +2027,7 @@
           "grants": {
             "intelligence": 3
           },
-          "armor": 2
+          "armor": 4
         }
       }
     }
