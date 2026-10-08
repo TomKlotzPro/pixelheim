@@ -114,11 +114,6 @@ func _run_test_harness() -> void:
 	if floor_index >= 0 and floor_index + 1 < args.size():
 		world.enter_floor(int(args[floor_index + 1]))
 		await get_tree().create_timer(0.3).timeout
-	if args.has("clear"):
-		# Fell every foe on the floor at once: the clear, its hoard, the way up.
-		for foe in get_tree().get_nodes_in_group("mobs"):
-			foe.take_hit(99999, foe.global_position + Vector2.LEFT)
-		await get_tree().create_timer(0.6).timeout
 	if args.has("gate"):
 		var dungeon_index := args.find("--dungeon")
 		world._use_portal({
@@ -130,6 +125,11 @@ func _run_test_harness() -> void:
 			# Take the selected floor, as E would.
 			world.get_children().filter(func(node: Node) -> bool: return node.has_method("_descend"))[0]._act()
 			await get_tree().create_timer(0.4).timeout
+	if args.has("clear"):
+		# Fell every foe on the floor at once (after `gate descend`): the clear, its hoard, the way up.
+		for foe in get_tree().get_nodes_in_group("mobs"):
+			foe.take_hit(99999, foe.global_position + Vector2.LEFT)
+		await get_tree().create_timer(0.6).timeout
 	if args.has("leave"):
 		# Up the stairs, back to the gate.
 		world._use_portal({"kind": "gate"})
