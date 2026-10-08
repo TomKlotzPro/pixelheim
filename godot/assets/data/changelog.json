@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.98.0",
+      "date": "2026-10-08",
+      "codename": "Light on Your Feet",
+      "notes": [
+        "DODGE ROLL: Shift (or L, or the right shoulder button) throws you three tiles in a blink - nothing can touch you mid-roll. Rebind it in Options",
+        "HITS THAT LAND: a blow you strike freezes the world for an instant and the screen jolts; a blow you take hits harder still, and a boss's harder than that (none of it with Reduce motion)",
+        "ELITES HAVE A TRICK: elite wolves and slimes lunge down a marked line, greenskins cleave the ground before them, golems and mimics stamp a ring, imps and wyverns spit firebolts, and the undead raise a guard that turns most of a blow",
+        "EVERY TRICK IS TOLD: the ground marks or the monster flashes first - read it, roll out"
+      ]
+    },
+    {
       "version": "0.97.0",
       "date": "2026-10-08",
       "codename": "Bad Dreams",

@@ -11,6 +11,7 @@ const BINDABLE := {
 	"move_left": ["Move left", KEY_A],
 	"move_right": ["Move right", KEY_D],
 	"attack": ["Attack", KEY_J],
+	"dodge": ["Dodge roll", KEY_SHIFT],
 	"interact": ["Talk / interact", KEY_E],
 	"inventory": ["Inventory", KEY_I],
 	"map": ["World map", KEY_M],
@@ -22,7 +23,7 @@ const BINDABLE := {
 ## Keys that always work beside the primary one.
 const ALTERNATES := {
 	"move_up": [KEY_UP], "move_down": [KEY_DOWN], "move_left": [KEY_LEFT], "move_right": [KEY_RIGHT],
-	"attack": [KEY_SPACE], "interact": [KEY_ENTER], "map": [KEY_TAB],
+	"attack": [KEY_SPACE], "interact": [KEY_ENTER], "map": [KEY_TAB], "dodge": [KEY_L],
 	"drop": [KEY_X], "drop_all": [KEY_Z], "menu": [KEY_ESCAPE],
 }
 ## Skills by their place in the hero's list: the number row, fixed.
@@ -31,7 +32,7 @@ const SKILL_KEYS := [KEY_1, KEY_2, KEY_3, KEY_4, KEY_5, KEY_6]
 const ALL_DEVICES := -1
 const PAD_BUTTONS := {
 	"attack": JOY_BUTTON_A, "interact": JOY_BUTTON_B, "map": JOY_BUTTON_Y, "menu": JOY_BUTTON_START,
-	"inventory": JOY_BUTTON_X,
+	"inventory": JOY_BUTTON_X, "dodge": JOY_BUTTON_RIGHT_SHOULDER,
 }
 const PAD_STICK := {
 	"move_up": [JOY_AXIS_LEFT_Y, -1.0], "move_down": [JOY_AXIS_LEFT_Y, 1.0],

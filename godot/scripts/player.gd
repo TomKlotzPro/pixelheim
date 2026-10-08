@@ -29,6 +29,10 @@ var casting := false
 var skill_ready := true
 var regen_clock := 0.0
 var invulnerable := false
+## The dodge roll (PIX-155): rolling now, and ready to roll again.
+var dodging := false
+var dodge_ready := true
+var dodge_dir := Vector2.ZERO
 var dead := false
 var hit_this_swing: Array[Node] = []
 var scripted_dir := Vector2.ZERO  # test-harness movement override
@@ -109,6 +113,10 @@ func _physics_process(delta: float) -> void:
 		velocity = Vector2.ZERO
 		_play("idle")
 		return
+	if dodging:
+		velocity = dodge_dir * float(Bestiary._data()["dodge"]["speed"])
+		move_and_slide()
+		return
 	if attacking:
 		if not hitbox.monitoring:
 			return
@@ -145,6 +153,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		if not ailments.is_stunned():
 			attack()
 		return
+	if event.is_action_pressed("dodge"):
+		get_viewport().set_input_as_handled()
+		dodge()
+		return
 	for index in Controls.SKILL_KEYS.size():
 		if event.is_action_pressed("skill_%d" % (index + 1)):
 			get_viewport().set_input_as_handled()
@@ -170,13 +182,48 @@ func attack() -> void:
 		func() -> void: attack_ready = true
 	)
 
+## A quick roll the way the hero is heading (or facing): a burst of speed and
+## a moment nothing can touch them (PIX-155), then a cooldown.
+func dodge() -> void:
+	if not dodge_ready or dodging or attacking or dead or ailments.is_stunned():
+		return
+	var rules: Dictionary = Bestiary._data()["dodge"]
+	var heading := Input.get_vector("move_left", "move_right", "move_up", "move_down")
+	if scripted_dir != Vector2.ZERO:
+		heading = scripted_dir
+	dodge_dir = heading.normalized() if heading != Vector2.ZERO else facing
+	face(dodge_dir)
+	dodging = true
+	dodge_ready = false
+	Sound.play("step")
+	_play("walk")
+	# A blur: the hero half-seen, a puff of dust where they left from.
+	var blur := sprite.create_tween()
+	blur.tween_property(sprite, "modulate:a", 0.45, 0.05)
+	blur.tween_interval(float(rules["seconds"]))
+	blur.tween_property(sprite, "modulate:a", 1.0, 0.08)
+	world.dust(global_position)
+	get_tree().create_timer(float(rules["seconds"])).timeout.connect(func() -> void: dodging = false)
+	_dodge_iframes = true
+	get_tree().create_timer(float(rules["iframes"])).timeout.connect(func() -> void: _dodge_iframes = false)
+	get_tree().create_timer(float(rules["cooldown"])).timeout.connect(func() -> void: dodge_ready = true)
+
+
+var _dodge_iframes := false
+
+
 ## A blow lands; `infliction` is the attacker's ailment roll, if it carries one.
 func take_hit(damage: int, from: Vector2, infliction: Variant = null) -> void:
 	if invulnerable or dead:
 		return
+	if _dodge_iframes:
+		world.float_text("dodged", global_position + Vector2(0, -22), Color(0.75, 0.9, 1.0))
+		return
 	GameState.hurt(damage)
 	hp = GameState.hero.hp
 	world.float_number(damage, global_position + Vector2(0, -22), Color(1, 0.35, 0.35))
+	world.shake(3.0, 0.2)
+	world.hit_stop(0.05)
 	if hp > 0 and ailments.inflict(infliction, GameState.roll, HeroRules.passives(GameState.hero)):
 		world.log_line("You are afflicted by %s!" % infliction["kind"])
 		_show_ailment()

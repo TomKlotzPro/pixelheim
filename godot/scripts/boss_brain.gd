@@ -9,7 +9,6 @@ extends Node
 ## (its parent) does the moving and the biting.
 
 const TILE := 16.0
-const TELL_COLOR := Color(1.0, 0.18, 0.08, 0.32)
 
 var enemy: CharacterBody2D
 var world: Node2D
@@ -19,6 +18,8 @@ var cooldown := 2.0
 var turn := 0
 ## The marks on the ground now, freed when they strike.
 var marks: Array[Node2D] = []
+## Marks of this cast still to strike; at none the boss moves again.
+var pending := 0
 
 
 func _ready() -> void:
@@ -52,8 +53,7 @@ func _check_phase() -> void:
 	cooldown = minf(cooldown, 1.0)
 	world.log_line(pattern["roars"][phase - 1])
 	Sound.play("bump")
-	if world.has_method("shake"):
-		world.shake(6.0, 0.5)
+	world.shake(6.0, 0.5)
 
 
 func _cast(move: String) -> void:
@@ -64,59 +64,36 @@ func _cast(move: String) -> void:
 	var at: Vector2 = enemy.global_position
 	match String(attack["shape"]):
 		"line":
-			var toward := (hero - at).normalized()
-			if toward == Vector2.ZERO:
-				toward = Vector2.DOWN
-			var along := toward * float(attack["length"]) * TILE
-			var across := toward.orthogonal() * float(attack["width"]) * TILE / 2.0
-			_tell(PackedVector2Array([at + across, at + along + across, at + along - across, at - across]), attack)
+			_tell(Telegraph.band(at, hero, float(attack["length"]) * TILE, float(attack["width"]) * TILE), attack)
 		"circle":
-			_tell(_circle(at, float(attack["radius"]) * TILE), attack)
+			_tell(Telegraph.circle(at, float(attack["radius"]) * TILE), attack)
 		"circles":
 			for i in int(attack["count"]):
 				var spot := hero if i == 0 else hero + Vector2(randf_range(-1, 1), randf_range(-1, 1)) * float(attack["spread"]) * TILE
-				_tell(_circle(spot, float(attack["radius"]) * TILE), attack)
+				_tell(Telegraph.circle(spot, float(attack["radius"]) * TILE), attack)
 		"summon":
 			_summon(attack)
 
 
-## A mark on the ground that pulses for the tell, then strikes whoever
-## stands in it.
+## A mark on the ground (Telegraph) that strikes whoever still stands in it.
 func _tell(shape: PackedVector2Array, attack: Dictionary) -> void:
-	var mark := Polygon2D.new()
-	mark.polygon = shape
-	mark.color = TELL_COLOR
-	# A bright edge so the mark reads on grass, stone and water alike.
-	var edge := Line2D.new()
-	edge.points = shape
-	edge.closed = true
-	edge.width = 1.5
-	edge.default_color = Color(1.0, 0.62, 0.2, 0.95)
-	mark.add_child(edge)
-	world.add_child(mark)
-	# Over the ground, under everyone standing on it.
-	world.move_child(mark, 3)
-	marks.append(mark)
-	var tell := float(attack["tell"])
-	var pulse := mark.create_tween()
-	pulse.tween_property(mark, "color:a", 0.6, tell * 0.5)
-	pulse.tween_property(mark, "color:a", 0.35, tell * 0.5)
-	pulse.tween_callback(_strike.bind(mark, attack))
+	var shown := Telegraph.mark(world, shape, float(attack["tell"]), _strike.bind(attack))
+	pending += 1
+	marks.append(shown)
+	shown.tree_exiting.connect(func() -> void: marks.erase(shown))
 
 
-func _strike(mark: Polygon2D, attack: Dictionary) -> void:
-	marks.erase(mark)
-	if is_instance_valid(enemy) and not enemy.dying:
-		var player: CharacterBody2D = world.player
-		if not player.dead and Geometry2D.is_point_in_polygon(player.global_position, mark.polygon):
-			var damage := roundi(Bestiary.monster_attack_damage(enemy.fighter, GameState.hero, GameState.pack, GameState.roll) * float(attack["power"]))
-			player.take_hit(damage, mark.polygon[0], enemy.fighter.get("inflicts") if attack.get("inflicts", false) else null)
-		if marks.is_empty():
-			enemy.mode = "chase"
-	var flash := mark.create_tween()
-	flash.tween_property(mark, "color", Color(1.0, 0.75, 0.3, 0.7), 0.06)
-	flash.tween_property(mark, "color:a", 0.0, 0.25)
-	flash.tween_callback(mark.queue_free)
+func _strike(shape: PackedVector2Array, attack: Dictionary) -> void:
+	pending -= 1
+	if not is_instance_valid(enemy) or enemy.dying:
+		return
+	if Telegraph.catches(world, shape):
+		var damage := roundi(Bestiary.monster_attack_damage(enemy.fighter, GameState.hero, GameState.pack, GameState.roll) * float(attack["power"]))
+		world.player.take_hit(damage, shape[0], enemy.fighter.get("inflicts") if attack.get("inflicts", false) else null)
+		world.shake(5.0, 0.3)
+	# The last mark of a cast lets the boss move again.
+	if pending <= 0:
+		enemy.mode = "chase"
 
 
 ## The dead rise at the caster's side (never more than the attack's cap).
@@ -133,13 +110,6 @@ func _summon(attack: Dictionary) -> void:
 		world.appear(add)
 		add.notice()
 	enemy.mode = "chase"
-
-
-func _circle(center: Vector2, radius: float) -> PackedVector2Array:
-	var points := PackedVector2Array()
-	for i in 20:
-		points.append(center + Vector2.RIGHT.rotated(TAU * i / 20.0) * radius)
-	return points
 
 
 func _exit_tree() -> void:
