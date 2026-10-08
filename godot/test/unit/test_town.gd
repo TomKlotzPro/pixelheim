@@ -177,35 +177,52 @@ func test_investments_round_trip_in_the_web_shape() -> void:
 
 # ---- GameState: recruits and services (settlers.test.ts) --------------------------
 
-func test_an_unmet_ask_refuses_politely_and_names_the_price() -> void:
+## A recruit's help is a quest (PIX-148): taken on the first word, turned in
+## when it's done, and the turn-in moves them to town.
+func test_a_recruits_story_is_a_quest_that_brings_them_home() -> void:
 	state.settlement.town_tier = 1
 	var messages: Array[String] = []
 	state.message.connect(func(text: String) -> void: messages.append(text))
 	state.finish_dialogue("settler_iva")
-	assert_string_starts_with(messages[0], "Iva the Healer asks: 3x Marsh Reed.")
+	assert_string_starts_with(messages[0], "Quest accepted - Reeds for a Healer:")
 	assert_false(state.is_settled("settler_iva"))
-
-
-func test_a_met_ask_recruits_and_the_settler_moves_to_town() -> void:
-	state.settlement.town_tier = 1
 	state.pack.items["marsh_reed"] = 3
 	var moved := [false]
 	state.settlers_changed.connect(func() -> void: moved[0] = true)
 	state.finish_dialogue("settler_iva")
+	assert_string_starts_with(messages[1], "Quest complete - Reeds for a Healer! +25 xp. Reeds enough")
 	assert_true(state.is_settled("settler_iva"))
 	assert_false(state.pack.items.has("marsh_reed"), "the reeds were handed over")
 	assert_true(moved[0])
 	assert_eq(Npcs.by_id("settler_iva", state.settlement.settlers)["mapId"], "town")
 
 
+func test_the_bards_lute_is_with_a_troll() -> void:
+	state.settlement.town_tier = 2
+	state.finish_dialogue("settler_loras")
+	assert_true(state.progression.quests.has("loras_lute"))
+	state.roll = func() -> float: return 0.99
+	state.defeat_monster(Bestiary.spawn("troll"), "deepwood", "", 8)
+	state.finish_dialogue("settler_loras")
+	assert_true(state.is_settled("settler_loras"))
+	assert_has(Town.settler_perks(state.settlement.settlers), "Loras plays a marching song before a hunt: +12% crit until it ends")
+
+
 func test_finer_folk_hold_out_for_a_finer_town() -> void:
-	state.pack.gold = 1000
+	state.settlement.town_tier = 2
 	var messages: Array[String] = []
 	state.message.connect(func(text: String) -> void: messages.append(text))
 	state.finish_dialogue("settler_mirelle")
-	assert_string_contains(messages[0], "Fund the third charter")
-	assert_false(state.is_settled("settler_mirelle"))
-	assert_eq(state.pack.gold, 1000)
+	assert_string_contains(messages[0], "into a town")
+	assert_false(state.progression.quests.has("mirelle_vault"), "no story until there's a town")
+
+
+func test_settlers_speak_for_the_towns_age() -> void:
+	var at := func(tier: int) -> Array:
+		return Npcs.on_map("town", tier, ["settler_iva"]).filter(func(npc: Dictionary) -> bool: return npc["id"] == "settler_iva")[0]["lines"]
+	assert_eq(at.call(1)[0], "Sit. Breathe. There - whole again. My door is always open to the town's patron.")
+	assert_string_contains(at.call(3)[0], "fountain")
+	assert_string_contains(at.call(4)[0], "city")
 
 
 func test_iva_heals_her_patron_for_free_at_home_in_town() -> void:

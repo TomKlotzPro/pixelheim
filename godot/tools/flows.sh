@@ -44,8 +44,16 @@ for flow in "${FLOWS[@]}"; do
 	rm -f screenshot.png
 	# shellcheck disable=SC2086 # the arguments are meant to split
 	# A watchdog: a run that never quits fails instead of stalling the rest.
-	report=$(perl -e 'alarm 60; exec @ARGV' godot --path . -- --screenshot $args 2>&1 | grep "screenshot saved")
-	if [[ -f screenshot.png ]] && grep -qE "$expect" <<<"$report"; then
+	output=$(perl -e 'alarm 60; exec @ARGV' godot --path . -- --screenshot $args 2>&1)
+	report=$(grep "screenshot saved" <<<"$output")
+	# A script error fails the flow even when the report looks right: a broken
+	# map build once logged errors on every map but the town while the report
+	# line stayed clean.
+	errors=$(grep -m1 "SCRIPT ERROR" <<<"$output")
+	if [[ -n "$errors" ]]; then
+		failed=1
+		printf "FAIL  %-7s %s\n" "$name" "$errors"
+	elif [[ -f screenshot.png ]] && grep -qE "$expect" <<<"$report"; then
 		mv screenshot.png "flows/$name.png"
 		printf "ok    %-7s %s\n" "$name" "${report#screenshot saved; }"
 	else

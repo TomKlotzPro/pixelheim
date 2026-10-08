@@ -225,6 +225,11 @@ func _run_test_harness() -> void:
 		screen.world = world
 		world.add_child(screen)
 		await get_tree().create_timer(0.3).timeout
+	var settlers_index := args.find("--settlers")
+	if settlers_index >= 0 and settlers_index + 1 < args.size():
+		# `--settlers iva,wren`: recruits already living in town.
+		for short: String in args[settlers_index + 1].split(","):
+			GameState.settlement.settlers.append("settler_" + short)
 	var cleared_index := args.find("--cleared")
 	if cleared_index >= 0 and cleared_index + 1 < args.size():
 		# `--cleared N`: floors 1 to N beaten, for the main quest's later chapters.

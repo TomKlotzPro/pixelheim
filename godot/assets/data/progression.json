@@ -108,6 +108,82 @@
       },
       "accepted": "Three marsh reeds, woven tight, at my forge. Make me a buckler and keep it - it's yours.",
       "completed": "Tight weave. You'll do. Take this for the reeds."
+    },
+    {
+      "id": "iva_reeds",
+      "giver": "settler_iva",
+      "settles": "settler_iva",
+      "name": "Reeds for a Healer",
+      "brief": "Iva patches up what the fen bites, but she's out of reeds to bind with.",
+      "objective": {
+        "kind": "deliver",
+        "itemId": "marsh_reed",
+        "count": 3,
+        "label": "Marsh reeds brought"
+      },
+      "reward": {
+        "gold": 0,
+        "xp": 25
+      },
+      "accepted": "Three marsh reeds, and my tent moves to Pixelheim. The marsh east of the gate grows plenty.",
+      "completed": "Reeds enough to start with. Find me by the shrine - and come to me before you climb."
+    },
+    {
+      "id": "wren_leather",
+      "giver": "settler_wren",
+      "settles": "settler_wren",
+      "name": "Leather for the Stable",
+      "brief": "Wren lost her stable to the fire and walks travelers' horses by the gate.",
+      "objective": {
+        "kind": "deliver",
+        "itemId": "wolf_pelt",
+        "count": 2,
+        "label": "Wolf pelts brought"
+      },
+      "reward": {
+        "gold": 0,
+        "xp": 25
+      },
+      "accepted": "Two wolf pelts for saddle leather. The wolves den in the fields east of here - mind their teeth.",
+      "completed": "Leather enough! The post stands by the north road - the square is a whistle away now."
+    },
+    {
+      "id": "loras_lute",
+      "giver": "settler_loras",
+      "settles": "settler_loras",
+      "name": "The Lost Lute",
+      "brief": "A troll in the Deepwood took Loras's lute to pick its teeth with.",
+      "objective": {
+        "kind": "kill",
+        "monsterId": "troll",
+        "count": 1,
+        "label": "Trolls relieved of a lute"
+      },
+      "reward": {
+        "gold": 0,
+        "xp": 45
+      },
+      "accepted": "Big, green, smells of moss, wearing my lute as an earring. Bring it back and I'll sing you into legend.",
+      "completed": "My lute! Slightly chewed. It adds character. Pixelheim gains its first verse tonight."
+    },
+    {
+      "id": "mirelle_vault",
+      "giver": "settler_mirelle",
+      "settles": "settler_mirelle",
+      "name": "The First Deposit",
+      "brief": "Mirelle will open a bank in Pixelheim - once its vault holds something worth guarding.",
+      "objective": {
+        "kind": "deliver",
+        "itemId": "gem",
+        "count": 2,
+        "label": "Gems for the vault"
+      },
+      "reward": {
+        "gold": 0,
+        "xp": 45
+      },
+      "accepted": "Two gems for the vault's first shelf. Dragons hoard them; so do the deep floors.",
+      "completed": "A vault with something in it is a bank. Find my ledger by the hall - bring your idle gold."
     }
   ],
   "rankTitles": {

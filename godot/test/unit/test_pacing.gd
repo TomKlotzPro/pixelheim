@@ -8,7 +8,7 @@ const GameStateScript := preload("res://scripts/state/game_state.gd")
 ## Foes in a wild pack (world.gd PACK_SIZE).
 const PACK := 3
 ## The floor a hero is on when each quest is handed in.
-const QUEST_FLOORS := {"slime_trouble": 1, "cheese_run": 1, "wolf_watch": 4, "herbs_for_vex": 2, "hildas_buckler": 4, "troll_toll": 8}
+const QUEST_FLOORS := {"slime_trouble": 1, "cheese_run": 1, "wolf_watch": 4, "herbs_for_vex": 2, "hildas_buckler": 4, "troll_toll": 8, "iva_reeds": 4, "wren_leather": 2, "loras_lute": 8, "mirelle_vault": 10}
 
 var maps := {}
 

@@ -35,6 +35,24 @@ func _info() -> String:
 	return "\n".join(lines)
 
 
+## Who has come to live here, and what each brings (PIX-148): on the page,
+## under the projects.
+func _refresh() -> void:
+	super._refresh()
+	var perks := Town.settler_perks(GameState.settlement.settlers)
+	if perks.is_empty():
+		return
+	var spacer := Control.new()
+	spacer.custom_minimum_size = Vector2(0, 14)
+	list.add_child(spacer)
+	list.add_child(UiStyle.strong("Townsfolk", 16, UiStyle.LAMP))
+	for perk: String in perks:
+		var line := UiStyle.label("- " + perk, 14, UiStyle.INK)
+		line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		line.custom_minimum_size = Vector2(540, 0)
+		list.add_child(line)
+
+
 func _chosen_project() -> Dictionary:
 	if rows.is_empty() or selected >= rows.size():
 		return {}

@@ -1,6 +1,18 @@
 {
   "releases": [
     {
+      "version": "0.92.0",
+      "date": "2026-10-08",
+      "codename": "Come Home",
+      "notes": [
+        "EVERY RECRUIT A STORY: the folk waiting in the wilds now each give you a small quest in the journal - help them, and they come home to Pixelheim",
+        "A LUTE AND A VAULT: Loras wants his lute back from a Deepwood troll, and Mirelle wants two gems for her vault's first shelf - no more paying them to move",
+        "THE LEDGER KNOWS ITS PEOPLE: the projects ledger lists who lives in town and what each brings - Iva's healing, Wren's post, Loras's song, Mirelle's bank",
+        "THEY NOTICE THE TOWN: settlers say new things as Pixelheim becomes a village, a town and a city",
+        "FIX: every map but the town logged an error as it was built since v0.90 (the props and door signs of other maps failed to build); the release checks now fail on any script error"
+      ]
+    },
+    {
       "version": "0.91.0",
       "date": "2026-10-08",
       "codename": "Hard Hats",

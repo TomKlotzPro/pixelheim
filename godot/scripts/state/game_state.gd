@@ -576,9 +576,17 @@ func resolve_quests(giver_id: String) -> String:
 			var level_line := earn_xp(int(reward["xp"]))
 			if reward.has("itemId"):
 				pack.add_item(reward["itemId"])
+			# A recruit's story ends with them moving to town (PIX-148).
+			if quest.has("settles") and quest["settles"] not in settlement.settlers:
+				settlement.settlers.append(quest["settles"])
+				settlers_changed.emit()
 			_pack_changed()
 			save_now()
-			var done := "Quest complete - %s! +%dg, +%d xp. %s" % [quest["name"], reward["gold"], reward["xp"], quest["completed"]]
+			var paid: Array[String] = []
+			if int(reward["gold"]) > 0:
+				paid.append("+%dg" % reward["gold"])
+			paid.append("+%d xp" % reward["xp"])
+			var done := "Quest complete - %s! %s. %s" % [quest["name"], ", ".join(paid), quest["completed"]]
 			return done + (" " + level_line if level_line != "" else "")
 		return "%s: %d/%d %s." % [
 			quest["name"], Quests.progress(quest, entries, pack.items), objective["count"],
@@ -593,26 +601,11 @@ func _resolve_settler(npc_id: String) -> String:
 	if recruit.is_empty():
 		return ""
 	if not is_settled(npc_id):
-		match Town.recruit_blocker(recruit, town_tier(), pack.gold, pack.items):
-			"tier":
-				return "%s: %s" % [recruit["name"], recruit.get("tierLine", "The town is not ready for me yet.")]
-			"ask":
-				var ask: Dictionary = recruit["ask"]
-				var price: String = (
-					"%dg" % ask["amount"] if ask["kind"] == "gold"
-					else "%dx %s" % [ask["count"], Catalog.item_name(ask["itemId"])]
-				)
-				return "%s asks: %s. (%s)" % [recruit["name"], price, recruit["askLine"]]
-		var ask: Dictionary = recruit["ask"]
-		if ask["kind"] == "gold":
-			pack.gold -= int(ask["amount"])
-		else:
-			pack.remove_item(ask["itemId"], ask["count"])
-		settlement.settlers.append(npc_id)
-		_pack_changed()
-		settlers_changed.emit()
-		save_now()
-		return "%s joins Pixelheim! %s" % [recruit["name"], recruit["joinedLine"]]
+		# A recruit's help is their quest (PIX-148, resolve_quests), once the
+		# town is grown enough for them.
+		if Town.recruit_blocker(recruit, town_tier()) == "tier":
+			return "%s: %s" % [recruit["name"], recruit.get("tierLine", "The town is not ready for me yet.")]
+		return ""
 	if world.map_id == "town":
 		if npc_id == "settler_iva":
 			_make_whole()
