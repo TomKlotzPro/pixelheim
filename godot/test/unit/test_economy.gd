@@ -163,6 +163,15 @@ func test_selling_pays_the_shop_rate_with_city_and_trophy_bonuses() -> void:
 	assert_eq(state.sell_item("forest_herb"), 0)
 
 
+func test_a_whole_stack_sells_at_the_one_by_one_price() -> void:
+	_stand_in("town_alchemist")
+	state.pack.items = {"forest_herb": 3}
+	state.pack.gold = 0
+	assert_eq(state.sell_item("forest_herb", 99), 18, "three herbs at 6g, never more than are carried")
+	assert_eq(state.pack.gold, 18)
+	assert_false(state.pack.items.has("forest_herb"))
+
+
 func test_worn_gear_is_never_sold() -> void:
 	_stand_in("town_smith")
 	var worn: String = state.pack.equipped["weapon"]

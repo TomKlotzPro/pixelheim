@@ -37,8 +37,11 @@ var tab_row: HBoxContainer
 var list: VBoxContainer
 var scroll: ScrollContainer
 var header: Label
+var sort_label: Label
 ## The chosen row in full: an item's description, a recipe's station.
 var about: Label
+## How full the pack is, beside the weight (red near capacity).
+var weight_fill: ColorRect
 var status: Label
 
 
@@ -49,8 +52,24 @@ func _open() -> void:
 	# The pack's ledger: a page under the tabs and the list.
 	add_child(UiStyle.page(Rect2(474, 58, 742, 572)))
 	add_child(UiStyle.heading("Inventory", 20, UiStyle.CREAM, Vector2(80, 24)))
-	header = UiStyle.label("", 16, UiStyle.GOLD, Vector2(490, 22))
-	add_child(header)
+	var weight := HBoxContainer.new()
+	weight.position = Vector2(490, 22)
+	weight.add_theme_constant_override("separation", 10)
+	add_child(weight)
+	header = UiStyle.label("", 16, UiStyle.CREAM)
+	weight.add_child(header)
+	var track := ColorRect.new()
+	track.color = UiStyle.NIGHT
+	track.custom_minimum_size = Vector2(124, 12)
+	track.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	weight.add_child(track)
+	weight_fill = ColorRect.new()
+	weight_fill.position = Vector2(2, 2)
+	track.add_child(weight_fill)
+	sort_label = UiStyle.label("", 16, UiStyle.DUSK, Vector2(940, 22))
+	sort_label.custom_minimum_size = Vector2(276, 0)
+	sort_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	add_child(sort_label)
 
 	var doll_card := PanelContainer.new()
 	doll_card.position = Vector2(80, 70)
@@ -89,7 +108,7 @@ func _open() -> void:
 	status.custom_minimum_size = Vector2(710, 0)
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(status)
-	add_child(UiStyle.footer("A/D  tabs      W/S  choose      E  equip / use      X  drop      Z  drop all      I / Esc  close", Vector2(80, 660)))
+	add_child(UiStyle.footer("A/D  tabs      W/S  choose      E  equip / use      X  drop      Z  drop all      R  sort      I / Esc  close", Vector2(80, 660)))
 	_refresh()
 
 
@@ -98,14 +117,23 @@ func _refresh() -> void:
 	var pack := GameState.pack
 	var weight := pack.carried_weight()
 	var capacity := Skills.carry_capacity(hero, pack)
-	header.text = "Weight %d/%d      Gold %d" % [weight, capacity, pack.gold]
+	header.text = "Weight %d/%d" % [weight, capacity]
 	header.add_theme_color_override("font_color", Color(1, 0.45, 0.4) if weight > capacity else UiStyle.CREAM)
+	var share := clampf(float(weight) / maxi(1, capacity), 0.0, 1.0)
+	weight_fill.size = Vector2(120 * share, 8)
+	weight_fill.color = UiStyle.LAMP if share >= 0.9 else UiStyle.GOLD
+	sort_label.text = "Gold %d      Sorted by %s" % [pack.gold, GameState.settings.pack_sort]
 	_build_doll()
 	for child in tab_row.get_children():
 		child.queue_free()
 	for index in TABS.size():
 		var button := UiStyle.button(TABS[index][1], _switch.bind(index))
 		UiStyle.focus(button, index == tab)
+		var count := _tab_count(TABS[index][0])
+		if count > 0 and index > 0:
+			button.add_child(_count_badge(count))
+		elif count == 0:
+			button.modulate.a = 0.55
 		tab_row.add_child(button)
 	rows = _rows()
 	selected = clampi(selected, 0, maxi(0, rows.size() - 1))
@@ -126,27 +154,7 @@ func _rows() -> Array[Dictionary]:
 	var category: String = TABS[tab][0]
 	if category == "craft":
 		return _craft_rows()
-	var pack := GameState.pack
-	var out: Array[Dictionary] = []
-	var gear := pack.gear.duplicate()
-	gear.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
-		var ca: String = Catalog.item(a["itemId"])["category"]
-		var cb: String = Catalog.item(b["itemId"])["category"]
-		return ca < cb if ca != cb else InventoryState.gear_name(a) < InventoryState.gear_name(b)
-	)
-	for piece: Dictionary in gear:
-		if category == "all" or Catalog.item(piece["itemId"])["category"] == category:
-			out.append({"kind": "gear", "piece": piece, "item_id": piece["itemId"]})
-	var stacks: Array = pack.items.keys()
-	stacks.sort_custom(func(a: String, b: String) -> bool:
-		var ca: String = Catalog.item(a)["category"]
-		var cb: String = Catalog.item(b)["category"]
-		return ca < cb if ca != cb else Catalog.item_name(a) < Catalog.item_name(b)
-	)
-	for item_id: String in stacks:
-		if category == "all" or Catalog.item(item_id)["category"] == category:
-			out.append({"kind": "stack", "item_id": item_id, "count": pack.items[item_id]})
-	return out
+	return GameState.pack.listing(category, GameState.settings.pack_sort)
 
 
 ## The Craft tab: where to craft, then every recipe by trade and level.
@@ -296,6 +304,43 @@ func _craft_row(index: int) -> Control:
 	text.add_child(small)
 	line.add_child(UiStyle.label(_primary_label(row), 13, UiStyle.LAMP if chosen else UiStyle.FADED))
 	return panel
+
+
+## What a tab holds: rows of the pack, or for Craft what can be made now.
+func _tab_count(category: String) -> int:
+	if category == "craft":
+		return Economy.recipes().filter(func(entry: Dictionary) -> bool:
+			return Economy.can_craft(entry, GameState.pack.items, GameState.hero.jobs)
+		).size()
+	return GameState.pack.listing(category).size()
+
+
+## A tab's count in a little dark tag above its top right corner, outside
+## the tab's own layout.
+func _count_badge(count: int) -> Control:
+	var badge := PanelContainer.new()
+	badge.add_theme_stylebox_override("panel", UiStyle.box(UiStyle.NIGHT, UiStyle.NIGHT, 2))
+	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	badge.add_child(UiStyle.label(str(count), 12, UiStyle.CREAM))
+	# Standing on the tab's top edge at its right end, clear of its name.
+	badge.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	badge.offset_left = 4
+	badge.offset_right = 4
+	badge.offset_top = 4
+	badge.offset_bottom = 4
+	badge.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	badge.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	return badge
+
+
+## R: the next order (InventoryState.SORTS), remembered between sessions.
+func _sort() -> void:
+	var sorts := InventoryState.SORTS
+	var settings := GameState.settings
+	settings.pack_sort = sorts[(sorts.find(settings.pack_sort) + 1) % sorts.size()]
+	settings.save_file()
+	selected = 0
+	_refresh()
 
 
 ## The chosen row in full, under the list: what an item is, where a recipe
@@ -450,6 +495,8 @@ func _command(event: InputEvent) -> Callable:
 		command = _drop.bind(false)
 	elif event.is_action_pressed("drop_all"):
 		command = _drop.bind(true)
+	elif event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_R:
+		command = _sort
 	return command
 
 

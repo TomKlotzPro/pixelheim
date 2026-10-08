@@ -22,6 +22,8 @@ var last_slot := 1
 ## The newest version whose notes were read (What's new), so the title can
 ## flag a new one (hasUnseenChanges); "" before any.
 var seen_version := ""
+## How the pack lists what it holds (InventoryState.SORTS).
+var pack_sort := "kind"
 ## Harness runs read the player's settings but never write them.
 var read_only := false
 
@@ -42,6 +44,7 @@ func load_file() -> void:
 	muted = config.get_value(SECTION, "muted", muted)
 	fullscreen = config.get_value(SECTION, "fullscreen", fullscreen)
 	seen_version = str(config.get_value(SECTION, "seen_version", seen_version))
+	pack_sort = str(config.get_value(SECTION, "pack_sort", pack_sort))
 	var saved: Variant = config.get_value(SECTION, "bindings", {})
 	bindings = {}
 	if saved is Dictionary:
@@ -62,6 +65,7 @@ func save_file() -> void:
 	config.set_value(SECTION, "muted", muted)
 	config.set_value(SECTION, "fullscreen", fullscreen)
 	config.set_value(SECTION, "seen_version", seen_version)
+	config.set_value(SECTION, "pack_sort", pack_sort)
 	config.set_value(SECTION, "bindings", bindings)
 	DirAccess.make_dir_recursive_absolute(path.get_base_dir())
 	config.save(path)
