@@ -262,6 +262,10 @@ func _run_test_harness() -> void:
 		GameState.equip(ring["uid"])
 		GameState.pack.items.merge({"potion_hp": 3, "antidote": 1, "wolf_pelt": 2})
 		world._open_inventory()
+		# `--tab N` opens another tab (7 is Craft).
+		var inv_tab := args.find("--tab")
+		if inv_tab >= 0 and inv_tab + 1 < args.size():
+			world.get_children().filter(func(node: Node) -> bool: return node.has_method("_craft_rows"))[-1]._switch(int(args[inv_tab + 1]))
 		await get_tree().create_timer(0.3).timeout
 	if args.has("codex"):
 		# A record to read: twelve beasts (Slayer I) and a few undead.

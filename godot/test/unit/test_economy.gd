@@ -237,3 +237,12 @@ func test_the_home_workbench_crafts_both_trades_only_at_home() -> void:
 	_stand_in("town")
 	state.pack.items = {"wolf_pelt": 2, "imp_horn": 1}
 	assert_false(state.craft("craft_beast_cleaver")["made"], "the workbench does not travel")
+
+
+func test_the_craft_guide_knows_which_trades_are_here() -> void:
+	assert_eq(Economy.jobs_here("town_smith", false), ["smithing"])
+	assert_eq(Economy.jobs_here("town_alchemist", false), ["alchemy"])
+	assert_eq(Economy.jobs_here("town_house", false), [], "no workbench yet")
+	assert_eq(Economy.jobs_here("town_house", true).size(), 2, "the workbench does both")
+	assert_eq(Economy.jobs_here("overworld", true), [])
+	assert_string_contains(Economy.station_hint("smithing"), "Hilda")
