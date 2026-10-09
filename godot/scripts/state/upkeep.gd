@@ -167,22 +167,30 @@ func use_item(item_id: String) -> Dictionary:
 ## innkeeper's line.
 func rest_at_inn() -> String:
 	var cost := Town.rest_cost_for(owner.town_tier())
-	var whole: bool = owner.hero.hp == owner.hero.stats.get("maxHp", owner.hero.hp) and owner.hero.mp == owner.hero.stats.get("maxMp", owner.hero.mp)
-	if whole:
-		return Text.t("The innkeeper nods. You are already well rested.")
 	if owner.pack.gold < cost:
 		return Text.t("No coin, no bed: a night costs %d gold.") % cost
 	owner.pack.gold -= cost
 	owner.make_whole()
 	owner.spoils.wake_the_wilds()
+	# A night in a bed is a night (PIX-246): the hero wakes at dawn, whole or
+	# not when they lay down - skipping the dark is reason enough.
+	sleep_till_morning()
 	# The inn rebuilt (PIX-206): a real bed leaves the hero rested a while.
-	var line := Text.t("You rest at the inn and wake fully restored. -%d gold.") % cost
+	var line := Text.t("You sleep at the inn and wake at dawn, fully restored. -%d gold.") % cost
 	if owner.holdings.project_built("the_inn"):
 		var fights := int(Town._data()["rested"]["innFights"])
 		owner.settlement.house["rested"] = maxi(int(owner.settlement.house.get("rested", 0)), fights)
 		line += " " + Text.t("Well rested, too: more XP for your next %d fights.") % fights
 	owner.pack_changed()
 	return line
+
+
+## A night's sleep (PIX-246): the clock runs on to the next morning, and
+## the game is saved where the hero woke.
+func sleep_till_morning() -> void:
+	owner.world.steps = DayNight.next_morning(owner.world.steps)
+	owner.mark_dirty()
+	owner.save_now()
 
 
 ## Defeat is forgiving (RETURN_TO_WORLD after a loss): wake at the village

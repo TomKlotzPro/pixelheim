@@ -1725,6 +1725,10 @@ msgid "A critical hit shows: its number pops up in gold, twice the size, with a 
 msgstr "Un coup critique se voit : son chiffre jaillit en or, deux fois plus grand, avec un « ! » ; dans une volée de coups, les chiffres se posent côte à côte au lieu de s'empiler"
 
 #: assets/data/changelog.json
+msgid "A day lasts three times longer, and a clock at the top right tells the hour: a sun by day, a moon by night"
+msgstr "Une journée dure trois fois plus longtemps, et une horloge en haut à droite donne l'heure : un soleil le jour, une lune la nuit"
+
+#: assets/data/changelog.json
 msgid "A deep piece can still be forged and masterworked: the deep's bonus is kept apart from the forge's, and pieces from before are mended once as your save loads"
 msgstr "Une pièce des profondeurs peut encore être forgée et sublimée : le bonus des profondeurs est gardé à part de celui de la forge, et les pièces d'avant sont réparées une fois au chargement"
 
@@ -3021,6 +3025,10 @@ msgid "Long messages now grow upward instead of running under the dock"
 msgstr "Les longs messages s'agrandissent désormais vers le haut au lieu de passer sous la barre"
 
 #: assets/data/changelog.json
+msgid "Longer Days"
+msgstr "Des jours plus longs"
+
+#: assets/data/changelog.json
 msgid "Loot That Fits"
 msgstr "Un butin à sa place"
 
@@ -3629,6 +3637,10 @@ msgid "Renamed for clarity: the warrior now peaks as WARBRINGER and the paladin 
 msgstr "Renommés par souci de clarté : le guerrier culmine désormais en PORTE-GUERRE et le paladin en Chevalier, pour que les titres ne se confondent plus avec les noms de spécialisation"
 
 #: assets/data/changelog.json
+msgid "Rent and the bank's interest still come by the day, so with longer days they come in less often"
+msgstr "Les loyers et les intérêts de la banque viennent toujours par jour : avec des journées plus longues, ils tombent moins souvent"
+
+#: assets/data/changelog.json
 msgid "Roads and town stay clean-looking because they ARE safe"
 msgstr "Les routes et la ville restent dégagées parce qu'elles SONT sûres"
 
@@ -3811,6 +3823,10 @@ msgstr "Des arbres de compétences ! Un point de compétence par niveau, trois
 #: assets/data/changelog.json
 msgid "Slaying one makes you a Boss slayer: +10% damage for 10 minutes, counting down at the top left"
 msgstr "En abattre un fait de vous un Tueur de boss : +10 % de dégâts pendant 10 minutes, décomptés en haut à gauche"
+
+#: assets/data/changelog.json
+msgid "Sleep till morning: face a bed at the inn (for the night's coin) or your own bed at home and press E; the screen goes dark and you wake at dawn, restored. Walking into the inn no longer takes a bed by itself"
+msgstr "Dormir jusqu'au matin : face à un lit de l'auberge (contre le prix de la nuit) ou à votre propre lit, appuyez sur E ; l'écran s'assombrit et vous vous réveillez à l'aube, en pleine forme. Entrer à l'auberge ne prend plus un lit tout seul"
 
 #: assets/data/changelog.json
 msgid "Small Things"
@@ -12800,31 +12816,31 @@ msgstr "Objet posé : %s. {key:interact} pour le reprendre."
 msgid "%s back in the pack."
 msgstr "%s : de retour dans le sac."
 
-#: scripts/state/household.gd:198
-msgid "Your own bed. Fully restored, and well rested: +%d%% XP for your next %d fights."
-msgstr "Votre lit à vous. Pleine forme, et un bon repos : +%d%% d'XP pour vos %d prochains combats."
+#: scripts/state/household.gd:200
+msgid "You sleep in your own bed till dawn. Fully restored, and well rested: +%d%% XP for your next %d fights."
+msgstr "Vous dormez dans votre lit jusqu'à l'aube. Pleine forme, et un bon repos : +%d%% d'XP pour vos %d prochains combats."
 
-#: scripts/state/household.gd:210
+#: scripts/state/household.gd:212
 msgid "A workbench and a small cauldron, fitted to the shelf. Craft at home, forever."
 msgstr "Un établi et un petit chaudron, installés contre l'étagère. Fabriquez chez vous, pour toujours."
 
-#: scripts/state/household.gd:211
+#: scripts/state/household.gd:213
 msgid "A proper workbench would fit this shelf. Tools and parts cost %d gold."
 msgstr "Un vrai établi irait bien contre cette étagère. Outils et pièces : %d or."
 
-#: scripts/state/household.gd:214
+#: scripts/state/household.gd:216
 msgid "The hearth roars beside your workbench. Home industry."
 msgstr "L'âtre ronfle à côté de votre établi. Artisanat maison."
 
-#: scripts/state/household.gd:215
+#: scripts/state/household.gd:217
 msgid "The hearth crackles, warm and idle. A workbench would fit by the shelf..."
 msgstr "L'âtre crépite, chaud et désœuvré. Un établi irait bien près de l'étagère..."
 
-#: scripts/state/household.gd:218
+#: scripts/state/household.gd:220
 msgid "Your kitchen counter. Clean, empty, hopeful."
 msgstr "Votre plan de travail. Propre, vide, plein d'espoir."
 
-#: scripts/state/household.gd:222
+#: scripts/state/household.gd:224
 msgid "The garden drinks your victories: %d/%d until the next harvest."
 msgstr "Le jardin s'abreuve de vos victoires : %d/%d avant la prochaine récolte."
 
@@ -13212,27 +13228,23 @@ msgstr "Vous utilisez %s."
 msgid " Restored %s."
 msgstr " Vous récupérez %s."
 
-#: scripts/state/upkeep.gd:172
-msgid "The innkeeper nods. You are already well rested."
-msgstr "L'aubergiste hoche la tête. Vous avez déjà fait le plein de repos."
-
-#: scripts/state/upkeep.gd:174
+#: scripts/state/upkeep.gd:171
 msgid "No coin, no bed: a night costs %d gold."
 msgstr "Pas un sou, pas de lit : la nuit coûte %d or."
 
 #: scripts/state/upkeep.gd:179
-msgid "You rest at the inn and wake fully restored. -%d gold."
-msgstr "Vous dormez à l'auberge et vous réveillez en pleine forme. -%d or."
+msgid "You sleep at the inn and wake at dawn, fully restored. -%d gold."
+msgstr "Vous dormez à l'auberge et vous réveillez à l'aube, en pleine forme. -%d or."
 
 #: scripts/state/upkeep.gd:183
 msgid "Well rested, too: more XP for your next %d fights."
 msgstr "Et un vrai repos : plus d'XP pour vos %d prochains combats."
 
-#: scripts/state/upkeep.gd:207
+#: scripts/state/upkeep.gd:215
 msgid "You wake at the inn, %d gold lighter. What isn't banked is a fallen hero's to lose."
 msgstr "Vous vous réveillez à l'auberge, avec %d or en moins. Ce qui n'est pas à la banque, un héros à terre le perd."
 
-#: scripts/state/upkeep.gd:209
+#: scripts/state/upkeep.gd:217
 msgid "You wake at the inn. The innkeeper says nothing. Kind of her."
 msgstr "Vous vous réveillez à l'auberge. L'aubergiste ne dit rien. C'est gentil de sa part."
 
@@ -13444,11 +13456,11 @@ msgstr "COMMANDÉ"
 msgid "Arrows"
 msgstr "Flèches"
 
-#: scripts/world.gd:271
+#: scripts/world.gd:272
 msgid "%s bars your way: no leaving until the fight is over."
 msgstr "%s vous barre la route : pas de fuite avant la fin du combat."
 
-#: scripts/world.gd:309
+#: scripts/world.gd:306
 msgid "No map reaches this deep."
 msgstr "Aucune carte ne va aussi profond."
 
@@ -13476,19 +13488,19 @@ msgstr "Tueur de boss : +%d %% de dégâts pendant %d minutes."
 msgid "LEVEL UP"
 msgstr "NIVEAU SUPÉRIEUR"
 
-#: scripts/world_hud.gd:207
+#: scripts/world_hud.gd:212
 msgid "Boss slayer +%d%%  %d:%02d"
 msgstr "Tueur de boss +%d %%  %d:%02d"
 
-#: scripts/world_hud.gd:88
+#: scripts/world_hud.gd:93
 msgid "Next"
 msgstr "Ensuite"
 
-#: scripts/world_interaction.gd:158
+#: scripts/world_interaction.gd:166
 msgid "A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it."
 msgstr "Un établi pour cette étagère : %d or. Il compte comme un niveau de métier en plus quand vous fabriquez chez vous. {key:interact} à nouveau pour l'acheter."
 
-#: scripts/world_interaction.gd:185
+#: scripts/world_interaction.gd:193
 msgid "Sela's stew simmers over the fire. Hunter's Stew is brewed at Vex's cauldron, behind the BREWS door."
 msgstr "Le ragoût de Sela mijote sur le feu. Le Ragoût du chasseur se prépare au chaudron de Vex, derrière la porte POTIONS."
 

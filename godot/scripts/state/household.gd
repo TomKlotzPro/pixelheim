@@ -195,8 +195,10 @@ func house_interact(cell: Vector2i, tile: String) -> Dictionary:
 			var fights := int(Town._data()["rested"]["fights"]) + roundi(home_buff("rested"))
 			owner.settlement.house["rested"] = fights
 			owner.pack_changed()
-			return {"text": Text.t("Your own bed. Fully restored, and well rested: +%d%% XP for your next %d fights.") % [
-				roundi(float(Town._data()["rested"]["xp"]) * 100), fights]}
+			# A night in your own bed, till morning (PIX-246).
+			owner.upkeep.sleep_till_morning()
+			return {"text": Text.t("You sleep in your own bed till dawn. Fully restored, and well rested: +%d%% XP for your next %d fights.") % [
+				roundi(float(Town._data()["rested"]["xp"]) * 100), fights], "slept": true}
 		"barrel":
 			return {"panel": "storage"}
 		"shelf":

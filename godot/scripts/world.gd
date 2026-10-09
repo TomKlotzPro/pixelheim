@@ -225,6 +225,7 @@ func _process(delta: float) -> void:
 		hud.hint_boards()
 	hud.update_objective()
 	hud.update_arrow()
+	hud.update_clock()
 	var cell := Vector2i((player.position / TILE).floor())
 	if cell == player_cell:
 		return
@@ -275,10 +276,6 @@ func use_portal(target: Dictionary) -> void:
 			_through_door(func() -> void:
 				map = load_map(target["mapId"])
 				enter_map(map, Vector2i(int(target["x"]), int(target["y"])))
-				# Stepping into the inn takes a bed for coin, as on the web.
-				if map.id == "town_inn":
-					messages.flash(GameState.upkeep.rest_at_inn())
-					stage.dream()
 			)
 		"dungeon":
 			# The floor select opens while the hero waits at the door.
@@ -395,6 +392,18 @@ func _through_door(then: Callable) -> void:
 		then.call()
 		dark.queue_free()
 		_passing = false
+	)
+
+
+## A night's sleep (PIX-246): the screen goes dark, `then` lets the night
+## pass (the clock runs on to the morning), and the world wakes to it - its
+## folk where the morning puts them - fading in. With no fades (reduced
+## motion, a harness run) it simply happens.
+func sleep_through(then: Callable) -> void:
+	_through_door(func() -> void:
+		then.call()
+		folk.keep_hours(true)
+		_fade_in()
 	)
 
 

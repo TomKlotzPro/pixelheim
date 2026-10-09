@@ -74,6 +74,10 @@ func interact() -> void:
 		return
 	if world.map.id == "town_house" and _house_interact(faced):
 		return
+	# A bed at the inn: a night's sleep for coin (PIX-246).
+	if world.map.id == "town_inn" and _tile_in_hand(faced) == "bed":
+		_sleep_at_inn()
+		return
 	if _station(faced):
 		return
 	# A fishing spot facing the water: cast (PIX-165).
@@ -110,8 +114,7 @@ func interact() -> void:
 			# A keeper on the burnt square (PIX-146): Sela's tent takes a
 			# guest for the night, the others trade from their stalls.
 			if beside["npc"]["id"] == "innkeeper":
-				world.messages.flash(GameState.upkeep.rest_at_inn())
-				world.stage.dream()
+				_sleep_at_inn()
 			else:
 				_open_stall(Economy.shop_at(String(Npcs.by_id(beside["npc"]["id"], []).get("mapId", ""))))
 		elif GameState.trade.active_shop() != "" and not quest_word:
@@ -151,6 +154,11 @@ func _asked_twice(key: String) -> bool:
 
 ## The house's fixtures and furniture; true when E meant one of them.
 func _house_interact(cell: Vector2i) -> bool:
+	# Your own bed: a night's sleep, till morning (PIX-246).
+	if _tile_in_hand(cell) == "bed" and GameState.household.furniture_at(cell).is_empty():
+		world.sleep_through(func() -> void:
+			world.messages.flash(GameState.household.house_interact(cell, "bed")["text"]))
+		return true
 	# The workbench is a big buy: it asks first (PIX-179).
 	var cost := int(Town._data()["workbenchCost"])
 	if _tile_in_hand(cell) == "shelf" and GameState.household.furniture_at(cell).is_empty() and not GameState.settlement.house.get("workbench", false) \
@@ -186,6 +194,23 @@ func _station(cell: Vector2i) -> bool:
 		_:
 			_open_shop("Craft")
 	return true
+
+
+## A night at the inn (PIX-246): in one of its beds, or in Sela's tent before
+## it's rebuilt. With the coin, the screen goes dark, the night passes and
+## Morvax may speak in a dream (PIX-154); without it, Sela says the price.
+func _sleep_at_inn() -> void:
+	if GameState.pack.gold < Town.rest_cost_for(GameState.town_tier()):
+		world.messages.flash(GameState.upkeep.rest_at_inn())
+		return
+	world.sleep_through(func() -> void:
+		world.messages.flash(GameState.upkeep.rest_at_inn())
+		world.stage.dream())
+
+
+## A bed E can sleep in (PIX-246): the inn's, or your own.
+func _bed_at(cell: Vector2i) -> bool:
+	return world.map.id in ["town_inn", "town_house"] and _tile_in_hand(cell) == "bed"
 
 
 ## What a cell is to E as a station: its trade ("smithing", "alchemy"),
@@ -364,7 +389,7 @@ func update_prompt() -> void:
 	var chest := _chest_at(facing_cell())
 	var show: bool = (
 		not chest.is_empty() and chest["look"] == "chest" and not GameState.spoils.is_opened(chest)
-	) or _fishing_here() or _station_at(facing_cell()) != ""
+	) or _fishing_here() or _station_at(facing_cell()) != "" or _bed_at(facing_cell())
 	if show:
 		_show_prompt(facing_cell(), -12)
 	else:

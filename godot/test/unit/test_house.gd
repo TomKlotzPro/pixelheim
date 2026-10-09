@@ -105,7 +105,11 @@ func test_fixtures_answer_to_e() -> void:
 	_own_house(1000)
 	state.world.map_id = "town_house"
 	state.hero.hp = 1
-	assert_eq(state.household.house_interact(Vector2i.ZERO, "bed")["text"], "Your own bed. Fully restored, and well rested: +10% XP for your next 30 fights.")
+	state.world.steps = 0.8 * DayNight.DAY_CYCLE_STEPS
+	var slept: Dictionary = state.household.house_interact(Vector2i.ZERO, "bed")
+	assert_eq(slept["text"], "You sleep in your own bed till dawn. Fully restored, and well rested: +10% XP for your next 30 fights.")
+	assert_true(slept["slept"])
+	assert_eq(state.world.steps, float(DayNight.DAY_CYCLE_STEPS), "till the next morning (PIX-246)")
 	assert_eq(state.hero.hp, state.hero.stats["maxHp"])
 	assert_eq(state.household.house_interact(Vector2i.ZERO, "barrel"), {"panel": "storage"})
 	assert_eq(state.household.house_interact(Vector2i.ZERO, "trophy_shelf"), {"panel": "trophies"})

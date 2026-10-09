@@ -44,6 +44,7 @@ FLOWS=(
 	"chest|--map town chest|map=town cell=\(79, 4\) .*gold=90"
 	"shop|--map town_shop shop|map=town_shop"
 	"craft|--map town_alchemist shop --tab 2|map=town_alchemist"
+	"sleep|--map town_inn night sleep|map=town_inn .*gold=20 .* clock=06:00"
 	"station|--map town_alchemist station|open=shop_screen.*tab=Craft"
 	"forge|--map town_smith station|open=shop_screen.*tab=Craft"
 	"quest|--map town quest|map=town cell"

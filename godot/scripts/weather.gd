@@ -27,11 +27,12 @@ const MOODS := {
 ## The night takes some colour from everything.
 const NIGHT_SATURATION := 0.82
 ## How many days in a hundred bring a shower; how long one lasts and how
-## long it takes to come and go, in steps (a day is DayNight.DAY_CYCLE_STEPS).
+## long it takes to come and go, as shares of the day so they keep its pace
+## (PIX-246: a twelfth to three sixteenths of it, a forty-eighth to build).
 const RAIN_CHANCE := 40
-const SHOWER_MIN := 40.0
-const SHOWER_MAX := 90.0
-const SHOWER_RAMP := 10.0
+const SHOWER_MIN := DayNight.DAY_CYCLE_STEPS / 12.0
+const SHOWER_MAX := DayNight.DAY_CYCLE_STEPS * 3.0 / 16.0
+const SHOWER_RAMP := DayNight.DAY_CYCLE_STEPS / 48.0
 ## Rain darkens and cools the light.
 const RAIN_LIGHT := Color(0.72, 0.76, 0.85)
 
