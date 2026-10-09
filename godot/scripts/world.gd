@@ -10,10 +10,7 @@ const TILE := 16
 const PACK_SIZE := 3
 ## Fight music holds this long after the last hunter gives up.
 const COMBAT_LINGER_S := 3.0
-## Open-air maps too high and cold for birdsong: wind instead (PIX-169).
-const WINDY_MAPS := ["frostgate"]
-## How hard it must rain before the rain is heard over the birds.
-const RAIN_HEARD := 0.3
+
 
 
 var map: MapData
@@ -28,6 +25,8 @@ var camera_rig: CameraRig
 var fx: WorldFx
 ## What the world says in words: the message plate and the battle log (Messages).
 var messages: Messages
+## What the hero hears: the music, the ambience and the world's sounds (Soundscape).
+var soundscape: Soundscape
 var player_cell := Vector2i.ZERO
 var kills := 0
 var last_player_position := Vector2.ZERO
@@ -40,14 +39,9 @@ var pack_alive := {}
 var arrived_at := -100.0
 ## Seconds until the next look for packs due to come home.
 var respawn_check := 0.0
-## Sound's view of the hero: what changed is heard (coin, heal, hurt).
-var heard_gold := 0
-var heard_hp := 0
 ## When something last hunted the hero, and whether a boss did.
 var hunted_at := -100.0
 var hunted_by_boss := false
-## Until when the music keeps quiet after a boss falls (PIX-210).
-var hushed_until := 0.0
 ## How long that silence lasts, and how slow the world runs as it falls.
 const BOSS_HUSH_S := 3.5
 const BOSS_SLOW := 0.25
@@ -59,8 +53,6 @@ var hud_root: CanvasLayer
 var hint_card: PanelContainer
 static var _hint_doc := {}
 static var _hint_generation := 0
-## Seconds until the soundscape is looked at again (PIX-158).
-var soundscape_left := 0.0
 ## Foes still standing on the dungeon floor the hero walks (0 when cleared).
 var floor_foes := 0
 ## The message's plate and its tag (PIX-194): "Quest accepted", "Level up"...
@@ -159,6 +151,9 @@ func _ready() -> void:
 	messages = Messages.new()
 	messages.world = self
 	add_child(messages)
+	soundscape = Soundscape.new()
+	soundscape.world = self
+	add_child(soundscape)
 	_build_hud()
 	if Touch.enabled():
 		var mark := Label.new()
@@ -240,7 +235,7 @@ func _process(delta: float) -> void:
 	# The dark is the world's own now (PIX-221: the LightRig), not a veil
 	# over it; the veil is left for the dawn's own fades.
 	sky_overlay.color = Color(0, 0, 0, 0)
-	_update_music()
+	soundscape.refresh()
 	respawn_check -= delta
 	if respawn_check <= 0:
 		respawn_check = 1.0
@@ -418,22 +413,6 @@ func place_from_pack(item_id: String) -> void:
 	view.furnish()
 
 
-## Gold that grows rings (SFX.coin); health heard rising or falling.
-func _hear_gold(gold: int) -> void:
-	if gold > heard_gold:
-		Sound.play("coin")
-	heard_gold = gold
-
-
-func _hear_hp(hp: int, _max_hp: int) -> void:
-	if hp < heard_hp:
-		Sound.play("hurt")
-	# Health trickling back at rest (PIX-206) mends in silence.
-	elif hp > heard_hp + GameState.rest_mend():
-		Sound.play("heal")
-	heard_hp = hp
-
-
 ## A fight is on: something has hunted the hero in the last few seconds.
 func in_fight() -> bool:
 	return Time.get_ticks_msec() / 1000.0 - hunted_at < COMBAT_LINGER_S
@@ -466,63 +445,6 @@ func on_enemy_noticed(enemy: Node) -> void:
 ## A boss or a named monster (PIX-156): the boss's music plays.
 func fights_like_boss(enemy: Node) -> bool:
 	return Bestiary.is_boss(enemy.fighter["id"]) or enemy.fighter.has("named")
-
-
-## The place's theme, or the fight's while anything hunts the hero (and a
-## few seconds after), the boss's when a boss does; and the place's weather.
-func _update_music() -> void:
-	if not GameState.title_seen and not OS.get_cmdline_user_args().has("--screenshot"):
-		return  # the title plays its own
-	var now := Time.get_ticks_msec() / 1000.0
-	for enemy in get_tree().get_nodes_in_group("mobs"):
-		if enemy.hunting and not enemy.dying:
-			hunted_at = now
-			hunted_by_boss = hunted_by_boss or fights_like_boss(enemy)
-			# A boss on the hunt has its bar across the top (PIX-210).
-			if fights_like_boss(enemy) and not boss_bar.following():
-				boss_bar.follow(enemy)
-	var fight := ""
-	if now - hunted_at < COMBAT_LINGER_S:
-		fight = "boss" if hunted_by_boss else "battle"
-	else:
-		hunted_by_boss = false
-	# A fallen boss's silence holds a moment before the place's music.
-	if now >= hushed_until and (Sound.track != "victory" or fight != ""):
-		Sound.play_track(Sound.track_for(map.id, map.floor_level, fight))
-	Sound.set_ambience(Sound.ambience_for(map.id, map.floor_level))
-	# The soundscape changes slowly: twice a second is plenty.
-	soundscape_left -= get_process_delta_time()
-	if soundscape_left <= 0.0:
-		soundscape_left = 0.5
-		Sound.set_extras(_soundscape())
-		var windy := map.floor_level > 0 or map.style == "cave" or map.id in WINDY_MAPS
-		var bed := ("deepwind" if map.floor_level > 10 else "wind") if windy else ""
-		Sound.set_bed("rain" if _raining() else bed)
-
-
-## What else the hero hears here (PIX-158): birds by day and crickets by
-## night outdoors, the town talking by day once it has folk again, and fire
-## close by - a camp's torch, the forge, the village burning on the Night of
-## Ash.
-func _soundscape() -> Array[String]:
-	var out: Array[String] = []
-	if map.floor_level > 0:
-		return out
-	var burning := map.id == "town" and GameState.progression.prologue != Prologue.DONE
-	var outdoors := map.id == "town" or (PunyTerrain.is_outdoor(map.grid) and not map.id.begins_with("town_"))
-	# The birds keep quiet in the rain.
-	if outdoors and not burning and map.id not in WINDY_MAPS and not _raining():
-		out.append("crickets" if DayNight.is_night(GameState.world.steps) else "birds")
-		if map.id == "town" and GameState.town_tier() >= 1 and not DayNight.is_night(GameState.world.steps):
-			out.append("chatter")
-	if burning or map.id == "town_smith" or _near_camp_fire():
-		out.append("fire")
-	return out
-
-
-## A shower falling here now, enough to hear (PIX-224).
-func _raining() -> bool:
-	return atmosphere != null and atmosphere.rain > RAIN_HEARD
 
 
 ## On a fishing spot, facing the water (PIX-165).
@@ -595,14 +517,6 @@ func _hint_boards() -> void:
 	if Vector2(player_cell).distance_to(Vector2(Town.bounty_board())) <= 2.0 \
 			and not Hunts.notices(GameState.board_floors(), GameState.progression.hunted).is_empty():
 		hint("bounty")
-
-
-## A camp's torch within a few tiles of the hero.
-func _near_camp_fire() -> bool:
-	for cell: Vector2i in view.camps:
-		if view.camps[cell]["kind"] == "torch" and Vector2(cell).distance_to(Vector2(player_cell)) <= 4.0:
-			return true
-	return false
 
 
 ## The ascension scene: a new title, and at a fork the path cards.
@@ -728,7 +642,7 @@ func _enter_map(next: MapData, arrival: Vector2i) -> void:
 	if changing:
 		Sound.play("door")
 	hunted_at = -100.0
-	soundscape_left = 0.0
+	soundscape.listen_again()
 	arrived_at = Time.get_ticks_msec() / 1000.0
 	for stale in get_tree().get_nodes_in_group("mobs") + get_tree().get_nodes_in_group("decor"):
 		stale.queue_free()
@@ -757,7 +671,7 @@ func _enter_map(next: MapData, arrival: Vector2i) -> void:
 	_keep_hours(true)
 	camera_rig.set_limits(Vector2(next.size * TILE))
 	_spawn_enemies(next)
-	_update_music()
+	soundscape.refresh()
 	if changing:
 		_fade_in()
 
@@ -1232,7 +1146,7 @@ func _dream() -> void:
 ## floor's clearing plays it; a boss with foes still about plays its own).
 func boss_fell() -> void:
 	Sound.stop_music()
-	hushed_until = Time.get_ticks_msec() / 1000.0 + BOSS_HUSH_S
+	soundscape.hush(BOSS_HUSH_S)
 	hunted_by_boss = false
 	if map.floor_level == 0 or floor_foes > 0:
 		Sound.play("victory")
@@ -1675,18 +1589,11 @@ func _build_hud() -> void:
 	hud.add_child(boss_bar)
 	messages.build_log(hud)
 	GameState.hp_changed.connect(_on_hp_changed)
-	heard_gold = GameState.pack.gold
-	heard_hp = GameState.hero.hp
-	GameState.gold_changed.connect(_hear_gold)
-	GameState.hp_changed.connect(_hear_hp)
+	soundscape.listen()
 	GameState.leveled_up.connect(func(_level: int) -> void:
 		Sound.play("levelUp")
-		heard_hp = GameState.hero.hp
+		soundscape.heard_hp = GameState.hero.hp
 		fx.level_up_burst()
-	)
-	GameState.loaded.connect(func() -> void:
-		heard_gold = GameState.pack.gold
-		heard_hp = GameState.hero.hp
 	)
 	GameState.gold_changed.connect(func(_gold: int) -> void: dock.refresh())
 	GameState.inventory_changed.connect(dock.refresh)
