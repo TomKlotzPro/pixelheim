@@ -3621,6 +3621,10 @@ msgid "QUESTS! Five promises around the village: slimes for Sela, cheese for Bra
 msgstr "DES QUÊTES ! Cinq promesses dans le village : des gelées pour Sela, du fromage pour Bram (évidemment), des loups pour Ana, un troll pour l'Ancienne, des herbes pour Vex - parlez pour accepter, livrez ou tuez, puis reparlez pour être récompensé"
 
 #: assets/data/changelog.json
+msgid "Quick wins stack: a pack's kills rise as one float that counts up, not a pile of lines"
+msgstr "Les gains rapprochés s'additionnent : les victimes d'une meute montent en un seul nombre qui grimpe, pas en une pile de lignes"
+
+#: assets/data/changelog.json
 msgid "READABLE DANGER: a foe shows its level as you come near, on a small plate over its head - grey well below you, cream a match, orange a step above, red far above - so you can choose your fights before the charge"
 msgstr "UN DANGER LISIBLE : un ennemi affiche son niveau quand vous approchez, sur une petite plaque au-dessus de sa tête - gris s'il est bien plus faible que vous, crème s'il est de votre niveau, orange s'il est un cran au-dessus, rouge s'il est bien plus fort - pour que vous choisissiez vos combats avant la charge"
 
@@ -3923,6 +3927,10 @@ msgstr "Des spécialisations ! À votre première ascension, chaque classe doi
 #: assets/data/changelog.json
 msgid "Spent points are permanent. Choose like it matters."
 msgstr "Les points dépensés sont définitifs. Choisissez comme si ça comptait."
+
+#: assets/data/changelog.json
+msgid "Spoils Aloft"
+msgstr "Butin en l'air"
 
 #: assets/data/changelog.json
 msgid "Stakes"
@@ -4637,6 +4645,10 @@ msgid "The line above the dock says where: the next step, the place it's in and 
 msgstr "La ligne au-dessus de la barre dit où : la prochaine étape, le lieu où elle se trouve et où vous en êtes"
 
 #: assets/data/changelog.json
+msgid "The log keeps only what the world doesn't show: the story, quests, levels, mastery, bounties and the Boss Slayer's edge"
+msgstr "Le journal ne garde que ce que le monde ne montre pas : l'histoire, les quêtes, les niveaux, la maîtrise, les primes et l'avantage du Tueur de boss"
+
+#: assets/data/changelog.json
 msgid "The map key is rebindable like everything else"
 msgstr "La touche de la carte se réassigne comme tout le reste"
 
@@ -5053,6 +5065,10 @@ msgid "With Reduce motion, the ruin stands a moment and then the building is the
 msgstr "Avec Réduire les animations, la ruine reste un instant, puis le bâtiment est là"
 
 #: assets/data/changelog.json
+msgid "With Reduce motion, the wins fade in where they stand"
+msgstr "Avec Réduire les animations, les gains apparaissent en fondu sur place"
+
+#: assets/data/changelog.json
 msgid "Wolves, spiders, cats, the mammoths and many villagers no longer walk backwards when they go left or right"
 msgstr "Les loups, les araignées, les chats, les mammouths et bien des villageois ne marchent plus à reculons vers la gauche ou la droite"
 
@@ -5079,6 +5095,10 @@ msgstr "Ça vaut l'ouvrage"
 #: assets/data/changelog.json
 msgid "Wren the Stablemaster walks horses by the gate - two wolf pelts for saddle leather and fast travel drops you straight at Pixelheim Square, no gate queue"
 msgstr "Wren la palefrenière promène des chevaux près de la porte - deux peaux de loup pour le cuir des selles, et le voyage rapide vous dépose droit sur la place de Pixelheim, sans faire la queue à la porte"
+
+#: assets/data/changelog.json
+msgid "XP, gold and loot float up from where you won them, the fallen foe, the chest, the patch or the water, like the damage numbers: XP in sea-glass green, gold behind a coin, each item with its icon in its rarity's colour"
+msgstr "L'XP, l'or et le butin s'élèvent de là où vous les avez gagnés, le monstre vaincu, le coffre, le point de récolte ou l'eau, comme les dégâts : l'XP en vert d'eau, l'or derrière une pièce, chaque objet avec son icône dans la couleur de sa rareté"
 
 #: assets/data/changelog.json
 msgid "YOU BUMP INTO WHAT YOU SEE: walk behind the well's roof and stop at the fountain's rim, bushes and stumps in the fields stand in your way (never where they'd close one), logs and twigs lie flat to step over, and villagers keep a polite step away instead of letting you stand inside them"

@@ -3621,6 +3621,10 @@ msgid "QUESTS! Five promises around the village: slimes for Sela, cheese for Bra
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Quick wins stack: a pack's kills rise as one float that counts up, not a pile of lines"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "READABLE DANGER: a foe shows its level as you come near, on a small plate over its head - grey well below you, cream a match, orange a step above, red far above - so you can choose your fights before the charge"
 msgstr ""
 
@@ -3922,6 +3926,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Spent points are permanent. Choose like it matters."
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Spoils Aloft"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4637,6 +4645,10 @@ msgid "The line above the dock says where: the next step, the place it's in and 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The log keeps only what the world doesn't show: the story, quests, levels, mastery, bounties and the Boss Slayer's edge"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The map key is rebindable like everything else"
 msgstr ""
 
@@ -5053,6 +5065,10 @@ msgid "With Reduce motion, the ruin stands a moment and then the building is the
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "With Reduce motion, the wins fade in where they stand"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Wolves, spiders, cats, the mammoths and many villagers no longer walk backwards when they go left or right"
 msgstr ""
 
@@ -5078,6 +5094,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Wren the Stablemaster walks horses by the gate - two wolf pelts for saddle leather and fast travel drops you straight at Pixelheim Square, no gate queue"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "XP, gold and loot float up from where you won them, the fallen foe, the chest, the patch or the water, like the damage numbers: XP in sea-glass green, gold behind a coin, each item with its icon in its rarity's colour"
 msgstr ""
 
 #: assets/data/changelog.json

@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.193.0",
+      "date": "2026-10-10",
+      "codename": "Spoils Aloft",
+      "notes": [
+        "XP, gold and loot float up from where you won them, the fallen foe, the chest, the patch or the water, like the damage numbers: XP in sea-glass green, gold behind a coin, each item with its icon in its rarity's colour",
+        "Quick wins stack: a pack's kills rise as one float that counts up, not a pile of lines",
+        "The log keeps only what the world doesn't show: the story, quests, levels, mastery, bounties and the Boss Slayer's edge",
+        "With Reduce motion, the wins fade in where they stand"
+      ]
+    },
+    {
       "version": "0.192.0",
       "date": "2026-10-10",
       "codename": "Raised Roofs",
