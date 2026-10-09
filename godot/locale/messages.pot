@@ -2521,6 +2521,10 @@ msgid "Keys That Look Like Keys"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Keys to the Top"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Kills That Count"
 msgstr ""
 
@@ -2854,6 +2858,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "ONE PLATE FOR WHAT THE GAME TELLS YOU: the next step, a message and every line of the battle log now sit on the same dark plate, readable over grass and snow alike, with a gold word in front where it helps (Next, Quest accepted, Quest complete, Level up, Mastery)"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "ONE SCREEN AT A TIME: the keys go only to the screen on top. A rank-up at Morvax's fall no longer hides the throne - and the E meant for the rank-up can't choose his fate behind your back"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -11120,7 +11128,7 @@ msgstr ""
 msgid "Your web game hero %s, %d gold."
 msgstr ""
 
-#: scripts/screen.gd:98
+#: scripts/screen.gd:105
 msgid "Back"
 msgstr ""
 

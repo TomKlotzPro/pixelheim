@@ -17,6 +17,10 @@ extends CanvasLayer
 
 ## Screens holding the world still right now.
 static var _holds := 0
+## The screens open now, in the order they opened: the keys go to the top
+## one only (PIX-199) - the highest layer, the latest among equals - so a
+## screen hidden under another (the throne under a rank-up) never takes them.
+static var _shown: Array[Screen] = []
 
 ## Actions besides Esc and the menu key that close this screen (its own key:
 ## I closes the pack).
@@ -26,6 +30,7 @@ var _holding := false
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	_shown.append(self)
 	# On a phone the canvas outgrows 1280x720: the screen keeps to the middle
 	# (PIX-162). On a desktop this is no offset at all.
 	offset = Touch.center_offset(self)
@@ -47,6 +52,8 @@ func _command(_event: InputEvent) -> Callable:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if not on_top():
+		return
 	var command := _command(event)
 	if not command.is_valid() and _closes_on(event):
 		command = close
@@ -157,4 +164,14 @@ func _let_go() -> void:
 
 ## Freed without closing (the scene reloading under it): its hold goes too.
 func _exit_tree() -> void:
+	_shown.erase(self)
 	_let_go()
+
+
+## Whether the keys are this screen's: no open screen stands above it.
+func on_top() -> bool:
+	var top: Screen = null
+	for screen: Screen in _shown:
+		if is_instance_valid(screen) and screen.is_inside_tree() and (top == null or screen.layer >= top.layer):
+			top = screen
+	return top == self
