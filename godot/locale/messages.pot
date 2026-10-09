@@ -4181,6 +4181,10 @@ msgid "Under the Ashen Mountain"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Under the hood, a test keeps the French whole: a new line can't ship in English only"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Under the hood, the pacing model follows each villager's quests in the order they're offered, and every kill quest is handed in where its quarry lives"
 msgstr ""
 
