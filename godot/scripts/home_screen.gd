@@ -23,7 +23,7 @@ func _intro() -> String:
 	return {
 		"storage": "What the house keeps, safe and weightless.",
 		"workbench": "Both trades, at home: forge and brew without walking to town.",
-		"trophies": "Sell a trophy for gold, or shelve it for power.",
+		"trophies": "Shelve a trophy for power; take it back down any time.",
 		"nook": "Two of a brew distill into one better one.",
 		"furniture": "Pick a piece for this spot. E on it later takes it back.",
 	}[mode]

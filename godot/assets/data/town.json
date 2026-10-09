@@ -1118,5 +1118,15 @@
         }
       }
     ]
-  }
+  },
+  "rested": {
+    "about": "PIX-179: a night in your own bed leaves you well rested: more XP for a number of fights.",
+    "xp": 0.1,
+    "fights": 30
+  },
+  "gardenYields": [
+    "forest_herb",
+    "marsh_reed"
+  ],
+  "gardenCount": 2
 }

@@ -938,8 +938,23 @@ func buy_house_upgrade() -> String:
 		return ""
 	pack.gold -= int(next["cost"])
 	settlement.house["tier"] = next["tier"]
+	# What stood where the new house puts a fixture (or the doorway) comes
+	# back to the pack (PIX-179).
+	var rooms := MapData.load_by_id("town_house" if int(next["tier"]) <= 1 else "town_house@%d" % int(next["tier"]))
+	var moved := 0
+	for piece: Dictionary in furniture():
+		var cell := Vector2i(int(piece["x"]), int(piece["y"]))
+		if rooms.tile_at(cell) != "floor" or cell == Vector2i(8, 8):
+			pack.add_item(piece["itemId"])
+			moved += 1
+	settlement.house["furniture"] = furniture().filter(func(piece: Dictionary) -> bool:
+		var cell := Vector2i(int(piece["x"]), int(piece["y"]))
+		return rooms.tile_at(cell) == "floor" and cell != Vector2i(8, 8))
 	_pack_changed()
-	return Text.t("The %s deed is signed. Your house grew while you were out.") % String(next["name"])
+	var line := Text.t("The %s deed is signed. Your house grew while you were out.") % String(next["name"])
+	if moved > 0:
+		line += Text.t(" %d piece%s of furniture had to move: it's back in your pack.") % [moved, "" if moved == 1 else "s"]
+	return line
 
 
 ## The storage barrel (STORE_ITEM / TAKE_ITEM): stacks move between pack and home.
@@ -1014,6 +1029,21 @@ func furniture() -> Array:
 	return settlement.house.get("furniture", [])
 
 
+## What the furniture placed at home adds to `kind` (PIX-179): each kind of
+## piece counts once, wherever it stands.
+func home_buff(kind: String) -> float:
+	if not owns_house():
+		return 0.0
+	var seen := {}
+	var total := 0.0
+	for piece: Dictionary in furniture():
+		if seen.has(piece["itemId"]):
+			continue
+		seen[piece["itemId"]] = true
+		total += float(Catalog.item(piece["itemId"]).get("homeBuff", {}).get(kind, 0.0))
+	return total
+
+
 func furniture_at(cell: Vector2i) -> Dictionary:
 	for piece: Dictionary in furniture():
 		if piece["x"] == cell.x and piece["y"] == cell.y:
@@ -1031,6 +1061,8 @@ func place_furniture(item_id: String, cell: Vector2i, tile: String) -> String:
 		return "It needs open floor. Face a free tile and try again."
 	if not furniture_at(cell).is_empty():
 		return "Something already stands there."
+	if cell == Vector2i(8, 8):
+		return "Not in the doorway: you'd trip over it coming home."
 	pack.remove_item(item_id)
 	settlement.house["furniture"] = furniture() + [{"itemId": item_id, "x": cell.x, "y": cell.y}]
 	_pack_changed()
@@ -1051,7 +1083,12 @@ func house_interact(cell: Vector2i, tile: String) -> Dictionary:
 	match tile:
 		"bed":
 			_make_whole()
-			return {"text": "Your own bed. Fully rested, free of charge."}
+			# Well rested (PIX-179): more XP for the next fights, longer with the bench.
+			var fights := int(Town._data()["rested"]["fights"]) + roundi(home_buff("rested"))
+			settlement.house["rested"] = fights
+			_pack_changed()
+			return {"text": Text.t("Your own bed. Fully restored, and well rested: +%d%% XP for your next %d fights.") % [
+				roundi(float(Town._data()["rested"]["xp"]) * 100), fights]}
 		"barrel":
 			return {"panel": "storage"}
 		"shelf":
@@ -1142,11 +1179,17 @@ func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, fl
 			var harvests: int = settlement.house.get("gardenHarvests", 0)
 			var crop := Town.garden_yield(harvests)
 			settlement.house["gardenHarvests"] = harvests + 1
-			pack.add_item(crop)
-			log.append(Text.t("Your garden ripens: +1 %s.") % Catalog.item_name(crop))
+			var grown := int(Town._data()["gardenCount"])
+			pack.add_item(crop, grown)
+			log.append(Text.t("Your garden ripens: +%d %s.") % [grown, Catalog.item_name(crop)])
 	var passives := HeroRules.passives(hero)
-	var gold := roundi(fighter["gold"] * (1 + passives["goldBonus"] + commission_buff("gold")))
-	var xp := roundi(Bestiary.xp_for(fighter, hero.level) * (1.0 + commission_buff("xp")))
+	var gold := roundi(fighter["gold"] * (1 + passives["goldBonus"] + commission_buff("gold") + home_buff("gold")))
+	# A night in your own bed (PIX-179): more XP for a while.
+	var rested := int(settlement.house.get("rested", 0))
+	var rested_xp := float(Town._data()["rested"]["xp"]) if rested > 0 else 0.0
+	if rested > 0:
+		settlement.house["rested"] = rested - 1
+	var xp := roundi(Bestiary.xp_for(fighter, hero.level) * (1.0 + commission_buff("xp") + home_buff("xp") + rested_xp))
 	log.append(Text.t("%s is defeated! +%d XP, +%d gold.") % [fighter["name"], xp, gold])
 	pack.gold += gold
 	if passives["killRefundMp"] > 0:
@@ -1451,7 +1494,7 @@ func use_item(item_id: String) -> Dictionary:
 	pack.remove_item(item_id)
 	var parts: Array[String] = []
 	# The Healers' Hall makes every potion stronger (PIX-180).
-	var potency := 1.0 + commission_buff("potion")
+	var potency := 1.0 + commission_buff("potion") + home_buff("potion")
 	if item.has("restoreHp"):
 		var healed := mini(int(hero.stats["maxHp"]), hero.hp + roundi(int(item["restoreHp"]) * potency)) - hero.hp
 		hero.hp += healed
@@ -1494,7 +1537,9 @@ func heal_hero(amount: int) -> int:
 ## Out of a fight every hero's mana or stamina trickles back (PIX-187): a
 ## twentieth of it each rest tick, at least one. Returns what came back.
 func regen_resting() -> int:
-	var back := mini(int(hero.stats["maxMp"]), hero.mp + maxi(1, ceili(int(hero.stats["maxMp"]) * 0.05))) - hero.mp
+	# Candles at home bring it back a point faster (PIX-179).
+	var step := maxi(1, ceili(int(hero.stats["maxMp"]) * 0.05)) + roundi(home_buff("regen"))
+	var back := mini(int(hero.stats["maxMp"]), hero.mp + step) - hero.mp
 	if back > 0:
 		hero.mp += back
 		mark_dirty()

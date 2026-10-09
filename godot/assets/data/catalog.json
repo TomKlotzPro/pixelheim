@@ -754,7 +754,10 @@
       "sprite": "furniture_rug",
       "weight": 3,
       "value": 60,
-      "description": "Crimson wool from the western looms. Ties the room together."
+      "description": "Crimson wool from the western looms. Ties the room together. Placed at home: +5% gold from every fight.",
+      "homeBuff": {
+        "gold": 0.05
+      }
     },
     "furn_plant": {
       "name": "Potted Fern",
@@ -762,7 +765,10 @@
       "sprite": "furniture_plant",
       "weight": 2,
       "value": 45,
-      "description": "Thrives on hearth-light and neglect."
+      "description": "Thrives on hearth-light and neglect. Placed at home: potions heal a tenth more.",
+      "homeBuff": {
+        "potion": 0.1
+      }
     },
     "furn_bookshelf": {
       "name": "Bookshelf",
@@ -770,7 +776,10 @@
       "sprite": "furniture_bookshelf",
       "weight": 8,
       "value": 120,
-      "description": "Mostly adventure stories. A few are even true."
+      "description": "Mostly adventure stories. A few are even true. Placed at home: +5% XP from every fight.",
+      "homeBuff": {
+        "xp": 0.05
+      }
     },
     "furn_banner": {
       "name": "Hero's Banner",
@@ -778,7 +787,10 @@
       "sprite": "furniture_banner",
       "weight": 2,
       "value": 90,
-      "description": "Your colors on the wall, so nobody forgets whose house this is."
+      "description": "Your colors on the wall, so nobody forgets whose house this is. Placed at home: +3% chance to strike a critical blow.",
+      "homeBuff": {
+        "crit": 0.03
+      }
     },
     "furn_candles": {
       "name": "Candelabra",
@@ -786,7 +798,10 @@
       "sprite": "furniture_candles",
       "weight": 1,
       "value": 35,
-      "description": "Three flames against the dark. Cozy, not haunted."
+      "description": "Three flames against the dark. Cozy, not haunted. Placed at home: your mana or stamina comes back a point faster.",
+      "homeBuff": {
+        "regen": 1
+      }
     },
     "furn_bench": {
       "name": "Oak Bench",
@@ -794,7 +809,10 @@
       "sprite": "furniture_bench",
       "weight": 6,
       "value": 70,
-      "description": "Seats two friends or one tired hero lying down."
+      "description": "Seats two friends or one tired hero lying down. Placed at home: a night in your bed rests you for 10 more fights.",
+      "homeBuff": {
+        "rested": 10
+      }
     },
     "bone_charm": {
       "name": "Bone Charm",

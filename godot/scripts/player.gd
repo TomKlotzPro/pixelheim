@@ -133,7 +133,7 @@ func _physics_process(delta: float) -> void:
 				# The web's swing: scaling stat + weapon, crits, mastery, through armour (PIX-185).
 				body.take_hit(Bestiary.hero_attack_damage(
 					GameState.hero, GameState.pack, body.fighter,
-					GameState.settlement.bard_song == true, GameState.roll, GameState.song_crit()
+					GameState.settlement.bard_song == true, GameState.roll, GameState.song_crit(), GameState.home_buff("crit")
 				), global_position, HeroRules.passives(GameState.hero)["attackInflict"])
 		return
 	var input := scripted_dir

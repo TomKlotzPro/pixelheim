@@ -93,6 +93,9 @@ func _open() -> void:
 	add_child(UiStyle.footer(Text.t("Esc  close      A/D  tab      W/S  choose      E  %s      Z  sell a stack") % "/".join(tabs).to_lower(), Vector2(80, 660)))
 	if collected > 0:
 		status.text = Text.t("%s hands you the till: +%d gold.") % [String(shop.get("keeper", "")), collected]
+	# A keeper who sells their business explains deeds once (PIX-179).
+	if Town.deeds().has(GameState.world.map_id) and get_tree().current_scene.has_method("hint"):
+		get_tree().current_scene.hint("deed")
 	_refresh()
 
 

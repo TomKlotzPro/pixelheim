@@ -150,7 +150,7 @@ func test_the_manor_garden_ripens_on_the_sixth_win() -> void:
 	state.settlement.house["gardenWins"] = 5
 	state.roll = _dice([0.99, 0.99])
 	var log: Array[String] = state.defeat_monster(Bestiary.spawn("slime"), "", "", 1)
-	assert_has(log, "Your garden ripens: +1 Bread Loaf.")
+	assert_has(log, "Your garden ripens: +2 Forest Herb.", "PIX-179: herbs and reeds for the cauldron")
 	assert_eq(state.settlement.house["gardenWins"], 0)
 	assert_eq(state.settlement.house["gardenHarvests"], 1)
 

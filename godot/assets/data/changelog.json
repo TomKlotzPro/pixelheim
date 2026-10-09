@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.135.0",
+      "date": "2026-10-09",
+      "codename": "A Home Worth Having",
+      "notes": [
+        "A HOME WORTH HAVING: a night in your own bed leaves you well rested (+10% XP for your next 30 fights), and furniture now helps where it stands - a bookshelf for XP, a banner for critical blows, candles for energy, a rug for gold, a plant for stronger potions, a bench for longer rest. The Manor's garden grows herbs and reeds for the cauldron",
+        "ASKED BEFORE BIG BUYS: the house deed and the workbench ask before they take your gold - press again to buy. Furniture never blocks the doorway, an upgrade hands back what stood in its way, and new hints explain the house, deeds and the bank"
+      ]
+    },
+    {
       "version": "0.134.0",
       "date": "2026-10-09",
       "codename": "Gold With a Purpose",
