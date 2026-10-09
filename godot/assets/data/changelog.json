@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.179.0",
+      "date": "2026-10-09",
+      "codename": "Who Has Work",
+      "notes": [
+        "A gold ! over someone with a quest for you, a gold ? over someone waiting for you to hand one in, and a grey ? while a quest you took from them is under way; Options can turn them off (Quest markers)"
+      ]
+    },
+    {
       "version": "0.178.0",
       "date": "2026-10-09",
       "codename": "By the Hearth",

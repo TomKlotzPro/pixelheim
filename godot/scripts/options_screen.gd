@@ -58,6 +58,7 @@ func _build() -> Array[Dictionary]:
 	out.append({"label": "Clear warnings", "value": "On" if settings.clear_warnings else "Off", "adjust": _flip.bind("clear_warnings")})
 	out.append({"label": "Glow", "value": "On" if settings.glow else "Off", "adjust": _flip.bind("glow")})
 	out.append({"label": "Hints", "value": "On" if settings.hints else "Off", "adjust": _flip.bind("hints")})
+	out.append({"label": "Quest markers", "value": "On" if settings.quest_marks else "Off", "adjust": _flip.bind("quest_marks")})
 	out.append({"heading": "Controls", "column": 1})
 	for action: String in Controls.BINDABLE:
 		var waiting := listening == action

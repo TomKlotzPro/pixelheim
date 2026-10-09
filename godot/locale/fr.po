@@ -1749,6 +1749,10 @@ msgid "A foe gives you longer to see its bite coming, and shows it: it crouches 
 msgstr "Un ennemi vous laisse plus de temps pour voir venir sa morsure, et la montre : il se ramasse avec une lueur rouge et un son. Avec les Avertissements clairs, une bande au sol marque où elle tombera"
 
 #: assets/data/changelog.json
+msgid "A gold ! over someone with a quest for you, a gold ? over someone waiting for you to hand one in, and a grey ? while a quest you took from them is under way; Options can turn them off (Quest markers)"
+msgstr "Un ! doré au-dessus de qui a une quête pour vous, un ? doré au-dessus de qui attend que vous en remettiez une, et un ? gris tant qu'une quête prise auprès de lui est en cours ; les Options peuvent les masquer (Marqueurs de quête)"
+
+#: assets/data/changelog.json
 msgid "A hero from before keeps everything: whoever has cleared a floor finds the gate open, and Maren goes straight to her next ask"
 msgstr "Un ancien héros conserve tout : qui a déjà nettoyé un étage trouve la porte ouverte, et Maren passe directement à sa demande suivante"
 
@@ -4851,6 +4855,10 @@ msgstr "« Quoi de neuf » est désormais dans le menu titre, au clavier com
 #: assets/data/changelog.json
 msgid "When every voice is busy, the sounds that matter (a hurt, a level, a victory) still get through"
 msgstr "Quand toutes les voix sont prises, les sons qui comptent (une blessure, un niveau, une victoire) passent quand même"
+
+#: assets/data/changelog.json
+msgid "Who Has Work"
+msgstr "Qui a du travail"
 
 #: assets/data/changelog.json
 msgid "Win wild battles to forage: herbs in the forest, reeds in the marsh, ember shards in the ash"
@@ -11764,19 +11772,19 @@ msgstr "Repaire"
 msgid "Quest"
 msgstr "Quête"
 
-#: scripts/options_screen.gd:112
+#: scripts/options_screen.gd:113
 msgid "System (%s)"
 msgstr "Système (%s)"
 
-#: scripts/options_screen.gd:152
+#: scripts/options_screen.gd:153
 msgid "%s already does %s. Choose another key."
 msgstr "%s sert déjà à : %s. Choisissez une autre touche."
 
-#: scripts/options_screen.gd:158
+#: scripts/options_screen.gd:159
 msgid "%s is now %s."
 msgstr "%s : désormais %s."
 
-#: scripts/options_screen.gd:189
+#: scripts/options_screen.gd:190
 msgid "Press the new key for %s (Esc keeps the old one)."
 msgstr "Appuyez sur la nouvelle touche pour %s (Esc garde l'ancienne)."
 
@@ -11784,7 +11792,7 @@ msgstr "Appuyez sur la nouvelle touche pour %s (Esc garde l'ancienne)."
 msgid "Options"
 msgstr "Options"
 
-#: scripts/options_screen.gd:220
+#: scripts/options_screen.gd:221
 msgid "Keys are back to the defaults."
 msgstr "Touches par défaut rétablies."
 
@@ -11857,14 +11865,18 @@ msgid "Hints"
 msgstr "Astuces"
 
 #: scripts/options_screen.gd:61
+msgid "Quest markers"
+msgstr "Marqueurs de quête"
+
+#: scripts/options_screen.gd:62
 msgid "Controls"
 msgstr "Commandes"
 
-#: scripts/options_screen.gd:66
+#: scripts/options_screen.gd:67
 msgid "Press a key..."
 msgstr "Appuyez sur une touche..."
 
-#: scripts/options_screen.gd:69
+#: scripts/options_screen.gd:70
 msgid "Reset keys to defaults"
 msgstr "Rétablir les touches par défaut"
 
@@ -12848,27 +12860,27 @@ msgstr "Cela entame ce que demande « %s » (%s). Recommencez pour confirmer
 msgid "A feat done: %s. The %s is yours, for the shelf at home."
 msgstr "Un haut fait accompli : %s. La %s est à vous, pour l'étagère de la maison."
 
-#: scripts/state/quests.gd:112
+#: scripts/state/quests.gd:127
 msgid "In %s."
 msgstr "Repaire : %s."
 
-#: scripts/state/quests.gd:112
+#: scripts/state/quests.gd:127
 msgid "the wilds"
 msgstr "les terres sauvages"
 
-#: scripts/state/quests.gd:115
+#: scripts/state/quests.gd:130
 msgid "Found in %s."
 msgstr "Se trouve : %s."
 
-#: scripts/state/quests.gd:119
+#: scripts/state/quests.gd:134
 msgid "In a chest somewhere in %s."
 msgstr "Dans un coffre, quelque part (%s)."
 
-#: scripts/state/quests.gd:126
+#: scripts/state/quests.gd:141
 msgid "The five left them in %s."
 msgstr "Les cinq les ont laissées ici : %s."
 
-#: scripts/state/quests.gd:136
+#: scripts/state/quests.gd:151
 msgid "%s, from %s."
 msgstr "%s, avec %s."
 

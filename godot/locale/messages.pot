@@ -1749,6 +1749,10 @@ msgid "A foe gives you longer to see its bite coming, and shows it: it crouches 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A gold ! over someone with a quest for you, a gold ? over someone waiting for you to hand one in, and a grey ? while a quest you took from them is under way; Options can turn them off (Quest markers)"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A hero from before keeps everything: whoever has cleared a floor finds the gate open, and Maren goes straight to her next ask"
 msgstr ""
 
@@ -4850,6 +4854,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "When every voice is busy, the sounds that matter (a hurt, a level, a victory) still get through"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Who Has Work"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -11764,19 +11772,19 @@ msgstr ""
 msgid "Quest"
 msgstr ""
 
-#: scripts/options_screen.gd:112
+#: scripts/options_screen.gd:113
 msgid "System (%s)"
 msgstr ""
 
-#: scripts/options_screen.gd:152
+#: scripts/options_screen.gd:153
 msgid "%s already does %s. Choose another key."
 msgstr ""
 
-#: scripts/options_screen.gd:158
+#: scripts/options_screen.gd:159
 msgid "%s is now %s."
 msgstr ""
 
-#: scripts/options_screen.gd:189
+#: scripts/options_screen.gd:190
 msgid "Press the new key for %s (Esc keeps the old one)."
 msgstr ""
 
@@ -11784,7 +11792,7 @@ msgstr ""
 msgid "Options"
 msgstr ""
 
-#: scripts/options_screen.gd:220
+#: scripts/options_screen.gd:221
 msgid "Keys are back to the defaults."
 msgstr ""
 
@@ -11857,14 +11865,18 @@ msgid "Hints"
 msgstr ""
 
 #: scripts/options_screen.gd:61
+msgid "Quest markers"
+msgstr ""
+
+#: scripts/options_screen.gd:62
 msgid "Controls"
 msgstr ""
 
-#: scripts/options_screen.gd:66
+#: scripts/options_screen.gd:67
 msgid "Press a key..."
 msgstr ""
 
-#: scripts/options_screen.gd:69
+#: scripts/options_screen.gd:70
 msgid "Reset keys to defaults"
 msgstr ""
 
@@ -12848,27 +12860,27 @@ msgstr ""
 msgid "A feat done: %s. The %s is yours, for the shelf at home."
 msgstr ""
 
-#: scripts/state/quests.gd:112
+#: scripts/state/quests.gd:127
 msgid "In %s."
 msgstr ""
 
-#: scripts/state/quests.gd:112
+#: scripts/state/quests.gd:127
 msgid "the wilds"
 msgstr ""
 
-#: scripts/state/quests.gd:115
+#: scripts/state/quests.gd:130
 msgid "Found in %s."
 msgstr ""
 
-#: scripts/state/quests.gd:119
+#: scripts/state/quests.gd:134
 msgid "In a chest somewhere in %s."
 msgstr ""
 
-#: scripts/state/quests.gd:126
+#: scripts/state/quests.gd:141
 msgid "The five left them in %s."
 msgstr ""
 
-#: scripts/state/quests.gd:136
+#: scripts/state/quests.gd:151
 msgid "%s, from %s."
 msgstr ""
 

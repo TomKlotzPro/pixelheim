@@ -60,6 +60,15 @@ var body: CollisionShape2D
 const NOWHERE := Vector2i(-1, -1)
 var gather_at := NOWHERE
 var _last_beat := -1
+## What hangs over their head for the hero (PIX-240): a "!" with a quest to
+## give, a gold "?" with one to hand in, a grey "?" while it's under way.
+## Looked at twice a second, not every frame.
+const MARK_SECONDS := 0.5
+## Gold for a quest to give or to hand in, grey while one is under way.
+const MARK_COLORS := {"offer": Color("f2c14e"), "ready": Color("f2c14e"), "waiting": Color("a8a39a")}
+var _mark: Node2D
+var _mark_kind := ""
+var _mark_left := 0.0
 
 
 ## Gone for the night, or back: back means at home, wherever the evening
@@ -80,9 +89,13 @@ func place_at(at: Vector2i) -> void:
 	reset_physics_interpolation()
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	if away:
 		return
+	_mark_left -= delta
+	if _mark_left <= 0.0:
+		_mark_left = MARK_SECONDS
+		_refresh_mark()
 	if gather_at != NOWHERE:
 		_walk_to_square()
 		return
@@ -93,6 +106,64 @@ func _process(_delta: float) -> void:
 	if next == cell or next == world.player_cell:
 		return
 	_step_to(next)
+
+
+## Their quest mark as things stand: the right one, or none with the marks
+## turned off in Options.
+func _refresh_mark() -> void:
+	var kind := ""
+	if GameState.settings.quest_marks:
+		kind = Quests.mark_for(String(data.get("id", "")), GameState.progression.quests, GameState.pack.items, GameState.questing.quest_open)
+	if kind == _mark_kind:
+		return
+	_mark_kind = kind
+	if _mark != null:
+		_mark.queue_free()
+		_mark = null
+	if kind == "":
+		return
+	_mark = _outlined("!" if kind == "offer" else "?", MARK_COLORS[kind])
+	_mark.z_index = 10
+	# Bright at night too (PIX-221).
+	_mark.material = Lights.unshaded()
+	# Its baseline just over the head, measured on the figure's first frame
+	# (its drawn pixels, not the frame's empty top).
+	var glyph: Label = _mark.get_child(-1)
+	var ascent := UiStyle.bold_font().get_ascent(UiStyle.BODY_PX)
+	_mark.position = Vector2(roundf(-glyph.size.x / 2.0), roundf(_head_top() - 2.0 - ascent))
+	add_child(_mark)
+
+
+## Where the figure's head begins, from its middle (the sprite is centred):
+## the first drawn row of its first frame, scaled.
+func _head_top() -> float:
+	var frame := sprite.sprite_frames.get_frame_texture(sprite.animation, 0)
+	var image := frame.get_image()
+	# A frame cut from a sheet: only its own region counts.
+	if frame is AtlasTexture:
+		var cut := frame as AtlasTexture
+		image = cut.atlas.get_image().get_region(Rect2i(cut.region))
+	var drawn := image.get_used_rect()
+	return sprite.position.y + (drawn.position.y - frame.get_size().y / 2.0) * sprite.scale.y
+
+
+## `text` in the UI's bold pixel face at its own size, outlined in the night
+## by four dark copies a pixel off each way: the pixel face draws no outline
+## of its own. The glyph itself is the last child.
+static func _outlined(text: String, color: Color) -> Node2D:
+	var mark := Node2D.new()
+	for offset: Vector2 in [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN, Vector2.ZERO]:
+		var glyph := Label.new()
+		glyph.text = text
+		glyph.add_theme_font_override("font", UiStyle.bold_font())
+		glyph.add_theme_font_size_override("font_size", UiStyle.BODY_PX)
+		glyph.add_theme_color_override("font_color", color if offset == Vector2.ZERO else UiStyle.NIGHT)
+		glyph.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		glyph.use_parent_material = true
+		glyph.size = glyph.get_minimum_size()
+		glyph.position = offset
+		mark.add_child(glyph)
+	return mark
 
 
 ## A step a beat toward their spot on the square: the longer way first, the
