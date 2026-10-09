@@ -202,16 +202,16 @@ func test_the_forge_raises_bonus_for_gold_and_smithing_xp() -> void:
 func test_forges_gear_as_an_instance_and_pays_smithing_xp() -> void:
 	_stand_in("town_smith")
 	state.hero.jobs["smithing"]["level"] = 3
-	state.pack.items = {"wolf_pelt": 2, "imp_horn": 1}
+	state.pack.items = {"wolf_pelt": 2, "ember_shard": 2}
 	assert_true(state.craft("craft_beast_cleaver")["made"])
 	assert_eq(state.pack.gear[-1]["itemId"], "beast_cleaver")
 	assert_false(state.pack.items.has("wolf_pelt"))
-	assert_eq(state.hero.jobs["smithing"]["xp"], 10)
+	assert_eq(state.hero.jobs["smithing"]["xp"], 20, "PIX-181: 5 + 5 a recipe level (a level-3 cleaver)")
 
 
 func test_refuses_a_recipe_above_the_job_level() -> void:
 	_stand_in("town_smith")
-	state.pack.items = {"wolf_pelt": 2, "imp_horn": 1}
+	state.pack.items = {"wolf_pelt": 2, "ember_shard": 2}
 	assert_false(state.craft("craft_beast_cleaver")["made"])
 	assert_eq(state.pack.items["wolf_pelt"], 2)
 
@@ -223,13 +223,13 @@ func test_a_skilled_alchemist_brews_doubles() -> void:
 	state.pack.items = {"forest_herb": 1, "marsh_reed": 1}
 	assert_eq(state.craft("brew_potion_hp")["count"], 2)
 	assert_eq(state.pack.items["potion_hp"], 2)
-	assert_eq(state.hero.jobs["alchemy"]["xp"], 8)
+	assert_eq(state.hero.jobs["alchemy"]["xp"], 10, "a level-1 brew")
 
 
 func test_refuses_to_craft_away_from_the_station() -> void:
 	_stand_in("town")
 	state.hero.jobs["smithing"]["level"] = 3
-	state.pack.items = {"wolf_pelt": 2, "imp_horn": 1}
+	state.pack.items = {"wolf_pelt": 2, "ember_shard": 2}
 	assert_false(state.craft("craft_beast_cleaver")["made"])
 	assert_eq(state.pack.items["wolf_pelt"], 2)
 
@@ -238,13 +238,13 @@ func test_the_home_workbench_crafts_both_trades_only_at_home() -> void:
 	_stand_in("town_house")
 	state.settlement.house["owned"] = true
 	state.hero.jobs["smithing"]["level"] = 3
-	state.pack.items = {"wolf_pelt": 2, "imp_horn": 1, "forest_herb": 1, "marsh_reed": 1}
+	state.pack.items = {"wolf_pelt": 2, "ember_shard": 2, "forest_herb": 1, "marsh_reed": 1}
 	assert_false(state.craft("craft_beast_cleaver")["made"], "an owned house is not a station")
 	state.settlement.house["workbench"] = true
 	assert_true(state.craft("craft_beast_cleaver")["made"])
 	assert_true(state.craft("brew_potion_hp")["made"])
 	_stand_in("town")
-	state.pack.items = {"wolf_pelt": 2, "imp_horn": 1}
+	state.pack.items = {"wolf_pelt": 2, "ember_shard": 2}
 	assert_false(state.craft("craft_beast_cleaver")["made"], "the workbench does not travel")
 
 

@@ -4434,7 +4434,7 @@
         }
       ],
       "rewardItemIds": [
-        "scaled_greaves",
+        "runic_armor",
         "gem"
       ],
       "rewardGold": 310,
@@ -5050,7 +5050,25 @@
       "id": "saltmere_jetty",
       "mapId": "saltmere",
       "x": 31,
-      "y": 31
+      "y": 31,
+      "catches": [
+        [
+          "fresh_fish",
+          55
+        ],
+        [
+          "sea_glass",
+          15
+        ],
+        [
+          "pearl",
+          20
+        ],
+        [
+          "old_boot",
+          10
+        ]
+      ]
     },
     {
       "id": "saltmere_lagoon",

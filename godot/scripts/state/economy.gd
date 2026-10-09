@@ -94,7 +94,13 @@ static func forge_cost_for(item_id: String, current_bonus: int, smithing: int) -
 
 ## Smithing 5 unlocks the +8 masterwork cap.
 static func forge_cap_for(smithing: int) -> int:
-	return int(_data()["forgeBonusCap"]) + (1 if smithing >= 5 else 0)
+	# And Smithing 9 raises it once more (PIX-181: the top levels give something).
+	return int(_data()["forgeBonusCap"]) + (1 if smithing >= 5 else 0) + (1 if smithing >= int(_data()["jobUnlocks"]["smithingCapAt"]) else 0)
+
+
+## Smithing 10 (PIX-181): every forged piece comes out at least Fine.
+static func forges_fine(smithing: int) -> bool:
+	return smithing >= int(_data()["jobUnlocks"]["smithingFineAt"])
 
 
 static func job_xp_to_next(level: int) -> int:
@@ -117,9 +123,10 @@ static func grant_job_xp(jobs: Dictionary, job: String, xp: int) -> int:
 	return gained
 
 
-## What one craft teaches its trade: the forge 10, the cauldron 8.
-static func craft_xp(job: String) -> int:
-	return 10 if job == "smithing" else 8
+## What one craft teaches its trade (PIX-181): more the harder the recipe,
+## 5 + 5 a level, so a trade keeps up with what it makes.
+static func craft_xp(entry: Dictionary) -> int:
+	return 5 + 5 * int(entry["job"]["level"])
 
 
 ## A trade's standing for the Craft tab: "Smithing 2 (15/50 XP)".

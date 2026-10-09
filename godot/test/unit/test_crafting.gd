@@ -48,7 +48,7 @@ func test_a_craft_teaches_its_own_trade() -> void:
 	state.pack.items.merge({"wolf_pelt": 2, "grave_moss": 1})
 	var made: Dictionary = state.craft("brew_wolfstooth_collar")
 	assert_true(made["made"])
-	assert_eq(state.hero.jobs["alchemy"]["xp"], Economy.craft_xp("alchemy"), "the collar is brewed")
+	assert_eq(state.hero.jobs["alchemy"]["xp"], Economy.craft_xp(Economy.recipe("brew_wolfstooth_collar")), "the collar is brewed")
 	assert_eq(state.hero.jobs["smithing"]["xp"], 0)
 
 
@@ -65,3 +65,90 @@ func test_a_missing_material_says_where_it_comes_from() -> void:
 	assert_eq(Economy.where_to_find("wolf_pelt"), "Wolf Pelt: Dire Wolf, 50% (the Whispering Forest, the Sunken Marsh, floor 4)")
 	assert_eq(Economy.where_to_find("marsh_reed"), "Marsh Reed: foraged after fights in the Sunken Marsh")
 	assert_eq(Economy.where_to_find("dragon_scale"), "Dragon Scale: Fafnyr the Ashen, every time (floor 10)")
+
+
+## PIX-181: no dead recipes, trades that keep up.
+func _value(needs: Dictionary) -> int:
+	var total := 0
+	for item_id: String in needs:
+		total += int(Catalog.item(item_id).get("value", 0)) * int(needs[item_id])
+	return total
+
+
+func test_no_recipe_is_worth_less_than_what_goes_in() -> void:
+	for entry: Dictionary in Economy._data()["recipes"]:
+		var out := Catalog.item(entry["itemId"])
+		assert_gte(int(out.get("value", 0)), _value(entry["needs"]), "%s is worth making" % entry["id"])
+
+
+func test_no_early_recipe_waits_on_a_late_monster() -> void:
+	for entry: Dictionary in Economy._data()["recipes"]:
+		if int(entry["job"]["level"]) <= 4:
+			assert_false(entry["needs"].has("imp_horn"), "%s needs no L14 imp" % entry["id"])
+			assert_false(entry["needs"].has("dragon_scale"), "%s needs no dragon" % entry["id"])
+
+
+func test_the_bucklers_climb_and_the_dragon_gear_is_endgame() -> void:
+	var armor := func(item_id: String) -> int: return int(Catalog.item(item_id)["armor"])
+	assert_lt(armor.call("reed_buckler"), armor.call("saltwood_buckler"), "the starter buckler gives way to the coast's")
+	assert_lte(armor.call("saltwood_buckler"), armor.call("blackiron_bulwark"))
+	assert_lte(armor.call("blackiron_bulwark"), armor.call("warden_kite"))
+	assert_gt(armor.call("grave_ward"), armor.call("warden_kite"), "the grave ward tops the shields the forge makes")
+	assert_gt(armor.call("scaled_mail"), armor.call("city_plate"), "dragon scale beats the city's plate")
+	assert_gte(int(Catalog.item("dragon_tonic")["restoreHp"]), 999, "a dragon tonic is everything back")
+
+
+func test_no_hoard_gives_away_what_the_forge_makes() -> void:
+	var forged := {}
+	for entry: Dictionary in Economy._data()["recipes"]:
+		if Catalog.item(entry["itemId"]).has("slot"):
+			forged[entry["itemId"]] = true
+	for level: Dictionary in Bestiary._data()["levels"]:
+		for item_id: String in level.get("rewardItemIds", []):
+			assert_false(forged.has(item_id), "floor %d's hoard: %s" % [level["level"], item_id])
+
+
+func test_each_trade_level_is_a_handful_of_crafts_away() -> void:
+	for job: String in ["smithing", "alchemy"]:
+		var recipes: Array = Economy._data()["recipes"].filter(func(e: Dictionary) -> bool: return e["job"]["id"] == job)
+		var crafts := 0
+		for level in range(1, 8):
+			# The best practice a hero of this level has: its hardest open recipe.
+			var best := 0
+			for entry: Dictionary in recipes:
+				if int(entry["job"]["level"]) <= level:
+					best = maxi(best, Economy.craft_xp(entry))
+			var needed := ceili(float(Economy.job_xp_to_next(level)) / best)
+			assert_lte(needed, 6, "%s %d to %d" % [job, level, level + 1])
+			crafts += needed
+			if job == "alchemy" and level == 3:
+				assert_lte(crafts, 14, "the Frostweave (Alchemy 4) by the Frostgate")
+
+
+func test_the_top_trade_levels_give_something() -> void:
+	assert_gt(Economy.forge_cap_for(9), Economy.forge_cap_for(8), "Smithing 9 forges higher")
+	assert_false(Economy.forges_fine(9))
+	assert_true(Economy.forges_fine(10), "Smithing 10 forges Fine")
+	assert_gt(Economy.double_brew_chance(9), Economy.double_brew_chance(6), "brewing doubles more often")
+
+
+func test_steeping_turns_bought_potions_into_practice_never_doubles() -> void:
+	state.world.map_id = "town_alchemist"
+	state.roll = func() -> float: return 0.0
+	state.hero.jobs["alchemy"]["level"] = 9
+	state.pack.items = {"potion_hp": 2}
+	var made: Dictionary = state.craft("steep_potion_hp")
+	assert_true(made["made"])
+	assert_eq(made["count"], 1, "two potions steep into one, whatever the trade's luck")
+	assert_eq(state.pack.items.get("greater_potion", 0), 1)
+
+
+func test_pearls_are_found_at_the_jetty() -> void:
+	var spot := Gathering.fishing_spot("saltmere_jetty")
+	var total := 0.0
+	var pearls := 0.0
+	for catch: Array in spot["catches"]:
+		total += float(catch[1])
+		if catch[0] == "pearl":
+			pearls = float(catch[1])
+	assert_gte(pearls / total, 0.15, "the tidecutter's pearl is a fair catch")
