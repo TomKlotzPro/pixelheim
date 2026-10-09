@@ -592,7 +592,7 @@ func _primary() -> void:
 		var item := Catalog.item(item_id)
 		if item["category"] == "furniture" and GameState.world.map_id == "town_house" and world != null:
 			close()
-			world.place_from_pack(item_id)
+			world.interaction.place_from_pack(item_id)
 			return
 		var used := GameState.use_item(item_id)
 		if not used["used"]:
