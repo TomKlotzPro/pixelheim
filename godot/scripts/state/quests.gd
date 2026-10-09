@@ -109,14 +109,14 @@ static func where(quest: Dictionary) -> String:
 	var objective: Dictionary = quest["objective"]
 	match String(objective["kind"]):
 		"hunt":
-			return Text.t("In %s.") % Hunts.named(objective["named"]).get("where", "the wilds")
+			return Text.t("In %s.") % Hunts.named(objective["named"]).get("where", Text.t("the wilds"))
 		"kill":
 			var places := Bestiary.where_found(objective["monsterId"])
 			return Text.t("Found in %s.") % ", ".join(places.slice(0, 3)) if not places.is_empty() else ""
 		"deliver":
 			for chest: Dictionary in Interactables._data()["chests"]:
 				if chest.get("loot", {}).get("itemId", "") == objective["itemId"]:
-					return Text.t("In a chest somewhere in %s.") % Economy._mid(Catalog.place_name(chest["mapId"]))
+					return Text.t("In a chest somewhere in %s.") % Text.mid(Catalog.place_name(chest["mapId"]))
 			var lead := Economy.where_to_find(objective["itemId"])
 			return lead + "." if lead != "" else ""
 		"relics":

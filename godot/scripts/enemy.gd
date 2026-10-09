@@ -336,7 +336,7 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null) -> void:
 		return
 	if guarding:
 		damage = maxi(1, roundi(damage * float(Bestiary._data()["eliteMoves"]["undead"]["block"])))
-		world.float_text("blocked", global_position + Vector2(0, -26), Color(0.7, 0.85, 1.0))
+		world.float_text(Text.t("blocked"), global_position + Vector2(0, -26), Color(0.7, 0.85, 1.0))
 	Sound.play("hit")
 	velocity = (global_position - from).normalized() * 220
 	move_and_slide()
@@ -353,7 +353,7 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null) -> void:
 			hunting = true
 			world.on_enemy_noticed(self)
 	if not dying and ailments.inflict(infliction, GameState.roll):
-		world.log_line(Text.t("%s is afflicted by %s!") % [fighter["name"], infliction["kind"]])
+		world.log_line(Text.t("%s is afflicted by %s!") % [fighter["name"], Ailments.label(infliction["kind"])])
 
 
 func _lose(damage: int, color: Color) -> void:

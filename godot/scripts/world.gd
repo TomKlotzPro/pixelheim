@@ -297,7 +297,7 @@ func on_enemy_died(enemy: Node) -> void:
 	if GameState.pack.gear.size() > gear_before:
 		Sound.play("drop")
 	if cleared != "":
-		_log(["The wilds fall quiet again."])
+		_log([Text.t("The wilds fall quiet again.")])
 	# The dead a boss summons aren't the floor's own foes (PIX-150).
 	if map.floor_level > 0 and floor_foes > 0 and not enemy.is_in_group("summoned"):
 		floor_foes -= 1
@@ -715,7 +715,8 @@ func enter_floor(level: int) -> void:
 	for foe: Dictionary in plan["foes"]:
 		var spawned := spawn_enemy(foe["id"], foe["cell"], "", "", foe["elite"], false, Vector2i(-1, -1), foe["lift"])
 		if epithet != "" and int(foe["lift"]) > 0:
-			var titled := Text.t("%s %s") % [Text.t(epithet), Bestiary.monster(foe["id"])["name"]]
+			# Named, not positional: French puts the epithet after (PIX-196).
+			var titled := Text.t("{epithet} {name}").format({"epithet": Text.t(epithet), "name": Bestiary.monster(foe["id"])["name"]})
 			spawned.fighter["name"] = Text.t("Elite %s") % titled if foe["elite"] else titled
 		if replay:
 			spawned.fighter["gold"] = roundi(int(spawned.fighter["gold"]) * float(Bestiary._data()["deepHunt"]["replayGoldShare"]))
@@ -1365,8 +1366,8 @@ func _play_ending(choice := "destroy") -> void:
 	var town_name := String(Town.tier(GameState.town_tier())["name"]).to_lower()
 	stops.append({
 		"at": _cell_center(square),
-		"line": ("Five lanterns on the square, one for each of the five who climbed. Tonight the %s remembers them - and %s."
-			if choice == "rest" else "Pixelheim, a %s raised from the ashes. Tonight it celebrates %s.") % [town_name, GameState.hero.hero_name],
+		"line": (Text.t("Five lanterns on the square, one for each of the five who climbed. Tonight the %s remembers them - and %s.")
+			if choice == "rest" else Text.t("Pixelheim, a %s raised from the ashes. Tonight it celebrates %s.")) % [town_name, GameState.hero.hero_name],
 	})
 	var tour := preload("res://scripts/reveal_screen.gd").new()
 	tour.world = self
@@ -1461,7 +1462,7 @@ func _play_reveals() -> void:
 				if GameState.festival_on():
 					stops.append({
 						"at": _cell_center(Vector2i(int(Town.festival("barker")["x"]), int(Town.festival("barker")["y"]))),
-						"line": "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw.",
+						"line": Text.t("And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."),
 					})
 			"home":
 				stops.append({"at": _cell_center(Town.square()), "line": Town.homecoming(int(key))})
@@ -1897,10 +1898,15 @@ func _fit_message() -> void:
 func _flash_message(text: String) -> void:
 	var tag := ""
 	for known: String in MESSAGE_TAGS:
-		if text.begins_with(known + ": "):
-			tag = known
-			text = text.substr(known.length() + 2)
-			text = text[0].to_upper() + text.substr(1)
+		# In the player's language, French setting a narrow space before the colon.
+		var said := Text.t(known)
+		for colon: String in [": ", "\u202f: ", " : "]:
+			if text.begins_with(said + colon):
+				tag = said
+				text = text.substr(said.length() + colon.length())
+				text = text[0].to_upper() + text.substr(1)
+				break
+		if tag != "":
 			break
 	message_tag.text = tag
 	message_tag.visible = tag != ""

@@ -26,6 +26,12 @@ POT = os.path.join(LOCALE, "messages.pot")
 DATA = ["catalog", "progression", "npcs", "combat", "economy", "town", "story", "changelog", "hints"]
 MAPS_DATA = ["interactables"]
 LANGUAGES = ["fr"]
+## Short words the game shows that read like ids (PIX-196): labels, stat
+## abbreviations and the words templates are filled with.
+SHOWN = [
+    "HP", "MP", "EN", "XP", "STR", "INT", "DEX", "DEF", "END", "ATK", "DMG",
+    "damage", "healing", "Buy", "Sell", "Craft", "Gear", "Items", "Forge", "%dg",
+]
 HEADER = {
     "fr": 'Language: fr\\nPlural-Forms: nplurals=2; plural=(n > 1);\\n',
 }
@@ -130,6 +136,8 @@ def gather():
     for name in MAPS_DATA:
         walk(json.load(open(os.path.join(ROOT, "assets", "maps", name + ".json"))), "", deny, "assets/maps/%s.json" % name, out)
     from_scripts(out)
+    for word in SHOWN:
+        out.setdefault(word, "tools/i18n.py")
     return out
 
 

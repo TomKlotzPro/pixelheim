@@ -252,7 +252,7 @@ func _new_badge() -> Control:
 	var badge := PanelContainer.new()
 	badge.add_theme_stylebox_override("panel", UiStyle.box(UiStyle.LAMP, UiStyle.NIGHT, 3))
 	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	badge.add_child(UiStyle.strong("NEW", 12, UiStyle.CREAM))
+	badge.add_child(UiStyle.strong(Text.t("NEW"), 12, UiStyle.CREAM))
 	# Beside the marker it hangs from, middles level, growing rightward.
 	badge.set_anchors_preset(Control.PRESET_CENTER_LEFT)
 	badge.offset_left = 20

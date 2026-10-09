@@ -22,19 +22,19 @@ func _info() -> String:
 	]
 	var building := Town.current_age(GameState.settlement)
 	if building == 0:
-		lines.append_array(["", "Every project is built. Pixelheim stands at its full height.", "",
-			"Commissions: costly works the town would build in your honour, each a lasting edge."])
+		lines.append_array(["", Text.t("Every project is built. Pixelheim stands at its full height."), "",
+			Text.t("Commissions: costly works the town would build in your honour, each a lasting edge.")])
 		for entry: Dictionary in Town.commissions():
-			lines.append("- %s: %s" % [entry["name"], entry["blurb"]])
+			lines.append(Text.t("- %s: %s") % [entry["name"], entry["blurb"]])
 		return "\n".join(lines)
 	lines.append_array(["", Text.t("Building the %s") % Town.tier(building)["name"]])
 	var blockers := Town.age_blockers(building, GameState.progression, GameState.settlement)
 	for need: Dictionary in Town.age(building)["requires"]:
-		lines.append("%s %s" % ["Needed:" if need["line"] in blockers else "Done:", need["line"]])
+		lines.append("%s %s" % [Text.t("Needed:") if need["line"] in blockers else Text.t("Done:"), need["line"]])
 	lines.append(Text.t("When it's done: %s.") % "; ".join(Town.tier(building)["perks"]).to_lower())
 	var chosen := _chosen_project()
 	if not chosen.is_empty():
-		lines.append_array(["", "%s: %s" % [chosen["name"], chosen["blurb"]]])
+		lines.append_array(["", Text.t("%s: %s") % [chosen["name"], chosen["blurb"]]])
 	return "\n".join(lines)
 
 
@@ -92,7 +92,7 @@ func _rows() -> Array[Dictionary]:
 			var commission_id: String = entry["id"]
 			var funded: bool = commission_id in GameState.settlement.projects
 			works.append({
-				"label": entry["name"], "note": "COMMISSIONED" if funded else "%dg" % int(entry["cost"]),
+				"label": entry["name"], "note": Text.t("COMMISSIONED") if funded else Text.coins(int(entry["cost"])),
 				"enabled": not funded and GameState.pack.gold >= int(entry["cost"]),
 				"why": "Already commissioned." if funded else "Not enough gold.",
 				"action": func() -> String:
@@ -113,7 +113,7 @@ func _rows() -> Array[Dictionary]:
 		out.append({
 			"project": project_id,
 			"label": entry["name"],
-			"note": "BUILT" if built else Town.cost_line(project_id),
+			"note": Text.t("BUILT") if built else Town.cost_line(project_id),
 			"enabled": blocker == "",
 			"why": blocker,
 			"action": func() -> String:

@@ -15,6 +15,7 @@
 #   godot/tools/flows.sh            # all of them
 #   godot/tools/flows.sh fight die  # just these
 #   godot/tools/flows.sh --quiet    # no window, no sound, no pictures
+#   FLOWS_EXTRA="--lang fr" godot/tools/flows.sh --quiet   # every flow in French (PIX-196)
 #
 # --quiet runs every flow headless with the audio off: nothing opens on the
 # screen or plays out loud, the report lines are still checked. The motion
@@ -84,9 +85,9 @@ for flow in "${FLOWS[@]}"; do
 	# shellcheck disable=SC2086 # the arguments are meant to split
 	# A watchdog: a run that never quits fails instead of stalling the rest.
 	if [[ $quiet == 1 ]]; then
-		output=$(perl -e 'alarm 60; exec @ARGV' godot --headless --audio-driver Dummy --path . -- --screenshot $args 2>&1)
+		output=$(perl -e 'alarm 60; exec @ARGV' godot --headless --audio-driver Dummy --path . -- --screenshot $args ${FLOWS_EXTRA:-} 2>&1)
 	else
-		output=$(perl -e 'alarm 60; exec @ARGV' godot --path . -- --screenshot $args 2>&1)
+		output=$(perl -e 'alarm 60; exec @ARGV' godot --path . -- --screenshot $args ${FLOWS_EXTRA:-} 2>&1)
 	fi
 	report=$(grep "screenshot saved" <<<"$output")
 	# Smooth walking is timed frame by frame, and the festival's and the
@@ -96,9 +97,9 @@ for flow in "${FLOWS[@]}"; do
 		rm -f screenshot.png
 		# shellcheck disable=SC2086
 		if [[ $quiet == 1 ]]; then
-			output=$(perl -e 'alarm 60; exec @ARGV' godot --headless --audio-driver Dummy --path . -- --screenshot $args 2>&1)
+			output=$(perl -e 'alarm 60; exec @ARGV' godot --headless --audio-driver Dummy --path . -- --screenshot $args ${FLOWS_EXTRA:-} 2>&1)
 		else
-			output=$(perl -e 'alarm 60; exec @ARGV' godot --path . -- --screenshot $args 2>&1)
+			output=$(perl -e 'alarm 60; exec @ARGV' godot --path . -- --screenshot $args ${FLOWS_EXTRA:-} 2>&1)
 		fi
 		report=$(grep "screenshot saved" <<<"$output")
 	fi

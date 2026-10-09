@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.143.0",
+      "date": "2026-10-09",
+      "codename": "En français",
+      "notes": [
+        "PIXELHEIM SPEAKS FRENCH: every menu, quest, line of dialogue, item, skill, monster, the story and these notes, all 3,098 strings - choose it under Options, or the game follows your system's language",
+        "Names that sit in a sentence lose their capital article in French, gear and floor foes are named in French word order, and door signs, skill icons and message tags work in either language",
+        "Every price, tag and stat abbreviation on the screens goes through the translation, so nothing is left in English in the corners"
+      ]
+    },
+    {
       "version": "0.142.0",
       "date": "2026-10-09",
       "codename": "Against the Clock",

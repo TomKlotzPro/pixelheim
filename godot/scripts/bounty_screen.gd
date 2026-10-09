@@ -21,7 +21,7 @@ func _info() -> String:
 		var first := Hunts.next_notice(GameState.board_floors())
 		return Text.t("No notices yet. The board waits for word from the wilds.\n\nThe first one goes up when %s.") % _when(first)
 	var slain: bool = chosen["id"] in GameState.progression.hunted
-	var lines: Array[String] = ["%s: %s" % ["Slain" if slain else "Wanted", chosen["name"]], "", String(chosen["notice"]), ""]
+	var lines: Array[String] = [(Text.t("Slain: %s") if slain else Text.t("Wanted: %s")) % chosen["name"], "", String(chosen["notice"]), ""]
 	lines.append(Text.t("Its lair: %s.") % chosen["where"])
 	lines.append("%s." % Hunts.reward_line(chosen))
 	if slain:
@@ -33,7 +33,7 @@ func _info() -> String:
 
 
 func _verb() -> String:
-	return "where"
+	return Text.t("where")
 
 
 func _rows() -> Array[Dictionary]:
@@ -43,7 +43,7 @@ func _rows() -> Array[Dictionary]:
 		out.append({
 			"named": entry["id"],
 			"label": entry["name"],
-			"note": "SLAIN" if slain else "%dg" % int(entry["bounty"]),
+			"note": Text.t("SLAIN") if slain else Text.coins(int(entry["bounty"])),
 			"enabled": not slain,
 			"why": "Slain. Pixelheim still talks about it.",
 			"action": func() -> String: return Text.t("%s keeps to %s. Its lair is marked on your map.") % [entry["name"], entry["where"]],
@@ -65,9 +65,12 @@ static func _when(entry: Dictionary) -> String:
 	if not entry.has("postedRelics"):
 		return cleared
 	var relics := int(entry["postedRelics"])
-	return Text.t("%s of the five relics %s won, or %s") % [["one", "two", "three", "four"][relics - 1], "is" if relics == 1 else "are", cleared]
+	# Words a language can say its own way (PIX-196): the count, and is/are.
+	var count: String = [Text.t("one"), Text.t("two"), Text.t("three"), Text.t("four")][relics - 1]
+	var said := Text.t("%s of the five relics is won, or %s") if relics == 1 else Text.t("%s of the five relics are won, or %s")
+	return said % [count, cleared]
 
 
 static func _floor_name(level: int) -> String:
 	var floor_def: Dictionary = Bestiary._data()["levels"][level - 1]
-	return Text.t("the %s (floor %d)") % [String(floor_def["name"]).trim_prefix("The "), level]
+	return Text.t("the %s (floor %d)") % [Text.mid(String(floor_def["name"]).trim_prefix("The ")), level]

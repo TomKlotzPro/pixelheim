@@ -179,12 +179,20 @@ static func craft_xp(entry: Dictionary) -> int:
 	return 5 + 5 * int(entry["job"]["level"])
 
 
+## The trades by name, for the player's language (PIX-196).
+const JOB_NAMES := {"smithing": "Smithing", "alchemy": "Alchemy", "foraging": "Foraging", "fishing": "Fishing"}
+
+
+static func job_name(job: String) -> String:
+	return Text.t(JOB_NAMES.get(job, job.capitalize()))
+
+
 ## A trade's standing for the Craft tab: "Smithing 2 (15/50 XP)".
 static func job_line(jobs: Dictionary, job: String) -> String:
 	var progress: Dictionary = jobs[job]
 	if int(progress["level"]) >= int(_data()["jobLevelCap"]):
-		return Text.t("%s %d (mastered)") % [job.capitalize(), progress["level"]]
-	return Text.t("%s %d (%d/%d XP)") % [job.capitalize(), progress["level"], progress["xp"], job_xp_to_next(progress["level"])]
+		return Text.t("%s %d (mastered)") % [job_name(job), progress["level"]]
+	return Text.t("%s %d (%d/%d XP)") % [job_name(job), progress["level"], progress["xp"], job_xp_to_next(progress["level"])]
 
 
 ## How far into the Reach a place lies (PIX-184), in the order a hero takes
@@ -244,11 +252,6 @@ static func _lead(kind: String, text: String, stage: float) -> Dictionary:
 	return {"kind": kind, "text": text, "stage": stage}
 
 
-## A place's name inside a sentence: "the Frostgate Pass", not "The".
-static func _mid(name: String) -> String:
-	return "the " + name.substr(4) if name.begins_with("The ") else name
-
-
 ## Where a quest's reward is earned: no nearer than its giver, nor than
 ## what it asks for - Hilda pays her shard for ore from the mines.
 static func _quest_stage(quest: Dictionary) -> float:
@@ -297,14 +300,14 @@ static func material_sources(item_id: String, town_tier := 4, stock_stage := 99,
 	for chest: Dictionary in Interactables._data()["chests"]:
 		if chest.get("loot", {}).get("itemId", "") == item_id:
 			var region_id: String = _map(chest["mapId"]).region_at(Vector2i(chest["x"], chest["y"]))
-			var where: String = Bestiary.region(region_id).get("name", _mid(Catalog.place_name(chest["mapId"])))
+			var where: String = Bestiary.region(region_id).get("name", Text.mid(Catalog.place_name(chest["mapId"])))
 			out.append(_lead("chest", Text.t("in a chest in %s") % where, place_stage(chest["mapId"], region_id)))
 	var waters: Array[String] = []
 	var water_stage := 99.0
 	for spot: Dictionary in combat.get("fishingSpots", []):
 		var catches: Array = spot.get("catches", combat["fishing"]["catches"])
 		if catches.any(func(entry: Array) -> bool: return entry[0] == item_id):
-			var place := _mid(Catalog.place_name(spot["mapId"]))
+			var place := Text.mid(Catalog.place_name(spot["mapId"]))
 			if place not in waters:
 				waters.append(place)
 			water_stage = minf(water_stage, place_stage(spot["mapId"]))
@@ -319,7 +322,7 @@ static func material_sources(item_id: String, town_tier := 4, stock_stage := 99,
 			if carried["itemId"] != item_id:
 				continue
 			var places := Bestiary.where_found(monster_id)
-			var odds := "every time" if float(carried["chance"]) >= 1.0 else "%d%%" % roundi(float(carried["chance"]) * 100)
+			var odds := Text.t("every time") if float(carried["chance"]) >= 1.0 else "%d%%" % roundi(float(carried["chance"]) * 100)
 			if carried.has("once"):
 				# Sure once a hero, then a chance (PIX-180: Fafnyr's scale).
 				odds = Text.t("sure the first time, then %d%%") % roundi(float(carried["after"]) * 100)
@@ -342,7 +345,7 @@ static func material_sources(item_id: String, town_tier := 4, stock_stage := 99,
 	var hoards: Array = range(1, combat["levels"].size() + 1).filter(func(level: int) -> bool:
 		return item_id in combat["levels"][level - 1].get("rewardItemIds", []))
 	if hoards.size() == 1:
-		out.append(_lead("hoard", Text.t("the hoard of %s") % _mid(combat["levels"][hoards[0] - 1]["name"]), floor_stage(hoards[0])))
+		out.append(_lead("hoard", Text.t("the hoard of %s") % Text.mid(combat["levels"][hoards[0] - 1]["name"]), floor_stage(hoards[0])))
 	elif hoards.size() > 1:
 		out.append(_lead("hoard", Text.t("the hoards of floors %s") % ", ".join(hoards.map(func(level: int) -> String: return str(level))), floor_stage(hoards[0])))
 	out.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:

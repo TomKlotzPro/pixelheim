@@ -55,8 +55,23 @@ static func ailment(kind: String) -> Texture2D:
 
 ## A skill's icon by its name, or null (no icon, or no paid art).
 static func skill(skill_name: String) -> Texture2D:
-	var code: String = _data()["skills"].get(skill_name, "")
+	var code: String = _data()["skills"].get(skill_name, _translated_skills().get(skill_name, ""))
 	return _texture(skill_file(code)) if code != "" else null
+
+
+## The skills' icons by the name the player reads (PIX-196): the map is
+## keyed by the English names, the dock shows them translated.
+static var _skill_names := {}
+static var _skill_generation := -1
+
+
+static func _translated_skills() -> Dictionary:
+	if _skill_generation != Text.generation:
+		_skill_generation = Text.generation
+		_skill_names = {}
+		for english: String in _data()["skills"]:
+			_skill_names[Text.t(english)] = _data()["skills"][english]
+	return _skill_names
 
 
 ## "Fire/9" -> its file in the Puny Skills pack, under retro-rpg/shade/.

@@ -23,7 +23,7 @@ func _intro() -> String:
 
 
 func _footer() -> String:
-	return "W/S  choose      E  decide"
+	return Text.t("W/S  choose      E  %s") % Text.t("decide")
 
 
 func _closes_on(_event: InputEvent) -> bool:
@@ -32,12 +32,12 @@ func _closes_on(_event: InputEvent) -> bool:
 
 func _info() -> String:
 	var lines: Array[String] = [
-		"Morvax the Deathless kneels on the steps of his throne. The dead around him have stopped moving. His crown has slipped over one eye.",
+		Text.t("Morvax the Deathless kneels on the steps of his throne. The dead around him have stopped moving. His crown has slipped over one eye."),
 		"",
-		"\"Finish it, courier,\" he says. \"Everyone else did.\"",
+		Text.t("\"Finish it, courier,\" he says. \"Everyone else did.\""),
 	]
 	if _knows():
-		lines.append_array(["", "Liane's last page is in your pack, and you know the names of the five who climbed. You could give him those instead of the blade."])
+		lines.append_array(["", Text.t("Liane's last page is in your pack, and you know the names of the five who climbed. You could give him those instead of the blade.")])
 	lines.append_array(["", String(rows[selected].get("detail", ""))])
 	return "\n".join(lines)
 
@@ -48,15 +48,15 @@ func _rows() -> Array[Dictionary]:
 			"label": "Destroy him",
 			"note": "",
 			"enabled": true,
-			"detail": "Break the Deathless. The dark takes what is left, and nothing of him comes back.",
+			"detail": Text.t("Break the Deathless. The dark takes what is left, and nothing of him comes back."),
 			"action": _decide.bind("destroy"),
 		},
 		{
 			"label": "Lay him to rest",
 			"note": "" if _knows() else "?",
 			"enabled": _knows(),
-			"detail": "Read him Liane's words, say their names, and let him go." if _knows()
-				else "You don't know him well enough. Maren's story of the five, and the last page of Liane's journal, would tell you how.",
+			"detail": Text.t("Read him Liane's words, say their names, and let him go.") if _knows()
+				else Text.t("You don't know him well enough. Maren's story of the five, and the last page of Liane's journal, would tell you how."),
 			"why": "You don't know him well enough. Maren's story of the five, and the last page of Liane's journal, would tell you how.",
 			"action": _decide.bind("rest"),
 		},

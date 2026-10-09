@@ -13,6 +13,12 @@ func before_each() -> void:
 	slots = SaveSlots.new(DIR)
 
 
+func after_each() -> void:
+	# Booting follows the system's language (PIX-195); a French machine
+	# would leave every later test reading French.
+	Text.apply("en")
+
+
 func after_all() -> void:
 	_wipe()
 

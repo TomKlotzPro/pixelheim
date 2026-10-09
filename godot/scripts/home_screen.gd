@@ -34,13 +34,13 @@ func _info() -> String:
 	match mode:
 		"storage":
 			var stored: Dictionary = house["storage"]
-			return "Stored:\n" + ("\n".join(stored.keys().map(func(id: String) -> String: return "%s x%d" % [Catalog.item_name(id), stored[id]])) if not stored.is_empty() else "Nothing yet.")
+			return Text.t("Stored:\n") + ("\n".join(stored.keys().map(func(id: String) -> String: return "%s x%d" % [Catalog.item_name(id), stored[id]])) if not stored.is_empty() else Text.t("Nothing yet."))
 		"trophies":
-			var lines: Array[String] = ["On the shelf:"]
+			var lines: Array[String] = [Text.t("On the shelf:")]
 			for id: String in GameState.trophies():
-				lines.append("%s: %s" % [Catalog.item_name(id), Town.trophy_buffs()[id]["label"]])
+				lines.append(Text.t("%s: %s") % [Catalog.item_name(id), Town.trophy_buffs()[id]["label"]])
 			if GameState.trophies().is_empty():
-				lines.append("Nothing yet. Trophies come from the toughest foes.")
+				lines.append(Text.t("Nothing yet. Trophies come from the toughest foes."))
 			return "\n".join(lines)
 		"workbench":
 			return Text.t("Smithing %d, Alchemy %d") % [GameState.hero.jobs["smithing"]["level"], GameState.hero.jobs["alchemy"]["level"]]
@@ -63,7 +63,7 @@ func _rows() -> Array[Dictionary]:
 				var recipe_id: String = entry["id"]
 				out.append(_row_for(
 					Text.t("Craft %s") % Catalog.item_name(entry["itemId"]),
-					"%s %d" % [String(entry["job"]["id"]).capitalize(), entry["job"]["level"]],
+					"%s %d" % [Economy.job_name(entry["job"]["id"]), entry["job"]["level"]],
 					Economy.can_craft(entry, pack.items, GameState.hero.jobs),
 					func() -> String:
 						var result := GameState.craft(recipe_id)

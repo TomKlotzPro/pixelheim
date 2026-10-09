@@ -305,8 +305,9 @@ func refresh() -> void:
 	rank_label.text = Text.t("Lv %d %s") % [hero.level, Ranks.title(hero.role_id, hero.level)]
 	gold_label.text = str(pack.gold)
 	var resource := Skills.resource_label(hero.role_id)
-	_set_bar("hp", "HP", hero.hp, int(hero.stats["maxHp"]), BARS["hp"])
-	_set_bar("res", resource, hero.mp, int(hero.stats["maxMp"]), BARS["en"] if resource == "EN" else BARS["mp"])
+	_set_bar("hp", Text.t("HP"), hero.hp, int(hero.stats["maxHp"]), BARS["hp"])
+	var stamina: bool = Catalog.role(hero.role_id)["resource"] == "endurance"
+	_set_bar("res", resource, hero.mp, int(hero.stats["maxMp"]), BARS["en"] if stamina else BARS["mp"])
 	_set_xp.call_deferred(hero.xp, hero.xp_to_next)
 	var keys := GameState.settings.bindings
 	var waiting_any := false
@@ -315,7 +316,7 @@ func refresh() -> void:
 		UiStyle.keycap_text(line["cap"], Controls.key_label(Controls.key_for(screen, keys)))
 		var waiting := hero.stat_points if screen == "stats" else (hero.skill_points if screen == "skills" else 0)
 		waiting_any = waiting_any or waiting > 0
-		line["word"].text = line["name"] + ("  +%d" % waiting if waiting > 0 else "")
+		line["word"].text = Text.t(line["name"]) + ("  +%d" % waiting if waiting > 0 else "")
 		line["word"].add_theme_color_override("font_color", UiStyle.LAMP if waiting > 0 else UiStyle.INK)
 	# Points to spend light the menu, so they're never missed.
 	UiStyle.focus(menu_button, waiting_any)

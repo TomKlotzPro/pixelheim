@@ -65,7 +65,7 @@ static func tier_level(entry: Dictionary) -> int:
 
 ## Casters spend mana, fighters endurance (resourceLabel).
 static func resource_label(role_id: String) -> String:
-	return "MP" if Catalog.role(role_id)["resource"] == "mana" else "EN"
+	return Text.t("MP") if Catalog.role(role_id)["resource"] == "mana" else Text.t("EN")
 
 
 ## One stat point, spent (applyStatPoint): INT grows a caster's mana, END
@@ -222,7 +222,7 @@ static func readout(stat: String, hero: HeroState, pack: InventoryState) -> Stri
 			if Catalog.role(hero.role_id)["resource"] == "mana":
 				parts.append(Text.t("MP %d") % hero.stats["maxMp"])
 			if parts.is_empty():
-				parts.append("powers INT skills")
+				parts.append(Text.t("powers INT skills"))
 		"dexterity":
 			# A DEX weapon's swing, as STR's and INT's show theirs (PIX-188).
 			if scaling == "dexterity":
@@ -234,7 +234,7 @@ static func readout(stat: String, hero: HeroState, pack: InventoryState) -> Stri
 			if strongest >= 0:
 				parts.append(Text.t("skill power %d") % strongest)
 			if parts.is_empty():
-				parts.append("powers bows, daggers and DEX skills")
+				parts.append(Text.t("powers bows, daggers and DEX skills"))
 		"defense":
 			# Measured against a foe of the hero's own level (PIX-185).
 			var defense := HeroRules.total_defense(hero, pack)
@@ -252,4 +252,4 @@ static func readout(stat: String, hero: HeroState, pack: InventoryState) -> Stri
 static func info(stat: String, hero: HeroState, pack: InventoryState) -> Dictionary:
 	var after := HeroState.from_dict(hero.to_dict())
 	apply_stat_point(after, stat)
-	return {"blurb": BLURBS[stat], "now": readout(stat, hero, pack), "next": readout(stat, after, pack)}
+	return {"blurb": Text.t(BLURBS[stat]), "now": readout(stat, hero, pack), "next": readout(stat, after, pack)}

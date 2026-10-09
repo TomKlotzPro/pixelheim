@@ -8,6 +8,19 @@ extends RefCounted
 const TURN_SECONDS := 1.0
 const VERBS := {"poison": "Poison", "burn": "The burn"}
 
+## An ailment's name for the player, in their language (PIX-196): the
+## kinds are ids.
+static func label(kind: String) -> String:
+	match kind:
+		"poison":
+			return Text.t("poison")
+		"burn":
+			return Text.t("burn")
+		"stun":
+			return Text.t("stun")
+	return kind
+
+
 ## {kind, turnsLeft, power}
 var effects: Array[Dictionary] = []
 var _clock := 0.0

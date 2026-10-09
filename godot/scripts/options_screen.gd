@@ -150,7 +150,7 @@ func _input(event: InputEvent) -> void:
 		settings.bindings = Controls.rebind(settings.bindings, listening, key)
 		settings.save_file()
 		Controls.apply(settings.bindings)
-		status.text = Text.t("%s is now %s.") % [Controls.BINDABLE[listening][0], Controls.key_label(key)]
+		status.text = Text.t("%s is now %s.") % [Text.t(Controls.BINDABLE[listening][0]), Controls.key_label(key)]
 	listening = ""
 	_refresh()
 
@@ -181,7 +181,7 @@ func _act(direction: int) -> void:
 		row["adjust"].call(direction)
 	elif row.has("rebind"):
 		listening = row["rebind"]
-		status.text = Text.t("Press the new key for %s (Esc keeps the old one).") % row["label"]
+		status.text = Text.t("Press the new key for %s (Esc keeps the old one).") % Text.t(row["label"])
 	elif row.has("act"):
 		row["act"].call()
 	_refresh()
