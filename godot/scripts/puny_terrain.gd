@@ -46,6 +46,9 @@ const REGION_TINTS := {"frost": "snow"}
 const REGION_PATHS := {"frost": "stone"}
 ## What a bridge or a dock spans.
 const WATERS := ["water", "shore", "sea", "deep_sea"]
+## The tiles a span is laid in: a bridge from bank to bank, a dock out from
+## one.
+const SPANS := ["bridge", "dock"]
 ## Ground the hero can walk out onto; maps with none are interiors.
 const OUTDOOR := ["grass", "forest", "marsh", "ash", "sand", "snow", "stone"]
 
@@ -90,6 +93,19 @@ static func ground_of(tile: String) -> String:
 	return GROUND.get(tile, "grass")
 
 
+## The ground drawn under one cell of a map. A dock stands in the water
+## around it: the coast's piers over their pale shallows, but one built out
+## into a river (the village's, PIX-236) over the river, or a pale square of
+## sea would show round its planks.
+static func ground_at(grid: Dictionary, cell: Vector2i) -> String:
+	var tile: String = grid.get(cell, "")
+	if tile == "dock":
+		for step: Vector2i in [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]:
+			if grid.get(span_end(grid, cell, step), "") == "water":
+				return ground_of("water")
+	return ground_of(tile)
+
+
 ## The tile for four corner terrains [tl, tr, br, bl]; `pick` chooses among
 ## equal tiles (grass has nine) so fields don't repeat.
 static func corner_tile(corners: Array, pick: int) -> int:
@@ -120,7 +136,7 @@ static func settle(corners: Array) -> Array:
 ## the corner shared by cells (x-1, y-1) to (x, y), so the layer drawing them
 ## is shifted half a tile up-left. Off-map cells repeat the nearest edge.
 static func ground_tiles(grid: Dictionary, size: Vector2i) -> Dictionary:
-	return _dual_tiles(size, func(cell: Vector2i) -> String: return ground_of(grid.get(cell, "")))
+	return _dual_tiles(size, func(cell: Vector2i) -> String: return ground_at(grid, cell))
 
 
 ## The pine forest crowning the mountains, on the same dual grid: it covers
@@ -268,32 +284,60 @@ static func skyline(grid: Dictionary) -> Dictionary:
 	return drawn
 
 
-## Puny objects standing on our cells, -1 where none: bridges by the way
-## they span (a single plank, or the ends and middles of a span along its
-## longer side; square spans cross the water) and cave mouths.
+## Puny objects standing on our cells, -1 where none: bridges and docks as
+## planks the way they span (span_axis: a single plank, or the ends and
+## middles of a run) and cave mouths.
 static func object_at(grid: Dictionary, cell: Vector2i) -> int:
 	match grid.get(cell, ""):
 		"bridge", "dock":
-			var span := ["bridge", "dock"]
-			var across := _run(grid, cell, Vector2i.LEFT, span) + _run(grid, cell, Vector2i.RIGHT, span) + 1
-			var down := _run(grid, cell, Vector2i.UP, span) + _run(grid, cell, Vector2i.DOWN, span) + 1
-			var water_runs_down: bool = (
-				grid.get(cell + Vector2i.UP, "") in WATERS or grid.get(cell + Vector2i.DOWN, "") in WATERS
-			)
-			if across > down or (across == down and water_runs_down):
-				if across == 1:
+			if span_axis(grid, cell) == Vector2i.RIGHT:
+				var west := _run(grid, cell, Vector2i.LEFT, SPANS) > 0
+				var east := _run(grid, cell, Vector2i.RIGHT, SPANS) > 0
+				if not west and not east:
 					return 821
-				var west := _run(grid, cell, Vector2i.LEFT, span) > 0
-				var east := _run(grid, cell, Vector2i.RIGHT, span) > 0
 				return 876 if west and east else (875 if east else 877)
-			if down == 1:
+			var north := _run(grid, cell, Vector2i.UP, SPANS) > 0
+			var south := _run(grid, cell, Vector2i.DOWN, SPANS) > 0
+			if not north and not south:
 				return 848
-			var north := _run(grid, cell, Vector2i.UP, span) > 0
-			var south := _run(grid, cell, Vector2i.DOWN, span) > 0
 			return 847 if north and south else (820 if south else 874)
 		"cave":
 			return 128
 	return -1
+
+
+## Which way the planks of a bridge or dock run through `cell`:
+## Vector2i.RIGHT west to east, Vector2i.DOWN north to south. A span runs
+## between ground the hero walks on: the way whose two ends land wins, then
+## the way with one (a dock is a pier out from its bank). The web drew a
+## bridge as one sprite whatever lay round it, and its shape alone laid
+## planks along a river (PIX-235); only a span landing both ways alike
+## falls back on its longer side, a square one crossing the water.
+static func span_axis(grid: Dictionary, cell: Vector2i) -> Vector2i:
+	var lands_across := _lands(grid, cell, Vector2i.LEFT) + _lands(grid, cell, Vector2i.RIGHT)
+	var lands_down := _lands(grid, cell, Vector2i.UP) + _lands(grid, cell, Vector2i.DOWN)
+	if lands_across != lands_down:
+		return Vector2i.RIGHT if lands_across > lands_down else Vector2i.DOWN
+	var across := _run(grid, cell, Vector2i.LEFT, SPANS) + _run(grid, cell, Vector2i.RIGHT, SPANS) + 1
+	var down := _run(grid, cell, Vector2i.UP, SPANS) + _run(grid, cell, Vector2i.DOWN, SPANS) + 1
+	var water_runs_down: bool = (
+		grid.get(cell + Vector2i.UP, "") in WATERS or grid.get(cell + Vector2i.DOWN, "") in WATERS
+	)
+	return Vector2i.RIGHT if across > down or (across == down and water_runs_down) else Vector2i.DOWN
+
+
+## The first cell past the span through `cell`, going toward `step`.
+static func span_end(grid: Dictionary, cell: Vector2i, step: Vector2i) -> Vector2i:
+	var next := cell + step
+	while grid.get(next, "") in SPANS:
+		next += step
+	return next
+
+
+## 1 when the span through `cell` lands toward `step` on ground the hero
+## walks on, 0 at water, a wall or the map's edge.
+static func _lands(grid: Dictionary, cell: Vector2i, step: Vector2i) -> int:
+	return 1 if WorldTiles.is_walkable(grid.get(span_end(grid, cell, step), "")) else 0
 
 
 ## A Puny tile's rectangle on the sheet, for sprites cut from it.
