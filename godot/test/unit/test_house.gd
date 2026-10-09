@@ -203,6 +203,29 @@ func test_no_furniture_in_the_doorway_and_an_upgrade_moves_whats_in_the_way() ->
 	assert_eq(state.pack.items.get("furn_rug", 0), 1)
 
 
+func test_an_upgrade_moves_whats_where_a_fixture_reaches() -> void:
+	# The cottage's hearth stands two tiles tall on the hut's open floor
+	# (PIX-237): a piece there would be drawn over it.
+	state.new_game("Robin", "warrior")
+	_own_house()
+	var hut := MapData.load_by_id("town_house")
+	var cottage := MapData.load_by_id("town_house@2")
+	var under := Vector2i(-1, -1)
+	var over: Dictionary = PunyInterior.plan(cottage.id, cottage.grid)["over"]
+	for cell: Vector2i in over:
+		if over[cell] == "hearth" and cottage.tile_at(cell) == "floor" and hut.tile_at(cell) == "floor":
+			under = cell
+	assert_gt(under.x, -1, "the hearth reaches onto the hut's floor")
+	state.settlement.house["furniture"] = [
+		{"itemId": "furn_plant", "x": under.x, "y": under.y}, {"itemId": "furn_rug", "x": 10, "y": 8},
+	]
+	state.world.map_id = "town_shop"
+	state.pack.gold = 100000
+	assert_string_contains(state.household.buy_house_upgrade(), "1 piece of furniture had to move")
+	assert_eq(state.household.furniture(), [{"itemId": "furn_rug", "x": 10, "y": 8}], "the rug in the open stays")
+	assert_eq(state.pack.items.get("furn_plant", 0), 1, "the plant by the hearth comes home")
+
+
 func test_the_manor_garden_grows_for_the_cauldron() -> void:
 	assert_eq(Town.garden_yield(0), "forest_herb")
 	assert_eq(Town.garden_yield(1), "marsh_reed")

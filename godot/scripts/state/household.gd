@@ -45,17 +45,19 @@ func buy_house_upgrade() -> String:
 	owner.pack.gold -= int(next["cost"])
 	owner.settlement.house["tier"] = next["tier"]
 	# What stood where the new house puts a fixture (or the doorway) comes
-	# back to the pack (PIX-179).
+	# back to the pack (PIX-179), and so does what stood where a fixture
+	# reaches beyond its own tile: the hearth's top, a bed's foot (PIX-237).
 	var rooms := MapData.load_by_id("town_house" if int(next["tier"]) <= 1 else "town_house@%d" % int(next["tier"]))
+	var reach: Dictionary = PunyInterior.plan(rooms.id, rooms.grid)["over"]
+	var stays := func(piece: Dictionary) -> bool:
+		var cell := Vector2i(int(piece["x"]), int(piece["y"]))
+		return rooms.tile_at(cell) == "floor" and not reach.has(cell) and cell != Vector2i(8, 8)
 	var moved := 0
 	for piece: Dictionary in furniture():
-		var cell := Vector2i(int(piece["x"]), int(piece["y"]))
-		if rooms.tile_at(cell) != "floor" or cell == Vector2i(8, 8):
+		if not stays.call(piece):
 			owner.pack.add_item(piece["itemId"])
 			moved += 1
-	owner.settlement.house["furniture"] = furniture().filter(func(piece: Dictionary) -> bool:
-		var cell := Vector2i(int(piece["x"]), int(piece["y"]))
-		return rooms.tile_at(cell) == "floor" and cell != Vector2i(8, 8))
+	owner.settlement.house["furniture"] = furniture().filter(stays)
 	owner.pack_changed()
 	var line := Text.t("The %s deed is signed. Your house grew while you were out.") % String(next["name"])
 	if moved > 0:

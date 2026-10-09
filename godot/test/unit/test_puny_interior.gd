@@ -15,6 +15,11 @@ func _room(name: String) -> MapData:
 	return data
 
 
+## Shade's wall tiles and the window: what a wall cell may be drawn as.
+func _wall_tiles() -> Array:
+	return PunyInterior.WALLS.values() + [PunyInterior.WINDOW]
+
+
 func test_every_room_keeps_its_door_floor_and_walls() -> void:
 	for name: String in ROOMS:
 		var data := _room(name)
@@ -24,9 +29,70 @@ func test_every_room_keeps_its_door_floor_and_walls() -> void:
 			if tile.begins_with("door"):
 				assert_eq(plan["pieces"].get(cell), PunyInterior.DOOR, "%s door at %s" % [name, cell])
 			elif tile == "wall":
-				assert_true(plan["pieces"].has(cell) or plan["void"].has(cell), "%s wall at %s drawn or dark" % [name, cell])
+				# A wall is drawn as a wall (whatever stands against it), or
+				# dark beyond the room, or it is the ground furniture stands
+				# on where it reaches into the wall line (PIX-237): never the
+				# backdrop through a piece's open pixels.
+				var drawn: bool = plan["walls"].get(cell, -1) in _wall_tiles()
+				var under: bool = plan["floor"].has(cell) and plan["pieces"].has(cell)
+				assert_true(drawn or under or plan["void"].has(cell), "%s wall at %s drawn or dark" % [name, cell])
 			else:
 				assert_true(plan["floor"].has(cell), "%s floor under %s" % [name, cell])
+
+
+## The black squares around the smithy's forges (PIX-237): furniture
+## reaching into the wall line stands on something. A part above its cell
+## leans on a plain wall (a window would show through the forge's top), a
+## part on the ground has floor under it, and no piece is drawn over
+## another's (the Cottage's hearth hid its bed's foot).
+func test_furniture_in_the_wall_line_stands_on_wall_or_floor() -> void:
+	for name: String in ROOMS:
+		var data := _room(name)
+		var plan := PunyInterior.plan(data.id, data.grid)
+		var walls: Dictionary = plan["walls"]
+		var drawn := {}
+		for cell: Vector2i in data.grid:
+			var tile: String = data.grid[cell]
+			if PunyInterior.RUNS.has(tile) or not PunyInterior.FURNITURE.has(tile):
+				continue
+			for part: Array in PunyInterior.FURNITURE[tile]:
+				var at: Vector2i = cell + part[0]
+				assert_false(drawn.has(at), "%s: the %s at %s is drawn over the %s" % [name, tile, cell, drawn.get(at, "")])
+				drawn[at] = "%s at %s" % [tile, cell]
+				assert_eq(plan["pieces"].get(at), part[1], "%s: the %s at %s drawn whole (%s)" % [name, tile, cell, at])
+				if data.grid.get(at, "") != "wall":
+					continue
+				if part[0].y < 0:
+					assert_true(walls.get(at, -1) in PunyInterior.WALLS.values(), "%s: a plain wall behind the %s's top at %s" % [name, tile, at])
+				else:
+					assert_true(plan["floor"].has(at) and not walls.has(at), "%s: floor under the %s at %s" % [name, tile, at])
+
+
+## Every bed is a bed (PIX-237): its foot drawn, open, the bed's when E
+## meets it (a rest; nothing placed there) and reachable from the door.
+func test_every_bed_can_be_slept_in() -> void:
+	for name: String in ROOMS:
+		var data := _room(name)
+		var plan := PunyInterior.plan(data.id, data.grid)
+		var blocked := {}
+		for cell: Vector2i in plan["blocked"]:
+			blocked[cell] = true
+		var seen := {data.spawn: true}
+		var queue: Array[Vector2i] = [data.spawn]
+		while not queue.is_empty():
+			var cell: Vector2i = queue.pop_front()
+			for step: Vector2i in [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]:
+				var next := cell + step
+				if not seen.has(next) and not blocked.has(next) and data.grid.get(next, "wall") == "floor":
+					seen[next] = true
+					queue.append(next)
+		for cell: Vector2i in data.grid:
+			if data.grid[cell] != "bed":
+				continue
+			var foot := cell + Vector2i.DOWN
+			assert_eq(plan["pieces"].get(foot), 1482, "%s: the bed at %s has its foot" % [name, cell])
+			assert_eq(plan["over"].get(foot), "bed", "%s: E at the foot of %s rests" % [name, cell])
+			assert_true(seen.has(foot), "%s: the bed at %s can be reached" % [name, cell])
 
 
 func test_furniture_never_shuts_the_way_out() -> void:
@@ -62,13 +128,14 @@ func test_walls_follow_their_neighbours() -> void:
 	for y in rows.size():
 		for x in rows[y].length():
 			grid[Vector2i(x, y)] = {"#": "wall", "_": "floor", "D": "door"}[rows[y][x]]
-	var pieces: Dictionary = PunyInterior.plan("town_shop", grid)["pieces"]
-	assert_eq(pieces[Vector2i(0, 0)], PunyInterior.WALLS[6], "top-left corner")
-	assert_eq(pieces[Vector2i(4, 0)], PunyInterior.WALLS[12], "top-right corner")
-	assert_eq(pieces[Vector2i(0, 1)], PunyInterior.WALLS[5], "a side wall")
-	assert_eq(pieces[Vector2i(1, 3)], PunyInterior.WALLS[8], "the wall ends left of the door")
-	assert_eq(pieces[Vector2i(3, 3)], PunyInterior.WALLS[2], "and starts again right of it")
-	assert_eq(pieces[Vector2i(2, 3)], PunyInterior.DOOR)
+	var plan := PunyInterior.plan("town_shop", grid)
+	var walls: Dictionary = plan["walls"]
+	assert_eq(walls[Vector2i(0, 0)], PunyInterior.WALLS[6], "top-left corner")
+	assert_eq(walls[Vector2i(4, 0)], PunyInterior.WALLS[12], "top-right corner")
+	assert_eq(walls[Vector2i(0, 1)], PunyInterior.WALLS[5], "a side wall")
+	assert_eq(walls[Vector2i(1, 3)], PunyInterior.WALLS[8], "the wall ends left of the door")
+	assert_eq(walls[Vector2i(3, 3)], PunyInterior.WALLS[2], "and starts again right of it")
+	assert_eq(plan["pieces"][Vector2i(2, 3)], PunyInterior.DOOR)
 
 
 func test_the_inn_wakes_its_guests_in_an_open_bed() -> void:
