@@ -145,31 +145,30 @@ static func saves_kept() -> bool:
 ## Picks the save to play: `--slot N` or the last slot played, else a new game
 ## written straight to that slot. Harness runs (`--screenshot`) play a fresh
 ## throwaway hero unless a slot is named explicitly. Runs once per session:
-## the world scene reloads after a slot switch and must not undo it.
-func boot(args: PackedStringArray) -> void:
+## the world scene reloads after a slot switch and must not undo it. `flags`
+## is the command line, parsed (HarnessFlags, PIX-262).
+func boot(flags: HarnessFlags) -> void:
 	if _booted:
 		return
 	_booted = true
 	settings.load_file()
 	# The game speaks the player's language from the first screen (PIX-195);
 	# `--lang xx` (harness) picks one for the run.
-	var lang_index := args.find("--lang")
-	Text.apply(args[lang_index + 1] if lang_index >= 0 and lang_index + 1 < args.size() else settings.language)
+	Text.apply(flags.value("--lang", settings.language))
 	# `--pseudo` (harness): every string stretched a third longer and
 	# accented, to see where a longer language would overflow (PIX-195).
-	if args.has("--pseudo"):
+	if flags.has("--pseudo"):
 		ProjectSettings.set_setting("internationalization/pseudolocalization/expansion_ratio", 0.35)
 		TranslationServer.pseudolocalization_enabled = true
 		TranslationServer.set_locale("fr")
 		Text.forget()
-	var slot_index := args.find("--slot")
-	if slot_index >= 0 and slot_index + 1 < args.size():
-		slot = clampi(int(args[slot_index + 1]), 1, SaveSlots.SLOT_COUNT)
-	elif args.has("--screenshot"):
+	if flags.has("--slot"):
+		slot = clampi(int(flags.value("--slot")), 1, SaveSlots.SLOT_COUNT)
+	elif flags.has("--screenshot"):
 		slot = NO_SLOT
 		settings.read_only = true
 		# `still`: the run with Reduce motion on, as a player can set it.
-		if args.has("still"):
+		if flags.has("still"):
 			settings.reduce_motion = true
 	else:
 		slot = clampi(settings.last_slot, 1, SaveSlots.SLOT_COUNT)
@@ -180,7 +179,7 @@ func boot(args: PackedStringArray) -> void:
 	if saved.is_empty():
 		new_game()
 		# A plain launch waits for the title's hero; a named slot starts at once.
-		standing_in = slot_index < 0
+		standing_in = not flags.has("--slot")
 		save_now()
 	else:
 		apply(saved)

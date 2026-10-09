@@ -73,9 +73,14 @@ Headless Godot cannot render, so visual verification drives a real window
 briefly, saves `screenshot.png` into `godot/`, and quits. It lives in
 `scripts/harness.gd`, which `world.gd` adds only when `--screenshot` is
 passed. Harness runs play a fresh throwaway hero and never touch save slots
-unless `--slot N` is passed:
+unless `--slot N` is passed. Every flag is declared once, with its argument
+and what it does, in `HarnessFlags.TABLE` (`scripts/harness_flags.gd`): the
+command line is parsed once against it, so a flag's argument never reads as
+another flag, and `test_harness_flags` fails on a name declared twice or a
+flag read or passed that the table doesn't know. `-- --help` prints it:
 
 ```sh
+godot --headless --path godot -- --help               # every flag, its argument and what it does
 godot --path godot -- --screenshot                    # new hero in the village
 godot --path godot -- --screenshot --slot 1           # resume (and write) slot 1
 godot --path godot -- --screenshot --map town         # boot into another map

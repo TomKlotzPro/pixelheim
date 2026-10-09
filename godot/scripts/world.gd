@@ -48,18 +48,25 @@ var atmosphere: Node
 var harness := false
 
 func _ready() -> void:
+	# The command line's flags, parsed once against the harness's table (PIX-262).
+	var flags := HarnessFlags.given()
+	if flags.has("--help"):
+		# `-- --help`: the table, and nothing else: no slot is read or written.
+		print(HarnessFlags.help())
+		process_mode = Node.PROCESS_MODE_DISABLED
+		get_tree().quit()
+		return
 	UiStyle.setup()
 	# Only what physics moves is interpolated between ticks (the actors and
 	# the camera riding the hero); the ground and the UI hold still.
 	physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
 	# The world's physics step runs after the actors', to note where the hero ended.
 	process_physics_priority = 10
-	var args := OS.get_cmdline_user_args()
-	harness = args.has("--screenshot")
+	harness = flags.has("--screenshot")
 	# The phone version (PIX-162): on a touch screen (or a harness run with
 	# `touch`) the canvas fills the screen's own shape instead of
 	# letterboxing it.
-	Touch.forced = args.has("touch")
+	Touch.forced = flags.has("touch")
 	if Touch.enabled():
 		get_tree().root.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_EXPAND
 	if harness:
@@ -69,24 +76,22 @@ func _ready() -> void:
 		# a covered window and the run would never reach its screenshot.
 		DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_NO_FOCUS, true)
 		DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_ALWAYS_ON_TOP, true)
-	GameState.boot(args)
+	GameState.boot(flags)
 	Sound.apply_volumes()
 	_setup_input()
 	apply_video.call_deferred()
 	# Harness: `--town-tier N` previews the village at another age; without it
 	# a run shows the Hamlet its flows were written for (`--town-tier 0` is a
 	# new hero's Ashes).
-	var tier_index := args.find("--town-tier")
-	if tier_index >= 0 and tier_index + 1 < args.size():
-		GameState.settlement.town_tier = int(args[tier_index + 1])
-	elif args.has("--screenshot") and GameState.settlement.projects.is_empty():
+	if flags.has("--town-tier"):
+		GameState.settlement.town_tier = int(flags.value("--town-tier"))
+	elif harness and GameState.settlement.projects.is_empty():
 		GameState.settlement.town_tier = maxi(1, GameState.settlement.town_tier)
 	# Harness runs skip the Night of Ash (their flows were written for the
 	# town by day) unless `--prologue N` puts them at its step N.
-	if args.has("--screenshot"):
-		var prologue_index := args.find("--prologue")
-		if prologue_index >= 0 and prologue_index + 1 < args.size():
-			GameState.progression.prologue = int(args[prologue_index + 1])
+	if harness:
+		if flags.has("--prologue"):
+			GameState.progression.prologue = int(flags.value("--prologue"))
 			GameState.settlement.town_tier = 0
 			GameState.world.steps = Prologue.night_steps()
 			if GameState.progression.prologue == Prologue.SCAVENGER:
@@ -101,13 +106,11 @@ func _ready() -> void:
 			var spawn: Dictionary = Catalog._data()["townSpawn"]
 			GameState.world.cell = Vector2i(int(spawn["x"]), int(spawn["y"]))
 			GameState.pack.remove_item("chancellors_letter")
-	var house_index := args.find("--house-tier")
-	if house_index >= 0 and house_index + 1 < args.size():
-		GameState.settlement.house["tier"] = int(args[house_index + 1])
+	if flags.has("--house-tier"):
+		GameState.settlement.house["tier"] = int(flags.value("--house-tier"))
 	# Resume where the save stands; `--map <id>` (harness) boots at that map's spawn.
-	var map_index := args.find("--map")
-	var override := map_index >= 0 and map_index + 1 < args.size()
-	map = load_map(args[map_index + 1] if override else GameState.world.map_id)
+	var override := flags.has("--map")
+	map = load_map(flags.value("--map", GameState.world.map_id))
 	var arrival := map.spawn if override else GameState.world.cell
 	if not map.is_walkable(arrival):
 		arrival = map.spawn
@@ -155,7 +158,7 @@ func _ready() -> void:
 			open_saves(found, true)
 			greeted = true
 	# The title greets a launch (not a slot switch or a reload, and not the harness).
-	if not greeted and not GameState.title_seen and (not harness or OS.get_cmdline_user_args().has("title")):
+	if not greeted and not GameState.title_seen and (not harness or flags.has("title")):
 		open_title()
 	if harness:
 		var driver := preload("res://scripts/harness.gd").new()
@@ -408,7 +411,7 @@ func _fade_in() -> void:
 func _fades() -> bool:
 	if GameState.settings.reduce_motion or hud.root == null:
 		return false
-	return not harness or OS.get_cmdline_user_args().has("fades")
+	return not harness or HarnessFlags.given().has("fades")
 
 
 ## The dark a fade runs on, over the world and under the HUD's widgets. It
@@ -544,7 +547,7 @@ func apply_video() -> void:
 	elif not settings.scanlines and crt != null:
 		crt.queue_free()
 		crt = null
-	if OS.get_cmdline_user_args().has("--screenshot"):
+	if harness:
 		return
 	var mode := DisplayServer.WINDOW_MODE_FULLSCREEN if settings.fullscreen else DisplayServer.WINDOW_MODE_WINDOWED
 	if DisplayServer.window_get_mode() != mode:

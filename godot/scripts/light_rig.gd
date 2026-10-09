@@ -83,7 +83,7 @@ func _ready() -> void:
 		world.add_child(_wide_layer)
 		glow_wide = _screen_pass(_wide_layer, preload("res://shaders/glow_wide.gdshader"))
 		_show_wide(false)
-	wear(DesktopLook.pick(app, OS.get_cmdline_user_args()))
+	wear(DesktopLook.pick(app, HarnessFlags.given()))
 
 
 ## Wears a look (DesktopLook.LOOKS): the canvas in linear HDR or not, and

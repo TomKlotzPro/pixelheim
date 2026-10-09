@@ -55,13 +55,11 @@ static func here() -> bool:
 
 ## The look to wear: the browser's where the extras can't run, else the one
 ## `--look NAME` names, else the app's.
-static func pick(can: bool, args: PackedStringArray) -> String:
+static func pick(can: bool, flags: HarnessFlags) -> String:
 	if not can:
 		return BROWSER
-	var index := args.find("--look")
-	if index >= 0 and index + 1 < args.size() and LOOKS.has(args[index + 1]):
-		return args[index + 1]
-	return APP
+	var named := flags.value("--look")
+	return named if LOOKS.has(named) else APP
 
 
 static func _spec(name: String) -> Dictionary:

@@ -13424,11 +13424,11 @@ msgstr "COMMANDÉ"
 msgid "Arrows"
 msgstr "Flèches"
 
-#: scripts/world.gd:267
+#: scripts/world.gd:270
 msgid "%s bars your way: no leaving until the fight is over."
 msgstr "%s vous barre la route : pas de fuite avant la fin du combat."
 
-#: scripts/world.gd:305
+#: scripts/world.gd:308
 msgid "No map reaches this deep."
 msgstr "Aucune carte ne va aussi profond."
 
