@@ -2565,6 +2565,10 @@ msgid "Fantastique"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Fast travel shows where it takes you: the waypoint you choose on the map gets a gold ring, its name and the region you'll land in, and the map turns to that place; choose with the arrows, the pad or the mouse"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Fast travel: any waypoint you have laid eyes on is one click away - seen once, reachable forever"
 msgstr ""
 
@@ -4854,6 +4858,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "When every voice is busy, the sounds that matter (a hurt, a level, a victory) still get through"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Where It Leads"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -11744,32 +11752,32 @@ msgstr ""
 msgid "{key:move_up}/{key:move_down}  choose      {key:interact}  %s      Esc  close"
 msgstr ""
 
-#: scripts/map_screen.gd:47
-msgid "Waypoints"
-msgstr ""
-
-#: scripts/map_screen.gd:62
-msgid "Unstaffed: no one keeps this post yet"
-msgstr ""
-
-#: scripts/map_screen.gd:70
-msgid "Nothing discovered yet. Waypoints you find on your travels show up here."
-msgstr ""
-
-#: scripts/map_screen.gd:78
-msgid "Waypoint"
-msgstr ""
-
-#: scripts/map_screen.gd:78
+#: scripts/map_screen.gd:190
 msgid "You"
 msgstr ""
 
-#: scripts/map_screen.gd:80
+#: scripts/map_screen.gd:191
+msgid "Waypoint"
+msgstr ""
+
+#: scripts/map_screen.gd:193
 msgid "Lair"
 msgstr ""
 
-#: scripts/map_screen.gd:82
+#: scripts/map_screen.gd:195
 msgid "Quest"
+msgstr ""
+
+#: scripts/map_screen.gd:62
+msgid "Waypoints"
+msgstr ""
+
+#: scripts/map_screen.gd:78
+msgid "Unstaffed: no one keeps this post yet"
+msgstr ""
+
+#: scripts/map_screen.gd:90
+msgid "Nothing discovered yet. Waypoints you find on your travels show up here."
 msgstr ""
 
 #: scripts/options_screen.gd:113

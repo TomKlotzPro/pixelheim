@@ -727,6 +727,11 @@ func _run_test_harness() -> void:
 	# A boss's fall (PIX-232), when one fell.
 	if world.foes.bosses_fallen > 0:
 		motion_report += " fell=%d" % world.foes.bosses_fallen
+	# The waypoint the map's list has chosen (PIX-241), while it's open.
+	for node in world.get_children():
+		if node.has_method("destination_id"):
+			var chosen: String = node.destination_id()
+			motion_report += " dest=%s" % (chosen if chosen != "" else "none")
 	print("screenshot saved; map=%s cell=%s hp=%d gold=%d save=%s%s draws=%d paused=%s open=%s night=%d mobs=%d" % [
 		world.map.id, world.player_cell, world.player.hp, GameState.pack.gold, GameState.world.map_id, GameState.world.cell,
 		Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME), get_tree().paused,
