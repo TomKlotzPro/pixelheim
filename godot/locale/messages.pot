@@ -3409,6 +3409,10 @@ msgid "On a phone the controls are sized for a thumb on any screen, the attack, 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "On the town's tour, a rebuilt building rises at its stop: the ruin gives way in a cloud of dust, the walls go up row by row, and it lands under confetti"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Once Upon a Mountain"
 msgstr ""
 
@@ -3654,6 +3658,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Raise the Roof"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Raised Roofs"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4733,6 +4741,10 @@ msgid "The title screen lives: stars, embers, bobbing monsters, a breathing drag
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The tour now looks at the inn itself and at the flower beds, and its dust drifts instead of hanging in the air"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The town signs its doors: GOODS, FORGE, BREWS, INN - no more hunting for the craft stations"
 msgstr ""
 
@@ -4885,6 +4897,10 @@ msgid "UNDER THE HOOD: the map you walk is now drawn by its own part of the game
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Under its name, what it brings: who is back at work, the new perk, or who has moved into town"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Under the Ashen Mountain"
 msgstr ""
 
@@ -5030,6 +5046,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "With Reduce motion on, the wind drops and the water and the clouds hold still"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "With Reduce motion, the ruin stands a moment and then the building is there"
 msgstr ""
 
 #: assets/data/changelog.json

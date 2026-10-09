@@ -3409,6 +3409,10 @@ msgid "On a phone the controls are sized for a thumb on any screen, the attack, 
 msgstr "Sur téléphone, les commandes ont la taille d'un pouce sur tous les écrans, les boutons attaquer, rouler et utiliser montrent une épée, une flèche et une main dessinées au lieu de mots, et les six touches de compétence sont à l'écran, chacune avec son icône"
 
 #: assets/data/changelog.json
+msgid "On the town's tour, a rebuilt building rises at its stop: the ruin gives way in a cloud of dust, the walls go up row by row, and it lands under confetti"
+msgstr "Pendant la visite du bourg, un bâtiment reconstruit s'élève à son arrêt : la ruine cède dans un nuage de poussière, les murs montent rang par rang, et il se pose sous les confettis"
+
+#: assets/data/changelog.json
 msgid "Once Upon a Mountain"
 msgstr "Il était une montagne"
 
@@ -3655,6 +3659,10 @@ msgstr "PRENEZ DE L'AVANCE SI VOUS VOULEZ : un héros qui s'enfonce tôt n'est
 #: assets/data/changelog.json
 msgid "Raise the Roof"
 msgstr "Hissez les toits"
+
+#: assets/data/changelog.json
+msgid "Raised Roofs"
+msgstr "Toits relevés"
 
 #: assets/data/changelog.json
 msgid "Random encounters in the open world: forests, marshes and ash fields are dangerous now"
@@ -4733,6 +4741,10 @@ msgid "The title screen lives: stars, embers, bobbing monsters, a breathing drag
 msgstr "L'écran titre s'anime : étoiles, braises, monstres qui se dandinent, un dragon qui respire"
 
 #: assets/data/changelog.json
+msgid "The tour now looks at the inn itself and at the flower beds, and its dust drifts instead of hanging in the air"
+msgstr "La visite montre désormais l'auberge elle-même et les parterres de fleurs, et sa poussière dérive au lieu de rester suspendue"
+
+#: assets/data/changelog.json
 msgid "The town signs its doors: GOODS, FORGE, BREWS, INN - no more hunting for the craft stations"
 msgstr "La ville signale ses portes : BAZAR, FORGE, POTIONS, AUBERGE - plus besoin de chercher les ateliers"
 
@@ -4885,6 +4897,10 @@ msgid "UNDER THE HOOD: the map you walk is now drawn by its own part of the game
 msgstr "SOUS LE CAPOT : la carte que vous parcourez est désormais dessinée par sa propre partie du jeu, à l'écart de l'action"
 
 #: assets/data/changelog.json
+msgid "Under its name, what it brings: who is back at work, the new perk, or who has moved into town"
+msgstr "Sous son nom, ce qu'il apporte : qui reprend le travail, le nouvel avantage, ou qui s'est installé au bourg"
+
+#: assets/data/changelog.json
 msgid "Under the Ashen Mountain"
 msgstr "Sous la Montagne des Cendres"
 
@@ -5031,6 +5047,10 @@ msgstr "Avec « Réduire les animations », la caméra reste immobile et vot
 #: assets/data/changelog.json
 msgid "With Reduce motion on, the wind drops and the water and the clouds hold still"
 msgstr "Avec « Réduire les animations », le vent tombe, et l'eau et les nuages s'immobilisent"
+
+#: assets/data/changelog.json
+msgid "With Reduce motion, the ruin stands a moment and then the building is there"
+msgstr "Avec Réduire les animations, la ruine reste un instant, puis le bâtiment est là"
 
 #: assets/data/changelog.json
 msgid "Wolves, spiders, cats, the mammoths and many villagers no longer walk backwards when they go left or right"
@@ -13666,7 +13686,7 @@ msgstr "Pixelheim passe au rang de %s."
 
 #: scripts/world_stage.gd:242
 msgid "New in town: %s."
-msgstr "Nouveaux venus en ville : %s."
+msgstr "Nouveaux venus au bourg : %s."
 
 #: scripts/world_stage.gd:248
 msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
