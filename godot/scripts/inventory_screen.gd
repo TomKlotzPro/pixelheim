@@ -239,7 +239,7 @@ func _row(index: int) -> Control:
 	if row["kind"] == "gear":
 		var piece: Dictionary = row["piece"]
 		name = InventoryState.gear_name(piece) + ("   EQUIPPED" if GameState.pack.is_equipped(piece["uid"]) else "")
-		stats = stat_line(item, int(piece["bonus"]), Economy.gear_value(piece))
+		stats = stat_line(item, int(piece["bonus"]), Economy.gear_value(piece), piece.get("affixes", {}))
 	else:
 		name = String(item["name"]) + ("  x%d" % row["count"] if row["count"] > 1 else "")
 		stats = stat_line(item, 0, int(item["value"]))
@@ -393,8 +393,9 @@ static func _icon(item_id: String) -> TextureRect:
 	return icon
 
 
-## An item's numbers on one line (itemStatLine).
-static func stat_line(item: Dictionary, bonus: int, value: int) -> String:
+## An item's numbers on one line (itemStatLine), a piece's affixes with
+## them (PIX-191).
+static func stat_line(item: Dictionary, bonus: int, value: int, affixes := {}) -> String:
 	var parts: Array[String] = []
 	var plus := "+%d" % bonus if bonus > 0 else ""
 	if item.has("damage"):
@@ -404,6 +405,8 @@ static func stat_line(item: Dictionary, bonus: int, value: int) -> String:
 		parts.append(Text.t("ARMOR %d%s") % [int(item["armor"]) + bonus, " (%d%s)" % [item["armor"], plus] if plus != "" else ""])
 	for stat: String in item.get("grants", {}):
 		parts.append("+%d %s" % [item["grants"][stat], stat.substr(0, 3).to_upper()])
+	for stat: String in affixes:
+		parts.append("+%d %s" % [int(affixes[stat]), stat.substr(0, 3).to_upper()])
 	if item.has("restoreHp"):
 		parts.append(Text.t("+%d HP") % item["restoreHp"])
 	if item.has("restoreMp"):

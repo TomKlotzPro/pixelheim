@@ -134,7 +134,10 @@
     "marens_promise": "jewelry-rpg-icons/Brooches/Brooch-07.png",
     "smugglers_rum": "survival-rpg-icons/Liquid/Brew-05.png",
     "shaft_cheese": "medieval@800",
-    "guard_badge": "jewelry-rpg-icons/Brooches/Brooch-03.png"
+    "guard_badge": "jewelry-rpg-icons/Brooches/Brooch-03.png",
+    "starfall_staff": "survival-rpg-icons/Tools/Magic-Staff-17.png",
+    "gale_longbow": "survival-rpg-icons/Tools/Wooden-Bow-11.png",
+    "moonsteel_dagger": "survival-rpg-icons/Tools/Knife-13.png"
   },
   "ailments": {
     "poison": "puny-skills/Indicators/Symbol Indicator/Poisoned-Indicator.png",

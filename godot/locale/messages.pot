@@ -109,6 +109,10 @@ msgid "A round shield in the town's blue, its rim beaten from the old gate's hin
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "A shard of a fallen star set in blackwood. The mountain's deep floors keep a few."
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "A small brass locket with a red stone. Inside, a girl's face, worn soft by a thumb."
 msgstr ""
 
@@ -513,6 +517,10 @@ msgid "Fur boots that never slip on ice. Mostly. Crafted, never sold."
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "Gale Longbow"
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "Glass cannon, loud spells"
 msgstr ""
 
@@ -797,6 +805,10 @@ msgid "Moon Wand"
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "Moonsteel Dagger"
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "Mossback Maul"
 msgstr ""
 
@@ -858,6 +870,10 @@ msgstr ""
 
 #: assets/data/catalog.json
 msgid "Paladin"
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "Pale as a winter moon and about as warm. It finds the gap in anything."
 msgstr ""
 
 #: assets/data/catalog.json
@@ -1125,6 +1141,10 @@ msgid "Stamina Draught"
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "Starfall Staff"
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "Steel Axe"
 msgstr ""
 
@@ -1154,6 +1174,10 @@ msgstr ""
 
 #: assets/data/catalog.json
 msgid "Strikes a vital spot for heavy dexterity damage."
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "Strung with something that isn't gut. The arrows arrive before the sound."
 msgstr ""
 
 #: assets/data/catalog.json
@@ -1454,6 +1478,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "A LOADING SCREEN THAT IS THE GAME: the web build loads behind the title's own night sky, with the bar where the menu will appear"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "A LOOT CURVE WORTH CHASING: the mountain's floors drop by how deep they are, so every band of floors is a step up - the Obsidian Blade waits on the last floors, and Dragonbane's hoard (now 23 damage) is no longer a step down. Gear drops more often, and a boss always drops a piece"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -2093,6 +2121,10 @@ msgid "FESTIVAL DAYS: finish an age and Pixelheim celebrates for a day - confett
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "FINE AND EPIC GEAR HAS CHARACTER: a fine piece carries one bonus stat and an epic one two, and wears it in its name - a Fine Iron Sword of Insight, an Epic Gale Longbow of Swiftness"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "FISHING: stand at the end of Saltmere's jetty, by the lagoon or on the eastern rocks, face the water and press E. Fish, sea glass, the odd pearl - and the odd boot"
 msgstr ""
 
@@ -2465,6 +2497,10 @@ msgid "MINERS' QUESTS: Foreman Garrick's lost crew and the black seam, Dagny's o
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "MIXED PACKS: a pack in the wilds is no longer three of a kind - its leader brings company from the region, though never anything much stronger than itself"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "MONSTERS CARRY WHAT YOU NEED: dire wolves drop a pelt half the time, imps a horn about a third of the time, and Fafnyr leaves a scale every time he falls"
 msgstr ""
 
@@ -2538,6 +2574,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "NEW SOUNDS: the dodge roll whooshes, a named monster roars when it sees you, and a bounty jingles when it's yours"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "NEW TO FIND: the Starfall Staff, the Gale Longbow and the Moonsteel Dagger on the deep floors, so mages, rangers and rogues have something to chase as well. In the Deep Hunt, gear comes up forged deeper every five depths: Deep-forged, Abyssal, Primordial"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3986,6 +4026,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Worn with Pride"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Worth Chasing"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5845,6 +5889,10 @@ msgid "the west bank of the Mirefen"
 msgstr ""
 
 #: assets/data/economy.json
+msgid "Abyssal"
+msgstr ""
+
+#: assets/data/economy.json
 msgid "Brews, cures, reagents. I pay full price for raw materials."
 msgstr ""
 
@@ -5854,6 +5902,14 @@ msgstr ""
 
 #: assets/data/economy.json
 msgid "Craft at Vex's cauldron - the BREWS door in town"
+msgstr ""
+
+#: assets/data/economy.json
+msgid "Deep-forged"
+msgstr ""
+
+#: assets/data/economy.json
+msgid "Eldritch"
 msgstr ""
 
 #: assets/data/economy.json
@@ -5881,6 +5937,10 @@ msgid "Pick, plate or pickled egg. The mine pays in iron, I sell in iron."
 msgstr ""
 
 #: assets/data/economy.json
+msgid "Primordial"
+msgstr ""
+
+#: assets/data/economy.json
 msgid "Rope, tar, lamp oil and whatever the tide brings. Mostly fish."
 msgstr ""
 
@@ -5890,6 +5950,26 @@ msgstr ""
 
 #: assets/data/economy.json
 msgid "Three wagons up the pass, one wagon down. What's left is for sale - furs, glass and good steel."
+msgstr ""
+
+#: assets/data/economy.json
+msgid "of Grit"
+msgstr ""
+
+#: assets/data/economy.json
+msgid "of Insight"
+msgstr ""
+
+#: assets/data/economy.json
+msgid "of Might"
+msgstr ""
+
+#: assets/data/economy.json
+msgid "of Swiftness"
+msgstr ""
+
+#: assets/data/economy.json
+msgid "of the Wall"
 msgstr ""
 
 #: assets/data/hints.json
@@ -9372,119 +9452,119 @@ msgstr ""
 msgid " You are %s."
 msgstr ""
 
-#: scripts/inventory_screen.gd:402
+#: scripts/inventory_screen.gd:403
 msgid "DMG %d%s %s"
 msgstr ""
 
-#: scripts/inventory_screen.gd:404
+#: scripts/inventory_screen.gd:405
 msgid "ARMOR %d%s"
 msgstr ""
 
-#: scripts/inventory_screen.gd:408
+#: scripts/inventory_screen.gd:411
 msgid "+%d HP"
 msgstr ""
 
-#: scripts/inventory_screen.gd:410
+#: scripts/inventory_screen.gd:413
 msgid "+%d MP"
 msgstr ""
 
-#: scripts/inventory_screen.gd:412
+#: scripts/inventory_screen.gd:415
 msgid "cures %s"
 msgstr ""
 
-#: scripts/inventory_screen.gd:413
+#: scripts/inventory_screen.gd:416
 msgid "%d wt"
 msgstr ""
 
-#: scripts/inventory_screen.gd:422
+#: scripts/inventory_screen.gd:425
 msgid "E  travel"
 msgstr ""
 
-#: scripts/inventory_screen.gd:426
+#: scripts/inventory_screen.gd:429
 msgid "E  craft"
 msgstr ""
 
-#: scripts/inventory_screen.gd:428
+#: scripts/inventory_screen.gd:431
 msgid "E  equip"
 msgstr ""
 
-#: scripts/inventory_screen.gd:428
+#: scripts/inventory_screen.gd:431
 msgid "E  take off"
 msgstr ""
 
-#: scripts/inventory_screen.gd:431
+#: scripts/inventory_screen.gd:434
 msgid "E  use"
 msgstr ""
 
-#: scripts/inventory_screen.gd:433
+#: scripts/inventory_screen.gd:436
 msgid "E  place"
 msgstr ""
 
-#: scripts/inventory_screen.gd:460
+#: scripts/inventory_screen.gd:463
 msgid "ATK %d"
 msgstr ""
 
-#: scripts/inventory_screen.gd:460
+#: scripts/inventory_screen.gd:463
 msgid "DEF %d"
 msgstr ""
 
-#: scripts/inventory_screen.gd:464
+#: scripts/inventory_screen.gd:467
 msgid "Carry %d/%d"
 msgstr ""
 
-#: scripts/inventory_screen.gd:483
+#: scripts/inventory_screen.gd:486
 msgid "%s - click to take off"
 msgstr ""
 
-#: scripts/inventory_screen.gd:537
+#: scripts/inventory_screen.gd:540
 msgid "You travel to %s."
 msgstr ""
 
-#: scripts/inventory_screen.gd:550
+#: scripts/inventory_screen.gd:553
 msgid "%s goes back in the pack."
 msgstr ""
 
-#: scripts/inventory_screen.gd:553
+#: scripts/inventory_screen.gd:556
 msgid "You put on %s."
 msgstr ""
 
-#: scripts/inventory_screen.gd:556
+#: scripts/inventory_screen.gd:559
 msgid "That can't be worn."
 msgstr ""
 
-#: scripts/inventory_screen.gd:566
+#: scripts/inventory_screen.gd:569
 msgid "Nothing to do with that here."
 msgstr ""
 
-#: scripts/inventory_screen.gd:570
+#: scripts/inventory_screen.gd:573
 msgid " Cured %s."
 msgstr ""
 
-#: scripts/inventory_screen.gd:582
+#: scripts/inventory_screen.gd:585
 msgid "Still missing: %s."
 msgstr ""
 
-#: scripts/inventory_screen.gd:582
+#: scripts/inventory_screen.gd:585
 msgid "You need %s %d for that."
 msgstr ""
 
-#: scripts/inventory_screen.gd:587
+#: scripts/inventory_screen.gd:590
 msgid "You craft %s%s. %s"
 msgstr ""
 
-#: scripts/inventory_screen.gd:599
+#: scripts/inventory_screen.gd:602
 msgid "You leave %s behind."
 msgstr ""
 
-#: scripts/inventory_screen.gd:601
+#: scripts/inventory_screen.gd:604
 msgid "Take it off before you drop it."
 msgstr ""
 
-#: scripts/inventory_screen.gd:603
+#: scripts/inventory_screen.gd:606
 msgid "You'd better hold on to that."
 msgstr ""
 
-#: scripts/inventory_screen.gd:607
+#: scripts/inventory_screen.gd:610
 msgid "You drop %dx %s."
 msgstr ""
 
@@ -10100,27 +10180,27 @@ msgstr ""
 msgid "Armor %d"
 msgstr ""
 
-#: scripts/shop_screen.gd:375
+#: scripts/shop_screen.gd:377
 msgid "Restores %d HP"
 msgstr ""
 
-#: scripts/shop_screen.gd:377
+#: scripts/shop_screen.gd:379
 msgid "Restores %d MP"
 msgstr ""
 
-#: scripts/shop_screen.gd:378
+#: scripts/shop_screen.gd:380
 msgid "Weight %d"
 msgstr ""
 
-#: scripts/shop_screen.gd:383
+#: scripts/shop_screen.gd:385
 msgid "Needs:"
 msgstr ""
 
-#: scripts/shop_screen.gd:386
+#: scripts/shop_screen.gd:388
 msgid "  %d x %s  (have %d)"
 msgstr ""
 
-#: scripts/shop_screen.gd:393
+#: scripts/shop_screen.gd:395
 msgid "%s level %d - you are %s"
 msgstr ""
 
@@ -10316,183 +10396,183 @@ msgstr ""
 msgid "%s, depth %d"
 msgstr ""
 
-#: scripts/state/economy.gd:126
+#: scripts/state/economy.gd:129
 msgid "%s %d (mastered)"
 msgstr ""
 
-#: scripts/state/economy.gd:127
+#: scripts/state/economy.gd:130
 msgid "%s %d (%d/%d XP)"
 msgstr ""
 
-#: scripts/state/economy.gd:140
+#: scripts/state/economy.gd:143
 msgid "every time"
 msgstr ""
 
-#: scripts/state/economy.gd:146
+#: scripts/state/economy.gd:149
 msgid "foraged after fights in %s"
 msgstr ""
 
-#: scripts/state/economy.gd:149
+#: scripts/state/economy.gd:152
 msgid "sold by %s"
 msgstr ""
 
-#: scripts/state/economy.gd:152
+#: scripts/state/economy.gd:155
 msgid "now and then in loot from floor %d on"
 msgstr ""
 
-#: scripts/state/economy.gd:157
+#: scripts/state/economy.gd:160
 msgid "caught fishing off Saltmere's jetty and rocks"
 msgstr ""
 
-#: scripts/state/economy.gd:160
+#: scripts/state/economy.gd:163
 msgid "the hoard of %s"
 msgstr ""
 
-#: scripts/state/game_state.gd:1001
+#: scripts/state/game_state.gd:1002
 msgid "Rent from your properties: +%d gold."
 msgstr ""
 
-#: scripts/state/game_state.gd:1011
+#: scripts/state/game_state.gd:1012
 msgid "Your garden ripens: +1 %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1015
+#: scripts/state/game_state.gd:1016
 msgid "%s is defeated! +%d XP, +%d gold."
 msgstr ""
 
-#: scripts/state/game_state.gd:1026
+#: scripts/state/game_state.gd:1027
 msgid "%s drops: %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1033
+#: scripts/state/game_state.gd:1034
 msgid "%s drops: %s!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1043
+#: scripts/state/game_state.gd:1044
 msgid "You forage %d %s%s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1045
+#: scripts/state/game_state.gd:1046
 msgid "Foraging reached %d!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1061
+#: scripts/state/game_state.gd:1062
 msgid "Level up: you are now level %d. +%d stat points and +%d skill point%s to spend."
 msgstr ""
 
-#: scripts/state/game_state.gd:1089
+#: scripts/state/game_state.gd:1090
 msgid "You gather %d %s%s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1100
+#: scripts/state/game_state.gd:1101
 msgid "Nothing's biting here yet. Try again in a while, or somewhere else."
 msgstr ""
 
-#: scripts/state/game_state.gd:1104
+#: scripts/state/game_state.gd:1105
 msgid "You cast, wait... and haul up an old boot."
 msgstr ""
 
-#: scripts/state/game_state.gd:1104
+#: scripts/state/game_state.gd:1105
 msgid "You cast, wait... and land %s!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1106
+#: scripts/state/game_state.gd:1107
 msgid " Foraging reached %d!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1208
+#: scripts/state/game_state.gd:1209
 msgid "The bounty on %s is yours: +%d gold."
 msgstr ""
 
-#: scripts/state/game_state.gd:1217
+#: scripts/state/game_state.gd:1218
 msgid "%s leaves you %s!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1315
+#: scripts/state/game_state.gd:1316
 msgid "%d HP"
 msgstr ""
 
-#: scripts/state/game_state.gd:1323
+#: scripts/state/game_state.gd:1324
 msgid "You use %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1325
+#: scripts/state/game_state.gd:1326
 msgid " Restored %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1450
+#: scripts/state/game_state.gd:1451
 msgid "%s is cleared!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1455
+#: scripts/state/game_state.gd:1456
 msgid "%d gold"
 msgstr ""
 
-#: scripts/state/game_state.gd:1464
+#: scripts/state/game_state.gd:1465
 msgid "The floor's hoard: %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1468
+#: scripts/state/game_state.gd:1469
 msgid "Among the bones: a page of an old journal (%s). {key:journal} reads it."
 msgstr ""
 
-#: scripts/state/game_state.gd:1472
+#: scripts/state/game_state.gd:1473
 msgid "+%d XP for the way down."
 msgstr ""
 
-#: scripts/state/game_state.gd:1485
+#: scripts/state/game_state.gd:1486
 msgid "Behind the throne, a stair goes on down into the dark: the Deep Hunt."
 msgstr ""
 
-#: scripts/state/game_state.gd:1489
+#: scripts/state/game_state.gd:1490
 msgid "A deeper way opens: %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1502
+#: scripts/state/game_state.gd:1503
 msgid "Depth %d of the Deep Hunt is cleared!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1511
+#: scripts/state/game_state.gd:1512
 msgid "The deepest yet. Its hoard: %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1517
+#: scripts/state/game_state.gd:1518
 msgid "depth %d of the Deep Hunt"
 msgstr ""
 
-#: scripts/state/game_state.gd:1519
+#: scripts/state/game_state.gd:1520
 msgid "A hole into the dark opens beside the way up: depth %d waits below."
 msgstr ""
 
-#: scripts/state/game_state.gd:1538
+#: scripts/state/game_state.gd:1539
 msgid "Mastery: %s Slayer %s. +%d%% damage against %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1564
+#: scripts/state/game_state.gd:1565
 msgid "The chest bares its teeth — a mimic!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1570
+#: scripts/state/game_state.gd:1571
 msgid "Something glitters on the road: %d gold."
 msgstr ""
 
-#: scripts/state/game_state.gd:1571
+#: scripts/state/game_state.gd:1572
 msgid "The chest holds %d gold."
 msgstr ""
 
-#: scripts/state/game_state.gd:1580
+#: scripts/state/game_state.gd:1581
 msgid "Too heavy to carry. Lighten the pack and come back."
 msgstr ""
 
-#: scripts/state/game_state.gd:1586
+#: scripts/state/game_state.gd:1587
 msgid "The chest holds %s!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1591
+#: scripts/state/game_state.gd:1592
 msgid "You gather %dx %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1592
+#: scripts/state/game_state.gd:1593
 msgid "The chest holds %dx %s."
 msgstr ""
 
@@ -10630,6 +10710,10 @@ msgstr ""
 
 #: scripts/state/hunts.gd:123
 msgid "Bounty %dg, and %s"
+msgstr ""
+
+#: scripts/state/inventory_state.gd:90
+msgid "%s %s"
 msgstr ""
 
 #: scripts/state/main_quest.gd:86
@@ -10928,7 +11012,7 @@ msgstr ""
 msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
 msgstr ""
 
-#: scripts/world.gd:1667
+#: scripts/world.gd:1668
 msgid "Next"
 msgstr ""
 

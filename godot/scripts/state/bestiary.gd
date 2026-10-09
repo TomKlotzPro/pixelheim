@@ -261,20 +261,42 @@ static func monster_attack_damage(fighter: Dictionary, hero: HeroState, pack: In
 	return through_armor(variance(fighter["attack"], roll), HeroRules.total_defense(hero, pack))
 
 
-## A kill's drop, or {} (rollDrop): chance by kind, the floor's pool, a third
-## of drops are gear with a rarity roll. Returns {kind: "gear"|"stack", ...}.
-static func roll_drop(floor_level: int, kind: String, roll: Callable) -> Dictionary:
+## A kill's drop, or {} (rollDrop): chance by kind, then gear (gearShare by
+## kind: a boss always drops gear, PIX-191) with a rarity roll, or a stack.
+## The wilds roll dropPools by the foe's level (`floor_level`); the mountain
+## (`mountain`, its real floor) rolls floorPools, each floor a step, and the
+## Deep Hunt's floors forge their gear deeper every few depths.
+## Returns {kind: "gear"|"stack", ...}.
+static func roll_drop(floor_level: int, kind: String, roll: Callable, mountain := 0) -> Dictionary:
 	if roll.call() >= float(_data()["dropChance"][kind]):
 		return {}
-	var pool: Dictionary = _data()["dropPools"][0]
-	for entry: Dictionary in _data()["dropPools"]:
-		if int(entry["floor"]) <= floor_level:
+	var pools: Array = _data()["floorPools"]["pools"] if mountain > 0 else _data()["dropPools"]
+	var at := mini(mountain, Dungeons.floor_count()) if mountain > 0 else floor_level
+	var pool: Dictionary = pools[0]
+	for entry: Dictionary in pools:
+		if int(entry["floor"]) <= at:
 			pool = entry
-	if roll.call() < 0.35:
+	if roll.call() < float(_data()["gearShare"][kind]):
 		var item_id: String = _pick(pool["gearIds"], roll)
 		var rarity := _roll_rarity(_data()["rarityWeights"][kind], roll)
-		return {"kind": "gear", "gear": InventoryState.create_gear(item_id, rarity, roll)}
+		var gear := InventoryState.create_gear(item_id, rarity, roll)
+		if mountain > Dungeons.floor_count():
+			InventoryState.deepen(gear, Dungeons.deep_tier(mountain), roll)
+		return {"kind": "gear", "gear": gear}
 	return {"kind": "stack", "itemId": _pick(pool["stackIds"], roll)}
+
+
+## Who stands in a wild pack (PIX-191): the spawn's own kind leads, the rest
+## are the region's mix by weight - never more than four levels above the
+## leader, so a pack of orcs by the road hides no imp.
+static func pack_species(spawn: Dictionary, region_id: String, index: int, cell: Vector2i) -> String:
+	var leader := species_of(spawn, region_id)
+	if index == 0:
+		return leader
+	var other := species_at(region_id, cell + Vector2i(index * 7, index * 13))
+	if int(monster(other)["level"]) > int(monster(leader)["level"]) + 4:
+		return leader
+	return other
 
 
 static func _pick(list: Array, roll: Callable) -> String:

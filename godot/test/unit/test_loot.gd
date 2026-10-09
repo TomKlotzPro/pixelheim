@@ -55,3 +55,101 @@ func test_the_mirefen_maze_holds_no_endgame_blade() -> void:
 	for chest: Dictionary in Interactables._data()["chests"]:
 		if chest["id"] == "mire_maze":
 			assert_ne(chest["loot"]["itemId"], "obsidian_blade")
+
+
+## PIX-191: a loot curve worth chasing.
+func _dice(values: Array) -> Callable:
+	var sequence := values.duplicate()
+	return func() -> float: return sequence.pop_front() if not sequence.is_empty() else 0.5
+
+
+func _best(pool: Dictionary, stat := "") -> int:
+	var best := 0
+	for item_id: String in pool["gearIds"]:
+		var item := Catalog.item(item_id)
+		if stat == "" or item.get("scaling", "") == stat:
+			best = maxi(best, int(item.get("damage", 0)))
+	return best
+
+
+func test_each_band_of_the_mountain_is_a_step() -> void:
+	var pools: Array = Bestiary._data()["floorPools"]["pools"]
+	for i in range(1, pools.size()):
+		assert_gte(_best(pools[i]), _best(pools[i - 1]), "floor %d's pool is no step down" % pools[i]["floor"])
+	assert_gt(_best(pools[-1]), _best(pools[0]), "the deep floors beat the first")
+	for stat: String in ["strength", "intelligence", "dexterity"]:
+		assert_gt(_best(pools[-1], stat), _best(pools[0], stat), "a %s hero has better to find deeper" % stat)
+
+
+func test_the_mountain_rolls_its_own_floors_pool() -> void:
+	# Drop, gear, pick the first item, common: the floor's pool decides.
+	var first := Bestiary.roll_drop(1, "normal", _dice([0.0, 0.0, 0.0, 0.0]), 2)
+	assert_eq(first["gear"]["itemId"], Bestiary._data()["floorPools"]["pools"][0]["gearIds"][0])
+	var deep := Bestiary.roll_drop(1, "normal", _dice([0.0, 0.0, 0.0, 0.0]), 13)
+	assert_eq(deep["gear"]["itemId"], "obsidian_blade", "floor 13 rolls the deepest pool")
+
+
+func test_a_boss_always_drops_gear() -> void:
+	for roll in [0.0, 0.5, 0.99]:
+		var drop := Bestiary.roll_drop(10, "boss", _dice([roll, roll, roll, roll, roll, roll]), 10)
+		assert_eq(drop["kind"], "gear", "whatever the dice (%s)" % roll)
+
+
+func test_fine_and_epic_gear_carry_affixes_that_count() -> void:
+	assert_false(InventoryState.create_gear("iron_sword").has("affixes"), "common gear is plain")
+	var fine := InventoryState.create_gear("iron_sword", "fine", _dice([0.0, 0.0, 0.0]))
+	assert_eq(fine["affixes"].size(), 1)
+	var epic := InventoryState.create_gear("iron_sword", "epic", _dice([0.0, 0.1, 0.5, 0.9, 0.5]))
+	assert_eq(epic["affixes"].size(), 2)
+	assert_string_contains(InventoryState.gear_name(fine), "Fine Iron Sword of ")
+	var pack := InventoryState.new()
+	pack.gear.append(fine)
+	pack.equipped["weapon"] = fine["uid"]
+	var stat: String = fine["affixes"].keys()[0]
+	assert_eq(pack.granted_stat(stat), int(fine["affixes"][stat]), "worn, it grants its affix")
+	assert_gt(Economy.gear_value(epic), Economy.gear_value(InventoryState.create_gear("iron_sword", "epic", _dice([0.0]))) - 1)
+
+
+func test_the_deep_hunt_forges_deeper_every_five_depths() -> void:
+	var top := Dungeons.floor_count()
+	assert_eq(Dungeons.deep_tier(top), 0)
+	assert_eq(Dungeons.deep_tier(top + 1), 1)
+	assert_eq(Dungeons.deep_tier(top + 6), 2)
+	var drop := Bestiary.roll_drop(1, "elite", _dice([0.0, 0.0, 0.0, 0.0]), top + 6)
+	var gear: Dictionary = drop["gear"]
+	assert_eq(int(gear["deep"]), 2)
+	assert_string_starts_with(InventoryState.gear_name(gear), "Abyssal ")
+	assert_gte(int(gear["bonus"]), 4, "two tiers of bonus")
+	assert_false(gear["affixes"].is_empty())
+
+
+func test_casters_and_archers_have_late_weapons_too() -> void:
+	var best := {}
+	for item_id: String in Catalog._data()["items"]:
+		var item := Catalog.item(item_id)
+		if item.has("damage"):
+			var stat := String(item.get("scaling", "strength"))
+			best[stat] = maxi(int(best.get(stat, 0)), int(item["damage"]))
+	assert_gte(int(best["intelligence"]), 22)
+	assert_gte(int(best["dexterity"]), 21)
+
+
+func test_dragonbanes_hoard_is_no_step_down() -> void:
+	var pools: Array = Bestiary._data()["floorPools"]["pools"]
+	for pool: Dictionary in pools:
+		if int(pool["floor"]) <= 9:
+			assert_lte(_best(pool, "strength"), int(Catalog.item("dragonbane")["damage"]), "floor %d" % pool["floor"])
+
+
+func test_packs_mix_but_never_hide_a_stronger_kind() -> void:
+	var mixed := false
+	for spawn: Dictionary in Bestiary._data()["spawns"]:
+		var map := MapData.load_by_id(spawn["mapId"])
+		var region := map.region_at(Vector2i(spawn["x"], spawn["y"]))
+		var leader := Bestiary.pack_species(spawn, region, 0, Vector2i(spawn["x"], spawn["y"]))
+		assert_eq(leader, Bestiary.species_of(spawn, region), "the spawn's kind leads")
+		for i in range(1, 3):
+			var kind := Bestiary.pack_species(spawn, region, i, Vector2i(spawn["x"] + i, spawn["y"]))
+			assert_lte(int(Bestiary.monster(kind)["level"]), int(Bestiary.monster(leader)["level"]) + 4, "%s's pack" % spawn["id"])
+			mixed = mixed or kind != leader
+	assert_true(mixed, "some packs mix their region's kinds")
