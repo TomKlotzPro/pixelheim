@@ -245,7 +245,8 @@ func _row(index: int) -> Control:
 	if row["kind"] == "gear":
 		var piece: Dictionary = row["piece"]
 		name = InventoryState.gear_name(piece) + ("   " + Text.t("EQUIPPED") if GameState.pack.is_equipped(piece["uid"]) else "")
-		stats = stat_line(item, int(piece["bonus"]), Economy.gear_value(piece), piece.get("affixes", {}))
+		# The forge's and the deep's bonus, the affixes and what was quenched (PIX-218).
+		stats = stat_line(item, int(piece["bonus"]) + int(piece.get("deepBonus", 0)), Economy.gear_value(piece), InventoryState.shown_affixes(piece))
 	else:
 		name = String(item["name"]) + ("  x%d" % row["count"] if row["count"] > 1 else "")
 		stats = stat_line(item, 0, int(item["value"]))

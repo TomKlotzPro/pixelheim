@@ -871,7 +871,7 @@
     ]
   },
   "deepTiers": {
-    "about": "PIX-191: gear from the Deep Hunt is forged deeper every `every` depths: the tier's name before it, `bonus` more damage or armour and a point more on each affix per tier, worth `valuePerTier` more.",
+    "about": "PIX-191: gear from the Deep Hunt is forged deeper every `every` depths: the tier's name before it, `bonus` more damage or armour and a point more on each affix per tier, worth `valuePerTier` more. PIX-218: the deep bonus is kept apart from the forge's (deepBonus), so a deep piece still takes the forge and masterwork; past the last name, tiers count on in numerals; each tier adds a quarter of the worth, not a whole.",
     "every": 5,
     "names": [
       "Deep-forged",
@@ -880,7 +880,7 @@
       "Eldritch"
     ],
     "bonus": 2,
-    "valuePerTier": 1.0
+    "valuePerTier": 0.25
   },
   "jobUnlocks": {
     "about": "PIX-181: what the top job levels give. Smithing 9 raises the forge's cap again, Smithing 10 makes every forged piece at least Fine; brewing's double chance keeps growing to Alchemy 10.",
@@ -922,5 +922,12 @@
     "growth": 3,
     "gem": "gem"
   },
-  "deathGoldShare": 0.1
+  "deathGoldShare": 0.1,
+  "quench": {
+    "about": "PIX-218: Hilda quenches a deep piece for gold and a gem: +1 to its strongest stat a time, each time growth times the last, priced by the piece's tier. A sink for the Deep Hunt's gold.",
+    "gold": 300,
+    "growth": 1.5,
+    "gem": "gem",
+    "smithingXp": 15
+  }
 }

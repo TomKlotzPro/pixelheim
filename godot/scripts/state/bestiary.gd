@@ -318,7 +318,10 @@ static func roll_drop(floor_level: int, kind: String, roll: Callable, mountain :
 		if int(entry["floor"]) <= at:
 			pool = entry
 	if roll.call() < float(_data()["gearShare"][kind]):
-		var item_id: String = _pick(pool["gearIds"], roll)
+		# The Deep Hunt deepens every slot's best (PIX-218), not only the
+		# mountain's last pool.
+		var gear_ids: Array = _data()["deepHunt"]["gearIds"] if mountain > Dungeons.floor_count() else pool["gearIds"]
+		var item_id: String = _pick(gear_ids, roll)
 		var rarity := _roll_rarity(_data()["rarityWeights"][kind], roll)
 		var gear := InventoryState.create_gear(item_id, rarity, roll)
 		if mountain > Dungeons.floor_count():

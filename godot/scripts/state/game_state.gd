@@ -486,6 +486,30 @@ func reforge_gear(uid: String) -> String:
 	return Text.t("Hilda reforges it: %s.") % InventoryState.gear_name(instance)
 
 
+## Hilda quenches a deep piece (PIX-218): gold and a gem for +1 to its
+## strongest stat, kept apart from its affixes so a reforge keeps it.
+## Returns the line, "" when it can't.
+func quench_gear(uid: String) -> String:
+	var instance := pack.gear_by_uid(uid)
+	var shop_id := active_shop()
+	var rules: Dictionary = Economy._data()["quench"]
+	if instance.is_empty() or int(instance.get("deep", 0)) <= 0 or shop_id == "" or not Economy.shop(shop_id).get("forge", false):
+		return ""
+	var cost := Economy.quench_cost(instance)
+	var gem := String(rules["gem"])
+	if pack.gold < cost or int(pack.items.get(gem, 0)) < 1:
+		return ""
+	pack.gold -= cost
+	pack.remove_item(gem, 1)
+	var stat := Economy.quench_stat(instance)
+	var quenched: Dictionary = instance.get("quenched", {})
+	quenched[stat] = int(quenched.get(stat, 0)) + 1
+	instance["quenched"] = quenched
+	Economy.grant_job_xp(hero.jobs, "smithing", int(rules["smithingXp"]))
+	_pack_changed()
+	return Text.t("Hilda quenches it in the deep's black water: +1 %s.") % Text.t(Skills.ABBR[stat])
+
+
 ## UPGRADE_GEAR at the forge: +1 bonus for gold, up to the smithing cap; pays smithing xp.
 func upgrade_gear(uid: String) -> bool:
 	var shop_id := active_shop()

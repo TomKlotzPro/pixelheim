@@ -58,13 +58,15 @@ static func _add_affix(piece: Dictionary, rarity: String, roll: Callable) -> voi
 
 
 ## A piece from the Deep Hunt (PIX-191), forged deeper with each tier: more
-## bonus, a point more on every affix, and one more affix.
+## bonus, a point more on every affix, and one more affix. The deep's bonus
+## is kept apart from the forge's (PIX-218: in `bonus` it locked the forge
+## and masterwork out).
 static func deepen(piece: Dictionary, tier: int, roll: Callable = Callable()) -> Dictionary:
 	if tier <= 0:
 		return piece
 	var deep: Dictionary = Economy._data()["deepTiers"]
 	piece["deep"] = tier
-	piece["bonus"] = int(piece["bonus"]) + int(deep["bonus"]) * tier
+	piece["deepBonus"] = int(deep["bonus"]) * tier
 	if piece["rarity"] == "common":
 		piece["rarity"] = "fine"
 	deep_affixes(piece, tier, roll)
@@ -80,10 +82,25 @@ static func deep_affixes(piece: Dictionary, tier: int, roll: Callable = Callable
 		affixes[stat] = int(affixes[stat]) + tier
 
 
-## The tier name a deep-forged piece wears ("Deep-forged", "Abyssal"...).
+## The tier name a deep-forged piece wears ("Deep-forged", "Abyssal"...),
+## in the player's language; past the last name, it counts on (PIX-218:
+## "Eldritch II", "Eldritch III").
 static func deep_name(tier: int) -> String:
+	if tier <= 0:
+		return ""
 	var names: Array = Economy._data()["deepTiers"]["names"]
-	return String(names[mini(tier, names.size()) - 1]) if tier > 0 else ""
+	var named := Text.t(String(names[mini(tier, names.size()) - 1]))
+	return named if tier <= names.size() else "%s %s" % [named, roman(tier - names.size() + 1)]
+
+
+## 1-39 in Roman numerals.
+static func roman(number: int) -> String:
+	var out := ""
+	for step: Array in [[10, "X"], [9, "IX"], [5, "V"], [4, "IV"], [1, "I"]]:
+		while number >= int(step[0]):
+			out += String(step[1])
+			number -= int(step[0])
+	return out
 
 
 ## "Fine Iron Sword of Might", "Abyssal Starfall Staff of Insight": the
@@ -91,7 +108,7 @@ static func deep_name(tier: int) -> String:
 static func gear_name(instance: Dictionary) -> String:
 	var label: String = Text.t(RARITY_LABELS.get(instance["rarity"], ""))
 	if int(instance.get("deep", 0)) > 0:
-		label = Text.t(deep_name(int(instance["deep"])))
+		label = deep_name(int(instance["deep"]))
 	var name := Catalog.item_name(instance["itemId"])
 	# Named, not positional: French puts the rarity after the item (PIX-196).
 	var titled := Text.t("{rarity} {item}").format({"rarity": label, "item": name}) if label != "" else name
@@ -108,10 +125,20 @@ static func gear_name(instance: Dictionary) -> String:
 ## A piece's affixes as the sheet reads them: "+2 STR, +1 END".
 static func affix_line(instance: Dictionary) -> String:
 	var parts: Array[String] = []
-	var affixes: Dictionary = instance.get("affixes", {})
+	var affixes := shown_affixes(instance)
 	for stat: String in affixes:
 		parts.append("+%d %s" % [int(affixes[stat]), Text.t(Skills.ABBR.get(stat, stat))])
 	return ", ".join(parts)
+
+
+## What a piece adds to each stat: its affixes and what was quenched into it
+## (PIX-218), together.
+static func shown_affixes(instance: Dictionary) -> Dictionary:
+	var out: Dictionary = instance.get("affixes", {}).duplicate()
+	var quenched: Dictionary = instance.get("quenched", {})
+	for stat: String in quenched:
+		out[stat] = int(out.get(stat, 0)) + int(quenched[stat])
+	return out
 
 
 static func from_dict(data: Dictionary) -> InventoryState:
@@ -120,6 +147,12 @@ static func from_dict(data: Dictionary) -> InventoryState:
 	pack.items = data["inventory"].duplicate()
 	pack.gear.assign(data["gear"].map(func(g: Dictionary) -> Dictionary: return g.duplicate()))
 	pack.equipped = data["equipped"].duplicate()
+	# A deep piece from before PIX-218 carried the deep's bonus in the
+	# forge's: it moves out, once, so the forge can work on it again.
+	for piece: Dictionary in pack.gear:
+		if int(piece.get("deep", 0)) > 0 and not piece.has("deepBonus"):
+			piece["deepBonus"] = int(Economy._data()["deepTiers"]["bonus"]) * int(piece["deep"])
+			piece["bonus"] = maxi(0, int(piece["bonus"]) - int(piece["deepBonus"]))
 	return pack
 
 
@@ -220,6 +253,8 @@ func granted_stat(stat: String) -> int:
 		if instance["uid"] in equipped.values():
 			total += int(Catalog.item(instance["itemId"]).get("grants", {}).get(stat, 0))
 			total += int(instance.get("affixes", {}).get(stat, 0))
+			# What Hilda quenched into it (PIX-218).
+			total += int(instance.get("quenched", {}).get(stat, 0))
 	return total + int(set_bonus()["grants"].get(stat, 0))
 
 
