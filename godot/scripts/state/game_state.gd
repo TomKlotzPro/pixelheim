@@ -430,14 +430,16 @@ func craft(recipe_id: String) -> Dictionary:
 		pack.remove_item(item_id, entry["needs"][item_id])
 	var count := 1
 	if Catalog.item(entry["itemId"]).has("slot"):
-		pack.gear.append(InventoryState.create_gear(entry["itemId"]))
+		var rarity := "fine" if job == "smithing" and Economy.forges_fine(hero.jobs["smithing"]["level"]) else "common"
+		pack.gear.append(InventoryState.create_gear(entry["itemId"], rarity, roll))
 	else:
-		if roll.call() < Economy.double_brew_chance(hero.jobs["alchemy"]["level"]):
+		# Steeping two potions into one better never doubles (PIX-181).
+		if not entry.get("steep", false) and roll.call() < Economy.double_brew_chance(hero.jobs["alchemy"]["level"]):
 			count = 2
 		pack.add_item(entry["itemId"], count)
 	# The trade that made it learns from it (PIX-143: an amulet brewed at
 	# the cauldron is alchemy, not smithing).
-	var gained := Economy.grant_job_xp(hero.jobs, job, Economy.craft_xp(job))
+	var gained := Economy.grant_job_xp(hero.jobs, job, Economy.craft_xp(entry))
 	# Accepted crafting quests count what the hero makes (PIX-143).
 	for quest: Dictionary in Quests.all():
 		var taken: Dictionary = progression.quests.get(quest["id"], {})

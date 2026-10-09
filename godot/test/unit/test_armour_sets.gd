@@ -43,7 +43,7 @@ func test_three_and_five_pieces_grant_more() -> void:
 	var armor_three := HeroRules.total_armor(state.pack)
 	_wear(["oilskin_boots", "saltwood_buckler"])
 	assert_eq(HeroRules.effective_stat(state.hero, state.pack, "dexterity"), dex_before + 3 + 2 + 3)
-	assert_eq(HeroRules.total_armor(state.pack), armor_three + 2 + 3 + 3, "boots, buckler, and the set's +3")
+	assert_eq(HeroRules.total_armor(state.pack), armor_three + 2 + 4 + 3, "boots, buckler, and the set's +3")
 	assert_string_contains(Catalog.set_line("oilskin", 5), "Saltmere Oilskin (5/5)")
 
 

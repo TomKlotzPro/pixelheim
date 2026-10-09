@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.130.0",
+      "date": "2026-10-09",
+      "codename": "Worth Making",
+      "notes": [
+        "EVERY RECIPE WORTH MAKING: no early recipe waits on a late monster (the Beast Cleaver and the smith's gauntlets take ember shards now, not imp horns), and nothing costs more to make than it's worth. The dragon recipes are real endgame gear - Scaled Mail at 12 armour, a Grave Ward at 8, a Wyrmfang Dagger at 20 - and a Dragon Tonic brings everything back",
+        "TRADES THAT KEEP UP: a craft teaches more the harder the recipe, the Frostweave can be woven from Alchemy 2, and Vex's cauldron lets you steep two bought potions into one better one for the practice. Smithing 9 forges one step higher and Smithing 10 forges every piece Fine",
+        "SMALL FIXES: the starter buckler no longer out-guards the coast's, the floor-7 hoard stops giving away what the forge makes, hunter's stew is made from fish, and pearls bite more often at the Saltmere jetty"
+      ]
+    },
+    {
       "version": "0.129.0",
       "date": "2026-10-09",
       "codename": "Worth Chasing",

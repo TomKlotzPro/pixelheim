@@ -489,7 +489,7 @@
       "weight": 4,
       "value": 55,
       "description": "Marsh reeds woven tight enough to turn a blade. Crafted, never sold.",
-      "armor": 4,
+      "armor": 2,
       "slot": "offhand",
       "tint": [
         0.7,
@@ -535,9 +535,9 @@
       "category": "weapons",
       "sprite": "dagger",
       "weight": 4,
-      "value": 170,
+      "value": 420,
       "description": "A dragon's scale honed to a whisper. Crafted, never sold.",
-      "damage": 13,
+      "damage": 20,
       "scaling": "dexterity",
       "slot": "weapon",
       "tint": [
@@ -551,9 +551,9 @@
       "category": "apparel",
       "sprite": "armor",
       "weight": 13,
-      "value": 220,
+      "value": 480,
       "description": "Dragonscale over boiled hide. Crafted, never sold.",
-      "armor": 9,
+      "armor": 12,
       "slot": "body"
     },
     "stamina_draught": {
@@ -579,10 +579,10 @@
       "category": "potions",
       "sprite": "elixir",
       "weight": 1,
-      "value": 120,
-      "description": "Scale-steeped fire in a bottle. Restores nearly everything.",
-      "restoreHp": 60,
-      "restoreMp": 30
+      "value": 400,
+      "description": "Brewed round a dragon's scale. One swallow and every wound and every spent breath comes back.",
+      "restoreHp": 999,
+      "restoreMp": 999
     },
     "deep_root": {
       "name": "Deep Root",
@@ -738,9 +738,9 @@
       "category": "apparel",
       "sprite": "boots",
       "weight": 6,
-      "value": 200,
+      "value": 400,
       "description": "Dragon scale from the knee down. Crafted, never sold.",
-      "armor": 4,
+      "armor": 5,
       "slot": "feet",
       "tint": [
         0.66,
@@ -885,9 +885,9 @@
       "category": "apparel",
       "sprite": "cloak",
       "weight": 3,
-      "value": 240,
+      "value": 420,
       "description": "A mantle of moss and scale that death declines to touch. Crafted, never sold.",
-      "armor": 6,
+      "armor": 8,
       "slot": "offhand",
       "tint": [
         0.38,
@@ -1205,7 +1205,7 @@
       "weight": 2,
       "value": 90,
       "description": "Driftwood, bleached and banded with sea glass. Light enough to dance with. Crafted, never sold.",
-      "armor": 3,
+      "armor": 4,
       "slot": "offhand",
       "set": "oilskin",
       "tint": [

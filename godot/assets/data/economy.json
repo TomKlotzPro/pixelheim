@@ -287,7 +287,7 @@
       "id": "brew_stew",
       "itemId": "hunters_stew",
       "needs": {
-        "dried_meat": 1,
+        "fresh_fish": 1,
         "forest_herb": 2
       },
       "job": {
@@ -349,7 +349,7 @@
       "itemId": "beast_cleaver",
       "needs": {
         "wolf_pelt": 2,
-        "imp_horn": 1
+        "ember_shard": 2
       },
       "job": {
         "id": "smithing",
@@ -373,7 +373,7 @@
       "itemId": "wyrmfang_dagger",
       "needs": {
         "dragon_scale": 1,
-        "imp_horn": 2
+        "wolf_pelt": 1
       },
       "job": {
         "id": "smithing",
@@ -408,12 +408,12 @@
       "id": "craft_smith_gauntlets",
       "itemId": "smith_gauntlets",
       "needs": {
-        "wolf_pelt": 2,
-        "imp_horn": 1
+        "wolf_pelt": 1,
+        "ember_shard": 2
       },
       "job": {
         "id": "smithing",
-        "level": 4
+        "level": 3
       }
     },
     {
@@ -421,7 +421,7 @@
       "itemId": "scaled_greaves",
       "needs": {
         "dragon_scale": 1,
-        "wolf_pelt": 2
+        "wolf_pelt": 1
       },
       "job": {
         "id": "smithing",
@@ -700,7 +700,7 @@
       },
       "job": {
         "id": "alchemy",
-        "level": 4
+        "level": 2
       }
     },
     {
@@ -712,7 +712,7 @@
       },
       "job": {
         "id": "alchemy",
-        "level": 4
+        "level": 2
       }
     },
     {
@@ -724,7 +724,7 @@
       },
       "job": {
         "id": "alchemy",
-        "level": 4
+        "level": 2
       }
     },
     {
@@ -736,7 +736,7 @@
       },
       "job": {
         "id": "alchemy",
-        "level": 5
+        "level": 3
       }
     },
     {
@@ -748,7 +748,7 @@
       },
       "job": {
         "id": "alchemy",
-        "level": 5
+        "level": 3
       }
     },
     {
@@ -760,8 +760,32 @@
       },
       "job": {
         "id": "alchemy",
-        "level": 6
+        "level": 4
       }
+    },
+    {
+      "id": "steep_potion_hp",
+      "itemId": "greater_potion",
+      "needs": {
+        "potion_hp": 2
+      },
+      "job": {
+        "id": "alchemy",
+        "level": 1
+      },
+      "steep": true
+    },
+    {
+      "id": "steep_potion_mp",
+      "itemId": "elixir",
+      "needs": {
+        "potion_mp": 2
+      },
+      "job": {
+        "id": "alchemy",
+        "level": 2
+      },
+      "steep": true
     }
   ],
   "jobStations": {
@@ -850,5 +874,10 @@
     ],
     "bonus": 2,
     "valuePerTier": 1.0
+  },
+  "jobUnlocks": {
+    "about": "PIX-181: what the top job levels give. Smithing 9 raises the forge's cap again, Smithing 10 makes every forged piece at least Fine; brewing's double chance keeps growing to Alchemy 10.",
+    "smithingCapAt": 9,
+    "smithingFineAt": 10
   }
 }
