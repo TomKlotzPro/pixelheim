@@ -2005,6 +2005,10 @@ msgid "Branches of Power"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Bridges and Forges"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Bright things now glow in the dark: lamps, fires, torches, lit windows and spells bloom softly around themselves at night and underground, while the pixels stay crisp and daylight stays clear"
 msgstr ""
 
@@ -2529,6 +2533,10 @@ msgid "FURNITURE: Odo stocks rugs, ferns, bookshelves, banners, candelabras and 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Face a forge, an anvil or a cauldron and press E to craft there; the inn's hearth tells you where the stew is brewed, and a recipe you can't make yet says what it still needs"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Fafnyr and Morvax hit harder and last longer - bosses are events again"
 msgstr ""
 
@@ -2618,6 +2626,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Fixed: skill points no longer pile up with nothing to buy; the skill tree's last tiers now open at levels 9, 11 and 14 instead of 10, 13 and 17"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Fixed: the Mirefen's bridges cross the river instead of running along it or standing alone in a pond, its maze chest can be reached, and the town's bridge and dock sit right in the water"
 msgstr ""
 
 #: assets/data/changelog.json

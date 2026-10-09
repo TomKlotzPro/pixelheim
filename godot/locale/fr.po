@@ -2005,6 +2005,10 @@ msgid "Branches of Power"
 msgstr "Les branches du pouvoir"
 
 #: assets/data/changelog.json
+msgid "Bridges and Forges"
+msgstr "Ponts et forges"
+
+#: assets/data/changelog.json
 msgid "Bright things now glow in the dark: lamps, fires, torches, lit windows and spells bloom softly around themselves at night and underground, while the pixels stay crisp and daylight stays clear"
 msgstr "Ce qui brille rayonne désormais dans le noir : lampes, feux, torches, fenêtres éclairées et sorts s'auréolent doucement la nuit et sous terre, tandis que les pixels restent nets et le jour reste clair"
 
@@ -2529,6 +2533,10 @@ msgid "FURNITURE: Odo stocks rugs, ferns, bookshelves, banners, candelabras and 
 msgstr "MOBILIER : Odo vend tapis, fougères, bibliothèques, bannières, candélabres et bancs - posez-les sur n'importe quelle case libre devant vous (bouton Placer dans le nouvel onglet Maison du sac), E les reprend ; votre aménagement est sauvegardé avec la maison"
 
 #: assets/data/changelog.json
+msgid "Face a forge, an anvil or a cauldron and press E to craft there; the inn's hearth tells you where the stew is brewed, and a recipe you can't make yet says what it still needs"
+msgstr "Placez-vous face à une forge, une enclume ou un chaudron et appuyez sur E pour y fabriquer ; l'âtre de l'auberge vous dit où se prépare le ragoût, et une recette encore impossible dit ce qu'il lui manque"
+
+#: assets/data/changelog.json
 msgid "Fafnyr and Morvax hit harder and last longer - bosses are events again"
 msgstr "Fafnyr et Morvax frappent plus fort et tiennent plus longtemps - les boss redeviennent des événements"
 
@@ -2619,6 +2627,10 @@ msgstr "Corrigé : sur un clavier AZERTY, les astuces nommaient les touches ch
 #: assets/data/changelog.json
 msgid "Fixed: skill points no longer pile up with nothing to buy; the skill tree's last tiers now open at levels 9, 11 and 14 instead of 10, 13 and 17"
 msgstr "Corrigé : les points de compétence ne s'accumulent plus sans rien à acheter ; les derniers paliers de l'arbre s'ouvrent désormais aux niveaux 9, 11 et 14 au lieu de 10, 13 et 17"
+
+#: assets/data/changelog.json
+msgid "Fixed: the Mirefen's bridges cross the river instead of running along it or standing alone in a pond, its maze chest can be reached, and the town's bridge and dock sit right in the water"
+msgstr "Corrigé : les ponts des Marais de Fange traversent la rivière au lieu de la longer ou de trôner seuls dans une mare, le coffre du dédale s'atteint enfin, et le pont et le ponton de la ville sont posés comme il faut sur l'eau"
 
 #: assets/data/changelog.json
 msgid "Fixed: the ascension card could get stuck on screen until the next fight - it leaves politely now"
