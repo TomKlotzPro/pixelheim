@@ -61,8 +61,8 @@ func test_energy_comes_back_out_of_a_fight() -> void:
 	var state: Node = autofree(GameStateScript.new())
 	state.new_game("Robin", "mage")
 	state.hero.mp = 0
-	var back: int = state.regen_resting()
+	var back: int = state.upkeep.regen_resting()
 	assert_gt(back, 0)
 	assert_eq(state.hero.mp, back)
 	state.hero.mp = int(state.hero.stats["maxMp"])
-	assert_eq(state.regen_resting(), 0, "never past the top")
+	assert_eq(state.upkeep.regen_resting(), 0, "never past the top")

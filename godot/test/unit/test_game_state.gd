@@ -59,33 +59,33 @@ func test_fields_godot_does_not_play_yet_survive_untouched() -> void:
 
 func test_gold_chest_pays_once() -> void:
 	var nook := _chest("town_nook")
-	var result: Dictionary = state.open_chest(nook)
+	var result: Dictionary = state.spoils.open_chest(nook)
 	assert_true(result["opened"])
 	assert_eq(result["message"], "The chest holds 60 gold.")
 	assert_eq(state.pack.gold, 90)
-	assert_true(state.is_opened(nook))
-	assert_false(state.open_chest(nook)["opened"], "an opened chest stays empty")
+	assert_true(state.spoils.is_opened(nook))
+	assert_false(state.spoils.open_chest(nook)["opened"], "an opened chest stays empty")
 	assert_eq(state.pack.gold, 90)
 
 
 func test_ground_treasure_speaks_in_its_own_words() -> void:
-	assert_eq(state.open_chest(_chest("road_glint"))["message"], "Something glitters on the road: 45 gold.")
+	assert_eq(state.spoils.open_chest(_chest("road_glint"))["message"], "Something glitters on the road: 45 gold.")
 	var herb := {}
 	for chest: Dictionary in Interactables._data()["chests"]:
 		if chest["look"] == "herb":
 			herb = chest
-	var result: Dictionary = state.open_chest(herb)
+	var result: Dictionary = state.spoils.open_chest(herb)
 	assert_string_starts_with(result["message"], "You gather %dx " % herb["loot"]["qty"])
 
 
 func test_item_chest_stacks_into_the_pack() -> void:
-	var result: Dictionary = state.open_chest(_chest("town_corner"))
+	var result: Dictionary = state.spoils.open_chest(_chest("town_corner"))
 	assert_eq(result["message"], "The chest holds 2x Health Potion.")
 	assert_eq(state.pack.items["potion_hp"], 4)
 
 
 func test_gear_chest_adds_an_instance() -> void:
-	var result: Dictionary = state.open_chest(_chest("ash_west"))
+	var result: Dictionary = state.spoils.open_chest(_chest("ash_west"))
 	assert_eq(result["message"], "The chest holds Iron Sword!")
 	assert_eq(state.pack.gear.size(), 2)
 	assert_eq(state.pack.gear[1]["itemId"], "iron_sword")
@@ -94,13 +94,13 @@ func test_gear_chest_adds_an_instance() -> void:
 func test_overloaded_pack_leaves_the_chest_closed() -> void:
 	state.hero.stats["strength"] = 0  # capacity 60
 	state.pack.items = {"potion_hp": 60}  # 60 weight; the worn sword weighs nothing
-	assert_eq(state.carry_capacity(), 60)
+	assert_eq(state.upkeep.carry_capacity(), 60)
 	assert_eq(state.pack.carried_weight(), 60)
 	var ash_west := _chest("ash_west")
-	var result: Dictionary = state.open_chest(ash_west)
+	var result: Dictionary = state.spoils.open_chest(ash_west)
 	assert_false(result["opened"])
 	assert_eq(result["message"], "Too heavy to carry. Lighten the pack and come back.")
-	assert_false(state.is_opened(ash_west))
+	assert_false(state.spoils.is_opened(ash_west))
 	assert_eq(state.pack.gear.size(), 1)
 
 
@@ -121,9 +121,9 @@ func test_mimics_bite() -> void:
 	for chest: Dictionary in Interactables._data()["chests"]:
 		if chest.get("mimic", false):
 			mimic = chest
-	var result: Dictionary = state.open_chest(mimic)
+	var result: Dictionary = state.spoils.open_chest(mimic)
 	assert_true(result["mimic"])
-	assert_true(state.is_opened(mimic))
+	assert_true(state.spoils.is_opened(mimic))
 
 
 func test_moving_remembers_position_and_sight() -> void:

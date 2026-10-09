@@ -67,7 +67,7 @@ func _rows() -> Array[Dictionary]:
 					Economy.can_craft(entry, pack.items, GameState.hero.jobs),
 					func() -> String:
 						# Not with what a taken delivery needs, unless asked twice (PIX-206).
-						var ask := GameState.ask_before_dip("craft:" + recipe_id, entry["needs"])
+						var ask := GameState.questing.ask_before_dip("craft:" + recipe_id, entry["needs"])
 						if ask != "":
 							return ask
 						var result := GameState.trade.craft(recipe_id)

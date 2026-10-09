@@ -42,7 +42,7 @@ func _open() -> void:
 
 	# The hero marches in from the left and stops beneath the title.
 	var hero := AnimatedSprite2D.new()
-	var art := GameState.hero_art()
+	var art := GameState.upkeep.hero_art()
 	hero.sprite_frames = PunyArt.frames(art)
 	hero.self_modulate = art["tint"]
 	hero.scale = Vector2(6, 6)

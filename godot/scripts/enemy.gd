@@ -3,7 +3,7 @@ extends CharacterBody2D
 ## (a "!" and a hop first), chases, bites after a tell, and gives up a chase
 ## that strays too far, walking home to heal (PIX-142). Its numbers are the web bestiary's (`fighter` from
 ## Bestiary.spawn): hits land through Bestiary's damage formulas, and its
-## death pays out through GameState.defeat_monster (via the world). It wears
+## death pays out through GameState.spoils.defeat_monster (via the world). It wears
 ## the Puny sheet PunyArt assigns its species, walking the way it moves.
 
 const WANDER_SPEED := 22.0

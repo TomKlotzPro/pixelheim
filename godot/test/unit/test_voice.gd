@@ -83,7 +83,7 @@ func test_messages_spell_gold_out() -> void:
 func test_a_quest_line_leads_with_its_tag() -> void:
 	var state: Node = autofree(GameStateScript.new())
 	state.new_game("Robin", "warrior", 0, false)
-	var accepted: String = state.resolve_quests("innkeeper")
+	var accepted: String = state.questing.resolve_quests("innkeeper")
 	assert_string_starts_with(accepted, "Quest accepted: ")
 	var tag := accepted.get_slice(":", 0)
 	assert_true(tag in Messages.MESSAGE_TAGS, "the world sets it in gold")

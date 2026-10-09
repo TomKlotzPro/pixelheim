@@ -38,10 +38,10 @@ func test_every_patch_is_open_ground_with_something_to_pick() -> void:
 func test_a_patch_is_picked_and_grows_back() -> void:
 	state.roll = func() -> float: return 0.99
 	state.world.steps = 50.0
-	assert_eq(state.gather("forest_patch_1", "forest_herb"), ["You gather 1 Forest Herb."] as Array[String])
+	assert_eq(state.spoils.gather("forest_patch_1", "forest_herb"), ["You gather 1 Forest Herb."] as Array[String])
 	assert_eq(state.pack.items["forest_herb"], 1)
 	assert_eq(state.hero.jobs["foraging"]["xp"], 5)
-	assert_true(state.gather("forest_patch_1", "forest_herb").is_empty(), "picked bare")
+	assert_true(state.spoils.gather("forest_patch_1", "forest_herb").is_empty(), "picked bare")
 	state.world.steps = 349.0
 	assert_false(Gathering.is_ready(state.world, "forest_patch_1"))
 	state.world.steps = 350.0
@@ -66,11 +66,11 @@ func test_every_floor_has_a_patch_that_deepens() -> void:
 func test_a_first_brew_for_vex_and_a_buckler_for_hilda() -> void:
 	assert_eq(Quests.by_id("herbs_for_vex")["objective"]["kind"], "craft")
 	assert_eq(Quests.by_id("hildas_buckler")["giver"], "smith")
-	state.resolve_quests("alchemist_vex")
+	state.questing.resolve_quests("alchemist_vex")
 	state.world.map_id = "town_alchemist"
 	state.pack.items.merge({"forest_herb": 1, "marsh_reed": 1})
 	assert_false(Quests.is_ready(Quests.by_id("herbs_for_vex"), state.progression.quests, state.pack.items))
 	state.roll = func() -> float: return 0.99
 	assert_true(state.trade.craft("brew_potion_hp")["made"])
 	assert_true(Quests.is_ready(Quests.by_id("herbs_for_vex"), state.progression.quests, state.pack.items), "one brewed")
-	assert_string_starts_with(state.resolve_quests("alchemist_vex"), "Quest complete: A First Brew.")
+	assert_string_starts_with(state.questing.resolve_quests("alchemist_vex"), "Quest complete: A First Brew.")

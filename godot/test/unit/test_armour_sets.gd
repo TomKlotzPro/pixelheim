@@ -17,7 +17,7 @@ func _wear(item_ids: Array) -> void:
 	for item_id: String in item_ids:
 		var piece := InventoryState.create_gear(item_id)
 		state.pack.gear.append(piece)
-		state.equip(piece["uid"])
+		state.upkeep.equip(piece["uid"])
 
 
 func test_every_set_piece_is_in_its_set_and_drawn() -> void:

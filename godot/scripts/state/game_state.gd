@@ -402,15 +402,15 @@ func pack_changed() -> void:
 
 # ---- delegates (PIX-261) ----------------------------------------------------
 # Step 1 left a one-line delegate here for every method that moved into a
-# module, so no caller changed with the move. Step 2 moves the callers onto
-# GameState.<module>.<method>() and deletes each delegate nothing calls.
-# Training's callers have all moved. Trade and Household keep only what
-# world.gd still calls, until its own split moves those calls too. Holdings,
-# Questing, Spoils and Upkeep haven't moved yet. The old private names stay
-# only where harness.gd calls them.
+# module, so no caller changed with the move. Steps 2 and 3 moved the callers
+# onto GameState.<module>.<method>() and deleted each delegate nothing called.
+# What is left is called only by world.gd, the world_*.gd files being split
+# out of it, or harness.gd, which stay untouched while world.gd is split;
+# each delegate goes once its last call there moves. Training has none left.
+# The old private names stay only where harness.gd calls them.
 
-# Trade (state/trade.gd): world.gd opens the burnt square's stall and asks
-# whether a shop is open.
+# Trade (state/trade.gd): Interaction (world_interaction.gd) opens the burnt
+# square's stall and asks whether a shop is open.
 var stall_shop: String:
 	get:
 		return trade.stall_shop
@@ -418,86 +418,62 @@ var stall_shop: String:
 		trade.stall_shop = value
 func active_shop() -> String: return trade.active_shop()
 
-# Holdings (state/holdings.gd)
-func fund_commission(commission_id: String) -> String: return holdings.fund_commission(commission_id)
-func commission_buff(kind: String) -> float: return holdings.commission_buff(kind)
-func fund_project(project_id: String) -> String: return holdings.fund_project(project_id)
-func project_built(project_id: String) -> bool: return holdings.project_built(project_id)
-func buy_property(map_id: String) -> bool: return holdings.buy_property(map_id)
-func till(map_id: String) -> Dictionary: return holdings.till(map_id)
-func collect_till(map_id: String) -> int: return holdings.collect_till(map_id)
-func expand_property(map_id: String) -> bool: return holdings.expand_property(map_id)
+# Holdings (state/holdings.gd): world.gd asks whether it's a festival day (the
+# town's tour), as Folk (world_folk.gd) does for the barker and the square;
+# Interaction asks whether Mirelle has settled (her word on the bank);
+# harness.gd starts a festival and puts days of rent in an owned shop's till.
 func steps_now() -> int: return holdings.steps_now()
 func investments() -> Dictionary: return holdings.investments()
-func bank_deposit(amount: int) -> bool: return holdings.bank_deposit(amount)
-func bank_withdraw() -> int: return holdings.bank_withdraw()
-func fund_venture() -> bool: return holdings.fund_venture()
-func collect_venture() -> Dictionary: return holdings.collect_venture()
-func perk_grown(id: String) -> bool: return holdings.perk_grown(id)
-func song_crit() -> float: return holdings.song_crit()
-func walk_bonus() -> float: return holdings.walk_bonus()
 func is_settled(id: String) -> bool: return holdings.is_settled(id)
 func _start_festival(age: int) -> void: holdings.start_festival(age)
 func festival_on() -> bool: return holdings.festival_on()
-func win_ring_toss() -> String: return holdings.win_ring_toss()
 
-# Household (state/household.gd): world.gd opens the house's door, sells it,
-# places a piece from the pack, and asks what E does on a cell of it.
+# Household (state/household.gd): world.gd walks the hero in at the house's
+# door; Interaction opens it, sells it, places a piece from the pack, and asks
+# what E does on a cell of it.
 func owns_house() -> bool: return household.owns_house()
 func buy_house() -> String: return household.buy_house()
 func furniture_at(cell: Vector2i) -> Dictionary: return household.furniture_at(cell)
 func place_furniture(item_id: String, cell: Vector2i, tile: String) -> String: return household.place_furniture(item_id, cell, tile)
 func house_interact(cell: Vector2i, tile: String) -> Dictionary: return household.house_interact(cell, tile)
 
-# Questing (state/questing.gd)
+# Questing (state/questing.gd): Interaction talks (a quest on offer, a word
+# waiting, a stake's answer) and douses the Night of Ash's fires; world.gd
+# reads the bounty board, walks the escort and the timed runs, and plays the
+# rest of that night; harness.gd closes a talk with the elder.
 func quest_on_offer(giver_id: String) -> Dictionary: return questing.quest_on_offer(giver_id)
 func first_skill_heals() -> bool: return questing.first_skill_heals()
 func quest_open(quest: Dictionary) -> bool: return questing.quest_open(quest)
-func givers_waiting(npcs: Array) -> Array[Dictionary]: return questing.givers_waiting(npcs)
 func board_floors() -> Array: return questing.board_floors()
 func finish_dialogue(npc_id: String) -> void: questing.finish_dialogue(npc_id)
-func resolve_quests(giver_id: String) -> String: return questing.resolve_quests(giver_id)
 func choose(quest_id: String, option_id: String) -> String: return questing.choose(quest_id, option_id)
 func escort_due() -> Dictionary: return questing.escort_due()
 func escort_arrived(quest_id: String) -> void: questing.escort_arrived(quest_id)
 func timed_run() -> Dictionary: return questing.timed_run()
 func tick_runs(delta: float) -> Dictionary: return questing.tick_runs(delta)
-func delivery_dip(costs: Dictionary) -> Dictionary: return questing.delivery_dip(costs)
-func ask_before_dip(what: String, costs: Dictionary) -> String: return questing.ask_before_dip(what, costs)
 func prologue_pouch() -> String: return questing.prologue_pouch()
 func prologue_reached_town() -> void: questing.prologue_reached_town()
 func prologue_wave_cleared() -> String: return questing.prologue_wave_cleared()
 func prologue_douse(ruin: int) -> String: return questing.prologue_douse(ruin)
 func finish_prologue() -> void: questing.finish_prologue()
 
-# Spoils (state/spoils.gd)
+# Spoils (state/spoils.gd): world.gd pays out a kill and a cleared floor and
+# brings packs back; Interaction opens chests and ground treasure, gathers and
+# fishes; harness.gd grants the levels it set up.
 func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, floor_level: int, mountain := 0) -> Array[String]: return spoils.defeat_monster(fighter, region_id, spawn_id, floor_level, mountain)
-func earn_xp(amount: int) -> String: return spoils.earn_xp(amount)
 func _grant_levels() -> int: return spoils.grant_levels()
-func clear_pack(spawn_id: String) -> void: spoils.clear_pack(spawn_id)
 func revive_pack(spawn_id: String) -> void: spoils.revive_pack(spawn_id)
-func wake_the_wilds() -> void: spoils.wake_the_wilds()
 func clear_floor(level: int) -> Dictionary: return spoils.clear_floor(level)
 func clear_deep(level: int) -> Dictionary: return spoils.clear_deep(level)
 func open_chest(chest: Dictionary) -> Dictionary: return spoils.open_chest(chest)
 func is_opened(chest: Dictionary) -> bool: return spoils.is_opened(chest)
 func gather(spot_id: String, item_id: String) -> Array[String]: return spoils.gather(spot_id, item_id)
 func fish(spot_id: String) -> String: return spoils.fish(spot_id)
-func death_toll() -> int: return spoils.death_toll()
 
-# Upkeep (state/upkeep.gd)
-func hurt(amount: int) -> bool: return upkeep.hurt(amount)
-func heal_hero(amount: int) -> int: return upkeep.heal_hero(amount)
-func regen_resting() -> int: return upkeep.regen_resting()
+# Upkeep (state/upkeep.gd): world.gd and Interaction bed the hero at the inn,
+# and world.gd wakes them there after a fall; Soundscape (world_soundscape.gd)
+# keeps a rest's mending quiet; harness.gd puts gear on the hero.
 func rest_mend() -> int: return upkeep.rest_mend()
-func regen_stamina() -> int: return upkeep.regen_stamina()
-func hp_restore(item: Dictionary) -> int: return upkeep.hp_restore(item)
-func carry_capacity() -> int: return upkeep.carry_capacity()
-func hero_art() -> Dictionary: return upkeep.hero_art()
 func equip(uid: String) -> bool: return upkeep.equip(uid)
-func unequip(slot: String) -> bool: return upkeep.unequip(slot)
-func drop_item(item_id: String, count := 1) -> bool: return upkeep.drop_item(item_id, count)
-func drop_gear(uid: String) -> bool: return upkeep.drop_gear(uid)
-func use_item(item_id: String) -> Dictionary: return upkeep.use_item(item_id)
 func rest_at_inn() -> String: return upkeep.rest_at_inn()
 func wake_at_inn() -> Dictionary: return upkeep.wake_at_inn()

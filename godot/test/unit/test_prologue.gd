@@ -26,34 +26,34 @@ func test_a_new_hero_arrives_on_the_road_at_night_with_the_letter() -> void:
 func test_the_night_moves_only_through_its_steps() -> void:
 	var dawns := [0]
 	state.prologue_dawn.connect(func() -> void: dawns[0] += 1)
-	state.finish_dialogue("elder")
+	state.questing.finish_dialogue("elder")
 	assert_eq(state.progression.prologue, Prologue.SCAVENGER, "Maren waits her turn")
-	assert_string_contains(state.prologue_pouch(), "health potion")
+	assert_string_contains(state.questing.prologue_pouch(), "health potion")
 	assert_eq(state.progression.prologue, Prologue.GATE)
-	state.prologue_reached_town()
+	state.questing.prologue_reached_town()
 	assert_eq(state.progression.prologue, Prologue.HOUNDS, "PIX-197: hounds inside the gate")
-	assert_string_contains(state.prologue_wave_cleared(), "Upper Street")
+	assert_string_contains(state.questing.prologue_wave_cleared(), "Upper Street")
 	assert_eq(state.progression.prologue, Prologue.BRAM)
-	state.finish_dialogue("villager_bram")
+	state.questing.finish_dialogue("villager_bram")
 	assert_eq(state.progression.prologue, Prologue.SELA)
 	state.hero.hp = 3
-	state.finish_dialogue("innkeeper")
+	state.questing.finish_dialogue("innkeeper")
 	assert_eq(state.hero.hp, state.hero.stats["maxHp"], "Sela's bandages")
 	assert_false(state.progression.quests.has("slime_trouble"), "no errands on the night of the fire")
 	assert_eq(state.progression.prologue, Prologue.CAP, "and a cap to wear")
 	var cap: Dictionary = state.pack.gear.filter(func(g: Dictionary) -> bool: return g["itemId"] == "leather_cap")[0]
-	state.equip(cap["uid"])
+	state.upkeep.equip(cap["uid"])
 	assert_eq(state.progression.prologue, Prologue.FIRES, "worn: on to the fires")
 	for ruin in Prologue.fires_needed():
-		assert_ne(state.prologue_douse(ruin), "")
-		assert_eq(state.prologue_douse(ruin), "", "a fire goes out once")
+		assert_ne(state.questing.prologue_douse(ruin), "")
+		assert_eq(state.questing.prologue_douse(ruin), "", "a fire goes out once")
 	assert_eq(state.progression.prologue, Prologue.EMBERS)
-	assert_string_contains(state.prologue_wave_cleared(), "Maren")
+	assert_string_contains(state.questing.prologue_wave_cleared(), "Maren")
 	assert_eq(state.progression.prologue, Prologue.MAREN)
-	state.finish_dialogue("elder")
+	state.questing.finish_dialogue("elder")
 	assert_eq(dawns[0], 1, "the letter in her hands: dawn")
 	assert_false(state.pack.items.has("chancellors_letter"))
-	state.finish_prologue()
+	state.questing.finish_prologue()
 	assert_eq(state.progression.prologue, Prologue.DONE)
 	assert_false(DayNight.is_night(state.world.steps), "morning")
 
@@ -127,7 +127,7 @@ func test_the_night_teaches_every_control_in_order() -> void:
 
 func test_the_fires_put_out_are_kept() -> void:
 	state.progression.prologue = Prologue.FIRES
-	state.prologue_douse(2)
+	state.questing.prologue_douse(2)
 	var saved := {}
 	state.progression.write_into(saved)
 	assert_eq(saved["prologueDoused"], [2])

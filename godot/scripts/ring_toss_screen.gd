@@ -114,7 +114,7 @@ func _throw() -> void:
 func _finish() -> void:
 	done = true
 	if hits >= int(Town.festival("hitsToWin")):
-		var prize := GameState.win_ring_toss()
+		var prize := GameState.holdings.win_ring_toss()
 		Sound.play("levelUp" if prize != "" else "coin")
 		status.text = prize if prize != "" else Controls.say(Text.t("On the peg again! The prize is already yours this festival. {key:interact} to throw again."))
 		if prize != "":

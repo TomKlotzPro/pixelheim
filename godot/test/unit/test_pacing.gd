@@ -79,10 +79,10 @@ func test_a_first_clear_pays_xp_once() -> void:
 	var state: Node = autofree(GameStateScript.new())
 	state.new_game("Robin", "warrior")
 	state.progression.unlocked_level = 3
-	var lines: Array = state.clear_floor(3)["lines"]
+	var lines: Array = state.spoils.clear_floor(3)["lines"]
 	assert_eq(state.hero.xp, Dungeons.clear_xp(3))
 	assert_true("+36 XP for the way down." in lines)
-	state.clear_floor(3)
+	state.spoils.clear_floor(3)
 	assert_eq(state.hero.xp, 36, "a replay pays only its fights")
 
 
@@ -91,8 +91,8 @@ func test_the_level_up_line_counts_what_there_is_to_spend() -> void:
 	state.new_game("Robin", "warrior")
 	state.hero.level = 4
 	state.hero.xp_to_next = HeroState.xp_to_next_for(4)
-	assert_eq(state.earn_xp(1), "")
-	var line: String = state.earn_xp(state.hero.xp_to_next)
+	assert_eq(state.spoils.earn_xp(1), "")
+	var line: String = state.spoils.earn_xp(state.hero.xp_to_next)
 	assert_eq(line, "Level up: you are now level 5. +3 stat points and +2 skill points to spend.")
 
 

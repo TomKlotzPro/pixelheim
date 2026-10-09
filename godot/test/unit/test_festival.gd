@@ -64,24 +64,24 @@ func test_an_age_completed_brings_a_festival_day() -> void:
 	state.settlement.settlers.append("settler_iva")
 	state.pack.gold = 5000
 	state.pack.items.merge({"marsh_reed": 8, "wolf_pelt": 2})
-	state.fund_project("street_lamps")
-	assert_false(state.festival_on(), "not for one project")
-	state.fund_project("market_stalls")
-	state.fund_project("thatch_cottage")
-	assert_true(state.festival_on(), "the Village's festival")
+	state.holdings.fund_project("street_lamps")
+	assert_false(state.holdings.festival_on(), "not for one project")
+	state.holdings.fund_project("market_stalls")
+	state.holdings.fund_project("thatch_cottage")
+	assert_true(state.holdings.festival_on(), "the Village's festival")
 	assert_eq(int(state.settlement.festival["age"]), 2)
 	state.world.steps += DayNight.DAY_CYCLE_STEPS
-	assert_false(state.festival_on(), "for one day")
+	assert_false(state.holdings.festival_on(), "for one day")
 
 
 func test_the_ring_toss_pays_once_a_festival() -> void:
-	assert_eq(state.win_ring_toss(), "", "no festival, no prize")
+	assert_eq(state.holdings.win_ring_toss(), "", "no festival, no prize")
 	state.holdings.start_festival(3)
 	var gold: int = state.pack.gold
-	assert_string_contains(state.win_ring_toss(), "prize")
+	assert_string_contains(state.holdings.win_ring_toss(), "prize")
 	assert_eq(state.pack.gold, gold + 90, "30g an age")
 	assert_eq(int(state.pack.items.get("festival_pie", 0)), 3)
-	assert_eq(state.win_ring_toss(), "", "once")
+	assert_eq(state.holdings.win_ring_toss(), "", "once")
 
 
 func test_the_festival_is_saved_only_while_there_is_one() -> void:

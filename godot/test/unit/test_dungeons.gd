@@ -37,7 +37,7 @@ func test_a_first_clear_pays_the_hoard_and_opens_the_next_floor() -> void:
 	var gold: int = state.pack.gold
 	var gear_before: int = state.pack.gear.size()
 	# The Ruined Watchtower's hoard (retuned for the mountain last, PIX-170).
-	var result: Dictionary = state.clear_floor(5)
+	var result: Dictionary = state.spoils.clear_floor(5)
 	assert_true(result["first"])
 	assert_false(result["victory"])
 	assert_eq(state.pack.gold, gold + int(Dungeons.floor_def(5)["rewardGold"]))
@@ -49,9 +49,9 @@ func test_a_first_clear_pays_the_hoard_and_opens_the_next_floor() -> void:
 
 
 func test_a_floor_pays_its_hoard_once() -> void:
-	state.clear_floor(1)
+	state.spoils.clear_floor(1)
 	var gold: int = state.pack.gold
-	var result: Dictionary = state.clear_floor(1)
+	var result: Dictionary = state.spoils.clear_floor(1)
 	assert_false(result["first"])
 	assert_eq(state.pack.gold, gold)
 	assert_eq(state.progression.cleared_levels, [1])
@@ -59,14 +59,14 @@ func test_a_floor_pays_its_hoard_once() -> void:
 
 func test_the_last_floors_first_clear_is_victory() -> void:
 	state.progression.unlocked_level = 15
-	assert_true(state.clear_floor(15)["victory"])
-	assert_false(state.clear_floor(15)["victory"])
+	assert_true(state.spoils.clear_floor(15)["victory"])
+	assert_false(state.spoils.clear_floor(15)["victory"])
 	assert_eq(state.progression.unlocked_level, 15)
 
 
 func test_the_bards_song_fades_with_the_outing() -> void:
 	state.settlement.bard_song = true
-	state.clear_floor(1)
+	state.spoils.clear_floor(1)
 	assert_false(state.settlement.bard_song)
 
 

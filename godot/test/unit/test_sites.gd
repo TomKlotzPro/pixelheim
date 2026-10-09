@@ -34,11 +34,11 @@ func test_a_funded_plot_becomes_its_house_and_the_town_shows_it() -> void:
 	state.settlement.settlers.append("settler_iva")
 	state.pack.gold = 2000
 	state.pack.items.merge({"marsh_reed": 8, "wolf_pelt": 2})
-	state.fund_project("thatch_cottage")
+	state.holdings.fund_project("thatch_cottage")
 	assert_eq(state.reveals, ["project:thatch_cottage"] as Array[String])
 	assert_true(Town.sites(Town.done_projects(state.settlement)).is_empty(), "built, not staked")
-	state.fund_project("street_lamps")
-	state.fund_project("market_stalls")
+	state.holdings.fund_project("street_lamps")
+	state.holdings.fund_project("market_stalls")
 	assert_eq(state.reveals.slice(-2), ["project:market_stalls", "age:2"] as Array[String])
 	var next_sites := Town.sites(Town.done_projects(state.settlement)).map(func(site: Dictionary) -> String: return site["project"])
 	assert_eq(next_sites, ["fountain", "slate_hall", "moss_cottage"], "the Town's plots come next")
@@ -46,10 +46,10 @@ func test_a_funded_plot_becomes_its_house_and_the_town_shows_it() -> void:
 
 func test_a_bosss_floor_is_a_homecoming() -> void:
 	state.progression.unlocked_level = 10
-	state.clear_floor(10)
+	state.spoils.clear_floor(10)
 	assert_has(state.reveals, "home:10")
 	state.reveals.clear()
-	state.clear_floor(10)
+	state.spoils.clear_floor(10)
 	assert_true(state.reveals.is_empty(), "once")
 
 
