@@ -1,7 +1,8 @@
 extends GutTest
 ## PunyTerrain: Shade's wang tables read from his .tsx, the dual grid laid
-## over our cells, and the pieces that stand on them (bridges, ramparts, a
-## town seen from afar). Expected tile ids come from the .tsx itself.
+## over our cells, and the pieces that stand on them (bridges, ramparts).
+## Expected tile ids come from the .tsx itself. The town seen from afar is
+## test_skyline's.
 
 const GRASS := [0, 1, 2, 27, 28, 29, 54, 55, 56]
 
@@ -121,24 +122,6 @@ func test_ramparts_raise_towers_runs_and_a_gate() -> void:
 	assert_eq(PunyTerrain.wall_piece(grid, Vector2i(3, 2)), -1, "inside the walls")
 	var house := _grid(["RRR", "RDR", "..."])
 	assert_eq(PunyTerrain.wall_piece(house, Vector2i(1, 1)), -1, "a house door is no gate")
-
-
-func test_a_town_seen_from_afar_is_a_keep_among_houses() -> void:
-	var grid := _grid([
-		"#######",
-		"##D####",
-		"#RRRRR#",
-		"#RRRRR#",
-		"#RRRRR#",
-		"#######",
-	])
-	var skyline := PunyTerrain.skyline(grid)
-	assert_eq(skyline[Vector2i(3, 3)], 714, "the keep's top-left at the block's heart")
-	assert_eq(skyline[Vector2i(4, 4)], 742)
-	assert_has(PunyTerrain.HOUSES, skyline[Vector2i(4, 2)])
-	assert_has(PunyTerrain.HOUSES, skyline[Vector2i(2, 4)])
-	assert_false(skyline.has(Vector2i(2, 2)), "never right behind the gate")
-	assert_false(skyline.has(Vector2i(3, 2)), "houses stand on even cells only")
 
 
 func test_interiors_are_not_outdoors() -> void:

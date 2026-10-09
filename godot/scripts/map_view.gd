@@ -58,6 +58,9 @@ var patch_day := -1
 ## Each wild pack's camp (PIX-142): cell -> {"kind": "tent"|"torch", "tile"},
 ## a tent in its region's colour behind its home and a torch beside it.
 var camps := {}
+## The village seen from outside (PIX-248, Skyline.plan), on the maps that
+## hold it as one block (PunyTerrain.SKYLINE_MAPS); empty elsewhere.
+var skyline := {}
 
 ## How far the wind leans what grows, in pixels at its top (PIX-223): a
 ## tree or a sheaf, a flower, a forest's crowns (all of a piece, so less).
@@ -81,6 +84,9 @@ const CAMP_RING := [
 ]
 const TENT_FOOT := Rect2(1, 5, 14, 11)
 const TORCH_FOOT := Rect2(5, 9, 6, 7)
+## A burnt house seen small from afar smokes with this share of a ruin's
+## motes in town (PIX-248).
+const VILLAGE_RUIN_SMOKE := 0.4
 
 
 func _init(map_data: MapData, actor_layer: Node2D) -> void:
@@ -100,7 +106,7 @@ func plan(arrival: Vector2i) -> Vector2i:
 	# Where patches may grow is read before anything is drawn over the map
 	# (PIX-250), so it's the same with or without the paid art.
 	patch_decks = Gathering.decks(data)
-	# Far off (the overworld's skyline) a town stays one Puny house icon.
+	# Far off (the overworld) the town's block of roofs is the village, small.
 	var near := data.floor_level == 0 and data.id not in PunyTerrain.SKYLINE_MAPS
 	buildings = PunyTown.compose(data.grid) if near else {"pieces": {}, "decor": {}, "freed": []}
 	# What a house covers is house: its corners stop the hero and villagers
@@ -110,6 +116,15 @@ func plan(arrival: Vector2i) -> Vector2i:
 			data.grid[cell] = "roof"
 	for cell: Vector2i in buildings["freed"]:
 		data.grid[cell] = "grass"
+	# The village as it stands now (PIX-248): its ruins, its rebuilt houses,
+	# what each age added. Only drawn: the block's cells stay as they are.
+	skyline = {}
+	if data.floor_level == 0 and data.id in PunyTerrain.SKYLINE_MAPS:
+		var done := Town.done_projects(GameState.settlement)
+		var ruins: Array = Town.ruins(done).map(func(ruin: Dictionary) -> Rect2i: return ruin["rect"])
+		skyline = Skyline.plan(data.grid, MapData.load_tiered("town", done, 1), ruins)
+		if PunyTown.available():
+			buildings = {"pieces": skyline["pieces"], "decor": skyline["decor"], "freed": []}
 	# Inside, Shade's rooms (PunyInterior): furniture spreading onto the floor
 	# blocks it, like the rest of the furniture.
 	if PunyTown.available() and PunyInterior.is_room(data.id):
@@ -197,18 +212,21 @@ func _build_ground(data: MapData) -> Node2D:
 	var layer := TileMapLayer.new()
 	layer.tile_set = PunyTerrain.tileset()
 	layer.position = Vector2(-TILE, -TILE) / 2.0
-	var tiles := PunyTerrain.ground_tiles(data.grid, data.size)
+	# The ground as drawn: the map's, but for the village far off (PIX-248),
+	# whose streets, river and ash lie where its block's cells are.
+	var look: Dictionary = data.grid.merged(skyline["ground"], true) if not skyline.is_empty() else data.grid
+	var tiles := PunyTerrain.ground_tiles(look, data.size)
 	for cell: Vector2i in tiles:
 		PunyTerrain.place(layer, cell, tiles[cell])
 	# Ash and mire are toned from Shade's dirt and grass, decor included.
 	ground_tint = ShaderMaterial.new()
 	ground_tint.shader = preload("res://shaders/region_tint.gdshader")
-	ground_tint.set_shader_parameter("tint_map", PunyTerrain.tint_map(data.grid, data.size, data.regions))
+	ground_tint.set_shader_parameter("tint_map", PunyTerrain.tint_map(look, data.size, data.regions))
 	ground_tint.set_shader_parameter("map_pixels", Vector2(data.size * TILE))
 	# The water swells, glints and foams at the shore (PIX-223).
 	var water := ground_tint.duplicate() as ShaderMaterial
 	water.set_shader_parameter("water_life", true)
-	water.set_shader_parameter("water_map", PunyTerrain.water_map(data.grid, data.size))
+	water.set_shader_parameter("water_map", PunyTerrain.water_map(look, data.size))
 	layer.material = water
 	root.add_child(layer)
 	decor_sway = _swaying(TREE_SWAY, true)
@@ -228,22 +246,31 @@ func _build_ground(data: MapData) -> Node2D:
 		canopy.set_shader_parameter("strength", 0.0)
 	forest.material = canopy
 	root.add_child(forest)
-	# Bridges, cave mouths, ramparts and (seen from afar) whole towns stand on
-	# that ground as Puny objects.
+	# Bridges, cave mouths and ramparts stand on that ground as Puny objects;
+	# the village far off brings its own rampart, wells and growth.
 	var objects := TileMapLayer.new()
 	objects.tile_set = PunyTerrain.tileset()
 	var outdoor := PunyTerrain.is_outdoor(data.grid)
-	for cell: Vector2i in data.grid:
-		var object := PunyTerrain.object_at(data.grid, cell)
-		if outdoor and object < 0:
+	var village: Rect2i = skyline.get("block", Rect2i())
+	for cell: Vector2i in look:
+		var object := PunyTerrain.object_at(look, cell)
+		if outdoor and object < 0 and not village.has_point(cell):
 			object = PunyTerrain.wall_piece(data.grid, cell)
 		if object >= 0:
 			PunyTerrain.place(objects, cell, object)
-	if data.id in PunyTerrain.SKYLINE_MAPS:
-		var skyline := PunyTerrain.skyline(data.grid)
-		for cell: Vector2i in skyline:
-			PunyTerrain.place(objects, cell, skyline[cell])
+	if not skyline.is_empty():
+		var drawn: Dictionary = skyline["objects"].merged({} if PunyTown.available() else skyline["icons"])
+		for cell: Vector2i in drawn:
+			PunyTerrain.place(objects, cell, drawn[cell])
 	root.add_child(objects)
+	if not skyline.get("growth", {}).is_empty():
+		# Its woods and fields lean in the wind together.
+		var growth := TileMapLayer.new()
+		growth.tile_set = PunyTerrain.tileset()
+		for cell: Vector2i in skyline["growth"]:
+			PunyTerrain.place(growth, cell, skyline["growth"][cell])
+		growth.material = _swaying(TREE_SWAY, false)
+		root.add_child(growth)
 	# Shade's flowers, flat on the ground (the hero walks through them).
 	if not outdoor_props["flat"].is_empty():
 		var flowers := TileMapLayer.new()
@@ -352,9 +379,13 @@ func _build_decor(data: MapData) -> void:
 	var built: Dictionary = buildings.get("walls", {}).merged(buildings["pieces"], true)
 	for cell: Vector2i in built:
 		var tile: int = built[cell]
-		if tile == PunyTown.WINDOW:
+		if tile == PunyTown.WINDOW and skyline.is_empty():
 			# A candle behind the glass lights the street a little (PIX-221).
 			_add_glow(center(cell), 10, 0.5, 40.0, Lights.WINDOW, false, Lights.WINDOW_ENERGY)
+		elif tile == PunyTown.WINDOW:
+			# Far off the windows stand side by side: a smaller candle each,
+			# on the glass rather than round it (PIX-248).
+			_add_glow(center(cell) + Vector2(0, -1), 6, 0.55, 30.0, Lights.WINDOW, false, Lights.WINDOW_ENERGY)
 		elif tile in PunyInterior.FIRE_TILES:
 			# A hearth or a forge warms the room it's in, and embers rise off
 			# it (PIX-225).
@@ -363,8 +394,10 @@ func _build_decor(data: MapData) -> void:
 			embers.position = center(cell) + Vector2(TILE / 2.0, 6)
 			embers.z_index = 6
 			props.add_child(embers)
-		elif tile == PunyTown.DOOR:
+		elif tile == PunyTown.DOOR and skyline.is_empty():
 			_add_chimney_smoke(cell)
+	if not skyline.is_empty():
+		_add_village_life()
 	chest_sprites = {}
 	for chest: Dictionary in Interactables.chests_on(data.id):
 		var texture := treasure_texture(chest, GameState.spoils.is_opened(chest))
@@ -566,18 +599,19 @@ func douse(index: int, seconds := 1.2) -> void:
 
 
 ## Smoke and embers over a burnt house (PIX-146): pixel motes drifting up
-## from its footing, the embers quicker and fewer. Still with Reduce motion.
-func _add_smoke(rect: Rect2i) -> void:
+## from its footing, the embers quicker and fewer (a `share` of them, for a
+## house seen small from afar). Still with Reduce motion.
+func _add_smoke(rect: Rect2i, share := 1.0) -> void:
 	if GameState.settings.reduce_motion:
 		return
 	var middle := Vector2(rect.position * TILE) + Vector2(rect.size * TILE) / 2.0
-	var extents := Vector2(rect.size * TILE) / 2.0 - Vector2(10, 10)
+	var extents := (Vector2(rect.size * TILE) / 2.0 - Vector2(10, 10)).max(Vector2(3, 3))
 	for ember in [false, true]:
 		var motes := CPUParticles2D.new()
 		motes.position = middle
 		motes.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
 		motes.emission_rect_extents = extents
-		motes.amount = 4 if ember else 12
+		motes.amount = maxi(1, roundi((4 if ember else 12) * share))
 		motes.lifetime = 1.6 if ember else 3.5
 		motes.direction = Vector2.UP
 		motes.spread = 20.0
@@ -636,15 +670,34 @@ func set_night(night: bool) -> void:
 
 
 ## A thread of smoke from a house's chimney: up from its door to the roof's
-## top, a little to the side. Still with Reduce motion.
+## top, a little to the side.
 func _add_chimney_smoke(door: Vector2i) -> void:
-	if GameState.settings.reduce_motion:
-		return
 	var top := door
 	while buildings["pieces"].has(top + Vector2i.UP):
 		top += Vector2i.UP
+	_add_smoke_thread(Vector2(top * TILE) + Vector2(TILE * 1.5, 2))
+
+
+## The village far off (PIX-248): smoke from every roof (the houses are the
+## paid pack's) and over what still lies in ruins, and its lamps lit at
+## night (its windows light with the town's). Small glows with small lights:
+## the village is small here.
+func _add_village_life() -> void:
+	if PunyTown.available():
+		for at: Vector2 in skyline["smoke"]:
+			_add_smoke_thread(at)
+	for ruin: Rect2i in skyline["ruins"]:
+		_add_smoke(ruin, VILLAGE_RUIN_SMOKE)
+	for cell: Vector2i in skyline["lamps"]:
+		_add_glow(center(cell), 5, 0.4, 26.0, Lights.LAMP, true, Lights.LAMP_ENERGY)
+
+
+## A thread of chimney smoke rising from `at`. Still with Reduce motion.
+func _add_smoke_thread(at: Vector2) -> void:
+	if GameState.settings.reduce_motion:
+		return
 	var motes := CPUParticles2D.new()
-	motes.position = Vector2(top * TILE) + Vector2(TILE * 1.5, 2)
+	motes.position = at
 	motes.amount = 5
 	motes.lifetime = 3.5
 	motes.direction = Vector2.UP

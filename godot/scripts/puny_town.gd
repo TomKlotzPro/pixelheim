@@ -117,20 +117,53 @@ static func _blobs(grid: Dictionary) -> Array:
 	return blobs
 
 
+## Every house on a map as the far-off view needs it (PIX-248, Skyline): its
+## cells' bounding box, its roof kind, and its door (-1, -1 for none) - the
+## same clusters the town builds its houses from.
+static func houses(grid: Dictionary) -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	for blob: Array in _blobs(grid):
+		var low: Vector2i = blob[0]
+		var high: Vector2i = blob[0]
+		for cell: Vector2i in blob:
+			low = Vector2i(mini(low.x, cell.x), mini(low.y, cell.y))
+			high = Vector2i(maxi(high.x, cell.x), maxi(high.y, cell.y))
+		var door := Vector2i(-1, -1)
+		for cell: Vector2i in blob:
+			if cell.y == high.y and String(grid[cell]).begins_with("door"):
+				door = cell
+		out.append({"rect": Rect2i(low, high - low + Vector2i.ONE), "kind": roof_kind(blob, grid), "door": door})
+	return out
+
+
+## The roof a house wears: the kind most of its roof cells are.
+static func roof_kind(blob: Array, grid: Dictionary) -> String:
+	var kinds := {}
+	for cell: Vector2i in blob:
+		var tile: String = grid[cell]
+		if tile.begins_with("roof"):
+			kinds[tile] = kinds.get(tile, 0) + 1
+	return kinds.keys().reduce(func(a: String, b: String) -> String: return a if kinds[a] >= kinds[b] else b)
+
+
+## One hip-roofed house filling `rect`, in roof `kind`'s colour, its door at
+## column `door_x` (-1 for none): cell -> tile. The town's narrow houses are
+## built so; far off, every house is (PIX-248).
+static func wing_house(rect: Rect2i, door_x: int, kind: String) -> Dictionary:
+	var pieces := {}
+	_wing(rect.position.x, rect.end.x - 1, rect.position.y, rect.end.y - 1, door_x, "", ROOF_ROWS.get(kind, 0) * COLUMNS, pieces)
+	return pieces
+
+
 static func _building(blob: Array, grid: Dictionary, pieces: Dictionary, decor: Dictionary) -> void:
 	var bottom := -1
 	var top_of := {}
 	var bottom_of := {}
-	var kinds := {}
 	for cell: Vector2i in blob:
 		bottom = maxi(bottom, cell.y)
 		top_of[cell.x] = mini(top_of.get(cell.x, cell.y), cell.y)
 		bottom_of[cell.x] = maxi(bottom_of.get(cell.x, cell.y), cell.y)
-		var tile: String = grid[cell]
-		if tile.begins_with("roof"):
-			kinds[tile] = kinds.get(tile, 0) + 1
-	var kind: String = kinds.keys().reduce(func(a: String, b: String) -> String: return a if kinds[a] >= kinds[b] else b)
-	var shift: int = ROOF_ROWS.get(kind, 0) * COLUMNS
+	var shift: int = ROOF_ROWS.get(roof_kind(blob, grid), 0) * COLUMNS
 	var facade: Array = blob.filter(func(cell: Vector2i) -> bool: return cell.y == bottom).map(func(cell: Vector2i) -> int: return cell.x)
 	var left: int = facade.min()
 	var right: int = facade.max()
