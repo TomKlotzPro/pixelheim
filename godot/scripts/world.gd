@@ -222,7 +222,7 @@ func _process(delta: float) -> void:
 	respawn_check -= delta
 	if respawn_check <= 0:
 		respawn_check = 1.0
-		foes.revive()
+		foes.keep_hours()
 		view.refresh_patches()
 		folk.keep_hours()
 		hud.hint_boards()

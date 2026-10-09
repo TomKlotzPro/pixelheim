@@ -519,11 +519,15 @@ func _solid_scatter(data: MapData, arrival: Vector2i) -> Dictionary:
 
 ## Where each wild pack's camp stands: a tent on the first open cell of its
 ## region in CAMP_RING, and a torch on the next one within two of the tent.
+## A night pack keeps none (PIX-252): it comes out of the dark, and a camp,
+## drawn once for the visit, would stand empty all day.
 static func plan_camps(map: MapData) -> Dictionary:
 	var out := {}
 	if map.floor_level > 0 or map.style == "cave":
 		return out
 	for spawn: Dictionary in Bestiary.spawns_on(map.id):
+		if Packs.of_the_night(spawn):
+			continue
 		var home := Vector2i(spawn["x"], spawn["y"])
 		var region := map.region_at(home)
 		var fits := func(cell: Vector2i) -> bool:

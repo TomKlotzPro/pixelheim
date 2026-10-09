@@ -136,12 +136,16 @@ static func drops_of(monster_id: String) -> Array:
 
 static var _found := {}
 static var _found_floors := {}
+## kind -> the regions where it comes out only after dark, named so (PIX-252).
+static var _found_at_night := {}
 ## kind -> the first spawn whose pack is of it: {mapId, x, y} (PIX-239).
 static var _homes := {}
 
 
 ## Where a monster lives: the wild regions with a pack of it, then the floors
-## that field it (for "where to find" hints).
+## that field it (for "where to find" hints), then the regions where it
+## comes out only after dark, saying so ("the Ash Fields by night", PIX-252):
+## a hint's first few are where it is at any hour.
 static func where_found(monster_id: String, with_floors := true) -> Array[String]:
 	_learn_places()
 	var out: Array[String] = []
@@ -149,11 +153,14 @@ static func where_found(monster_id: String, with_floors := true) -> Array[String
 	# The mountain's floors, once there's a way up (PIX-203).
 	if with_floors:
 		out.append_array(_found_floors.get(monster_id, []))
+	out.append_array(_found_at_night.get(monster_id, []))
 	return out
 
 
 ## The first spawn in the wild whose pack is of `monster_id`: {mapId, x, y},
-## or {} when none is (the way to a hunting quest, PIX-239).
+## or {} when none is (the way to a hunting quest, PIX-239). A pack out at
+## every hour first (PIX-252), so the way never leads to an empty camp;
+## then one out by day, then one of the night.
 static func home_of(monster_id: String) -> Dictionary:
 	_learn_places()
 	return _homes.get(monster_id, {})
@@ -164,18 +171,32 @@ static func _learn_places() -> void:
 	if not (_found.is_empty() and _found_floors.is_empty()):
 		return
 	var maps := {}
+	# kind -> region name -> whether a pack of it is out there by day.
+	var by_day := {}
+	var home_rank := {}
 	for spawn: Dictionary in _data()["spawns"]:
 		if not maps.has(spawn["mapId"]):
 			maps[spawn["mapId"]] = MapData.load_by_id(spawn["mapId"])
 		var region_id: String = maps[spawn["mapId"]].region_at(Vector2i(spawn["x"], spawn["y"]))
 		var species := species_of(spawn, region_id)
 		var name: String = region(region_id).get("name", region_id)
-		var places: Array = _found.get(species, [])
-		if name not in places:
-			places.append(name)
-		_found[species] = places
-		if not _homes.has(species):
+		var seen: Dictionary = by_day.get(species, {})
+		seen[name] = seen.get(name, false) or Packs.is_out(spawn, false)
+		by_day[species] = seen
+		var rank: int = {"": 0, "day": 1}.get(String(spawn.get("hours", "")), 2)
+		if rank < int(home_rank.get(species, 99)):
+			home_rank[species] = rank
 			_homes[species] = {"mapId": spawn["mapId"], "x": int(spawn["x"]), "y": int(spawn["y"])}
+	for species: String in by_day:
+		var places: Array[String] = []
+		var at_night: Array[String] = []
+		for name: String in by_day[species]:
+			if by_day[species][name]:
+				places.append(name)
+			else:
+				at_night.append(Text.t("%s by night") % name)
+		_found[species] = places
+		_found_at_night[species] = at_night
 	for level in range(1, _data()["levels"].size() + 1):
 		for encounter: Dictionary in _data()["levels"][level - 1]["encounters"]:
 			var places: Array = _found_floors.get(encounter["monsterId"], [])
@@ -359,7 +380,9 @@ static func roll_drop(floor_level: int, kind: String, roll: Callable, mountain :
 ## leader, so a pack of orcs by the road hides no imp.
 static func pack_species(spawn: Dictionary, region_id: String, index: int, cell: Vector2i) -> String:
 	var leader := species_of(spawn, region_id)
-	if index == 0:
+	# What comes out after dark comes out together (PIX-252): a night pack
+	# is all of its kind, no orc among the ash hounds.
+	if index == 0 or Packs.of_the_night(spawn):
 		return leader
 	var other := species_at(region_id, cell + Vector2i(index * 7, index * 13))
 	# Never a stronger kind than the leader (PIX-203): a pack of slimes is

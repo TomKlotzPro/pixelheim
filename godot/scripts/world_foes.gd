@@ -1,12 +1,14 @@
 class_name Foes
 extends Node
 ## The world's foes (Solid Ground, PIX-260: moved out of world.gd as they
-## were): packs at their homes and back when their time is up, the named
-## monsters in their lairs, the mimic in its chest; when a monster may notice
-## the hero (or, far below them, run: PIX-251), and the fight's clock that
-## keeps the battle music on; a monster fallen (the web's victory, a pack
-## scattered, a floor's foes counted down) and a boss's fall. Monsters stand
-## on the world's y-sorted actors layer, in the "mobs" group.
+## were): packs at their homes and back when their time is up, each out at
+## its hours (PIX-252: the night's after dark, the day's by day, some asleep
+## by their fires), the named monsters in their lairs, the mimic in its
+## chest; when a monster may notice the hero (or, far below them, run:
+## PIX-251), and the fight's clock that keeps the battle music on; a monster
+## fallen (the web's victory, a pack scattered, a floor's foes counted down)
+## and a boss's fall. Monsters stand on the world's y-sorted actors layer, in
+## the "mobs" group.
 
 var world: Node
 ## Monsters at each of the web's visible spawn points: a small pack of the
@@ -40,17 +42,14 @@ var floor_foes := 0
 
 
 ## Packs at their homes (the spawns): the species its region and position
-## decide, an elite roll each. A pack the slain ledger keeps down stays away;
-## one whose time is up comes home only where the hero can't see it appear
-## (PIX-142), now or on a later look (revive).
+## decide, an elite roll each - those the hour has out (PIX-252), asleep or
+## awake. A pack the slain ledger keeps down stays away; one whose time is up
+## comes home only where the hero can't see it appear (PIX-142), now or on a
+## later look (keep_hours).
 func spawn_for(data: MapData) -> void:
 	pack_alive = {}
-	for spawn: Dictionary in Bestiary.spawns_on(data.id):
-		if spawn["id"] in GameState.world.slain:
-			continue
-		_spawn_pack(data, spawn)
+	keep_hours(true)
 	spawn_lairs()
-	revive()
 
 
 ## One monster of `species` at `cell`, at home there unless `home` says where
@@ -99,22 +98,100 @@ func spawn_named(named_id: String, cell := Vector2i(-1, -1)) -> Node:
 	return enemy
 
 
-## Cleared packs whose time is up, back at homes out of view.
-func revive() -> void:
+## The wilds keep their hours (PIX-252), looked at every second and on
+## arriving (`arriving`): the packs the hour has out (Packs.out_at) come
+## home, the night's at dusk and the day's at dawn, and the others go; a pack
+## that sleeps after dark lies down by its camp's fire, and gets up at dawn.
+## Never where the player can watch: a pack comes or changes only while its
+## home is off the screen, and goes only while it and every one of it are
+## too, none hunting the hero or running from them - except on arriving,
+## when the map is new to the eye anyway. A cleared pack whose time is up
+## comes back here too, at a home out of view, even on arriving (PIX-142).
+func keep_hours(arriving := false) -> void:
 	if world.map.floor_level > 0:
 		return
+	var minute := DayNight.minute_of(GameState.world.steps)
+	var night := DayNight.night_at(minute)
+	var standing := _standing()
 	for spawn: Dictionary in Bestiary.spawns_on(world.map.id):
-		if not Packs.is_due(GameState.world, spawn["id"]):
-			continue
+		var id: String = spawn["id"]
 		var home := MapView.center(Vector2i(spawn["x"], spawn["y"]))
-		if world.camera_rig.in_view(home, 2 * MapView.TILE):
+		var members: Array = standing.get(id, [])
+		var hidden := arriving or _unseen(home, members)
+		if not Packs.is_out(spawn, night):
+			if not members.is_empty() and hidden:
+				for member: Node in members:
+					member.queue_free()
+				pack_alive.erase(id)
 			continue
-		GameState.spoils.revive_pack(spawn["id"])
-		_spawn_pack(world.map, spawn)
+		var asleep := Packs.asleep(spawn, minute)
+		if members.is_empty():
+			if id in GameState.world.slain:
+				if Packs.is_down(GameState.world, id) or world.camera_rig.in_view(home, 2 * MapView.TILE):
+					continue
+				GameState.spoils.revive_pack(id)
+			elif not hidden:
+				continue
+			_spawn_pack(world.map, spawn, asleep)
+			continue
+		if hidden and members.any(func(member: Node) -> bool: return member.asleep != asleep):
+			for member: Node in members:
+				member.set_asleep(asleep)
 
 
-## One pack around its home: up to PACK_SIZE on open cells of its region.
-func _spawn_pack(data: MapData, spawn: Dictionary) -> void:
+## Each pack standing on the map: spawn id -> its living monsters (none
+## dying, none left over from the map before).
+func _standing() -> Dictionary:
+	var out := {}
+	for enemy in get_tree().get_nodes_in_group("mobs"):
+		if enemy.spawn_id == "" or enemy.dying or enemy.is_queued_for_deletion():
+			continue
+		var members: Array = out.get(enemy.spawn_id, [])
+		members.append(enemy)
+		out[enemy.spawn_id] = members
+	return out
+
+
+## Whether a pack may change unseen: its home off the screen (with a margin
+## for the camp), and every one of it too, none in a chase or a flight.
+func _unseen(home: Vector2, members: Array) -> bool:
+	if world.camera_rig.in_view(home, 2 * MapView.TILE):
+		return false
+	for member: Node in members:
+		if member.hunting or member.mode == "flee" or world.camera_rig.in_view(member.global_position, MapView.TILE):
+			return false
+	return true
+
+
+## A sleeper woken (struck, or the hero at arm's length): the rest of its
+## pack wake with it, and watch for the hero as by day.
+func wake_pack(spawn_id: String) -> void:
+	if spawn_id == "":
+		return
+	for member: Node in _standing().get(spawn_id, []):
+		if member.asleep:
+			member.set_asleep(false)
+
+
+## The packs standing on the map, in the spawns' order, as the harness
+## reports them (PIX-252): each by its leader's kind, ":asleep" when it
+## sleeps; only those of `region` when one is given.
+func standing_report(region := "") -> PackedStringArray:
+	var standing := _standing()
+	var out: PackedStringArray = []
+	for spawn: Dictionary in Bestiary.spawns_on(world.map.id):
+		var members: Array = standing.get(spawn["id"], [])
+		if members.is_empty() or (region != "" and world.map.region_at(Vector2i(spawn["x"], spawn["y"])) != region):
+			continue
+		var kind := Bestiary.species_of(spawn, world.map.region_at(Vector2i(spawn["x"], spawn["y"])))
+		out.append(kind + (":asleep" if members[0].asleep else ""))
+	return out
+
+
+## One pack around its home: up to PACK_SIZE on open cells of its region,
+## asleep there (`asleep`) or not. A night pack's are stronger and better
+## paid (Packs.by_night).
+func _spawn_pack(data: MapData, spawn: Dictionary, asleep := false) -> void:
 	var home := Vector2i(spawn["x"], spawn["y"])
 	var region := data.region_at(home)
 	var elite_chance := float(Bestiary.region(region)["eliteChance"])
@@ -128,7 +205,11 @@ func _spawn_pack(data: MapData, spawn: Dictionary) -> void:
 	for i in cells.size():
 		# The pack's leader is the spawn's kind; the rest the region's mix (PIX-191).
 		var kind := Bestiary.pack_species(spawn, region, i, cells[i])
-		spawn_enemy(kind, cells[i], region, spawn["id"], GameState.roll.call() < elite_chance, true, home)
+		var enemy := spawn_enemy(kind, cells[i], region, spawn["id"], GameState.roll.call() < elite_chance, true, home)
+		if Packs.of_the_night(spawn):
+			enemy.fighter = Packs.by_night(enemy.fighter)
+		if asleep:
+			enemy.set_asleep(true)
 	pack_alive[spawn["id"]] = cells.size()
 
 
@@ -170,7 +251,8 @@ func can_notice(enemy: Node) -> bool:
 	if Time.get_ticks_msec() / 1000.0 - arrived_at < float(Packs.rules()["graceSeconds"]):
 		return false
 	var at: Vector2 = enemy.global_position
-	if enemy.feeding and at.distance_to(world.player.global_position) > MapView.TILE * 1.5:
+	# At its meal or asleep by its fire (PIX-252), only a hero at arm's length.
+	if (enemy.feeding or enemy.asleep) and at.distance_to(world.player.global_position) > MapView.TILE * 1.5:
 		return false
 	if not Packs.within_notice(at, world.player.global_position) or not world.camera_rig.in_view(at):
 		return false

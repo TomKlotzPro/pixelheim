@@ -42,6 +42,20 @@ static func clock(steps: float) -> Vector2i:
 	return Vector2i(minute / 60, minute % 60)
 
 
+## The minute of the day at `steps`, 0 at midnight (PIX-252): what the
+## clock reads, as one number.
+static func minute_of(steps: float) -> int:
+	var time := clock(steps)
+	return time.x * 60 + time.y
+
+
+## Whether the clock's `minute` of the day falls in the night (is_night),
+## read back to the steps that show it: a step is a minute, and the
+## cycle's first step is six in the morning.
+static func night_at(minute: int) -> bool:
+	return is_night(float(minute - MORNING_MINUTE))
+
+
 ## The next morning's first step after `steps`: where a night's sleep wakes
 ## the hero (PIX-246).
 static func next_morning(steps: float) -> float:

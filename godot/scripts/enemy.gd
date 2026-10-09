@@ -3,10 +3,12 @@ extends CharacterBody2D
 ## (a "!" and a hop first), chases, bites after a tell, and gives up a chase
 ## that strays too far, walking home to heal (PIX-142). One far below the
 ## hero runs from it instead (PIX-251), and turns only when cornered or
-## struck. Its numbers are the web bestiary's (`fighter` from
-## Bestiary.spawn): hits land through Bestiary's damage formulas, and its
-## death pays out through GameState.spoils.defeat_monster (via the world). It wears
-## the Puny sheet PunyArt assigns its species, walking the way it moves.
+## struck. One whose pack sleeps after dark lies still by its camp's fire
+## until the hero comes close or strikes (PIX-252). Its numbers are the web
+## bestiary's (`fighter` from Bestiary.spawn): hits land through Bestiary's
+## damage formulas, and its death pays out through
+## GameState.spoils.defeat_monster (via the world). It wears the Puny sheet
+## PunyArt assigns its species, walking the way it moves.
 
 const WANDER_SPEED := 22.0
 const CHASE_SPEED := 55.0
@@ -42,6 +44,12 @@ const SPARK_LIFT := Vector2(0, -12)
 ## The hit stop on a blow, and the longer one on the blow that kills.
 const HIT_STOP := 0.035
 const KILL_STOP := 0.08
+## Asleep (PIX-252): its idle played this much slower, a sleeper's breath,
+## how long each "Z" takes to drift up and fade, and the pause before the
+## next.
+const SLEEP_BREATH := 0.35
+const SLEEP_DRIFT_SECONDS := 1.6
+const SLEEP_PAUSE_SECONDS := 0.3
 
 var world: Node2D
 ## Bestiary.spawn record: id, name, elite, hp, maxHp, attack, defense, xp, gold.
@@ -85,6 +93,11 @@ var guarding := false
 ## Busy where it stands (the Night of Ash's scavenger at its meal): it
 ## doesn't wander, and only notices a hero at arm's length or a blow.
 var feeding := false
+## Asleep at home by its camp's fire (PIX-252: a pack that sleeps after
+## dark): it lies still, a "Z" drifting up off it, and as at a meal only a
+## hero at arm's length or a blow wakes it - and its pack with it.
+var asleep := false
+var _sleep_mark: Label
 ## A named monster's entry (Hunts, PIX-156), or {}.
 var named := {}
 ## The health bar's full width: a named monster's is longer.
@@ -297,6 +310,7 @@ func _physics_process(delta: float) -> void:
 
 ## The hero is seen: a "!" over the head and a hop, then the chase.
 func notice() -> void:
+	_wake()
 	mode = "alert"
 	hunting = true
 	alert_left = float(Packs.rules()["windUpSeconds"])
@@ -360,6 +374,7 @@ func _bubble(ink: Color) -> PanelContainer:
 ## sweat shiver over its head, it starts back, then runs. It isn't hunting:
 ## no growl, no fight's clock, so the music stays the place's.
 func take_fright(to_player: Vector2) -> void:
+	_wake()
 	mode = "flee"
 	alert_left = FLINCH_SECONDS
 	stuck_for = 0.0
@@ -568,9 +583,58 @@ func _settle() -> void:
 	health_bar.size.x = bar_width
 
 
+## Lies down to sleep by its camp's fire (`on`), or gets up (PIX-252): the
+## world's choice by the hour (Foes.keep_hours), made where nobody sees it.
+## Its breath slows and a "Z" drifts up off it; it no longer wanders.
+func set_asleep(on: bool) -> void:
+	asleep = on
+	if sprite != null:
+		sprite.speed_scale = SLEEP_BREATH if on else 1.0
+	if on and _sleep_mark == null:
+		_sleep_mark = _sleep_cue()
+		add_child(_sleep_mark)
+	elif not on and _sleep_mark != null:
+		_sleep_mark.queue_free()
+		_sleep_mark = null
+
+
+## Up from its sleep at once, and its pack with it (a fight by the fire
+## wakes everyone).
+func _wake() -> void:
+	if not asleep:
+		return
+	set_asleep(false)
+	world.foes.wake_pack(spawn_id)
+
+
+## A sleeper's "Z" (a capital: the small one read as a 2): the UI's type at
+## a quarter, as the level tag, beside its head, drifting up and fading a
+## whole art pixel at a time, then again - each sleeper on its own breath,
+## not in step with its pack; still with Reduce motion. Lit at night.
+func _sleep_cue() -> Label:
+	var cue := UiStyle.strong("Z", 16, UiStyle.CREAM)
+	cue.add_theme_color_override("font_outline_color", UiStyle.NIGHT)
+	cue.add_theme_constant_override("outline_size", 4)
+	cue.scale = Vector2.ONE * 0.25
+	cue.z_index = 10
+	cue.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var rest := Vector2(3.0, -20.0 * _rest_scale.y - 2.0)
+	cue.position = rest
+	Lights.unshade(cue)
+	if not GameState.settings.reduce_motion:
+		var rise := func(t: float) -> void:
+			cue.position = rest + Vector2(roundf(t * 3.0), -roundf(t * 6.0))
+			cue.modulate.a = 1.0 - t * t
+		var drift := cue.create_tween().set_loops()
+		drift.tween_method(rise, 0.0, 1.0, SLEEP_DRIFT_SECONDS)
+		drift.tween_interval(SLEEP_PAUSE_SECONDS)
+		drift.custom_step(randf() * (SLEEP_DRIFT_SECONDS + SLEEP_PAUSE_SECONDS))
+	return cue
+
+
 ## A step this way or that, never past the leash.
 func _wander(delta: float) -> void:
-	if feeding:
+	if feeding or asleep:
 		velocity = Vector2.ZERO
 		return
 	wander_time -= delta
@@ -604,6 +668,9 @@ func _shove(delta: float) -> Vector2:
 func take_hit(damage: int, from: Vector2, infliction: Variant = null, crit := false) -> void:
 	if dying:
 		return
+	# Struck in its sleep (PIX-252): up, and its pack with it, even if the
+	# blow is its last.
+	_wake()
 	if guarding:
 		damage = maxi(1, roundi(damage * float(Bestiary._data()["eliteMoves"]["undead"]["block"])))
 		world.fx.float_text(Text.t("blocked"), global_position + Vector2(0, -26), Color(0.7, 0.85, 1.0))

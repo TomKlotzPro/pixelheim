@@ -187,9 +187,12 @@ func _sweep(hero: HeroState, region_id: String, spawn_id := "") -> void:
 			_earn(hero, Bestiary.xp_for(Bestiary.wild(Bestiary.spawn(Bestiary.species_of(spawn, here)), here), hero.level))
 
 
-## The packs of a region, or the one named.
+## The packs of a region, or the one named. The model sweeps by day: the
+## packs that come out only after dark (PIX-252) are a night-goer's extra.
 func _packs(region_id: String, spawn_id := "") -> Array:
 	return Bestiary._data()["spawns"].filter(func(spawn: Dictionary) -> bool:
+		if Packs.of_the_night(spawn):
+			return false
 		return spawn["id"] == spawn_id if spawn_id != "" else _region_of(spawn) == region_id)
 
 

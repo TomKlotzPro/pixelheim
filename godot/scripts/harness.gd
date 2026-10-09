@@ -242,6 +242,14 @@ func _run_test_harness() -> void:
 	if flags.has("night"):
 		# That day's night (`--day`'s, else the first's).
 		GameState.world.steps = (Gathering.day_of(GameState.world.steps) + 0.7) * DayNight.DAY_CYCLE_STEPS
+		# The night's packs out, as if the hero had just arrived after dark
+		# (PIX-252): play swaps them only off the screen (nightfall).
+		world.foes.keep_hours(true)
+	if flags.has("nightfall"):
+		# Night falls while the hero looks on (PIX-252): the world's look
+		# each second changes only the packs whose homes are off the screen.
+		GameState.world.steps = (Gathering.day_of(GameState.world.steps) + 0.7) * DayNight.DAY_CYCLE_STEPS
+		await get_tree().create_timer(1.5).timeout
 	if flags.has("overview"):
 		var view := get_viewport().get_visible_rect().size
 		var fit := minf(view.x / (world.map.size.x * world.TILE), view.y / (world.map.size.y * world.TILE))
@@ -775,6 +783,12 @@ func _run_test_harness() -> void:
 	# lines the battle log showed: a kill's XP and gold float and log none.
 	if not Gains.is_empty(world.fx.floated):
 		motion_report += " floats=%s logged=%d" % [Gains.summary(world.fx.floated), world.messages.logged]
+	# The packs standing on a wild map (PIX-252), each by its kind, ":asleep"
+	# by its fire: those of the hero's region when they stand in one. The
+	# night's are not the day's.
+	if not Bestiary.spawns_on(world.map.id).is_empty():
+		var packs: PackedStringArray = world.foes.standing_report(world.map.region_at(world.player_cell))
+		motion_report += " packs=%s" % (",".join(packs) if not packs.is_empty() else "none")
 	# On `--day`, the day and its patches still to pick (PIX-250), by cell.
 	if flags.has("--day"):
 		var cells: Array = world.view.patches.keys().filter(func(cell: Vector2i) -> bool:

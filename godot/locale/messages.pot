@@ -11392,15 +11392,15 @@ msgstr ""
 msgid "%s howls - the forest answers!"
 msgstr ""
 
-#: scripts/enemy.gd:210
+#: scripts/enemy.gd:223
 msgid "Lv %d"
 msgstr ""
 
-#: scripts/enemy.gd:609
+#: scripts/enemy.gd:676
 msgid "blocked"
 msgstr ""
 
-#: scripts/enemy.gd:644
+#: scripts/enemy.gd:711
 msgid "%s is afflicted by %s!"
 msgstr ""
 
@@ -12804,7 +12804,11 @@ msgstr ""
 msgid "Hand it in to %s."
 msgstr ""
 
-#: scripts/state/bestiary.gd:182
+#: scripts/state/bestiary.gd:197
+msgid "%s by night"
+msgstr ""
+
+#: scripts/state/bestiary.gd:203
 msgid "floor %d"
 msgstr ""
 
@@ -13196,71 +13200,71 @@ msgstr ""
 msgid "regen %d/turn"
 msgstr ""
 
-#: scripts/state/spoils.gd:134
+#: scripts/state/spoils.gd:135
 msgid "Foraging reached %d!"
 msgstr ""
 
-#: scripts/state/spoils.gd:155
+#: scripts/state/spoils.gd:156
 msgid "Mastery: %s Slayer %s. +%d%% damage against %s."
 msgstr ""
 
-#: scripts/state/spoils.gd:171
+#: scripts/state/spoils.gd:172
 msgid "The bounty on %s is yours: +%d gold."
 msgstr ""
 
-#: scripts/state/spoils.gd:183
+#: scripts/state/spoils.gd:184
 msgid "%s leaves you %s!"
 msgstr ""
 
-#: scripts/state/spoils.gd:200
+#: scripts/state/spoils.gd:201
 msgid "Level up: you are now level %d. +%d stat points and +%d skill point%s to spend."
 msgstr ""
 
-#: scripts/state/spoils.gd:251
+#: scripts/state/spoils.gd:252
 msgid "%s is cleared!"
 msgstr ""
 
-#: scripts/state/spoils.gd:269
+#: scripts/state/spoils.gd:270
 msgid "Among the bones: a page of an old journal (%s). {key:journal} reads it."
 msgstr ""
 
-#: scripts/state/spoils.gd:283
+#: scripts/state/spoils.gd:284
 msgid "the %s"
 msgstr ""
 
-#: scripts/state/spoils.gd:286
+#: scripts/state/spoils.gd:287
 msgid "Behind the throne, a stair goes on down into the dark: the Deep Hunt."
 msgstr ""
 
-#: scripts/state/spoils.gd:290
+#: scripts/state/spoils.gd:291
 msgid "A deeper way opens: %s."
 msgstr ""
 
-#: scripts/state/spoils.gd:304
+#: scripts/state/spoils.gd:305
 msgid "Depth %d of the Deep Hunt is cleared!"
 msgstr ""
 
-#: scripts/state/spoils.gd:319
+#: scripts/state/spoils.gd:320
 msgid "depth %d of the Deep Hunt"
 msgstr ""
 
-#: scripts/state/spoils.gd:323
+#: scripts/state/spoils.gd:324
 msgid "A milestone: %d depths below the throne. The %s is yours, a trophy for the shelf at home."
 msgstr ""
 
-#: scripts/state/spoils.gd:326
+#: scripts/state/spoils.gd:327
 msgid "A hole into the dark opens beside the way up: depth %d waits below."
 msgstr ""
 
-#: scripts/state/spoils.gd:343
+#: scripts/state/spoils.gd:344
 msgid "The chest bares its teeth — a mimic!"
 msgstr ""
 
-#: scripts/state/spoils.gd:355
+#: scripts/state/spoils.gd:356
 msgid "Too heavy to carry. Lighten the pack and come back."
 msgstr ""
 
-#: scripts/state/spoils.gd:404
+#: scripts/state/spoils.gd:405
 msgid "Nothing's biting here yet. Try again in a while, or somewhere else."
 msgstr ""
 
@@ -13580,19 +13584,19 @@ msgstr ""
 msgid "{epithet} {name}"
 msgstr ""
 
-#: scripts/world_foes.gd:259
+#: scripts/world_foes.gd:341
 msgid "The pack is scattered. Another comes once you've walked a good way, or after a night's rest."
 msgstr ""
 
-#: scripts/world_foes.gd:275
+#: scripts/world_foes.gd:357
 msgid "%s is no more."
 msgstr ""
 
-#: scripts/world_foes.gd:275
+#: scripts/world_foes.gd:357
 msgid "Victory"
 msgstr ""
 
-#: scripts/world_foes.gd:276
+#: scripts/world_foes.gd:358
 msgid "Boss slayer: +%d%% damage for %d minutes."
 msgstr ""
 

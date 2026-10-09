@@ -112,4 +112,5 @@ static func forget() -> void:
 	Bestiary._found = {}
 	Dungeons._deep = {}
 	Bestiary._found_floors = {}
+	Bestiary._found_at_night = {}
 	generation += 1

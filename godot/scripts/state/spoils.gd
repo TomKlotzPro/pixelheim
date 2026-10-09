@@ -115,8 +115,9 @@ func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, fl
 	if fighter.has("named"):
 		log.append_array(hunted(fighter["named"]))
 	var kind := "boss" if Bestiary.is_boss(fighter["id"]) else ("elite" if fighter["elite"] else "normal")
-	# A twisted depth of the Deep Hunt drops more often (PIX-216).
-	var drop := Bestiary.roll_drop(floor_level, kind, owner.roll, mountain, Dungeons.loot_luck(mountain))
+	# A twisted depth of the Deep Hunt drops more often (PIX-216), and so does
+	# a pack that comes out only after dark (PIX-252).
+	var drop := Bestiary.roll_drop(floor_level, kind, owner.roll, mountain, Dungeons.loot_luck(mountain) + Packs.night_luck(fighter))
 	if drop.get("kind") == "gear":
 		owner.pack.gear.append(drop["gear"])
 		Gains.add_piece(gains, drop["gear"])

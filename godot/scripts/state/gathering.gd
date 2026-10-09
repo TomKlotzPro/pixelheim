@@ -215,6 +215,9 @@ static func _kept_clear(map: MapData) -> Dictionary:
 		if spot["mapId"] == map.id:
 			_mark(out, Vector2i(int(spot["x"]), int(spot["y"])), 1)
 	for spawn: Dictionary in Bestiary.spawns_on(map.id):
+		# A night pack keeps no camp (PIX-252): its home is open ground by day.
+		if Packs.of_the_night(spawn):
+			continue
 		_mark(out, Vector2i(int(spawn["x"]), int(spawn["y"])), CAMP_REACH)
 	return out
 

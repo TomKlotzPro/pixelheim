@@ -6,6 +6,13 @@ class_name Packs
 ## (respawnSteps tiles walked, or until a night at the inn) and comes back
 ## only where the hero can't watch it appear. Pure, over combat.json's
 ## "packs" numbers; enemy.gd and world.gd do the moving and drawing.
+##
+## The wilds keep hours (PIX-252): a spawn's "hours" says when its pack is
+## out - "night" only after dark, "day" only by day, every hour without it -
+## and "sleeps": "night" keeps a day pack at home asleep by its camp's fire
+## after dark. Under the ground (the caves) no pack keeps hours: no sun
+## reaches them, and the night there looks like the day. A night pack is a
+## little stronger and drops a little more (packs.night).
 
 const TILE := 16.0
 ## The cells around a cell, the straight steps before the diagonals (a tie
@@ -157,6 +164,68 @@ static func _line(from: Vector2i, to: Vector2i) -> Array[Vector2i]:
 			error += d.x
 			at.y += step.y
 	return cells
+
+
+## The packs out on `map_id` at the clock's `minute` of the day (PIX-252),
+## asleep or awake, in the spawns' order: those that keep no hours, and those
+## whose hours ("day" or "night") it is. The roster is decided by the hour
+## alone, so nothing new is saved.
+static func out_at(map_id: String, minute: int) -> Array[Dictionary]:
+	var night := DayNight.night_at(minute)
+	var out: Array[Dictionary] = []
+	for spawn: Dictionary in Bestiary.spawns_on(map_id):
+		if is_out(spawn, night):
+			out.append(spawn)
+	return out
+
+
+## Whether a spawn's pack is out by night (`night`) or by day.
+static func is_out(spawn: Dictionary, night: bool) -> bool:
+	match String(spawn.get("hours", "")):
+		"night":
+			return night
+		"day":
+			return not night
+	return true
+
+
+## Whether a spawn's pack is asleep at home at `minute`: one that sleeps at
+## night (its camp's torch lit, no roaming), after dark.
+static func asleep(spawn: Dictionary, minute: int) -> bool:
+	return spawn.get("sleeps", "") == "night" and DayNight.night_at(minute)
+
+
+## A night pack: one that comes out only after dark. It is all of its own
+## kind (Bestiary.pack_species), keeps no camp, and is stronger for it.
+static func of_the_night(spawn: Dictionary) -> bool:
+	return spawn.get("hours", "") == "night"
+
+
+## The night's numbers (combat.json packs.night).
+static func night_numbers() -> Dictionary:
+	return rules()["night"]
+
+
+## A night pack's monster (PIX-252): a little stronger and better paid than
+## its kind by day - its health, its bite, its XP and its gold by the night's
+## multipliers - and marked so its drop rolls a little luckier (night_luck).
+## Its level stays its kind's, so its tag and whether it runs (PIX-251) read
+## as by day. Changes `fighter` and returns it, as Bestiary.wild does.
+static func by_night(fighter: Dictionary) -> Dictionary:
+	var lift := night_numbers()
+	var hp := roundi(float(fighter["maxHp"]) * float(lift["hp"]))
+	fighter["maxHp"] = hp
+	fighter["hp"] = hp
+	for stat: String in ["attack", "xp", "gold"]:
+		fighter[stat] = roundi(float(fighter[stat]) * float(lift[stat]))
+	fighter["night"] = true
+	return fighter
+
+
+## What a fighter's kill adds to its drop chance: the night's loot for a
+## night pack's monster, else nothing.
+static func night_luck(fighter: Dictionary) -> float:
+	return float(night_numbers()["loot"]) if fighter.get("night", false) else 0.0
 
 
 ## A cleared pack still down: cleared fewer than respawnSteps tiles ago.
