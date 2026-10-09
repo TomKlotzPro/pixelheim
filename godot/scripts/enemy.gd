@@ -19,6 +19,9 @@ const ELITE_TINT := Color(1.0, 0.82, 0.7)
 ## foe, half for an elite or a named one, none for a boss.
 const KNOCK_PUSH := 166.0
 const KNOCK_TIME := 0.12
+## The bite's wind-up (PIX-226): how far it leans back and tilts away.
+const LEAN_BACK := 3.0
+const LEAN_SKEW := 0.22
 ## Where a blow lands on a foe, from its feet: about its chest (the sparks).
 const SPARK_LIFT := Vector2(0, -12)
 ## The hit stop on a blow, and the longer one on the blow that kills.
@@ -99,6 +102,8 @@ func _ready() -> void:
 	var size: float = art.get("scale", 1.0) * grown
 	sprite.scale = Vector2.ONE * size
 	sprite.position = Vector2(0, PunyArt.lift(art) * size)
+	# Its own flash and dissolve (PIX-226).
+	sprite.material = Juice.fighter_material()
 	_play("idle")
 	add_child(sprite)
 	# Fafnyr and Morvax fight with their own attacks too (PIX-150); an elite
@@ -295,15 +300,23 @@ func _chase(to_player: Vector2, delta: float) -> void:
 
 
 ## The bite's tell (PIX-210): it crouches to spring with a red glint and a
-## blip; under clear warnings a band on the ground shows where it will land.
+## blip, leaning back away from its mark (PIX-226) so it reads at a glance;
+## under clear warnings a band on the ground shows where it will land.
 func _tell_bite(toward: Vector2) -> void:
 	tell_left = float(Packs.rules()["biteTellSeconds"])
 	var rest := sprite.scale
+	var at := sprite.position
+	var back := -toward.normalized() * LEAN_BACK
 	var tell := sprite.create_tween().set_parallel()
 	tell.tween_property(sprite, "modulate", Color(1.8, 0.75, 0.6), tell_left * 0.6)
 	tell.tween_property(sprite, "scale", rest * Vector2(1.12, 0.88), tell_left * 0.6)
+	tell.tween_property(sprite, "position", at + back, tell_left * 0.6).set_ease(Tween.EASE_OUT)
+	tell.tween_property(sprite, "skew", LEAN_SKEW * signf(back.x), tell_left * 0.6)
 	tell.chain().tween_property(sprite, "modulate", Color.WHITE, tell_left * 0.4)
 	tell.tween_property(sprite, "scale", rest, tell_left * 0.4)
+	# The spring: forward again, fast.
+	tell.tween_property(sprite, "position", at, tell_left * 0.4).set_ease(Tween.EASE_IN)
+	tell.tween_property(sprite, "skew", 0.0, tell_left * 0.4)
 	Sound.play_ui("tell")
 	if GameState.settings.clear_warnings:
 		Telegraph.mark(world, Telegraph.band(global_position, global_position + toward, BITE_REACH, 12.0), tell_left, Callable(), false)
@@ -402,14 +415,9 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null, crit := fa
 	knock = (global_position - from).normalized() * knock_push(fighter, not named.is_empty())
 	knock_left = KNOCK_TIME
 	_lose(damage, Color(1, 0.95, 0.85), crit)
-	var tween := create_tween()
-	if dying and not GameState.settings.reduce_motion:
-		# The killing blow (PIX-209): a white flash, a longer stop, a thud.
-		sprite.modulate = Color(4, 4, 4)
-		tween.tween_property(sprite, "modulate", Color.WHITE, 0.14)
-	else:
-		tween.tween_property(sprite, "modulate", Color(1, 0.4, 0.4), 0.06)
-		tween.tween_property(sprite, "modulate", Color.WHITE, 0.12)
+	# A clean white flash (PIX-226), longer on the killing blow (PIX-209: a
+	# longer stop, a thud).
+	Juice.flash(sprite, Juice.KILL_FLASH_SECONDS if dying else Juice.FLASH_SECONDS)
 	if dying:
 		Sound.play_ui("kill")
 	if dying and Bestiary.is_boss(fighter["id"]):
@@ -417,6 +425,9 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null, crit := fa
 	else:
 		world.hit_stop(KILL_STOP if dying else HIT_STOP)
 	world.shake(2.5 if dying or crit else 1.5, 0.1)
+	# The camera answers a crit or a killing blow with a little punch.
+	if dying or crit:
+		world.punch(global_position - from)
 	# Struck from anywhere, it turns on the hero at once.
 	if not dying and mode != "chase":
 		mode = "chase"
@@ -450,13 +461,21 @@ func _die() -> void:
 	var death := "death_" + facing
 	if not sprite.sprite_frames.has_animation(death):
 		death = "death"
+	# It falls, then dissolves into embers or dust (PIX-226).
 	if sprite.sprite_frames.has_animation(death):
 		sprite.play(death)
-		sprite.animation_finished.connect(func() -> void: queue_free())
+		sprite.animation_finished.connect(_dissolve)
 	else:
-		var tween := create_tween()
-		tween.tween_property(sprite, "modulate:a", 0.0, 0.35)
-		tween.tween_callback(queue_free)
+		_dissolve()
+
+
+## The last of it: the body dissolves pixel by pixel, what it leaves drifts
+## off, and it's gone.
+func _dissolve() -> void:
+	var color := Juice.remains_color(Bestiary.family_of(fighter["id"]))
+	if world.get("atmosphere") != null:
+		world.atmosphere.remains(global_position + Vector2(0, -8), color)
+	Juice.dissolve(sprite, color).tween_callback(queue_free)
 
 
 func _play(anim: String) -> void:

@@ -1985,6 +1985,10 @@ msgid "Black Iron"
 msgstr "Fer noir"
 
 #: assets/data/changelog.json
+msgid "Blows land with weight: the one struck flashes pure white, an arc in your weapon's colour trails every swing, and the camera punches on crits and killing blows"
+msgstr "Les coups ont du poids : la cible s'illumine d'un blanc pur, un arc de la couleur de votre arme suit chaque coup, et la caméra tressaille sur les coups critiques et les coups de grâce"
+
+#: assets/data/changelog.json
 msgid "Bosses and named monsters carry a bar across the top of the screen, notched where a boss's next phase begins. Each phase is roared, marks on the ground are heard as they appear and as they strike, and a boss falls in slow motion, with a flash and a silence before the victory sting"
 msgstr "Les boss et les monstres nommés ont une barre en haut de l'écran, crantée là où commence la phase suivante d'un boss. Chaque phase est rugie, les marques au sol s'entendent quand elles apparaissent et quand elles frappent, et un boss tombe au ralenti, avec un éclair et un silence avant la fanfare de victoire"
 
@@ -2517,6 +2521,10 @@ msgid "Fall in a dungeon you entered from the world? The inn takes you in"
 msgstr "Vaincu dans un donjon atteint depuis le monde ? L'auberge vous recueille"
 
 #: assets/data/changelog.json
+msgid "Fallen foes dissolve into embers or dust instead of fading away, and foes lean back before they bite, so you see it coming"
+msgstr "Les ennemis vaincus se dissolvent en braises ou en poussière au lieu de s'effacer, et ils prennent leur élan en arrière avant de mordre, pour qu'on les voie venir"
+
+#: assets/data/changelog.json
 msgid "Fanfare"
 msgstr "Fanfare"
 
@@ -2759,6 +2767,10 @@ msgstr "DE LEUR PROPRE VOIX : les villageois demandent de nouveau leurs quête
 #: assets/data/changelog.json
 msgid "INKED: every living thing's outline now seals its corners in near-black - no more dotted edges - and shadow tones deepened inside the sprites; characters pop off grass and path alike, and the voxel figures glow a touch brighter"
 msgstr "ENCRÉ : le contour de chaque être vivant ferme désormais ses angles en quasi-noir - fini les bords pointillés - et les ombres se sont approfondies à l'intérieur des sprites ; les personnages ressortent aussi bien sur l'herbe que sur le chemin, et les figurines voxel brillent un peu plus"
+
+#: assets/data/changelog.json
+msgid "Impact"
+msgstr "Impact"
 
 #: assets/data/changelog.json
 msgid "In Hand"
@@ -4773,6 +4785,10 @@ msgid "With Reduce motion on, nothing falls or drifts and the heat haze holds st
 msgstr "Avec « Réduire les animations », rien ne tombe ni ne dérive, et la brume de chaleur reste immobile"
 
 #: assets/data/changelog.json
+msgid "With Reduce motion on, the camera holds still and your hero keeps its shape; flashes and dissolves still show what happened"
+msgstr "Avec « Réduire les animations », la caméra reste immobile et votre héros garde sa forme ; les éclairs et les dissolutions montrent toujours ce qui se passe"
+
+#: assets/data/changelog.json
 msgid "With Reduce motion on, the wind drops and the water and the clouds hold still"
 msgstr "Avec « Réduire les animations », le vent tombe, et l'eau et les nuages s'immobilisent"
 
@@ -4875,6 +4891,10 @@ msgstr "Votre héros porte une lanterne la nuit et sous terre, et les sorts illu
 #: assets/data/changelog.json
 msgid "Your hero rides along as a compact HUD; I opens the inventory"
 msgstr "Votre héros vous suit dans une interface compacte ; I ouvre l'inventaire"
+
+#: assets/data/changelog.json
+msgid "Your hero springs into a run, lands a roll with a squash and winds up each swing; the camera leans the way you're heading, and doors fade through the dark"
+msgstr "Votre héros s'élance d'un bond, retombe de sa roulade en s'écrasant et arme chaque coup ; la caméra se penche dans la direction où vous allez, et les portes passent par un fondu au noir"
 
 #: assets/data/changelog.json
 msgid "Your hero steps into the light: figures carry their own inner glow, so the champion of Pixelheim never disappears into a shadow"
@@ -11052,15 +11072,15 @@ msgstr "Première victoire : %s"
 msgid "%s howls - the forest answers!"
 msgstr "%s hurle - la forêt répond !"
 
-#: scripts/enemy.gd:161
+#: scripts/enemy.gd:166
 msgid "Lv %d"
 msgstr "Niv. %d"
 
-#: scripts/enemy.gd:397
+#: scripts/enemy.gd:410
 msgid "blocked"
 msgstr "paré"
 
-#: scripts/enemy.gd:428
+#: scripts/enemy.gd:439
 msgid "%s is afflicted by %s!"
 msgstr "%s est atteint : %s !"
 
@@ -11796,35 +11816,35 @@ msgstr "Sauvegardes"
 msgid "Quit to title"
 msgstr "Quitter vers le titre"
 
-#: scripts/player.gd:247
+#: scripts/player.gd:267
 msgid "dodged"
 msgstr "esquivé"
 
-#: scripts/player.gd:256
+#: scripts/player.gd:277
 msgid "You are afflicted by %s!"
 msgstr "Vous voilà atteint : %s !"
 
-#: scripts/player.gd:308
+#: scripts/player.gd:330
 msgid "No skill on that key yet. Learn more, or set the keys, in Skills."
 msgstr "Aucune compétence sur cette touche. Apprenez-en d'autres, ou réglez les touches, dans Compétences."
 
-#: scripts/player.gd:321
+#: scripts/player.gd:343
 msgid "No foe in reach for %s."
 msgstr "Aucun ennemi à portée pour %s."
 
-#: scripts/player.gd:339
+#: scripts/player.gd:361
 msgid "All ailments are purged!"
 msgstr "Tous les maux sont purgés !"
 
-#: scripts/player.gd:342
+#: scripts/player.gd:364
 msgid "%s restores %d HP."
 msgstr "%s rend %d PV."
 
-#: scripts/player.gd:354
+#: scripts/player.gd:376
 msgid "%s hits %d foes for %d damage!"
 msgstr "%s touche %d ennemis : %d dégâts !"
 
-#: scripts/player.gd:356
+#: scripts/player.gd:378
 msgid "%s hits %s for %d damage!"
 msgstr "%s touche %s : %d dégâts !"
 
@@ -13288,43 +13308,43 @@ msgstr "COMMANDÉ"
 msgid "Arrows"
 msgstr "Flèches"
 
-#: scripts/world.gd:1025
+#: scripts/world.gd:1056
 msgid "Only cinders where the house stood. The board on the square can change that."
 msgstr "Rien que des cendres là où se dressait la maison. Le tableau de la place peut y remédier."
 
-#: scripts/world.gd:1030
+#: scripts/world.gd:1061
 msgid "The deed costs %d gold. {key:interact} again to sign it."
 msgstr "Le titre de propriété coûte %d or. {key:interact} à nouveau pour le signer."
 
-#: scripts/world.gd:1114
+#: scripts/world.gd:1145
 msgid "A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it."
 msgstr "Un établi pour cette étagère : %d or. Il compte comme un niveau de métier en plus quand vous fabriquez chez vous. {key:interact} à nouveau pour l'acheter."
 
-#: scripts/world.gd:1541
+#: scripts/world.gd:1572
 msgid "Five lanterns on the square, one for each of the five who climbed. Tonight the %s remembers them - and %s."
 msgstr "Cinq lanternes sur la place, une pour chacun des cinq qui ont gravi la montagne. Ce soir, Pixelheim, désormais %s, se souvient d'eux - et salue %s."
 
-#: scripts/world.gd:1542
+#: scripts/world.gd:1573
 msgid "Pixelheim, a %s raised from the ashes. Tonight it celebrates %s."
 msgstr "Pixelheim, des cendres au rang de %s. Ce soir, on y fête %s."
 
-#: scripts/world.gd:1628
+#: scripts/world.gd:1659
 msgid "%s: built."
 msgstr "%s : chantier terminé."
 
-#: scripts/world.gd:1632
+#: scripts/world.gd:1663
 msgid "Pixelheim is a %s now."
 msgstr "Pixelheim passe au rang de %s."
 
-#: scripts/world.gd:1638
+#: scripts/world.gd:1669
 msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
 msgstr "Et aujourd'hui, on fait la fête : des étals sur la place, et un lancer d'anneaux avec un lot pour le meilleur lancer."
 
-#: scripts/world.gd:1740
+#: scripts/world.gd:1771
 msgid "%s  %d:%02d"
 msgstr "%s  %d:%02d"
 
-#: scripts/world.gd:1979
+#: scripts/world.gd:2010
 msgid "Next"
 msgstr "Ensuite"
 
@@ -13332,11 +13352,11 @@ msgstr "Ensuite"
 msgid "The pack is scattered. Another comes once you've walked a good way, or after a night's rest."
 msgstr "La meute est dispersée. Une autre reviendra quand vous aurez bien marché, ou après une nuit de repos."
 
-#: scripts/world.gd:520
+#: scripts/world.gd:522
 msgid "No map reaches this deep."
 msgstr "Aucune carte ne va aussi profond."
 
-#: scripts/world.gd:604
+#: scripts/world.gd:606
 msgid "LEVEL UP"
 msgstr "NIVEAU SUPÉRIEUR"
 
@@ -13356,7 +13376,7 @@ msgstr "Quête acceptée"
 msgid "Quest complete"
 msgstr "Quête terminée"
 
-#: scripts/world.gd:826
+#: scripts/world.gd:828
 msgid "{epithet} {name}"
 msgstr "{name} {epithet}"
 

@@ -20,7 +20,7 @@ var _map_of: MapData
 ## "spray", "fireflies", "leaves", "room_dust".
 var particles := {}
 ## The bursts, a few of each kind taken in turn, so a quick second one
-## doesn't cut the first short: "dust", "splash", "sparks".
+## doesn't cut the first short: "dust", "splash", "sparks", "remains".
 var bursts := {}
 var _next := {}
 ## How many of each burst to take turns with.
@@ -55,6 +55,7 @@ func _ready() -> void:
 		"dust": func() -> CPUParticles2D: return Motes.make_dust(),
 		"splash": func() -> CPUParticles2D: return Motes.make_splash(),
 		"sparks": func() -> CPUParticles2D: return Motes.make_sparks(),
+		"remains": func() -> CPUParticles2D: return Motes.make_remains(),
 	}
 	for kind: String in makers:
 		bursts[kind] = []
@@ -141,6 +142,11 @@ func footfall(at: Vector2, tile: String) -> void:
 ## Sparks off armour at `at`.
 func sparks(at: Vector2) -> void:
 	_fire("sparks", at)
+
+
+## What a fallen foe leaves at `at`, in its `color` (PIX-226).
+func remains(at: Vector2, color: Color) -> void:
+	_fire("remains", at, color)
 
 
 ## The next burst of `kind` at `at`, tinted `color`; none with reduced motion.

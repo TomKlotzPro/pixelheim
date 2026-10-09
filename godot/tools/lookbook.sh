@@ -10,6 +10,7 @@
 #   tools/lookbook.sh --motion        # and each scene filmed: lookbook/motion/
 #   tools/lookbook.sh --desktop       # the desktop renderer, into lookbook-desktop/
 #   tools/lookbook.sh --out DIR       # somewhere else (a "before" folder)
+#   tools/lookbook.sh --only NAME     # just that shot (e.g. 17_strike)
 set -euo pipefail
 cd "$(dirname "$0")/.."
 method="gl_compatibility"
@@ -19,8 +20,9 @@ while [ $# -gt 0 ]; do
   case "$1" in
     --desktop) method="forward_plus"; out="lookbook-desktop" ;;
     --perf) extra+=("perf") ;;
-    --motion) extra+=("motion") ;;
+    --motion) extra+=("film") ;;
     --out) out="$2"; shift ;;
+    --only) extra+=("--only" "$2"); shift ;;
   esac
   shift
 done

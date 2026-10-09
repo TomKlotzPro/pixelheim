@@ -1985,6 +1985,10 @@ msgid "Black Iron"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Blows land with weight: the one struck flashes pure white, an arc in your weapon's colour trails every swing, and the camera punches on crits and killing blows"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Bosses and named monsters carry a bar across the top of the screen, notched where a boss's next phase begins. Each phase is roared, marks on the ground are heard as they appear and as they strike, and a boss falls in slow motion, with a flash and a silence before the victory sting"
 msgstr ""
 
@@ -2517,6 +2521,10 @@ msgid "Fall in a dungeon you entered from the world? The inn takes you in"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Fallen foes dissolve into embers or dust instead of fading away, and foes lean back before they bite, so you see it coming"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Fanfare"
 msgstr ""
 
@@ -2758,6 +2766,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "INKED: every living thing's outline now seals its corners in near-black - no more dotted edges - and shadow tones deepened inside the sprites; characters pop off grass and path alike, and the voxel figures glow a touch brighter"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Impact"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4773,6 +4785,10 @@ msgid "With Reduce motion on, nothing falls or drifts and the heat haze holds st
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "With Reduce motion on, the camera holds still and your hero keeps its shape; flashes and dissolves still show what happened"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "With Reduce motion on, the wind drops and the water and the clouds hold still"
 msgstr ""
 
@@ -4874,6 +4890,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Your hero rides along as a compact HUD; I opens the inventory"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Your hero springs into a run, lands a roll with a squash and winds up each swing; the camera leans the way you're heading, and doors fade through the dark"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -11052,15 +11072,15 @@ msgstr ""
 msgid "%s howls - the forest answers!"
 msgstr ""
 
-#: scripts/enemy.gd:161
+#: scripts/enemy.gd:166
 msgid "Lv %d"
 msgstr ""
 
-#: scripts/enemy.gd:397
+#: scripts/enemy.gd:410
 msgid "blocked"
 msgstr ""
 
-#: scripts/enemy.gd:428
+#: scripts/enemy.gd:439
 msgid "%s is afflicted by %s!"
 msgstr ""
 
@@ -11796,35 +11816,35 @@ msgstr ""
 msgid "Quit to title"
 msgstr ""
 
-#: scripts/player.gd:247
+#: scripts/player.gd:267
 msgid "dodged"
 msgstr ""
 
-#: scripts/player.gd:256
+#: scripts/player.gd:277
 msgid "You are afflicted by %s!"
 msgstr ""
 
-#: scripts/player.gd:308
+#: scripts/player.gd:330
 msgid "No skill on that key yet. Learn more, or set the keys, in Skills."
 msgstr ""
 
-#: scripts/player.gd:321
+#: scripts/player.gd:343
 msgid "No foe in reach for %s."
 msgstr ""
 
-#: scripts/player.gd:339
+#: scripts/player.gd:361
 msgid "All ailments are purged!"
 msgstr ""
 
-#: scripts/player.gd:342
+#: scripts/player.gd:364
 msgid "%s restores %d HP."
 msgstr ""
 
-#: scripts/player.gd:354
+#: scripts/player.gd:376
 msgid "%s hits %d foes for %d damage!"
 msgstr ""
 
-#: scripts/player.gd:356
+#: scripts/player.gd:378
 msgid "%s hits %s for %d damage!"
 msgstr ""
 
@@ -13288,43 +13308,43 @@ msgstr ""
 msgid "Arrows"
 msgstr ""
 
-#: scripts/world.gd:1025
+#: scripts/world.gd:1056
 msgid "Only cinders where the house stood. The board on the square can change that."
 msgstr ""
 
-#: scripts/world.gd:1030
+#: scripts/world.gd:1061
 msgid "The deed costs %d gold. {key:interact} again to sign it."
 msgstr ""
 
-#: scripts/world.gd:1114
+#: scripts/world.gd:1145
 msgid "A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it."
 msgstr ""
 
-#: scripts/world.gd:1541
+#: scripts/world.gd:1572
 msgid "Five lanterns on the square, one for each of the five who climbed. Tonight the %s remembers them - and %s."
 msgstr ""
 
-#: scripts/world.gd:1542
+#: scripts/world.gd:1573
 msgid "Pixelheim, a %s raised from the ashes. Tonight it celebrates %s."
 msgstr ""
 
-#: scripts/world.gd:1628
+#: scripts/world.gd:1659
 msgid "%s: built."
 msgstr ""
 
-#: scripts/world.gd:1632
+#: scripts/world.gd:1663
 msgid "Pixelheim is a %s now."
 msgstr ""
 
-#: scripts/world.gd:1638
+#: scripts/world.gd:1669
 msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
 msgstr ""
 
-#: scripts/world.gd:1740
+#: scripts/world.gd:1771
 msgid "%s  %d:%02d"
 msgstr ""
 
-#: scripts/world.gd:1979
+#: scripts/world.gd:2010
 msgid "Next"
 msgstr ""
 
@@ -13332,11 +13352,11 @@ msgstr ""
 msgid "The pack is scattered. Another comes once you've walked a good way, or after a night's rest."
 msgstr ""
 
-#: scripts/world.gd:520
+#: scripts/world.gd:522
 msgid "No map reaches this deep."
 msgstr ""
 
-#: scripts/world.gd:604
+#: scripts/world.gd:606
 msgid "LEVEL UP"
 msgstr ""
 
@@ -13356,7 +13376,7 @@ msgstr ""
 msgid "Quest complete"
 msgstr ""
 
-#: scripts/world.gd:826
+#: scripts/world.gd:828
 msgid "{epithet} {name}"
 msgstr ""
 

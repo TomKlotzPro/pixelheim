@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.170.0",
+      "date": "2026-10-09",
+      "codename": "Impact",
+      "notes": [
+        "Blows land with weight: the one struck flashes pure white, an arc in your weapon's colour trails every swing, and the camera punches on crits and killing blows",
+        "Fallen foes dissolve into embers or dust instead of fading away, and foes lean back before they bite, so you see it coming",
+        "Your hero springs into a run, lands a roll with a squash and winds up each swing; the camera leans the way you're heading, and doors fade through the dark",
+        "With Reduce motion on, the camera holds still and your hero keeps its shape; flashes and dissolves still show what happened"
+      ]
+    },
+    {
       "version": "0.169.0",
       "date": "2026-10-09",
       "codename": "Fireflies",
