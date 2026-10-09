@@ -63,8 +63,43 @@ func test_topping_up_never_compounds() -> void:
 
 
 func test_perks_match_the_web() -> void:
-	assert_eq([1, 2, 3, 4].map(Town.rent_per_property), [2, 3, 3, 3])
 	assert_eq([1, 2, 3, 4].map(Town.rest_cost_for), [10, 10, 5, 5])
+
+
+## PIX-178: a property's rent fills its till by the day, scaled to the deed
+## (paid back in about 25 days), richer from the Village and expanded.
+func test_rent_fills_a_till_by_the_day() -> void:
+	assert_eq(Town.daily_rent("town_shop", false, 1), 100, "Odo's: 4% of 2500 a day")
+	assert_eq(Town.daily_rent("town_shop", false, 2), 110, "a tenth more from the Village")
+	assert_eq(Town.daily_rent("town_shop", true, 2), 138, "a quarter more expanded")
+	for map_id: String in Town.deeds():
+		var payback := float(Town.deeds()[map_id]["cost"]) / Town.daily_rent(map_id, false, 1)
+		assert_between(payback, 20.0, 30.0, "%s pays itself back in about 25 days" % map_id)
+	state.pack.gold = 10000
+	state.world.map_id = "town_shop"
+	state.world.steps = 100.0
+	assert_true(state.buy_property("town_shop"))
+	state.world.steps = 100.0 + 480 * 3 + 200
+	assert_eq(state.till("town_shop")["gold"], 300, "three whole days")
+	assert_eq(state.collect_till("town_shop"), 300)
+	assert_eq(state.till("town_shop")["gold"], 0)
+	state.world.steps += 480 * 50
+	assert_eq(state.till("town_shop")["gold"], Town.till_cap("town_shop", false, state.town_tier()), "a till holds ten days at most")
+	assert_gt(int(state.till("town_shop")["earned"]), 300, "the Holdings count all it earned")
+
+
+func test_an_owner_pays_less_and_gets_the_days_pick() -> void:
+	state.world.map_id = "town_shop"
+	state.pack.gold = 100000
+	var bread := Economy.buy_price("bread")
+	var before: int = state.price_of("elixir")
+	state.buy_property("town_shop")
+	assert_lt(state.price_of("elixir"), before, "a tenth off in your own shop")
+	var wares: Array = state.shop_wares("odo")
+	var pick := Town.owner_pick("odo", int(state.steps_now()) / 480)
+	assert_has(wares, pick, "the owner's pick is on the shelf")
+	assert_true(state.buy_item(pick))
+	assert_eq(Economy.buy_price("bread"), bread, "the catalogue price is unchanged")
 
 
 ## Village projects (PIX-145): an age opens with its requirements, each

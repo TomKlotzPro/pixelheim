@@ -26,6 +26,9 @@ func _open() -> void:
 	layer = 5
 	shop_id = GameState.active_shop()
 	var shop := Economy.shop(shop_id)
+	# The owner's till, emptied as they walk up (PIX-178).
+	var owned := GameState.owned_shop_map(shop_id)
+	var collected := GameState.collect_till(owned) if owned != "" else 0
 	tabs = ["Buy", "Sell"]
 	if shop.get("forge", false):
 		tabs.append("Forge")
@@ -88,6 +91,8 @@ func _open() -> void:
 	status = UiStyle.label("", 14, UiStyle.LAMP, Vector2(80, 580))
 	add_child(status)
 	add_child(UiStyle.footer(Text.t("Esc  close      A/D  tab      W/S  choose      E  %s      Z  sell a stack") % "/".join(tabs).to_lower(), Vector2(80, 660)))
+	if collected > 0:
+		status.text = Text.t("%s hands you the till: +%d gold.") % [String(shop.get("keeper", "")), collected]
 	_refresh()
 
 
@@ -152,7 +157,7 @@ func _build_rows() -> Array[Dictionary]:
 				var owned := map_id in GameState.settlement.properties
 				out.append({
 					"label": Text.t("Deed: %s") % deed["name"], "price": "owned" if owned else "%dg" % deed["cost"],
-					"detail": Text.t("%s\nOwn this business: it pays you %dg rent after every victory.") % [deed["name"], Town.rent_per_property(GameState.town_tier())],
+					"detail": Text.t("%s\nOwn this business: its till fills with %dg a day, and you pay a tenth less here.") % [deed["name"], Town.daily_rent(map_id, false, GameState.town_tier())],
 					"verb": "Buy the deed", "enabled": not owned and pack.gold >= int(deed["cost"]),
 					"action": func() -> void: _after(GameState.buy_property(map_id), "The deed is yours.", "Not enough gold."),
 				})
@@ -167,8 +172,10 @@ func _build_rows() -> Array[Dictionary]:
 						var text := GameState.buy_house_upgrade()
 						status.text = text if text != "" else "Not enough gold.",
 				})
-			for item_id in Economy.shop_stock(shop_id, GameState.stock_stage(), GameState.town_tier()):
-				var price := Economy.buy_price(item_id)
+			var picked := GameState.owned_shop_map(shop_id) != ""
+			var stock: Array = Economy.shop_stock(shop_id, GameState.stock_stage(), GameState.town_tier())
+			for item_id in GameState.shop_wares(shop_id):
+				var price := GameState.price_of(item_id)
 				# What only Pixelheim sells, since the age that brought it (PIX-159).
 				var signature: bool = Catalog.item(item_id).get("signature", false)
 				var detail := _describe(item_id)
@@ -179,7 +186,7 @@ func _build_rows() -> Array[Dictionary]:
 					]
 				out.append({
 					"label": Catalog.item_name(item_id), "price": "%dg" % price, "icon": item_id,
-					"tag": "Pixelheim's own" if signature else "",
+					"tag": "Pixelheim's own" if signature else ("Owner's pick" if picked and item_id not in stock else ""),
 					"detail": detail, "verb": "Buy", "enabled": pack.gold >= price,
 					"action": func() -> void: _after(GameState.buy_item(item_id), Text.t("Bought %s.") % Catalog.item_name(item_id), "Not enough gold."),
 				})

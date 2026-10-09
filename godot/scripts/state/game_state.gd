@@ -354,9 +354,9 @@ func trophy_sell_multiplier() -> float:
 ## common gear; the exciting rolls come from monsters.
 func buy_item(item_id: String) -> bool:
 	var shop_id := active_shop()
-	if shop_id == "" or item_id not in Economy.shop_stock(shop_id, stock_stage(), town_tier()):
+	if shop_id == "" or item_id not in shop_wares(shop_id):
 		return false
-	var price := Economy.buy_price(item_id)
+	var price := price_of(item_id)
 	if pack.gold < price:
 		return false
 	pack.gold -= price
@@ -554,8 +554,69 @@ func buy_property(map_id: String) -> bool:
 		return false
 	pack.gold -= int(deed["cost"])
 	settlement.properties.append(map_id)
+	investments()["tills"] = investments().get("tills", {})
+	investments()["tills"][map_id] = {"gold": 0, "earned": 0, "at": steps_now()}
 	_pack_changed()
 	return true
+
+
+## A property's till brought up to now (PIX-178): a day's rent for each
+## whole day since it was last counted, up to what it holds. {gold, earned, at}.
+func till(map_id: String) -> Dictionary:
+	var tills: Dictionary = investments().get("tills", {})
+	if not tills.has(map_id):
+		# A deed bought before tills: its rent starts counting now.
+		tills[map_id] = {"gold": 0, "earned": 0, "at": steps_now()}
+		investments()["tills"] = tills
+	var entry: Dictionary = tills[map_id]
+	var day_steps := int(Town.bank("daySteps"))
+	var days := maxi(0, floori((steps_now() - int(entry["at"])) / float(day_steps)))
+	if days > 0:
+		var expanded: bool = map_id in investments()["expansions"]
+		var before := int(entry["gold"])
+		entry["gold"] = mini(Town.till_cap(map_id, expanded, town_tier()), before + days * Town.daily_rent(map_id, expanded, town_tier()))
+		entry["earned"] = int(entry["earned"]) + int(entry["gold"]) - before
+		entry["at"] = int(entry["at"]) + days * day_steps
+	return entry
+
+
+## Empties a property's till into the purse; what it held.
+func collect_till(map_id: String) -> int:
+	if map_id not in settlement.properties:
+		return 0
+	var entry := till(map_id)
+	var gold := int(entry["gold"])
+	if gold > 0:
+		pack.gold += gold
+		entry["gold"] = 0
+		_pack_changed()
+	return gold
+
+
+## The property a shop is, if the hero owns it ("" otherwise).
+func owned_shop_map(shop_id: String) -> String:
+	for map_id: String in settlement.properties:
+		if Town.shop_of(map_id) == shop_id:
+			return map_id
+	return ""
+
+
+## What an item costs here: an owner pays a tenth less in their own shop.
+func price_of(item_id: String) -> int:
+	var price := Economy.buy_price(item_id)
+	if owned_shop_map(active_shop()) != "":
+		price = roundi(price * (1.0 - float(Town._data()["rent"]["ownerDiscount"])))
+	return price
+
+
+## What a shop sells now, with the owner's pick of the day in a shop you own.
+func shop_wares(shop_id: String) -> Array:
+	var wares: Array = Economy.shop_stock(shop_id, stock_stage(), town_tier()).duplicate()
+	if owned_shop_map(shop_id) != "":
+		var pick := Town.owner_pick(shop_id, steps_now() / int(Town.bank("daySteps")))
+		if pick != "" and pick not in wares:
+			wares.append(pick)
+	return wares
 
 
 func steps_now() -> int:
@@ -1046,15 +1107,6 @@ func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, fl
 			entry["progress"] += 1
 			log.append("%s: %d/%d." % [quest["name"], entry["progress"], objective["count"]])
 	monster_slain.emit(fighter["id"])
-	if not settlement.properties.is_empty():
-		var inv := investments()
-		var expanded := 0
-		for map_id: String in inv["expansions"]:
-			if map_id in settlement.properties:
-				expanded += int(Town.bank("expansionRent"))
-		var rent := settlement.properties.size() * Town.rent_per_property(town_tier()) + expanded
-		pack.gold += rent
-		log.append(Text.t("Rent from your properties: +%d gold.") % rent)
 	if Town.house_tier(owns_house(), int(settlement.house.get("tier", 1))) >= 3:
 		var wins: int = settlement.house.get("gardenWins", 0) + 1
 		settlement.house["gardenWins"] = wins

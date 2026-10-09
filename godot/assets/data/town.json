@@ -20,7 +20,7 @@
       "blurb": "Lamps on the street, stalls on the square, and a new face who chose to stay.",
       "perks": [
         "Market stalls and street lamps dress the square",
-        "Rent rises: +1g per property after every victory"
+        "Rent rises: every till fills a tenth faster"
       ]
     },
     {
@@ -979,7 +979,6 @@
   "gardenWinsPerYield": 6,
   "workbenchCost": 800,
   "restCost": 10,
-  "rentPerVictory": 2,
   "bank": {
     "daySteps": 480,
     "savingsRate": 0.005,
@@ -1059,5 +1058,33 @@
       "x": 42,
       "y": 21
     }
-  ]
+  ],
+  "rent": {
+    "about": "PIX-178: each property's rent fills its till by the in-game day (dailyShare of the deed, a tenth more from the Village, expansionBoost more expanded), up to tillDays of it; you collect at the keeper's counter. An owner pays ownerDiscount less in their own shop and gets the day's owner's pick.",
+    "dailyShare": 0.04,
+    "villageBoost": 0.1,
+    "expansionBoost": 0.25,
+    "tillDays": 10,
+    "ownerDiscount": 0.1,
+    "ownerPicks": {
+      "odo": [
+        "festival_pie",
+        "gem",
+        "elixir",
+        "greater_potion"
+      ],
+      "smith": [
+        "duelists_ring",
+        "wyrm_visor",
+        "moon_pendant",
+        "runic_armor"
+      ],
+      "alchemist": [
+        "phoenix_draught",
+        "elixir",
+        "ember_salve",
+        "greater_potion"
+      ]
+    }
+  }
 }
