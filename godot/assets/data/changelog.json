@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.140.0",
+      "date": "2026-10-09",
+      "codename": "One Hero Everywhere",
+      "notes": [
+        "ONE HERO EVERYWHERE: the save slots show each hero in what they wore, as the dock and the doll do",
+        "A necromancer's grave violet stays on their own robe and hood: borrowed iron, leather or a gilded plate keeps its colour",
+        "The fallen lie in one piece: a hero in a helmet from one set and armour from another no longer falls as two halves of two different heroes"
+      ]
+    },
+    {
       "version": "0.139.0",
       "date": "2026-10-09",
       "codename": "Every Lead True",

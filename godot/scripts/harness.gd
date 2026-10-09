@@ -198,6 +198,11 @@ func _run_test_harness() -> void:
 	# Terrain review: `--at x,y` stands the hero on a cell (before `--walk`,
 	# so a walk can test what stops them), `--zoom Z` changes the camera;
 	# `overview` (below) frames the whole map.
+	# `--role necromancer`: the hero's role, for how a role wears gear (PIX-175).
+	var role_index := args.find("--role")
+	if role_index >= 0 and role_index + 1 < args.size():
+		GameState.hero.role_id = args[role_index + 1]
+		world.player.refresh_rank()
 	# `--wear iron_helm,iron_armor`: gear put on the hero (drawn on them, PIX-129).
 	var wear_index := args.find("--wear")
 	if wear_index >= 0 and wear_index + 1 < args.size():

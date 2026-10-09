@@ -121,8 +121,12 @@ const SHIELD_HIDDEN := [[8, 15], [21, 24]]
 
 ## The bare template whose frames say where each head ends.
 const BASE := "characters/Character-Base.png"
-## A head is the figure's top seven rows, in every frame.
+## A head is the figure's top seven rows, in every frame...
 const HEAD_ROWS := 7
+## ...but for the hero lying down (PIX-175): falling right, up or left, the
+## figure lies across the cut, so those frames are the body sheet's whole
+## (column, row) - no helmet on the fallen, but no two heroes in one either.
+const LYING := [Vector2i(22, 2), Vector2i(23, 2), Vector2i(22, 4), Vector2i(23, 4), Vector2i(22, 6), Vector2i(23, 6)]
 
 ## Villagers by the web's sprite id (npcs.ts / settlers.ts).
 const VILLAGERS := {
@@ -215,11 +219,13 @@ static func hero(role_id: String, look: Variant = 0) -> Dictionary:
 
 ## The hero as dressed: the role's look, a worn helmet's head and a worn
 ## armour's body (`worn`: slot -> item id). Pieces without a drawing keep the
-## look's own.
+## look's own. A role's colour (the necromancer's grave violet) goes on its
+## own head and body only, never on borrowed armour (PIX-175).
 static func dressed(role_id: String, look: Variant, worn: Dictionary) -> Dictionary:
 	var spec := hero(role_id, look)
 	var head: String = HEADS.get(worn.get("head", ""), spec["sheet"])
 	var body: String = BODIES.get(worn.get("body", ""), spec["sheet"])
+	var role_tint: Color = spec["tint"]
 	# The weapon in hand picks the swing and colours the blade (PIX-172).
 	var tint := Color.WHITE
 	var weapon: Dictionary = Catalog.item(worn.get("weapon", "")) if worn.get("weapon", "") != "" else {}
@@ -240,6 +246,9 @@ static func dressed(role_id: String, look: Variant, worn: Dictionary) -> Diction
 	spec["body"] = body
 	spec["weapon_tint"] = tint
 	spec["gear"] = gear
+	gear["head_tint"] = role_tint if head == spec["sheet"] else Color.WHITE
+	gear["body_tint"] = role_tint if body == spec["sheet"] else Color.WHITE
+	spec["tint"] = Color.WHITE
 	spec["sheet"] = "outfit|%s" % outfit_key(head, body, tint, gear)
 	return spec
 
@@ -253,9 +262,10 @@ static func _tint_of(item: Dictionary, fallback: Color) -> Color:
 
 
 static func outfit_key(head: String, body: String, weapon_tint: Color, gear: Dictionary) -> String:
-	return "%s|%s|%s|%s|%s|%s|%s" % [
+	return "%s|%s|%s|%s|%s|%s|%s|%s|%s" % [
 		head, body, weapon_tint.to_html(false), Color(gear.get("hands", Color.TRANSPARENT)).to_html(),
 		Color(gear.get("feet", Color.TRANSPARENT)).to_html(), gear.get("shield", ""), Color(gear.get("shield_tint", Color.WHITE)).to_html(false),
+		Color(gear.get("head_tint", Color.WHITE)).to_html(false), Color(gear.get("body_tint", Color.WHITE)).to_html(false),
 	]
 
 
@@ -268,6 +278,8 @@ static func outfit_texture(head: String, body: String, weapon_tint := Color.WHIT
 		var bodies: Image = (load(path(body)) as Texture2D).get_image()
 		heads.convert(Image.FORMAT_RGBA8)
 		bodies.convert(Image.FORMAT_RGBA8)
+		_tint(heads, gear.get("head_tint", Color.WHITE))
+		_tint(bodies, gear.get("body_tint", Color.WHITE))
 		var sheet := Image.create(bodies.get_width(), bodies.get_height(), false, Image.FORMAT_RGBA8)
 		var columns := bodies.get_width() / 32
 		var rows := bodies.get_height() / 32
@@ -275,7 +287,7 @@ static func outfit_texture(head: String, body: String, weapon_tint := Color.WHIT
 		for row in rows:
 			for column in columns:
 				var at := Vector2i(column * 32, row * 32)
-				var neck: int = necks[row * columns + column]
+				var neck: int = 0 if Vector2i(column, row) in LYING else necks[row * columns + column]
 				sheet.blit_rect(bodies, Rect2i(at + Vector2i(0, neck), Vector2i(32, 32 - neck)), at + Vector2i(0, neck))
 				sheet.blit_rect(heads, Rect2i(at, Vector2i(32, neck)), at)
 		if weapon_tint != Color.WHITE:
@@ -284,6 +296,17 @@ static func outfit_texture(head: String, body: String, weapon_tint := Color.WHIT
 			_wear(sheet, gear)
 		_outfits[key] = ImageTexture.create_from_image(sheet)
 	return _outfits[key]
+
+
+## A whole sheet in a role's colour, multiplied as the sprite's modulate did.
+static func _tint(image: Image, tint: Color) -> void:
+	if tint == Color.WHITE:
+		return
+	for y in image.get_height():
+		for x in image.get_width():
+			var here := image.get_pixel(x, y)
+			if here.a > 0.0:
+				image.set_pixel(x, y, Color(here.r * tint.r, here.g * tint.g, here.b * tint.b, here.a))
 
 
 ## A colour's ramp, light to dark, for recolouring Shade's ramps over it.
@@ -317,6 +340,9 @@ static func _wear(sheet: Image, gear: Dictionary) -> void:
 	for row in rows:
 		for column in columns:
 			var cell := Rect2i(column * 32, row * 32, 32, 32)
+			# A fallen hero's face lies where the hands would be: left alone.
+			if Vector2i(column, row) in LYING:
+				continue
 			var used := _figure(row * columns + column)
 			var neck: int = necks[row * columns + column]
 			var bottom := used.end.y
@@ -438,6 +464,13 @@ static func frame_size(spec: Dictionary) -> int:
 	return int(spec.get("frame", FAMILIES[spec["family"]]["frame"]))
 
 
+## A spec's whole sheet: the dressed outfit's, or the drawn one's.
+static func sheet_texture(spec: Dictionary) -> Texture2D:
+	if spec.has("head"):
+		return outfit_texture(spec["head"], spec["body"], spec.get("weapon_tint", Color.WHITE), spec.get("gear", {}))
+	return load(path(spec["sheet"]))
+
+
 ## SpriteFrames with "<anim>_<dir>" animations (or "<anim>" for strips) for a
 ## spec; cached per sheet so a pack of twelve shares one set of frames.
 static func frames(spec: Dictionary) -> SpriteFrames:
@@ -446,7 +479,7 @@ static func frames(spec: Dictionary) -> SpriteFrames:
 		return _frames_cache[key]
 	var family: Dictionary = FAMILIES[spec["family"]]
 	var size := frame_size(spec)
-	var texture: Texture2D = outfit_texture(spec["head"], spec["body"], spec.get("weapon_tint", Color.WHITE), spec.get("gear", {})) if spec.has("head") else load(path(spec["sheet"]))
+	var texture := sheet_texture(spec)
 	var columns := texture.get_width() / size
 	var sheet := SpriteFrames.new()
 	sheet.remove_animation("default")

@@ -303,10 +303,13 @@ func _fill_card(card: PanelContainer, index: int) -> void:
 	portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	if not summary.is_empty():
 		var frame := AtlasTexture.new()
-		# The slot's own hero: their role's Puny sheet, facing down.
-		frame.atlas = load(PunyArt.path(PunyArt.hero(summary["roleId"], summary.get("look", 0))["sheet"]))
+		# The slot's own hero as they left, dressed and coloured as the
+		# dock and the doll show them (PIX-175), facing down.
+		var spec := PunyArt.dressed(summary["roleId"], summary.get("look", 0), summary.get("worn", {}))
+		frame.atlas = PunyArt.sheet_texture(spec)
 		frame.region = PORTRAIT
 		portrait.texture = frame
+		portrait.self_modulate = spec["tint"]
 	row.add_child(portrait)
 
 	var lines := VBoxContainer.new()

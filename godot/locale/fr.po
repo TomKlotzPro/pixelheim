@@ -1625,6 +1625,10 @@ msgid "A mini-map rides in the corner of the world, fog included"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A necromancer's grave violet stays on their own robe and hood: borrowed iron, leather or a gilded plate keeps its colour"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A path is a permanent identity: an always-on passive theme and a SIGNATURE SKILL no tree can teach"
 msgstr ""
 
@@ -2813,6 +2817,10 @@ msgid "ONE DRAGON: the story's sky no longer flies a second dragon behind its ow
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "ONE HERO EVERYWHERE: the save slots show each hero in what they wore, as the dock and the doll do"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "ONE PIXELHEIM: the old web edition has retired - this is the game now, and every hero from it still comes across from the saves screen"
 msgstr ""
 
@@ -2874,6 +2882,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "One Game"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "One Hero Everywhere"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3874,6 +3886,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The decor got real carpentry too: lamp posts with glowing lanterns, a roofed well, rail fences that connect, market stalls under striped awnings, round barrels, plank crates - and real trees in the deep woods"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The fallen lie in one piece: a hero in a helmet from one set and armour from another no longer falls as two halves of two different heroes"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -10740,47 +10756,47 @@ msgstr ""
 msgid "Load into slot %d"
 msgstr ""
 
-#: scripts/saves_screen.gd:317
+#: scripts/saves_screen.gd:320
 msgid "Empty slot"
 msgstr ""
 
-#: scripts/saves_screen.gd:318
+#: scripts/saves_screen.gd:321
 msgid "N starts a new hero here."
 msgstr ""
 
-#: scripts/saves_screen.gd:323
+#: scripts/saves_screen.gd:326
 msgid "Level %d %s in %s"
 msgstr ""
 
-#: scripts/saves_screen.gd:325
+#: scripts/saves_screen.gd:328
 msgid "%d gold, saved %s"
 msgstr ""
 
-#: scripts/saves_screen.gd:327
+#: scripts/saves_screen.gd:330
 msgid "Playing"
 msgstr ""
 
-#: scripts/saves_screen.gd:327
+#: scripts/saves_screen.gd:330
 msgid "Slot %d"
 msgstr ""
 
-#: scripts/saves_screen.gd:335
+#: scripts/saves_screen.gd:338
 msgid "just now"
 msgstr ""
 
-#: scripts/saves_screen.gd:337
+#: scripts/saves_screen.gd:340
 msgid "%d min ago"
 msgstr ""
 
-#: scripts/saves_screen.gd:340
+#: scripts/saves_screen.gd:343
 msgid "%d hours ago"
 msgstr ""
 
-#: scripts/saves_screen.gd:340
+#: scripts/saves_screen.gd:343
 msgid "1 hour ago"
 msgstr ""
 
-#: scripts/saves_screen.gd:342
+#: scripts/saves_screen.gd:345
 msgid "%d days ago"
 msgstr ""
 
