@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.147.0",
+      "date": "2026-10-09",
+      "codename": "In Their Own Words",
+      "notes": [
+        "IN THEIR OWN WORDS: the villagers ask for their quests themselves again - what they need, why, and where to look - before the quest goes in your journal",
+        "The first quest you take shows where the journal is, and every accepted quest says so",
+        "Iva's marsh lies west of the gate, as it always did"
+      ]
+    },
+    {
       "version": "0.146.0",
       "date": "2026-10-09",
       "codename": "True Keys",

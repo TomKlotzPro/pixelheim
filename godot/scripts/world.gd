@@ -1051,6 +1051,11 @@ func _talk(npc: Dictionary) -> void:
 	if npc["id"] == "mayor":
 		GameState.dialogue_closed.connect(func(_who: String) -> void:
 			add_child(preload("res://scripts/town_hall_screen.gd").new()), CONNECT_ONE_SHOT)
+	# The giver asks it themselves before it's taken (PIX-202).
+	var offer := GameState.quest_on_offer(npc["id"])
+	if not offer.is_empty() and String(offer.get("accepted", "")) != "":
+		npc = npc.duplicate()
+		npc["lines"] = npc["lines"] + [offer["accepted"]]
 	box.npc = npc
 	add_child(box)
 
@@ -1910,6 +1915,9 @@ func _flash_message(text: String) -> void:
 			break
 	message_tag.text = tag
 	message_tag.visible = tag != ""
+	# The first quest taken introduces the journal (PIX-202).
+	if tag == Text.t("Quest accepted"):
+		hint("journal")
 	message_label.text = text
 	# Wraps at a reading width, never wider than it needs.
 	var wide := 0.0

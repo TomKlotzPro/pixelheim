@@ -70,3 +70,17 @@ func test_the_map_marks_who_is_waiting() -> void:
 	assert_eq(waiting.map(func(npc: Dictionary) -> String: return npc["id"]), ["innkeeper", "villager_bram"], "both have a first ask")
 	state.resolve_quests("innkeeper")
 	assert_eq(state.givers_waiting([sela]), [] as Array[Dictionary], "a quest taken and not ready: nothing to say")
+
+
+## PIX-202: a giver asks their quest themselves before it's taken.
+func test_a_giver_speaks_their_ask() -> void:
+	var state: Node = autofree(GameStateScript.new())
+	state.new_game("Robin", "warrior")
+	var offer: Dictionary = state.quest_on_offer("innkeeper")
+	assert_eq(offer.get("id"), "slime_trouble")
+	assert_ne(String(offer.get("accepted", "")), "", "Sela's own words")
+	var said: String = state.resolve_quests("innkeeper")
+	assert_string_contains(said, "journal", "the accept points at the journal")
+	assert_true(state.quest_on_offer("innkeeper").is_empty(), "taken: nothing more to ask")
+	for quest: Dictionary in Quests.all():
+		assert_ne(String(quest.get("accepted", "")), "", "%s has its ask" % quest["id"])

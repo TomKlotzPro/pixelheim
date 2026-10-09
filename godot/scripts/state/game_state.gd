@@ -792,6 +792,23 @@ func win_ring_toss() -> String:
 ## Whether a quest may be offered yet (PIX-171): its "opensAfter" is met,
 ## and Maren's relics aren't asked of a hero who climbed before the gate
 ## was barred.
+## The quest a giver is about to offer (PIX-202): their next one not done,
+## if it's untaken and open; {} otherwise. Its "accepted" line is their ask.
+func quest_on_offer(giver_id: String) -> Dictionary:
+	# A recruit waiting on a grown town asks nothing yet.
+	var recruit := Town.recruit(giver_id)
+	if not recruit.is_empty() and not is_settled(giver_id) and Town.recruit_blocker(recruit, town_tier()) == "tier":
+		return {}
+	for quest: Dictionary in Quests.for_giver(giver_id):
+		var entry: Dictionary = progression.quests.get(quest["id"], {})
+		if entry.get("done", false):
+			continue
+		if entry.is_empty() and quest.get("unlessGateOpen", false) and Relics.gate_open(progression):
+			continue
+		return quest if entry.is_empty() and quest_open(quest) else {}
+	return {}
+
+
 func quest_open(quest: Dictionary) -> bool:
 	if quest.get("unlessGateOpen", false) and Relics.gate_open(progression) and not progression.quests.has(quest["id"]):
 		return false
@@ -876,7 +893,7 @@ func resolve_quests(giver_id: String) -> String:
 			entries[quest["id"]] = {"progress": int(quest["objective"]["count"]) if already else 0, "done": false}
 			save_now()
 			# The giver's words were just said; the line names the task (PIX-194).
-			return Text.t("Quest accepted: %s. %s") % [quest["name"], quest["brief"]]
+			return Text.t("Quest accepted: %s. %s") % [quest["name"], quest["brief"]] + " " + Controls.say(Text.t("It's in your journal ({key:journal})."))
 		var objective: Dictionary = quest["objective"]
 		# A quest that ends in a choice waits for the hero's answer (PIX-192).
 		if quest.has("choice") and Quests.is_ready(quest, entries, pack.items):
