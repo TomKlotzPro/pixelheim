@@ -16,9 +16,7 @@ static func _named() -> Dictionary:
 static func all() -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	for named_id: String in _named():
-		var entry: Dictionary = _named()[named_id].duplicate()
-		entry["id"] = named_id
-		out.append(entry)
+		out.append(named(named_id))
 	out.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return int(a["postedAfter"]) < int(b["postedAfter"]))
 	return out
 
@@ -27,7 +25,37 @@ static func named(named_id: String) -> Dictionary:
 	var entry: Dictionary = _named().get(named_id, {}).duplicate()
 	if not entry.is_empty():
 		entry["id"] = named_id
+		if entry.has("deepDepth"):
+			entry.merge(_deep_numbers(entry), true)
 	return entry
+
+
+## A Deep Hunt named monster (PIX-219): posted once the depth above its own
+## is cleared, and as strong as an elite of its kind at its depth, made
+## bigger (combat.json "namedDeep").
+static func _deep_numbers(entry: Dictionary) -> Dictionary:
+	var depth := int(entry["deepDepth"])
+	var rules: Dictionary = Bestiary._data()["namedDeep"]
+	var kind := Bestiary.monster(entry["monsterId"])
+	var elite := Bestiary.spawn(entry["monsterId"], true, maxi(0, Dungeons.deep_level(depth) - int(kind["level"])))
+	return {
+		"postedAfter": Dungeons.floor_count() + depth - 1,
+		"level": Dungeons.deep_level(depth) + int(rules["levels"]),
+		"maxHp": roundi(int(elite["maxHp"]) * float(rules["hp"])),
+		"attack": roundi(int(elite["attack"]) * float(rules["attack"])),
+		"defense": int(elite["defense"]),
+		"xp": roundi(int(elite["xp"]) * float(rules["xp"])),
+		"gold": roundi(int(elite["gold"]) * float(rules["gold"])),
+	}
+
+
+## The named monster guarding a depth of the Deep Hunt now (PIX-219):
+## posted and still alive, or {}.
+static func deep_guardian(depth: int, cleared: Array, hunted: Array) -> Dictionary:
+	for entry in all():
+		if int(entry.get("deepDepth", 0)) == depth and status(entry, cleared, hunted) == "wanted":
+			return entry
+	return {}
 
 
 ## On the board: its floor is cleared. A chapter's boss (postedAfter 0,
@@ -39,8 +67,12 @@ static func is_posted(entry: Dictionary, cleared: Array) -> bool:
 ## The floors the board counts as cleared (PIX-170): the hero's own, and a
 ## notice's floor once enough relics are won ("postedRelics"), so a hero out
 ## in the Reach before the mountain gets the bounties too.
-static func board_floors(cleared: Array, relics: int) -> Array:
+static func board_floors(cleared: Array, relics: int, deepest := 0) -> Array:
 	var out := cleared.duplicate()
+	# Depths of the Deep Hunt cleared count as floors past the fifteenth
+	# (PIX-219): the deep's own notices wait on them.
+	for depth in range(1, deepest + 1):
+		out.append(Dungeons.floor_count() + depth)
 	for entry in all():
 		if entry.has("postedRelics") and relics >= int(entry["postedRelics"]) and int(entry["postedAfter"]) not in out:
 			out.append(int(entry["postedAfter"]))

@@ -5730,6 +5730,151 @@
       "where": "the glass hall at the back of the ice cave",
       "notice": "",
       "seen": "Rimefang uncoils from the ice, and the air turns to needles!"
+    },
+    "grimshade": {
+      "name": "Grimshade",
+      "monsterId": "shade",
+      "deepDepth": 6,
+      "bounty": 1500,
+      "drop": "shadow_cloak",
+      "scale": 1.5,
+      "tint": [
+        0.7,
+        0.55,
+        1.2
+      ],
+      "move": {
+        "move": "grasp",
+        "every": 6.0,
+        "tell": 0.85,
+        "range": [
+          0,
+          6.0
+        ],
+        "radius": 1.4,
+        "power": 0.9,
+        "inflicts": {
+          "kind": "stun",
+          "chance": 1.0,
+          "turns": 1,
+          "power": 0
+        }
+      },
+      "where": "depth 6 of the Deep Hunt, where it guards the stair",
+      "notice": "Climbers who came back from the sixth depth speak of a shadow that holds you where you stand while the rest of the dark closes in. Nobody has seen its face. Nobody wants to.",
+      "seen": "Grimshade peels itself off the wall!",
+      "homecoming": "Grimshade is gone from the sixth depth. Odo swears the shadows in his cellar are smaller now.",
+      "mapId": "deep",
+      "lair": {
+        "x": 0,
+        "y": 0
+      },
+      "dropRarity": "epic"
+    },
+    "bone_abbot": {
+      "name": "The Bone Abbot",
+      "monsterId": "boneknight",
+      "deepDepth": 11,
+      "bounty": 3000,
+      "drop": "grave_ward",
+      "scale": 1.5,
+      "tint": [
+        0.85,
+        0.8,
+        1.0
+      ],
+      "move": {
+        "move": "howl",
+        "every": 8.0,
+        "tell": 0.6,
+        "range": [
+          0,
+          7.0
+        ],
+        "monsterId": "skeleton",
+        "count": 2,
+        "max": 3
+      },
+      "where": "depth 11 of the Deep Hunt, where it guards the stair",
+      "notice": "Down in the eleventh depth an old knight keeps a congregation of bones, and it rings them up out of the floor whenever someone comes to pray. Bring something heavier than a prayer.",
+      "seen": "The Bone Abbot raises its hand, and the floor answers.",
+      "homecoming": "The Bone Abbot's congregation is dust. The chapel in Greyhold rang its bell for you.",
+      "mapId": "deep",
+      "lair": {
+        "x": 0,
+        "y": 0
+      },
+      "dropRarity": "epic"
+    },
+    "hollowmother": {
+      "name": "Hollowmother",
+      "monsterId": "wendigo",
+      "deepDepth": 16,
+      "bounty": 5000,
+      "drop": "moon_pendant",
+      "scale": 1.6,
+      "tint": [
+        0.8,
+        0.9,
+        1.15
+      ],
+      "move": {
+        "move": "leap",
+        "every": 5.0,
+        "tell": 0.8,
+        "range": [
+          2.0,
+          6.5
+        ],
+        "radius": 1.7,
+        "power": 1.5
+      },
+      "where": "depth 16 of the Deep Hunt, where it guards the stair",
+      "notice": "The thing at the sixteenth depth is thin as a hunger and it leaps further than a horse. The hunters who drew it call it Hollowmother, and won't say why.",
+      "seen": "Hollowmother unfolds, all limbs and hunger.",
+      "homecoming": "Hollowmother is slain. The children have stopped daring each other to look down the well.",
+      "mapId": "deep",
+      "lair": {
+        "x": 0,
+        "y": 0
+      },
+      "dropRarity": "epic"
+    },
+    "ironheart": {
+      "name": "Ironheart",
+      "monsterId": "iron_demon",
+      "deepDepth": 21,
+      "bounty": 8000,
+      "drop": "runed_grips",
+      "scale": 1.5,
+      "tint": [
+        1.3,
+        0.9,
+        0.7
+      ],
+      "move": {
+        "move": "firefan",
+        "every": 5.0,
+        "tell": 0.55,
+        "range": [
+          0.0,
+          7.0
+        ],
+        "count": 4,
+        "spread": 0.3,
+        "speed": 130,
+        "power": 1.0
+      },
+      "where": "depth 21 of the Deep Hunt, where it guards the stair",
+      "notice": "A forge-demon walks the twenty-first depth with a furnace where its heart should be. Hilda wants the grips off its hands. She says she'll know what to do with them.",
+      "seen": "Ironheart's furnace roars open!",
+      "homecoming": "Ironheart's furnace is cold. Hilda has hung its grips over her anvil and won't let anyone touch them.",
+      "mapId": "deep",
+      "lair": {
+        "x": 0,
+        "y": 0
+      },
+      "dropRarity": "epic"
     }
   },
   "fishingSpots": [
@@ -6150,5 +6295,13 @@
         "cap": 20
       }
     ]
+  },
+  "namedDeep": {
+    "about": "PIX-219: the Deep Hunt's own named monsters stand as their depth's guardian, posted once the depth above is cleared; their numbers are an elite of their kind at the depth's level, made bigger.",
+    "hp": 2.5,
+    "attack": 1.2,
+    "xp": 3.0,
+    "gold": 3.0,
+    "levels": 2
   }
 }

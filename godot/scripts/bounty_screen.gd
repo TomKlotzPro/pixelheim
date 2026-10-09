@@ -46,7 +46,8 @@ func _rows() -> Array[Dictionary]:
 			"note": Text.t("SLAIN") if slain else Text.coins(int(entry["bounty"])),
 			"enabled": not slain,
 			"why": "Slain. Pixelheim still talks about it.",
-			"action": func() -> String: return Text.t("%s keeps to %s. Its lair is marked on your map.") % [entry["name"], entry["where"]],
+			# A Deep Hunt one guards its depth's stair (PIX-219), not a lair on the map.
+			"action": func() -> String: return Text.t("%s keeps to %s.") % [entry["name"], entry["where"]] if entry.has("deepDepth") else Text.t("%s keeps to %s. Its lair is marked on your map.") % [entry["name"], entry["where"]],
 		})
 	return out
 
@@ -61,6 +62,8 @@ func _chosen() -> Dictionary:
 ## When a notice goes up: its floor cleared, or enough of the five relics
 ## won out in the Reach (PIX-170).
 static func _when(entry: Dictionary) -> String:
+	if entry.has("deepDepth"):
+		return Text.t("depth %d of the Deep Hunt is cleared") % (int(entry["deepDepth"]) - 1)
 	var cleared := Text.t("%s is cleared") % _floor_name(int(entry["postedAfter"]))
 	if not entry.has("postedRelics"):
 		return cleared

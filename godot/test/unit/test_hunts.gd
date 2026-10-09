@@ -9,11 +9,12 @@ const GameStateScript := preload("res://scripts/state/game_state.gd")
 const MOVES := ["lunge", "cleave", "stamp", "guard", "firebolt", "howl", "grasp", "boulder", "leap", "firefan"]
 
 
-## The bounty board's own: a chapter's boss (the Tidecaller) is a quest's.
+## The bounty board's own out in the Reach: a chapter's boss (the
+## Tidecaller) is a quest's, and the Deep Hunt's (PIX-219) have no lairs.
 func _board() -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	for entry in Hunts.all():
-		if Hunts.on_board(entry):
+		if Hunts.on_board(entry) and not entry.has("deepDepth"):
 			out.append(entry)
 	return out
 
@@ -36,6 +37,8 @@ func test_one_named_monster_per_wild_region_in_board_order() -> void:
 
 func test_each_lair_is_open_ground_well_away_from_the_packs() -> void:
 	for entry in Hunts.all():
+		if entry.has("deepDepth"):
+			continue
 		var map := MapData.load_by_id(entry["mapId"])
 		var lair := Hunts.lair(entry)
 		assert_true(map.is_walkable(lair), "%s's lair is walkable" % entry["id"])
@@ -69,7 +72,8 @@ func test_the_board_posts_them_as_floors_are_cleared() -> void:
 	var deep := range(1, 10)
 	assert_eq(Hunts.notices(deep, []).size(), 4)
 	assert_eq(Hunts.next_notice(deep)["id"], "gulp")
-	assert_eq(Hunts.next_notice(range(1, 16)), {})
+	# Past the mountain, the next is the Deep Hunt's first (PIX-219).
+	assert_eq(Hunts.next_notice(range(1, 16))["id"], "grimshade")
 	# The slain go to the bottom of the board, and out of their lairs.
 	var board := Hunts.notices(deep, ["greymaw"]).map(func(entry: Dictionary) -> String: return entry["id"])
 	assert_eq(board, ["drowned_knight", "cinderjaw", "mossback", "greymaw"])

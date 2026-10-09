@@ -134,3 +134,29 @@ func test_every_milestone_crystal_is_a_trophy_with_an_icon() -> void:
 		assert_false(Town.trophy_stat_delta(item_id).is_empty(), "%s lends stats on the shelf" % item_id)
 		assert_ne(String(mark["homecoming"]), "")
 		assert_has(Dungeons.deep_def(int(mark["depth"]))["rewardItemIds"], item_id, "its depth's hoard holds it")
+
+
+## PIX-219: the Deep Hunt's own named monsters, posted as the depths above
+## them are cleared, standing as their depth's guardian.
+func test_the_deeps_named_are_posted_as_the_depths_above_are_cleared() -> void:
+	var grimshade := Hunts.named("grimshade")
+	assert_eq(int(grimshade["deepDepth"]) % int(Economy._data()["deepTiers"]["every"]), 1, "it waits on a depth the gate opens")
+	assert_eq(Hunts.status(grimshade, Hunts.board_floors(range(1, 16), 5, 4), []), "", "not before depth 5 is cleared")
+	var floors := Hunts.board_floors(range(1, 16), 5, 5)
+	assert_eq(Hunts.status(grimshade, floors, []), "wanted")
+	assert_eq(Hunts.deep_guardian(6, floors, [])["id"], "grimshade")
+	assert_true(Hunts.deep_guardian(6, floors, ["grimshade"]).is_empty(), "slain stays slain")
+	var elite := Bestiary.spawn("shade", true, Dungeons.deep_level(6) - int(Bestiary.monster("shade")["level"]))
+	assert_gt(int(grimshade["maxHp"]), int(elite["maxHp"]) * 2, "bigger than an elite of its depth")
+	assert_gte(int(grimshade["level"]), Dungeons.deep_level(6))
+
+
+func test_a_deep_named_kill_pays_an_epic_deep_piece() -> void:
+	state.progression.deepest = 5
+	var gear_before: int = state.pack.gear.size()
+	state.defeat_monster(Hunts.fighter("grimshade"), "", "", 1, Dungeons.floor_count() + 6)
+	assert_has(state.progression.hunted, "grimshade")
+	var prize: Dictionary = state.pack.gear[gear_before]
+	assert_eq(prize["itemId"], "shadow_cloak")
+	assert_eq(prize["rarity"], "epic")
+	assert_eq(int(prize["deep"]), Dungeons.deep_tier(Dungeons.floor_count() + 6))

@@ -42,7 +42,7 @@ static func deep_def(depth: int) -> Dictionary:
 	var foes: Array = rules["foes"]
 	# Foes climb faster than a hero levels (PIX-217): the deepest depth
 	# measures a build, not the hours.
-	var target := int(rules["startLevel"]) + floori((depth - 1) * float(rules["levelsPerDepth"]))
+	var target := deep_level(depth)
 	var count := mini(3 + depth / 3, 6)
 	var encounters: Array = []
 	var start := rng.randi_range(0, foes.size() - 1)
@@ -92,6 +92,11 @@ static func deep_def(depth: int) -> Dictionary:
 
 static func _rules() -> Dictionary:
 	return Bestiary._data()["deepHunt"]
+
+
+## The level a depth's foes stand at.
+static func deep_level(depth: int) -> int:
+	return int(_rules()["startLevel"]) + floori((depth - 1) * float(_rules()["levelsPerDepth"]))
 
 
 ## Every bossEvery-th depth a warden guards (PIX-216).
