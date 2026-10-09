@@ -50,7 +50,7 @@ static func can_forget_at(map_id: String) -> bool:
 
 
 ## A point to spend, not yet owned, its parent owned (canBuyNode), and the
-## level its tier asks (PIX-141: tiers open at levels 1, 3, 6 and 10).
+## level its tier asks (skillTierLevels: 1, 3, 6, 9, 11 and 14, PIX-233).
 static func can_buy(hero: HeroState, entry: Dictionary) -> bool:
 	if hero.skill_points <= 0 or entry["id"] in hero.skill_nodes or hero.level < tier_level(entry):
 		return false
@@ -92,10 +92,34 @@ static func all_learned(hero: HeroState) -> bool:
 	return tree_whole(hero) and beyond_tracks().all(func(track: Dictionary) -> bool: return int(hero.beyond.get(track["id"], 0)) >= int(track["cap"]))
 
 
-## The level a node's tier opens at (skillTierLevels).
+## The level a node's tier opens at (skillTierLevels). Each tier opens at the
+## level a hero's points (one a level, one more a rank) would outrun the
+## nodes already open, the latest it can: a point earned always has a node
+## to buy until the tree is whole and the ranks beyond take the rest
+## (PIX-233; with tiers at 10, 13 and 17 a level-9 hero had a point and
+## nothing to spend it on).
 static func tier_level(entry: Dictionary) -> int:
 	var levels: Array = Bestiary._data()["skillTierLevels"]
 	return int(levels[clampi(int(entry.get("tier", 0)), 0, levels.size() - 1)])
+
+
+## The level the hero's next tier opens at, 0 once every tier is open.
+static func next_tier_level(hero: HeroState) -> int:
+	var next := 0
+	for entry: Dictionary in tree(hero.role_id):
+		var opens := tier_level(entry)
+		if opens > hero.level and (next == 0 or opens < next):
+			next = opens
+	return next
+
+
+## What a point with nothing to buy yet is waiting for (PIX-233): the level
+## the next skills open at, "" when a point can be spent or none is waiting.
+static func next_skills_note(hero: HeroState) -> String:
+	var next := next_tier_level(hero)
+	if hero.skill_points <= 0 or can_spend(hero) or next == 0:
+		return ""
+	return Text.t("Next skills at level %d.") % next
 
 
 ## Casters spend mana, fighters endurance (resourceLabel).

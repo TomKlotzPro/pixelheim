@@ -180,7 +180,8 @@ func hunted(named_id: String) -> Array[String]:
 
 
 ## XP earned, and the levels it makes: the level-up line with what there is
-## to spend now, or "" when no level came of it.
+## to spend now (and, for a point with nothing to buy yet, when the next
+## skills open: PIX-233), or "" when no level came of it.
 func earn_xp(amount: int) -> String:
 	owner.hero.xp += amount
 	var stat_before := owner.hero.stat_points
@@ -188,9 +189,11 @@ func earn_xp(amount: int) -> String:
 	if grant_levels() == 0:
 		return ""
 	var skills_won := owner.hero.skill_points - skill_before
-	return Text.t("Level up: you are now level %d. +%d stat points and +%d skill point%s to spend.") % [
+	var line := Text.t("Level up: you are now level %d. +%d stat points and +%d skill point%s to spend.") % [
 		owner.hero.level, owner.hero.stat_points - stat_before, skills_won, "s" if skills_won > 1 else "",
 	]
+	var waiting := Skills.next_skills_note(owner.hero)
+	return line if waiting == "" else "%s %s" % [line, waiting]
 
 
 ## Banked XP becomes levels: the hero is lifted (HeroRules.apply_level_ups),

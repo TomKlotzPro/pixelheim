@@ -1,7 +1,8 @@
 extends GutTest
 ## Something to earn after level 10 (PIX-190): two more tiers in every tree
-## (levels 13 and 17), passives that do something in a real-time fight (the
-## web's flee chance didn't), a dock the hero sets, and a fifth rank at 20.
+## (levels 13 and 17 then, 11 and 14 since PIX-233), passives that do
+## something in a real-time fight (the web's flee chance didn't), a dock the
+## hero sets, and a fifth rank at 20.
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
 
@@ -20,7 +21,7 @@ func _hero(role: String, level: int, nodes: Array = []) -> HeroState:
 
 
 func test_every_tree_runs_six_tiers_deep() -> void:
-	assert_eq(Bestiary._data()["skillTierLevels"], [1, 3, 6, 10, 13, 17])
+	assert_eq(Bestiary._data()["skillTierLevels"], [1, 3, 6, 9, 11, 14])
 	for role: String in Bestiary._data()["skillTrees"]:
 		var tree := Skills.tree(role)
 		assert_eq(tree.size(), 18, "%s: three branches of six" % role)
@@ -172,3 +173,55 @@ func test_spare_points_wait_without_nagging() -> void:
 		hero.beyond[track["id"]] = int(track["cap"])
 	assert_false(Skills.can_spend(hero), "all learned: the points wait quietly")
 	assert_true(Town.trophy_stat_delta("lich_crown").has("endurance"), "the Lich Crown's every stat includes END")
+
+
+## PIX-233: a point earned always has something to buy. A hero of every role
+## climbs from level 1 to 25 buying all it can - every node open to it, then
+## ranks beyond the whole tree - and no level leaves a point over (with the
+## tiers at 10, 13 and 17, level 9 left one, and 16 left four).
+func test_every_point_earned_has_something_to_buy() -> void:
+	for role: String in Bestiary._data()["skillTrees"]:
+		var game: Node = autofree(GameStateScript.new())
+		game.new_game("T", role)
+		var hero: HeroState = game.hero
+		for level in range(1, 26):
+			if level > 1:
+				hero.xp = hero.xp_to_next
+				game.spoils.grant_levels()
+			assert_eq(hero.level, level)
+			_spend_everything(game)
+			assert_true(hero.skill_points == 0 or Skills.all_learned(hero), "%s at level %d: %d point(s) and nothing to buy" % [role, level, hero.skill_points])
+			if level == 15:
+				assert_true(Skills.tree_whole(hero), "%s: the whole tree by 15" % role)
+			if level == 16:
+				assert_eq(hero.beyond.values().reduce(func(sum: int, rank: int) -> int: return sum + rank, 0), 1, "%s: the ranks beyond take 16's point" % role)
+
+
+## Every node the hero can buy, bought (parents before children), then
+## every rank beyond a whole tree.
+func _spend_everything(game: Node) -> void:
+	var bought := true
+	while bought:
+		bought = false
+		for entry: Dictionary in Skills.tree(game.hero.role_id):
+			bought = game.training.buy_skill_node(entry["id"]) or bought
+		for track: Dictionary in Skills.beyond_tracks():
+			bought = game.training.buy_beyond(track["id"]) or bought
+
+
+## PIX-233: should a point ever wait with nothing to buy (here, points a
+## level-1 hero was handed), the level-up line says when the next skills open.
+func test_a_waiting_point_says_when_the_next_skills_open() -> void:
+	state.new_game("Robin", "warrior")
+	var hero: HeroState = state.hero
+	hero.skill_points = 2
+	for node_id: String in ["warrior_shield_slam", "warrior_berserk"]:
+		assert_true(state.training.buy_skill_node(node_id), node_id)
+	assert_eq(Skills.next_tier_level(hero), 3)
+	assert_eq(Skills.next_skills_note(hero), "", "no point waiting")
+	var line: String = state.spoils.earn_xp(hero.xp_to_next)
+	assert_eq(line, "Level up: you are now level 2. +3 stat points and +1 skill point to spend. Next skills at level 3.")
+	assert_eq(Skills.next_skills_note(hero), "Next skills at level 3.", "the tree says so too")
+	hero.level = 14
+	assert_eq(Skills.next_tier_level(hero), 0, "every tier open")
+	assert_eq(Skills.next_skills_note(hero), "")

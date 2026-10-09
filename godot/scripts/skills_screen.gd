@@ -1,10 +1,11 @@
 extends Screen
 ## The skill tree (SkillTree.tsx): once the hero has ranked, the Path Graph on
 ## top (six identities, walked edges lit, a pending step to claim), then the
-## role's three branches of six tiers (PIX-190 added levels 13 and 17), one
-## line a node, the selected one in full below. Arrows move across the grid,
-## E learns a node or walks a path, 1-6 puts a known skill on that key of the
-## dock, K or Esc closes. The world holds still meanwhile.
+## role's three branches of six tiers (PIX-190 added the last two, open at
+## 11 and 14 since PIX-233), one line a node, the selected one in full below.
+## Arrows move across the grid, E learns a node or walks a path, 1-6 puts a
+## known skill on that key of the dock, K or Esc closes. The world holds
+## still meanwhile.
 
 const TIER_BADGES := ["I", "II", "III", "IV", "V", "VI"]
 const COLUMN_X := [80, 470, 860]
@@ -70,9 +71,13 @@ func _layout() -> void:
 		Text.t("%d skill point%s") % [points, "" if points == 1 else "s"], 18, UiStyle.GOLD if points > 0 else UiStyle.DUSK,
 		Vector2(1000, 30)
 	))
-	# A whole tree's points go beyond it, in Stats (PIX-217).
+	# A whole tree's points go beyond it, in Stats (PIX-217); a point with
+	# nothing to buy yet says when the next skills open (PIX-233).
+	var waiting := Skills.next_skills_note(hero)
 	if Skills.beyond_open(hero):
 		view.add_child(UiStyle.label(Text.t("The tree is whole: spend them beyond it, in Stats."), 14, UiStyle.DUSK, Vector2(620, 56)))
+	elif waiting != "":
+		view.add_child(UiStyle.label(waiting, 14, UiStyle.DUSK, Vector2(620, 56)))
 	var top := 80
 	if HeroRules.rank_index(hero.level) >= 1:
 		_path_graph(hero)

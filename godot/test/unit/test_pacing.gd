@@ -103,7 +103,7 @@ func test_skill_tiers_open_with_levels() -> void:
 	var by_tier := {}
 	for entry: Dictionary in tree:
 		by_tier[int(entry["tier"])] = entry
-	assert_eq([0, 1, 2, 3].map(func(tier: int) -> int: return Skills.tier_level(by_tier[tier])), [1, 3, 6, 10])
+	assert_eq([0, 1, 2, 3].map(func(tier: int) -> int: return Skills.tier_level(by_tier[tier])), [1, 3, 6, 9])
 	var second: Dictionary = Skills.node("warrior", "warrior_power_strike_2")
 	assert_false(Skills.can_buy(hero, second), "tier 2 waits for level 3")
 	hero.level = 3

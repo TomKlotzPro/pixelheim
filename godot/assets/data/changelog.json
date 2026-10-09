@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.175.0",
+      "date": "2026-10-09",
+      "codename": "Every Point Counts",
+      "notes": [
+        "Fixed: skill points no longer pile up with nothing to buy; the skill tree's last tiers now open at levels 9, 11 and 14 instead of 10, 13 and 17"
+      ]
+    },
+    {
       "version": "0.174.0",
       "date": "2026-10-09",
       "codename": "Boss Slayer",
