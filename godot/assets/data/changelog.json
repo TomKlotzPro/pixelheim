@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.187.0",
+      "date": "2026-10-10",
+      "codename": "Open Book",
+      "notes": [
+        "The journal opens on what you're doing now: the quest you follow, its step, where to go and how far along you are. Under it, every open thread in one list, the main story, the town's quests and the board's bounties, each with its next step and its place",
+        "Choose a row with the arrows, the pad or the mouse and follow it with E, the pad's A or a click: the line over the dock, the arrow and the map's goal turn to it at once. A bounty you follow leads to its quarry's lair",
+        "Liane's pages and the feats are the journal's two other tabs, where there were five chapters"
+      ]
+    },
+    {
       "version": "0.186.0",
       "date": "2026-10-10",
       "codename": "Soft Edges",

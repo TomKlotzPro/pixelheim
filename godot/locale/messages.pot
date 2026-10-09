@@ -2137,6 +2137,10 @@ msgid "Chimneys rose on the rooftops, and they smoke: pale wisps drift and thin 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Choose a row with the arrows, the pad or the mouse and follow it with E, the pad's A or a click: the line over the dock, the arrow and the map's goal turn to it at once. A bounty you follow leads to its quarry's lair"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Choose in the Skills menu; your title on the stat sheet carries the path. A path is for life - choose like it matters"
 msgstr ""
 
@@ -3005,6 +3009,10 @@ msgid "Level-ups now bank 5 stat points: spend them on STR, INT, DEX or DEF"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Liane's pages and the feats are the journal's two other tabs, where there were five chapters"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Light Feet"
 msgstr ""
 
@@ -3398,6 +3406,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "One source of truth for what you look like: the world, the battle, the inventory doll, the HUD portrait and the stat sheet all wear the same outfit"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Open Book"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4542,6 +4554,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The inventory grew a mirror: a paper doll of your hero with every worn piece laid on the body - click a piece to take it off"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The journal opens on what you're doing now: the quest you follow, its step, where to go and how far along you are. Under it, every open thread in one list, the main story, the town's quests and the board's bounties, each with its next step and its place"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -11700,100 +11716,84 @@ msgstr ""
 msgid "Buffs&Debuffs"
 msgstr ""
 
-#: scripts/journal_screen.gd:10
-msgid "Feats"
+#: scripts/journal_screen.gd:152
+msgid "follow"
 msgstr ""
 
-#: scripts/journal_screen.gd:10
-msgid "Main"
-msgstr ""
-
-#: scripts/journal_screen.gd:10
-msgid "Side"
-msgstr ""
-
-#: scripts/journal_screen.gd:10
-msgid "Story"
-msgstr ""
-
-#: scripts/journal_screen.gd:103
-msgid "Done"
-msgstr ""
-
-#: scripts/journal_screen.gd:105
-msgid "Brings home: %s"
-msgstr ""
-
-#: scripts/journal_screen.gd:122
-msgid "The story is told"
-msgstr ""
-
-#: scripts/journal_screen.gd:125
-msgid "Chapter %d: %s"
-msgstr ""
-
-#: scripts/journal_screen.gd:134
-msgid "%s (optional)"
-msgstr ""
-
-#: scripts/journal_screen.gd:138
-msgid "DONE"
-msgstr ""
-
-#: scripts/journal_screen.gd:138
-msgid "NEXT"
-msgstr ""
-
-#: scripts/journal_screen.gd:160
-msgid "No side promises open. The map marks who has something to ask."
-msgstr ""
-
-#: scripts/journal_screen.gd:162
-msgid "Side promises - %d open"
-msgstr ""
-
-#: scripts/journal_screen.gd:164
-msgid "   (W/S to scroll)"
-msgstr ""
-
-#: scripts/journal_screen.gd:175
-msgid "Kept: %d promises, the latest %s."
-msgstr ""
-
-#: scripts/journal_screen.gd:182
-msgid "The Deep Hunt: deepest depth %d"
-msgstr ""
-
-#: scripts/journal_screen.gd:185
-msgid "No notices on the bounty board yet. The first goes up when %s."
-msgstr ""
-
-#: scripts/journal_screen.gd:196
-msgid "Its lair: %s. %s."
-msgstr ""
-
-#: scripts/journal_screen.gd:207
-msgid "No pages yet. Someone climbed this mountain before you - and wrote it down."
+#: scripts/journal_screen.gd:154
+msgid "turn"
 msgstr ""
 
 #: scripts/journal_screen.gd:209
+msgid "Done: %d quests, the latest %s."
+msgstr ""
+
+#: scripts/journal_screen.gd:22
+msgid "Feats"
+msgstr ""
+
+#: scripts/journal_screen.gd:22
+msgid "Liane's pages"
+msgstr ""
+
+#: scripts/journal_screen.gd:22
+msgid "Quests"
+msgstr ""
+
+#: scripts/journal_screen.gd:229
+msgid "The story is told"
+msgstr ""
+
+#: scripts/journal_screen.gd:232
+msgid "No quests taken yet. Someone with a ! over their head has one for you."
+msgstr ""
+
+#: scripts/journal_screen.gd:236
+msgid "The Deep Hunt: deepest depth %d"
+msgstr ""
+
+#: scripts/journal_screen.gd:240
+msgid "No notices on the bounty board yet. The first goes up when %s."
+msgstr ""
+
+#: scripts/journal_screen.gd:27
+msgid "Bounty you follow"
+msgstr ""
+
+#: scripts/journal_screen.gd:27
+msgid "Main story"
+msgstr ""
+
+#: scripts/journal_screen.gd:27
+msgid "Quest you follow"
+msgstr ""
+
+#: scripts/journal_screen.gd:275
+msgid "FOLLOWING"
+msgstr ""
+
+#: scripts/journal_screen.gd:279
+msgid "READY"
+msgstr ""
+
+#: scripts/journal_screen.gd:401
+msgid "Next"
+msgstr ""
+
+#: scripts/journal_screen.gd:439
+msgid "No pages yet. Someone climbed this mountain before you - and wrote it down."
+msgstr ""
+
+#: scripts/journal_screen.gd:441
 msgid "Liane's journal - %d of %d pages"
 msgstr ""
 
-#: scripts/journal_screen.gd:211
-msgid "   (W/S to turn)"
+#: scripts/journal_screen.gd:482
+msgid "Done"
 msgstr ""
 
-#: scripts/journal_screen.gd:230
-msgid "   READY - see %s"
-msgstr ""
-
-#: scripts/journal_screen.gd:39
-msgid "A promise is a route marked on the heart."
-msgstr ""
-
-#: scripts/journal_screen.gd:40
-msgid "chapter"
+#: scripts/journal_screen.gd:484
+msgid "Brings home: %s"
 msgstr ""
 
 #: scripts/keycap.gd:17
@@ -12668,7 +12668,11 @@ msgstr ""
 msgid "The burn"
 msgstr ""
 
-#: scripts/state/bearing.gd:67
+#: scripts/state/bearing.gd:100
+msgid "Slay %s in its lair"
+msgstr ""
+
+#: scripts/state/bearing.gd:72
 msgid "Hand it in to %s."
 msgstr ""
 
@@ -12900,6 +12904,18 @@ msgstr ""
 msgid "{item} {affix}"
 msgstr ""
 
+#: scripts/state/journal.gd:14
+msgid "Town and people"
+msgstr ""
+
+#: scripts/state/journal.gd:49
+msgid "Its lair: %s. %s."
+msgstr ""
+
+#: scripts/state/journal.gd:61
+msgid "Chapter %d: %s"
+msgstr ""
+
 #: scripts/state/main_quest.gd:86
 msgid "Next: %s"
 msgstr ""
@@ -12920,31 +12936,31 @@ msgstr ""
 msgid "%s: they wait on your answer."
 msgstr ""
 
-#: scripts/state/questing.gd:161
+#: scripts/state/questing.gd:163
 msgid "+%d gold"
 msgstr ""
 
-#: scripts/state/questing.gd:162
+#: scripts/state/questing.gd:164
 msgid "+%d XP"
 msgstr ""
 
-#: scripts/state/questing.gd:163
+#: scripts/state/questing.gd:165
 msgid "Quest complete: %s. %s. “%s”"
 msgstr ""
 
-#: scripts/state/questing.gd:165
+#: scripts/state/questing.gd:167
 msgid "%s: %d/%d %s."
 msgstr ""
 
-#: scripts/state/questing.gd:284
+#: scripts/state/questing.gd:287
 msgid "%s: ready to hand in to %s."
 msgstr ""
 
-#: scripts/state/questing.gd:336
+#: scripts/state/questing.gd:339
 msgid "That uses what %s needs (%s). Do it again to go ahead."
 msgstr ""
 
-#: scripts/state/questing.gd:347
+#: scripts/state/questing.gd:350
 msgid "A feat done: %s. The %s is yours, for the shelf at home."
 msgstr ""
 
@@ -13068,115 +13084,115 @@ msgstr ""
 msgid "Mastery: %s Slayer %s. +%d%% damage against %s."
 msgstr ""
 
-#: scripts/state/spoils.gd:163
+#: scripts/state/spoils.gd:165
 msgid "The bounty on %s is yours: +%d gold."
 msgstr ""
 
-#: scripts/state/spoils.gd:175
+#: scripts/state/spoils.gd:177
 msgid "%s leaves you %s!"
 msgstr ""
 
-#: scripts/state/spoils.gd:192
+#: scripts/state/spoils.gd:194
 msgid "Level up: you are now level %d. +%d stat points and +%d skill point%s to spend."
 msgstr ""
 
-#: scripts/state/spoils.gd:241
+#: scripts/state/spoils.gd:243
 msgid "%s is cleared!"
 msgstr ""
 
-#: scripts/state/spoils.gd:246
+#: scripts/state/spoils.gd:248
 msgid "%d gold"
 msgstr ""
 
-#: scripts/state/spoils.gd:255
+#: scripts/state/spoils.gd:257
 msgid "The floor's hoard: %s."
 msgstr ""
 
-#: scripts/state/spoils.gd:259
+#: scripts/state/spoils.gd:261
 msgid "Among the bones: a page of an old journal (%s). {key:journal} reads it."
 msgstr ""
 
-#: scripts/state/spoils.gd:263
+#: scripts/state/spoils.gd:265
 msgid "+%d XP for the way down."
 msgstr ""
 
-#: scripts/state/spoils.gd:273
+#: scripts/state/spoils.gd:275
 msgid "the %s"
 msgstr ""
 
-#: scripts/state/spoils.gd:276
+#: scripts/state/spoils.gd:278
 msgid "Behind the throne, a stair goes on down into the dark: the Deep Hunt."
 msgstr ""
 
-#: scripts/state/spoils.gd:280
+#: scripts/state/spoils.gd:282
 msgid "A deeper way opens: %s."
 msgstr ""
 
-#: scripts/state/spoils.gd:293
+#: scripts/state/spoils.gd:295
 msgid "Depth %d of the Deep Hunt is cleared!"
 msgstr ""
 
-#: scripts/state/spoils.gd:302
+#: scripts/state/spoils.gd:304
 msgid "The deepest yet. Its hoard: %s."
 msgstr ""
 
-#: scripts/state/spoils.gd:308
+#: scripts/state/spoils.gd:310
 msgid "depth %d of the Deep Hunt"
 msgstr ""
 
-#: scripts/state/spoils.gd:312
+#: scripts/state/spoils.gd:314
 msgid "A milestone: %d depths below the throne. The %s is yours, a trophy for the shelf at home."
 msgstr ""
 
-#: scripts/state/spoils.gd:315
+#: scripts/state/spoils.gd:317
 msgid "A hole into the dark opens beside the way up: depth %d waits below."
 msgstr ""
 
-#: scripts/state/spoils.gd:329
+#: scripts/state/spoils.gd:331
 msgid "The chest bares its teeth — a mimic!"
 msgstr ""
 
-#: scripts/state/spoils.gd:335
+#: scripts/state/spoils.gd:337
 msgid "Something glitters on the road: %d gold."
 msgstr ""
 
-#: scripts/state/spoils.gd:336
+#: scripts/state/spoils.gd:338
 msgid "The chest holds %d gold."
 msgstr ""
 
-#: scripts/state/spoils.gd:345
+#: scripts/state/spoils.gd:347
 msgid "Too heavy to carry. Lighten the pack and come back."
 msgstr ""
 
-#: scripts/state/spoils.gd:351
+#: scripts/state/spoils.gd:353
 msgid "The chest holds %s!"
 msgstr ""
 
-#: scripts/state/spoils.gd:356
+#: scripts/state/spoils.gd:358
 msgid "You gather %dx %s."
 msgstr ""
 
-#: scripts/state/spoils.gd:357
+#: scripts/state/spoils.gd:359
 msgid "The chest holds %dx %s."
 msgstr ""
 
-#: scripts/state/spoils.gd:379
+#: scripts/state/spoils.gd:381
 msgid "You gather %d %s%s."
 msgstr ""
 
-#: scripts/state/spoils.gd:390
+#: scripts/state/spoils.gd:392
 msgid "Nothing's biting here yet. Try again in a while, or somewhere else."
 msgstr ""
 
-#: scripts/state/spoils.gd:394
+#: scripts/state/spoils.gd:396
 msgid "You cast, wait... and haul up an old boot."
 msgstr ""
 
-#: scripts/state/spoils.gd:394
+#: scripts/state/spoils.gd:396
 msgid "You cast, wait... and land %s!"
 msgstr ""
 
-#: scripts/state/spoils.gd:396
+#: scripts/state/spoils.gd:398
 msgid " Foraging reached %d!"
 msgstr ""
 
@@ -13518,10 +13534,6 @@ msgstr ""
 
 #: scripts/world_hud.gd:212
 msgid "Boss slayer +%d%%  %d:%02d"
-msgstr ""
-
-#: scripts/world_hud.gd:93
-msgid "Next"
 msgstr ""
 
 #: scripts/world_interaction.gd:166

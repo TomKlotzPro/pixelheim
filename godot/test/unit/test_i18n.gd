@@ -110,7 +110,8 @@ func test_tags_and_compact_gold_speak_french() -> void:
 	assert_eq(InventoryScreen.sort_name("kind"), "type")
 	assert_eq(Ailments.label("burn"), "brûlure")
 	assert_string_contains(InventoryScreen.stat_line(Catalog.item("iron_sword"), 0, 120), "FOR")
-	for tag: String in ["EQUIPPED", "SLAIN", "CLEARED", "DONE", "NEXT", "NEW", "BUILT", "COMMISSIONED", "SKILL", "UPGRADE", "PASSIVE", "locked"]:
+	# The journal's tags (PIX-239: FOLLOWING and READY, where its chapters said DONE and NEXT).
+	for tag: String in ["EQUIPPED", "SLAIN", "CLEARED", "FOLLOWING", "READY", "NEW", "BUILT", "COMMISSIONED", "SKILL", "UPGRADE", "PASSIVE", "locked"]:
 		assert_ne(Text.t(tag), tag, "%s is translated" % tag)
 	Text.apply("en")
 	assert_eq(Text.coins(55), "55g")

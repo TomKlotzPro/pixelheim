@@ -1,0 +1,109 @@
+class_name Journal
+## The journal's quest page as rows (PIX-239, after Tom's playtest: "le
+## journal c'est pas clair"): every open thread in one list, grouped - the
+## main story (its chapter and next step, then the quests that carry it),
+## the town and its people (the quests taken from them), the bounty board
+## (its notices still wanted). Each row says its next step in the words the
+## line above the dock uses (Bearing), how far along it is, and whether it's
+## ready to hand in. One row is followed: ProgressionState.tracked names a
+## quest or a bounty's named monster, and "" follows the main story. Pure:
+## everything it needs is passed in.
+
+## The groups, in the order the page shows them, and their headings.
+const GROUPS := ["story", "people", "bounties"]
+const GROUP_NAMES := {"story": "Main story", "people": "Town and people", "bounties": "Bounties"}
+## The main story's row: following it follows nothing else.
+const STORY := ""
+
+
+## The quests that carry the story (PIX-171): Maren's relics and each relic's hunt.
+static func is_main_line(quest: Dictionary) -> bool:
+	if quest["id"] == Relics.quest_id():
+		return true
+	var named: String = quest["objective"].get("named", "")
+	return Relics.all().any(func(relic: Dictionary) -> bool: return relic["named"] == named)
+
+
+## Every row of the page in its order, group by group: {group, id, title,
+## line (the next step and where, as Bearing.line says it, without the
+## count), progress ("2/3", "" for a single thing), ready (it can be handed
+## in), bounty (a notice's gold, 0 otherwise), lead (Bearing's), detail
+## (the longer word: the elder's hint, what the giver asked, the lair)}.
+static func rows(progression: ProgressionState, settlement: SettlementState, items: Dictionary) -> Array[Dictionary]:
+	var by_group := {"story": [], "people": [], "bounties": []}
+	var step := MainQuest.next_step(progression, settlement)
+	if not step.is_empty():
+		var lead := Bearing.of_step(step, progression, settlement, items)
+		by_group["story"].append(_row("story", STORY, chapter_title(step), lead, String(step.get("hint", ""))))
+	for quest: Dictionary in Quests.all():
+		var entry: Dictionary = progression.quests.get(quest["id"], {})
+		if entry.is_empty() or entry.get("done", false):
+			continue
+		var group := "story" if is_main_line(quest) else "people"
+		var row := _row(group, quest["id"], quest["name"], Bearing.of_quest(quest, progression, settlement, items), _asked(quest, progression, settlement))
+		row["ready"] = Quests.is_ready(quest, progression.quests, items)
+		by_group[group].append(row)
+	for notice: Dictionary in Hunts.notices(Bearing.board_floors(progression), progression.hunted):
+		if notice["id"] in progression.hunted:
+			continue
+		var row := _row("bounties", notice["id"], notice["name"], Bearing.of_bounty(notice), Text.t("Its lair: %s. %s.") % [notice["where"], Hunts.reward_line(notice)])
+		row["bounty"] = int(notice["bounty"])
+		by_group["bounties"].append(row)
+	var out: Array[Dictionary] = []
+	for group: String in GROUPS:
+		for row: Dictionary in by_group[group]:
+			out.append(row)
+	return out
+
+
+## "Chapter 2: The Relics": a main story step's chapter, numbered.
+static func chapter_title(step: Dictionary) -> String:
+	return Text.t("Chapter %d: %s") % [step["chapter_number"], step["chapter"]]
+
+
+## The row followed now: the active lead's quest or bounty, or STORY while
+## the main story leads (or once it's told and nothing is followed).
+static func followed(progression: ProgressionState, settlement: SettlementState, items: Dictionary) -> String:
+	var lead := Bearing.active(progression, settlement, items)
+	if lead.is_empty() or lead["main"]:
+		return STORY
+	return String(lead["quest_id"]) if String(lead["quest_id"]) != "" else String(lead["named"])
+
+
+## Follows row `id` (STORY: the main story); whether that changed anything.
+static func follow(progression: ProgressionState, id: String) -> bool:
+	if progression.tracked == id:
+		return false
+	progression.tracked = id
+	return true
+
+
+## A quest handed in, or a bounty's quarry slain, isn't followed any more:
+## the main story leads again, and the save forgets it.
+static func let_go(progression: ProgressionState) -> void:
+	var id := progression.tracked
+	if id != "" and (progression.quests.get(id, {}).get("done", false) or id in progression.hunted):
+		progression.tracked = ""
+
+
+## The quests handed in, outside the main line: the page's last word.
+static func kept(progression: ProgressionState) -> Array:
+	return Quests.all().filter(func(quest: Dictionary) -> bool:
+		return not is_main_line(quest) and progression.quests.get(quest["id"], {}).get("done", false))
+
+
+static func _row(group: String, id: String, title: String, lead: Dictionary, detail: String) -> Dictionary:
+	var bare := lead.duplicate()
+	bare["progress"] = ""
+	return {
+		"group": group, "id": id, "title": title, "line": Bearing.line(bare), "progress": String(lead["progress"]),
+		"ready": false, "bounty": 0, "lead": lead, "detail": detail,
+	}
+
+
+## What a giver asked, who and where they are, and where to look (PIX-171).
+static func _asked(quest: Dictionary, progression: ProgressionState, settlement: SettlementState) -> String:
+	var npc: Dictionary = Npcs.by_id(quest["giver"], settlement.settlers)
+	var asked := "%s (%s, %s)" % [quest["brief"], npc.get("name", ""), Catalog.place_name(npc.get("mapId", ""))]
+	var where := Quests.where(quest, Relics.gate_open(progression), Town.done_projects(settlement))
+	return asked + ("  " + where if where != "" else "")

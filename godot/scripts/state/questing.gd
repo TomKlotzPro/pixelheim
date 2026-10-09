@@ -144,6 +144,8 @@ func resolve_quests(giver_id: String) -> String:
 				for item_id: String in objective["items"]:
 					owner.pack.remove_item(item_id)
 			entry["done"] = true
+			# Handed in, it's no longer followed (PIX-239): the story leads.
+			Journal.let_go(owner.progression)
 			var reward: Dictionary = quest["reward"]
 			owner.pack.gold += int(reward["gold"])
 			var level_line := owner.spoils.earn_xp(int(reward["xp"]))
@@ -187,6 +189,7 @@ func choose(quest_id: String, option_id: String) -> String:
 		owner.pack.remove_item(quest["objective"]["itemId"], int(quest["objective"]["count"]))
 	entry["done"] = true
 	entry["choice"] = option_id
+	Journal.let_go(owner.progression)
 	var reward: Dictionary = option["reward"]
 	owner.pack.gold += int(reward.get("gold", 0))
 	var level_line := owner.spoils.earn_xp(int(reward.get("xp", 0)))

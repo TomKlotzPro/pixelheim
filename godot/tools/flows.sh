@@ -13,8 +13,9 @@
 # was taken still finishing it (PIX-231), a named boss that falls as a
 # boss does and holds the way out while it hunts (PIX-232), the map's
 # waypoint list showing where a waypoint takes you before it does, then
-# taking you there (PIX-241), and hero creation's first night skipped with
-# Tab while the name field has the keys (PIX-228). Every flow leaves its
+# taking you there (PIX-241), hero creation's first night skipped with
+# Tab while the name field has the keys (PIX-228), and a quest chosen in the
+# journal and followed after it closes (PIX-239). Every flow leaves its
 # picture in godot/flows/<name>.png for a human to look at, and the
 # harness's report line must match what the flow promises or the run fails.
 #
@@ -87,6 +88,9 @@ FLOWS=(
 	# The waypoint chosen on the map is the one shown, and E goes there (PIX-241).
 	"waypoint|--map town waypoints --keys m,s,s|open=map_screen.*dest=mountain_gate"
 	"travel|--map town waypoints --keys m,s,e|map=overworld cell=\\(48, 40\\).*open=none"
+	# The journal's fourth thread (the slimes, under the story's three) chosen,
+	# E follows it, and it's still followed once the journal closes (PIX-239).
+	"follow|--map town journal --keys s,s,s,e,esc|open=none .*tracked=slime_trouble"
 	# Every screen fits the canvas in French, the longest language (PIX-258):
 	# the harness's `overflow` counts pieces running off the screen.
 	"fit-title|title overflow --lang fr|open=title_screen.*overflow=0"
@@ -103,6 +107,12 @@ FLOWS=(
 	"fit-travel|--map town waypoints --keys m,s,s,s,s overflow --lang fr|open=map_screen.*overflow=0 dest=mirefen_pass"
 	"fit-pack|--map town --keys i overflow --lang fr|open=inventory_screen.*overflow=0"
 	"fit-journal|--map town --keys q overflow --lang fr|open=journal_screen.*overflow=0"
+	# A hero mid-game (PIX-239): every group, a bounty followed at the bottom
+	# of the list; its English twin; Liane's ten pages; the feats.
+	"fit-journal-full|--map town journal --cleared 4 --keys w,e overflow --lang fr|open=journal_screen.*overflow=0 tracked=drowned_knight"
+	"fit-journal-en|--map town journal --cleared 4 --keys w,e overflow --lang en|open=journal_screen.*overflow=0 tracked=drowned_knight"
+	"fit-journal-pages|--map town journal --tab pages --cleared 15 overflow --lang fr|open=journal_screen.*overflow=0"
+	"fit-journal-feats|--map town journal --tab feats overflow --lang fr|open=journal_screen.*overflow=0"
 	"fit-skills|--map town --keys k overflow --lang fr|open=skills_screen.*overflow=0"
 	"fit-stats|--map town --keys c overflow --lang fr|open=stats_screen.*overflow=0"
 	"fit-codex|--map town --keys b overflow --lang fr|open=codex_screen.*overflow=0"

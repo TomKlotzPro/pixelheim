@@ -35,8 +35,9 @@ var met := {}
 ## item id -> how many the hero has made at a station (PIX-231), so a
 ## crafting quest taken after the work counts it; saved once there is one.
 var crafted := {}
-## The side quest the hero chose to follow (PIX-239), "" for the main story's
-## next step; saved only while there is one.
+## What the hero chose to follow in the journal (PIX-239): a quest's id, or a
+## bounty's named monster; "" for the main story's next step. Let go once
+## it's done (Journal.let_go); saved only while there is one.
 var tracked := ""
 
 
