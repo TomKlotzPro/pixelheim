@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.181.0",
+      "date": "2026-10-09",
+      "codename": "Begin",
+      "notes": [
+        "Hero creation reads clearly: the first night is a setting of its own (The first night (tutorial): Play / Skip, with a line on what each means), and Begin the adventure is the start, alone at the bottom; Tab, a click or the pad's Y flips the night, and a pad can now reach every control"
+      ]
+    },
+    {
       "version": "0.180.0",
       "date": "2026-10-09",
       "codename": "Where It Leads",

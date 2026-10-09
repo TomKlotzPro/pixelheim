@@ -40,7 +40,7 @@ func _keys(args: PackedStringArray) -> void:
 	var codes := {
 		"e": KEY_E, "esc": KEY_ESCAPE, "space": KEY_SPACE, "enter": KEY_ENTER, "s": KEY_S, "w": KEY_W,
 		"i": KEY_I, "q": KEY_Q, "k": KEY_K, "c": KEY_C, "m": KEY_M, "b": KEY_B, "shift": KEY_SHIFT,
-		"r": KEY_R, "a": KEY_A, "d": KEY_D, "z": KEY_Z, "x": KEY_X, "f": KEY_F,
+		"r": KEY_R, "a": KEY_A, "d": KEY_D, "z": KEY_Z, "x": KEY_X, "f": KEY_F, "tab": KEY_TAB,
 	}
 	for key: String in args[keys_index + 1].split(","):
 		for pressed: bool in [true, false]:
@@ -695,6 +695,10 @@ func _run_test_harness() -> void:
 	var wait_index := args.find("--wait")
 	if wait_index >= 0 and wait_index + 1 < args.size():
 		await get_tree().create_timer(float(args[wait_index + 1])).timeout
+	# Hero creation's first night (PIX-228): what the run's keys left it at.
+	for node in world.get_children():
+		if node.get_script() == preload("res://scripts/create_screen.gd"):
+			motion_report += " firstnight=%s" % ("play" if node.play_night else "skip")
 	# `overflow` (Solid Ground): every visible piece of an open screen that
 	# runs past the canvas, as OVERFLOW lines; text that grows (French is
 	# longer) mustn't push a panel off the screen. Works headless.
