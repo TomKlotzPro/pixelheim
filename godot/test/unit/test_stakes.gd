@@ -77,3 +77,69 @@ func test_the_night_of_the_fire_costs_nothing() -> void:
 	state.pack.gold = 100
 	state.wake_at_inn()
 	assert_eq(state.pack.gold, 100)
+
+
+## PIX-192: Pell's canary against the clock.
+func test_the_canary_runs_against_the_clock() -> void:
+	state.progression.quests["pell_canary"] = {"progress": 0, "done": false}
+	assert_eq(state.tick_runs(1.0)["message"], "", "no canary, no clock")
+	var chest_id: String = Interactables._data()["chests"].filter(func(chest: Dictionary) -> bool: return chest.get("loot", {}).get("itemId", "") == "canary")[0]["id"]
+	state.pack.add_item("canary")
+	state.world.opened_chests.append(chest_id)
+	var started: Dictionary = state.tick_runs(0.5)
+	assert_string_contains(started["message"], "60 seconds")
+	state.tick_runs(10.0)
+	assert_almost_eq(float(state.timed_run()["left"]), 50.0, 0.01)
+	var lapsed: Dictionary = state.tick_runs(51.0)
+	assert_string_contains(lapsed["message"], "west gallery")
+	assert_eq(int(state.pack.items.get("canary", 0)), 0, "she flies back")
+	assert_false(chest_id in state.world.opened_chests, "her chest can be opened again")
+	assert_true(state.timed_run().is_empty())
+
+
+func test_the_canary_home_in_time_stops_the_clock() -> void:
+	state.progression.quests["pell_canary"] = {"progress": 0, "done": false}
+	state.pack.add_item("canary")
+	state.tick_runs(0.1)
+	state.resolve_quests("mines_pell")
+	assert_true(state.progression.quests["pell_canary"]["done"])
+	assert_true(state.timed_run().is_empty())
+	assert_eq(state.tick_runs(500.0)["message"], "")
+
+
+func test_an_answer_survives_a_save() -> void:
+	_ready_locket()
+	state.choose("fenwick_locket", "turn_in")
+	var saved := {}
+	state.progression.write_into(saved)
+	assert_eq(ProgressionState.from_dict(saved).quests["fenwick_locket"]["choice"], "turn_in")
+
+
+## PIX-192: Gunnar's last wagon down the pass.
+func test_the_wagon_waits_while_its_quest_runs() -> void:
+	assert_true(state.escort_due().is_empty(), "not before Gunnar asks")
+	state.progression.quests["gunnar_strongbox"] = {"progress": 1, "done": true}
+	state.progression.quests["gunnar_wagon"] = {"progress": 0, "done": false}
+	var due: Dictionary = state.escort_due()
+	assert_eq(due["quest"]["id"], "gunnar_wagon")
+	assert_eq(due["def"]["mapId"], "frostgate")
+	assert_false(Quests.is_ready(Quests.by_id("gunnar_wagon"), state.progression.quests, state.pack.items))
+	state.escort_arrived("gunnar_wagon")
+	assert_true(state.escort_due().is_empty(), "down: no more wagon")
+	assert_true(Quests.is_ready(Quests.by_id("gunnar_wagon"), state.progression.quests, state.pack.items), "Gunnar waits with the pay")
+	assert_string_contains(state.resolve_quests("frost_gunnar"), "Quest complete: The Last Wagon Down")
+
+
+func test_the_wagons_road_and_its_ambushes_stand_on_open_ground() -> void:
+	for escort_id: String in Bestiary._data()["escorts"]:
+		var def: Dictionary = Bestiary._data()["escorts"][escort_id]
+		var map := MapData.load_by_id(def["mapId"])
+		for cell: Array in def["route"]:
+			assert_true(map.is_walkable(Vector2i(int(cell[0]), int(cell[1]))), "%s road %s" % [escort_id, cell])
+		for ambush: Dictionary in def["ambushes"]:
+			assert_between(int(ambush["at"]), 1, def["route"].size() - 1, "%s ambush on the road" % escort_id)
+			assert_eq(ambush["foes"].size(), ambush["from"].size())
+			for cell: Array in ambush["from"]:
+				assert_true(map.is_walkable(Vector2i(int(cell[0]), int(cell[1]))), "%s ambush from %s" % [escort_id, cell])
+			for foe: String in ambush["foes"]:
+				assert_false(Bestiary.monster(foe).is_empty(), foe)

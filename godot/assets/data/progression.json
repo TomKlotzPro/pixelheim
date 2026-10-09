@@ -783,7 +783,7 @@
       "id": "pell_canary",
       "giver": "mines_pell",
       "name": "The Missing Canary",
-      "brief": "Old Pell's canary is lost in the shafts.",
+      "brief": "Old Pell's canary is lost in the shafts - and the air down there is bad. Bring her up quick.",
       "objective": {
         "kind": "deliver",
         "itemId": "canary",
@@ -797,7 +797,13 @@
       },
       "accepted": "Off the west gallery, last I heard her. Small cage. Mind your fingers.",
       "completed": "There's my girl! Cross as ever. Thank you - the air's safe to breathe as long as she's singing.",
-      "opensAfter": "garrick_crew"
+      "opensAfter": "garrick_crew",
+      "timed": {
+        "seconds": 60,
+        "clock": "Pell's canary",
+        "start": "The canary coughs in the bad air. Get her to Pell in %d seconds.",
+        "lapse": "The canary stops singing. She squeezes out between the bars and flies back down to the west gallery to catch her breath - fetch her again."
+      }
     },
     {
       "id": "ulla_turncoats",
@@ -973,6 +979,24 @@
       "accepted": "Tracks went up toward the observatory. If there's a den in that cave, my box is in it.",
       "completed": "Still locked! The yetis must have given up on it. Here - your share, and then some.",
       "opensAfter": "aske_wolves"
+    },
+    {
+      "id": "gunnar_wagon",
+      "giver": "frost_gunnar",
+      "name": "The Last Wagon Down",
+      "brief": "Gunnar's last wagon waits at the cave mouth. Walk it down the pass to his camp - the wolves know a wagon when they smell one.",
+      "objective": {
+        "kind": "escort",
+        "escort": "gunnar_wagon",
+        "count": 1,
+        "label": "Wagon brought down"
+      },
+      "reward": {
+        "gold": 260,
+        "xp": 50
+      },
+      "accepted": "Old Bergit pulls it - she's slow, and she stops dead if anything with teeth comes near. Stay close, clear the road, and she'll get there.",
+      "completed": "Down in one piece! Mostly. The pass's last run of the season, and the first in years that didn't feed the wolves."
     },
     {
       "id": "linnea_lilies",

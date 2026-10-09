@@ -1195,6 +1195,72 @@ func wake_at_inn() -> Dictionary:
 	return inn
 
 
+## An escort under way (PIX-192): {quest, def} for a taken escort quest
+## whose wagon hasn't come down yet, {} otherwise.
+func escort_due() -> Dictionary:
+	for quest: Dictionary in Quests.all():
+		var objective: Dictionary = quest["objective"]
+		var entry: Dictionary = progression.quests.get(quest["id"], {})
+		if objective["kind"] == "escort" and not entry.is_empty() and not entry["done"] and int(entry["progress"]) < int(objective["count"]):
+			return {"quest": quest, "def": Bestiary._data()["escorts"][objective["escort"]]}
+	return {}
+
+
+## The wagon is down: the escort's goal is met, the giver waits.
+func escort_arrived(quest_id: String) -> void:
+	var entry: Dictionary = progression.quests.get(quest_id, {})
+	if entry.is_empty():
+		return
+	entry["progress"] = int(Quests.by_id(quest_id)["objective"]["count"])
+	save_now()
+
+
+## A quest against the clock (PIX-192): {quest, left} while one runs, {}.
+func timed_run() -> Dictionary:
+	for quest: Dictionary in Quests.all():
+		var entry: Dictionary = progression.quests.get(quest["id"], {})
+		if quest.has("timed") and entry.has("left") and not entry["done"]:
+			return {"quest": quest, "left": float(entry["left"])}
+	return {}
+
+
+## The clocks run while the world does (PIX-192): a timed quest's clock
+## starts once its goods are in the pack and it's taken, stops when they
+## leave it, and at nought the goods go back where they were found (their
+## chest closes again). Returns {message, rearmed: chest ids}.
+func tick_runs(delta: float) -> Dictionary:
+	for quest: Dictionary in Quests.all():
+		if not quest.has("timed"):
+			continue
+		var entry: Dictionary = progression.quests.get(quest["id"], {})
+		if entry.is_empty() or entry["done"]:
+			continue
+		var item: String = quest["objective"]["itemId"]
+		var carried := int(pack.items.get(item, 0)) > 0
+		if not entry.has("left"):
+			if carried:
+				entry["left"] = float(quest["timed"]["seconds"])
+				return {"message": String(quest["timed"]["start"]) % quest["timed"]["seconds"], "rearmed": []}
+			continue
+		if not carried:
+			entry.erase("left")
+			continue
+		entry["left"] = float(entry["left"]) - delta
+		if float(entry["left"]) > 0.0:
+			continue
+		entry.erase("left")
+		pack.remove_item(item, int(pack.items.get(item, 0)))
+		var rearmed: Array[String] = []
+		for chest: Dictionary in Interactables._data()["chests"]:
+			if chest.get("loot", {}).get("itemId", "") == item and chest["id"] in world.opened_chests:
+				world.opened_chests.erase(chest["id"])
+				rearmed.append(chest["id"])
+		_pack_changed()
+		save_now()
+		return {"message": quest["timed"]["lapse"], "rearmed": rearmed}
+	return {"message": "", "rearmed": []}
+
+
 ## The gold a fall costs now: a tenth of what's carried (economy.json
 ## deathGoldShare); nothing on the night of the fire.
 func death_toll() -> int:
