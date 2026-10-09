@@ -63,8 +63,8 @@ func test_a_trade_level_is_announced() -> void:
 
 func test_a_missing_material_says_where_it_comes_from() -> void:
 	assert_eq(Economy.where_to_find("wolf_pelt"), "Wolf Pelt: Dire Wolf, 50% (the Whispering Forest, the Sunken Marsh, floor 4)")
-	assert_eq(Economy.where_to_find("marsh_reed"), "Marsh Reed: foraged after fights in the Sunken Marsh")
-	assert_eq(Economy.where_to_find("dragon_scale"), "Dragon Scale: Fafnyr the Ashen, every time (floor 10)")
+	assert_eq(Economy.where_to_find("marsh_reed"), "Marsh Reed: picked from patches and foraged after fights in the Sunken Marsh")
+	assert_eq(Economy.where_to_find("dragon_scale"), "Dragon Scale: Fafnyr the Ashen, sure the first time, then 10% (floor 10)")
 
 
 ## PIX-181: no dead recipes, trades that keep up.

@@ -374,7 +374,8 @@ func buy_item(item_id: String) -> bool:
 func sell_item(item_id: String, count := 1) -> int:
 	var shop_id := active_shop()
 	var have: int = pack.items.get(item_id, 0)
-	if shop_id == "" or have <= 0:
+	# A quest's goods aren't for sale (PIX-184), whatever screen asks.
+	if shop_id == "" or have <= 0 or Catalog.item(item_id).get("quest", false):
 		return 0
 	var sold := mini(count, have)
 	var price := floori(Economy.sell_price_at(shop_id, item_id, town_tier()) * trophy_sell_multiplier())

@@ -566,14 +566,15 @@
       },
       "minTownTier": 2,
       "ask": {
-        "kind": "gold",
-        "amount": 150
+        "kind": "kill",
+        "monsterId": "troll",
+        "count": 1
       },
       "meetLines": [
         "A bard in a forest sings to trees. Trees, friend, do not tip.",
-        "Get me an audience with lamplight and I will make your battles sound like legends. 150 gold - relocation is art too."
+        "A troll in this wood took my lute to pick its teeth with. Get it back and I will make your battles sound like legends, by Pixelheim's lamplight."
       ],
-      "askLine": "150 gold, and my lute follows you home.",
+      "askLine": "My lute back from the troll, and I follow you home.",
       "tierLine": "Sing for a hamlet? Darling, no. Light some lamps first - make Pixelheim a village, then we talk.",
       "joinedLine": "A patron! Pixelheim gains its first verse tonight.",
       "townLines": [
@@ -653,14 +654,15 @@
       },
       "minTownTier": 2,
       "ask": {
-        "kind": "gold",
-        "amount": 500
+        "kind": "deliver",
+        "itemId": "gem",
+        "count": 2
       },
       "meetLines": [
         "I count coins for caravans that never stop anywhere worth banking in.",
-        "Give me a town with a fountain and 500 gold of founding capital, and I will make Pixelheim's money WORK."
+        "Put two gems in a vault worth guarding, and I will make Pixelheim's money WORK."
       ],
-      "askLine": "500 gold of founding capital, and the bank follows you home.",
+      "askLine": "Two gems for the vault, and the bank follows you home.",
       "tierLine": "A bank needs streets and lamps, not a hamlet of tents. Grow Pixelheim into a village and we will talk.",
       "joinedLine": "Capital received. Find my ledger by the city hall - bring your idle gold.",
       "townLines": [

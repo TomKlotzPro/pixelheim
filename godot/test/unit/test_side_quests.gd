@@ -58,9 +58,9 @@ func test_every_promise_says_where_to_go() -> void:
 	assert_string_contains(Quests.where(Quests.by_id("sela_rum")), "Sea Cave")
 	assert_string_contains(Quests.where(Quests.by_id("wolf_watch")), "Found in")
 	assert_string_contains(Quests.where(Quests.by_id("maren_relics")), "Saltmere")
+	# PIX-184: every promise, deliveries too (Linnea's icefin comes from a hole in the ice).
 	for quest: Dictionary in Quests.all():
-		if quest["objective"]["kind"] in ["hunt", "kill", "relics"]:
-			assert_ne(Quests.where(quest), "", "%s says where" % quest["id"])
+		assert_ne(Quests.where(quest), "", "%s says where" % quest["id"])
 
 
 func test_the_map_marks_who_is_waiting() -> void:

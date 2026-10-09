@@ -94,7 +94,7 @@ static func where(quest: Dictionary) -> String:
 		"deliver":
 			for chest: Dictionary in Interactables._data()["chests"]:
 				if chest.get("loot", {}).get("itemId", "") == objective["itemId"]:
-					return Text.t("In a chest somewhere in %s.") % Catalog.place_name(chest["mapId"])
+					return Text.t("In a chest somewhere in %s.") % Economy._mid(Catalog.place_name(chest["mapId"]))
 			var lead := Economy.where_to_find(objective["itemId"])
 			return lead + "." if lead != "" else ""
 		"relics":
@@ -102,4 +102,12 @@ static func where(quest: Dictionary) -> String:
 			for relic: Dictionary in Relics.all():
 				out.append(relic["place"])
 			return Text.t("The five left them in %s.") % ", ".join(out)
+		"craft":
+			# Made, not found (PIX-184): the station, and what goes into it.
+			for entry: Dictionary in Economy.recipes():
+				if entry["itemId"] == objective["itemId"]:
+					var needs: Array[String] = []
+					for need: String in entry["needs"]:
+						needs.append("%d %s" % [entry["needs"][need], Catalog.item_name(need)])
+					return Text.t("%s, from %s.") % [Economy.station_hint(entry["job"]["id"]), ", ".join(needs)]
 	return ""
