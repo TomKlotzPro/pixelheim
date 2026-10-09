@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.128.0",
+      "date": "2026-10-09",
+      "codename": "Loot That Fits",
+      "notes": [
+        "LOOT THAT FITS THE STAGE: a monster in the wilds drops what a monster of its level would, never more than its region's best - the Mirefen's skeletons no longer drop the mountain's finest blades, and the maze chest there holds a steel axe instead of an obsidian blade",
+        "WHO LIVES WHERE: each region's packs now follow its own mix (the Ash Fields are mostly orcs), and the pack nearest the town is orcs, not a nest of imps",
+        "ARMOUR SETS, READ RIGHT: a set's line now shows what each tier adds up to (five pieces of Oilskin give +5 DEX, not +3), the Greyhold Warden set guards a little better than the Blackiron that comes before it, and the shop says which stat a weapon hits with"
+      ]
+    },
+    {
       "version": "0.127.0",
       "date": "2026-10-09",
       "codename": "Many Tongues",

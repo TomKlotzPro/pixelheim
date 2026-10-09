@@ -1335,7 +1335,7 @@
       "weight": 5,
       "value": 160,
       "description": "Greyhold's old pattern: a steel cap, a slit to see by. Crafted, never sold.",
-      "armor": 3,
+      "armor": 4,
       "slot": "head",
       "set": "warden",
       "grants": {
@@ -1349,7 +1349,7 @@
       "weight": 16,
       "value": 330,
       "description": "Mail over padding, the way the fort's guard wore it. It moves with you. Crafted, never sold.",
-      "armor": 7,
+      "armor": 9,
       "slot": "body",
       "set": "warden",
       "grants": {
@@ -1363,7 +1363,7 @@
       "weight": 4,
       "value": 150,
       "description": "Steel-backed and soft in the palm, for a sure grip on a wet hilt. Crafted, never sold.",
-      "armor": 2,
+      "armor": 3,
       "slot": "hands",
       "set": "warden",
       "grants": {
@@ -1382,7 +1382,7 @@
       "weight": 4,
       "value": 150,
       "description": "Made for walking walls all night. Crafted, never sold.",
-      "armor": 2,
+      "armor": 3,
       "slot": "feet",
       "set": "warden",
       "grants": {
@@ -1401,7 +1401,7 @@
       "weight": 10,
       "value": 260,
       "description": "Long enough to kneel behind. Greyhold's tower is still painted on it, faintly. Crafted, never sold.",
-      "armor": 5,
+      "armor": 6,
       "slot": "offhand",
       "set": "warden",
       "tint": [
@@ -2003,7 +2003,7 @@
             "strength": 2,
             "dexterity": 2
           },
-          "armor": 3
+          "armor": 4
         }
       }
     },

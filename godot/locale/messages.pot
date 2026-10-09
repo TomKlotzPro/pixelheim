@@ -1589,6 +1589,10 @@ msgid "ANY WAY UP: the game fills a phone's screen held sideways or upright inst
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "ARMOUR SETS, READ RIGHT: a set's line now shows what each tier adds up to (five pieces of Oilskin give +5 DEX, not +3), the Greyhold Warden set guards a little better than the Blackiron that comes before it, and the shop says which stat a weapon hits with"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "ARMOUR SETS: pieces of one set worn together give more - at three pieces and again at five. The bonus shows on every piece (what you wear of it, what more would give) and on the stats page"
 msgstr ""
 
@@ -2377,6 +2381,10 @@ msgid "LIANE'S JOURNAL: ten pages lie on the floors, one per first clear, tellin
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "LOOT THAT FITS THE STAGE: a monster in the wilds drops what a monster of its level would, never more than its region's best - the Mirefen's skeletons no longer drop the mountain's finest blades, and the maze chest there holds a steel axe instead of an obsidian blade"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Lamplight"
 msgstr ""
 
@@ -2418,6 +2426,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Long messages now grow upward instead of running under the dock"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Loot That Fits"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3934,6 +3946,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "WHERE TO FIND IT: a recipe you can't make yet says where each missing material comes from, in the pack's Craft tab and at Hilda's and Vex's counters"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "WHO LIVES WHERE: each region's packs now follow its own mix (the Ash Fields are mostly orcs), and the pack nearest the town is orcs, not a nest of imps"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -10077,30 +10093,34 @@ msgid "Damage %d"
 msgstr ""
 
 #: scripts/shop_screen.gd:366
+msgid "Scales with %s"
+msgstr ""
+
+#: scripts/shop_screen.gd:368
 msgid "Armor %d"
 msgstr ""
 
-#: scripts/shop_screen.gd:373
+#: scripts/shop_screen.gd:375
 msgid "Restores %d HP"
 msgstr ""
 
-#: scripts/shop_screen.gd:375
+#: scripts/shop_screen.gd:377
 msgid "Restores %d MP"
 msgstr ""
 
-#: scripts/shop_screen.gd:376
+#: scripts/shop_screen.gd:378
 msgid "Weight %d"
 msgstr ""
 
-#: scripts/shop_screen.gd:381
+#: scripts/shop_screen.gd:383
 msgid "Needs:"
 msgstr ""
 
-#: scripts/shop_screen.gd:384
+#: scripts/shop_screen.gd:386
 msgid "  %d x %s  (have %d)"
 msgstr ""
 
-#: scripts/shop_screen.gd:391
+#: scripts/shop_screen.gd:393
 msgid "%s level %d - you are %s"
 msgstr ""
 
@@ -10284,11 +10304,11 @@ msgstr ""
 msgid "Elite %s"
 msgstr ""
 
-#: scripts/state/catalog.gd:64
+#: scripts/state/catalog.gd:72
 msgid "+%d armor"
 msgstr ""
 
-#: scripts/state/catalog.gd:65
+#: scripts/state/catalog.gd:73
 msgid "%s pieces %s"
 msgstr ""
 
