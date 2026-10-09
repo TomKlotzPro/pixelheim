@@ -38,6 +38,8 @@ static func mark(world: Node, shape: PackedVector2Array, tell: float, strike: Ca
 	edge.width = 2.0 if clear else 1.5
 	edge.default_color = UiStyle.GOLD if clear else EDGE
 	shown.add_child(edge)
+	# A warning reads in the dark as by day (PIX-221).
+	Lights.unshade(shown)
 	world.add_child(shown)
 	world.move_child(shown, 3)
 	if heard:

@@ -276,6 +276,8 @@ func _build_dungeon(data: MapData) -> Node2D:
 			"lamp":
 				dungeon.place(layer, cell, PunyDungeon.TORCH_BLOCK)
 				dungeon.place(dungeon_objects, cell, PunyDungeon.TORCH)
+				# Its fire lights the floor before it (PIX-221).
+				root.add_child(Lights.make(center(cell) + Vector2(0, TILE * 0.7), 92.0, Lights.FIRE, Lights.TORCH_ENERGY, true))
 				continue
 		dungeon.place(layer, cell, PunyDungeon.floor_tile(cell))
 		match tile:
@@ -310,7 +312,11 @@ func _build_decor(data: MapData) -> void:
 	for cell: Vector2i in buildings["pieces"]:
 		var tile: int = buildings["pieces"][cell]
 		if tile == PunyTown.WINDOW:
-			_add_glow(center(cell), 10, 0.5)
+			# A candle behind the glass lights the street a little (PIX-221).
+			_add_glow(center(cell), 10, 0.5, 40.0, Lights.WINDOW, false, Lights.WINDOW_ENERGY)
+		elif tile in PunyInterior.FIRE_TILES:
+			# A hearth or a forge warms the room it's in.
+			props.add_child(Lights.make(center(cell) + Vector2(TILE / 2.0, 4), 96.0, Lights.FIRE, Lights.FIRE_ENERGY, true))
 		elif tile == PunyTown.DOOR:
 			_add_chimney_smoke(cell)
 	chest_sprites = {}
@@ -425,11 +431,12 @@ func _add_fire(rect: Rect2i) -> Array[Node2D]:
 				fire.position = at + Vector2(0, -4)
 				fire.frame = absi(x * 3 + y) % flame.get_frame_count("default")
 				fire.play()
+				fire.material = Lights.unshaded()
 				fire.z_index = 4
 				fire.add_to_group("decor")
 				props.add_child(fire)
 				nodes.append(fire)
-				nodes.append(_add_glow(at, 14, 0.4))
+				nodes.append(_add_glow(at, 14, 0.4, 72.0, Lights.FIRE, true, Lights.FIRE_ENERGY))
 			if embers != null and (x + y) % 3 == 0:
 				var drift := AnimatedSprite2D.new()
 				drift.sprite_frames = embers
@@ -545,14 +552,21 @@ func _add_smoke(rect: Rect2i) -> void:
 static var _glow_textures := {}
 
 
-## A warm, stepped glow (the title's lamplight), shown only at night.
-func _add_glow(at: Vector2, radius: int, peak: float) -> Sprite2D:
+## A warm, stepped glow (the title's lamplight), shown only at night, and
+## with `light_radius` a real light beside it that lights what's around
+## (PIX-221), gone with it.
+func _add_glow(at: Vector2, radius: int, peak: float, light_radius := 0.0, light_color := Lights.LAMP, flicker := false, energy := 1.0) -> Sprite2D:
 	var key := "%d:%f" % [radius, peak]
 	if not _glow_textures.has(key):
 		_glow_textures[key] = TitleScene.glow_texture(radius, Color(1.0, 0.72, 0.38), peak, 4)
 	var glow := Sprite2D.new()
 	glow.texture = _glow_textures[key]
-	glow.material = TitleScene.additive()
+	# Added onto the night, never darkened by it.
+	glow.material = Lights.glow()
+	if light_radius > 0.0:
+		var lamp := Lights.make(at, light_radius, light_color, energy, flicker)
+		props.add_child(lamp)
+		glow.tree_exiting.connect(lamp.queue_free)
 	glow.position = at
 	glow.z_index = 5
 	glow.add_to_group("decor")
@@ -652,6 +666,9 @@ func _add_camp_piece(cell: Vector2i, piece: Dictionary) -> void:
 		var flame := AnimatedSprite2D.new()
 		flame.sprite_frames = _camp_torch_frames()
 		flame.play()
+		flame.material = Lights.unshaded()
+		# A camp's fire lights the camp (PIX-221).
+		root.add_child(Lights.make(Vector2(TILE / 2.0, -foot.end.y + 4), 72.0, Lights.FIRE, Lights.FIRE_ENERGY, true))
 		# Each camp's fire flickers on its own beat.
 		flame.frame = absi(hash(cell)) % CAMP_TORCH.size()
 		sprite = flame
@@ -772,8 +789,9 @@ func _add_puny_prop(prop: Dictionary) -> Node2D:
 				root.add_child(unlit)
 				var flame := AnimatedSprite2D.new()
 				lamps.append({"flame": flame, "unlit": unlit})
-				_add_glow(Vector2(prop["cell"] * TILE) + Vector2(TILE / 2.0, 4), 22, 0.35)
+				_add_glow(Vector2(prop["cell"] * TILE) + Vector2(TILE / 2.0, 4), 22, 0.35, 76.0, Lights.LAMP, true, Lights.LAMP_ENERGY)
 				flame.sprite_frames = PunyProps.animation(prop["frames"], PunyProps.LAMP_FPS)
+				flame.material = Lights.unshaded()
 				flame.centered = false
 				# Each torch flickers on its own beat.
 				flame.play()

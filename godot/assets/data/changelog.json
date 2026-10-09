@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.165.0",
+      "date": "2026-10-09",
+      "codename": "Light and Dark",
+      "notes": [
+        "The world now darkens with the hour instead of under a veil: gold dawns, orange dusks and blue nights, and lamps, lit windows, torches, camp fires and hearths truly light the dark around them",
+        "Your hero carries a lantern at night and below ground, and spells light up the ground where they land",
+        "Dungeons and caves are dark and torchlit, and the Night of Ash glows red; damage numbers, prompts, health bars and danger marks stay bright in the dark",
+        "Fixed: on an AZERTY keyboard, hints named the number keys by their symbol (\"Ampersand\"); they read as their digits again"
+      ]
+    },
+    {
       "version": "0.164.0",
       "date": "2026-10-09",
       "codename": "Goals to Chase",

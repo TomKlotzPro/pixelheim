@@ -63,3 +63,11 @@ func test_no_screen_names_a_movable_key_by_its_letter() -> void:
 				if parts[i].strip_edges().trim_prefix("\"").trim_suffix("\"") in movable:
 					bad.append("%s: %s" % [file, found.get_string()])
 	assert_eq(bad, [] as Array[String])
+
+
+## The number row reads as digits whatever the board: an AZERTY's 1 key
+## types "&" unshifted, and a hint said "Ampersand for your skill".
+func test_the_number_row_reads_as_digits() -> void:
+	Controls.learned = {KEY_1: KEY_AMPERSAND, KEY_2: 233}
+	assert_eq(Controls.key_label(KEY_1), "1")
+	assert_eq(Controls.say("{key:skill_2} for your skill"), "2 for your skill")
