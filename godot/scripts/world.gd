@@ -318,7 +318,7 @@ func spawn_enemy(species: String, cell: Vector2i, region := "", spawn_id := "", 
 	var enemy := preload("res://scripts/enemy.gd").new()
 	enemy.world = self
 	var fighter := Bestiary.spawn(species, elite, lift)
-	enemy.fighter = Bestiary.wild(fighter) if wild else fighter
+	enemy.fighter = Bestiary.wild(fighter, region) if wild else fighter
 	enemy.region = region
 	enemy.spawn_id = spawn_id
 	enemy.position = _cell_center(cell)
