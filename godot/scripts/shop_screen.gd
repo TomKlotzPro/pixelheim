@@ -434,7 +434,7 @@ static func _describe_recipe(entry: Dictionary) -> String:
 		lines.append(Text.t("  %d x %s  (have %d)") % [entry["needs"][need], Catalog.item_name(need), have])
 		# Where a missing one comes from (PIX-143).
 		if have < int(entry["needs"][need]):
-			var sources := Economy.material_sources(need)
+			var sources := Economy.material_sources(need, GameState.town_tier(), GameState.stock_stage())
 			if not sources.is_empty():
 				lines.append("    " + String(sources[0]["text"]))
 	var job: String = entry["job"]["id"]

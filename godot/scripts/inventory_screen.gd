@@ -359,7 +359,9 @@ func _about(row: Dictionary) -> String:
 			var missing: Array[String] = []
 			for need: String in entry["needs"]:
 				if GameState.pack.items.get(need, 0) < entry["needs"][need]:
-					missing.append(Economy.where_to_find(need))
+					# The nearest lead true now (PIX-184), or at least its name.
+					var lead := Economy.where_to_find(need, GameState.town_tier(), GameState.stock_stage())
+					missing.append(lead if lead != "" else Catalog.item_name(need))
 			if missing.is_empty():
 				return about + " " + String(Catalog.item(row["item_id"]).get("description", ""))
 			return about + " " + "; ".join(missing) + "."

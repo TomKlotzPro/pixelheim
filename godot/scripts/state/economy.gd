@@ -187,38 +187,208 @@ static func job_line(jobs: Dictionary, job: String) -> String:
 	return Text.t("%s %d (%d/%d XP)") % [job.capitalize(), progress["level"], progress["xp"], job_xp_to_next(progress["level"])]
 
 
-## Where a material comes from (PIX-143), best leads first: [{kind, text}],
-## kind one of drop, forage, shop, loot, hoard (once per hero).
-static func material_sources(item_id: String) -> Array[Dictionary]:
+## How far into the Reach a place lies (PIX-184), in the order a hero takes
+## it, so the nearest lead comes first: the fields, the coast, the road through
+## the Ash, the mines, the Deepwood, Greyhold, the Frostgate, then the
+## mountain's floors, and the Mirefen last.
+const REGION_STAGE := {
+	"forest": 1, "marsh": 1, "coast": 2, "seacave": 2, "ash": 3, "mines": 4, "shafts": 4,
+	"deepwood": 5, "castle": 6, "cellars": 6, "frost": 7, "icecave": 7, "mire": 12,
+}
+const MAP_STAGE := {
+	"overworld": 1, "saltmere": 2, "seacave": 2, "blackiron": 4, "shafts": 4, "deepwood": 5,
+	"greyhold": 6, "cellars": 6, "frostgate": 7, "icecave": 7, "mirefen": 12,
+}
+## At the same stage, the surer lead first.
+const KIND_ORDER := ["shop", "forage", "chest", "fishing", "quest", "drop", "loot", "patch", "hoard"]
+
+static var _maps := {}
+
+
+static func _map(map_id: String) -> MapData:
+	if not _maps.has(map_id):
+		_maps[map_id] = MapData.load_by_id(map_id)
+	return _maps[map_id]
+
+
+static func floor_stage(level: int) -> float:
+	return 8.0 + 0.3 * level
+
+
+## A place's stage: its region's where it has one, else its map's.
+static func place_stage(map_id: String, region_id := "") -> float:
+	if REGION_STAGE.has(region_id):
+		return float(REGION_STAGE[region_id])
+	if map_id.begins_with("town"):
+		return 0.0
+	return float(MAP_STAGE.get(map_id, 8))
+
+
+## The region names of `regions`, nearest first, at most three.
+static func _region_names(regions: Array) -> String:
+	var sorted := regions.duplicate()
+	sorted.sort_custom(func(a: String, b: String) -> bool: return place_stage("", a) < place_stage("", b))
+	return ", ".join(sorted.slice(0, 3).map(func(region_id: String) -> String: return Bestiary.region(region_id)["name"]))
+
+
+## "floor 4", "floors 4-6", "the mountain from floor 8": the floors listed.
+static func _floor_span(floors: Array) -> String:
+	if floors.size() == 1:
+		return Text.t("floor %d") % floors[0]
+	if int(floors[-1]) == Dungeons.floor_count():
+		return Text.t("the mountain from floor %d") % floors[0]
+	return Text.t("floors %d-%d") % [floors[0], floors[-1]]
+
+
+static func _lead(kind: String, text: String, stage: float) -> Dictionary:
+	return {"kind": kind, "text": text, "stage": stage}
+
+
+## A place's name inside a sentence: "the Frostgate Pass", not "The".
+static func _mid(name: String) -> String:
+	return "the " + name.substr(4) if name.begins_with("The ") else name
+
+
+## Where a quest's reward is earned: no nearer than its giver, nor than
+## what it asks for - Hilda pays her shard for ore from the mines.
+static func _quest_stage(quest: Dictionary) -> float:
+	var stage := place_stage(Npcs.by_id(quest["giver"], []).get("mapId", ""))
+	var objective: Dictionary = quest["objective"]
+	match String(objective["kind"]):
+		"kill":
+			stage = maxf(stage, _monster_stage(objective["monsterId"]))
+		"hunt":
+			var named := Hunts.named(objective["named"])
+			if named.has("mapId"):
+				var lair: Dictionary = named.get("lair", {"x": 0, "y": 0})
+				stage = maxf(stage, place_stage(named["mapId"], _map(named["mapId"]).region_at(Vector2i(lair["x"], lair["y"]))))
+		"deliver":
+			var leads := material_sources(objective["itemId"], 4, 99, false)
+			if not leads.is_empty():
+				stage = maxf(stage, leads[0]["stage"])
+		"relics":
+			stage = maxf(stage, float(REGION_STAGE["frost"]))
+	return stage
+
+
+## Where a material comes from (PIX-143; PIX-184 made it whole and true), the
+## nearest lead first: [{kind, text, stage}], kind one of shop, forage (a
+## region's patches and its fights), chest, fishing, quest (a reward), drop
+## (a monster's own), loot (the wilds' and the mountain's), patch (the floors')
+## and hoard (a floor's first clear). A shop counts only with it on its
+## shelves at `stock_stage` and the town's age `town_tier`.
+static func material_sources(item_id: String, town_tier := 4, stock_stage := 99, with_quests := true) -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	var combat := Bestiary._data()
+	var shop_maps := {}
+	for map_id: String in _data()["shopMaps"]:
+		shop_maps[_data()["shopMaps"][map_id]] = map_id
+	for npc: Dictionary in Npcs._data()["npcs"]:
+		if npc.has("shop"):
+			shop_maps[npc["shop"]] = npc["mapId"]
+	for shop_id: String in _data()["shops"]:
+		if item_id in shop_stock(shop_id, stock_stage, town_tier):
+			out.append(_lead("shop", Text.t("sold by %s") % shop(shop_id)["keeper"], place_stage(shop_maps.get(shop_id, ""))))
+	# A region's own material grows in its patches and turns up after its fights.
+	var home: Array = combat["regionMaterials"].keys().filter(func(region_id: String) -> bool: return combat["regionMaterials"][region_id] == item_id)
+	if not home.is_empty():
+		var nearest: float = home.map(func(region_id: String) -> float: return place_stage("", region_id)).min()
+		out.append(_lead("forage", Text.t("picked from patches and foraged after fights in %s") % _region_names(home), nearest))
+	for chest: Dictionary in Interactables._data()["chests"]:
+		if chest.get("loot", {}).get("itemId", "") == item_id:
+			var region_id: String = _map(chest["mapId"]).region_at(Vector2i(chest["x"], chest["y"]))
+			var where: String = Bestiary.region(region_id).get("name", _mid(Catalog.place_name(chest["mapId"])))
+			out.append(_lead("chest", Text.t("in a chest in %s") % where, place_stage(chest["mapId"], region_id)))
+	var waters: Array[String] = []
+	var water_stage := 99.0
+	for spot: Dictionary in combat.get("fishingSpots", []):
+		var catches: Array = spot.get("catches", combat["fishing"]["catches"])
+		if catches.any(func(entry: Array) -> bool: return entry[0] == item_id):
+			var place := _mid(Catalog.place_name(spot["mapId"]))
+			if place not in waters:
+				waters.append(place)
+			water_stage = minf(water_stage, place_stage(spot["mapId"]))
+	if not waters.is_empty():
+		out.append(_lead("fishing", Text.t("caught fishing at %s") % ", ".join(waters), water_stage))
+	for quest: Dictionary in Quests.all() if with_quests else []:
+		if quest["reward"].get("itemId", "") == item_id:
+			var giver := Npcs.by_id(quest["giver"], [])
+			out.append(_lead("quest", Text.t("%s's reward for %s") % [giver.get("name", quest["giver"]), quest["name"]], _quest_stage(quest)))
 	for monster_id: String in combat["monsters"]:
 		for carried: Dictionary in Bestiary.drops_of(monster_id):
 			if carried["itemId"] != item_id:
 				continue
 			var places := Bestiary.where_found(monster_id)
 			var odds := "every time" if float(carried["chance"]) >= 1.0 else "%d%%" % roundi(float(carried["chance"]) * 100)
-			out.append({"kind": "drop", "text": "%s, %s%s" % [
+			if carried.has("once"):
+				# Sure once a hero, then a chance (PIX-180: Fafnyr's scale).
+				odds = Text.t("sure the first time, then %d%%") % roundi(float(carried["after"]) * 100)
+			out.append(_lead("drop", "%s, %s%s" % [
 				Bestiary.monster(monster_id)["name"], odds, " (%s)" % ", ".join(places.slice(0, 3)) if not places.is_empty() else "",
-			]})
-	for region_id: String in combat["regionMaterials"]:
-		if combat["regionMaterials"][region_id] == item_id:
-			out.append({"kind": "forage", "text": Text.t("foraged after fights in %s") % Bestiary.region(region_id)["name"]})
-	for shop_id: String in _data()["shops"]:
-		if shop(shop_id).get("stock", {}).has(item_id):
-			out.append({"kind": "shop", "text": Text.t("sold by %s") % shop(shop_id)["keeper"]})
-	for pool: Dictionary in combat["dropPools"]:
-		if item_id in pool["stackIds"]:
-			out.append({"kind": "loot", "text": Text.t("now and then in loot from floor %d on") % pool["floor"]})
-			break
-	# What comes up on a line (PIX-165): fishing at Saltmere.
-	for entry: Array in combat.get("fishing", {}).get("catches", []):
-		if entry[0] == item_id:
-			out.append({"kind": "fishing", "text": "caught fishing off Saltmere's jetty and rocks"})
-	for level in range(1, combat["levels"].size() + 1):
-		if item_id in combat["levels"][level - 1].get("rewardItemIds", []):
-			out.append({"kind": "hoard", "text": Text.t("the hoard of %s") % combat["levels"][level - 1]["name"]})
+			], _monster_stage(monster_id)))
+	# The wilds' loot rolls by the foe's level, never past its region's
+	# dropFloor (PIX-183); the mountain's by the floor.
+	var looted: Array = combat["regions"].keys().filter(func(region_id: String) -> bool: return _region_loots(region_id, item_id))
+	if not looted.is_empty():
+		var nearest: float = looted.map(func(region_id: String) -> float: return place_stage("", region_id)).min()
+		out.append(_lead("loot", Text.t("now and then in loot in %s") % _region_names(looted), nearest))
+	var loot_floors: Array = range(1, Dungeons.floor_count() + 1).filter(func(level: int) -> bool:
+		return item_id in _pool_for(combat["floorPools"]["pools"], level)["stackIds"])
+	if not loot_floors.is_empty():
+		out.append(_lead("loot", Text.t("now and then in loot on %s") % _floor_span(loot_floors), floor_stage(loot_floors[0])))
+	var patch_floors: Array = range(1, Dungeons.floor_count() + 1).filter(func(level: int) -> bool: return Gathering.floor_material(level) == item_id)
+	if not patch_floors.is_empty():
+		out.append(_lead("patch", Text.t("picked from the patch on %s") % _floor_span(patch_floors), floor_stage(patch_floors[0])))
+	var hoards: Array = range(1, combat["levels"].size() + 1).filter(func(level: int) -> bool:
+		return item_id in combat["levels"][level - 1].get("rewardItemIds", []))
+	if hoards.size() == 1:
+		out.append(_lead("hoard", Text.t("the hoard of %s") % _mid(combat["levels"][hoards[0] - 1]["name"]), floor_stage(hoards[0])))
+	elif hoards.size() > 1:
+		out.append(_lead("hoard", Text.t("the hoards of floors %s") % ", ".join(hoards.map(func(level: int) -> String: return str(level))), floor_stage(hoards[0])))
+	out.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		if not is_equal_approx(a["stage"], b["stage"]):
+			return a["stage"] < b["stage"]
+		return KIND_ORDER.find(a["kind"]) < KIND_ORDER.find(b["kind"]))
 	return out
+
+
+## The loot pool a level rolls from: the deepest whose floor it has reached.
+static func _pool_for(pools: Array, at: int) -> Dictionary:
+	var pool: Dictionary = pools[0]
+	for entry: Dictionary in pools:
+		if int(entry["floor"]) <= at:
+			pool = entry
+	return pool
+
+
+## Whether a region's foes can drop `item_id` as loot: each foe that lives
+## there rolls the pool of its level, held to the region's dropFloor.
+static func _region_loots(region_id: String, item_id: String) -> bool:
+	var combat := Bestiary._data()
+	var species: Array = Bestiary.region(region_id).get("monsters", []).map(func(entry: Dictionary) -> String: return entry["monsterId"])
+	for spawn: Dictionary in combat["spawns"]:
+		if _map(spawn["mapId"]).region_at(Vector2i(spawn["x"], spawn["y"])) == region_id:
+			species.append(Bestiary.species_of(spawn, region_id))
+	for monster_id: String in species:
+		var fighter := {"id": monster_id, "level": int(Bestiary.monster(monster_id).get("level", 1))}
+		if item_id in _pool_for(combat["dropPools"], Bestiary.wild_drop_floor(region_id, fighter))["stackIds"]:
+			return true
+	return false
+
+
+## The nearest place a monster is met: its wild packs' regions, its floors.
+static func _monster_stage(monster_id: String) -> float:
+	var combat := Bestiary._data()
+	var nearest := 99.0
+	for spawn: Dictionary in combat["spawns"]:
+		var region_id: String = _map(spawn["mapId"]).region_at(Vector2i(spawn["x"], spawn["y"]))
+		if Bestiary.species_of(spawn, region_id) == monster_id:
+			nearest = minf(nearest, place_stage(spawn["mapId"], region_id))
+	for level in range(1, combat["levels"].size() + 1):
+		for encounter: Dictionary in combat["levels"][level - 1]["encounters"]:
+			if encounter["monsterId"] == monster_id:
+				nearest = minf(nearest, floor_stage(level))
+	return nearest
 
 
 ## The materials a recipe still lacks, as "2 Marsh Reed".
@@ -232,8 +402,8 @@ static func missing_names(entry: Dictionary, items: Dictionary) -> Array[String]
 
 
 ## The best lead for a material, as one line: "Wolf Pelt: Dire Wolf, 50% (...)".
-static func where_to_find(item_id: String) -> String:
-	var sources := material_sources(item_id)
+static func where_to_find(item_id: String, town_tier := 4, stock_stage := 99) -> String:
+	var sources := material_sources(item_id, town_tier, stock_stage)
 	if sources.is_empty():
 		return ""
 	return "%s: %s" % [Catalog.item_name(item_id), sources[0]["text"]]

@@ -1,6 +1,19 @@
 {
   "releases": [
     {
+      "version": "0.139.0",
+      "date": "2026-10-09",
+      "codename": "Every Lead True",
+      "notes": [
+        "EVERY LEAD TRUE: where a material comes from now names every way there is - patches and fights in its region, the floors' patches, chests, fishing holes (Linnea's icefin comes through the ice at the Frostgate), quest rewards, the monsters that carry it, loot and the floors' hoards - the nearest first",
+        "LOOT WHERE IT FALLS: wild loot names the regions that drop it (imp horn in the Mirefen, wolf pelts in the forest, marsh and on the coast), not a floor of the mountain",
+        "HONEST SHELVES: a shop is only named while it has the thing on its shelves, and Fafnyr's scale is sure the first time, then one in ten",
+        "MADE, NOT FOUND: the journal tells a crafting quest where it's made and what goes in",
+        "CURRENT WORDS: Loras wants his lute back from the troll and Mirelle two gems for her vault, as their quests say, not old prices; the Town age's goal says its fountain will still want Fafnyr's scale; a recipe's missing material always names itself",
+        "A quest's goods can't be sold, from any screen"
+      ]
+    },
+    {
       "version": "0.138.0",
       "date": "2026-10-09",
       "codename": "Past Ten",
