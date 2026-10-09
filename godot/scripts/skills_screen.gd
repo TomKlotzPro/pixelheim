@@ -61,8 +61,7 @@ func _open() -> void:
 
 
 func _layout() -> void:
-	for child in view.get_children():
-		child.queue_free()
+	Layout.clear(view)
 	cells = {}
 	var hero := GameState.hero
 	view.add_child(UiStyle.title("Skills"))

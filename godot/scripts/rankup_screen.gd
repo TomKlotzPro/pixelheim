@@ -105,8 +105,7 @@ func _process(delta: float) -> void:
 func _offer() -> void:
 	choices = Ranks.path_choices(GameState.hero)
 	selected = clampi(selected, 0, maxi(0, choices.size() - 1))
-	for child in cards.get_children():
-		child.queue_free()
+	Layout.clear(cards)
 	if choices.is_empty():
 		note.text = ""
 		get_tree().create_timer(HOLD_SECONDS, true, false, true).timeout.connect(_close)

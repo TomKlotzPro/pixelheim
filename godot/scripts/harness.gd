@@ -272,6 +272,11 @@ func _run_test_harness() -> void:
 	if args.has("ringtoss"):
 		world.add_child(preload("res://scripts/ring_toss_screen.gd").new())
 		await get_tree().create_timer(0.3).timeout
+	if args.has("waypoints"):
+		# Every waypoint found (Solid Ground): the map's list at its longest.
+		for waypoint: Dictionary in Interactables.waypoints():
+			var at := Vector2i(int(waypoint["at"]["x"]), int(waypoint["at"]["y"]))
+			Discovery.discover_around(GameState.world.discovered, MapData.load_by_id(waypoint["mapId"]), at)
 	if args.has("worldmap"):
 		# After `--cleared`: the lairs it posts are on the map.
 		var screen := preload("res://scripts/map_screen.gd").new()
@@ -646,6 +651,15 @@ func _run_test_harness() -> void:
 	var wait_index := args.find("--wait")
 	if wait_index >= 0 and wait_index + 1 < args.size():
 		await get_tree().create_timer(float(args[wait_index + 1])).timeout
+	# `overflow` (Solid Ground): every visible piece of an open screen that
+	# runs past the canvas, as OVERFLOW lines; text that grows (French is
+	# longer) mustn't push a panel off the screen. Works headless.
+	if args.has("overflow"):
+		await get_tree().process_frame
+		var overflows := Layout.overflows(get_tree().root, Touch.view_size(world))
+		for line in overflows:
+			print("%s %s" % ["OVERFLOW", line])
+		motion_report += " overflow=%d" % overflows.size()
 	# A quiet run (--headless: no window, nothing drawn) still reports; only
 	# a windowed run has a picture to save.
 	if DisplayServer.get_name() == "headless":

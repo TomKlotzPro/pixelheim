@@ -7,6 +7,11 @@ extends Screen
 
 const PORTRAIT := Rect2(8, 6, 16, 20)  # hero body within a 32px Puny idle frame
 const WINDOW := Vector2(1080, 0)
+## The window's right column: the window less its margins, the slots' column
+## and the gap between.
+const RIGHT_WIDTH := WINDOW.x - 44.0 - 560.0 - 32.0
+## Its words, inside a card's margins.
+const RIGHT_TEXT := RIGHT_WIDTH - 20.0
 
 ## A save found in this browser's web game (or passed in by the harness).
 var web_save := {}
@@ -69,8 +74,11 @@ func _open() -> void:
 	actions.add_child(UiStyle.button(Text.t("Clear slot"), _clear, "X"))
 	left.add_child(actions)
 
+	# The rest of the window, and no more (Solid Ground): its words wrap and
+	# its buttons flow onto a second line rather than widen the window.
 	var right := VBoxContainer.new()
 	right.add_theme_constant_override("separation", 10)
+	right.custom_minimum_size = Vector2(RIGHT_WIDTH, 0)
 	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	columns.add_child(right)
 	var web := PanelContainer.new()
@@ -88,16 +96,16 @@ func _open() -> void:
 			if OS.has_feature("web")
 			else "A hero from the old web edition comes across by their save code: paste it below."
 		)
-		var none := UiStyle.label(hint, 14, UiStyle.FADED)
-		none.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		web_lines.add_child(none)
+		web_lines.add_child(Layout.wrapped(UiStyle.label(hint, 14, UiStyle.FADED), RIGHT_TEXT))
 	else:
 		var found := UiStyle.label(
 			Text.t("Your web game hero %s, %d gold.") % [WebImport.describe(web_save), web_save["gold"]], 14, UiStyle.INK
 		)
-		found.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		web_lines.add_child(found)
+		web_lines.add_child(Layout.wrapped(found, RIGHT_TEXT))
 		bring_button = UiStyle.button("", _bring)
+		# "Bring <name> into slot N" runs long in French: it wraps.
+		bring_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		bring_button.custom_minimum_size.x = RIGHT_TEXT
 		if welcome:
 			# The one thing a first visit is for: make it the brightest control.
 			UiStyle.focus(bring_button)
@@ -117,8 +125,7 @@ func _open() -> void:
 	code_field.add_theme_stylebox_override("focus", UiStyle.box(UiStyle.WINDOW, UiStyle.LAMP, 6))
 	code_field.text_submitted.connect(func(_text: String) -> void: _load_code())
 	code_lines.add_child(code_field)
-	var code_actions := HBoxContainer.new()
-	code_actions.add_theme_constant_override("separation", 10)
+	var code_actions := Layout.flow()
 	load_button = UiStyle.button("", _load_code)
 	code_actions.add_child(load_button)
 	code_actions.add_child(UiStyle.button(Text.t("Copy mine"), _copy, "C"))

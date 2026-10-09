@@ -70,6 +70,26 @@ FLOWS=(
 	"motion|--map town motion|backsteps=[01]$"
 	"hounds|--map town --prologue 6|night=6 mobs=2"
 	"embers|--map town --prologue 9|night=9 mobs=3"
+	# Every screen fits the canvas in French, the longest language (PIX-258):
+	# the harness's `overflow` counts pieces running off the screen.
+	"fit-title|title overflow --lang fr|open=title_screen.*overflow=0"
+	"fit-create|create overflow --lang fr|open=create_screen.*overflow=0"
+	"fit-whatsnew|title whatsnew overflow --lang fr|overflow=0"
+	"fit-saves|--map town --keys esc,s,e overflow --lang fr|open=saves_screen.*overflow=0"
+	"fit-webhero|saves --web-save res://test/fixtures/web_save_v4.txt overflow --lang fr|open=saves_screen.*overflow=0"
+	"fit-pause|--map town --keys esc overflow --lang fr|open=pause_screen.*overflow=0"
+	"fit-options|--map town --keys esc,s,s,e overflow --lang fr|overflow=0"
+	"fit-map|--map town waypoints worldmap overflow --lang fr|open=map_screen.*overflow=0"
+	"fit-pack|--map town --keys i overflow --lang fr|open=inventory_screen.*overflow=0"
+	"fit-journal|--map town --keys q overflow --lang fr|open=journal_screen.*overflow=0"
+	"fit-skills|--map town --keys k overflow --lang fr|open=skills_screen.*overflow=0"
+	"fit-stats|--map town --keys c overflow --lang fr|open=stats_screen.*overflow=0"
+	"fit-codex|--map town --keys b overflow --lang fr|open=codex_screen.*overflow=0"
+	"fit-shop|--map town_shop shop overflow --lang fr|open=shop_screen.*overflow=0"
+	"fit-craft|--map town_alchemist shop --tab 2 overflow --lang fr|open=shop_screen.*overflow=0"
+	"fit-rankup|--map town rankup overflow --lang fr|open=rankup_screen.*overflow=0"
+	"fit-hall|--map town_hall talk --keys e,e,e overflow --lang fr|open=town_hall_screen.*overflow=0"
+	"fit-bounty|--map town --at 43,22 --cleared 4 --keys w,e overflow --lang fr|open=bounty_screen.*overflow=0"
 )
 
 failed=0

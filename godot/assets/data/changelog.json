@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.171.0",
+      "date": "2026-10-09",
+      "codename": "Everything Fits",
+      "notes": [
+        "Fixed: in French the map and the saves screen ran off the right of the screen; long lines now wrap and rows of buttons flow onto a second line, and every screen is checked to fit",
+        "Fixed: menus no longer jump for a blink when they redraw"
+      ]
+    },
+    {
       "version": "0.170.0",
       "date": "2026-10-09",
       "codename": "Impact",

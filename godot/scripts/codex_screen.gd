@@ -37,8 +37,8 @@ func _open() -> void:
 
 
 func _show() -> void:
-	for child in tabs_row.get_children() + body.get_children():
-		child.queue_free()
+	Layout.clear(tabs_row)
+	Layout.clear(body)
 	for index in TABS.size():
 		var chip := PanelContainer.new()
 		chip.add_theme_stylebox_override("panel", UiStyle.plank(index == tab, 6))

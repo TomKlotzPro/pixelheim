@@ -14,6 +14,10 @@ var cards: Array[Dictionary] = []
 var usable: Array[Dictionary] = []
 
 
+## How wide a waypoint card's words run before they wrap: the side panel's
+## width less its margins.
+const CARD_TEXT := 300.0
+
 func _open() -> void:
 	closing_actions = [&"map"]
 	layer = 5
@@ -51,11 +55,13 @@ func _open() -> void:
 		var lines := VBoxContainer.new()
 		lines.add_theme_constant_override("separation", 0)
 		card.add_child(lines)
-		lines.add_child(UiStyle.label(waypoint["name"], 16, UiStyle.INK if staffed else UiStyle.FADED))
-		lines.add_child(UiStyle.label(
+		# Wrapped to the panel (Solid Ground): a long line in French breaks
+		# instead of pushing the panel off the screen.
+		lines.add_child(Layout.wrapped(UiStyle.label(waypoint["name"], 16, UiStyle.INK if staffed else UiStyle.FADED), CARD_TEXT))
+		lines.add_child(Layout.wrapped(UiStyle.label(
 			Catalog.place_name(waypoint["mapId"]) if staffed else "Unstaffed: no one keeps this post yet",
 			12, UiStyle.FADED
-		))
+		), CARD_TEXT))
 		column.add_child(card)
 		cards.append({"card": card, "usable": staffed})
 		if staffed:
