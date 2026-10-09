@@ -2033,6 +2033,10 @@ msgid "Buying, spending a stat point, a refusal, turning a dialogue's page, taki
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "By the Hearth"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "CALM WATERS: rivers and ponds are one clean, still, glassy surface now - no speckle, no shimmer - with the foam kept where water meets land"
 msgstr ""
 
@@ -2618,6 +2622,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Fixed: menus no longer jump for a blink when they redraw"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Fixed: no more black squares around the smithy's forges or the hearths of the inn and your house; they stand against the wall now, and in the bigger houses the oven moves so both beds can be slept in"
 msgstr ""
 
 #: assets/data/changelog.json

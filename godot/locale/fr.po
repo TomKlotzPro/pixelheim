@@ -2033,6 +2033,10 @@ msgid "Buying, spending a stat point, a refusal, turning a dialogue's page, taki
 msgstr "Acheter, dépenser un point de caractéristique, un refus, tourner une page de dialogue, accepter une quête et une altération qui frappe s'entendent désormais, et chaque écran sonne à l'ouverture et à la fermeture"
 
 #: assets/data/changelog.json
+msgid "By the Hearth"
+msgstr "Au coin du feu"
+
+#: assets/data/changelog.json
 msgid "CALM WATERS: rivers and ponds are one clean, still, glassy surface now - no speckle, no shimmer - with the foam kept where water meets land"
 msgstr "EAUX CALMES : rivières et étangs forment désormais une seule surface nette, immobile et lisse comme du verre - sans mouchetures, sans miroitement - et l'écume reste là où l'eau rencontre la terre"
 
@@ -2619,6 +2623,10 @@ msgstr "Corrigé : en français, la carte et l'écran des sauvegardes déborda
 #: assets/data/changelog.json
 msgid "Fixed: menus no longer jump for a blink when they redraw"
 msgstr "Corrigé : les menus ne sautent plus un instant quand ils se redessinent"
+
+#: assets/data/changelog.json
+msgid "Fixed: no more black squares around the smithy's forges or the hearths of the inn and your house; they stand against the wall now, and in the bigger houses the oven moves so both beds can be slept in"
+msgstr "Corrigé : plus de carrés noirs autour des forges du forgeron ni des âtres de l'auberge et de votre maison ; ils sont désormais adossés au mur, et dans les grandes maisons le four change de place pour que les deux lits soient utilisables"
 
 #: assets/data/changelog.json
 msgid "Fixed: on an AZERTY keyboard, hints named the number keys by their symbol (\"Ampersand\"); they read as their digits again"
