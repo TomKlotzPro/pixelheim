@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.182.0",
+      "date": "2026-10-10",
+      "codename": "Bearing",
+      "notes": [
+        "The line above the dock says where: the next step, the place it's in and how far along you are",
+        "A gold arrow at the edge of the screen points the way while your goal is out of sight, to the person, the spot or the door that leads there; the map marks it with a gold diamond"
+      ]
+    },
+    {
       "version": "0.181.0",
       "date": "2026-10-09",
       "codename": "Begin",

@@ -29,6 +29,16 @@ var nameplate_door := Vector2i(-1, -1)
 ## The boss slayer's edge while it lasts (PIX-232): a small plate at the top
 ## left, its time running down.
 var edge_plate: PanelContainer
+## Where the hero is headed (Bearing, PIX-239): the line above the dock, the
+## map's goal and the arrow at the view's edge read it; looked at again
+## twice a second.
+const BEARING_SECONDS := 0.5
+var bearing := {}
+var _bearing_left := 0.0
+## The arrow at the view's edge (PIX-240): toward where the hero is headed
+## while that's off screen; how far in from the edge it stands.
+var arrow: Arrow
+const ARROW_INSET := 26.0
 
 
 ## The layer and its widgets, in the order they stand: the sky's tint, the
@@ -223,8 +233,13 @@ func on_hp_changed(hp: int, max_hp: int) -> void:
 ## _notification).
 func update_objective() -> void:
 	var messages: Messages = world.messages
-	var step := MainQuest.next_step(GameState.progression, GameState.settlement)
-	var text: String = step.get("text", "")
+	# Where the hero is headed (PIX-239): the followed quest or the story's
+	# next step, with its place and count; looked at twice a second.
+	_bearing_left -= get_process_delta_time()
+	if _bearing_left <= 0.0:
+		_bearing_left = BEARING_SECONDS
+		bearing = Bearing.active(GameState.progression, GameState.settlement, GameState.pack.items)
+	var text := Bearing.line(bearing)
 	if GameState.progression.prologue != Prologue.DONE:
 		text = Prologue.objective(GameState.progression.prologue, GameState.progression.prologue_doused.size(), GameState.questing.first_skill_heals())
 	if text != objective_label.text:
@@ -248,6 +263,48 @@ func update_objective() -> void:
 	if objective_box.get_meta("fading_to", -1.0) != target:
 		objective_box.set_meta("fading_to", target)
 		objective_box.create_tween().tween_property(objective_box, "modulate:a", target, 0.3)
+
+
+## The arrow at the view's edge (PIX-240): toward the bearing's spot on this
+## map, or the door that starts the way to its map, while it's off screen;
+## gone once it's in view, with nowhere to head for, on the first night
+## (which has its own steps), or with the quest marks turned off.
+func update_arrow() -> void:
+	if root == null:
+		return
+	if arrow == null:
+		arrow = Arrow.new()
+		root.add_child(arrow)
+	var target := _bearing_point()
+	var bottom: float = world.camera_rig.dock_top()
+	var area := Rect2(Vector2(ARROW_INSET, ARROW_INSET), Vector2(1280.0 - 2.0 * ARROW_INSET, bottom - 2.0 * ARROW_INSET))
+	var on_screen := Vector2.ZERO
+	if target != Vector2.INF:
+		on_screen = get_viewport().get_canvas_transform() * target
+	arrow.visible = target != Vector2.INF and not area.has_point(on_screen)
+	if not arrow.visible:
+		return
+	var from := area.get_center()
+	var heading := (on_screen - from).normalized()
+	arrow.position = Arrow.edge_point(area, from, heading).round()
+	arrow.rotation = heading.angle()
+
+
+## Where the arrow points in the world, or Vector2.INF for nowhere.
+func _bearing_point() -> Vector2:
+	if bearing.is_empty() or not GameState.settings.quest_marks or GameState.progression.prologue != Prologue.DONE:
+		return Vector2.INF
+	# A person is wherever they stand now: a keeper's tent on the square
+	# before the inn is rebuilt, a wanderer on their round.
+	if String(bearing["who"]) != "":
+		for villager in get_tree().get_nodes_in_group("npcs"):
+			if not villager.away and String(villager.data.get("id", "")) == bearing["who"]:
+				return villager.global_position
+	var here: String = world.map.id
+	if bearing["map_id"] == here:
+		return MapView.center(bearing["cell"]) if bearing["cell"] != Bearing.NOWHERE else Vector2.INF
+	var door := Bearing.way_out(here, String(bearing["map_id"]))
+	return MapView.center(door) if door != Bearing.NOWHERE else Vector2.INF
 
 
 ## The nameplate of the sign the hero stands near (two tiles or so): the
@@ -283,3 +340,28 @@ func update_nameplate() -> void:
 	var top := Vector2(nameplate_door.x * TILE + TILE / 2.0, nameplate_door.y * TILE - ShopSign.BOARD.y - 10)
 	var screen := get_viewport().get_canvas_transform() * top
 	nameplate.position = (screen - Vector2(nameplate.size.x / 2.0, nameplate.size.y)).round()
+
+
+## The arrow itself: a small gold head pointing right (the HUD turns it),
+## rimmed in the night so it reads on any ground.
+class Arrow extends Control:
+	## Long and narrow, so it reads as pointing whichever way it's turned.
+	const SHAPE := [Vector2(12, 0), Vector2(-7, -6), Vector2(-7, 6)]
+	const RIM := [Vector2(16, 0), Vector2(-9, -8), Vector2(-9, 8)]
+
+	func _init() -> void:
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	func _draw() -> void:
+		draw_colored_polygon(PackedVector2Array(RIM), UiStyle.NIGHT)
+		draw_colored_polygon(PackedVector2Array(SHAPE), Color("f2c14e"))
+
+	## Where a ray from `from` (inside `area`) along `heading` leaves it.
+	static func edge_point(area: Rect2, from: Vector2, heading: Vector2) -> Vector2:
+		var half := area.size / 2.0
+		var reach := INF
+		if absf(heading.x) > 0.0001:
+			reach = minf(reach, half.x / absf(heading.x))
+		if absf(heading.y) > 0.0001:
+			reach = minf(reach, half.y / absf(heading.y))
+		return from + heading * reach

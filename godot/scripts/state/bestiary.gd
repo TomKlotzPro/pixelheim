@@ -136,36 +136,53 @@ static func drops_of(monster_id: String) -> Array:
 
 static var _found := {}
 static var _found_floors := {}
+## kind -> the first spawn whose pack is of it: {mapId, x, y} (PIX-239).
+static var _homes := {}
 
 
 ## Where a monster lives: the wild regions with a pack of it, then the floors
 ## that field it (for "where to find" hints).
 static func where_found(monster_id: String, with_floors := true) -> Array[String]:
-	if _found.is_empty() and _found_floors.is_empty():
-		var maps := {}
-		for spawn: Dictionary in _data()["spawns"]:
-			if not maps.has(spawn["mapId"]):
-				maps[spawn["mapId"]] = MapData.load_by_id(spawn["mapId"])
-			var region_id: String = maps[spawn["mapId"]].region_at(Vector2i(spawn["x"], spawn["y"]))
-			var species := species_of(spawn, region_id)
-			var name: String = region(region_id).get("name", region_id)
-			var places: Array = _found.get(species, [])
-			if name not in places:
-				places.append(name)
-			_found[species] = places
-		for level in range(1, _data()["levels"].size() + 1):
-			for encounter: Dictionary in _data()["levels"][level - 1]["encounters"]:
-				var places: Array = _found_floors.get(encounter["monsterId"], [])
-				var floor_name := Text.t("floor %d") % level
-				if floor_name not in places:
-					places.append(floor_name)
-				_found_floors[encounter["monsterId"]] = places
+	_learn_places()
 	var out: Array[String] = []
 	out.assign(_found.get(monster_id, []))
 	# The mountain's floors, once there's a way up (PIX-203).
 	if with_floors:
 		out.append_array(_found_floors.get(monster_id, []))
 	return out
+
+
+## The first spawn in the wild whose pack is of `monster_id`: {mapId, x, y},
+## or {} when none is (the way to a hunting quest, PIX-239).
+static func home_of(monster_id: String) -> Dictionary:
+	_learn_places()
+	return _homes.get(monster_id, {})
+
+
+## Who lives where, learned once from the spawns and the floors.
+static func _learn_places() -> void:
+	if not (_found.is_empty() and _found_floors.is_empty()):
+		return
+	var maps := {}
+	for spawn: Dictionary in _data()["spawns"]:
+		if not maps.has(spawn["mapId"]):
+			maps[spawn["mapId"]] = MapData.load_by_id(spawn["mapId"])
+		var region_id: String = maps[spawn["mapId"]].region_at(Vector2i(spawn["x"], spawn["y"]))
+		var species := species_of(spawn, region_id)
+		var name: String = region(region_id).get("name", region_id)
+		var places: Array = _found.get(species, [])
+		if name not in places:
+			places.append(name)
+		_found[species] = places
+		if not _homes.has(species):
+			_homes[species] = {"mapId": spawn["mapId"], "x": int(spawn["x"]), "y": int(spawn["y"])}
+	for level in range(1, _data()["levels"].size() + 1):
+		for encounter: Dictionary in _data()["levels"][level - 1]["encounters"]:
+			var places: Array = _found_floors.get(encounter["monsterId"], [])
+			var floor_name := Text.t("floor %d") % level
+			if floor_name not in places:
+				places.append(floor_name)
+			_found_floors[encounter["monsterId"]] = places
 
 
 ## Weighted as the region says (PIX-183: an Ash Fields spawn is twice as
