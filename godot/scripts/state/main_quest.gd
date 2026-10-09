@@ -86,7 +86,16 @@ static func objective(progression: ProgressionState, settlement: SettlementState
 	return Text.t("Next: %s") % step["text"] if not step.is_empty() else ""
 
 
-## What the elder and the mayor say about it.
-static func hint(progression: ProgressionState, settlement: SettlementState) -> String:
+## What the elder and the mayor say about it. Maren says it in her own
+## words where the step names her (PIX-204), or nothing rather than "ask
+## Maren" to her face.
+static func hint(progression: ProgressionState, settlement: SettlementState, speaker := "") -> String:
 	var step := next_step(progression, settlement)
-	return String(step["hint"]) if not step.is_empty() else String(_doc()["done"])
+	if step.is_empty():
+		return String(_doc()["done"])
+	if speaker == "elder":
+		if step.has("elderHint"):
+			return String(step["elderHint"])
+		if "Maren" in String(step["hint"]):
+			return ""
+	return String(step["hint"])

@@ -1151,7 +1151,7 @@
       "weight": 1,
       "value": 0,
       "quest": true,
-      "description": "A cook's ladle, black iron, the handle wrapped in sailcloth. Tam carried it up the mountain fifty years ago. One of the five relics."
+      "description": "A cook's ladle, black iron, the handle wrapped in sailcloth. Tam carried it up the mountain fifty years ago. One of the relics the five left behind."
     },
     "oilskin_hood": {
       "name": "Oilskin Hood",
@@ -1264,7 +1264,7 @@
       "weight": 3,
       "value": 0,
       "quest": true,
-      "description": "An ingot from the seam the Ember Seal was cast from, stamped with five marks. The five took a cartload; this one waited. One of the five relics."
+      "description": "An ingot from the seam the Ember Seal was cast from, stamped with five marks. The five took a cartload; this one waited. One of the relics the five left behind."
     },
     "canary": {
       "name": "Pell's Canary",
@@ -1383,7 +1383,7 @@
       "weight": 8,
       "value": 0,
       "quest": true,
-      "description": "A bronze-rimmed shield, dented and polished. Oskar left it at Greyhold when he climbed the mountain: \"Keep it till I'm home.\" One of the five relics."
+      "description": "A bronze-rimmed shield, dented and polished. Oskar left it at Greyhold when he climbed the mountain: \"Keep it till I'm home.\" One of the relics the five left behind."
     },
     "fenwicks_locket": {
       "name": "Fenwick's Locket",
@@ -1534,7 +1534,7 @@
       "weight": 2,
       "value": 0,
       "quest": true,
-      "description": "A brass storm-lantern, its glass etched with stars. Liane lit it the night before the climb so the five could find their way home. One of the five relics."
+      "description": "A brass storm-lantern, its glass etched with stars. Liane lit it the night before the climb so the five could find their way home. One of the relics the five left behind."
     },
     "frost_hood": {
       "name": "Frostweave Hood",

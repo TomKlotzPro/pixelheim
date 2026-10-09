@@ -594,7 +594,7 @@ func _primary() -> void:
 func _craft(entry: Dictionary) -> void:
 	var job: String = entry["job"]["id"]
 	if job not in _jobs_here():
-		status.text = Economy.station_hint(job) + "."
+		status.text = Economy.station_hint(job, Town.done_projects(GameState.settlement)) + "."
 		return
 	if not Economy.can_craft(entry, GameState.pack.items, GameState.hero.jobs):
 		var level := int(entry["job"]["level"])

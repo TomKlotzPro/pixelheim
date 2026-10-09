@@ -33,7 +33,7 @@ func test_the_datas_words_translate_as_they_load_and_ids_never_do() -> void:
 	assert_eq(quest["giver"], "innkeeper", "an id stays an id")
 	assert_eq(quest["objective"]["monsterId"], "slime")
 	assert_eq(Economy._data()["shops"]["odo"]["keeper"], "Marchand Odo")
-	assert_eq(quest["brief"], "Sela's cellar smells of slime. Thin the forest's supply of them.", "untranslated words stay English")
+	assert_eq(quest["brief"], "Slimes have crept into what's left of Sela's stores. Thin the forest's supply of them.", "untranslated words stay English")
 
 
 func test_a_format_is_translated_before_it_is_filled() -> void:

@@ -4,7 +4,7 @@
       "id": "slime_trouble",
       "giver": "innkeeper",
       "name": "Slime Trouble",
-      "brief": "Sela's cellar smells of slime. Thin the forest's supply of them.",
+      "brief": "Slimes have crept into what's left of Sela's stores. Thin the forest's supply of them.",
       "objective": {
         "kind": "kill",
         "monsterId": "slime",
@@ -16,7 +16,7 @@
         "xp": 30
       },
       "accepted": "Three fewer slimes in the world and there's coin in it for you.",
-      "completed": "The cellar thanks you. So does my nose. Here - you've earned it."
+      "completed": "The stores thank you. So does my nose. Here - you've earned it."
     },
     {
       "id": "sela_rum",
@@ -76,7 +76,7 @@
     {
       "id": "maren_relics",
       "giver": "elder",
-      "name": "The Five Relics",
+      "name": "Relics of the Five",
       "brief": "Only what the five climbers left behind will open the mountain's gate.",
       "objective": {
         "kind": "relics",
@@ -1184,7 +1184,8 @@
               "questId": "maren_relics"
             },
             "text": "Ask Maren about the barred mountain gate",
-            "hint": "The mountain's gate has been barred since the fire. Maren knows why, and what opens it - ask her."
+            "hint": "The mountain's gate has been barred since the fire. Maren knows why, and what opens it - ask her.",
+            "elderHint": "The gate's been barred since the fire. Sit a moment, courier - I'll tell you why, and what opens it."
           },
           {
             "id": "rebuild",
@@ -1203,13 +1204,13 @@
               "questId": "herbs_for_vex"
             },
             "text": "Brew a first potion at Vex's cauldron",
-            "hint": "Vex behind the BREWS door will show you the cauldron. Potions you brew cost you a herb, not a fortune.",
+            "hint": "Vex will show you the cauldron - at her stall on the square, or behind the BREWS door once it stands again. Potions you brew cost you a herb, not a fortune.",
             "optional": true
           }
         ]
       },
       {
-        "title": "The Five Relics",
+        "title": "Relics of the Five",
         "steps": [
           {
             "id": "ladle",
@@ -1278,7 +1279,8 @@
               "questId": "maren_relics"
             },
             "text": "Bring the four relics home to Maren",
-            "hint": "Bring them to me, all four, and I'll open the gate with the last of them: my promise."
+            "hint": "Maren waits for all four relics. She'll open the gate with the last of them: her promise.",
+            "elderHint": "Bring them to me, all four, and I'll open the gate with the last of them: my promise."
           }
         ]
       },
@@ -1311,7 +1313,8 @@
               "sceneId": "maren_graves"
             },
             "text": "Ask Maren about the graves in the crypt",
-            "hint": "Three names on a grave in the crypt, and a fourth chiselled away. Maren knew them, I think."
+            "hint": "Three names on a grave in the crypt, and a fourth chiselled away. Maren knew them, I think.",
+            "elderHint": "You found their names in the crypt. Ask, then. I owe you that much."
           },
           {
             "id": "watchtower",
@@ -1372,7 +1375,8 @@
               "sceneId": "maren_confession"
             },
             "text": "Tell Maren what Fafnyr said about the voice below",
-            "hint": "Fafnyr spoke of a voice below. Maren will want to hear it - and she owes you a story."
+            "hint": "Fafnyr spoke of a voice below. Maren will want to hear it - and she owes you a story.",
+            "elderHint": "Fafnyr spoke to you before he fell. Tell me what he said - and I'll tell you what I owe you."
           },
           {
             "id": "stair",

@@ -25,20 +25,20 @@ msgid "A blessed blow of righteous strength."
 msgstr "Un coup béni, d'une force vertueuse."
 
 #: assets/data/catalog.json
-msgid "A brass storm-lantern, its glass etched with stars. Liane lit it the night before the climb so the five could find their way home. One of the five relics."
-msgstr "Une lampe-tempête en laiton, au verre gravé d'étoiles. Liane l'a allumée la veille de l'ascension, pour que les cinq retrouvent le chemin du retour. L'une des cinq reliques."
+msgid "A brass storm-lantern, its glass etched with stars. Liane lit it the night before the climb so the five could find their way home. One of the relics the five left behind."
+msgstr "Une lampe-tempête en laiton, au verre gravé d'étoiles. Liane l'a allumée la veille de l'ascension, pour que les cinq retrouvent le chemin du retour. L'une des reliques que les cinq ont laissées derrière eux."
 
 #: assets/data/catalog.json
-msgid "A bronze-rimmed shield, dented and polished. Oskar left it at Greyhold when he climbed the mountain: \"Keep it till I'm home.\" One of the five relics."
-msgstr "Un bouclier cerclé de bronze, cabossé et poli. Oskar l'a laissé à Greyhold quand il a gravi la montagne : « Garde-le jusqu'à mon retour. » L'une des cinq reliques."
+msgid "A bronze-rimmed shield, dented and polished. Oskar left it at Greyhold when he climbed the mountain: \"Keep it till I'm home.\" One of the relics the five left behind."
+msgstr "Un bouclier cerclé de bronze, cabossé et poli. Oskar l'a laissé à Greyhold quand il a gravi la montagne : « Garde-le jusqu'à mon retour. » L'une des reliques que les cinq ont laissées derrière eux."
 
 #: assets/data/catalog.json
 msgid "A coated dagger that leaves the enemy poisoned."
 msgstr "Une dague enduite qui laisse l'ennemi empoisonné."
 
 #: assets/data/catalog.json
-msgid "A cook's ladle, black iron, the handle wrapped in sailcloth. Tam carried it up the mountain fifty years ago. One of the five relics."
-msgstr "Une louche de cuisinier en fer noir, le manche entouré de toile à voile. Tam l'a emportée sur la montagne il y a cinquante ans. L'une des cinq reliques."
+msgid "A cook's ladle, black iron, the handle wrapped in sailcloth. Tam carried it up the mountain fifty years ago. One of the relics the five left behind."
+msgstr "Une louche de cuisinier en fer noir, le manche entouré de toile à voile. Tam l'a emportée sur la montagne il y a cinquante ans. L'une des reliques que les cinq ont laissées derrière eux."
 
 #: assets/data/catalog.json
 msgid "A creeping rot that poisons for several turns."
@@ -153,8 +153,8 @@ msgid "Aimed Shot"
 msgstr "Tir ajusté"
 
 #: assets/data/catalog.json
-msgid "An ingot from the seam the Ember Seal was cast from, stamped with five marks. The five took a cartload; this one waited. One of the five relics."
-msgstr "Un lingot du filon dont fut coulé le Sceau de braise, frappé de cinq marques. Les cinq en ont emporté une charrette ; celui-ci a attendu. L'une des cinq reliques."
+msgid "An ingot from the seam the Ember Seal was cast from, stamped with five marks. The five took a cartload; this one waited. One of the relics the five left behind."
+msgstr "Un lingot du filon dont fut coulé le Sceau de braise, frappé de cinq marques. Les cinq en ont emporté une charrette ; celui-ci a attendu. L'une des reliques que les cinq ont laissées derrière eux."
 
 #: assets/data/catalog.json
 msgid "An iron-bound box with a caravan's mark. Something has chewed one corner."
@@ -2497,6 +2497,10 @@ msgid "In Their Own Words"
 msgstr "De leur propre voix"
 
 #: assets/data/changelog.json
+msgid "In the Ashes, Hilda's and Vex's crafts are at their stalls on the square; Sela's slimes are in her stores, Wren lost her stable to the fire, and Ana warns of the packs, not the grass"
+msgstr "Dans les Cendres, la forge de Hilda et le chaudron de Vex sont à leurs étals sur la place ; les gelées de Sela sont dans ses réserves, Wren a perdu son écurie dans l'incendie, et Ana met en garde contre les meutes, pas l'herbe"
+
+#: assets/data/changelog.json
 msgid "In the browser, the game saves the moment its tab is hidden or closed, and a private window that won't keep saves says so on the title"
 msgstr "Dans le navigateur, le jeu sauvegarde dès que son onglet est masqué ou fermé, et une fenêtre privée qui ne garde pas les sauvegardes le signale sur l'écran titre"
 
@@ -3733,6 +3737,10 @@ msgid "THE TRUE STRIDE: the hero's legs scissor now - one swings ahead, one trai
 msgstr "LA VRAIE FOULÉE : les jambes du héros font désormais des ciseaux - l'une part en avant, l'autre traîne derrière, écartées en vraie profondeur - en plus du sautillement et de l'inclinaison"
 
 #: assets/data/changelog.json
+msgid "THE TRUTH OF IT: Maren keeps the barred gate's words until it opens - no more talk of an open gate north of the bridge the morning after the fire - and says the next step in her own voice instead of telling you to ask her"
+msgstr "LA VÉRITÉ DES CHOSES : Maren garde les mots de la porte barrée jusqu'à son ouverture - plus question d'une porte ouverte au nord du pont au lendemain de l'incendie - et annonce l'étape suivante de sa propre voix au lieu de vous dire de lui demander"
+
+#: assets/data/changelog.json
 msgid "THE VIEW CLEARS THE DOCK: the camera centres your hero in the world above the dock, not behind it"
 msgstr "LA VUE DÉGAGE LA BARRE : la caméra centre votre héros dans le monde au-dessus de la barre, et non derrière elle"
 
@@ -3925,6 +3933,10 @@ msgid "The Third Dimension"
 msgstr "La Troisième Dimension"
 
 #: assets/data/changelog.json
+msgid "The Truth of It"
+msgstr "La vérité des choses"
+
+#: assets/data/changelog.json
 msgid "The Village Ledger"
 msgstr "Le Registre du village"
 
@@ -4059,6 +4071,10 @@ msgstr "Le mannequin et le portrait de la barre le portent aussi"
 #: assets/data/changelog.json
 msgid "The passes are fast-travel waypoints the moment you lay eyes on them"
 msgstr "Les cols deviennent des relais de voyage rapide dès que vous les apercevez"
+
+#: assets/data/changelog.json
+msgid "The quest is now Relics of the Five - four to find, the five's to bring home - and the town's goals and the bounty board no longer offer floors behind a barred gate"
+msgstr "La quête s'appelle désormais Les Reliques des Cinq - quatre à trouver, celles des cinq à ramener - et les objectifs du village comme le tableau des primes ne proposent plus d'étages derrière une porte barrée"
 
 #: assets/data/changelog.json
 msgid "The region chapters' quests and bosses pay half the XP they did, so a hero arrives at each one about its match"
@@ -6665,8 +6681,16 @@ msgid "Craft at Hilda's forge - the FORGE door in town"
 msgstr "Fabriquez à la forge de Hilda - la porte FORGE en ville"
 
 #: assets/data/economy.json
+msgid "Craft at Hilda's stall on the square"
+msgstr "Fabriquer à l'étal de Hilda, sur la place"
+
+#: assets/data/economy.json
 msgid "Craft at Vex's cauldron - the BREWS door in town"
 msgstr "Fabriquez au chaudron de Vex - la porte POTIONS en ville"
+
+#: assets/data/economy.json
+msgid "Craft at Vex's stall on the square"
+msgstr "Fabriquer à l'étal de Vex, sur la place"
 
 #: assets/data/economy.json
 msgid "Deep-forged"
@@ -7129,8 +7153,8 @@ msgid "Loras the Bard"
 msgstr "Loras le barde"
 
 #: assets/data/npcs.json
-msgid "Lost my stable to the ash years back. Been walking travelers' horses by the gate ever since."
-msgstr "J'ai perdu mon écurie dans les cendres il y a des années. Depuis, je promène les chevaux des voyageurs près de la porte."
+msgid "Lost my stable to the fire. Been walking travelers' horses by the gate ever since."
+msgstr "J'ai perdu mon écurie dans l'incendie. Depuis, je promène les chevaux des voyageurs près de la porte."
 
 #: assets/data/npcs.json
 msgid "Mabel the Sutler"
@@ -7229,12 +7253,24 @@ msgid "Pixelheim runs on two things: stubbornness and gold. The first we have. B
 msgstr "Pixelheim marche à deux choses : l'entêtement et l'or. Le premier, nous l'avons. Apportez le second à mon registre."
 
 #: assets/data/npcs.json
+msgid "Pixelheim stands again, and the mountain doesn't care. Its gate stays barred until what the five left behind comes home."
+msgstr "Pixelheim est de nouveau debout, et la montagne s'en moque. Sa porte reste barrée tant que ce que les cinq ont laissé derrière eux n'est pas revenu."
+
+#: assets/data/npcs.json
+msgid "Pixelheim stands again. Whatever lives on that mountain has noticed."
+msgstr "Pixelheim est de nouveau debout. Ce qui vit sur cette montagne l'a remarqué."
+
+#: assets/data/npcs.json
 msgid "Put two gems in a vault worth guarding, and I will make Pixelheim's money WORK."
 msgstr "Mettez deux gemmes dans un coffre digne d'être gardé, et je ferai TRAVAILLER l'argent de Pixelheim."
 
 #: assets/data/npcs.json
 msgid "Quartermaster Brann"
 msgstr "Le quartier-maître Brann"
+
+#: assets/data/npcs.json
+msgid "Rebuild us, bring the relics home, and then we talk about the mountain. In that order, courier."
+msgstr "Rebâtissez-nous, ramenez les reliques, et ensuite nous parlerons de la montagne. Dans cet ordre, messager."
 
 #: assets/data/npcs.json
 msgid "Roll up, roll up! Three rings, three pegs - land two and the prize is yours!"
@@ -7251,6 +7287,10 @@ msgstr "Cordage, goudron et huile à lampe. Et du poisson. Surtout du poisson."
 #: assets/data/npcs.json
 msgid "Saltmere's small, but she's honest. Mostly. The crabs aren't, and neither are the smugglers."
 msgstr "Saltmere est petite, mais honnête. Presque. Les crabes, non, et les contrebandiers non plus."
+
+#: assets/data/npcs.json
+msgid "Saltmere, Blackiron, Greyhold, the Frostgate. The five scattered their keepsakes across the Reach before they climbed."
+msgstr "Saltmere, Fernoir, Greyhold, la Porte-Givre. Les cinq ont semé leurs souvenirs à travers la Marche avant de monter."
 
 #: assets/data/npcs.json
 msgid "Sela's set up a tent on the square for the hurt. Go. I'll follow when my legs remember how."
@@ -7293,8 +7333,8 @@ msgid "Smith Hilda"
 msgstr "Hilda la forgeronne"
 
 #: assets/data/npcs.json
-msgid "Stay on the roads if you value your ankles. The tufty grass BITES."
-msgstr "Restez sur les routes si vous tenez à vos chevilles. Les touffes d'herbe MORDENT."
+msgid "Stay on the roads if you value your ankles. The packs in the fields don't wait for introductions."
+msgstr "Restez sur les routes si vous tenez à vos chevilles. Les meutes des champs n'attendent pas les présentations."
 
 #: assets/data/npcs.json
 msgid "Tag! You're it! ...You're not going to chase me, are you. Grown-ups never chase."
@@ -7349,8 +7389,8 @@ msgid "The fountain spooks the young horses. They'll learn. So did I."
 msgstr "La fontaine affole les jeunes chevaux. Ils apprendront. J'ai bien appris, moi."
 
 #: assets/data/npcs.json
-msgid "The gate to the Ashen Mountain is north, past the bridge. Ten floors of teeth and worse manners."
-msgstr "La porte de la Montagne des Cendres est au nord, après le pont. Dix étages de crocs, et des manières pires encore."
+msgid "The gate stands open now. Ten floors of teeth and worse manners, and Fafnyr asleep on the last of them."
+msgstr "La porte est ouverte, désormais. Dix étages de crocs et de mauvaises manières, et Fafnyr endormi sur le dernier."
 
 #: assets/data/npcs.json
 msgid "The hall stood. Stone does that. Everything else is cinders and stubbornness."
@@ -7387,10 +7427,6 @@ msgstr "Le marchand coupe ses élixirs à l'eau, je vous le jure. Achetez plutô
 #: assets/data/npcs.json
 msgid "The mine pays in iron, I sell in iron."
 msgstr "La mine paie en fer, je vends en fer."
-
-#: assets/data/npcs.json
-msgid "The mountain burned before you were born. We rebuilt the village; the monsters rebuilt too."
-msgstr "La montagne a brûlé avant votre naissance. Nous avons rebâti le village ; les monstres, eux aussi, se sont refait une santé."
 
 #: assets/data/npcs.json
 msgid "The post runs like a dream. Fast travel drops you right at the square now - no gate queue."
@@ -7825,6 +7861,10 @@ msgid "Fafnyr spoke of a voice below. Maren will want to hear it - and she owes 
 msgstr "Fafnyr a parlé d'une voix venue d'en bas. Maren voudra l'entendre - et elle vous doit une histoire."
 
 #: assets/data/progression.json
+msgid "Fafnyr spoke to you before he fell. Tell me what he said - and I'll tell you what I owe you."
+msgstr "Fafnyr vous a parlé avant de tomber. Dites-moi ce qu'il a dit - et je vous dirai ce que je vous dois."
+
+#: assets/data/progression.json
 msgid "Fafnyr will come back for what's left of us. Unless someone climbs."
 msgstr "Fafnyr reviendra chercher ce qui reste de nous. À moins que quelqu'un ne monte là-haut."
 
@@ -8185,6 +8225,10 @@ msgid "Magus"
 msgstr "Magister"
 
 #: assets/data/progression.json
+msgid "Maren waits for all four relics. She'll open the gate with the last of them: her promise."
+msgstr "Maren attend les quatre reliques. Elle ouvrira la porte avec la dernière : sa promesse."
+
+#: assets/data/progression.json
 msgid "Marsh reeds brought"
 msgstr "Roseaux des marais apportés"
 
@@ -8377,6 +8421,10 @@ msgid "Relics brought home"
 msgstr "Reliques rapportées"
 
 #: assets/data/progression.json
+msgid "Relics of the Five"
+msgstr "Les Reliques des Cinq"
+
+#: assets/data/progression.json
 msgid "Rimefang laid low"
 msgstr "Crocgivre terrassé"
 
@@ -8433,10 +8481,6 @@ msgid "Sela keeps the inn - or a tent on the square, if that's all there is. She
 msgstr "Sela tient l'auberge - ou une tente sur la place, s'il ne reste que ça. Elle a toujours du travail à proposer."
 
 #: assets/data/progression.json
-msgid "Sela's cellar smells of slime. Thin the forest's supply of them."
-msgstr "La cave de Sela sent la gelée. Éclaircissez les rangs de celles de la forêt."
-
-#: assets/data/progression.json
 msgid "Set Fafnyr's scale in a fountain on the square"
 msgstr "Placer l'écaille de Fafnyr dans une fontaine sur la place"
 
@@ -8467,6 +8511,10 @@ msgstr "Ennuis gluants"
 #: assets/data/progression.json
 msgid "Slimes flattened"
 msgstr "Gelées écrasées"
+
+#: assets/data/progression.json
+msgid "Slimes have crept into what's left of Sela's stores. Thin the forest's supply of them."
+msgstr "Des gelées se sont glissées dans ce qui reste des réserves de Sela. Éclaircissez les rangs de celles de la forêt."
 
 #: assets/data/progression.json
 msgid "Slimes nest in the fields east of the town gate. Three of them, and Sela pays."
@@ -8629,10 +8677,6 @@ msgid "The First Deposit"
 msgstr "Le Premier Dépôt"
 
 #: assets/data/progression.json
-msgid "The Five Relics"
-msgstr "Les Cinq Reliques"
-
-#: assets/data/progression.json
 msgid "The Frostgate road climbs north out of the Ash Fields. Aske the hermit has kept Liane's door for fifty years."
 msgstr "La route de la Porte-Givre monte vers le nord depuis les Champs de Cendres. Aske l'ermite garde la porte de Liane depuis cinquante ans."
 
@@ -8733,10 +8777,6 @@ msgid "The cave mouth is under the western headland, past the lagoon. Mind the s
 msgstr "L'entrée de la grotte est sous le cap ouest, après le lagon. Attention aux marches. Et revenez."
 
 #: assets/data/progression.json
-msgid "The cellar thanks you. So does my nose. Here - you've earned it."
-msgstr "La cave vous remercie. Mon nez aussi. Tenez, vous l'avez bien mérité."
-
-#: assets/data/progression.json
 msgid "The fen's ghosts bring a fever in on the mist. Lay three of them and I can brew against it."
 msgstr "Les fantômes du marais apportent une fièvre avec la brume. Apaisez-en trois, et je pourrai préparer un remède."
 
@@ -8747,6 +8787,10 @@ msgstr "Le feu s'éteint en sifflant."
 #: assets/data/progression.json
 msgid "The gate's barred, courier. The old wardens sealed it when the five never came home, and only what the five left behind will open it: Tam's ladle in Saltmere, the black iron at Blackiron, Oskar's shield at Greyhold and Liane's lantern on the Frostgate. Bring them home to me."
 msgstr "La porte est barrée, messager. Les anciens gardiens l'ont scellée quand les cinq ne sont pas revenus, et seul ce qu'ils ont laissé derrière eux peut l'ouvrir : la louche de Tam à Saltmere, le fer noir à Fernoir, le bouclier d'Oskar à Greyhold et la lanterne de Liane sur la Porte-Givre. Ramenez-les-moi."
+
+#: assets/data/progression.json
+msgid "The gate's been barred since the fire. Sit a moment, courier - I'll tell you why, and what opens it."
+msgstr "La porte est barrée depuis l'incendie. Asseyez-vous un instant, messager - je vais vous dire pourquoi, et ce qui l'ouvre."
 
 #: assets/data/progression.json
 msgid "The gate's open. The Ashen Mountain stands north of town, past the bridge; its first floor is the Mossy Cellar."
@@ -8815,6 +8859,10 @@ msgstr "La route est dégagée. Mes cavaliers vous ont appris à voyager léger�
 #: assets/data/progression.json
 msgid "The slime was carrying a traveller's pouch: a health potion. {key:inventory} opens your pack."
 msgstr "La gelée transportait une bourse de voyageur : une potion de soin. {key:inventory} ouvre votre sac."
+
+#: assets/data/progression.json
+msgid "The stores thank you. So does my nose. Here - you've earned it."
+msgstr "Les réserves vous remercient. Mon nez aussi. Tenez, vous l'avez bien mérité."
 
 #: assets/data/progression.json
 msgid "The yard's quiet. First time in years. Now the keep: its door goes down to the cellars, and something down there won't let anyone near the captain's hall."
@@ -8977,10 +9025,6 @@ msgid "Ulla's coin for my friends' necks. ...Fine. It's your road, not mine."
 msgstr "L'argent d'Ulla contre le cou de mes amis. ...Soit. C'est votre route, pas la mienne."
 
 #: assets/data/progression.json
-msgid "Vex behind the BREWS door will show you the cauldron. Potions you brew cost you a herb, not a fortune."
-msgstr "Vex, derrière la porte POTIONS, vous montrera le chaudron. Les potions que vous préparez vous coûtent une herbe, pas une fortune."
-
-#: assets/data/progression.json
 msgid "Vex in Pixelheim pays well for frost lilies."
 msgstr "Vex, à Pixelheim, paie bien les lys de givre."
 
@@ -8991,6 +9035,10 @@ msgstr "Vex veut du verre de mer de Saltmere pour des potions plus limpides."
 #: assets/data/progression.json
 msgid "Vex wants proof you can work a cauldron before she trusts you with the good stuff."
 msgstr "Vex veut la preuve que vous savez manier un chaudron avant de vous confier les bonnes choses."
+
+#: assets/data/progression.json
+msgid "Vex will show you the cauldron - at her stall on the square, or behind the BREWS door once it stands again. Potions you brew cost you a herb, not a fortune."
+msgstr "Vex vous montrera le chaudron - à son étal sur la place, ou derrière la porte POTIONS une fois l'échoppe rebâtie. Les potions que vous préparez vous coûtent une herbe, pas une fortune."
 
 #: assets/data/progression.json
 msgid "Wagon brought down"
@@ -9079,6 +9127,10 @@ msgstr "Vous avez porté de mauvaises nouvelles bien loin, et vous n'avez pas fu
 #: assets/data/progression.json
 msgid "You fill a bucket at the well."
 msgstr "Vous remplissez un seau au puits."
+
+#: assets/data/progression.json
+msgid "You found their names in the crypt. Ask, then. I owe you that much."
+msgstr "Vous avez trouvé leurs noms dans la crypte. Demandez, alors. Je vous dois bien ça."
 
 #: assets/data/progression.json
 msgid "Your hands are empty: the well is on the green, below the square."
@@ -9553,8 +9605,8 @@ msgid "Hilda's forge"
 msgstr "La forge de Hilda"
 
 #: assets/data/town.json
-msgid "Hope comes home: win two of the five relics (or clear the Ruined Watchtower)"
-msgstr "L'espoir revient : obtenir deux des cinq reliques (ou venir à bout de la Tour de guet en ruine)"
+msgid "Hope comes home: bring two of the relics back to Pixelheim"
+msgstr "L'espoir revient : rapporter deux des reliques à Pixelheim"
 
 #: assets/data/town.json
 msgid "Iva's school, and its stronger brews: every potion heals a quarter more."
@@ -9661,8 +9713,8 @@ msgid "The five climbers in bronze on the square. Heroes walk taller past it: +5
 msgstr "Les cinq grimpeurs, en bronze, sur la place. Les héros se redressent en passant devant : +5 % d'XP par ennemi vaincu."
 
 #: assets/data/town.json
-msgid "The five come home: bring all four relics to Maren (or slay Fafnyr). The fountain will still want his scale"
-msgstr "Les cinq rentrent chez eux : rapporter les quatre reliques à Maren (ou terrasser Fafnyr). La fontaine voudra quand même son écaille"
+msgid "The five come home: bring all four relics to Maren. The fountain will still want Fafnyr's scale"
+msgstr "Les cinq rentrent : rapporter les quatre reliques à Maren. La fontaine voudra encore l'écaille de Fafnyr"
 
 #: assets/data/town.json
 msgid "The fountain"
@@ -9944,19 +9996,27 @@ msgstr "trois"
 msgid "two"
 msgstr "deux"
 
-#: scripts/bounty_screen.gd:70
-msgid "%s of the five relics are won, or %s"
-msgstr "%s des cinq reliques sont à vous, ou %s"
+#: scripts/bounty_screen.gd:72
+msgid "%s of the relics are home"
+msgstr "%s des reliques sont rentrées"
 
-#: scripts/bounty_screen.gd:70
-msgid "%s of the five relics is won, or %s"
-msgstr "%s des cinq reliques est à vous, ou %s"
+#: scripts/bounty_screen.gd:72
+msgid "%s of the relics is home"
+msgstr "%s des reliques est rentrée"
 
-#: scripts/bounty_screen.gd:76
+#: scripts/bounty_screen.gd:73
+msgid "%s of the relics are home, or %s"
+msgstr "%s des reliques sont rentrées, ou %s"
+
+#: scripts/bounty_screen.gd:73
+msgid "%s of the relics is home, or %s"
+msgstr "%s des reliques est rentrée, ou %s"
+
+#: scripts/bounty_screen.gd:79
 msgid "The "
 msgstr "The "
 
-#: scripts/bounty_screen.gd:76
+#: scripts/bounty_screen.gd:79
 msgid "the %s (floor %d)"
 msgstr "%s (étage %d)"
 
@@ -12064,6 +12124,10 @@ msgstr "{item} {rarity}"
 msgid "Next: %s"
 msgstr "Ensuite : %s"
 
+#: scripts/state/main_quest.gd:99
+msgid "Maren"
+msgstr "Maren"
+
 #: scripts/state/quests.gd:112
 msgid "In %s."
 msgstr "Repaire : %s."
@@ -12396,31 +12460,31 @@ msgstr "Déjà commandé."
 msgid "Arrows"
 msgstr "Flèches"
 
-#: scripts/world.gd:1374
+#: scripts/world.gd:1376
 msgid "Five lanterns on the square, one for each of the five who climbed. Tonight the %s remembers them - and %s."
 msgstr "Cinq lanternes sur la place, une pour chacun des cinq qui ont gravi la montagne. Ce soir, Pixelheim, désormais %s, se souvient d'eux - et salue %s."
 
-#: scripts/world.gd:1375
+#: scripts/world.gd:1377
 msgid "Pixelheim, a %s raised from the ashes. Tonight it celebrates %s."
 msgstr "Pixelheim, des cendres au rang de %s. Ce soir, on y fête %s."
 
-#: scripts/world.gd:1461
+#: scripts/world.gd:1463
 msgid "%s: built."
 msgstr "%s : chantier terminé."
 
-#: scripts/world.gd:1465
+#: scripts/world.gd:1467
 msgid "Pixelheim is a %s now."
 msgstr "Pixelheim passe au rang de %s."
 
-#: scripts/world.gd:1470
+#: scripts/world.gd:1472
 msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
 msgstr "Et aujourd'hui, on fait la fête : des étals sur la place, et un lancer d'anneaux avec un lot pour le meilleur lancer."
 
-#: scripts/world.gd:1569
+#: scripts/world.gd:1571
 msgid "%s  %d:%02d"
 msgstr "%s  %d:%02d"
 
-#: scripts/world.gd:1793
+#: scripts/world.gd:1795
 msgid "Next"
 msgstr "Ensuite"
 

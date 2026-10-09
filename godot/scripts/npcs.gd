@@ -24,7 +24,7 @@ static func _data() -> Dictionary:
 ## While a keeper's building is still rubble (PIX-146, `done` the projects
 ## built; null skips it), they trade from a stall on the town square; in the
 ## Ashes the elder and the mayor say their Ashes lines.
-static func on_map(map_id: String, town_tier: int, settlers: Array, done: Variant = null) -> Array[Dictionary]:
+static func on_map(map_id: String, town_tier: int, settlers: Array, done: Variant = null, gate_open := true) -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	for npc: Dictionary in _data()["npcs"]:
 		var stall: Dictionary = npc.get("stall", {})
@@ -38,6 +38,10 @@ static func on_map(map_id: String, town_tier: int, settlers: Array, done: Varian
 			if town_tier == 0 and npc.has("ashesLines"):
 				npc = npc.duplicate()
 				npc["lines"] = npc["ashesLines"]
+			elif not gate_open and npc.has("gateLines"):
+				# Maren keeps the barred gate's lines till it opens (PIX-204).
+				npc = npc.duplicate()
+				npc["lines"] = npc["gateLines"]
 			elif npc.has("linesByTier"):
 				npc = npc.duplicate()
 				npc["lines"] = lines_for_tier(npc["linesByTier"], town_tier, npc["lines"])

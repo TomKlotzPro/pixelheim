@@ -105,7 +105,7 @@ static func is_open(quest: Dictionary, progression: ProgressionState, settlement
 ## Where a quest sends the hero (PIX-171), one line for the journal: the
 ## named monster's lair, the regions a quarry roams, the chest that holds
 ## what's wanted or the best lead for a material; "" when there's none.
-static func where(quest: Dictionary, gate_open := true) -> String:
+static func where(quest: Dictionary, gate_open := true, done: Variant = null) -> String:
 	var objective: Dictionary = quest["objective"]
 	match String(objective["kind"]):
 		"hunt":
@@ -133,5 +133,5 @@ static func where(quest: Dictionary, gate_open := true) -> String:
 					var needs: Array[String] = []
 					for need: String in entry["needs"]:
 						needs.append("%d %s" % [entry["needs"][need], Catalog.item_name(need)])
-					return Text.t("%s, from %s.") % [Economy.station_hint(entry["job"]["id"]), ", ".join(needs)]
+					return Text.t("%s, from %s.") % [Economy.station_hint(entry["job"]["id"], done), ", ".join(needs)]
 	return ""

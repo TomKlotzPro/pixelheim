@@ -9,8 +9,8 @@
       "name": "Elder Maren",
       "wander": false,
       "lines": [
-        "The mountain burned before you were born. We rebuilt the village; the monsters rebuilt too.",
-        "The gate to the Ashen Mountain is north, past the bridge. Ten floors of teeth and worse manners.",
+        "The gate stands open now. Ten floors of teeth and worse manners, and Fafnyr asleep on the last of them.",
+        "Pixelheim stands again. Whatever lives on that mountain has noticed.",
         "And if you beat the dragon... come see me. There are older things below. I hear them some nights."
       ],
       "minTownTier": 0,
@@ -29,7 +29,12 @@
           "(She reads it twice.) Then no one is coming.",
           "(She looks up at the mountain for a long time.) Rest. We'll talk at dawn."
         ]
-      }
+      },
+      "gateLines": [
+        "Pixelheim stands again, and the mountain doesn't care. Its gate stays barred until what the five left behind comes home.",
+        "Saltmere, Blackiron, Greyhold, the Frostgate. The five scattered their keepsakes across the Reach before they climbed.",
+        "Rebuild us, bring the relics home, and then we talk about the mountain. In that order, courier."
+      ]
     },
     {
       "id": "villager_ana",
@@ -41,7 +46,7 @@
       "wander": true,
       "lines": [
         "The merchant waters down his elixirs, I swear it. Buy the cheese instead.",
-        "Stay on the roads if you value your ankles. The tufty grass BITES."
+        "Stay on the roads if you value your ankles. The packs in the fields don't wait for introductions."
       ]
     },
     {
@@ -615,7 +620,7 @@
         "count": 2
       },
       "meetLines": [
-        "Lost my stable to the ash years back. Been walking travelers' horses by the gate ever since.",
+        "Lost my stable to the fire. Been walking travelers' horses by the gate ever since.",
         "Two wolf pelts for saddle leather and I will run a proper post in town - straight to the square, no gate queue."
       ],
       "askLine": "Two wolf pelts for the saddles, and the stable is Pixelheim's.",
