@@ -209,7 +209,7 @@ func _run_test_harness() -> void:
 		for item_id: String in args[wear_index + 1].split(","):
 			var piece := InventoryState.create_gear(item_id)
 			GameState.pack.gear.append(piece)
-			GameState.equip(piece["uid"])
+			GameState.upkeep.equip(piece["uid"])
 	var at_index := args.find("--at")
 	if at_index >= 0 and at_index + 1 < args.size():
 		var at := args[at_index + 1].split(",")
@@ -261,7 +261,7 @@ func _run_test_harness() -> void:
 	if args.has("festival"):
 		# A festival day (PIX-159): the town comes back with its stalls, its
 		# barker and confetti, everyone on the square.
-		GameState._start_festival(maxi(1, GameState.town_tier()))
+		GameState.holdings.start_festival(maxi(1, GameState.town_tier()))
 		world.map = world.load_map("town")
 		world.enter_map(world.map, world.player_cell)
 		await get_tree().create_timer(0.3).timeout
@@ -295,7 +295,7 @@ func _run_test_harness() -> void:
 		hero.level = (HeroRules.rank_index(hero.level) + 1) * 5 - 1
 		hero.xp_to_next = HeroState.xp_to_next_for(hero.level)
 		hero.xp = hero.xp_to_next
-		GameState._grant_levels()
+		GameState.spoils.grant_levels()
 		await get_tree().create_timer(1.6).timeout
 		if args.has("walk-path"):
 			world.get_children().filter(func(node: Node) -> bool: return node.has_method("_walk"))[0]._walk()
@@ -373,8 +373,8 @@ func _run_test_harness() -> void:
 		var armor := InventoryState.create_gear("leather_armor")
 		var ring := InventoryState.create_gear("band_of_grit")
 		GameState.pack.gear.append_array([sword, armor, ring])
-		GameState.equip(armor["uid"])
-		GameState.equip(ring["uid"])
+		GameState.upkeep.equip(armor["uid"])
+		GameState.upkeep.equip(ring["uid"])
 		GameState.pack.items.merge({"potion_hp": 3, "antidote": 1, "wolf_pelt": 2})
 		world.open_inventory()
 		# `--tab N` opens another tab (7 is Craft).
@@ -391,7 +391,7 @@ func _run_test_harness() -> void:
 		await get_tree().create_timer(0.3).timeout
 	if args.has("quest"):
 		# A conversation with the elder closes: his quest is accepted.
-		GameState.finish_dialogue("elder")
+		GameState.questing.finish_dialogue("elder")
 		await get_tree().create_timer(0.3).timeout
 	if args.has("journal"):
 		# A few promises in hand: slimes half done, the cheese ready, the troll
@@ -449,8 +449,8 @@ func _run_test_harness() -> void:
 		if own_index >= 0 and own_index + 1 < args.size():
 			for map_id in args[own_index + 1].split(","):
 				GameState.settlement.properties.append(map_id)
-				GameState.investments()["tills"] = GameState.investments().get("tills", {})
-				GameState.investments()["tills"][map_id] = {"gold": 0, "earned": 900, "at": GameState.steps_now() - 480 * 4}
+				GameState.holdings.investments()["tills"] = GameState.holdings.investments().get("tills", {})
+				GameState.holdings.investments()["tills"][map_id] = {"gold": 0, "earned": 900, "at": GameState.holdings.steps_now() - 480 * 4}
 		var ledger := "town_hall_screen" if args.has("hall") else "bank_screen"
 		world.add_child(load("res://scripts/%s.gd" % ledger).new())
 		await get_tree().create_timer(0.3).timeout

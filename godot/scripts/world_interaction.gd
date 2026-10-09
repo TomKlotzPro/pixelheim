@@ -56,26 +56,26 @@ func interact() -> void:
 	if world.map.id == "town" and GameState.progression.prologue == Prologue.FIRES and _carry_water(faced):
 		return
 	var chest := _chest_at(faced)
-	if not chest.is_empty() and chest["look"] == "chest" and not GameState.is_opened(chest):
+	if not chest.is_empty() and chest["look"] == "chest" and not GameState.spoils.is_opened(chest):
 		_open_chest(chest)
 		return
 	if world.map.id == "town" and faced == Town.house_door():
 		if Town.ashes_tent(Town.done_projects(GameState.settlement)).x >= 0:
 			world.messages.flash("Only cinders where the house stood. The board on the square can change that.")
-		elif GameState.owns_house():
+		elif GameState.household.owns_house():
 			world.enter_house()
 		elif GameState.pack.gold >= int(Town._data()["houseDeedCost"]) and not _asked_twice("deed"):
 			# A big buy asks first (PIX-179).
 			world.messages.flash(Controls.say(Text.t("The deed costs %d gold. {key:interact} again to sign it.") % int(Town._data()["houseDeedCost"])))
 		else:
-			world.messages.flash(GameState.buy_house())
+			world.messages.flash(GameState.household.buy_house())
 		return
 	if world.map.id == "town_house" and _house_interact(faced):
 		return
 	# A fishing spot facing the water: cast (PIX-165).
 	if _fishing_here():
 		Sound.play("drop")
-		world.messages.flash(GameState.fish(Gathering.fishing_spot_at(world.map.id, world.player_cell)["id"]))
+		world.messages.flash(GameState.spoils.fish(Gathering.fishing_spot_at(world.map.id, world.player_cell)["id"]))
 		return
 	# The projects board on the square opens the village's ledger (PIX-145);
 	# what it built, the town shows off as it closes (PIX-147).
@@ -96,7 +96,7 @@ func interact() -> void:
 		# the next word opens the counter), a settled Mirelle her bank (her
 		# arc's asks first, PIX-157). The
 		# mayor talks, then opens the projects ledger (see talk).
-		var quest_word := Quests.awaits_word(beside["npc"]["id"], GameState.progression.quests, GameState.pack.items, GameState.quest_open)
+		var quest_word := Quests.awaits_word(beside["npc"]["id"], GameState.progression.quests, GameState.pack.items, GameState.questing.quest_open)
 		var at_stall: bool = world.map.id == "town" and beside["npc"].has("stall") and beside["npc"]["mapId"] == "town"
 		# A trader out in the Reach (PIX-176) sells from their own pack.
 		var trader: String = beside["npc"].get("shop", "")
@@ -106,13 +106,13 @@ func interact() -> void:
 			# A keeper on the burnt square (PIX-146): Sela's tent takes a
 			# guest for the night, the others trade from their stalls.
 			if beside["npc"]["id"] == "innkeeper":
-				world.messages.flash(GameState.rest_at_inn())
+				world.messages.flash(GameState.upkeep.rest_at_inn())
 				world.stage.dream()
 			else:
 				_open_stall(Economy.shop_at(String(Npcs.by_id(beside["npc"]["id"], []).get("mapId", ""))))
-		elif GameState.active_shop() != "" and not quest_word:
+		elif GameState.trade.active_shop() != "" and not quest_word:
 			_open_shop()
-		elif beside["npc"]["id"] == "settler_mirelle" and GameState.is_settled("settler_mirelle") and not quest_word:
+		elif beside["npc"]["id"] == "settler_mirelle" and GameState.holdings.is_settled("settler_mirelle") and not quest_word:
 			world.add_child(preload("res://scripts/bank_screen.gd").new())
 			world.hud.hint("bank")
 		else:
@@ -130,7 +130,7 @@ func _tile_in_hand(cell: Vector2i) -> String:
 ## Furniture from the pack onto the floor tile the hero faces (PLACE_FURNITURE).
 func place_from_pack(item_id: String) -> void:
 	var cell := facing_cell()
-	var text := GameState.place_furniture(item_id, cell, _tile_in_hand(cell))
+	var text := GameState.household.place_furniture(item_id, cell, _tile_in_hand(cell))
 	if text != "":
 		world.messages.flash(text)
 	world.view.furnish()
@@ -149,11 +149,11 @@ func _asked_twice(key: String) -> bool:
 func _house_interact(cell: Vector2i) -> bool:
 	# The workbench is a big buy: it asks first (PIX-179).
 	var cost := int(Town._data()["workbenchCost"])
-	if _tile_in_hand(cell) == "shelf" and GameState.furniture_at(cell).is_empty() and not GameState.settlement.house.get("workbench", false) \
+	if _tile_in_hand(cell) == "shelf" and GameState.household.furniture_at(cell).is_empty() and not GameState.settlement.house.get("workbench", false) \
 			and GameState.pack.gold >= cost and not _asked_twice("workbench"):
 		world.messages.flash(Controls.say(Text.t("A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it.") % cost))
 		return true
-	var result := GameState.house_interact(cell, _tile_in_hand(cell))
+	var result := GameState.household.house_interact(cell, _tile_in_hand(cell))
 	if result.is_empty():
 		return false
 	if result.has("text"):
@@ -181,9 +181,9 @@ func _open_shop() -> void:
 
 ## A stall's counter: the shop as if in its building, until the screen closes.
 func _open_stall(shop_id: String) -> void:
-	GameState.stall_shop = shop_id
+	GameState.trade.stall_shop = shop_id
 	var screen := preload("res://scripts/shop_screen.gd").new()
-	screen.tree_exited.connect(func() -> void: GameState.stall_shop = "")
+	screen.tree_exited.connect(func() -> void: GameState.trade.stall_shop = "")
 	world.add_child(screen)
 
 
@@ -212,7 +212,7 @@ func talk(npc: Dictionary) -> void:
 		npc["lines"] = asking["choice"]["prompt"]
 		box.choices = asking["choice"]["options"].map(func(option: Dictionary) -> String: return option["label"])
 		box.on_choice = func(index: int) -> void:
-			world.messages.flash(GameState.choose(asking["id"], asking["choice"]["options"][index]["id"]))
+			world.messages.flash(GameState.questing.choose(asking["id"], asking["choice"]["options"][index]["id"]))
 		box.npc = npc
 		world.add_child(box)
 		return
@@ -241,7 +241,7 @@ func talk(npc: Dictionary) -> void:
 		GameState.dialogue_closed.connect(func(_who: String) -> void:
 			world.add_child(preload("res://scripts/town_hall_screen.gd").new()), CONNECT_ONE_SHOT)
 	# The giver asks it themselves before it's taken (PIX-202).
-	var offer := GameState.quest_on_offer(npc["id"])
+	var offer := GameState.questing.quest_on_offer(npc["id"])
 	if not offer.is_empty() and String(offer.get("accepted", "")) != "":
 		npc = npc.duplicate()
 		npc["lines"] = npc["lines"] + [offer["accepted"]]
@@ -250,7 +250,7 @@ func talk(npc: Dictionary) -> void:
 
 
 func _open_chest(chest: Dictionary) -> void:
-	var result := GameState.open_chest(chest)
+	var result := GameState.spoils.open_chest(chest)
 	world.messages.flash(result["message"])
 	if not result["opened"]:
 		return
@@ -282,7 +282,7 @@ func _carry_water(faced: Vector2i) -> bool:
 		prologue_bucket = false
 		world.view.douse_ruin(i)
 		Sound.play("heal")
-		world.messages.flash(GameState.prologue_douse(i))
+		world.messages.flash(GameState.questing.prologue_douse(i))
 		if GameState.progression.prologue == Prologue.EMBERS:
 			world.stage.prologue_wave.call_deferred()
 		return true
@@ -301,7 +301,7 @@ func _gather_at(cell: Vector2i) -> void:
 	var patch: Dictionary = world.view.patches.get(cell, {})
 	if patch.is_empty():
 		return
-	var lines := GameState.gather(patch["id"], patch["item"])
+	var lines := GameState.spoils.gather(patch["id"], patch["item"])
 	if lines.is_empty():
 		return
 	Sound.play("drop")
@@ -311,9 +311,9 @@ func _gather_at(cell: Vector2i) -> void:
 
 func _collect_ground_treasure(cell: Vector2i) -> void:
 	var chest := _chest_at(cell)
-	if chest.is_empty() or chest["look"] == "chest" or GameState.is_opened(chest):
+	if chest.is_empty() or chest["look"] == "chest" or GameState.spoils.is_opened(chest):
 		return
-	var result := GameState.open_chest(chest)
+	var result := GameState.spoils.open_chest(chest)
 	world.messages.flash(result["message"])
 	if result["opened"]:
 		world.view.chest_sprites[chest["id"]].queue_free()
@@ -329,7 +329,7 @@ func update_prompt() -> void:
 		return
 	var chest := _chest_at(facing_cell())
 	var show: bool = (
-		not chest.is_empty() and chest["look"] == "chest" and not GameState.is_opened(chest)
+		not chest.is_empty() and chest["look"] == "chest" and not GameState.spoils.is_opened(chest)
 	) or _fishing_here()
 	if show:
 		_show_prompt(facing_cell(), -12)

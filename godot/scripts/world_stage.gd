@@ -62,7 +62,7 @@ func arrive(next: MapData) -> void:
 				world.messages.flash.call_deferred(String(Prologue.data()["arrival"]))
 		Prologue.GATE:
 			if next.id == "town":
-				GameState.prologue_reached_town()
+				GameState.questing.prologue_reached_town()
 				prologue_wave.call_deferred()
 		Prologue.HOUNDS, Prologue.EMBERS:
 			if next.id == "town":
@@ -93,7 +93,7 @@ func play_dawn() -> void:
 	var dawn := preload("res://scripts/dawn_screen.gd").new()
 	dawn.world = world
 	dawn.on_done = func() -> void:
-		GameState.finish_prologue()
+		GameState.questing.finish_prologue()
 		world.map = world.load_map("town")
 		# The day begins on the square, below the hall, whether the dawn
 		# was watched or skipped.
@@ -227,7 +227,7 @@ func play_reveals() -> void:
 					"line": Text.t("Pixelheim is a %s now.") % String(Town.tier(int(key))["name"]).to_lower(),
 					"sound": "evolve", "dust": true,
 				})
-				if GameState.festival_on():
+				if GameState.holdings.festival_on():
 					stops.append({
 						"at": MapView.center(Vector2i(int(Town.festival("barker")["x"]), int(Town.festival("barker")["y"]))),
 						"line": Text.t("And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."),
@@ -251,7 +251,7 @@ func play_reveals() -> void:
 ## The escort's wagon on its map, unless it's there already or was lost a
 ## moment ago.
 func tend_escort() -> void:
-	var due := GameState.escort_due()
+	var due := GameState.questing.escort_due()
 	if due.is_empty() or world.map.id != due["def"]["mapId"]:
 		return
 	if escort != null and is_instance_valid(escort):
@@ -264,7 +264,7 @@ func tend_escort() -> void:
 	escort.def = due["def"]
 	escort.add_to_group("decor")
 	escort.arrived.connect(func() -> void:
-		GameState.escort_arrived(quest_id)
+		GameState.questing.escort_arrived(quest_id)
 		world.messages.flash(due["def"]["arrived"]))
 	escort.lost.connect(func() -> void:
 		world.messages.flash(due["def"]["lost"])
@@ -276,7 +276,7 @@ func tend_escort() -> void:
 
 ## The clocks of the quests against time tick, and the one running shows.
 func run_clocks(delta: float) -> void:
-	var ticked := GameState.tick_runs(delta)
+	var ticked := GameState.questing.tick_runs(delta)
 	if ticked["message"] != "":
 		world.messages.flash(ticked["message"])
 	for chest_id: String in ticked["rearmed"]:
@@ -284,7 +284,7 @@ func run_clocks(delta: float) -> void:
 			for chest: Dictionary in Interactables._data()["chests"]:
 				if chest["id"] == chest_id:
 					world.view.chest_sprites[chest_id].texture = MapView.treasure_texture(chest, false)
-	var running := GameState.timed_run()
+	var running := GameState.questing.timed_run()
 	if running.is_empty() or world.hud.root == null:
 		if run_clock != null:
 			run_clock.queue_free()

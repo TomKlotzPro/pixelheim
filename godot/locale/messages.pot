@@ -12624,7 +12624,7 @@ msgstr ""
 msgid "the hoards of floors %s"
 msgstr ""
 
-#: scripts/state/game_state.gd:45
+#: scripts/state/game_state.gd:47
 msgid "Wanderer"
 msgstr ""
 

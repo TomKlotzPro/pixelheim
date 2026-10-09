@@ -16,7 +16,7 @@ func spawn_for(data: MapData) -> void:
 	if GameState.progression.prologue != Prologue.DONE and data.id == "town":
 		folk = Prologue.survivors()
 	# A festival day's barker runs the ring toss on the square (PIX-159).
-	if data.id == "town" and GameState.festival_on() and GameState.progression.prologue == Prologue.DONE:
+	if data.id == "town" and GameState.holdings.festival_on() and GameState.progression.prologue == Prologue.DONE:
 		var barker: Dictionary = Npcs._data()["festivalBarker"].duplicate()
 		barker.merge({"x": int(Town.festival("barker")["x"]), "y": int(Town.festival("barker")["y"])})
 		folk.append(barker)
@@ -58,7 +58,7 @@ func keep_hours(arriving := false) -> void:
 	# At dusk, and all day on a festival, the town's folk walk to the square
 	# (PIX-159); each takes a spot of its own.
 	var gathering: bool = map.id == "town" and not night and GameState.progression.prologue == Prologue.DONE \
-		and (DayNight.is_dusk(GameState.world.steps) or GameState.festival_on())
+		and (DayNight.is_dusk(GameState.world.steps) or GameState.holdings.festival_on())
 	var spots := Town.gathering_spots(map) if gathering else ([] as Array[Vector2i])
 	var taken := {}
 	for villager in get_tree().get_nodes_in_group("npcs"):

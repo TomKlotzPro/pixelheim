@@ -151,7 +151,7 @@ func hint_boards() -> void:
 	if cell.distance_to(Vector2(Town.project_board())) <= 3.0:
 		hint("board")
 	if cell.distance_to(Vector2(Town.bounty_board())) <= 2.0 \
-			and not Hunts.notices(GameState.board_floors(), GameState.progression.hunted).is_empty():
+			and not Hunts.notices(GameState.questing.board_floors(), GameState.progression.hunted).is_empty():
 		hint("bounty")
 
 
@@ -171,7 +171,7 @@ func update_objective() -> void:
 	var step := MainQuest.next_step(GameState.progression, GameState.settlement)
 	var text: String = step.get("text", "")
 	if GameState.progression.prologue != Prologue.DONE:
-		text = Prologue.objective(GameState.progression.prologue, GameState.progression.prologue_doused.size(), GameState.first_skill_heals())
+		text = Prologue.objective(GameState.progression.prologue, GameState.progression.prologue_doused.size(), GameState.questing.first_skill_heals())
 	if text != objective_label.text:
 		objective_label.text = text
 		objective_box.reset_size()
