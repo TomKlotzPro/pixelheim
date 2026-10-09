@@ -1154,6 +1154,8 @@ func wake_at_inn() -> Dictionary:
 func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, floor_level: int, mountain := 0) -> Array[String]:
 	var log: Array[String] = []
 	var mastery_line := _record_kill(fighter["id"])
+	# The codex remembers the kind, and the highest level it was met at (PIX-188).
+	progression.met[fighter["id"]] = maxi(int(progression.met.get(fighter["id"], 0)), Bestiary.level_of(fighter))
 	if mastery_line != "":
 		log.append(mastery_line)
 	# Accepted bounties tick on every matching kill; a hunt (PIX-165) only on

@@ -173,3 +173,30 @@ func test_in_the_ashes_the_hero_wakes_by_selas_tent() -> void:
 	var inn: Dictionary = state.wake_at_inn()
 	var tent := Town.ashes_tent([])
 	assert_eq([inn["mapId"], inn["x"], inn["y"]], ["town", tent.x, tent.y + 1])
+
+
+## PIX-188: readable danger.
+func test_a_foe_shows_its_level_coloured_by_the_gap() -> void:
+	assert_eq(Bestiary.level_of(Bestiary.spawn("imp")), 14)
+	assert_eq(Bestiary.level_of(Bestiary.spawn("slime", false, Dungeons.lift(1))), 1 + Dungeons.lift(1), "a lifted slime is its floor's level")
+	assert_eq(Bestiary.gap_color(14, 5), Color("ff5a4a"), "far above: red")
+	assert_eq(Bestiary.gap_color(6, 5), Color("ffb347"), "a step above: orange")
+	assert_eq(Bestiary.gap_color(5, 5), Color("f3e6c4"), "a match")
+	assert_eq(Bestiary.gap_color(1, 5), Color("a8a294"), "far below: grey")
+
+
+func test_every_floor_names_its_foes() -> void:
+	for level in range(1, Dungeons.floor_count() + 1):
+		assert_ne(Dungeons.epithet(level), "", "floor %d" % level)
+	assert_eq(Dungeons.epithet(1), "Cellar")
+	assert_eq(Dungeons.epithet(Dungeons.floor_count() + 3), "Deep")
+
+
+func test_the_codex_remembers_each_kind_and_the_level_it_was_met_at() -> void:
+	state.roll = _dice([0.99, 0.99, 0.99, 0.99])
+	state.defeat_monster(Bestiary.spawn("slime", false, Dungeons.lift(1)), "", "", 1)
+	assert_eq(int(state.progression.met["slime"]), 1 + Dungeons.lift(1))
+	assert_false(state.progression.met.has("king_slime"), "one slime doesn't reveal its family")
+	var saved := {}
+	state.progression.write_into(saved)
+	assert_eq(int(saved["met"]["slime"]), 1 + Dungeons.lift(1))

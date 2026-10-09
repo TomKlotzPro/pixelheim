@@ -708,8 +708,13 @@ func enter_floor(level: int) -> void:
 	floor_foes = plan["foes"].size()
 	# A depth of the Deep Hunt already cleared pays its foes a share (PIX-180).
 	var replay := Dungeons.is_deep(level) and Dungeons.depth_of(level) <= GameState.progression.deepest
+	# The mountain's foes wear their floor's name (PIX-188): a Cellar Slime.
+	var epithet := Dungeons.epithet(level)
 	for foe: Dictionary in plan["foes"]:
 		var spawned := spawn_enemy(foe["id"], foe["cell"], "", "", foe["elite"], false, Vector2i(-1, -1), foe["lift"])
+		if epithet != "" and int(foe["lift"]) > 0:
+			var titled := Text.t("%s %s") % [Text.t(epithet), Bestiary.monster(foe["id"])["name"]]
+			spawned.fighter["name"] = Text.t("Elite %s") % titled if foe["elite"] else titled
 		if replay:
 			spawned.fighter["gold"] = roundi(int(spawned.fighter["gold"]) * float(Bestiary._data()["deepHunt"]["replayGoldShare"]))
 	view.add_patch(plan["patch"], Gathering.floor_spot_id(level), Gathering.floor_material(level))

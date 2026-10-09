@@ -9,8 +9,7 @@ const ABBR := {"strength": "STR", "intelligence": "INT", "dexterity": "DEX", "de
 const BLURBS := {
 	"strength": "Melee attack with STR weapons, and how much you can carry.",
 	"intelligence": "The power of your skills and heals - and for casters, the size of the mana pool.",
-	# Real-time fights have no fleeing yet; DEX keeps its web meaning for now.
-	"dexterity": "Your chance to flee a fight you want no part of (turn-based battles; none yet in real time).",
+	"dexterity": "Attack with bows, daggers and DEX skills (Aimed Shot, Backstab), and your chance to flee.",
 	"defense": "The share of every hit you turn aside: each point helps, a little less than the last.",
 	"endurance": "Grit: a little health for everyone, and for fighters the stamina pool and how fast it refills.",
 }
@@ -158,6 +157,9 @@ static func readout(stat: String, hero: HeroState, pack: InventoryState) -> Stri
 			if parts.is_empty():
 				parts.append("powers INT skills")
 		"dexterity":
+			# A DEX weapon's swing, as STR's and INT's show theirs (PIX-188).
+			if scaling == "dexterity":
+				parts.append(Text.t("ATK %d") % (int(hero.stats["dexterity"]) + HeroRules.gear_damage(weapon)))
 			parts.append(Text.t("flee %d%%") % roundi(flee_chance(hero, pack) * 100))
 		"defense":
 			# Measured against a foe of the hero's own level (PIX-185).

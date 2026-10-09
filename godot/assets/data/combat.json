@@ -4301,7 +4301,8 @@
         "elixir"
       ],
       "rewardGold": 55,
-      "lift": 11
+      "lift": 11,
+      "epithet": "Cellar"
     },
     {
       "level": 2,
@@ -4324,7 +4325,8 @@
         "gem"
       ],
       "rewardGold": 75,
-      "lift": 10
+      "lift": 10,
+      "epithet": "Whispering"
     },
     {
       "level": 3,
@@ -4347,7 +4349,8 @@
         "greater_potion"
       ],
       "rewardGold": 110,
-      "lift": 10
+      "lift": 10,
+      "epithet": "Barrow"
     },
     {
       "level": 4,
@@ -4371,7 +4374,8 @@
         "greater_potion"
       ],
       "rewardGold": 140,
-      "lift": 9
+      "lift": 9,
+      "epithet": "Frosthowl"
     },
     {
       "level": 5,
@@ -4394,7 +4398,8 @@
         "elixir"
       ],
       "rewardGold": 200,
-      "lift": 9
+      "lift": 9,
+      "epithet": "Watchtower"
     },
     {
       "level": 6,
@@ -4417,7 +4422,8 @@
         "greater_potion"
       ],
       "rewardGold": 240,
-      "lift": 8
+      "lift": 8,
+      "epithet": "Drowned"
     },
     {
       "level": 7,
@@ -4440,7 +4446,8 @@
         "gem"
       ],
       "rewardGold": 310,
-      "lift": 8
+      "lift": 8,
+      "epithet": "Forge"
     },
     {
       "level": 8,
@@ -4464,7 +4471,8 @@
         "elixir"
       ],
       "rewardGold": 370,
-      "lift": 7
+      "lift": 7,
+      "epithet": "Gloomdeep"
     },
     {
       "level": 9,
@@ -4489,7 +4497,8 @@
         "cheese_wheel"
       ],
       "rewardGold": 490,
-      "lift": 7
+      "lift": 7,
+      "epithet": "Stormcrag"
     },
     {
       "level": 10,
@@ -4508,7 +4517,8 @@
         "gem"
       ],
       "rewardGold": 950,
-      "lift": 6
+      "lift": 6,
+      "epithet": "Ashen"
     },
     {
       "level": 11,
@@ -4531,7 +4541,8 @@
         "greater_potion"
       ],
       "rewardGold": 570,
-      "lift": 6
+      "lift": 6,
+      "epithet": "Sunless"
     },
     {
       "level": 12,
@@ -4554,7 +4565,8 @@
         "greater_potion"
       ],
       "rewardGold": 610,
-      "lift": 5
+      "lift": 5,
+      "epithet": "Echoing"
     },
     {
       "level": 13,
@@ -4577,7 +4589,8 @@
         "gem"
       ],
       "rewardGold": 735,
-      "lift": 5
+      "lift": 5,
+      "epithet": "Hoard"
     },
     {
       "level": 14,
@@ -4601,7 +4614,8 @@
         "gem"
       ],
       "rewardGold": 800,
-      "lift": 4
+      "lift": 4,
+      "epithet": "Ember"
     },
     {
       "level": 15,
@@ -4620,7 +4634,8 @@
         "gem"
       ],
       "rewardGold": 1740,
-      "lift": 3
+      "lift": 3,
+      "epithet": "Deathless"
     }
   ],
   "dungeons": {
@@ -5196,6 +5211,7 @@
       "The air is warm and old. Something below is breathing.",
       "Bones of every kind, gnawed by every kind."
     ],
-    "replayGoldShare": 0.25
+    "replayGoldShare": 0.25,
+    "epithet": "Deep"
   }
 }

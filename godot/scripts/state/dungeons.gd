@@ -74,6 +74,13 @@ static func drop_floor(level: int) -> int:
 	return mini(level + lift(level), floor_count())
 
 
+## The name a floor's lifted foes wear (PIX-188): "Cellar", "Deep".
+static func epithet(level: int) -> String:
+	if is_deep(level):
+		return String(Bestiary._data()["deepHunt"]["epithet"])
+	return String(floor_def(level).get("epithet", ""))
+
+
 ## How deep the Deep Hunt forges its gear at `level` (PIX-191): 0 above it,
 ## then a tier more every deepTiers.every depths.
 static func deep_tier(level: int) -> int:

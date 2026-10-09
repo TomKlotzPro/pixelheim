@@ -49,6 +49,23 @@ static func spawn(monster_id: String, elite := false, lift := 0) -> Dictionary:
 	return fighter
 
 
+## A fighter's level: lifted on the mountain, else its kind's (PIX-188).
+static func level_of(fighter: Dictionary) -> int:
+	return int(fighter.get("level", monster(fighter["id"]).get("level", 1)))
+
+
+## How a level reads beside the hero's (PIX-188): a colour for the gap.
+static func gap_color(level: int, hero_level: int) -> Color:
+	var gap := level - hero_level
+	if gap >= 3:
+		return Color("ff5a4a")
+	if gap >= 1:
+		return Color("ffb347")
+	if gap >= -1:
+		return Color("f3e6c4")
+	return Color("a8a294")
+
+
 ## A monster `lift` levels above its kind (PIX-170: the mountain's floors,
 ## climbed last): each stat grows by the ratio of combat.json's floorLift
 ## curve at the new level to the curve at its own.

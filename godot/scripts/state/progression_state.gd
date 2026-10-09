@@ -27,6 +27,9 @@ var deepest := 0
 ## Once-per-hero drops already taken (PIX-180: Fafnyr's first scale); saved
 ## only once there is one.
 var firsts: Array[String] = []
+## Every kind met in a fight (PIX-188: the codex by species, not family),
+## with the highest level it was met at; saved once there is one.
+var met := {}
 
 
 static func from_dict(data: Dictionary) -> ProgressionState:
@@ -41,6 +44,7 @@ static func from_dict(data: Dictionary) -> ProgressionState:
 	progress.hunted.assign(data.get("hunted", []))
 	progress.deepest = int(data.get("deepHunt", 0))
 	progress.firsts.assign(data.get("firsts", []))
+	progress.met = data.get("met", {}).duplicate()
 	return progress
 
 
@@ -59,5 +63,7 @@ func write_into(state: Dictionary) -> void:
 		state["hunted"] = hunted.duplicate()
 	if not firsts.is_empty():
 		state["firsts"] = firsts.duplicate()
+	if not met.is_empty():
+		state["met"] = met.duplicate()
 	if deepest > 0:
 		state["deepHunt"] = deepest
