@@ -1633,11 +1633,19 @@ msgid "A dozen new items: bows, war hammers, wands, cloaks, tower shields..."
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A fine or epic drop's name rises over the fallen foe in its colour"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A foe gives you longer to see its bite coming, and shows it: it crouches with a red glint and a sound. With Clear warnings on, a band on the ground marks where the bite lands"
 msgstr ""
 
 #: assets/data/changelog.json
 msgid "A hero from before keeps everything: whoever has cleared a floor finds the gate open, and Maren goes straight to her next ask"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "A level gained bursts in gold on the hero with LEVEL UP over their head, the experience line flashes, and the news goes on the message plate instead of slipping into the battle log"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -1678,6 +1686,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "A small-screen pass: panels fit, the HUD compacts, and nothing overlaps at any width"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "A town's new age is heralded with a flourish and dust on the square, and each new map fades in from the dark instead of cutting (not with reduced motion)"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -1838,6 +1850,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Beyond the Ring"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Big Moments"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -2782,6 +2798,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Merchant Odo and Innkeeper Sela finally have faces"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Messages wait their turn instead of cutting each other off, and stay long enough to read (longer with large text); a finished quest sounds its victory"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -12528,44 +12548,52 @@ msgstr ""
 msgid "Already commissioned."
 msgstr ""
 
-#: scripts/ui_style.gd:458
+#: scripts/ui_style.gd:465
 msgid "Arrows"
 msgstr ""
 
-#: scripts/world.gd:1423
+#: scripts/world.gd:1065
+msgid "A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it."
+msgstr ""
+
+#: scripts/world.gd:1492
 msgid "Five lanterns on the square, one for each of the five who climbed. Tonight the %s remembers them - and %s."
 msgstr ""
 
-#: scripts/world.gd:1424
+#: scripts/world.gd:1493
 msgid "Pixelheim, a %s raised from the ashes. Tonight it celebrates %s."
 msgstr ""
 
-#: scripts/world.gd:1510
+#: scripts/world.gd:1579
 msgid "%s: built."
 msgstr ""
 
-#: scripts/world.gd:1514
+#: scripts/world.gd:1583
 msgid "Pixelheim is a %s now."
 msgstr ""
 
-#: scripts/world.gd:1519
+#: scripts/world.gd:1589
 msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
 msgstr ""
 
-#: scripts/world.gd:1618
+#: scripts/world.gd:1688
 msgid "%s  %d:%02d"
 msgstr ""
 
-#: scripts/world.gd:1844
+#: scripts/world.gd:1915
 msgid "Next"
 msgstr ""
 
-#: scripts/world.gd:310
+#: scripts/world.gd:318
 msgid "The pack is scattered. Another comes once you've walked a good way, or after a night's rest."
 msgstr ""
 
-#: scripts/world.gd:496
+#: scripts/world.gd:520
 msgid "No map reaches this deep."
+msgstr ""
+
+#: scripts/world.gd:586
+msgid "LEVEL UP"
 msgstr ""
 
 #: scripts/world.gd:74
@@ -12584,20 +12612,16 @@ msgstr ""
 msgid "Quest complete"
 msgstr ""
 
-#: scripts/world.gd:742
+#: scripts/world.gd:789
 msgid "{epithet} {name}"
 msgstr ""
 
-#: scripts/world.gd:910
+#: scripts/world.gd:976
 msgid "Only cinders where the house stood. The board on the square can change that."
 msgstr ""
 
-#: scripts/world.gd:915
+#: scripts/world.gd:981
 msgid "The deed costs %d gold. {key:interact} again to sign it."
-msgstr ""
-
-#: scripts/world.gd:999
-msgid "A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it."
 msgstr ""
 
 #: tools/i18n.py

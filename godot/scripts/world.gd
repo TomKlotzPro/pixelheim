@@ -72,6 +72,12 @@ var message_tag: Label
 var message_fade: Tween
 ## Tags a message may open with, set in gold on its plate.
 const MESSAGE_TAGS := ["Quest accepted", "Quest complete", "Level up", "Mastery"]
+## A fine or epic drop's name over the fallen foe (PIX-211): the rarities'
+## colours, lit to read on the ground rather than on paper.
+const LOOT_GLOW := {"fine": Color("8cc4ff"), "epic": Color("d99bff")}
+## A plain message gives way to the next after this long; a tagged one
+## (a quest, a level) is always read to its end (PIX-211).
+const PLAIN_MESSAGE_S := 1.2
 ## The widest a message's words run before they wrap.
 const MESSAGE_WIDTH := 860.0
 ## The main quest's next step, quietly above the dock (PIX-144): a dark
@@ -238,6 +244,7 @@ func _process(delta: float) -> void:
 	_update_prompt()
 	_update_nameplate()
 	_run_clocks(delta)
+	_advance_messages()
 	# A first-time hint stands under the boss bar while one is up (PIX-210).
 	if hint_card != null and is_instance_valid(hint_card):
 		hint_card.position.y = boss_bar.bottom() + 6 if boss_bar.following() else 18.0
@@ -294,6 +301,7 @@ func on_enemy_died(enemy: Node) -> void:
 		floor_level = Dungeons.drop_floor(map.floor_level)
 	var gear_before := GameState.pack.gear.size()
 	_log(GameState.defeat_monster(enemy.fighter, enemy.region, cleared, floor_level, map.floor_level))
+	_show_loot(GameState.pack.gear.slice(gear_before), enemy.global_position)
 	if enemy.has_meta("prologue"):
 		_flash_message(GameState.prologue_pouch())
 	# The last of a wave of the night's foes: on to the next beat.
@@ -384,48 +392,60 @@ func _frame_lift() -> float:
 func in_view(at: Vector2, margin := 0.0) -> bool:
 	return view_rect(margin).has_point(at)
 
-## A number that rises and fades where a blow landed.
-## A word that rises and fades (PIX-155: "dodged", "blocked").
-func float_text(text: String, at: Vector2, color: Color) -> void:
+## A word that rises and fades over where it happened (PIX-155: "dodged",
+## "blocked"). A `big` one (PIX-211: LEVEL UP, a fine or epic drop's name)
+## bursts in at twice its size unless motion is reduced, then settles at the
+## pixel face's own (anything larger dwarfs the fighters), and stays longer.
+func float_text(text: String, at: Vector2, color: Color, big := false) -> void:
+	var label := _floating(text, color)
+	label.position = (at - Vector2(label.size.x / 2.0, 0)).round()
+	label.z_index = 11 if big else 10
+	add_child(label)
+	var life := 1.8 if big else 0.6
+	var tween := label.create_tween().set_parallel()
+	if big:
+		_pop(label, tween)
+	tween.tween_property(label, "position:y", label.position.y - (16 if big else 12), life).set_ease(Tween.EASE_OUT)
+	tween.tween_property(label, "modulate:a", 0.0, 0.6).set_delay(life - 0.35)
+	tween.chain().tween_callback(label.queue_free)
+
+
+## The UI's bold pixel face at its own size, outlined in the night (PIX-194).
+func _floating(text: String, color: Color) -> Label:
 	var label := Label.new()
 	label.text = text
-	# The UI's bold pixel face at its own size, outlined in the night (PIX-194).
 	label.add_theme_font_override("font", UiStyle.bold_font())
 	label.add_theme_font_size_override("font_size", UiStyle.BODY_PX)
 	label.add_theme_color_override("font_color", color)
 	label.add_theme_color_override("font_outline_color", UiStyle.NIGHT)
 	label.add_theme_constant_override("outline_size", 3)
-	label.position = at - Vector2(14, 0)
-	label.z_index = 10
-	add_child(label)
-	var tween := label.create_tween().set_parallel()
-	tween.tween_property(label, "position:y", label.position.y - 12, 0.6).set_ease(Tween.EASE_OUT)
-	tween.tween_property(label, "modulate:a", 0.0, 0.6).set_delay(0.25)
-	tween.chain().tween_callback(label.queue_free)
+	label.size = label.get_minimum_size()
+	return label
+
+
+## A label bursting in at twice its size (PIX-209, PIX-211), not when motion
+## is reduced.
+func _pop(label: Label, tween: Tween) -> void:
+	if GameState.settings.reduce_motion:
+		return
+	label.pivot_offset = label.size / 2.0
+	label.scale = Vector2.ONE * 2.0
+	tween.tween_property(label, "scale", Vector2.ONE, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
 ## A number over a head. Each lands a few pixels off the last (PIX-209), so
-## a flurry reads as blows, not one smudge; a crit comes in gold, twice the
-## size and with a "!", popping in unless motion is reduced.
+## a flurry reads as blows, not one smudge; a crit comes in gold with a "!"
+## and a spark, bursting in at twice its size unless motion is reduced.
 func float_number(value: int, at: Vector2, color: Color, crit := false) -> void:
-	var label := Label.new()
-	label.text = str(value) + ("!" if crit else "")
-	# The UI's bold pixel face at its own size, outlined in the night (PIX-194).
-	label.add_theme_font_override("font", UiStyle.bold_font())
-	label.add_theme_font_size_override("font_size", UiStyle.BODY_PX * (2 if crit else 1))
-	label.add_theme_color_override("font_color", UiStyle.BRASS_LIGHT if crit else color)
-	label.add_theme_color_override("font_outline_color", UiStyle.NIGHT)
-	label.add_theme_constant_override("outline_size", 4 if crit else 3)
-	label.size = label.get_minimum_size()
-	label.position = at - Vector2(label.size.x / 2.0 + randf_range(-4.0, 4.0), 6 if crit else 0)
+	var label := _floating(str(value) + ("!" if crit else ""), UiStyle.BRASS_LIGHT if crit else color)
+	label.position = at - Vector2(label.size.x / 2.0 + randf_range(-4.0, 4.0), 4 if crit else 0)
 	label.z_index = 11 if crit else 10
 	add_child(label)
 	var life := 0.8 if crit else 0.6
 	var tween := create_tween().set_parallel()
-	if crit and not GameState.settings.reduce_motion:
-		label.pivot_offset = label.size / 2.0
-		label.scale = Vector2.ONE * 1.6
-		tween.tween_property(label, "scale", Vector2.ONE, 0.16).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	if crit:
+		_pop(label, tween)
+		skill_flash(at + Vector2(0, 10), UiStyle.BRASS_LIGHT)
 	tween.tween_property(label, "position:y", label.position.y - 12, life).set_ease(Tween.EASE_OUT)
 	tween.tween_property(label, "modulate:a", 0.0, life).set_delay(life * 0.4)
 	tween.chain().tween_callback(label.queue_free)
@@ -436,6 +456,10 @@ func log_line(line: String) -> void:
 ## The battle log: recent lines stack bottom-left and fade.
 func _log(lines: Array) -> void:
 	for line: String in lines:
+		# A level gained goes on the plate, not among the kills (PIX-211).
+		if tag_of(line, [Text.t("Level up")]) != "":
+			_flash_message(line)
+			continue
 		# Each line on its own small plate, like the objective's (PIX-194).
 		var chip := PanelContainer.new()
 		chip.add_theme_stylebox_override("panel", UiStyle.plate(8))
@@ -550,6 +574,29 @@ func skill_flash(at: Vector2, color: Color) -> void:
 	bloom.tween_property(burst, "scale", Vector2(1.6, 2.2), 0.35).set_ease(Tween.EASE_OUT)
 	bloom.tween_property(burst, "modulate:a", 0.0, 0.35)
 	bloom.chain().tween_callback(burst.queue_free)
+
+
+## A level gained (PIX-211): a gold burst on the hero, LEVEL UP over their
+## head and the experience line flashing; its words go on the plate (_log).
+func _level_up_burst() -> void:
+	if player == null:
+		return
+	skill_flash(player.global_position, UiStyle.GOLD)
+	skill_flash(player.global_position + Vector2(0, -8), UiStyle.BRASS_LIGHT)
+	float_text(Text.t("LEVEL UP"), player.global_position + Vector2(0, -40), UiStyle.GOLD, true)
+	dock.flash_xp()
+
+
+## A fine or epic piece from a kill (PIX-211): its name rises over the
+## fallen foe in its rarity's colour, so it isn't lost in the log.
+func _show_loot(pieces: Array, at: Vector2) -> void:
+	var lift := 0.0
+	for piece: Dictionary in pieces:
+		var glow: Variant = LOOT_GLOW.get(String(piece["rarity"]))
+		if glow == null:
+			continue
+		float_text(InventoryState.gear_name(piece), at + Vector2(0, -24 - lift), glow, true)
+		lift += 12.0
 
 
 ## Something has seen the hero: a growl (SFX.bump), not more than once a beat.
@@ -798,7 +845,8 @@ func play_story(scene_id: String) -> void:
 	add_child(scene)
 
 func _enter_map(next: MapData, arrival: Vector2i) -> void:
-	if view != null:
+	var changing := view != null
+	if changing:
 		Sound.play("door")
 	hunted_at = -100.0
 	soundscape_left = 0.0
@@ -833,6 +881,24 @@ func _enter_map(next: MapData, arrival: Vector2i) -> void:
 	camera.reset_smoothing()
 	_spawn_enemies(next)
 	_update_music()
+	if changing:
+		_fade_in()
+
+
+## A new map fades in from the dark (PIX-211) instead of cutting; not with
+## reduced motion, nor in harness runs, whose pictures are taken at once.
+func _fade_in() -> void:
+	if GameState.settings.reduce_motion or harness or hud_root == null:
+		return
+	var dark := ColorRect.new()
+	dark.color = UiStyle.NIGHT
+	dark.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	dark.position = -hud_root.offset
+	dark.size = Touch.view_size(self)
+	hud_root.add_child(dark)
+	var fade := dark.create_tween()
+	fade.tween_property(dark, "color:a", 0.0, 0.35).set_ease(Tween.EASE_IN)
+	fade.tween_callback(dark.queue_free)
 
 ## The saves screen; `web_save` defaults to whatever this browser's web game holds.
 func _open_saves(web_save := {}, welcome := false) -> void:
@@ -1165,15 +1231,18 @@ func _update_objective() -> void:
 		objective_label.text = text
 		objective_box.reset_size()
 	objective_box.position.y = (dock.top() if dock != null and dock.top() > 0 else 690.0) - 38
-	# The battle log stands on the objective line and grows upward, so a
-	# long kill (a bounty's five lines) never runs into it or the dock.
-	log_box.reset_size()
-	log_box.position.y = objective_box.position.y - 6 - log_box.size.y
-	# A message stands where the objective line does and grows upward too, so
-	# a long one (a barred gate, a quest's words) never runs under the dock.
+	# A message stands where the objective line does and grows upward, so a
+	# long one (a barred gate, a quest's words) never runs under the dock.
 	if message_box.modulate.a > 0.0:
 		_fit_message()
 	message_box.position.y = objective_box.position.y + objective_box.size.y - message_box.size.y
+	# The battle log stands on the objective line, or on a taller message
+	# (PIX-211), and grows upward, so a long kill never runs into either.
+	var under := objective_box.position.y
+	if message_box.modulate.a > 0.0:
+		under = minf(under, message_box.position.y)
+	log_box.reset_size()
+	log_box.position.y = under - 6 - log_box.size.y
 	var show := text != "" and not in_fight() and message_box.modulate.a < 0.05
 	var target := 1.0 if show else 0.0
 	if objective_box.get_meta("fading_to", -1.0) != target:
@@ -1512,6 +1581,7 @@ func _play_reveals() -> void:
 				stops.append({
 					"at": _cell_center(Town.square()),
 					"line": Text.t("Pixelheim is a %s now.") % String(Town.tier(int(key))["name"]).to_lower(),
+					"sound": "evolve", "dust": true,
 				})
 				if GameState.festival_on():
 					stops.append({
@@ -1775,6 +1845,7 @@ func _build_hud() -> void:
 	GameState.leveled_up.connect(func(_level: int) -> void:
 		Sound.play("levelUp")
 		heard_hp = GameState.hero.hp
+		_level_up_burst()
 	)
 	GameState.loaded.connect(func() -> void:
 		heard_gold = GameState.pack.gold
@@ -1949,26 +2020,79 @@ func _fit_message() -> void:
 	message_box.reset_size()
 
 
-## On the objective's plate (PIX-194): a known tag before its first colon
-## ("Quest accepted: ...") is set in gold, the rest wraps beside it.
+## Messages waiting their turn on the plate (PIX-211), the one showing,
+## whether it carries a tag, and since when it shows.
+var _messages: Array[String] = []
+var _message_now := ""
+var _message_tagged := false
+var _message_since := 0.0
+
+
+## A message for the objective's plate (PIX-211): it waits behind the one
+## showing instead of cutting it off. A quest's end and the level it brings
+## go up one after the other; the same words twice are said once.
 func _flash_message(text: String) -> void:
-	var tag := ""
-	for known: String in MESSAGE_TAGS:
-		# In the player's language, French setting a narrow space before the colon.
-		var said := Text.t(known)
+	for part: String in split_messages(text, _tags()):
+		if part != _message_now and part not in _messages:
+			_messages.append(part)
+	_advance_messages()
+
+
+func _tags() -> Array:
+	return MESSAGE_TAGS.map(func(known: String) -> String: return Text.t(known))
+
+
+## A line that starts with a known tag begins a message of its own; any
+## other line belongs to the message before it.
+static func split_messages(text: String, tags: Array) -> Array[String]:
+	var parts: Array[String] = []
+	for line: String in text.split("\n"):
+		if parts.is_empty() or tag_of(line, tags) != "":
+			parts.append(line)
+		else:
+			parts[-1] += "\n" + line
+	return parts
+
+
+## The tag a message starts with ("Quest accepted: ..."), or "". In the
+## player's language, French setting a narrow space before the colon.
+static func tag_of(text: String, tags: Array) -> String:
+	for said: String in tags:
 		for colon: String in [": ", "\u202f: ", " : "]:
 			if text.begins_with(said + colon):
-				tag = said
-				text = text.substr(said.length() + colon.length())
-				text = text[0].to_upper() + text.substr(1)
-				break
-		if tag != "":
-			break
+				return said
+	return ""
+
+
+## The next message, once the one showing is done with: a tagged one when
+## it has faded, a plain one after PLAIN_MESSAGE_S.
+func _advance_messages() -> void:
+	if _messages.is_empty():
+		return
+	if _message_now != "" and (_message_tagged or Time.get_ticks_msec() / 1000.0 - _message_since < PLAIN_MESSAGE_S):
+		return
+	_show_message(_messages.pop_front())
+
+
+## On the objective's plate (PIX-194): a known tag before its first colon
+## ("Quest accepted: ...") is set in gold, the rest wraps beside it. It holds
+## long enough to read (UiStyle.reading_seconds).
+func _show_message(text: String) -> void:
+	_message_now = text
+	_message_since = Time.get_ticks_msec() / 1000.0
+	var tag := tag_of(text, _tags())
+	_message_tagged = tag != ""
+	if tag != "":
+		text = text.substr(tag.length()).lstrip(" \u202f:")
+		text = text[0].to_upper() + text.substr(1)
 	message_tag.text = tag
 	message_tag.visible = tag != ""
 	# The first quest taken introduces the journal (PIX-202).
 	if tag == Text.t("Quest accepted"):
 		hint("journal")
+	# A quest done is a victory, heard (PIX-211).
+	if tag == Text.t("Quest complete"):
+		Sound.play("victory")
 	message_label.text = text
 	# Wraps at a reading width, never wider than it needs.
 	var wide := 0.0
@@ -1984,8 +2108,12 @@ func _flash_message(text: String) -> void:
 		message_fade.kill()
 	message_fade = create_tween()
 	message_fade.tween_property(message_box, "modulate:a", 1.0, 0.15)
-	message_fade.tween_interval(clampf(text.length() / 22.0, 1.6, 6.0))
+	message_fade.tween_interval(UiStyle.reading_seconds(text))
 	message_fade.tween_property(message_box, "modulate:a", 0.0, 0.4)
+	message_fade.tween_callback(func() -> void:
+		_message_now = ""
+		_advance_messages()
+	)
 
 ## The keys, as the player bound them (Controls, GameSettings).
 func _setup_input() -> void:
