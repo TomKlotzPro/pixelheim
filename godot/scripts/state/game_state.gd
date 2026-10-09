@@ -83,10 +83,12 @@ func _ready() -> void:
 	_watch_the_page()
 
 
-## Every key pressed teaches the labels what this keyboard calls it (PIX-201).
+## Every key pressed teaches the labels what this keyboard calls it (PIX-201);
+## every input says whether the keycaps should show the pad's (PIX-215).
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed:
 		Controls.learn(event)
+	Controls.note_device(event)
 
 
 ## The web page going away or out of sight saves what's unsaved (PIX-200):

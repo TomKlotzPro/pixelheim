@@ -30,10 +30,31 @@ const ALTERNATES := {
 const SKILL_KEYS := [KEY_1, KEY_2, KEY_3, KEY_4, KEY_5, KEY_6]
 ## InputMap's "any device" (Godot's InputMap::ALL_DEVICES).
 const ALL_DEVICES := -1
+## The pad (PIX-215): A answers and confirms, B only goes back (Godot's
+## ui_cancel), X swings, Y opens the pack, RB rolls, LB the first skill,
+## Back the dock's menu (the other screens, skills 4-6), Start the pause
+## menu; the D-pad walks like the stick.
 const PAD_BUTTONS := {
-	"attack": JOY_BUTTON_A, "interact": JOY_BUTTON_B, "map": JOY_BUTTON_Y, "menu": JOY_BUTTON_START,
-	"inventory": JOY_BUTTON_X, "dodge": JOY_BUTTON_RIGHT_SHOULDER,
+	"interact": JOY_BUTTON_A, "attack": JOY_BUTTON_X, "inventory": JOY_BUTTON_Y, "menu": JOY_BUTTON_START,
+	"dodge": JOY_BUTTON_RIGHT_SHOULDER, "skill_1": JOY_BUTTON_LEFT_SHOULDER, "dock_menu": JOY_BUTTON_BACK,
+	"move_up": JOY_BUTTON_DPAD_UP, "move_down": JOY_BUTTON_DPAD_DOWN,
+	"move_left": JOY_BUTTON_DPAD_LEFT, "move_right": JOY_BUTTON_DPAD_RIGHT,
 }
+## The triggers, pulled: skills 2 and 3.
+const PAD_TRIGGERS := {"skill_2": JOY_AXIS_TRIGGER_LEFT, "skill_3": JOY_AXIS_TRIGGER_RIGHT}
+## What a keycap reads for an action while the player plays by pad.
+const PAD_NAMES := {
+	"interact": "A", "attack": "X", "inventory": "Y", "menu": "Start", "dodge": "RB",
+	"skill_1": "LB", "skill_2": "LT", "skill_3": "RT", "dock_menu": "Back",
+	"move_up": "↑", "move_down": "↓", "move_left": "←", "move_right": "→",
+	"map": "Back", "journal": "Back", "stats": "Back", "skills": "Back", "codex": "Back",
+	"skill_4": "Back", "skill_5": "Back", "skill_6": "Back",
+}
+## Keys named outright in footers, as the pad has them.
+const PAD_FOR_KEYS := {"Esc": "B", "Enter": "A"}
+## Whether the last thing the player touched was a pad (PIX-215): keycaps
+## then show its buttons.
+static var pad := false
 const PAD_STICK := {
 	"move_up": [JOY_AXIS_LEFT_Y, -1.0], "move_down": [JOY_AXIS_LEFT_Y, 1.0],
 	"move_left": [JOY_AXIS_LEFT_X, -1.0], "move_right": [JOY_AXIS_LEFT_X, 1.0],
@@ -68,6 +89,15 @@ static func learn(event: InputEventKey) -> void:
 		learned[event.physical_keycode] = event.key_label
 
 
+## Notes which hands are on the game (PIX-215): a key or a click, or a pad's
+## button or a firm push of its stick.
+static func note_device(event: InputEvent) -> void:
+	if event is InputEventKey or event is InputEventMouseButton:
+		pad = false
+	elif event is InputEventJoypadButton or (event is InputEventJoypadMotion and absf((event as InputEventJoypadMotion).axis_value) > 0.5):
+		pad = true
+
+
 ## A physical key's name for the screen, on the player's layout ("W", "Space",
 ## "Esc"): short where a cap is small (Keycap.SHORT).
 static func key_label(key: int) -> String:
@@ -86,6 +116,8 @@ static func key_label(key: int) -> String:
 static func shown(name: String) -> String:
 	if name.begins_with("{key:"):
 		return say(name)
+	if pad and PAD_FOR_KEYS.has(name):
+		return PAD_FOR_KEYS[name]
 	if name.length() == 1 and name.to_upper() != name.to_lower():
 		return key_label(OS.find_keycode_from_string(name.to_upper()))
 	return name
@@ -116,9 +148,11 @@ static func say(text: String, bindings: Variant = null) -> String:
 		return text
 	var bound: Dictionary = bindings if bindings is Dictionary else GameState.settings.bindings
 	var out := text
-	for found in RegEx.create_from_string("\\{key:([a-z_]+)\\}").search_all(text):
+	for found in RegEx.create_from_string("\\{key:([a-z_0-9]+)\\}").search_all(text):
 		var action := found.get_string(1)
-		if BINDABLE.has(action):
+		if pad and PAD_NAMES.has(action):
+			out = out.replace(found.get_string(), PAD_NAMES[action])
+		elif BINDABLE.has(action):
 			out = out.replace(found.get_string(), key_label(key_for(action, bound)))
 		elif action.begins_with("skill_") and int(action.substr(6)) in range(1, SKILL_KEYS.size() + 1):
 			out = out.replace(found.get_string(), key_label(SKILL_KEYS[int(action.substr(6)) - 1]))
@@ -134,6 +168,8 @@ static func apply(bindings: Dictionary) -> void:
 		actions[action] = true
 	for index in SKILL_KEYS.size():
 		actions["skill_%d" % (index + 1)] = true
+	for action: String in PAD_BUTTONS:
+		actions[action] = true
 	for action: String in actions:
 		if InputMap.has_action(action):
 			InputMap.action_erase_events(action)
@@ -156,9 +192,25 @@ static func apply(bindings: Dictionary) -> void:
 			button.button_index = PAD_BUTTONS[action]
 			button.device = ALL_DEVICES
 			InputMap.action_add_event(action, button)
+		if PAD_TRIGGERS.has(action):
+			var pull := InputEventJoypadMotion.new()
+			pull.axis = PAD_TRIGGERS[action]
+			pull.axis_value = 1.0
+			pull.device = ALL_DEVICES
+			InputMap.action_add_event(action, pull)
 		if PAD_STICK.has(action):
 			var motion := InputEventJoypadMotion.new()
 			motion.axis = PAD_STICK[action][0]
 			motion.axis_value = PAD_STICK[action][1]
 			motion.device = ALL_DEVICES
 			InputMap.action_add_event(action, motion)
+
+	# The pad's A and B in Godot's own confirm and back (PIX-215): screens
+	# close on ui_cancel, so B goes back everywhere.
+	for pair: Array in [["ui_accept", JOY_BUTTON_A], ["ui_cancel", JOY_BUTTON_B]]:
+		var has := InputMap.action_get_events(pair[0]).any(func(event: InputEvent) -> bool: return event is InputEventJoypadButton and event.button_index == pair[1])
+		if not has:
+			var button := InputEventJoypadButton.new()
+			button.button_index = pair[1]
+			button.device = ALL_DEVICES
+			InputMap.action_add_event(pair[0], button)

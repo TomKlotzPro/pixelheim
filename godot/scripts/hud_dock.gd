@@ -38,6 +38,10 @@ var slots: Array[Dictionary] = []
 var menu_button: Button
 var menu: PanelContainer
 var menu_rows := {}
+## The menu's lines in order (the screens, then skills 4-6), and the one a
+## pad or the arrows are on, -1 when the mouse opened it (PIX-215).
+var menu_lines: Array[Dictionary] = []
+var menu_focus := -1
 var _shown: Array = []
 var _beat_left := 0.0
 var _low := false
@@ -225,25 +229,61 @@ func _build_menu() -> void:
 	lines.add_theme_constant_override("separation", 4)
 	menu.add_child(lines)
 	for screen: Array in SCREENS:
-		var line := HBoxContainer.new()
-		line.add_theme_constant_override("separation", 8)
-		line.mouse_filter = Control.MOUSE_FILTER_STOP
-		line.gui_input.connect(func(event: InputEvent) -> void:
-			if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-				menu.visible = false
-				world.open_screen(screen[0])
-		)
-		var cap := UiStyle.keycap("", true)
-		line.add_child(cap)
-		var word := UiStyle.label(screen[1], 16, UiStyle.INK)
-		line.add_child(word)
-		lines.add_child(line)
-		menu_rows[screen[0]] = {"cap": cap, "word": word, "name": screen[1]}
+		var open := func() -> void:
+			menu.visible = false
+			world.open_screen(screen[0])
+		var row := _menu_line(lines, open)
+		menu_rows[screen[0]] = {"cap": row["cap"], "word": row["word"], "name": screen[1]}
+	# Skills 4-6, for a pad with no keys for them (PIX-215).
+	for index in [3, 4, 5]:
+		var cast := func() -> void:
+			_close_menu()
+			world.player.cast(index)
+		var row := _menu_line(lines, cast)
+		row["skill"] = index
 	menu.resized.connect(_place)
+
+
+## One line of the menu: a keycap and a word, clicked or chosen to `run`.
+func _menu_line(lines: VBoxContainer, run: Callable) -> Dictionary:
+	var line := HBoxContainer.new()
+	line.add_theme_constant_override("separation", 8)
+	line.mouse_filter = Control.MOUSE_FILTER_STOP
+	line.gui_input.connect(func(event: InputEvent) -> void:
+		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+			run.call()
+	)
+	var cap := UiStyle.keycap("", true)
+	line.add_child(cap)
+	var word := UiStyle.label("", 16, UiStyle.INK)
+	line.add_child(word)
+	lines.add_child(line)
+	var row := {"line": line, "cap": cap, "word": word, "run": run}
+	menu_lines.append(row)
+	return row
+
+
+## Whether the menu has the pad's (or the arrows') attention now.
+func steering() -> bool:
+	return menu.visible and menu_focus >= 0
+
+
+func _close_menu() -> void:
+	menu.visible = false
+	menu_focus = -1
+
+
+## The chosen line lit, the rest plain.
+func _show_focus() -> void:
+	for index in menu_lines.size():
+		var line: HBoxContainer = menu_lines[index]["line"]
+		line.modulate = Color(1.25, 1.1, 0.8) if index == menu_focus else Color.WHITE
 
 
 func _toggle_menu() -> void:
 	menu.visible = not menu.visible
+	menu_focus = -1
+	_show_focus()
 	_place()
 
 
@@ -346,6 +386,14 @@ func refresh() -> void:
 		waiting_any = waiting_any or waiting > 0
 		line["word"].text = Text.t(line["name"]) + ("  +%d" % waiting if waiting > 0 else "")
 		line["word"].add_theme_color_override("font_color", UiStyle.LAMP if waiting > 0 else UiStyle.INK)
+	# Skills 4-6 by name (PIX-215), their keys as the keyboard has them.
+	var docked := Skills.docked(hero)
+	for row: Dictionary in menu_lines:
+		if not row.has("skill"):
+			continue
+		var index: int = row["skill"]
+		UiStyle.keycap_text(row["cap"], str(index + 1))
+		row["word"].text = String(docked[index].get("name", Text.t("Skill %d: none yet") % (index + 1))) if index < docked.size() else Text.t("Skill %d: none yet") % (index + 1)
 	# Points to spend light the menu, so they're never missed.
 	UiStyle.focus(menu_button, waiting_any)
 
@@ -374,7 +422,39 @@ func _set_xp(xp: int, to_next: int) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	# The pad's Back opens the menu with its first line chosen (PIX-215).
+	if event.is_action_pressed("dock_menu"):
+		get_viewport().set_input_as_handled()
+		if menu.visible:
+			_close_menu()
+		else:
+			refresh()
+			menu.visible = true
+			menu_focus = 0
+			_place()
+		_show_focus()
+		return
 	# The menu closes on Esc before the pause menu would open.
 	if menu.visible and (event.is_action_pressed("ui_cancel") or event.is_action_pressed("menu")):
 		get_viewport().set_input_as_handled()
-		menu.visible = false
+		_close_menu()
+		_show_focus()
+		return
+	if not steering():
+		return
+	for step: Array in [["move_up", -1], ["move_down", 1]]:
+		if event.is_action_pressed(step[0]):
+			get_viewport().set_input_as_handled()
+			menu_focus = posmod(menu_focus + int(step[1]), menu_lines.size())
+			_show_focus()
+			Sound.play_ui("tick")
+			return
+	if event.is_action_pressed("interact") or event.is_action_pressed("ui_accept"):
+		get_viewport().set_input_as_handled()
+		var run: Callable = menu_lines[menu_focus]["run"]
+		menu_focus = -1
+		run.call()
+		return
+	# Nothing else reaches the world while the pad is in the menu.
+	if event.is_action_pressed("attack") or event.is_action_pressed("dodge") or event.is_action_pressed("move_left") or event.is_action_pressed("move_right"):
+		get_viewport().set_input_as_handled()
