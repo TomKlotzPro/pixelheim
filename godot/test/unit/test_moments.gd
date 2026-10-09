@@ -12,15 +12,15 @@ func after_each() -> void:
 
 func test_a_quests_end_and_its_level_are_two_messages() -> void:
 	var tags := ["Quest complete", "Level up"]
-	var parts := WorldScript.split_messages("Quest complete: Slimes. +40 XP.\nLevel up: you are now level 3.", tags)
+	var parts := Messages.split_messages("Quest complete: Slimes. +40 XP.\nLevel up: you are now level 3.", tags)
 	assert_eq(parts, ["Quest complete: Slimes. +40 XP.", "Level up: you are now level 3."] as Array[String])
-	assert_eq(WorldScript.split_messages("The gate is barred.\nFind the five relics.", tags).size(), 1, "an untagged line stays with its message")
+	assert_eq(Messages.split_messages("The gate is barred.\nFind the five relics.", tags).size(), 1, "an untagged line stays with its message")
 
 
 func test_a_tag_is_found_in_french_too() -> void:
-	assert_eq(WorldScript.tag_of("Quête terminée : Les slimes.", ["Quête terminée"]), "Quête terminée")
-	assert_eq(WorldScript.tag_of("Quest complete: Slimes.", ["Quest complete"]), "Quest complete")
-	assert_eq(WorldScript.tag_of("Nothing to say.", ["Quest complete"]), "")
+	assert_eq(Messages.tag_of("Quête terminée : Les slimes.", ["Quête terminée"]), "Quête terminée")
+	assert_eq(Messages.tag_of("Quest complete: Slimes.", ["Quest complete"]), "Quest complete")
+	assert_eq(Messages.tag_of("Nothing to say.", ["Quest complete"]), "")
 
 
 func test_a_line_stays_long_enough_to_read() -> void:

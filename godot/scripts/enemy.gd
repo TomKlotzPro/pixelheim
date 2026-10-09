@@ -436,7 +436,7 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null, crit := fa
 			world.on_enemy_noticed(self)
 	if not dying and ailments.inflict(infliction, GameState.roll):
 		Sound.play_ui("ail")
-		world.log_line(Text.t("%s is afflicted by %s!") % [fighter["name"], Ailments.label(infliction["kind"])])
+		world.messages.log_line(Text.t("%s is afflicted by %s!") % [fighter["name"], Ailments.label(infliction["kind"])])
 
 
 func _lose(damage: int, color: Color, crit := false) -> void:

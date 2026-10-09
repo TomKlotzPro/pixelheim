@@ -8,8 +8,6 @@ const TILE := 16
 ## Monsters at each of the web's visible spawn points: a small pack of the
 ## species that lives there, so the real-time fight has bodies to swing at.
 const PACK_SIZE := 3
-const LOG_LINES := 6
-const LOG_SECONDS := 4.0
 ## Fight music holds this long after the last hunter gives up.
 const COMBAT_LINGER_S := 3.0
 ## Open-air maps too high and cold for birdsong: wind instead (PIX-169).
@@ -28,12 +26,13 @@ var player: CharacterBody2D
 var camera_rig: CameraRig
 ## What flashes and floats over the world (WorldFx).
 var fx: WorldFx
+## What the world says in words: the message plate and the battle log (Messages).
+var messages: Messages
 var player_cell := Vector2i.ZERO
 var kills := 0
 var last_player_position := Vector2.ZERO
 ## The hero panel: health, resource, xp, gold, the screens (HudPanel).
 var dock: Control
-var log_box: VBoxContainer
 ## spawn id -> monsters of its pack still standing
 var pack_alive := {}
 ## When the hero last arrived somewhere: a moment's grace before anything
@@ -64,20 +63,9 @@ static var _hint_generation := 0
 var soundscape_left := 0.0
 ## Foes still standing on the dungeon floor the hero walks (0 when cleared).
 var floor_foes := 0
-var message_label: Label
 ## The message's plate and its tag (PIX-194): "Quest accepted", "Level up"...
 ## A bucket of the well's water in hand, on the Night of Ash (PIX-197).
 var prologue_bucket := false
-var message_box: PanelContainer
-var message_tag: Label
-var message_fade: Tween
-## Tags a message may open with, set in gold on its plate.
-const MESSAGE_TAGS := ["Quest accepted", "Quest complete", "Level up", "Mastery"]
-## A plain message gives way to the next after this long; a tagged one
-## (a quest, a level) is always read to its end (PIX-211).
-const PLAIN_MESSAGE_S := 1.2
-## The widest a message's words run before they wrap.
-const MESSAGE_WIDTH := 860.0
 ## The main quest's next step, quietly above the dock (PIX-144): a dark
 ## pill holding "Next" and the step.
 var objective_box: PanelContainer
@@ -168,6 +156,9 @@ func _ready() -> void:
 	add_child(actors)
 	_spawn_player()
 	player.face(WorldState.FACINGS.get(GameState.world.facing, Vector2.DOWN))
+	messages = Messages.new()
+	messages.world = self
+	add_child(messages)
 	_build_hud()
 	if Touch.enabled():
 		var mark := Label.new()
@@ -239,7 +230,7 @@ func _process(delta: float) -> void:
 	_update_prompt()
 	_update_nameplate()
 	_run_clocks(delta)
-	_advance_messages()
+	messages.update()
 	# A first-time hint stands under the boss bar while one is up (PIX-210).
 	if hint_card != null and is_instance_valid(hint_card):
 		hint_card.position.y = boss_bar.bottom() + 6 if boss_bar.following() else 18.0
@@ -297,22 +288,22 @@ func on_enemy_died(enemy: Node) -> void:
 	if map.floor_level > 0:
 		floor_level = Dungeons.drop_floor(map.floor_level)
 	var gear_before := GameState.pack.gear.size()
-	_log(GameState.defeat_monster(enemy.fighter, enemy.region, cleared, floor_level, map.floor_level))
+	messages.log_lines(GameState.defeat_monster(enemy.fighter, enemy.region, cleared, floor_level, map.floor_level))
 	fx.show_loot(GameState.pack.gear.slice(gear_before), enemy.global_position)
 	if enemy.has_meta("prologue"):
-		_flash_message(GameState.prologue_pouch())
+		messages.flash(GameState.prologue_pouch())
 	# The last of a wave of the night's foes: on to the next beat.
 	if enemy.has_meta("prologue_wave"):
 		var left := get_tree().get_nodes_in_group("mobs").filter(func(mob: Node) -> bool:
 			return mob != enemy and mob.has_meta("prologue_wave") and not mob.dying)
 		if left.is_empty():
-			_flash_message(GameState.prologue_wave_cleared())
+			messages.flash(GameState.prologue_wave_cleared())
 	if enemy.fighter.has("named"):
 		Sound.play("bounty")
 	if GameState.pack.gear.size() > gear_before:
 		Sound.play("drop")
 	if cleared != "":
-		_log([Text.t("The pack is scattered. Another comes once you've walked a good way, or after a night's rest.")])
+		messages.log_lines([Text.t("The pack is scattered. Another comes once you've walked a good way, or after a night's rest.")])
 	# The dead a boss summons aren't the floor's own foes (PIX-150).
 	if map.floor_level > 0 and floor_foes > 0 and not enemy.is_in_group("summoned"):
 		floor_foes -= 1
@@ -360,32 +351,6 @@ func can_notice(enemy: Node) -> bool:
 
 
 
-func log_line(line: String) -> void:
-	_log([line])
-
-## The battle log: recent lines stack bottom-left and fade.
-func _log(lines: Array) -> void:
-	for line: String in lines:
-		# A level gained goes on the plate, not among the kills (PIX-211).
-		if tag_of(line, [Text.t("Level up")]) != "":
-			_flash_message(line)
-			continue
-		# Each line on its own small plate, like the objective's (PIX-194).
-		var chip := PanelContainer.new()
-		chip.add_theme_stylebox_override("panel", UiStyle.plate(8))
-		chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		chip.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-		chip.add_child(UiStyle.label(line, UiStyle.reading(12), UiStyle.CREAM))
-		log_box.add_child(chip)
-		var tween := chip.create_tween()
-		tween.tween_interval(LOG_SECONDS)
-		tween.tween_property(chip, "modulate:a", 0.0, 0.6)
-		tween.tween_callback(chip.queue_free)
-	while log_box.get_child_count() > LOG_LINES:
-		var oldest := log_box.get_child(0)
-		log_box.remove_child(oldest)
-		oldest.queue_free()
-
 func _on_hp_changed(hp: int, max_hp: int) -> void:
 	dock.refresh()
 	# Hurt on the first night: how to drink a potion, once (PIX-197).
@@ -400,7 +365,7 @@ func _use_portal(target: Dictionary) -> void:
 				_enter_map(map, Vector2i(int(target["x"]), int(target["y"])))
 				# Stepping into the inn takes a bed for coin, as on the web.
 				if map.id == "town_inn":
-					_flash_message(GameState.rest_at_inn())
+					messages.flash(GameState.rest_at_inn())
 					_dream()
 			)
 		"dungeon":
@@ -408,7 +373,7 @@ func _use_portal(target: Dictionary) -> void:
 			_step_back()
 			# Barred since the Night of Ash until the relics come home (PIX-170).
 			if target["dungeon"] == "mountain" and not Relics.gate_open(GameState.progression):
-				_flash_message(Relics.barred_line())
+				messages.flash(Relics.barred_line())
 				return
 			var screen := preload("res://scripts/dungeon_screen.gd").new()
 			screen.world = self
@@ -429,7 +394,7 @@ func open_screen(screen: String) -> void:
 			_open_inventory()
 		"map":
 			if map.floor_level > 0:
-				_flash_message("No map reaches this deep.")
+				messages.flash("No map reaches this deep.")
 				return
 			var chart := preload("res://scripts/map_screen.gd").new()
 			chart.world = self
@@ -449,7 +414,7 @@ func place_from_pack(item_id: String) -> void:
 	var cell := _facing_cell()
 	var text := GameState.place_furniture(item_id, cell, _tile_in_hand(cell))
 	if text != "":
-		_flash_message(text)
+		messages.flash(text)
 	view.furnish()
 
 
@@ -495,7 +460,7 @@ func on_enemy_noticed(enemy: Node) -> void:
 	hunted_at = now
 	hunted_by_boss = hunted_by_boss or fights_like_boss(enemy)
 	if enemy.fighter.has("named"):
-		_log([Hunts.named(enemy.fighter["named"])["seen"]])
+		messages.log_lines([Hunts.named(enemy.fighter["named"])["seen"]])
 
 
 ## A boss or a named monster (PIX-156): the boss's music plays.
@@ -704,9 +669,9 @@ func enter_floor(level: int) -> void:
 			spawn_named(hunted["id"], guardian["cell"])
 	view.add_patch(plan["patch"], Gathering.floor_spot_id(level), Gathering.floor_material(level))
 	var floor_def := Dungeons.floor_def(level)
-	_log([String(floor_def["name"]) if Dungeons.is_deep(level) else Text.t("Floor %d: %s") % [level, floor_def["name"]], String(floor_def["description"])])
+	messages.log_lines([String(floor_def["name"]) if Dungeons.is_deep(level) else Text.t("Floor %d: %s") % [level, floor_def["name"]], String(floor_def["description"])])
 	if not twist.is_empty():
-		_log([Text.t("%s: %s") % [Text.t(twist["name"]), Text.t(twist["line"])]])
+		messages.log_lines([Text.t("%s: %s") % [Text.t(twist["name"]), Text.t(twist["line"])]])
 	# A boss's floor: its intro, the first time only (PIX-32).
 	play_story(Cutscene.moment("boss:%s" % Dungeons.boss_of(level)["monsterId"]))
 
@@ -723,7 +688,7 @@ func _floor_cleared(at: Vector2i) -> void:
 	var deep := Dungeons.is_deep(map.floor_level)
 	var result := GameState.clear_deep(map.floor_level) if deep else GameState.clear_floor(map.floor_level)
 	Sound.play("victory")
-	_log(result["lines"])
+	messages.log_lines(result["lines"])
 	var stairs := at
 	if not map.is_walkable(stairs) or map.portals.has(stairs):
 		stairs = player_cell
@@ -914,21 +879,21 @@ func _try_interact() -> void:
 		return
 	if map.id == "town" and faced == Town.house_door():
 		if Town.ashes_tent(Town.done_projects(GameState.settlement)).x >= 0:
-			_flash_message("Only cinders where the house stood. The board on the square can change that.")
+			messages.flash("Only cinders where the house stood. The board on the square can change that.")
 		elif GameState.owns_house():
 			_enter_house()
 		elif GameState.pack.gold >= int(Town._data()["houseDeedCost"]) and not _asked_twice("deed"):
 			# A big buy asks first (PIX-179).
-			_flash_message(Controls.say(Text.t("The deed costs %d gold. {key:interact} again to sign it.") % int(Town._data()["houseDeedCost"])))
+			messages.flash(Controls.say(Text.t("The deed costs %d gold. {key:interact} again to sign it.") % int(Town._data()["houseDeedCost"])))
 		else:
-			_flash_message(GameState.buy_house())
+			messages.flash(GameState.buy_house())
 		return
 	if map.id == "town_house" and _house_interact(faced):
 		return
 	# A fishing spot facing the water: cast (PIX-165).
 	if _fishing_here():
 		Sound.play("drop")
-		_flash_message(GameState.fish(Gathering.fishing_spot_at(map.id, player_cell)["id"]))
+		messages.flash(GameState.fish(Gathering.fishing_spot_at(map.id, player_cell)["id"]))
 		return
 	# The projects board on the square opens the village's ledger (PIX-145);
 	# what it built, the town shows off as it closes (PIX-147).
@@ -959,7 +924,7 @@ func _try_interact() -> void:
 			# A keeper on the burnt square (PIX-146): Sela's tent takes a
 			# guest for the night, the others trade from their stalls.
 			if beside["npc"]["id"] == "innkeeper":
-				_flash_message(GameState.rest_at_inn())
+				messages.flash(GameState.rest_at_inn())
 				_dream()
 			else:
 				_open_stall(Economy.shop_at(String(Npcs.by_id(beside["npc"]["id"], []).get("mapId", ""))))
@@ -1003,13 +968,13 @@ func _house_interact(cell: Vector2i) -> bool:
 	var cost := int(Town._data()["workbenchCost"])
 	if _tile_in_hand(cell) == "shelf" and GameState.furniture_at(cell).is_empty() and not GameState.settlement.house.get("workbench", false) \
 			and GameState.pack.gold >= cost and not _asked_twice("workbench"):
-		_flash_message(Controls.say(Text.t("A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it.") % cost))
+		messages.flash(Controls.say(Text.t("A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it.") % cost))
 		return true
 	var result := GameState.house_interact(cell, _tile_in_hand(cell))
 	if result.is_empty():
 		return false
 	if result.has("text"):
-		_flash_message(result["text"])
+		messages.flash(result["text"])
 	if result.has("panel"):
 		var screen := preload("res://scripts/home_screen.gd").new()
 		screen.mode = result["panel"]
@@ -1055,7 +1020,7 @@ func _talk(npc: Dictionary) -> void:
 		npc["lines"] = asking["choice"]["prompt"]
 		box.choices = asking["choice"]["options"].map(func(option: Dictionary) -> String: return option["label"])
 		box.on_choice = func(index: int) -> void:
-			_flash_message(GameState.choose(asking["id"], asking["choice"]["options"][index]["id"]))
+			messages.flash(GameState.choose(asking["id"], asking["choice"]["options"][index]["id"]))
 		box.npc = npc
 		add_child(box)
 		return
@@ -1093,7 +1058,7 @@ func _talk(npc: Dictionary) -> void:
 
 func _open_chest(chest: Dictionary) -> void:
 	var result := GameState.open_chest(chest)
-	_flash_message(result["message"])
+	messages.flash(result["message"])
 	if not result["opened"]:
 		return
 	var sprite: Sprite2D = view.chest_sprites[chest["id"]]
@@ -1147,17 +1112,17 @@ func _update_objective() -> void:
 	objective_box.position.y = (dock.top() if dock != null and dock.top() > 0 else 690.0) - 38
 	# A message stands where the objective line does and grows upward, so a
 	# long one (a barred gate, a quest's words) never runs under the dock.
-	if message_box.modulate.a > 0.0:
-		_fit_message()
-	message_box.position.y = objective_box.position.y + objective_box.size.y - message_box.size.y
+	if messages.message_box.modulate.a > 0.0:
+		messages.fit()
+	messages.message_box.position.y = objective_box.position.y + objective_box.size.y - messages.message_box.size.y
 	# The battle log stands on the objective line, or on a taller message
 	# (PIX-211), and grows upward, so a long kill never runs into either.
 	var under := objective_box.position.y
-	if message_box.modulate.a > 0.0:
-		under = minf(under, message_box.position.y)
-	log_box.reset_size()
-	log_box.position.y = under - 6 - log_box.size.y
-	var show := text != "" and not in_fight() and message_box.modulate.a < 0.05
+	if messages.message_box.modulate.a > 0.0:
+		under = minf(under, messages.message_box.position.y)
+	messages.log_box.reset_size()
+	messages.log_box.position.y = under - 6 - messages.log_box.size.y
+	var show := text != "" and not in_fight() and messages.message_box.modulate.a < 0.05
 	var target := 1.0 if show else 0.0
 	if objective_box.get_meta("fading_to", -1.0) != target:
 		objective_box.set_meta("fading_to", target)
@@ -1186,7 +1151,7 @@ func _prologue_arrive(next: MapData) -> void:
 				# It keeps to its meal until the hero walks up or strikes:
 				# the night's first fight is the hero's to start.
 				scavenger.feeding = true
-				_flash_message.call_deferred(String(Prologue.data()["arrival"]))
+				messages.flash.call_deferred(String(Prologue.data()["arrival"]))
 		Prologue.GATE:
 			if next.id == "town":
 				GameState.prologue_reached_town()
@@ -1203,7 +1168,7 @@ func _carry_water(faced: Vector2i) -> bool:
 	if map.tile_at(faced) == "well":
 		prologue_bucket = true
 		Sound.play("drop")
-		_flash_message(String(fires["well"]))
+		messages.flash(String(fires["well"]))
 		return true
 	var ruins := Town.ruins(Town.done_projects(GameState.settlement))
 	for i in ruins.size():
@@ -1211,12 +1176,12 @@ func _carry_water(faced: Vector2i) -> bool:
 		if not rect.has_point(faced) or i in GameState.progression.prologue_doused:
 			continue
 		if not prologue_bucket:
-			_flash_message(String(fires["empty"]))
+			messages.flash(String(fires["empty"]))
 			return true
 		prologue_bucket = false
 		view.douse_ruin(i)
 		Sound.play("heal")
-		_flash_message(GameState.prologue_douse(i))
+		messages.flash(GameState.prologue_douse(i))
 		if GameState.progression.prologue == Prologue.EMBERS:
 			_prologue_wave.call_deferred()
 		return true
@@ -1481,7 +1446,7 @@ func _gather_at(cell: Vector2i) -> void:
 	if lines.is_empty():
 		return
 	Sound.play("drop")
-	_log(lines)
+	messages.log_lines(lines)
 	view.refresh_patches()
 
 
@@ -1490,7 +1455,7 @@ func _collect_ground_treasure(cell: Vector2i) -> void:
 	if chest.is_empty() or chest["look"] == "chest" or GameState.is_opened(chest):
 		return
 	var result := GameState.open_chest(chest)
-	_flash_message(result["message"])
+	messages.flash(result["message"])
 	if result["opened"]:
 		view.chest_sprites[chest["id"]].queue_free()
 		view.chest_sprites.erase(chest["id"])
@@ -1518,9 +1483,9 @@ func _tend_escort() -> void:
 	escort.add_to_group("decor")
 	escort.arrived.connect(func() -> void:
 		GameState.escort_arrived(quest_id)
-		_flash_message(due["def"]["arrived"]))
+		messages.flash(due["def"]["arrived"]))
 	escort.lost.connect(func() -> void:
-		_flash_message(due["def"]["lost"])
+		messages.flash(due["def"]["lost"])
 		escort_lost_at = Time.get_ticks_msec() / 1000.0
 		var gone := escort
 		gone.create_tween().tween_property(gone, "modulate:a", 0.0, 1.0).finished.connect(gone.queue_free))
@@ -1536,7 +1501,7 @@ var run_clock: PanelContainer
 func _run_clocks(delta: float) -> void:
 	var ticked := GameState.tick_runs(delta)
 	if ticked["message"] != "":
-		_flash_message(ticked["message"])
+		messages.flash(ticked["message"])
 	for chest_id: String in ticked["rearmed"]:
 		if view.chest_sprites.has(chest_id):
 			for chest: Dictionary in Interactables._data()["chests"]:
@@ -1708,12 +1673,7 @@ func _build_hud() -> void:
 	hud.add_child(dock)
 	boss_bar = preload("res://scripts/boss_bar.gd").new()
 	hud.add_child(boss_bar)
-	log_box = VBoxContainer.new()
-	log_box.add_theme_constant_override("separation", 3)
-	log_box.position = Vector2(24, 506)
-	log_box.custom_minimum_size = Vector2(700, 0)
-	log_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	hud.add_child(log_box)
+	messages.build_log(hud)
 	GameState.hp_changed.connect(_on_hp_changed)
 	heard_gold = GameState.pack.gold
 	heard_hp = GameState.hero.hp
@@ -1731,8 +1691,8 @@ func _build_hud() -> void:
 	GameState.gold_changed.connect(func(_gold: int) -> void: dock.refresh())
 	GameState.inventory_changed.connect(dock.refresh)
 	GameState.healed.connect(dock.refresh)
-	GameState.message.connect(_flash_message)
-	GameState.noted.connect(_log)
+	GameState.message.connect(messages.flash)
+	GameState.noted.connect(messages.log_lines)
 	GameState.healed.connect(func() -> void: player.heal())
 	GameState.ranked_up.connect(_ascend)
 	GameState.prologue_dawn.connect(_play_dawn)
@@ -1765,23 +1725,7 @@ func _build_hud() -> void:
 	keeper.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lines.add_child(keeper)
 	hud.add_child(nameplate)
-	# A message stands on the objective's plate, its tag in gold (PIX-194).
-	message_box = PanelContainer.new()
-	message_box.add_theme_stylebox_override("panel", UiStyle.plate())
-	message_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	message_box.modulate.a = 0.0
-	var message_row := HBoxContainer.new()
-	message_row.add_theme_constant_override("separation", 8)
-	message_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	message_box.add_child(message_row)
-	message_tag = UiStyle.plate_tag("")
-	message_tag.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
-	message_row.add_child(message_tag)
-	message_label = UiStyle.plate_text("")
-	message_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	message_row.add_child(message_label)
-	message_box.resized.connect(func() -> void: message_box.position.x = roundf((1280 - message_box.size.x) / 2.0))
-	hud.add_child(message_box)
+	messages.build_plate(hud)
 	objective_box = PanelContainer.new()
 	objective_box.add_theme_stylebox_override("panel", UiStyle.plate())
 	objective_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -1830,110 +1774,6 @@ func _update_nameplate() -> void:
 	var screen := get_viewport().get_canvas_transform() * top
 	nameplate.position = (screen - Vector2(nameplate.size.x / 2.0, nameplate.size.y)).round()
 
-## A line for the hero, held long enough to read (quests say a lot).
-## The message's plate, shrunk round its words (a container only grows).
-func _fit_message() -> void:
-	message_box.size = Vector2.ZERO
-	message_box.reset_size()
-
-
-## Messages waiting their turn on the plate (PIX-211), the one showing,
-## whether it carries a tag, and since when it shows.
-var _messages: Array[String] = []
-var _message_now := ""
-var _message_tagged := false
-var _message_since := 0.0
-
-
-## A message for the objective's plate (PIX-211): it waits behind the one
-## showing instead of cutting it off. A quest's end and the level it brings
-## go up one after the other; the same words twice are said once.
-func _flash_message(text: String) -> void:
-	for part: String in split_messages(text, _tags()):
-		if part != _message_now and part not in _messages:
-			_messages.append(part)
-	_advance_messages()
-
-
-func _tags() -> Array:
-	return MESSAGE_TAGS.map(func(known: String) -> String: return Text.t(known))
-
-
-## A line that starts with a known tag begins a message of its own; any
-## other line belongs to the message before it.
-static func split_messages(text: String, tags: Array) -> Array[String]:
-	var parts: Array[String] = []
-	for line: String in text.split("\n"):
-		if parts.is_empty() or tag_of(line, tags) != "":
-			parts.append(line)
-		else:
-			parts[-1] += "\n" + line
-	return parts
-
-
-## The tag a message starts with ("Quest accepted: ..."), or "". In the
-## player's language, French setting a narrow space before the colon.
-static func tag_of(text: String, tags: Array) -> String:
-	for said: String in tags:
-		for colon: String in [": ", "\u202f: ", " : "]:
-			if text.begins_with(said + colon):
-				return said
-	return ""
-
-
-## The next message, once the one showing is done with: a tagged one when
-## it has faded, a plain one after PLAIN_MESSAGE_S.
-func _advance_messages() -> void:
-	if _messages.is_empty():
-		return
-	if _message_now != "" and (_message_tagged or Time.get_ticks_msec() / 1000.0 - _message_since < PLAIN_MESSAGE_S):
-		return
-	_show_message(_messages.pop_front())
-
-
-## On the objective's plate (PIX-194): a known tag before its first colon
-## ("Quest accepted: ...") is set in gold, the rest wraps beside it. It holds
-## long enough to read (UiStyle.reading_seconds).
-func _show_message(text: String) -> void:
-	_message_now = text
-	_message_since = Time.get_ticks_msec() / 1000.0
-	var tag := tag_of(text, _tags())
-	_message_tagged = tag != ""
-	if tag != "":
-		text = text.substr(tag.length()).lstrip(" \u202f:")
-		text = text[0].to_upper() + text.substr(1)
-	message_tag.text = tag
-	message_tag.visible = tag != ""
-	# The first quest taken introduces the journal (PIX-202).
-	if tag == Text.t("Quest accepted"):
-		hint("journal")
-	# A quest done is a victory, heard (PIX-211); one taken, a yes (PIX-212).
-	if tag == Text.t("Quest complete"):
-		Sound.play("victory")
-	elif tag == Text.t("Quest accepted"):
-		Sound.play_ui("confirm")
-	message_label.text = text
-	# Wraps at a reading width, never wider than it needs.
-	var wide := 0.0
-	for line in text.split("\n"):
-		wide = maxf(wide, UiStyle.body_font().get_string_size(line, HORIZONTAL_ALIGNMENT_LEFT, -1, message_label.get_theme_font_size("font_size")).x)
-	var width := minf(ceilf(wide) + 2, MESSAGE_WIDTH - (message_tag.get_minimum_size().x + 8 if tag != "" else 0))
-	# A wrapping label measures its height at the width it has: give it the
-	# width first, then fit the plate round it.
-	message_label.custom_minimum_size.x = width
-	message_label.size = Vector2(width, 0)
-	_fit_message()
-	if message_fade != null:
-		message_fade.kill()
-	message_fade = create_tween()
-	message_fade.tween_property(message_box, "modulate:a", 1.0, 0.15)
-	message_fade.tween_interval(UiStyle.reading_seconds(text))
-	message_fade.tween_property(message_box, "modulate:a", 0.0, 0.4)
-	message_fade.tween_callback(func() -> void:
-		_message_now = ""
-		_advance_messages()
-	)
-
 ## The keys, as the player bound them (Controls, GameSettings).
 func _setup_input() -> void:
 	Controls.apply(GameState.settings.bindings)
@@ -1945,9 +1785,9 @@ var crt: CanvasLayer
 func apply_video() -> void:
 	var settings := GameState.settings
 	# Large reading text (PIX-160) applies at once to what's on the HUD.
-	if message_label != null:
-		UiStyle.sized(message_label, UiStyle.reading(16))
-		message_box.reset_size()
+	if messages != null and messages.message_label != null:
+		UiStyle.sized(messages.message_label, UiStyle.reading(16))
+		messages.message_box.reset_size()
 		UiStyle.sized(objective_label, UiStyle.reading(16))
 		objective_box.reset_size()
 	if settings.scanlines and crt == null:

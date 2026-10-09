@@ -111,7 +111,7 @@ func _reached(at: int) -> void:
 				foe.quarry = self
 				world.fx.appear(foe)
 				foe.notice()
-			world._flash_message(ambush["line"])
+			world.messages.flash(ambush["line"])
 
 
 func _hurt(amount: int) -> void:
