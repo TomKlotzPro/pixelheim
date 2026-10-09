@@ -24,4 +24,5 @@ while [ $# -gt 0 ]; do
   esac
   shift
 done
-godot --rendering-method "$method" --audio-driver Dummy --path . -- --screenshot lookbook --out "res://$out" "${extra[@]+"${extra[@]}"}" 2>&1 | grep -E "^LOOK|SCRIPT ERROR|Parse Error"
+# -NSAppSleepDisabled: macOS mustn't nap the run while its window is hidden.
+godot --rendering-method "$method" --audio-driver Dummy --path . -- --screenshot lookbook --out "res://$out" "${extra[@]+"${extra[@]}"}" -NSAppSleepDisabled YES 2>&1 | grep -E "^LOOK|SCRIPT ERROR|Parse Error"

@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.169.0",
+      "date": "2026-10-09",
+      "codename": "Fireflies",
+      "notes": [
+        "Fireflies blink over the grass and in the woods at dusk and by night, glowing in the dark",
+        "Leaves drift down through the forests, dust floats in the light of every room, and embers rise from forges, hearths and camp fires",
+        "Your feet kick up dust on dry ground and splash through the bogs, and steel throws sparks off armour"
+      ]
+    },
+    {
       "version": "0.168.0",
       "date": "2026-10-09",
       "codename": "Weather",

@@ -2541,6 +2541,14 @@ msgid "Figures shed their 2D outline in 3D: brighter, chunkier heroes, villagers
 msgstr "Les personnages perdent leur contour 2D en 3D : héros, villageois et monstres plus lumineux et plus trapus, ancrés au sol par une douce ombre de contact"
 
 #: assets/data/changelog.json
+msgid "Fireflies"
+msgstr "Lucioles"
+
+#: assets/data/changelog.json
+msgid "Fireflies blink over the grass and in the woods at dusk and by night, glowing in the dark"
+msgstr "Des lucioles clignotent sur l'herbe et dans les bois au crépuscule et la nuit, lumineuses dans le noir"
+
+#: assets/data/changelog.json
 msgid "First Impressions"
 msgstr "Premières impressions"
 
@@ -2875,6 +2883,10 @@ msgstr "Les couches s'empilent dans le bon ordre : l'apparence, puis le rang, 
 #: assets/data/changelog.json
 msgid "Learn new skills, upgrade old ones, or take passives: crits, resists, +DEF..."
 msgstr "Apprenez de nouvelles compétences, améliorez les anciennes ou prenez des passifs : critiques, résistances, +DEF..."
+
+#: assets/data/changelog.json
+msgid "Leaves drift down through the forests, dust floats in the light of every room, and embers rise from forges, hearths and camp fires"
+msgstr "Des feuilles tombent en virevoltant dans les forêts, la poussière flotte dans la lumière de chaque pièce, et des braises s'élèvent des forges, des âtres et des feux de camp"
 
 #: assets/data/changelog.json
 msgid "Let Me Go"
@@ -4839,6 +4851,10 @@ msgstr "Vous pouvez posséder une MAISON. La porte close au sud du village annon
 #: assets/data/changelog.json
 msgid "Your Hero, Your Rules"
 msgstr "Votre héros, vos règles"
+
+#: assets/data/changelog.json
+msgid "Your feet kick up dust on dry ground and splash through the bogs, and steel throws sparks off armour"
+msgstr "Vos pas soulèvent la poussière sur la terre sèche et éclaboussent dans les tourbières, et l'acier fait jaillir des étincelles des armures"
 
 #: assets/data/changelog.json
 msgid "Your gear finally shows: the equipped weapon rides your hand, the shield your arm, the helm your head - in the world, in both renderers"
@@ -11036,15 +11052,15 @@ msgstr "Première victoire : %s"
 msgid "%s howls - the forest answers!"
 msgstr "%s hurle - la forêt répond !"
 
-#: scripts/enemy.gd:159
+#: scripts/enemy.gd:161
 msgid "Lv %d"
 msgstr "Niv. %d"
 
-#: scripts/enemy.gd:395
+#: scripts/enemy.gd:397
 msgid "blocked"
 msgstr "paré"
 
-#: scripts/enemy.gd:423
+#: scripts/enemy.gd:428
 msgid "%s is afflicted by %s!"
 msgstr "%s est atteint : %s !"
 
@@ -13272,55 +13288,55 @@ msgstr "COMMANDÉ"
 msgid "Arrows"
 msgstr "Flèches"
 
-#: scripts/world.gd:1023
+#: scripts/world.gd:1025
 msgid "Only cinders where the house stood. The board on the square can change that."
 msgstr "Rien que des cendres là où se dressait la maison. Le tableau de la place peut y remédier."
 
-#: scripts/world.gd:1028
+#: scripts/world.gd:1030
 msgid "The deed costs %d gold. {key:interact} again to sign it."
 msgstr "Le titre de propriété coûte %d or. {key:interact} à nouveau pour le signer."
 
-#: scripts/world.gd:1112
+#: scripts/world.gd:1114
 msgid "A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it."
 msgstr "Un établi pour cette étagère : %d or. Il compte comme un niveau de métier en plus quand vous fabriquez chez vous. {key:interact} à nouveau pour l'acheter."
 
-#: scripts/world.gd:1539
+#: scripts/world.gd:1541
 msgid "Five lanterns on the square, one for each of the five who climbed. Tonight the %s remembers them - and %s."
 msgstr "Cinq lanternes sur la place, une pour chacun des cinq qui ont gravi la montagne. Ce soir, Pixelheim, désormais %s, se souvient d'eux - et salue %s."
 
-#: scripts/world.gd:1540
+#: scripts/world.gd:1542
 msgid "Pixelheim, a %s raised from the ashes. Tonight it celebrates %s."
 msgstr "Pixelheim, des cendres au rang de %s. Ce soir, on y fête %s."
 
-#: scripts/world.gd:1626
+#: scripts/world.gd:1628
 msgid "%s: built."
 msgstr "%s : chantier terminé."
 
-#: scripts/world.gd:1630
+#: scripts/world.gd:1632
 msgid "Pixelheim is a %s now."
 msgstr "Pixelheim passe au rang de %s."
 
-#: scripts/world.gd:1636
+#: scripts/world.gd:1638
 msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
 msgstr "Et aujourd'hui, on fait la fête : des étals sur la place, et un lancer d'anneaux avec un lot pour le meilleur lancer."
 
-#: scripts/world.gd:1738
+#: scripts/world.gd:1740
 msgid "%s  %d:%02d"
 msgstr "%s  %d:%02d"
 
-#: scripts/world.gd:1977
+#: scripts/world.gd:1979
 msgid "Next"
 msgstr "Ensuite"
 
-#: scripts/world.gd:314
+#: scripts/world.gd:316
 msgid "The pack is scattered. Another comes once you've walked a good way, or after a night's rest."
 msgstr "La meute est dispersée. Une autre reviendra quand vous aurez bien marché, ou après une nuit de repos."
 
-#: scripts/world.gd:518
+#: scripts/world.gd:520
 msgid "No map reaches this deep."
 msgstr "Aucune carte ne va aussi profond."
 
-#: scripts/world.gd:602
+#: scripts/world.gd:604
 msgid "LEVEL UP"
 msgstr "NIVEAU SUPÉRIEUR"
 
@@ -13340,7 +13356,7 @@ msgstr "Quête acceptée"
 msgid "Quest complete"
 msgstr "Quête terminée"
 
-#: scripts/world.gd:824
+#: scripts/world.gd:826
 msgid "{epithet} {name}"
 msgstr "{name} {epithet}"
 

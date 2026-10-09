@@ -264,6 +264,8 @@ func _process(delta: float) -> void:
 		return
 	player_cell = cell
 	Sound.play("step")
+	# Dust off dry ground, a splash in a bog (PIX-225).
+	atmosphere.footfall(player.global_position + Vector2(0, 2), map.tile_at(cell))
 	# Down a dungeon the save keeps the hero at its gate, as the web does.
 	if map.floor_level == 0:
 		GameState.move_to(map, cell, player.facing)

@@ -8,7 +8,8 @@ class_name PerfProbe
 
 
 ## One line: "physics 0.74/1.57 | process 0.41/0.91 | render ... | draws 43
-## objects 879 nodes 1460" (ms average/95th percentile).
+## objects 879 nodes 1460 particles 420" (ms average/95th percentile;
+## particles: how many the emitting systems hold, PIX-225).
 static func sample(node: Node, frames := 300, warmup := 30) -> String:
 	var tree := node.get_tree()
 	for i in warmup:
@@ -44,12 +45,23 @@ static func sample(node: Node, frames := 300, warmup := 30) -> String:
 	for key: String in spans:
 		parts.append("%s %s" % [key, summary(spans[key])])
 	# Developer output, not the player's: no words for the translators.
-	parts.append("%s %d %s %d %s %d" % [
+	parts.append("%s %d %s %d %s %d %s %d" % [
 		"draws", Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME),
 		"objects", Performance.get_monitor(Performance.RENDER_TOTAL_OBJECTS_IN_FRAME),
 		"nodes", Performance.get_monitor(Performance.OBJECT_NODE_COUNT),
+		"particles", particles(tree.root),
 	])
 	return " | ".join(parts)
+
+
+## How many particles the emitting systems under `node` hold.
+static func particles(node: Node) -> int:
+	var count := 0
+	if node is CPUParticles2D and (node as CPUParticles2D).emitting:
+		count += (node as CPUParticles2D).amount
+	for child in node.get_children():
+		count += particles(child)
+	return count
 
 
 ## "average/95th percentile" of a list of milliseconds, "-" for none.
