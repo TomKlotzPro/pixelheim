@@ -55,7 +55,7 @@ func test_a_quests_goods_are_not_for_sale() -> void:
 	var goods: String = Catalog._data()["items"].keys().filter(func(id: String) -> bool: return Catalog.item(id).get("quest", false))[0]
 	state.pack.add_item(goods)
 	state.world.map_id = "town_shop"
-	assert_eq(state.sell_item(goods), 0)
+	assert_eq(state.trade.sell_item(goods), 0)
 	assert_eq(int(state.pack.items.get(goods, 0)), 1)
 
 

@@ -389,7 +389,7 @@ func _about(row: Dictionary) -> String:
 			for need: String in entry["needs"]:
 				if GameState.pack.items.get(need, 0) < entry["needs"][need]:
 					# The nearest lead true now (PIX-184), or at least its name.
-					var lead := Economy.where_to_find(need, GameState.town_tier(), GameState.stock_stage())
+					var lead := Economy.where_to_find(need, GameState.town_tier(), GameState.trade.stock_stage())
 					missing.append(lead if lead != "" else Catalog.item_name(need))
 			if missing.is_empty():
 				return about + " " + String(Catalog.item(row["item_id"]).get("description", ""))
@@ -619,7 +619,7 @@ func _craft(entry: Dictionary) -> void:
 	if ask != "":
 		status.text = ask
 		return
-	var made := GameState.craft(entry["id"])
+	var made := GameState.trade.craft(entry["id"])
 	if made["made"]:
 		Sound.play("craft")
 		status.text = Text.t("You craft %s%s. %s") % [Catalog.item_name(entry["itemId"]), Text.t(" (two!)") if made["count"] > 1 else "", made["level_line"]]

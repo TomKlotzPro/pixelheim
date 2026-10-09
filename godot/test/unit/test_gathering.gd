@@ -71,6 +71,6 @@ func test_a_first_brew_for_vex_and_a_buckler_for_hilda() -> void:
 	state.pack.items.merge({"forest_herb": 1, "marsh_reed": 1})
 	assert_false(Quests.is_ready(Quests.by_id("herbs_for_vex"), state.progression.quests, state.pack.items))
 	state.roll = func() -> float: return 0.99
-	assert_true(state.craft("brew_potion_hp")["made"])
+	assert_true(state.trade.craft("brew_potion_hp")["made"])
 	assert_true(Quests.is_ready(Quests.by_id("herbs_for_vex"), state.progression.quests, state.pack.items), "one brewed")
 	assert_string_starts_with(state.resolve_quests("alchemist_vex"), "Quest complete: A First Brew.")

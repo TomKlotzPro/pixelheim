@@ -53,10 +53,10 @@ func test_a_skill_learned_is_announced() -> void:
 	state.hero.skill_points = 2
 	var heard: Array = []
 	state.skill_learned.connect(func(entry: Dictionary, _key: int) -> void: heard.append(entry["id"]))
-	var bought: bool = state.buy_skill_node("warrior_shield_slam")
+	var bought: bool = state.training.buy_skill_node("warrior_shield_slam")
 	assert_true(bought)
 	assert_eq(heard, ["warrior_shield_slam"])
 	# A passive is no button to press: no hint.
 	state.hero.skill_points = 2
-	state.buy_skill_node("warrior_iron_skin")
+	state.training.buy_skill_node("warrior_iron_skin")
 	assert_eq(heard.size(), 1)

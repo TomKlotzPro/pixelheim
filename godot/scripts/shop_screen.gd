@@ -24,10 +24,10 @@ var status: Label
 
 func _open() -> void:
 	layer = 5
-	shop_id = GameState.active_shop()
+	shop_id = GameState.trade.active_shop()
 	var shop := Economy.shop(shop_id)
 	# The owner's till, emptied as they walk up (PIX-178).
-	var owned := GameState.owned_shop_map(shop_id)
+	var owned := GameState.trade.owned_shop_map(shop_id)
 	var collected := GameState.collect_till(owned) if owned != "" else 0
 	tabs = ["Buy", "Sell"]
 	if shop.get("forge", false):
@@ -125,7 +125,7 @@ func _command(event: InputEvent) -> Callable:
 func _sell_stack() -> void:
 	var item_id: String = rows[selected]["stack"]
 	var count: int = GameState.pack.items.get(item_id, 0)
-	var gold := GameState.sell_item(item_id, count)
+	var gold := GameState.trade.sell_item(item_id, count)
 	status.text = Text.t("Sold %d %s for %dg.") % [count, Catalog.item_name(item_id), gold] if gold > 0 else "Not for sale."
 	_refresh()
 
@@ -147,7 +147,7 @@ func _select(index: int) -> void:
 ## The trade this station crafts, if any (the smithy forges, Vex brews).
 func _craft_job() -> String:
 	for job: String in ["smithing", "alchemy"]:
-		if GameState.at_station(job) and Economy.station_shop(job) == shop_id:
+		if GameState.trade.at_station(job) and Economy.station_shop(job) == shop_id:
 			return job
 	return ""
 
@@ -170,20 +170,20 @@ func _build_rows() -> Array[Dictionary]:
 					"action": func() -> void: _after(GameState.buy_property(map_id), "The deed is yours.", "Not enough gold."),
 				})
 			# Odo also sells the bigger house deeds (BUY_HOUSE_UPGRADE).
-			var bigger := Town.next_house_tier(GameState.owns_house(), int(GameState.settlement.house.get("tier", 1)))
+			var bigger := Town.next_house_tier(GameState.household.owns_house(), int(GameState.settlement.house.get("tier", 1)))
 			if shop_id == "odo" and not bigger.is_empty():
 				out.append({
 					"label": Text.t("Deed: %s") % bigger["name"], "price": Text.coins(int(bigger["cost"])),
 					"detail": Text.t("%s\nA bigger house: its new rooms wait the next time you walk in.") % bigger["name"],
 					"verb": "Sign the deed", "enabled": pack.gold >= int(bigger["cost"]),
 					"action": func() -> void:
-						var text := GameState.buy_house_upgrade()
+						var text := GameState.household.buy_house_upgrade()
 						status.text = text if text != "" else "Not enough gold.",
 				})
-			var picked := GameState.owned_shop_map(shop_id) != ""
-			var stock: Array = Economy.shop_stock(shop_id, GameState.stock_stage(), GameState.town_tier())
-			for item_id in GameState.shop_wares(shop_id):
-				var price := GameState.price_of(item_id)
+			var picked := GameState.trade.owned_shop_map(shop_id) != ""
+			var stock: Array = Economy.shop_stock(shop_id, GameState.trade.stock_stage(), GameState.town_tier())
+			for item_id in GameState.trade.shop_wares(shop_id):
+				var price := GameState.trade.price_of(item_id)
 				# What only Pixelheim sells, since the age that brought it (PIX-159).
 				var signature: bool = Catalog.item(item_id).get("signature", false)
 				var detail := _describe(item_id)
@@ -196,28 +196,28 @@ func _build_rows() -> Array[Dictionary]:
 					"label": Catalog.item_name(item_id), "price": Text.coins(price), "icon": item_id,
 					"tag": "Pixelheim's own" if signature else ("Owner's pick" if picked and item_id not in stock else ""),
 					"detail": detail, "verb": "Buy", "enabled": pack.gold >= price,
-					"action": func() -> void: _after(GameState.buy_item(item_id), Text.t("Bought %s.") % Catalog.item_name(item_id), "Not enough gold."),
+					"action": func() -> void: _after(GameState.trade.buy_item(item_id), Text.t("Bought %s.") % Catalog.item_name(item_id), "Not enough gold."),
 				})
 		"Sell":
 			for item_id: String in pack.items:
 				# What the story gave you isn't for sale (the letter, PIX-152).
 				if Catalog.item(item_id).get("quest", false):
 					continue
-				var each := floori(Economy.sell_price_at(shop_id, item_id, GameState.town_tier()) * GameState.sale_multiplier(shop_id))
+				var each := floori(Economy.sell_price_at(shop_id, item_id, GameState.town_tier()) * GameState.trade.sale_multiplier(shop_id))
 				out.append({
 					"label": "%s  x%d" % [Catalog.item_name(item_id), pack.items[item_id]], "price": Text.coins(each), "icon": item_id,
 					"detail": _describe(item_id), "verb": "Sell one", "enabled": true, "stack": item_id,
-					"action": func() -> void: _sold(GameState.sell_item(item_id)),
+					"action": func() -> void: _sold(GameState.trade.sell_item(item_id)),
 				})
 			for instance in pack.gear:
 				if pack.is_equipped(instance["uid"]):
 					continue
 				var uid: String = instance["uid"]
-				var price := floori(Economy.gear_sell_price_at(shop_id, instance, GameState.town_tier()) * GameState.sale_multiplier(shop_id))
+				var price := floori(Economy.gear_sell_price_at(shop_id, instance, GameState.town_tier()) * GameState.trade.sale_multiplier(shop_id))
 				out.append({
 					"label": _gear_label(instance), "price": Text.coins(price), "icon": instance["itemId"],
 					"detail": _describe(instance["itemId"], instance), "verb": "Sell", "enabled": true,
-					"action": func() -> void: _sold(GameState.sell_gear(uid)),
+					"action": func() -> void: _sold(GameState.trade.sell_gear(uid)),
 				})
 		"Forge":
 			var smithing: int = GameState.hero.jobs["smithing"]["level"]
@@ -226,13 +226,13 @@ func _build_rows() -> Array[Dictionary]:
 				# Past the cap, masterwork from Smithing 8: a gem a step (PIX-180).
 				var past: bool = instance["bonus"] >= Economy.forge_cap_for(smithing)
 				var maxed: bool = past and not Economy.masterwork_open(smithing, instance["bonus"])
-				var cost := GameState.forge_price(instance, smithing, past)
+				var cost := GameState.trade.forge_price(instance, smithing, past)
 				out.append({
 					"label": _gear_label(instance) + (Text.t("  (worn)") if pack.is_equipped(uid) else ""), "icon": instance["itemId"],
 					"price": Text.t("max") if maxed else (Text.t("%dg + gem") % cost if past else Text.coins(cost)),
 					"detail": _describe(instance["itemId"], instance), "verb": "Temper +1",
 					"enabled": not maxed and pack.gold >= cost,
-					"action": func() -> void: _after(GameState.upgrade_gear(uid), "Hilda tempers it: +1.", "Not enough gold, or it can take no more."),
+					"action": func() -> void: _after(GameState.trade.upgrade_gear(uid), "Hilda tempers it: +1.", "Not enough gold, or it can take no more."),
 				})
 		"Quench":
 			var gem := String(Economy._data()["quench"]["gem"])
@@ -248,7 +248,7 @@ func _build_rows() -> Array[Dictionary]:
 					"verb": "Quench",
 					"enabled": pack.gold >= cost and int(pack.items.get(gem, 0)) > 0,
 					"action": func() -> void:
-						var line := GameState.quench_gear(uid)
+						var line := GameState.trade.quench_gear(uid)
 						if line != "":
 							Sound.play("craft")
 						status.text = line if line != "" else Text.t("That takes %dg and a gem.") % cost,
@@ -265,7 +265,7 @@ func _build_rows() -> Array[Dictionary]:
 				out.append({
 					"label": _gear_label(instance), "icon": instance["itemId"], "price": ", ".join(parts),
 					"detail": _describe(instance["itemId"], instance), "verb": "Salvage", "enabled": true,
-					"action": func() -> void: status.text = GameState.salvage_gear(uid),
+					"action": func() -> void: status.text = GameState.trade.salvage_gear(uid),
 				})
 		"Reforge":
 			for instance in pack.gear:
@@ -276,7 +276,7 @@ func _build_rows() -> Array[Dictionary]:
 					"price": Text.coins(cost), "detail": _describe(instance["itemId"], instance), "verb": "Reforge",
 					"enabled": pack.gold >= cost,
 					"action": func() -> void:
-						var line := GameState.reforge_gear(uid)
+						var line := GameState.trade.reforge_gear(uid)
 						status.text = line if line != "" else "Not enough gold.",
 				})
 		"Craft":
@@ -403,7 +403,7 @@ func _craft(recipe_id: String, entry: Dictionary) -> void:
 	if ask != "":
 		status.text = ask
 		return
-	_crafted(GameState.craft(recipe_id), entry)
+	_crafted(GameState.trade.craft(recipe_id), entry)
 
 
 func _crafted(result: Dictionary, entry: Dictionary) -> void:
@@ -476,7 +476,7 @@ static func _describe_recipe(entry: Dictionary) -> String:
 		lines.append(Text.t("  %d x %s  (have %d)") % [entry["needs"][need], Catalog.item_name(need), have])
 		# Where a missing one comes from (PIX-143).
 		if have < int(entry["needs"][need]):
-			var sources := Economy.material_sources(need, GameState.town_tier(), GameState.stock_stage())
+			var sources := Economy.material_sources(need, GameState.town_tier(), GameState.trade.stock_stage())
 			if not sources.is_empty():
 				lines.append("    " + String(sources[0]["text"]))
 	var job: String = entry["job"]["id"]

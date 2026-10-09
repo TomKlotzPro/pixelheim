@@ -131,21 +131,21 @@ func test_the_gate_is_the_making() -> void:
 
 func test_buying_needs_the_shop_the_stock_and_the_gold() -> void:
 	_stand_in("town")
-	assert_false(state.buy_item("bread"), "no shop on the street")
+	assert_false(state.trade.buy_item("bread"), "no shop on the street")
 	_stand_in("town_shop")
-	assert_false(state.buy_item("iron_sword"), "Odo doesn't sell steel")
-	assert_false(state.buy_item("furn_banner"), "stock for later in the story (PIX-176)")
-	assert_true(state.buy_item("bread"))
+	assert_false(state.trade.buy_item("iron_sword"), "Odo doesn't sell steel")
+	assert_false(state.trade.buy_item("furn_banner"), "stock for later in the story (PIX-176)")
+	assert_true(state.trade.buy_item("bread"))
 	assert_eq(state.pack.gold, 30 - Economy.buy_price("bread"))
 	assert_eq(state.pack.items["bread"], 3)
 	state.pack.gold = 0
-	assert_false(state.buy_item("bread"))
+	assert_false(state.trade.buy_item("bread"))
 
 
 func test_bought_gear_is_a_common_instance() -> void:
 	_stand_in("town_smith")
 	state.pack.gold = 100  # the bow costs 45, a new hero has 30
-	assert_true(state.buy_item("hunting_bow"))
+	assert_true(state.trade.buy_item("hunting_bow"))
 	assert_eq(state.pack.gear.size(), 2)
 	assert_eq(state.pack.gear[1]["itemId"], "hunting_bow")
 	assert_eq(state.pack.gear[1]["rarity"], "common")
@@ -154,20 +154,20 @@ func test_bought_gear_is_a_common_instance() -> void:
 func test_selling_pays_the_shop_rate_with_city_and_trophy_bonuses() -> void:
 	_stand_in("town_alchemist")
 	state.pack.items = {"forest_herb": 3}
-	assert_eq(state.sell_item("forest_herb"), 6)
+	assert_eq(state.trade.sell_item("forest_herb"), 6)
 	state.settlement.town_tier = 4
-	assert_eq(state.sell_item("forest_herb"), 7)
+	assert_eq(state.trade.sell_item("forest_herb"), 7)
 	state.settlement.house["trophies"] = ["gem"]
-	assert_eq(state.sell_item("forest_herb"), 7, "floor(7 * 1.1)")
+	assert_eq(state.trade.sell_item("forest_herb"), 7, "floor(7 * 1.1)")
 	assert_false(state.pack.items.has("forest_herb"), "an emptied stack disappears")
-	assert_eq(state.sell_item("forest_herb"), 0)
+	assert_eq(state.trade.sell_item("forest_herb"), 0)
 
 
 func test_a_whole_stack_sells_at_the_one_by_one_price() -> void:
 	_stand_in("town_alchemist")
 	state.pack.items = {"forest_herb": 3}
 	state.pack.gold = 0
-	assert_eq(state.sell_item("forest_herb", 99), 18, "three herbs at 6g, never more than are carried")
+	assert_eq(state.trade.sell_item("forest_herb", 99), 18, "three herbs at 6g, never more than are carried")
 	assert_eq(state.pack.gold, 18)
 	assert_false(state.pack.items.has("forest_herb"))
 
@@ -175,11 +175,11 @@ func test_a_whole_stack_sells_at_the_one_by_one_price() -> void:
 func test_worn_gear_is_never_sold() -> void:
 	_stand_in("town_smith")
 	var worn: String = state.pack.equipped["weapon"]
-	assert_eq(state.sell_gear(worn), 0)
+	assert_eq(state.trade.sell_gear(worn), 0)
 	state.pack.gold = 100
-	assert_true(state.buy_item("hunting_bow"))
+	assert_true(state.trade.buy_item("hunting_bow"))
 	var spare: String = state.pack.gear[1]["uid"]
-	assert_gt(state.sell_gear(spare), 0)
+	assert_gt(state.trade.sell_gear(spare), 0)
 	assert_true(state.pack.gear_by_uid(spare).is_empty())
 
 
@@ -187,14 +187,14 @@ func test_the_forge_raises_bonus_for_gold_and_smithing_xp() -> void:
 	_stand_in("town_shop")
 	var sword: String = state.pack.equipped["weapon"]
 	state.pack.gold = 1000
-	assert_false(state.upgrade_gear(sword), "Odo has no forge")
+	assert_false(state.trade.upgrade_gear(sword), "Odo has no forge")
 	_stand_in("town_smith")
-	assert_true(state.upgrade_gear(sword))
+	assert_true(state.trade.upgrade_gear(sword))
 	assert_eq(state.pack.gear_by_uid(sword)["bonus"], 1)
 	assert_eq(state.pack.gold, 1000 - Economy.forge_cost_for("rusty_sword", 0, 1))
 	assert_eq(state.hero.jobs["smithing"]["xp"], 10)
 	state.pack.gear_by_uid(sword)["bonus"] = 7
-	assert_false(state.upgrade_gear(sword), "the cap holds at smithing 1")
+	assert_false(state.trade.upgrade_gear(sword), "the cap holds at smithing 1")
 
 
 # ---- GameState: CRAFT (economy.test.ts) -----------------------------------------
@@ -203,7 +203,7 @@ func test_forges_gear_as_an_instance_and_pays_smithing_xp() -> void:
 	_stand_in("town_smith")
 	state.hero.jobs["smithing"]["level"] = 3
 	state.pack.items = {"wolf_pelt": 2, "ember_shard": 2}
-	assert_true(state.craft("craft_beast_cleaver")["made"])
+	assert_true(state.trade.craft("craft_beast_cleaver")["made"])
 	assert_eq(state.pack.gear[-1]["itemId"], "beast_cleaver")
 	assert_false(state.pack.items.has("wolf_pelt"))
 	assert_eq(state.hero.jobs["smithing"]["xp"], 20, "PIX-181: 5 + 5 a recipe level (a level-3 cleaver)")
@@ -212,7 +212,7 @@ func test_forges_gear_as_an_instance_and_pays_smithing_xp() -> void:
 func test_refuses_a_recipe_above_the_job_level() -> void:
 	_stand_in("town_smith")
 	state.pack.items = {"wolf_pelt": 2, "ember_shard": 2}
-	assert_false(state.craft("craft_beast_cleaver")["made"])
+	assert_false(state.trade.craft("craft_beast_cleaver")["made"])
 	assert_eq(state.pack.items["wolf_pelt"], 2)
 
 
@@ -221,7 +221,7 @@ func test_a_skilled_alchemist_brews_doubles() -> void:
 	state.roll = func() -> float: return 0.01
 	state.hero.jobs["alchemy"]["level"] = 6
 	state.pack.items = {"forest_herb": 1, "marsh_reed": 1}
-	assert_eq(state.craft("brew_potion_hp")["count"], 2)
+	assert_eq(state.trade.craft("brew_potion_hp")["count"], 2)
 	assert_eq(state.pack.items["potion_hp"], 2)
 	assert_eq(state.hero.jobs["alchemy"]["xp"], 10, "a level-1 brew")
 
@@ -230,7 +230,7 @@ func test_refuses_to_craft_away_from_the_station() -> void:
 	_stand_in("town")
 	state.hero.jobs["smithing"]["level"] = 3
 	state.pack.items = {"wolf_pelt": 2, "ember_shard": 2}
-	assert_false(state.craft("craft_beast_cleaver")["made"])
+	assert_false(state.trade.craft("craft_beast_cleaver")["made"])
 	assert_eq(state.pack.items["wolf_pelt"], 2)
 
 
@@ -239,13 +239,13 @@ func test_the_home_workbench_crafts_both_trades_only_at_home() -> void:
 	state.settlement.house["owned"] = true
 	state.hero.jobs["smithing"]["level"] = 3
 	state.pack.items = {"wolf_pelt": 2, "ember_shard": 2, "forest_herb": 1, "marsh_reed": 1}
-	assert_false(state.craft("craft_beast_cleaver")["made"], "an owned house is not a station")
+	assert_false(state.trade.craft("craft_beast_cleaver")["made"], "an owned house is not a station")
 	state.settlement.house["workbench"] = true
-	assert_true(state.craft("craft_beast_cleaver")["made"])
-	assert_true(state.craft("brew_potion_hp")["made"])
+	assert_true(state.trade.craft("craft_beast_cleaver")["made"])
+	assert_true(state.trade.craft("brew_potion_hp")["made"])
 	_stand_in("town")
 	state.pack.items = {"wolf_pelt": 2, "ember_shard": 2}
-	assert_false(state.craft("craft_beast_cleaver")["made"], "the workbench does not travel")
+	assert_false(state.trade.craft("craft_beast_cleaver")["made"], "the workbench does not travel")
 
 
 func test_the_craft_guide_knows_which_trades_are_here() -> void:
@@ -290,19 +290,19 @@ func test_masterwork_forging_past_the_cap() -> void:
 	state.hero.jobs["smithing"]["level"] = 8
 	var cap := Economy.forge_cap_for(8)
 	state.pack.gear_by_uid(sword)["bonus"] = cap
-	assert_false(state.upgrade_gear(sword), "a gem a step")
+	assert_false(state.trade.upgrade_gear(sword), "a gem a step")
 	state.pack.items["gem"] = 2
 	var first := Economy.masterwork_cost("rusty_sword", cap, 8)
-	assert_true(state.upgrade_gear(sword))
+	assert_true(state.trade.upgrade_gear(sword))
 	assert_eq(state.pack.gear_by_uid(sword)["bonus"], cap + 1)
 	assert_eq(state.pack.items.get("gem", 0), 1)
 	assert_gt(Economy.masterwork_cost("rusty_sword", cap + 1, 8), first * 2, "each step dearer")
 	state.pack.gear_by_uid(sword)["bonus"] = 12
 	state.pack.items["gem"] = 5
-	assert_false(state.upgrade_gear(sword), "+12 at most")
+	assert_false(state.trade.upgrade_gear(sword), "+12 at most")
 	state.hero.jobs["smithing"]["level"] = 7
 	state.pack.gear_by_uid(sword)["bonus"] = Economy.forge_cap_for(7)
-	assert_false(state.upgrade_gear(sword), "not before Smithing 8")
+	assert_false(state.trade.upgrade_gear(sword), "not before Smithing 8")
 
 
 func test_commissions_wait_for_every_age_and_give_a_lasting_edge() -> void:

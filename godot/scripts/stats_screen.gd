@@ -70,13 +70,13 @@ func _rows() -> Array[Dictionary]:
 
 
 func _beyond(track: Dictionary) -> String:
-	GameState.buy_beyond(track["id"])
+	GameState.training.buy_beyond(track["id"])
 	Sound.play_ui("confirm")
 	return Text.t("%s: %s. %d/%d.") % [Text.t(track["name"]), Text.t(track["line"]), int(GameState.hero.beyond[track["id"]]), int(track["cap"])]
 
 
 func _spend(stat: String) -> String:
-	GameState.spend_stat_point(stat)
+	GameState.training.spend_stat_point(stat)
 	Sound.play_ui("confirm")
 	return Text.t("%s %d: %s") % [Text.t(Skills.ABBR[stat]), GameState.hero.stats[stat], Skills.readout(stat, GameState.hero, GameState.pack)]
 

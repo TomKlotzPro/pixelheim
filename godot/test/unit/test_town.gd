@@ -92,13 +92,13 @@ func test_an_owner_pays_less_and_gets_the_days_pick() -> void:
 	state.world.map_id = "town_shop"
 	state.pack.gold = 100000
 	var bread := Economy.buy_price("bread")
-	var before: int = state.price_of("elixir")
+	var before: int = state.trade.price_of("elixir")
 	state.buy_property("town_shop")
-	assert_lt(state.price_of("elixir"), before, "a tenth off in your own shop")
-	var wares: Array = state.shop_wares("odo")
+	assert_lt(state.trade.price_of("elixir"), before, "a tenth off in your own shop")
+	var wares: Array = state.trade.shop_wares("odo")
 	var pick := Town.owner_pick("odo", int(state.steps_now()) / 480)
 	assert_has(wares, pick, "the owner's pick is on the shelf")
-	assert_true(state.buy_item(pick))
+	assert_true(state.trade.buy_item(pick))
 	assert_eq(Economy.buy_price("bread"), bread, "the catalogue price is unchanged")
 
 

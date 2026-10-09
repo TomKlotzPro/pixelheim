@@ -20,12 +20,12 @@ func test_a_deed_is_done_once_and_brings_its_medal_home() -> void:
 	var heard: Array = []
 	state.noted.connect(func(lines: Array) -> void: heard.append_array(lines))
 	state.progression.deepest = 10
-	state._pack_changed()
+	state.pack_changed()
 	assert_has(state.progression.deeds, "deep_10")
 	assert_eq(int(state.pack.items.get("medal_ten_below", 0)), 1)
 	assert_eq(heard.size(), 1)
 	state.progression.deepest = 9
-	state._pack_changed()
+	state.pack_changed()
 	assert_has(state.progression.deeds, "deep_10", "done stays done")
 	assert_eq(int(state.pack.items.get("medal_ten_below", 0)), 1, "one medal")
 	var saved := {}

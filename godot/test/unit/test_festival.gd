@@ -53,9 +53,9 @@ func test_a_signature_is_sold_only_from_its_age() -> void:
 	state.world.map_id = "town_smith"
 	state.pack.gold = 1000
 	state.settlement.town_tier = 1
-	assert_false(state.buy_item("lamplit_blade"), "not before the Village")
+	assert_false(state.trade.buy_item("lamplit_blade"), "not before the Village")
 	state.settlement.town_tier = 2
-	assert_true(state.buy_item("lamplit_blade"))
+	assert_true(state.trade.buy_item("lamplit_blade"))
 
 
 func test_an_age_completed_brings_a_festival_day() -> void:
@@ -76,7 +76,7 @@ func test_an_age_completed_brings_a_festival_day() -> void:
 
 func test_the_ring_toss_pays_once_a_festival() -> void:
 	assert_eq(state.win_ring_toss(), "", "no festival, no prize")
-	state._start_festival(3)
+	state.holdings.start_festival(3)
 	var gold: int = state.pack.gold
 	assert_string_contains(state.win_ring_toss(), "prize")
 	assert_eq(state.pack.gold, gold + 90, "30g an age")
