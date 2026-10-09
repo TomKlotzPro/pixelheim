@@ -158,7 +158,7 @@ func _asking() -> bool:
 func _pick(index: int) -> void:
 	close()
 	on_choice.call(index)
-	GameState.finish_dialogue(npc["id"])
+	GameState.questing.finish_dialogue(npc["id"])
 
 
 func _show() -> void:
@@ -191,4 +191,4 @@ func _fit() -> void:
 
 func _close() -> void:
 	close()
-	GameState.finish_dialogue(npc["id"])
+	GameState.questing.finish_dialogue(npc["id"])

@@ -118,4 +118,4 @@ func _descend(level: int) -> String:
 
 
 func _over_encumbered() -> bool:
-	return GameState.pack.carried_weight() > GameState.carry_capacity()
+	return GameState.pack.carried_weight() > GameState.upkeep.carry_capacity()

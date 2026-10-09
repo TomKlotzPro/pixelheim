@@ -91,9 +91,9 @@ func test_forgetting_gives_the_ranks_back_too() -> void:
 func test_potions_heal_a_share_of_a_grown_hero() -> void:
 	var greater := Catalog.item("greater_potion")
 	state.hero.stats["maxHp"] = 100
-	assert_eq(state.hp_restore(greater), 60, "its own sixty, early on")
+	assert_eq(state.upkeep.hp_restore(greater), 60, "its own sixty, early on")
 	state.hero.stats["maxHp"] = 500
-	assert_eq(state.hp_restore(greater), roundi(500 * float(greater["restoreHpShare"])), "a share of a deep hero's health")
+	assert_eq(state.upkeep.hp_restore(greater), roundi(500 * float(greater["restoreHpShare"])), "a share of a deep hero's health")
 	for item_id: String in ["phoenix_draught", "elixir"]:
 		assert_true(Catalog.item(item_id).has("restoreHpShare"), item_id)
 

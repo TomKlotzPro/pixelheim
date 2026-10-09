@@ -46,30 +46,30 @@ func test_walls_block_sight_and_water_does_not() -> void:
 
 func test_a_cleared_pack_stays_down_until_its_time_or_the_inn() -> void:
 	state.world.steps = 100.0
-	state.clear_pack("forest_1")
+	state.spoils.clear_pack("forest_1")
 	assert_true(Packs.is_down(state.world, "forest_1"))
 	state.world.steps = 599.0
 	assert_true(Packs.is_down(state.world, "forest_1"))
 	state.world.steps = 600.0
 	assert_false(Packs.is_down(state.world, "forest_1"))
 	assert_true(Packs.is_due(state.world, "forest_1"), "due: it comes home once out of sight")
-	state.revive_pack("forest_1")
+	state.spoils.revive_pack("forest_1")
 	assert_false(Packs.is_due(state.world, "forest_1"))
 	assert_eq(state.world.slain, [] as Array[String])
 
 
 func test_a_door_keeps_the_ledger_and_only_a_night_at_the_inn_clears_it() -> void:
-	state.clear_pack("forest_1")
+	state.spoils.clear_pack("forest_1")
 	state.move_to(MapData.load_by_id("town"), Vector2i(40, 30), Vector2.DOWN)
 	state.move_to(MapData.load_by_id("overworld"), Vector2i(48, 40), Vector2.UP)
 	assert_true(Packs.is_down(state.world, "forest_1"), "no free respawn through a door")
 	state.hero.hp = 1
 	state.pack.gold = 100
-	state.rest_at_inn()
+	state.upkeep.rest_at_inn()
 	assert_eq(state.world.slain, [] as Array[String])
 	# A fall is no night's rest (PIX-206): the wilds stay as they were.
-	state.clear_pack("ash_1")
-	state.wake_at_inn()
+	state.spoils.clear_pack("ash_1")
+	state.upkeep.wake_at_inn()
 	assert_eq(state.world.slain, ["ash_1"] as Array[String], "waking there after a fall wakes nothing")
 
 
@@ -78,7 +78,7 @@ func test_the_ledger_keeps_its_steps_in_the_save() -> void:
 	state.world.write_into(bare)
 	assert_false(bare["world"].has("slainAt"), "saves without it stay byte for byte")
 	state.world.steps = 42.0
-	state.clear_pack("marsh_2")
+	state.spoils.clear_pack("marsh_2")
 	var saved := {}
 	state.world.write_into(saved)
 	assert_eq(saved["world"]["slainAt"], {"marsh_2": 42})

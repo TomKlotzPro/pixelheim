@@ -25,14 +25,14 @@ func test_the_valley_and_the_shafts_join_up() -> void:
 
 
 func test_garricks_chain_ends_in_the_black_ingot() -> void:
-	state.resolve_quests("mines_garrick")
+	state.questing.resolve_quests("mines_garrick")
 	for i in 4:
-		state.defeat_monster(Bestiary.spawn("goblin_digger"), "shafts", "", 7)
-	assert_string_contains(state.resolve_quests("mines_garrick"), "Quest complete")
-	state.resolve_quests("mines_garrick")
-	state.defeat_monster(Hunts.fighter("seam_warden"), "shafts", "", 7)
+		state.spoils.defeat_monster(Bestiary.spawn("goblin_digger"), "shafts", "", 7)
+	assert_string_contains(state.questing.resolve_quests("mines_garrick"), "Quest complete")
+	state.questing.resolve_quests("mines_garrick")
+	state.spoils.defeat_monster(Hunts.fighter("seam_warden"), "shafts", "", 7)
 	assert_eq(int(state.pack.items.get("black_ingot", 0)), 1)
-	assert_string_contains(state.resolve_quests("mines_garrick"), "five marks")
+	assert_string_contains(state.questing.resolve_quests("mines_garrick"), "five marks")
 	assert_eq(int(state.pack.items.get("black_ingot", 0)), 1, "the relic stays")
 
 

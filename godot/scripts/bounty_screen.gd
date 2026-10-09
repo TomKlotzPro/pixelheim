@@ -18,7 +18,7 @@ func _intro() -> String:
 func _info() -> String:
 	var chosen := _chosen()
 	if chosen.is_empty():
-		var first := Hunts.next_notice(GameState.board_floors())
+		var first := Hunts.next_notice(GameState.questing.board_floors())
 		return Text.t("No notices yet. The board waits for word from the wilds.\n\nThe first one goes up when %s.") % _when(first)
 	var slain: bool = chosen["id"] in GameState.progression.hunted
 	var lines: Array[String] = [(Text.t("Slain: %s") if slain else Text.t("Wanted: %s")) % chosen["name"], "", String(chosen["notice"]), ""]
@@ -26,7 +26,7 @@ func _info() -> String:
 	lines.append("%s." % Hunts.reward_line(chosen))
 	if slain:
 		lines.append_array(["", String(chosen["homecoming"])])
-	var next := Hunts.next_notice(GameState.board_floors())
+	var next := Hunts.next_notice(GameState.questing.board_floors())
 	if not next.is_empty():
 		lines.append_array(["", Text.t("Another notice goes up when %s.") % _when(next)])
 	return "\n".join(lines)
@@ -38,7 +38,7 @@ func _verb() -> String:
 
 func _rows() -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
-	for entry in Hunts.notices(GameState.board_floors(), GameState.progression.hunted):
+	for entry in Hunts.notices(GameState.questing.board_floors(), GameState.progression.hunted):
 		var slain: bool = entry["id"] in GameState.progression.hunted
 		out.append({
 			"named": entry["id"],

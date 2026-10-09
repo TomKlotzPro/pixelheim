@@ -79,8 +79,8 @@ func test_rebuilding_the_hamlet_opens_the_doors() -> void:
 	state.pack.gold = 1000
 	state.pack.items.merge({"marsh_reed": 6, "wolf_pelt": 2, "forest_herb": 3})
 	for project_id: String in ["odos_store", "hildas_forge", "vexs_brewery"]:
-		assert_eq(state.fund_project(project_id).get_slice(":", 1), " built. Walk outside and see.")
-	assert_eq(state.fund_project("the_inn"), "The inn and the homes: built - and Pixelheim is a hamlet now.")
+		assert_eq(state.holdings.fund_project(project_id).get_slice(":", 1), " built. Walk outside and see.")
+	assert_eq(state.holdings.fund_project("the_inn"), "The inn and the homes: built - and Pixelheim is a hamlet now.")
 	assert_eq(state.town_tier(), 1)
 	var map := _town()
 	for door: Vector2i in RUINED_DOORS:

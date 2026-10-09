@@ -55,11 +55,11 @@ func test_every_depth_can_be_walked_to_its_guardian() -> void:
 
 func test_the_deepest_depth_is_kept_and_its_hoard_paid_once() -> void:
 	var gold: int = state.pack.gold
-	var result: Dictionary = state.clear_deep(17)
+	var result: Dictionary = state.spoils.clear_deep(17)
 	assert_true(result["first"])
 	assert_eq(state.progression.deepest, 2)
 	assert_eq(state.pack.gold, gold + int(Dungeons.floor_def(17)["rewardGold"]))
-	var again: Dictionary = state.clear_deep(16)
+	var again: Dictionary = state.spoils.clear_deep(16)
 	assert_false(again["first"], "depth 1 is shallower than the record")
 	assert_eq(state.progression.deepest, 2)
 	var saved := {}
@@ -73,7 +73,7 @@ func test_the_deepest_depth_is_kept_and_its_hoard_paid_once() -> void:
 
 func test_morvax_falls_and_the_stair_goes_on() -> void:
 	state.progression.unlocked_level = 15
-	var lines: Array = state.clear_floor(15)["lines"]
+	var lines: Array = state.spoils.clear_floor(15)["lines"]
 	assert_true(lines.any(func(line: String) -> bool: return line.contains("Deep Hunt")))
 
 
@@ -115,7 +115,7 @@ func test_the_gate_opens_the_first_depth_of_every_tier_reached() -> void:
 
 func test_a_milestone_brings_a_crystal_home_and_the_town_hears() -> void:
 	state.progression.deepest = 4
-	var result: Dictionary = state.clear_deep(Dungeons.floor_count() + 5)
+	var result: Dictionary = state.spoils.clear_deep(Dungeons.floor_count() + 5)
 	assert_true(result["first"])
 	assert_eq(int(state.pack.items.get("deep_crystal_5", 0)), 1)
 	assert_has(state.reveals, "deep:5")
@@ -154,7 +154,7 @@ func test_the_deeps_named_are_posted_as_the_depths_above_are_cleared() -> void:
 func test_a_deep_named_kill_pays_an_epic_deep_piece() -> void:
 	state.progression.deepest = 5
 	var gear_before: int = state.pack.gear.size()
-	state.defeat_monster(Hunts.fighter("grimshade"), "", "", 1, Dungeons.floor_count() + 6)
+	state.spoils.defeat_monster(Hunts.fighter("grimshade"), "", "", 1, Dungeons.floor_count() + 6)
 	assert_has(state.progression.hunted, "grimshade")
 	var prize: Dictionary = state.pack.gear[gear_before]
 	assert_eq(prize["itemId"], "shadow_cloak")

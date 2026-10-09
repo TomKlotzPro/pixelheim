@@ -180,9 +180,9 @@ func _side() -> void:
 func _bounties() -> void:
 	if GameState.progression.deepest > 0:
 		body.add_child(UiStyle.strong(Text.t("The Deep Hunt: deepest depth %d") % GameState.progression.deepest, 18, UiStyle.LAMP))
-	var notices := Hunts.notices(GameState.board_floors(), GameState.progression.hunted)
+	var notices := Hunts.notices(GameState.questing.board_floors(), GameState.progression.hunted)
 	if notices.is_empty():
-		body.add_child(_wrapped(Text.t("No notices on the bounty board yet. The first goes up when %s.") % BountyScreen._when(Hunts.next_notice(GameState.board_floors())), 16, UiStyle.FADED))
+		body.add_child(_wrapped(Text.t("No notices on the bounty board yet. The first goes up when %s.") % BountyScreen._when(Hunts.next_notice(GameState.questing.board_floors())), 16, UiStyle.FADED))
 		return
 	for entry: Dictionary in notices:
 		var slain: bool = entry["id"] in GameState.progression.hunted
@@ -194,7 +194,7 @@ func _bounties() -> void:
 		body.add_child(line)
 		if not slain:
 			body.add_child(_wrapped(Text.t("Its lair: %s. %s.") % [entry["where"], Hunts.reward_line(entry)], 14, UiStyle.FADED))
-	var next := Hunts.next_notice(GameState.board_floors())
+	var next := Hunts.next_notice(GameState.questing.board_floors())
 	if not next.is_empty():
 		body.add_child(_rule())
 		body.add_child(_wrapped(Text.t("Another notice goes up when %s.") % BountyScreen._when(next), 14, UiStyle.FADED))

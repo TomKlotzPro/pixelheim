@@ -70,8 +70,8 @@ func _holdings() -> void:
 	list.add_child(spacer)
 	list.add_child(UiStyle.strong("Holdings", 16, UiStyle.LAMP))
 	for map_id: String in GameState.settlement.properties:
-		var entry := GameState.till(map_id)
-		var expanded: bool = map_id in GameState.investments()["expansions"]
+		var entry := GameState.holdings.till(map_id)
+		var expanded: bool = map_id in GameState.holdings.investments()["expansions"]
 		var line := UiStyle.label(Text.t("- %s: %dg earned, %dg in the till (%dg a day)") % [
 			Town.deeds()[map_id]["name"], entry["earned"], entry["gold"], Town.daily_rent(map_id, expanded, GameState.town_tier()),
 		], 14, UiStyle.INK)
@@ -99,7 +99,7 @@ func _rows() -> Array[Dictionary]:
 				"enabled": not funded and GameState.pack.gold >= int(entry["cost"]),
 				"why": "Already commissioned." if funded else "Not enough gold.",
 				"action": func() -> String:
-					var line := GameState.fund_commission(commission_id)
+					var line := GameState.holdings.fund_commission(commission_id)
 					if line != "":
 						Sound.play("coin")
 					return line,
@@ -121,10 +121,10 @@ func _rows() -> Array[Dictionary]:
 			"why": blocker,
 			"action": func() -> String:
 				# Not with what a taken delivery needs, unless asked twice (PIX-206).
-				var ask := GameState.ask_before_dip("project:" + project_id, Town.project(project_id)["cost"]["items"])
+				var ask := GameState.questing.ask_before_dip("project:" + project_id, Town.project(project_id)["cost"]["items"])
 				if ask != "":
 					return ask
-				var line := GameState.fund_project(project_id)
+				var line := GameState.holdings.fund_project(project_id)
 				if line != "":
 					Sound.play("coin")
 				return line,

@@ -19,7 +19,7 @@ func _next() -> String:
 
 
 func _win(named_id: String) -> void:
-	state.defeat_monster(Hunts.fighter(named_id), Hunts.named(named_id)["mapId"], "", 10)
+	state.spoils.defeat_monster(Hunts.fighter(named_id), Hunts.named(named_id)["mapId"], "", 10)
 
 
 func test_every_relic_is_its_chapter_bosss_drop() -> void:
@@ -33,15 +33,15 @@ func test_every_relic_is_its_chapter_bosss_drop() -> void:
 func test_the_gate_is_barred_until_the_relics_are_home() -> void:
 	assert_false(Relics.gate_open(state.progression), "a new hero finds it barred")
 	assert_string_contains(Relics.barred_line(), "Maren")
-	state.resolve_quests("elder")
+	state.questing.resolve_quests("elder")
 	# Any order: the iron first, then the lantern, the shield, the ladle.
 	for named_id: String in ["seam_warden", "rimefang", "hollow_captain"]:
 		_win(named_id)
 	assert_eq(Relics.found(state.progression), 3)
-	assert_string_contains(state.resolve_quests("elder"), "3/4")
+	assert_string_contains(state.questing.resolve_quests("elder"), "3/4")
 	assert_false(Relics.gate_open(state.progression))
 	_win("tidecaller")
-	assert_string_contains(state.resolve_quests("elder"), "Quest complete: Relics of the Five")
+	assert_string_contains(state.questing.resolve_quests("elder"), "Quest complete: Relics of the Five")
 	assert_true(Relics.gate_open(state.progression))
 	assert_eq(Relics.found(state.progression), 4)
 	for relic: Dictionary in Relics.all():
@@ -52,16 +52,16 @@ func test_the_gate_is_barred_until_the_relics_are_home() -> void:
 
 func test_a_hero_who_climbed_before_keeps_the_gate_open() -> void:
 	state.progression.unlocked_level = 2
-	state.clear_floor(1)
+	state.spoils.clear_floor(1)
 	assert_true(Relics.gate_open(state.progression))
 	assert_eq(_next(), "crypt", "and the relics never block the way they already went")
-	assert_string_contains(state.resolve_quests("elder"), "The Troll Toll", "Maren goes on to her next ask")
+	assert_string_contains(state.questing.resolve_quests("elder"), "The Troll Toll", "Maren goes on to her next ask")
 
 
 func test_the_relic_steps_point_at_the_first_one_missing() -> void:
 	state.progression.quests["slime_trouble"] = {"progress": 3, "done": true}
 	state.progression.quests["innkeeper"] = {"progress": 0, "done": true}
-	state.resolve_quests("elder")
+	state.questing.resolve_quests("elder")
 	state.settlement.town_tier = 1
 	state.progression.quests["herbs_for_vex"] = {"progress": 1, "done": true}
 	_win("seam_warden")
@@ -80,9 +80,9 @@ func test_maren_tells_of_each_relic_once() -> void:
 
 
 func test_the_relics_post_bounties_and_grow_the_town() -> void:
-	assert_eq(Hunts.notices(state.board_floors(), []), [] as Array[Dictionary])
+	assert_eq(Hunts.notices(state.questing.board_floors(), []), [] as Array[Dictionary])
 	_win("tidecaller")
-	assert_eq(Hunts.notices(state.board_floors(), []).map(func(entry: Dictionary) -> String: return entry["id"]), ["greymaw"])
+	assert_eq(Hunts.notices(state.questing.board_floors(), []).map(func(entry: Dictionary) -> String: return entry["id"]), ["greymaw"])
 	state.settlement.settlers.append("settler_iva")
 	assert_eq(Town.age_blockers(2, state.progression, state.settlement).size(), 1, "one relic is not enough for the Village")
 	_win("seam_warden")

@@ -439,7 +439,7 @@ static func stat_line(item: Dictionary, bonus: int, value: int, affixes := {}) -
 	for stat: String in affixes:
 		parts.append("+%d %s" % [int(affixes[stat]), Text.t(stat.substr(0, 3).to_upper())])
 	if item.has("restoreHp"):
-		parts.append(Text.t("+%d HP") % GameState.hp_restore(item))
+		parts.append(Text.t("+%d HP") % GameState.upkeep.hp_restore(item))
 	if item.has("restoreMp"):
 		parts.append(Text.t("+%d MP") % item["restoreMp"])
 	if item.has("cures"):
@@ -471,7 +471,7 @@ func _primary_label(row: Dictionary) -> String:
 func _build_doll() -> void:
 	Layout.clear(doll)
 	var hero := GameState.hero
-	var art := GameState.hero_art()
+	var art := GameState.upkeep.hero_art()
 	var figure := AnimatedSprite2D.new()
 	figure.sprite_frames = PunyArt.frames(art)
 	figure.self_modulate = art["tint"]
@@ -516,7 +516,7 @@ func _slot(slot: String, label: String) -> Control:
 		box.tooltip_text = Text.t("%s - click to take off") % InventoryState.gear_name(instance)
 		box.gui_input.connect(func(event: InputEvent) -> void:
 			if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-				GameState.unequip(slot)
+				GameState.upkeep.unequip(slot)
 				Sound.play("equip")
 				_refresh()
 		)
@@ -578,11 +578,11 @@ func _primary() -> void:
 		if GameState.pack.is_equipped(piece["uid"]):
 			for slot: String in GameState.pack.equipped:
 				if GameState.pack.equipped[slot] == piece["uid"]:
-					GameState.unequip(slot)
+					GameState.upkeep.unequip(slot)
 					break
 			status.text = Text.t("%s goes back in the pack.") % InventoryState.gear_name(piece)
 			Sound.play("equip")
-		elif GameState.equip(piece["uid"]):
+		elif GameState.upkeep.equip(piece["uid"]):
 			status.text = Text.t("You put on %s.") % InventoryState.gear_name(piece)
 			Sound.play("equip")
 		else:
@@ -594,7 +594,7 @@ func _primary() -> void:
 			close()
 			world.interaction.place_from_pack(item_id)
 			return
-		var used := GameState.use_item(item_id)
+		var used := GameState.upkeep.use_item(item_id)
 		if not used["used"]:
 			status.text = "Nothing to do with that here."
 		else:
@@ -615,7 +615,7 @@ func _craft(entry: Dictionary) -> void:
 		status.text = Text.t("You need %s %d for that.") % [Economy.job_name(job), level] if GameState.hero.jobs[job]["level"] < level else Text.t("Still missing: %s.") % ", ".join(Economy.missing_names(entry, GameState.pack.items))
 		return
 	# Not with what a taken delivery needs, unless asked twice (PIX-206).
-	var ask := GameState.ask_before_dip("craft:" + String(entry["id"]), entry["needs"])
+	var ask := GameState.questing.ask_before_dip("craft:" + String(entry["id"]), entry["needs"])
 	if ask != "":
 		status.text = ask
 		return
@@ -652,7 +652,7 @@ func _drop(whole_stack: bool) -> void:
 		_drop_armed = ""
 	if row["kind"] == "gear":
 		var piece: Dictionary = row["piece"]
-		if GameState.drop_gear(piece["uid"]):
+		if GameState.upkeep.drop_gear(piece["uid"]):
 			status.text = Text.t("You leave %s behind.") % InventoryState.gear_name(piece)
 		else:
 			status.text = "Take it off before you drop it."
@@ -660,6 +660,6 @@ func _drop(whole_stack: bool) -> void:
 		status.text = "You'd better hold on to that."
 	else:
 		var count: int = row["count"] if whole_stack else 1
-		GameState.drop_item(row["item_id"], count)
+		GameState.upkeep.drop_item(row["item_id"], count)
 		status.text = Text.t("You drop %dx %s.") % [count, Catalog.item_name(row["item_id"])]
 	_refresh()

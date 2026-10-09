@@ -25,19 +25,19 @@ func test_every_opening_names_a_real_step_or_quest() -> void:
 func test_the_town_sends_the_hero_out_once_maren_has_asked() -> void:
 	state.progression.quests["hildas_buckler"] = {"progress": 1, "done": true}
 	var quest := Quests.by_id("hildas_ore")
-	assert_false(state.quest_open(quest), "the relics aren't asked for yet")
-	assert_eq(state.resolve_quests("smith"), "", "Hilda has nothing to ask")
-	assert_false(Quests.awaits_word("smith", state.progression.quests, state.pack.items, state.quest_open), "so she opens her counter")
-	state.resolve_quests("elder")
-	assert_true(state.quest_open(quest))
-	assert_true(Quests.awaits_word("smith", state.progression.quests, state.pack.items, state.quest_open))
-	assert_string_contains(state.resolve_quests("smith"), "Black Iron for the Forge")
+	assert_false(state.questing.quest_open(quest), "the relics aren't asked for yet")
+	assert_eq(state.questing.resolve_quests("smith"), "", "Hilda has nothing to ask")
+	assert_false(Quests.awaits_word("smith", state.progression.quests, state.pack.items, state.questing.quest_open), "so she opens her counter")
+	state.questing.resolve_quests("elder")
+	assert_true(state.questing.quest_open(quest))
+	assert_true(Quests.awaits_word("smith", state.progression.quests, state.pack.items, state.questing.quest_open))
+	assert_string_contains(state.questing.resolve_quests("smith"), "Black Iron for the Forge")
 
 
 func test_a_hubs_side_quest_waits_for_its_first_word() -> void:
-	assert_eq(state.resolve_quests("saltmere_rook"), "", "Rook waits until Wenna's smugglers are dealt with")
+	assert_eq(state.questing.resolve_quests("saltmere_rook"), "", "Rook waits until Wenna's smugglers are dealt with")
 	state.progression.quests["wenna_smugglers"] = {"progress": 3, "done": true}
-	assert_string_contains(state.resolve_quests("saltmere_rook"), "Quest accepted")
+	assert_string_contains(state.questing.resolve_quests("saltmere_rook"), "Quest accepted")
 
 
 func test_bram_asks_for_the_shaft_cheese_before_the_imps() -> void:
@@ -66,21 +66,21 @@ func test_every_promise_says_where_to_go() -> void:
 func test_the_map_marks_who_is_waiting() -> void:
 	var sela: Dictionary = Npcs.by_id("innkeeper", [])
 	var bram: Dictionary = Npcs.by_id("villager_bram", [])
-	var waiting: Array = state.givers_waiting([sela, bram])
+	var waiting: Array = state.questing.givers_waiting([sela, bram])
 	assert_eq(waiting.map(func(npc: Dictionary) -> String: return npc["id"]), ["innkeeper", "villager_bram"], "both have a first ask")
-	state.resolve_quests("innkeeper")
-	assert_eq(state.givers_waiting([sela]), [] as Array[Dictionary], "a quest taken and not ready: nothing to say")
+	state.questing.resolve_quests("innkeeper")
+	assert_eq(state.questing.givers_waiting([sela]), [] as Array[Dictionary], "a quest taken and not ready: nothing to say")
 
 
 ## PIX-202: a giver asks their quest themselves before it's taken.
 func test_a_giver_speaks_their_ask() -> void:
 	var state: Node = autofree(GameStateScript.new())
 	state.new_game("Robin", "warrior")
-	var offer: Dictionary = state.quest_on_offer("innkeeper")
+	var offer: Dictionary = state.questing.quest_on_offer("innkeeper")
 	assert_eq(offer.get("id"), "slime_trouble")
 	assert_ne(String(offer.get("accepted", "")), "", "Sela's own words")
-	var said: String = state.resolve_quests("innkeeper")
+	var said: String = state.questing.resolve_quests("innkeeper")
 	assert_string_contains(said, "journal", "the accept points at the journal")
-	assert_true(state.quest_on_offer("innkeeper").is_empty(), "taken: nothing more to ask")
+	assert_true(state.questing.quest_on_offer("innkeeper").is_empty(), "taken: nothing more to ask")
 	for quest: Dictionary in Quests.all():
 		assert_ne(String(quest.get("accepted", "")), "", "%s has its ask" % quest["id"])

@@ -44,24 +44,24 @@ func test_the_fort_has_its_own_creatures() -> void:
 
 func test_ullas_chain_ends_in_oskars_shield() -> void:
 	assert_eq(Quests.for_giver("greyhold_ulla").map(func(q: Dictionary) -> String: return q["id"]), ["ulla_turncoats", "ulla_captain"])
-	state.resolve_quests("greyhold_ulla")
+	state.questing.resolve_quests("greyhold_ulla")
 	for i in 5:
-		state.defeat_monster(Bestiary.spawn("turncoat"), "castle", "", 11)
-	assert_string_contains(state.resolve_quests("greyhold_ulla"), "Quest complete")
-	assert_string_contains(state.resolve_quests("greyhold_ulla"), "The Hollow Captain")
-	state.defeat_monster(Hunts.fighter("hollow_captain"), "cellars", "", 11)
+		state.spoils.defeat_monster(Bestiary.spawn("turncoat"), "castle", "", 11)
+	assert_string_contains(state.questing.resolve_quests("greyhold_ulla"), "Quest complete")
+	assert_string_contains(state.questing.resolve_quests("greyhold_ulla"), "The Hollow Captain")
+	state.spoils.defeat_monster(Hunts.fighter("hollow_captain"), "cellars", "", 11)
 	assert_eq(int(state.pack.items.get("oskars_shield", 0)), 1, "the relic is the hero's")
-	assert_string_contains(state.resolve_quests("greyhold_ulla"), "Captain Hale")
+	assert_string_contains(state.questing.resolve_quests("greyhold_ulla"), "Captain Hale")
 	assert_eq(int(state.pack.items.get("oskars_shield", 0)), 1, "and stays the hero's")
 
 
 func test_the_captain_is_no_guard_to_stand_down() -> void:
-	state.resolve_quests("greyhold_teo")
-	state.defeat_monster(Hunts.fighter("hollow_captain"), "cellars", "", 11)
+	state.questing.resolve_quests("greyhold_teo")
+	state.spoils.defeat_monster(Hunts.fighter("hollow_captain"), "cellars", "", 11)
 	assert_eq(int(state.progression.quests["teo_rest"].get("progress", 0)), 0, "a named fighter counts for no kill quest")
 	for i in 3:
-		state.defeat_monster(Bestiary.spawn("hollow_guard"), "cellars", "", 11)
-	assert_string_contains(state.resolve_quests("greyhold_teo"), "Quest complete")
+		state.spoils.defeat_monster(Bestiary.spawn("hollow_guard"), "cellars", "", 11)
+	assert_string_contains(state.questing.resolve_quests("greyhold_teo"), "Quest complete")
 
 
 func test_fenwicks_locket_waits_in_the_end_cell() -> void:

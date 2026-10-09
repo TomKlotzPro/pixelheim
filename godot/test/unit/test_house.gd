@@ -156,7 +156,7 @@ func test_furniture_at_home_helps_each_kind_once() -> void:
 	assert_almost_eq(state.household.home_buff("gold"), 0.05, 0.0001)
 	state.roll = func() -> float: return 0.99
 	var before: int = state.pack.gold
-	state.defeat_monster(Bestiary.wild(Bestiary.spawn("wolf")), "forest", "", 1)
+	state.spoils.defeat_monster(Bestiary.wild(Bestiary.spawn("wolf")), "forest", "", 1)
 	assert_eq(state.pack.gold - before, roundi(int(Bestiary.wild(Bestiary.spawn("wolf"))["gold"]) * 1.05), "the rug: +5% gold")
 
 
@@ -169,7 +169,7 @@ func test_your_own_bed_leaves_you_well_rested() -> void:
 	state.roll = func() -> float: return 0.99
 	var plain := Bestiary.xp_for(Bestiary.wild(Bestiary.spawn("wolf")), 1)
 	var xp_before: int = state.hero.xp
-	state.defeat_monster(Bestiary.wild(Bestiary.spawn("wolf")), "forest", "", 1)
+	state.spoils.defeat_monster(Bestiary.wild(Bestiary.spawn("wolf")), "forest", "", 1)
 	assert_eq(state.hero.xp - xp_before, roundi(plain * 1.1), "+10% XP while rested")
 	assert_eq(state.settlement.house["rested"], 29, "a fight used")
 	state.settlement.house["furniture"] = [{"itemId": "furn_bench", "x": 3, "y": 3}]

@@ -111,7 +111,7 @@ func test_drops_match_the_web() -> void:
 func test_mastery_announces_a_crossed_tier() -> void:
 	state.hero.mastery = {"beasts": 9}
 	state.roll = _dice([0.99, 0.99])  # no drop, no forage
-	var log: Array[String] = state.defeat_monster(Bestiary.wild(Bestiary.spawn("wolf")), "forest", "forest_2", 1)
+	var log: Array[String] = state.spoils.defeat_monster(Bestiary.wild(Bestiary.spawn("wolf")), "forest", "forest_2", 1)
 	assert_eq(log[0], "Mastery: Beasts Slayer I. +5% damage against beasts.")
 	assert_almost_eq(Bestiary.mastery_bonus(state.hero.mastery, "slime"), 0.05, 0.0001)
 
@@ -124,7 +124,7 @@ func test_a_kill_pays_xp_and_gold_and_clears_the_spawn() -> void:
 	var wolf := Bestiary.wild(Bestiary.spawn("wolf"))
 	var slain := []
 	state.monster_slain.connect(func(id: String) -> void: slain.append(id))
-	var log: Array[String] = state.defeat_monster(wolf, "forest", "forest_2", 1)
+	var log: Array[String] = state.spoils.defeat_monster(wolf, "forest", "forest_2", 1)
 	assert_false(log.any(func(line: String) -> bool: return line.begins_with("Rent")), "no rent line per kill")
 	assert_has(log, "Dire Wolf is defeated! +9 XP, +9 gold.", "a wolf above a new hero pays a little more (PIX-189)")
 	assert_eq(state.hero.xp, 9)
@@ -137,7 +137,7 @@ func test_a_kill_pays_xp_and_gold_and_clears_the_spawn() -> void:
 func test_foraging_and_drops_land_in_the_pack() -> void:
 	# drop: chance yes, stack, apple; forage: yes, double yes
 	state.roll = _dice([0.1, 0.9, 0.3, 0.1, 0.1])
-	var log: Array[String] = state.defeat_monster(Bestiary.wild(Bestiary.spawn("slime")), "forest", "", 1)
+	var log: Array[String] = state.spoils.defeat_monster(Bestiary.wild(Bestiary.spawn("slime")), "forest", "", 1)
 	assert_eq(state.pack.items["apple"], 1)
 	assert_eq(state.pack.items["forest_herb"], 2)
 	assert_has(log, "You forage 2 Forest Herbs.")
@@ -149,7 +149,7 @@ func test_the_manor_garden_ripens_on_the_sixth_win() -> void:
 	state.settlement.house["tier"] = 3
 	state.settlement.house["gardenWins"] = 5
 	state.roll = _dice([0.99, 0.99])
-	var log: Array[String] = state.defeat_monster(Bestiary.spawn("slime"), "", "", 1)
+	var log: Array[String] = state.spoils.defeat_monster(Bestiary.spawn("slime"), "", "", 1)
 	assert_has(log, "Your garden ripens: +2 Forest Herb.", "PIX-179: herbs and reeds for the cauldron")
 	assert_eq(state.settlement.house["gardenWins"], 0)
 	assert_eq(state.settlement.house["gardenHarvests"], 1)
@@ -158,10 +158,10 @@ func test_the_manor_garden_ripens_on_the_sixth_win() -> void:
 func test_defeat_wakes_the_hero_at_the_inn() -> void:
 	state.settlement.town_tier = 1
 	state.settlement.bard_song = true
-	assert_false(state.hurt(5))
-	assert_true(state.hurt(999))
+	assert_false(state.upkeep.hurt(5))
+	assert_true(state.upkeep.hurt(999))
 	assert_eq(state.hero.hp, 0)
-	var inn: Dictionary = state.wake_at_inn()
+	var inn: Dictionary = state.upkeep.wake_at_inn()
 	assert_eq([inn["mapId"], inn["x"], inn["y"]], ["town_inn", 2, 3])
 	assert_eq(state.hero.hp, state.hero.stats["maxHp"])
 	assert_eq(state.settlement.bard_song, false)
@@ -170,7 +170,7 @@ func test_defeat_wakes_the_hero_at_the_inn() -> void:
 ## In the Ashes (PIX-146) the inn is rubble: Sela's tent on the square.
 func test_in_the_ashes_the_hero_wakes_by_selas_tent() -> void:
 	state.settlement.town_tier = 0
-	var inn: Dictionary = state.wake_at_inn()
+	var inn: Dictionary = state.upkeep.wake_at_inn()
 	var tent := Town.ashes_tent([])
 	assert_eq([inn["mapId"], inn["x"], inn["y"]], ["town", tent.x, tent.y + 1])
 
@@ -194,7 +194,7 @@ func test_every_floor_names_its_foes() -> void:
 
 func test_the_codex_remembers_each_kind_and_the_level_it_was_met_at() -> void:
 	state.roll = _dice([0.99, 0.99, 0.99, 0.99])
-	state.defeat_monster(Bestiary.spawn("slime", false, Dungeons.lift(1)), "", "", 1)
+	state.spoils.defeat_monster(Bestiary.spawn("slime", false, Dungeons.lift(1)), "", "", 1)
 	assert_eq(int(state.progression.met["slime"]), 1 + Dungeons.lift(1))
 	assert_false(state.progression.met.has("king_slime"), "one slime doesn't reveal its family")
 	var saved := {}
@@ -215,6 +215,6 @@ func test_every_class_starts_on_its_best_stat() -> void:
 		assert_eq(weapon.get("scaling", "strength"), best, "%s starts on %s" % [role_id, best])
 	var cleric: Node = autofree(GameStateScript.new())
 	cleric.new_game("Mira", "cleric")
-	assert_true(cleric.first_skill_heals())
+	assert_true(cleric.questing.first_skill_heals())
 	assert_false("for your skill" in Prologue.objective(Prologue.EMBERS, 0, true), "Mend is no weapon")
 	assert_true("for your skill" in Prologue.objective(Prologue.EMBERS, 0, false))

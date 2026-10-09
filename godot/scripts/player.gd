@@ -64,7 +64,7 @@ func _ready() -> void:
 	# Top-down: no floor, no walls by angle, just slide along what blocks.
 	motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
 	hp = GameState.hero.hp
-	art = GameState.hero_art()
+	art = GameState.upkeep.hero_art()
 	aura = Sprite2D.new()
 	aura.texture = _glow()
 	aura.position = Vector2(0, 5)
@@ -108,7 +108,7 @@ func _ready() -> void:
 ## Puts on what is worn now (PIX-129): a new helmet or armour shows at once,
 ## mid-step.
 func dress() -> void:
-	var next := GameState.hero_art()
+	var next := GameState.upkeep.hero_art()
 	# The swing follows the weapon even when the look doesn't change (PIX-207:
 	# a bow for a staff kept the bow's draw).
 	var same_look: bool = next["sheet"] == art["sheet"]
@@ -151,7 +151,7 @@ func _physics_process(delta: float) -> void:
 				# The web's swing: scaling stat + weapon, crits, mastery, through armour (PIX-185).
 				var swing := Bestiary.hero_attack(
 					GameState.hero, GameState.pack, body.fighter,
-					GameState.settlement.bard_song == true, GameState.roll, GameState.song_crit(), GameState.household.home_buff("crit") + (1.0 if primed else 0.0)
+					GameState.settlement.bard_song == true, GameState.roll, GameState.holdings.song_crit(), GameState.household.home_buff("crit") + (1.0 if primed else 0.0)
 				)
 				body.take_hit(swing["damage"], global_position, HeroRules.passives(GameState.hero)["attackInflict"], swing["crit"])
 				_steal_life(swing["damage"])
@@ -163,7 +163,7 @@ func _physics_process(delta: float) -> void:
 		if world.dock != null and world.dock.steering():
 			input = Vector2.ZERO
 	# Wren's riders taught the hero to travel light (PIX-157): above ground only.
-	var pace := SPEED * (1.0 + (GameState.walk_bonus() if world.map.floor_level == 0 else 0.0))
+	var pace := SPEED * (1.0 + (GameState.holdings.walk_bonus() if world.map.floor_level == 0 else 0.0))
 	pace *= 1.0 + float(HeroRules.passives(GameState.hero)["moveSpeed"])
 	velocity = input * pace
 	move_and_slide()
@@ -266,7 +266,7 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null) -> void:
 	if _dodge_iframes:
 		world.fx.float_text(Text.t("dodged"), global_position + Vector2(0, -22), Color(0.75, 0.9, 1.0))
 		return
-	GameState.hurt(damage)
+	GameState.upkeep.hurt(damage)
 	hp = GameState.hero.hp
 	Juice.flash(sprite)
 	world.fx.float_number(damage, global_position + Vector2(0, -22), Color(1, 0.35, 0.35))
@@ -354,7 +354,7 @@ func cast(index: int) -> void:
 	Sound.play_ui("cast")
 	var color: Color = SKILL_COLORS.get(skill["stat"], Color.WHITE)
 	if skill["kind"] == "heal":
-		var restored := GameState.heal_hero(Skills.heal_power(GameState.hero, GameState.pack, skill))
+		var restored := GameState.upkeep.heal_hero(Skills.heal_power(GameState.hero, GameState.pack, skill))
 		if skill.get("cleanse", false) and not ailments.kinds().is_empty():
 			ailments.clear()
 			_show_ailment()
@@ -379,7 +379,7 @@ func cast(index: int) -> void:
 	# A draining skill gives back a share of what it took (Drain Life).
 	var drained := roundi(dealt * float(skill.get("drain", 0.0)))
 	if drained > 0:
-		var restored := GameState.heal_hero(drained)
+		var restored := GameState.upkeep.heal_hero(drained)
 		world.fx.float_number(restored, global_position + Vector2(0, -22), Color(0.5, 1, 0.6))
 	_steal_life(dealt)
 
@@ -389,7 +389,7 @@ func _steal_life(damage: int) -> void:
 	var share := float(HeroRules.passives(GameState.hero)["lifeSteal"])
 	if share <= 0 or damage <= 0:
 		return
-	var restored := GameState.heal_hero(maxi(1, roundi(damage * share)))
+	var restored := GameState.upkeep.heal_hero(maxi(1, roundi(damage * share)))
 	if restored > 0:
 		world.fx.float_number(restored, global_position + Vector2(0, -22), Color(0.5, 1, 0.6))
 
@@ -426,13 +426,13 @@ func _regen(delta: float) -> void:
 		rest_clock += delta
 		while rest_clock >= REST_TICK:
 			rest_clock -= REST_TICK
-			GameState.regen_resting()
+			GameState.upkeep.regen_resting()
 		return
 	rest_clock = 0.0
 	regen_clock += delta
 	while regen_clock >= SKILL_TURN:
 		regen_clock -= SKILL_TURN
-		GameState.regen_stamina()
+		GameState.upkeep.regen_stamina()
 
 
 ## Back in step with the hero's health after a rest, a healer or a level-up.
@@ -445,7 +445,7 @@ func heal() -> void:
 ## Ticks poison/burn into the hero's health and shows what still ails them.
 func _tick_ailments(delta: float) -> void:
 	for tick in ailments.tick(delta):
-		GameState.hurt(tick["damage"])
+		GameState.upkeep.hurt(tick["damage"])
 		hp = GameState.hero.hp
 		world.fx.float_number(tick["damage"], global_position + Vector2(0, -22), Color(0.75, 0.5, 1))
 		if hp == 0:

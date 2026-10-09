@@ -273,10 +273,10 @@ func test_the_deep_hunts_gold_climbs_by_a_step_not_a_curve() -> void:
 
 func test_fafnyrs_scale_is_sure_once_then_rare() -> void:
 	state.roll = func() -> float: return 0.5
-	state.defeat_monster(Bestiary.spawn("dragon"), "", "", 10)
+	state.spoils.defeat_monster(Bestiary.spawn("dragon"), "", "", 10)
 	assert_eq(state.pack.items.get("dragon_scale", 0), 1, "the first time, always")
 	assert_has(state.progression.firsts, "fafnyr_scale")
-	state.defeat_monster(Bestiary.spawn("dragon"), "", "", 10)
+	state.spoils.defeat_monster(Bestiary.spawn("dragon"), "", "", 10)
 	assert_eq(state.pack.items.get("dragon_scale", 0), 1, "then a tenth of the time (the roll was a half)")
 	var saved := {}
 	state.progression.write_into(saved)
@@ -307,15 +307,15 @@ func test_masterwork_forging_past_the_cap() -> void:
 
 func test_commissions_wait_for_every_age_and_give_a_lasting_edge() -> void:
 	state.pack.gold = 100000
-	assert_eq(state.fund_commission("lantern_walk"), "", "not while an age is still being built")
+	assert_eq(state.holdings.fund_commission("lantern_walk"), "", "not while an age is still being built")
 	state.settlement.projects.assign(Town.projects_through(Town.MAX_TIER))
 	state.settlement.town_tier = Town.MAX_TIER
-	assert_ne(state.fund_commission("lantern_walk"), "")
-	assert_eq(state.fund_commission("lantern_walk"), "", "once")
-	assert_almost_eq(state.commission_buff("gold"), 0.1, 0.0001)
+	assert_ne(state.holdings.fund_commission("lantern_walk"), "")
+	assert_eq(state.holdings.fund_commission("lantern_walk"), "", "once")
+	assert_almost_eq(state.holdings.commission_buff("gold"), 0.1, 0.0001)
 	state.roll = func() -> float: return 0.99
 	var before: int = state.pack.gold
-	state.defeat_monster(Bestiary.wild(Bestiary.spawn("wolf")), "forest", "", 1)
+	state.spoils.defeat_monster(Bestiary.wild(Bestiary.spawn("wolf")), "forest", "", 1)
 	assert_eq(state.pack.gold - before, roundi(int(Bestiary.wild(Bestiary.spawn("wolf"))["gold"]) * 1.1), "a tenth more gold a kill")
 
 

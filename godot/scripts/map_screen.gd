@@ -76,7 +76,7 @@ func _open() -> void:
 	legend.add_theme_constant_override("separation", 16)
 	legend.position = Vector2(64, 630)
 	var marks: Array = [[Color.WHITE, "You"], [UiStyle.LAMP, "Waypoint"]]
-	if not Hunts.living_on(world.map.id, GameState.board_floors(), GameState.progression.hunted).is_empty():
+	if not Hunts.living_on(world.map.id, GameState.questing.board_floors(), GameState.progression.hunted).is_empty():
 		marks.append([Painting.LAIR, "Lair"])
 	if not Painting.givers(world).is_empty():
 		marks.append([Painting.QUEST, "Quest"])
@@ -136,7 +136,7 @@ class Painting extends Control:
 	static func givers(on: Node2D) -> Array[Node]:
 		var out: Array[Node] = []
 		for villager in on.get_tree().get_nodes_in_group("npcs"):
-			if not villager.away and Quests.awaits_word(villager.data["id"], GameState.progression.quests, GameState.pack.items, GameState.quest_open):
+			if not villager.away and Quests.awaits_word(villager.data["id"], GameState.progression.quests, GameState.pack.items, GameState.questing.quest_open):
 				out.append(villager)
 		return out
 
@@ -157,7 +157,7 @@ class Painting extends Control:
 			var at := Vector2(int(waypoint["at"]["x"]), int(waypoint["at"]["y"]))
 			_marker(at * tile_px + Vector2.ONE * tile_px / 2.0, mark, UiStyle.LAMP)
 		# The lairs of the named monsters the board has posted (PIX-156).
-		for entry in Hunts.living_on(world.map.id, GameState.board_floors(), GameState.progression.hunted):
+		for entry in Hunts.living_on(world.map.id, GameState.questing.board_floors(), GameState.progression.hunted):
 			_marker(Vector2(Hunts.lair(entry)) * tile_px + Vector2.ONE * tile_px / 2.0, mark, LAIR)
 		for villager in givers(world):
 			var cell := Vector2i((villager.position / 16.0).floor())

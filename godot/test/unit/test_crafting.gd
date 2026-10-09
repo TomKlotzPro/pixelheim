@@ -33,11 +33,11 @@ func test_each_trade_starts_at_level_one() -> void:
 
 func test_wolves_carry_pelts_and_fafnyr_his_scales() -> void:
 	state.roll = func() -> float: return 0.4
-	var log: Array[String] = state.defeat_monster(Bestiary.spawn("wolf"), "forest", "", 1)
+	var log: Array[String] = state.spoils.defeat_monster(Bestiary.spawn("wolf"), "forest", "", 1)
 	assert_has(log, "Dire Wolf drops: Wolf Pelt.")
 	assert_eq(state.pack.items.get("wolf_pelt", 0), 1)
 	state.roll = func() -> float: return 0.99
-	state.defeat_monster(Bestiary.spawn("dragon"), "", "", 10)
+	state.spoils.defeat_monster(Bestiary.spawn("dragon"), "", "", 10)
 	assert_eq(state.pack.items.get("dragon_scale", 0), 1, "a scale on every kill")
 	assert_true("the Whispering Forest" in Bestiary.where_found("wolf"), "wolves live in the forest")
 

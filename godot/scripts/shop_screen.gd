@@ -28,7 +28,7 @@ func _open() -> void:
 	var shop := Economy.shop(shop_id)
 	# The owner's till, emptied as they walk up (PIX-178).
 	var owned := GameState.trade.owned_shop_map(shop_id)
-	var collected := GameState.collect_till(owned) if owned != "" else 0
+	var collected := GameState.holdings.collect_till(owned) if owned != "" else 0
 	tabs = ["Buy", "Sell"]
 	if shop.get("forge", false):
 		tabs.append("Forge")
@@ -167,7 +167,7 @@ func _build_rows() -> Array[Dictionary]:
 					"label": Text.t("Deed: %s") % deed["name"], "price": Text.t("owned") if owned else Text.coins(int(deed["cost"])),
 					"detail": Text.t("%s\nOwn this business: its till fills with %dg a day, and you pay a tenth less here.") % [deed["name"], Town.daily_rent(map_id, false, GameState.town_tier())],
 					"verb": "Buy the deed", "enabled": not owned and pack.gold >= int(deed["cost"]),
-					"action": func() -> void: _after(GameState.buy_property(map_id), "The deed is yours.", "Not enough gold."),
+					"action": func() -> void: _after(GameState.holdings.buy_property(map_id), "The deed is yours.", "Not enough gold."),
 				})
 			# Odo also sells the bigger house deeds (BUY_HOUSE_UPGRADE).
 			var bigger := Town.next_house_tier(GameState.household.owns_house(), int(GameState.settlement.house.get("tier", 1)))
@@ -399,7 +399,7 @@ func _sold(gold: int) -> void:
 ## A craft, unless it would take what a taken delivery needs: then it asks
 ## first, and the same craft again goes ahead (PIX-206).
 func _craft(recipe_id: String, entry: Dictionary) -> void:
-	var ask := GameState.ask_before_dip("craft:" + recipe_id, entry["needs"])
+	var ask := GameState.questing.ask_before_dip("craft:" + recipe_id, entry["needs"])
 	if ask != "":
 		status.text = ask
 		return
@@ -462,7 +462,7 @@ static func _describe(item_id: String, instance := {}) -> String:
 	if item.has("set"):
 		lines.append(Catalog.set_line(item["set"], int(GameState.pack.set_counts().get(item["set"], 0))))
 	if item.has("restoreHp"):
-		lines.append(Text.t("Restores %d HP") % GameState.hp_restore(item))
+		lines.append(Text.t("Restores %d HP") % GameState.upkeep.hp_restore(item))
 	if item.has("restoreMp"):
 		lines.append(Text.t("Restores %d MP") % item["restoreMp"])
 	lines.append(Text.t("Weight %d") % item["weight"])

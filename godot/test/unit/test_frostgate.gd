@@ -39,14 +39,14 @@ func test_the_pass_has_its_own_creatures() -> void:
 
 func test_askes_chain_ends_in_lianes_lantern() -> void:
 	assert_eq(Quests.for_giver("frost_aske").map(func(q: Dictionary) -> String: return q["id"]), ["aske_wolves", "aske_rimefang"])
-	state.resolve_quests("frost_aske")
+	state.questing.resolve_quests("frost_aske")
 	for i in 4:
-		state.defeat_monster(Bestiary.spawn("frost_wolf"), "frost", "", 14)
-	assert_string_contains(state.resolve_quests("frost_aske"), "Quest complete")
-	assert_string_contains(state.resolve_quests("frost_aske"), "Liane's Lantern")
-	state.defeat_monster(Hunts.fighter("rimefang"), "icecave", "", 14)
+		state.spoils.defeat_monster(Bestiary.spawn("frost_wolf"), "frost", "", 14)
+	assert_string_contains(state.questing.resolve_quests("frost_aske"), "Quest complete")
+	assert_string_contains(state.questing.resolve_quests("frost_aske"), "Liane's Lantern")
+	state.spoils.defeat_monster(Hunts.fighter("rimefang"), "icecave", "", 14)
 	assert_eq(int(state.pack.items.get("lianes_lantern", 0)), 1, "the relic is the hero's")
-	assert_string_contains(state.resolve_quests("frost_aske"), "the way she went")
+	assert_string_contains(state.questing.resolve_quests("frost_aske"), "the way she went")
 	assert_eq(int(state.pack.items.get("lianes_lantern", 0)), 1, "and stays the hero's")
 
 
@@ -66,7 +66,7 @@ func test_the_ice_hole_gives_icefin() -> void:
 	assert_eq(Gathering.catch(func() -> float: return 0.0, spot), "icefin")
 	assert_eq(Gathering.catch(func() -> float: return 0.0), "fresh_fish", "the sea's catch is unchanged")
 	state.roll = func() -> float: return 0.0
-	assert_string_contains(state.fish("frostgate_hole"), "icefin")
+	assert_string_contains(state.spoils.fish("frostgate_hole"), "icefin")
 	assert_eq(int(state.pack.items.get("icefin", 0)), 1)
 
 

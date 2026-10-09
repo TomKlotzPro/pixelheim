@@ -162,13 +162,13 @@ func test_casting_pays_heals_cap_and_stamina_returns_in_fights() -> void:
 	assert_true(state.training.pay_for_skill(berserk))
 	assert_eq(hero.mp, mp - int(berserk["mpCost"]))
 	assert_eq(hero.hp, hp - int(berserk["hpCost"]))
-	assert_eq(state.heal_hero(999), int(berserk["hpCost"]), "a heal tops out at max HP")
+	assert_eq(state.upkeep.heal_hero(999), int(berserk["hpCost"]), "a heal tops out at max HP")
 	hero.mp = 0
-	assert_eq(state.regen_stamina(), Skills.stamina_regen(hero), "a fighter's stamina comes back")
+	assert_eq(state.upkeep.regen_stamina(), Skills.stamina_regen(hero), "a fighter's stamina comes back")
 	var mage: Node = autofree(GameStateScript.new())
 	mage.new_game("Ilse", "mage")
 	mage.hero.mp = 0
-	assert_eq(mage.regen_stamina(), 0, "mana does not")
+	assert_eq(mage.upkeep.regen_stamina(), 0, "mana does not")
 
 
 ## Forgetting (PIX-86): bought skills for their points back, in the village,

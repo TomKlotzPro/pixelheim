@@ -57,29 +57,29 @@ func test_a_settler_serves_then_asks_and_the_last_ask_grows_the_perk() -> void:
 	state.hero.hp = 1
 	var said := [""]
 	state.message.connect(func(text: String) -> void: said[0] = text)
-	state.finish_dialogue("settler_iva")
+	state.questing.finish_dialogue("settler_iva")
 	assert_eq(state.hero.hp, state.hero.stats["maxHp"], "she heals first")
 	assert_string_contains(said[0], "Herbs for the Shrine", "then asks")
-	assert_false(state.perk_grown("settler_iva"))
+	assert_false(state.holdings.perk_grown("settler_iva"))
 	state.progression.quests["iva_herbs"] = {"progress": 4, "done": true}
 	state.progression.quests["iva_fever"] = {"progress": 3, "done": true}
-	assert_true(state.perk_grown("settler_iva"))
+	assert_true(state.holdings.perk_grown("settler_iva"))
 	assert_has(Town.settler_perks(state.settlement.settlers, state.progression.quests), Town.recruit("settler_iva")["perkUp"])
 	state.pack.items.erase("potion_hp")
-	state.finish_dialogue("settler_iva")
+	state.questing.finish_dialogue("settler_iva")
 	assert_eq(int(state.pack.items.get("potion_hp", 0)), 3, "and tops up the potions")
 
 
 func test_the_grown_perks_pay_more() -> void:
 	for recruit_id: String in RECRUITS:
 		state.settlement.settlers.append(recruit_id)
-	assert_almost_eq(state.song_crit(), 0.12, 0.001)
-	assert_eq(state.walk_bonus(), 0.0)
+	assert_almost_eq(state.holdings.song_crit(), 0.12, 0.001)
+	assert_eq(state.holdings.walk_bonus(), 0.0)
 	for quest: Dictionary in Quests.all():
 		if quest.has("upgrades"):
 			state.progression.quests[quest["id"]] = {"progress": 0, "done": true}
-	assert_almost_eq(state.song_crit(), 0.2, 0.001)
-	assert_almost_eq(state.walk_bonus(), 0.1, 0.001)
+	assert_almost_eq(state.holdings.song_crit(), 0.2, 0.001)
+	assert_almost_eq(state.holdings.walk_bonus(), 0.1, 0.001)
 	var plain := Town.savings_value({"principal": 1000, "at": 0}, 4800)
 	assert_gt(Town.savings_value({"principal": 1000, "at": 0}, 4800, true), plain, "Mirelle's savings grow faster")
 	# Loras's horn: a song-inspired crit is likelier (the roll that missed at 12% lands at 20%).

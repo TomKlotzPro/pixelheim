@@ -33,28 +33,28 @@ func test_the_coast_has_its_own_creatures() -> void:
 
 func test_wennas_chain_ends_in_tams_ladle() -> void:
 	assert_eq(Quests.for_giver("saltmere_wenna").map(func(q: Dictionary) -> String: return q["id"]), ["wenna_smugglers", "wenna_tidecaller"])
-	state.resolve_quests("saltmere_wenna")
+	state.questing.resolve_quests("saltmere_wenna")
 	for i in 3:
-		state.defeat_monster(Bestiary.spawn("pirate"), "coast", "", 2)
-	assert_string_contains(state.resolve_quests("saltmere_wenna"), "Quest complete")
-	assert_string_contains(state.resolve_quests("saltmere_wenna"), "The Tidecaller")
-	state.defeat_monster(Hunts.fighter("tidecaller"), "seacave", "", 4)
+		state.spoils.defeat_monster(Bestiary.spawn("pirate"), "coast", "", 2)
+	assert_string_contains(state.questing.resolve_quests("saltmere_wenna"), "Quest complete")
+	assert_string_contains(state.questing.resolve_quests("saltmere_wenna"), "The Tidecaller")
+	state.spoils.defeat_monster(Hunts.fighter("tidecaller"), "seacave", "", 4)
 	assert_eq(int(state.pack.items.get("tams_ladle", 0)), 1, "the relic is the hero's")
-	assert_string_contains(state.resolve_quests("saltmere_wenna"), "Tam's")
+	assert_string_contains(state.questing.resolve_quests("saltmere_wenna"), "Tam's")
 	assert_eq(int(state.pack.items.get("tams_ladle", 0)), 1, "and stays the hero's")
 
 
 func test_a_hunt_counts_the_quarry_that_fell_first() -> void:
 	state.progression.quests["wenna_smugglers"] = {"progress": 3, "done": true}
-	state.defeat_monster(Hunts.fighter("tidecaller"), "seacave", "", 4)
-	state.resolve_quests("saltmere_wenna")
+	state.spoils.defeat_monster(Hunts.fighter("tidecaller"), "seacave", "", 4)
+	state.questing.resolve_quests("saltmere_wenna")
 	assert_true(Quests.is_ready(Quests.by_id("wenna_tidecaller"), state.progression.quests, state.pack.items))
 
 
 func test_a_plain_crab_is_no_tidecaller() -> void:
 	state.progression.quests["wenna_smugglers"] = {"progress": 3, "done": true}
-	state.resolve_quests("saltmere_wenna")
-	state.defeat_monster(Bestiary.spawn("king_slime"), "seacave", "", 4)
+	state.questing.resolve_quests("saltmere_wenna")
+	state.spoils.defeat_monster(Bestiary.spawn("king_slime"), "seacave", "", 4)
 	assert_false(Quests.is_ready(Quests.by_id("wenna_tidecaller"), state.progression.quests, state.pack.items))
 
 
@@ -66,10 +66,10 @@ func test_the_jetty_bites_then_rests() -> void:
 		var at := Vector2i(int(entry["x"]), int(entry["y"]))
 		assert_true(map.is_walkable(at), "%s stands on ground" % entry["id"])
 	var before: int = state.pack.items.values().reduce(func(sum: int, n: int) -> int: return sum + n, 0)
-	assert_string_contains(state.fish("saltmere_jetty"), "You cast")
+	assert_string_contains(state.spoils.fish("saltmere_jetty"), "You cast")
 	var after: int = state.pack.items.values().reduce(func(sum: int, n: int) -> int: return sum + n, 0)
 	assert_eq(after, before + 1)
-	assert_string_contains(state.fish("saltmere_jetty"), "Nothing's biting")
+	assert_string_contains(state.spoils.fish("saltmere_jetty"), "Nothing's biting")
 	for i in 20:
 		assert_has(["fresh_fish", "sea_glass", "pearl", "old_boot"], Gathering.catch(func() -> float: return i / 20.0))
 

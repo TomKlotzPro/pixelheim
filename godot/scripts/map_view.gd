@@ -132,7 +132,7 @@ func plan(arrival: Vector2i) -> Vector2i:
 		# Its neighbour wears a wanted poster: the bounties (PIX-156).
 		camps[Town.bounty_board()] = {"kind": "board", "tile": PROJECT_BOARD, "wanted": true}
 		# A festival day's stalls (PIX-159), wherever the ground is open.
-		if GameState.festival_on():
+		if GameState.holdings.festival_on():
 			for stall: Dictionary in Town.festival("stalls"):
 				var at := Vector2i(int(stall["x"]), int(stall["y"]))
 				if data.is_walkable(at) and not data.covered.has(at) and not camps.has(at):
@@ -358,7 +358,7 @@ func _build_decor(data: MapData) -> void:
 			_add_chimney_smoke(cell)
 	chest_sprites = {}
 	for chest: Dictionary in Interactables.chests_on(data.id):
-		var texture := treasure_texture(chest, GameState.is_opened(chest))
+		var texture := treasure_texture(chest, GameState.spoils.is_opened(chest))
 		if texture == null:
 			continue
 		var cell := Vector2i(int(chest["x"]), int(chest["y"]))

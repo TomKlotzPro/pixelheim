@@ -24,7 +24,7 @@ func test_ten_pages_one_per_floor_found_on_first_clears() -> void:
 	assert_eq(Story.lore().size(), 10)
 	var floors := Story.lore().map(func(page: Dictionary) -> int: return int(page["floor"]))
 	assert_eq(floors, [1, 3, 4, 5, 7, 9, 11, 12, 13, 14])
-	var lines: Array = state.clear_floor(1)["lines"]
+	var lines: Array = state.spoils.clear_floor(1)["lines"]
 	assert_true(lines.any(func(line: String) -> bool: return line.contains("Page I")))
 	assert_eq(Story.found_pages(state.progression.cleared_levels).size(), 1)
 
@@ -39,7 +39,7 @@ func test_maren_tells_each_story_once_and_the_deepest_first() -> void:
 
 func test_the_main_quest_asks_for_her_stories_on_the_side() -> void:
 	state.progression.unlocked_level = 3
-	state.clear_floor(3)
+	state.spoils.clear_floor(3)
 	assert_eq(MainQuest.next_step(state.progression, state.settlement)["id"], "graves")
 	state.mark_seen("maren_graves")
 	assert_ne(MainQuest.next_step(state.progression, state.settlement)["id"], "graves")

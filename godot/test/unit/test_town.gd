@@ -47,12 +47,12 @@ func test_topping_up_never_compounds() -> void:
 	state.pack.gold = 100000
 	var steps_at := func(steps: float) -> void: state.world.steps = steps
 	steps_at.call(0.0)
-	assert_true(state.bank_deposit(10000))
+	assert_true(state.holdings.bank_deposit(10000))
 	# A deposit of 100 every day for twenty days: the interest is kept apart.
 	for day in range(1, 21):
 		steps_at.call(day * 480.0)
-		state.bank_deposit(100)
-	var pot: Dictionary = state.investments()["savings"]
+		state.holdings.bank_deposit(100)
+	var pot: Dictionary = state.holdings.investments()["savings"]
 	assert_eq(pot["principal"], 12000)
 	assert_lte(pot["earned"], Town.savings_cap(12000), "never past a tenth of the pot")
 	var simple := 0
@@ -78,14 +78,14 @@ func test_rent_fills_a_till_by_the_day() -> void:
 	state.pack.gold = 10000
 	state.world.map_id = "town_shop"
 	state.world.steps = 100.0
-	assert_true(state.buy_property("town_shop"))
+	assert_true(state.holdings.buy_property("town_shop"))
 	state.world.steps = 100.0 + 480 * 3 + 200
-	assert_eq(state.till("town_shop")["gold"], 300, "three whole days")
-	assert_eq(state.collect_till("town_shop"), 300)
-	assert_eq(state.till("town_shop")["gold"], 0)
+	assert_eq(state.holdings.till("town_shop")["gold"], 300, "three whole days")
+	assert_eq(state.holdings.collect_till("town_shop"), 300)
+	assert_eq(state.holdings.till("town_shop")["gold"], 0)
 	state.world.steps += 480 * 50
-	assert_eq(state.till("town_shop")["gold"], Town.till_cap("town_shop", false, state.town_tier()), "a till holds ten days at most")
-	assert_gt(int(state.till("town_shop")["earned"]), 300, "the Holdings count all it earned")
+	assert_eq(state.holdings.till("town_shop")["gold"], Town.till_cap("town_shop", false, state.town_tier()), "a till holds ten days at most")
+	assert_gt(int(state.holdings.till("town_shop")["earned"]), 300, "the Holdings count all it earned")
 
 
 func test_an_owner_pays_less_and_gets_the_days_pick() -> void:
@@ -93,10 +93,10 @@ func test_an_owner_pays_less_and_gets_the_days_pick() -> void:
 	state.pack.gold = 100000
 	var bread := Economy.buy_price("bread")
 	var before: int = state.trade.price_of("elixir")
-	state.buy_property("town_shop")
+	state.holdings.buy_property("town_shop")
 	assert_lt(state.trade.price_of("elixir"), before, "a tenth off in your own shop")
 	var wares: Array = state.trade.shop_wares("odo")
-	var pick := Town.owner_pick("odo", int(state.steps_now()) / 480)
+	var pick := Town.owner_pick("odo", int(state.holdings.steps_now()) / 480)
 	assert_has(wares, pick, "the owner's pick is on the shelf")
 	assert_true(state.trade.buy_item(pick))
 	assert_eq(Economy.buy_price("bread"), bread, "the catalogue price is unchanged")
@@ -129,14 +129,14 @@ func test_the_last_project_of_an_age_raises_the_town() -> void:
 	state.settlement.settlers.append("settler_iva")
 	state.pack.gold = 5000
 	state.pack.items.merge({"marsh_reed": 8, "wolf_pelt": 2})
-	assert_eq(state.fund_project("street_lamps"), "Street lamps: built. Walk outside and see.")
+	assert_eq(state.holdings.fund_project("street_lamps"), "Street lamps: built. Walk outside and see.")
 	assert_eq(state.pack.items["marsh_reed"], 5)
 	assert_eq(state.town_tier(), 1, "one of three")
-	state.fund_project("market_stalls")
-	assert_eq(state.fund_project("thatch_cottage"), "A thatched cottage: built - and Pixelheim is a village now.")
+	state.holdings.fund_project("market_stalls")
+	assert_eq(state.holdings.fund_project("thatch_cottage"), "A thatched cottage: built - and Pixelheim is a village now.")
 	assert_eq(state.town_tier(), 2)
 	assert_eq(state.pack.gold, 5000 - 150 - 250 - 400)
-	assert_eq(state.fund_project("thatch_cottage"), "", "once")
+	assert_eq(state.holdings.fund_project("thatch_cottage"), "", "once")
 	assert_eq(Town.current_age(state.settlement), 3)
 
 
@@ -185,49 +185,49 @@ func test_the_projects_fit_what_the_game_pays() -> void:
 
 func test_deeds_sell_only_where_you_stand() -> void:
 	state.pack.gold = 10000
-	assert_false(state.buy_property("town_shop"), "not standing in Odo's")
+	assert_false(state.holdings.buy_property("town_shop"), "not standing in Odo's")
 	state.world.map_id = "town_shop"
-	assert_true(state.buy_property("town_shop"))
-	assert_false(state.buy_property("town_shop"), "once")
+	assert_true(state.holdings.buy_property("town_shop"))
+	assert_false(state.holdings.buy_property("town_shop"), "once")
 	assert_eq(state.pack.gold, 7500)
 
 
 func test_deposits_keep_interest_apart_and_withdraw_pays_it() -> void:
 	state.pack.gold = 2000
-	assert_true(state.bank_deposit(500))
+	assert_true(state.holdings.bank_deposit(500))
 	state.world.steps = 960.0  # two days
-	assert_true(state.bank_deposit(500))
-	assert_eq(state.investments()["savings"], {"principal": 1000, "earned": 5, "at": 960}, "PIX-177: two days on 500, kept apart")
+	assert_true(state.holdings.bank_deposit(500))
+	assert_eq(state.holdings.investments()["savings"], {"principal": 1000, "earned": 5, "at": 960}, "PIX-177: two days on 500, kept apart")
 	state.world.steps = 1440.0
-	assert_eq(state.bank_withdraw(), 1010, "and a day on 1000")
+	assert_eq(state.holdings.bank_withdraw(), 1010, "and a day on 1000")
 	assert_eq(state.pack.gold, 1000 + 1010)
-	assert_false(state.investments().has("savings"))
+	assert_false(state.holdings.investments().has("savings"))
 
 
 func test_one_caravan_at_a_time_sealed_at_departure() -> void:
 	state.pack.gold = 2000
 	state.world.steps = 4321.0
-	assert_true(state.fund_venture())
-	assert_false(state.fund_venture(), "one on the road")
-	assert_eq(state.collect_venture(), {}, "not back yet")
+	assert_true(state.holdings.fund_venture())
+	assert_false(state.holdings.fund_venture(), "one on the road")
+	assert_eq(state.holdings.collect_venture(), {}, "not back yet")
 	state.world.steps = 4321.0 + 240
-	assert_eq(state.collect_venture(), {"won": true, "payout": 800})
+	assert_eq(state.holdings.collect_venture(), {"won": true, "payout": 800})
 	assert_eq(state.pack.gold, 2000 - 500 + 800)
 
 
 func test_expansions_cost_once_on_owned_businesses() -> void:
 	state.pack.gold = 5000
-	assert_false(state.expand_property("town_shop"), "not owned")
+	assert_false(state.holdings.expand_property("town_shop"), "not owned")
 	state.settlement.properties.append("town_shop")
-	assert_true(state.expand_property("town_shop"))
-	assert_false(state.expand_property("town_shop"), "once")
+	assert_true(state.holdings.expand_property("town_shop"))
+	assert_false(state.holdings.expand_property("town_shop"), "once")
 	assert_eq(state.pack.gold, 4000)
 
 
 func test_investments_round_trip_in_the_web_shape() -> void:
 	state.pack.gold = 2000
-	state.bank_deposit(100)
-	state.fund_venture()
+	state.holdings.bank_deposit(100)
+	state.holdings.fund_venture()
 	var saved: Dictionary = state.to_dict()["investments"]
 	assert_eq(saved["savings"]["principal"], 100)
 	assert_eq(saved["venture"]["stake"], 500)
@@ -242,15 +242,15 @@ func test_a_recruits_story_is_a_quest_that_brings_them_home() -> void:
 	state.settlement.town_tier = 1
 	var messages: Array[String] = []
 	state.message.connect(func(text: String) -> void: messages.append(text))
-	state.finish_dialogue("settler_iva")
+	state.questing.finish_dialogue("settler_iva")
 	assert_string_starts_with(messages[0], "Quest accepted: Reeds for a Healer.")
-	assert_false(state.is_settled("settler_iva"))
+	assert_false(state.holdings.is_settled("settler_iva"))
 	state.pack.items["marsh_reed"] = 3
 	var moved := [false]
 	state.settlers_changed.connect(func() -> void: moved[0] = true)
-	state.finish_dialogue("settler_iva")
+	state.questing.finish_dialogue("settler_iva")
 	assert_string_starts_with(messages[1], "Quest complete: Reeds for a Healer. +25 XP. \u201cReeds enough")
-	assert_true(state.is_settled("settler_iva"))
+	assert_true(state.holdings.is_settled("settler_iva"))
 	assert_false(state.pack.items.has("marsh_reed"), "the reeds were handed over")
 	assert_true(moved[0])
 	assert_eq(Npcs.by_id("settler_iva", state.settlement.settlers)["mapId"], "town")
@@ -258,12 +258,12 @@ func test_a_recruits_story_is_a_quest_that_brings_them_home() -> void:
 
 func test_the_bards_lute_is_with_a_troll() -> void:
 	state.settlement.town_tier = 2
-	state.finish_dialogue("settler_loras")
+	state.questing.finish_dialogue("settler_loras")
 	assert_true(state.progression.quests.has("loras_lute"))
 	state.roll = func() -> float: return 0.99
-	state.defeat_monster(Bestiary.spawn("troll"), "deepwood", "", 8)
-	state.finish_dialogue("settler_loras")
-	assert_true(state.is_settled("settler_loras"))
+	state.spoils.defeat_monster(Bestiary.spawn("troll"), "deepwood", "", 8)
+	state.questing.finish_dialogue("settler_loras")
+	assert_true(state.holdings.is_settled("settler_loras"))
 	assert_has(Town.settler_perks(state.settlement.settlers), "Loras plays a marching song before a hunt: +12% crit until it ends")
 
 
@@ -272,7 +272,7 @@ func test_finer_folk_hold_out_for_a_finer_town() -> void:
 	state.settlement.town_tier = 1
 	var messages: Array[String] = []
 	state.message.connect(func(text: String) -> void: messages.append(text))
-	state.finish_dialogue("settler_mirelle")
+	state.questing.finish_dialogue("settler_mirelle")
 	assert_string_contains(messages[0], "into a village")
 	assert_false(state.progression.quests.has("mirelle_vault"), "no story until there's a village")
 
@@ -291,7 +291,7 @@ func test_iva_heals_her_patron_for_free_at_home_in_town() -> void:
 	state.world.map_id = "town"
 	var healed := [false]
 	state.healed.connect(func() -> void: healed[0] = true)
-	state.finish_dialogue("settler_iva")
+	state.questing.finish_dialogue("settler_iva")
 	assert_eq(state.hero.hp, state.hero.stats["maxHp"])
 	assert_true(healed[0])
 
@@ -299,7 +299,7 @@ func test_iva_heals_her_patron_for_free_at_home_in_town() -> void:
 func test_the_bard_plays_a_marching_song() -> void:
 	state.settlement.settlers.append("settler_loras")
 	state.world.map_id = "town"
-	state.finish_dialogue("settler_loras")
+	state.questing.finish_dialogue("settler_loras")
 	assert_true(state.settlement.bard_song)
 	assert_true(state.to_dict()["bardSong"])
 
@@ -307,23 +307,23 @@ func test_the_bard_plays_a_marching_song() -> void:
 func test_closing_any_conversation_is_announced() -> void:
 	var closed: Array[String] = []
 	state.dialogue_closed.connect(func(id: String) -> void: closed.append(id))
-	state.finish_dialogue("elder")
+	state.questing.finish_dialogue("elder")
 	assert_eq(closed, ["elder"])
 
 
 # ---- GameState: the inn -----------------------------------------------------------
 
 func test_the_inn_charges_only_the_hurt_and_halves_in_a_town() -> void:
-	assert_eq(state.rest_at_inn(), "The innkeeper nods. You are already well rested.")
+	assert_eq(state.upkeep.rest_at_inn(), "The innkeeper nods. You are already well rested.")
 	assert_eq(state.pack.gold, 30)
 	state.hero.hp = 1
-	assert_eq(state.rest_at_inn(), "You rest at the inn and wake fully restored. -10 gold.")
+	assert_eq(state.upkeep.rest_at_inn(), "You rest at the inn and wake fully restored. -10 gold.")
 	assert_eq(state.pack.gold, 20)
 	assert_eq(state.hero.hp, state.hero.stats["maxHp"])
 	state.settlement.town_tier = 3
 	state.hero.hp = 1
-	state.rest_at_inn()
+	state.upkeep.rest_at_inn()
 	assert_eq(state.pack.gold, 15)
 	state.pack.gold = 0
 	state.hero.hp = 1
-	assert_eq(state.rest_at_inn(), "No coin, no bed: a night costs 5 gold.")
+	assert_eq(state.upkeep.rest_at_inn(), "No coin, no bed: a night costs 5 gold.")
