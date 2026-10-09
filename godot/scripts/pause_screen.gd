@@ -15,6 +15,8 @@ func _open() -> void:
 	var card := PanelContainer.new()
 	card.position = Vector2(470, 170)
 	card.custom_minimum_size = Vector2(340, 340)
+	# Centred whatever its words (PIX-213: French ran it off-centre).
+	card.resized.connect(func() -> void: card.position = ((Vector2(1280, 720) - card.size) / 2.0).round())
 	card.add_theme_stylebox_override("panel", UiStyle.box(UiStyle.CARD, UiStyle.RIM, 22))
 	add_child(card)
 	var column := VBoxContainer.new()
@@ -28,6 +30,8 @@ func _open() -> void:
 	column.add_child(menu)
 	var footer := UiStyle.label("Progress is saved automatically.", 13, UiStyle.FADED)
 	footer.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	footer.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	footer.custom_minimum_size = Vector2(296, 0)
 	column.add_child(footer)
 	options = [
 		{"label": "Resume", "action": _resume},

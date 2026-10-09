@@ -32,7 +32,7 @@ func _open() -> void:
 	# The roles are written on a page beside the hero's card.
 	add_child(UiStyle.page(Rect2(64, 82, 446, 520)))
 	add_child(UiStyle.label("The mountain is waiting", 14, UiStyle.DUSK, Vector2(80, 24)))
-	add_child(UiStyle.heading("Create your hero", 20, UiStyle.CREAM, Vector2(80, 42)))
+	add_child(UiStyle.title("Create your hero"))
 	roles_box = VBoxContainer.new()
 	roles_box.position = Vector2(80, 96)
 	roles_box.add_theme_constant_override("separation", 4)
@@ -71,7 +71,7 @@ func _open() -> void:
 	footer.add_child(begin)
 	status = UiStyle.label("", 14, UiStyle.GOLD, Vector2(720, 626))
 	add_child(status)
-	add_child(UiStyle.footer("Up/Down  role    PgUp/PgDn  look    Tab  first night    Enter  begin    Esc  back", Vector2(0, 684), true))
+	add_child(UiStyle.screen_footer("Up/Down  role    PgUp/PgDn  look    Tab  first night    Enter  begin    Esc  close"))
 	_refresh()
 	name_field.grab_focus.call_deferred()
 

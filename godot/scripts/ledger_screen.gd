@@ -9,7 +9,7 @@ var selected := 0
 var list: VBoxContainer
 var info: Label
 var info_card: PanelContainer
-var gold_label: Label
+var purse: HBoxContainer
 var status: Label
 var page: Panel
 
@@ -20,10 +20,11 @@ func _open() -> void:
 	# The choices are written on a page beside the card.
 	page = UiStyle.page(Rect2(624, 94, 592, 470))
 	add_child(page)
-	add_child(UiStyle.heading(_title(), 20, UiStyle.CREAM, Vector2(80, 32)))
+	add_child(UiStyle.title(_title()))
 	add_child(UiStyle.label(_intro(), 14, UiStyle.DUSK, Vector2(80, 66)))
-	gold_label = UiStyle.label("", 18, UiStyle.GOLD, Vector2(1060, 36))
-	add_child(gold_label)
+	purse = UiStyle.purse(0, 18)
+	purse.position = Vector2(1060, 20)
+	add_child(purse)
 
 	var card := PanelContainer.new()
 	info_card = card
@@ -47,7 +48,7 @@ func _open() -> void:
 	status.custom_minimum_size = Vector2(1120, 0)
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(status)
-	add_child(UiStyle.footer(_footer(), Vector2(80, 660)))
+	add_child(UiStyle.screen_footer(_footer()))
 	_refresh()
 
 
@@ -71,7 +72,7 @@ func _verb() -> String:
 
 ## The keys along the bottom.
 func _footer() -> String:
-	return Text.t("Esc  close      {key:move_up}/{key:move_down}  choose      {key:interact}  %s") % _verb()
+	return Text.t("{key:move_up}/{key:move_down}  choose      {key:interact}  %s      Esc  close") % _verb()
 
 
 ## Each row: {label, note, enabled, action: Callable returning a status line}.
@@ -106,7 +107,7 @@ func _act() -> void:
 
 
 func _refresh() -> void:
-	gold_label.text = Text.t("Gold: %d") % GameState.pack.gold
+	UiStyle.purse_set(purse, GameState.pack.gold)
 	# The rows first: the info may speak of the chosen one.
 	rows = _rows()
 	selected = clampi(selected, 0, maxi(0, rows.size() - 1))

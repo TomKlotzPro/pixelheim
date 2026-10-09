@@ -18,7 +18,7 @@ func _open() -> void:
 	closing_actions = [&"map"]
 	layer = 5
 	dim()
-	add_child(UiStyle.heading(Catalog.place_name(world.map.id), 20, UiStyle.CREAM, Vector2(64, 28)))
+	add_child(UiStyle.title(Catalog.place_name(world.map.id), Vector2(64, UiStyle.TITLE_AT.y)))
 
 	var frame := PanelContainer.new()
 	frame.position = Vector2(56, 72)
@@ -82,7 +82,7 @@ func _open() -> void:
 		legend.add_child(swatch)
 		legend.add_child(UiStyle.label(mark[1], 12, UiStyle.FADED))
 	add_child(legend)
-	add_child(UiStyle.footer("{key:map}  close      {key:move_up}/{key:move_down}  choose      {key:interact}  travel", Vector2(64, 668)))
+	add_child(UiStyle.screen_footer("{key:move_up}/{key:move_down}  choose      {key:interact}  travel      {key:map} / Esc  close"))
 	_highlight()
 
 

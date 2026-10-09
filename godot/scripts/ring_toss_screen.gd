@@ -68,7 +68,7 @@ func _open() -> void:
 	status.custom_minimum_size = Vector2(800, 0)
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(status)
-	add_child(UiStyle.footer("Esc  leave      {key:interact}  throw", Vector2(220, 580)))
+	add_child(UiStyle.screen_footer("{key:interact}  throw      Esc  close"))
 	_new_round()
 
 

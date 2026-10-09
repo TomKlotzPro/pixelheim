@@ -17,7 +17,7 @@ var status: Label
 func _open() -> void:
 	layer = 7
 	dim()
-	add_child(UiStyle.heading("Options", 20, UiStyle.CREAM, Vector2(80, 24)))
+	add_child(UiStyle.title("Options"))
 	var card := PanelContainer.new()
 	card.position = Vector2(80, 70)
 	card.custom_minimum_size = Vector2(1120, 560)
@@ -34,7 +34,7 @@ func _open() -> void:
 		columns.append(column)
 	status = UiStyle.label("", 14, UiStyle.LAMP, Vector2(80, 640))
 	add_child(status)
-	add_child(UiStyle.footer("{key:move_up}/{key:move_down}  choose      {key:move_left}/{key:move_right}  adjust      {key:interact}  rebind / toggle      Esc  close", Vector2(80, 680)))
+	add_child(UiStyle.screen_footer("{key:move_up}/{key:move_down}  choose      {key:move_left}/{key:move_right}  adjust      {key:interact}  rebind / toggle      Esc  close"))
 	_refresh()
 
 

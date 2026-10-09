@@ -11,7 +11,7 @@ var on_choice := Callable()
 func _open() -> void:
 	super._open()
 	# Gold means nothing at the throne.
-	gold_label.visible = false
+	purse.visible = false
 
 
 func _title() -> String:

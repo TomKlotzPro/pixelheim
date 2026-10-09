@@ -31,7 +31,7 @@ func test_a_footer_draws_every_key_as_a_cap() -> void:
 
 
 func test_every_footer_names_its_keys_the_same_way() -> void:
-	var literal := RegEx.create_from_string('UiStyle\\.footer\\(\\s*"([^"]+)"')
+	var literal := RegEx.create_from_string('UiStyle\\.(?:screen_)?footer\\(\\s*"([^"]+)"')
 	var checked := 0
 	for file in DirAccess.get_files_at("res://scripts"):
 		if not file.ends_with(".gd"):

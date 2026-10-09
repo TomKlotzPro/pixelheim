@@ -102,7 +102,8 @@ func _tap_bar() -> void:
 	var button_px := 46.0 / scale
 	var gap := 8.0 / scale
 	var spare := (size - Touch.DESIGN) / 2.0
-	var keys := [["<", "move_left"], ["^", "move_up"], ["v", "move_down"], [">", "move_right"], ["OK", "interact"], ["Back", "ui_cancel"]]
+	# The arrows as the keycaps draw them (PIX-213), not ASCII.
+	var keys := [[UiStyle.ARROWS["Left"], "move_left"], [UiStyle.ARROWS["Up"], "move_up"], [UiStyle.ARROWS["Down"], "move_down"], [UiStyle.ARROWS["Right"], "move_right"], ["OK", "interact"], ["Back", "ui_cancel"]]
 	var column := spare.x >= button_px * 1.15 + gap * 2
 	var bar: BoxContainer = VBoxContainer.new() if column else HBoxContainer.new()
 	bar.add_theme_constant_override("separation", int(gap))
@@ -111,6 +112,7 @@ func _tap_bar() -> void:
 		button.text = key[0]
 		button.focus_mode = Control.FOCUS_NONE
 		button.custom_minimum_size = Vector2(button_px * (1.15 if column else (1.6 if key[0].length() > 1 else 1.0)), button_px)
+		button.add_theme_font_override("font", UiStyle.bold_font())
 		button.add_theme_font_size_override("font_size", roundi(button_px * 0.4))
 		button.add_theme_stylebox_override("normal", UiStyle.box(Color(UiStyle.NIGHT, 0.8), UiStyle.RIM, 8))
 		button.add_theme_stylebox_override("pressed", UiStyle.box(Color(UiStyle.LAMP, 0.8), UiStyle.RIM, 8))

@@ -38,6 +38,7 @@ var list: VBoxContainer
 var scroll: ScrollContainer
 var header: Label
 var sort_label: Label
+var purse: HBoxContainer
 ## The chosen row in full: an item's description, a recipe's station.
 var about: Label
 ## How full the pack is, beside the weight (red near capacity).
@@ -51,7 +52,7 @@ func _open() -> void:
 	dim()
 	# The pack's ledger: a page under the tabs and the list.
 	add_child(UiStyle.page(Rect2(474, 58, 742, 572)))
-	add_child(UiStyle.heading("Inventory", 20, UiStyle.CREAM, Vector2(80, 24)))
+	add_child(UiStyle.title("Inventory"))
 	var weight := HBoxContainer.new()
 	weight.position = Vector2(490, 22)
 	weight.add_theme_constant_override("separation", 10)
@@ -66,10 +67,14 @@ func _open() -> void:
 	weight_fill = ColorRect.new()
 	weight_fill.position = Vector2(2, 2)
 	track.add_child(weight_fill)
-	sort_label = UiStyle.label("", 16, UiStyle.DUSK, Vector2(940, 22))
-	sort_label.custom_minimum_size = Vector2(276, 0)
+	sort_label = UiStyle.label("", 16, UiStyle.DUSK, Vector2(740, 22))
+	sort_label.custom_minimum_size = Vector2(300, 0)
 	sort_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	add_child(sort_label)
+	# The gold, shown as everywhere else (PIX-213).
+	purse = UiStyle.purse(0, 18)
+	purse.position = Vector2(1060, 20)
+	add_child(purse)
 
 	var doll_card := PanelContainer.new()
 	doll_card.position = Vector2(80, 70)
@@ -108,7 +113,7 @@ func _open() -> void:
 	status.custom_minimum_size = Vector2(710, 0)
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(status)
-	add_child(UiStyle.footer("{key:move_left}/{key:move_right}  tabs      {key:move_up}/{key:move_down}  choose      {key:interact}  equip / use      X  drop      Z  drop all      R  sort      {key:inventory} / Esc  close", Vector2(80, 660)))
+	add_child(UiStyle.screen_footer("{key:move_left}/{key:move_right}  tabs      {key:move_up}/{key:move_down}  choose      {key:interact}  equip / use      X  drop      Z  drop all      R  sort      {key:inventory} / Esc  close"))
 	_refresh()
 
 
@@ -122,7 +127,8 @@ func _refresh() -> void:
 	var share := clampf(float(weight) / maxi(1, capacity), 0.0, 1.0)
 	weight_fill.size = Vector2(120 * share, 8)
 	weight_fill.color = UiStyle.LAMP if share >= 0.9 else UiStyle.GOLD
-	sort_label.text = Text.t("Gold %d      Sorted by %s") % [pack.gold, sort_name(GameState.settings.pack_sort)]
+	sort_label.text = Text.t("Sorted by %s") % sort_name(GameState.settings.pack_sort)
+	UiStyle.purse_set(purse, pack.gold)
 	_build_doll()
 	for child in tab_row.get_children():
 		child.queue_free()

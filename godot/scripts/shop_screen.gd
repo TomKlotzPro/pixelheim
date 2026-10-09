@@ -18,7 +18,7 @@ var scroll: ScrollContainer
 var detail: Label
 var act_button: Button
 var stack_button: Button
-var gold_label: Label
+var purse: HBoxContainer
 var status: Label
 
 
@@ -42,10 +42,11 @@ func _open() -> void:
 	dim()
 	# The counter's ledger: a page under the tabs, the wares and the news.
 	add_child(UiStyle.page(Rect2(60, 90, 740, 530)))
-	add_child(UiStyle.heading(shop["keeper"], 18, UiStyle.CREAM, Vector2(80, 32)))
+	add_child(UiStyle.title(shop["keeper"]))
 	add_child(UiStyle.label(shop["greeting"], 14, UiStyle.DUSK, Vector2(80, 66)))
-	gold_label = UiStyle.label("", 18, UiStyle.GOLD, Vector2(1060, 36))
-	add_child(gold_label)
+	purse = UiStyle.purse(0, 18)
+	purse.position = Vector2(1060, 20)
+	add_child(purse)
 
 	var tab_row := HBoxContainer.new()
 	tab_row.position = Vector2(80, 100)
@@ -90,7 +91,7 @@ func _open() -> void:
 
 	status = UiStyle.label("", 14, UiStyle.LAMP, Vector2(80, 580))
 	add_child(status)
-	add_child(UiStyle.footer(Text.t("Esc  close      {key:move_left}/{key:move_right}  tab      {key:move_up}/{key:move_down}  choose      {key:interact}  %s      Z  sell a stack") % "/".join(tabs.map(func(tab: String) -> String: return Text.t(tab))).to_lower(), Vector2(80, 660)))
+	add_child(UiStyle.screen_footer(Text.t("{key:move_left}/{key:move_right}  tab      {key:move_up}/{key:move_down}  choose      {key:interact}  %s      Z  sell a stack      Esc  close") % "/".join(tabs.map(func(tab: String) -> String: return Text.t(tab))).to_lower()))
 	if collected > 0:
 		status.text = Text.t("%s hands you the till: +%d gold.") % [String(shop.get("keeper", "")), collected]
 	# A keeper who sells their business explains deeds once (PIX-179).
@@ -279,7 +280,7 @@ func _build_rows() -> Array[Dictionary]:
 func _refresh() -> void:
 	for index in tab_buttons.size():
 		UiStyle.focus(tab_buttons[index], index == tab)
-	gold_label.text = Text.t("Gold: %d") % GameState.pack.gold
+	UiStyle.purse_set(purse, GameState.pack.gold)
 	rows = _build_rows()
 	selected = clampi(selected, 0, maxi(0, rows.size() - 1))
 	for child in list.get_children():
@@ -292,11 +293,11 @@ func _refresh() -> void:
 	var row := rows[selected] if not rows.is_empty() else {}
 	detail.text = row["detail_of"].call() if row.has("detail_of") else row.get("detail", "")
 	act_button.visible = not row.is_empty()
-	act_button.text = UiStyle.keyed("{key:interact}", Text.t(row.get("verb", "")))
+	UiStyle.button_keyed(act_button, "{key:interact}", Text.t(row.get("verb", "")))
 	act_button.disabled = not row.get("enabled", false)
 	var stacked: int = GameState.pack.items.get(row.get("stack", ""), 0)
 	stack_button.visible = stacked > 1
-	stack_button.text = UiStyle.keyed("Z", Text.t("Sell all %d") % stacked)
+	UiStyle.button_keyed(stack_button, "Z", Text.t("Sell all %d") % stacked)
 	if not rows.is_empty():
 		# Deferred until layout. Old rows leave the list at once on refresh, so
 		# looking the row up by index then always finds the current one.
