@@ -393,6 +393,15 @@ func _run_test_harness() -> void:
 		# A conversation with the elder closes: his quest is accepted.
 		GameState.questing.finish_dialogue("elder")
 		await get_tree().create_timer(0.3).timeout
+	if args.has("brew"):
+		# A First Brew (PIX-231): a potion brewed at Vex's cauldron before her
+		# quest is taken; then a word with her takes it, and another hands it in.
+		GameState.pack.add_item("forest_herb")
+		GameState.pack.add_item("marsh_reed")
+		GameState.trade.craft("brew_potion_hp")
+		GameState.questing.finish_dialogue("alchemist_vex")
+		GameState.questing.finish_dialogue("alchemist_vex")
+		await get_tree().create_timer(0.3).timeout
 	if args.has("journal"):
 		# A few promises in hand: slimes half done, the cheese ready, the troll
 		# kept; Maren's relics asked for, the ladle won, the iron still out

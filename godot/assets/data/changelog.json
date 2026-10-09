@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.173.0",
+      "date": "2026-10-09",
+      "codename": "First Brew",
+      "notes": [
+        "Fixed: a potion you brewed before taking Vex's \"A First Brew\" now counts as soon as you take it, and whatever you craft for a quest you've taken says in the battle log when it's ready to hand in"
+      ]
+    },
+    {
       "version": "0.172.0",
       "date": "2026-10-09",
       "codename": "Steady Camera",
