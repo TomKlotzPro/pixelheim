@@ -255,3 +255,73 @@ func test_the_craft_guide_knows_which_trades_are_here() -> void:
 	assert_eq(Economy.jobs_here("town_house", true).size(), 2, "the workbench does both")
 	assert_eq(Economy.jobs_here("overworld", true), [])
 	assert_string_contains(Economy.station_hint("smithing"), "Hilda")
+
+
+# ---- PIX-180: late-game gold -----------------------------------------------------
+
+func test_the_deep_hunts_gold_climbs_by_a_step_not_a_curve() -> void:
+	var at := func(depth: int) -> int:
+		var base := Bestiary.monster("troll")
+		return int(Bestiary.lifted(base, 18 + depth - int(base["level"]))["gold"])
+	var first: int = at.call(1)
+	assert_lt(float(at.call(30)) / first, 3.2, "depth 30 pays under about three times depth 1")
+	assert_lt(at.call(20) - at.call(10), (at.call(10) - at.call(1)) * 1.4, "and each ten depths add about the same")
+	# The mountain itself keeps its curve.
+	var slime := Bestiary.spawn("slime", false, Dungeons.lift(1))
+	assert_gt(int(slime["gold"]), 50)
+
+
+func test_fafnyrs_scale_is_sure_once_then_rare() -> void:
+	state.roll = func() -> float: return 0.5
+	state.defeat_monster(Bestiary.spawn("dragon"), "", "", 10)
+	assert_eq(state.pack.items.get("dragon_scale", 0), 1, "the first time, always")
+	assert_has(state.progression.firsts, "fafnyr_scale")
+	state.defeat_monster(Bestiary.spawn("dragon"), "", "", 10)
+	assert_eq(state.pack.items.get("dragon_scale", 0), 1, "then a tenth of the time (the roll was a half)")
+	var saved := {}
+	state.progression.write_into(saved)
+	assert_eq(saved["firsts"], ["fafnyr_scale"], "kept in the save")
+
+
+func test_masterwork_forging_past_the_cap() -> void:
+	_stand_in("town_smith")
+	var sword: String = state.pack.equipped["weapon"]
+	state.pack.gold = 1000000
+	state.hero.jobs["smithing"]["level"] = 8
+	var cap := Economy.forge_cap_for(8)
+	state.pack.gear_by_uid(sword)["bonus"] = cap
+	assert_false(state.upgrade_gear(sword), "a gem a step")
+	state.pack.items["gem"] = 2
+	var first := Economy.masterwork_cost("rusty_sword", cap, 8)
+	assert_true(state.upgrade_gear(sword))
+	assert_eq(state.pack.gear_by_uid(sword)["bonus"], cap + 1)
+	assert_eq(state.pack.items.get("gem", 0), 1)
+	assert_gt(Economy.masterwork_cost("rusty_sword", cap + 1, 8), first * 2, "each step dearer")
+	state.pack.gear_by_uid(sword)["bonus"] = 12
+	state.pack.items["gem"] = 5
+	assert_false(state.upgrade_gear(sword), "+12 at most")
+	state.hero.jobs["smithing"]["level"] = 7
+	state.pack.gear_by_uid(sword)["bonus"] = Economy.forge_cap_for(7)
+	assert_false(state.upgrade_gear(sword), "not before Smithing 8")
+
+
+func test_commissions_wait_for_every_age_and_give_a_lasting_edge() -> void:
+	state.pack.gold = 100000
+	assert_eq(state.fund_commission("lantern_walk"), "", "not while an age is still being built")
+	state.settlement.projects.assign(Town.projects_through(Town.MAX_TIER))
+	state.settlement.town_tier = Town.MAX_TIER
+	assert_ne(state.fund_commission("lantern_walk"), "")
+	assert_eq(state.fund_commission("lantern_walk"), "", "once")
+	assert_almost_eq(state.commission_buff("gold"), 0.1, 0.0001)
+	state.roll = func() -> float: return 0.99
+	var before: int = state.pack.gold
+	state.defeat_monster(Bestiary.wild(Bestiary.spawn("wolf")), "forest", "", 1)
+	assert_eq(state.pack.gold - before, roundi(int(Bestiary.wild(Bestiary.spawn("wolf"))["gold"]) * 1.1), "a tenth more gold a kill")
+
+
+func test_the_city_sells_rare_stock() -> void:
+	for item_id: String in ["kings_signet", "aegis_of_the_ash", "everflask"]:
+		var price := Economy.buy_price(item_id)
+		assert_between(price, 2000, 5000, "%s is a city-tier buy" % item_id)
+	assert_has(Economy.shop_stock("odo", 15, 4), "kings_signet")
+	assert_false(Economy.shop_stock("odo", 15, 3).has("kings_signet"), "only in the City")

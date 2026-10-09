@@ -28,7 +28,8 @@
         "lamplighters_supper": 2,
         "furn_bookshelf": 3,
         "fountain_roast": 3,
-        "city_banquet": 4
+        "city_banquet": 4,
+        "kings_signet": 4
       }
     },
     "smith": {
@@ -78,7 +79,8 @@
         "iron_armor": 3,
         "fountain_guard": 3,
         "tower_shield": 4,
-        "city_plate": 4
+        "city_plate": 4,
+        "aegis_of_the_ash": 4
       }
     },
     "alchemist": {
@@ -106,7 +108,8 @@
         "lantern_draught": 2,
         "fountain_tonic": 3,
         "greater_potion": 4,
-        "phoenix_draught": 4
+        "phoenix_draught": 4,
+        "everflask": 4
       }
     },
     "chandler": {
@@ -907,5 +910,12 @@
       "fine": 0.4,
       "epic": 0.15
     }
+  },
+  "masterwork": {
+    "about": "PIX-180: from Smithing 8 Hilda forges past the cap, up to `max`, each step costing `growth` times the last and a gem: a sink for the late game's gold.",
+    "smithing": 8,
+    "max": 12,
+    "growth": 3,
+    "gem": "gem"
   }
 }

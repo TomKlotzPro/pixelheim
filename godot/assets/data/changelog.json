@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.134.0",
+      "date": "2026-10-09",
+      "codename": "Gold With a Purpose",
+      "notes": [
+        "LATE GOLD, TAMED: past the mountain, the Deep Hunt's foes pay a little more each depth rather than ever more steeply, and a depth you've already cleared pays its foes a quarter. The dead Morvax raises pay nothing, and Fafnyr's scale is sure the first time you bring him down, then rare",
+        "GOLD WITH A PURPOSE: from Smithing 8 Hilda forges past the cap, up to +12, each step dearer than the last and a gem a time; once Pixelheim is a city its shops sell the King's Signet, the Aegis of the Ash and the Everflask; and when every age is built the town takes commissions - the Statue of the Five (+5% XP), the Lantern Walk (+10% gold) and the Healers' Hall (potions heal a quarter more)"
+      ]
+    },
+    {
       "version": "0.133.0",
       "date": "2026-10-09",
       "codename": "Property That Pays",

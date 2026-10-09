@@ -366,6 +366,18 @@ static func shop_of(map_id: String) -> String:
 	return String(Economy._data()["shopMaps"].get(map_id, ""))
 
 
+## The commissions offered once every age is built (PIX-180).
+static func commissions() -> Array:
+	return _data()["commissions"]["list"]
+
+
+static func commission(commission_id: String) -> Dictionary:
+	for entry: Dictionary in commissions():
+		if entry["id"] == commission_id:
+			return entry
+	return {}
+
+
 ## The day's owner's pick in a shop the hero owns (PIX-178).
 static func owner_pick(shop_id: String, day: int) -> String:
 	var picks: Array = _data()["rent"]["ownerPicks"].get(shop_id, [])

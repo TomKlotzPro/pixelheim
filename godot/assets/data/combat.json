@@ -148,7 +148,9 @@
       "drops": [
         {
           "itemId": "dragon_scale",
-          "chance": 1.0
+          "chance": 1.0,
+          "once": "fafnyr_scale",
+          "after": 0.1
         }
       ],
       "inflicts": {
@@ -5125,7 +5127,7 @@
     ]
   },
   "floorLift": {
-    "about": "PIX-170: the mountain comes last, so each floor's foes stand `lift` levels above their kind. A stat grows by the ratio of its curve (a + b*L + c*L*L) at the lifted level to its curve at the kind's own; XP grows gentler than the rest.",
+    "about": "PIX-170: the mountain comes last, so each floor's foes stand `lift` levels above their kind. A stat grows by the ratio of its curve (a + b*L + c*L*L) at the lifted level to its curve at the kind's own; XP grows gentler than the rest. Past goldLinearFrom (the Deep Hunt, PIX-180) gold grows by goldLinearStep a level instead of on the curve.",
     "curves": {
       "maxHp": [
         4,
@@ -5152,10 +5154,12 @@
         0,
         0.3
       ]
-    }
+    },
+    "goldLinearFrom": 19,
+    "goldLinearStep": 0.06
   },
   "deepHunt": {
-    "about": "PIX-161: below Morvax's throne, generated depths without end. Depth d's foes stand at startLevel + d - 1, drawn from every family; every eliteEvery-th depth an elite guards the stair down. The hoard pays once per new deepest depth.",
+    "about": "PIX-161: below Morvax's throne, generated depths without end. Depth d's foes stand at startLevel + d - 1, drawn from every family; every eliteEvery-th depth an elite guards the stair down. The hoard pays once per new deepest depth. A depth already cleared pays its foes replayGoldShare of their gold (PIX-180).",
     "startLevel": 19,
     "eliteEvery": 3,
     "foes": [
@@ -5191,6 +5195,7 @@
       "Things that fled the light came here to wait. They're done waiting.",
       "The air is warm and old. Something below is breathing.",
       "Bones of every kind, gnawed by every kind."
-    ]
+    ],
+    "replayGoldShare": 0.25
   }
 }

@@ -58,8 +58,15 @@ static func lifted(base: Dictionary, lift: int) -> Dictionary:
 	var out := base.duplicate()
 	var level := int(base["level"])
 	var curves: Dictionary = _data()["floorLift"]["curves"]
+	var rules: Dictionary = _data()["floorLift"]
+	var linear_from := int(rules.get("goldLinearFrom", 999))
 	for stat: String in curves:
-		out[stat] = roundi(float(base[stat]) * _grown(curves[stat], level, level + lift))
+		var grown := _grown(curves[stat], level, level + lift)
+		# Past the mountain (the Deep Hunt, PIX-180) gold climbs by a step a
+		# level, not on its curve: depth 30 pays about 2.7x depth 1, not 6x.
+		if stat == "gold" and level + lift > linear_from:
+			grown = _grown(curves[stat], level, linear_from) * (1.0 + float(rules["goldLinearStep"]) * (level + lift - linear_from))
+		out[stat] = roundi(float(base[stat]) * grown)
 	if base.get("inflicts") is Dictionary:
 		var inflicts: Dictionary = base["inflicts"].duplicate()
 		inflicts["power"] = roundi(float(inflicts["power"]) * _grown(curves["attack"], level, level + lift))

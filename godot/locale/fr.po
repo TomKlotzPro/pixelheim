@@ -145,6 +145,10 @@ msgid "A white staff tipped with frost lily ice. It hums when it's cold, which i
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "Aegis of the Ash"
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "Aimed Shot"
 msgstr ""
 
@@ -409,6 +413,10 @@ msgid "Enchanted Robe"
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "Everflask"
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "Every fisher catches one. Nobody knows whose they were."
 msgstr ""
 
@@ -466,6 +474,10 @@ msgstr ""
 
 #: assets/data/catalog.json
 msgid "Forged from a skull that once breathed fire at its wearer."
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "Forged from the beams that burned on the Night of Ash. Nothing gets through it twice."
 msgstr ""
 
 #: assets/data/catalog.json
@@ -702,6 +714,10 @@ msgstr ""
 
 #: assets/data/catalog.json
 msgid "Judgement"
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "King's Signet"
 msgstr ""
 
 #: assets/data/catalog.json
@@ -1257,6 +1273,10 @@ msgid "The miners' axe, reforged for war. It bites like the cold. Crafted, never
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "The old king's seal, bought back from a valley merchant. Pixelheim's own, for whoever saved it."
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "The seamstress swears it was black when she started."
 msgstr ""
 
@@ -1310,6 +1330,10 @@ msgstr ""
 
 #: assets/data/catalog.json
 msgid "Vanish and reappear behind the enemy for a devastating strike."
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "Vex's finest: a flask that brings everything back, every wound and every spent breath."
 msgstr ""
 
 #: assets/data/catalog.json
@@ -2273,7 +2297,15 @@ msgid "GO DEEPER TO GROW: clearing a floor for the first time pays XP on top of 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "GOLD WITH A PURPOSE: from Smithing 8 Hilda forges past the cap, up to +12, each step dearer than the last and a gem a time; once Pixelheim is a city its shops sell the King's Signet, the Aegis of the Ash and the Everflask; and when every age is built the town takes commissions - the Statue of the Five (+5% XP), the Lantern Walk (+10% gold) and the Healers' Hall (potions heal a quarter more)"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "GREYHOLD: a new road leaves the east edge of the Ash Fields for Oskar's old fort on its hill - breached walls, a stone yard, his statue, and the keep where turncoats in red cloaks have made themselves at home"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Gold With a Purpose"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -2426,6 +2458,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "LARGE READING TEXT: everything you read at length - conversations, the story's captions, the town tour, hints, the quest line, the battle log and messages - in the big type. Long lines grow the window upward instead of running off the screen"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "LATE GOLD, TAMED: past the mountain, the Deep Hunt's foes pay a little more each depth rather than ever more steeply, and a depth you've already cleared pays its foes a quarter. The dead Morvax raises pay nothing, and Fafnyr's scale is sure the first time you bring him down, then rare"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -8693,6 +8729,10 @@ msgid "Hope comes home: win two of the five relics (or clear the Ruined Watchtow
 msgstr ""
 
 #: assets/data/town.json
+msgid "Iva's school, and its stronger brews: every potion heals a quarter more."
+msgstr ""
+
+#: assets/data/town.json
 msgid "Lamplit avenues, flowers on the square, full houses. Pixelheim, city of the Ashenreach."
 msgstr ""
 
@@ -8702,6 +8742,10 @@ msgstr ""
 
 #: assets/data/town.json
 msgid "Lamps on the street, stalls on the square, and a new face who chose to stay."
+msgstr ""
+
+#: assets/data/town.json
+msgid "Lanterns all the way up the mountain road. Merchants follow the light: +10% gold from every kill."
 msgstr ""
 
 #: assets/data/town.json
@@ -8769,7 +8813,23 @@ msgid "Street lamps"
 msgstr ""
 
 #: assets/data/town.json
+msgid "The Healers' Hall"
+msgstr ""
+
+#: assets/data/town.json
+msgid "The Lantern Walk"
+msgstr ""
+
+#: assets/data/town.json
+msgid "The Statue of the Five"
+msgstr ""
+
+#: assets/data/town.json
 msgid "The bells ring as you walk in. Pixelheim knows what fell on the mountain - and Bram has been telling everyone he always knew."
+msgstr ""
+
+#: assets/data/town.json
+msgid "The five climbers in bronze on the square. Heroes walk taller past it: +5% XP from every kill."
 msgstr ""
 
 #: assets/data/town.json
@@ -10244,19 +10304,23 @@ msgstr ""
 msgid "Sell one"
 msgstr ""
 
-#: scripts/shop_screen.gd:223
+#: scripts/shop_screen.gd:224
+msgid "%dg + gem"
+msgstr ""
+
+#: scripts/shop_screen.gd:225
 msgid "Temper +1"
 msgstr ""
 
-#: scripts/shop_screen.gd:225
+#: scripts/shop_screen.gd:227
 msgid "Hilda tempers it: +1."
 msgstr ""
 
-#: scripts/shop_screen.gd:225
+#: scripts/shop_screen.gd:227
 msgid "Not enough gold, or it can take no more."
 msgstr ""
 
-#: scripts/shop_screen.gd:293
+#: scripts/shop_screen.gd:295
 msgid "Z  Sell all %d"
 msgstr ""
 
@@ -10276,19 +10340,19 @@ msgstr ""
 msgid "Salvage"
 msgstr ""
 
-#: scripts/shop_screen.gd:360
+#: scripts/shop_screen.gd:362
 msgid "Sold for %dg."
 msgstr ""
 
-#: scripts/shop_screen.gd:367
+#: scripts/shop_screen.gd:369
 msgid "That takes %s %d."
 msgstr ""
 
-#: scripts/shop_screen.gd:373
+#: scripts/shop_screen.gd:375
 msgid "A lucky brew: 2x %s! %s"
 msgstr ""
 
-#: scripts/shop_screen.gd:375
+#: scripts/shop_screen.gd:377
 msgid "Made %s. %s"
 msgstr ""
 
@@ -10296,55 +10360,55 @@ msgstr ""
 msgid "Reforge"
 msgstr ""
 
-#: scripts/shop_screen.gd:381
+#: scripts/shop_screen.gd:383
 msgid "Nothing to sell. Worn gear stays on your back."
 msgstr ""
 
-#: scripts/shop_screen.gd:383
+#: scripts/shop_screen.gd:385
 msgid "Bring me steel to work with."
 msgstr ""
 
-#: scripts/shop_screen.gd:385
+#: scripts/shop_screen.gd:387
 msgid "Nothing to break down. Worn gear stays on your back."
 msgstr ""
 
-#: scripts/shop_screen.gd:388
+#: scripts/shop_screen.gd:390
 msgid "Nothing here yet."
 msgstr ""
 
-#: scripts/shop_screen.gd:405
+#: scripts/shop_screen.gd:407
 msgid "Damage %d"
 msgstr ""
 
-#: scripts/shop_screen.gd:407
+#: scripts/shop_screen.gd:409
 msgid "Scales with %s"
 msgstr ""
 
-#: scripts/shop_screen.gd:409
+#: scripts/shop_screen.gd:411
 msgid "Armor %d"
 msgstr ""
 
-#: scripts/shop_screen.gd:418
+#: scripts/shop_screen.gd:420
 msgid "Restores %d HP"
 msgstr ""
 
-#: scripts/shop_screen.gd:420
+#: scripts/shop_screen.gd:422
 msgid "Restores %d MP"
 msgstr ""
 
-#: scripts/shop_screen.gd:421
+#: scripts/shop_screen.gd:423
 msgid "Weight %d"
 msgstr ""
 
-#: scripts/shop_screen.gd:426
+#: scripts/shop_screen.gd:428
 msgid "Needs:"
 msgstr ""
 
-#: scripts/shop_screen.gd:429
+#: scripts/shop_screen.gd:431
 msgid "  %d x %s  (have %d)"
 msgstr ""
 
-#: scripts/shop_screen.gd:436
+#: scripts/shop_screen.gd:438
 msgid "%s level %d - you are %s"
 msgstr ""
 
@@ -10524,7 +10588,7 @@ msgstr ""
 msgid "The burn"
 msgstr ""
 
-#: scripts/state/bestiary.gd:127
+#: scripts/state/bestiary.gd:134
 msgid "floor %d"
 msgstr ""
 
@@ -10544,227 +10608,231 @@ msgstr ""
 msgid "%s, depth %d"
 msgstr ""
 
-#: scripts/state/economy.gd:173
+#: scripts/state/economy.gd:186
 msgid "%s %d (mastered)"
 msgstr ""
 
-#: scripts/state/economy.gd:174
+#: scripts/state/economy.gd:187
 msgid "%s %d (%d/%d XP)"
 msgstr ""
 
-#: scripts/state/economy.gd:187
+#: scripts/state/economy.gd:200
 msgid "every time"
 msgstr ""
 
-#: scripts/state/economy.gd:193
+#: scripts/state/economy.gd:206
 msgid "foraged after fights in %s"
 msgstr ""
 
-#: scripts/state/economy.gd:196
+#: scripts/state/economy.gd:209
 msgid "sold by %s"
 msgstr ""
 
-#: scripts/state/economy.gd:199
+#: scripts/state/economy.gd:212
 msgid "now and then in loot from floor %d on"
 msgstr ""
 
-#: scripts/state/economy.gd:204
+#: scripts/state/economy.gd:217
 msgid "caught fishing off Saltmere's jetty and rocks"
 msgstr ""
 
-#: scripts/state/economy.gd:207
+#: scripts/state/economy.gd:220
 msgid "the hoard of %s"
 msgstr ""
 
-#: scripts/state/game_state.gd:1004
+#: scripts/state/game_state.gd:1009
+msgid "The nook bubbles: 2x %s became %s."
+msgstr ""
+
+#: scripts/state/game_state.gd:1031
 msgid "It needs open floor. Face a free tile and try again."
 msgstr ""
 
-#: scripts/state/game_state.gd:1006
+#: scripts/state/game_state.gd:1033
 msgid "Something already stands there."
 msgstr ""
 
-#: scripts/state/game_state.gd:1010
+#: scripts/state/game_state.gd:1037
 msgid "%s placed. {key:interact} takes it back."
 msgstr ""
 
-#: scripts/state/game_state.gd:1023
+#: scripts/state/game_state.gd:1050
 msgid "%s back in the pack."
 msgstr ""
 
-#: scripts/state/game_state.gd:1027
+#: scripts/state/game_state.gd:1054
 msgid "Your own bed. Fully rested, free of charge."
 msgstr ""
 
-#: scripts/state/game_state.gd:1038
+#: scripts/state/game_state.gd:1065
 msgid "A workbench and a small cauldron, fitted to the shelf. Craft at home, forever."
 msgstr ""
 
-#: scripts/state/game_state.gd:1039
+#: scripts/state/game_state.gd:1066
 msgid "A proper workbench would fit this shelf. Tools and parts cost %d gold."
 msgstr ""
 
-#: scripts/state/game_state.gd:1042
+#: scripts/state/game_state.gd:1069
 msgid "The hearth roars beside your workbench. Home industry."
 msgstr ""
 
-#: scripts/state/game_state.gd:1043
+#: scripts/state/game_state.gd:1070
 msgid "The hearth crackles, warm and idle. A workbench would fit by the shelf..."
 msgstr ""
 
-#: scripts/state/game_state.gd:1046
+#: scripts/state/game_state.gd:1073
 msgid "Your kitchen counter. Clean, empty, hopeful."
 msgstr ""
 
-#: scripts/state/game_state.gd:1050
+#: scripts/state/game_state.gd:1077
 msgid "The garden drinks your victories: %d/%d until the next harvest."
 msgstr ""
 
-#: scripts/state/game_state.gd:1082
+#: scripts/state/game_state.gd:1109
 msgid "You wake at the inn. The innkeeper says nothing. Kind of her."
 msgstr ""
 
-#: scripts/state/game_state.gd:1119
+#: scripts/state/game_state.gd:1146
 msgid "Your garden ripens: +1 %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1123
+#: scripts/state/game_state.gd:1150
 msgid "%s is defeated! +%d XP, +%d gold."
 msgstr ""
 
-#: scripts/state/game_state.gd:1134
+#: scripts/state/game_state.gd:1167
 msgid "%s drops: %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1141
+#: scripts/state/game_state.gd:1174
 msgid "%s drops: %s!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1151
+#: scripts/state/game_state.gd:1184
 msgid "You forage %d %s%s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1153
+#: scripts/state/game_state.gd:1186
 msgid "Foraging reached %d!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1169
+#: scripts/state/game_state.gd:1202
 msgid "Level up: you are now level %d. +%d stat points and +%d skill point%s to spend."
 msgstr ""
 
-#: scripts/state/game_state.gd:1197
+#: scripts/state/game_state.gd:1230
 msgid "You gather %d %s%s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1208
+#: scripts/state/game_state.gd:1241
 msgid "Nothing's biting here yet. Try again in a while, or somewhere else."
 msgstr ""
 
-#: scripts/state/game_state.gd:1212
+#: scripts/state/game_state.gd:1245
 msgid "You cast, wait... and haul up an old boot."
 msgstr ""
 
-#: scripts/state/game_state.gd:1212
+#: scripts/state/game_state.gd:1245
 msgid "You cast, wait... and land %s!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1214
+#: scripts/state/game_state.gd:1247
 msgid " Foraging reached %d!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1316
+#: scripts/state/game_state.gd:1349
 msgid "The bounty on %s is yours: +%d gold."
 msgstr ""
 
-#: scripts/state/game_state.gd:1325
+#: scripts/state/game_state.gd:1358
 msgid "%s leaves you %s!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1423
+#: scripts/state/game_state.gd:1458
 msgid "%d HP"
 msgstr ""
 
-#: scripts/state/game_state.gd:1431
+#: scripts/state/game_state.gd:1466
 msgid "You use %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1433
+#: scripts/state/game_state.gd:1468
 msgid " Restored %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1558
+#: scripts/state/game_state.gd:1593
 msgid "%s is cleared!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1563
+#: scripts/state/game_state.gd:1598
 msgid "%d gold"
 msgstr ""
 
-#: scripts/state/game_state.gd:1572
+#: scripts/state/game_state.gd:1607
 msgid "The floor's hoard: %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1576
+#: scripts/state/game_state.gd:1611
 msgid "Among the bones: a page of an old journal (%s). {key:journal} reads it."
 msgstr ""
 
-#: scripts/state/game_state.gd:1580
+#: scripts/state/game_state.gd:1615
 msgid "+%d XP for the way down."
 msgstr ""
 
-#: scripts/state/game_state.gd:1593
+#: scripts/state/game_state.gd:1628
 msgid "Behind the throne, a stair goes on down into the dark: the Deep Hunt."
 msgstr ""
 
-#: scripts/state/game_state.gd:1597
+#: scripts/state/game_state.gd:1632
 msgid "A deeper way opens: %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1610
+#: scripts/state/game_state.gd:1645
 msgid "Depth %d of the Deep Hunt is cleared!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1619
+#: scripts/state/game_state.gd:1654
 msgid "The deepest yet. Its hoard: %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1625
+#: scripts/state/game_state.gd:1660
 msgid "depth %d of the Deep Hunt"
 msgstr ""
 
-#: scripts/state/game_state.gd:1627
+#: scripts/state/game_state.gd:1662
 msgid "A hole into the dark opens beside the way up: depth %d waits below."
 msgstr ""
 
-#: scripts/state/game_state.gd:1646
+#: scripts/state/game_state.gd:1681
 msgid "Mastery: %s Slayer %s. +%d%% damage against %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1672
+#: scripts/state/game_state.gd:1707
 msgid "The chest bares its teeth — a mimic!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1678
+#: scripts/state/game_state.gd:1713
 msgid "Something glitters on the road: %d gold."
 msgstr ""
 
-#: scripts/state/game_state.gd:1679
+#: scripts/state/game_state.gd:1714
 msgid "The chest holds %d gold."
 msgstr ""
 
-#: scripts/state/game_state.gd:1688
+#: scripts/state/game_state.gd:1723
 msgid "Too heavy to carry. Lighten the pack and come back."
 msgstr ""
 
-#: scripts/state/game_state.gd:1694
+#: scripts/state/game_state.gd:1729
 msgid "The chest holds %s!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1699
+#: scripts/state/game_state.gd:1734
 msgid "You gather %dx %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1700
+#: scripts/state/game_state.gd:1735
 msgid "The chest holds %dx %s."
 msgstr ""
 
@@ -10780,84 +10848,84 @@ msgstr ""
 msgid "Hilda reforges it: %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:502
+#: scripts/state/game_state.gd:507
 msgid "%s reached %d!"
 msgstr ""
 
-#: scripts/state/game_state.gd:512
+#: scripts/state/game_state.gd:517
 msgid "The innkeeper nods. You are already well rested."
 msgstr ""
 
-#: scripts/state/game_state.gd:514
+#: scripts/state/game_state.gd:519
 msgid "No coin, no bed: a night costs %d gold."
 msgstr ""
 
-#: scripts/state/game_state.gd:519
+#: scripts/state/game_state.gd:524
 msgid "You rest at the inn and wake fully restored. -%d gold."
 msgstr ""
 
-#: scripts/state/game_state.gd:534
+#: scripts/state/game_state.gd:540
+msgid "%s: commissioned. %s"
+msgstr ""
+
+#: scripts/state/game_state.gd:561
 msgid "%s: built. Walk outside and see."
 msgstr ""
 
-#: scripts/state/game_state.gd:540
+#: scripts/state/game_state.gd:567
 msgid "%s: built - and Pixelheim is a %s now."
 msgstr ""
 
-#: scripts/state/game_state.gd:727
+#: scripts/state/game_state.gd:754
 msgid "The prize is yours: +%d gold and %d %ss!"
 msgstr ""
 
-#: scripts/state/game_state.gd:817
+#: scripts/state/game_state.gd:844
 msgid "Quest accepted: %s. %s"
 msgstr ""
 
-#: scripts/state/game_state.gd:841
+#: scripts/state/game_state.gd:868
 msgid "+%d gold"
 msgstr ""
 
-#: scripts/state/game_state.gd:842
+#: scripts/state/game_state.gd:869
 msgid "+%d XP"
 msgstr ""
 
-#: scripts/state/game_state.gd:843
+#: scripts/state/game_state.gd:870
 msgid "Quest complete: %s. %s. “%s”"
 msgstr ""
 
-#: scripts/state/game_state.gd:861
+#: scripts/state/game_state.gd:888
 msgid "The town is not ready for me yet."
 msgstr ""
 
-#: scripts/state/game_state.gd:866
+#: scripts/state/game_state.gd:893
 msgid "Iva's hands glow warm. Fully healed, free of charge."
 msgstr ""
 
-#: scripts/state/game_state.gd:869
+#: scripts/state/game_state.gd:896
 msgid " She tucks %d healing potion%s in your pack."
 msgstr ""
 
-#: scripts/state/game_state.gd:874
+#: scripts/state/game_state.gd:901
 msgid "Loras plays you a marching song%s. Your next hunt strikes truer. (+%d%% crit)"
 msgstr ""
 
-#: scripts/state/game_state.gd:875
+#: scripts/state/game_state.gd:902
 msgid " on his war-horn"
 msgstr ""
 
-#: scripts/state/game_state.gd:898
+#: scripts/state/game_state.gd:925
 msgid "For sale: this house. The deed costs %d gold."
 msgstr ""
 
-#: scripts/state/game_state.gd:903
+#: scripts/state/game_state.gd:930
 msgid "The deed is yours. Welcome home."
 msgstr ""
 
-#: scripts/state/game_state.gd:915
+#: scripts/state/game_state.gd:942
 msgid "The %s deed is signed. Your house grew while you were out."
-msgstr ""
-
-#: scripts/state/game_state.gd:982
-msgid "The nook bubbles: 2x %s became %s."
 msgstr ""
 
 #: scripts/state/hunts.gd:123
@@ -11112,67 +11180,67 @@ msgstr ""
 msgid "Every project is built. Pixelheim stands at its full height."
 msgstr ""
 
-#: scripts/town_hall_screen.gd:27
+#: scripts/town_hall_screen.gd:26
+msgid "Commissions: costly works the town would build in your honour, each a lasting edge."
+msgstr ""
+
+#: scripts/town_hall_screen.gd:30
 msgid "Building the %s"
 msgstr ""
 
-#: scripts/town_hall_screen.gd:30
+#: scripts/town_hall_screen.gd:33
 msgid "Done:"
 msgstr ""
 
-#: scripts/town_hall_screen.gd:30
+#: scripts/town_hall_screen.gd:33
 msgid "Needed:"
 msgstr ""
 
-#: scripts/town_hall_screen.gd:31
+#: scripts/town_hall_screen.gd:34
 msgid "When it's done: %s."
 msgstr ""
 
-#: scripts/town_hall_screen.gd:49
+#: scripts/town_hall_screen.gd:52
 msgid "Townsfolk"
 msgstr ""
 
-#: scripts/town_hall_screen.gd:65
+#: scripts/town_hall_screen.gd:68
 msgid "Holdings"
 msgstr ""
 
-#: scripts/town_hall_screen.gd:69
+#: scripts/town_hall_screen.gd:72
 msgid "- %s: %dg earned, %dg in the till (%dg a day)"
 msgstr ""
 
-#: scripts/town_hall_screen.gd:87
-msgid "Pixelheim stands at its full height."
-msgstr ""
-
-#: scripts/town_hall_screen.gd:88
-msgid "There is nothing left to build."
+#: scripts/town_hall_screen.gd:97
+msgid "Already commissioned."
 msgstr ""
 
 #: scripts/ui_style.gd:452
 msgid "Arrows"
 msgstr ""
 
-#: scripts/world.gd:1315
+#: scripts/world.gd:1319
 msgid "Five lanterns on the square, one for each of the five who climbed. Tonight the %s remembers them - and %s."
 msgstr ""
 
-#: scripts/world.gd:1316
+#: scripts/world.gd:1320
 msgid "Pixelheim, a %s raised from the ashes. Tonight it celebrates %s."
 msgstr ""
 
-#: scripts/world.gd:1402
+#: scripts/world.gd:1406
 msgid "%s: built."
 msgstr ""
 
-#: scripts/world.gd:1406
+#: scripts/world.gd:1410
 msgid "Pixelheim is a %s now."
 msgstr ""
 
-#: scripts/world.gd:1411
+#: scripts/world.gd:1415
 msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
 msgstr ""
 
-#: scripts/world.gd:1668
+#: scripts/world.gd:1672
 msgid "Next"
 msgstr ""
 
@@ -11200,6 +11268,6 @@ msgstr ""
 msgid "Quest complete"
 msgstr ""
 
-#: scripts/world.gd:875
+#: scripts/world.gd:879
 msgid "Only cinders where the house stood. The board on the square can change that."
 msgstr ""

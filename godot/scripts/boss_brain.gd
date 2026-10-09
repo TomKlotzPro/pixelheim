@@ -109,6 +109,9 @@ func _summon(attack: Dictionary) -> void:
 		# The dead rise at their master's level (PIX-186), not the floor's lift.
 		var add: Node = world.spawn_enemy(pattern["summon"], spot, "", "", false, false, cell, Bestiary.lift_to(pattern["summon"], int(enemy.fighter.get("level", Bestiary.monster(enemy.fighter["id"])["level"]))))
 		add.add_to_group("summoned")
+		# The dead a boss raises pay nothing (PIX-180): no farm in a long fight.
+		add.fighter["gold"] = 0
+		add.fighter["xp"] = 0
 		world.appear(add)
 		add.notice()
 	enemy.mode = "chase"
