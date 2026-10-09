@@ -2149,6 +2149,10 @@ msgid "Clear Ink"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Clear Map"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Clear Waters"
 msgstr ""
 
@@ -4554,6 +4558,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The map key is rebindable like everything else"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The map screen reads cleanly: its legend sits under the map, the HUD steps aside while it's open, and keys like the comma show as their mark instead of their name"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -11776,27 +11784,27 @@ msgstr ""
 msgid "chapter"
 msgstr ""
 
-#: scripts/keycap.gd:13
+#: scripts/keycap.gd:17
 msgid "PgDn"
 msgstr ""
 
-#: scripts/keycap.gd:13
+#: scripts/keycap.gd:17
 msgid "PgUp"
 msgstr ""
 
-#: scripts/keycap.gd:64
+#: scripts/keycap.gd:68
 msgid "Down"
 msgstr ""
 
-#: scripts/keycap.gd:64
+#: scripts/keycap.gd:68
 msgid "Left"
 msgstr ""
 
-#: scripts/keycap.gd:64
+#: scripts/keycap.gd:68
 msgid "Right"
 msgstr ""
 
-#: scripts/keycap.gd:64
+#: scripts/keycap.gd:68
 msgid "Up"
 msgstr ""
 
@@ -11808,35 +11816,35 @@ msgstr ""
 msgid "{key:move_up}/{key:move_down}  choose      {key:interact}  %s      Esc  close"
 msgstr ""
 
-#: scripts/map_screen.gd:190
+#: scripts/map_screen.gd:199
 msgid "You"
 msgstr ""
 
-#: scripts/map_screen.gd:191
+#: scripts/map_screen.gd:200
 msgid "Waypoint"
 msgstr ""
 
-#: scripts/map_screen.gd:193
+#: scripts/map_screen.gd:202
 msgid "Lair"
 msgstr ""
 
-#: scripts/map_screen.gd:195
+#: scripts/map_screen.gd:204
 msgid "Quest"
 msgstr ""
 
-#: scripts/map_screen.gd:197
+#: scripts/map_screen.gd:206
 msgid "Goal"
 msgstr ""
 
-#: scripts/map_screen.gd:62
+#: scripts/map_screen.gd:68
 msgid "Waypoints"
 msgstr ""
 
-#: scripts/map_screen.gd:78
+#: scripts/map_screen.gd:84
 msgid "Unstaffed: no one keeps this post yet"
 msgstr ""
 
-#: scripts/map_screen.gd:90
+#: scripts/map_screen.gd:96
 msgid "Nothing discovered yet. Waypoints you find on your travels show up here."
 msgstr ""
 

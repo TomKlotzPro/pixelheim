@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.185.0",
+      "date": "2026-10-10",
+      "codename": "Clear Map",
+      "notes": [
+        "The map screen reads cleanly: its legend sits under the map, the HUD steps aside while it's open, and keys like the comma show as their mark instead of their name"
+      ]
+    },
+    {
       "version": "0.184.0",
       "date": "2026-10-10",
       "codename": "Survivor",

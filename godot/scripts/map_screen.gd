@@ -37,6 +37,12 @@ func _open() -> void:
 	closing_actions = [&"map"]
 	layer = 5
 	dim()
+	# The HUD steps aside while the map is open (PIX-265): its dock read
+	# through the dim under the legend and the keys.
+	var hud: Variant = world.get("hud") if world != null else null
+	if hud != null and hud.root != null:
+		hud.root.visible = false
+		tree_exiting.connect(func() -> void: hud.root.visible = true)
 	title = UiStyle.title(Catalog.place_name(world.map.id), Vector2(64, UiStyle.TITLE_AT.y))
 	add_child(title)
 
@@ -94,7 +100,9 @@ func _open() -> void:
 
 	legend = HBoxContainer.new()
 	legend.add_theme_constant_override("separation", 16)
-	legend.position = Vector2(64, 630)
+	# Under the map's frame, wherever its page ends (PIX-265: at y 630 it
+	# sat over the dock).
+	legend.position = Vector2(64, 0)
 	add_child(legend)
 	selected = Waypoints.first_on(usable, world.map.id)
 	_show()
@@ -155,8 +163,9 @@ func _show() -> void:
 	# Whole pixels per tile, as large as the window allows.
 	var tile_px: int = clampi(mini(int(MAP_BOX.x / map.size.x), int(MAP_BOX.y / map.size.y)), 2, 12)
 	painting.paint(map, tile_px, home, destination)
-	# A smaller page shrinks the window round it.
+	# A smaller page shrinks the window round it, and the legend follows it.
 	frame.reset_size()
+	legend.position.y = frame.position.y + frame.size.y + 10
 	title.text = Catalog.place_name(map.id)
 	_fill_legend(map, home)
 	_set_footer()
