@@ -13328,76 +13328,76 @@ msgstr ""
 msgid "Arrows"
 msgstr ""
 
-#: scripts/world.gd:1024
-msgid "Only cinders where the house stood. The board on the square can change that."
-msgstr ""
-
-#: scripts/world.gd:1029
-msgid "The deed costs %d gold. {key:interact} again to sign it."
-msgstr ""
-
-#: scripts/world.gd:1113
+#: scripts/world.gd:1006
 msgid "A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it."
 msgstr ""
 
-#: scripts/world.gd:1494
+#: scripts/world.gd:1360
 msgid "Five lanterns on the square, one for each of the five who climbed. Tonight the %s remembers them - and %s."
 msgstr ""
 
-#: scripts/world.gd:1495
+#: scripts/world.gd:1361
 msgid "Pixelheim, a %s raised from the ashes. Tonight it celebrates %s."
 msgstr ""
 
-#: scripts/world.gd:1581
+#: scripts/world.gd:1447
 msgid "%s: built."
 msgstr ""
 
-#: scripts/world.gd:1585
+#: scripts/world.gd:1451
 msgid "Pixelheim is a %s now."
 msgstr ""
 
-#: scripts/world.gd:1591
+#: scripts/world.gd:1457
 msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
 msgstr ""
 
-#: scripts/world.gd:1693
+#: scripts/world.gd:1559
 msgid "%s  %d:%02d"
 msgstr ""
 
-#: scripts/world.gd:1924
+#: scripts/world.gd:1793
 msgid "Next"
 msgstr ""
 
-#: scripts/world.gd:316
+#: scripts/world.gd:315
 msgid "The pack is scattered. Another comes once you've walked a good way, or after a night's rest."
 msgstr ""
 
-#: scripts/world.gd:492
+#: scripts/world.gd:432
 msgid "No map reaches this deep."
 msgstr ""
 
-#: scripts/world.gd:576
-msgid "LEVEL UP"
+#: scripts/world.gd:691
+msgid "{epithet} {name}"
 msgstr ""
 
-#: scripts/world.gd:73
+#: scripts/world.gd:75
 msgid "Level up"
 msgstr ""
 
-#: scripts/world.gd:73
+#: scripts/world.gd:75
 msgid "Mastery"
 msgstr ""
 
-#: scripts/world.gd:73
+#: scripts/world.gd:75
 msgid "Quest accepted"
 msgstr ""
 
-#: scripts/world.gd:73
+#: scripts/world.gd:75
 msgid "Quest complete"
 msgstr ""
 
-#: scripts/world.gd:798
-msgid "{epithet} {name}"
+#: scripts/world.gd:917
+msgid "Only cinders where the house stood. The board on the square can change that."
+msgstr ""
+
+#: scripts/world.gd:922
+msgid "The deed costs %d gold. {key:interact} again to sign it."
+msgstr ""
+
+#: scripts/world_fx.gd:108
+msgid "LEVEL UP"
 msgstr ""
 
 #: tools/i18n.py
