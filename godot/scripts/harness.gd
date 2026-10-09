@@ -288,7 +288,7 @@ func _run_test_harness() -> void:
 		# A hero of that level: the rank's title, aura and presence.
 		GameState.hero.level = int(args[level_index + 1])
 		world.player.refresh_rank()
-		world._on_hp_changed(GameState.hero.hp, int(GameState.hero.stats["maxHp"]))
+		world.hud.on_hp_changed(GameState.hero.hp, int(GameState.hero.stats["maxHp"]))
 	if args.has("rankup"):
 		# Enough XP to cross into the next rank: the ascension plays.
 		var hero := GameState.hero
@@ -418,7 +418,7 @@ func _run_test_harness() -> void:
 		await get_tree().create_timer(0.3).timeout
 	if args.has("dockmenu"):
 		# The dock's menu of screens, opened as its button would.
-		world.dock._toggle_menu()
+		world.hud.dock._toggle_menu()
 		await get_tree().create_timer(0.2).timeout
 	if args.has("lineup"):
 		# Every hero role, villager and monster sheet, walking down then right.

@@ -13328,13 +13328,9 @@ msgstr "COMMANDÉ"
 msgid "Arrows"
 msgstr "Flèches"
 
-#: scripts/world.gd:308
+#: scripts/world.gd:289
 msgid "No map reaches this deep."
 msgstr "Aucune carte ne va aussi profond."
-
-#: scripts/world.gd:642
-msgid "Next"
-msgstr "Ensuite"
 
 #: scripts/world_delve.gd:40
 msgid "{epithet} {name}"
@@ -13347,6 +13343,10 @@ msgstr "La meute est dispersée. Une autre reviendra quand vous aurez bien march
 #: scripts/world_fx.gd:108
 msgid "LEVEL UP"
 msgstr "NIVEAU SUPÉRIEUR"
+
+#: scripts/world_hud.gd:75
+msgid "Next"
+msgstr "Ensuite"
 
 #: scripts/world_interaction.gd:154
 msgid "A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it."

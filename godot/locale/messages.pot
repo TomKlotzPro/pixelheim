@@ -13328,12 +13328,8 @@ msgstr ""
 msgid "Arrows"
 msgstr ""
 
-#: scripts/world.gd:308
+#: scripts/world.gd:289
 msgid "No map reaches this deep."
-msgstr ""
-
-#: scripts/world.gd:642
-msgid "Next"
 msgstr ""
 
 #: scripts/world_delve.gd:40
@@ -13346,6 +13342,10 @@ msgstr ""
 
 #: scripts/world_fx.gd:108
 msgid "LEVEL UP"
+msgstr ""
+
+#: scripts/world_hud.gd:75
+msgid "Next"
 msgstr ""
 
 #: scripts/world_interaction.gd:154

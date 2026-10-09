@@ -114,7 +114,7 @@ func interact() -> void:
 			_open_shop()
 		elif beside["npc"]["id"] == "settler_mirelle" and GameState.is_settled("settler_mirelle") and not quest_word:
 			world.add_child(preload("res://scripts/bank_screen.gd").new())
-			world.hint("bank")
+			world.hud.hint("bank")
 		else:
 			talk(beside["npc"])
 		return

@@ -285,7 +285,7 @@ func run_clocks(delta: float) -> void:
 				if chest["id"] == chest_id:
 					world.view.chest_sprites[chest_id].texture = MapView.treasure_texture(chest, false)
 	var running := GameState.timed_run()
-	if running.is_empty() or world.hud_root == null:
+	if running.is_empty() or world.hud.root == null:
 		if run_clock != null:
 			run_clock.queue_free()
 			run_clock = null
@@ -295,7 +295,7 @@ func run_clocks(delta: float) -> void:
 		run_clock.add_theme_stylebox_override("panel", UiStyle.plate(12))
 		run_clock.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		run_clock.add_child(UiStyle.strong("", 16, UiStyle.CREAM))
-		world.hud_root.add_child(run_clock)
+		world.hud.root.add_child(run_clock)
 	var left := ceili(float(running["left"]))
 	var shown: Label = run_clock.get_child(0)
 	shown.text = Text.t("%s  %d:%02d") % [running["quest"]["timed"]["clock"], left / 60, left % 60]

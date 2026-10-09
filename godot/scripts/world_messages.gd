@@ -171,7 +171,7 @@ func _show_message(text: String) -> void:
 	message_tag.visible = tag != ""
 	# The first quest taken introduces the journal (PIX-202).
 	if tag == Text.t("Quest accepted"):
-		world.hint("journal")
+		world.hud.hint("journal")
 	# A quest done is a victory, heard (PIX-211); one taken, a yes (PIX-212).
 	if tag == Text.t("Quest complete"):
 		Sound.play("victory")

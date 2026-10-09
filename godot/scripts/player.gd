@@ -160,7 +160,7 @@ func _physics_process(delta: float) -> void:
 	if input == Vector2.ZERO:
 		input = Input.get_vector("move_left", "move_right", "move_up", "move_down")
 		# The pad steers the dock's menu while it's open (PIX-215), not the hero.
-		if world.dock != null and world.dock.steering():
+		if world.hud.dock != null and world.hud.dock.steering():
 			input = Vector2.ZERO
 	# Wren's riders taught the hero to travel light (PIX-157): above ground only.
 	var pace := SPEED * (1.0 + (GameState.holdings.walk_bonus() if world.map.floor_level == 0 else 0.0))
