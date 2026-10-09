@@ -157,6 +157,8 @@ func hunted(named_id: String) -> Array[String]:
 		return []
 	var entry := Hunts.named(named_id)
 	owner.progression.hunted.append(named_id)
+	# A bounty followed is done with (PIX-239): the story leads again.
+	Journal.let_go(owner.progression)
 	var lines: Array[String] = []
 	if int(entry["bounty"]) > 0:
 		owner.pack.gold += int(entry["bounty"])

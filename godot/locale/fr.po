@@ -11700,101 +11700,85 @@ msgstr "Buff"
 msgid "Buffs&Debuffs"
 msgstr "Buffs&Debuffs"
 
-#: scripts/journal_screen.gd:10
+#: scripts/journal_screen.gd:152
+msgid "follow"
+msgstr "suivre"
+
+#: scripts/journal_screen.gd:154
+msgid "turn"
+msgstr "tourner"
+
+#: scripts/journal_screen.gd:209
+msgid "Done: %d quests, the latest %s."
+msgstr "Terminées : %d quêtes, les dernières : %s."
+
+#: scripts/journal_screen.gd:22
 msgid "Feats"
 msgstr "Hauts faits"
 
-#: scripts/journal_screen.gd:10
-msgid "Main"
-msgstr "Principales"
+#: scripts/journal_screen.gd:22
+msgid "Liane's pages"
+msgstr "Pages de Liane"
 
-#: scripts/journal_screen.gd:10
-msgid "Side"
-msgstr "Annexes"
+#: scripts/journal_screen.gd:22
+msgid "Quests"
+msgstr "Quêtes"
 
-#: scripts/journal_screen.gd:10
-msgid "Story"
-msgstr "Histoire"
-
-#: scripts/journal_screen.gd:103
-msgid "Done"
-msgstr "Accompli"
-
-#: scripts/journal_screen.gd:105
-msgid "Brings home: %s"
-msgstr "Rapporte : %s"
-
-#: scripts/journal_screen.gd:122
+#: scripts/journal_screen.gd:229
 msgid "The story is told"
 msgstr "L'histoire est contée"
 
-#: scripts/journal_screen.gd:125
-msgid "Chapter %d: %s"
-msgstr "Chapitre %d : %s"
+#: scripts/journal_screen.gd:232
+msgid "No quests taken yet. Someone with a ! over their head has one for you."
+msgstr "Aucune quête en cours. Ceux qui ont un « ! » au-dessus de la tête en ont une pour vous."
 
-#: scripts/journal_screen.gd:134
-msgid "%s (optional)"
-msgstr "%s (facultatif)"
-
-#: scripts/journal_screen.gd:138
-msgid "DONE"
-msgstr "FAIT"
-
-#: scripts/journal_screen.gd:138
-msgid "NEXT"
-msgstr "SUIVANT"
-
-#: scripts/journal_screen.gd:160
-msgid "No side promises open. The map marks who has something to ask."
-msgstr "Aucune promesse annexe en cours. La carte indique qui a quelque chose à demander."
-
-#: scripts/journal_screen.gd:162
-msgid "Side promises - %d open"
-msgstr "Promesses annexes - %d en cours"
-
-#: scripts/journal_screen.gd:164
-msgid "   (W/S to scroll)"
-msgstr "   (W/S pour défiler)"
-
-#: scripts/journal_screen.gd:175
-msgid "Kept: %d promises, the latest %s."
-msgstr "Promesses tenues : %d, les dernières : %s."
-
-#: scripts/journal_screen.gd:182
+#: scripts/journal_screen.gd:236
 msgid "The Deep Hunt: deepest depth %d"
 msgstr "La Traque des Profondeurs : record de profondeur %d"
 
-#: scripts/journal_screen.gd:185
+#: scripts/journal_screen.gd:240
 msgid "No notices on the bounty board yet. The first goes up when %s."
 msgstr "Aucun avis au tableau des primes pour l'instant. Le premier s'affiche quand %s."
 
-#: scripts/journal_screen.gd:196
-msgid "Its lair: %s. %s."
-msgstr "Son repaire : %s. %s."
+#: scripts/journal_screen.gd:27
+msgid "Bounty you follow"
+msgstr "Prime suivie"
 
-#: scripts/journal_screen.gd:207
+#: scripts/journal_screen.gd:27
+msgid "Main story"
+msgstr "Histoire principale"
+
+#: scripts/journal_screen.gd:27
+msgid "Quest you follow"
+msgstr "Quête suivie"
+
+#: scripts/journal_screen.gd:275
+msgid "FOLLOWING"
+msgstr "SUIVIE"
+
+#: scripts/journal_screen.gd:279
+msgid "READY"
+msgstr "PRÊTE"
+
+#: scripts/journal_screen.gd:401
+msgid "Next"
+msgstr "À suivre"
+
+#: scripts/journal_screen.gd:439
 msgid "No pages yet. Someone climbed this mountain before you - and wrote it down."
 msgstr "Aucune page pour l'instant. Quelqu'un a gravi cette montagne avant vous - et l'a consigné par écrit."
 
-#: scripts/journal_screen.gd:209
+#: scripts/journal_screen.gd:441
 msgid "Liane's journal - %d of %d pages"
 msgstr "Journal de Liane - %d pages sur %d"
 
-#: scripts/journal_screen.gd:211
-msgid "   (W/S to turn)"
-msgstr "   (W/S pour feuilleter)"
+#: scripts/journal_screen.gd:482
+msgid "Done"
+msgstr "Accompli"
 
-#: scripts/journal_screen.gd:230
-msgid "   READY - see %s"
-msgstr "   PRÊTE - allez voir %s"
-
-#: scripts/journal_screen.gd:39
-msgid "A promise is a route marked on the heart."
-msgstr "Une promesse est une route tracée sur le cœur."
-
-#: scripts/journal_screen.gd:40
-msgid "chapter"
-msgstr "chapitre"
+#: scripts/journal_screen.gd:484
+msgid "Brings home: %s"
+msgstr "Rapporte : %s"
 
 #: scripts/keycap.gd:17
 msgid "PgDn"
@@ -12668,7 +12652,11 @@ msgstr "Le poison"
 msgid "The burn"
 msgstr "La brûlure"
 
-#: scripts/state/bearing.gd:67
+#: scripts/state/bearing.gd:100
+msgid "Slay %s in its lair"
+msgstr "Abattez %s dans son repaire"
+
+#: scripts/state/bearing.gd:72
 msgid "Hand it in to %s."
 msgstr "Remettez-la à %s."
 
@@ -12900,6 +12888,18 @@ msgstr "{item} {rarity}"
 msgid "{item} {affix}"
 msgstr "{item} {affix}"
 
+#: scripts/state/journal.gd:14
+msgid "Town and people"
+msgstr "Le bourg et ses gens"
+
+#: scripts/state/journal.gd:49
+msgid "Its lair: %s. %s."
+msgstr "Son repaire : %s. %s."
+
+#: scripts/state/journal.gd:61
+msgid "Chapter %d: %s"
+msgstr "Chapitre %d : %s"
+
 #: scripts/state/main_quest.gd:86
 msgid "Next: %s"
 msgstr "Ensuite : %s"
@@ -12920,31 +12920,31 @@ msgstr "Quête acceptée : %s. %s"
 msgid "%s: they wait on your answer."
 msgstr "%s : on attend votre réponse."
 
-#: scripts/state/questing.gd:161
+#: scripts/state/questing.gd:163
 msgid "+%d gold"
 msgstr "+%d or"
 
-#: scripts/state/questing.gd:162
+#: scripts/state/questing.gd:164
 msgid "+%d XP"
 msgstr "+%d XP"
 
-#: scripts/state/questing.gd:163
+#: scripts/state/questing.gd:165
 msgid "Quest complete: %s. %s. “%s”"
 msgstr "Quête terminée : %s. %s. « %s »"
 
-#: scripts/state/questing.gd:165
+#: scripts/state/questing.gd:167
 msgid "%s: %d/%d %s."
 msgstr "%s : %d/%d %s."
 
-#: scripts/state/questing.gd:284
+#: scripts/state/questing.gd:287
 msgid "%s: ready to hand in to %s."
 msgstr "%s : prêt à remettre à %s."
 
-#: scripts/state/questing.gd:336
+#: scripts/state/questing.gd:339
 msgid "That uses what %s needs (%s). Do it again to go ahead."
 msgstr "Cela entame ce que demande « %s » (%s). Recommencez pour confirmer."
 
-#: scripts/state/questing.gd:347
+#: scripts/state/questing.gd:350
 msgid "A feat done: %s. The %s is yours, for the shelf at home."
 msgstr "Un haut fait accompli : %s. La %s est à vous, pour l'étagère de la maison."
 
@@ -13068,115 +13068,115 @@ msgstr "Cueillette : niveau %d !"
 msgid "Mastery: %s Slayer %s. +%d%% damage against %s."
 msgstr "Maîtrise : %s, Tueur %s. +%d%% de dégâts (%s)."
 
-#: scripts/state/spoils.gd:163
+#: scripts/state/spoils.gd:165
 msgid "The bounty on %s is yours: +%d gold."
 msgstr "La prime pour %s vous revient : +%d or."
 
-#: scripts/state/spoils.gd:175
+#: scripts/state/spoils.gd:177
 msgid "%s leaves you %s!"
 msgstr "%s vous laisse %s !"
 
-#: scripts/state/spoils.gd:192
+#: scripts/state/spoils.gd:194
 msgid "Level up: you are now level %d. +%d stat points and +%d skill point%s to spend."
 msgstr "Niveau supérieur : vous voici au niveau %d. +%d points de caractéristique et +%d point%s de compétence à dépenser."
 
-#: scripts/state/spoils.gd:241
+#: scripts/state/spoils.gd:243
 msgid "%s is cleared!"
 msgstr "Étage nettoyé : %s !"
 
-#: scripts/state/spoils.gd:246
+#: scripts/state/spoils.gd:248
 msgid "%d gold"
 msgstr "%d or"
 
-#: scripts/state/spoils.gd:255
+#: scripts/state/spoils.gd:257
 msgid "The floor's hoard: %s."
 msgstr "Le trésor de l'étage : %s."
 
-#: scripts/state/spoils.gd:259
+#: scripts/state/spoils.gd:261
 msgid "Among the bones: a page of an old journal (%s). {key:journal} reads it."
 msgstr "Parmi les os : une page d'un vieux journal (%s). {key:journal} pour la lire."
 
-#: scripts/state/spoils.gd:263
+#: scripts/state/spoils.gd:265
 msgid "+%d XP for the way down."
 msgstr "+%d XP pour la descente."
 
-#: scripts/state/spoils.gd:273
+#: scripts/state/spoils.gd:275
 msgid "the %s"
 msgstr "%s"
 
-#: scripts/state/spoils.gd:276
+#: scripts/state/spoils.gd:278
 msgid "Behind the throne, a stair goes on down into the dark: the Deep Hunt."
 msgstr "Derrière le trône, un escalier s'enfonce encore dans le noir : la Traque des Profondeurs."
 
-#: scripts/state/spoils.gd:280
+#: scripts/state/spoils.gd:282
 msgid "A deeper way opens: %s."
 msgstr "Un passage plus profond s'ouvre : %s."
 
-#: scripts/state/spoils.gd:293
+#: scripts/state/spoils.gd:295
 msgid "Depth %d of the Deep Hunt is cleared!"
 msgstr "Profondeur %d de la Traque des Profondeurs : nettoyée !"
 
-#: scripts/state/spoils.gd:302
+#: scripts/state/spoils.gd:304
 msgid "The deepest yet. Its hoard: %s."
 msgstr "Le plus profond jusqu'ici. Son trésor : %s."
 
-#: scripts/state/spoils.gd:308
+#: scripts/state/spoils.gd:310
 msgid "depth %d of the Deep Hunt"
 msgstr "la profondeur %d de la Traque des Profondeurs"
 
-#: scripts/state/spoils.gd:312
+#: scripts/state/spoils.gd:314
 msgid "A milestone: %d depths below the throne. The %s is yours, a trophy for the shelf at home."
 msgstr "Un jalon : %d profondeurs sous le trône. Le %s est à vous, un trophée pour l'étagère de la maison."
 
-#: scripts/state/spoils.gd:315
+#: scripts/state/spoils.gd:317
 msgid "A hole into the dark opens beside the way up: depth %d waits below."
 msgstr "Un trou s'ouvre sur le noir près de la montée : la profondeur %d attend en dessous."
 
-#: scripts/state/spoils.gd:329
+#: scripts/state/spoils.gd:331
 msgid "The chest bares its teeth — a mimic!"
 msgstr "Le coffre montre les dents — c'est une mimique !"
 
-#: scripts/state/spoils.gd:335
+#: scripts/state/spoils.gd:337
 msgid "Something glitters on the road: %d gold."
 msgstr "Quelque chose brille sur la route : %d or."
 
-#: scripts/state/spoils.gd:336
+#: scripts/state/spoils.gd:338
 msgid "The chest holds %d gold."
 msgstr "Le coffre contient %d or."
 
-#: scripts/state/spoils.gd:345
+#: scripts/state/spoils.gd:347
 msgid "Too heavy to carry. Lighten the pack and come back."
 msgstr "Trop lourd à porter. Allégez votre sac et revenez."
 
-#: scripts/state/spoils.gd:351
+#: scripts/state/spoils.gd:353
 msgid "The chest holds %s!"
 msgstr "Le coffre contient %s !"
 
-#: scripts/state/spoils.gd:356
+#: scripts/state/spoils.gd:358
 msgid "You gather %dx %s."
 msgstr "Vous récoltez %dx %s."
 
-#: scripts/state/spoils.gd:357
+#: scripts/state/spoils.gd:359
 msgid "The chest holds %dx %s."
 msgstr "Le coffre contient %dx %s."
 
-#: scripts/state/spoils.gd:379
+#: scripts/state/spoils.gd:381
 msgid "You gather %d %s%s."
 msgstr "Vous récoltez %d %s%s."
 
-#: scripts/state/spoils.gd:390
+#: scripts/state/spoils.gd:392
 msgid "Nothing's biting here yet. Try again in a while, or somewhere else."
 msgstr "Ça ne mord pas encore ici. Réessayez dans un moment, ou ailleurs."
 
-#: scripts/state/spoils.gd:394
+#: scripts/state/spoils.gd:396
 msgid "You cast, wait... and haul up an old boot."
 msgstr "Vous lancez, attendez... et remontez une vieille botte."
 
-#: scripts/state/spoils.gd:394
+#: scripts/state/spoils.gd:396
 msgid "You cast, wait... and land %s!"
 msgstr "Vous lancez, attendez... et ça mord : %s !"
 
-#: scripts/state/spoils.gd:396
+#: scripts/state/spoils.gd:398
 msgid " Foraging reached %d!"
 msgstr " Cueillette : niveau %d !"
 
@@ -13519,10 +13519,6 @@ msgstr "NIVEAU SUPÉRIEUR"
 #: scripts/world_hud.gd:212
 msgid "Boss slayer +%d%%  %d:%02d"
 msgstr "Tueur de boss +%d %%  %d:%02d"
-
-#: scripts/world_hud.gd:93
-msgid "Next"
-msgstr "Ensuite"
 
 #: scripts/world_interaction.gd:166
 msgid "A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it."

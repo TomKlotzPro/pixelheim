@@ -1,10 +1,10 @@
 class_name Bearing
 extends RefCounted
 ## Where the hero is headed, their bearing (PIX-239, PIX-240): the active quest - a side
-## quest the hero chose to follow (ProgressionState.tracked), or else the
-## main story's next step - as a title, one plain line for what to do now,
-## the place it's in, a map and a cell to point at when there's one, and how
-## far along it is. The line above the dock, the journal's top, the map
+## quest or a bounty the hero chose to follow in the journal
+## (ProgressionState.tracked), or else the main story's next step - as a
+## title, one plain line for what to do now, the place it's in, a map and a
+## cell to point at when there's one, and how far along it is. The line above the dock, the journal's top, the map
 ## screen and the arrow at the view's edge all say the same thing from here.
 ## Pure: everything it needs is passed in.
 
@@ -12,14 +12,19 @@ const NOWHERE := Vector2i(-1, -1)
 
 
 ## The active lead: {title, step, place, map_id, cell, who, progress,
-## quest_id, main} (`who`: the villager it's about, when it's a person), or {}
-## once the story is done and nothing is followed.
+## quest_id, named, main} (`who`: the villager it's about, when it's a
+## person; `named`: a followed bounty's named monster), or {} once the
+## story is done and nothing is followed.
 static func active(progression: ProgressionState, settlement: SettlementState, items: Dictionary) -> Dictionary:
 	if progression.tracked != "":
 		var quest := Quests.by_id(progression.tracked)
 		var entry: Dictionary = progression.quests.get(progression.tracked, {})
 		if not quest.is_empty() and not entry.is_empty() and not entry.get("done", false):
 			return of_quest(quest, progression, settlement, items)
+		# A notice on the bounty board, followed while its quarry lives.
+		var named := Hunts.named(progression.tracked)
+		if not named.is_empty() and Hunts.on_board(named) and Hunts.status(named, board_floors(progression), progression.hunted) == "wanted":
+			return of_bounty(named)
 	var step := MainQuest.next_step(progression, settlement)
 	return {} if step.is_empty() else of_step(step, progression, settlement, items)
 
@@ -89,8 +94,22 @@ static func of_quest(quest: Dictionary, progression: ProgressionState, settlemen
 	return lead
 
 
+## A bounty's lead (PIX-239): the named monster on the board's notice, slain
+## in its lair. Its bounty is paid where it falls: nothing to hand in.
+static func of_bounty(named: Dictionary) -> Dictionary:
+	var lead := _blank(String(named["name"]), Text.t("Slay %s in its lair") % Text.mid(String(named["name"])))
+	lead["named"] = named["id"]
+	_at_lair(lead, named)
+	return lead
+
+
+## The floors the bounty board counts (Hunts.board_floors), read off the save.
+static func board_floors(progression: ProgressionState) -> Array:
+	return Hunts.board_floors(progression.cleared_levels, Relics.found(progression), progression.deepest)
+
+
 static func _blank(title: String, step: String) -> Dictionary:
-	return {"title": title, "step": step, "place": "", "map_id": "", "cell": NOWHERE, "who": "", "progress": "", "quest_id": "", "main": false}
+	return {"title": title, "step": step, "place": "", "map_id": "", "cell": NOWHERE, "who": "", "progress": "", "quest_id": "", "named": "", "main": false}
 
 
 ## At `cell` of `map_id` (NOWHERE: somewhere on that map), named by its place.
@@ -183,14 +202,18 @@ static func _learn_doors() -> void:
 
 
 ## The line above the dock (PIX-239): the step, the place it's in when the
-## step doesn't already say it, and the count.
+## step doesn't already say it, and the count. A step that's a sentence
+## ("Hand it in to Bram.") loses its full stop before what follows it.
 static func line(lead: Dictionary) -> String:
 	if lead.is_empty():
 		return ""
 	var text := String(lead["step"])
 	var place := String(lead["place"])
+	var progress := String(lead["progress"])
+	if (place != "" and place not in text) or progress != "":
+		text = text.trim_suffix(".")
 	if place != "" and place not in text:
 		text += " - " + place
-	if String(lead["progress"]) != "":
-		text += " (%s)" % lead["progress"]
+	if progress != "":
+		text += " (%s)" % progress
 	return text

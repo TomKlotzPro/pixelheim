@@ -396,7 +396,8 @@ func _run_test_harness() -> void:
 	if flags.has("journal"):
 		# A few promises in hand: slimes half done, the cheese ready, the troll
 		# kept; Maren's relics asked for, the ladle won, the iron still out
-		# there (PIX-171). `--tab side|bounties|story` opens that chapter.
+		# there (PIX-171). `--tab pages|feats` opens that page (PIX-239);
+		# `--cleared 4` puts notices on the board for its bounties.
 		GameState.progression.quests.merge({
 			"slime_trouble": {"progress": 2, "done": false},
 			"cheese_run": {"progress": 0, "done": false},
@@ -732,6 +733,11 @@ func _run_test_harness() -> void:
 		if node.has_method("destination_id"):
 			var chosen: String = node.destination_id()
 			motion_report += " dest=%s" % (chosen if chosen != "" else "none")
+	# The quest or bounty followed (PIX-239), while the journal is open or
+	# one is followed: what the journal's E chose.
+	var tracked := GameState.progression.tracked
+	if open.has("journal_screen") or tracked != "":
+		motion_report += " tracked=%s" % (tracked if tracked != "" else "none")
 	print("screenshot saved; map=%s cell=%s hp=%d gold=%d save=%s%s draws=%d paused=%s open=%s night=%d mobs=%d" % [
 		world.map.id, world.player_cell, world.player.hp, GameState.pack.gold, GameState.world.map_id, GameState.world.cell,
 		Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME), get_tree().paused,
