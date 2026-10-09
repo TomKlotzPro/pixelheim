@@ -1741,6 +1741,10 @@ msgid "A dozen new items: bows, war hammers, wands, cloaks, tower shields..."
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A dungeon floor's patch grows once a day, somewhere new in its first hall"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A fall now costs at least a night at the inn, and no longer wakes the wilds: what you cleared stays cleared, and what beat you is still out there"
 msgstr ""
 
@@ -2345,6 +2349,10 @@ msgid "Each comes with a full 12-node skill tree, its own look palette, and a pr
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Each material grows a set number a day, so the rare ones stay rare: one Frost Lily, one Blackiron Ore and one Old Steel a day, their two homes taking turns"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Each region has its own air: heat shimmers over the Ash Fields as embers drift up, snow falls on the Frostgate and frost creeps in at the edges of the view, low fog rolls over the Mirefen and the marshes, and salt spray blows off the Saltmere coast"
 msgstr ""
 
@@ -2698,6 +2706,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Four roles: Warrior, Mage, Rogue, Cleric"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Fresh Ground"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4942,6 +4954,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Welcome Home"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "What grows on the ground moves from day to day: each morning a region grows its few patches in new spots, on bare ground away from villages, camps and roads"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -13200,23 +13216,23 @@ msgstr ""
 msgid "The chest holds %dx %s."
 msgstr ""
 
-#: scripts/state/spoils.gd:381
+#: scripts/state/spoils.gd:382
 msgid "You gather %d %s%s."
 msgstr ""
 
-#: scripts/state/spoils.gd:392
+#: scripts/state/spoils.gd:393
 msgid "Nothing's biting here yet. Try again in a while, or somewhere else."
 msgstr ""
 
-#: scripts/state/spoils.gd:396
+#: scripts/state/spoils.gd:397
 msgid "You cast, wait... and haul up an old boot."
 msgstr ""
 
-#: scripts/state/spoils.gd:396
+#: scripts/state/spoils.gd:397
 msgid "You cast, wait... and land %s!"
 msgstr ""
 
-#: scripts/state/spoils.gd:398
+#: scripts/state/spoils.gd:399
 msgid " Foraging reached %d!"
 msgstr ""
 
@@ -13524,11 +13540,11 @@ msgstr ""
 msgid "Arrows"
 msgstr ""
 
-#: scripts/world.gd:272
+#: scripts/world.gd:275
 msgid "%s bars your way: no leaving until the fight is over."
 msgstr ""
 
-#: scripts/world.gd:306
+#: scripts/world.gd:309
 msgid "No map reaches this deep."
 msgstr ""
 

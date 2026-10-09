@@ -51,6 +51,10 @@ var _night := -1
 ## Gathering patches (PIX-143): cell -> {"id", "item"}, and each one's sprite.
 var patches := {}
 var patch_sprites := {}
+## Where the map's wild patches may grow, shuffled (Gathering.decks), and
+## the day they were dealt for: a new day deals new ones (PIX-250).
+var patch_decks := {}
+var patch_day := -1
 ## Each wild pack's camp (PIX-142): cell -> {"kind": "tent"|"torch", "tile"},
 ## a tent in its region's colour behind its home and a torch beside it.
 var camps := {}
@@ -93,6 +97,9 @@ static func center(cell: Vector2i) -> Vector2:
 ## drawn; returns where the hero arrives (the map's spawn when `arrival` is
 ## now covered).
 func plan(arrival: Vector2i) -> Vector2i:
+	# Where patches may grow is read before anything is drawn over the map
+	# (PIX-250), so it's the same with or without the paid art.
+	patch_decks = Gathering.decks(data)
 	# Far off (the overworld's skyline) a town stays one Puny house icon.
 	var near := data.floor_level == 0 and data.id not in PunyTerrain.SKYLINE_MAPS
 	buildings = PunyTown.compose(data.grid) if near else {"pieces": {}, "decor": {}, "freed": []}
@@ -143,11 +150,10 @@ func plan(arrival: Vector2i) -> Vector2i:
 			camps[tent] = {"kind": "tent", "tile": TENTS["marsh"]}
 	for cell: Vector2i in camps:
 		data.covered[cell] = true
+	# Today's patches (PIX-250): a few dealt from each region's ground.
 	patches = {}
-	if data.floor_level == 0:
-		for spot: Dictionary in Gathering.spots_on(data.id):
-			var at := Vector2i(spot["x"], spot["y"])
-			patches[at] = {"id": spot["id"], "item": Gathering.material_at(data, at)}
+	patch_day = -1
+	deal_patches(Gathering.day_of(GameState.world.steps))
 	if not data.is_walkable(arrival):
 		arrival = data.spawn
 	solid_scatter = _solid_scatter(data, arrival)
@@ -689,8 +695,25 @@ func _add_patch_sprite(cell: Vector2i) -> void:
 	root.visible = Gathering.is_ready(GameState.world, patch["id"])
 
 
-## Patches that have grown back show again.
+## Deals day `day`'s wild patches (PIX-250), unless they're dealt already;
+## whether they changed.
+func deal_patches(day: int) -> bool:
+	if patch_decks.is_empty() or day == patch_day:
+		return false
+	patch_day = day
+	patches = Gathering.patches_on(patch_decks, day)
+	return true
+
+
+## Patches that have grown back show again; when the day turns while the
+## hero is here, yesterday's go and the new day's grow elsewhere (PIX-250).
 func refresh_patches() -> void:
+	if deal_patches(Gathering.day_of(GameState.world.steps)):
+		for spot_id: String in patch_sprites:
+			patch_sprites[spot_id].queue_free()
+		patch_sprites = {}
+		for cell: Vector2i in patches:
+			_add_patch_sprite(cell)
 	for spot_id: String in patch_sprites:
 		patch_sprites[spot_id].visible = Gathering.is_ready(GameState.world, spot_id)
 

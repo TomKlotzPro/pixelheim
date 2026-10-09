@@ -51,7 +51,9 @@ func enter_floor(level: int) -> void:
 					mob.remove_from_group("mobs")
 					mob.queue_free()
 			foes.spawn_named(hunted["id"], guardian["cell"])
-	world.view.add_patch(plan["patch"], Gathering.floor_spot_id(level), Gathering.floor_material(level))
+	# Somewhere else in the first hall each day (PIX-250).
+	var patch := Gathering.floor_patch(plan["patch_ground"], level, Gathering.day_of(GameState.world.steps))
+	world.view.add_patch(patch, Gathering.floor_spot_id(level), Gathering.floor_material(level))
 	var floor_def := Dungeons.floor_def(level)
 	world.messages.log_lines([String(floor_def["name"]) if Dungeons.is_deep(level) else Text.t("Floor %d: %s") % [level, floor_def["name"]], String(floor_def["description"])])
 	if not twist.is_empty():

@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.189.0",
+      "date": "2026-10-10",
+      "codename": "Fresh Ground",
+      "notes": [
+        "What grows on the ground moves from day to day: each morning a region grows its few patches in new spots, on bare ground away from villages, camps and roads",
+        "Each material grows a set number a day, so the rare ones stay rare: one Frost Lily, one Blackiron Ore and one Old Steel a day, their two homes taking turns",
+        "A dungeon floor's patch grows once a day, somewhere new in its first hall"
+      ]
+    },
+    {
       "version": "0.188.0",
       "date": "2026-10-10",
       "codename": "Running Scared",

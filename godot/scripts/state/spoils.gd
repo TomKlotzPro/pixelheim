@@ -369,7 +369,8 @@ func is_opened(chest: Dictionary) -> bool:
 
 
 ## Picks a gathering spot (PIX-143): its material, a second one as often as
-## foraging allows, foraging XP; the patch grows back after regrowSteps.
+## foraging allows, foraging XP; the patch stays picked until the next day
+## (PIX-250: Gathering.is_ready).
 ## Returns the log lines, none when there was nothing to pick.
 func gather(spot_id: String, item_id: String) -> Array[String]:
 	var lines: Array[String] = []

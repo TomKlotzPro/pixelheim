@@ -43,7 +43,9 @@ func test_packs_and_patches_stand_on_their_ground() -> void:
 			var at := Vector2i(int(spawn["x"]), int(spawn["y"]))
 			assert_true(map.is_walkable(at), "%s: pack %s" % [map_id, spawn["id"]])
 			assert_ne(map.region_at(at), "", "%s: pack %s has a region" % [map_id, spawn["id"]])
-		for spot: Dictionary in Gathering.spots_on(map_id):
-			var at := Vector2i(int(spot["x"]), int(spot["y"]))
-			assert_true(map.is_walkable(at), "%s: patch %s" % [map_id, spot["id"]])
-			assert_ne(Gathering.material_at(map, at), "", "%s: patch %s grows something" % [map_id, spot["id"]])
+		# Wherever a patch may grow (PIX-250: the days deal them from there).
+		var decks := Gathering.decks(map)
+		for region: String in decks:
+			for at: Vector2i in decks[region]:
+				assert_true(map.is_walkable(at), "%s: a %s patch at %s" % [map_id, region, at])
+				assert_ne(Gathering.material_at(map, at), "", "%s: a patch at %s grows something" % [map_id, at])

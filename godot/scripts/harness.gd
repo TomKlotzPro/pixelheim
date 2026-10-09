@@ -227,7 +227,8 @@ func _run_test_harness() -> void:
 			await get_tree().create_timer(0.2).timeout
 		world.player.scripted_dir = Vector2.ZERO
 	if flags.has("night"):
-		GameState.world.steps = 0.7 * DayNight.DAY_CYCLE_STEPS
+		# That day's night (`--day`'s, else the first's).
+		GameState.world.steps = (Gathering.day_of(GameState.world.steps) + 0.7) * DayNight.DAY_CYCLE_STEPS
 	if flags.has("overview"):
 		var view := get_viewport().get_visible_rect().size
 		var fit := minf(view.x / (world.map.size.x * world.TILE), view.y / (world.map.size.y * world.TILE))
@@ -262,7 +263,7 @@ func _run_test_harness() -> void:
 		await get_tree().create_timer(0.3).timeout
 	if flags.has("dusk"):
 		# Evening (PIX-159): the town's folk on the square.
-		GameState.world.steps = 0.5 * DayNight.DAY_CYCLE_STEPS
+		GameState.world.steps = (Gathering.day_of(GameState.world.steps) + 0.5) * DayNight.DAY_CYCLE_STEPS
 		world.folk.keep_hours(true)
 	if flags.has("ringtoss"):
 		world.add_child(preload("res://scripts/ring_toss_screen.gd").new())
@@ -732,6 +733,15 @@ func _run_test_harness() -> void:
 	# playing: the place's, as running is no fight.
 	if world.foes.fled > 0:
 		motion_report += " fled=%d music=%s" % [world.foes.fled, Sound.track]
+	# On `--day`, the day and its patches still to pick (PIX-250), by cell.
+	if flags.has("--day"):
+		var cells: Array = world.view.patches.keys().filter(func(cell: Vector2i) -> bool:
+			return Gathering.is_ready(GameState.world, world.view.patches[cell]["id"]))
+		cells.sort()
+		motion_report += " day=%d patches=%s" % [
+			Gathering.day_of(GameState.world.steps),
+			";".join(cells.map(func(cell: Vector2i) -> String: return "%d,%d" % [cell.x, cell.y])) if not cells.is_empty() else "none",
+		]
 	# The waypoint the map's list has chosen (PIX-241), while it's open.
 	for node in world.get_children():
 		if node.has_method("destination_id"):

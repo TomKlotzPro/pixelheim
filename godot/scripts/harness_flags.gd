@@ -29,6 +29,7 @@ const TABLE := [
 	{"flag": "--town-tier", "takes": "<n>", "does": "the village at that age (default the Hamlet the flows were written for; 0 is a new hero's Ashes)"},
 	{"flag": "--prologue", "takes": "<n>", "does": "the Night of Ash at its step n (harness runs skip it otherwise)"},
 	{"flag": "--house-tier", "takes": "<n>", "does": "the hero's house at that tier"},
+	{"flag": "--day", "takes": "<n>", "does": "the world's clock on the morning of day n: that day's patches (PIX-250) and weather; the report adds day= and patches="},
 	{"flag": "--map", "takes": "<id>", "does": "boot at that map's spawn, not where the save stands"},
 	{"flag": "title", "takes": "", "does": "the title over the world, as a launch shows it (with --keys, its menu walked)"},
 	{"flag": "--look", "takes": "<name>", "does": "the desktop renderer in another of the app's looks (DesktopLook.LOOKS, PIX-227)"},
