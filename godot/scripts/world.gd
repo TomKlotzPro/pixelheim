@@ -1864,6 +1864,8 @@ func _spawn_pack(data: MapData, spawn: Dictionary) -> void:
 
 func _build_hud() -> void:
 	var hud := CanvasLayer.new()
+	# Over the glow's layer (PIX-222: LightRig.GLOW_LAYER), so it never blooms.
+	hud.layer = 2
 	add_child(hud)
 	# Day/night tint sits under the HUD widgets, over the world.
 	sky_overlay = ColorRect.new()

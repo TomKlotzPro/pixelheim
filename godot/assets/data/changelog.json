@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.166.0",
+      "date": "2026-10-09",
+      "codename": "Glow",
+      "notes": [
+        "Bright things now glow in the dark: lamps, fires, torches, lit windows and spells bloom softly around themselves at night and underground, while the pixels stay crisp and daylight stays clear",
+        "Glow can be turned off in Options"
+      ]
+    },
+    {
       "version": "0.165.0",
       "date": "2026-10-09",
       "codename": "Light and Dark",

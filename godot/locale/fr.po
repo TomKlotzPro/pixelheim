@@ -1993,6 +1993,10 @@ msgid "Branches of Power"
 msgstr "Les branches du pouvoir"
 
 #: assets/data/changelog.json
+msgid "Bright things now glow in the dark: lamps, fires, torches, lit windows and spells bloom softly around themselves at night and underground, while the pixels stay crisp and daylight stays clear"
+msgstr "Ce qui brille rayonne désormais dans le noir : lampes, feux, torches, fenêtres éclairées et sorts s'auréolent doucement la nuit et sous terre, tandis que les pixels restent nets et le jour reste clair"
+
+#: assets/data/changelog.json
 msgid "Buildings grew wooden door plates - INN, SHOP and the rest hang over their doorways, readable from across the square"
 msgstr "Les bâtiments ont gagné des enseignes en bois - AUBERGE, BAZAR et les autres pendent au-dessus des portes, lisibles depuis l'autre bout de la place"
 
@@ -2595,6 +2599,14 @@ msgstr "DE L'OR QUI SERT : dès Forge 8, Hilda forge au-delà du plafond, jusq
 #: assets/data/changelog.json
 msgid "GREYHOLD: a new road leaves the east edge of the Ash Fields for Oskar's old fort on its hill - breached walls, a stone yard, his statue, and the keep where turncoats in red cloaks have made themselves at home"
 msgstr "GREYHOLD : une nouvelle route part de la lisière est des Champs de Cendres vers le vieux fort d'Oskar sur sa colline - murailles éventrées, une cour de pierre, sa statue, et le donjon où des renégats en capes rouges ont pris leurs aises"
+
+#: assets/data/changelog.json
+msgid "Glow"
+msgstr "Lueurs"
+
+#: assets/data/changelog.json
+msgid "Glow can be turned off in Options"
+msgstr "Les lueurs peuvent être désactivées dans les Options"
 
 #: assets/data/changelog.json
 msgid "Goals to Chase"
@@ -11604,19 +11616,19 @@ msgstr "Repaire"
 msgid "Quest"
 msgstr "Quête"
 
-#: scripts/options_screen.gd:111
+#: scripts/options_screen.gd:112
 msgid "System (%s)"
 msgstr "Système (%s)"
 
-#: scripts/options_screen.gd:151
+#: scripts/options_screen.gd:152
 msgid "%s already does %s. Choose another key."
 msgstr "%s sert déjà à : %s. Choisissez une autre touche."
 
-#: scripts/options_screen.gd:157
+#: scripts/options_screen.gd:158
 msgid "%s is now %s."
 msgstr "%s : désormais %s."
 
-#: scripts/options_screen.gd:188
+#: scripts/options_screen.gd:189
 msgid "Press the new key for %s (Esc keeps the old one)."
 msgstr "Appuyez sur la nouvelle touche pour %s (Esc garde l'ancienne)."
 
@@ -11624,7 +11636,7 @@ msgstr "Appuyez sur la nouvelle touche pour %s (Esc garde l'ancienne)."
 msgid "Options"
 msgstr "Options"
 
-#: scripts/options_screen.gd:219
+#: scripts/options_screen.gd:220
 msgid "Keys are back to the defaults."
 msgstr "Touches par défaut rétablies."
 
@@ -11692,19 +11704,19 @@ msgstr "Texte de lecture agrandi"
 msgid "Clear warnings"
 msgstr "Avertissements clairs"
 
-#: scripts/options_screen.gd:59
+#: scripts/options_screen.gd:60
 msgid "Hints"
 msgstr "Astuces"
 
-#: scripts/options_screen.gd:60
+#: scripts/options_screen.gd:61
 msgid "Controls"
 msgstr "Commandes"
 
-#: scripts/options_screen.gd:65
+#: scripts/options_screen.gd:66
 msgid "Press a key..."
 msgstr "Appuyez sur une touche..."
 
-#: scripts/options_screen.gd:68
+#: scripts/options_screen.gd:69
 msgid "Reset keys to defaults"
 msgstr "Rétablir les touches par défaut"
 
@@ -13256,7 +13268,7 @@ msgstr "Et aujourd'hui, on fait la fête : des étals sur la place, et un lanc
 msgid "%s  %d:%02d"
 msgstr "%s  %d:%02d"
 
-#: scripts/world.gd:1961
+#: scripts/world.gd:1963
 msgid "Next"
 msgstr "Ensuite"
 

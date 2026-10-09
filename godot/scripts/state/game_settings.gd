@@ -28,6 +28,8 @@ var pack_sort := "kind"
 ## hazard stripes, and the first-time hints (with the ones already given).
 var large_text := false
 var clear_warnings := false
+## Bright things bloom softly (PIX-222).
+var glow := true
 var hints := true
 var hints_seen: Array[String] = []
 ## The language the game speaks (PIX-195): a Text.LANGUAGES code, or ""
@@ -58,6 +60,7 @@ func load_file() -> void:
 	pack_sort = str(config.get_value(SECTION, "pack_sort", pack_sort))
 	large_text = config.get_value(SECTION, "large_text", large_text)
 	clear_warnings = config.get_value(SECTION, "clear_warnings", clear_warnings)
+	glow = config.get_value(SECTION, "glow", glow)
 	hints = config.get_value(SECTION, "hints", hints)
 	language = str(config.get_value(SECTION, "language", language))
 	hints_seen.assign(config.get_value(SECTION, "hints_seen", []))
@@ -84,6 +87,7 @@ func save_file() -> void:
 	config.set_value(SECTION, "pack_sort", pack_sort)
 	config.set_value(SECTION, "large_text", large_text)
 	config.set_value(SECTION, "clear_warnings", clear_warnings)
+	config.set_value(SECTION, "glow", glow)
 	config.set_value(SECTION, "language", language)
 	config.set_value(SECTION, "hints", hints)
 	config.set_value(SECTION, "hints_seen", hints_seen)

@@ -58,3 +58,22 @@ func test_the_worlds_words_stay_bright() -> void:
 	assert_true(label.use_parent_material, "and what's in it")
 	assert_eq(Lights.glow().blend_mode, CanvasItemMaterial.BLEND_MODE_ADD)
 	assert_eq(Lights.glow().light_mode, CanvasItemMaterial.LIGHT_MODE_UNSHADED, "a glow is added to the night, not darkened by it")
+
+
+## PIX-222: the glow sits between the world and the HUD, and can be turned off.
+func test_the_glow_sits_under_the_hud_and_can_be_turned_off() -> void:
+	assert_lt(LightRig.GLOW_LAYER, 2, "under the HUD's layer, so the HUD never blooms")
+	assert_eq(LightRig.GLOW_DAY, 0.0, "sunlit sand doesn't bloom")
+	assert_gt(LightRig.GLOW_NIGHT, 0.0)
+	var path := "user://test_glow_settings.cfg"
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+	var settings := GameSettings.new(path)
+	assert_true(settings.glow, "on unless turned off")
+	settings.glow = false
+	settings.save_file()
+	var again := GameSettings.new(path)
+	again.load_file()
+	assert_false(again.glow, "remembered")
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+	var shader := preload("res://shaders/bloom.gdshader")
+	assert_string_contains(shader.code, "hint_screen_texture", "it blooms what the world drew")

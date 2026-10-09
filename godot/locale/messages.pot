@@ -1993,6 +1993,10 @@ msgid "Branches of Power"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Bright things now glow in the dark: lamps, fires, torches, lit windows and spells bloom softly around themselves at night and underground, while the pixels stay crisp and daylight stays clear"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Buildings grew wooden door plates - INN, SHOP and the rest hang over their doorways, readable from across the square"
 msgstr ""
 
@@ -2594,6 +2598,14 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "GREYHOLD: a new road leaves the east edge of the Ash Fields for Oskar's old fort on its hill - breached walls, a stone yard, his statue, and the keep where turncoats in red cloaks have made themselves at home"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Glow"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Glow can be turned off in Options"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -11604,19 +11616,19 @@ msgstr ""
 msgid "Quest"
 msgstr ""
 
-#: scripts/options_screen.gd:111
+#: scripts/options_screen.gd:112
 msgid "System (%s)"
 msgstr ""
 
-#: scripts/options_screen.gd:151
+#: scripts/options_screen.gd:152
 msgid "%s already does %s. Choose another key."
 msgstr ""
 
-#: scripts/options_screen.gd:157
+#: scripts/options_screen.gd:158
 msgid "%s is now %s."
 msgstr ""
 
-#: scripts/options_screen.gd:188
+#: scripts/options_screen.gd:189
 msgid "Press the new key for %s (Esc keeps the old one)."
 msgstr ""
 
@@ -11624,7 +11636,7 @@ msgstr ""
 msgid "Options"
 msgstr ""
 
-#: scripts/options_screen.gd:219
+#: scripts/options_screen.gd:220
 msgid "Keys are back to the defaults."
 msgstr ""
 
@@ -11692,19 +11704,19 @@ msgstr ""
 msgid "Clear warnings"
 msgstr ""
 
-#: scripts/options_screen.gd:59
+#: scripts/options_screen.gd:60
 msgid "Hints"
 msgstr ""
 
-#: scripts/options_screen.gd:60
+#: scripts/options_screen.gd:61
 msgid "Controls"
 msgstr ""
 
-#: scripts/options_screen.gd:65
+#: scripts/options_screen.gd:66
 msgid "Press a key..."
 msgstr ""
 
-#: scripts/options_screen.gd:68
+#: scripts/options_screen.gd:69
 msgid "Reset keys to defaults"
 msgstr ""
 
@@ -13256,7 +13268,7 @@ msgstr ""
 msgid "%s  %d:%02d"
 msgstr ""
 
-#: scripts/world.gd:1961
+#: scripts/world.gd:1963
 msgid "Next"
 msgstr ""
 
