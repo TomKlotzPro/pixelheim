@@ -803,6 +803,16 @@ func enter_floor(level: int) -> void:
 			spawned.fighter["name"] = Text.t("Elite %s") % titled if foe["elite"] else titled
 		if replay:
 			spawned.fighter["gold"] = roundi(int(spawned.fighter["gold"]) * float(Bestiary._data()["deepHunt"]["replayGoldShare"]))
+	# A Deep Hunt named monster takes its depth's stair (PIX-219).
+	if Dungeons.is_deep(level):
+		var hunted := Hunts.deep_guardian(Dungeons.depth_of(level), GameState.board_floors(), GameState.progression.hunted)
+		if not hunted.is_empty():
+			var guardian: Dictionary = plan["foes"][-1]
+			for mob in get_tree().get_nodes_in_group("mobs"):
+				if mob.position == _cell_center(guardian["cell"]):
+					mob.remove_from_group("mobs")
+					mob.queue_free()
+			spawn_named(hunted["id"], guardian["cell"])
 	view.add_patch(plan["patch"], Gathering.floor_spot_id(level), Gathering.floor_material(level))
 	var floor_def := Dungeons.floor_def(level)
 	_log([String(floor_def["name"]) if Dungeons.is_deep(level) else Text.t("Floor %d: %s") % [level, floor_def["name"]], String(floor_def["description"])])

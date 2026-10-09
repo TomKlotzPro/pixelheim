@@ -1779,6 +1779,54 @@
       "weight": 0,
       "value": 1500,
       "description": "From further down than anyone has a word for."
+    },
+    "medal_ten_below": {
+      "name": "Medal of Ten Below",
+      "category": "misc",
+      "sprite": "gem",
+      "weight": 0,
+      "value": 10,
+      "description": "Struck for whoever comes back from the tenth depth. So far, that's you."
+    },
+    "medal_thirty_below": {
+      "name": "Medal of Thirty Below",
+      "category": "misc",
+      "sprite": "gem",
+      "weight": 0,
+      "value": 10,
+      "description": "The smith who struck it had to ask how to spell 'thirty'."
+    },
+    "medal_every_bounty": {
+      "name": "Medal of Every Bounty",
+      "category": "misc",
+      "sprite": "gem",
+      "weight": 0,
+      "value": 10,
+      "description": "The board is empty because of you."
+    },
+    "medal_slayer": {
+      "name": "Medal of All Kinds",
+      "category": "misc",
+      "sprite": "gem",
+      "weight": 0,
+      "value": 10,
+      "description": "Every family of monster knows your step."
+    },
+    "medal_dressed": {
+      "name": "Medal of the Matched Set",
+      "category": "misc",
+      "sprite": "gem",
+      "weight": 0,
+      "value": 10,
+      "description": "For looking the part, every piece of it."
+    },
+    "medal_seen_all": {
+      "name": "Medal of the Full Bestiary",
+      "category": "misc",
+      "sprite": "gem",
+      "weight": 0,
+      "value": 10,
+      "description": "Every page of the codex, filled."
     }
   },
   "roles": {

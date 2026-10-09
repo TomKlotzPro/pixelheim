@@ -876,7 +876,7 @@ func givers_waiting(npcs: Array) -> Array[Dictionary]:
 ## The floors the bounty board counts (PIX-170): the hero's own, and the
 ## notices the relics won have earned out in the Reach.
 func board_floors() -> Array:
-	return Hunts.board_floors(progression.cleared_levels, Relics.found(progression))
+	return Hunts.board_floors(progression.cleared_levels, Relics.found(progression), progression.deepest)
 
 
 ## A settler living here whose arc is done (PIX-157): their perk has grown.
@@ -1618,10 +1618,13 @@ func _hunted(named_id: String) -> Array[String]:
 	if int(entry["bounty"]) > 0:
 		pack.gold += int(entry["bounty"])
 		lines.append(Text.t("The bounty on %s is yours: +%d gold.") % [entry["name"], int(entry["bounty"])])
-	# Gear comes as a fresh piece; anything else (a relic) into the pack.
+	# Gear comes as a fresh piece; anything else (a relic) into the pack. A
+	# Deep Hunt named one's is epic and forged as deep as its lair (PIX-219).
 	var prize_name := Catalog.item_name(entry["drop"])
 	if Catalog.item(entry["drop"]).has("slot"):
-		var prize := InventoryState.create_gear(entry["drop"])
+		var prize := InventoryState.create_gear(entry["drop"], String(entry.get("dropRarity", "common")), roll)
+		if entry.has("deepDepth"):
+			InventoryState.deepen(prize, Dungeons.deep_tier(Dungeons.floor_count() + int(entry["deepDepth"])), roll)
 		pack.gear.append(prize)
 		prize_name = InventoryState.gear_name(prize)
 	else:
@@ -2028,6 +2031,22 @@ func _pack_changed() -> void:
 	gold_changed.emit(pack.gold)
 	inventory_changed.emit()
 	_note_deliveries()
+	_note_deeds()
+
+
+## A deed newly done (PIX-219): kept, its medal in the pack, the log told.
+func _note_deeds() -> void:
+	var lines: Array[String] = []
+	for deed: Dictionary in Deeds.all():
+		if deed["id"] in progression.deeds or not Deeds.met(deed, hero, pack, progression):
+			continue
+		progression.deeds.append(deed["id"])
+		pack.add_item(deed["itemId"])
+		lines.append(Text.t("A feat done: %s. The %s is yours, for the shelf at home.") % [Text.t(deed["name"]), Catalog.item_name(deed["itemId"])])
+	if not lines.is_empty():
+		mark_dirty()
+		Sound.play("learn")
+		noted.emit(lines)
 
 
 ## What each accepted delivery had at the last look (PIX-206), so a pickup

@@ -6,8 +6,8 @@ extends Screen
 ## it. The world holds still while it is open.
 
 const BountyScreen := preload("res://scripts/bounty_screen.gd")
-const TABS := ["main", "side", "bounties", "story"]
-const TAB_NAMES := {"main": "Main", "side": "Side", "bounties": "Bounties", "story": "Story"}
+const TABS := ["main", "side", "bounties", "story", "deeds"]
+const TAB_NAMES := {"main": "Main", "side": "Side", "bounties": "Bounties", "story": "Story", "deeds": "Feats"}
 ## Promises shown at once on the Side tab, and pages on the Story tab (W/S
 ## scroll either).
 const SHOWN := 5
@@ -81,6 +81,28 @@ func _fill() -> void:
 			_bounties()
 		"story":
 			_story()
+		"deeds":
+			_deeds()
+
+
+## Feats (PIX-219: Deeds in the code; the word was the shops' deeds'):
+## every long goal, done or how far along, and its medal.
+func _deeds() -> void:
+	var state := GameState
+	for deed: Dictionary in Deeds.all():
+		var done: bool = deed["id"] in state.progression.deeds
+		var counted := Deeds.count(deed, state.hero, state.pack, state.progression)
+		var line := HBoxContainer.new()
+		line.add_theme_constant_override("separation", 12)
+		var name := UiStyle.strong(Text.t(deed["name"]), 18, UiStyle.LAMP if done else UiStyle.INK)
+		name.custom_minimum_size = Vector2(320, 0)
+		line.add_child(name)
+		var what := UiStyle.label(Text.t(deed["line"]), 14, UiStyle.INK)
+		what.custom_minimum_size = Vector2(520, 0)
+		line.add_child(what)
+		line.add_child(UiStyle.label(Text.t("Done") if done else "%d/%d" % [counted[0], counted[1]], 14, UiStyle.FADED))
+		body.add_child(line)
+		body.add_child(UiStyle.label(Text.t("Brings home: %s") % Catalog.item_name(deed["itemId"]), 13, UiStyle.FADED))
 
 
 ## The quests that carry the story: Maren's relics and each relic's hunt.

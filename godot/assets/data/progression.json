@@ -1569,5 +1569,51 @@
       }
     ],
     "barred": "The mountain's gate is barred with old iron and older wards. Nothing passes. Maren will know what opens it."
-  }
+  },
+  "deeds": [
+    {
+      "id": "deep_10",
+      "name": "Ten Below",
+      "line": "Clear depth 10 of the Deep Hunt.",
+      "kind": "deepest",
+      "count": 10,
+      "itemId": "medal_ten_below"
+    },
+    {
+      "id": "deep_30",
+      "name": "Thirty Below",
+      "line": "Clear depth 30 of the Deep Hunt.",
+      "kind": "deepest",
+      "count": 30,
+      "itemId": "medal_thirty_below"
+    },
+    {
+      "id": "all_hunts",
+      "name": "Every Bounty Paid",
+      "line": "Slay every named monster, the Reach's and the deep's.",
+      "kind": "hunts",
+      "itemId": "medal_every_bounty"
+    },
+    {
+      "id": "all_masteries",
+      "name": "Slayer of All Kinds",
+      "line": "Reach Slayer III against every family.",
+      "kind": "masteries",
+      "itemId": "medal_slayer"
+    },
+    {
+      "id": "full_set",
+      "name": "Dressed for It",
+      "line": "Wear a whole armour set at once.",
+      "kind": "set",
+      "itemId": "medal_dressed"
+    },
+    {
+      "id": "bestiary",
+      "name": "Seen Them All",
+      "line": "Meet every kind in the bestiary.",
+      "kind": "bestiary",
+      "itemId": "medal_seen_all"
+    }
+  ]
 }

@@ -453,7 +453,15 @@ msgid "Everflask"
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "Every family of monster knows your step."
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "Every fisher catches one. Nobody knows whose they were."
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "Every page of the codex, filled."
 msgstr ""
 
 #: assets/data/catalog.json
@@ -498,6 +506,10 @@ msgstr ""
 
 #: assets/data/catalog.json
 msgid "Flawless Emerald"
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "For looking the part, every piece of it."
 msgstr ""
 
 #: assets/data/catalog.json
@@ -854,6 +866,30 @@ msgstr ""
 
 #: assets/data/catalog.json
 msgid "Meat, herbs, and no questions asked."
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "Medal of All Kinds"
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "Medal of Every Bounty"
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "Medal of Ten Below"
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "Medal of Thirty Below"
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "Medal of the Full Bestiary"
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "Medal of the Matched Set"
 msgstr ""
 
 #: assets/data/catalog.json
@@ -1237,6 +1273,10 @@ msgid "Strikes a vital spot for heavy dexterity damage."
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "Struck for whoever comes back from the tenth depth. So far, that's you."
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "Strung with something that isn't gut. The arrows arrive before the sound."
 msgstr ""
 
@@ -1313,6 +1353,10 @@ msgid "The best offense's roommate."
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "The board is empty because of you."
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "The cold of the tomb: damage, and the enemy may freeze in fear."
 msgstr ""
 
@@ -1330,6 +1374,10 @@ msgstr ""
 
 #: assets/data/catalog.json
 msgid "The sky darkens. Everything under it regrets something."
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "The smith who struck it had to ask how to spell 'thirty'."
 msgstr ""
 
 #: assets/data/catalog.json
@@ -1722,6 +1770,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "A necromancer's grave violet stays on their own robe and hood: borrowed iron, leather or a gilded plate keeps its colour"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "A new Feats chapter in the journal: long goals - ten and thirty depths, every bounty, every mastery, a whole set worn, the whole bestiary - each bringing home a medal for the trophy shelf"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -2534,6 +2586,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "GREYHOLD: a new road leaves the east edge of the Ash Fields for Oskar's old fort on its hill - breached walls, a stone yard, his statue, and the keep where turncoats in red cloaks have made themselves at home"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Goals to Chase"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4077,6 +4133,10 @@ msgid "The Deep Hunt has milestones at depths 5, 10, 15, 20, 30 and 50: each bri
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Deep Hunt has named monsters of its own, posted on the board as you reach them: Grimshade, the Bone Abbot, Hollowmother and Ironheart each guard a depth's stair and leave an epic deep-forged piece"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Deep Hunt now deepens gear for every slot, from gloves and boots to amulets and shields, the regions' sets and the named pieces"
 msgstr ""
 
@@ -4897,6 +4957,10 @@ msgid "A crushing blow."
 msgstr ""
 
 #: assets/data/combat.json
+msgid "A forge-demon walks the twenty-first depth with a furnace where its heart should be. Hilda wants the grips off its hands. She says she'll know what to do with them."
+msgstr ""
+
+#: assets/data/combat.json
 msgid "A fortress that marches. +5 DEF, unstaggerable, stronger when bloodied."
 msgstr ""
 
@@ -5249,6 +5313,10 @@ msgid "Cleave"
 msgstr ""
 
 #: assets/data/combat.json
+msgid "Climbers who came back from the sixth depth speak of a shadow that holds you where you stand while the rest of the dark closes in. Nobody has seen its face. Nobody wants to."
+msgstr ""
+
+#: assets/data/combat.json
 msgid "Cold blast, may stun."
 msgstr ""
 
@@ -5370,6 +5438,10 @@ msgstr ""
 
 #: assets/data/combat.json
 msgid "Doubt breaks on you first. +5 DEF, unstaggerable."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Down in the eleventh depth an old knight keeps a congregation of bones, and it rings them up out of the floor whenever someone comes to pray. Bring something heavier than a prayer."
 msgstr ""
 
 #: assets/data/combat.json
@@ -5609,6 +5681,18 @@ msgid "Greenskins"
 msgstr ""
 
 #: assets/data/combat.json
+msgid "Grimshade"
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Grimshade is gone from the sixth depth. Odo swears the shadows in his cellar are smaller now."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Grimshade peels itself off the wall!"
+msgstr ""
+
+#: assets/data/combat.json
 msgid "Guardian"
 msgstr ""
 
@@ -5677,6 +5761,18 @@ msgid "Hollow Guard"
 msgstr ""
 
 #: assets/data/combat.json
+msgid "Hollowmother"
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Hollowmother is slain. The children have stopped daring each other to look down the well."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Hollowmother unfolds, all limbs and hunger."
+msgstr ""
+
+#: assets/data/combat.json
 msgid "Holy Nova"
 msgstr ""
 
@@ -5730,6 +5826,18 @@ msgstr ""
 
 #: assets/data/combat.json
 msgid "Iron constitution"
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Ironheart"
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Ironheart's furnace is cold. Hilda has hung its grips over her anvil and won't let anyone touch them."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Ironheart's furnace roars open!"
 msgstr ""
 
 #: assets/data/combat.json
@@ -6421,6 +6529,18 @@ msgid "The Ashen Mountain"
 msgstr ""
 
 #: assets/data/combat.json
+msgid "The Bone Abbot"
+msgstr ""
+
+#: assets/data/combat.json
+msgid "The Bone Abbot raises its hand, and the floor answers."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "The Bone Abbot's congregation is dust. The chapel in Greyhold rang its bell for you."
+msgstr ""
+
+#: assets/data/combat.json
 msgid "The Deep Hunt"
 msgstr ""
 
@@ -6654,6 +6774,10 @@ msgstr ""
 
 #: assets/data/combat.json
 msgid "The stair below the throne goes on down. Nobody built this far."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "The thing at the sixteenth depth is thin as a hunger and it leaps further than a horse. The hunters who drew it call it Hollowmother, and won't say why."
 msgstr ""
 
 #: assets/data/combat.json
@@ -6986,6 +7110,22 @@ msgstr ""
 
 #: assets/data/combat.json
 msgid "Zealotry"
+msgstr ""
+
+#: assets/data/combat.json
+msgid "depth 11 of the Deep Hunt, where it guards the stair"
+msgstr ""
+
+#: assets/data/combat.json
+msgid "depth 16 of the Deep Hunt, where it guards the stair"
+msgstr ""
+
+#: assets/data/combat.json
+msgid "depth 21 of the Deep Hunt, where it guards the stair"
+msgstr ""
+
+#: assets/data/combat.json
+msgid "depth 6 of the Deep Hunt, where it guards the stair"
 msgstr ""
 
 #: assets/data/combat.json
@@ -8133,6 +8273,14 @@ msgid "Cheese wheels delivered"
 msgstr ""
 
 #: assets/data/progression.json
+msgid "Clear depth 10 of the Deep Hunt."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Clear depth 30 of the Deep Hunt."
+msgstr ""
+
+#: assets/data/progression.json
 msgid "Clear the Barrow Crypt (floor 3)"
 msgstr ""
 
@@ -8217,6 +8365,10 @@ msgid "Down the keep's stair, through the crypt, to the captain's hall. That's w
 msgstr ""
 
 #: assets/data/progression.json
+msgid "Dressed for It"
+msgstr ""
+
+#: assets/data/progression.json
 msgid "Drive off three of them and the rest will talk. They always do."
 msgstr ""
 
@@ -8246,6 +8398,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Embers swarm the square: strike them down ({key:attack}) - {key:skill_1} mends you between blows"
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Every Bounty Paid"
 msgstr ""
 
 #: assets/data/progression.json
@@ -8637,6 +8793,10 @@ msgid "Marsh reeds brought"
 msgstr ""
 
 #: assets/data/progression.json
+msgid "Meet every kind in the bestiary."
+msgstr ""
+
+#: assets/data/progression.json
 msgid "Mira wants yeti fur for her loom."
 msgstr ""
 
@@ -8805,6 +8965,10 @@ msgid "Raiders on the Ash Road"
 msgstr ""
 
 #: assets/data/progression.json
+msgid "Reach Slayer III against every family."
+msgstr ""
+
+#: assets/data/progression.json
 msgid "Real, and terrible, and the regulars will love it. Your drinks are on the house. Well - the first one."
 msgstr ""
 
@@ -8873,6 +9037,10 @@ msgid "Seam Warden laid low"
 msgstr ""
 
 #: assets/data/progression.json
+msgid "Seen Them All"
+msgstr ""
+
+#: assets/data/progression.json
 msgid "Sela binds your cuts and presses a leather cap into your hands. \"It's not much. Wear it.\""
 msgstr ""
 
@@ -8906,6 +9074,14 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Slay Fafnyr on the Ashen Throne (floor 10)"
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Slay every named monster, the Reach's and the deep's."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Slayer of All Kinds"
 msgstr ""
 
 #: assets/data/progression.json
@@ -9010,6 +9186,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Tell Ulla"
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Ten Below"
 msgstr ""
 
 #: assets/data/progression.json
@@ -9309,6 +9489,10 @@ msgid "They're out - dusty, hungry, alive. And they say the deep seam is open ag
 msgstr ""
 
 #: assets/data/progression.json
+msgid "Thirty Below"
+msgstr ""
+
+#: assets/data/progression.json
 msgid "Three clumps of grave moss. It grows where the fen is quietest. Too quiet, if you ask me."
 msgstr ""
 
@@ -9454,6 +9638,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Warbringer"
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Wear a whole armour set at once."
 msgstr ""
 
 #: assets/data/progression.json
@@ -9945,6 +10133,10 @@ msgid "A cottage on the bend"
 msgstr ""
 
 #: assets/data/town.json
+msgid "A feat, displayed with pride"
+msgstr ""
+
+#: assets/data/town.json
 msgid "A fountain on the square, Fafnyr's scale set in its basin."
 msgstr ""
 
@@ -10416,51 +10608,59 @@ msgstr ""
 msgid "Slain. Pixelheim still talks about it."
 msgstr ""
 
-#: scripts/bounty_screen.gd:49
+#: scripts/bounty_screen.gd:50
+msgid "%s keeps to %s."
+msgstr ""
+
+#: scripts/bounty_screen.gd:50
 msgid "%s keeps to %s. Its lair is marked on your map."
 msgstr ""
 
-#: scripts/bounty_screen.gd:64
+#: scripts/bounty_screen.gd:66
+msgid "depth %d of the Deep Hunt is cleared"
+msgstr ""
+
+#: scripts/bounty_screen.gd:67
 msgid "%s is cleared"
 msgstr ""
 
-#: scripts/bounty_screen.gd:69
+#: scripts/bounty_screen.gd:72
 msgid "four"
 msgstr ""
 
-#: scripts/bounty_screen.gd:69
+#: scripts/bounty_screen.gd:72
 msgid "one"
 msgstr ""
 
-#: scripts/bounty_screen.gd:69
+#: scripts/bounty_screen.gd:72
 msgid "three"
 msgstr ""
 
-#: scripts/bounty_screen.gd:69
+#: scripts/bounty_screen.gd:72
 msgid "two"
 msgstr ""
 
-#: scripts/bounty_screen.gd:72
+#: scripts/bounty_screen.gd:75
 msgid "%s of the relics are home"
 msgstr ""
 
-#: scripts/bounty_screen.gd:72
+#: scripts/bounty_screen.gd:75
 msgid "%s of the relics is home"
 msgstr ""
 
-#: scripts/bounty_screen.gd:73
+#: scripts/bounty_screen.gd:76
 msgid "%s of the relics are home, or %s"
 msgstr ""
 
-#: scripts/bounty_screen.gd:73
+#: scripts/bounty_screen.gd:76
 msgid "%s of the relics is home, or %s"
 msgstr ""
 
-#: scripts/bounty_screen.gd:79
+#: scripts/bounty_screen.gd:82
 msgid "The "
 msgstr ""
 
-#: scripts/bounty_screen.gd:79
+#: scripts/bounty_screen.gd:82
 msgid "the %s (floor %d)"
 msgstr ""
 
@@ -11225,6 +11425,10 @@ msgid "Buffs&Debuffs"
 msgstr ""
 
 #: scripts/journal_screen.gd:10
+msgid "Feats"
+msgstr ""
+
+#: scripts/journal_screen.gd:10
 msgid "Main"
 msgstr ""
 
@@ -11236,67 +11440,75 @@ msgstr ""
 msgid "Story"
 msgstr ""
 
-#: scripts/journal_screen.gd:100
+#: scripts/journal_screen.gd:103
+msgid "Done"
+msgstr ""
+
+#: scripts/journal_screen.gd:105
+msgid "Brings home: %s"
+msgstr ""
+
+#: scripts/journal_screen.gd:122
 msgid "The story is told"
 msgstr ""
 
-#: scripts/journal_screen.gd:103
+#: scripts/journal_screen.gd:125
 msgid "Chapter %d: %s"
 msgstr ""
 
-#: scripts/journal_screen.gd:112
+#: scripts/journal_screen.gd:134
 msgid "%s (optional)"
 msgstr ""
 
-#: scripts/journal_screen.gd:116
+#: scripts/journal_screen.gd:138
 msgid "DONE"
 msgstr ""
 
-#: scripts/journal_screen.gd:116
+#: scripts/journal_screen.gd:138
 msgid "NEXT"
 msgstr ""
 
-#: scripts/journal_screen.gd:138
+#: scripts/journal_screen.gd:160
 msgid "No side promises open. The map marks who has something to ask."
 msgstr ""
 
-#: scripts/journal_screen.gd:140
+#: scripts/journal_screen.gd:162
 msgid "Side promises - %d open"
 msgstr ""
 
-#: scripts/journal_screen.gd:142
+#: scripts/journal_screen.gd:164
 msgid "   (W/S to scroll)"
 msgstr ""
 
-#: scripts/journal_screen.gd:153
+#: scripts/journal_screen.gd:175
 msgid "Kept: %d promises, the latest %s."
 msgstr ""
 
-#: scripts/journal_screen.gd:160
+#: scripts/journal_screen.gd:182
 msgid "The Deep Hunt: deepest depth %d"
 msgstr ""
 
-#: scripts/journal_screen.gd:163
+#: scripts/journal_screen.gd:185
 msgid "No notices on the bounty board yet. The first goes up when %s."
 msgstr ""
 
-#: scripts/journal_screen.gd:174
+#: scripts/journal_screen.gd:196
 msgid "Its lair: %s. %s."
 msgstr ""
 
-#: scripts/journal_screen.gd:185
+#: scripts/journal_screen.gd:207
 msgid "No pages yet. Someone climbed this mountain before you - and wrote it down."
 msgstr ""
 
-#: scripts/journal_screen.gd:187
+#: scripts/journal_screen.gd:209
 msgid "Liane's journal - %d of %d pages"
 msgstr ""
 
-#: scripts/journal_screen.gd:189
+#: scripts/journal_screen.gd:211
 msgid "   (W/S to turn)"
 msgstr ""
 
-#: scripts/journal_screen.gd:208
+#: scripts/journal_screen.gd:230
 msgid "   READY - see %s"
 msgstr ""
 
@@ -12432,111 +12644,115 @@ msgstr ""
 msgid "The bounty on %s is yours: +%d gold."
 msgstr ""
 
-#: scripts/state/game_state.gd:1629
+#: scripts/state/game_state.gd:1632
 msgid "%s leaves you %s!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1729
+#: scripts/state/game_state.gd:1732
 msgid "%d HP"
 msgstr ""
 
-#: scripts/state/game_state.gd:1737
+#: scripts/state/game_state.gd:1740
 msgid "You use %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1739
+#: scripts/state/game_state.gd:1742
 msgid " Restored %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1922
+#: scripts/state/game_state.gd:1925
 msgid "%s is cleared!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1927
+#: scripts/state/game_state.gd:1930
 msgid "%d gold"
 msgstr ""
 
-#: scripts/state/game_state.gd:1936
+#: scripts/state/game_state.gd:1939
 msgid "The floor's hoard: %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1940
+#: scripts/state/game_state.gd:1943
 msgid "Among the bones: a page of an old journal (%s). {key:journal} reads it."
 msgstr ""
 
-#: scripts/state/game_state.gd:1944
+#: scripts/state/game_state.gd:1947
 msgid "+%d XP for the way down."
 msgstr ""
 
-#: scripts/state/game_state.gd:1954
+#: scripts/state/game_state.gd:1957
 msgid "the %s"
 msgstr ""
 
-#: scripts/state/game_state.gd:1957
+#: scripts/state/game_state.gd:1960
 msgid "Behind the throne, a stair goes on down into the dark: the Deep Hunt."
 msgstr ""
 
-#: scripts/state/game_state.gd:1961
+#: scripts/state/game_state.gd:1964
 msgid "A deeper way opens: %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1974
+#: scripts/state/game_state.gd:1977
 msgid "Depth %d of the Deep Hunt is cleared!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1983
+#: scripts/state/game_state.gd:1986
 msgid "The deepest yet. Its hoard: %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1989
+#: scripts/state/game_state.gd:1992
 msgid "depth %d of the Deep Hunt"
 msgstr ""
 
-#: scripts/state/game_state.gd:1993
+#: scripts/state/game_state.gd:1996
 msgid "A milestone: %d depths below the throne. The %s is yours, a trophy for the shelf at home."
 msgstr ""
 
-#: scripts/state/game_state.gd:1996
+#: scripts/state/game_state.gd:1999
 msgid "A hole into the dark opens beside the way up: depth %d waits below."
 msgstr ""
 
-#: scripts/state/game_state.gd:2015
+#: scripts/state/game_state.gd:2018
 msgid "Mastery: %s Slayer %s. +%d%% damage against %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:2055
+#: scripts/state/game_state.gd:2045
+msgid "A feat done: %s. The %s is yours, for the shelf at home."
+msgstr ""
+
+#: scripts/state/game_state.gd:2074
 msgid "%s: ready to hand in to %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:2095
+#: scripts/state/game_state.gd:2114
 msgid "That uses what %s needs (%s). Do it again to go ahead."
 msgstr ""
 
-#: scripts/state/game_state.gd:2126
+#: scripts/state/game_state.gd:2145
 msgid "The chest bares its teeth — a mimic!"
 msgstr ""
 
-#: scripts/state/game_state.gd:2132
+#: scripts/state/game_state.gd:2151
 msgid "Something glitters on the road: %d gold."
 msgstr ""
 
-#: scripts/state/game_state.gd:2133
+#: scripts/state/game_state.gd:2152
 msgid "The chest holds %d gold."
 msgstr ""
 
-#: scripts/state/game_state.gd:2142
+#: scripts/state/game_state.gd:2161
 msgid "Too heavy to carry. Lighten the pack and come back."
 msgstr ""
 
-#: scripts/state/game_state.gd:2148
+#: scripts/state/game_state.gd:2167
 msgid "The chest holds %s!"
 msgstr ""
 
-#: scripts/state/game_state.gd:2153
+#: scripts/state/game_state.gd:2172
 msgid "You gather %dx %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:2154
+#: scripts/state/game_state.gd:2173
 msgid "The chest holds %dx %s."
 msgstr ""
 
@@ -12620,7 +12836,7 @@ msgstr ""
 msgid "%s: %d/%d %s."
 msgstr ""
 
-#: scripts/state/hunts.gd:123
+#: scripts/state/hunts.gd:155
 msgid "Bounty %dg, and %s"
 msgstr ""
 
@@ -12984,35 +13200,43 @@ msgstr ""
 msgid "Arrows"
 msgstr ""
 
-#: scripts/world.gd:1080
+#: scripts/world.gd:1001
+msgid "Only cinders where the house stood. The board on the square can change that."
+msgstr ""
+
+#: scripts/world.gd:1006
+msgid "The deed costs %d gold. {key:interact} again to sign it."
+msgstr ""
+
+#: scripts/world.gd:1090
 msgid "A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it."
 msgstr ""
 
-#: scripts/world.gd:1507
+#: scripts/world.gd:1517
 msgid "Five lanterns on the square, one for each of the five who climbed. Tonight the %s remembers them - and %s."
 msgstr ""
 
-#: scripts/world.gd:1508
+#: scripts/world.gd:1518
 msgid "Pixelheim, a %s raised from the ashes. Tonight it celebrates %s."
 msgstr ""
 
-#: scripts/world.gd:1594
+#: scripts/world.gd:1604
 msgid "%s: built."
 msgstr ""
 
-#: scripts/world.gd:1598
+#: scripts/world.gd:1608
 msgid "Pixelheim is a %s now."
 msgstr ""
 
-#: scripts/world.gd:1604
+#: scripts/world.gd:1614
 msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
 msgstr ""
 
-#: scripts/world.gd:1706
+#: scripts/world.gd:1716
 msgid "%s  %d:%02d"
 msgstr ""
 
-#: scripts/world.gd:1934
+#: scripts/world.gd:1944
 msgid "Next"
 msgstr ""
 
@@ -13046,14 +13270,6 @@ msgstr ""
 
 #: scripts/world.gd:802
 msgid "{epithet} {name}"
-msgstr ""
-
-#: scripts/world.gd:991
-msgid "Only cinders where the house stood. The board on the square can change that."
-msgstr ""
-
-#: scripts/world.gd:996
-msgid "The deed costs %d gold. {key:interact} again to sign it."
 msgstr ""
 
 #: tools/i18n.py

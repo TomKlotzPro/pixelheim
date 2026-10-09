@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.164.0",
+      "date": "2026-10-09",
+      "codename": "Goals to Chase",
+      "notes": [
+        "The Deep Hunt has named monsters of its own, posted on the board as you reach them: Grimshade, the Bone Abbot, Hollowmother and Ironheart each guard a depth's stair and leave an epic deep-forged piece",
+        "A new Feats chapter in the journal: long goals - ten and thirty depths, every bounty, every mastery, a whole set worn, the whole bestiary - each bringing home a medal for the trophy shelf"
+      ]
+    },
+    {
       "version": "0.163.0",
       "date": "2026-10-09",
       "codename": "Pad in Hand",

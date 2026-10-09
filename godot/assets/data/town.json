@@ -1018,6 +1018,24 @@
         "defense": 2,
         "endurance": 2
       }
+    },
+    "medal_ten_below": {
+      "label": "A feat, displayed with pride"
+    },
+    "medal_thirty_below": {
+      "label": "A feat, displayed with pride"
+    },
+    "medal_every_bounty": {
+      "label": "A feat, displayed with pride"
+    },
+    "medal_slayer": {
+      "label": "A feat, displayed with pride"
+    },
+    "medal_dressed": {
+      "label": "A feat, displayed with pride"
+    },
+    "medal_seen_all": {
+      "label": "A feat, displayed with pride"
     }
   },
   "nookCombines": [
