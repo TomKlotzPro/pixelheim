@@ -14,6 +14,18 @@ extends Node
 
 const FADE_S := 0.35
 const SFX_VOICES := 8
+## A stinger is never quite the same twice (PIX-212): its pitch a few
+## percent either way, its level a decibel and a half. The same one twice
+## within SAME_GAP_MS sounds once (an area skill's hits). Steps are quieter
+## and alternate two pitches, left foot and right.
+const VARY_PITCH := 0.06
+const VARY_DB := 1.5
+const SAME_GAP_MS := 40
+const STEP_DB := -8.0
+const STEP_PITCHES := [1.0, 0.9]
+## Sounds that take the oldest voice when all eight are busy, rather than
+## going unheard.
+const PRIORITY := ["hurt", "levelUp", "victory", "defeat", "roar", "bounty", "chest", "learn", "evolve", "heal"]
 ## How long the fight's music lingers after the last hunter gives up.
 const COMBAT_LINGER_S := 3.0
 
@@ -37,6 +49,10 @@ var _bed_fade: Tween
 var _after_theme := ""
 ## When each made sound last played (msec).
 var _played_at := {}
+## When each stinger last played, and when each voice began (msec).
+var _sfx_at := {}
+var _began := {}
+var _foot := 0
 
 
 func _ready() -> void:
@@ -111,6 +127,11 @@ const UI_SOUNDS := {
 	"mark": [[0.06, "square", 330.0, 330.0, 0.05], [0.07, "square", 247.0, 247.0, 0.05]],
 	"slam": [[0.03, "square", 130.0, 60.0, 0.10], [0.10, "noise", 0.0, 0.0, 0.08]],
 	"heart": [[0.045, "triangle", 120.0, 80.0, 0.16], [0.05, "square", 0.0, 0.0, 0.0], [0.045, "triangle", 110.0, 70.0, 0.11]],
+	# The quiet answers (PIX-212): yes, no, a page turned, an ailment taking hold.
+	"confirm": [[0.04, "square", 660.0, 660.0, 0.05], [0.06, "square", 990.0, 990.0, 0.05]],
+	"deny": [[0.05, "square", 220.0, 220.0, 0.06], [0.07, "square", 165.0, 165.0, 0.06]],
+	"page": [[0.035, "noise", 0.0, 0.0, 0.06], [0.03, "triangle", 1200.0, 900.0, 0.03]],
+	"ail": [[0.05, "triangle", 300.0, 520.0, 0.06], [0.06, "triangle", 520.0, 260.0, 0.06]],
 }
 const UI_RATE := 22050
 
@@ -127,11 +148,7 @@ func play_ui(name: String) -> void:
 	var key := "ui:" + name
 	if not _streams.has(key):
 		_streams[key] = _synth(UI_SOUNDS[name])
-	for voice in _voices:
-		if not voice.playing:
-			voice.stream = _streams[key]
-			voice.play()
-			return
+	_voice_for(_streams[key], 1.0, 0.0, false)
 
 
 ## Blips to 16-bit mono PCM, each fading out as it ends.
@@ -171,15 +188,47 @@ func _input(event: InputEvent) -> void:
 			return
 
 
-## A stinger by the web's name (SFX.hit, SFX.coin...).
-func play(sfx: String) -> void:
+## A stinger by the web's name (SFX.hit, SFX.coin...), a little different
+## each time unless `vary` is false.
+func play(sfx: String, vary := true) -> void:
 	if not _doc["stingers"].has(sfx):
 		return
+	var now := Time.get_ticks_msec()
+	if now - int(_sfx_at.get(sfx, -1000)) < SAME_GAP_MS:
+		return
+	_sfx_at[sfx] = now
+	var pitch := 1.0
+	var level := 0.0
+	if sfx == "step":
+		_foot = 1 - _foot
+		pitch = STEP_PITCHES[_foot]
+		level = STEP_DB
+	elif vary:
+		pitch = randf_range(1.0 - VARY_PITCH, 1.0 + VARY_PITCH)
+		level = randf_range(-VARY_DB, VARY_DB)
+	_voice_for(_stream("res://assets/audio/sfx/%s.wav" % sfx), pitch, level, sfx in PRIORITY)
+
+
+## Plays `stream` on a free voice at `pitch` and `level` dB; with all busy,
+## a priority sound takes the voice that began longest ago.
+func _voice_for(stream: AudioStream, pitch: float, level: float, priority: bool) -> void:
+	var chosen: AudioStreamPlayer = null
 	for voice in _voices:
 		if not voice.playing:
-			voice.stream = _stream("res://assets/audio/sfx/%s.wav" % sfx)
-			voice.play()
+			chosen = voice
+			break
+	if chosen == null:
+		if not priority:
 			return
+		chosen = _voices[0]
+		for voice in _voices:
+			if int(_began.get(voice, 0)) < int(_began.get(chosen, 0)):
+				chosen = voice
+	chosen.stream = stream
+	chosen.pitch_scale = pitch
+	chosen.volume_db = level
+	chosen.play()
+	_began[chosen] = Time.get_ticks_msec()
 
 
 ## Crossfades to a theme: the old one fades out, the new one in.

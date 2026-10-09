@@ -123,6 +123,7 @@ func _advance() -> void:
 		_close()
 		return
 	page += 1
+	Sound.play_ui("page")
 	_show()
 
 

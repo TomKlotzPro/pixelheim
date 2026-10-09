@@ -96,14 +96,6 @@ var harness := false
 
 func _ready() -> void:
 	UiStyle.setup()
-	# Screens ease in as they open (UiStyle.enter), all but the two that make
-	# their own entrance.
-	child_entered_tree.connect(func(node: Node) -> void:
-		if node is CanvasLayer and node.get_script() != null:
-			var file: String = node.get_script().resource_path.get_file()
-			if file.ends_with("_screen.gd") and file not in ["title_screen.gd", "rankup_screen.gd"]:
-				node.ready.connect(UiStyle.enter.bind(node), CONNECT_ONE_SHOT)
-	)
 	# Only what physics moves is interpolated between ticks (the actors and
 	# the camera riding the hero); the ground and the UI hold still.
 	physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
@@ -2092,9 +2084,11 @@ func _show_message(text: String) -> void:
 	# The first quest taken introduces the journal (PIX-202).
 	if tag == Text.t("Quest accepted"):
 		hint("journal")
-	# A quest done is a victory, heard (PIX-211).
+	# A quest done is a victory, heard (PIX-211); one taken, a yes (PIX-212).
 	if tag == Text.t("Quest complete"):
 		Sound.play("victory")
+	elif tag == Text.t("Quest accepted"):
+		Sound.play_ui("confirm")
 	message_label.text = text
 	# Wraps at a reading width, never wider than it needs.
 	var wide := 0.0

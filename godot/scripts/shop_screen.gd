@@ -354,6 +354,7 @@ func _act() -> void:
 	var row := rows[selected]
 	if not row["enabled"]:
 		status.text = "Not possible right now."
+		Sound.play_ui("deny")
 		return
 	row["action"].call()
 	_refresh()
@@ -361,6 +362,11 @@ func _act() -> void:
 
 func _after(ok: bool, done: String, refused: String) -> void:
 	status.text = done if ok else refused
+	# Coin for a deal, a no for a refusal (PIX-212).
+	if ok:
+		Sound.play("coin")
+	else:
+		Sound.play_ui("deny")
 
 
 func _sold(gold: int) -> void:

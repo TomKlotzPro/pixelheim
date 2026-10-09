@@ -17,6 +17,11 @@ var note: Label
 var closing := false
 
 
+## Its own entrance, not the screens' ease (PIX-212).
+func _eases_in() -> bool:
+	return false
+
+
 func _open() -> void:
 	layer = 6
 	var view := Vector2(1280, 720)

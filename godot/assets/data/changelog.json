@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.158.0",
+      "date": "2026-10-09",
+      "codename": "Audio That Breathes",
+      "notes": [
+        "Sounds are never quite the same twice, a little higher or lower, louder or softer; a flurry of hits sounds as one, and footsteps are softer, left foot and right",
+        "When every voice is busy, the sounds that matter (a hurt, a level, a victory) still get through",
+        "Buying, spending a stat point, a refusal, turning a dialogue's page, taking a quest and an ailment landing are all heard now, and every screen sounds as it opens and closes"
+      ]
+    },
+    {
       "version": "0.157.0",
       "date": "2026-10-09",
       "codename": "One Look",
