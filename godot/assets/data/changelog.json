@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.146.0",
+      "date": "2026-10-09",
+      "codename": "True Keys",
+      "notes": [
+        "KEYS THAT TELL THE TRUTH: every key the game names is the one on your keyboard - an AZERTY board reads Z, Q and W where a QWERTY one reads W, A and Z - and follows you when you rebind",
+        "Dropping a piece of gear or a whole stack asks for the same key again, and a key with a fixed job (drop, a skill, Esc) can't be given to another action"
+      ]
+    },
+    {
       "version": "0.145.0",
       "date": "2026-10-09",
       "codename": "Kept",

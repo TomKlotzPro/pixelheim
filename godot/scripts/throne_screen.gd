@@ -23,7 +23,7 @@ func _intro() -> String:
 
 
 func _footer() -> String:
-	return Text.t("W/S  choose      E  %s") % Text.t("decide")
+	return Text.t("{key:move_up}/{key:move_down}  choose      {key:interact}  %s") % Text.t("decide")
 
 
 func _closes_on(_event: InputEvent) -> bool:

@@ -82,7 +82,7 @@ func _open() -> void:
 		legend.add_child(swatch)
 		legend.add_child(UiStyle.label(mark[1], 12, UiStyle.FADED))
 	add_child(legend)
-	add_child(UiStyle.footer("M  close      W/S  choose      E  travel", Vector2(64, 668)))
+	add_child(UiStyle.footer("{key:map}  close      {key:move_up}/{key:move_down}  choose      {key:interact}  travel", Vector2(64, 668)))
 	_highlight()
 
 

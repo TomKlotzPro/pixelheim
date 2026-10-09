@@ -34,7 +34,7 @@ func _open() -> void:
 		columns.append(column)
 	status = UiStyle.label("", 14, UiStyle.LAMP, Vector2(80, 640))
 	add_child(status)
-	add_child(UiStyle.footer("W/S  choose      A/D  adjust      E  rebind / toggle      Esc  close", Vector2(80, 680)))
+	add_child(UiStyle.footer("{key:move_up}/{key:move_down}  choose      {key:move_left}/{key:move_right}  adjust      {key:interact}  rebind / toggle      Esc  close", Vector2(80, 680)))
 	_refresh()
 
 
@@ -145,7 +145,11 @@ func _input(event: InputEvent) -> void:
 		return
 	get_viewport().set_input_as_handled()
 	var key: int = event.physical_keycode if event.physical_keycode != 0 else event.keycode
-	if key != KEY_ESCAPE:
+	# A key with a fixed job keeps it (PIX-201): one key, one thing.
+	var taken := Controls.fixed_use(key, listening)
+	if key != KEY_ESCAPE and taken != "":
+		status.text = Text.t("%s already does %s. Choose another key.") % [Controls.key_label(key), taken]
+	elif key != KEY_ESCAPE:
 		var settings := GameState.settings
 		settings.bindings = Controls.rebind(settings.bindings, listening, key)
 		settings.save_file()

@@ -44,7 +44,7 @@ func test_every_footer_names_its_keys_the_same_way() -> void:
 					continue
 				for choice in command.substr(0, cut).split(" / "):
 					for key in choice.strip_edges().split("/"):
-						assert_true(key.length() == 1 or key in NAMED, "%s: a key named %s" % [file, key])
+						assert_true(key.length() == 1 or key in NAMED or key.begins_with("{key:"), "%s: a key named %s" % [file, key])
 						checked += 1
 	assert_gt(checked, 40, "the footers were read")
 

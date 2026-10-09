@@ -71,7 +71,7 @@ func _verb() -> String:
 
 ## The keys along the bottom.
 func _footer() -> String:
-	return Text.t("Esc  close      W/S  choose      E  %s") % _verb()
+	return Text.t("Esc  close      {key:move_up}/{key:move_down}  choose      {key:interact}  %s") % _verb()
 
 
 ## Each row: {label, note, enabled, action: Callable returning a status line}.

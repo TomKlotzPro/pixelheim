@@ -249,6 +249,12 @@ static func _style(texture: Texture2D, border: int, padding: int) -> StyleBoxTex
 
 
 ## Clickable twins of key commands; keyboard focus stays with the screen.
+## A command's words after its key, as the player's keyboard names it
+## (PIX-201): keyed("{key:interact}", "Play") reads "E  Play".
+static func keyed(key: String, text: String) -> String:
+	return "%s  %s" % [Controls.shown(key), text]
+
+
 static func button(text: String, action: Callable) -> Button:
 	var node := Button.new()
 	node.text = text
@@ -451,7 +457,8 @@ static func keys(spec: String, on_dark := false) -> HBoxContainer:
 			row.add_child(label("/", 12, DUSK if on_dark else FADED))
 		var names: Array = ["←", "↑", "↓", "→"] if choices[c].strip_edges() == "Arrows" else Array(choices[c].strip_edges().split("/"))
 		for name: String in names:
-			row.add_child(keycap(String(ARROWS.get(name, name)), true))
+			# The player's keys, on the player's keyboard (PIX-201).
+			row.add_child(keycap(String(ARROWS.get(name, Controls.shown(name))), true))
 	return row
 
 

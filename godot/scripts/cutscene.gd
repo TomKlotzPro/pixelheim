@@ -78,7 +78,7 @@ func _open() -> void:
 	caption.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(caption)
-	var skip := UiStyle.hints(["E", "next", "Esc", "skip"], true)
+	var skip := UiStyle.hints(["{key:interact}", "next", "Esc", "skip"], true)
 	skip.position = Vector2(VIEW.x - 280, 22)
 	add_child(skip)
 	front = Control.new()

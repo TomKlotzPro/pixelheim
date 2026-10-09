@@ -79,6 +79,12 @@ func _ready() -> void:
 	_watch_the_page()
 
 
+## Every key pressed teaches the labels what this keyboard calls it (PIX-201).
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed:
+		Controls.learn(event)
+
+
 ## The web page going away or out of sight saves what's unsaved (PIX-200):
 ## the web runtime tells the game nothing when a tab closes.
 var _page_hidden: Variant
