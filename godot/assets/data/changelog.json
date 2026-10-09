@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.176.0",
+      "date": "2026-10-09",
+      "codename": "Lights Up",
+      "notes": [
+        "Fixed: after funding a project on the square, the town's tour of what was built played behind a black screen; it shows in full now, and so do the ending's tour and the homecomings"
+      ]
+    },
+    {
       "version": "0.175.0",
       "date": "2026-10-09",
       "codename": "Every Point Counts",

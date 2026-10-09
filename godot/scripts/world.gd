@@ -378,18 +378,13 @@ var _passing := false
 
 
 func _through_door(then: Callable) -> void:
-	if GameState.settings.reduce_motion or harness or hud.root == null:
+	if not _fades():
 		then.call()
 		return
 	if _passing:
 		return
 	_passing = true
-	var dark := ColorRect.new()
-	dark.color = Color(UiStyle.NIGHT, 0.0)
-	dark.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	dark.position = -hud.root.offset
-	dark.size = Touch.view_size(self)
-	hud.root.add_child(dark)
+	var dark := _fade_rect(Color(UiStyle.NIGHT, 0.0))
 	var fade := dark.create_tween()
 	fade.tween_property(dark, "color:a", 1.0, DOOR_FADE).set_ease(Tween.EASE_OUT)
 	fade.tween_callback(func() -> void:
@@ -399,20 +394,38 @@ func _through_door(then: Callable) -> void:
 	)
 
 
-## A new map fades in from the dark (PIX-211) instead of cutting; not with
-## reduced motion, nor in harness runs, whose pictures are taken at once.
+## A new map fades in from the dark (PIX-211) instead of cutting.
 func _fade_in() -> void:
-	if GameState.settings.reduce_motion or harness or hud.root == null:
+	if not _fades():
 		return
-	var dark := ColorRect.new()
-	dark.color = UiStyle.NIGHT
-	dark.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	dark.position = -hud.root.offset
-	dark.size = Touch.view_size(self)
-	hud.root.add_child(dark)
+	var dark := _fade_rect(UiStyle.NIGHT)
 	var fade := dark.create_tween()
 	fade.tween_property(dark, "color:a", 0.0, 0.35).set_ease(Tween.EASE_IN)
 	fade.tween_callback(dark.queue_free)
+
+## Whether the screen fades through the dark: not with reduced motion, nor in
+## harness runs, whose pictures are taken at once, unless one asks (`fades`).
+func _fades() -> bool:
+	if GameState.settings.reduce_motion or hud.root == null:
+		return false
+	return not harness or OS.get_cmdline_user_args().has("fades")
+
+
+## The dark a fade runs on, over the world and under the HUD's widgets. It
+## runs on while the world is paused (PIX-238): the town's tour pauses the
+## world a frame after it's redrawn, and the fade froze at full black over
+## the whole tour.
+func _fade_rect(color: Color) -> ColorRect:
+	var dark := ColorRect.new()
+	dark.color = color
+	dark.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	dark.position = -hud.root.offset
+	dark.size = Touch.view_size(self)
+	dark.process_mode = Node.PROCESS_MODE_ALWAYS
+	dark.set_meta("fade", true)
+	hud.root.add_child(dark)
+	return dark
+
 
 ## The saves screen; `web_save` defaults to whatever this browser's web game holds.
 func open_saves(web_save := {}, welcome := false) -> void:

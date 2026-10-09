@@ -2601,6 +2601,10 @@ msgid "Fixed: a potion you brewed before taking Vex's \"A First Brew\" now count
 msgstr "Corrigé : une potion préparée avant d'accepter « Un premier breuvage » de Vex compte désormais dès que vous l'acceptez, et ce que vous fabriquez pour une quête acceptée s'annonce dans le journal de combat quand c'est prêt à remettre"
 
 #: assets/data/changelog.json
+msgid "Fixed: after funding a project on the square, the town's tour of what was built played behind a black screen; it shows in full now, and so do the ending's tour and the homecomings"
+msgstr "Corrigé : après avoir financé un projet sur la place, la visite de ce qui a été bâti se jouait derrière un écran noir ; elle s'affiche désormais en entier, tout comme la visite de la fin et les retours au pays"
+
+#: assets/data/changelog.json
 msgid "Fixed: in French the map and the saves screen ran off the right of the screen; long lines now wrap and rows of buttons flow onto a second line, and every screen is checked to fit"
 msgstr "Corrigé : en français, la carte et l'écran des sauvegardes débordaient à droite de l'écran ; les longues lignes passent désormais à la ligne et les rangées de boutons sur une seconde rangée, et chaque écran est vérifié pour tenir"
 
@@ -2955,6 +2959,10 @@ msgstr "L'ombre et la lumière"
 #: assets/data/changelog.json
 msgid "Light on Your Feet"
 msgstr "Le pied léger"
+
+#: assets/data/changelog.json
+msgid "Lights Up"
+msgstr "Lumière"
 
 #: assets/data/changelog.json
 msgid "Lived In"
@@ -13452,7 +13460,7 @@ msgstr "Pixelheim passe au rang de %s."
 msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
 msgstr "Et aujourd'hui, on fait la fête : des étals sur la place, et un lancer d'anneaux avec un lot pour le meilleur lancer."
 
-#: scripts/world_stage.gd:301
+#: scripts/world_stage.gd:302
 msgid "%s  %d:%02d"
 msgstr "%s  %d:%02d"
 

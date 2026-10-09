@@ -2601,6 +2601,10 @@ msgid "Fixed: a potion you brewed before taking Vex's \"A First Brew\" now count
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Fixed: after funding a project on the square, the town's tour of what was built played behind a black screen; it shows in full now, and so do the ending's tour and the homecomings"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Fixed: in French the map and the saves screen ran off the right of the screen; long lines now wrap and rows of buttons flow onto a second line, and every screen is checked to fit"
 msgstr ""
 
@@ -2954,6 +2958,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Light on Your Feet"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Lights Up"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -13452,7 +13460,7 @@ msgstr ""
 msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
 msgstr ""
 
-#: scripts/world_stage.gd:301
+#: scripts/world_stage.gd:302
 msgid "%s  %d:%02d"
 msgstr ""
 
