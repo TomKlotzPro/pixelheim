@@ -130,7 +130,8 @@
   },
   "beds": [
     "wind",
-    "deepwind"
+    "deepwind",
+    "rain"
   ],
   "themes": {
     "fafnyr": {

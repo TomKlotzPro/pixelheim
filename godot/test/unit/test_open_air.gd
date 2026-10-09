@@ -42,13 +42,13 @@ func test_the_water_map_finds_rivers_seas_and_what_spans_them() -> void:
 
 
 func test_clouds_pass_only_under_the_sky() -> void:
-	assert_true(LightRig.under_sky(MapData.load_by_id("overworld")))
-	assert_true(LightRig.under_sky(MapData.load_by_id("town")))
-	assert_false(LightRig.under_sky(MapData.load_by_id("town_inn")), "never indoors")
+	assert_true(Lights.under_sky(MapData.load_by_id("overworld")))
+	assert_true(Lights.under_sky(MapData.load_by_id("town")))
+	assert_false(Lights.under_sky(MapData.load_by_id("town_inn")), "never indoors")
 	var floor := MapData.new()
 	floor.floor_level = 4
-	assert_false(LightRig.under_sky(floor), "never under the mountain")
-	assert_false(LightRig.under_sky(null))
+	assert_false(Lights.under_sky(floor), "never under the mountain")
+	assert_false(Lights.under_sky(null))
 
 
 func test_the_worlds_clock_stops_with_reduced_motion() -> void:

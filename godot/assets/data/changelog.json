@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.168.0",
+      "date": "2026-10-09",
+      "codename": "Weather",
+      "notes": [
+        "Each region has its own air: heat shimmers over the Ash Fields as embers drift up, snow falls on the Frostgate and frost creeps in at the edges of the view, low fog rolls over the Mirefen and the marshes, and salt spray blows off the Saltmere coast",
+        "Now and then a shower crosses the open land: rain slants down and splashes, the light turns grey, the lamps come up, the birds fall quiet and you hear the rain",
+        "Each region has its own colour mood, and the night takes a little colour from everything",
+        "With Reduce motion on, nothing falls or drifts and the heat haze holds still"
+      ]
+    },
+    {
       "version": "0.167.0",
       "date": "2026-10-09",
       "codename": "Wind and Water",
