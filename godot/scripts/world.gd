@@ -394,21 +394,30 @@ func float_text(text: String, at: Vector2, color: Color) -> void:
 	tween.chain().tween_callback(label.queue_free)
 
 
-func float_number(value: int, at: Vector2, color: Color) -> void:
+## A number over a head. Each lands a few pixels off the last (PIX-209), so
+## a flurry reads as blows, not one smudge; a crit comes in gold, twice the
+## size and with a "!", popping in unless motion is reduced.
+func float_number(value: int, at: Vector2, color: Color, crit := false) -> void:
 	var label := Label.new()
-	label.text = str(value)
+	label.text = str(value) + ("!" if crit else "")
 	# The UI's bold pixel face at its own size, outlined in the night (PIX-194).
 	label.add_theme_font_override("font", UiStyle.bold_font())
-	label.add_theme_font_size_override("font_size", UiStyle.BODY_PX)
-	label.add_theme_color_override("font_color", color)
+	label.add_theme_font_size_override("font_size", UiStyle.BODY_PX * (2 if crit else 1))
+	label.add_theme_color_override("font_color", UiStyle.BRASS_LIGHT if crit else color)
 	label.add_theme_color_override("font_outline_color", UiStyle.NIGHT)
-	label.add_theme_constant_override("outline_size", 3)
-	label.position = at - Vector2(6, 0)
-	label.z_index = 10
+	label.add_theme_constant_override("outline_size", 4 if crit else 3)
+	label.size = label.get_minimum_size()
+	label.position = at - Vector2(label.size.x / 2.0 + randf_range(-4.0, 4.0), 6 if crit else 0)
+	label.z_index = 11 if crit else 10
 	add_child(label)
+	var life := 0.8 if crit else 0.6
 	var tween := create_tween().set_parallel()
-	tween.tween_property(label, "position:y", label.position.y - 12, 0.6).set_ease(Tween.EASE_OUT)
-	tween.tween_property(label, "modulate:a", 0.0, 0.6).set_delay(0.25)
+	if crit and not GameState.settings.reduce_motion:
+		label.pivot_offset = label.size / 2.0
+		label.scale = Vector2.ONE * 1.6
+		tween.tween_property(label, "scale", Vector2.ONE, 0.16).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(label, "position:y", label.position.y - 12, life).set_ease(Tween.EASE_OUT)
+	tween.tween_property(label, "modulate:a", 0.0, life).set_delay(life * 0.4)
 	tween.chain().tween_callback(label.queue_free)
 
 func log_line(line: String) -> void:

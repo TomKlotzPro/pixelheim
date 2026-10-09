@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.153.0",
+      "date": "2026-10-09",
+      "codename": "Hit Feel",
+      "notes": [
+        "A critical hit shows: its number pops up in gold, twice the size, with a \"!\"; numbers in a flurry land side by side instead of on top of each other",
+        "A blow shoves a foe back and the push fades, instead of a one-frame jolt: an elite gives half as much ground, a boss none",
+        "The killing blow lands harder: a white flash, a longer pause and a thud; swings and skills have their own sounds. With reduced motion, no flash, pop or pause"
+      ]
+    },
+    {
       "version": "0.152.0",
       "date": "2026-10-09",
       "codename": "Every Corner in French",

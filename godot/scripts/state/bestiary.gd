@@ -278,17 +278,23 @@ static func hero_skill_damage(hero: HeroState, pack: InventoryState, skill: Dict
 ## `song_crit`: what Loras's song adds when `inspired` (more with his horn, PIX-157).
 ## `extra_crit`: a crit chance from outside the hero's skills (PIX-179: a banner at home).
 static func hero_attack_damage(hero: HeroState, pack: InventoryState, fighter: Dictionary, inspired: bool, roll: Callable, song_crit := 0.12, extra_crit := 0.0) -> int:
+	return int(hero_attack(hero, pack, fighter, inspired, roll, song_crit, extra_crit)["damage"])
+
+
+## The same swing as {damage, crit} (PIX-209), so a crit can look like one.
+static func hero_attack(hero: HeroState, pack: InventoryState, fighter: Dictionary, inspired: bool, roll: Callable, song_crit := 0.12, extra_crit := 0.0) -> Dictionary:
 	var held := HeroRules.weapon(pack)
 	var scaling: String = Catalog.item(held["itemId"]).get("scaling", "strength") if not held.is_empty() else "strength"
 	var raw := float(HeroRules.effective_stat(hero, pack, scaling) + (HeroRules.gear_damage(held) if not held.is_empty() else 2))
 	var passives := HeroRules.passives(hero)
-	var crit: float = passives["critChance"] + (song_crit if inspired else 0.0) + extra_crit
-	if crit > 0 and roll.call() < crit:
+	var chance: float = passives["critChance"] + (song_crit if inspired else 0.0) + extra_crit
+	var crit: bool = chance > 0 and roll.call() < chance
+	if crit:
 		raw *= 1.5
 	if passives["lowHpBonus"] > 0 and float(fighter["hp"]) / fighter["maxHp"] < 0.3:
 		raw *= 1 + passives["lowHpBonus"]
 	raw *= 1 + mastery_bonus(hero.mastery, fighter["id"])
-	return through_armor(variance(raw, roll), int(fighter["defense"]))
+	return {"damage": through_armor(variance(raw, roll), int(fighter["defense"])), "crit": crit}
 
 
 ## A monster's hit on the hero (monsterAttackDamage), through the hero's armour.

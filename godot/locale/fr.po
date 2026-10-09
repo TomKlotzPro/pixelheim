@@ -1613,12 +1613,20 @@ msgid "A WEIGHT BAR: how full the pack is sits beside the weight, and it turns r
 msgstr "UNE JAUGE DE POIDS : le remplissage du sac s'affiche à côté du poids, et vire au rouge près de la limite"
 
 #: assets/data/changelog.json
+msgid "A blow shoves a foe back and the push fades, instead of a one-frame jolt: an elite gives half as much ground, a boss none"
+msgstr "Un coup repousse l'ennemi et la poussée s'estompe, au lieu d'un sursaut d'une image : un élite recule deux fois moins, un boss pas du tout"
+
+#: assets/data/changelog.json
 msgid "A cleric's first night tells them to strike the embers down and mend between blows, since Mend is no weapon"
 msgstr "La première nuit d'un clerc lui dit de frapper les braises et de se soigner entre deux coups, puisque Soin n'est pas une arme"
 
 #: assets/data/changelog.json
 msgid "A code-quality pass under the floorboards: one panel system instead of seven scattered flags - menus are properly modal everywhere now, and a save taken with any panel open loads clean"
 msgstr "Un grand ménage du code, sous le plancher : un seul système de panneaux au lieu de sept indicateurs éparpillés - les menus sont désormais vraiment modaux partout, et une sauvegarde faite avec un panneau ouvert se recharge proprement"
+
+#: assets/data/changelog.json
+msgid "A critical hit shows: its number pops up in gold, twice the size, with a \"!\"; numbers in a flurry land side by side instead of on top of each other"
+msgstr "Un coup critique se voit : son chiffre jaillit en or, deux fois plus grand, avec un « ! » ; dans une volée de coups, les chiffres se posent côte à côte au lieu de s'empiler"
 
 #: assets/data/changelog.json
 msgid "A dozen new items: bows, war hammers, wands, cloaks, tower shields..."
@@ -2471,6 +2479,10 @@ msgstr "De la tête aux pieds"
 #: assets/data/changelog.json
 msgid "Higher charters ask more than gold: the Town wants its patron to own a home; the City wants all three businesses under your name"
 msgstr "Les chartes supérieures demandent plus que de l'or : le Bourg veut que son mécène possède une maison ; la Cité veut les trois commerces à votre nom"
+
+#: assets/data/changelog.json
+msgid "Hit Feel"
+msgstr "Des coups qui portent"
 
 #: assets/data/changelog.json
 msgid "Home & Hearth"
@@ -4075,6 +4087,10 @@ msgstr "Le journal indique où commence une escorte"
 #: assets/data/changelog.json
 msgid "The keepers keep working. They just work for you now."
 msgstr "Les commerçants travaillent toujours. Simplement, c'est pour vous désormais."
+
+#: assets/data/changelog.json
+msgid "The killing blow lands harder: a white flash, a longer pause and a thud; swings and skills have their own sounds. With reduced motion, no flash, pop or pause"
+msgstr "Le coup fatal frappe plus fort : un éclair blanc, une pause plus longue et un bruit sourd ; les attaques et les compétences ont leurs propres sons. Avec les mouvements réduits, ni éclair, ni rebond, ni pause"
 
 #: assets/data/changelog.json
 msgid "The land got lived-in: a fenced sheep pen, flower meadows, kitchen gardens behind the cottages, and a walled orchard behind the player's house"
@@ -10344,15 +10360,15 @@ msgstr "S'éloigner"
 msgid "%s howls - the forest answers!"
 msgstr "%s hurle - la forêt répond !"
 
-#: scripts/enemy.gd:141
+#: scripts/enemy.gd:152
 msgid "Lv %d"
 msgstr "Niv. %d"
 
-#: scripts/enemy.gd:339
+#: scripts/enemy.gd:374
 msgid "blocked"
 msgstr "paré"
 
-#: scripts/enemy.gd:356
+#: scripts/enemy.gd:398
 msgid "%s is afflicted by %s!"
 msgstr "%s est atteint : %s !"
 
@@ -11072,35 +11088,35 @@ msgstr "Sauvegardes"
 msgid "Quit to title"
 msgstr "Quitter vers le titre"
 
-#: scripts/player.gd:243
+#: scripts/player.gd:244
 msgid "dodged"
 msgstr "esquivé"
 
-#: scripts/player.gd:251
+#: scripts/player.gd:252
 msgid "You are afflicted by %s!"
 msgstr "Vous voilà atteint : %s !"
 
-#: scripts/player.gd:303
+#: scripts/player.gd:304
 msgid "No skill on that key yet. Learn more, or set the keys, in Skills."
 msgstr "Aucune compétence sur cette touche. Apprenez-en d'autres, ou réglez les touches, dans Compétences."
 
-#: scripts/player.gd:314
+#: scripts/player.gd:315
 msgid "No foe in reach for %s."
 msgstr "Aucun ennemi à portée pour %s."
 
-#: scripts/player.gd:330
+#: scripts/player.gd:332
 msgid "All ailments are purged!"
 msgstr "Tous les maux sont purgés !"
 
-#: scripts/player.gd:333
+#: scripts/player.gd:335
 msgid "%s restores %d HP."
 msgstr "%s rend %d PV."
 
-#: scripts/player.gd:344
+#: scripts/player.gd:346
 msgid "%s hits %d foes for %d damage!"
 msgstr "%s touche %d ennemis : %d dégâts !"
 
-#: scripts/player.gd:346
+#: scripts/player.gd:348
 msgid "%s hits %s for %d damage!"
 msgstr "%s touche %s : %d dégâts !"
 
@@ -12504,31 +12520,31 @@ msgstr "Déjà commandé."
 msgid "Arrows"
 msgstr "Flèches"
 
-#: scripts/world.gd:1376
+#: scripts/world.gd:1385
 msgid "Five lanterns on the square, one for each of the five who climbed. Tonight the %s remembers them - and %s."
 msgstr "Cinq lanternes sur la place, une pour chacun des cinq qui ont gravi la montagne. Ce soir, Pixelheim, désormais %s, se souvient d'eux - et salue %s."
 
-#: scripts/world.gd:1377
+#: scripts/world.gd:1386
 msgid "Pixelheim, a %s raised from the ashes. Tonight it celebrates %s."
 msgstr "Pixelheim, des cendres au rang de %s. Ce soir, on y fête %s."
 
-#: scripts/world.gd:1463
+#: scripts/world.gd:1472
 msgid "%s: built."
 msgstr "%s : chantier terminé."
 
-#: scripts/world.gd:1467
+#: scripts/world.gd:1476
 msgid "Pixelheim is a %s now."
 msgstr "Pixelheim passe au rang de %s."
 
-#: scripts/world.gd:1472
+#: scripts/world.gd:1481
 msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
 msgstr "Et aujourd'hui, on fait la fête : des étals sur la place, et un lancer d'anneaux avec un lot pour le meilleur lancer."
 
-#: scripts/world.gd:1571
+#: scripts/world.gd:1580
 msgid "%s  %d:%02d"
 msgstr "%s  %d:%02d"
 
-#: scripts/world.gd:1795
+#: scripts/world.gd:1804
 msgid "Next"
 msgstr "Ensuite"
 
@@ -12536,7 +12552,7 @@ msgstr "Ensuite"
 msgid "The pack is scattered. Another comes once you've walked a good way, or after a night's rest."
 msgstr "La meute est dispersée. Une autre reviendra quand vous aurez bien marché, ou après une nuit de repos."
 
-#: scripts/world.gd:477
+#: scripts/world.gd:486
 msgid "No map reaches this deep."
 msgstr "Aucune carte ne va aussi profond."
 
@@ -12556,19 +12572,19 @@ msgstr "Quête acceptée"
 msgid "Quest complete"
 msgstr "Quête terminée"
 
-#: scripts/world.gd:719
+#: scripts/world.gd:728
 msgid "{epithet} {name}"
 msgstr "{name} {epithet}"
 
-#: scripts/world.gd:887
+#: scripts/world.gd:896
 msgid "Only cinders where the house stood. The board on the square can change that."
 msgstr "Rien que des cendres là où se dressait la maison. Le tableau de la place peut y remédier."
 
-#: scripts/world.gd:892
+#: scripts/world.gd:901
 msgid "The deed costs %d gold. {key:interact} again to sign it."
 msgstr "Le titre de propriété coûte %d or. {key:interact} à nouveau pour le signer."
 
-#: scripts/world.gd:976
+#: scripts/world.gd:985
 msgid "A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it."
 msgstr "Un établi pour cette étagère : %d or. Il compte comme un niveau de métier en plus quand vous fabriquez chez vous. {key:interact} à nouveau pour l'acheter."
 

@@ -137,12 +137,12 @@ func _physics_process(delta: float) -> void:
 				var primed := Time.get_ticks_msec() / 1000.0 < crit_primed_until
 				crit_primed_until = 0.0
 				# The web's swing: scaling stat + weapon, crits, mastery, through armour (PIX-185).
-				var damage := Bestiary.hero_attack_damage(
+				var swing := Bestiary.hero_attack(
 					GameState.hero, GameState.pack, body.fighter,
 					GameState.settlement.bard_song == true, GameState.roll, GameState.song_crit(), GameState.home_buff("crit") + (1.0 if primed else 0.0)
 				)
-				body.take_hit(damage, global_position, HeroRules.passives(GameState.hero)["attackInflict"])
-				_steal_life(damage)
+				body.take_hit(swing["damage"], global_position, HeroRules.passives(GameState.hero)["attackInflict"], swing["crit"])
+				_steal_life(swing["damage"])
 		return
 	var input := scripted_dir
 	if input == Vector2.ZERO:
@@ -193,6 +193,7 @@ func attack() -> void:
 	velocity = Vector2.ZERO
 	hitbox.position = facing * 16
 	_play(art["attack"])
+	Sound.play_ui("swing")
 	get_tree().create_timer(ATTACK_COOLDOWN).timeout.connect(
 		func() -> void: attack_ready = true
 	)
@@ -321,6 +322,7 @@ func cast(index: int) -> void:
 	casting = true
 	velocity = Vector2.ZERO
 	_play(art["attack"])
+	Sound.play_ui("cast")
 	var color: Color = SKILL_COLORS.get(skill["stat"], Color.WHITE)
 	if skill["kind"] == "heal":
 		var restored := GameState.heal_hero(Skills.heal_power(GameState.hero, GameState.pack, skill))
