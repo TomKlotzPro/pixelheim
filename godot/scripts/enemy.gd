@@ -19,6 +19,8 @@ const ELITE_TINT := Color(1.0, 0.82, 0.7)
 ## foe, half for an elite or a named one, none for a boss.
 const KNOCK_PUSH := 166.0
 const KNOCK_TIME := 0.12
+## Where a blow lands on a foe, from its feet: about its chest (the sparks).
+const SPARK_LIFT := Vector2(0, -12)
 ## The hit stop on a blow, and the longer one on the blow that kills.
 const HIT_STOP := 0.035
 const KILL_STOP := 0.08
@@ -394,6 +396,9 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null, crit := fa
 		damage = maxi(1, roundi(damage * float(Bestiary._data()["eliteMoves"]["undead"]["block"])))
 		world.float_text(Text.t("blocked"), global_position + Vector2(0, -26), Color(0.7, 0.85, 1.0))
 	Sound.play("hit")
+	# Steel on armour throws sparks where the blow lands (PIX-225).
+	if Motes.sparks_off(String(fighter["id"])) and world.get("atmosphere") != null:
+		world.atmosphere.sparks(global_position + (from - global_position).normalized() * 6.0 + SPARK_LIFT)
 	knock = (global_position - from).normalized() * knock_push(fighter, not named.is_empty())
 	knock_left = KNOCK_TIME
 	_lose(damage, Color(1, 0.95, 0.85), crit)

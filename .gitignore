@@ -12,3 +12,6 @@ logs
 # The deploy's assembled site, and Playwright's MCP scratch
 site/
 .playwright-mcp/
+
+# Agents' private checkouts.
+.claude/worktrees/

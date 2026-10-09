@@ -31,6 +31,7 @@ const SHOTS := [
 	{"name": "13_riverside", "map": "town", "cell": Vector2i(72, 8), "time": DAY},
 	{"name": "14_rain", "map": "overworld", "at": "forest_1", "rain": true},
 	{"name": "15_coast", "map": "saltmere", "cell": Vector2i(33, 27), "time": DAY},
+	{"name": "16_deepwood", "map": "deepwood", "time": DAY},
 ]
 ## Upper Street: the shop's and the inn's fronts, the street lamps, the hall.
 const STREET := Vector2i(40, 13)
@@ -66,7 +67,7 @@ func run() -> void:
 	for shot: Dictionary in SHOTS:
 		_stage(shot)
 		await get_tree().create_timer(SETTLE_SECONDS).timeout
-		await RenderingServer.frame_post_draw
+		await drawn()
 		var image := get_viewport().get_texture().get_image()
 		image.save_png("%s/%s.png" % [out_dir, shot["name"]])
 		images.append(image)
@@ -104,13 +105,25 @@ func _stage(shot: Dictionary) -> void:
 		foe.notice()
 
 
+## Waits for a frame drawn and ready to save. While the window is hidden
+## (another app full screen over it) the engine draws nothing of its own
+## accord and a run would wait forever, so the look book draws the frame
+## itself.
+func drawn() -> void:
+	if DisplayServer.window_can_draw():
+		await RenderingServer.frame_post_draw
+	else:
+		await get_tree().process_frame
+		RenderingServer.force_draw(false)
+
+
 ## The shot as it moves: MOTION_FRAMES frames, MOTION_STEP seconds apart.
 func _film(shot_name: String) -> void:
 	var folder := "%s/motion/%s" % [out_dir, shot_name]
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(folder))
 	for frame in MOTION_FRAMES:
 		await get_tree().create_timer(MOTION_STEP).timeout
-		await RenderingServer.frame_post_draw
+		await drawn()
 		get_viewport().get_texture().get_image().save_png("%s/%02d.png" % [folder, frame])
 
 

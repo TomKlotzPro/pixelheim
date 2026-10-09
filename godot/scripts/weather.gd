@@ -8,10 +8,12 @@ class_name Weather
 ## steps walked), so they need no saving and fall the same way every time.
 ## Pure: the Atmosphere node does the per-frame work.
 
-## A region's air: region -> air.
-const AIRS := {"ash": "ash", "frost": "frost", "mire": "mire", "marsh": "mire", "coast": "coast"}
-## The airs in the order the shaders take them.
-const KINDS := ["ash", "frost", "mire", "coast"]
+## A region's air: region -> air. The woods have theirs too (PIX-225: the
+## leaves falling, a deeper green).
+const AIRS := {"ash": "ash", "frost": "frost", "mire": "mire", "marsh": "mire", "coast": "coast", "forest": "woods", "deepwood": "woods"}
+## Every air; the first four are the ones the air's pass draws.
+const KINDS := ["ash", "frost", "mire", "coast", "woods"]
+const DRAWN := ["ash", "frost", "mire", "coast"]
 ## Each air's colour mood: a tint, its saturation and its contrast. The open
 ## land keeps Shade's colours.
 const MOODS := {
@@ -20,6 +22,7 @@ const MOODS := {
 	"frost": [Color(0.93, 0.97, 1.0), 0.9, 1.02],
 	"mire": [Color(0.94, 1.0, 0.93), 0.8, 0.96],
 	"coast": [Color(0.98, 1.0, 1.0), 1.06, 1.02],
+	"woods": [Color(0.96, 1.0, 0.95), 1.04, 1.03],
 }
 ## The night takes some colour from everything.
 const NIGHT_SATURATION := 0.82

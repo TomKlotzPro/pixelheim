@@ -347,8 +347,13 @@ func _build_decor(data: MapData) -> void:
 			# A candle behind the glass lights the street a little (PIX-221).
 			_add_glow(center(cell), 10, 0.5, 40.0, Lights.WINDOW, false, Lights.WINDOW_ENERGY)
 		elif tile in PunyInterior.FIRE_TILES:
-			# A hearth or a forge warms the room it's in.
+			# A hearth or a forge warms the room it's in, and embers rise off
+			# it (PIX-225).
 			props.add_child(Lights.make(center(cell) + Vector2(TILE / 2.0, 4), 96.0, Lights.FIRE, Lights.FIRE_ENERGY, true))
+			var embers := Motes.make_embers()
+			embers.position = center(cell) + Vector2(TILE / 2.0, 6)
+			embers.z_index = 6
+			props.add_child(embers)
 		elif tile == PunyTown.DOOR:
 			_add_chimney_smoke(cell)
 	chest_sprites = {}
@@ -699,8 +704,13 @@ func _add_camp_piece(cell: Vector2i, piece: Dictionary) -> void:
 		flame.sprite_frames = _camp_torch_frames()
 		flame.play()
 		flame.material = Lights.unshaded()
-		# A camp's fire lights the camp (PIX-221).
+		# A camp's fire lights the camp (PIX-221), and sparks rise off it
+		# (PIX-225).
 		root.add_child(Lights.make(Vector2(TILE / 2.0, -foot.end.y + 4), 72.0, Lights.FIRE, Lights.FIRE_ENERGY, true))
+		var embers := Motes.make_embers(3)
+		embers.position = Vector2(TILE / 2.0, -foot.end.y - 2)
+		embers.z_index = 6
+		root.add_child(embers)
 		# Each camp's fire flickers on its own beat.
 		flame.frame = absi(hash(cell)) % CAMP_TORCH.size()
 		sprite = flame
