@@ -57,6 +57,12 @@ static func can_buy(hero: HeroState, entry: Dictionary) -> bool:
 	return not entry.has("requires") or entry["requires"] in hero.skill_nodes
 
 
+## Whether a skill point has something to buy now (PIX-207): once the tree
+## is all learned, the points wait without nagging.
+static func can_spend(hero: HeroState) -> bool:
+	return hero.skill_points > 0 and tree(hero.role_id).any(func(entry: Dictionary) -> bool: return can_buy(hero, entry))
+
+
 ## The level a node's tier opens at (skillTierLevels).
 static func tier_level(entry: Dictionary) -> int:
 	var levels: Array = Bestiary._data()["skillTierLevels"]

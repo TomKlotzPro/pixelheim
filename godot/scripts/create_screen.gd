@@ -226,6 +226,18 @@ func _show_night() -> void:
 	night_toggle.text = "First night: play it" if play_night else "First night: skip it"
 
 
+## The name field would swallow these (PIX-207): role, look and the first
+## night answer them before it does.
+func _input(event: InputEvent) -> void:
+	if not on_top() or not event is InputEventKey or not event.pressed or event.echo:
+		return
+	if event.keycode in [KEY_UP, KEY_DOWN, KEY_TAB, KEY_PAGEUP, KEY_PAGEDOWN]:
+		var command := _command(event)
+		if command.is_valid():
+			get_viewport().set_input_as_handled()
+			command.call()
+
+
 func _command(event: InputEvent) -> Callable:
 	var command := Callable()
 	if event is InputEventKey and event.pressed and not event.echo:

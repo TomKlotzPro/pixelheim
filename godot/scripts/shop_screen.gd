@@ -268,7 +268,8 @@ func _build_rows() -> Array[Dictionary]:
 				out.append({
 					"label": Catalog.item_name(entry["itemId"]), "icon": entry["itemId"],
 					"price": "%s %d" % [Economy.job_name(entry["job"]["id"]), entry["job"]["level"]],
-					"detail": _describe_recipe(entry), "verb": "Craft",
+					# Written when the row is chosen, not for every row each move (PIX-207).
+					"detail_of": _describe_recipe.bind(entry), "verb": "Craft",
 					"enabled": Economy.can_craft(entry, pack.items, GameState.hero.jobs),
 					"action": func() -> void: _crafted(GameState.craft(recipe_id), entry),
 				})
@@ -289,7 +290,7 @@ func _refresh() -> void:
 	for index in rows.size():
 		list.add_child(_row(index))
 	var row := rows[selected] if not rows.is_empty() else {}
-	detail.text = row.get("detail", "")
+	detail.text = row["detail_of"].call() if row.has("detail_of") else row.get("detail", "")
 	act_button.visible = not row.is_empty()
 	act_button.text = UiStyle.keyed("{key:interact}", Text.t(row.get("verb", "")))
 	act_button.disabled = not row.get("enabled", false)

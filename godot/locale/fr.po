@@ -3405,8 +3405,20 @@ msgid "Sixteen new pieces across the tiers: shops stock the basics, the best dro
 msgstr "Seize nouvelles pièces à tous les paliers : les boutiques vendent l'essentiel, les meilleures tombent en profondeur ou sortent de l'établi (Grèves d'écailles, Collier de crocs de loup)"
 
 #: assets/data/changelog.json
+msgid "Skill points stop lighting the menu once there's nothing left to learn"
+msgstr "Les points de compétence n'allument plus le menu quand il n'y a plus rien à apprendre"
+
+#: assets/data/changelog.json
 msgid "Skill trees! One skill point per level, three branches per role"
 msgstr "Des arbres de compétences ! Un point de compétence par niveau, trois branches par rôle"
+
+#: assets/data/changelog.json
+msgid "Small Things"
+msgstr "Petites choses"
+
+#: assets/data/changelog.json
+msgid "Small things put right: hero creation answers its keys again (role, look, the first night), the hero swings whatever weapon is in hand, Hilda's craft list moves without a stutter, and the Lich Crown's every stat includes endurance"
+msgstr "Petites choses réparées : la création du héros répond de nouveau à ses touches (classe, apparence, première nuit), le héros frappe avec l'arme qu'il tient, la liste d'artisanat de Hilda défile sans à-coups, et chaque caractéristique de la Couronne de la liche inclut l'endurance"
 
 #: assets/data/changelog.json
 msgid "Smithing shaves the Forge's prices and, at level 5, unlocks the +8 masterwork cap"
@@ -10184,11 +10196,11 @@ msgstr "Première nuit : la jouer"
 msgid "First night: skip it"
 msgstr "Première nuit : la passer"
 
-#: scripts/create_screen.gd:252
+#: scripts/create_screen.gd:264
 msgid "A hero needs a name."
 msgstr "Un héros a besoin d'un nom."
 
-#: scripts/create_screen.gd:256
+#: scripts/create_screen.gd:268
 msgid "Every slot holds a hero. Clear one in Saves first."
 msgstr "Chaque emplacement a déjà son héros. Libérez-en un dans Sauvegardes d'abord."
 
@@ -11052,35 +11064,35 @@ msgstr "Sauvegardes"
 msgid "Quit to title"
 msgstr "Quitter vers le titre"
 
-#: scripts/player.gd:240
+#: scripts/player.gd:243
 msgid "dodged"
 msgstr "esquivé"
 
-#: scripts/player.gd:248
+#: scripts/player.gd:251
 msgid "You are afflicted by %s!"
 msgstr "Vous voilà atteint : %s !"
 
-#: scripts/player.gd:300
+#: scripts/player.gd:303
 msgid "No skill on that key yet. Learn more, or set the keys, in Skills."
 msgstr "Aucune compétence sur cette touche. Apprenez-en d'autres, ou réglez les touches, dans Compétences."
 
-#: scripts/player.gd:311
+#: scripts/player.gd:314
 msgid "No foe in reach for %s."
 msgstr "Aucun ennemi à portée pour %s."
 
-#: scripts/player.gd:327
+#: scripts/player.gd:330
 msgid "All ailments are purged!"
 msgstr "Tous les maux sont purgés !"
 
-#: scripts/player.gd:330
+#: scripts/player.gd:333
 msgid "%s restores %d HP."
 msgstr "%s rend %d PV."
 
-#: scripts/player.gd:341
+#: scripts/player.gd:344
 msgid "%s hits %d foes for %d damage!"
 msgstr "%s touche %d ennemis : %d dégâts !"
 
-#: scripts/player.gd:343
+#: scripts/player.gd:346
 msgid "%s hits %s for %d damage!"
 msgstr "%s touche %s : %d dégâts !"
 
@@ -11388,7 +11400,7 @@ msgstr "Hilda y met un coup de marteau : +1."
 msgid "Not enough gold, or it can take no more."
 msgstr "Pas assez d'or, ou la pièce est à son maximum."
 
-#: scripts/shop_screen.gd:298
+#: scripts/shop_screen.gd:299
 msgid "Sell all %d"
 msgstr "Tout vendre (%d)"
 
@@ -11408,15 +11420,15 @@ msgstr "Forge"
 msgid "Salvage"
 msgstr "Démonter"
 
-#: scripts/shop_screen.gd:365
+#: scripts/shop_screen.gd:366
 msgid "Sold for %dg."
 msgstr "Vente : %d o."
 
-#: scripts/shop_screen.gd:372
+#: scripts/shop_screen.gd:373
 msgid "That takes %s %d."
 msgstr "Requis : %s %d."
 
-#: scripts/shop_screen.gd:378
+#: scripts/shop_screen.gd:379
 msgid "A lucky brew: 2x %s! %s"
 msgstr "Coup de chance au chaudron : 2x %s ! %s"
 
@@ -11424,59 +11436,59 @@ msgstr "Coup de chance au chaudron : 2x %s ! %s"
 msgid "Reforge"
 msgstr "Reforger"
 
-#: scripts/shop_screen.gd:380
+#: scripts/shop_screen.gd:381
 msgid "Made %s. %s"
 msgstr "Fabrication : %s. %s"
 
-#: scripts/shop_screen.gd:386
+#: scripts/shop_screen.gd:387
 msgid "Nothing to sell. Worn gear stays on your back."
 msgstr "Rien à vendre. L'équipement porté reste sur votre dos."
 
-#: scripts/shop_screen.gd:388
+#: scripts/shop_screen.gd:389
 msgid "Bring me steel to work with."
 msgstr "Apportez-moi de l'acier à travailler."
 
-#: scripts/shop_screen.gd:390
+#: scripts/shop_screen.gd:391
 msgid "Nothing to break down. Worn gear stays on your back."
 msgstr "Rien à démonter. L'équipement porté reste sur votre dos."
 
-#: scripts/shop_screen.gd:393
+#: scripts/shop_screen.gd:394
 msgid "Nothing here yet."
 msgstr "Rien ici pour l'instant."
 
-#: scripts/shop_screen.gd:410
+#: scripts/shop_screen.gd:411
 msgid "Damage %d"
 msgstr "Dégâts %d"
 
-#: scripts/shop_screen.gd:412
+#: scripts/shop_screen.gd:413
 msgid "Scales with %s"
 msgstr "Évolue avec %s"
 
-#: scripts/shop_screen.gd:414
+#: scripts/shop_screen.gd:415
 msgid "Armor %d"
 msgstr "Armure %d"
 
-#: scripts/shop_screen.gd:423
+#: scripts/shop_screen.gd:424
 msgid "Restores %d HP"
 msgstr "Rend %d PV"
 
-#: scripts/shop_screen.gd:425
+#: scripts/shop_screen.gd:426
 msgid "Restores %d MP"
 msgstr "Rend %d PM"
 
-#: scripts/shop_screen.gd:426
+#: scripts/shop_screen.gd:427
 msgid "Weight %d"
 msgstr "Poids %d"
 
-#: scripts/shop_screen.gd:431
+#: scripts/shop_screen.gd:432
 msgid "Needs:"
 msgstr "Il faut :"
 
-#: scripts/shop_screen.gd:434
+#: scripts/shop_screen.gd:435
 msgid "  %d x %s  (have %d)"
 msgstr "  %d x %s  (vous en avez %d)"
 
-#: scripts/shop_screen.gd:441
+#: scripts/shop_screen.gd:442
 msgid "%s level %d - you are %s"
 msgstr "%s niveau %d - vous : %s"
 
@@ -12196,55 +12208,55 @@ msgstr "La part de chaque coup que vous détournez : chaque point aide, un peu
 msgid "Grit: a little health for everyone, and for fighters the stamina pool and how fast it refills."
 msgstr "Ténacité : un peu de santé pour tous et, pour les combattants, la réserve d'EN et sa vitesse de recharge."
 
-#: scripts/state/skills.gd:182
+#: scripts/state/skills.gd:188
 msgid "%s needs level %d."
 msgstr "%s requiert le niveau %d."
 
-#: scripts/state/skills.gd:184
+#: scripts/state/skills.gd:190
 msgid "Not enough %s for %s."
 msgstr "Pas assez de %s pour %s."
 
-#: scripts/state/skills.gd:186
+#: scripts/state/skills.gd:192
 msgid "Too hurt to pay %s's price."
 msgstr "%s : vos PV ne suffisent pas à en payer le prix."
 
-#: scripts/state/skills.gd:212
+#: scripts/state/skills.gd:218
 msgid "carry %d"
 msgstr "charge %d"
 
-#: scripts/state/skills.gd:221
+#: scripts/state/skills.gd:227
 msgid "skill power %d"
 msgstr "puissance %d"
 
-#: scripts/state/skills.gd:223
+#: scripts/state/skills.gd:229
 msgid "MP %d"
 msgstr "PM %d"
 
-#: scripts/state/skills.gd:225
+#: scripts/state/skills.gd:231
 msgid "powers INT skills"
 msgstr "renforce les compétences d'INT"
 
-#: scripts/state/skills.gd:237
+#: scripts/state/skills.gd:243
 msgid "powers bows, daggers and DEX skills"
 msgstr "renforce arcs, dagues et compétences de DEX"
 
-#: scripts/state/skills.gd:242
+#: scripts/state/skills.gd:248
 msgid "turns aside %d%% of a level-%d hit"
 msgstr "détourne %d%% d'un coup de niveau %d"
 
-#: scripts/state/skills.gd:244
+#: scripts/state/skills.gd:250
 msgid "HP %d"
 msgstr "PV %d"
 
-#: scripts/state/skills.gd:247
+#: scripts/state/skills.gd:253
 msgid "regen %d/turn"
 msgstr "régén. %d/tour"
 
-#: scripts/state/skills.gd:68
+#: scripts/state/skills.gd:74
 msgid "EN"
 msgstr "EN"
 
-#: scripts/state/skills.gd:68
+#: scripts/state/skills.gd:74
 msgid "MP"
 msgstr "PM"
 

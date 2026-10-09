@@ -155,3 +155,16 @@ func test_twenty_is_the_fifth_rank() -> void:
 	assert_eq(hero.skill_points, 2, "a rank's bonus point")
 	assert_eq(HeroRules.rank_index(20), 4)
 	assert_eq(Ranks.pending_tier(hero), 0, "the path was walked at 15: no step left")
+
+
+## PIX-207: points with nothing to buy don't nag.
+func test_spare_points_wait_without_nagging() -> void:
+	var hero := HeroState.create("T", "warrior")
+	hero.level = 20
+	hero.skill_points = 3
+	assert_true(Skills.can_spend(hero), "a whole tree still to learn")
+	for entry: Dictionary in Skills.tree("warrior"):
+		if entry["id"] not in hero.skill_nodes:
+			hero.skill_nodes.append(entry["id"])
+	assert_false(Skills.can_spend(hero), "all learned: the points wait quietly")
+	assert_true(Town.trophy_stat_delta("lich_crown").has("endurance"), "the Lich Crown's every stat includes END")
