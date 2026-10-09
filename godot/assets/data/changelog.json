@@ -1,6 +1,18 @@
 {
   "releases": [
     {
+      "version": "0.138.0",
+      "date": "2026-10-09",
+      "codename": "Past Ten",
+      "notes": [
+        "PAST TEN: every skill tree grows two more tiers, at levels 13 and 17 - a new skill and two passives at each. Each role gains a skill that strikes every foe in reach (Cleave, Flame Wave, Fan of Knives, Holy Nova, Volley, Divine Storm, Death Cloud) and one more to finish (Rally, Arcane Lance, Garrote, Sunfire, Kill Shot, Shieldbreaker, and Drain Life, which heals you for half of what it takes)",
+        "PASSIVES THAT PLAY: fleeing never happened in a real-time fight, so every node and path that promised it now gives quicker feet, a dodge that's ready sooner, or a sure crit on your next strike after a dodge. New passives heal you for a share of the damage you deal, make your skills hit harder or your heals restore more",
+        "YOUR KEYS, YOUR CHOICE: in Skills, choose a skill you know and press 1-6 to put it on that key. A new skill takes the first free key, and learning one never shuffles the others",
+        "A FIFTH RANK: level 20 crowns the hero - Ironlord, Starcaller, Nightlord, Hierophant, Eldwarden, Exemplar or Deathlord - with an amethyst aura and a bonus skill point",
+        "The skill tree fits all six tiers on one page, one line a skill, with the chosen one described in full below"
+      ]
+    },
+    {
       "version": "0.137.0",
       "date": "2026-10-09",
       "codename": "Kills That Count",

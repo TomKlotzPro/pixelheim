@@ -130,17 +130,23 @@ func _physics_process(delta: float) -> void:
 			var body := area.get_parent()
 			if body.has_method("take_hit") and body not in hit_this_swing:
 				hit_this_swing.append(body)
+				# A blow after a priming dodge is a sure crit, once (PIX-190).
+				var primed := Time.get_ticks_msec() / 1000.0 < crit_primed_until
+				crit_primed_until = 0.0
 				# The web's swing: scaling stat + weapon, crits, mastery, through armour (PIX-185).
-				body.take_hit(Bestiary.hero_attack_damage(
+				var damage := Bestiary.hero_attack_damage(
 					GameState.hero, GameState.pack, body.fighter,
-					GameState.settlement.bard_song == true, GameState.roll, GameState.song_crit(), GameState.home_buff("crit")
-				), global_position, HeroRules.passives(GameState.hero)["attackInflict"])
+					GameState.settlement.bard_song == true, GameState.roll, GameState.song_crit(), GameState.home_buff("crit") + (1.0 if primed else 0.0)
+				)
+				body.take_hit(damage, global_position, HeroRules.passives(GameState.hero)["attackInflict"])
+				_steal_life(damage)
 		return
 	var input := scripted_dir
 	if input == Vector2.ZERO:
 		input = Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	# Wren's riders taught the hero to travel light (PIX-157): above ground only.
 	var pace := SPEED * (1.0 + (GameState.walk_bonus() if world.map.floor_level == 0 else 0.0))
+	pace *= 1.0 + float(HeroRules.passives(GameState.hero)["moveSpeed"])
 	velocity = input * pace
 	move_and_slide()
 	if input != Vector2.ZERO:
@@ -212,10 +218,18 @@ func dodge() -> void:
 	get_tree().create_timer(float(rules["seconds"])).timeout.connect(func() -> void: dodging = false)
 	_dodge_iframes = true
 	get_tree().create_timer(float(rules["iframes"])).timeout.connect(func() -> void: _dodge_iframes = false)
-	get_tree().create_timer(float(rules["cooldown"])).timeout.connect(func() -> void: dodge_ready = true)
+	# Passives ready the next roll sooner, and some make it the setup for a crit (PIX-190).
+	var passives := HeroRules.passives(GameState.hero)
+	if passives["dodgeCrit"]:
+		crit_primed_until = Time.get_ticks_msec() / 1000.0 + PRIMED_SECONDS
+	var cooldown := float(rules["cooldown"]) * (1.0 - float(passives["dodgeCooldown"]))
+	get_tree().create_timer(cooldown).timeout.connect(func() -> void: dodge_ready = true)
 
 
 var _dodge_iframes := false
+## A dodge that primes the next blow to crit (PIX-190's dodgeCrit): until when.
+var crit_primed_until := 0.0
+const PRIMED_SECONDS := 2.0
 
 
 ## A blow lands; `infliction` is the attacker's ailment roll, if it carries one.
@@ -280,9 +294,10 @@ static func _glow() -> Texture2D:
 func cast(index: int) -> void:
 	if dead or attacking or not skill_ready or ailments.is_stunned():
 		return
-	var skills := Skills.hero_skills(GameState.hero)
-	if index >= skills.size():
-		world._flash_message("No skill in that place yet. Learn more in Skills.")
+	# The skill on that key of the dock (PIX-190), not the Nth one known.
+	var skills := Skills.docked(GameState.hero)
+	if index >= skills.size() or skills[index].is_empty():
+		world._flash_message("No skill on that key yet. Learn more, or set the keys, in Skills.")
 		return
 	var skill: Dictionary = skills[index]
 	var block := Skills.cast_block(GameState.hero, skill)
@@ -305,7 +320,7 @@ func cast(index: int) -> void:
 	_play(art["attack"])
 	var color: Color = SKILL_COLORS.get(skill["stat"], Color.WHITE)
 	if skill["kind"] == "heal":
-		var restored := GameState.heal_hero(Skills.skill_power(GameState.hero, GameState.pack, skill))
+		var restored := GameState.heal_hero(Skills.heal_power(GameState.hero, GameState.pack, skill))
 		if skill.get("cleanse", false) and not ailments.kinds().is_empty():
 			ailments.clear()
 			_show_ailment()
@@ -314,10 +329,40 @@ func cast(index: int) -> void:
 		world.float_number(restored, global_position + Vector2(0, -22), Color(0.5, 1, 0.6))
 		world.log_line(Text.t("%s restores %d HP.") % [skill["name"], restored])
 		return
-	var damage := Bestiary.hero_skill_damage(GameState.hero, GameState.pack, skill, target.fighter, GameState.roll)
-	world.skill_flash(target.global_position, color)
-	world.log_line(Text.t("%s hits %s for %d damage!") % [skill["name"], target.fighter["name"], damage])
-	target.take_hit(damage, global_position, skill.get("inflicts"))
+	# An area skill (PIX-190) strikes every foe in reach, not just the nearest.
+	var targets: Array = _foes_in_reach() if skill.get("area", false) else [target]
+	var dealt := 0
+	for foe: Node in targets:
+		var damage := Bestiary.hero_skill_damage(GameState.hero, GameState.pack, skill, foe.fighter, GameState.roll)
+		world.skill_flash(foe.global_position, color)
+		foe.take_hit(damage, global_position, skill.get("inflicts"))
+		dealt += damage
+	if targets.size() > 1:
+		world.log_line(Text.t("%s hits %d foes for %d damage!") % [skill["name"], targets.size(), dealt])
+	else:
+		world.log_line(Text.t("%s hits %s for %d damage!") % [skill["name"], target.fighter["name"], dealt])
+	# A draining skill gives back a share of what it took (Drain Life).
+	var drained := roundi(dealt * float(skill.get("drain", 0.0)))
+	if drained > 0:
+		var restored := GameState.heal_hero(drained)
+		world.float_number(restored, global_position + Vector2(0, -22), Color(0.5, 1, 0.6))
+	_steal_life(dealt)
+
+
+## Some passives heal the hero a share of the damage they deal (PIX-190).
+func _steal_life(damage: int) -> void:
+	var share := float(HeroRules.passives(GameState.hero)["lifeSteal"])
+	if share <= 0 or damage <= 0:
+		return
+	var restored := GameState.heal_hero(maxi(1, roundi(damage * share)))
+	if restored > 0:
+		world.float_number(restored, global_position + Vector2(0, -22), Color(0.5, 1, 0.6))
+
+
+## Every living foe within a skill's reach.
+func _foes_in_reach() -> Array:
+	return get_tree().get_nodes_in_group("mobs").filter(func(enemy: Node) -> bool:
+		return not enemy.dying and (enemy.global_position - global_position).length() <= SKILL_RANGE)
 
 
 ## The closest living foe within reach, those ahead of the hero first.

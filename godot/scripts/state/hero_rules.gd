@@ -5,11 +5,20 @@ class_name HeroRules
 ## InventoryState and the exported skill/path tables (combat.json).
 
 const ARMOR_SLOTS := ["body", "offhand", "head", "hands", "feet", "neck", "ring1", "ring2"]
+## What every passive can grant. The web's flee chance did nothing in a
+## real-time fight; PIX-190 made those nodes move speed, a quicker dodge and
+## a sure crit after one ("dodgeCrit"), and the later tiers add a share of
+## damage dealt back as health ("lifeSteal"), stronger skills and heals.
 const NO_PASSIVES := {
-	"defense": 0, "fleeBonus": 0.0, "carryBonus": 0, "critChance": 0.0, "killRefundMp": 0,
+	"defense": 0, "carryBonus": 0, "critChance": 0.0, "killRefundMp": 0,
 	"goldBonus": 0.0, "lowHpBonus": 0.0, "stunResist": false, "poisonResist": false,
-	"attackInflict": null,
+	"attackInflict": null, "moveSpeed": 0.0, "dodgeCooldown": 0.0, "dodgeCrit": false,
+	"lifeSteal": 0.0, "skillPower": 0.0, "healBonus": 0.0,
 }
+## However many nodes stack them: a hero no more than 40% quicker, a dodge
+## no more than 60% sooner.
+const MAX_MOVE_SPEED := 0.4
+const MAX_DODGE_CUT := 0.6
 
 
 static func _combat() -> Dictionary:
@@ -77,17 +86,23 @@ static func passives(hero: HeroState) -> Dictionary:
 		if node["kind"] == "passive" and node["id"] in hero.skill_nodes and node.has("passive"):
 			sources.append(node["passive"])
 	for effects: Dictionary in sources:
-		for key: String in ["defense", "fleeBonus", "carryBonus", "critChance", "killRefundMp", "goldBonus", "lowHpBonus"]:
-			merged[key] += effects.get(key, 0)
-		merged["stunResist"] = merged["stunResist"] or effects.get("stunResist", false)
-		merged["poisonResist"] = merged["poisonResist"] or effects.get("poisonResist", false)
-		if effects.get("attackInflict") != null:
-			merged["attackInflict"] = effects["attackInflict"]
+		for key: String in effects:
+			if key == "attackInflict":
+				# The deepest node's bite: the tree lists it after the one it betters.
+				if effects[key] != null:
+					merged[key] = effects[key]
+			elif NO_PASSIVES[key] is bool:
+				merged[key] = merged[key] or effects[key]
+			else:
+				merged[key] += effects[key]
+	merged["moveSpeed"] = minf(merged["moveSpeed"], MAX_MOVE_SPEED)
+	merged["dodgeCooldown"] = minf(merged["dodgeCooldown"], MAX_DODGE_CUT)
 	return merged
 
 
+## Five ranks: 1, 5, 10, 15 and 20 (PIX-190 added the last).
 static func rank_index(level: int) -> int:
-	return mini(3, floori(level / 5.0))
+	return mini(4, floori(level / 5.0))
 
 
 ## The health a hero of their level has grown into under today's growth

@@ -254,18 +254,19 @@ func _process(_delta: float) -> void:
 	# The skills change state on their own (a cast spent, energy back), so the
 	# slots follow every frame, redrawn only when something changed.
 	var hero := GameState.hero
-	var skills := Skills.hero_skills(hero).slice(0, slots.size())
+	# What the hero put on each key (PIX-190), an empty key where there's none.
+	var skills := Skills.docked(hero).slice(0, slots.size())
 	var states := skills.map(func(skill: Dictionary) -> bool:
-		return Skills.cast_block(hero, skill) == "" and world.player.skill_ready
+		return not skill.is_empty() and Skills.cast_block(hero, skill) == "" and world.player.skill_ready
 	)
-	var shown := [skills.map(func(skill: Dictionary) -> String: return skill["name"]), states]
+	var shown := [skills.map(func(skill: Dictionary) -> String: return skill.get("name", "")), states]
 	if shown == _shown:
 		return
 	_shown = shown
 	for index in slots.size():
 		var slot: PanelContainer = slots[index]["slot"]
 		var mark: Label = slots[index]["mark"]
-		var has := index < skills.size()
+		var has: bool = index < skills.size() and not skills[index].is_empty()
 		var ready: bool = has and states[index]
 		# Ready to cast: a brass rim; spent, too dear or not yet reached: dim.
 		slot.add_theme_stylebox_override("panel", UiStyle.box(UiStyle.WINDOW if has else UiStyle.CARD, UiStyle.BRASS if ready else UiStyle.RIM, 4))

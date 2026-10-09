@@ -2000,6 +2000,96 @@
         "passive": {
           "critChance": 0.1
         }
+      },
+      {
+        "id": "warrior_cleave",
+        "requires": "warrior_skullsplitter",
+        "branch": 0,
+        "tier": 4,
+        "kind": "active",
+        "name": "Cleave",
+        "description": "A wide swing that strikes every foe in reach.",
+        "skill": {
+          "name": "Cleave",
+          "description": "A wide swing.",
+          "mpCost": 10,
+          "kind": "damage",
+          "multiplier": 2.2,
+          "stat": "strength",
+          "area": true,
+          "unlockLevel": 1
+        }
+      },
+      {
+        "id": "warrior_shieldwall",
+        "requires": "warrior_mountainheart",
+        "branch": 1,
+        "tier": 4,
+        "kind": "passive",
+        "name": "Shieldwall",
+        "description": "+3 DEF and +20 max HP, permanently.",
+        "passive": {
+          "defense": 3
+        },
+        "grantStats": {
+          "maxHp": 20
+        }
+      },
+      {
+        "id": "warrior_bloodthirst",
+        "requires": "warrior_warpath",
+        "branch": 2,
+        "tier": 4,
+        "kind": "passive",
+        "name": "Bloodthirst",
+        "description": "8% of the damage you deal heals you.",
+        "passive": {
+          "lifeSteal": 0.08
+        }
+      },
+      {
+        "id": "warrior_headsman",
+        "requires": "warrior_cleave",
+        "branch": 0,
+        "tier": 5,
+        "kind": "passive",
+        "name": "Headsman",
+        "description": "+25% more damage against enemies below 30% HP, and +5% crit.",
+        "passive": {
+          "lowHpBonus": 0.25,
+          "critChance": 0.05
+        }
+      },
+      {
+        "id": "warrior_rally",
+        "requires": "warrior_shieldwall",
+        "branch": 1,
+        "tier": 5,
+        "kind": "active",
+        "name": "Rally",
+        "description": "Catch your breath mid-fight: restores health with your STR.",
+        "skill": {
+          "name": "Rally",
+          "description": "A breath and a roar.",
+          "mpCost": 10,
+          "kind": "heal",
+          "multiplier": 2.5,
+          "stat": "strength",
+          "unlockLevel": 1
+        }
+      },
+      {
+        "id": "warrior_relentless",
+        "requires": "warrior_bloodthirst",
+        "branch": 2,
+        "tier": 5,
+        "kind": "passive",
+        "name": "Relentless",
+        "description": "+10% move speed, and your dodge is ready a quarter sooner.",
+        "passive": {
+          "moveSpeed": 0.1,
+          "dodgeCooldown": 0.25
+        }
       }
     ],
     "mage": [
@@ -2143,10 +2233,10 @@
         "branch": 2,
         "tier": 2,
         "name": "Winter's Grace",
-        "description": "+10% flee chance.",
+        "description": "Your dodge is ready a fifth sooner.",
         "kind": "passive",
         "passive": {
-          "fleeBonus": 0.1
+          "dodgeCooldown": 0.2
         }
       },
       {
@@ -2188,11 +2278,110 @@
         "branch": 2,
         "tier": 3,
         "name": "Rimeguard",
-        "description": "A sheath of ice: +2 DEF and +5% flee.",
+        "description": "A sheath of ice: +2 DEF and +5% move speed.",
         "kind": "passive",
         "passive": {
           "defense": 2,
-          "fleeBonus": 0.05
+          "moveSpeed": 0.05
+        }
+      },
+      {
+        "id": "mage_flame_wave",
+        "requires": "mage_meteor",
+        "branch": 0,
+        "tier": 4,
+        "kind": "active",
+        "name": "Flame Wave",
+        "description": "A wall of fire rolls over every foe in reach and may set them burning.",
+        "skill": {
+          "name": "Flame Wave",
+          "description": "A wall of fire.",
+          "mpCost": 14,
+          "kind": "damage",
+          "multiplier": 2.0,
+          "stat": "intelligence",
+          "area": true,
+          "inflicts": {
+            "kind": "burn",
+            "chance": 0.5,
+            "turns": 2,
+            "power": 6
+          },
+          "unlockLevel": 1
+        }
+      },
+      {
+        "id": "mage_spellweaver",
+        "requires": "mage_archmage",
+        "branch": 1,
+        "tier": 4,
+        "kind": "passive",
+        "name": "Spellweaver",
+        "description": "Your skills deal 15% more damage.",
+        "passive": {
+          "skillPower": 0.15
+        }
+      },
+      {
+        "id": "mage_shatter",
+        "requires": "mage_rimeguard",
+        "branch": 2,
+        "tier": 4,
+        "kind": "passive",
+        "name": "Shatter",
+        "description": "+40% damage against enemies below 30% HP.",
+        "passive": {
+          "lowHpBonus": 0.4
+        }
+      },
+      {
+        "id": "mage_kindled",
+        "requires": "mage_flame_wave",
+        "branch": 0,
+        "tier": 5,
+        "kind": "passive",
+        "name": "Kindled",
+        "description": "Plain attacks have a 35% chance to set enemies burning, and it burns hotter.",
+        "passive": {
+          "attackInflict": {
+            "kind": "burn",
+            "chance": 0.35,
+            "turns": 2,
+            "power": 7
+          }
+        }
+      },
+      {
+        "id": "mage_arcane_lance",
+        "requires": "mage_spellweaver",
+        "branch": 1,
+        "tier": 5,
+        "kind": "active",
+        "name": "Arcane Lance",
+        "description": "A lance of pure force: enormous INT damage.",
+        "skill": {
+          "name": "Arcane Lance",
+          "description": "A lance of pure force.",
+          "mpCost": 16,
+          "kind": "damage",
+          "multiplier": 4.0,
+          "stat": "intelligence",
+          "unlockLevel": 1
+        }
+      },
+      {
+        "id": "mage_glacial_heart",
+        "requires": "mage_shatter",
+        "branch": 2,
+        "tier": 5,
+        "kind": "passive",
+        "name": "Glacial Heart",
+        "description": "+3 DEF and +20 max HP, permanently.",
+        "passive": {
+          "defense": 3
+        },
+        "grantStats": {
+          "maxHp": 20
         }
       }
     ],
@@ -2313,10 +2502,10 @@
         "branch": 2,
         "tier": 1,
         "name": "Fleet Foot",
-        "description": "+15% flee chance.",
+        "description": "+10% move speed.",
         "kind": "passive",
         "passive": {
-          "fleeBonus": 0.15
+          "moveSpeed": 0.1
         }
       },
       {
@@ -2372,11 +2561,109 @@
         "branch": 2,
         "tier": 3,
         "name": "Ghostwalk",
-        "description": "+10% flee and +10% gold: leave rich, leave alive.",
+        "description": "After a dodge your next strike is a sure crit, and +10% gold.",
         "kind": "passive",
         "passive": {
-          "fleeBonus": 0.1,
+          "dodgeCrit": true,
           "goldBonus": 0.1
+        }
+      },
+      {
+        "id": "rogue_fan_of_knives",
+        "requires": "rogue_deathblow",
+        "branch": 0,
+        "tier": 4,
+        "kind": "active",
+        "name": "Fan of Knives",
+        "description": "Knives in every direction: strikes every foe in reach.",
+        "skill": {
+          "name": "Fan of Knives",
+          "description": "Knives in every direction.",
+          "mpCost": 10,
+          "kind": "damage",
+          "multiplier": 2.0,
+          "stat": "dexterity",
+          "area": true,
+          "unlockLevel": 1
+        }
+      },
+      {
+        "id": "rogue_lethal_dose",
+        "requires": "rogue_venom_master",
+        "branch": 1,
+        "tier": 4,
+        "kind": "passive",
+        "name": "Lethal Dose",
+        "description": "Plain attacks have a 40% chance to poison, and it bites harder.",
+        "passive": {
+          "attackInflict": {
+            "kind": "poison",
+            "chance": 0.4,
+            "turns": 3,
+            "power": 7
+          }
+        }
+      },
+      {
+        "id": "rogue_smoke_and_mirrors",
+        "requires": "rogue_ghostwalk",
+        "branch": 2,
+        "tier": 4,
+        "kind": "passive",
+        "name": "Smoke and Mirrors",
+        "description": "Your dodge is ready a third sooner.",
+        "passive": {
+          "dodgeCooldown": 0.33
+        }
+      },
+      {
+        "id": "rogue_killer_instinct",
+        "requires": "rogue_fan_of_knives",
+        "branch": 0,
+        "tier": 5,
+        "kind": "passive",
+        "name": "Killer Instinct",
+        "description": "+10% crit and +20% damage against enemies below 30% HP.",
+        "passive": {
+          "critChance": 0.1,
+          "lowHpBonus": 0.2
+        }
+      },
+      {
+        "id": "rogue_garrote",
+        "requires": "rogue_lethal_dose",
+        "branch": 1,
+        "tier": 5,
+        "kind": "active",
+        "name": "Garrote",
+        "description": "A wire from behind: heavy DEX damage that may stun.",
+        "skill": {
+          "name": "Garrote",
+          "description": "A wire from behind.",
+          "mpCost": 12,
+          "kind": "damage",
+          "multiplier": 2.8,
+          "stat": "dexterity",
+          "inflicts": {
+            "kind": "stun",
+            "chance": 0.6,
+            "turns": 1,
+            "power": 0
+          },
+          "unlockLevel": 1
+        }
+      },
+      {
+        "id": "rogue_nightrunner",
+        "requires": "rogue_smoke_and_mirrors",
+        "branch": 2,
+        "tier": 5,
+        "kind": "passive",
+        "name": "Nightrunner",
+        "description": "+10% move speed, and kills refund 3 EN.",
+        "passive": {
+          "moveSpeed": 0.1,
+          "killRefundMp": 3
         }
       }
     ],
@@ -2558,6 +2845,101 @@
           "maxHp": 15,
           "maxMp": 10
         }
+      },
+      {
+        "id": "cleric_blessed_hands",
+        "requires": "cleric_divine_word",
+        "branch": 0,
+        "tier": 4,
+        "kind": "passive",
+        "name": "Blessed Hands",
+        "description": "Your heals restore 25% more.",
+        "passive": {
+          "healBonus": 0.25
+        }
+      },
+      {
+        "id": "cleric_holy_nova",
+        "requires": "cleric_judgement",
+        "branch": 1,
+        "tier": 4,
+        "kind": "active",
+        "name": "Holy Nova",
+        "description": "Radiance bursts from you, searing every foe in reach.",
+        "skill": {
+          "name": "Holy Nova",
+          "description": "Radiance bursts from you.",
+          "mpCost": 12,
+          "kind": "damage",
+          "multiplier": 1.9,
+          "stat": "intelligence",
+          "area": true,
+          "unlockLevel": 1
+        }
+      },
+      {
+        "id": "cleric_halo",
+        "requires": "cleric_sainthood",
+        "branch": 2,
+        "tier": 4,
+        "kind": "passive",
+        "name": "Halo",
+        "description": "+2 DEF, and your dodge is ready a quarter sooner.",
+        "passive": {
+          "defense": 2,
+          "dodgeCooldown": 0.25
+        }
+      },
+      {
+        "id": "cleric_mercy",
+        "requires": "cleric_blessed_hands",
+        "branch": 0,
+        "tier": 5,
+        "kind": "passive",
+        "name": "Mercy",
+        "description": "+20 max HP, and your heals restore 15% more.",
+        "passive": {
+          "healBonus": 0.15
+        },
+        "grantStats": {
+          "maxHp": 20
+        }
+      },
+      {
+        "id": "cleric_fervour",
+        "requires": "cleric_holy_nova",
+        "branch": 1,
+        "tier": 5,
+        "kind": "passive",
+        "name": "Fervour",
+        "description": "Your skills deal 15% more damage.",
+        "passive": {
+          "skillPower": 0.15
+        }
+      },
+      {
+        "id": "cleric_sunfire",
+        "requires": "cleric_halo",
+        "branch": 2,
+        "tier": 5,
+        "kind": "active",
+        "name": "Sunfire",
+        "description": "Holy light that clings: heavy INT damage and a lasting burn.",
+        "skill": {
+          "name": "Sunfire",
+          "description": "Holy light that clings.",
+          "mpCost": 13,
+          "kind": "damage",
+          "multiplier": 2.6,
+          "stat": "intelligence",
+          "inflicts": {
+            "kind": "burn",
+            "chance": 0.8,
+            "turns": 3,
+            "power": 8
+          },
+          "unlockLevel": 1
+        }
       }
     ],
     "ranger": [
@@ -2643,10 +3025,10 @@
         "branch": 1,
         "tier": 2,
         "name": "Pathfinder",
-        "description": "+15% flee chance.",
+        "description": "+10% move speed.",
         "kind": "passive",
         "passive": {
-          "fleeBonus": 0.15
+          "moveSpeed": 0.1
         }
       },
       {
@@ -2733,6 +3115,94 @@
         "kind": "passive",
         "passive": {
           "lowHpBonus": 0.4
+        }
+      },
+      {
+        "id": "ranger_steady_hand",
+        "requires": "ranger_heartseeker",
+        "branch": 0,
+        "tier": 4,
+        "kind": "passive",
+        "name": "Steady Hand",
+        "description": "Your skills deal 15% more damage.",
+        "passive": {
+          "skillPower": 0.15
+        }
+      },
+      {
+        "id": "ranger_trailblazer",
+        "requires": "ranger_wolfblood",
+        "branch": 1,
+        "tier": 4,
+        "kind": "passive",
+        "name": "Trailblazer",
+        "description": "Your dodge is ready a quarter sooner, and +15 carry weight.",
+        "passive": {
+          "dodgeCooldown": 0.25,
+          "carryBonus": 15
+        }
+      },
+      {
+        "id": "ranger_volley",
+        "requires": "ranger_hunters_eye",
+        "branch": 2,
+        "tier": 4,
+        "kind": "active",
+        "name": "Volley",
+        "description": "Arrows fall on every foe in reach.",
+        "skill": {
+          "name": "Volley",
+          "description": "Arrows on every foe.",
+          "mpCost": 11,
+          "kind": "damage",
+          "multiplier": 2.2,
+          "stat": "dexterity",
+          "area": true,
+          "unlockLevel": 1
+        }
+      },
+      {
+        "id": "ranger_kill_shot",
+        "requires": "ranger_steady_hand",
+        "branch": 0,
+        "tier": 5,
+        "kind": "active",
+        "name": "Kill Shot",
+        "description": "An arrow for the last breath: enormous DEX damage.",
+        "skill": {
+          "name": "Kill Shot",
+          "description": "An arrow for the last breath.",
+          "mpCost": 15,
+          "kind": "damage",
+          "multiplier": 4.0,
+          "stat": "dexterity",
+          "unlockLevel": 1
+        }
+      },
+      {
+        "id": "ranger_evasion",
+        "requires": "ranger_trailblazer",
+        "branch": 1,
+        "tier": 5,
+        "kind": "passive",
+        "name": "Evasion",
+        "description": "After a dodge your next strike is a sure crit, and your dodge is ready a fifth sooner.",
+        "passive": {
+          "dodgeCrit": true,
+          "dodgeCooldown": 0.2
+        }
+      },
+      {
+        "id": "ranger_predator",
+        "requires": "ranger_volley",
+        "branch": 2,
+        "tier": 5,
+        "kind": "passive",
+        "name": "Predator",
+        "description": "Kills refund 4 more EN, and +5% crit.",
+        "passive": {
+          "killRefundMp": 4,
+          "critChance": 0.05
         }
       }
     ],
@@ -2921,6 +3391,99 @@
           "stat": "intelligence",
           "cleanse": true,
           "unlockLevel": 1
+        }
+      },
+      {
+        "id": "paladin_divine_storm",
+        "requires": "paladin_wrath",
+        "branch": 0,
+        "tier": 4,
+        "kind": "active",
+        "name": "Divine Storm",
+        "description": "Holy steel sweeps every foe in reach.",
+        "skill": {
+          "name": "Divine Storm",
+          "description": "Holy steel sweeps.",
+          "mpCost": 12,
+          "kind": "damage",
+          "multiplier": 2.1,
+          "stat": "strength",
+          "area": true,
+          "unlockLevel": 1
+        }
+      },
+      {
+        "id": "paladin_devotion",
+        "requires": "paladin_sanctified",
+        "branch": 1,
+        "tier": 4,
+        "kind": "passive",
+        "name": "Devotion",
+        "description": "Your heals restore 25% more.",
+        "passive": {
+          "healBonus": 0.25
+        }
+      },
+      {
+        "id": "paladin_zeal",
+        "requires": "paladin_absolution",
+        "branch": 2,
+        "tier": 4,
+        "kind": "passive",
+        "name": "Zeal",
+        "description": "6% of the damage you deal heals you.",
+        "passive": {
+          "lifeSteal": 0.06
+        }
+      },
+      {
+        "id": "paladin_crusade",
+        "requires": "paladin_divine_storm",
+        "branch": 0,
+        "tier": 5,
+        "kind": "passive",
+        "name": "Crusade",
+        "description": "+10% crit and +20% damage against enemies below 30% HP.",
+        "passive": {
+          "critChance": 0.1,
+          "lowHpBonus": 0.2
+        }
+      },
+      {
+        "id": "paladin_shieldbreaker",
+        "requires": "paladin_devotion",
+        "branch": 1,
+        "tier": 5,
+        "kind": "active",
+        "name": "Shieldbreaker",
+        "description": "A shield blow with your full weight: heavy STR damage that may stun.",
+        "skill": {
+          "name": "Shieldbreaker",
+          "description": "Your full weight behind a shield.",
+          "mpCost": 12,
+          "kind": "damage",
+          "multiplier": 2.6,
+          "stat": "strength",
+          "inflicts": {
+            "kind": "stun",
+            "chance": 0.7,
+            "turns": 1,
+            "power": 0
+          },
+          "unlockLevel": 1
+        }
+      },
+      {
+        "id": "paladin_holy_vigour",
+        "requires": "paladin_zeal",
+        "branch": 2,
+        "tier": 5,
+        "kind": "passive",
+        "name": "Holy Vigour",
+        "description": "+10% move speed and +3 DEF.",
+        "passive": {
+          "moveSpeed": 0.1,
+          "defense": 3
         }
       }
     ],
@@ -3121,6 +3684,102 @@
           "maxHp": 20,
           "maxMp": 10
         }
+      },
+      {
+        "id": "necromancer_soul_siphon",
+        "requires": "necro_soul_rend",
+        "branch": 0,
+        "tier": 4,
+        "kind": "passive",
+        "name": "Soul Siphon",
+        "description": "8% of the damage you deal heals you.",
+        "passive": {
+          "lifeSteal": 0.08
+        }
+      },
+      {
+        "id": "necromancer_death_cloud",
+        "requires": "necro_plague",
+        "branch": 1,
+        "tier": 4,
+        "kind": "active",
+        "name": "Death Cloud",
+        "description": "A pall of rot over every foe in reach, poisoning them.",
+        "skill": {
+          "name": "Death Cloud",
+          "description": "A pall of rot.",
+          "mpCost": 13,
+          "kind": "damage",
+          "multiplier": 1.6,
+          "stat": "intelligence",
+          "area": true,
+          "inflicts": {
+            "kind": "poison",
+            "chance": 0.8,
+            "turns": 3,
+            "power": 7
+          },
+          "unlockLevel": 1
+        }
+      },
+      {
+        "id": "necromancer_ossified",
+        "requires": "necro_lichbone",
+        "branch": 2,
+        "tier": 4,
+        "kind": "passive",
+        "name": "Ossified",
+        "description": "+3 DEF and +20 max HP, permanently.",
+        "passive": {
+          "defense": 3
+        },
+        "grantStats": {
+          "maxHp": 20
+        }
+      },
+      {
+        "id": "necromancer_drain_life",
+        "requires": "necromancer_soul_siphon",
+        "branch": 0,
+        "tier": 5,
+        "kind": "active",
+        "name": "Drain Life",
+        "description": "Rips the life from a foe: heavy INT damage, and half of it heals you.",
+        "skill": {
+          "name": "Drain Life",
+          "description": "Rips the life from a foe.",
+          "mpCost": 14,
+          "kind": "damage",
+          "multiplier": 2.8,
+          "stat": "intelligence",
+          "drain": 0.5,
+          "unlockLevel": 1
+        }
+      },
+      {
+        "id": "necromancer_pestilent",
+        "requires": "necromancer_death_cloud",
+        "branch": 1,
+        "tier": 5,
+        "kind": "passive",
+        "name": "Pestilent",
+        "description": "Your skills deal 15% more damage.",
+        "passive": {
+          "skillPower": 0.15
+        }
+      },
+      {
+        "id": "necromancer_deathless_step",
+        "requires": "necromancer_ossified",
+        "branch": 2,
+        "tier": 5,
+        "kind": "passive",
+        "name": "Deathless Step",
+        "description": "+10% move speed, and your dodge is ready a quarter sooner.",
+        "passive": {
+          "moveSpeed": 0.1,
+          "dodgeCooldown": 0.25
+        }
       }
     ]
   },
@@ -3259,9 +3918,9 @@
       "id": "trickster",
       "roleId": "rogue",
       "name": "Trickster",
-      "blurb": "Never where they look. +20% flee, and escape artistry pays.",
+      "blurb": "Never where they look. +10% move speed, and escape artistry pays.",
       "passive": {
-        "fleeBonus": 0.2,
+        "moveSpeed": 0.1,
         "goldBonus": 0.1
       },
       "signature": {
@@ -3701,7 +4360,7 @@
       "passive": {
         "killRefundMp": 8,
         "critChance": 0.15,
-        "fleeBonus": 0.1
+        "dodgeCooldown": 0.15
       },
       "signature": {
         "name": "Heavenfall",
@@ -3753,9 +4412,10 @@
         "trickster"
       ],
       "name": "Phantom Jester",
-      "blurb": "The joke lands; you don't. +30% flee, +20% gold, +8% crit.",
+      "blurb": "The joke lands; you don't. a sure crit after a dodge, +10% speed, +20% gold, +8% crit.",
       "passive": {
-        "fleeBonus": 0.3,
+        "dodgeCrit": true,
+        "moveSpeed": 0.1,
         "goldBonus": 0.2,
         "critChance": 0.08
       },
@@ -3813,9 +4473,11 @@
         "phantom_jester"
       ],
       "name": "The Unseen",
-      "blurb": "Officially, you were never there. +40% flee, +30% gold, unstunned.",
+      "blurb": "Officially, you were never there. a sure crit after a dodge, +15% speed, +30% gold, unstunned.",
       "passive": {
-        "fleeBonus": 0.4,
+        "dodgeCrit": true,
+        "moveSpeed": 0.15,
+        "dodgeCooldown": 0.25,
         "goldBonus": 0.3,
         "critChance": 0.12,
         "stunResist": true
@@ -4005,10 +4667,10 @@
         "hawkeye"
       ],
       "name": "Stormbow",
-      "blurb": "You shoot where the world will be. +28% crit, +10% flee.",
+      "blurb": "You shoot where the world will be. +28% crit, +5% move speed.",
       "passive": {
         "critChance": 0.28,
-        "fleeBonus": 0.1
+        "moveSpeed": 0.05
       },
       "signature": {
         "name": "Arrow of Ages",
@@ -4696,7 +5358,9 @@
     1,
     3,
     6,
-    10
+    10,
+    13,
+    17
   ],
   "named": {
     "greymaw": {

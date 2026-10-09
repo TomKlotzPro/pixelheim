@@ -5,7 +5,11 @@
   },
   "skill": {
     "title": "{skill}",
-    "text": "{what} It's on your dock: press its number to use it. Energy comes back as you walk."
+    "text": "{what} It's on key {slot} of your dock: press it to use it. Energy comes back as you walk."
+  },
+  "skill_full": {
+    "title": "{skill}",
+    "text": "{what} All six keys are taken: in Skills ({key:skills}), choose it and press a number to put it on that key."
   },
   "board": {
     "title": "The notice board",

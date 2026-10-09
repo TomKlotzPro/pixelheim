@@ -4,7 +4,7 @@ extends GutTest
 ## the arrows as their glyphs; a cap dips when its key is pressed.
 
 ## The names a footer may give a key: one letter or digit, or one of these.
-const NAMED := ["Esc", "Enter", "Space", "Tab", "Shift", "PgUp", "PgDn", "Arrows", "Up", "Down", "Left", "Right"]
+const NAMED := ["Esc", "Enter", "Space", "Tab", "Shift", "PgUp", "PgDn", "Arrows", "Up", "Down", "Left", "Right", "1-6"]
 
 
 func _caps(row: Control) -> Array:

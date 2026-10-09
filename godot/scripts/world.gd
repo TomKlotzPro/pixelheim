@@ -1646,8 +1646,9 @@ func _build_hud() -> void:
 	GameState.healed.connect(func() -> void: player.heal())
 	GameState.ranked_up.connect(_ascend)
 	GameState.prologue_dawn.connect(_play_dawn)
-	GameState.skill_learned.connect(func(entry: Dictionary) -> void:
-		hint("skill", {"skill": entry["name"], "what": entry.get("description", "")}, "skill:" + String(entry["id"]))
+	GameState.skill_learned.connect(func(entry: Dictionary, key: int) -> void:
+		var values := {"skill": entry["name"], "what": entry.get("description", ""), "slot": Controls.say("{key:skill_%d}" % key)}
+		hint("skill" if key > 0 else "skill_full", values, "skill:" + String(entry["id"]))
 	)
 	hud_root = hud
 	_place_hud()
