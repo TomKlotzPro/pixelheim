@@ -2521,6 +2521,10 @@ msgid "Keys That Look Like Keys"
 msgstr "Des touches qui ressemblent à des touches"
 
 #: assets/data/changelog.json
+msgid "Keys to the Top"
+msgstr "La main au sommet"
+
+#: assets/data/changelog.json
 msgid "Kills That Count"
 msgstr "Des victoires qui comptent"
 
@@ -2855,6 +2859,10 @@ msgstr "UN SEUL PIXELHEIM : l'ancienne édition web a pris sa retraite - c'est
 #: assets/data/changelog.json
 msgid "ONE PLATE FOR WHAT THE GAME TELLS YOU: the next step, a message and every line of the battle log now sit on the same dark plate, readable over grass and snow alike, with a gold word in front where it helps (Next, Quest accepted, Quest complete, Level up, Mastery)"
 msgstr "UN SEUL BANDEAU POUR CE QUE LE JEU VOUS DIT : la prochaine étape, un message et chaque ligne du journal de combat reposent sur le même bandeau sombre, lisible sur l'herbe comme sur la neige, avec un mot doré devant quand c'est utile (Ensuite, Quête acceptée, Quête accomplie, Niveau supérieur, Maîtrise)"
+
+#: assets/data/changelog.json
+msgid "ONE SCREEN AT A TIME: the keys go only to the screen on top. A rank-up at Morvax's fall no longer hides the throne - and the E meant for the rank-up can't choose his fate behind your back"
+msgstr "UN ÉCRAN À LA FOIS : les touches ne vont qu'à l'écran du dessus. Un passage de rang à la chute de Morvax ne cache plus le trône - et le E destiné au rang ne peut plus décider de son sort dans votre dos"
 
 #: assets/data/changelog.json
 msgid "ONE STEP, ONE POSE: the stride now advances with each TILE you cross, not with the clock - four steps show four different sprites, guaranteed - and standing settles on a true neutral pose instead of a mid-stride freeze; the hop calmed down to let the footwork lead"
@@ -11120,7 +11128,7 @@ msgstr "Un héros de l'ancienne version web s'importe avec son code de sauvegard
 msgid "Your web game hero %s, %d gold."
 msgstr "Votre héros du jeu web : %s, %d or."
 
-#: scripts/screen.gd:98
+#: scripts/screen.gd:105
 msgid "Back"
 msgstr "Retour"
 

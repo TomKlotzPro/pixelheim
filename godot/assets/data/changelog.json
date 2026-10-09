@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.144.0",
+      "date": "2026-10-09",
+      "codename": "Keys to the Top",
+      "notes": [
+        "ONE SCREEN AT A TIME: the keys go only to the screen on top. A rank-up at Morvax's fall no longer hides the throne - and the E meant for the rank-up can't choose his fate behind your back"
+      ]
+    },
+    {
       "version": "0.143.1",
       "date": "2026-10-09",
       "codename": "En français",
