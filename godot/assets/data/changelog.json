@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.137.0",
+      "date": "2026-10-09",
+      "codename": "Kills That Count",
+      "notes": [
+        "KILLS THAT COUNT: the Reach's chapters - the Saltmere coast and its sea cave, the mines and their shafts, Greyhold and its cellars, the Frostgate and its ice cave - pay nearly half again as much XP for a kill as the fields round Pixelheim",
+        "PUNCHING UP PAYS: a foe above your level pays 5% more XP for each level it stands above you, up to a quarter more, so a hero who has fallen behind catches up faster",
+        "Under the hood, the pacing model follows each villager's quests in the order they're offered, and every kill quest is handed in where its quarry lives"
+      ]
+    },
+    {
       "version": "0.136.0",
       "date": "2026-10-09",
       "codename": "Readable Danger",

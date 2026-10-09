@@ -2461,7 +2461,15 @@ msgid "KEYS THAT LOOK LIKE KEYS: every key the game shows you - in a screen's fo
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "KILLS THAT COUNT: the Reach's chapters - the Saltmere coast and its sea cave, the mines and their shafts, Greyhold and its cellars, the Frostgate and its ice cave - pay nearly half again as much XP for a kill as the fields round Pixelheim"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Keys That Look Like Keys"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Kills That Count"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -2914,6 +2922,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "PROPERTY THAT PAYS: a business you own now fills its till with rent every day - about a twenty-fifth of what its deed cost, a tenth more once Pixelheim is a village and a quarter more expanded - and its keeper hands you the till when you walk up to the counter. No more rent line after every kill"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "PUNCHING UP PAYS: a foe above your level pays 5% more XP for each level it stands above you, up to a quarter more, so a hero who has fallen behind catches up faster"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4054,6 +4066,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Under the Ashen Mountain"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Under the hood, the pacing model follows each villager's quests in the order they're offered, and every kill quest is handed in where its quarry lives"
 msgstr ""
 
 #: assets/data/changelog.json

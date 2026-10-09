@@ -584,6 +584,7 @@
       ]
     },
     "coast": {
+      "wildXp": 0.5,
       "name": "the Saltmere coast",
       "dropFloor": 2,
       "eliteChance": 0.1,
@@ -603,6 +604,7 @@
       ]
     },
     "seacave": {
+      "wildXp": 0.5,
       "name": "the Sea Cave",
       "dropFloor": 4,
       "eliteChance": 0.15,
@@ -622,6 +624,7 @@
       ]
     },
     "mines": {
+      "wildXp": 0.5,
       "name": "the Blackiron valley",
       "dropFloor": 6,
       "eliteChance": 0.12,
@@ -637,6 +640,7 @@
       ]
     },
     "shafts": {
+      "wildXp": 0.5,
       "name": "the Blackiron shafts",
       "dropFloor": 7,
       "eliteChance": 0.15,
@@ -656,6 +660,7 @@
       ]
     },
     "castle": {
+      "wildXp": 0.5,
       "name": "Greyhold",
       "dropFloor": 8,
       "eliteChance": 0.12,
@@ -675,6 +680,7 @@
       ]
     },
     "cellars": {
+      "wildXp": 0.5,
       "name": "the Greyhold cellars",
       "dropFloor": 9,
       "eliteChance": 0.15,
@@ -694,6 +700,7 @@
       ]
     },
     "frost": {
+      "wildXp": 0.5,
       "name": "the Frostgate pass",
       "dropFloor": 9,
       "eliteChance": 0.12,
@@ -713,6 +720,7 @@
       ]
     },
     "icecave": {
+      "wildXp": 0.5,
       "name": "the ice cave",
       "dropFloor": 10,
       "eliteChance": 0.15,
@@ -4680,6 +4688,8 @@
   },
   "xpGap": {
     "falloff": 0.15,
+    "aboveBonus": 0.05,
+    "aboveCap": 0.25,
     "floor": 0.1
   },
   "skillTierLevels": [

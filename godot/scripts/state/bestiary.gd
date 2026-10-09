@@ -183,20 +183,25 @@ static func wild_drop_floor(region_id: String, fighter: Dictionary) -> int:
 
 ## Wild kills pay reduced xp and gold: dungeons stay the main progression
 ## (XP more so than gold, PIX-141: the wilds are for gathering, not farming).
-static func wild(fighter: Dictionary) -> Dictionary:
-	fighter["xp"] = roundi(fighter["xp"] * float(_data()["wildXpMult"]))
+## The Reach's chapters and their caves pay more XP than the fields (PIX-189):
+## a region's "wildXp" over the game's.
+static func wild(fighter: Dictionary, region_id := "") -> Dictionary:
+	var share := float(region(region_id).get("wildXp", _data()["wildXpMult"]))
+	fighter["xp"] = roundi(fighter["xp"] * share)
 	fighter["gold"] = roundi(fighter["gold"] * float(_data()["wildRewardMult"]))
 	return fighter
 
 
 ## The XP a kill pays a hero of `hero_level` (PIX-141): full against a match,
-## 15% less per level the hero stands above the monster, never under a tenth.
+## 15% less per level the hero stands above the monster, never under a tenth;
+## 5% more per level the monster stands above the hero, up to a quarter (PIX-189).
 static func xp_for(fighter: Dictionary, hero_level: int) -> int:
 	var gap: Dictionary = _data()["xpGap"]
 	var monster: Dictionary = _data()["monsters"].get(fighter["id"], {})
 	# A named monster (PIX-156) stands at its own level, not its kind's.
 	var above := hero_level - int(fighter.get("level", monster.get("level", hero_level)))
 	var share := clampf(1.0 - float(gap["falloff"]) * maxi(0, above), float(gap["floor"]), 1.0)
+	share += minf(float(gap["aboveBonus"]) * maxi(0, -above), float(gap["aboveCap"]))
 	return roundi(int(fighter["xp"]) * share)
 
 
