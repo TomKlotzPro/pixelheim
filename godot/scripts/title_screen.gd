@@ -348,4 +348,4 @@ func _options() -> void:
 func _leave() -> void:
 	GameState.title_seen = true
 	close()
-	world._update_music()
+	world.soundscape.refresh()
