@@ -124,7 +124,7 @@ func _summon(attack: Dictionary) -> void:
 		# The dead a boss raises pay nothing (PIX-180): no farm in a long fight.
 		add.fighter["gold"] = 0
 		add.fighter["xp"] = 0
-		world.appear(add)
+		world.fx.appear(add)
 		add.notice()
 	enemy.mode = "chase"
 

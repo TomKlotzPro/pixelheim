@@ -109,7 +109,7 @@ func _reached(at: int) -> void:
 				var from: Array = ambush["from"][i]
 				var foe: Node = world.spawn_enemy(ambush["foes"][i], Vector2i(int(from[0]), int(from[1])), "", "", false, true)
 				foe.quarry = self
-				world.appear(foe)
+				world.fx.appear(foe)
 				foe.notice()
 			world._flash_message(ambush["line"])
 
@@ -118,7 +118,7 @@ func _hurt(amount: int) -> void:
 	hp = maxi(0, hp - amount)
 	bar.size.x = 26.0 * hp / max_hp
 	bar.color = Color("8fd16a") if hp > max_hp / 3 else Color("ff5a4a")
-	world.float_number(amount, global_position + Vector2(0, -30), Color(1, 0.5, 0.4))
+	world.fx.float_number(amount, global_position + Vector2(0, -30), Color(1, 0.5, 0.4))
 	if hp == 0:
 		done = true
 		lost.emit()

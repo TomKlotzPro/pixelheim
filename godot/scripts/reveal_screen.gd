@@ -63,7 +63,7 @@ func _next() -> void:
 		Sound.play(stop.get("sound", "coin"))
 		if stop.get("dust", false):
 			for spot: Vector2 in [Vector2(-20, 6), Vector2(18, -4), Vector2(0, 14), Vector2(-6, -12)]:
-				world.dust(stop["at"] + spot)
+				world.fx.dust(stop["at"] + spot)
 	)
 	# Long enough to read the line (the dawn's are long).
 	_tour.tween_interval(UiStyle.reading_seconds(stop["line"]))

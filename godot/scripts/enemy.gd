@@ -407,7 +407,7 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null, crit := fa
 		return
 	if guarding:
 		damage = maxi(1, roundi(damage * float(Bestiary._data()["eliteMoves"]["undead"]["block"])))
-		world.float_text(Text.t("blocked"), global_position + Vector2(0, -26), Color(0.7, 0.85, 1.0))
+		world.fx.float_text(Text.t("blocked"), global_position + Vector2(0, -26), Color(0.7, 0.85, 1.0))
 	Sound.play("hit")
 	# Steel on armour throws sparks where the blow lands (PIX-225).
 	if Motes.sparks_off(String(fighter["id"])) and world.get("atmosphere") != null:
@@ -441,7 +441,7 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null, crit := fa
 
 func _lose(damage: int, color: Color, crit := false) -> void:
 	fighter["hp"] = maxi(0, int(fighter["hp"]) - damage)
-	world.float_number(damage, global_position + Vector2(0, -18), color, crit)
+	world.fx.float_number(damage, global_position + Vector2(0, -18), color, crit)
 	health_bar.size.x = bar_width * fighter["hp"] / fighter["maxHp"]
 	# A boss's health is on the boss bar across the screen's top (PIX-210).
 	health_bar.visible = not world.fights_like_boss(self)

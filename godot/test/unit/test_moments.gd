@@ -32,6 +32,6 @@ func test_a_line_stays_long_enough_to_read() -> void:
 
 
 func test_fine_and_epic_drops_rise_in_their_colour() -> void:
-	assert_true(WorldScript.LOOT_GLOW.has("fine"))
-	assert_true(WorldScript.LOOT_GLOW.has("epic"))
-	assert_false(WorldScript.LOOT_GLOW.has("common"), "a common piece stays in the log")
+	assert_true(WorldFx.LOOT_GLOW.has("fine"))
+	assert_true(WorldFx.LOOT_GLOW.has("epic"))
+	assert_false(WorldFx.LOOT_GLOW.has("common"), "a common piece stays in the log")

@@ -238,7 +238,7 @@ func dodge() -> void:
 	blur.tween_property(sprite, "modulate:a", 0.45, 0.05)
 	blur.tween_interval(float(rules["seconds"]))
 	blur.tween_property(sprite, "modulate:a", 1.0, 0.08)
-	world.dust(global_position)
+	world.fx.dust(global_position)
 	get_tree().create_timer(float(rules["seconds"])).timeout.connect(func() -> void:
 		dodging = false
 		_spring_from(Juice.LAND)
@@ -264,12 +264,12 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null) -> void:
 	if invulnerable or dead:
 		return
 	if _dodge_iframes:
-		world.float_text(Text.t("dodged"), global_position + Vector2(0, -22), Color(0.75, 0.9, 1.0))
+		world.fx.float_text(Text.t("dodged"), global_position + Vector2(0, -22), Color(0.75, 0.9, 1.0))
 		return
 	GameState.hurt(damage)
 	hp = GameState.hero.hp
 	Juice.flash(sprite)
-	world.float_number(damage, global_position + Vector2(0, -22), Color(1, 0.35, 0.35))
+	world.fx.float_number(damage, global_position + Vector2(0, -22), Color(1, 0.35, 0.35))
 	world.camera_rig.shake(3.0, 0.2)
 	world.camera_rig.hit_stop(0.05)
 	if hp > 0 and ailments.inflict(infliction, GameState.roll, HeroRules.passives(GameState.hero)):
@@ -359,8 +359,8 @@ func cast(index: int) -> void:
 			ailments.clear()
 			_show_ailment()
 			world.log_line("All ailments are purged!")
-		world.skill_flash(global_position, Color(0.5, 1.0, 0.6))
-		world.float_number(restored, global_position + Vector2(0, -22), Color(0.5, 1, 0.6))
+		world.fx.skill_flash(global_position, Color(0.5, 1.0, 0.6))
+		world.fx.float_number(restored, global_position + Vector2(0, -22), Color(0.5, 1, 0.6))
 		world.log_line(Text.t("%s restores %d HP.") % [skill["name"], restored])
 		return
 	# An area skill (PIX-190) strikes every foe in reach, not just the nearest.
@@ -369,7 +369,7 @@ func cast(index: int) -> void:
 	for foe: Node in targets:
 		# A warded depth dulls skills (PIX-216).
 		var damage := roundi(Bestiary.hero_skill_damage(GameState.hero, GameState.pack, skill, foe.fighter, GameState.roll) * world.skill_ward())
-		world.skill_flash(foe.global_position, color)
+		world.fx.skill_flash(foe.global_position, color)
 		foe.take_hit(damage, global_position, skill.get("inflicts"))
 		dealt += damage
 	if targets.size() > 1:
@@ -380,7 +380,7 @@ func cast(index: int) -> void:
 	var drained := roundi(dealt * float(skill.get("drain", 0.0)))
 	if drained > 0:
 		var restored := GameState.heal_hero(drained)
-		world.float_number(restored, global_position + Vector2(0, -22), Color(0.5, 1, 0.6))
+		world.fx.float_number(restored, global_position + Vector2(0, -22), Color(0.5, 1, 0.6))
 	_steal_life(dealt)
 
 
@@ -391,7 +391,7 @@ func _steal_life(damage: int) -> void:
 		return
 	var restored := GameState.heal_hero(maxi(1, roundi(damage * share)))
 	if restored > 0:
-		world.float_number(restored, global_position + Vector2(0, -22), Color(0.5, 1, 0.6))
+		world.fx.float_number(restored, global_position + Vector2(0, -22), Color(0.5, 1, 0.6))
 
 
 ## Every living foe within a skill's reach.
@@ -447,7 +447,7 @@ func _tick_ailments(delta: float) -> void:
 	for tick in ailments.tick(delta):
 		GameState.hurt(tick["damage"])
 		hp = GameState.hero.hp
-		world.float_number(tick["damage"], global_position + Vector2(0, -22), Color(0.75, 0.5, 1))
+		world.fx.float_number(tick["damage"], global_position + Vector2(0, -22), Color(0.75, 0.5, 1))
 		if hp == 0:
 			ailments.clear()
 			_die()
