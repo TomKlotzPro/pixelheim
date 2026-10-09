@@ -200,3 +200,21 @@ func test_the_codex_remembers_each_kind_and_the_level_it_was_met_at() -> void:
 	var saved := {}
 	state.progression.write_into(saved)
 	assert_eq(int(saved["met"]["slime"]), 1 + Dungeons.lift(1))
+
+
+## PIX-205: every class starts with a weapon for its own best stat, and a
+## healer's first night says how to fight without a striking skill.
+func test_every_class_starts_on_its_best_stat() -> void:
+	for role_id: String in ["warrior", "mage", "rogue", "cleric", "ranger", "paladin", "necromancer"]:
+		var base: Dictionary = Catalog.role(role_id)["baseStats"]
+		var best := "strength"
+		for stat: String in ["dexterity", "intelligence"]:
+			if int(base[stat]) > int(base[best]):
+				best = stat
+		var weapon := Catalog.item(GameStateScript.STARTER_WEAPONS.get(role_id, "rusty_sword"))
+		assert_eq(weapon.get("scaling", "strength"), best, "%s starts on %s" % [role_id, best])
+	var cleric: Node = autofree(GameStateScript.new())
+	cleric.new_game("Mira", "cleric")
+	assert_true(cleric.first_skill_heals())
+	assert_false("for your skill" in Prologue.objective(Prologue.EMBERS, 0, true), "Mend is no weapon")
+	assert_true("for your skill" in Prologue.objective(Prologue.EMBERS, 0, false))
