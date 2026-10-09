@@ -1,8 +1,10 @@
 shader_type canvas_item;
 // Tones whole regions of the Puny ground from a per-cell mask (PunyTerrain
 // .tint_map, hue premultiplied by coverage). Where regions meet, coverage
-// fades over a cell and an ordered Bayer pattern in 2px blocks decides which
-// pixels take the tone: the retro dither, never a smudge. Water keeps its own
+// fades over a cell and a half, along an edge a slow noise bends off the
+// grid (PIX-247: a region ended in straight lines and right angles, cell by
+// cell), and an ordered Bayer pattern in 2px blocks decides which pixels
+// take the tone: the retro dither, never a smudge. Water keeps its own
 // colours, so the mire and the ash stop at the shore.
 //
 // And what moves in the open air (PIX-223): `sway` leans the top of each quad
@@ -42,6 +44,14 @@ const float FOAM_REACH = 0.34;
 const float FOAM_LAP = 0.035;
 const float FOAM_LINE = 0.032;
 
+// A cell of the ground, in pixels.
+const float CELL = 16.0;
+// How far a region's edge wanders off the grid, and how wide its bends are.
+const float EDGE_WANDER = 1.4;
+const float EDGE_BENDS = 2.6;
+// How far round each pixel the mask is read, in cells.
+const float EDGE_SOFT = 0.5;
+
 float hash(vec2 p) {
 	return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
 }
@@ -65,10 +75,44 @@ void vertex() {
 	VERTEX.x += lean;
 }
 
+// Smooth value noise, 0..1: the slow bends of a region's edge.
+float value_noise(vec2 p) {
+	vec2 i = floor(p);
+	vec2 f = fract(p);
+	f = f * f * (3.0 - 2.0 * f);
+	float a = hash(i);
+	float b = hash(i + vec2(1.0, 0.0));
+	float c = hash(i + vec2(0.0, 1.0));
+	float d = hash(i + vec2(1.0, 1.0));
+	return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
+}
+
+// The region's tone at `at` (premultiplied): read where a slow noise bends
+// it, and over a cell and a half round that, so an edge drifts and fades
+// instead of following the cells. Whole 2px blocks read alike, as the
+// dither does.
+vec4 soft_tint(vec2 at) {
+	vec2 block = floor(at / 2.0) * 2.0;
+	vec2 cells = block / CELL;
+	vec2 bend = vec2(value_noise(cells / EDGE_BENDS), value_noise(cells / EDGE_BENDS + 17.3)) - 0.5;
+	vec2 read = block + bend * 2.0 * EDGE_WANDER * CELL;
+	float reach = EDGE_SOFT * CELL;
+	vec4 sum = texture(tint_map, read / map_pixels) * 2.0;
+	sum += texture(tint_map, (read + vec2(reach, reach)) / map_pixels);
+	sum += texture(tint_map, (read + vec2(-reach, reach)) / map_pixels);
+	sum += texture(tint_map, (read + vec2(reach, -reach)) / map_pixels);
+	sum += texture(tint_map, (read + vec2(-reach, -reach)) / map_pixels);
+	vec4 soft = sum / 6.0;
+	// The noise shapes the edge; the fade across it stays about a cell
+	// wide, so the dither marks a line, not a spray of dots.
+	float covered = smoothstep(0.2, 0.8, soft.a);
+	return soft.a > 0.0 ? vec4(soft.rgb / soft.a * covered, covered) : vec4(0.0);
+}
+
 void fragment() {
 	vec4 base = COLOR;  // already the texel times the modulate
 	base.rgb = to_display(base.rgb);
-	vec4 tint = texture(tint_map, world_pos / map_pixels);
+	vec4 tint = soft_tint(world_pos);
 	ivec2 block = ivec2(floor(world_pos / 2.0)) & ivec2(3);
 	float threshold = (BAYER[block.y * 4 + block.x] + 0.5) / 16.0;
 	bool water = base.b > base.g;

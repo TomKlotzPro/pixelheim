@@ -3849,6 +3849,10 @@ msgid "Smithing shaves the Forge's prices and, at level 5, unlocks the +8 master
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Soft Edges"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Sounds are never quite the same twice, a little higher or lower, louder or softer; a flurry of hits sounds as one, and footsteps are softer, left foot and right"
 msgstr ""
 
@@ -4449,6 +4453,10 @@ msgid "The app shell slimmed from four hundred lines to a router: the soundscape
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The arrow toward your goal keeps clear of the line over the dock"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The balance sim now walks every legal path chain through the whole game, so no identity is a trap"
 msgstr ""
 
@@ -4914,6 +4922,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Where It Leads"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Where regions meet, the ground no longer changes along straight lines and square corners: the edge bends and wanders, still dithered pixel by pixel, and the land's tone runs right to the shore"
 msgstr ""
 
 #: assets/data/changelog.json

@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.186.0",
+      "date": "2026-10-10",
+      "codename": "Soft Edges",
+      "notes": [
+        "Where regions meet, the ground no longer changes along straight lines and square corners: the edge bends and wanders, still dithered pixel by pixel, and the land's tone runs right to the shore",
+        "The arrow toward your goal keeps clear of the line over the dock"
+      ]
+    },
+    {
       "version": "0.185.0",
       "date": "2026-10-10",
       "codename": "Clear Map",

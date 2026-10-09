@@ -309,7 +309,9 @@ func update_arrow() -> void:
 		arrow = Arrow.new()
 		root.add_child(arrow)
 	var target := _bearing_point()
-	var bottom: float = world.camera_rig.dock_top()
+	# Above the line over the dock too (the objective's plate stands there),
+	# never on its words.
+	var bottom: float = minf(world.camera_rig.dock_top(), objective_box.position.y - 4.0) if objective_box != null else world.camera_rig.dock_top()
 	var area := Rect2(Vector2(ARROW_INSET, ARROW_INSET), Vector2(1280.0 - 2.0 * ARROW_INSET, bottom - 2.0 * ARROW_INSET))
 	var on_screen := Vector2.ZERO
 	if target != Vector2.INF:
