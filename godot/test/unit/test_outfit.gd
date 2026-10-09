@@ -200,3 +200,33 @@ func test_gloves_boots_and_shields_show() -> void:
 	for y in 32:
 		for x in range(8 * 32, 9 * 32):
 			assert_eq(bow_sheet.get_pixel(x, y), plain.get_pixel(x, y))
+
+
+## PIX-175: the hero looks the same everywhere.
+func test_the_fallen_lie_in_one_sheet() -> void:
+	var head_path := PunyArt.HEADS["wyrm_visor"]
+	var body_path := PunyArt.BODIES["leather_armor"]
+	var outfit := PunyArt.outfit_texture(head_path, body_path).get_image()
+	var bodies: Image = (load(PunyArt.path(body_path)) as Texture2D).get_image()
+	bodies.convert(Image.FORMAT_RGBA8)
+	for frame: Vector2i in PunyArt.LYING:
+		var cell := Rect2i(frame * 32, Vector2i(32, 32))
+		assert_eq(outfit.get_region(cell).get_data(), bodies.get_region(cell).get_data(), "frame %s is the body sheet's" % frame)
+
+
+func test_the_necromancers_violet_stays_on_their_own_robe() -> void:
+	var bare := PunyArt.dressed("necromancer", 0, {})
+	assert_ne(bare["tint"], Color.WHITE, "a bare necromancer is violet all over")
+	var armoured := PunyArt.dressed("necromancer", 0, {"body": "iron_armor"})
+	assert_eq(armoured["tint"], Color.WHITE, "no sprite-wide tint once dressed")
+	assert_ne(armoured["gear"]["head_tint"], Color.WHITE, "the role's own head keeps its violet")
+	assert_eq(armoured["gear"]["body_tint"], Color.WHITE, "borrowed armour keeps its colour")
+	var outfit := PunyArt.sheet_texture(armoured).get_image()
+	var bodies: Image = (load(PunyArt.path(PunyArt.BODIES["iron_armor"])) as Texture2D).get_image()
+	bodies.convert(Image.FORMAT_RGBA8)
+	var base: Image = (load(PunyArt.path(PunyArt.BASE)) as Texture2D).get_image()
+	var neck := base.get_region(Rect2i(0, 0, 32, 32)).get_used_rect().position.y + PunyArt.HEAD_ROWS
+	for x in range(8, 24):
+		assert_eq(outfit.get_pixel(x, neck + 3), bodies.get_pixel(x, neck + 3), "iron at x %d" % x)
+	assert_eq(PunyArt.dressed("warrior", 0, {"body": "iron_armor"})["gear"]["head_tint"], Color.WHITE)
+

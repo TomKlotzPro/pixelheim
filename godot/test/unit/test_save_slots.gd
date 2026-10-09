@@ -230,3 +230,17 @@ func test_save_code_carries_the_hero_to_the_web() -> void:
 	state.pack.gold = 321
 	var decoded := SaveCodec.decode_code(state.save_code())
 	assert_eq(decoded, state.to_dict())
+
+
+## PIX-175: the slot's portrait wears what the hero wore.
+func test_summary_says_what_the_hero_wears() -> void:
+	var state := _fresh_state()
+	var armor := InventoryState.create_gear("iron_armor")
+	state.pack.gear.append(armor)
+	state.pack.equipped["body"] = armor["uid"]
+	slots.write(1, state.to_dict())
+	assert_eq(slots.summary(1)["worn"].get("body"), "iron_armor")
+	var spec := PunyArt.dressed(slots.summary(1)["roleId"], 0, slots.summary(1)["worn"])
+	assert_true(spec.has("body"), "drawn in the armour")
+	assert_not_null(PunyArt.sheet_texture(spec), "the portrait's sheet")
+	assert_typeof(spec["tint"], TYPE_COLOR)

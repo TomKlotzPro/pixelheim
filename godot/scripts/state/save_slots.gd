@@ -48,6 +48,8 @@ func summary(slot: int) -> Dictionary:
 		"name": state["hero"]["name"],
 		"roleId": state["hero"]["roleId"],
 		"look": state["hero"].get("look", 0),
+		# What the hero wears, so the slot shows them as they left (PIX-175).
+		"worn": InventoryState.from_dict(state).worn_items(),
 		"level": state["hero"]["level"],
 		"gold": state["gold"],
 		"mapId": state["world"]["position"]["mapId"],
