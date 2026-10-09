@@ -42,6 +42,8 @@ func _init(file_path := "user://settings.cfg") -> void:
 
 
 func load_file() -> void:
+	# A phone reads at arm's length (PIX-214): large text unless told otherwise.
+	large_text = Touch.enabled()
 	var config := ConfigFile.new()
 	if config.load(path) != OK:
 		return

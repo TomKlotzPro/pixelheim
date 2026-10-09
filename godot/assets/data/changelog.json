@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.162.0",
+      "date": "2026-10-09",
+      "codename": "Thumb-Sized",
+      "notes": [
+        "On a phone the controls are sized for a thumb on any screen, the attack, roll and use buttons show a drawn sword, arrow and hand instead of words, and all six skill keys are on screen, with each skill's icon",
+        "The tap bar carries what only a key did: drop, drop all and sort in the pack, put a skill on a key and forget in Skills, and it shrinks to fit the screen",
+        "A phone starts with large text, which now reaches the shops' and ledgers' descriptions too"
+      ]
+    },
+    {
       "version": "0.161.0",
       "date": "2026-10-09",
       "codename": "Deep Gear",

@@ -32,7 +32,8 @@ func _open() -> void:
 	card.custom_minimum_size = Vector2(520, 440)
 	card.add_theme_stylebox_override("panel", UiStyle.window(18))
 	add_child(card)
-	info = UiStyle.label("", 14, UiStyle.INK)
+	# Large text reaches the page's words too (PIX-214).
+	info = UiStyle.label("", UiStyle.reading(14), UiStyle.INK)
 	info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	info.custom_minimum_size = Vector2(480, 0)
 	info.size_flags_vertical = Control.SIZE_SHRINK_BEGIN

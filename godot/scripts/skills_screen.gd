@@ -300,6 +300,22 @@ func _forget() -> void:
 	forget_armed = armed
 
 
+## On a phone, the tap bar's own buttons (PIX-214): the next key for the
+## chosen skill (1-6 by keyboard), and F's forgetting.
+func _tap_actions() -> Array[Dictionary]:
+	return [
+		{"label": "Set key", "call": _bind_next},
+		{"label": "Forget", "call": _forget},
+	]
+
+
+## The chosen skill onto the key after the one it's on (the first, if none).
+func _bind_next() -> void:
+	var cell: Dictionary = cells.get(selected, {})
+	var key_id := "path" if cell.get("kind", "") == "path" else String(cell.get("entry", {}).get("id", ""))
+	_bind(_key_of(key_id) % Skills.DOCK_SIZE)
+
+
 ## 1-6: the selected known skill (or the walked path's signature) onto that key.
 func _bind(index: int) -> void:
 	var cell: Dictionary = cells.get(selected, {})

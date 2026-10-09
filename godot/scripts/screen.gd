@@ -94,6 +94,12 @@ func dim(alpha := UiStyle.BACKDROP.a) -> ColorRect:
 	return backdrop
 
 
+## The screen's own commands for the tap bar (PIX-214), [{label, call}]:
+## those only a key reached.
+func _tap_actions() -> Array[Dictionary]:
+	return []
+
+
 ## Whether this screen takes the tap bar on a phone; a story scene that
 ## moves on by itself, or by any tap, doesn't need it.
 func _wants_tap_bar() -> bool:
@@ -107,36 +113,53 @@ func _wants_tap_bar() -> bool:
 ## there is none.
 func _tap_bar() -> void:
 	var size := Touch.view_size(self)
-	var scale := maxf(0.2, get_tree().root.get_final_transform().get_scale().x)
-	var button_px := 46.0 / scale
-	var gap := 8.0 / scale
+	# A thumb's size in CSS pixels, whatever the screen (PIX-214).
+	var button_px := Touch.css(self, 48.0)
+	var gap := Touch.css(self, 8.0)
 	var spare := (size - Touch.DESIGN) / 2.0
-	# The arrows as the keycaps draw them (PIX-213), not ASCII.
-	var keys := [[UiStyle.ARROWS["Left"], "move_left"], [UiStyle.ARROWS["Up"], "move_up"], [UiStyle.ARROWS["Down"], "move_down"], [UiStyle.ARROWS["Right"], "move_right"], ["OK", "interact"], ["Back", "ui_cancel"]]
+	# The arrows as the keycaps draw them (PIX-213), not ASCII; then the
+	# screen's own commands (PIX-214): what only a key did - dropping and
+	# sorting the pack, putting a skill on a key, forgetting.
+	var keys: Array = [[UiStyle.ARROWS["Left"], "move_left"], [UiStyle.ARROWS["Up"], "move_up"], [UiStyle.ARROWS["Down"], "move_down"], [UiStyle.ARROWS["Right"], "move_right"], ["OK", "interact"], [Text.t("Back"), "ui_cancel"]]
+	for extra: Dictionary in _tap_actions():
+		keys.append([Text.t(extra["label"]), extra["call"]])
 	var column := spare.x >= button_px * 1.15 + gap * 2
 	var bar: BoxContainer = VBoxContainer.new() if column else HBoxContainer.new()
 	bar.add_theme_constant_override("separation", int(gap))
 	for key: Array in keys:
+		var word: String = key[0]
+		var mine: bool = key[1] is Callable
 		var button := Button.new()
-		button.text = key[0]
+		button.text = word
 		button.focus_mode = Control.FOCUS_NONE
-		button.custom_minimum_size = Vector2(button_px * (1.15 if column else (1.6 if key[0].length() > 1 else 1.0)), button_px)
+		button.custom_minimum_size = Vector2(button_px * (1.15 if column else 1.0), button_px)
 		button.add_theme_font_override("font", UiStyle.bold_font())
-		button.add_theme_font_size_override("font_size", roundi(button_px * 0.4))
-		button.add_theme_stylebox_override("normal", UiStyle.box(Color(UiStyle.NIGHT, 0.8), UiStyle.RIM, 8))
+		# An arrow reads big; a word smaller, so it fits its button.
+		button.add_theme_font_size_override("font_size", roundi(button_px * (0.4 if word.length() == 1 else 0.24)))
+		var face := Color(UiStyle.WOOD_DARK, 0.85) if mine else Color(UiStyle.NIGHT, 0.8)
+		button.add_theme_stylebox_override("normal", UiStyle.box(face, UiStyle.RIM, 8))
 		button.add_theme_stylebox_override("pressed", UiStyle.box(Color(UiStyle.LAMP, 0.8), UiStyle.RIM, 8))
-		button.add_theme_stylebox_override("hover", UiStyle.box(Color(UiStyle.NIGHT, 0.8), UiStyle.RIM, 8))
+		button.add_theme_stylebox_override("hover", UiStyle.box(face, UiStyle.RIM, 8))
 		button.add_theme_color_override("font_color", UiStyle.CREAM)
-		var action: String = key[1]
-		button.button_down.connect(func() -> void: _tap(action))
+		if mine:
+			button.pressed.connect(key[1])
+		else:
+			var action: String = key[1]
+			button.button_down.connect(func() -> void: _tap(action))
 		bar.add_child(button)
 	add_child(bar)
 	bar.reset_size()
-	var at := Vector2(size.x - bar.size.x - gap * 2, size.y - bar.size.y - gap * 2)
+	# Too long for the screen, the bar shrinks to fit rather than run off it.
+	var room := (size.y if column else size.x) - gap * 4
+	var length := bar.size.y if column else bar.size.x
+	if length > room:
+		bar.scale = Vector2.ONE * (room / length)
+	var shown := bar.size * bar.scale
+	var at := Vector2(size.x - shown.x - gap * 2, size.y - shown.y - gap * 2)
 	if column:
-		at = Vector2(size.x - spare.x / 2.0 - bar.size.x / 2.0, (size.y - bar.size.y) / 2.0)
+		at = Vector2(size.x - spare.x / 2.0 - shown.x / 2.0, (size.y - shown.y) / 2.0)
 	elif spare.y >= button_px + gap * 2:
-		at = Vector2((size.x - bar.size.x) / 2.0, size.y - spare.y / 2.0 - bar.size.y / 2.0)
+		at = Vector2((size.x - shown.x) / 2.0, size.y - spare.y / 2.0 - shown.y / 2.0)
 	bar.position = (at - offset).round()
 
 

@@ -79,7 +79,8 @@ func _open() -> void:
 	var side_box := VBoxContainer.new()
 	side_box.add_theme_constant_override("separation", 14)
 	side.add_child(side_box)
-	detail = UiStyle.label("", 14, UiStyle.INK)
+	# Large text reaches the counter's words too (PIX-214).
+	detail = UiStyle.label("", UiStyle.reading(14), UiStyle.INK)
 	detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	detail.custom_minimum_size = Vector2(340, 0)
 	side_box.add_child(detail)
