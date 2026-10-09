@@ -953,6 +953,66 @@
       },
       "accepted": "There's a hole cut in the lake ice, out past the middle. Stand at its edge, face the water and be patient. Icefin, three of them.",
       "completed": "Supper! Real supper. Gunnar will stop complaining for a whole hour."
+    },
+    {
+      "id": "brin_oilskin",
+      "giver": "saltmere_brin",
+      "name": "A Coat for the Harbour",
+      "brief": "Brin's oilskin has more holes than coat. He wants a new one, made the Saltmere way.",
+      "objective": {
+        "kind": "craft",
+        "itemId": "oilskin_coat",
+        "count": 1,
+        "label": "Oilskin coats made"
+      },
+      "reward": {
+        "gold": 90,
+        "xp": 50,
+        "itemId": "pearl"
+      },
+      "accepted": "Sea glass and pelts, sewn tight at a forge. Make me an oilskin coat and I'll make it worth your while.",
+      "completed": "Now that's a coat. Here - a pearl from the jetty. Make something sharp with it.",
+      "opensAfter": "brin_lens"
+    },
+    {
+      "id": "garrick_helm",
+      "giver": "mines_garrick",
+      "name": "Iron for the Foreman",
+      "brief": "Garrick wants proof a smith can work Blackiron ore: a helm, forged from his seam.",
+      "objective": {
+        "kind": "craft",
+        "itemId": "blackiron_helm",
+        "count": 1,
+        "label": "Blackiron helms forged"
+      },
+      "reward": {
+        "gold": 150,
+        "xp": 80,
+        "itemId": "gem"
+      },
+      "accepted": "Three lumps of ore and a pelt for the lining. Forge me a Blackiron helm and the seam's yours to work.",
+      "completed": "Heavy, true, and it fits my thick head. Take this - we found it in the seam.",
+      "opensAfter": "garrick_seam"
+    },
+    {
+      "id": "linnea_hood",
+      "giver": "frost_linnea",
+      "name": "A Hood Against the Pass",
+      "brief": "Linnea's brother crosses the pass at night. She wants him in Frostweave.",
+      "objective": {
+        "kind": "craft",
+        "itemId": "frost_hood",
+        "count": 1,
+        "label": "Frost hoods woven"
+      },
+      "reward": {
+        "gold": 160,
+        "xp": 90,
+        "itemId": "frost_lily"
+      },
+      "accepted": "Yeti fur and a frost lily, woven at a cauldron. A Frostweave hood, for my brother. Please.",
+      "completed": "He'll come home with his ears. Thank you. Take a lily - they only bloom up here.",
+      "opensAfter": "linnea_icefin"
     }
   ],
   "rankTitles": {
