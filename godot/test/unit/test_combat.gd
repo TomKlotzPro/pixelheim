@@ -116,7 +116,8 @@ func test_mastery_announces_a_crossed_tier() -> void:
 	assert_almost_eq(Bestiary.mastery_bonus(state.hero.mastery, "slime"), 0.05, 0.0001)
 
 
-func test_a_kill_pays_xp_gold_rent_and_clears_the_spawn() -> void:
+## PIX-178: rent fills a till by the day now, not a line on every kill.
+func test_a_kill_pays_xp_and_gold_and_clears_the_spawn() -> void:
 	state.settlement.properties.assign(["town_shop"])
 	state.settlement.bard_song = true
 	state.roll = _dice([0.99, 0.99])
@@ -124,10 +125,10 @@ func test_a_kill_pays_xp_gold_rent_and_clears_the_spawn() -> void:
 	var slain := []
 	state.monster_slain.connect(func(id: String) -> void: slain.append(id))
 	var log: Array[String] = state.defeat_monster(wolf, "forest", "forest_2", 1)
-	assert_has(log, "Rent from your properties: +2 gold.")
+	assert_false(log.any(func(line: String) -> bool: return line.begins_with("Rent")), "no rent line per kill")
 	assert_has(log, "Dire Wolf is defeated! +8 XP, +9 gold.")
 	assert_eq(state.hero.xp, 8)
-	assert_eq(state.pack.gold, 30 + 2 + 9)
+	assert_eq(state.pack.gold, 30 + 9)
 	assert_eq(state.world.slain, ["forest_2"])
 	assert_eq(slain, ["wolf"])
 	assert_eq(state.settlement.bard_song, false, "the song fades with the fight")

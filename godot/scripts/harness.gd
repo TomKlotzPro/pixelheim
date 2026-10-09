@@ -410,6 +410,13 @@ func _run_test_harness() -> void:
 		await get_tree().create_timer(0.3).timeout
 	if args.has("hall") or args.has("bank"):
 		GameState.pack.gold = 20000
+		# `--own town_shop,town_smith`: deeds held, four days of rent waiting (PIX-178).
+		var own_index := args.find("--own")
+		if own_index >= 0 and own_index + 1 < args.size():
+			for map_id in args[own_index + 1].split(","):
+				GameState.settlement.properties.append(map_id)
+				GameState.investments()["tills"] = GameState.investments().get("tills", {})
+				GameState.investments()["tills"][map_id] = {"gold": 0, "earned": 900, "at": GameState.steps_now() - 480 * 4}
 		var ledger := "town_hall_screen" if args.has("hall") else "bank_screen"
 		world.add_child(load("res://scripts/%s.gd" % ledger).new())
 		await get_tree().create_timer(0.3).timeout

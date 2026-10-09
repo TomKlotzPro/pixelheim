@@ -344,8 +344,32 @@ static func town_patches(done: Array) -> Dictionary:
 
 
 ## Village rent: one coin more per property from tier 2 (rentPerProperty).
-static func rent_per_property(current: int) -> int:
-	return int(_data()["rentPerVictory"]) + (1 if current >= 2 else 0)
+## A property's rent for a day of the day-wheel (PIX-178): a share of its
+## deed, a tenth more from the Village, more again expanded.
+static func daily_rent(map_id: String, expanded: bool, current: int) -> int:
+	var rules: Dictionary = _data()["rent"]
+	var rent := float(deeds()[map_id]["cost"]) * float(rules["dailyShare"])
+	if current >= 2:
+		rent *= 1.0 + float(rules["villageBoost"])
+	if expanded:
+		rent *= 1.0 + float(rules["expansionBoost"])
+	return roundi(rent)
+
+
+## The most a till holds before someone empties it.
+static func till_cap(map_id: String, expanded: bool, current: int) -> int:
+	return daily_rent(map_id, expanded, current) * int(_data()["rent"]["tillDays"])
+
+
+## The shop a property is (economy.json shopMaps), or "".
+static func shop_of(map_id: String) -> String:
+	return String(Economy._data()["shopMaps"].get(map_id, ""))
+
+
+## The day's owner's pick in a shop the hero owns (PIX-178).
+static func owner_pick(shop_id: String, day: int) -> String:
+	var picks: Array = _data()["rent"]["ownerPicks"].get(shop_id, [])
+	return String(picks[day % picks.size()]) if not picks.is_empty() else ""
 
 
 ## Town inns honor their patron: half price from tier 3 (restCostFor).

@@ -40,7 +40,7 @@ func _info() -> String:
 		lines.append(Text.t("On the road: %dg staked, back in %d steps.") % [
 			venture["stake"], int(Town.bank("ventureSteps")) - (steps - int(venture["at"])),
 		])
-	lines.append_array(["", Text.t("Expansions (+%dg rent per victory each)") % Town.bank("expansionRent")])
+	lines.append_array(["", Text.t("Expansions (+%d%% daily rent each)") % roundi(float(Town._data()["rent"]["expansionBoost"]) * 100)])
 	if GameState.settlement.properties.is_empty():
 		lines.append("Own a business first: buy its deed from the keeper.")
 	return "\n".join(lines)

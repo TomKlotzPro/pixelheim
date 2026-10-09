@@ -35,10 +35,11 @@ func _info() -> String:
 	return "\n".join(lines)
 
 
-## Who has come to live here, and what each brings (PIX-148): on the page,
-## under the projects.
+## Who has come to live here, and what each brings (PIX-148), and what
+## the hero owns (PIX-178): on the page, under the projects.
 func _refresh() -> void:
 	super._refresh()
+	_holdings()
 	var perks := Town.settler_perks(GameState.settlement.settlers, GameState.progression.quests)
 	if perks.is_empty():
 		return
@@ -48,6 +49,26 @@ func _refresh() -> void:
 	list.add_child(UiStyle.strong("Townsfolk", 16, UiStyle.LAMP))
 	for perk: String in perks:
 		var line := UiStyle.label("- " + perk, 14, UiStyle.INK)
+		line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		line.custom_minimum_size = Vector2(540, 0)
+		list.add_child(line)
+
+
+## Holdings (PIX-178): each property, what it has earned, what waits in
+## its till and what a day brings.
+func _holdings() -> void:
+	if GameState.settlement.properties.is_empty():
+		return
+	var spacer := Control.new()
+	spacer.custom_minimum_size = Vector2(0, 14)
+	list.add_child(spacer)
+	list.add_child(UiStyle.strong("Holdings", 16, UiStyle.LAMP))
+	for map_id: String in GameState.settlement.properties:
+		var entry := GameState.till(map_id)
+		var expanded: bool = map_id in GameState.investments()["expansions"]
+		var line := UiStyle.label(Text.t("- %s: %dg earned, %dg in the till (%dg a day)") % [
+			Town.deeds()[map_id]["name"], entry["earned"], entry["gold"], Town.daily_rent(map_id, expanded, GameState.town_tier()),
+		], 14, UiStyle.INK)
 		line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		line.custom_minimum_size = Vector2(540, 0)
 		list.add_child(line)

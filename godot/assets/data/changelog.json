@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.133.0",
+      "date": "2026-10-09",
+      "codename": "Property That Pays",
+      "notes": [
+        "PROPERTY THAT PAYS: a business you own now fills its till with rent every day - about a twenty-fifth of what its deed cost, a tenth more once Pixelheim is a village and a quarter more expanded - and its keeper hands you the till when you walk up to the counter. No more rent line after every kill",
+        "AN OWNER'S PERKS: you pay a tenth less in a shop you own, and its shelf keeps an owner's pick that changes every day",
+        "HOLDINGS: the town hall's page now lists what you own - what each property has earned, what waits in its till and what a day brings"
+      ]
+    },
+    {
       "version": "0.132.0",
       "date": "2026-10-09",
       "codename": "An Honest Bank",
