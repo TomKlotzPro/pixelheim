@@ -368,7 +368,7 @@ func cast(index: int) -> void:
 	var dealt := 0
 	for foe: Node in targets:
 		# A warded depth dulls skills (PIX-216).
-		var damage := roundi(Bestiary.hero_skill_damage(GameState.hero, GameState.pack, skill, foe.fighter, GameState.roll) * world.skill_ward())
+		var damage := roundi(Bestiary.hero_skill_damage(GameState.hero, GameState.pack, skill, foe.fighter, GameState.roll) * world.delve.skill_ward())
 		world.fx.skill_flash(foe.global_position, color)
 		foe.take_hit(damage, global_position, skill.get("inflicts"))
 		dealt += damage
@@ -421,7 +421,7 @@ func _nearest_foe() -> Node:
 ## one, every hero's mana or stamina trickles back (PIX-187), so a caster
 ## isn't left swinging a staff at crabs.
 func _regen(delta: float) -> void:
-	if not world.in_fight():
+	if not world.foes.in_fight():
 		regen_clock = 0.0
 		rest_clock += delta
 		while rest_clock >= REST_TICK:

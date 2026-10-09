@@ -209,7 +209,7 @@ func _physics_process(delta: float) -> void:
 			if back.length() < 4:
 				_settle()
 		_:
-			if not player.dead and world.can_notice(self):
+			if not player.dead and world.foes.can_notice(self):
 				notice()
 			else:
 				_wander(delta)
@@ -233,7 +233,7 @@ func notice() -> void:
 	mode = "alert"
 	hunting = true
 	alert_left = float(Packs.rules()["windUpSeconds"])
-	world.on_enemy_noticed(self)
+	world.foes.on_enemy_noticed(self)
 	_play("idle")
 	if mark == null:
 		mark = _alert_bubble()
@@ -421,7 +421,7 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null, crit := fa
 	if dying:
 		Sound.play_ui("kill")
 	if dying and Bestiary.is_boss(fighter["id"]):
-		world.boss_fell()
+		world.foes.boss_fell()
 	else:
 		world.camera_rig.hit_stop(KILL_STOP if dying else HIT_STOP)
 	world.camera_rig.shake(2.5 if dying or crit else 1.5, 0.1)
@@ -433,7 +433,7 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null, crit := fa
 		mode = "chase"
 		if not hunting:
 			hunting = true
-			world.on_enemy_noticed(self)
+			world.foes.on_enemy_noticed(self)
 	if not dying and ailments.inflict(infliction, GameState.roll):
 		Sound.play_ui("ail")
 		world.messages.log_line(Text.t("%s is afflicted by %s!") % [fighter["name"], Ailments.label(infliction["kind"])])
@@ -444,7 +444,7 @@ func _lose(damage: int, color: Color, crit := false) -> void:
 	world.fx.float_number(damage, global_position + Vector2(0, -18), color, crit)
 	health_bar.size.x = bar_width * fighter["hp"] / fighter["maxHp"]
 	# A boss's health is on the boss bar across the screen's top (PIX-210).
-	health_bar.visible = not world.fights_like_boss(self)
+	health_bar.visible = not world.foes.fights_like_boss(self)
 	health_bar_back.visible = health_bar.visible
 	if fighter["hp"] == 0:
 		_die()
@@ -452,7 +452,7 @@ func _lose(damage: int, color: Color, crit := false) -> void:
 
 func _die() -> void:
 	dying = true
-	world.on_enemy_died(self)
+	world.foes.on_enemy_died(self)
 	collision_layer = 0
 	collision_mask = 0
 	hurtbox.collision_layer = 0

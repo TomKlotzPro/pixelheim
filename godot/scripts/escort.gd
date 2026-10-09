@@ -107,7 +107,7 @@ func _reached(at: int) -> void:
 		if int(ambush["at"]) == at:
 			for i in ambush["foes"].size():
 				var from: Array = ambush["from"][i]
-				var foe: Node = world.spawn_enemy(ambush["foes"][i], Vector2i(int(from[0]), int(from[1])), "", "", false, true)
+				var foe: Node = world.foes.spawn_enemy(ambush["foes"][i], Vector2i(int(from[0]), int(from[1])), "", "", false, true)
 				foe.quarry = self
 				world.fx.appear(foe)
 				foe.notice()

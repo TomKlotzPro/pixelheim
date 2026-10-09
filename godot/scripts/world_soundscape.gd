@@ -5,8 +5,7 @@ extends Node
 ## the hero, a fallen boss's silence; the place's ambience, birds or
 ## crickets, the town's chatter, fire close by, wind or rain underneath
 ## (PIX-158, PIX-224); and coins, hurts and heals as they happen. The fight's
-## clock it reads (and keeps) is still the world's: hunted_at,
-## hunted_by_boss.
+## clock it reads (and keeps) is Foes': hunted_at, hunted_by_boss.
 
 var world: Node
 ## Sound's view of the hero: what changed is heard (coin, heal, hurt).
@@ -68,16 +67,16 @@ func refresh() -> void:
 	var now := Time.get_ticks_msec() / 1000.0
 	for enemy in get_tree().get_nodes_in_group("mobs"):
 		if enemy.hunting and not enemy.dying:
-			world.hunted_at = now
-			world.hunted_by_boss = world.hunted_by_boss or world.fights_like_boss(enemy)
+			world.foes.hunted_at = now
+			world.foes.hunted_by_boss = world.foes.hunted_by_boss or world.foes.fights_like_boss(enemy)
 			# A boss on the hunt has its bar across the top (PIX-210).
-			if world.fights_like_boss(enemy) and not world.boss_bar.following():
+			if world.foes.fights_like_boss(enemy) and not world.boss_bar.following():
 				world.boss_bar.follow(enemy)
 	var fight := ""
-	if now - world.hunted_at < world.COMBAT_LINGER_S:
-		fight = "boss" if world.hunted_by_boss else "battle"
+	if now - world.foes.hunted_at < Foes.COMBAT_LINGER_S:
+		fight = "boss" if world.foes.hunted_by_boss else "battle"
 	else:
-		world.hunted_by_boss = false
+		world.foes.hunted_by_boss = false
 	# A fallen boss's silence holds a moment before the place's music.
 	if now >= hushed_until and (Sound.track != "victory" or fight != ""):
 		Sound.play_track(Sound.track_for(world.map.id, world.map.floor_level, fight))

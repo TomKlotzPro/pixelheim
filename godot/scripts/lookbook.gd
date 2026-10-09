@@ -122,15 +122,15 @@ func _stage(shot: Dictionary) -> void:
 	world.messages.clear()
 	GameState.world.steps = shower_by_day() if shot.get("rain", false) else float(shot["time"]) * DayNight.DAY_CYCLE_STEPS
 	if shot.has("floor"):
-		world.enter_floor(int(shot["floor"]))
+		world.delve.enter_floor(int(shot["floor"]))
 	else:
-		world.map = world._load_map(shot["map"])
+		world.map = world.load_map(shot["map"])
 		var at: Vector2i = nearest_walkable(world.map, shot["cell"]) if shot.has("cell") else _cell(world.map, String(shot.get("at", "")))
-		world._enter_map(world.map, at)
+		world.enter_map(world.map, at)
 	world.folk.keep_hours(true)
 	world.lights.time = CLOCK
 	if shot.has("foe"):
-		var foe: Node = world.spawn_enemy(shot["foe"], world.player_cell + Vector2i(2, 0), "", "", true, false)
+		var foe: Node = world.foes.spawn_enemy(shot["foe"], world.player_cell + Vector2i(2, 0), "", "", true, false)
 		world.player.face(Vector2.RIGHT)
 		foe.notice()
 		_foe = foe

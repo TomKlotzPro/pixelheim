@@ -13328,44 +13328,44 @@ msgstr ""
 msgid "Arrows"
 msgstr ""
 
-#: scripts/world.gd:1005
-msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
-msgstr ""
-
-#: scripts/world.gd:1082
-msgid "%s  %d:%02d"
-msgstr ""
-
-#: scripts/world.gd:1258
-msgid "Next"
-msgstr ""
-
-#: scripts/world.gd:290
-msgid "The pack is scattered. Another comes once you've walked a good way, or after a night's rest."
-msgstr ""
-
-#: scripts/world.gd:381
+#: scripts/world.gd:303
 msgid "No map reaches this deep."
 msgstr ""
 
-#: scripts/world.gd:543
-msgid "{epithet} {name}"
-msgstr ""
-
-#: scripts/world.gd:908
+#: scripts/world.gd:657
 msgid "Five lanterns on the square, one for each of the five who climbed. Tonight the %s remembers them - and %s."
 msgstr ""
 
-#: scripts/world.gd:909
+#: scripts/world.gd:658
 msgid "Pixelheim, a %s raised from the ashes. Tonight it celebrates %s."
 msgstr ""
 
-#: scripts/world.gd:995
+#: scripts/world.gd:744
 msgid "%s: built."
 msgstr ""
 
-#: scripts/world.gd:999
+#: scripts/world.gd:748
 msgid "Pixelheim is a %s now."
+msgstr ""
+
+#: scripts/world.gd:754
+msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
+msgstr ""
+
+#: scripts/world.gd:831
+msgid "%s  %d:%02d"
+msgstr ""
+
+#: scripts/world.gd:930
+msgid "Next"
+msgstr ""
+
+#: scripts/world_delve.gd:40
+msgid "{epithet} {name}"
+msgstr ""
+
+#: scripts/world_foes.gd:226
+msgid "The pack is scattered. Another comes once you've walked a good way, or after a night's rest."
 msgstr ""
 
 #: scripts/world_fx.gd:108

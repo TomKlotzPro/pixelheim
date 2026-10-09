@@ -113,7 +113,7 @@ func _step_away() -> String:
 
 func _descend(level: int) -> String:
 	close()
-	world.enter_floor(level)
+	world.delve.enter_floor(level)
 	return ""
 
 
