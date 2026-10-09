@@ -203,6 +203,9 @@ func _process(delta: float) -> void:
 	stage.run_clocks(delta)
 	messages.update()
 	hud.keep_hint_clear()
+	# The boss slayer's edge (PIX-232) wears down while the world runs.
+	GameState.spoils.tick_slayer(delta)
+	hud.update_edge()
 	stage.tend_escort()
 	GameState.walk(player.position.distance_to(last_player_position) / TILE)
 	last_player_position = player.position
@@ -257,6 +260,12 @@ func on_player_died() -> void:
 ## door to another map, a dungeon's gate and its floor select, the stairs
 ## up from a floor, or the hole deeper.
 func use_portal(target: Dictionary) -> void:
+	# No running from a boss (PIX-232): the way out holds until it falls.
+	var boss := foes.boss_hunting()
+	if boss != null:
+		_step_back()
+		messages.flash(Text.t("%s bars your way: no leaving until the fight is over.") % boss.fighter["name"])
+		return
 	match target["kind"]:
 		"map":
 			_through_door(func() -> void:

@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.174.0",
+      "date": "2026-10-09",
+      "codename": "Boss Slayer",
+      "notes": [
+        "Named monsters like Rimefang now fall as bosses do: the world slows, the music cuts, and a Victory title marks it",
+        "Bosses and named monsters no longer give up the chase and heal when you step away, and there's no leaving while one hunts you",
+        "Slaying one makes you a Boss slayer: +10% damage for 10 minutes, counting down at the top left"
+      ]
+    },
+    {
       "version": "0.173.0",
       "date": "2026-10-09",
       "codename": "First Brew",

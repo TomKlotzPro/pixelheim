@@ -153,8 +153,10 @@ func _physics_process(delta: float) -> void:
 					GameState.hero, GameState.pack, body.fighter,
 					GameState.settlement.bard_song == true, GameState.roll, GameState.holdings.song_crit(), GameState.household.home_buff("crit") + (1.0 if primed else 0.0)
 				)
-				body.take_hit(swing["damage"], global_position, HeroRules.passives(GameState.hero)["attackInflict"], swing["crit"])
-				_steal_life(swing["damage"])
+				# A slain boss's edge (PIX-232) sharpens every blow a while.
+				var dealt := roundi(swing["damage"] * GameState.spoils.damage_scale())
+				body.take_hit(dealt, global_position, HeroRules.passives(GameState.hero)["attackInflict"], swing["crit"])
+				_steal_life(dealt)
 		return
 	var input := scripted_dir
 	if input == Vector2.ZERO:
@@ -368,7 +370,7 @@ func cast(index: int) -> void:
 	var dealt := 0
 	for foe: Node in targets:
 		# A warded depth dulls skills (PIX-216).
-		var damage := roundi(Bestiary.hero_skill_damage(GameState.hero, GameState.pack, skill, foe.fighter, GameState.roll) * world.delve.skill_ward())
+		var damage := roundi(Bestiary.hero_skill_damage(GameState.hero, GameState.pack, skill, foe.fighter, GameState.roll) * world.delve.skill_ward() * GameState.spoils.damage_scale())
 		world.fx.skill_flash(foe.global_position, color)
 		foe.take_hit(damage, global_position, skill.get("inflicts"))
 		dealt += damage
