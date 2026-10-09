@@ -8,6 +8,10 @@ const TILE := 16
 ## A pace every four beats: villagers amble roughly every 1.6 s.
 const BEAT_SECONDS := 0.4
 const STEP_SECONDS := 0.35
+## After a step they look the way they walked this long before turning back
+## to face the street (PIX-243: they used to snap round the moment they
+## stopped).
+const LOOK_SECONDS := 0.5
 
 var world: Node2D
 var data: Dictionary
@@ -16,6 +20,15 @@ var home := Vector2i.ZERO
 var cell := Vector2i.ZERO
 var offsets: Array[Vector2i] = []
 var sprite: AnimatedSprite2D
+## Their walk (PIX-243): frames by the ground the step covers, two steps a
+## cell, and the way the last step went.
+var gait: Gait
+var _step_dir := "down"
+## Where they stood last tick, the way their idle faces, and how long until
+## they turn it back toward the street.
+var _was := Vector2.ZERO
+var _facing := "down"
+var _look_left := 0.0
 
 
 func _ready() -> void:
@@ -37,6 +50,8 @@ func _ready() -> void:
 	# Offset the idle phase per villager so the square doesn't breathe in unison.
 	sprite.frame = Npcs.id_hash(data["id"]) % 2
 	add_child(sprite)
+	gait = Gait.new(sprite, art, size)
+	_was = position
 
 	# The body is the villager's feet and the ground before them, so the hero,
 	# whose box is only their feet, stops a step away instead of standing half
@@ -82,10 +97,11 @@ func set_away(gone: bool) -> void:
 		place_at(home + Npcs.pace_offset(data, offsets, _beat()))
 
 
-## Straight to `at` (only ever where nobody's watching).
+## Straight to `at` (only ever where nobody's watching): not a walk.
 func place_at(at: Vector2i) -> void:
 	cell = at
 	position = _center(cell)
+	_was = position
 	reset_physics_interpolation()
 
 
@@ -191,12 +207,39 @@ func _walk_to_square() -> void:
 func _step_to(next: Vector2i) -> void:
 	var step := next - cell
 	cell = next
-	var dir := "down" if step.y > 0 else ("up" if step.y < 0 else ("right" if step.x > 0 else "left"))
-	sprite.play(PunyArt.pick(sprite.sprite_frames, "walk", dir))
-	# Stepped on physics ticks, so the step is interpolated like any walk.
+	_step_dir = "down" if step.y > 0 else ("up" if step.y < 0 else ("right" if step.x > 0 else "left"))
+	# Stepped on physics ticks, so the step is interpolated like any walk;
+	# the gait draws it (_physics_process).
 	var tween := create_tween().set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)
 	tween.tween_property(self, "position", _center(cell), STEP_SECONDS)
-	tween.tween_callback(func() -> void: sprite.play(PunyArt.pick(sprite.sprite_frames, "idle", "down")))
+
+
+## The walk on physics ticks, beside the step's tween (PIX-243): frames by
+## the ground covered, the last step held a breath before they settle facing
+## the way they went, then a look that way before they turn back to face the
+## street - by their side, from their back.
+func _physics_process(delta: float) -> void:
+	if away:
+		return
+	var moved := (position - _was).length()
+	_was = position
+	if moved > 0.0:
+		gait.walk(_step_dir, moved, delta)
+		return
+	if gait.rest(delta):
+		_idle(_step_dir)
+		_look_left = LOOK_SECONDS
+	elif not gait.walking and _facing != "down":
+		_look_left -= delta
+		if _look_left <= 0.0:
+			var via := Gait.through(_facing, "down")
+			_idle(via if via != "" else "down")
+			_look_left = Gait.TURN_SECONDS
+
+
+func _idle(dir: String) -> void:
+	_facing = dir
+	sprite.play(PunyArt.pick(sprite.sprite_frames, "idle", dir))
 
 
 func _beat() -> int:

@@ -11320,15 +11320,15 @@ msgstr ""
 msgid "%s howls - the forest answers!"
 msgstr ""
 
-#: scripts/enemy.gd:206
+#: scripts/enemy.gd:210
 msgid "Lv %d"
 msgstr ""
 
-#: scripts/enemy.gd:599
+#: scripts/enemy.gd:609
 msgid "blocked"
 msgstr ""
 
-#: scripts/enemy.gd:634
+#: scripts/enemy.gd:644
 msgid "%s is afflicted by %s!"
 msgstr ""
 
@@ -12044,55 +12044,55 @@ msgstr ""
 msgid "Quit to title"
 msgstr ""
 
-#: scripts/player.gd:269
+#: scripts/player.gd:279
 msgid "dodged"
 msgstr ""
 
-#: scripts/player.gd:279
+#: scripts/player.gd:289
 msgid "You are afflicted by %s!"
 msgstr ""
 
-#: scripts/player.gd:332
+#: scripts/player.gd:344
 msgid "No skill on that key yet. Learn more, or set the keys, in Skills."
 msgstr ""
 
-#: scripts/player.gd:345
+#: scripts/player.gd:357
 msgid "No foe in reach for %s."
 msgstr ""
 
-#: scripts/player.gd:363
+#: scripts/player.gd:375
 msgid "All ailments are purged!"
 msgstr ""
 
-#: scripts/player.gd:366
+#: scripts/player.gd:378
 msgid "%s restores %d HP."
 msgstr ""
 
-#: scripts/player.gd:378
+#: scripts/player.gd:390
 msgid "%s hits %d foes for %d damage!"
 msgstr ""
 
-#: scripts/player.gd:380
+#: scripts/player.gd:392
 msgid "%s hits %s for %d damage!"
 msgstr ""
 
-#: scripts/rankup_screen.gd:115
+#: scripts/rankup_screen.gd:119
 msgid "The path forks      A/D  choose      E  walk this path      Esc  choose later, in Skills"
 msgstr ""
 
-#: scripts/rankup_screen.gd:130
+#: scripts/rankup_screen.gd:134
 msgid "Signature: %s"
 msgstr ""
 
-#: scripts/rankup_screen.gd:62
+#: scripts/rankup_screen.gd:66
 msgid "+1 bonus skill point"
 msgstr ""
 
-#: scripts/rankup_screen.gd:64
+#: scripts/rankup_screen.gd:68
 msgid "Every skill mastered: the bonus point rests"
 msgstr ""
 
-#: scripts/rankup_screen.gd:66
+#: scripts/rankup_screen.gd:70
 msgid "+1 bonus skill point, to spend beyond the tree (Stats)"
 msgstr ""
 
@@ -13456,7 +13456,7 @@ msgstr ""
 msgid "You don't know him well enough. Maren's story of the five, and the last page of Liane's journal, would tell you how."
 msgstr ""
 
-#: scripts/title_scene.gd:490
+#: scripts/title_scene.gd:493
 msgid "Figure"
 msgstr ""
 

@@ -32,6 +32,9 @@ const GRASS := [1, 2, 28, 29]
 const ROAD_EDGE := 5
 const ROAD := [13, 14]
 const WATCHMAN := "characters/aligned/Human-Soldier-Cyan.png"
+## The watchman's pace on his round (art px a second); his steps keep to it
+## (PIX-243).
+const WATCH_PACE := 12.0
 ## One sway takes this long; the dragon comes this soon, then this often (s).
 const SWAY_S := 80.0
 const DRAGON_FIRST_S := 4.0
@@ -490,6 +493,7 @@ func _village() -> void:
 	guard.name = "Figure"
 	guard.sprite_frames = PunyArt.frames(guard_spec)
 	guard.play(PunyArt.pick(guard.sprite_frames, "walk", "right"))
+	guard.speed_scale = PunyArt.walk_speed_scale(guard_spec, WATCH_PACE)
 	guard.position = Vector2(0, PunyArt.lift(guard_spec))
 	watchman.add_child(guard)
 	lantern = Sprite2D.new()
@@ -620,7 +624,7 @@ func _process(delta: float) -> void:
 
 ## The watchman walks the street end to end, his lantern with him.
 func _watch(delta: float) -> void:
-	watchman.position.x += watch_dir * 12.0 * delta
+	watchman.position.x += watch_dir * WATCH_PACE * delta
 	if watchman.position.x > ART.x + 24 or watchman.position.x < -24:
 		watch_dir = -watch_dir
 		var guard: AnimatedSprite2D = watchman.get_node("Figure")

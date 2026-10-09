@@ -26,6 +26,10 @@ var sprite: AnimatedSprite2D
 var crate: Sprite2D
 var bar: ColorRect
 var bitten_at := {}
+## The mammoth's walk (PIX-243): its slow, heavy steps by the ground it
+## covers, and the way it heads.
+var gait: Gait
+var _heading := "down"
 
 
 func _ready() -> void:
@@ -46,6 +50,7 @@ func _ready() -> void:
 	sprite.position = Vector2(0, PunyArt.lift(art) * 1.5)
 	sprite.play(PunyArt.pick(sprite.sprite_frames, "idle", "down"))
 	add_child(sprite)
+	gait = Gait.new(sprite, art, 1.5)
 	var back := ColorRect.new()
 	back.color = Color(0.1, 0.06, 0.05, 0.8)
 	back.size = Vector2(26, 3)
@@ -82,7 +87,9 @@ func _physics_process(delta: float) -> void:
 	var threatened: bool = near.any(func(foe: Node) -> bool: return (foe.global_position - global_position).length() < THREAT)
 	var hero_near: bool = (world.player.global_position - global_position).length() <= float(def["near"]) * 16
 	if threatened or not hero_near:
-		_play("idle", Vector2.DOWN)
+		# It holds its last step a breath, then stands.
+		if gait.rest(delta) or not gait.walking:
+			_idle()
 		return
 	var to := route[index] - global_position
 	var step := float(def["speed"]) * delta
@@ -92,13 +99,22 @@ func _physics_process(delta: float) -> void:
 		index += 1
 		if index >= route.size():
 			done = true
-			_play("idle", Vector2.DOWN)
+			_idle()
 			arrived.emit()
 		return
 	global_position += to.normalized() * step
-	_play("walk", to)
+	_heading = Gait.steer(_heading, to)
+	gait.walk(_heading, step, delta)
 	# The crates trail behind the way it walks.
 	crate.position = -to.normalized() * 12 + Vector2(0, -4)
+
+
+## Standing, facing down the pass.
+func _idle() -> void:
+	gait.halt()
+	var wanted := PunyArt.pick(sprite.sprite_frames, "idle", "down")
+	if sprite.animation != wanted or not sprite.is_playing():
+		sprite.play(wanted)
 
 
 ## A waypoint reached: the ambush waiting there rises.
@@ -122,14 +138,3 @@ func _hurt(amount: int) -> void:
 	if hp == 0:
 		done = true
 		lost.emit()
-
-
-func _play(anim: String, toward: Vector2) -> void:
-	var dir := "down"
-	if absf(toward.x) > absf(toward.y):
-		dir = "right" if toward.x > 0 else "left"
-	elif toward != Vector2.ZERO:
-		dir = "down" if toward.y > 0 else "up"
-	var wanted := PunyArt.pick(sprite.sprite_frames, anim, dir)
-	if sprite.animation != wanted:
-		sprite.play(wanted)
