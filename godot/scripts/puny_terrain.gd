@@ -205,6 +205,22 @@ static func tint_map(grid: Dictionary, size: Vector2i, regions := {}) -> ImageTe
 			tile = REGION_TINTS[region]
 		if TINTS.has(tile):
 			image.set_pixelv(cell, TINTS[tile])
+	# Water takes the tone of the land beside it, two cells out (PIX-247).
+	# Water is never toned itself (the shader keeps its colours), but the soft
+	# edge reads round each pixel, and an untoned shore thinned the land's
+	# tone to nothing along it.
+	for ring in 2:
+		var spilled := {}
+		for cell: Vector2i in grid:
+			if grid[cell] not in WATERS or image.get_pixelv(cell).a > 0.0:
+				continue
+			for side: Vector2i in [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN, Vector2i(1, 1), Vector2i(-1, 1), Vector2i(1, -1), Vector2i(-1, -1)]:
+				var next := cell + side
+				if next.x >= 0 and next.y >= 0 and next.x < size.x and next.y < size.y and image.get_pixelv(next).a > 0.0:
+					spilled[cell] = image.get_pixelv(next)
+					break
+		for cell: Vector2i in spilled:
+			image.set_pixelv(cell, spilled[cell])
 	return ImageTexture.create_from_image(image)
 
 
