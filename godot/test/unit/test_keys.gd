@@ -71,3 +71,11 @@ func test_the_number_row_reads_as_digits() -> void:
 	Controls.learned = {KEY_1: KEY_AMPERSAND, KEY_2: 233}
 	assert_eq(Controls.key_label(KEY_1), "1")
 	assert_eq(Controls.say("{key:skill_2} for your skill"), "2 for your skill")
+
+
+func test_punctuation_keys_read_as_their_mark() -> void:
+	# PIX-265: the map's key read "Comma" on a French Mac.
+	assert_eq(Controls.key_label(KEY_COMMA), ",")
+	assert_eq(Controls.key_label(KEY_SEMICOLON), ";")
+	assert_eq(Controls.key_label(KEY_PERIOD), ".")
+	assert_eq(Controls.key_label(KEY_ESCAPE), "Esc", "named keys keep their short names")

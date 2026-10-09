@@ -2149,6 +2149,10 @@ msgid "Clear Ink"
 msgstr "Encre nette"
 
 #: assets/data/changelog.json
+msgid "Clear Map"
+msgstr "Carte nette"
+
+#: assets/data/changelog.json
 msgid "Clear Waters"
 msgstr "Eaux claires"
 
@@ -4555,6 +4559,10 @@ msgstr "La ligne au-dessus de la barre dit où : la prochaine étape, le lieu 
 #: assets/data/changelog.json
 msgid "The map key is rebindable like everything else"
 msgstr "La touche de la carte se réassigne comme tout le reste"
+
+#: assets/data/changelog.json
+msgid "The map screen reads cleanly: its legend sits under the map, the HUD steps aside while it's open, and keys like the comma show as their mark instead of their name"
+msgstr "L'écran de la carte se lit nettement : sa légende se place sous la carte, l'interface s'efface tant qu'elle est ouverte, et les touches comme la virgule s'affichent par leur signe et non par leur nom"
 
 #: assets/data/changelog.json
 msgid "The merchant opens shop: buy gear and potions, sell your loot"
@@ -11776,27 +11784,27 @@ msgstr "Une promesse est une route tracée sur le cœur."
 msgid "chapter"
 msgstr "chapitre"
 
-#: scripts/keycap.gd:13
+#: scripts/keycap.gd:17
 msgid "PgDn"
 msgstr "PgDn"
 
-#: scripts/keycap.gd:13
+#: scripts/keycap.gd:17
 msgid "PgUp"
 msgstr "PgUp"
 
-#: scripts/keycap.gd:64
+#: scripts/keycap.gd:68
 msgid "Down"
 msgstr "Down"
 
-#: scripts/keycap.gd:64
+#: scripts/keycap.gd:68
 msgid "Left"
 msgstr "Left"
 
-#: scripts/keycap.gd:64
+#: scripts/keycap.gd:68
 msgid "Right"
 msgstr "Right"
 
-#: scripts/keycap.gd:64
+#: scripts/keycap.gd:68
 msgid "Up"
 msgstr "Up"
 
@@ -11808,35 +11816,35 @@ msgstr "valider"
 msgid "{key:move_up}/{key:move_down}  choose      {key:interact}  %s      Esc  close"
 msgstr "{key:move_up}/{key:move_down}  choisir      {key:interact}  %s      Esc  fermer"
 
-#: scripts/map_screen.gd:190
+#: scripts/map_screen.gd:199
 msgid "You"
 msgstr "Vous"
 
-#: scripts/map_screen.gd:191
+#: scripts/map_screen.gd:200
 msgid "Waypoint"
 msgstr "Relais"
 
-#: scripts/map_screen.gd:193
+#: scripts/map_screen.gd:202
 msgid "Lair"
 msgstr "Repaire"
 
-#: scripts/map_screen.gd:195
+#: scripts/map_screen.gd:204
 msgid "Quest"
 msgstr "Quête"
 
-#: scripts/map_screen.gd:197
+#: scripts/map_screen.gd:206
 msgid "Goal"
 msgstr "Objectif"
 
-#: scripts/map_screen.gd:62
+#: scripts/map_screen.gd:68
 msgid "Waypoints"
 msgstr "Relais"
 
-#: scripts/map_screen.gd:78
+#: scripts/map_screen.gd:84
 msgid "Unstaffed: no one keeps this post yet"
 msgstr "Inoccupé : personne ne tient encore ce poste"
 
-#: scripts/map_screen.gd:90
+#: scripts/map_screen.gd:96
 msgid "Nothing discovered yet. Waypoints you find on your travels show up here."
 msgstr "Rien de découvert pour l'instant. Les relais trouvés en voyage apparaissent ici."
 

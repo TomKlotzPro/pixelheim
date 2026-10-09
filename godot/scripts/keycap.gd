@@ -10,7 +10,11 @@ extends PanelContainer
 ## How long a press holds the key down.
 const DIP_SECONDS := 0.12
 ## Key names as the OS spells them -> as a cap reads them.
-const SHORT := {"Escape": "Esc", "PageUp": "PgUp", "PageDown": "PgDn", "Return": "Enter", "Kp Enter": "Enter"}
+## Punctuation keys read as the mark they type, not their name ("Comma",
+## PIX-265: the map's key on a French Mac).
+## (One line: the catalogue reads a key on a line of its own as words to
+## translate.)
+const SHORT := {"Escape": "Esc", "PageUp": "PgUp", "PageDown": "PgDn", "Return": "Enter", "Kp Enter": "Enter", "Comma": ",", "Period": ".", "Semicolon": ";", "Colon": ":", "Slash": "/", "Backslash": "\\", "Apostrophe": "'", "QuoteLeft": "`", "Minus": "-", "Equal": "=", "BracketLeft": "[", "BracketRight": "]", "Exclam": "!"}
 
 ## The keys this cap answers to (a cap reads one key).
 var keys: Array[String] = []
