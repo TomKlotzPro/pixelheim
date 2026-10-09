@@ -105,13 +105,13 @@ static func is_open(quest: Dictionary, progression: ProgressionState, settlement
 ## Where a quest sends the hero (PIX-171), one line for the journal: the
 ## named monster's lair, the regions a quarry roams, the chest that holds
 ## what's wanted or the best lead for a material; "" when there's none.
-static func where(quest: Dictionary) -> String:
+static func where(quest: Dictionary, gate_open := true) -> String:
 	var objective: Dictionary = quest["objective"]
 	match String(objective["kind"]):
 		"hunt":
 			return Text.t("In %s.") % Hunts.named(objective["named"]).get("where", Text.t("the wilds"))
 		"kill":
-			var places := Bestiary.where_found(objective["monsterId"])
+			var places := Bestiary.where_found(objective["monsterId"], gate_open)
 			return Text.t("Found in %s.") % ", ".join(places.slice(0, 3)) if not places.is_empty() else ""
 		"deliver":
 			for chest: Dictionary in Interactables._data()["chests"]:
