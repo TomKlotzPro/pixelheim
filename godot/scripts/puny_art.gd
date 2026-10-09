@@ -7,11 +7,15 @@ class_name PunyArt
 ## - "puny": Puny Characters, 32px cells, 8 direction rows clockwise from down
 ##   (down 0, right 2, up 4, left 6), 24 columns of idle/walk/sword/bow/staff/
 ##   throw/hurt/death.
-## - "beast": PunyMonsters, 32px cells, 8 rows turning the other way (down 0,
-##   left 2, up 4, right 6); walk 0-5, bite 6-8, hurt 9-11.
+## - "beast": PunyMonsters, 32px cells, 8 rows clockwise like the characters
+##   (down 0, right 2, up 4, left 6: the rat's tail trails left in row 2, the
+##   wolf's fangs bite right); walk 0-5, bite 6-8, hurt 9-11.
 ## - "mini": Mini World, 16px cells (32 for dragons), rows down 0 / up 1 /
-##   left 2 / right 3 for walking, the attack rows 4 below.
-## (Row orders checked against a `--screenshot lineup` capture.)
+##   right 2 / left 3 for walking (the face, and the swing's arc, on the right
+##   in row 2), the attack rows 4 below. Some sheets are laid out apart from
+##   the rest (LAYOUTS).
+## (PIX-243 found the beasts' and Mini World's sides swapped: everything that
+## walked left or right walked backwards. Check a sheet's facing on the art.)
 ## - "strip": one row of frames, no directions (the slime).
 
 const DIRS := ["down", "right", "up", "left"]
@@ -19,25 +23,79 @@ const FAMILIES := {
 	"puny": {
 		"frame": 32, "rows": {"down": 0, "right": 2, "up": 4, "left": 6},
 		"anims": {
-			"idle": [0, 2, 4.0, true], "walk": [2, 2, 6.0, true], "sword": [4, 4, 14.0, false],
+			"idle": [0, 2, 4.0, true], "sword": [4, 4, 14.0, false],
 			"bow": [8, 4, 12.0, false], "staff": [12, 3, 10.0, false], "hurt": [18, 3, 12.0, false],
 			"death": [21, 3, 6.0, false],
 		},
 	},
 	"beast": {
-		"frame": 32, "rows": {"down": 0, "left": 2, "up": 4, "right": 6},
-		"anims": {
-			"idle": [0, 2, 3.0, true], "walk": [0, 6, 10.0, true], "attack": [6, 3, 10.0, false],
-			"hurt": [9, 3, 12.0, false],
-		},
+		"frame": 32, "rows": {"down": 0, "right": 2, "up": 4, "left": 6},
+		"anims": {"idle": [0, 2, 3.0, true], "attack": [6, 3, 10.0, false], "hurt": [9, 3, 12.0, false]},
 	},
 	"mini": {
-		"frame": 16, "rows": {"down": 0, "up": 1, "left": 2, "right": 3}, "attack_row_offset": 4,
-		"anims": {"idle": [0, 2, 3.0, true], "walk": [0, 4, 8.0, true], "attack": [0, 3, 10.0, false]},
+		"frame": 16, "rows": {"down": 0, "up": 1, "right": 2, "left": 3}, "attack_row_offset": 4,
+		"anims": {"idle": [0, 2, 3.0, true], "attack": [0, 3, 10.0, false]},
 	},
 	# The slime's strip: six frames of bounce, its white hit flash at 6 and 9
 	# (never in a loop, or every hop flashes white), and a splat from 9.
-	"strip": {"frame": 32, "anims": {"idle": [0, 3, 5.0, true], "walk": [0, 6, 10.0, true], "death": [9, 6, 12.0, false]}},
+	"strip": {"frame": 32, "anims": {"idle": [0, 3, 5.0, true], "death": [9, 6, 12.0, false]}},
+}
+
+## How each family walks (PIX-243): the columns of one cycle, the frame rate
+## a walk plays at where nothing moves it (a figure walking in place on a
+## screen), and its stride: the ground, in the sheet's pixels, one frame of
+## the walk carries the walker, so in the world the frames step with the
+## ground covered (Gait) and the feet don't skate.
+## - Puny Characters draw two steps (columns 2 and 3) and a breath up
+##   (column 1): Shade's own Mini World walks put that rise between the steps
+##   (stand, rise, step, rise, step), so the hero passes through it too - a
+##   four-beat walk with the body a pixel up as the feet pass, from his frames.
+##   Six pixels a frame is a twelve-pixel step: the hero's 95 px a second is
+##   about 16 frames a second, eight steps (the two-frame walk took six steps
+##   of 16 px, its feet skating a whole cell each).
+## - Mini World's walkers stand in column 0 and walk 1-4 (rise, step, rise,
+##   the other step): the old 0-3 never put the second foot down.
+## - The beasts' six-frame trot and the slime's hop cover 24 px a cycle.
+## `level`: the cycle's rise is the walk's bob, and Reduce motion holds the
+## body level instead (Gait): feet on one line, the head still.
+const WALKS := {
+	"puny": {"cycle": [1, 2, 1, 3], "fps": 12.0, "stride": 6.0, "level": true},
+	"beast": {"cycle": [0, 1, 2, 3, 4, 5], "fps": 10.0, "stride": 4.0, "level": false},
+	"mini": {"cycle": [1, 2, 3, 4], "fps": 8.0, "stride": 4.0, "level": true},
+	"strip": {"cycle": [0, 1, 2, 3, 4, 5], "fps": 10.0, "stride": 4.0, "level": false},
+}
+
+## Mini World's dragons face left in row 2 and right in row 3, the old way
+## round (the head and its red eye lead), and their attacks follow suit.
+const _DRAGON := {"walk": [0, 1, 2, 3], "rows": {"down": 0, "up": 1, "left": 2, "right": 3}, "level": false}
+## Casters and archers swing left in their third attack row, right in the
+## fourth (the eye and the bow lead), unlike the blades.
+const _CASTER_ATTACKS := {"down": 4, "up": 5, "left": 6, "right": 7}
+## Sheets Shade laid out apart from their family (PIX-243), by sheet: their own
+## walk cycle, rows and attack rows, `mirror` drawing a direction he didn't as
+## another's row flipped.
+const LAYOUTS := {
+	# Four frames, a step at 1 and 3 between two rises.
+	"mini/Wendigo.png": {"walk": [0, 1, 2, 3]},
+	# Side on to the right and left, then front and back.
+	"mini/Mammoth.png": {"walk": [0, 1, 2, 3], "rows": {"right": 0, "left": 1, "down": 2, "up": 3}},
+	# Three walking rows (down, up, right) and four of attacks after them.
+	"mini/Minotaur.png": {
+		"walk": [0, 1, 2, 3], "rows": {"down": 0, "up": 1, "right": 2}, "mirror": {"left": "right"},
+		"attack_rows": {"down": 3, "up": 4, "right": 5, "left": 6},
+	},
+	# Stand, rise and two steps.
+	"mini/MagePurple.png": {"walk": [1, 2, 1, 3]},
+	"mini/GiantCrab.png": {"walk": [0, 1, 2], "rows": {"down": 0, "up": 1, "left": 2, "right": 3}},
+	# The whole hop, not cut off at the top of it.
+	"mini/KingSlimeBlue.png": {"walk": [0, 1, 2, 3, 4, 5], "level": false},
+	"mini/RedDragon.png": _DRAGON,
+	"mini/WhiteDragon.png": _DRAGON,
+	"mini/YellowDragon.png": _DRAGON,
+	"mini/Necromancer.png": {"attack_rows": _CASTER_ATTACKS},
+	"mini/BowmanRed.png": {"attack_rows": _CASTER_ATTACKS},
+	# Two takes of each swing: down 4-5, up 6-7, right 8-9, left 10-11.
+	"mini/AssasinRed.png": {"attack_rows": {"down": 4, "up": 6, "right": 8, "left": 10}},
 }
 
 ## Hero sheets and attack by role: blades swing, casters strike with the
@@ -491,36 +549,119 @@ static func frames(spec: Dictionary) -> SpriteFrames:
 	if _frames_cache.has(key):
 		return _frames_cache[key]
 	var family: Dictionary = FAMILIES[spec["family"]]
+	var layout: Dictionary = LAYOUTS.get(spec["sheet"], {})
 	var size := frame_size(spec)
 	var texture := sheet_texture(spec)
 	var columns := texture.get_width() / size
 	var sheet := SpriteFrames.new()
 	sheet.remove_animation("default")
+	# Every family's actions as [columns, fps, loop], the walk from WALKS.
+	var anims := {}
 	for anim: String in family["anims"]:
 		var def: Array = family["anims"][anim]
+		anims[anim] = [range(def[0], def[0] + def[1]), def[2], def[3]]
+	var walk := walk_of(spec)
+	anims["walk"] = [walk["cycle"], walk["fps"], true]
+	var rows: Dictionary = layout.get("rows", family.get("rows", {}))
+	var mirror: Dictionary = layout.get("mirror", {})
+	for anim: String in anims:
+		var def: Array = anims[anim]
+		var drawn: Array = (def[0] as Array).filter(func(column: int) -> bool: return column < columns)
 		if spec["family"] == "strip":
-			_add(sheet, anim, texture, size, 0, def[0], mini(def[1], columns), def[2], def[3])
+			_add(sheet, anim, texture, size, 0, drawn, def[1], def[2])
 			continue
 		for dir: String in DIRS:
-			var row: int = family["rows"][dir]
-			if anim == "attack" and family.has("attack_row_offset"):
+			# A sheet's own attack rows are drawn every way; its other rows
+			# borrow the mirrored side where Shade drew one.
+			var own_attack: bool = anim == "attack" and layout.has("attack_rows")
+			var flipped: bool = mirror.has(dir) and not own_attack
+			var row: int = int(rows.get(mirror[dir] if flipped else dir, -1))
+			if own_attack:
+				row = int(layout["attack_rows"].get(dir, -1))
+			elif anim == "attack" and row >= 0 and family.has("attack_row_offset"):
 				row += int(family["attack_row_offset"])
-			if (row + 1) * size > texture.get_height():
+			if row < 0 or (row + 1) * size > texture.get_height():
 				continue
-			_add(sheet, "%s_%s" % [anim, dir], texture, size, row, def[0], mini(def[1], columns - def[0]), def[2], def[3])
+			_add(sheet, "%s_%s" % [anim, dir], _mirrored(texture) if flipped else texture, size, row, drawn, def[1], def[2], flipped)
 	_frames_cache[key] = sheet
 	return sheet
 
 
-static func _add(sheet: SpriteFrames, anim: String, texture: Texture2D, size: int, row: int, first: int, count: int, fps: float, loop: bool) -> void:
+## How `spec`'s sheet walks (WALKS, its LAYOUTS entry over its family's):
+## cycle, fps, stride (at the sheet's 1x, its frame size counted) and level.
+static func walk_of(spec: Dictionary) -> Dictionary:
+	var walk: Dictionary = WALKS[spec["family"]].duplicate()
+	var layout: Dictionary = LAYOUTS.get(spec["sheet"], {})
+	if layout.has("walk"):
+		walk["cycle"] = layout["walk"]
+	walk["level"] = layout.get("level", walk["level"])
+	# A dragon's 32 px cells in a 16 px family stride twice as far.
+	walk["stride"] = float(walk["stride"]) * frame_size(spec) / float(FAMILIES[spec["family"]]["frame"])
+	return walk
+
+
+static var _flipped := {}
+
+
+## A sheet mirrored left to right, for the directions Shade drew one side of.
+static func _mirrored(texture: Texture2D) -> Texture2D:
+	if not _flipped.has(texture):
+		# A copy: headless, get_image hands back the texture's own image,
+		# and flipping that would turn the sheet itself round.
+		var image := texture.get_image().duplicate() as Image
+		image.flip_x()
+		_flipped[texture] = ImageTexture.create_from_image(image)
+	return _flipped[texture]
+
+
+static func _add(sheet: SpriteFrames, anim: String, texture: Texture2D, size: int, row: int, columns: Array, fps: float, loop: bool, flipped := false) -> void:
 	sheet.add_animation(anim)
 	sheet.set_animation_speed(anim, fps)
 	sheet.set_animation_loop(anim, loop)
-	for i in count:
+	for column: int in columns:
 		var atlas := AtlasTexture.new()
 		atlas.atlas = texture
-		atlas.region = Rect2((first + i) * size, row * size, size, size)
+		# A mirrored sheet holds column c at the far end.
+		var x: int = texture.get_width() - (column + 1) * size if flipped else column * size
+		atlas.region = Rect2(x, row * size, size, size)
 		sheet.add_frame(anim, atlas)
+
+
+## How far above the walk's lowest frame each frame of `anim` stands (its
+## feet's last row, from the art): the cycle's rise, its bob. Read once per
+## animation and kept on the frames.
+static func rises(sheet: SpriteFrames, anim: String) -> PackedInt32Array:
+	var meta := StringName("rise_" + anim)
+	if sheet.has_meta(meta):
+		return sheet.get_meta(meta)
+	var images := {}
+	var feet := PackedInt32Array()
+	for i in sheet.get_frame_count(anim):
+		var frame := sheet.get_frame_texture(anim, i) as AtlasTexture
+		if frame == null:
+			feet.append(0)
+			continue
+		if not images.has(frame.atlas):
+			images[frame.atlas] = frame.atlas.get_image()
+		var used := (images[frame.atlas] as Image).get_region(Rect2i(frame.region)).get_used_rect()
+		feet.append(used.end.y)
+	var lowest := 0
+	for bottom in feet:
+		lowest = maxi(lowest, bottom)
+	var out := PackedInt32Array()
+	for bottom in feet:
+		out.append(lowest - bottom)
+	sheet.set_meta(meta, out)
+	return out
+
+
+## The speed_scale for a walk crossing a screen outside the world at `pace`
+## px a second, drawn at `scale`: a figure on the title or the rank-up steps
+## with the ground it covers too (within Gait's limits).
+static func walk_speed_scale(spec: Dictionary, pace: float, scale := 1.0) -> float:
+	var walk := walk_of(spec)
+	var fps := clampf(pace / (float(walk["stride"]) * scale), Gait.MIN_FPS, Gait.MAX_FPS)
+	return fps / float(walk["fps"])
 
 
 ## The animation to play for `anim` facing `dir`, falling back to walking and

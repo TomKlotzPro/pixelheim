@@ -44,5 +44,14 @@ func test_a_fallen_foe_leaves_embers_or_dust() -> void:
 
 func test_the_hero_springs_back_with_feet_on_the_ground() -> void:
 	assert_gt(Juice.SET_OFF.y, 1.0, "taller setting off")
+	assert_lt(Juice.SETTLE.y, 1.0, "lower settling (PIX-243)")
 	assert_lt(Juice.LAND.y, 1.0, "flatter landing a roll")
-	assert_gt(Juice.FEET, 0.0)
+	assert_lt(Juice.SETTLE.x - 1.0, Juice.LAND.x - 1.0, "a stop settles more gently than a roll lands")
+	# PIX-243: the feet stand where the hero's frames draw them, below the
+	# middle of the cell, so a squash about them keeps them on the ground:
+	# standing, setting off (the walk's rise) and swinging.
+	var frames := PunyArt.frames(PunyArt.plain("warrior", 0))
+	var size := float(PunyArt.frame_size(PunyArt.plain("warrior", 0)))
+	for anim in ["idle_down", "idle_right", "walk_down", "walk_right", "sword_down"]:
+		var used := frames.get_frame_texture(anim, 0).get_image().get_used_rect()
+		assert_eq(float(used.end.y) - size / 2.0, Juice.FEET, anim)

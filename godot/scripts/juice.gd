@@ -9,15 +9,20 @@ const FIGHTER_SHADER := preload("res://shaders/fighter.gdshader")
 const FLASH_SECONDS := 0.1
 const KILL_FLASH_SECONDS := 0.18
 const DISSOLVE_SECONDS := 0.45
-## The hero's shapes: setting off (taller), landing a roll (wider), a swing
-## (wound up), each springing back to rest.
+## The hero's shapes: setting off (taller, with the walk's first frame, the
+## rise off the back foot: PIX-243), settling when the walk stops (a little
+## wider, the weight coming down onto both feet), landing a roll (wider), a
+## swing (wound up), each springing back to rest.
 const SET_OFF := Vector2(0.9, 1.1)
+const SETTLE := Vector2(1.08, 0.92)
 const LAND := Vector2(1.18, 0.84)
 const SWING := Vector2(1.12, 0.9)
 const SPRING_SECONDS := 0.16
-## How far below a sprite's centre its feet stand (Shade's 64px frames, feet
-## at 48): a squash keeps them on the ground.
-const FEET := 16.0
+## How far below a sprite's centre its feet stand (Shade's 32px frames: a
+## standing hero's feet end at row 23, 7 below the middle; a step reaches a
+## row lower): a squash keeps them on the ground. It was 16, from older 64px
+## frames, so every squash lifted the feet off the ground or sank them in.
+const FEET := 7.0
 ## The slash's arc: how far ahead of the hero, how long it lingers, and its
 ## colour by the weapon in hand (a staff's arcane, a blade's by its rarity).
 const SLASH_REACH := 13.0

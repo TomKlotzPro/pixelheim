@@ -48,10 +48,14 @@ func _open() -> void:
 	hero.scale = Vector2(6, 6)
 	hero.position = Vector2(view.x / 2 - 300, 236)
 	hero.play(PunyArt.pick(hero.sprite_frames, "walk", "right"))
+	# Steps that keep to the march's pace, on average (PIX-243).
+	hero.speed_scale = PunyArt.walk_speed_scale(art, 300.0 / 1.4, hero.scale.x)
 	add_child(hero)
 	var march := create_tween()
 	march.tween_property(hero, "position:x", view.x / 2, 1.4).set_ease(Tween.EASE_OUT)
-	march.tween_callback(func() -> void: hero.play(PunyArt.pick(hero.sprite_frames, "idle", "down")))
+	march.tween_callback(func() -> void:
+		hero.speed_scale = 1.0
+		hero.play(PunyArt.pick(hero.sprite_frames, "idle", "down")))
 
 	var card := VBoxContainer.new()
 	card.position = Vector2(0, 330)

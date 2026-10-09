@@ -42,7 +42,20 @@ const SHOTS := [
 	{"name": "18_village_road", "map": "overworld", "cell": Vector2i(48, 40), "time": DAY},
 	{"name": "19_village_gate_night", "map": "overworld", "cell": Vector2i(48, 41), "time": NIGHT},
 	{"name": "20_village_west_night", "map": "overworld", "cell": Vector2i(34, 47), "time": NIGHT},
+	# The hero's walk (PIX-243), filmed (`film`) setting off, striding, turning
+	# right round and settling, then walking up the street.
+	{"name": "21_walk", "map": "town", "cell": Vector2i(38, 13), "time": DAY, "walk": true},
 ]
+## Filming the walk: slowed to a quarter, a picture every WALK_STEP of the
+## game's time (thirty a second: two or three of each frame of the walk),
+## cropped round the hero this far (art px) each way; the legs of the clip
+## as [heading, pictures].
+const WALK_SLOW := 0.25
+const WALK_STEP := 1.0 / 30.0
+const WALK_CROP := Vector2(22, 26)
+const WALK_LEGS := [[Vector2.ZERO, 3], [Vector2.RIGHT, 20], [Vector2.LEFT, 12], [Vector2.ZERO, 9], [Vector2.UP, 12], [Vector2.ZERO, 9]]
+## The strip of crops: this many across.
+const STRIP_COLUMNS := 11
 ## Upper Street: the shop's and the inn's fronts, the street lamps, the hall.
 const STREET := Vector2i(40, 13)
 ## The contact sheet: three across, each shot at half size.
@@ -115,7 +128,9 @@ func run() -> void:
 		if with_perf:
 			line += "  " + await PerfProbe.sample(self, 180)
 		print(line)
-		if with_motion:
+		if with_motion and shot.get("walk", false):
+			await _film_walk(shot["name"])
+		elif with_motion:
 			await _film(shot["name"], shot.get("strike", false))
 	for look: String in folders:
 		sheet(images[look]).save_png("%s/sheet.png" % folders[look])
@@ -167,6 +182,59 @@ func _film(shot_name: String, strike := false) -> void:
 		await get_tree().create_timer(MOTION_STEP).timeout
 		await drawn()
 		(await DesktopLook.snapshot(self)).save_png("%s/%02d.png" % [folder, frame])
+
+
+## The hero's walk (PIX-243), slowed to WALK_SLOW: standing, setting off to
+## the right, a stride, turning right round, settling, then up the street
+## and settling again (the back's four beats). Every picture is cropped round
+## the hero into <out>/motion/<shot>/NN.png, and all of them, in order and
+## STRIP_COLUMNS across, into walk_strip.png beside them.
+func _film_walk(shot_name: String) -> void:
+	var folder := "%s/motion/%s" % [out_dir, shot_name]
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(folder))
+	var crops: Array[Image] = []
+	Engine.time_scale = WALK_SLOW
+	for leg: Array in WALK_LEGS:
+		world.player.scripted_dir = leg[0]
+		for picture in int(leg[1]):
+			# The game's time, not drawn frames: a window drawing faster than
+			# the clock would film the same tick over and over.
+			await get_tree().create_timer(WALK_STEP).timeout
+			await drawn()
+			crops.append(_around_hero(await DesktopLook.snapshot(self)))
+	world.player.scripted_dir = Vector2.ZERO
+	Engine.time_scale = 1.0
+	for index in crops.size():
+		crops[index].save_png("%s/%02d.png" % [folder, index])
+	_strip(crops).save_png("%s/walk_strip.png" % folder)
+	print("%s %s" % ["LOOK", ProjectSettings.globalize_path("%s/walk_strip.png" % folder)])
+
+
+## The part of `image` round the hero, WALK_CROP art px each way (a little
+## more above, for the head).
+func _around_hero(image: Image) -> Image:
+	var view := get_viewport()
+	var shown := image.get_width() / view.get_visible_rect().size.x
+	var canvas := view.get_canvas_transform()
+	var at: Vector2 = canvas * world.player.global_position * shown
+	var half := WALK_CROP * canvas.get_scale().x * shown
+	var box := Rect2i(Vector2i(at - Vector2(half.x, half.y * 1.25)), Vector2i(half * 2.0))
+	box = box.intersection(Rect2i(Vector2i.ZERO, image.get_size()))
+	var crop := image.get_region(box)
+	crop.convert(Image.FORMAT_RGBA8)
+	return crop
+
+
+## The crops in order, STRIP_COLUMNS across, a dark line between them.
+static func _strip(crops: Array[Image]) -> Image:
+	var cell := crops[0].get_size() + Vector2i(2, 2)
+	var rows := ceili(crops.size() / float(STRIP_COLUMNS))
+	var out := Image.create(cell.x * STRIP_COLUMNS, cell.y * rows, false, Image.FORMAT_RGBA8)
+	out.fill(Color(0.07, 0.05, 0.04))
+	for index in crops.size():
+		var size := crops[index].get_size().min(cell - Vector2i(2, 2))
+		out.blit_rect(crops[index], Rect2i(Vector2i.ZERO, size), Vector2i(index % STRIP_COLUMNS * cell.x + 1, index / STRIP_COLUMNS * cell.y + 1))
+	return out
 
 
 ## The looks `--looks a,b` names, those the app has (DesktopLook.LOOKS), in

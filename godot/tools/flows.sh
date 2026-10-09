@@ -29,7 +29,8 @@
 #
 # --quiet runs every flow headless with the audio off: nothing opens on the
 # screen or plays out loud, the report lines are still checked. The motion
-# flow measures pixels, so it needs a window and is skipped.
+# flow measures pixels, so it needs a window and is skipped. A windowed run
+# is muted too: its window shows, nothing plays.
 set -uo pipefail
 
 cd "$(dirname "$0")/.."
@@ -152,7 +153,7 @@ for flow in "${FLOWS[@]}"; do
 	if [[ $quiet == 1 ]]; then
 		output=$(perl -e 'alarm 60; exec @ARGV' godot --headless --audio-driver Dummy --path . -- --screenshot $args ${FLOWS_EXTRA:-} 2>&1)
 	else
-		output=$(perl -e 'alarm 60; exec @ARGV' godot --path . -- --screenshot $args ${FLOWS_EXTRA:-} 2>&1)
+		output=$(perl -e 'alarm 60; exec @ARGV' godot --audio-driver Dummy --path . -- --screenshot $args ${FLOWS_EXTRA:-} 2>&1)
 	fi
 	report=$(grep "screenshot saved" <<<"$output")
 	# Smooth walking is timed frame by frame, and the festival's and the
@@ -164,7 +165,7 @@ for flow in "${FLOWS[@]}"; do
 		if [[ $quiet == 1 ]]; then
 			output=$(perl -e 'alarm 60; exec @ARGV' godot --headless --audio-driver Dummy --path . -- --screenshot $args ${FLOWS_EXTRA:-} 2>&1)
 		else
-			output=$(perl -e 'alarm 60; exec @ARGV' godot --path . -- --screenshot $args ${FLOWS_EXTRA:-} 2>&1)
+			output=$(perl -e 'alarm 60; exec @ARGV' godot --audio-driver Dummy --path . -- --screenshot $args ${FLOWS_EXTRA:-} 2>&1)
 		fi
 		report=$(grep "screenshot saved" <<<"$output")
 	fi

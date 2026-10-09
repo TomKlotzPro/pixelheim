@@ -50,15 +50,15 @@ var art: Dictionary
 ## The rank's glow under the hero's feet (silver, gold, radiant).
 var aura: Sprite2D
 ## The sprite's shape (PIX-226): squashed or stretched for a moment around
-## the rank's presence, the feet kept on the ground; and whether the hero was
-## moving last tick, to spring on setting off.
+## the rank's presence, the feet kept on the ground.
 var squash := Vector2.ONE:
 	set(value):
 		squash = value
 		_shape()
 var _presence := 1.0
 var _spring: Tween
-var _moving := false
+## The walk (PIX-243): its frames step with the ground the hero covers.
+var gait: Gait
 
 func _ready() -> void:
 	# Top-down: no floor, no walls by angle, just slide along what blocks.
@@ -76,6 +76,7 @@ func _ready() -> void:
 	# A clean white flash when struck (PIX-226).
 	sprite.material = Juice.fighter_material()
 	add_child(sprite)
+	gait = Gait.new(sprite, art)
 	_play("idle")
 	refresh_rank()
 	GameState.inventory_changed.connect(dress)
@@ -134,7 +135,9 @@ func _physics_process(delta: float) -> void:
 		return
 	if dodging:
 		velocity = dodge_dir * float(Bestiary._data()["dodge"]["speed"])
+		var rolled_from := global_position
 		move_and_slide()
+		gait.walk(_dir_name(), (global_position - rolled_from).length(), delta)
 		return
 	if attacking:
 		if not hitbox.monitoring:
@@ -168,15 +171,23 @@ func _physics_process(delta: float) -> void:
 	var pace := SPEED * (1.0 + (GameState.holdings.walk_bonus() if world.map.floor_level == 0 else 0.0))
 	pace *= 1.0 + float(HeroRules.passives(GameState.hero)["moveSpeed"])
 	velocity = input * pace
+	var from := global_position
 	move_and_slide()
-	var moving := input != Vector2.ZERO
-	if moving and not _moving:
-		_spring_from(Juice.SET_OFF)
-	_moving = moving
-	if moving:
-		face(input)
-		_play("walk")
-	else:
+	if input != Vector2.ZERO:
+		# Setting off (PIX-243): the stretch lands with the walk's first
+		# frame, the rise off the back foot.
+		if not gait.walking:
+			_spring_from(Juice.SET_OFF)
+		# A diagonal holds the way the hero faces rather than flickering.
+		face(Gait.VECTORS[Gait.steer(_dir_name(), input)])
+		gait.walk(_dir_name(), (global_position - from).length(), delta)
+	elif gait.rest(delta):
+		# Settling: the weight comes down onto both feet, unless a landing's
+		# spring is still playing out.
+		if _spring == null or not _spring.is_running():
+			_spring_from(Juice.SETTLE)
+		_play("idle")
+	elif not gait.walking:
 		_play("idle")
 
 ## The swing and the skills answer key events, so a key that closed a
@@ -234,7 +245,6 @@ func dodge() -> void:
 	dodging = true
 	dodge_ready = false
 	Sound.play("dodge")
-	_play("walk")
 	# A blur: the hero half-seen, a puff of dust where they left from.
 	var blur := sprite.create_tween()
 	blur.tween_property(sprite, "modulate:a", 0.45, 0.05)
@@ -283,7 +293,9 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null) -> void:
 	if hp == 0:
 		_die()
 		return
-	if not attacking:
+	# Struck mid-stride, the stride carries on (the walk took the sprite back
+	# the next tick anyway): halting it would set the hero off afresh.
+	if not attacking and not gait.walking:
 		_play("hurt")
 	invulnerable = true
 	var tween := create_tween().set_loops(4)
@@ -524,26 +536,31 @@ func _spring_from(shape: Vector2) -> void:
 	if _spring != null:
 		_spring.kill()
 	squash = shape
-	_spring = create_tween()
+	# On physics ticks, with the walk's frames (PIX-243) and the interpolated
+	# body (PIX-135).
+	_spring = create_tween().set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)
 	_spring.tween_property(self, "squash", Vector2.ONE, Juice.SPRING_SECONDS).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
-## The sprite at the rank's presence times the squash, feet on the ground.
+## The sprite at the rank's presence times the squash, its feet where they
+## stand at rest whatever the rank (PIX-243: the presence used to grow the
+## hero from the middle, the feet sinking below the ground).
 func _shape() -> void:
 	if sprite == null:
 		return
 	sprite.scale = Vector2.ONE * _presence * squash
-	sprite.position.y = PunyArt.lift(art) + Juice.FEET * _presence * (1.0 - squash.y)
+	sprite.position.y = PunyArt.lift(art) + Juice.FEET * (1.0 - _presence * squash.y)
 
-## Shade draws all four directions, so there's no mirroring.
+
+## The way the hero faces, by name.
+func _dir_name() -> String:
+	return Gait.dir_of(facing)
+
+
+## Shade draws all four directions, so there's no mirroring. The walk is the
+## gait's (PIX-243); anything else played takes the hero out of it.
 func _play(anim: String) -> void:
-	var dir := "down"
-	if facing == Vector2.UP:
-		dir = "up"
-	elif facing == Vector2.RIGHT:
-		dir = "right"
-	elif facing == Vector2.LEFT:
-		dir = "left"
-	var name := PunyArt.pick(sprite.sprite_frames, anim, dir)
+	gait.halt()
+	var name := PunyArt.pick(sprite.sprite_frames, anim, _dir_name())
 	if sprite.animation != name or not sprite.is_playing():
 		sprite.play(name)

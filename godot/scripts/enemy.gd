@@ -116,6 +116,9 @@ var _drop: Sprite2D
 var _flinch_tween: Tween
 var _rest_scale := Vector2.ONE
 var _rest_at := Vector2.ZERO
+## Its walk (PIX-243): stepping with the ground it covers, wandering slowly
+## or hunting fast.
+var gait: Gait
 
 
 func _ready() -> void:
@@ -144,6 +147,7 @@ func _ready() -> void:
 	_rest_at = sprite.position
 	# Its own flash and dissolve (PIX-226).
 	sprite.material = Juice.fighter_material()
+	gait = Gait.new(sprite, art, size)
 	_play("idle")
 	add_child(sprite)
 	# Fafnyr and Morvax fight with their own attacks too (PIX-150); an elite
@@ -271,18 +275,24 @@ func _physics_process(delta: float) -> void:
 	var walk := velocity
 	var shove := _shove(delta)
 	velocity += shove
+	var from := global_position
 	move_and_slide()
 	if shove != Vector2.ZERO:
 		# Shoved, it still faces (and walks) the way it meant to.
 		velocity = walk
 	if mode == "flee" and alert_left <= 0:
 		stuck_for = stuck_for + delta if get_real_velocity().length() < FLEE_SPEED * 0.25 else 0.0
+	# Heading off at an angle, it holds its facing rather than flickering
+	# between two (PIX-243).
 	if velocity.length() > 1:
-		facing = _dir_of(velocity)
+		facing = Gait.steer(facing, velocity)
 	# Let a bite or a hurt finish before walking resumes.
 	if sprite.is_playing() and not sprite.sprite_frames.get_animation_loop(sprite.animation):
 		return
-	_play("walk" if velocity.length() > 1 else "idle")
+	if velocity.length() > 1:
+		gait.walk(facing, (global_position - from).length(), delta)
+	elif gait.rest(delta) or not gait.walking:
+		_play("idle")
 
 
 ## The hero is seen: a "!" over the head and a hop, then the chase.
@@ -357,7 +367,7 @@ func take_fright(to_player: Vector2) -> void:
 	_fled_from = NO_CELL
 	world.foes.on_enemy_frightened(self)
 	# It looks at what frightened it, then turns to run.
-	facing = _dir_of(to_player)
+	facing = Gait.dir_of(to_player)
 	_play("idle")
 	if mark != null:
 		mark.visible = false
@@ -655,6 +665,7 @@ func _die() -> void:
 	hurtbox.collision_layer = 0
 	health_bar.visible = false
 	health_bar_back.visible = false
+	gait.halt()
 	var death := "death_" + facing
 	if not sprite.sprite_frames.has_animation(death):
 		death = "death"
@@ -675,13 +686,9 @@ func _dissolve() -> void:
 	Juice.dissolve(sprite, color).tween_callback(queue_free)
 
 
+## Anything but the walk (the gait's, PIX-243) takes it out of its stride.
 func _play(anim: String) -> void:
+	gait.halt()
 	var name := PunyArt.pick(sprite.sprite_frames, anim, facing)
 	if sprite.animation != name or not sprite.is_playing():
 		sprite.play(name)
-
-
-static func _dir_of(motion: Vector2) -> String:
-	if absf(motion.x) >= absf(motion.y):
-		return "right" if motion.x >= 0 else "left"
-	return "down" if motion.y >= 0 else "up"
