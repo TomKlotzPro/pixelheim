@@ -1741,6 +1741,10 @@ msgid "A dozen new items: bows, war hammers, wands, cloaks, tower shields..."
 msgstr "Une douzaine de nouveaux objets : arcs, marteaux de guerre, baguettes, capes, pavois..."
 
 #: assets/data/changelog.json
+msgid "A dungeon floor's patch grows once a day, somewhere new in its first hall"
+msgstr "Le point de récolte d'un étage pousse une fois par jour, à un nouvel endroit de sa première salle"
+
+#: assets/data/changelog.json
 msgid "A fall now costs at least a night at the inn, and no longer wakes the wilds: what you cleared stays cleared, and what beat you is still out there"
 msgstr "Une chute coûte désormais au moins une nuit à l'auberge, et ne réveille plus les terres sauvages : ce que vous avez nettoyé le reste, et ce qui vous a battu vous attend toujours"
 
@@ -2345,6 +2349,10 @@ msgid "Each comes with a full 12-node skill tree, its own look palette, and a pr
 msgstr "Chacune arrive avec un arbre de compétences complet de 12 nœuds, sa propre palette d'apparence, et un chemin éprouvé jusqu'au boss final - la simulation d'équilibrage termine le jeu avec les sept classes"
 
 #: assets/data/changelog.json
+msgid "Each material grows a set number a day, so the rare ones stay rare: one Frost Lily, one Blackiron Ore and one Old Steel a day, their two homes taking turns"
+msgstr "Chaque matériau pousse en nombre fixe chaque jour, si bien que les rares le restent : un Lys de givre, un Minerai de Fernoir et un Vieil acier par jour, leurs deux foyers à tour de rôle"
+
+#: assets/data/changelog.json
 msgid "Each region has its own air: heat shimmers over the Ash Fields as embers drift up, snow falls on the Frostgate and frost creeps in at the edges of the view, low fog rolls over the Mirefen and the marshes, and salt spray blows off the Saltmere coast"
 msgstr "Chaque région a son air : la chaleur fait trembler les Champs de Cendres où montent des braises, la neige tombe sur la Porte-Givre et le givre gagne les bords de l'écran, un brouillard bas roule sur les Marais de Fange et les marécages, et les embruns soufflent sur la côte de Saltmere"
 
@@ -2699,6 +2707,10 @@ msgstr "Fortune et acier"
 #: assets/data/changelog.json
 msgid "Four roles: Warrior, Mage, Rogue, Cleric"
 msgstr "Quatre rôles : Guerrier, Mage, Voleur, Clerc"
+
+#: assets/data/changelog.json
+msgid "Fresh Ground"
+msgstr "Terre nouvelle"
 
 #: assets/data/changelog.json
 msgid "Fresh Plaster"
@@ -4943,6 +4955,10 @@ msgstr "Météo"
 #: assets/data/changelog.json
 msgid "Welcome Home"
 msgstr "Bienvenue chez vous"
+
+#: assets/data/changelog.json
+msgid "What grows on the ground moves from day to day: each morning a region grows its few patches in new spots, on bare ground away from villages, camps and roads"
+msgstr "Ce qui pousse au sol change de place d'un jour à l'autre : chaque matin, une région fait pousser ses quelques points de récolte à de nouveaux endroits, sur la terre nue, loin des villages, des camps et des routes"
 
 #: assets/data/changelog.json
 msgid "What's new is on the title menu now, keys and gamepads included, with a NEW badge until you've read the latest notes"
