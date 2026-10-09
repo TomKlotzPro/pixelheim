@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.191.0",
+      "date": "2026-10-10",
+      "codename": "Sure Footing",
+      "notes": [
+        "The hero walks in four beats, rising as the feet pass, each step timed to the ground it covers, so the feet no longer slide",
+        "Villagers, monsters and the wagon step at their own pace too, keep their stride through a turn and settle a moment when they stop",
+        "Wolves, spiders, cats, the mammoths and many villagers no longer walk backwards when they go left or right",
+        "Villagers keep looking the way they walked a moment before turning back to the street, and the King Slime hops all the way up"
+      ]
+    },
+    {
       "version": "0.190.0",
       "date": "2026-10-10",
       "codename": "Home in Sight",

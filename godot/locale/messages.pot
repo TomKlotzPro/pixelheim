@@ -3949,6 +3949,10 @@ msgid "Story captions now wrap instead of running past the edge of the screen"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Sure Footing"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Survivor"
 msgstr ""
 
@@ -4585,6 +4589,10 @@ msgid "The gate opens the first depth of every five you've reached, so a long de
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The hero walks in four beats, rising as the feet pass, each step timed to the ground it covers, so the feet no longer slide"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The hub screen retires with honor. It served well."
 msgstr ""
 
@@ -4921,6 +4929,14 @@ msgid "Villagers and monsters breathe their true 2-beat idle instead of floating
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Villagers keep looking the way they walked a moment before turning back to the street, and the King Slime hops all the way up"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Villagers, monsters and the wagon step at their own pace too, keep their stride through a turn and settle a moment when they stop"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "WALK AWAY AND SEE A BACK: every hero has a drawn rear view now - helm backs, cape, hood, hat - shown whenever you head north, in 2D and voxel alike"
 msgstr ""
 
@@ -5014,6 +5030,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "With Reduce motion on, the wind drops and the water and the clouds hold still"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Wolves, spiders, cats, the mammoths and many villagers no longer walk backwards when they go left or right"
 msgstr ""
 
 #: assets/data/changelog.json

@@ -3949,6 +3949,10 @@ msgid "Story captions now wrap instead of running past the edge of the screen"
 msgstr "Les textes du récit passent désormais à la ligne au lieu de déborder de l'écran"
 
 #: assets/data/changelog.json
+msgid "Sure Footing"
+msgstr "Pied sûr"
+
+#: assets/data/changelog.json
 msgid "Survivor"
 msgstr "Rescapé"
 
@@ -4585,6 +4589,10 @@ msgid "The gate opens the first depth of every five you've reached, so a long de
 msgstr "La porte ouvre la première profondeur de chaque tranche de cinq atteinte, et une longue descente ne repart plus d'en haut"
 
 #: assets/data/changelog.json
+msgid "The hero walks in four beats, rising as the feet pass, each step timed to the ground it covers, so the feet no longer slide"
+msgstr "Le héros marche en quatre temps, se soulevant quand les pieds se croisent, chaque pas réglé sur le terrain parcouru : ses pieds ne glissent plus"
+
+#: assets/data/changelog.json
 msgid "The hub screen retires with honor. It served well."
 msgstr "L'écran central prend sa retraite avec les honneurs. Il a bien servi."
 
@@ -4921,6 +4929,14 @@ msgid "Villagers and monsters breathe their true 2-beat idle instead of floating
 msgstr "Villageois et monstres respirent sur leur vraie animation d'attente en 2 temps, au lieu de flotter de haut en bas"
 
 #: assets/data/changelog.json
+msgid "Villagers keep looking the way they walked a moment before turning back to the street, and the King Slime hops all the way up"
+msgstr "Les villageois regardent encore un instant là où ils allaient avant de se tourner vers la rue, et la Gelée royale bondit jusqu'en haut"
+
+#: assets/data/changelog.json
+msgid "Villagers, monsters and the wagon step at their own pace too, keep their stride through a turn and settle a moment when they stop"
+msgstr "Les villageois, les monstres et le chariot marchent eux aussi à leur rythme, gardent leur foulée dans les virages et se posent un instant à l'arrêt"
+
+#: assets/data/changelog.json
 msgid "WALK AWAY AND SEE A BACK: every hero has a drawn rear view now - helm backs, cape, hood, hat - shown whenever you head north, in 2D and voxel alike"
 msgstr "VU DE DOS : chaque héros a désormais une vue de dos dessinée - arrière du heaume, cape, capuche, chapeau - affichée dès que vous allez vers le nord, en 2D comme en voxels"
 
@@ -5015,6 +5031,10 @@ msgstr "Avec « Réduire les animations », la caméra reste immobile et vot
 #: assets/data/changelog.json
 msgid "With Reduce motion on, the wind drops and the water and the clouds hold still"
 msgstr "Avec « Réduire les animations », le vent tombe, et l'eau et les nuages s'immobilisent"
+
+#: assets/data/changelog.json
+msgid "Wolves, spiders, cats, the mammoths and many villagers no longer walk backwards when they go left or right"
+msgstr "Les loups, les araignées, les chats, les mammouths et bien des villageois ne marchent plus à reculons vers la gauche ou la droite"
 
 #: assets/data/changelog.json
 msgid "Worn gear got a fitting: the helm sits on the crown instead of floating, and equipped BODY ARMOR finally shows on the torso"
