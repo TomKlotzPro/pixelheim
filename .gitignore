@@ -15,3 +15,6 @@ site/
 
 # Agents' private checkouts.
 .claude/worktrees/
+
+# graphify's output for the code graph (godot/tools/codegraph.py)
+graphify-out/
