@@ -44,8 +44,8 @@ func _open() -> void:
 	world.view.props.process_mode = Node.PROCESS_MODE_ALWAYS
 	for villager in get_tree().get_nodes_in_group("npcs"):
 		villager.process_mode = Node.PROCESS_MODE_ALWAYS
-	world.camera_follows = false
-	world.camera.process_mode = Node.PROCESS_MODE_ALWAYS
+	world.camera_rig.follows = false
+	world.camera_rig.camera.process_mode = Node.PROCESS_MODE_ALWAYS
 	_build()
 	Sound.play_theme("dawn")
 	_fires()
@@ -95,7 +95,7 @@ func _fires() -> void:
 	_tell(String(_beats[0]["line"]))
 	var still := GameState.settings.reduce_motion
 	var path: Array[Vector2] = [
-		world.camera.global_position,
+		world.camera_rig.camera.global_position,
 		world._cell_center(Vector2i(24, 12)),
 		world._cell_center(Vector2i(48, 14)),
 		world._cell_center(Town.square()),
@@ -103,11 +103,11 @@ func _fires() -> void:
 	_flow = create_tween()
 	_flow.set_parallel()
 	if still:
-		world.camera.global_position = path[-1]
+		world.camera_rig.camera.global_position = path[-1]
 	else:
 		var legs := path.size() - 1
 		for i in legs:
-			_flow.tween_property(world.camera, "global_position", path[i + 1], FIRES_SECONDS / legs) \
+			_flow.tween_property(world.camera_rig.camera, "global_position", path[i + 1], FIRES_SECONDS / legs) \
 				.set_delay(FIRES_SECONDS / legs * i).set_trans(Tween.TRANS_SINE)
 	# Each fire goes out as the camera passes it.
 	var order := range(world.view.fires.size())
@@ -165,7 +165,7 @@ func _place_everyone() -> void:
 	world.player.position = world._cell_center(hero_cell)
 	world.player_cell = hero_cell
 	world.player.face(Vector2.UP)
-	world.camera.global_position = world._cell_center(Town.square())
+	world.camera_rig.camera.global_position = world._cell_center(Town.square())
 	world.sky_overlay.color = DAWN_GREY
 
 
@@ -287,7 +287,7 @@ func _process(delta: float) -> void:
 		_bubble.position.x = clampf(_bubble.position.x, 16, 1264 - _bubble.size.x)
 	if _shake_left > 0.0:
 		_shake_left -= delta
-		world.camera.offset = Vector2(randf_range(-3, 3), randf_range(-3, 3)) if _shake_left > 0.0 else Vector2.ZERO
+		world.camera_rig.camera.offset = Vector2(randf_range(-3, 3), randf_range(-3, 3)) if _shake_left > 0.0 else Vector2.ZERO
 
 
 func _command(event: InputEvent) -> Callable:
@@ -300,14 +300,14 @@ func _command(event: InputEvent) -> Callable:
 func close() -> void:
 	if _flow != null:
 		_flow.kill()
-	world.camera.offset = Vector2.ZERO
-	world.camera.process_mode = Node.PROCESS_MODE_INHERIT
-	world.camera_follows = true
+	world.camera_rig.camera.offset = Vector2.ZERO
+	world.camera_rig.camera.process_mode = Node.PROCESS_MODE_INHERIT
+	world.camera_rig.follows = true
 	if is_instance_valid(world.view.props):
 		world.view.props.process_mode = Node.PROCESS_MODE_INHERIT
 	if _actors.has("mayor") and is_instance_valid(_actors["mayor"]):
 		_actors["mayor"].queue_free()
-	world._teleported()
+	world.camera_rig.cut()
 	super.close()
 	if on_done.is_valid():
 		on_done.call()

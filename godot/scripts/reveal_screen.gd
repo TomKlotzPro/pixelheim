@@ -28,9 +28,9 @@ func _open() -> void:
 	caption.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(caption)
 	add_child(UiStyle.footer("{key:interact}  next      Esc  skip", Vector2(1010, 40)))
-	world.camera_follows = false
+	world.camera_rig.follows = false
 	# The camera answers to the tour while the world is held.
-	world.camera.process_mode = Node.PROCESS_MODE_ALWAYS
+	world.camera_rig.camera.process_mode = Node.PROCESS_MODE_ALWAYS
 	_next()
 
 
@@ -51,8 +51,8 @@ func _next() -> void:
 		return
 	var stop: Dictionary = stops[_index]
 	caption.text = ""
-	_tour = world.camera.create_tween()
-	_tour.tween_property(world.camera, "global_position", stop["at"], 0.0 if GameState.settings.reduce_motion else 0.9).set_trans(Tween.TRANS_SINE)
+	_tour = world.camera_rig.camera.create_tween()
+	_tour.tween_property(world.camera_rig.camera, "global_position", stop["at"], 0.0 if GameState.settings.reduce_motion else 0.9).set_trans(Tween.TRANS_SINE)
 	_tour.tween_callback(func() -> void:
 		caption.text = stop["line"]
 		# Standing on the dock's top edge, however many lines it takes.
@@ -73,9 +73,9 @@ func _next() -> void:
 func close() -> void:
 	if _tour != null:
 		_tour.kill()
-	world.camera.process_mode = Node.PROCESS_MODE_INHERIT
-	world.camera_follows = true
-	world._teleported()
+	world.camera_rig.camera.process_mode = Node.PROCESS_MODE_INHERIT
+	world.camera_rig.follows = true
+	world.camera_rig.cut()
 	super.close()
 	if on_done.is_valid():
 		on_done.call()

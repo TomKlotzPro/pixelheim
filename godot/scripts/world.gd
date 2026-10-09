@@ -24,7 +24,8 @@ var map: MapData
 var view: MapView
 var actors: Node2D
 var player: CharacterBody2D
-var camera: Camera2D
+## The camera (Solid Ground: its own node, CameraRig).
+var camera_rig: CameraRig
 var player_cell := Vector2i.ZERO
 var kills := 0
 var last_player_position := Vector2.ZERO
@@ -233,8 +234,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		command.call()
 
 func _process(delta: float) -> void:
-	_follow_hero(delta)
-	_apply_shake(delta)
+	camera_rig.update(delta)
 	if player == null or player.dead:
 		return
 	_update_prompt()
@@ -355,40 +355,10 @@ func can_notice(enemy: Node) -> bool:
 	var at: Vector2 = enemy.global_position
 	if enemy.feeding and at.distance_to(player.global_position) > TILE * 1.5:
 		return false
-	if not Packs.within_notice(at, player.global_position) or not in_view(at):
+	if not Packs.within_notice(at, player.global_position) or not camera_rig.in_view(at):
 		return false
 	return Packs.can_see(map, Vector2i((at / TILE).floor()), Vector2i((player.position / TILE).floor()))
 
-
-## The world the player can see: the screen above the dock, widened by
-## `margin` world pixels on every side.
-func view_rect(margin := 0.0) -> Rect2:
-	if camera == null:
-		return Rect2()
-	var view := Touch.view_size(self)
-	var half := view / 2.0 / camera.zoom.x
-	# Where the camera stands, held inside the map as its limits hold it.
-	var center := camera.global_position
-	center.x = clampf(center.x, camera.limit_left + half.x, maxf(camera.limit_left + half.x, camera.limit_right - half.x))
-	center.y = clampf(center.y, camera.limit_top + half.y, maxf(camera.limit_top + half.y, camera.limit_bottom - half.y))
-	return Rect2(center - half, Vector2(view.x, view.y - (720.0 - _dock_top())) / camera.zoom.x).grow(margin)
-
-
-## Where the dock begins on the 1280x720 canvas (the bottom, before it is built).
-func _dock_top() -> float:
-	return dock.top() if dock != null and dock.top() > 0 else 720.0
-
-
-## How far below the hero the camera stands, so the hero is centred in the
-## world above the dock rather than on the whole screen (PIX-142).
-func _frame_lift() -> float:
-	if camera == null:
-		return 0.0
-	return roundf((720.0 - _dock_top()) / 2.0 / camera.zoom.y)
-
-
-func in_view(at: Vector2, margin := 0.0) -> bool:
-	return view_rect(margin).has_point(at)
 
 ## A word that rises and fades over where it happened (PIX-155: "dodged",
 ## "blocked"). A `big` one (PIX-211: LEVEL UP, a fine or epic drop's name)
@@ -793,7 +763,7 @@ func _step_back() -> void:
 		return
 	player_cell = back
 	player.position = _cell_center(back)
-	_teleported()
+	camera_rig.cut()
 	last_player_position = player.position
 	GameState.move_to(map, back, player.facing)
 
@@ -911,7 +881,7 @@ func _enter_map(next: MapData, arrival: Vector2i) -> void:
 	view.build(self)
 	_spawn_npcs(next)
 	player.position = _cell_center(arrival)
-	_teleported()
+	camera_rig.cut()
 	player.ailments.clear()
 	last_player_position = player.position
 	player_cell = arrival
@@ -927,9 +897,7 @@ func _enter_map(next: MapData, arrival: Vector2i) -> void:
 		_festival()
 	_play_reveals.call_deferred()
 	_keep_hours(true)
-	camera.limit_right = next.size.x * TILE
-	camera.limit_bottom = next.size.y * TILE
-	camera.reset_smoothing()
+	camera_rig.set_limits(Vector2(next.size * TILE))
 	_spawn_enemies(next)
 	_update_music()
 	if changing:
@@ -1292,7 +1260,7 @@ func dust(at: Vector2) -> void:
 ## Dust where a monster comes into sight (PIX-142): a ring of motes kicked up
 ## from its feet as it fades in, so nothing simply pops into being.
 func appear(enemy: Node) -> void:
-	if not in_view(enemy.position, TILE):
+	if not camera_rig.in_view(enemy.position, TILE):
 		return
 	enemy.modulate.a = 0.0
 	var fade_in := enemy.create_tween()
@@ -1428,52 +1396,6 @@ func _dream() -> void:
 	play_story(Story.next_dream(GameState.progression.cleared_levels, GameState.progression.story_seen))
 
 
-## The screen shakes (PIX-155): `strength` pixels at first, easing out over
-## `seconds`. Reduce motion keeps it still.
-var _shake_left := 0.0
-var _shake_total := 0.0
-var _shake_strength := 0.0
-
-
-func shake(strength: float, seconds: float) -> void:
-	if GameState.settings.reduce_motion or camera == null:
-		return
-	if strength * seconds < _shake_strength * _shake_left:
-		return
-	_shake_strength = strength
-	_shake_total = seconds
-	_shake_left = seconds
-
-
-func _apply_shake(delta: float) -> void:
-	if camera == null:
-		return
-	if _shake_left <= 0.0:
-		# Only once: writing the offset every frame re-settles the camera.
-		if camera.offset != Vector2.ZERO:
-			camera.offset = Vector2.ZERO
-		return
-	_shake_left = maxf(0.0, _shake_left - delta)
-	var power := _shake_strength * _shake_left / _shake_total / camera.zoom.x
-	camera.offset = Vector2(randf_range(-1, 1), randf_range(-1, 1)) * power
-
-
-## A blow lands: the world holds its breath for a few hundredths of a second
-## (PIX-155), counted in real time so the stop can end itself.
-var _stopped := false
-
-
-func hit_stop(seconds: float, scale := 0.08) -> void:
-	if _stopped or GameState.settings.reduce_motion:
-		return
-	_stopped = true
-	Engine.time_scale = scale
-	get_tree().create_timer(seconds, true, false, true).timeout.connect(func() -> void:
-		Engine.time_scale = 1.0
-		_stopped = false
-	)
-
-
 ## A boss falls (PIX-210): the world slows a moment, shakes and flashes
 ## white, and the music cuts so the victory sting rings out alone (the
 ## floor's clearing plays it; a boss with foes still about plays its own).
@@ -1483,10 +1405,10 @@ func boss_fell() -> void:
 	hunted_by_boss = false
 	if map.floor_level == 0 or floor_foes > 0:
 		Sound.play("victory")
-	shake(8.0, 0.6)
+	camera_rig.shake(8.0, 0.6)
 	if GameState.settings.reduce_motion:
 		return
-	hit_stop(BOSS_SLOW_S, BOSS_SLOW)
+	camera_rig.hit_stop(BOSS_SLOW_S, BOSS_SLOW)
 	var flash := ColorRect.new()
 	flash.color = Color(1, 1, 1, 0.75)
 	flash.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -1517,8 +1439,8 @@ func _keep_hours(arriving := false) -> void:
 		var id := String(villager.data["id"])
 		if not villager.data.get("wander", false) and not id.begins_with("worker_"):
 			continue
-		var home_seen := in_view(_cell_center(villager.home), TILE)
-		if villager.away != night and (arriving or (not in_view(villager.position, TILE) and (night or not home_seen))):
+		var home_seen := camera_rig.in_view(_cell_center(villager.home), TILE)
+		if villager.away != night and (arriving or (not camera_rig.in_view(villager.position, TILE) and (night or not home_seen))):
 			villager.set_away(night)
 		if villager.away or id.begins_with("worker_") or not villager.data.get("wander", false):
 			continue
@@ -1528,11 +1450,11 @@ func _keep_hours(arriving := false) -> void:
 				index = (index + 1) % spots.size()
 			taken[index] = true
 			villager.gather_at = spots[index]
-			if arriving or (not in_view(villager.position, TILE) and not in_view(_cell_center(spots[index]), TILE)):
+			if arriving or (not camera_rig.in_view(villager.position, TILE) and not camera_rig.in_view(_cell_center(spots[index]), TILE)):
 				villager.place_at(spots[index])
 		elif gathering and villager.gather_at != villager.NOWHERE:
 			taken[spots.find(villager.gather_at)] = true
-		elif not gathering and villager.gather_at != villager.NOWHERE and not in_view(villager.position, TILE) and not home_seen:
+		elif not gathering and villager.gather_at != villager.NOWHERE and not camera_rig.in_view(villager.position, TILE) and not home_seen:
 			# The gathering's over by day (a night skipped at the inn): home.
 			villager.set_away(false)
 
@@ -1818,19 +1740,11 @@ func _spawn_player() -> void:
 	atmosphere.world = self
 	add_child(atmosphere)
 
-	camera = Camera2D.new()
-	camera.limit_left = 0
-	camera.limit_top = 0
-	# The camera follows where the hero is drawn (between physics ticks), not
-	# where physics last put them: attached to the hero it would lag the drawn
-	# sprite by up to a tick and snap back, a shake that blurs every step.
-	camera.top_level = true
-	camera.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
-	player.add_child(camera)
-	_fit_zoom()
-	get_tree().root.size_changed.connect(_fit_zoom)
+	camera_rig = CameraRig.new()
+	camera_rig.world = self
+	add_child(camera_rig)
+	camera_rig.attach(player)
 	get_tree().root.size_changed.connect(_place_hud)
-	_teleported()
 
 ## Packs at their homes (the spawns): the species its region and position
 ## decide, an elite roll each. A pack the slain ledger keeps down stays away;
@@ -1885,7 +1799,7 @@ func _revive_packs() -> void:
 		if not Packs.is_due(GameState.world, spawn["id"]):
 			continue
 		var home := _cell_center(Vector2i(spawn["x"], spawn["y"]))
-		if in_view(home, 2 * TILE):
+		if camera_rig.in_view(home, 2 * TILE):
 			continue
 		GameState.revive_pack(spawn["id"])
 		_spawn_pack(map, spawn)
@@ -2013,89 +1927,6 @@ func _build_hud() -> void:
 	# Centred over the dock whatever the step's length.
 	objective_box.resized.connect(func() -> void: objective_box.position.x = roundf((1280 - objective_box.size.x) / 2.0))
 	hud.add_child(objective_box)
-
-## The hero's position after the last two physics ticks (recorded after the
-## hero has moved, see _physics_process), so the camera can stand exactly
-## where the hero is drawn this frame.
-var _hero_tick_from := Vector2.ZERO
-var _hero_tick_to := Vector2.ZERO
-## False while something else frames the shot (the harness overview).
-var camera_follows := true
-## Shade's figures are 16px: about 4x shows ~20x11 tiles, close to the web
-## game's view. The exact zoom keeps an art pixel a whole number of screen
-## pixels at any window size (_fit_zoom).
-const ZOOM := 4.0
-## How fast the camera catches up with the hero (per second, eased).
-const CAMERA_EASE := 8.0
-## Where the camera eases to stand, before it settles on a whole pixel.
-var _camera_at := Vector2.ZERO
-## The camera leans a little ahead of the hero, the way they're heading, and
-## a crit or a killing blow punches it (PIX-226). Neither with reduced motion.
-const CAMERA_LEAN := 10.0
-const LEAN_EASE := 2.5
-const PUNCH := 3.0
-const PUNCH_EASE := 16.0
-var _lean := Vector2.ZERO
-var _punch := Vector2.ZERO
-
-func _physics_process(_delta: float) -> void:
-	if player == null:
-		return
-	_hero_tick_from = _hero_tick_to
-	_hero_tick_to = player.position
-
-## The hero was placed, not walked: no interpolating from the old spot, and
-## the camera cuts there.
-func _teleported() -> void:
-	player.reset_physics_interpolation()
-	_hero_tick_from = player.position
-	_hero_tick_to = player.position
-	_lean = Vector2.ZERO
-	_punch = Vector2.ZERO
-	if camera != null:
-		_camera_at = player.position + Vector2(0, _frame_lift())
-		camera.global_position = _camera_at
-		camera.reset_smoothing()
-
-## The camera eases toward where the hero is drawn this frame (between the
-## last two ticks, as the physics interpolation draws them) and stands on a
-## whole screen pixel, so the world scrolls crisp, all of a piece.
-func _follow_hero(delta: float) -> void:
-	if camera == null or not camera_follows:
-		return
-	var drawn := _hero_tick_from.lerp(_hero_tick_to, Engine.get_physics_interpolation_fraction())
-	drawn.y += _frame_lift()
-	var still: bool = GameState.settings.reduce_motion
-	var heading := player.velocity.normalized() if not still and player.velocity.length() > 1.0 else Vector2.ZERO
-	_lean = _lean.lerp(heading * CAMERA_LEAN, 1.0 - exp(-LEAN_EASE * delta))
-	_punch = _punch.lerp(Vector2.ZERO, 1.0 - exp(-PUNCH_EASE * delta))
-	_camera_at = _camera_at.lerp(drawn + _lean, 1.0 - exp(-CAMERA_EASE * delta))
-	var pixels_per_unit := camera.zoom.x * _stretch()
-	camera.global_position = ((_camera_at + _punch) * pixels_per_unit).round() / pixels_per_unit
-
-
-## A crit or a killing blow nudges the camera along the blow's `direction`
-## for an instant (PIX-226); not with reduced motion.
-func punch(direction: Vector2) -> void:
-	if GameState.settings.reduce_motion or direction == Vector2.ZERO:
-		return
-	_punch = direction.normalized() * PUNCH
-
-## Screen pixels per pixel of the 1280x720 canvas (the window's stretch).
-func _stretch() -> float:
-	return get_tree().root.get_final_transform().get_scale().x
-
-## The zoom nearest ZOOM at which an art pixel covers a whole number of
-## screen pixels: no uneven 4-and-5-pixel columns shimmering as the world
-## scrolls.
-func _fit_zoom() -> void:
-	if camera == null or not camera_follows:
-		return
-	var scale := _stretch()
-	# A phone's small screen still gets art pixels two screen pixels big
-	# (PIX-162): a hero you can see.
-	var least := 2.0 if Touch.enabled() else 1.0
-	camera.zoom = Vector2.ONE * maxf(least, roundf(ZOOM * scale)) / scale
 
 ## The nameplate of the sign the hero stands near (two tiles or so): the
 ## place's name and who keeps it, over the board, in the UI's window style.

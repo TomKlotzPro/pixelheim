@@ -423,11 +423,11 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null, crit := fa
 	if dying and Bestiary.is_boss(fighter["id"]):
 		world.boss_fell()
 	else:
-		world.hit_stop(KILL_STOP if dying else HIT_STOP)
-	world.shake(2.5 if dying or crit else 1.5, 0.1)
+		world.camera_rig.hit_stop(KILL_STOP if dying else HIT_STOP)
+	world.camera_rig.shake(2.5 if dying or crit else 1.5, 0.1)
 	# The camera answers a crit or a killing blow with a little punch.
 	if dying or crit:
-		world.punch(global_position - from)
+		world.camera_rig.punch(global_position - from)
 	# Struck from anywhere, it turns on the hero at once.
 	if not dying and mode != "chase":
 		mode = "chase"
