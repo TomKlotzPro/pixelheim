@@ -64,9 +64,9 @@ func _open() -> void:
 		cards.append(card)
 	var actions := HBoxContainer.new()
 	actions.add_theme_constant_override("separation", 10)
-	actions.add_child(UiStyle.button(UiStyle.keyed("{key:interact}", Text.t("Play")), _play))
-	actions.add_child(UiStyle.button(UiStyle.keyed("N", Text.t("New hero")), _new_hero))
-	actions.add_child(UiStyle.button(UiStyle.keyed("X", Text.t("Clear slot")), _clear))
+	actions.add_child(UiStyle.button(Text.t("Play"), _play, "{key:interact}"))
+	actions.add_child(UiStyle.button(Text.t("New hero"), _new_hero, "N"))
+	actions.add_child(UiStyle.button(Text.t("Clear slot"), _clear, "X"))
 	left.add_child(actions)
 
 	var right := VBoxContainer.new()
@@ -121,14 +121,14 @@ func _open() -> void:
 	code_actions.add_theme_constant_override("separation", 10)
 	load_button = UiStyle.button("", _load_code)
 	code_actions.add_child(load_button)
-	code_actions.add_child(UiStyle.button(UiStyle.keyed("C", Text.t("Copy mine")), _copy))
+	code_actions.add_child(UiStyle.button(Text.t("Copy mine"), _copy, "C"))
 	code_lines.add_child(code_actions)
 
 	status = UiStyle.label("", 14, UiStyle.LAMP)
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	status.custom_minimum_size = Vector2(WINDOW.x - 44, 0)
 	body.add_child(status)
-	add_child(UiStyle.footer("Esc  close      {key:move_up}/{key:move_down}  choose      {key:interact}  play      N  new hero      X  clear      P  paste      C  copy", Vector2(0, 664), true))
+	add_child(UiStyle.screen_footer("{key:move_up}/{key:move_down}  choose      {key:interact}  play      N  new hero      X  clear      P  paste      C  copy      Esc  close"))
 
 	if welcome:
 		status.text = (
@@ -285,7 +285,7 @@ func _refresh() -> void:
 	for index in cards.size():
 		_fill_card(cards[index], index)
 	if bring_button != null:
-		bring_button.text = UiStyle.keyed("B", Text.t("Bring %s to slot %d") % [web_save["hero"]["name"], _target()])
+		UiStyle.button_keyed(bring_button, "B", Text.t("Bring %s to slot %d") % [web_save["hero"]["name"], _target()])
 	load_button.text = Text.t("Load into slot %d") % _target()
 
 func _fill_card(card: PanelContainer, index: int) -> void:

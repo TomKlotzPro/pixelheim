@@ -2269,6 +2269,10 @@ msgid "Every role verified to be able to finish the game"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Every screen keeps its title and its keys in the same places, with leaving always last as Esc close, and the keys on buttons stand on keycaps instead of being spelled out"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Every skill branch grew a tier-3 capstone: 12 nodes per role, from Skullsplitter to Divine Word"
 msgstr ""
 
@@ -3042,6 +3046,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "One Hero Everywhere"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "One Look"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4073,6 +4081,10 @@ msgid "The choice happens INSIDE the ascension: the letterboxed scene holds, the
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The codex's bestiary turns its pages instead of running off the screen, the pause card stays centred in French, and the phone's tap bar shows real arrows"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The controls moved into a legend at the side - every key at a glance, rebindable in Options"
 msgstr ""
 
@@ -4546,6 +4558,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Your gear rides into 3D: helm, plate and blade are part of your voxel figure, exactly as drawn"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Your gold is shown the same way everywhere: the coin and the sum"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -10172,31 +10188,39 @@ msgstr ""
 msgid "scroll"
 msgstr ""
 
-#: scripts/codex_screen.gd:112
+#: scripts/codex_screen.gd:103
+msgid "Page %d of %d"
+msgstr ""
+
+#: scripts/codex_screen.gd:125
 msgid "Lv %d  HP %d  ATK %d  DEF %d  %d xp"
 msgstr ""
 
-#: scripts/codex_screen.gd:119
+#: scripts/codex_screen.gd:132
 msgid "Unmet. The wilds keep their secrets."
 msgstr ""
 
-#: scripts/codex_screen.gd:18
+#: scripts/codex_screen.gd:21
 msgid "Codex"
 msgstr ""
 
-#: scripts/codex_screen.gd:31
+#: scripts/codex_screen.gd:34
 msgid "Every kill teaches. Families over faces."
 msgstr ""
 
-#: scripts/codex_screen.gd:32
+#: scripts/codex_screen.gd:35
+msgid "page"
+msgstr ""
+
+#: scripts/codex_screen.gd:35
 msgid "tabs"
 msgstr ""
 
-#: scripts/codex_screen.gd:61
+#: scripts/codex_screen.gd:64
 msgid "   Slayer %s"
 msgstr ""
 
-#: scripts/codex_screen.gd:66
+#: scripts/codex_screen.gd:69
 msgid "%d slain"
 msgstr ""
 
@@ -10208,15 +10232,15 @@ msgstr ""
 msgid "Masteries"
 msgstr ""
 
-#: scripts/codex_screen.gd:79
+#: scripts/codex_screen.gd:82
 msgid "+%d%% damage against them. "
 msgstr ""
 
-#: scripts/codex_screen.gd:80
+#: scripts/codex_screen.gd:83
 msgid "%d more for +%d%%."
 msgstr ""
 
-#: scripts/codex_screen.gd:80
+#: scripts/codex_screen.gd:83
 msgid "Nothing left to teach you."
 msgstr ""
 
@@ -10322,10 +10346,6 @@ msgstr ""
 
 #: scripts/create_screen.gd:68
 msgid "Begin the climb"
-msgstr ""
-
-#: scripts/create_screen.gd:74
-msgid "back"
 msgstr ""
 
 #: scripts/create_screen.gd:74
@@ -10588,44 +10608,40 @@ msgstr ""
 msgid "Pack"
 msgstr ""
 
-#: scripts/hud_dock.gd:328
+#: scripts/hud_dock.gd:319
 msgid " +%d HP"
 msgstr ""
 
-#: scripts/hud_dock.gd:341
+#: scripts/hud_dock.gd:332
 msgid "Lv %d %s"
 msgstr ""
 
-#: scripts/hud_dock.gd:344
+#: scripts/hud_dock.gd:335
 msgid "HP"
 msgstr ""
 
-#: scripts/inventory_screen.gd:111
+#: scripts/inventory_screen.gd:116
 msgid "choose"
 msgstr ""
 
-#: scripts/inventory_screen.gd:111
+#: scripts/inventory_screen.gd:116
 msgid "drop"
 msgstr ""
 
-#: scripts/inventory_screen.gd:111
+#: scripts/inventory_screen.gd:116
 msgid "drop all"
 msgstr ""
 
-#: scripts/inventory_screen.gd:111
+#: scripts/inventory_screen.gd:116
 msgid "equip / use"
 msgstr ""
 
-#: scripts/inventory_screen.gd:111
+#: scripts/inventory_screen.gd:116
 msgid "sort"
 msgstr ""
 
-#: scripts/inventory_screen.gd:120
-msgid "Weight %d/%d"
-msgstr ""
-
 #: scripts/inventory_screen.gd:125
-msgid "Gold %d      Sorted by %s"
+msgid "Weight %d/%d"
 msgstr ""
 
 #: scripts/inventory_screen.gd:13
@@ -10644,6 +10660,10 @@ msgstr ""
 msgid "Weapons"
 msgstr ""
 
+#: scripts/inventory_screen.gd:130
+msgid "Sorted by %s"
+msgstr ""
+
 #: scripts/inventory_screen.gd:14
 msgid "Craft"
 msgstr ""
@@ -10660,7 +10680,7 @@ msgstr ""
 msgid "Misc"
 msgstr ""
 
-#: scripts/inventory_screen.gd:144
+#: scripts/inventory_screen.gd:150
 msgid "Nothing here. Go hit some monsters."
 msgstr ""
 
@@ -10700,183 +10720,183 @@ msgstr ""
 msgid "Weapon"
 msgstr ""
 
-#: scripts/inventory_screen.gd:201
+#: scripts/inventory_screen.gd:207
 msgid "your workbench"
 msgstr ""
 
-#: scripts/inventory_screen.gd:202
+#: scripts/inventory_screen.gd:208
 msgid "At %s"
 msgstr ""
 
-#: scripts/inventory_screen.gd:202
+#: scripts/inventory_screen.gd:208
 msgid "E crafts any recipe below you have the makings for."
 msgstr ""
 
-#: scripts/inventory_screen.gd:203
+#: scripts/inventory_screen.gd:209
 msgid "Hilda forges behind the FORGE door, Vex brews behind BREWS; a bought house can fit a workbench."
 msgstr ""
 
-#: scripts/inventory_screen.gd:205
+#: scripts/inventory_screen.gd:211
 msgid " E travels to the gate."
 msgstr ""
 
-#: scripts/inventory_screen.gd:205
+#: scripts/inventory_screen.gd:211
 msgid "The stations are in town"
 msgstr ""
 
-#: scripts/inventory_screen.gd:241
+#: scripts/inventory_screen.gd:247
 msgid "EQUIPPED"
 msgstr ""
 
-#: scripts/inventory_screen.gd:340
+#: scripts/inventory_screen.gd:346
 msgid "kind"
 msgstr ""
 
-#: scripts/inventory_screen.gd:342
+#: scripts/inventory_screen.gd:348
 msgid "value"
 msgstr ""
 
-#: scripts/inventory_screen.gd:344
+#: scripts/inventory_screen.gd:350
 msgid "weight"
 msgstr ""
 
-#: scripts/inventory_screen.gd:346
+#: scripts/inventory_screen.gd:352
 msgid "name"
 msgstr ""
 
-#: scripts/inventory_screen.gd:369
+#: scripts/inventory_screen.gd:375
 msgid "%s %d, at %s."
 msgstr ""
 
-#: scripts/inventory_screen.gd:371
+#: scripts/inventory_screen.gd:377
 msgid " You are %s."
 msgstr ""
 
-#: scripts/inventory_screen.gd:419
+#: scripts/inventory_screen.gd:425
 msgid "DMG %d%s %s"
 msgstr ""
 
-#: scripts/inventory_screen.gd:421
+#: scripts/inventory_screen.gd:427
 msgid "ARMOR %d%s"
 msgstr ""
 
-#: scripts/inventory_screen.gd:427
+#: scripts/inventory_screen.gd:433
 msgid "+%d HP"
 msgstr ""
 
-#: scripts/inventory_screen.gd:429
+#: scripts/inventory_screen.gd:435
 msgid "+%d MP"
 msgstr ""
 
-#: scripts/inventory_screen.gd:431
+#: scripts/inventory_screen.gd:437
 msgid "cures %s"
 msgstr ""
 
-#: scripts/inventory_screen.gd:432
+#: scripts/inventory_screen.gd:438
 msgid "%d wt"
 msgstr ""
 
-#: scripts/inventory_screen.gd:441
+#: scripts/inventory_screen.gd:447
 msgid "travel"
 msgstr ""
 
-#: scripts/inventory_screen.gd:445
+#: scripts/inventory_screen.gd:451
 msgid "craft"
 msgstr ""
 
-#: scripts/inventory_screen.gd:447
+#: scripts/inventory_screen.gd:453
 msgid "equip"
 msgstr ""
 
-#: scripts/inventory_screen.gd:447
+#: scripts/inventory_screen.gd:453
 msgid "take off"
 msgstr ""
 
-#: scripts/inventory_screen.gd:450
+#: scripts/inventory_screen.gd:456
 msgid "use"
 msgstr ""
 
-#: scripts/inventory_screen.gd:452
+#: scripts/inventory_screen.gd:458
 msgid "place"
 msgstr ""
 
-#: scripts/inventory_screen.gd:479
+#: scripts/inventory_screen.gd:485
 msgid "ATK %d"
 msgstr ""
 
-#: scripts/inventory_screen.gd:479
+#: scripts/inventory_screen.gd:485
 msgid "DEF %d"
 msgstr ""
 
-#: scripts/inventory_screen.gd:483
+#: scripts/inventory_screen.gd:489
 msgid "Carry %d/%d"
 msgstr ""
 
-#: scripts/inventory_screen.gd:502
+#: scripts/inventory_screen.gd:508
 msgid "%s - click to take off"
 msgstr ""
 
-#: scripts/inventory_screen.gd:556
+#: scripts/inventory_screen.gd:562
 msgid "You travel to %s."
 msgstr ""
 
-#: scripts/inventory_screen.gd:569
+#: scripts/inventory_screen.gd:575
 msgid "%s goes back in the pack."
 msgstr ""
 
-#: scripts/inventory_screen.gd:572
+#: scripts/inventory_screen.gd:578
 msgid "You put on %s."
 msgstr ""
 
-#: scripts/inventory_screen.gd:575
+#: scripts/inventory_screen.gd:581
 msgid "That can't be worn."
 msgstr ""
 
-#: scripts/inventory_screen.gd:585
+#: scripts/inventory_screen.gd:591
 msgid "Nothing to do with that here."
 msgstr ""
 
-#: scripts/inventory_screen.gd:589
+#: scripts/inventory_screen.gd:595
 msgid " Cured %s."
 msgstr ""
 
-#: scripts/inventory_screen.gd:601
+#: scripts/inventory_screen.gd:607
 msgid "Still missing: %s."
 msgstr ""
 
-#: scripts/inventory_screen.gd:601
+#: scripts/inventory_screen.gd:607
 msgid "You need %s %d for that."
 msgstr ""
 
-#: scripts/inventory_screen.gd:611
+#: scripts/inventory_screen.gd:617
 msgid " (two!)"
 msgstr ""
 
-#: scripts/inventory_screen.gd:611
+#: scripts/inventory_screen.gd:617
 msgid "You craft %s%s. %s"
 msgstr ""
 
-#: scripts/inventory_screen.gd:635
+#: scripts/inventory_screen.gd:641
 msgid "%dx %s"
 msgstr ""
 
-#: scripts/inventory_screen.gd:636
+#: scripts/inventory_screen.gd:642
 msgid "Drop %s for good? Press %s again."
 msgstr ""
 
-#: scripts/inventory_screen.gd:642
+#: scripts/inventory_screen.gd:648
 msgid "You leave %s behind."
 msgstr ""
 
-#: scripts/inventory_screen.gd:644
+#: scripts/inventory_screen.gd:650
 msgid "Take it off before you drop it."
 msgstr ""
 
-#: scripts/inventory_screen.gd:646
+#: scripts/inventory_screen.gd:652
 msgid "You'd better hold on to that."
 msgstr ""
 
-#: scripts/inventory_screen.gd:650
+#: scripts/inventory_screen.gd:656
 msgid "You drop %dx %s."
 msgstr ""
 
@@ -11000,16 +11020,12 @@ msgstr ""
 msgid "Up"
 msgstr ""
 
-#: scripts/ledger_screen.gd:109
-msgid "Gold: %d"
-msgstr ""
-
-#: scripts/ledger_screen.gd:69
+#: scripts/ledger_screen.gd:70
 msgid "do it"
 msgstr ""
 
-#: scripts/ledger_screen.gd:74
-msgid "Esc  close      {key:move_up}/{key:move_down}  choose      {key:interact}  %s"
+#: scripts/ledger_screen.gd:75
+msgid "{key:move_up}/{key:move_down}  choose      {key:interact}  %s      Esc  close"
 msgstr ""
 
 #: scripts/map_screen.gd:43
@@ -11144,23 +11160,23 @@ msgstr ""
 msgid "Reset keys to defaults"
 msgstr ""
 
-#: scripts/pause_screen.gd:23
+#: scripts/pause_screen.gd:25
 msgid "Paused"
 msgstr ""
 
-#: scripts/pause_screen.gd:29
+#: scripts/pause_screen.gd:31
 msgid "Progress is saved automatically."
 msgstr ""
 
-#: scripts/pause_screen.gd:33
+#: scripts/pause_screen.gd:37
 msgid "Resume"
 msgstr ""
 
-#: scripts/pause_screen.gd:34
+#: scripts/pause_screen.gd:38
 msgid "Saves"
 msgstr ""
 
-#: scripts/pause_screen.gd:36
+#: scripts/pause_screen.gd:40
 msgid "Quit to title"
 msgstr ""
 
@@ -11230,10 +11246,6 @@ msgstr ""
 
 #: scripts/ring_toss_screen.gd:34
 msgid "Throw when the ring is over the peg. Two of three wins the prize."
-msgstr ""
-
-#: scripts/ring_toss_screen.gd:71
-msgid "leave"
 msgstr ""
 
 #: scripts/ring_toss_screen.gd:71
@@ -11408,99 +11420,99 @@ msgstr ""
 msgid "Your web game hero %s, %d gold."
 msgstr ""
 
-#: scripts/screen.gd:105
+#: scripts/screen.gd:106
 msgid "Back"
 msgstr ""
 
-#: scripts/shop_screen.gd:124
+#: scripts/shop_screen.gd:125
 msgid "Not for sale."
 msgstr ""
 
-#: scripts/shop_screen.gd:124
+#: scripts/shop_screen.gd:125
 msgid "Sold %d %s for %dg."
 msgstr ""
 
-#: scripts/shop_screen.gd:162
+#: scripts/shop_screen.gd:163
 msgid "Deed: %s"
 msgstr ""
 
-#: scripts/shop_screen.gd:162
+#: scripts/shop_screen.gd:163
 msgid "owned"
 msgstr ""
 
-#: scripts/shop_screen.gd:163
+#: scripts/shop_screen.gd:164
 msgid "%s\nOwn this business: its till fills with %dg a day, and you pay a tenth less here."
 msgstr ""
 
-#: scripts/shop_screen.gd:164
+#: scripts/shop_screen.gd:165
 msgid "Buy the deed"
 msgstr ""
 
-#: scripts/shop_screen.gd:165
+#: scripts/shop_screen.gd:166
 msgid "The deed is yours."
 msgstr ""
 
-#: scripts/shop_screen.gd:172
+#: scripts/shop_screen.gd:173
 msgid "%s\nA bigger house: its new rooms wait the next time you walk in."
 msgstr ""
 
-#: scripts/shop_screen.gd:173
+#: scripts/shop_screen.gd:174
 msgid "Sign the deed"
 msgstr ""
 
-#: scripts/shop_screen.gd:187
+#: scripts/shop_screen.gd:188
 msgid "\nThe shop's own, since Pixelheim became a %s."
 msgstr ""
 
-#: scripts/shop_screen.gd:188
+#: scripts/shop_screen.gd:189
 msgid "\nThe forge's own, since Pixelheim became a %s."
 msgstr ""
 
-#: scripts/shop_screen.gd:188
+#: scripts/shop_screen.gd:189
 msgid "\nThe workshop's own, since Pixelheim became a %s."
 msgstr ""
 
-#: scripts/shop_screen.gd:192
+#: scripts/shop_screen.gd:193
 msgid "Owner's pick"
 msgstr ""
 
-#: scripts/shop_screen.gd:192
+#: scripts/shop_screen.gd:193
 msgid "Pixelheim's own"
 msgstr ""
 
-#: scripts/shop_screen.gd:194
+#: scripts/shop_screen.gd:195
 msgid "Bought %s."
 msgstr ""
 
-#: scripts/shop_screen.gd:204
+#: scripts/shop_screen.gd:205
 msgid "Sell one"
 msgstr ""
 
-#: scripts/shop_screen.gd:226
+#: scripts/shop_screen.gd:227
 msgid "  (worn)"
 msgstr ""
 
-#: scripts/shop_screen.gd:227
+#: scripts/shop_screen.gd:228
 msgid "%dg + gem"
 msgstr ""
 
-#: scripts/shop_screen.gd:227
+#: scripts/shop_screen.gd:228
 msgid "max"
 msgstr ""
 
-#: scripts/shop_screen.gd:228
+#: scripts/shop_screen.gd:229
 msgid "Temper +1"
 msgstr ""
 
-#: scripts/shop_screen.gd:230
+#: scripts/shop_screen.gd:231
 msgid "Hilda tempers it: +1."
 msgstr ""
 
-#: scripts/shop_screen.gd:230
+#: scripts/shop_screen.gd:231
 msgid "Not enough gold, or it can take no more."
 msgstr ""
 
-#: scripts/shop_screen.gd:299
+#: scripts/shop_screen.gd:300
 msgid "Sell all %d"
 msgstr ""
 
@@ -11520,7 +11532,7 @@ msgstr ""
 msgid "Salvage"
 msgstr ""
 
-#: scripts/shop_screen.gd:366
+#: scripts/shop_screen.gd:367
 msgid "Sold for %dg."
 msgstr ""
 
@@ -11528,75 +11540,75 @@ msgstr ""
 msgid "Reforge"
 msgstr ""
 
-#: scripts/shop_screen.gd:383
+#: scripts/shop_screen.gd:384
 msgid "That takes %s %d."
 msgstr ""
 
-#: scripts/shop_screen.gd:389
+#: scripts/shop_screen.gd:390
 msgid "A lucky brew: 2x %s! %s"
 msgstr ""
 
-#: scripts/shop_screen.gd:391
+#: scripts/shop_screen.gd:392
 msgid "Made %s. %s"
 msgstr ""
 
-#: scripts/shop_screen.gd:397
+#: scripts/shop_screen.gd:398
 msgid "Nothing to sell. Worn gear stays on your back."
 msgstr ""
 
-#: scripts/shop_screen.gd:399
+#: scripts/shop_screen.gd:400
 msgid "Bring me steel to work with."
 msgstr ""
 
-#: scripts/shop_screen.gd:401
+#: scripts/shop_screen.gd:402
 msgid "Nothing to break down. Worn gear stays on your back."
 msgstr ""
 
-#: scripts/shop_screen.gd:404
+#: scripts/shop_screen.gd:405
 msgid "Nothing here yet."
 msgstr ""
 
-#: scripts/shop_screen.gd:421
+#: scripts/shop_screen.gd:422
 msgid "Damage %d"
 msgstr ""
 
-#: scripts/shop_screen.gd:423
+#: scripts/shop_screen.gd:424
 msgid "Scales with %s"
 msgstr ""
 
-#: scripts/shop_screen.gd:425
+#: scripts/shop_screen.gd:426
 msgid "Armor %d"
 msgstr ""
 
-#: scripts/shop_screen.gd:434
+#: scripts/shop_screen.gd:435
 msgid "Restores %d HP"
 msgstr ""
 
-#: scripts/shop_screen.gd:436
+#: scripts/shop_screen.gd:437
 msgid "Restores %d MP"
 msgstr ""
 
-#: scripts/shop_screen.gd:437
+#: scripts/shop_screen.gd:438
 msgid "Weight %d"
 msgstr ""
 
-#: scripts/shop_screen.gd:442
+#: scripts/shop_screen.gd:443
 msgid "Needs:"
 msgstr ""
 
-#: scripts/shop_screen.gd:445
+#: scripts/shop_screen.gd:446
 msgid "  %d x %s  (have %d)"
 msgstr ""
 
-#: scripts/shop_screen.gd:452
+#: scripts/shop_screen.gd:453
 msgid "%s level %d - you are %s"
 msgstr ""
 
-#: scripts/shop_screen.gd:93
-msgid "Esc  close      {key:move_left}/{key:move_right}  tab      {key:move_up}/{key:move_down}  choose      {key:interact}  %s      Z  sell a stack"
+#: scripts/shop_screen.gd:94
+msgid "{key:move_left}/{key:move_right}  tab      {key:move_up}/{key:move_down}  choose      {key:interact}  %s      Z  sell a stack      Esc  close"
 msgstr ""
 
-#: scripts/shop_screen.gd:95
+#: scripts/shop_screen.gd:96
 msgid "%s hands you the till: +%d gold."
 msgstr ""
 
@@ -12608,7 +12620,7 @@ msgstr ""
 msgid "COMMISSIONED"
 msgstr ""
 
-#: scripts/ui_style.gd:465
+#: scripts/ui_style.gd:530
 msgid "Arrows"
 msgstr ""
 

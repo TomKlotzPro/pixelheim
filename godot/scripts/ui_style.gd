@@ -262,7 +262,9 @@ static func keyed(key: String, text: String) -> String:
 	return "%s  %s" % [Controls.shown(key), text]
 
 
-static func button(text: String, action: Callable) -> Button:
+## `key`, when given, stands on a keycap inside the plank (PIX-213), not
+## spelled out in the words.
+static func button(text: String, action: Callable, key := "") -> Button:
 	var node := Button.new()
 	node.text = text
 	node.focus_mode = Control.FOCUS_NONE
@@ -276,7 +278,32 @@ static func button(text: String, action: Callable) -> Button:
 	node.add_theme_stylebox_override("disabled", plank(false, 6, true))
 	node.add_theme_color_override("font_disabled_color", Color(DUSK, 0.7))
 	node.pressed.connect(action)
+	if key != "":
+		button_keyed(node, key, text)
 	return node
+
+
+## A plank button's key on a keycap and its words beside it (PIX-213);
+## called again, it changes them. Dimmed with the button when it's off.
+static func button_keyed(node: Button, key: String, text: String) -> void:
+	var row: HBoxContainer = node.get_node_or_null("keyed")
+	if row == null:
+		row = HBoxContainer.new()
+		row.name = "keyed"
+		row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		row.alignment = BoxContainer.ALIGNMENT_CENTER
+		row.add_theme_constant_override("separation", 8)
+		row.add_child(keycap("", true))
+		row.add_child(label("", TEXT, CREAM))
+		node.add_child(row)
+		row.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		node.draw.connect(func() -> void: row.modulate.a = 0.6 if node.disabled else 1.0)
+		# The plank fits its cap and words once they're measured (in the tree).
+		row.minimum_size_changed.connect(func() -> void: node.custom_minimum_size = row.get_combined_minimum_size() + Vector2(24, 4))
+	node.text = ""
+	keycap_text(row.get_child(0), Controls.shown(key))
+	(row.get_child(1) as Label).text = text
+	node.custom_minimum_size = row.get_combined_minimum_size() + Vector2(24, 4)
 
 
 ## A button with focus (the chosen tab or menu line): the plank lit brass, its
@@ -308,6 +335,44 @@ static func logo_font() -> FontFile:
 	if _logo_font == null:
 		_logo_font = _pixel_font(load("res://assets/fonts/press-start-2p.woff2"), LOGO_PX)
 	return _logo_font
+
+
+## Where every full screen has its title and its keys (PIX-213).
+const TITLE_AT := Vector2(80, 28)
+const FOOTER_Y := 672.0
+
+
+## A full screen's title, in its one place (PIX-213); `at` only for a
+## screen whose pages sit elsewhere (the map's wider margin).
+static func title(text: String, at := TITLE_AT) -> Label:
+	return heading(text, 20, CREAM, at)
+
+
+## A full screen's keys (PIX-213), centred along the bottom at FOOTER_Y in
+## one order: what the screen does, then leaving it last, as "Esc  close".
+static func screen_footer(line: String) -> HBoxContainer:
+	return footer(line, Vector2(0, FOOTER_Y), true)
+
+
+## The hero's gold, the one way it's shown (PIX-213): the coin and the sum.
+static func purse(amount: int, font_size := 16) -> HBoxContainer:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 4)
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var mark := TextureRect.new()
+	mark.texture = coin()
+	mark.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	mark.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(mark)
+	var sum := strong(str(amount), font_size, GOLD)
+	sum.name = "sum"
+	row.add_child(sum)
+	return row
+
+
+## A purse's sum, changed.
+static func purse_set(purse_row: HBoxContainer, amount: int) -> void:
+	(purse_row.get_node("sum") as Label).text = str(amount)
 
 
 ## A heading in the bold cut: from 18 a screen's title, at BIG; below, a

@@ -36,7 +36,7 @@ func test_a_fixed_key_keeps_its_job() -> void:
 ## keys go through {key:action}, so a rebinding or another layout shows true.
 func test_no_screen_names_a_movable_key_by_its_letter() -> void:
 	var movable := ["W", "A", "S", "D", "E", "I", "M", "Q", "K", "J"]
-	var spots := RegEx.create_from_string("(UiStyle\\.footer|UiStyle\\.keyed|Text\\.t)\\(\\s*\"([^\"]*)\"")
+	var spots := RegEx.create_from_string("(UiStyle\\.footer|UiStyle\\.screen_footer|UiStyle\\.keyed|UiStyle\\.button_keyed\\([^,]*,|Text\\.t)\\(?\\s*\"([^\"]*)\"")
 	var hinted := RegEx.create_from_string("UiStyle\\.hints\\(\\[([^\\]]*)\\]")
 	var bad: Array[String] = []
 	for file in DirAccess.get_files_at("res://scripts"):

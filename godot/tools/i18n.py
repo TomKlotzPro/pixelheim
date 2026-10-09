@@ -69,7 +69,7 @@ def walk(value, key, deny, where, out):
 LITERAL = r'"((?:[^"\\\n]|\\.)*)"'
 CALLED = re.compile(r'(?:Text\.t|(?<![\w.])tr|tr_n)\(\s*' + LITERAL)
 ANY = re.compile(LITERAL)
-FOOTER = re.compile(r'UiStyle\.footer\(\s*' + LITERAL)
+FOOTER = re.compile(r"UiStyle\.(?:screen_)?footer\(\s*" + LITERAL)
 HINTS = re.compile(r'UiStyle\.hints\(\s*\[([^\]]*)\]')
 
 

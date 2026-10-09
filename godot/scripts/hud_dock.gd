@@ -30,7 +30,7 @@ var plate: PanelContainer
 var portrait: AnimatedSprite2D
 var name_label: Label
 var rank_label: Label
-var gold_label: Label
+var purse: HBoxContainer
 var bars := {}
 var xp_fill: ColorRect
 var xp_track: ColorRect
@@ -207,16 +207,7 @@ func _purse() -> Control:
 	block.add_theme_constant_override("separation", 4)
 	block.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	block.alignment = BoxContainer.ALIGNMENT_CENTER
-	var purse := HBoxContainer.new()
-	purse.add_theme_constant_override("separation", 4)
-	purse.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var coin := TextureRect.new()
-	coin.texture = UiStyle.coin()
-	coin.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	coin.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	purse.add_child(coin)
-	gold_label = UiStyle.strong("", 16, UiStyle.GOLD)
-	purse.add_child(gold_label)
+	purse = UiStyle.purse(0)
 	block.add_child(purse)
 	menu_button = UiStyle.button("Menu", _toggle_menu)
 	block.add_child(menu_button)
@@ -339,7 +330,7 @@ func refresh() -> void:
 	portrait.play(PunyArt.pick(portrait.sprite_frames, "idle", "down"))
 	name_label.text = hero.hero_name
 	rank_label.text = Text.t("Lv %d %s") % [hero.level, Ranks.title(hero.role_id, hero.level)]
-	gold_label.text = str(pack.gold)
+	UiStyle.purse_set(purse, pack.gold)
 	var resource := Skills.resource_label(hero.role_id)
 	_set_bar("hp", Text.t("HP"), hero.hp, int(hero.stats["maxHp"]), BARS["hp"])
 	var stamina: bool = Catalog.role(hero.role_id)["resource"] == "endurance"

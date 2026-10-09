@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.157.0",
+      "date": "2026-10-09",
+      "codename": "One Look",
+      "notes": [
+        "Every screen keeps its title and its keys in the same places, with leaving always last as Esc close, and the keys on buttons stand on keycaps instead of being spelled out",
+        "Your gold is shown the same way everywhere: the coin and the sum",
+        "The codex's bestiary turns its pages instead of running off the screen, the pause card stays centred in French, and the phone's tap bar shows real arrows"
+      ]
+    },
+    {
       "version": "0.156.0",
       "date": "2026-10-09",
       "codename": "Early Stakes",

@@ -5,8 +5,11 @@ extends Screen
 ## rest secret. A/D switch tabs, B or Esc closes. The world holds still.
 
 const TABS := ["Masteries", "Bestiary"]
+## The bestiary a page at a time (PIX-213: 32 kinds ran off the screen).
+const PAGE_ROWS := 14
 
 var tab := 0
+var page := 0
 var body: VBoxContainer
 var tabs_row: HBoxContainer
 
@@ -15,7 +18,7 @@ func _open() -> void:
 	closing_actions = [&"codex"]
 	layer = 5
 	dim()
-	add_child(UiStyle.heading("Codex", 20, UiStyle.CREAM, Vector2(80, 24)))
+	add_child(UiStyle.title("Codex"))
 	tabs_row = HBoxContainer.new()
 	tabs_row.position = Vector2(80, 64)
 	tabs_row.add_theme_constant_override("separation", 10)
@@ -28,8 +31,8 @@ func _open() -> void:
 	body = VBoxContainer.new()
 	body.add_theme_constant_override("separation", 6)
 	card.add_child(body)
-	add_child(UiStyle.label("Every kill teaches. Families over faces.", 13, UiStyle.DUSK, Vector2(80, 660)))
-	add_child(UiStyle.footer("{key:move_left}/{key:move_right}  tabs      {key:codex} / Esc  close", Vector2(1000, 660)))
+	add_child(UiStyle.label("Every kill teaches. Families over faces.", 13, UiStyle.DUSK, Vector2(80, 648)))
+	add_child(UiStyle.screen_footer("{key:move_left}/{key:move_right}  tabs      {key:move_up}/{key:move_down}  page      {key:codex} / Esc  close"))
 	_show()
 
 
@@ -86,11 +89,21 @@ func _masteries() -> void:
 		body.add_child(gap)
 
 
-## Every monster, in the bestiary's order: the met ones in full.
+static func pages() -> int:
+	return ceili(Bestiary._data()["monsters"].size() / float(PAGE_ROWS))
+
+
+## Every monster, in the bestiary's order, a page at a time: the met ones
+## in full.
 func _bestiary() -> void:
 	var data := Bestiary._data()
 	var mastery: Variant = GameState.hero.mastery
-	for monster_id: String in data["monsters"]:
+	page = clampi(page, 0, pages() - 1)
+	var count := pages()
+	var turn := UiStyle.label(Text.t("Page %d of %d") % [page + 1, count], 13, UiStyle.FADED)
+	turn.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	body.add_child(turn)
+	for monster_id: String in data["monsters"].keys().slice(page * PAGE_ROWS, (page + 1) * PAGE_ROWS):
 		var monster: Dictionary = data["monsters"][monster_id]
 		var family: String = data["families"].get(monster_id, "")
 		# Met by its kind, not its family (PIX-188); a save from before keeps
@@ -140,4 +153,10 @@ func _command(event: InputEvent) -> Callable:
 		command = func() -> void:
 			tab = 1 - tab
 			_show()
+	elif tab == 1 and (event.is_action_pressed("move_up") or event.is_action_pressed("move_down")):
+		var step := -1 if event.is_action_pressed("move_up") else 1
+		if page + step >= 0 and page + step < pages():
+			command = func() -> void:
+				page += step
+				_show()
 	return command
