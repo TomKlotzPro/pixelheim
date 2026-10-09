@@ -13456,32 +13456,32 @@ msgstr ""
 msgid "You don't know him well enough. Maren's story of the five, and the last page of Liane's journal, would tell you how."
 msgstr ""
 
-#: scripts/title_scene.gd:493
+#: scripts/title_scene.gd:627
 msgid "Figure"
 msgstr ""
 
-#: scripts/title_screen.gd:150
+#: scripts/title_screen.gd:117
+msgid "Fifteen floors. One dragon. Worse things below."
+msgstr ""
+
+#: scripts/title_screen.gd:178
 msgid "Continue  %s, Lv %d"
 msgstr ""
 
-#: scripts/title_screen.gd:151
+#: scripts/title_screen.gd:179
 msgid "New Game"
 msgstr ""
 
-#: scripts/title_screen.gd:158
+#: scripts/title_screen.gd:186
 msgid "This browser window won't keep your saves (a private window?). Your hero lasts only while it's open."
 msgstr ""
 
-#: scripts/title_screen.gd:163
+#: scripts/title_screen.gd:191
 msgid "v%s  ·  What's new"
 msgstr ""
 
-#: scripts/title_screen.gd:267
+#: scripts/title_screen.gd:295
 msgid "NEW"
-msgstr ""
-
-#: scripts/title_screen.gd:95
-msgid "Fifteen floors. One dragon. Worse things below."
 msgstr ""
 
 #: scripts/town_hall_screen.gd:10

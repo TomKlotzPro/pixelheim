@@ -13456,33 +13456,33 @@ msgstr "Lui lire les mots de Liane, dire leurs noms, et le laisser partir."
 msgid "You don't know him well enough. Maren's story of the five, and the last page of Liane's journal, would tell you how."
 msgstr "Vous ne le connaissez pas assez. L'histoire des cinq racontée par Maren et la dernière page du journal de Liane vous diraient comment faire."
 
-#: scripts/title_scene.gd:493
+#: scripts/title_scene.gd:627
 msgid "Figure"
 msgstr "Silhouette"
 
-#: scripts/title_screen.gd:150
+#: scripts/title_screen.gd:117
+msgid "Fifteen floors. One dragon. Worse things below."
+msgstr "Quinze étages. Un dragon. Et pire en dessous."
+
+#: scripts/title_screen.gd:178
 msgid "Continue  %s, Lv %d"
 msgstr "Continuer  %s, Niv. %d"
 
-#: scripts/title_screen.gd:151
+#: scripts/title_screen.gd:179
 msgid "New Game"
 msgstr "Nouvelle partie"
 
-#: scripts/title_screen.gd:158
+#: scripts/title_screen.gd:186
 msgid "This browser window won't keep your saves (a private window?). Your hero lasts only while it's open."
 msgstr "Cette fenêtre ne garde pas vos sauvegardes (navigation privée ?). Votre héros ne vit que tant qu'elle reste ouverte."
 
-#: scripts/title_screen.gd:163
+#: scripts/title_screen.gd:191
 msgid "v%s  ·  What's new"
 msgstr "v%s  ·  Quoi de neuf"
 
-#: scripts/title_screen.gd:267
+#: scripts/title_screen.gd:295
 msgid "NEW"
 msgstr "NOUVEAU"
-
-#: scripts/title_screen.gd:95
-msgid "Fifteen floors. One dragon. Worse things below."
-msgstr "Quinze étages. Un dragon. Et pire en dessous."
 
 #: scripts/town_hall_screen.gd:10
 msgid "Village projects"

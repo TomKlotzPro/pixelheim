@@ -49,6 +49,8 @@ var glow_mask: ColorRect
 var _mask_copy: BackBufferCopy
 var glow_wide: ColorRect
 var _wide_layer: CanvasLayer
+## The passes' own canvas layer (GLOW_LAYER).
+var _layer: CanvasLayer
 var time := 0.0
 var wind := 1.0
 ## How dark a cloud's shadow is at its heart, in full day.
@@ -64,6 +66,7 @@ func _ready() -> void:
 	var layer := CanvasLayer.new()
 	layer.layer = GLOW_LAYER
 	world.add_child(layer)
+	_layer = layer
 	reflections = _screen_pass(layer, preload("res://shaders/reflections.gdshader"))
 	clouds = _screen_pass(layer, preload("res://shaders/clouds.gdshader"))
 	var noise := cloud_noise()
@@ -99,6 +102,15 @@ func wear(look: String) -> void:
 		root.use_hdr_2d = DesktopLook.linear
 		root.use_debanding = DesktopLook.linear
 	RenderingServer.global_shader_parameter_set("world_linear", 1.0 if DesktopLook.linear else 0.0)
+
+
+## While the title's backdrop covers the whole view (PIX-249), the passes
+## rest: they would only draw over a world no one sees. They come back as
+## it goes, the wider glow with the next frame's dark.
+func rest(resting: bool) -> void:
+	_layer.visible = not resting
+	if resting and _wide_layer != null:
+		_wide_layer.visible = false
 
 
 func _show_wide(on: bool) -> void:
