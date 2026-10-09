@@ -1459,7 +1459,8 @@
       },
       {
         "id": "embers",
-        "text": "Embers swarm the square: drive them off ({key:skill_1} for your skill)"
+        "text": "Embers swarm the square: drive them off ({key:skill_1} for your skill)",
+        "textHeal": "Embers swarm the square: strike them down ({key:attack}) - {key:skill_1} mends you between blows"
       }
     ],
     "dawn": [

@@ -16,6 +16,22 @@
         0.45
       ]
     },
+    "worn_dagger": {
+      "name": "Worn Dagger",
+      "category": "weapons",
+      "sprite": "dagger",
+      "weight": 3,
+      "value": 15,
+      "damage": 4,
+      "scaling": "dexterity",
+      "slot": "weapon",
+      "tint": [
+        0.9,
+        0.62,
+        0.45
+      ],
+      "description": "A short blade gone dull with use. Quick in quick hands."
+    },
     "hunting_bow": {
       "name": "Hunting Bow",
       "category": "weapons",

@@ -41,7 +41,9 @@ const DEFAULT_ROLE := "warrior"
 ## Starting kits (CREATE_HERO in reducers/meta.ts): rangers string a bow,
 ## casters carry a staff (PIX-172: the weapon you hold is the one you swing),
 ## everyone else begins with the humble rusty sword.
-const STARTER_WEAPONS := {"ranger": "hunting_bow", "mage": "apprentice_staff", "cleric": "apprentice_staff", "necromancer": "apprentice_staff"}
+## Each class starts with a blade or a staff for its own best stat (PIX-205:
+## the rogue's dagger is DEX, not a strength sword).
+const STARTER_WEAPONS := {"ranger": "hunting_bow", "mage": "apprentice_staff", "cleric": "apprentice_staff", "necromancer": "apprentice_staff", "rogue": "worn_dagger"}
 const STARTER_ITEMS := {"potion_hp": 2, "bread": 2, "cheese_wheel": 1}
 const STARTER_GOLD := 30
 
@@ -807,6 +809,13 @@ func quest_on_offer(giver_id: String) -> Dictionary:
 			continue
 		return quest if entry.is_empty() and quest_open(quest) else {}
 	return {}
+
+
+## Whether the hero's first skill mends rather than strikes (a cleric's Mend):
+## the night's lines say so (PIX-205).
+func first_skill_heals() -> bool:
+	var skills := Skills.hero_skills(hero)
+	return not skills.is_empty() and skills[0]["kind"] == "heal"
 
 
 func quest_open(quest: Dictionary) -> bool:
@@ -1627,7 +1636,7 @@ func equip(uid: String) -> bool:
 	# Sela's cap on (PIX-197): the night moves on to the fires.
 	if progression.prologue == Prologue.CAP and slot == "head":
 		_prologue_on()
-		message.emit(Prologue.objective(progression.prologue))
+		message.emit(Prologue.objective(progression.prologue, 0, first_skill_heals()))
 	return true
 
 

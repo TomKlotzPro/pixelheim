@@ -2,6 +2,7 @@
   "about": "Item and ailment icons (PIX-138), all Shade's. 'free/<sheet>@c,r' is a cell of a CC0 sheet in godot/assets/puny/icons/; 'medieval@<tile>' a tile of the Medieval Age atlas; anything else a file under retro-rpg/shade/ in the private pixelheim-assets repo (a '@c,r' suffix picks a cell of a sheet), which scripts/fetch-private-art.sh copies into godot/assets/puny/shade/. Skills map a skill's name to '<theme>/<n>' in the Puny Skills pack (puny-skills/Icons/Transparent Background/<theme>/<Theme>-Icon-NNN.png; Buffs&Debuffs files are Buff-Icon-NNN.png).",
   "items": {
     "rusty_sword": "survival-rpg-icons/Tools/Sword-01.png",
+    "worn_dagger": "survival-rpg-icons/Tools/Knife-01.png",
     "iron_sword": "survival-rpg-icons/Tools/Sword-03.png",
     "obsidian_blade": "survival-rpg-icons/Tools/Sword-12.png",
     "dragonbane": "survival-rpg-icons/Tools/Sword-11.png",

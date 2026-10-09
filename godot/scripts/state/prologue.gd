@@ -41,11 +41,13 @@ static func data() -> Dictionary:
 
 ## What the line above the dock says at a step, "" outside the prologue;
 ## `doused`: the fires out so far (the carrying beat counts them).
-static func objective(step: int, doused := 0) -> String:
+static func objective(step: int, doused := 0, heals_first := false) -> String:
 	var steps: Array = data()["steps"]
 	if step < 1 or step > steps.size():
 		return ""
-	var text := String(steps[step - 1]["text"]).replace("{fires}", "%d/%d" % [doused, fires_needed()])
+	# A hero whose first skill mends hears how to fight without it (PIX-205).
+	var line: String = steps[step - 1].get("textHeal", steps[step - 1]["text"]) if heals_first else steps[step - 1]["text"]
+	var text := line.replace("{fires}", "%d/%d" % [doused, fires_needed()])
 	return Controls.say(text)
 
 

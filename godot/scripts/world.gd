@@ -1137,7 +1137,7 @@ func _update_objective() -> void:
 	var step := MainQuest.next_step(GameState.progression, GameState.settlement)
 	var text: String = step.get("text", "")
 	if GameState.progression.prologue != Prologue.DONE:
-		text = Prologue.objective(GameState.progression.prologue, GameState.progression.prologue_doused.size())
+		text = Prologue.objective(GameState.progression.prologue, GameState.progression.prologue_doused.size(), GameState.first_skill_heals())
 	if text != objective_label.text:
 		objective_label.text = text
 		objective_box.reset_size()

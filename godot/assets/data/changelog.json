@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.150.0",
+      "date": "2026-10-09",
+      "codename": "Every Class Starts Right",
+      "notes": [
+        "EVERY CLASS STARTS RIGHT: a new rogue carries a worn dagger that cuts with dexterity, not a strength sword - twice the bite in the first fights",
+        "A cleric's first night tells them to strike the embers down and mend between blows, since Mend is no weapon"
+      ]
+    },
+    {
       "version": "0.149.0",
       "date": "2026-10-09",
       "codename": "The Truth of It",
