@@ -41,7 +41,7 @@ func _open() -> void:
 	status = UiStyle.label("", 14, UiStyle.GOLD, Vector2(260, 30))
 	status.custom_minimum_size = Vector2(720, 0)
 	add_child(status)
-	add_child(UiStyle.footer("Arrows  choose      E  learn / walk      1-6  put on a key      F  forget      K / Esc  close", Vector2(80, 672)))
+	add_child(UiStyle.footer("Arrows  choose      {key:interact}  learn / walk      1-6  put on a key      F  forget      {key:skills} / Esc  close", Vector2(80, 672)))
 	var rule := UiStyle.label("A point each level, one more each rank.", 13, UiStyle.DUSK, Vector2(800, 6))
 	rule.custom_minimum_size = Vector2(416, 0)
 	rule.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT

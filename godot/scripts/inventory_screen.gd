@@ -108,7 +108,7 @@ func _open() -> void:
 	status.custom_minimum_size = Vector2(710, 0)
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(status)
-	add_child(UiStyle.footer("A/D  tabs      W/S  choose      E  equip / use      X  drop      Z  drop all      R  sort      I / Esc  close", Vector2(80, 660)))
+	add_child(UiStyle.footer("{key:move_left}/{key:move_right}  tabs      {key:move_up}/{key:move_down}  choose      {key:interact}  equip / use      X  drop      Z  drop all      R  sort      {key:inventory} / Esc  close", Vector2(80, 660)))
 	_refresh()
 
 
@@ -438,18 +438,18 @@ static func stat_line(item: Dictionary, bonus: int, value: int, affixes := {}) -
 ## place furniture at home.
 func _primary_label(row: Dictionary) -> String:
 	if row["kind"] == "guide":
-		return Text.t("E  travel") if not _town_gate().is_empty() else ""
+		return UiStyle.keyed("{key:interact}", Text.t("travel")) if not _town_gate().is_empty() else ""
 	if row["kind"] == "recipe":
 		var entry: Dictionary = row["entry"]
 		var here := String(entry["job"]["id"]) in _jobs_here()
-		return Text.t("E  craft") if here and Economy.can_craft(entry, GameState.pack.items, GameState.hero.jobs) else ""
+		return UiStyle.keyed("{key:interact}", Text.t("craft")) if here and Economy.can_craft(entry, GameState.pack.items, GameState.hero.jobs) else ""
 	if row["kind"] == "gear":
-		return Text.t("E  take off") if GameState.pack.is_equipped(row["piece"]["uid"]) else Text.t("E  equip")
+		return UiStyle.keyed("{key:interact}", Text.t("take off")) if GameState.pack.is_equipped(row["piece"]["uid"]) else UiStyle.keyed("{key:interact}", Text.t("equip"))
 	var item := Catalog.item(row["item_id"])
 	if item.has("restoreHp") or item.has("restoreMp") or item.has("cures"):
-		return Text.t("E  use")
+		return UiStyle.keyed("{key:interact}", Text.t("use"))
 	if item["category"] == "furniture" and GameState.world.map_id == "town_house":
-		return Text.t("E  place")
+		return UiStyle.keyed("{key:interact}", Text.t("place"))
 	return ""
 
 
@@ -606,12 +606,31 @@ func _craft(entry: Dictionary) -> void:
 		status.text = Text.t("You craft %s%s. %s") % [Catalog.item_name(entry["itemId"]), Text.t(" (two!)") if made["count"] > 1 else "", made["level_line"]]
 
 
+## A drop that can't be undone - a piece of gear, a whole stack - waits for
+## the same key again (PIX-201: on another keyboard the key under a finger
+## may not be the one it seems).
+var _drop_armed := ""
+var _drop_armed_at := -10.0
+const DROP_CONFIRM_SECONDS := 3.0
+
+
 func _drop(whole_stack: bool) -> void:
 	if rows.is_empty():
 		return
 	var row: Dictionary = rows[selected]
 	if row["kind"] in ["guide", "recipe"]:
 		return
+	var lasting: bool = row["kind"] == "gear" or (whole_stack and int(row.get("count", 1)) > 1)
+	if lasting and not Catalog.item(row.get("item_id", "")).get("quest", false):
+		var which := "%s|%s|%s" % [row["kind"], row.get("item_id", ""), String(row.get("piece", {}).get("uid", ""))]
+		var now := Time.get_ticks_msec() / 1000.0
+		if _drop_armed != which or now - _drop_armed_at > DROP_CONFIRM_SECONDS:
+			_drop_armed = which
+			_drop_armed_at = now
+			var what: String = InventoryState.gear_name(row["piece"]) if row["kind"] == "gear" else Text.t("%dx %s") % [row["count"], Catalog.item_name(row["item_id"])]
+			status.text = Text.t("Drop %s for good? Press %s again.") % [what, Controls.shown("Z" if whole_stack else "X")]
+			return
+		_drop_armed = ""
 	if row["kind"] == "gear":
 		var piece: Dictionary = row["piece"]
 		if GameState.drop_gear(piece["uid"]):

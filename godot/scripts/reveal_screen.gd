@@ -27,7 +27,7 @@ func _open() -> void:
 	caption.size = Vector2(1000, 0)
 	caption.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(caption)
-	add_child(UiStyle.footer("E  next      Esc  skip", Vector2(1010, 40)))
+	add_child(UiStyle.footer("{key:interact}  next      Esc  skip", Vector2(1010, 40)))
 	world.camera_follows = false
 	# The camera answers to the tour while the world is held.
 	world.camera.process_mode = Node.PROCESS_MODE_ALWAYS

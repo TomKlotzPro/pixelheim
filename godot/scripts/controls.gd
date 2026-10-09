@@ -57,11 +57,55 @@ static func rebind(bindings: Dictionary, action: String, key: int) -> Dictionary
 	return next
 
 
-## A key's name for the screen ("W", "Space", "Esc"): short where a cap is
-## small (Keycap.SHORT).
+## What the player's own keyboard calls each physical key (PIX-201): an
+## AZERTY board's "Z" where a QWERTY board has "W". Learned from the keys
+## pressed (a browser may not say), else asked of the system.
+static var learned := {}
+
+
+static func learn(event: InputEventKey) -> void:
+	if event.physical_keycode != KEY_NONE and event.key_label != KEY_NONE:
+		learned[event.physical_keycode] = event.key_label
+
+
+## A physical key's name for the screen, on the player's layout ("W", "Space",
+## "Esc"): short where a cap is small (Keycap.SHORT).
 static func key_label(key: int) -> String:
-	var name := OS.get_keycode_string(key)
+	var shown: int = learned.get(key, KEY_NONE)
+	if shown == KEY_NONE and DisplayServer.get_name() != "headless":
+		shown = DisplayServer.keyboard_get_label_from_physical(key)
+	if shown == KEY_NONE:
+		shown = key
+	var name := OS.get_keycode_string(shown)
 	return String(Keycap.SHORT.get(name, name))
+
+
+## A key as the code names it ("{key:interact}", or a QWERTY letter for a
+## screen's own physical key, "X"), as the player's keyboard shows it.
+## Digits and named keys (Esc, Tab, Enter...) read the same everywhere.
+static func shown(name: String) -> String:
+	if name.begins_with("{key:"):
+		return say(name)
+	if name.length() == 1 and name.to_upper() != name.to_lower():
+		return key_label(OS.find_keycode_from_string(name.to_upper()))
+	return name
+
+
+## What a key already does for good, in the player's words, "" if nothing
+## (PIX-201): binding `action` onto it would make one key do two things.
+## An action's own alternates are its own (Up for moving up).
+const FIXED_NAMES := {"drop": "Drop", "drop_all": "Drop all", "menu": "Menu"}
+
+
+static func fixed_use(key: int, action := "") -> String:
+	if key == KEY_ESCAPE:
+		return Text.t("Menu")
+	for other: String in ALTERNATES:
+		if other != action and key in ALTERNATES[other]:
+			return Text.t(String(BINDABLE[other][0]) if BINDABLE.has(other) else String(FIXED_NAMES.get(other, other)))
+	if key in SKILL_KEYS:
+		return Text.t("skill %d") % (SKILL_KEYS.find(key) + 1)
+	return ""
 
 
 ## Text that names keys by action (PIX-194): "{key:interact} to help" reads

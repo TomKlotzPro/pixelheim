@@ -2025,6 +2025,10 @@ msgid "Dressed to Match"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Dropping a piece of gear or a whole stack asks for the same key again, and a key with a fixed job (drop, a skill, Esc) can't be given to another action"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Dungeons live in the world now: walk to the mountain gate to climb"
 msgstr ""
 
@@ -2514,6 +2518,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "KEYS THAT LOOK LIKE KEYS: every key the game shows you - in a screen's footer, under a conversation, in the menu - is drawn as a raised key with a lit edge and a lip, and it dips when you press it. Pairs sit side by side (W S), choices take a slash (I / Esc), and the arrow keys show their arrows"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "KEYS THAT TELL THE TRUTH: every key the game names is the one on your keyboard - an AZERTY board reads Z, Q and W where a QWERTY one reads W, A and Z - and follows you when you rebind"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4162,6 +4170,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Trophies like wolf pelts and imp horns to sell at the shop"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "True Keys"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -9980,6 +9992,10 @@ msgstr ""
 msgid "Move down"
 msgstr ""
 
+#: scripts/controls.gd:107
+msgid "skill %d"
+msgstr ""
+
 #: scripts/controls.gd:11
 msgid "Move left"
 msgstr ""
@@ -10022,6 +10038,18 @@ msgstr ""
 
 #: scripts/controls.gd:9
 msgid "Move up"
+msgstr ""
+
+#: scripts/controls.gd:97
+msgid "Drop"
+msgstr ""
+
+#: scripts/controls.gd:97
+msgid "Drop all"
+msgstr ""
+
+#: scripts/controls.gd:97
+msgid "Menu"
 msgstr ""
 
 #: scripts/create_screen.gd:202
@@ -10328,10 +10356,6 @@ msgstr ""
 msgid "Pack"
 msgstr ""
 
-#: scripts/hud_dock.gd:215
-msgid "Menu"
-msgstr ""
-
 #: scripts/hud_dock.gd:292
 msgid " +%d HP"
 msgstr ""
@@ -10521,27 +10545,27 @@ msgid "%d wt"
 msgstr ""
 
 #: scripts/inventory_screen.gd:441
-msgid "E  travel"
+msgid "travel"
 msgstr ""
 
 #: scripts/inventory_screen.gd:445
-msgid "E  craft"
+msgid "craft"
 msgstr ""
 
 #: scripts/inventory_screen.gd:447
-msgid "E  equip"
+msgid "equip"
 msgstr ""
 
 #: scripts/inventory_screen.gd:447
-msgid "E  take off"
+msgid "take off"
 msgstr ""
 
 #: scripts/inventory_screen.gd:450
-msgid "E  use"
+msgid "use"
 msgstr ""
 
 #: scripts/inventory_screen.gd:452
-msgid "E  place"
+msgid "place"
 msgstr ""
 
 #: scripts/inventory_screen.gd:479
@@ -10600,19 +10624,27 @@ msgstr ""
 msgid "You craft %s%s. %s"
 msgstr ""
 
-#: scripts/inventory_screen.gd:618
+#: scripts/inventory_screen.gd:630
+msgid "%dx %s"
+msgstr ""
+
+#: scripts/inventory_screen.gd:631
+msgid "Drop %s for good? Press %s again."
+msgstr ""
+
+#: scripts/inventory_screen.gd:637
 msgid "You leave %s behind."
 msgstr ""
 
-#: scripts/inventory_screen.gd:620
+#: scripts/inventory_screen.gd:639
 msgid "Take it off before you drop it."
 msgstr ""
 
-#: scripts/inventory_screen.gd:622
+#: scripts/inventory_screen.gd:641
 msgid "You'd better hold on to that."
 msgstr ""
 
-#: scripts/inventory_screen.gd:626
+#: scripts/inventory_screen.gd:645
 msgid "You drop %dx %s."
 msgstr ""
 
@@ -10745,7 +10777,7 @@ msgid "do it"
 msgstr ""
 
 #: scripts/ledger_screen.gd:74
-msgid "Esc  close      W/S  choose      E  %s"
+msgid "Esc  close      {key:move_up}/{key:move_down}  choose      {key:interact}  %s"
 msgstr ""
 
 #: scripts/map_screen.gd:43
@@ -10776,19 +10808,19 @@ msgstr ""
 msgid "Quest"
 msgstr ""
 
-#: scripts/map_screen.gd:85
-msgid "travel"
-msgstr ""
-
 #: scripts/options_screen.gd:111
 msgid "System (%s)"
 msgstr ""
 
-#: scripts/options_screen.gd:153
+#: scripts/options_screen.gd:151
+msgid "%s already does %s. Choose another key."
+msgstr ""
+
+#: scripts/options_screen.gd:157
 msgid "%s is now %s."
 msgstr ""
 
-#: scripts/options_screen.gd:184
+#: scripts/options_screen.gd:188
 msgid "Press the new key for %s (Esc keeps the old one)."
 msgstr ""
 
@@ -10796,7 +10828,7 @@ msgstr ""
 msgid "Options"
 msgstr ""
 
-#: scripts/options_screen.gd:215
+#: scripts/options_screen.gd:219
 msgid "Keys are back to the defaults."
 msgstr ""
 
@@ -10985,7 +11017,7 @@ msgid "Paste a save code"
 msgstr ""
 
 #: scripts/saves_screen.gd:124
-msgid "C  Copy mine"
+msgid "Copy mine"
 msgstr ""
 
 #: scripts/saves_screen.gd:131
@@ -11057,7 +11089,7 @@ msgid "%s Press %s again to confirm."
 msgstr ""
 
 #: scripts/saves_screen.gd:288
-msgid "B  Bring %s to slot %d"
+msgid "Bring %s to slot %d"
 msgstr ""
 
 #: scripts/saves_screen.gd:289
@@ -11113,15 +11145,15 @@ msgid "yesterday"
 msgstr ""
 
 #: scripts/saves_screen.gd:67
-msgid "E  Play"
+msgid "Play"
 msgstr ""
 
 #: scripts/saves_screen.gd:68
-msgid "N  New hero"
+msgid "New hero"
 msgstr ""
 
 #: scripts/saves_screen.gd:69
-msgid "X  Clear slot"
+msgid "Clear slot"
 msgstr ""
 
 #: scripts/saves_screen.gd:83
@@ -11237,7 +11269,7 @@ msgid "Not enough gold, or it can take no more."
 msgstr ""
 
 #: scripts/shop_screen.gd:298
-msgid "Z  Sell all %d"
+msgid "Sell all %d"
 msgstr ""
 
 #: scripts/shop_screen.gd:32
@@ -11329,7 +11361,7 @@ msgid "%s level %d - you are %s"
 msgstr ""
 
 #: scripts/shop_screen.gd:93
-msgid "Esc  close      A/D  tab      W/S  choose      E  %s      Z  sell a stack"
+msgid "Esc  close      {key:move_left}/{key:move_right}  tab      {key:move_up}/{key:move_down}  choose      {key:interact}  %s      Z  sell a stack"
 msgstr ""
 
 #: scripts/shop_screen.gd:95
@@ -11664,219 +11696,223 @@ msgstr ""
 msgid "the hoards of floors %s"
 msgstr ""
 
-#: scripts/state/game_state.gd:1021
+#: scripts/state/game_state.gd:1003
+msgid "The deed is yours. Welcome home."
+msgstr ""
+
+#: scripts/state/game_state.gd:1027
 msgid "The %s deed is signed. Your house grew while you were out."
 msgstr ""
 
-#: scripts/state/game_state.gd:1023
+#: scripts/state/game_state.gd:1029
 msgid " %d piece%s of furniture had to move: it's back in your pack."
 msgstr ""
 
-#: scripts/state/game_state.gd:1091
+#: scripts/state/game_state.gd:1097
 msgid "The nook bubbles: 2x %s became %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1128
+#: scripts/state/game_state.gd:1134
 msgid "It needs open floor. Face a free tile and try again."
 msgstr ""
 
-#: scripts/state/game_state.gd:1130
+#: scripts/state/game_state.gd:1136
 msgid "Something already stands there."
 msgstr ""
 
-#: scripts/state/game_state.gd:1132
+#: scripts/state/game_state.gd:1138
 msgid "Not in the doorway: you'd trip over it coming home."
 msgstr ""
 
-#: scripts/state/game_state.gd:1136
+#: scripts/state/game_state.gd:1142
 msgid "%s placed. {key:interact} takes it back."
 msgstr ""
 
-#: scripts/state/game_state.gd:1149
+#: scripts/state/game_state.gd:1155
 msgid "%s back in the pack."
 msgstr ""
 
-#: scripts/state/game_state.gd:1157
+#: scripts/state/game_state.gd:1163
 msgid "Your own bed. Fully restored, and well rested: +%d%% XP for your next %d fights."
 msgstr ""
 
-#: scripts/state/game_state.gd:1169
+#: scripts/state/game_state.gd:1175
 msgid "A workbench and a small cauldron, fitted to the shelf. Craft at home, forever."
 msgstr ""
 
-#: scripts/state/game_state.gd:1170
+#: scripts/state/game_state.gd:1176
 msgid "A proper workbench would fit this shelf. Tools and parts cost %d gold."
 msgstr ""
 
-#: scripts/state/game_state.gd:1173
+#: scripts/state/game_state.gd:1179
 msgid "The hearth roars beside your workbench. Home industry."
 msgstr ""
 
-#: scripts/state/game_state.gd:1174
+#: scripts/state/game_state.gd:1180
 msgid "The hearth crackles, warm and idle. A workbench would fit by the shelf..."
 msgstr ""
 
-#: scripts/state/game_state.gd:1177
+#: scripts/state/game_state.gd:1183
 msgid "Your kitchen counter. Clean, empty, hopeful."
 msgstr ""
 
-#: scripts/state/game_state.gd:1181
+#: scripts/state/game_state.gd:1187
 msgid "The garden drinks your victories: %d/%d until the next harvest."
 msgstr ""
 
-#: scripts/state/game_state.gd:1219
+#: scripts/state/game_state.gd:1225
 msgid "You wake at the inn, %d gold lighter. What isn't banked is a fallen hero's to lose."
 msgstr ""
 
-#: scripts/state/game_state.gd:1221
+#: scripts/state/game_state.gd:1227
 msgid "You wake at the inn. The innkeeper says nothing. Kind of her."
 msgstr ""
 
-#: scripts/state/game_state.gd:1335
+#: scripts/state/game_state.gd:1341
 msgid "Your garden ripens: +%d %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1344
+#: scripts/state/game_state.gd:1350
 msgid "%s is defeated! +%d XP, +%d gold."
 msgstr ""
 
-#: scripts/state/game_state.gd:1361
+#: scripts/state/game_state.gd:1367
 msgid "%s drops: %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1368
+#: scripts/state/game_state.gd:1374
 msgid "%s drops: %s!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1378
+#: scripts/state/game_state.gd:1384
 msgid "You forage %d %s%s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1380
+#: scripts/state/game_state.gd:1386
 msgid "Foraging reached %d!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1396
+#: scripts/state/game_state.gd:1402
 msgid "Level up: you are now level %d. +%d stat points and +%d skill point%s to spend."
 msgstr ""
 
-#: scripts/state/game_state.gd:1424
+#: scripts/state/game_state.gd:1430
 msgid "You gather %d %s%s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1435
+#: scripts/state/game_state.gd:1441
 msgid "Nothing's biting here yet. Try again in a while, or somewhere else."
 msgstr ""
 
-#: scripts/state/game_state.gd:1439
+#: scripts/state/game_state.gd:1445
 msgid "You cast, wait... and haul up an old boot."
 msgstr ""
 
-#: scripts/state/game_state.gd:1439
+#: scripts/state/game_state.gd:1445
 msgid "You cast, wait... and land %s!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1441
+#: scripts/state/game_state.gd:1447
 msgid " Foraging reached %d!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1543
+#: scripts/state/game_state.gd:1549
 msgid "The bounty on %s is yours: +%d gold."
 msgstr ""
 
-#: scripts/state/game_state.gd:1552
+#: scripts/state/game_state.gd:1558
 msgid "%s leaves you %s!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1652
+#: scripts/state/game_state.gd:1658
 msgid "%d HP"
 msgstr ""
 
-#: scripts/state/game_state.gd:1660
+#: scripts/state/game_state.gd:1666
 msgid "You use %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1662
+#: scripts/state/game_state.gd:1668
 msgid " Restored %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1805
+#: scripts/state/game_state.gd:1811
 msgid "%s is cleared!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1810
+#: scripts/state/game_state.gd:1816
 msgid "%d gold"
 msgstr ""
 
-#: scripts/state/game_state.gd:1819
+#: scripts/state/game_state.gd:1825
 msgid "The floor's hoard: %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1823
+#: scripts/state/game_state.gd:1829
 msgid "Among the bones: a page of an old journal (%s). {key:journal} reads it."
 msgstr ""
 
-#: scripts/state/game_state.gd:1827
+#: scripts/state/game_state.gd:1833
 msgid "+%d XP for the way down."
 msgstr ""
 
-#: scripts/state/game_state.gd:1837
+#: scripts/state/game_state.gd:1843
 msgid "the %s"
 msgstr ""
 
-#: scripts/state/game_state.gd:1840
+#: scripts/state/game_state.gd:1846
 msgid "Behind the throne, a stair goes on down into the dark: the Deep Hunt."
 msgstr ""
 
-#: scripts/state/game_state.gd:1844
+#: scripts/state/game_state.gd:1850
 msgid "A deeper way opens: %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1857
+#: scripts/state/game_state.gd:1863
 msgid "Depth %d of the Deep Hunt is cleared!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1866
+#: scripts/state/game_state.gd:1872
 msgid "The deepest yet. Its hoard: %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1872
+#: scripts/state/game_state.gd:1878
 msgid "depth %d of the Deep Hunt"
 msgstr ""
 
-#: scripts/state/game_state.gd:1874
+#: scripts/state/game_state.gd:1880
 msgid "A hole into the dark opens beside the way up: depth %d waits below."
 msgstr ""
 
-#: scripts/state/game_state.gd:1893
+#: scripts/state/game_state.gd:1899
 msgid "Mastery: %s Slayer %s. +%d%% damage against %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1919
+#: scripts/state/game_state.gd:1925
 msgid "The chest bares its teeth — a mimic!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1925
+#: scripts/state/game_state.gd:1931
 msgid "Something glitters on the road: %d gold."
 msgstr ""
 
-#: scripts/state/game_state.gd:1926
+#: scripts/state/game_state.gd:1932
 msgid "The chest holds %d gold."
 msgstr ""
 
-#: scripts/state/game_state.gd:1935
+#: scripts/state/game_state.gd:1941
 msgid "Too heavy to carry. Lighten the pack and come back."
 msgstr ""
 
-#: scripts/state/game_state.gd:1941
+#: scripts/state/game_state.gd:1947
 msgid "The chest holds %s!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1946
+#: scripts/state/game_state.gd:1952
 msgid "You gather %dx %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1947
+#: scripts/state/game_state.gd:1953
 msgid "The chest holds %dx %s."
 msgstr ""
 
@@ -11884,96 +11920,92 @@ msgstr ""
 msgid "Wanderer"
 msgstr ""
 
-#: scripts/state/game_state.gd:445
+#: scripts/state/game_state.gd:451
 msgid "Hilda breaks it down: %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:474
+#: scripts/state/game_state.gd:480
 msgid "Hilda reforges it: %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:536
+#: scripts/state/game_state.gd:542
 msgid "%s reached %d!"
 msgstr ""
 
-#: scripts/state/game_state.gd:546
+#: scripts/state/game_state.gd:552
 msgid "The innkeeper nods. You are already well rested."
 msgstr ""
 
-#: scripts/state/game_state.gd:548
+#: scripts/state/game_state.gd:554
 msgid "No coin, no bed: a night costs %d gold."
 msgstr ""
 
-#: scripts/state/game_state.gd:553
+#: scripts/state/game_state.gd:559
 msgid "You rest at the inn and wake fully restored. -%d gold."
 msgstr ""
 
-#: scripts/state/game_state.gd:569
+#: scripts/state/game_state.gd:575
 msgid "%s: commissioned. %s"
 msgstr ""
 
-#: scripts/state/game_state.gd:590
+#: scripts/state/game_state.gd:596
 msgid "%s: built. Walk outside and see."
 msgstr ""
 
-#: scripts/state/game_state.gd:596
+#: scripts/state/game_state.gd:602
 msgid "%s: built - and Pixelheim is a %s now."
 msgstr ""
 
-#: scripts/state/game_state.gd:783
+#: scripts/state/game_state.gd:789
 msgid "The prize is yours: +%d gold and %d %ss!"
 msgstr ""
 
-#: scripts/state/game_state.gd:873
+#: scripts/state/game_state.gd:879
 msgid "Quest accepted: %s. %s"
 msgstr ""
 
-#: scripts/state/game_state.gd:877
+#: scripts/state/game_state.gd:883
 msgid "%s: they wait on your answer."
 msgstr ""
 
-#: scripts/state/game_state.gd:900
+#: scripts/state/game_state.gd:906
 msgid "+%d gold"
 msgstr ""
 
-#: scripts/state/game_state.gd:901
+#: scripts/state/game_state.gd:907
 msgid "+%d XP"
 msgstr ""
 
-#: scripts/state/game_state.gd:902
+#: scripts/state/game_state.gd:908
 msgid "Quest complete: %s. %s. “%s”"
 msgstr ""
 
-#: scripts/state/game_state.gd:904
+#: scripts/state/game_state.gd:910
 msgid "%s: %d/%d %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:955
+#: scripts/state/game_state.gd:961
 msgid "The town is not ready for me yet."
 msgstr ""
 
-#: scripts/state/game_state.gd:960
+#: scripts/state/game_state.gd:966
 msgid "Iva's hands glow warm. Fully healed, free of charge."
 msgstr ""
 
-#: scripts/state/game_state.gd:963
+#: scripts/state/game_state.gd:969
 msgid " She tucks %d healing potion%s in your pack."
 msgstr ""
 
-#: scripts/state/game_state.gd:968
+#: scripts/state/game_state.gd:974
 msgid "Loras plays you a marching song%s. Your next hunt strikes truer. (+%d%% crit)"
 msgstr ""
 
-#: scripts/state/game_state.gd:969
+#: scripts/state/game_state.gd:975
 msgid " on his war-horn"
 msgstr ""
 
-#: scripts/state/game_state.gd:992
+#: scripts/state/game_state.gd:998
 msgid "For sale: this house. The deed costs %d gold."
-msgstr ""
-
-#: scripts/state/game_state.gd:997
-msgid "The deed is yours. Welcome home."
 msgstr ""
 
 #: scripts/state/hunts.gd:123
@@ -12177,11 +12209,11 @@ msgid "Morvax is beaten. What happens to him now is up to you."
 msgstr ""
 
 #: scripts/throne_screen.gd:26
-msgid "W/S  choose      E  %s"
+msgid "decide"
 msgstr ""
 
 #: scripts/throne_screen.gd:26
-msgid "decide"
+msgid "{key:move_up}/{key:move_down}  choose      {key:interact}  %s"
 msgstr ""
 
 #: scripts/throne_screen.gd:35
@@ -12320,7 +12352,7 @@ msgstr ""
 msgid "Already commissioned."
 msgstr ""
 
-#: scripts/ui_style.gd:452
+#: scripts/ui_style.gd:458
 msgid "Arrows"
 msgstr ""
 

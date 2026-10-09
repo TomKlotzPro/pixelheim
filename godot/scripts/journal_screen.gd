@@ -37,7 +37,7 @@ func _open() -> void:
 	card.add_child(body)
 	_fill()
 	add_child(UiStyle.label("A promise is a route marked on the heart.", 14, UiStyle.DUSK, Vector2(80, 640)))
-	add_child(UiStyle.footer("A/D  chapter      W/S  scroll      Esc / Q  close", Vector2(720, 640)))
+	add_child(UiStyle.footer("{key:move_left}/{key:move_right}  chapter      {key:move_up}/{key:move_down}  scroll      Esc / {key:journal}  close", Vector2(720, 640)))
 
 
 func _command(event: InputEvent) -> Callable:

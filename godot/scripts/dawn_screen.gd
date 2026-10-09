@@ -85,7 +85,7 @@ func _build() -> void:
 	lines.add_child(_bubble_text)
 	_bubble.visible = false
 	add_child(_bubble)
-	add_child(UiStyle.footer("E  next      Esc  skip", Vector2(1010, 40)))
+	add_child(UiStyle.footer("{key:interact}  next      Esc  skip", Vector2(1010, 40)))
 
 
 ## 1. The camera drifts from the shrine across the town; the fires go out in

@@ -38,7 +38,7 @@ func _open() -> void:
 	for release: Dictionary in releases():
 		column.add_child(_release(release))
 
-	add_child(UiStyle.footer("W/S  scroll      Esc  close", Vector2(0, 664), true))
+	add_child(UiStyle.footer("{key:move_up}/{key:move_down}  scroll      Esc  close", Vector2(0, 664), true))
 
 
 ## One release: "v0.70.0  Timber and Plaster" with its date, then its notes.

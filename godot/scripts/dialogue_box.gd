@@ -147,7 +147,7 @@ func _show() -> void:
 			hints.add_child(UiStyle.button(Text.t("%d  %s") % [index + 1, choices[index]], _pick.bind(index)))
 		hints.add_child(UiStyle.hints(["Esc", "not yet"]))
 	else:
-		hints.add_child(UiStyle.hints(["E", "close"] if last else ["E", "next", "Esc", "leave"]))
+		hints.add_child(UiStyle.hints(["{key:interact}", "close"] if last else ["{key:interact}", "next", "Esc", "leave"]))
 	more.visible = not last
 	_fit.call_deferred()
 

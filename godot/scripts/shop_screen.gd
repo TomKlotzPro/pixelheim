@@ -90,7 +90,7 @@ func _open() -> void:
 
 	status = UiStyle.label("", 14, UiStyle.LAMP, Vector2(80, 580))
 	add_child(status)
-	add_child(UiStyle.footer(Text.t("Esc  close      A/D  tab      W/S  choose      E  %s      Z  sell a stack") % "/".join(tabs.map(func(tab: String) -> String: return Text.t(tab))).to_lower(), Vector2(80, 660)))
+	add_child(UiStyle.footer(Text.t("Esc  close      {key:move_left}/{key:move_right}  tab      {key:move_up}/{key:move_down}  choose      {key:interact}  %s      Z  sell a stack") % "/".join(tabs.map(func(tab: String) -> String: return Text.t(tab))).to_lower(), Vector2(80, 660)))
 	if collected > 0:
 		status.text = Text.t("%s hands you the till: +%d gold.") % [String(shop.get("keeper", "")), collected]
 	# A keeper who sells their business explains deeds once (PIX-179).
@@ -291,11 +291,11 @@ func _refresh() -> void:
 	var row := rows[selected] if not rows.is_empty() else {}
 	detail.text = row.get("detail", "")
 	act_button.visible = not row.is_empty()
-	act_button.text = "E  %s" % Text.t(row.get("verb", ""))
+	act_button.text = UiStyle.keyed("{key:interact}", Text.t(row.get("verb", "")))
 	act_button.disabled = not row.get("enabled", false)
 	var stacked: int = GameState.pack.items.get(row.get("stack", ""), 0)
 	stack_button.visible = stacked > 1
-	stack_button.text = Text.t("Z  Sell all %d") % stacked
+	stack_button.text = UiStyle.keyed("Z", Text.t("Sell all %d") % stacked)
 	if not rows.is_empty():
 		# Deferred until layout. Old rows leave the list at once on refresh, so
 		# looking the row up by index then always finds the current one.
