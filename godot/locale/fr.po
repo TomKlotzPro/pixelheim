@@ -1969,6 +1969,10 @@ msgid "Bed Rest"
 msgstr "Garder le lit"
 
 #: assets/data/changelog.json
+msgid "Begin"
+msgstr "Commencer"
+
+#: assets/data/changelog.json
 msgid "Behind the scenes: new ground for the regions to come (Shade's sea in three depths, docks, snow, ice and cobbled stone) and a tool that turns a drawn sketch into a map"
 msgstr "En coulisses : de nouveaux sols pour les régions à venir (la mer de Shade en trois profondeurs, quais, neige, glace et pavés) et un outil qui transforme un croquis en carte"
 
@@ -2783,6 +2787,10 @@ msgstr "De la tête aux pieds"
 #: assets/data/changelog.json
 msgid "Health comes back slowly while you're out of a fight"
 msgstr "La santé revient lentement hors des combats"
+
+#: assets/data/changelog.json
+msgid "Hero creation reads clearly: the first night is a setting of its own (The first night (tutorial): Play / Skip, with a line on what each means), and Begin the adventure is the start, alone at the bottom; Tab, a click or the pad's Y flips the night, and a pad can now reach every control"
+msgstr "La création du héros se lit clairement : la première nuit est un réglage à part (La première nuit (tutoriel) : Jouer / Passer, avec une ligne sur ce que chacun veut dire), et Commencer l'aventure est le départ, seul en bas ; Tab, un clic ou le Y de la manette change la nuit, et une manette atteint désormais chaque commande"
 
 #: assets/data/changelog.json
 msgid "Higher charters ask more than gold: the Town wants its patron to own a home; the City wants all three businesses under your name"
@@ -11012,61 +11020,77 @@ msgstr "Retour"
 msgid "Move up"
 msgstr "Aller en haut"
 
-#: scripts/create_screen.gd:202
-msgid "Skills: %s"
-msgstr "Compétences : %s"
-
-#: scripts/create_screen.gd:226
-msgid "First night: play it"
-msgstr "Première nuit : la jouer"
-
-#: scripts/create_screen.gd:226
-msgid "First night: skip it"
-msgstr "Première nuit : la passer"
-
-#: scripts/create_screen.gd:264
-msgid "A hero needs a name."
-msgstr "Un héros a besoin d'un nom."
-
-#: scripts/create_screen.gd:268
-msgid "Every slot holds a hero. Clear one in Saves first."
-msgstr "Chaque emplacement a déjà son héros. Libérez-en un dans Sauvegardes d'abord."
-
-#: scripts/create_screen.gd:34
-msgid "The mountain is waiting"
-msgstr "La montagne attend"
-
-#: scripts/create_screen.gd:35
-msgid "Create your hero"
-msgstr "Créez votre héros"
-
-#: scripts/create_screen.gd:49
-msgid "Name"
-msgstr "Nom"
-
-#: scripts/create_screen.gd:52
-msgid "Dragonsbane..."
-msgstr "Fléau-des-dragons..."
-
-#: scripts/create_screen.gd:68
-msgid "Begin the climb"
-msgstr "Partir à l'assaut"
-
-#: scripts/create_screen.gd:74
+#: scripts/create_screen.gd:104
 msgid "begin"
 msgstr "commencer"
 
-#: scripts/create_screen.gd:74
+#: scripts/create_screen.gd:104
 msgid "first night"
 msgstr "première nuit"
 
-#: scripts/create_screen.gd:74
+#: scripts/create_screen.gd:104
 msgid "look"
 msgstr "apparence"
 
-#: scripts/create_screen.gd:74
+#: scripts/create_screen.gd:104
 msgid "role"
 msgstr "classe"
+
+#: scripts/create_screen.gd:123
+msgid "The first night (tutorial):"
+msgstr "La première nuit (tutoriel) :"
+
+#: scripts/create_screen.gd:126
+msgid "Play"
+msgstr "Jouer"
+
+#: scripts/create_screen.gd:127
+msgid "Skip"
+msgstr "Passer"
+
+#: scripts/create_screen.gd:131
+msgid "Tab"
+msgstr "Tab"
+
+#: scripts/create_screen.gd:136
+msgid "A guided first night in the burning village.\nSkip it to start in town by day."
+msgstr "Une première nuit guidée dans le village en flammes.\nPassez-la pour commencer en ville, de jour."
+
+#: scripts/create_screen.gd:274
+msgid "Skills: %s"
+msgstr "Compétences : %s"
+
+#: scripts/create_screen.gd:381
+msgid "A hero needs a name."
+msgstr "Un héros a besoin d'un nom."
+
+#: scripts/create_screen.gd:385
+msgid "Every slot holds a hero. Clear one in Saves first."
+msgstr "Chaque emplacement a déjà son héros. Libérez-en un dans Sauvegardes d'abord."
+
+#: scripts/create_screen.gd:46
+msgid "Create your hero"
+msgstr "Créez votre héros"
+
+#: scripts/create_screen.gd:48
+msgid "The mountain is waiting"
+msgstr "La montagne attend"
+
+#: scripts/create_screen.gd:74
+msgid "Name"
+msgstr "Nom"
+
+#: scripts/create_screen.gd:79
+msgid "Dragonsbane..."
+msgstr "Fléau-des-dragons..."
+
+#: scripts/create_screen.gd:97
+msgid "Begin the adventure"
+msgstr "Commencer l'aventure"
+
+#: scripts/create_screen.gd:97
+msgid "Enter"
+msgstr "Enter"
 
 #: scripts/cutscene.gd:83
 msgid "Esc"
@@ -11717,10 +11741,6 @@ msgid "chapter"
 msgstr "chapitre"
 
 #: scripts/keycap.gd:13
-msgid "Enter"
-msgstr "Enter"
-
-#: scripts/keycap.gd:13
 msgid "PgDn"
 msgstr "PgDn"
 
@@ -12127,10 +12147,6 @@ msgstr "il y a %d jours"
 #: scripts/saves_screen.gd:358
 msgid "yesterday"
 msgstr "hier"
-
-#: scripts/saves_screen.gd:72
-msgid "Play"
-msgstr "Jouer"
 
 #: scripts/saves_screen.gd:73
 msgid "New hero"
@@ -13404,7 +13420,7 @@ msgstr "- %s : %d o gagnés, %d o en caisse (%d o par jour)"
 msgid "COMMISSIONED"
 msgstr "COMMANDÉ"
 
-#: scripts/ui_style.gd:530
+#: scripts/ui_style.gd:534
 msgid "Arrows"
 msgstr "Flèches"
 
