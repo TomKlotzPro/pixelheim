@@ -5,11 +5,6 @@ extends Node2D
 ## persists (position, discovery, chests, loot) in the GameState autoload.
 
 const TILE := 16
-## Monsters at each of the web's visible spawn points: a small pack of the
-## species that lives there, so the real-time fight has bodies to swing at.
-const PACK_SIZE := 3
-## Fight music holds this long after the last hunter gives up.
-const COMBAT_LINGER_S := 3.0
 
 
 
@@ -31,34 +26,21 @@ var soundscape: Soundscape
 var folk: Folk
 ## What E does, what the hero steps on, and the prompt (Interaction).
 var interaction: Interaction
+## The monsters and the fight's clock (Foes), and the dungeon floors (Delve).
+var foes: Foes
+var delve: Delve
 var player_cell := Vector2i.ZERO
-var kills := 0
 var last_player_position := Vector2.ZERO
 ## The hero panel: health, resource, xp, gold, the screens (HudPanel).
 var dock: Control
-## spawn id -> monsters of its pack still standing
-var pack_alive := {}
-## When the hero last arrived somewhere: a moment's grace before anything
-## notices them (Packs graceSeconds).
-var arrived_at := -100.0
 ## Seconds until the next look for packs due to come home.
 var respawn_check := 0.0
-## When something last hunted the hero, and whether a boss did.
-var hunted_at := -100.0
-var hunted_by_boss := false
-## How long that silence lasts, and how slow the world runs as it falls.
-const BOSS_HUSH_S := 3.5
-const BOSS_SLOW := 0.25
-const BOSS_SLOW_S := 0.8
 var boss_bar: Control
-var noticed_at := -100.0
 ## The HUD's layer, and the first-time hint on it now (PIX-160).
 var hud_root: CanvasLayer
 var hint_card: PanelContainer
 static var _hint_doc := {}
 static var _hint_generation := 0
-## Foes still standing on the dungeon floor the hero walks (0 when cleared).
-var floor_foes := 0
 ## The main quest's next step, quietly above the dock (PIX-144): a dark
 ## pill holding "Next" and the step.
 var objective_box: PanelContainer
@@ -134,7 +116,7 @@ func _ready() -> void:
 	# Resume where the save stands; `--map <id>` (harness) boots at that map's spawn.
 	var map_index := args.find("--map")
 	var override := map_index >= 0 and map_index + 1 < args.size()
-	map = _load_map(args[map_index + 1] if override else GameState.world.map_id)
+	map = load_map(args[map_index + 1] if override else GameState.world.map_id)
 	var arrival := map.spawn if override else GameState.world.cell
 	if not map.is_walkable(arrival):
 		arrival = map.spawn
@@ -158,9 +140,15 @@ func _ready() -> void:
 	interaction = Interaction.new()
 	interaction.world = self
 	add_child(interaction)
+	foes = Foes.new()
+	foes.world = self
+	add_child(foes)
+	delve = Delve.new()
+	delve.world = self
+	add_child(delve)
 	_build_hud()
 	interaction.build_prompt()
-	_enter_map(map, arrival)
+	enter_map(map, arrival)
 	# A first visit to the Godot build that finds a web game hero in this
 	# browser offers to bring them along before anything else.
 	var greeted := false
@@ -229,7 +217,7 @@ func _process(delta: float) -> void:
 	respawn_check -= delta
 	if respawn_check <= 0:
 		respawn_check = 1.0
-		_revive_packs()
+		foes.revive()
 		view.refresh_patches()
 		folk.keep_hours()
 		_hint_boards()
@@ -253,87 +241,21 @@ func _process(delta: float) -> void:
 		_use_portal(map.portals[cell])
 
 ## Maps as the town has grown: the village and the house redraw per tier.
-func _load_map(map_id: String) -> MapData:
+func load_map(map_id: String) -> MapData:
 	return MapData.load_tiered(map_id, Town.done_projects(GameState.settlement), int(GameState.settlement.house.get("tier", 1)))
 
 func is_walkable(cell: Vector2i) -> bool:
 	return map.is_walkable(cell)
-
-## A monster fell: the web's victory pays out, and the last of a spawn's pack
-## clears that spawn until the hero leaves the map.
-func on_enemy_died(enemy: Node) -> void:
-	kills += 1
-	var cleared := ""
-	if enemy.spawn_id != "":
-		pack_alive[enemy.spawn_id] = pack_alive.get(enemy.spawn_id, 1) - 1
-		if pack_alive[enemy.spawn_id] <= 0:
-			cleared = enemy.spawn_id
-	var floor_level := Bestiary.wild_drop_floor(enemy.region, enemy.fighter) if enemy.region != "" else 1
-	if map.floor_level > 0:
-		floor_level = Dungeons.drop_floor(map.floor_level)
-	var gear_before := GameState.pack.gear.size()
-	messages.log_lines(GameState.defeat_monster(enemy.fighter, enemy.region, cleared, floor_level, map.floor_level))
-	fx.show_loot(GameState.pack.gear.slice(gear_before), enemy.global_position)
-	if enemy.has_meta("prologue"):
-		messages.flash(GameState.prologue_pouch())
-	# The last of a wave of the night's foes: on to the next beat.
-	if enemy.has_meta("prologue_wave"):
-		var left := get_tree().get_nodes_in_group("mobs").filter(func(mob: Node) -> bool:
-			return mob != enemy and mob.has_meta("prologue_wave") and not mob.dying)
-		if left.is_empty():
-			messages.flash(GameState.prologue_wave_cleared())
-	if enemy.fighter.has("named"):
-		Sound.play("bounty")
-	if GameState.pack.gear.size() > gear_before:
-		Sound.play("drop")
-	if cleared != "":
-		messages.log_lines([Text.t("The pack is scattered. Another comes once you've walked a good way, or after a night's rest.")])
-	# The dead a boss summons aren't the floor's own foes (PIX-150).
-	if map.floor_level > 0 and floor_foes > 0 and not enemy.is_in_group("summoned"):
-		floor_foes -= 1
-		if floor_foes == 0:
-			_floor_cleared(Vector2i((enemy.position / TILE).floor()))
 
 func on_player_died() -> void:
 	await get_tree().create_timer(1.2).timeout
 	# Defeat is forgiving: wake at the inn, healed, purse intact.
 	var inn: Dictionary = GameState.wake_at_inn()
 	var bed := Vector2i(inn["x"], inn["y"])
-	map = _load_map(inn["mapId"])
-	_enter_map(map, bed)
+	map = load_map(inn["mapId"])
+	enter_map(map, bed)
 	player.respawn(_cell_center(bed))
 	last_player_position = player.position  # a respawn is not a walk
-
-## One monster of `species` at `cell`, at home there unless `home` says where
-## its pack lives; wild ones pay the reduced wild rewards.
-func spawn_enemy(species: String, cell: Vector2i, region := "", spawn_id := "", elite := false, wild := true, home := Vector2i(-1, -1), lift := 0) -> Node:
-	var enemy := preload("res://scripts/enemy.gd").new()
-	enemy.world = self
-	var fighter := Bestiary.spawn(species, elite, lift)
-	enemy.fighter = Bestiary.wild(fighter, region) if wild else fighter
-	enemy.region = region
-	enemy.spawn_id = spawn_id
-	enemy.position = _cell_center(cell)
-	enemy.home = _cell_center(home if home != Vector2i(-1, -1) else cell)
-	enemy.add_to_group("mobs")
-	actors.add_child(enemy)
-	return enemy
-
-
-## Whether a monster may notice the hero now (PIX-142): not in the moment
-## after an arrival, only close by, only where the player can see it (on
-## screen, above the dock) and only with nothing solid between them.
-func can_notice(enemy: Node) -> bool:
-	if Time.get_ticks_msec() / 1000.0 - arrived_at < float(Packs.rules()["graceSeconds"]):
-		return false
-	var at: Vector2 = enemy.global_position
-	if enemy.feeding and at.distance_to(player.global_position) > TILE * 1.5:
-		return false
-	if not Packs.within_notice(at, player.global_position) or not camera_rig.in_view(at):
-		return false
-	return Packs.can_see(map, Vector2i((at / TILE).floor()), Vector2i((player.position / TILE).floor()))
-
-
 
 func _on_hp_changed(hp: int, max_hp: int) -> void:
 	dock.refresh()
@@ -345,8 +267,8 @@ func _use_portal(target: Dictionary) -> void:
 	match target["kind"]:
 		"map":
 			_through_door(func() -> void:
-				map = _load_map(target["mapId"])
-				_enter_map(map, Vector2i(int(target["x"]), int(target["y"])))
+				map = load_map(target["mapId"])
+				enter_map(map, Vector2i(int(target["x"]), int(target["y"])))
 				# Stepping into the inn takes a bed for coin, as on the web.
 				if map.id == "town_inn":
 					messages.flash(GameState.rest_at_inn())
@@ -364,9 +286,9 @@ func _use_portal(target: Dictionary) -> void:
 			screen.dungeon_id = target["dungeon"]
 			add_child(screen)
 		"gate":
-			_leave_floor()
+			delve.leave_floor()
 		"deeper":
-			enter_floor(map.floor_level + 1)
+			delve.enter_floor(map.floor_level + 1)
 
 
 ## One of the hero's screens, from its key or the panel's button.
@@ -391,40 +313,6 @@ func _open_inventory() -> void:
 	var screen := preload("res://scripts/inventory_screen.gd").new()
 	screen.world = self
 	add_child(screen)
-
-
-## A fight is on: something has hunted the hero in the last few seconds.
-func in_fight() -> bool:
-	return Time.get_ticks_msec() / 1000.0 - hunted_at < COMBAT_LINGER_S
-
-
-## How hard the hero's skills strike on this floor (PIX-216): less on a
-## warded depth of the Deep Hunt.
-func skill_ward() -> float:
-	if map != null and Dungeons.modifier(map.floor_level).get("id", "") == "warded":
-		return float(Bestiary._data()["deepHunt"]["wardedSkills"])
-	return 1.0
-
-
-## Something has seen the hero: a growl (SFX.bump), not more than once a beat.
-func on_enemy_noticed(enemy: Node) -> void:
-	var now := Time.get_ticks_msec() / 1000.0
-	hint("dodge")
-	# A named monster or a boss roars (PIX-158, PIX-210); anything else bumps.
-	if fights_like_boss(enemy):
-		Sound.play("roar")
-	elif now - noticed_at > 1.5:
-		Sound.play("bump")
-	noticed_at = now
-	hunted_at = now
-	hunted_by_boss = hunted_by_boss or fights_like_boss(enemy)
-	if enemy.fighter.has("named"):
-		messages.log_lines([Hunts.named(enemy.fighter["named"])["seen"]])
-
-
-## A boss or a named monster (PIX-156): the boss's music plays.
-func fights_like_boss(enemy: Node) -> bool:
-	return Bestiary.is_boss(enemy.fighter["id"]) or enemy.fighter.has("named")
 
 
 ## The HUD's 1280x720 layout on the screen as it is (PIX-162): along the
@@ -513,93 +401,6 @@ func _step_back() -> void:
 	GameState.move_to(map, back, player.facing)
 
 
-## Down to a dungeon floor (DungeonFloor): its foes one per room, the
-## guardian last. The save still holds the gate the hero entered by.
-func enter_floor(level: int) -> void:
-	var plan := DungeonFloor.plan(level)
-	map = plan["map"]
-	_enter_map(map, map.spawn)
-	floor_foes = plan["foes"].size()
-	# A depth of the Deep Hunt already cleared pays its foes a share (PIX-180).
-	var replay := Dungeons.is_deep(level) and Dungeons.depth_of(level) <= GameState.progression.deepest
-	# The mountain's foes wear their floor's name (PIX-188): a Cellar Slime.
-	var epithet := Dungeons.epithet(level)
-	var twist := Dungeons.modifier(level)
-	var rules: Dictionary = Bestiary._data()["deepHunt"]
-	for foe: Dictionary in plan["foes"]:
-		var spawned := spawn_enemy(foe["id"], foe["cell"], "", "", foe["elite"], false, Vector2i(-1, -1), foe["lift"])
-		# A twisted depth (PIX-216): its foes quicker, or their bites venomous.
-		match String(twist.get("id", "")):
-			"swift":
-				spawned.pace = float(rules["swiftPace"])
-			"venom":
-				var venom: Dictionary = rules["venom"]
-				spawned.fighter["inflicts"] = {"kind": venom["kind"], "chance": venom["chance"], "turns": venom["turns"], "power": maxi(2, roundi(int(spawned.fighter["attack"]) * float(venom["attackShare"])))}
-		if String(foe.get("name", "")) != "":
-			# A warden goes by its own name (PIX-216).
-			spawned.fighter["name"] = Text.t(foe["name"])
-		elif epithet != "" and int(foe["lift"]) > 0:
-			# Named, not positional: French puts the epithet after (PIX-196).
-			var titled := Text.t("{epithet} {name}").format({"epithet": Text.t(epithet), "name": Bestiary.monster(foe["id"])["name"]})
-			spawned.fighter["name"] = Text.t("Elite %s") % titled if foe["elite"] else titled
-		if replay:
-			spawned.fighter["gold"] = roundi(int(spawned.fighter["gold"]) * float(Bestiary._data()["deepHunt"]["replayGoldShare"]))
-	# A Deep Hunt named monster takes its depth's stair (PIX-219).
-	if Dungeons.is_deep(level):
-		var hunted := Hunts.deep_guardian(Dungeons.depth_of(level), GameState.board_floors(), GameState.progression.hunted)
-		if not hunted.is_empty():
-			var guardian: Dictionary = plan["foes"][-1]
-			for mob in get_tree().get_nodes_in_group("mobs"):
-				if mob.position == _cell_center(guardian["cell"]):
-					mob.remove_from_group("mobs")
-					mob.queue_free()
-			spawn_named(hunted["id"], guardian["cell"])
-	view.add_patch(plan["patch"], Gathering.floor_spot_id(level), Gathering.floor_material(level))
-	var floor_def := Dungeons.floor_def(level)
-	messages.log_lines([String(floor_def["name"]) if Dungeons.is_deep(level) else Text.t("Floor %d: %s") % [level, floor_def["name"]], String(floor_def["description"])])
-	if not twist.is_empty():
-		messages.log_lines([Text.t("%s: %s") % [Text.t(twist["name"]), Text.t(twist["line"])]])
-	# A boss's floor: its intro, the first time only (PIX-32).
-	play_story(Cutscene.moment("boss:%s" % Dungeons.boss_of(level)["monsterId"]))
-
-
-## Up the stairs, back to the gate the save remembers.
-func _leave_floor() -> void:
-	map = _load_map(GameState.world.map_id)
-	_enter_map(map, Vector2i(GameState.world.cell))
-
-
-## The floor's last foe fell: its hoard on a first clear, and a way up where
-## the guardian stood, so the hero needn't walk the halls back.
-func _floor_cleared(at: Vector2i) -> void:
-	var deep := Dungeons.is_deep(map.floor_level)
-	var result := GameState.clear_deep(map.floor_level) if deep else GameState.clear_floor(map.floor_level)
-	Sound.play("victory")
-	messages.log_lines(result["lines"])
-	var stairs := at
-	if not map.is_walkable(stairs) or map.portals.has(stairs):
-		stairs = player_cell
-	map.grid[stairs] = "cave"
-	map.portals[stairs] = {"kind": "gate"}
-	PunyDungeon.sheet().place(view.dungeon_objects, stairs, PunyDungeon.STAIRS)
-	# The Deep Hunt (PIX-161) goes on: a hole into the dark beside the way up.
-	if deep or Dungeons.is_final(map.floor_level):
-		for side: Vector2i in [Vector2i(2, 0), Vector2i(-2, 0), Vector2i(0, 2), Vector2i(0, -2)]:
-			var down := stairs + side
-			if map.is_walkable(down) and not map.portals.has(down):
-				map.grid[down] = "cave"
-				map.portals[down] = {"kind": "deeper"}
-				PunyDungeon.sheet().place(view.dungeon_objects, down, PunyDungeon.VOID)
-				break
-	if result["victory"] and Story.ending_of(GameState.progression.story_seen) == "":
-		# Morvax kneels: the hero decides how it ends (PIX-157).
-		var throne := preload("res://scripts/throne_screen.gd").new()
-		throne.on_choice = _play_ending
-		add_child(throne)
-	elif result["first"]:
-		play_story(Cutscene.moment("cleared:%d" % map.floor_level))
-
-
 ## A story moment over the world (Cutscene, PIX-32), once per hero; "" or a
 ## moment already seen plays nothing.
 func play_story(scene_id: String) -> void:
@@ -610,13 +411,13 @@ func play_story(scene_id: String) -> void:
 	scene.scene_id = scene_id
 	add_child(scene)
 
-func _enter_map(next: MapData, arrival: Vector2i) -> void:
+func enter_map(next: MapData, arrival: Vector2i) -> void:
 	var changing := view != null
 	if changing:
 		Sound.play("door")
-	hunted_at = -100.0
+	foes.hunted_at = -100.0
 	soundscape.listen_again()
-	arrived_at = Time.get_ticks_msec() / 1000.0
+	foes.arrived_at = Time.get_ticks_msec() / 1000.0
 	for stale in get_tree().get_nodes_in_group("mobs") + get_tree().get_nodes_in_group("decor"):
 		stale.queue_free()
 	if view != null:
@@ -635,7 +436,7 @@ func _enter_map(next: MapData, arrival: Vector2i) -> void:
 	if next.floor_level == 0:
 		GameState.move_to(next, arrival, player.facing)
 		GameState.save_now()
-	floor_foes = 0
+	foes.floor_foes = 0
 	_prologue_arrive(next)
 	# A festival day: confetti over the square (PIX-159).
 	if next.id == "town" and GameState.festival_on():
@@ -643,7 +444,8 @@ func _enter_map(next: MapData, arrival: Vector2i) -> void:
 	_play_reveals.call_deferred()
 	folk.keep_hours(true)
 	camera_rig.set_limits(Vector2(next.size * TILE))
-	_spawn_enemies(next)
+	foes.spawn_for(next)
+	respawn_check = 0.0
 	soundscape.refresh()
 	if changing:
 		_fade_in()
@@ -705,46 +507,17 @@ func travel_to(waypoint: Dictionary) -> void:
 	Sound.play("travel")
 	var arrival := Vector2i(int(waypoint["arrival"]["x"]), int(waypoint["arrival"]["y"]))
 	if waypoint["mapId"] != map.id:
-		map = _load_map(waypoint["mapId"])
-	_enter_map(map, arrival)
+		map = load_map(waypoint["mapId"])
+	enter_map(map, arrival)
 
 func _cell_center(cell: Vector2i) -> Vector2:
 	return MapView.center(cell)
 
 ## Into the bought house, at its door (E on the door, or walking into it).
 func enter_house() -> void:
-	map = _load_map("town_house")
-	_enter_map(map, Vector2i(8, 8))
+	map = load_map("town_house")
+	enter_map(map, Vector2i(8, 8))
 	hint("house")
-
-
-## A mimic's chest shudders before it bites (PIX-142): a beat to step back,
-## then it bursts out beside the chest, nearest the hero, already hunting.
-func mimic_wakes(sprite: Sprite2D, chest: Dictionary) -> void:
-	var visit := view
-	var rest := sprite.position
-	var shudder := sprite.create_tween()
-	for i in 7:
-		shudder.tween_property(sprite, "position:x", rest.x + (1.0 if i % 2 == 0 else -1.0), 0.07)
-	shudder.tween_property(sprite, "position:x", rest.x, 0.07)
-	await shudder.finished
-	if view != visit:
-		return
-	sprite.texture = MapView.treasure_texture(chest, true)
-	Sound.play("chest")
-	var at := Vector2i(int(chest["x"]), int(chest["y"]))
-	var ambush := Vector2i(-1, -1)
-	for step: Vector2i in [Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i(-1, 1), Vector2i(1, 1)]:
-		var cell := at + step
-		if not map.is_walkable(cell) or cell == player_cell:
-			continue
-		if ambush.x < 0 or cell.distance_to(player_cell) < ambush.distance_to(player_cell):
-			ambush = cell
-	if ambush.x < 0:
-		ambush = player_cell + Vector2i.RIGHT
-	var mimic := spawn_enemy("mimic", ambush, map.region_at(ambush), "", false, true)
-	fx.appear(mimic)
-	mimic.notice()
 
 
 ## The line above the dock (PIX-144): the main quest's next step, faded out
@@ -771,7 +544,7 @@ func _update_objective() -> void:
 		under = minf(under, messages.message_box.position.y)
 	messages.log_box.reset_size()
 	messages.log_box.position.y = under - 6 - messages.log_box.size.y
-	var show := text != "" and not in_fight() and messages.message_box.modulate.a < 0.05
+	var show := text != "" and not foes.in_fight() and messages.message_box.modulate.a < 0.05
 	var target := 1.0 if show else 0.0
 	if objective_box.get_meta("fading_to", -1.0) != target:
 		objective_box.set_meta("fading_to", target)
@@ -795,7 +568,7 @@ func _prologue_arrive(next: MapData) -> void:
 		Prologue.SCAVENGER:
 			if next.id == "overworld":
 				var at: Dictionary = Prologue.data()["scavenger"]
-				var scavenger := spawn_enemy(at["monsterId"], Vector2i(at["x"], at["y"]), "forest", "", false, true)
+				var scavenger := foes.spawn_enemy(at["monsterId"], Vector2i(at["x"], at["y"]), "forest", "", false, true)
 				scavenger.set_meta("prologue", true)
 				# It keeps to its meal until the hero walks up or strikes:
 				# the night's first fight is the hero's to start.
@@ -820,7 +593,7 @@ func prologue_wave() -> void:
 	var kind := Bestiary.monster(wave["monsterId"])
 	for at: Array in wave["cells"]:
 		var cell := Vector2i(int(at[0]), int(at[1]))
-		var foe := spawn_enemy(wave["monsterId"], cell, "", "", bool(wave.get("elite", false)), false, cell, int(wave["level"]) - int(kind["level"]))
+		var foe := foes.spawn_enemy(wave["monsterId"], cell, "", "", bool(wave.get("elite", false)), false, cell, int(wave["level"]) - int(kind["level"]))
 		foe.fighter["name"] = wave["name"]
 		foe.set_meta("prologue_wave", true)
 		fx.appear(foe)
@@ -834,10 +607,10 @@ func _play_dawn() -> void:
 	dawn.world = self
 	dawn.on_done = func() -> void:
 		GameState.finish_prologue()
-		map = _load_map("town")
+		map = load_map("town")
 		# The day begins on the square, below the hall, whether the dawn
 		# was watched or skipped.
-		_enter_map(map, Town.square() + Vector2i(0, 2))
+		enter_map(map, Town.square() + Vector2i(0, 2))
 	add_child(dawn)
 
 
@@ -849,43 +622,19 @@ func dream() -> void:
 	play_story(Story.next_dream(GameState.progression.cleared_levels, GameState.progression.story_seen))
 
 
-## A boss falls (PIX-210): the world slows a moment, shakes and flashes
-## white, and the music cuts so the victory sting rings out alone (the
-## floor's clearing plays it; a boss with foes still about plays its own).
-func boss_fell() -> void:
-	Sound.stop_music()
-	soundscape.hush(BOSS_HUSH_S)
-	hunted_by_boss = false
-	if map.floor_level == 0 or floor_foes > 0:
-		Sound.play("victory")
-	camera_rig.shake(8.0, 0.6)
-	if GameState.settings.reduce_motion:
-		return
-	camera_rig.hit_stop(BOSS_SLOW_S, BOSS_SLOW)
-	var flash := ColorRect.new()
-	flash.color = Color(1, 1, 1, 0.75)
-	flash.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	flash.position = -hud_root.offset
-	flash.size = Touch.view_size(self)
-	hud_root.add_child(flash)
-	var fade := flash.create_tween().set_ignore_time_scale(true)
-	fade.tween_property(flash, "color:a", 0.0, 0.45)
-	fade.tween_callback(flash.queue_free)
-
-
 ## The ending (PIX-150): home to the square, the camera touring each age's
 ## landmark the hero built, then the square - and then the story's ending
 ## and credits. How Morvax ended (PIX-157) sets the evening: a festival
 ## with confetti for the one destroyed, five lanterns for the five who
 ## climbed for the one laid to rest.
-func _play_ending(choice := "destroy") -> void:
+func play_ending(choice := "destroy") -> void:
 	var scene_id := Story.ending_scene(choice)
 	GameState.mark_seen(scene_id)
 	GameState.reveals.clear()
-	map = _load_map("town")
+	map = load_map("town")
 	# Below the fountain, facing the hall.
 	var square := Town.square() + Vector2i(0, 3)
-	_enter_map(map, square)
+	enter_map(map, square)
 	if choice == "rest":
 		_lanterns()
 	else:
@@ -978,8 +727,8 @@ func _festival() -> void:
 func after_board() -> void:
 	if GameState.reveals.is_empty() or map.id != "town":
 		return
-	map = _load_map("town")
-	_enter_map(map, player_cell)
+	map = load_map("town")
+	enter_map(map, player_cell)
 
 
 ## The town risen (PIX-147): what was built since the hero last saw the town,
@@ -1107,83 +856,6 @@ func _spawn_player() -> void:
 	add_child(fx)
 	camera_rig.attach(player)
 	get_tree().root.size_changed.connect(_place_hud)
-
-## Packs at their homes (the spawns): the species its region and position
-## decide, an elite roll each. A pack the slain ledger keeps down stays away;
-## one whose time is up comes home only where the hero can't see it appear
-## (PIX-142), now or on a later look (_revive_packs).
-func _spawn_enemies(data: MapData) -> void:
-	pack_alive = {}
-	for spawn: Dictionary in Bestiary.spawns_on(data.id):
-		if spawn["id"] in GameState.world.slain:
-			continue
-		_spawn_pack(data, spawn)
-	spawn_lairs()
-	respawn_check = 0.0
-	_revive_packs()
-
-
-## The named monsters the board has posted, each in its lair on this map
-## unless already out (PIX-156).
-func spawn_lairs() -> void:
-	if map.floor_level > 0:
-		return
-	var out := []
-	for enemy in get_tree().get_nodes_in_group("mobs"):
-		if not enemy.is_queued_for_deletion():
-			out.append(enemy.fighter.get("named", ""))
-	for entry in Hunts.living_on(map.id, GameState.board_floors(), GameState.progression.hunted):
-		if entry["id"] not in out:
-			spawn_named(entry["id"])
-
-
-## A named monster in its lair (PIX-156), or at `cell` (the harness): never
-## a pack, never respawned once dead; a chase it gives up ends with it home
-## and whole again.
-func spawn_named(named_id: String, cell := Vector2i(-1, -1)) -> Node:
-	var at := Hunts.lair(Hunts.named(named_id)) if cell == Vector2i(-1, -1) else cell
-	var enemy := preload("res://scripts/enemy.gd").new()
-	enemy.world = self
-	enemy.fighter = Hunts.fighter(named_id)
-	enemy.region = map.region_at(at)
-	enemy.position = _cell_center(at)
-	enemy.home = _cell_center(at)
-	enemy.add_to_group("mobs")
-	actors.add_child(enemy)
-	return enemy
-
-
-## Cleared packs whose time is up, back at homes out of view.
-func _revive_packs() -> void:
-	if map.floor_level > 0:
-		return
-	for spawn: Dictionary in Bestiary.spawns_on(map.id):
-		if not Packs.is_due(GameState.world, spawn["id"]):
-			continue
-		var home := _cell_center(Vector2i(spawn["x"], spawn["y"]))
-		if camera_rig.in_view(home, 2 * TILE):
-			continue
-		GameState.revive_pack(spawn["id"])
-		_spawn_pack(map, spawn)
-
-
-## One pack around its home: up to PACK_SIZE on open cells of its region.
-func _spawn_pack(data: MapData, spawn: Dictionary) -> void:
-	var home := Vector2i(spawn["x"], spawn["y"])
-	var region := data.region_at(home)
-	var elite_chance := float(Bestiary.region(region)["eliteChance"])
-	var cells: Array[Vector2i] = [home]
-	for offset in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1), Vector2i(1, 1), Vector2i(-1, -1)]:
-		var cell: Vector2i = home + offset
-		if cells.size() < PACK_SIZE and data.is_walkable(cell) and data.region_at(cell) != "" and not data.portals.has(cell):
-			cells.append(cell)
-	# A spawn may name its size: one captain, not three (PIX-165).
-	cells.resize(mini(cells.size(), int(spawn.get("size", PACK_SIZE))))
-	for i in cells.size():
-		# The pack's leader is the spawn's kind; the rest the region's mix (PIX-191).
-		var kind := Bestiary.pack_species(spawn, region, i, cells[i])
-		spawn_enemy(kind, cells[i], region, spawn["id"], GameState.roll.call() < elite_chance, true, home)
-	pack_alive[spawn["id"]] = cells.size()
 
 func _build_hud() -> void:
 	var hud := CanvasLayer.new()

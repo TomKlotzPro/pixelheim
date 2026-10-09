@@ -171,7 +171,7 @@ func _howl(move: Dictionary) -> void:
 		var spot: Vector2i = cell + offsets[i % offsets.size()]
 		if not world.map.is_walkable(spot):
 			spot = cell
-		var wolf: Node = world.spawn_enemy(move["monsterId"], spot, enemy.region, "", false, true, Vector2i((enemy.home / TILE).floor()))
+		var wolf: Node = world.foes.spawn_enemy(move["monsterId"], spot, enemy.region, "", false, true, Vector2i((enemy.home / TILE).floor()))
 		called.append(wolf)
 		world.fx.appear(wolf)
 		wolf.notice()

@@ -13328,45 +13328,45 @@ msgstr "COMMANDÉ"
 msgid "Arrows"
 msgstr "Flèches"
 
-#: scripts/world.gd:1005
-msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
-msgstr "Et aujourd'hui, on fait la fête : des étals sur la place, et un lancer d'anneaux avec un lot pour le meilleur lancer."
-
-#: scripts/world.gd:1082
-msgid "%s  %d:%02d"
-msgstr "%s  %d:%02d"
-
-#: scripts/world.gd:1258
-msgid "Next"
-msgstr "Ensuite"
-
-#: scripts/world.gd:290
-msgid "The pack is scattered. Another comes once you've walked a good way, or after a night's rest."
-msgstr "La meute est dispersée. Une autre reviendra quand vous aurez bien marché, ou après une nuit de repos."
-
-#: scripts/world.gd:381
+#: scripts/world.gd:303
 msgid "No map reaches this deep."
 msgstr "Aucune carte ne va aussi profond."
 
-#: scripts/world.gd:543
-msgid "{epithet} {name}"
-msgstr "{name} {epithet}"
-
-#: scripts/world.gd:908
+#: scripts/world.gd:657
 msgid "Five lanterns on the square, one for each of the five who climbed. Tonight the %s remembers them - and %s."
 msgstr "Cinq lanternes sur la place, une pour chacun des cinq qui ont gravi la montagne. Ce soir, Pixelheim, désormais %s, se souvient d'eux - et salue %s."
 
-#: scripts/world.gd:909
+#: scripts/world.gd:658
 msgid "Pixelheim, a %s raised from the ashes. Tonight it celebrates %s."
 msgstr "Pixelheim, des cendres au rang de %s. Ce soir, on y fête %s."
 
-#: scripts/world.gd:995
+#: scripts/world.gd:744
 msgid "%s: built."
 msgstr "%s : chantier terminé."
 
-#: scripts/world.gd:999
+#: scripts/world.gd:748
 msgid "Pixelheim is a %s now."
 msgstr "Pixelheim passe au rang de %s."
+
+#: scripts/world.gd:754
+msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
+msgstr "Et aujourd'hui, on fait la fête : des étals sur la place, et un lancer d'anneaux avec un lot pour le meilleur lancer."
+
+#: scripts/world.gd:831
+msgid "%s  %d:%02d"
+msgstr "%s  %d:%02d"
+
+#: scripts/world.gd:930
+msgid "Next"
+msgstr "Ensuite"
+
+#: scripts/world_delve.gd:40
+msgid "{epithet} {name}"
+msgstr "{name} {epithet}"
+
+#: scripts/world_foes.gd:226
+msgid "The pack is scattered. Another comes once you've walked a good way, or after a night's rest."
+msgstr "La meute est dispersée. Une autre reviendra quand vous aurez bien marché, ou après une nuit de repos."
 
 #: scripts/world_fx.gd:108
 msgid "LEVEL UP"

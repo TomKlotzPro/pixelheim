@@ -338,7 +338,7 @@ func _warn_low_hp(delta: float) -> void:
 	else:
 		var beat := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 1000.0 * TAU / HEARTBEAT_S)
 		fill.modulate = Color.WHITE.lerp(bright, beat)
-	if world != null and world.in_fight():
+	if world != null and world.foes.in_fight():
 		_beat_left -= delta
 		if _beat_left <= 0.0:
 			_beat_left = HEARTBEAT_S

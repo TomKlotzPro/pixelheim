@@ -119,7 +119,7 @@ func _summon(attack: Dictionary) -> void:
 		if not world.map.is_walkable(spot):
 			spot = cell
 		# The dead rise at their master's level (PIX-186), not the floor's lift.
-		var add: Node = world.spawn_enemy(pattern["summon"], spot, "", "", false, false, cell, Bestiary.lift_to(pattern["summon"], int(enemy.fighter.get("level", Bestiary.monster(enemy.fighter["id"])["level"]))))
+		var add: Node = world.foes.spawn_enemy(pattern["summon"], spot, "", "", false, false, cell, Bestiary.lift_to(pattern["summon"], int(enemy.fighter.get("level", Bestiary.monster(enemy.fighter["id"])["level"]))))
 		add.add_to_group("summoned")
 		# The dead a boss raises pay nothing (PIX-180): no farm in a long fight.
 		add.fighter["gold"] = 0

@@ -256,7 +256,7 @@ func _open_chest(chest: Dictionary) -> void:
 		return
 	var sprite: Sprite2D = world.view.chest_sprites[chest["id"]]
 	if result["mimic"]:
-		world.mimic_wakes(sprite, chest)
+		world.foes.mimic_wakes(sprite, chest)
 		return
 	sprite.texture = MapView.treasure_texture(chest, true)
 	Sound.play("chest")

@@ -128,7 +128,7 @@ func _run_test_harness() -> void:
 	# gate's floor select (mountain by default).
 	var floor_index := args.find("--floor")
 	if floor_index >= 0 and floor_index + 1 < args.size():
-		world.enter_floor(int(args[floor_index + 1]))
+		world.delve.enter_floor(int(args[floor_index + 1]))
 		await get_tree().create_timer(0.3).timeout
 	# `--story <id>`: a story scene from assets/data/story.json, over the world.
 	var story_index := args.find("--story")
@@ -257,13 +257,13 @@ func _run_test_harness() -> void:
 				GameState.progression.cleared_levels.append(level)
 		GameState.progression.unlocked_level = maxi(GameState.progression.unlocked_level, mini(deepest + 1, Dungeons.floor_count()))
 		# The named monsters those floors post come out to their lairs (PIX-156).
-		world.spawn_lairs()
+		world.foes.spawn_lairs()
 	if args.has("festival"):
 		# A festival day (PIX-159): the town comes back with its stalls, its
 		# barker and confetti, everyone on the square.
 		GameState._start_festival(maxi(1, GameState.town_tier()))
-		world.map = world._load_map("town")
-		world._enter_map(world.map, world.player_cell)
+		world.map = world.load_map("town")
+		world.enter_map(world.map, world.player_cell)
 		await get_tree().create_timer(0.3).timeout
 	if args.has("dusk"):
 		# Evening (PIX-159): the town's folk on the square.
@@ -527,7 +527,7 @@ func _run_test_harness() -> void:
 	if args.has("ending"):
 		# The ending (PIX-150): home to the festival and the tour's first stop;
 		# `rest` the ending where Morvax is laid to rest (PIX-157).
-		world._play_ending("rest" if args.has("rest") else "destroy")
+		world.play_ending("rest" if args.has("rest") else "destroy")
 		await get_tree().create_timer(1.4).timeout
 	var seen_index := args.find("--seen")
 	if seen_index >= 0 and seen_index + 1 < args.size():
@@ -538,7 +538,7 @@ func _run_test_harness() -> void:
 		# Morvax beaten (PIX-157): the choice. Pair with `--cleared 15` and
 		# `--seen maren_confession` to have "lay him to rest" open.
 		var throne := preload("res://scripts/throne_screen.gd").new()
-		throne.on_choice = world._play_ending
+		throne.on_choice = world.play_ending
 		world.add_child(throne)
 		await get_tree().create_timer(0.3).timeout
 	if args.has("mimic"):
@@ -579,7 +579,7 @@ func _run_test_harness() -> void:
 	if args.has("cast"):
 		# A foe two steps away, then the first skill: the strike, the flash, the log.
 		world.player.invulnerable = true
-		world.spawn_enemy("orc", world.player_cell + Vector2i(2, 0), "ash")
+		world.foes.spawn_enemy("orc", world.player_cell + Vector2i(2, 0), "ash")
 		world.player.face(Vector2.RIGHT)
 		await get_tree().create_timer(0.2).timeout
 		world.player.cast(0)
@@ -595,9 +595,9 @@ func _run_test_harness() -> void:
 		# A named monster's id (`--foe greymaw`) brings it out of its lair (PIX-156).
 		var opponent: Node
 		if not Hunts.named(foe).is_empty():
-			opponent = world.spawn_named(foe, world.player_cell + Vector2i(foe_distance, 0))
+			opponent = world.foes.spawn_named(foe, world.player_cell + Vector2i(foe_distance, 0))
 		else:
-			opponent = world.spawn_enemy(foe, world.player_cell + Vector2i(foe_distance, 0), "ash", "", args.has("elite"))
+			opponent = world.foes.spawn_enemy(foe, world.player_cell + Vector2i(foe_distance, 0), "ash", "", args.has("elite"))
 		world.player.face(Vector2.RIGHT)
 		if args.has("slay"):
 			# Felled outright: what its death pays (a named one's bounty).
@@ -606,12 +606,12 @@ func _run_test_harness() -> void:
 		# `kill` swings until the foe drops (or 12 swings); plain `fight`
 		# captures mid-swing.
 		var swings := 12 if args.has("kill") else 1
-		var kills_before: int = world.kills
+		var kills_before: int = world.foes.kills
 		for i in swings:
 			world.player.attack()
 			if i < swings - 1:
 				await get_tree().create_timer(0.45).timeout
-			if world.kills > kills_before:
+			if world.foes.kills > kills_before:
 				break
 		await get_tree().create_timer(0.4 if args.has("kill") else 0.1).timeout
 	else:
