@@ -1626,6 +1626,100 @@
       ]
     }
   ],
+  "floorPools": {
+    "about": "PIX-191: the mountain's loot by its real floor number, so each floor is a step (the wilds keep dropPools, by the foe's level). Crafted, named and hoard gear stays out of them.",
+    "pools": [
+      {
+        "floor": 1,
+        "gearIds": [
+          "war_hammer",
+          "arch_staff",
+          "longbow",
+          "shadow_dagger",
+          "iron_armor",
+          "shadow_cloak",
+          "iron_helm",
+          "tower_shield",
+          "runed_grips",
+          "duelists_ring"
+        ],
+        "stackIds": [
+          "greater_potion",
+          "elixir",
+          "antidote",
+          "ember_salve",
+          "gem"
+        ]
+      },
+      {
+        "floor": 4,
+        "gearIds": [
+          "war_hammer",
+          "arch_staff",
+          "longbow",
+          "runic_armor",
+          "wyrm_visor",
+          "tower_shield",
+          "runed_grips",
+          "moon_pendant",
+          "duelists_ring"
+        ],
+        "stackIds": [
+          "greater_potion",
+          "elixir",
+          "antidote",
+          "ember_salve",
+          "gem"
+        ]
+      },
+      {
+        "floor": 8,
+        "gearIds": [
+          "dragonbane",
+          "starfall_staff",
+          "gale_longbow",
+          "moonsteel_dagger",
+          "runic_armor",
+          "wyrm_visor",
+          "city_plate",
+          "moon_pendant"
+        ],
+        "stackIds": [
+          "greater_potion",
+          "elixir",
+          "ember_salve",
+          "gem",
+          "imp_horn"
+        ]
+      },
+      {
+        "floor": 12,
+        "gearIds": [
+          "obsidian_blade",
+          "starfall_staff",
+          "gale_longbow",
+          "moonsteel_dagger",
+          "city_plate",
+          "wyrm_visor",
+          "runic_armor",
+          "duelists_ring"
+        ],
+        "stackIds": [
+          "greater_potion",
+          "elixir",
+          "ember_salve",
+          "gem",
+          "imp_horn"
+        ]
+      }
+    ]
+  },
+  "gearShare": {
+    "about": "PIX-191: of the drops, the share that is gear rather than a stack: a boss always drops gear.",
+    "normal": 0.45,
+    "elite": 0.6,
+    "boss": 1.0
+  },
   "rarityWeights": {
     "normal": {
       "common": 0.75,

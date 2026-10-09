@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.129.0",
+      "date": "2026-10-09",
+      "codename": "Worth Chasing",
+      "notes": [
+        "A LOOT CURVE WORTH CHASING: the mountain's floors drop by how deep they are, so every band of floors is a step up - the Obsidian Blade waits on the last floors, and Dragonbane's hoard (now 23 damage) is no longer a step down. Gear drops more often, and a boss always drops a piece",
+        "FINE AND EPIC GEAR HAS CHARACTER: a fine piece carries one bonus stat and an epic one two, and wears it in its name - a Fine Iron Sword of Insight, an Epic Gale Longbow of Swiftness",
+        "NEW TO FIND: the Starfall Staff, the Gale Longbow and the Moonsteel Dagger on the deep floors, so mages, rangers and rogues have something to chase as well. In the Deep Hunt, gear comes up forged deeper every five depths: Deep-forged, Abyssal, Primordial",
+        "MIXED PACKS: a pack in the wilds is no longer three of a kind - its leader brings company from the region, though never anything much stronger than itself"
+      ]
+    },
+    {
       "version": "0.128.0",
       "date": "2026-10-09",
       "codename": "Loot That Fits",

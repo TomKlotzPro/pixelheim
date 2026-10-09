@@ -820,5 +820,35 @@
     8,
     10,
     11
-  ]
+  ],
+  "affixes": {
+    "about": "PIX-191: fine gear carries one of these, epic two, a deep-forged piece one more: a stat it grants, named after it.",
+    "stats": {
+      "strength": "of Might",
+      "intelligence": "of Insight",
+      "dexterity": "of Swiftness",
+      "defense": "of the Wall",
+      "endurance": "of Grit"
+    },
+    "fine": [
+      1,
+      2
+    ],
+    "epic": [
+      2,
+      4
+    ]
+  },
+  "deepTiers": {
+    "about": "PIX-191: gear from the Deep Hunt is forged deeper every `every` depths: the tier's name before it, `bonus` more damage or armour and a point more on each affix per tier, worth `valuePerTier` more.",
+    "every": 5,
+    "names": [
+      "Deep-forged",
+      "Abyssal",
+      "Primordial",
+      "Eldritch"
+    ],
+    "bonus": 2,
+    "valuePerTier": 1.0
+  }
 }

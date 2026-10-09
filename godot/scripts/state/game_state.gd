@@ -970,7 +970,8 @@ func wake_at_inn() -> Dictionary:
 ## A monster falls (onMonsterDefeated): mastery, bounties, rent, the garden,
 ## xp and gold with level-ups, a drop, and for wild kills the slain ledger and
 ## foraging. The bard's song fades with the fight. Returns the battle log.
-func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, floor_level: int) -> Array[String]:
+## `mountain`: the mountain's floor the kill was on (its loot pools, PIX-191), 0 in the wilds.
+func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, floor_level: int, mountain := 0) -> Array[String]:
 	var log: Array[String] = []
 	var mastery_line := _record_kill(fighter["id"])
 	if mastery_line != "":
@@ -1027,7 +1028,7 @@ func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, fl
 	if fighter.has("named"):
 		log.append_array(_hunted(fighter["named"]))
 	var kind := "boss" if Bestiary.is_boss(fighter["id"]) else ("elite" if fighter["elite"] else "normal")
-	var drop := Bestiary.roll_drop(floor_level, kind, roll)
+	var drop := Bestiary.roll_drop(floor_level, kind, roll, mountain)
 	if drop.get("kind") == "gear":
 		pack.gear.append(drop["gear"])
 		log.append(Text.t("%s drops: %s!") % [fighter["name"], InventoryState.gear_name(drop["gear"])])

@@ -161,6 +161,54 @@
         0.7
       ]
     },
+    "starfall_staff": {
+      "name": "Starfall Staff",
+      "category": "weapons",
+      "sprite": "staff",
+      "weight": 4,
+      "value": 680,
+      "description": "A shard of a fallen star set in blackwood. The mountain's deep floors keep a few.",
+      "damage": 22,
+      "scaling": "intelligence",
+      "slot": "weapon",
+      "tint": [
+        0.62,
+        0.55,
+        1.0
+      ]
+    },
+    "gale_longbow": {
+      "name": "Gale Longbow",
+      "category": "weapons",
+      "sprite": "bow",
+      "weight": 5,
+      "value": 660,
+      "description": "Strung with something that isn't gut. The arrows arrive before the sound.",
+      "damage": 22,
+      "scaling": "dexterity",
+      "slot": "weapon",
+      "tint": [
+        0.78,
+        0.86,
+        0.92
+      ]
+    },
+    "moonsteel_dagger": {
+      "name": "Moonsteel Dagger",
+      "category": "weapons",
+      "sprite": "dagger",
+      "weight": 3,
+      "value": 640,
+      "description": "Pale as a winter moon and about as warm. It finds the gap in anything.",
+      "damage": 21,
+      "scaling": "dexterity",
+      "slot": "weapon",
+      "tint": [
+        0.86,
+        0.9,
+        1.0
+      ]
+    },
     "dragonbane": {
       "name": "Dragonbane",
       "category": "weapons",
@@ -168,7 +216,7 @@
       "weight": 11,
       "value": 500,
       "description": "Forged for exactly one purpose. You will know when.",
-      "damage": 19,
+      "damage": 23,
       "scaling": "strength",
       "slot": "weapon",
       "tint": [

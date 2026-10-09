@@ -68,8 +68,11 @@ static func sell_price_at(shop_id: String, item_id: String, town_tier := 1) -> i
 
 
 ## What a gear piece is worth with its rarity priced in (gearValue).
+## Each affix adds half again, each deep tier a whole (PIX-191).
 static func gear_value(instance: Dictionary) -> int:
 	var mult: float = _data()["rarities"][instance["rarity"]]["valueMult"]
+	mult *= 1.0 + 0.5 * instance.get("affixes", {}).size()
+	mult *= 1.0 + float(_data()["deepTiers"]["valuePerTier"]) * int(instance.get("deep", 0))
 	return roundi(Catalog.item(instance["itemId"])["value"] * mult)
 
 

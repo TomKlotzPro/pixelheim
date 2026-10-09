@@ -281,7 +281,7 @@ func on_enemy_died(enemy: Node) -> void:
 	if map.floor_level > 0:
 		floor_level = Dungeons.drop_floor(map.floor_level)
 	var gear_before := GameState.pack.gear.size()
-	_log(GameState.defeat_monster(enemy.fighter, enemy.region, cleared, floor_level))
+	_log(GameState.defeat_monster(enemy.fighter, enemy.region, cleared, floor_level, map.floor_level))
 	if enemy.has_meta("prologue"):
 		_flash_message(GameState.prologue_pouch())
 	# The last of a wave of the night's foes: on to the next beat.
@@ -1560,7 +1560,6 @@ func _revive_packs() -> void:
 func _spawn_pack(data: MapData, spawn: Dictionary) -> void:
 	var home := Vector2i(spawn["x"], spawn["y"])
 	var region := data.region_at(home)
-	var species := Bestiary.species_of(spawn, region)
 	var elite_chance := float(Bestiary.region(region)["eliteChance"])
 	var cells: Array[Vector2i] = [home]
 	for offset in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1), Vector2i(1, 1), Vector2i(-1, -1)]:
@@ -1569,8 +1568,10 @@ func _spawn_pack(data: MapData, spawn: Dictionary) -> void:
 			cells.append(cell)
 	# A spawn may name its size: one captain, not three (PIX-165).
 	cells.resize(mini(cells.size(), int(spawn.get("size", PACK_SIZE))))
-	for cell in cells:
-		spawn_enemy(species, cell, region, spawn["id"], GameState.roll.call() < elite_chance, true, home)
+	for i in cells.size():
+		# The pack's leader is the spawn's kind; the rest the region's mix (PIX-191).
+		var kind := Bestiary.pack_species(spawn, region, i, cells[i])
+		spawn_enemy(kind, cells[i], region, spawn["id"], GameState.roll.call() < elite_chance, true, home)
 	pack_alive[spawn["id"]] = cells.size()
 
 func _build_hud() -> void:

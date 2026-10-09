@@ -74,6 +74,14 @@ static func drop_floor(level: int) -> int:
 	return mini(level + lift(level), floor_count())
 
 
+## How deep the Deep Hunt forges its gear at `level` (PIX-191): 0 above it,
+## then a tier more every deepTiers.every depths.
+static func deep_tier(level: int) -> int:
+	if not is_deep(level):
+		return 0
+	return 1 + (depth_of(level) - 1) / int(Economy._data()["deepTiers"]["every"])
+
+
 ## XP for clearing a floor the first time (clearXpPerFloor per floor deep).
 static func clear_xp(level: int) -> int:
 	return int(Bestiary._data()["clearXpPerFloor"]) * level
