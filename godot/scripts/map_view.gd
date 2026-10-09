@@ -16,7 +16,7 @@ var data: MapData
 ## they walk behind or in front of.
 var actors: Node2D
 ## Houses (PunyTown) or a room (PunyInterior): {"pieces", "decor", "freed"},
-## a room adding "floor", "void" and "over".
+## a room adding "floor", "walls", "void" and "over".
 var buildings := {"pieces": {}, "decor": {}, "freed": []}
 ## Outdoor props (PunyProps): {"props", "flat", "drawn"}.
 var outdoor_props := {"props": [], "flat": {}, "drawn": {}}
@@ -112,7 +112,7 @@ func plan(arrival: Vector2i) -> Vector2i:
 		var placed: Array = GameState.household.furniture() if data.id == "town_house" else []
 		var dressed := PunyInterior.furnish(data.id + data.variant, data.grid, PunyInterior.reserved(data, placed))
 		buildings = {
-			"pieces": room["pieces"], "decor": {}, "freed": [], "floor": room["floor"], "void": room["void"], "over": room["over"],
+			"pieces": room["pieces"], "decor": {}, "freed": [], "floor": room["floor"], "walls": room["walls"], "void": room["void"], "over": room["over"],
 			"rug": dressed["rug"], "objects": dressed["objects"], "tops": dressed["tops"], "lifted": dressed["lifted"],
 		}
 		for cell: Vector2i in room["blocked"] + dressed["blocked"]:
@@ -268,16 +268,17 @@ func _swaying(sway: float, alone: bool) -> ShaderMaterial:
 
 
 ## A room in Shade's Medieval Age pack (PunyInterior): the dark beyond its
-## walls, the floor and rugs, then walls, door and furniture, then his
-## furnished corners (PIX-163): what stands, what stands on it, and what
-## sits on that, 6 px up as in his samples.
+## walls, the floor, walls and rugs, then door and furniture (on the walls
+## where they lean on them, PIX-237), then his furnished corners (PIX-163):
+## what stands, what stands on it, and what sits on that, 6 px up as in his
+## samples.
 func _build_room(data: MapData) -> Node2D:
 	var root := Node2D.new()
 	var dark := ColorRect.new()
 	dark.color = Color("0b0a0e")
 	dark.size = Vector2(data.size * TILE)
 	root.add_child(dark)
-	for part: String in ["floor", "rug", "pieces", "objects", "tops", "lifted"]:
+	for part: String in ["floor", "walls", "rug", "pieces", "objects", "tops", "lifted"]:
 		var layer := TileMapLayer.new()
 		layer.tile_set = PunyTown.tileset()
 		for cell: Vector2i in buildings.get(part, {}):
@@ -340,9 +341,11 @@ func _build_decor(data: MapData) -> void:
 	patch_sprites = {}
 	for cell: Vector2i in patches:
 		_add_patch_sprite(cell)
-	# Lit windows at night, smoke from every finished house (PIX-149).
-	for cell: Vector2i in buildings["pieces"]:
-		var tile: int = buildings["pieces"][cell]
+	# Lit windows at night, smoke from every finished house (PIX-149). A
+	# room's windows are in its walls.
+	var built: Dictionary = buildings.get("walls", {}).merged(buildings["pieces"], true)
+	for cell: Vector2i in built:
+		var tile: int = built[cell]
 		if tile == PunyTown.WINDOW:
 			# A candle behind the glass lights the street a little (PIX-221).
 			_add_glow(center(cell), 10, 0.5, 40.0, Lights.WINDOW, false, Lights.WINDOW_ENERGY)

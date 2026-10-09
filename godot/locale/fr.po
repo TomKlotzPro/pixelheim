@@ -12712,55 +12712,55 @@ msgstr "%s : chantier terminé. Sortez voir."
 msgid "%s: built - and Pixelheim is a %s now."
 msgstr "%s : chantier terminé - et Pixelheim passe au rang de %s."
 
-#: scripts/state/household.gd:130
+#: scripts/state/household.gd:132
 msgid "The nook bubbles: 2x %s became %s."
 msgstr "Le chaudron bouillonne : 2x %s donnent %s."
 
-#: scripts/state/household.gd:167
+#: scripts/state/household.gd:169
 msgid "It needs open floor. Face a free tile and try again."
 msgstr "Il faut un sol dégagé. Placez-vous face à une case libre et réessayez."
 
-#: scripts/state/household.gd:169
+#: scripts/state/household.gd:171
 msgid "Something already stands there."
 msgstr "Quelque chose occupe déjà la place."
 
-#: scripts/state/household.gd:171
+#: scripts/state/household.gd:173
 msgid "Not in the doorway: you'd trip over it coming home."
 msgstr "Pas devant la porte : vous trébucheriez dessus en rentrant."
 
-#: scripts/state/household.gd:175
+#: scripts/state/household.gd:177
 msgid "%s placed. {key:interact} takes it back."
 msgstr "Objet posé : %s. {key:interact} pour le reprendre."
 
-#: scripts/state/household.gd:188
+#: scripts/state/household.gd:190
 msgid "%s back in the pack."
 msgstr "%s : de retour dans le sac."
 
-#: scripts/state/household.gd:196
+#: scripts/state/household.gd:198
 msgid "Your own bed. Fully restored, and well rested: +%d%% XP for your next %d fights."
 msgstr "Votre lit à vous. Pleine forme, et un bon repos : +%d%% d'XP pour vos %d prochains combats."
 
-#: scripts/state/household.gd:208
+#: scripts/state/household.gd:210
 msgid "A workbench and a small cauldron, fitted to the shelf. Craft at home, forever."
 msgstr "Un établi et un petit chaudron, installés contre l'étagère. Fabriquez chez vous, pour toujours."
 
-#: scripts/state/household.gd:209
+#: scripts/state/household.gd:211
 msgid "A proper workbench would fit this shelf. Tools and parts cost %d gold."
 msgstr "Un vrai établi irait bien contre cette étagère. Outils et pièces : %d or."
 
-#: scripts/state/household.gd:212
+#: scripts/state/household.gd:214
 msgid "The hearth roars beside your workbench. Home industry."
 msgstr "L'âtre ronfle à côté de votre établi. Artisanat maison."
 
-#: scripts/state/household.gd:213
+#: scripts/state/household.gd:215
 msgid "The hearth crackles, warm and idle. A workbench would fit by the shelf..."
 msgstr "L'âtre crépite, chaud et désœuvré. Un établi irait bien près de l'étagère..."
 
-#: scripts/state/household.gd:216
+#: scripts/state/household.gd:218
 msgid "Your kitchen counter. Clean, empty, hopeful."
 msgstr "Votre plan de travail. Propre, vide, plein d'espoir."
 
-#: scripts/state/household.gd:220
+#: scripts/state/household.gd:222
 msgid "The garden drinks your victories: %d/%d until the next harvest."
 msgstr "Le jardin s'abreuve de vos victoires : %d/%d avant la prochaine récolte."
 
@@ -12772,11 +12772,11 @@ msgstr "À vendre : cette maison. Le titre de propriété coûte %d or."
 msgid "The deed is yours. Welcome home."
 msgstr "Le titre de propriété est à vous. Bienvenue chez vous."
 
-#: scripts/state/household.gd:60
+#: scripts/state/household.gd:62
 msgid "The %s deed is signed. Your house grew while you were out."
 msgstr "Titre signé : %s. Votre maison s'est agrandie pendant votre absence."
 
-#: scripts/state/household.gd:62
+#: scripts/state/household.gd:64
 msgid " %d piece%s of furniture had to move: it's back in your pack."
 msgstr " Il a fallu déplacer %d meuble%s : retour dans votre sac."
 

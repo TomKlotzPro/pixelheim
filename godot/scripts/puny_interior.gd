@@ -150,57 +150,28 @@ static func furnish(room_key: String, grid: Dictionary, reserved: Dictionary) ->
 	return out
 
 
-## {"floor": {cell: tile}, "pieces": {cell: tile} (walls, door, furniture),
-## "void": [cells] (wall beyond the room), "blocked": [cells] (floor the
-## furniture now covers), "over": {cell: web tile} (the furniture drawn over
-## a cell beyond its own, a bed's foot included)}.
+## {"floor": {cell: tile}, "walls": {cell: tile} (the room's walls and
+## windows), "pieces": {cell: tile} (door, furniture), "void": [cells] (wall
+## beyond the room), "blocked": [cells] (floor the furniture now covers),
+## "over": {cell: web tile} (the furniture drawn over a cell beyond its own,
+## a bed's foot included)}. Walls are drawn under the pieces (PIX-237):
+## Shade's forges and hearths are ovens two tiles tall that reach into the
+## wall line, and where their tops replaced the wall, the room's dark
+## backdrop showed through their open pixels. A part above its cell leans
+## on a plain wall (a window would show through it); a part on the ground
+## that reaches into the wall line stands on floor, and the wall wraps
+## round it.
 static func plan(map_id: String, grid: Dictionary) -> Dictionary:
 	var floor := {}
+	var walls := {}
 	var pieces := {}
 	var beyond: Array[Vector2i] = []
 	var blocked: Array[Vector2i] = []
 	var over := {}
-	var stone := map_id == "town_smith"
-	# Doors stand in the wall line, so they are not room.
-	var inside := func(cell: Vector2i) -> bool:
-		return grid.has(cell) and grid[cell] != "wall" and not String(grid[cell]).begins_with("door")
-	# The room: everything that isn't wall gets floor (furniture stands on it).
-	var room := []
-	for cell: Vector2i in grid:
-		if inside.call(cell) or String(grid[cell]).begins_with("door"):
-			room.append(cell)
-			var choices: Array = STONE if stone else PLANKS
-			floor[cell] = choices[absi(cell.x * 7 + cell.y * 13) % choices.size()]
-	# Walls touching the room are its walls; the rest is the dark beyond.
-	var ring := {}
-	for cell: Vector2i in grid:
-		if grid[cell] != "wall":
-			continue
-		var touches := false
-		for dy in [-1, 0, 1]:
-			for dx in [-1, 0, 1]:
-				if inside.call(cell + Vector2i(dx, dy)):
-					touches = true
-		if touches:
-			ring[cell] = true
-		else:
-			beyond.append(cell)
-	var top := 1 << 20
-	for cell: Vector2i in ring:
-		top = mini(top, cell.y)
-	for cell: Vector2i in ring:
-		var mask := 0
-		for bit: Array in [[Vector2i.UP, 1], [Vector2i.RIGHT, 2], [Vector2i.DOWN, 4], [Vector2i.LEFT, 8]]:
-			var next: Vector2i = cell + bit[0]
-			# A door continues the wall line on either side of it, but the
-			# wall stops at the door (its ends face the gap).
-			if ring.has(next) and not String(grid.get(next, "")).begins_with("door"):
-				mask |= bit[1]
-		var tile: int = WALLS[mask]
-		# Windows along the back wall's straight runs.
-		if cell.y == top and mask == 10 and cell.x % 4 == 1:
-			tile = WINDOW
-		pieces[cell] = tile
+	var choices: Array = STONE if map_id == "town_smith" else PLANKS
+	# Wall cells furniture leans on, and wall cells it stands on.
+	var leaning := {}
+	var standing := {}
 	# Doors set in the wall, and the furniture.
 	for cell: Vector2i in grid:
 		var tile: String = grid[cell]
@@ -223,4 +194,50 @@ static func plan(map_id: String, grid: Dictionary) -> Dictionary:
 				# foot stays walkable: the inn wakes its guests there.
 				if at != cell and tile != "bed" and grid.get(at, "") == "floor":
 					blocked.append(at)
-	return {"floor": floor, "pieces": pieces, "void": beyond, "blocked": blocked, "over": over}
+				if grid.get(at, "") == "wall":
+					if part[0].y < 0:
+						leaning[at] = true
+					else:
+						standing[at] = true
+	# The room: everything that isn't wall gets floor (furniture stands on
+	# it), and so does the wall line where furniture stands in it. Doors
+	# stand in the wall line, so they are not room.
+	var inside := func(cell: Vector2i) -> bool:
+		if standing.has(cell):
+			return true
+		return grid.has(cell) and grid[cell] != "wall" and not String(grid[cell]).begins_with("door")
+	for cell: Vector2i in grid:
+		if inside.call(cell) or String(grid[cell]).begins_with("door"):
+			floor[cell] = choices[absi(cell.x * 7 + cell.y * 13) % choices.size()]
+	# Walls touching the room are its walls; the rest is the dark beyond.
+	var ring := {}
+	for cell: Vector2i in grid:
+		if grid[cell] != "wall" or standing.has(cell):
+			continue
+		var touches := false
+		for dy in [-1, 0, 1]:
+			for dx in [-1, 0, 1]:
+				if inside.call(cell + Vector2i(dx, dy)):
+					touches = true
+		if touches:
+			ring[cell] = true
+		else:
+			beyond.append(cell)
+	var top := 1 << 20
+	for cell: Vector2i in ring:
+		top = mini(top, cell.y)
+	for cell: Vector2i in ring:
+		var mask := 0
+		for bit: Array in [[Vector2i.UP, 1], [Vector2i.RIGHT, 2], [Vector2i.DOWN, 4], [Vector2i.LEFT, 8]]:
+			var next: Vector2i = cell + bit[0]
+			# A door continues the wall line on either side of it, but the
+			# wall stops at the door (its ends face the gap).
+			if ring.has(next) and not String(grid.get(next, "")).begins_with("door"):
+				mask |= bit[1]
+		var tile: int = WALLS[mask]
+		# Windows along the back wall's straight runs, where nothing stands
+		# in front of them.
+		if cell.y == top and mask == 10 and cell.x % 4 == 1 and not leaning.has(cell):
+			tile = WINDOW
+		walls[cell] = tile
+	return {"floor": floor, "walls": walls, "pieces": pieces, "void": beyond, "blocked": blocked, "over": over}
