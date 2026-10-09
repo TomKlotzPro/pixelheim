@@ -13328,60 +13328,60 @@ msgstr ""
 msgid "Arrows"
 msgstr ""
 
-#: scripts/world.gd:1171
-msgid "Five lanterns on the square, one for each of the five who climbed. Tonight the %s remembers them - and %s."
-msgstr ""
-
-#: scripts/world.gd:1172
-msgid "Pixelheim, a %s raised from the ashes. Tonight it celebrates %s."
-msgstr ""
-
-#: scripts/world.gd:1258
-msgid "%s: built."
-msgstr ""
-
-#: scripts/world.gd:1262
-msgid "Pixelheim is a %s now."
-msgstr ""
-
-#: scripts/world.gd:1268
+#: scripts/world.gd:1005
 msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
 msgstr ""
 
-#: scripts/world.gd:1370
+#: scripts/world.gd:1082
 msgid "%s  %d:%02d"
 msgstr ""
 
-#: scripts/world.gd:1576
+#: scripts/world.gd:1258
 msgid "Next"
 msgstr ""
 
-#: scripts/world.gd:306
+#: scripts/world.gd:290
 msgid "The pack is scattered. Another comes once you've walked a good way, or after a night's rest."
 msgstr ""
 
-#: scripts/world.gd:397
+#: scripts/world.gd:381
 msgid "No map reaches this deep."
 msgstr ""
 
-#: scripts/world.gd:575
+#: scripts/world.gd:543
 msgid "{epithet} {name}"
 msgstr ""
 
-#: scripts/world.gd:767
-msgid "Only cinders where the house stood. The board on the square can change that."
+#: scripts/world.gd:908
+msgid "Five lanterns on the square, one for each of the five who climbed. Tonight the %s remembers them - and %s."
 msgstr ""
 
-#: scripts/world.gd:772
-msgid "The deed costs %d gold. {key:interact} again to sign it."
+#: scripts/world.gd:909
+msgid "Pixelheim, a %s raised from the ashes. Tonight it celebrates %s."
 msgstr ""
 
-#: scripts/world.gd:856
-msgid "A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it."
+#: scripts/world.gd:995
+msgid "%s: built."
+msgstr ""
+
+#: scripts/world.gd:999
+msgid "Pixelheim is a %s now."
 msgstr ""
 
 #: scripts/world_fx.gd:108
 msgid "LEVEL UP"
+msgstr ""
+
+#: scripts/world_interaction.gd:154
+msgid "A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it."
+msgstr ""
+
+#: scripts/world_interaction.gd:64
+msgid "Only cinders where the house stood. The board on the square can change that."
+msgstr ""
+
+#: scripts/world_interaction.gd:69
+msgid "The deed costs %d gold. {key:interact} again to sign it."
 msgstr ""
 
 #: scripts/world_messages.gd:23

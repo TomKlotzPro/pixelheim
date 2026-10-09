@@ -486,7 +486,7 @@ func _run_test_harness() -> void:
 	var talk_index := args.find("--talk-to")
 	if talk_index >= 0:
 		# A conversation with one villager by id, wherever they stand.
-		world._talk(Npcs.by_id(args[talk_index + 1], GameState.settlement.settlers))
+		world.interaction.talk(Npcs.by_id(args[talk_index + 1], GameState.settlement.settlers))
 		await get_tree().create_timer(0.3).timeout
 		await _keys(args)
 	if args.has("talk") or args.has("near"):
@@ -497,7 +497,7 @@ func _run_test_harness() -> void:
 		world.player_cell = villager.cell + Vector2i.DOWN
 		world.player.face(Vector2.UP)
 		if args.has("talk"):
-			world._try_interact()
+			world.interaction.interact()
 		await get_tree().create_timer(0.3).timeout
 		# The way a player leaves it (the report lists what stays open).
 		await _keys(args)
@@ -507,7 +507,7 @@ func _run_test_harness() -> void:
 		world.camera_rig.cut()
 		world.player_cell = Vector2i(79, 4)
 		world.player.face(Vector2.RIGHT)
-		world._try_interact()
+		world.interaction.interact()
 		await get_tree().create_timer(0.3).timeout
 	var hunted_index := args.find("--hunted")
 	if hunted_index >= 0 and hunted_index + 1 < args.size():
@@ -549,7 +549,7 @@ func _run_test_harness() -> void:
 		world.player_cell = Vector2i(42, 13)
 		world.player.invulnerable = true
 		world.player.face(Vector2.UP)
-		world._try_interact()
+		world.interaction.interact()
 	if args.has("portal"):
 		# Walk into the map's nearest doorway from a free side, as a player would.
 		var doors: Array = world.map.portals.keys()
