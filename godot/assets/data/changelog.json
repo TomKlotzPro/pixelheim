@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.159.0",
+      "date": "2026-10-09",
+      "codename": "The Deep Hunt Has a Reason",
+      "notes": [
+        "The Deep Hunt has milestones at depths 5, 10, 15, 20, 30 and 50: each brings home a crystal for the trophy shelf, with stats while it's displayed, and Maren and the town hear of it",
+        "Every tenth depth a warden guards the stair down, a boss with its own attacks: the Deep Warden, then the Hollow King",
+        "Most depths now have a twist, shown at the gate: swift foes, warded skills, venomous bites or proud elites, with richer drops and a richer hoard",
+        "The gate opens the first depth of every five you've reached, so a long descent no longer starts from the top"
+      ]
+    },
+    {
       "version": "0.158.0",
       "date": "2026-10-09",
       "codename": "Audio That Breathes",

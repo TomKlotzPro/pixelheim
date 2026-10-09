@@ -5844,7 +5844,7 @@
     "goldLinearStep": 0.06
   },
   "deepHunt": {
-    "about": "PIX-161: below Morvax's throne, generated depths without end. Depth d's foes stand at startLevel + d - 1, drawn from every family; every eliteEvery-th depth an elite guards the stair down. The hoard pays once per new deepest depth. A depth already cleared pays its foes replayGoldShare of their gold (PIX-180).",
+    "about": "PIX-161: below Morvax's throne, generated depths without end. Depth d's foes stand at startLevel + d - 1, drawn from every family; every eliteEvery-th depth an elite guards the stair down. The hoard pays once per new deepest depth. A depth already cleared pays its foes replayGoldShare of their gold (PIX-180). PIX-216: milestones bring a crystal home (a trophy) with the elder's word and the town's; every bossEvery-th depth a warden (a lifted dragon or lich, renamed) guards it; every other depth past the first has one twist, shown at the gate, its kills dropping more often (modifierLuck); the gate opens the first depth of every tier reached.",
     "startLevel": 19,
     "eliteEvery": 3,
     "foes": [
@@ -5882,7 +5882,87 @@
       "Bones of every kind, gnawed by every kind."
     ],
     "replayGoldShare": 0.25,
-    "epithet": "Deep"
+    "epithet": "Deep",
+    "bossEvery": 10,
+    "wardens": [
+      {
+        "monsterId": "dragon",
+        "name": "The Deep Warden"
+      },
+      {
+        "monsterId": "lich",
+        "name": "The Hollow King"
+      }
+    ],
+    "modifiers": [
+      {
+        "id": "swift",
+        "name": "Swift",
+        "line": "Its foes move quicker than anything should."
+      },
+      {
+        "id": "warded",
+        "name": "Warded",
+        "line": "Something in the stone dulls your skills."
+      },
+      {
+        "id": "venom",
+        "name": "Venomous",
+        "line": "Every bite down here carries poison."
+      },
+      {
+        "id": "proud",
+        "name": "Proud",
+        "line": "Two of its foes are elites, besides whatever guards it."
+      }
+    ],
+    "modifierLuck": 0.15,
+    "swiftPace": 1.25,
+    "wardedSkills": 0.7,
+    "venom": {
+      "kind": "poison",
+      "chance": 0.3,
+      "turns": 3,
+      "attackShare": 0.15
+    },
+    "milestones": [
+      {
+        "depth": 5,
+        "itemId": "deep_crystal_5",
+        "elder": "Five depths under the throne, and you came back up. I didn't think the mountain had a cellar.",
+        "homecoming": "Word comes up the road before you do: five depths below the throne. The tavern names a stool after you."
+      },
+      {
+        "depth": 10,
+        "itemId": "deep_crystal_10",
+        "elder": "Ten depths. Something guarded the tenth, they say. Something you put down.",
+        "homecoming": "Ten depths down, and a warden of the deep beneath your boots. Children play 'the Deep Hunt' in the square now; nobody wants to be the warden."
+      },
+      {
+        "depth": 15,
+        "itemId": "deep_crystal_15",
+        "elder": "Fifteen. Deeper than the mountain is tall, if the old maps are right. Are you still looking for the bottom?",
+        "homecoming": "Fifteen depths. Hilda has started keeping the crystals you bring up on her mantel, 'for safekeeping'."
+      },
+      {
+        "depth": 20,
+        "itemId": "deep_crystal_20",
+        "elder": "Twenty depths. The Hollow King, they're calling the thing you beat. I'd rather they called you something.",
+        "homecoming": "Twenty depths, and a king of the hollow places fallen. The bard's new song has a verse for every ten."
+      },
+      {
+        "depth": 30,
+        "itemId": "deep_crystal_30",
+        "elder": "Thirty. Nobody in the Reach has a number for how deep that is. You'll have to be the number.",
+        "homecoming": "Thirty depths. Merchants from the coast come up just to see the one who goes down."
+      },
+      {
+        "depth": 50,
+        "itemId": "deep_crystal_50",
+        "elder": "Fifty depths below the throne. Whatever is at the bottom, I hope it knows your name by now.",
+        "homecoming": "Fifty depths. The whole town is on the square when you come home, and for once nobody says a word. They just clap."
+      }
+    ]
   },
   "escorts": {
     "gunnar_wagon": {

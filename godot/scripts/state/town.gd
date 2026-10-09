@@ -507,6 +507,9 @@ static func next_house_tier(owned: bool, tier: int) -> Dictionary:
 
 ## Stats a trophy lends while it stands on the shelf (trophyStatDelta).
 static func trophy_stat_delta(item_id: String) -> Dictionary:
+	# The Deep Hunt's crystals (PIX-216) say theirs in town.json.
+	if trophy_buffs().get(item_id, {}).has("stats"):
+		return trophy_buffs()[item_id]["stats"]
 	match item_id:
 		"dragon_scale":
 			return {"defense": 2}

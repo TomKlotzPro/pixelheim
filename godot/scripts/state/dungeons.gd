@@ -30,11 +30,13 @@ static var _deep := {}
 
 ## A depth of the Deep Hunt, generated from its number so it's the same
 ## every visit: more foes the deeper (three to six), drawn from every family,
-## each lifted to the depth's level; every few depths an elite guards it.
+## each lifted to the depth's level; every few depths an elite guards it, and
+## every tenth a warden (PIX-216). A twisted depth's hoard is a quarter
+## richer, and a milestone's brings its crystal home.
 static func deep_def(depth: int) -> Dictionary:
 	if _deep.has(depth):
 		return _deep[depth]
-	var rules: Dictionary = Bestiary._data()["deepHunt"]
+	var rules: Dictionary = _rules()
 	var rng := RandomNumberGenerator.new()
 	rng.seed = depth * 104729 + 3
 	var foes: Array = rules["foes"]
@@ -42,6 +44,7 @@ static func deep_def(depth: int) -> Dictionary:
 	var count := mini(3 + depth / 3, 6)
 	var encounters: Array = []
 	var start := rng.randi_range(0, foes.size() - 1)
+	var twist := String(modifier_at(depth).get("id", ""))
 	for i in count:
 		# Stepping through the list by a prime keeps neighbours apart: one
 		# depth's foes come from many families.
@@ -49,18 +52,105 @@ static func deep_def(depth: int) -> Dictionary:
 		var encounter := {"monsterId": monster_id, "lift": maxi(0, target - int(Bestiary.monster(monster_id)["level"]))}
 		if i == count - 1 and depth % int(rules["eliteEvery"]) == 0:
 			encounter["elite"] = true
+		# A proud depth: two of its foes elites besides the guardian.
+		if twist == "proud" and i < 2 and count > 2:
+			encounter["elite"] = true
 		encounters.append(encounter)
+	if is_warden_depth(depth):
+		# The warden stands where the guardian would, a boss with its own
+		# attacks, lifted to the depth and named for the deep.
+		var wardens: Array = rules["wardens"]
+		var warden: Dictionary = wardens[(depth / int(rules["bossEvery"]) - 1) % wardens.size()]
+		encounters[encounters.size() - 1] = {
+			"monsterId": warden["monsterId"], "name": warden["name"], "warden": true,
+			"lift": maxi(0, target - int(Bestiary.monster(warden["monsterId"])["level"])),
+		}
 	var gold: Array = rules["rewardGold"]
 	var descriptions: Array = rules["descriptions"]
+	var rewards: Array = ["greater_potion", "gem"] if depth % int(rules["eliteEvery"]) == 0 else ["greater_potion"]
+	var mark := milestone(depth)
+	if not mark.is_empty():
+		rewards.append(mark["itemId"])
 	_deep[depth] = {
 		"level": floor_count() + depth,
 		"name": Text.t("%s, depth %d") % [rules["names"][0], depth],
 		"description": descriptions[(depth - 1) % descriptions.size()],
 		"encounters": encounters,
-		"rewardItemIds": ["greater_potion", "gem"] if depth % int(rules["eliteEvery"]) == 0 else ["greater_potion"],
-		"rewardGold": int(gold[0]) + int(gold[1]) * depth,
+		"rewardItemIds": rewards,
+		"rewardGold": roundi((int(gold[0]) + int(gold[1]) * depth) * (1.25 if twist != "" else 1.0)),
+		"modifier": twist,
 	}
 	return _deep[depth]
+
+
+static func _rules() -> Dictionary:
+	return Bestiary._data()["deepHunt"]
+
+
+## Every bossEvery-th depth a warden guards (PIX-216).
+static func is_warden_depth(depth: int) -> bool:
+	return depth % int(_rules()["bossEvery"]) == 0
+
+
+## A depth's one twist (PIX-216), the same every visit: swift, warded,
+## venomous or proud. None on the first depth, nor where a warden stands
+## (the warden is twist enough).
+static func modifier_at(depth: int) -> Dictionary:
+	if depth <= 1 or is_warden_depth(depth):
+		return {}
+	var twists: Array = _rules()["modifiers"]
+	var rng := RandomNumberGenerator.new()
+	rng.seed = depth * 6151 + 11
+	return twists[rng.randi_range(0, twists.size() - 1)]
+
+
+## The twist of the floor at `level`, {} above the Deep Hunt.
+static func modifier(level: int) -> Dictionary:
+	return modifier_at(depth_of(level)) if is_deep(level) else {}
+
+
+## How much more often a twisted depth's foes drop something (PIX-216).
+static func loot_luck(level: int) -> float:
+	return float(_rules()["modifierLuck"]) if not modifier(level).is_empty() else 0.0
+
+
+## The milestone at `depth` ({depth, itemId, elder, homecoming}), or {}.
+static func milestone(depth: int) -> Dictionary:
+	for mark: Dictionary in _rules()["milestones"]:
+		if int(mark["depth"]) == depth:
+			return mark
+	return {}
+
+
+## The first milestone past `deepest`, {} once all are reached.
+static func next_milestone(deepest: int) -> Dictionary:
+	for mark: Dictionary in _rules()["milestones"]:
+		if int(mark["depth"]) > deepest:
+			return mark
+	return {}
+
+
+## The deepest milestone reached, {} before the first.
+static func milestone_reached(deepest: int) -> Dictionary:
+	var reached := {}
+	for mark: Dictionary in _rules()["milestones"]:
+		if int(mark["depth"]) <= deepest:
+			reached = mark
+	return reached
+
+
+## The depths the gate opens (PIX-216): the first, the first of every tier
+## (deepTiers.every) the hero has reached, and the one past the deepest.
+static func deep_entries(deepest: int) -> Array[int]:
+	var every := int(Economy._data()["deepTiers"]["every"])
+	var out: Array[int] = [1]
+	var depth := 1 + every
+	while depth <= deepest:
+		out.append(depth)
+		depth += every
+	if deepest > 0 and deepest + 1 not in out:
+		out.append(deepest + 1)
+	return out
 
 
 ## How many levels above their kind a floor's foes stand (PIX-170).

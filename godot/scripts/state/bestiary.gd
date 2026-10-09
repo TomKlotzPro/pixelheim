@@ -308,8 +308,8 @@ static func monster_attack_damage(fighter: Dictionary, hero: HeroState, pack: In
 ## (`mountain`, its real floor) rolls floorPools, each floor a step, and the
 ## Deep Hunt's floors forge their gear deeper every few depths.
 ## Returns {kind: "gear"|"stack", ...}.
-static func roll_drop(floor_level: int, kind: String, roll: Callable, mountain := 0) -> Dictionary:
-	if roll.call() >= float(_data()["dropChance"][kind]):
+static func roll_drop(floor_level: int, kind: String, roll: Callable, mountain := 0, luck := 0.0) -> Dictionary:
+	if roll.call() >= float(_data()["dropChance"][kind]) + luck:
 		return {}
 	var pools: Array = _data()["floorPools"]["pools"] if mountain > 0 else _data()["dropPools"]
 	var at := mini(mountain, Dungeons.floor_count()) if mountain > 0 else floor_level

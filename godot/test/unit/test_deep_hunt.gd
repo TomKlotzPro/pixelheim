@@ -75,3 +75,62 @@ func test_morvax_falls_and_the_stair_goes_on() -> void:
 	state.progression.unlocked_level = 15
 	var lines: Array = state.clear_floor(15)["lines"]
 	assert_true(lines.any(func(line: String) -> bool: return line.contains("Deep Hunt")))
+
+
+## PIX-216: a warden every tenth depth, a boss with its own name and attacks.
+func test_a_warden_guards_every_tenth_depth() -> void:
+	var tenth := Dungeons.boss_of(Dungeons.floor_count() + 10)
+	assert_true(Bestiary.is_boss(tenth["monsterId"]), "a boss, with its patterns")
+	assert_eq(tenth["name"], "The Deep Warden")
+	assert_eq(Dungeons.boss_of(Dungeons.floor_count() + 20)["name"], "The Hollow King")
+	assert_gt(_guardian_level(Dungeons.floor_count() + 20), _guardian_level(Dungeons.floor_count() + 10), "deeper wardens stand taller")
+	var plan := DungeonFloor.plan(Dungeons.floor_count() + 10)
+	assert_eq(plan["foes"][-1]["name"], "The Deep Warden", "the floor knows its name")
+
+
+func test_a_depth_has_one_twist_and_the_gate_says_which() -> void:
+	assert_true(Dungeons.modifier_at(1).is_empty(), "the first depth is plain")
+	assert_true(Dungeons.modifier_at(10).is_empty(), "a warden's depth needs no twist")
+	assert_eq(Dungeons.modifier_at(7), Dungeons.modifier_at(7), "the same every visit")
+	var seen := {}
+	for depth in range(2, 40):
+		var twist := Dungeons.modifier_at(depth)
+		if not twist.is_empty():
+			seen[twist["id"]] = true
+			assert_gt(Dungeons.loot_luck(Dungeons.floor_count() + depth), 0.0, "a twisted depth drops more")
+	assert_eq(seen.size(), Bestiary._data()["deepHunt"]["modifiers"].size(), "every twist turns up: %s" % [seen.keys()])
+	assert_eq(Dungeons.loot_luck(3), 0.0, "not on the mountain's own floors")
+	for depth in range(2, 40):
+		if Dungeons.modifier_at(depth).get("id", "") == "proud":
+			var encounters: Array = Dungeons.deep_def(depth)["encounters"]
+			assert_true(encounters[0].get("elite", false) and encounters[1].get("elite", false), "depth %d is proud" % depth)
+
+
+func test_the_gate_opens_the_first_depth_of_every_tier_reached() -> void:
+	assert_eq(Dungeons.deep_entries(0), [1] as Array[int])
+	assert_eq(Dungeons.deep_entries(4), [1, 5] as Array[int])
+	var every := int(Economy._data()["deepTiers"]["every"])
+	assert_eq(Dungeons.deep_entries(12), [1, 1 + every, 1 + 2 * every, 13] as Array[int])
+
+
+func test_a_milestone_brings_a_crystal_home_and_the_town_hears() -> void:
+	state.progression.deepest = 4
+	var result: Dictionary = state.clear_deep(Dungeons.floor_count() + 5)
+	assert_true(result["first"])
+	assert_eq(int(state.pack.items.get("deep_crystal_5", 0)), 1)
+	assert_has(state.reveals, "deep:5")
+	assert_true(result["lines"].any(func(line: String) -> bool: return line.contains("milestone")))
+	var elder: Dictionary = Npcs.on_map("town", 1, [], null, true, 5).filter(func(npc: Dictionary) -> bool: return npc["id"] == "elder")[0]
+	assert_eq(elder["lines"][0], Dungeons.milestone(5)["elder"], "Maren has heard")
+	assert_eq(Dungeons.next_milestone(5)["depth"], 10)
+
+
+func test_every_milestone_crystal_is_a_trophy_with_an_icon() -> void:
+	var icons: Dictionary = SaveCodec.parse_json(FileAccess.get_file_as_string("res://assets/puny/icons.json"))["items"]
+	for mark: Dictionary in Bestiary._data()["deepHunt"]["milestones"]:
+		var item_id: String = mark["itemId"]
+		assert_false(Catalog.item(item_id).is_empty(), item_id)
+		assert_true(icons.has(item_id), "%s has Shade's art" % item_id)
+		assert_false(Town.trophy_stat_delta(item_id).is_empty(), "%s lends stats on the shelf" % item_id)
+		assert_ne(String(mark["homecoming"]), "")
+		assert_has(Dungeons.deep_def(int(mark["depth"]))["rewardItemIds"], item_id, "its depth's hoard holds it")

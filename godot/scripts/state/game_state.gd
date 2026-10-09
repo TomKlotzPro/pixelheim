@@ -1412,7 +1412,8 @@ func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, fl
 	if fighter.has("named"):
 		log.append_array(_hunted(fighter["named"]))
 	var kind := "boss" if Bestiary.is_boss(fighter["id"]) else ("elite" if fighter["elite"] else "normal")
-	var drop := Bestiary.roll_drop(floor_level, kind, roll, mountain)
+	# A twisted depth of the Deep Hunt drops more often (PIX-216).
+	var drop := Bestiary.roll_drop(floor_level, kind, roll, mountain, Dungeons.loot_luck(mountain))
 	if drop.get("kind") == "gear":
 		pack.gear.append(drop["gear"])
 		log.append(Text.t("%s drops: %s!") % [fighter["name"], InventoryState.gear_name(drop["gear"])])
@@ -1930,6 +1931,11 @@ func clear_deep(level: int) -> Dictionary:
 		if level_line != "":
 			lines.append(level_line)
 		last_deed = {"kind": "cleared", "floor": Text.t("depth %d of the Deep Hunt") % depth}
+		# A milestone (PIX-216): its crystal came with the hoard; the town hears.
+		var mark := Dungeons.milestone(depth)
+		if not mark.is_empty():
+			lines.append(Text.t("A milestone: %d depths below the throne. The %s is yours, a trophy for the shelf at home.") % [depth, Catalog.item_name(mark["itemId"])])
+			reveals.append("deep:%d" % depth)
 		_pack_changed()
 	lines.append(Text.t("A hole into the dark opens beside the way up: depth %d waits below.") % (depth + 1))
 	save_now()

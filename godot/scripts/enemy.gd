@@ -68,6 +68,8 @@ var feeding := false
 var named := {}
 ## The health bar's full width: a named monster's is longer.
 var bar_width := 16.0
+## How much quicker than its kind it hunts (PIX-216: a swift depth).
+var pace := 1.0
 ## The shove of the last blow, and how long it has left (PIX-209).
 var knock := Vector2.ZERO
 var knock_left := 0.0
@@ -273,7 +275,7 @@ func _alert_bubble() -> PanelContainer:
 ## Straight at the hero; in reach, a flash tells the bite, which lands if the
 ## hero is still close when the tell is done.
 func _chase(to_player: Vector2, delta: float) -> void:
-	velocity = to_player.normalized() * CHASE_SPEED
+	velocity = to_player.normalized() * CHASE_SPEED * pace
 	if tell_left >= 0:
 		velocity *= 0.3
 		tell_left -= delta
