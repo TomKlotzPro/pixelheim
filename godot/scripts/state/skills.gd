@@ -57,10 +57,39 @@ static func can_buy(hero: HeroState, entry: Dictionary) -> bool:
 	return not entry.has("requires") or entry["requires"] in hero.skill_nodes
 
 
-## Whether a skill point has something to buy now (PIX-207): once the tree
-## is all learned, the points wait without nagging.
+## Whether a skill point has something to buy now (PIX-207): a node of the
+## tree, or once it's whole a rank beyond it (PIX-217); with everything
+## learned, the points wait without nagging.
 static func can_spend(hero: HeroState) -> bool:
+	return tree_open(hero) or beyond_open(hero)
+
+
+## A point to spend and a node of the tree to spend it on.
+static func tree_open(hero: HeroState) -> bool:
 	return hero.skill_points > 0 and tree(hero.role_id).any(func(entry: Dictionary) -> bool: return can_buy(hero, entry))
+
+
+## Every node of the hero's tree learned (PIX-217).
+static func tree_whole(hero: HeroState) -> bool:
+	return tree(hero.role_id).all(func(entry: Dictionary) -> bool: return entry["id"] in hero.skill_nodes)
+
+
+## Beyond the tree (PIX-217): capped tracks a whole tree's spare points buy.
+static func beyond_tracks() -> Array:
+	return Bestiary._data()["beyondTree"]["tracks"]
+
+
+static func can_buy_beyond(hero: HeroState, track: Dictionary) -> bool:
+	return hero.skill_points > 0 and tree_whole(hero) and int(hero.beyond.get(track["id"], 0)) < int(track["cap"])
+
+
+static func beyond_open(hero: HeroState) -> bool:
+	return beyond_tracks().any(func(track: Dictionary) -> bool: return can_buy_beyond(hero, track))
+
+
+## Everything there is to learn, learned: the tree and every track's cap.
+static func all_learned(hero: HeroState) -> bool:
+	return tree_whole(hero) and beyond_tracks().all(func(track: Dictionary) -> bool: return int(hero.beyond.get(track["id"], 0)) >= int(track["cap"]))
 
 
 ## The level a node's tier opens at (skillTierLevels).

@@ -10,6 +10,8 @@ func _title() -> String:
 
 func _intro() -> String:
 	var points := GameState.hero.stat_points
+	if Skills.beyond_open(GameState.hero):
+		return Text.t("Your tree is whole: %d skill point%s to spend beyond it, below.") % [GameState.hero.skill_points, "" if GameState.hero.skill_points == 1 else "s"]
 	if points == 0:
 		return Text.t("Every level brings %d stat points to spend.") % Bestiary._data()["statPointsPerLevel"]
 	return Text.t("%d stat point%s to spend. Spending is permanent.") % [points, "" if points == 1 else "s"]
@@ -53,7 +55,24 @@ func _rows() -> Array[Dictionary]:
 			"why": "No stat points to spend. Level up to earn more.",
 			"action": _spend.bind(stat),
 		})
+	# Beyond a whole tree (PIX-217): its spare skill points buy ranks here.
+	if Skills.tree_whole(hero):
+		for track: Dictionary in Skills.beyond_tracks():
+			var rank := int(hero.beyond.get(track["id"], 0))
+			rows_out.append({
+				"label": Text.t("Beyond the tree: %s") % Text.t(track["name"]),
+				"note": "%d/%d" % [rank, int(track["cap"])],
+				"enabled": Skills.can_buy_beyond(hero, track),
+				"why": Text.t("Mastered.") if rank >= int(track["cap"]) else Text.t("No skill points to spend."),
+				"action": _beyond.bind(track),
+			})
 	return rows_out
+
+
+func _beyond(track: Dictionary) -> String:
+	GameState.buy_beyond(track["id"])
+	Sound.play_ui("confirm")
+	return Text.t("%s: %s. %d/%d.") % [Text.t(track["name"]), Text.t(track["line"]), int(GameState.hero.beyond[track["id"]]), int(track["cap"])]
 
 
 func _spend(stat: String) -> String:

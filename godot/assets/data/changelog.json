@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.160.0",
+      "date": "2026-10-09",
+      "codename": "Endgame Numbers",
+      "notes": [
+        "The Deep Hunt's foes now climb faster than a hero levels: the first depths are as fair as ever, but by depth thirty a mountain kit alone no longer holds",
+        "Once your whole skill tree is learned, spare skill points buy ranks beyond it in Stats: more skill power, health back from every blow, and more health, each capped",
+        "Greater potions, phoenix draughts and elixirs heal a share of your health when that's more than their own, and a new deepest depth's hoard holds a better potion the deeper you go",
+        "The rank-up says what its bonus point is truly for"
+      ]
+    },
+    {
       "version": "0.159.0",
       "date": "2026-10-09",
       "codename": "The Deep Hunt Has a Reason",

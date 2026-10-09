@@ -40,7 +40,9 @@ static func deep_def(depth: int) -> Dictionary:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = depth * 104729 + 3
 	var foes: Array = rules["foes"]
-	var target := int(rules["startLevel"]) + depth - 1
+	# Foes climb faster than a hero levels (PIX-217): the deepest depth
+	# measures a build, not the hours.
+	var target := int(rules["startLevel"]) + floori((depth - 1) * float(rules["levelsPerDepth"]))
 	var count := mini(3 + depth / 3, 6)
 	var encounters: Array = []
 	var start := rng.randi_range(0, foes.size() - 1)
@@ -67,7 +69,12 @@ static func deep_def(depth: int) -> Dictionary:
 		}
 	var gold: Array = rules["rewardGold"]
 	var descriptions: Array = rules["descriptions"]
-	var rewards: Array = ["greater_potion", "gem"] if depth % int(rules["eliteEvery"]) == 0 else ["greater_potion"]
+	# The hoard's potion grows with the depth (PIX-217).
+	var potion := ""
+	for step: Dictionary in rules["hoardPotions"]:
+		if depth >= int(step["from"]):
+			potion = step["itemId"]
+	var rewards: Array = [potion, "gem"] if depth % int(rules["eliteEvery"]) == 0 else [potion]
 	var mark := milestone(depth)
 	if not mark.is_empty():
 		rewards.append(mark["itemId"])

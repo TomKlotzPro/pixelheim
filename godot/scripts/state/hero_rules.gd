@@ -95,6 +95,11 @@ static func passives(hero: HeroState) -> Dictionary:
 				merged[key] = merged[key] or effects[key]
 			else:
 				merged[key] += effects[key]
+	# Ranks beyond a finished tree (PIX-217).
+	for track: Dictionary in Skills.beyond_tracks():
+		var rank := int(hero.beyond.get(track["id"], 0))
+		for key: String in ["skillPower", "lifeSteal"]:
+			merged[key] += float(track.get(key, 0.0)) * rank
 	merged["moveSpeed"] = minf(merged["moveSpeed"], MAX_MOVE_SPEED)
 	merged["dodgeCooldown"] = minf(merged["dodgeCooldown"], MAX_DODGE_CUT)
 	return merged
@@ -116,6 +121,8 @@ static func grown_hp(hero: Dictionary) -> int:
 	for node: Dictionary in _combat()["skillTrees"].get(hero["roleId"], []):
 		if node["id"] in hero.get("skillNodes", []):
 			hp += int(node.get("grantStats", {}).get("maxHp", 0))
+	for track: Dictionary in Skills.beyond_tracks():
+		hp += int(track.get("maxHp", 0)) * int(hero.get("beyond", {}).get(track["id"], 0))
 	return hp
 
 

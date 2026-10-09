@@ -5844,7 +5844,7 @@
     "goldLinearStep": 0.06
   },
   "deepHunt": {
-    "about": "PIX-161: below Morvax's throne, generated depths without end. Depth d's foes stand at startLevel + d - 1, drawn from every family; every eliteEvery-th depth an elite guards the stair down. The hoard pays once per new deepest depth. A depth already cleared pays its foes replayGoldShare of their gold (PIX-180). PIX-216: milestones bring a crystal home (a trophy) with the elder's word and the town's; every bossEvery-th depth a warden (a lifted dragon or lich, renamed) guards it; every other depth past the first has one twist, shown at the gate, its kills dropping more often (modifierLuck); the gate opens the first depth of every tier reached.",
+    "about": "PIX-161: below Morvax's throne, generated depths without end. Depth d's foes stand at startLevel + d - 1, drawn from every family; every eliteEvery-th depth an elite guards the stair down. The hoard pays once per new deepest depth. A depth already cleared pays its foes replayGoldShare of their gold (PIX-180). PIX-216: milestones bring a crystal home (a trophy) with the elder's word and the town's; every bossEvery-th depth a warden (a lifted dragon or lich, renamed) guards it; every other depth past the first has one twist, shown at the gate, its kills dropping more often (modifierLuck); the gate opens the first depth of every tier reached. PIX-217: foes climb levelsPerDepth levels a depth, faster than a hero levels, so the deepest depth measures a build; a new deepest's potion is the best of hoardPotions its depth has reached.",
     "startLevel": 19,
     "eliteEvery": 3,
     "foes": [
@@ -5962,6 +5962,21 @@
         "elder": "Fifty depths below the throne. Whatever is at the bottom, I hope it knows your name by now.",
         "homecoming": "Fifty depths. The whole town is on the square when you come home, and for once nobody says a word. They just clap."
       }
+    ],
+    "levelsPerDepth": 1.5,
+    "hoardPotions": [
+      {
+        "from": 1,
+        "itemId": "greater_potion"
+      },
+      {
+        "from": 11,
+        "itemId": "phoenix_draught"
+      },
+      {
+        "from": 26,
+        "itemId": "dragon_tonic"
+      }
     ]
   },
   "escorts": {
@@ -6070,5 +6085,31 @@
       "lost": "The wagon's overturned and Bergit's bolted back up the pass. Gunnar's rigging another at the cave mouth.",
       "arrived": "The wagon's down! Gunnar is waving his hat at you."
     }
+  },
+  "beyondTree": {
+    "about": "PIX-217: once a hero's whole tree is learned, spare skill points buy ranks here (in Stats), each track capped.",
+    "tracks": [
+      {
+        "id": "power",
+        "name": "Deeper power",
+        "line": "+3% skill power a rank",
+        "skillPower": 0.03,
+        "cap": 10
+      },
+      {
+        "id": "steal",
+        "name": "Blood price",
+        "line": "+1% of damage dealt comes back as health, a rank",
+        "lifeSteal": 0.01,
+        "cap": 5
+      },
+      {
+        "id": "vigor",
+        "name": "Iron constitution",
+        "line": "+8 HP a rank",
+        "maxHp": 8,
+        "cap": 20
+      }
+    ]
   }
 }

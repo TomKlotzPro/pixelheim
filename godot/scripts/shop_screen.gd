@@ -438,7 +438,7 @@ static func _describe(item_id: String, instance := {}) -> String:
 	if item.has("set"):
 		lines.append(Catalog.set_line(item["set"], int(GameState.pack.set_counts().get(item["set"], 0))))
 	if item.has("restoreHp"):
-		lines.append(Text.t("Restores %d HP") % item["restoreHp"])
+		lines.append(Text.t("Restores %d HP") % GameState.hp_restore(item))
 	if item.has("restoreMp"):
 		lines.append(Text.t("Restores %d MP") % item["restoreMp"])
 	lines.append(Text.t("Weight %d") % item["weight"])
