@@ -32,6 +32,8 @@ var clear_warnings := false
 var glow := true
 var hints := true
 var hints_seen: Array[String] = []
+## Quest marks over people, and where the active step leads (PIX-240).
+var quest_marks := true
 ## The language the game speaks (PIX-195): a Text.LANGUAGES code, or ""
 ## to follow the system's.
 var language := ""
@@ -62,6 +64,7 @@ func load_file() -> void:
 	clear_warnings = config.get_value(SECTION, "clear_warnings", clear_warnings)
 	glow = config.get_value(SECTION, "glow", glow)
 	hints = config.get_value(SECTION, "hints", hints)
+	quest_marks = config.get_value(SECTION, "quest_marks", quest_marks)
 	language = str(config.get_value(SECTION, "language", language))
 	hints_seen.assign(config.get_value(SECTION, "hints_seen", []))
 	var saved: Variant = config.get_value(SECTION, "bindings", {})
@@ -90,6 +93,7 @@ func save_file() -> void:
 	config.set_value(SECTION, "glow", glow)
 	config.set_value(SECTION, "language", language)
 	config.set_value(SECTION, "hints", hints)
+	config.set_value(SECTION, "quest_marks", quest_marks)
 	config.set_value(SECTION, "hints_seen", hints_seen)
 	config.set_value(SECTION, "bindings", bindings)
 	DirAccess.make_dir_recursive_absolute(path.get_base_dir())

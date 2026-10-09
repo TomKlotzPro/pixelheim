@@ -67,6 +67,21 @@ static func awaits_word(giver: String, entries: Dictionary, items: Dictionary, o
 	return false
 
 
+## What hangs over a giver's head (PIX-240): "offer" with a quest to give
+## (a "!"), "ready" with one to hand in (a gold "?"), "waiting" while one is
+## under way (a grey "?"), or "" when there's nothing between them and the
+## hero. The giver's first quest not done decides, as for awaits_word.
+static func mark_for(giver: String, entries: Dictionary, items: Dictionary, opened := Callable()) -> String:
+	for quest: Dictionary in for_giver(giver):
+		var entry: Dictionary = entries.get(quest["id"], {})
+		if entry.get("done", false):
+			continue
+		if entry.is_empty():
+			return "" if opened.is_valid() and not opened.call(quest) else "offer"
+		return "ready" if is_ready(quest, entries, items) else "waiting"
+	return ""
+
+
 ## A giver's quest that's finished and waits on the hero's answer (PIX-192):
 ## its "choice" to make before it's handed in; {} when there's none.
 static func pending_choice(giver: String, entries: Dictionary, items: Dictionary) -> Dictionary:
