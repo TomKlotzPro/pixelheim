@@ -1769,6 +1769,10 @@ msgid "A hero from before keeps everything: whoever has cleared a floor finds th
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A lake behind the square swells and glints, the trees and the hill's pines lean in the wind, mist rolls along the valley and embers rise off the torches"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A level gained bursts in gold on the hero with LEVEL UP over their head, the experience line flashes, and the news goes on the message plate instead of slipping into the battle log"
 msgstr ""
 
@@ -4745,6 +4749,10 @@ msgid "The title menu and the saves screen sit in the middle of the screen, howe
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The title screen comes alive: a slow camera drifts over the street under the mountain, the torches, the lit windows and the watchman's lantern pool warm light on the walls and the road, and the moon and the flames glow"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The title screen is a living diorama: three mountain ridges deep, a smoldering summit, drifting fog, and the game's own monsters parading past - watch for the dragon"
 msgstr ""
 
@@ -5058,6 +5066,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "With Reduce motion on, the wind drops and the water and the clouds hold still"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "With Reduce motion the scene holds still, and the world behind the title rests, so the title costs no more to draw than before"
 msgstr ""
 
 #: assets/data/changelog.json

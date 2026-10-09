@@ -1769,6 +1769,10 @@ msgid "A hero from before keeps everything: whoever has cleared a floor finds th
 msgstr "Un ancien héros conserve tout : qui a déjà nettoyé un étage trouve la porte ouverte, et Maren passe directement à sa demande suivante"
 
 #: assets/data/changelog.json
+msgid "A lake behind the square swells and glints, the trees and the hill's pines lean in the wind, mist rolls along the valley and embers rise off the torches"
+msgstr "Un lac derrière la place ondule et scintille, les arbres et les pins de la colline penchent sous le vent, la brume roule dans la vallée et des braises montent des torches"
+
+#: assets/data/changelog.json
 msgid "A level gained bursts in gold on the hero with LEVEL UP over their head, the experience line flashes, and the news goes on the message plate instead of slipping into the battle log"
 msgstr "Un niveau gagné éclate en or sur le héros avec NIVEAU SUPÉRIEUR au-dessus de sa tête, la ligne d'expérience s'illumine, et la nouvelle s'affiche sur le bandeau des messages au lieu de se perdre dans le journal de combat"
 
@@ -3010,7 +3014,7 @@ msgstr "LE BUTIN LÀ OÙ IL TOMBE : le butin sauvage indique les régions où 
 
 #: assets/data/changelog.json
 msgid "Lamplight"
-msgstr "Lueur des lanternes"
+msgstr "Lueur des lampes"
 
 #: assets/data/changelog.json
 msgid "Late-game hunting grounds: trolls and golems under the trees, ghosts and mimics in the bog - elites roam thick"
@@ -4745,6 +4749,10 @@ msgid "The title menu and the saves screen sit in the middle of the screen, howe
 msgstr "Le menu titre et l'écran des sauvegardes restent au milieu de l'écran, quelle que soit la longueur du nom de votre héros"
 
 #: assets/data/changelog.json
+msgid "The title screen comes alive: a slow camera drifts over the street under the mountain, the torches, the lit windows and the watchman's lantern pool warm light on the walls and the road, and the moon and the flames glow"
+msgstr "L'écran titre prend vie : une caméra lente glisse sur la rue au pied de la montagne, les torches, les fenêtres éclairées et la lanterne du veilleur répandent une lumière chaude sur les murs et la route, et la lune et les flammes rayonnent"
+
+#: assets/data/changelog.json
 msgid "The title screen is a living diorama: three mountain ridges deep, a smoldering summit, drifting fog, and the game's own monsters parading past - watch for the dragon"
 msgstr "L'écran titre est un diorama vivant : trois rangées de crêtes en profondeur, un sommet qui couve, du brouillard qui dérive et les monstres du jeu qui défilent - guettez le dragon"
 
@@ -5059,6 +5067,10 @@ msgstr "Avec « Réduire les animations », la caméra reste immobile et vot
 #: assets/data/changelog.json
 msgid "With Reduce motion on, the wind drops and the water and the clouds hold still"
 msgstr "Avec « Réduire les animations », le vent tombe, et l'eau et les nuages s'immobilisent"
+
+#: assets/data/changelog.json
+msgid "With Reduce motion the scene holds still, and the world behind the title rests, so the title costs no more to draw than before"
+msgstr "Avec Réduire les animations, la scène reste immobile, et le monde derrière l'écran titre se repose : l'écran titre ne coûte pas plus à afficher qu'avant"
 
 #: assets/data/changelog.json
 msgid "With Reduce motion, the ruin stands a moment and then the building is there"
