@@ -569,6 +569,14 @@ func skill_flash(at: Vector2, color: Color) -> void:
 	bloom.chain().tween_callback(burst.queue_free)
 
 
+## How hard the hero's skills strike on this floor (PIX-216): less on a
+## warded depth of the Deep Hunt.
+func skill_ward() -> float:
+	if map != null and Dungeons.modifier(map.floor_level).get("id", "") == "warded":
+		return float(Bestiary._data()["deepHunt"]["wardedSkills"])
+	return 1.0
+
+
 ## A level gained (PIX-211): a gold burst on the hero, LEVEL UP over their
 ## head and the experience line flashing; its words go on the plate (_log).
 func _level_up_burst() -> void:
@@ -775,9 +783,21 @@ func enter_floor(level: int) -> void:
 	var replay := Dungeons.is_deep(level) and Dungeons.depth_of(level) <= GameState.progression.deepest
 	# The mountain's foes wear their floor's name (PIX-188): a Cellar Slime.
 	var epithet := Dungeons.epithet(level)
+	var twist := Dungeons.modifier(level)
+	var rules: Dictionary = Bestiary._data()["deepHunt"]
 	for foe: Dictionary in plan["foes"]:
 		var spawned := spawn_enemy(foe["id"], foe["cell"], "", "", foe["elite"], false, Vector2i(-1, -1), foe["lift"])
-		if epithet != "" and int(foe["lift"]) > 0:
+		# A twisted depth (PIX-216): its foes quicker, or their bites venomous.
+		match String(twist.get("id", "")):
+			"swift":
+				spawned.pace = float(rules["swiftPace"])
+			"venom":
+				var venom: Dictionary = rules["venom"]
+				spawned.fighter["inflicts"] = {"kind": venom["kind"], "chance": venom["chance"], "turns": venom["turns"], "power": maxi(2, roundi(int(spawned.fighter["attack"]) * float(venom["attackShare"])))}
+		if String(foe.get("name", "")) != "":
+			# A warden goes by its own name (PIX-216).
+			spawned.fighter["name"] = Text.t(foe["name"])
+		elif epithet != "" and int(foe["lift"]) > 0:
 			# Named, not positional: French puts the epithet after (PIX-196).
 			var titled := Text.t("{epithet} {name}").format({"epithet": Text.t(epithet), "name": Bestiary.monster(foe["id"])["name"]})
 			spawned.fighter["name"] = Text.t("Elite %s") % titled if foe["elite"] else titled
@@ -786,6 +806,8 @@ func enter_floor(level: int) -> void:
 	view.add_patch(plan["patch"], Gathering.floor_spot_id(level), Gathering.floor_material(level))
 	var floor_def := Dungeons.floor_def(level)
 	_log([String(floor_def["name"]) if Dungeons.is_deep(level) else Text.t("Floor %d: %s") % [level, floor_def["name"]], String(floor_def["description"])])
+	if not twist.is_empty():
+		_log([Text.t("%s: %s") % [Text.t(twist["name"]), Text.t(twist["line"])]])
 	# A boss's floor: its intro, the first time only (PIX-32).
 	play_story(Cutscene.moment("boss:%s" % Dungeons.boss_of(level)["monsterId"]))
 
@@ -914,7 +936,7 @@ func _cell_center(cell: Vector2i) -> Vector2:
 ## Villagers who live on this map now: tier-gated townsfolk and recruits.
 func _spawn_npcs(data: MapData) -> void:
 	var settlers := GameState.settlement.settlers
-	var folk := Npcs.on_map(data.id, GameState.settlement.town_tier, settlers, Town.done_projects(GameState.settlement), Relics.gate_open(GameState.progression))
+	var folk := Npcs.on_map(data.id, GameState.settlement.town_tier, settlers, Town.done_projects(GameState.settlement), Relics.gate_open(GameState.progression), GameState.progression.deepest)
 	# On the night of the fire only the survivors are about (PIX-152).
 	if GameState.progression.prologue != Prologue.DONE and data.id == "town":
 		folk = Prologue.survivors()
@@ -1585,6 +1607,9 @@ func _play_reveals() -> void:
 				stops.append({"at": _cell_center(Town.square()), "line": Town.homecoming(int(key))})
 			"hunt":
 				stops.append({"at": _cell_center(Town.bounty_board() + Vector2i(0, 3)), "line": Hunts.named(key)["homecoming"]})
+			"deep":
+				# A Deep Hunt milestone (PIX-216): the town has heard.
+				stops.append({"at": _cell_center(Town.square()), "line": Text.t(Dungeons.milestone(int(key))["homecoming"])})
 	GameState.reveals.clear()
 	if stops.is_empty() or (harness and not OS.get_cmdline_user_args().has("reveal")):
 		return

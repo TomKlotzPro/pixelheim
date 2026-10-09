@@ -24,7 +24,7 @@ static func _data() -> Dictionary:
 ## While a keeper's building is still rubble (PIX-146, `done` the projects
 ## built; null skips it), they trade from a stall on the town square; in the
 ## Ashes the elder and the mayor say their Ashes lines.
-static func on_map(map_id: String, town_tier: int, settlers: Array, done: Variant = null, gate_open := true) -> Array[Dictionary]:
+static func on_map(map_id: String, town_tier: int, settlers: Array, done: Variant = null, gate_open := true, deepest := 0) -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	for npc: Dictionary in _data()["npcs"]:
 		var stall: Dictionary = npc.get("stall", {})
@@ -45,6 +45,12 @@ static func on_map(map_id: String, town_tier: int, settlers: Array, done: Varian
 			elif npc.has("linesByTier"):
 				npc = npc.duplicate()
 				npc["lines"] = lines_for_tier(npc["linesByTier"], town_tier, npc["lines"])
+			# Maren hears how deep the hero has gone (PIX-216): the deepest
+			# milestone's word first.
+			var mark := Dungeons.milestone_reached(deepest)
+			if npc["id"] == "elder" and not mark.is_empty():
+				npc = npc.duplicate()
+				npc["lines"] = [Text.t(mark["elder"])] + Array(npc["lines"])
 			out.append(npc)
 	for recruit: Dictionary in _data()["recruits"]:
 		var npc := as_npc(recruit, recruit["id"] in settlers, town_tier)

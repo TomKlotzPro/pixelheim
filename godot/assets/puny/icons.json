@@ -141,7 +141,13 @@
     "moonsteel_dagger": "survival-rpg-icons/Tools/Knife-13.png",
     "kings_signet": "jewelry-rpg-icons/Rings/Ring-50.png",
     "aegis_of_the_ash": "survival-rpg-icons/Armour/Metal-Shield-11.png",
-    "everflask": "survival-rpg-icons/Liquid/Large-Potion-15.png"
+    "everflask": "survival-rpg-icons/Liquid/Large-Potion-15.png",
+    "deep_crystal_5": "survival-rpg-icons/Gem/Crystal-Fragment-03.png",
+    "deep_crystal_10": "survival-rpg-icons/Gem/Crystal-Fragment-05.png",
+    "deep_crystal_15": "survival-rpg-icons/Gem/Crystal-Fragment-08.png",
+    "deep_crystal_20": "survival-rpg-icons/Gem/Crystal-Fragment-10.png",
+    "deep_crystal_30": "survival-rpg-icons/Gem/Crystal-Fragment-13.png",
+    "deep_crystal_50": "survival-rpg-icons/Gem/Crystal-Fragment-17.png"
   },
   "ailments": {
     "poison": "puny-skills/Indicators/Symbol Indicator/Poisoned-Indicator.png",

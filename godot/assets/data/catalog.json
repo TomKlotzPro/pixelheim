@@ -1728,6 +1728,54 @@
       "restoreHp": 999,
       "restoreMp": 999,
       "description": "Vex's finest: a flask that brings everything back, every wound and every spent breath."
+    },
+    "deep_crystal_5": {
+      "name": "Crystal of the Fifth Depth",
+      "category": "misc",
+      "sprite": "gem",
+      "weight": 0,
+      "value": 150,
+      "description": "Warm to the touch, like something alive gave it up."
+    },
+    "deep_crystal_10": {
+      "name": "Crystal of the Tenth Depth",
+      "category": "misc",
+      "sprite": "gem",
+      "weight": 0,
+      "value": 300,
+      "description": "Cut from the warden's lair. It hums when you hold it near the stair."
+    },
+    "deep_crystal_15": {
+      "name": "Crystal of the Fifteenth Depth",
+      "category": "misc",
+      "sprite": "gem",
+      "weight": 0,
+      "value": 450,
+      "description": "Deeper than the mountain is tall. It glows in the dark of the shelf."
+    },
+    "deep_crystal_20": {
+      "name": "Crystal of the Twentieth Depth",
+      "category": "misc",
+      "sprite": "gem",
+      "weight": 0,
+      "value": 600,
+      "description": "The Hollow King wore a shard of it. Now it's yours."
+    },
+    "deep_crystal_30": {
+      "name": "Crystal of the Thirtieth Depth",
+      "category": "misc",
+      "sprite": "gem",
+      "weight": 0,
+      "value": 900,
+      "description": "Heavy for its size, and colder than snow."
+    },
+    "deep_crystal_50": {
+      "name": "Crystal of the Fiftieth Depth",
+      "category": "misc",
+      "sprite": "gem",
+      "weight": 0,
+      "value": 1500,
+      "description": "From further down than anyone has a word for."
     }
   },
   "roles": {

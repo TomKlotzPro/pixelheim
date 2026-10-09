@@ -342,7 +342,8 @@ func cast(index: int) -> void:
 	var targets: Array = _foes_in_reach() if skill.get("area", false) else [target]
 	var dealt := 0
 	for foe: Node in targets:
-		var damage := Bestiary.hero_skill_damage(GameState.hero, GameState.pack, skill, foe.fighter, GameState.roll)
+		# A warded depth dulls skills (PIX-216).
+		var damage := roundi(Bestiary.hero_skill_damage(GameState.hero, GameState.pack, skill, foe.fighter, GameState.roll) * world.skill_ward())
 		world.skill_flash(foe.global_position, color)
 		foe.take_hit(damage, global_position, skill.get("inflicts"))
 		dealt += damage

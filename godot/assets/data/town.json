@@ -978,6 +978,46 @@
     },
     "gem": {
       "label": "+10% shop sell price while displayed"
+    },
+    "deep_crystal_5": {
+      "label": "+2 END while displayed",
+      "stats": {
+        "endurance": 2
+      }
+    },
+    "deep_crystal_10": {
+      "label": "+2 STR while displayed",
+      "stats": {
+        "strength": 2
+      }
+    },
+    "deep_crystal_15": {
+      "label": "+2 DEX while displayed",
+      "stats": {
+        "dexterity": 2
+      }
+    },
+    "deep_crystal_20": {
+      "label": "+2 INT while displayed",
+      "stats": {
+        "intelligence": 2
+      }
+    },
+    "deep_crystal_30": {
+      "label": "+3 DEF while displayed",
+      "stats": {
+        "defense": 3
+      }
+    },
+    "deep_crystal_50": {
+      "label": "+2 to every stat while displayed",
+      "stats": {
+        "strength": 2,
+        "intelligence": 2,
+        "dexterity": 2,
+        "defense": 2,
+        "endurance": 2
+      }
     }
   },
   "nookCombines": [

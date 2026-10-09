@@ -33,14 +33,13 @@ func _intro() -> String:
 
 
 ## The floors behind this gate, then - below Morvax's throne, once he is
-## down (PIX-161) - the Deep Hunt: its first depth, and the next one past
-## the deepest the hero has cleared.
+## down (PIX-161) - the Deep Hunt: its first depth, the first of every tier
+## reached (PIX-216), and the next one past the deepest the hero has cleared.
 func _levels() -> Array:
 	var levels: Array = Dungeons.dungeon(dungeon_id)["floors"].duplicate()
 	if Dungeons.floor_count() in levels and Dungeons.floor_count() in GameState.progression.cleared_levels:
-		levels.append(Dungeons.floor_count() + 1)
-		if GameState.progression.deepest > 0:
-			levels.append(Dungeons.floor_count() + GameState.progression.deepest + 1)
+		for depth: int in Dungeons.deep_entries(GameState.progression.deepest):
+			levels.append(Dungeons.floor_count() + depth)
 	return levels
 
 
@@ -57,7 +56,8 @@ func _info() -> String:
 		return Text.t("Floor %d\n\nClear the previous floor to unlock.") % level
 	var floor_def := Dungeons.floor_def(level)
 	var guardian := Dungeons.boss_of(level)
-	var guardian_name: String = Bestiary.monster(guardian["monsterId"])["name"]
+	# A warden goes by its own name (PIX-216).
+	var guardian_name: String = Text.t(guardian["name"]) if guardian.has("name") else Bestiary.monster(guardian["monsterId"])["name"]
 	var lines: Array[String] = [
 		floor_def["name"] if Dungeons.is_deep(level) else Text.t("Floor %d: %s") % [level, floor_def["name"]],
 		String(floor_def["description"]),
@@ -65,7 +65,13 @@ func _info() -> String:
 		Text.t("Guardian: %s, level %d") % [Text.t("Elite %s") % guardian_name if guardian.get("elite", false) else guardian_name, int(Bestiary.monster(guardian["monsterId"])["level"]) + int(guardian.get("lift", Dungeons.lift(level)))],
 	]
 	if Dungeons.is_deep(level):
+		var twist := Dungeons.modifier(level)
+		if not twist.is_empty():
+			lines.append(Text.t("Twist: %s. %s Its foes drop more.") % [Text.t(twist["name"]), Text.t(twist["line"])])
 		lines.append(Text.t("Deepest cleared so far: depth %d.") % GameState.progression.deepest if GameState.progression.deepest > 0 else Text.t("No one has gone this deep and come back."))
+		var mark := Dungeons.next_milestone(GameState.progression.deepest)
+		if not mark.is_empty():
+			lines.append(Text.t("Next milestone: depth %d, for the %s.") % [int(mark["depth"]), Catalog.item_name(mark["itemId"])])
 		if Dungeons.depth_of(level) <= GameState.progression.deepest:
 			lines.append(Text.t("Beaten before: only its fights pay now."))
 		else:
