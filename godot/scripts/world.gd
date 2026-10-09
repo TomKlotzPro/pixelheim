@@ -46,6 +46,13 @@ var heard_hp := 0
 ## When something last hunted the hero, and whether a boss did.
 var hunted_at := -100.0
 var hunted_by_boss := false
+## Until when the music keeps quiet after a boss falls (PIX-210).
+var hushed_until := 0.0
+## How long that silence lasts, and how slow the world runs as it falls.
+const BOSS_HUSH_S := 3.5
+const BOSS_SLOW := 0.25
+const BOSS_SLOW_S := 0.8
+var boss_bar: Control
 var noticed_at := -100.0
 ## The HUD's layer, and the first-time hint on it now (PIX-160).
 var hud_root: CanvasLayer
@@ -231,6 +238,9 @@ func _process(delta: float) -> void:
 	_update_prompt()
 	_update_nameplate()
 	_run_clocks(delta)
+	# A first-time hint stands under the boss bar while one is up (PIX-210).
+	if hint_card != null and is_instance_valid(hint_card):
+		hint_card.position.y = boss_bar.bottom() + 6 if boss_bar.following() else 18.0
 	_tend_escort()
 	GameState.walk(player.position.distance_to(last_player_position) / TILE)
 	last_player_position = player.position
@@ -546,20 +556,20 @@ func skill_flash(at: Vector2, color: Color) -> void:
 func on_enemy_noticed(enemy: Node) -> void:
 	var now := Time.get_ticks_msec() / 1000.0
 	hint("dodge")
-	# A named monster roars (PIX-158); anything else bumps.
-	if enemy.fighter.has("named"):
+	# A named monster or a boss roars (PIX-158, PIX-210); anything else bumps.
+	if fights_like_boss(enemy):
 		Sound.play("roar")
 	elif now - noticed_at > 1.5:
 		Sound.play("bump")
 	noticed_at = now
 	hunted_at = now
-	hunted_by_boss = hunted_by_boss or _fights_like_boss(enemy)
+	hunted_by_boss = hunted_by_boss or fights_like_boss(enemy)
 	if enemy.fighter.has("named"):
 		_log([Hunts.named(enemy.fighter["named"])["seen"]])
 
 
 ## A boss or a named monster (PIX-156): the boss's music plays.
-func _fights_like_boss(enemy: Node) -> bool:
+func fights_like_boss(enemy: Node) -> bool:
 	return Bestiary.is_boss(enemy.fighter["id"]) or enemy.fighter.has("named")
 
 
@@ -572,13 +582,17 @@ func _update_music() -> void:
 	for enemy in get_tree().get_nodes_in_group("mobs"):
 		if enemy.hunting and not enemy.dying:
 			hunted_at = now
-			hunted_by_boss = hunted_by_boss or _fights_like_boss(enemy)
+			hunted_by_boss = hunted_by_boss or fights_like_boss(enemy)
+			# A boss on the hunt has its bar across the top (PIX-210).
+			if fights_like_boss(enemy) and not boss_bar.following():
+				boss_bar.follow(enemy)
 	var fight := ""
 	if now - hunted_at < COMBAT_LINGER_S:
 		fight = "boss" if hunted_by_boss else "battle"
 	else:
 		hunted_by_boss = false
-	if Sound.track != "victory" or fight != "":
+	# A fallen boss's silence holds a moment before the place's music.
+	if now >= hushed_until and (Sound.track != "victory" or fight != ""):
 		Sound.play_track(Sound.track_for(map.id, map.floor_level, fight))
 	Sound.set_ambience(Sound.ambience_for(map.id, map.floor_level))
 	# The soundscape changes slowly: twice a second is plenty.
@@ -650,7 +664,7 @@ func hint(id: String, values := {}, key := "") -> void:
 		hint_card.queue_free()
 	hint_card = PanelContainer.new()
 	hint_card.add_theme_stylebox_override("panel", UiStyle.window(12))
-	hint_card.position = Vector2(340, 18)
+	hint_card.position = Vector2(340, boss_bar.bottom() + 6 if boss_bar.following() else 18.0)
 	hint_card.custom_minimum_size = Vector2(600, 0)
 	hint_card.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var lines := VBoxContainer.new()
@@ -1300,15 +1314,39 @@ func _apply_shake(delta: float) -> void:
 var _stopped := false
 
 
-func hit_stop(seconds: float) -> void:
+func hit_stop(seconds: float, scale := 0.08) -> void:
 	if _stopped or GameState.settings.reduce_motion:
 		return
 	_stopped = true
-	Engine.time_scale = 0.08
+	Engine.time_scale = scale
 	get_tree().create_timer(seconds, true, false, true).timeout.connect(func() -> void:
 		Engine.time_scale = 1.0
 		_stopped = false
 	)
+
+
+## A boss falls (PIX-210): the world slows a moment, shakes and flashes
+## white, and the music cuts so the victory sting rings out alone (the
+## floor's clearing plays it; a boss with foes still about plays its own).
+func boss_fell() -> void:
+	Sound.stop_music()
+	hushed_until = Time.get_ticks_msec() / 1000.0 + BOSS_HUSH_S
+	hunted_by_boss = false
+	if map.floor_level == 0 or floor_foes > 0:
+		Sound.play("victory")
+	shake(8.0, 0.6)
+	if GameState.settings.reduce_motion:
+		return
+	hit_stop(BOSS_SLOW_S, BOSS_SLOW)
+	var flash := ColorRect.new()
+	flash.color = Color(1, 1, 1, 0.75)
+	flash.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	flash.position = -hud_root.offset
+	flash.size = Touch.view_size(self)
+	hud_root.add_child(flash)
+	var fade := flash.create_tween().set_ignore_time_scale(true)
+	fade.tween_property(flash, "color:a", 0.0, 0.45)
+	fade.tween_callback(flash.queue_free)
 
 
 ## The village's hours (PIX-149): lamps and windows lit at night, and the
@@ -1721,6 +1759,8 @@ func _build_hud() -> void:
 	dock = preload("res://scripts/hud_dock.gd").new()
 	dock.world = self
 	hud.add_child(dock)
+	boss_bar = preload("res://scripts/boss_bar.gd").new()
+	hud.add_child(boss_bar)
 	log_box = VBoxContainer.new()
 	log_box.add_theme_constant_override("separation", 3)
 	log_box.position = Vector2(24, 506)

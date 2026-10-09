@@ -1,3 +1,4 @@
+class_name BossBrain
 extends Node
 ## A boss that fights back (PIX-150): between bites, Fafnyr and Morvax cast
 ## their own attacks, each told first by a red mark on the ground so a hero
@@ -9,6 +10,8 @@ extends Node
 ## (its parent) does the moving and the biting.
 
 const TILE := 16.0
+## The shares of its health where each new phase begins (the boss bar's notches).
+const PHASES: Array[float] = [2.0 / 3.0, 1.0 / 3.0]
 
 var enemy: CharacterBody2D
 var world: Node2D
@@ -46,15 +49,24 @@ func _physics_process(delta: float) -> void:
 
 ## Two thirds and one third of its health: a roar, a shake, a quicker fight.
 func _check_phase() -> void:
-	var share := float(enemy.fighter["hp"]) / float(enemy.fighter["maxHp"])
-	var now := 2 if share <= 1.0 / 3.0 else (1 if share <= 2.0 / 3.0 else 0)
+	var now := phase_at(float(enemy.fighter["hp"]) / float(enemy.fighter["maxHp"]))
 	if now <= phase:
 		return
 	phase = now
 	cooldown = minf(cooldown, 1.0)
 	world.log_line(pattern["roars"][phase - 1])
-	Sound.play("bump")
+	# A new phase is roared (PIX-210), not bumped.
+	Sound.play("roar")
 	world.shake(6.0, 0.5)
+
+
+## The phase a boss is in at `share` of its health: 0, 1 or 2.
+static func phase_at(share: float) -> int:
+	var reached := 0
+	for at: float in PHASES:
+		if share <= at:
+			reached += 1
+	return reached
 
 
 func _cast(move: String) -> void:

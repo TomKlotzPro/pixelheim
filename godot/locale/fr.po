@@ -1633,6 +1633,10 @@ msgid "A dozen new items: bows, war hammers, wands, cloaks, tower shields..."
 msgstr "Une douzaine de nouveaux objets : arcs, marteaux de guerre, baguettes, capes, pavois..."
 
 #: assets/data/changelog.json
+msgid "A foe gives you longer to see its bite coming, and shows it: it crouches with a red glint and a sound. With Clear warnings on, a band on the ground marks where the bite lands"
+msgstr "Un ennemi vous laisse plus de temps pour voir venir sa morsure, et la montre : il se ramasse avec une lueur rouge et un son. Avec les Avertissements clairs, une bande au sol marque où elle tombera"
+
+#: assets/data/changelog.json
 msgid "A hero from before keeps everything: whoever has cleared a floor finds the gate open, and Maren goes straight to her next ask"
 msgstr "Un ancien héros conserve tout : qui a déjà nettoyé un étage trouve la porte ouverte, et Maren passe directement à sa demande suivante"
 
@@ -1829,12 +1833,20 @@ msgid "Behind the scenes: new ground for the regions to come (Shade's sea in thr
 msgstr "En coulisses : de nouveaux sols pour les régions à venir (la mer de Shade en trois profondeurs, quais, neige, glace et pavés) et un outil qui transforme un croquis en carte"
 
 #: assets/data/changelog.json
+msgid "Below a quarter of your health, the health bar beats, and in a fight you hear your heart"
+msgstr "Sous le quart de vos points de vie, la barre de vie bat, et en combat vous entendez votre cœur"
+
+#: assets/data/changelog.json
 msgid "Beyond the Ring"
 msgstr "Au-delà du cercle"
 
 #: assets/data/changelog.json
 msgid "Black Iron"
 msgstr "Fer noir"
+
+#: assets/data/changelog.json
+msgid "Bosses and named monsters carry a bar across the top of the screen, notched where a boss's next phase begins. Each phase is roared, marks on the ground are heard as they appear and as they strike, and a boss falls in slow motion, with a flash and a silence before the victory sting"
+msgstr "Les boss et les monstres nommés ont une barre en haut de l'écran, crantée là où commence la phase suivante d'un boss. Chaque phase est rugie, les marques au sol s'entendent quand elles apparaissent et quand elles frappent, et un boss tombe au ralenti, avec un éclair et un silence avant la fanfare de victoire"
 
 #: assets/data/changelog.json
 msgid "Branches of Power"
@@ -3234,7 +3246,7 @@ msgstr "Le rang se voit sur le héros : une aura qui s'intensifie à chaque as
 
 #: assets/data/changelog.json
 msgid "Readable Danger"
-msgstr "Danger lisible"
+msgstr "Le danger se lit"
 
 #: assets/data/changelog.json
 msgid "Recipes now demand skill: Smithing forges gear, Alchemy brews, and locked recipes show what level they ask"
@@ -10364,11 +10376,11 @@ msgstr "%s hurle - la forêt répond !"
 msgid "Lv %d"
 msgstr "Niv. %d"
 
-#: scripts/enemy.gd:374
+#: scripts/enemy.gd:386
 msgid "blocked"
 msgstr "paré"
 
-#: scripts/enemy.gd:398
+#: scripts/enemy.gd:413
 msgid "%s is afflicted by %s!"
 msgstr "%s est atteint : %s !"
 
@@ -10504,23 +10516,23 @@ msgstr "Il en faut deux."
 msgid "Place %s here"
 msgstr "Placer %s ici"
 
-#: scripts/hud_dock.gd:20
+#: scripts/hud_dock.gd:24
 msgid "Map"
 msgstr "Carte"
 
-#: scripts/hud_dock.gd:20
+#: scripts/hud_dock.gd:24
 msgid "Pack"
 msgstr "Sac"
 
-#: scripts/hud_dock.gd:292
+#: scripts/hud_dock.gd:328
 msgid " +%d HP"
 msgstr " +%d PV"
 
-#: scripts/hud_dock.gd:305
+#: scripts/hud_dock.gd:341
 msgid "Lv %d %s"
 msgstr "Niv. %d %s"
 
-#: scripts/hud_dock.gd:308
+#: scripts/hud_dock.gd:344
 msgid "HP"
 msgstr "PV"
 
@@ -11720,15 +11732,15 @@ msgstr "%d point%s de compétence"
 msgid "Path of %s"
 msgstr "Voie : %s"
 
-#: scripts/sound.gd:43
+#: scripts/sound.gd:45
 msgid "Ambience"
 msgstr "Ambiance"
 
-#: scripts/sound.gd:43
+#: scripts/sound.gd:45
 msgid "Music"
 msgstr "Musique"
 
-#: scripts/sound.gd:47
+#: scripts/sound.gd:49
 msgid "Master"
 msgstr "Général"
 
@@ -12520,71 +12532,71 @@ msgstr "Déjà commandé."
 msgid "Arrows"
 msgstr "Flèches"
 
-#: scripts/world.gd:1385
+#: scripts/world.gd:1423
 msgid "Five lanterns on the square, one for each of the five who climbed. Tonight the %s remembers them - and %s."
 msgstr "Cinq lanternes sur la place, une pour chacun des cinq qui ont gravi la montagne. Ce soir, Pixelheim, désormais %s, se souvient d'eux - et salue %s."
 
-#: scripts/world.gd:1386
+#: scripts/world.gd:1424
 msgid "Pixelheim, a %s raised from the ashes. Tonight it celebrates %s."
 msgstr "Pixelheim, des cendres au rang de %s. Ce soir, on y fête %s."
 
-#: scripts/world.gd:1472
+#: scripts/world.gd:1510
 msgid "%s: built."
 msgstr "%s : chantier terminé."
 
-#: scripts/world.gd:1476
+#: scripts/world.gd:1514
 msgid "Pixelheim is a %s now."
 msgstr "Pixelheim passe au rang de %s."
 
-#: scripts/world.gd:1481
+#: scripts/world.gd:1519
 msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
 msgstr "Et aujourd'hui, on fait la fête : des étals sur la place, et un lancer d'anneaux avec un lot pour le meilleur lancer."
 
-#: scripts/world.gd:1580
+#: scripts/world.gd:1618
 msgid "%s  %d:%02d"
 msgstr "%s  %d:%02d"
 
-#: scripts/world.gd:1804
+#: scripts/world.gd:1844
 msgid "Next"
 msgstr "Ensuite"
 
-#: scripts/world.gd:300
+#: scripts/world.gd:310
 msgid "The pack is scattered. Another comes once you've walked a good way, or after a night's rest."
 msgstr "La meute est dispersée. Une autre reviendra quand vous aurez bien marché, ou après une nuit de repos."
 
-#: scripts/world.gd:486
+#: scripts/world.gd:496
 msgid "No map reaches this deep."
 msgstr "Aucune carte ne va aussi profond."
 
-#: scripts/world.gd:67
+#: scripts/world.gd:74
 msgid "Level up"
 msgstr "Niveau supérieur"
 
-#: scripts/world.gd:67
+#: scripts/world.gd:74
 msgid "Mastery"
 msgstr "Maîtrise"
 
-#: scripts/world.gd:67
+#: scripts/world.gd:74
 msgid "Quest accepted"
 msgstr "Quête acceptée"
 
-#: scripts/world.gd:67
+#: scripts/world.gd:74
 msgid "Quest complete"
 msgstr "Quête terminée"
 
-#: scripts/world.gd:728
+#: scripts/world.gd:742
 msgid "{epithet} {name}"
 msgstr "{name} {epithet}"
 
-#: scripts/world.gd:896
+#: scripts/world.gd:910
 msgid "Only cinders where the house stood. The board on the square can change that."
 msgstr "Rien que des cendres là où se dressait la maison. Le tableau de la place peut y remédier."
 
-#: scripts/world.gd:901
+#: scripts/world.gd:915
 msgid "The deed costs %d gold. {key:interact} again to sign it."
 msgstr "Le titre de propriété coûte %d or. {key:interact} à nouveau pour le signer."
 
-#: scripts/world.gd:985
+#: scripts/world.gd:999
 msgid "A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it."
 msgstr "Un établi pour cette étagère : %d or. Il compte comme un niveau de métier en plus quand vous fabriquez chez vous. {key:interact} à nouveau pour l'acheter."
 
