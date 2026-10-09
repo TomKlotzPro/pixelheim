@@ -277,7 +277,7 @@ func on_enemy_died(enemy: Node) -> void:
 		pack_alive[enemy.spawn_id] = pack_alive.get(enemy.spawn_id, 1) - 1
 		if pack_alive[enemy.spawn_id] <= 0:
 			cleared = enemy.spawn_id
-	var floor_level := int(Bestiary.region(enemy.region).get("dropFloor", 1)) if enemy.region != "" else 1
+	var floor_level := Bestiary.wild_drop_floor(enemy.region, enemy.fighter) if enemy.region != "" else 1
 	if map.floor_level > 0:
 		floor_level = Dungeons.drop_floor(map.floor_level)
 	var gear_before := GameState.pack.gear.size()

@@ -737,7 +737,8 @@
       "id": "ash_1",
       "mapId": "overworld",
       "x": 36,
-      "y": 8
+      "y": 8,
+      "species": "orc"
     },
     {
       "id": "ash_2",
@@ -757,19 +758,22 @@
       "id": "ash_4",
       "mapId": "overworld",
       "x": 89,
-      "y": 23
+      "y": 23,
+      "species": "wyvern"
     },
     {
       "id": "forest_1",
       "mapId": "overworld",
       "x": 62,
-      "y": 34
+      "y": 34,
+      "species": "slime"
     },
     {
       "id": "forest_2",
       "mapId": "overworld",
       "x": 82,
-      "y": 42
+      "y": 42,
+      "species": "goblin"
     },
     {
       "id": "forest_3",
@@ -782,13 +786,15 @@
       "id": "marsh_1",
       "mapId": "overworld",
       "x": 4,
-      "y": 41
+      "y": 41,
+      "species": "skeleton"
     },
     {
       "id": "marsh_2",
       "mapId": "overworld",
       "x": 22,
-      "y": 42
+      "y": 42,
+      "species": "ghost"
     },
     {
       "id": "marsh_3",
@@ -808,7 +814,8 @@
       "id": "deep_2",
       "mapId": "deepwood",
       "x": 14,
-      "y": 22
+      "y": 22,
+      "species": "troll"
     },
     {
       "id": "deep_3",
@@ -821,7 +828,8 @@
       "id": "deep_4",
       "mapId": "deepwood",
       "x": 56,
-      "y": 44
+      "y": 44,
+      "species": "golem"
     },
     {
       "id": "mire_1",
@@ -834,19 +842,22 @@
       "id": "mire_2",
       "mapId": "mirefen",
       "x": 39,
-      "y": 19
+      "y": 19,
+      "species": "skeleton"
     },
     {
       "id": "mire_3",
       "mapId": "mirefen",
       "x": 45,
-      "y": 33
+      "y": 33,
+      "species": "ghost"
     },
     {
       "id": "mire_4",
       "mapId": "mirefen",
       "x": 56,
-      "y": 44
+      "y": 44,
+      "species": "skeleton"
     },
     {
       "id": "coast_1",

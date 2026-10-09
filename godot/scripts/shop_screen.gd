@@ -362,6 +362,8 @@ static func _describe(item_id: String, instance := {}) -> String:
 	var bonus: int = instance.get("bonus", 0)
 	if item.has("damage"):
 		lines.append(Text.t("Damage %d") % (int(item["damage"]) + bonus))
+		# What it hits with (PIX-183): the stat a swing of it adds.
+		lines.append(Text.t("Scales with %s") % Skills.ABBR.get(String(item.get("scaling", "strength")), "STR"))
 	if item.has("armor"):
 		lines.append(Text.t("Armor %d") % (int(item["armor"]) + bonus))
 	for stat: String in item.get("grants", {}):

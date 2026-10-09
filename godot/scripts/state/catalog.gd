@@ -50,17 +50,25 @@ static func armour_set(set_id: String) -> Dictionary:
 	return _data().get("sets", {}).get(set_id, {})
 
 
-## One line saying what a set gives and how much of it is worn: "Saltmere
-## Oilskin (3/5): 3 pieces +2 DEX; 5 pieces +3 DEX, +3 armor".
+## One line saying what a set gives and how much of it is worn, each tier
+## with all it adds up to by then (PIX-183: the tiers stack): "Saltmere
+## Oilskin (3/5): 3 pieces +2 DEX; 5 pieces +5 DEX, +3 armor".
 static func set_line(set_id: String, worn: int) -> String:
 	var entry := armour_set(set_id)
 	var parts: Array[String] = []
 	var bonuses: Dictionary = entry.get("bonuses", {})
-	for at: String in bonuses:
-		var gives: Array[String] = []
+	var tiers := bonuses.keys()
+	tiers.sort_custom(func(a: String, b: String) -> bool: return int(a) < int(b))
+	var grants := {}
+	var armor := 0
+	for at: String in tiers:
 		for stat: String in bonuses[at].get("grants", {}):
-			gives.append("+%d %s" % [int(bonuses[at]["grants"][stat]), stat.substr(0, 3).to_upper()])
-		if int(bonuses[at].get("armor", 0)) > 0:
-			gives.append(Text.t("+%d armor") % int(bonuses[at]["armor"]))
+			grants[stat] = int(grants.get(stat, 0)) + int(bonuses[at]["grants"][stat])
+		armor += int(bonuses[at].get("armor", 0))
+		var gives: Array[String] = []
+		for stat: String in grants:
+			gives.append("+%d %s" % [int(grants[stat]), stat.substr(0, 3).to_upper()])
+		if armor > 0:
+			gives.append(Text.t("+%d armor") % armor)
 		parts.append(Text.t("%s pieces %s") % [at, ", ".join(gives)])
 	return "%s (%d/%d): %s" % [entry.get("name", set_id), worn, entry.get("pieces", []).size(), "; ".join(parts)]

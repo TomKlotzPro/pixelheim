@@ -133,9 +133,28 @@ static func where_found(monster_id: String) -> Array[String]:
 	return out
 
 
+## Weighted as the region says (PIX-183: an Ash Fields spawn is twice as
+## likely orcs as imps), picked by the cell so it stays put.
 static func species_at(region_id: String, cell: Vector2i) -> String:
 	var monsters: Array = region(region_id)["monsters"]
-	return monsters[(cell.x * 31 + cell.y) % monsters.size()]["monsterId"]
+	var total := 0
+	for entry: Dictionary in monsters:
+		total += int(entry.get("weight", 1))
+	var pick := absi(hash(cell)) % maxi(1, total)
+	for entry: Dictionary in monsters:
+		pick -= int(entry.get("weight", 1))
+		if pick < 0:
+			return entry["monsterId"]
+	return monsters[0]["monsterId"]
+
+
+## The loot pool a wild kill rolls from (PIX-183): its region's, but never
+## above the foe's own level - a Mirefen skeleton drops a skeleton's loot,
+## its mimic a mimic's.
+static func wild_drop_floor(region_id: String, fighter: Dictionary) -> int:
+	var cap := int(region(region_id).get("dropFloor", 1))
+	var level := int(fighter.get("level", monster(fighter["id"]).get("level", 1)))
+	return clampi(level, 1, cap)
 
 
 ## Wild kills pay reduced xp and gold: dungeons stay the main progression
