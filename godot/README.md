@@ -87,6 +87,7 @@ godot --path godot -- --screenshot fight kill hurt --foe wyvern   # another foe,
 godot --path godot -- --screenshot talk --map town_shop   # talk to the map's first villager
 godot --path godot -- --screenshot near --map town_hall   # stand beside them (the "!" prompt)
 godot --path godot -- --screenshot shop --map town_smith --tab 2   # a keeper's counter (500g), tab by index
+godot --path godot -- --screenshot station --map town_alchemist   # E at the room's first cauldron or forge (report: tab=Craft)
 godot --path godot -- --screenshot hall --map town_hall   # the town ledger (20000g); `bank` for Mirelle's
 godot --path godot -- --screenshot --map town --town-tier 4  # preview the village at another age
 godot --path godot -- --screenshot home --map town_house --house-tier 3 --mode nook  # a house fixture (storage|workbench|trophies|nook|furniture)

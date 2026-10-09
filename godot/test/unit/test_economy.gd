@@ -257,6 +257,49 @@ func test_the_craft_guide_knows_which_trades_are_here() -> void:
 	assert_string_contains(Economy.station_hint("smithing"), "Hilda")
 
 
+## PIX-234: E at a forge, an anvil or a cauldron opens its trade's recipes,
+## and only in its own room.
+func test_each_station_knows_its_trade() -> void:
+	assert_eq(Economy.station_job("town_smith", "forge"), "smithing")
+	assert_eq(Economy.station_job("town_smith", "anvil"), "smithing")
+	assert_eq(Economy.station_job("town_alchemist", "cauldron"), "alchemy")
+	assert_eq(Economy.station_job("town_smith", "counter"), "", "the counter is the keeper's")
+	assert_eq(Economy.station_job("town_smith", "floor"), "")
+	assert_eq(Economy.station_job("town_alchemist", "shelf"), "")
+	assert_eq(Economy.station_job("town_alchemist", "forge"), "", "no forge at Vex's")
+	assert_eq(Economy.station_job("town_house", "cauldron"), "", "the house's cauldron is its nook")
+	assert_eq(Economy.station_job("town_inn", "hearth"), "", "the inn's hearth is no trade")
+	assert_eq(Economy.station_job("town", "forge"), "")
+
+
+## Every station tile stands in its room, and the forge's right half (drawn
+## over the floor beside it) is the forge too.
+func test_every_station_stands_in_its_room() -> void:
+	for job: String in Economy._data()["jobStations"]:
+		var station: Dictionary = Economy._data()["jobStations"][job]
+		var map := MapData.load_by_id(station["mapId"])
+		for tile: String in station["tiles"]:
+			assert_has(map.grid.values(), tile, "%s has a %s" % [map.id, tile])
+	var smithy := MapData.load_by_id("town_smith")
+	var over: Dictionary = PunyInterior.plan(smithy.id, smithy.grid)["over"]
+	assert_eq(Economy.station_job(smithy.id, over.get(Vector2i(5, 2), "")), "smithing")
+
+
+## A recipe that can't be made says why (PIX-234: it said "Not possible
+## right now."): the materials and how many, the trade level, or where.
+func test_a_refused_craft_says_what_it_lacks() -> void:
+	var stew := Economy.recipe("brew_stew")
+	var skilled := {"smithing": {"level": 1, "xp": 0}, "alchemy": {"level": 3, "xp": 0}}
+	var green := {"smithing": {"level": 1, "xp": 0}, "alchemy": {"level": 1, "xp": 0}}
+	var stocked := {"fresh_fish": 1, "forest_herb": 2}
+	assert_eq(Economy.craft_refusal(stew, {"forest_herb": 1}, skilled), "Still missing: 1 Fresh Fish, 1 Forest Herb.")
+	assert_eq(Economy.craft_refusal(stew, stocked, green), "That takes Alchemy 3.")
+	assert_eq(Economy.craft_refusal(stew, {"fresh_fish": 1}, green), "That takes Alchemy 3. Still missing: 2 Forest Herb.")
+	assert_eq(Economy.craft_refusal(stew, stocked, skilled), "", "it can be made")
+	assert_eq(Economy.craft_refusal(stew, stocked, skilled, false, ["vexs_brewery"]), "Craft at Vex's cauldron - the BREWS door in town.")
+	assert_eq(Economy.craft_refusal(stew, stocked, skilled, false, []), "Craft at Vex's stall on the square.", "in the Ashes")
+
+
 # ---- PIX-180: late-game gold -----------------------------------------------------
 
 func test_the_deep_hunts_gold_climbs_by_a_step_not_a_curve() -> void:

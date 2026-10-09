@@ -461,6 +461,19 @@ static func jobs_here(map_id: String, home_workbench: bool) -> Array[String]:
 	return jobs
 
 
+## The trade a faced tile works (PIX-234): the forges and anvils in Hilda's
+## smithy, the cauldrons in Vex's workshop (each station's "tiles"), so E
+## there opens the trade's recipes. "" for any other tile, and for the same
+## tile elsewhere: the house's cauldron is its nook, the inn's hearth cooks
+## nothing a hero can.
+static func station_job(map_id: String, tile: String) -> String:
+	for job: String in _data()["jobStations"]:
+		var station: Dictionary = _data()["jobStations"][job]
+		if station["mapId"] == map_id and tile in station.get("tiles", []):
+			return job
+	return ""
+
+
 ## Where a trade crafts, as the web says it ("Craft at Hilda's forge - the
 ## FORGE door in town").
 static func station_hint(job: String, done: Variant = null) -> String:
@@ -490,3 +503,21 @@ static func can_craft(entry: Dictionary, items: Dictionary, jobs: Dictionary) ->
 		if items.get(item_id, 0) < entry["needs"][item_id]:
 			return false
 	return true
+
+
+## Why a recipe can't be made, "" when it can (PIX-234: a refused craft
+## used to say only "Not possible right now."): away from its station, where
+## that is (`done`, the town's finished projects, picks the stall in the
+## Ashes); else the trade level it takes and what's still missing, both when
+## both are short, so one try tells the whole bill.
+static func craft_refusal(entry: Dictionary, items: Dictionary, jobs: Dictionary, at_station := true, done: Variant = null) -> String:
+	var job: String = entry["job"]["id"]
+	if not at_station:
+		return station_hint(job, done) + "."
+	var parts: Array[String] = []
+	if int(jobs[job]["level"]) < int(entry["job"]["level"]):
+		parts.append(Text.t("That takes %s %d.") % [job_name(job), int(entry["job"]["level"])])
+	var missing := missing_names(entry, items)
+	if not missing.is_empty():
+		parts.append(Text.t("Still missing: %s.") % ", ".join(missing))
+	return " ".join(parts)

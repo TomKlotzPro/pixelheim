@@ -518,6 +518,24 @@ func _run_test_harness() -> void:
 		world.player.face(Vector2.RIGHT)
 		world.interaction.interact()
 		await get_tree().create_timer(0.3).timeout
+	if args.has("station"):
+		# Pair with `--map town_alchemist` (or town_smith): stand below the
+		# room's first station (a cauldron, a forge), face it and press E
+		# (PIX-234); the report adds the tab the counter opened on.
+		var map: MapData = world.map
+		var station := Vector2i(-1, -1)
+		for y in map.size.y:
+			for x in map.size.x:
+				if station.x < 0 and Economy.station_job(map.id, map.tile_at(Vector2i(x, y))) != "":
+					station = Vector2i(x, y)
+		world.player.position = MapView.center(station + Vector2i.DOWN)
+		world.camera_rig.cut()
+		world.player_cell = station + Vector2i.DOWN
+		world.player.face(Vector2.UP)
+		world.interaction.interact()
+		await get_tree().create_timer(0.3).timeout
+		var counters: Array = world.get_children().filter(func(node: Node) -> bool: return node.has_method("_craft_job"))
+		motion_report += " tab=%s" % (counters[-1].tabs[counters[-1].tab] if not counters.is_empty() else "none")
 	var hunted_index := args.find("--hunted")
 	if hunted_index >= 0 and hunted_index + 1 < args.size():
 		# `--hunted greymaw,cinderjaw`: named monsters already slain (PIX-156).

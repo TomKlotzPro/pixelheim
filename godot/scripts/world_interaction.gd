@@ -2,17 +2,19 @@ class_name Interaction
 extends Node
 ## What E does in the world (Solid Ground, PIX-260: moved out of world.gd as
 ## it was), in the web's INTERACT order: the well's water on the Night of
-## Ash, a faced chest, the house's door and fixtures, a fishing spot, the
-## square's boards, then the villager beside the hero (a keeper's counter, a
-## stall, the bank, or a talk). What the hero steps on is picked up (ground
+## Ash, a faced chest, the house's door and fixtures, a trade's station (a
+## forge, an anvil, a cauldron: PIX-234), a fishing spot, the square's
+## boards, then the villager beside the hero (a keeper's counter, a stall,
+## the bank, or a talk). What the hero steps on is picked up (ground
 ## treasure, patches), and the prompt floats over whatever E would meet.
 ## The screens it opens, and the prompt, stand on the world as before.
 
 var world: Node
 ## A bucket of the well's water in hand, on the Night of Ash (PIX-197).
 var prologue_bucket := false
-## What floats over a faced villager, chest or fishing spot: the interact
-## key as a keycap (PIX-193), or "!" on a phone, which has its Use button.
+## What floats over a faced villager, chest, station or fishing spot: the
+## interact key as a keycap (PIX-193), or "!" on a phone, which has its Use
+## button.
 var prompt_label: Control
 ## A big buy asked twice (PIX-179): true when this is the second E on the
 ## same thing within a few seconds, else it remembers this one.
@@ -71,6 +73,8 @@ func interact() -> void:
 			world.messages.flash(GameState.household.buy_house())
 		return
 	if world.map.id == "town_house" and _house_interact(faced):
+		return
+	if _station(faced):
 		return
 	# A fishing spot facing the water: cast (PIX-165).
 	if _fishing_here():
@@ -168,6 +172,32 @@ func _house_interact(cell: Vector2i) -> bool:
 	return true
 
 
+## A station faced (PIX-234: E at them was silent, and nothing in the room
+## said crafting is at the counter): a forge, an anvil or a cauldron opens
+## its keeper's counter on the Craft tab, that trade's recipes; the inn's
+## hearth, which cooks nothing a hero can, says where the stew is brewed.
+## True when E meant one.
+func _station(cell: Vector2i) -> bool:
+	match _station_at(cell):
+		"":
+			return false
+		"hearth":
+			world.messages.flash(Text.t("Sela's stew simmers over the fire. Hunter's Stew is brewed at Vex's cauldron, behind the BREWS door."))
+		_:
+			_open_shop("Craft")
+	return true
+
+
+## What a cell is to E as a station: its trade ("smithing", "alchemy"),
+## "hearth" for the inn's, else "". Read through the furniture drawn over
+## it, so the forge's right half is the forge too.
+func _station_at(cell: Vector2i) -> String:
+	var tile := _tile_in_hand(cell)
+	if world.map.id == "town_inn" and tile == "hearth":
+		return "hearth"
+	return Economy.station_job(world.map.id, tile)
+
+
 ## On a fishing spot, facing the water (PIX-165).
 func _fishing_here() -> bool:
 	if Gathering.fishing_spot_at(world.map.id, world.player_cell).is_empty():
@@ -175,8 +205,11 @@ func _fishing_here() -> bool:
 	return world.map.tile_at(facing_cell()) in PunyTerrain.WATERS
 
 
-func _open_shop() -> void:
-	world.add_child(preload("res://scripts/shop_screen.gd").new())
+## The keeper's counter, on `tab` when named (a station opens "Craft").
+func _open_shop(tab := "") -> void:
+	var screen := preload("res://scripts/shop_screen.gd").new()
+	screen.start_tab = tab
+	world.add_child(screen)
 
 
 ## A stall's counter: the shop as if in its building, until the screen closes.
@@ -321,7 +354,8 @@ func _collect_ground_treasure(cell: Vector2i) -> void:
 
 
 ## The one interaction-prompt rule (interactionPrompt.ts): a villager beside
-## the hero wins, then a faced unopened chest; the "!" floats over their head.
+## the hero wins, then a faced unopened chest, a station (PIX-234) or the
+## water from a fishing spot; the "!" floats over their head.
 func update_prompt() -> void:
 	var beside: Dictionary = world.folk.beside()
 	if not beside.is_empty():
@@ -330,7 +364,7 @@ func update_prompt() -> void:
 	var chest := _chest_at(facing_cell())
 	var show: bool = (
 		not chest.is_empty() and chest["look"] == "chest" and not GameState.spoils.is_opened(chest)
-	) or _fishing_here()
+	) or _fishing_here() or _station_at(facing_cell()) != ""
 	if show:
 		_show_prompt(facing_cell(), -12)
 	else:
