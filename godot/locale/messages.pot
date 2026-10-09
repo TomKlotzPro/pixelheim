@@ -7621,6 +7621,10 @@ msgid "Mirelle's bank"
 msgstr ""
 
 #: assets/data/hints.json
+msgid "Monsters far below your level run when they see you. Corner one or strike it and it fights back - bosses and named monsters never run."
+msgstr ""
+
+#: assets/data/hints.json
 msgid "Named monsters, where they lair (marked on your map) and what they pay. Kill one and the bounty is yours on the spot."
 msgstr ""
 
@@ -7642,6 +7646,10 @@ msgstr ""
 
 #: assets/data/hints.json
 msgid "The notice board"
+msgstr ""
+
+#: assets/data/hints.json
+msgid "Too strong for them"
 msgstr ""
 
 #: assets/data/hints.json
@@ -11264,15 +11272,15 @@ msgstr ""
 msgid "%s howls - the forest answers!"
 msgstr ""
 
-#: scripts/enemy.gd:166
+#: scripts/enemy.gd:206
 msgid "Lv %d"
 msgstr ""
 
-#: scripts/enemy.gd:417
+#: scripts/enemy.gd:599
 msgid "blocked"
 msgstr ""
 
-#: scripts/enemy.gd:447
+#: scripts/enemy.gd:634
 msgid "%s is afflicted by %s!"
 msgstr ""
 
@@ -13512,19 +13520,19 @@ msgstr ""
 msgid "{epithet} {name}"
 msgstr ""
 
-#: scripts/world_foes.gd:237
+#: scripts/world_foes.gd:256
 msgid "The pack is scattered. Another comes once you've walked a good way, or after a night's rest."
 msgstr ""
 
-#: scripts/world_foes.gd:253
+#: scripts/world_foes.gd:272
 msgid "%s is no more."
 msgstr ""
 
-#: scripts/world_foes.gd:253
+#: scripts/world_foes.gd:272
 msgid "Victory"
 msgstr ""
 
-#: scripts/world_foes.gd:254
+#: scripts/world_foes.gd:273
 msgid "Boss slayer: +%d%% damage for %d minutes."
 msgstr ""
 

@@ -728,6 +728,10 @@ func _run_test_harness() -> void:
 	# A boss's fall (PIX-232), when one fell.
 	if world.foes.bosses_fallen > 0:
 		motion_report += " fell=%d" % world.foes.bosses_fallen
+	# Monsters that ran from a hero far above them (PIX-251), and the music
+	# playing: the place's, as running is no fight.
+	if world.foes.fled > 0:
+		motion_report += " fled=%d music=%s" % [world.foes.fled, Sound.track]
 	# The waypoint the map's list has chosen (PIX-241), while it's open.
 	for node in world.get_children():
 		if node.has_method("destination_id"):

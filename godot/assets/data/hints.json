@@ -3,6 +3,10 @@
     "title": "Dodge",
     "text": "Something's coming for you. Press {key:dodge} to roll out of the way - for a blink nothing can touch you, and a patch of ground marked for a blow is always worth leaving."
   },
+  "fright": {
+    "title": "Too strong for them",
+    "text": "Monsters far below your level run when they see you. Corner one or strike it and it fights back - bosses and named monsters never run."
+  },
   "skill": {
     "title": "{skill}",
     "text": "{what} It's on key {slot} of your dock: press it to use it. Energy comes back as you walk."

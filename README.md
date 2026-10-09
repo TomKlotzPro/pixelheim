@@ -24,7 +24,7 @@ What changed release by release: **What's new** on the title menu, or [`godot/as
 You wake in Pixelheim village, in an open world called **the Ashenreach**: walk the roads (safe) or the wilds (not safe), talk to villagers, forage, trade, and climb the Ashen Mountain - ten floors of increasingly rude monsters - to slay **Fafnyr the Ashen** at the summit. Behind the dragon's hoard a stairway descends: five more floors of the **Undermountain**, down to **Morvax the Deathless**.
 
 - **One hand-drawn world**: hero, villagers, monsters, terrain and dungeons in Shade's Puny art; the town's timber houses, its wells, fountain, torches and fences, and the rooms behind its doors from his Medieval Age set
-- **Real-time fights**: monsters prowl in packs and hunt you; swing, cast your skills on the number keys, and watch the ailments land - on the same numbers the game has always used
+- **Real-time fights**: monsters prowl in packs and hunt you (the weak ones run from a hero far above them); swing, cast your skills on the number keys, and watch the ailments land - on the same numbers the game has always used
 - **7 classes that ascend**: every 5 levels a rank and its aura, and from the first rank a path that forks into 14 identities, each with a signature skill
 - **Skill trees, stats and gear**: three named paths per class, stat points that explain themselves, loot with rarities on a nine-slot paper doll, and helmets and armour you can see on your hero
 - **Quests and the journal**, the **codex** of every beast you have fought, and mastery bonuses for the families you hunt

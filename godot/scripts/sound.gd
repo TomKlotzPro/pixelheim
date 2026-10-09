@@ -132,6 +132,9 @@ const UI_SOUNDS := {
 	"deny": [[0.05, "square", 220.0, 220.0, 0.06], [0.07, "square", 165.0, 165.0, 0.06]],
 	"page": [[0.035, "noise", 0.0, 0.0, 0.06], [0.03, "triangle", 1200.0, 900.0, 0.03]],
 	"ail": [[0.05, "triangle", 300.0, 520.0, 0.06], [0.06, "triangle", 520.0, 260.0, 0.06]],
+	# A foe far below the hero takes fright and runs (PIX-251): a yelp that
+	# jumps up and falls away.
+	"fright": [[0.03, "square", 990.0, 1480.0, 0.04], [0.07, "triangle", 1480.0, 620.0, 0.06]],
 }
 const UI_RATE := 22050
 

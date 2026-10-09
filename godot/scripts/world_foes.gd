@@ -3,10 +3,10 @@ extends Node
 ## The world's foes (Solid Ground, PIX-260: moved out of world.gd as they
 ## were): packs at their homes and back when their time is up, the named
 ## monsters in their lairs, the mimic in its chest; when a monster may notice
-## the hero, and the fight's clock that keeps the battle music on; a monster
-## fallen (the web's victory, a pack scattered, a floor's foes counted down)
-## and a boss's fall. Monsters stand on the world's y-sorted actors layer, in
-## the "mobs" group.
+## the hero (or, far below them, run: PIX-251), and the fight's clock that
+## keeps the battle music on; a monster fallen (the web's victory, a pack
+## scattered, a floor's foes counted down) and a boss's fall. Monsters stand
+## on the world's y-sorted actors layer, in the "mobs" group.
 
 var world: Node
 ## Monsters at each of the web's visible spawn points: a small pack of the
@@ -31,6 +31,10 @@ var hunted_by_boss := false
 var noticed_at := -100.0
 ## Bosses and named monsters felled on this visit (the harness reports it).
 var bosses_fallen := 0
+## Monsters that took fright and ran from the hero (PIX-251; the harness
+## reports it), and when the last did.
+var fled := 0
+var frightened_at := -100.0
 ## Foes still standing on the dungeon floor the hero walks (0 when cleared).
 var floor_foes := 0
 
@@ -153,6 +157,8 @@ func mimic_wakes(sprite: Sprite2D, chest: Dictionary) -> void:
 	if ambush.x < 0:
 		ambush = world.player_cell + Vector2i.RIGHT
 	var mimic := spawn_enemy("mimic", ambush, world.map.region_at(ambush), "", false, true)
+	# It bites what woke it, however strong (PIX-251).
+	mimic.woken = true
 	world.fx.appear(mimic)
 	mimic.notice()
 
@@ -185,6 +191,19 @@ func on_enemy_noticed(enemy: Node) -> void:
 	hunted_by_boss = hunted_by_boss or fights_like_boss(enemy)
 	if enemy.fighter.has("named"):
 		world.messages.log_lines([Hunts.named(enemy.fighter["named"])["seen"]])
+
+
+## A monster far below the hero has seen them and runs (PIX-251): a yelp,
+## not more than once a beat, and the first time a hint that says why. It
+## is no fight: the fight's clock isn't wound (the music stays the place's),
+## no growl, no word of dodging.
+func on_enemy_frightened(_enemy: Node) -> void:
+	var now := Time.get_ticks_msec() / 1000.0
+	fled += 1
+	world.hud.hint("fright")
+	if now - frightened_at > 1.5:
+		Sound.play_ui("fright")
+	frightened_at = now
 
 
 ## A boss or a named monster (PIX-156): the boss's music plays.
