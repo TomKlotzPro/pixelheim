@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.180.0",
+      "date": "2026-10-09",
+      "codename": "Where It Leads",
+      "notes": [
+        "Fast travel shows where it takes you: the waypoint you choose on the map gets a gold ring, its name and the region you'll land in, and the map turns to that place; choose with the arrows, the pad or the mouse"
+      ]
+    },
+    {
       "version": "0.179.0",
       "date": "2026-10-09",
       "codename": "Who Has Work",

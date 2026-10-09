@@ -2565,6 +2565,10 @@ msgid "Fantastique"
 msgstr "Fantastique"
 
 #: assets/data/changelog.json
+msgid "Fast travel shows where it takes you: the waypoint you choose on the map gets a gold ring, its name and the region you'll land in, and the map turns to that place; choose with the arrows, the pad or the mouse"
+msgstr "Le voyage rapide montre où il mène : le relais choisi sur la carte s'entoure d'un anneau doré, avec son nom et la région où vous arriverez, et la carte passe à cet endroit ; choisissez avec les flèches, la manette ou la souris"
+
+#: assets/data/changelog.json
 msgid "Fast travel: any waypoint you have laid eyes on is one click away - seen once, reachable forever"
 msgstr "Voyage rapide : tout relais que vous avez aperçu est à un clic - vu une fois, accessible pour toujours"
 
@@ -4855,6 +4859,10 @@ msgstr "« Quoi de neuf » est désormais dans le menu titre, au clavier com
 #: assets/data/changelog.json
 msgid "When every voice is busy, the sounds that matter (a hurt, a level, a victory) still get through"
 msgstr "Quand toutes les voix sont prises, les sons qui comptent (une blessure, un niveau, une victoire) passent quand même"
+
+#: assets/data/changelog.json
+msgid "Where It Leads"
+msgstr "Où ça mène"
 
 #: assets/data/changelog.json
 msgid "Who Has Work"
@@ -11744,33 +11752,33 @@ msgstr "valider"
 msgid "{key:move_up}/{key:move_down}  choose      {key:interact}  %s      Esc  close"
 msgstr "{key:move_up}/{key:move_down}  choisir      {key:interact}  %s      Esc  fermer"
 
-#: scripts/map_screen.gd:47
-msgid "Waypoints"
-msgstr "Relais"
-
-#: scripts/map_screen.gd:62
-msgid "Unstaffed: no one keeps this post yet"
-msgstr "Inoccupé : personne ne tient encore ce poste"
-
-#: scripts/map_screen.gd:70
-msgid "Nothing discovered yet. Waypoints you find on your travels show up here."
-msgstr "Rien de découvert pour l'instant. Les relais trouvés en voyage apparaissent ici."
-
-#: scripts/map_screen.gd:78
-msgid "Waypoint"
-msgstr "Relais"
-
-#: scripts/map_screen.gd:78
+#: scripts/map_screen.gd:190
 msgid "You"
 msgstr "Vous"
 
-#: scripts/map_screen.gd:80
+#: scripts/map_screen.gd:191
+msgid "Waypoint"
+msgstr "Relais"
+
+#: scripts/map_screen.gd:193
 msgid "Lair"
 msgstr "Repaire"
 
-#: scripts/map_screen.gd:82
+#: scripts/map_screen.gd:195
 msgid "Quest"
 msgstr "Quête"
+
+#: scripts/map_screen.gd:62
+msgid "Waypoints"
+msgstr "Relais"
+
+#: scripts/map_screen.gd:78
+msgid "Unstaffed: no one keeps this post yet"
+msgstr "Inoccupé : personne ne tient encore ce poste"
+
+#: scripts/map_screen.gd:90
+msgid "Nothing discovered yet. Waypoints you find on your travels show up here."
+msgstr "Rien de découvert pour l'instant. Les relais trouvés en voyage apparaissent ici."
 
 #: scripts/options_screen.gd:113
 msgid "System (%s)"
