@@ -845,6 +845,9 @@ func resolve_quests(giver_id: String) -> String:
 			# The giver's words were just said; the line names the task (PIX-194).
 			return Text.t("Quest accepted: %s. %s") % [quest["name"], quest["brief"]]
 		var objective: Dictionary = quest["objective"]
+		# A quest that ends in a choice waits for the hero's answer (PIX-192).
+		if quest.has("choice") and Quests.is_ready(quest, entries, pack.items):
+			return Text.t("%s: they wait on your answer.") % quest["name"]
 		if Quests.is_ready(quest, entries, pack.items):
 			if objective["kind"] == "deliver":
 				pack.remove_item(objective["itemId"], int(objective["count"]))
@@ -876,6 +879,41 @@ func resolve_quests(giver_id: String) -> String:
 			String(objective["label"]).to_lower(),
 		]
 	return ""
+
+
+## The hero's answer to a quest that ends in a choice (PIX-192): the
+## option's reward instead of the quest's, its words, and the choice kept
+## (the giver remembers it). Returns the line to show, "" if not ready.
+func choose(quest_id: String, option_id: String) -> String:
+	var quest := Quests.by_id(quest_id)
+	var entry: Dictionary = progression.quests.get(quest_id, {})
+	if not quest.has("choice") or entry.is_empty() or entry["done"] or not Quests.is_ready(quest, progression.quests, pack.items):
+		return ""
+	var option: Dictionary = {}
+	for each: Dictionary in quest["choice"]["options"]:
+		if each["id"] == option_id:
+			option = each
+	if option.is_empty():
+		return ""
+	if quest["objective"]["kind"] == "deliver":
+		pack.remove_item(quest["objective"]["itemId"], int(quest["objective"]["count"]))
+	entry["done"] = true
+	entry["choice"] = option_id
+	var reward: Dictionary = option["reward"]
+	pack.gold += int(reward.get("gold", 0))
+	var level_line := earn_xp(int(reward.get("xp", 0)))
+	if reward.has("itemId"):
+		pack.add_item(reward["itemId"])
+	_pack_changed()
+	save_now()
+	var paid: Array[String] = []
+	if int(reward.get("gold", 0)) > 0:
+		paid.append(Text.t("+%d gold") % reward["gold"])
+	paid.append(Text.t("+%d XP") % reward.get("xp", 0))
+	if reward.has("itemId"):
+		paid.append(Catalog.item_name(reward["itemId"]))
+	var done := Text.t("Quest complete: %s. %s. \u201c%s\u201d") % [quest["name"], ", ".join(paid), option["line"]]
+	return done + ("\n" + level_line if level_line != "" else "")
 
 
 ## Recruiting where they wait; services once they live in town.
@@ -1144,9 +1182,25 @@ func wake_at_inn() -> Dictionary:
 		inn = {"mapId": "town", "x": tent.x, "y": tent.y + 1, "facing": "down"}
 	_make_whole()
 	wake_the_wilds()
+	# A fall costs a tenth of the gold carried (PIX-192), never what's banked;
+	# the night of the fire is a lesson, not a toll.
+	var lost := death_toll()
+	pack.gold -= lost
+	_pack_changed()
 	save_now()
-	message.emit("You wake at the inn. The innkeeper says nothing. Kind of her.")
+	if lost > 0:
+		message.emit(Text.t("You wake at the inn, %d gold lighter. What isn't banked is a fallen hero's to lose.") % lost)
+	else:
+		message.emit("You wake at the inn. The innkeeper says nothing. Kind of her.")
 	return inn
+
+
+## The gold a fall costs now: a tenth of what's carried (economy.json
+## deathGoldShare); nothing on the night of the fire.
+func death_toll() -> int:
+	if progression.prologue != Prologue.DONE:
+		return 0
+	return floori(pack.gold * float(Economy._data()["deathGoldShare"]))
 
 
 ## A monster falls (onMonsterDefeated): mastery, bounties, rent, the garden,

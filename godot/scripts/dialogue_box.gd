@@ -10,6 +10,9 @@ const SIZE := Vector2(980, 188)
 const PORTRAIT := 112
 
 var npc: Dictionary
+## A question at the end (PIX-192): the answers' labels, and what picks one.
+var choices: Array = []
+var on_choice := Callable()
 var page := 0
 var text: Label
 var counter: Label
@@ -93,12 +96,20 @@ func _portrait(sprite: String) -> Control:
 
 
 ## E, Enter, Space or a click turns the page (and closes after the last);
-## Esc or a step in any direction leaves at any line.
+## Esc or a step in any direction leaves at any line. At a question, 1, 2...
+## answer it (or a click on the answer); E waits for one.
 func _command(event: InputEvent) -> Callable:
 	var click: bool = event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT
 	var leave: bool = event.is_action_pressed("ui_cancel") or event.is_action_pressed("menu")
 	for move: String in ["move_up", "move_down", "move_left", "move_right"]:
 		leave = leave or event.is_action_pressed(move)
+	if _asking():
+		for index in choices.size():
+			if event.is_action_pressed("skill_%d" % (index + 1)):
+				return _pick.bind(index)
+		if leave:
+			return _close
+		return Callable()
 	if click or event.is_action_pressed("interact") or event.is_action_pressed("ui_accept"):
 		return _advance
 	if leave:
@@ -114,13 +125,29 @@ func _advance() -> void:
 	_show()
 
 
+func _asking() -> bool:
+	return not choices.is_empty() and page >= npc["lines"].size() - 1
+
+
+func _pick(index: int) -> void:
+	close()
+	on_choice.call(index)
+	GameState.finish_dialogue(npc["id"])
+
+
 func _show() -> void:
 	text.text = npc["lines"][page]
 	var last: bool = page >= npc["lines"].size() - 1
 	counter.text = "" if npc["lines"].size() == 1 else "%d / %d" % [page + 1, npc["lines"].size()]
 	for child in hints.get_children():
 		child.queue_free()
-	hints.add_child(UiStyle.hints(["E", "close"] if last else ["E", "next", "Esc", "leave"]))
+	if _asking():
+		# The answers, a key and a click each, and leaving without one.
+		for index in choices.size():
+			hints.add_child(UiStyle.button(Text.t("%d  %s") % [index + 1, choices[index]], _pick.bind(index)))
+		hints.add_child(UiStyle.hints(["Esc", "not yet"]))
+	else:
+		hints.add_child(UiStyle.hints(["E", "close"] if last else ["E", "next", "Esc", "leave"]))
 	more.visible = not last
 	_fit.call_deferred()
 

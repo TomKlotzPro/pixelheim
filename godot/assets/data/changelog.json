@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.141.0",
+      "date": "2026-10-09",
+      "codename": "Stakes",
+      "notes": [
+        "STAKES: some quests now end in a choice. In Greyhold, Fenwick's old crew still hides in the low cells - keep his secret or tell Ulla. On the Saltmere beach, Rook wants half the smugglers' captain's take - split it with him or give it back to the town. Each answer pays its own way, and the one who asked remembers",
+        "A FALL COSTS SOMETHING: waking at the inn now costs a tenth of the gold you carry. What's banked with Mirelle is safe, and the night of the fire costs nothing",
+        "A question in a conversation is answered with 1 or 2, or a click on the answer; Esc leaves it for later"
+      ]
+    },
+    {
       "version": "0.140.0",
       "date": "2026-10-09",
       "codename": "One Hero Everywhere",

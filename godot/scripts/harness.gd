@@ -454,6 +454,20 @@ func _run_test_harness() -> void:
 		var stand_in := WebImport.parse_any(FileAccess.get_file_as_string(web_file)) if web_file != "" else {}
 		world._open_saves(stand_in, not stand_in.is_empty())
 		await get_tree().create_timer(0.3).timeout
+	var ready_index := args.find("--ready")
+	if ready_index >= 0:
+		# A quest accepted and its goal met (PIX-192): `--ready fenwick_locket`.
+		var quest := Quests.by_id(args[ready_index + 1])
+		var objective: Dictionary = quest["objective"]
+		GameState.progression.quests[quest["id"]] = {"progress": int(objective["count"]), "done": false}
+		if objective["kind"] == "deliver":
+			GameState.pack.add_item(objective["itemId"], int(objective["count"]))
+	var talk_index := args.find("--talk-to")
+	if talk_index >= 0:
+		# A conversation with one villager by id, wherever they stand.
+		world._talk(Npcs.by_id(args[talk_index + 1], GameState.settlement.settlers))
+		await get_tree().create_timer(0.3).timeout
+		await _keys(args)
 	if args.has("talk") or args.has("near"):
 		# Stand below the map's first villager facing up; `talk` also presses E.
 		var villager: Node = get_tree().get_first_node_in_group("npcs")
