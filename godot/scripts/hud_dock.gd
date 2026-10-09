@@ -213,7 +213,7 @@ func _purse() -> Control:
 	block.alignment = BoxContainer.ALIGNMENT_CENTER
 	purse = UiStyle.purse(0)
 	block.add_child(purse)
-	menu_button = UiStyle.button("Menu", _toggle_menu)
+	menu_button = UiStyle.button("Menu", toggle_menu)
 	block.add_child(menu_button)
 	return block
 
@@ -280,7 +280,7 @@ func _show_focus() -> void:
 		line.modulate = Color(1.25, 1.1, 0.8) if index == menu_focus else Color.WHITE
 
 
-func _toggle_menu() -> void:
+func toggle_menu() -> void:
 	menu.visible = not menu.visible
 	menu_focus = -1
 	_show_focus()

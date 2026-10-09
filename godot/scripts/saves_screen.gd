@@ -212,7 +212,7 @@ func _play() -> void:
 
 func _decline() -> void:
 	close()
-	get_tree().current_scene._open_title()
+	get_tree().current_scene.open_title()
 
 
 func _new_hero() -> void:

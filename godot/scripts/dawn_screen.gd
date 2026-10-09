@@ -96,9 +96,9 @@ func _fires() -> void:
 	var still := GameState.settings.reduce_motion
 	var path: Array[Vector2] = [
 		world.camera_rig.camera.global_position,
-		world._cell_center(Vector2i(24, 12)),
-		world._cell_center(Vector2i(48, 14)),
-		world._cell_center(Town.square()),
+		MapView.center(Vector2i(24, 12)),
+		MapView.center(Vector2i(48, 14)),
+		MapView.center(Town.square()),
 	]
 	_flow = create_tween()
 	_flow.set_parallel()
@@ -126,7 +126,7 @@ func _fires() -> void:
 
 func _fire_at(index: int) -> Vector2:
 	var rect: Rect2i = world.view.fires[index]["rect"]
-	return world._cell_center(rect.get_center())
+	return MapView.center(rect.get_center())
 
 
 ## 2. A breath of dark; the survivors (and the mayor, out of his hall) stand
@@ -162,10 +162,10 @@ func _place_everyone() -> void:
 		world.actors.add_child(figure)
 		_actors["mayor"] = figure
 	var hero_cell: Vector2i = Town.square() + Vector2i(0, 2)
-	world.player.position = world._cell_center(hero_cell)
+	world.player.position = MapView.center(hero_cell)
 	world.player_cell = hero_cell
 	world.player.face(Vector2.UP)
-	world.camera_rig.camera.global_position = world._cell_center(Town.square())
+	world.camera_rig.camera.global_position = MapView.center(Town.square())
 	world.hud.sky_overlay.color = DAWN_GREY
 
 
@@ -176,7 +176,7 @@ func _stand(villager: Node2D, cell: Vector2i) -> void:
 	villager.home = cell
 	villager.cell = cell
 	villager.gather_at = cell
-	villager.position = world._cell_center(cell)
+	villager.position = MapView.center(cell)
 	villager.reset_physics_interpolation()
 	_actors[villager.data["id"]] = villager
 
