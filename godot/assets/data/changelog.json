@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.188.0",
+      "date": "2026-10-10",
+      "codename": "Running Scared",
+      "notes": [
+        "Monsters far below your level run when they see you: a pale exclamation mark, a bead of sweat and a yelp. Corner one or strike it and it fights back; bosses and named monsters never run",
+        "A monster running from you doesn't start the battle music",
+        "The exclamation mark over a monster that has seen you sits above its level, which no longer hides its dot"
+      ]
+    },
+    {
       "version": "0.187.0",
       "date": "2026-10-10",
       "codename": "Open Book",

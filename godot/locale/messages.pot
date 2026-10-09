@@ -1781,6 +1781,10 @@ msgid "A mini-map rides in the corner of the world, fog included"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A monster running from you doesn't start the battle music"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A necromancer's grave violet stays on their own robe and hood: borrowed iron, leather or a gilded plate keeps its colour"
 msgstr ""
 
@@ -3161,6 +3165,10 @@ msgid "Monsters drop loot: gear now rolls Fine and Epic rarities with bonus stat
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Monsters far below your level run when they see you: a pale exclamation mark, a bead of sweat and a yelp. Corner one or strike it and it fights back; bosses and named monsters never run"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Monsters fight dirty now: wyverns poison, the dragon burns, golems stun"
 msgstr ""
 
@@ -3662,6 +3670,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Roads and town stay clean-looking because they ARE safe"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Running Scared"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4514,6 +4526,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The decor got real carpentry too: lamp posts with glowing lanterns, a roofed well, rail fences that connect, market stalls under striped awnings, round barrels, plank crates - and real trees in the deep woods"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The exclamation mark over a monster that has seen you sits above its level, which no longer hides its dot"
 msgstr ""
 
 #: assets/data/changelog.json
