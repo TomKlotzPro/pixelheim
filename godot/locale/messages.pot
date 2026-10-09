@@ -1929,6 +1929,10 @@ msgid "Ascension is a scene now: letterbox bars, turning light, your hero marchi
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "At night its windows and lamps are lit, and smoke rises from its roofs"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "At the Bench"
 msgstr ""
 
@@ -2853,6 +2857,10 @@ msgid "Home Industry"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Home in Sight"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Home storage is the answer to carry weight: stored goods weigh NOTHING on the road. Hoarding, finally legal"
 msgstr ""
 
@@ -2914,6 +2922,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Intelligence finally feeds the mana pool: casters gain +2 max MP per INT point"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "It grows as you rebuild it, from the Town Hall alone among the ashes to the city's lamps and fountain"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4722,6 +4734,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The viewport grew from 15x11 to 21x13 tiles: you see MORE world at once, and the finer scale reads as sharper, denser pixel art"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The village seen from outside is the village you walk in: its own houses and roofs, the river with its bridge, its fields and woods, inside one ring of its rampart, the road running in through the gate"
 msgstr ""
 
 #: assets/data/changelog.json

@@ -1,7 +1,8 @@
 extends Node
 ## The look book (PIX-220): the same scenes, staged the same way every time -
 ## the town by day, at dusk and at night, the forest, the Ash, the Mire, the
-## Frostgate, a dungeon floor, a fight and the overworld at night - each saved
+## Frostgate, a dungeon floor, a fight, the overworld at night and the
+## village seen from its road (PIX-248) - each saved
 ## as a picture, and all of them on one contact sheet, so a change to how the
 ## game looks is judged before and after, by eye. With `perf`, each shot also
 ## reports what its frames cost (PerfProbe); with `film`, each is filmed for
@@ -36,6 +37,11 @@ const SHOTS := [
 	{"name": "15_coast", "map": "saltmere", "cell": Vector2i(33, 27), "time": DAY},
 	{"name": "16_deepwood", "map": "deepwood", "time": DAY},
 	{"name": "17_strike", "map": "overworld", "at": "forest_1", "time": DAY, "foe": "orc", "strike": true},
+	# The village seen from outside (PIX-248): up the road to its gate by day
+	# and at night, and its lit windows from the road along its west wall.
+	{"name": "18_village_road", "map": "overworld", "cell": Vector2i(48, 40), "time": DAY},
+	{"name": "19_village_gate_night", "map": "overworld", "cell": Vector2i(48, 41), "time": NIGHT},
+	{"name": "20_village_west_night", "map": "overworld", "cell": Vector2i(34, 47), "time": NIGHT},
 ]
 ## Upper Street: the shop's and the inn's fronts, the street lamps, the hall.
 const STREET := Vector2i(40, 13)

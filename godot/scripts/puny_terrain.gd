@@ -62,17 +62,9 @@ const GATE := 802
 const TOWER_EVERY := 8
 const RAMPART := ["wall", "door", "door_shut"]
 
-## Maps that show a whole town as one block of roofs (the overworld): Puny
-## draws it as a walled city of house icons around a keep instead.
+## Maps that show the whole village as one block of roofs (the overworld):
+## Skyline draws the village there, small (PIX-248).
 const SKYLINE_MAPS := ["overworld"]
-## Shade's single-tile houses: thatch, teal and red roofs.
-const HOUSES := [
-	709, 710, 711, 733, 734, 735, 736, 737, 738, 760, 761, 762, 763, 764, 765,
-	895, 896, 897, 898, 899, 900, 922, 923, 924, 925, 926, 927,
-	904, 905, 906, 907, 908, 909, 931, 932, 933, 934, 935, 936,
-]
-## The keep, 2x2 from its top-left.
-const KEEP := [[Vector2i(0, 0), 714], [Vector2i(1, 0), 715], [Vector2i(0, 1), 741], [Vector2i(1, 1), 742]]
 
 static var _sheet: PunySheet
 
@@ -267,37 +259,6 @@ static func _run(grid: Dictionary, cell: Vector2i, step: Vector2i, tiles: Array)
 		count += 1
 		next += step
 	return count
-
-
-## The skyline of a town drawn as one roof block (SKYLINE_MAPS): a keep at
-## the block's heart and houses on every other cell around it, none right
-## behind a gate. Cell -> Puny tile.
-static func skyline(grid: Dictionary) -> Dictionary:
-	var roofs: Array[Vector2i] = []
-	for cell: Vector2i in grid:
-		if (grid[cell] as String).begins_with("roof"):
-			roofs.append(cell)
-	if roofs.is_empty():
-		return {}
-	var low := roofs[0]
-	var high := roofs[0]
-	for cell in roofs:
-		low = Vector2i(mini(low.x, cell.x), mini(low.y, cell.y))
-		high = Vector2i(maxi(high.x, cell.x), maxi(high.y, cell.y))
-	var keep_at := (low + high) / 2
-	var drawn := {}
-	for piece: Array in KEEP:
-		drawn[keep_at + piece[0]] = piece[1]
-	for cell in roofs:
-		if drawn.has(cell) or cell.x % 2 != 0 or cell.y % 2 != 0:
-			continue
-		var by_gate := false
-		for step: Vector2i in [Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT]:
-			if grid.get(cell + step, "") in ["door", "door_shut"]:
-				by_gate = true
-		if not by_gate:
-			drawn[cell] = HOUSES[absi(hash(cell)) % HOUSES.size()]
-	return drawn
 
 
 ## Puny objects standing on our cells, -1 where none: bridges and docks as

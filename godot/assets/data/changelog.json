@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.190.0",
+      "date": "2026-10-10",
+      "codename": "Home in Sight",
+      "notes": [
+        "The village seen from outside is the village you walk in: its own houses and roofs, the river with its bridge, its fields and woods, inside one ring of its rampart, the road running in through the gate",
+        "At night its windows and lamps are lit, and smoke rises from its roofs",
+        "It grows as you rebuild it, from the Town Hall alone among the ashes to the city's lamps and fountain"
+      ]
+    },
+    {
       "version": "0.189.0",
       "date": "2026-10-10",
       "codename": "Fresh Ground",
