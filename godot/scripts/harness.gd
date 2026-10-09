@@ -533,6 +533,13 @@ func _run_test_harness() -> void:
 			GameState.reveals.assign(["project:street_lamps", "age:2"])
 		world.stage.play_reveals()
 		await get_tree().create_timer(1.4).timeout
+	if args.has("rebuilt"):
+		# Back from the board with something built, the real way (PIX-238):
+		# the town redrawn and faded in from the dark, then its tour. Pair
+		# with `--map town --town-tier 2 fades`.
+		GameState.reveals.assign(["project:street_lamps", "age:2"])
+		world.stage.after_board()
+		await get_tree().create_timer(1.4).timeout
 	if args.has("ending"):
 		# The ending (PIX-150): home to the festival and the tour's first stop;
 		# `rest` the ending where Morvax is laid to rest (PIX-157).
@@ -695,6 +702,10 @@ func _run_test_harness() -> void:
 		)
 	).map(func(node: Node) -> String: return node.get_script().resource_path.get_file().get_basename())
 	var mobs := get_tree().get_nodes_in_group("mobs").filter(func(mob: Node) -> bool: return not mob.dying).size()
+	# What's left of a fade from the dark (PIX-238), when fades run.
+	if args.has("fades"):
+		var dark: int = world.hud.root.get_children().filter(func(node: Node) -> bool: return node.has_meta("fade") and node.color.a > 0.5).size()
+		motion_report += " dark=%d" % dark
 	# A boss's fall (PIX-232), when one fell.
 	if world.foes.bosses_fallen > 0:
 		motion_report += " fell=%d" % world.foes.bosses_fallen

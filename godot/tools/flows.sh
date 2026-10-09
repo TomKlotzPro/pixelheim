@@ -56,6 +56,7 @@ FLOWS=(
 	"road|--prologue 1|map=overworld cell=\(48, 34\)"
 	"dodge|--map town --keys shift --wait 0.4|map=town cell=\(40, 33\)"
 	"hunt|--map overworld --at 70,40 fight slay --foe greymaw --wait 0.3|map=overworld .*gold=160"
+	"rebuilt|--map town --town-tier 2 rebuilt fades|open=reveal_screen.* dark=0"
 	"bossfell|--map icecave fight slay --foe rimefang --wait 0.3|map=icecave .* fell=1"
 	"noescape|--map icecave fight --foe rimefang flee|map=icecave "
 	"bounty|--map town --at 43,22 --cleared 4 --keys w,e|open=bounty_screen"
