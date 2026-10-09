@@ -151,7 +151,7 @@ func test_owned_house_sign_reads_home() -> void:
 	assert_has(labels, "HOME")
 	assert_does_not_have(labels, "FOR SALE")
 	state.settlement.house["owned"] = true
-	assert_true(state.owns_house())
+	assert_true(state.household.owns_house())
 
 
 func test_a_late_game_web_save_survives_godot_untouched() -> void:

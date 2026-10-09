@@ -29,11 +29,11 @@ func test_the_stock_grows_with_the_relics_then_the_floors() -> void:
 		last = stage
 	assert_eq(Economy.stock_stage(13, 4), 13, "on the mountain the floors lead")
 	state.progression.hunted.append("tidecaller")
-	assert_eq(state.stock_stage(), Economy.stock_stage(1, 1))
+	assert_eq(state.trade.stock_stage(), Economy.stock_stage(1, 1))
 
 
 func test_mana_and_cures_from_the_first_day() -> void:
-	var stock := Economy.shop_stock("alchemist", state.stock_stage())
+	var stock := Economy.shop_stock("alchemist", state.trade.stock_stage())
 	assert_has(stock, "potion_mp")
 	assert_has(stock, "antidote")
 
@@ -54,9 +54,9 @@ func test_every_region_has_a_trader() -> void:
 
 
 func test_buying_from_a_trader() -> void:
-	state.stall_shop = "chandler"
+	state.trade.stall_shop = "chandler"
 	state.pack.gold = 500
 	var gold: int = state.pack.gold
-	assert_true(state.buy_item("longbow"))
+	assert_true(state.trade.buy_item("longbow"))
 	assert_eq(state.pack.gold, gold - Economy.buy_price("longbow"))
-	state.stall_shop = ""
+	state.trade.stall_shop = ""

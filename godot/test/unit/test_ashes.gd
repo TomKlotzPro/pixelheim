@@ -67,12 +67,12 @@ func test_the_keepers_trade_from_stalls_and_sela_keeps_a_tent() -> void:
 
 func test_hilda_crafts_at_her_stall() -> void:
 	state.world.map_id = "town"
-	assert_false(state.at_station("smithing"))
-	state.stall_shop = Economy.station_shop("smithing")
-	assert_true(state.at_station("smithing"))
-	assert_false(state.at_station("alchemy"), "Hilda doesn't brew")
+	assert_false(state.trade.at_station("smithing"))
+	state.trade.stall_shop = Economy.station_shop("smithing")
+	assert_true(state.trade.at_station("smithing"))
+	assert_false(state.trade.at_station("alchemy"), "Hilda doesn't brew")
 	state.pack.items["marsh_reed"] = 3
-	assert_true(state.craft("craft_reed_buckler")["made"])
+	assert_true(state.trade.craft("craft_reed_buckler")["made"])
 
 
 func test_rebuilding_the_hamlet_opens_the_doors() -> void:

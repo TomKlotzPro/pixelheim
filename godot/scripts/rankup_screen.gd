@@ -154,7 +154,7 @@ func _pick(index: int) -> void:
 
 ## The walk is taken; a further tier the rank already allows opens at once.
 func _walk() -> void:
-	if GameState.choose_path(choices[selected]["id"]):
+	if GameState.training.choose_path(choices[selected]["id"]):
 		Sound.play("learn")
 	selected = 0
 	_offer()

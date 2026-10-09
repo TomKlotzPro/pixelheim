@@ -111,7 +111,7 @@ func test_the_kill_pays_the_bounty_and_the_drop_and_the_town_hears() -> void:
 	assert_string_contains(Npcs.reaction(bram, state.last_deed), "Old Greymaw")
 	# Never paid twice.
 	var after: int = state.pack.gold
-	state._hunted("greymaw")
+	state.spoils.hunted("greymaw")
 	assert_eq(state.pack.gold, after)
 
 

@@ -109,26 +109,26 @@ func test_the_dock_keeps_its_keys() -> void:
 	var learned := []
 	state.skill_learned.connect(func(entry: Dictionary, key: int) -> void: learned.append([entry["id"], key]))
 	for node_id in ["cleric_smite", "cleric_sanctuary", "cleric_mend_2", "cleric_martyr", "cleric_divine_word", "cleric_smite_2", "cleric_zealotry", "cleric_judgement"]:
-		assert_true(state.buy_skill_node(node_id), node_id)
+		assert_true(state.training.buy_skill_node(node_id), node_id)
 	assert_eq(Skills.dock_keys(hero), ["cleric_mend", "cleric_smite", "cleric_sanctuary", "cleric_divine_word", "cleric_judgement", ""], "each new skill takes the next free key")
 	assert_eq(learned.back(), ["cleric_judgement", 5])
-	assert_true(state.choose_path(Ranks.path_choices(hero)[0]["id"]))
+	assert_true(state.training.choose_path(Ranks.path_choices(hero)[0]["id"]))
 	assert_eq(Skills.dock_keys(hero)[5], "path", "the signature takes the last key")
-	assert_true(state.buy_skill_node("cleric_holy_nova"))
+	assert_true(state.training.buy_skill_node("cleric_holy_nova"))
 	assert_eq(learned.back(), ["cleric_holy_nova", 0], "all six keys taken: it waits off the dock")
 	assert_false(Skills.docked(hero).any(func(skill: Dictionary) -> bool: return skill.get("key", "") == "cleric_holy_nova"))
-	assert_true(state.dock_skill("cleric_holy_nova", 1))
+	assert_true(state.training.dock_skill("cleric_holy_nova", 1))
 	assert_eq(Skills.dock_keys(hero).slice(0, 2), ["cleric_mend", "cleric_holy_nova"], "Smite makes room")
-	assert_true(state.dock_skill("cleric_mend", 1))
+	assert_true(state.training.dock_skill("cleric_mend", 1))
 	assert_eq(Skills.dock_keys(hero).slice(0, 2), ["cleric_holy_nova", "cleric_mend"], "two keys trade places")
-	assert_false(state.dock_skill("warrior_cleave", 0), "only a skill the hero knows")
+	assert_false(state.training.dock_skill("warrior_cleave", 0), "only a skill the hero knows")
 	hero.level = 20
-	assert_true(state.choose_path(Ranks.path_choices(hero)[0]["id"]) or true)
+	assert_true(state.training.choose_path(Ranks.path_choices(hero)[0]["id"]) or true)
 	assert_eq(Skills.dock_keys(hero)[5], "path", "a deeper step keeps the signature's key")
 	assert_eq(HeroState.from_dict(hero.to_dict()).skill_dock, hero.skill_dock, "the dock is saved")
 	state.world.map_id = "town"
 	state.pack.gold = 9999
-	assert_true(state.forget_skills())
+	assert_true(state.training.forget_skills())
 	assert_eq(Skills.dock_keys(hero)[0], "", "a forgotten skill leaves its key empty")
 	assert_eq(Skills.docked(hero)[1]["key"], "cleric_mend")
 

@@ -151,7 +151,7 @@ func _physics_process(delta: float) -> void:
 				# The web's swing: scaling stat + weapon, crits, mastery, through armour (PIX-185).
 				var swing := Bestiary.hero_attack(
 					GameState.hero, GameState.pack, body.fighter,
-					GameState.settlement.bard_song == true, GameState.roll, GameState.song_crit(), GameState.home_buff("crit") + (1.0 if primed else 0.0)
+					GameState.settlement.bard_song == true, GameState.roll, GameState.song_crit(), GameState.household.home_buff("crit") + (1.0 if primed else 0.0)
 				)
 				body.take_hit(swing["damage"], global_position, HeroRules.passives(GameState.hero)["attackInflict"], swing["crit"])
 				_steal_life(swing["damage"])
@@ -344,7 +344,7 @@ func cast(index: int) -> void:
 			Sound.play_ui("deny")
 			return
 		face(target.global_position - global_position)
-	GameState.pay_for_skill(skill)
+	GameState.training.pay_for_skill(skill)
 	skill_ready = false
 	get_tree().create_timer(SKILL_TURN).timeout.connect(func() -> void: skill_ready = true)
 	attacking = true

@@ -99,7 +99,7 @@ func test_vex_talks_before_his_counter_only_while_his_quest_waits() -> void:
 	state.world.map_id = "town_alchemist"
 	state.pack.items.merge({"forest_herb": 1, "marsh_reed": 1})
 	state.roll = func() -> float: return 0.99
-	state.craft("brew_potion_hp")
+	state.trade.craft("brew_potion_hp")
 	assert_true(waits.call(), "potion brewed: he takes word of it")
 	state.finish_dialogue("alchemist_vex")
 	assert_true(state.progression.quests["herbs_for_vex"]["done"])

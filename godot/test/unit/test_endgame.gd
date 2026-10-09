@@ -58,11 +58,11 @@ func test_a_whole_trees_spare_points_buy_ranks_beyond_it() -> void:
 			hero.skill_nodes.append(entry["id"])
 	assert_true(Skills.beyond_open(hero))
 	var before := float(HeroRules.passives(hero)["skillPower"])
-	assert_true(state.buy_beyond("power"))
+	assert_true(state.training.buy_beyond("power"))
 	assert_almost_eq(float(HeroRules.passives(hero)["skillPower"]), before + float(power["skillPower"]), 0.0001)
 	var hp: int = hero.stats["maxHp"]
 	var grown := HeroRules.grown_hp(hero.to_dict())
-	assert_true(state.buy_beyond("vigor"))
+	assert_true(state.training.buy_beyond("vigor"))
 	assert_eq(int(hero.stats["maxHp"]), hp + 8)
 	assert_eq(HeroRules.grown_hp(hero.to_dict()), grown + 8, "a save's catch-up counts the ranks")
 	assert_eq(HeroState.from_dict(hero.to_dict()).beyond, hero.beyond, "the ranks are saved")
@@ -76,13 +76,13 @@ func test_forgetting_gives_the_ranks_back_too() -> void:
 		if entry["id"] not in hero.skill_nodes:
 			hero.skill_nodes.append(entry["id"])
 	hero.skill_points = 2
-	state.buy_beyond("vigor")
-	state.buy_beyond("steal")
+	state.training.buy_beyond("vigor")
+	state.training.buy_beyond("steal")
 	var hp_before_ranks: int = int(hero.stats["maxHp"]) - 8
 	state.world.map_id = "town"
 	state.pack.gold = 9999
 	var points_after: int = hero.skill_points + Skills.forgettable(hero).size() + 2
-	assert_true(state.forget_skills())
+	assert_true(state.training.forget_skills())
 	assert_eq(hero.skill_points, points_after)
 	assert_true(hero.beyond.is_empty())
 	assert_lte(int(hero.stats["maxHp"]), hp_before_ranks, "vigour's health goes with it")

@@ -74,15 +74,15 @@ func test_quenching_is_a_sink_that_grows() -> void:
 	state.world.map_id = "town_smith"
 	state.pack.gold = 100000
 	var first := Economy.quench_cost(piece)
-	assert_eq(state.quench_gear(piece["uid"]), "", "no gem, no quench")
+	assert_eq(state.trade.quench_gear(piece["uid"]), "", "no gem, no quench")
 	state.pack.add_item("gem", 3)
 	var stat := Economy.quench_stat(piece)
 	var before := int(InventoryState.shown_affixes(piece).get(stat, 0))
-	assert_ne(state.quench_gear(piece["uid"]), "")
+	assert_ne(state.trade.quench_gear(piece["uid"]), "")
 	assert_eq(int(InventoryState.shown_affixes(piece)[stat]), before + 1)
 	assert_eq(Economy.quench_cost(piece), roundi(first * 1.5), "each time half again")
 	assert_eq(state.pack.gold, 100000 - first)
 	assert_eq(int(state.pack.items["gem"]), 2)
 	var plain := InventoryState.create_gear("obsidian_blade")
 	state.pack.gear.append(plain)
-	assert_eq(state.quench_gear(plain["uid"]), "", "only what came from the deep")
+	assert_eq(state.trade.quench_gear(plain["uid"]), "", "only what came from the deep")

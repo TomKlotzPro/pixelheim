@@ -46,7 +46,7 @@ func test_a_craft_teaches_its_own_trade() -> void:
 	state.world.map_id = "town_alchemist"
 	state.hero.jobs["alchemy"]["level"] = 4
 	state.pack.items.merge({"wolf_pelt": 2, "grave_moss": 1})
-	var made: Dictionary = state.craft("brew_wolfstooth_collar")
+	var made: Dictionary = state.trade.craft("brew_wolfstooth_collar")
 	assert_true(made["made"])
 	assert_eq(state.hero.jobs["alchemy"]["xp"], Economy.craft_xp(Economy.recipe("brew_wolfstooth_collar")), "the collar is brewed")
 	assert_eq(state.hero.jobs["smithing"]["xp"], 0)
@@ -56,7 +56,7 @@ func test_a_trade_level_is_announced() -> void:
 	state.world.map_id = "town_smith"
 	state.hero.jobs["smithing"]["xp"] = Economy.job_xp_to_next(1) - 5
 	state.pack.items["marsh_reed"] = 3
-	var made: Dictionary = state.craft("craft_reed_buckler")
+	var made: Dictionary = state.trade.craft("craft_reed_buckler")
 	assert_eq(made["level_line"], "Smithing reached 2!")
 	assert_eq(Economy.job_line(state.hero.jobs, "smithing"), "Smithing 2 (5/50 XP)")
 
@@ -137,7 +137,7 @@ func test_steeping_turns_bought_potions_into_practice_never_doubles() -> void:
 	state.roll = func() -> float: return 0.0
 	state.hero.jobs["alchemy"]["level"] = 9
 	state.pack.items = {"potion_hp": 2}
-	var made: Dictionary = state.craft("steep_potion_hp")
+	var made: Dictionary = state.trade.craft("steep_potion_hp")
 	assert_true(made["made"])
 	assert_eq(made["count"], 1, "two potions steep into one, whatever the trade's luck")
 	assert_eq(state.pack.items.get("greater_potion", 0), 1)
@@ -180,12 +180,12 @@ func test_salvage_gives_back_half_of_what_went_in() -> void:
 	assert_eq(Economy.salvage_yield(bought), {"ember_shard": 3}, "a piece no recipe makes gives shards by its rarity")
 	state.world.map_id = "town_smith"
 	state.pack.gear.append(plate)
-	assert_string_contains(state.salvage_gear(plate["uid"]), "Hilda breaks it down")
+	assert_string_contains(state.trade.salvage_gear(plate["uid"]), "Hilda breaks it down")
 	assert_eq(state.pack.items.get("blackiron_ore", 0), 2)
 	assert_eq(state.pack.gear_by_uid(plate["uid"]), {}, "the piece is gone")
 	state.world.map_id = "town"
 	var sword: String = state.pack.equipped["weapon"]
-	assert_eq(state.salvage_gear(sword), "", "only at Hilda's, and never what you wear")
+	assert_eq(state.trade.salvage_gear(sword), "", "only at Hilda's, and never what you wear")
 
 
 func test_reforging_waits_for_smithing_8_and_never_goes_down() -> void:
@@ -193,10 +193,10 @@ func test_reforging_waits_for_smithing_8_and_never_goes_down() -> void:
 	state.pack.gold = 5000
 	var epic := InventoryState.create_gear("war_hammer", "epic", func() -> float: return 0.0)
 	state.pack.gear.append(epic)
-	assert_eq(state.reforge_gear(epic["uid"]), "", "not before Smithing 8")
+	assert_eq(state.trade.reforge_gear(epic["uid"]), "", "not before Smithing 8")
 	state.hero.jobs["smithing"]["level"] = 8
 	state.roll = func() -> float: return 0.99
-	assert_string_contains(state.reforge_gear(epic["uid"]), "Hilda reforges it")
+	assert_string_contains(state.trade.reforge_gear(epic["uid"]), "Hilda reforges it")
 	assert_eq(epic["rarity"], "epic", "a common roll keeps it epic")
 	assert_eq(epic["affixes"].size(), 2)
 	assert_lt(state.pack.gold, 5000, "paid for")

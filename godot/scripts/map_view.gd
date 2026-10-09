@@ -109,7 +109,7 @@ func plan(arrival: Vector2i) -> Vector2i:
 		var room: Dictionary = PunyInterior.plan(data.id, data.grid)
 		# Then Shade's furnished corners (PIX-163), clear of the way in, the
 		# keepers and the hero's own furniture.
-		var placed: Array = GameState.furniture() if data.id == "town_house" else []
+		var placed: Array = GameState.household.furniture() if data.id == "town_house" else []
 		var dressed := PunyInterior.furnish(data.id + data.variant, data.grid, PunyInterior.reserved(data, placed))
 		buildings = {
 			"pieces": room["pieces"], "decor": {}, "freed": [], "floor": room["floor"], "void": room["void"], "over": room["over"],
@@ -883,14 +883,14 @@ func _build_props(data: MapData) -> Node2D:
 	var ruins: Array[Dictionary] = []
 	if data.id == "town":
 		ruins = Town.ruins(Town.done_projects(GameState.settlement))
-	for sign_def: Dictionary in Interactables.signs_on(data.id, GameState.owns_house()):
+	for sign_def: Dictionary in Interactables.signs_on(data.id, GameState.household.owns_house()):
 		var door := Vector2i(int(sign_def["x"]), int(sign_def["y"]))
 		# A burnt house has lost its sign with its roof (PIX-146).
 		if ruins.any(func(ruin: Dictionary) -> bool: return (ruin["rect"] as Rect2i).has_point(door)):
 			continue
 		var target: Dictionary = data.portals.get(door, {})
 		root.add_child(ShopSign.build(sign_def["label"], door))
-		var told := ShopSign.about(sign_def["label"], String(target.get("mapId", "")), GameState.owns_house())
+		var told := ShopSign.about(sign_def["label"], String(target.get("mapId", "")), GameState.household.owns_house())
 		door_signs.append({"door": door, "name": told["name"], "about": told["about"]})
 	return root
 
@@ -904,7 +904,7 @@ func furnish() -> void:
 	furniture_cells = []
 	if data.id != "town_house":
 		return
-	for placed: Dictionary in GameState.furniture():
+	for placed: Dictionary in GameState.household.furniture():
 		var item_id: String = placed["itemId"]
 		var cell := Vector2i(placed["x"], placed["y"])
 		if PunyTown.available():

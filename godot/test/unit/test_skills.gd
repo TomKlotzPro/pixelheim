@@ -56,14 +56,14 @@ func test_stat_points_buy_their_stat_and_its_pools() -> void:
 	hero.stat_points = 2
 	var hp: int = hero.stats["maxHp"]
 	var en: int = hero.stats["maxMp"]
-	assert_true(state.spend_stat_point("endurance"))
+	assert_true(state.training.spend_stat_point("endurance"))
 	assert_eq(hero.stats["maxHp"], hp + 1)
 	assert_eq(hero.stats["maxMp"], en + 2, "a fighter's stamina grows with END")
-	assert_true(state.spend_stat_point("strength"))
+	assert_true(state.training.spend_stat_point("strength"))
 	assert_eq(hero.stat_points, 0)
-	assert_false(state.spend_stat_point("strength"), "no points left")
+	assert_false(state.training.spend_stat_point("strength"), "no points left")
 	hero.stat_points = 1
-	assert_false(state.spend_stat_point("luck"), "only the five stats")
+	assert_false(state.training.spend_stat_point("luck"), "only the five stats")
 
 
 func test_int_fills_only_a_casters_mana() -> void:
@@ -71,11 +71,11 @@ func test_int_fills_only_a_casters_mana() -> void:
 	mage.new_game("Ilse", "mage")
 	mage.hero.stat_points = 1
 	var mp: int = mage.hero.stats["maxMp"]
-	mage.spend_stat_point("intelligence")
+	mage.training.spend_stat_point("intelligence")
 	assert_eq(mage.hero.stats["maxMp"], mp + 2)
 	state.hero.stat_points = 1
 	var en: int = state.hero.stats["maxMp"]
-	state.spend_stat_point("intelligence")
+	state.training.spend_stat_point("intelligence")
 	assert_eq(state.hero.stats["maxMp"], en, "a warrior's stamina doesn't care")
 
 
@@ -84,11 +84,11 @@ func test_nodes_are_learned_in_order_for_a_point_each() -> void:
 	assert_has(hero.skill_nodes, "warrior_power_strike", "the root comes free")
 	hero.level = 3
 	hero.skill_points = 1
-	assert_false(state.buy_skill_node("warrior_executioner"), "its parent first")
-	assert_false(state.buy_skill_node("warrior_power_strike"), "already known")
-	assert_true(state.buy_skill_node("warrior_power_strike_2"))
+	assert_false(state.training.buy_skill_node("warrior_executioner"), "its parent first")
+	assert_false(state.training.buy_skill_node("warrior_power_strike"), "already known")
+	assert_true(state.training.buy_skill_node("warrior_power_strike_2"))
 	assert_eq(hero.skill_points, 0)
-	assert_false(state.buy_skill_node("warrior_shield_slam"), "no points left")
+	assert_false(state.training.buy_skill_node("warrior_shield_slam"), "no points left")
 
 
 func test_some_nodes_grow_the_pools_for_good() -> void:
@@ -97,7 +97,7 @@ func test_some_nodes_grow_the_pools_for_good() -> void:
 	hero.level = 10
 	hero.skill_points = 1
 	var max_hp: int = hero.stats["maxHp"]
-	assert_true(state.buy_skill_node("warrior_mountainheart"))
+	assert_true(state.training.buy_skill_node("warrior_mountainheart"))
 	assert_eq(hero.stats["maxHp"], max_hp + 30)
 
 
@@ -109,7 +109,7 @@ func test_owned_skills_carry_their_upgrades_and_the_paths_signature() -> void:
 	assert_ne(upgraded, power_strike, "the upgrade's patch applies")
 	assert_eq(upgraded["name"], Skills.node("warrior", "warrior_power_strike_2")["patch"].get("name", power_strike["name"]))
 	hero.level = 5
-	state.choose_path("juggernaut")
+	state.training.choose_path("juggernaut")
 	assert_eq(Skills.hero_skills(hero)[-1]["name"], "Immovable", "the identity teaches its signature")
 
 
@@ -159,7 +159,7 @@ func test_casting_pays_heals_cap_and_stamina_returns_in_fights() -> void:
 	var berserk: Dictionary = Skills.node("warrior", "warrior_berserk")["skill"]
 	var mp: int = hero.mp
 	var hp: int = hero.hp
-	assert_true(state.pay_for_skill(berserk))
+	assert_true(state.training.pay_for_skill(berserk))
 	assert_eq(hero.mp, mp - int(berserk["mpCost"]))
 	assert_eq(hero.hp, hp - int(berserk["hpCost"]))
 	assert_eq(state.heal_hero(999), int(berserk["hpCost"]), "a heal tops out at max HP")
@@ -178,15 +178,15 @@ func test_forgetting_gives_the_points_back_and_keeps_the_born_skill() -> void:
 	var born: String = Catalog.skill_roots("warrior")[0]
 	state.hero.level = 3
 	state.hero.skill_points = 2
-	assert_true(state.buy_skill_node("warrior_power_strike_2"))
-	assert_true(state.buy_skill_node("warrior_shield_slam"))
+	assert_true(state.training.buy_skill_node("warrior_power_strike_2"))
+	assert_true(state.training.buy_skill_node("warrior_shield_slam"))
 	state.pack.gold = 100
 	assert_eq(Skills.forget_cost(state.hero), 40)
-	assert_true(state.forget_skills())
+	assert_true(state.training.forget_skills())
 	assert_eq(state.hero.skill_nodes, [born] as Array[String])
 	assert_eq(state.hero.skill_points, 2)
 	assert_eq(state.pack.gold, 60)
-	assert_false(state.forget_skills(), "nothing bought is left to forget")
+	assert_false(state.training.forget_skills(), "nothing bought is left to forget")
 
 
 func test_forgetting_shrinks_what_a_skill_grew() -> void:
@@ -195,10 +195,10 @@ func test_forgetting_shrinks_what_a_skill_grew() -> void:
 	state.hero.skill_nodes.append_array(["warrior_shield_slam", "warrior_iron_skin", "warrior_unshakeable"])
 	state.hero.level = 10
 	state.hero.skill_points = 1
-	assert_true(state.buy_skill_node("warrior_mountainheart"))
+	assert_true(state.training.buy_skill_node("warrior_mountainheart"))
 	assert_eq(int(state.hero.stats["maxHp"]), before + 30)
 	state.pack.gold = 1000
-	assert_true(state.forget_skills())
+	assert_true(state.training.forget_skills())
 	assert_eq(int(state.hero.stats["maxHp"]), before)
 	assert_true(state.hero.hp <= before)
 
@@ -206,12 +206,12 @@ func test_forgetting_shrinks_what_a_skill_grew() -> void:
 func test_forgetting_takes_the_village_and_the_gold() -> void:
 	state.hero.level = 3
 	state.hero.skill_points = 1
-	assert_true(state.buy_skill_node("warrior_power_strike_2"))
+	assert_true(state.training.buy_skill_node("warrior_power_strike_2"))
 	state.pack.gold = 100
 	state.world.map_id = "overworld"
-	assert_false(state.forget_skills(), "not out in the wilds")
+	assert_false(state.training.forget_skills(), "not out in the wilds")
 	state.world.map_id = "town"
 	state.pack.gold = 19
-	assert_false(state.forget_skills(), "20g a skill")
+	assert_false(state.training.forget_skills(), "20g a skill")
 	assert_eq(state.hero.skill_points, 0)
 

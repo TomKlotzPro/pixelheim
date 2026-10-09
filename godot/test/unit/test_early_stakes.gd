@@ -39,17 +39,17 @@ func test_health_trickles_back_at_rest() -> void:
 
 func test_a_delivery_says_how_it_stands_as_items_come() -> void:
 	state.progression.quests["iva_reeds"] = {"progress": 0, "done": false}
-	state._note_deliveries(false)
+	state.questing.note_deliveries(false)
 	var heard: Array = []
 	state.noted.connect(func(lines: Array) -> void: heard.append_array(lines))
 	state.pack.add_item("marsh_reed", 1)
-	state._pack_changed()
+	state.pack_changed()
 	assert_eq(heard.size(), 1)
 	assert_string_ends_with(heard[0], ": 1/3.")
 	state.pack.add_item("marsh_reed", 2)
-	state._pack_changed()
+	state.pack_changed()
 	assert_string_contains(heard[1], "ready to hand in to")
-	state._pack_changed()
+	state.pack_changed()
 	assert_eq(heard.size(), 2, "nothing new, nothing said")
 
 
@@ -70,13 +70,13 @@ func test_each_hamlet_project_brings_a_perk() -> void:
 		assert_true(entry.has("perk"), "%s says what it brings" % entry["id"])
 	# In the Ashes, before anything is rebuilt.
 	state.settlement.town_tier = 0
-	assert_eq(state.sale_multiplier("odo"), 1.0)
+	assert_eq(state.trade.sale_multiplier("odo"), 1.0)
 	state.settlement.projects.assign(["odos_store", "hildas_forge", "vexs_brewery", "the_inn"])
-	assert_almost_eq(state.sale_multiplier("odo"), 1.1, 0.0001, "Odo pays a tenth more")
-	assert_eq(state.sale_multiplier("smith"), 1.0, "only Odo")
+	assert_almost_eq(state.trade.sale_multiplier("odo"), 1.1, 0.0001, "Odo pays a tenth more")
+	assert_eq(state.trade.sale_multiplier("smith"), 1.0, "only Odo")
 	var sword := InventoryState.create_gear("rusty_sword")
 	var full := Economy.forge_cost_for("rusty_sword", 0, 1)
-	assert_eq(state.forge_price(sword, 1, false), roundi(full * 0.9), "Hilda forges a tenth cheaper")
+	assert_eq(state.trade.forge_price(sword, 1, false), roundi(full * 0.9), "Hilda forges a tenth cheaper")
 
 
 func test_a_night_at_the_rebuilt_inn_leaves_you_rested() -> void:

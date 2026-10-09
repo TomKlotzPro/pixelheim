@@ -400,38 +400,23 @@ func pack_changed() -> void:
 	questing.note_deeds()
 
 
-# ---- delegates (PIX-261, step 1) --------------------------------------------
-# Every method that moved into a module still answers here in one line, so
-# no caller or test changed with the move. Step 2 moves the callers onto
-# GameState.<module>.<method>(); step 3 deletes each delegate nothing calls.
-# The old private names stay only where the harness and tests call them.
+# ---- delegates (PIX-261) ----------------------------------------------------
+# Step 1 left a one-line delegate here for every method that moved into a
+# module, so no caller changed with the move. Step 2 moves the callers onto
+# GameState.<module>.<method>() and deletes each delegate nothing calls.
+# Training's callers have all moved. Trade and Household keep only what
+# world.gd still calls, until its own split moves those calls too. Holdings,
+# Questing, Spoils and Upkeep haven't moved yet. The old private names stay
+# only where harness.gd calls them.
 
-# The core (state/game_state.gd)
-func _pack_changed() -> void: pack_changed()
-
-# Trade (state/trade.gd)
+# Trade (state/trade.gd): world.gd opens the burnt square's stall and asks
+# whether a shop is open.
 var stall_shop: String:
 	get:
 		return trade.stall_shop
 	set(value):
 		trade.stall_shop = value
 func active_shop() -> String: return trade.active_shop()
-func at_station(job: String) -> bool: return trade.at_station(job)
-func stock_stage() -> int: return trade.stock_stage()
-func price_of(item_id: String) -> int: return trade.price_of(item_id)
-func shop_wares(shop_id: String) -> Array: return trade.shop_wares(shop_id)
-func owned_shop_map(shop_id: String) -> String: return trade.owned_shop_map(shop_id)
-func sale_multiplier(shop_id: String) -> float: return trade.sale_multiplier(shop_id)
-func trophy_sell_multiplier() -> float: return trade.trophy_sell_multiplier()
-func forge_price(instance: Dictionary, smithing: int, masterwork: bool) -> int: return trade.forge_price(instance, smithing, masterwork)
-func buy_item(item_id: String) -> bool: return trade.buy_item(item_id)
-func sell_item(item_id: String, count := 1) -> int: return trade.sell_item(item_id, count)
-func sell_gear(uid: String) -> int: return trade.sell_gear(uid)
-func salvage_gear(uid: String) -> String: return trade.salvage_gear(uid)
-func reforge_gear(uid: String) -> String: return trade.reforge_gear(uid)
-func quench_gear(uid: String) -> String: return trade.quench_gear(uid)
-func upgrade_gear(uid: String) -> bool: return trade.upgrade_gear(uid)
-func craft(recipe_id: String) -> Dictionary: return trade.craft(recipe_id)
 
 # Holdings (state/holdings.gd)
 func fund_commission(commission_id: String) -> String: return holdings.fund_commission(commission_id)
@@ -456,18 +441,10 @@ func _start_festival(age: int) -> void: holdings.start_festival(age)
 func festival_on() -> bool: return holdings.festival_on()
 func win_ring_toss() -> String: return holdings.win_ring_toss()
 
-# Household (state/household.gd)
+# Household (state/household.gd): world.gd opens the house's door, sells it,
+# places a piece from the pack, and asks what E does on a cell of it.
 func owns_house() -> bool: return household.owns_house()
 func buy_house() -> String: return household.buy_house()
-func buy_house_upgrade() -> String: return household.buy_house_upgrade()
-func store_item(item_id: String, count := 1) -> bool: return household.store_item(item_id, count)
-func take_item(item_id: String, count := 1) -> bool: return household.take_item(item_id, count)
-func trophies() -> Array: return household.trophies()
-func display_trophy(item_id: String) -> bool: return household.display_trophy(item_id)
-func take_trophy(item_id: String) -> bool: return household.take_trophy(item_id)
-func combine_potions(item_id: String) -> String: return household.combine_potions(item_id)
-func furniture() -> Array: return household.furniture()
-func home_buff(kind: String) -> float: return household.home_buff(kind)
 func furniture_at(cell: Vector2i) -> Dictionary: return household.furniture_at(cell)
 func place_furniture(item_id: String, cell: Vector2i, tile: String) -> String: return household.place_furniture(item_id, cell, tile)
 func house_interact(cell: Vector2i, tile: String) -> Dictionary: return household.house_interact(cell, tile)
@@ -485,7 +462,6 @@ func escort_due() -> Dictionary: return questing.escort_due()
 func escort_arrived(quest_id: String) -> void: questing.escort_arrived(quest_id)
 func timed_run() -> Dictionary: return questing.timed_run()
 func tick_runs(delta: float) -> Dictionary: return questing.tick_runs(delta)
-func _note_deliveries(announce := true) -> void: questing.note_deliveries(announce)
 func delivery_dip(costs: Dictionary) -> Dictionary: return questing.delivery_dip(costs)
 func ask_before_dip(what: String, costs: Dictionary) -> String: return questing.ask_before_dip(what, costs)
 func prologue_pouch() -> String: return questing.prologue_pouch()
@@ -496,7 +472,6 @@ func finish_prologue() -> void: questing.finish_prologue()
 
 # Spoils (state/spoils.gd)
 func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, floor_level: int, mountain := 0) -> Array[String]: return spoils.defeat_monster(fighter, region_id, spawn_id, floor_level, mountain)
-func _hunted(named_id: String) -> Array[String]: return spoils.hunted(named_id)
 func earn_xp(amount: int) -> String: return spoils.earn_xp(amount)
 func _grant_levels() -> int: return spoils.grant_levels()
 func clear_pack(spawn_id: String) -> void: spoils.clear_pack(spawn_id)
@@ -526,12 +501,3 @@ func drop_gear(uid: String) -> bool: return upkeep.drop_gear(uid)
 func use_item(item_id: String) -> Dictionary: return upkeep.use_item(item_id)
 func rest_at_inn() -> String: return upkeep.rest_at_inn()
 func wake_at_inn() -> Dictionary: return upkeep.wake_at_inn()
-
-# Training (state/training.gd)
-func pay_for_skill(skill: Dictionary) -> bool: return training.pay_for_skill(skill)
-func spend_stat_point(stat: String) -> bool: return training.spend_stat_point(stat)
-func buy_beyond(track_id: String) -> bool: return training.buy_beyond(track_id)
-func forget_skills() -> bool: return training.forget_skills()
-func buy_skill_node(node_id: String) -> bool: return training.buy_skill_node(node_id)
-func choose_path(node_id: String) -> bool: return training.choose_path(node_id)
-func dock_skill(key: String, index: int) -> bool: return training.dock_skill(key, index)

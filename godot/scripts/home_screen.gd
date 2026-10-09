@@ -37,9 +37,9 @@ func _info() -> String:
 			return Text.t("Stored:\n") + ("\n".join(stored.keys().map(func(id: String) -> String: return "%s x%d" % [Catalog.item_name(id), stored[id]])) if not stored.is_empty() else Text.t("Nothing yet."))
 		"trophies":
 			var lines: Array[String] = [Text.t("On the shelf:")]
-			for id: String in GameState.trophies():
+			for id: String in GameState.household.trophies():
 				lines.append(Text.t("%s: %s") % [Catalog.item_name(id), Town.trophy_buffs()[id]["label"]])
-			if GameState.trophies().is_empty():
+			if GameState.household.trophies().is_empty():
 				lines.append(Text.t("Nothing yet. Trophies come from the toughest foes."))
 			return "\n".join(lines)
 		"workbench":
@@ -54,10 +54,10 @@ func _rows() -> Array[Dictionary]:
 		"storage":
 			for id: String in pack.items.keys():
 				out.append(_row_for(Text.t("Store %s") % Catalog.item_name(id), "x%d" % pack.items[id], true,
-					func() -> String: return "Stored." if GameState.store_item(id) else ""))
+					func() -> String: return "Stored." if GameState.household.store_item(id) else ""))
 			for id: String in GameState.settlement.house["storage"].keys():
 				out.append(_row_for(Text.t("Take %s") % Catalog.item_name(id), "x%d" % GameState.settlement.house["storage"][id], true,
-					func() -> String: return "Taken." if GameState.take_item(id) else ""))
+					func() -> String: return "Taken." if GameState.household.take_item(id) else ""))
 		"workbench":
 			for entry: Dictionary in Economy.recipes():
 				var recipe_id: String = entry["id"]
@@ -70,25 +70,25 @@ func _rows() -> Array[Dictionary]:
 						var ask := GameState.ask_before_dip("craft:" + recipe_id, entry["needs"])
 						if ask != "":
 							return ask
-						var result := GameState.craft(recipe_id)
+						var result := GameState.trade.craft(recipe_id)
 						return "" if not result["made"] else Text.t("Made %dx %s.") % [result["count"], Catalog.item_name(entry["itemId"])],
 					"Missing materials or skill.",
 				))
 		"trophies":
 			for id: String in Town.trophy_buffs():
-				if id in GameState.trophies():
+				if id in GameState.household.trophies():
 					out.append(_row_for(Text.t("Take down %s") % Catalog.item_name(id), "", true,
-						func() -> String: return "Back in the pack." if GameState.take_trophy(id) else ""))
+						func() -> String: return "Back in the pack." if GameState.household.take_trophy(id) else ""))
 				elif pack.items.get(id, 0) > 0:
 					out.append(_row_for(Text.t("Display %s") % Catalog.item_name(id), Town.trophy_buffs()[id]["label"], true,
-						func() -> String: return "On the shelf." if GameState.display_trophy(id) else ""))
+						func() -> String: return "On the shelf." if GameState.household.display_trophy(id) else ""))
 		"nook":
 			for combine: Dictionary in Town.nook_combines():
 				var from: String = combine["from"]
 				out.append(_row_for(
 					Text.t("2x %s into %s") % [Catalog.item_name(from), Catalog.item_name(combine["to"])],
 					Text.t("have %d") % pack.items.get(from, 0), pack.items.get(from, 0) >= 2,
-					func() -> String: return GameState.combine_potions(from), "It takes two.",
+					func() -> String: return GameState.household.combine_potions(from), "It takes two.",
 				))
 		"furniture":
 			for id: String in pack.items.keys():
@@ -96,7 +96,7 @@ func _rows() -> Array[Dictionary]:
 					continue
 				out.append(_row_for(Text.t("Place %s here") % Catalog.item_name(id), "x%d" % pack.items[id], true,
 					func() -> String:
-						var text := GameState.place_furniture(id, cell, "floor")
+						var text := GameState.household.place_furniture(id, cell, "floor")
 						if on_placed.is_valid():
 							on_placed.call()
 						close.call_deferred()

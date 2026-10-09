@@ -292,7 +292,7 @@ func _forget() -> void:
 	elif not forget_armed:
 		armed = true
 		status.text = Text.t("Forget %s for %dg and get the points back? F again to agree.") % [_skills(count), cost]
-	elif GameState.forget_skills():
+	elif GameState.training.forget_skills():
 		Sound.play("learn")
 		status.text = Text.t("Forgotten. %s to spend again.") % (Text.t("1 point") if count == 1 else Text.t("%d points") % count)
 		_layout()
@@ -330,7 +330,7 @@ func _bind(index: int) -> void:
 	if key == "":
 		status.text = "Only a skill you know can go on a key."
 		return
-	if GameState.dock_skill(key, index):
+	if GameState.training.dock_skill(key, index):
 		Sound.play("learn")
 		status.text = Text.t("%s is on key %d.") % [name, index + 1]
 	_layout()
@@ -368,12 +368,12 @@ func _act() -> void:
 		return
 	var entry: Dictionary = cell["entry"]
 	if cell["kind"] == "path":
-		if GameState.choose_path(entry["id"]):
+		if GameState.training.choose_path(entry["id"]):
 			Sound.play("learn")
 			status.text = Text.t("You walk the path of the %s.") % entry["name"]
 		else:
 			status.text = "That path isn't yours to walk now."
-	elif GameState.buy_skill_node(entry["id"]):
+	elif GameState.training.buy_skill_node(entry["id"]):
 		Sound.play("learn")
 		status.text = Text.t("Learned: %s.") % entry["name"]
 	elif entry["id"] in GameState.hero.skill_nodes:
