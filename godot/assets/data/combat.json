@@ -1119,8 +1119,61 @@
     "biteTellSeconds": 0.4
   },
   "gathering": {
-    "regrowSteps": 300,
     "jobXp": 5,
+    "daily": {
+      "forest_herb": 3,
+      "marsh_reed": 3,
+      "deep_root": 2,
+      "ember_shard": 2,
+      "grave_moss": 2,
+      "sea_glass": 2,
+      "frost_lily": 1,
+      "blackiron_ore": 1,
+      "old_steel": 1
+    },
+    "ground": {
+      "forest": [
+        "grass"
+      ],
+      "marsh": [
+        "grass"
+      ],
+      "ash": [
+        "ash"
+      ],
+      "deepwood": [
+        "forest",
+        "grass"
+      ],
+      "mire": [
+        "marsh"
+      ],
+      "coast": [
+        "grass",
+        "sand"
+      ],
+      "seacave": [
+        "floor"
+      ],
+      "mines": [
+        "ash"
+      ],
+      "shafts": [
+        "floor"
+      ],
+      "castle": [
+        "stone"
+      ],
+      "cellars": [
+        "floor"
+      ],
+      "frost": [
+        "snow"
+      ],
+      "icecave": [
+        "floor"
+      ]
+    },
     "floorMaterials": [
       [
         1,
@@ -1144,254 +1197,6 @@
       ]
     ]
   },
-  "gatherSpots": [
-    {
-      "id": "ash_patch_1",
-      "mapId": "overworld",
-      "x": 6,
-      "y": 26
-    },
-    {
-      "id": "ash_patch_2",
-      "mapId": "overworld",
-      "x": 26,
-      "y": 15
-    },
-    {
-      "id": "ash_patch_3",
-      "mapId": "overworld",
-      "x": 29,
-      "y": 23
-    },
-    {
-      "id": "ash_patch_4",
-      "mapId": "overworld",
-      "x": 38,
-      "y": 15
-    },
-    {
-      "id": "forest_patch_1",
-      "mapId": "overworld",
-      "x": 63,
-      "y": 54
-    },
-    {
-      "id": "forest_patch_2",
-      "mapId": "overworld",
-      "x": 85,
-      "y": 36
-    },
-    {
-      "id": "forest_patch_3",
-      "mapId": "overworld",
-      "x": 87,
-      "y": 56
-    },
-    {
-      "id": "forest_patch_4",
-      "mapId": "overworld",
-      "x": 92,
-      "y": 36
-    },
-    {
-      "id": "marsh_patch_1",
-      "mapId": "overworld",
-      "x": 4,
-      "y": 50
-    },
-    {
-      "id": "marsh_patch_2",
-      "mapId": "overworld",
-      "x": 18,
-      "y": 36
-    },
-    {
-      "id": "marsh_patch_3",
-      "mapId": "overworld",
-      "x": 28,
-      "y": 34
-    },
-    {
-      "id": "marsh_patch_4",
-      "mapId": "overworld",
-      "x": 29,
-      "y": 41
-    },
-    {
-      "id": "deepwood_patch_1",
-      "mapId": "deepwood",
-      "x": 34,
-      "y": 25
-    },
-    {
-      "id": "deepwood_patch_2",
-      "mapId": "deepwood",
-      "x": 47,
-      "y": 16
-    },
-    {
-      "id": "deepwood_patch_3",
-      "mapId": "deepwood",
-      "x": 52,
-      "y": 39
-    },
-    {
-      "id": "deepwood_patch_4",
-      "mapId": "deepwood",
-      "x": 56,
-      "y": 28
-    },
-    {
-      "id": "mire_patch_1",
-      "mapId": "mirefen",
-      "x": 11,
-      "y": 3
-    },
-    {
-      "id": "mire_patch_2",
-      "mapId": "mirefen",
-      "x": 30,
-      "y": 38
-    },
-    {
-      "id": "mire_patch_3",
-      "mapId": "mirefen",
-      "x": 51,
-      "y": 28
-    },
-    {
-      "id": "mire_patch_4",
-      "mapId": "mirefen",
-      "x": 51,
-      "y": 42
-    },
-    {
-      "id": "coast_patch_1",
-      "mapId": "saltmere",
-      "x": 17,
-      "y": 20
-    },
-    {
-      "id": "coast_patch_2",
-      "mapId": "saltmere",
-      "x": 44,
-      "y": 20
-    },
-    {
-      "id": "coast_patch_3",
-      "mapId": "saltmere",
-      "x": 8,
-      "y": 25
-    },
-    {
-      "id": "seacave_patch_1",
-      "mapId": "seacave",
-      "x": 32,
-      "y": 5
-    },
-    {
-      "id": "shafts_patch_1",
-      "mapId": "shafts",
-      "x": 2,
-      "y": 11
-    },
-    {
-      "id": "shafts_patch_2",
-      "mapId": "shafts",
-      "x": 19,
-      "y": 7
-    },
-    {
-      "id": "shafts_patch_3",
-      "mapId": "shafts",
-      "x": 44,
-      "y": 23
-    },
-    {
-      "id": "shafts_patch_4",
-      "mapId": "shafts",
-      "x": 22,
-      "y": 30
-    },
-    {
-      "id": "mines_patch_1",
-      "mapId": "blackiron",
-      "x": 8,
-      "y": 20
-    },
-    {
-      "id": "castle_patch_1",
-      "mapId": "greyhold",
-      "x": 26,
-      "y": 5
-    },
-    {
-      "id": "castle_patch_2",
-      "mapId": "greyhold",
-      "x": 48,
-      "y": 25
-    },
-    {
-      "id": "cellars_patch_1",
-      "mapId": "cellars",
-      "x": 2,
-      "y": 14
-    },
-    {
-      "id": "cellars_patch_2",
-      "mapId": "cellars",
-      "x": 45,
-      "y": 3
-    },
-    {
-      "id": "cellars_patch_3",
-      "mapId": "cellars",
-      "x": 14,
-      "y": 29
-    },
-    {
-      "id": "frost_patch_1",
-      "mapId": "frostgate",
-      "x": 9,
-      "y": 30
-    },
-    {
-      "id": "frost_patch_2",
-      "mapId": "frostgate",
-      "x": 36,
-      "y": 13
-    },
-    {
-      "id": "frost_patch_3",
-      "mapId": "frostgate",
-      "x": 48,
-      "y": 40
-    },
-    {
-      "id": "frost_patch_4",
-      "mapId": "frostgate",
-      "x": 18,
-      "y": 43
-    },
-    {
-      "id": "icecave_patch_1",
-      "mapId": "icecave",
-      "x": 24,
-      "y": 27
-    },
-    {
-      "id": "icecave_patch_2",
-      "mapId": "icecave",
-      "x": 42,
-      "y": 3
-    },
-    {
-      "id": "icecave_patch_3",
-      "mapId": "icecave",
-      "x": 3,
-      "y": 11
-    }
-  ],
   "bossIds": [
     "dragon",
     "lich"

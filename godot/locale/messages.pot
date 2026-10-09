@@ -13200,23 +13200,23 @@ msgstr ""
 msgid "The chest holds %dx %s."
 msgstr ""
 
-#: scripts/state/spoils.gd:381
+#: scripts/state/spoils.gd:382
 msgid "You gather %d %s%s."
 msgstr ""
 
-#: scripts/state/spoils.gd:392
+#: scripts/state/spoils.gd:393
 msgid "Nothing's biting here yet. Try again in a while, or somewhere else."
 msgstr ""
 
-#: scripts/state/spoils.gd:396
+#: scripts/state/spoils.gd:397
 msgid "You cast, wait... and haul up an old boot."
 msgstr ""
 
-#: scripts/state/spoils.gd:396
+#: scripts/state/spoils.gd:397
 msgid "You cast, wait... and land %s!"
 msgstr ""
 
-#: scripts/state/spoils.gd:398
+#: scripts/state/spoils.gd:399
 msgid " Foraging reached %d!"
 msgstr ""
 
@@ -13524,11 +13524,11 @@ msgstr ""
 msgid "Arrows"
 msgstr ""
 
-#: scripts/world.gd:272
+#: scripts/world.gd:275
 msgid "%s bars your way: no leaving until the fight is over."
 msgstr ""
 
-#: scripts/world.gd:306
+#: scripts/world.gd:309
 msgid "No map reaches this deep."
 msgstr ""
 

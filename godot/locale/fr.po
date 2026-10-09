@@ -13200,23 +13200,23 @@ msgstr "Vous récoltez %dx %s."
 msgid "The chest holds %dx %s."
 msgstr "Le coffre contient %dx %s."
 
-#: scripts/state/spoils.gd:381
+#: scripts/state/spoils.gd:382
 msgid "You gather %d %s%s."
 msgstr "Vous récoltez %d %s%s."
 
-#: scripts/state/spoils.gd:392
+#: scripts/state/spoils.gd:393
 msgid "Nothing's biting here yet. Try again in a while, or somewhere else."
 msgstr "Ça ne mord pas encore ici. Réessayez dans un moment, ou ailleurs."
 
-#: scripts/state/spoils.gd:396
+#: scripts/state/spoils.gd:397
 msgid "You cast, wait... and haul up an old boot."
 msgstr "Vous lancez, attendez... et remontez une vieille botte."
 
-#: scripts/state/spoils.gd:396
+#: scripts/state/spoils.gd:397
 msgid "You cast, wait... and land %s!"
 msgstr "Vous lancez, attendez... et ça mord : %s !"
 
-#: scripts/state/spoils.gd:398
+#: scripts/state/spoils.gd:399
 msgid " Foraging reached %d!"
 msgstr " Cueillette : niveau %d !"
 
@@ -13524,11 +13524,11 @@ msgstr "COMMANDÉ"
 msgid "Arrows"
 msgstr "Flèches"
 
-#: scripts/world.gd:272
+#: scripts/world.gd:275
 msgid "%s bars your way: no leaving until the fight is over."
 msgstr "%s vous barre la route : pas de fuite avant la fin du combat."
 
-#: scripts/world.gd:306
+#: scripts/world.gd:309
 msgid "No map reaches this deep."
 msgstr "Aucune carte ne va aussi profond."
 

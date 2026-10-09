@@ -108,6 +108,9 @@ func _ready() -> void:
 			GameState.pack.remove_item("chancellors_letter")
 	if flags.has("--house-tier"):
 		GameState.settlement.house["tier"] = int(flags.value("--house-tier"))
+	# `--day N`: the morning of day N, its patches grown (PIX-250).
+	if flags.has("--day"):
+		GameState.world.steps = float(int(flags.value("--day")) * DayNight.DAY_CYCLE_STEPS)
 	# Resume where the save stands; `--map <id>` (harness) boots at that map's spawn.
 	var override := flags.has("--map")
 	map = load_map(flags.value("--map", GameState.world.map_id))

@@ -15,8 +15,10 @@
 # running from a far stronger hero without the battle music (PIX-251), the
 # map's waypoint list showing where a waypoint takes you before it does, then
 # taking you there (PIX-241), hero creation's first night skipped with
-# Tab while the name field has the keys (PIX-228), and a quest chosen in the
-# journal and followed after it closes (PIX-239). Every flow leaves its
+# Tab while the name field has the keys (PIX-228), a quest chosen in the
+# journal and followed after it closes (PIX-239), and what grows on the
+# ground somewhere new each day, picked off as you step on it (PIX-250).
+# Every flow leaves its
 # picture in godot/flows/<name>.png for a human to look at, and the
 # harness's report line must match what the flow promises or the run fails.
 #
@@ -85,6 +87,11 @@ FLOWS=(
 	"icecave|--map frostgate --at 27,7 --walk u --wait 0.4|map=icecave"
 	"gate|--map overworld --at 48,8 --walk u,u --wait 0.3|map=overworld cell=\\(48, 7\\).*open=none"
 	"deep|--floor 16 clear --wait 0.3|map=floor_16"
+	# What grows on the ground moves with the days (PIX-250): two days, two
+	# sets of cells, and one of the first day's picked as the hero steps on it.
+	"patches|--map overworld --day 2|day=2 patches=5,50;20,47;20,60;24,23;54,17;63,39;66,52;75,45$"
+	"regrown|--map overworld --day 3|day=3 patches=14,43;26,56;31,37;52,12;77,44;79,14;79,53;86,36$"
+	"forage|--map overworld --day 2 --at 75,46 --walk u|cell=\\(75, 45\\).* day=2 patches=5,50;20,47;20,60;24,23;54,17;63,39;66,52$"
 	"dawn|--map town --prologue 5 --at 11,8 --keys w,e,e,e,e,e --wait 1.5|open=dawn_screen"
 	"motion|--map town motion|backsteps=[01]$"
 	"firstnight|create --keys tab|open=create_screen.*firstnight=skip"
