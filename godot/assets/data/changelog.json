@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.143.1",
+      "date": "2026-10-09",
+      "codename": "En français",
+      "notes": [
+        "Under the hood, a test keeps the French whole: a new line can't ship in English only"
+      ]
+    },
+    {
       "version": "0.143.0",
       "date": "2026-10-09",
       "codename": "En français",

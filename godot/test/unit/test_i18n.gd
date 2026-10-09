@@ -115,3 +115,31 @@ func test_tags_and_compact_gold_speak_french() -> void:
 	Text.apply("en")
 	assert_eq(Text.coins(55), "55g")
 	assert_eq(InventoryScreen.sort_name("kind"), "kind")
+
+
+## PIX-196: French is whole - every string the catalogue holds has its
+## translation, with the same placeholders, so a new line can't ship in
+## English only.
+func test_french_is_complete() -> void:
+	var french := {}
+	var msgid := ""
+	for line in FileAccess.get_file_as_string("res://locale/fr.po").split("\n"):
+		if line.begins_with("msgid \""):
+			msgid = JSON.parse_string(line.substr(6))
+		elif line.begins_with("msgstr \"") and msgid != "":
+			french[msgid] = JSON.parse_string(line.substr(7))
+			msgid = ""
+	var holes: Array[String] = []
+	var placeholder := RegEx.create_from_string("%[-+0#]*\\d*(?:\\.\\d+)?[sdfixX%]")
+	for line in FileAccess.get_file_as_string("res://locale/messages.pot").split("\n"):
+		if not line.begins_with("msgid \""):
+			continue
+		var english: String = JSON.parse_string(line.substr(6))
+		if english == "":
+			continue
+		var said: String = french.get(english, "")
+		var wanted := placeholder.search_all(english).map(func(found: RegExMatch) -> String: return found.get_string())
+		var given := placeholder.search_all(said).map(func(found: RegExMatch) -> String: return found.get_string())
+		if said == "" or wanted != given:
+			holes.append(english.left(60))
+	assert_eq(holes, [] as Array[String], "every string has its French, placeholders kept")
