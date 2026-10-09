@@ -879,6 +879,9 @@ func _try_interact() -> void:
 			_flash_message("Only cinders where the house stood. The board on the square can change that.")
 		elif GameState.owns_house():
 			_enter_house()
+		elif GameState.pack.gold >= int(Town._data()["houseDeedCost"]) and not _asked_twice("deed"):
+			# A big buy asks first (PIX-179).
+			_flash_message(Controls.say(Text.t("The deed costs %d gold. {key:interact} again to sign it.") % int(Town._data()["houseDeedCost"])))
 		else:
 			_flash_message(GameState.buy_house())
 		return
@@ -926,6 +929,7 @@ func _try_interact() -> void:
 			_open_shop()
 		elif beside["npc"]["id"] == "settler_mirelle" and GameState.is_settled("settler_mirelle") and not quest_word:
 			add_child(preload("res://scripts/bank_screen.gd").new())
+			hint("bank")
 		else:
 			_talk(beside["npc"])
 		return
@@ -939,9 +943,30 @@ func _tile_in_hand(cell: Vector2i) -> String:
 func _enter_house() -> void:
 	map = _load_map("town_house")
 	_enter_map(map, Vector2i(8, 8))
+	hint("house")
+
+
+## A big buy asked twice (PIX-179): true when this is the second E on the
+## same thing within a few seconds, else it remembers this one.
+var _asked := {}
+
+
+func _asked_twice(key: String) -> bool:
+	var now := Time.get_ticks_msec() / 1000.0
+	if _asked.has(key) and now - float(_asked[key]) < 6.0:
+		_asked.erase(key)
+		return true
+	_asked[key] = now
+	return false
 
 ## The house's fixtures and furniture; true when E meant one of them.
 func _house_interact(cell: Vector2i) -> bool:
+	# The workbench is a big buy: it asks first (PIX-179).
+	var cost := int(Town._data()["workbenchCost"])
+	if _tile_in_hand(cell) == "shelf" and GameState.furniture_at(cell).is_empty() and not GameState.settlement.house.get("workbench", false) \
+			and GameState.pack.gold >= cost and not _asked_twice("workbench"):
+		_flash_message(Controls.say(Text.t("A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it.") % cost))
+		return true
 	var result := GameState.house_interact(cell, _tile_in_hand(cell))
 	if result.is_empty():
 		return false

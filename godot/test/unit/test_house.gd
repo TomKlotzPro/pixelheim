@@ -105,7 +105,7 @@ func test_fixtures_answer_to_e() -> void:
 	_own_house(1000)
 	state.world.map_id = "town_house"
 	state.hero.hp = 1
-	assert_eq(state.house_interact(Vector2i.ZERO, "bed")["text"], "Your own bed. Fully rested, free of charge.")
+	assert_eq(state.house_interact(Vector2i.ZERO, "bed")["text"], "Your own bed. Fully restored, and well rested: +10% XP for your next 30 fights.")
 	assert_eq(state.hero.hp, state.hero.stats["maxHp"])
 	assert_eq(state.house_interact(Vector2i.ZERO, "barrel"), {"panel": "storage"})
 	assert_eq(state.house_interact(Vector2i.ZERO, "trophy_shelf"), {"panel": "trophies"})
@@ -127,7 +127,7 @@ func test_the_shelf_sells_then_hosts_the_workbench() -> void:
 
 
 func test_the_garden_alternates_bread_and_cheese() -> void:
-	assert_eq([0, 1, 2, 3].map(Town.garden_yield), ["bread", "cheese_wheel", "bread", "cheese_wheel"])
+	assert_eq([0, 1, 2, 3].map(Town.garden_yield), ["forest_herb", "marsh_reed", "forest_herb", "marsh_reed"])
 
 
 func test_house_records_round_trip_in_the_web_shape() -> void:
@@ -140,3 +140,70 @@ func test_house_records_round_trip_in_the_web_shape() -> void:
 	assert_eq(house["furniture"], [{"itemId": "furn_rug", "x": 3, "y": 3}])
 	assert_eq(house["trophies"], ["gem"])
 	assert_eq(state.trophy_sell_multiplier(), 1.1)
+
+
+## PIX-179: a home worth having.
+func test_furniture_at_home_helps_each_kind_once() -> void:
+	state.new_game("Robin", "warrior")
+	_own_house()
+	assert_eq(state.home_buff("xp"), 0.0)
+	state.settlement.house["furniture"] = [
+		{"itemId": "furn_bookshelf", "x": 3, "y": 3}, {"itemId": "furn_bookshelf", "x": 4, "y": 3},
+		{"itemId": "furn_banner", "x": 5, "y": 3}, {"itemId": "furn_rug", "x": 6, "y": 3},
+	]
+	assert_almost_eq(state.home_buff("xp"), 0.05, 0.0001, "two bookshelves count once")
+	assert_almost_eq(state.home_buff("crit"), 0.03, 0.0001)
+	assert_almost_eq(state.home_buff("gold"), 0.05, 0.0001)
+	state.roll = func() -> float: return 0.99
+	var before: int = state.pack.gold
+	state.defeat_monster(Bestiary.wild(Bestiary.spawn("wolf")), "forest", "", 1)
+	assert_eq(state.pack.gold - before, roundi(int(Bestiary.wild(Bestiary.spawn("wolf"))["gold"]) * 1.05), "the rug: +5% gold")
+
+
+func test_your_own_bed_leaves_you_well_rested() -> void:
+	state.new_game("Robin", "warrior")
+	_own_house()
+	state.world.map_id = "town_house"
+	state.house_interact(Vector2i.ZERO, "bed")
+	assert_eq(state.settlement.house["rested"], 30)
+	state.roll = func() -> float: return 0.99
+	var plain := Bestiary.xp_for(Bestiary.wild(Bestiary.spawn("wolf")), 1)
+	var xp_before: int = state.hero.xp
+	state.defeat_monster(Bestiary.wild(Bestiary.spawn("wolf")), "forest", "", 1)
+	assert_eq(state.hero.xp - xp_before, roundi(plain * 1.1), "+10% XP while rested")
+	assert_eq(state.settlement.house["rested"], 29, "a fight used")
+	state.settlement.house["furniture"] = [{"itemId": "furn_bench", "x": 3, "y": 3}]
+	state.house_interact(Vector2i.ZERO, "bed")
+	assert_eq(state.settlement.house["rested"], 40, "the bench rests you for ten more")
+
+
+func test_no_furniture_in_the_doorway_and_an_upgrade_moves_whats_in_the_way() -> void:
+	state.new_game("Robin", "warrior")
+	_own_house()
+	state.world.map_id = "town_house"
+	state.pack.items["furn_plant"] = 1
+	assert_string_contains(state.place_furniture("furn_plant", Vector2i(8, 8), "floor"), "doorway")
+	assert_eq(state.pack.items.get("furn_plant", 0), 1, "still in the pack")
+	# A piece where the cottage puts a wall comes home to the pack.
+	var cottage := MapData.load_by_id("town_house@2")
+	var blocked := Vector2i(-1, -1)
+	for y in cottage.size.y:
+		for x in cottage.size.x:
+			if blocked.x < 0 and cottage.tile_at(Vector2i(x, y)) != "floor" and MapData.load_by_id("town_house").tile_at(Vector2i(x, y)) == "floor":
+				blocked = Vector2i(x, y)
+	if blocked.x < 0:
+		pass_test("the cottage keeps every floor tile of the hut")
+		return
+	state.settlement.house["furniture"] = [{"itemId": "furn_rug", "x": blocked.x, "y": blocked.y}]
+	state.world.map_id = "town_shop"
+	state.pack.gold = 100000
+	var line: String = state.buy_house_upgrade()
+	assert_string_contains(line, "back in your pack")
+	assert_true(state.furniture().is_empty())
+	assert_eq(state.pack.items.get("furn_rug", 0), 1)
+
+
+func test_the_manor_garden_grows_for_the_cauldron() -> void:
+	assert_eq(Town.garden_yield(0), "forest_herb")
+	assert_eq(Town.garden_yield(1), "marsh_reed")
+	assert_eq(int(Town._data()["gardenCount"]), 2)

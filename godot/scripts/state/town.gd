@@ -522,9 +522,11 @@ static func furniture_blocks(item_id: String) -> bool:
 	return item_id != "furn_rug"
 
 
-## Bread and cheese, turn and turn about (gardenYield).
+## Herbs and reeds for the cauldron, turn and turn about (PIX-179: the
+## manor garden grows what crafting needs; it used to be bread and cheese).
 static func garden_yield(harvests: int) -> String:
-	return "bread" if harvests % 2 == 0 else "cheese_wheel"
+	var crops: Array = _data()["gardenYields"]
+	return String(crops[harvests % crops.size()])
 
 
 static func house_door() -> Vector2i:

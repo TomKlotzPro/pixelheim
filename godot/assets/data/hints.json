@@ -22,5 +22,17 @@
   "potion": {
     "title": "A potion",
     "text": "Hurt? Open your pack ({key:inventory}), pick the health potion and press {key:interact} to drink it."
+  },
+  "house": {
+    "title": "Your house",
+    "text": "Home: the barrel keeps what you carry, your bed leaves you well rested (more XP for a while), and furniture from Odo helps where it stands. The shelf takes a workbench."
+  },
+  "deed": {
+    "title": "Deeds",
+    "text": "A business you own fills its till with rent every day - its keeper hands it over when you walk in - and you pay a tenth less there."
+  },
+  "bank": {
+    "title": "Mirelle's bank",
+    "text": "Savings earn a little each day, up to a tenth of the pot. A caravan is a gamble that usually pays. Expansions make your businesses' rent richer."
   }
 }
