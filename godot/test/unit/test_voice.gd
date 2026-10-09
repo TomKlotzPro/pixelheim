@@ -86,4 +86,4 @@ func test_a_quest_line_leads_with_its_tag() -> void:
 	var accepted: String = state.resolve_quests("innkeeper")
 	assert_string_starts_with(accepted, "Quest accepted: ")
 	var tag := accepted.get_slice(":", 0)
-	assert_true(tag in preload("res://scripts/world.gd").MESSAGE_TAGS, "the world sets it in gold")
+	assert_true(tag in Messages.MESSAGE_TAGS, "the world sets it in gold")

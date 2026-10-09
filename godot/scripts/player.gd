@@ -274,7 +274,7 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null) -> void:
 	world.camera_rig.hit_stop(0.05)
 	if hp > 0 and ailments.inflict(infliction, GameState.roll, HeroRules.passives(GameState.hero)):
 		Sound.play_ui("ail")
-		world.log_line(Text.t("You are afflicted by %s!") % Ailments.label(infliction["kind"]))
+		world.messages.log_line(Text.t("You are afflicted by %s!") % Ailments.label(infliction["kind"]))
 		_show_ailment()
 	velocity = (global_position - from).normalized() * 180
 	move_and_slide()
@@ -327,20 +327,20 @@ func cast(index: int) -> void:
 	# The skill on that key of the dock (PIX-190), not the Nth one known.
 	var skills := Skills.docked(GameState.hero)
 	if index >= skills.size() or skills[index].is_empty():
-		world._flash_message("No skill on that key yet. Learn more, or set the keys, in Skills.")
+		world.messages.flash("No skill on that key yet. Learn more, or set the keys, in Skills.")
 		Sound.play_ui("deny")
 		return
 	var skill: Dictionary = skills[index]
 	var block := Skills.cast_block(GameState.hero, skill)
 	if block != "":
-		world._flash_message(block)
+		world.messages.flash(block)
 		Sound.play_ui("deny")
 		return
 	var target: Node = null
 	if skill["kind"] == "damage":
 		target = _nearest_foe()
 		if target == null:
-			world._flash_message(Text.t("No foe in reach for %s.") % skill["name"])
+			world.messages.flash(Text.t("No foe in reach for %s.") % skill["name"])
 			Sound.play_ui("deny")
 			return
 		face(target.global_position - global_position)
@@ -358,10 +358,10 @@ func cast(index: int) -> void:
 		if skill.get("cleanse", false) and not ailments.kinds().is_empty():
 			ailments.clear()
 			_show_ailment()
-			world.log_line("All ailments are purged!")
+			world.messages.log_line("All ailments are purged!")
 		world.fx.skill_flash(global_position, Color(0.5, 1.0, 0.6))
 		world.fx.float_number(restored, global_position + Vector2(0, -22), Color(0.5, 1, 0.6))
-		world.log_line(Text.t("%s restores %d HP.") % [skill["name"], restored])
+		world.messages.log_line(Text.t("%s restores %d HP.") % [skill["name"], restored])
 		return
 	# An area skill (PIX-190) strikes every foe in reach, not just the nearest.
 	var targets: Array = _foes_in_reach() if skill.get("area", false) else [target]
@@ -373,9 +373,9 @@ func cast(index: int) -> void:
 		foe.take_hit(damage, global_position, skill.get("inflicts"))
 		dealt += damage
 	if targets.size() > 1:
-		world.log_line(Text.t("%s hits %d foes for %d damage!") % [skill["name"], targets.size(), dealt])
+		world.messages.log_line(Text.t("%s hits %d foes for %d damage!") % [skill["name"], targets.size(), dealt])
 	else:
-		world.log_line(Text.t("%s hits %s for %d damage!") % [skill["name"], target.fighter["name"], dealt])
+		world.messages.log_line(Text.t("%s hits %s for %d damage!") % [skill["name"], target.fighter["name"], dealt])
 	# A draining skill gives back a share of what it took (Drain Life).
 	var drained := roundi(dealt * float(skill.get("drain", 0.0)))
 	if drained > 0:

@@ -567,7 +567,7 @@ func _primary() -> void:
 		if not gate.is_empty() and world != null:
 			close()
 			world.travel_to(gate)
-			world._flash_message(Text.t("You travel to %s.") % gate["name"])
+			world.messages.flash(Text.t("You travel to %s.") % gate["name"])
 		return
 	if row["kind"] == "recipe":
 		_craft(row["entry"])

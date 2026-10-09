@@ -54,7 +54,7 @@ func _check_phase() -> void:
 		return
 	phase = now
 	cooldown = minf(cooldown, 1.0)
-	world.log_line(pattern["roars"][phase - 1])
+	world.messages.log_line(pattern["roars"][phase - 1])
 	# A new phase is roared (PIX-210), not bumped.
 	Sound.play("roar")
 	world.camera_rig.shake(6.0, 0.5)

@@ -119,11 +119,7 @@ func run() -> void:
 ## Puts the hero where the shot stands, at its hour, with its foe - the last
 ## shot's words cleared away.
 func _stage(shot: Dictionary) -> void:
-	for line in world.log_box.get_children():
-		line.queue_free()
-	world._messages.clear()
-	world._message_now = ""
-	world.message_box.modulate.a = 0.0
+	world.messages.clear()
 	GameState.world.steps = shower_by_day() if shot.get("rain", false) else float(shot["time"]) * DayNight.DAY_CYCLE_STEPS
 	if shot.has("floor"):
 		world.enter_floor(int(shot["floor"]))
