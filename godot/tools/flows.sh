@@ -11,9 +11,11 @@
 # (PIX-169), the mountain's gate barred to a new hero (PIX-170) and a depth
 # of the Deep Hunt cleared (PIX-161), and a potion brewed before Vex's quest
 # was taken still finishing it (PIX-231), and a named boss that falls as a
-# boss does and holds the way out while it hunts (PIX-232). Every flow leaves
-# its picture in godot/flows/<name>.png for a human to look at, and the
-# harness's report line must match what the flow promises or the run fails.
+# boss does and holds the way out while it hunts (PIX-232), and the map's
+# waypoint list showing where a waypoint takes you before it does, then
+# taking you there (PIX-241). Every flow leaves its picture in
+# godot/flows/<name>.png for a human to look at, and the harness's report
+# line must match what the flow promises or the run fails.
 #
 #   godot/tools/flows.sh            # all of them
 #   godot/tools/flows.sh fight die  # just these
@@ -79,6 +81,9 @@ FLOWS=(
 	"motion|--map town motion|backsteps=[01]$"
 	"hounds|--map town --prologue 6|night=6 mobs=2"
 	"embers|--map town --prologue 9|night=9 mobs=3"
+	# The waypoint chosen on the map is the one shown, and E goes there (PIX-241).
+	"waypoint|--map town waypoints --keys m,s,s|open=map_screen.*dest=mountain_gate"
+	"travel|--map town waypoints --keys m,s,e|map=overworld cell=\\(48, 40\\).*open=none"
 	# Every screen fits the canvas in French, the longest language (PIX-258):
 	# the harness's `overflow` counts pieces running off the screen.
 	"fit-title|title overflow --lang fr|open=title_screen.*overflow=0"
@@ -89,6 +94,7 @@ FLOWS=(
 	"fit-pause|--map town --keys esc overflow --lang fr|open=pause_screen.*overflow=0"
 	"fit-options|--map town --keys esc,s,s,e overflow --lang fr|overflow=0"
 	"fit-map|--map town waypoints worldmap overflow --lang fr|open=map_screen.*overflow=0"
+	"fit-travel|--map town waypoints --keys m,s,s,s,s overflow --lang fr|open=map_screen.*overflow=0 dest=mirefen_pass"
 	"fit-pack|--map town --keys i overflow --lang fr|open=inventory_screen.*overflow=0"
 	"fit-journal|--map town --keys q overflow --lang fr|open=journal_screen.*overflow=0"
 	"fit-skills|--map town --keys k overflow --lang fr|open=skills_screen.*overflow=0"
