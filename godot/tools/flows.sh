@@ -10,12 +10,13 @@
 # Greyhold with its cellars (PIX-168) and the Frostgate pass with its ice cave
 # (PIX-169), the mountain's gate barred to a new hero (PIX-170) and a depth
 # of the Deep Hunt cleared (PIX-161), and a potion brewed before Vex's quest
-# was taken still finishing it (PIX-231), and a named boss that falls as a
-# boss does and holds the way out while it hunts (PIX-232), and the map's
+# was taken still finishing it (PIX-231), a named boss that falls as a
+# boss does and holds the way out while it hunts (PIX-232), the map's
 # waypoint list showing where a waypoint takes you before it does, then
-# taking you there (PIX-241). Every flow leaves its picture in
-# godot/flows/<name>.png for a human to look at, and the harness's report
-# line must match what the flow promises or the run fails.
+# taking you there (PIX-241), and hero creation's first night skipped with
+# Tab while the name field has the keys (PIX-228). Every flow leaves its
+# picture in godot/flows/<name>.png for a human to look at, and the
+# harness's report line must match what the flow promises or the run fails.
 #
 #   godot/tools/flows.sh            # all of them
 #   godot/tools/flows.sh fight die  # just these
@@ -79,6 +80,7 @@ FLOWS=(
 	"deep|--floor 16 clear --wait 0.3|map=floor_16"
 	"dawn|--map town --prologue 5 --at 11,8 --keys w,e,e,e,e,e --wait 1.5|open=dawn_screen"
 	"motion|--map town motion|backsteps=[01]$"
+	"firstnight|create --keys tab|open=create_screen.*firstnight=skip"
 	"hounds|--map town --prologue 6|night=6 mobs=2"
 	"embers|--map town --prologue 9|night=9 mobs=3"
 	# The waypoint chosen on the map is the one shown, and E goes there (PIX-241).
@@ -88,6 +90,9 @@ FLOWS=(
 	# the harness's `overflow` counts pieces running off the screen.
 	"fit-title|title overflow --lang fr|open=title_screen.*overflow=0"
 	"fit-create|create overflow --lang fr|open=create_screen.*overflow=0"
+	# Its English twin (PIX-228): the setting's card and Begin's row laid out
+	# in the other words.
+	"fit-create-en|create overflow --lang en|open=create_screen.*overflow=0"
 	"fit-whatsnew|title whatsnew overflow --lang fr|overflow=0"
 	"fit-saves|--map town --keys esc,s,e overflow --lang fr|open=saves_screen.*overflow=0"
 	"fit-webhero|saves --web-save res://test/fixtures/web_save_v4.txt overflow --lang fr|open=saves_screen.*overflow=0"

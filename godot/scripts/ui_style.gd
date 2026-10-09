@@ -311,6 +311,10 @@ static func button_keyed(node: Button, key: String, text: String) -> void:
 static func focus(button: Button, on := true) -> void:
 	button.add_theme_stylebox_override("normal", plank(on, 6))
 	button.add_theme_color_override("font_color", GOLD if on else CREAM)
+	# A keyed plank's words are a label of their own (PIX-213): they light too.
+	var row := button.get_node_or_null("keyed")
+	if row != null:
+		(row.get_child(1) as Label).add_theme_color_override("font_color", GOLD if on else CREAM)
 
 
 ## A wooden plank (buttons, the menu): wood with a lit top edge and a dark
