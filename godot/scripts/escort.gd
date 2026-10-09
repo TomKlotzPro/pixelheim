@@ -30,7 +30,7 @@ var bitten_at := {}
 
 func _ready() -> void:
 	for cell: Array in def["route"]:
-		route.append(world._cell_center(Vector2i(int(cell[0]), int(cell[1]))))
+		route.append(MapView.center(Vector2i(int(cell[0]), int(cell[1]))))
 	position = route[0]
 	max_hp = int(def["hp"])
 	hp = max_hp

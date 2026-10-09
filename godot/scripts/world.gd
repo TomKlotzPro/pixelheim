@@ -152,11 +152,11 @@ func _ready() -> void:
 	if GameState.first_run:
 		var found := WebImport.find_in_browser()
 		if not found.is_empty():
-			_open_saves(found, true)
+			open_saves(found, true)
 			greeted = true
 	# The title greets a launch (not a slot switch or a reload, and not the harness).
 	if not greeted and not GameState.title_seen and (not harness or OS.get_cmdline_user_args().has("title")):
-		_open_title()
+		open_title()
 	if harness:
 		var driver := preload("res://scripts/harness.gd").new()
 		driver.world = self
@@ -164,7 +164,8 @@ func _ready() -> void:
 		add_child(driver)
 
 
-func _open_title() -> void:
+## The title screen over the world (a launch, or back from the saves).
+func open_title() -> void:
 	var title := preload("res://scripts/title_screen.gd").new()
 	title.world = self
 	add_child(title)
@@ -233,7 +234,7 @@ func _process(delta: float) -> void:
 		return
 	interaction.step_on(cell)
 	if map.portals.has(cell):
-		_use_portal(map.portals[cell])
+		use_portal(map.portals[cell])
 
 ## Maps as the town has grown: the village and the house redraw per tier.
 func load_map(map_id: String) -> MapData:
@@ -249,10 +250,13 @@ func on_player_died() -> void:
 	var bed := Vector2i(inn["x"], inn["y"])
 	map = load_map(inn["mapId"])
 	enter_map(map, bed)
-	player.respawn(_cell_center(bed))
+	player.respawn(MapView.center(bed))
 	last_player_position = player.position  # a respawn is not a walk
 
-func _use_portal(target: Dictionary) -> void:
+## Through a portal the hero stepped on (or the harness sent them to): a
+## door to another map, a dungeon's gate and its floor select, the stairs
+## up from a floor, or the hole deeper.
+func use_portal(target: Dictionary) -> void:
 	match target["kind"]:
 		"map":
 			_through_door(func() -> void:
@@ -286,7 +290,7 @@ func open_screen(screen: String) -> void:
 		return
 	match screen:
 		"inventory":
-			_open_inventory()
+			open_inventory()
 		"map":
 			if map.floor_level > 0:
 				messages.flash("No map reaches this deep.")
@@ -298,7 +302,8 @@ func open_screen(screen: String) -> void:
 			add_child(load("res://scripts/%s_screen.gd" % screen).new())
 
 
-func _open_inventory() -> void:
+## The pack (I, or the dock's menu).
+func open_inventory() -> void:
 	var screen := preload("res://scripts/inventory_screen.gd").new()
 	screen.world = self
 	add_child(screen)
@@ -310,7 +315,7 @@ func _step_back() -> void:
 	if not map.is_walkable(back):
 		return
 	player_cell = back
-	player.position = _cell_center(back)
+	player.position = MapView.center(back)
 	camera_rig.cut()
 	last_player_position = player.position
 	GameState.move_to(map, back, player.facing)
@@ -331,7 +336,7 @@ func enter_map(next: MapData, arrival: Vector2i) -> void:
 	arrival = view.plan(arrival)
 	view.build(self)
 	folk.spawn_for(next)
-	player.position = _cell_center(arrival)
+	player.position = MapView.center(arrival)
 	camera_rig.cut()
 	player.ailments.clear()
 	last_player_position = player.position
@@ -401,7 +406,7 @@ func _fade_in() -> void:
 	fade.tween_callback(dark.queue_free)
 
 ## The saves screen; `web_save` defaults to whatever this browser's web game holds.
-func _open_saves(web_save := {}, welcome := false) -> void:
+func open_saves(web_save := {}, welcome := false) -> void:
 	var screen := preload("res://scripts/saves_screen.gd").new()
 	screen.web_save = web_save if not web_save.is_empty() else WebImport.find_in_browser()
 	screen.welcome = welcome
@@ -414,9 +419,6 @@ func travel_to(waypoint: Dictionary) -> void:
 	if waypoint["mapId"] != map.id:
 		map = load_map(waypoint["mapId"])
 	enter_map(map, arrival)
-
-func _cell_center(cell: Vector2i) -> Vector2:
-	return MapView.center(cell)
 
 ## Into the bought house, at its door (E on the door, or walking into it).
 func enter_house() -> void:

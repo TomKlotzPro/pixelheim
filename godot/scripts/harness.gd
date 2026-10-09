@@ -140,7 +140,7 @@ func _run_test_harness() -> void:
 		# The floor select, not the barred gate (PIX-170): the relics are home.
 		if not Relics.gate_open(GameState.progression):
 			GameState.progression.quests[Relics.quest_id()] = {"progress": Relics.all().size(), "done": true}
-		world._use_portal({
+		world.use_portal({
 			"kind": "dungeon",
 			"dungeon": args[dungeon_index + 1] if dungeon_index >= 0 else "mountain",
 		})
@@ -156,7 +156,7 @@ func _run_test_harness() -> void:
 		await get_tree().create_timer(0.6).timeout
 	if args.has("leave"):
 		# Up the stairs, back to the gate.
-		world._use_portal({"kind": "gate"})
+		world.use_portal({"kind": "gate"})
 		await get_tree().create_timer(0.3).timeout
 	var motion_report := ""
 	if args.has("motion"):
@@ -214,7 +214,7 @@ func _run_test_harness() -> void:
 	if at_index >= 0 and at_index + 1 < args.size():
 		var at := args[at_index + 1].split(",")
 		world.player_cell = Vector2i(int(at[0]), int(at[1]))
-		world.player.position = world._cell_center(world.player_cell)
+		world.player.position = MapView.center(world.player_cell)
 		world.camera_rig.cut()
 		world.camera_rig.camera.reset_smoothing()
 	var zoom_index := args.find("--zoom")
@@ -376,7 +376,7 @@ func _run_test_harness() -> void:
 		GameState.equip(armor["uid"])
 		GameState.equip(ring["uid"])
 		GameState.pack.items.merge({"potion_hp": 3, "antidote": 1, "wolf_pelt": 2})
-		world._open_inventory()
+		world.open_inventory()
 		# `--tab N` opens another tab (7 is Craft).
 		var inv_tab := args.find("--tab")
 		if inv_tab >= 0 and inv_tab + 1 < args.size():
@@ -418,7 +418,7 @@ func _run_test_harness() -> void:
 		await get_tree().create_timer(0.3).timeout
 	if args.has("dockmenu"):
 		# The dock's menu of screens, opened as its button would.
-		world.hud.dock._toggle_menu()
+		world.hud.dock.toggle_menu()
 		await get_tree().create_timer(0.2).timeout
 	if args.has("lineup"):
 		# Every hero role, villager and monster sheet, walking down then right.
@@ -460,7 +460,7 @@ func _run_test_harness() -> void:
 		var web_index := args.find("--web-save")
 		var web_file := args[web_index + 1] if web_index >= 0 and web_index + 1 < args.size() else ""
 		var stand_in := WebImport.parse_any(FileAccess.get_file_as_string(web_file)) if web_file != "" else {}
-		world._open_saves(stand_in, not stand_in.is_empty())
+		world.open_saves(stand_in, not stand_in.is_empty())
 		await get_tree().create_timer(0.3).timeout
 	var ready_index := args.find("--ready")
 	if ready_index >= 0:
@@ -492,7 +492,7 @@ func _run_test_harness() -> void:
 	if args.has("talk") or args.has("near"):
 		# Stand below the map's first villager facing up; `talk` also presses E.
 		var villager: Node = get_tree().get_first_node_in_group("npcs")
-		world.player.position = world._cell_center(villager.cell + Vector2i.DOWN)
+		world.player.position = MapView.center(villager.cell + Vector2i.DOWN)
 		world.camera_rig.cut()
 		world.player_cell = villager.cell + Vector2i.DOWN
 		world.player.face(Vector2.UP)
@@ -503,7 +503,7 @@ func _run_test_harness() -> void:
 		await _keys(args)
 	if args.has("chest"):
 		# Pair with `--map town`: warp beside the nook chest, face it, open it.
-		world.player.position = world._cell_center(Vector2i(79, 4))
+		world.player.position = MapView.center(Vector2i(79, 4))
 		world.camera_rig.cut()
 		world.player_cell = Vector2i(79, 4)
 		world.player.face(Vector2.RIGHT)
@@ -544,7 +544,7 @@ func _run_test_harness() -> void:
 	if args.has("mimic"):
 		# Pair with `--map mirefen`: open the mire's mimic chest; `--wait`
 		# catches its shudder (under 0.6 s) or the ambush after.
-		world.player.position = world._cell_center(Vector2i(42, 13))
+		world.player.position = MapView.center(Vector2i(42, 13))
 		world.camera_rig.cut()
 		world.player_cell = Vector2i(42, 13)
 		world.player.invulnerable = true
@@ -564,7 +564,7 @@ func _run_test_harness() -> void:
 			if sides.is_empty():
 				continue
 			var side: Vector2i = sides[0]
-			world.player.position = world._cell_center(door + side)
+			world.player.position = MapView.center(door + side)
 			world.camera_rig.cut()
 			world.player_cell = door + side
 			world.player.scripted_dir = Vector2(-side)

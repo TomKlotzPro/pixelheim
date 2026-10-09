@@ -78,7 +78,7 @@ func _resume() -> void:
 
 func _saves() -> void:
 	_resume()
-	world._open_saves()
+	world.open_saves()
 
 
 ## Options open over the pause menu and hand back to it when closed.
