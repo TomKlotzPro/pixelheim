@@ -61,3 +61,44 @@ func test_a_touch_on_the_stick_is_the_sticks() -> void:
 	touch.pressed = false
 	assert_true(pad.take(touch))
 	assert_eq(pad.stick_finger, -1)
+
+
+## PIX-214: thumb-sized controls, every one on the screen and none on another,
+## and the six skill keys - on a phone held sideways, 844x390 CSS pixels
+## (its canvas 1558x720, 1.85 canvas units to a CSS pixel).
+func test_the_pad_is_thumb_sized_and_fits() -> void:
+	var size := Vector2(1558, 720)
+	var unit := 720.0 / 390.0
+	var plan := Touch.pad_plan(size, unit)
+	var actions: Array = plan["buttons"].map(func(button: Dictionary) -> String: return button["action"])
+	for index in 6:
+		assert_has(actions, "skill_%d" % (index + 1), "skill %d is on the pad" % (index + 1))
+	for button: Dictionary in plan["buttons"]:
+		var at: Vector2 = button["center"]
+		var radius: float = button["radius"]
+		assert_gte(radius * 2.0 / unit, 52.0 - 0.01, "%s is thumb-sized" % button["action"])
+		assert_true(Rect2(Vector2.ZERO, size).encloses(Rect2(at - Vector2(radius, radius), Vector2(radius, radius) * 2.0)), "%s is on the screen" % button["action"])
+		for other: Dictionary in plan["buttons"]:
+			if other != button:
+				assert_gte(at.distance_to(other["center"]), radius + float(other["radius"]) - 0.5, "%s and %s don't overlap" % [button["action"], other["action"]])
+	assert_gte(float(plan["stick_radius"]) * 2.0 / unit, 120.0 - 0.01, "a stick a thumb can work")
+
+
+func test_screens_put_their_key_only_commands_on_the_tap_bar() -> void:
+	var pack: Node = autofree(preload("res://scripts/inventory_screen.gd").new())
+	assert_eq(pack._tap_actions().map(func(entry: Dictionary) -> String: return entry["label"]), ["Drop", "Drop all", "Sort"])
+	var skills: Node = autofree(preload("res://scripts/skills_screen.gd").new())
+	assert_eq(skills._tap_actions().map(func(entry: Dictionary) -> String: return entry["label"]), ["Set key", "Forget"])
+
+
+func test_a_phone_reads_large_by_default() -> void:
+	var path := "user://test_touch_settings.cfg"
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+	Touch.forced = true
+	var settings := GameSettings.new(path)
+	settings.load_file()
+	Touch.forced = false
+	assert_true(settings.large_text, "large text on a phone")
+	var desktop := GameSettings.new(path)
+	desktop.load_file()
+	assert_false(desktop.large_text, "not on a desktop")

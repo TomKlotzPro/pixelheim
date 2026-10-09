@@ -354,6 +354,15 @@ static func sort_name(sort: String) -> String:
 	return sort
 
 
+## On a phone, the tap bar's own buttons (PIX-214): X, Z and R by touch.
+func _tap_actions() -> Array[Dictionary]:
+	return [
+		{"label": "Drop", "call": _drop.bind(false)},
+		{"label": "Drop all", "call": _drop.bind(true)},
+		{"label": "Sort", "call": _sort},
+	]
+
+
 ## R: the next order (InventoryState.SORTS), remembered between sessions.
 func _sort() -> void:
 	var sorts := InventoryState.SORTS

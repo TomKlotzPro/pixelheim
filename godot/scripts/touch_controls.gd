@@ -6,11 +6,7 @@ extends CanvasLayer
 ## a key would), so everything else plays as it does by keyboard. They hide
 ## while a screen is open; screens have their own tap bar (Screen).
 
-## Sizes in screen pixels, whatever the canvas's scale: a thumb is a thumb.
-const STICK_PX := 64.0
-const BIG_PX := 42.0
-const SMALL_PX := 30.0
-const MARGIN_PX := 28.0
+## Where the stick and buttons go: Touch.pad_plan (PIX-214).
 const DEADZONE := 0.22
 
 var pad: Pad
@@ -32,6 +28,8 @@ func _process(_delta: float) -> void:
 		pad.visible = shown
 		if not shown:
 			pad.let_go()
+		else:
+			pad.layout()
 
 
 func _input(event: InputEvent) -> void:
@@ -44,40 +42,48 @@ class Pad extends Control:
 	var stick_radius := 64.0
 	var knob := Vector2.ZERO
 	var stick_finger := -1
-	## {action, label, center, radius, finger}
+	## {action, glyph, center, radius, finger}
 	var buttons: Array[Dictionary] = []
 
-	## Where everything goes for this screen: the stick bottom-left and the
-	## buttons bottom-right, above the dock.
+	## Where everything goes for this screen: the stick bottom-left, attack in
+	## the bottom-right corner, then around it - a ring with the roll, the
+	## first skill and use, and a wider ring with skills two to six - all
+	## above the dock.
 	func layout() -> void:
-		var size := Touch.view_size(self)
-		var scale := maxf(0.2, get_tree().root.get_final_transform().get_scale().x)
-		var dock_room := 130.0
-		stick_radius = STICK_PX / scale
-		var margin := MARGIN_PX / scale
-		var big := BIG_PX / scale
-		var small := SMALL_PX / scale
-		stick_center = Vector2(margin + stick_radius, size.y - dock_room - margin - stick_radius)
-		var attack := Vector2(size.x - margin - big, size.y - dock_room - margin - big)
-		buttons = [
-			{"action": "attack", "label": "Hit", "center": attack, "radius": big},
-			{"action": "dodge", "label": "Roll", "center": attack + Vector2(-big * 2.3, big * 0.3), "radius": small},
-			{"action": "interact", "label": "Use", "center": attack + Vector2(-big * 1.5, -big * 1.7), "radius": small},
-			{"action": "skill_1", "label": "1", "center": attack + Vector2(0, -big * 2.6), "radius": small * 0.85},
-			{"action": "skill_2", "label": "2", "center": attack + Vector2(-big * 1.4, -big * 3.4), "radius": small * 0.85},
-			{"action": "skill_3", "label": "3", "center": attack + Vector2(-big * 2.9, -big * 2.6), "radius": small * 0.85},
-		]
+		var planned := Touch.pad_plan(Touch.view_size(self), Touch.css(self, 1.0))
+		stick_center = planned["stick_center"]
+		stick_radius = planned["stick_radius"]
+		buttons.assign(planned["buttons"])
 		for button: Dictionary in buttons:
 			button["finger"] = -1
 		for child in get_children():
 			child.queue_free()
+		# Each skill key shows the skill on it (its icon, else its number).
+		var docked := Skills.docked(GameState.hero)
 		for button: Dictionary in buttons:
-			var label := UiStyle.strong(button["label"], maxi(12, roundi(float(button["radius"]) * 0.55)), UiStyle.CREAM)
-			label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-			label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-			label.size = Vector2(button["radius"], button["radius"]) * 2.0
-			label.position = button["center"] - Vector2(button["radius"], button["radius"])
-			add_child(label)
+			var action: String = button["action"]
+			if not action.begins_with("skill_"):
+				continue
+			var index := int(action.substr(6)) - 1
+			var icon: Texture2D = ItemIcons.skill(docked[index]["name"]) if index < docked.size() and not docked[index].is_empty() else null
+			var radius: float = button["radius"]
+			if icon != null:
+				var art := TextureRect.new()
+				art.texture = icon
+				art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+				art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+				art.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+				art.size = Vector2(radius, radius) * 1.2
+				art.position = button["center"] - art.size / 2.0
+				art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+				add_child(art)
+			else:
+				var label := UiStyle.strong(button["glyph"], 18, UiStyle.CREAM)
+				label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+				label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+				label.size = Vector2(radius, radius) * 2.0
+				label.position = button["center"] - Vector2(radius, radius)
+				add_child(label)
 		queue_redraw()
 
 	## Claims a touch on the stick or a button; false lets it through.
@@ -152,3 +158,28 @@ class Pad extends Control:
 			var held := int(button["finger"]) != -1
 			draw_circle(button["center"], button["radius"], Color(UiStyle.LAMP if held else UiStyle.NIGHT, 0.6 if held else 0.4))
 			draw_arc(button["center"], button["radius"], 0, TAU, 40, Color(UiStyle.CREAM, 0.5), 3.0)
+			_glyph(button["glyph"], button["center"], float(button["radius"]) * 0.5)
+
+	## A button's mark drawn, not written (PIX-214: "Frapper" and "Roulade"
+	## spilled out of their circles): a sword, a rolling arrow, an open hand.
+	func _glyph(glyph: String, at: Vector2, reach: float) -> void:
+		var ink := Color(UiStyle.CREAM, 0.9)
+		var width := maxf(2.0, reach * 0.16)
+		match glyph:
+			"sword":
+				var tip := at + Vector2(reach, -reach)
+				var hilt := at + Vector2(-reach * 0.6, reach * 0.6)
+				draw_line(hilt, tip, ink, width * 1.3)
+				draw_line(hilt + Vector2(-reach * 0.35, -reach * 0.35), hilt + Vector2(reach * 0.35, reach * 0.35), ink, width)
+				draw_line(hilt, hilt + Vector2(-reach * 0.35, reach * 0.35), ink, width)
+			"roll":
+				draw_arc(at, reach * 0.8, deg_to_rad(-200), deg_to_rad(60), 24, ink, width)
+				var end := at + Vector2.RIGHT.rotated(deg_to_rad(60)) * reach * 0.8
+				draw_line(end, end + Vector2(-reach * 0.5, -reach * 0.05), ink, width)
+				draw_line(end, end + Vector2(reach * 0.05, -reach * 0.5), ink, width)
+			"use":
+				# An open hand: a palm and four fingers.
+				draw_circle(at + Vector2(0, reach * 0.25), reach * 0.45, ink)
+				for i in 4:
+					var x := (i - 1.5) * reach * 0.28
+					draw_line(at + Vector2(x, reach * 0.1), at + Vector2(x, -reach * (0.75 if i in [1, 2] else 0.55)), ink, width)
