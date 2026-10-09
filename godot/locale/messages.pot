@@ -2209,6 +2209,10 @@ msgid "Dropping a piece of gear or a whole stack asks for the same key again, an
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Dungeons and caves are dark and torchlit, and the Night of Ash glows red; damage numbers, prompts, health bars and danger marks stay bright in the dark"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Dungeons live in the world now: walk to the mountain gate to climb"
 msgstr ""
 
@@ -2541,6 +2545,10 @@ msgid "Fixed: a flaky load could leave the world pitch black until a reload - th
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Fixed: on an AZERTY keyboard, hints named the number keys by their symbol (\"Ampersand\"); they read as their digits again"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Fixed: the ascension card could get stuck on screen until the next fight - it leaves politely now"
 msgstr ""
 
@@ -2854,6 +2862,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Light Feet"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Light and Dark"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4501,6 +4513,10 @@ msgid "The world map is here: press M for the Ashenreach under fog of war - you 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The world now darkens with the hour instead of under a veil: gold dawns, orange dusks and blue nights, and lamps, lit windows, torches, camp fires and hearths truly light the dark around them"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The world sits centered on the screen, where a world belongs"
 msgstr ""
 
@@ -4782,6 +4798,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Your gold is shown the same way everywhere: the coin and the sum"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Your hero carries a lantern at night and below ground, and spells light up the ground where they land"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -10748,28 +10768,28 @@ msgstr ""
 msgid "Move right"
 msgstr ""
 
-#: scripts/controls.gd:129
-msgid "Drop"
-msgstr ""
-
-#: scripts/controls.gd:129
-msgid "Drop all"
-msgstr ""
-
-#: scripts/controls.gd:129
-msgid "Menu"
-msgstr ""
-
 #: scripts/controls.gd:13
 msgid "Attack"
 msgstr ""
 
-#: scripts/controls.gd:139
-msgid "skill %d"
+#: scripts/controls.gd:133
+msgid "Drop"
+msgstr ""
+
+#: scripts/controls.gd:133
+msgid "Drop all"
+msgstr ""
+
+#: scripts/controls.gd:133
+msgid "Menu"
 msgstr ""
 
 #: scripts/controls.gd:14
 msgid "Dodge roll"
+msgstr ""
+
+#: scripts/controls.gd:143
+msgid "skill %d"
 msgstr ""
 
 #: scripts/controls.gd:15
@@ -10964,15 +10984,15 @@ msgstr ""
 msgid "%s howls - the forest answers!"
 msgstr ""
 
-#: scripts/enemy.gd:154
+#: scripts/enemy.gd:159
 msgid "Lv %d"
 msgstr ""
 
-#: scripts/enemy.gd:388
+#: scripts/enemy.gd:395
 msgid "blocked"
 msgstr ""
 
-#: scripts/enemy.gd:416
+#: scripts/enemy.gd:423
 msgid "%s is afflicted by %s!"
 msgstr ""
 
@@ -13200,43 +13220,43 @@ msgstr ""
 msgid "Arrows"
 msgstr ""
 
-#: scripts/world.gd:1001
+#: scripts/world.gd:1012
 msgid "Only cinders where the house stood. The board on the square can change that."
 msgstr ""
 
-#: scripts/world.gd:1006
+#: scripts/world.gd:1017
 msgid "The deed costs %d gold. {key:interact} again to sign it."
 msgstr ""
 
-#: scripts/world.gd:1090
+#: scripts/world.gd:1101
 msgid "A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it."
 msgstr ""
 
-#: scripts/world.gd:1517
+#: scripts/world.gd:1528
 msgid "Five lanterns on the square, one for each of the five who climbed. Tonight the %s remembers them - and %s."
 msgstr ""
 
-#: scripts/world.gd:1518
+#: scripts/world.gd:1529
 msgid "Pixelheim, a %s raised from the ashes. Tonight it celebrates %s."
 msgstr ""
 
-#: scripts/world.gd:1604
+#: scripts/world.gd:1615
 msgid "%s: built."
 msgstr ""
 
-#: scripts/world.gd:1608
+#: scripts/world.gd:1619
 msgid "Pixelheim is a %s now."
 msgstr ""
 
-#: scripts/world.gd:1614
+#: scripts/world.gd:1625
 msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
 msgstr ""
 
-#: scripts/world.gd:1716
+#: scripts/world.gd:1727
 msgid "%s  %d:%02d"
 msgstr ""
 
-#: scripts/world.gd:1944
+#: scripts/world.gd:1961
 msgid "Next"
 msgstr ""
 
@@ -13244,31 +13264,31 @@ msgstr ""
 msgid "The pack is scattered. Another comes once you've walked a good way, or after a night's rest."
 msgstr ""
 
-#: scripts/world.gd:512
+#: scripts/world.gd:514
 msgid "No map reaches this deep."
 msgstr ""
 
-#: scripts/world.gd:587
+#: scripts/world.gd:598
 msgid "LEVEL UP"
 msgstr ""
 
-#: scripts/world.gd:74
+#: scripts/world.gd:70
 msgid "Level up"
 msgstr ""
 
-#: scripts/world.gd:74
+#: scripts/world.gd:70
 msgid "Mastery"
 msgstr ""
 
-#: scripts/world.gd:74
+#: scripts/world.gd:70
 msgid "Quest accepted"
 msgstr ""
 
-#: scripts/world.gd:74
+#: scripts/world.gd:70
 msgid "Quest complete"
 msgstr ""
 
-#: scripts/world.gd:802
+#: scripts/world.gd:813
 msgid "{epithet} {name}"
 msgstr ""
 

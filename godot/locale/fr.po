@@ -2209,6 +2209,10 @@ msgid "Dropping a piece of gear or a whole stack asks for the same key again, an
 msgstr "Jeter une pièce d'équipement ou tout un lot demande la même touche une seconde fois, et une touche qui a déjà un rôle (jeter, une compétence, Esc) ne peut pas être donnée à une autre action"
 
 #: assets/data/changelog.json
+msgid "Dungeons and caves are dark and torchlit, and the Night of Ash glows red; damage numbers, prompts, health bars and danger marks stay bright in the dark"
+msgstr "Les donjons et les grottes sont sombres et éclairés à la torche, et la Nuit des Cendres rougeoie ; les dégâts, les invites, les barres de vie et les zones de danger restent bien lisibles dans le noir"
+
+#: assets/data/changelog.json
 msgid "Dungeons live in the world now: walk to the mountain gate to climb"
 msgstr "Les donjons font désormais partie du monde : marchez jusqu'à la porte de la montagne pour grimper"
 
@@ -2541,6 +2545,10 @@ msgid "Fixed: a flaky load could leave the world pitch black until a reload - th
 msgstr "Corrigé : un chargement capricieux pouvait laisser le monde plongé dans le noir jusqu'au rechargement - le rendu réessaie désormais tout seul"
 
 #: assets/data/changelog.json
+msgid "Fixed: on an AZERTY keyboard, hints named the number keys by their symbol (\"Ampersand\"); they read as their digits again"
+msgstr "Corrigé : sur un clavier AZERTY, les astuces nommaient les touches chiffrées par leur symbole (« Ampersand ») ; elles affichent de nouveau leur chiffre"
+
+#: assets/data/changelog.json
 msgid "Fixed: the ascension card could get stuck on screen until the next fight - it leaves politely now"
 msgstr "Corrigé : la carte d'ascension pouvait rester bloquée à l'écran jusqu'au combat suivant - elle s'en va poliment désormais"
 
@@ -2855,6 +2863,10 @@ msgstr "Chaque montée de niveau met de côté 5 points de caractéristique : 
 #: assets/data/changelog.json
 msgid "Light Feet"
 msgstr "Pieds légers"
+
+#: assets/data/changelog.json
+msgid "Light and Dark"
+msgstr "L'ombre et la lumière"
 
 #: assets/data/changelog.json
 msgid "Light on Your Feet"
@@ -4501,6 +4513,10 @@ msgid "The world map is here: press M for the Ashenreach under fog of war - you 
 msgstr "Voici la carte du monde : appuyez sur M pour voir la Marche des Cendres sous le brouillard de guerre - vous ne voyez que ce que vous avez parcouru"
 
 #: assets/data/changelog.json
+msgid "The world now darkens with the hour instead of under a veil: gold dawns, orange dusks and blue nights, and lamps, lit windows, torches, camp fires and hearths truly light the dark around them"
+msgstr "Le monde s'assombrit désormais avec l'heure au lieu de passer sous un voile : aubes dorées, crépuscules orangés et nuits bleues, et lampes, fenêtres éclairées, torches, feux de camp et âtres éclairent vraiment l'obscurité autour d'eux"
+
+#: assets/data/changelog.json
 msgid "The world sits centered on the screen, where a world belongs"
 msgstr "Le monde est centré à l'écran, là où un monde doit être"
 
@@ -4783,6 +4799,10 @@ msgstr "Votre équipement passe en 3D : heaume, plates et lame font partie de 
 #: assets/data/changelog.json
 msgid "Your gold is shown the same way everywhere: the coin and the sum"
 msgstr "Votre or s'affiche partout de la même façon : la pièce et la somme"
+
+#: assets/data/changelog.json
+msgid "Your hero carries a lantern at night and below ground, and spells light up the ground where they land"
+msgstr "Votre héros porte une lanterne la nuit et sous terre, et les sorts illuminent le sol là où ils frappent"
 
 #: assets/data/changelog.json
 msgid "Your hero rides along as a compact HUD; I opens the inventory"
@@ -10748,29 +10768,29 @@ msgstr "Aller à gauche"
 msgid "Move right"
 msgstr "Aller à droite"
 
-#: scripts/controls.gd:129
-msgid "Drop"
-msgstr "Jeter"
-
-#: scripts/controls.gd:129
-msgid "Drop all"
-msgstr "Tout jeter"
-
-#: scripts/controls.gd:129
-msgid "Menu"
-msgstr "Menu"
-
 #: scripts/controls.gd:13
 msgid "Attack"
 msgstr "Attaquer"
 
-#: scripts/controls.gd:139
-msgid "skill %d"
-msgstr "compétence %d"
+#: scripts/controls.gd:133
+msgid "Drop"
+msgstr "Jeter"
+
+#: scripts/controls.gd:133
+msgid "Drop all"
+msgstr "Tout jeter"
+
+#: scripts/controls.gd:133
+msgid "Menu"
+msgstr "Menu"
 
 #: scripts/controls.gd:14
 msgid "Dodge roll"
 msgstr "Roulade"
+
+#: scripts/controls.gd:143
+msgid "skill %d"
+msgstr "compétence %d"
 
 #: scripts/controls.gd:15
 msgid "Talk / interact"
@@ -10964,15 +10984,15 @@ msgstr "Première victoire : %s"
 msgid "%s howls - the forest answers!"
 msgstr "%s hurle - la forêt répond !"
 
-#: scripts/enemy.gd:154
+#: scripts/enemy.gd:159
 msgid "Lv %d"
 msgstr "Niv. %d"
 
-#: scripts/enemy.gd:388
+#: scripts/enemy.gd:395
 msgid "blocked"
 msgstr "paré"
 
-#: scripts/enemy.gd:416
+#: scripts/enemy.gd:423
 msgid "%s is afflicted by %s!"
 msgstr "%s est atteint : %s !"
 
@@ -13200,43 +13220,43 @@ msgstr "COMMANDÉ"
 msgid "Arrows"
 msgstr "Flèches"
 
-#: scripts/world.gd:1001
+#: scripts/world.gd:1012
 msgid "Only cinders where the house stood. The board on the square can change that."
 msgstr "Rien que des cendres là où se dressait la maison. Le tableau de la place peut y remédier."
 
-#: scripts/world.gd:1006
+#: scripts/world.gd:1017
 msgid "The deed costs %d gold. {key:interact} again to sign it."
 msgstr "Le titre de propriété coûte %d or. {key:interact} à nouveau pour le signer."
 
-#: scripts/world.gd:1090
+#: scripts/world.gd:1101
 msgid "A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it."
 msgstr "Un établi pour cette étagère : %d or. Il compte comme un niveau de métier en plus quand vous fabriquez chez vous. {key:interact} à nouveau pour l'acheter."
 
-#: scripts/world.gd:1517
+#: scripts/world.gd:1528
 msgid "Five lanterns on the square, one for each of the five who climbed. Tonight the %s remembers them - and %s."
 msgstr "Cinq lanternes sur la place, une pour chacun des cinq qui ont gravi la montagne. Ce soir, Pixelheim, désormais %s, se souvient d'eux - et salue %s."
 
-#: scripts/world.gd:1518
+#: scripts/world.gd:1529
 msgid "Pixelheim, a %s raised from the ashes. Tonight it celebrates %s."
 msgstr "Pixelheim, des cendres au rang de %s. Ce soir, on y fête %s."
 
-#: scripts/world.gd:1604
+#: scripts/world.gd:1615
 msgid "%s: built."
 msgstr "%s : chantier terminé."
 
-#: scripts/world.gd:1608
+#: scripts/world.gd:1619
 msgid "Pixelheim is a %s now."
 msgstr "Pixelheim passe au rang de %s."
 
-#: scripts/world.gd:1614
+#: scripts/world.gd:1625
 msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
 msgstr "Et aujourd'hui, on fait la fête : des étals sur la place, et un lancer d'anneaux avec un lot pour le meilleur lancer."
 
-#: scripts/world.gd:1716
+#: scripts/world.gd:1727
 msgid "%s  %d:%02d"
 msgstr "%s  %d:%02d"
 
-#: scripts/world.gd:1944
+#: scripts/world.gd:1961
 msgid "Next"
 msgstr "Ensuite"
 
@@ -13244,31 +13264,31 @@ msgstr "Ensuite"
 msgid "The pack is scattered. Another comes once you've walked a good way, or after a night's rest."
 msgstr "La meute est dispersée. Une autre reviendra quand vous aurez bien marché, ou après une nuit de repos."
 
-#: scripts/world.gd:512
+#: scripts/world.gd:514
 msgid "No map reaches this deep."
 msgstr "Aucune carte ne va aussi profond."
 
-#: scripts/world.gd:587
+#: scripts/world.gd:598
 msgid "LEVEL UP"
 msgstr "NIVEAU SUPÉRIEUR"
 
-#: scripts/world.gd:74
+#: scripts/world.gd:70
 msgid "Level up"
 msgstr "Niveau supérieur"
 
-#: scripts/world.gd:74
+#: scripts/world.gd:70
 msgid "Mastery"
 msgstr "Maîtrise"
 
-#: scripts/world.gd:74
+#: scripts/world.gd:70
 msgid "Quest accepted"
 msgstr "Quête acceptée"
 
-#: scripts/world.gd:74
+#: scripts/world.gd:70
 msgid "Quest complete"
 msgstr "Quête terminée"
 
-#: scripts/world.gd:802
+#: scripts/world.gd:813
 msgid "{epithet} {name}"
 msgstr "{name} {epithet}"
 

@@ -101,6 +101,10 @@ static func note_device(event: InputEvent) -> void:
 ## A physical key's name for the screen, on the player's layout ("W", "Space",
 ## "Esc"): short where a cap is small (Keycap.SHORT).
 static func key_label(key: int) -> String:
+	# The number row reads as its digits on every board: an AZERTY's 1 key
+	# types "&" unshifted, but the cap and the dock say 1.
+	if key >= KEY_0 and key <= KEY_9:
+		return char(key)
 	var shown: int = learned.get(key, KEY_NONE)
 	if shown == KEY_NONE and DisplayServer.get_name() != "headless":
 		shown = DisplayServer.keyboard_get_label_from_physical(key)

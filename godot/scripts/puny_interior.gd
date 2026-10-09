@@ -20,6 +20,9 @@ const WALLS := {
 	8: 721, 9: 501, 10: 720, 11: 720, 12: 61, 13: 281, 14: 60, 15: 720,
 }
 const WINDOW := 3659
+## A hearth's and a forge's fire (their lower left), where a room's warm
+## light comes from (PIX-221).
+const FIRE_TILES := [2565, 2567]
 const DOOR := 3875
 
 ## Furniture by web tile: [[offset from its cell, tile], ...]. Offsets above

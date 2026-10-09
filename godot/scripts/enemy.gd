@@ -142,8 +142,13 @@ func _ready() -> void:
 	health_bar.position = Vector2(-bar_width / 2.0, -20 * size)
 	health_bar.visible = false
 	add_child(health_bar)
+	# A foe's bar and name read at night too (PIX-221).
+	health_bar_back.material = Lights.unshaded()
+	health_bar.material = Lights.unshaded()
 	if not named.is_empty():
-		add_child(_name_plate(-20 * size - 1))
+		var plate := _name_plate(-20 * size - 1)
+		Lights.unshade(plate)
+		add_child(plate)
 	# Its level by the health bar (PIX-188), coloured by the gap to the
 	# hero's: seen once the hero is near enough to be noticed, before the charge.
 	var level := Bestiary.level_of(fighter)
@@ -159,6 +164,7 @@ func _ready() -> void:
 	level_tag.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	level_tag.resized.connect(func() -> void:
 		level_tag.position = Vector2(-level_tag.size.x * 0.125, -20 * size - level_tag.size.y * 0.25 - 0.5))
+	Lights.unshade(level_tag)
 	add_child(level_tag)
 
 
@@ -224,6 +230,7 @@ func notice() -> void:
 	_play("idle")
 	if mark == null:
 		mark = _alert_bubble()
+		Lights.unshade(mark)
 		add_child(mark)
 	mark.modulate.a = 1.0
 	mark.visible = true

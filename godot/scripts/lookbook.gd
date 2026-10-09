@@ -24,6 +24,8 @@ const SHOTS := [
 	{"name": "08_dungeon", "floor": 5, "time": DAY},
 	{"name": "09_fight", "map": "overworld", "at": "forest_1", "time": DAY, "foe": "orc"},
 	{"name": "10_overworld_night", "map": "overworld", "at": "forest_2", "time": NIGHT},
+	{"name": "11_inn_night", "map": "town_inn", "time": NIGHT},
+	{"name": "12_smithy_day", "map": "town_smith", "time": DAY},
 ]
 ## Upper Street: the shop's and the inn's fronts, the street lamps, the hall.
 const STREET := Vector2i(40, 13)

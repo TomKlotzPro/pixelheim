@@ -56,6 +56,9 @@ func _ready() -> void:
 	bar.size = Vector2(26, 3)
 	bar.position = back.position
 	add_child(bar)
+	# Readable at night (PIX-221).
+	back.material = Lights.unshaded()
+	bar.material = Lights.unshaded()
 
 
 ## The ambush foes still standing.

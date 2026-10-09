@@ -10,10 +10,6 @@ const TILE := 16
 const PACK_SIZE := 3
 const LOG_LINES := 6
 const LOG_SECONDS := 4.0
-## The dark under the mountain, whatever the hour above.
-const DUNGEON_GLOOM := Color(0.04, 0.02, 0.08, 0.28)
-## The sky the night Pixelheim burns (PIX-152): dark, lit red from below.
-const NIGHT_OF_ASH := Color(0.16, 0.03, 0.04, 0.42)
 ## Fight music holds this long after the last hunter gives up.
 const COMBAT_LINGER_S := 3.0
 ## Open-air maps too high and cold for birdsong: wind instead (PIX-169).
@@ -91,6 +87,8 @@ var nameplate_door := Vector2i(-1, -1)
 ## key as a keycap (PIX-193), or "!" on a phone, which has its Use button.
 var prompt_label: Control
 var sky_overlay: ColorRect
+## The world's light and darkness (PIX-221, light_rig.gd).
+var lights: Node
 ## A `--screenshot` run: the harness drives, nobody else.
 var harness := false
 
@@ -179,6 +177,8 @@ func _ready() -> void:
 		prompt_label = UiStyle.world_keycap(_interact_key())
 	prompt_label.visible = false
 	prompt_label.z_index = 50
+	# Words in the world stay readable at night (PIX-221).
+	Lights.unshade(prompt_label)
 	add_child(prompt_label)
 	_enter_map(map, arrival)
 	# A first visit to the Godot build that finds a web game hero in this
@@ -243,9 +243,9 @@ func _process(delta: float) -> void:
 	_tend_escort()
 	GameState.walk(player.position.distance_to(last_player_position) / TILE)
 	last_player_position = player.position
-	sky_overlay.color = DUNGEON_GLOOM if map.floor_level > 0 or map.style == "cave" else (
-		NIGHT_OF_ASH if GameState.progression.prologue != Prologue.DONE else DayNight.sky_at(GameState.world.steps)
-	)
+	# The dark is the world's own now (PIX-221: the LightRig), not a veil
+	# over it; the veil is left for the dawn's own fades.
+	sky_overlay.color = Color(0, 0, 0, 0)
 	_update_music()
 	respawn_check -= delta
 	if respawn_check <= 0:
@@ -412,6 +412,8 @@ func _floating(text: String, color: Color) -> Label:
 	label.add_theme_color_override("font_outline_color", UiStyle.NIGHT)
 	label.add_theme_constant_override("outline_size", 3)
 	label.size = label.get_minimum_size()
+	# Bright at night too (PIX-221).
+	label.material = Lights.unshaded()
 	return label
 
 
@@ -558,7 +560,16 @@ func in_fight() -> bool:
 func skill_flash(at: Vector2, color: Color) -> void:
 	var burst := Sprite2D.new()
 	burst.texture = preload("res://scripts/player.gd")._glow()
+	burst.material = Lights.glow()
 	burst.modulate = Color(color, 0.85)
+	# A spell lights the ground for a breath where it lands (PIX-221).
+	var flare := Lights.make(at, 96.0, color, 0.8)
+	flare.remove_from_group("lights")
+	flare.energy = 0.8 * maxf(0.35, lights.dark if lights != null else 0.0)
+	add_child(flare)
+	var dim := flare.create_tween()
+	dim.tween_property(flare, "energy", 0.0, 0.45).set_ease(Tween.EASE_IN)
+	dim.tween_callback(flare.queue_free)
 	burst.global_position = at
 	burst.scale = Vector2(0.4, 0.6)
 	burst.z_index = 5
@@ -1753,6 +1764,12 @@ func _spawn_player() -> void:
 	player = preload("res://scripts/player.gd").new()
 	player.world = self
 	actors.add_child(player)
+	# Light and darkness (PIX-221): the world's light for the hour, and the
+	# hero's lantern for when it's dark.
+	lights = preload("res://scripts/light_rig.gd").new()
+	lights.world = self
+	add_child(lights)
+	lights.give_lantern(player)
 
 	camera = Camera2D.new()
 	camera.limit_left = 0
