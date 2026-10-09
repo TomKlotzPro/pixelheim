@@ -264,7 +264,8 @@ static func matched_attack(level: int) -> float:
 ## mastery of the foe's family, through the variance; skills pierce half
 ## the foe's armour.
 static func hero_skill_damage(hero: HeroState, pack: InventoryState, skill: Dictionary, fighter: Dictionary, roll: Callable) -> int:
-	var raw := Skills.skill_power(hero, pack, skill) * (1.0 + mastery_bonus(hero.mastery, fighter["id"]))
+	# Skill-power passives (PIX-190) and the hero's mastery of the kind.
+	var raw := Skills.skill_power(hero, pack, skill) * (1.0 + float(HeroRules.passives(hero)["skillPower"])) * (1.0 + mastery_bonus(hero.mastery, fighter["id"]))
 	return through_armor(variance(raw, roll), int(fighter["defense"]) / 2.0)
 
 

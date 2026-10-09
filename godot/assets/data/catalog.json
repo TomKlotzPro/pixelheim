@@ -1789,7 +1789,7 @@
     },
     "rogue": {
       "name": "Rogue",
-      "description": "Fast and sneaky. Great at fleeing, deadly with a backstab.",
+      "description": "Fast and sneaky. Quick on their feet, deadly with a backstab.",
       "pitch": "Fast, sharp, gone",
       "baseStats": {
         "maxHp": 34,

@@ -18,6 +18,9 @@ var stats := {}
 var stat_points := 0
 var skill_points := 0
 var skill_nodes: Array[String] = []
+## The skill on each of the six keys (PIX-190), by key; empty until the hero
+## sets it or learns a seventh (Skills.dock_keys).
+var skill_dock: Array[String] = []
 ## job id -> {level, xp}
 var jobs := {}
 ## Additive web fields: null means absent, and absent stays absent on save.
@@ -69,6 +72,7 @@ static func from_dict(data: Dictionary) -> HeroState:
 	hero.stat_points = data["statPoints"]
 	hero.skill_points = data["skillPoints"]
 	hero.skill_nodes.assign(data["skillNodes"])
+	hero.skill_dock.assign(data.get("skillDock", []))
 	hero.jobs = data["jobs"].duplicate(true)
 	hero.look = data.get("look")
 	hero.spec = data.get("spec")
@@ -100,5 +104,7 @@ func to_dict() -> Dictionary:
 		out["path"] = path.duplicate()
 	if mastery != null:
 		out["mastery"] = mastery.duplicate()
+	if not skill_dock.is_empty():
+		out["skillDock"] = skill_dock.duplicate()
 	return out
 

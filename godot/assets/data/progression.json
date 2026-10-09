@@ -1020,50 +1020,58 @@
       "Footman",
       "Warrior",
       "Champion",
-      "Warbringer"
+      "Warbringer",
+      "Ironlord"
     ],
     "mage": [
       "Apprentice",
       "Mage",
       "Magus",
-      "Archmage"
+      "Archmage",
+      "Starcaller"
     ],
     "rogue": [
       "Cutpurse",
       "Rogue",
       "Shadow",
-      "Phantom"
+      "Phantom",
+      "Nightlord"
     ],
     "cleric": [
       "Acolyte",
       "Cleric",
       "Prelate",
-      "Saint"
+      "Saint",
+      "Hierophant"
     ],
     "ranger": [
       "Tracker",
       "Ranger",
       "Pathfinder",
-      "Wildlord"
+      "Wildlord",
+      "Eldwarden"
     ],
     "paladin": [
       "Squire",
       "Paladin",
       "Knight",
-      "Crusader"
+      "Crusader",
+      "Exemplar"
     ],
     "necromancer": [
       "Gravedigger",
       "Necromancer",
       "Deathcaller",
-      "Lichlord"
+      "Lichlord",
+      "Deathlord"
     ]
   },
   "rankAuras": [
     null,
     "#9ab0d8",
     "#e8c34a",
-    "#4ae6c8"
+    "#4ae6c8",
+    "#c58cff"
   ],
   "mainQuest": {
     "chapters": [

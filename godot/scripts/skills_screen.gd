@@ -1,17 +1,19 @@
 extends Screen
 ## The skill tree (SkillTree.tsx): once the hero has ranked, the Path Graph on
 ## top (six identities, walked edges lit, a pending step to claim), then the
-## role's three branches of four tiers. Arrows move across the grid, E learns
-## a node or walks a path, K or Esc closes. The world holds still meanwhile.
+## role's three branches of six tiers (PIX-190 added levels 13 and 17), one
+## line a node, the selected one in full below. Arrows move across the grid,
+## E learns a node or walks a path, 1-6 puts a known skill on that key of the
+## dock, K or Esc closes. The world holds still meanwhile.
 
 const KIND_LABELS := {"active": "SKILL", "upgrade": "UPGRADE", "passive": "PASSIVE"}
-const TIER_BADGES := ["I", "II", "III", "CAP"]
+const TIER_BADGES := ["I", "II", "III", "IV", "V", "VI"]
 const COLUMN_X := [80, 470, 860]
 const PATH_CARD := Vector2(340, 56)
-const NODE_CARD := Vector2(340, 78)
+const NODE_CARD := Vector2(340, 40)
 
 ## Grid cell -> {kind: "path"|"node", entry}; cells (col, row): the path
-## graph on rows 0-1 (branch a, b), the tree's tiers on rows 2-5.
+## graph on rows 0-1 (branch a, b), the tree's tiers on rows 2-7.
 var cells := {}
 var selected := Vector2i(0, 2)
 var view: Control
@@ -31,15 +33,17 @@ func _open() -> void:
 	view.set_anchors_preset(Control.PRESET_FULL_RECT)
 	view.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(view)
-	details = UiStyle.label("", 13, UiStyle.CREAM, Vector2(80, 632))
+	# The selected card in full, on the page under the tree (one line a node
+	# leaves the room).
+	details = UiStyle.label("", 13, UiStyle.INK, Vector2(80, 562))
 	details.custom_minimum_size = Vector2(1120, 0)
 	details.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(details)
 	status = UiStyle.label("", 14, UiStyle.GOLD, Vector2(260, 30))
 	status.custom_minimum_size = Vector2(720, 0)
 	add_child(status)
-	add_child(UiStyle.footer("Arrows  choose      E  learn / walk      F  forget      K / Esc  close", Vector2(80, 672)))
-	var rule := UiStyle.label("A point each level, one more each rank.", 13, UiStyle.DUSK, Vector2(800, 678))
+	add_child(UiStyle.footer("Arrows  choose      E  learn / walk      1-6  put on a key      F  forget      K / Esc  close", Vector2(80, 672)))
+	var rule := UiStyle.label("A point each level, one more each rank.", 13, UiStyle.DUSK, Vector2(800, 6))
 	rule.custom_minimum_size = Vector2(416, 0)
 	rule.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	add_child(rule)
@@ -71,7 +75,7 @@ func _layout() -> void:
 	var top := 80
 	if HeroRules.rank_index(hero.level) >= 1:
 		_path_graph(hero)
-		top = 262
+		top = 244
 	var tree := Skills.tree(hero.role_id)
 	for branch in 3:
 		var nodes := tree.filter(func(entry: Dictionary) -> bool: return int(entry["branch"]) == branch)
@@ -83,7 +87,7 @@ func _layout() -> void:
 			var cell := Vector2i(branch, 2 + int(entry["tier"]))
 			cells[cell] = {"kind": "node", "entry": entry}
 			var card := _node_card(entry, cell == selected)
-			card.position = Vector2(COLUMN_X[branch], top + 26 + int(entry["tier"]) * (NODE_CARD.y + 5))
+			card.position = Vector2(COLUMN_X[branch], top + 24 + int(entry["tier"]) * (NODE_CARD.y + 5))
 			view.add_child(card)
 	_describe()
 
@@ -100,7 +104,10 @@ func _path_graph(hero: HeroState) -> void:
 	))
 	if not walked.is_empty():
 		var identity := HeroRules.path_node(walked[-1])
-		view.add_child(UiStyle.label("%s - %s" % [identity["name"], identity["blurb"]], 13, UiStyle.FADED, Vector2(380, 72)))
+		var walking := UiStyle.label("%s - %s" % [identity["name"], identity["blurb"]], 13, UiStyle.FADED, Vector2(COLUMN_X[1], 72))
+		walking.custom_minimum_size = Vector2(COLUMN_X[2] + PATH_CARD.x - COLUMN_X[1], 0)
+		walking.clip_text = true
+		view.add_child(walking)
 	var at := func(node: Dictionary) -> Vector2:
 		return Vector2(COLUMN_X[int(node["tier"]) - 1], 100 + (0 if node["branch"] == "a" else PATH_CARD.y + 18))
 	for node: Dictionary in nodes:
@@ -124,6 +131,8 @@ func _path_graph(hero: HeroState) -> void:
 func _path_card(node: Dictionary, walked: Array, chosen: bool) -> Control:
 	var current: bool = not walked.is_empty() and walked[-1] == node["id"]
 	var state := "Current" if current else ("Walked" if node["id"] in walked else ("Walk this path" if _claimable({"kind": "path", "entry": node}) else Text.t("Rank %d") % node["tier"]))
+	if current and _key_of("path") > 0:
+		state = Text.t("Current · key %d") % _key_of("path")
 	var lit: bool = current or node["id"] in walked or state == "Walk this path"
 	var panel := _panel(PATH_CARD, chosen, lit)
 	var lines := VBoxContainer.new()
@@ -139,29 +148,35 @@ func _path_card(node: Dictionary, walked: Array, chosen: bool) -> Control:
 	return panel
 
 
+## One line a node: its tier and name, and on the right what it is or what
+## it waits for - its key once it's on the dock.
 func _node_card(entry: Dictionary, chosen: bool) -> Control:
 	var hero := GameState.hero
 	var owned: bool = entry["id"] in hero.skill_nodes
 	var buyable := Skills.can_buy(hero, entry)
 	var panel := _panel(NODE_CARD, chosen, owned or buyable)
-	var lines := VBoxContainer.new()
-	lines.add_theme_constant_override("separation", 2)
-	panel.add_child(lines)
 	var head := HBoxContainer.new()
+	panel.add_child(head)
 	var name := UiStyle.label(
 		"%s  %s" % [TIER_BADGES[int(entry["tier"])], entry["name"]], 15,
 		UiStyle.LAMP if owned else (UiStyle.INK if buyable else UiStyle.FADED)
 	)
 	name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	name.clip_text = true
 	head.add_child(name)
-	head.add_child(UiStyle.label(KIND_LABELS[entry["kind"]], 11, UiStyle.FADED))
-	lines.add_child(head)
-	var numbers := _numbers(entry)
-	if numbers != "":
-		lines.add_child(UiStyle.label(numbers, 12, UiStyle.INK if owned or buyable else UiStyle.FADED))
-	var state := "OWNED" if owned else ("Learn (1 pt)" if buyable else _why_not(entry))
-	lines.add_child(UiStyle.label(state, 12, UiStyle.LAMP if owned or buyable else UiStyle.FADED))
+	var tag: String = KIND_LABELS[entry["kind"]]
+	if owned and _key_of(entry["id"]) > 0:
+		tag = Text.t("key %d") % _key_of(entry["id"])
+	elif not owned:
+		tag = "1 pt" if buyable else (Text.t("Lv %d") % Skills.tier_level(entry) if hero.level < Skills.tier_level(entry) else "locked")
+	head.add_child(UiStyle.label(tag, 12, UiStyle.LAMP if owned or buyable else UiStyle.FADED))
 	return panel
+
+
+## The dock key (1-6) a skill sits on, 0 if none.
+func _key_of(key: String) -> int:
+	var index := Skills.dock_keys(GameState.hero).find(key)
+	return index + 1 if index >= 0 and not Skills.docked(GameState.hero)[index].is_empty() else 0
 
 
 ## A skill's cost and punch, as the web prints it.
@@ -172,6 +187,8 @@ func _numbers(entry: Dictionary) -> String:
 	var verb := "damage" if skill["kind"] == "damage" else ("healing" if skill["kind"] == "heal" else "")
 	if verb == "":
 		return ""
+	if skill.get("area", false):
+		verb = "damage to every foe in reach"
 	var cost := "%s %s" % [skill["mpCost"], Skills.resource_label(GameState.hero.role_id)]
 	if skill.get("hpCost", 0) > 0:
 		cost += Text.t(" + %d HP") % skill["hpCost"]
@@ -203,8 +220,19 @@ func _describe() -> void:
 	var entry: Dictionary = cell["entry"]
 	if cell["kind"] == "path":
 		details.text = Text.t("%s: %s  Signature: %s - %s") % [entry["name"], entry["blurb"], entry["signature"]["name"], entry["signature"]["description"]]
-	else:
-		details.text = "%s: %s" % [entry["name"], entry["description"]]
+		return
+	var hero := GameState.hero
+	var owned: bool = entry["id"] in hero.skill_nodes
+	var parts: Array[String] = ["%s: %s" % [entry["name"], entry["description"]]]
+	var numbers := _numbers(entry)
+	if numbers != "":
+		parts.append(numbers)
+	if owned and entry["kind"] == "active":
+		var key := _key_of(entry["id"])
+		parts.append(Text.t("On key %d - press 1-6 to move it.") % key if key > 0 else "Not on the dock - press 1-6 to put it on that key.")
+	elif not owned:
+		parts.append("Learn it for 1 point." if Skills.can_buy(hero, entry) else _why_not(entry) + ".")
+	details.text = "  ".join(parts)
 
 
 func _command(event: InputEvent) -> Callable:
@@ -221,6 +249,10 @@ func _command(event: InputEvent) -> Callable:
 		command = _act
 	elif event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_F:
 		command = _forget
+	else:
+		for index in Skills.DOCK_SIZE:
+			if event.is_action_pressed("skill_%d" % (index + 1)):
+				command = _bind.bind(index)
 	if command.is_valid() and command != _forget:
 		forget_armed = false
 	return command
@@ -247,6 +279,27 @@ func _forget() -> void:
 		status.text = Text.t("Forgotten. %s to spend again.") % ("1 point" if count == 1 else Text.t("%d points") % count)
 		_layout()
 	forget_armed = armed
+
+
+## 1-6: the selected known skill (or the walked path's signature) onto that key.
+func _bind(index: int) -> void:
+	var cell: Dictionary = cells.get(selected, {})
+	var hero := GameState.hero
+	var key := ""
+	var name := ""
+	if cell.get("kind", "") == "node" and cell["entry"]["kind"] == "active" and cell["entry"]["id"] in hero.skill_nodes:
+		key = cell["entry"]["id"]
+		name = cell["entry"]["name"]
+	elif cell.get("kind", "") == "path" and not HeroRules.walked(hero).is_empty() and HeroRules.walked(hero)[-1] == cell["entry"]["id"]:
+		key = "path"
+		name = cell["entry"]["signature"]["name"]
+	if key == "":
+		status.text = "Only a skill you know can go on a key."
+		return
+	if GameState.dock_skill(key, index):
+		Sound.play("learn")
+		status.text = Text.t("%s is on key %d.") % [name, index + 1]
+	_layout()
 
 
 func _skills(count: int) -> String:

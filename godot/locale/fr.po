@@ -429,7 +429,7 @@ msgid "Everything they touch keeps dying"
 msgstr ""
 
 #: assets/data/catalog.json
-msgid "Fast and sneaky. Great at fleeing, deadly with a backstab."
+msgid "Fast and sneaky. Quick on their feet, deadly with a backstab."
 msgstr ""
 
 #: assets/data/catalog.json
@@ -1462,6 +1462,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "A FAVICON OF ITS OWN: the title's gold P under the moon, in your browser tab and on your home screen"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "A FIFTH RANK: level 20 crowns the hero - Ironlord, Starcaller, Nightlord, Hierophant, Eldwarden, Exemplar or Deathlord - with an amethyst aura and a bonus skill point"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -2889,6 +2893,14 @@ msgid "PAGES THAT TURN: screens ease in as they open, with a swish of paper, a p
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "PASSIVES THAT PLAY: fleeing never happened in a real-time fight, so every node and path that promised it now gives quicker feet, a dodge that's ready sooner, or a sure crit on your next strike after a dodge. New passives heal you for a share of the damage you deal, make your skills hit harder or your heals restore more"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "PAST TEN: every skill tree grows two more tiers, at levels 13 and 17 - a new skill and two passives at each. Each role gains a skill that strikes every foe in reach (Cleave, Flame Wave, Fan of Knives, Holy Nova, Volley, Divine Storm, Death Cloud) and one more to finish (Rally, Arcane Lance, Garrote, Sunfire, Kill Shot, Shieldbreaker, and Drain Life, which heals you for half of what it takes)"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "PATCHES TO PICK: herbs, reeds, ember shards, deep roots and grave moss grow in patches around each wild region - walk over one to gather it, and it grows back after a while"
 msgstr ""
 
@@ -2930,6 +2942,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Paladins in soldier's steel, the mayor, Hilda, Odo, Sela and the goblins and orcs no longer step one frame out of time: their swings, stumbles and falls play the frames they were drawn for"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Past Ten"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3909,6 +3925,10 @@ msgid "The release flows give the camera-smoothness check a second try, so a bus
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The skill tree fits all six tiers on one page, one line a skill, with the chosen one described in full below"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The skill tree looks like a tree: three named paths, tier badges from I to CAP, connector lines, and the numbers on every skill - multiplier, stat, cost - before you commit"
 msgstr ""
 
@@ -4201,6 +4221,10 @@ msgid "YOUR HOUSE TOO: a lamp, hanging herbs, a bread shelf, a chest and a pie t
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "YOUR KEYS, YOUR CHOICE: in Skills, choose a skill you know and press 1-6 to put it on that key. A new skill takes the first free key, and learning one never shuffles the others"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "YOUR TOWN IS SAFE: a hero from before keeps every project their town had reached"
 msgstr ""
 
@@ -4265,11 +4289,23 @@ msgid "+10% chance to crit for 1.5x damage."
 msgstr ""
 
 #: assets/data/combat.json
-msgid "+10% flee and +10% gold: leave rich, leave alive."
+msgid "+10% crit and +20% damage against enemies below 30% HP."
 msgstr ""
 
 #: assets/data/combat.json
-msgid "+10% flee chance."
+msgid "+10% move speed and +3 DEF."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "+10% move speed, and kills refund 3 EN."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "+10% move speed, and your dodge is ready a quarter sooner."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "+10% move speed."
 msgstr ""
 
 #: assets/data/combat.json
@@ -4289,10 +4325,6 @@ msgid "+15% chance to crit for 1.5x damage."
 msgstr ""
 
 #: assets/data/combat.json
-msgid "+15% flee chance."
-msgstr ""
-
-#: assets/data/combat.json
 msgid "+15% gold from victories."
 msgstr ""
 
@@ -4301,11 +4333,19 @@ msgid "+2 DEF, always."
 msgstr ""
 
 #: assets/data/combat.json
+msgid "+2 DEF, and your dodge is ready a quarter sooner."
+msgstr ""
+
+#: assets/data/combat.json
 msgid "+20 max HP and +10 max MP, permanently."
 msgstr ""
 
 #: assets/data/combat.json
 msgid "+20 max HP and poison never touches you."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "+20 max HP, and your heals restore 15% more."
 msgstr ""
 
 #: assets/data/combat.json
@@ -4325,6 +4365,14 @@ msgid "+25% gold from kills."
 msgstr ""
 
 #: assets/data/combat.json
+msgid "+25% more damage against enemies below 30% HP, and +5% crit."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "+3 DEF and +20 max HP, permanently."
+msgstr ""
+
+#: assets/data/combat.json
 msgid "+30 max HP and +1 DEF, permanently."
 msgstr ""
 
@@ -4341,7 +4389,19 @@ msgid "+8 DEF, immune to stun and poison, fiercer when bloodied."
 msgstr ""
 
 #: assets/data/combat.json
+msgid "6% of the damage you deal heals you."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "8% of the damage you deal heals you."
+msgstr ""
+
+#: assets/data/combat.json
 msgid "A blessed blow."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "A breath and a roar."
 msgstr ""
 
 #: assets/data/combat.json
@@ -4377,6 +4437,14 @@ msgid "A knight in rusted mail walks the drowned road at the bottom of the marsh
 msgstr ""
 
 #: assets/data/combat.json
+msgid "A lance of pure force."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "A lance of pure force: enormous INT damage."
+msgstr ""
+
+#: assets/data/combat.json
 msgid "A lash of stolen life."
 msgstr ""
 
@@ -4389,6 +4457,14 @@ msgid "A measured arrow."
 msgstr ""
 
 #: assets/data/combat.json
+msgid "A pall of rot over every foe in reach, poisoning them."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "A pall of rot."
+msgstr ""
+
+#: assets/data/combat.json
 msgid "A piece of the sky."
 msgstr ""
 
@@ -4397,7 +4473,11 @@ msgid "A roar and a wide swing that can stagger."
 msgstr ""
 
 #: assets/data/combat.json
-msgid "A sheath of ice: +2 DEF and +5% flee."
+msgid "A sheath of ice: +2 DEF and +5% move speed."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "A shield blow with your full weight: heavy STR damage that may stun."
 msgstr ""
 
 #: assets/data/combat.json
@@ -4429,11 +4509,35 @@ msgid "A verdict of light: heal and full cleanse."
 msgstr ""
 
 #: assets/data/combat.json
+msgid "A wall of fire rolls over every foe in reach and may set them burning."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "A wall of fire."
+msgstr ""
+
+#: assets/data/combat.json
 msgid "A war cry that armies would follow."
 msgstr ""
 
 #: assets/data/combat.json
 msgid "A whipcrack of lightning that can stun."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "A wide swing that strikes every foe in reach."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "A wide swing."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "A wire from behind."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "A wire from behind: heavy DEX damage that may stun."
 msgstr ""
 
 #: assets/data/combat.json
@@ -4457,6 +4561,14 @@ msgid "Aegis Wall"
 msgstr ""
 
 #: assets/data/combat.json
+msgid "After a dodge your next strike is a sure crit, and +10% gold."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "After a dodge your next strike is a sure crit, and your dodge is ready a fifth sooner."
+msgstr ""
+
+#: assets/data/combat.json
 msgid "Aimed Shot II"
 msgstr ""
 
@@ -4469,6 +4581,14 @@ msgid "Alpha's Call"
 msgstr ""
 
 #: assets/data/combat.json
+msgid "An arrow for the last breath."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "An arrow for the last breath: enormous DEX damage."
+msgstr ""
+
+#: assets/data/combat.json
 msgid "An orc warband has claimed the old garrison."
 msgstr ""
 
@@ -4477,7 +4597,19 @@ msgid "Applause from an empty room."
 msgstr ""
 
 #: assets/data/combat.json
+msgid "Arcane Lance"
+msgstr ""
+
+#: assets/data/combat.json
 msgid "Arrow of Ages"
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Arrows fall on every foe in reach."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Arrows on every foe."
 msgstr ""
 
 #: assets/data/combat.json
@@ -4553,7 +4685,15 @@ msgid "Black Harvest"
 msgstr ""
 
 #: assets/data/combat.json
+msgid "Blessed Hands"
+msgstr ""
+
+#: assets/data/combat.json
 msgid "Blood Rage"
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Bloodthirst"
 msgstr ""
 
 #: assets/data/combat.json
@@ -4589,6 +4729,10 @@ msgid "Calls a piece of the sky down: colossal INT damage."
 msgstr ""
 
 #: assets/data/combat.json
+msgid "Catch your breath mid-fight: restores health with your STR."
+msgstr ""
+
+#: assets/data/combat.json
 msgid "Cave Troll"
 msgstr ""
 
@@ -4617,6 +4761,10 @@ msgid "Clarity"
 msgstr ""
 
 #: assets/data/combat.json
+msgid "Cleave"
+msgstr ""
+
+#: assets/data/combat.json
 msgid "Cold blast, may stun."
 msgstr ""
 
@@ -4641,6 +4789,10 @@ msgid "Cross out the wound. Write 'whole'."
 msgstr ""
 
 #: assets/data/combat.json
+msgid "Crusade"
+msgstr ""
+
+#: assets/data/combat.json
 msgid "Crusader of Dawn"
 msgstr ""
 
@@ -4658,6 +4810,10 @@ msgstr ""
 
 #: assets/data/combat.json
 msgid "Deadeye"
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Death Cloud"
 msgstr ""
 
 #: assets/data/combat.json
@@ -4681,6 +4837,10 @@ msgid "Deathless"
 msgstr ""
 
 #: assets/data/combat.json
+msgid "Deathless Step"
+msgstr ""
+
+#: assets/data/combat.json
 msgid "Deathward"
 msgstr ""
 
@@ -4701,6 +4861,10 @@ msgid "Devastating ambush."
 msgstr ""
 
 #: assets/data/combat.json
+msgid "Devotion"
+msgstr ""
+
+#: assets/data/combat.json
 msgid "Dire Wolf"
 msgstr ""
 
@@ -4709,11 +4873,19 @@ msgid "Distance is a rumor. +22% crit."
 msgstr ""
 
 #: assets/data/combat.json
+msgid "Divine Storm"
+msgstr ""
+
+#: assets/data/combat.json
 msgid "Divine Word"
 msgstr ""
 
 #: assets/data/combat.json
 msgid "Doubt breaks on you first. +5 DEF, unstaggerable."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Drain Life"
 msgstr ""
 
 #: assets/data/combat.json
@@ -4734,6 +4906,10 @@ msgstr ""
 
 #: assets/data/combat.json
 msgid "Epidemics cite you. Attacks fester; kills feed the mind."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Evasion"
 msgstr ""
 
 #: assets/data/combat.json
@@ -4785,6 +4961,14 @@ msgid "Faith in plate. +2 DEF, +20 HP, and the light hits back."
 msgstr ""
 
 #: assets/data/combat.json
+msgid "Fan of Knives"
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Fervour"
+msgstr ""
+
+#: assets/data/combat.json
 msgid "Fieldcraft"
 msgstr ""
 
@@ -4810,6 +4994,10 @@ msgstr ""
 
 #: assets/data/combat.json
 msgid "Firestorm"
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Flame Wave"
 msgstr ""
 
 #: assets/data/combat.json
@@ -4849,6 +5037,10 @@ msgid "Frosthowl Pass"
 msgstr ""
 
 #: assets/data/combat.json
+msgid "Garrote"
+msgstr ""
+
+#: assets/data/combat.json
 msgid "Ghost"
 msgstr ""
 
@@ -4858,6 +5050,10 @@ msgstr ""
 
 #: assets/data/combat.json
 msgid "Giant Crab"
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Glacial Heart"
 msgstr ""
 
 #: assets/data/combat.json
@@ -4913,11 +5109,19 @@ msgid "Hall of Echoes"
 msgstr ""
 
 #: assets/data/combat.json
+msgid "Halo"
+msgstr ""
+
+#: assets/data/combat.json
 msgid "Harvest"
 msgstr ""
 
 #: assets/data/combat.json
 msgid "Hawkeye"
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Headsman"
 msgstr ""
 
 #: assets/data/combat.json
@@ -4965,7 +5169,31 @@ msgid "Hollow Guard"
 msgstr ""
 
 #: assets/data/combat.json
+msgid "Holy Nova"
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Holy Vigour"
+msgstr ""
+
+#: assets/data/combat.json
 msgid "Holy fire that clings."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Holy light that clings."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Holy light that clings: heavy INT damage and a lasting burn."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Holy steel sweeps every foe in reach."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Holy steel sweeps."
 msgstr ""
 
 #: assets/data/combat.json
@@ -5025,6 +5253,14 @@ msgid "Keen Edge"
 msgstr ""
 
 #: assets/data/combat.json
+msgid "Kill Shot"
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Killer Instinct"
+msgstr ""
+
+#: assets/data/combat.json
 msgid "Killing Blow"
 msgstr ""
 
@@ -5037,6 +5273,14 @@ msgid "Kills refund 3 MP."
 msgstr ""
 
 #: assets/data/combat.json
+msgid "Kills refund 4 more EN, and +5% crit."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Kindled"
+msgstr ""
+
+#: assets/data/combat.json
 msgid "King Slime"
 msgstr ""
 
@@ -5045,7 +5289,19 @@ msgid "King in Bone"
 msgstr ""
 
 #: assets/data/combat.json
+msgid "Knives in every direction."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Knives in every direction: strikes every foe in reach."
+msgstr ""
+
+#: assets/data/combat.json
 msgid "Last Bastion"
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Lethal Dose"
 msgstr ""
 
 #: assets/data/combat.json
@@ -5078,6 +5334,10 @@ msgstr ""
 
 #: assets/data/combat.json
 msgid "Mend restores far more."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Mercy"
 msgstr ""
 
 #: assets/data/combat.json
@@ -5133,11 +5393,15 @@ msgid "Mountainheart"
 msgstr ""
 
 #: assets/data/combat.json
-msgid "Never where they look. +20% flee, and escape artistry pays."
+msgid "Never where they look. +10% move speed, and escape artistry pays."
 msgstr ""
 
 #: assets/data/combat.json
 msgid "Nightblade"
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Nightrunner"
 msgstr ""
 
 #: assets/data/combat.json
@@ -5157,7 +5421,7 @@ msgid "Odo has counted the treasure that came back from Grandmother Gulp twice. 
 msgstr ""
 
 #: assets/data/combat.json
-msgid "Officially, you were never there. +40% flee, +30% gold, unstunned."
+msgid "Officially, you were never there. a sure crit after a dodge, +15% speed, +30% gold, unstunned."
 msgstr ""
 
 #: assets/data/combat.json
@@ -5205,6 +5469,10 @@ msgid "Orc Raider"
 msgstr ""
 
 #: assets/data/combat.json
+msgid "Ossified"
+msgstr ""
+
+#: assets/data/combat.json
 msgid "Ossuary Throne"
 msgstr ""
 
@@ -5226,6 +5494,10 @@ msgstr ""
 
 #: assets/data/combat.json
 msgid "Pestilence"
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Pestilent"
 msgstr ""
 
 #: assets/data/combat.json
@@ -5265,6 +5537,14 @@ msgid "Plain attacks have a 25% chance to poison."
 msgstr ""
 
 #: assets/data/combat.json
+msgid "Plain attacks have a 35% chance to set enemies burning, and it burns hotter."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Plain attacks have a 40% chance to poison, and it bites harder."
+msgstr ""
+
+#: assets/data/combat.json
 msgid "Plant your feet: a crushing counter-blow."
 msgstr ""
 
@@ -5289,6 +5569,10 @@ msgid "Power Strike hits much harder."
 msgstr ""
 
 #: assets/data/combat.json
+msgid "Predator"
+msgstr ""
+
+#: assets/data/combat.json
 msgid "Providence"
 msgstr ""
 
@@ -5301,11 +5585,23 @@ msgid "Pyromancer"
 msgstr ""
 
 #: assets/data/combat.json
+msgid "Radiance bursts from you, searing every foe in reach."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Radiance bursts from you."
+msgstr ""
+
+#: assets/data/combat.json
 msgid "Radiant Hammer"
 msgstr ""
 
 #: assets/data/combat.json
 msgid "Rain of Arrows costs 7 EN."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Rally"
 msgstr ""
 
 #: assets/data/combat.json
@@ -5326,6 +5622,10 @@ msgstr ""
 
 #: assets/data/combat.json
 msgid "Reckless fury: massive damage, costs 8 HP."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Relentless"
 msgstr ""
 
 #: assets/data/combat.json
@@ -5350,6 +5650,14 @@ msgstr ""
 
 #: assets/data/combat.json
 msgid "Rimeguard"
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Rips the life from a foe."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Rips the life from a foe: heavy INT damage, and half of it heals you."
 msgstr ""
 
 #: assets/data/combat.json
@@ -5409,6 +5717,18 @@ msgid "Shadows file complaints. +6 DEF, +12% crit, unstaggerable."
 msgstr ""
 
 #: assets/data/combat.json
+msgid "Shatter"
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Shieldbreaker"
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Shieldwall"
+msgstr ""
+
+#: assets/data/combat.json
 msgid "Sit. Let the kingdom defend itself."
 msgstr ""
 
@@ -5434,6 +5754,10 @@ msgstr ""
 
 #: assets/data/combat.json
 msgid "Smoke Bomb"
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Smoke and Mirrors"
 msgstr ""
 
 #: assets/data/combat.json
@@ -5465,11 +5789,23 @@ msgid "Soul Rend"
 msgstr ""
 
 #: assets/data/combat.json
+msgid "Soul Siphon"
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Spellweaver"
+msgstr ""
+
+#: assets/data/combat.json
 msgid "Stalwart"
 msgstr ""
 
 #: assets/data/combat.json
 msgid "Stampede"
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Steady Hand"
 msgstr ""
 
 #: assets/data/combat.json
@@ -5502,6 +5838,10 @@ msgstr ""
 
 #: assets/data/combat.json
 msgid "Sun Incarnate"
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Sunfire"
 msgstr ""
 
 #: assets/data/combat.json
@@ -5677,7 +6017,7 @@ msgid "The horizon catches."
 msgstr ""
 
 #: assets/data/combat.json
-msgid "The joke lands; you don't. +30% flee, +20% gold, +8% crit."
+msgid "The joke lands; you don't. a sure crit after a dodge, +10% speed, +20% gold, +8% crit."
 msgstr ""
 
 #: assets/data/combat.json
@@ -5837,6 +6177,10 @@ msgid "Toxin Ward"
 msgstr ""
 
 #: assets/data/combat.json
+msgid "Trailblazer"
+msgstr ""
+
+#: assets/data/combat.json
 msgid "Trickster"
 msgstr ""
 
@@ -5890,6 +6234,10 @@ msgstr ""
 
 #: assets/data/combat.json
 msgid "Voice of Fate"
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Volley"
 msgstr ""
 
 #: assets/data/combat.json
@@ -5989,11 +6337,31 @@ msgid "You read the next page. Kills refund 6 MP; mending deepens."
 msgstr ""
 
 #: assets/data/combat.json
-msgid "You shoot where the world will be. +28% crit, +10% flee."
+msgid "You shoot where the world will be. +28% crit, +5% move speed."
 msgstr ""
 
 #: assets/data/combat.json
 msgid "You stopped casting fire. You started being it."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Your dodge is ready a fifth sooner."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Your dodge is ready a quarter sooner, and +15 carry weight."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Your dodge is ready a third sooner."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Your full weight behind a shield."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Your heals restore 25% more."
 msgstr ""
 
 #: assets/data/combat.json
@@ -6006,6 +6374,14 @@ msgstr ""
 
 #: assets/data/combat.json
 msgid "Your shadow has teeth: a savaging that poisons."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Your skills deal 15% more damage."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Zeal"
 msgstr ""
 
 #: assets/data/combat.json
@@ -6241,7 +6617,11 @@ msgid "Your house"
 msgstr ""
 
 #: assets/data/hints.json
-msgid "{what} It's on your dock: press its number to use it. Energy comes back as you walk."
+msgid "{what} All six keys are taken: in Skills ({key:skills}), choose it and press a number to put it on that key."
+msgstr ""
+
+#: assets/data/hints.json
+msgid "{what} It's on key {slot} of your dock: press it to use it. Energy comes back as you walk."
 msgstr ""
 
 #: assets/data/npcs.json
@@ -7177,6 +7557,10 @@ msgid "Deathcaller"
 msgstr ""
 
 #: assets/data/progression.json
+msgid "Deathlord"
+msgstr ""
+
+#: assets/data/progression.json
 msgid "Deeper still, a vault the dead keep for their master. Mind the chests that bite."
 msgstr ""
 
@@ -7209,6 +7593,10 @@ msgid "Dye for the Looms"
 msgstr ""
 
 #: assets/data/progression.json
+msgid "Eldwarden"
+msgstr ""
+
+#: assets/data/progression.json
 msgid "Ember"
 msgstr ""
 
@@ -7222,6 +7610,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Every ballad needs a dragon. Loras can't afford a dragon."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Exemplar"
 msgstr ""
 
 #: assets/data/progression.json
@@ -7441,6 +7833,10 @@ msgid "Herbs for the Shrine"
 msgstr ""
 
 #: assets/data/progression.json
+msgid "Hierophant"
+msgstr ""
+
+#: assets/data/progression.json
 msgid "Hilda wants Blackiron ore on her anvil."
 msgstr ""
 
@@ -7482,6 +7878,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Iron for the Foreman"
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Ironlord"
 msgstr ""
 
 #: assets/data/progression.json
@@ -7590,6 +7990,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "My sister's locket. They took it when they threw me in the cells - the end cell, under the straw."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Nightlord"
 msgstr ""
 
 #: assets/data/progression.json
@@ -7866,6 +8270,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Stand Down"
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Starcaller"
 msgstr ""
 
 #: assets/data/progression.json
@@ -9628,11 +10036,11 @@ msgstr ""
 msgid "Menu"
 msgstr ""
 
-#: scripts/hud_dock.gd:291
+#: scripts/hud_dock.gd:292
 msgid " +%d HP"
 msgstr ""
 
-#: scripts/hud_dock.gd:304
+#: scripts/hud_dock.gd:305
 msgid "Lv %d %s"
 msgstr ""
 
@@ -10160,27 +10568,31 @@ msgstr ""
 msgid "Quit to title"
 msgstr ""
 
-#: scripts/player.gd:234
+#: scripts/player.gd:248
 msgid "You are afflicted by %s!"
 msgstr ""
 
-#: scripts/player.gd:285
-msgid "No skill in that place yet. Learn more in Skills."
+#: scripts/player.gd:300
+msgid "No skill on that key yet. Learn more, or set the keys, in Skills."
 msgstr ""
 
-#: scripts/player.gd:296
+#: scripts/player.gd:311
 msgid "No foe in reach for %s."
 msgstr ""
 
-#: scripts/player.gd:312
+#: scripts/player.gd:327
 msgid "All ailments are purged!"
 msgstr ""
 
-#: scripts/player.gd:315
+#: scripts/player.gd:330
 msgid "%s restores %d HP."
 msgstr ""
 
-#: scripts/player.gd:319
+#: scripts/player.gd:341
+msgid "%s hits %d foes for %d damage!"
+msgstr ""
+
+#: scripts/player.gd:343
 msgid "%s hits %s for %d damage!"
 msgstr ""
 
@@ -10568,124 +10980,160 @@ msgstr ""
 msgid "For sale"
 msgstr ""
 
-#: scripts/skills_screen.gd:126
+#: scripts/skills_screen.gd:103
+msgid "Your ascension demands a path"
+msgstr ""
+
+#: scripts/skills_screen.gd:133
 msgid "Current"
 msgstr ""
 
-#: scripts/skills_screen.gd:126
+#: scripts/skills_screen.gd:133
 msgid "Rank %d"
 msgstr ""
 
-#: scripts/skills_screen.gd:126
+#: scripts/skills_screen.gd:133
 msgid "Walk this path"
 msgstr ""
 
-#: scripts/skills_screen.gd:126
+#: scripts/skills_screen.gd:133
 msgid "Walked"
 msgstr ""
 
-#: scripts/skills_screen.gd:162
-msgid "Learn (1 pt)"
+#: scripts/skills_screen.gd:135
+msgid "Current · key %d"
 msgstr ""
 
-#: scripts/skills_screen.gd:177
+#: scripts/skills_screen.gd:169
+msgid "key %d"
+msgstr ""
+
+#: scripts/skills_screen.gd:171
+msgid "1 pt"
+msgstr ""
+
+#: scripts/skills_screen.gd:191
+msgid "damage to every foe in reach"
+msgstr ""
+
+#: scripts/skills_screen.gd:194
 msgid " + %d HP"
 msgstr ""
 
-#: scripts/skills_screen.gd:178
+#: scripts/skills_screen.gd:195
 msgid "%sx %s %s · %s"
 msgstr ""
 
-#: scripts/skills_screen.gd:205
+#: scripts/skills_screen.gd:222
 msgid "%s: %s  Signature: %s - %s"
 msgstr ""
 
-#: scripts/skills_screen.gd:237
+#: scripts/skills_screen.gd:232
+msgid "Not on the dock - press 1-6 to put it on that key."
+msgstr ""
+
+#: scripts/skills_screen.gd:232
+msgid "On key %d - press 1-6 to move it."
+msgstr ""
+
+#: scripts/skills_screen.gd:234
+msgid "Learn it for 1 point."
+msgstr ""
+
+#: scripts/skills_screen.gd:269
 msgid "Nothing learned to forget yet."
 msgstr ""
 
-#: scripts/skills_screen.gd:239
+#: scripts/skills_screen.gd:271
 msgid "Forgetting takes the village's quiet. Come back to Pixelheim."
 msgstr ""
 
-#: scripts/skills_screen.gd:241
+#: scripts/skills_screen.gd:273
 msgid "Forgetting %s costs %dg."
 msgstr ""
 
-#: scripts/skills_screen.gd:244
+#: scripts/skills_screen.gd:276
 msgid "Forget %s for %dg and get the points back? F again to agree."
 msgstr ""
 
-#: scripts/skills_screen.gd:247
+#: scripts/skills_screen.gd:279
 msgid "%d points"
 msgstr ""
 
-#: scripts/skills_screen.gd:247
+#: scripts/skills_screen.gd:279
 msgid "1 point"
 msgstr ""
 
-#: scripts/skills_screen.gd:247
+#: scripts/skills_screen.gd:279
 msgid "Forgotten. %s to spend again."
 msgstr ""
 
-#: scripts/skills_screen.gd:253
-msgid "%d skills"
+#: scripts/skills_screen.gd:297
+msgid "Only a skill you know can go on a key."
 msgstr ""
 
-#: scripts/skills_screen.gd:253
-msgid "1 skill"
-msgstr ""
-
-#: scripts/skills_screen.gd:286
-msgid "You walk the path of the %s."
-msgstr ""
-
-#: scripts/skills_screen.gd:288
-msgid "That path isn't yours to walk now."
-msgstr ""
-
-#: scripts/skills_screen.gd:291
-msgid "Learned: %s."
-msgstr ""
-
-#: scripts/skills_screen.gd:293
-msgid "Already learned."
-msgstr ""
-
-#: scripts/skills_screen.gd:303
-msgid "Requires the skill above"
-msgstr ""
-
-#: scripts/skills_screen.gd:305
-msgid "Needs level %d"
+#: scripts/skills_screen.gd:301
+msgid "%s is on key %d."
 msgstr ""
 
 #: scripts/skills_screen.gd:306
+msgid "%d skills"
+msgstr ""
+
+#: scripts/skills_screen.gd:306
+msgid "1 skill"
+msgstr ""
+
+#: scripts/skills_screen.gd:339
+msgid "You walk the path of the %s."
+msgstr ""
+
+#: scripts/skills_screen.gd:341
+msgid "That path isn't yours to walk now."
+msgstr ""
+
+#: scripts/skills_screen.gd:344
+msgid "Learned: %s."
+msgstr ""
+
+#: scripts/skills_screen.gd:346
+msgid "Already learned."
+msgstr ""
+
+#: scripts/skills_screen.gd:356
+msgid "Requires the skill above"
+msgstr ""
+
+#: scripts/skills_screen.gd:358
+msgid "Needs level %d"
+msgstr ""
+
+#: scripts/skills_screen.gd:359
 msgid "No skill points to spend"
 msgstr ""
 
-#: scripts/skills_screen.gd:41
+#: scripts/skills_screen.gd:45
 msgid "forget"
 msgstr ""
 
-#: scripts/skills_screen.gd:41
+#: scripts/skills_screen.gd:45
 msgid "learn / walk"
 msgstr ""
 
-#: scripts/skills_screen.gd:42
+#: scripts/skills_screen.gd:45
+msgid "put on a key"
+msgstr ""
+
+#: scripts/skills_screen.gd:46
 msgid "A point each level, one more each rank."
 msgstr ""
 
-#: scripts/skills_screen.gd:68
+#: scripts/skills_screen.gd:72
 msgid "%d skill point%s"
 msgstr ""
 
-#: scripts/skills_screen.gd:81
+#: scripts/skills_screen.gd:85
 msgid "Path of %s"
-msgstr ""
-
-#: scripts/skills_screen.gd:99
-msgid "Your ascension demands a path"
 msgstr ""
 
 #: scripts/sound.gd:43
@@ -10760,299 +11208,299 @@ msgstr ""
 msgid "the hoard of %s"
 msgstr ""
 
-#: scripts/state/game_state.gd:1024
+#: scripts/state/game_state.gd:1025
 msgid "The nook bubbles: 2x %s became %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1061
+#: scripts/state/game_state.gd:1062
 msgid "It needs open floor. Face a free tile and try again."
 msgstr ""
 
-#: scripts/state/game_state.gd:1063
+#: scripts/state/game_state.gd:1064
 msgid "Something already stands there."
 msgstr ""
 
-#: scripts/state/game_state.gd:1065
+#: scripts/state/game_state.gd:1066
 msgid "Not in the doorway: you'd trip over it coming home."
 msgstr ""
 
-#: scripts/state/game_state.gd:1069
+#: scripts/state/game_state.gd:1070
 msgid "%s placed. {key:interact} takes it back."
 msgstr ""
 
-#: scripts/state/game_state.gd:1082
+#: scripts/state/game_state.gd:1083
 msgid "%s back in the pack."
 msgstr ""
 
-#: scripts/state/game_state.gd:1090
+#: scripts/state/game_state.gd:1091
 msgid "Your own bed. Fully restored, and well rested: +%d%% XP for your next %d fights."
 msgstr ""
 
-#: scripts/state/game_state.gd:1102
+#: scripts/state/game_state.gd:1103
 msgid "A workbench and a small cauldron, fitted to the shelf. Craft at home, forever."
 msgstr ""
 
-#: scripts/state/game_state.gd:1103
+#: scripts/state/game_state.gd:1104
 msgid "A proper workbench would fit this shelf. Tools and parts cost %d gold."
 msgstr ""
 
-#: scripts/state/game_state.gd:1106
+#: scripts/state/game_state.gd:1107
 msgid "The hearth roars beside your workbench. Home industry."
 msgstr ""
 
-#: scripts/state/game_state.gd:1107
+#: scripts/state/game_state.gd:1108
 msgid "The hearth crackles, warm and idle. A workbench would fit by the shelf..."
 msgstr ""
 
-#: scripts/state/game_state.gd:1110
+#: scripts/state/game_state.gd:1111
 msgid "Your kitchen counter. Clean, empty, hopeful."
 msgstr ""
 
-#: scripts/state/game_state.gd:1114
+#: scripts/state/game_state.gd:1115
 msgid "The garden drinks your victories: %d/%d until the next harvest."
 msgstr ""
 
-#: scripts/state/game_state.gd:1146
+#: scripts/state/game_state.gd:1147
 msgid "You wake at the inn. The innkeeper says nothing. Kind of her."
 msgstr ""
 
-#: scripts/state/game_state.gd:1186
+#: scripts/state/game_state.gd:1187
 msgid "Your garden ripens: +%d %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1195
+#: scripts/state/game_state.gd:1196
 msgid "%s is defeated! +%d XP, +%d gold."
 msgstr ""
 
-#: scripts/state/game_state.gd:1212
+#: scripts/state/game_state.gd:1213
 msgid "%s drops: %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1219
+#: scripts/state/game_state.gd:1220
 msgid "%s drops: %s!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1229
+#: scripts/state/game_state.gd:1230
 msgid "You forage %d %s%s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1231
+#: scripts/state/game_state.gd:1232
 msgid "Foraging reached %d!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1247
+#: scripts/state/game_state.gd:1248
 msgid "Level up: you are now level %d. +%d stat points and +%d skill point%s to spend."
 msgstr ""
 
-#: scripts/state/game_state.gd:1275
+#: scripts/state/game_state.gd:1276
 msgid "You gather %d %s%s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1286
+#: scripts/state/game_state.gd:1287
 msgid "Nothing's biting here yet. Try again in a while, or somewhere else."
 msgstr ""
 
-#: scripts/state/game_state.gd:1290
+#: scripts/state/game_state.gd:1291
 msgid "You cast, wait... and haul up an old boot."
 msgstr ""
 
-#: scripts/state/game_state.gd:1290
+#: scripts/state/game_state.gd:1291
 msgid "You cast, wait... and land %s!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1292
+#: scripts/state/game_state.gd:1293
 msgid " Foraging reached %d!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1394
+#: scripts/state/game_state.gd:1395
 msgid "The bounty on %s is yours: +%d gold."
 msgstr ""
 
-#: scripts/state/game_state.gd:1403
+#: scripts/state/game_state.gd:1404
 msgid "%s leaves you %s!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1503
+#: scripts/state/game_state.gd:1504
 msgid "%d HP"
 msgstr ""
 
-#: scripts/state/game_state.gd:1511
+#: scripts/state/game_state.gd:1512
 msgid "You use %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1513
+#: scripts/state/game_state.gd:1514
 msgid " Restored %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1640
+#: scripts/state/game_state.gd:1657
 msgid "%s is cleared!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1645
+#: scripts/state/game_state.gd:1662
 msgid "%d gold"
 msgstr ""
 
-#: scripts/state/game_state.gd:1654
+#: scripts/state/game_state.gd:1671
 msgid "The floor's hoard: %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1658
+#: scripts/state/game_state.gd:1675
 msgid "Among the bones: a page of an old journal (%s). {key:journal} reads it."
 msgstr ""
 
-#: scripts/state/game_state.gd:1662
+#: scripts/state/game_state.gd:1679
 msgid "+%d XP for the way down."
 msgstr ""
 
-#: scripts/state/game_state.gd:1675
+#: scripts/state/game_state.gd:1692
 msgid "Behind the throne, a stair goes on down into the dark: the Deep Hunt."
 msgstr ""
 
-#: scripts/state/game_state.gd:1679
+#: scripts/state/game_state.gd:1696
 msgid "A deeper way opens: %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1692
+#: scripts/state/game_state.gd:1709
 msgid "Depth %d of the Deep Hunt is cleared!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1701
+#: scripts/state/game_state.gd:1718
 msgid "The deepest yet. Its hoard: %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1707
+#: scripts/state/game_state.gd:1724
 msgid "depth %d of the Deep Hunt"
 msgstr ""
 
-#: scripts/state/game_state.gd:1709
+#: scripts/state/game_state.gd:1726
 msgid "A hole into the dark opens beside the way up: depth %d waits below."
 msgstr ""
 
-#: scripts/state/game_state.gd:1728
+#: scripts/state/game_state.gd:1745
 msgid "Mastery: %s Slayer %s. +%d%% damage against %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1754
+#: scripts/state/game_state.gd:1771
 msgid "The chest bares its teeth — a mimic!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1760
+#: scripts/state/game_state.gd:1777
 msgid "Something glitters on the road: %d gold."
 msgstr ""
 
-#: scripts/state/game_state.gd:1761
+#: scripts/state/game_state.gd:1778
 msgid "The chest holds %d gold."
 msgstr ""
 
-#: scripts/state/game_state.gd:1770
+#: scripts/state/game_state.gd:1787
 msgid "Too heavy to carry. Lighten the pack and come back."
 msgstr ""
 
-#: scripts/state/game_state.gd:1776
+#: scripts/state/game_state.gd:1793
 msgid "The chest holds %s!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1781
+#: scripts/state/game_state.gd:1798
 msgid "You gather %dx %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1782
+#: scripts/state/game_state.gd:1799
 msgid "The chest holds %dx %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:38
+#: scripts/state/game_state.gd:39
 msgid "Wanderer"
 msgstr ""
 
-#: scripts/state/game_state.gd:416
+#: scripts/state/game_state.gd:417
 msgid "Hilda breaks it down: %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:445
+#: scripts/state/game_state.gd:446
 msgid "Hilda reforges it: %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:507
+#: scripts/state/game_state.gd:508
 msgid "%s reached %d!"
 msgstr ""
 
-#: scripts/state/game_state.gd:517
+#: scripts/state/game_state.gd:518
 msgid "The innkeeper nods. You are already well rested."
 msgstr ""
 
-#: scripts/state/game_state.gd:519
+#: scripts/state/game_state.gd:520
 msgid "No coin, no bed: a night costs %d gold."
 msgstr ""
 
-#: scripts/state/game_state.gd:524
+#: scripts/state/game_state.gd:525
 msgid "You rest at the inn and wake fully restored. -%d gold."
 msgstr ""
 
-#: scripts/state/game_state.gd:540
+#: scripts/state/game_state.gd:541
 msgid "%s: commissioned. %s"
 msgstr ""
 
-#: scripts/state/game_state.gd:561
+#: scripts/state/game_state.gd:562
 msgid "%s: built. Walk outside and see."
 msgstr ""
 
-#: scripts/state/game_state.gd:567
+#: scripts/state/game_state.gd:568
 msgid "%s: built - and Pixelheim is a %s now."
 msgstr ""
 
-#: scripts/state/game_state.gd:754
+#: scripts/state/game_state.gd:755
 msgid "The prize is yours: +%d gold and %d %ss!"
 msgstr ""
 
-#: scripts/state/game_state.gd:844
+#: scripts/state/game_state.gd:845
 msgid "Quest accepted: %s. %s"
 msgstr ""
 
-#: scripts/state/game_state.gd:868
+#: scripts/state/game_state.gd:869
 msgid "+%d gold"
 msgstr ""
 
-#: scripts/state/game_state.gd:869
+#: scripts/state/game_state.gd:870
 msgid "+%d XP"
 msgstr ""
 
-#: scripts/state/game_state.gd:870
+#: scripts/state/game_state.gd:871
 msgid "Quest complete: %s. %s. “%s”"
 msgstr ""
 
-#: scripts/state/game_state.gd:888
+#: scripts/state/game_state.gd:889
 msgid "The town is not ready for me yet."
 msgstr ""
 
-#: scripts/state/game_state.gd:893
+#: scripts/state/game_state.gd:894
 msgid "Iva's hands glow warm. Fully healed, free of charge."
 msgstr ""
 
-#: scripts/state/game_state.gd:896
+#: scripts/state/game_state.gd:897
 msgid " She tucks %d healing potion%s in your pack."
 msgstr ""
 
-#: scripts/state/game_state.gd:901
+#: scripts/state/game_state.gd:902
 msgid "Loras plays you a marching song%s. Your next hunt strikes truer. (+%d%% crit)"
 msgstr ""
 
-#: scripts/state/game_state.gd:902
+#: scripts/state/game_state.gd:903
 msgid " on his war-horn"
 msgstr ""
 
-#: scripts/state/game_state.gd:925
+#: scripts/state/game_state.gd:926
 msgid "For sale: this house. The deed costs %d gold."
 msgstr ""
 
-#: scripts/state/game_state.gd:930
+#: scripts/state/game_state.gd:931
 msgid "The deed is yours. Welcome home."
 msgstr ""
 
-#: scripts/state/game_state.gd:954
+#: scripts/state/game_state.gd:955
 msgid "The %s deed is signed. Your house grew while you were out."
 msgstr ""
 
-#: scripts/state/game_state.gd:956
+#: scripts/state/game_state.gd:957
 msgid " %d piece%s of furniture had to move: it's back in your pack."
 msgstr ""
 
@@ -11096,20 +11544,8 @@ msgstr ""
 msgid "The power of your skills and heals - and for casters, the size of the mana pool."
 msgstr ""
 
-#: scripts/state/skills.gd:116
-msgid "%s needs level %d."
-msgstr ""
-
-#: scripts/state/skills.gd:118
-msgid "Not enough %s for %s."
-msgstr ""
-
 #: scripts/state/skills.gd:12
-msgid "Attack with bows, daggers and DEX skills (Aimed Shot, Backstab), and your chance to flee."
-msgstr ""
-
-#: scripts/state/skills.gd:120
-msgid "Too hurt to pay %s's price."
+msgid "Attack with bows, daggers and DEX skills (Aimed Shot, Backstab)."
 msgstr ""
 
 #: scripts/state/skills.gd:13
@@ -11120,35 +11556,47 @@ msgstr ""
 msgid "Grit: a little health for everyone, and for fighters the stamina pool and how fast it refills."
 msgstr ""
 
-#: scripts/state/skills.gd:145
+#: scripts/state/skills.gd:182
+msgid "%s needs level %d."
+msgstr ""
+
+#: scripts/state/skills.gd:184
+msgid "Not enough %s for %s."
+msgstr ""
+
+#: scripts/state/skills.gd:186
+msgid "Too hurt to pay %s's price."
+msgstr ""
+
+#: scripts/state/skills.gd:212
 msgid "carry %d"
 msgstr ""
 
-#: scripts/state/skills.gd:154
+#: scripts/state/skills.gd:221
 msgid "skill power %d"
 msgstr ""
 
-#: scripts/state/skills.gd:156
+#: scripts/state/skills.gd:223
 msgid "MP %d"
 msgstr ""
 
-#: scripts/state/skills.gd:158
+#: scripts/state/skills.gd:225
 msgid "powers INT skills"
 msgstr ""
 
-#: scripts/state/skills.gd:163
-msgid "flee %d%%"
+#: scripts/state/skills.gd:237
+msgid "powers bows, daggers and DEX skills"
 msgstr ""
 
-#: scripts/state/skills.gd:168
+#: scripts/state/skills.gd:242
 msgid "turns aside %d%% of a level-%d hit"
 msgstr ""
 
-#: scripts/state/skills.gd:170
+#: scripts/state/skills.gd:244
 msgid "HP %d"
 msgstr ""
 
-#: scripts/state/skills.gd:173
+#: scripts/state/skills.gd:247
 msgid "regen %d/turn"
 msgstr ""
 
@@ -11368,7 +11816,7 @@ msgstr ""
 msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
 msgstr ""
 
-#: scripts/world.gd:1702
+#: scripts/world.gd:1703
 msgid "Next"
 msgstr ""
 

@@ -9,7 +9,7 @@ const ABBR := {"strength": "STR", "intelligence": "INT", "dexterity": "DEX", "de
 const BLURBS := {
 	"strength": "Melee attack with STR weapons, and how much you can carry.",
 	"intelligence": "The power of your skills and heals - and for casters, the size of the mana pool.",
-	"dexterity": "Attack with bows, daggers and DEX skills (Aimed Shot, Backstab), and your chance to flee.",
+	"dexterity": "Attack with bows, daggers and DEX skills (Aimed Shot, Backstab).",
 	"defense": "The share of every hit you turn aside: each point helps, a little less than the last.",
 	"endurance": "Grit: a little health for everyone, and for fighters the stamina pool and how fast it refills.",
 }
@@ -91,7 +91,8 @@ static func stamina_regen(hero: HeroState) -> int:
 
 
 ## Owned actives with their owned upgrades applied, then the path's
-## signature (getHeroSkills).
+## signature (getHeroSkills). Each carries its "key" for the dock: its node's
+## id, or "path" for the signature (one at a time, whichever step it is).
 static func hero_skills(hero: HeroState) -> Array:
 	var skills: Array = []
 	var nodes := tree(hero.role_id)
@@ -102,11 +103,76 @@ static func hero_skills(hero: HeroState) -> Array:
 		for upgrade: Dictionary in nodes:
 			if upgrade["kind"] == "upgrade" and upgrade["id"] in hero.skill_nodes and upgrade.get("requires") == entry["id"]:
 				skill.merge(upgrade["patch"], true)
+		skill["key"] = entry["id"]
 		skills.append(skill)
 	var path := HeroRules.walked(hero)
 	if not path.is_empty():
-		skills.append(HeroRules.path_node(path[-1])["signature"])
+		var signature: Dictionary = HeroRules.path_node(path[-1])["signature"].duplicate()
+		signature["key"] = "path"
+		skills.append(signature)
 	return skills
+
+
+## The dock (PIX-190): six keys, a skill on each the hero chose. A hero who
+## never chose has the first six they know, in the tree's order (as before
+## the dock could be set); once a seventh is learned the dock is pinned, so
+## learning never shuffles the keys under the hero's fingers.
+const DOCK_SIZE := 6
+
+
+## The skill keys on the dock, "" for an empty key.
+static func dock_keys(hero: HeroState) -> Array[String]:
+	var keys: Array[String] = []
+	if hero.skill_dock.is_empty():
+		for skill: Dictionary in hero_skills(hero).slice(0, DOCK_SIZE):
+			keys.append(skill["key"])
+	else:
+		keys.assign(hero.skill_dock.slice(0, DOCK_SIZE))
+	while keys.size() < DOCK_SIZE:
+		keys.append("")
+	return keys
+
+
+## The skill on each key, {} where there's none (or one since forgotten).
+static func docked(hero: HeroState) -> Array:
+	var known := {}
+	for skill: Dictionary in hero_skills(hero):
+		known[skill["key"]] = skill
+	return dock_keys(hero).map(func(key: String) -> Dictionary: return known.get(key, {}))
+
+
+## Pins the dock as it stands (before a new skill could reorder the default).
+static func pin_dock(hero: HeroState) -> void:
+	hero.skill_dock = dock_keys(hero)
+
+
+## A newly known skill takes the first free key; returns it (1-6), or 0 when
+## the dock is full or the skill was already on it.
+static func place_on_dock(hero: HeroState, key: String) -> int:
+	if not hero_skills(hero).any(func(skill: Dictionary) -> bool: return skill["key"] == key):
+		return 0
+	pin_dock(hero)
+	var known := docked(hero)
+	if key in hero.skill_dock and not known[hero.skill_dock.find(key)].is_empty():
+		return 0
+	for index in DOCK_SIZE:
+		if known[index].is_empty():
+			hero.skill_dock[index] = key
+			return index + 1
+	return 0
+
+
+## Puts a known skill on key `index` (0-5); the skill already there moves to
+## where this one was, or off the dock.
+static func bind(hero: HeroState, key: String, index: int) -> bool:
+	if index < 0 or index >= DOCK_SIZE or not hero_skills(hero).any(func(skill: Dictionary) -> bool: return skill["key"] == key):
+		return false
+	pin_dock(hero)
+	var was := hero.skill_dock.find(key)
+	if was >= 0:
+		hero.skill_dock[was] = hero.skill_dock[index]
+	hero.skill_dock[index] = key
+	return true
 
 
 ## Why a skill can't be cast right now, "" when it can: its level, its
@@ -125,8 +191,9 @@ static func skill_power(hero: HeroState, pack: InventoryState, skill: Dictionary
 	return roundi(HeroRules.effective_stat(hero, pack, skill["stat"]) * float(skill["multiplier"]))
 
 
-static func flee_chance(hero: HeroState, pack: InventoryState) -> float:
-	return minf(0.95, 0.4 + HeroRules.effective_stat(hero, pack, "dexterity") * 0.02 + HeroRules.passives(hero)["fleeBonus"])
+## What a healing skill restores, with the passives that bless heals (PIX-190).
+static func heal_power(hero: HeroState, pack: InventoryState, skill: Dictionary) -> int:
+	return roundi(skill_power(hero, pack, skill) * (1.0 + float(HeroRules.passives(hero)["healBonus"])))
 
 
 static func carry_capacity(hero: HeroState, pack: InventoryState) -> int:
@@ -160,7 +227,14 @@ static func readout(stat: String, hero: HeroState, pack: InventoryState) -> Stri
 			# A DEX weapon's swing, as STR's and INT's show theirs (PIX-188).
 			if scaling == "dexterity":
 				parts.append(Text.t("ATK %d") % (int(hero.stats["dexterity"]) + HeroRules.gear_damage(weapon)))
-			parts.append(Text.t("flee %d%%") % roundi(flee_chance(hero, pack) * 100))
+			var strongest := -1
+			for skill: Dictionary in hero_skills(hero):
+				if skill.get("stat") == "dexterity":
+					strongest = maxi(strongest, skill_power(hero, pack, skill))
+			if strongest >= 0:
+				parts.append(Text.t("skill power %d") % strongest)
+			if parts.is_empty():
+				parts.append("powers bows, daggers and DEX skills")
 		"defense":
 			# Measured against a foe of the hero's own level (PIX-185).
 			var defense := HeroRules.total_defense(hero, pack)

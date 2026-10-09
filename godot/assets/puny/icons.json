@@ -219,7 +219,21 @@
     "Black Harvest": "Dark/8",
     "Tomb Legion": "Dark/18",
     "Extinction Bloom": "Flora/3",
-    "Ossuary Throne": "Dark/1"
+    "Ossuary Throne": "Dark/1",
+    "Cleave": "Melee/0",
+    "Rally": "Martial-Arts/8",
+    "Flame Wave": "Fire/7",
+    "Arcane Lance": "Melee/14",
+    "Fan of Knives": "Rogue/4",
+    "Garrote": "Dark/15",
+    "Holy Nova": "Light/5",
+    "Sunfire": "Light/8",
+    "Volley": "Fire/23",
+    "Kill Shot": "Ranged/1",
+    "Divine Storm": "Light/6",
+    "Shieldbreaker": "Light/23",
+    "Death Cloud": "Poison/1",
+    "Drain Life": "Vampiric/1"
   },
   "effects": {
     "flame": "puny-skills/Animation Spritesheets/Fire/Flame-Anim(Looped).png",

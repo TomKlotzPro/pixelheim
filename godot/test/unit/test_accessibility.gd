@@ -52,7 +52,7 @@ func test_a_skill_learned_is_announced() -> void:
 	state.new_game("Robin", "warrior")
 	state.hero.skill_points = 2
 	var heard: Array = []
-	state.skill_learned.connect(func(entry: Dictionary) -> void: heard.append(entry["id"]))
+	state.skill_learned.connect(func(entry: Dictionary, _key: int) -> void: heard.append(entry["id"]))
 	var bought: bool = state.buy_skill_node("warrior_shield_slam")
 	assert_true(bought)
 	assert_eq(heard, ["warrior_shield_slam"])

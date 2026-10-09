@@ -29,7 +29,8 @@ signal ranked_up(title: String)
 ## Levels were gained (the level-up fanfare).
 signal leveled_up(level: int)
 ## A skill the hero can now use (PIX-160: its first-time hint).
-signal skill_learned(entry: Dictionary)
+## `key`: the dock key (1-6) it took, 0 when all six were taken (PIX-190).
+signal skill_learned(entry: Dictionary, key: int)
 
 ## Slot 0 never touches disk: harness runs and tests leave real saves alone.
 const NO_SLOT := 0
@@ -1584,6 +1585,8 @@ func forget_skills() -> bool:
 			if grants.has(stat):
 				hero.stats[stat] = int(hero.stats[stat]) - int(grants[stat])
 		hero.skill_nodes.erase(node_id)
+		if node_id in hero.skill_dock:
+			hero.skill_dock[hero.skill_dock.find(node_id)] = ""
 	hero.hp = mini(hero.hp, int(hero.stats["maxHp"]))
 	hero.mp = mini(hero.mp, int(hero.stats["maxMp"]))
 	hero.skill_points += forgotten.size()
@@ -1600,10 +1603,13 @@ func buy_skill_node(node_id: String) -> bool:
 	var entry := Skills.node(hero.role_id, node_id)
 	if entry.is_empty() or not Skills.can_buy(hero, entry):
 		return false
+	var active: bool = entry.get("kind", "") == "active"
+	if active:
+		Skills.pin_dock(hero)
 	hero.skill_nodes.append(node_id)
 	hero.skill_points -= 1
-	if entry.get("kind", "") == "active":
-		skill_learned.emit(entry)
+	if active:
+		skill_learned.emit(entry, Skills.place_on_dock(hero, node_id))
 	var grants: Dictionary = entry.get("grantStats", {})
 	if grants.has("maxHp"):
 		hero.stats["maxHp"] = int(hero.stats["maxHp"]) + int(grants["maxHp"])
@@ -1622,10 +1628,21 @@ func choose_path(node_id: String) -> bool:
 	var offered := Ranks.path_choices(hero).any(func(node: Dictionary) -> bool: return node["id"] == node_id)
 	if not offered:
 		return false
+	Skills.pin_dock(hero)
 	var path := HeroRules.walked(hero).duplicate()
 	path.append(node_id)
 	hero.path = path
 	hero.spec = path[0]
+	# The first step brings a signature skill; later steps change it in place.
+	Skills.place_on_dock(hero, "path")
+	save_now()
+	return true
+
+
+## A known skill onto dock key `index` (0-5), from the skill tree (PIX-190).
+func dock_skill(key: String, index: int) -> bool:
+	if not Skills.bind(hero, key, index):
+		return false
 	save_now()
 	return true
 

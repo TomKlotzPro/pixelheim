@@ -30,14 +30,14 @@ func test_the_stat_sheet_reads_like_the_webs() -> void:
 		"warrior": [
 			["strength", "ATK 13 · carry 87", "ATK 14 · carry 90"],
 			["intelligence", "powers INT skills", "powers INT skills"],
-			["dexterity", "flee 50%", "flee 52%"],
+			["dexterity", "powers bows, daggers and DEX skills", "powers bows, daggers and DEX skills"],
 			["defense", "DEF 8 · turns aside 71% of a level-1 hit", "DEF 9 · turns aside 74% of a level-1 hit"],
 			["endurance", "HP 42 · EN 8 · regen 2/turn", "HP 43 · EN 10 · regen 2/turn"],
 		],
 		"mage": [
 			["strength", "carry 69", "carry 72"],
 			["intelligence", "ATK 17 · skill power 22 · MP 24", "ATK 18 · skill power 24 · MP 26"],
-			["dexterity", "flee 48%", "flee 50%"],
+			["dexterity", "powers bows, daggers and DEX skills", "powers bows, daggers and DEX skills"],
 			["defense", "DEF 5 · turns aside 61% of a level-1 hit", "DEF 6 · turns aside 65% of a level-1 hit"],
 			["endurance", "HP 28", "HP 29"],
 		],

@@ -290,6 +290,27 @@ func _run_test_harness() -> void:
 		if args.has("walk-path"):
 			world.get_children().filter(func(node: Node) -> bool: return node.has_method("_walk"))[0]._walk()
 			await get_tree().create_timer(0.3).timeout
+	var nodes_index := args.find("--nodes")
+	if nodes_index >= 0:
+		# Skills already learned (PIX-190): `--nodes a,b,c`, then onto the dock.
+		for node_id in args[nodes_index + 1].split(","):
+			GameState.hero.skill_nodes.append(node_id)
+			Skills.place_on_dock(GameState.hero, node_id)
+	var path_index := args.find("--path")
+	if path_index >= 0:
+		# A path already walked: `--path juggernaut,bastion`.
+		GameState.hero.path = Array(args[path_index + 1].split(","))
+		Skills.place_on_dock(GameState.hero, "path")
+	var cast_index := args.find("--cast")
+	if cast_index >= 0:
+		# A dock key pressed (PIX-190): `--cast 5`, with energy to spare.
+		await get_tree().create_timer(0.4).timeout
+		GameState.hero.mp = maxi(99, int(GameState.hero.stats["maxMp"]))
+		var hurt_before: Array = get_tree().get_nodes_in_group("mobs").map(func(mob: Node) -> int: return int(mob.fighter["hp"]))
+		world.player.cast(int(args[cast_index + 1]) - 1)
+		await get_tree().create_timer(0.6).timeout
+		var hurt_after: Array = get_tree().get_nodes_in_group("mobs").map(func(mob: Node) -> int: return int(mob.fighter["hp"]))
+		print("cast %s: foes' hp %s -> %s, %s %d" % [Skills.docked(GameState.hero)[int(args[cast_index + 1]) - 1].get("name", "-"), hurt_before, hurt_after, Skills.resource_label(GameState.hero.role_id), GameState.hero.mp])
 	if args.has("stats") or args.has("skills"):
 		# Points to spend: a few of each.
 		GameState.hero.stat_points = 5
