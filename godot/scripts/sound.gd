@@ -94,15 +94,21 @@ func _stream(path: String) -> AudioStreamWAV:
 ## pen's tick as a choice moves, a soft fall as it closes. Made here, in the
 ## rendered sounds' chiptune voice:
 ## [seconds, wave, from Hz, to Hz, volume] per blip, played in turn.
+## The fight has three of its own (PIX-209): a swing's swish, a skill's
+## rising shimmer and the thud of a killing blow.
 const UI_SOUNDS := {
 	"open": [[0.05, "noise", 0.0, 0.0, 0.10], [0.05, "triangle", 660.0, 880.0, 0.10]],
 	"tick": [[0.025, "square", 1320.0, 1320.0, 0.05]],
 	"close": [[0.07, "triangle", 620.0, 360.0, 0.10]],
+	"swing": [[0.05, "noise", 0.0, 0.0, 0.05], [0.03, "triangle", 420.0, 280.0, 0.04]],
+	"cast": [[0.05, "triangle", 520.0, 1040.0, 0.08], [0.06, "square", 1040.0, 1300.0, 0.03]],
+	"kill": [[0.04, "square", 180.0, 90.0, 0.09], [0.08, "noise", 0.0, 0.0, 0.07]],
 }
 const UI_RATE := 22050
 
 
-## One of the pages' sounds (open, tick, close).
+## One of the made sounds (the pages' open, tick and close; the fight's
+## swing, cast and kill).
 func play_ui(name: String) -> void:
 	if not UI_SOUNDS.has(name):
 		return

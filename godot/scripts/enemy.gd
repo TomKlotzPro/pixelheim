@@ -14,6 +14,14 @@ const CONTACT_RADIUS := 13.0
 const BITE_REACH := 20.0
 const CONTACT_COOLDOWN := 0.9
 const ELITE_TINT := Color(1.0, 0.82, 0.7)
+## A blow's shove (PIX-209): a push that fades to nothing over KNOCK_TIME,
+## riding on top of the foe's own walk - 10 px all told (v·t/2) for a common
+## foe, half for an elite or a named one, none for a boss.
+const KNOCK_PUSH := 166.0
+const KNOCK_TIME := 0.12
+## The hit stop on a blow, and the longer one on the blow that kills.
+const HIT_STOP := 0.035
+const KILL_STOP := 0.08
 
 var world: Node2D
 ## Bestiary.spawn record: id, name, elite, hp, maxHp, attack, defense, xp, gold.
@@ -60,6 +68,9 @@ var feeding := false
 var named := {}
 ## The health bar's full width: a named monster's is longer.
 var bar_width := 16.0
+## The shove of the last blow, and how long it has left (PIX-209).
+var knock := Vector2.ZERO
+var knock_left := 0.0
 
 
 func _ready() -> void:
@@ -187,7 +198,13 @@ func _physics_process(delta: float) -> void:
 				notice()
 			else:
 				_wander(delta)
+	var walk := velocity
+	var shove := _shove(delta)
+	velocity += shove
 	move_and_slide()
+	if shove != Vector2.ZERO:
+		# Shoved, it still faces (and walks) the way it meant to.
+		velocity = walk
 	if velocity.length() > 1:
 		facing = _dir_of(velocity)
 	# Let a bite or a hurt finish before walking resumes.
@@ -329,23 +346,48 @@ func _wander(delta: float) -> void:
 	velocity = wander_dir * WANDER_SPEED
 
 
-## A landed swing: `damage` is already Bestiary.hero_attack_damage's verdict;
-## `infliction` is the hero's afflicting passive, if any.
-func take_hit(damage: int, from: Vector2, infliction: Variant = null) -> void:
+## How hard a blow shoves a foe (PIX-209): a boss stands its ground, an
+## elite or a named foe gives half as much.
+static func knock_push(fighter: Dictionary, is_named := false) -> float:
+	if Bestiary.is_boss(fighter["id"]):
+		return 0.0
+	return KNOCK_PUSH * (0.5 if fighter["elite"] or is_named else 1.0)
+
+
+## This tick's share of the shove, fading as it runs out.
+func _shove(delta: float) -> Vector2:
+	if knock_left <= 0:
+		return Vector2.ZERO
+	var share := knock * (knock_left / KNOCK_TIME)
+	knock_left -= delta
+	return share
+
+
+## A landed swing: `damage` is already Bestiary.hero_attack's verdict, and
+## `crit` whether it was one; `infliction` is the hero's afflicting passive,
+## if any.
+func take_hit(damage: int, from: Vector2, infliction: Variant = null, crit := false) -> void:
 	if dying:
 		return
 	if guarding:
 		damage = maxi(1, roundi(damage * float(Bestiary._data()["eliteMoves"]["undead"]["block"])))
 		world.float_text(Text.t("blocked"), global_position + Vector2(0, -26), Color(0.7, 0.85, 1.0))
 	Sound.play("hit")
-	velocity = (global_position - from).normalized() * 220
-	move_and_slide()
+	knock = (global_position - from).normalized() * knock_push(fighter, not named.is_empty())
+	knock_left = KNOCK_TIME
+	_lose(damage, Color(1, 0.95, 0.85), crit)
 	var tween := create_tween()
-	tween.tween_property(sprite, "modulate", Color(1, 0.4, 0.4), 0.06)
-	tween.tween_property(sprite, "modulate", Color.WHITE, 0.12)
-	_lose(damage, Color(1, 0.95, 0.85))
-	world.hit_stop(0.035)
-	world.shake(1.5, 0.1)
+	if dying and not GameState.settings.reduce_motion:
+		# The killing blow (PIX-209): a white flash, a longer stop, a thud.
+		sprite.modulate = Color(4, 4, 4)
+		tween.tween_property(sprite, "modulate", Color.WHITE, 0.14)
+	else:
+		tween.tween_property(sprite, "modulate", Color(1, 0.4, 0.4), 0.06)
+		tween.tween_property(sprite, "modulate", Color.WHITE, 0.12)
+	if dying:
+		Sound.play_ui("kill")
+	world.hit_stop(KILL_STOP if dying else HIT_STOP)
+	world.shake(2.5 if dying or crit else 1.5, 0.1)
 	# Struck from anywhere, it turns on the hero at once.
 	if not dying and mode != "chase":
 		mode = "chase"
@@ -356,9 +398,9 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null) -> void:
 		world.log_line(Text.t("%s is afflicted by %s!") % [fighter["name"], Ailments.label(infliction["kind"])])
 
 
-func _lose(damage: int, color: Color) -> void:
+func _lose(damage: int, color: Color, crit := false) -> void:
 	fighter["hp"] = maxi(0, int(fighter["hp"]) - damage)
-	world.float_number(damage, global_position + Vector2(0, -18), color)
+	world.float_number(damage, global_position + Vector2(0, -18), color, crit)
 	health_bar.size.x = bar_width * fighter["hp"] / fighter["maxHp"]
 	health_bar.visible = true
 	health_bar_back.visible = true

@@ -37,3 +37,40 @@ func test_the_dodge_has_a_key_and_trades_it_when_rebound() -> void:
 	var swapped := Controls.rebind({}, "dodge", KEY_J)
 	assert_eq(Controls.key_for("dodge", swapped), KEY_J)
 	assert_eq(Controls.key_for("attack", swapped), KEY_SHIFT, "attack takes the old key")
+
+
+## PIX-209: a crit says so, from the same roll that makes it one.
+func test_a_swing_knows_when_it_was_a_crit() -> void:
+	var hero := HeroState.create("T", "warrior")
+	var pack := InventoryState.new()
+	var slime := Bestiary.spawn("slime")
+	var sure := Bestiary.hero_attack(hero, pack, slime, false, func() -> float: return 0.5, 0.0, 1.0)
+	assert_true(sure["crit"], "a sure crit is one")
+	assert_eq(sure["damage"], Bestiary.hero_attack_damage(hero, pack, slime, false, func() -> float: return 0.5, 0.0, 1.0))
+	var plain := Bestiary.hero_attack(hero, pack, slime, false, func() -> float: return 0.5, 0.0, 0.0)
+	assert_false(plain["crit"])
+	assert_gt(sure["damage"], plain["damage"])
+
+
+## A blow shoves a common foe about 10 px, an elite half that, a boss not at all.
+func test_a_blow_shoves_by_weight() -> void:
+	var EnemyScript := preload("res://scripts/enemy.gd")
+	var common := EnemyScript.knock_push(Bestiary.spawn("wolf"))
+	assert_eq(EnemyScript.knock_push(Bestiary.spawn("wolf", true)), common / 2.0, "an elite")
+	assert_eq(EnemyScript.knock_push(Bestiary.spawn("wolf"), true), common / 2.0, "a named foe")
+	var boss_id: String = Bestiary._data()["bossIds"][0]
+	assert_eq(EnemyScript.knock_push(Bestiary.spawn(boss_id)), 0.0, "a boss stands")
+	# The shove fades over its time: what it adds up to at 60 ticks a second.
+	var travelled := 0.0
+	var left := float(EnemyScript.KNOCK_TIME)
+	while left > 0:
+		travelled += common * (left / EnemyScript.KNOCK_TIME) / 60.0
+		left -= 1.0 / 60.0
+	assert_between(travelled, 8.0, 12.0, "about 10 px")
+
+
+func test_the_fight_has_its_own_blips() -> void:
+	var SoundScript := preload("res://scripts/sound.gd")
+	for name: String in ["swing", "cast", "kill"]:
+		assert_true(SoundScript.UI_SOUNDS.has(name), name)
+		assert_gt(SoundScript._synth(SoundScript.UI_SOUNDS[name]).data.size(), 0, name)
