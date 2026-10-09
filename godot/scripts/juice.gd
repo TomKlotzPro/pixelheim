@@ -118,3 +118,28 @@ static func arc_turn(facing: Vector2) -> float:
 	if facing == Vector2.RIGHT:
 		return -PI / 2.0
 	return 0.0
+
+
+## A frightened foe's cue (PIX-251): its "!" in a pale, cold blue instead
+## of the charge's red, and a drop of sweat beside its head.
+const FRIGHT_INK := Color("5f86b0")
+const SWEAT := Color("a9dcff")
+const SWEAT_RIM := Color("23395a")
+## The drop, a pixel per letter: o its rim, s the sweat, w the glint.
+const DROP_ROWS: Array[String] = ["..o..", ".oso.", "ossso", "oswso", "ossso", ".ooo."]
+
+static var _drop: Texture2D
+
+
+## The drop of sweat at 1x, so its pixels are the art's.
+static func sweat_drop() -> Texture2D:
+	if _drop == null:
+		var image := Image.create(DROP_ROWS[0].length(), DROP_ROWS.size(), false, Image.FORMAT_RGBA8)
+		var inks := {"o": SWEAT_RIM, "s": SWEAT, "w": Color.WHITE}
+		for y in DROP_ROWS.size():
+			for x in DROP_ROWS[y].length():
+				var ink: String = DROP_ROWS[y][x]
+				if inks.has(ink):
+					image.set_pixel(x, y, inks[ink])
+		_drop = ImageTexture.create_from_image(image)
+	return _drop

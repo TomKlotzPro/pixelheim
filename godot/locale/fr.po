@@ -1781,6 +1781,10 @@ msgid "A mini-map rides in the corner of the world, fog included"
 msgstr "Une mini-carte s'installe dans un coin du monde, brouillard compris"
 
 #: assets/data/changelog.json
+msgid "A monster running from you doesn't start the battle music"
+msgstr "Un monstre qui vous fuit ne lance pas la musique de combat"
+
+#: assets/data/changelog.json
 msgid "A necromancer's grave violet stays on their own robe and hood: borrowed iron, leather or a gilded plate keeps its colour"
 msgstr "Le violet funèbre du nécromancien reste sur sa robe et sa capuche : le fer, le cuir ou les plates dorées qu'il emprunte gardent leur couleur"
 
@@ -3161,6 +3165,10 @@ msgid "Monsters drop loot: gear now rolls Fine and Epic rarities with bonus stat
 msgstr "Les monstres lâchent du butin : l'équipement peut désormais être de qualité ou épique, avec des caractéristiques bonus"
 
 #: assets/data/changelog.json
+msgid "Monsters far below your level run when they see you: a pale exclamation mark, a bead of sweat and a yelp. Corner one or strike it and it fights back; bosses and named monsters never run"
+msgstr "Les monstres bien en dessous de votre niveau fuient en vous voyant : un point d'exclamation pâle, une goutte de sueur et un glapissement. Acculez-en un ou frappez-le et il se défend ; les boss et les monstres nommés ne fuient jamais"
+
+#: assets/data/changelog.json
 msgid "Monsters fight dirty now: wyverns poison, the dragon burns, golems stun"
 msgstr "Les monstres jouent salement désormais : les wyvernes empoisonnent, le dragon brûle, les golems étourdissent"
 
@@ -3663,6 +3671,10 @@ msgstr "Les loyers et les intérêts de la banque viennent toujours par jour :
 #: assets/data/changelog.json
 msgid "Roads and town stay clean-looking because they ARE safe"
 msgstr "Les routes et la ville restent dégagées parce qu'elles SONT sûres"
+
+#: assets/data/changelog.json
+msgid "Running Scared"
+msgstr "Sauve qui peut"
 
 #: assets/data/changelog.json
 msgid "SAFE ARRIVALS: no pack lives within 8 tiles of a door or a waypoint, and nothing notices you in the first moment after you arrive"
@@ -4515,6 +4527,10 @@ msgstr "Les cartons et les légendes des cinématiques parlent français, les po
 #: assets/data/changelog.json
 msgid "The decor got real carpentry too: lamp posts with glowing lanterns, a roofed well, rail fences that connect, market stalls under striped awnings, round barrels, plank crates - and real trees in the deep woods"
 msgstr "Le décor a aussi droit à de la vraie menuiserie : réverbères aux lanternes lumineuses, un puits couvert, des clôtures à lisses qui se raccordent, des étals sous des auvents rayés, des tonneaux ronds, des caisses en planches - et de vrais arbres au fond des bois"
+
+#: assets/data/changelog.json
+msgid "The exclamation mark over a monster that has seen you sits above its level, which no longer hides its dot"
+msgstr "Le point d'exclamation au-dessus d'un monstre qui vous a vu se place au-dessus de son niveau, qui ne cache plus son point"
 
 #: assets/data/changelog.json
 msgid "The fallen lie in one piece: a hero in a helmet from one set and armour from another no longer falls as two halves of two different heroes"
@@ -7621,6 +7637,10 @@ msgid "Mirelle's bank"
 msgstr "La banque de Mirelle"
 
 #: assets/data/hints.json
+msgid "Monsters far below your level run when they see you. Corner one or strike it and it fights back - bosses and named monsters never run."
+msgstr "Les monstres bien en dessous de votre niveau fuient en vous voyant. Acculez-en un ou frappez-le et il se défend - les boss et les monstres nommés ne fuient jamais."
+
+#: assets/data/hints.json
 msgid "Named monsters, where they lair (marked on your map) and what they pay. Kill one and the bounty is yours on the spot."
 msgstr "Les monstres nommés, leur repaire (marqué sur votre carte) et ce qu'ils rapportent. Tuez-en un et la prime est à vous sur-le-champ."
 
@@ -7643,6 +7663,10 @@ msgstr "Le tableau des primes"
 #: assets/data/hints.json
 msgid "The notice board"
 msgstr "Le tableau d'avis"
+
+#: assets/data/hints.json
+msgid "Too strong for them"
+msgstr "Ils ne font pas le poids"
 
 #: assets/data/hints.json
 msgid "Turn sideways"
@@ -11264,15 +11288,15 @@ msgstr "Première victoire : %s"
 msgid "%s howls - the forest answers!"
 msgstr "%s hurle - la forêt répond !"
 
-#: scripts/enemy.gd:166
+#: scripts/enemy.gd:206
 msgid "Lv %d"
 msgstr "Niv. %d"
 
-#: scripts/enemy.gd:417
+#: scripts/enemy.gd:599
 msgid "blocked"
 msgstr "paré"
 
-#: scripts/enemy.gd:447
+#: scripts/enemy.gd:634
 msgid "%s is afflicted by %s!"
 msgstr "%s est atteint : %s !"
 
@@ -13512,19 +13536,19 @@ msgstr "Aucune carte ne va aussi profond."
 msgid "{epithet} {name}"
 msgstr "{name} {epithet}"
 
-#: scripts/world_foes.gd:237
+#: scripts/world_foes.gd:256
 msgid "The pack is scattered. Another comes once you've walked a good way, or after a night's rest."
 msgstr "La meute est dispersée. Une autre reviendra quand vous aurez bien marché, ou après une nuit de repos."
 
-#: scripts/world_foes.gd:253
+#: scripts/world_foes.gd:272
 msgid "%s is no more."
 msgstr "%s n'est plus."
 
-#: scripts/world_foes.gd:253
+#: scripts/world_foes.gd:272
 msgid "Victory"
 msgstr "Victoire"
 
-#: scripts/world_foes.gd:254
+#: scripts/world_foes.gd:273
 msgid "Boss slayer: +%d%% damage for %d minutes."
 msgstr "Tueur de boss : +%d %% de dégâts pendant %d minutes."
 

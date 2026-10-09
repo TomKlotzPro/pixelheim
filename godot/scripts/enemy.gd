@@ -1,7 +1,9 @@
 extends CharacterBody2D
 ## A monster in the field: wanders near its home, notices a hero it can see
 ## (a "!" and a hop first), chases, bites after a tell, and gives up a chase
-## that strays too far, walking home to heal (PIX-142). Its numbers are the web bestiary's (`fighter` from
+## that strays too far, walking home to heal (PIX-142). One far below the
+## hero runs from it instead (PIX-251), and turns only when cornered or
+## struck. Its numbers are the web bestiary's (`fighter` from
 ## Bestiary.spawn): hits land through Bestiary's damage formulas, and its
 ## death pays out through GameState.spoils.defeat_monster (via the world). It wears
 ## the Puny sheet PunyArt assigns its species, walking the way it moves.
@@ -9,6 +11,19 @@ extends CharacterBody2D
 const WANDER_SPEED := 22.0
 const CHASE_SPEED := 55.0
 const HOMEWARD_SPEED := 70.0
+## Running from a hero far above it (PIX-251): quicker than its charge, but
+## a hero (95) who wants the fight still catches it.
+const FLEE_SPEED := 62.0
+## The start before it runs, and how long it may stand stuck while running
+## (a packmate or the hero's body in the way) before it tries another way.
+const FLINCH_SECONDS := 0.3
+const STUCK_SECONDS := 0.35
+## No cell yet: a flight just begun.
+const NO_CELL := Vector2i(-1, -1)
+## The fright's "!" and drop shiver this many art pixels either way; the
+## drop starts by the bubble's top (in the bubble's half-size units).
+const SHIVER := 1.0
+const DROP_FROM := 8.0
 const CONTACT_RADIUS := 13.0
 ## A bite that was told lands if the hero is still this close.
 const BITE_REACH := 20.0
@@ -57,8 +72,9 @@ var quarry: Node2D = null
 var _at_quarry := false
 ## Where it lives: wanders around it, gives up a chase too far from it.
 var home := Vector2.ZERO
-## "idle" (at home), "alert" (the "!" wind-up), "chase", "homeward", and
-## for a boss "cast" (standing still while its attack is told, PIX-150).
+## "idle" (at home), "alert" (the "!" wind-up), "chase", "homeward",
+## "flee" (running from a hero far above it, PIX-251), and for a boss
+## "cast" (standing still while its attack is told, PIX-150).
 var mode := "idle"
 var alert_left := 0.0
 ## Seconds until a told bite lands; negative while no bite is coming.
@@ -78,6 +94,28 @@ var pace := 1.0
 ## The shove of the last blow, and how long it has left (PIX-209).
 var knock := Vector2.ZERO
 var knock_left := 0.0
+## Turned on the hero from flight, cornered or struck (PIX-251): it fights
+## where it stands, so the leash to its home lets go until the fight is over.
+var at_bay := false
+## A mimic just burst from its chest (PIX-251): it bites what woke it and
+## never runs, until it is home again.
+var woken := false
+## How long it has run without getting anywhere (PIX-251); the step it is
+## running, the cell it runs from, and the cells beside it a body has shut.
+var stuck_for := 0.0
+var _step := Vector2i.ZERO
+var _fled_from := NO_CELL
+var _taken: Array[Vector2i] = []
+## The fright's cue over the head: a pale "!" and a drop of sweat.
+var fright_mark: Node2D
+var _fright_tween: Tween
+var _drop: Sprite2D
+## The start back, and the sprite's shape and place it springs back to (a
+## blow cuts it short, so a bite's tell never takes a stretched shape for
+## its rest).
+var _flinch_tween: Tween
+var _rest_scale := Vector2.ONE
+var _rest_at := Vector2.ZERO
 
 
 func _ready() -> void:
@@ -102,6 +140,8 @@ func _ready() -> void:
 	var size: float = art.get("scale", 1.0) * grown
 	sprite.scale = Vector2.ONE * size
 	sprite.position = Vector2(0, PunyArt.lift(art) * size)
+	_rest_scale = sprite.scale
+	_rest_at = sprite.position
 	# Its own flash and dissolve (PIX-226).
 	sprite.material = Juice.fighter_material()
 	_play("idle")
@@ -197,7 +237,9 @@ func _physics_process(delta: float) -> void:
 				mode = "chase"
 		"chase":
 			var aim := _aim(to_player)
-			if player.dead or (not _hunts_wagon() and gives_up(fighter, home, global_position, player.global_position)):
+			# At bay, the fight is where it stands, not a leash from home.
+			var leash := global_position if at_bay else home
+			if player.dead or (not _hunts_wagon() and gives_up(fighter, leash, global_position, player.global_position)):
 				_give_up()
 			else:
 				_chase(aim, delta)
@@ -208,9 +250,22 @@ func _physics_process(delta: float) -> void:
 			velocity = back.normalized() * HOMEWARD_SPEED
 			if back.length() < 4:
 				_settle()
+		"flee":
+			if alert_left > 0:
+				# The flinch: a start before it runs.
+				velocity = Vector2.ZERO
+				alert_left -= delta
+			elif player.dead or Packs.calmed(global_position, player.global_position):
+				# Far enough: it calms down and walks home, as from a chase.
+				_give_up()
+			else:
+				_flee(to_player)
 		_:
 			if not player.dead and world.foes.can_notice(self):
-				notice()
+				if flees_from(fighter, GameState.hero.level, held_to_fight()):
+					take_fright(to_player)
+				else:
+					notice()
 			else:
 				_wander(delta)
 	var walk := velocity
@@ -220,6 +275,8 @@ func _physics_process(delta: float) -> void:
 	if shove != Vector2.ZERO:
 		# Shoved, it still faces (and walks) the way it meant to.
 		velocity = walk
+	if mode == "flee" and alert_left <= 0:
+		stuck_for = stuck_for + delta if get_real_velocity().length() < FLEE_SPEED * 0.25 else 0.0
 	if velocity.length() > 1:
 		facing = _dir_of(velocity)
 	# Let a bite or a hurt finish before walking resumes.
@@ -235,8 +292,10 @@ func notice() -> void:
 	alert_left = float(Packs.rules()["windUpSeconds"])
 	world.foes.on_enemy_noticed(self)
 	_play("idle")
+	if fright_mark != null:
+		fright_mark.visible = false
 	if mark == null:
-		mark = _alert_bubble()
+		mark = _bubble(Color("d8433f"))
 		Lights.unshade(mark)
 		add_child(mark)
 	mark.modulate.a = 1.0
@@ -263,9 +322,9 @@ func _name_plate(lift: float) -> Label:
 	return plate
 
 
-## A "!" in a white bubble over the head, built at the UI's size and drawn
-## at half of it: one art pixel per font pixel.
-func _alert_bubble() -> PanelContainer:
+## A "!" in `ink` in a white bubble over the head, built at the UI's size
+## and drawn at half of it: one art pixel per font pixel.
+func _bubble(ink: Color) -> PanelContainer:
 	var bubble := PanelContainer.new()
 	var box := StyleBoxFlat.new()
 	box.bg_color = Color("fff6dc")
@@ -277,13 +336,133 @@ func _alert_bubble() -> PanelContainer:
 	box.content_margin_top = 0
 	box.content_margin_bottom = 0
 	bubble.add_theme_stylebox_override("panel", box)
-	bubble.add_child(UiStyle.strong("!", 18, Color("d8433f")))
+	bubble.add_child(UiStyle.strong("!", 18, ink))
 	bubble.scale = Vector2.ONE * 0.5
 	bubble.z_index = 10
 	bubble.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var lift := -20.0 * sprite.scale.y - 16
+	# Clear of the level tag (PIX-188) under it, which hid the "!"'s dot.
+	var lift := -20.0 * _rest_scale.y - 20
 	bubble.resized.connect(func() -> void: bubble.position = Vector2(-bubble.size.x * 0.25, lift))
 	return bubble
+
+
+## The hero is seen, and far too strong (PIX-251): a pale "!" and a drop of
+## sweat shiver over its head, it starts back, then runs. It isn't hunting:
+## no growl, no fight's clock, so the music stays the place's.
+func take_fright(to_player: Vector2) -> void:
+	mode = "flee"
+	alert_left = FLINCH_SECONDS
+	stuck_for = 0.0
+	_step = Vector2i.ZERO
+	_fled_from = NO_CELL
+	world.foes.on_enemy_frightened(self)
+	# It looks at what frightened it, then turns to run.
+	facing = _dir_of(to_player)
+	_play("idle")
+	if mark != null:
+		mark.visible = false
+	if fright_mark == null:
+		fright_mark = _fright_cue()
+		add_child(fright_mark)
+	var still := GameState.settings.reduce_motion
+	fright_mark.visible = true
+	fright_mark.modulate.a = 1.0
+	fright_mark.position = Vector2.ZERO
+	_drop.position.y = DROP_FROM
+	if _fright_tween != null:
+		_fright_tween.kill()
+	_fright_tween = fright_mark.create_tween()
+	if not still:
+		# A shiver a whole pixel either way (the art's pixels stay square),
+		# while the drop runs down beside the "!" a pixel at a time.
+		for i in 6:
+			_fright_tween.tween_callback(func() -> void: fright_mark.position.x = SHIVER if i % 2 == 0 else -SHIVER)
+			_fright_tween.tween_interval(0.06)
+		_fright_tween.tween_callback(func() -> void: fright_mark.position.x = 0.0)
+		var run := _drop.create_tween()
+		run.tween_method(func(y: float) -> void: _drop.position.y = 2.0 * roundf(y / 2.0), DROP_FROM, DROP_FROM + 6.0, 0.5)
+		_flinch(to_player)
+	_fright_tween.tween_interval(0.5 if not still else 1.0)
+	_fright_tween.tween_property(fright_mark, "modulate:a", 0.0, 0.25)
+
+
+## The fright's cue: the pale "!" in its bubble, and a drop of sweat at its
+## side. The drop rides in the bubble, which is drawn at half size: drawn
+## twice its own size there, its pixels are the art's.
+func _fright_cue() -> Node2D:
+	var cue := Node2D.new()
+	var bubble := _bubble(Juice.FRIGHT_INK)
+	cue.add_child(bubble)
+	_drop = Sprite2D.new()
+	_drop.texture = Juice.sweat_drop()
+	_drop.scale = Vector2.ONE * 2.0
+	bubble.add_child(_drop)
+	bubble.resized.connect(func() -> void: _drop.position.x = bubble.size.x + 8.0)
+	Lights.unshade(cue)
+	return cue
+
+
+## A start back from the hero: taller for a blink (Juice's set-off), leaning
+## away, then back to its shape, its feet on the ground throughout; done a
+## little before it runs.
+func _flinch(to_player: Vector2) -> void:
+	var shape := Juice.SET_OFF
+	var back := -to_player.normalized() * 2.0 + Vector2(0, Juice.FEET * _rest_scale.y * (1.0 - shape.y))
+	_flinch_tween = sprite.create_tween()
+	_flinch_tween.tween_property(sprite, "scale", _rest_scale * shape, 0.05)
+	_flinch_tween.parallel().tween_property(sprite, "position", _rest_at + back, 0.05).set_ease(Tween.EASE_OUT)
+	_flinch_tween.tween_property(sprite, "scale", _rest_scale, 0.2).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	_flinch_tween.parallel().tween_property(sprite, "position", _rest_at, 0.2)
+
+
+## A flinch cut short (a blow lands): the sprite back to its own shape.
+func _end_flinch() -> void:
+	if _flinch_tween != null and _flinch_tween.is_valid():
+		_flinch_tween.kill()
+		sprite.scale = _rest_scale
+		sprite.position = _rest_at
+
+
+## Away from the hero a cell at a time over open ground (Packs.flight_step);
+## a body in the way (a packmate, the hero) shuts that cell and it tries
+## another; with nowhere left to run, it turns and fights.
+func _flee(to_player: Vector2) -> void:
+	var here := Vector2i((global_position / Packs.TILE).floor())
+	if here != _fled_from:
+		_taken.clear()
+		# Out of a step back across the hero's way (round a wall's end), not
+		# straight back again: two cells would trade it to and fro.
+		if _fled_from != NO_CELL and Vector2(_step).dot(to_player) > 0:
+			_taken.append(_fled_from)
+		_fled_from = here
+	if stuck_for > STUCK_SECONDS and _step != Vector2i.ZERO:
+		_taken.append(here + _step)
+		stuck_for = 0.0
+	_step = Packs.flight_step(world.map, region, global_position, global_position + to_player, _taken)
+	if _step == Vector2i.ZERO:
+		at_bay = true
+		notice()
+		return
+	velocity = (Packs.middle(here + _step) - global_position).normalized() * FLEE_SPEED
+
+
+## Whether `fighter` runs from a hero of `hero_level` instead of fighting
+## (PIX-251): far enough below the hero (Packs.outmatched, an elite counting
+## higher), but never a boss, a Deep Hunt warden (a boss under the deep's
+## name) or a named monster, and never one `held` to its fight
+## (held_to_fight).
+static func flees_from(fighter: Dictionary, hero_level: int, held := false) -> bool:
+	if held or Bestiary.fights_like_boss(fighter):
+		return false
+	return Packs.outmatched(Bestiary.level_of(fighter), bool(fighter["elite"]), hero_level)
+
+
+## Bound to its fight whatever the levels (PIX-251): sent at the escort's
+## wagon, one of the Night of Ash's foes (the scavenger at its meal, the
+## waves in the village), a mimic just burst from its chest, or the dead a
+## boss raised at its side.
+func held_to_fight() -> bool:
+	return _hunts_wagon() or has_meta("prologue") or has_meta("prologue_wave") or woken or is_in_group("summoned")
 
 
 ## Straight at the hero; in reach, a flash tells the bite, which lands if the
@@ -353,10 +532,12 @@ func _bite(to_player: Vector2) -> void:
 	get_tree().create_timer(CONTACT_COOLDOWN).timeout.connect(func() -> void: can_bite = true)
 
 
-## Too far from home or behind: back home, deaf to the hero on the way.
+## Too far from home or behind, or far enough from a hero it ran from
+## (PIX-251): back home, deaf to the hero on the way.
 func _give_up() -> void:
 	mode = "homeward"
 	hunting = false
+	at_bay = false
 	tell_left = -1.0
 
 
@@ -370,6 +551,7 @@ static func gives_up(fighter: Dictionary, home_at: Vector2, at: Vector2, hero: V
 ## Home again: whole, and watching.
 func _settle() -> void:
 	mode = "idle"
+	woken = false
 	fighter["hp"] = fighter["maxHp"]
 	health_bar.visible = false
 	health_bar_back.visible = false
@@ -436,8 +618,13 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null, crit := fa
 	# The camera answers a crit or a killing blow with a little punch.
 	if dying or crit:
 		world.camera_rig.punch(global_position - from)
-	# Struck from anywhere, it turns on the hero at once.
+	# Struck from anywhere, it turns on the hero at once; struck as it runs,
+	# it stands and fights where it is (PIX-251).
 	if not dying and mode != "chase":
+		if mode == "flee":
+			at_bay = true
+			fright_mark.visible = false
+			_end_flinch()
 		mode = "chase"
 		if not hunting:
 			hunting = true
@@ -461,6 +648,8 @@ func _lose(damage: int, color: Color, crit := false) -> void:
 func _die() -> void:
 	dying = true
 	world.foes.on_enemy_died(self)
+	if fright_mark != null:
+		fright_mark.visible = false
 	collision_layer = 0
 	collision_mask = 0
 	hurtbox.collision_layer = 0

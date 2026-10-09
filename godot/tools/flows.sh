@@ -11,8 +11,9 @@
 # (PIX-169), the mountain's gate barred to a new hero (PIX-170) and a depth
 # of the Deep Hunt cleared (PIX-161), and a potion brewed before Vex's quest
 # was taken still finishing it (PIX-231), a named boss that falls as a
-# boss does and holds the way out while it hunts (PIX-232), the map's
-# waypoint list showing where a waypoint takes you before it does, then
+# boss does and holds the way out while it hunts (PIX-232), weak monsters
+# running from a far stronger hero without the battle music (PIX-251), the
+# map's waypoint list showing where a waypoint takes you before it does, then
 # taking you there (PIX-241), hero creation's first night skipped with
 # Tab while the name field has the keys (PIX-228), and a quest chosen in the
 # journal and followed after it closes (PIX-239). Every flow leaves its
@@ -67,6 +68,10 @@ FLOWS=(
 	"rebuilt|--map town --town-tier 2 rebuilt fades|open=reveal_screen.* dark=0"
 	"bossfell|--map icecave fight slay --foe rimefang --wait 0.3|map=icecave .* fell=1"
 	"noescape|--map icecave fight --foe rimefang flee|map=icecave "
+	# A hero far above the forest's slimes (PIX-251): they run instead of
+	# charging, and the music stays the place's. At play zoom: a quiet run's
+	# camera otherwise sees a few tiles, and a monster notices only on screen.
+	"fright|--map overworld --at 59,34 --zoom 4 --level 20 --wait 3|map=overworld .* fled=[1-9][0-9]* music=world"
 	"bounty|--map town --at 43,22 --cleared 4 --keys w,e|open=bounty_screen"
 	"throne|--map town --cleared 15 --seen maren_confession throne --keys s,e --wait 0.5|open=reveal_screen"
 	"festival|--map town --town-tier 2 --at 43,27 festival --keys w,e,e,e|open=ring_toss_screen"

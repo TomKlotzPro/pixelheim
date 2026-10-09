@@ -1781,6 +1781,10 @@ msgid "A mini-map rides in the corner of the world, fog included"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A monster running from you doesn't start the battle music"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A necromancer's grave violet stays on their own robe and hood: borrowed iron, leather or a gilded plate keeps its colour"
 msgstr ""
 
@@ -3161,6 +3165,10 @@ msgid "Monsters drop loot: gear now rolls Fine and Epic rarities with bonus stat
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Monsters far below your level run when they see you: a pale exclamation mark, a bead of sweat and a yelp. Corner one or strike it and it fights back; bosses and named monsters never run"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Monsters fight dirty now: wyverns poison, the dragon burns, golems stun"
 msgstr ""
 
@@ -3662,6 +3670,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Roads and town stay clean-looking because they ARE safe"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Running Scared"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4514,6 +4526,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The decor got real carpentry too: lamp posts with glowing lanterns, a roofed well, rail fences that connect, market stalls under striped awnings, round barrels, plank crates - and real trees in the deep woods"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The exclamation mark over a monster that has seen you sits above its level, which no longer hides its dot"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7621,6 +7637,10 @@ msgid "Mirelle's bank"
 msgstr ""
 
 #: assets/data/hints.json
+msgid "Monsters far below your level run when they see you. Corner one or strike it and it fights back - bosses and named monsters never run."
+msgstr ""
+
+#: assets/data/hints.json
 msgid "Named monsters, where they lair (marked on your map) and what they pay. Kill one and the bounty is yours on the spot."
 msgstr ""
 
@@ -7642,6 +7662,10 @@ msgstr ""
 
 #: assets/data/hints.json
 msgid "The notice board"
+msgstr ""
+
+#: assets/data/hints.json
+msgid "Too strong for them"
 msgstr ""
 
 #: assets/data/hints.json
@@ -11264,15 +11288,15 @@ msgstr ""
 msgid "%s howls - the forest answers!"
 msgstr ""
 
-#: scripts/enemy.gd:166
+#: scripts/enemy.gd:206
 msgid "Lv %d"
 msgstr ""
 
-#: scripts/enemy.gd:417
+#: scripts/enemy.gd:599
 msgid "blocked"
 msgstr ""
 
-#: scripts/enemy.gd:447
+#: scripts/enemy.gd:634
 msgid "%s is afflicted by %s!"
 msgstr ""
 
@@ -13512,19 +13536,19 @@ msgstr ""
 msgid "{epithet} {name}"
 msgstr ""
 
-#: scripts/world_foes.gd:237
+#: scripts/world_foes.gd:256
 msgid "The pack is scattered. Another comes once you've walked a good way, or after a night's rest."
 msgstr ""
 
-#: scripts/world_foes.gd:253
+#: scripts/world_foes.gd:272
 msgid "%s is no more."
 msgstr ""
 
-#: scripts/world_foes.gd:253
+#: scripts/world_foes.gd:272
 msgid "Victory"
 msgstr ""
 
-#: scripts/world_foes.gd:254
+#: scripts/world_foes.gd:273
 msgid "Boss slayer: +%d%% damage for %d minutes."
 msgstr ""
 
