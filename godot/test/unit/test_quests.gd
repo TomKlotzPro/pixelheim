@@ -22,7 +22,7 @@ func _slay(monster_id: String) -> Array[String]:
 func test_a_givers_first_word_accepts_their_quest() -> void:
 	assert_eq(
 		state.resolve_quests("innkeeper"),
-		"Quest accepted: Slime Trouble. Sela's cellar smells of slime. Thin the forest's supply of them.",
+		"Quest accepted: Slime Trouble. Sela's cellar smells of slime. Thin the forest's supply of them. It's in your journal (Q).",
 		"PIX-194: the task, not the words just said"
 	)
 	assert_eq(state.progression.quests["slime_trouble"], {"progress": 0, "done": false})

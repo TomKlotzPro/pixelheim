@@ -7,6 +7,10 @@
     "title": "{skill}",
     "text": "{what} It's on key {slot} of your dock: press it to use it. Energy comes back as you walk."
   },
+  "journal": {
+    "title": "Your journal",
+    "text": "Every quest you take is written down: {key:journal} opens the journal, with where to go and what's still to do."
+  },
   "skill_full": {
     "title": "{skill}",
     "text": "{what} All six keys are taken: in Skills ({key:skills}), choose it and press a number to put it on that key."
