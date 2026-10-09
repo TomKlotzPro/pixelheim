@@ -183,6 +183,17 @@ static func make_splash() -> CPUParticles2D:
 	return node
 
 
+## What a fallen foe leaves as it dissolves (PIX-226): motes of its colour
+## drifting up and away.
+static func make_remains() -> CPUParticles2D:
+	var node := burst(12, 0.7, 180.0, Vector2(8, 24), Vector2(0, -14))
+	node.emission_sphere_radius = 6.0
+	node.damping_min = 10.0
+	node.damping_max = 20.0
+	node.color_ramp = fading(Color(1, 1, 1, 0.9))
+	return node
+
+
 ## Sparks off armour: white-hot, flying every way, falling, glowing.
 static func make_sparks() -> CPUParticles2D:
 	var node := burst(10, 0.28, 180.0, Vector2(40, 90), Vector2(0, 160))

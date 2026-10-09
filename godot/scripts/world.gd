@@ -485,12 +485,14 @@ func _on_hp_changed(hp: int, max_hp: int) -> void:
 func _use_portal(target: Dictionary) -> void:
 	match target["kind"]:
 		"map":
-			map = _load_map(target["mapId"])
-			_enter_map(map, Vector2i(int(target["x"]), int(target["y"])))
-			# Stepping into the inn takes a bed for coin, as on the web.
-			if map.id == "town_inn":
-				_flash_message(GameState.rest_at_inn())
-				_dream()
+			_through_door(func() -> void:
+				map = _load_map(target["mapId"])
+				_enter_map(map, Vector2i(int(target["x"]), int(target["y"])))
+				# Stepping into the inn takes a bed for coin, as on the web.
+				if map.id == "town_inn":
+					_flash_message(GameState.rest_at_inn())
+					_dream()
+			)
 		"dungeon":
 			# The floor select opens while the hero waits at the door.
 			_step_back()
@@ -932,6 +934,35 @@ func _enter_map(next: MapData, arrival: Vector2i) -> void:
 	_update_music()
 	if changing:
 		_fade_in()
+
+
+## Through a door the world fades to the dark first (PIX-226), then the new
+## map fades in (_fade_in): no cut either way. Once at a time; at once with
+## reduced motion or in harness runs.
+const DOOR_FADE := 0.15
+var _passing := false
+
+
+func _through_door(then: Callable) -> void:
+	if GameState.settings.reduce_motion or harness or hud_root == null:
+		then.call()
+		return
+	if _passing:
+		return
+	_passing = true
+	var dark := ColorRect.new()
+	dark.color = Color(UiStyle.NIGHT, 0.0)
+	dark.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	dark.position = -hud_root.offset
+	dark.size = Touch.view_size(self)
+	hud_root.add_child(dark)
+	var fade := dark.create_tween()
+	fade.tween_property(dark, "color:a", 1.0, DOOR_FADE).set_ease(Tween.EASE_OUT)
+	fade.tween_callback(func() -> void:
+		then.call()
+		dark.queue_free()
+		_passing = false
+	)
 
 
 ## A new map fades in from the dark (PIX-211) instead of cutting; not with
@@ -1998,6 +2029,14 @@ const ZOOM := 4.0
 const CAMERA_EASE := 8.0
 ## Where the camera eases to stand, before it settles on a whole pixel.
 var _camera_at := Vector2.ZERO
+## The camera leans a little ahead of the hero, the way they're heading, and
+## a crit or a killing blow punches it (PIX-226). Neither with reduced motion.
+const CAMERA_LEAN := 10.0
+const LEAN_EASE := 2.5
+const PUNCH := 3.0
+const PUNCH_EASE := 16.0
+var _lean := Vector2.ZERO
+var _punch := Vector2.ZERO
 
 func _physics_process(_delta: float) -> void:
 	if player == null:
@@ -2011,6 +2050,8 @@ func _teleported() -> void:
 	player.reset_physics_interpolation()
 	_hero_tick_from = player.position
 	_hero_tick_to = player.position
+	_lean = Vector2.ZERO
+	_punch = Vector2.ZERO
 	if camera != null:
 		_camera_at = player.position + Vector2(0, _frame_lift())
 		camera.global_position = _camera_at
@@ -2024,9 +2065,21 @@ func _follow_hero(delta: float) -> void:
 		return
 	var drawn := _hero_tick_from.lerp(_hero_tick_to, Engine.get_physics_interpolation_fraction())
 	drawn.y += _frame_lift()
-	_camera_at = _camera_at.lerp(drawn, 1.0 - exp(-CAMERA_EASE * delta))
+	var still: bool = GameState.settings.reduce_motion
+	var heading := player.velocity.normalized() if not still and player.velocity.length() > 1.0 else Vector2.ZERO
+	_lean = _lean.lerp(heading * CAMERA_LEAN, 1.0 - exp(-LEAN_EASE * delta))
+	_punch = _punch.lerp(Vector2.ZERO, 1.0 - exp(-PUNCH_EASE * delta))
+	_camera_at = _camera_at.lerp(drawn + _lean, 1.0 - exp(-CAMERA_EASE * delta))
 	var pixels_per_unit := camera.zoom.x * _stretch()
-	camera.global_position = (_camera_at * pixels_per_unit).round() / pixels_per_unit
+	camera.global_position = ((_camera_at + _punch) * pixels_per_unit).round() / pixels_per_unit
+
+
+## A crit or a killing blow nudges the camera along the blow's `direction`
+## for an instant (PIX-226); not with reduced motion.
+func punch(direction: Vector2) -> void:
+	if GameState.settings.reduce_motion or direction == Vector2.ZERO:
+		return
+	_punch = direction.normalized() * PUNCH
 
 ## Screen pixels per pixel of the 1280x720 canvas (the window's stretch).
 func _stretch() -> float:

@@ -49,6 +49,16 @@ var ailment_icon: Sprite2D
 var art: Dictionary
 ## The rank's glow under the hero's feet (silver, gold, radiant).
 var aura: Sprite2D
+## The sprite's shape (PIX-226): squashed or stretched for a moment around
+## the rank's presence, the feet kept on the ground; and whether the hero was
+## moving last tick, to spring on setting off.
+var squash := Vector2.ONE:
+	set(value):
+		squash = value
+		_shape()
+var _presence := 1.0
+var _spring: Tween
+var _moving := false
 
 func _ready() -> void:
 	# Top-down: no floor, no walls by angle, just slide along what blocks.
@@ -63,6 +73,8 @@ func _ready() -> void:
 	sprite.sprite_frames = PunyArt.frames(art)
 	sprite.position = Vector2(0, PunyArt.lift(art))
 	sprite.self_modulate = art["tint"]
+	# A clean white flash when struck (PIX-226).
+	sprite.material = Juice.fighter_material()
 	add_child(sprite)
 	_play("idle")
 	refresh_rank()
@@ -155,7 +167,11 @@ func _physics_process(delta: float) -> void:
 	pace *= 1.0 + float(HeroRules.passives(GameState.hero)["moveSpeed"])
 	velocity = input * pace
 	move_and_slide()
-	if input != Vector2.ZERO:
+	var moving := input != Vector2.ZERO
+	if moving and not _moving:
+		_spring_from(Juice.SET_OFF)
+	_moving = moving
+	if moving:
 		face(input)
 		_play("walk")
 	else:
@@ -195,6 +211,7 @@ func attack() -> void:
 	hit_this_swing = []
 	velocity = Vector2.ZERO
 	hitbox.position = facing * 16
+	_spring_from(Juice.SWING)
 	_play(art["attack"])
 	Sound.play_ui("swing")
 	get_tree().create_timer(ATTACK_COOLDOWN).timeout.connect(
@@ -222,7 +239,10 @@ func dodge() -> void:
 	blur.tween_interval(float(rules["seconds"]))
 	blur.tween_property(sprite, "modulate:a", 1.0, 0.08)
 	world.dust(global_position)
-	get_tree().create_timer(float(rules["seconds"])).timeout.connect(func() -> void: dodging = false)
+	get_tree().create_timer(float(rules["seconds"])).timeout.connect(func() -> void:
+		dodging = false
+		_spring_from(Juice.LAND)
+	)
 	_dodge_iframes = true
 	get_tree().create_timer(float(rules["iframes"])).timeout.connect(func() -> void: _dodge_iframes = false)
 	# Passives ready the next roll sooner, and some make it the setup for a crit (PIX-190).
@@ -248,6 +268,7 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null) -> void:
 		return
 	GameState.hurt(damage)
 	hp = GameState.hero.hp
+	Juice.flash(sprite)
 	world.float_number(damage, global_position + Vector2(0, -22), Color(1, 0.35, 0.35))
 	world.shake(3.0, 0.2)
 	world.hit_stop(0.05)
@@ -274,7 +295,8 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null) -> void:
 ## presence, from the hero's level.
 func refresh_rank() -> void:
 	var level := GameState.hero.level
-	sprite.scale = Vector2.ONE * Ranks.presence(level)
+	_presence = Ranks.presence(level)
+	_shape()
 	var glow: Variant = Ranks.aura(level)
 	aura.visible = glow != null
 	if glow != null:
@@ -466,11 +488,50 @@ func _on_animation_finished() -> void:
 	elif not dead and sprite.animation.begins_with("hurt"):
 		_play("idle")
 
-## The weapon only bites on the striking frames, matching what the sheet shows.
+## The weapon only bites on the striking frames, matching what the sheet
+## shows; a blade or a staff leaves its arc on the first (PIX-226).
 func _on_frame_changed() -> void:
 	if attacking and not casting:
 		var strike: Array = STRIKE_FRAMES.get(art["attack"], [1, 2])
 		hitbox.monitoring = sprite.frame >= strike[0] and sprite.frame <= strike[1]
+		if sprite.frame == strike[0] and art["attack"] != "bow":
+			_slash()
+
+
+## The swing's arc, a breath long, in the weapon's colour.
+func _slash() -> void:
+	var trail := Sprite2D.new()
+	trail.texture = Juice.arc()
+	trail.material = Lights.glow()
+	var weapon := GameState.pack.gear_by_uid(String(GameState.pack.equipped.get("weapon", "")))
+	trail.modulate = Juice.slash_color(art["attack"], String(weapon.get("rarity", "")))
+	trail.rotation = Juice.arc_turn(facing)
+	trail.position = facing * Juice.SLASH_REACH + Vector2(0, -6)
+	trail.z_index = Juice.SLASH_Z
+	add_child(trail)
+	var fade := trail.create_tween()
+	fade.tween_property(trail, "modulate:a", 0.0, Juice.SLASH_SECONDS)
+	fade.tween_callback(trail.queue_free)
+
+
+## Squashes or stretches the hero to `shape` and springs back; not with
+## reduced motion.
+func _spring_from(shape: Vector2) -> void:
+	if GameState.settings.reduce_motion:
+		return
+	if _spring != null:
+		_spring.kill()
+	squash = shape
+	_spring = create_tween()
+	_spring.tween_property(self, "squash", Vector2.ONE, Juice.SPRING_SECONDS).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+
+## The sprite at the rank's presence times the squash, feet on the ground.
+func _shape() -> void:
+	if sprite == null:
+		return
+	sprite.scale = Vector2.ONE * _presence * squash
+	sprite.position.y = PunyArt.lift(art) + Juice.FEET * _presence * (1.0 - squash.y)
 
 ## Shade draws all four directions, so there's no mirroring.
 func _play(anim: String) -> void:

@@ -14,7 +14,8 @@ const DUSK := 0.53
 const NIGHT := 0.75
 ## Each shot: a map and where on it (Upper Street, a pack's home, a cell, or
 ## the map's arrival), or a dungeon floor; the hour, or the first shower by
-## day (`rain`); and a foe to face, for the fight.
+## day (`rain`); and a foe to face, for the fight, struck on a beat while
+## it's filmed (`strike`), the third blow felling it.
 const SHOTS := [
 	{"name": "01_town_day", "map": "town", "at": "street", "time": DAY},
 	{"name": "02_town_dusk", "map": "town", "at": "street", "time": DUSK},
@@ -32,6 +33,7 @@ const SHOTS := [
 	{"name": "14_rain", "map": "overworld", "at": "forest_1", "rain": true},
 	{"name": "15_coast", "map": "saltmere", "cell": Vector2i(33, 27), "time": DAY},
 	{"name": "16_deepwood", "map": "deepwood", "time": DAY},
+	{"name": "17_strike", "map": "overworld", "at": "forest_1", "time": DAY, "foe": "orc", "strike": true},
 ]
 ## Upper Street: the shop's and the inn's fronts, the street lamps, the hall.
 const STREET := Vector2i(40, 13)
@@ -50,6 +52,14 @@ var world: Node
 var out_dir := "res://lookbook"
 var with_perf := false
 var with_motion := false
+## Only the shot of this name ("" for all), to look at one quickly.
+var only := ""
+## The shot's foe, to strike while filming.
+var _foe: Node
+## Filming a strike: the frames the hero swings on (the second a crit, the
+## last one felling it), and what each blow takes.
+const STRIKES := [2, 8, 14]
+const STAGED_BLOW := 12
 
 
 func run() -> void:
@@ -65,6 +75,8 @@ func run() -> void:
 	GameState.settlement.projects.assign(Town.projects_through(Town.MAX_TIER))
 	var images: Array[Image] = []
 	for shot: Dictionary in SHOTS:
+		if only != "" and shot["name"] != only:
+			continue
 		_stage(shot)
 		await get_tree().create_timer(SETTLE_SECONDS).timeout
 		await drawn()
@@ -77,7 +89,7 @@ func run() -> void:
 			line += "  " + await PerfProbe.sample(self, 180)
 		print(line)
 		if with_motion:
-			await _film(shot["name"])
+			await _film(shot["name"], shot.get("strike", false))
 	sheet(images).save_png("%s/sheet.png" % out_dir)
 	print("%s %s/%s" % ["LOOK", ProjectSettings.globalize_path(out_dir), "sheet.png"])
 
@@ -103,6 +115,7 @@ func _stage(shot: Dictionary) -> void:
 		var foe: Node = world.spawn_enemy(shot["foe"], world.player_cell + Vector2i(2, 0), "", "", true, false)
 		world.player.face(Vector2.RIGHT)
 		foe.notice()
+		_foe = foe
 
 
 ## Waits for a frame drawn and ready to save. While the window is hidden
@@ -117,11 +130,20 @@ func drawn() -> void:
 		RenderingServer.force_draw(false)
 
 
-## The shot as it moves: MOTION_FRAMES frames, MOTION_STEP seconds apart.
-func _film(shot_name: String) -> void:
+## The shot as it moves: MOTION_FRAMES frames, MOTION_STEP seconds apart;
+## with `strike`, the hero swings at the foe on STRIKES' frames.
+func _film(shot_name: String, strike := false) -> void:
 	var folder := "%s/motion/%s" % [out_dir, shot_name]
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(folder))
 	for frame in MOTION_FRAMES:
+		if strike and frame in STRIKES and is_instance_valid(_foe):
+			world.player.face(_foe.global_position - world.player.global_position)
+			if frame == STRIKES[-1]:
+				_foe.fighter["hp"] = 1
+			world.player.attack_ready = true
+			world.player.attack()
+			# Staged: the blow lands on the beat, wherever the foe has stepped.
+			_foe.take_hit(STAGED_BLOW, world.player.global_position, null, frame == STRIKES[1])
 		await get_tree().create_timer(MOTION_STEP).timeout
 		await drawn()
 		get_viewport().get_texture().get_image().save_png("%s/%02d.png" % [folder, frame])
