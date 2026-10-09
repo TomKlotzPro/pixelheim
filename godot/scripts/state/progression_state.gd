@@ -24,6 +24,9 @@ var hunted: Array[String] = []
 ## The deepest depth of the Deep Hunt cleared (PIX-161); saved only once
 ## there is one.
 var deepest := 0
+## Once-per-hero drops already taken (PIX-180: Fafnyr's first scale); saved
+## only once there is one.
+var firsts: Array[String] = []
 
 
 static func from_dict(data: Dictionary) -> ProgressionState:
@@ -37,6 +40,7 @@ static func from_dict(data: Dictionary) -> ProgressionState:
 	progress.prologue_doused.assign(data.get("prologueDoused", []))
 	progress.hunted.assign(data.get("hunted", []))
 	progress.deepest = int(data.get("deepHunt", 0))
+	progress.firsts.assign(data.get("firsts", []))
 	return progress
 
 
@@ -53,5 +57,7 @@ func write_into(state: Dictionary) -> void:
 			state["prologueDoused"] = prologue_doused.duplicate()
 	if not hunted.is_empty():
 		state["hunted"] = hunted.duplicate()
+	if not firsts.is_empty():
+		state["firsts"] = firsts.duplicate()
 	if deepest > 0:
 		state["deepHunt"] = deepest

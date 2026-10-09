@@ -452,12 +452,17 @@ func upgrade_gear(uid: String) -> bool:
 	if shop_id == "" or not Economy.shop(shop_id).get("forge", false) or instance.is_empty():
 		return false
 	var smithing: int = hero.jobs["smithing"]["level"]
-	if instance["bonus"] >= Economy.forge_cap_for(smithing):
+	# Past the cap, masterwork (PIX-180): Smithing 8, a gem a step, a rising price.
+	var masterwork: bool = instance["bonus"] >= Economy.forge_cap_for(smithing)
+	if masterwork and not Economy.masterwork_open(smithing, instance["bonus"]):
 		return false
-	var cost := Economy.forge_cost_for(instance["itemId"], instance["bonus"], smithing)
-	if pack.gold < cost:
+	var cost := Economy.masterwork_cost(instance["itemId"], instance["bonus"], smithing) if masterwork else Economy.forge_cost_for(instance["itemId"], instance["bonus"], smithing)
+	var gem := String(Economy._data()["masterwork"]["gem"])
+	if pack.gold < cost or (masterwork and int(pack.items.get(gem, 0)) < 1):
 		return false
 	pack.gold -= cost
+	if masterwork:
+		pack.remove_item(gem)
 	instance["bonus"] += 1
 	Economy.grant_job_xp(hero.jobs, "smithing", 10)
 	_pack_changed()
@@ -522,6 +527,28 @@ func rest_at_inn() -> String:
 ## Funds a village project (PIX-145): gold and materials paid, the project
 ## built (the town redraws as the hero next sees it), and the last of an age
 ## raises the town to that age. Returns the ledger's line, "" if it can't.
+## A commission (PIX-180): once every age is built, a costly work for a
+## lasting edge. "" when it can't be funded.
+func fund_commission(commission_id: String) -> String:
+	var entry := Town.commission(commission_id)
+	if entry.is_empty() or Town.current_age(settlement) != 0 or commission_id in settlement.projects or pack.gold < int(entry["cost"]):
+		return ""
+	pack.gold -= int(entry["cost"])
+	settlement.projects.append(commission_id)
+	_pack_changed()
+	save_now()
+	return Text.t("%s: commissioned. %s") % [entry["name"], entry["blurb"]]
+
+
+## What the funded commissions add to `kind` ("xp", "gold", "potion").
+func commission_buff(kind: String) -> float:
+	var total := 0.0
+	for entry: Dictionary in Town.commissions():
+		if entry["id"] in settlement.projects:
+			total += float(entry["buff"].get(kind, 0.0))
+	return total
+
+
 func fund_project(project_id: String) -> String:
 	if Town.project_blocker(project_id, progression, settlement, pack.gold, pack.items) != "":
 		return ""
@@ -1118,8 +1145,8 @@ func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, fl
 			pack.add_item(crop)
 			log.append(Text.t("Your garden ripens: +1 %s.") % Catalog.item_name(crop))
 	var passives := HeroRules.passives(hero)
-	var gold := roundi(fighter["gold"] * (1 + passives["goldBonus"]))
-	var xp := Bestiary.xp_for(fighter, hero.level)
+	var gold := roundi(fighter["gold"] * (1 + passives["goldBonus"] + commission_buff("gold")))
+	var xp := roundi(Bestiary.xp_for(fighter, hero.level) * (1.0 + commission_buff("xp")))
 	log.append(Text.t("%s is defeated! +%d XP, +%d gold.") % [fighter["name"], xp, gold])
 	pack.gold += gold
 	if passives["killRefundMp"] > 0:
@@ -1129,7 +1156,13 @@ func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, fl
 		log.append(level_line)
 	# What the monster itself carries (PIX-143): a wolf's pelt, an imp's horn.
 	for carried: Dictionary in Bestiary.drops_of(fighter["id"]):
-		if roll.call() < float(carried["chance"]):
+		# A once-per-hero drop (PIX-180: Fafnyr's scale) is sure the first
+		# time, then rare.
+		var once := String(carried.get("once", ""))
+		var chance := float(carried.get("after", carried["chance"])) if once != "" and once in progression.firsts else float(carried["chance"])
+		if roll.call() < chance:
+			if once != "" and once not in progression.firsts:
+				progression.firsts.append(once)
 			pack.add_item(carried["itemId"])
 			log.append(Text.t("%s drops: %s.") % [fighter["name"], Catalog.item_name(carried["itemId"])])
 	if fighter.has("named"):
@@ -1417,12 +1450,14 @@ func use_item(item_id: String) -> Dictionary:
 		return {"used": false, "text": "", "cures": ""}
 	pack.remove_item(item_id)
 	var parts: Array[String] = []
+	# The Healers' Hall makes every potion stronger (PIX-180).
+	var potency := 1.0 + commission_buff("potion")
 	if item.has("restoreHp"):
-		var healed := mini(int(hero.stats["maxHp"]), hero.hp + int(item["restoreHp"])) - hero.hp
+		var healed := mini(int(hero.stats["maxHp"]), hero.hp + roundi(int(item["restoreHp"]) * potency)) - hero.hp
 		hero.hp += healed
 		parts.append(Text.t("%d HP") % healed)
 	if item.has("restoreMp"):
-		var restored := mini(int(hero.stats["maxMp"]), hero.mp + int(item["restoreMp"])) - hero.mp
+		var restored := mini(int(hero.stats["maxMp"]), hero.mp + roundi(int(item["restoreMp"]) * potency)) - hero.mp
 		hero.mp += restored
 		parts.append("%d %s" % [restored, Skills.resource_label(hero.role_id)])
 	_pack_changed()

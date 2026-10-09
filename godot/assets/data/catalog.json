@@ -1652,6 +1652,48 @@
       "value": 0,
       "quest": true,
       "description": "A soldier's badge from Greyhold, the tower on it worn smooth by a thumb."
+    },
+    "kings_signet": {
+      "name": "King's Signet",
+      "category": "apparel",
+      "sprite": "ring",
+      "weight": 0,
+      "value": 4500,
+      "grants": {
+        "strength": 2,
+        "intelligence": 2,
+        "dexterity": 2,
+        "defense": 2,
+        "endurance": 2
+      },
+      "slot": "ring",
+      "description": "The old king's seal, bought back from a valley merchant. Pixelheim's own, for whoever saved it."
+    },
+    "aegis_of_the_ash": {
+      "name": "Aegis of the Ash",
+      "category": "apparel",
+      "sprite": "shield",
+      "weight": 12,
+      "value": 3800,
+      "armor": 10,
+      "slot": "offhand",
+      "tint": [
+        0.86,
+        0.42,
+        0.36
+      ],
+      "shape": "kite",
+      "description": "Forged from the beams that burned on the Night of Ash. Nothing gets through it twice."
+    },
+    "everflask": {
+      "name": "Everflask",
+      "category": "potions",
+      "sprite": "elixir",
+      "weight": 1,
+      "value": 2200,
+      "restoreHp": 999,
+      "restoreMp": 999,
+      "description": "Vex's finest: a flask that brings everything back, every wound and every spent breath."
     }
   },
   "roles": {

@@ -22,7 +22,10 @@ func _info() -> String:
 	]
 	var building := Town.current_age(GameState.settlement)
 	if building == 0:
-		lines.append_array(["", "Every project is built. Pixelheim stands at its full height."])
+		lines.append_array(["", "Every project is built. Pixelheim stands at its full height.", "",
+			"Commissions: costly works the town would build in your honour, each a lasting edge."])
+		for entry: Dictionary in Town.commissions():
+			lines.append("- %s: %s" % [entry["name"], entry["blurb"]])
 		return "\n".join(lines)
 	lines.append_array(["", Text.t("Building the %s") % Town.tier(building)["name"]])
 	var blockers := Town.age_blockers(building, GameState.progression, GameState.settlement)
@@ -83,10 +86,22 @@ func _chosen_project() -> Dictionary:
 func _rows() -> Array[Dictionary]:
 	var building := Town.current_age(GameState.settlement)
 	if building == 0:
-		return [{
-			"label": "Pixelheim stands at its full height.", "note": "", "enabled": false,
-			"why": "There is nothing left to build.", "action": func() -> String: return "",
-		}]
+		# Every age built: the commissions, for a lasting edge (PIX-180).
+		var works: Array[Dictionary] = []
+		for entry: Dictionary in Town.commissions():
+			var commission_id: String = entry["id"]
+			var funded: bool = commission_id in GameState.settlement.projects
+			works.append({
+				"label": entry["name"], "note": "COMMISSIONED" if funded else "%dg" % int(entry["cost"]),
+				"enabled": not funded and GameState.pack.gold >= int(entry["cost"]),
+				"why": "Already commissioned." if funded else "Not enough gold.",
+				"action": func() -> String:
+					var line := GameState.fund_commission(commission_id)
+					if line != "":
+						Sound.play("coin")
+					return line,
+			})
+		return works
 	var done := Town.done_projects(GameState.settlement)
 	var out: Array[Dictionary] = []
 	for entry: Dictionary in Town.age(building)["projects"]:

@@ -1086,5 +1086,37 @@
         "greater_potion"
       ]
     }
+  },
+  "commissions": {
+    "about": "PIX-180: once every age is built, the ledger offers commissions: costly works that give the hero a lasting edge, the late game's gold sink.",
+    "list": [
+      {
+        "id": "statue_of_the_five",
+        "name": "The Statue of the Five",
+        "blurb": "The five climbers in bronze on the square. Heroes walk taller past it: +5% XP from every kill.",
+        "cost": 8000,
+        "buff": {
+          "xp": 0.05
+        }
+      },
+      {
+        "id": "lantern_walk",
+        "name": "The Lantern Walk",
+        "blurb": "Lanterns all the way up the mountain road. Merchants follow the light: +10% gold from every kill.",
+        "cost": 6000,
+        "buff": {
+          "gold": 0.1
+        }
+      },
+      {
+        "id": "healers_hall",
+        "name": "The Healers' Hall",
+        "blurb": "Iva's school, and its stronger brews: every potion heals a quarter more.",
+        "cost": 7000,
+        "buff": {
+          "potion": 0.25
+        }
+      }
+    ]
   }
 }

@@ -215,11 +215,13 @@ func _build_rows() -> Array[Dictionary]:
 			var smithing: int = GameState.hero.jobs["smithing"]["level"]
 			for instance in pack.gear:
 				var uid: String = instance["uid"]
-				var maxed: bool = instance["bonus"] >= Economy.forge_cap_for(smithing)
-				var cost := Economy.forge_cost_for(instance["itemId"], instance["bonus"], smithing)
+				# Past the cap, masterwork from Smithing 8: a gem a step (PIX-180).
+				var past: bool = instance["bonus"] >= Economy.forge_cap_for(smithing)
+				var maxed: bool = past and not Economy.masterwork_open(smithing, instance["bonus"])
+				var cost := Economy.masterwork_cost(instance["itemId"], instance["bonus"], smithing) if past else Economy.forge_cost_for(instance["itemId"], instance["bonus"], smithing)
 				out.append({
 					"label": _gear_label(instance) + ("  (worn)" if pack.is_equipped(uid) else ""), "icon": instance["itemId"],
-					"price": "max" if maxed else "%dg" % cost,
+					"price": "max" if maxed else (Text.t("%dg + gem") % cost if past else "%dg" % cost),
 					"detail": _describe(instance["itemId"], instance), "verb": "Temper +1",
 					"enabled": not maxed and pack.gold >= cost,
 					"action": func() -> void: _after(GameState.upgrade_gear(uid), "Hilda tempers it: +1.", "Not enough gold, or it can take no more."),

@@ -137,7 +137,10 @@
     "guard_badge": "jewelry-rpg-icons/Brooches/Brooch-03.png",
     "starfall_staff": "survival-rpg-icons/Tools/Magic-Staff-17.png",
     "gale_longbow": "survival-rpg-icons/Tools/Wooden-Bow-11.png",
-    "moonsteel_dagger": "survival-rpg-icons/Tools/Knife-13.png"
+    "moonsteel_dagger": "survival-rpg-icons/Tools/Knife-13.png",
+    "kings_signet": "jewelry-rpg-icons/Rings/Ring-50.png",
+    "aegis_of_the_ash": "survival-rpg-icons/Armour/Metal-Shield-11.png",
+    "everflask": "survival-rpg-icons/Liquid/Large-Potion-15.png"
   },
   "ailments": {
     "poison": "puny-skills/Indicators/Symbol Indicator/Poisoned-Indicator.png",

@@ -98,6 +98,19 @@ static func forge_cap_for(smithing: int) -> int:
 	return int(_data()["forgeBonusCap"]) + (1 if smithing >= 5 else 0) + (1 if smithing >= int(_data()["jobUnlocks"]["smithingCapAt"]) else 0)
 
 
+## Masterwork (PIX-180): from Smithing 8, forging past the cap up to the
+## masterwork max, each step `growth` times the last and a gem.
+static func masterwork_open(smithing: int, bonus: int) -> bool:
+	var rules: Dictionary = _data()["masterwork"]
+	return smithing >= int(rules["smithing"]) and bonus < int(rules["max"])
+
+
+static func masterwork_cost(item_id: String, bonus: int, smithing: int) -> int:
+	var cap := forge_cap_for(smithing)
+	var base := forge_cost_for(item_id, maxi(0, cap - 1), smithing)
+	return roundi(base * pow(float(_data()["masterwork"]["growth"]), bonus - cap + 1))
+
+
 ## A crafted piece's rarity (PIX-182): the more trade levels above the
 ## recipe's (`bonus_levels` more at the home workbench), the likelier Fine,
 ## and past a couple, Epic.
