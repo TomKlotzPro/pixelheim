@@ -81,7 +81,7 @@ func _press(keycode: Key, pressed: bool) -> void:
 func _lineup() -> void:
 	for node in get_tree().get_nodes_in_group("mobs") + get_tree().get_nodes_in_group("npcs"):
 		node.queue_free()
-	world.camera.zoom = Vector2(2.6, 2.6)
+	world.camera_rig.camera.zoom = Vector2(2.6, 2.6)
 	var rows := [
 		PunyArt.HEROES.keys().map(func(role: String) -> Array: return [role, PunyArt.hero(role)]),
 		PunyArt.VILLAGERS.keys().map(func(id: String) -> Array: return [id, PunyArt.villager(id)]),
@@ -215,11 +215,11 @@ func _run_test_harness() -> void:
 		var at := args[at_index + 1].split(",")
 		world.player_cell = Vector2i(int(at[0]), int(at[1]))
 		world.player.position = world._cell_center(world.player_cell)
-		world._teleported()
-		world.camera.reset_smoothing()
+		world.camera_rig.cut()
+		world.camera_rig.camera.reset_smoothing()
 	var zoom_index := args.find("--zoom")
 	if zoom_index >= 0 and zoom_index + 1 < args.size():
-		world.camera.zoom = Vector2.ONE * float(args[zoom_index + 1])
+		world.camera_rig.camera.zoom = Vector2.ONE * float(args[zoom_index + 1])
 	var walk_index := args.find("--walk")
 	if walk_index >= 0 and walk_index + 1 < args.size():
 		var dirs := {
@@ -234,14 +234,14 @@ func _run_test_harness() -> void:
 	if args.has("overview"):
 		var view := get_viewport().get_visible_rect().size
 		var fit := minf(view.x / (world.map.size.x * world.TILE), view.y / (world.map.size.y * world.TILE))
-		world.camera_follows = false
-		world.camera.zoom = Vector2(fit, fit)
-		world.camera.limit_right = 1 << 20
-		world.camera.limit_bottom = 1 << 20
-		world.camera.limit_left = -(1 << 20)
-		world.camera.limit_top = -(1 << 20)
-		world.camera.global_position = Vector2(world.map.size * world.TILE) / 2.0
-		world.camera.reset_smoothing()
+		world.camera_rig.follows = false
+		world.camera_rig.camera.zoom = Vector2(fit, fit)
+		world.camera_rig.camera.limit_right = 1 << 20
+		world.camera_rig.camera.limit_bottom = 1 << 20
+		world.camera_rig.camera.limit_left = -(1 << 20)
+		world.camera_rig.camera.limit_top = -(1 << 20)
+		world.camera_rig.camera.global_position = Vector2(world.map.size * world.TILE) / 2.0
+		world.camera_rig.camera.reset_smoothing()
 		await get_tree().create_timer(0.2).timeout
 	var settlers_index := args.find("--settlers")
 	if settlers_index >= 0 and settlers_index + 1 < args.size():
@@ -493,7 +493,7 @@ func _run_test_harness() -> void:
 		# Stand below the map's first villager facing up; `talk` also presses E.
 		var villager: Node = get_tree().get_first_node_in_group("npcs")
 		world.player.position = world._cell_center(villager.cell + Vector2i.DOWN)
-		world._teleported()
+		world.camera_rig.cut()
 		world.player_cell = villager.cell + Vector2i.DOWN
 		world.player.face(Vector2.UP)
 		if args.has("talk"):
@@ -504,7 +504,7 @@ func _run_test_harness() -> void:
 	if args.has("chest"):
 		# Pair with `--map town`: warp beside the nook chest, face it, open it.
 		world.player.position = world._cell_center(Vector2i(79, 4))
-		world._teleported()
+		world.camera_rig.cut()
 		world.player_cell = Vector2i(79, 4)
 		world.player.face(Vector2.RIGHT)
 		world._try_interact()
@@ -545,7 +545,7 @@ func _run_test_harness() -> void:
 		# Pair with `--map mirefen`: open the mire's mimic chest; `--wait`
 		# catches its shudder (under 0.6 s) or the ambush after.
 		world.player.position = world._cell_center(Vector2i(42, 13))
-		world._teleported()
+		world.camera_rig.cut()
 		world.player_cell = Vector2i(42, 13)
 		world.player.invulnerable = true
 		world.player.face(Vector2.UP)
@@ -565,7 +565,7 @@ func _run_test_harness() -> void:
 				continue
 			var side: Vector2i = sides[0]
 			world.player.position = world._cell_center(door + side)
-			world._teleported()
+			world.camera_rig.cut()
 			world.player_cell = door + side
 			world.player.scripted_dir = Vector2(-side)
 			await get_tree().create_timer(0.4).timeout

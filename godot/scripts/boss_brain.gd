@@ -57,7 +57,7 @@ func _check_phase() -> void:
 	world.log_line(pattern["roars"][phase - 1])
 	# A new phase is roared (PIX-210), not bumped.
 	Sound.play("roar")
-	world.shake(6.0, 0.5)
+	world.camera_rig.shake(6.0, 0.5)
 
 
 ## The phase a boss is in at `share` of its health: 0, 1 or 2.
@@ -103,7 +103,7 @@ func _strike(shape: PackedVector2Array, attack: Dictionary) -> void:
 	if Telegraph.catches(world, shape):
 		var damage := roundi(Bestiary.monster_attack_damage(enemy.fighter, GameState.hero, GameState.pack, GameState.roll) * float(attack["power"]))
 		world.player.take_hit(damage, shape[0], enemy.fighter.get("inflicts") if attack.get("inflicts", false) else null)
-		world.shake(5.0, 0.3)
+		world.camera_rig.shake(5.0, 0.3)
 	# The last mark of a cast lets the boss move again.
 	if pending <= 0:
 		enemy.mode = "chase"

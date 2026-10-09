@@ -270,8 +270,8 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null) -> void:
 	hp = GameState.hero.hp
 	Juice.flash(sprite)
 	world.float_number(damage, global_position + Vector2(0, -22), Color(1, 0.35, 0.35))
-	world.shake(3.0, 0.2)
-	world.hit_stop(0.05)
+	world.camera_rig.shake(3.0, 0.2)
+	world.camera_rig.hit_stop(0.05)
 	if hp > 0 and ailments.inflict(infliction, GameState.roll, HeroRules.passives(GameState.hero)):
 		Sound.play_ui("ail")
 		world.log_line(Text.t("You are afflicted by %s!") % Ailments.label(infliction["kind"]))

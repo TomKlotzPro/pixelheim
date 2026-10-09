@@ -3769,6 +3769,10 @@ msgid "Status effects: poison and burn tick every turn, stun steals turns"
 msgstr "Effets d'état : le poison et la brûlure frappent à chaque tour, l'étourdissement fait perdre des tours"
 
 #: assets/data/changelog.json
+msgid "Steady Camera"
+msgstr "Caméra stable"
+
+#: assets/data/changelog.json
 msgid "Steady Steps"
 msgstr "Pas assurés"
 
@@ -4339,6 +4343,10 @@ msgstr "La simulation d'équilibrage parcourt désormais chaque enchaînement de
 #: assets/data/changelog.json
 msgid "The breeze is back in 3D: grass, flowers, forest and marsh sway, water shimmers - the same two-frame breath as the classic renderer"
 msgstr "La brise revient en 3D : herbe, fleurs, forêt et marais ondulent, l'eau miroite - le même souffle en deux images que le rendu classique"
+
+#: assets/data/changelog.json
+msgid "The camera no longer leans ahead of your hero: it made them slip back on screen as they set off, and the world scrolls crisp again"
+msgstr "La caméra ne se penche plus en avant de votre héros : il reculait à l'écran en se mettant en marche, et le monde défile de nouveau net"
 
 #: assets/data/changelog.json
 msgid "The cave at the mountain's base leads below, once the dragon falls"
@@ -13320,43 +13328,43 @@ msgstr "COMMANDÉ"
 msgid "Arrows"
 msgstr "Flèches"
 
-#: scripts/world.gd:1056
+#: scripts/world.gd:1024
 msgid "Only cinders where the house stood. The board on the square can change that."
 msgstr "Rien que des cendres là où se dressait la maison. Le tableau de la place peut y remédier."
 
-#: scripts/world.gd:1061
+#: scripts/world.gd:1029
 msgid "The deed costs %d gold. {key:interact} again to sign it."
 msgstr "Le titre de propriété coûte %d or. {key:interact} à nouveau pour le signer."
 
-#: scripts/world.gd:1145
+#: scripts/world.gd:1113
 msgid "A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it."
 msgstr "Un établi pour cette étagère : %d or. Il compte comme un niveau de métier en plus quand vous fabriquez chez vous. {key:interact} à nouveau pour l'acheter."
 
-#: scripts/world.gd:1572
+#: scripts/world.gd:1494
 msgid "Five lanterns on the square, one for each of the five who climbed. Tonight the %s remembers them - and %s."
 msgstr "Cinq lanternes sur la place, une pour chacun des cinq qui ont gravi la montagne. Ce soir, Pixelheim, désormais %s, se souvient d'eux - et salue %s."
 
-#: scripts/world.gd:1573
+#: scripts/world.gd:1495
 msgid "Pixelheim, a %s raised from the ashes. Tonight it celebrates %s."
 msgstr "Pixelheim, des cendres au rang de %s. Ce soir, on y fête %s."
 
-#: scripts/world.gd:1659
+#: scripts/world.gd:1581
 msgid "%s: built."
 msgstr "%s : chantier terminé."
 
-#: scripts/world.gd:1663
+#: scripts/world.gd:1585
 msgid "Pixelheim is a %s now."
 msgstr "Pixelheim passe au rang de %s."
 
-#: scripts/world.gd:1669
+#: scripts/world.gd:1591
 msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
 msgstr "Et aujourd'hui, on fait la fête : des étals sur la place, et un lancer d'anneaux avec un lot pour le meilleur lancer."
 
-#: scripts/world.gd:1771
+#: scripts/world.gd:1693
 msgid "%s  %d:%02d"
 msgstr "%s  %d:%02d"
 
-#: scripts/world.gd:2010
+#: scripts/world.gd:1924
 msgid "Next"
 msgstr "Ensuite"
 
@@ -13364,31 +13372,31 @@ msgstr "Ensuite"
 msgid "The pack is scattered. Another comes once you've walked a good way, or after a night's rest."
 msgstr "La meute est dispersée. Une autre reviendra quand vous aurez bien marché, ou après une nuit de repos."
 
-#: scripts/world.gd:522
+#: scripts/world.gd:492
 msgid "No map reaches this deep."
 msgstr "Aucune carte ne va aussi profond."
 
-#: scripts/world.gd:606
+#: scripts/world.gd:576
 msgid "LEVEL UP"
 msgstr "NIVEAU SUPÉRIEUR"
 
-#: scripts/world.gd:72
+#: scripts/world.gd:73
 msgid "Level up"
 msgstr "Niveau supérieur"
 
-#: scripts/world.gd:72
+#: scripts/world.gd:73
 msgid "Mastery"
 msgstr "Maîtrise"
 
-#: scripts/world.gd:72
+#: scripts/world.gd:73
 msgid "Quest accepted"
 msgstr "Quête acceptée"
 
-#: scripts/world.gd:72
+#: scripts/world.gd:73
 msgid "Quest complete"
 msgstr "Quête terminée"
 
-#: scripts/world.gd:828
+#: scripts/world.gd:798
 msgid "{epithet} {name}"
 msgstr "{name} {epithet}"
 

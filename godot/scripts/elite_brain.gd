@@ -113,7 +113,7 @@ func _strike(shape: PackedVector2Array, move: Dictionary, jump: String) -> void:
 		for point in shape:
 			mid += point
 		world.dust(mid / shape.size())
-		world.shake(2.5, 0.15)
+		world.camera_rig.shake(2.5, 0.15)
 	if Telegraph.catches(world, shape):
 		var damage := roundi(Bestiary.monster_attack_damage(enemy.fighter, GameState.hero, GameState.pack, GameState.roll) * float(move["power"]))
 		world.player.take_hit(damage, enemy.global_position, move.get("inflicts", enemy.fighter.get("inflicts")))
@@ -164,7 +164,7 @@ func _bolt(move: Dictionary, heading: Vector2) -> void:
 ## The forest answers a howl: wolves of its kind at its side.
 func _howl(move: Dictionary) -> void:
 	world.log_line(Text.t("%s howls - the forest answers!") % enemy.fighter["name"])
-	world.shake(3.0, 0.3)
+	world.camera_rig.shake(3.0, 0.3)
 	var cell := Vector2i((enemy.global_position / TILE).floor())
 	var offsets: Array[Vector2i] = [Vector2i(-2, 1), Vector2i(2, 1), Vector2i(0, 2), Vector2i(0, -2)]
 	for i in mini(int(move["count"]), int(move["max"]) - _calling()):

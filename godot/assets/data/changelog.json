@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.172.0",
+      "date": "2026-10-09",
+      "codename": "Steady Camera",
+      "notes": [
+        "The camera no longer leans ahead of your hero: it made them slip back on screen as they set off, and the world scrolls crisp again"
+      ]
+    },
+    {
       "version": "0.171.0",
       "date": "2026-10-09",
       "codename": "Everything Fits",

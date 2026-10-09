@@ -3769,6 +3769,10 @@ msgid "Status effects: poison and burn tick every turn, stun steals turns"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Steady Camera"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Steady Steps"
 msgstr ""
 
@@ -4338,6 +4342,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The breeze is back in 3D: grass, flowers, forest and marsh sway, water shimmers - the same two-frame breath as the classic renderer"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The camera no longer leans ahead of your hero: it made them slip back on screen as they set off, and the world scrolls crisp again"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -13320,43 +13328,43 @@ msgstr ""
 msgid "Arrows"
 msgstr ""
 
-#: scripts/world.gd:1056
+#: scripts/world.gd:1024
 msgid "Only cinders where the house stood. The board on the square can change that."
 msgstr ""
 
-#: scripts/world.gd:1061
+#: scripts/world.gd:1029
 msgid "The deed costs %d gold. {key:interact} again to sign it."
 msgstr ""
 
-#: scripts/world.gd:1145
+#: scripts/world.gd:1113
 msgid "A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it."
 msgstr ""
 
-#: scripts/world.gd:1572
+#: scripts/world.gd:1494
 msgid "Five lanterns on the square, one for each of the five who climbed. Tonight the %s remembers them - and %s."
 msgstr ""
 
-#: scripts/world.gd:1573
+#: scripts/world.gd:1495
 msgid "Pixelheim, a %s raised from the ashes. Tonight it celebrates %s."
 msgstr ""
 
-#: scripts/world.gd:1659
+#: scripts/world.gd:1581
 msgid "%s: built."
 msgstr ""
 
-#: scripts/world.gd:1663
+#: scripts/world.gd:1585
 msgid "Pixelheim is a %s now."
 msgstr ""
 
-#: scripts/world.gd:1669
+#: scripts/world.gd:1591
 msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
 msgstr ""
 
-#: scripts/world.gd:1771
+#: scripts/world.gd:1693
 msgid "%s  %d:%02d"
 msgstr ""
 
-#: scripts/world.gd:2010
+#: scripts/world.gd:1924
 msgid "Next"
 msgstr ""
 
@@ -13364,31 +13372,31 @@ msgstr ""
 msgid "The pack is scattered. Another comes once you've walked a good way, or after a night's rest."
 msgstr ""
 
-#: scripts/world.gd:522
+#: scripts/world.gd:492
 msgid "No map reaches this deep."
 msgstr ""
 
-#: scripts/world.gd:606
+#: scripts/world.gd:576
 msgid "LEVEL UP"
 msgstr ""
 
-#: scripts/world.gd:72
+#: scripts/world.gd:73
 msgid "Level up"
 msgstr ""
 
-#: scripts/world.gd:72
+#: scripts/world.gd:73
 msgid "Mastery"
 msgstr ""
 
-#: scripts/world.gd:72
+#: scripts/world.gd:73
 msgid "Quest accepted"
 msgstr ""
 
-#: scripts/world.gd:72
+#: scripts/world.gd:73
 msgid "Quest complete"
 msgstr ""
 
-#: scripts/world.gd:828
+#: scripts/world.gd:798
 msgid "{epithet} {name}"
 msgstr ""
 
