@@ -261,12 +261,22 @@ func craft(recipe_id: String) -> Dictionary:
 	# The trade that made it learns from it (PIX-143: an amulet brewed at
 	# the cauldron is alchemy, not smithing).
 	var gained := Economy.grant_job_xp(owner.hero.jobs, job, Economy.craft_xp(entry))
-	# Accepted crafting quests count what the hero makes (PIX-143).
+	# What the hero has made is remembered, so a crafting quest taken later
+	# counts it (PIX-231).
+	owner.progression.crafted[entry["itemId"]] = int(owner.progression.crafted.get(entry["itemId"], 0)) + count
+	# Accepted crafting quests count what the hero makes (PIX-143), and say
+	# so in the log as deliveries do (PIX-231): how far, or ready and to whom.
+	var lines: Array[String] = []
 	for quest: Dictionary in Quests.all():
 		var taken: Dictionary = owner.progression.quests.get(quest["id"], {})
 		var objective: Dictionary = quest["objective"]
 		if not taken.is_empty() and not taken["done"] and objective["kind"] == "craft" and objective["itemId"] == entry["itemId"]:
-			taken["progress"] = mini(int(objective["count"]), int(taken["progress"]) + count)
+			var before := int(taken["progress"])
+			taken["progress"] = mini(int(objective["count"]), before + count)
+			if int(taken["progress"]) > before:
+				lines.append(owner.questing.progress_line(quest, int(taken["progress"])))
 	owner.pack_changed()
+	if not lines.is_empty():
+		owner.noted.emit(lines)
 	var level_line := Text.t("%s reached %d!") % [Economy.job_name(job), owner.hero.jobs[job]["level"]] if gained > 0 else ""
 	return {"made": true, "count": count, "level_line": level_line}

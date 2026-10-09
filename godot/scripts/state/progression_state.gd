@@ -32,6 +32,9 @@ var firsts: Array[String] = []
 ## Every kind met in a fight (PIX-188: the codex by species, not family),
 ## with the highest level it was met at; saved once there is one.
 var met := {}
+## item id -> how many the hero has made at a station (PIX-231), so a
+## crafting quest taken after the work counts it; saved once there is one.
+var crafted := {}
 
 
 static func from_dict(data: Dictionary) -> ProgressionState:
@@ -48,6 +51,7 @@ static func from_dict(data: Dictionary) -> ProgressionState:
 	progress.deeds.assign(data.get("deeds", []))
 	progress.firsts.assign(data.get("firsts", []))
 	progress.met = data.get("met", {}).duplicate()
+	progress.crafted = data.get("crafted", {}).duplicate()
 	return progress
 
 
@@ -68,6 +72,8 @@ func write_into(state: Dictionary) -> void:
 		state["firsts"] = firsts.duplicate()
 	if not met.is_empty():
 		state["met"] = met.duplicate()
+	if not crafted.is_empty():
+		state["crafted"] = crafted.duplicate()
 	if deepest > 0:
 		state["deepHunt"] = deepest
 	if not deeds.is_empty():

@@ -2561,6 +2561,10 @@ msgid "Fireflies blink over the grass and in the woods at dusk and by night, glo
 msgstr "Des lucioles clignotent sur l'herbe et dans les bois au crépuscule et la nuit, lumineuses dans le noir"
 
 #: assets/data/changelog.json
+msgid "First Brew"
+msgstr "Premier breuvage"
+
+#: assets/data/changelog.json
 msgid "First Impressions"
 msgstr "Premières impressions"
 
@@ -2579,6 +2583,10 @@ msgstr "Cinq nouveaux étages sous la montagne, pour ceux qui ont vaincu le drag
 #: assets/data/changelog.json
 msgid "Fixed: a flaky load could leave the world pitch black until a reload - the renderer retries on its own"
 msgstr "Corrigé : un chargement capricieux pouvait laisser le monde plongé dans le noir jusqu'au rechargement - le rendu réessaie désormais tout seul"
+
+#: assets/data/changelog.json
+msgid "Fixed: a potion you brewed before taking Vex's \"A First Brew\" now counts as soon as you take it, and whatever you craft for a quest you've taken says in the battle log when it's ready to hand in"
+msgstr "Corrigé : une potion préparée avant d'accepter « Un premier breuvage » de Vex compte désormais dès que vous l'acceptez, et ce que vous fabriquez pour une quête acceptée s'annonce dans le journal de combat quand c'est prêt à remettre"
 
 #: assets/data/changelog.json
 msgid "Fixed: in French the map and the saves screen ran off the right of the screen; long lines now wrap and rows of buttons flow onto a second line, and every screen is checked to fit"
@@ -12752,43 +12760,43 @@ msgstr "Ensuite : %s"
 msgid "Maren"
 msgstr "Maren"
 
-#: scripts/state/questing.gd:126
+#: scripts/state/questing.gd:134
 msgid "It's in your journal ({key:journal})."
 msgstr "Elle est dans votre journal ({key:journal})."
 
-#: scripts/state/questing.gd:126
+#: scripts/state/questing.gd:134
 msgid "Quest accepted: %s. %s"
 msgstr "Quête acceptée : %s. %s"
 
-#: scripts/state/questing.gd:130
+#: scripts/state/questing.gd:138
 msgid "%s: they wait on your answer."
 msgstr "%s : on attend votre réponse."
 
-#: scripts/state/questing.gd:153
+#: scripts/state/questing.gd:161
 msgid "+%d gold"
 msgstr "+%d or"
 
-#: scripts/state/questing.gd:154
+#: scripts/state/questing.gd:162
 msgid "+%d XP"
 msgstr "+%d XP"
 
-#: scripts/state/questing.gd:155
+#: scripts/state/questing.gd:163
 msgid "Quest complete: %s. %s. “%s”"
 msgstr "Quête terminée : %s. %s. « %s »"
 
-#: scripts/state/questing.gd:157
+#: scripts/state/questing.gd:165
 msgid "%s: %d/%d %s."
 msgstr "%s : %d/%d %s."
 
-#: scripts/state/questing.gd:288
+#: scripts/state/questing.gd:284
 msgid "%s: ready to hand in to %s."
 msgstr "%s : prêt à remettre à %s."
 
-#: scripts/state/questing.gd:323
+#: scripts/state/questing.gd:336
 msgid "That uses what %s needs (%s). Do it again to go ahead."
 msgstr "Cela entame ce que demande « %s » (%s). Recommencez pour confirmer."
 
-#: scripts/state/questing.gd:334
+#: scripts/state/questing.gd:347
 msgid "A feat done: %s. The %s is yours, for the shelf at home."
 msgstr "Un haut fait accompli : %s. La %s est à vous, pour l'étagère de la maison."
 
@@ -13080,7 +13088,7 @@ msgstr "Hilda reforge la pièce : %s."
 msgid "Hilda quenches it in the deep's black water: +1 %s."
 msgstr "Hilda trempe la pièce dans l'eau noire des profondeurs : +1 %s."
 
-#: scripts/state/trade.gd:271
+#: scripts/state/trade.gd:281
 msgid "%s reached %d!"
 msgstr "%s : niveau %d !"
 

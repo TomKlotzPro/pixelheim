@@ -8,7 +8,8 @@
 # Saltmere (PIX-164), its sea cave (PIX-165), the Blackiron mines (PIX-167),
 # Greyhold with its cellars (PIX-168) and the Frostgate pass with its ice cave
 # (PIX-169), the mountain's gate barred to a new hero (PIX-170) and a depth
-# of the Deep Hunt cleared (PIX-161). Every flow leaves its picture in
+# of the Deep Hunt cleared (PIX-161), and a potion brewed before Vex's quest
+# was taken still finishing it (PIX-231). Every flow leaves its picture in
 # godot/flows/<name>.png for a human to look at, and the harness's report line
 # must match what the flow promises or the run fails.
 #
@@ -39,6 +40,7 @@ FLOWS=(
 	"shop|--map town_shop shop|map=town_shop"
 	"craft|--map town_alchemist shop --tab 2|map=town_alchemist"
 	"quest|--map town quest|map=town cell"
+	"brew|--map town_alchemist brew|map=town_alchemist .*gold=100 "
 	"rankup|rankup|screenshot saved"
 	"fight|fight kill|screenshot saved"
 	"die|die|map=town_inn cell=\(2, 3\)"

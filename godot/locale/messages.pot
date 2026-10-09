@@ -2561,6 +2561,10 @@ msgid "Fireflies blink over the grass and in the woods at dusk and by night, glo
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "First Brew"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "First Impressions"
 msgstr ""
 
@@ -2578,6 +2582,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Fixed: a flaky load could leave the world pitch black until a reload - the renderer retries on its own"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Fixed: a potion you brewed before taking Vex's \"A First Brew\" now counts as soon as you take it, and whatever you craft for a quest you've taken says in the battle log when it's ready to hand in"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -12752,43 +12760,43 @@ msgstr ""
 msgid "Maren"
 msgstr ""
 
-#: scripts/state/questing.gd:126
+#: scripts/state/questing.gd:134
 msgid "It's in your journal ({key:journal})."
 msgstr ""
 
-#: scripts/state/questing.gd:126
+#: scripts/state/questing.gd:134
 msgid "Quest accepted: %s. %s"
 msgstr ""
 
-#: scripts/state/questing.gd:130
+#: scripts/state/questing.gd:138
 msgid "%s: they wait on your answer."
 msgstr ""
 
-#: scripts/state/questing.gd:153
+#: scripts/state/questing.gd:161
 msgid "+%d gold"
 msgstr ""
 
-#: scripts/state/questing.gd:154
+#: scripts/state/questing.gd:162
 msgid "+%d XP"
 msgstr ""
 
-#: scripts/state/questing.gd:155
+#: scripts/state/questing.gd:163
 msgid "Quest complete: %s. %s. “%s”"
 msgstr ""
 
-#: scripts/state/questing.gd:157
+#: scripts/state/questing.gd:165
 msgid "%s: %d/%d %s."
 msgstr ""
 
-#: scripts/state/questing.gd:288
+#: scripts/state/questing.gd:284
 msgid "%s: ready to hand in to %s."
 msgstr ""
 
-#: scripts/state/questing.gd:323
+#: scripts/state/questing.gd:336
 msgid "That uses what %s needs (%s). Do it again to go ahead."
 msgstr ""
 
-#: scripts/state/questing.gd:334
+#: scripts/state/questing.gd:347
 msgid "A feat done: %s. The %s is yours, for the shelf at home."
 msgstr ""
 
@@ -13080,7 +13088,7 @@ msgstr ""
 msgid "Hilda quenches it in the deep's black water: +1 %s."
 msgstr ""
 
-#: scripts/state/trade.gd:271
+#: scripts/state/trade.gd:281
 msgid "%s reached %d!"
 msgstr ""
 

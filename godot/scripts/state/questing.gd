@@ -118,8 +118,16 @@ func resolve_quests(giver_id: String) -> String:
 			return ""
 		if entry.is_empty():
 			# A hunt whose quarry already fell counts at once (PIX-165).
-			var already: bool = quest["objective"]["kind"] == "hunt" and quest["objective"]["named"] in owner.progression.hunted
-			entries[quest["id"]] = {"progress": int(quest["objective"]["count"]) if already else 0, "done": false}
+			var asked: Dictionary = quest["objective"]
+			var already: bool = asked["kind"] == "hunt" and asked["named"] in owner.progression.hunted
+			var progress := int(asked["count"]) if already else 0
+			# What the hero already made counts toward a crafting quest
+			# (PIX-231): a potion brewed before Vex was asked.
+			if asked["kind"] == "craft":
+				progress = mini(int(asked["count"]), int(owner.progression.crafted.get(asked["itemId"], 0)))
+				if progress >= int(asked["count"]):
+					owner.noted.emit([progress_line(quest, progress)])
+			entries[quest["id"]] = {"progress": progress, "done": false}
 			note_deliveries(false)
 			owner.save_now()
 			# The giver's words were just said; the line names the task (PIX-194).
@@ -268,6 +276,15 @@ func forget_deliveries() -> void:
 	_delivered.clear()
 
 
+## A quest's progress for the battle log: "Reeds: 2/3.", or once it's all
+## there, ready and to whom it's handed in.
+func progress_line(quest: Dictionary, have: int) -> String:
+	var count := int(quest["objective"]["count"])
+	if have >= count:
+		return Text.t("%s: ready to hand in to %s.") % [quest["name"], String(Npcs.by_id(quest["giver"], owner.settlement.settlers).get("name", quest["giver"]))]
+	return "%s: %d/%d." % [quest["name"], have, count]
+
+
 ## Deliveries' progress as their items come and go: "Reeds: 2/3." in the
 ## battle log, and "ready" once all are there. `announce` false only takes
 ## the measure (after a load, or as a quest is taken).
@@ -283,11 +300,7 @@ func note_deliveries(announce := true) -> void:
 		_delivered[quest["id"]] = have
 		if not announce or have <= had:
 			continue
-		var count := int(quest["objective"]["count"])
-		if have >= count:
-			lines.append(Text.t("%s: ready to hand in to %s.") % [quest["name"], String(Npcs.by_id(quest["giver"], owner.settlement.settlers).get("name", quest["giver"]))])
-		else:
-			lines.append("%s: %d/%d." % [quest["name"], have, count])
+		lines.append(progress_line(quest, have))
 	if not lines.is_empty():
 		owner.noted.emit(lines)
 
