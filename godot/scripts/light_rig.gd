@@ -3,6 +3,11 @@ extends Node
 ## and the hour (Lights' colours) on a CanvasModulate, and every light in the
 ## "lights" group brought up as it gets dark - fires flickering, the hero's
 ## lantern with them. With reduced motion, nothing flickers.
+##
+## And the open air's motion (PIX-223): the world's clock and the wind that
+## the shaders read (shaders/wind.gdshaderinc), and cloud shadows drifting
+## over the land by day. The clock stops while the game is paused; with
+## reduced motion it stops too, the wind drops and the clouds stand still.
 
 var world: Node
 var darkness: CanvasModulate
@@ -18,6 +23,15 @@ const GLOW_NIGHT := 0.9
 ## The light now and how dark it is (0 by day, 1 at night).
 var light := Color.WHITE
 var dark := 0.0
+## The cloud shadows, under the glow on its layer; the world's clock and
+## the wind's strength (1, or 0 with reduced motion).
+var clouds: ColorRect
+var time := 0.0
+var wind := 1.0
+## How dark a cloud's shadow is at its heart, in full day.
+const CLOUD_SHADE := 0.17
+## The clouds' noise: one seamless sheet, CLOUD_PX square.
+const CLOUD_PX := 256
 
 
 func _ready() -> void:
@@ -27,6 +41,14 @@ func _ready() -> void:
 	var layer := CanvasLayer.new()
 	layer.layer = GLOW_LAYER
 	world.add_child(layer)
+	clouds = ColorRect.new()
+	clouds.set_anchors_preset(Control.PRESET_FULL_RECT)
+	clouds.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var sky := ShaderMaterial.new()
+	sky.shader = preload("res://shaders/clouds.gdshader")
+	sky.set_shader_parameter("clouds", cloud_noise())
+	clouds.material = sky
+	layer.add_child(clouds)
 	bloom = ColorRect.new()
 	bloom.set_anchors_preset(Control.PRESET_FULL_RECT)
 	bloom.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -42,6 +64,26 @@ func give_lantern(player: Node2D) -> void:
 	player.add_child(lantern)
 
 
+## Seamless soft noise for the clouds: big puffs with ragged rims.
+static func cloud_noise() -> NoiseTexture2D:
+	var noise := FastNoiseLite.new()
+	noise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH
+	noise.frequency = 0.012
+	noise.fractal_octaves = 4
+	noise.seed = 7
+	var texture := NoiseTexture2D.new()
+	texture.width = CLOUD_PX
+	texture.height = CLOUD_PX
+	texture.seamless = true
+	texture.noise = noise
+	return texture
+
+
+## Whether the sky is over the map: not indoors, not under the ground.
+static func under_sky(map: MapData) -> bool:
+	return map != null and map.floor_level == 0 and map.style != "cave" and not PunyInterior.is_room(map.id)
+
+
 ## The light for the map the hero is on, at this hour.
 func light_for(map: MapData) -> Color:
 	if map == null:
@@ -55,13 +97,15 @@ func light_for(map: MapData) -> Color:
 	return Lights.outdoor(GameState.world.steps)
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	light = light_for(world.map)
 	darkness.color = light
 	dark = Lights.darkness(light)
 	bloom.visible = GameState.settings.glow
 	if bloom.visible:
 		(bloom.material as ShaderMaterial).set_shader_parameter("strength", lerpf(GLOW_DAY, GLOW_NIGHT, dark))
+	tick(delta)
+	_drift_clouds()
 	var still: bool = GameState.settings.reduce_motion
 	var t := Time.get_ticks_msec() / 1000.0
 	for node in get_tree().get_nodes_in_group("lights"):
@@ -72,3 +116,28 @@ func _process(_delta: float) -> void:
 			energy *= 1.0 + 0.07 * sin(t * 8.3 + phase) + 0.04 * sin(t * 21.7 + phase * 1.9)
 		lamp.energy = energy
 		lamp.visible = energy > 0.01
+
+
+## The world's clock and the wind, for the shaders: with reduced motion the
+## clock stops and the wind drops.
+func tick(delta: float) -> void:
+	var still: bool = GameState.settings.reduce_motion
+	if not still:
+		time += delta
+	wind = 0.0 if still else 1.0
+	RenderingServer.global_shader_parameter_set("world_time", time)
+	RenderingServer.global_shader_parameter_set("world_wind", wind)
+
+
+## The cloud shadows lie on the world under the camera, by day under the sky.
+func _drift_clouds() -> void:
+	var amount := (1.0 - dark) * CLOUD_SHADE if under_sky(world.map) else 0.0
+	clouds.visible = amount > 0.0
+	if not clouds.visible:
+		return
+	var view := get_viewport().get_visible_rect()
+	var to_world := get_viewport().get_canvas_transform().affine_inverse()
+	var sky := clouds.material as ShaderMaterial
+	sky.set_shader_parameter("view_origin", to_world * view.position)
+	sky.set_shader_parameter("view_size", to_world.basis_xform(view.size))
+	sky.set_shader_parameter("depth", amount)

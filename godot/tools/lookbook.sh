@@ -7,6 +7,7 @@
 #
 #   tools/lookbook.sh                 # lookbook/*.png and lookbook/sheet.png
 #   tools/lookbook.sh --perf          # and what each scene's frames cost
+#   tools/lookbook.sh --motion        # and each scene filmed: lookbook/motion/
 #   tools/lookbook.sh --desktop       # the desktop renderer, into lookbook-desktop/
 #   tools/lookbook.sh --out DIR       # somewhere else (a "before" folder)
 set -euo pipefail
@@ -18,6 +19,7 @@ while [ $# -gt 0 ]; do
   case "$1" in
     --desktop) method="forward_plus"; out="lookbook-desktop" ;;
     --perf) extra+=("perf") ;;
+    --motion) extra+=("motion") ;;
     --out) out="$2"; shift ;;
   esac
   shift

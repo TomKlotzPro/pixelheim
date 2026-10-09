@@ -2117,6 +2117,10 @@ msgid "Clearing a floor steps you back out of the door you entered"
 msgstr "Nettoyer un étage vous fait ressortir par la porte d'où vous êtes entré"
 
 #: assets/data/changelog.json
+msgid "Cloud shadows drift slowly over the open land by day, never indoors or underground"
+msgstr "L'ombre des nuages glisse lentement sur les terres le jour, jamais à l'intérieur ni sous terre"
+
+#: assets/data/changelog.json
 msgid "Come Home"
 msgstr "Rentrer au foyer"
 
@@ -4501,6 +4505,10 @@ msgid "The water cleared: translucent shallows over the riverbed, and a lip of f
 msgstr "L'eau s'est éclaircie : des hauts-fonds translucides au-dessus du lit de la rivière, et un liseré d'écume le long de chaque rive, là où l'eau rencontre la terre"
 
 #: assets/data/changelog.json
+msgid "The wind moves the world: trees, wheat and flowers sway, their tops more than their feet, as gusts roll across the land"
+msgstr "Le vent anime le monde : arbres, blé et fleurs se balancent, la cime plus que le pied, au gré des rafales qui traversent les terres"
+
+#: assets/data/changelog.json
 msgid "The world got redrawn: mottled grass, real cobblestone roads, rippled sand, sunlit tree canopies, and water with depth, crests and foam where it meets the land"
 msgstr "Le monde a été redessiné : herbe mouchetée, vraies routes pavées, sable ridé, frondaisons ensoleillées, et une eau qui a de la profondeur, des crêtes et de l'écume là où elle rencontre la terre"
 
@@ -4709,6 +4717,10 @@ msgid "Wanted"
 msgstr "Avis de recherche"
 
 #: assets/data/changelog.json
+msgid "Water comes alive: it swells with light, glints here and there, and foam laps along every shore"
+msgstr "L'eau prend vie : elle ondule de lumière, scintille çà et là, et l'écume vient lécher chaque rive"
+
+#: assets/data/changelog.json
 msgid "Welcome Home"
 msgstr "Bienvenue chez vous"
 
@@ -4723,6 +4735,14 @@ msgstr "Quand toutes les voix sont prises, les sons qui comptent (une blessure, 
 #: assets/data/changelog.json
 msgid "Win wild battles to forage: herbs in the forest, reeds in the marsh, ember shards in the ash"
 msgstr "Gagnez des combats dans la nature pour faire de la cueillette : des herbes en forêt, des roseaux dans le marais, des éclats de braise dans les cendres"
+
+#: assets/data/changelog.json
+msgid "Wind and Water"
+msgstr "Le Vent et l'Eau"
+
+#: assets/data/changelog.json
+msgid "With Reduce motion on, the wind drops and the water and the clouds hold still"
+msgstr "Avec « Réduire les animations », le vent tombe, et l'eau et les nuages s'immobilisent"
 
 #: assets/data/changelog.json
 msgid "Worn gear got a fitting: the helm sits on the crown instead of floating, and equipped BODY ARMOR finally shows on the torso"
