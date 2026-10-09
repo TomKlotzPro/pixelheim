@@ -58,10 +58,15 @@ func _next() -> void:
 		# Standing on the dock's top edge, however many lines it takes.
 		caption.size = Vector2(1000, 0)
 		caption.position.y = CAPTION_FOOT - caption.get_minimum_size().y
-		Sound.play("coin")
+		# A new age is bigger news than a building (PIX-211): it evolves,
+		# raising dust on the square.
+		Sound.play(stop.get("sound", "coin"))
+		if stop.get("dust", false):
+			for spot: Vector2 in [Vector2(-20, 6), Vector2(18, -4), Vector2(0, 14), Vector2(-6, -12)]:
+				world.dust(stop["at"] + spot)
 	)
 	# Long enough to read the line (the dawn's are long).
-	_tour.tween_interval(clampf(String(stop["line"]).length() / 22.0, 2.2, 6.0))
+	_tour.tween_interval(UiStyle.reading_seconds(stop["line"]))
 	_tour.tween_callback(_next)
 
 

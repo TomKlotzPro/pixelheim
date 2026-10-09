@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.155.0",
+      "date": "2026-10-09",
+      "codename": "Big Moments",
+      "notes": [
+        "A level gained bursts in gold on the hero with LEVEL UP over their head, the experience line flashes, and the news goes on the message plate instead of slipping into the battle log",
+        "A fine or epic drop's name rises over the fallen foe in its colour",
+        "Messages wait their turn instead of cutting each other off, and stay long enough to read (longer with large text); a finished quest sounds its victory",
+        "A town's new age is heralded with a flourish and dust on the square, and each new map fades in from the dark instead of cutting (not with reduced motion)"
+      ]
+    },
+    {
       "version": "0.154.0",
       "date": "2026-10-09",
       "codename": "Readable Danger",

@@ -370,6 +370,13 @@ func _set_bar(key: String, tag: String, value: int, most: int, colors: Array) ->
 	bar["value"].text = "%d/%d" % [value, most]
 
 
+## A level gained (PIX-211): the experience line flashes bright and settles.
+func flash_xp() -> void:
+	var flash := xp_fill.create_tween()
+	xp_track.modulate = Color(1.8, 1.7, 1.2)
+	flash.tween_property(xp_track, "modulate", Color.WHITE, 0.9).set_ease(Tween.EASE_IN)
+
+
 func _set_xp(xp: int, to_next: int) -> void:
 	xp_fill.size.x = floorf(xp_track.size.x * clampf(float(xp) / maxi(1, to_next), 0.0, 1.0) / 2.0) * 2.0
 

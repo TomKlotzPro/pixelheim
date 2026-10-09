@@ -295,6 +295,9 @@ func _run_test_harness() -> void:
 		if args.has("walk-path"):
 			world.get_children().filter(func(node: Node) -> bool: return node.has_method("_walk"))[0]._walk()
 			await get_tree().create_timer(0.3).timeout
+	if args.has("levelup"):
+		# A breath short of the next level (PIX-211): the first kill lifts it.
+		GameState.hero.xp = GameState.hero.xp_to_next - 1
 	var nodes_index := args.find("--nodes")
 	if nodes_index >= 0:
 		# Skills already learned (PIX-190): `--nodes a,b,c`, then onto the dock.

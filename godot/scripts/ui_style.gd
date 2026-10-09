@@ -107,6 +107,13 @@ static func reading(font_size: int) -> int:
 	return BIG if GameState.settings.large_text else font_size
 
 
+## How long a passing line stays to be read (PIX-211): fifteen characters a
+## second, the subtitle norm, never under 2.5 s nor (before large text's
+## half again) over 12 s.
+static func reading_seconds(text: String) -> float:
+	return clampf(text.length() / 15.0, 2.5, 12.0) * (1.5 if GameState.settings.large_text else 1.0)
+
+
 ## A label in the bold cut (names, amounts, what a row is).
 static func strong(text: String, font_size: int, color: Color, at := Vector2.ZERO) -> Label:
 	var node := label(text, font_size, color, at)

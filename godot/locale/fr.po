@@ -1633,12 +1633,20 @@ msgid "A dozen new items: bows, war hammers, wands, cloaks, tower shields..."
 msgstr "Une douzaine de nouveaux objets : arcs, marteaux de guerre, baguettes, capes, pavois..."
 
 #: assets/data/changelog.json
+msgid "A fine or epic drop's name rises over the fallen foe in its colour"
+msgstr "Le nom d'un butin raffiné ou épique s'élève au-dessus de l'ennemi tombé, dans sa couleur"
+
+#: assets/data/changelog.json
 msgid "A foe gives you longer to see its bite coming, and shows it: it crouches with a red glint and a sound. With Clear warnings on, a band on the ground marks where the bite lands"
 msgstr "Un ennemi vous laisse plus de temps pour voir venir sa morsure, et la montre : il se ramasse avec une lueur rouge et un son. Avec les Avertissements clairs, une bande au sol marque où elle tombera"
 
 #: assets/data/changelog.json
 msgid "A hero from before keeps everything: whoever has cleared a floor finds the gate open, and Maren goes straight to her next ask"
 msgstr "Un ancien héros conserve tout : qui a déjà nettoyé un étage trouve la porte ouverte, et Maren passe directement à sa demande suivante"
+
+#: assets/data/changelog.json
+msgid "A level gained bursts in gold on the hero with LEVEL UP over their head, the experience line flashes, and the news goes on the message plate instead of slipping into the battle log"
+msgstr "Un niveau gagné éclate en or sur le héros avec NIVEAU SUPÉRIEUR au-dessus de sa tête, la ligne d'expérience s'illumine, et la nouvelle s'affiche sur le bandeau des messages au lieu de se perdre dans le journal de combat"
 
 #: assets/data/changelog.json
 msgid "A live stats panel beside the doll: ATK, DEF and every granted bonus, updating as you dress"
@@ -1679,6 +1687,10 @@ msgstr "Un nouvel habitant qui a quelque chose à demander vous soigne ou joue t
 #: assets/data/changelog.json
 msgid "A small-screen pass: panels fit, the HUD compacts, and nothing overlaps at any width"
 msgstr "Un passage pour les petits écrans : les panneaux tiennent, l'interface se resserre, et rien ne se chevauche, quelle que soit la largeur"
+
+#: assets/data/changelog.json
+msgid "A town's new age is heralded with a flourish and dust on the square, and each new map fades in from the dark instead of cutting (not with reduced motion)"
+msgstr "Le nouvel âge d'une ville s'annonce par une fanfare et de la poussière sur la place, et chaque nouvelle carte sort de l'obscurité au lieu d'apparaître d'un coup (sauf avec les animations réduites)"
 
 #: assets/data/changelog.json
 msgid "AGAINST THE CLOCK: Pell's canary can't breathe the shafts' bad air for long. Once she's in your pack you have a minute to get her to Pell - the clock shows top right - or she flies back to the west gallery and you fetch her again"
@@ -1839,6 +1851,10 @@ msgstr "Sous le quart de vos points de vie, la barre de vie bat, et en combat vo
 #: assets/data/changelog.json
 msgid "Beyond the Ring"
 msgstr "Au-delà du cercle"
+
+#: assets/data/changelog.json
+msgid "Big Moments"
+msgstr "Les grands moments"
 
 #: assets/data/changelog.json
 msgid "Black Iron"
@@ -2783,6 +2799,10 @@ msgstr "Les matériaux ne pèsent rien et se vendent pour trois sous - concoctez
 #: assets/data/changelog.json
 msgid "Merchant Odo and Innkeeper Sela finally have faces"
 msgstr "Odo le marchand et Sela l'aubergiste ont enfin un visage"
+
+#: assets/data/changelog.json
+msgid "Messages wait their turn instead of cutting each other off, and stay long enough to read (longer with large text); a finished quest sounds its victory"
+msgstr "Les messages attendent leur tour au lieu de se couper la parole, et restent le temps d'être lus (plus longtemps avec le grand texte) ; une quête terminée fait retentir sa victoire"
 
 #: assets/data/changelog.json
 msgid "Mirror Mirror"
@@ -12528,45 +12548,53 @@ msgstr "COMMANDÉ"
 msgid "Already commissioned."
 msgstr "Déjà commandé."
 
-#: scripts/ui_style.gd:458
+#: scripts/ui_style.gd:465
 msgid "Arrows"
 msgstr "Flèches"
 
-#: scripts/world.gd:1423
+#: scripts/world.gd:1065
+msgid "A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it."
+msgstr "Un établi pour cette étagère : %d or. Il compte comme un niveau de métier en plus quand vous fabriquez chez vous. {key:interact} à nouveau pour l'acheter."
+
+#: scripts/world.gd:1492
 msgid "Five lanterns on the square, one for each of the five who climbed. Tonight the %s remembers them - and %s."
 msgstr "Cinq lanternes sur la place, une pour chacun des cinq qui ont gravi la montagne. Ce soir, Pixelheim, désormais %s, se souvient d'eux - et salue %s."
 
-#: scripts/world.gd:1424
+#: scripts/world.gd:1493
 msgid "Pixelheim, a %s raised from the ashes. Tonight it celebrates %s."
 msgstr "Pixelheim, des cendres au rang de %s. Ce soir, on y fête %s."
 
-#: scripts/world.gd:1510
+#: scripts/world.gd:1579
 msgid "%s: built."
 msgstr "%s : chantier terminé."
 
-#: scripts/world.gd:1514
+#: scripts/world.gd:1583
 msgid "Pixelheim is a %s now."
 msgstr "Pixelheim passe au rang de %s."
 
-#: scripts/world.gd:1519
+#: scripts/world.gd:1589
 msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
 msgstr "Et aujourd'hui, on fait la fête : des étals sur la place, et un lancer d'anneaux avec un lot pour le meilleur lancer."
 
-#: scripts/world.gd:1618
+#: scripts/world.gd:1688
 msgid "%s  %d:%02d"
 msgstr "%s  %d:%02d"
 
-#: scripts/world.gd:1844
+#: scripts/world.gd:1915
 msgid "Next"
 msgstr "Ensuite"
 
-#: scripts/world.gd:310
+#: scripts/world.gd:318
 msgid "The pack is scattered. Another comes once you've walked a good way, or after a night's rest."
 msgstr "La meute est dispersée. Une autre reviendra quand vous aurez bien marché, ou après une nuit de repos."
 
-#: scripts/world.gd:496
+#: scripts/world.gd:520
 msgid "No map reaches this deep."
 msgstr "Aucune carte ne va aussi profond."
+
+#: scripts/world.gd:586
+msgid "LEVEL UP"
+msgstr "NIVEAU SUPÉRIEUR"
 
 #: scripts/world.gd:74
 msgid "Level up"
@@ -12584,21 +12612,17 @@ msgstr "Quête acceptée"
 msgid "Quest complete"
 msgstr "Quête terminée"
 
-#: scripts/world.gd:742
+#: scripts/world.gd:789
 msgid "{epithet} {name}"
 msgstr "{name} {epithet}"
 
-#: scripts/world.gd:910
+#: scripts/world.gd:976
 msgid "Only cinders where the house stood. The board on the square can change that."
 msgstr "Rien que des cendres là où se dressait la maison. Le tableau de la place peut y remédier."
 
-#: scripts/world.gd:915
+#: scripts/world.gd:981
 msgid "The deed costs %d gold. {key:interact} again to sign it."
 msgstr "Le titre de propriété coûte %d or. {key:interact} à nouveau pour le signer."
-
-#: scripts/world.gd:999
-msgid "A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it."
-msgstr "Un établi pour cette étagère : %d or. Il compte comme un niveau de métier en plus quand vous fabriquez chez vous. {key:interact} à nouveau pour l'acheter."
 
 #: tools/i18n.py
 msgid "%dg"
