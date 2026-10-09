@@ -103,6 +103,8 @@ func _act() -> void:
 		return
 	var row := rows[selected]
 	status.text = row["action"].call() if row["enabled"] else String(row.get("why", "Not possible right now."))
+	if not row["enabled"]:
+		Sound.play_ui("deny")
 	_refresh()
 
 

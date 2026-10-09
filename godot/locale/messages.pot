@@ -1801,6 +1801,10 @@ msgid "At the Bench"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Audio That Breathes"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Audit phase two, still under the floorboards: ten panels now share one modal frame instead of hand-rolling their own - Escape, the close button and the gold line behave identically everywhere"
 msgstr ""
 
@@ -1890,6 +1894,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Buy the street: Odo's Emporium (2,500g), Vex's Workshop (3,500g) and Hilda's Smithy (4,000g) each sell their deed - ask the keeper behind the counter"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Buying, spending a stat point, a refusal, turning a dialogue's page, taking a quest and an ailment landing are all heard now, and every screen sounds as it opens and closes"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3497,6 +3505,10 @@ msgid "Smithing shaves the Forge's prices and, at level 5, unlocks the +8 master
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Sounds are never quite the same twice, a little higher or lower, louder or softer; a flurry of hits sounds as one, and footsteps are softer, left foot and right"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Space no longer swings your sword as you close a conversation, and I closes the pack for good"
 msgstr ""
 
@@ -4470,6 +4482,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "What's new is on the title menu now, keys and gamepads included, with a NEW badge until you've read the latest notes"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "When every voice is busy, the sounds that matter (a hurt, a level, a victory) still get through"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -10376,11 +10392,11 @@ msgstr ""
 msgid "skip"
 msgstr ""
 
-#: scripts/dialogue_box.gd:148
+#: scripts/dialogue_box.gd:149
 msgid "%d  %s"
 msgstr ""
 
-#: scripts/dialogue_box.gd:149
+#: scripts/dialogue_box.gd:150
 msgid "not yet"
 msgstr ""
 
@@ -10464,7 +10480,7 @@ msgstr ""
 msgid "blocked"
 msgstr ""
 
-#: scripts/enemy.gd:413
+#: scripts/enemy.gd:414
 msgid "%s is afflicted by %s!"
 msgstr ""
 
@@ -11184,43 +11200,43 @@ msgstr ""
 msgid "dodged"
 msgstr ""
 
-#: scripts/player.gd:252
+#: scripts/player.gd:253
 msgid "You are afflicted by %s!"
 msgstr ""
 
-#: scripts/player.gd:304
+#: scripts/player.gd:305
 msgid "No skill on that key yet. Learn more, or set the keys, in Skills."
 msgstr ""
 
-#: scripts/player.gd:315
+#: scripts/player.gd:318
 msgid "No foe in reach for %s."
 msgstr ""
 
-#: scripts/player.gd:332
+#: scripts/player.gd:336
 msgid "All ailments are purged!"
 msgstr ""
 
-#: scripts/player.gd:335
+#: scripts/player.gd:339
 msgid "%s restores %d HP."
 msgstr ""
 
-#: scripts/player.gd:346
+#: scripts/player.gd:350
 msgid "%s hits %d foes for %d damage!"
 msgstr ""
 
-#: scripts/player.gd:348
+#: scripts/player.gd:352
 msgid "%s hits %s for %d damage!"
 msgstr ""
 
-#: scripts/rankup_screen.gd:105
+#: scripts/rankup_screen.gd:110
 msgid "The path forks      A/D  choose      E  walk this path      Esc  choose later, in Skills"
 msgstr ""
 
-#: scripts/rankup_screen.gd:120
+#: scripts/rankup_screen.gd:125
 msgid "Signature: %s"
 msgstr ""
 
-#: scripts/rankup_screen.gd:56
+#: scripts/rankup_screen.gd:61
 msgid "+1 bonus skill point"
 msgstr ""
 
@@ -11420,7 +11436,7 @@ msgstr ""
 msgid "Your web game hero %s, %d gold."
 msgstr ""
 
-#: scripts/screen.gd:106
+#: scripts/screen.gd:115
 msgid "Back"
 msgstr ""
 
@@ -11532,7 +11548,7 @@ msgstr ""
 msgid "Salvage"
 msgstr ""
 
-#: scripts/shop_screen.gd:367
+#: scripts/shop_screen.gd:373
 msgid "Sold for %dg."
 msgstr ""
 
@@ -11540,67 +11556,67 @@ msgstr ""
 msgid "Reforge"
 msgstr ""
 
-#: scripts/shop_screen.gd:384
+#: scripts/shop_screen.gd:390
 msgid "That takes %s %d."
 msgstr ""
 
-#: scripts/shop_screen.gd:390
+#: scripts/shop_screen.gd:396
 msgid "A lucky brew: 2x %s! %s"
 msgstr ""
 
-#: scripts/shop_screen.gd:392
+#: scripts/shop_screen.gd:398
 msgid "Made %s. %s"
 msgstr ""
 
-#: scripts/shop_screen.gd:398
+#: scripts/shop_screen.gd:404
 msgid "Nothing to sell. Worn gear stays on your back."
 msgstr ""
 
-#: scripts/shop_screen.gd:400
+#: scripts/shop_screen.gd:406
 msgid "Bring me steel to work with."
 msgstr ""
 
-#: scripts/shop_screen.gd:402
+#: scripts/shop_screen.gd:408
 msgid "Nothing to break down. Worn gear stays on your back."
 msgstr ""
 
-#: scripts/shop_screen.gd:405
+#: scripts/shop_screen.gd:411
 msgid "Nothing here yet."
 msgstr ""
 
-#: scripts/shop_screen.gd:422
+#: scripts/shop_screen.gd:428
 msgid "Damage %d"
 msgstr ""
 
-#: scripts/shop_screen.gd:424
+#: scripts/shop_screen.gd:430
 msgid "Scales with %s"
 msgstr ""
 
-#: scripts/shop_screen.gd:426
+#: scripts/shop_screen.gd:432
 msgid "Armor %d"
 msgstr ""
 
-#: scripts/shop_screen.gd:435
+#: scripts/shop_screen.gd:441
 msgid "Restores %d HP"
 msgstr ""
 
-#: scripts/shop_screen.gd:437
+#: scripts/shop_screen.gd:443
 msgid "Restores %d MP"
 msgstr ""
 
-#: scripts/shop_screen.gd:438
+#: scripts/shop_screen.gd:444
 msgid "Weight %d"
 msgstr ""
 
-#: scripts/shop_screen.gd:443
+#: scripts/shop_screen.gd:449
 msgid "Needs:"
 msgstr ""
 
-#: scripts/shop_screen.gd:446
+#: scripts/shop_screen.gd:452
 msgid "  %d x %s  (have %d)"
 msgstr ""
 
-#: scripts/shop_screen.gd:453
+#: scripts/shop_screen.gd:459
 msgid "%s level %d - you are %s"
 msgstr ""
 
@@ -11808,15 +11824,15 @@ msgstr ""
 msgid "Path of %s"
 msgstr ""
 
-#: scripts/sound.gd:45
+#: scripts/sound.gd:61
 msgid "Ambience"
 msgstr ""
 
-#: scripts/sound.gd:45
+#: scripts/sound.gd:61
 msgid "Music"
 msgstr ""
 
-#: scripts/sound.gd:49
+#: scripts/sound.gd:65
 msgid "Master"
 msgstr ""
 
@@ -12460,7 +12476,7 @@ msgstr ""
 msgid "No stat points to spend. Level up to earn more."
 msgstr ""
 
-#: scripts/stats_screen.gd:61
+#: scripts/stats_screen.gd:62
 msgid "%s %d: %s"
 msgstr ""
 
@@ -12516,27 +12532,27 @@ msgstr ""
 msgid "Figure"
 msgstr ""
 
-#: scripts/title_screen.gd:143
+#: scripts/title_screen.gd:148
 msgid "Continue  %s, Lv %d"
 msgstr ""
 
-#: scripts/title_screen.gd:144
+#: scripts/title_screen.gd:149
 msgid "New Game"
 msgstr ""
 
-#: scripts/title_screen.gd:151
+#: scripts/title_screen.gd:156
 msgid "This browser window won't keep your saves (a private window?). Your hero lasts only while it's open."
 msgstr ""
 
-#: scripts/title_screen.gd:156
+#: scripts/title_screen.gd:161
 msgid "v%s  ·  What's new"
 msgstr ""
 
-#: scripts/title_screen.gd:261
+#: scripts/title_screen.gd:266
 msgid "NEW"
 msgstr ""
 
-#: scripts/title_screen.gd:88
+#: scripts/title_screen.gd:93
 msgid "Fifteen floors. One dragon. Worse things below."
 msgstr ""
 
@@ -12624,47 +12640,47 @@ msgstr ""
 msgid "Arrows"
 msgstr ""
 
-#: scripts/world.gd:1066
+#: scripts/world.gd:1058
 msgid "A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it."
 msgstr ""
 
-#: scripts/world.gd:1493
+#: scripts/world.gd:1485
 msgid "Five lanterns on the square, one for each of the five who climbed. Tonight the %s remembers them - and %s."
 msgstr ""
 
-#: scripts/world.gd:1494
+#: scripts/world.gd:1486
 msgid "Pixelheim, a %s raised from the ashes. Tonight it celebrates %s."
 msgstr ""
 
-#: scripts/world.gd:1580
+#: scripts/world.gd:1572
 msgid "%s: built."
 msgstr ""
 
-#: scripts/world.gd:1584
+#: scripts/world.gd:1576
 msgid "Pixelheim is a %s now."
 msgstr ""
 
-#: scripts/world.gd:1590
+#: scripts/world.gd:1582
 msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
 msgstr ""
 
-#: scripts/world.gd:1689
+#: scripts/world.gd:1681
 msgid "%s  %d:%02d"
 msgstr ""
 
-#: scripts/world.gd:1917
+#: scripts/world.gd:1909
 msgid "Next"
 msgstr ""
 
-#: scripts/world.gd:318
+#: scripts/world.gd:310
 msgid "The pack is scattered. Another comes once you've walked a good way, or after a night's rest."
 msgstr ""
 
-#: scripts/world.gd:520
+#: scripts/world.gd:512
 msgid "No map reaches this deep."
 msgstr ""
 
-#: scripts/world.gd:587
+#: scripts/world.gd:579
 msgid "LEVEL UP"
 msgstr ""
 
@@ -12684,15 +12700,15 @@ msgstr ""
 msgid "Quest complete"
 msgstr ""
 
-#: scripts/world.gd:790
+#: scripts/world.gd:782
 msgid "{epithet} {name}"
 msgstr ""
 
-#: scripts/world.gd:977
+#: scripts/world.gd:969
 msgid "Only cinders where the house stood. The board on the square can change that."
 msgstr ""
 
-#: scripts/world.gd:982
+#: scripts/world.gd:974
 msgid "The deed costs %d gold. {key:interact} again to sign it."
 msgstr ""
 

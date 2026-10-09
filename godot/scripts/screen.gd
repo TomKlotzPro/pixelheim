@@ -36,8 +36,17 @@ func _ready() -> void:
 	offset = Touch.center_offset(self)
 	_hold()
 	_open()
+	# Every screen eases in and is heard opening and closing (PIX-212: those
+	# opened from another screen were silent), but the two with entrances of
+	# their own.
+	if _eases_in():
+		UiStyle.enter(self)
 	if Touch.enabled() and _wants_tap_bar():
 		_tap_bar()
+
+
+func _eases_in() -> bool:
+	return true
 
 
 ## Builds the screen.

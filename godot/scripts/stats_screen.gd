@@ -58,6 +58,7 @@ func _rows() -> Array[Dictionary]:
 
 func _spend(stat: String) -> String:
 	GameState.spend_stat_point(stat)
+	Sound.play_ui("confirm")
 	return Text.t("%s %d: %s") % [Text.t(Skills.ABBR[stat]), GameState.hero.stats[stat], Skills.readout(stat, GameState.hero, GameState.pack)]
 
 

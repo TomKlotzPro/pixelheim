@@ -249,6 +249,7 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null) -> void:
 	world.shake(3.0, 0.2)
 	world.hit_stop(0.05)
 	if hp > 0 and ailments.inflict(infliction, GameState.roll, HeroRules.passives(GameState.hero)):
+		Sound.play_ui("ail")
 		world.log_line(Text.t("You are afflicted by %s!") % Ailments.label(infliction["kind"]))
 		_show_ailment()
 	velocity = (global_position - from).normalized() * 180
@@ -302,17 +303,20 @@ func cast(index: int) -> void:
 	var skills := Skills.docked(GameState.hero)
 	if index >= skills.size() or skills[index].is_empty():
 		world._flash_message("No skill on that key yet. Learn more, or set the keys, in Skills.")
+		Sound.play_ui("deny")
 		return
 	var skill: Dictionary = skills[index]
 	var block := Skills.cast_block(GameState.hero, skill)
 	if block != "":
 		world._flash_message(block)
+		Sound.play_ui("deny")
 		return
 	var target: Node = null
 	if skill["kind"] == "damage":
 		target = _nearest_foe()
 		if target == null:
 			world._flash_message(Text.t("No foe in reach for %s.") % skill["name"])
+			Sound.play_ui("deny")
 			return
 		face(target.global_position - global_position)
 	GameState.pay_for_skill(skill)

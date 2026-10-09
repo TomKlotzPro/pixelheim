@@ -541,12 +541,11 @@ static func enter(layer: CanvasLayer) -> void:
 		return
 	Sound.play_ui("open")
 	layer.tree_exiting.connect(Sound.play_ui.bind("close"), CONNECT_ONE_SHOT)
-	if GameState.settings.reduce_motion:
+	var items := layer.get_children().filter(func(child: Node) -> bool: return child is CanvasItem)
+	if GameState.settings.reduce_motion or items.is_empty():
 		return
 	var tween := layer.create_tween().set_parallel()
-	for child in layer.get_children():
-		if not child is CanvasItem:
-			continue
+	for child: Node in items:
 		var item := child as CanvasItem
 		item.modulate.a = 0.0
 		tween.tween_property(item, "modulate:a", 1.0, 0.14)

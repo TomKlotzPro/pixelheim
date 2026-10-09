@@ -23,6 +23,11 @@ var shine: ColorRect
 var version := ""
 
 
+## Its own entrance, not the screens' ease (PIX-212).
+func _eases_in() -> bool:
+	return false
+
+
 func _open() -> void:
 	layer = 7
 	Sound.play_track("title")
