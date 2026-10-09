@@ -280,10 +280,22 @@ func _chase(to_player: Vector2, delta: float) -> void:
 		if tell_left < 0:
 			_bite(to_player)
 	elif to_player.length() < CONTACT_RADIUS and can_bite:
-		tell_left = float(Packs.rules()["biteTellSeconds"])
-		var flash := sprite.create_tween()
-		flash.tween_property(sprite, "modulate", Color(1.7, 1.7, 1.5), tell_left * 0.5)
-		flash.tween_property(sprite, "modulate", Color.WHITE, tell_left * 0.5)
+		_tell_bite(to_player)
+
+
+## The bite's tell (PIX-210): it crouches to spring with a red glint and a
+## blip; under clear warnings a band on the ground shows where it will land.
+func _tell_bite(toward: Vector2) -> void:
+	tell_left = float(Packs.rules()["biteTellSeconds"])
+	var rest := sprite.scale
+	var tell := sprite.create_tween().set_parallel()
+	tell.tween_property(sprite, "modulate", Color(1.8, 0.75, 0.6), tell_left * 0.6)
+	tell.tween_property(sprite, "scale", rest * Vector2(1.12, 0.88), tell_left * 0.6)
+	tell.chain().tween_property(sprite, "modulate", Color.WHITE, tell_left * 0.4)
+	tell.tween_property(sprite, "scale", rest, tell_left * 0.4)
+	Sound.play_ui("tell")
+	if GameState.settings.clear_warnings:
+		Telegraph.mark(world, Telegraph.band(global_position, global_position + toward, BITE_REACH, 12.0), tell_left, Callable(), false)
 
 
 ## Where the chase goes: the hero, or the wagon when it's the nearer.
@@ -386,7 +398,10 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null, crit := fa
 		tween.tween_property(sprite, "modulate", Color.WHITE, 0.12)
 	if dying:
 		Sound.play_ui("kill")
-	world.hit_stop(KILL_STOP if dying else HIT_STOP)
+	if dying and Bestiary.is_boss(fighter["id"]):
+		world.boss_fell()
+	else:
+		world.hit_stop(KILL_STOP if dying else HIT_STOP)
 	world.shake(2.5 if dying or crit else 1.5, 0.1)
 	# Struck from anywhere, it turns on the hero at once.
 	if not dying and mode != "chase":
@@ -402,8 +417,9 @@ func _lose(damage: int, color: Color, crit := false) -> void:
 	fighter["hp"] = maxi(0, int(fighter["hp"]) - damage)
 	world.float_number(damage, global_position + Vector2(0, -18), color, crit)
 	health_bar.size.x = bar_width * fighter["hp"] / fighter["maxHp"]
-	health_bar.visible = true
-	health_bar_back.visible = true
+	# A boss's health is on the boss bar across the screen's top (PIX-210).
+	health_bar.visible = not world.fights_like_boss(self)
+	health_bar_back.visible = health_bar.visible
 	if fighter["hp"] == 0:
 		_die()
 

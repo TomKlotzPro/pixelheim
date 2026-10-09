@@ -16,6 +16,10 @@ const BARS := {
 	"en": [Color("5cbf4a"), Color("a6ea8a")],
 	"xp": [Color("e8b33a"), Color("ffe08a")],
 }
+## Below a quarter of health (PIX-210) the bar beats like a heart (held
+## bright under reduced motion) and, in a fight, a quiet heartbeat sounds.
+const LOW_HP := 0.25
+const HEARTBEAT_S := 0.9
 const SCREENS := [
 	["inventory", "Pack"], ["map", "Map"], ["stats", "Stats"],
 	["skills", "Skills"], ["codex", "Codex"], ["journal", "Journal"],
@@ -35,6 +39,8 @@ var menu_button: Button
 var menu: PanelContainer
 var menu_rows := {}
 var _shown: Array = []
+var _beat_left := 0.0
+var _low := false
 
 
 func _ready() -> void:
@@ -250,7 +256,8 @@ func _toggle_menu() -> void:
 	_place()
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	_warn_low_hp(delta)
 	# The skills change state on their own (a cast spent, energy back), so the
 	# slots follow every frame, redrawn only when something changed.
 	var hero := GameState.hero
@@ -276,6 +283,35 @@ func _process(_delta: float) -> void:
 		art.texture = icon
 		mark.text = _initials(skills[index]["name"]) if has and icon == null else ""
 		slot.tooltip_text = _describe(skills[index]) if has else ""
+
+
+static func low_hp(hp: int, most: int) -> bool:
+	return hp > 0 and hp < most * LOW_HP
+
+
+func _warn_low_hp(delta: float) -> void:
+	var hero := GameState.hero
+	var fill: ColorRect = bars["hp"]["fill"]
+	var value: Label = bars["hp"]["value"]
+	var low := low_hp(hero.hp, int(hero.stats["maxHp"]))
+	if low != _low:
+		_low = low
+		value.add_theme_color_override("font_color", BARS["hp"][1] if low else UiStyle.CREAM)
+	if not low:
+		fill.modulate = Color.WHITE
+		_beat_left = 0.0
+		return
+	var bright := Color(1.6, 1.5, 1.5)
+	if GameState.settings.reduce_motion:
+		fill.modulate = bright
+	else:
+		var beat := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 1000.0 * TAU / HEARTBEAT_S)
+		fill.modulate = Color.WHITE.lerp(bright, beat)
+	if world != null and world.in_fight():
+		_beat_left -= delta
+		if _beat_left <= 0.0:
+			_beat_left = HEARTBEAT_S
+			Sound.play_ui("heart")
 
 
 ## "Power Strike" -> "PS": what a slot shows until the skills have icons.

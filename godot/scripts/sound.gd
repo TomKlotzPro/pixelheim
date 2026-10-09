@@ -35,6 +35,8 @@ var _bed: AudioStreamPlayer
 var _bed_fade: Tween
 ## What a story theme hands over to when it ends ("" - the place's music).
 var _after_theme := ""
+## When each made sound last played (msec).
+var _played_at := {}
 
 
 func _ready() -> void:
@@ -103,15 +105,25 @@ const UI_SOUNDS := {
 	"swing": [[0.05, "noise", 0.0, 0.0, 0.05], [0.03, "triangle", 420.0, 280.0, 0.04]],
 	"cast": [[0.05, "triangle", 520.0, 1040.0, 0.08], [0.06, "square", 1040.0, 1300.0, 0.03]],
 	"kill": [[0.04, "square", 180.0, 90.0, 0.09], [0.08, "noise", 0.0, 0.0, 0.07]],
+	# Danger (PIX-210): a foe gathering to bite, a mark drawn on the ground
+	# and its strike, and the heart of a hero near the end.
+	"tell": [[0.05, "square", 880.0, 1320.0, 0.04]],
+	"mark": [[0.06, "square", 330.0, 330.0, 0.05], [0.07, "square", 247.0, 247.0, 0.05]],
+	"slam": [[0.03, "square", 130.0, 60.0, 0.10], [0.10, "noise", 0.0, 0.0, 0.08]],
+	"heart": [[0.045, "triangle", 120.0, 80.0, 0.16], [0.05, "square", 0.0, 0.0, 0.0], [0.045, "triangle", 110.0, 70.0, 0.11]],
 }
 const UI_RATE := 22050
 
 
-## One of the made sounds (the pages' open, tick and close; the fight's
-## swing, cast and kill).
+## One of the made sounds (the pages' open, tick and close; the fight's).
+## The same one twice at once (three marks drawn together) sounds once.
 func play_ui(name: String) -> void:
 	if not UI_SOUNDS.has(name):
 		return
+	var now := Time.get_ticks_msec()
+	if now - int(_played_at.get(name, -1000)) < 40:
+		return
+	_played_at[name] = now
 	var key := "ui:" + name
 	if not _streams.has(key):
 		_streams[key] = _synth(UI_SOUNDS[name])

@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.154.0",
+      "date": "2026-10-09",
+      "codename": "Readable Danger",
+      "notes": [
+        "A foe gives you longer to see its bite coming, and shows it: it crouches with a red glint and a sound. With Clear warnings on, a band on the ground marks where the bite lands",
+        "Below a quarter of your health, the health bar beats, and in a fight you hear your heart",
+        "Bosses and named monsters carry a bar across the top of the screen, notched where a boss's next phase begins. Each phase is roared, marks on the ground are heard as they appear and as they strike, and a boss falls in slow motion, with a flash and a silence before the victory sting"
+      ]
+    },
+    {
       "version": "0.153.0",
       "date": "2026-10-09",
       "codename": "Hit Feel",

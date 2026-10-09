@@ -12,7 +12,9 @@ const EDGE := Color(1.0, 0.62, 0.2, 0.95)
 
 ## Draws `shape` over the ground (under everyone standing on it) and strikes
 ## after `tell` seconds. Returns the mark (freed by itself after the strike).
-static func mark(world: Node, shape: PackedVector2Array, tell: float, strike: Callable) -> Polygon2D:
+## A mark is heard as it's drawn and as it strikes (PIX-210), unless `heard`
+## is false (a bite's band under clear warnings, whose foe blips its own tell).
+static func mark(world: Node, shape: PackedVector2Array, tell: float, strike: Callable, heard := true) -> Polygon2D:
 	var shown := Polygon2D.new()
 	shown.polygon = shape
 	shown.color = COLOR
@@ -38,12 +40,16 @@ static func mark(world: Node, shape: PackedVector2Array, tell: float, strike: Ca
 	shown.add_child(edge)
 	world.add_child(shown)
 	world.move_child(shown, 3)
+	if heard:
+		Sound.play_ui("mark")
 	var pulse := shown.create_tween()
 	pulse.tween_property(shown, "color:a", 0.6, tell * 0.5)
 	pulse.tween_property(shown, "color:a", 0.35, tell * 0.5)
 	pulse.tween_callback(func() -> void:
 		if strike.is_valid():
 			strike.call(shown.polygon)
+		if heard:
+			Sound.play_ui("slam")
 		var flash := shown.create_tween()
 		flash.tween_property(shown, "color", Color(1, 1, 1, 0.95) if clear else Color(1.0, 0.75, 0.3, 0.7), 0.06)
 		flash.tween_property(shown, "color:a", 0.0, 0.25)

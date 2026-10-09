@@ -1633,6 +1633,10 @@ msgid "A dozen new items: bows, war hammers, wands, cloaks, tower shields..."
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A foe gives you longer to see its bite coming, and shows it: it crouches with a red glint and a sound. With Clear warnings on, a band on the ground marks where the bite lands"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A hero from before keeps everything: whoever has cleared a floor finds the gate open, and Maren goes straight to her next ask"
 msgstr ""
 
@@ -1829,11 +1833,19 @@ msgid "Behind the scenes: new ground for the regions to come (Shade's sea in thr
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Below a quarter of your health, the health bar beats, and in a fight you hear your heart"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Beyond the Ring"
 msgstr ""
 
 #: assets/data/changelog.json
 msgid "Black Iron"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Bosses and named monsters carry a bar across the top of the screen, notched where a boss's next phase begins. Each phase is roared, marks on the ground are heard as they appear and as they strike, and a boss falls in slow motion, with a flash and a silence before the victory sting"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -10364,11 +10376,11 @@ msgstr ""
 msgid "Lv %d"
 msgstr ""
 
-#: scripts/enemy.gd:374
+#: scripts/enemy.gd:386
 msgid "blocked"
 msgstr ""
 
-#: scripts/enemy.gd:398
+#: scripts/enemy.gd:413
 msgid "%s is afflicted by %s!"
 msgstr ""
 
@@ -10504,23 +10516,23 @@ msgstr ""
 msgid "Place %s here"
 msgstr ""
 
-#: scripts/hud_dock.gd:20
+#: scripts/hud_dock.gd:24
 msgid "Map"
 msgstr ""
 
-#: scripts/hud_dock.gd:20
+#: scripts/hud_dock.gd:24
 msgid "Pack"
 msgstr ""
 
-#: scripts/hud_dock.gd:292
+#: scripts/hud_dock.gd:328
 msgid " +%d HP"
 msgstr ""
 
-#: scripts/hud_dock.gd:305
+#: scripts/hud_dock.gd:341
 msgid "Lv %d %s"
 msgstr ""
 
-#: scripts/hud_dock.gd:308
+#: scripts/hud_dock.gd:344
 msgid "HP"
 msgstr ""
 
@@ -11720,15 +11732,15 @@ msgstr ""
 msgid "Path of %s"
 msgstr ""
 
-#: scripts/sound.gd:43
+#: scripts/sound.gd:45
 msgid "Ambience"
 msgstr ""
 
-#: scripts/sound.gd:43
+#: scripts/sound.gd:45
 msgid "Music"
 msgstr ""
 
-#: scripts/sound.gd:47
+#: scripts/sound.gd:49
 msgid "Master"
 msgstr ""
 
@@ -12520,71 +12532,71 @@ msgstr ""
 msgid "Arrows"
 msgstr ""
 
-#: scripts/world.gd:1385
+#: scripts/world.gd:1423
 msgid "Five lanterns on the square, one for each of the five who climbed. Tonight the %s remembers them - and %s."
 msgstr ""
 
-#: scripts/world.gd:1386
+#: scripts/world.gd:1424
 msgid "Pixelheim, a %s raised from the ashes. Tonight it celebrates %s."
 msgstr ""
 
-#: scripts/world.gd:1472
+#: scripts/world.gd:1510
 msgid "%s: built."
 msgstr ""
 
-#: scripts/world.gd:1476
+#: scripts/world.gd:1514
 msgid "Pixelheim is a %s now."
 msgstr ""
 
-#: scripts/world.gd:1481
+#: scripts/world.gd:1519
 msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
 msgstr ""
 
-#: scripts/world.gd:1580
+#: scripts/world.gd:1618
 msgid "%s  %d:%02d"
 msgstr ""
 
-#: scripts/world.gd:1804
+#: scripts/world.gd:1844
 msgid "Next"
 msgstr ""
 
-#: scripts/world.gd:300
+#: scripts/world.gd:310
 msgid "The pack is scattered. Another comes once you've walked a good way, or after a night's rest."
 msgstr ""
 
-#: scripts/world.gd:486
+#: scripts/world.gd:496
 msgid "No map reaches this deep."
 msgstr ""
 
-#: scripts/world.gd:67
+#: scripts/world.gd:74
 msgid "Level up"
 msgstr ""
 
-#: scripts/world.gd:67
+#: scripts/world.gd:74
 msgid "Mastery"
 msgstr ""
 
-#: scripts/world.gd:67
+#: scripts/world.gd:74
 msgid "Quest accepted"
 msgstr ""
 
-#: scripts/world.gd:67
+#: scripts/world.gd:74
 msgid "Quest complete"
 msgstr ""
 
-#: scripts/world.gd:728
+#: scripts/world.gd:742
 msgid "{epithet} {name}"
 msgstr ""
 
-#: scripts/world.gd:896
+#: scripts/world.gd:910
 msgid "Only cinders where the house stood. The board on the square can change that."
 msgstr ""
 
-#: scripts/world.gd:901
+#: scripts/world.gd:915
 msgid "The deed costs %d gold. {key:interact} again to sign it."
 msgstr ""
 
-#: scripts/world.gd:985
+#: scripts/world.gd:999
 msgid "A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it."
 msgstr ""
 

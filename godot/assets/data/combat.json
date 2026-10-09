@@ -1113,7 +1113,7 @@
     "respawnSteps": 500,
     "graceSeconds": 1.5,
     "windUpSeconds": 0.4,
-    "biteTellSeconds": 0.25
+    "biteTellSeconds": 0.4
   },
   "gathering": {
     "regrowSteps": 300,
