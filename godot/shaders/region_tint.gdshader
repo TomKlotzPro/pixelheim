@@ -31,12 +31,13 @@ const float BAYER[16] = float[16](
 	3.0, 11.0, 1.0, 9.0,
 	15.0, 7.0, 13.0, 5.0
 );
-// Foam's colour. The water map reads 0.5 on the shore line and 1 a half
-// cell out (about a sixteenth a pixel): the shallows reach SHALLOWS, and the
-// foam's thin line laps in and out around FOAM_REACH, broken here and there.
+// Foam's colour. The water map reads 0.5 on its cells' edge, a sixteenth
+// less or more a pixel either way, and Shade's water spills about 4 pixels
+// past its cells (to 0.25): the shallows reach SHALLOWS, and the foam's thin
+// line laps in and out around FOAM_REACH, broken here and there.
 const vec3 FOAM = vec3(0.86, 0.98, 0.95);
-const float SHALLOWS = 0.64;
-const float FOAM_REACH = 0.57;
+const float SHALLOWS = 0.45;
+const float FOAM_REACH = 0.34;
 const float FOAM_LAP = 0.035;
 const float FOAM_LINE = 0.032;
 
@@ -95,7 +96,7 @@ void fragment() {
 		// there, brightest in its middle.
 		vec2 streak = vec2(floor(px.x / 3.0), px.y);
 		float slot = floor(world_time * 1.8 + hash(streak) * 9.0);
-		if (hash(streak + slot * 13.7) > 0.995) {
+		if (hash(streak + slot * 13.7) > 0.9965) {
 			float middle = mod(px.x, 3.0) == 1.0 ? 0.7 : 0.4;
 			base.rgb = mix(base.rgb, vec3(0.9, 1.0, 1.0), middle);
 		}

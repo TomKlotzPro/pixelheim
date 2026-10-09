@@ -4717,7 +4717,7 @@ msgid "Wanted"
 msgstr ""
 
 #: assets/data/changelog.json
-msgid "Water comes alive: it swells with light, glints here and there, and foam laps along every shore"
+msgid "Water comes alive: it swells with light, glints here and there, foam laps along every shore, and what stands on a bank is mirrored in it"
 msgstr ""
 
 #: assets/data/changelog.json

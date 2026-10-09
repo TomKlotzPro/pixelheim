@@ -1,7 +1,7 @@
 extends GutTest
 ## A world that moves (PIX-223): what the wind sways and what stands still,
-## where the water lies for the foam, cloud shadows only under the sky, and
-## the world's clock, which stops with reduced motion.
+## where the water lies for the foam and the reflections, cloud shadows only
+## under the sky, and the world's clock, which stops with reduced motion.
 
 const LightRig := preload("res://scripts/light_rig.gd")
 
@@ -36,6 +36,9 @@ func test_the_water_map_finds_rivers_seas_and_what_spans_them() -> void:
 	assert_eq(mask.get_pixel(0, 1).r, 1.0, "the sea")
 	assert_eq(mask.get_pixel(1, 1).r, 1.0, "water under a dock")
 	assert_eq(mask.get_pixel(2, 1).r, 0.0, "the beach is land")
+	assert_eq(mask.get_pixel(1, 0).g, 0.0, "the river's first row lies under its bank")
+	assert_almost_eq(mask.get_pixel(1, 1).g * 255.0, 1.0, 0.01, "one row of water above the dock's")
+	assert_eq(mask.get_pixel(0, 1).g, 0.0, "the sea under the grass")
 
 
 func test_clouds_pass_only_under_the_sky() -> void:
@@ -65,6 +68,6 @@ func test_the_shaders_share_one_clock() -> void:
 	assert_true(ProjectSettings.has_setting("shader_globals/world_time"))
 	assert_true(ProjectSettings.has_setting("shader_globals/world_wind"))
 	var wind := FileAccess.get_file_as_string("res://shaders/wind.gdshaderinc")
-	for path: String in ["res://shaders/region_tint.gdshader", "res://shaders/clouds.gdshader"]:
+	for path: String in ["res://shaders/region_tint.gdshader", "res://shaders/clouds.gdshader", "res://shaders/reflections.gdshader"]:
 		assert_string_contains((load(path) as Shader).code, "wind.gdshaderinc")
 	assert_string_contains(wind, "RENDERER_COMPATIBILITY", "the browser's renderer numbers a quad's corners its own way")

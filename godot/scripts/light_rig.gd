@@ -5,8 +5,8 @@ extends Node
 ## lantern with them. With reduced motion, nothing flickers.
 ##
 ## And the open air's motion (PIX-223): the world's clock and the wind that
-## the shaders read (shaders/wind.gdshaderinc), and cloud shadows drifting
-## over the land by day. The clock stops while the game is paused; with
+## the shaders read (shaders/wind.gdshaderinc), the banks mirrored in the
+## water, and cloud shadows drifting over the land by day. The clock stops while the game is paused; with
 ## reduced motion it stops too, the wind drops and the clouds stand still.
 
 var world: Node
@@ -23,9 +23,12 @@ const GLOW_NIGHT := 0.9
 ## The light now and how dark it is (0 by day, 1 at night).
 var light := Color.WHITE
 var dark := 0.0
-## The cloud shadows, under the glow on its layer; the world's clock and
-## the wind's strength (1, or 0 with reduced motion).
+## The water's reflections and the cloud shadows, under the glow on its
+## layer, and the map the reflections were laid out for; the world's clock
+## and the wind's strength (1, or 0 with reduced motion).
+var reflections: ColorRect
 var clouds: ColorRect
+var _water_of: MapData
 var time := 0.0
 var wind := 1.0
 ## How dark a cloud's shadow is at its heart, in full day.
@@ -41,21 +44,22 @@ func _ready() -> void:
 	var layer := CanvasLayer.new()
 	layer.layer = GLOW_LAYER
 	world.add_child(layer)
-	clouds = ColorRect.new()
-	clouds.set_anchors_preset(Control.PRESET_FULL_RECT)
-	clouds.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var sky := ShaderMaterial.new()
-	sky.shader = preload("res://shaders/clouds.gdshader")
-	sky.set_shader_parameter("clouds", cloud_noise())
-	clouds.material = sky
-	layer.add_child(clouds)
-	bloom = ColorRect.new()
-	bloom.set_anchors_preset(Control.PRESET_FULL_RECT)
-	bloom.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var glow := ShaderMaterial.new()
-	glow.shader = preload("res://shaders/bloom.gdshader")
-	bloom.material = glow
-	layer.add_child(bloom)
+	reflections = _screen_pass(layer, preload("res://shaders/reflections.gdshader"))
+	clouds = _screen_pass(layer, preload("res://shaders/clouds.gdshader"))
+	(clouds.material as ShaderMaterial).set_shader_parameter("clouds", cloud_noise())
+	bloom = _screen_pass(layer, preload("res://shaders/bloom.gdshader"))
+
+
+## A shader over the whole view, on `layer` after what's already there.
+func _screen_pass(layer: CanvasLayer, shader: Shader) -> ColorRect:
+	var rect := ColorRect.new()
+	rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var material := ShaderMaterial.new()
+	material.shader = shader
+	rect.material = material
+	layer.add_child(rect)
+	return rect
 
 
 ## The hero carries a lantern: it only shows when it's dark.
@@ -105,7 +109,9 @@ func _process(delta: float) -> void:
 	if bloom.visible:
 		(bloom.material as ShaderMaterial).set_shader_parameter("strength", lerpf(GLOW_DAY, GLOW_NIGHT, dark))
 	tick(delta)
-	_drift_clouds()
+	var view := _view()
+	_mirror_water(view)
+	_drift_clouds(view)
 	var still: bool = GameState.settings.reduce_motion
 	var t := Time.get_ticks_msec() / 1000.0
 	for node in get_tree().get_nodes_in_group("lights"):
@@ -129,15 +135,36 @@ func tick(delta: float) -> void:
 	RenderingServer.global_shader_parameter_set("world_wind", wind)
 
 
+## The world under the screen: [its top-left corner, its size], in pixels.
+func _view() -> Array[Vector2]:
+	var screen := get_viewport().get_visible_rect()
+	var to_world := get_viewport().get_canvas_transform().affine_inverse()
+	return [to_world * screen.position, to_world.basis_xform(screen.size)]
+
+
+## The banks mirrored in the water, on maps under the sky that have some.
+func _mirror_water(view: Array[Vector2]) -> void:
+	var map: MapData = world.map
+	var mirror := reflections.material as ShaderMaterial
+	if map != _water_of:
+		_water_of = map
+		var wet := under_sky(map) and map.grid.values().any(func(tile: String) -> bool: return PunyTerrain.ground_of(tile) in PunyTerrain.WATER_GROUNDS)
+		reflections.visible = wet
+		if wet:
+			mirror.set_shader_parameter("water_map", PunyTerrain.water_map(map.grid, map.size))
+			mirror.set_shader_parameter("map_cells", Vector2(map.size))
+	if reflections.visible:
+		mirror.set_shader_parameter("view_origin", view[0])
+		mirror.set_shader_parameter("view_size", view[1])
+
+
 ## The cloud shadows lie on the world under the camera, by day under the sky.
-func _drift_clouds() -> void:
+func _drift_clouds(view: Array[Vector2]) -> void:
 	var amount := (1.0 - dark) * CLOUD_SHADE if under_sky(world.map) else 0.0
 	clouds.visible = amount > 0.0
 	if not clouds.visible:
 		return
-	var view := get_viewport().get_visible_rect()
-	var to_world := get_viewport().get_canvas_transform().affine_inverse()
 	var sky := clouds.material as ShaderMaterial
-	sky.set_shader_parameter("view_origin", to_world * view.position)
-	sky.set_shader_parameter("view_size", to_world.basis_xform(view.size))
+	sky.set_shader_parameter("view_origin", view[0])
+	sky.set_shader_parameter("view_size", view[1])
 	sky.set_shader_parameter("depth", amount)
