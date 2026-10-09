@@ -72,6 +72,33 @@ func _init() -> void:
 	dirty = false
 
 
+func _ready() -> void:
+	# The autosave runs under open screens too (PIX-200): a shop or the pack
+	# holds the world still, not the saving.
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	_watch_the_page()
+
+
+## The web page going away or out of sight saves what's unsaved (PIX-200):
+## the web runtime tells the game nothing when a tab closes.
+var _page_hidden: Variant
+
+
+func _watch_the_page() -> void:
+	if not OS.has_feature("web"):
+		return
+	_page_hidden = JavaScriptBridge.create_callback(func(_args: Array) -> void:
+		if dirty:
+			save_now())
+	JavaScriptBridge.get_interface("document").addEventListener("visibilitychange", _page_hidden)
+	JavaScriptBridge.get_interface("window").addEventListener("pagehide", _page_hidden)
+
+
+## Whether this browser keeps saves at all (a private window doesn't).
+static func saves_kept() -> bool:
+	return not OS.has_feature("web") or OS.is_userfs_persistent()
+
+
 ## Picks the save to play: `--slot N` or the last slot played, else a new game
 ## written straight to that slot. Harness runs (`--screenshot`) play a fresh
 ## throwaway hero unless a slot is named explicitly. Runs once per session:

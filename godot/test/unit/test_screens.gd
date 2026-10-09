@@ -35,3 +35,16 @@ func test_among_equals_the_latest_takes_the_keys() -> void:
 	first.close()
 	await wait_physics_frames(1)
 	assert_false(get_tree().paused, "the world runs again with every screen closed")
+
+
+## PIX-200: nothing done in a screen waits on the world to save it.
+func test_the_autosave_runs_under_screens() -> void:
+	assert_eq(GameState.process_mode, Node.PROCESS_MODE_ALWAYS, "a paused world doesn't pause the saving")
+
+
+func test_closing_the_last_screen_keeps_the_work() -> void:
+	var shop := _screen(5)
+	GameState.mark_dirty()
+	shop.close()
+	await wait_physics_frames(1)
+	assert_false(GameState.dirty, "saved as the screen let go")

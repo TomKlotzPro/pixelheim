@@ -146,6 +146,12 @@ func _card() -> void:
 	options.append({"label": "Options", "action": _options})
 	options.append({"label": "What's new", "action": _whats_new})
 	_draw_menu()
+	# A browser that won't keep saves says so before anyone plays (PIX-200).
+	if not GameState.saves_kept():
+		var warning := UiStyle.label("This browser window won't keep your saves (a private window?). Your hero lasts only while it's open.", 13, UiStyle.LAMP, Vector2(0, 664))
+		warning.custom_minimum_size = Vector2(VIEW.x, 0)
+		warning.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		add_child(warning)
 	# The version line opens What's new (the web's changelog link).
 	footer = UiStyle.label(Text.t("v%s  ·  What's new") % version, 13, UiStyle.DUSK, Vector2(0, 690))
 	footer.custom_minimum_size = Vector2(VIEW.x, 0)

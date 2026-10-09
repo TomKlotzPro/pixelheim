@@ -132,7 +132,7 @@ func _open() -> void:
 
 	if welcome:
 		status.text = (
-			Text.t("Found %s in this browser's web game. Press B to bring them here, or Esc to start a new hero.")
+			Text.t("Found %s in this browser's web game. Press B to bring them here, or Esc for the title and a new hero.")
 			% WebImport.describe(web_save)
 		)
 	_refresh()
@@ -148,6 +148,10 @@ func _unhandled_input(event: InputEvent) -> void:
 	super(event)
 
 func _command(event: InputEvent) -> Callable:
+	# Turning down the web hero (PIX-200) goes to the title, where a new one
+	# is made and kept - not on as a stand-in nobody saves.
+	if welcome and (event.is_action_pressed("ui_cancel") or event.is_action_pressed("menu")):
+		return _decline
 	if event.is_action_pressed("move_up"):
 		return _select.bind(selected - 1)
 	if event.is_action_pressed("move_down"):
@@ -198,6 +202,11 @@ func _play() -> void:
 		return
 	if GameState.play_slot(_target()):
 		_reload()
+
+func _decline() -> void:
+	close()
+	get_tree().current_scene._open_title()
+
 
 func _new_hero() -> void:
 	var summary := GameState.slots.summary(_target())

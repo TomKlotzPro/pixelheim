@@ -43,6 +43,7 @@ FLOWS=(
 	"fight|fight kill|screenshot saved"
 	"die|die|map=town_inn cell=\(2, 3\)"
 	"saves|saves|screenshot saved"
+	"decline|saves --web-save res://test/fixtures/web_save_v4.txt --keys esc|open=title_screen"
 	"talk|--map town talk --keys e,e,e,e|open=none"
 	"leave|--map town talk --keys e,esc|open=none"
 	"mimic|--map mirefen mimic --wait 0.75|map=mirefen cell=\(42, 13\) hp=42"

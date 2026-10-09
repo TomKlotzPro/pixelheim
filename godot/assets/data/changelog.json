@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.145.0",
+      "date": "2026-10-09",
+      "codename": "Kept",
+      "notes": [
+        "NOTHING LOST: what you buy, sell, craft or equip in a shop or your pack is saved as soon as you close it, and the game saves while any screen is open",
+        "In the browser, the game saves the moment its tab is hidden or closed, and a private window that won't keep saves says so on the title",
+        "Turning down your old web hero takes you to the title to make a new one - no more playing a stand-in that's never saved"
+      ]
+    },
+    {
       "version": "0.144.0",
       "date": "2026-10-09",
       "codename": "Keys to the Top",
