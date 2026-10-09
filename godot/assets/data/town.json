@@ -982,12 +982,13 @@
   "rentPerVictory": 2,
   "bank": {
     "daySteps": 480,
-    "savingsRate": 0.02,
-    "savingsMaxDays": 10,
+    "savingsRate": 0.005,
     "ventureCost": 500,
     "ventureSteps": 240,
     "expansionCost": 1000,
-    "expansionRent": 2
+    "expansionRent": 2,
+    "savingsCapShare": 0.1,
+    "about": "PIX-177: savings earn simple interest on what's in the pot, by whole days of the day-wheel, kept apart (it never earns interest itself) and capped at savingsCapShare of the pot; a top-up neither resets the clock nor folds the interest in."
   },
   "ashesCamp": {
     "tent": {
@@ -1007,7 +1008,7 @@
     "ivaPotions": 3,
     "lorasCrit": 0.2,
     "wrenWalk": 0.1,
-    "mirelleRate": 0.03
+    "mirelleRate": 0.0075
   },
   "festival": {
     "days": 1,

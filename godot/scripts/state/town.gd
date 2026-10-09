@@ -363,15 +363,32 @@ static func bank(key: String) -> Variant:
 	return _data()["bank"][key]
 
 
-## Days of interest so far, capped: patience pays, parking doesn't.
-static func savings_days(at: int, steps: int) -> int:
-	return mini(int(bank("savingsMaxDays")), maxi(0, floori((steps - at) / float(bank("daySteps")))))
+## The day's rate: Mirelle's savings pay more once her arc is done (PIX-157).
+static func savings_rate(upgraded := false) -> float:
+	return float(arc("mirelleRate")) if upgraded else float(bank("savingsRate"))
 
 
-## `upgraded`: Mirelle's caravans run safe (PIX-157), her savings pay more.
-static func savings_value(principal: int, at: int, steps: int, upgraded := false) -> int:
-	var rate := float(arc("mirelleRate")) if upgraded else float(bank("savingsRate"))
-	return floori(principal * (1 + rate * savings_days(at, steps)))
+## A pot's interest brought up to `steps` (PIX-177): simple interest on what
+## was put in, for each whole day since it was last counted, kept apart
+## (it never earns interest itself) and never past the pot's cap. Returns
+## the pot as it stands now: {principal, earned, at}.
+static func savings_accrued(savings: Dictionary, steps: int, upgraded := false) -> Dictionary:
+	var principal := int(savings["principal"])
+	var at := int(savings["at"])
+	var days := maxi(0, floori((steps - at) / float(bank("daySteps"))))
+	var earned := mini(savings_cap(principal), int(savings.get("earned", 0)) + floori(principal * savings_rate(upgraded) * days))
+	return {"principal": principal, "earned": earned, "at": at + days * int(bank("daySteps"))}
+
+
+## The most a pot of `principal` can earn.
+static func savings_cap(principal: int) -> int:
+	return floori(principal * float(bank("savingsCapShare")))
+
+
+## What a pot is worth to take out now: what went in and what it earned.
+static func savings_value(savings: Dictionary, steps: int, upgraded := false) -> int:
+	var now := savings_accrued(savings, steps, upgraded)
+	return int(now["principal"]) + int(now["earned"])
 
 
 static func venture_ready(at: int, steps: int) -> bool:

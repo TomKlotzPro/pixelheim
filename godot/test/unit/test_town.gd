@@ -31,11 +31,35 @@ func test_caravans_match_the_web_hash() -> void:
 	assert_eq(wins, 715, "same 1000 departures as the web")
 
 
-func test_savings_match_the_web() -> void:
-	var expected := {0: 500, 479: 500, 480: 510, 1440: 530, 4800: 600, 9999: 600}
+## PIX-177: simple interest by whole days, half a percent, capped at a
+## tenth of the pot (the web's 2% compounded on every top-up).
+func test_savings_earn_by_the_day_and_stop_at_the_cap() -> void:
+	var pot := {"principal": 1000, "at": 0}
+	var expected := {0: 1000, 479: 1000, 480: 1005, 1440: 1015, 9600: 1100, 99999: 1100}
 	for steps: int in expected:
-		assert_eq(Town.savings_value(500, 0, steps), expected[steps], "steps %d" % steps)
-	assert_eq(Town.savings_value(333, 20, 1000), 346)
+		assert_eq(Town.savings_value(pot, steps), expected[steps], "steps %d" % steps)
+	assert_eq(Town.savings_accrued(pot, 1000)["at"], 960, "the clock keeps the part of a day that's running")
+
+
+func test_topping_up_never_compounds() -> void:
+	var state: Node = autofree(preload("res://scripts/state/game_state.gd").new())
+	state.new_game("Mirelle's best customer", "rogue")
+	state.pack.gold = 100000
+	var steps_at := func(steps: float) -> void: state.world.steps = steps
+	steps_at.call(0.0)
+	assert_true(state.bank_deposit(10000))
+	# A deposit of 100 every day for twenty days: the interest is kept apart.
+	for day in range(1, 21):
+		steps_at.call(day * 480.0)
+		state.bank_deposit(100)
+	var pot: Dictionary = state.investments()["savings"]
+	assert_eq(pot["principal"], 12000)
+	assert_lte(pot["earned"], Town.savings_cap(12000), "never past a tenth of the pot")
+	var simple := 0
+	for day in range(1, 21):
+		simple += floori((10000 + 100 * (day - 1)) * 0.005)
+	assert_eq(pot["earned"], simple, "interest on what was put in, never on interest")
+	assert_eq(int(pot["at"]), 20 * 480, "the top-ups never reset the clock")
 
 
 func test_perks_match_the_web() -> void:
@@ -133,15 +157,15 @@ func test_deeds_sell_only_where_you_stand() -> void:
 	assert_eq(state.pack.gold, 7500)
 
 
-func test_deposits_fold_interest_and_withdraw_pays_it() -> void:
+func test_deposits_keep_interest_apart_and_withdraw_pays_it() -> void:
 	state.pack.gold = 2000
 	assert_true(state.bank_deposit(500))
 	state.world.steps = 960.0  # two days
 	assert_true(state.bank_deposit(500))
-	assert_eq(state.investments()["savings"], {"principal": 1020, "at": 960})
+	assert_eq(state.investments()["savings"], {"principal": 1000, "earned": 5, "at": 960}, "PIX-177: two days on 500, kept apart")
 	state.world.steps = 1440.0
-	assert_eq(state.bank_withdraw(), 1040)
-	assert_eq(state.pack.gold, 1000 + 1040)
+	assert_eq(state.bank_withdraw(), 1010, "and a day on 1000")
+	assert_eq(state.pack.gold, 1000 + 1010)
 	assert_false(state.investments().has("savings"))
 
 
@@ -208,13 +232,14 @@ func test_the_bards_lute_is_with_a_troll() -> void:
 	assert_has(Town.settler_perks(state.settlement.settlers), "Loras plays a marching song before a hunt: +12% crit until it ends")
 
 
+## PIX-177: Mirelle settles in the Village, so the bank opens during the regions.
 func test_finer_folk_hold_out_for_a_finer_town() -> void:
-	state.settlement.town_tier = 2
+	state.settlement.town_tier = 1
 	var messages: Array[String] = []
 	state.message.connect(func(text: String) -> void: messages.append(text))
 	state.finish_dialogue("settler_mirelle")
-	assert_string_contains(messages[0], "into a town")
-	assert_false(state.progression.quests.has("mirelle_vault"), "no story until there's a town")
+	assert_string_contains(messages[0], "into a village")
+	assert_false(state.progression.quests.has("mirelle_vault"), "no story until there's a village")
 
 
 func test_settlers_speak_for_the_towns_age() -> void:

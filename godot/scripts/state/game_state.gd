@@ -568,15 +568,16 @@ func investments() -> Dictionary:
 	return settlement.investments
 
 
-## BANK_DEPOSIT: any accrued interest folds into the new principal.
+## BANK_DEPOSIT (PIX-177): the interest so far is counted and kept apart,
+## the new gold joins what was put in, and the day's clock runs on.
 func bank_deposit(amount: int) -> bool:
 	if amount <= 0 or pack.gold < amount:
 		return false
 	var inv := investments()
 	var savings: Dictionary = inv.get("savings", {})
-	var carried := 0 if savings.is_empty() else _savings_now(savings)
+	var now := {"principal": 0, "earned": 0, "at": steps_now()} if savings.is_empty() else Town.savings_accrued(savings, steps_now(), perk_grown("settler_mirelle"))
 	pack.gold -= amount
-	inv["savings"] = {"principal": carried + amount, "at": steps_now()}
+	inv["savings"] = {"principal": int(now["principal"]) + amount, "earned": int(now["earned"]), "at": int(now["at"])}
 	_pack_changed()
 	return true
 
@@ -706,7 +707,7 @@ func walk_bonus() -> float:
 
 
 func _savings_now(savings: Dictionary) -> int:
-	return Town.savings_value(savings["principal"], savings["at"], steps_now(), perk_grown("settler_mirelle"))
+	return Town.savings_value(savings, steps_now(), perk_grown("settler_mirelle"))
 
 
 ## A conversation closed: recruits answer (resolveSettler), then the quest
