@@ -55,3 +55,14 @@ func test_every_skill_has_an_icon() -> void:
 	assert_gt(names.size(), 60)
 	for skill_name: String in names:
 		assert_true(ItemIcons._data()["skills"].has(skill_name), "%s needs an icon" % skill_name)
+
+
+## PIX-196: the dock finds a skill's icon by its French name too.
+func test_a_translated_skill_keeps_its_icon() -> void:
+	TranslationServer.set_locale("fr")
+	Text.forget()
+	var name: String = Skills.hero_skills(HeroState.create("T", "warrior"))[0]["name"]
+	assert_ne(name, "Power Strike", "the name is French")
+	var icons: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/puny/icons.json"))["skills"]
+	assert_eq(ItemIcons._translated_skills().get(name, ""), icons["Power Strike"])
+	Text.apply("en")

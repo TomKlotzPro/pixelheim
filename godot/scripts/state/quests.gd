@@ -116,7 +116,7 @@ static func where(quest: Dictionary) -> String:
 		"deliver":
 			for chest: Dictionary in Interactables._data()["chests"]:
 				if chest.get("loot", {}).get("itemId", "") == objective["itemId"]:
-					return Text.t("In a chest somewhere in %s.") % Economy._mid(Catalog.place_name(chest["mapId"]))
+					return Text.t("In a chest somewhere in %s.") % Text.mid(Catalog.place_name(chest["mapId"]))
 			var lead := Economy.where_to_find(objective["itemId"])
 			return lead + "." if lead != "" else ""
 		"relics":

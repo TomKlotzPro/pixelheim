@@ -5089,10 +5089,6 @@ msgid "Foresight"
 msgstr ""
 
 #: assets/data/combat.json
-msgid "Forge"
-msgstr ""
-
-#: assets/data/combat.json
 msgid "Frost Drake"
 msgstr ""
 
@@ -5926,6 +5922,10 @@ msgstr ""
 
 #: assets/data/combat.json
 msgid "Sunfire"
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Sunken"
 msgstr ""
 
 #: assets/data/combat.json
@@ -9820,15 +9820,35 @@ msgstr ""
 msgid "%s is cleared"
 msgstr ""
 
-#: scripts/bounty_screen.gd:68
-msgid "%s of the five relics %s won, or %s"
+#: scripts/bounty_screen.gd:69
+msgid "four"
 msgstr ""
 
-#: scripts/bounty_screen.gd:73
+#: scripts/bounty_screen.gd:69
+msgid "one"
+msgstr ""
+
+#: scripts/bounty_screen.gd:69
+msgid "three"
+msgstr ""
+
+#: scripts/bounty_screen.gd:69
+msgid "two"
+msgstr ""
+
+#: scripts/bounty_screen.gd:70
+msgid "%s of the five relics are won, or %s"
+msgstr ""
+
+#: scripts/bounty_screen.gd:70
+msgid "%s of the five relics is won, or %s"
+msgstr ""
+
+#: scripts/bounty_screen.gd:76
 msgid "The "
 msgstr ""
 
-#: scripts/bounty_screen.gd:73
+#: scripts/bounty_screen.gd:76
 msgid "the %s (floor %d)"
 msgstr ""
 
@@ -10248,6 +10268,10 @@ msgstr ""
 msgid "Lv %d %s"
 msgstr ""
 
+#: scripts/hud_dock.gd:308
+msgid "HP"
+msgstr ""
+
 #: scripts/inventory_screen.gd:111
 msgid "choose"
 msgstr ""
@@ -10474,6 +10498,10 @@ msgstr ""
 
 #: scripts/inventory_screen.gd:587
 msgid "You need %s %d for that."
+msgstr ""
+
+#: scripts/inventory_screen.gd:592
+msgid " (two!)"
 msgstr ""
 
 #: scripts/inventory_screen.gd:592
@@ -11028,8 +11056,16 @@ msgstr ""
 msgid "Sign the deed"
 msgstr ""
 
-#: scripts/shop_screen.gd:186
-msgid "\nThe %s's own, since Pixelheim became a %s."
+#: scripts/shop_screen.gd:187
+msgid "\nThe shop's own, since Pixelheim became a %s."
+msgstr ""
+
+#: scripts/shop_screen.gd:188
+msgid "\nThe forge's own, since Pixelheim became a %s."
+msgstr ""
+
+#: scripts/shop_screen.gd:188
+msgid "\nThe workshop's own, since Pixelheim became a %s."
 msgstr ""
 
 #: scripts/shop_screen.gd:192
@@ -11074,6 +11110,10 @@ msgstr ""
 
 #: scripts/shop_screen.gd:32
 msgid "Sell"
+msgstr ""
+
+#: scripts/shop_screen.gd:34
+msgid "Forge"
 msgstr ""
 
 #: scripts/shop_screen.gd:36
@@ -11380,67 +11420,83 @@ msgstr ""
 msgid "%s, depth %d"
 msgstr ""
 
-#: scripts/state/economy.gd:186
+#: scripts/state/economy.gd:183
+msgid "Alchemy"
+msgstr ""
+
+#: scripts/state/economy.gd:183
+msgid "Fishing"
+msgstr ""
+
+#: scripts/state/economy.gd:183
+msgid "Foraging"
+msgstr ""
+
+#: scripts/state/economy.gd:183
+msgid "Smithing"
+msgstr ""
+
+#: scripts/state/economy.gd:194
 msgid "%s %d (mastered)"
 msgstr ""
 
-#: scripts/state/economy.gd:187
+#: scripts/state/economy.gd:195
 msgid "%s %d (%d/%d XP)"
 msgstr ""
 
-#: scripts/state/economy.gd:239
+#: scripts/state/economy.gd:247
 msgid "the mountain from floor %d"
 msgstr ""
 
-#: scripts/state/economy.gd:240
+#: scripts/state/economy.gd:248
 msgid "floors %d-%d"
 msgstr ""
 
-#: scripts/state/economy.gd:291
+#: scripts/state/economy.gd:294
 msgid "sold by %s"
 msgstr ""
 
-#: scripts/state/economy.gd:296
+#: scripts/state/economy.gd:299
 msgid "picked from patches and foraged after fights in %s"
 msgstr ""
 
-#: scripts/state/economy.gd:301
+#: scripts/state/economy.gd:304
 msgid "in a chest in %s"
 msgstr ""
 
-#: scripts/state/economy.gd:312
+#: scripts/state/economy.gd:315
 msgid "caught fishing at %s"
 msgstr ""
 
-#: scripts/state/economy.gd:316
+#: scripts/state/economy.gd:319
 msgid "%s's reward for %s"
 msgstr ""
 
-#: scripts/state/economy.gd:322
+#: scripts/state/economy.gd:325
 msgid "every time"
 msgstr ""
 
-#: scripts/state/economy.gd:325
+#: scripts/state/economy.gd:328
 msgid "sure the first time, then %d%%"
 msgstr ""
 
-#: scripts/state/economy.gd:334
+#: scripts/state/economy.gd:337
 msgid "now and then in loot in %s"
 msgstr ""
 
-#: scripts/state/economy.gd:338
+#: scripts/state/economy.gd:341
 msgid "now and then in loot on %s"
 msgstr ""
 
-#: scripts/state/economy.gd:341
+#: scripts/state/economy.gd:344
 msgid "picked from the patch on %s"
 msgstr ""
 
-#: scripts/state/economy.gd:345
+#: scripts/state/economy.gd:348
 msgid "the hoard of %s"
 msgstr ""
 
-#: scripts/state/economy.gd:347
+#: scripts/state/economy.gd:350
 msgid "the hoards of floors %s"
 msgstr ""
 
@@ -11752,8 +11808,12 @@ msgstr ""
 msgid "Bounty %dg, and %s"
 msgstr ""
 
-#: scripts/state/inventory_state.gd:96
-msgid "%s %s"
+#: scripts/state/inventory_state.gd:105
+msgid "{item} {affix}"
+msgstr ""
+
+#: scripts/state/inventory_state.gd:97
+msgid "{rarity} {item}"
 msgstr ""
 
 #: scripts/state/main_quest.gd:86
@@ -11848,12 +11908,32 @@ msgstr ""
 msgid "regen %d/turn"
 msgstr ""
 
+#: scripts/state/skills.gd:68
+msgid "EN"
+msgstr ""
+
+#: scripts/state/skills.gd:68
+msgid "MP"
+msgstr ""
+
 #: scripts/state/text.gd:17
 msgid "English"
 msgstr ""
 
 #: scripts/state/text.gd:17
 msgid "Français"
+msgstr ""
+
+#: scripts/state/text.gd:33
+msgid "La "
+msgstr ""
+
+#: scripts/state/text.gd:33
+msgid "Le "
+msgstr ""
+
+#: scripts/state/text.gd:33
+msgid "Les "
 msgstr ""
 
 #: scripts/state/town.gd:122
@@ -12044,31 +12124,31 @@ msgstr ""
 msgid "Arrows"
 msgstr ""
 
-#: scripts/world.gd:1368
+#: scripts/world.gd:1369
 msgid "Five lanterns on the square, one for each of the five who climbed. Tonight the %s remembers them - and %s."
 msgstr ""
 
-#: scripts/world.gd:1369
+#: scripts/world.gd:1370
 msgid "Pixelheim, a %s raised from the ashes. Tonight it celebrates %s."
 msgstr ""
 
-#: scripts/world.gd:1455
+#: scripts/world.gd:1456
 msgid "%s: built."
 msgstr ""
 
-#: scripts/world.gd:1459
+#: scripts/world.gd:1460
 msgid "Pixelheim is a %s now."
 msgstr ""
 
-#: scripts/world.gd:1464
+#: scripts/world.gd:1465
 msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
 msgstr ""
 
-#: scripts/world.gd:1563
+#: scripts/world.gd:1564
 msgid "%s  %d:%02d"
 msgstr ""
 
-#: scripts/world.gd:1787
+#: scripts/world.gd:1788
 msgid "Next"
 msgstr ""
 
@@ -12096,14 +12176,66 @@ msgstr ""
 msgid "Quest complete"
 msgstr ""
 
-#: scripts/world.gd:886
+#: scripts/world.gd:719
+msgid "{epithet} {name}"
+msgstr ""
+
+#: scripts/world.gd:887
 msgid "Only cinders where the house stood. The board on the square can change that."
 msgstr ""
 
-#: scripts/world.gd:891
+#: scripts/world.gd:892
 msgid "The deed costs %d gold. {key:interact} again to sign it."
 msgstr ""
 
-#: scripts/world.gd:975
+#: scripts/world.gd:976
 msgid "A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it."
+msgstr ""
+
+#: tools/i18n.py
+msgid "ATK"
+msgstr ""
+
+#: tools/i18n.py
+msgid "DEF"
+msgstr ""
+
+#: tools/i18n.py
+msgid "DEX"
+msgstr ""
+
+#: tools/i18n.py
+msgid "DMG"
+msgstr ""
+
+#: tools/i18n.py
+msgid "END"
+msgstr ""
+
+#: tools/i18n.py
+msgid "Gear"
+msgstr ""
+
+#: tools/i18n.py
+msgid "INT"
+msgstr ""
+
+#: tools/i18n.py
+msgid "Items"
+msgstr ""
+
+#: tools/i18n.py
+msgid "STR"
+msgstr ""
+
+#: tools/i18n.py
+msgid "XP"
+msgstr ""
+
+#: tools/i18n.py
+msgid "damage"
+msgstr ""
+
+#: tools/i18n.py
+msgid "healing"
 msgstr ""

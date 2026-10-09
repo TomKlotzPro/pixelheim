@@ -22,3 +22,13 @@ func test_the_house_is_for_sale_then_home() -> void:
 	assert_eq(sale["name"], "For sale")
 	assert_string_contains(sale["about"], "%dg" % int(Town._data()["houseDeedCost"]))
 	assert_eq(ShopSign.about("HOME", "", true), {"name": "Home", "about": "Your house"})
+
+
+## PIX-196: in French the boards keep their icons (the label is an id).
+func test_a_sign_keeps_its_icon_in_another_language() -> void:
+	TranslationServer.set_locale("fr")
+	Text.forget()
+	for sign_def: Dictionary in Interactables._data()["signs"]["town"]:
+		assert_true(ShopSign.ICONS.has(sign_def["label"]), "%s keeps its icon" % sign_def["label"])
+	assert_ne(Catalog.item_name("bread"), "Bread", "the rest of the data does speak French")
+	Text.apply("en")

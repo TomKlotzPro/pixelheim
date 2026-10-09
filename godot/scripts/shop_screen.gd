@@ -90,7 +90,7 @@ func _open() -> void:
 
 	status = UiStyle.label("", 14, UiStyle.LAMP, Vector2(80, 580))
 	add_child(status)
-	add_child(UiStyle.footer(Text.t("Esc  close      A/D  tab      W/S  choose      E  %s      Z  sell a stack") % "/".join(tabs).to_lower(), Vector2(80, 660)))
+	add_child(UiStyle.footer(Text.t("Esc  close      A/D  tab      W/S  choose      E  %s      Z  sell a stack") % "/".join(tabs.map(func(tab: String) -> String: return Text.t(tab))).to_lower(), Vector2(80, 660)))
 	if collected > 0:
 		status.text = Text.t("%s hands you the till: +%d gold.") % [String(shop.get("keeper", "")), collected]
 	# A keeper who sells their business explains deeds once (PIX-179).
@@ -183,10 +183,10 @@ func _build_rows() -> Array[Dictionary]:
 				var signature: bool = Catalog.item(item_id).get("signature", false)
 				var detail := _describe(item_id)
 				if signature:
-					detail += Text.t("\nThe %s's own, since Pixelheim became a %s.") % [
-						"shop" if shop_id == "odo" else ("forge" if shop_id == "smith" else "workshop"),
-						String(Town.tier(Economy.age_of(shop_id, item_id))["name"]).to_lower(),
-					]
+					# Whole sentences, so each language can say the place its own way (PIX-196).
+					var since: String = Text.t("\nThe shop's own, since Pixelheim became a %s.") if shop_id == "odo" else (
+						Text.t("\nThe forge's own, since Pixelheim became a %s.") if shop_id == "smith" else Text.t("\nThe workshop's own, since Pixelheim became a %s."))
+					detail += since % String(Town.tier(Economy.age_of(shop_id, item_id))["name"]).to_lower()
 				out.append({
 					"label": Catalog.item_name(item_id), "price": "%dg" % price, "icon": item_id,
 					"tag": "Pixelheim's own" if signature else ("Owner's pick" if picked and item_id not in stock else ""),
@@ -267,7 +267,7 @@ func _build_rows() -> Array[Dictionary]:
 				var recipe_id: String = entry["id"]
 				out.append({
 					"label": Catalog.item_name(entry["itemId"]), "icon": entry["itemId"],
-					"price": "%s %d" % [String(entry["job"]["id"]).capitalize(), entry["job"]["level"]],
+					"price": "%s %d" % [Economy.job_name(entry["job"]["id"]), entry["job"]["level"]],
 					"detail": _describe_recipe(entry), "verb": "Craft",
 					"enabled": Economy.can_craft(entry, pack.items, GameState.hero.jobs),
 					"action": func() -> void: _crafted(GameState.craft(recipe_id), entry),
@@ -369,7 +369,7 @@ func _crafted(result: Dictionary, entry: Dictionary) -> void:
 	if not result["made"]:
 		var job: String = entry["job"]["id"]
 		if int(GameState.hero.jobs[job]["level"]) < int(entry["job"]["level"]):
-			status.text = Text.t("That takes %s %d.") % [job.capitalize(), entry["job"]["level"]]
+			status.text = Text.t("That takes %s %d.") % [Economy.job_name(job), entry["job"]["level"]]
 		else:
 			status.text = Text.t("Still missing: %s.") % ", ".join(Economy.missing_names(entry, GameState.pack.items))
 		return
@@ -438,5 +438,5 @@ static func _describe_recipe(entry: Dictionary) -> String:
 			if not sources.is_empty():
 				lines.append("    " + String(sources[0]["text"]))
 	var job: String = entry["job"]["id"]
-	lines.append(Text.t("%s level %d - you are %s") % [job.capitalize(), entry["job"]["level"], Economy.job_line(GameState.hero.jobs, job)])
+	lines.append(Text.t("%s level %d - you are %s") % [Economy.job_name(job), entry["job"]["level"], Economy.job_line(GameState.hero.jobs, job)])
 	return "\n".join(lines)

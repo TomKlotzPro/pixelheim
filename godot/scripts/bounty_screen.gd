@@ -65,9 +65,12 @@ static func _when(entry: Dictionary) -> String:
 	if not entry.has("postedRelics"):
 		return cleared
 	var relics := int(entry["postedRelics"])
-	return Text.t("%s of the five relics %s won, or %s") % [["one", "two", "three", "four"][relics - 1], "is" if relics == 1 else "are", cleared]
+	# Words a language can say its own way (PIX-196): the count, and is/are.
+	var count: String = [Text.t("one"), Text.t("two"), Text.t("three"), Text.t("four")][relics - 1]
+	var said := Text.t("%s of the five relics is won, or %s") if relics == 1 else Text.t("%s of the five relics are won, or %s")
+	return said % [count, cleared]
 
 
 static func _floor_name(level: int) -> String:
 	var floor_def: Dictionary = Bestiary._data()["levels"][level - 1]
-	return Text.t("the %s (floor %d)") % [String(floor_def["name"]).trim_prefix("The "), level]
+	return Text.t("the %s (floor %d)") % [Text.mid(String(floor_def["name"]).trim_prefix("The ")), level]

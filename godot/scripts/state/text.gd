@@ -27,6 +27,15 @@ const NOT_WORDS := [
 ]
 
 
+## A place's name inside a sentence (PIX-196): its leading article in lower
+## case - "the Frostgate Pass", « la Cave moussue » - not "The", « La ».
+static func mid(name: String) -> String:
+	for article: String in ["The ", "La ", "Le ", "Les ", "L’", "L'"]:
+		if name.begins_with(article):
+			return article.to_lower() + name.substr(article.length())
+	return name
+
+
 ## `text` in the player's language (itself where there's no translation).
 static func t(text: String) -> String:
 	return TranslationServer.translate(text) if text != "" else text

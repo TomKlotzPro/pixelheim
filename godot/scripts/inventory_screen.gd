@@ -352,7 +352,7 @@ func _about(row: Dictionary) -> String:
 		"recipe":
 			var entry: Dictionary = row["entry"]
 			var job: String = entry["job"]["id"]
-			var about := Text.t("%s %d, at %s.") % [job.capitalize(), entry["job"]["level"], STATIONS[job]]
+			var about := Text.t("%s %d, at %s.") % [Economy.job_name(job), entry["job"]["level"], STATIONS[job]]
 			if int(GameState.hero.jobs[job]["level"]) < int(entry["job"]["level"]):
 				about += Text.t(" You are %s.") % Economy.job_line(GameState.hero.jobs, job)
 			# What's missing and where it comes from (PIX-143), else what it is.
@@ -584,12 +584,12 @@ func _craft(entry: Dictionary) -> void:
 		return
 	if not Economy.can_craft(entry, GameState.pack.items, GameState.hero.jobs):
 		var level := int(entry["job"]["level"])
-		status.text = Text.t("You need %s %d for that.") % [job.capitalize(), level] if GameState.hero.jobs[job]["level"] < level else Text.t("Still missing: %s.") % ", ".join(Economy.missing_names(entry, GameState.pack.items))
+		status.text = Text.t("You need %s %d for that.") % [Economy.job_name(job), level] if GameState.hero.jobs[job]["level"] < level else Text.t("Still missing: %s.") % ", ".join(Economy.missing_names(entry, GameState.pack.items))
 		return
 	var made := GameState.craft(entry["id"])
 	if made["made"]:
 		Sound.play("craft")
-		status.text = Text.t("You craft %s%s. %s") % [Catalog.item_name(entry["itemId"]), " (two!)" if made["count"] > 1 else "", made["level_line"]]
+		status.text = Text.t("You craft %s%s. %s") % [Catalog.item_name(entry["itemId"]), Text.t(" (two!)") if made["count"] > 1 else "", made["level_line"]]
 
 
 func _drop(whole_stack: bool) -> void:

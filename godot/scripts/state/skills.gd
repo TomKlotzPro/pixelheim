@@ -65,7 +65,7 @@ static func tier_level(entry: Dictionary) -> int:
 
 ## Casters spend mana, fighters endurance (resourceLabel).
 static func resource_label(role_id: String) -> String:
-	return "MP" if Catalog.role(role_id)["resource"] == "mana" else "EN"
+	return Text.t("MP") if Catalog.role(role_id)["resource"] == "mana" else Text.t("EN")
 
 
 ## One stat point, spent (applyStatPoint): INT grows a caster's mana, END

@@ -506,7 +506,7 @@ func craft(recipe_id: String) -> Dictionary:
 		if not taken.is_empty() and not taken["done"] and objective["kind"] == "craft" and objective["itemId"] == entry["itemId"]:
 			taken["progress"] = mini(int(objective["count"]), int(taken["progress"]) + count)
 	_pack_changed()
-	var level_line := Text.t("%s reached %d!") % [job.capitalize(), hero.jobs[job]["level"]] if gained > 0 else ""
+	var level_line := Text.t("%s reached %d!") % [Economy.job_name(job), hero.jobs[job]["level"]] if gained > 0 else ""
 	return {"made": true, "count": count, "level_line": level_line}
 
 

@@ -63,7 +63,7 @@ func _rows() -> Array[Dictionary]:
 				var recipe_id: String = entry["id"]
 				out.append(_row_for(
 					Text.t("Craft %s") % Catalog.item_name(entry["itemId"]),
-					"%s %d" % [String(entry["job"]["id"]).capitalize(), entry["job"]["level"]],
+					"%s %d" % [Economy.job_name(entry["job"]["id"]), entry["job"]["level"]],
 					Economy.can_craft(entry, pack.items, GameState.hero.jobs),
 					func() -> String:
 						var result := GameState.craft(recipe_id)

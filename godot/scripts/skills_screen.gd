@@ -192,7 +192,7 @@ func _numbers(entry: Dictionary) -> String:
 	var cost := "%s %s" % [skill["mpCost"], Skills.resource_label(GameState.hero.role_id)]
 	if skill.get("hpCost", 0) > 0:
 		cost += Text.t(" + %d HP") % skill["hpCost"]
-	return Text.t("%sx %s %s · %s") % [skill["multiplier"], Skills.ABBR.get(skill["stat"], skill["stat"]), verb, cost]
+	return Text.t("%sx %s %s · %s") % [skill["multiplier"], Text.t(Skills.ABBR.get(skill["stat"], skill["stat"])), Text.t(verb), cost]
 
 
 func _panel(size: Vector2, chosen: bool, lit: bool) -> PanelContainer:

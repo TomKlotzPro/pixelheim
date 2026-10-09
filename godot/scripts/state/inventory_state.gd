@@ -93,7 +93,8 @@ static func gear_name(instance: Dictionary) -> String:
 	if int(instance.get("deep", 0)) > 0:
 		label = Text.t(deep_name(int(instance["deep"])))
 	var name := Catalog.item_name(instance["itemId"])
-	var titled := Text.t("%s %s") % [label, name] if label != "" else name
+	# Named, not positional: French puts the rarity after the item (PIX-196).
+	var titled := Text.t("{rarity} {item}").format({"rarity": label, "item": name}) if label != "" else name
 	var affixes: Dictionary = instance.get("affixes", {})
 	if affixes.is_empty():
 		return titled
@@ -101,7 +102,7 @@ static func gear_name(instance: Dictionary) -> String:
 	for stat: String in affixes:
 		if best == "" or int(affixes[stat]) > int(affixes[best]):
 			best = stat
-	return Text.t("%s %s") % [titled, Text.t(String(Economy._data()["affixes"]["stats"][best]))]
+	return Text.t("{item} {affix}").format({"item": titled, "affix": Text.t(String(Economy._data()["affixes"]["stats"][best]))})
 
 
 ## A piece's affixes as the sheet reads them: "+2 STR, +1 END".
