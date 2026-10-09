@@ -24,8 +24,9 @@ func test_species_follow_their_regions_weights() -> void:
 		for y in 40:
 			var kind := Bestiary.species_at("ash", Vector2i(x, y))
 			counts[kind] = int(counts.get(kind, 0)) + 1
-	assert_almost_eq(float(counts["orc"]) / 1600.0, 0.5, 0.06, "orcs weigh 4 of 8 in the Ash Fields")
-	assert_almost_eq(float(counts["imp"]) / 1600.0, 0.25, 0.06)
+	assert_almost_eq(float(counts["orc"]) / 1600.0, 0.667, 0.06, "orcs weigh 4 of 6 in the Ash Fields")
+	assert_almost_eq(float(counts["wyvern"]) / 1600.0, 0.333, 0.06)
+	assert_false(counts.has("imp"), "PIX-203: no imps in the Ash - they never could spawn there")
 
 
 func test_the_pack_by_the_hub_is_no_imp_pack() -> void:
@@ -150,6 +151,20 @@ func test_packs_mix_but_never_hide_a_stronger_kind() -> void:
 		assert_eq(leader, Bestiary.species_of(spawn, region), "the spawn's kind leads")
 		for i in range(1, 3):
 			var kind := Bestiary.pack_species(spawn, region, i, Vector2i(spawn["x"] + i, spawn["y"]))
-			assert_lte(int(Bestiary.monster(kind)["level"]), int(Bestiary.monster(leader)["level"]) + 4, "%s's pack" % spawn["id"])
+			assert_lte(int(Bestiary.monster(kind)["level"]), int(Bestiary.monster(leader)["level"]), "%s's pack: never stronger than its leader (PIX-203)" % spawn["id"])
 			mixed = mixed or kind != leader
 	assert_true(mixed, "some packs mix their region's kinds")
+
+
+## PIX-203: the first quest's slimes are where it says, all three.
+func test_the_first_fields_hold_what_the_first_quest_asks() -> void:
+	var forest := MapData.load_by_id("overworld")
+	for spawn: Dictionary in Bestiary.spawns_on("overworld"):
+		var region_id := forest.region_at(Vector2i(spawn["x"], spawn["y"]))
+		if spawn["id"] == "forest_1":
+			for i in 3:
+				assert_eq(Bestiary.pack_species(spawn, region_id, i, Vector2i(spawn["x"], spawn["y"])), "slime", "forest_1 is slimes")
+		if spawn["id"] in ["ash_1", "ash_2", "ash_3"]:
+			for i in 3:
+				assert_ne(Bestiary.pack_species(spawn, region_id, i, Vector2i(spawn["x"], spawn["y"])), "wyvern", "%s by the road hides no wyvern" % spawn["id"])
+	assert_false("floor" in Quests.where(Quests.by_id("slime_trouble"), false), "no floor while the gate is barred")

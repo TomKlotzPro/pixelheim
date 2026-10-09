@@ -297,7 +297,7 @@ func on_enemy_died(enemy: Node) -> void:
 	if GameState.pack.gear.size() > gear_before:
 		Sound.play("drop")
 	if cleared != "":
-		_log([Text.t("The wilds fall quiet again.")])
+		_log([Text.t("The pack is scattered. Another comes once you've walked a good way, or after a night's rest.")])
 	# The dead a boss summons aren't the floor's own foes (PIX-150).
 	if map.floor_level > 0 and floor_foes > 0 and not enemy.is_in_group("summoned"):
 		floor_foes -= 1

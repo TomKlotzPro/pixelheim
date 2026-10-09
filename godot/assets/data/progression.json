@@ -479,7 +479,7 @@
       "id": "bram_imps",
       "giver": "villager_bram",
       "name": "Imp-ossible",
-      "brief": "Bram swears imps from the Ash Fields stole his best cheese knife.",
+      "brief": "Bram swears imps from the mountain's deep floors stole his best cheese knife.",
       "objective": {
         "kind": "kill",
         "monsterId": "imp",

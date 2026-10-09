@@ -3525,6 +3525,10 @@ msgid "THE ENDING: slaying Morvax plays the ending over the village, then the cr
 msgstr "LA FIN : terrasser Morvax lance la fin sur le village, puis le générique - avec toutes les créatures que vous avez combattues, et une infinité de meules de fromage dans leur propre rôle"
 
 #: assets/data/changelog.json
+msgid "THE FIRST FIELDS: a pack never hides a stronger kind than the one leading it - the slimes east of the gate come three at a time for Sela's quest, and the orc packs by the Ash road are orcs, with no wyvern among them"
+msgstr "LES PREMIERS CHAMPS : une meute ne cache jamais plus fort que celui qui la mène - les gelées à l'est de la porte viennent par trois pour la quête de Sela, et les meutes d'orcs sur la route des Cendres ne sont que des orcs, sans wyverne parmi eux"
+
+#: assets/data/changelog.json
 msgid "THE FROSTGATE PASS: a narrow road climbs north out of the Ash Fields into snow - pines on white ridges, a frozen lake, and at the head of the pass Liane's observatory, built over the old ice cave. Up here the wind blows where the birds would sing"
 msgstr "LE COL DE LA PORTE-GIVRE : une route étroite grimpe vers le nord, des Champs de Cendres jusqu'à la neige - des pins sur des crêtes blanches, un lac gelé et, au sommet du col, l'observatoire de Liane, bâti sur l'ancienne grotte de glace. Là-haut, le vent souffle là où chanteraient les oiseaux"
 
@@ -3845,6 +3849,10 @@ msgid "The Ember Seal"
 msgstr "Le Sceau de braise"
 
 #: assets/data/changelog.json
+msgid "The First Fields"
+msgstr "Les premiers champs"
+
+#: assets/data/changelog.json
 msgid "The First Night"
 msgstr "La Première Nuit"
 
@@ -4159,6 +4167,10 @@ msgstr "Le monde ne bat plus sur un seul métronome - chaque villageois, chaque 
 #: assets/data/changelog.json
 msgid "The world's reaction to E moved into tidy rooms of its own; the balance sim and tests now see the same funded town the game does"
 msgstr "La réaction du monde à E s'est installée dans ses propres pièces, bien rangées ; la simulation d'équilibrage et les tests voient désormais le même village financé que le jeu"
+
+#: assets/data/changelog.json
+msgid "The wyverns keep to the far end of the Ash Fields, the journal only points at floors once the mountain's gate is open, and a scattered pack tells you when another comes"
+msgstr "Les wyvernes restent au bout des Champs de Cendres, le journal ne désigne les étages qu'une fois la porte de la montagne ouverte, et une meute dispersée vous dit quand une autre reviendra"
 
 #: assets/data/changelog.json
 msgid "Thirty wearables got hand-fitted overlays cut to the hero's anatomy - every sword, axe, bow, staff, robe, helm and shield, tiered by palette"
@@ -7601,8 +7613,8 @@ msgid "Blackiron ore brought"
 msgstr "Minerai de Fernoir apporté"
 
 #: assets/data/progression.json
-msgid "Bram swears imps from the Ash Fields stole his best cheese knife."
-msgstr "Bram jure que des diablotins des Champs de Cendres lui ont volé son meilleur couteau à fromage."
+msgid "Bram swears imps from the mountain's deep floors stole his best cheese knife."
+msgstr "Bram jure que des diablotins des étages profonds de la montagne lui ont volé son meilleur couteau à fromage."
 
 #: assets/data/progression.json
 msgid "Bram wants a cheese wheel. Of course he does."
@@ -11620,7 +11632,7 @@ msgstr "Le poison"
 msgid "The burn"
 msgstr "La brûlure"
 
-#: scripts/state/bestiary.gd:151
+#: scripts/state/bestiary.gd:152
 msgid "floor %d"
 msgstr "étage %d"
 
@@ -12413,8 +12425,8 @@ msgid "Next"
 msgstr "Ensuite"
 
 #: scripts/world.gd:300
-msgid "The wilds fall quiet again."
-msgstr "Les terres sauvages retombent dans le silence."
+msgid "The pack is scattered. Another comes once you've walked a good way, or after a night's rest."
+msgstr "La meute est dispersée. Une autre reviendra quand vous aurez bien marché, ou après une nuit de repos."
 
 #: scripts/world.gd:477
 msgid "No map reaches this deep."

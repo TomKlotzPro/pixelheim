@@ -219,7 +219,7 @@ func _promise(quest: Dictionary, entries: Dictionary) -> Control:
 	fill.size = Vector2(WIDTH * done / goal, 6)
 	track.add_child(fill)
 	block.add_child(track)
-	var where := "" if ready else Quests.where(quest)
+	var where := "" if ready else Quests.where(quest, Relics.gate_open(GameState.progression))
 	block.add_child(_wrapped("%s (%s, %s)%s" % [quest["brief"], giver, home, "  " + where if where != "" else ""], 14, UiStyle.FADED))
 	return block
 

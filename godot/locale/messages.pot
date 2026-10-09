@@ -3525,6 +3525,10 @@ msgid "THE ENDING: slaying Morvax plays the ending over the village, then the cr
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "THE FIRST FIELDS: a pack never hides a stronger kind than the one leading it - the slimes east of the gate come three at a time for Sela's quest, and the orc packs by the Ash road are orcs, with no wyvern among them"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "THE FROSTGATE PASS: a narrow road climbs north out of the Ash Fields into snow - pines on white ridges, a frozen lake, and at the head of the pass Liane's observatory, built over the old ice cave. Up here the wind blows where the birds would sing"
 msgstr ""
 
@@ -3845,6 +3849,10 @@ msgid "The Ember Seal"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The First Fields"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The First Night"
 msgstr ""
 
@@ -4158,6 +4166,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The world's reaction to E moved into tidy rooms of its own; the balance sim and tests now see the same funded town the game does"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The wyverns keep to the far end of the Ash Fields, the journal only points at floors once the mountain's gate is open, and a scattered pack tells you when another comes"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7601,7 +7613,7 @@ msgid "Blackiron ore brought"
 msgstr ""
 
 #: assets/data/progression.json
-msgid "Bram swears imps from the Ash Fields stole his best cheese knife."
+msgid "Bram swears imps from the mountain's deep floors stole his best cheese knife."
 msgstr ""
 
 #: assets/data/progression.json
@@ -11620,7 +11632,7 @@ msgstr ""
 msgid "The burn"
 msgstr ""
 
-#: scripts/state/bestiary.gd:151
+#: scripts/state/bestiary.gd:152
 msgid "floor %d"
 msgstr ""
 
@@ -12413,7 +12425,7 @@ msgid "Next"
 msgstr ""
 
 #: scripts/world.gd:300
-msgid "The wilds fall quiet again."
+msgid "The pack is scattered. Another comes once you've walked a good way, or after a night's rest."
 msgstr ""
 
 #: scripts/world.gd:477

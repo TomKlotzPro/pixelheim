@@ -128,12 +128,13 @@ static func drops_of(monster_id: String) -> Array:
 
 
 static var _found := {}
+static var _found_floors := {}
 
 
 ## Where a monster lives: the wild regions with a pack of it, then the floors
 ## that field it (for "where to find" hints).
-static func where_found(monster_id: String) -> Array[String]:
-	if _found.is_empty():
+static func where_found(monster_id: String, with_floors := true) -> Array[String]:
+	if _found.is_empty() and _found_floors.is_empty():
 		var maps := {}
 		for spawn: Dictionary in _data()["spawns"]:
 			if not maps.has(spawn["mapId"]):
@@ -147,13 +148,16 @@ static func where_found(monster_id: String) -> Array[String]:
 			_found[species] = places
 		for level in range(1, _data()["levels"].size() + 1):
 			for encounter: Dictionary in _data()["levels"][level - 1]["encounters"]:
-				var places: Array = _found.get(encounter["monsterId"], [])
+				var places: Array = _found_floors.get(encounter["monsterId"], [])
 				var floor_name := Text.t("floor %d") % level
 				if floor_name not in places:
 					places.append(floor_name)
-				_found[encounter["monsterId"]] = places
+				_found_floors[encounter["monsterId"]] = places
 	var out: Array[String] = []
 	out.assign(_found.get(monster_id, []))
+	# The mountain's floors, once there's a way up (PIX-203).
+	if with_floors:
+		out.append_array(_found_floors.get(monster_id, []))
 	return out
 
 
@@ -325,7 +329,9 @@ static func pack_species(spawn: Dictionary, region_id: String, index: int, cell:
 	if index == 0:
 		return leader
 	var other := species_at(region_id, cell + Vector2i(index * 7, index * 13))
-	if int(monster(other)["level"]) > int(monster(leader)["level"]) + 4:
+	# Never a stronger kind than the leader (PIX-203): a pack of slimes is
+	# slimes, a pack of orcs by the road hides no wyvern.
+	if int(monster(other)["level"]) > int(monster(leader)["level"]):
 		return leader
 	return other
 

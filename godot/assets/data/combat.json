@@ -538,10 +538,6 @@
         {
           "monsterId": "wyvern",
           "weight": 2
-        },
-        {
-          "monsterId": "imp",
-          "weight": 2
         }
       ]
     },
@@ -762,7 +758,7 @@
       "mapId": "overworld",
       "x": 58,
       "y": 25,
-      "species": "wyvern"
+      "species": "orc"
     },
     {
       "id": "ash_4",

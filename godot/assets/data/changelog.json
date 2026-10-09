@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.148.0",
+      "date": "2026-10-09",
+      "codename": "The First Fields",
+      "notes": [
+        "THE FIRST FIELDS: a pack never hides a stronger kind than the one leading it - the slimes east of the gate come three at a time for Sela's quest, and the orc packs by the Ash road are orcs, with no wyvern among them",
+        "The wyverns keep to the far end of the Ash Fields, the journal only points at floors once the mountain's gate is open, and a scattered pack tells you when another comes"
+      ]
+    },
+    {
       "version": "0.147.0",
       "date": "2026-10-09",
       "codename": "In Their Own Words",
