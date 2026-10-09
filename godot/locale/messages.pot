@@ -2121,6 +2121,10 @@ msgid "Embers rise over the Ashenreach again, and the world's far edge fades gen
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "En français"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Endurance is a stat: a little health for everyone, stamina pool and faster regen for martials"
 msgstr ""
 
@@ -2170,6 +2174,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Every place has its own music now: a warm folk tune in town, old minor wanderings in the Deepwood, drowned bells over the Mirefen, a cozy lull indoors, a pulse before the dungeon plunge - and bosses get their own menace"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Every price, tag and stat abbreviation on the screens goes through the translation, so nothing is left in English in the corners"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -2749,6 +2757,10 @@ msgid "NOTHING YOU PUT ON IS INVISIBLE ANY MORE: Greymaw's Hood and the City Pla
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Names that sit in a sentence lose their capital article in French, gear and floor foes are named in French word order, and door signs, skill icons and message tags work in either language"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Neighbors"
 msgstr ""
 
@@ -2966,6 +2978,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "PIXELHEIM MOVES TO GODOT: the game at the address you know now runs on the Godot engine - the React edition lives on as the classic edition, one click from the title, and your hero comes across from the saves screen"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "PIXELHEIM SPEAKS FRENCH: every menu, quest, line of dialogue, item, skill, monster, the story and these notes, all 3,098 strings - choose it under Options, or the game follows your system's language"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -9772,6 +9788,10 @@ msgstr ""
 msgid "Expand %s"
 msgstr ""
 
+#: scripts/bank_screen.gd:95
+msgid "expanded"
+msgstr ""
+
 #: scripts/bank_screen.gd:97
 msgid "Already expanded."
 msgstr ""
@@ -9797,7 +9817,11 @@ msgid "No notices yet. The board waits for word from the wilds.\n\nThe first one
 msgstr ""
 
 #: scripts/bounty_screen.gd:24
-msgid "Slain"
+msgid "Slain: %s"
+msgstr ""
+
+#: scripts/bounty_screen.gd:24
+msgid "Wanted: %s"
 msgstr ""
 
 #: scripts/bounty_screen.gd:25
@@ -9806,6 +9830,14 @@ msgstr ""
 
 #: scripts/bounty_screen.gd:31
 msgid "Another notice goes up when %s."
+msgstr ""
+
+#: scripts/bounty_screen.gd:36
+msgid "where"
+msgstr ""
+
+#: scripts/bounty_screen.gd:46
+msgid "SLAIN"
 msgstr ""
 
 #: scripts/bounty_screen.gd:48
@@ -10061,11 +10093,11 @@ msgid "Floor %d: %s"
 msgstr ""
 
 #: scripts/dungeon_screen.gd:65
-msgid "Elite "
+msgid "Elite %s"
 msgstr ""
 
 #: scripts/dungeon_screen.gd:65
-msgid "Guardian: %s%s, level %d"
+msgid "Guardian: %s, level %d"
 msgstr ""
 
 #: scripts/dungeon_screen.gd:68
@@ -10097,6 +10129,10 @@ msgid "First clear: %s"
 msgstr ""
 
 #: scripts/dungeon_screen.gd:94
+msgid "CLEARED"
+msgstr ""
+
+#: scripts/dungeon_screen.gd:94
 msgid "DEEPEST %d"
 msgstr ""
 
@@ -10114,6 +10150,10 @@ msgstr ""
 
 #: scripts/enemy.gd:141
 msgid "Lv %d"
+msgstr ""
+
+#: scripts/enemy.gd:339
+msgid "blocked"
 msgstr ""
 
 #: scripts/enemy.gd:356
@@ -10178,6 +10218,10 @@ msgstr ""
 
 #: scripts/home_screen.gd:39
 msgid "On the shelf:"
+msgstr ""
+
+#: scripts/home_screen.gd:41
+msgid "%s: %s"
 msgstr ""
 
 #: scripts/home_screen.gd:43
@@ -10396,139 +10440,159 @@ msgstr ""
 msgid "The stations are in town"
 msgstr ""
 
-#: scripts/inventory_screen.gd:355
+#: scripts/inventory_screen.gd:241
+msgid "EQUIPPED"
+msgstr ""
+
+#: scripts/inventory_screen.gd:340
+msgid "kind"
+msgstr ""
+
+#: scripts/inventory_screen.gd:342
+msgid "value"
+msgstr ""
+
+#: scripts/inventory_screen.gd:344
+msgid "weight"
+msgstr ""
+
+#: scripts/inventory_screen.gd:346
+msgid "name"
+msgstr ""
+
+#: scripts/inventory_screen.gd:369
 msgid "%s %d, at %s."
 msgstr ""
 
-#: scripts/inventory_screen.gd:357
+#: scripts/inventory_screen.gd:371
 msgid " You are %s."
 msgstr ""
 
-#: scripts/inventory_screen.gd:405
+#: scripts/inventory_screen.gd:419
 msgid "DMG %d%s %s"
 msgstr ""
 
-#: scripts/inventory_screen.gd:407
+#: scripts/inventory_screen.gd:421
 msgid "ARMOR %d%s"
 msgstr ""
 
-#: scripts/inventory_screen.gd:413
+#: scripts/inventory_screen.gd:427
 msgid "+%d HP"
 msgstr ""
 
-#: scripts/inventory_screen.gd:415
+#: scripts/inventory_screen.gd:429
 msgid "+%d MP"
 msgstr ""
 
-#: scripts/inventory_screen.gd:417
+#: scripts/inventory_screen.gd:431
 msgid "cures %s"
 msgstr ""
 
-#: scripts/inventory_screen.gd:418
+#: scripts/inventory_screen.gd:432
 msgid "%d wt"
 msgstr ""
 
-#: scripts/inventory_screen.gd:427
+#: scripts/inventory_screen.gd:441
 msgid "E  travel"
 msgstr ""
 
-#: scripts/inventory_screen.gd:431
+#: scripts/inventory_screen.gd:445
 msgid "E  craft"
 msgstr ""
 
-#: scripts/inventory_screen.gd:433
+#: scripts/inventory_screen.gd:447
 msgid "E  equip"
 msgstr ""
 
-#: scripts/inventory_screen.gd:433
+#: scripts/inventory_screen.gd:447
 msgid "E  take off"
 msgstr ""
 
-#: scripts/inventory_screen.gd:436
+#: scripts/inventory_screen.gd:450
 msgid "E  use"
 msgstr ""
 
-#: scripts/inventory_screen.gd:438
+#: scripts/inventory_screen.gd:452
 msgid "E  place"
 msgstr ""
 
-#: scripts/inventory_screen.gd:465
+#: scripts/inventory_screen.gd:479
 msgid "ATK %d"
 msgstr ""
 
-#: scripts/inventory_screen.gd:465
+#: scripts/inventory_screen.gd:479
 msgid "DEF %d"
 msgstr ""
 
-#: scripts/inventory_screen.gd:469
+#: scripts/inventory_screen.gd:483
 msgid "Carry %d/%d"
 msgstr ""
 
-#: scripts/inventory_screen.gd:488
+#: scripts/inventory_screen.gd:502
 msgid "%s - click to take off"
 msgstr ""
 
-#: scripts/inventory_screen.gd:542
+#: scripts/inventory_screen.gd:556
 msgid "You travel to %s."
 msgstr ""
 
-#: scripts/inventory_screen.gd:555
+#: scripts/inventory_screen.gd:569
 msgid "%s goes back in the pack."
 msgstr ""
 
-#: scripts/inventory_screen.gd:558
+#: scripts/inventory_screen.gd:572
 msgid "You put on %s."
 msgstr ""
 
-#: scripts/inventory_screen.gd:561
+#: scripts/inventory_screen.gd:575
 msgid "That can't be worn."
 msgstr ""
 
-#: scripts/inventory_screen.gd:571
+#: scripts/inventory_screen.gd:585
 msgid "Nothing to do with that here."
 msgstr ""
 
-#: scripts/inventory_screen.gd:575
+#: scripts/inventory_screen.gd:589
 msgid " Cured %s."
 msgstr ""
 
-#: scripts/inventory_screen.gd:587
+#: scripts/inventory_screen.gd:601
 msgid "Still missing: %s."
 msgstr ""
 
-#: scripts/inventory_screen.gd:587
+#: scripts/inventory_screen.gd:601
 msgid "You need %s %d for that."
 msgstr ""
 
-#: scripts/inventory_screen.gd:592
+#: scripts/inventory_screen.gd:606
 msgid " (two!)"
 msgstr ""
 
-#: scripts/inventory_screen.gd:592
+#: scripts/inventory_screen.gd:606
 msgid "You craft %s%s. %s"
 msgstr ""
 
-#: scripts/inventory_screen.gd:604
+#: scripts/inventory_screen.gd:618
 msgid "You leave %s behind."
 msgstr ""
 
-#: scripts/inventory_screen.gd:606
+#: scripts/inventory_screen.gd:620
 msgid "Take it off before you drop it."
 msgstr ""
 
-#: scripts/inventory_screen.gd:608
+#: scripts/inventory_screen.gd:622
 msgid "You'd better hold on to that."
 msgstr ""
 
-#: scripts/inventory_screen.gd:612
+#: scripts/inventory_screen.gd:626
 msgid "You drop %dx %s."
 msgstr ""
 
-#: scripts/item_icons.gd:65
+#: scripts/item_icons.gd:80
 msgid "Buff"
 msgstr ""
 
-#: scripts/item_icons.gd:65
+#: scripts/item_icons.gd:80
 msgid "Buffs&Debuffs"
 msgstr ""
 
@@ -10554,6 +10618,14 @@ msgstr ""
 
 #: scripts/journal_screen.gd:112
 msgid "%s (optional)"
+msgstr ""
+
+#: scripts/journal_screen.gd:116
+msgid "DONE"
+msgstr ""
+
+#: scripts/journal_screen.gd:116
+msgid "NEXT"
 msgstr ""
 
 #: scripts/journal_screen.gd:138
@@ -10800,6 +10872,10 @@ msgstr ""
 msgid "Quit to title"
 msgstr ""
 
+#: scripts/player.gd:240
+msgid "dodged"
+msgstr ""
+
 #: scripts/player.gd:248
 msgid "You are afflicted by %s!"
 msgstr ""
@@ -10884,108 +10960,128 @@ msgstr ""
 msgid "C  Copy mine"
 msgstr ""
 
-#: scripts/saves_screen.gd:132
-msgid "Esc  close      W/S  choose      E  play      N  new hero      X  clear      P  paste      C  copy"
+#: scripts/saves_screen.gd:131
+msgid "clear"
 msgstr ""
 
-#: scripts/saves_screen.gd:138
+#: scripts/saves_screen.gd:131
+msgid "copy"
+msgstr ""
+
+#: scripts/saves_screen.gd:131
+msgid "new hero"
+msgstr ""
+
+#: scripts/saves_screen.gd:131
+msgid "paste"
+msgstr ""
+
+#: scripts/saves_screen.gd:131
+msgid "play"
+msgstr ""
+
+#: scripts/saves_screen.gd:135
 msgid "Found %s in this browser's web game. Press B to bring them here, or Esc to start a new hero."
 msgstr ""
 
-#: scripts/saves_screen.gd:207
+#: scripts/saves_screen.gd:204
 msgid "Replace %s with a new hero?"
 msgstr ""
 
-#: scripts/saves_screen.gd:222
+#: scripts/saves_screen.gd:219
 msgid "Slot %d is already empty."
 msgstr ""
 
-#: scripts/saves_screen.gd:225
+#: scripts/saves_screen.gd:222
 msgid "Clear %s, the hero in hand, for good? You'll go back to the title."
 msgstr ""
 
-#: scripts/saves_screen.gd:229
+#: scripts/saves_screen.gd:226
 msgid "Clear %s from slot %d for good?"
 msgstr ""
 
-#: scripts/saves_screen.gd:231
+#: scripts/saves_screen.gd:228
 msgid "Slot %d is empty now."
 msgstr ""
 
-#: scripts/saves_screen.gd:237
+#: scripts/saves_screen.gd:234
 msgid "from the web game"
 msgstr ""
 
-#: scripts/saves_screen.gd:244
+#: scripts/saves_screen.gd:241
 msgid "That is not a save code. In the web game, open Options and use Copy save code, then paste it here."
 msgstr ""
 
-#: scripts/saves_screen.gd:246
+#: scripts/saves_screen.gd:243
 msgid "from the code"
 msgstr ""
 
-#: scripts/saves_screen.gd:252
+#: scripts/saves_screen.gd:249
 msgid "Save code copied. Paste it into Import save code in the web game's Options."
 msgstr ""
 
-#: scripts/saves_screen.gd:260
+#: scripts/saves_screen.gd:257
 msgid "Replace %s in slot %d with %s %s? Their progress here would be lost."
 msgstr ""
 
-#: scripts/saves_screen.gd:271
+#: scripts/saves_screen.gd:268
 msgid "%s Press %s again to confirm."
 msgstr ""
 
-#: scripts/saves_screen.gd:282
+#: scripts/saves_screen.gd:279
 msgid "B  Bring %s to slot %d"
 msgstr ""
 
-#: scripts/saves_screen.gd:283
+#: scripts/saves_screen.gd:280
 msgid "Load into slot %d"
 msgstr ""
 
-#: scripts/saves_screen.gd:320
+#: scripts/saves_screen.gd:317
 msgid "Empty slot"
 msgstr ""
 
-#: scripts/saves_screen.gd:321
+#: scripts/saves_screen.gd:318
 msgid "N starts a new hero here."
 msgstr ""
 
-#: scripts/saves_screen.gd:326
+#: scripts/saves_screen.gd:323
 msgid "Level %d %s in %s"
 msgstr ""
 
-#: scripts/saves_screen.gd:328
+#: scripts/saves_screen.gd:325
 msgid "%d gold, saved %s"
 msgstr ""
 
-#: scripts/saves_screen.gd:330
+#: scripts/saves_screen.gd:327
 msgid "Playing"
 msgstr ""
 
-#: scripts/saves_screen.gd:330
+#: scripts/saves_screen.gd:327
 msgid "Slot %d"
 msgstr ""
 
-#: scripts/saves_screen.gd:338
+#: scripts/saves_screen.gd:335
 msgid "just now"
 msgstr ""
 
-#: scripts/saves_screen.gd:340
+#: scripts/saves_screen.gd:337
 msgid "%d min ago"
 msgstr ""
 
-#: scripts/saves_screen.gd:343
+#: scripts/saves_screen.gd:340
 msgid "%d hours ago"
 msgstr ""
 
-#: scripts/saves_screen.gd:343
+#: scripts/saves_screen.gd:340
 msgid "1 hour ago"
 msgstr ""
 
-#: scripts/saves_screen.gd:345
+#: scripts/saves_screen.gd:342
 msgid "%d days ago"
+msgstr ""
+
+#: scripts/saves_screen.gd:342
+msgid "yesterday"
 msgstr ""
 
 #: scripts/saves_screen.gd:67
@@ -11036,6 +11132,10 @@ msgstr ""
 msgid "Deed: %s"
 msgstr ""
 
+#: scripts/shop_screen.gd:162
+msgid "owned"
+msgstr ""
+
 #: scripts/shop_screen.gd:163
 msgid "%s\nOwn this business: its till fills with %dg a day, and you pay a tenth less here."
 msgstr ""
@@ -11084,8 +11184,16 @@ msgstr ""
 msgid "Sell one"
 msgstr ""
 
+#: scripts/shop_screen.gd:226
+msgid "  (worn)"
+msgstr ""
+
 #: scripts/shop_screen.gd:227
 msgid "%dg + gem"
+msgstr ""
+
+#: scripts/shop_screen.gd:227
+msgid "max"
 msgstr ""
 
 #: scripts/shop_screen.gd:228
@@ -11224,159 +11332,175 @@ msgstr ""
 msgid "For sale"
 msgstr ""
 
-#: scripts/skills_screen.gd:103
+#: scripts/skills_screen.gd:102
 msgid "Your ascension demands a path"
 msgstr ""
 
-#: scripts/skills_screen.gd:133
+#: scripts/skills_screen.gd:135
 msgid "Current"
 msgstr ""
 
-#: scripts/skills_screen.gd:133
+#: scripts/skills_screen.gd:135
 msgid "Rank %d"
 msgstr ""
 
-#: scripts/skills_screen.gd:133
+#: scripts/skills_screen.gd:135
 msgid "Walk this path"
 msgstr ""
 
-#: scripts/skills_screen.gd:133
+#: scripts/skills_screen.gd:135
 msgid "Walked"
 msgstr ""
 
-#: scripts/skills_screen.gd:135
+#: scripts/skills_screen.gd:137
 msgid "Current · key %d"
 msgstr ""
 
-#: scripts/skills_screen.gd:169
+#: scripts/skills_screen.gd:173
 msgid "key %d"
 msgstr ""
 
-#: scripts/skills_screen.gd:171
+#: scripts/skills_screen.gd:175
 msgid "1 pt"
 msgstr ""
 
-#: scripts/skills_screen.gd:191
+#: scripts/skills_screen.gd:175
+msgid "locked"
+msgstr ""
+
+#: scripts/skills_screen.gd:184
+msgid "SKILL"
+msgstr ""
+
+#: scripts/skills_screen.gd:186
+msgid "UPGRADE"
+msgstr ""
+
+#: scripts/skills_screen.gd:188
+msgid "PASSIVE"
+msgstr ""
+
+#: scripts/skills_screen.gd:207
 msgid "damage to every foe in reach"
 msgstr ""
 
-#: scripts/skills_screen.gd:194
+#: scripts/skills_screen.gd:210
 msgid " + %d HP"
 msgstr ""
 
-#: scripts/skills_screen.gd:195
+#: scripts/skills_screen.gd:211
 msgid "%sx %s %s · %s"
 msgstr ""
 
-#: scripts/skills_screen.gd:222
+#: scripts/skills_screen.gd:238
 msgid "%s: %s  Signature: %s - %s"
 msgstr ""
 
-#: scripts/skills_screen.gd:232
+#: scripts/skills_screen.gd:248
 msgid "Not on the dock - press 1-6 to put it on that key."
 msgstr ""
 
-#: scripts/skills_screen.gd:232
+#: scripts/skills_screen.gd:248
 msgid "On key %d - press 1-6 to move it."
 msgstr ""
 
-#: scripts/skills_screen.gd:234
+#: scripts/skills_screen.gd:250
 msgid "Learn it for 1 point."
 msgstr ""
 
-#: scripts/skills_screen.gd:269
+#: scripts/skills_screen.gd:285
 msgid "Nothing learned to forget yet."
 msgstr ""
 
-#: scripts/skills_screen.gd:271
+#: scripts/skills_screen.gd:287
 msgid "Forgetting takes the village's quiet. Come back to Pixelheim."
 msgstr ""
 
-#: scripts/skills_screen.gd:273
+#: scripts/skills_screen.gd:289
 msgid "Forgetting %s costs %dg."
 msgstr ""
 
-#: scripts/skills_screen.gd:276
+#: scripts/skills_screen.gd:292
 msgid "Forget %s for %dg and get the points back? F again to agree."
 msgstr ""
 
-#: scripts/skills_screen.gd:279
+#: scripts/skills_screen.gd:295
 msgid "%d points"
 msgstr ""
 
-#: scripts/skills_screen.gd:279
+#: scripts/skills_screen.gd:295
 msgid "1 point"
 msgstr ""
 
-#: scripts/skills_screen.gd:279
+#: scripts/skills_screen.gd:295
 msgid "Forgotten. %s to spend again."
 msgstr ""
 
-#: scripts/skills_screen.gd:297
+#: scripts/skills_screen.gd:313
 msgid "Only a skill you know can go on a key."
 msgstr ""
 
-#: scripts/skills_screen.gd:301
+#: scripts/skills_screen.gd:317
 msgid "%s is on key %d."
 msgstr ""
 
-#: scripts/skills_screen.gd:306
+#: scripts/skills_screen.gd:322
 msgid "%d skills"
 msgstr ""
 
-#: scripts/skills_screen.gd:306
+#: scripts/skills_screen.gd:322
 msgid "1 skill"
 msgstr ""
 
-#: scripts/skills_screen.gd:339
+#: scripts/skills_screen.gd:355
 msgid "You walk the path of the %s."
 msgstr ""
 
-#: scripts/skills_screen.gd:341
+#: scripts/skills_screen.gd:357
 msgid "That path isn't yours to walk now."
 msgstr ""
 
-#: scripts/skills_screen.gd:344
+#: scripts/skills_screen.gd:360
 msgid "Learned: %s."
 msgstr ""
 
-#: scripts/skills_screen.gd:346
+#: scripts/skills_screen.gd:362
 msgid "Already learned."
 msgstr ""
 
-#: scripts/skills_screen.gd:356
+#: scripts/skills_screen.gd:372
 msgid "Requires the skill above"
 msgstr ""
 
-#: scripts/skills_screen.gd:358
+#: scripts/skills_screen.gd:374
 msgid "Needs level %d"
 msgstr ""
 
-#: scripts/skills_screen.gd:359
+#: scripts/skills_screen.gd:375
 msgid "No skill points to spend"
 msgstr ""
 
-#: scripts/skills_screen.gd:45
+#: scripts/skills_screen.gd:44
 msgid "forget"
 msgstr ""
 
-#: scripts/skills_screen.gd:45
+#: scripts/skills_screen.gd:44
 msgid "learn / walk"
 msgstr ""
 
-#: scripts/skills_screen.gd:45
+#: scripts/skills_screen.gd:44
 msgid "put on a key"
 msgstr ""
 
-#: scripts/skills_screen.gd:46
+#: scripts/skills_screen.gd:45
 msgid "A point each level, one more each rank."
 msgstr ""
 
-#: scripts/skills_screen.gd:72
+#: scripts/skills_screen.gd:71
 msgid "%d skill point%s"
 msgstr ""
 
-#: scripts/skills_screen.gd:85
+#: scripts/skills_screen.gd:84
 msgid "Path of %s"
 msgstr ""
 
@@ -11392,6 +11516,18 @@ msgstr ""
 msgid "Master"
 msgstr ""
 
+#: scripts/state/ailments.gd:16
+msgid "poison"
+msgstr ""
+
+#: scripts/state/ailments.gd:18
+msgid "burn"
+msgstr ""
+
+#: scripts/state/ailments.gd:20
+msgid "stun"
+msgstr ""
+
 #: scripts/state/ailments.gd:9
 msgid "Poison"
 msgstr ""
@@ -11404,16 +11540,16 @@ msgstr ""
 msgid "floor %d"
 msgstr ""
 
-#: scripts/state/bestiary.gd:37
-msgid "Elite %s"
-msgstr ""
-
 #: scripts/state/catalog.gd:72
 msgid "+%d armor"
 msgstr ""
 
 #: scripts/state/catalog.gd:73
 msgid "%s pieces %s"
+msgstr ""
+
+#: scripts/state/catalog.gd:74
+msgid "%s (%d/%d): %s"
 msgstr ""
 
 #: scripts/state/dungeons.gd:57
@@ -11648,6 +11784,10 @@ msgstr ""
 msgid "+%d XP for the way down."
 msgstr ""
 
+#: scripts/state/game_state.gd:1810
+msgid "the %s"
+msgstr ""
+
 #: scripts/state/game_state.gd:1813
 msgid "Behind the throne, a stair goes on down into the dark: the Deep Hunt."
 msgstr ""
@@ -11766,6 +11906,10 @@ msgstr ""
 
 #: scripts/state/game_state.gd:875
 msgid "Quest complete: %s. %s. “%s”"
+msgstr ""
+
+#: scripts/state/game_state.gd:877
+msgid "%s: %d/%d %s."
 msgstr ""
 
 #: scripts/state/game_state.gd:928
@@ -11992,6 +12136,10 @@ msgstr ""
 msgid "No stat points to spend. Level up to earn more."
 msgstr ""
 
+#: scripts/stats_screen.gd:61
+msgid "%s %d: %s"
+msgstr ""
+
 #: scripts/throne_screen.gd:18
 msgid "The Throne Below"
 msgstr ""
@@ -12001,7 +12149,11 @@ msgid "Morvax is beaten. What happens to him now is up to you."
 msgstr ""
 
 #: scripts/throne_screen.gd:26
-msgid "W/S  choose      E  decide"
+msgid "W/S  choose      E  %s"
+msgstr ""
+
+#: scripts/throne_screen.gd:26
+msgid "decide"
 msgstr ""
 
 #: scripts/throne_screen.gd:35
@@ -12052,6 +12204,10 @@ msgstr ""
 msgid "v%s  ·  What's new"
 msgstr ""
 
+#: scripts/title_screen.gd:255
+msgid "NEW"
+msgstr ""
+
 #: scripts/title_screen.gd:88
 msgid "Fifteen floors. One dragon. Worse things below."
 msgstr ""
@@ -12072,6 +12228,10 @@ msgstr ""
 msgid "Village projects"
 msgstr ""
 
+#: scripts/town_hall_screen.gd:116
+msgid "BUILT"
+msgstr ""
+
 #: scripts/town_hall_screen.gd:14
 msgid "Fund a project and Pixelheim changes the moment you walk outside."
 msgstr ""
@@ -12086,6 +12246,10 @@ msgstr ""
 
 #: scripts/town_hall_screen.gd:26
 msgid "Commissions: costly works the town would build in your honour, each a lasting edge."
+msgstr ""
+
+#: scripts/town_hall_screen.gd:28
+msgid "- %s: %s"
 msgstr ""
 
 #: scripts/town_hall_screen.gd:30
@@ -12114,6 +12278,10 @@ msgstr ""
 
 #: scripts/town_hall_screen.gd:72
 msgid "- %s: %dg earned, %dg in the till (%dg a day)"
+msgstr ""
+
+#: scripts/town_hall_screen.gd:95
+msgid "COMMISSIONED"
 msgstr ""
 
 #: scripts/town_hall_screen.gd:97
@@ -12190,6 +12358,10 @@ msgstr ""
 
 #: scripts/world.gd:976
 msgid "A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it."
+msgstr ""
+
+#: tools/i18n.py
+msgid "%dg"
 msgstr ""
 
 #: tools/i18n.py

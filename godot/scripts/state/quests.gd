@@ -109,7 +109,7 @@ static func where(quest: Dictionary) -> String:
 	var objective: Dictionary = quest["objective"]
 	match String(objective["kind"]):
 		"hunt":
-			return Text.t("In %s.") % Hunts.named(objective["named"]).get("where", "the wilds")
+			return Text.t("In %s.") % Hunts.named(objective["named"]).get("where", Text.t("the wilds"))
 		"kill":
 			var places := Bestiary.where_found(objective["monsterId"])
 			return Text.t("Found in %s.") % ", ".join(places.slice(0, 3)) if not places.is_empty() else ""

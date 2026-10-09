@@ -70,7 +70,7 @@ func _refill() -> void:
 func _fill() -> void:
 	var names: Array[String] = []
 	for id: String in TABS:
-		names.append("[ %s ]" % TAB_NAMES[id] if id == tab else TAB_NAMES[id])
+		names.append("[ %s ]" % Text.t(TAB_NAMES[id]) if id == tab else Text.t(TAB_NAMES[id]))
 	tab_label.text = "   |   ".join(names)
 	match tab:
 		"main":
@@ -113,7 +113,7 @@ func _main() -> void:
 			UiStyle.FADED if met else (UiStyle.LAMP if entry["id"] == step["id"] else UiStyle.INK))
 		text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		line.add_child(text)
-		line.add_child(UiStyle.label("DONE" if met else ("NEXT" if entry["id"] == step["id"] else ""), 14, UiStyle.LAMP))
+		line.add_child(UiStyle.label(Text.t("DONE") if met else (Text.t("NEXT") if entry["id"] == step["id"] else ""), 14, UiStyle.LAMP))
 		body.add_child(line)
 	var entries := GameState.progression.quests
 	var carried := Quests.all().filter(func(quest: Dictionary) -> bool:
@@ -139,7 +139,7 @@ func _side() -> void:
 	else:
 		var heading := Text.t("Side promises - %d open") % open.size()
 		if open.size() > SHOWN:
-			heading += "   (W/S to scroll)"
+			heading += Text.t("   (W/S to scroll)")
 		body.add_child(UiStyle.strong(heading, 18, UiStyle.LAMP))
 		for quest: Dictionary in open.slice(from, from + SHOWN):
 			body.add_child(_promise(quest, entries))
@@ -168,7 +168,7 @@ func _bounties() -> void:
 		var name := UiStyle.label(entry["name"], 16, UiStyle.FADED if slain else UiStyle.INK)
 		name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		line.add_child(name)
-		line.add_child(UiStyle.label("SLAIN" if slain else "%dg" % int(entry["bounty"]), 16, UiStyle.LAMP))
+		line.add_child(UiStyle.label(Text.t("SLAIN") if slain else Text.coins(int(entry["bounty"])), 16, UiStyle.LAMP))
 		body.add_child(line)
 		if not slain:
 			body.add_child(_wrapped(Text.t("Its lair: %s. %s.") % [entry["where"], Hunts.reward_line(entry)], 14, UiStyle.FADED))
@@ -186,7 +186,7 @@ func _story() -> void:
 		return
 	var heading := Text.t("Liane's journal - %d of %d pages") % [pages.size(), Story.lore().size()]
 	if pages.size() > SHOWN:
-		heading += "   (W/S to turn)"
+		heading += Text.t("   (W/S to turn)")
 	body.add_child(UiStyle.strong(heading, 18, UiStyle.LAMP))
 	for page: Dictionary in pages.slice(from, from + SHOWN):
 		body.add_child(_wrapped("%s.  %s" % [page["title"], page["text"]], 14, UiStyle.INK))

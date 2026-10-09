@@ -99,3 +99,19 @@ func test_no_prose_format_skips_the_translation() -> void:
 					if wrapped.search(line.substr(0, found.get_start())) == null:
 						missed.append("%s:%d %s" % [file, number, inner])
 	assert_eq(missed, [] as Array[String], "every sentence built from a format goes through Text.t")
+
+
+## PIX-196: the words the screens glue together - tags, compact gold, the
+## pack's order, an ailment's name, a stat - speak the player's language.
+func test_tags_and_compact_gold_speak_french() -> void:
+	const InventoryScreen := preload("res://scripts/inventory_screen.gd")
+	Text.apply("fr")
+	assert_eq(Text.coins(55), "55 o")
+	assert_eq(InventoryScreen.sort_name("kind"), "type")
+	assert_eq(Ailments.label("burn"), "brûlure")
+	assert_string_contains(InventoryScreen.stat_line(Catalog.item("iron_sword"), 0, 120), "FOR")
+	for tag: String in ["EQUIPPED", "SLAIN", "CLEARED", "DONE", "NEXT", "NEW", "BUILT", "COMMISSIONED", "SKILL", "UPGRADE", "PASSIVE", "locked"]:
+		assert_ne(Text.t(tag), tag, "%s is translated" % tag)
+	Text.apply("en")
+	assert_eq(Text.coins(55), "55g")
+	assert_eq(InventoryScreen.sort_name("kind"), "kind")

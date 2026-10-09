@@ -322,7 +322,7 @@ static func material_sources(item_id: String, town_tier := 4, stock_stage := 99,
 			if carried["itemId"] != item_id:
 				continue
 			var places := Bestiary.where_found(monster_id)
-			var odds := "every time" if float(carried["chance"]) >= 1.0 else "%d%%" % roundi(float(carried["chance"]) * 100)
+			var odds := Text.t("every time") if float(carried["chance"]) >= 1.0 else "%d%%" % roundi(float(carried["chance"]) * 100)
 			if carried.has("once"):
 				# Sure once a hero, then a chance (PIX-180: Fafnyr's scale).
 				odds = Text.t("sure the first time, then %d%%") % roundi(float(carried["after"]) * 100)

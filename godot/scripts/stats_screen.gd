@@ -36,7 +36,7 @@ func _info() -> String:
 		var stat: String = Skills.STATS[selected]
 		var info := Skills.info(stat, hero, pack)
 		lines.append_array([
-			"", "%s %d" % [Skills.ABBR[stat], hero.stats[stat]], String(info["blurb"]),
+			"", "%s %d" % [Text.t(Skills.ABBR[stat]), hero.stats[stat]], String(info["blurb"]),
 			Text.t("Now: %s") % info["now"], Text.t("With a point: %s") % info["next"],
 		])
 	return "\n".join(lines)
@@ -47,7 +47,7 @@ func _rows() -> Array[Dictionary]:
 	var rows_out: Array[Dictionary] = []
 	for stat: String in Skills.STATS:
 		rows_out.append({
-			"label": "%s  %d" % [Skills.ABBR[stat], hero.stats[stat]],
+			"label": "%s  %d" % [Text.t(Skills.ABBR[stat]), hero.stats[stat]],
 			"note": "+1" if hero.stat_points > 0 else "",
 			"enabled": hero.stat_points > 0,
 			"why": "No stat points to spend. Level up to earn more.",
@@ -58,7 +58,7 @@ func _rows() -> Array[Dictionary]:
 
 func _spend(stat: String) -> String:
 	GameState.spend_stat_point(stat)
-	return "%s %d: %s" % [Skills.ABBR[stat], GameState.hero.stats[stat], Skills.readout(stat, GameState.hero, GameState.pack)]
+	return Text.t("%s %d: %s") % [Text.t(Skills.ABBR[stat]), GameState.hero.stats[stat], Skills.readout(stat, GameState.hero, GameState.pack)]
 
 
 func _open() -> void:

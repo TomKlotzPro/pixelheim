@@ -316,7 +316,7 @@ func refresh() -> void:
 		UiStyle.keycap_text(line["cap"], Controls.key_label(Controls.key_for(screen, keys)))
 		var waiting := hero.stat_points if screen == "stats" else (hero.skill_points if screen == "skills" else 0)
 		waiting_any = waiting_any or waiting > 0
-		line["word"].text = line["name"] + ("  +%d" % waiting if waiting > 0 else "")
+		line["word"].text = Text.t(line["name"]) + ("  +%d" % waiting if waiting > 0 else "")
 		line["word"].add_theme_color_override("font_color", UiStyle.LAMP if waiting > 0 else UiStyle.INK)
 	# Points to spend light the menu, so they're never missed.
 	UiStyle.focus(menu_button, waiting_any)

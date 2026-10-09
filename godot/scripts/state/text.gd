@@ -41,6 +41,11 @@ static func t(text: String) -> String:
 	return TranslationServer.translate(text) if text != "" else text
 
 
+## A compact gold amount, as costs show it: "55g", « 55 o ».
+static func coins(amount: int) -> String:
+	return t("%dg") % amount
+
+
 ## Whether a data string is words a player reads: it has a capital or a
 ## space (ids are lower_snake), and its key isn't one that holds ids.
 static func is_words(key: String, value: String) -> bool:

@@ -110,7 +110,7 @@ static func affix_line(instance: Dictionary) -> String:
 	var parts: Array[String] = []
 	var affixes: Dictionary = instance.get("affixes", {})
 	for stat: String in affixes:
-		parts.append("+%d %s" % [int(affixes[stat]), Skills.ABBR.get(stat, stat)])
+		parts.append("+%d %s" % [int(affixes[stat]), Text.t(Skills.ABBR.get(stat, stat))])
 	return ", ".join(parts)
 
 

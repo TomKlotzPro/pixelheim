@@ -67,8 +67,8 @@ static func set_line(set_id: String, worn: int) -> String:
 		armor += int(bonuses[at].get("armor", 0))
 		var gives: Array[String] = []
 		for stat: String in grants:
-			gives.append("+%d %s" % [int(grants[stat]), stat.substr(0, 3).to_upper()])
+			gives.append("+%d %s" % [int(grants[stat]), Text.t(stat.substr(0, 3).to_upper())])
 		if armor > 0:
 			gives.append(Text.t("+%d armor") % armor)
 		parts.append(Text.t("%s pieces %s") % [at, ", ".join(gives)])
-	return "%s (%d/%d): %s" % [entry.get("name", set_id), worn, entry.get("pieces", []).size(), "; ".join(parts)]
+	return Text.t("%s (%d/%d): %s") % [entry.get("name", set_id), worn, entry.get("pieces", []).size(), "; ".join(parts)]

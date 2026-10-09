@@ -128,14 +128,11 @@ func _open() -> void:
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	status.custom_minimum_size = Vector2(WINDOW.x - 44, 0)
 	body.add_child(status)
-	add_child(UiStyle.footer(
-		"Esc  close      W/S  choose      E  play      N  new hero      X  clear      P  paste      C  copy",
-		Vector2(0, 664), true
-	))
+	add_child(UiStyle.footer("Esc  close      W/S  choose      E  play      N  new hero      X  clear      P  paste      C  copy", Vector2(0, 664), true))
 
 	if welcome:
 		status.text = (
-			"Found %s in this browser's web game. Press B to bring them here, or Esc to start a new hero."
+			Text.t("Found %s in this browser's web game. Press B to bring them here, or Esc to start a new hero.")
 			% WebImport.describe(web_save)
 		)
 	_refresh()
@@ -234,7 +231,7 @@ func _clear() -> void:
 func _bring() -> void:
 	if web_save.is_empty():
 		return
-	if welcome or _may_replace("bring", "B", web_save, "from the web game"):
+	if welcome or _may_replace("bring", "B", web_save, Text.t("from the web game")):
 		GameState.import_into(_target(), web_save)
 		_reload()
 
@@ -243,7 +240,7 @@ func _load_code() -> void:
 	if state.is_empty():
 		_say("That is not a save code. In the web game, open Options and use Copy save code, then paste it here.")
 		return
-	if _may_replace("code", "Enter", state, "from the code"):
+	if _may_replace("code", "Enter", state, Text.t("from the code")):
 		GameState.import_into(_target(), state)
 		_reload()
 
@@ -335,14 +332,14 @@ func _fill_card(card: PanelContainer, index: int) -> void:
 static func _ago(saved_at: int) -> String:
 	var seconds := int(Time.get_unix_time_from_system()) - saved_at
 	if saved_at <= 0 or seconds < 60:
-		return "just now"
+		return Text.t("just now")
 	if seconds < 3600:
 		return Text.t("%d min ago") % (seconds / 60)
 	if seconds < 86400:
 		var hours := seconds / 3600
-		return "1 hour ago" if hours == 1 else Text.t("%d hours ago") % hours
+		return Text.t("1 hour ago") if hours == 1 else Text.t("%d hours ago") % hours
 	var days := seconds / 86400
-	return "yesterday" if days == 1 else Text.t("%d days ago") % days
+	return Text.t("yesterday") if days == 1 else Text.t("%d days ago") % days
 
 func _reload() -> void:
 	get_tree().paused = false

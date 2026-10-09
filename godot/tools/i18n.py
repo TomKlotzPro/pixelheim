@@ -30,7 +30,7 @@ LANGUAGES = ["fr"]
 ## abbreviations and the words templates are filled with.
 SHOWN = [
     "HP", "MP", "EN", "XP", "STR", "INT", "DEX", "DEF", "END", "ATK", "DMG",
-    "damage", "healing", "Buy", "Sell", "Craft", "Gear", "Items", "Forge",
+    "damage", "healing", "Buy", "Sell", "Craft", "Gear", "Items", "Forge", "%dg",
 ]
 HEADER = {
     "fr": 'Language: fr\\nPlural-Forms: nplurals=2; plural=(n > 1);\\n',

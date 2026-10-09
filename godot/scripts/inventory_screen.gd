@@ -122,7 +122,7 @@ func _refresh() -> void:
 	var share := clampf(float(weight) / maxi(1, capacity), 0.0, 1.0)
 	weight_fill.size = Vector2(120 * share, 8)
 	weight_fill.color = UiStyle.LAMP if share >= 0.9 else UiStyle.GOLD
-	sort_label.text = Text.t("Gold %d      Sorted by %s") % [pack.gold, GameState.settings.pack_sort]
+	sort_label.text = Text.t("Gold %d      Sorted by %s") % [pack.gold, sort_name(GameState.settings.pack_sort)]
 	_build_doll()
 	for child in tab_row.get_children():
 		child.queue_free()
@@ -198,12 +198,12 @@ func _town_gate() -> Dictionary:
 func _guide_lines() -> Array[String]:
 	var here := _jobs_here()
 	if not here.is_empty():
-		var where: String = "your workbench" if GameState.world.map_id == "town_house" else STATIONS[here[0]]
-		return [Text.t("At %s") % where, "E crafts any recipe below you have the makings for."]
-	var away := "Hilda forges behind the FORGE door, Vex brews behind BREWS; a bought house can fit a workbench."
+		var where: String = Text.t("your workbench") if GameState.world.map_id == "town_house" else Text.mid(Text.t(STATIONS[here[0]]))
+		return [Text.t("At %s") % where, Text.t("E crafts any recipe below you have the makings for.")]
+	var away := Text.t("Hilda forges behind the FORGE door, Vex brews behind BREWS; a bought house can fit a workbench.")
 	if not _town_gate().is_empty():
-		return ["The stations are in town", away + " E travels to the gate."]
-	return ["The stations are in town", away]
+		return [Text.t("The stations are in town"), away + Text.t(" E travels to the gate.")]
+	return [Text.t("The stations are in town"), away]
 
 
 func _row(index: int) -> Control:
@@ -238,7 +238,7 @@ func _row(index: int) -> Control:
 	var stats := ""
 	if row["kind"] == "gear":
 		var piece: Dictionary = row["piece"]
-		name = InventoryState.gear_name(piece) + ("   EQUIPPED" if GameState.pack.is_equipped(piece["uid"]) else "")
+		name = InventoryState.gear_name(piece) + ("   " + Text.t("EQUIPPED") if GameState.pack.is_equipped(piece["uid"]) else "")
 		stats = stat_line(item, int(piece["bonus"]), Economy.gear_value(piece), piece.get("affixes", {}))
 	else:
 		name = String(item["name"]) + ("  x%d" % row["count"] if row["count"] > 1 else "")
@@ -333,6 +333,20 @@ func _count_badge(count: int) -> Control:
 	return badge
 
 
+## A sort's name for the "Sorted by" line: the SORTS are ids.
+static func sort_name(sort: String) -> String:
+	match sort:
+		"kind":
+			return Text.t("kind")
+		"value":
+			return Text.t("value")
+		"weight":
+			return Text.t("weight")
+		"name":
+			return Text.t("name")
+	return sort
+
+
 ## R: the next order (InventoryState.SORTS), remembered between sessions.
 func _sort() -> void:
 	var sorts := InventoryState.SORTS
@@ -352,7 +366,7 @@ func _about(row: Dictionary) -> String:
 		"recipe":
 			var entry: Dictionary = row["entry"]
 			var job: String = entry["job"]["id"]
-			var about := Text.t("%s %d, at %s.") % [Economy.job_name(job), entry["job"]["level"], STATIONS[job]]
+			var about := Text.t("%s %d, at %s.") % [Economy.job_name(job), entry["job"]["level"], Text.mid(Text.t(STATIONS[job]))]
 			if int(GameState.hero.jobs[job]["level"]) < int(entry["job"]["level"]):
 				about += Text.t(" You are %s.") % Economy.job_line(GameState.hero.jobs, job)
 			# What's missing and where it comes from (PIX-143), else what it is.
@@ -402,21 +416,21 @@ static func stat_line(item: Dictionary, bonus: int, value: int, affixes := {}) -
 	var plus := "+%d" % bonus if bonus > 0 else ""
 	if item.has("damage"):
 		var scaling: String = item.get("scaling", "strength")
-		parts.append(Text.t("DMG %d%s %s") % [int(item["damage"]) + bonus, " (%d%s)" % [item["damage"], plus] if plus != "" else "", scaling.substr(0, 3).to_upper()])
+		parts.append(Text.t("DMG %d%s %s") % [int(item["damage"]) + bonus, " (%d%s)" % [item["damage"], plus] if plus != "" else "", Text.t(scaling.substr(0, 3).to_upper())])
 	if item.has("armor"):
 		parts.append(Text.t("ARMOR %d%s") % [int(item["armor"]) + bonus, " (%d%s)" % [item["armor"], plus] if plus != "" else ""])
 	for stat: String in item.get("grants", {}):
-		parts.append("+%d %s" % [item["grants"][stat], stat.substr(0, 3).to_upper()])
+		parts.append("+%d %s" % [item["grants"][stat], Text.t(stat.substr(0, 3).to_upper())])
 	for stat: String in affixes:
-		parts.append("+%d %s" % [int(affixes[stat]), stat.substr(0, 3).to_upper()])
+		parts.append("+%d %s" % [int(affixes[stat]), Text.t(stat.substr(0, 3).to_upper())])
 	if item.has("restoreHp"):
 		parts.append(Text.t("+%d HP") % item["restoreHp"])
 	if item.has("restoreMp"):
 		parts.append(Text.t("+%d MP") % item["restoreMp"])
 	if item.has("cures"):
-		parts.append(Text.t("cures %s") % item["cures"])
+		parts.append(Text.t("cures %s") % Ailments.label(item["cures"]))
 	parts.append(Text.t("%d wt") % item["weight"])
-	parts.append("%dg" % value)
+	parts.append(Text.coins(value))
 	return "  ".join(parts)
 
 
@@ -424,18 +438,18 @@ static func stat_line(item: Dictionary, bonus: int, value: int, affixes := {}) -
 ## place furniture at home.
 func _primary_label(row: Dictionary) -> String:
 	if row["kind"] == "guide":
-		return "E  travel" if not _town_gate().is_empty() else ""
+		return Text.t("E  travel") if not _town_gate().is_empty() else ""
 	if row["kind"] == "recipe":
 		var entry: Dictionary = row["entry"]
 		var here := String(entry["job"]["id"]) in _jobs_here()
-		return "E  craft" if here and Economy.can_craft(entry, GameState.pack.items, GameState.hero.jobs) else ""
+		return Text.t("E  craft") if here and Economy.can_craft(entry, GameState.pack.items, GameState.hero.jobs) else ""
 	if row["kind"] == "gear":
-		return "E  take off" if GameState.pack.is_equipped(row["piece"]["uid"]) else "E  equip"
+		return Text.t("E  take off") if GameState.pack.is_equipped(row["piece"]["uid"]) else Text.t("E  equip")
 	var item := Catalog.item(row["item_id"])
 	if item.has("restoreHp") or item.has("restoreMp") or item.has("cures"):
-		return "E  use"
+		return Text.t("E  use")
 	if item["category"] == "furniture" and GameState.world.map_id == "town_house":
-		return "E  place"
+		return Text.t("E  place")
 	return ""
 
 
@@ -465,7 +479,7 @@ func _build_doll() -> void:
 	var lines: Array[String] = [Text.t("ATK %d") % attack, Text.t("DEF %d") % HeroRules.total_defense(hero, pack)]
 	for stat: String in ["strength", "intelligence", "dexterity"]:
 		var granted := pack.granted_stat(stat)
-		lines.append("%s %d%s" % [Skills.ABBR[stat], hero.stats[stat], "  +%d" % granted if granted > 0 else ""])
+		lines.append("%s %d%s" % [Text.t(Skills.ABBR[stat]), hero.stats[stat], "  +%d" % granted if granted > 0 else ""])
 	lines.append(Text.t("Carry %d/%d") % [pack.carried_weight(), Skills.carry_capacity(hero, pack)])
 	var numbers := UiStyle.label("\n".join(lines), 15, UiStyle.INK, Vector2(24, 340))
 	doll.add_child(numbers)
@@ -482,7 +496,7 @@ func _slot(slot: String, label: String) -> Control:
 		var ghost := _icon(GHOSTS[slot])
 		ghost.modulate = Color(UiStyle.INK, 0.28)
 		box.add_child(ghost)
-		box.tooltip_text = label
+		box.tooltip_text = Text.t(label)
 	else:
 		box.add_child(_icon(instance["itemId"]))
 		box.tooltip_text = Text.t("%s - click to take off") % InventoryState.gear_name(instance)
@@ -572,7 +586,7 @@ func _primary() -> void:
 		else:
 			status.text = used["text"]
 			if used["cures"] != "" and world != null and world.player.ailments.cure(used["cures"]):
-				status.text += Text.t(" Cured %s.") % used["cures"]
+				status.text += Text.t(" Cured %s.") % Ailments.label(used["cures"])
 	_refresh()
 
 

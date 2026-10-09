@@ -297,7 +297,7 @@ func on_enemy_died(enemy: Node) -> void:
 	if GameState.pack.gear.size() > gear_before:
 		Sound.play("drop")
 	if cleared != "":
-		_log(["The wilds fall quiet again."])
+		_log([Text.t("The wilds fall quiet again.")])
 	# The dead a boss summons aren't the floor's own foes (PIX-150).
 	if map.floor_level > 0 and floor_foes > 0 and not enemy.is_in_group("summoned"):
 		floor_foes -= 1
@@ -1462,7 +1462,7 @@ func _play_reveals() -> void:
 				if GameState.festival_on():
 					stops.append({
 						"at": _cell_center(Vector2i(int(Town.festival("barker")["x"]), int(Town.festival("barker")["y"]))),
-						"line": "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw.",
+						"line": Text.t("And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."),
 					})
 			"home":
 				stops.append({"at": _cell_center(Town.square()), "line": Town.homecoming(int(key))})

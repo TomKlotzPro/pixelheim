@@ -77,7 +77,7 @@ func _masteries() -> void:
 		var note := ""
 		if tier > 0:
 			note = Text.t("+%d%% damage against them. ") % roundi(float(tiers[tier - 1]["bonus"]) * 100)
-		note += "Nothing left to teach you." if next.is_empty() else Text.t("%d more for +%d%%.") % [
+		note += Text.t("Nothing left to teach you.") if next.is_empty() else Text.t("%d more for +%d%%.") % [
 			int(next["kills"]) - kills, roundi(float(next["bonus"]) * 100),
 		]
 		body.add_child(UiStyle.label(note, 13, UiStyle.FADED))

@@ -119,7 +119,7 @@ static func current_age(settlement: SettlementState) -> int:
 static func project_blocker(project_id: String, progression: ProgressionState, settlement: SettlementState, gold: int, items: Dictionary) -> String:
 	var entry := project(project_id)
 	if project_id in done_projects(settlement):
-		return "Already built."
+		return Text.t("Already built.")
 	var tier_number := age_of(project_id)
 	if tier_number != current_age(settlement):
 		return Text.t("Finish the %s first.") % tier(current_age(settlement))["name"]
@@ -137,7 +137,7 @@ static func project_blocker(project_id: String, progression: ProgressionState, s
 ## A project's price as one line: "250g, 2 Wolf Pelt".
 static func cost_line(project_id: String) -> String:
 	var cost: Dictionary = project(project_id)["cost"]
-	var parts: Array[String] = ["%dg" % cost["gold"]]
+	var parts: Array[String] = [Text.coins(int(cost["gold"]))]
 	for item_id: String in cost["items"]:
 		parts.append("%d %s" % [cost["items"][item_id], Catalog.item_name(item_id)])
 	return ", ".join(parts)

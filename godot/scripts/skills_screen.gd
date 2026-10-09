@@ -6,7 +6,6 @@ extends Screen
 ## E learns a node or walks a path, 1-6 puts a known skill on that key of the
 ## dock, K or Esc closes. The world holds still meanwhile.
 
-const KIND_LABELS := {"active": "SKILL", "upgrade": "UPGRADE", "passive": "PASSIVE"}
 const TIER_BADGES := ["I", "II", "III", "IV", "V", "VI"]
 const COLUMN_X := [80, 470, 860]
 const PATH_CARD := Vector2(340, 56)
@@ -130,10 +129,13 @@ func _path_graph(hero: HeroState) -> void:
 
 func _path_card(node: Dictionary, walked: Array, chosen: bool) -> Control:
 	var current: bool = not walked.is_empty() and walked[-1] == node["id"]
-	var state := "Current" if current else ("Walked" if node["id"] in walked else ("Walk this path" if _claimable({"kind": "path", "entry": node}) else Text.t("Rank %d") % node["tier"]))
+	# Whether this step waits to be walked now: decided apart from the words
+	# shown, which are in the player's language.
+	var claim: bool = not current and node["id"] not in walked and _claimable({"kind": "path", "entry": node})
+	var state := Text.t("Current") if current else (Text.t("Walked") if node["id"] in walked else (Text.t("Walk this path") if claim else Text.t("Rank %d") % node["tier"]))
 	if current and _key_of("path") > 0:
 		state = Text.t("Current · key %d") % _key_of("path")
-	var lit: bool = current or node["id"] in walked or state == "Walk this path"
+	var lit: bool = current or node["id"] in walked or claim
 	var panel := _panel(PATH_CARD, chosen, lit)
 	var lines := VBoxContainer.new()
 	lines.add_theme_constant_override("separation", 2)
@@ -144,7 +146,7 @@ func _path_card(node: Dictionary, walked: Array, chosen: bool) -> Control:
 	head.add_child(name)
 	head.add_child(UiStyle.label(TIER_BADGES[int(node["tier"]) - 1], 13, UiStyle.FADED))
 	lines.add_child(head)
-	lines.add_child(UiStyle.label(state, 12, UiStyle.LAMP if state == "Walk this path" else UiStyle.FADED))
+	lines.add_child(UiStyle.label(state, 12, UiStyle.LAMP if claim else UiStyle.FADED))
 	return panel
 
 
@@ -156,6 +158,8 @@ func _node_card(entry: Dictionary, chosen: bool) -> Control:
 	var buyable := Skills.can_buy(hero, entry)
 	var panel := _panel(NODE_CARD, chosen, owned or buyable)
 	var head := HBoxContainer.new()
+	# A clear gap: a longer language's name clips before it meets the tag.
+	head.add_theme_constant_override("separation", 12)
 	panel.add_child(head)
 	var name := UiStyle.label(
 		"%s  %s" % [TIER_BADGES[int(entry["tier"])], entry["name"]], 15,
@@ -164,13 +168,25 @@ func _node_card(entry: Dictionary, chosen: bool) -> Control:
 	name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	name.clip_text = true
 	head.add_child(name)
-	var tag: String = KIND_LABELS[entry["kind"]]
+	var tag := _kind_label(entry["kind"])
 	if owned and _key_of(entry["id"]) > 0:
 		tag = Text.t("key %d") % _key_of(entry["id"])
 	elif not owned:
-		tag = "1 pt" if buyable else (Text.t("Lv %d") % Skills.tier_level(entry) if hero.level < Skills.tier_level(entry) else "locked")
+		tag = Text.t("1 pt") if buyable else (Text.t("Lv %d") % Skills.tier_level(entry) if hero.level < Skills.tier_level(entry) else Text.t("locked"))
 	head.add_child(UiStyle.label(tag, 12, UiStyle.LAMP if owned or buyable else UiStyle.FADED))
 	return panel
+
+
+## What a node is, as its tag says it.
+static func _kind_label(kind: String) -> String:
+	match kind:
+		"active":
+			return Text.t("SKILL")
+		"upgrade":
+			return Text.t("UPGRADE")
+		"passive":
+			return Text.t("PASSIVE")
+	return kind.to_upper()
 
 
 ## The dock key (1-6) a skill sits on, 0 if none.
@@ -223,15 +239,15 @@ func _describe() -> void:
 		return
 	var hero := GameState.hero
 	var owned: bool = entry["id"] in hero.skill_nodes
-	var parts: Array[String] = ["%s: %s" % [entry["name"], entry["description"]]]
+	var parts: Array[String] = [Text.t("%s: %s") % [entry["name"], entry["description"]]]
 	var numbers := _numbers(entry)
 	if numbers != "":
 		parts.append(numbers)
 	if owned and entry["kind"] == "active":
 		var key := _key_of(entry["id"])
-		parts.append(Text.t("On key %d - press 1-6 to move it.") % key if key > 0 else "Not on the dock - press 1-6 to put it on that key.")
+		parts.append(Text.t("On key %d - press 1-6 to move it.") % key if key > 0 else Text.t("Not on the dock - press 1-6 to put it on that key."))
 	elif not owned:
-		parts.append("Learn it for 1 point." if Skills.can_buy(hero, entry) else _why_not(entry) + ".")
+		parts.append(Text.t("Learn it for 1 point.") if Skills.can_buy(hero, entry) else _why_not(entry) + ".")
 	details.text = "  ".join(parts)
 
 
@@ -276,7 +292,7 @@ func _forget() -> void:
 		status.text = Text.t("Forget %s for %dg and get the points back? F again to agree.") % [_skills(count), cost]
 	elif GameState.forget_skills():
 		Sound.play("learn")
-		status.text = Text.t("Forgotten. %s to spend again.") % ("1 point" if count == 1 else Text.t("%d points") % count)
+		status.text = Text.t("Forgotten. %s to spend again.") % (Text.t("1 point") if count == 1 else Text.t("%d points") % count)
 		_layout()
 	forget_armed = armed
 
@@ -303,7 +319,7 @@ func _bind(index: int) -> void:
 
 
 func _skills(count: int) -> String:
-	return "1 skill" if count == 1 else Text.t("%d skills") % count
+	return Text.t("1 skill") if count == 1 else Text.t("%d skills") % count
 
 
 ## To the next card that way: same column first, else the nearest one.
@@ -353,7 +369,7 @@ func _act() -> void:
 func _why_not(entry: Dictionary) -> String:
 	var hero := GameState.hero
 	if entry.has("requires") and entry["requires"] not in hero.skill_nodes:
-		return "Requires the skill above"
+		return Text.t("Requires the skill above")
 	if hero.level < Skills.tier_level(entry):
 		return Text.t("Needs level %d") % Skills.tier_level(entry)
-	return "No skill points to spend"
+	return Text.t("No skill points to spend")

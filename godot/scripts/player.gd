@@ -237,7 +237,7 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null) -> void:
 	if invulnerable or dead:
 		return
 	if _dodge_iframes:
-		world.float_text("dodged", global_position + Vector2(0, -22), Color(0.75, 0.9, 1.0))
+		world.float_text(Text.t("dodged"), global_position + Vector2(0, -22), Color(0.75, 0.9, 1.0))
 		return
 	GameState.hurt(damage)
 	hp = GameState.hero.hp
@@ -245,7 +245,7 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null) -> void:
 	world.shake(3.0, 0.2)
 	world.hit_stop(0.05)
 	if hp > 0 and ailments.inflict(infliction, GameState.roll, HeroRules.passives(GameState.hero)):
-		world.log_line(Text.t("You are afflicted by %s!") % infliction["kind"])
+		world.log_line(Text.t("You are afflicted by %s!") % Ailments.label(infliction["kind"]))
 		_show_ailment()
 	velocity = (global_position - from).normalized() * 180
 	move_and_slide()

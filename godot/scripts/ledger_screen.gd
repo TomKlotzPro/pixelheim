@@ -66,7 +66,7 @@ func _info() -> String:
 
 ## What E does, for the footer.
 func _verb() -> String:
-	return "do it"
+	return Text.t("do it")
 
 
 ## The keys along the bottom.

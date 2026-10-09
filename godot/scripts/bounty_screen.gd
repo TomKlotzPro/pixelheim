@@ -21,7 +21,7 @@ func _info() -> String:
 		var first := Hunts.next_notice(GameState.board_floors())
 		return Text.t("No notices yet. The board waits for word from the wilds.\n\nThe first one goes up when %s.") % _when(first)
 	var slain: bool = chosen["id"] in GameState.progression.hunted
-	var lines: Array[String] = ["%s: %s" % ["Slain" if slain else "Wanted", chosen["name"]], "", String(chosen["notice"]), ""]
+	var lines: Array[String] = [(Text.t("Slain: %s") if slain else Text.t("Wanted: %s")) % chosen["name"], "", String(chosen["notice"]), ""]
 	lines.append(Text.t("Its lair: %s.") % chosen["where"])
 	lines.append("%s." % Hunts.reward_line(chosen))
 	if slain:
@@ -33,7 +33,7 @@ func _info() -> String:
 
 
 func _verb() -> String:
-	return "where"
+	return Text.t("where")
 
 
 func _rows() -> Array[Dictionary]:
@@ -43,7 +43,7 @@ func _rows() -> Array[Dictionary]:
 		out.append({
 			"named": entry["id"],
 			"label": entry["name"],
-			"note": "SLAIN" if slain else "%dg" % int(entry["bounty"]),
+			"note": Text.t("SLAIN") if slain else Text.coins(int(entry["bounty"])),
 			"enabled": not slain,
 			"why": "Slain. Pixelheim still talks about it.",
 			"action": func() -> String: return Text.t("%s keeps to %s. Its lair is marked on your map.") % [entry["name"], entry["where"]],
