@@ -9,7 +9,7 @@ const GRASS := [0, 1, 2, 27, 28, 29, 54, 55, 56]
 func _grid(rows: Array) -> Dictionary:
 	var legend := {
 		".": "grass", "~": "water", "^": "mountain", "=": "path", "B": "bridge",
-		"#": "wall", "D": "door", "R": "roof", "_": "floor",
+		"#": "wall", "D": "door", "R": "roof", "_": "floor", "K": "dock", "s": "sand", "S": "sea",
 	}
 	var grid := {}
 	for y in rows.size():
@@ -77,6 +77,32 @@ func test_bridges_follow_their_span() -> void:
 	assert_eq(PunyTerrain.object_at(down, Vector2i(1, 3)), 874, "south end")
 	assert_eq(PunyTerrain.object_at(_grid(["~~", ".B", "~~"]), Vector2i(1, 1)), 821, "one plank over a stream")
 	assert_eq(PunyTerrain.object_at(down, Vector2i(0, 0)), -1)
+
+
+## PIX-235: the web's shapes laid planks along a river; they run from land
+## to land, whatever the span's shape.
+func test_planks_run_between_the_banks() -> void:
+	var tall := _grid(["~~~~", ".BB.", ".BB.", ".BB.", "~~~~"])
+	assert_eq(PunyTerrain.span_axis(tall, Vector2i(1, 2)), Vector2i.RIGHT, "taller than wide, still across")
+	assert_eq(PunyTerrain.object_at(tall, Vector2i(1, 2)), 875, "west end")
+	assert_eq(PunyTerrain.object_at(tall, Vector2i(2, 2)), 877, "east end")
+	var pier := _grid(["=====", "~KKK~", "~KKK~", "~~~~~"])
+	assert_eq(PunyTerrain.span_axis(pier, Vector2i(2, 1)), Vector2i.DOWN, "a pier runs out from its bank")
+	assert_eq(PunyTerrain.object_at(pier, Vector2i(2, 1)), 820, "its landing")
+	assert_eq(PunyTerrain.object_at(pier, Vector2i(2, 2)), 874, "its end, out over the water")
+	var long := _grid(["~~~~~~~~~~~~", "=BBBBBBBBBB=", "~~~~~~~~~~~~"])
+	assert_eq(PunyTerrain.span_axis(long, Vector2i(1, 1)), Vector2i.RIGHT, "a span longer than a run's reach")
+	assert_eq(PunyTerrain.span_end(long, Vector2i(1, 1), Vector2i.RIGHT), Vector2i(11, 1))
+
+
+## PIX-236: a dock built out into a river stands in the river, not in a pale
+## square of the coast's shallows.
+func test_a_dock_stands_in_the_water_around_it() -> void:
+	var river := _grid(["=====", "~KKK~", "~KKK~", "~~~~~"])
+	assert_eq(PunyTerrain.ground_at(river, Vector2i(2, 1)), "river", "the middle of the village's pier too")
+	var coast := _grid(["sss", "SKS", "SKS", "SSS"])
+	assert_eq(PunyTerrain.ground_at(coast, Vector2i(1, 2)), "seawater-light", "the coast's over its shallows")
+	assert_eq(PunyTerrain.ground_at(coast, Vector2i(1, 0)), "sand")
 
 
 func test_ramparts_raise_towers_runs_and_a_gate() -> void:
