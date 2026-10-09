@@ -31,7 +31,10 @@ func test_a_line_stays_long_enough_to_read() -> void:
 	assert_almost_eq(UiStyle.reading_seconds("x".repeat(150)), 15.0, 0.001, "half again with large text")
 
 
+## PIX-245: every drop rises now, a common one too, in cream.
 func test_fine_and_epic_drops_rise_in_their_colour() -> void:
-	assert_true(WorldFx.LOOT_GLOW.has("fine"))
-	assert_true(WorldFx.LOOT_GLOW.has("epic"))
-	assert_false(WorldFx.LOOT_GLOW.has("common"), "a common piece stays in the log")
+	for tone: String in ["xp", "gold", "common", "fine", "epic"]:
+		assert_true(WorldFx.GAIN_TONES.has(tone), tone)
+	assert_ne(WorldFx.GAIN_TONES["fine"], WorldFx.GAIN_TONES["common"])
+	assert_ne(WorldFx.GAIN_TONES["epic"], WorldFx.GAIN_TONES["fine"])
+	assert_eq(WorldFx.GAIN_TONES["common"], UiStyle.CREAM, "on the dark, as words over the world are")

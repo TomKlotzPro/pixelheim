@@ -18,8 +18,10 @@
 # Tab while the name field has the keys (PIX-228), a quest chosen in the
 # journal and followed after it closes (PIX-239), what grows on the
 # ground somewhere new each day, picked off as you step on it (PIX-250),
-# and a building rising out of its ruin on the town's tour, a cut with
-# Reduce motion (PIX-264). Every flow leaves its
+# a building rising out of its ruin on the town's tour, a cut with Reduce
+# motion (PIX-264), and a kill's XP and gold floating up over the foe, a
+# chest's gold over the chest, with nothing said of them in the log
+# (PIX-245). Every flow leaves its
 # picture in godot/flows/<name>.png for a human to look at, and the
 # harness's report line must match what the flow promises or the run fails.
 #
@@ -47,7 +49,7 @@ fi
 FLOWS=(
 	"spawn|--map town|map=town cell"
 	"portal|--map town portal|map=town_"
-	"chest|--map town chest|map=town cell=\(79, 4\) .*gold=90"
+	"chest|--map town chest|map=town cell=\(79, 4\) .*gold=90.* floats=\+60 [a-z]+ logged=0"
 	"shop|--map town_shop shop|map=town_shop"
 	"craft|--map town_alchemist shop --tab 2|map=town_alchemist"
 	"sleep|--map town_inn night sleep|map=town_inn .*gold=20 .* clock=06:00"
@@ -57,6 +59,9 @@ FLOWS=(
 	"brew|--map town_alchemist brew|map=town_alchemist .*gold=100 "
 	"rankup|rankup|screenshot saved"
 	"fight|fight kill|screenshot saved"
+	# The kill's XP and gold float up over the fallen foe and the battle log
+	# says nothing of them (PIX-245): floats= is what rose, logged= the lines.
+	"spoils|fight kill|floats=\+[0-9]+ XP;\+[0-9]+ [a-z]+.* logged=0"
 	"die|die|map=town_inn cell=\(2, 3\)"
 	"saves|saves|screenshot saved"
 	"decline|saves --web-save res://test/fixtures/web_save_v4.txt --keys esc|open=title_screen"

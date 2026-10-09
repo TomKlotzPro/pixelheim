@@ -66,7 +66,8 @@ func test_the_ice_hole_gives_icefin() -> void:
 	assert_eq(Gathering.catch(func() -> float: return 0.0, spot), "icefin")
 	assert_eq(Gathering.catch(func() -> float: return 0.0), "fresh_fish", "the sea's catch is unchanged")
 	state.roll = func() -> float: return 0.0
-	assert_string_contains(state.spoils.fish("frostgate_hole"), "icefin")
+	# The catch floats up out of the hole (PIX-245).
+	assert_eq(state.spoils.fish("frostgate_hole")["gains"]["items"][0]["id"], "icefin")
 	assert_eq(int(state.pack.items.get("icefin", 0)), 1)
 
 

@@ -238,8 +238,11 @@ func on_enemy_died(enemy: Node) -> void:
 	if world.map.floor_level > 0:
 		floor_level = Dungeons.drop_floor(world.map.floor_level)
 	var gear_before := GameState.pack.gear.size()
-	world.messages.log_lines(GameState.spoils.defeat_monster(enemy.fighter, enemy.region, cleared, floor_level, world.map.floor_level))
-	world.fx.show_loot(GameState.pack.gear.slice(gear_before), enemy.global_position)
+	# Its XP, gold and drops float up from where it fell (PIX-245); the log
+	# keeps only what the world doesn't show.
+	var won := GameState.spoils.defeat_monster(enemy.fighter, enemy.region, cleared, floor_level, world.map.floor_level)
+	world.messages.log_lines(won["lines"])
+	world.fx.show_gains(won["gains"], enemy.global_position + WorldFx.OVER_FOE)
 	if enemy.has_meta("prologue"):
 		world.messages.flash(GameState.questing.prologue_pouch())
 	# The last of a wave of the night's foes: on to the next beat.

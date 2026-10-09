@@ -45,10 +45,15 @@ func damage_scale() -> float:
 
 ## A monster falls (onMonsterDefeated): mastery, bounties, rent, the garden,
 ## xp and gold with level-ups, a drop, and for wild kills the slain ledger and
-## foraging. The bard's song fades with the fight. Returns the battle log.
+## foraging. The bard's song fades with the fight. Returns {lines, gains}:
+## the battle log's lines, and the win (Gains) that floats up from the fallen
+## foe instead of being said (PIX-245): its XP, gold, drops and what was
+## foraged. The log keeps the rest: mastery, a quest's count, the garden at
+## home, a bounty paid, a level (which goes on the plate), a trade's level.
 ## `mountain`: the mountain's floor the kill was on (its loot pools, PIX-191), 0 in the wilds.
-func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, floor_level: int, mountain := 0) -> Array[String]:
+func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, floor_level: int, mountain := 0) -> Dictionary:
 	var log: Array[String] = []
+	var gains := Gains.none()
 	var mastery_line := _record_kill(fighter["id"])
 	# The codex remembers the kind, and the highest level it was met at (PIX-188).
 	owner.progression.met[fighter["id"]] = maxi(int(owner.progression.met.get(fighter["id"], 0)), Bestiary.level_of(fighter))
@@ -88,7 +93,8 @@ func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, fl
 	if rested > 0:
 		owner.settlement.house["rested"] = rested - 1
 	var xp := roundi(Bestiary.xp_for(fighter, owner.hero.level) * (1.0 + owner.holdings.commission_buff("xp") + owner.household.home_buff("xp") + rested_xp))
-	log.append(Text.t("%s is defeated! +%d XP, +%d gold.") % [fighter["name"], xp, gold])
+	gains["xp"] = xp
+	gains["gold"] = gold
 	owner.pack.gold += gold
 	if passives["killRefundMp"] > 0:
 		owner.hero.mp = mini(int(owner.hero.stats["maxMp"]), owner.hero.mp + int(passives["killRefundMp"]))
@@ -105,7 +111,7 @@ func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, fl
 			if once != "" and once not in owner.progression.firsts:
 				owner.progression.firsts.append(once)
 			owner.pack.add_item(carried["itemId"])
-			log.append(Text.t("%s drops: %s.") % [fighter["name"], Catalog.item_name(carried["itemId"])])
+			Gains.add_item(gains, carried["itemId"])
 	if fighter.has("named"):
 		log.append_array(hunted(fighter["named"]))
 	var kind := "boss" if Bestiary.is_boss(fighter["id"]) else ("elite" if fighter["elite"] else "normal")
@@ -113,23 +119,23 @@ func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, fl
 	var drop := Bestiary.roll_drop(floor_level, kind, owner.roll, mountain, Dungeons.loot_luck(mountain))
 	if drop.get("kind") == "gear":
 		owner.pack.gear.append(drop["gear"])
-		log.append(Text.t("%s drops: %s!") % [fighter["name"], InventoryState.gear_name(drop["gear"])])
+		Gains.add_piece(gains, drop["gear"])
 	elif drop.get("kind") == "stack":
 		owner.pack.add_item(drop["itemId"])
-		log.append(Text.t("%s drops: %s.") % [fighter["name"], Catalog.item_name(drop["itemId"])])
+		Gains.add_item(gains, drop["itemId"])
 	if spawn_id != "":
 		clear_pack(spawn_id)
 	var material: String = Bestiary._data()["regionMaterials"].get(region_id, "")
 	if material != "" and owner.roll.call() < Bestiary.forage_chance(owner.hero.jobs["foraging"]["level"]):
 		var count := 1 + (1 if owner.roll.call() < Bestiary.double_forage_chance(owner.hero.jobs["foraging"]["level"]) else 0)
 		owner.pack.add_item(material, count)
-		log.append(Text.t("You forage %d %s%s.") % [count, Catalog.item_name(material), "s" if count > 1 else ""])
+		Gains.add_item(gains, material, count)
 		if Economy.grant_job_xp(owner.hero.jobs, "foraging", 5) > 0:
 			log.append(Text.t("Foraging reached %d!") % owner.hero.jobs["foraging"]["level"])
 	owner.settlement.bard_song = false
 	owner.pack_changed()
 	owner.hp_changed.emit(owner.hero.hp, int(owner.hero.stats["maxHp"]))
-	return log
+	return {"lines": log, "gains": gains}
 
 
 ## Counts a kill toward its family's mastery; the slayer line when a tier is crossed.
@@ -236,25 +242,27 @@ func wake_the_wilds() -> void:
 ## A dungeon floor's last foe falls (COLLECT_AND_RETURN): the first clear
 ## pays the floor's gold and items (gear arrives as fresh pieces, whatever the
 ## pack weighs) and opens the next floor; later clears pay only their kills.
-## The bard's song fades with the outing. Returns {first, lines, victory}.
+## The bard's song fades with the outing. Returns {first, lines, victory,
+## gains}: the hoard and the way down's XP are a win that floats up where
+## the last foe fell (PIX-245); the lines say the rest.
 func clear_floor(level: int) -> Dictionary:
 	owner.settlement.bard_song = false
 	var floor_def := Dungeons.floor_def(level)
 	var lines: Array[String] = [Text.t("%s is cleared!") % floor_def["name"]]
+	var gains := Gains.none()
 	var first: bool = level not in owner.progression.cleared_levels
 	if first:
 		owner.progression.cleared_levels.append(level)
 		owner.pack.gold += int(floor_def["rewardGold"])
-		var found: Array[String] = [Text.t("%d gold") % floor_def["rewardGold"]]
+		gains["gold"] = int(floor_def["rewardGold"])
 		for item_id: String in floor_def["rewardItemIds"]:
 			if Catalog.item(item_id).has("slot"):
 				var piece := InventoryState.create_gear(item_id)
 				owner.pack.gear.append(piece)
-				found.append(InventoryState.gear_name(piece))
+				Gains.add_piece(gains, piece)
 			else:
 				owner.pack.add_item(item_id)
-				found.append(Catalog.item_name(item_id))
-		lines.append(Text.t("The floor's hoard: %s.") % ", ".join(found))
+				Gains.add_item(gains, item_id)
 		# A page of Liane's journal, dropped on the way down (PIX-153).
 		var page := Story.page_for(level)
 		if not page.is_empty():
@@ -262,7 +270,7 @@ func clear_floor(level: int) -> Dictionary:
 		# A first clear is worth more than its fights (PIX-141): going deeper
 		# levels the hero, farming what's beaten doesn't.
 		var clear_xp := Dungeons.clear_xp(level)
-		lines.append(Text.t("+%d XP for the way down.") % clear_xp)
+		gains["xp"] = clear_xp
 		var level_line := earn_xp(clear_xp)
 		if level_line != "":
 			lines.append(level_line)
@@ -282,28 +290,29 @@ func clear_floor(level: int) -> Dictionary:
 			lines.append(Text.t("A deeper way opens: %s.") % Dungeons.floor_def(owner.progression.unlocked_level)["name"])
 		owner.pack_changed()
 	owner.save_now()
-	return {"first": first, "lines": lines, "victory": first and Dungeons.is_final(level)}
+	return {"first": first, "lines": lines, "victory": first and Dungeons.is_final(level), "gains": gains}
 
 
 ## A depth of the Deep Hunt cleared (PIX-161): a new deepest depth is
-## recorded and pays its hoard and the way down; a depth already beaten pays
-## only its fights.
+## recorded and pays its hoard and the way down (a win that floats up where
+## the last foe fell, PIX-245); a depth already beaten pays only its fights.
+## Returns {first, lines, victory, gains}, as clear_floor does.
 func clear_deep(level: int) -> Dictionary:
 	owner.settlement.bard_song = false
 	var depth := Dungeons.depth_of(level)
 	var floor_def := Dungeons.floor_def(level)
 	var lines: Array[String] = [Text.t("Depth %d of the Deep Hunt is cleared!") % depth]
+	var gains := Gains.none()
 	var record := depth > owner.progression.deepest
 	if record:
 		owner.progression.deepest = depth
 		owner.pack.gold += int(floor_def["rewardGold"])
-		var found: Array[String] = [Text.t("%d gold") % floor_def["rewardGold"]]
+		gains["gold"] = int(floor_def["rewardGold"])
 		for item_id: String in floor_def["rewardItemIds"]:
 			owner.pack.add_item(item_id)
-			found.append(Catalog.item_name(item_id))
-		lines.append(Text.t("The deepest yet. Its hoard: %s.") % ", ".join(found))
+			Gains.add_item(gains, item_id)
 		var clear_xp := Dungeons.clear_xp(level)
-		lines.append(Text.t("+%d XP for the way down.") % clear_xp)
+		gains["xp"] = clear_xp
 		var level_line := earn_xp(clear_xp)
 		if level_line != "":
 			lines.append(level_line)
@@ -316,27 +325,26 @@ func clear_deep(level: int) -> Dictionary:
 		owner.pack_changed()
 	lines.append(Text.t("A hole into the dark opens beside the way up: depth %d waits below.") % (depth + 1))
 	owner.save_now()
-	return {"first": record, "lines": lines, "victory": false}
+	return {"first": record, "lines": lines, "victory": false, "gains": gains}
 
 
 ## Grants a chest's payout (openChest in reducers/world.ts): gold, a stack, a
 ## gear piece, or a mimic's teeth. Loot that would overload the pack leaves the
-## chest closed. Returns {opened, message, mimic}.
+## chest closed. Returns {opened, message, mimic, gains}: what it held is a
+## win that floats up from the chest (PIX-245), so the message is only for
+## what the world doesn't show (a mimic, a pack too heavy), "" otherwise.
 func open_chest(chest: Dictionary) -> Dictionary:
+	var gains := Gains.none()
 	if is_opened(chest):
-		return {"opened": false, "message": "", "mimic": false}
+		return {"opened": false, "message": "", "mimic": false, "gains": gains}
 	if chest.get("mimic", false):
 		owner.world.opened_chests.append(chest["id"])
 		owner.save_now()
-		return {"opened": true, "message": Text.t("The chest bares its teeth — a mimic!"), "mimic": true}
+		return {"opened": true, "message": Text.t("The chest bares its teeth — a mimic!"), "mimic": true, "gains": gains}
 	var loot: Dictionary = chest["loot"]
-	var message := ""
 	if loot["kind"] == "gold":
 		owner.pack.gold += loot["amount"]
-		message = (
-			Text.t("Something glitters on the road: %d gold.") % loot["amount"] if chest["look"] == "glint"
-			else Text.t("The chest holds %d gold.") % loot["amount"]
-		)
+		gains["gold"] = int(loot["amount"])
 		owner.gold_changed.emit(owner.pack.gold)
 	else:
 		var qty: int = loot["qty"] if loot["kind"] == "item" else 1
@@ -346,22 +354,19 @@ func open_chest(chest: Dictionary) -> Dictionary:
 				"opened": false,
 				"message": Text.t("Too heavy to carry. Lighten the pack and come back."),
 				"mimic": false,
+				"gains": gains,
 			}
 		if loot["kind"] == "gear":
 			var instance := InventoryState.create_gear(loot["itemId"])
 			owner.pack.gear.append(instance)
-			message = Text.t("The chest holds %s!") % InventoryState.gear_name(instance)
+			Gains.add_piece(gains, instance)
 		else:
 			owner.pack.add_item(loot["itemId"], qty)
-			var name := Catalog.item_name(loot["itemId"])
-			message = (
-				Text.t("You gather %dx %s.") % [qty, name] if chest["look"] == "herb"
-				else Text.t("The chest holds %dx %s.") % [qty, name]
-			)
+			Gains.add_item(gains, loot["itemId"], qty)
 		owner.inventory_changed.emit()
 	owner.world.opened_chests.append(chest["id"])
 	owner.save_now()
-	return {"opened": true, "message": message, "mimic": false}
+	return {"opened": true, "message": "", "mimic": false, "gains": gains}
 
 
 func is_opened(chest: Dictionary) -> bool:
@@ -370,35 +375,41 @@ func is_opened(chest: Dictionary) -> bool:
 
 ## Picks a gathering spot (PIX-143): its material, a second one as often as
 ## foraging allows, foraging XP; the patch stays picked until the next day
-## (PIX-250: Gathering.is_ready).
-## Returns the log lines, none when there was nothing to pick.
-func gather(spot_id: String, item_id: String) -> Array[String]:
+## (PIX-250: Gathering.is_ready). Returns {lines, gains}: what was picked
+## floats up from the patch (PIX-245), the log says only a trade's level
+## gained; nothing won when there was nothing to pick.
+func gather(spot_id: String, item_id: String) -> Dictionary:
 	var lines: Array[String] = []
+	var gains := Gains.none()
 	if item_id == "" or not Gathering.is_ready(owner.world, spot_id):
-		return lines
+		return {"lines": lines, "gains": gains}
 	var count := 1 + (1 if owner.roll.call() < Bestiary.double_forage_chance(owner.hero.jobs["foraging"]["level"]) else 0)
 	owner.pack.add_item(item_id, count)
 	owner.world.gathered_at[spot_id] = int(owner.world.steps)
-	lines.append(Text.t("You gather %d %s%s.") % [count, Catalog.item_name(item_id), "s" if count > 1 else ""])
+	Gains.add_item(gains, item_id, count)
 	if Economy.grant_job_xp(owner.hero.jobs, "foraging", int(Gathering.rules()["jobXp"])) > 0:
 		lines.append(Text.t("Foraging reached %d!") % owner.hero.jobs["foraging"]["level"])
 	owner.pack_changed()
-	return lines
+	return {"lines": lines, "gains": gains}
 
 
 ## A cast from a fishing spot (PIX-165): a catch if they're biting there,
-## foraging's job xp with it. "" when the spot is resting.
-func fish(spot_id: String) -> String:
+## foraging's job xp with it. Returns {message, lines, gains}: the catch
+## floats up from the water (PIX-245, the old boot too), a trade's level goes
+## in the log, and the message is only for a resting spot.
+func fish(spot_id: String) -> Dictionary:
+	var lines: Array[String] = []
+	var gains := Gains.none()
 	if not Gathering.fish_ready(owner.world, spot_id):
-		return Text.t("Nothing's biting here yet. Try again in a while, or somewhere else.")
+		return {"message": Text.t("Nothing's biting here yet. Try again in a while, or somewhere else."), "lines": lines, "gains": gains}
 	var caught := Gathering.catch(owner.roll, Gathering.fishing_spot(spot_id))
 	owner.pack.add_item(caught)
 	owner.world.gathered_at[spot_id] = int(owner.world.steps)
-	var line := Text.t("You cast, wait... and land %s!") % Catalog.item_name(caught).to_lower() if caught != "old_boot" else Text.t("You cast, wait... and haul up an old boot.")
+	Gains.add_item(gains, caught)
 	if Economy.grant_job_xp(owner.hero.jobs, "foraging", int(Gathering.rules()["jobXp"])) > 0:
-		line += Text.t(" Foraging reached %d!") % owner.hero.jobs["foraging"]["level"]
+		lines.append(Text.t("Foraging reached %d!") % owner.hero.jobs["foraging"]["level"])
 	owner.pack_changed()
-	return line
+	return {"message": "", "lines": lines, "gains": gains}
 
 
 ## The gold a fall costs now: a tenth of what's carried (economy.json

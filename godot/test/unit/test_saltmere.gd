@@ -66,10 +66,15 @@ func test_the_jetty_bites_then_rests() -> void:
 		var at := Vector2i(int(entry["x"]), int(entry["y"]))
 		assert_true(map.is_walkable(at), "%s stands on ground" % entry["id"])
 	var before: int = state.pack.items.values().reduce(func(sum: int, n: int) -> int: return sum + n, 0)
-	assert_string_contains(state.spoils.fish("saltmere_jetty"), "You cast")
+	# A catch floats up from the water without a word (PIX-245); a resting
+	# spot says so.
+	var cast: Dictionary = state.spoils.fish("saltmere_jetty")
+	assert_eq([cast["message"], cast["gains"]["items"].size()], ["", 1])
 	var after: int = state.pack.items.values().reduce(func(sum: int, n: int) -> int: return sum + n, 0)
 	assert_eq(after, before + 1)
-	assert_string_contains(state.spoils.fish("saltmere_jetty"), "Nothing's biting")
+	var resting: Dictionary = state.spoils.fish("saltmere_jetty")
+	assert_string_contains(resting["message"], "Nothing's biting")
+	assert_true(Gains.is_empty(resting["gains"]))
 	for i in 20:
 		assert_has(["fresh_fish", "sea_glass", "pearl", "old_boot"], Gathering.catch(func() -> float: return i / 20.0))
 

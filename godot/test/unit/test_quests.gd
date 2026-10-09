@@ -15,8 +15,9 @@ func before_each() -> void:
 	state.roll = func() -> float: return 0.99
 
 
+## A kill's battle log: a bounty's count is a line to read (PIX-245 left it there).
 func _slay(monster_id: String) -> Array[String]:
-	return state.spoils.defeat_monster(Bestiary.spawn(monster_id), "", "", 1)
+	return state.spoils.defeat_monster(Bestiary.spawn(monster_id), "", "", 1)["lines"]
 
 
 func test_a_givers_first_word_accepts_their_quest() -> void:

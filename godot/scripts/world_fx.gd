@@ -2,19 +2,58 @@ class_name WorldFx
 extends Node2D
 ## What flashes and floats over the world (Solid Ground, PIX-260: moved out
 ## of world.gd as it was): damage numbers and words rising over heads, a
-## skill's light where it lands, the level-up burst, a fine or epic drop's
-## name, dust kicked up, a monster fading into view. A Node2D at the world's
-## origin, so what it adds stands where it always did.
+## skill's light where it lands, the level-up burst, what's won rising from
+## where it was won (PIX-245), dust kicked up, a monster fading into view. A
+## Node2D at the world's origin, so what it adds stands where it always did.
 
 var world: Node2D
 
-## A fine or epic drop's name over the fallen foe (PIX-211): the rarities'
-## colours, lit to read on the ground rather than on paper.
-const LOOT_GLOW := {"fine": Color("8cc4ff"), "epic": Color("d99bff")}
+## A win's colours over the world (PIX-245): XP in a sea-glass green no
+## other number uses (a blow is warm white, a heal mint, a fine piece blue),
+## gold as the purse counts it, behind its coin; an item in its rarity's
+## colour, lit to read on the ground rather than on paper (PIX-211's fine and
+## epic), a common one cream like the words over the world.
+const GAIN_TONES := {
+	"xp": Color("7fe3d6"), "gold": UiStyle.GOLD, "common": UiStyle.CREAM,
+	"fine": Color("8cc4ff"), "epic": Color("d99bff"),
+}
+## Where the foot of a win's lowest words stands, from the spot it was won
+## (PIX-245): over a foe, above where the damage numbers go (their words rise
+## from 18 to 30 px over it, a crit's to 34, while this rises far slower), so
+## the killing blow's number and what it won never sit on each other; over
+## the hero's head for what they pick up underfoot; just over a chest or the
+## water.
+const OVER_FOE := Vector2(0, -26)
+const OVER_HERO := Vector2(0, -18)
+const OVER_THING := Vector2(0, -10)
+## A win's rows stack this far apart, upward (the words are 11 px tall); the
+## first comes in once the blow's number has shown, each next this long after
+## the one below it; the whole stays up this long from the last win that
+## joined it, rising this far.
+const GAIN_ROW := 12.0
+const GAIN_FIRST := 0.15
+const GAIN_STAGGER := 0.12
+const GAIN_LIFE := 1.8
+const GAIN_RISE := 14.0
+## With motion reduced a win doesn't rise, while a damage number still does:
+## it stands this much higher from the start, clear of the number's whole
+## path.
+const GAIN_STILL_LIFT := 8.0
+## A row's mark at half its size: an item's 16 px icon and the purse's coin
+## (drawn at the UI's 2x) come out about the words' height, and the icon at
+## twice its art on screen at play zoom, as the pack shows it.
+const GAIN_ICON := 0.5
+
+## The wins rising now, each {box, at, joined, gains, rows (key -> row),
+## fresh, tween}: a new win near one of them soon enough joins it.
+var _rising: Array[Dictionary] = []
+## Everything floated on this visit, merged (the harness reports it).
+var floated := Gains.none()
 
 
 ## A word that rises and fades over where it happened (PIX-155: "dodged",
-## "blocked"). A `big` one (PIX-211: LEVEL UP, a fine or epic drop's name)
+## "blocked"). A `big` one (PIX-211: LEVEL UP; a fine or epic drop's name
+## now rises with the rest of a win, show_gains)
 ## bursts in at twice its size unless motion is reduced, then settles at the
 ## pixel face's own (anything larger dwarfs the fighters), and stays longer.
 func float_text(text: String, at: Vector2, color: Color, big := false) -> void:
@@ -109,16 +148,152 @@ func level_up_burst() -> void:
 	world.hud.dock.flash_xp()
 
 
-## A fine or epic piece from a kill (PIX-211): its name rises over the
-## fallen foe in its rarity's colour, so it isn't lost in the log.
-func show_loot(pieces: Array, at: Vector2) -> void:
+## A win floating up from where it was won (PIX-245: less to read in the
+## log): XP, gold, then each item with its icon, in its rarity's colour, a
+## fine or epic piece bursting in as its name did (PIX-211). A win soon after
+## another nearby joins it (Gains.joins): its rows count up in place, so a
+## pack felled in a few blows reads "+36 XP" once. With motion reduced
+## nothing rises or bursts: the rows fade in where they stand (a little
+## higher, GAIN_STILL_LIFT), then out.
+func show_gains(gains: Dictionary, at: Vector2) -> void:
+	if Gains.is_empty(gains):
+		return
+	Gains.merge(floated, gains)
+	var now := Time.get_ticks_msec() / 1000.0
+	for i in range(_rising.size() - 1, -1, -1):
+		var gone: Variant = _rising[i]["box"]
+		if not is_instance_valid(gone) or (gone as Node).is_queued_for_deletion():
+			_rising.remove_at(i)
+	var win := {}
+	for rising: Dictionary in _rising:
+		if Gains.joins(rising["at"], rising["joined"], at, now):
+			win = rising
+			break
+	if win.is_empty():
+		var box := Node2D.new()
+		box.position = (at - Vector2(0, GAIN_STILL_LIFT if GameState.settings.reduce_motion else 0.0)).round()
+		box.z_index = 10
+		add_child(box)
+		win = {"box": box, "at": at, "joined": now, "gains": Gains.none(), "rows": {}, "fresh": true, "tween": null}
+		_rising.append(win)
+	win["joined"] = now
+	Gains.merge(win["gains"], gains)
+	_lay_out(win)
+	_hold(win)
+
+
+## A win's rows from the bottom up, each centred over the spot: a row it
+## already shows counts up in place (a bump unless motion is reduced), a new
+## one comes in after the last (all at once with motion reduced).
+func _lay_out(win: Dictionary) -> void:
+	var box: Node2D = win["box"]
+	var shown: Dictionary = win["rows"]
+	var still: bool = GameState.settings.reduce_motion
+	var delay := GAIN_FIRST if win["fresh"] else 0.0
 	var lift := 0.0
-	for piece: Dictionary in pieces:
-		var glow: Variant = LOOT_GLOW.get(String(piece["rarity"]))
-		if glow == null:
-			continue
-		float_text(InventoryState.gear_name(piece), at + Vector2(0, -24 - lift), glow, true)
-		lift += 12.0
+	for row: Dictionary in Gains.rows(win["gains"]):
+		var line: Node2D = shown.get(row["key"])
+		if line == null:
+			line = _gain_row(row)
+			box.add_child(line)
+			shown[row["key"]] = line
+			_come_in(line, delay, row["tone"] in ["fine", "epic"])
+			if not still:
+				delay += GAIN_STAGGER
+		elif (line.get_node("text") as Label).text != row["text"]:
+			(line.get_node("text") as Label).text = row["text"]
+			_fit_row(line)
+			_bump(line)
+		line.position = Vector2(0, -lift)
+		lift += GAIN_ROW
+	win["fresh"] = false
+
+
+## One row of a win: its mark (an item's icon when there's art for it, the
+## purse's coin for gold) and its words in the row's colour, about the row's
+## foot so it bursts about its middle.
+func _gain_row(row: Dictionary) -> Node2D:
+	var line := Node2D.new()
+	var label := _floating(row["text"], GAIN_TONES.get(row["tone"], UiStyle.CREAM))
+	label.name = "text"
+	line.add_child(label)
+	var art: Texture2D = null
+	if row["item"] != "":
+		art = ItemIcons.texture(row["item"])
+	elif row["key"] == "gold":
+		art = UiStyle.coin()
+	if art != null:
+		var icon := Sprite2D.new()
+		icon.name = "icon"
+		icon.texture = art
+		icon.centered = false
+		icon.scale = Vector2.ONE * GAIN_ICON
+		# Bright at night, as the words are (PIX-221).
+		icon.material = Lights.unshaded()
+		line.add_child(icon)
+	_fit_row(line)
+	return line
+
+
+## A row's pieces placed about its foot (the foot of its words): the mark,
+## two pixels' gap, the words, centred together. The label's box runs wider
+## and taller than the words it draws from its top left, so they're placed
+## by the font's measure of the words, not by the box.
+func _fit_row(line: Node2D) -> void:
+	var label: Label = line.get_node("text")
+	label.size = label.get_minimum_size()
+	var words := UiStyle.bold_font().get_string_size(label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, UiStyle.BODY_PX)
+	var icon: Sprite2D = line.get_node_or_null("icon")
+	var side := icon.texture.get_size().x * icon.scale.x if icon != null else 0.0
+	var indent := side + 2.0 if icon != null else 0.0
+	var left := -roundf((indent + words.x) / 2.0)
+	if icon != null:
+		icon.position = Vector2(left, -roundf((words.y + side) / 2.0))
+	label.position = Vector2(left + indent, -words.y)
+
+
+## A row fading in after `delay`; a fine or epic piece bursts in at twice
+## its size (_pop's rule: not with motion reduced).
+func _come_in(line: Node2D, delay: float, big: bool) -> void:
+	line.modulate.a = 0.0
+	var tween := line.create_tween().set_parallel()
+	tween.tween_property(line, "modulate:a", 1.0, 0.12).set_delay(delay)
+	if big and not GameState.settings.reduce_motion:
+		line.scale = Vector2.ONE * 2.0
+		tween.tween_property(line, "scale", Vector2.ONE, 0.22).set_delay(delay).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	line.set_meta("tween", tween)
+
+
+## A row counted up by a win that joined: it swells a moment and settles
+## (not with motion reduced), shown at once if it was still coming in.
+func _bump(line: Node2D) -> void:
+	var coming: Variant = line.get_meta("tween", null)
+	if coming != null and (coming as Tween).is_valid():
+		(coming as Tween).kill()
+	line.modulate.a = 1.0
+	line.scale = Vector2.ONE
+	if GameState.settings.reduce_motion:
+		return
+	line.scale = Vector2.ONE * 1.3
+	var settle := line.create_tween()
+	settle.tween_property(line, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	line.set_meta("tween", settle)
+
+
+## A win stays up GAIN_LIFE from the last that joined it, rising GAIN_RISE
+## as it goes (in place with motion reduced), then fades away.
+func _hold(win: Dictionary) -> void:
+	var box: Node2D = win["box"]
+	var held: Variant = win["tween"]
+	if held != null and (held as Tween).is_valid():
+		(held as Tween).kill()
+	box.modulate.a = 1.0
+	var tween := box.create_tween().set_parallel()
+	if not GameState.settings.reduce_motion:
+		tween.tween_property(box, "position:y", box.position.y - GAIN_RISE, GAIN_LIFE).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(box, "modulate:a", 0.0, 0.45).set_delay(GAIN_LIFE - 0.45)
+	tween.chain().tween_callback(box.queue_free)
+	win["tween"] = tween
 
 
 ## A ring of dust motes kicked up from `at` (a monster appearing, a dodge).

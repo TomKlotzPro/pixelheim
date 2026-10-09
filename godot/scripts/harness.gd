@@ -771,6 +771,10 @@ func _run_test_harness() -> void:
 	# playing: the place's, as running is no fight.
 	if world.foes.fled > 0:
 		motion_report += " fled=%d music=%s" % [world.foes.fled, Sound.track]
+	# What floated up from where it was won (PIX-245), merged, and how many
+	# lines the battle log showed: a kill's XP and gold float and log none.
+	if not Gains.is_empty(world.fx.floated):
+		motion_report += " floats=%s logged=%d" % [Gains.summary(world.fx.floated), world.messages.logged]
 	# On `--day`, the day and its patches still to pick (PIX-250), by cell.
 	if flags.has("--day"):
 		var cells: Array = world.view.patches.keys().filter(func(cell: Vector2i) -> bool:

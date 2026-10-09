@@ -98,7 +98,7 @@ func test_a_named_monster_fights_as_an_elite_of_its_kind_with_its_own_numbers() 
 func test_the_kill_pays_the_bounty_and_the_drop_and_the_town_hears() -> void:
 	var gold: int = state.pack.gold
 	var gear: int = state.pack.gear.size()
-	var lines: Array[String] = state.spoils.defeat_monster(Hunts.fighter("greymaw"), "forest", "", 1)
+	var lines: Array[String] = state.spoils.defeat_monster(Hunts.fighter("greymaw"), "forest", "", 1)["lines"]
 	var entry := Hunts.named("greymaw")
 	assert_gte(state.pack.gold, gold + int(entry["bounty"]) + int(entry["gold"]))
 	assert_true(state.pack.gear.any(func(piece: Dictionary) -> bool: return piece["itemId"] == "greymaw_hood"))

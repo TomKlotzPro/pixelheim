@@ -169,14 +169,17 @@ func test_a_day_grows_no_more_than_its_cap() -> void:
 func test_a_patch_picked_stays_picked_till_the_morning() -> void:
 	state.roll = func() -> float: return 0.99
 	state.world.steps = 3 * DAY + 50.0
-	assert_eq(state.spoils.gather("forest_patch_1", "forest_herb"), ["You gather 1 Forest Herb."] as Array[String])
+	# PIX-245: what's picked floats up from the patch; the log has nothing to say.
+	var picked: Dictionary = state.spoils.gather("forest_patch_1", "forest_herb")
+	assert_eq(Gains.summary(picked["gains"]), "Forest Herb")
+	assert_true(picked["lines"].is_empty())
 	assert_eq(state.pack.items["forest_herb"], 1)
 	assert_eq(state.hero.jobs["foraging"]["xp"], 5)
-	assert_true(state.spoils.gather("forest_patch_1", "forest_herb").is_empty(), "picked bare")
+	assert_true(Gains.is_empty(state.spoils.gather("forest_patch_1", "forest_herb")["gains"]), "picked bare")
 	assert_true(Gathering.is_ready(state.world, "forest_patch_2"), "the day's other patch is still there")
 	state.world.steps = 4 * DAY - 0.5
 	assert_false(Gathering.is_ready(state.world, "forest_patch_1"), "all day, however far you walk")
-	assert_true(state.spoils.gather("forest_patch_1", "forest_herb").is_empty())
+	assert_true(Gains.is_empty(state.spoils.gather("forest_patch_1", "forest_herb")["gains"]))
 	state.world.steps = 4 * DAY
 	assert_true(Gathering.is_ready(state.world, "forest_patch_1"), "the next morning, a new one")
 	# The save keeps what it always kept: the step each patch was picked on.

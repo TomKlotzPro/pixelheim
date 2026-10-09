@@ -87,7 +87,7 @@ godot --path godot -- --screenshot --map town         # boot into another map
 godot --path godot -- --screenshot --walk l,d,d,d     # scripted steps first
 godot --path godot -- --screenshot --at 40,27 --walk u,u,u  # stand on a cell, then walk: what stops you
 godot --path godot -- --screenshot fight              # orc fight, mid-swing
-godot --path godot -- --screenshot fight kill         # swing until it dies (rewards in the battle log)
+godot --path godot -- --screenshot fight kill         # swing until it dies (its XP, gold and drops float up over it: floats=, logged=)
 godot --path godot -- --screenshot fight kill hurt --foe wyvern   # another foe, and let it bite back
 godot --path godot -- --screenshot talk --map town_shop   # talk to the map's first villager
 godot --path godot -- --screenshot near --map town_hall   # stand beside them (the "!" prompt)
@@ -115,7 +115,7 @@ godot --path godot -- --screenshot inventory --keys i # press keys at whatever s
 godot --path godot -- --screenshot --map town --look browser   # the desktop renderer in another of the app's looks (below)
 ```
 
-The final `print` line reports the map id, hero cell, HP, gold, the save's place, draw calls, whether the world is held still (`paused=`) and which screens are open (`open=`), for assertions.
+The final `print` line reports the map id, hero cell, HP, gold, the save's place, draw calls, whether the world is held still (`paused=`) and which screens are open (`open=`), for assertions. After anything was won, it adds what floated up from where it was won (`floats=+13 XP;+14 gold`) and how many lines the battle log showed (`logged=`).
 
 ### Release flows
 

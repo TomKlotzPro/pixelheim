@@ -26,6 +26,9 @@ const MESSAGE_TAGS := ["Quest accepted", "Quest complete", "Level up", "Mastery"
 const PLAIN_MESSAGE_S := 1.2
 ## The widest a message's words run before they wrap.
 const MESSAGE_WIDTH := 860.0
+## Lines the battle log has shown on this visit (the harness reports it: a
+## kill's XP and gold float over the foe and add none, PIX-245).
+var logged := 0
 
 
 ## The battle log, among the HUD's pieces where it always stood.
@@ -72,13 +75,17 @@ func clear() -> void:
 func log_line(line: String) -> void:
 	log_lines([line])
 
-## The battle log: recent lines stack bottom-left and fade.
+## The battle log: recent lines stack bottom-left and fade. Only what the
+## world doesn't show comes here (PIX-245): story beats, quests, levels, the
+## boss slayer's edge, a pack scattered; what's won floats up where it was
+## won (WorldFx.show_gains).
 func log_lines(lines: Array) -> void:
 	for line: String in lines:
 		# A level gained goes on the plate, not among the kills (PIX-211).
 		if tag_of(line, [Text.t("Level up")]) != "":
 			flash(line)
 			continue
+		logged += 1
 		# Each line on its own small plate, like the objective's (PIX-194).
 		var chip := PanelContainer.new()
 		chip.add_theme_stylebox_override("panel", UiStyle.plate(8))
@@ -112,8 +119,11 @@ var _message_since := 0.0
 
 ## A message for the objective's plate (PIX-211): it waits behind the one
 ## showing instead of cutting it off. A quest's end and the level it brings
-## go up one after the other; the same words twice are said once.
+## go up one after the other; the same words twice are said once. No words
+## is no message (a chest whose loot floats up says nothing, PIX-245).
 func flash(text: String) -> void:
+	if text == "":
+		return
 	for part: String in split_messages(text, _tags()):
 		if part != _message_now and part not in _messages:
 			_messages.append(part)

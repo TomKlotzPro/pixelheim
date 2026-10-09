@@ -76,6 +76,9 @@ func floor_cleared(at: Vector2i) -> void:
 	var result := GameState.spoils.clear_deep(map.floor_level) if deep else GameState.spoils.clear_floor(map.floor_level)
 	Sound.play("victory")
 	world.messages.log_lines(result["lines"])
+	# The hoard and the way down's XP rise where the last foe fell, with what
+	# it paid (PIX-245).
+	world.fx.show_gains(result["gains"], MapView.center(at) + WorldFx.OVER_FOE)
 	var stairs := at
 	if not map.is_walkable(stairs) or map.portals.has(stairs):
 		stairs = world.player_cell
