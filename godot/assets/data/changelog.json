@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.163.0",
+      "date": "2026-10-09",
+      "codename": "Pad in Hand",
+      "notes": [
+        "On a gamepad, A answers and confirms, X swings, B goes back everywhere, Y opens the pack, the D-pad walks, and LB, LT and RT cast your first three skills",
+        "The pad's Back button opens the dock's menu with a line chosen: every screen, and skills four to six, so a pad player can spend points and reach everything",
+        "Answers in a conversation are chosen with up and down and given with A or E, and keycaps show the pad's buttons while you play with one",
+        "Fixed: the first night's line about your skill showed a raw key token instead of its key"
+      ]
+    },
+    {
       "version": "0.162.0",
       "date": "2026-10-09",
       "codename": "Thumb-Sized",

@@ -108,7 +108,16 @@ func _command(event: InputEvent) -> Callable:
 		for index in choices.size():
 			if event.is_action_pressed("skill_%d" % (index + 1)):
 				return _pick.bind(index)
-		if leave:
+		# Up and down choose an answer, A or E gives it (PIX-215: a pad
+		# had no number keys).
+		for step: Array in [["move_up", -1], ["move_left", -1], ["move_down", 1], ["move_right", 1]]:
+			if event.is_action_pressed(step[0]):
+				return _choose.bind(int(step[1]))
+		# E or A gives the answer chosen; with none chosen yet it waits, so
+		# a page-turning thumb never answers by accident.
+		if choice_focus >= 0 and (event.is_action_pressed("interact") or event.is_action_pressed("ui_accept")):
+			return _pick.bind(choice_focus)
+		if event.is_action_pressed("ui_cancel") or event.is_action_pressed("menu"):
 			return _close
 		return Callable()
 	if click or event.is_action_pressed("interact") or event.is_action_pressed("ui_accept"):
@@ -125,6 +134,21 @@ func _advance() -> void:
 	page += 1
 	Sound.play_ui("page")
 	_show()
+
+
+## The answer chosen with up and down (PIX-215), lit among the rest.
+var choice_focus := -1
+var choice_buttons: Array[Button] = []
+
+
+func _choose(step: int) -> void:
+	if choice_focus < 0:
+		choice_focus = 0 if step > 0 else choices.size() - 1
+	else:
+		choice_focus = posmod(choice_focus + step, choices.size())
+	Sound.play_ui("tick")
+	for index in choice_buttons.size():
+		UiStyle.focus(choice_buttons[index], index == choice_focus)
 
 
 func _asking() -> bool:
@@ -145,8 +169,12 @@ func _show() -> void:
 		child.queue_free()
 	if _asking():
 		# The answers, a key and a click each, and leaving without one.
+		choice_buttons.clear()
 		for index in choices.size():
-			hints.add_child(UiStyle.button(Text.t("%d  %s") % [index + 1, choices[index]], _pick.bind(index)))
+			var answer := UiStyle.button(Text.t("%d  %s") % [index + 1, choices[index]], _pick.bind(index))
+			UiStyle.focus(answer, index == choice_focus)
+			choice_buttons.append(answer)
+			hints.add_child(answer)
 		hints.add_child(UiStyle.hints(["Esc", "not yet"]))
 	else:
 		hints.add_child(UiStyle.hints(["{key:interact}", "close"] if last else ["{key:interact}", "next", "Esc", "leave"]))

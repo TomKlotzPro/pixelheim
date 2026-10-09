@@ -1833,6 +1833,10 @@ msgid "An empty lot sits between the lower houses. For sale? Soon."
 msgstr "Un terrain vide attend entre les maisons du bas. À vendre ? Bientôt."
 
 #: assets/data/changelog.json
+msgid "Answers in a conversation are chosen with up and down and given with A or E, and keycaps show the pad's buttons while you play with one"
+msgstr "Les réponses d'une conversation se choisissent avec haut et bas et se donnent avec A ou E, et les touches affichées sont celles de la manette quand vous jouez avec"
+
+#: assets/data/changelog.json
 msgid "Antidote and Ember Salve cure poison and burn mid-fight"
 msgstr "L'Antidote et le Baume de braise soignent le poison et la brûlure en plein combat"
 
@@ -2489,6 +2493,10 @@ msgid "Fixed: the ascension card could get stuck on screen until the next fight 
 msgstr "Corrigé : la carte d'ascension pouvait rester bloquée à l'écran jusqu'au combat suivant - elle s'en va poliment désormais"
 
 #: assets/data/changelog.json
+msgid "Fixed: the first night's line about your skill showed a raw key token instead of its key"
+msgstr "Corrigé : la ligne de la première nuit sur votre compétence affichait un code brut au lieu de sa touche"
+
+#: assets/data/changelog.json
 msgid "Fleeing and forage work exactly as before - only the surprise is gone"
 msgstr "La fuite et la cueillette fonctionnent exactement comme avant - seule la surprise a disparu"
 
@@ -3125,6 +3133,10 @@ msgid "On a computer nothing changes"
 msgstr "Sur ordinateur, rien ne change"
 
 #: assets/data/changelog.json
+msgid "On a gamepad, A answers and confirms, X swings, B goes back everywhere, Y opens the pack, the D-pad walks, and LB, LT and RT cast your first three skills"
+msgstr "À la manette, A répond et confirme, X frappe, B revient en arrière partout, Y ouvre le sac, la croix directionnelle fait marcher, et LB, LT et RT lancent vos trois premières compétences"
+
+#: assets/data/changelog.json
 msgid "On a phone the controls are sized for a thumb on any screen, the attack, roll and use buttons show a drawn sword, arrow and hand instead of words, and all six skill keys are on screen, with each skill's icon"
 msgstr "Sur téléphone, les commandes ont la taille d'un pouce sur tous les écrans, les boutons attaquer, rouler et utiliser montrent une épée, une flèche et une main dessinées au lieu de mots, et les six touches de compétence sont à l'écran, chacune avec son icône"
 
@@ -3243,6 +3255,10 @@ msgstr "DES BIENS QUI RAPPORTENT : un commerce que vous possédez remplit dés
 #: assets/data/changelog.json
 msgid "PUNCHING UP PAYS: a foe above your level pays 5% more XP for each level it stands above you, up to a quarter more, so a hero who has fallen behind catches up faster"
 msgstr "VISER PLUS HAUT, ÇA PAIE : un ennemi de niveau supérieur rapporte 5 % d'XP en plus par niveau d'écart, jusqu'à un quart de plus, si bien qu'un héros à la traîne rattrape son retard plus vite"
+
+#: assets/data/changelog.json
+msgid "Pad in Hand"
+msgstr "Manette en main"
 
 #: assets/data/changelog.json
 msgid "Paladins in soldier's steel, the mayor, Hilda, Odo, Sela and the goblins and orcs no longer step one frame out of time: their swings, stumbles and falls play the frames they were drawn for"
@@ -4303,6 +4319,10 @@ msgstr "Les classes de la nuit sortent de l'ombre : les robes du nécromancien
 #: assets/data/changelog.json
 msgid "The pack's Craft tab knows your home station: 'You are at your own workbench - craft freely'"
 msgstr "L'onglet Artisanat du sac reconnaît votre atelier : « Vous êtes à votre propre établi - fabriquez librement »"
+
+#: assets/data/changelog.json
+msgid "The pad's Back button opens the dock's menu with a line chosen: every screen, and skills four to six, so a pad player can spend points and reach everything"
+msgstr "Le bouton Retour de la manette ouvre le menu du dock avec une ligne choisie : chaque écran, et les compétences quatre à six, pour qu'on puisse tout atteindre et dépenser ses points à la manette"
 
 #: assets/data/changelog.json
 msgid "The paper doll and the dock's portrait wear it all too"
@@ -10520,10 +10540,6 @@ msgstr "Plus rien à vous apprendre."
 msgid "Move down"
 msgstr "Aller en bas"
 
-#: scripts/controls.gd:107
-msgid "skill %d"
-msgstr "compétence %d"
-
 #: scripts/controls.gd:11
 msgid "Move left"
 msgstr "Aller à gauche"
@@ -10532,9 +10548,25 @@ msgstr "Aller à gauche"
 msgid "Move right"
 msgstr "Aller à droite"
 
+#: scripts/controls.gd:129
+msgid "Drop"
+msgstr "Jeter"
+
+#: scripts/controls.gd:129
+msgid "Drop all"
+msgstr "Tout jeter"
+
+#: scripts/controls.gd:129
+msgid "Menu"
+msgstr "Menu"
+
 #: scripts/controls.gd:13
 msgid "Attack"
 msgstr "Attaquer"
+
+#: scripts/controls.gd:139
+msgid "skill %d"
+msgstr "compétence %d"
 
 #: scripts/controls.gd:14
 msgid "Dodge roll"
@@ -10564,21 +10596,17 @@ msgstr "Stats"
 msgid "Skills"
 msgstr "Compétences"
 
+#: scripts/controls.gd:47
+msgid "Start"
+msgstr "Start"
+
+#: scripts/controls.gd:48
+msgid "Back"
+msgstr "Retour"
+
 #: scripts/controls.gd:9
 msgid "Move up"
 msgstr "Aller en haut"
-
-#: scripts/controls.gd:97
-msgid "Drop"
-msgstr "Jeter"
-
-#: scripts/controls.gd:97
-msgid "Drop all"
-msgstr "Tout jeter"
-
-#: scripts/controls.gd:97
-msgid "Menu"
-msgstr "Menu"
 
 #: scripts/create_screen.gd:202
 msgid "Skills: %s"
@@ -10648,11 +10676,11 @@ msgstr "suivant"
 msgid "skip"
 msgstr "passer"
 
-#: scripts/dialogue_box.gd:149
+#: scripts/dialogue_box.gd:174
 msgid "%d  %s"
 msgstr "%d  %s"
 
-#: scripts/dialogue_box.gd:150
+#: scripts/dialogue_box.gd:178
 msgid "not yet"
 msgstr "plus tard"
 
@@ -10888,17 +10916,21 @@ msgstr "Carte"
 msgid "Pack"
 msgstr "Sac"
 
-#: scripts/hud_dock.gd:319
+#: scripts/hud_dock.gd:359
 msgid " +%d HP"
 msgstr " +%d PV"
 
-#: scripts/hud_dock.gd:332
+#: scripts/hud_dock.gd:372
 msgid "Lv %d %s"
 msgstr "Niv. %d %s"
 
-#: scripts/hud_dock.gd:335
+#: scripts/hud_dock.gd:375
 msgid "HP"
 msgstr "PV"
+
+#: scripts/hud_dock.gd:396
+msgid "Skill %d: none yet"
+msgstr "Compétence %d : aucune encore"
 
 #: scripts/inventory_screen.gd:116
 msgid "choose"
@@ -11464,35 +11496,35 @@ msgstr "Sauvegardes"
 msgid "Quit to title"
 msgstr "Quitter vers le titre"
 
-#: scripts/player.gd:244
+#: scripts/player.gd:247
 msgid "dodged"
 msgstr "esquivé"
 
-#: scripts/player.gd:253
+#: scripts/player.gd:256
 msgid "You are afflicted by %s!"
 msgstr "Vous voilà atteint : %s !"
 
-#: scripts/player.gd:305
+#: scripts/player.gd:308
 msgid "No skill on that key yet. Learn more, or set the keys, in Skills."
 msgstr "Aucune compétence sur cette touche. Apprenez-en d'autres, ou réglez les touches, dans Compétences."
 
-#: scripts/player.gd:318
+#: scripts/player.gd:321
 msgid "No foe in reach for %s."
 msgstr "Aucun ennemi à portée pour %s."
 
-#: scripts/player.gd:336
+#: scripts/player.gd:339
 msgid "All ailments are purged!"
 msgstr "Tous les maux sont purgés !"
 
-#: scripts/player.gd:339
+#: scripts/player.gd:342
 msgid "%s restores %d HP."
 msgstr "%s rend %d PV."
 
-#: scripts/player.gd:351
+#: scripts/player.gd:354
 msgid "%s hits %d foes for %d damage!"
 msgstr "%s touche %d ennemis : %d dégâts !"
 
-#: scripts/player.gd:353
+#: scripts/player.gd:356
 msgid "%s hits %s for %d damage!"
 msgstr "%s touche %s : %d dégâts !"
 
@@ -11711,10 +11743,6 @@ msgstr "Un héros de l'ancienne version web s'importe avec son code de sauvegard
 #: scripts/saves_screen.gd:96
 msgid "Your web game hero %s, %d gold."
 msgstr "Votre héros du jeu web : %s, %d or."
-
-#: scripts/screen.gd:123
-msgid "Back"
-msgstr "Retour"
 
 #: scripts/shop_screen.gd:100
 msgid "%s hands you the till: +%d gold."
@@ -12256,259 +12284,259 @@ msgstr "le trésor de l'étage (%s)"
 msgid "the hoards of floors %s"
 msgstr "les trésors des étages %s"
 
-#: scripts/state/game_state.gd:1025
+#: scripts/state/game_state.gd:1027
 msgid "The town is not ready for me yet."
 msgstr "La ville n'est pas encore prête pour moi."
 
-#: scripts/state/game_state.gd:1030
+#: scripts/state/game_state.gd:1032
 msgid "Iva's hands glow warm. Fully healed, free of charge."
 msgstr "Les mains d'Iva rayonnent de chaleur. Soins complets, gratuits."
 
-#: scripts/state/game_state.gd:1033
+#: scripts/state/game_state.gd:1035
 msgid " She tucks %d healing potion%s in your pack."
 msgstr " Elle glisse %d potion%s de soin dans votre sac."
 
-#: scripts/state/game_state.gd:1038
+#: scripts/state/game_state.gd:1040
 msgid "Loras plays you a marching song%s. Your next hunt strikes truer. (+%d%% crit)"
 msgstr "Loras vous joue un air de marche%s. Votre prochaine chasse frappera plus juste. (+%d%% de critique)"
 
-#: scripts/state/game_state.gd:1039
+#: scripts/state/game_state.gd:1041
 msgid " on his war-horn"
 msgstr " sur son cor de guerre"
 
-#: scripts/state/game_state.gd:1062
+#: scripts/state/game_state.gd:1064
 msgid "For sale: this house. The deed costs %d gold."
 msgstr "À vendre : cette maison. Le titre de propriété coûte %d or."
 
-#: scripts/state/game_state.gd:1067
+#: scripts/state/game_state.gd:1069
 msgid "The deed is yours. Welcome home."
 msgstr "Le titre de propriété est à vous. Bienvenue chez vous."
 
-#: scripts/state/game_state.gd:1091
+#: scripts/state/game_state.gd:1093
 msgid "The %s deed is signed. Your house grew while you were out."
 msgstr "Titre signé : %s. Votre maison s'est agrandie pendant votre absence."
 
-#: scripts/state/game_state.gd:1093
+#: scripts/state/game_state.gd:1095
 msgid " %d piece%s of furniture had to move: it's back in your pack."
 msgstr " Il a fallu déplacer %d meuble%s : retour dans votre sac."
 
-#: scripts/state/game_state.gd:1161
+#: scripts/state/game_state.gd:1163
 msgid "The nook bubbles: 2x %s became %s."
 msgstr "Le chaudron bouillonne : 2x %s donnent %s."
 
-#: scripts/state/game_state.gd:1198
+#: scripts/state/game_state.gd:1200
 msgid "It needs open floor. Face a free tile and try again."
 msgstr "Il faut un sol dégagé. Placez-vous face à une case libre et réessayez."
 
-#: scripts/state/game_state.gd:1200
+#: scripts/state/game_state.gd:1202
 msgid "Something already stands there."
 msgstr "Quelque chose occupe déjà la place."
 
-#: scripts/state/game_state.gd:1202
+#: scripts/state/game_state.gd:1204
 msgid "Not in the doorway: you'd trip over it coming home."
 msgstr "Pas devant la porte : vous trébucheriez dessus en rentrant."
 
-#: scripts/state/game_state.gd:1206
+#: scripts/state/game_state.gd:1208
 msgid "%s placed. {key:interact} takes it back."
 msgstr "Objet posé : %s. {key:interact} pour le reprendre."
 
-#: scripts/state/game_state.gd:1219
+#: scripts/state/game_state.gd:1221
 msgid "%s back in the pack."
 msgstr "%s : de retour dans le sac."
 
-#: scripts/state/game_state.gd:1227
+#: scripts/state/game_state.gd:1229
 msgid "Your own bed. Fully restored, and well rested: +%d%% XP for your next %d fights."
 msgstr "Votre lit à vous. Pleine forme, et un bon repos : +%d%% d'XP pour vos %d prochains combats."
 
-#: scripts/state/game_state.gd:1239
+#: scripts/state/game_state.gd:1241
 msgid "A workbench and a small cauldron, fitted to the shelf. Craft at home, forever."
 msgstr "Un établi et un petit chaudron, installés contre l'étagère. Fabriquez chez vous, pour toujours."
 
-#: scripts/state/game_state.gd:1240
+#: scripts/state/game_state.gd:1242
 msgid "A proper workbench would fit this shelf. Tools and parts cost %d gold."
 msgstr "Un vrai établi irait bien contre cette étagère. Outils et pièces : %d or."
 
-#: scripts/state/game_state.gd:1243
+#: scripts/state/game_state.gd:1245
 msgid "The hearth roars beside your workbench. Home industry."
 msgstr "L'âtre ronfle à côté de votre établi. Artisanat maison."
 
-#: scripts/state/game_state.gd:1244
+#: scripts/state/game_state.gd:1246
 msgid "The hearth crackles, warm and idle. A workbench would fit by the shelf..."
 msgstr "L'âtre crépite, chaud et désœuvré. Un établi irait bien près de l'étagère..."
 
-#: scripts/state/game_state.gd:1247
+#: scripts/state/game_state.gd:1249
 msgid "Your kitchen counter. Clean, empty, hopeful."
 msgstr "Votre plan de travail. Propre, vide, plein d'espoir."
 
-#: scripts/state/game_state.gd:1251
+#: scripts/state/game_state.gd:1253
 msgid "The garden drinks your victories: %d/%d until the next harvest."
 msgstr "Le jardin s'abreuve de vos victoires : %d/%d avant la prochaine récolte."
 
-#: scripts/state/game_state.gd:1290
+#: scripts/state/game_state.gd:1292
 msgid "You wake at the inn, %d gold lighter. What isn't banked is a fallen hero's to lose."
 msgstr "Vous vous réveillez à l'auberge, avec %d or en moins. Ce qui n'est pas à la banque, un héros à terre le perd."
 
-#: scripts/state/game_state.gd:1292
+#: scripts/state/game_state.gd:1294
 msgid "You wake at the inn. The innkeeper says nothing. Kind of her."
 msgstr "Vous vous réveillez à l'auberge. L'aubergiste ne dit rien. C'est gentil de sa part."
 
-#: scripts/state/game_state.gd:1409
+#: scripts/state/game_state.gd:1411
 msgid "Your garden ripens: +%d %s."
 msgstr "Votre jardin donne sa récolte : +%d %s."
 
-#: scripts/state/game_state.gd:1418
+#: scripts/state/game_state.gd:1420
 msgid "%s is defeated! +%d XP, +%d gold."
 msgstr "%s tombe ! +%d XP, +%d or."
 
-#: scripts/state/game_state.gd:1435
+#: scripts/state/game_state.gd:1437
 msgid "%s drops: %s."
 msgstr "%s laisse tomber : %s."
 
-#: scripts/state/game_state.gd:1443
+#: scripts/state/game_state.gd:1445
 msgid "%s drops: %s!"
 msgstr "%s laisse tomber : %s !"
 
-#: scripts/state/game_state.gd:1453
+#: scripts/state/game_state.gd:1455
 msgid "You forage %d %s%s."
 msgstr "Vous glanez %d %s%s."
 
-#: scripts/state/game_state.gd:1455
+#: scripts/state/game_state.gd:1457
 msgid "Foraging reached %d!"
 msgstr "Cueillette : niveau %d !"
 
-#: scripts/state/game_state.gd:1471
+#: scripts/state/game_state.gd:1473
 msgid "Level up: you are now level %d. +%d stat points and +%d skill point%s to spend."
 msgstr "Niveau supérieur : vous voici au niveau %d. +%d points de caractéristique et +%d point%s de compétence à dépenser."
 
-#: scripts/state/game_state.gd:1499
+#: scripts/state/game_state.gd:1501
 msgid "You gather %d %s%s."
 msgstr "Vous récoltez %d %s%s."
 
-#: scripts/state/game_state.gd:1510
+#: scripts/state/game_state.gd:1512
 msgid "Nothing's biting here yet. Try again in a while, or somewhere else."
 msgstr "Ça ne mord pas encore ici. Réessayez dans un moment, ou ailleurs."
 
-#: scripts/state/game_state.gd:1514
+#: scripts/state/game_state.gd:1516
 msgid "You cast, wait... and haul up an old boot."
 msgstr "Vous lancez, attendez... et remontez une vieille botte."
 
-#: scripts/state/game_state.gd:1514
+#: scripts/state/game_state.gd:1516
 msgid "You cast, wait... and land %s!"
 msgstr "Vous lancez, attendez... et ça mord : %s !"
 
-#: scripts/state/game_state.gd:1516
+#: scripts/state/game_state.gd:1518
 msgid " Foraging reached %d!"
 msgstr " Cueillette : niveau %d !"
 
-#: scripts/state/game_state.gd:1618
+#: scripts/state/game_state.gd:1620
 msgid "The bounty on %s is yours: +%d gold."
 msgstr "La prime pour %s vous revient : +%d or."
 
-#: scripts/state/game_state.gd:1627
+#: scripts/state/game_state.gd:1629
 msgid "%s leaves you %s!"
 msgstr "%s vous laisse %s !"
 
-#: scripts/state/game_state.gd:1727
+#: scripts/state/game_state.gd:1729
 msgid "%d HP"
 msgstr "%d PV"
 
-#: scripts/state/game_state.gd:1735
+#: scripts/state/game_state.gd:1737
 msgid "You use %s."
 msgstr "Vous utilisez %s."
 
-#: scripts/state/game_state.gd:1737
+#: scripts/state/game_state.gd:1739
 msgid " Restored %s."
 msgstr " Vous récupérez %s."
 
-#: scripts/state/game_state.gd:1920
+#: scripts/state/game_state.gd:1922
 msgid "%s is cleared!"
 msgstr "Étage nettoyé : %s !"
 
-#: scripts/state/game_state.gd:1925
+#: scripts/state/game_state.gd:1927
 msgid "%d gold"
 msgstr "%d or"
 
-#: scripts/state/game_state.gd:1934
+#: scripts/state/game_state.gd:1936
 msgid "The floor's hoard: %s."
 msgstr "Le trésor de l'étage : %s."
 
-#: scripts/state/game_state.gd:1938
+#: scripts/state/game_state.gd:1940
 msgid "Among the bones: a page of an old journal (%s). {key:journal} reads it."
 msgstr "Parmi les os : une page d'un vieux journal (%s). {key:journal} pour la lire."
 
-#: scripts/state/game_state.gd:1942
+#: scripts/state/game_state.gd:1944
 msgid "+%d XP for the way down."
 msgstr "+%d XP pour la descente."
 
-#: scripts/state/game_state.gd:1952
+#: scripts/state/game_state.gd:1954
 msgid "the %s"
 msgstr "%s"
 
-#: scripts/state/game_state.gd:1955
+#: scripts/state/game_state.gd:1957
 msgid "Behind the throne, a stair goes on down into the dark: the Deep Hunt."
 msgstr "Derrière le trône, un escalier s'enfonce encore dans le noir : la Traque des Profondeurs."
 
-#: scripts/state/game_state.gd:1959
+#: scripts/state/game_state.gd:1961
 msgid "A deeper way opens: %s."
 msgstr "Un passage plus profond s'ouvre : %s."
 
-#: scripts/state/game_state.gd:1972
+#: scripts/state/game_state.gd:1974
 msgid "Depth %d of the Deep Hunt is cleared!"
 msgstr "Profondeur %d de la Traque des Profondeurs : nettoyée !"
 
-#: scripts/state/game_state.gd:1981
+#: scripts/state/game_state.gd:1983
 msgid "The deepest yet. Its hoard: %s."
 msgstr "Le plus profond jusqu'ici. Son trésor : %s."
 
-#: scripts/state/game_state.gd:1987
+#: scripts/state/game_state.gd:1989
 msgid "depth %d of the Deep Hunt"
 msgstr "la profondeur %d de la Traque des Profondeurs"
 
-#: scripts/state/game_state.gd:1991
+#: scripts/state/game_state.gd:1993
 msgid "A milestone: %d depths below the throne. The %s is yours, a trophy for the shelf at home."
 msgstr "Un jalon : %d profondeurs sous le trône. Le %s est à vous, un trophée pour l'étagère de la maison."
 
-#: scripts/state/game_state.gd:1994
+#: scripts/state/game_state.gd:1996
 msgid "A hole into the dark opens beside the way up: depth %d waits below."
 msgstr "Un trou s'ouvre sur le noir près de la montée : la profondeur %d attend en dessous."
 
-#: scripts/state/game_state.gd:2013
+#: scripts/state/game_state.gd:2015
 msgid "Mastery: %s Slayer %s. +%d%% damage against %s."
 msgstr "Maîtrise : %s, Tueur %s. +%d%% de dégâts (%s)."
 
-#: scripts/state/game_state.gd:2053
+#: scripts/state/game_state.gd:2055
 msgid "%s: ready to hand in to %s."
 msgstr "%s : prêt à remettre à %s."
 
-#: scripts/state/game_state.gd:2093
+#: scripts/state/game_state.gd:2095
 msgid "That uses what %s needs (%s). Do it again to go ahead."
 msgstr "Cela entame ce que demande « %s » (%s). Recommencez pour confirmer."
 
-#: scripts/state/game_state.gd:2124
+#: scripts/state/game_state.gd:2126
 msgid "The chest bares its teeth — a mimic!"
 msgstr "Le coffre montre les dents — c'est une mimique !"
 
-#: scripts/state/game_state.gd:2130
+#: scripts/state/game_state.gd:2132
 msgid "Something glitters on the road: %d gold."
 msgstr "Quelque chose brille sur la route : %d or."
 
-#: scripts/state/game_state.gd:2131
+#: scripts/state/game_state.gd:2133
 msgid "The chest holds %d gold."
 msgstr "Le coffre contient %d or."
 
-#: scripts/state/game_state.gd:2140
+#: scripts/state/game_state.gd:2142
 msgid "Too heavy to carry. Lighten the pack and come back."
 msgstr "Trop lourd à porter. Allégez votre sac et revenez."
 
-#: scripts/state/game_state.gd:2146
+#: scripts/state/game_state.gd:2148
 msgid "The chest holds %s!"
 msgstr "Le coffre contient %s !"
 
-#: scripts/state/game_state.gd:2151
+#: scripts/state/game_state.gd:2153
 msgid "You gather %dx %s."
 msgstr "Vous récoltez %dx %s."
 
-#: scripts/state/game_state.gd:2152
+#: scripts/state/game_state.gd:2154
 msgid "The chest holds %dx %s."
 msgstr "Le coffre contient %dx %s."
 
@@ -12516,79 +12544,79 @@ msgstr "Le coffre contient %dx %s."
 msgid "Wanderer"
 msgstr "Vagabond"
 
-#: scripts/state/game_state.gd:457
+#: scripts/state/game_state.gd:459
 msgid "Hilda breaks it down: %s."
 msgstr "Hilda démonte la pièce : %s."
 
-#: scripts/state/game_state.gd:486
+#: scripts/state/game_state.gd:488
 msgid "Hilda reforges it: %s."
 msgstr "Hilda reforge la pièce : %s."
 
-#: scripts/state/game_state.gd:510
+#: scripts/state/game_state.gd:512
 msgid "Hilda quenches it in the deep's black water: +1 %s."
 msgstr "Hilda trempe la pièce dans l'eau noire des profondeurs : +1 %s."
 
-#: scripts/state/game_state.gd:572
+#: scripts/state/game_state.gd:574
 msgid "%s reached %d!"
 msgstr "%s : niveau %d !"
 
-#: scripts/state/game_state.gd:582
+#: scripts/state/game_state.gd:584
 msgid "The innkeeper nods. You are already well rested."
 msgstr "L'aubergiste hoche la tête. Vous avez déjà fait le plein de repos."
 
-#: scripts/state/game_state.gd:584
+#: scripts/state/game_state.gd:586
 msgid "No coin, no bed: a night costs %d gold."
 msgstr "Pas un sou, pas de lit : la nuit coûte %d or."
 
-#: scripts/state/game_state.gd:589
+#: scripts/state/game_state.gd:591
 msgid "You rest at the inn and wake fully restored. -%d gold."
 msgstr "Vous dormez à l'auberge et vous réveillez en pleine forme. -%d or."
 
-#: scripts/state/game_state.gd:593
+#: scripts/state/game_state.gd:595
 msgid "Well rested, too: more XP for your next %d fights."
 msgstr "Et un vrai repos : plus d'XP pour vos %d prochains combats."
 
-#: scripts/state/game_state.gd:611
+#: scripts/state/game_state.gd:613
 msgid "%s: commissioned. %s"
 msgstr "Commande passée : %s. %s"
 
-#: scripts/state/game_state.gd:632
+#: scripts/state/game_state.gd:634
 msgid "%s: built. Walk outside and see."
 msgstr "%s : chantier terminé. Sortez voir."
 
-#: scripts/state/game_state.gd:638
+#: scripts/state/game_state.gd:640
 msgid "%s: built - and Pixelheim is a %s now."
 msgstr "%s : chantier terminé - et Pixelheim passe au rang de %s."
 
-#: scripts/state/game_state.gd:828
+#: scripts/state/game_state.gd:830
 msgid "The prize is yours: +%d gold and %d %ss!"
 msgstr "Vous remportez le lot : +%d or et %d %ss !"
 
-#: scripts/state/game_state.gd:943
+#: scripts/state/game_state.gd:945
 msgid "It's in your journal ({key:journal})."
 msgstr "Elle est dans votre journal ({key:journal})."
 
-#: scripts/state/game_state.gd:943
+#: scripts/state/game_state.gd:945
 msgid "Quest accepted: %s. %s"
 msgstr "Quête acceptée : %s. %s"
 
-#: scripts/state/game_state.gd:947
+#: scripts/state/game_state.gd:949
 msgid "%s: they wait on your answer."
 msgstr "%s : on attend votre réponse."
 
-#: scripts/state/game_state.gd:970
+#: scripts/state/game_state.gd:972
 msgid "+%d gold"
 msgstr "+%d or"
 
-#: scripts/state/game_state.gd:971
+#: scripts/state/game_state.gd:973
 msgid "+%d XP"
 msgstr "+%d XP"
 
-#: scripts/state/game_state.gd:972
+#: scripts/state/game_state.gd:974
 msgid "Quest complete: %s. %s. “%s”"
 msgstr "Quête terminée : %s. %s. « %s »"
 
-#: scripts/state/game_state.gd:974
+#: scripts/state/game_state.gd:976
 msgid "%s: %d/%d %s."
 msgstr "%s : %d/%d %s."
 
