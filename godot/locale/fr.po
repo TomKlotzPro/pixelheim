@@ -13328,35 +13328,11 @@ msgstr "COMMANDÉ"
 msgid "Arrows"
 msgstr "Flèches"
 
-#: scripts/world.gd:303
+#: scripts/world.gd:308
 msgid "No map reaches this deep."
 msgstr "Aucune carte ne va aussi profond."
 
-#: scripts/world.gd:657
-msgid "Five lanterns on the square, one for each of the five who climbed. Tonight the %s remembers them - and %s."
-msgstr "Cinq lanternes sur la place, une pour chacun des cinq qui ont gravi la montagne. Ce soir, Pixelheim, désormais %s, se souvient d'eux - et salue %s."
-
-#: scripts/world.gd:658
-msgid "Pixelheim, a %s raised from the ashes. Tonight it celebrates %s."
-msgstr "Pixelheim, des cendres au rang de %s. Ce soir, on y fête %s."
-
-#: scripts/world.gd:744
-msgid "%s: built."
-msgstr "%s : chantier terminé."
-
-#: scripts/world.gd:748
-msgid "Pixelheim is a %s now."
-msgstr "Pixelheim passe au rang de %s."
-
-#: scripts/world.gd:754
-msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
-msgstr "Et aujourd'hui, on fait la fête : des étals sur la place, et un lancer d'anneaux avec un lot pour le meilleur lancer."
-
-#: scripts/world.gd:831
-msgid "%s  %d:%02d"
-msgstr "%s  %d:%02d"
-
-#: scripts/world.gd:930
+#: scripts/world.gd:642
 msgid "Next"
 msgstr "Ensuite"
 
@@ -13399,6 +13375,30 @@ msgstr "Quête acceptée"
 #: scripts/world_messages.gd:23
 msgid "Quest complete"
 msgstr "Quête terminée"
+
+#: scripts/world_stage.gd:136
+msgid "Five lanterns on the square, one for each of the five who climbed. Tonight the %s remembers them - and %s."
+msgstr "Cinq lanternes sur la place, une pour chacun des cinq qui ont gravi la montagne. Ce soir, Pixelheim, désormais %s, se souvient d'eux - et salue %s."
+
+#: scripts/world_stage.gd:137
+msgid "Pixelheim, a %s raised from the ashes. Tonight it celebrates %s."
+msgstr "Pixelheim, des cendres au rang de %s. Ce soir, on y fête %s."
+
+#: scripts/world_stage.gd:223
+msgid "%s: built."
+msgstr "%s : chantier terminé."
+
+#: scripts/world_stage.gd:227
+msgid "Pixelheim is a %s now."
+msgstr "Pixelheim passe au rang de %s."
+
+#: scripts/world_stage.gd:233
+msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
+msgstr "Et aujourd'hui, on fait la fête : des étals sur la place, et un lancer d'anneaux avec un lot pour le meilleur lancer."
+
+#: scripts/world_stage.gd:301
+msgid "%s  %d:%02d"
+msgstr "%s  %d:%02d"
 
 #: tools/i18n.py
 msgid "%dg"

@@ -29,6 +29,8 @@ var interaction: Interaction
 ## The monsters and the fight's clock (Foes), and the dungeon floors (Delve).
 var foes: Foes
 var delve: Delve
+## The story over the world: moments, the night, the ending, reveals (Stage).
+var stage: Stage
 var player_cell := Vector2i.ZERO
 var last_player_position := Vector2.ZERO
 ## The hero panel: health, resource, xp, gold, the screens (HudPanel).
@@ -146,6 +148,9 @@ func _ready() -> void:
 	delve = Delve.new()
 	delve.world = self
 	add_child(delve)
+	stage = Stage.new()
+	stage.world = self
+	add_child(stage)
 	_build_hud()
 	interaction.build_prompt()
 	enter_map(map, arrival)
@@ -202,12 +207,12 @@ func _process(delta: float) -> void:
 		return
 	interaction.update_prompt()
 	_update_nameplate()
-	_run_clocks(delta)
+	stage.run_clocks(delta)
 	messages.update()
 	# A first-time hint stands under the boss bar while one is up (PIX-210).
 	if hint_card != null and is_instance_valid(hint_card):
 		hint_card.position.y = boss_bar.bottom() + 6 if boss_bar.following() else 18.0
-	_tend_escort()
+	stage.tend_escort()
 	GameState.walk(player.position.distance_to(last_player_position) / TILE)
 	last_player_position = player.position
 	# The dark is the world's own now (PIX-221: the LightRig), not a veil
@@ -272,7 +277,7 @@ func _use_portal(target: Dictionary) -> void:
 				# Stepping into the inn takes a bed for coin, as on the web.
 				if map.id == "town_inn":
 					messages.flash(GameState.rest_at_inn())
-					dream()
+					stage.dream()
 			)
 		"dungeon":
 			# The floor select opens while the hero waits at the door.
@@ -380,15 +385,6 @@ func _hint_boards() -> void:
 		hint("bounty")
 
 
-## The ascension scene: a new title, and at a fork the path cards.
-func _ascend(title: String) -> void:
-	Sound.play("evolve")
-	player.refresh_rank()
-	var scene := preload("res://scripts/rankup_screen.gd").new()
-	scene.title = title
-	add_child(scene)
-
-
 ## Back off a gate to the cell the hero came from (the web keeps them there).
 func _step_back() -> void:
 	var back := player_cell - Vector2i(player.facing)
@@ -400,16 +396,6 @@ func _step_back() -> void:
 	last_player_position = player.position
 	GameState.move_to(map, back, player.facing)
 
-
-## A story moment over the world (Cutscene, PIX-32), once per hero; "" or a
-## moment already seen plays nothing.
-func play_story(scene_id: String) -> void:
-	if scene_id == "" or GameState.has_seen(scene_id):
-		return
-	GameState.mark_seen(scene_id)
-	var scene := Cutscene.new()
-	scene.scene_id = scene_id
-	add_child(scene)
 
 func enter_map(next: MapData, arrival: Vector2i) -> void:
 	var changing := view != null
@@ -437,11 +423,11 @@ func enter_map(next: MapData, arrival: Vector2i) -> void:
 		GameState.move_to(next, arrival, player.facing)
 		GameState.save_now()
 	foes.floor_foes = 0
-	_prologue_arrive(next)
+	stage.arrive(next)
 	# A festival day: confetti over the square (PIX-159).
 	if next.id == "town" and GameState.festival_on():
-		_festival()
-	_play_reveals.call_deferred()
+		stage.festival()
+	stage.play_reveals.call_deferred()
 	folk.keep_hours(true)
 	camera_rig.set_limits(Vector2(next.size * TILE))
 	foes.spawn_for(next)
@@ -560,280 +546,6 @@ func _notification(what: int) -> void:
 		objective_box.visible = true
 
 
-## The Night of Ash on arriving somewhere (PIX-152): on the road, the
-## scavenger feeding at the gate (and the night's first words); through the
-## gate, the village is the next step.
-func _prologue_arrive(next: MapData) -> void:
-	match GameState.progression.prologue:
-		Prologue.SCAVENGER:
-			if next.id == "overworld":
-				var at: Dictionary = Prologue.data()["scavenger"]
-				var scavenger := foes.spawn_enemy(at["monsterId"], Vector2i(at["x"], at["y"]), "forest", "", false, true)
-				scavenger.set_meta("prologue", true)
-				# It keeps to its meal until the hero walks up or strikes:
-				# the night's first fight is the hero's to start.
-				scavenger.feeding = true
-				messages.flash.call_deferred(String(Prologue.data()["arrival"]))
-		Prologue.GATE:
-			if next.id == "town":
-				GameState.prologue_reached_town()
-				prologue_wave.call_deferred()
-		Prologue.HOUNDS, Prologue.EMBERS:
-			if next.id == "town":
-				prologue_wave.call_deferred()
-
-
-## The night's foes for this beat (PIX-197): the ash hounds inside the gate,
-## the embers on the square - below their kind's level, one told lunge
-## among the hounds for the roll.
-func prologue_wave() -> void:
-	var wave := Prologue.wave(GameState.progression.prologue)
-	if wave.is_empty() or map.id != "town":
-		return
-	var kind := Bestiary.monster(wave["monsterId"])
-	for at: Array in wave["cells"]:
-		var cell := Vector2i(int(at[0]), int(at[1]))
-		var foe := foes.spawn_enemy(wave["monsterId"], cell, "", "", bool(wave.get("elite", false)), false, cell, int(wave["level"]) - int(kind["level"]))
-		foe.fighter["name"] = wave["name"]
-		foe.set_meta("prologue_wave", true)
-		fx.appear(foe)
-
-
-## Dawn after the Night of Ash (PIX-197): played on the town itself - the
-## fires going out, the survivors on the square, the letter read, Fafnyr's
-## shadow - and then the day.
-func _play_dawn() -> void:
-	var dawn := preload("res://scripts/dawn_screen.gd").new()
-	dawn.world = self
-	dawn.on_done = func() -> void:
-		GameState.finish_prologue()
-		map = load_map("town")
-		# The day begins on the square, below the hall, whether the dawn
-		# was watched or skipped.
-		enter_map(map, Town.square() + Vector2i(0, 2))
-	add_child(dawn)
-
-
-## A night under Sela's roof (or canvas) brings Morvax's voice, once per
-## dream, in the order the story earns them (PIX-154).
-func dream() -> void:
-	if GameState.progression.prologue != Prologue.DONE:
-		return
-	play_story(Story.next_dream(GameState.progression.cleared_levels, GameState.progression.story_seen))
-
-
-## The ending (PIX-150): home to the square, the camera touring each age's
-## landmark the hero built, then the square - and then the story's ending
-## and credits. How Morvax ended (PIX-157) sets the evening: a festival
-## with confetti for the one destroyed, five lanterns for the five who
-## climbed for the one laid to rest.
-func play_ending(choice := "destroy") -> void:
-	var scene_id := Story.ending_scene(choice)
-	GameState.mark_seen(scene_id)
-	GameState.reveals.clear()
-	map = load_map("town")
-	# Below the fountain, facing the hall.
-	var square := Town.square() + Vector2i(0, 3)
-	enter_map(map, square)
-	if choice == "rest":
-		_lanterns()
-	else:
-		_festival()
-	Sound.play_track("victory")
-	var stops: Array[Dictionary] = []
-	var done := Town.done_projects(GameState.settlement)
-	for entry: Dictionary in Town.ages():
-		var built: Array = entry["projects"].filter(func(project_entry: Dictionary) -> bool: return project_entry["id"] in done)
-		if built.is_empty():
-			continue
-		var landmark: Dictionary = built[-1]
-		stops.append({
-			"at": _cell_center(Town.project_center(landmark["id"])),
-			"line": "%s - %s" % [landmark["name"], String(landmark["blurb"]).to_lower()],
-		})
-	var town_name := String(Town.tier(GameState.town_tier())["name"]).to_lower()
-	stops.append({
-		"at": _cell_center(square),
-		"line": (Text.t("Five lanterns on the square, one for each of the five who climbed. Tonight the %s remembers them - and %s.")
-			if choice == "rest" else Text.t("Pixelheim, a %s raised from the ashes. Tonight it celebrates %s.")) % [town_name, GameState.hero.hero_name],
-	})
-	var tour := preload("res://scripts/reveal_screen.gd").new()
-	tour.world = self
-	tour.stops = stops
-	tour.on_done = func() -> void:
-		var ending := Cutscene.new()
-		ending.scene_id = scene_id
-		add_child(ending)
-	add_child(tour)
-
-
-## Five lanterns in a row on the square (PIX-157), for Maren, Oskar,
-## Liane, Tam and Morvax: Shade's flame on a post, or a warm square.
-func _lanterns() -> void:
-	var spots := Town.lanterns()
-	for i in spots.size():
-		var lantern := Node2D.new()
-		lantern.position = _cell_center(spots[i])
-		lantern.add_to_group("decor")
-		var post := ColorRect.new()
-		post.color = Color("4a3426")
-		post.size = Vector2(2, 9)
-		post.position = Vector2(-1, -7)
-		lantern.add_child(post)
-		var frames := ItemIcons.effect("flame", 10.0)
-		if frames != null:
-			var flame := AnimatedSprite2D.new()
-			flame.sprite_frames = frames
-			flame.scale = Vector2.ONE * 0.5
-			flame.position = Vector2(0, -11)
-			flame.frame = i
-			flame.play()
-			lantern.add_child(flame)
-		else:
-			var glow := ColorRect.new()
-			glow.color = Color(1.0, 0.75, 0.35)
-			glow.size = Vector2(4, 4)
-			glow.position = Vector2(-2, -12)
-			lantern.add_child(glow)
-		actors.add_child(lantern)
-
-
-## Confetti over the square: the town's festival, until the hero leaves.
-func _festival() -> void:
-	if GameState.settings.reduce_motion:
-		return
-	for color: Color in [Color("f2c14e"), Color("d8433f"), Color("4f7cff"), Color("5cbf4a")]:
-		var confetti := CPUParticles2D.new()
-		confetti.position = _cell_center(Town.square() + Vector2i(0, -4))
-		confetti.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
-		confetti.emission_rect_extents = Vector2(14 * TILE, TILE)
-		confetti.amount = 18
-		confetti.lifetime = 4.0
-		confetti.direction = Vector2.DOWN
-		confetti.spread = 25.0
-		confetti.gravity = Vector2(0, 14)
-		confetti.initial_velocity_min = 4.0
-		confetti.initial_velocity_max = 10.0
-		confetti.scale_amount_min = 1.0
-		confetti.scale_amount_max = 2.0
-		confetti.color = color
-		confetti.z_index = 7
-		confetti.add_to_group("decor")
-		add_child(confetti)
-
-
-## Back from the board with something built: the town redraws around the
-## hero, then shows it.
-func after_board() -> void:
-	if GameState.reveals.is_empty() or map.id != "town":
-		return
-	map = load_map("town")
-	enter_map(map, player_cell)
-
-
-## The town risen (PIX-147): what was built since the hero last saw the town,
-## the age it reached, a homecoming - the camera tours them, then hands back.
-func _play_reveals() -> void:
-	if GameState.reveals.is_empty() or map.id != "town" or not is_inside_tree():
-		return
-	var stops: Array[Dictionary] = []
-	for entry: String in GameState.reveals:
-		var key := entry.get_slice(":", 1)
-		match entry.get_slice(":", 0):
-			"project":
-				stops.append({"at": _cell_center(Town.project_center(key)), "line": Text.t("%s: built.") % Town.project(key)["name"]})
-			"age":
-				stops.append({
-					"at": _cell_center(Town.square()),
-					"line": Text.t("Pixelheim is a %s now.") % String(Town.tier(int(key))["name"]).to_lower(),
-					"sound": "evolve", "dust": true,
-				})
-				if GameState.festival_on():
-					stops.append({
-						"at": _cell_center(Vector2i(int(Town.festival("barker")["x"]), int(Town.festival("barker")["y"]))),
-						"line": Text.t("And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."),
-					})
-			"home":
-				stops.append({"at": _cell_center(Town.square()), "line": Town.homecoming(int(key))})
-			"hunt":
-				stops.append({"at": _cell_center(Town.bounty_board() + Vector2i(0, 3)), "line": Hunts.named(key)["homecoming"]})
-			"deep":
-				# A Deep Hunt milestone (PIX-216): the town has heard.
-				stops.append({"at": _cell_center(Town.square()), "line": Text.t(Dungeons.milestone(int(key))["homecoming"])})
-	GameState.reveals.clear()
-	if stops.is_empty() or (harness and not OS.get_cmdline_user_args().has("reveal")):
-		return
-	var tour := preload("res://scripts/reveal_screen.gd").new()
-	tour.world = self
-	tour.stops = stops
-	add_child(tour)
-
-
-## An escort under way on this map (PIX-192): its wagon waits at the start
-## of the route, or comes back there a few breaths after it was lost.
-var escort: Node2D
-var escort_lost_at := -100.0
-
-
-func _tend_escort() -> void:
-	var due := GameState.escort_due()
-	if due.is_empty() or map.id != due["def"]["mapId"]:
-		return
-	if escort != null and is_instance_valid(escort):
-		return
-	if Time.get_ticks_msec() / 1000.0 - escort_lost_at < 4.0:
-		return
-	var quest_id: String = due["quest"]["id"]
-	escort = preload("res://scripts/escort.gd").new()
-	escort.world = self
-	escort.def = due["def"]
-	escort.add_to_group("decor")
-	escort.arrived.connect(func() -> void:
-		GameState.escort_arrived(quest_id)
-		messages.flash(due["def"]["arrived"]))
-	escort.lost.connect(func() -> void:
-		messages.flash(due["def"]["lost"])
-		escort_lost_at = Time.get_ticks_msec() / 1000.0
-		var gone := escort
-		gone.create_tween().tween_property(gone, "modulate:a", 0.0, 1.0).finished.connect(gone.queue_free))
-	actors.add_child(escort)
-
-
-## A quest against the clock (PIX-192): its time ticks while the world runs,
-## shown top right, red in its last half minute; a lapse closes the chest the
-## goods went back to.
-var run_clock: PanelContainer
-
-
-func _run_clocks(delta: float) -> void:
-	var ticked := GameState.tick_runs(delta)
-	if ticked["message"] != "":
-		messages.flash(ticked["message"])
-	for chest_id: String in ticked["rearmed"]:
-		if view.chest_sprites.has(chest_id):
-			for chest: Dictionary in Interactables._data()["chests"]:
-				if chest["id"] == chest_id:
-					view.chest_sprites[chest_id].texture = MapView.treasure_texture(chest, false)
-	var running := GameState.timed_run()
-	if running.is_empty() or hud_root == null:
-		if run_clock != null:
-			run_clock.queue_free()
-			run_clock = null
-		return
-	if run_clock == null:
-		run_clock = PanelContainer.new()
-		run_clock.add_theme_stylebox_override("panel", UiStyle.plate(12))
-		run_clock.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		run_clock.add_child(UiStyle.strong("", 16, UiStyle.CREAM))
-		hud_root.add_child(run_clock)
-	var left := ceili(float(running["left"]))
-	var shown: Label = run_clock.get_child(0)
-	shown.text = Text.t("%s  %d:%02d") % [running["quest"]["timed"]["clock"], left / 60, left % 60]
-	shown.add_theme_color_override("font_color", Color("ff5a4a") if left <= 30 else UiStyle.CREAM)
-	run_clock.reset_size()
-	run_clock.position = Vector2(1280 - 24 - run_clock.size.x, 16)
-
-
 func _spawn_player() -> void:
 	player = preload("res://scripts/player.gd").new()
 	player.world = self
@@ -887,8 +599,8 @@ func _build_hud() -> void:
 	GameState.message.connect(messages.flash)
 	GameState.noted.connect(messages.log_lines)
 	GameState.healed.connect(func() -> void: player.heal())
-	GameState.ranked_up.connect(_ascend)
-	GameState.prologue_dawn.connect(_play_dawn)
+	GameState.ranked_up.connect(stage.ascend)
+	GameState.prologue_dawn.connect(stage.play_dawn)
 	GameState.skill_learned.connect(func(entry: Dictionary, key: int) -> void:
 		var values := {"skill": entry["name"], "what": entry.get("description", ""), "slot": Controls.say("{key:skill_%d}" % key)}
 		hint("skill" if key > 0 else "skill_full", values, "skill:" + String(entry["id"]))

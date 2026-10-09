@@ -81,7 +81,7 @@ func interact() -> void:
 	# what it built, the town shows off as it closes (PIX-147).
 	if world.map.id == "town" and faced == Town.project_board():
 		var ledger := preload("res://scripts/town_hall_screen.gd").new()
-		ledger.tree_exited.connect(world.after_board)
+		ledger.tree_exited.connect(world.stage.after_board)
 		world.add_child(ledger)
 		return
 	# Beside it, the bounties on the named monsters (PIX-156).
@@ -107,7 +107,7 @@ func interact() -> void:
 			# guest for the night, the others trade from their stalls.
 			if beside["npc"]["id"] == "innkeeper":
 				world.messages.flash(GameState.rest_at_inn())
-				world.dream()
+				world.stage.dream()
 			else:
 				_open_stall(Economy.shop_at(String(Npcs.by_id(beside["npc"]["id"], []).get("mapId", ""))))
 		elif GameState.active_shop() != "" and not quest_word:
@@ -284,7 +284,7 @@ func _carry_water(faced: Vector2i) -> bool:
 		Sound.play("heal")
 		world.messages.flash(GameState.prologue_douse(i))
 		if GameState.progression.prologue == Prologue.EMBERS:
-			world.prologue_wave.call_deferred()
+			world.stage.prologue_wave.call_deferred()
 		return true
 	return false
 

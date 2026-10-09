@@ -133,7 +133,7 @@ func _run_test_harness() -> void:
 	# `--story <id>`: a story scene from assets/data/story.json, over the world.
 	var story_index := args.find("--story")
 	if story_index >= 0 and story_index + 1 < args.size():
-		world.play_story(args[story_index + 1])
+		world.stage.play_story(args[story_index + 1])
 		await get_tree().create_timer(0.3).timeout
 	if args.has("gate"):
 		var dungeon_index := args.find("--dungeon")
@@ -480,9 +480,9 @@ func _run_test_harness() -> void:
 		var until := Time.get_ticks_msec() / 1000.0 + float(args[follow_index + 1])
 		while Time.get_ticks_msec() / 1000.0 < until:
 			await get_tree().physics_frame
-			if world.escort != null and is_instance_valid(world.escort):
-				world.player.position = world.escort.position + Vector2(20, 0)
-		print("escort: waypoint %d, hp %d" % [world.escort.index, world.escort.hp] if world.escort != null and is_instance_valid(world.escort) else "escort: none")
+			if world.stage.escort != null and is_instance_valid(world.stage.escort):
+				world.player.position = world.stage.escort.position + Vector2(20, 0)
+		print("escort: waypoint %d, hp %d" % [world.stage.escort.index, world.stage.escort.hp] if world.stage.escort != null and is_instance_valid(world.stage.escort) else "escort: none")
 	var talk_index := args.find("--talk-to")
 	if talk_index >= 0:
 		# A conversation with one villager by id, wherever they stand.
@@ -522,12 +522,12 @@ func _run_test_harness() -> void:
 			GameState.reveals.assign(["hunt:" + GameState.progression.hunted[0]])
 		else:
 			GameState.reveals.assign(["project:street_lamps", "age:2"])
-		world._play_reveals()
+		world.stage.play_reveals()
 		await get_tree().create_timer(1.4).timeout
 	if args.has("ending"):
 		# The ending (PIX-150): home to the festival and the tour's first stop;
 		# `rest` the ending where Morvax is laid to rest (PIX-157).
-		world.play_ending("rest" if args.has("rest") else "destroy")
+		world.stage.play_ending("rest" if args.has("rest") else "destroy")
 		await get_tree().create_timer(1.4).timeout
 	var seen_index := args.find("--seen")
 	if seen_index >= 0 and seen_index + 1 < args.size():
@@ -538,7 +538,7 @@ func _run_test_harness() -> void:
 		# Morvax beaten (PIX-157): the choice. Pair with `--cleared 15` and
 		# `--seen maren_confession` to have "lay him to rest" open.
 		var throne := preload("res://scripts/throne_screen.gd").new()
-		throne.on_choice = world.play_ending
+		throne.on_choice = world.stage.play_ending
 		world.add_child(throne)
 		await get_tree().create_timer(0.3).timeout
 	if args.has("mimic"):
