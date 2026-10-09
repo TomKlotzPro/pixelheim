@@ -89,6 +89,8 @@ func _logo() -> void:
 	shine.position = Vector2(-200, -30)
 	shine.rotation = 0.4
 	shine.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# It sweeps in from off the screen on purpose: not a layout to fit.
+	shine.set_meta(Layout.DECOR, true)
 	face.add_child(shine)
 	var tagline := UiStyle.label("Fifteen floors. One dragon. Worse things below.", 18, UiStyle.CREAM, Vector2(0, LOGO_Y + 92))
 	tagline.custom_minimum_size = Vector2(VIEW.x, 0)
@@ -184,8 +186,7 @@ func as_splash() -> void:
 ## The menu as words over the scene, in the name's pixel type: cream, the
 ## chosen line gold between two gold markers. The mouse chooses by pointing.
 func _draw_menu() -> void:
-	for child in menu.get_children():
-		child.queue_free()
+	Layout.clear(menu)
 	lines.clear()
 	for index in options.size():
 		var line := HBoxContainer.new()

@@ -130,8 +130,7 @@ func _refresh() -> void:
 	sort_label.text = Text.t("Sorted by %s") % sort_name(GameState.settings.pack_sort)
 	UiStyle.purse_set(purse, pack.gold)
 	_build_doll()
-	for child in tab_row.get_children():
-		child.queue_free()
+	Layout.clear(tab_row)
 	for index in TABS.size():
 		var button := UiStyle.button(TABS[index][1], _switch.bind(index))
 		UiStyle.focus(button, index == tab)
@@ -470,8 +469,7 @@ func _primary_label(row: Dictionary) -> String:
 
 
 func _build_doll() -> void:
-	for child in doll.get_children():
-		child.queue_free()
+	Layout.clear(doll)
 	var hero := GameState.hero
 	var art := GameState.hero_art()
 	var figure := AnimatedSprite2D.new()

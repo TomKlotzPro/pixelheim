@@ -43,8 +43,7 @@ func _open() -> void:
 
 
 func _draw() -> void:
-	for child in menu.get_children():
-		child.queue_free()
+	Layout.clear(menu)
 	for index in options.size():
 		var button := UiStyle.button(options[index]["label"], _take.bind(index))
 		button.custom_minimum_size = Vector2(296, 40)

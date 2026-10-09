@@ -81,8 +81,8 @@ func _role() -> String:
 
 
 func _refresh() -> void:
-	for child in roles_box.get_children() + details.get_children():
-		child.queue_free()
+	Layout.clear(roles_box)
+	Layout.clear(details)
 	for index in ROLES.size():
 		roles_box.add_child(_role_card(index))
 	_fill_details()
