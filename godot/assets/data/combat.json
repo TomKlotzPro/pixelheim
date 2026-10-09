@@ -5887,5 +5887,112 @@
     ],
     "replayGoldShare": 0.25,
     "epithet": "Deep"
+  },
+  "escorts": {
+    "gunnar_wagon": {
+      "mapId": "frostgate",
+      "route": [
+        [
+          27,
+          11
+        ],
+        [
+          27,
+          17
+        ],
+        [
+          23,
+          17
+        ],
+        [
+          23,
+          31
+        ],
+        [
+          27,
+          31
+        ],
+        [
+          27,
+          40
+        ],
+        [
+          34,
+          40
+        ]
+      ],
+      "speed": 26,
+      "hp": 220,
+      "near": 5,
+      "where": "Walk it down from the cave mouth at the top of the Frostgate pass to Gunnar's camp.",
+      "ambushes": [
+        {
+          "at": 2,
+          "foes": [
+            "frost_wolf",
+            "frost_wolf",
+            "frost_wolf"
+          ],
+          "from": [
+            [
+              16,
+              19
+            ],
+            [
+              16,
+              21
+            ],
+            [
+              16,
+              23
+            ]
+          ],
+          "line": "Wolves out of the trees - they've smelled the wagon!"
+        },
+        {
+          "at": 4,
+          "foes": [
+            "frost_wolf",
+            "frost_wolf",
+            "yeti"
+          ],
+          "from": [
+            [
+              32,
+              30
+            ],
+            [
+              34,
+              33
+            ],
+            [
+              33,
+              35
+            ]
+          ],
+          "line": "A yeti and its wolves come down off the lake shore!"
+        },
+        {
+          "at": 5,
+          "foes": [
+            "wendigo",
+            "frost_wolf"
+          ],
+          "from": [
+            [
+              20,
+              42
+            ],
+            [
+              21,
+              43
+            ]
+          ],
+          "line": "Something tall moves in the pines by the road. Keep the wagon going!"
+        }
+      ],
+      "lost": "The wagon's overturned and Bergit's bolted back up the pass. Gunnar's rigging another at the cave mouth.",
+      "arrived": "The wagon's down! Gunnar is waving his hat at you."
+    }
   }
 }

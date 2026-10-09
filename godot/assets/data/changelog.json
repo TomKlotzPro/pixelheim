@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.142.0",
+      "date": "2026-10-09",
+      "codename": "Against the Clock",
+      "notes": [
+        "THE LAST WAGON DOWN: once his strongbox is home, Gunnar asks you to walk the pass's last wagon down from the cave mouth. Old Bergit the mammoth hauls it - slowly, and she stops dead whenever anything with teeth comes near. Three ambushes wait along the road; stay close, clear them, and keep the wagon in one piece",
+        "AGAINST THE CLOCK: Pell's canary can't breathe the shafts' bad air for long. Once she's in your pack you have a minute to get her to Pell - the clock shows top right - or she flies back to the west gallery and you fetch her again",
+        "The journal says where an escort starts"
+      ]
+    },
+    {
       "version": "0.141.0",
       "date": "2026-10-09",
       "codename": "Stakes",

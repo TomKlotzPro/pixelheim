@@ -25,7 +25,7 @@ const STAGES := [
 	{"id": "castle", "sweep": ["castle", "cellars"], "hunt": "hollow_captain", "quests": [
 		"ulla_turncoats", "ulla_captain", "teo_rest", "teo_steel", "fenwick_locket", "ana_badge"]},
 	{"id": "frost", "sweep": ["frost", "icecave"], "hunt": "rimefang", "quests": [
-		"aske_wolves", "aske_rimefang", "gunnar_strongbox", "linnea_lilies", "linnea_icefin", "linnea_hood", "mira_fur"]},
+		"aske_wolves", "aske_rimefang", "gunnar_strongbox", "gunnar_wagon", "linnea_lilies", "linnea_icefin", "linnea_hood", "mira_fur"]},
 	{"id": "gate", "sweep": [], "hunt": "", "quests": ["maren_relics"]},
 ]
 ## On the climb: the floor a hero is on when each of the rest is handed in,

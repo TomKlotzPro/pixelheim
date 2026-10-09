@@ -462,6 +462,19 @@ func _run_test_harness() -> void:
 		GameState.progression.quests[quest["id"]] = {"progress": int(objective["count"]), "done": false}
 		if objective["kind"] == "deliver":
 			GameState.pack.add_item(objective["itemId"], int(objective["count"]))
+	var take_index := args.find("--take")
+	if take_index >= 0:
+		# A quest taken, nothing done yet: `--take gunnar_wagon`.
+		GameState.progression.quests[args[take_index + 1]] = {"progress": 0, "done": false}
+	var follow_index := args.find("--follow-wagon")
+	if follow_index >= 0:
+		# The hero walks beside the escort's wagon for that many seconds (PIX-192).
+		var until := Time.get_ticks_msec() / 1000.0 + float(args[follow_index + 1])
+		while Time.get_ticks_msec() / 1000.0 < until:
+			await get_tree().physics_frame
+			if world.escort != null and is_instance_valid(world.escort):
+				world.player.position = world.escort.position + Vector2(20, 0)
+		print("escort: waypoint %d, hp %d" % [world.escort.index, world.escort.hp] if world.escort != null and is_instance_valid(world.escort) else "escort: none")
 	var talk_index := args.find("--talk-to")
 	if talk_index >= 0:
 		# A conversation with one villager by id, wherever they stand.

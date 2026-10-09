@@ -230,6 +230,8 @@ func _process(delta: float) -> void:
 		return
 	_update_prompt()
 	_update_nameplate()
+	_run_clocks(delta)
+	_tend_escort()
 	GameState.walk(player.position.distance_to(last_player_position) / TILE)
 	last_player_position = player.position
 	sky_overlay.color = DUNGEON_GLOOM if map.floor_level > 0 or map.style == "cave" else (
@@ -1499,6 +1501,71 @@ func _collect_ground_treasure(cell: Vector2i) -> void:
 
 ## The one interaction-prompt rule (interactionPrompt.ts): a villager beside
 ## the hero wins, then a faced unopened chest; the "!" floats over their head.
+## An escort under way on this map (PIX-192): its wagon waits at the start
+## of the route, or comes back there a few breaths after it was lost.
+var escort: Node2D
+var escort_lost_at := -100.0
+
+
+func _tend_escort() -> void:
+	var due := GameState.escort_due()
+	if due.is_empty() or map.id != due["def"]["mapId"]:
+		return
+	if escort != null and is_instance_valid(escort):
+		return
+	if Time.get_ticks_msec() / 1000.0 - escort_lost_at < 4.0:
+		return
+	var quest_id: String = due["quest"]["id"]
+	escort = preload("res://scripts/escort.gd").new()
+	escort.world = self
+	escort.def = due["def"]
+	escort.add_to_group("decor")
+	escort.arrived.connect(func() -> void:
+		GameState.escort_arrived(quest_id)
+		_flash_message(due["def"]["arrived"]))
+	escort.lost.connect(func() -> void:
+		_flash_message(due["def"]["lost"])
+		escort_lost_at = Time.get_ticks_msec() / 1000.0
+		var gone := escort
+		gone.create_tween().tween_property(gone, "modulate:a", 0.0, 1.0).finished.connect(gone.queue_free))
+	actors.add_child(escort)
+
+
+## A quest against the clock (PIX-192): its time ticks while the world runs,
+## shown top right, red in its last half minute; a lapse closes the chest the
+## goods went back to.
+var run_clock: PanelContainer
+
+
+func _run_clocks(delta: float) -> void:
+	var ticked := GameState.tick_runs(delta)
+	if ticked["message"] != "":
+		_flash_message(ticked["message"])
+	for chest_id: String in ticked["rearmed"]:
+		if view.chest_sprites.has(chest_id):
+			for chest: Dictionary in Interactables._data()["chests"]:
+				if chest["id"] == chest_id:
+					view.chest_sprites[chest_id].texture = MapView.treasure_texture(chest, false)
+	var running := GameState.timed_run()
+	if running.is_empty() or hud_root == null:
+		if run_clock != null:
+			run_clock.queue_free()
+			run_clock = null
+		return
+	if run_clock == null:
+		run_clock = PanelContainer.new()
+		run_clock.add_theme_stylebox_override("panel", UiStyle.plate(12))
+		run_clock.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		run_clock.add_child(UiStyle.strong("", 16, UiStyle.CREAM))
+		hud_root.add_child(run_clock)
+	var left := ceili(float(running["left"]))
+	var shown: Label = run_clock.get_child(0)
+	shown.text = Text.t("%s  %d:%02d") % [running["quest"]["timed"]["clock"], left / 60, left % 60]
+	shown.add_theme_color_override("font_color", Color("ff5a4a") if left <= 30 else UiStyle.CREAM)
+	run_clock.reset_size()
+	run_clock.position = Vector2(1280 - 24 - run_clock.size.x, 16)
+
+
 func _update_prompt() -> void:
 	var beside := _npc_beside()
 	if not beside.is_empty():

@@ -38,6 +38,10 @@ var art: Dictionary
 var facing := "down"
 ## True from the alert until it gives up; the alert is heard (bump).
 var hunting := false
+## An escort's wagon this foe was sent for (PIX-192): it goes for whichever
+## is nearer, the wagon or the hero, and never gives the chase up.
+var quarry: Node2D = null
+var _at_quarry := false
 ## Where it lives: wanders around it, gives up a chase too far from it.
 var home := Vector2.ZERO
 ## "idle" (at home), "alert" (the "!" wind-up), "chase", "homeward", and
@@ -166,10 +170,11 @@ func _physics_process(delta: float) -> void:
 			if alert_left <= 0:
 				mode = "chase"
 		"chase":
-			if player.dead or Packs.gives_up(home, global_position, player.global_position):
+			var aim := _aim(to_player)
+			if player.dead or (not _hunts_wagon() and Packs.gives_up(home, global_position, player.global_position)):
 				_give_up()
 			else:
-				_chase(to_player, delta)
+				_chase(aim, delta)
 		"cast":
 			velocity = Vector2.ZERO
 		"homeward":
@@ -264,11 +269,30 @@ func _chase(to_player: Vector2, delta: float) -> void:
 		flash.tween_property(sprite, "modulate", Color.WHITE, tell_left * 0.5)
 
 
+## Where the chase goes: the hero, or the wagon when it's the nearer.
+func _aim(to_player: Vector2) -> Vector2:
+	_at_quarry = false
+	if _hunts_wagon():
+		var to_wagon := quarry.global_position - global_position
+		if to_wagon.length() < to_player.length():
+			_at_quarry = true
+			return to_wagon
+	return to_player
+
+
+func _hunts_wagon() -> bool:
+	return quarry != null and is_instance_valid(quarry) and not quarry.done
+
+
 func _bite(to_player: Vector2) -> void:
 	if to_player.length() > BITE_REACH:
 		return
 	can_bite = false
 	_play("attack" if sprite.sprite_frames.has_animation("attack_" + facing) else "sword")
+	# At the wagon the bite lands on it (the escort counts it).
+	if _at_quarry:
+		get_tree().create_timer(CONTACT_COOLDOWN).timeout.connect(func() -> void: can_bite = true)
+		return
 	world.player.take_hit(
 		Bestiary.monster_attack_damage(fighter, GameState.hero, GameState.pack, GameState.roll),
 		global_position, fighter.get("inflicts")
