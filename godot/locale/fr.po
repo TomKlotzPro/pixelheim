@@ -1929,6 +1929,10 @@ msgid "Ascension is a scene now: letterbox bars, turning light, your hero marchi
 msgstr "L'ascension est désormais une scène : bandes noires, lumière tournoyante, votre héros qui défile dans sa NOUVELLE apparence, le titre frappé par-dessus"
 
 #: assets/data/changelog.json
+msgid "At night its windows and lamps are lit, and smoke rises from its roofs"
+msgstr "La nuit, ses fenêtres et ses lanternes s'allument, et la fumée monte de ses toits"
+
+#: assets/data/changelog.json
 msgid "At the Bench"
 msgstr "À l'établi"
 
@@ -2853,6 +2857,10 @@ msgid "Home Industry"
 msgstr "Fait maison"
 
 #: assets/data/changelog.json
+msgid "Home in Sight"
+msgstr "Le bourg en vue"
+
+#: assets/data/changelog.json
 msgid "Home storage is the answer to carry weight: stored goods weigh NOTHING on the road. Hoarding, finally legal"
 msgstr "L'entreposage à la maison règle le problème du poids : les biens entreposés ne pèsent RIEN en route. Accumuler, enfin légal"
 
@@ -2915,6 +2923,10 @@ msgstr "À l'intérieur : votre propre lit (repos gratuit, pour toujours - l'a
 #: assets/data/changelog.json
 msgid "Intelligence finally feeds the mana pool: casters gain +2 max MP per INT point"
 msgstr "L'Intelligence alimente enfin la réserve de mana : les lanceurs de sorts gagnent +2 PM max par point d'INT"
+
+#: assets/data/changelog.json
+msgid "It grows as you rebuild it, from the Town Hall alone among the ashes to the city's lamps and fountain"
+msgstr "Il grandit à mesure que vous le reconstruisez, de la Mairie seule au milieu des cendres aux lanternes et à la fontaine de la cité"
 
 #: assets/data/changelog.json
 msgid "Iva the Healer sits in the Mirefen, three marsh reeds from home - settled by the shrine, her hands heal her patron for FREE, forever"
@@ -4723,6 +4735,10 @@ msgstr "Les légendes de la visite de la ville restent désormais toujours au-de
 #: assets/data/changelog.json
 msgid "The viewport grew from 15x11 to 21x13 tiles: you see MORE world at once, and the finer scale reads as sharper, denser pixel art"
 msgstr "La vue passe de 15x11 à 21x13 tuiles : vous voyez PLUS du monde à la fois, et l'échelle plus fine donne un pixel art plus net et plus dense"
+
+#: assets/data/changelog.json
+msgid "The village seen from outside is the village you walk in: its own houses and roofs, the river with its bridge, its fields and woods, inside one ring of its rampart, the road running in through the gate"
+msgstr "Le village vu de l'extérieur est celui où vous marchez : ses propres maisons et toits, la rivière et son pont, ses champs et ses bois, dans un seul anneau de rempart, la route entrant par la porte"
 
 #: assets/data/changelog.json
 msgid "The village stopped being rectangles: shingled roof courses, rounded building corners, and chimneys with smoke wisps - form, not squares"
