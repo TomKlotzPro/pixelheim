@@ -58,7 +58,7 @@ func test_a_cleared_pack_stays_down_until_its_time_or_the_inn() -> void:
 	assert_eq(state.world.slain, [] as Array[String])
 
 
-func test_a_door_keeps_the_ledger_and_a_night_at_the_inn_clears_it() -> void:
+func test_a_door_keeps_the_ledger_and_only_a_night_at_the_inn_clears_it() -> void:
 	state.clear_pack("forest_1")
 	state.move_to(MapData.load_by_id("town"), Vector2i(40, 30), Vector2.DOWN)
 	state.move_to(MapData.load_by_id("overworld"), Vector2i(48, 40), Vector2.UP)
@@ -67,9 +67,10 @@ func test_a_door_keeps_the_ledger_and_a_night_at_the_inn_clears_it() -> void:
 	state.pack.gold = 100
 	state.rest_at_inn()
 	assert_eq(state.world.slain, [] as Array[String])
+	# A fall is no night's rest (PIX-206): the wilds stay as they were.
 	state.clear_pack("ash_1")
 	state.wake_at_inn()
-	assert_eq(state.world.slain, [] as Array[String], "waking there after a fall counts too")
+	assert_eq(state.world.slain, ["ash_1"] as Array[String], "waking there after a fall wakes nothing")
 
 
 func test_the_ledger_keeps_its_steps_in_the_save() -> void:

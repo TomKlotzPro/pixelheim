@@ -66,6 +66,10 @@ func _rows() -> Array[Dictionary]:
 					"%s %d" % [Economy.job_name(entry["job"]["id"]), entry["job"]["level"]],
 					Economy.can_craft(entry, pack.items, GameState.hero.jobs),
 					func() -> String:
+						# Not with what a taken delivery needs, unless asked twice (PIX-206).
+						var ask := GameState.ask_before_dip("craft:" + recipe_id, entry["needs"])
+						if ask != "":
+							return ask
 						var result := GameState.craft(recipe_id)
 						return "" if not result["made"] else Text.t("Made %dx %s.") % [result["count"], Catalog.item_name(entry["itemId"])],
 					"Missing materials or skill.",

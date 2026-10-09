@@ -551,7 +551,8 @@ func _hear_gold(gold: int) -> void:
 func _hear_hp(hp: int, _max_hp: int) -> void:
 	if hp < heard_hp:
 		Sound.play("hurt")
-	elif hp > heard_hp:
+	# Health trickling back at rest (PIX-206) mends in silence.
+	elif hp > heard_hp + GameState.rest_mend():
 		Sound.play("heal")
 	heard_hp = hp
 
@@ -1855,6 +1856,7 @@ func _build_hud() -> void:
 	GameState.inventory_changed.connect(dock.refresh)
 	GameState.healed.connect(dock.refresh)
 	GameState.message.connect(_flash_message)
+	GameState.noted.connect(_log)
 	GameState.healed.connect(func() -> void: player.heal())
 	GameState.ranked_up.connect(_ascend)
 	GameState.prologue_dawn.connect(_play_dawn)

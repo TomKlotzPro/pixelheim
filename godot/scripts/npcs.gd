@@ -86,6 +86,62 @@ static func lines_for_tier(by_tier: Dictionary, town_tier: int, fallback: Array)
 
 ## A recruit as a walking villager: where they wait, or where they live once
 ## settled (recruitNpc), saying what the town's age has them say.
+## Faces (PIX-206): Shade drew fewer people than Pixelheim has, so those
+## who share a sheet wear different tints, and no two on the same map look
+## alike. A person keeps one tint everywhere: the first that no one sharing
+## their sheet and one of their maps already wears, in the data's order.
+const FACE_TINTS: Array[Color] = [
+	Color.WHITE, Color(1.0, 0.8, 0.76), Color(0.78, 0.86, 1.0),
+	Color(0.84, 1.0, 0.78), Color(1.0, 0.93, 0.68), Color(0.9, 0.8, 1.0),
+]
+static var _faces := {}
+
+
+## The tint a person wears (white for anyone not in the data).
+static func tint_of(person_id: String) -> Color:
+	if _faces.is_empty():
+		_faces = face_indexes()
+	return FACE_TINTS[mini(int(_faces.get(person_id, 0)), FACE_TINTS.size() - 1)]
+
+
+## Everyone with a face: their sheet (and size), and the maps they can stand
+## on - their own, the square while their trade has no roof, and for a
+## settler where they were found and the town.
+static func people() -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	for npc: Dictionary in _data()["npcs"]:
+		var maps: Array = [npc["mapId"]]
+		if npc.has("stall"):
+			maps.append("town")
+		out.append({"id": npc["id"], "look": _look(npc["sprite"]), "maps": maps})
+	for recruit: Dictionary in _data()["recruits"]:
+		out.append({"id": recruit["id"], "look": _look(recruit["sprite"]), "maps": [recruit["found"]["mapId"], "town"]})
+	var barker: Dictionary = _data()["festivalBarker"]
+	out.append({"id": barker["id"], "look": _look(barker["sprite"]), "maps": ["town"]})
+	return out
+
+
+static func _look(sprite: String) -> String:
+	var art := PunyArt.villager(sprite)
+	return "%s@%s" % [art["sheet"], art.get("scale", 1.0)]
+
+
+## Each person's tint index, by the rule above.
+static func face_indexes() -> Dictionary:
+	var everyone := people()
+	var out := {}
+	for i in everyone.size():
+		var taken := {}
+		for j in i:
+			if everyone[j]["look"] == everyone[i]["look"] and everyone[j]["maps"].any(func(map_id: String) -> bool: return map_id in everyone[i]["maps"]):
+				taken[out[everyone[j]["id"]]] = true
+		var pick := 0
+		while taken.has(pick):
+			pick += 1
+		out[everyone[i]["id"]] = pick
+	return out
+
+
 static func as_npc(recruit: Dictionary, settled: bool, town_tier := 1) -> Dictionary:
 	var spot: Dictionary = recruit["home"] if settled else recruit["found"]
 	return {

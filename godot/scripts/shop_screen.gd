@@ -198,7 +198,7 @@ func _build_rows() -> Array[Dictionary]:
 				# What the story gave you isn't for sale (the letter, PIX-152).
 				if Catalog.item(item_id).get("quest", false):
 					continue
-				var each := floori(Economy.sell_price_at(shop_id, item_id, GameState.town_tier()) * GameState.trophy_sell_multiplier())
+				var each := floori(Economy.sell_price_at(shop_id, item_id, GameState.town_tier()) * GameState.sale_multiplier(shop_id))
 				out.append({
 					"label": "%s  x%d" % [Catalog.item_name(item_id), pack.items[item_id]], "price": Text.coins(each), "icon": item_id,
 					"detail": _describe(item_id), "verb": "Sell one", "enabled": true, "stack": item_id,
@@ -208,7 +208,7 @@ func _build_rows() -> Array[Dictionary]:
 				if pack.is_equipped(instance["uid"]):
 					continue
 				var uid: String = instance["uid"]
-				var price := floori(Economy.gear_sell_price_at(shop_id, instance, GameState.town_tier()) * GameState.trophy_sell_multiplier())
+				var price := floori(Economy.gear_sell_price_at(shop_id, instance, GameState.town_tier()) * GameState.sale_multiplier(shop_id))
 				out.append({
 					"label": _gear_label(instance), "price": Text.coins(price), "icon": instance["itemId"],
 					"detail": _describe(instance["itemId"], instance), "verb": "Sell", "enabled": true,
@@ -221,7 +221,7 @@ func _build_rows() -> Array[Dictionary]:
 				# Past the cap, masterwork from Smithing 8: a gem a step (PIX-180).
 				var past: bool = instance["bonus"] >= Economy.forge_cap_for(smithing)
 				var maxed: bool = past and not Economy.masterwork_open(smithing, instance["bonus"])
-				var cost := Economy.masterwork_cost(instance["itemId"], instance["bonus"], smithing) if past else Economy.forge_cost_for(instance["itemId"], instance["bonus"], smithing)
+				var cost := GameState.forge_price(instance, smithing, past)
 				out.append({
 					"label": _gear_label(instance) + (Text.t("  (worn)") if pack.is_equipped(uid) else ""), "icon": instance["itemId"],
 					"price": Text.t("max") if maxed else (Text.t("%dg + gem") % cost if past else Text.coins(cost)),
@@ -271,7 +271,7 @@ func _build_rows() -> Array[Dictionary]:
 					# Written when the row is chosen, not for every row each move (PIX-207).
 					"detail_of": _describe_recipe.bind(entry), "verb": "Craft",
 					"enabled": Economy.can_craft(entry, pack.items, GameState.hero.jobs),
-					"action": func() -> void: _crafted(GameState.craft(recipe_id), entry),
+					"action": func() -> void: _craft(recipe_id, entry),
 				})
 	return out
 
@@ -364,6 +364,16 @@ func _after(ok: bool, done: String, refused: String) -> void:
 
 func _sold(gold: int) -> void:
 	status.text = Text.t("Sold for %dg.") % gold if gold > 0 else "Not for sale."
+
+
+## A craft, unless it would take what a taken delivery needs: then it asks
+## first, and the same craft again goes ahead (PIX-206).
+func _craft(recipe_id: String, entry: Dictionary) -> void:
+	var ask := GameState.ask_before_dip("craft:" + recipe_id, entry["needs"])
+	if ask != "":
+		status.text = ask
+		return
+	_crafted(GameState.craft(recipe_id), entry)
 
 
 func _crafted(result: Dictionary, entry: Dictionary) -> void:

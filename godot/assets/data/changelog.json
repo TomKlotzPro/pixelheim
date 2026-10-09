@@ -1,6 +1,18 @@
 {
   "releases": [
     {
+      "version": "0.156.0",
+      "date": "2026-10-09",
+      "codename": "Early Stakes",
+      "notes": [
+        "A fall now costs at least a night at the inn, and no longer wakes the wilds: what you cleared stays cleared, and what beat you is still out there",
+        "Health comes back slowly while you're out of a fight",
+        "A delivery says how it stands as its goods come in, and when it's ready; the project board and the workbenches ask before using what a delivery you've taken still needs",
+        "The Hamlet's projects each bring something: Odo pays a tenth more, Hilda forges and Vex brews for a tenth less, and a night at the rebuilt inn leaves you well rested for a while",
+        "Townsfolk drawn from the same sheet now wear their own colours, so no two people on a map look alike"
+      ]
+    },
+    {
       "version": "0.155.0",
       "date": "2026-10-09",
       "codename": "Big Moments",

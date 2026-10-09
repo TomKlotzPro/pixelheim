@@ -45,6 +45,12 @@ static func age(tier_number: int) -> Dictionary:
 	return {}
 
 
+## A Hamlet project's perk (PIX-206): its share for `key` ("sell", "forge",
+## "buy"), 0 when it brings none.
+static func project_perk(project_id: String, key: String) -> float:
+	return float(project(project_id).get("perkValues", {}).get(key, 0.0))
+
+
 static func project(project_id: String) -> Dictionary:
 	for entry: Dictionary in ages():
 		for candidate: Dictionary in entry["projects"]:
