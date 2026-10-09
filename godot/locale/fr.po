@@ -1753,6 +1753,10 @@ msgid "A gold ! over someone with a quest for you, a gold ? over someone waiting
 msgstr "Un ! doré au-dessus de qui a une quête pour vous, un ? doré au-dessus de qui attend que vous en remettiez une, et un ? gris tant qu'une quête prise auprès de lui est en cours ; les Options peuvent les masquer (Marqueurs de quête)"
 
 #: assets/data/changelog.json
+msgid "A gold arrow at the edge of the screen points the way while your goal is out of sight, to the person, the spot or the door that leads there; the map marks it with a gold diamond"
+msgstr "Une flèche dorée au bord de l'écran montre le chemin tant que votre but est hors de vue, vers la personne, l'endroit ou la porte qui y mène ; la carte le marque d'un losange doré"
+
+#: assets/data/changelog.json
 msgid "A hero from before keeps everything: whoever has cleared a floor finds the gate open, and Maren goes straight to her next ask"
 msgstr "Un ancien héros conserve tout : qui a déjà nettoyé un étage trouve la porte ouverte, et Maren passe directement à sa demande suivante"
 
@@ -1955,6 +1959,10 @@ msgstr "Passe d'équilibrage, guidée par la simulation de centaines de parties"
 #: assets/data/changelog.json
 msgid "Battles got a stage: lunges, hit flashes and floating damage numbers"
 msgstr "Les combats ont leur mise en scène : assauts, éclairs d'impact et chiffres de dégâts flottants"
+
+#: assets/data/changelog.json
+msgid "Bearing"
+msgstr "Le cap"
 
 #: assets/data/changelog.json
 msgid "Beat the dragon before this update? Floor 11 is already open for you"
@@ -4515,6 +4523,10 @@ msgstr "Le coup fatal frappe plus fort : un éclair blanc, une pause plus long
 #: assets/data/changelog.json
 msgid "The land got lived-in: a fenced sheep pen, flower meadows, kitchen gardens behind the cottages, and a walled orchard behind the player's house"
 msgstr "La campagne paraît habitée : un enclos à moutons, des prés fleuris, des potagers derrière les maisonnettes et un verger clos de murs derrière la maison du joueur"
+
+#: assets/data/changelog.json
+msgid "The line above the dock says where: the next step, the place it's in and how far along you are"
+msgstr "La ligne au-dessus de la barre dit où : la prochaine étape, le lieu où elle se trouve et où vous en êtes"
 
 #: assets/data/changelog.json
 msgid "The map key is rebindable like everything else"
@@ -11788,6 +11800,10 @@ msgstr "Repaire"
 msgid "Quest"
 msgstr "Quête"
 
+#: scripts/map_screen.gd:197
+msgid "Goal"
+msgstr "Objectif"
+
 #: scripts/map_screen.gd:62
 msgid "Waypoints"
 msgstr "Relais"
@@ -12608,7 +12624,11 @@ msgstr "Le poison"
 msgid "The burn"
 msgstr "La brûlure"
 
-#: scripts/state/bestiary.gd:159
+#: scripts/state/bearing.gd:67
+msgid "Hand it in to %s."
+msgstr "Remettez-la à %s."
+
+#: scripts/state/bestiary.gd:182
 msgid "floor %d"
 msgstr "étage %d"
 
@@ -13424,11 +13444,11 @@ msgstr "COMMANDÉ"
 msgid "Arrows"
 msgstr "Flèches"
 
-#: scripts/world.gd:270
+#: scripts/world.gd:271
 msgid "%s bars your way: no leaving until the fight is over."
 msgstr "%s vous barre la route : pas de fuite avant la fin du combat."
 
-#: scripts/world.gd:308
+#: scripts/world.gd:309
 msgid "No map reaches this deep."
 msgstr "Aucune carte ne va aussi profond."
 
@@ -13456,11 +13476,11 @@ msgstr "Tueur de boss : +%d %% de dégâts pendant %d minutes."
 msgid "LEVEL UP"
 msgstr "NIVEAU SUPÉRIEUR"
 
-#: scripts/world_hud.gd:197
+#: scripts/world_hud.gd:207
 msgid "Boss slayer +%d%%  %d:%02d"
 msgstr "Tueur de boss +%d %%  %d:%02d"
 
-#: scripts/world_hud.gd:78
+#: scripts/world_hud.gd:88
 msgid "Next"
 msgstr "Ensuite"
 

@@ -193,6 +193,8 @@ func _fill_legend(map: MapData, home: bool) -> void:
 		marks.append([Painting.LAIR, "Lair"])
 	if home and not Painting.givers(world).is_empty():
 		marks.append([Painting.QUEST, "Quest"])
+	if painting.goal_cell() != Bearing.NOWHERE:
+		marks.append([Painting.GOAL, "Goal"])
 	for mark: Array in marks:
 		var swatch := ColorRect.new()
 		swatch.color = mark[0]
@@ -224,6 +226,8 @@ func _set_footer() -> void:
 class Painting extends Control:
 	const LAIR := Color("c071ff")
 	const QUEST := Color("5fdc7a")
+	## Where the hero is headed (PIX-240): the quest marks' gold.
+	const GOAL := Color("f2c14e")
 	var world: Node2D
 	## The page shown: the hero's map, or the chosen waypoint's.
 	var map: MapData
@@ -328,9 +332,39 @@ class Painting extends Control:
 		if not destination.is_empty():
 			var grow := Waypoints.ring_grow(Time.get_ticks_msec() - chosen_at, GameState.settings.reduce_motion)
 			_ring(_center(Waypoints.cell(destination)).floor(), _ring_half(grow))
+		# Where the hero is headed (PIX-240), a diamond under the hero's mark.
+		var goal := goal_cell()
+		if goal != Bearing.NOWHERE:
+			_diamond(_center(goal).floor(), mark + 6.0)
 		if home:
 			var hero: Vector2i = world.player_cell
 			_marker(_center(hero), mark, Color.WHITE)
+
+	## Where the hero is headed on this page (PIX-240): the person the bearing
+	## is about where they stand now, its spot when it's on this map, or the
+	## door here that starts the way to its map; NOWHERE when there's none,
+	## or with the quest marks turned off.
+	func goal_cell() -> Vector2i:
+		var hud: Variant = world.get("hud") if world != null else null
+		if hud == null or map == null or not GameState.settings.quest_marks:
+			return Bearing.NOWHERE
+		var bearing: Dictionary = hud.bearing
+		if bearing.is_empty():
+			return Bearing.NOWHERE
+		if home and String(bearing["who"]) != "":
+			for villager in world.get_tree().get_nodes_in_group("npcs"):
+				if not villager.away and String(villager.data.get("id", "")) == bearing["who"]:
+					return Vector2i((villager.position / 16.0).floor())
+		if bearing["map_id"] == map.id:
+			return bearing["cell"]
+		return Bearing.way_out(map.id, String(bearing["map_id"]))
+
+	## A gold diamond with a dark rim, `size` px across.
+	func _diamond(center: Vector2, size: float) -> void:
+		var half := floorf(size / 2.0)
+		var rim := half + 3.0
+		draw_colored_polygon(PackedVector2Array([center + Vector2(0, -rim), center + Vector2(rim, 0), center + Vector2(0, rim), center + Vector2(-rim, 0)]), UiStyle.NIGHT)
+		draw_colored_polygon(PackedVector2Array([center + Vector2(0, -half), center + Vector2(half, 0), center + Vector2(0, half), center + Vector2(-half, 0)]), GOAL)
 
 	func _marker(center: Vector2, size: float, color: Color) -> void:
 		var half := floorf(size / 2.0)

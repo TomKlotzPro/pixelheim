@@ -35,6 +35,9 @@ var met := {}
 ## item id -> how many the hero has made at a station (PIX-231), so a
 ## crafting quest taken after the work counts it; saved once there is one.
 var crafted := {}
+## The side quest the hero chose to follow (PIX-239), "" for the main story's
+## next step; saved only while there is one.
+var tracked := ""
 
 
 static func from_dict(data: Dictionary) -> ProgressionState:
@@ -52,6 +55,7 @@ static func from_dict(data: Dictionary) -> ProgressionState:
 	progress.firsts.assign(data.get("firsts", []))
 	progress.met = data.get("met", {}).duplicate()
 	progress.crafted = data.get("crafted", {}).duplicate()
+	progress.tracked = String(data.get("tracked", ""))
 	return progress
 
 
@@ -74,6 +78,8 @@ func write_into(state: Dictionary) -> void:
 		state["met"] = met.duplicate()
 	if not crafted.is_empty():
 		state["crafted"] = crafted.duplicate()
+	if tracked != "":
+		state["tracked"] = tracked
 	if deepest > 0:
 		state["deepHunt"] = deepest
 	if not deeds.is_empty():

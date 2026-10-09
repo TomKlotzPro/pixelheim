@@ -224,6 +224,7 @@ func _process(delta: float) -> void:
 		folk.keep_hours()
 		hud.hint_boards()
 	hud.update_objective()
+	hud.update_arrow()
 	var cell := Vector2i((player.position / TILE).floor())
 	if cell == player_cell:
 		return
