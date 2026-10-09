@@ -67,6 +67,28 @@ static func awaits_word(giver: String, entries: Dictionary, items: Dictionary, o
 	return false
 
 
+## A giver's quest that's finished and waits on the hero's answer (PIX-192):
+## its "choice" to make before it's handed in; {} when there's none.
+static func pending_choice(giver: String, entries: Dictionary, items: Dictionary) -> Dictionary:
+	for quest: Dictionary in for_giver(giver):
+		var entry: Dictionary = entries.get(quest["id"], {})
+		if entry.get("done", false):
+			continue
+		return quest if quest.has("choice") and is_ready(quest, entries, items) else {}
+	return {}
+
+
+## What a giver says of a choice the hero made (PIX-192), "" if none.
+static func after_choice(giver: String, entries: Dictionary) -> String:
+	for quest: Dictionary in for_giver(giver):
+		var chosen: String = entries.get(quest["id"], {}).get("choice", "")
+		if chosen != "":
+			for option: Dictionary in quest["choice"]["options"]:
+				if option["id"] == chosen:
+					return option.get("after", "")
+	return ""
+
+
 ## Whether a quest may be offered yet (PIX-171): side quests open as the
 ## story moves on - "opensAfter" names a main quest step, or another quest
 ## that must be done first.

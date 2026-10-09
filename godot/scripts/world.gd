@@ -1014,6 +1014,23 @@ func _talk(npc: Dictionary) -> void:
 			box.npc = npc
 			add_child(box)
 			return
+	# A quest that ends in a choice asks it now (PIX-192): its question, an
+	# answer for each key; leaving without one keeps it waiting.
+	var asking := Quests.pending_choice(npc["id"], GameState.progression.quests, GameState.pack.items)
+	if not asking.is_empty():
+		npc = npc.duplicate()
+		npc["lines"] = asking["choice"]["prompt"]
+		box.choices = asking["choice"]["options"].map(func(option: Dictionary) -> String: return option["label"])
+		box.on_choice = func(index: int) -> void:
+			_flash_message(GameState.choose(asking["id"], asking["choice"]["options"][index]["id"]))
+		box.npc = npc
+		add_child(box)
+		return
+	# A choice made stays with the one who asked it (PIX-192).
+	var remembered := Quests.after_choice(npc["id"], GameState.progression.quests)
+	if remembered != "":
+		npc = npc.duplicate()
+		npc["lines"] = [remembered] + npc["lines"]
 	# Townsfolk talk about the hero's latest deed first (PIX-149).
 	var reaction := Npcs.reaction(npc, GameState.last_deed)
 	if reaction != "":

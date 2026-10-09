@@ -917,5 +917,6 @@
     "max": 12,
     "growth": 3,
     "gem": "gem"
-  }
+  },
+  "deathGoldShare": 0.1
 }

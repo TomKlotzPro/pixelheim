@@ -658,7 +658,36 @@
       },
       "accepted": "North-east beach, sitting on his chests like a hen. He bites.",
       "completed": "Ha! Saltmere breathes easier. And so do I. Here's your share - fair's fair.",
-      "opensAfter": "wenna_smugglers"
+      "opensAfter": "wenna_smugglers",
+      "choice": {
+        "prompt": [
+          "The captain's gone? Then his take is lying on that beach, and nobody's counting.",
+          "Half for you, half for me - or we hand it back to Saltmere and I go honest. Your call, hero."
+        ],
+        "options": [
+          {
+            "id": "split",
+            "label": "Split it with Rook",
+            "line": "Ha! Fair's fair. Spend it somewhere loud.",
+            "reward": {
+              "gold": 240,
+              "xp": 30
+            },
+            "after": "Business is good. Don't ask which business."
+          },
+          {
+            "id": "return",
+            "label": "Give it back to Saltmere",
+            "line": "Honest. Me. Brin's buying the drinks, and Ola says you're to have her best pearl.",
+            "reward": {
+              "gold": 60,
+              "xp": 100,
+              "itemId": "pearl"
+            },
+            "after": "Honest work's slower. The beer tastes better, though."
+          }
+        ]
+      }
     },
     {
       "id": "pip_fish",
@@ -860,7 +889,35 @@
       },
       "accepted": "My sister's locket. They took it when they threw me in the cells - the end cell, under the straw.",
       "completed": "That's hers. That's... thank you. Here - it's not much. It's all the turncoats didn't find.",
-      "opensAfter": "ulla_turncoats"
+      "opensAfter": "ulla_turncoats",
+      "choice": {
+        "prompt": [
+          "That's hers. That's... thank you.",
+          "There's something else. Five of my old crew still hide in the low cells. They sold nothing - they only ran. If Ulla finds them, they hang. Will you tell her?"
+        ],
+        "options": [
+          {
+            "id": "spare",
+            "label": "Keep his secret",
+            "line": "Then they walk home tonight, by the north stair. I won't forget it.",
+            "reward": {
+              "gold": 50,
+              "xp": 60
+            },
+            "after": "Word came from the coast: five red cloaks got home. They drink to you, I'm told."
+          },
+          {
+            "id": "turn_in",
+            "label": "Tell Ulla",
+            "line": "Ulla's coin for my friends' necks. ...Fine. It's your road, not mine.",
+            "reward": {
+              "gold": 180,
+              "xp": 20
+            },
+            "after": "I fetch the water. It's a living. It's what's left of one."
+          }
+        ]
+      }
     },
     {
       "id": "aske_wolves",
