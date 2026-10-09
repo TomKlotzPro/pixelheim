@@ -35,7 +35,7 @@ func _open() -> void:
 	panel.add_child(row)
 	# A narrator (the victory) has no face; everyone else speaks from a slot.
 	if npc.has("sprite"):
-		row.add_child(_portrait(npc["sprite"]))
+		row.add_child(_portrait(npc["sprite"], Npcs.tint_of(String(npc.get("id", "")))))
 	var column := VBoxContainer.new()
 	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	column.add_theme_constant_override("separation", 10)
@@ -73,7 +73,7 @@ func _open() -> void:
 
 
 ## The speaker standing in a framed slot, a few times life size, idling.
-func _portrait(sprite: String) -> Control:
+func _portrait(sprite: String, tint := Color.WHITE) -> Control:
 	var slot := PanelContainer.new()
 	slot.custom_minimum_size = Vector2(PORTRAIT, PORTRAIT)
 	slot.size_flags_vertical = Control.SIZE_SHRINK_CENTER
@@ -85,6 +85,7 @@ func _portrait(sprite: String) -> Control:
 	var art := PunyArt.villager(sprite)
 	var figure := AnimatedSprite2D.new()
 	figure.sprite_frames = PunyArt.frames(art)
+	figure.self_modulate = tint
 	figure.play(PunyArt.pick(figure.sprite_frames, "idle", "down"))
 	# Whole-number zoom: small sheets x6, Shade's 32px cells x4 (the figure
 	# stands in the lower half of its cell, so it sits a little higher).

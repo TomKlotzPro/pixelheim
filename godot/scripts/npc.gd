@@ -31,6 +31,8 @@ func _ready() -> void:
 	sprite.sprite_frames = PunyArt.frames(art)
 	sprite.scale = Vector2.ONE * size
 	sprite.position = Vector2(0, PunyArt.lift(art) * size)
+	# Their own face, though they share a sheet with others (PIX-206).
+	sprite.self_modulate = Npcs.tint_of(String(data.get("id", "")))
 	sprite.play(PunyArt.pick(sprite.sprite_frames, "idle", "down"))
 	# Offset the idle phase per villager so the square doesn't breathe in unison.
 	sprite.frame = Npcs.id_hash(data["id"]) % 2

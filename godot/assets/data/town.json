@@ -11,7 +11,9 @@
       "name": "Hamlet",
       "blurb": "Rebuilt from the ashes, roof by stubborn roof. Now it can grow.",
       "perks": [
-        "Every door open again: the store, the forge, the brewery and the inn"
+        "Every door open again: the store, the forge, the brewery and the inn",
+        "Odo pays a tenth more, Hilda forges and Vex brews for a tenth less",
+        "A night at the inn leaves you rested for a while"
       ]
     },
     {
@@ -71,7 +73,11 @@
                 10
               ]
             }
-          ]
+          ],
+          "perk": "Odo pays a tenth more for what you sell him",
+          "perkValues": {
+            "sell": 0.1
+          }
         },
         {
           "id": "hildas_forge",
@@ -97,7 +103,11 @@
                 18
               ]
             }
-          ]
+          ],
+          "perk": "Hilda's +1s cost a tenth less",
+          "perkValues": {
+            "forge": 0.1
+          }
         },
         {
           "id": "vexs_brewery",
@@ -123,7 +133,11 @@
                 19
               ]
             }
-          ]
+          ],
+          "perk": "Vex's brews cost a tenth less",
+          "perkValues": {
+            "buy": 0.1
+          }
         },
         {
           "id": "the_inn",
@@ -189,7 +203,11 @@
                 25
               ]
             }
-          ]
+          ],
+          "perk": "A night at the inn leaves you rested for a while",
+          "perkValues": {
+            "rested": true
+          }
         }
       ]
     },
@@ -1122,7 +1140,8 @@
   "rested": {
     "about": "PIX-179: a night in your own bed leaves you well rested: more XP for a number of fights.",
     "xp": 0.1,
-    "fights": 30
+    "fights": 30,
+    "innFights": 15
   },
   "gardenYields": [
     "forest_herb",

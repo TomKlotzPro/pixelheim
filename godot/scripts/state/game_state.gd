@@ -16,6 +16,8 @@ signal dialogue_closed(npc_id: String)
 signal prologue_dawn
 ## One line of feedback for the world (the web's worldMessage).
 signal message(text: String)
+## Lines for the battle log from outside a fight (PIX-206: a delivery's progress).
+signal noted(lines: Array)
 ## Who lives where changed: a recruit left the wilds for town.
 signal settlers_changed
 ## The hero was made whole (inn, healer): the live body refills too.
@@ -263,6 +265,8 @@ func apply(state: Dictionary) -> void:
 	progression = ProgressionState.from_dict(state)
 	world = WorldState.from_dict(state)
 	mark_dirty()
+	_delivered.clear()
+	_note_deliveries(false)
 	loaded.emit()
 	gold_changed.emit(pack.gold)
 	inventory_changed.emit()
@@ -413,7 +417,7 @@ func sell_item(item_id: String, count := 1) -> int:
 	if shop_id == "" or have <= 0 or Catalog.item(item_id).get("quest", false):
 		return 0
 	var sold := mini(count, have)
-	var price := floori(Economy.sell_price_at(shop_id, item_id, town_tier()) * trophy_sell_multiplier())
+	var price := floori(Economy.sell_price_at(shop_id, item_id, town_tier()) * sale_multiplier(shop_id))
 	pack.gold += price * sold
 	pack.remove_item(item_id, sold)
 	_pack_changed()
@@ -427,7 +431,7 @@ func sell_gear(uid: String) -> int:
 	if shop_id == "" or instance.is_empty() or pack.is_equipped(uid):
 		return 0
 	var price := floori(
-		Economy.gear_sell_price_at(shop_id, instance, town_tier()) * trophy_sell_multiplier()
+		Economy.gear_sell_price_at(shop_id, instance, town_tier()) * sale_multiplier(shop_id)
 	)
 	pack.gold += price
 	pack.gear.erase(instance)
@@ -493,7 +497,7 @@ func upgrade_gear(uid: String) -> bool:
 	var masterwork: bool = instance["bonus"] >= Economy.forge_cap_for(smithing)
 	if masterwork and not Economy.masterwork_open(smithing, instance["bonus"]):
 		return false
-	var cost := Economy.masterwork_cost(instance["itemId"], instance["bonus"], smithing) if masterwork else Economy.forge_cost_for(instance["itemId"], instance["bonus"], smithing)
+	var cost := forge_price(instance, smithing, masterwork)
 	var gem := String(Economy._data()["masterwork"]["gem"])
 	if pack.gold < cost or (masterwork and int(pack.items.get(gem, 0)) < 1):
 		return false
@@ -557,8 +561,14 @@ func rest_at_inn() -> String:
 	pack.gold -= cost
 	_make_whole()
 	wake_the_wilds()
+	# The inn rebuilt (PIX-206): a real bed leaves the hero rested a while.
+	var line := Text.t("You rest at the inn and wake fully restored. -%d gold.") % cost
+	if project_built("the_inn"):
+		var fights := int(Town._data()["rested"]["innFights"])
+		settlement.house["rested"] = maxi(int(settlement.house.get("rested", 0)), fights)
+		line += " " + Text.t("Well rested, too: more XP for your next %d fights.") % fights
 	_pack_changed()
-	return Text.t("You rest at the inn and wake fully restored. -%d gold.") % cost
+	return line
 
 
 ## Funds a village project (PIX-145): gold and materials paid, the project
@@ -670,6 +680,9 @@ func price_of(item_id: String) -> int:
 	var price := Economy.buy_price(item_id)
 	if owned_shop_map(active_shop()) != "":
 		price = roundi(price * (1.0 - float(Town._data()["rent"]["ownerDiscount"])))
+	# Vex brews cheaper in a brewery of her own (PIX-206).
+	if active_shop() == "alchemist" and project_built("vexs_brewery"):
+		price = roundi(price * (1.0 - Town.project_perk("vexs_brewery", "buy")))
 	return price
 
 
@@ -900,6 +913,7 @@ func resolve_quests(giver_id: String) -> String:
 			# A hunt whose quarry already fell counts at once (PIX-165).
 			var already: bool = quest["objective"]["kind"] == "hunt" and quest["objective"]["named"] in progression.hunted
 			entries[quest["id"]] = {"progress": int(quest["objective"]["count"]) if already else 0, "done": false}
+			_note_deliveries(false)
 			save_now()
 			# The giver's words were just said; the line names the task (PIX-194).
 			return Text.t("Quest accepted: %s. %s") % [quest["name"], quest["brief"]] + " " + Controls.say(Text.t("It's in your journal ({key:journal})."))
@@ -1240,8 +1254,9 @@ func wake_at_inn() -> Dictionary:
 	if tent.x >= 0:
 		inn = {"mapId": "town", "x": tent.x, "y": tent.y + 1, "facing": "down"}
 	_make_whole()
-	wake_the_wilds()
-	# A fall costs a tenth of the gold carried (PIX-192), never what's banked;
+	# A fall doesn't wake the wilds (PIX-206): what was cleared stays cleared,
+	# and what was not is still out there. A night's rest wakes them.
+	# It costs a tenth of the gold carried (PIX-192), never what's banked;
 	# the night of the fire is a lesson, not a toll.
 	var lost := death_toll()
 	pack.gold -= lost
@@ -1321,11 +1336,14 @@ func tick_runs(delta: float) -> Dictionary:
 
 
 ## The gold a fall costs now: a tenth of what's carried (economy.json
-## deathGoldShare); nothing on the night of the fire.
+## deathGoldShare), but never less than a night at the inn (PIX-206: a fall
+## is no cheaper heal than a bed), as far as the purse goes; nothing on the
+## night of the fire.
 func death_toll() -> int:
 	if progression.prologue != Prologue.DONE:
 		return 0
-	return floori(pack.gold * float(Economy._data()["deathGoldShare"]))
+	var share := floori(pack.gold * float(Economy._data()["deathGoldShare"]))
+	return mini(pack.gold, maxi(Town.rest_cost_for(town_tier()), share))
 
 
 ## A monster falls (onMonsterDefeated): mastery, bounties, rent, the garden,
@@ -1723,11 +1741,21 @@ func regen_resting() -> int:
 	# Candles at home bring it back a point faster (PIX-179).
 	var step := maxi(1, ceili(int(hero.stats["maxMp"]) * 0.05)) + roundi(home_buff("regen"))
 	var back := mini(int(hero.stats["maxMp"]), hero.mp + step) - hero.mp
-	if back > 0:
+	# Health trickles back too (PIX-206), slowly: a bed or a potion is quicker.
+	var mended := 0
+	if hero.hp > 0:
+		mended = mini(int(hero.stats["maxHp"]), hero.hp + rest_mend()) - hero.hp
+	if back > 0 or mended > 0:
 		hero.mp += back
+		hero.hp += mended
 		mark_dirty()
 		hp_changed.emit(hero.hp, int(hero.stats["maxHp"]))
 	return back
+
+
+## The health a quiet moment gives back (PIX-206): a hundredth, at least one.
+func rest_mend() -> int:
+	return maxi(1, floori(int(hero.stats["maxHp"]) * 0.01))
 
 
 ## A fighter's stamina comes back each turn of a fight (staminaRegen, from
@@ -1937,6 +1965,91 @@ func _pack_changed() -> void:
 	mark_dirty()
 	gold_changed.emit(pack.gold)
 	inventory_changed.emit()
+	_note_deliveries()
+
+
+## What each accepted delivery had at the last look (PIX-206), so a pickup
+## that brings one closer can say so.
+var _delivered := {}
+
+
+## Deliveries' progress as their items come and go: "Reeds: 2/3." in the
+## battle log, and "ready" once all are there. `announce` false only takes
+## the measure (after a load, or as a quest is taken).
+func _note_deliveries(announce := true) -> void:
+	var lines: Array[String] = []
+	for quest: Dictionary in Quests.all():
+		var entry: Dictionary = progression.quests.get(quest["id"], {})
+		if quest["objective"]["kind"] != "deliver" or entry.is_empty() or entry["done"]:
+			_delivered.erase(quest["id"])
+			continue
+		var have := Quests.progress(quest, progression.quests, pack.items)
+		var had := int(_delivered.get(quest["id"], have))
+		_delivered[quest["id"]] = have
+		if not announce or have <= had:
+			continue
+		var count := int(quest["objective"]["count"])
+		if have >= count:
+			lines.append(Text.t("%s: ready to hand in to %s.") % [quest["name"], String(Npcs.by_id(quest["giver"], settlement.settlers).get("name", quest["giver"]))])
+		else:
+			lines.append("%s: %d/%d." % [quest["name"], have, count])
+	if not lines.is_empty():
+		noted.emit(lines)
+
+
+## The accepted delivery that spending `costs` (item id -> count) would set
+## back (PIX-206): {quest, item}, or {} when none is touched.
+func delivery_dip(costs: Dictionary) -> Dictionary:
+	for quest: Dictionary in Quests.all():
+		var entry: Dictionary = progression.quests.get(quest["id"], {})
+		var objective: Dictionary = quest["objective"]
+		if objective["kind"] != "deliver" or entry.is_empty() or entry["done"] or not costs.has(objective["itemId"]):
+			continue
+		var have := int(pack.items.get(objective["itemId"], 0))
+		var count := int(objective["count"])
+		if mini(count, have - int(costs[objective["itemId"]])) < mini(count, have):
+			return {"quest": quest["name"], "item": Catalog.item_name(objective["itemId"])}
+	return {}
+
+
+var _dip_asked := ""
+var _dip_asked_at := -10.0
+const DIP_CONFIRM_SECONDS := 4.0
+
+
+## Before the board or a workbench takes what an accepted delivery needs
+## (PIX-206), it asks: the first try returns the question, the same again
+## within a few seconds goes ahead (""). `what` names the spend.
+func ask_before_dip(what: String, costs: Dictionary) -> String:
+	var dip := delivery_dip(costs)
+	if dip.is_empty():
+		return ""
+	var now := Time.get_ticks_msec() / 1000.0
+	if _dip_asked == what and now - _dip_asked_at <= DIP_CONFIRM_SECONDS:
+		_dip_asked = ""
+		return ""
+	_dip_asked = what
+	_dip_asked_at = now
+	return Text.t("That uses what %s needs (%s). Do it again to go ahead.") % [dip["quest"], dip["item"]]
+
+
+## Whether a village project stands (PIX-206: the Hamlet's each bring a perk).
+func project_built(project_id: String) -> bool:
+	return project_id in Town.done_projects(settlement)
+
+
+## What a shop pays for what the hero sells, over its listed rate: a gem on
+## the trophy shelf, and Odo's rebuilt store (PIX-206).
+func sale_multiplier(shop_id: String) -> float:
+	return trophy_sell_multiplier() * (1.0 + Town.project_perk("odos_store", "sell") if shop_id == "odo" and project_built("odos_store") else 1.0)
+
+
+## Hilda's price for a +1 (PIX-206): a tenth less once her forge stands.
+func forge_price(instance: Dictionary, smithing: int, masterwork: bool) -> int:
+	var cost := Economy.masterwork_cost(instance["itemId"], instance["bonus"], smithing) if masterwork else Economy.forge_cost_for(instance["itemId"], instance["bonus"], smithing)
+	if project_built("hildas_forge"):
+		cost = roundi(cost * (1.0 - Town.project_perk("hildas_forge", "forge")))
+	return cost
 
 
 ## Grants a chest's payout (openChest in reducers/world.ts): gold, a stack, a

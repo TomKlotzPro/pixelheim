@@ -35,6 +35,9 @@ func _info() -> String:
 	var chosen := _chosen_project()
 	if not chosen.is_empty():
 		lines.append_array(["", Text.t("%s: %s") % [chosen["name"], chosen["blurb"]]])
+		# What it brings for good (PIX-206).
+		if chosen.has("perk"):
+			lines.append(Text.t("Once built: %s.") % chosen["perk"])
 	return "\n".join(lines)
 
 
@@ -117,6 +120,10 @@ func _rows() -> Array[Dictionary]:
 			"enabled": blocker == "",
 			"why": blocker,
 			"action": func() -> String:
+				# Not with what a taken delivery needs, unless asked twice (PIX-206).
+				var ask := GameState.ask_before_dip("project:" + project_id, Town.project(project_id)["cost"]["items"])
+				if ask != "":
+					return ask
 				var line := GameState.fund_project(project_id)
 				if line != "":
 					Sound.play("coin")

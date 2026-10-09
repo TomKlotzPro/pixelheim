@@ -600,6 +600,11 @@ func _craft(entry: Dictionary) -> void:
 		var level := int(entry["job"]["level"])
 		status.text = Text.t("You need %s %d for that.") % [Economy.job_name(job), level] if GameState.hero.jobs[job]["level"] < level else Text.t("Still missing: %s.") % ", ".join(Economy.missing_names(entry, GameState.pack.items))
 		return
+	# Not with what a taken delivery needs, unless asked twice (PIX-206).
+	var ask := GameState.ask_before_dip("craft:" + String(entry["id"]), entry["needs"])
+	if ask != "":
+		status.text = ask
+		return
 	var made := GameState.craft(entry["id"])
 	if made["made"]:
 		Sound.play("craft")
