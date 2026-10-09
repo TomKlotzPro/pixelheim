@@ -3,7 +3,11 @@ shader_type canvas_item;
 // silhouette rather than a brightened tint; a death dissolves it pixel by
 // pixel, the pixels about to go glowing like embers. Both by the sprite's own
 // texels, so the art stays crisp. The fighter sets `flash` and `dissolve`
-// (0..1) on its own copy of the material.
+// (0..1) on its own copy of the material. On the desktop app's linear canvas
+// (PIX-227) the flash fades as it does in the browser; `ember`, a colour,
+// reaches it already linear.
+
+#include "res://shaders/linear.gdshaderinc"
 
 uniform float flash : hint_range(0.0, 1.0) = 0.0;
 uniform float dissolve : hint_range(0.0, 1.0) = 0.0;
@@ -17,7 +21,7 @@ float hash(vec2 p) {
 
 void fragment() {
 	vec4 c = COLOR;  // already the texel times the modulate
-	c.rgb = mix(c.rgb, vec3(1.0), flash);
+	c.rgb = to_canvas(mix(to_display(c.rgb), vec3(1.0), flash));
 	if (dissolve > 0.0) {
 		float h = hash(floor(UV / TEXTURE_PIXEL_SIZE));
 		if (h < dissolve) {

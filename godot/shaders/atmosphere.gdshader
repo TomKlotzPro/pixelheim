@@ -11,6 +11,7 @@ shader_type canvas_item;
 // the haze stops and the fog stands still.
 
 #include "res://shaders/wind.gdshaderinc"
+#include "res://shaders/linear.gdshaderinc"
 
 uniform sampler2D screen : hint_screen_texture, filter_nearest;
 uniform sampler2D noise : filter_linear, repeat_enable;
@@ -65,7 +66,7 @@ void fragment() {
 		float band = sin(px.y * 0.35 + world_time * 3.0) * sin(px.y * 0.07 + world_time * 0.9 + px.x * 0.013);
 		at.x += (band > HAZE ? 1.0 : (band < -HAZE ? -1.0 : 0.0)) * per_px.x;
 	}
-	vec3 c = texture(screen, at).rgb;
+	vec3 c = to_display(texture(screen, at).rgb);
 	// Low fog rolling over the Mire, longer than it is tall.
 	if (mire > 0.0) {
 		vec2 drift = vec2(world_time * 5.0, world_time * 1.2);
@@ -95,5 +96,5 @@ void fragment() {
 	// The colour mood.
 	c = mix(vec3(dot(c, LUMA)), c, saturation);
 	c = (c - 0.5) * contrast + 0.5;
-	COLOR = vec4(c * tint, 1.0);
+	COLOR = vec4(to_canvas(c * tint), 1.0);
 }

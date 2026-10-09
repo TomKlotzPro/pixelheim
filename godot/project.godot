@@ -55,7 +55,16 @@ world_wind={
 "type": "float",
 "value": 1.0
 }
+; 1 while the desktop app draws the canvas in linear light (PIX-227,
+; shaders/linear.gdshaderinc), set by scripts/light_rig.gd; 0 in the browser.
+world_linear={
+"type": "float",
+"value": 0.0
+}
 
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0
+; The macOS app is universal (Intel and Apple silicon), and its export asks
+; for both VRAM formats (PIX-227); no texture here is VRAM-compressed.
+textures/vram_compression/import_etc2_astc=true

@@ -1,0 +1,101 @@
+name: Desktop app
+
+# The desktop app (PIX-227): the game for macOS (universal, ad-hoc signed)
+# and Windows (x86_64, one .exe), on the desktop renderer with its extras
+# (godot/scripts/desktop_look.gd), built from the same project as the browser
+# build and uploaded as downloadable artifacts. The browser build stays the
+# main one (godot.yml, deploy.yml).
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: desktop-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GODOT_VERSION: "4.7.1"
+
+jobs:
+  desktop:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Its own cache: the web jobs' holds only the web templates.
+      - name: Cache Godot binary and desktop export templates
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/godot-bin
+            ~/.local/share/godot/export_templates
+          key: godot-${{ env.GODOT_VERSION }}-desktop
+
+      - name: Install Godot
+        run: |
+          if [ ! -x "$HOME/godot-bin/godot" ]; then
+            mkdir -p "$HOME/godot-bin"
+            curl -sL "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip" -o godot.zip
+            unzip -q godot.zip
+            mv "Godot_v${GODOT_VERSION}-stable_linux.x86_64" "$HOME/godot-bin/godot"
+          fi
+          echo "$HOME/godot-bin" >> "$GITHUB_PATH"
+
+      - name: Install the macOS and Windows export templates
+        run: |
+          TDIR="$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.stable"
+          if [ ! -f "$TDIR/macos.zip" ] || [ ! -f "$TDIR/windows_release_x86_64.exe" ]; then
+            curl -sL "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_export_templates.tpz" -o templates.tpz
+            unzip -q templates.tpz templates/version.txt templates/macos.zip 'templates/windows_release_x86_64*'
+            mkdir -p "$TDIR"
+            mv templates/* "$TDIR/"
+            rm -rf templates templates.tpz
+          fi
+
+      # The paid art (PIX-133, PIX-138), as godot.yml fetches it. Forks have no
+      # key and build on Shade's CC0 art alone.
+      - name: Fetch the private art
+        id: art
+        continue-on-error: true
+        uses: actions/checkout@v4
+        with:
+          repository: TomKlotzPro/pixelheim-assets
+          ssh-key: ${{ secrets.PIXELHEIM_ASSETS_KEY }}
+          path: private-assets
+      - name: Install the private art
+        if: steps.art.outcome == 'success'
+        run: |
+          bash scripts/fetch-private-art.sh private-assets
+          rm -rf private-assets
+
+      - name: Import assets
+        run: godot --headless --path godot --import
+
+      # An export that fails can still exit 0: the files must be there.
+      - name: Export the macOS and Windows apps
+        run: |
+          mkdir -p godot/export/macos godot/export/windows
+          godot --headless --path godot --export-release macOS export/macos/Pixelheim.zip
+          godot --headless --path godot --export-release Windows export/windows/Pixelheim.exe
+          test -s godot/export/macos/Pixelheim.zip
+          test -s godot/export/windows/Pixelheim.exe
+          ls -la godot/export/macos godot/export/windows
+
+      # The Mac app stays in Godot's own zip: an artifact keeps no file modes,
+      # and the app's binary must stay executable.
+      - name: Upload the macOS app
+        uses: actions/upload-artifact@v4
+        with:
+          name: pixelheim-macos
+          path: godot/export/macos/Pixelheim.zip
+          retention-days: ${{ github.event_name == 'push' && 30 || 7 }}
+
+      - name: Upload the Windows app
+        uses: actions/upload-artifact@v4
+        with:
+          name: pixelheim-windows
+          path: godot/export/windows/Pixelheim.exe
+          retention-days: ${{ github.event_name == 'push' && 30 || 7 }}

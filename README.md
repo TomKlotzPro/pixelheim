@@ -15,6 +15,8 @@
 
 **https://tomklotzpro.github.io/pixelheim/** - the game, deployed to GitHub Pages on every push to `main`. It runs in the browser: keyboard, mouse or gamepad.
 
+**On a computer** it also comes as an app for macOS and Windows, built on every push to `main` by the [Desktop app](../../actions/workflows/desktop.yml) workflow (the latest run's `pixelheim-macos` and `pixelheim-windows` artifacts). The app draws with the desktop renderer: its world is lit in high dynamic range (no banding in the night's light) and lamps and fires get a wider glow at night than the browser can afford. Its slots use the same save format as the browser's, so a save code brings a hero across either way. Neither app is signed by a store: on a Mac, open it the first time with right-click → Open; on Windows, SmartScreen's "More info" → "Run anyway".
+
 What changed release by release: **What's new** on the title menu, or [`godot/assets/data/changelog.json`](godot/assets/data/changelog.json).
 
 ## The game

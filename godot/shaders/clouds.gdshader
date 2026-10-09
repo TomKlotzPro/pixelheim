@@ -7,6 +7,7 @@ shader_type canvas_item;
 // shadows' `depth`, none indoors, underground or at night.
 
 #include "res://shaders/wind.gdshaderinc"
+#include "res://shaders/linear.gdshaderinc"
 
 uniform sampler2D clouds : filter_linear, repeat_enable;
 // The world under the screen: its top-left corner and size, in pixels.
@@ -38,5 +39,5 @@ void fragment() {
 	ivec2 block = ivec2(floor(px / 2.0)) & ivec2(3);
 	float threshold = (BAYER[block.y * 4 + block.x] + 0.5) / 16.0;
 	float stepped = floor(shadow * 4.0 + threshold) / 4.0;
-	COLOR = vec4(shade, stepped * depth);
+	COLOR = vec4(to_canvas(shade), veil(stepped * depth));
 }

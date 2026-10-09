@@ -106,6 +106,7 @@ godot --path godot -- --screenshot --story ending --wait 20  # any story scene o
 godot --path godot -- --screenshot title --keys s,s,s # walk the title's menu with real keys (w, s, e, enter, esc, space)
 godot --path godot -- --screenshot dockmenu           # the dock's menu of screens, open
 godot --path godot -- --screenshot inventory --keys i # press keys at whatever screen the run opened (here: I closes the pack)
+godot --path godot -- --screenshot --map town --look browser   # the desktop renderer in another of the app's looks (below)
 ```
 
 The final `print` line reports the map id, hero cell, HP, gold, the save's place, draw calls, whether the world is held still (`paused=`) and which screens are open (`open=`), for assertions.
@@ -146,6 +147,58 @@ Single-threaded preset (`export_presets.cfg`): no cross-origin-isolation
 headers needed, so any static host works — GitHub Pages included (~9.6 MB
 gzipped over the wire). The deploy puts it at the root of the Pages site; old
 `/classic/` and `/godot/` links lead there.
+
+## Desktop app
+
+The browser build stays the main one; the same project also exports as an
+app for macOS (universal, ad-hoc signed, not notarized) and Windows (x86_64,
+one `.exe` with the game inside). `.github/workflows/desktop.yml` builds both
+on every pull request and push to `main` and uploads them as the
+`pixelheim-macos` and `pixelheim-windows` artifacts (the Mac app stays in
+Godot's own zip, which keeps its binary executable: unzip twice). Locally,
+with the macOS and Windows export templates installed:
+
+```sh
+godot --headless --path godot --export-release macOS export/macos/Pixelheim.zip
+godot --headless --path godot --export-release Windows export/windows/Pixelheim.exe
+```
+
+The app runs the desktop renderer (Forward+), and where it runs in a window
+it wears the app's look (`scripts/desktop_look.gd`, PIX-227); the browser, a
+headless run or a desktop that fell back to the Compatibility renderer keep
+the browser's:
+
+- **An HDR canvas**: the 2D world drawn in linear light, sixteen bits a
+  channel, debanded, so lamps and the glow fall off into the night without
+  bands. Every pass over the world reads and writes through
+  `shaders/linear.gdshaderinc`, which compiles away in the browser, so its
+  thresholds and tints hold on both canvases; light colours are made linear
+  to keep their hue (`DesktopLook.canvas_color`).
+- **A wider glow at night**, on top of the browser's own: what's brighter
+  than a threshold is marked in the screen's alpha (`glow_mask.gdshader`,
+  last on the LightRig's layer) before the blur, and `glow_wide.gdshader`,
+  alone on a canvas layer of its own under the HUD, spreads it soft and far,
+  so a small flame glows as far as it is bright. The renderer's own glow (a
+  WorldEnvironment) was tried and dropped: everything drawn after its pass,
+  the HUD included, came out lifted, and lamplit rooms washed out.
+
+Saves are the browser's format: the app keeps its slots in
+`user://saves/slot_<n>.json` under the pinned user dir
+(`~/Library/Application Support/pixelheim/`, `%APPDATA%\pixelheim\`), the
+same files every desktop run uses; save codes carry a hero between the app
+and the browser. Screenshots of a linear canvas go through
+`DesktopLook.snapshot`, which turns its light into the screen's colours.
+
+`--look NAME` wears another of the app's looks for a run (`browser`, `hdr`,
+`app`, `app_bright`; `DesktopLook.LOOKS`). The look book shows the difference:
+
+```sh
+godot/tools/lookbook.sh                              # the browser's renderer: lookbook/
+godot/tools/lookbook.sh --desktop                    # the app's look: lookbook-desktop/
+godot/tools/lookbook.sh --desktop --looks browser,app  # both on the desktop renderer, a folder each
+godot/tools/lookbook.sh --compare                    # no window: lookbook/ | lookbook-desktop/ side by side in lookbook-compare/
+python3 godot/tools/lookbook_compare.py godot/lookbook-desktop/browser godot/lookbook-desktop/app godot/lookbook-compare
+```
 
 ## Layout
 

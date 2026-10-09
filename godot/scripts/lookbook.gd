@@ -6,7 +6,9 @@ extends Node
 ## game looks is judged before and after, by eye. With `perf`, each shot also
 ## reports what its frames cost (PerfProbe); with `motion`, each is filmed for
 ## a moment too, frame by frame, for what a still can't show (the wind, the
-## water). Run by tools/lookbook.sh.
+## water). With `--looks a,b`, the desktop renderer shoots each scene in each
+## of the app's looks (PIX-227, DesktopLook.LOOKS), each look in its own
+## folder with its own sheet. Run by tools/lookbook.sh.
 
 ## Where in the day a shot stands (DayNight's wheel, 0..1).
 const DAY := 0.2
@@ -47,6 +49,9 @@ const MOTION_STEP := 0.1
 ## The world's clock at each shot, so the clouds and the wind stand the same
 ## way every time.
 const CLOCK := 40.0
+## Frames drawn after a look is put on, before its shot: the canvas is remade
+## and the glow's levels filled.
+const LOOK_FRAMES := 4
 
 var world: Node
 var out_dir := "res://lookbook"
@@ -60,6 +65,8 @@ var _foe: Node
 ## last one felling it), and what each blow takes.
 const STRIKES := [2, 8, 14]
 const STAGED_BLOW := 12
+## The looks to shoot each scene in (`--looks`); none: the look worn.
+var looks: PackedStringArray = []
 
 
 func run() -> void:
@@ -73,25 +80,40 @@ func run() -> void:
 	# The town at its fullest: every age built, its lamps and roofs up.
 	GameState.settlement.town_tier = Town.MAX_TIER
 	GameState.settlement.projects.assign(Town.projects_through(Town.MAX_TIER))
-	var images: Array[Image] = []
+	# Each look's folder ("" is the look worn, straight into out_dir) and its
+	# shots so far.
+	var folders := {}
+	var images := {}
+	for look in (looks if not looks.is_empty() else PackedStringArray([""])):
+		folders[look] = out_dir if look == "" else "%s/%s" % [out_dir, look]
+		DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(folders[look]))
+		var shots: Array[Image] = []
+		images[look] = shots
+	# Developer output, not the player's: no words for the translators.
+	print("%s %s=%s" % ["LOOK", "look", DesktopLook.look])
 	for shot: Dictionary in SHOTS:
 		if only != "" and shot["name"] != only:
 			continue
 		_stage(shot)
 		await get_tree().create_timer(SETTLE_SECONDS).timeout
 		await drawn()
-		var image := get_viewport().get_texture().get_image()
-		image.save_png("%s/%s.png" % [out_dir, shot["name"]])
-		images.append(image)
-		# Developer output, not the player's: no words for the translators.
+		for look: String in folders:
+			if look != "":
+				world.lights.wear(look)
+				for frame in LOOK_FRAMES:
+					await drawn()
+			var image: Image = await DesktopLook.snapshot(self)
+			image.save_png("%s/%s.png" % [folders[look], shot["name"]])
+			images[look].append(image)
 		var line := "%s %s" % ["LOOK", shot["name"]]
 		if with_perf:
 			line += "  " + await PerfProbe.sample(self, 180)
 		print(line)
 		if with_motion:
 			await _film(shot["name"], shot.get("strike", false))
-	sheet(images).save_png("%s/sheet.png" % out_dir)
-	print("%s %s/%s" % ["LOOK", ProjectSettings.globalize_path(out_dir), "sheet.png"])
+	for look: String in folders:
+		sheet(images[look]).save_png("%s/sheet.png" % folders[look])
+		print("%s %s/%s" % ["LOOK", ProjectSettings.globalize_path(folders[look]), "sheet.png"])
 
 
 ## Puts the hero where the shot stands, at its hour, with its foe - the last
@@ -123,11 +145,7 @@ func _stage(shot: Dictionary) -> void:
 ## accord and a run would wait forever, so the look book draws the frame
 ## itself.
 func drawn() -> void:
-	if DisplayServer.window_can_draw():
-		await RenderingServer.frame_post_draw
-	else:
-		await get_tree().process_frame
-		RenderingServer.force_draw(false)
+	await DesktopLook.drawn(self)
 
 
 ## The shot as it moves: MOTION_FRAMES frames, MOTION_STEP seconds apart;
@@ -146,7 +164,19 @@ func _film(shot_name: String, strike := false) -> void:
 			_foe.take_hit(STAGED_BLOW, world.player.global_position, null, frame == STRIKES[1])
 		await get_tree().create_timer(MOTION_STEP).timeout
 		await drawn()
-		get_viewport().get_texture().get_image().save_png("%s/%02d.png" % [folder, frame])
+		(await DesktopLook.snapshot(self)).save_png("%s/%02d.png" % [folder, frame])
+
+
+## The looks `--looks a,b` names, those the app has (DesktopLook.LOOKS), in
+## its order.
+static func looks_from(args: PackedStringArray) -> PackedStringArray:
+	var index := args.find("--looks")
+	var out: PackedStringArray = []
+	if index >= 0 and index + 1 < args.size():
+		for look in args[index + 1].split(","):
+			if DesktopLook.LOOKS.has(look) and not out.has(look):
+				out.append(look)
+	return out
 
 
 ## The heart of the first shower that falls in full day (Weather).

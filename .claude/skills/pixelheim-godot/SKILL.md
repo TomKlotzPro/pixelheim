@@ -50,6 +50,7 @@ godot --headless --path godot --import                        # after new assets
 godot --headless --path godot -s res://addons/gut/gut_cmdln.gd # GUT; ALSO grep the output for "Parse Error"
 godot --path godot -- --screenshot [--map <id>] [--walk l,d,r,u] [fight [kill] [hurt] [--foe <species>]] [chest] [talk] [near] [shop [--tab N]] [hall] [bank] [home --mode M] [--town-tier N] [--house-tier N] [lineup] [saves] [night] [worldmap] [overview] [--at x,y] [--zoom Z] [--floor N] [clear] [gate [--dungeon id] [descend]] [leave] [quest] [journal] [--level N] [rankup [walk-path]] [stats] [skills] [codex [bestiary]] [cast] [inventory] [title [splash]] [create] [pause [scanlines]] [options] [portal] [die] [talk --keys e,esc] [motion] [--slot N]
 godot/tools/flows.sh [name...]   # the release flows; pictures in godot/flows/
+godot/tools/lookbook.sh [--desktop] [--looks browser,app] [--compare]   # the look book (opens a window; --compare doesn't)
 godot/tools/splash.sh            # re-render the web boot splash after title changes
 python3 godot/tools/favicon.py   # redraw the game's icon (assets/icon.png)
 ```
@@ -67,6 +68,7 @@ python3 godot/tools/favicon.py   # redraw the game's icon (assets/icon.png)
 
 ## Pitfalls already paid for
 
+- **The desktop app's canvas is linear light (PIX-227, `DesktopLook`)**: on Forward+ in a window (the app, harness runs, the look book's `--desktop`) the root viewport draws in HDR, so a shader's screen reads, `COLOR` and constants are linear there. Every shader that does colour maths over the world includes `shaders/linear.gdshaderinc` and reads with `to_display` / writes with `to_canvas` (`test_desktop_look` fails otherwise); it compiles away in the browser. Light colours go through `Lights.make` (kept linear by the LightRig). Read pixels or save pictures through `DesktopLook.snapshot` / `DesktopLook.shown`, never the raw viewport image (linear light saves far too dark). Half-transparent overlays blend in linear light there (dims and rain read a little lighter). Don't reach for a WorldEnvironment glow: on 4.7 everything drawn after its pass, the HUD included, came out lifted. The app's wider glow marks the brights in the screen's alpha (`glow_mask`) and must be the first screen reader on its own canvas layer (`glow_wide`): a back-buffer copy's mipmaps keep alpha only when the pass that reads them made the copy.
 - **Bind every tween to the node it animates** (`node.create_tween()`), above all a looping one: a `set_loops()` tween owned by a parent that outlives its target spins forever once the target is freed. The editor's debug build stops it, but the web's release build freezes (v0.81's opening froze at its stage change). Desktop harness runs can't catch this: check story or animation changes in the web export too.
 
 - Characters are Shade's Puny family at 1x (PIX-130): `PunyArt` maps roles, villagers and species to sheets. Row orders differ per family: Puny Characters turn clockwise (down 0, right 2, up 4, left 6), PunyMonsters the other way (left 2, right 6), Mini World rows are down/up/left/right. Check any new sheet with `--screenshot lineup` before trusting a direction.
