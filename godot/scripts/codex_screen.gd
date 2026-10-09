@@ -93,7 +93,10 @@ func _bestiary() -> void:
 	for monster_id: String in data["monsters"]:
 		var monster: Dictionary = data["monsters"][monster_id]
 		var family: String = data["families"].get(monster_id, "")
-		var met: bool = family != "" and mastery is Dictionary and int((mastery as Dictionary).get(family, 0)) > 0
+		# Met by its kind, not its family (PIX-188); a save from before keeps
+		# the family's word for it.
+		var met_at := int(GameState.progression.met.get(monster_id, 0))
+		var met: bool = met_at > 0 or (GameState.progression.met.is_empty() and family != "" and mastery is Dictionary and int((mastery as Dictionary).get(family, 0)) > 0)
 		var line := HBoxContainer.new()
 		line.add_theme_constant_override("separation", 12)
 		line.custom_minimum_size = Vector2(0, 28)
@@ -102,8 +105,11 @@ func _bestiary() -> void:
 			var name := UiStyle.label(monster["name"], 15, UiStyle.INK)
 			name.custom_minimum_size = Vector2(220, 0)
 			line.add_child(name)
+			# Its numbers where it was met: a floor slime as strong as the floor made it.
+			var level := maxi(int(monster["level"]), met_at)
+			var seen: Dictionary = Bestiary.lifted(monster, level - int(monster["level"])) if level > int(monster["level"]) else monster
 			var numbers := UiStyle.label(
-				Text.t("HP %d  ATK %d  DEF %d  %d xp") % [monster["maxHp"], monster["attack"], monster["defense"], monster["xp"]],
+				Text.t("Lv %d  HP %d  ATK %d  DEF %d  %d xp") % [level, seen["maxHp"], seen["attack"], seen["defense"], seen["xp"]],
 				14, UiStyle.INK
 			)
 			numbers.custom_minimum_size = Vector2(360, 0)

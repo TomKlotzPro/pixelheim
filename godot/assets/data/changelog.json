@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.136.0",
+      "date": "2026-10-09",
+      "codename": "Readable Danger",
+      "notes": [
+        "READABLE DANGER: a foe shows its level as you come near, on a small plate over its head - grey well below you, cream a match, orange a step above, red far above - so you can choose your fights before the charge",
+        "FLOORS NAME THEIR FOES: the mountain's lifted monsters wear their floor's name (a Cellar Slime, a Barrow Skeleton, an Elite Frosthowl Dire Wolf), and the Deep Hunt's are Deep ones, so a slime fifteen levels up no longer looks like the one from the forest",
+        "THE CODEX REMEMBERS: each kind you've fought is entered on its own, with the highest level you met it at and its health, attack, defence and XP there",
+        "CLEARER SKILLS: Dexterity says it strikes with bows, daggers and DEX skills, and the readout shows the attack it gives; the hero creation screen lists skills without their level"
+      ]
+    },
+    {
       "version": "0.135.0",
       "date": "2026-10-09",
       "codename": "A Home Worth Having",

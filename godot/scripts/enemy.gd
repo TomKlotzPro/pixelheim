@@ -29,6 +29,8 @@ var sprite: AnimatedSprite2D
 var hurtbox: Area2D
 var health_bar: ColorRect
 var health_bar_back: ColorRect
+## "Lv N" beside the health bar (PIX-188).
+var level_tag: PanelContainer
 ## Poison, burn and stun from the hero's afflicting passives.
 var ailments := Ailments.new()
 ## PunyArt.monster spec, and the way it last faced.
@@ -125,11 +127,29 @@ func _ready() -> void:
 	add_child(health_bar)
 	if not named.is_empty():
 		add_child(_name_plate(-20 * size - 1))
+	# Its level by the health bar (PIX-188), coloured by the gap to the
+	# hero's: seen once the hero is near enough to be noticed, before the charge.
+	var level := Bestiary.level_of(fighter)
+	# On the night's plate (the pixel font draws no outline), over every actor
+	# (the y-sort would put a hero standing above the foe on top of it).
+	level_tag = PanelContainer.new()
+	level_tag.add_theme_stylebox_override("panel", UiStyle.plate(6))
+	level_tag.add_child(UiStyle.strong(Text.t("Lv %d") % level, 16, Bestiary.gap_color(level, GameState.hero.level)))
+	level_tag.scale = Vector2.ONE * 0.25
+	level_tag.z_as_relative = false
+	level_tag.z_index = 20
+	level_tag.visible = false
+	level_tag.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	level_tag.resized.connect(func() -> void:
+		level_tag.position = Vector2(-level_tag.size.x * 0.125, -20 * size - level_tag.size.y * 0.25 - 0.5))
+	add_child(level_tag)
 
 
 func _physics_process(delta: float) -> void:
 	if dying:
 		return
+	if level_tag != null:
+		level_tag.visible = hunting or health_bar.visible or Packs.within_notice(global_position, world.player.global_position)
 	for tick in ailments.tick(delta):
 		_lose(tick["damage"], Color(0.75, 0.5, 1))
 		if dying:
