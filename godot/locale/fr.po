@@ -1989,8 +1989,16 @@ msgid "Blows land with weight: the one struck flashes pure white, an arc in your
 msgstr "Les coups ont du poids : la cible s'illumine d'un blanc pur, un arc de la couleur de votre arme suit chaque coup, et la caméra tressaille sur les coups critiques et les coups de grâce"
 
 #: assets/data/changelog.json
+msgid "Boss Slayer"
+msgstr "Tueur de boss"
+
+#: assets/data/changelog.json
 msgid "Bosses and named monsters carry a bar across the top of the screen, notched where a boss's next phase begins. Each phase is roared, marks on the ground are heard as they appear and as they strike, and a boss falls in slow motion, with a flash and a silence before the victory sting"
 msgstr "Les boss et les monstres nommés ont une barre en haut de l'écran, crantée là où commence la phase suivante d'un boss. Chaque phase est rugie, les marques au sol s'entendent quand elles apparaissent et quand elles frappent, et un boss tombe au ralenti, avec un éclair et un silence avant la fanfare de victoire"
+
+#: assets/data/changelog.json
+msgid "Bosses and named monsters no longer give up the chase and heal when you step away, and there's no leaving while one hunts you"
+msgstr "Les boss et les monstres nommés n'abandonnent plus la poursuite pour aller se soigner quand vous vous éloignez, et impossible de partir tant que l'un d'eux vous traque"
 
 #: assets/data/changelog.json
 msgid "Branches of Power"
@@ -3117,6 +3125,10 @@ msgid "NOTHING YOU PUT ON IS INVISIBLE ANY MORE: Greymaw's Hood and the City Pla
 msgstr "PLUS RIEN D'INVISIBLE SUR VOUS : la Capuche de Gueule-Grise et l'Armure de la Cité sont désormais visibles, et les armures qui se confondaient avec les couleurs de votre héros (la cotte d'écailles sur un guerrier rouge, la robe de mage sur un mage cyan) ont leur propre apparence"
 
 #: assets/data/changelog.json
+msgid "Named monsters like Rimefang now fall as bosses do: the world slows, the music cuts, and a Victory title marks it"
+msgstr "Les monstres nommés comme Crocgivre tombent désormais comme les boss : le monde ralentit, la musique se tait, et un titre « Victoire » le marque"
+
+#: assets/data/changelog.json
 msgid "Names that sit in a sentence lose their capital article in French, gear and floor foes are named in French word order, and door signs, skill icons and message tags work in either language"
 msgstr "Les noms pris dans une phrase perdent la majuscule de leur article, l'équipement et les ennemis des étages sont nommés dans l'ordre du français, et les enseignes, les icônes de compétences et les étiquettes de message fonctionnent dans les deux langues"
 
@@ -3735,6 +3747,10 @@ msgstr "Les points de compétence n'allument plus le menu quand il n'y a plus ri
 #: assets/data/changelog.json
 msgid "Skill trees! One skill point per level, three branches per role"
 msgstr "Des arbres de compétences ! Un point de compétence par niveau, trois branches par rôle"
+
+#: assets/data/changelog.json
+msgid "Slaying one makes you a Boss slayer: +10% damage for 10 minutes, counting down at the top left"
+msgstr "En abattre un fait de vous un Tueur de boss : +10 % de dégâts pendant 10 minutes, décomptés en haut à gauche"
 
 #: assets/data/changelog.json
 msgid "Small Things"
@@ -11104,11 +11120,11 @@ msgstr "%s hurle - la forêt répond !"
 msgid "Lv %d"
 msgstr "Niv. %d"
 
-#: scripts/enemy.gd:410
+#: scripts/enemy.gd:417
 msgid "blocked"
 msgstr "paré"
 
-#: scripts/enemy.gd:439
+#: scripts/enemy.gd:447
 msgid "%s is afflicted by %s!"
 msgstr "%s est atteint : %s !"
 
@@ -11844,35 +11860,35 @@ msgstr "Sauvegardes"
 msgid "Quit to title"
 msgstr "Quitter vers le titre"
 
-#: scripts/player.gd:267
+#: scripts/player.gd:269
 msgid "dodged"
 msgstr "esquivé"
 
-#: scripts/player.gd:277
+#: scripts/player.gd:279
 msgid "You are afflicted by %s!"
 msgstr "Vous voilà atteint : %s !"
 
-#: scripts/player.gd:330
+#: scripts/player.gd:332
 msgid "No skill on that key yet. Learn more, or set the keys, in Skills."
 msgstr "Aucune compétence sur cette touche. Apprenez-en d'autres, ou réglez les touches, dans Compétences."
 
-#: scripts/player.gd:343
+#: scripts/player.gd:345
 msgid "No foe in reach for %s."
 msgstr "Aucun ennemi à portée pour %s."
 
-#: scripts/player.gd:361
+#: scripts/player.gd:363
 msgid "All ailments are purged!"
 msgstr "Tous les maux sont purgés !"
 
-#: scripts/player.gd:364
+#: scripts/player.gd:366
 msgid "%s restores %d HP."
 msgstr "%s rend %d PV."
 
-#: scripts/player.gd:376
+#: scripts/player.gd:378
 msgid "%s hits %d foes for %d damage!"
 msgstr "%s touche %d ennemis : %d dégâts !"
 
-#: scripts/player.gd:378
+#: scripts/player.gd:380
 msgid "%s hits %s for %d damage!"
 msgstr "%s touche %s : %d dégâts !"
 
@@ -12532,7 +12548,7 @@ msgstr "Le poison"
 msgid "The burn"
 msgstr "La brûlure"
 
-#: scripts/state/bestiary.gd:152
+#: scripts/state/bestiary.gd:159
 msgid "floor %d"
 msgstr "étage %d"
 
@@ -12896,145 +12912,145 @@ msgstr "PV %d"
 msgid "regen %d/turn"
 msgstr "régén. %d/tour"
 
-#: scripts/state/spoils.gd:102
-msgid "You forage %d %s%s."
-msgstr "Vous glanez %d %s%s."
-
-#: scripts/state/spoils.gd:104
-msgid "Foraging reached %d!"
-msgstr "Cueillette : niveau %d !"
-
-#: scripts/state/spoils.gd:125
-msgid "Mastery: %s Slayer %s. +%d%% damage against %s."
-msgstr "Maîtrise : %s, Tueur %s. +%d%% de dégâts (%s)."
-
-#: scripts/state/spoils.gd:139
-msgid "The bounty on %s is yours: +%d gold."
-msgstr "La prime pour %s vous revient : +%d or."
-
-#: scripts/state/spoils.gd:151
-msgid "%s leaves you %s!"
-msgstr "%s vous laisse %s !"
-
-#: scripts/state/spoils.gd:167
-msgid "Level up: you are now level %d. +%d stat points and +%d skill point%s to spend."
-msgstr "Niveau supérieur : vous voici au niveau %d. +%d points de caractéristique et +%d point%s de compétence à dépenser."
-
-#: scripts/state/spoils.gd:214
-msgid "%s is cleared!"
-msgstr "Étage nettoyé : %s !"
-
-#: scripts/state/spoils.gd:219
-msgid "%d gold"
-msgstr "%d or"
-
-#: scripts/state/spoils.gd:228
-msgid "The floor's hoard: %s."
-msgstr "Le trésor de l'étage : %s."
-
-#: scripts/state/spoils.gd:232
-msgid "Among the bones: a page of an old journal (%s). {key:journal} reads it."
-msgstr "Parmi les os : une page d'un vieux journal (%s). {key:journal} pour la lire."
-
-#: scripts/state/spoils.gd:236
-msgid "+%d XP for the way down."
-msgstr "+%d XP pour la descente."
-
-#: scripts/state/spoils.gd:246
-msgid "the %s"
-msgstr "%s"
-
-#: scripts/state/spoils.gd:249
-msgid "Behind the throne, a stair goes on down into the dark: the Deep Hunt."
-msgstr "Derrière le trône, un escalier s'enfonce encore dans le noir : la Traque des Profondeurs."
-
-#: scripts/state/spoils.gd:253
-msgid "A deeper way opens: %s."
-msgstr "Un passage plus profond s'ouvre : %s."
-
-#: scripts/state/spoils.gd:266
-msgid "Depth %d of the Deep Hunt is cleared!"
-msgstr "Profondeur %d de la Traque des Profondeurs : nettoyée !"
-
-#: scripts/state/spoils.gd:275
-msgid "The deepest yet. Its hoard: %s."
-msgstr "Le plus profond jusqu'ici. Son trésor : %s."
-
-#: scripts/state/spoils.gd:281
-msgid "depth %d of the Deep Hunt"
-msgstr "la profondeur %d de la Traque des Profondeurs"
-
-#: scripts/state/spoils.gd:285
-msgid "A milestone: %d depths below the throne. The %s is yours, a trophy for the shelf at home."
-msgstr "Un jalon : %d profondeurs sous le trône. Le %s est à vous, un trophée pour l'étagère de la maison."
-
-#: scripts/state/spoils.gd:288
-msgid "A hole into the dark opens beside the way up: depth %d waits below."
-msgstr "Un trou s'ouvre sur le noir près de la montée : la profondeur %d attend en dessous."
-
-#: scripts/state/spoils.gd:302
-msgid "The chest bares its teeth — a mimic!"
-msgstr "Le coffre montre les dents — c'est une mimique !"
-
-#: scripts/state/spoils.gd:308
-msgid "Something glitters on the road: %d gold."
-msgstr "Quelque chose brille sur la route : %d or."
-
-#: scripts/state/spoils.gd:309
-msgid "The chest holds %d gold."
-msgstr "Le coffre contient %d or."
-
-#: scripts/state/spoils.gd:318
-msgid "Too heavy to carry. Lighten the pack and come back."
-msgstr "Trop lourd à porter. Allégez votre sac et revenez."
-
-#: scripts/state/spoils.gd:324
-msgid "The chest holds %s!"
-msgstr "Le coffre contient %s !"
-
-#: scripts/state/spoils.gd:329
-msgid "You gather %dx %s."
-msgstr "Vous récoltez %dx %s."
-
-#: scripts/state/spoils.gd:330
-msgid "The chest holds %dx %s."
-msgstr "Le coffre contient %dx %s."
-
-#: scripts/state/spoils.gd:352
-msgid "You gather %d %s%s."
-msgstr "Vous récoltez %d %s%s."
-
-#: scripts/state/spoils.gd:363
-msgid "Nothing's biting here yet. Try again in a while, or somewhere else."
-msgstr "Ça ne mord pas encore ici. Réessayez dans un moment, ou ailleurs."
-
-#: scripts/state/spoils.gd:367
-msgid "You cast, wait... and haul up an old boot."
-msgstr "Vous lancez, attendez... et remontez une vieille botte."
-
-#: scripts/state/spoils.gd:367
-msgid "You cast, wait... and land %s!"
-msgstr "Vous lancez, attendez... et ça mord : %s !"
-
-#: scripts/state/spoils.gd:369
-msgid " Foraging reached %d!"
-msgstr " Cueillette : niveau %d !"
-
-#: scripts/state/spoils.gd:58
-msgid "Your garden ripens: +%d %s."
-msgstr "Votre jardin donne sa récolte : +%d %s."
-
-#: scripts/state/spoils.gd:67
-msgid "%s is defeated! +%d XP, +%d gold."
-msgstr "%s tombe ! +%d XP, +%d or."
-
-#: scripts/state/spoils.gd:84
+#: scripts/state/spoils.gd:108
 msgid "%s drops: %s."
 msgstr "%s laisse tomber : %s."
 
-#: scripts/state/spoils.gd:92
+#: scripts/state/spoils.gd:116
 msgid "%s drops: %s!"
 msgstr "%s laisse tomber : %s !"
+
+#: scripts/state/spoils.gd:126
+msgid "You forage %d %s%s."
+msgstr "Vous glanez %d %s%s."
+
+#: scripts/state/spoils.gd:128
+msgid "Foraging reached %d!"
+msgstr "Cueillette : niveau %d !"
+
+#: scripts/state/spoils.gd:149
+msgid "Mastery: %s Slayer %s. +%d%% damage against %s."
+msgstr "Maîtrise : %s, Tueur %s. +%d%% de dégâts (%s)."
+
+#: scripts/state/spoils.gd:163
+msgid "The bounty on %s is yours: +%d gold."
+msgstr "La prime pour %s vous revient : +%d or."
+
+#: scripts/state/spoils.gd:175
+msgid "%s leaves you %s!"
+msgstr "%s vous laisse %s !"
+
+#: scripts/state/spoils.gd:191
+msgid "Level up: you are now level %d. +%d stat points and +%d skill point%s to spend."
+msgstr "Niveau supérieur : vous voici au niveau %d. +%d points de caractéristique et +%d point%s de compétence à dépenser."
+
+#: scripts/state/spoils.gd:238
+msgid "%s is cleared!"
+msgstr "Étage nettoyé : %s !"
+
+#: scripts/state/spoils.gd:243
+msgid "%d gold"
+msgstr "%d or"
+
+#: scripts/state/spoils.gd:252
+msgid "The floor's hoard: %s."
+msgstr "Le trésor de l'étage : %s."
+
+#: scripts/state/spoils.gd:256
+msgid "Among the bones: a page of an old journal (%s). {key:journal} reads it."
+msgstr "Parmi les os : une page d'un vieux journal (%s). {key:journal} pour la lire."
+
+#: scripts/state/spoils.gd:260
+msgid "+%d XP for the way down."
+msgstr "+%d XP pour la descente."
+
+#: scripts/state/spoils.gd:270
+msgid "the %s"
+msgstr "%s"
+
+#: scripts/state/spoils.gd:273
+msgid "Behind the throne, a stair goes on down into the dark: the Deep Hunt."
+msgstr "Derrière le trône, un escalier s'enfonce encore dans le noir : la Traque des Profondeurs."
+
+#: scripts/state/spoils.gd:277
+msgid "A deeper way opens: %s."
+msgstr "Un passage plus profond s'ouvre : %s."
+
+#: scripts/state/spoils.gd:290
+msgid "Depth %d of the Deep Hunt is cleared!"
+msgstr "Profondeur %d de la Traque des Profondeurs : nettoyée !"
+
+#: scripts/state/spoils.gd:299
+msgid "The deepest yet. Its hoard: %s."
+msgstr "Le plus profond jusqu'ici. Son trésor : %s."
+
+#: scripts/state/spoils.gd:305
+msgid "depth %d of the Deep Hunt"
+msgstr "la profondeur %d de la Traque des Profondeurs"
+
+#: scripts/state/spoils.gd:309
+msgid "A milestone: %d depths below the throne. The %s is yours, a trophy for the shelf at home."
+msgstr "Un jalon : %d profondeurs sous le trône. Le %s est à vous, un trophée pour l'étagère de la maison."
+
+#: scripts/state/spoils.gd:312
+msgid "A hole into the dark opens beside the way up: depth %d waits below."
+msgstr "Un trou s'ouvre sur le noir près de la montée : la profondeur %d attend en dessous."
+
+#: scripts/state/spoils.gd:326
+msgid "The chest bares its teeth — a mimic!"
+msgstr "Le coffre montre les dents — c'est une mimique !"
+
+#: scripts/state/spoils.gd:332
+msgid "Something glitters on the road: %d gold."
+msgstr "Quelque chose brille sur la route : %d or."
+
+#: scripts/state/spoils.gd:333
+msgid "The chest holds %d gold."
+msgstr "Le coffre contient %d or."
+
+#: scripts/state/spoils.gd:342
+msgid "Too heavy to carry. Lighten the pack and come back."
+msgstr "Trop lourd à porter. Allégez votre sac et revenez."
+
+#: scripts/state/spoils.gd:348
+msgid "The chest holds %s!"
+msgstr "Le coffre contient %s !"
+
+#: scripts/state/spoils.gd:353
+msgid "You gather %dx %s."
+msgstr "Vous récoltez %dx %s."
+
+#: scripts/state/spoils.gd:354
+msgid "The chest holds %dx %s."
+msgstr "Le coffre contient %dx %s."
+
+#: scripts/state/spoils.gd:376
+msgid "You gather %d %s%s."
+msgstr "Vous récoltez %d %s%s."
+
+#: scripts/state/spoils.gd:387
+msgid "Nothing's biting here yet. Try again in a while, or somewhere else."
+msgstr "Ça ne mord pas encore ici. Réessayez dans un moment, ou ailleurs."
+
+#: scripts/state/spoils.gd:391
+msgid "You cast, wait... and haul up an old boot."
+msgstr "Vous lancez, attendez... et remontez une vieille botte."
+
+#: scripts/state/spoils.gd:391
+msgid "You cast, wait... and land %s!"
+msgstr "Vous lancez, attendez... et ça mord : %s !"
+
+#: scripts/state/spoils.gd:393
+msgid " Foraging reached %d!"
+msgstr " Cueillette : niveau %d !"
+
+#: scripts/state/spoils.gd:82
+msgid "Your garden ripens: +%d %s."
+msgstr "Votre jardin donne sa récolte : +%d %s."
+
+#: scripts/state/spoils.gd:91
+msgid "%s is defeated! +%d XP, +%d gold."
+msgstr "%s tombe ! +%d XP, +%d or."
 
 #: scripts/state/text.gd:17
 msgid "English"
@@ -13336,7 +13352,11 @@ msgstr "COMMANDÉ"
 msgid "Arrows"
 msgstr "Flèches"
 
-#: scripts/world.gd:296
+#: scripts/world.gd:267
+msgid "%s bars your way: no leaving until the fight is over."
+msgstr "%s vous barre la route : pas de fuite avant la fin du combat."
+
+#: scripts/world.gd:305
 msgid "No map reaches this deep."
 msgstr "Aucune carte ne va aussi profond."
 
@@ -13344,15 +13364,31 @@ msgstr "Aucune carte ne va aussi profond."
 msgid "{epithet} {name}"
 msgstr "{name} {epithet}"
 
-#: scripts/world_foes.gd:226
+#: scripts/world_foes.gd:237
 msgid "The pack is scattered. Another comes once you've walked a good way, or after a night's rest."
 msgstr "La meute est dispersée. Une autre reviendra quand vous aurez bien marché, ou après une nuit de repos."
+
+#: scripts/world_foes.gd:253
+msgid "%s is no more."
+msgstr "%s n'est plus."
+
+#: scripts/world_foes.gd:253
+msgid "Victory"
+msgstr "Victoire"
+
+#: scripts/world_foes.gd:254
+msgid "Boss slayer: +%d%% damage for %d minutes."
+msgstr "Tueur de boss : +%d %% de dégâts pendant %d minutes."
 
 #: scripts/world_fx.gd:108
 msgid "LEVEL UP"
 msgstr "NIVEAU SUPÉRIEUR"
 
-#: scripts/world_hud.gd:75
+#: scripts/world_hud.gd:197
+msgid "Boss slayer +%d%%  %d:%02d"
+msgstr "Tueur de boss +%d %%  %d:%02d"
+
+#: scripts/world_hud.gd:78
 msgid "Next"
 msgstr "Ensuite"
 

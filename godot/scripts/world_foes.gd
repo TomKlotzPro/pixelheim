@@ -29,6 +29,8 @@ var arrived_at := -100.0
 var hunted_at := -100.0
 var hunted_by_boss := false
 var noticed_at := -100.0
+## Bosses and named monsters felled on this visit (the harness reports it).
+var bosses_fallen := 0
 ## Foes still standing on the dungeon floor the hero walks (0 when cleared).
 var floor_foes := 0
 
@@ -187,7 +189,16 @@ func on_enemy_noticed(enemy: Node) -> void:
 
 ## A boss or a named monster (PIX-156): the boss's music plays.
 func fights_like_boss(enemy: Node) -> bool:
-	return Bestiary.is_boss(enemy.fighter["id"]) or enemy.fighter.has("named")
+	return Bestiary.fights_like_boss(enemy.fighter)
+
+
+## The boss or named monster hunting the hero now, or null: while one is,
+## there's no leaving the place (PIX-232).
+func boss_hunting() -> Node:
+	for enemy in get_tree().get_nodes_in_group("mobs"):
+		if enemy.hunting and not enemy.dying and fights_like_boss(enemy):
+			return enemy
+	return null
 
 
 ## A fight is on: something has hunted the hero in the last few seconds.
@@ -234,7 +245,13 @@ func on_enemy_died(enemy: Node) -> void:
 ## A boss falls (PIX-210): the world slows a moment, shakes and flashes
 ## white, and the music cuts so the victory sting rings out alone (the
 ## floor's clearing plays it; a boss with foes still about plays its own).
-func boss_fell() -> void:
+## Its fall is the hero's moment (PIX-232): a title over the world, and the
+## boss slayer's edge for a while.
+func boss_fell(boss: Node) -> void:
+	bosses_fallen += 1
+	GameState.spoils.slay_boss()
+	world.hud.title_card(Text.t("Victory"), Text.t("%s is no more.") % boss.fighter["name"])
+	world.messages.log_lines([Text.t("Boss slayer: +%d%% damage for %d minutes.") % [roundi(Spoils.SLAYER_DAMAGE * 100), roundi(Spoils.SLAYER_SECONDS / 60.0)]])
 	Sound.stop_music()
 	world.soundscape.hush(BOSS_HUSH_S)
 	hunted_by_boss = false

@@ -26,6 +26,9 @@ var objective_label: Label
 ## The nameplate over the signed door the hero walks up to (ShopSign).
 var nameplate: PanelContainer
 var nameplate_door := Vector2i(-1, -1)
+## The boss slayer's edge while it lasts (PIX-232): a small plate at the top
+## left, its time running down.
+var edge_plate: PanelContainer
 
 
 ## The layer and its widgets, in the order they stand: the sky's tint, the
@@ -141,6 +144,58 @@ func hint(id: String, values := {}, key := "") -> void:
 func keep_hint_clear() -> void:
 	if hint_card != null and is_instance_valid(hint_card):
 		hint_card.position.y = boss_bar.bottom() + 6 if boss_bar.following() else 18.0
+
+
+## A title over the world for a moment (PIX-232: a boss's fall): the big
+## word and a line under it on a dark plate, held a beat, then faded. It runs
+## on the real clock, so the boss's slow motion doesn't hold it.
+func title_card(title: String, line: String) -> void:
+	if root == null:
+		return
+	var card := PanelContainer.new()
+	card.add_theme_stylebox_override("panel", UiStyle.plate(16))
+	card.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var lines := VBoxContainer.new()
+	lines.add_theme_constant_override("separation", 2)
+	lines.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	card.add_child(lines)
+	var big := UiStyle.strong(title, 36, UiStyle.LAMP)
+	big.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lines.add_child(big)
+	var small := UiStyle.label(line, UiStyle.reading(16), UiStyle.CREAM)
+	small.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lines.add_child(small)
+	root.add_child(card)
+	card.reset_size()
+	card.position = Vector2(roundf((1280 - card.size.x) / 2.0), 140)
+	card.modulate.a = 0.0
+	var show := card.create_tween().set_ignore_time_scale(true)
+	show.tween_property(card, "modulate:a", 1.0, 0.3)
+	show.tween_interval(2.4)
+	show.tween_property(card, "modulate:a", 0.0, 0.6)
+	show.tween_callback(card.queue_free)
+
+
+## The boss slayer's edge (PIX-232) at the top left while it lasts, its
+## minutes and seconds running down; gone with it.
+func update_edge() -> void:
+	var left: float = GameState.spoils.slayer_left
+	if left <= 0.0 or root == null:
+		if edge_plate != null:
+			edge_plate.queue_free()
+			edge_plate = null
+		return
+	if edge_plate == null:
+		edge_plate = PanelContainer.new()
+		edge_plate.add_theme_stylebox_override("panel", UiStyle.plate(12))
+		edge_plate.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		edge_plate.add_child(UiStyle.strong("", 16, UiStyle.LAMP))
+		edge_plate.position = Vector2(24, 16)
+		root.add_child(edge_plate)
+	var seconds := ceili(left)
+	var shown: Label = edge_plate.get_child(0)
+	shown.text = Text.t("Boss slayer +%d%%  %d:%02d") % [roundi(Spoils.SLAYER_DAMAGE * 100), seconds / 60, seconds % 60]
+	edge_plate.reset_size()
 
 
 ## The boards on the square, explained the first time the hero walks up.

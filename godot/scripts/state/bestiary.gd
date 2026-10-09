@@ -21,6 +21,13 @@ static func is_boss(id: String) -> bool:
 	return id in _data()["bossIds"]
 
 
+## A boss, or a named monster (PIX-156): it fights like one - the boss bar,
+## its music and its roar - never gives up the chase, and falls like one,
+## the world holding its breath (PIX-232).
+static func fights_like_boss(fighter: Dictionary) -> bool:
+	return is_boss(String(fighter["id"])) or fighter.has("named")
+
+
 ## A fighting monster (spawnMonster): elites hit and pay half again, and armor
 ## up 30%; their health grows by combat.json's eliteHp (PIX-186: sized for
 ## real time, where a hero swings every 0.45 s).

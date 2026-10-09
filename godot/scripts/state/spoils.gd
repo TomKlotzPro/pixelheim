@@ -3,7 +3,8 @@ extends RefCounted
 ## What the hero wins (PIX-261, out of game_state.gd): a monster's fall
 ## (mastery, bounties, the garden, gold, drops, foraging), XP and the levels
 ## it makes, named hunts, cleared packs and the wilds waking, floors and
-## depths cleared, chests, gathering and fishing, and what a fall costs. It
+## depths cleared, chests, gathering and fishing, what a fall costs, and the
+## boss slayer's edge. Apart from that edge, which lasts the session only, it
 ## holds nothing of its own: it all lives in GameState's sections, reached
 ## through `owner`.
 
@@ -13,10 +14,33 @@ const GameStateScript := preload("res://scripts/state/game_state.gd")
 ## their own (GameStateScript.new()), and a module reaching the autoload
 ## would change the real game's state from inside one. Signals are its too.
 var owner: GameStateScript
+## A boss or a named monster slain (PIX-232): the boss slayer's edge, this
+## much more damage for this long. It lasts the session only; another hero
+## loaded starts without it.
+const SLAYER_SECONDS := 600.0
+const SLAYER_DAMAGE := 0.10
+## Seconds of the edge still to run (0 without it).
+var slayer_left := 0.0
 
 
 func _init(state: GameStateScript) -> void:
 	owner = state
+
+
+## A boss or a named monster fell to the hero: the edge begins, or starts
+## over.
+func slay_boss() -> void:
+	slayer_left = SLAYER_SECONDS
+
+
+## The world ran `delta` seconds: the edge wears down.
+func tick_slayer(delta: float) -> void:
+	slayer_left = maxf(0.0, slayer_left - delta)
+
+
+## What the hero's blows and skills are multiplied by: more with the edge.
+func damage_scale() -> float:
+	return 1.0 + SLAYER_DAMAGE if slayer_left > 0.0 else 1.0
 
 
 ## A monster falls (onMonsterDefeated): mastery, bounties, rent, the garden,

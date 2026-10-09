@@ -300,6 +300,8 @@ func apply(state: Dictionary) -> void:
 	mark_dirty()
 	questing.forget_deliveries()
 	questing.note_deliveries(false)
+	# Another hero: the last one's boss slayer's edge isn't theirs.
+	spoils.slayer_left = 0.0
 	loaded.emit()
 	gold_changed.emit(pack.gold)
 	inventory_changed.emit()

@@ -625,6 +625,14 @@ func _run_test_harness() -> void:
 		await get_tree().create_timer(0.4 if args.has("kill") else 0.1).timeout
 	else:
 		await get_tree().create_timer(0.2).timeout
+	if args.has("flee"):
+		# Run for the way out mid-fight (PIX-232): whatever hunts the hero
+		# has seen them, then the map's first portal is taken.
+		for mob in get_tree().get_nodes_in_group("mobs"):
+			if not mob.hunting and not mob.dying:
+				mob.notice()
+		world.use_portal(world.map.portals.values()[0])
+		await get_tree().create_timer(0.5).timeout
 	# `--keys` at whatever screen the run opened (talk and title press theirs
 	# earlier): `inventory --keys esc` checks it closes and lets the world go.
 	if not args.has("talk") and not args.has("title"):
@@ -687,6 +695,9 @@ func _run_test_harness() -> void:
 		)
 	).map(func(node: Node) -> String: return node.get_script().resource_path.get_file().get_basename())
 	var mobs := get_tree().get_nodes_in_group("mobs").filter(func(mob: Node) -> bool: return not mob.dying).size()
+	# A boss's fall (PIX-232), when one fell.
+	if world.foes.bosses_fallen > 0:
+		motion_report += " fell=%d" % world.foes.bosses_fallen
 	print("screenshot saved; map=%s cell=%s hp=%d gold=%d save=%s%s draws=%d paused=%s open=%s night=%d mobs=%d" % [
 		world.map.id, world.player_cell, world.player.hp, GameState.pack.gold, GameState.world.map_id, GameState.world.cell,
 		Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME), get_tree().paused,

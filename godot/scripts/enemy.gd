@@ -197,7 +197,7 @@ func _physics_process(delta: float) -> void:
 				mode = "chase"
 		"chase":
 			var aim := _aim(to_player)
-			if player.dead or (not _hunts_wagon() and Packs.gives_up(home, global_position, player.global_position)):
+			if player.dead or (not _hunts_wagon() and gives_up(fighter, home, global_position, player.global_position)):
 				_give_up()
 			else:
 				_chase(aim, delta)
@@ -360,6 +360,13 @@ func _give_up() -> void:
 	tell_left = -1.0
 
 
+## Whether `fighter` gives up the chase: too far from its home or the hero
+## (Packs.gives_up), but never a boss or a named monster (PIX-232): walking
+## off a few tiles used to send it home and make it whole again.
+static func gives_up(fighter: Dictionary, home_at: Vector2, at: Vector2, hero: Vector2) -> bool:
+	return not Bestiary.fights_like_boss(fighter) and Packs.gives_up(home_at, at, hero)
+
+
 ## Home again: whole, and watching.
 func _settle() -> void:
 	mode = "idle"
@@ -420,8 +427,9 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null, crit := fa
 	Juice.flash(sprite, Juice.KILL_FLASH_SECONDS if dying else Juice.FLASH_SECONDS)
 	if dying:
 		Sound.play_ui("kill")
-	if dying and Bestiary.is_boss(fighter["id"]):
-		world.foes.boss_fell()
+	# A named monster falls as a boss does (PIX-232), not just a boss.
+	if dying and Bestiary.fights_like_boss(fighter):
+		world.foes.boss_fell(self)
 	else:
 		world.camera_rig.hit_stop(KILL_STOP if dying else HIT_STOP)
 	world.camera_rig.shake(2.5 if dying or crit else 1.5, 0.1)

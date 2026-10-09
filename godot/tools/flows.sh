@@ -9,9 +9,10 @@
 # Greyhold with its cellars (PIX-168) and the Frostgate pass with its ice cave
 # (PIX-169), the mountain's gate barred to a new hero (PIX-170) and a depth
 # of the Deep Hunt cleared (PIX-161), and a potion brewed before Vex's quest
-# was taken still finishing it (PIX-231). Every flow leaves its picture in
-# godot/flows/<name>.png for a human to look at, and the harness's report line
-# must match what the flow promises or the run fails.
+# was taken still finishing it (PIX-231), and a named boss that falls as a
+# boss does and holds the way out while it hunts (PIX-232). Every flow leaves
+# its picture in godot/flows/<name>.png for a human to look at, and the
+# harness's report line must match what the flow promises or the run fails.
 #
 #   godot/tools/flows.sh            # all of them
 #   godot/tools/flows.sh fight die  # just these
@@ -55,6 +56,8 @@ FLOWS=(
 	"road|--prologue 1|map=overworld cell=\(48, 34\)"
 	"dodge|--map town --keys shift --wait 0.4|map=town cell=\(40, 33\)"
 	"hunt|--map overworld --at 70,40 fight slay --foe greymaw --wait 0.3|map=overworld .*gold=160"
+	"bossfell|--map icecave fight slay --foe rimefang --wait 0.3|map=icecave .* fell=1"
+	"noescape|--map icecave fight --foe rimefang flee|map=icecave "
 	"bounty|--map town --at 43,22 --cleared 4 --keys w,e|open=bounty_screen"
 	"throne|--map town --cleared 15 --seen maren_confession throne --keys s,e --wait 0.5|open=reveal_screen"
 	"festival|--map town --town-tier 2 --at 43,27 festival --keys w,e,e,e|open=ring_toss_screen"
