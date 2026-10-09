@@ -58,7 +58,13 @@ func _open() -> void:
 	card.custom_minimum_size = Vector2(view.x, 0)
 	card.alignment = BoxContainer.ALIGNMENT_CENTER
 	add_child(card)
-	for line: Array in [["Ascension", 15, UiStyle.DUSK], [title, 30, UiStyle.GOLD], ["+1 bonus skill point", 15, UiStyle.CREAM]]:
+	# What the rank's bonus point is for, truly (PIX-217).
+	var bonus := "+1 bonus skill point"
+	if Skills.all_learned(GameState.hero):
+		bonus = "Every skill mastered: the bonus point rests"
+	elif Skills.tree_whole(GameState.hero):
+		bonus = "+1 bonus skill point, to spend beyond the tree (Stats)"
+	for line: Array in [["Ascension", 15, UiStyle.DUSK], [title, 30, UiStyle.GOLD], [bonus, 15, UiStyle.CREAM]]:
 		var label := UiStyle.heading(line[0], line[1], line[2]) if line[0] == title else UiStyle.label(line[0], line[1], line[2])
 		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		label.add_theme_color_override("font_outline_color", Color(0.05, 0.04, 0.06))

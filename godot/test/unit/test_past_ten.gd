@@ -166,5 +166,9 @@ func test_spare_points_wait_without_nagging() -> void:
 	for entry: Dictionary in Skills.tree("warrior"):
 		if entry["id"] not in hero.skill_nodes:
 			hero.skill_nodes.append(entry["id"])
+	# PIX-217: a whole tree's points go beyond it, until those ranks are full too.
+	assert_true(Skills.can_spend(hero), "a whole tree: the points buy ranks beyond it")
+	for track: Dictionary in Skills.beyond_tracks():
+		hero.beyond[track["id"]] = int(track["cap"])
 	assert_false(Skills.can_spend(hero), "all learned: the points wait quietly")
 	assert_true(Town.trophy_stat_delta("lich_crown").has("endurance"), "the Lich Crown's every stat includes END")

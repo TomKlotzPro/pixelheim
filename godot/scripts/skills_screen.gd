@@ -71,6 +71,9 @@ func _layout() -> void:
 		Text.t("%d skill point%s") % [points, "" if points == 1 else "s"], 18, UiStyle.GOLD if points > 0 else UiStyle.DUSK,
 		Vector2(1000, 30)
 	))
+	# A whole tree's points go beyond it, in Stats (PIX-217).
+	if Skills.beyond_open(hero):
+		view.add_child(UiStyle.label(Text.t("The tree is whole: spend them beyond it, in Stats."), 14, UiStyle.DUSK, Vector2(620, 56)))
 	var top := 80
 	if HeroRules.rank_index(hero.level) >= 1:
 		_path_graph(hero)

@@ -358,7 +358,8 @@
       "weight": 1,
       "value": 70,
       "description": "Restores 60 HP. Brewed strong for those who go below.",
-      "restoreHp": 60
+      "restoreHp": 60,
+      "restoreHpShare": 0.3
     },
     "elixir": {
       "name": "Elixir",
@@ -368,7 +369,8 @@
       "value": 60,
       "description": "Restores 30 HP and 20 MP. The merchant swears by it.",
       "restoreHp": 30,
-      "restoreMp": 20
+      "restoreMp": 20,
+      "restoreHpShare": 0.2
     },
     "antidote": {
       "name": "Antidote",
@@ -1116,7 +1118,8 @@
       "value": 150,
       "signature": true,
       "description": "Restores 120 HP. Vex won't say what's in it, only that it was hard to catch.",
-      "restoreHp": 120
+      "restoreHp": 120,
+      "restoreHpShare": 0.5
     },
     "festival_pie": {
       "name": "Festival Pie",

@@ -1698,7 +1698,7 @@ func use_item(item_id: String) -> Dictionary:
 	# The Healers' Hall makes every potion stronger (PIX-180).
 	var potency := 1.0 + commission_buff("potion") + home_buff("potion")
 	if item.has("restoreHp"):
-		var healed := mini(int(hero.stats["maxHp"]), hero.hp + roundi(int(item["restoreHp"]) * potency)) - hero.hp
+		var healed := mini(int(hero.stats["maxHp"]), hero.hp + roundi(hp_restore(item) * potency)) - hero.hp
 		hero.hp += healed
 		parts.append(Text.t("%d HP") % healed)
 	if item.has("restoreMp"):
@@ -1781,6 +1781,29 @@ func spend_stat_point(stat: String) -> bool:
 	return true
 
 
+## A rank beyond a whole tree, for a skill point (PIX-217): its track's
+## edge at once, and its health for good.
+func buy_beyond(track_id: String) -> bool:
+	for track: Dictionary in Skills.beyond_tracks():
+		if track["id"] != track_id or not Skills.can_buy_beyond(hero, track):
+			continue
+		hero.skill_points -= 1
+		hero.beyond[track_id] = int(hero.beyond.get(track_id, 0)) + 1
+		var grown := int(track.get("maxHp", 0))
+		hero.stats["maxHp"] = int(hero.stats["maxHp"]) + grown
+		hero.hp += grown
+		hp_changed.emit(hero.hp, int(hero.stats["maxHp"]))
+		mark_dirty()
+		return true
+	return false
+
+
+## The health a potion gives back (PIX-217): its own, or a share of the
+## hero's whole health where it has one, whichever is more.
+func hp_restore(item: Dictionary) -> int:
+	return maxi(int(item.get("restoreHp", 0)), roundi(float(item.get("restoreHpShare", 0.0)) * int(hero.stats["maxHp"])))
+
+
 ## Every bought skill forgotten for its point back (PIX-86): in the village,
 ## for Skills.forget_cost gold. What a skill grew (max HP or MP) shrinks back.
 func forget_skills() -> bool:
@@ -1796,9 +1819,16 @@ func forget_skills() -> bool:
 		hero.skill_nodes.erase(node_id)
 		if node_id in hero.skill_dock:
 			hero.skill_dock[hero.skill_dock.find(node_id)] = ""
+	# Ranks beyond the tree go back with it, and what they grew (PIX-217).
+	var ranks := 0
+	for track: Dictionary in Skills.beyond_tracks():
+		var rank := int(hero.beyond.get(track["id"], 0))
+		ranks += rank
+		hero.stats["maxHp"] = int(hero.stats["maxHp"]) - int(track.get("maxHp", 0)) * rank
+	hero.beyond = {}
 	hero.hp = mini(hero.hp, int(hero.stats["maxHp"]))
 	hero.mp = mini(hero.mp, int(hero.stats["maxMp"]))
-	hero.skill_points += forgotten.size()
+	hero.skill_points += forgotten.size() + ranks
 	pack.gold -= cost
 	_pack_changed()
 	hp_changed.emit(hero.hp, int(hero.stats["maxHp"]))

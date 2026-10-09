@@ -430,7 +430,7 @@ static func stat_line(item: Dictionary, bonus: int, value: int, affixes := {}) -
 	for stat: String in affixes:
 		parts.append("+%d %s" % [int(affixes[stat]), Text.t(stat.substr(0, 3).to_upper())])
 	if item.has("restoreHp"):
-		parts.append(Text.t("+%d HP") % item["restoreHp"])
+		parts.append(Text.t("+%d HP") % GameState.hp_restore(item))
 	if item.has("restoreMp"):
 		parts.append(Text.t("+%d MP") % item["restoreMp"])
 	if item.has("cures"):
