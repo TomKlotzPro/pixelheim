@@ -24,6 +24,12 @@ var outdoor_props := {"props": [], "flat": {}, "drawn": {}}
 var solid_scatter := {}
 var ground: Node2D
 var ground_tint: ShaderMaterial
+## The same toning for what the wind moves (PIX-223): each tree and wheat
+## sheaf leaning on its own beat (decor_sway), the forest's crowns as one
+## sheet (canopy), the town's flowers (flowers_sway).
+var decor_sway: ShaderMaterial
+var canopy: ShaderMaterial
+var flowers_sway: ShaderMaterial
 var tile_layer: TileMapLayer
 ## Door signs, above the world and outside the y-sort.
 var props: Node2D
@@ -49,6 +55,11 @@ var patch_sprites := {}
 ## a tent in its region's colour behind its home and a torch beside it.
 var camps := {}
 
+## How far the wind leans what grows, in pixels at its top (PIX-223): a
+## tree or a sheaf, a flower, a forest's crowns (all of a piece, so less).
+const TREE_SWAY := 1.3
+const FLOWER_SWAY := 0.7
+const CANOPY_SWAY := 0.4
 ## The projects board on the square (PIX-145): a Puny World notice board.
 const PROJECT_BOARD := 846
 const BOARD_FOOT := Rect2(1, 8, 14, 8)
@@ -188,17 +199,28 @@ func _build_ground(data: MapData) -> Node2D:
 	ground_tint.shader = preload("res://shaders/region_tint.gdshader")
 	ground_tint.set_shader_parameter("tint_map", PunyTerrain.tint_map(data.grid, data.size, data.regions))
 	ground_tint.set_shader_parameter("map_pixels", Vector2(data.size * TILE))
-	layer.material = ground_tint
+	# The water swells, glints and foams at the shore (PIX-223).
+	var water := ground_tint.duplicate() as ShaderMaterial
+	water.set_shader_parameter("water_life", true)
+	water.set_shader_parameter("water_map", PunyTerrain.water_map(data.grid, data.size))
+	layer.material = water
 	root.add_child(layer)
+	decor_sway = _swaying(TREE_SWAY, true)
+	flowers_sway = _swaying(FLOWER_SWAY, false)
+	flowers_sway.set_shader_parameter("strength", 0.0)
+	canopy = ground_tint.duplicate() as ShaderMaterial
+	canopy.set_shader_parameter("canopy", CANOPY_SWAY)
 	var forest := TileMapLayer.new()
 	forest.tile_set = PunyTerrain.tileset()
 	forest.position = layer.position
 	var crowns := PunyTerrain.forest_tiles(data.grid, data.size)
 	for cell: Vector2i in crowns:
 		PunyTerrain.place(forest, cell, crowns[cell])
-	# Under snow the pines on the ridges whiten with the ground (PIX-169).
-	if PunyTerrain.region_toned(data.regions):
-		forest.material = ground_tint
+	# Under snow the pines on the ridges whiten with the ground (PIX-169);
+	# elsewhere they keep their green.
+	if not PunyTerrain.region_toned(data.regions):
+		canopy.set_shader_parameter("strength", 0.0)
+	forest.material = canopy
 	root.add_child(forest)
 	# Bridges, cave mouths, ramparts and (seen from afar) whole towns stand on
 	# that ground as Puny objects.
@@ -222,6 +244,7 @@ func _build_ground(data: MapData) -> Node2D:
 		flowers.tile_set = PunyTown.tileset()
 		for cell: Vector2i in outdoor_props["flat"]:
 			PunyTown.place(flowers, cell, outdoor_props["flat"][cell])
+		flowers.material = flowers_sway
 		root.add_child(flowers)
 	# The houses, then what stands on their roofs (chimneys).
 	for part: String in ["pieces", "decor"]:
@@ -233,6 +256,15 @@ func _build_ground(data: MapData) -> Node2D:
 			PunyTown.place(houses, cell, buildings[part][cell])
 		root.add_child(houses)
 	return root
+
+
+## The ground's toning, leaning in the wind `sway` pixels at the top: each
+## sprite on its own beat (`alone`), or a layer's tiles together.
+func _swaying(sway: float, alone: bool) -> ShaderMaterial:
+	var material := ground_tint.duplicate() as ShaderMaterial
+	material.set_shader_parameter("sway", sway)
+	material.set_shader_parameter("sway_alone", alone)
+	return material
 
 
 ## A room in Shade's Medieval Age pack (PunyInterior): the dark beyond its
@@ -363,7 +395,7 @@ func _build_decor(data: MapData) -> void:
 			ground.add_child(flat)
 		else:
 			_add_decor_sprite(PunyTerrain.SHEET, PunyTerrain.region(choice), cell, h)
-			actors.get_child(-1).material = ground_tint
+			actors.get_child(-1).material = decor_sway if choice in Scatter.SWAYS else ground_tint
 
 
 ## Field decor that blocks (Scatter.solid), kept off the cell the hero
@@ -736,7 +768,7 @@ func _add_solid_decor(choice: int, cell: Vector2i) -> void:
 	sprite.texture = PunyTerrain.sheet().tile_texture(choice)
 	sprite.centered = false
 	sprite.position = Vector2(0, -Scatter.FOOT.end.y)
-	sprite.material = ground_tint
+	sprite.material = decor_sway if choice in Scatter.SWAYS else ground_tint
 	root.add_child(sprite)
 	var body := StaticBody2D.new()
 	var shape := CollisionShape2D.new()

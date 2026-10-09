@@ -19,6 +19,8 @@ const SCATTER := {
 const SOLID := [702, 730, 732, 784, 811]
 const FLAT := [703, 838]
 const FIELDS := ["grass", "ash", "marsh"]
+## What the wind moves (PIX-223): the trees, and the wheat in the fields.
+const SWAYS := [197, 224, 251, 206, 233, 260, 705, 729, 732, 783, 810, 756, 757]
 ## A solid one's foot, in pixels from its cell's top-left: it covers the
 ## middle-bottom of the cell, as PunyProps' feet do.
 const FOOT := Rect2(3, 6, 10, 10)

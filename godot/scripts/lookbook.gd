@@ -4,15 +4,17 @@ extends Node
 ## Frostgate, a dungeon floor, a fight and the overworld at night - each saved
 ## as a picture, and all of them on one contact sheet, so a change to how the
 ## game looks is judged before and after, by eye. With `perf`, each shot also
-## reports what its frames cost (PerfProbe). Run by tools/lookbook.sh.
+## reports what its frames cost (PerfProbe); with `motion`, each is filmed for
+## a moment too, frame by frame, for what a still can't show (the wind, the
+## water). Run by tools/lookbook.sh.
 
 ## Where in the day a shot stands (DayNight's wheel, 0..1).
 const DAY := 0.2
 const DUSK := 0.53
 const NIGHT := 0.75
-## Each shot: a map and where on it (Upper Street, a pack's home, or the
-## map's arrival), or a dungeon floor; the hour; and a foe to face, for the
-## fight.
+## Each shot: a map and where on it (Upper Street, a pack's home, a cell, or
+## the map's arrival), or a dungeon floor; the hour; and a foe to face, for
+## the fight.
 const SHOTS := [
 	{"name": "01_town_day", "map": "town", "at": "street", "time": DAY},
 	{"name": "02_town_dusk", "map": "town", "at": "street", "time": DUSK},
@@ -26,20 +28,31 @@ const SHOTS := [
 	{"name": "10_overworld_night", "map": "overworld", "at": "forest_2", "time": NIGHT},
 	{"name": "11_inn_night", "map": "town_inn", "time": NIGHT},
 	{"name": "12_smithy_day", "map": "town_smith", "time": DAY},
+	{"name": "13_riverside", "map": "town", "cell": Vector2i(72, 8), "time": DAY},
 ]
 ## Upper Street: the shop's and the inn's fronts, the street lamps, the hall.
 const STREET := Vector2i(40, 13)
 ## The contact sheet: three across, each shot at half size.
 const SHEET_COLUMNS := 3
 const SETTLE_SECONDS := 1.2
+## Filming (`motion`): this many frames, this far apart, into
+## <out>/motion/<shot>/NN.png.
+const MOTION_FRAMES := 24
+const MOTION_STEP := 0.1
+## The world's clock at each shot, so the clouds and the wind stand the same
+## way every time.
+const CLOCK := 40.0
 
 var world: Node
 var out_dir := "res://lookbook"
 var with_perf := false
+var with_motion := false
 
 
 func run() -> void:
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(out_dir))
+	# Pictures to look at, not the game's: Godot leaves the folder alone.
+	FileAccess.open("%s/.gdignore" % out_dir, FileAccess.WRITE)
 	# The same picture every time: no first-time hints over the scene, and a
 	# hero no foe can fell while a shot is taken or its frames are timed.
 	GameState.settings.hints = false
@@ -60,6 +73,8 @@ func run() -> void:
 		if with_perf:
 			line += "  " + await PerfProbe.sample(self, 180)
 		print(line)
+		if with_motion:
+			await _film(shot["name"])
 	sheet(images).save_png("%s/sheet.png" % out_dir)
 	print("%s %s/%s" % ["LOOK", ProjectSettings.globalize_path(out_dir), "sheet.png"])
 
@@ -77,12 +92,24 @@ func _stage(shot: Dictionary) -> void:
 		world.enter_floor(int(shot["floor"]))
 	else:
 		world.map = world._load_map(shot["map"])
-		world._enter_map(world.map, _cell(world.map, String(shot.get("at", ""))))
+		var at: Vector2i = nearest_walkable(world.map, shot["cell"]) if shot.has("cell") else _cell(world.map, String(shot.get("at", "")))
+		world._enter_map(world.map, at)
 	world._keep_hours(true)
+	world.lights.time = CLOCK
 	if shot.has("foe"):
 		var foe: Node = world.spawn_enemy(shot["foe"], world.player_cell + Vector2i(2, 0), "", "", true, false)
 		world.player.face(Vector2.RIGHT)
 		foe.notice()
+
+
+## The shot as it moves: MOTION_FRAMES frames, MOTION_STEP seconds apart.
+func _film(shot_name: String) -> void:
+	var folder := "%s/motion/%s" % [out_dir, shot_name]
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(folder))
+	for frame in MOTION_FRAMES:
+		await get_tree().create_timer(MOTION_STEP).timeout
+		await RenderingServer.frame_post_draw
+		get_viewport().get_texture().get_image().save_png("%s/%02d.png" % [folder, frame])
 
 
 ## Where on the map: the square, beside a pack's home, or the arrival.

@@ -151,6 +151,30 @@ static func _dual_tiles(size: Vector2i, terrain_at: Callable) -> Dictionary:
 	return tiles
 
 
+## The grounds Shade draws as water: the river and the sea's three depths
+## (under bridges and docks too).
+const WATER_GROUNDS := ["river", "seawater-light", "seawater-medium", "seawater-deep"]
+
+
+## Where the water lies, cell by cell, for the shaders (PIX-223). Red is 1 on
+## water and 0 on land, for the foam region_tint.gdshader lays along the
+## shore: filtered between cells it reads a half on the shore line, rising
+## out into the water. Green counts the water cells straight above (/255), so
+## reflections.gdshader finds the bank that a cell's water mirrors.
+static func water_map(grid: Dictionary, size: Vector2i) -> ImageTexture:
+	var image := Image.create(size.x, size.y, false, Image.FORMAT_RG8)
+	for x in size.x:
+		var above := 0
+		for y in size.y:
+			var cell := Vector2i(x, y)
+			if ground_of(grid.get(cell, "")) in WATER_GROUNDS:
+				image.set_pixelv(cell, Color(1.0, mini(above, 255) / 255.0, 0.0))
+				above += 1
+			else:
+				above = 0
+	return ImageTexture.create_from_image(image)
+
+
 ## The per-cell mask region_tint.gdshader reads: a region's hue with full
 ## coverage, premultiplied so blending between cells keeps the hue true.
 static func tint_map(grid: Dictionary, size: Vector2i, regions := {}) -> ImageTexture:

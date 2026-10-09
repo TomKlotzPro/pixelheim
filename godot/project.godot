@@ -43,6 +43,19 @@ locale/translations=PackedStringArray("res://locale/fr.po")
 ; stutter on screens faster than the 60 Hz physics.
 common/physics_interpolation=true
 
+[shader_globals]
+
+; What moves in the open air (PIX-223, shaders/wind.gdshaderinc): the world's
+; clock and the wind's strength, set each frame by scripts/light_rig.gd.
+world_time={
+"type": "float",
+"value": 0.0
+}
+world_wind={
+"type": "float",
+"value": 1.0
+}
+
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0
