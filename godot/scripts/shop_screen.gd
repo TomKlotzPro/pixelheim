@@ -2,14 +2,18 @@ extends Screen
 ## A keeper's counter (talk to anyone in a shop): Buy, Sell, the Forge at the
 ## smithy, and Craft at the forge and the cauldron. Crafting lives in the web
 ## game's pack screen; until the UI suite brings that screen (PIX-127) the
-## stations offer it here. A/D switch tabs, W/S choose, E acts, Esc closes;
-## everything is clickable too. Pauses the world while open.
+## stations offer it here, and E at a forge, an anvil or a cauldron opens the
+## counter on Craft (PIX-234). A/D switch tabs, W/S choose, E acts, Esc
+## closes; everything is clickable too. Pauses the world while open.
 
 const LIST_SIZE := Vector2(700, 400)
 
 var shop_id := ""
 var tabs: Array[String] = []
 var tab := 0
+## The tab it opens on, by name: E at a forge or a cauldron opens the
+## counter on its Craft tab (PIX-234). The first tab when it has none such.
+var start_tab := ""
 var selected := 0
 var rows: Array[Dictionary] = []
 var tab_buttons: Array[Button] = []
@@ -41,6 +45,7 @@ func _open() -> void:
 			tabs.append("Quench")
 	if _craft_job() != "":
 		tabs.append("Craft")
+	tab = maxi(0, tabs.find(start_tab))
 
 	dim()
 	# The counter's ledger: a page under the tabs, the wares and the news.
@@ -93,7 +98,11 @@ func _open() -> void:
 	stack_button = UiStyle.button("", _sell_stack)
 	actions.add_child(stack_button)
 
-	status = UiStyle.label("", 14, UiStyle.LAMP, Vector2(80, 580))
+	# Two lines on the page when a recipe lacks a lot (PIX-234), not one
+	# running off it.
+	status = UiStyle.label("", 14, UiStyle.LAMP, Vector2(80, 562))
+	status.custom_minimum_size = Vector2(LIST_SIZE.x, 0)
+	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(status)
 	add_child(UiStyle.screen_footer(Text.t("{key:move_left}/{key:move_right}  tab      {key:move_up}/{key:move_down}  choose      {key:interact}  %s      Z  sell a stack      Esc  close") % "/".join(tabs.map(func(tab: String) -> String: return Text.t(tab))).to_lower()))
 	if collected > 0:
@@ -295,6 +304,8 @@ func _build_rows() -> Array[Dictionary]:
 					# Written when the row is chosen, not for every row each move (PIX-207).
 					"detail_of": _describe_recipe.bind(entry), "verb": "Craft",
 					"enabled": Economy.can_craft(entry, pack.items, GameState.hero.jobs),
+					# What it still lacks, said when E is pressed on it (PIX-234).
+					"why_of": func() -> String: return Economy.craft_refusal(entry, GameState.pack.items, GameState.hero.jobs),
 					"action": func() -> void: _craft(recipe_id, entry),
 				})
 	return out
@@ -376,7 +387,9 @@ func _act() -> void:
 		return
 	var row := rows[selected]
 	if not row["enabled"]:
-		status.text = "Not possible right now."
+		# A recipe says what it lacks (PIX-234); anything else, only no.
+		var why: String = row["why_of"].call() if row.has("why_of") else ""
+		status.text = why if why != "" else "Not possible right now."
 		Sound.play_ui("deny")
 		return
 	row["action"].call()
@@ -408,11 +421,8 @@ func _craft(recipe_id: String, entry: Dictionary) -> void:
 
 func _crafted(result: Dictionary, entry: Dictionary) -> void:
 	if not result["made"]:
-		var job: String = entry["job"]["id"]
-		if int(GameState.hero.jobs[job]["level"]) < int(entry["job"]["level"]):
-			status.text = Text.t("That takes %s %d.") % [Economy.job_name(job), entry["job"]["level"]]
-		else:
-			status.text = Text.t("Still missing: %s.") % ", ".join(Economy.missing_names(entry, GameState.pack.items))
+		var why := Economy.craft_refusal(entry, GameState.pack.items, GameState.hero.jobs, GameState.trade.at_station(entry["job"]["id"]), Town.done_projects(GameState.settlement))
+		status.text = why if why != "" else "Not possible right now."
 		return
 	Sound.play("craft")
 	if result["count"] > 1:

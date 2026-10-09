@@ -2005,6 +2005,10 @@ msgid "Branches of Power"
 msgstr "Les branches du pouvoir"
 
 #: assets/data/changelog.json
+msgid "Bridges and Forges"
+msgstr "Ponts et forges"
+
+#: assets/data/changelog.json
 msgid "Bright things now glow in the dark: lamps, fires, torches, lit windows and spells bloom softly around themselves at night and underground, while the pixels stay crisp and daylight stays clear"
 msgstr "Ce qui brille rayonne désormais dans le noir : lampes, feux, torches, fenêtres éclairées et sorts s'auréolent doucement la nuit et sous terre, tandis que les pixels restent nets et le jour reste clair"
 
@@ -2529,6 +2533,10 @@ msgid "FURNITURE: Odo stocks rugs, ferns, bookshelves, banners, candelabras and 
 msgstr "MOBILIER : Odo vend tapis, fougères, bibliothèques, bannières, candélabres et bancs - posez-les sur n'importe quelle case libre devant vous (bouton Placer dans le nouvel onglet Maison du sac), E les reprend ; votre aménagement est sauvegardé avec la maison"
 
 #: assets/data/changelog.json
+msgid "Face a forge, an anvil or a cauldron and press E to craft there; the inn's hearth tells you where the stew is brewed, and a recipe you can't make yet says what it still needs"
+msgstr "Placez-vous face à une forge, une enclume ou un chaudron et appuyez sur E pour y fabriquer ; l'âtre de l'auberge vous dit où se prépare le ragoût, et une recette encore impossible dit ce qu'il lui manque"
+
+#: assets/data/changelog.json
 msgid "Fafnyr and Morvax hit harder and last longer - bosses are events again"
 msgstr "Fafnyr et Morvax frappent plus fort et tiennent plus longtemps - les boss redeviennent des événements"
 
@@ -2619,6 +2627,10 @@ msgstr "Corrigé : sur un clavier AZERTY, les astuces nommaient les touches ch
 #: assets/data/changelog.json
 msgid "Fixed: skill points no longer pile up with nothing to buy; the skill tree's last tiers now open at levels 9, 11 and 14 instead of 10, 13 and 17"
 msgstr "Corrigé : les points de compétence ne s'accumulent plus sans rien à acheter ; les derniers paliers de l'arbre s'ouvrent désormais aux niveaux 9, 11 et 14 au lieu de 10, 13 et 17"
+
+#: assets/data/changelog.json
+msgid "Fixed: the Mirefen's bridges cross the river instead of running along it or standing alone in a pond, its maze chest can be reached, and the town's bridge and dock sit right in the water"
+msgstr "Corrigé : les ponts des Marais de Fange traversent la rivière au lieu de la longer ou de trôner seuls dans une mare, le coffre du dédale s'atteint enfin, et le pont et le ponton de la ville sont posés comme il faut sur l'eau"
 
 #: assets/data/changelog.json
 msgid "Fixed: the ascension card could get stuck on screen until the next fight - it leaves politely now"
@@ -11544,43 +11556,35 @@ msgstr "Rien à en faire ici."
 msgid " Cured %s."
 msgstr " Soigné : %s."
 
-#: scripts/inventory_screen.gd:615
-msgid "Still missing: %s."
-msgstr "Il manque encore : %s."
-
-#: scripts/inventory_screen.gd:615
-msgid "You need %s %d for that."
-msgstr "Il vous faut %s %d pour ça."
-
-#: scripts/inventory_screen.gd:625
+#: scripts/inventory_screen.gd:621
 msgid " (two!)"
 msgstr " (deux !)"
 
-#: scripts/inventory_screen.gd:625
+#: scripts/inventory_screen.gd:621
 msgid "You craft %s%s. %s"
 msgstr "Vous fabriquez %s%s. %s"
 
-#: scripts/inventory_screen.gd:649
+#: scripts/inventory_screen.gd:645
 msgid "%dx %s"
 msgstr "%d × %s"
 
-#: scripts/inventory_screen.gd:650
+#: scripts/inventory_screen.gd:646
 msgid "Drop %s for good? Press %s again."
 msgstr "Jeter %s pour de bon ? Appuyez encore sur %s."
 
-#: scripts/inventory_screen.gd:656
+#: scripts/inventory_screen.gd:652
 msgid "You leave %s behind."
 msgstr "Vous abandonnez %s."
 
-#: scripts/inventory_screen.gd:658
+#: scripts/inventory_screen.gd:654
 msgid "Take it off before you drop it."
 msgstr "Retirez-le avant de le jeter."
 
-#: scripts/inventory_screen.gd:660
+#: scripts/inventory_screen.gd:656
 msgid "You'd better hold on to that."
 msgstr "Mieux vaut garder ça."
 
-#: scripts/inventory_screen.gd:664
+#: scripts/inventory_screen.gd:660
 msgid "You drop %dx %s."
 msgstr "Vous jetez %dx %s."
 
@@ -12124,205 +12128,201 @@ msgstr "Aucun héros de l'ancienne version web dans ce navigateur. Un héros sau
 msgid "A hero from the old web edition comes across by their save code: paste it below."
 msgstr "Un héros de l'ancienne version web s'importe avec son code de sauvegarde : collez-le ci-dessous."
 
-#: scripts/shop_screen.gd:100
+#: scripts/shop_screen.gd:107
+msgid "{key:move_left}/{key:move_right}  tab      {key:move_up}/{key:move_down}  choose      {key:interact}  %s      Z  sell a stack      Esc  close"
+msgstr "{key:move_left}/{key:move_right}  onglet      {key:move_up}/{key:move_down}  choisir      {key:interact}  %s      Z  vendre le lot      Esc  fermer"
+
+#: scripts/shop_screen.gd:109
 msgid "%s hands you the till: +%d gold."
 msgstr "%s vous remet la caisse : +%d or."
 
-#: scripts/shop_screen.gd:129
+#: scripts/shop_screen.gd:138
 msgid "Not for sale."
 msgstr "Ne se vend pas."
 
-#: scripts/shop_screen.gd:129
+#: scripts/shop_screen.gd:138
 msgid "Sold %d %s for %dg."
 msgstr "Vendu : %d %s pour %d o."
 
-#: scripts/shop_screen.gd:167
+#: scripts/shop_screen.gd:176
 msgid "Deed: %s"
 msgstr "Titre : %s"
 
-#: scripts/shop_screen.gd:167
+#: scripts/shop_screen.gd:176
 msgid "owned"
 msgstr "acquis"
 
-#: scripts/shop_screen.gd:168
+#: scripts/shop_screen.gd:177
 msgid "%s\nOwn this business: its till fills with %dg a day, and you pay a tenth less here."
 msgstr "%s\nPossédez ce commerce : sa caisse se remplit de %d o par jour, et vous payez un dixième de moins ici."
 
-#: scripts/shop_screen.gd:169
+#: scripts/shop_screen.gd:178
 msgid "Buy the deed"
 msgstr "Acheter le titre"
 
-#: scripts/shop_screen.gd:170
+#: scripts/shop_screen.gd:179
 msgid "The deed is yours."
 msgstr "Le titre est à vous."
 
-#: scripts/shop_screen.gd:177
+#: scripts/shop_screen.gd:186
 msgid "%s\nA bigger house: its new rooms wait the next time you walk in."
 msgstr "%s\nUne maison plus grande : ses nouvelles pièces vous attendent à votre prochaine visite."
 
-#: scripts/shop_screen.gd:178
+#: scripts/shop_screen.gd:187
 msgid "Sign the deed"
 msgstr "Signer l'acte"
 
-#: scripts/shop_screen.gd:192
+#: scripts/shop_screen.gd:201
 msgid "\nThe shop's own, since Pixelheim became a %s."
 msgstr "\nSpécialité de la boutique depuis que Pixelheim est passé au rang de %s."
 
-#: scripts/shop_screen.gd:193
+#: scripts/shop_screen.gd:202
 msgid "\nThe forge's own, since Pixelheim became a %s."
 msgstr "\nSpécialité de la forge depuis que Pixelheim est passé au rang de %s."
 
-#: scripts/shop_screen.gd:193
+#: scripts/shop_screen.gd:202
 msgid "\nThe workshop's own, since Pixelheim became a %s."
 msgstr "\nSpécialité de l'atelier depuis que Pixelheim est passé au rang de %s."
 
-#: scripts/shop_screen.gd:197
+#: scripts/shop_screen.gd:206
 msgid "Owner's pick"
 msgstr "Choix du patron"
 
-#: scripts/shop_screen.gd:197
+#: scripts/shop_screen.gd:206
 msgid "Pixelheim's own"
 msgstr "Fait à Pixelheim"
 
-#: scripts/shop_screen.gd:199
+#: scripts/shop_screen.gd:208
 msgid "Bought %s."
 msgstr "Achat : %s."
 
-#: scripts/shop_screen.gd:209
+#: scripts/shop_screen.gd:218
 msgid "Sell one"
 msgstr "Vendre 1"
 
-#: scripts/shop_screen.gd:231
+#: scripts/shop_screen.gd:240
 msgid "  (worn)"
 msgstr "  (porté)"
 
-#: scripts/shop_screen.gd:232
+#: scripts/shop_screen.gd:241
 msgid "%dg + gem"
 msgstr "%d o + gemme"
 
-#: scripts/shop_screen.gd:232
+#: scripts/shop_screen.gd:241
 msgid "max"
 msgstr "max"
 
-#: scripts/shop_screen.gd:233
+#: scripts/shop_screen.gd:242
 msgid "Temper +1"
 msgstr "Forger +1"
 
-#: scripts/shop_screen.gd:235
+#: scripts/shop_screen.gd:244
 msgid "Hilda tempers it: +1."
 msgstr "Hilda y met un coup de marteau : +1."
 
-#: scripts/shop_screen.gd:235
+#: scripts/shop_screen.gd:244
 msgid "Not enough gold, or it can take no more."
 msgstr "Pas assez d'or, ou la pièce est à son maximum."
 
-#: scripts/shop_screen.gd:247
+#: scripts/shop_screen.gd:256
 msgid "Quenching adds +1 %s, for gold and a gem; each time costs half again."
 msgstr "La trempe ajoute +1 %s, contre de l'or et une gemme ; chaque fois coûte moitié plus."
 
-#: scripts/shop_screen.gd:254
+#: scripts/shop_screen.gd:263
 msgid "That takes %dg and a gem."
 msgstr "Il faut %d o et une gemme."
 
-#: scripts/shop_screen.gd:32
-msgid "Buy"
-msgstr "Acheter"
-
-#: scripts/shop_screen.gd:32
-msgid "Sell"
-msgstr "Vendre"
-
-#: scripts/shop_screen.gd:323
+#: scripts/shop_screen.gd:334
 msgid "Sell all %d"
 msgstr "Tout vendre (%d)"
 
-#: scripts/shop_screen.gd:34
+#: scripts/shop_screen.gd:36
+msgid "Buy"
+msgstr "Acheter"
+
+#: scripts/shop_screen.gd:36
+msgid "Sell"
+msgstr "Vendre"
+
+#: scripts/shop_screen.gd:38
 msgid "Forge"
 msgstr "Forge"
 
-#: scripts/shop_screen.gd:36
+#: scripts/shop_screen.gd:40
 msgid "Salvage"
 msgstr "Démonter"
 
-#: scripts/shop_screen.gd:38
-msgid "Reforge"
-msgstr "Reforger"
-
-#: scripts/shop_screen.gd:396
+#: scripts/shop_screen.gd:409
 msgid "Sold for %dg."
 msgstr "Vente : %d o."
 
-#: scripts/shop_screen.gd:41
-msgid "Quench"
-msgstr "Tremper"
+#: scripts/shop_screen.gd:42
+msgid "Reforge"
+msgstr "Reforger"
 
-#: scripts/shop_screen.gd:413
-msgid "That takes %s %d."
-msgstr "Requis : %s %d."
-
-#: scripts/shop_screen.gd:419
+#: scripts/shop_screen.gd:429
 msgid "A lucky brew: 2x %s! %s"
 msgstr "Coup de chance au chaudron : 2x %s ! %s"
 
-#: scripts/shop_screen.gd:421
+#: scripts/shop_screen.gd:431
 msgid "Made %s. %s"
 msgstr "Fabrication : %s. %s"
 
-#: scripts/shop_screen.gd:427
+#: scripts/shop_screen.gd:437
 msgid "Nothing to sell. Worn gear stays on your back."
 msgstr "Rien à vendre. L'équipement porté reste sur votre dos."
 
-#: scripts/shop_screen.gd:429
+#: scripts/shop_screen.gd:439
 msgid "Bring me steel to work with."
 msgstr "Apportez-moi de l'acier à travailler."
 
-#: scripts/shop_screen.gd:431
+#: scripts/shop_screen.gd:441
 msgid "Nothing to break down. Worn gear stays on your back."
 msgstr "Rien à démonter. L'équipement porté reste sur votre dos."
 
-#: scripts/shop_screen.gd:434
+#: scripts/shop_screen.gd:444
 msgid "Nothing here yet."
 msgstr "Rien ici pour l'instant."
 
-#: scripts/shop_screen.gd:452
+#: scripts/shop_screen.gd:45
+msgid "Quench"
+msgstr "Tremper"
+
+#: scripts/shop_screen.gd:462
 msgid "Damage %d"
 msgstr "Dégâts %d"
 
-#: scripts/shop_screen.gd:454
+#: scripts/shop_screen.gd:464
 msgid "Scales with %s"
 msgstr "Évolue avec %s"
 
-#: scripts/shop_screen.gd:456
+#: scripts/shop_screen.gd:466
 msgid "Armor %d"
 msgstr "Armure %d"
 
-#: scripts/shop_screen.gd:465
+#: scripts/shop_screen.gd:475
 msgid "Restores %d HP"
 msgstr "Rend %d PV"
 
-#: scripts/shop_screen.gd:467
+#: scripts/shop_screen.gd:477
 msgid "Restores %d MP"
 msgstr "Rend %d PM"
 
-#: scripts/shop_screen.gd:468
+#: scripts/shop_screen.gd:478
 msgid "Weight %d"
 msgstr "Poids %d"
 
-#: scripts/shop_screen.gd:473
+#: scripts/shop_screen.gd:483
 msgid "Needs:"
 msgstr "Il faut :"
 
-#: scripts/shop_screen.gd:476
+#: scripts/shop_screen.gd:486
 msgid "  %d x %s  (have %d)"
 msgstr "  %d x %s  (vous en avez %d)"
 
-#: scripts/shop_screen.gd:483
+#: scripts/shop_screen.gd:493
 msgid "%s level %d - you are %s"
 msgstr "%s niveau %d - vous : %s"
-
-#: scripts/shop_screen.gd:98
-msgid "{key:move_left}/{key:move_right}  tab      {key:move_up}/{key:move_down}  choose      {key:interact}  %s      Z  sell a stack      Esc  close"
-msgstr "{key:move_left}/{key:move_right}  onglet      {key:move_up}/{key:move_down}  choisir      {key:interact}  %s      Z  vendre le lot      Esc  fermer"
 
 #: scripts/shop_sign.gd:43
 msgid "The Inn"
@@ -12663,6 +12663,14 @@ msgstr "le trésor de l'étage (%s)"
 #: scripts/state/economy.gd:374
 msgid "the hoards of floors %s"
 msgstr "les trésors des étages %s"
+
+#: scripts/state/economy.gd:519
+msgid "That takes %s %d."
+msgstr "Requis : %s %d."
+
+#: scripts/state/economy.gd:522
+msgid "Still missing: %s."
+msgstr "Il manque encore : %s."
 
 #: scripts/state/game_state.gd:47
 msgid "Wanderer"
@@ -13412,15 +13420,19 @@ msgstr "Tueur de boss +%d %%  %d:%02d"
 msgid "Next"
 msgstr "Ensuite"
 
-#: scripts/world_interaction.gd:154
+#: scripts/world_interaction.gd:158
 msgid "A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it."
 msgstr "Un établi pour cette étagère : %d or. Il compte comme un niveau de métier en plus quand vous fabriquez chez vous. {key:interact} à nouveau pour l'acheter."
 
-#: scripts/world_interaction.gd:64
+#: scripts/world_interaction.gd:185
+msgid "Sela's stew simmers over the fire. Hunter's Stew is brewed at Vex's cauldron, behind the BREWS door."
+msgstr "Le ragoût de Sela mijote sur le feu. Le Ragoût du chasseur se prépare au chaudron de Vex, derrière la porte POTIONS."
+
+#: scripts/world_interaction.gd:66
 msgid "Only cinders where the house stood. The board on the square can change that."
 msgstr "Rien que des cendres là où se dressait la maison. Le tableau de la place peut y remédier."
 
-#: scripts/world_interaction.gd:69
+#: scripts/world_interaction.gd:71
 msgid "The deed costs %d gold. {key:interact} again to sign it."
 msgstr "Le titre de propriété coûte %d or. {key:interact} à nouveau pour le signer."
 

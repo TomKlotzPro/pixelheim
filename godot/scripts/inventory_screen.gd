@@ -606,13 +606,9 @@ func _primary() -> void:
 
 ## A recipe crafted where the hero stands, or why it can't be.
 func _craft(entry: Dictionary) -> void:
-	var job: String = entry["job"]["id"]
-	if job not in _jobs_here():
-		status.text = Economy.station_hint(job, Town.done_projects(GameState.settlement)) + "."
-		return
-	if not Economy.can_craft(entry, GameState.pack.items, GameState.hero.jobs):
-		var level := int(entry["job"]["level"])
-		status.text = Text.t("You need %s %d for that.") % [Economy.job_name(job), level] if GameState.hero.jobs[job]["level"] < level else Text.t("Still missing: %s.") % ", ".join(Economy.missing_names(entry, GameState.pack.items))
+	var why := Economy.craft_refusal(entry, GameState.pack.items, GameState.hero.jobs, String(entry["job"]["id"]) in _jobs_here(), Town.done_projects(GameState.settlement))
+	if why != "":
+		status.text = why
 		return
 	# Not with what a taken delivery needs, unless asked twice (PIX-206).
 	var ask := GameState.questing.ask_before_dip("craft:" + String(entry["id"]), entry["needs"])

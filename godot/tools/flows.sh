@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # The flows a release must not break (PIX-129), each driven through the
-# screenshot harness on a throwaway hero: spawn, portal, chest, shop, craft,
-# quest, rank-up, fight, death and the inn, saves, and leaving a conversation
+# screenshot harness on a throwaway hero: spawn, portal, chest, shop, craft
+# (at the counter, and E at a cauldron or a forge: PIX-234), quest,
+# rank-up, fight, death and the inn, saves, and leaving a conversation
 # with real key presses (PIX-131), walking without the camera shake
 # (PIX-135), a named monster's bounty and board (PIX-156), the choice at
 # Morvax's throne (PIX-157), a festival's ring toss (PIX-159), the road to
@@ -40,6 +41,8 @@ FLOWS=(
 	"chest|--map town chest|map=town cell=\(79, 4\) .*gold=90"
 	"shop|--map town_shop shop|map=town_shop"
 	"craft|--map town_alchemist shop --tab 2|map=town_alchemist"
+	"station|--map town_alchemist station|open=shop_screen.*tab=Craft"
+	"forge|--map town_smith station|open=shop_screen.*tab=Craft"
 	"quest|--map town quest|map=town cell"
 	"brew|--map town_alchemist brew|map=town_alchemist .*gold=100 "
 	"rankup|rankup|screenshot saved"
@@ -93,6 +96,7 @@ FLOWS=(
 	"fit-codex|--map town --keys b overflow --lang fr|open=codex_screen.*overflow=0"
 	"fit-shop|--map town_shop shop overflow --lang fr|open=shop_screen.*overflow=0"
 	"fit-craft|--map town_alchemist shop --tab 2 overflow --lang fr|open=shop_screen.*overflow=0"
+	"fit-refusal|--map town_alchemist station --keys e overflow --lang fr|open=shop_screen.*tab=Craft.*overflow=0"
 	"fit-rankup|--map town rankup overflow --lang fr|open=rankup_screen.*overflow=0"
 	"fit-hall|--map town_hall talk --keys e,e,e overflow --lang fr|open=town_hall_screen.*overflow=0"
 	"fit-bounty|--map town --at 43,22 --cleared 4 --keys w,e overflow --lang fr|open=bounty_screen.*overflow=0"
