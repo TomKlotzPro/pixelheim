@@ -2389,6 +2389,10 @@ msgid "Every Lead True"
 msgstr "Chaque piste est juste"
 
 #: assets/data/changelog.json
+msgid "Every Point Counts"
+msgstr "Chaque point compte"
+
+#: assets/data/changelog.json
 msgid "Every cleared depth opens a hole into the dark beside the way up: keep going, or climb out. The Undermountain's gate offers the first depth and the next one past your deepest"
 msgstr "Chaque profondeur nettoyée ouvre un trou vers les ténèbres à côté du chemin de sortie : continuez, ou remontez. La porte du Sous-Mont propose la première profondeur et celle qui suit la plus profonde que vous ayez atteinte"
 
@@ -2607,6 +2611,10 @@ msgstr "Corrigé : les menus ne sautent plus un instant quand ils se redessine
 #: assets/data/changelog.json
 msgid "Fixed: on an AZERTY keyboard, hints named the number keys by their symbol (\"Ampersand\"); they read as their digits again"
 msgstr "Corrigé : sur un clavier AZERTY, les astuces nommaient les touches chiffrées par leur symbole (« Ampersand ») ; elles affichent de nouveau leur chiffre"
+
+#: assets/data/changelog.json
+msgid "Fixed: skill points no longer pile up with nothing to buy; the skill tree's last tiers now open at levels 9, 11 and 14 instead of 10, 13 and 17"
+msgstr "Corrigé : les points de compétence ne s'accumulent plus sans rien à acheter ; les derniers paliers de l'arbre s'ouvrent désormais aux niveaux 9, 11 et 14 au lieu de 10, 13 et 17"
 
 #: assets/data/changelog.json
 msgid "Fixed: the ascension card could get stuck on screen until the next fight - it leaves politely now"
@@ -12332,187 +12340,187 @@ msgstr "Une maison : %d o, à signer à la porte"
 msgid "For sale"
 msgstr "À vendre"
 
-#: scripts/skills_screen.gd:104
+#: scripts/skills_screen.gd:109
 msgid "Your ascension demands a path"
 msgstr "Votre ascension exige une voie"
 
-#: scripts/skills_screen.gd:137
+#: scripts/skills_screen.gd:142
 msgid "Current"
 msgstr "Actuelle"
 
-#: scripts/skills_screen.gd:137
+#: scripts/skills_screen.gd:142
 msgid "Rank %d"
 msgstr "Rang %d"
 
-#: scripts/skills_screen.gd:137
+#: scripts/skills_screen.gd:142
 msgid "Walk this path"
 msgstr "Suivre cette voie"
 
-#: scripts/skills_screen.gd:137
+#: scripts/skills_screen.gd:142
 msgid "Walked"
 msgstr "Parcourue"
 
-#: scripts/skills_screen.gd:139
+#: scripts/skills_screen.gd:144
 msgid "Current · key %d"
 msgstr "Actuelle · touche %d"
 
-#: scripts/skills_screen.gd:175
+#: scripts/skills_screen.gd:180
 msgid "key %d"
 msgstr "touche %d"
 
-#: scripts/skills_screen.gd:177
+#: scripts/skills_screen.gd:182
 msgid "1 pt"
 msgstr "1 pt"
 
-#: scripts/skills_screen.gd:177
+#: scripts/skills_screen.gd:182
 msgid "locked"
 msgstr "bloqué"
 
-#: scripts/skills_screen.gd:186
+#: scripts/skills_screen.gd:191
 msgid "SKILL"
 msgstr "ACTIF"
 
-#: scripts/skills_screen.gd:188
+#: scripts/skills_screen.gd:193
 msgid "UPGRADE"
 msgstr "RENFORT"
 
-#: scripts/skills_screen.gd:190
+#: scripts/skills_screen.gd:195
 msgid "PASSIVE"
 msgstr "PASSIF"
 
-#: scripts/skills_screen.gd:209
+#: scripts/skills_screen.gd:214
 msgid "damage to every foe in reach"
 msgstr "dégâts à tous les ennemis à portée"
 
-#: scripts/skills_screen.gd:212
+#: scripts/skills_screen.gd:217
 msgid " + %d HP"
 msgstr " + %d PV"
 
-#: scripts/skills_screen.gd:213
+#: scripts/skills_screen.gd:218
 msgid "%sx %s %s · %s"
 msgstr "%sx %s en %s · %s"
 
-#: scripts/skills_screen.gd:240
+#: scripts/skills_screen.gd:245
 msgid "%s: %s  Signature: %s - %s"
 msgstr "%s : %s  Signature : %s - %s"
 
-#: scripts/skills_screen.gd:250
+#: scripts/skills_screen.gd:255
 msgid "Not on the dock - press 1-6 to put it on that key."
 msgstr "Pas sur la barre - appuyez sur 1-6 pour la placer sur cette touche."
 
-#: scripts/skills_screen.gd:250
+#: scripts/skills_screen.gd:255
 msgid "On key %d - press 1-6 to move it."
 msgstr "Sur la touche %d - appuyez sur 1-6 pour la déplacer."
 
-#: scripts/skills_screen.gd:252
+#: scripts/skills_screen.gd:257
 msgid "Learn it for 1 point."
 msgstr "L'apprendre pour 1 point."
 
-#: scripts/skills_screen.gd:287
+#: scripts/skills_screen.gd:292
 msgid "Nothing learned to forget yet."
 msgstr "Rien d'appris à oublier pour l'instant."
 
-#: scripts/skills_screen.gd:289
+#: scripts/skills_screen.gd:294
 msgid "Forgetting takes the village's quiet. Come back to Pixelheim."
 msgstr "Pour oublier, il faut le calme du village. Revenez à Pixelheim."
 
-#: scripts/skills_screen.gd:291
+#: scripts/skills_screen.gd:296
 msgid "Forgetting %s costs %dg."
 msgstr "Oublier %s coûte %d o."
 
-#: scripts/skills_screen.gd:294
+#: scripts/skills_screen.gd:299
 msgid "Forget %s for %dg and get the points back? F again to agree."
 msgstr "Oublier %s pour %d o et récupérer les points ? F de nouveau pour confirmer."
 
-#: scripts/skills_screen.gd:297
+#: scripts/skills_screen.gd:302
 msgid "%d points"
 msgstr "%d points"
 
-#: scripts/skills_screen.gd:297
+#: scripts/skills_screen.gd:302
 msgid "1 point"
 msgstr "1 point"
 
-#: scripts/skills_screen.gd:297
+#: scripts/skills_screen.gd:302
 msgid "Forgotten. %s to spend again."
 msgstr "C'est oublié. %s à dépenser de nouveau."
 
-#: scripts/skills_screen.gd:306
+#: scripts/skills_screen.gd:311
 msgid "Set key"
 msgstr "Touche"
 
-#: scripts/skills_screen.gd:307
+#: scripts/skills_screen.gd:312
 msgid "Forget"
 msgstr "Oublier"
 
-#: scripts/skills_screen.gd:331
+#: scripts/skills_screen.gd:336
 msgid "Only a skill you know can go on a key."
 msgstr "Seule une compétence apprise peut aller sur une touche."
 
-#: scripts/skills_screen.gd:335
+#: scripts/skills_screen.gd:340
 msgid "%s is on key %d."
 msgstr "%s est sur la touche %d."
 
-#: scripts/skills_screen.gd:340
+#: scripts/skills_screen.gd:345
 msgid "%d skills"
 msgstr "%d compétences"
 
-#: scripts/skills_screen.gd:340
+#: scripts/skills_screen.gd:345
 msgid "1 skill"
 msgstr "1 compétence"
 
-#: scripts/skills_screen.gd:373
+#: scripts/skills_screen.gd:378
 msgid "You walk the path of the %s."
 msgstr "Vous suivez la voie : %s."
 
-#: scripts/skills_screen.gd:375
+#: scripts/skills_screen.gd:380
 msgid "That path isn't yours to walk now."
 msgstr "Cette voie n'est pas la vôtre pour l'instant."
 
-#: scripts/skills_screen.gd:378
+#: scripts/skills_screen.gd:383
 msgid "Learned: %s."
 msgstr "Compétence apprise : %s."
 
-#: scripts/skills_screen.gd:380
+#: scripts/skills_screen.gd:385
 msgid "Already learned."
 msgstr "Déjà apprise."
 
-#: scripts/skills_screen.gd:390
+#: scripts/skills_screen.gd:395
 msgid "Requires the skill above"
 msgstr "Exige la compétence du dessus"
 
-#: scripts/skills_screen.gd:392
+#: scripts/skills_screen.gd:397
 msgid "Needs level %d"
 msgstr "Niveau %d requis"
 
-#: scripts/skills_screen.gd:393
+#: scripts/skills_screen.gd:398
 msgid "No skill points to spend"
 msgstr "Aucun point de compétence à dépenser"
 
-#: scripts/skills_screen.gd:44
+#: scripts/skills_screen.gd:45
 msgid "forget"
 msgstr "oublier"
 
-#: scripts/skills_screen.gd:44
+#: scripts/skills_screen.gd:45
 msgid "learn / walk"
 msgstr "apprendre / suivre"
 
-#: scripts/skills_screen.gd:44
+#: scripts/skills_screen.gd:45
 msgid "put on a key"
 msgstr "mettre sur une touche"
 
-#: scripts/skills_screen.gd:45
+#: scripts/skills_screen.gd:46
 msgid "A point each level, one more each rank."
 msgstr "Un point par niveau, un de plus par rang."
 
-#: scripts/skills_screen.gd:70
+#: scripts/skills_screen.gd:71
 msgid "%d skill point%s"
 msgstr "%d point%s de compétence"
 
-#: scripts/skills_screen.gd:75
+#: scripts/skills_screen.gd:78
 msgid "The tree is whole: spend them beyond it, in Stats."
 msgstr "L'arbre est complet : dépensez-les au-delà, dans Stats."
 
-#: scripts/skills_screen.gd:86
+#: scripts/skills_screen.gd:91
 msgid "Path of %s"
 msgstr "Voie : %s"
 
@@ -12844,14 +12852,6 @@ msgstr "%s, avec %s."
 msgid "Melee attack with STR weapons, and how much you can carry."
 msgstr "Attaque de mêlée avec les armes de FOR, et poids que vous pouvez porter."
 
-#: scripts/state/skills.gd:103
-msgid "EN"
-msgstr "EN"
-
-#: scripts/state/skills.gd:103
-msgid "MP"
-msgstr "PM"
-
 #: scripts/state/skills.gd:11
 msgid "The power of your skills and heals - and for casters, the size of the mana pool."
 msgstr "La puissance de vos compétences et de vos soins - et, pour les lanceurs de sorts, la taille de la réserve de mana."
@@ -12859,6 +12859,18 @@ msgstr "La puissance de vos compétences et de vos soins - et, pour les lanceurs
 #: scripts/state/skills.gd:12
 msgid "Attack with bows, daggers and DEX skills (Aimed Shot, Backstab)."
 msgstr "Attaque avec les arcs, les dagues et les compétences de DEX (Tir ajusté, Coup dans le dos)."
+
+#: scripts/state/skills.gd:122
+msgid "Next skills at level %d."
+msgstr "Prochaines compétences au niveau %d."
+
+#: scripts/state/skills.gd:127
+msgid "EN"
+msgstr "EN"
+
+#: scripts/state/skills.gd:127
+msgid "MP"
+msgstr "PM"
 
 #: scripts/state/skills.gd:13
 msgid "The share of every hit you turn aside: each point helps, a little less than the last."
@@ -12868,47 +12880,47 @@ msgstr "La part de chaque coup que vous détournez : chaque point aide, un peu
 msgid "Grit: a little health for everyone, and for fighters the stamina pool and how fast it refills."
 msgstr "Ténacité : un peu de santé pour tous et, pour les combattants, la réserve d'EN et sa vitesse de recharge."
 
-#: scripts/state/skills.gd:217
+#: scripts/state/skills.gd:241
 msgid "%s needs level %d."
 msgstr "%s requiert le niveau %d."
 
-#: scripts/state/skills.gd:219
+#: scripts/state/skills.gd:243
 msgid "Not enough %s for %s."
 msgstr "Pas assez de %s pour %s."
 
-#: scripts/state/skills.gd:221
+#: scripts/state/skills.gd:245
 msgid "Too hurt to pay %s's price."
 msgstr "%s : vos PV ne suffisent pas à en payer le prix."
 
-#: scripts/state/skills.gd:247
+#: scripts/state/skills.gd:271
 msgid "carry %d"
 msgstr "charge %d"
 
-#: scripts/state/skills.gd:256
+#: scripts/state/skills.gd:280
 msgid "skill power %d"
 msgstr "puissance %d"
 
-#: scripts/state/skills.gd:258
+#: scripts/state/skills.gd:282
 msgid "MP %d"
 msgstr "PM %d"
 
-#: scripts/state/skills.gd:260
+#: scripts/state/skills.gd:284
 msgid "powers INT skills"
 msgstr "renforce les compétences d'INT"
 
-#: scripts/state/skills.gd:272
+#: scripts/state/skills.gd:296
 msgid "powers bows, daggers and DEX skills"
 msgstr "renforce arcs, dagues et compétences de DEX"
 
-#: scripts/state/skills.gd:277
+#: scripts/state/skills.gd:301
 msgid "turns aside %d%% of a level-%d hit"
 msgstr "détourne %d%% d'un coup de niveau %d"
 
-#: scripts/state/skills.gd:279
+#: scripts/state/skills.gd:303
 msgid "HP %d"
 msgstr "PV %d"
 
-#: scripts/state/skills.gd:282
+#: scripts/state/skills.gd:306
 msgid "regen %d/turn"
 msgstr "régén. %d/tour"
 
@@ -12940,107 +12952,107 @@ msgstr "La prime pour %s vous revient : +%d or."
 msgid "%s leaves you %s!"
 msgstr "%s vous laisse %s !"
 
-#: scripts/state/spoils.gd:191
+#: scripts/state/spoils.gd:192
 msgid "Level up: you are now level %d. +%d stat points and +%d skill point%s to spend."
 msgstr "Niveau supérieur : vous voici au niveau %d. +%d points de caractéristique et +%d point%s de compétence à dépenser."
 
-#: scripts/state/spoils.gd:238
+#: scripts/state/spoils.gd:241
 msgid "%s is cleared!"
 msgstr "Étage nettoyé : %s !"
 
-#: scripts/state/spoils.gd:243
+#: scripts/state/spoils.gd:246
 msgid "%d gold"
 msgstr "%d or"
 
-#: scripts/state/spoils.gd:252
+#: scripts/state/spoils.gd:255
 msgid "The floor's hoard: %s."
 msgstr "Le trésor de l'étage : %s."
 
-#: scripts/state/spoils.gd:256
+#: scripts/state/spoils.gd:259
 msgid "Among the bones: a page of an old journal (%s). {key:journal} reads it."
 msgstr "Parmi les os : une page d'un vieux journal (%s). {key:journal} pour la lire."
 
-#: scripts/state/spoils.gd:260
+#: scripts/state/spoils.gd:263
 msgid "+%d XP for the way down."
 msgstr "+%d XP pour la descente."
 
-#: scripts/state/spoils.gd:270
+#: scripts/state/spoils.gd:273
 msgid "the %s"
 msgstr "%s"
 
-#: scripts/state/spoils.gd:273
+#: scripts/state/spoils.gd:276
 msgid "Behind the throne, a stair goes on down into the dark: the Deep Hunt."
 msgstr "Derrière le trône, un escalier s'enfonce encore dans le noir : la Traque des Profondeurs."
 
-#: scripts/state/spoils.gd:277
+#: scripts/state/spoils.gd:280
 msgid "A deeper way opens: %s."
 msgstr "Un passage plus profond s'ouvre : %s."
 
-#: scripts/state/spoils.gd:290
+#: scripts/state/spoils.gd:293
 msgid "Depth %d of the Deep Hunt is cleared!"
 msgstr "Profondeur %d de la Traque des Profondeurs : nettoyée !"
 
-#: scripts/state/spoils.gd:299
+#: scripts/state/spoils.gd:302
 msgid "The deepest yet. Its hoard: %s."
 msgstr "Le plus profond jusqu'ici. Son trésor : %s."
 
-#: scripts/state/spoils.gd:305
+#: scripts/state/spoils.gd:308
 msgid "depth %d of the Deep Hunt"
 msgstr "la profondeur %d de la Traque des Profondeurs"
 
-#: scripts/state/spoils.gd:309
+#: scripts/state/spoils.gd:312
 msgid "A milestone: %d depths below the throne. The %s is yours, a trophy for the shelf at home."
 msgstr "Un jalon : %d profondeurs sous le trône. Le %s est à vous, un trophée pour l'étagère de la maison."
 
-#: scripts/state/spoils.gd:312
+#: scripts/state/spoils.gd:315
 msgid "A hole into the dark opens beside the way up: depth %d waits below."
 msgstr "Un trou s'ouvre sur le noir près de la montée : la profondeur %d attend en dessous."
 
-#: scripts/state/spoils.gd:326
+#: scripts/state/spoils.gd:329
 msgid "The chest bares its teeth — a mimic!"
 msgstr "Le coffre montre les dents — c'est une mimique !"
 
-#: scripts/state/spoils.gd:332
+#: scripts/state/spoils.gd:335
 msgid "Something glitters on the road: %d gold."
 msgstr "Quelque chose brille sur la route : %d or."
 
-#: scripts/state/spoils.gd:333
+#: scripts/state/spoils.gd:336
 msgid "The chest holds %d gold."
 msgstr "Le coffre contient %d or."
 
-#: scripts/state/spoils.gd:342
+#: scripts/state/spoils.gd:345
 msgid "Too heavy to carry. Lighten the pack and come back."
 msgstr "Trop lourd à porter. Allégez votre sac et revenez."
 
-#: scripts/state/spoils.gd:348
+#: scripts/state/spoils.gd:351
 msgid "The chest holds %s!"
 msgstr "Le coffre contient %s !"
 
-#: scripts/state/spoils.gd:353
+#: scripts/state/spoils.gd:356
 msgid "You gather %dx %s."
 msgstr "Vous récoltez %dx %s."
 
-#: scripts/state/spoils.gd:354
+#: scripts/state/spoils.gd:357
 msgid "The chest holds %dx %s."
 msgstr "Le coffre contient %dx %s."
 
-#: scripts/state/spoils.gd:376
+#: scripts/state/spoils.gd:379
 msgid "You gather %d %s%s."
 msgstr "Vous récoltez %d %s%s."
 
-#: scripts/state/spoils.gd:387
+#: scripts/state/spoils.gd:390
 msgid "Nothing's biting here yet. Try again in a while, or somewhere else."
 msgstr "Ça ne mord pas encore ici. Réessayez dans un moment, ou ailleurs."
 
-#: scripts/state/spoils.gd:391
+#: scripts/state/spoils.gd:394
 msgid "You cast, wait... and haul up an old boot."
 msgstr "Vous lancez, attendez... et remontez une vieille botte."
 
-#: scripts/state/spoils.gd:391
+#: scripts/state/spoils.gd:394
 msgid "You cast, wait... and land %s!"
 msgstr "Vous lancez, attendez... et ça mord : %s !"
 
-#: scripts/state/spoils.gd:393
+#: scripts/state/spoils.gd:396
 msgid " Foraging reached %d!"
 msgstr " Cueillette : niveau %d !"
 
