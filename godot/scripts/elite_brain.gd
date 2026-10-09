@@ -112,7 +112,7 @@ func _strike(shape: PackedVector2Array, move: Dictionary, jump: String) -> void:
 		var mid := Vector2.ZERO
 		for point in shape:
 			mid += point
-		world.dust(mid / shape.size())
+		world.fx.dust(mid / shape.size())
 		world.camera_rig.shake(2.5, 0.15)
 	if Telegraph.catches(world, shape):
 		var damage := roundi(Bestiary.monster_attack_damage(enemy.fighter, GameState.hero, GameState.pack, GameState.roll) * float(move["power"]))
@@ -173,7 +173,7 @@ func _howl(move: Dictionary) -> void:
 			spot = cell
 		var wolf: Node = world.spawn_enemy(move["monsterId"], spot, enemy.region, "", false, true, Vector2i((enemy.home / TILE).floor()))
 		called.append(wolf)
-		world.appear(wolf)
+		world.fx.appear(wolf)
 		wolf.notice()
 
 

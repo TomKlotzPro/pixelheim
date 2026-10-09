@@ -26,6 +26,8 @@ var actors: Node2D
 var player: CharacterBody2D
 ## The camera (Solid Ground: its own node, CameraRig).
 var camera_rig: CameraRig
+## What flashes and floats over the world (WorldFx).
+var fx: WorldFx
 var player_cell := Vector2i.ZERO
 var kills := 0
 var last_player_position := Vector2.ZERO
@@ -71,9 +73,6 @@ var message_tag: Label
 var message_fade: Tween
 ## Tags a message may open with, set in gold on its plate.
 const MESSAGE_TAGS := ["Quest accepted", "Quest complete", "Level up", "Mastery"]
-## A fine or epic drop's name over the fallen foe (PIX-211): the rarities'
-## colours, lit to read on the ground rather than on paper.
-const LOOT_GLOW := {"fine": Color("8cc4ff"), "epic": Color("d99bff")}
 ## A plain message gives way to the next after this long; a tagged one
 ## (a quest, a level) is always read to its end (PIX-211).
 const PLAIN_MESSAGE_S := 1.2
@@ -299,7 +298,7 @@ func on_enemy_died(enemy: Node) -> void:
 		floor_level = Dungeons.drop_floor(map.floor_level)
 	var gear_before := GameState.pack.gear.size()
 	_log(GameState.defeat_monster(enemy.fighter, enemy.region, cleared, floor_level, map.floor_level))
-	_show_loot(GameState.pack.gear.slice(gear_before), enemy.global_position)
+	fx.show_loot(GameState.pack.gear.slice(gear_before), enemy.global_position)
 	if enemy.has_meta("prologue"):
 		_flash_message(GameState.prologue_pouch())
 	# The last of a wave of the night's foes: on to the next beat.
@@ -360,65 +359,6 @@ func can_notice(enemy: Node) -> bool:
 	return Packs.can_see(map, Vector2i((at / TILE).floor()), Vector2i((player.position / TILE).floor()))
 
 
-## A word that rises and fades over where it happened (PIX-155: "dodged",
-## "blocked"). A `big` one (PIX-211: LEVEL UP, a fine or epic drop's name)
-## bursts in at twice its size unless motion is reduced, then settles at the
-## pixel face's own (anything larger dwarfs the fighters), and stays longer.
-func float_text(text: String, at: Vector2, color: Color, big := false) -> void:
-	var label := _floating(text, color)
-	label.position = (at - Vector2(label.size.x / 2.0, 0)).round()
-	label.z_index = 11 if big else 10
-	add_child(label)
-	var life := 1.8 if big else 0.6
-	var tween := label.create_tween().set_parallel()
-	if big:
-		_pop(label, tween)
-	tween.tween_property(label, "position:y", label.position.y - (16 if big else 12), life).set_ease(Tween.EASE_OUT)
-	tween.tween_property(label, "modulate:a", 0.0, 0.6).set_delay(life - 0.35)
-	tween.chain().tween_callback(label.queue_free)
-
-
-## The UI's bold pixel face at its own size, outlined in the night (PIX-194).
-func _floating(text: String, color: Color) -> Label:
-	var label := Label.new()
-	label.text = text
-	label.add_theme_font_override("font", UiStyle.bold_font())
-	label.add_theme_font_size_override("font_size", UiStyle.BODY_PX)
-	label.add_theme_color_override("font_color", color)
-	label.add_theme_color_override("font_outline_color", UiStyle.NIGHT)
-	label.add_theme_constant_override("outline_size", 3)
-	label.size = label.get_minimum_size()
-	# Bright at night too (PIX-221).
-	label.material = Lights.unshaded()
-	return label
-
-
-## A label bursting in at twice its size (PIX-209, PIX-211), not when motion
-## is reduced.
-func _pop(label: Label, tween: Tween) -> void:
-	if GameState.settings.reduce_motion:
-		return
-	label.pivot_offset = label.size / 2.0
-	label.scale = Vector2.ONE * 2.0
-	tween.tween_property(label, "scale", Vector2.ONE, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-
-
-## A number over a head. Each lands a few pixels off the last (PIX-209), so
-## a flurry reads as blows, not one smudge; a crit comes in gold with a "!"
-## and a spark, bursting in at twice its size unless motion is reduced.
-func float_number(value: int, at: Vector2, color: Color, crit := false) -> void:
-	var label := _floating(str(value) + ("!" if crit else ""), UiStyle.BRASS_LIGHT if crit else color)
-	label.position = at - Vector2(label.size.x / 2.0 + randf_range(-4.0, 4.0), 4 if crit else 0)
-	label.z_index = 11 if crit else 10
-	add_child(label)
-	var life := 0.8 if crit else 0.6
-	var tween := create_tween().set_parallel()
-	if crit:
-		_pop(label, tween)
-		skill_flash(at + Vector2(0, 10), UiStyle.BRASS_LIGHT)
-	tween.tween_property(label, "position:y", label.position.y - 12, life).set_ease(Tween.EASE_OUT)
-	tween.tween_property(label, "modulate:a", 0.0, life).set_delay(life * 0.4)
-	tween.chain().tween_callback(label.queue_free)
 
 func log_line(line: String) -> void:
 	_log([line])
@@ -534,59 +474,12 @@ func in_fight() -> bool:
 	return Time.get_ticks_msec() / 1000.0 - hunted_at < COMBAT_LINGER_S
 
 
-## A skill's light where it lands: a soft burst that swells and fades.
-func skill_flash(at: Vector2, color: Color) -> void:
-	var burst := Sprite2D.new()
-	burst.texture = preload("res://scripts/player.gd")._glow()
-	burst.material = Lights.glow()
-	burst.modulate = Color(color, 0.85)
-	# A spell lights the ground for a breath where it lands (PIX-221).
-	var flare := Lights.make(at, 96.0, color, 0.8)
-	flare.remove_from_group("lights")
-	flare.energy = 0.8 * maxf(0.35, lights.dark if lights != null else 0.0)
-	add_child(flare)
-	var dim := flare.create_tween()
-	dim.tween_property(flare, "energy", 0.0, 0.45).set_ease(Tween.EASE_IN)
-	dim.tween_callback(flare.queue_free)
-	burst.global_position = at
-	burst.scale = Vector2(0.4, 0.6)
-	burst.z_index = 5
-	add_child(burst)
-	var bloom := create_tween().set_parallel()
-	bloom.tween_property(burst, "scale", Vector2(1.6, 2.2), 0.35).set_ease(Tween.EASE_OUT)
-	bloom.tween_property(burst, "modulate:a", 0.0, 0.35)
-	bloom.chain().tween_callback(burst.queue_free)
-
-
 ## How hard the hero's skills strike on this floor (PIX-216): less on a
 ## warded depth of the Deep Hunt.
 func skill_ward() -> float:
 	if map != null and Dungeons.modifier(map.floor_level).get("id", "") == "warded":
 		return float(Bestiary._data()["deepHunt"]["wardedSkills"])
 	return 1.0
-
-
-## A level gained (PIX-211): a gold burst on the hero, LEVEL UP over their
-## head and the experience line flashing; its words go on the plate (_log).
-func _level_up_burst() -> void:
-	if player == null:
-		return
-	skill_flash(player.global_position, UiStyle.GOLD)
-	skill_flash(player.global_position + Vector2(0, -8), UiStyle.BRASS_LIGHT)
-	float_text(Text.t("LEVEL UP"), player.global_position + Vector2(0, -40), UiStyle.GOLD, true)
-	dock.flash_xp()
-
-
-## A fine or epic piece from a kill (PIX-211): its name rises over the
-## fallen foe in its rarity's colour, so it isn't lost in the log.
-func _show_loot(pieces: Array, at: Vector2) -> void:
-	var lift := 0.0
-	for piece: Dictionary in pieces:
-		var glow: Variant = LOOT_GLOW.get(String(piece["rarity"]))
-		if glow == null:
-			continue
-		float_text(InventoryState.gear_name(piece), at + Vector2(0, -24 - lift), glow, true)
-		lift += 12.0
 
 
 ## Something has seen the hero: a growl (SFX.bump), not more than once a beat.
@@ -1236,36 +1129,9 @@ func _mimic_wakes(sprite: Sprite2D, chest: Dictionary) -> void:
 	if ambush.x < 0:
 		ambush = player_cell + Vector2i.RIGHT
 	var mimic := spawn_enemy("mimic", ambush, map.region_at(ambush), "", false, true)
-	appear(mimic)
+	fx.appear(mimic)
 	mimic.notice()
 
-
-## A ring of dust motes kicked up from `at` (a monster appearing, a dodge).
-func dust(at: Vector2) -> void:
-	for i in 8:
-		var mote := ColorRect.new()
-		mote.color = Color(0.86, 0.8, 0.68, 0.9) if i % 2 == 0 else Color(0.7, 0.64, 0.52, 0.9)
-		mote.size = Vector2(2, 2)
-		mote.position = at + Vector2(-1, 1)
-		mote.z_index = 4
-		mote.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		add_child(mote)
-		var away := Vector2.RIGHT.rotated(TAU * i / 8.0) * Vector2(9, 4)
-		var drift := mote.create_tween().set_parallel()
-		drift.tween_property(mote, "position", mote.position + away + Vector2(0, -3), 0.45).set_ease(Tween.EASE_OUT)
-		drift.tween_property(mote, "modulate:a", 0.0, 0.45).set_delay(0.15)
-		drift.chain().tween_callback(mote.queue_free)
-
-
-## Dust where a monster comes into sight (PIX-142): a ring of motes kicked up
-## from its feet as it fades in, so nothing simply pops into being.
-func appear(enemy: Node) -> void:
-	if not camera_rig.in_view(enemy.position, TILE):
-		return
-	enemy.modulate.a = 0.0
-	var fade_in := enemy.create_tween()
-	fade_in.tween_property(enemy, "modulate:a", 1.0, 0.3)
-	dust(enemy.position)
 
 ## The line above the dock (PIX-144): the main quest's next step, faded out
 ## in a fight, under a flashing message and once the story is done; hidden
@@ -1370,7 +1236,7 @@ func _prologue_wave() -> void:
 		var foe := spawn_enemy(wave["monsterId"], cell, "", "", bool(wave.get("elite", false)), false, cell, int(wave["level"]) - int(kind["level"]))
 		foe.fighter["name"] = wave["name"]
 		foe.set_meta("prologue_wave", true)
-		appear(foe)
+		fx.appear(foe)
 
 
 ## Dawn after the Night of Ash (PIX-197): played on the town itself - the
@@ -1743,6 +1609,9 @@ func _spawn_player() -> void:
 	camera_rig = CameraRig.new()
 	camera_rig.world = self
 	add_child(camera_rig)
+	fx = WorldFx.new()
+	fx.world = self
+	add_child(fx)
 	camera_rig.attach(player)
 	get_tree().root.size_changed.connect(_place_hud)
 
@@ -1853,7 +1722,7 @@ func _build_hud() -> void:
 	GameState.leveled_up.connect(func(_level: int) -> void:
 		Sound.play("levelUp")
 		heard_hp = GameState.hero.hp
-		_level_up_burst()
+		fx.level_up_burst()
 	)
 	GameState.loaded.connect(func() -> void:
 		heard_gold = GameState.pack.gold
