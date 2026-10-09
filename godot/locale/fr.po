@@ -12624,7 +12624,7 @@ msgstr "le trésor de l'étage (%s)"
 msgid "the hoards of floors %s"
 msgstr "les trésors des étages %s"
 
-#: scripts/state/game_state.gd:45
+#: scripts/state/game_state.gd:47
 msgid "Wanderer"
 msgstr "Vagabond"
 

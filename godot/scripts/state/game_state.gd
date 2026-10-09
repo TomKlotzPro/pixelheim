@@ -7,8 +7,10 @@ extends Node
 ## AUTOSAVE_SECONDS, and moments that matter (map change, loot) save at once.
 ## The methods live in seven modules, one per part of the game (PIX-261):
 ## `trade`, `holdings`, `household`, `questing`, `spoils`, `upkeep` and
-## `training`. This core keeps the sections, the signals, the saves and the
-## slots; the modules reach them through their `owner`, never the autoload.
+## `training`, and callers reach them there (`GameState.questing.choose()`,
+## or `state.spoils.open_chest()` in a test). This core keeps the sections,
+## the signals, the saves and the slots; the modules reach them through
+## their `owner`, never the autoload.
 
 signal loaded
 signal gold_changed(gold: int)
@@ -398,82 +400,3 @@ func pack_changed() -> void:
 	inventory_changed.emit()
 	questing.note_deliveries()
 	questing.note_deeds()
-
-
-# ---- delegates (PIX-261) ----------------------------------------------------
-# Step 1 left a one-line delegate here for every method that moved into a
-# module, so no caller changed with the move. Steps 2 and 3 moved the callers
-# onto GameState.<module>.<method>() and deleted each delegate nothing called.
-# What is left is called only by world.gd, the world_*.gd files being split
-# out of it, or harness.gd, which stay untouched while world.gd is split;
-# each delegate goes once its last call there moves. Training has none left.
-# The old private names stay only where harness.gd calls them.
-
-# Trade (state/trade.gd): Interaction (world_interaction.gd) opens the burnt
-# square's stall and asks whether a shop is open.
-var stall_shop: String:
-	get:
-		return trade.stall_shop
-	set(value):
-		trade.stall_shop = value
-func active_shop() -> String: return trade.active_shop()
-
-# Holdings (state/holdings.gd): world.gd asks whether it's a festival day (the
-# town's tour), as Folk (world_folk.gd) does for the barker and the square;
-# Interaction asks whether Mirelle has settled (her word on the bank);
-# harness.gd starts a festival and puts days of rent in an owned shop's till.
-func steps_now() -> int: return holdings.steps_now()
-func investments() -> Dictionary: return holdings.investments()
-func is_settled(id: String) -> bool: return holdings.is_settled(id)
-func _start_festival(age: int) -> void: holdings.start_festival(age)
-func festival_on() -> bool: return holdings.festival_on()
-
-# Household (state/household.gd): world.gd walks the hero in at the house's
-# door; Interaction opens it, sells it, places a piece from the pack, and asks
-# what E does on a cell of it.
-func owns_house() -> bool: return household.owns_house()
-func buy_house() -> String: return household.buy_house()
-func furniture_at(cell: Vector2i) -> Dictionary: return household.furniture_at(cell)
-func place_furniture(item_id: String, cell: Vector2i, tile: String) -> String: return household.place_furniture(item_id, cell, tile)
-func house_interact(cell: Vector2i, tile: String) -> Dictionary: return household.house_interact(cell, tile)
-
-# Questing (state/questing.gd): Interaction talks (a quest on offer, a word
-# waiting, a stake's answer) and douses the Night of Ash's fires; world.gd
-# reads the bounty board, walks the escort and the timed runs, and plays the
-# rest of that night; harness.gd closes a talk with the elder.
-func quest_on_offer(giver_id: String) -> Dictionary: return questing.quest_on_offer(giver_id)
-func first_skill_heals() -> bool: return questing.first_skill_heals()
-func quest_open(quest: Dictionary) -> bool: return questing.quest_open(quest)
-func board_floors() -> Array: return questing.board_floors()
-func finish_dialogue(npc_id: String) -> void: questing.finish_dialogue(npc_id)
-func choose(quest_id: String, option_id: String) -> String: return questing.choose(quest_id, option_id)
-func escort_due() -> Dictionary: return questing.escort_due()
-func escort_arrived(quest_id: String) -> void: questing.escort_arrived(quest_id)
-func timed_run() -> Dictionary: return questing.timed_run()
-func tick_runs(delta: float) -> Dictionary: return questing.tick_runs(delta)
-func prologue_pouch() -> String: return questing.prologue_pouch()
-func prologue_reached_town() -> void: questing.prologue_reached_town()
-func prologue_wave_cleared() -> String: return questing.prologue_wave_cleared()
-func prologue_douse(ruin: int) -> String: return questing.prologue_douse(ruin)
-func finish_prologue() -> void: questing.finish_prologue()
-
-# Spoils (state/spoils.gd): world.gd pays out a kill and a cleared floor and
-# brings packs back; Interaction opens chests and ground treasure, gathers and
-# fishes; harness.gd grants the levels it set up.
-func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, floor_level: int, mountain := 0) -> Array[String]: return spoils.defeat_monster(fighter, region_id, spawn_id, floor_level, mountain)
-func _grant_levels() -> int: return spoils.grant_levels()
-func revive_pack(spawn_id: String) -> void: spoils.revive_pack(spawn_id)
-func clear_floor(level: int) -> Dictionary: return spoils.clear_floor(level)
-func clear_deep(level: int) -> Dictionary: return spoils.clear_deep(level)
-func open_chest(chest: Dictionary) -> Dictionary: return spoils.open_chest(chest)
-func is_opened(chest: Dictionary) -> bool: return spoils.is_opened(chest)
-func gather(spot_id: String, item_id: String) -> Array[String]: return spoils.gather(spot_id, item_id)
-func fish(spot_id: String) -> String: return spoils.fish(spot_id)
-
-# Upkeep (state/upkeep.gd): world.gd and Interaction bed the hero at the inn,
-# and world.gd wakes them there after a fall; Soundscape (world_soundscape.gd)
-# keeps a rest's mending quiet; harness.gd puts gear on the hero.
-func rest_mend() -> int: return upkeep.rest_mend()
-func equip(uid: String) -> bool: return upkeep.equip(uid)
-func rest_at_inn() -> String: return upkeep.rest_at_inn()
-func wake_at_inn() -> Dictionary: return upkeep.wake_at_inn()

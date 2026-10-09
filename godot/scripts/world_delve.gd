@@ -43,7 +43,7 @@ func enter_floor(level: int) -> void:
 			spawned.fighter["gold"] = roundi(int(spawned.fighter["gold"]) * float(Bestiary._data()["deepHunt"]["replayGoldShare"]))
 	# A Deep Hunt named monster takes its depth's stair (PIX-219).
 	if Dungeons.is_deep(level):
-		var hunted := Hunts.deep_guardian(Dungeons.depth_of(level), GameState.board_floors(), GameState.progression.hunted)
+		var hunted := Hunts.deep_guardian(Dungeons.depth_of(level), GameState.questing.board_floors(), GameState.progression.hunted)
 		if not hunted.is_empty():
 			var guardian: Dictionary = plan["foes"][-1]
 			for mob in get_tree().get_nodes_in_group("mobs"):
@@ -71,7 +71,7 @@ func leave_floor() -> void:
 func floor_cleared(at: Vector2i) -> void:
 	var map: MapData = world.map
 	var deep := Dungeons.is_deep(map.floor_level)
-	var result := GameState.clear_deep(map.floor_level) if deep else GameState.clear_floor(map.floor_level)
+	var result := GameState.spoils.clear_deep(map.floor_level) if deep else GameState.spoils.clear_floor(map.floor_level)
 	Sound.play("victory")
 	world.messages.log_lines(result["lines"])
 	var stairs := at

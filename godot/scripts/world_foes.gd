@@ -72,7 +72,7 @@ func spawn_lairs() -> void:
 	for enemy in get_tree().get_nodes_in_group("mobs"):
 		if not enemy.is_queued_for_deletion():
 			out.append(enemy.fighter.get("named", ""))
-	for entry in Hunts.living_on(world.map.id, GameState.board_floors(), GameState.progression.hunted):
+	for entry in Hunts.living_on(world.map.id, GameState.questing.board_floors(), GameState.progression.hunted):
 		if entry["id"] not in out:
 			spawn_named(entry["id"])
 
@@ -103,7 +103,7 @@ func revive() -> void:
 		var home := MapView.center(Vector2i(spawn["x"], spawn["y"]))
 		if world.camera_rig.in_view(home, 2 * MapView.TILE):
 			continue
-		GameState.revive_pack(spawn["id"])
+		GameState.spoils.revive_pack(spawn["id"])
 		_spawn_pack(world.map, spawn)
 
 
@@ -208,16 +208,16 @@ func on_enemy_died(enemy: Node) -> void:
 	if world.map.floor_level > 0:
 		floor_level = Dungeons.drop_floor(world.map.floor_level)
 	var gear_before := GameState.pack.gear.size()
-	world.messages.log_lines(GameState.defeat_monster(enemy.fighter, enemy.region, cleared, floor_level, world.map.floor_level))
+	world.messages.log_lines(GameState.spoils.defeat_monster(enemy.fighter, enemy.region, cleared, floor_level, world.map.floor_level))
 	world.fx.show_loot(GameState.pack.gear.slice(gear_before), enemy.global_position)
 	if enemy.has_meta("prologue"):
-		world.messages.flash(GameState.prologue_pouch())
+		world.messages.flash(GameState.questing.prologue_pouch())
 	# The last of a wave of the night's foes: on to the next beat.
 	if enemy.has_meta("prologue_wave"):
 		var left := get_tree().get_nodes_in_group("mobs").filter(func(mob: Node) -> bool:
 			return mob != enemy and mob.has_meta("prologue_wave") and not mob.dying)
 		if left.is_empty():
-			world.messages.flash(GameState.prologue_wave_cleared())
+			world.messages.flash(GameState.questing.prologue_wave_cleared())
 	if enemy.fighter.has("named"):
 		Sound.play("bounty")
 	if GameState.pack.gear.size() > gear_before:

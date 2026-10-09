@@ -229,7 +229,7 @@ func _process(delta: float) -> void:
 	if map.floor_level == 0:
 		GameState.move_to(map, cell, player.facing)
 	# Walking into the bought house's shut door walks you in.
-	if map.id == "town" and cell + Vector2i(player.facing) == Town.house_door() and GameState.owns_house():
+	if map.id == "town" and cell + Vector2i(player.facing) == Town.house_door() and GameState.household.owns_house():
 		enter_house()
 		return
 	interaction.step_on(cell)
@@ -246,7 +246,7 @@ func is_walkable(cell: Vector2i) -> bool:
 func on_player_died() -> void:
 	await get_tree().create_timer(1.2).timeout
 	# Defeat is forgiving: wake at the inn, healed, purse intact.
-	var inn: Dictionary = GameState.wake_at_inn()
+	var inn: Dictionary = GameState.upkeep.wake_at_inn()
 	var bed := Vector2i(inn["x"], inn["y"])
 	map = load_map(inn["mapId"])
 	enter_map(map, bed)
@@ -264,7 +264,7 @@ func use_portal(target: Dictionary) -> void:
 				enter_map(map, Vector2i(int(target["x"]), int(target["y"])))
 				# Stepping into the inn takes a bed for coin, as on the web.
 				if map.id == "town_inn":
-					messages.flash(GameState.rest_at_inn())
+					messages.flash(GameState.upkeep.rest_at_inn())
 					stage.dream()
 			)
 		"dungeon":
@@ -349,7 +349,7 @@ func enter_map(next: MapData, arrival: Vector2i) -> void:
 	foes.floor_foes = 0
 	stage.arrive(next)
 	# A festival day: confetti over the square (PIX-159).
-	if next.id == "town" and GameState.festival_on():
+	if next.id == "town" and GameState.holdings.festival_on():
 		stage.festival()
 	stage.play_reveals.call_deferred()
 	folk.keep_hours(true)

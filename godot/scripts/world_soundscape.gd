@@ -54,7 +54,7 @@ func hear_hp(hp: int, _max_hp: int) -> void:
 	if hp < heard_hp:
 		Sound.play("hurt")
 	# Health trickling back at rest (PIX-206) mends in silence.
-	elif hp > heard_hp + GameState.rest_mend():
+	elif hp > heard_hp + GameState.upkeep.rest_mend():
 		Sound.play("heal")
 	heard_hp = hp
 
