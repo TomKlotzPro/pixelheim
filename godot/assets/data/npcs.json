@@ -651,7 +651,7 @@
         "y": 14,
         "wander": false
       },
-      "minTownTier": 3,
+      "minTownTier": 2,
       "ask": {
         "kind": "gold",
         "amount": 500
@@ -661,7 +661,7 @@
         "Give me a town with a fountain and 500 gold of founding capital, and I will make Pixelheim's money WORK."
       ],
       "askLine": "500 gold of founding capital, and the bank follows you home.",
-      "tierLine": "A bank needs a TOWN, not a village fair. Grow Pixelheim into a town and we will talk.",
+      "tierLine": "A bank needs streets and lamps, not a hamlet of tents. Grow Pixelheim into a village and we will talk.",
       "joinedLine": "Capital received. Find my ledger by the city hall - bring your idle gold.",
       "townLines": [
         "Idle gold is lazy gold. Savings, a caravan, an expansion - put it to work.",

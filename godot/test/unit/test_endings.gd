@@ -80,8 +80,8 @@ func test_the_grown_perks_pay_more() -> void:
 			state.progression.quests[quest["id"]] = {"progress": 0, "done": true}
 	assert_almost_eq(state.song_crit(), 0.2, 0.001)
 	assert_almost_eq(state.walk_bonus(), 0.1, 0.001)
-	var plain := Town.savings_value(1000, 0, 100000)
-	assert_gt(Town.savings_value(1000, 0, 100000, true), plain, "Mirelle's savings grow faster")
+	var plain := Town.savings_value({"principal": 1000, "at": 0}, 4800)
+	assert_gt(Town.savings_value({"principal": 1000, "at": 0}, 4800, true), plain, "Mirelle's savings grow faster")
 	# Loras's horn: a song-inspired crit is likelier (the roll that missed at 12% lands at 20%).
 	var hero: HeroState = state.hero
 	var crit_roll: float = HeroRules.passives(hero)["critChance"] + 0.15

@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.132.0",
+      "date": "2026-10-09",
+      "codename": "An Honest Bank",
+      "notes": [
+        "AN HONEST BANK: Mirelle's savings now pay half a percent a day on what's in the pot, up to a tenth of it in all, and the interest is kept apart - topping up no longer folds it in or restarts the clock, so a pot can't be grown without end. The bank shows what your savings have earned so far, and there's a Deposit all",
+        "THE BANK COMES SOONER: Mirelle settles once Pixelheim is a village, so her bank opens while you're still out in the regions"
+      ]
+    },
+    {
       "version": "0.131.0",
       "date": "2026-10-09",
       "codename": "Mastery Shows",

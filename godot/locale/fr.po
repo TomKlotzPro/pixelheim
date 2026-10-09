@@ -1613,6 +1613,10 @@ msgid "AMBER WINDOWS that glow: honey-lit by day, warm lanterns down every stree
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "AN HONEST BANK: Mirelle's savings now pay half a percent a day on what's in the pot, up to a tenth of it in all, and the interest is kept apart - topping up no longer folds it in or restarts the clock, so a pot can't be grown without end. The bank shows what your savings have earned so far, and there's a Deposit all"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "ANY WAY UP: the game fills a phone's screen held sideways or upright instead of sitting in a letterbox, the dock along the bottom and the pages in the middle. Upright, the art stays big enough to see the hero; sideways reads best, and the game says so once"
 msgstr ""
 
@@ -1650,6 +1654,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Ambushes feel like ambushes: the monster lunges in, the screen shakes, !"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "An Honest Bank"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3210,6 +3218,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "THE ASHES: the store, the forge, the brewery, the inn and the homes are charred frames with smoke still rising; only the stone hall stood"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "THE BANK COMES SOONER: Mirelle settles once Pixelheim is a village, so her bank opens while you're still out in the regions"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -6077,7 +6089,7 @@ msgid "500 gold of founding capital, and the bank follows you home."
 msgstr ""
 
 #: assets/data/npcs.json
-msgid "A bank needs a TOWN, not a village fair. Grow Pixelheim into a town and we will talk."
+msgid "A bank needs streets and lamps, not a hamlet of tents. Grow Pixelheim into a village and we will talk."
 msgstr ""
 
 #: assets/data/npcs.json
@@ -8856,103 +8868,111 @@ msgstr ""
 msgid "Savings"
 msgstr ""
 
-#: scripts/bank_screen.gd:23
-msgid "Nothing deposited. %d%% a day, up to %d days."
+#: scripts/bank_screen.gd:24
+msgid "Nothing deposited. %s%% a day on what's in, up to %d%% in all."
 msgstr ""
 
-#: scripts/bank_screen.gd:27
-msgid "%dg deposited, worth %dg now (%d of %d days)."
+#: scripts/bank_screen.gd:30
+msgid "%dg deposited, %dg earned so far (at most %dg)."
 msgstr ""
 
-#: scripts/bank_screen.gd:31
+#: scripts/bank_screen.gd:33
 msgid "Caravan"
 msgstr ""
 
-#: scripts/bank_screen.gd:34
+#: scripts/bank_screen.gd:36
 msgid "No caravan on the road. Stake %dg: two roads in three come home heavy."
 msgstr ""
 
-#: scripts/bank_screen.gd:36
+#: scripts/bank_screen.gd:38
 msgid "The caravan is back. Collect what it brought."
 msgstr ""
 
-#: scripts/bank_screen.gd:38
+#: scripts/bank_screen.gd:40
 msgid "On the road: %dg staked, back in %d steps."
 msgstr ""
 
-#: scripts/bank_screen.gd:41
+#: scripts/bank_screen.gd:43
 msgid "Expansions (+%dg rent per victory each)"
 msgstr ""
 
-#: scripts/bank_screen.gd:43
+#: scripts/bank_screen.gd:45
 msgid "Own a business first: buy its deed from the keeper."
 msgstr ""
 
-#: scripts/bank_screen.gd:52
+#: scripts/bank_screen.gd:54
 msgid "Deposit %dg"
 msgstr ""
 
-#: scripts/bank_screen.gd:53
+#: scripts/bank_screen.gd:55
 msgid "Not enough gold."
 msgstr ""
 
-#: scripts/bank_screen.gd:54
+#: scripts/bank_screen.gd:56
 msgid "Deposited %dg."
 msgstr ""
 
-#: scripts/bank_screen.gd:58
-msgid "Nothing to withdraw."
-msgstr ""
-
-#: scripts/bank_screen.gd:58
-msgid "Withdraw all"
+#: scripts/bank_screen.gd:60
+msgid "Deposit all"
 msgstr ""
 
 #: scripts/bank_screen.gd:60
-msgid "Withdrawn: %dg. Mirelle stamps the ledger."
-msgstr ""
-
-#: scripts/bank_screen.gd:66
-msgid "Send a caravan"
+msgid "Not a coin to deposit."
 msgstr ""
 
 #: scripts/bank_screen.gd:67
+msgid "Nothing to withdraw."
+msgstr ""
+
+#: scripts/bank_screen.gd:67
+msgid "Withdraw all"
+msgstr ""
+
+#: scripts/bank_screen.gd:69
+msgid "Withdrawn: %dg. Mirelle stamps the ledger."
+msgstr ""
+
+#: scripts/bank_screen.gd:75
+msgid "Send a caravan"
+msgstr ""
+
+#: scripts/bank_screen.gd:76
 msgid "The caravan needs %dg."
 msgstr ""
 
-#: scripts/bank_screen.gd:68
+#: scripts/bank_screen.gd:77
 msgid "The caravan rolls out. Give it half a day on the road."
 msgstr ""
 
-#: scripts/bank_screen.gd:72
+#: scripts/bank_screen.gd:81
 msgid "Collect the caravan"
 msgstr ""
 
-#: scripts/bank_screen.gd:73
+#: scripts/bank_screen.gd:82
 msgid "It is still on the road."
 msgstr ""
 
-#: scripts/bank_screen.gd:78
+#: scripts/bank_screen.gd:87
 msgid "Raiders hit the caravan. %dg salvaged from the wreck."
 msgstr ""
 
-#: scripts/bank_screen.gd:78
+#: scripts/bank_screen.gd:87
 msgid "The caravan returns heavy! +%dg."
 msgstr ""
 
-#: scripts/bank_screen.gd:86
+#: scripts/bank_screen.gd:95
 msgid "Expand %s"
 msgstr ""
 
-#: scripts/bank_screen.gd:88
+#: scripts/bank_screen.gd:97
 msgid "Already expanded."
 msgstr ""
 
-#: scripts/bank_screen.gd:88
+#: scripts/bank_screen.gd:97
 msgid "An expansion costs %dg."
 msgstr ""
 
-#: scripts/bank_screen.gd:89
+#: scripts/bank_screen.gd:98
 msgid "The expansion is funded: that business pays richer rent now."
 msgstr ""
 
@@ -10532,155 +10552,155 @@ msgstr ""
 msgid "the hoard of %s"
 msgstr ""
 
-#: scripts/state/game_state.gd:1020
+#: scripts/state/game_state.gd:1021
 msgid "You wake at the inn. The innkeeper says nothing. Kind of her."
 msgstr ""
 
-#: scripts/state/game_state.gd:1056
+#: scripts/state/game_state.gd:1057
 msgid "Rent from your properties: +%d gold."
 msgstr ""
 
-#: scripts/state/game_state.gd:1066
+#: scripts/state/game_state.gd:1067
 msgid "Your garden ripens: +1 %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1070
+#: scripts/state/game_state.gd:1071
 msgid "%s is defeated! +%d XP, +%d gold."
 msgstr ""
 
-#: scripts/state/game_state.gd:1081
+#: scripts/state/game_state.gd:1082
 msgid "%s drops: %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1088
+#: scripts/state/game_state.gd:1089
 msgid "%s drops: %s!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1098
+#: scripts/state/game_state.gd:1099
 msgid "You forage %d %s%s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1100
+#: scripts/state/game_state.gd:1101
 msgid "Foraging reached %d!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1116
+#: scripts/state/game_state.gd:1117
 msgid "Level up: you are now level %d. +%d stat points and +%d skill point%s to spend."
 msgstr ""
 
-#: scripts/state/game_state.gd:1144
+#: scripts/state/game_state.gd:1145
 msgid "You gather %d %s%s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1155
+#: scripts/state/game_state.gd:1156
 msgid "Nothing's biting here yet. Try again in a while, or somewhere else."
 msgstr ""
 
-#: scripts/state/game_state.gd:1159
+#: scripts/state/game_state.gd:1160
 msgid "You cast, wait... and haul up an old boot."
 msgstr ""
 
-#: scripts/state/game_state.gd:1159
+#: scripts/state/game_state.gd:1160
 msgid "You cast, wait... and land %s!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1161
+#: scripts/state/game_state.gd:1162
 msgid " Foraging reached %d!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1263
+#: scripts/state/game_state.gd:1264
 msgid "The bounty on %s is yours: +%d gold."
 msgstr ""
 
-#: scripts/state/game_state.gd:1272
+#: scripts/state/game_state.gd:1273
 msgid "%s leaves you %s!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1370
+#: scripts/state/game_state.gd:1371
 msgid "%d HP"
 msgstr ""
 
-#: scripts/state/game_state.gd:1378
+#: scripts/state/game_state.gd:1379
 msgid "You use %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1380
+#: scripts/state/game_state.gd:1381
 msgid " Restored %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1505
+#: scripts/state/game_state.gd:1506
 msgid "%s is cleared!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1510
+#: scripts/state/game_state.gd:1511
 msgid "%d gold"
 msgstr ""
 
-#: scripts/state/game_state.gd:1519
+#: scripts/state/game_state.gd:1520
 msgid "The floor's hoard: %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1523
+#: scripts/state/game_state.gd:1524
 msgid "Among the bones: a page of an old journal (%s). {key:journal} reads it."
 msgstr ""
 
-#: scripts/state/game_state.gd:1527
+#: scripts/state/game_state.gd:1528
 msgid "+%d XP for the way down."
 msgstr ""
 
-#: scripts/state/game_state.gd:1540
+#: scripts/state/game_state.gd:1541
 msgid "Behind the throne, a stair goes on down into the dark: the Deep Hunt."
 msgstr ""
 
-#: scripts/state/game_state.gd:1544
+#: scripts/state/game_state.gd:1545
 msgid "A deeper way opens: %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1557
+#: scripts/state/game_state.gd:1558
 msgid "Depth %d of the Deep Hunt is cleared!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1566
+#: scripts/state/game_state.gd:1567
 msgid "The deepest yet. Its hoard: %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1572
+#: scripts/state/game_state.gd:1573
 msgid "depth %d of the Deep Hunt"
 msgstr ""
 
-#: scripts/state/game_state.gd:1574
+#: scripts/state/game_state.gd:1575
 msgid "A hole into the dark opens beside the way up: depth %d waits below."
 msgstr ""
 
-#: scripts/state/game_state.gd:1593
+#: scripts/state/game_state.gd:1594
 msgid "Mastery: %s Slayer %s. +%d%% damage against %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1619
+#: scripts/state/game_state.gd:1620
 msgid "The chest bares its teeth — a mimic!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1625
+#: scripts/state/game_state.gd:1626
 msgid "Something glitters on the road: %d gold."
 msgstr ""
 
-#: scripts/state/game_state.gd:1626
+#: scripts/state/game_state.gd:1627
 msgid "The chest holds %d gold."
 msgstr ""
 
-#: scripts/state/game_state.gd:1635
+#: scripts/state/game_state.gd:1636
 msgid "Too heavy to carry. Lighten the pack and come back."
 msgstr ""
 
-#: scripts/state/game_state.gd:1641
+#: scripts/state/game_state.gd:1642
 msgid "The chest holds %s!"
 msgstr ""
 
-#: scripts/state/game_state.gd:1646
+#: scripts/state/game_state.gd:1647
 msgid "You gather %dx %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:1647
+#: scripts/state/game_state.gd:1648
 msgid "The chest holds %dx %s."
 msgstr ""
 
@@ -10720,103 +10740,103 @@ msgstr ""
 msgid "%s: built - and Pixelheim is a %s now."
 msgstr ""
 
-#: scripts/state/game_state.gd:665
+#: scripts/state/game_state.gd:666
 msgid "The prize is yours: +%d gold and %d %ss!"
 msgstr ""
 
-#: scripts/state/game_state.gd:755
+#: scripts/state/game_state.gd:756
 msgid "Quest accepted: %s. %s"
 msgstr ""
 
-#: scripts/state/game_state.gd:779
+#: scripts/state/game_state.gd:780
 msgid "+%d gold"
 msgstr ""
 
-#: scripts/state/game_state.gd:780
+#: scripts/state/game_state.gd:781
 msgid "+%d XP"
 msgstr ""
 
-#: scripts/state/game_state.gd:781
+#: scripts/state/game_state.gd:782
 msgid "Quest complete: %s. %s. “%s”"
 msgstr ""
 
-#: scripts/state/game_state.gd:799
+#: scripts/state/game_state.gd:800
 msgid "The town is not ready for me yet."
 msgstr ""
 
-#: scripts/state/game_state.gd:804
+#: scripts/state/game_state.gd:805
 msgid "Iva's hands glow warm. Fully healed, free of charge."
 msgstr ""
 
-#: scripts/state/game_state.gd:807
+#: scripts/state/game_state.gd:808
 msgid " She tucks %d healing potion%s in your pack."
 msgstr ""
 
-#: scripts/state/game_state.gd:812
+#: scripts/state/game_state.gd:813
 msgid "Loras plays you a marching song%s. Your next hunt strikes truer. (+%d%% crit)"
 msgstr ""
 
-#: scripts/state/game_state.gd:813
+#: scripts/state/game_state.gd:814
 msgid " on his war-horn"
 msgstr ""
 
-#: scripts/state/game_state.gd:836
+#: scripts/state/game_state.gd:837
 msgid "For sale: this house. The deed costs %d gold."
 msgstr ""
 
-#: scripts/state/game_state.gd:841
+#: scripts/state/game_state.gd:842
 msgid "The deed is yours. Welcome home."
 msgstr ""
 
-#: scripts/state/game_state.gd:853
+#: scripts/state/game_state.gd:854
 msgid "The %s deed is signed. Your house grew while you were out."
 msgstr ""
 
-#: scripts/state/game_state.gd:920
+#: scripts/state/game_state.gd:921
 msgid "The nook bubbles: 2x %s became %s."
 msgstr ""
 
-#: scripts/state/game_state.gd:942
+#: scripts/state/game_state.gd:943
 msgid "It needs open floor. Face a free tile and try again."
 msgstr ""
 
-#: scripts/state/game_state.gd:944
+#: scripts/state/game_state.gd:945
 msgid "Something already stands there."
 msgstr ""
 
-#: scripts/state/game_state.gd:948
+#: scripts/state/game_state.gd:949
 msgid "%s placed. {key:interact} takes it back."
 msgstr ""
 
-#: scripts/state/game_state.gd:961
+#: scripts/state/game_state.gd:962
 msgid "%s back in the pack."
 msgstr ""
 
-#: scripts/state/game_state.gd:965
+#: scripts/state/game_state.gd:966
 msgid "Your own bed. Fully rested, free of charge."
 msgstr ""
 
-#: scripts/state/game_state.gd:976
+#: scripts/state/game_state.gd:977
 msgid "A workbench and a small cauldron, fitted to the shelf. Craft at home, forever."
 msgstr ""
 
-#: scripts/state/game_state.gd:977
+#: scripts/state/game_state.gd:978
 msgid "A proper workbench would fit this shelf. Tools and parts cost %d gold."
 msgstr ""
 
-#: scripts/state/game_state.gd:980
+#: scripts/state/game_state.gd:981
 msgid "The hearth roars beside your workbench. Home industry."
 msgstr ""
 
-#: scripts/state/game_state.gd:981
+#: scripts/state/game_state.gd:982
 msgid "The hearth crackles, warm and idle. A workbench would fit by the shelf..."
 msgstr ""
 
-#: scripts/state/game_state.gd:984
+#: scripts/state/game_state.gd:985
 msgid "Your kitchen counter. Clean, empty, hopeful."
 msgstr ""
 
-#: scripts/state/game_state.gd:988
+#: scripts/state/game_state.gd:989
 msgid "The garden drinks your victories: %d/%d until the next harvest."
 msgstr ""
 
