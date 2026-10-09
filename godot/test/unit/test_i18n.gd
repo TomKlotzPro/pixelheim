@@ -143,3 +143,23 @@ func test_french_is_complete() -> void:
 		if said == "" or wanted != given:
 			holes.append(english.left(60))
 	assert_eq(holes, [] as Array[String], "every string has its French, placeholders kept")
+
+
+## PIX-208: the corners French still missed.
+func test_french_reaches_signs_the_deep_and_the_cutscenes() -> void:
+	Text.apply("fr")
+	var owned: Dictionary = Interactables._data()["signsHouseOwned"]
+	for map_id: String in owned:
+		for sign_def: Dictionary in owned[map_id]:
+			assert_true(ShopSign.ICONS.has(sign_def["label"]), "%s keeps its icon" % sign_def["label"])
+	var english_deep: String = Dungeons.floor_def(Dungeons.floor_count() + 1)["name"]
+	Text.apply("en")
+	assert_ne(Dungeons.floor_def(Dungeons.floor_count() + 1)["name"], english_deep, "the Deep Hunt's name follows the language")
+	Text.apply("fr")
+	var titles: Array = []
+	for scene: String in Cutscene.scenes():
+		for step: Dictionary in Cutscene.scenes()[scene]:
+			if step.get("kind", "") == "card":
+				titles.append(step["text"])
+	assert_false(titles.is_empty())
+	assert_false(titles.has("Fafnyr the Ashen"), "the title cards speak French")

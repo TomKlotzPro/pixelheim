@@ -11,10 +11,12 @@ static func _data() -> Dictionary:
 		var raw := FileAccess.get_file_as_string("res://assets/maps/interactables.json")
 		var doc: Dictionary = JSON.parse_string(raw)
 		var signs: Dictionary = doc["signs"].duplicate(true)
+		var owned: Variant = doc.get("signsHouseOwned", {}).duplicate(true)
 		_doc = Text.localize(doc)
-		# A sign's label is its id (PIX-196): the icon and the door go by it;
-		# where it's shown, the label translates itself.
+		# A sign's label is its id (PIX-196, PIX-208 for the owner's signs): the
+		# icon and the door go by it; where it's shown, it translates itself.
 		_doc["signs"] = signs
+		_doc["signsHouseOwned"] = owned
 	return _doc
 
 

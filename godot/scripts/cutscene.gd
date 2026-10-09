@@ -46,8 +46,10 @@ static func moment(key: String) -> String:
 	return String(_story()["moments"].get(key, ""))
 
 
+## The story's words in the player's language (PIX-208): translated as they
+## load, so a title card upper-cases and a caption names the hero after.
 static func _story() -> Dictionary:
-	return SaveCodec.parse_json(FileAccess.get_file_as_string("res://assets/data/story.json"))
+	return Text.localize(SaveCodec.parse_json(FileAccess.get_file_as_string("res://assets/data/story.json")))
 
 
 func _open() -> void:

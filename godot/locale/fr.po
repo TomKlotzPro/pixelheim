@@ -2173,6 +2173,10 @@ msgid "Every Class Starts Right"
 msgstr "Chaque classe part du bon pied"
 
 #: assets/data/changelog.json
+msgid "Every Corner in French"
+msgstr "Le français jusque dans les coins"
+
+#: assets/data/changelog.json
 msgid "Every Lead True"
 msgstr "Chaque piste est juste"
 
@@ -4019,6 +4023,10 @@ msgstr "Le guide d'artisanat connaît désormais la pêche : il vous dit d'où
 #: assets/data/changelog.json
 msgid "The craft stations finally introduce themselves: an anvil hangs over the FORGE door, a bubbling cauldron over BREWS"
 msgstr "Les ateliers se présentent enfin : une enclume pend au-dessus de la porte de la FORGE, un chaudron bouillonnant au-dessus de POTIONS"
+
+#: assets/data/changelog.json
+msgid "The cutscenes' title cards and captions speak French, the doors keep their signs in French once you own a house, and switching language mid-game renames the Deep Hunt and the journal's leads at once"
+msgstr "Les cartons et les légendes des cinématiques parlent français, les portes gardent leurs enseignes en français une fois la maison achetée, et changer de langue en cours de partie renomme aussitôt la Traque des Profondeurs et les pistes du journal"
 
 #: assets/data/changelog.json
 msgid "The decor got real carpentry too: lamp posts with glowing lanterns, a roofed well, rail fences that connect, market stalls under striped awnings, round barrels, plank crates - and real trees in the deep woods"
@@ -10244,15 +10252,15 @@ msgstr "apparence"
 msgid "role"
 msgstr "classe"
 
-#: scripts/cutscene.gd:81
+#: scripts/cutscene.gd:83
 msgid "Esc"
 msgstr "Esc"
 
-#: scripts/cutscene.gd:81
+#: scripts/cutscene.gd:83
 msgid "next"
 msgstr "suivant"
 
-#: scripts/cutscene.gd:81
+#: scripts/cutscene.gd:83
 msgid "skip"
 msgstr "passer"
 
