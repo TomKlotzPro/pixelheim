@@ -13328,7 +13328,7 @@ msgstr "COMMANDÉ"
 msgid "Arrows"
 msgstr "Flèches"
 
-#: scripts/world.gd:289
+#: scripts/world.gd:292
 msgid "No map reaches this deep."
 msgstr "Aucune carte ne va aussi profond."
 
