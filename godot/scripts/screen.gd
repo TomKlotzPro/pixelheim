@@ -160,6 +160,9 @@ func _let_go() -> void:
 	_holds = maxi(0, _holds - 1)
 	if _holds == 0:
 		get_tree().paused = false
+		# What was done in the screens is kept now (PIX-200).
+		if GameState.dirty:
+			GameState.save_now()
 
 
 ## Freed without closing (the scene reloading under it): its hold goes too.
