@@ -174,7 +174,7 @@ func in_view(at: Vector2, margin := 0.0) -> bool:
 
 ## Where the dock begins on the 1280x720 canvas (the bottom, before it is built).
 func dock_top() -> float:
-	var dock: Node = world.dock
+	var dock: Node = world.hud.dock if world.hud != null else null
 	return dock.top() if dock != null and dock.top() > 0 else 720.0
 
 

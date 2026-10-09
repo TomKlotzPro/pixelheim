@@ -106,7 +106,7 @@ func level_up_burst() -> void:
 	skill_flash(world.player.global_position, UiStyle.GOLD)
 	skill_flash(world.player.global_position + Vector2(0, -8), UiStyle.BRASS_LIGHT)
 	float_text(Text.t("LEVEL UP"), world.player.global_position + Vector2(0, -40), UiStyle.GOLD, true)
-	world.dock.flash_xp()
+	world.hud.dock.flash_xp()
 
 
 ## A fine or epic piece from a kill (PIX-211): its name rises over the

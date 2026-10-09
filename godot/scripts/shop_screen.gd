@@ -100,7 +100,7 @@ func _open() -> void:
 		status.text = Text.t("%s hands you the till: +%d gold.") % [String(shop.get("keeper", "")), collected]
 	# A keeper who sells their business explains deeds once (PIX-179).
 	if Town.deeds().has(GameState.world.map_id) and get_tree().current_scene.has_method("hint"):
-		get_tree().current_scene.hint("deed")
+		get_tree().current_scene.hud.hint("deed")
 	_refresh()
 
 

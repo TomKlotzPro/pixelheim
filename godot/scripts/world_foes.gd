@@ -172,7 +172,7 @@ func can_notice(enemy: Node) -> bool:
 ## Something has seen the hero: a growl (SFX.bump), not more than once a beat.
 func on_enemy_noticed(enemy: Node) -> void:
 	var now := Time.get_ticks_msec() / 1000.0
-	world.hint("dodge")
+	world.hud.hint("dodge")
 	# A named monster or a boss roars (PIX-158, PIX-210); anything else bumps.
 	if fights_like_boss(enemy):
 		Sound.play("roar")
@@ -247,9 +247,9 @@ func boss_fell() -> void:
 	var flash := ColorRect.new()
 	flash.color = Color(1, 1, 1, 0.75)
 	flash.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	flash.position = -world.hud_root.offset
+	flash.position = -world.hud.root.offset
 	flash.size = Touch.view_size(world)
-	world.hud_root.add_child(flash)
+	world.hud.root.add_child(flash)
 	var fade := flash.create_tween().set_ignore_time_scale(true)
 	fade.tween_property(flash, "color:a", 0.0, 0.45)
 	fade.tween_callback(flash.queue_free)

@@ -118,7 +118,7 @@ func _fires() -> void:
 		var index: int = order[n]
 		_flow.tween_callback(func() -> void: world.view.douse(index, 0.2 if still else 1.4)) \
 			.set_delay(0.4 + (FIRES_SECONDS - 1.2) * n / maxf(1.0, order.size() - 1))
-	var sky: ColorRect = world.sky_overlay
+	var sky: ColorRect = world.hud.sky_overlay
 	_flow.tween_property(sky, "color", DAWN_GREY, FIRES_SECONDS)
 	_flow.chain().tween_interval(0.6)
 	_flow.chain().tween_callback(_gather)
@@ -166,7 +166,7 @@ func _place_everyone() -> void:
 	world.player_cell = hero_cell
 	world.player.face(Vector2.UP)
 	world.camera_rig.camera.global_position = world._cell_center(Town.square())
-	world.sky_overlay.color = DAWN_GREY
+	world.hud.sky_overlay.color = DAWN_GREY
 
 
 func _stand(villager: Node2D, cell: Vector2i) -> void:

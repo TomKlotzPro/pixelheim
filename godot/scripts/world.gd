@@ -1,12 +1,15 @@
 extends Node2D
 ## World orchestration: loads maps exported from the web game, builds their
-## TileMapLayer, moves the hero through portals, and spawns mobs in the wild.
-## Tile tables live in WorldTiles; map data in MapData; everything that
-## persists (position, discovery, chests, loot) in the GameState autoload.
+## TileMapLayer, moves the hero through portals and doors, and runs the
+## frame. Its pieces do the rest (Solid Ground, PIX-260, world_*.gd): the
+## camera (CameraRig), what floats over the world (WorldFx), words
+## (Messages), sound (Soundscape), villagers (Folk), what E does
+## (Interaction), monsters (Foes), dungeon floors (Delve), the story (Stage)
+## and the HUD (Hud). Tile tables live in WorldTiles; map data in MapData;
+## everything that persists (position, discovery, chests, loot) in the
+## GameState autoload.
 
 const TILE := 16
-
-
 
 var map: MapData
 ## The map as drawn on this visit (MapView): ground, houses, props, chests,
@@ -31,26 +34,12 @@ var foes: Foes
 var delve: Delve
 ## The story over the world: moments, the night, the ending, reveals (Stage).
 var stage: Stage
+## The HUD: its layer and widgets, hints, the objective, the nameplate (Hud).
+var hud: Hud
 var player_cell := Vector2i.ZERO
 var last_player_position := Vector2.ZERO
-## The hero panel: health, resource, xp, gold, the screens (HudPanel).
-var dock: Control
 ## Seconds until the next look for packs due to come home.
 var respawn_check := 0.0
-var boss_bar: Control
-## The HUD's layer, and the first-time hint on it now (PIX-160).
-var hud_root: CanvasLayer
-var hint_card: PanelContainer
-static var _hint_doc := {}
-static var _hint_generation := 0
-## The main quest's next step, quietly above the dock (PIX-144): a dark
-## pill holding "Next" and the step.
-var objective_box: PanelContainer
-var objective_label: Label
-## The nameplate over the signed door the hero walks up to (ShopSign).
-var nameplate: PanelContainer
-var nameplate_door := Vector2i(-1, -1)
-var sky_overlay: ColorRect
 ## The world's light and darkness (PIX-221, light_rig.gd).
 var lights: Node
 ## Each region's air and the weather (PIX-224).
@@ -151,6 +140,9 @@ func _ready() -> void:
 	stage = Stage.new()
 	stage.world = self
 	add_child(stage)
+	hud = Hud.new()
+	hud.world = self
+	add_child(hud)
 	_build_hud()
 	interaction.build_prompt()
 	enter_map(map, arrival)
@@ -206,18 +198,16 @@ func _process(delta: float) -> void:
 	if player == null or player.dead:
 		return
 	interaction.update_prompt()
-	_update_nameplate()
+	hud.update_nameplate()
 	stage.run_clocks(delta)
 	messages.update()
-	# A first-time hint stands under the boss bar while one is up (PIX-210).
-	if hint_card != null and is_instance_valid(hint_card):
-		hint_card.position.y = boss_bar.bottom() + 6 if boss_bar.following() else 18.0
+	hud.keep_hint_clear()
 	stage.tend_escort()
 	GameState.walk(player.position.distance_to(last_player_position) / TILE)
 	last_player_position = player.position
 	# The dark is the world's own now (PIX-221: the LightRig), not a veil
 	# over it; the veil is left for the dawn's own fades.
-	sky_overlay.color = Color(0, 0, 0, 0)
+	hud.sky_overlay.color = Color(0, 0, 0, 0)
 	soundscape.refresh()
 	respawn_check -= delta
 	if respawn_check <= 0:
@@ -225,8 +215,8 @@ func _process(delta: float) -> void:
 		foes.revive()
 		view.refresh_patches()
 		folk.keep_hours()
-		_hint_boards()
-	_update_objective()
+		hud.hint_boards()
+	hud.update_objective()
 	var cell := Vector2i((player.position / TILE).floor())
 	if cell == player_cell:
 		return
@@ -261,12 +251,6 @@ func on_player_died() -> void:
 	enter_map(map, bed)
 	player.respawn(_cell_center(bed))
 	last_player_position = player.position  # a respawn is not a walk
-
-func _on_hp_changed(hp: int, max_hp: int) -> void:
-	dock.refresh()
-	# Hurt on the first night: how to drink a potion, once (PIX-197).
-	if GameState.progression.prologue != Prologue.DONE and hp * 2 < max_hp and hp > 0:
-		hint("potion")
 
 func _use_portal(target: Dictionary) -> void:
 	match target["kind"]:
@@ -318,71 +302,6 @@ func _open_inventory() -> void:
 	var screen := preload("res://scripts/inventory_screen.gd").new()
 	screen.world = self
 	add_child(screen)
-
-
-## The HUD's 1280x720 layout on the screen as it is (PIX-162): along the
-## bottom, centred across, with the sky's tint edge to edge. On a desktop the
-## canvas is 1280x720 and nothing moves.
-func _place_hud() -> void:
-	if hud_root == null:
-		return
-	hud_root.offset = Touch.hud_offset(self)
-	sky_overlay.position = -hud_root.offset
-	sky_overlay.size = Touch.view_size(self)
-
-
-## A first-time hint (PIX-160): a card under the top of the screen that
-## says what something is, once per player (GameSettings.hints_seen, `key`
-## when one hint has many, a skill each) and never with hints off. It doesn't
-## stop the game, and fades by itself.
-func hint(id: String, values := {}, key := "") -> void:
-	var settings := GameState.settings
-	var seen_id := key if key != "" else id
-	if not settings.hints or seen_id in settings.hints_seen or hud_root == null:
-		return
-	settings.hints_seen.append(seen_id)
-	settings.save_file()
-	if _hint_doc.is_empty() or _hint_generation != Text.generation:
-		_hint_doc = Text.localize(JSON.parse_string(FileAccess.get_file_as_string("res://assets/data/hints.json")))
-		_hint_generation = Text.generation
-	var title := String(_hint_doc[id]["title"])
-	var text := Controls.say(String(_hint_doc[id]["text"]))
-	for name: String in values:
-		title = title.replace("{%s}" % name, str(values[name]))
-		text = text.replace("{%s}" % name, str(values[name]))
-	if hint_card != null:
-		hint_card.queue_free()
-	hint_card = PanelContainer.new()
-	hint_card.add_theme_stylebox_override("panel", UiStyle.window(12))
-	hint_card.position = Vector2(340, boss_bar.bottom() + 6 if boss_bar.following() else 18.0)
-	hint_card.custom_minimum_size = Vector2(600, 0)
-	hint_card.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var lines := VBoxContainer.new()
-	lines.add_theme_constant_override("separation", 4)
-	hint_card.add_child(lines)
-	lines.add_child(UiStyle.strong(title, 16, UiStyle.LAMP))
-	var body := UiStyle.label(text, UiStyle.reading(14), UiStyle.INK)
-	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	body.custom_minimum_size = Vector2(570, 0)
-	lines.add_child(body)
-	hud_root.add_child(hint_card)
-	hint_card.modulate.a = 0.0
-	var show := hint_card.create_tween()
-	show.tween_property(hint_card, "modulate:a", 1.0, 0.3)
-	show.tween_interval(10.0 if settings.large_text else 7.0)
-	show.tween_property(hint_card, "modulate:a", 0.0, 0.6)
-	show.tween_callback(hint_card.queue_free)
-
-
-## The boards on the square, explained the first time the hero walks up.
-func _hint_boards() -> void:
-	if map.id != "town" or GameState.progression.prologue != Prologue.DONE:
-		return
-	if Vector2(player_cell).distance_to(Vector2(Town.project_board())) <= 3.0:
-		hint("board")
-	if Vector2(player_cell).distance_to(Vector2(Town.bounty_board())) <= 2.0 \
-			and not Hunts.notices(GameState.board_floors(), GameState.progression.hunted).is_empty():
-		hint("bounty")
 
 
 ## Back off a gate to the cell the hero came from (the web keeps them there).
@@ -445,7 +364,7 @@ var _passing := false
 
 
 func _through_door(then: Callable) -> void:
-	if GameState.settings.reduce_motion or harness or hud_root == null:
+	if GameState.settings.reduce_motion or harness or hud.root == null:
 		then.call()
 		return
 	if _passing:
@@ -454,9 +373,9 @@ func _through_door(then: Callable) -> void:
 	var dark := ColorRect.new()
 	dark.color = Color(UiStyle.NIGHT, 0.0)
 	dark.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	dark.position = -hud_root.offset
+	dark.position = -hud.root.offset
 	dark.size = Touch.view_size(self)
-	hud_root.add_child(dark)
+	hud.root.add_child(dark)
 	var fade := dark.create_tween()
 	fade.tween_property(dark, "color:a", 1.0, DOOR_FADE).set_ease(Tween.EASE_OUT)
 	fade.tween_callback(func() -> void:
@@ -469,14 +388,14 @@ func _through_door(then: Callable) -> void:
 ## A new map fades in from the dark (PIX-211) instead of cutting; not with
 ## reduced motion, nor in harness runs, whose pictures are taken at once.
 func _fade_in() -> void:
-	if GameState.settings.reduce_motion or harness or hud_root == null:
+	if GameState.settings.reduce_motion or harness or hud.root == null:
 		return
 	var dark := ColorRect.new()
 	dark.color = UiStyle.NIGHT
 	dark.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	dark.position = -hud_root.offset
+	dark.position = -hud.root.offset
 	dark.size = Touch.view_size(self)
-	hud_root.add_child(dark)
+	hud.root.add_child(dark)
 	var fade := dark.create_tween()
 	fade.tween_property(dark, "color:a", 0.0, 0.35).set_ease(Tween.EASE_IN)
 	fade.tween_callback(dark.queue_free)
@@ -503,47 +422,18 @@ func _cell_center(cell: Vector2i) -> Vector2:
 func enter_house() -> void:
 	map = load_map("town_house")
 	enter_map(map, Vector2i(8, 8))
-	hint("house")
+	hud.hint("house")
 
 
-## The line above the dock (PIX-144): the main quest's next step, faded out
-## in a fight, under a flashing message and once the story is done; hidden
-## while the world is paused (menus, conversations, cutscenes).
-func _update_objective() -> void:
-	var step := MainQuest.next_step(GameState.progression, GameState.settlement)
-	var text: String = step.get("text", "")
-	if GameState.progression.prologue != Prologue.DONE:
-		text = Prologue.objective(GameState.progression.prologue, GameState.progression.prologue_doused.size(), GameState.first_skill_heals())
-	if text != objective_label.text:
-		objective_label.text = text
-		objective_box.reset_size()
-	objective_box.position.y = (dock.top() if dock != null and dock.top() > 0 else 690.0) - 38
-	# A message stands where the objective line does and grows upward, so a
-	# long one (a barred gate, a quest's words) never runs under the dock.
-	if messages.message_box.modulate.a > 0.0:
-		messages.fit()
-	messages.message_box.position.y = objective_box.position.y + objective_box.size.y - messages.message_box.size.y
-	# The battle log stands on the objective line, or on a taller message
-	# (PIX-211), and grows upward, so a long kill never runs into either.
-	var under := objective_box.position.y
-	if messages.message_box.modulate.a > 0.0:
-		under = minf(under, messages.message_box.position.y)
-	messages.log_box.reset_size()
-	messages.log_box.position.y = under - 6 - messages.log_box.size.y
-	var show := text != "" and not foes.in_fight() and messages.message_box.modulate.a < 0.05
-	var target := 1.0 if show else 0.0
-	if objective_box.get_meta("fading_to", -1.0) != target:
-		objective_box.set_meta("fading_to", target)
-		objective_box.create_tween().tween_property(objective_box, "modulate:a", target, 0.3)
-
-
+## The objective line hides while the world is paused (menus,
+## conversations, cutscenes).
 func _notification(what: int) -> void:
-	if objective_box == null:
+	if hud == null or hud.objective_box == null:
 		return
 	if what == NOTIFICATION_PAUSED:
-		objective_box.visible = false
+		hud.objective_box.visible = false
 	elif what == NOTIFICATION_UNPAUSED:
-		objective_box.visible = true
+		hud.objective_box.visible = true
 
 
 func _spawn_player() -> void:
@@ -567,35 +457,21 @@ func _spawn_player() -> void:
 	fx.world = self
 	add_child(fx)
 	camera_rig.attach(player)
-	get_tree().root.size_changed.connect(_place_hud)
 
+## The HUD (Hud builds its widgets), and which of GameState's signals reach
+## what: the dock and the hints, the messages, the sounds, the story.
 func _build_hud() -> void:
-	var hud := CanvasLayer.new()
-	# Over the glow's layer (PIX-222: LightRig.GLOW_LAYER), so it never blooms.
-	hud.layer = 2
-	add_child(hud)
-	# Day/night tint sits under the HUD widgets, over the world.
-	sky_overlay = ColorRect.new()
-	sky_overlay.color = Color(0, 0, 0, 0)
-	sky_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	hud.add_child(sky_overlay)
-	# The hero's dock along the bottom; the battle log floats above its left.
-	dock = preload("res://scripts/hud_dock.gd").new()
-	dock.world = self
-	hud.add_child(dock)
-	boss_bar = preload("res://scripts/boss_bar.gd").new()
-	hud.add_child(boss_bar)
-	messages.build_log(hud)
-	GameState.hp_changed.connect(_on_hp_changed)
+	hud.build()
+	GameState.hp_changed.connect(hud.on_hp_changed)
 	soundscape.listen()
 	GameState.leveled_up.connect(func(_level: int) -> void:
 		Sound.play("levelUp")
 		soundscape.heard_hp = GameState.hero.hp
 		fx.level_up_burst()
 	)
-	GameState.gold_changed.connect(func(_gold: int) -> void: dock.refresh())
-	GameState.inventory_changed.connect(dock.refresh)
-	GameState.healed.connect(dock.refresh)
+	GameState.gold_changed.connect(func(_gold: int) -> void: hud.dock.refresh())
+	GameState.inventory_changed.connect(hud.dock.refresh)
+	GameState.healed.connect(hud.dock.refresh)
 	GameState.message.connect(messages.flash)
 	GameState.noted.connect(messages.log_lines)
 	GameState.healed.connect(func() -> void: player.heal())
@@ -603,81 +479,16 @@ func _build_hud() -> void:
 	GameState.prologue_dawn.connect(stage.play_dawn)
 	GameState.skill_learned.connect(func(entry: Dictionary, key: int) -> void:
 		var values := {"skill": entry["name"], "what": entry.get("description", ""), "slot": Controls.say("{key:skill_%d}" % key)}
-		hint("skill" if key > 0 else "skill_full", values, "skill:" + String(entry["id"]))
+		hud.hint("skill" if key > 0 else "skill_full", values, "skill:" + String(entry["id"]))
 	)
-	hud_root = hud
-	_place_hud()
 	# Thumbs instead of keys on a phone (PIX-162), and a word for whoever
 	# holds it upright: the game reads best sideways.
 	if Touch.enabled():
 		add_child(preload("res://scripts/touch_controls.gd").new())
 		var size := Touch.view_size(self)
 		if size.y > size.x:
-			hint.call_deferred("turn")
+			hud.hint.call_deferred("turn")
 	GameState.settlers_changed.connect(folk.respawn)
-	nameplate = PanelContainer.new()
-	nameplate.add_theme_stylebox_override("panel", UiStyle.window(8))
-	nameplate.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	nameplate.visible = false
-	var lines := VBoxContainer.new()
-	lines.add_theme_constant_override("separation", 0)
-	lines.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	nameplate.add_child(lines)
-	var title := UiStyle.strong("", 16, UiStyle.LAMP)
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	lines.add_child(title)
-	var keeper := UiStyle.label("", 12, UiStyle.INK)
-	keeper.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	lines.add_child(keeper)
-	hud.add_child(nameplate)
-	messages.build_plate(hud)
-	objective_box = PanelContainer.new()
-	objective_box.add_theme_stylebox_override("panel", UiStyle.plate())
-	objective_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	objective_box.modulate.a = 0.0
-	var objective_row := HBoxContainer.new()
-	objective_row.add_theme_constant_override("separation", 8)
-	objective_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	objective_box.add_child(objective_row)
-	objective_row.add_child(UiStyle.plate_tag("Next"))
-	objective_label = UiStyle.plate_text("")
-	objective_row.add_child(objective_label)
-	# Centred over the dock whatever the step's length.
-	objective_box.resized.connect(func() -> void: objective_box.position.x = roundf((1280 - objective_box.size.x) / 2.0))
-	hud.add_child(objective_box)
-
-## The nameplate of the sign the hero stands near (two tiles or so): the
-## place's name and who keeps it, over the board, in the UI's window style.
-func _update_nameplate() -> void:
-	var near := {}
-	var best := 2.6 * TILE
-	for entry: Dictionary in view.door_signs:
-		var at := Vector2(entry["door"] * TILE) + Vector2(TILE / 2.0, TILE / 2.0)
-		var distance := player.position.distance_to(at)
-		if distance < best:
-			best = distance
-			near = entry
-	if near.is_empty():
-		if nameplate.visible and nameplate_door != Vector2i(-1, -1):
-			nameplate_door = Vector2i(-1, -1)
-			var fade := nameplate.create_tween()
-			fade.tween_property(nameplate, "modulate:a", 0.0, 0.15)
-			fade.tween_callback(nameplate.hide)
-		return
-	if near["door"] != nameplate_door:
-		nameplate_door = near["door"]
-		(nameplate.get_child(0).get_child(0) as Label).text = near["name"]
-		(nameplate.get_child(0).get_child(1) as Label).text = near["about"]
-		nameplate.get_child(0).get_child(1).visible = near["about"] != ""
-		nameplate.reset_size()
-		nameplate.show()
-		nameplate.modulate.a = 1.0 if GameState.settings.reduce_motion else 0.0
-		if not GameState.settings.reduce_motion:
-			nameplate.create_tween().tween_property(nameplate, "modulate:a", 1.0, 0.15)
-	# Over the board, wherever the camera has the door on screen.
-	var top := Vector2(nameplate_door.x * TILE + TILE / 2.0, nameplate_door.y * TILE - ShopSign.BOARD.y - 10)
-	var screen := get_viewport().get_canvas_transform() * top
-	nameplate.position = (screen - Vector2(nameplate.size.x / 2.0, nameplate.size.y)).round()
 
 ## The keys, as the player bound them (Controls, GameSettings).
 func _setup_input() -> void:
@@ -693,8 +504,8 @@ func apply_video() -> void:
 	if messages != null and messages.message_label != null:
 		UiStyle.sized(messages.message_label, UiStyle.reading(16))
 		messages.message_box.reset_size()
-		UiStyle.sized(objective_label, UiStyle.reading(16))
-		objective_box.reset_size()
+		UiStyle.sized(hud.objective_label, UiStyle.reading(16))
+		hud.objective_box.reset_size()
 	if settings.scanlines and crt == null:
 		crt = CanvasLayer.new()
 		crt.layer = 20

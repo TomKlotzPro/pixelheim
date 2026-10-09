@@ -70,8 +70,8 @@ func refresh() -> void:
 			world.foes.hunted_at = now
 			world.foes.hunted_by_boss = world.foes.hunted_by_boss or world.foes.fights_like_boss(enemy)
 			# A boss on the hunt has its bar across the top (PIX-210).
-			if world.foes.fights_like_boss(enemy) and not world.boss_bar.following():
-				world.boss_bar.follow(enemy)
+			if world.foes.fights_like_boss(enemy) and not world.hud.boss_bar.following():
+				world.hud.boss_bar.follow(enemy)
 	var fight := ""
 	if now - world.foes.hunted_at < Foes.COMBAT_LINGER_S:
 		fight = "boss" if world.foes.hunted_by_boss else "battle"
