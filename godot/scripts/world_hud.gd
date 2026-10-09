@@ -38,6 +38,11 @@ var _bearing_left := 0.0
 ## The arrow at the view's edge (PIX-240): toward where the hero is headed
 ## while that's off screen; how far in from the edge it stands.
 var arrow: Arrow
+## The hour (PIX-246): a small plate at the top right, a dial (the sun by day,
+## the moon by night) and the time. A quest's run clock stands under it.
+var clock_plate: PanelContainer
+var _clock_text: Label
+var _clock_dial: Dial
 const ARROW_INSET := 26.0
 
 
@@ -265,6 +270,34 @@ func update_objective() -> void:
 		objective_box.create_tween().tween_property(objective_box, "modulate:a", target, 0.3)
 
 
+## The clock as the steps stand (PIX-246); redrawn only when the minute turns.
+func update_clock() -> void:
+	if root == null:
+		return
+	if clock_plate == null:
+		clock_plate = PanelContainer.new()
+		clock_plate.add_theme_stylebox_override("panel", UiStyle.plate(10))
+		clock_plate.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", 6)
+		row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_clock_dial = Dial.new()
+		row.add_child(_clock_dial)
+		_clock_text = UiStyle.strong("", 16, UiStyle.CREAM)
+		row.add_child(_clock_text)
+		clock_plate.add_child(row)
+		root.add_child(clock_plate)
+	var time := DayNight.clock(GameState.world.steps)
+	var text := "%02d:%02d" % [time.x, time.y]
+	if _clock_text.text == text:
+		return
+	_clock_text.text = text
+	_clock_dial.night = DayNight.is_night(GameState.world.steps)
+	_clock_dial.queue_redraw()
+	clock_plate.reset_size()
+	clock_plate.position = Vector2(1280 - 24 - clock_plate.size.x, 16)
+
+
 ## The arrow at the view's edge (PIX-240): toward the bearing's spot on this
 ## map, or the door that starts the way to its map, while it's off screen;
 ## gone once it's in view, with nowhere to head for, on the first night
@@ -365,3 +398,26 @@ class Arrow extends Control:
 		if absf(heading.y) > 0.0001:
 			reach = minf(reach, half.y / absf(heading.y))
 		return from + heading * reach
+
+
+## The clock's dial (PIX-246): a gold sun with four short rays by day, a pale
+## crescent moon by night, rimmed in the night like the arrow.
+class Dial extends Control:
+	var night := false
+
+	func _init() -> void:
+		custom_minimum_size = Vector2(14, 14)
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	func _draw() -> void:
+		var middle := size / 2.0
+		if night:
+			draw_circle(middle, 6.0, UiStyle.NIGHT)
+			draw_circle(middle, 5.0, Color("e8e4d0"))
+			draw_circle(middle + Vector2(2.5, -1.5), 4.0, UiStyle.NIGHT)
+			return
+		for ray: Vector2 in [Vector2(0, -7), Vector2(7, 0), Vector2(0, 7), Vector2(-7, 0)]:
+			draw_line(middle, middle + ray, UiStyle.NIGHT, 3.0)
+			draw_line(middle, middle + ray * 0.85, Color("f2c14e"), 1.0)
+		draw_circle(middle, 4.5, UiStyle.NIGHT)
+		draw_circle(middle, 3.5, Color("f2c14e"))

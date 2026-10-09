@@ -302,4 +302,5 @@ func run_clocks(delta: float) -> void:
 	shown.text = Text.t("%s  %d:%02d") % [running["quest"]["timed"]["clock"], left / 60, left % 60]
 	shown.add_theme_color_override("font_color", Color("ff5a4a") if left <= 30 else UiStyle.CREAM)
 	run_clock.reset_size()
-	run_clock.position = Vector2(1280 - 24 - run_clock.size.x, 16)
+	# Under the clock of the day (PIX-246).
+	run_clock.position = Vector2(1280 - 24 - run_clock.size.x, 56)

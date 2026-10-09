@@ -516,6 +516,30 @@ func _run_test_harness() -> void:
 		await get_tree().create_timer(0.3).timeout
 		var counters: Array = world.get_children().filter(func(node: Node) -> bool: return node.has_method("_craft_job"))
 		motion_report += " tab=%s" % (counters[-1].tabs[counters[-1].tab] if not counters.is_empty() else "none")
+	if flags.has("sleep"):
+		# Pair with `--map town_inn` (and `night`): face the room's first bed
+		# from a free cell beside it and press E (PIX-246); the report adds
+		# the clock the hero woke at.
+		var map: MapData = world.map
+		var bed := Vector2i(-1, -1)
+		var stand := Vector2i(-1, -1)
+		for y in map.size.y:
+			for x in map.size.x:
+				var cell := Vector2i(x, y)
+				if bed.x >= 0 or map.tile_at(cell) != "bed":
+					continue
+				for side: Vector2i in [Vector2i.DOWN, Vector2i.RIGHT, Vector2i.LEFT, Vector2i.UP]:
+					if stand.x < 0 and map.is_walkable(cell + side):
+						bed = cell
+						stand = cell + side
+		world.player.position = MapView.center(stand)
+		world.camera_rig.cut()
+		world.player_cell = stand
+		world.player.face(Vector2(bed - stand))
+		world.interaction.interact()
+		await get_tree().create_timer(0.3).timeout
+		var woke := DayNight.clock(GameState.world.steps)
+		motion_report += " clock=%02d:%02d" % [woke.x, woke.y]
 	if flags.has("--hunted"):
 		# `--hunted greymaw,cinderjaw`: named monsters already slain (PIX-156).
 		for named_id: String in flags.list("--hunted"):

@@ -96,6 +96,7 @@ const TABLE := [
 	{"flag": "near", "takes": "", "does": "below the map's first villager, facing them (the prompt)"},
 	{"flag": "chest", "takes": "", "does": "with --map town: the nook chest faced and opened"},
 	{"flag": "station", "takes": "", "does": "the room's first station (a cauldron, a forge) faced and E pressed; the report adds tab= (PIX-234)"},
+	{"flag": "sleep", "takes": "", "does": "with --map town_inn: the room's first bed faced and E pressed, a night slept; the report adds clock= (PIX-246)"},
 	{"flag": "--hunted", "takes": "<ids>", "does": "named monsters already slain (PIX-156)"},
 	{"flag": "reveal", "takes": "", "does": "the town risen (PIX-147): the lamps' stop, then the age's; with --hunted, the first one's homecoming"},
 	{"flag": "rebuilt", "takes": "", "does": "back from the board with something built: the town redrawn, faded in, then its tour (PIX-238)"},

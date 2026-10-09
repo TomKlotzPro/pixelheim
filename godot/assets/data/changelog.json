@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.183.0",
+      "date": "2026-10-10",
+      "codename": "Longer Days",
+      "notes": [
+        "A day lasts three times longer, and a clock at the top right tells the hour: a sun by day, a moon by night",
+        "Sleep till morning: face a bed at the inn (for the night's coin) or your own bed at home and press E; the screen goes dark and you wake at dawn, restored. Walking into the inn no longer takes a bed by itself",
+        "Rent and the bank's interest still come by the day, so with longer days they come in less often"
+      ]
+    },
+    {
       "version": "0.182.0",
       "date": "2026-10-10",
       "codename": "Bearing",

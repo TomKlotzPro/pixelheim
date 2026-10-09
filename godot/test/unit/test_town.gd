@@ -35,10 +35,10 @@ func test_caravans_match_the_web_hash() -> void:
 ## tenth of the pot (the web's 2% compounded on every top-up).
 func test_savings_earn_by_the_day_and_stop_at_the_cap() -> void:
 	var pot := {"principal": 1000, "at": 0}
-	var expected := {0: 1000, 479: 1000, 480: 1005, 1440: 1015, 9600: 1100, 99999: 1100}
+	var expected := {0: 1000, 1439: 1000, 1440: 1005, 4320: 1015, 28800: 1100, 299999: 1100}
 	for steps: int in expected:
 		assert_eq(Town.savings_value(pot, steps), expected[steps], "steps %d" % steps)
-	assert_eq(Town.savings_accrued(pot, 1000)["at"], 960, "the clock keeps the part of a day that's running")
+	assert_eq(Town.savings_accrued(pot, 3000)["at"], 2880, "the clock keeps the part of a day that's running")
 
 
 func test_topping_up_never_compounds() -> void:
@@ -50,7 +50,7 @@ func test_topping_up_never_compounds() -> void:
 	assert_true(state.holdings.bank_deposit(10000))
 	# A deposit of 100 every day for twenty days: the interest is kept apart.
 	for day in range(1, 21):
-		steps_at.call(day * 480.0)
+		steps_at.call(day * 1440.0)
 		state.holdings.bank_deposit(100)
 	var pot: Dictionary = state.holdings.investments()["savings"]
 	assert_eq(pot["principal"], 12000)
@@ -59,7 +59,7 @@ func test_topping_up_never_compounds() -> void:
 	for day in range(1, 21):
 		simple += floori((10000 + 100 * (day - 1)) * 0.005)
 	assert_eq(pot["earned"], simple, "interest on what was put in, never on interest")
-	assert_eq(int(pot["at"]), 20 * 480, "the top-ups never reset the clock")
+	assert_eq(int(pot["at"]), 20 * 1440, "the top-ups never reset the clock")
 
 
 func test_perks_match_the_web() -> void:
@@ -79,11 +79,11 @@ func test_rent_fills_a_till_by_the_day() -> void:
 	state.world.map_id = "town_shop"
 	state.world.steps = 100.0
 	assert_true(state.holdings.buy_property("town_shop"))
-	state.world.steps = 100.0 + 480 * 3 + 200
+	state.world.steps = 100.0 + 1440 * 3 + 200
 	assert_eq(state.holdings.till("town_shop")["gold"], 300, "three whole days")
 	assert_eq(state.holdings.collect_till("town_shop"), 300)
 	assert_eq(state.holdings.till("town_shop")["gold"], 0)
-	state.world.steps += 480 * 50
+	state.world.steps += 1440 * 50
 	assert_eq(state.holdings.till("town_shop")["gold"], Town.till_cap("town_shop", false, state.town_tier()), "a till holds ten days at most")
 	assert_gt(int(state.holdings.till("town_shop")["earned"]), 300, "the Holdings count all it earned")
 
@@ -96,7 +96,7 @@ func test_an_owner_pays_less_and_gets_the_days_pick() -> void:
 	state.holdings.buy_property("town_shop")
 	assert_lt(state.trade.price_of("elixir"), before, "a tenth off in your own shop")
 	var wares: Array = state.trade.shop_wares("odo")
-	var pick := Town.owner_pick("odo", int(state.holdings.steps_now()) / 480)
+	var pick := Town.owner_pick("odo", int(state.holdings.steps_now()) / 1440)
 	assert_has(wares, pick, "the owner's pick is on the shelf")
 	assert_true(state.trade.buy_item(pick))
 	assert_eq(Economy.buy_price("bread"), bread, "the catalogue price is unchanged")
@@ -195,10 +195,10 @@ func test_deeds_sell_only_where_you_stand() -> void:
 func test_deposits_keep_interest_apart_and_withdraw_pays_it() -> void:
 	state.pack.gold = 2000
 	assert_true(state.holdings.bank_deposit(500))
-	state.world.steps = 960.0  # two days
+	state.world.steps = 2880.0  # two days
 	assert_true(state.holdings.bank_deposit(500))
-	assert_eq(state.holdings.investments()["savings"], {"principal": 1000, "earned": 5, "at": 960}, "PIX-177: two days on 500, kept apart")
-	state.world.steps = 1440.0
+	assert_eq(state.holdings.investments()["savings"], {"principal": 1000, "earned": 5, "at": 2880}, "PIX-177: two days on 500, kept apart")
+	state.world.steps = 4320.0
 	assert_eq(state.holdings.bank_withdraw(), 1010, "and a day on 1000")
 	assert_eq(state.pack.gold, 1000 + 1010)
 	assert_false(state.holdings.investments().has("savings"))
@@ -210,7 +210,7 @@ func test_one_caravan_at_a_time_sealed_at_departure() -> void:
 	assert_true(state.holdings.fund_venture())
 	assert_false(state.holdings.fund_venture(), "one on the road")
 	assert_eq(state.holdings.collect_venture(), {}, "not back yet")
-	state.world.steps = 4321.0 + 240
+	state.world.steps = 4321.0 + 720
 	assert_eq(state.holdings.collect_venture(), {"won": true, "payout": 800})
 	assert_eq(state.pack.gold, 2000 - 500 + 800)
 
@@ -313,13 +313,18 @@ func test_closing_any_conversation_is_announced() -> void:
 
 # ---- GameState: the inn -----------------------------------------------------------
 
-func test_the_inn_charges_only_the_hurt_and_halves_in_a_town() -> void:
-	assert_eq(state.upkeep.rest_at_inn(), "The innkeeper nods. You are already well rested.")
-	assert_eq(state.pack.gold, 30)
-	state.hero.hp = 1
-	assert_eq(state.upkeep.rest_at_inn(), "You rest at the inn and wake fully restored. -10 gold.")
+func test_a_night_at_the_inn_wakes_at_dawn_and_halves_in_a_town() -> void:
+	# Whole or hurt, a night is a night (PIX-246): it skips the dark.
+	state.world.steps = 0.7 * DayNight.DAY_CYCLE_STEPS
+	assert_eq(state.upkeep.rest_at_inn(), "You sleep at the inn and wake at dawn, fully restored. -10 gold.")
 	assert_eq(state.pack.gold, 20)
+	assert_eq(state.world.steps, float(DayNight.DAY_CYCLE_STEPS), "the next morning")
+	assert_eq(DayNight.clock(state.world.steps), Vector2i(6, 0), "at six")
+	state.hero.hp = 1
+	state.upkeep.rest_at_inn()
+	assert_eq(state.pack.gold, 10)
 	assert_eq(state.hero.hp, state.hero.stats["maxHp"])
+	state.pack.gold = 20
 	state.settlement.town_tier = 3
 	state.hero.hp = 1
 	state.upkeep.rest_at_inn()

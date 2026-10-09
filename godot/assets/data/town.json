@@ -1056,10 +1056,10 @@
   "workbenchCost": 800,
   "restCost": 10,
   "bank": {
-    "daySteps": 480,
+    "daySteps": 1440,
     "savingsRate": 0.005,
     "ventureCost": 500,
-    "ventureSteps": 240,
+    "ventureSteps": 720,
     "expansionCost": 1000,
     "expansionRent": 2,
     "savingsCapShare": 0.1,
