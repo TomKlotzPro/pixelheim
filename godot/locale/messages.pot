@@ -2173,6 +2173,10 @@ msgid "Every Class Starts Right"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Every Corner in French"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Every Lead True"
 msgstr ""
 
@@ -4018,6 +4022,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The craft stations finally introduce themselves: an anvil hangs over the FORGE door, a bubbling cauldron over BREWS"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The cutscenes' title cards and captions speak French, the doors keep their signs in French once you own a house, and switching language mid-game renames the Deep Hunt and the journal's leads at once"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -10244,15 +10252,15 @@ msgstr ""
 msgid "role"
 msgstr ""
 
-#: scripts/cutscene.gd:81
+#: scripts/cutscene.gd:83
 msgid "Esc"
 msgstr ""
 
-#: scripts/cutscene.gd:81
+#: scripts/cutscene.gd:83
 msgid "next"
 msgstr ""
 
-#: scripts/cutscene.gd:81
+#: scripts/cutscene.gd:83
 msgid "skip"
 msgstr ""
 

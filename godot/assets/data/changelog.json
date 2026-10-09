@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.152.0",
+      "date": "2026-10-09",
+      "codename": "Every Corner in French",
+      "notes": [
+        "The cutscenes' title cards and captions speak French, the doors keep their signs in French once you own a house, and switching language mid-game renames the Deep Hunt and the journal's leads at once"
+      ]
+    },
+    {
       "version": "0.151.0",
       "date": "2026-10-09",
       "codename": "Small Things",

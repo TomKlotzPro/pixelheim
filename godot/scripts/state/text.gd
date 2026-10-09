@@ -110,5 +110,6 @@ static func forget() -> void:
 	Interactables._doc = {}
 	Ranks._doc = {}
 	Bestiary._found = {}
+	Dungeons._deep = {}
 	Bestiary._found_floors = {}
 	generation += 1
