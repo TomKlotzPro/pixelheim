@@ -98,7 +98,10 @@ static func make(at: Vector2, radius: float, color: Color, energy: float, flicke
 	var light := PointLight2D.new()
 	light.texture = soft()
 	light.texture_scale = radius * 2.0 / TEXTURE_PX
-	light.color = color
+	# Picked by eye, in the screen's colours: on the desktop app's linear
+	# canvas made linear (PIX-227, DesktopLook), the LightRig keeping it so.
+	light.set_meta("tint", color)
+	light.color = DesktopLook.canvas_color(color, DesktopLook.linear)
 	light.energy = 0.0
 	light.position = at
 	light.set_meta("energy", energy)

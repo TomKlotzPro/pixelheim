@@ -13,6 +13,7 @@ shader_type canvas_item;
 // and foam laps where PunyTerrain.water_map's water meets the land.
 
 #include "res://shaders/wind.gdshaderinc"
+#include "res://shaders/linear.gdshaderinc"
 
 uniform sampler2D tint_map : filter_linear, repeat_disable;
 uniform vec2 map_pixels;
@@ -66,6 +67,7 @@ void vertex() {
 
 void fragment() {
 	vec4 base = COLOR;  // already the texel times the modulate
+	base.rgb = to_display(base.rgb);
 	vec4 tint = texture(tint_map, world_pos / map_pixels);
 	ivec2 block = ivec2(floor(world_pos / 2.0)) & ivec2(3);
 	float threshold = (BAYER[block.y * 4 + block.x] + 0.5) / 16.0;
@@ -101,5 +103,5 @@ void fragment() {
 			base.rgb = mix(base.rgb, vec3(0.9, 1.0, 1.0), middle);
 		}
 	}
-	COLOR = base;
+	COLOR = vec4(to_canvas(base.rgb), base.a);
 }

@@ -178,7 +178,7 @@ func _run_test_harness() -> void:
 			var around: Vector2 = (get_viewport().get_canvas_transform() * world.player.global_position) * (image.get_width() / get_viewport().get_visible_rect().size.x)
 			for y in range(int(around.y) - 90, int(around.y) + 30):
 				for x in range(int(around.x) - 50, int(around.x) + 50):
-					if image.get_pixel(x, y).to_html(false) == "ae0000":
+					if DesktopLook.shown(image.get_pixel(x, y), DesktopLook.linear).to_html(false) == "ae0000":
 						sum += x
 						n += 1
 			hero_x.append(sum / maxf(n, 1))
@@ -627,8 +627,9 @@ func _run_test_harness() -> void:
 			if node.has_method("jump_to"):
 				node.jump_to(int(args[beat_index + 1]))
 		await get_tree().create_timer(0.6).timeout
-	# `lookbook [perf] [film] [--only NAME] [--out DIR]`: the look book (PIX-220), every staged
-	# scene saved and on one sheet; tools/lookbook.sh runs it.
+	# `lookbook [perf] [film] [--only NAME] [--out DIR] [--looks a,b]`: the
+	# look book (PIX-220), every staged scene saved and on one sheet, in each
+	# of the app's looks named (PIX-227); tools/lookbook.sh runs it.
 	if args.has("lookbook"):
 		var book: Node = preload("res://scripts/lookbook.gd").new()
 		book.world = world
@@ -639,6 +640,7 @@ func _run_test_harness() -> void:
 		var only_index := args.find("--only")
 		if only_index >= 0 and only_index + 1 < args.size():
 			book.only = args[only_index + 1]
+		book.looks = book.looks_from(args)
 		var out_index := args.find("--out")
 		if out_index >= 0 and out_index + 1 < args.size():
 			book.out_dir = args[out_index + 1]
@@ -666,7 +668,8 @@ func _run_test_harness() -> void:
 		await get_tree().process_frame
 	else:
 		await RenderingServer.frame_post_draw
-		get_viewport().get_texture().get_image().save_png("res://screenshot.png")
+		# As the screen shows it (the desktop app's canvas is linear light).
+		(await DesktopLook.snapshot(self)).save_png("res://screenshot.png")
 	# The menus and conversations still open over the world, by script name.
 	var open := world.get_children().filter(func(node: Node) -> bool:
 		return node is CanvasLayer and node.get_script() != null and (

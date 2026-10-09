@@ -10,6 +10,7 @@ shader_type canvas_item;
 // view and the map.
 
 #include "res://shaders/wind.gdshaderinc"
+#include "res://shaders/linear.gdshaderinc"
 
 uniform sampler2D screen : hint_screen_texture, filter_nearest;
 uniform sampler2D water_map : filter_nearest, repeat_disable;
@@ -38,9 +39,9 @@ void fragment() {
 	vec2 px = floor(view_origin + UV * view_size) + 0.5;
 	vec2 cell = floor((px + vec2(0.0, SPILL)) / TILE);
 	vec4 water = texture(water_map, (cell + 0.5) / map_cells);
-	vec4 seen = texture(screen, SCREEN_UV);
+	vec3 seen = to_display(texture(screen, SCREEN_UV).rgb);
 	COLOR = vec4(0.0);
-	if (water.r > 0.5 && looks_like_water(seen.rgb)) {
+	if (water.r > 0.5 && looks_like_water(seen)) {
 		float shore = (cell.y - round(water.g * 255.0)) * TILE - SPILL;
 		float depth = px.y - shore;
 		if (depth < reach) {
@@ -48,10 +49,10 @@ void fragment() {
 			float waver = floor(sin(px.y * 0.7 + world_time * 2.2) * 1.2 + 0.5);
 			vec2 mirrored = vec2(px.x + waver, shore - depth);
 			vec2 at = SCREEN_UV + ((mirrored - view_origin) / view_size - UV) * per_uv;
-			vec3 image = texture(screen, at).rgb;
+			vec3 image = to_display(texture(screen, at).rgb);
 			if (at.y > 0.0 && !looks_like_water(image)) {
 				float fade = (1.0 - depth / reach) * strength;
-				COLOR = vec4(mix(seen.rgb, image * vec3(0.62, 0.86, 1.0), fade), 1.0);
+				COLOR = vec4(to_canvas(mix(seen, image * vec3(0.62, 0.86, 1.0), fade)), 1.0);
 			}
 		}
 	}

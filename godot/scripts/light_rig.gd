@@ -8,6 +8,10 @@ extends Node
 ## the shaders read (shaders/wind.gdshaderinc), the banks mirrored in the
 ## water, and cloud shadows drifting over the land by day. The clock stops while the game is paused; with
 ## reduced motion it stops too, the wind drops and the clouds stand still.
+##
+## And the desktop app's look (PIX-227, DesktopLook): the canvas in linear
+## HDR and a wider glow at night, where the desktop renderer runs; the
+## browser's look everywhere else.
 
 var world: Node
 var darkness: CanvasModulate
@@ -36,6 +40,15 @@ var air: ColorRect
 var _air_copy: BackBufferCopy
 var _glow_copy: BackBufferCopy
 var _water_of: MapData
+## The desktop app's wider glow (PIX-227, DesktopLook): the brights marked
+## last on the layer (after a fresh copy), then spread by a pass alone on a
+## canvas layer of its own right after this one (its screen copy is the one
+## whose blur keeps the mark). Only where the desktop renderer runs; null in
+## the browser.
+var glow_mask: ColorRect
+var _mask_copy: BackBufferCopy
+var glow_wide: ColorRect
+var _wide_layer: CanvasLayer
 var time := 0.0
 var wind := 1.0
 ## How dark a cloud's shadow is at its heart, in full day.
@@ -61,6 +74,37 @@ func _ready() -> void:
 	air.visible = false
 	_glow_copy = _copy(layer)
 	bloom = _screen_pass(layer, preload("res://shaders/bloom.gdshader"))
+	var app := DesktopLook.here()
+	if app:
+		_mask_copy = _copy(layer)
+		glow_mask = _screen_pass(layer, preload("res://shaders/glow_mask.gdshader"))
+		_wide_layer = CanvasLayer.new()
+		_wide_layer.layer = GLOW_LAYER
+		world.add_child(_wide_layer)
+		glow_wide = _screen_pass(_wide_layer, preload("res://shaders/glow_wide.gdshader"))
+		_show_wide(false)
+	wear(DesktopLook.pick(app, OS.get_cmdline_user_args()))
+
+
+## Wears a look (DesktopLook.LOOKS): the canvas in linear HDR or not, and
+## the wider glow or not. Only the desktop renderer can; the browser keeps
+## its own look.
+func wear(look: String) -> void:
+	if glow_wide == null:
+		look = DesktopLook.BROWSER
+	DesktopLook.look = look
+	DesktopLook.linear = DesktopLook.hdr(look)
+	if glow_wide != null:
+		var root := get_tree().root
+		root.use_hdr_2d = DesktopLook.linear
+		root.use_debanding = DesktopLook.linear
+	RenderingServer.global_shader_parameter_set("world_linear", 1.0 if DesktopLook.linear else 0.0)
+
+
+func _show_wide(on: bool) -> void:
+	glow_mask.visible = on
+	_mask_copy.visible = on
+	_wide_layer.visible = on
 
 
 ## A fresh copy of the screen for the passes after it.
@@ -134,6 +178,10 @@ func _process(delta: float) -> void:
 	_air_copy.visible = air.visible
 	if bloom.visible:
 		(bloom.material as ShaderMaterial).set_shader_parameter("strength", lerpf(GLOW_DAY, GLOW_NIGHT, dark))
+	if glow_wide != null:
+		var wide := DesktopLook.wide(DesktopLook.look, dark, GameState.settings.glow)
+		_show_wide(wide > 0.0)
+		(glow_wide.material as ShaderMaterial).set_shader_parameter("strength", wide)
 	tick(delta)
 	var at := world_view()
 	_mirror_water(at)
@@ -142,6 +190,8 @@ func _process(delta: float) -> void:
 	var t := Time.get_ticks_msec() / 1000.0
 	for node in get_tree().get_nodes_in_group("lights"):
 		var lamp := node as PointLight2D
+		if lamp.has_meta("tint"):
+			lamp.color = DesktopLook.canvas_color(lamp.get_meta("tint"), DesktopLook.linear)
 		var energy := float(lamp.get_meta("energy", 1.0)) * dark
 		if lamp.get_meta("flicker", false) and not still:
 			var phase := float(lamp.get_meta("phase", 0.0))
