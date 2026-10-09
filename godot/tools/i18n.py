@@ -99,7 +99,8 @@ def prose(text):
 def from_scripts(out):
     for path in sorted(glob.glob(os.path.join(ROOT, "scripts", "**", "*.gd"), recursive=True)):
         name = os.path.relpath(path, ROOT)
-        if name.endswith("harness.gd"):
+        # The harness and its flags' table (PIX-262) speak to developers only.
+        if name.endswith(("harness.gd", "harness_flags.gd")):
             continue
         for number, line in enumerate(open(path, encoding="utf-8"), 1):
             stripped = line.strip()

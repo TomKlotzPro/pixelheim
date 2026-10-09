@@ -113,7 +113,7 @@ func test_the_notes_read_are_remembered_and_a_harness_run_writes_nothing() -> vo
 
 func test_boot_starts_a_new_game_in_the_last_slot_then_resumes_it() -> void:
 	var first := _fresh_state()
-	first.boot(PackedStringArray())
+	first.boot(HarnessFlags.new())
 	assert_eq(first.slot, 1)
 	assert_false(FileAccess.file_exists(slots.path_for(1)), "the title's stand-in isn't written")
 	first.new_hero_in(first.free_slot(), "Robin", "warrior")
@@ -121,13 +121,13 @@ func test_boot_starts_a_new_game_in_the_last_slot_then_resumes_it() -> void:
 	first.pack.gold = 999
 	first.save_now()
 	var second := _fresh_state()
-	second.boot(PackedStringArray())
+	second.boot(HarnessFlags.new())
 	assert_eq(second.pack.gold, 999)
 
 
 func test_boot_honors_a_named_slot_and_remembers_it() -> void:
 	var state := _fresh_state()
-	state.boot(PackedStringArray(["--slot", "2"]))
+	state.boot(HarnessFlags.new(PackedStringArray(["--slot", "2"])))
 	assert_eq(state.slot, 2)
 	var settings := GameSettings.new(DIR + "/settings.cfg")
 	settings.load_file()
@@ -136,7 +136,7 @@ func test_boot_honors_a_named_slot_and_remembers_it() -> void:
 
 func test_harness_runs_never_touch_saves() -> void:
 	var state := _fresh_state()
-	state.boot(PackedStringArray(["--screenshot"]))
+	state.boot(HarnessFlags.new(PackedStringArray(["--screenshot"])))
 	assert_eq(state.slot, GameStateScript.NO_SLOT)
 	state.pack.gold = 5
 	state.save_now()
@@ -146,24 +146,24 @@ func test_harness_runs_never_touch_saves() -> void:
 
 func test_boot_runs_once_per_session() -> void:
 	var state := _fresh_state()
-	state.boot(PackedStringArray(["--slot", "1"]))
+	state.boot(HarnessFlags.new(PackedStringArray(["--slot", "1"])))
 	state.new_hero_in(2, "Robin", "warrior")
-	state.boot(PackedStringArray(["--slot", "1"]))  # the world scene reloaded
+	state.boot(HarnessFlags.new(PackedStringArray(["--slot", "1"])))  # the world scene reloaded
 	assert_eq(state.slot, 2, "a reload must not undo the switch")
 
 
 func test_a_first_visit_lasts_until_a_hero_is_made() -> void:
 	var first := _fresh_state()
-	first.boot(PackedStringArray())
+	first.boot(HarnessFlags.new())
 	assert_true(first.first_run)
 	first.save_now()
 	var second := _fresh_state()
-	second.boot(PackedStringArray())
+	second.boot(HarnessFlags.new())
 	assert_true(second.first_run, "the stand-in behind the title is never written")
 	assert_eq(second.free_slot(), second.slot, "the new hero takes the slot in hand")
 	second.new_hero_in(second.free_slot(), "Robin", "ranger", 1)
 	var third := _fresh_state()
-	third.boot(PackedStringArray())
+	third.boot(HarnessFlags.new())
 	assert_false(third.first_run)
 	assert_eq(third.hero.hero_name, "Robin")
 	assert_eq(third.hero.role_id, "ranger")
@@ -176,7 +176,7 @@ func test_an_empty_slot_is_no_hero_to_play() -> void:
 	# past creation and the Night of Ash. Now it's refused (the saves screen
 	# opens creation for it instead).
 	var state := _fresh_state()
-	state.boot(PackedStringArray(["--slot", "1"]))
+	state.boot(HarnessFlags.new(PackedStringArray(["--slot", "1"])))
 	state.pack.gold = 777
 	assert_false(state.play_slot(3))
 	assert_eq(state.slot, 1, "the hero in hand stays")
@@ -192,7 +192,7 @@ func test_an_empty_slot_is_no_hero_to_play() -> void:
 
 func test_importing_writes_the_slot_and_plays_it() -> void:
 	var state := _fresh_state()
-	state.boot(PackedStringArray(["--slot", "1"]))
+	state.boot(HarnessFlags.new(PackedStringArray(["--slot", "1"])))
 	var imported := WebImport.parse_any(FileAccess.get_file_as_string("res://test/fixtures/web_save_v4.txt"))
 	state.import_into(2, imported)
 	assert_eq(state.slot, 2)
@@ -205,7 +205,7 @@ func test_importing_writes_the_slot_and_plays_it() -> void:
 
 func test_new_hero_replaces_a_slot() -> void:
 	var state := _fresh_state()
-	state.boot(PackedStringArray(["--slot", "1"]))
+	state.boot(HarnessFlags.new(PackedStringArray(["--slot", "1"])))
 	state.pack.gold = 500
 	state.save_now()
 	state.new_hero_in(1)
@@ -214,7 +214,7 @@ func test_new_hero_replaces_a_slot() -> void:
 
 func test_any_slot_clears_and_the_hero_in_hand_becomes_a_stand_in() -> void:
 	var state := _fresh_state()
-	state.boot(PackedStringArray(["--slot", "1"]))
+	state.boot(HarnessFlags.new(PackedStringArray(["--slot", "1"])))
 	state.new_hero_in(2, "Robin", "warrior")
 	assert_true(state.clear_slot(1))
 	assert_eq(slots.read(1), {})

@@ -27,12 +27,12 @@ func test_the_extras_need_the_desktop_renderer_in_a_window() -> void:
 
 
 func test_the_app_wears_its_look_and_the_browser_its_own() -> void:
-	assert_eq(DesktopLook.pick(false, PackedStringArray()), DesktopLook.BROWSER)
-	assert_eq(DesktopLook.pick(false, PackedStringArray(["--look", "layered"])), DesktopLook.BROWSER, "no look the renderer can't wear")
-	assert_eq(DesktopLook.pick(true, PackedStringArray()), DesktopLook.APP)
-	assert_eq(DesktopLook.pick(true, PackedStringArray(["--screenshot", "--look", "hdr"])), "hdr", "a run picks another")
-	assert_eq(DesktopLook.pick(true, PackedStringArray(["--look", "sepia"])), DesktopLook.APP, "an unknown look is the app's")
-	assert_eq(DesktopLook.pick(true, PackedStringArray(["--look"])), DesktopLook.APP)
+	assert_eq(DesktopLook.pick(false, HarnessFlags.new()), DesktopLook.BROWSER)
+	assert_eq(DesktopLook.pick(false, HarnessFlags.new(PackedStringArray(["--look", "layered"]))), DesktopLook.BROWSER, "no look the renderer can't wear")
+	assert_eq(DesktopLook.pick(true, HarnessFlags.new()), DesktopLook.APP)
+	assert_eq(DesktopLook.pick(true, HarnessFlags.new(PackedStringArray(["--screenshot", "--look", "hdr"]))), "hdr", "a run picks another")
+	assert_eq(DesktopLook.pick(true, HarnessFlags.new(PackedStringArray(["--look", "sepia"]))), DesktopLook.APP, "an unknown look is the app's")
+	assert_eq(DesktopLook.pick(true, HarnessFlags.new(PackedStringArray(["--look"]))), DesktopLook.APP)
 
 
 func test_every_look_says_what_it_wears() -> void:
@@ -90,9 +90,9 @@ func test_every_pass_over_the_world_reads_both_canvases() -> void:
 
 
 func test_the_look_book_shoots_the_looks_named() -> void:
-	assert_eq(Lookbook.looks_from(PackedStringArray()), PackedStringArray())
+	assert_eq(Lookbook.looks_from(HarnessFlags.new()), PackedStringArray())
 	assert_eq(
-		Lookbook.looks_from(PackedStringArray(["lookbook", "--looks", "browser,app,sepia,app"])),
+		Lookbook.looks_from(HarnessFlags.new(PackedStringArray(["lookbook", "--looks", "browser,app,sepia,app"]))),
 		PackedStringArray(["browser", "app"]),
 		"the app's looks, once each, in order"
 	)

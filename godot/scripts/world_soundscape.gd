@@ -62,7 +62,7 @@ func hear_hp(hp: int, _max_hp: int) -> void:
 ## The place's theme, or the fight's while anything hunts the hero (and a
 ## few seconds after), the boss's when a boss does; and the place's weather.
 func refresh() -> void:
-	if not GameState.title_seen and not OS.get_cmdline_user_args().has("--screenshot"):
+	if not GameState.title_seen and not HarnessFlags.given().has("--screenshot"):
 		return  # the title plays its own
 	var now := Time.get_ticks_msec() / 1000.0
 	for enemy in get_tree().get_nodes_in_group("mobs"):

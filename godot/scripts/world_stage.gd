@@ -240,8 +240,8 @@ func play_reveals() -> void:
 				# A Deep Hunt milestone (PIX-216): the town has heard.
 				stops.append({"at": MapView.center(Town.square()), "line": Text.t(Dungeons.milestone(int(key))["homecoming"])})
 	GameState.reveals.clear()
-	var args := OS.get_cmdline_user_args()
-	if stops.is_empty() or (world.harness and not (args.has("reveal") or args.has("rebuilt"))):
+	var flags := HarnessFlags.given()
+	if stops.is_empty() or (world.harness and not (flags.has("reveal") or flags.has("rebuilt"))):
 		return
 	var tour := preload("res://scripts/reveal_screen.gd").new()
 	tour.world = world

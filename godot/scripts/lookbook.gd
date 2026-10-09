@@ -4,7 +4,7 @@ extends Node
 ## Frostgate, a dungeon floor, a fight and the overworld at night - each saved
 ## as a picture, and all of them on one contact sheet, so a change to how the
 ## game looks is judged before and after, by eye. With `perf`, each shot also
-## reports what its frames cost (PerfProbe); with `motion`, each is filmed for
+## reports what its frames cost (PerfProbe); with `film`, each is filmed for
 ## a moment too, frame by frame, for what a still can't show (the wind, the
 ## water). With `--looks a,b`, the desktop renderer shoots each scene in each
 ## of the app's looks (PIX-227, DesktopLook.LOOKS), each look in its own
@@ -42,7 +42,7 @@ const STREET := Vector2i(40, 13)
 ## The contact sheet: three across, each shot at half size.
 const SHEET_COLUMNS := 3
 const SETTLE_SECONDS := 1.2
-## Filming (`motion`): this many frames, this far apart, into
+## Filming (`film`): this many frames, this far apart, into
 ## <out>/motion/<shot>/NN.png.
 const MOTION_FRAMES := 24
 const MOTION_STEP := 0.1
@@ -165,13 +165,11 @@ func _film(shot_name: String, strike := false) -> void:
 
 ## The looks `--looks a,b` names, those the app has (DesktopLook.LOOKS), in
 ## its order.
-static func looks_from(args: PackedStringArray) -> PackedStringArray:
-	var index := args.find("--looks")
+static func looks_from(flags: HarnessFlags) -> PackedStringArray:
 	var out: PackedStringArray = []
-	if index >= 0 and index + 1 < args.size():
-		for look in args[index + 1].split(","):
-			if DesktopLook.LOOKS.has(look) and not out.has(look):
-				out.append(look)
+	for look in flags.list("--looks"):
+		if DesktopLook.LOOKS.has(look) and not out.has(look):
+			out.append(look)
 	return out
 
 

@@ -13424,11 +13424,11 @@ msgstr ""
 msgid "Arrows"
 msgstr ""
 
-#: scripts/world.gd:267
+#: scripts/world.gd:270
 msgid "%s bars your way: no leaving until the fight is over."
 msgstr ""
 
-#: scripts/world.gd:305
+#: scripts/world.gd:308
 msgid "No map reaches this deep."
 msgstr ""
 
