@@ -14,6 +14,8 @@ const LOG_SECONDS := 4.0
 const COMBAT_LINGER_S := 3.0
 ## Open-air maps too high and cold for birdsong: wind instead (PIX-169).
 const WINDY_MAPS := ["frostgate"]
+## How hard it must rain before the rain is heard over the birds.
+const RAIN_HEARD := 0.3
 
 
 var map: MapData
@@ -89,6 +91,8 @@ var prompt_label: Control
 var sky_overlay: ColorRect
 ## The world's light and darkness (PIX-221, light_rig.gd).
 var lights: Node
+## Each region's air and the weather (PIX-224).
+var atmosphere: Node
 ## A `--screenshot` run: the harness drives, nobody else.
 var harness := false
 
@@ -660,7 +664,8 @@ func _update_music() -> void:
 		soundscape_left = 0.5
 		Sound.set_extras(_soundscape())
 		var windy := map.floor_level > 0 or map.style == "cave" or map.id in WINDY_MAPS
-		Sound.set_bed(("deepwind" if map.floor_level > 10 else "wind") if windy else "")
+		var bed := ("deepwind" if map.floor_level > 10 else "wind") if windy else ""
+		Sound.set_bed("rain" if _raining() else bed)
 
 
 ## What else the hero hears here (PIX-158): birds by day and crickets by
@@ -673,13 +678,19 @@ func _soundscape() -> Array[String]:
 		return out
 	var burning := map.id == "town" and GameState.progression.prologue != Prologue.DONE
 	var outdoors := map.id == "town" or (PunyTerrain.is_outdoor(map.grid) and not map.id.begins_with("town_"))
-	if outdoors and not burning and map.id not in WINDY_MAPS:
+	# The birds keep quiet in the rain.
+	if outdoors and not burning and map.id not in WINDY_MAPS and not _raining():
 		out.append("crickets" if DayNight.is_night(GameState.world.steps) else "birds")
 		if map.id == "town" and GameState.town_tier() >= 1 and not DayNight.is_night(GameState.world.steps):
 			out.append("chatter")
 	if burning or map.id == "town_smith" or _near_camp_fire():
 		out.append("fire")
 	return out
+
+
+## A shower falling here now, enough to hear (PIX-224).
+func _raining() -> bool:
+	return atmosphere != null and atmosphere.rain > RAIN_HEARD
 
 
 ## On a fishing spot, facing the water (PIX-165).
@@ -1770,6 +1781,9 @@ func _spawn_player() -> void:
 	lights.world = self
 	add_child(lights)
 	lights.give_lantern(player)
+	atmosphere = preload("res://scripts/atmosphere.gd").new()
+	atmosphere.world = self
+	add_child(atmosphere)
 
 	camera = Camera2D.new()
 	camera.limit_left = 0

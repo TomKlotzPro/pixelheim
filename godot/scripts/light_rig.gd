@@ -23,11 +23,18 @@ const GLOW_NIGHT := 0.9
 ## The light now and how dark it is (0 by day, 1 at night).
 var light := Color.WHITE
 var dark := 0.0
-## The water's reflections and the cloud shadows, under the glow on its
-## layer, and the map the reflections were laid out for; the world's clock
-## and the wind's strength (1, or 0 with reduced motion).
+## The water's reflections, the cloud shadows and the region's air (PIX-224,
+## the Atmosphere node sets it), under the glow on its layer, and the map the
+## reflections were laid out for; the world's clock and the wind's strength
+## (1, or 0 with reduced motion).
 var reflections: ColorRect
 var clouds: ColorRect
+var air: ColorRect
+## A pass that reads the screen sees what was drawn before the first such
+## pass on the layer unless the screen is copied again (a probe found): one
+## copy before the air and one before the glow, shown only with them.
+var _air_copy: BackBufferCopy
+var _glow_copy: BackBufferCopy
 var _water_of: MapData
 var time := 0.0
 var wind := 1.0
@@ -46,8 +53,22 @@ func _ready() -> void:
 	world.add_child(layer)
 	reflections = _screen_pass(layer, preload("res://shaders/reflections.gdshader"))
 	clouds = _screen_pass(layer, preload("res://shaders/clouds.gdshader"))
-	(clouds.material as ShaderMaterial).set_shader_parameter("clouds", cloud_noise())
+	var noise := cloud_noise()
+	(clouds.material as ShaderMaterial).set_shader_parameter("clouds", noise)
+	_air_copy = _copy(layer)
+	air = _screen_pass(layer, preload("res://shaders/atmosphere.gdshader"))
+	(air.material as ShaderMaterial).set_shader_parameter("noise", noise)
+	air.visible = false
+	_glow_copy = _copy(layer)
 	bloom = _screen_pass(layer, preload("res://shaders/bloom.gdshader"))
+
+
+## A fresh copy of the screen for the passes after it.
+func _copy(layer: CanvasLayer) -> BackBufferCopy:
+	var copy := BackBufferCopy.new()
+	copy.copy_mode = BackBufferCopy.COPY_MODE_VIEWPORT
+	layer.add_child(copy)
+	return copy
 
 
 ## A shader over the whole view, on `layer` after what's already there.
@@ -83,11 +104,6 @@ static func cloud_noise() -> NoiseTexture2D:
 	return texture
 
 
-## Whether the sky is over the map: not indoors, not under the ground.
-static func under_sky(map: MapData) -> bool:
-	return map != null and map.floor_level == 0 and map.style != "cave" and not PunyInterior.is_room(map.id)
-
-
 ## The light for the map the hero is on, at this hour.
 func light_for(map: MapData) -> Color:
 	if map == null:
@@ -103,15 +119,25 @@ func light_for(map: MapData) -> Color:
 
 func _process(delta: float) -> void:
 	light = light_for(world.map)
+	# Rain darkens and cools the light, and the lamps come up a little; under
+	# rain, fog or snow the sky is all cloud.
+	var rain := 0.0
+	var overcast := 0.0
+	if world.get("atmosphere") != null:
+		rain = world.atmosphere.rain
+		overcast = maxf(rain, maxf(world.atmosphere.weights.get("mire", 0.0), world.atmosphere.weights.get("frost", 0.0)))
+	light = light.lerp(light * Weather.RAIN_LIGHT, rain)
 	darkness.color = light
 	dark = Lights.darkness(light)
 	bloom.visible = GameState.settings.glow
+	_glow_copy.visible = bloom.visible
+	_air_copy.visible = air.visible
 	if bloom.visible:
 		(bloom.material as ShaderMaterial).set_shader_parameter("strength", lerpf(GLOW_DAY, GLOW_NIGHT, dark))
 	tick(delta)
-	var view := _view()
-	_mirror_water(view)
-	_drift_clouds(view)
+	var at := world_view()
+	_mirror_water(at)
+	_drift_clouds(at, overcast)
 	var still: bool = GameState.settings.reduce_motion
 	var t := Time.get_ticks_msec() / 1000.0
 	for node in get_tree().get_nodes_in_group("lights"):
@@ -136,7 +162,7 @@ func tick(delta: float) -> void:
 
 
 ## The world under the screen: [its top-left corner, its size], in pixels.
-func _view() -> Array[Vector2]:
+func world_view() -> Array[Vector2]:
 	var screen := get_viewport().get_visible_rect()
 	var to_world := get_viewport().get_canvas_transform().affine_inverse()
 	return [to_world * screen.position, to_world.basis_xform(screen.size)]
@@ -148,7 +174,7 @@ func _mirror_water(view: Array[Vector2]) -> void:
 	var mirror := reflections.material as ShaderMaterial
 	if map != _water_of:
 		_water_of = map
-		var wet := under_sky(map) and map.grid.values().any(func(tile: String) -> bool: return PunyTerrain.ground_of(tile) in PunyTerrain.WATER_GROUNDS)
+		var wet := Lights.under_sky(map) and map.grid.values().any(func(tile: String) -> bool: return PunyTerrain.ground_of(tile) in PunyTerrain.WATER_GROUNDS)
 		reflections.visible = wet
 		if wet:
 			mirror.set_shader_parameter("water_map", PunyTerrain.water_map(map.grid, map.size))
@@ -158,9 +184,10 @@ func _mirror_water(view: Array[Vector2]) -> void:
 		mirror.set_shader_parameter("view_size", view[1])
 
 
-## The cloud shadows lie on the world under the camera, by day under the sky.
-func _drift_clouds(view: Array[Vector2]) -> void:
-	var amount := (1.0 - dark) * CLOUD_SHADE if under_sky(world.map) else 0.0
+## The cloud shadows lie on the world under the camera, by day under the
+## sky; under an `overcast` sky there are none.
+func _drift_clouds(view: Array[Vector2], overcast: float) -> void:
+	var amount := (1.0 - dark) * (1.0 - overcast) * CLOUD_SHADE if Lights.under_sky(world.map) else 0.0
 	clouds.visible = amount > 0.0
 	if not clouds.visible:
 		return

@@ -57,6 +57,8 @@ func test_extras_and_beds_take_only_what_exists() -> void:
 	Sound.set_bed("wind")
 	assert_eq(Sound.bed, "wind")
 	Sound.set_bed("rain")
+	assert_eq(Sound.bed, "rain", "a shower's (PIX-224)")
+	Sound.set_bed("thunder")
 	assert_eq(Sound.bed, "", "an unknown bed is silence")
 	Sound.stop_all()
 	assert_eq(Sound.extras, [] as Array[String])

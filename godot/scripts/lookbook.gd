@@ -13,8 +13,8 @@ const DAY := 0.2
 const DUSK := 0.53
 const NIGHT := 0.75
 ## Each shot: a map and where on it (Upper Street, a pack's home, a cell, or
-## the map's arrival), or a dungeon floor; the hour; and a foe to face, for
-## the fight.
+## the map's arrival), or a dungeon floor; the hour, or the first shower by
+## day (`rain`); and a foe to face, for the fight.
 const SHOTS := [
 	{"name": "01_town_day", "map": "town", "at": "street", "time": DAY},
 	{"name": "02_town_dusk", "map": "town", "at": "street", "time": DUSK},
@@ -29,6 +29,8 @@ const SHOTS := [
 	{"name": "11_inn_night", "map": "town_inn", "time": NIGHT},
 	{"name": "12_smithy_day", "map": "town_smith", "time": DAY},
 	{"name": "13_riverside", "map": "town", "cell": Vector2i(72, 8), "time": DAY},
+	{"name": "14_rain", "map": "overworld", "at": "forest_1", "rain": true},
+	{"name": "15_coast", "map": "saltmere", "cell": Vector2i(33, 27), "time": DAY},
 ]
 ## Upper Street: the shop's and the inn's fronts, the street lamps, the hall.
 const STREET := Vector2i(40, 13)
@@ -87,7 +89,7 @@ func _stage(shot: Dictionary) -> void:
 	world._messages.clear()
 	world._message_now = ""
 	world.message_box.modulate.a = 0.0
-	GameState.world.steps = float(shot["time"]) * DayNight.DAY_CYCLE_STEPS
+	GameState.world.steps = shower_by_day() if shot.get("rain", false) else float(shot["time"]) * DayNight.DAY_CYCLE_STEPS
 	if shot.has("floor"):
 		world.enter_floor(int(shot["floor"]))
 	else:
@@ -110,6 +112,18 @@ func _film(shot_name: String) -> void:
 		await get_tree().create_timer(MOTION_STEP).timeout
 		await RenderingServer.frame_post_draw
 		get_viewport().get_texture().get_image().save_png("%s/%02d.png" % [folder, frame])
+
+
+## The heart of the first shower that falls in full day (Weather).
+static func shower_by_day() -> float:
+	var steps := 0.0
+	for tries in 40:
+		steps = Weather.next_shower(steps)
+		var hour := fposmod(steps, float(DayNight.DAY_CYCLE_STEPS)) / DayNight.DAY_CYCLE_STEPS
+		if hour > 0.05 and hour < 0.42:
+			return steps
+		steps += DayNight.DAY_CYCLE_STEPS / 2.0
+	return steps
 
 
 ## Where on the map: the square, beside a pack's home, or the arrival.

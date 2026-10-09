@@ -4,7 +4,8 @@
 # game plays as they are (Godot compresses them on import):
 # - sfx/: the dodge, a named monster's roar, a bounty claimed;
 # - ambience/: one-shots for birds, crickets, town chatter and fire, a few
-#   variants each, and the looping wind beds of the mountain's floors;
+#   variants each, the looping wind beds of the mountain's floors and the
+#   rain's (PIX-224);
 # - music/theme_*.wav: the short story themes, from the notes in
 #   assets/data/audio.json "themes".
 # Seeded, so a rerun writes the same files.
@@ -227,6 +228,37 @@ def wind(deep):
     return body
 
 
+def rain():
+    """A shower on the land (PIX-224): a soft hiss of fine noise, breathing
+    once over the loop, under many small drops - each a short, falling tick
+    of a high tone. Folded like the wind, so it loops without a click."""
+    rng = random.Random(900)
+    seconds, fold = 8.0, 0.6
+    count = int((seconds + fold) * MUSIC_RATE)
+    out, low, lower = [], 0.0, 0.0
+    for i in range(count):
+        t = i / MUSIC_RATE
+        noise = rng.uniform(-1.0, 1.0)
+        low += 0.45 * (noise - low)
+        lower += 0.08 * (low - lower)
+        breath = 0.85 + 0.15 * math.sin(2 * math.pi * t / seconds)
+        out.append((0.55 * (low - lower) + 0.25 * lower) * breath)
+    for _ in range(int((seconds + fold) * 70)):
+        at = rng.randrange(0, count - 500)
+        level = rng.uniform(0.08, 0.35)
+        f0 = rng.uniform(2200.0, 4800.0)
+        for j in range(480):
+            t = j / MUSIC_RATE
+            f = f0 * (1.0 - 0.35 * j / 480)
+            out[at + j] += level * math.exp(-j / 55.0) * math.sin(2 * math.pi * f * t)
+    body = out[: int(seconds * MUSIC_RATE)]
+    tail = out[int(seconds * MUSIC_RATE):]
+    for i, s in enumerate(tail):
+        w = i / len(tail)
+        body[i] = body[i] * w + s * (1 - w)
+    return body
+
+
 # ---- themes ----------------------------------------------------------------
 
 def theme(spec):
@@ -264,7 +296,8 @@ def main():
         for v in range(extra["variants"]):
             write(os.path.join(AUDIO, "ambience", "%s_%d.wav" % (name, v)), make(v), FX_RATE, peak)
     for name in doc["beds"]:
-        write(os.path.join(AUDIO, "ambience", "bed_%s.wav" % name), wind(name == "deepwind"), MUSIC_RATE, 900, loop=True)
+        bed, peak = (rain(), 1300) if name == "rain" else (wind(name == "deepwind"), 900)
+        write(os.path.join(AUDIO, "ambience", "bed_%s.wav" % name), bed, MUSIC_RATE, peak, loop=True)
     for name, spec in doc["themes"].items():
         write(os.path.join(AUDIO, "music", "theme_%s.wav" % name), theme(spec), MUSIC_RATE, 4000, rms=520)
     print("wrote the effects, %d ambience sets, %d beds and %d themes" % (len(doc["ambienceExtras"]), len(doc["beds"]), len(doc["themes"])))
