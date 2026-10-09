@@ -200,7 +200,7 @@
           "kind": "relics",
           "count": 2,
           "orCleared": 5,
-          "line": "Hope comes home: win two of the five relics (or clear the Ruined Watchtower)"
+          "line": "Hope comes home: bring two of the relics back to Pixelheim"
         },
         {
           "kind": "settlers",
@@ -438,7 +438,7 @@
           "kind": "relics",
           "count": 4,
           "orCleared": 10,
-          "line": "The five come home: bring all four relics to Maren (or slay Fafnyr). The fountain will still want his scale"
+          "line": "The five come home: bring all four relics to Maren. The fountain will still want Fafnyr's scale"
         }
       ],
       "projects": [

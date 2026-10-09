@@ -794,11 +794,15 @@
   "jobStations": {
     "smithing": {
       "mapId": "town_smith",
-      "hint": "Craft at Hilda's forge - the FORGE door in town"
+      "hint": "Craft at Hilda's forge - the FORGE door in town",
+      "project": "hildas_forge",
+      "stallHint": "Craft at Hilda's stall on the square"
     },
     "alchemy": {
       "mapId": "town_alchemist",
-      "hint": "Craft at Vex's cauldron - the BREWS door in town"
+      "hint": "Craft at Vex's cauldron - the BREWS door in town",
+      "project": "vexs_brewery",
+      "stallHint": "Craft at Vex's stall on the square"
     }
   },
   "jobLevelCap": 10,

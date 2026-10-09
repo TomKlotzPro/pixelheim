@@ -109,7 +109,7 @@ func test_a_project_waits_for_its_age_then_for_its_price() -> void:
 	state.settlement.town_tier = 1
 	var blocker := func() -> String:
 		return Town.project_blocker("street_lamps", state.progression, state.settlement, state.pack.gold, state.pack.items)
-	assert_string_contains(blocker.call(), "Ruined Watchtower")
+	assert_string_contains(blocker.call(), "two of the relics", "PIX-204: no floor named while the gate is barred")
 	state.progression.cleared_levels.append(5)
 	assert_string_contains(blocker.call(), "settler")
 	state.settlement.settlers.append("settler_iva")

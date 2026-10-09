@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.149.0",
+      "date": "2026-10-09",
+      "codename": "The Truth of It",
+      "notes": [
+        "THE TRUTH OF IT: Maren keeps the barred gate's words until it opens - no more talk of an open gate north of the bridge the morning after the fire - and says the next step in her own voice instead of telling you to ask her",
+        "The quest is now Relics of the Five - four to find, the five's to bring home - and the town's goals and the bounty board no longer offer floors behind a barred gate",
+        "In the Ashes, Hilda's and Vex's crafts are at their stalls on the square; Sela's slimes are in her stores, Wren lost her stable to the fire, and Ana warns of the packs, not the grass"
+      ]
+    },
+    {
       "version": "0.148.0",
       "date": "2026-10-09",
       "codename": "The First Fields",

@@ -25,11 +25,11 @@ msgid "A blessed blow of righteous strength."
 msgstr ""
 
 #: assets/data/catalog.json
-msgid "A brass storm-lantern, its glass etched with stars. Liane lit it the night before the climb so the five could find their way home. One of the five relics."
+msgid "A brass storm-lantern, its glass etched with stars. Liane lit it the night before the climb so the five could find their way home. One of the relics the five left behind."
 msgstr ""
 
 #: assets/data/catalog.json
-msgid "A bronze-rimmed shield, dented and polished. Oskar left it at Greyhold when he climbed the mountain: \"Keep it till I'm home.\" One of the five relics."
+msgid "A bronze-rimmed shield, dented and polished. Oskar left it at Greyhold when he climbed the mountain: \"Keep it till I'm home.\" One of the relics the five left behind."
 msgstr ""
 
 #: assets/data/catalog.json
@@ -37,7 +37,7 @@ msgid "A coated dagger that leaves the enemy poisoned."
 msgstr ""
 
 #: assets/data/catalog.json
-msgid "A cook's ladle, black iron, the handle wrapped in sailcloth. Tam carried it up the mountain fifty years ago. One of the five relics."
+msgid "A cook's ladle, black iron, the handle wrapped in sailcloth. Tam carried it up the mountain fifty years ago. One of the relics the five left behind."
 msgstr ""
 
 #: assets/data/catalog.json
@@ -153,7 +153,7 @@ msgid "Aimed Shot"
 msgstr ""
 
 #: assets/data/catalog.json
-msgid "An ingot from the seam the Ember Seal was cast from, stamped with five marks. The five took a cartload; this one waited. One of the five relics."
+msgid "An ingot from the seam the Ember Seal was cast from, stamped with five marks. The five took a cartload; this one waited. One of the relics the five left behind."
 msgstr ""
 
 #: assets/data/catalog.json
@@ -2497,6 +2497,10 @@ msgid "In Their Own Words"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "In the Ashes, Hilda's and Vex's crafts are at their stalls on the square; Sela's slimes are in her stores, Wren lost her stable to the fire, and Ana warns of the packs, not the grass"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "In the browser, the game saves the moment its tab is hidden or closed, and a private window that won't keep saves says so on the title"
 msgstr ""
 
@@ -3733,6 +3737,10 @@ msgid "THE TRUE STRIDE: the hero's legs scissor now - one swings ahead, one trai
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "THE TRUTH OF IT: Maren keeps the barred gate's words until it opens - no more talk of an open gate north of the bridge the morning after the fire - and says the next step in her own voice instead of telling you to ask her"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "THE VIEW CLEARS THE DOCK: the camera centres your hero in the world above the dock, not behind it"
 msgstr ""
 
@@ -3925,6 +3933,10 @@ msgid "The Third Dimension"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Truth of It"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Village Ledger"
 msgstr ""
 
@@ -4058,6 +4070,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The passes are fast-travel waypoints the moment you lay eyes on them"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The quest is now Relics of the Five - four to find, the five's to bring home - and the town's goals and the bounty board no longer offer floors behind a barred gate"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -6665,7 +6681,15 @@ msgid "Craft at Hilda's forge - the FORGE door in town"
 msgstr ""
 
 #: assets/data/economy.json
+msgid "Craft at Hilda's stall on the square"
+msgstr ""
+
+#: assets/data/economy.json
 msgid "Craft at Vex's cauldron - the BREWS door in town"
+msgstr ""
+
+#: assets/data/economy.json
+msgid "Craft at Vex's stall on the square"
 msgstr ""
 
 #: assets/data/economy.json
@@ -7129,7 +7153,7 @@ msgid "Loras the Bard"
 msgstr ""
 
 #: assets/data/npcs.json
-msgid "Lost my stable to the ash years back. Been walking travelers' horses by the gate ever since."
+msgid "Lost my stable to the fire. Been walking travelers' horses by the gate ever since."
 msgstr ""
 
 #: assets/data/npcs.json
@@ -7229,11 +7253,23 @@ msgid "Pixelheim runs on two things: stubbornness and gold. The first we have. B
 msgstr ""
 
 #: assets/data/npcs.json
+msgid "Pixelheim stands again, and the mountain doesn't care. Its gate stays barred until what the five left behind comes home."
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "Pixelheim stands again. Whatever lives on that mountain has noticed."
+msgstr ""
+
+#: assets/data/npcs.json
 msgid "Put two gems in a vault worth guarding, and I will make Pixelheim's money WORK."
 msgstr ""
 
 #: assets/data/npcs.json
 msgid "Quartermaster Brann"
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "Rebuild us, bring the relics home, and then we talk about the mountain. In that order, courier."
 msgstr ""
 
 #: assets/data/npcs.json
@@ -7250,6 +7286,10 @@ msgstr ""
 
 #: assets/data/npcs.json
 msgid "Saltmere's small, but she's honest. Mostly. The crabs aren't, and neither are the smugglers."
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "Saltmere, Blackiron, Greyhold, the Frostgate. The five scattered their keepsakes across the Reach before they climbed."
 msgstr ""
 
 #: assets/data/npcs.json
@@ -7293,7 +7333,7 @@ msgid "Smith Hilda"
 msgstr ""
 
 #: assets/data/npcs.json
-msgid "Stay on the roads if you value your ankles. The tufty grass BITES."
+msgid "Stay on the roads if you value your ankles. The packs in the fields don't wait for introductions."
 msgstr ""
 
 #: assets/data/npcs.json
@@ -7349,7 +7389,7 @@ msgid "The fountain spooks the young horses. They'll learn. So did I."
 msgstr ""
 
 #: assets/data/npcs.json
-msgid "The gate to the Ashen Mountain is north, past the bridge. Ten floors of teeth and worse manners."
+msgid "The gate stands open now. Ten floors of teeth and worse manners, and Fafnyr asleep on the last of them."
 msgstr ""
 
 #: assets/data/npcs.json
@@ -7386,10 +7426,6 @@ msgstr ""
 
 #: assets/data/npcs.json
 msgid "The mine pays in iron, I sell in iron."
-msgstr ""
-
-#: assets/data/npcs.json
-msgid "The mountain burned before you were born. We rebuilt the village; the monsters rebuilt too."
 msgstr ""
 
 #: assets/data/npcs.json
@@ -7825,6 +7861,10 @@ msgid "Fafnyr spoke of a voice below. Maren will want to hear it - and she owes 
 msgstr ""
 
 #: assets/data/progression.json
+msgid "Fafnyr spoke to you before he fell. Tell me what he said - and I'll tell you what I owe you."
+msgstr ""
+
+#: assets/data/progression.json
 msgid "Fafnyr will come back for what's left of us. Unless someone climbs."
 msgstr ""
 
@@ -8185,6 +8225,10 @@ msgid "Magus"
 msgstr ""
 
 #: assets/data/progression.json
+msgid "Maren waits for all four relics. She'll open the gate with the last of them: her promise."
+msgstr ""
+
+#: assets/data/progression.json
 msgid "Marsh reeds brought"
 msgstr ""
 
@@ -8377,6 +8421,10 @@ msgid "Relics brought home"
 msgstr ""
 
 #: assets/data/progression.json
+msgid "Relics of the Five"
+msgstr ""
+
+#: assets/data/progression.json
 msgid "Rimefang laid low"
 msgstr ""
 
@@ -8433,10 +8481,6 @@ msgid "Sela keeps the inn - or a tent on the square, if that's all there is. She
 msgstr ""
 
 #: assets/data/progression.json
-msgid "Sela's cellar smells of slime. Thin the forest's supply of them."
-msgstr ""
-
-#: assets/data/progression.json
 msgid "Set Fafnyr's scale in a fountain on the square"
 msgstr ""
 
@@ -8466,6 +8510,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Slimes flattened"
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Slimes have crept into what's left of Sela's stores. Thin the forest's supply of them."
 msgstr ""
 
 #: assets/data/progression.json
@@ -8629,10 +8677,6 @@ msgid "The First Deposit"
 msgstr ""
 
 #: assets/data/progression.json
-msgid "The Five Relics"
-msgstr ""
-
-#: assets/data/progression.json
 msgid "The Frostgate road climbs north out of the Ash Fields. Aske the hermit has kept Liane's door for fifty years."
 msgstr ""
 
@@ -8733,10 +8777,6 @@ msgid "The cave mouth is under the western headland, past the lagoon. Mind the s
 msgstr ""
 
 #: assets/data/progression.json
-msgid "The cellar thanks you. So does my nose. Here - you've earned it."
-msgstr ""
-
-#: assets/data/progression.json
 msgid "The fen's ghosts bring a fever in on the mist. Lay three of them and I can brew against it."
 msgstr ""
 
@@ -8746,6 +8786,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "The gate's barred, courier. The old wardens sealed it when the five never came home, and only what the five left behind will open it: Tam's ladle in Saltmere, the black iron at Blackiron, Oskar's shield at Greyhold and Liane's lantern on the Frostgate. Bring them home to me."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "The gate's been barred since the fire. Sit a moment, courier - I'll tell you why, and what opens it."
 msgstr ""
 
 #: assets/data/progression.json
@@ -8814,6 +8858,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "The slime was carrying a traveller's pouch: a health potion. {key:inventory} opens your pack."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "The stores thank you. So does my nose. Here - you've earned it."
 msgstr ""
 
 #: assets/data/progression.json
@@ -8977,10 +9025,6 @@ msgid "Ulla's coin for my friends' necks. ...Fine. It's your road, not mine."
 msgstr ""
 
 #: assets/data/progression.json
-msgid "Vex behind the BREWS door will show you the cauldron. Potions you brew cost you a herb, not a fortune."
-msgstr ""
-
-#: assets/data/progression.json
 msgid "Vex in Pixelheim pays well for frost lilies."
 msgstr ""
 
@@ -8990,6 +9034,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Vex wants proof you can work a cauldron before she trusts you with the good stuff."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Vex will show you the cauldron - at her stall on the square, or behind the BREWS door once it stands again. Potions you brew cost you a herb, not a fortune."
 msgstr ""
 
 #: assets/data/progression.json
@@ -9078,6 +9126,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "You fill a bucket at the well."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "You found their names in the crypt. Ask, then. I owe you that much."
 msgstr ""
 
 #: assets/data/progression.json
@@ -9553,7 +9605,7 @@ msgid "Hilda's forge"
 msgstr ""
 
 #: assets/data/town.json
-msgid "Hope comes home: win two of the five relics (or clear the Ruined Watchtower)"
+msgid "Hope comes home: bring two of the relics back to Pixelheim"
 msgstr ""
 
 #: assets/data/town.json
@@ -9661,7 +9713,7 @@ msgid "The five climbers in bronze on the square. Heroes walk taller past it: +5
 msgstr ""
 
 #: assets/data/town.json
-msgid "The five come home: bring all four relics to Maren (or slay Fafnyr). The fountain will still want his scale"
+msgid "The five come home: bring all four relics to Maren. The fountain will still want Fafnyr's scale"
 msgstr ""
 
 #: assets/data/town.json
@@ -9944,19 +9996,27 @@ msgstr ""
 msgid "two"
 msgstr ""
 
-#: scripts/bounty_screen.gd:70
-msgid "%s of the five relics are won, or %s"
+#: scripts/bounty_screen.gd:72
+msgid "%s of the relics are home"
 msgstr ""
 
-#: scripts/bounty_screen.gd:70
-msgid "%s of the five relics is won, or %s"
+#: scripts/bounty_screen.gd:72
+msgid "%s of the relics is home"
 msgstr ""
 
-#: scripts/bounty_screen.gd:76
+#: scripts/bounty_screen.gd:73
+msgid "%s of the relics are home, or %s"
+msgstr ""
+
+#: scripts/bounty_screen.gd:73
+msgid "%s of the relics is home, or %s"
+msgstr ""
+
+#: scripts/bounty_screen.gd:79
 msgid "The "
 msgstr ""
 
-#: scripts/bounty_screen.gd:76
+#: scripts/bounty_screen.gd:79
 msgid "the %s (floor %d)"
 msgstr ""
 
@@ -12064,6 +12124,10 @@ msgstr ""
 msgid "Next: %s"
 msgstr ""
 
+#: scripts/state/main_quest.gd:99
+msgid "Maren"
+msgstr ""
+
 #: scripts/state/quests.gd:112
 msgid "In %s."
 msgstr ""
@@ -12396,31 +12460,31 @@ msgstr ""
 msgid "Arrows"
 msgstr ""
 
-#: scripts/world.gd:1374
+#: scripts/world.gd:1376
 msgid "Five lanterns on the square, one for each of the five who climbed. Tonight the %s remembers them - and %s."
 msgstr ""
 
-#: scripts/world.gd:1375
+#: scripts/world.gd:1377
 msgid "Pixelheim, a %s raised from the ashes. Tonight it celebrates %s."
 msgstr ""
 
-#: scripts/world.gd:1461
+#: scripts/world.gd:1463
 msgid "%s: built."
 msgstr ""
 
-#: scripts/world.gd:1465
+#: scripts/world.gd:1467
 msgid "Pixelheim is a %s now."
 msgstr ""
 
-#: scripts/world.gd:1470
+#: scripts/world.gd:1472
 msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
 msgstr ""
 
-#: scripts/world.gd:1569
+#: scripts/world.gd:1571
 msgid "%s  %d:%02d"
 msgstr ""
 
-#: scripts/world.gd:1793
+#: scripts/world.gd:1795
 msgid "Next"
 msgstr ""
 

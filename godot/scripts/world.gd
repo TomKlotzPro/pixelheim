@@ -832,7 +832,7 @@ func _cell_center(cell: Vector2i) -> Vector2:
 ## Villagers who live on this map now: tier-gated townsfolk and recruits.
 func _spawn_npcs(data: MapData) -> void:
 	var settlers := GameState.settlement.settlers
-	var folk := Npcs.on_map(data.id, GameState.settlement.town_tier, settlers, Town.done_projects(GameState.settlement))
+	var folk := Npcs.on_map(data.id, GameState.settlement.town_tier, settlers, Town.done_projects(GameState.settlement), Relics.gate_open(GameState.progression))
 	# On the night of the fire only the survivors are about (PIX-152).
 	if GameState.progression.prologue != Prologue.DONE and data.id == "town":
 		folk = Prologue.survivors()
@@ -1041,8 +1041,10 @@ func _talk(npc: Dictionary) -> void:
 		npc["lines"] = [reaction] + npc["lines"]
 	# The elder and the mayor always know what comes next (PIX-144).
 	if npc["id"] in ["elder", "mayor"]:
-		npc = npc.duplicate()
-		npc["lines"] = npc["lines"] + [MainQuest.hint(GameState.progression, GameState.settlement)]
+		var next := MainQuest.hint(GameState.progression, GameState.settlement, npc["id"])
+		if next != "":
+			npc = npc.duplicate()
+			npc["lines"] = npc["lines"] + [next]
 	# The festival's barker has his say, then the ring toss (PIX-159).
 	if npc["id"] == "festival_barker":
 		GameState.dialogue_closed.connect(func(_who: String) -> void:

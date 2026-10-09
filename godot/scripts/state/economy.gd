@@ -439,7 +439,11 @@ static func jobs_here(map_id: String, home_workbench: bool) -> Array[String]:
 
 ## Where a trade crafts, as the web says it ("Craft at Hilda's forge - the
 ## FORGE door in town").
-static func station_hint(job: String) -> String:
+static func station_hint(job: String, done: Variant = null) -> String:
+	# In the Ashes the trade works from a stall until its house stands (PIX-204).
+	var station: Dictionary = _data()["jobStations"][job]
+	if done != null and station.has("project") and station["project"] not in done:
+		return station["stallHint"]
 	return _data()["jobStations"][job]["hint"]
 
 

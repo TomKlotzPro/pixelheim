@@ -67,7 +67,10 @@ static func _when(entry: Dictionary) -> String:
 	var relics := int(entry["postedRelics"])
 	# Words a language can say its own way (PIX-196): the count, and is/are.
 	var count: String = [Text.t("one"), Text.t("two"), Text.t("three"), Text.t("four")][relics - 1]
-	var said := Text.t("%s of the five relics is won, or %s") if relics == 1 else Text.t("%s of the five relics are won, or %s")
+	# Floors are no alternative while the gate is barred (PIX-204).
+	if not Relics.gate_open(GameState.progression):
+		return (Text.t("%s of the relics is home") if relics == 1 else Text.t("%s of the relics are home")) % count
+	var said := Text.t("%s of the relics is home, or %s") if relics == 1 else Text.t("%s of the relics are home, or %s")
 	return said % [count, cleared]
 
 
