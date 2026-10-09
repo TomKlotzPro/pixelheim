@@ -2425,6 +2425,10 @@ msgid "Every cleared depth opens a hole into the dark beside the way up: keep go
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Every hero starts as a survivor of the Night of Ash: plain worker's clothes in the colour you chose, whatever the role; hero creation still shows the role's full kit, what you'll become, and gear shows on you as you put it on"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Every interior doubled: your house is a real home now, and the shops have proper floors to browse"
 msgstr ""
 
@@ -3886,6 +3890,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Story captions now wrap instead of running past the edge of the screen"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Survivor"
 msgstr ""
 
 #: assets/data/changelog.json

@@ -54,6 +54,10 @@ const HEROES := {
 }
 ## Necromancers wear the mage's robe in grave colors.
 const HERO_TINTS := {"necromancer": Color(0.72, 0.6, 1.0)}
+## Every hero starts a survivor of the Night of Ash, not a soldier (PIX-242):
+## a worker's plain clothes, in the look's colour; the role's kit is a
+## picture of what they become, on hero creation. Gear shows as it's worn.
+const PLAIN := ["characters/aligned/Human-Worker-Red.png", "characters/aligned/Human-Worker-Cyan.png"]
 ## The attack a worn weapon swings (PIX-172), by its catalog sprite: blades,
 ## daggers and heads swing (Shade's throw columns draw no weapon, so a dagger
 ## slashes), bows draw, staves and wands cast. Bare hands keep the role's own.
@@ -217,12 +221,21 @@ static func hero(role_id: String, look: Variant = 0) -> Dictionary:
 	return {"sheet": sheets[index], "family": "puny", "attack": entry[1], "tint": HERO_TINTS.get(role_id, Color.WHITE)}
 
 
-## The hero as dressed: the role's look, a worn helmet's head and a worn
-## armour's body (`worn`: slot -> item id). Pieces without a drawing keep the
-## look's own. A role's colour (the necromancer's grave violet) goes on its
-## own head and body only, never on borrowed armour (PIX-175).
-static func dressed(role_id: String, look: Variant, worn: Dictionary) -> Dictionary:
+## The hero in plain clothes (PIX-242): the worker's in the look's colour,
+## the role's own swing still theirs, no role colour on what everyone wears.
+static func plain(role_id: String, look: Variant = 0) -> Dictionary:
 	var spec := hero(role_id, look)
+	spec["sheet"] = PLAIN[(int(look) if look != null else 0) % PLAIN.size()]
+	spec["tint"] = Color.WHITE
+	return spec
+
+
+## The hero as dressed: plain clothes (PIX-242), a worn helmet's head and a
+## worn armour's body (`worn`: slot -> item id). Pieces without a drawing keep
+## the plain clothes. A role's colour (the necromancer's grave violet) goes
+## on its own kit only, never on borrowed armour (PIX-175).
+static func dressed(role_id: String, look: Variant, worn: Dictionary) -> Dictionary:
+	var spec := plain(role_id, look)
 	var head: String = HEADS.get(worn.get("head", ""), spec["sheet"])
 	var body: String = BODIES.get(worn.get("body", ""), spec["sheet"])
 	var role_tint: Color = spec["tint"]
