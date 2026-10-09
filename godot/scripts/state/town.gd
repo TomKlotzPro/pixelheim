@@ -505,7 +505,7 @@ static func trophy_stat_delta(item_id: String) -> Dictionary:
 		"dragon_scale":
 			return {"defense": 2}
 		"lich_crown":
-			return {"strength": 2, "intelligence": 2, "dexterity": 2, "defense": 2}
+			return {"strength": 2, "intelligence": 2, "dexterity": 2, "defense": 2, "endurance": 2}
 	return {}
 
 

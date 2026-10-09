@@ -314,7 +314,7 @@ func refresh() -> void:
 	for screen: String in menu_rows:
 		var line: Dictionary = menu_rows[screen]
 		UiStyle.keycap_text(line["cap"], Controls.key_label(Controls.key_for(screen, keys)))
-		var waiting := hero.stat_points if screen == "stats" else (hero.skill_points if screen == "skills" else 0)
+		var waiting := hero.stat_points if screen == "stats" else (hero.skill_points if screen == "skills" and Skills.can_spend(hero) else 0)
 		waiting_any = waiting_any or waiting > 0
 		line["word"].text = Text.t(line["name"]) + ("  +%d" % waiting if waiting > 0 else "")
 		line["word"].add_theme_color_override("font_color", UiStyle.LAMP if waiting > 0 else UiStyle.INK)

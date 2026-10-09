@@ -97,9 +97,12 @@ func _ready() -> void:
 ## mid-step.
 func dress() -> void:
 	var next := GameState.hero_art()
-	if next["sheet"] == art["sheet"]:
-		return
+	# The swing follows the weapon even when the look doesn't change (PIX-207:
+	# a bow for a staff kept the bow's draw).
+	var same_look: bool = next["sheet"] == art["sheet"]
 	art = next
+	if same_look:
+		return
 	var playing := sprite.animation
 	var at := sprite.frame
 	sprite.sprite_frames = PunyArt.frames(art)

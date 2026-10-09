@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.151.0",
+      "date": "2026-10-09",
+      "codename": "Small Things",
+      "notes": [
+        "Small things put right: hero creation answers its keys again (role, look, the first night), the hero swings whatever weapon is in hand, Hilda's craft list moves without a stutter, and the Lich Crown's every stat includes endurance",
+        "Skill points stop lighting the menu once there's nothing left to learn"
+      ]
+    },
+    {
       "version": "0.150.0",
       "date": "2026-10-09",
       "codename": "Every Class Starts Right",
