@@ -622,6 +622,20 @@ func _run_test_harness() -> void:
 			if node.has_method("jump_to"):
 				node.jump_to(int(args[beat_index + 1]))
 		await get_tree().create_timer(0.6).timeout
+	# `lookbook [perf] [--out DIR]`: the look book (PIX-220), every staged
+	# scene saved and on one sheet; tools/lookbook.sh runs it.
+	if args.has("lookbook"):
+		var book: Node = preload("res://scripts/lookbook.gd").new()
+		book.world = world
+		book.with_perf = args.has("perf")
+		var out_index := args.find("--out")
+		if out_index >= 0 and out_index + 1 < args.size():
+			book.out_dir = args[out_index + 1]
+		world.add_child(book)
+		await book.run()
+	elif args.has("perf"):
+		# `perf`: what this scene's frames cost (PerfProbe, the perf guard).
+		print("PERF " + await PerfProbe.sample(world))
 	# `--wait S` holds the shot (an entrance still playing: the title's logo).
 	var wait_index := args.find("--wait")
 	if wait_index >= 0 and wait_index + 1 < args.size():
