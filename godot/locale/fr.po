@@ -2425,6 +2425,10 @@ msgid "Every cleared depth opens a hole into the dark beside the way up: keep go
 msgstr "Chaque profondeur nettoyée ouvre un trou vers les ténèbres à côté du chemin de sortie : continuez, ou remontez. La porte du Sous-Mont propose la première profondeur et celle qui suit la plus profonde que vous ayez atteinte"
 
 #: assets/data/changelog.json
+msgid "Every hero starts as a survivor of the Night of Ash: plain worker's clothes in the colour you chose, whatever the role; hero creation still shows the role's full kit, what you'll become, and gear shows on you as you put it on"
+msgstr "Chaque héros commence en rescapé de la Nuit des Cendres : des habits d'ouvrier dans la couleur choisie, quel que soit le rôle ; la création du héros montre toujours l'équipement complet du rôle, ce que vous deviendrez, et l'équipement apparaît sur vous à mesure que vous l'enfilez"
+
+#: assets/data/changelog.json
 msgid "Every interior doubled: your house is a real home now, and the shops have proper floors to browse"
 msgstr "Chaque intérieur a doublé : votre maison est un vrai foyer désormais, et les boutiques ont de vrais espaces où flâner"
 
@@ -3887,6 +3891,10 @@ msgstr "Pierre et eau"
 #: assets/data/changelog.json
 msgid "Story captions now wrap instead of running past the edge of the screen"
 msgstr "Les textes du récit passent désormais à la ligne au lieu de déborder de l'écran"
+
+#: assets/data/changelog.json
+msgid "Survivor"
+msgstr "Rescapé"
 
 #: assets/data/changelog.json
 msgid "Swap the rusty sword for Dragonbane and WATCH the swap - appearance is derived live from what you wear"

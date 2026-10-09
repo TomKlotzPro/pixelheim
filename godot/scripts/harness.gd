@@ -161,7 +161,8 @@ func _run_test_harness() -> void:
 	var motion_report := ""
 	if flags.has("motion"):
 		# `motion` (PIX-135): what the screen shows each rendered frame while
-		# the hero walks right: the hero found by its horns' red in the image
+		# the hero walks right: the hero found by its shirt's reds in the image
+		# (a survivor's worker clothes since PIX-242; it was a helmet's horns)
 		# (a still frame of the walk, so only motion moves it), and the
 		# world's scroll from the camera. A hero who steps back on screen
 		# while walking forward is the shake that blurred every step.
@@ -178,7 +179,7 @@ func _run_test_harness() -> void:
 			var around: Vector2 = (get_viewport().get_canvas_transform() * world.player.global_position) * (image.get_width() / get_viewport().get_visible_rect().size.x)
 			for y in range(int(around.y) - 90, int(around.y) + 30):
 				for x in range(int(around.x) - 50, int(around.x) + 50):
-					if DesktopLook.shown(image.get_pixel(x, y), DesktopLook.linear).to_html(false) == "ae0000":
+					if DesktopLook.shown(image.get_pixel(x, y), DesktopLook.linear).to_html(false) in ["b60000", "770000"]:
 						sum += x
 						n += 1
 			hero_x.append(sum / maxf(n, 1))
@@ -194,7 +195,8 @@ func _run_test_harness() -> void:
 		print("MOTION fps=%d hero_backsteps=%d scroll_frozen=%d hero=%s scroll=%s" % [
 			Engine.get_frames_per_second(), back, frozen, str(hero_steps.slice(5, 17)), str(scroll_steps.slice(5, 17))])
 		# The release flow reads it off the report line (PIX-135).
-		motion_report = " backsteps=%d" % back
+		# A hero not found at all would make every step 0: say so, not pass.
+		motion_report = " backsteps=%d" % back if hero_x.any(func(x: float) -> bool: return x > 0.0) else " backsteps=lost"
 	# Terrain review: `--at x,y` stands the hero on a cell (before `--walk`,
 	# so a walk can test what stops them), `--zoom Z` changes the camera;
 	# `overview` (below) frames the whole map.

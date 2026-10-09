@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.184.0",
+      "date": "2026-10-10",
+      "codename": "Survivor",
+      "notes": [
+        "Every hero starts as a survivor of the Night of Ash: plain worker's clothes in the colour you chose, whatever the role; hero creation still shows the role's full kit, what you'll become, and gear shows on you as you put it on"
+      ]
+    },
+    {
       "version": "0.183.0",
       "date": "2026-10-10",
       "codename": "Longer Days",
