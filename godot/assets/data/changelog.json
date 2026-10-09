@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.161.0",
+      "date": "2026-10-09",
+      "codename": "Deep Gear",
+      "notes": [
+        "The Deep Hunt now deepens gear for every slot, from gloves and boots to amulets and shields, the regions' sets and the named pieces",
+        "A deep piece can still be forged and masterworked: the deep's bonus is kept apart from the forge's, and pieces from before are mended once as your save loads",
+        "Tiers past Eldritch count on in numerals, and deep gear's worth grows more gently with each tier",
+        "Hilda quenches deep pieces: gold and a gem for +1 to their strongest stat, half again dearer each time"
+      ]
+    },
+    {
       "version": "0.160.0",
       "date": "2026-10-09",
       "codename": "Endgame Numbers",

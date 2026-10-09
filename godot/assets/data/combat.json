@@ -5844,7 +5844,7 @@
     "goldLinearStep": 0.06
   },
   "deepHunt": {
-    "about": "PIX-161: below Morvax's throne, generated depths without end. Depth d's foes stand at startLevel + d - 1, drawn from every family; every eliteEvery-th depth an elite guards the stair down. The hoard pays once per new deepest depth. A depth already cleared pays its foes replayGoldShare of their gold (PIX-180). PIX-216: milestones bring a crystal home (a trophy) with the elder's word and the town's; every bossEvery-th depth a warden (a lifted dragon or lich, renamed) guards it; every other depth past the first has one twist, shown at the gate, its kills dropping more often (modifierLuck); the gate opens the first depth of every tier reached. PIX-217: foes climb levelsPerDepth levels a depth, faster than a hero levels, so the deepest depth measures a build; a new deepest's potion is the best of hoardPotions its depth has reached.",
+    "about": "PIX-161: below Morvax's throne, generated depths without end. Depth d's foes stand at startLevel + d - 1, drawn from every family; every eliteEvery-th depth an elite guards the stair down. The hoard pays once per new deepest depth. A depth already cleared pays its foes replayGoldShare of their gold (PIX-180). PIX-216: milestones bring a crystal home (a trophy) with the elder's word and the town's; every bossEvery-th depth a warden (a lifted dragon or lich, renamed) guards it; every other depth past the first has one twist, shown at the gate, its kills dropping more often (modifierLuck); the gate opens the first depth of every tier reached. PIX-217: foes climb levelsPerDepth levels a depth, faster than a hero levels, so the deepest depth measures a build; a new deepest's potion is the best of hoardPotions its depth has reached. PIX-218: its gear rolls from gearIds, every slot's best, the regions' sets and the named pieces, not only the mountain's last pool.",
     "startLevel": 19,
     "eliteEvery": 3,
     "foes": [
@@ -5977,6 +5977,45 @@
         "from": 26,
         "itemId": "dragon_tonic"
       }
+    ],
+    "gearIds": [
+      "obsidian_blade",
+      "dragonbane",
+      "mossback_maul",
+      "starfall_staff",
+      "gale_longbow",
+      "moonsteel_dagger",
+      "wyrmfang_dagger",
+      "city_plate",
+      "runic_armor",
+      "scaled_mail",
+      "warden_hauberk",
+      "blackiron_plate",
+      "frostweave_robe",
+      "grave_ward",
+      "fountain_guard",
+      "cinderscale_shield",
+      "blackiron_bulwark",
+      "warden_kite",
+      "frost_ward",
+      "wyrm_visor",
+      "warden_helm",
+      "blackiron_helm",
+      "frost_hood",
+      "greymaw_hood",
+      "runed_grips",
+      "blackiron_gauntlets",
+      "warden_gloves",
+      "frost_mitts",
+      "scaled_greaves",
+      "blackiron_sabatons",
+      "warden_boots",
+      "frost_boots",
+      "gulp_tooth",
+      "wolfstooth_collar",
+      "moon_pendant",
+      "drowned_signet",
+      "duelists_ring"
     ]
   },
   "escorts": {

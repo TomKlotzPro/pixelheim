@@ -82,6 +82,30 @@ static func gear_sell_price_at(shop_id: String, instance: Dictionary, town_tier 
 	return maxi(1, floori(gear_value(instance) * rate * sell_multiplier(town_tier)))
 
 
+## Quenching a deep piece (PIX-218): gold by its tier, `growth` times more
+## each time it's been quenched, and a gem.
+static func quench_cost(instance: Dictionary) -> int:
+	var rules: Dictionary = _data()["quench"]
+	var times := 0
+	for stat: String in instance.get("quenched", {}):
+		times += int(instance["quenched"][stat])
+	return roundi(float(rules["gold"]) * int(instance.get("deep", 0)) * pow(float(rules["growth"]), times))
+
+
+## The stat a quench raises: the piece's strongest affix, else what it's for
+## (a weapon's scaling stat, an armour piece's defense).
+static func quench_stat(instance: Dictionary) -> String:
+	var best := ""
+	var affixes: Dictionary = instance.get("affixes", {})
+	for stat: String in affixes:
+		if best == "" or int(affixes[stat]) > int(affixes[best]) or (int(affixes[stat]) == int(affixes[best]) and stat < best):
+			best = stat
+	if best != "":
+		return best
+	var item := Catalog.item(instance["itemId"])
+	return String(item.get("scaling", "strength")) if item["category"] == "weapons" else "defense"
+
+
 ## Each +1 costs more as the piece grows (forgeCost).
 static func forge_cost(item_id: String, current_bonus: int) -> int:
 	return maxi(20, roundi(buy_price(item_id) * 0.25 * (current_bonus + 1)))

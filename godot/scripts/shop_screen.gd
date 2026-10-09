@@ -36,6 +36,9 @@ func _open() -> void:
 		tabs.append("Salvage")
 		if int(GameState.hero.jobs["smithing"]["level"]) >= int(Economy._data()["reforge"]["smithing"]):
 			tabs.append("Reforge")
+		# Deep pieces can be quenched (PIX-218): the Deep Hunt's gold sink.
+		if GameState.pack.gear.any(func(piece: Dictionary) -> bool: return int(piece.get("deep", 0)) > 0):
+			tabs.append("Quench")
 	if _craft_job() != "":
 		tabs.append("Craft")
 
@@ -230,6 +233,25 @@ func _build_rows() -> Array[Dictionary]:
 					"enabled": not maxed and pack.gold >= cost,
 					"action": func() -> void: _after(GameState.upgrade_gear(uid), "Hilda tempers it: +1.", "Not enough gold, or it can take no more."),
 				})
+		"Quench":
+			var gem := String(Economy._data()["quench"]["gem"])
+			for instance in pack.gear:
+				if int(instance.get("deep", 0)) <= 0:
+					continue
+				var uid: String = instance["uid"]
+				var cost := Economy.quench_cost(instance)
+				out.append({
+					"label": _gear_label(instance) + (Text.t("  (worn)") if pack.is_equipped(uid) else ""), "icon": instance["itemId"],
+					"price": Text.t("%dg + gem") % cost,
+					"detail": _describe(instance["itemId"], instance) + "\n\n" + Text.t("Quenching adds +1 %s, for gold and a gem; each time costs half again.") % Text.t(Skills.ABBR[Economy.quench_stat(instance)]),
+					"verb": "Quench",
+					"enabled": pack.gold >= cost and int(pack.items.get(gem, 0)) > 0,
+					"action": func() -> void:
+						var line := GameState.quench_gear(uid)
+						if line != "":
+							Sound.play("craft")
+						status.text = line if line != "" else Text.t("That takes %dg and a gem.") % cost,
+				})
 		"Salvage":
 			for instance in pack.gear:
 				if pack.is_equipped(instance["uid"]):
@@ -423,7 +445,8 @@ static func _describe(item_id: String, instance := {}) -> String:
 		_gear_label(instance) if not instance.is_empty() else String(item["name"]),
 		String(item.get("description", "")),
 	]
-	var bonus: int = instance.get("bonus", 0)
+	# The forge's bonus and the deep's (PIX-218).
+	var bonus: int = int(instance.get("bonus", 0)) + int(instance.get("deepBonus", 0))
 	if item.has("damage"):
 		lines.append(Text.t("Damage %d") % (int(item["damage"]) + bonus))
 		# What it hits with (PIX-183): the stat a swing of it adds.
@@ -432,7 +455,7 @@ static func _describe(item_id: String, instance := {}) -> String:
 		lines.append(Text.t("Armor %d") % (int(item["armor"]) + bonus))
 	for stat: String in item.get("grants", {}):
 		lines.append("+%d %s" % [item["grants"][stat], Text.t(Skills.ABBR.get(stat, stat))])
-	if not instance.get("affixes", {}).is_empty():
+	if not InventoryState.shown_affixes(instance).is_empty():
 		lines.append(InventoryState.affix_line(instance))
 	# A set piece says its set and what wearing more of it gives (PIX-166).
 	if item.has("set"):

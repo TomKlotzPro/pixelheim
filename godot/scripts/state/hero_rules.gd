@@ -30,16 +30,21 @@ static func effective_stat(hero: HeroState, pack: InventoryState, stat: String) 
 	return int(hero.stats.get(stat, 0)) + pack.granted_stat(stat)
 
 
-## A gear piece's armor: the item's, plus the forge bonus on apparel (gearArmor).
+## A gear piece's armor: the item's, plus the forge's and the deep's bonus
+## on apparel (gearArmor; PIX-218 keeps the deep's apart).
 static func gear_armor(instance: Dictionary) -> int:
 	var item := Catalog.item(instance["itemId"])
-	return int(item.get("armor", 0)) + (int(instance["bonus"]) if item["category"] == "apparel" else 0)
+	return int(item.get("armor", 0)) + (_bonus(instance) if item["category"] == "apparel" else 0)
 
 
-## A weapon's damage: the item's, plus the forge bonus (gearDamage).
+## A weapon's damage: the item's, plus the forge's and the deep's bonus (gearDamage).
 static func gear_damage(instance: Dictionary) -> int:
 	var item := Catalog.item(instance["itemId"])
-	return int(item.get("damage", 0)) + (int(instance["bonus"]) if item["category"] == "weapons" else 0)
+	return int(item.get("damage", 0)) + (_bonus(instance) if item["category"] == "weapons" else 0)
+
+
+static func _bonus(instance: Dictionary) -> int:
+	return int(instance["bonus"]) + int(instance.get("deepBonus", 0))
 
 
 static func total_armor(pack: InventoryState) -> int:
