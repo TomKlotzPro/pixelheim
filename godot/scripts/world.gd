@@ -27,6 +27,8 @@ var fx: WorldFx
 var messages: Messages
 ## What the hero hears: the music, the ambience and the world's sounds (Soundscape).
 var soundscape: Soundscape
+## The villagers: who stands where, and the village's hours (Folk).
+var folk: Folk
 var player_cell := Vector2i.ZERO
 var kills := 0
 var last_player_position := Vector2.ZERO
@@ -154,6 +156,9 @@ func _ready() -> void:
 	soundscape = Soundscape.new()
 	soundscape.world = self
 	add_child(soundscape)
+	folk = Folk.new()
+	folk.world = self
+	add_child(folk)
 	_build_hud()
 	if Touch.enabled():
 		var mark := Label.new()
@@ -241,7 +246,7 @@ func _process(delta: float) -> void:
 		respawn_check = 1.0
 		_revive_packs()
 		view.refresh_patches()
-		_keep_hours()
+		folk.keep_hours()
 		_hint_boards()
 	_update_objective()
 	var cell := Vector2i((player.position / TILE).floor())
@@ -651,7 +656,7 @@ func _enter_map(next: MapData, arrival: Vector2i) -> void:
 	view = MapView.new(next, actors)
 	arrival = view.plan(arrival)
 	view.build(self)
-	_spawn_npcs(next)
+	folk.spawn_for(next)
 	player.position = _cell_center(arrival)
 	camera_rig.cut()
 	player.ailments.clear()
@@ -668,7 +673,7 @@ func _enter_map(next: MapData, arrival: Vector2i) -> void:
 	if next.id == "town" and GameState.festival_on():
 		_festival()
 	_play_reveals.call_deferred()
-	_keep_hours(true)
+	folk.keep_hours(true)
 	camera_rig.set_limits(Vector2(next.size * TILE))
 	_spawn_enemies(next)
 	soundscape.refresh()
@@ -738,40 +743,6 @@ func travel_to(waypoint: Dictionary) -> void:
 func _cell_center(cell: Vector2i) -> Vector2:
 	return MapView.center(cell)
 
-## Villagers who live on this map now: tier-gated townsfolk and recruits.
-func _spawn_npcs(data: MapData) -> void:
-	var settlers := GameState.settlement.settlers
-	var folk := Npcs.on_map(data.id, GameState.settlement.town_tier, settlers, Town.done_projects(GameState.settlement), Relics.gate_open(GameState.progression), GameState.progression.deepest)
-	# On the night of the fire only the survivors are about (PIX-152).
-	if GameState.progression.prologue != Prologue.DONE and data.id == "town":
-		folk = Prologue.survivors()
-	# A festival day's barker runs the ring toss on the square (PIX-159).
-	if data.id == "town" and GameState.festival_on() and GameState.progression.prologue == Prologue.DONE:
-		var barker: Dictionary = Npcs._data()["festivalBarker"].duplicate()
-		barker.merge({"x": int(Town.festival("barker")["x"]), "y": int(Town.festival("barker")["y"])})
-		folk.append(barker)
-	for npc: Dictionary in folk:
-		var villager := preload("res://scripts/npc.gd").new()
-		villager.world = self
-		villager.data = npc
-		villager.add_to_group("decor")
-		villager.add_to_group("npcs")
-		actors.add_child(villager)
-
-## A recruit settled or the town grew: redraw who stands on this map.
-func _respawn_npcs() -> void:
-	for villager in get_tree().get_nodes_in_group("npcs"):
-		villager.queue_free()
-	_spawn_npcs(map)
-
-## The villager beside the hero, faced side first: {npc, side} or {}.
-func _npc_beside() -> Dictionary:
-	var occupied := {}
-	for villager in get_tree().get_nodes_in_group("npcs"):
-		if not villager.away:
-			occupied[villager.cell] = villager.data
-	return Npcs.beside(occupied, player_cell, Vector2i(player.facing))
-
 func _chest_at(cell: Vector2i) -> Dictionary:
 	for chest: Dictionary in Interactables.chests_on(map.id):
 		if int(chest["x"]) == cell.x and int(chest["y"]) == cell.y:
@@ -820,7 +791,7 @@ func _try_interact() -> void:
 	if map.id == "town" and faced == Town.bounty_board():
 		add_child(preload("res://scripts/bounty_screen.gd").new())
 		return
-	var beside := _npc_beside()
+	var beside := folk.beside()
 	if not beside.is_empty():
 		player.face(Vector2(beside["side"]))
 		# Keepers trade instead of chatting: anyone in a shop opens its counter
@@ -1165,45 +1136,6 @@ func boss_fell() -> void:
 	fade.tween_callback(flash.queue_free)
 
 
-## The village's hours (PIX-149): lamps and windows lit at night, and the
-## folk who wander - villagers, builders, children, the cat and the dog - go
-## home after dark and come back in the morning, never vanishing in view.
-## On arriving, everyone is simply where the hour puts them.
-func _keep_hours(arriving := false) -> void:
-	var night := DayNight.is_night(GameState.world.steps)
-	view.set_night(night)
-	# At dusk, and all day on a festival, the town's folk walk to the square
-	# (PIX-159); each takes a spot of its own.
-	var gathering: bool = map.id == "town" and not night and GameState.progression.prologue == Prologue.DONE \
-		and (DayNight.is_dusk(GameState.world.steps) or GameState.festival_on())
-	var spots := Town.gathering_spots(map) if gathering else ([] as Array[Vector2i])
-	var taken := {}
-	for villager in get_tree().get_nodes_in_group("npcs"):
-		if villager.is_queued_for_deletion():
-			continue
-		var id := String(villager.data["id"])
-		if not villager.data.get("wander", false) and not id.begins_with("worker_"):
-			continue
-		var home_seen := camera_rig.in_view(_cell_center(villager.home), TILE)
-		if villager.away != night and (arriving or (not camera_rig.in_view(villager.position, TILE) and (night or not home_seen))):
-			villager.set_away(night)
-		if villager.away or id.begins_with("worker_") or not villager.data.get("wander", false):
-			continue
-		if gathering and villager.gather_at == villager.NOWHERE and taken.size() < spots.size():
-			var index := Npcs.id_hash(id) % spots.size()
-			while taken.has(index):
-				index = (index + 1) % spots.size()
-			taken[index] = true
-			villager.gather_at = spots[index]
-			if arriving or (not camera_rig.in_view(villager.position, TILE) and not camera_rig.in_view(_cell_center(spots[index]), TILE)):
-				villager.place_at(spots[index])
-		elif gathering and villager.gather_at != villager.NOWHERE:
-			taken[spots.find(villager.gather_at)] = true
-		elif not gathering and villager.gather_at != villager.NOWHERE and not camera_rig.in_view(villager.position, TILE) and not home_seen:
-			# The gathering's over by day (a night skipped at the inn): home.
-			villager.set_away(false)
-
-
 ## The ending (PIX-150): home to the square, the camera touring each age's
 ## landmark the hero built, then the square - and then the story's ending
 ## and credits. How Morvax ended (PIX-157) sets the evening: a festival
@@ -1442,7 +1374,7 @@ func _run_clocks(delta: float) -> void:
 
 
 func _update_prompt() -> void:
-	var beside := _npc_beside()
+	var beside := folk.beside()
 	if not beside.is_empty():
 		_show_prompt(player_cell + Vector2i(beside["side"]), -18)
 		return
@@ -1616,7 +1548,7 @@ func _build_hud() -> void:
 		var size := Touch.view_size(self)
 		if size.y > size.x:
 			hint.call_deferred("turn")
-	GameState.settlers_changed.connect(_respawn_npcs)
+	GameState.settlers_changed.connect(folk.respawn)
 	nameplate = PanelContainer.new()
 	nameplate.add_theme_stylebox_override("panel", UiStyle.window(8))
 	nameplate.mouse_filter = Control.MOUSE_FILTER_IGNORE

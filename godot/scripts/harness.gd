@@ -268,7 +268,7 @@ func _run_test_harness() -> void:
 	if args.has("dusk"):
 		# Evening (PIX-159): the town's folk on the square.
 		GameState.world.steps = 0.5 * DayNight.DAY_CYCLE_STEPS
-		world._keep_hours(true)
+		world.folk.keep_hours(true)
 	if args.has("ringtoss"):
 		world.add_child(preload("res://scripts/ring_toss_screen.gd").new())
 		await get_tree().create_timer(0.3).timeout
