@@ -29,6 +29,10 @@ func _open() -> void:
 	tabs = ["Buy", "Sell"]
 	if shop.get("forge", false):
 		tabs.append("Forge")
+		# Hilda breaks old gear down, and from Smithing 8 reforges it (PIX-182).
+		tabs.append("Salvage")
+		if int(GameState.hero.jobs["smithing"]["level"]) >= int(Economy._data()["reforge"]["smithing"]):
+			tabs.append("Reforge")
 	if _craft_job() != "":
 		tabs.append("Craft")
 
@@ -213,6 +217,32 @@ func _build_rows() -> Array[Dictionary]:
 					"enabled": not maxed and pack.gold >= cost,
 					"action": func() -> void: _after(GameState.upgrade_gear(uid), "Hilda tempers it: +1.", "Not enough gold, or it can take no more."),
 				})
+		"Salvage":
+			for instance in pack.gear:
+				if pack.is_equipped(instance["uid"]):
+					continue
+				var uid: String = instance["uid"]
+				var back := Economy.salvage_yield(instance)
+				var parts: Array[String] = []
+				for item_id: String in back:
+					parts.append("%d %s" % [int(back[item_id]), Catalog.item_name(item_id)])
+				out.append({
+					"label": _gear_label(instance), "icon": instance["itemId"], "price": ", ".join(parts),
+					"detail": _describe(instance["itemId"], instance), "verb": "Salvage", "enabled": true,
+					"action": func() -> void: status.text = GameState.salvage_gear(uid),
+				})
+		"Reforge":
+			for instance in pack.gear:
+				var uid: String = instance["uid"]
+				var cost := Economy.reforge_cost(instance)
+				out.append({
+					"label": _gear_label(instance) + ("  (worn)" if pack.is_equipped(uid) else ""), "icon": instance["itemId"],
+					"price": "%dg" % cost, "detail": _describe(instance["itemId"], instance), "verb": "Reforge",
+					"enabled": pack.gold >= cost,
+					"action": func() -> void:
+						var line := GameState.reforge_gear(uid)
+						status.text = line if line != "" else "Not enough gold.",
+				})
 		"Craft":
 			# This station's recipes, easiest first.
 			var entries := Economy.recipes().filter(func(entry: Dictionary) -> bool: return entry["job"]["id"] == _craft_job())
@@ -343,6 +373,10 @@ func _empty_note() -> String:
 		"Sell":
 			return "Nothing to sell. Worn gear stays on your back."
 		"Forge":
+			return "Bring me steel to work with."
+		"Salvage":
+			return "Nothing to break down. Worn gear stays on your back."
+		"Reforge":
 			return "Bring me steel to work with."
 	return "Nothing here yet."
 

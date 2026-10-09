@@ -879,5 +879,33 @@
     "about": "PIX-181: what the top job levels give. Smithing 9 raises the forge's cap again, Smithing 10 makes every forged piece at least Fine; brewing's double chance keeps growing to Alchemy 10.",
     "smithingCapAt": 9,
     "smithingFineAt": 10
+  },
+  "craftRarity": {
+    "about": "PIX-182: a forged piece's chance to come out Fine or Epic grows with each trade level above the recipe's; the home workbench counts one level more.",
+    "finePerLevel": 0.1,
+    "epicPerLevel": 0.04,
+    "epicAfter": 2,
+    "workbenchLevels": 1
+  },
+  "salvage": {
+    "about": "PIX-182: Hilda breaks a piece down into half of what it's made of (a piece no recipe makes gives ember shards by rarity), and the forge learns a little.",
+    "share": 0.5,
+    "fallback": "ember_shard",
+    "fallbackCount": {
+      "common": 1,
+      "fine": 2,
+      "epic": 3
+    },
+    "xp": 5
+  },
+  "reforge": {
+    "about": "PIX-182: from Smithing 8, Hilda reforges a piece for part of its worth: its rarity rolled again (never down) and its affixes new.",
+    "smithing": 8,
+    "costShare": 0.6,
+    "weights": {
+      "common": 0.45,
+      "fine": 0.4,
+      "epic": 0.15
+    }
   }
 }

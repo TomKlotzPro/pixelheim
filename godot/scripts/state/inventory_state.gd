@@ -67,11 +67,17 @@ static func deepen(piece: Dictionary, tier: int, roll: Callable = Callable()) ->
 	piece["bonus"] = int(piece["bonus"]) + int(deep["bonus"]) * tier
 	if piece["rarity"] == "common":
 		piece["rarity"] = "fine"
+	deep_affixes(piece, tier, roll)
+	return piece
+
+
+## The deep's mark on a piece's affixes: one more, and each a point more a
+## tier (deepen, and a reforge of a deep piece).
+static func deep_affixes(piece: Dictionary, tier: int, roll: Callable = Callable()) -> void:
 	_add_affix(piece, "epic", roll)
 	var affixes: Dictionary = piece["affixes"]
 	for stat: String in affixes:
 		affixes[stat] = int(affixes[stat]) + tier
-	return piece
 
 
 ## The tier name a deep-forged piece wears ("Deep-forged", "Abyssal"...).

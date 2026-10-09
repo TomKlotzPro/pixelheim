@@ -398,6 +398,53 @@ func sell_gear(uid: String) -> int:
 	return price
 
 
+## Breaks a piece down at Hilda's (PIX-182): half of what it's made of back,
+## a little forge practice. "" when it can't be done here.
+func salvage_gear(uid: String) -> String:
+	var instance := pack.gear_by_uid(uid)
+	var shop_id := active_shop()
+	if instance.is_empty() or pack.is_equipped(uid) or shop_id == "" or not Economy.shop(shop_id).get("forge", false):
+		return ""
+	var back := Economy.salvage_yield(instance)
+	var parts: Array[String] = []
+	for item_id: String in back:
+		pack.add_item(item_id, int(back[item_id]))
+		parts.append("%d %s" % [int(back[item_id]), Catalog.item_name(item_id)])
+	pack.gear.erase(instance)
+	Economy.grant_job_xp(hero.jobs, "smithing", int(Economy._data()["salvage"]["xp"]))
+	_pack_changed()
+	return Text.t("Hilda breaks it down: %s.") % ", ".join(parts)
+
+
+## Reforges a piece at Hilda's from Smithing 8 (PIX-182): its rarity rolled
+## again, never down, and new affixes. "" when it can't be done.
+func reforge_gear(uid: String) -> String:
+	var instance := pack.gear_by_uid(uid)
+	var shop_id := active_shop()
+	var rules: Dictionary = Economy._data()["reforge"]
+	if instance.is_empty() or shop_id == "" or not Economy.shop(shop_id).get("forge", false):
+		return ""
+	if int(hero.jobs["smithing"]["level"]) < int(rules["smithing"]):
+		return ""
+	var cost := Economy.reforge_cost(instance)
+	if pack.gold < cost:
+		return ""
+	pack.gold -= cost
+	var ranks := ["common", "fine", "epic"]
+	var rolled := Bestiary._roll_rarity(rules["weights"], roll)
+	var rarity: String = rolled if ranks.find(rolled) > ranks.find(instance["rarity"]) else instance["rarity"]
+	var fresh := InventoryState.create_gear(instance["itemId"], rarity, roll)
+	instance["rarity"] = rarity
+	instance.erase("affixes")
+	if fresh.has("affixes"):
+		instance["affixes"] = fresh["affixes"]
+	if int(instance.get("deep", 0)) > 0:
+		InventoryState.deep_affixes(instance, int(instance["deep"]), roll)
+	Economy.grant_job_xp(hero.jobs, "smithing", 10)
+	_pack_changed()
+	return Text.t("Hilda reforges it: %s.") % InventoryState.gear_name(instance)
+
+
 ## UPGRADE_GEAR at the forge: +1 bonus for gold, up to the smithing cap; pays smithing xp.
 func upgrade_gear(uid: String) -> bool:
 	var shop_id := active_shop()
@@ -430,7 +477,12 @@ func craft(recipe_id: String) -> Dictionary:
 		pack.remove_item(item_id, entry["needs"][item_id])
 	var count := 1
 	if Catalog.item(entry["itemId"]).has("slot"):
-		var rarity := "fine" if job == "smithing" and Economy.forges_fine(hero.jobs["smithing"]["level"]) else "common"
+		# Mastery shows in the work (PIX-182): Fine or Epic the more levels
+		# above the recipe, a level more at the home workbench.
+		var bench := 1 if world.map_id.begins_with("town_house") and settlement.house.get("workbench", false) else 0
+		var rarity := Economy.craft_rarity(int(hero.jobs[job]["level"]), int(entry["job"]["level"]), roll, bench)
+		if rarity == "common" and job == "smithing" and Economy.forges_fine(hero.jobs["smithing"]["level"]):
+			rarity = "fine"
 		pack.gear.append(InventoryState.create_gear(entry["itemId"], rarity, roll))
 	else:
 		# Steeping two potions into one better never doubles (PIX-181).

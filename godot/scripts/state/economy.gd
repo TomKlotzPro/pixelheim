@@ -98,6 +98,43 @@ static func forge_cap_for(smithing: int) -> int:
 	return int(_data()["forgeBonusCap"]) + (1 if smithing >= 5 else 0) + (1 if smithing >= int(_data()["jobUnlocks"]["smithingCapAt"]) else 0)
 
 
+## A crafted piece's rarity (PIX-182): the more trade levels above the
+## recipe's (`bonus_levels` more at the home workbench), the likelier Fine,
+## and past a couple, Epic.
+static func craft_rarity(job_level: int, recipe_level: int, roll: Callable, bonus_levels := 0) -> String:
+	var rules: Dictionary = _data()["craftRarity"]
+	var over := maxi(0, job_level + bonus_levels - recipe_level)
+	var epic := float(rules["epicPerLevel"]) * maxi(0, over - int(rules["epicAfter"]))
+	var fine := float(rules["finePerLevel"]) * over
+	var value: float = roll.call()
+	if value < epic:
+		return "epic"
+	if value < epic + fine:
+		return "fine"
+	return "common"
+
+
+## What Hilda gives back for a piece broken down (PIX-182): item -> count.
+static func salvage_yield(instance: Dictionary) -> Dictionary:
+	var rules: Dictionary = _data()["salvage"]
+	for entry: Dictionary in recipes():
+		if entry["itemId"] == instance["itemId"]:
+			var out := {}
+			for item_id: String in entry["needs"]:
+				var count := floori(int(entry["needs"][item_id]) * float(rules["share"]))
+				if count > 0:
+					out[item_id] = count
+			if out.is_empty():
+				out[entry["needs"].keys()[0]] = 1
+			return out
+	return {String(rules["fallback"]): int(rules["fallbackCount"].get(instance["rarity"], 1))}
+
+
+## What Hilda asks to reforge a piece (PIX-182).
+static func reforge_cost(instance: Dictionary) -> int:
+	return maxi(1, roundi(gear_value(instance) * float(_data()["reforge"]["costShare"])))
+
+
 ## Smithing 10 (PIX-181): every forged piece comes out at least Fine.
 static func forges_fine(smithing: int) -> bool:
 	return smithing >= int(_data()["jobUnlocks"]["smithingFineAt"])

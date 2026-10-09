@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.131.0",
+      "date": "2026-10-09",
+      "codename": "Mastery Shows",
+      "notes": [
+        "MASTERY SHOWS IN THE WORK: the further your trade stands above a recipe, the likelier what you forge or weave comes out Fine - and, well past it, Epic, with the bonus stats loot has. Your own workbench at home counts as a level more",
+        "OLD GEAR BACK TO THE FORGE: Hilda's new Salvage tab breaks a piece down into half of what it was made of (or ember shards), and from Smithing 8 her Reforge tab rolls a piece's rarity again - never down - with fresh bonus stats",
+        "CRAFTING QUESTS: Brin wants an oilskin coat for the harbour, Garrick a helm forged from his Blackiron seam, and Linnea a Frostweave hood for her brother on the pass"
+      ]
+    },
+    {
       "version": "0.130.0",
       "date": "2026-10-09",
       "codename": "Worth Making",

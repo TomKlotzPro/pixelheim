@@ -152,3 +152,61 @@ func test_pearls_are_found_at_the_jetty() -> void:
 		if catch[0] == "pearl":
 			pearls = float(catch[1])
 	assert_gte(pearls / total, 0.15, "the tidecutter's pearl is a fair catch")
+
+
+## PIX-182: mastery shows in the work, and old gear goes back to the forge.
+func test_mastery_makes_finer_work() -> void:
+	var dice := func(value: float) -> Callable: return func() -> float: return value
+	assert_eq(Economy.craft_rarity(4, 4, dice.call(0.0)), "common", "a recipe at your level comes out plain")
+	assert_eq(Economy.craft_rarity(6, 4, dice.call(0.15)), "fine", "two levels above: a fine chance")
+	assert_eq(Economy.craft_rarity(9, 4, dice.call(0.05)), "epic", "far above: an epic chance")
+	assert_eq(Economy.craft_rarity(4, 4, dice.call(0.05), 1), "fine", "the home workbench counts a level more")
+	var fine_at := func(level: int) -> int:
+		var count := 0
+		for i in 100:
+			var roll := float(i) / 100.0
+			if Economy.craft_rarity(level, 2, func() -> float: return roll) != "common":
+				count += 1
+		return count
+	assert_gt(fine_at.call(6), fine_at.call(4), "more levels above, more fine work")
+
+
+func test_salvage_gives_back_half_of_what_went_in() -> void:
+	var helm := InventoryState.create_gear("blackiron_helm")
+	assert_eq(Economy.salvage_yield(helm), {"blackiron_ore": 1}, "3 ore and a pelt: one ore back")
+	var plate := InventoryState.create_gear("blackiron_plate")
+	assert_eq(Economy.salvage_yield(plate), {"blackiron_ore": 2, "ember_shard": 1})
+	var bought := InventoryState.create_gear("iron_sword", "epic", func() -> float: return 0.0)
+	assert_eq(Economy.salvage_yield(bought), {"ember_shard": 3}, "a piece no recipe makes gives shards by its rarity")
+	state.world.map_id = "town_smith"
+	state.pack.gear.append(plate)
+	assert_string_contains(state.salvage_gear(plate["uid"]), "Hilda breaks it down")
+	assert_eq(state.pack.items.get("blackiron_ore", 0), 2)
+	assert_eq(state.pack.gear_by_uid(plate["uid"]), {}, "the piece is gone")
+	state.world.map_id = "town"
+	var sword: String = state.pack.equipped["weapon"]
+	assert_eq(state.salvage_gear(sword), "", "only at Hilda's, and never what you wear")
+
+
+func test_reforging_waits_for_smithing_8_and_never_goes_down() -> void:
+	state.world.map_id = "town_smith"
+	state.pack.gold = 5000
+	var epic := InventoryState.create_gear("war_hammer", "epic", func() -> float: return 0.0)
+	state.pack.gear.append(epic)
+	assert_eq(state.reforge_gear(epic["uid"]), "", "not before Smithing 8")
+	state.hero.jobs["smithing"]["level"] = 8
+	state.roll = func() -> float: return 0.99
+	assert_string_contains(state.reforge_gear(epic["uid"]), "Hilda reforges it")
+	assert_eq(epic["rarity"], "epic", "a common roll keeps it epic")
+	assert_eq(epic["affixes"].size(), 2)
+	assert_lt(state.pack.gold, 5000, "paid for")
+
+
+func test_each_region_has_a_crafting_quest() -> void:
+	var crafted := {}
+	for quest: Dictionary in Quests.all():
+		if quest["objective"]["kind"] == "craft":
+			crafted[quest["giver"]] = quest["objective"]["itemId"]
+	assert_eq(crafted.get("saltmere_brin"), "oilskin_coat")
+	assert_eq(crafted.get("mines_garrick"), "blackiron_helm")
+	assert_eq(crafted.get("frost_linnea"), "frost_hood")
