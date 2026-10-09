@@ -57,7 +57,7 @@ func enter_floor(level: int) -> void:
 	if not twist.is_empty():
 		world.messages.log_lines([Text.t("%s: %s") % [Text.t(twist["name"]), Text.t(twist["line"])]])
 	# A boss's floor: its intro, the first time only (PIX-32).
-	world.play_story(Cutscene.moment("boss:%s" % Dungeons.boss_of(level)["monsterId"]))
+	world.stage.play_story(Cutscene.moment("boss:%s" % Dungeons.boss_of(level)["monsterId"]))
 
 
 ## Up the stairs, back to the gate the save remembers.
@@ -92,10 +92,10 @@ func floor_cleared(at: Vector2i) -> void:
 	if result["victory"] and Story.ending_of(GameState.progression.story_seen) == "":
 		# Morvax kneels: the hero decides how it ends (PIX-157).
 		var throne := preload("res://scripts/throne_screen.gd").new()
-		throne.on_choice = world.play_ending
+		throne.on_choice = world.stage.play_ending
 		world.add_child(throne)
 	elif result["first"]:
-		world.play_story(Cutscene.moment("cleared:%d" % map.floor_level))
+		world.stage.play_story(Cutscene.moment("cleared:%d" % map.floor_level))
 
 
 ## How hard the hero's skills strike on this floor (PIX-216): less on a

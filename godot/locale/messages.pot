@@ -13328,35 +13328,11 @@ msgstr ""
 msgid "Arrows"
 msgstr ""
 
-#: scripts/world.gd:303
+#: scripts/world.gd:308
 msgid "No map reaches this deep."
 msgstr ""
 
-#: scripts/world.gd:657
-msgid "Five lanterns on the square, one for each of the five who climbed. Tonight the %s remembers them - and %s."
-msgstr ""
-
-#: scripts/world.gd:658
-msgid "Pixelheim, a %s raised from the ashes. Tonight it celebrates %s."
-msgstr ""
-
-#: scripts/world.gd:744
-msgid "%s: built."
-msgstr ""
-
-#: scripts/world.gd:748
-msgid "Pixelheim is a %s now."
-msgstr ""
-
-#: scripts/world.gd:754
-msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
-msgstr ""
-
-#: scripts/world.gd:831
-msgid "%s  %d:%02d"
-msgstr ""
-
-#: scripts/world.gd:930
+#: scripts/world.gd:642
 msgid "Next"
 msgstr ""
 
@@ -13398,6 +13374,30 @@ msgstr ""
 
 #: scripts/world_messages.gd:23
 msgid "Quest complete"
+msgstr ""
+
+#: scripts/world_stage.gd:136
+msgid "Five lanterns on the square, one for each of the five who climbed. Tonight the %s remembers them - and %s."
+msgstr ""
+
+#: scripts/world_stage.gd:137
+msgid "Pixelheim, a %s raised from the ashes. Tonight it celebrates %s."
+msgstr ""
+
+#: scripts/world_stage.gd:223
+msgid "%s: built."
+msgstr ""
+
+#: scripts/world_stage.gd:227
+msgid "Pixelheim is a %s now."
+msgstr ""
+
+#: scripts/world_stage.gd:233
+msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
+msgstr ""
+
+#: scripts/world_stage.gd:301
+msgid "%s  %d:%02d"
 msgstr ""
 
 #: tools/i18n.py
