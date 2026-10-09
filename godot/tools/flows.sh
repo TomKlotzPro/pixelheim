@@ -16,9 +16,10 @@
 # map's waypoint list showing where a waypoint takes you before it does, then
 # taking you there (PIX-241), hero creation's first night skipped with
 # Tab while the name field has the keys (PIX-228), a quest chosen in the
-# journal and followed after it closes (PIX-239), and what grows on the
-# ground somewhere new each day, picked off as you step on it (PIX-250).
-# Every flow leaves its
+# journal and followed after it closes (PIX-239), what grows on the
+# ground somewhere new each day, picked off as you step on it (PIX-250),
+# and a building rising out of its ruin on the town's tour, a cut with
+# Reduce motion (PIX-264). Every flow leaves its
 # picture in godot/flows/<name>.png for a human to look at, and the
 # harness's report line must match what the flow promises or the run fails.
 #
@@ -69,6 +70,10 @@ FLOWS=(
 	"dodge|--map town --keys shift --wait 0.4|map=town cell=\(40, 33\)"
 	"hunt|--map overworld --at 70,40 fight slay --foe greymaw --wait 0.3|map=overworld .*gold=160"
 	"rebuilt|--map town --town-tier 2 rebuilt fades|open=reveal_screen.* dark=0"
+	# A building rises out of its ruin at its stop on the tour, never over a
+	# dark screen (PIX-264); with Reduce motion the ruin simply cuts to it.
+	"rise|--map town --rise odos_store fades --wait 1.6|open=reveal_screen.* dark=0 rise=built"
+	"rise-still|--map town --rise odos_store still --wait 0.8|open=reveal_screen.* rise=built"
 	"bossfell|--map icecave fight slay --foe rimefang --wait 0.3|map=icecave .* fell=1"
 	"noescape|--map icecave fight --foe rimefang flee|map=icecave "
 	# A hero far above the forest's slimes (PIX-251): they run instead of

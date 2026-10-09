@@ -62,6 +62,17 @@ static func on_map(map_id: String, town_tier: int, settlers: Array, done: Varian
 	return out
 
 
+## The townsfolk who move in as the town reaches `town_tier` (PIX-264), by
+## on_map's rule (an age of 1 for those who don't say): the age's stop on
+## the town's tour names them.
+static func newcomers(town_tier: int) -> Array[String]:
+	var out: Array[String] = []
+	for npc: Dictionary in _data()["npcs"]:
+		if npc["mapId"] == "town" and not npc.has("stall") and int(npc.get("minTownTier", 1)) == town_tier:
+			out.append(String(npc["name"]))
+	return out
+
+
 ## What a villager says about the hero's latest deed (PIX-149), or "": only
 ## the town's own folk (not keepers, builders or animals) gossip, each
 ## picking one of the deed's lines by who they are.

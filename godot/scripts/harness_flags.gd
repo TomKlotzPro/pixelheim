@@ -101,6 +101,7 @@ const TABLE := [
 	{"flag": "--hunted", "takes": "<ids>", "does": "named monsters already slain (PIX-156)"},
 	{"flag": "reveal", "takes": "", "does": "the town risen (PIX-147): the lamps' stop, then the age's; with --hunted, the first one's homecoming"},
 	{"flag": "rebuilt", "takes": "", "does": "back from the board with something built: the town redrawn, faded in, then its tour (PIX-238)"},
+	{"flag": "--rise", "takes": "<project>", "does": "back from the board with that project built: its stop on the tour, the ruin giving way and the building rising in dust and confetti, then its name and what it brings (PIX-264); --wait counts from the rise; the report adds rise="},
 	{"flag": "ending", "takes": "", "does": "the ending (PIX-150): home to the festival and the tour's first stop"},
 	{"flag": "rest", "takes": "", "does": "with ending: the ending where Morvax is laid to rest (PIX-157)"},
 	{"flag": "--seen", "takes": "<ids>", "does": "stories already told this hero"},

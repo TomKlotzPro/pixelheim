@@ -77,6 +77,19 @@ func _press(keycode: Key, pressed: bool) -> void:
 	get_viewport().push_input(event)
 
 
+## How far the building rising on the town's tour had got when last seen
+## (`--rise`, PIX-264): it goes once its confetti has fallen, built.
+var _rise_phase := "none"
+
+
+## The building rising on the town's tour, while it's there.
+func _rise() -> RebuildRise:
+	var rise := get_tree().get_first_node_in_group(RebuildRise.GROUP) as RebuildRise
+	if rise != null:
+		_rise_phase = rise.phase
+	return rise
+
+
 ## Harness `lineup`: the cast PunyArt assigns, side by side with names.
 func _lineup() -> void:
 	for node in get_tree().get_nodes_in_group("mobs") + get_tree().get_nodes_in_group("npcs"):
@@ -565,6 +578,27 @@ func _run_test_harness() -> void:
 		GameState.reveals.assign(["project:street_lamps", "age:2"])
 		world.stage.after_board()
 		await get_tree().create_timer(1.4).timeout
+	if flags.has("--rise"):
+		# `--rise odos_store`: back from the board with that project built
+		# (PIX-264), whatever age the run's town stands at: the town redrawn,
+		# then its stop on the tour, the building rising out of its ruin.
+		# The run waits for the camera to get there, so `--wait` counts from
+		# the rise (the fight step's 0.2 s comes first).
+		var project_id := flags.value("--rise")
+		if Town.project(project_id).is_empty():
+			push_error("--rise: no village project %s (assets/data/town.json)" % project_id)
+		else:
+			var done := Town.done_projects(GameState.settlement)
+			if project_id not in done:
+				done.append(project_id)
+			GameState.settlement.projects.assign(done)
+			GameState.reveals.assign(["project:" + project_id])
+			world.stage.after_board()
+			for frame in 300:
+				var rise := _rise()
+				if rise != null and rise.phase != "ruin":
+					break
+				await get_tree().process_frame
 	if flags.has("ending"):
 		# The ending (PIX-150): home to the festival and the tour's first stop;
 		# `rest` the ending where Morvax is laid to rest (PIX-157).
@@ -726,6 +760,10 @@ func _run_test_harness() -> void:
 	if flags.has("fades"):
 		var dark: int = world.hud.root.get_children().filter(func(node: Node) -> bool: return node.has_meta("fade") and node.color.a > 0.5).size()
 		motion_report += " dark=%d" % dark
+	# How far the building on the tour has risen (PIX-264): ruin, rising, built.
+	if flags.has("--rise"):
+		var rise := _rise()
+		motion_report += " rise=%s" % (rise.phase if rise != null else ("built" if _rise_phase != "none" else "none"))
 	# A boss's fall (PIX-232), when one fell.
 	if world.foes.bosses_fallen > 0:
 		motion_report += " fell=%d" % world.foes.bosses_fallen

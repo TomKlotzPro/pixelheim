@@ -9,7 +9,10 @@ extends Node
 ## a moment too, frame by frame, for what a still can't show (the wind, the
 ## water). With `--looks a,b`, the desktop renderer shoots each scene in each
 ## of the app's looks (PIX-227, DesktopLook.LOOKS), each look in its own
-## folder with its own sheet. Run by tools/lookbook.sh.
+## folder with its own sheet. A shot that is a moment rather than a place (a
+## clip: `rise`, PIX-264) is staged afresh for each look and kept as a strip
+## of frames through it, <name>_strip.png; its last frame stands in the
+## sheet. Run by tools/lookbook.sh.
 
 ## Where in the day a shot stands (DayNight's wheel, 0..1).
 const DAY := 0.2
@@ -45,6 +48,8 @@ const SHOTS := [
 	# The hero's walk (PIX-243), filmed (`film`) setting off, striding, turning
 	# right round and settling, then walking up the street.
 	{"name": "21_walk", "map": "town", "cell": Vector2i(38, 13), "time": DAY, "walk": true},
+	# Odo's store rising out of its ruin on the town's tour (PIX-264).
+	{"name": "22_rise", "map": "town", "at": "street", "time": DAY, "rise": "odos_store"},
 ]
 ## Filming the walk: slowed to a quarter, a picture every WALK_STEP of the
 ## game's time (thirty a second: two or three of each frame of the walk),
@@ -56,6 +61,10 @@ const WALK_CROP := Vector2(22, 26)
 const WALK_LEGS := [[Vector2.ZERO, 3], [Vector2.RIGHT, 20], [Vector2.LEFT, 12], [Vector2.ZERO, 9], [Vector2.UP, 12], [Vector2.ZERO, 9]]
 ## The strip of crops: this many across.
 const STRIP_COLUMNS := 11
+## A clip's frames, in seconds after the rise begins: the ruin, giving way
+## in dust as the first courses drop, the roof going up, and standing with
+## its confetti, its name and what it brings.
+const CLIP_MARKS := [0.1, 0.55, 0.95, 2.1]
 ## Upper Street: the shop's and the inn's fronts, the street lamps, the hall.
 const STREET := Vector2i(40, 13)
 ## The contact sheet: three across, each shot at half size.
@@ -112,6 +121,9 @@ func run() -> void:
 	print("%s %s=%s" % ["LOOK", "look", DesktopLook.look])
 	for shot: Dictionary in SHOTS:
 		if only != "" and shot["name"] != only:
+			continue
+		if shot.has("rise"):
+			await _clip(shot, folders, images)
 			continue
 		_stage(shot)
 		await get_tree().create_timer(SETTLE_SECONDS).timeout
@@ -234,6 +246,52 @@ static func _strip(crops: Array[Image]) -> Image:
 	for index in crops.size():
 		var size := crops[index].get_size().min(cell - Vector2i(2, 2))
 		out.blit_rect(crops[index], Rect2i(Vector2i.ZERO, size), Vector2i(index % STRIP_COLUMNS * cell.x + 1, index / STRIP_COLUMNS * cell.y + 1))
+	return out
+
+
+## A building rising on the town's tour (PIX-264), in each look: the town
+## staged, back from the board with the shot's project built, the tour on
+## its way; then CLIP_MARKS' frames from the moment it rises, side by side.
+## The tour is closed after, so the next shot finds the world its own.
+func _clip(shot: Dictionary, folders: Dictionary, images: Dictionary) -> void:
+	for look: String in folders:
+		if look != "":
+			world.lights.wear(look)
+		_stage(shot)
+		GameState.reveals.assign(["project:" + String(shot["rise"])])
+		world.stage.after_board()
+		var rise: RebuildRise = null
+		for frame in 600:
+			rise = get_tree().get_first_node_in_group(RebuildRise.GROUP) as RebuildRise
+			if rise != null and rise.phase != "ruin":
+				break
+			await drawn()
+		var began := Time.get_ticks_msec()
+		var frames: Array[Image] = []
+		for mark: float in CLIP_MARKS:
+			var left := mark - (Time.get_ticks_msec() - began) / 1000.0
+			if left > 0.0:
+				await get_tree().create_timer(left).timeout
+			await drawn()
+			frames.append(await DesktopLook.snapshot(self))
+		strip(frames).save_png("%s/%s_strip.png" % [folders[look], shot["name"]])
+		frames[-1].save_png("%s/%s.png" % [folders[look], shot["name"]])
+		images[look].append(frames[-1])
+		for node in world.get_children():
+			if node is Screen:
+				(node as Screen).close()
+		print("%s %s" % ["LOOK", shot["name"]])
+
+
+## A clip's frames side by side at half size.
+static func strip(frames: Array[Image]) -> Image:
+	var cell := Vector2i(frames[0].get_width() / 2, frames[0].get_height() / 2)
+	var out := Image.create(cell.x * frames.size(), cell.y, false, Image.FORMAT_RGBA8)
+	for index in frames.size():
+		var small := frames[index].duplicate()
+		small.convert(Image.FORMAT_RGBA8)
+		small.resize(cell.x, cell.y, Image.INTERPOLATE_BILINEAR)
+		out.blit_rect(small, Rect2i(Vector2i.ZERO, cell), Vector2i(index * cell.x, 0))
 	return out
 
 

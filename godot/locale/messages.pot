@@ -13316,8 +13316,12 @@ msgstr ""
 msgid "It takes %d %s."
 msgstr ""
 
-#: scripts/state/town.gd:310
+#: scripts/state/town.gd:313
 msgid "All it wants is %s. The board on the square takes it, and we'll have it up by the time you're back."
+msgstr ""
+
+#: scripts/state/town.gd:379
+msgid "%s is back at work indoors."
 msgstr ""
 
 #: scripts/state/trade.gd:156
@@ -13652,19 +13656,23 @@ msgstr ""
 msgid "Pixelheim, a %s raised from the ashes. Tonight it celebrates %s."
 msgstr ""
 
-#: scripts/world_stage.gd:223
+#: scripts/world_stage.gd:234
 msgid "%s: built."
 msgstr ""
 
-#: scripts/world_stage.gd:227
+#: scripts/world_stage.gd:241
 msgid "Pixelheim is a %s now."
 msgstr ""
 
-#: scripts/world_stage.gd:233
+#: scripts/world_stage.gd:242
+msgid "New in town: %s."
+msgstr ""
+
+#: scripts/world_stage.gd:248
 msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
 msgstr ""
 
-#: scripts/world_stage.gd:302
+#: scripts/world_stage.gd:318
 msgid "%s  %d:%02d"
 msgstr ""
 

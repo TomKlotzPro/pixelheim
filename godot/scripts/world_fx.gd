@@ -122,7 +122,9 @@ func show_loot(pieces: Array, at: Vector2) -> void:
 
 
 ## A ring of dust motes kicked up from `at` (a monster appearing, a dodge).
-func dust(at: Vector2) -> void:
+## `held`: it drifts while a screen holds the world (the town's tour,
+## PIX-264); the age's dust used to hang in the air until the tour let go.
+func dust(at: Vector2, held := false) -> void:
 	for i in 8:
 		var mote := ColorRect.new()
 		mote.color = Color(0.86, 0.8, 0.68, 0.9) if i % 2 == 0 else Color(0.7, 0.64, 0.52, 0.9)
@@ -130,6 +132,8 @@ func dust(at: Vector2) -> void:
 		mote.position = at + Vector2(-1, 1)
 		mote.z_index = 4
 		mote.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		if held:
+			mote.process_mode = Node.PROCESS_MODE_ALWAYS
 		add_child(mote)
 		var away := Vector2.RIGHT.rotated(TAU * i / 8.0) * Vector2(9, 4)
 		var drift := mote.create_tween().set_parallel()

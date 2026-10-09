@@ -61,6 +61,11 @@ var camps := {}
 ## The village seen from outside (PIX-248, Skyline.plan), on the maps that
 ## hold it as one block (PunyTerrain.SKYLINE_MAPS); empty elsewhere.
 var skyline := {}
+## What a building rising on the town's tour lifts out and puts back
+## (PIX-264): the houses' layers and the flat flowers' ("pieces", "decor",
+## "flowers"), and each outdoor prop's node by its cell.
+var layers := {}
+var prop_nodes := {}
 
 ## How far the wind leans what grows, in pixels at its top (PIX-223): a
 ## tree or a sheaf, a flower, a forest's crowns (all of a piece, so less).
@@ -279,6 +284,7 @@ func _build_ground(data: MapData) -> Node2D:
 			PunyTown.place(flowers, cell, outdoor_props["flat"][cell])
 		flowers.material = flowers_sway
 		root.add_child(flowers)
+		layers["flowers"] = flowers
 	# The houses, then what stands on their roofs (chimneys).
 	for part: String in ["pieces", "decor"]:
 		if buildings[part].is_empty():
@@ -288,7 +294,60 @@ func _build_ground(data: MapData) -> Node2D:
 		for cell: Vector2i in buildings[part]:
 			PunyTown.place(houses, cell, buildings[part][cell])
 		root.add_child(houses)
+		layers[part] = houses
 	return root
+
+
+## This plan's ground drawn on its own over `windows` (PIX-264): Shade's
+## terrain (on the dual grid, so it spills half a cell past each window),
+## crowns, spans, flowers, houses and the flat field decor over all it
+## spills on, without the actors, lights or bodies a visit adds. The town's
+## tour draws the town as it stood a moment ago over the town as it stands
+## while a building rises out of its ruin.
+func draw_ground(windows: Array[Rect2i]) -> Node2D:
+	var root := _build_ground(data)
+	for layer: Node in root.get_children():
+		if not layer is TileMapLayer:
+			continue
+		# A dual-grid layer sits half a tile up-left: its cell is a corner,
+		# and a window's corners run one past its last cell. A layer on the
+		# cells keeps every cell those corners reach into.
+		var corners: bool = (layer as TileMapLayer).position != Vector2.ZERO
+		for cell: Vector2i in (layer as TileMapLayer).get_used_cells():
+			var kept := windows.any(func(window: Rect2i) -> bool:
+				return (window.grow_individual(0, 0, 1, 1) if corners else window.grow(1)).has_point(cell))
+			if not kept:
+				(layer as TileMapLayer).erase_cell(cell)
+	var seen := {}
+	for window: Rect2i in windows:
+		var reach := window.grow(1)
+		for y in range(reach.position.y, reach.end.y):
+			for x in range(reach.position.x, reach.end.x):
+				var cell := Vector2i(x, y)
+				if seen.has(cell) or not data.grid.has(cell):
+					continue
+				seen[cell] = true
+				var choice := Scatter.choice(data.grid, cell)
+				if _is_flat_decor(cell, choice):
+					root.add_child(_flat_decor(cell, choice))
+	return root
+
+
+## Field decor drawn flat on the ground (the hero steps over it): not where
+## a prop stands, not what blocks, not in a forest.
+func _is_flat_decor(cell: Vector2i, choice: int) -> bool:
+	return choice >= 0 and not outdoor_props["drawn"].has(cell) and not solid_scatter.has(cell) \
+		and choice in Scatter.FLAT and data.grid[cell] != "forest"
+
+
+func _flat_decor(cell: Vector2i, choice: int) -> Sprite2D:
+	var h := absi(hash(cell))
+	var flat := Sprite2D.new()
+	flat.texture = PunyTerrain.sheet().tile_texture(choice)
+	flat.position = center(cell) + Vector2((h >> 12) % 7 - 3, (h >> 16) % 5 - 2)
+	flat.material = ground_tint
+	flat.add_to_group("decor")
+	return flat
 
 
 ## The ground's toning, leaning in the wind `sway` pixels at the top: each
@@ -429,19 +488,12 @@ func _build_decor(data: MapData) -> void:
 		var choice := Scatter.choice(data.grid, cell)
 		if choice < 0 or outdoor_props["drawn"].has(cell):
 			continue
-		var h := absi(hash(cell))
 		if solid_scatter.has(cell):
 			_add_solid_decor(choice, cell)
-		elif choice in Scatter.FLAT and data.grid[cell] != "forest":
-			# Flat on the ground: the hero steps over it.
-			var flat := Sprite2D.new()
-			flat.texture = PunyTerrain.sheet().tile_texture(choice)
-			flat.position = center(cell) + Vector2((h >> 12) % 7 - 3, (h >> 16) % 5 - 2)
-			flat.material = ground_tint
-			flat.add_to_group("decor")
-			ground.add_child(flat)
+		elif _is_flat_decor(cell, choice):
+			ground.add_child(_flat_decor(cell, choice))
 		else:
-			_add_decor_sprite(PunyTerrain.SHEET, PunyTerrain.region(choice), cell, h)
+			_add_decor_sprite(PunyTerrain.SHEET, PunyTerrain.region(choice), cell, absi(hash(cell)))
 			actors.get_child(-1).material = decor_sway if choice in Scatter.SWAYS else ground_tint
 
 
@@ -935,6 +987,7 @@ func _add_puny_prop(prop: Dictionary) -> Node2D:
 		body.add_child(shape)
 		root.add_child(body)
 	actors.add_child(root)
+	prop_nodes[prop["cell"]] = root
 	return root
 
 
@@ -968,9 +1021,10 @@ func _build_props(data: MapData) -> Node2D:
 		if ruins.any(func(ruin: Dictionary) -> bool: return (ruin["rect"] as Rect2i).has_point(door)):
 			continue
 		var target: Dictionary = data.portals.get(door, {})
-		root.add_child(ShopSign.build(sign_def["label"], door))
+		var board := ShopSign.build(sign_def["label"], door)
+		root.add_child(board)
 		var told := ShopSign.about(sign_def["label"], String(target.get("mapId", "")), GameState.household.owns_house())
-		door_signs.append({"door": door, "name": told["name"], "about": told["about"]})
+		door_signs.append({"door": door, "name": told["name"], "about": told["about"], "node": board})
 	return root
 
 

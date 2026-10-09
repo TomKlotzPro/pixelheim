@@ -13316,9 +13316,13 @@ msgstr "La trésorerie demande %d or."
 msgid "It takes %d %s."
 msgstr "Il faut %d %s."
 
-#: scripts/state/town.gd:310
+#: scripts/state/town.gd:313
 msgid "All it wants is %s. The board on the square takes it, and we'll have it up by the time you're back."
 msgstr "Il ne lui faut que %s. Ça se dépose au tableau de la place, et on l'aura monté d'ici votre retour."
+
+#: scripts/state/town.gd:379
+msgid "%s is back at work indoors."
+msgstr "%s travaille de nouveau sous son propre toit."
 
 #: scripts/state/trade.gd:156
 msgid "Hilda breaks it down: %s."
@@ -13652,19 +13656,23 @@ msgstr "Cinq lanternes sur la place, une pour chacun des cinq qui ont gravi la m
 msgid "Pixelheim, a %s raised from the ashes. Tonight it celebrates %s."
 msgstr "Pixelheim, des cendres au rang de %s. Ce soir, on y fête %s."
 
-#: scripts/world_stage.gd:223
+#: scripts/world_stage.gd:234
 msgid "%s: built."
 msgstr "%s : chantier terminé."
 
-#: scripts/world_stage.gd:227
+#: scripts/world_stage.gd:241
 msgid "Pixelheim is a %s now."
 msgstr "Pixelheim passe au rang de %s."
 
-#: scripts/world_stage.gd:233
+#: scripts/world_stage.gd:242
+msgid "New in town: %s."
+msgstr "Nouveaux venus en ville : %s."
+
+#: scripts/world_stage.gd:248
 msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
 msgstr "Et aujourd'hui, on fait la fête : des étals sur la place, et un lancer d'anneaux avec un lot pour le meilleur lancer."
 
-#: scripts/world_stage.gd:302
+#: scripts/world_stage.gd:318
 msgid "%s  %d:%02d"
 msgstr "%s  %d:%02d"
 
