@@ -148,7 +148,7 @@ func test_a_clip_is_a_strip_of_its_frames_at_half_size() -> void:
 	var strip := Lookbook.strip(frames)
 	assert_eq(strip.get_size(), Vector2i(32 * 4, 18), "four across, one row")
 	assert_almost_eq(strip.get_pixel(32 * 2 + 16, 9).r, 0.5, 0.02, "the third frame third")
-	for shot: Dictionary in Lookbook.SHOTS:
-		if shot.has("rise"):
-			assert_false(Town.project(shot["rise"]).is_empty(), "%s raises a project" % shot["name"])
+	for shot_name: String in Lookbook.SHOTS:
+		if Lookbook.SHOTS[shot_name].has("rise"):
+			assert_false(Town.project(Lookbook.SHOTS[shot_name]["rise"]).is_empty(), "%s raises a project" % shot_name)
 	assert_eq(Lookbook.CLIP_MARKS.size(), 4)

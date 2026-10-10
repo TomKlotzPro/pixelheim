@@ -25,12 +25,12 @@
 # - beside GUT, the town booted headless by day and at night, with every map
 #   the diff touches (GUT never loads world.gd nor its world_*.gd pieces, so
 #   a script that breaks only there fails here), then the flows tagged with
-#   the areas the diff touches: each flow's tags end its line in flows.sh,
+#   the areas the diff touches: each flow's tags end its line in flows.txt,
 #   and AREAS below says which areas each file touches. A changed map also
 #   runs the flows that name it, a changed scripts/<x>.gd the flows whose
-#   report shows open=<x>. A file no line of AREAS names, or whose areas no
-#   flow covers, runs every flow, and quick says so; a flow without a tag
-#   AREAS knows runs every time.
+#   report shows open=<x>, and a changed flows.txt the flows it adds or changes.
+#   A file no line of AREAS names, or whose areas no flow covers, runs every
+#   flow, and quick says so; a flow without a tag AREAS knows runs every time.
 # The windowed motion flow never runs here: quick says when the diff calls
 # for it (player.gd, gait.gd, juice.gd, puny_art.gd, world_camera.gd).
 #
@@ -48,10 +48,11 @@ cd "$(dirname "$0")/.."
 # (globs from godot/); a changed file takes the areas of the first line that
 # names it. "all" runs every flow, "none" no flow (the checks, GUT and the
 # town's boot still run). +name adds boots (a name from flows.sh --boot
-# --list, or a glob of them) to the town's.
+# --list, or a glob of them) to the town's. all comes first: tools/flows.py
+# is a tools/*.py, and it checks every flow.
 AREAS='
+all: project.godot scenes/* tools/flows.sh tools/flows.py scripts/world.gd scripts/harness.gd scripts/harness_flags.gd scripts/harness_report.gd scripts/state/game_state.gd scripts/state/catalog.gd assets/data/catalog.json
 none: README.md .gitignore .gutconfig.json export_presets.cfg addons/* test/unit/* test/hooks/* tools/*.py tools/check.sh tools/lookbook.sh tools/splash.sh scripts/lookbook.gd scripts/perf_probe.gd assets/puny/LICENSE.txt assets/fonts/*.txt
-all: project.godot scenes/* tools/flows.sh scripts/world.gd scripts/harness.gd scripts/harness_flags.gd scripts/state/game_state.gd scripts/state/catalog.gd assets/data/catalog.json
 travel combat: scripts/world_camera.gd
 combat field night: scripts/world_foes.gd
 combat town: scripts/world_fx.gd scripts/state/gains.gd
@@ -330,7 +331,7 @@ add_boots() {
 
 # Picks what one changed file calls for, and leaves why in $why.
 pick() {
-	local file=$1 areas="" label="" found="" own line pattern word i count=0 hit map="" id tier
+	local file=$1 areas="" label="" found="" own line pattern word i count=0 hit map="" id tier flow
 	# A .uid or .import goes with its file.
 	file=${file%.uid}
 	file=${file%.import}
@@ -352,6 +353,22 @@ pick() {
 		assets/maps/*.json) map=${file#assets/maps/} map=${map%.json} ;;
 		maps-src/*.txt) map=${file#maps-src/} map=${map%.txt} ;;
 	esac
+	if [[ $file == tools/flows.txt ]]; then
+		# The flows (PIX-273): those whose lines the branch added or changed.
+		# Given files, or a flows.txt git doesn't know yet, have no diff to
+		# read: every flow.
+		if [[ -z ${fork:-} ]] || ! git -C "$root" ls-files --error-unmatch godot/tools/flows.txt >/dev/null 2>&1; then
+			everything=1
+			why="the flows: every flow (no diff to read)"
+			return
+		fi
+		for flow in $(git -C "$root" diff --no-renames -U0 "$fork" -- godot/tools/flows.txt | grep -E '^\+[a-z0-9]' | cut -d"|" -f1 | tr -d '+ '); do
+			count=$((count + 1))
+			[[ $picked == *" $flow "* ]] || picked+="$flow "
+		done
+		why="the flows: the $count it adds or changes"
+		return
+	fi
 	if [[ -n $map ]]; then
 		# A map: its boots by day and at night, and the flows that name it.
 		id=${map%@*} tier=${map#"$id"}
@@ -467,7 +484,7 @@ else
 	echo "flows:   $(wc -w <<<"$flows" | tr -d ' ') of $total: ${flows:-none}"
 fi
 if [[ -n $untagged ]]; then
-	echo "note:    no tag AREAS knows on ${untagged% }, so they run every time (tag them in flows.sh)"
+	echo "note:    no tag AREAS knows on ${untagged% }, so they run every time (tag them in flows.txt)"
 fi
 if [[ -n $motion ]]; then
 	echo "motion:  the diff touches ${motion% }: watch the walk in a window before the PR: godot/tools/flows.sh motion"

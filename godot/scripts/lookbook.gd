@@ -15,66 +15,75 @@ extends Node
 ## folder with its own sheet. A shot that is a moment rather than a place (a
 ## clip: `rise`, PIX-264) is staged afresh for each look and kept as a strip
 ## of frames through it, <name>_strip.png; its last frame stands in the
-## sheet. Run by tools/lookbook.sh.
+## sheet. Each folder also gets shots.txt, the shots' names in the sheet's
+## order, for tools/lookbook_compare.py. Run by tools/lookbook.sh.
 
 ## Where in the day a shot stands (DayNight's wheel, 0..1).
 const DAY := 0.2
 const DUSK := 0.53
 const NIGHT := 0.75
-## Each shot: a map and where on it (Upper Street, a pack's home, a cell, or
-## the map's arrival), or a dungeon floor; the hour, or the first shower by
-## day (`rain`); and a foe to face, for the fight, struck on a beat while
-## it's filmed (`strike`), the third blow felling it. Only a shot with
-## `card` keeps the title card naming the place it enters (PIX-269).
-const SHOTS := [
-	{"name": "01_town_day", "map": "town", "at": "street", "time": DAY},
-	{"name": "02_town_dusk", "map": "town", "at": "street", "time": DUSK},
-	{"name": "03_town_night", "map": "town", "at": "street", "time": NIGHT},
-	{"name": "04_forest", "map": "overworld", "at": "forest_2", "time": DAY},
-	{"name": "05_ash", "map": "overworld", "at": "ash_3", "time": DAY},
-	{"name": "06_mire", "map": "mirefen", "time": DAY},
-	{"name": "07_frostgate", "map": "frostgate", "time": DAY},
-	{"name": "08_dungeon", "floor": 5, "time": DAY},
-	{"name": "09_fight", "map": "overworld", "at": "forest_1", "time": DAY, "foe": "orc"},
-	{"name": "10_overworld_night", "map": "overworld", "at": "forest_2", "time": NIGHT},
-	{"name": "11_inn_night", "map": "town_inn", "time": NIGHT},
-	{"name": "12_smithy_day", "map": "town_smith", "time": DAY},
-	{"name": "13_riverside", "map": "town", "cell": Vector2i(72, 8), "time": DAY},
-	{"name": "14_rain", "map": "overworld", "at": "forest_1", "rain": true},
-	{"name": "15_coast", "map": "saltmere", "cell": Vector2i(33, 27), "time": DAY},
-	{"name": "16_deepwood", "map": "deepwood", "time": DAY},
-	{"name": "17_strike", "map": "overworld", "at": "forest_1", "time": DAY, "foe": "orc", "strike": true},
-	# The village seen from outside (PIX-248): up the road to its gate by day
-	# and at night, and its lit windows from the road along its west wall.
-	{"name": "18_village_road", "map": "overworld", "cell": Vector2i(48, 40), "time": DAY},
-	{"name": "19_village_gate_night", "map": "overworld", "cell": Vector2i(48, 41), "time": NIGHT},
-	{"name": "20_village_west_night", "map": "overworld", "cell": Vector2i(34, 47), "time": NIGHT},
+## The sheet's areas, in its order (PIX-273): the village and its rooms,
+## the Reach around it, the regions beyond, the ways between them,
+## underground, a fight, and the game's pages. A shot names its area, and
+## the sheet groups them so, in the order SHOTS gives within an area.
+const AREAS := ["town", "rooms", "reach", "regions", "ways", "dungeon", "combat", "screens"]
+## Each shot by its name (its picture's file, and `--only`'s word: never a
+## number, which every branch adding a shot took the same next one of): its
+## area; a map and where on it (Upper Street, a pack's home, a cell, or the
+## map's arrival), or a dungeon floor; the hour, or the first shower by day
+## (`rain`); and a foe to face, for the fight, struck on a beat while it's
+## filmed (`strike`), the third blow felling it. Only a shot with `card`
+## keeps the title card naming the place it enters (PIX-269). A new shot
+## goes with its area's.
+const SHOTS := {
+	"town_day": {"area": "town", "map": "town", "at": "street", "time": DAY},
+	"town_dusk": {"area": "town", "map": "town", "at": "street", "time": DUSK},
+	"town_night": {"area": "town", "map": "town", "at": "street", "time": NIGHT},
+	"riverside": {"area": "town", "map": "town", "cell": Vector2i(72, 8), "time": DAY},
 	# The hero's walk (PIX-243), filmed (`film`) setting off, striding, turning
 	# right round and settling, then walking up the street.
-	{"name": "21_walk", "map": "town", "cell": Vector2i(38, 13), "time": DAY, "walk": true},
+	"walk": {"area": "town", "map": "town", "cell": Vector2i(38, 13), "time": DAY, "walk": true},
 	# Odo's store rising out of its ruin on the town's tour (PIX-264).
-	{"name": "22_rise", "map": "town", "at": "street", "time": DAY, "rise": "odos_store"},
+	"rise": {"area": "town", "map": "town", "at": "street", "time": DAY, "rise": "odos_store"},
+	"inn_night": {"area": "rooms", "map": "town_inn", "time": NIGHT},
+	"smithy_day": {"area": "rooms", "map": "town_smith", "time": DAY},
+	# A house opens onto a room, the cave down a stair in its floor (PIX-256):
+	# Liane's room and Captain Hale's hall from beside the stairwell, then at
+	# its top, the stairs asking.
+	"lianes_room": {"area": "rooms", "map": "observatory", "cell": Vector2i(13, 7), "time": DAY},
+	"lianes_stair": {"area": "rooms", "map": "observatory", "cell": Vector2i(13, 6), "time": DAY, "down": true},
+	"hales_hall": {"area": "rooms", "map": "keep", "cell": Vector2i(13, 7), "time": DAY},
+	"hales_stair": {"area": "rooms", "map": "keep", "cell": Vector2i(13, 6), "time": DAY, "down": true},
+	"forest": {"area": "reach", "map": "overworld", "at": "forest_2", "time": DAY},
+	"ash": {"area": "reach", "map": "overworld", "at": "ash_3", "time": DAY},
+	"overworld_night": {"area": "reach", "map": "overworld", "at": "forest_2", "time": NIGHT},
+	"rain": {"area": "reach", "map": "overworld", "at": "forest_1", "rain": true},
+	# The village seen from outside (PIX-248): up the road to its gate by day
+	# and at night, and its lit windows from the road along its west wall.
+	"village_road": {"area": "reach", "map": "overworld", "cell": Vector2i(48, 40), "time": DAY},
+	"village_gate_night": {"area": "reach", "map": "overworld", "cell": Vector2i(48, 41), "time": NIGHT},
+	"village_west_night": {"area": "reach", "map": "overworld", "cell": Vector2i(34, 47), "time": NIGHT},
+	"mire": {"area": "regions", "map": "mirefen", "time": DAY},
+	"frostgate": {"area": "regions", "map": "frostgate", "time": DAY},
+	"coast": {"area": "regions", "map": "saltmere", "cell": Vector2i(33, 27), "time": DAY},
+	"deepwood": {"area": "regions", "map": "deepwood", "time": DAY},
 	# The ways between maps (PIX-269): the river road running out through
 	# the cliffs at the Deepwood pass by day and by night, the Mirefen's way
 	# back (high on its east edge since the Reach became one plane), and the
 	# road south out through the ridge - bare ground, no post.
-	{"name": "24_deepwood_pass", "map": "overworld", "cell": Vector2i(91, 33), "time": DAY},
-	{"name": "25_deepwood_pass_night", "map": "overworld", "cell": Vector2i(91, 33), "time": NIGHT},
-	{"name": "26_mire_pass", "map": "mirefen", "cell": Vector2i(55, 5), "time": DAY},
-	{"name": "27_road_south", "map": "overworld", "cell": Vector2i(16, 60), "time": DAY},
+	"deepwood_pass": {"area": "ways", "map": "overworld", "cell": Vector2i(91, 33), "time": DAY},
+	"deepwood_pass_night": {"area": "ways", "map": "overworld", "cell": Vector2i(91, 33), "time": NIGHT},
+	"mire_pass": {"area": "ways", "map": "mirefen", "cell": Vector2i(55, 5), "time": DAY},
+	"road_south": {"area": "ways", "map": "overworld", "cell": Vector2i(16, 60), "time": DAY},
+	# Come through the pass into the Mirefen: its name on a card, once.
+	"place_card": {"area": "ways", "map": "mirefen", "cell": Vector2i(55, 5), "time": DAY, "card": true},
+	"dungeon": {"area": "dungeon", "floor": 5, "time": DAY},
+	"fight": {"area": "combat", "map": "overworld", "at": "forest_1", "time": DAY, "foe": "orc"},
+	"strike": {"area": "combat", "map": "overworld", "at": "forest_1", "time": DAY, "foe": "orc", "strike": true},
 	# The map (PIX-266) of a hero who has walked the whole Reach, its list
 	# scrolled down to the last waypoint, on Greyhold's page.
-	{"name": "28_map", "map": "town", "at": "street", "time": DAY, "chart": "greyhold_keep"},
-	# A house opens onto a room, the cave down a stair in its floor (PIX-256):
-	# Liane's room and Captain Hale's hall from beside the stairwell, then at
-	# its top, the stairs asking.
-	{"name": "29_lianes_room", "map": "observatory", "cell": Vector2i(13, 7), "time": DAY},
-	{"name": "30_lianes_stair", "map": "observatory", "cell": Vector2i(13, 6), "time": DAY, "down": true},
-	{"name": "31_hales_hall", "map": "keep", "cell": Vector2i(13, 7), "time": DAY},
-	{"name": "32_hales_stair", "map": "keep", "cell": Vector2i(13, 6), "time": DAY, "down": true},
-	# Come through the pass into the Mirefen: its name on a card, once.
-	{"name": "33_place_card", "map": "mirefen", "cell": Vector2i(55, 5), "time": DAY, "card": true},
-]
+	"map": {"area": "screens", "map": "town", "at": "street", "time": DAY, "chart": "greyhold_keep"},
+}
 ## Filming the walk: slowed to a quarter, a picture every WALK_STEP of the
 ## game's time (thirty a second: two or three of each frame of the walk),
 ## cropped round the hero this far (art px) each way; the legs of the clip
@@ -145,9 +154,16 @@ func run() -> void:
 		images[look] = shots
 	# Developer output, not the player's: no words for the translators.
 	print("%s %s=%s" % ["LOOK", "look", DesktopLook.look])
-	for shot: Dictionary in SHOTS:
-		if only != "" and shot["name"] != only:
+	if only != "" and not SHOTS.has(only):
+		push_error("lookbook: no shot is called %s (%s)" % [only, ", ".join(ordered())])
+		return
+	var shot_names: PackedStringArray = []
+	for shot_name in ordered():
+		if only != "" and shot_name != only:
 			continue
+		shot_names.append(shot_name)
+		var shot: Dictionary = SHOTS[shot_name].duplicate()
+		shot["name"] = shot_name
 		if shot.has("rise"):
 			await _clip(shot, folders, images)
 			continue
@@ -179,7 +195,19 @@ func run() -> void:
 				(node as Screen).close()
 	for look: String in folders:
 		sheet(images[look]).save_png("%s/sheet.png" % folders[look])
+		FileAccess.open("%s/shots.txt" % folders[look], FileAccess.WRITE).store_string("\n".join(shot_names) + "\n")
 		print("%s %s/%s" % ["LOOK", ProjectSettings.globalize_path(folders[look]), "sheet.png"])
+
+
+## Every shot's name in the sheet's order: by area, as AREAS lists them, and
+## in SHOTS' order within an area.
+static func ordered() -> PackedStringArray:
+	var out: PackedStringArray = []
+	for area: String in AREAS:
+		for shot_name: String in SHOTS:
+			if SHOTS[shot_name]["area"] == area:
+				out.append(shot_name)
+	return out
 
 
 ## Puts the hero where the shot stands, at its hour, with its foe - the last

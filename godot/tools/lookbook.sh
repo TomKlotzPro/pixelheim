@@ -13,7 +13,7 @@
 #   tools/lookbook.sh --desktop --look hdr          # another of its looks
 #   tools/lookbook.sh --desktop --looks browser,app  # several, a folder each
 #   tools/lookbook.sh --out DIR       # somewhere else (a "before" folder)
-#   tools/lookbook.sh --only NAME     # just that shot (e.g. 17_strike)
+#   tools/lookbook.sh --only NAME     # just that shot, by name (e.g. strike)
 #   tools/lookbook.sh --compare       # no window: lookbook/ and lookbook-desktop/
 #                                     # side by side into lookbook-compare/
 set -euo pipefail

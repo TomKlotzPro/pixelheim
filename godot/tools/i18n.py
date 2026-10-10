@@ -11,6 +11,12 @@ merges it into each godot/locale/<lang>.po, keeping what is translated:
   strings a label or button shows (Godot translates those by itself), with
   the words of key footers and hints.
 
+Each string's `#:` reference names the file it was found in, never its line
+(PIX-273): with lines, editing any script moved every reference below the
+edit, and two branches that touched one script conflicted in both catalogues
+with no string changed. The entries are sorted by that file, then by the
+string, so a branch that adds a string adds its entry and nothing else.
+
     python3 godot/tools/i18n.py           # write messages.pot, merge the .po files
     python3 godot/tools/i18n.py --check   # fail if messages.pot is stale (CI)
 """
@@ -99,14 +105,16 @@ def prose(text):
 def from_scripts(out):
     for path in sorted(glob.glob(os.path.join(ROOT, "scripts", "**", "*.gd"), recursive=True)):
         name = os.path.relpath(path, ROOT)
-        # The harness and its flags' table (PIX-262) speak to developers only.
-        if name.endswith(("harness.gd", "harness_flags.gd")):
+        # The harness, its flags' table (PIX-262) and its report's (PIX-273)
+        # speak to developers only.
+        if name.endswith(("harness.gd", "harness_flags.gd", "harness_report.gd")):
             continue
-        for number, line in enumerate(open(path, encoding="utf-8"), 1):
+        # The file, not the line: see the top.
+        where = name
+        for line in open(path, encoding="utf-8"):
             stripped = line.strip()
             if stripped.startswith("#") or "print(" in line or "push_" in line:
                 continue
-            where = "%s:%d" % (name, number)
             for match in CALLED.finditer(line):
                 out.setdefault(unescape(match.group(1)), where)
             for match in FOOTER.finditer(line):
@@ -194,6 +202,19 @@ def write_po(lang, strings):
     print("%s.po: %d of %d translated" % (lang, done, len(strings)))
 
 
+## A reference with a line number (`#: scripts/world.gd:120`): never written
+## since PIX-273, refused by --check.
+LINE_REFERENCE = re.compile(r"^#: .*:\d+$", re.M)
+
+
+def line_references(path):
+    """The `#:` lines of a catalogue that carry a line number."""
+    if not os.path.exists(path):
+        return []
+    with open(path, encoding="utf-8") as file:
+        return LINE_REFERENCE.findall(file.read())
+
+
 def main():
     strings = gather()
     text = pot(strings)
@@ -201,6 +222,11 @@ def main():
         current = open(POT, encoding="utf-8").read() if os.path.exists(POT) else ""
         if current != text:
             sys.exit("locale/messages.pot is stale: run python3 godot/tools/i18n.py")
+        for lang in LANGUAGES:
+            stale = line_references(os.path.join(LOCALE, lang + ".po"))
+            if stale:
+                sys.exit("locale/%s.po has %d references with a line (%s): run python3 godot/tools/i18n.py"
+                         % (lang, len(stale), stale[0]))
         print("messages.pot is current (%d strings)" % len(strings))
         return
     os.makedirs(LOCALE, exist_ok=True)

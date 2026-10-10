@@ -130,7 +130,7 @@ const TABLE := [
 	{"flag": "lookbook", "takes": "", "does": "the look book (PIX-220): every staged scene saved and on one sheet (tools/lookbook.sh)"},
 	{"flag": "perf", "takes": "", "does": "what the frames cost (PerfProbe); with lookbook, each shot's"},
 	{"flag": "film", "takes": "", "does": "with lookbook: each shot filmed for a moment too"},
-	{"flag": "--only", "takes": "<shot>", "does": "with lookbook: just that shot (17_strike)"},
+	{"flag": "--only", "takes": "<shot>", "does": "with lookbook: just that shot, by name (strike)"},
 	{"flag": "--looks", "takes": "<a,b>", "does": "with lookbook: each shot in each of the app's looks named, a folder each (PIX-227)"},
 	{"flag": "--out", "takes": "<dir>", "does": "with lookbook: where it saves (res://lookbook)"},
 	{"flag": "--wait", "takes": "<s>", "does": "hold the shot s seconds (an entrance still playing)"},

@@ -121,7 +121,7 @@ godot --path godot -- --screenshot inventory --keys i # press keys at whatever s
 godot --path godot -- --screenshot --map town --look browser   # the desktop renderer in another of the app's looks (below)
 ```
 
-The final `print` line reports the map id, hero cell, HP, gold, the save's place, draw calls, whether the world is held still (`paused=`) and which screens are open (`open=`), for assertions. After anything was won, it adds what floated up from where it was won (`floats=+13 XP;+14 gold`) and how many lines the battle log showed (`logged=`).
+The final `print` line reports the map id, hero cell, HP, gold, the save's place, draw calls, whether the world is held still (`paused=`) and which screens are open (`open=`), for assertions, then whatever else the run has, by name: after anything was won, what floated up from where it was won (`floats=+13 XP;+14 gold`) and how many lines the battle log showed (`logged=`); a gate's line (`gate=`), the packs on a wild map (`packs=`), and so on. Every field is a row of `HarnessReport.TABLE` (`scripts/harness_report.gd`, PIX-273) with its own function, `field_<name>()`, which returns its text, or nothing when the run has none: a new field is a row in its place by name (after the head) and its function in the same place. harness.gd never writes a field itself; a value it knows only part-way through (the clock as the hero wakes) it hands over with `report.note("clock", ...)`.
 
 ### Release flows
 
@@ -132,6 +132,23 @@ the camera shake)
 through the harness. Each one checks the harness's report line and leaves its
 picture in `godot/flows/<name>.png` (gitignored). `godot/tools/flows.sh fight die`
 runs just those.
+
+The flows are `godot/tools/flows.txt`, one a line under a comment saying
+what it walks through (PIX-273):
+
+```
+# A named boss falls as a boss does, and holds the way out while it hunts (PIX-232).
+bossfell | --map icecave fight slay --foe rimefang --wait 0.3 | map=icecave fell=1 | combat dungeon
+```
+
+its name, the harness's arguments, the report fields it expects and its
+tags. A field is `name=pattern`, matched by name wherever it stands on the
+line: the pattern is a regular expression the field's whole value must match
+(`map=town` is the town, `map=town_.*` any of its rooms), spaces allowed, and
+a field the report doesn't show fails the flow. A new flow is a new line
+beside its kind and nothing else: two branches adding flows no longer
+conflict (`.gitattributes` merges the file by union, and a flow both
+branches changed comes out twice, which `tools/flows.py` refuses).
 
 The flows run side by side, `-j N` at a time (the machine's cores less two
 by default; `-j 1` runs them one after another). Each run keeps its picture
@@ -154,7 +171,7 @@ against `origin/main` could break, in under a minute and with nothing on the
 screen: the release and catalogue checks, the import when art or scripts
 changed, GUT beside a boot of the town and of the maps the diff touches, and
 the flows tagged with the areas it touches. Each flow ends on its tags in
-`flows.sh` (town, rooms, travel, field, combat, dungeon, trade, story, quest,
+`flows.txt` (town, rooms, travel, field, combat, dungeon, trade, story, quest,
 screen, lang, save, gathering, title, rank, night), and `AREAS` in
 `check.sh` says which areas each file touches; a file it doesn't know runs
 every flow. `--plan` shows what it would run and why. `check.sh full` runs
@@ -238,8 +255,16 @@ godot/tools/lookbook.sh                              # the browser's renderer: l
 godot/tools/lookbook.sh --desktop                    # the app's look: lookbook-desktop/
 godot/tools/lookbook.sh --desktop --looks browser,app  # both on the desktop renderer, a folder each
 godot/tools/lookbook.sh --compare                    # no window: lookbook/ | lookbook-desktop/ side by side in lookbook-compare/
+godot/tools/lookbook.sh --only strike                # one shot, by its name
 python3 godot/tools/lookbook_compare.py godot/lookbook-desktop/browser godot/lookbook-desktop/app godot/lookbook-compare
 ```
+
+A shot is a key of `SHOTS` in `scripts/lookbook.gd`: its name (the picture's
+file, never a number: every branch adding a shot took the same next one,
+PIX-273) and its `area`, one of `AREAS`, which orders the sheet (the village,
+its rooms, the Reach, the regions, the ways between, underground, a fight,
+the game's pages). Each folder gets `shots.txt`, the sheet's order, which
+`lookbook_compare.py` follows.
 
 ## Releasing
 
@@ -275,6 +300,11 @@ python3 -m unittest discover -s godot/tools -p 'test_*.py'   # the script's test
   refuses to leave a string untranslated in fr.po. A refused release changes
   nothing.
 - Its paths are its own checkout's: run it from the worktree being released.
+- A string added between releases: `python3 godot/tools/i18n.py` puts it in
+  `locale/messages.pot` and `fr.po`. Their `#:` references name the file a
+  string is in, never its line (PIX-273), and entries sort by file, then
+  text, so editing a script changes the catalogue only when one of its
+  strings changes; `i18n.py --check` refuses a reference with a line.
 
 The Godot CI runs `release.py --check` on every pull request: the README's
 version is the newest release's, every codename and note has its French in

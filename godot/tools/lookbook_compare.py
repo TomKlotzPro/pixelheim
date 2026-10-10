@@ -24,10 +24,18 @@ INK = (240, 226, 196)
 
 
 def shots(folder):
-    """The scenes in a look book folder, by name (01_town_day.png ...)."""
+    """The scenes in a look book folder (town_day.png ...), in its sheet's
+    order: the shots.txt the look book writes beside them (PIX-273: shots go
+    by name and area, no longer by a number), or by name in a folder without
+    one. Never the sheet itself nor a clip's strip."""
+    listed = os.path.join(folder, "shots.txt")
+    if os.path.exists(listed):
+        with open(listed, encoding="utf-8") as file:
+            names = [line.strip() + ".png" for line in file if line.strip()]
+        return [name for name in names if os.path.exists(os.path.join(folder, name))]
     return sorted(
         name for name in os.listdir(folder)
-        if name.endswith(".png") and name[:2].isdigit()
+        if name.endswith(".png") and name != "sheet.png" and not name.endswith("_strip.png")
     )
 
 
