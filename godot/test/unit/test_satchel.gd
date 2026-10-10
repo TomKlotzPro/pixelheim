@@ -183,7 +183,7 @@ func test_the_main_story_waits_behind_a_side_quest() -> void:
 	assert_eq(behind["who"], "innkeeper", "its next step: Sela's work")
 	state.progression.cleared_levels.append(2)
 	Journal.follow(state.progression, "greymaw")
-	assert_eq(Bearing.behind(_lead(), state.progression, state.settlement, state.pack.items)["who"], "innkeeper", "and behind a bounty")
+	assert_eq(Bearing.behind(_lead(), state.progression, state.settlement, state.pack.items)["who"], "elder", "and behind a bounty: a floor of the old mountain cleared is past its gate, Maren's story next (PIX-257)")
 
 
 func test_the_map_keeps_the_main_story_as_a_hollow_diamond() -> void:

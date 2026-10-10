@@ -88,8 +88,11 @@ func finish_dialogue(npc_id: String) -> void:
 		owner.dialogue_closed.emit(npc_id)
 		return
 	# The first word with Maren after the night is her tin (PIX-253): the
-	# letters, and nothing else asked or handed in that time.
+	# letters, and nothing else asked or handed in that time. Once the four
+	# keepsakes are home, her confession gives the fifth (step 8).
 	var said := open_tin() if npc_id == "elder" else ""
+	if said == "" and npc_id == "elder":
+		said = hear_out()
 	# A letter carried to this villager is theirs as the talk ends.
 	if said == "":
 		said = deliver(npc_id)
@@ -206,6 +209,28 @@ func open_tin() -> String:
 	var line := Letters.taken_line(given)
 	# The satchel is the journal's main story (PIX-253 step 2).
 	return line + " " + Controls.say(Text.t("Your satchel is in the journal ({key:journal}).")) if not given.is_empty() else line
+
+
+## Maren has told it all (PIX-253 step 8): her confession, at the shrine,
+## the four keepsakes home - or, for a hero who heard her old one, a word.
+## The fifth letter goes in the satchel, its quest taken, with her promise
+## (once: an old save may hold it from the relics' turn-in), and the
+## mountain's gate opens (Relics.gate_open). Returns what the pack holds
+## now, "" when she had nothing to give.
+func hear_out() -> String:
+	if not Letters.fifth_due(owner.progression, owner.settlement):
+		return ""
+	if Letters.confession_due(owner.progression, owner.settlement):
+		owner.mark_seen(Letters.confession_id())
+	var quest := Letters.fifth_quest()
+	owner.progression.quests[quest["id"]] = {"progress": 0, "done": false}
+	owner.pack.add_item(quest["objective"]["itemId"])
+	if int(owner.pack.items.get(Relics.promise_id(), 0)) <= 0:
+		owner.pack.add_item(Relics.promise_id())
+	Journal.let_go(owner.progression)
+	owner.pack_changed()
+	owner.save_now()
+	return String(Letters.fifth()["given"])
 
 
 ## The letter `npc_id` is owed now (PIX-253): a deliverTo quest taken, not

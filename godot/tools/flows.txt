@@ -249,15 +249,35 @@ aske | --map town --hunted rimefang --talk-to frost_aske --keys e,e,e | map=town
 aske-home | --map town --hunted rimefang reveal | open=reveal_screen home=aske | town story
 # The mountain's gate barred to a new hero (PIX-170).
 gate | --map overworld --at 48,8 --walk u,u --wait 0.3 | map=overworld cell=\(48, 7\) open=none | travel dungeon
+# The fifth letter (PIX-253 step 8, PIX-257): with the four keepsakes home
+# Maren tells it all at the shrine and gives the fifth letter and her
+# promise; through the mountain's gate, open now, onto the road up to
+# Morvax's forge (its packs out), and back down through it; his tally marks
+# read on the forge's wall; the letter handed to Morvax, and as he says he
+# won't come, the mountain shakes; home with the story run out, the honest
+# card ("To be continued"); and old saves: one saved on the old floors
+# wakes by the gate with Maren's story next, one by the Undermountain's
+# filled-in cave wakes in town, and the late web hero plays on.
+confession | --map town --seen maren_tin --delivered maren_relics --talk-to elder --keys e,e,e,e,e --wait 0.3 | map=town open=none letters=1 next=letter_morvax | story quest town
+mountain-gate | --map overworld --seen maren_confession --at 48,8 --walk u,u --wait 0.4 | map=mountain_road cell=\(17, 28\) | travel story
+mountain-road | --map mountain_road --wait 0.3 | map=mountain_road mobs=[5-8] | field travel
+road-down | --map mountain_road --at 17,29 --walk d --wait 0.4 | map=overworld cell=\(48, 8\) | travel
+tally | --map morvax_forge --at 12,2 --walk u --keys e --wait 0.3 | map=morvax_forge open=dialogue_box | rooms story
+morvax | --map morvax_forge --ready letter_morvax --talk-to mountain_morvax --keys e,e,e --wait 1.6 | map=morvax_forge open=dialogue_box delivered=1 next=run_home | story quest rooms
+run-home | --map town --delivered letter_morvax --seen maren_confession,chapter_7 chapter | map=town continued=7 next=run_home | story town
+oldsave-floor7 | --load res://test/fixtures/old_floor7.json --wait 0.3 | map=overworld cell=\(48, 7\) next=confession | save story travel
+oldsave-cave | --load res://test/fixtures/old_cave.json --wait 0.3 | map=town | save travel
+late-web | --load res://test/fixtures/web_save_late.txt --wait 0.3 | map=town | save story
 # A depth of the Deep Hunt cleared (PIX-161).
 deep | --floor 16 clear --wait 0.3 | map=floor_16 | dungeon combat
 # What grows on the ground moves with the days (PIX-250): two days, two
 # sets of cells, and one of the first day's picked as the hero steps on it.
 # (The roads to the ways on, PIX-269, took some of the ash's and the
-# marsh's ground: patches never grow on a road.)
-patches | --map overworld --day 2 | day=2 patches=11,14;14,36;30,57;31,43;34,24;63,39;66,52;75,45 | gathering field
-regrown | --map overworld --day 3 | day=3 patches=17,41;18,34;24,51;29,12;50,16;77,44;79,53;86,36 | gathering field
-forage | --map overworld --day 2 --at 75,46 --walk u | cell=\(75, 45\) day=2 patches=11,14;14,36;30,57;31,43;34,24;63,39;66,52 | gathering field
+# marsh's ground: patches never grow on a road; the Undermountain's cave
+# filled with rock, PIX-257, dealt the ash's ground again.)
+patches | --map overworld --day 2 | day=2 patches=14,36;26,21;30,57;31,43;42,18;63,39;66,52;75,45 | gathering field
+regrown | --map overworld --day 3 | day=3 patches=14,22;17,41;18,34;24,51;77,44;79,53;81,18;86,36 | gathering field
+forage | --map overworld --day 2 --at 75,46 --walk u | cell=\(75, 45\) day=2 patches=14,36;26,21;30,57;31,43;42,18;63,39;66,52 | gathering field
 # The Night of Ash's dawn (PIX-197).
 dawn | --map town --prologue 5 --at 11,8 --keys w,e,e,e,e,e --wait 1.5 | open=dawn_screen | story screen
 # Walking without the camera shake (PIX-135): needs a window, so --quiet skips it.

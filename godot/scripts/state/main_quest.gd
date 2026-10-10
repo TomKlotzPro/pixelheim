@@ -3,14 +3,19 @@ class_name MainQuest
 ## game can always say what comes next - on the line above the dock, in the
 ## journal, from the elder and the mayor. Since PIX-253 it is the story of
 ## Maren's letters in eight chapters: the tin, a letter and its region's
-## relic for each of the four, then the mountain, the Night of Bells and
-## home (the last three still today's climb, to be replaced). A step is met
-## by the save's own records (a quest taken or kept, a letter delivered, a
-## floor cleared, a project, a settler);
+## relic for each of the four, then the fifth letter up the mountain road
+## (step 8), the Night of Bells and home (steps 9 and 10, not written yet:
+## the Night's first step is `unbuilt`, never met, and home has no step).
+## A step is met by the save's own records (a quest taken or kept, a letter
+## delivered, a floor cleared, a project, a settler), or by its `or`, the
+## same kind of condition another way (an old save's floors: past the
+## mountain's gate, or Morvax cast down);
 ## the next step is the first unmet one after the furthest met, so a hero who
 ## runs ahead is never sent back for a side errand. Optional steps (errands
 ## and village projects) never count as the furthest: a town grown before
-## its hero went deep doesn't skip the mountain. Pure, over
+## its hero went deep doesn't skip the mountain. A chapter may be skipped
+## by a save (`skipIf`): a hero who slew Fafnyr on the old mountain keeps
+## him slain and never plays the Night of Bells. Pure, over
 ## progression.json's "mainQuest"; Phase 2's village projects slot in as
 ## more kinds of step.
 
@@ -23,7 +28,8 @@ static func chapters() -> Array:
 	return _doc()["chapters"]
 
 
-## Every step in order, each with its chapter's title and number.
+## Every step in order, each with its chapter's title and number (and the
+## chapter's `skipIf`, as `skip_if`, where it has one).
 static func steps() -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	for index in chapters().size():
@@ -32,8 +38,16 @@ static func steps() -> Array[Dictionary]:
 			var entry := step.duplicate()
 			entry["chapter"] = chapter["title"]
 			entry["chapter_number"] = index + 1
+			if chapter.has("skipIf"):
+				entry["skip_if"] = chapter["skipIf"]
 			out.append(entry)
 	return out
+
+
+## Whether this save skips chapter `number` (from 1): its `skipIf` met.
+static func skips(number: int, progression: ProgressionState, settlement: SettlementState) -> bool:
+	var chapter: Dictionary = chapters()[number - 1]
+	return chapter.has("skipIf") and _holds(chapter["skipIf"], progression, settlement)
 
 
 ## A step by its id, {} if there is none.
@@ -44,9 +58,15 @@ static func step(step_id: String) -> Dictionary:
 	return {}
 
 
-## Whether the save has met a step.
+## Whether the save has met a step: its condition, or its `or`.
 static func is_met(step: Dictionary, progression: ProgressionState, settlement: SettlementState) -> bool:
-	var when: Dictionary = step["when"]
+	return _holds(step["when"], progression, settlement)
+
+
+## Whether a step's condition holds for the save (`when`, with its `or`).
+static func _holds(when: Dictionary, progression: ProgressionState, settlement: SettlementState) -> bool:
+	if when.has("or") and _holds(when["or"], progression, settlement):
+		return true
 	match String(when["kind"]):
 		"questTaken":
 			return progression.quests.has(when["questId"])
@@ -71,13 +91,24 @@ static func is_met(step: Dictionary, progression: ProgressionState, settlement: 
 			# One of Maren's letters handed over, or its keepsake already
 			# home: an old save is never sent back with it (PIX-253).
 			return Letters.delivered(Quests.by_id(when["questId"]), progression)
+		"climbed":
+			# Any of the old mountain's floors cleared (PIX-257): a hero
+			# who went up before the mountain's gate was barred, or before
+			# the floors left play, is past the gate.
+			return not progression.cleared_levels.is_empty()
+		"unbuilt":
+			# A step the story hasn't written yet (PIX-253 step 8: the
+			# Night of Bells' first, which step 9 builds): never met.
+			return false
 	push_warning("MainQuest: unknown step kind %s" % when["kind"])
 	return false
 
 
-## The step to do next, or {} when the story is done.
+## The step to do next, or {} when the story is done. A chapter the save
+## skips (`skipIf`) is no part of it.
 static func next_step(progression: ProgressionState, settlement: SettlementState) -> Dictionary:
-	var all := steps()
+	var all := steps().filter(func(step: Dictionary) -> bool:
+		return not step.has("skip_if") or not _holds(step["skip_if"], progression, settlement))
 	var furthest := -1
 	for index in all.size():
 		if not all[index].get("optional", false) and is_met(all[index], progression, settlement):
@@ -86,6 +117,30 @@ static func next_step(progression: ProgressionState, settlement: SettlementState
 		if not is_met(all[index], progression, settlement):
 			return all[index]
 	return {}
+
+
+## The honest card's chapter (PIX-253 step 8: "To be continued: the Night
+## of Bells."): once the fifth letter is delivered, the title of the
+## chapter where the story runs out for this hero - the one its next step
+## waits in while that step isn't written (`unbuilt`), or, with no step
+## left, the first chapter this hero plays that has none yet (home, for a
+## hero who skips the Night of Bells); "" while there's a step to take, or
+## before the fifth letter.
+static func continued(progression: ProgressionState, settlement: SettlementState) -> String:
+	if not progression.quests.get(Letters.fifth_quest()["id"], {}).get("done", false):
+		return ""
+	var step := next_step(progression, settlement)
+	if not step.is_empty():
+		return String(step["chapter"]) if step["when"]["kind"] == "unbuilt" else ""
+	for number in range(1, chapters().size() + 1):
+		if chapters()[number - 1]["steps"].is_empty() and not skips(number, progression, settlement):
+			return title_of(number)
+	return ""
+
+
+## The card's word over the chapter's title: "To be continued".
+static func continued_word() -> String:
+	return String(_doc()["continued"])
 
 
 ## The chapter whose card is due (PIX-253 step 2: a card like the dawn's

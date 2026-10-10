@@ -27,6 +27,9 @@ const STAGES := [
 	{"id": "frost", "sweep": ["frost", "icecave"], "hunt": "rimefang", "quests": [
 		"letter_aske", "aske_wolves", "aske_rimefang", "gunnar_strongbox", "gunnar_wagon", "linnea_lilies", "linnea_icefin", "linnea_hood", "mira_fur"]},
 	{"id": "gate", "sweep": [], "hunt": "", "quests": ["maren_relics"]},
+	# The fifth letter (PIX-253 step 8): up the mountain road to Morvax. The
+	# floors below stand in for the curve's top until it's retuned (PIX-257).
+	{"id": "mountain", "sweep": ["road"], "hunt": "", "quests": ["letter_morvax"]},
 ]
 ## On the climb: the floor a hero is on when each of the rest is handed in,
 ## and when the hardest wilds (wyverns and imps, the mire's mimic) are swept.

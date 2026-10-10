@@ -25,11 +25,13 @@ class_name Atlas
 ## pages turn in: the Ashenreach, the village, then round the Reach from the
 ## south-west as its roads leave it, each region followed by the cave under
 ## it (and the cave's floors below, PIX-255); the regions are on the Reach's
-## page, their caves and each cave's floor a page of their own.
+## page, their caves and each cave's floor a page of their own; and last
+## the mountain road up to Morvax's forge (PIX-253 step 8), behind its gate.
 const ORDER := [
 	"overworld", "town", "saltmere", "seacave", "seacave_galleries", "seacave_grotto", "mirefen",
 	"blackiron", "shafts", "shafts_gallery", "shafts_blackseam",
 	"frostgate", "icecave", "icecave_lake", "icecave_glass", "greyhold", "cellars", "cellars_crypt", "cellars_hall", "deepwood",
+	"mountain_road",
 ]
 ## Pixels per tile on a page: whole, as large as the window allows, within these.
 const MIN_TILE := 2

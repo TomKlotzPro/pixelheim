@@ -43,6 +43,8 @@ func watch_chapters(delta: float) -> void:
 	var number := MainQuest.card_due(GameState.progression, GameState.settlement)
 	if number > 0:
 		show_chapter(number)
+		return
+	watch_continued()
 
 
 ## Chapter `number`'s card over the world, kept in the story ledger as shown.
@@ -51,6 +53,42 @@ func show_chapter(number: int) -> void:
 	var card := preload("res://scripts/chapter_screen.gd").new()
 	card.number = number
 	world.add_child(card)
+
+
+## Arriving home with the story run out (PIX-253 step 8: "To be continued:
+## the Night of Bells.", until step 9 writes it): the honest card, once a
+## session, while the hero is in town. Asked with the chapter cards, once
+## the world has been free a moment.
+var _continued_shown := false
+
+
+func watch_continued() -> void:
+	if _continued_shown or world.map == null or world.map.id != "town":
+		return
+	var title := MainQuest.continued(GameState.progression, GameState.settlement)
+	if title == "":
+		return
+	_continued_shown = true
+	var card := preload("res://scripts/chapter_screen.gd").new()
+	card.number = MainQuest.chapters().map(func(chapter: Dictionary) -> String: return chapter["title"]).find(title) + 1
+	card.continued = true
+	world.add_child(card)
+
+
+## Morvax reads his letter, and the mountain shakes (PIX-253 step 8): the
+## ground jumps under the forge and something roars far above; after a
+## breath he says what it means (`lines`, his).
+func mountain_shakes(npc: Dictionary, lines: Array) -> void:
+	world.camera_rig.shake(8.0, 1.4)
+	Sound.play("roar")
+	await get_tree().create_timer(1.0).timeout
+	if not is_inside_tree():
+		return
+	var said := npc.duplicate()
+	said["lines"] = lines
+	var box := preload("res://scripts/dialogue_box.gd").new()
+	box.npc = said
+	world.add_child(box)
 
 
 ## A story moment over the world (Cutscene, PIX-32), once per hero; "" or a

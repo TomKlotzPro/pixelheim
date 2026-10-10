@@ -83,7 +83,7 @@ func test_four_gates_in_the_storys_order_on_the_reach() -> void:
 		assert_true(past["maps"].has(REGIONS[gate["id"]]), "%s stands before %s" % [gate["id"], REGIONS[gate["id"]]])
 		for open_region: String in ["mirefen", "deepwood", "town"]:
 			assert_false(past["maps"].has(open_region), "%s leaves %s open" % [gate["id"], open_region])
-	assert_true(Gates.beyond(Gates.by_id("bridge"))["dungeons"], "the mountain's gates are past the bridge")
+	assert_true(Gates.beyond(Gates.by_id("bridge"))["maps"].has("mountain_road"), "the mountain's gate is past the bridge, onto its road (PIX-253 step 8)")
 	for region: String in ["saltmere", "seacave"]:
 		assert_true(Gates.beyond(Gates.by_id("cliff"))["maps"].has(region), "the cliff road leads to %s" % region)
 	for region: String in ["blackiron", "shafts", "greyhold", "keep", "cellars", "frostgate", "observatory", "icecave"]:
@@ -161,7 +161,8 @@ func test_a_shut_gate_blocks_the_walk_to_its_regions_road() -> void:
 	for region: String in REGIONS.values():
 		assert_false(_reaches(region, shut), "a new hero can't walk to %s" % region)
 	var reach := MapData.load_by_id("overworld")
-	assert_false(Gates.walk(reach, reach.spawn, shut).has(Bearing.gate_of("mountain")["cell"]), "nor to the mountain's gate")
+	assert_false(Gates.walk(reach, reach.spawn, shut).has(Vector2i(48, 6)), "nor to the mountain's gate")
+	assert_true(reach.portals[Vector2i(48, 6)].get("barred", false), "(the mountain's gate, barred until Maren's promise)")
 	# Each opened in turn opens its road.
 	state.questing.finish_dialogue("elder")
 	assert_true(_reaches("saltmere", _shut_for(state)))

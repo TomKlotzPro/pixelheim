@@ -1,0 +1,159 @@
+{
+  "version": 4,
+  "state": {
+    "screen": "world",
+    "hero": {
+      "name": "Torvi",
+      "roleId": "warrior",
+      "look": 0,
+      "level": 17,
+      "xp": 190,
+      "xpToNext": 344,
+      "hp": 191,
+      "mp": 25,
+      "stats": {
+        "maxHp": 191,
+        "maxMp": 25,
+        "strength": 77,
+        "intelligence": 3,
+        "dexterity": 5,
+        "defense": 22,
+        "endurance": 8
+      },
+      "statPoints": 0,
+      "skillPoints": 9,
+      "skillNodes": [
+        "warrior_power_strike",
+        "warrior_power_strike_2",
+        "warrior_executioner",
+        "warrior_shield_slam",
+        "warrior_iron_skin",
+        "warrior_unshakeable",
+        "warrior_berserk",
+        "warrior_blood_rage",
+        "warrior_rampage",
+        "warrior_skullsplitter",
+        "warrior_mountainheart",
+        "warrior_warpath"
+      ],
+      "jobs": {
+        "smithing": {
+          "level": 1,
+          "xp": 0
+        },
+        "alchemy": {
+          "level": 1,
+          "xp": 0
+        },
+        "foraging": {
+          "level": 1,
+          "xp": 0
+        }
+      },
+      "mastery": {
+        "beasts": 7,
+        "greenskins": 9,
+        "undead": 13,
+        "constructs": 6,
+        "fireborn": 8
+      },
+      "path": [
+        "juggernaut",
+        "bastion",
+        "unbroken"
+      ],
+      "spec": "juggernaut"
+    },
+    "gold": 2234,
+    "inventory": {
+      "potion_hp": 8,
+      "greater_potion": 3,
+      "imp_horn": 1
+    },
+    "gear": [
+      {
+        "uid": "gmux7nz9z51e72",
+        "itemId": "steel_shield",
+        "rarity": "common",
+        "bonus": 0
+      },
+      {
+        "uid": "gmux7nza314v7ng",
+        "itemId": "wyrm_visor",
+        "rarity": "common",
+        "bonus": 0
+      },
+      {
+        "uid": "gmux7nza415zvd6",
+        "itemId": "obsidian_blade",
+        "rarity": "common",
+        "bonus": 0
+      },
+      {
+        "uid": "gmux7nza5171wb5",
+        "itemId": "runic_armor",
+        "rarity": "common",
+        "bonus": 0
+      }
+    ],
+    "equipped": {
+      "weapon": "gmux7nza415zvd6",
+      "body": "gmux7nza5171wb5",
+      "offhand": "gmux7nz9z51e72",
+      "head": "gmux7nza314v7ng"
+    },
+    "unlockedLevel": 13,
+    "clearedLevels": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "battle": null,
+    "openPanel": null,
+    "house": {
+      "owned": true,
+      "storage": {
+        "potion_hp": 1
+      }
+    },
+    "properties": [
+      "town_shop"
+    ],
+    "townTier": 2,
+    "settlers": [],
+    "quests": {},
+    "world": {
+      "position": {
+        "mapId": "overworld",
+        "x": 25,
+        "y": 10,
+        "facing": "left"
+      },
+      "discovered": {},
+      "openedChests": [],
+      "slain": []
+    },
+    "dungeonSelect": null,
+    "introSeen": false,
+    "worldMessage": null,
+    "worldSteps": 0,
+    "dialogue": null,
+    "bardSong": false,
+    "investments": {
+      "expansions": [],
+      "savings": {
+        "principal": 200,
+        "at": 0
+      }
+    }
+  }
+}

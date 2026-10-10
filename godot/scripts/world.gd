@@ -118,6 +118,11 @@ func _ready() -> void:
 	for named_id: String in flags.list("--hunted"):
 		if named_id not in GameState.progression.hunted:
 			GameState.progression.hunted.append(named_id)
+	# `--cleared N`: the old mountain's floors 1 to N cleared before the
+	# first map is drawn too, so the gate they open is drawn open (PIX-257).
+	for level in range(1, int(flags.value("--cleared", "0")) + 1):
+		if level not in GameState.progression.cleared_levels:
+			GameState.progression.cleared_levels.append(level)
 	# The family a keepsake brings home is home already (PIX-255).
 	if flags.has("--hunted"):
 		GameState.holdings.come_home(true)
@@ -300,6 +305,13 @@ func use_portal(target: Dictionary) -> void:
 		return
 	match target["kind"]:
 		"map":
+			# The mountain's gate (`barred`), shut since the Night of Ash
+			# until Maren's promise opens it on the road up to Morvax's forge
+			# (PIX-170, PIX-253 step 8): the hero waits before it.
+			if target.get("barred", false) and not Relics.gate_open(GameState.progression):
+				_step_back()
+				messages.flash(Relics.barred_line())
+				return
 			var next := load_map(target["mapId"])
 			_through_door(func() -> void:
 				var from_id := map.id

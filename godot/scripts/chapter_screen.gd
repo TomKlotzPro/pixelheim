@@ -25,6 +25,9 @@ const TITLE_ROOM := 1160.0
 
 ## The chapter, from 1.
 var number := 1
+## The honest card where the story runs out (PIX-253 step 8): "To be
+## continued" over the chapter's title, not its number (MainQuest.continued).
+var continued := false
 var _black: ColorRect
 var _number: Label
 var _title: Label
@@ -41,7 +44,7 @@ func _open() -> void:
 	layer = 6
 	_still = GameState.settings.reduce_motion
 	_black = dim(0.0)
-	_number = _line(UiStyle.heading(Text.t("Chapter %d") % number, 27, UiStyle.GOLD))
+	_number = _line(UiStyle.heading(MainQuest.continued_word() if continued else Text.t("Chapter %d") % number, 27, UiStyle.GOLD))
 	var title := MainQuest.title_of(number)
 	_title = _line(UiStyle.heading(title, 54, UiStyle.CREAM))
 	_title.add_theme_font_override("font", UiStyle.logo_font())

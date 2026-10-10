@@ -37,6 +37,7 @@ const TABLE := [
 	{"field": "change", "says": "with fades: how the last change of scene looked: dissolve, dark or cut (PIX-269)"},
 	{"field": "chapter", "says": "a chapter card's chapter, while it's up (PIX-253)"},
 	{"field": "clock", "says": "with sleep: the clock the hero woke at (PIX-246)"},
+	{"field": "continued", "says": "the honest card where the story runs out, while it's up: the chapter it waits on (PIX-253 step 8)"},
 	{"field": "dark", "says": "with fades: what's left of a fade from the dark (PIX-238)"},
 	{"field": "day", "says": "with --day: the day (PIX-250)"},
 	{"field": "delivered", "says": "Maren's letters delivered, once any is out (PIX-253)"},
@@ -156,8 +157,11 @@ func _letters_page() -> Node:
 
 
 ## Maren's letters once any is out (PIX-253).
+## Maren's letters taken: the four, and the fifth once she's given it.
 func _letters() -> Array:
-	return Letters.all().filter(func(quest: Dictionary) -> bool: return GameState.progression.quests.has(quest["id"]))
+	var all: Array = Letters.all()
+	all.append(Letters.fifth_quest())
+	return all.filter(func(quest: Dictionary) -> bool: return GameState.progression.quests.has(quest["id"]))
 
 
 # --- The head ----------------------------------------------------------------
@@ -230,11 +234,16 @@ func field_change() -> String:
 
 func field_chapter() -> String:
 	var card := _chapter_card()
-	return str(card.number) if card != null else ""
+	return str(card.number) if card != null and not card.continued else ""
 
 
 func field_clock() -> String:
 	return noted("clock")
+
+
+func field_continued() -> String:
+	var card := _chapter_card()
+	return str(card.number) if card != null and card.continued else ""
 
 
 func field_dark() -> String:

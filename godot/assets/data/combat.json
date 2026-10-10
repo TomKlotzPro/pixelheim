@@ -734,6 +734,25 @@
           "weight": 2
         }
       ]
+    },
+    "road": {
+      "wildXp": 0.5,
+      "name": "the mountain road",
+      "dropFloor": 10,
+      "eliteChance": 0.15,
+      "monsters": [
+        {
+          "monsterId": "wolf",
+          "weight": 3
+        },
+        {
+          "monsterId": "wyvern",
+          "weight": 2
+        }
+      ],
+      "called": {
+        "wolf": "Ash Hound"
+      }
     }
   },
   "wildRewardMult": 0.65,
@@ -1327,6 +1346,31 @@
       "y": 19,
       "species": "frost_mammoth",
       "size": 1
+    },
+    {
+      "id": "road_1",
+      "mapId": "mountain_road",
+      "x": 8,
+      "y": 20,
+      "species": "wolf",
+      "level": 13
+    },
+    {
+      "id": "road_2",
+      "mapId": "mountain_road",
+      "x": 29,
+      "y": 12,
+      "species": "wyvern",
+      "size": 2,
+      "level": 13
+    },
+    {
+      "id": "road_3",
+      "mapId": "mountain_road",
+      "x": 26,
+      "y": 8,
+      "species": "wolf",
+      "level": 13
     }
   ],
   "packs": {

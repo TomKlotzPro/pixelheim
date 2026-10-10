@@ -136,5 +136,5 @@ static func _asked(quest: Dictionary, progression: ProgressionState, settlement:
 	var asked := "%s (%s, %s)" % [quest["brief"], npc.get("name", ""), Catalog.place_name(npc.get("mapId", ""))]
 	if objective["kind"] == "deliverTo":
 		return asked
-	var where := Quests.where(quest, Relics.gate_open(progression), Town.done_projects(settlement))
+	var where := Quests.where(quest, Town.done_projects(settlement))
 	return asked + ("  " + where if where != "" else "")

@@ -254,6 +254,7 @@ func build(root: Node) -> void:
 		root.move_child(layer, 0)
 	lap = _lap("signs", lap)
 	_build_decor(data)
+	_add_set_pieces(data)
 	lap = _lap("decor", lap)
 	furnish()
 	_night = -1
@@ -343,12 +344,13 @@ func _build_ground(data: MapData) -> Node2D:
 	if not PunyTown.available():
 		for cell: Vector2i in rampart.get("fallback", {}):
 			PunyTerrain.place(objects, cell, rampart["fallback"][cell])
-	# A gate set in the rock (the Ashen Mountain's, PIX-269), where nothing
-	# stood in the notch: Shade's castle gate, its portcullis down while the
-	# gate is barred.
+	# A gate set in the rock (the Ashen Mountain's, PIX-269; its other side
+	# at the foot of the mountain road, PIX-253 step 8), where nothing stood
+	# in the notch: Shade's castle gate, its portcullis down while the story
+	# bars it (`barred`, until Maren's promise).
 	for way: Dictionary in ways:
 		if way["rock"]:
-			var barred: bool = way["to"].get("dungeon", "") == "mountain" and not Relics.gate_open(GameState.progression)
+			var barred: bool = way["to"].get("barred", false) and not Relics.gate_open(GameState.progression)
 			PunyTerrain.place(objects, way["at"], Ways.ROCK_GATE_BARRED if barred else Ways.ROCK_GATE)
 	root.add_child(objects)
 	# Pixelheim's rampart in the Medieval Age's stone, its gatehouse at the
@@ -1397,3 +1399,50 @@ func _build_tile_layer(data: MapData) -> TileMapLayer:
 		if (not prop and not WorldTiles.is_walkable(tile)) or cell in towers:
 			layer.set_cell(cell, blocker_id, Vector2i.ZERO)
 	return layer
+
+
+## What the story leaves on a wall to be read (Letters.drawn_on, PIX-253
+## step 8): Morvax's tally marks over his forge's back wall, drawn here in
+## code over the wall's face. E reads them (WorldInteraction's readings).
+func _add_set_pieces(data: MapData) -> void:
+	for piece: Dictionary in Letters.drawn_on(data.id):
+		if piece["look"] == "tally":
+			var marks := TallyMarks.new()
+			marks.rect = piece["rect"]
+			ground.add_child(marks)
+
+
+## Fifty years of tally marks scratched into a wall (PIX-253 step 8): rows of
+## fives across `rect` (cells), four strokes and the fifth across them, in
+## whole art pixels, dark on the plaster; the newest row runs out part-way
+## (the counting isn't done).
+class TallyMarks extends Node2D:
+	const INK := Color(0.29, 0.2, 0.14, 0.9)
+	## A stroke's height, and the room a five takes with the gap after it.
+	const STROKE := 4
+	const GROUP := 9
+	## Each row's top, in pixels down the wall cell: on the plaster, above
+	## the wall's dark foot.
+	const ROWS := [1, 6]
+	## How many fives the newest row has before it stops.
+	const LAST_ROW_GROUPS := 7
+	var rect := Rect2i()
+
+	func _draw() -> void:
+		var left := rect.position.x * TILE + 3
+		var groups := int((rect.size.x * TILE - 6) / GROUP)
+		for row in ROWS.size():
+			var top := rect.position.y * TILE + int(ROWS[row])
+			var last := row == ROWS.size() - 1
+			var count := LAST_ROW_GROUPS if last else groups
+			for group in count:
+				var x := left + group * GROUP
+				for stroke in 4:
+					draw_rect(Rect2(x + stroke * 2, top, 1, STROKE), INK)
+				# The fifth, across the four, a pixel a step.
+				for step in 8:
+					draw_rect(Rect2(x - 1 + step, top + STROKE - 1 - int(step * STROKE / 8.0), 1, 1), INK)
+			if last:
+				# Two strokes of the next five: still counting.
+				for stroke in 2:
+					draw_rect(Rect2(left + count * GROUP + stroke * 2, top, 1, STROKE), INK)

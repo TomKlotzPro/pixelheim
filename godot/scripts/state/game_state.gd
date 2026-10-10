@@ -182,6 +182,11 @@ func boot(flags: HarnessFlags) -> void:
 	else:
 		slot = clampi(settings.last_slot, 1, SaveSlots.SLOT_COUNT)
 	var saved := slots.read(slot) if slot != NO_SLOT else {}
+	# `--load <file>` (harness): an old save played as it loads from a slot
+	# (a code or JSON: the fixtures in test/fixtures), nothing written back
+	# (PIX-257: a hero saved on the old mountain's floors wakes by its gate).
+	if slot == NO_SLOT and flags.has("--load"):
+		saved = WebImport.parse_any(FileAccess.get_file_as_string(flags.value("--load")))
 	first_run = slot != NO_SLOT and range(1, SaveSlots.SLOT_COUNT + 1).all(
 		func(n: int) -> bool: return slots.summary(n).is_empty()
 	)

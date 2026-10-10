@@ -1,0 +1,26 @@
+# Morvax's forge (PIX-253 step 8): the room behind the door at the top of
+# the mountain road, where Morvax has lived fifty years mending the seal -
+# a cot in the corner, the anvil gone cold since the iron ran out last
+# spring, and on the back wall fifty years of tally marks, a stroke for
+# every lamp he counted in the valley below (story.json `readings`, read
+# with E, drawn by MapView).
+id morvax_forge
+spawn 8 8
+portal 8 9 map mountain_road 17 6
+key # wall -
+key . floor -
+key D door -
+key B bed -
+key a anvil -
+map
+##################
+##################
+##B.............##
+##..............##
+##.....a........##
+##..............##
+##..............##
+##..............##
+##..............##
+########D#########
+##################

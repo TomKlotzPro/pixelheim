@@ -60,6 +60,12 @@ func test_every_promise_says_where_to_go() -> void:
 	assert_string_contains(Quests.where(Quests.by_id("maren_relics")), "Saltmere")
 	# PIX-184: every promise, deliveries too (Linnea's icefin comes from a hole in the ice).
 	for quest: Dictionary in Quests.all():
+		# Bram's imps wait for the Night of Bells (PIX-253 step 9 writes it):
+		# their old floors left play (PIX-257), and nothing offers them yet.
+		var opens := MainQuest.step(String(quest.get("opensAfter", "")))
+		if not opens.is_empty() and opens["when"]["kind"] == "unbuilt":
+			assert_false(state.questing.quest_open(quest), "%s isn't offered before its step is written" % quest["id"])
+			continue
 		assert_ne(Quests.where(quest), "", "%s says where" % quest["id"])
 
 

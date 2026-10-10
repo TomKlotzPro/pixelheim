@@ -977,6 +977,15 @@
       "quest": true,
       "description": "One of Maren's five, addressed to Aske, who keeps Liane's door on the Frostgate. A courier never reads the post."
     },
+    "letter_morvax": {
+      "name": "Letter to Morvax",
+      "category": "misc",
+      "sprite": "letter",
+      "weight": 0,
+      "value": 0,
+      "quest": true,
+      "description": "The fifth of Maren's letters, the one she kept. Fifty years it said only \"Morvax\". Now it has an address: the forge at the top of the mountain road. A courier never reads the post."
+    },
     "greymaw_hood": {
       "name": "Greymaw's Hood",
       "category": "apparel",
@@ -2186,7 +2195,9 @@
     "observatory": "Liane's Room",
     "icecave": "The Ice Cave",
     "icecave_lake": "The Frozen Lake",
-    "icecave_glass": "The Glass Hall"
+    "icecave_glass": "The Glass Hall",
+    "mountain_road": "The Mountain Road",
+    "morvax_forge": "Morvax's Forge"
   },
   "levelCount": 15,
   "townSpawn": {

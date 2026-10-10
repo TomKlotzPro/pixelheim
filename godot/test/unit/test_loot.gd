@@ -167,4 +167,4 @@ func test_the_first_fields_hold_what_the_first_quest_asks() -> void:
 		if spawn["id"] in ["ash_1", "ash_2", "ash_3"]:
 			for i in 3:
 				assert_ne(Bestiary.pack_species(spawn, region_id, i, Vector2i(spawn["x"], spawn["y"])), "wyvern", "%s by the road hides no wyvern" % spawn["id"])
-	assert_false("floor" in Quests.where(Quests.by_id("slime_trouble"), false), "no floor while the gate is barred")
+	assert_false("floor" in Quests.where(Quests.by_id("slime_trouble")), "no floor: the old mountain's left play (PIX-257)")

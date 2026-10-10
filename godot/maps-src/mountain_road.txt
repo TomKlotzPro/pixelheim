@@ -1,0 +1,54 @@
+# The mountain road (PIX-253 step 8, PIX-257): all that's left of the
+# Ashen Mountain in play. Past the mountain's gate the old road climbs in
+# switchbacks across the ash and the scree - ash hounds on the ledges, a
+# wyvern's nest on the east shoulder - to the top, where a forge is built
+# into the rock: Morvax's, its door opening onto his room (a cot, a cold
+# anvil, fifty years of tally marks), and beside it the lamp Maren saw some
+# nights and told herself was a star. Its gate at the foot of the road is
+# the mountain gate seen from inside, back down to the Ashenreach.
+id mountain_road
+spawn 17 29
+portal 17 30 map overworld 48 7
+portal 17 5 map morvax_forge 8 8
+key ^ mountain road
+key . ash road
+key : path road
+key r roof_slate road
+key D door road
+key d door road
+key L lamp road
+key b barrel road
+key k crate road
+map
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^rrrrrrr^^^^^^^^^^^^^^^
+^^^^^^^^^^^^..rrrrrrr..^^^^^^^^^^^^^
+^^^^^^^^^^^...rrrrrrr...^^^^^^^^^^^^
+^^^^^^^^^^kb..rrrDrrr.L..^^^^^^^^^^^
+^^^^^^^^^^k......:.......^^^^^^^^^^^
+^^^^^^^^^^^......:........^^^^^^^^^^
+^^^^^^^^^^^^.....:.........^^^^^^^^^
+^^^^^^^^^^^^^^...:::::::::...^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^:....^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^.:.....^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^..:......^^^^
+^^^^^^^^^^^^^^^^^^^^^^...:.......^^^
+^^^^^^^^^^^^^^^^^^^^^^^..:......^^^^
+^^^^^^^...^^^^^^^^^^^^^^^:....^^^^^^
+^^^^^^.....^^^^^^^^^^^^^^:..^^^^^^^^
+^^^^^.......::::::::::::::^^^^^^^^^^
+^^^^^^......:.....^^^^^^^^^^^^^^^^^^
+^^^^^^^.....:......^^^^^^^^^^^^^^^^^
+^^^^^^^^....:.......^^^^^^^^^^^^^^^^
+^^^^^^^^^...:........^^^^^^^^^^^^^^^
+^^^^^^^^^^..:.........^^^^^^^^^^^^^^
+^^^^^^^^^^^.::::::.....^^^^^^^^^^^^^
+^^^^^^^^^^^^.....:.....^^^^^^^^^^^^^
+^^^^^^^^^^^^^....:....^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^...:...^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^..:..^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^..:..^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^.:.^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^d^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
