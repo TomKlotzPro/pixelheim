@@ -46,32 +46,54 @@ func test_the_block_is_the_roofs_and_the_rampart_round_them() -> void:
 
 
 func test_the_town_inside_its_walls() -> void:
-	assert_eq(Skyline.inside(MapData.load_by_id("town")), Rect2i(2, 2, 80, 41))
+	# One wall round it, the fields outside in its top rows and outer
+	# columns (PIX-248).
+	assert_eq(Skyline.inside(MapData.load_by_id("town")), Rect2i(2, 3, 80, 40))
+	var walled := MapData.new()
+	walled.size = Vector2i(6, 5)
+	for y in 5:
+		for x in 6:
+			walled.grid[Vector2i(x, y)] = "wall" if y < 2 or x == 0 or x == 5 or y == 4 else "grass"
+	assert_eq(Skyline.inside(walled), Rect2i(1, 2, 4, 2), "two bands of wall at the edge, as the town was")
 
 
 func test_its_rows_keep_the_streets_between_the_houses() -> void:
-	var rows := Skyline._spans(Skyline.TOWN_ROWS.size(), 2, 41, Skyline.TOWN_ROWS)
-	assert_eq(rows[0], Vector2i(2, 5), "the inn's roof")
+	var rows := Skyline._spans(Skyline.TOWN_ROWS.size(), 3, 40, Skyline.TOWN_ROWS)
+	assert_eq(rows[0], Vector2i(3, 5), "the top of the inn's roof, under the wall")
 	assert_eq(rows[3], Vector2i(11, 14), "the top street")
 	assert_eq(rows[-1], Vector2i(35, 43), "the south river to the walls")
 	assert_eq(Skyline._spans(4, 0, 10, Skyline.TOWN_ROWS), [Vector2i(0, 2), Vector2i(2, 5), Vector2i(5, 7), Vector2i(7, 10)], "elsewhere, evenly")
 
 
-func test_one_ring_of_the_towns_rampart_with_the_gate_in_it() -> void:
+func test_one_ring_of_the_towns_rampart_with_its_gatehouse() -> void:
 	var village := _village(1)
-	var objects: Dictionary = village["objects"]
+	var rampart: Dictionary = village["rampart"]
+	var pieces: Dictionary = rampart["pieces"]
+	var fallback: Dictionary = rampart["fallback"]
 	assert_eq(village["block"], OUTER)
-	assert_eq(objects[GATE], PunyTerrain.GATE, "the gate where the road comes in")
+	for x in [47, 48, 49]:
+		assert_eq(pieces[Vector2i(x, 42)], Rampart.GATE, "the gate three wide where the road comes in (%d)" % x)
+		assert_eq(fallback[Vector2i(x, 42)], PunyTerrain.GATE)
+	assert_eq(rampart["gates"].size(), 1, "one gate")
+	assert_eq(pieces[Vector2i(46, 42)], Rampart.TOWER[0], "a tower either side")
+	assert_eq(pieces[Vector2i(50, 42)], Rampart.TOWER[1])
+	assert_eq(pieces[Vector2i(46, 41)], Rampart.ROOF[0], "their roofs a cell above the wall")
+	assert_eq(pieces[Vector2i(50, 41)], Rampart.ROOF[1])
+	assert_eq(rampart["covers"], [Vector2i(46, 41), Vector2i(50, 41)], "which block")
+	assert_true(rampart["scorched"].is_empty(), "the Hamlet mended it")
+	assert_eq(pieces[OUTER.position], Rampart.WALL[6], "the stone turns the corners")
+	assert_eq(pieces[OUTER.end - Vector2i.ONE], Rampart.WALL[9])
+	assert_eq(pieces[Vector2i(41, 55)], Rampart.WALL[10], "a run across")
+	assert_eq(pieces[Vector2i(36, 48)], Rampart.WALL[5], "a run down")
 	for corner: Vector2i in [OUTER.position, Vector2i(OUTER.end.x - 1, OUTER.position.y), OUTER.end - Vector2i.ONE]:
-		assert_eq(objects[corner], PunyTerrain.TOWER, "a tower on each corner")
-	assert_eq(objects[Vector2i(40, 42)], PunyTerrain.TOWER_ACROSS, "a tower every few steps, as in town")
-	assert_eq(objects[Vector2i(41, 55)], PunyTerrain.WALL_ACROSS)
-	assert_eq(objects[Vector2i(36, 48)], PunyTerrain.WALL_DOWN)
-	var rampart := [PunyTerrain.TOWER, PunyTerrain.TOWER_ACROSS, PunyTerrain.WALL_ACROSS, PunyTerrain.WALL_DOWN, PunyTerrain.GATE]
-	for cell: Vector2i in objects:
-		if objects[cell] in rampart:
-			assert_false(OUTER.grow(-1).has_point(cell), "one ring: no wall inside it (%s)" % cell)
+		assert_eq(fallback[corner], PunyTerrain.TOWER, "without the pack, Shade's towers on each corner")
+	assert_eq(fallback[Vector2i(40, 42)], PunyTerrain.TOWER_ACROSS, "and every few steps, as in town")
+	for cell: Vector2i in pieces:
+		assert_false(OUTER.grow(-1).has_point(cell), "one ring: no wall inside it (%s)" % cell)
 	assert_eq(village["ground"][GATE + Vector2i.DOWN], "path", "the road goes on in through the gate")
+	var ashes: Dictionary = _village(0)["rampart"]
+	assert_eq(ashes["pieces"][Vector2i(46, 41)], Rampart.ROOF_BURNT, "after the fire the west tower's roof is gone")
+	assert_true(ashes["scorched"].has(GATE), "and the gate scorched")
 
 
 func test_every_house_stands_in_its_own_roof_with_a_window_and_a_door() -> void:

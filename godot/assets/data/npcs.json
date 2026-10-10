@@ -715,7 +715,7 @@
     },
     {
       "id": "greyhold_ulla",
-      "about": "PIX-255 (story chapter 4): Captain Hale's sergeant, who took Maren's letter for him. Once it's delivered (`comesHome.letter`) and the Hollow Captain has stood down (`comesHome.named`), she brings the old guard to keep Pixelheim's gate (`home`), and her wardens dig out the Frostgate road (the avalanche, gates.json, opens on the same step). The town's tour stops at the gate (`homecoming`).",
+      "about": "PIX-255 (story chapter 4): Captain Hale's sergeant, who took Maren's letter for him. Once it's delivered (`comesHome.letter`) and the Hollow Captain has stood down (`comesHome.named`), she brings the old guard to keep Pixelheim's gate (`home`: just inside it, beside its east torch, off the tower PIX-248 raised where she stood), and her wardens dig out the Frostgate road (the avalanche, gates.json, opens on the same step). The town's tour stops at the gate (`homecoming`).",
       "name": "Sergeant Ulla",
       "sprite": "guard",
       "found": {
@@ -726,8 +726,8 @@
       },
       "home": {
         "mapId": "town",
-        "x": 42,
-        "y": 2,
+        "x": 43,
+        "y": 3,
         "wander": false
       },
       "comesHome": {

@@ -8,10 +8,17 @@
 # and the green below the square runs down to the old well and the fishing
 # dock on the bend. Every building faces south, its door on its bottom row.
 # The ages build on the lots south of Hearth Lane and across the bridge.
+# One rampart round it all, a wall drawn once (PIX-248: the double rampart
+# looked strange from inside): the top two rows and the columns beyond the
+# west and east walls are the fields outside, the road running on north out
+# of the gate, three wide, between its towers (Rampart), a torch either side
+# of it inside.
 #   python3 godot/tools/mapgen.py town
 id town
 spawn 40 30
-portal 40 0 map overworld 48 40
+portal 40 2 map overworld 48 41
+portal 39 2 map overworld 48 41
+portal 41 2 map overworld 48 41
 portal 30 10 map town_shop 8 8
 portal 50 10 map town_inn 8 8
 portal 55 18 map town_smith 8 8
@@ -46,47 +53,47 @@ key i sign_inn -
 key s sign_smith -
 key p sign_potion -
 map
-########################################D##########################~~~~#############
-########################################=##########################~~~~#############
-##^^^^^^^^^^^^^^^^.....................===.........................~~~~...........##
-##^^^^^^**^**^^^FF.....................===..TTTTTTTTTTTTT.......FF.~~~~..FFFFFFFF.##
-##^^^^FF======FFFF.....................===..TTTTTTTTTTTTT.......FF~~~~~..F*F*F*FF.##
-##^^^^====h=====FF........RRRRRRRRR....===..TTTTTTTTTTTTT.......FF~~~~~..FFFFFFFF.##
-##^^^^==========FF.MMMMMM.RRRRRRRRR....===..TTTTTTTTTTTTT.RRRRRRFF.~~~~..F*F*F*FF.##
-##^^^.==========FF.MMMMMM.RRRRRRRRR....===..TTTTTTTTTTTTT.RRRRRRFF.~~~~..FFFFFFFF.##
-##^^^.==========FF.MMMMMM.RRRRRRRRR....===..TTTTTTTTTTTTT.RRRRRRFF.~~~~..F*F*F*FF.##
-##^^..F========FFF.MMMMMM.RAAAAAAAR....===..TTTTTTTTTTTTT.RRRRRRFF.~~~~..FFFFFFFF.##
-##^^FFFFF.=.FFFFFF.MMdMMMcRRgRDRRRR....===.cTTTTiTDTTTTTTbRRdRRR**.~~~~.....=.....##
-##^^.=============================================================.~~~~.....="""".##
-##^..=============================================================.~~~~~....="""".##
-##^............................===.............===.SSSSSSSSSS......~~~~~....="""".##
-##^.FFFFFF..+*****.TTTTTTTTT...===.SSSSSSSSSSS.===.SSSSSSSSSS......~~~~.....="""".##
-##^.FFFFFF..+*****.TTTTTTTTT...===.SSSSSSSSSSS.===.SSSSSSSSSS......~~~~.....="""".##
-##^.FFFFFF..+*****.TTTTTTTTT...===.SSSSSSSSSSS.===.SSSSSSSSSS......~~~~.....="""".##
-##^.FFFFFF..+*****.TTTTTTTTT...===.SSSSSSSSSSS.===.SSSSSSSSSSc.....~~~~.....="""".##
-##^.FFFFFF..+*****.TTTTTTTTT...===.SSSSSSSSSSS.===.SSsSDSSSSSb.....~~~~.....=.....##
-##^.........++++++.TTpTDTTTT...===lSSSSSDSSSSSl====================HHHH======...b.##
-##^................=========....=================.=================HHHH======...c.##
-##..RRRRRR.RRRRRRRRR............=================..................~~~~.=========.##
-##..RRRRRR.RRRRRRRRR..MMMMMM....=================..................~~~~.=========.##
-##..RRRRRR.RRRRRRRRR..MMMMMM....=================......FF....FF....~~~~.++++=+++++##
-##..RRRRRR.RRRRRRRRR..MMMMMM....=================......FFF....F....~~~~.."""""""".##
-##..RRdRRR.RRRRdRRRR..MMdMMM....=================........*FF*......~~~~.."""""""".##
-##..=============================================.........FFF......~~~~.."""""""".##
-##..=============================================.......*....*.....~~~~.."""""""".##
-##..............................=================.....FF...........~~~~.."""""""".##
-##....................FFFFFFF..l.......===.......l.................~~~~.."""""""".##
-##....................FF***FF..........===..*.....................~~~~~~+++++++++.##
-##....................FF***FF..*..w....===...*....................~~~~~~..........##
-##....................FFF*FFF...*......===.....*..................~~~~~FFFFFFFFFFF##
-##....========================================================..~~~~~~~FFFFFFFFFFF##
-##....========================================================~~~~~~~~~FFFFFFFFFFF##
-##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~KKK~~~~~~~~~~~~~~~~~~~~~~~~~~~~~FFFFFFFFFFF##
-##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~KKK~~~~~~~~~~~~~~~~~~~~~~~~~~~~~FFFFFFFFFFF##
-##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~FFFFFFFFFFF##
-##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~FFFFFFFFFFF##
-##FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF##
-##FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF##
-##FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF##
-##FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF##
-####################################################################################
+..FFF.....FF........"""""""""""".......===..""""""""""""....FF.....~~~~.....FFF.....
+.FFF..........FF...."""""""""""".......===..""""""""""""......F....~~~~......FF.....
+.######################################DDD#########################~~~~############.
+.#^^^^^^**^**^^^FF....................l===l.TTTTTTTTTTTTT.......FF.~~~~..FFFFFFFF.#.
+.#^^^^FF======FFFF.....................===..TTTTTTTTTTTTT.......FF~~~~~..F*F*F*FF.#.
+.#^^^^====h=====FF........RRRRRRRRR....===..TTTTTTTTTTTTT.......FF~~~~~..FFFFFFFF.#.
+.#^^^^==========FF.MMMMMM.RRRRRRRRR....===..TTTTTTTTTTTTT.RRRRRRFF.~~~~..F*F*F*FF.#.
+.#^^^.==========FF.MMMMMM.RRRRRRRRR....===..TTTTTTTTTTTTT.RRRRRRFF.~~~~..FFFFFFFF.#.
+.#^^^.==========FF.MMMMMM.RRRRRRRRR....===..TTTTTTTTTTTTT.RRRRRRFF.~~~~..F*F*F*FF.#.
+.#^^..F========FFF.MMMMMM.RAAAAAAAR....===..TTTTTTTTTTTTT.RRRRRRFF.~~~~..FFFFFFFF.#.
+.#^^FFFFF.=.FFFFFF.MMdMMMcRRgRDRRRR....===.cTTTTiTDTTTTTTbRRdRRR**.~~~~.....=.....#.
+.#^^.=============================================================.~~~~.....="""".#.
+.#^..=============================================================.~~~~~....="""".#.
+.#^............................===.............===.SSSSSSSSSS......~~~~~....="""".#.
+.#^.FFFFFF..+*****.TTTTTTTTT...===.SSSSSSSSSSS.===.SSSSSSSSSS......~~~~.....="""".#.
+.#^.FFFFFF..+*****.TTTTTTTTT...===.SSSSSSSSSSS.===.SSSSSSSSSS......~~~~.....="""".#.
+.#^.FFFFFF..+*****.TTTTTTTTT...===.SSSSSSSSSSS.===.SSSSSSSSSS......~~~~.....="""".#.
+.#^.FFFFFF..+*****.TTTTTTTTT...===.SSSSSSSSSSS.===.SSSSSSSSSSc.....~~~~.....="""".#.
+.#^.FFFFFF..+*****.TTTTTTTTT...===.SSSSSSSSSSS.===.SSsSDSSSSSb.....~~~~.....=.....#.
+.#^.........++++++.TTpTDTTTT...===lSSSSSDSSSSSl====================HHHH======...b.#.
+.#^................=========....=================.=================HHHH======...c.#.
+.#..RRRRRR.RRRRRRRRR............=================..................~~~~.=========.#.
+.#..RRRRRR.RRRRRRRRR..MMMMMM....=================..................~~~~.=========.#.
+.#..RRRRRR.RRRRRRRRR..MMMMMM....=================......FF....FF....~~~~.++++=+++++#.
+.#..RRRRRR.RRRRRRRRR..MMMMMM....=================......FFF....F....~~~~.."""""""".#.
+.#..RRdRRR.RRRRdRRRR..MMdMMM....=================........*FF*......~~~~.."""""""".#.
+.#..=============================================.........FFF......~~~~.."""""""".#.
+.#..=============================================.......*....*.....~~~~.."""""""".#.
+.#..............................=================.....FF...........~~~~.."""""""".#.
+.#....................FFFFFFF..l.......===.......l.................~~~~.."""""""".#.
+.#....................FF***FF..........===..*.....................~~~~~~+++++++++.#.
+.#....................FF***FF..*..w....===...*....................~~~~~~..........#.
+.#....................FFF*FFF...*......===.....*..................~~~~~FFFFFFFFFFF#.
+.#....========================================================..~~~~~~~FFFFFFFFFFF#.
+.#....========================================================~~~~~~~~~FFFFFFFFFFF#.
+.#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~KKK~~~~~~~~~~~~~~~~~~~~~~~~~~~~~FFFFFFFFFFF#.
+.#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~KKK~~~~~~~~~~~~~~~~~~~~~~~~~~~~~FFFFFFFFFFF#.
+.#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~FFFFFFFFFFF#.
+.#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~FFFFFFFFFFF#.
+.#FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF#.
+.#FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF#.
+.#FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF#.
+.#FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF#.
+.##################################################################################.

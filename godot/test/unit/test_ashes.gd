@@ -44,7 +44,7 @@ func test_the_ashes_can_be_walked_from_the_spawn_to_the_gate_and_the_hall() -> v
 				seen[next] = true
 				if map.is_walkable(next):
 					queue.append(next)
-	assert_true(seen.has(Vector2i(40, 0)), "the gate")
+	assert_true(seen.has(Vector2i(40, 2)), "the gate")
 	assert_true(seen.has(Vector2i(40, 19)), "the hall")
 	assert_true(seen.has(Town.project_board() + Vector2i.DOWN), "the board")
 

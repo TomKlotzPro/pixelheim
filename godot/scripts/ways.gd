@@ -9,8 +9,10 @@ class_name Ways
 ## door between maps"): the cliffs part and the road runs out through them,
 ## a cave is a dark mouth in the rock. No signpost names it and no frame or
 ## torch marks it; the place's name shows once the hero is there
-## (PlaceTitle). The one thing drawn on a way is the Ashen Mountain's gate,
-## its portcullis down while the story bars it.
+## (PlaceTitle). What is built on a way is the Ashen Mountain's gate, its
+## portcullis down while the story bars it, and Pixelheim's own gate in its
+## rampart (PIX-248, Rampart), three wide between its towers, the road
+## running on through it and its torches the village's lamps.
 ## A house in the Reach opens onto a room, and the dungeon is down in its
 ## cellar (PIX-256: "strange to walk into a house and find a dungeon"): a
 ## stairwell in the room's floor is a way "down", which asks before it takes
@@ -185,33 +187,33 @@ const NEARBY := 6
 
 
 ## Where a hero saved at `cell` stands when the save loads (PIX-256): there,
-## on open ground; off a doorway onto the open ground beside it (below
-## first, the way out of a door), so a save made in the frame of a door that
-## now leads somewhere else wakes outside it; on the nearest open ground
-## within NEARBY that the map's way in reaches, where the ground is rock or
-## wood now (One Reach, PIX-269: the roads out of four regions moved along
-## their edges, and the cliff closed over the old ones); else the map's
-## spawn. The save's format is the same (web v4): only where it wakes moves.
+## on open ground the map's way in reaches; off a doorway onto the open
+## ground beside it (below first, the way out of a door), so a save made in
+## the frame of a door that now leads somewhere else wakes outside it; on
+## the nearest open ground within NEARBY that the map's way in reaches,
+## where the ground is rock or wood now (One Reach, PIX-269: the roads out
+## of four regions moved along their edges, and the cliff closed over the
+## old ones) or wall, or lies outside it (PIX-248: Pixelheim's rampart is
+## one wall a row further in, its fields beyond it, and a save in the old
+## slot through the double wall stands among them); else the map's spawn.
+## The save's format is the same (web v4): only where it wakes moves.
 static func standing(map: MapData, cell: Vector2i) -> Vector2i:
-	if open_ground(map, cell):
+	var reached := _walked_from(map, map.spawn)
+	if open_ground(map, cell) and reached.has(cell):
 		return cell
 	if map.portals.has(cell):
 		for step: Vector2i in [Vector2i.DOWN, Vector2i.UP, Vector2i.LEFT, Vector2i.RIGHT]:
-			if open_ground(map, cell + step):
+			if open_ground(map, cell + step) and reached.has(cell + step):
 				return cell + step
-	var reached := {}
 	for radius in range(1, NEARBY + 1):
 		var best := NOWHERE
 		for y in range(-radius, radius + 1):
 			for x in range(-radius, radius + 1):
 				var near := cell + Vector2i(x, y)
-				if maxi(absi(x), absi(y)) != radius or not open_ground(map, near):
+				if maxi(absi(x), absi(y)) != radius or not open_ground(map, near) or not reached.has(near):
 					continue
 				if best == NOWHERE or Vector2(near - cell).length() < Vector2(best - cell).length():
-					if reached.is_empty():
-						reached = _walked_from(map, map.spawn)
-					if reached.has(near):
-						best = near
+					best = near
 		if best != NOWHERE:
 			return best
 	return map.spawn

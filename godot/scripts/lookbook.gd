@@ -40,6 +40,11 @@ const SHOTS := {
 	"town_dusk": {"area": "town", "map": "town", "at": "street", "time": DUSK},
 	"town_night": {"area": "town", "map": "town", "at": "street", "time": NIGHT},
 	"riverside": {"area": "town", "map": "town", "cell": Vector2i(72, 8), "time": DAY},
+	# The village's gate from inside (PIX-248): one rampart, the gatehouse
+	# three wide between its towers, the road running on out through the
+	# fields; and its torches at night.
+	"town_gate": {"area": "town", "map": "town", "cell": Vector2i(40, 5), "time": DAY},
+	"town_gate_night": {"area": "town", "map": "town", "cell": Vector2i(40, 5), "time": NIGHT},
 	# The hero's walk (PIX-243), filmed (`film`) setting off, striding, turning
 	# right round and settling, then walking up the street.
 	"walk": {"area": "town", "map": "town", "cell": Vector2i(38, 13), "time": DAY, "walk": true},
