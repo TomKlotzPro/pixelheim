@@ -2,8 +2,9 @@ class_name Hud
 extends Node
 ## The HUD over the world (Solid Ground, PIX-260: moved out of world.gd as
 ## it was): its layer and widgets - the sky's tint, the hero's dock, the
-## boss bar, the nameplate over a signed door, the main quest's next step -
-## laid out on the screen as it is; and the first-time hints. The message
+## boss bar, the nameplate over a signed door, the main quest's next step,
+## the card naming where the hero has come to - laid out on the screen as it
+## is; and the first-time hints. The message
 ## plate and the battle log stand on its layer too (Messages builds them).
 ## Which of GameState's signals reach it is still the world's wiring.
 
@@ -23,14 +24,16 @@ static var _hint_generation := 0
 ## pill holding "Next" and the step.
 var objective_box: PanelContainer
 var objective_label: Label
-## The nameplate over the signed door the hero walks up to (ShopSign), or
-## the signpost of a way on (PIX-269), and how far over its cell it sits.
+## The nameplate over the signed door the hero walks up to (ShopSign).
 var nameplate: PanelContainer
 var nameplate_door := Vector2i(-1, -1)
-var nameplate_lift := 0.0
-## Which side of its sign the plate sits: "above" (a door sign's), or for a
-## signpost "below", "left" or "right", away from its road.
-var nameplate_anchor := "above"
+## Where the hero has come to (PlaceTitle, PIX-269): the place and region
+## named last, when each name was last shown, and the card showing it now.
+var place_was := {}
+var place_shown := {}
+var place_card: PanelContainer
+var _place_map: MapData
+var _place_regions := false
 ## The boss slayer's edge while it lasts (PIX-232): a small plate at the top
 ## left, its time running down.
 var edge_plate: PanelContainer
@@ -168,10 +171,11 @@ func keep_hint_clear() -> void:
 
 ## A title over the world for a moment (PIX-232: a boss's fall): the big
 ## word and a line under it on a dark plate, held a beat, then faded. It runs
-## on the real clock, so the boss's slow motion doesn't hold it.
-func title_card(title: String, line: String) -> void:
+## on the real clock, so the boss's slow motion doesn't hold it. An empty
+## line leaves the title alone on its plate.
+func title_card(title: String, line: String) -> PanelContainer:
 	if root == null:
-		return
+		return null
 	var card := PanelContainer.new()
 	card.add_theme_stylebox_override("panel", UiStyle.plate(16))
 	card.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -184,6 +188,7 @@ func title_card(title: String, line: String) -> void:
 	lines.add_child(big)
 	var small := UiStyle.label(line, UiStyle.reading(16), UiStyle.CREAM)
 	small.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	small.visible = line != ""
 	lines.add_child(small)
 	root.add_child(card)
 	card.reset_size()
@@ -194,6 +199,39 @@ func title_card(title: String, line: String) -> void:
 	show.tween_interval(2.4)
 	show.tween_property(card, "modulate:a", 0.0, 0.6)
 	show.tween_callback(card.queue_free)
+	return card
+
+
+## Names where the hero has come to (PIX-269: the way between maps is the
+## land itself, and the place says its name once you're there): the map's
+## place on entering it, a region of the Ashenreach on walking into it, as
+## a title card (PlaceTitle decides). `quiet` notes where they are without
+## a card (the map the game opens on). A new card takes the last one's place.
+func name_place(map: MapData, cell: Vector2i, quiet := false) -> void:
+	# Whether the map names its regions, learned once a visit, not each step.
+	if map != _place_map:
+		_place_map = map
+		_place_regions = Atlas.names_regions(map)
+	var here := PlaceTitle.at(map, cell, _place_regions)
+	var card := PlaceTitle.next(here, place_was, place_shown, Time.get_ticks_msec(), quiet)
+	if card.is_empty():
+		return
+	_drop_place_card()
+	place_card = title_card(card[0], card[1])
+
+
+## Forgets where the hero has been named and takes its card down at once
+## (the look book, between shots: a card over every scene would hide it).
+func forget_places() -> void:
+	place_was.clear()
+	place_shown.clear()
+	_drop_place_card()
+
+
+func _drop_place_card() -> void:
+	if is_instance_valid(place_card):
+		place_card.queue_free()
+	place_card = null
 
 
 ## The boss slayer's edge (PIX-232) at the top left while it lasts, its
@@ -368,8 +406,6 @@ func update_nameplate() -> void:
 		return
 	if near["door"] != nameplate_door:
 		nameplate_door = near["door"]
-		nameplate_lift = float(near.get("lift", ShopSign.BOARD.y + 10))
-		nameplate_anchor = String(near.get("anchor", "above"))
 		(nameplate.get_child(0).get_child(0) as Label).text = near["name"]
 		(nameplate.get_child(0).get_child(1) as Label).text = near["about"]
 		nameplate.get_child(0).get_child(1).visible = near["about"] != ""
@@ -378,23 +414,10 @@ func update_nameplate() -> void:
 		nameplate.modulate.a = 1.0 if GameState.settings.reduce_motion else 0.0
 		if not GameState.settings.reduce_motion:
 			nameplate.create_tween().tween_property(nameplate, "modulate:a", 1.0, 0.15)
-	# Over the board, wherever the camera has the door on screen; beside a
-	# signpost, on the side away from its road (PIX-269).
-	var cell := Rect2(Vector2(nameplate_door * TILE), Vector2(TILE, TILE))
-	var at := Vector2(cell.get_center().x, cell.position.y - nameplate_lift)
-	var pull := Vector2(0.5, 1.0)  # which point of the plate sits there
-	match nameplate_anchor:
-		"below":
-			at = Vector2(cell.get_center().x, cell.end.y + nameplate_lift)
-			pull = Vector2(0.5, 0.0)
-		"left":
-			at = Vector2(cell.position.x - nameplate_lift, cell.get_center().y)
-			pull = Vector2(1.0, 0.5)
-		"right":
-			at = Vector2(cell.end.x + nameplate_lift, cell.get_center().y)
-			pull = Vector2(0.0, 0.5)
-	var screen := get_viewport().get_canvas_transform() * at
-	nameplate.position = (screen - nameplate.size * pull).round()
+	# Over the board, wherever the camera has the door on screen.
+	var top := Vector2(nameplate_door.x * TILE + TILE / 2.0, nameplate_door.y * TILE - ShopSign.BOARD.y - 10)
+	var screen := get_viewport().get_canvas_transform() * top
+	nameplate.position = (screen - Vector2(nameplate.size.x / 2.0, nameplate.size.y)).round()
 
 
 ## The arrow itself: a small gold head pointing right (the HUD turns it),

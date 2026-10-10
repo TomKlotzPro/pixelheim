@@ -3,8 +3,9 @@ extends Node
 ## the town by day, at dusk and at night, the forest, the Ash, the Mire, the
 ## Frostgate, a dungeon floor, a fight, the overworld at night, the
 ## village seen from its road (PIX-248), the ways between maps (PIX-269),
-## the map screen (PIX-266) and the rooms behind the Reach's doors with the
-## stairs down in their floors (PIX-256) - each saved
+## the map screen (PIX-266), the rooms behind the Reach's doors with the
+## stairs down in their floors (PIX-256) and the card naming a place come
+## to - each saved
 ## as a picture, and all of them on one contact sheet, so a change to how the
 ## game looks is judged before and after, by eye. With `perf`, each shot also
 ## reports what its frames cost (PerfProbe); with `film`, each is filmed for
@@ -25,7 +26,8 @@ const NIGHT := 0.75
 ## Each shot: a map and where on it (Upper Street, a pack's home, a cell, or
 ## the map's arrival), or a dungeon floor; the hour, or the first shower by
 ## day (`rain`); and a foe to face, for the fight, struck on a beat while
-## it's filmed (`strike`), the third blow felling it.
+## it's filmed (`strike`), the third blow felling it. Only a shot with
+## `card` keeps the title card naming the place it enters (PIX-269).
 const SHOTS := [
 	{"name": "01_town_day", "map": "town", "at": "street", "time": DAY},
 	{"name": "02_town_dusk", "map": "town", "at": "street", "time": DUSK},
@@ -56,9 +58,9 @@ const SHOTS := [
 	{"name": "22_rise", "map": "town", "at": "street", "time": DAY, "rise": "odos_store"},
 	# Every class's ranks side by side, each rank's look on the hero (PIX-244).
 	{"name": "23_ranks", "map": "town", "at": "street", "time": DAY, "ranks": true},
-	# The ways between maps (PIX-269): the river road's end at the Deepwood
-	# pass by day and by night, the Mirefen's way back, and the road south
-	# out through the ridge.
+	# The ways between maps (PIX-269): the river road running out through
+	# the cliffs at the Deepwood pass by day and by night, the Mirefen's way
+	# back, and the road south out through the ridge - bare ground, no post.
 	{"name": "24_deepwood_pass", "map": "overworld", "cell": Vector2i(91, 33), "time": DAY},
 	{"name": "25_deepwood_pass_night", "map": "overworld", "cell": Vector2i(91, 33), "time": NIGHT},
 	{"name": "26_mire_pass", "map": "mirefen", "cell": Vector2i(55, 24), "time": DAY},
@@ -73,6 +75,8 @@ const SHOTS := [
 	{"name": "30_lianes_stair", "map": "observatory", "cell": Vector2i(13, 6), "time": DAY, "down": true},
 	{"name": "31_hales_hall", "map": "keep", "cell": Vector2i(13, 7), "time": DAY},
 	{"name": "32_hales_stair", "map": "keep", "cell": Vector2i(13, 6), "time": DAY, "down": true},
+	# Come through the pass into the Mirefen: its name on a card, once.
+	{"name": "33_place_card", "map": "mirefen", "cell": Vector2i(55, 24), "time": DAY, "card": true},
 ]
 ## Filming the walk: slowed to a quarter, a picture every WALK_STEP of the
 ## game's time (thirty a second: two or three of each frame of the walk),
@@ -191,6 +195,7 @@ func run() -> void:
 ## shot's words cleared away.
 func _stage(shot: Dictionary) -> void:
 	world.messages.clear()
+	world.hud.forget_places()
 	GameState.world.steps = shower_by_day() if shot.get("rain", false) else float(shot["time"]) * DayNight.DAY_CYCLE_STEPS
 	if shot.has("floor"):
 		world.delve.enter_floor(int(shot["floor"]))
@@ -198,6 +203,9 @@ func _stage(shot: Dictionary) -> void:
 		world.map = world.load_map(shot["map"])
 		var at: Vector2i = nearest_walkable(world.map, shot["cell"]) if shot.has("cell") else _cell(world.map, String(shot.get("at", "")))
 		world.enter_map(world.map, at)
+	# The card naming the place stands over its own shot only.
+	if not shot.get("card", false):
+		world.hud.forget_places()
 	world.folk.keep_hours(true)
 	world.lights.time = CLOCK
 	if shot.has("foe"):
@@ -207,8 +215,7 @@ func _stage(shot: Dictionary) -> void:
 		_foe = foe
 	if shot.get("down", false):
 		# At the top of a room's stair, facing it (PIX-256): the stairs ask
-		# once the world has drawn the hero turned and the stair's nameplate
-		# up (run).
+		# once the world has drawn the hero turned (run).
 		world.player.face(Vector2.UP)
 	if shot.has("chart"):
 		# The map over a hero who has walked it all, a waypoint chosen.

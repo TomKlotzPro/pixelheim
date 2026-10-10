@@ -7,6 +7,8 @@
 # (PIX-135), a named monster's bounty and board (PIX-156), the choice at
 # Morvax's throne (PIX-157), a festival's ring toss (PIX-159), the road to
 # Saltmere (PIX-164), its sea cave (PIX-165), the Blackiron mines (PIX-167),
+# the Mirefen and Deepwood passes open in the cliffs, each place named on a
+# card as the hero comes to it (PIX-269),
 # Greyhold with its cellars (PIX-168) and the Frostgate pass with its ice cave
 # (PIX-169), each down the stair of the room behind a door, which asks first
 # (PIX-256), the mountain's gate barred to a new hero (PIX-170) and a depth
@@ -109,8 +111,12 @@ FLOWS=(
 	"throne|--map town --cleared 15 --seen maren_confession throne --keys s,e --wait 0.5|open=reveal_screen"
 	"festival|--map town --town-tier 2 --at 43,27 festival --keys w,e,e,e|open=ring_toss_screen"
 	"coast|--map overworld --at 16,61 --walk d,d,d --wait 0.4|map=saltmere"
-	# Up the path into the sea cave's mouth (PIX-269: its post stands beside it).
+	# Up the path into the sea cave's mouth (PIX-269).
 	"seacave|--map saltmere --at 6,24 --walk u --wait 0.4|map=seacave"
+	# Out through the parted cliffs (PIX-269: no cave mouth, no post), and the
+	# place come to named on its card.
+	"mirepass|--map overworld --at 2,32 --walk l,l,l --wait 0.4 --lang en|map=mirefen .*card=The Mirefen"
+	"woodpass|--map overworld --at 93,33 --walk r,r,r --wait 0.4 --lang en|map=deepwood .*card=The Deepwood"
 	"mines|--map overworld --at 2,20 --walk l,l,l --wait 0.4|map=blackiron"
 	"shafts|--map blackiron --at 26,5 --walk u --wait 0.4|map=shafts"
 	"castle|--map overworld --at 93,15 --walk r,r,r --wait 0.4|map=greyhold"

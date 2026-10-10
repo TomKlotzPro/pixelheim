@@ -23,6 +23,10 @@ const GROUND := {
 	# snow is his grass whitened, ice his sand frosted, stone his dirt greyed.
 	"shore": "seawater-light", "dock": "seawater-light", "sea": "seawater-medium", "deep_sea": "seawater-deep",
 	"snow": "grass", "ice": "sand", "stone": "dirt",
+	# A cave mouth is the rock's own (PIX-269): the cliff runs on unbroken
+	# over it, its dark mouth at the cliff's foot, not a notch of grass cut
+	# in the ridge with a mound standing in it.
+	"cave": "cliff",
 }
 ## Shade pairs every terrain with grass only. Where two others meet at one
 ## corner, the first of these keeps its corners and the rest fall back to
@@ -60,8 +64,10 @@ const WALL_ACROSS := 721
 const WALL_DOWN := 747
 const GATE := 802
 const TOWER_EVERY := 8
-## A cave mouth: Shade's mine entrance, its dark in a timber frame.
-const CAVE_MOUTH := 127
+## A cave mouth: Shade's own dark hole in the rock, standing on the cliff
+## the ground draws under it (GROUND), with no frame round it (Tom: the
+## framed mouth and its torches looked stuck on, PIX-269).
+const CAVE_MOUTH := 128
 const RAMPART := ["wall", "door", "door_shut"]
 
 ## Maps that show the whole village as one block of roofs (the overworld):
@@ -269,9 +275,8 @@ static func _run(grid: Dictionary, cell: Vector2i, step: Vector2i, tiles: Array)
 
 ## Puny objects standing on our cells, -1 where none: bridges and docks as
 ## planks the way they span (span_axis: a single plank, or the ends and
-## middles of a run) and cave mouths, every one a way on to somewhere: in a
-## timber frame (Shade's mine entrance, PIX-269), where a bare hole in a
-## mound read as a stone in the field.
+## middles of a run) and cave mouths, every one a way on to somewhere: the
+## dark mouth in the rock, bare (CAVE_MOUTH).
 static func object_at(grid: Dictionary, cell: Vector2i) -> int:
 	match grid.get(cell, ""):
 		"bridge", "dock":

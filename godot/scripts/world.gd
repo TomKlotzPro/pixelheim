@@ -239,6 +239,8 @@ func _process(delta: float) -> void:
 	# Down a dungeon the save keeps the hero at its gate, as the web does.
 	if map.floor_level == 0:
 		GameState.move_to(map, cell, player.facing)
+	# Into a region of the Reach: its name, once (PIX-269).
+	hud.name_place(map, cell)
 	# Walking into the bought house's shut door walks you in.
 	if map.id == "town" and cell + Vector2i(player.facing) == Town.house_door() and GameState.household.owns_house():
 		enter_house()
@@ -370,6 +372,9 @@ func enter_map(next: MapData, arrival: Vector2i) -> void:
 		GameState.move_to(next, arrival, player.facing)
 		GameState.save_now()
 	foes.floor_foes = 0
+	# The place's name once the hero is there, not on a post by the way out
+	# (PIX-269); the map the game opens on is only noted.
+	hud.name_place(next, arrival, not changing)
 	stage.arrive(next)
 	# A festival day: confetti over the square (PIX-159).
 	if next.id == "town" and GameState.holdings.festival_on():

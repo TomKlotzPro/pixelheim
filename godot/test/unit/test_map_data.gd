@@ -38,17 +38,22 @@ func test_overworld_has_all_its_portals() -> void:
 	# The mountain, the undermountain, the town, the two passes, and the
 	# roads out to the bigger Reach (PIX-164: Saltmere; PIX-167: the mines;
 	# PIX-168: Greyhold; PIX-169: the Frostgate pass), each road out three
-	# cells wide (PIX-269).
-	assert_eq(map.portals.size(), 17)
+	# cells wide (PIX-269), the two passes too since they open in the cliffs
+	# rather than through a cave mouth.
+	assert_eq(map.portals.size(), 21)
 	assert_eq(map.portals[Vector2i(16, 63)]["mapId"], "saltmere")
 	assert_eq(map.portals[Vector2i(0, 20)]["mapId"], "blackiron")
 	assert_eq(map.portals[Vector2i(95, 15)]["mapId"], "greyhold")
 	assert_eq(map.portals[Vector2i(68, 0)]["mapId"], "frostgate")
+	assert_eq(map.portals[Vector2i(0, 32)]["mapId"], "mirefen")
+	assert_eq(map.portals[Vector2i(95, 33)]["mapId"], "deepwood")
 	for side: int in [-1, 1]:
 		assert_eq(map.portals[Vector2i(16 + side, 63)]["mapId"], "saltmere")
 		assert_eq(map.portals[Vector2i(0, 20 + side)]["mapId"], "blackiron")
 		assert_eq(map.portals[Vector2i(95, 15 + side)]["mapId"], "greyhold")
 		assert_eq(map.portals[Vector2i(68 + side, 0)]["mapId"], "frostgate")
+		assert_eq(map.portals[Vector2i(0, 32 + side)]["mapId"], "mirefen")
+		assert_eq(map.portals[Vector2i(95, 33 + side)]["mapId"], "deepwood")
 
 
 func test_map_corners_are_impassable_mountains() -> void:
