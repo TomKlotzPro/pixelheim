@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.203.0",
+      "date": "2026-10-10",
+      "codename": "Open Country",
+      "notes": [
+        "The ways between maps are natural passes now: the cliffs part and the road runs through, with no signposts, no name boxes and no framed caves or torches",
+        "The roads to the Mirefen and the Deepwood run out through the ridge instead of into a cave",
+        "Entering a place, or walking into one of the Ashenreach's regions, shows its name once on a title card"
+      ]
+    },
+    {
       "version": "0.202.0",
       "date": "2026-10-10",
       "codename": "Rooms Upstairs",

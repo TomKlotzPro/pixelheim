@@ -2457,6 +2457,10 @@ msgid "Enter the village, poke around the shop and the inn"
 msgstr "Entrez dans le village, furetez dans la boutique et l'auberge"
 
 #: assets/data/changelog.json
+msgid "Entering a place, or walking into one of the Ashenreach's regions, shows its name once on a title card"
+msgstr "En entrant dans un lieu, ou dans l'une des régions de la Marche des Cendres, son nom s'affiche une fois sur un carton"
+
+#: assets/data/changelog.json
 msgid "Entering the world shows 'Entering the Ashenreach...' instead of a silent black box while it loads"
 msgstr "Entrer dans le monde affiche « Entrée dans la Marche des Cendres... » au lieu d'un écran noir muet pendant le chargement"
 
@@ -3515,6 +3519,10 @@ msgstr "Une seule source de vérité pour votre apparence : le monde, le comba
 #: assets/data/changelog.json
 msgid "Open Book"
 msgstr "Livre ouvert"
+
+#: assets/data/changelog.json
+msgid "Open Country"
+msgstr "Rase campagne"
 
 #: assets/data/changelog.json
 msgid "Open Season"
@@ -4821,6 +4829,10 @@ msgid "The release flows give the camera-smoothness check a second try, so a bus
 msgstr "Les parcours de publication retentent la vérification de fluidité de la caméra, pour qu'une machine chargée ne la fasse plus échouer"
 
 #: assets/data/changelog.json
+msgid "The roads to the Mirefen and the Deepwood run out through the ridge instead of into a cave"
+msgstr "Les routes vers les Marais de Fange et les Bois-Profonds sortent par la crête au lieu d'entrer dans une grotte"
+
+#: assets/data/changelog.json
 msgid "The skill tree fits all six tiers on one page, one line a skill, with the chosen one described in full below"
 msgstr "L'arbre de compétences tient ses six paliers sur une page, une ligne par compétence, celle choisie étant décrite en entier en dessous"
 
@@ -4907,6 +4919,10 @@ msgstr "L'eau s'est éclaircie : des hauts-fonds translucides au-dessus du lit
 #: assets/data/changelog.json
 msgid "The waypoint list shows every waypoint under its place, greys the ones not found yet, and names the region where you land"
 msgstr "La liste des relais les montre tous sous leur lieu, grise ceux qui ne sont pas encore trouvés et nomme la région où vous arrivez"
+
+#: assets/data/changelog.json
+msgid "The ways between maps are natural passes now: the cliffs part and the road runs through, with no signposts, no name boxes and no framed caves or torches"
+msgstr "Les passages entre les cartes sont naturels : les falaises s'écartent et la route passe, sans panneaux, sans encadrés de nom, sans grottes encadrées ni torches"
 
 #: assets/data/changelog.json
 msgid "The wind moves the world: trees, wheat and flowers sway, their tops more than their feet, as gusts roll across the land"
@@ -13768,71 +13784,35 @@ msgstr "COMMANDÉ"
 msgid "Arrows"
 msgstr "Flèches"
 
-#: scripts/ways.gd:124
-msgid "Through the cave"
-msgstr "Par la grotte"
-
-#: scripts/ways.gd:126
-msgid "Through the gate"
-msgstr "Par le portail"
-
-#: scripts/ways.gd:128
-msgid "Through the door"
-msgstr "Par la porte"
-
-#: scripts/ways.gd:130
-msgid "Up the stairs"
-msgstr "Par l'escalier"
-
-#: scripts/ways.gd:132
-msgid "Down the stairs"
-msgstr "En bas de l'escalier"
-
-#: scripts/ways.gd:135
-msgid "The road north"
-msgstr "La route du nord"
-
-#: scripts/ways.gd:137
-msgid "The road east"
-msgstr "La route de l'est"
-
-#: scripts/ways.gd:139
-msgid "The road south"
-msgstr "La route du sud"
-
-#: scripts/ways.gd:140
-msgid "The road west"
-msgstr "La route de l'ouest"
-
-#: scripts/ways.gd:278
+#: scripts/ways.gd:149
 msgid "Go down into %s?"
 msgstr "Descendre dans %s ?"
 
-#: scripts/ways.gd:281
+#: scripts/ways.gd:152
 msgid "Liane's stair goes down through the floor, and the cold comes up it like a draught."
 msgstr "L'escalier de Liane s'enfonce sous le plancher, et le froid en remonte comme un courant d'air."
 
-#: scripts/ways.gd:283
+#: scripts/ways.gd:154
 msgid "The keep's stair goes down to the cellars, where something still stands the old watch."
 msgstr "L'escalier du donjon descend aux caves, où quelque chose monte encore l'ancienne garde."
 
-#: scripts/ways.gd:286
+#: scripts/ways.gd:157
 msgid "The stairs"
 msgstr "L'escalier"
 
-#: scripts/ways.gd:288
+#: scripts/ways.gd:159
 msgid "Go down"
 msgstr "Descendre"
 
-#: scripts/ways.gd:288
+#: scripts/ways.gd:159
 msgid "Stay"
 msgstr "Rester"
 
-#: scripts/world.gd:280
+#: scripts/world.gd:282
 msgid "%s bars your way: no leaving until the fight is over."
 msgstr "%s vous barre la route : pas de fuite avant la fin du combat."
 
-#: scripts/world.gd:319
+#: scripts/world.gd:321
 msgid "No map reaches this deep."
 msgstr "Aucune carte ne va aussi profond."
 
@@ -13860,7 +13840,7 @@ msgstr "Tueur de boss : +%d %% de dégâts pendant %d minutes."
 msgid "LEVEL UP"
 msgstr "NIVEAU SUPÉRIEUR"
 
-#: scripts/world_hud.gd:217
+#: scripts/world_hud.gd:255
 msgid "Boss slayer +%d%%  %d:%02d"
 msgstr "Tueur de boss +%d %%  %d:%02d"
 

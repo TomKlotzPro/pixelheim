@@ -8,8 +8,28 @@
   },
   "portals": [
     {
-      "x": 58,
+      "x": 59,
+      "y": 25,
+      "to": {
+        "kind": "map",
+        "mapId": "overworld",
+        "x": 2,
+        "y": 32
+      }
+    },
+    {
+      "x": 59,
       "y": 24,
+      "to": {
+        "kind": "map",
+        "mapId": "overworld",
+        "x": 2,
+        "y": 32
+      }
+    },
+    {
+      "x": 59,
+      "y": 26,
       "to": {
         "kind": "map",
         "mapId": "overworld",
@@ -43,9 +63,9 @@
     ["mountain", "mountain", "marsh", "marsh", "marsh", "marsh", "grass", "grass", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "water", "water", "water", "water", "water", "water", "water", "water", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "grass", "grass", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "grass", "grass", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "mountain", "mountain"],
     ["mountain", "mountain", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "grass", "grass", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "water", "water", "water", "water", "water", "water", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "grass", "grass", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "mountain", "mountain"],
     ["mountain", "mountain", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "grass", "grass", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "water", "water", "water", "water", "water", "water", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "grass", "grass", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "mountain", "mountain"],
-    ["mountain", "mountain", "grass", "grass", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "grass", "grass", "path", "path", "path", "path", "path", "path", "bridge", "bridge", "bridge", "bridge", "bridge", "bridge", "bridge", "bridge", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "grass", "grass", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "cave", "mountain"],
-    ["mountain", "mountain", "grass", "grass", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "grass", "grass", "path", "path", "path", "path", "path", "path", "bridge", "bridge", "bridge", "bridge", "bridge", "bridge", "bridge", "bridge", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "grass", "grass", "marsh", "path", "path", "path", "path", "path", "path", "path", "path", "path", "mountain", "mountain"],
-    ["mountain", "mountain", "marsh", "marsh", "marsh", "marsh", "grass", "grass", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "water", "water", "water", "water", "water", "water", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "grass", "grass", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "grass", "grass", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "mountain", "mountain"],
+    ["mountain", "mountain", "grass", "grass", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "grass", "grass", "path", "path", "path", "path", "path", "path", "bridge", "bridge", "bridge", "bridge", "bridge", "bridge", "bridge", "bridge", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "grass", "grass", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path"],
+    ["mountain", "mountain", "grass", "grass", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "grass", "grass", "path", "path", "path", "path", "path", "path", "bridge", "bridge", "bridge", "bridge", "bridge", "bridge", "bridge", "bridge", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "grass", "grass", "marsh", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path"],
+    ["mountain", "mountain", "marsh", "marsh", "marsh", "marsh", "grass", "grass", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "water", "water", "water", "water", "water", "water", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "grass", "grass", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "grass", "grass", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh"],
     ["mountain", "mountain", "marsh", "marsh", "marsh", "marsh", "grass", "grass", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "water", "water", "water", "water", "water", "water", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "grass", "grass", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "grass", "grass", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "mountain", "mountain"],
     ["mountain", "mountain", "marsh", "marsh", "grass", "grass", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "grass", "grass", "marsh", "marsh", "water", "water", "water", "water", "water", "water", "water", "water", "marsh", "marsh", "marsh", "marsh", "grass", "grass", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "grass", "grass", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "mountain", "mountain"],
     ["mountain", "mountain", "marsh", "marsh", "grass", "grass", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "grass", "grass", "marsh", "marsh", "water", "water", "water", "water", "water", "water", "water", "water", "marsh", "marsh", "marsh", "marsh", "grass", "grass", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "grass", "grass", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "marsh", "mountain", "mountain"],

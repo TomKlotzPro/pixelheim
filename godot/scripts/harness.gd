@@ -839,6 +839,10 @@ func _run_test_harness() -> void:
 	# lines the battle log showed: a kill's XP and gold float and log none.
 	if not Gains.is_empty(world.fx.floated):
 		motion_report += " floats=%s logged=%d" % [Gains.summary(world.fx.floated), world.messages.logged]
+	# The card naming where the hero has come to (PIX-269), while it's up.
+	var card: Variant = world.hud.place_card
+	if is_instance_valid(card):
+		motion_report += " card=%s" % (card as PanelContainer).get_child(0).get_child(0).text
 	# The packs standing on a wild map (PIX-252), each by its kind, ":asleep"
 	# by its fire: those of the hero's region when they stand in one. The
 	# night's are not the day's.

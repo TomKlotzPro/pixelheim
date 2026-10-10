@@ -2457,6 +2457,10 @@ msgid "Enter the village, poke around the shop and the inn"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Entering a place, or walking into one of the Ashenreach's regions, shows its name once on a title card"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Entering the world shows 'Entering the Ashenreach...' instead of a silent black box while it loads"
 msgstr ""
 
@@ -3514,6 +3518,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Open Book"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Open Country"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4821,6 +4829,10 @@ msgid "The release flows give the camera-smoothness check a second try, so a bus
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The roads to the Mirefen and the Deepwood run out through the ridge instead of into a cave"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The skill tree fits all six tiers on one page, one line a skill, with the chosen one described in full below"
 msgstr ""
 
@@ -4906,6 +4918,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The waypoint list shows every waypoint under its place, greys the ones not found yet, and names the region where you land"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The ways between maps are natural passes now: the cliffs part and the road runs through, with no signposts, no name boxes and no framed caves or torches"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -13768,71 +13784,35 @@ msgstr ""
 msgid "Arrows"
 msgstr ""
 
-#: scripts/ways.gd:124
-msgid "Through the cave"
-msgstr ""
-
-#: scripts/ways.gd:126
-msgid "Through the gate"
-msgstr ""
-
-#: scripts/ways.gd:128
-msgid "Through the door"
-msgstr ""
-
-#: scripts/ways.gd:130
-msgid "Up the stairs"
-msgstr ""
-
-#: scripts/ways.gd:132
-msgid "Down the stairs"
-msgstr ""
-
-#: scripts/ways.gd:135
-msgid "The road north"
-msgstr ""
-
-#: scripts/ways.gd:137
-msgid "The road east"
-msgstr ""
-
-#: scripts/ways.gd:139
-msgid "The road south"
-msgstr ""
-
-#: scripts/ways.gd:140
-msgid "The road west"
-msgstr ""
-
-#: scripts/ways.gd:278
+#: scripts/ways.gd:149
 msgid "Go down into %s?"
 msgstr ""
 
-#: scripts/ways.gd:281
+#: scripts/ways.gd:152
 msgid "Liane's stair goes down through the floor, and the cold comes up it like a draught."
 msgstr ""
 
-#: scripts/ways.gd:283
+#: scripts/ways.gd:154
 msgid "The keep's stair goes down to the cellars, where something still stands the old watch."
 msgstr ""
 
-#: scripts/ways.gd:286
+#: scripts/ways.gd:157
 msgid "The stairs"
 msgstr ""
 
-#: scripts/ways.gd:288
+#: scripts/ways.gd:159
 msgid "Go down"
 msgstr ""
 
-#: scripts/ways.gd:288
+#: scripts/ways.gd:159
 msgid "Stay"
 msgstr ""
 
-#: scripts/world.gd:280
+#: scripts/world.gd:282
 msgid "%s bars your way: no leaving until the fight is over."
 msgstr ""
 
-#: scripts/world.gd:319
+#: scripts/world.gd:321
 msgid "No map reaches this deep."
 msgstr ""
 
@@ -13860,7 +13840,7 @@ msgstr ""
 msgid "LEVEL UP"
 msgstr ""
 
-#: scripts/world_hud.gd:217
+#: scripts/world_hud.gd:255
 msgid "Boss slayer +%d%%  %d:%02d"
 msgstr ""
 

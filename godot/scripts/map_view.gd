@@ -37,13 +37,11 @@ var props: Node2D
 var dungeon_objects: TileMapLayer
 ## Chest id -> its sprite, to open or take it.
 var chest_sprites := {}
-## The signs the nameplate names: the door signs and the ways on's posts,
-## {door (the sign's cell), name, about, node, and for a post lift and
-## anchor (how far from its cell the plate sits, and on which side)}.
+## The door signs: {door, name, about}, for the nameplate.
 var door_signs: Array = []
-## The ways on from this map (PIX-269, Ways.on) and their signposts by cell.
+## The ways on from this map (PIX-269, Ways.on): bare ground and rock, but
+## for the gate the story bars.
 var ways: Array[Dictionary] = []
-var wayposts := {}
 var furniture_cells: Array[Vector2i] = []
 ## Night (PIX-149): each lamp's flame and its cold torch for the day, and
 ## the warm glows of lamps and windows; set_night shows one or the other.
@@ -94,12 +92,6 @@ const CAMP_RING := [
 ]
 const TENT_FOOT := Rect2(1, 5, 14, 11)
 const TORCH_FOOT := Rect2(5, 9, 6, 7)
-## A signpost's nameplate sits just over its boards (a door sign's sits
-## over the board hanging above its door).
-const POST_LIFT := 4.0
-## A stairwell's nameplate (PIX-256) sits over the steps, above the key's
-## prompt that floats there when the hero faces them.
-const STAIRS_LIFT := 10.0
 ## How many cells of ground are drawn on past the map's edges (PIX-269):
 ## more than the dock covers, so the camera looking past the south edge
 ## never shows the void.
@@ -185,14 +177,7 @@ func plan(arrival: Vector2i) -> Vector2i:
 			camps[tent] = {"kind": "tent", "tile": TENTS["marsh"]}
 	for cell: Vector2i in camps:
 		data.covered[cell] = true
-	# The ways on (PIX-269): each one's signpost stands beside the road and
-	# blocks its cell like any prop.
-	ways = Ways.on(data, camps)
-	wayposts = {}
-	for way: Dictionary in ways:
-		if way["post"] != Ways.NOWHERE:
-			wayposts[way["post"]] = way
-			data.covered[way["post"]] = true
+	ways = Ways.on(data)
 	# Today's patches (PIX-250): a few dealt from each region's ground.
 	patches = {}
 	patch_day = -1
@@ -213,11 +198,6 @@ func build(root: Node) -> void:
 	ground.modulate = data.tint
 	tile_layer = _build_tile_layer(data)
 	props = _build_props(data)
-	# A room's stairs down (PIX-256) name where they go as the hero walks up,
-	# as a shop's board does its door, high enough to clear the key's prompt.
-	for way: Dictionary in ways:
-		if way["kind"] == "down":
-			door_signs.append({"door": way["at"], "name": way["name"], "about": way["about"], "node": null, "lift": STAIRS_LIFT})
 	for layer: Node in [props, tile_layer, ground]:
 		root.add_child(layer)
 		root.move_child(layer, 0)
@@ -374,7 +354,7 @@ func draw_ground(windows: Array[Rect2i]) -> Node2D:
 ## a prop stands, not what blocks, not in a forest.
 func _is_flat_decor(cell: Vector2i, choice: int) -> bool:
 	return choice >= 0 and not outdoor_props["drawn"].has(cell) and not solid_scatter.has(cell) \
-		and not wayposts.has(cell) and choice in Scatter.FLAT and data.grid[cell] != "forest"
+		and choice in Scatter.FLAT and data.grid[cell] != "forest"
 
 
 func _flat_decor(cell: Vector2i, choice: int) -> Sprite2D:
@@ -521,15 +501,9 @@ func _build_decor(data: MapData) -> void:
 			actors.add_child(body)
 	for prop: Dictionary in outdoor_props["props"]:
 		_add_puny_prop(prop)
-	# The ways on (PIX-269): their signposts, and torches by the mouths.
-	for cell: Vector2i in wayposts:
-		_add_waypost(cell, wayposts[cell])
-	for way: Dictionary in ways:
-		if way["kind"] == "cave" or way["rock"]:
-			_light_mouth(way)
 	for cell: Vector2i in data.grid:
 		var choice := Scatter.choice(data.grid, cell)
-		if choice < 0 or outdoor_props["drawn"].has(cell) or wayposts.has(cell):
+		if choice < 0 or outdoor_props["drawn"].has(cell):
 			continue
 		if solid_scatter.has(cell):
 			_add_solid_decor(choice, cell)
@@ -551,8 +525,6 @@ func _solid_scatter(data: MapData, arrival: Vector2i) -> Dictionary:
 	for chest: Dictionary in Interactables.chests_on(data.id):
 		kept[Vector2i(int(chest["x"]), int(chest["y"]))] = true
 	for cell: Vector2i in patches:
-		kept[cell] = true
-	for cell: Vector2i in wayposts:
 		kept[cell] = true
 	# A pack's home and the cells around it stay open for the pack.
 	for spawn: Dictionary in Bestiary.spawns_on(data.id):
@@ -856,9 +828,6 @@ func deal_patches(day: int) -> bool:
 		return false
 	patch_day = day
 	patches = Gathering.patches_on(patch_decks, day)
-	# Nothing grows under a signpost (PIX-269).
-	for cell: Vector2i in wayposts:
-		patches.erase(cell)
 	return true
 
 
@@ -919,64 +888,6 @@ func _add_camp_piece(cell: Vector2i, piece: Dictionary) -> void:
 	body.add_child(shape)
 	root.add_child(body)
 	actors.add_child(root)
-
-
-## A way on's signpost (PIX-269): Shade's post from the Puny World sheet,
-## its arrow pointing the way the road leaves, sorted among the actors on
-## its foot, which blocks. The nameplate names where it goes as the hero
-## walks up.
-func _add_waypost(cell: Vector2i, way: Dictionary) -> void:
-	var foot := Ways.POST_FOOT
-	var root := Node2D.new()
-	root.position = Vector2(cell * TILE) + Vector2(0, foot.end.y)
-	root.add_to_group("decor")
-	var post := Sprite2D.new()
-	post.texture = PunyTerrain.sheet().tile_texture(int(way["look"][0]))
-	post.flip_h = bool(way["look"][1])
-	post.centered = false
-	post.position = Vector2(0, -foot.end.y)
-	root.add_child(post)
-	var body := StaticBody2D.new()
-	var shape := CollisionShape2D.new()
-	var rect := RectangleShape2D.new()
-	rect.size = foot.size
-	shape.shape = rect
-	shape.position = foot.get_center() - Vector2(0, foot.end.y)
-	body.add_child(shape)
-	root.add_child(body)
-	actors.add_child(root)
-	# Its plate rises on the side of the post away from the road, off the
-	# road and off the mouth or gate it names: over or under a post by a
-	# road running across, beside one by a road running up or down.
-	var out: Vector2i = way["out"]
-	var from: Vector2i = way["from"]
-	var anchor := ("below" if cell.y > from.y else "above") if out.y == 0 else ("left" if cell.x < from.x else "right")
-	door_signs.append({"door": cell, "name": way["name"], "about": way["about"], "node": root, "lift": POST_LIFT, "anchor": anchor})
-
-
-## A cave mouth or a gate in the rock lit as a way in (PIX-269): a torch in
-## the rock on each side of it, burning day and night like a camp's, with a
-## real light round it when it's dark.
-func _light_mouth(way: Dictionary) -> void:
-	var at: Vector2i = way["at"]
-	var out: Vector2i = way["out"]
-	for side: Vector2i in [Vector2i(out.y, -out.x), Vector2i(-out.y, out.x)]:
-		var cell := at + side
-		if not data.grid.has(cell) or WorldTiles.is_walkable(data.tile_at(cell)):
-			continue
-		var root := Node2D.new()
-		root.position = Vector2(cell * TILE) + Vector2(0, TORCH_FOOT.end.y)
-		root.add_to_group("decor")
-		var flame := AnimatedSprite2D.new()
-		flame.sprite_frames = _camp_torch_frames()
-		flame.material = Lights.unshaded()
-		flame.centered = false
-		flame.position = Vector2(0, -TORCH_FOOT.end.y)
-		flame.play()
-		flame.frame = absi(hash(cell)) % CAMP_TORCH.size()
-		root.add_child(flame)
-		root.add_child(Lights.make(Vector2(TILE / 2.0, -TORCH_FOOT.end.y + 4), 72.0, Lights.FIRE, Lights.FIRE_ENERGY, true))
-		actors.add_child(root)
 
 
 static var _torch_frames: SpriteFrames

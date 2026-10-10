@@ -9,7 +9,27 @@
   "portals": [
     {
       "x": 0,
+      "y": 25,
+      "to": {
+        "kind": "map",
+        "mapId": "overworld",
+        "x": 92,
+        "y": 32
+      }
+    },
+    {
+      "x": 0,
       "y": 24,
+      "to": {
+        "kind": "map",
+        "mapId": "overworld",
+        "x": 92,
+        "y": 32
+      }
+    },
+    {
+      "x": 0,
+      "y": 26,
       "to": {
         "kind": "map",
         "mapId": "overworld",
@@ -43,9 +63,9 @@
     ["mountain", "mountain", "forest", "forest", "grass", "grass", "grass", "grass", "forest", "forest", "forest", "forest", "forest", "forest", "grass", "grass", "forest", "forest", "forest", "forest", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "forest", "forest", "forest", "forest", "grass", "grass", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "mountain", "mountain"],
     ["mountain", "mountain", "forest", "forest", "grass", "grass", "forest", "forest", "forest", "forest", "grass", "grass", "grass", "grass", "forest", "forest", "forest", "forest", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "forest", "forest", "forest", "forest", "grass", "grass", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "mountain", "mountain"],
     ["mountain", "mountain", "forest", "forest", "grass", "grass", "forest", "forest", "forest", "forest", "grass", "grass", "grass", "grass", "forest", "forest", "forest", "forest", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "forest", "forest", "forest", "forest", "grass", "grass", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "mountain", "mountain"],
-    ["cave", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "grass", "grass", "grass", "grass", "shrine", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "grass", "grass", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "mountain", "mountain"],
-    ["mountain", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "grass", "grass", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "mountain", "mountain"],
-    ["mountain", "mountain", "forest", "forest", "grass", "grass", "forest", "forest", "forest", "forest", "grass", "grass", "grass", "grass", "forest", "forest", "forest", "forest", "forest", "forest", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "forest", "forest", "forest", "forest", "forest", "forest", "grass", "grass", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "mountain", "mountain"],
+    ["path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "grass", "grass", "grass", "grass", "shrine", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "grass", "grass", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "mountain", "mountain"],
+    ["path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "grass", "grass", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "mountain", "mountain"],
+    ["grass", "grass", "forest", "forest", "grass", "grass", "forest", "forest", "forest", "forest", "grass", "grass", "grass", "grass", "forest", "forest", "forest", "forest", "forest", "forest", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "forest", "forest", "forest", "forest", "forest", "forest", "grass", "grass", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "mountain", "mountain"],
     ["mountain", "mountain", "forest", "forest", "grass", "grass", "forest", "forest", "forest", "forest", "grass", "grass", "grass", "grass", "forest", "forest", "forest", "forest", "forest", "forest", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "forest", "forest", "forest", "forest", "forest", "forest", "grass", "grass", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "mountain", "mountain"],
     ["mountain", "mountain", "forest", "forest", "forest", "forest", "grass", "grass", "forest", "forest", "forest", "forest", "forest", "forest", "grass", "grass", "forest", "forest", "forest", "forest", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "forest", "forest", "forest", "forest", "grass", "grass", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "mountain", "mountain"],
     ["mountain", "mountain", "forest", "forest", "forest", "forest", "grass", "grass", "forest", "forest", "forest", "forest", "forest", "forest", "grass", "grass", "forest", "forest", "forest", "forest", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "forest", "forest", "forest", "forest", "grass", "grass", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "mountain", "mountain"],

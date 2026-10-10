@@ -4,8 +4,9 @@ extends GutTest
 ## No door in a building opens straight onto a cave or a dungeon's floors:
 ## the Frostgate's observatory opens onto Liane's room and Greyhold's keep
 ## onto Captain Hale's hall, each with a stairwell in its floor down to its
-## cave, whose stairs lead back up into the room. Going down asks first, and
-## the stairs name where they go. Every cell the hero lands on is open
+## cave, whose stairs lead back up into the room. Going down asks first, the
+## question naming where they go (PIX-269: no nameplate pops up by the
+## stair). Every cell the hero lands on is open
 ## ground with open ground ahead, and saves made before stand where they
 ## stood.
 
@@ -122,9 +123,7 @@ func test_the_stairs_ask_before_they_take_you_down_and_name_where_they_go() -> v
 		assert_eq(question["choices"].size(), 2, "go down, or stay")
 		var ways := Ways.on(room).filter(func(way: Dictionary) -> bool: return way["kind"] == "down")
 		assert_eq(ways.size(), 1)
-		assert_eq(ways[0]["name"], Catalog.place_name(house["cave"]), "the nameplate names the cave")
-		assert_eq(ways[0]["about"], "Down the stairs")
-		assert_eq(ways[0]["post"], Ways.NOWHERE, "a room's stair needs no post")
+		assert_eq(Ways.place_of(ways[0]["to"]), Catalog.place_name(house["cave"]), "the question names the cave")
 		for cell: Vector2i in room.portals:
 			if cell != down:
 				assert_false(Ways.goes_down(room, cell), "%s: the door at %s just opens" % [room.id, cell])
