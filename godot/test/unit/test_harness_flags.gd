@@ -97,12 +97,13 @@ func test_every_flag_in_the_table_is_read() -> void:
 
 func test_every_flag_the_tools_and_the_readme_pass_is_in_the_table() -> void:
 	var checked := 0
-	# The release flows: `"name|harness arguments|expected"`, and FLOWS_EXTRA.
-	var flows := FileAccess.get_file_as_string("res://tools/flows.sh")
-	var entries := RegEx.create_from_string("(?m)^\\s*\"[\\w-]+\\|([^|]*)\\|").search_all(flows)
+	# The release flows, a line each in flows.txt (PIX-273): `name | harness
+	# arguments | expected | tags`; and FLOWS_EXTRA in flows.sh.
+	var entries := RegEx.create_from_string("(?m)^[\\w-]+\\s*\\|([^|]*)\\|").search_all(FileAccess.get_file_as_string("res://tools/flows.txt"))
 	assert_gt(entries.size(), 50, "the flows were found")
 	for found in entries:
-		checked += _check(found.get_string(1).split(" ", false), "tools/flows.sh")
+		checked += _check(found.get_string(1).split(" ", false), "tools/flows.txt")
+	var flows := FileAccess.get_file_as_string("res://tools/flows.sh")
 	for found in RegEx.create_from_string("FLOWS_EXTRA=\"([^\"]*)\"").search_all(flows):
 		checked += _check(found.get_string(1).split(" ", false), "tools/flows.sh")
 	# The look book's options, each turned into the harness's flags.

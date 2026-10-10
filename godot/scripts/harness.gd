@@ -2,7 +2,8 @@ extends Node
 ## The agent verification harness, loaded only for `--screenshot` runs
 ## (world.gd adds it; it never ships in play): headless Godot cannot render,
 ## so it drives a real window briefly - warps, keys, screens, fights - saves
-## screenshot.png, prints a report line, and quits:
+## screenshot.png, prints a report line (HarnessReport: every field in its
+## table, PIX-273), and quits:
 ## `godot --path godot -- --screenshot [fight] [kill] [saves] [--map <id>]
 ## [--walk l,d,r,u,...] [--web-save <file>] ...`. Every flag is declared once
 ## in HarnessFlags.TABLE (scripts/harness_flags.gd, PIX-262), which
@@ -244,7 +245,9 @@ func _run_test_harness() -> void:
 		# measures a ranked hero.
 		GameState.hero.level = int(flags.value("--level"))
 		world.hud.on_hp_changed(GameState.hero.hp, int(GameState.hero.stats["maxHp"]))
-	var motion_report := ""
+	# The report line's fields (HarnessReport.TABLE); a value known only
+	# part-way through is noted as it's known.
+	var report := HarnessReport.new(self, flags)
 	if flags.has("motion"):
 		# `motion` (PIX-135): what the screen shows each rendered frame while
 		# the hero walks right: the hero found by its shirt's reds in the image
@@ -282,7 +285,7 @@ func _run_test_harness() -> void:
 			Engine.get_frames_per_second(), back, frozen, str(hero_steps.slice(5, 17)), str(scroll_steps.slice(5, 17))])
 		# The release flow reads it off the report line (PIX-135).
 		# A hero not found at all would make every step 0: say so, not pass.
-		motion_report = " backsteps=%d" % back if hero_x.any(func(x: float) -> bool: return x > 0.0) else " backsteps=lost"
+		report.note("backsteps", str(back) if hero_x.any(func(x: float) -> bool: return x > 0.0) else "lost")
 	# Terrain review: `--at x,y` stands the hero on a cell (before `--walk`,
 	# so a walk can test what stops them), `--zoom Z` changes the camera
 	# (`--zoom play`: the play zoom, CameraRig.ZOOM, which a headless run's
@@ -629,7 +632,7 @@ func _run_test_harness() -> void:
 		world.interaction.interact()
 		await get_tree().create_timer(0.3).timeout
 		var counters: Array = world.get_children().filter(func(node: Node) -> bool: return node.has_method("_craft_job"))
-		motion_report += " tab=%s" % (counters[-1].tabs[counters[-1].tab] if not counters.is_empty() else "none")
+		report.note("tab", counters[-1].tabs[counters[-1].tab] if not counters.is_empty() else "none")
 	if flags.has("sleep"):
 		# Pair with `--map town_inn` (and `night`): face the room's first bed
 		# from a free cell beside it and press E (PIX-246); the report adds
@@ -653,7 +656,7 @@ func _run_test_harness() -> void:
 		world.interaction.interact()
 		await get_tree().create_timer(0.3).timeout
 		var woke := DayNight.clock(GameState.world.steps)
-		motion_report += " clock=%02d:%02d" % [woke.x, woke.y]
+		report.note("clock", "%02d:%02d" % [woke.x, woke.y])
 	if flags.has("--hunted"):
 		# `--hunted greymaw,cinderjaw`: named monsters already slain (PIX-156;
 		# the world slays them before it draws the first map, PIX-254).
@@ -804,7 +807,7 @@ func _run_test_harness() -> void:
 	# `chapter` (PIX-253 step 2): chapter cards turned on now that the story
 	# stands where the run set it, and the one it's at waited for as the
 	# world shows it - once it has been free a moment - with its entrance;
-	# the report adds chapter= and rose=.
+	# the report shows chapter= and rose=.
 	if flags.has("chapter"):
 		world.stage.cards = true
 		var waited := 0.0
@@ -844,10 +847,6 @@ func _run_test_harness() -> void:
 	# `--wait S` holds the shot (an entrance still playing: the title's logo).
 	if flags.has("--wait"):
 		await get_tree().create_timer(float(flags.value("--wait"))).timeout
-	# Hero creation's first night (PIX-228): what the run's keys left it at.
-	for node in world.get_children():
-		if node.get_script() == preload("res://scripts/create_screen.gd"):
-			motion_report += " firstnight=%s" % ("play" if node.play_night else "skip")
 	# `overflow` (Solid Ground): every visible piece of an open screen that
 	# runs past the canvas, as OVERFLOW lines; text that grows (French is
 	# longer) mustn't push a panel off the screen. Works headless.
@@ -856,7 +855,7 @@ func _run_test_harness() -> void:
 		var overflows := Layout.overflows(get_tree().root, Touch.view_size(world))
 		for line in overflows:
 			print("%s %s" % ["OVERFLOW", line])
-		motion_report += " overflow=%d" % overflows.size()
+		report.note("overflow", str(overflows.size()))
 	# A quiet run (--headless: no window, nothing drawn) still reports; only
 	# a windowed run has a picture to save.
 	if DisplayServer.get_name() == "headless":
@@ -867,123 +866,8 @@ func _run_test_harness() -> void:
 		# where `--shot` says (PIX-270): the flows run side by side, and one
 		# shared screenshot.png would be whichever run saved last.
 		(await DesktopLook.snapshot(self)).save_png(flags.value("--shot", "res://screenshot.png"))
-	# The menus and conversations still open over the world, by script name.
-	var open := world.get_children().filter(func(node: Node) -> bool:
-		return node is CanvasLayer and node.get_script() != null and (
-			node.get_script().resource_path.ends_with("_screen.gd")
-			or node.get_script().resource_path.ends_with("dialogue_box.gd")
-		)
-	).map(func(node: Node) -> String: return node.get_script().resource_path.get_file().get_basename())
-	var mobs := get_tree().get_nodes_in_group("mobs").filter(func(mob: Node) -> bool: return not mob.dying).size()
-	# How the last change of scene looked (One Reach, PIX-269: a door
-	# dissolves, going under the ground keeps the dark, a cut with Reduce
-	# motion), and what's left of a fade from the dark (PIX-238), when fades
-	# run.
-	if flags.has("fades"):
-		var dark: int = world.hud.root.get_children().filter(func(node: Node) -> bool: return node.has_meta("fade") and node.color.a > 0.5).size()
-		var change: String = world.scene_change
-		motion_report += " change=%s dark=%d" % [change if change != "" else "none", dark]
-	# How far the building on the tour has risen (PIX-264): ruin, rising, built.
-	if flags.has("--rise"):
-		var rise := _rise()
-		motion_report += " rise=%s" % (rise.phase if rise != null else ("built" if _rise_phase != "none" else "none"))
-	# The ascension (PIX-244): its beat (closed once it's gone) and the motes
-	# and sparks flying in it (none with Reduce motion).
-	if flags.has("rankup"):
-		var screen := _ascension()
-		var flying := 0
-		if screen != null:
-			for node in screen.find_children("*", "CPUParticles2D", true, false):
-				if (node as CPUParticles2D).emitting:
-					flying += 1
-		motion_report += " ascension=%s motes=%d" % [screen.phase if screen != null else "closed", flying]
-	# A boss's fall (PIX-232), when one fell.
-	if world.foes.bosses_fallen > 0:
-		motion_report += " fell=%d" % world.foes.bosses_fallen
-	# Monsters that ran from a hero far above them (PIX-251), and the music
-	# playing: the place's, as running is no fight.
-	if world.foes.fled > 0:
-		motion_report += " fled=%d music=%s" % [world.foes.fled, Sound.track]
-	# What floated up from where it was won (PIX-245), merged, and how many
-	# lines the battle log showed: a kill's XP and gold float and log none.
-	if not Gains.is_empty(world.fx.floated):
-		motion_report += " floats=%s logged=%d" % [Gains.summary(world.fx.floated), world.messages.logged]
-	# A gate the story keeps shut that said its line on this run (PIX-254).
-	if world.interaction.gate_said != "":
-		motion_report += " gate=%s" % world.interaction.gate_said
-	# The card naming where the hero has come to (PIX-269), while it's up.
-	var card: Variant = world.hud.place_card
-	if is_instance_valid(card):
-		motion_report += " card=%s" % (card as PanelContainer).get_child(0).get_child(0).text
-	# The packs standing on a wild map (PIX-252), each by its kind, ":asleep"
-	# by its fire: those of the hero's region when they stand in one. The
-	# night's are not the day's.
-	if not Bestiary.spawns_on(world.map.id).is_empty():
-		var packs: PackedStringArray = world.foes.standing_report(world.map.region_at(world.player_cell))
-		motion_report += " packs=%s" % (",".join(packs) if not packs.is_empty() else "none")
-	# A floor of a region's dungeon (PIX-255): which of how many, and its
-	# shortcut out, where it has one.
-	if Depths.number(world.map.id) > 0:
-		var entry := Depths.floor_of(world.map.id)
-		motion_report += " floor=%d/%d" % [int(entry["number"]), Depths.count(entry["dungeon"])]
-		var door := Depths.shortcut_on(world.map.id)
-		if not door.is_empty():
-			motion_report += " shortcut=%s" % ("open" if world.map.portals.has(door["cell"]) else "shut")
-	# On `--day`, the day and its patches still to pick (PIX-250), by cell.
-	if flags.has("--day"):
-		var cells: Array = world.view.patches.keys().filter(func(cell: Vector2i) -> bool:
-			return Gathering.is_ready(GameState.world, world.view.patches[cell]["id"]))
-		cells.sort()
-		motion_report += " day=%d patches=%s" % [
-			Gathering.day_of(GameState.world.steps),
-			";".join(cells.map(func(cell: Vector2i) -> String: return "%d,%d" % [cell.x, cell.y])) if not cells.is_empty() else "none",
-		]
-	# The waypoint the map's list has chosen (PIX-241), and the page it shows
-	# (PIX-266), while it's open.
-	for node in world.get_children():
-		if node.has_method("destination_id"):
-			var chosen: String = node.destination_id()
-			var shown: String = node.page_id()
-			motion_report += " dest=%s page=%s" % [chosen if chosen != "" else "none", shown]
-			# The main story's hollow diamond on the page, while something
-			# else is followed (PIX-253 step 2).
-			var story: Vector2i = node.painting.story_cell()
-			if story != Bearing.NOWHERE:
-				motion_report += " story=%d,%d" % [story.x, story.y]
-		# The journal's Letters page (PIX-253 step 2): the letters it reads,
-		# and the older papers under them.
-		if node.get_script() == preload("res://scripts/journal_screen.gd") and node.tab == "letters":
-			var read := Letters.satchel(GameState.progression).filter(func(carried: Dictionary) -> bool: return carried["delivered"]).size()
-			motion_report += " read=%d older=%d" % [read, Story.found_pages(GameState.progression.cleared_levels).size()]
-	# The quest or bounty followed (PIX-239), while the journal is open or
-	# one is followed: what the journal's E chose.
-	var tracked := GameState.progression.tracked
-	if open.has("journal_screen") or tracked != "":
-		motion_report += " tracked=%s" % (tracked if tracked != "" else "none")
-	# A chapter card while it's up (PIX-253 step 2): its chapter, and how far
-	# its title rose coming in (none with Reduce motion).
-	for node in world.get_children():
-		if node.has_method("rise_left"):
-			motion_report += " chapter=%d rose=%d" % [node.number, roundi(node.rose)]
-	# Maren's letters once any is out (PIX-253): how many are in the pack,
-	# and how many delivered.
-	var letters := Letters.all().filter(func(quest: Dictionary) -> bool: return GameState.progression.quests.has(quest["id"]))
-	if not letters.is_empty():
-		motion_report += " letters=%d delivered=%d" % [
-			letters.filter(func(quest: Dictionary) -> bool: return int(GameState.pack.items.get(quest["objective"]["itemId"], 0)) > 0).size(),
-			letters.filter(func(quest: Dictionary) -> bool: return GameState.progression.quests[quest["id"]]["done"]).size(),
-		]
-	# Who lives in town that the story brought home (PIX-255: wenna).
-	var homecomers: Array = Npcs._data()["recruits"].filter(func(recruit: Dictionary) -> bool:
-		return recruit.has("comesHome") and GameState.holdings.is_settled(recruit["id"]))
-	if not homecomers.is_empty():
-		motion_report += " home=%s" % ",".join(homecomers.map(func(recruit: Dictionary) -> String: return String(recruit["id"]).get_slice("_", 1)))
-	print("screenshot saved; map=%s cell=%s hp=%d gold=%d save=%s%s draws=%d paused=%s open=%s night=%d mobs=%d" % [
-		world.map.id, world.player_cell, world.player.hp, GameState.pack.gold, GameState.world.map_id, GameState.world.cell,
-		Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME), get_tree().paused,
-		",".join(open) if not open.is_empty() else "none",
-		GameState.progression.prologue, mobs,
-	] + motion_report)
+	# What the run left: every field the report has (HarnessReport.TABLE).
+	print(report.line())
 	# Let the audio server let go of the music before the engine shuts down.
 	get_tree().paused = true  # nothing may start a track again
 	Sound.stop_all()

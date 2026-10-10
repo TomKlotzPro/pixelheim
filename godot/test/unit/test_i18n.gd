@@ -81,7 +81,7 @@ func test_no_prose_format_skips_the_translation() -> void:
 	var missed: Array[String] = []
 	for folder in ["res://scripts", "res://scripts/state"]:
 		for file in DirAccess.get_files_at(folder):
-			if not file.ends_with(".gd") or file == "harness.gd":
+			if not file.ends_with(".gd") or file in ["harness.gd", "harness_report.gd"]:
 				continue
 			var number := 0
 			for line in FileAccess.get_file_as_string(folder + "/" + file).split("\n"):

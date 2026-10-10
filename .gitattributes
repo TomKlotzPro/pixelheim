@@ -1,0 +1,5 @@
+# The release flows, a line each (PIX-273): two branches adding flows at the
+# same place keep both on a merge or a rebase instead of conflicting. A flow
+# both sides changed comes out twice, and tools/flows.py refuses a name
+# given twice, so nothing passes unseen.
+godot/tools/flows.txt merge=union

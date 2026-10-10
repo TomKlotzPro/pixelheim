@@ -1,45 +1,11 @@
 #!/usr/bin/env bash
 # The flows a release must not break (PIX-129), each driven through the
-# screenshot harness on a throwaway hero: spawn, portal, chest, shop, craft
-# (at the counter, and E at a cauldron or a forge: PIX-234), quest,
-# rank-up, fight, death and the inn, saves, and leaving a conversation
-# with real key presses (PIX-131), walking without the camera shake
-# (PIX-135), a named monster's bounty and board (PIX-156), the choice at
-# Morvax's throne (PIX-157), a festival's ring toss (PIX-159), the road to
-# Saltmere (PIX-164), its sea cave (PIX-165), the Blackiron mines (PIX-167),
-# the Mirefen and Deepwood passes open in the cliffs, each place named on a
-# card as the hero comes to it (PIX-269),
-# Greyhold with its cellars (PIX-168) and the Frostgate pass with its ice cave
-# (PIX-169), each down the stair of the room behind a door, which asks first
-# (PIX-256), the mountain's gate barred to a new hero (PIX-170) and a depth
-# of the Deep Hunt cleared (PIX-161), and a potion brewed before Vex's quest
-# was taken still finishing it (PIX-231), a named boss that falls as a
-# boss does and holds the way out while it hunts (PIX-232), weak monsters
-# running from a far stronger hero without the battle music (PIX-251), the
-# same field holding other packs by day and at night (PIX-252), the
-# map's waypoint list showing where a waypoint takes you before it does, then
-# taking you there (PIX-241), every map found a page of the map and the list
-# scrolled to the Reach's last waypoint (PIX-266), hero creation's first night skipped with
-# Tab while the name field has the keys (PIX-228), a quest chosen in the
-# journal and followed after it closes (PIX-239), what grows on the
-# ground somewhere new each day, picked off as you step on it (PIX-250),
-# a building rising out of its ruin on the town's tour, a cut with Reduce
-# motion (PIX-264), a kill's XP and gold floating up over the foe, a
-# chest's gold over the chest, with nothing said of them in the log
-# (PIX-245), and the ascension's beats, still with Reduce motion
-# (PIX-244), Maren's tin of letters dug out of her house with one of
-# them delivered (PIX-253), a door dissolving the old place into the new,
-# the dark kept for going under the ground and a cut with Reduce motion,
-# and each region's road back out where it moved so the Reach and its
-# regions lie in one plane (PIX-269), and the courier's satchel: the
-# journal's Letters page, a chapter's card as it opens, and the main
-# story's hollow diamond on the map (PIX-253 step 2), and each region's way
-# in shut until the story reaches it, its gate saying what opens it as the
-# hero walks up, and open once it has (PIX-254), and the sea cave down its
-# three floors and back up, the Tidecaller falling and the tide door out to
-# the beach, and Old Wenna at Sela's inn (PIX-255). Every flow leaves its
-# picture in godot/flows/<name>.png for a human to look at, and the
-# harness's report line must match what the flow promises or the run fails.
+# screenshot harness on a throwaway hero. The flows themselves are in
+# tools/flows.txt, one a line under its own comment (PIX-273): its name, the
+# harness's arguments, the report fields it expects and its tags. Every flow
+# leaves its picture in godot/flows/<name>.png for a human to look at, and
+# the harness's report line must show the fields the flow expects
+# (tools/flows.py matches them by name) or the run fails.
 #
 #   godot/tools/flows.sh            # all of them, several at a time
 #   godot/tools/flows.sh fight die  # just these
@@ -51,14 +17,7 @@
 #
 # Each flow ends on its tags (PIX-272): the areas of the game it walks
 # through, which godot/tools/check.sh quick matches against the files a
-# branch changed, so the laptop runs only the flows the diff could break and
-# CI runs them all. The areas: town (the village outdoors), rooms (inside a
-# building), travel (doors, stairs, roads, passes, fast travel), field (what
-# roams the open air), combat, dungeon, trade (shops, crafting, brewing),
-# story, quest, screen (menus and pages), lang (every screen in French),
-# save, gathering, title (the title and hero creation), rank, night, and
-# motion (the windowed walk, which check.sh leaves to a human). A flow
-# without tags runs in every quick check, so a new flow is never skipped.
+# branch changed (flows.txt says what each area is).
 #
 # --quiet runs every flow headless with the audio off: nothing opens on the
 # screen or plays out loud, the report lines are still checked. The motion
@@ -124,265 +83,18 @@ esac
 # A run that never quits is killed after this many seconds (a watchdog).
 watchdog=${FLOWS_WATCHDOG:-60}
 
-# name | harness arguments | what the report line must show | tags
-# (a pattern never uses |: it parts the fields)
-FLOWS=(
-	"spawn|--map town|map=town cell|town"
-	"portal|--map town portal|map=town_|town travel"
-	"chest|--map town chest|map=town cell=\(79, 4\) .*gold=90.* floats=\+60 [a-z]+ logged=0|town"
-	"shop|--map town_shop shop|map=town_shop|rooms trade screen"
-	"craft|--map town_alchemist shop --tab 2|map=town_alchemist|rooms trade screen"
-	"sleep|--map town_inn night sleep|map=town_inn .*gold=20 .* clock=06:00|rooms night"
-	"station|--map town_alchemist station|open=shop_screen.*tab=Craft|rooms trade screen"
-	"forge|--map town_smith station|open=shop_screen.*tab=Craft|rooms trade screen"
-	"quest|--map town quest|map=town cell|town quest"
-	"brew|--map town_alchemist brew|map=town_alchemist .*gold=100 |rooms trade quest"
-	# The ascension (PIX-244): held as the light flares, its motes and sparks
-	# flying; with Reduce motion, held on the name with nothing flying; and
-	# the fifth rank's, landed.
-	"rankup|rankup --rank-beat flare|open=rankup_screen.* ascension=flare motes=[1-9][0-9]*$|rank screen"
-	"rankup-still|rankup still --rank-beat named|open=rankup_screen.* ascension=named motes=0$|rank screen"
-	"rankup-five|--level 17 rankup --rank-beat settled|open=rankup_screen.* ascension=settled motes=0$|rank screen"
-	"fight|fight kill|screenshot saved|combat"
-	# The kill's XP and gold float up over the fallen foe and the battle log
-	# says nothing of them (PIX-245): floats= is what rose, logged= the lines.
-	"spoils|fight kill|floats=\+[0-9]+ XP;\+[0-9]+ [a-z]+.* logged=0|combat"
-	"die|die|map=town_inn cell=\(2, 3\)|combat rooms"
-	"saves|saves|screenshot saved|save screen"
-	"decline|saves --web-save res://test/fixtures/web_save_v4.txt --keys esc|open=title_screen|save title screen"
-	# A hero's first word with Maren after the night is her tin (PIX-253):
-	# in the Hamlet her house stands again and she says it short, two lines.
-	"talk|--map town talk --keys e,e|open=none.* letters=4 delivered=0|town story"
-	"leave|--map town talk --keys e,esc|open=none|town story"
-	# In the Ashes she digs in front of her house: the tin, its five lines,
-	# and four letters in the pack; one handed to Old Wenna in Saltmere.
-	"tin|--map town --town-tier 0 talk --keys e,e,e,e,e|open=none.* letters=4 delivered=0|town story"
-	"letter|--map saltmere --ready letter_wenna --talk-to saltmere_wenna --keys e,e,e|open=none.* letters=0 delivered=1|story quest"
-	# The courier's satchel (PIX-253 step 2): the journal's Letters page reads
-	# the two delivered and keeps the rest sealed; a chapter's card as the
-	# day begins, its title rising in, and still with Reduce motion; the
-	# second chapter's once Wenna has her letter; and on the map, the main
-	# story's hollow diamond kept while the slimes are followed.
-	"letters|--map town journal --tab letters|open=journal_screen.* read=2 older=0|quest story screen"
-	"chapter|--map town chapter|open=chapter_screen.* chapter=1 rose=12|story screen"
-	"chapter-still|--map town chapter still|open=chapter_screen.* chapter=1 rose=0|story screen"
-	"chapter-two|--map saltmere --ready letter_wenna --talk-to saltmere_wenna --keys e,e,e chapter|open=chapter_screen.* chapter=2 rose=12|story quest screen"
-	"storymap|--map town journal charted --keys s,s,s,s,s,s,s,e,esc,m,a|open=map_screen.*page=overworld story=[0-9]+,[0-9]+ tracked=slime_trouble|travel quest screen"
-	"mimic|--map mirefen mimic --wait 0.75|map=mirefen cell=\(42, 13\) hp=42|combat field"
-	"mayor|--map town_hall talk --keys e,e,e|open=town_hall_screen|town rooms screen"
-	"board|--map town --at 37,22 --keys w,e|open=town_hall_screen|town quest screen"
-	"stall|--map town --town-tier 0 --at 35,25 --keys a,e|open=shop_screen|town trade screen"
-	"road|--prologue 1|map=overworld cell=\(48, 34\)|story travel"
-	"dodge|--map town --keys shift --wait 0.4|map=town cell=\(40, 33\)|combat"
-	"hunt|--map overworld --at 70,40 fight slay --foe greymaw --wait 0.3|map=overworld .*gold=160|combat field quest"
-	"rebuilt|--map town --town-tier 2 rebuilt fades|open=reveal_screen.* dark=0|town story screen"
-	# A building rises out of its ruin at its stop on the tour, never over a
-	# dark screen (PIX-264); with Reduce motion the ruin simply cuts to it.
-	"rise|--map town --rise odos_store fades --wait 1.6|open=reveal_screen.* dark=0 rise=built|town story screen"
-	"rise-still|--map town --rise odos_store still --wait 0.8|open=reveal_screen.* rise=built|town story screen"
-	# Soft doors (One Reach, PIX-269): through a door the old place
-	# dissolves into the new one, no black between; going under the ground
-	# keeps a brief dark, and coming back up dissolves; Reduce motion cuts.
-	"dissolve|--map town portal fades|map=town_hall .* change=dissolve dark=0|travel rooms"
-	"underground|--map saltmere --at 6,24 --walk u fades --wait 0.4|map=seacave .* change=dark dark=0|travel"
-	"upstairs|--map seacave --at 4,26 --walk l fades --wait 0.4|map=saltmere .* change=dissolve dark=0|travel"
-	"door-still|--map town portal fades still|map=town_hall .* change=cut dark=0|travel rooms"
-	"bossfell|--map icecave fight slay --foe rimefang --wait 0.3|map=icecave .* fell=1|combat dungeon"
-	"noescape|--map icecave fight --foe rimefang flee|map=icecave |combat dungeon"
-	# A hero far above the forest's slimes (PIX-251): they run instead of
-	# charging, and the music stays the place's. At play zoom: a quiet run's
-	# camera otherwise sees a few tiles, and a monster notices only on screen.
-	"fright|--map overworld --at 59,34 --zoom play --level 20 --wait 3|map=overworld .* fled=[1-9][0-9]* music=world|combat field"
-	# The same field by day and at night (PIX-252): the forest's slimes,
-	# goblins and wolves by day; after dark the goblins asleep by their fire,
-	# and a second wolf pack and the walking dead out among them.
-	"field-day|--map overworld --at 67,46|map=overworld cell=\\(67, 46\\).* packs=slime,goblin,wolf$|field"
-	"field-night|--map overworld --at 67,46 night|map=overworld cell=\\(67, 46\\).* packs=slime,goblin:asleep,wolf,wolf,skeleton$|field night"
-	# Night falling while the hero watches the goblins' camp: nothing changes
-	# on the screen - the goblins stay up, the wolves whose home is in view
-	# wait - and the dead come out off it. From a few steps west of the camp
-	# (it was 79,43): the wider view since PIX-244 took in the dead's home
-	# there, and from here it's off the screen at 3 or 4.
-	"nightfall|--map overworld --at 75,43 --zoom play nightfall|map=overworld cell=\\(75, 43\\).* packs=slime,goblin,wolf,skeleton$|field night"
-	"bounty|--map town --at 43,22 --cleared 4 --keys w,e|open=bounty_screen|town quest screen"
-	"throne|--map town --cleared 15 --seen maren_confession throne --keys s,e --wait 0.5|open=reveal_screen|story screen"
-	"festival|--map town --town-tier 2 --at 43,27 festival --keys w,e,e,e|open=ring_toss_screen|town screen"
-	# The gates (PIX-254): each region's way in shut, the hero stopped before
-	# it and told what opens it; then open once the story has opened it (the
-	# cliff road once Maren's letters are out, the bridge, Ulla's barricade
-	# and the avalanche once a hero has won what lies past them).
-	"rockfall|--map overworld --at 16,59 --walk d,d,d --wait 0.3|map=overworld cell=\\(16, 61\\).* gate=cliff|travel story"
-	"burnt-bridge|--map overworld --at 48,34 --walk u,u,u,u --wait 0.3|map=overworld cell=\\(48, 31\\).* gate=bridge|travel story"
-	"barricade|--map overworld --at 91,15 --walk r,r,r --wait 0.3|map=overworld cell=\\(93, 15\\).* gate=barricade|travel story"
-	"avalanche|--map overworld --at 68,9 --walk u,u,u,u --wait 0.3|map=overworld cell=\\(68, 6\\).* gate=avalanche|travel story"
-	"bridge-open|--map overworld --hunted seam_warden --at 48,32 --walk u,u,u,u --wait 0.3|map=overworld cell=\\(48, [12][0-9]\\)|travel story"
-	"pass-open|--map overworld --hunted hollow_captain --at 68,8 --walk u,u,u,u,u,u,u,u --wait 0.4|map=frostgate|travel story"
-	"coast|--map overworld --seen maren_tin --at 16,61 --walk d,d,d --wait 0.4|map=saltmere|travel story"
-	# Up the path into the sea cave's mouth (PIX-269).
-	"seacave|--map saltmere --at 6,24 --walk u --wait 0.4|map=seacave|travel"
-	# The sea cave in three floors (PIX-255): down the smugglers' caves' stair
-	# (it asks; going down keeps the dark) to the drowned galleries, down
-	# past the wreck to the grotto, and back up (it dissolves); the
-	# Tidecaller falls and the tide door opens, onto the beach by the cave's
-	# mouth; and Old Wenna at Sela's inn once the ladle is home, the town's
-	# tour stopping at her door.
-	"cave-down|--map seacave --at 35,4 --walk u --keys s,e fades --wait 0.4|map=seacave_galleries cell=\\(3, 9\\).* change=dark dark=0.* floor=2/3|dungeon travel"
-	"cave-deeper|--map seacave_galleries --at 64,6 --walk r,r --keys s,e --wait 0.4|map=seacave_grotto cell=\\(4, 18\\).* floor=3/3 shortcut=shut|dungeon travel"
-	"cave-up|--map seacave_grotto --at 4,18 --walk l fades --wait 0.4|map=seacave_galleries cell=\\(6[45], 6\\).* change=dissolve dark=0|dungeon travel"
-	"tidecaller|--map seacave_grotto fight slay --foe tidecaller --wait 0.3|map=seacave_grotto .* fell=1.* shortcut=open|dungeon combat"
-	"tidedoor|--map seacave_grotto --hunted tidecaller --at 30,5 --walk u --wait 0.4|map=saltmere cell=\\(8, 2[45]\\)|dungeon travel"
-	"wenna|--map town_inn --hunted tidecaller --talk-to saltmere_wenna --keys e,e,e|map=town_inn .*open=none.* home=wenna|town story"
-	"homecoming|--map town --hunted tidecaller reveal|open=reveal_screen.* home=wenna|town story"
-	# Out through the parted cliffs (PIX-269: no cave mouth, no post), and the
-	# place come to named on its card.
-	"mirepass|--map overworld --at 2,32 --walk l,l,l --wait 0.4 --lang en|map=mirefen .*card=The Mirefen|travel"
-	"woodpass|--map overworld --at 93,33 --walk r,r,r --wait 0.4 --lang en|map=deepwood .*card=The Deepwood|travel"
-	"mines|--map overworld --at 2,20 --walk l,l,l --wait 0.4|map=blackiron|travel"
-	"shafts|--map blackiron --at 26,5 --walk u --wait 0.4|map=shafts|travel"
-	# Each region's road back out, moved along its edge so the Reach and its
-	# regions lie in one plane without overlapping (PIX-269).
-	"mines-out|--map blackiron --at 53,30 --walk r,r,r --wait 0.4|map=overworld |travel"
-	"mire-out|--map mirefen --at 56,5 --walk r,r,r --wait 0.4|map=overworld |travel"
-	"wood-out|--map deepwood --at 2,5 --walk l,l,l --wait 0.4|map=overworld |travel"
-	"coast-out|--map saltmere --at 16,2 --walk u,u,u --wait 0.4|map=overworld |travel"
-	"pass-out|--map frostgate --at 28,45 --walk d,d,d --wait 0.4|map=overworld |travel"
-	"castle|--map overworld --hunted seam_warden --at 93,15 --walk r,r,r --wait 0.4|map=greyhold|travel story"
-	# A house opens onto a room, and the cave is down its stair (PIX-256): the
-	# keep's door into Captain Hale's hall; the stair asks, and the hero waits
-	# at the top; going down takes them to the cellars, staying keeps them in
-	# the hall; and the cellars' stairs lead back up into the hall.
-	"keep|--map greyhold --at 37,13 --walk u --wait 0.4|map=keep |travel rooms"
-	"keep-ask|--map keep --at 13,7 --walk u,u|map=keep cell=\\(13, 6\\).*open=dialogue_box|travel rooms story"
-	"cellars|--map keep --at 13,7 --walk u,u --keys s,e --wait 0.4|map=cellars cell=\\(4, 27\\).*open=none|travel rooms"
-	"keep-stay|--map keep --at 13,7 --walk u,u --keys s,s,e --wait 0.3|map=keep cell=\\(13, 6\\).*open=none|travel rooms"
-	"keep-up|--map cellars --at 4,28 --walk l --wait 0.4|map=keep |travel rooms"
-	"pass|--map overworld --at 68,2 --walk u,u,u --wait 0.4|map=frostgate|travel"
-	# The observatory's door into Liane's room, down her stair to the ice
-	# cave, and back up into her room (PIX-256).
-	"observatory|--map frostgate --at 27,7 --walk u --wait 0.4|map=observatory |travel rooms"
-	"icecave|--map observatory --at 13,7 --walk u,u --keys s,e --wait 0.4|map=icecave cell=\\(4, 25\\).*open=none|travel rooms"
-	"observatory-up|--map icecave --at 4,26 --walk l --wait 0.4|map=observatory |travel rooms"
-	"gate|--map overworld --at 48,8 --walk u,u --wait 0.3|map=overworld cell=\\(48, 7\\).*open=none|travel dungeon"
-	"deep|--floor 16 clear --wait 0.3|map=floor_16|dungeon combat"
-	# What grows on the ground moves with the days (PIX-250): two days, two
-	# sets of cells, and one of the first day's picked as the hero steps on it.
-	# (The roads to the ways on, PIX-269, took some of the ash's and the
-	# marsh's ground: patches never grow on a road.)
-	"patches|--map overworld --day 2|day=2 patches=11,14;14,36;30,57;31,43;34,24;63,39;66,52;75,45$|gathering field"
-	"regrown|--map overworld --day 3|day=3 patches=17,41;18,34;24,51;29,12;50,16;77,44;79,53;86,36$|gathering field"
-	"forage|--map overworld --day 2 --at 75,46 --walk u|cell=\\(75, 45\\).* day=2 patches=11,14;14,36;30,57;31,43;34,24;63,39;66,52$|gathering field"
-	"dawn|--map town --prologue 5 --at 11,8 --keys w,e,e,e,e,e --wait 1.5|open=dawn_screen|story screen"
-	"motion|--map town motion|backsteps=[01]$|motion"
-	"firstnight|create --keys tab|open=create_screen.*firstnight=skip|title story"
-	"hounds|--map town --prologue 6|night=6 mobs=2|story night combat"
-	"embers|--map town --prologue 9|night=9 mobs=3|story night combat"
-	# The waypoint chosen on the map is the one shown, and E goes there (PIX-241).
-	"waypoint|--map town waypoints --keys m,s,s|open=map_screen.*dest=mountain_gate|travel screen"
-	"travel|--map town waypoints --keys m,s,e|map=overworld cell=\\(48, 40\\).*open=none|travel screen"
-	# Every map found is a page of the map, the next one round the Reach
-	# turned to with its waypoint chosen (PIX-266).
-	"atlas|--map town waypoints --keys m,d|open=map_screen.*dest=saltmere_hamlet page=saltmere|travel screen"
-	# The journal's fourth thread (the slimes, under the story's three) chosen,
-	# E follows it, and it's still followed once the journal closes (PIX-239).
-	# (The eighth since PIX-253 step 2: the satchel's four letters are the
-	# story's rows too.)
-	"follow|--map town journal --keys s,s,s,s,s,s,s,e,esc|open=none .*tracked=slime_trouble|quest screen"
-	# Every screen fits the canvas in French, the longest language (PIX-258):
-	# the harness's `overflow` counts pieces running off the screen.
-	"fit-title|title overflow --lang fr|open=title_screen.*overflow=0|screen lang title"
-	"fit-create|create overflow --lang fr|open=create_screen.*overflow=0|screen lang title"
-	# Its English twin (PIX-228): the setting's card and Begin's row laid out
-	# in the other words.
-	"fit-create-en|create overflow --lang en|open=create_screen.*overflow=0|screen lang title"
-	"fit-whatsnew|title whatsnew overflow --lang fr|overflow=0|screen lang title"
-	"fit-saves|--map town --keys esc,s,e overflow --lang fr|open=saves_screen.*overflow=0|screen lang save"
-	"fit-webhero|saves --web-save res://test/fixtures/web_save_v4.txt overflow --lang fr|open=saves_screen.*overflow=0|screen lang save"
-	# Every slot full (PIX-230): a full slot's line widened the window off
-	# the right of the screen in French, which empty slots never showed; and
-	# a web hero with a long name to bring across, in both languages.
-	"fit-saves-full|--map town saves --slots res://test/fixtures/slots overflow --lang fr|open=saves_screen.*overflow=0|screen lang save"
-	"fit-saves-full-en|--map town saves --slots res://test/fixtures/slots overflow --lang en|open=saves_screen.*overflow=0|screen lang save"
-	"fit-webhero-full|saves --slots res://test/fixtures/slots --web-save res://test/fixtures/slots/slot_1.json overflow --lang fr|open=saves_screen.*overflow=0|screen lang save"
-	"fit-pause|--map town --keys esc overflow --lang fr|open=pause_screen.*overflow=0|screen lang"
-	"fit-options|--map town --keys esc,s,s,e overflow --lang fr|overflow=0|screen lang"
-	"fit-map|--map town waypoints worldmap overflow --lang fr|open=map_screen.*overflow=0|screen lang travel"
-	"fit-travel|--map town waypoints --keys m,s,s,s,s overflow --lang fr|open=map_screen.*overflow=0 dest=mirefen_pass|screen lang travel"
-	# The list scrolled to its last waypoint, on Greyhold's page (PIX-266).
-	"fit-atlas|--map town charted --keys m,w overflow --lang fr|open=map_screen.*overflow=0 dest=greyhold_keep page=greyhold|screen lang travel"
-	"fit-pack|--map town --keys i overflow --lang fr|open=inventory_screen.*overflow=0|screen lang"
-	"fit-journal|--map town --keys q overflow --lang fr|open=journal_screen.*overflow=0|screen lang quest"
-	# A hero mid-game (PIX-239): every group, a bounty followed at the bottom
-	# of the list; its English twin; Liane's ten pages; the feats.
-	"fit-journal-full|--map town journal --cleared 4 --keys w,e overflow --lang fr|open=journal_screen.*overflow=0 tracked=drowned_knight|screen lang quest"
-	"fit-journal-en|--map town journal --cleared 4 --keys w,e overflow --lang en|open=journal_screen.*overflow=0 tracked=drowned_knight|screen lang quest"
-	# The satchel at the top of the quests; the Letters page with Liane's ten
-	# pages under it (PIX-253 step 2); the longest chapter card.
-	"fit-satchel|--map town journal overflow --lang fr|open=journal_screen.*overflow=0|screen lang quest story"
-	"fit-journal-letters|--map town journal --tab letters --cleared 15 overflow --lang fr|open=journal_screen.*overflow=0 .*read=2 older=10|screen lang quest story"
-	"fit-chapter|--map town --hunted tidecaller,seam_warden,hollow_captain chapter overflow --lang fr|open=chapter_screen.*overflow=0 .*chapter=5|screen lang story"
-	"fit-journal-feats|--map town journal --tab feats overflow --lang fr|open=journal_screen.*overflow=0|screen lang quest"
-	"fit-skills|--map town --keys k overflow --lang fr|open=skills_screen.*overflow=0|screen lang rank"
-	"fit-stats|--map town --keys c overflow --lang fr|open=stats_screen.*overflow=0|screen lang"
-	"fit-codex|--map town --keys b overflow --lang fr|open=codex_screen.*overflow=0|screen lang"
-	"fit-shop|--map town_shop shop overflow --lang fr|open=shop_screen.*overflow=0|screen lang trade"
-	"fit-craft|--map town_alchemist shop --tab 2 overflow --lang fr|open=shop_screen.*overflow=0|screen lang trade"
-	"fit-refusal|--map town_alchemist station --keys e overflow --lang fr|open=shop_screen.*tab=Craft.*overflow=0|screen lang trade"
-	"fit-rankup|--map town rankup --rank-beat unlocks overflow --lang fr|open=rankup_screen.*overflow=0|screen lang rank"
-	"fit-hall|--map town_hall talk --keys e,e,e overflow --lang fr|open=town_hall_screen.*overflow=0|screen lang town"
-	"fit-bounty|--map town --at 43,22 --cleared 4 --keys w,e overflow --lang fr|open=bounty_screen.*overflow=0|screen lang quest"
-)
-
-# Every map the game can stand in, as flows (--boot), from the game's own
-# data, so a new map is checked without a line here: each map file (a house
-# tier is its map's @n variant), the village at each age, the dungeons'
-# floors, and the Deep Hunt's depths down to its first warden (its twists,
-# its elites, the warden). Each one by day and at night; the report must
-# name the map it booted on.
-boot_flows() {
-	python3 - <<'PY'
-import glob, json, os
-
-
-def boot(name, args, map_id):
-    print(f"{name}|{args}|map={map_id} cell")
-    print(f"{name}-night|{args} night|map={map_id} cell")
-
-
-for path in sorted(glob.glob("assets/maps/*.json")):
-    with open(path) as file:
-        if "tiles" not in json.load(file):
-            continue  # interactables.json: what stands on the maps
-    map_id, _, tier = os.path.basename(path)[: -len(".json")].partition("@")
-    if tier:
-        boot(f"{map_id}-tier{tier}", f"--map {map_id} --house-tier {tier}", map_id)
-    else:
-        boot(map_id, f"--map {map_id}", map_id)
-with open("assets/data/town.json") as file:
-    for age in range(len(json.load(file)["tiers"])):
-        boot(f"town-age{age}", f"--map town --town-tier {age}", "town")
-# A region dungeon's planned floors (PIX-255) are laid out, not files.
-with open("assets/data/depths.json") as file:
-    for dungeon in json.load(file)["dungeons"].values():
-        for floor in dungeon["floors"]:
-            if "plan" in floor:
-                boot(floor["mapId"], f"--map {floor['mapId']}", floor["mapId"])
-with open("assets/data/combat.json") as file:
-    combat = json.load(file)
-floors = sorted({level for dungeon in combat["dungeons"].values() for level in dungeon["floors"]})
-deep = [len(combat["levels"]) + depth for depth in range(1, combat["deepHunt"]["bossEvery"] + 1)]
-for level in floors + deep:
-    boot(f"floor{level}", f"--floor {level}", f"floor_{level}")
-PY
-}
-if [[ $boot == 1 ]]; then
-	FLOWS=()
-	while IFS= read -r flow; do
-		FLOWS+=("$flow")
-	done < <(boot_flows)
-	if [[ ${#FLOWS[@]} -lt 40 ]]; then
-		echo "flows.sh: the maps weren't found in the data" >&2
-		exit 2
-	fi
+# name|harness arguments|expected report fields|tags, a line each, from
+# flows.txt (or, with --boot, every map the game can stand in: flows.py
+# reads them from the game's own data, so a new map is checked without a
+# line anywhere).
+FLOWS=()
+listed=$(python3 tools/flows.py list $([[ $boot == 1 ]] && echo --boot)) || exit 2
+while IFS= read -r flow; do
+	FLOWS+=("$flow")
+done <<<"$listed"
+if [[ $boot == 1 && ${#FLOWS[@]} -lt 40 ]]; then
+	echo "flows.sh: the maps weren't found in the data" >&2
+	exit 2
 fi
 # --list: the flows as they are written, for check.sh to choose from.
 if [[ $list == 1 ]]; then
@@ -435,19 +147,25 @@ run_godot() {
 	return $ran
 }
 
+# Whether report line $2 shows the fields flow expectation $1 asks for
+# (tools/flows.py matches them by name); why not, in $why.
+shows() {
+	why=$(python3 tools/flows.py match "$1" "$2")
+}
+
 # Runs flow $1 (its index in FLOWS) in job slot $2 and leaves its result in
 # its folder: status|name|seconds|line, written whole as its last act.
 run_flow() {
 	local name args expect tags
 	IFS="|" read -r name args expect tags <<<"${FLOWS[$1]}"
-	local dir="$runs/$name" status=ok line start ran output report errors
+	local dir="$runs/$name" status=ok line start ran output report errors why=""
 	mkdir -p "$dir"
 	start=$(now)
 	run_godot "$dir" "$args" "$2"
 	ran=$?
 	output=$(<"$dir/output.txt")
 	report=$(grep "screenshot saved" <<<"$output")
-	if [[ $retried == *" $name "* ]] && ! grep -qE "$expect" <<<"$report"; then
+	if [[ $retried == *" $name "* ]] && ! shows "$expect" "$report"; then
 		rm -f "$dir/shot.png"
 		run_godot "$dir" "$args" "$2"
 		ran=$?
@@ -466,12 +184,12 @@ run_flow() {
 	if [[ -n $errors ]]; then
 		status=FAIL
 		line=$errors
-	elif [[ ($quiet == 1 || -f $dir/shot.png) ]] && grep -qE "$expect" <<<"$report"; then
+	elif shows "$expect" "$report" && [[ ($quiet == 1 || -f $dir/shot.png) ]]; then
 		[[ -f $dir/shot.png ]] && mv "$dir/shot.png" "flows/$name.png"
 		line=${report#screenshot saved; }
 	else
 		status=FAIL
-		line="expected /$expect/, got: ${report:-no report}"
+		line="expected $expect (${why:-but no picture}), got: ${report:-no report}"
 	fi
 	printf "%s|%s|%s|%s\n" "$status" "$name" "$(since "$start")" "$line" >"$dir/result.part"
 	mv "$dir/result.part" "$dir/result"
