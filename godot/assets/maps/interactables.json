@@ -441,6 +441,97 @@
         "y": 27
       },
       "requiresSettler": "settler_wren"
+    },
+    {
+      "id": "saltmere_hamlet",
+      "name": "Saltmere Hamlet",
+      "mapId": "saltmere",
+      "at": {
+        "x": 30,
+        "y": 14
+      },
+      "arrival": {
+        "x": 30,
+        "y": 14
+      }
+    },
+    {
+      "id": "saltmere_cave",
+      "name": "The Sea Cave",
+      "mapId": "saltmere",
+      "at": {
+        "x": 6,
+        "y": 23
+      },
+      "arrival": {
+        "x": 8,
+        "y": 23
+      }
+    },
+    {
+      "id": "blackiron_camp",
+      "name": "The Miners' Camp",
+      "mapId": "blackiron",
+      "at": {
+        "x": 30,
+        "y": 19
+      },
+      "arrival": {
+        "x": 30,
+        "y": 19
+      }
+    },
+    {
+      "id": "frostgate_camp",
+      "name": "Gunnar's Camp",
+      "mapId": "frostgate",
+      "at": {
+        "x": 33,
+        "y": 40
+      },
+      "arrival": {
+        "x": 33,
+        "y": 40
+      }
+    },
+    {
+      "id": "frostgate_observatory",
+      "name": "Liane's Observatory",
+      "mapId": "frostgate",
+      "at": {
+        "x": 27,
+        "y": 9
+      },
+      "arrival": {
+        "x": 27,
+        "y": 9
+      }
+    },
+    {
+      "id": "greyhold_camp",
+      "name": "The Old Guard's Camp",
+      "mapId": "greyhold",
+      "at": {
+        "x": 12,
+        "y": 27
+      },
+      "arrival": {
+        "x": 12,
+        "y": 27
+      }
+    },
+    {
+      "id": "greyhold_keep",
+      "name": "The Keep Yard",
+      "mapId": "greyhold",
+      "at": {
+        "x": 37,
+        "y": 14
+      },
+      "arrival": {
+        "x": 37,
+        "y": 14
+      }
     }
   ]
 }

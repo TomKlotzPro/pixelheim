@@ -2,8 +2,8 @@ extends Node
 ## The look book (PIX-220): the same scenes, staged the same way every time -
 ## the town by day, at dusk and at night, the forest, the Ash, the Mire, the
 ## Frostgate, a dungeon floor, a fight, the overworld at night, the
-## village seen from its road (PIX-248) and the ways between maps
-## (PIX-269) - each saved
+## village seen from its road (PIX-248), the ways between maps (PIX-269)
+## and the map screen (PIX-266) - each saved
 ## as a picture, and all of them on one contact sheet, so a change to how the
 ## game looks is judged before and after, by eye. With `perf`, each shot also
 ## reports what its frames cost (PerfProbe); with `film`, each is filmed for
@@ -62,6 +62,9 @@ const SHOTS := [
 	{"name": "25_deepwood_pass_night", "map": "overworld", "cell": Vector2i(91, 33), "time": NIGHT},
 	{"name": "26_mire_pass", "map": "mirefen", "cell": Vector2i(55, 24), "time": DAY},
 	{"name": "27_road_south", "map": "overworld", "cell": Vector2i(16, 60), "time": DAY},
+	# The map (PIX-266) of a hero who has walked the whole Reach, its list
+	# scrolled down to the last waypoint, on Greyhold's page.
+	{"name": "28_map", "map": "town", "at": "street", "time": DAY, "chart": "greyhold_keep"},
 ]
 ## Filming the walk: slowed to a quarter, a picture every WALK_STEP of the
 ## game's time (thirty a second: two or three of each frame of the walk),
@@ -162,6 +165,10 @@ func run() -> void:
 			await _film_walk(shot["name"])
 		elif with_motion:
 			await _film(shot["name"], shot.get("strike", false))
+		# A screen a shot opened goes, so the next finds the world its own.
+		for node in world.get_children():
+			if node is Screen:
+				(node as Screen).close()
 	for look: String in folders:
 		sheet(images[look]).save_png("%s/sheet.png" % folders[look])
 		print("%s %s/%s" % ["LOOK", ProjectSettings.globalize_path(folders[look]), "sheet.png"])
@@ -185,6 +192,13 @@ func _stage(shot: Dictionary) -> void:
 		world.player.face(Vector2.RIGHT)
 		foe.notice()
 		_foe = foe
+	if shot.has("chart"):
+		# The map over a hero who has walked it all, a waypoint chosen.
+		Atlas.walk_all(GameState.world.discovered)
+		world.open_screen("map")
+		for node in world.get_children():
+			if node.has_method("show_waypoint"):
+				node.show_waypoint(shot["chart"])
 
 
 ## Waits for a frame drawn and ready to save. While the window is hidden

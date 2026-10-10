@@ -15,7 +15,8 @@
 # running from a far stronger hero without the battle music (PIX-251), the
 # same field holding other packs by day and at night (PIX-252), the
 # map's waypoint list showing where a waypoint takes you before it does, then
-# taking you there (PIX-241), hero creation's first night skipped with
+# taking you there (PIX-241), every map found a page of the map and the list
+# scrolled to the Reach's last waypoint (PIX-266), hero creation's first night skipped with
 # Tab while the name field has the keys (PIX-228), a quest chosen in the
 # journal and followed after it closes (PIX-239), what grows on the
 # ground somewhere new each day, picked off as you step on it (PIX-250),
@@ -132,6 +133,9 @@ FLOWS=(
 	# The waypoint chosen on the map is the one shown, and E goes there (PIX-241).
 	"waypoint|--map town waypoints --keys m,s,s|open=map_screen.*dest=mountain_gate"
 	"travel|--map town waypoints --keys m,s,e|map=overworld cell=\\(48, 40\\).*open=none"
+	# Every map found is a page of the map, the next one round the Reach
+	# turned to with its waypoint chosen (PIX-266).
+	"atlas|--map town waypoints --keys m,d|open=map_screen.*dest=saltmere_hamlet page=saltmere"
 	# The journal's fourth thread (the slimes, under the story's three) chosen,
 	# E follows it, and it's still followed once the journal closes (PIX-239).
 	"follow|--map town journal --keys s,s,s,e,esc|open=none .*tracked=slime_trouble"
@@ -149,6 +153,8 @@ FLOWS=(
 	"fit-options|--map town --keys esc,s,s,e overflow --lang fr|overflow=0"
 	"fit-map|--map town waypoints worldmap overflow --lang fr|open=map_screen.*overflow=0"
 	"fit-travel|--map town waypoints --keys m,s,s,s,s overflow --lang fr|open=map_screen.*overflow=0 dest=mirefen_pass"
+	# The list scrolled to its last waypoint, on Greyhold's page (PIX-266).
+	"fit-atlas|--map town charted --keys m,w overflow --lang fr|open=map_screen.*overflow=0 dest=greyhold_keep page=greyhold"
 	"fit-pack|--map town --keys i overflow --lang fr|open=inventory_screen.*overflow=0"
 	"fit-journal|--map town --keys q overflow --lang fr|open=journal_screen.*overflow=0"
 	# A hero mid-game (PIX-239): every group, a bounty followed at the bottom

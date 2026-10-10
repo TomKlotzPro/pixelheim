@@ -333,6 +333,10 @@ func _run_test_harness() -> void:
 		for waypoint: Dictionary in Interactables.waypoints():
 			var at := Vector2i(int(waypoint["at"]["x"]), int(waypoint["at"]["y"]))
 			Discovery.discover_around(GameState.world.discovered, MapData.load_by_id(waypoint["mapId"]), at)
+	if flags.has("charted"):
+		# A hero who has walked the whole Reach (PIX-266): every page of the
+		# map drawn whole.
+		Atlas.walk_all(GameState.world.discovered)
 	if flags.has("worldmap"):
 		# After `--cleared`: the lairs it posts are on the map.
 		var screen := preload("res://scripts/map_screen.gd").new()
@@ -850,11 +854,13 @@ func _run_test_harness() -> void:
 			Gathering.day_of(GameState.world.steps),
 			";".join(cells.map(func(cell: Vector2i) -> String: return "%d,%d" % [cell.x, cell.y])) if not cells.is_empty() else "none",
 		]
-	# The waypoint the map's list has chosen (PIX-241), while it's open.
+	# The waypoint the map's list has chosen (PIX-241), and the page it shows
+	# (PIX-266), while it's open.
 	for node in world.get_children():
 		if node.has_method("destination_id"):
 			var chosen: String = node.destination_id()
-			motion_report += " dest=%s" % (chosen if chosen != "" else "none")
+			var shown: String = node.page_id()
+			motion_report += " dest=%s page=%s" % [chosen if chosen != "" else "none", shown]
 	# The quest or bounty followed (PIX-239), while the journal is open or
 	# one is followed: what the journal's E chose.
 	var tracked := GameState.progression.tracked

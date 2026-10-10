@@ -28,7 +28,8 @@ func before_each() -> void:
 	_discovered = GameState.world.discovered.duplicate(true)
 	_settlers = GameState.settlement.settlers.duplicate()
 	GameState.settlement.settlers.clear()
-	# Every waypoint found; the square's post still unstaffed.
+	# Every waypoint found and nothing else; the square's post still unstaffed.
+	GameState.world.discovered = {}
 	for waypoint: Dictionary in Interactables.waypoints():
 		Discovery.discover_around(GameState.world.discovered, MapData.load_by_id(waypoint["mapId"]), Waypoints.cell(waypoint))
 
@@ -101,7 +102,9 @@ func test_in_town_the_map_opens_on_the_town_and_choosing_turns_the_page() -> voi
 	assert_eq(screen.destination_id(), "mountain_gate", "the ring moves with the choice")
 	_key(screen, KEY_W)
 	_key(screen, KEY_W)
-	assert_eq(screen.destination_id(), "undermountain_cave", "up from the first wraps to the last")
+	assert_eq(screen.destination_id(), "greyhold_keep", "up from the first wraps to the last, under the list's last place")
+	assert_eq(screen.painting.map.id, "greyhold", "on its own page")
+	assert_eq(screen.title.text, Catalog.place_name("greyhold"))
 	screen.close()
 
 
@@ -156,7 +159,8 @@ func test_pointing_chooses_and_a_click_travels() -> void:
 func test_an_unstaffed_post_is_never_chosen() -> void:
 	var opened := _open("town")
 	var screen: Node = opened[0]
-	assert_eq(screen.usable.size(), 5, "the square waits on its keeper")
+	assert_eq(screen.usable.size(), Interactables.waypoints().size() - 1, "the square waits on its keeper")
+	assert_eq(screen.cards.size(), Interactables.waypoints().size(), "but it's listed, greyed")
 	assert_false(screen.usable.any(func(waypoint: Dictionary) -> bool: return waypoint["id"] == "town_square"))
 	screen.close()
 
@@ -167,4 +171,103 @@ func test_with_its_keeper_the_square_is_chosen_in_town() -> void:
 	var screen: Node = opened[0]
 	assert_eq(screen.destination_id(), "town_square", "the waypoint where you are")
 	assert_true(screen.painting.home)
+	screen.close()
+
+
+## The words under a card's name.
+func _note(card: Control) -> String:
+	var lines: Node = card.get_child(0)
+	return (lines.get_child(1) as Label).text if lines.get_child_count() > 1 else ""
+
+
+func test_every_map_found_is_a_page_and_each_is_drawn() -> void:
+	var opened := _open("town")
+	var screen: Node = opened[0]
+	var found: Array[String] = []
+	for map_id: String in Atlas.ORDER:
+		if Atlas.found(GameState.world.discovered, map_id):
+			found.append(map_id)
+	assert_gt(found.size(), 4, "the regions' waypoints found their maps")
+	assert_eq(screen.pages, found, "every map found is a page, in the world's order")
+	var drawn := {}
+	for turn in found.size():
+		var page: String = screen.page_id()
+		var painting: Control = screen.painting
+		assert_eq(painting.map.id, page, "the page turned to is the one drawn")
+		assert_eq(screen.title.text, Catalog.place_name(page), "and named")
+		assert_eq(painting.custom_minimum_size, Vector2(painting.map.size * painting.tile_px), "%s drawn whole" % page)
+		assert_between(painting.tile_px, 7, Atlas.MAX_TILE, "%s at a size to read" % page)
+		assert_false(painting._ground.is_empty(), "%s: what's been seen of it drawn" % page)
+		drawn[page] = true
+		_key(screen, KEY_D)
+	assert_eq(drawn.size(), found.size(), "every map found drawn")
+	assert_eq(screen.page_id(), "town", "and round to where the hero stands")
+	screen.close()
+
+
+func test_turning_the_page_chooses_the_first_waypoint_there() -> void:
+	var opened := _open("town")
+	var screen: Node = opened[0]
+	assert_eq(screen.page_id(), "town")
+	_key(screen, KEY_D)
+	assert_eq(screen.page_id(), "saltmere", "the next map round the Reach")
+	assert_eq(screen.destination_id(), "saltmere_hamlet", "its waypoint chosen")
+	assert_not_null(screen.painting.tag, "named on its page")
+	_key(screen, KEY_A)
+	assert_eq(screen.page_id(), "town")
+	assert_eq(screen.destination_id(), "", "none open in town: none chosen")
+	_key(screen, KEY_A)
+	assert_eq(screen.page_id(), "overworld")
+	assert_eq(screen.destination_id(), "town_gate")
+	screen.close()
+
+
+func test_waypoints_not_found_yet_are_listed_greyed_where_they_stand() -> void:
+	# A hero who has only seen the town around the hall.
+	GameState.world.discovered = {}
+	Discovery.discover_around(GameState.world.discovered, MapData.load_by_id("town"), Vector2i(40, 22))
+	var opened := _open("town")
+	var screen: Node = opened[0]
+	assert_eq(screen.cards.size(), Interactables.waypoints().size(), "every waypoint listed")
+	assert_true(screen.usable.is_empty(), "none of them open yet")
+	assert_eq(screen.pages, ["town"] as Array[String], "the town the only map found")
+	assert_eq(_note(screen.cards[0]["card"]), Text.t("Not found yet"), "the gate not found yet")
+	assert_true(screen.painting.shows_closed(), "the square's post greyed on the town's page")
+	var down := InputEventKey.new()
+	down.physical_keycode = KEY_S
+	down.keycode = KEY_S
+	down.pressed = true
+	assert_true(screen._command(down).is_valid(), "with nothing to choose, down reads down the list")
+	assert_eq(screen.destination_id(), "", "and chooses nothing")
+	screen.close()
+
+
+func test_the_list_and_the_tag_name_where_you_land_alike() -> void:
+	var opened := _open("overworld")
+	var screen: Node = opened[0]
+	_key(screen, KEY_S)
+	assert_eq(screen.destination_id(), "mountain_gate")
+	var card: Control = _staffed_card(screen, screen.selected)
+	var tag_lines: Node = screen.painting.tag.get_child(0)
+	assert_eq(_note(card), Atlas.region_title("ash"), "the card says where you land, not the Ashenreach again")
+	assert_eq((tag_lines.get_child(1) as Label).text, _note(card), "and the tag says the same")
+	assert_eq(screen.cards[0]["heading"].text, Catalog.place_name("overworld"), "the place heads its waypoints")
+	# On a map that is one region, the place is the region: said once.
+	_key(screen, KEY_W)
+	_key(screen, KEY_W)
+	assert_eq(screen.destination_id(), "greyhold_keep")
+	assert_eq(_note(_staffed_card(screen, screen.selected)), "", "not Greyhold under Greyhold")
+	assert_eq(screen.painting.tag.get_child(0).get_child_count(), 1, "nor on its tag")
+	screen.close()
+
+
+func test_the_ashenreach_draws_the_village_small_in_its_walls() -> void:
+	var opened := _open("overworld")
+	var screen: Node = opened[0]
+	var village: Dictionary = screen.painting.village
+	assert_eq(village.get(Vector2i(48, 42), ""), "door", "its gate where the road comes in")
+	assert_eq(village.get(Vector2i(36, 42), ""), "wall", "its rampart")
+	assert_true(village.values().any(func(tile: String) -> bool: return tile.begins_with("roof")), "its houses")
+	assert_true(village.values().has("water"), "its river")
+	assert_eq(screen.painting._ground.get(Vector2i(50, 50)), Atlas.color(village[Vector2i(50, 50)]), "drawn though only the road to its gate was walked")
 	screen.close()

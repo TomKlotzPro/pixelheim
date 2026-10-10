@@ -34,6 +34,9 @@ visible spawn points and stay cleared until you leave the map.
 
 Controls: WASD/arrows or left stick to move, Space/J or gamepad A to attack,
 E to talk or open chests, M/Tab for the map, Esc (gamepad Start) for saves.
+The map has a page for every map you've found, turned with A/D, each naming
+its regions and its roads out; beside it every waypoint, by place, and fast
+travel to those you've found (`scripts/map_screen.gd`, `scripts/atlas.gd`).
 
 ## Saves
 

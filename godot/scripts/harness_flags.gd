@@ -58,6 +58,7 @@ const TABLE := [
 	{"flag": "dusk", "takes": "", "does": "evening: the town's folk on the square (PIX-159)"},
 	{"flag": "ringtoss", "takes": "", "does": "the festival's ring toss"},
 	{"flag": "waypoints", "takes": "", "does": "every waypoint found: the map's list at its longest"},
+	{"flag": "charted", "takes": "", "does": "every map of the Reach walked end to end: the map screen's pages drawn whole, every waypoint found (PIX-266)"},
 	{"flag": "worldmap", "takes": "", "does": "the world map (after --cleared, with the lairs it posts)"},
 	{"flag": "rankup", "takes": "", "does": "enough XP to cross into the next rank: the ascension plays; the report adds ascension=, motes= and look= (PIX-244)"},
 	{"flag": "walk-path", "takes": "", "does": "with rankup: walk the new rank's path"},

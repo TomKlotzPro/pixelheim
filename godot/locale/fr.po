@@ -10909,6 +10909,10 @@ msgid "GOODS"
 msgstr "BAZAR"
 
 #: assets/maps/interactables.json
+msgid "Gunnar's Camp"
+msgstr "Le camp de Gunnar"
+
+#: assets/maps/interactables.json
 msgid "HALL"
 msgstr "MAIRIE"
 
@@ -10921,6 +10925,10 @@ msgid "INN"
 msgstr "AUBERGE"
 
 #: assets/maps/interactables.json
+msgid "Liane's Observatory"
+msgstr "L'observatoire de Liane"
+
+#: assets/maps/interactables.json
 msgid "Pixelheim Gate"
 msgstr "Porte de Pixelheim"
 
@@ -10929,12 +10937,28 @@ msgid "Pixelheim Square"
 msgstr "Place de Pixelheim"
 
 #: assets/maps/interactables.json
+msgid "Saltmere Hamlet"
+msgstr "Le hameau de Saltmere"
+
+#: assets/maps/interactables.json
 msgid "The Deepwood Pass"
 msgstr "Le passage des Bois-Profonds"
 
 #: assets/maps/interactables.json
+msgid "The Keep Yard"
+msgstr "La cour du donjon"
+
+#: assets/maps/interactables.json
+msgid "The Miners' Camp"
+msgstr "Le camp des mineurs"
+
+#: assets/maps/interactables.json
 msgid "The Mirefen Pass"
 msgstr "Le passage des Marais de Fange"
+
+#: assets/maps/interactables.json
+msgid "The Old Guard's Camp"
+msgstr "Le camp de l'ancienne garde"
 
 #: scripts/bank_screen.gd:14
 msgid "Idle gold is lazy gold. Savings, a caravan, an expansion: put it to work."
@@ -12032,37 +12056,45 @@ msgstr "valider"
 msgid "{key:move_up}/{key:move_down}  choose      {key:interact}  %s      Esc  close"
 msgstr "{key:move_up}/{key:move_down}  choisir      {key:interact}  %s      Esc  fermer"
 
-#: scripts/map_screen.gd:199
-msgid "You"
-msgstr "Vous"
-
-#: scripts/map_screen.gd:200
-msgid "Waypoint"
-msgstr "Relais"
-
-#: scripts/map_screen.gd:202
-msgid "Lair"
-msgstr "Repaire"
-
-#: scripts/map_screen.gd:204
-msgid "Quest"
-msgstr "Quête"
-
-#: scripts/map_screen.gd:206
-msgid "Goal"
-msgstr "Objectif"
-
-#: scripts/map_screen.gd:68
+#: scripts/map_screen.gd:118
 msgid "Waypoints"
 msgstr "Relais"
 
-#: scripts/map_screen.gd:84
+#: scripts/map_screen.gd:176
+msgid "Not found yet"
+msgstr "Pas encore trouvé"
+
+#: scripts/map_screen.gd:178
 msgid "Unstaffed: no one keeps this post yet"
 msgstr "Inoccupé : personne ne tient encore ce poste"
 
-#: scripts/map_screen.gd:96
-msgid "Nothing discovered yet. Waypoints you find on your travels show up here."
-msgstr "Rien de découvert pour l'instant. Les relais trouvés en voyage apparaissent ici."
+#: scripts/map_screen.gd:352
+msgid "You"
+msgstr "Vous"
+
+#: scripts/map_screen.gd:353
+msgid "Waypoint"
+msgstr "Relais"
+
+#: scripts/map_screen.gd:355
+msgid "Not yet open"
+msgstr "Pas encore ouvert"
+
+#: scripts/map_screen.gd:357
+msgid "Lair"
+msgstr "Repaire"
+
+#: scripts/map_screen.gd:359
+msgid "Quest"
+msgstr "Quête"
+
+#: scripts/map_screen.gd:361
+msgid "Goal"
+msgstr "Objectif"
+
+#: scripts/map_screen.gd:387
+msgid "maps"
+msgstr "cartes"
 
 #: scripts/options_screen.gd:113
 msgid "System (%s)"

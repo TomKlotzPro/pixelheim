@@ -10909,6 +10909,10 @@ msgid "GOODS"
 msgstr ""
 
 #: assets/maps/interactables.json
+msgid "Gunnar's Camp"
+msgstr ""
+
+#: assets/maps/interactables.json
 msgid "HALL"
 msgstr ""
 
@@ -10921,6 +10925,10 @@ msgid "INN"
 msgstr ""
 
 #: assets/maps/interactables.json
+msgid "Liane's Observatory"
+msgstr ""
+
+#: assets/maps/interactables.json
 msgid "Pixelheim Gate"
 msgstr ""
 
@@ -10929,11 +10937,27 @@ msgid "Pixelheim Square"
 msgstr ""
 
 #: assets/maps/interactables.json
+msgid "Saltmere Hamlet"
+msgstr ""
+
+#: assets/maps/interactables.json
 msgid "The Deepwood Pass"
 msgstr ""
 
 #: assets/maps/interactables.json
+msgid "The Keep Yard"
+msgstr ""
+
+#: assets/maps/interactables.json
+msgid "The Miners' Camp"
+msgstr ""
+
+#: assets/maps/interactables.json
 msgid "The Mirefen Pass"
+msgstr ""
+
+#: assets/maps/interactables.json
+msgid "The Old Guard's Camp"
 msgstr ""
 
 #: scripts/bank_screen.gd:14
@@ -12032,36 +12056,44 @@ msgstr ""
 msgid "{key:move_up}/{key:move_down}  choose      {key:interact}  %s      Esc  close"
 msgstr ""
 
-#: scripts/map_screen.gd:199
-msgid "You"
-msgstr ""
-
-#: scripts/map_screen.gd:200
-msgid "Waypoint"
-msgstr ""
-
-#: scripts/map_screen.gd:202
-msgid "Lair"
-msgstr ""
-
-#: scripts/map_screen.gd:204
-msgid "Quest"
-msgstr ""
-
-#: scripts/map_screen.gd:206
-msgid "Goal"
-msgstr ""
-
-#: scripts/map_screen.gd:68
+#: scripts/map_screen.gd:118
 msgid "Waypoints"
 msgstr ""
 
-#: scripts/map_screen.gd:84
+#: scripts/map_screen.gd:176
+msgid "Not found yet"
+msgstr ""
+
+#: scripts/map_screen.gd:178
 msgid "Unstaffed: no one keeps this post yet"
 msgstr ""
 
-#: scripts/map_screen.gd:96
-msgid "Nothing discovered yet. Waypoints you find on your travels show up here."
+#: scripts/map_screen.gd:352
+msgid "You"
+msgstr ""
+
+#: scripts/map_screen.gd:353
+msgid "Waypoint"
+msgstr ""
+
+#: scripts/map_screen.gd:355
+msgid "Not yet open"
+msgstr ""
+
+#: scripts/map_screen.gd:357
+msgid "Lair"
+msgstr ""
+
+#: scripts/map_screen.gd:359
+msgid "Quest"
+msgstr ""
+
+#: scripts/map_screen.gd:361
+msgid "Goal"
+msgstr ""
+
+#: scripts/map_screen.gd:387
+msgid "maps"
 msgstr ""
 
 #: scripts/options_screen.gd:113
