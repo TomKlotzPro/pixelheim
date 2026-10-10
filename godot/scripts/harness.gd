@@ -520,6 +520,11 @@ func _run_test_harness() -> void:
 		# and opens the first-visit offer.
 		var web_file := flags.value("--web-save")
 		var stand_in := WebImport.parse_any(FileAccess.get_file_as_string(web_file)) if web_file != "" else {}
+		# `--slots <dir>`: full slots read from a folder (PIX-230: the cards'
+		# lines widened the window off the screen only once heroes filled
+		# them), instead of the player's own.
+		if flags.has("--slots"):
+			GameState.slots = SaveSlots.new(flags.value("--slots"))
 		world.open_saves(stand_in, not stand_in.is_empty())
 		await get_tree().create_timer(0.3).timeout
 	if flags.has("--ready"):

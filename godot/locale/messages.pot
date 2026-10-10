@@ -3793,6 +3793,10 @@ msgid "Roads and town stay clean-looking because they ARE safe"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Room to Spare"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Rooms Upstairs"
 msgstr ""
 
@@ -4833,11 +4837,19 @@ msgid "The roads to the Mirefen and the Deepwood run out through the ridge inste
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The save screen fits again with every slot full: long names and places wrap inside their cards, so the right-hand column is never cut off"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The skill tree fits all six tiers on one page, one line a skill, with the chosen one described in full below"
 msgstr ""
 
 #: assets/data/changelog.json
 msgid "The skill tree looks like a tree: three named paths, tier badges from I to CAP, connector lines, and the numbers on every skill - multiplier, stat, cost - before you commit"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The skills screen fits on narrow and tall screens too"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -12408,168 +12420,168 @@ msgstr ""
 msgid "throw"
 msgstr ""
 
-#: scripts/saves_screen.gd:102
-msgid "Your web game hero %s, %d gold."
-msgstr ""
-
-#: scripts/saves_screen.gd:120
-msgid "Save code"
-msgstr ""
-
-#: scripts/saves_screen.gd:122
-msgid "Paste a save code"
-msgstr ""
-
-#: scripts/saves_screen.gd:131
-msgid "Copy mine"
-msgstr ""
-
-#: scripts/saves_screen.gd:138
-msgid "clear"
-msgstr ""
-
-#: scripts/saves_screen.gd:138
-msgid "copy"
-msgstr ""
-
-#: scripts/saves_screen.gd:138
-msgid "new hero"
-msgstr ""
-
-#: scripts/saves_screen.gd:138
-msgid "paste"
-msgstr ""
-
-#: scripts/saves_screen.gd:138
-msgid "play"
-msgstr ""
-
-#: scripts/saves_screen.gd:142
-msgid "Found %s in this browser's web game. Press B to bring them here, or Esc for the title and a new hero."
-msgstr ""
-
-#: scripts/saves_screen.gd:220
-msgid "Replace %s with a new hero?"
-msgstr ""
-
-#: scripts/saves_screen.gd:235
-msgid "Slot %d is already empty."
-msgstr ""
-
-#: scripts/saves_screen.gd:238
-msgid "Clear %s, the hero in hand, for good? You'll go back to the title."
-msgstr ""
-
-#: scripts/saves_screen.gd:242
-msgid "Clear %s from slot %d for good?"
-msgstr ""
-
-#: scripts/saves_screen.gd:244
-msgid "Slot %d is empty now."
-msgstr ""
-
-#: scripts/saves_screen.gd:250
-msgid "from the web game"
-msgstr ""
-
-#: scripts/saves_screen.gd:257
-msgid "That is not a save code. In the web game, open Options and use Copy save code, then paste it here."
-msgstr ""
-
-#: scripts/saves_screen.gd:259
-msgid "from the code"
-msgstr ""
-
-#: scripts/saves_screen.gd:265
-msgid "Save code copied. Paste it into Import save code in the web game's Options."
-msgstr ""
-
-#: scripts/saves_screen.gd:273
-msgid "Replace %s in slot %d with %s %s? Their progress here would be lost."
-msgstr ""
-
-#: scripts/saves_screen.gd:284
-msgid "%s Press %s again to confirm."
-msgstr ""
-
-#: scripts/saves_screen.gd:295
-msgid "Bring %s to slot %d"
-msgstr ""
-
-#: scripts/saves_screen.gd:296
-msgid "Load into slot %d"
-msgstr ""
-
-#: scripts/saves_screen.gd:333
-msgid "Empty slot"
-msgstr ""
-
-#: scripts/saves_screen.gd:334
-msgid "N starts a new hero here."
-msgstr ""
-
-#: scripts/saves_screen.gd:339
-msgid "Level %d %s in %s"
-msgstr ""
-
-#: scripts/saves_screen.gd:341
-msgid "%d gold, saved %s"
-msgstr ""
-
-#: scripts/saves_screen.gd:343
-msgid "Playing"
-msgstr ""
-
-#: scripts/saves_screen.gd:343
-msgid "Slot %d"
-msgstr ""
-
-#: scripts/saves_screen.gd:351
-msgid "just now"
-msgstr ""
-
-#: scripts/saves_screen.gd:353
-msgid "%d min ago"
-msgstr ""
-
-#: scripts/saves_screen.gd:356
-msgid "%d hours ago"
-msgstr ""
-
-#: scripts/saves_screen.gd:356
-msgid "1 hour ago"
-msgstr ""
-
-#: scripts/saves_screen.gd:358
-msgid "%d days ago"
-msgstr ""
-
-#: scripts/saves_screen.gd:358
-msgid "yesterday"
-msgstr ""
-
-#: scripts/saves_screen.gd:73
-msgid "New hero"
-msgstr ""
-
-#: scripts/saves_screen.gd:74
-msgid "Clear slot"
-msgstr ""
-
-#: scripts/saves_screen.gd:91
+#: scripts/saves_screen.gd:108
 msgid "From the old web edition"
 msgstr ""
 
-#: scripts/saves_screen.gd:91
+#: scripts/saves_screen.gd:108
 msgid "Welcome back"
 msgstr ""
 
-#: scripts/saves_screen.gd:95
+#: scripts/saves_screen.gd:112
 msgid "No hero from the old web edition in this browser. One you saved as a code comes across below."
 msgstr ""
 
-#: scripts/saves_screen.gd:97
+#: scripts/saves_screen.gd:114
 msgid "A hero from the old web edition comes across by their save code: paste it below."
+msgstr ""
+
+#: scripts/saves_screen.gd:119
+msgid "Your web game hero %s, %d gold."
+msgstr ""
+
+#: scripts/saves_screen.gd:136
+msgid "Save code"
+msgstr ""
+
+#: scripts/saves_screen.gd:138
+msgid "Paste a save code"
+msgstr ""
+
+#: scripts/saves_screen.gd:147
+msgid "Copy mine"
+msgstr ""
+
+#: scripts/saves_screen.gd:154
+msgid "clear"
+msgstr ""
+
+#: scripts/saves_screen.gd:154
+msgid "copy"
+msgstr ""
+
+#: scripts/saves_screen.gd:154
+msgid "new hero"
+msgstr ""
+
+#: scripts/saves_screen.gd:154
+msgid "paste"
+msgstr ""
+
+#: scripts/saves_screen.gd:154
+msgid "play"
+msgstr ""
+
+#: scripts/saves_screen.gd:158
+msgid "Found %s in this browser's web game. Press B to bring them here, or Esc for the title and a new hero."
+msgstr ""
+
+#: scripts/saves_screen.gd:236
+msgid "Replace %s with a new hero?"
+msgstr ""
+
+#: scripts/saves_screen.gd:251
+msgid "Slot %d is already empty."
+msgstr ""
+
+#: scripts/saves_screen.gd:254
+msgid "Clear %s, the hero in hand, for good? You'll go back to the title."
+msgstr ""
+
+#: scripts/saves_screen.gd:258
+msgid "Clear %s from slot %d for good?"
+msgstr ""
+
+#: scripts/saves_screen.gd:260
+msgid "Slot %d is empty now."
+msgstr ""
+
+#: scripts/saves_screen.gd:266
+msgid "from the web game"
+msgstr ""
+
+#: scripts/saves_screen.gd:273
+msgid "That is not a save code. In the web game, open Options and use Copy save code, then paste it here."
+msgstr ""
+
+#: scripts/saves_screen.gd:275
+msgid "from the code"
+msgstr ""
+
+#: scripts/saves_screen.gd:281
+msgid "Save code copied. Paste it into Import save code in the web game's Options."
+msgstr ""
+
+#: scripts/saves_screen.gd:289
+msgid "Replace %s in slot %d with %s %s? Their progress here would be lost."
+msgstr ""
+
+#: scripts/saves_screen.gd:300
+msgid "%s Press %s again to confirm."
+msgstr ""
+
+#: scripts/saves_screen.gd:311
+msgid "Bring %s to slot %d"
+msgstr ""
+
+#: scripts/saves_screen.gd:313
+msgid "Load into slot %d"
+msgstr ""
+
+#: scripts/saves_screen.gd:357
+msgid "Empty slot"
+msgstr ""
+
+#: scripts/saves_screen.gd:361
+msgid "Playing"
+msgstr ""
+
+#: scripts/saves_screen.gd:361
+msgid "Slot %d"
+msgstr ""
+
+#: scripts/saves_screen.gd:369
+msgid "N starts a new hero here."
+msgstr ""
+
+#: scripts/saves_screen.gd:373
+msgid "Level %d %s in %s"
+msgstr ""
+
+#: scripts/saves_screen.gd:376
+msgid "%d gold, saved %s"
+msgstr ""
+
+#: scripts/saves_screen.gd:382
+msgid "just now"
+msgstr ""
+
+#: scripts/saves_screen.gd:384
+msgid "%d min ago"
+msgstr ""
+
+#: scripts/saves_screen.gd:387
+msgid "%d hours ago"
+msgstr ""
+
+#: scripts/saves_screen.gd:387
+msgid "1 hour ago"
+msgstr ""
+
+#: scripts/saves_screen.gd:389
+msgid "%d days ago"
+msgstr ""
+
+#: scripts/saves_screen.gd:389
+msgid "yesterday"
+msgstr ""
+
+#: scripts/saves_screen.gd:90
+msgid "New hero"
+msgstr ""
+
+#: scripts/saves_screen.gd:91
+msgid "Clear slot"
 msgstr ""
 
 #: scripts/shop_screen.gd:107
@@ -12792,187 +12804,187 @@ msgstr ""
 msgid "For sale"
 msgstr ""
 
-#: scripts/skills_screen.gd:109
+#: scripts/skills_screen.gd:112
 msgid "Your ascension demands a path"
 msgstr ""
 
-#: scripts/skills_screen.gd:142
+#: scripts/skills_screen.gd:145
 msgid "Current"
 msgstr ""
 
-#: scripts/skills_screen.gd:142
+#: scripts/skills_screen.gd:145
 msgid "Rank %d"
 msgstr ""
 
-#: scripts/skills_screen.gd:142
+#: scripts/skills_screen.gd:145
 msgid "Walk this path"
 msgstr ""
 
-#: scripts/skills_screen.gd:142
+#: scripts/skills_screen.gd:145
 msgid "Walked"
 msgstr ""
 
-#: scripts/skills_screen.gd:144
+#: scripts/skills_screen.gd:147
 msgid "Current · key %d"
 msgstr ""
 
-#: scripts/skills_screen.gd:180
+#: scripts/skills_screen.gd:183
 msgid "key %d"
 msgstr ""
 
-#: scripts/skills_screen.gd:182
+#: scripts/skills_screen.gd:185
 msgid "1 pt"
 msgstr ""
 
-#: scripts/skills_screen.gd:182
+#: scripts/skills_screen.gd:185
 msgid "locked"
 msgstr ""
 
-#: scripts/skills_screen.gd:191
+#: scripts/skills_screen.gd:194
 msgid "SKILL"
 msgstr ""
 
-#: scripts/skills_screen.gd:193
+#: scripts/skills_screen.gd:196
 msgid "UPGRADE"
 msgstr ""
 
-#: scripts/skills_screen.gd:195
+#: scripts/skills_screen.gd:198
 msgid "PASSIVE"
 msgstr ""
 
-#: scripts/skills_screen.gd:214
+#: scripts/skills_screen.gd:217
 msgid "damage to every foe in reach"
 msgstr ""
 
-#: scripts/skills_screen.gd:217
+#: scripts/skills_screen.gd:220
 msgid " + %d HP"
 msgstr ""
 
-#: scripts/skills_screen.gd:218
+#: scripts/skills_screen.gd:221
 msgid "%sx %s %s · %s"
 msgstr ""
 
-#: scripts/skills_screen.gd:245
+#: scripts/skills_screen.gd:248
 msgid "%s: %s  Signature: %s - %s"
 msgstr ""
 
-#: scripts/skills_screen.gd:255
+#: scripts/skills_screen.gd:258
 msgid "Not on the dock - press 1-6 to put it on that key."
 msgstr ""
 
-#: scripts/skills_screen.gd:255
+#: scripts/skills_screen.gd:258
 msgid "On key %d - press 1-6 to move it."
 msgstr ""
 
-#: scripts/skills_screen.gd:257
+#: scripts/skills_screen.gd:260
 msgid "Learn it for 1 point."
 msgstr ""
 
-#: scripts/skills_screen.gd:292
+#: scripts/skills_screen.gd:295
 msgid "Nothing learned to forget yet."
 msgstr ""
 
-#: scripts/skills_screen.gd:294
+#: scripts/skills_screen.gd:297
 msgid "Forgetting takes the village's quiet. Come back to Pixelheim."
 msgstr ""
 
-#: scripts/skills_screen.gd:296
+#: scripts/skills_screen.gd:299
 msgid "Forgetting %s costs %dg."
 msgstr ""
 
-#: scripts/skills_screen.gd:299
+#: scripts/skills_screen.gd:302
 msgid "Forget %s for %dg and get the points back? F again to agree."
 msgstr ""
 
-#: scripts/skills_screen.gd:302
+#: scripts/skills_screen.gd:305
 msgid "%d points"
 msgstr ""
 
-#: scripts/skills_screen.gd:302
+#: scripts/skills_screen.gd:305
 msgid "1 point"
 msgstr ""
 
-#: scripts/skills_screen.gd:302
+#: scripts/skills_screen.gd:305
 msgid "Forgotten. %s to spend again."
 msgstr ""
 
-#: scripts/skills_screen.gd:311
+#: scripts/skills_screen.gd:314
 msgid "Set key"
 msgstr ""
 
-#: scripts/skills_screen.gd:312
+#: scripts/skills_screen.gd:315
 msgid "Forget"
 msgstr ""
 
-#: scripts/skills_screen.gd:336
+#: scripts/skills_screen.gd:339
 msgid "Only a skill you know can go on a key."
 msgstr ""
 
-#: scripts/skills_screen.gd:340
+#: scripts/skills_screen.gd:343
 msgid "%s is on key %d."
 msgstr ""
 
-#: scripts/skills_screen.gd:345
+#: scripts/skills_screen.gd:348
 msgid "%d skills"
 msgstr ""
 
-#: scripts/skills_screen.gd:345
+#: scripts/skills_screen.gd:348
 msgid "1 skill"
 msgstr ""
 
-#: scripts/skills_screen.gd:378
+#: scripts/skills_screen.gd:381
 msgid "You walk the path of the %s."
 msgstr ""
 
-#: scripts/skills_screen.gd:380
+#: scripts/skills_screen.gd:383
 msgid "That path isn't yours to walk now."
 msgstr ""
 
-#: scripts/skills_screen.gd:383
+#: scripts/skills_screen.gd:386
 msgid "Learned: %s."
 msgstr ""
 
-#: scripts/skills_screen.gd:385
+#: scripts/skills_screen.gd:388
 msgid "Already learned."
 msgstr ""
 
-#: scripts/skills_screen.gd:395
+#: scripts/skills_screen.gd:398
 msgid "Requires the skill above"
 msgstr ""
 
-#: scripts/skills_screen.gd:397
+#: scripts/skills_screen.gd:400
 msgid "Needs level %d"
 msgstr ""
 
-#: scripts/skills_screen.gd:398
+#: scripts/skills_screen.gd:401
 msgid "No skill points to spend"
 msgstr ""
 
-#: scripts/skills_screen.gd:45
+#: scripts/skills_screen.gd:48
 msgid "forget"
 msgstr ""
 
-#: scripts/skills_screen.gd:45
+#: scripts/skills_screen.gd:48
 msgid "learn / walk"
 msgstr ""
 
-#: scripts/skills_screen.gd:45
+#: scripts/skills_screen.gd:48
 msgid "put on a key"
 msgstr ""
 
-#: scripts/skills_screen.gd:46
+#: scripts/skills_screen.gd:49
 msgid "A point each level, one more each rank."
 msgstr ""
 
-#: scripts/skills_screen.gd:71
+#: scripts/skills_screen.gd:74
 msgid "%d skill point%s"
 msgstr ""
 
-#: scripts/skills_screen.gd:78
+#: scripts/skills_screen.gd:81
 msgid "The tree is whole: spend them beyond it, in Stats."
 msgstr ""
 
-#: scripts/skills_screen.gd:91
+#: scripts/skills_screen.gd:94
 msgid "Path of %s"
 msgstr ""
 

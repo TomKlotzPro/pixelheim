@@ -104,6 +104,8 @@ godot --path godot -- --screenshot lineup             # every hero role, village
 godot --path godot -- --screenshot saves              # the saves screen
 godot --path godot -- --screenshot saves --web-save res://test/fixtures/web_save_v4.txt
                                                       # first-visit web import offer
+godot --path godot -- --screenshot saves --slots res://test/fixtures/slots
+                                                      # every slot full (the longest lines a card shows); nothing written
 godot --path godot -- --screenshot --map town portal  # walk into the nearest doorway
 godot --path godot -- --screenshot die                # fall, then wake at the inn
 godot --path godot -- --screenshot title splash       # the title as the boot splash

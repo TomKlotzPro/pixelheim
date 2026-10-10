@@ -29,8 +29,11 @@ func _open() -> void:
 	dim()
 	# The paths are written on one page; the details read below it.
 	add_child(UiStyle.page(Rect2(60, 60, 1160, 562)))
+	# The tree is drawn on the 1280x720 canvas the screen is laid out on
+	# (PIX-230): anchored to the whole view instead, it ran past a phone's
+	# view by the offset that centres the screen in it.
 	view = Control.new()
-	view.set_anchors_preset(Control.PRESET_FULL_RECT)
+	view.size = Touch.DESIGN
 	view.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(view)
 	# The selected card in full, on the page under the tree (one line a node
