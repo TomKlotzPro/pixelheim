@@ -43,7 +43,14 @@ func test_strong_packs_and_lairs_keep_off_the_roads() -> void:
 
 func test_the_deepwood_and_the_mirefen_greet_a_traveller_safely() -> void:
 	var deep := MapData.load_by_id("deepwood")
-	var arrival := Vector2i(2, 24)
+	# Where the Reach's road sets a traveller down (high on the west edge
+	# since the Reach became one plane, PIX-269).
+	var arrival := Vector2i(-1, -1)
+	var overworld := MapData.load_by_id("overworld")
+	for door: Vector2i in overworld.portals:
+		if overworld.portals[door].get("mapId", "") == "deepwood":
+			arrival = Vector2i(int(overworld.portals[door]["x"]), int(overworld.portals[door]["y"]))
+	assert_eq(arrival, Vector2i(2, 5), "the Deepwood's way in")
 	for spawn: Dictionary in Bestiary.spawns_on("deepwood"):
 		var at := Vector2i(int(spawn["x"]), int(spawn["y"]))
 		assert_gte(maxi(absi(at.x - arrival.x), absi(at.y - arrival.y)), 12, "%s stands back from the arrival" % spawn["id"])

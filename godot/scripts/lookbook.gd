@@ -56,10 +56,11 @@ const SHOTS := [
 	{"name": "22_rise", "map": "town", "at": "street", "time": DAY, "rise": "odos_store"},
 	# The ways between maps (PIX-269): the river road running out through
 	# the cliffs at the Deepwood pass by day and by night, the Mirefen's way
-	# back, and the road south out through the ridge - bare ground, no post.
+	# back (high on its east edge since the Reach became one plane), and the
+	# road south out through the ridge - bare ground, no post.
 	{"name": "24_deepwood_pass", "map": "overworld", "cell": Vector2i(91, 33), "time": DAY},
 	{"name": "25_deepwood_pass_night", "map": "overworld", "cell": Vector2i(91, 33), "time": NIGHT},
-	{"name": "26_mire_pass", "map": "mirefen", "cell": Vector2i(55, 24), "time": DAY},
+	{"name": "26_mire_pass", "map": "mirefen", "cell": Vector2i(55, 5), "time": DAY},
 	{"name": "27_road_south", "map": "overworld", "cell": Vector2i(16, 60), "time": DAY},
 	# The map (PIX-266) of a hero who has walked the whole Reach, its list
 	# scrolled down to the last waypoint, on Greyhold's page.
@@ -72,7 +73,7 @@ const SHOTS := [
 	{"name": "31_hales_hall", "map": "keep", "cell": Vector2i(13, 7), "time": DAY},
 	{"name": "32_hales_stair", "map": "keep", "cell": Vector2i(13, 6), "time": DAY, "down": true},
 	# Come through the pass into the Mirefen: its name on a card, once.
-	{"name": "33_place_card", "map": "mirefen", "cell": Vector2i(55, 24), "time": DAY, "card": true},
+	{"name": "33_place_card", "map": "mirefen", "cell": Vector2i(55, 5), "time": DAY, "card": true},
 ]
 ## Filming the walk: slowed to a quarter, a picture every WALK_STEP of the
 ## game's time (thirty a second: two or three of each frame of the walk),

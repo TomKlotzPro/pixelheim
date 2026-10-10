@@ -920,8 +920,8 @@
     {
       "id": "mire_night_1",
       "mapId": "mirefen",
-      "x": 55,
-      "y": 14,
+      "x": 56,
+      "y": 17,
       "species": "boneknight",
       "hours": "night"
     },
