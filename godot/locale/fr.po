@@ -2221,6 +2221,10 @@ msgid "CURRENT WORDS: Loras wants his lute back from the troll and Mirelle two g
 msgstr "DES MOTS À JOUR : Loras veut reprendre son luth au troll et Mirelle deux gemmes pour sa chambre forte, comme le disent leurs quêtes, et non d'anciens prix ; l'objectif de l'âge du Bourg précise que sa fontaine réclamera toujours l'écaille de Fafnyr ; le matériau manquant d'une recette donne toujours son nom"
 
 #: assets/data/changelog.json
+msgid "Captain Hale's order book waits on his table at Greyhold: read it once his letter is delivered, and learn what the old guard found on the mountain"
+msgstr "Le registre du capitaine Hale attend sur sa table à Greyhold : lisez-le une fois sa lettre remise, et apprenez ce que la vieille garde a trouvé sur la montagne"
+
+#: assets/data/changelog.json
 msgid "Cave mouths are framed and lit by torches, the mountain gate stands in the rock, and stairs up name the place above"
 msgstr "Les entrées de grotte sont encadrées et éclairées de torches, la porte de la montagne se dresse dans la roche, et les escaliers indiquent le lieu au-dessus"
 
@@ -3617,6 +3621,10 @@ msgid "Once Upon a Mountain"
 msgstr "Il était une montagne"
 
 #: assets/data/changelog.json
+msgid "Once he stands down, the north stair takes you back up to the cellars' door"
+msgstr "Une fois qu'il a quitté son poste, l'escalier nord vous remonte jusqu'à la porte des caves"
+
+#: assets/data/changelog.json
 msgid "Once the Seam Warden falls, the ore cage takes you back up to the pithead"
 msgstr "Une fois le Gardien du Filon tombé, la cage à minerai vous remonte jusqu'au carreau de la mine"
 
@@ -4701,6 +4709,10 @@ msgid "The Great Expansion"
 msgstr "La Grande Expansion"
 
 #: assets/data/changelog.json
+msgid "The Greyhold cellars now go three floors down: the cells with Fenwick's locket, the garrison's crypt with Ana's father's badge, and the captain's great hall"
+msgstr "Les caves de Greyhold descendent désormais sur trois étages : les cellules avec le médaillon de Fenwick, la crypte de la garnison avec l'insigne du père d'Ana, et la grande salle du capitaine"
+
+#: assets/data/changelog.json
 msgid "The HUD's Map button speaks a proper event now instead of faking an M keypress - it keeps working even after you rebind your keys"
 msgstr "Le bouton Carte de l'interface émet désormais un vrai événement au lieu de simuler un appui sur M - il fonctionne même après que vous avez réassigné vos touches"
 
@@ -4711,6 +4723,10 @@ msgstr "Le pic de morts de la Salle des échos est adouci : les spectres se so
 #: assets/data/changelog.json
 msgid "The Hamlet's projects each bring something: Odo pays a tenth more, Hilda forges and Vex brews for a tenth less, and a night at the rebuilt inn leaves you well rested for a while"
 msgstr "Chaque projet du Hameau apporte quelque chose : Odo paie un dixième de plus, Hilda forge et Vex brasse pour un dixième de moins, et une nuit à l'auberge rebâtie vous offre un vrai repos pendant un temps"
+
+#: assets/data/changelog.json
+msgid "The Hollow Captain no longer fights to the end: wear him down and read him Maren's words, and he stands down, hands you Oskar's shield and lies down to rest"
+msgstr "Le Capitaine creux ne se bat plus jusqu'au bout : épuisez-le et lisez-lui les mots de Maren, il quitte son poste, vous remet le bouclier d'Oskar et s'allonge pour se reposer"
 
 #: assets/data/changelog.json
 msgid "The JOURNAL (J) tracks every promise with progress bars and tells you who to see when it's ready"
@@ -5283,6 +5299,10 @@ msgstr "SOUS LE CAPOT : chaque menu, page et conversation s'ouvre, se ferme et
 #: assets/data/changelog.json
 msgid "UNDER THE HOOD: the map you walk is now drawn by its own part of the game, apart from the play"
 msgstr "SOUS LE CAPOT : la carte que vous parcourez est désormais dessinée par sa propre partie du jeu, à l'écart de l'action"
+
+#: assets/data/changelog.json
+msgid "Ulla and the old guard come home to keep Pixelheim's gate, and Brother Teo hangs Greyhold's mended bell in the town hall"
+msgstr "Ulla et la vieille garde rentrent garder la porte de Pixelheim, et Frère Teo suspend la cloche réparée de Greyhold dans la mairie"
 
 #: assets/data/changelog.json
 msgid "Under its name, what it brings: who is back at work, the new perk, or who has moved into town"

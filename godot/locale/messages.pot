@@ -2221,6 +2221,10 @@ msgid "CURRENT WORDS: Loras wants his lute back from the troll and Mirelle two g
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Captain Hale's order book waits on his table at Greyhold: read it once his letter is delivered, and learn what the old guard found on the mountain"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Cave mouths are framed and lit by torches, the mountain gate stands in the rock, and stairs up name the place above"
 msgstr ""
 
@@ -3617,6 +3621,10 @@ msgid "Once Upon a Mountain"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Once he stands down, the north stair takes you back up to the cellars' door"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Once the Seam Warden falls, the ore cage takes you back up to the pithead"
 msgstr ""
 
@@ -4701,6 +4709,10 @@ msgid "The Great Expansion"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Greyhold cellars now go three floors down: the cells with Fenwick's locket, the garrison's crypt with Ana's father's badge, and the captain's great hall"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The HUD's Map button speaks a proper event now instead of faking an M keypress - it keeps working even after you rebind your keys"
 msgstr ""
 
@@ -4710,6 +4722,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The Hamlet's projects each bring something: Odo pays a tenth more, Hilda forges and Vex brews for a tenth less, and a night at the rebuilt inn leaves you well rested for a while"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The Hollow Captain no longer fights to the end: wear him down and read him Maren's words, and he stands down, hands you Oskar's shield and lies down to rest"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5282,6 +5298,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "UNDER THE HOOD: the map you walk is now drawn by its own part of the game, apart from the play"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Ulla and the old guard come home to keep Pixelheim's gate, and Brother Teo hangs Greyhold's mended bell in the town hall"
 msgstr ""
 
 #: assets/data/changelog.json
