@@ -114,7 +114,7 @@ func _logo() -> void:
 	# It sweeps in from off the screen on purpose: not a layout to fit.
 	shine.set_meta(Layout.DECOR, true)
 	face.add_child(shine)
-	var tagline := UiStyle.label("Fifteen floors. One dragon. Worse things below.", 18, UiStyle.CREAM, Vector2(0, LOGO_Y + 92))
+	var tagline := UiStyle.label("The village burned. You stayed.", 18, UiStyle.CREAM, Vector2(0, LOGO_Y + 92))
 	tagline.custom_minimum_size = Vector2(VIEW.x, 0)
 	tagline.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(_shadowed(tagline))

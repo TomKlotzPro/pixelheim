@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.199.0",
+      "date": "2026-10-10",
+      "codename": "You Stayed",
+      "notes": [
+        "The line under the title now says what the game is about: The village burned. You stayed."
+      ]
+    },
+    {
       "version": "0.198.0",
       "date": "2026-10-10",
       "codename": "Ways On",
