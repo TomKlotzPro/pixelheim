@@ -62,12 +62,11 @@ godot/tools/check.sh quick [--plan]                            # before every PR
 godot/tools/check.sh full                                      # everything CI runs, locally
 godot --headless --path godot --import                        # after new assets/scripts
 godot --headless --path godot -s res://addons/gut/gut_cmdln.gd # GUT; ALSO grep the output for "Parse Error"
-godot --path godot -- --screenshot [--map <id>] [--walk l,d,r,u] [fight [kill] [hurt] [--foe <species>]] [chest] [talk] [near] [shop [--tab N]] [hall] [bank] [home --mode M] [--town-tier N] [--house-tier N] [lineup] [saves] [night] [worldmap] [overview] [--at x,y] [--zoom Z] [--floor N] [clear] [gate [--dungeon id] [descend]] [leave] [quest] [journal] [--level N] [rankup [walk-path]] [stats] [skills] [codex [bestiary]] [cast] [inventory] [title [splash]] [create] [pause [scanlines]] [options] [portal] [die] [talk --keys e,esc] [motion] [--slot N]
+godot --path godot -- --screenshot [--map <id>] [--walk l,d,r,u] [fight [kill] [hurt] [--foe <species>]] [chest] [talk] [near] [shop [--tab N]] [hall] [bank] [home --mode M] [--town-tier N] [--house-tier N] [lineup] [saves] [night] [worldmap] [overview] [--at x,y] [--zoom Z] [--floor N] [clear] [gate [--dungeon id] [descend]] [leave] [quest] [journal] [--level N] [rankup [walk-path]] [stats] [skills] [codex [bestiary]] [cast] [inventory] [title] [create] [pause [scanlines]] [options] [portal] [die] [talk --keys e,esc] [motion] [--slot N]
 godot/tools/flows.sh [--quiet] [-j N] [--shard K/N] [name...]   # the release flows, N at a time (cores-2), stepped; pictures in godot/flows/
 godot/tools/flows.sh --boot      # every map in the data booted headless, by day and at night (catches world.gd errors GUT can't)
 godot/tools/flows.sh [--boot] --list   # the flows (or boots) with their tags, a line each
 godot/tools/lookbook.sh [--desktop] [--looks browser,app] [--compare]   # the look book (opens a window; --compare doesn't)
-godot/tools/splash.sh            # re-render the web boot splash after title changes
 python3 godot/tools/favicon.py   # redraw the game's icon (assets/icon.png)
 ```
 

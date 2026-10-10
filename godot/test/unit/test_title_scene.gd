@@ -41,7 +41,7 @@ func _scene(still: bool) -> TitleScene:
 
 
 func test_the_camera_drifts_slowly_from_the_composed_frame() -> void:
-	assert_eq(TitleScene.drift(0.0), Vector2.ZERO, "it opens on the frame the boot splash shows")
+	assert_eq(TitleScene.drift(0.0), Vector2.ZERO, "it opens on the frame the title was composed for")
 	var widest := Vector2.ZERO
 	for i in 600:
 		var t := i * 0.5

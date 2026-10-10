@@ -22,21 +22,20 @@ static func _data() -> Dictionary:
 ## Who is on a map right now (npcsOn): townsfolk the town has grown enough
 ## for, and recruits where they wait — or at home in town once settled.
 ## While a keeper's building is still rubble (PIX-146, `done` the projects
-## built; null skips it), they trade from a stall on the town square; in the
+## built; null skips it), they trade from a stall on the town square, and
+## once it stands they are in it, whatever the town's age (PIX-283: Sela's
+## inn rebuilt first left her nowhere until the whole Hamlet stood); in the
 ## Ashes the elder and the mayor say their Ashes lines. While her tin waits
 ## (`tin_waits`, PIX-253) and her house is still ash, Maren stands digging
 ## in front of it rather than at the shrine.
 static func on_map(map_id: String, town_tier: int, settlers: Array, done: Variant = null, gate_open := true, deepest := 0, tin_waits := false) -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	for npc: Dictionary in _data()["npcs"]:
-		var stall: Dictionary = npc.get("stall", {})
-		if done != null and not stall.is_empty() and stall["project"] not in done:
+		if at_stall(npc, done):
 			if map_id == "town":
-				var at_stall := npc.duplicate()
-				at_stall.merge({"mapId": "town", "x": stall["x"], "y": stall["y"], "wander": false}, true)
-				out.append(at_stall)
+				out.append(standing(npc, done))
 			continue
-		if npc["mapId"] == map_id and int(npc.get("minTownTier", 1)) <= town_tier:
+		if npc["mapId"] == map_id and _age_needed(npc, done) <= town_tier:
 			if town_tier == 0 and npc.has("ashesLines"):
 				npc = npc.duplicate()
 				npc["lines"] = npc["ashesLines"]
@@ -67,6 +66,43 @@ static func on_map(map_id: String, town_tier: int, settlers: Array, done: Varian
 	if done != null and map_id == "town":
 		out.append_array(Town.site_workers(done))
 	return out
+
+
+## Whether a keeper trades from their stall on the square now: their
+## building (the stall's project) not yet built. `done` null skips it.
+static func at_stall(npc: Dictionary, done: Variant) -> bool:
+	var stall: Dictionary = npc.get("stall", {})
+	return done != null and not stall.is_empty() and stall["project"] not in done
+
+
+## A townsperson where they stand now: a keeper at their stall on the square
+## while their building is rubble, else where the data has them.
+static func standing(npc: Dictionary, done: Variant) -> Dictionary:
+	if not at_stall(npc, done):
+		return npc
+	var stall: Dictionary = npc["stall"]
+	var out := npc.duplicate()
+	out.merge({"mapId": "town", "x": stall["x"], "y": stall["y"], "wander": false}, true)
+	return out
+
+
+## The keeper of a building in town (`town_alchemist`: Vex), the one who
+## trades from a stall while it's rubble; {} for a room without one.
+static func keeper_of(map_id: String) -> Dictionary:
+	for npc: Dictionary in _data()["npcs"]:
+		if npc["mapId"] == map_id and npc.has("stall"):
+			return npc
+	return {}
+
+
+## The town's age a townsperson waits for (minTownTier, 1 when unsaid). A
+## keeper with a stall waits for their building, not the age (PIX-283): the
+## Hamlet's four can be rebuilt one at a time in the Ashes. Without `done`
+## (callers that skip the buildings), the age as before.
+static func _age_needed(npc: Dictionary, done: Variant) -> int:
+	if done != null and npc.has("stall"):
+		return 0
+	return int(npc.get("minTownTier", 1))
 
 
 ## The townsfolk who move in as the town reaches `town_tier` (PIX-264), by
@@ -187,13 +223,17 @@ static func as_npc(recruit: Dictionary, settled: bool, town_tier := 1, done: Var
 
 
 ## Any speaking villager by id, recruits included (npcById); {} if unknown.
-static func by_id(id: String, settlers: Array) -> Dictionary:
+## With `done` (the projects built), where they stand now: a keeper at their
+## stall while their building is rubble, a settler at home in a room (Wenna
+## at the inn) beside its keeper's stall then (PIX-283: a quest's lead
+## pointed into the ruin).
+static func by_id(id: String, settlers: Array, done: Variant = null) -> Dictionary:
 	for npc: Dictionary in _data()["npcs"]:
 		if npc["id"] == id:
-			return npc
+			return standing(npc, done)
 	for recruit: Dictionary in _data()["recruits"]:
 		if recruit["id"] == id:
-			return as_npc(recruit, id in settlers)
+			return as_npc(recruit, id in settlers, 1, done)
 	return {}
 
 

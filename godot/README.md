@@ -108,7 +108,6 @@ godot --path godot -- --screenshot saves --slots res://test/fixtures/slots
                                                       # every slot full (the longest lines a card shows); nothing written
 godot --path godot -- --screenshot --map town portal  # walk into the nearest doorway
 godot --path godot -- --screenshot die                # fall, then wake at the inn
-godot --path godot -- --screenshot title splash       # the title as the boot splash
 godot --path godot -- --screenshot title options     # options over the title, before any hero
 godot --path godot -- --screenshot title --wait 8      # hold the shot (the dragon crosses the moon about 8 s in)
 godot --path godot -- --screenshot title still        # with Reduce motion on (no sway, drift, dragon or shine)
@@ -236,12 +235,15 @@ river stops the walk, the camera catching up would read as a step back),
 and looks closely only at pure reds (turning every pixel into its hex took
 most of a slow frame).
 
-### Boot splash
+### Loading
 
-The web build loads behind `assets/splash.png`, which is the title screen
-without its menu or parade, and the loading bar sits where the menu will
-appear (`html/head_include` in `export_presets.cfg`). Rerun
-`godot/tools/splash.sh` whenever the title changes.
+While the game loads there is nothing but the title's night sky colour
+(`#080c28`, `boot_splash/bg_color` with no picture) and, on the web, a quiet
+thin bar in the middle of the page (`html/head_include` in
+`export_presets.cfg`); the tab and the window are titled just "Pixelheim".
+No words, so nothing shows in English before the title (PIX-295: the old
+title's picture, with its English tagline, outlived the title). The title
+then rises out of that colour.
 
 ### Icon
 

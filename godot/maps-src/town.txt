@@ -5,8 +5,10 @@
 # shrine stands in a grove under the cliffs (north-west), the forge on Forge
 # Lane runs east to the bridge and the farms and orchard across the river,
 # Vex brews by her herb garden, the homes keep to Hearth Lane (south-west),
-# and the green below the square runs down to the old well and the fishing
-# dock on the bend. Every building faces south, its door on its bottom row.
+# and the green below the square runs down past the old well to the river.
+# Every building faces south, its door on its bottom row. (A fishing dock
+# ran out from the green, two planks into a river four wide, and read as a
+# bridge left half built, from the green and from the Reach: PIX-287.)
 # The ages build on the lots south of Hearth Lane and across the bridge.
 # One rampart round it all, a wall drawn once (PIX-248: the double rampart
 # looked strange from inside): the top two rows and the columns beyond the
@@ -31,7 +33,6 @@ key = path -
 key : stone -
 key ~ water -
 key H bridge -
-key K dock -
 key " crops -
 key F forest -
 key + fence -
@@ -88,8 +89,8 @@ map
 .#....................FFF*FFF...*......===.....*..................~~~~~FFFFFFFFFFF#.
 .#....========================================================..~~~~~~~FFFFFFFFFFF#.
 .#....========================================================~~~~~~~~~FFFFFFFFFFF#.
-.#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~KKK~~~~~~~~~~~~~~~~~~~~~~~~~~~~~FFFFFFFFFFF#.
-.#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~KKK~~~~~~~~~~~~~~~~~~~~~~~~~~~~~FFFFFFFFFFF#.
+.#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~FFFFFFFFFFF#.
+.#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~FFFFFFFFFFF#.
 .#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~FFFFFFFFFFF#.
 .#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~FFFFFFFFFFF#.
 .#FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF#.

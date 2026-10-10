@@ -68,19 +68,52 @@ func _keys(flags: HarnessFlags) -> void:
 		"r": KEY_R, "a": KEY_A, "d": KEY_D, "z": KEY_Z, "x": KEY_X, "f": KEY_F, "tab": KEY_TAB,
 	}
 	for key: String in flags.list("--keys"):
-		for pressed: bool in [true, false]:
-			_press(codes[key], pressed)
-			# Held through two physics ticks too: walking and facing are read
-			# there, and a run stepped faster than its ticks (`--fps`) draws
-			# frames between them.
-			await get_tree().process_frame
-			await get_tree().physics_frame
-			await get_tree().physics_frame
-			await get_tree().process_frame
-		# Paced in the game's time as well as frames, as a hand is: a
-		# screen that ignores the press that opened it would miss the next.
-		await get_tree().create_timer(0.08).timeout
+		await _tap(codes[key])
 	await get_tree().create_timer(0.2).timeout
+
+
+## One key pressed and let go, as a hand would.
+func _tap(keycode: Key) -> void:
+	for pressed: bool in [true, false]:
+		_press(keycode, pressed)
+		# Held through two physics ticks too: walking and facing are read
+		# there, and a run stepped faster than its ticks (`--fps`) draws
+		# frames between them.
+		await get_tree().process_frame
+		await get_tree().physics_frame
+		await get_tree().physics_frame
+		await get_tree().process_frame
+	# Paced in the game's time as well as frames, as a hand is: a
+	# screen that ignores the press that opened it would miss the next.
+	await get_tree().create_timer(0.08).timeout
+
+
+## The villager `id` standing on this map, or null when they aren't here.
+func _villager(id: String) -> Node:
+	for villager in get_tree().get_nodes_in_group("npcs"):
+		if not villager.away and String(villager.data.get("id", "")) == id:
+			return villager
+	return null
+
+
+## Stand below `villager`, facing them.
+func _face(villager: Node) -> void:
+	world.player.position = MapView.center(villager.cell + Vector2i.DOWN)
+	world.camera_rig.cut()
+	world.player_cell = villager.cell + Vector2i.DOWN
+	world.player.face(Vector2.UP)
+
+
+## A word with `villager`, as a hero has one (PIX-283): below them, facing
+## them, E, and E again till the conversation closes.
+func _word_with(villager: Node) -> void:
+	_face(villager)
+	world.interaction.interact()
+	await get_tree().create_timer(0.3).timeout
+	for press in 12:
+		if not world.get_children().any(func(node: Node) -> bool: return node.has_method("_advance")):
+			return
+		await _tap(KEY_E)
 
 
 ## A harness key press, as a player's would land: the Input singleton's
@@ -616,10 +649,6 @@ func _run_test_harness() -> void:
 		var sheet := "stats_screen" if flags.has("stats") else "skills_screen"
 		world.add_child(load("res://scripts/%s.gd" % sheet).new())
 		await get_tree().create_timer(0.3).timeout
-	if flags.has("splash"):
-		# Pair with `title`: the boot splash, once every letter has landed.
-		world.get_children().filter(func(node: Node) -> bool: return node.has_method("as_splash"))[0].as_splash()
-		await get_tree().create_timer(1.2).timeout
 	if flags.has("create"):
 		# Hero creation over the title, a role picked and a name typed.
 		var creation := preload("res://scripts/create_screen.gd").new()
@@ -636,11 +665,11 @@ func _run_test_harness() -> void:
 		await _keys(flags)
 	if flags.has("title") and flags.has("whatsnew"):
 		# What's new over the title, as the version line opens it.
-		world.get_children().filter(func(node: Node) -> bool: return node.has_method("as_splash"))[0]._whats_new()
+		world.get_children().filter(func(node: Node) -> bool: return node.has_method("_whats_new"))[0]._whats_new()
 		await get_tree().create_timer(0.3).timeout
 	if flags.has("title") and flags.has("options"):
 		# Options over the title, before any hero is made.
-		world.get_children().filter(func(node: Node) -> bool: return node.has_method("as_splash"))[0]._options()
+		world.get_children().filter(func(node: Node) -> bool: return node.has_method("_whats_new"))[0]._options()
 		await get_tree().create_timer(0.3).timeout
 	elif flags.has("pause") or flags.has("options"):
 		if flags.has("scanlines"):
@@ -679,13 +708,22 @@ func _run_test_harness() -> void:
 		GameState.questing.finish_dialogue("elder")
 		await get_tree().create_timer(0.3).timeout
 	if flags.has("brew"):
-		# A First Brew (PIX-231): a potion brewed at Vex's cauldron before her
-		# quest is taken; then a word with her takes it, and another hands it in.
+		# A First Brew (PIX-231): a potion brewed before Vex's quest is taken;
+		# then a word with her takes it, and another hands it in. Where she
+		# stands now (PIX-283): in her room, brewed at its cauldron, or on the
+		# square while her house is rubble, brewed at her stall's counter. The
+		# words are had as a hero has them, facing her, so a Vex who isn't
+		# there gives nothing.
 		GameState.pack.add_item("forest_herb")
 		GameState.pack.add_item("marsh_reed")
+		var vex := _villager("alchemist_vex")
+		if vex != null and world.map.id == "town":
+			GameState.trade.stall_shop = Economy.station_shop("alchemy")
 		GameState.trade.craft("brew_potion_hp")
-		GameState.questing.finish_dialogue("alchemist_vex")
-		GameState.questing.finish_dialogue("alchemist_vex")
+		GameState.trade.stall_shop = ""
+		if vex != null:
+			await _word_with(vex)
+			await _word_with(vex)
 		await get_tree().create_timer(0.3).timeout
 	if flags.has("journal"):
 		# A few promises in hand: slimes half done, the cheese ready, the troll

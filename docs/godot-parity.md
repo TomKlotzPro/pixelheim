@@ -141,7 +141,7 @@ Each test of the web game's Playwright suite (`e2e/*.spec.ts`), and where it sta
 
 - `godot/tools/flows.sh` drives the thirteen flows a release must not break through the screenshot harness: spawn, portal, chest, shop, craft, quest, rank-up, fight, death and the inn, saves, a conversation, leaving one, and smooth walking. Each one checks the harness report and leaves a picture in `godot/flows/`.
 - `test_save_codec.gd` loads a late-game save made by the web's own reducer (level 18, all fifteen floors, house, village, a business, savings) and checks Godot writes back exactly what the web writes.
-- The web build loads behind the title's own night scene (`godot/tools/splash.sh`), with the loading bar where the menu appears.
+- The web build loads on the title's night sky colour with a quiet bar and no words (PIX-295), and the title rises out of it.
 - Draw calls, as the harness reports them: 76 in any map (tiles batch by texture, even zoomed out over the whole overworld), about 160 with a full screen like the inventory open, 158 on the title.
 
 ## Fixed in both editions

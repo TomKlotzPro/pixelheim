@@ -1861,6 +1861,10 @@ msgid "A hero from before keeps everything: whoever has cleared a floor finds th
 msgstr "Un ancien héros conserve tout : qui a déjà nettoyé un étage trouve la porte ouverte, et Maren passe directement à sa demande suivante"
 
 #: assets/data/changelog.json
+msgid "A keeper stands in their building the day it is rebuilt: Sela in her inn, Vex at her brews, whatever the village's age"
+msgstr "Un commerçant s'installe dans son bâtiment le jour où il est reconstruit : Sela dans son auberge, Vex à ses breuvages, quel que soit l'âge du village"
+
+#: assets/data/changelog.json
 msgid "A lake behind the square swells and glints, the trees and the hill's pines lean in the wind, mist rolls along the valley and embers rise off the torches"
 msgstr "Un lac derrière la place ondule et scintille, les arbres et les pins de la colline penchent sous le vent, la brume roule dans la vallée et des braises montent des torches"
 
@@ -3581,6 +3585,10 @@ msgid "No more glow around the hero at higher ranks: you look the same at every 
 msgstr "Plus de halo autour du héros aux rangs supérieurs : vous avez la même allure à chaque rang, et c'est votre équipement qui se voit. Le moment de l'ascension reste, un éclat de la lumière de votre classe"
 
 #: assets/data/changelog.json
+msgid "No more half bridge south of the village"
+msgstr "Plus de demi-pont au sud du village"
+
+#: assets/data/changelog.json
 msgid "No teleporting over-encumbered. Lighten the pack."
 msgstr "Pas de téléportation en surcharge. Allégez votre sac."
 
@@ -3770,7 +3778,7 @@ msgstr "Ouvrez les Compétences depuis l'interface ; vos anciennes compétence
 
 #: assets/data/changelog.json
 msgid "Open for Business"
-msgstr "Boutique ouverte"
+msgstr "Ouvert"
 
 #: assets/data/changelog.json
 msgid "Open for Trade"
@@ -5009,6 +5017,10 @@ msgid "The fallen lie in one piece: a hero in a helmet from one set and armour f
 msgstr "Les vaincus gisent d'un seul tenant : un héros portant le casque d'un ensemble et l'armure d'un autre ne tombe plus en deux moitiés de deux héros différents"
 
 #: assets/data/changelog.json
+msgid "The first brew works at every stage: at Vex's stall while her house is ash, at her cauldron once it stands"
+msgstr "La première préparation fonctionne à chaque étape : à l'étal de Vex tant que sa maison est en cendres, à son chaudron une fois rebâtie"
+
+#: assets/data/changelog.json
 msgid "The first dream's voice is Morvax's now"
 msgstr "La voix du premier rêve est désormais celle de Morvax"
 
@@ -5087,6 +5099,10 @@ msgstr "La ligne au-dessus de la barre dit où : la prochaine étape, le lieu 
 #: assets/data/changelog.json
 msgid "The line under the title now says what the game is about: The village burned. You stayed."
 msgstr "La ligne sous le titre dit enfin de quoi parle le jeu : Le village a brûlé. Vous restez."
+
+#: assets/data/changelog.json
+msgid "The loading screen shows only the night sky and a quiet bar: no old title, no English"
+msgstr "L'écran de chargement n'affiche plus que le ciel de nuit et une barre discrète : ni ancien titre, ni anglais"
 
 #: assets/data/changelog.json
 msgid "The log keeps only what the world doesn't show: the story, quests, levels, mastery, bounties and the Boss Slayer's edge"

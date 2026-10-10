@@ -54,6 +54,15 @@ forge | --map town_smith station | open=shop_screen tab=Craft | rooms trade scre
 quest | --map town quest | map=town | town quest
 # A potion brewed before Vex's quest was taken still finishes it (PIX-231).
 brew | --map town_alchemist brew | map=town_alchemist gold=100 | rooms trade quest
+# Vex's first brew at every stage (PIX-283): at her stall on the square while
+# her house is ash, and in her room the day it stands, the rest of the Hamlet
+# still rubble (she was nowhere then, and her quest with her).
+brew-stall | --map town --town-tier 0 brew | map=town cell=\(34, 28\) gold=100 | town trade quest
+brew-ashes | --map town_alchemist --town-tier 0 --built vexs_brewery brew | map=town_alchemist gold=100 | rooms trade quest
+# A keeper behind the counter the day their building stands (PIX-283): Sela
+# in her inn rebuilt first, still the Ashes, and in the Hamlet.
+sela-ashes | --map town_inn --town-tier 0 --built the_inn talk | map=town_inn open=dialogue_box speaker=innkeeper | rooms quest
+sela-hamlet | --map town_inn --town-tier 1 talk | map=town_inn open=dialogue_box speaker=innkeeper | rooms quest
 # The ascension (PIX-244): held as the light flares, its motes and sparks
 # flying; with Reduce motion, held on the name with nothing flying; and
 # the fifth rank's, landed.

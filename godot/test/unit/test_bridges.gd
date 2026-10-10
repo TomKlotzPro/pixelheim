@@ -6,7 +6,10 @@ extends GutTest
 ## every age: a bridge's planks run from walkable land to walkable land, with
 ## water off both its sides and none of its planks on dry ground, and the
 ## hero can walk onto it from the map's spawn. A dock is a pier: it runs out
-## from a bank the hero can reach.
+## from a bank the hero can reach, into the sea. Out into a river it reads as
+## a bridge left half built (PIX-287: Tom, « un demi pont au sud du
+## village », the village's fishing dock two planks out into a river four
+## wide, from the green and again from the Reach).
 
 const SIDES := [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]
 
@@ -105,8 +108,10 @@ func test_every_dock_runs_out_from_a_bank_the_hero_reaches() -> void:
 				assert_eq(PunyTerrain.span_axis(map.grid, cell), axis, "%s: the dock at %s runs one way" % [map.id, at])
 				var landed := [-axis, axis].any(func(step: Vector2i) -> bool: return _is_land(map, PunyTerrain.span_end(map.grid, cell, step)))
 				assert_true(landed, "%s: the dock at %s runs out from the bank" % [map.id, cell])
+				for step: Vector2i in SIDES:
+					assert_ne(map.tile_at(cell + step), "water", "%s: the dock at %s stands in the sea, not part way over a river" % [map.id, cell])
 			assert_true(reach.has(at), "%s: the hero can walk onto the dock at %s" % [map.id, at])
-	assert_gt(docks, 1, "the coast and the village have their docks")
+	assert_gt(docks, 0, "the coast has its jetty")
 
 
 func test_the_mirefen_chests_can_be_walked_to() -> void:

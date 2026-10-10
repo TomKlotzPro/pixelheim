@@ -7,7 +7,7 @@ class_name Skyline
 ## (its ruins, its rebuilt houses, what each age added) read into the block
 ## cell by cell, and drawn with the town's own pieces - every house a hip-
 ## roofed wing in its own roof's colour (PunyTown), its windows lit at
-## night and smoke from its roof; the river, its bridge and the dock, the
+## night and smoke from its roof; the river and its bridge, the
 ## streets, the fields and the woods on Shade's ground; ash and charred logs
 ## where a house still lies burnt; and one ring of the town's own rampart
 ## round it, its gatehouse where the road comes in as the town draws it

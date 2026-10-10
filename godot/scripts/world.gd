@@ -90,6 +90,14 @@ func _ready() -> void:
 		GameState.settlement.town_tier = int(flags.value("--town-tier"))
 	elif harness and GameState.settlement.projects.is_empty():
 		GameState.settlement.town_tier = maxi(1, GameState.settlement.town_tier)
+	# `--built the_inn`: those projects standing too, whatever the age
+	# (PIX-283: a keeper is in their building as soon as it stands).
+	if flags.has("--built"):
+		var done := Town.done_projects(GameState.settlement)
+		for project_id: String in flags.list("--built"):
+			if project_id not in done:
+				done.append(project_id)
+		GameState.settlement.projects.assign(done)
 	# Harness runs skip the Night of Ash (their flows were written for the
 	# town by day) unless `--prologue N` puts them at its step N.
 	if harness:

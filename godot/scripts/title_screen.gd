@@ -141,11 +141,20 @@ func _logo_word(font: Font, color: Color) -> Label:
 	return word
 
 
-## The one entrance: the scene is already there (it is the boot splash), the
-## menu rises in line by line, then the shine crosses the name.
+## The one entrance: the scene rises out of the night's colour loading
+## showed (PIX-295: the boot splash, nothing but that colour now), the menu
+## rises in line by line, then the shine crosses the name.
 func _arrive() -> void:
 	if GameState.settings.reduce_motion:
 		return
+	var night := ColorRect.new()
+	night.color = ProjectSettings.get_setting("application/boot_splash/bg_color", Color.BLACK)
+	night.set_anchors_preset(Control.PRESET_FULL_RECT)
+	night.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(night)
+	var lift := night.create_tween()
+	lift.tween_property(night, "modulate:a", 0.0, 0.6).set_trans(Tween.TRANS_SINE)
+	lift.tween_callback(night.queue_free)
 	# The menu's container rises (the menu itself is placed by it), line by line.
 	var middle: Control = menu.get_parent()
 	create_tween().tween_property(middle, "position:y", middle.position.y, 0.5).from(middle.position.y + 12).set_trans(Tween.TRANS_QUART).set_ease(Tween.EASE_OUT)
@@ -200,15 +209,6 @@ func _card() -> void:
 			_whats_new()
 	)
 	add_child(_shadowed(footer))
-
-
-## The boot splash (tools/splash.sh renders it): the scene and the name the
-## title opens on, with nothing yet to press and no one about, so loading
-## hands over to the title without a jump.
-func as_splash() -> void:
-	menu.visible = false
-	footer.visible = false
-	scene.as_splash()
 
 
 ## The menu as words over the scene, in the name's pixel type: cream, the
