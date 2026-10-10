@@ -28,6 +28,7 @@ A dragon burned Pixelheim in one night, and you - the courier who came up the ro
 - **7 classes that ascend**: every 5 levels a rank, its title and its moment in the light, and from the first rank a path that forks into 14 identities, each with a signature skill
 - **Skill trees, stats and gear**: three named paths per class, stat points that explain themselves, loot with rarities on a nine-slot paper doll, and helmets and armour you can see on your hero
 - **Quests and the journal**, the **codex** of every beast you have fought, and mastery bonuses for the families you hunt
+- **Roads the story opens**: each region's way in from the Reach - a rockfall on the cliff road, the river bridge burnt on the Night of Ash, Ulla's barricade, an avalanche on the Frostgate road - stays shut until the story reaches it, says what opens it, and the arrow leads there
 - **A town that grows**: buy the house and furnish it, buy the shops and collect rent, fund the village into a city, bank and send caravans, recruit settlers from the wilds
 - **Crafting** at the forge, the cauldron and your own workbench; foraging in the wilds
 - **Music, stingers and weather** for every place, rendered from the game's own chiptune synth

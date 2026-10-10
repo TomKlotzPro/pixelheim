@@ -26,6 +26,10 @@ func _info() -> String:
 			Text.t("Commissions: costly works the town would build in your honour, each a lasting edge.")])
 		for entry: Dictionary in Town.commissions():
 			lines.append(Text.t("- %s: %s") % [entry["name"], entry["blurb"]])
+		# A work on the roads (PIX-254) still asks its own word.
+		var work: Dictionary = Town.work(String(rows[selected].get("project", ""))) if selected < rows.size() else {}
+		if not work.is_empty():
+			lines.append_array(["", Text.t("%s: %s") % [work["name"], work["blurb"]]])
 		return "\n".join(lines)
 	lines.append_array(["", Text.t("Building the %s") % Town.tier(building)["name"]])
 	var blockers := Town.age_blockers(building, GameState.progression, GameState.settlement)
@@ -83,10 +87,43 @@ func _holdings() -> void:
 func _chosen_project() -> Dictionary:
 	if rows.is_empty() or selected >= rows.size():
 		return {}
-	return Town.project(rows[selected].get("project", ""))
+	var chosen := String(rows[selected].get("project", ""))
+	return Town.project(chosen) if not Town.project(chosen).is_empty() else Town.work(chosen)
 
 
 func _rows() -> Array[Dictionary]:
+	var out := _works()
+	out.append_array(_age_rows())
+	return out
+
+
+## The works out on the Reach's roads the story offers and nobody has
+## built yet (PIX-254: the river bridge), first on the board, whatever age
+## the town is building; not while their gate stands open anyway (a hero
+## already past it, from before the gates).
+func _works() -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	var done := Town.done_projects(GameState.settlement)
+	for entry: Dictionary in Town.works():
+		var work_id: String = entry["id"]
+		if work_id in done or not Town.work_offered(work_id, GameState.progression, GameState.settlement):
+			continue
+		if Gates.is_open(Gates.by_id(String(entry["gate"])), GameState.progression, GameState.settlement, GameState.world.discovered):
+			continue
+		var blocker := Town.work_blocker(work_id, GameState.progression, GameState.settlement, GameState.pack.gold, GameState.pack.items)
+		out.append({
+			"project": work_id, "label": entry["name"], "note": Town.cost_line(work_id),
+			"enabled": blocker == "", "why": blocker,
+			"action": func() -> String:
+				var line := GameState.holdings.fund_work(work_id)
+				if line != "":
+					Sound.play("coin")
+				return line,
+		})
+	return out
+
+
+func _age_rows() -> Array[Dictionary]:
 	var building := Town.current_age(GameState.settlement)
 	if building == 0:
 		# Every age built: the commissions, for a lasting edge (PIX-180).

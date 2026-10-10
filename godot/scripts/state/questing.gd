@@ -241,6 +241,10 @@ func deliver(npc_id: String) -> String:
 	var done := Text.t("Delivered: %s.") % quest["name"]
 	if not paid.is_empty():
 		done = Text.t("Delivered: %s. %s.") % [quest["name"], ", ".join(paid)]
+	# What comes home with the answer (PIX-254: Wenna's rope for the river
+	# bridge, mended at the board), a story beat in the log.
+	if quest.has("postscript"):
+		owner.noted.emit([String(quest["postscript"])])
 	return done + ("\n" + level_line if level_line != "" else "")
 
 

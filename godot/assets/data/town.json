@@ -1164,6 +1164,24 @@
       ]
     }
   },
+  "works": {
+    "about": "PIX-254: works out on the Reach's roads, on the board beside the age's projects once the story offers them (`needs`, a main quest step, with `line` said until then), and not part of any age: built, they open their `gate` (Gates), and while that gate stands open anyway (a hero already past it) they aren't offered. The river bridge burned on the Night of Ash; Old Wenna sends Brin's best rope with her answer.",
+    "list": [
+      {
+        "id": "river_bridge",
+        "gate": "bridge",
+        "name": "Mend the river bridge",
+        "blurb": "New planks on the burnt bridge north of town, lashed with Brin's best rope. The road to Blackiron, Greyhold and the Frostgate.",
+        "cost": {
+          "gold": 80,
+          "items": {}
+        },
+        "needs": "letter_wenna",
+        "line": "It wants rope, and the best rope is in Saltmere",
+        "built": "The river bridge is mended. Brin's rope holds, and Bram says he supervised."
+      }
+    ]
+  },
   "commissions": {
     "about": "PIX-180: once every age is built, the ledger offers commissions: costly works that give the hero a lasting edge, the late game's gold sink.",
     "list": [

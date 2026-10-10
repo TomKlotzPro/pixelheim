@@ -106,6 +106,11 @@ func interact() -> void:
 	if world.map.id == "town" and faced == Town.bounty_board():
 		world.add_child(preload("res://scripts/bounty_screen.gd").new())
 		return
+	# A gate the story keeps shut says again what opens it (PIX-254).
+	var gate := _gate_at(faced)
+	if not gate.is_empty():
+		_say_gate(gate)
+		return
 	var beside: Dictionary = world.folk.beside()
 	if not beside.is_empty():
 		world.player.face(Vector2(beside["side"]))
@@ -399,11 +404,52 @@ func _carry_water(faced: Vector2i) -> bool:
 	return false
 
 
-## The hero stepped onto `cell`: ground treasure there is picked up, and a
-## patch is gathered.
+## The hero stepped onto `cell`: ground treasure there is picked up, a
+## patch is gathered, and a gate the story keeps shut says what opens it.
 func step_on(cell: Vector2i) -> void:
 	_collect_ground_treasure(cell)
 	_gather_at(cell)
+	_near_gate(cell)
+
+
+## The gate that spoke last, while the hero is still near it, and the last
+## one that spoke on this run (the harness reports it).
+var _gate_near := ""
+var gate_said := ""
+
+
+## Walking up to a gate still shut (PIX-254): its line, once, until the hero
+## has gone a few steps away from it.
+func _near_gate(cell: Vector2i) -> void:
+	var beside := ""
+	var still_near := false
+	for gate: Dictionary in world.view.gates:
+		var off := 1 << 20
+		for at: Vector2i in Gates.cells_of(gate):
+			off = mini(off, maxi(absi(at.x - cell.x), absi(at.y - cell.y)))
+		if off <= 1 and beside == "":
+			beside = gate["id"]
+		if gate["id"] == _gate_near and off < 4:
+			still_near = true
+	if not still_near:
+		_gate_near = ""
+	if beside != "" and beside != _gate_near:
+		_gate_near = beside
+		_say_gate(Gates.by_id(beside))
+
+
+## A shut gate's line, on the message plate.
+func _say_gate(gate: Dictionary) -> void:
+	gate_said = gate["id"]
+	world.messages.flash(Gates.line(gate, GameState.progression, GameState.settlement))
+
+
+## The shut gate on `cell` of this visit, or {}.
+func _gate_at(cell: Vector2i) -> Dictionary:
+	for gate: Dictionary in world.view.gates:
+		if cell in Gates.cells_of(gate):
+			return gate
+	return {}
 
 
 ## A patch underfoot is picked (PIX-143); what it gave rises over the hero

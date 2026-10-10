@@ -103,16 +103,23 @@ func test_nothing_the_world_places_stands_at_a_way_on() -> void:
 		var data := MapData.load_by_id(id)
 		var view := MapView.new(data, null)
 		view.plan(data.spawn)
+		# A gate the story keeps shut (PIX-254) stands across a way on, on
+		# purpose: test_gates holds it.
+		var shut := {}
+		for gate: Dictionary in view.gates:
+			for cell: Vector2i in Gates.cells_of(gate):
+				shut[cell] = true
 		for way: Dictionary in view.ways:
 			var cells: Array = way["cells"] + [way["from"]]
 			for cell: Vector2i in cells:
-				assert_false(data.covered.has(cell), "%s: nothing stands in the way on at %s" % [id, cell])
+				if not shut.has(cell):
+					assert_false(data.covered.has(cell), "%s: nothing stands in the way on at %s" % [id, cell])
 			if way["kind"] != "edge":
 				continue
 			# Its whole mouth, a cell deep, is the map's own ground.
 			for cell: Vector2i in way["cells"]:
 				var inside: Vector2i = cell - (way["out"] as Vector2i)
-				if WorldTiles.is_walkable(data.tile_at(inside)):
+				if WorldTiles.is_walkable(data.tile_at(inside)) and not shut.has(inside):
 					assert_false(data.covered.has(inside), "%s: the opening at %s is clear" % [id, inside])
 
 

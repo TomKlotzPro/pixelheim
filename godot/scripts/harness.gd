@@ -655,9 +655,11 @@ func _run_test_harness() -> void:
 		var woke := DayNight.clock(GameState.world.steps)
 		motion_report += " clock=%02d:%02d" % [woke.x, woke.y]
 	if flags.has("--hunted"):
-		# `--hunted greymaw,cinderjaw`: named monsters already slain (PIX-156).
+		# `--hunted greymaw,cinderjaw`: named monsters already slain (PIX-156;
+		# the world slays them before it draws the first map, PIX-254).
 		for named_id: String in flags.list("--hunted"):
-			GameState.progression.hunted.append(named_id)
+			if named_id not in GameState.progression.hunted:
+				GameState.progression.hunted.append(named_id)
 	if flags.has("reveal"):
 		# The town risen (PIX-147): pair with `--map town --town-tier 2`; the
 		# lamps' stop, then the age's. With `--hunted`, the first one's
@@ -900,6 +902,9 @@ func _run_test_harness() -> void:
 	# lines the battle log showed: a kill's XP and gold float and log none.
 	if not Gains.is_empty(world.fx.floated):
 		motion_report += " floats=%s logged=%d" % [Gains.summary(world.fx.floated), world.messages.logged]
+	# A gate the story keeps shut that said its line on this run (PIX-254).
+	if world.interaction.gate_said != "":
+		motion_report += " gate=%s" % world.interaction.gate_said
 	# The card naming where the hero has come to (PIX-269), while it's up.
 	var card: Variant = world.hud.place_card
 	if is_instance_valid(card):

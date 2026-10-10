@@ -140,9 +140,45 @@ static func project_blocker(project_id: String, progression: ProgressionState, s
 	return ""
 
 
-## A project's price as one line: "250g, 2 Wolf Pelt".
+## Works out on the Reach's roads (PIX-254): on the board beside the age's
+## projects once the story offers them, and part of no age; built, each
+## opens a gate (Gates: the river bridge north of town). town.json "works".
+static func works() -> Array:
+	return _data()["works"]["list"]
+
+
+static func work(work_id: String) -> Dictionary:
+	for entry: Dictionary in works():
+		if entry["id"] == work_id:
+			return entry
+	return {}
+
+
+## Whether the story offers a work yet: its `needs` (a main quest step) met.
+static func work_offered(work_id: String, progression: ProgressionState, settlement: SettlementState) -> bool:
+	var needs := String(work(work_id).get("needs", ""))
+	return needs == "" or MainQuest.is_met(MainQuest.step(needs), progression, settlement)
+
+
+## Why a work can't be funded now, or "".
+static func work_blocker(work_id: String, progression: ProgressionState, settlement: SettlementState, gold: int, items: Dictionary) -> String:
+	var entry := work(work_id)
+	if work_id in done_projects(settlement):
+		return Text.t("Already built.")
+	if not work_offered(work_id, progression, settlement):
+		return String(entry["line"]) + "."
+	if gold < int(entry["cost"]["gold"]):
+		return Text.t("The treasury asks %d gold.") % entry["cost"]["gold"]
+	for item_id: String in entry["cost"]["items"]:
+		if int(items.get(item_id, 0)) < int(entry["cost"]["items"][item_id]):
+			return Text.t("It takes %d %s.") % [entry["cost"]["items"][item_id], Catalog.item_name(item_id)]
+	return ""
+
+
+## A project's (or a work's) price as one line: "250g, 2 Wolf Pelt".
 static func cost_line(project_id: String) -> String:
-	var cost: Dictionary = project(project_id)["cost"]
+	var priced := project(project_id)
+	var cost: Dictionary = (priced if not priced.is_empty() else work(project_id))["cost"]
 	var parts: Array[String] = [Text.coins(int(cost["gold"]))]
 	for item_id: String in cost["items"]:
 		parts.append("%d %s" % [cost["items"][item_id], Catalog.item_name(item_id)])
