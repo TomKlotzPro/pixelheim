@@ -277,7 +277,13 @@ func _run_test_harness() -> void:
 			var around: Vector2 = (get_viewport().get_canvas_transform() * world.player.global_position) * (image.get_width() / get_viewport().get_visible_rect().size.x)
 			for y in range(int(around.y) - 90, int(around.y) + 30):
 				for x in range(int(around.x) - 50, int(around.x) + 50):
-					if DesktopLook.shown(image.get_pixel(x, y), DesktopLook.linear).to_html(false) in ["b60000", "770000"]:
+					var pixel := image.get_pixel(x, y)
+					# A pure red, in either light, before the exact test: the
+					# frame's time is the measurement's too, and turning
+					# every pixel into its hex took most of a slow frame.
+					if pixel.r < 0.15 or pixel.g > 0.002 or pixel.b > 0.002:
+						continue
+					if DesktopLook.shown(pixel, DesktopLook.linear).to_html(false) in ["b60000", "770000"]:
 						sum += x
 						n += 1
 			# -1: not found in this frame.

@@ -1,0 +1,54 @@
+name: Windowed probe (temporary, PIX-275)
+
+on:
+  push:
+    branches: [tomklotz/pix-275-probe]
+
+env:
+  GODOT_VERSION: "4.7.1"
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        size: [960x540, 1280x720, 640x360]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Restore the Godot binary
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            ~/godot-bin
+            ~/.local/share/godot/export_templates
+          key: godot-${{ env.GODOT_VERSION }}
+
+      - name: Install Godot
+        run: |
+          if [ ! -x "$HOME/godot-bin/godot" ]; then
+            mkdir -p "$HOME/godot-bin"
+            curl -sL "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip" -o godot.zip
+            unzip -q godot.zip
+            mv "Godot_v${GODOT_VERSION}-stable_linux.x86_64" "$HOME/godot-bin/godot"
+          fi
+          echo "$HOME/godot-bin" >> "$GITHUB_PATH"
+
+      - name: Install a virtual display and software rendering
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends xvfb xauth libgl1-mesa-dri libglx-mesa0 libegl1 mesa-vulkan-drivers libvulkan1 >/dev/null
+          grep -m1 "model name" /proc/cpuinfo
+
+      - name: Import (no paid art)
+        run: godot --headless --path godot --import >/dev/null 2>&1
+
+      - name: Motion x20 alone, as the pictures job runs it
+        run: |
+          mkdir -p probe
+          for i in $(seq 1 20); do
+            timeout 120 xvfb-run -a -s "-screen 0 2560x1440x24" godot --resolution ${{ matrix.size }} --audio-driver Dummy --path godot -- --screenshot --map town motion --shot "$PWD/probe/$i.png" > probe/$i.txt 2>&1 || true
+            echo "run $i: $(grep -E '^MOTION' probe/$i.txt | sed -E 's/ hero=.*//') | $(grep 'screenshot saved' probe/$i.txt | grep -oE 'cell=\([0-9, ]*\)') $(grep 'screenshot saved' probe/$i.txt | grep -oE 'backsteps=[^ ]*')"
+          done
