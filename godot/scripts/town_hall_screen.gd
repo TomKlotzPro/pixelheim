@@ -35,7 +35,7 @@ func _info() -> String:
 	var blockers := Town.age_blockers(building, GameState.progression, GameState.settlement)
 	for need: Dictionary in Town.age(building)["requires"]:
 		lines.append("%s %s" % [Text.t("Needed:") if need["line"] in blockers else Text.t("Done:"), need["line"]])
-	lines.append(Text.t("When it's done: %s.") % "; ".join(Town.tier(building)["perks"]).to_lower())
+	lines.append(Text.t("When it's done: %s.") % Text.listed(Town.tier(building)["perks"]).to_lower())
 	var chosen := _chosen_project()
 	if not chosen.is_empty():
 		lines.append_array(["", Text.t("%s: %s") % [chosen["name"], chosen["blurb"]]])

@@ -41,6 +41,14 @@ static func t(text: String) -> String:
 	return TranslationServer.translate(text) if text != "" else text
 
 
+## Items of a list inside a sentence, joined by semicolons: "the square; the
+## rents", with French's narrow no-break space before each, « la place ; les
+## loyers ».
+static func listed(parts: PackedStringArray) -> String:
+	var sep := "\u202f; " if TranslationServer.get_locale().begins_with("fr") else "; "
+	return sep.join(parts)
+
+
 ## A compact gold amount, as costs show it: "55g", « 55 o ».
 static func coins(amount: int) -> String:
 	return t("%dg") % amount
