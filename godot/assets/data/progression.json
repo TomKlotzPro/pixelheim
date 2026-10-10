@@ -237,12 +237,60 @@
       },
       "reward": {
         "gold": 0,
-        "xp": 300,
-        "itemId": "marens_promise"
+        "xp": 300
       },
       "accepted": "The gate's barred, courier. The old wardens sealed it when one of the five came home alone, and only what the five left behind will open it: Tam's ladle in Saltmere, the black iron at Blackiron, Oskar's shield at Greyhold and Liane's lantern on the Frostgate. Bring them home to me.",
-      "completed": "Tam, the iron, Oskar, Liane. And the fifth is mine: my promise that someone would finish what we started. Take it. The gate is open, courier - climb.",
+      "completed": "Tam, the iron, Oskar, Liane. All four, home. ...Sit with me a while, courier. You've carried everyone's words but mine.",
       "unlessGateOpen": true
+    },
+    {
+      "id": "letter_morvax",
+      "giver": "elder",
+      "name": "The Fifth Letter",
+      "brief": "Climb the mountain road and deliver Maren's fifth letter to Morvax.",
+      "objective": {
+        "kind": "deliverTo",
+        "itemId": "letter_morvax",
+        "to": "mountain_morvax",
+        "count": 1,
+        "label": "Letter delivered"
+      },
+      "reward": {
+        "gold": 35,
+        "xp": 0
+      },
+      "answer": [
+        "You're late, courier. Fifty years late.",
+        "(He knows the hand before he breaks the seal, and reads it aloud, slowly, as if it might change.) \"Come home, you proud old goat. Nobody's angry. I'm angry, but come home anyway. The stew's on. - M.\"",
+        "...Not like this. I left to bring her a city. I can't come back with a cough."
+      ],
+      "quake": [
+        "(The floor jumps under you. Dust sifts down from the rafters, and somewhere over your heads something enormous turns over.)",
+        "He's awake. He goes for the lights. He always goes for the lights."
+      ],
+      "after": [
+        "Still here? He goes for the lights, courier, and Pixelheim's are the nearest. Run.",
+        "(He touches the last of the tally marks.) Forty lamps, last night. She built herself a town after all."
+      ],
+      "slain": {
+        "about": "PIX-253 step 8: a hero who slew Fafnyr on the old mountain keeps him slain (they skip chapter 7, mainQuest's skipIf): Morvax reads the letter to a quiet mountain, and nothing wakes.",
+        "answer": [
+          "You're late, courier. Fifty years late.",
+          "(He knows the hand before he breaks the seal, and reads it aloud, slowly, as if it might change.) \"Come home, you proud old goat. Nobody's angry. I'm angry, but come home anyway. The stew's on. - M.\"",
+          "...Not like this. I left to bring her a city. I can't come back with a cough.",
+          "(He looks up at the rock over his head.) Fifty years I mended his seal and listened to him snore. You went up there and stopped it. I can't decide if I'm grateful."
+        ],
+        "after": [
+          "Tell her I read it. Twice.",
+          "(He touches the last of the tally marks.) Forty lamps, last night. She built herself a town after all."
+        ]
+      },
+      "addressed": "Letter to Morvax, the mountain",
+      "letter": [
+        "Come home, you proud old goat. Nobody's angry. I'm angry, but come home anyway. The stew's on. - M."
+      ],
+      "answered": "Morvax read it, and stayed on his mountain.",
+      "gist": "Morvax: \"Not like this. I left to bring her a city. I can't come back with a cough.\""
     },
     {
       "id": "troll_toll",
@@ -637,7 +685,8 @@
         "xp": 90
       },
       "accepted": "Two imps. Little red, horns, laughing. One of them has my knife. I'd know it anywhere.",
-      "completed": "No knife? Doesn't matter. The principle of the thing. Here - and a wedge of the good stuff, later."
+      "completed": "No knife? Doesn't matter. The principle of the thing. Here - and a wedge of the good stuff, later.",
+      "opensAfter": "run_home"
     },
     {
       "id": "mira_moss",
@@ -1499,7 +1548,10 @@
             "id": "gate",
             "when": {
               "kind": "questDone",
-              "questId": "maren_relics"
+              "questId": "maren_relics",
+              "or": {
+                "kind": "climbed"
+              }
             },
             "text": "Bring the four keepsakes home to Maren",
             "hint": "Maren waits for all four keepsakes: Tam's ladle, the last ingot, Oskar's shield and Liane's lantern. She'll open the gate with the last of them: her promise.",
@@ -1509,136 +1561,65 @@
       },
       {
         "title": "The Fifth Letter",
-        "about": "To be replaced (PIX-253 step 8): today's climb of the Ashen Mountain stands in until the mountain road, Morvax's forge and the fifth letter are built.",
+        "about": "PIX-253 step 8: Maren tells it all at the shrine once the four keepsakes are home (story.json's maren_confession) and gives the courier her fifth letter and her promise, which opens the mountain's gate; the road climbs past it to Morvax's forge. A hero who heard her old confession gets the letter at the next word with her (Letters.fifth_due), and one who cast down Morvax on the old mountain (floor 15 cleared) has heard this story told another way: the letter's step is met for them (its `or`).",
         "steps": [
           {
-            "id": "cellar",
-            "when": {
-              "kind": "cleared",
-              "level": 1
-            },
-            "text": "Clear the Mossy Cellar, the mountain's first floor",
-            "hint": "The gate's open. The Ashen Mountain stands north of town, past the bridge; its first floor is the Mossy Cellar."
-          },
-          {
-            "id": "crypt",
-            "when": {
-              "kind": "cleared",
-              "level": 3
-            },
-            "text": "Clear the Barrow Crypt (floor 3)",
-            "hint": "Below the woods lies the Barrow Crypt. The dead there don't stay down without help."
-          },
-          {
-            "id": "graves",
-            "optional": true,
+            "id": "confession",
             "when": {
               "kind": "seen",
-              "sceneId": "maren_graves"
+              "sceneId": "maren_confession"
             },
-            "text": "Ask Maren about the graves in the crypt",
-            "hint": "Three names on a grave in the crypt, and a fourth chiselled away. Maren knew them, I think.",
-            "elderHint": "You found their names in the crypt. Ask, then. I owe you that much."
+            "text": "Hear Maren out at the shrine",
+            "hint": "All four keepsakes are home, and Maren is at the shrine with something to say. She's been fifty years getting round to it.",
+            "elderHint": "Sit with me, courier. There's a story I should have told fifty years ago, and I'll tell it badly."
           },
           {
-            "id": "watchtower",
+            "id": "letter_morvax",
             "when": {
-              "kind": "cleared",
-              "level": 5
+              "kind": "delivered",
+              "questId": "letter_morvax",
+              "or": {
+                "kind": "cleared",
+                "level": 15
+              }
             },
-            "text": "Clear the Ruined Watchtower (floor 5)",
-            "hint": "Orcs hold the old watchtower now. Floor five. Bring potions."
-          },
-          {
-            "id": "forge",
-            "when": {
-              "kind": "cleared",
-              "level": 7
-            },
-            "text": "Clear the Sunken Forge (floor 7)",
-            "hint": "The golems of the Sunken Forge still work the bellows for no one. Floor seven."
-          },
-          {
-            "id": "aerie",
-            "when": {
-              "kind": "cleared",
-              "level": 9
-            },
-            "text": "Clear the Stormcrag Aerie (floor 9)",
-            "hint": "Wyverns nest in the Stormcrag Aerie, one floor below the dragon. Mind the sky."
+            "text": "Climb the mountain road and deliver the fifth letter",
+            "hint": "The mountain's gate stands open. Past it the old road climbs to a forge built into the rock, where a lamp burns at night. Maren's fifth letter has an address now.",
+            "elderHint": "Up the road, past the gate. He'll be at his forge; he always was. Give him the letter, courier, and don't let him argue."
           }
         ]
       },
       {
         "title": "The Night of Bells",
-        "about": "To be replaced (PIX-253 step 9): Fafnyr on the Ashen Throne stands in until the Night of Bells is played on the square.",
+        "about": "PIX-253 step 9 builds it: the dragon comes back to the square and the village holds. Until then its first step is never met (`unbuilt`), and arriving home shows the honest card (`continued`). A hero who slew Fafnyr on the old mountain keeps him slain and skips this chapter (`skipIf`); step 9 and 10 must honour that: no Night of Bells for them, and the ending's forge is Hilda's alone.",
+        "skipIf": {
+          "kind": "cleared",
+          "level": 10,
+          "or": {
+            "kind": "cleared",
+            "level": 15
+          }
+        },
         "steps": [
           {
-            "id": "fafnyr",
+            "id": "run_home",
             "when": {
-              "kind": "cleared",
-              "level": 10
+              "kind": "unbuilt"
             },
-            "text": "Slay Fafnyr on the Ashen Throne (floor 10)",
-            "hint": "Fafnyr is back on his hoard at the top of the mountain, and awake. Ten floors up. End it."
-          },
-          {
-            "id": "fountain",
-            "when": {
-              "kind": "project",
-              "projectId": "fountain"
-            },
-            "text": "Set Fafnyr's scale in a fountain on the square",
-            "hint": "Fafnyr's scale belongs on the square, where everyone can see it. The board will tell you what else the fountain takes.",
-            "optional": true
+            "mapId": "town",
+            "text": "Run home: the dragon is awake",
+            "hint": "The mountain shook, and Morvax said it plainly: the dragon goes for the lights. Pixelheim's are the nearest. Run.",
+            "elderHint": "I felt it from here, courier. He's awake. ...Then this time we'll be ready for him."
           }
         ]
       },
       {
         "title": "Coming Home",
-        "about": "To be replaced (PIX-253 step 10): the stair below the hoard and Morvax's throne stand in until the homecoming and his choice.",
-        "steps": [
-          {
-            "id": "confession",
-            "optional": true,
-            "when": {
-              "kind": "seen",
-              "sceneId": "maren_confession"
-            },
-            "text": "Tell Maren what Fafnyr said about the voice below",
-            "hint": "Fafnyr spoke of a voice below. Maren will want to hear it - and she owes you a story.",
-            "elderHint": "Fafnyr spoke to you before he fell. Tell me what he said - and I'll tell you what I owe you."
-          },
-          {
-            "id": "stair",
-            "when": {
-              "kind": "cleared",
-              "level": 11
-            },
-            "text": "Take the stair below the hoard: clear the Sunless Stair (floor 11)",
-            "hint": "You beat the dragon. Then you've seen the stair behind its hoard. That's where the whispers come from."
-          },
-          {
-            "id": "hoard",
-            "when": {
-              "kind": "cleared",
-              "level": 13
-            },
-            "text": "Clear the Vaulted Hoard (floor 13)",
-            "hint": "Deeper still, a vault the dead keep for their master. Mind the chests that bite."
-          },
-          {
-            "id": "morvax",
-            "when": {
-              "kind": "cleared",
-              "level": 15
-            },
-            "text": "Cast down Morvax on the Throne of the Deathless (floor 15)",
-            "hint": "Morvax was one of us once, a hero of Pixelheim. Whatever he is now, it ends at the bottom."
-          }
-        ]
+        "about": "PIX-253 step 10 builds it: Morvax's choice and the ending. Until then it has no step, and the story is told for a hero past the fifth letter who skips the Night of Bells.",
+        "steps": []
       }
     ],
+    "continued": "To be continued",
     "done": "Pixelheim is safe. The mountain is quiet, and the tavern isn't."
   },
   "prologue": {
@@ -1782,6 +1763,7 @@
   },
   "relics": {
     "questId": "maren_relics",
+    "promise": "marens_promise",
     "items": [
       {
         "itemId": "tams_ladle",
@@ -1816,8 +1798,15 @@
       "letter_aske"
     ],
     "fifth": {
+      "about": "PIX-253 step 8: the fifth letter is Maren's to give once she has told it all (story.json's maren_confession, at the shrine, the four keepsakes home): its quest (`questId`, a deliverTo to Morvax at his forge), and her promise with it, which opens the mountain's gate (Relics.gate_open). `given` is the line as the confession closes; `late` what she says to a hero who heard her old confession and has no letter yet.",
+      "questId": "letter_morvax",
       "addressed": "Letter to Morvax",
-      "note": "Maren keeps this one. It has no address."
+      "note": "Maren keeps this one. It has no address.",
+      "given": "The fifth letter and Maren's promise are in your satchel. The mountain's gate is open.",
+      "late": [
+        "(Maren turns the fifth letter over in her hands.) You've heard the story already, courier. You heard it the hard way.",
+        "Take this up the road to him, with my promise. It has an address now."
+      ]
     },
     "dig": {
       "x": 21,

@@ -2,9 +2,12 @@ class_name Story
 ## The Ember Seal told through play (PIX-153): the pages of Liane's journal
 ## found on the floors (one per floor's first clear; retired from play with
 ## Maren's letters, PIX-253 step 2, and kept for a hero who cleared their
-## floors as the journal's older papers), what Maren has to say as the hero learns more - the graves,
-## the seal, her confession, and her last words - and how the hero chose to
-## end it at Morvax's throne (PIX-157). Pure, over story.json's "lore" and
+## floors as the journal's older papers), what Maren has to say as the hero
+## learns more - each relic's story, and her last words - and how the hero
+## chose to end it at Morvax's throne (PIX-157). Her stories of the old
+## mountain's floors (the graves, the seal) left play with them (PIX-257);
+## her confession is told at the shrine once the four keepsakes are home
+## (Letters, PIX-253 step 8). Pure, over story.json's "lore" and
 ## "elderLines"; scenes and moments stay with Cutscene.
 
 static var _doc := {}
@@ -30,11 +33,13 @@ static func found_pages(cleared_levels: Array) -> Array[Dictionary]:
 
 
 ## The dream a night's rest brings (PIX-154): the first one earned and not yet
-## dreamt - the first night after the Night of Ash, then after the crypt,
-## then after the forge - or "" when there's none. Since the story's letters
-## (PIX-253 step 5) a dream may come once someone is home instead (`home`, a
-## settler's id among `settlers`): the old man counting lamps, after Old
-## Pell moves in.
+## dreamt - the first night after the Night of Ash (Morvax's voice by his
+## lamp up the mountain, PIX-253 step 8) - or "" when there's none. Since
+## the story's letters (PIX-253 step 5) a dream may come once someone is
+## home instead (`home`, a settler's id among `settlers`): the old man
+## counting lamps, after Old Pell moves in; the dragon on his corners,
+## after Aske. (The two the old mountain's floors earned left play with
+## them, PIX-257: `after` a floor still reads for any that would say so.)
 static func next_dream(cleared_levels: Array, seen: Array, settlers := []) -> String:
 	for dream: Dictionary in _data()["dreams"]:
 		var earned := String(dream["home"]) in settlers if dream.has("home") else (

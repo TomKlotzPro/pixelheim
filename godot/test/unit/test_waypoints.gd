@@ -53,7 +53,6 @@ func test_every_waypoint_has_its_marker_on_its_map() -> void:
 func test_the_region_you_land_in() -> void:
 	var overworld := MapData.load_by_id("overworld")
 	assert_eq(Waypoints.region_of(_waypoint("mountain_gate"), overworld), "ash", "the mountain's foot is the Ash Fields")
-	assert_eq(Waypoints.region_of(_waypoint("undermountain_cave"), overworld), "ash")
 	assert_eq(Waypoints.region_of(_waypoint("deepwood_pass"), overworld), "forest", "the pass a step from the woods")
 	assert_eq(Waypoints.region_of(_waypoint("mirefen_pass"), overworld), "marsh")
 	assert_eq(Waypoints.region_of(_waypoint("town_gate"), overworld), "", "open ground by the gate")
@@ -153,7 +152,7 @@ func test_every_wild_region_has_a_waypoint_near_its_way_in() -> void:
 	var regions := {}
 	for door: Vector2i in overworld.portals:
 		var to: Dictionary = overworld.portals[door]
-		if to["kind"] != "map" or to["mapId"] == "town":
+		if to["kind"] != "map" or not ReachPlane.holds(to["mapId"]):
 			continue
 		regions[to["mapId"]] = true
 		var region := MapData.load_by_id(to["mapId"])

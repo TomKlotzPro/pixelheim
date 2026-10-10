@@ -32,32 +32,37 @@ func test_ten_pages_one_per_floor_kept_for_the_floors_cleared() -> void:
 	assert_eq(Story.found_pages(state.progression.cleared_levels).size(), 1)
 
 
-func test_maren_tells_each_story_once_and_the_oldest_first() -> void:
-	assert_eq(Story.elder_story([], []), {}, "nothing before the crypt")
-	assert_eq(Story.elder_story([1, 2, 3], [])["id"], "maren_graves")
-	assert_eq(Story.elder_story([1, 2, 3], ["maren_graves"]), {}, "told once")
-	assert_eq(Story.elder_story(range(1, 11), ["maren_graves"])["id"], "maren_seal", "the seal before the confession")
-	assert_string_contains(Story.elder_story(range(1, 11), ["maren_graves", "maren_seal"])["lines"][2], "rockfall")
+## Her stories of the old mountain's floors left play with them (PIX-257):
+## a hero who cleared them hears none of the graves or the seal now, and
+## her confession waits for the shrine, the four keepsakes home (PIX-253
+## step 8: Letters.fifth_due), never a floor.
+func test_the_floors_earn_no_story_now() -> void:
+	assert_eq(Story.elder_story([], []), {})
+	assert_eq(Story.elder_story(range(1, 11), []), {}, "no graves, no seal, no confession for a floor")
+	var told: Array = Story._data()["elderLines"].map(func(entry: Dictionary) -> String: return entry["id"])
+	assert_false(told.has("maren_graves") or told.has("maren_seal"), "out of play: %s" % [told])
+	assert_has(told, "maren_confession", "the confession stays, rewritten")
+	for entry: Dictionary in Story._data()["elderLines"]:
+		if entry.has("after"):
+			assert_eq(int(entry["after"]), 15, "%s: only the old endings' last words wait on a floor" % entry["id"])
 
 
-## PIX-279: a hero who earned several of her stories before calling on her
-## hears every one, a visit each, from the graves on - and the main quest's
-## step that waits on the graves is met by the first.
-func test_a_hero_who_went_deep_first_hears_every_story_in_turn() -> void:
-	state.progression.cleared_levels.assign(range(1, 11))
-	var graves := MainQuest.step("graves")
-	assert_false(MainQuest.is_met(graves, state.progression, state.settlement))
-	var heard: Array[String] = []
-	for visit in 4:
-		var told := Story.elder_story(state.progression.cleared_levels, state.progression.story_seen, state.progression.hunted)
-		if told.is_empty():
-			break
-		heard.append(told["id"])
-		state.mark_seen(told["id"])
-		if visit == 0:
-			assert_true(MainQuest.is_met(graves, state.progression, state.settlement), "the graves are asked about on the first visit")
-	assert_eq(heard, ["maren_graves", "maren_seal", "maren_confession"])
-	assert_true(MainQuest.is_met(MainQuest.step("confession"), state.progression, state.settlement))
+## PIX-253 step 8: Maren tells it all - the gold, the lie to the dragon,
+## the roof, the rockfall she made up - and her old line about the stair is
+## gone.
+func test_the_confession_tells_it_all() -> void:
+	var lines := " ".join(Letters.confession_lines())
+	for words: String in ["kings' gold", "freedom for the hoard", "held up the roof", "rockfall", "Two old fools and a mountain", "It has an address now"]:
+		assert_string_contains(lines, words)
+	assert_false(lines.contains("Go down and end it"), "nobody is sent down any more")
+	assert_eq(Letters.confession_lines(), Letters.fifth_lines(_at_the_shrine().progression, _at_the_shrine().settlement))
+
+
+func _at_the_shrine() -> Node:
+	var hero: Node = autofree(GameStateScript.new())
+	hero.new_game("Robin", "warrior")
+	hero.progression.quests[Relics.quest_id()] = {"progress": 4, "done": true}
+	return hero
 
 
 ## Once the hero has ended it, only her last words are left to tell: the
@@ -68,20 +73,27 @@ func test_after_the_ending_she_speaks_only_of_it() -> void:
 	assert_eq(Story.elder_story(all_floors, ["ending", "maren_after"]), {}, "the confession never follows Morvax's end")
 
 
-func test_the_main_quest_asks_for_her_stories_on_the_side() -> void:
-	state.progression.unlocked_level = 3
-	state.spoils.clear_floor(3)
-	assert_eq(MainQuest.next_step(state.progression, state.settlement)["id"], "graves")
-	state.mark_seen("maren_graves")
-	assert_ne(MainQuest.next_step(state.progression, state.settlement)["id"], "graves")
-
-
 ## Dreams at the inn (PIX-154): one per night's rest, in the order earned.
+## The two the old mountain's floors earned left play with them (PIX-257).
 func test_dreams_come_in_order_once_each() -> void:
 	assert_eq(Story.next_dream([], []), "dream_courier", "the first night after the fire")
-	assert_eq(Story.next_dream([], ["dream_courier"]), "", "nothing more until the crypt")
-	assert_eq(Story.next_dream([1, 2, 3], ["dream_courier"]), "dream_five")
-	assert_eq(Story.next_dream(range(1, 8), ["dream_courier"]), "dream_five", "earliest first")
-	assert_eq(Story.next_dream(range(1, 8), ["dream_courier", "dream_five"]), "dream_door")
+	assert_eq(Story.next_dream([], ["dream_courier"]), "", "nothing more until someone comes home")
+	assert_eq(Story.next_dream(range(1, 11), ["dream_courier"]), "", "no floor brings one now")
+	assert_eq(Story.next_dream([], ["dream_courier"], ["mines_pell"]), "dream_lamps")
+	assert_eq(Story.next_dream([], ["dream_courier", "dream_lamps"], ["mines_pell", "frost_aske"]), "dream_corners")
 	for dream: Dictionary in Story._data()["dreams"]:
 		assert_true(Cutscene.scenes().has(dream["id"]), "%s is a scene" % dream["id"])
+		assert_false(dream.has("after") and int(dream["after"]) > 0, "%s waits on no floor" % dream["id"])
+
+
+## The first dream is Morvax's voice (PIX-253 step 8): the old man by his
+## lamp up the mountain, the same as the second dream's, and no purple eyes.
+func test_the_first_dream_is_morvaxs_voice() -> void:
+	var steps: Array = Cutscene.scenes()["dream_courier"]
+	assert_false(steps.any(func(step: Dictionary) -> bool: return step["kind"] == "eyes"), "no purple eyes")
+	var actors := steps.filter(func(step: Dictionary) -> bool: return step["kind"] == "actor")
+	var lamps := (Cutscene.scenes()["dream_lamps"] as Array).filter(func(step: Dictionary) -> bool: return step["kind"] == "actor")
+	assert_eq(actors.size(), 1)
+	assert_eq(actors[0]["sheet"], lamps[0]["sheet"], "the old man at the forge")
+	assert_true(steps.any(func(step: Dictionary) -> bool: return String(step.get("text", "")).contains("You're late, courier. Fifty years late.")))
+	assert_false(JSON.stringify(steps).contains("down and down"), "no stair going down")

@@ -254,7 +254,16 @@ func _spawn_pack(data: MapData, spawn: Dictionary, asleep := false) -> void:
 	for i in cells.size():
 		# The pack's leader is the spawn's kind; the rest the region's mix (PIX-191).
 		var kind := Bestiary.pack_species(spawn, region, i, cells[i])
-		var enemy := spawn_enemy(kind, cells[i], region, spawn["id"], GameState.roll.call() < elite_chance, true, home, lift)
+		# A spawn may stand at a level of its own, above its kinds' (PIX-253
+		# step 8: the mountain road's, at the end of the Reach).
+		var lifted := lift
+		if spawn.has("level"):
+			lifted = maxi(0, int(spawn["level"]) - int(Bestiary.monster(kind)["level"]))
+		var enemy := spawn_enemy(kind, cells[i], region, spawn["id"], GameState.roll.call() < elite_chance, true, home, lifted)
+		# What a region calls a kind (the mountain road's wolves are ash hounds).
+		var called := String(Bestiary.region(region).get("called", {}).get(kind, ""))
+		if called != "":
+			enemy.fighter["name"] = Text.t("Elite %s") % called if enemy.fighter.get("elite", false) else called
 		if Packs.of_the_night(spawn):
 			enemy.fighter = Packs.by_night(enemy.fighter)
 		if asleep:

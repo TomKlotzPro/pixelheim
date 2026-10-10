@@ -41,13 +41,15 @@ const TINTS := {
 	"snow": Color(0.8, 0.84, 0.9),
 	"ice": Color(0.5, 0.66, 0.78),
 	"stone": Color(0.56, 0.56, 0.58),
+	# The mountain road's trodden way through the ash (REGION_PATHS).
+	"trodden": Color(0.62, 0.52, 0.4),
 }
 ## Regions whose every ground cell takes a tone, trees' included (the pass's
-## snow under its pines).
-const REGION_TINTS := {"frost": "snow"}
+## snow under its pines; the mountain road's ash over its ridges, PIX-253 step 8).
+const REGION_TINTS := {"frost": "snow", "road": "ash"}
 ## And their roads, which would whiten to a glare: the pass's road is trodden
-## grey.
-const REGION_PATHS := {"frost": "stone"}
+## grey; the mountain road's a trodden brown, to read in the ash.
+const REGION_PATHS := {"frost": "stone", "road": "trodden"}
 ## What a bridge or a dock spans.
 const WATERS := ["water", "shore", "sea", "deep_sea"]
 ## The tiles a span is laid in: a bridge from bank to bank, a dock out from

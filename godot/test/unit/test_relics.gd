@@ -42,19 +42,25 @@ func test_the_gate_is_barred_until_the_relics_are_home() -> void:
 	assert_false(Relics.gate_open(state.progression))
 	_win("tidecaller")
 	assert_string_contains(state.questing.resolve_quests("elder"), "Quest complete: Relics of the Five")
-	assert_true(Relics.gate_open(state.progression))
 	assert_eq(Relics.found(state.progression), 4)
 	for relic: Dictionary in Relics.all():
 		assert_eq(int(state.pack.items.get(relic["itemId"], 0)), 0, "%s is set in the gate" % relic["itemId"])
-	assert_eq(int(state.pack.items.get("marens_promise", 0)), 1)
-	assert_eq(_next(), "cellar", "then the climb")
+	# PIX-253 step 8: the gate opens on her promise, given as she tells it all.
+	assert_false(Relics.gate_open(state.progression), "not until she has told it all")
+	assert_eq(int(state.pack.items.get("marens_promise", 0)), 0)
+	assert_eq(_next(), "confession", "then Maren's story, at the shrine")
+	state.mark_seen(Letters.scene_id())
+	state.questing.finish_dialogue("elder")
+	assert_true(Relics.gate_open(state.progression))
+	assert_eq(int(state.pack.items.get("marens_promise", 0)), 1, "her promise, the fifth mark")
+	assert_eq(_next(), "letter_morvax", "then the road up to Morvax")
 
 
 func test_a_hero_who_climbed_before_keeps_the_gate_open() -> void:
 	state.progression.unlocked_level = 2
 	state.spoils.clear_floor(1)
 	assert_true(Relics.gate_open(state.progression))
-	assert_eq(_next(), "crypt", "and the relics never block the way they already went")
+	assert_eq(_next(), "confession", "and the relics never block the way they already went: Maren's story is next")
 	assert_string_contains(state.questing.resolve_quests("elder"), "The Troll Toll", "Maren goes on to her next ask")
 
 
@@ -78,9 +84,10 @@ func test_maren_tells_of_each_relic_once() -> void:
 	assert_eq(Story.elder_story([], [], []), {})
 	assert_eq(Story.elder_story([], [], ["hollow_captain"])["id"], "maren_oskar")
 	assert_eq(Story.elder_story([], ["maren_oskar"], ["hollow_captain"]), {})
-	# A relic's story comes before the floors' news.
+	# A relic's story, and no news of the old mountain's floors: they left
+	# play (PIX-257), and their stories with them.
 	assert_eq(Story.elder_story([3], [], ["rimefang"])["id"], "maren_liane")
-	assert_eq(Story.elder_story([3], ["maren_liane"], ["rimefang"])["id"], "maren_graves")
+	assert_eq(Story.elder_story([3, 5, 10], ["maren_liane"], ["rimefang"]), {})
 
 
 func test_the_relics_post_bounties_and_grow_the_town() -> void:

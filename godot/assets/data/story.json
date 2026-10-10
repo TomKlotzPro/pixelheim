@@ -572,13 +572,7 @@
     "dream_courier": [
       {
         "kind": "stage",
-        "stage": "dark"
-      },
-      {
-        "kind": "tint",
-        "color": "#3a1a5a",
-        "alpha": 0.35,
-        "seconds": 0.8
+        "stage": "path"
       },
       {
         "kind": "fade",
@@ -587,16 +581,26 @@
       },
       {
         "kind": "caption",
-        "text": "You dream of a stair, going down and down, and of something waiting at the bottom.",
+        "text": "You dream of the mountain in the dark, and high on it a single lamp, like a star that forgot to rise.",
         "hold": 4.0
       },
       {
-        "kind": "eyes",
+        "kind": "actor",
+        "sheet": "mini/Okomo.png",
+        "family": "mini",
+        "anim": "idle",
+        "dir": "down",
+        "scale": 6,
+        "silhouette": true,
         "at": [
           640,
-          280
-        ],
-        "color": "#b46cff"
+          500
+        ]
+      },
+      {
+        "kind": "caption",
+        "text": "Beside it an old man sits up, as if he'd heard you coming.",
+        "hold": 3.4
       },
       {
         "kind": "caption",
@@ -707,96 +711,6 @@
         "kind": "caption",
         "text": "You wake with a crick in your neck, to the street lamps going out one by one: Aske, on his dawn round.",
         "hold": 3.4
-      },
-      {
-        "kind": "fade",
-        "to": "black",
-        "seconds": 0.8
-      }
-    ],
-    "dream_five": [
-      {
-        "kind": "stage",
-        "stage": "dark"
-      },
-      {
-        "kind": "tint",
-        "color": "#3a1a5a",
-        "alpha": 0.35,
-        "seconds": 0.8
-      },
-      {
-        "kind": "fade",
-        "to": "clear",
-        "seconds": 0.8
-      },
-      {
-        "kind": "caption",
-        "text": "You dream of five torches climbing the mountain in the dark.",
-        "hold": 3.6
-      },
-      {
-        "kind": "eyes",
-        "at": [
-          640,
-          280
-        ],
-        "color": "#b46cff"
-      },
-      {
-        "kind": "caption",
-        "text": "\"Five went up. One came home. One went further.\"",
-        "hold": 3.6
-      },
-      {
-        "kind": "caption",
-        "text": "One by one, three torches go out.",
-        "hold": 3.0
-      },
-      {
-        "kind": "fade",
-        "to": "black",
-        "seconds": 0.8
-      }
-    ],
-    "dream_door": [
-      {
-        "kind": "stage",
-        "stage": "dark"
-      },
-      {
-        "kind": "tint",
-        "color": "#3a1a5a",
-        "alpha": 0.35,
-        "seconds": 0.8
-      },
-      {
-        "kind": "fade",
-        "to": "clear",
-        "seconds": 0.8
-      },
-      {
-        "kind": "caption",
-        "text": "You dream of a great door in the mountain, and of a dragon asleep against it.",
-        "hold": 4.0
-      },
-      {
-        "kind": "eyes",
-        "at": [
-          640,
-          280
-        ],
-        "color": "#b46cff"
-      },
-      {
-        "kind": "caption",
-        "text": "\"The dragon was only ever my door, courier. Thank you for opening it.\"",
-        "hold": 4.0
-      },
-      {
-        "kind": "caption",
-        "text": "You wake with your hand on your sword.",
-        "hold": 2.8
       },
       {
         "kind": "fade",
@@ -972,34 +886,17 @@
       "lines": [
         "Her lantern. Liane lit it the night before we climbed and said she'd blow it out herself when we were all home.",
         "She wrote everything down, you know. Every day of it.",
-        "If you find her pages up there, read them. She'd want someone to."
+        "And Aske kept her door fifty years. ...She'd have told him off for it, and been pleased."
       ]
     },
     {
-      "after": 3,
-      "id": "maren_graves",
-      "lines": [
-        "You found the graves in the crypt. Oskar, Liane, Tam.",
-        "Old names. Old graves. Leave them be, courier - some names are heavier than they look."
-      ]
-    },
-    {
-      "after": 5,
-      "id": "maren_seal",
-      "lines": [
-        "Sit. You've earned the story. The Ember Seal: black iron, forged in the Sunken Forge, set on Fafnyr's chain at the top of the mountain.",
-        "It kept him asleep a hundred years. Fifty years ago it cracked, and five fools climbed to make a new one.",
-        "I was one of the five. Don't look at me like that. Climb, and you'll understand."
-      ]
-    },
-    {
-      "after": 10,
       "id": "maren_confession",
       "lines": [
-        "Fafnyr spoke of a voice below. I know whose voice.",
-        "There were five of us. Morvax led. When the seal was set, he went down the stair behind the hoard, and we followed him.",
-        "Tam, Liane, Oskar - they held the stair so I could run. I came home alone and called it a rockfall. Fifty years I've called it a rockfall.",
-        "He isn't dead, courier. He's waiting. Go down and end it - for them, if not for me."
+        "Sit. No, sit. I've been fifty years getting this wrong in my head, and now I'll get it wrong out loud.",
+        "It wasn't a rockfall. Morvax wanted the kings' gold, to make Pixelheim a city fit for us. Fafnyr was half awake, so Morvax promised him his freedom for the hoard.",
+        "A lie, and the dragon knew it. The hall came down. Tam and Oskar and Liane held up the roof so I could get out. I made up the rockfall on the way home. It sounded tidier.",
+        "Some nights I saw a lamp up there. I told myself it was a star. I was too proud to climb, and so was he. Two old fools and a mountain.",
+        "(She takes a letter from her sleeve, and the brooch with five marks on it, hers the last.) My promise, courier: the fifth mark. And this. It has an address now."
       ]
     },
     {
@@ -1034,14 +931,27 @@
     {
       "id": "dream_corners",
       "home": "frost_aske"
-    },
+    }
+  ],
+  "readings": [
     {
-      "id": "dream_five",
-      "after": 3
-    },
-    {
-      "id": "dream_door",
-      "after": 7
+      "about": "PIX-253 step 8: Morvax's forge. Fifty years of tally marks on the back wall (`rect`, the wall cells E reads them from; `look`, MapView draws them), a stroke for every lamp he counted in the valley below. Read once into the story ledger (`sceneId`), `again` after.",
+      "sceneId": "morvax_tally",
+      "mapId": "morvax_forge",
+      "rect": [
+        10,
+        1,
+        6,
+        1
+      ],
+      "look": "tally",
+      "name": "The tally marks",
+      "lines": [
+        "(Tally marks, scratched into the wall in fives, row under row: fifty years of them. Under each row, in a cramped hand, a year.)",
+        "(Twelve lamps, the first year. Thirty-one, in a good one. The newest row, still being added to, says forty.)",
+        "(Beside the last mark, smaller: \"New one by the bridge. Crooked. Tell her.\")"
+      ],
+      "again": "Fifty years of tally marks, a stroke for every lamp lit in the valley. The newest row says forty."
     }
   ]
 }

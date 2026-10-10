@@ -59,6 +59,9 @@ const SHOTS := {
 	"lianes_stair": {"area": "rooms", "map": "observatory", "cell": Vector2i(13, 6), "time": DAY, "down": true},
 	"hales_hall": {"area": "rooms", "map": "keep", "cell": Vector2i(13, 7), "time": DAY},
 	"hales_stair": {"area": "rooms", "map": "keep", "cell": Vector2i(13, 6), "time": DAY, "down": true},
+	# Morvax's forge (PIX-253 step 8): the cot, the cold anvil, and fifty
+	# years of tally marks on the back wall.
+	"morvax_forge": {"area": "rooms", "map": "morvax_forge", "cell": Vector2i(11, 3), "time": DAY},
 	"forest": {"area": "reach", "map": "overworld", "at": "forest_2", "time": DAY},
 	"ash": {"area": "reach", "map": "overworld", "at": "ash_3", "time": DAY},
 	"overworld_night": {"area": "reach", "map": "overworld", "at": "forest_2", "time": NIGHT},
@@ -72,6 +75,9 @@ const SHOTS := {
 	"frostgate": {"area": "regions", "map": "frostgate", "time": DAY},
 	"coast": {"area": "regions", "map": "saltmere", "cell": Vector2i(33, 27), "time": DAY},
 	"deepwood": {"area": "regions", "map": "deepwood", "time": DAY},
+	# The mountain road (PIX-253 step 8): its switchbacks up the ash to the
+	# forge in the rock, and the lamp by its door.
+	"mountain_road": {"area": "regions", "map": "mountain_road", "cell": Vector2i(17, 8), "time": DAY},
 	# The ways between maps (PIX-269): the river road running out through
 	# the cliffs at the Deepwood pass by day and by night, the Mirefen's way
 	# back (high on its east edge since the Reach became one plane), and the

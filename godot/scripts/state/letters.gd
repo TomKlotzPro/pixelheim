@@ -13,7 +13,10 @@ class_name Letters
 ## Maren. Pure, over progression.json's "letters"; Questing gives them out
 ## and hands them over. Step 2 carries them in the courier's satchel: the
 ## journal's main story rows, and its Letters tab, where a letter delivered
-## can be read with its answer.
+## can be read with its answer. Step 8 gives the fifth: once the four
+## keepsakes are home Maren tells it all at the shrine (her confession) and
+## gives the courier the letter she kept, to Morvax at his forge at the top
+## of the mountain road, with her promise, which opens the mountain's gate.
 
 
 static func _doc() -> Dictionary:
@@ -33,13 +36,18 @@ static func all() -> Array[Dictionary]:
 	return out
 
 
+## Whether a quest is one of Maren's letters: the four, or the fifth.
 static func is_letter(quest: Dictionary) -> bool:
-	return String(quest.get("id", "")) in _doc()["quests"]
+	var id := String(quest.get("id", ""))
+	return id in _doc()["quests"] or id == String(fifth()["questId"])
 
 
 ## Whether a letter's keepsake is won: the relic its family gives back,
 ## laid low with its chapter boss, or every relic home with Maren.
 static func keepsake_won(quest: Dictionary, progression: ProgressionState) -> bool:
+	# The fifth has none: it goes to Morvax, after them all.
+	if not quest.has("keepsake"):
+		return false
 	if Relics.home(progression):
 		return true
 	for relic: Dictionary in Relics.all():
@@ -115,8 +123,9 @@ static func found(progression: ProgressionState) -> bool:
 ## The courier's satchel (PIX-253 step 2): Maren's four letters in the
 ## story's order once the tin is found, {quest, delivered} for each one in
 ## hand or delivered (handed over, or its keepsake won before the letters
-## were written into the story); nothing before. The journal's main story
-## is these rows, and its Letters tab their words.
+## were written into the story); nothing before. Then the fifth, once Maren
+## has given it (step 8). The journal's main story is these rows, and its
+## Letters tab their words.
 static func satchel(progression: ProgressionState) -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	if not found(progression):
@@ -125,20 +134,115 @@ static func satchel(progression: ProgressionState) -> Array[Dictionary]:
 		var done := delivered(quest, progression)
 		if done or progression.quests.has(quest["id"]):
 			out.append({"quest": quest, "delivered": done})
+	var last := fifth_quest()
+	if progression.quests.has(last["id"]):
+		out.append({"quest": last, "delivered": bool(progression.quests[last["id"]].get("done", false))})
 	return out
 
 
-## The fifth letter, to Morvax, that Maren keeps (until chapter 6):
-## {addressed, note}.
+## The fifth letter, to Morvax, that Maren keeps until she has told it all
+## (chapter 6): {questId, addressed, note, given, late}.
 static func fifth() -> Dictionary:
 	return _doc()["fifth"]
+
+
+## The fifth letter's quest (a deliverTo to Morvax at his forge).
+static func fifth_quest() -> Dictionary:
+	return Quests.by_id(String(fifth()["questId"]))
+
+
+## Whether Maren still keeps the fifth (no address on it yet): not given.
+static func fifth_kept(progression: ProgressionState) -> bool:
+	return not progression.quests.has(fifth_quest()["id"])
+
+
+# ---- The fifth letter (PIX-253 step 8) ---------------------------------------------
+
+## Maren's confession, in the story ledger once she has told it: the main
+## quest's step that waits on it names it.
+static func confession_id() -> String:
+	return "maren_confession"
+
+
+## Her confession's lines (story.json's elderLines).
+static func confession_lines() -> Array:
+	for entry: Dictionary in Story._data()["elderLines"]:
+		if entry["id"] == confession_id():
+			return entry["lines"]
+	return []
+
+
+## Whether Maren has the fifth letter to give now: the story's next step is
+## to hear her out (the four keepsakes home), or to deliver it while she
+## still keeps it (a hero who heard her old confession, after the dragon
+## on the old mountain). As she says so, it's given (Questing.hear_out).
+static func fifth_due(progression: ProgressionState, settlement: SettlementState) -> bool:
+	return confession_due(progression, settlement) or (
+		_next_waits_on(fifth_quest()["id"], progression, settlement) and fifth_kept(progression))
+
+
+## Whether the next word with Maren is her confession: the main quest's
+## next step waits on it.
+static func confession_due(progression: ProgressionState, settlement: SettlementState) -> bool:
+	var step := MainQuest.next_step(progression, settlement)
+	return not step.is_empty() and step["when"]["kind"] == "seen" and String(step["when"]["sceneId"]) == confession_id()
+
+
+static func _next_waits_on(quest_id: String, progression: ProgressionState, settlement: SettlementState) -> bool:
+	var step := MainQuest.next_step(progression, settlement)
+	return not step.is_empty() and step["when"]["kind"] == "delivered" and String(step["when"]["questId"]) == quest_id
+
+
+## What Maren says giving it: the whole story, or for a hero who heard it
+## before (her old confession, after the old mountain's dragon) a word.
+static func fifth_lines(progression: ProgressionState, settlement: SettlementState) -> Array:
+	return confession_lines() if confession_due(progression, settlement) else fifth()["late"]
+
+
+## Whether a letter's answer goes its other way for this hero (`slain`):
+## a hero who slew Fafnyr on the old mountain keeps him slain, and the
+## mountain stays quiet when Morvax reads his (PIX-253 step 8).
+static func _slain(quest: Dictionary, progression: ProgressionState, settlement: SettlementState) -> bool:
+	return quest.has("slain") and MainQuest.skips(_night_of_bells(), progression, settlement)
+
+
+## The chapter a dragon-slayer skips (the Night of Bells): the first that
+## says what skips it.
+static func _night_of_bells() -> int:
+	for number in range(1, MainQuest.chapters().size() + 1):
+		if MainQuest.chapters()[number - 1].has("skipIf"):
+			return number
+	return 0
+
+
+## A letter's answer as its recipient reads it (its `slain` one for a hero
+## who slew the dragon).
+static func answer(quest: Dictionary, progression: ProgressionState, settlement: SettlementState) -> Array:
+	return quest["slain"]["answer"] if _slain(quest, progression, settlement) else quest["answer"]
+
+
+## What the recipient says after a moment, once the answer is read: the
+## mountain shaking under Morvax's forge (`quake`), or nothing.
+static func then_lines(quest: Dictionary, progression: ProgressionState, settlement: SettlementState) -> Array:
+	return [] if _slain(quest, progression, settlement) else quest.get("quake", [])
+
+
+## What `npc_id` says once a letter carried to them is answered (`after`),
+## or [] when they say as they always did.
+static func after_lines(npc_id: String, progression: ProgressionState, settlement: SettlementState) -> Array:
+	for quest: Dictionary in Quests.for_recipient(npc_id):
+		if progression.quests.get(quest["id"], {}).get("done", false) and quest.has("after"):
+			return quest["slain"]["after"] if _slain(quest, progression, settlement) else quest["after"]
+	return []
 
 
 # ---- Answers that wait where they were written (PIX-255) --------------------------
 
 ## Every letter's answer to be read in the world (chapter 4: Captain Hale's
 ## order book, on his table in the keep): the letter's `reading`, with its
-## `quest`.
+## `quest`. Then what the story leaves to read that no letter opens
+## (story.json's `readings`, PIX-253 step 8: Morvax's tally marks on his
+## forge's wall), readable from the first: no `quest`.
 static func readings() -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	for quest: Dictionary in all():
@@ -146,6 +250,18 @@ static func readings() -> Array[Dictionary]:
 			var reading: Dictionary = quest["reading"].duplicate()
 			reading["quest"] = quest
 			out.append(reading)
+	for piece: Dictionary in Story._data().get("readings", []):
+		out.append(piece)
+	return out
+
+
+## The set pieces on `map_id` drawn in a look of their own (`look`: the
+## tally marks), [{look, rect}].
+static func drawn_on(map_id: String) -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	for entry: Dictionary in readings():
+		if String(entry["mapId"]) == map_id and entry.has("look"):
+			out.append({"look": String(entry["look"]), "rect": reading_rect(entry)})
 	return out
 
 
@@ -184,15 +300,19 @@ static func reading_rect(entry: Dictionary) -> Rect2i:
 
 
 ## Whether reading it now is its first time: its letter delivered (until
-## then it stays shut: a courier never reads the post) and not yet in the
-## story ledger.
+## then it stays shut: a courier never reads the post; a piece no letter
+## opens never is) and not yet in the story ledger.
 static func reads_now(entry: Dictionary, progression: ProgressionState) -> bool:
-	return delivered(entry["quest"], progression) and String(entry["sceneId"]) not in progression.story_seen
+	return _open(entry, progression) and String(entry["sceneId"]) not in progression.story_seen
 
 
 ## What it says: shut until its letter is delivered, its lines the first
 ## time it's read, a short word after.
 static func reading_lines(entry: Dictionary, progression: ProgressionState) -> Array:
-	if not delivered(entry["quest"], progression):
+	if not _open(entry, progression):
 		return [String(entry["shut"])]
 	return entry["lines"] if reads_now(entry, progression) else [String(entry["again"])]
+
+
+static func _open(entry: Dictionary, progression: ProgressionState) -> bool:
+	return not entry.has("quest") or delivered(entry["quest"], progression)

@@ -10,10 +10,11 @@ class_name PunyInterior
 ## Interiors this restyles (the web's room maps; house tiers share an id),
 ## and since PIX-256 the rooms the Reach's buildings open onto, a stairwell
 ## down to the cellar under each: Liane's room in her observatory over the
-## ice cave, Captain Hale's hall in Greyhold's keep over its cellars.
-const ROOMS := ["town_inn", "town_shop", "town_smith", "town_alchemist", "town_hall", "town_house", "observatory", "keep"]
-## Rooms with a stone floor: the smithy, and the keep of a fort.
-const STONE_ROOMS := ["town_smith", "keep"]
+## ice cave, Captain Hale's hall in Greyhold's keep over its cellars; and
+## Morvax's forge at the top of the mountain road (PIX-253 step 8).
+const ROOMS := ["town_inn", "town_shop", "town_smith", "town_alchemist", "town_hall", "town_house", "observatory", "keep", "morvax_forge"]
+## Rooms with a stone floor: the smithy, the keep of a fort, Morvax's forge.
+const STONE_ROOMS := ["town_smith", "keep", "morvax_forge"]
 
 const PLANKS := [5342, 5565, 3550]
 const STONE := [1792, 2233, 2453]
@@ -223,6 +224,13 @@ static func plan(map_id: String, grid: Dictionary) -> Dictionary:
 						leaning[at] = true
 					else:
 						standing[at] = true
+	# A wall the story has written on keeps it whole, no window through it
+	# (PIX-253 step 8: Morvax's tally marks, Letters.drawn_on).
+	for piece: Dictionary in Letters.drawn_on(map_id):
+		var rect: Rect2i = piece["rect"]
+		for x in range(rect.position.x, rect.end.x):
+			for y in range(rect.position.y, rect.end.y):
+				leaning[Vector2i(x, y)] = true
 	# The room: everything that isn't wall gets floor (furniture stands on
 	# it), and so does the wall line where furniture stands in it. Doors
 	# stand in the wall line, so they are not room.

@@ -121,7 +121,9 @@ func test_the_reachs_page_names_its_regions_not_its_roads() -> void:
 	assert_true(Catalog.place_name("town") in ways, "the village's gate")
 	for cave: String in ["seacave", "shafts", "cellars", "icecave"]:
 		assert_true(Catalog.place_name(cave) in ways, "the way down to %s" % cave)
-	assert_eq(ways.size(), 5, "no road between two maps on the page named")
+	# And the mountain's gate, onto its road (PIX-253 step 8).
+	assert_true(Catalog.place_name("mountain_road") in ways, "the way up the mountain")
+	assert_eq(ways.size(), 6, "no road between two maps on the page named")
 	var page := Rect2(Vector2.ZERO, Vector2(Atlas.page_size(sheets, sizes)))
 	for label: Dictionary in labels:
 		assert_true(page.has_point(label["at"]), "%s on the page" % label["text"])
@@ -180,9 +182,9 @@ func test_a_page_names_its_regions_and_ways_out_once_seen() -> void:
 	assert_eq(Atlas.labels(overworld, {}), [] as Array[Dictionary], "nothing seen, nothing named")
 	var everything := Atlas.labels(overworld, _seen_all(overworld))
 	var ways := _texts(everything, true)
-	for map_id: String in ["town", "mirefen", "deepwood", "saltmere", "blackiron", "greyhold", "frostgate"]:
+	for map_id: String in ["town", "mirefen", "deepwood", "saltmere", "blackiron", "greyhold", "frostgate", "mountain_road"]:
 		assert_true(Catalog.place_name(map_id) in ways, "the way to %s" % map_id)
-	assert_eq(ways.size(), 7, "each once")
+	assert_eq(ways.size(), 8, "each once")
 	assert_eq(_texts(everything, false), ["The Ash Fields", "The Whispering Forest", "The Sunken Marsh"], "its three regions")
 	# Seen from the Mirefen Pass: its road, and only a corner of the marsh.
 	var by_the_pass := {}

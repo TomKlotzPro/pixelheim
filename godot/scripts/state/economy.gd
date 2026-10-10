@@ -222,14 +222,14 @@ static func job_line(jobs: Dictionary, job: String) -> String:
 ## How far into the Reach a place lies (PIX-184), in the order a hero takes
 ## it, so the nearest lead comes first: the fields, the coast, the road through
 ## the Ash, the mines, the Deepwood, Greyhold, the Frostgate, then the
-## mountain's floors, and the Mirefen last.
+## mountain (its road, PIX-253 step 8; its old floors), and the Mirefen last.
 const REGION_STAGE := {
 	"forest": 1, "marsh": 1, "coast": 2, "seacave": 2, "ash": 3, "mines": 4, "shafts": 4,
-	"deepwood": 5, "castle": 6, "cellars": 6, "frost": 7, "icecave": 7, "mire": 12,
+	"deepwood": 5, "castle": 6, "cellars": 6, "frost": 7, "icecave": 7, "road": 8, "mire": 12,
 }
 const MAP_STAGE := {
 	"overworld": 1, "saltmere": 2, "seacave": 2, "blackiron": 4, "shafts": 4, "deepwood": 5,
-	"greyhold": 6, "cellars": 6, "frostgate": 7, "icecave": 7, "mirefen": 12,
+	"greyhold": 6, "cellars": 6, "frostgate": 7, "icecave": 7, "mountain_road": 8, "mirefen": 12,
 }
 ## At the same stage, the surer lead first.
 const KIND_ORDER := ["shop", "forage", "chest", "fishing", "quest", "drop", "loot", "patch", "hoard"]
@@ -302,10 +302,11 @@ static func _quest_stage(quest: Dictionary) -> float:
 ## Where a material comes from (PIX-143; PIX-184 made it whole and true), the
 ## nearest lead first: [{kind, text, stage}], kind one of shop, forage (a
 ## region's patches and its fights), chest, fishing, quest (a reward), drop
-## (a monster's own), loot (the wilds' and the mountain's), patch (the floors')
-## and hoard (a floor's first clear). A shop counts only with it on its
-## shelves at `stock_stage` and the town's age `town_tier`.
-static func material_sources(item_id: String, town_tier := 4, stock_stage := 99, with_quests := true) -> Array[Dictionary]:
+## (a monster's own), loot (the wilds'), and, `with_floors`, the old
+## mountain's loot, patch (the floors') and hoard (a floor's first clear),
+## which left play with its floors (PIX-257). A shop counts only with it on
+## its shelves at `stock_stage` and the town's age `town_tier`.
+static func material_sources(item_id: String, town_tier := 4, stock_stage := 99, with_quests := true, with_floors := false) -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	var combat := Bestiary._data()
 	var shop_maps := {}
@@ -346,7 +347,9 @@ static func material_sources(item_id: String, town_tier := 4, stock_stage := 99,
 		for carried: Dictionary in Bestiary.drops_of(monster_id):
 			if carried["itemId"] != item_id:
 				continue
-			var places := Bestiary.where_found(monster_id)
+			# Where the monster lives, never the old mountain's floors: they
+			# left play (PIX-257).
+			var places := Bestiary.where_found(monster_id, false)
 			var odds := Text.t("every time") if float(carried["chance"]) >= 1.0 else "%d%%" % roundi(float(carried["chance"]) * 100)
 			if carried.has("once"):
 				# Sure once a hero, then a chance (PIX-180: Fafnyr's scale).
@@ -360,6 +363,22 @@ static func material_sources(item_id: String, town_tier := 4, stock_stage := 99,
 	if not looted.is_empty():
 		var nearest: float = looted.map(func(region_id: String) -> float: return place_stage("", region_id)).min()
 		out.append(_lead("loot", Text.t("now and then in loot in %s") % _region_names(looted), nearest))
+	# The old mountain's floors left play (PIX-257): their loot, patches and
+	# hoards lead nowhere now, so no hint names them; PIX-257's last step
+	# re-homes what only they held.
+	if with_floors:
+		_floor_leads(out, item_id)
+	out.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		if not is_equal_approx(a["stage"], b["stage"]):
+			return a["stage"] < b["stage"]
+		return KIND_ORDER.find(a["kind"]) < KIND_ORDER.find(b["kind"]))
+	return out
+
+
+## The old mountain's floors' leads for `item_id` (its loot, its patches,
+## its hoards), added to `out`: asked only of a list that wants them.
+static func _floor_leads(out: Array[Dictionary], item_id: String) -> void:
+	var combat := Bestiary._data()
 	var loot_floors: Array = range(1, Dungeons.floor_count() + 1).filter(func(level: int) -> bool:
 		return item_id in _pool_for(combat["floorPools"]["pools"], level)["stackIds"])
 	if not loot_floors.is_empty():
@@ -373,11 +392,6 @@ static func material_sources(item_id: String, town_tier := 4, stock_stage := 99,
 		out.append(_lead("hoard", Text.t("the hoard of %s") % Text.mid(combat["levels"][hoards[0] - 1]["name"]), floor_stage(hoards[0])))
 	elif hoards.size() > 1:
 		out.append(_lead("hoard", Text.t("the hoards of floors %s") % ", ".join(hoards.map(func(level: int) -> String: return str(level))), floor_stage(hoards[0])))
-	out.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
-		if not is_equal_approx(a["stage"], b["stage"]):
-			return a["stage"] < b["stage"]
-		return KIND_ORDER.find(a["kind"]) < KIND_ORDER.find(b["kind"]))
-	return out
 
 
 ## The loot pool a level rolls from: the deepest whose floor it has reached.

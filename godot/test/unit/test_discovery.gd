@@ -39,7 +39,7 @@ func test_waypoints_unlock_by_discovery_and_staffing() -> void:
 	Discovery.discover_around(discovered, map, Vector2i(48, 40))
 	assert_true(Interactables.waypoint_discovered(gate, discovered))
 	assert_true(Interactables.waypoint_usable(gate, discovered, []))
-	var square: Dictionary = Interactables.waypoints()[5]
+	var square: Dictionary = Interactables.waypoints().filter(func(waypoint: Dictionary) -> bool: return waypoint["id"] == "town_square")[0]
 	assert_eq(square["requiresSettler"], "settler_wren")
 	var town := MapData.load_by_id("town")
 	var town_seen := {}

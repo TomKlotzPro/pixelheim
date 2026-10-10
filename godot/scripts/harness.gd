@@ -282,6 +282,8 @@ func _run_test_harness() -> void:
 		# The floor select, not the barred gate (PIX-170): the relics are home.
 		if not Relics.gate_open(GameState.progression):
 			GameState.progression.quests[Relics.quest_id()] = {"progress": Relics.all().size(), "done": true}
+			# Maren's promise opens it since the fifth letter (PIX-253 step 8).
+			GameState.mark_seen(Letters.confession_id())
 		world.use_portal({
 			"kind": "dungeon",
 			"dungeon": flags.value("--dungeon", "mountain"),

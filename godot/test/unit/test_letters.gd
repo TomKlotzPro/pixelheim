@@ -157,7 +157,8 @@ func test_a_deliver_to_quest_goes_to_its_recipient_not_its_giver() -> void:
 		assert_eq(Quests.for_recipient(objective["to"]), [quest])
 	var maren := Quests.for_giver("elder").map(func(quest: Dictionary) -> String: return quest["id"])
 	assert_eq(maren, ["maren_relics", "troll_toll"], "never offered in talk, never handed back to her")
-	assert_true(MainQuest.steps().filter(func(step: Dictionary) -> bool: return step["when"]["kind"] == "delivered").size() == 4)
+	# And the fifth, to Morvax (PIX-253 step 8).
+	assert_true(MainQuest.steps().filter(func(step: Dictionary) -> bool: return step["when"]["kind"] == "delivered").size() == 5)
 
 
 func test_a_letter_waits_for_its_recipient_and_the_pack() -> void:
@@ -217,8 +218,14 @@ func test_the_main_quest_is_v2s_eight_chapters() -> void:
 	])
 	for index in range(1, 5):
 		assert_eq(MainQuest.chapters()[index]["steps"][0]["when"]["kind"], "delivered", "a chapter of the Reach opens on its letter")
-	for index in range(5, 8):
-		assert_string_contains(String(MainQuest.chapters()[index].get("about", "")), "To be replaced", "today's climb stands in, marked")
+	# The fifth letter's chapter (PIX-253 step 8): Maren heard out, then the
+	# letter up the mountain road; the last two written by steps 9 and 10.
+	assert_eq(MainQuest.chapters()[5]["steps"].map(func(step: Dictionary) -> String: return step["text"]), [
+		"Hear Maren out at the shrine", "Climb the mountain road and deliver the fifth letter",
+	])
+	for index in range(6, 8):
+		assert_string_contains(String(MainQuest.chapters()[index].get("about", "")), "builds it", "a chapter still to write, marked")
+	assert_eq(MainQuest.chapters()[6]["steps"][0]["text"], "Run home: the dragon is awake")
 	var first: Array = MainQuest.chapters()[0]["steps"].filter(func(step: Dictionary) -> bool: return not step.get("optional", false) or step["id"] == "rebuild")
 	assert_eq(first.map(func(step: Dictionary) -> String: return step["text"]), [
 		"Help Maren dig through what's left of her house", "Ask Sela the innkeeper for work",
@@ -269,8 +276,13 @@ func test_the_story_runs_letter_by_letter() -> void:
 	_win("rimefang")
 	assert_eq(_next(), "gate")
 	state.questing.resolve_quests("elder")
-	assert_eq(_next(), "cellar", "then, for now, the climb")
+	assert_eq(_next(), "confession", "then Maren tells it all (PIX-253 step 8)")
 	assert_eq(MainQuest.next_step(state.progression, state.settlement)["chapter"], "The Fifth Letter")
+	state.questing.finish_dialogue("elder")
+	assert_eq(_next(), "letter_morvax", "the fifth letter, up the mountain road")
+	state.questing.finish_dialogue("mountain_morvax")
+	assert_eq(_next(), "run_home", "then run home")
+	assert_eq(MainQuest.next_step(state.progression, state.settlement)["chapter"], "The Night of Bells")
 
 
 # ---- Old saves ---------------------------------------------------------------------

@@ -211,7 +211,7 @@ func _quests() -> void:
 				list.add_child(UiStyle.strong("The courier's satchel", 14, UiStyle.FADED))
 			list.add_child(_card(index, heading if at == 0 else null))
 			index += 1
-			if letter and (at == members.size() - 1 or not members[at + 1]["letter"]):
+			if letter and Letters.fifth_kept(progression) and (at == members.size() - 1 or not members[at + 1]["letter"]):
 				var fifth := Letters.fifth()
 				list.add_child(Layout.wrapped(UiStyle.label(Text.t("%s: %s") % [fifth["addressed"], fifth["note"]], 14, UiStyle.FADED), ROW_TEXT))
 		for note: String in notes:
@@ -438,7 +438,7 @@ func _fill_now() -> void:
 	# line stays, empty, when there's no saying: the top keeps its height,
 	# and the list under it its place, whatever is followed.
 	if place == "" and not quest.is_empty() and progression.prologue == Prologue.DONE:
-		place = Quests.where(quest, Relics.gate_open(progression), Town.done_projects(GameState.settlement))
+		place = Quests.where(quest, Town.done_projects(GameState.settlement))
 	var where := HBoxContainer.new()
 	where.add_theme_constant_override("separation", 10)
 	var mark := Diamond.new()
@@ -476,8 +476,11 @@ func _letters() -> void:
 		list.add_child(UiStyle.strong(Text.t("Maren's letters - %d of %d delivered") % [delivered, satchel.size()], 18, UiStyle.LAMP))
 		for carried: Dictionary in satchel:
 			_letter_card(list, carried["quest"], carried["delivered"])
-		var fifth := Letters.fifth()
-		_letter_card(list, {"addressed": fifth["addressed"], "note": fifth["note"]}, false)
+		# The fifth, while Maren keeps it (PIX-253 step 8: she gives it at
+		# the shrine once she's told it all).
+		if Letters.fifth_kept(GameState.progression):
+			var fifth := Letters.fifth()
+			_letter_card(list, {"addressed": fifth["addressed"], "note": fifth["note"]}, false)
 	var found := Story.found_pages(GameState.progression.cleared_levels)
 	if found.is_empty():
 		return
@@ -517,7 +520,7 @@ func _letter_card(list: VBoxContainer, quest: Dictionary, delivered: bool) -> vo
 		gap.custom_minimum_size = Vector2(0, 6)
 		words.add_child(gap)
 		words.add_child(Layout.wrapped(UiStyle.strong(String(quest["answered"]), 14, UiStyle.LAMP), ROW_TEXT))
-		for line: String in quest["answer"]:
+		for line: String in Letters.answer(quest, GameState.progression, GameState.settlement):
 			words.add_child(Layout.wrapped(UiStyle.label(line, 14, UiStyle.INK), ROW_TEXT))
 	pages.append(card)
 	list.add_child(card)

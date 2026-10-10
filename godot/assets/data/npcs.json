@@ -9,9 +9,8 @@
       "name": "Elder Maren",
       "wander": false,
       "lines": [
-        "The gate stands open now. Ten floors of teeth and worse manners, and Fafnyr awake on the last of them.",
-        "Pixelheim stands again. Whatever lives on that mountain has noticed.",
-        "And if you beat the dragon... come see me. Something waits below him. I hear it some nights."
+        "The gate's open. The old road goes up to his forge, and nowhere else now: the deep ways are shut, and good riddance.",
+        "Pixelheim stands again. Fifty years I kept a village and a secret, and only one of them was worth keeping."
       ],
       "minTownTier": 0,
       "ashesLines": [
@@ -438,6 +437,21 @@
       "shop": "sutler",
       "lines": [
         "I sell what keeps soldiers alive."
+      ]
+    },
+    {
+      "id": "mountain_morvax",
+      "about": "PIX-253 step 8: the last of the five who climbed, who never came down. Fifty years at the forge at the top of the mountain road mending the seal on Fafnyr's collar with Blackiron iron, counting the village's lamps on his wall; the fifth letter is to him (letter_morvax: its answer, `quake` and `after`). Step 10 brings him home, or not.",
+      "mapId": "morvax_forge",
+      "x": 8,
+      "y": 4,
+      "sprite": "elder",
+      "name": "Morvax",
+      "wander": false,
+      "minTownTier": 0,
+      "lines": [
+        "You're late, courier. Fifty years late.",
+        "(He doesn't look up from the cold anvil.) If Maren wants something, Maren can climb. ...She won't. Neither will I."
       ]
     }
   ],

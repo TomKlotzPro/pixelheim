@@ -11,17 +11,26 @@ func _texts(item_id: String, town_tier := 4, stock_stage := 99) -> Array:
 	return Economy.material_sources(item_id, town_tier, stock_stage).map(func(lead: Dictionary) -> String: return lead["text"])
 
 
+## With the old mountain's floors' leads too (PIX-257: out of play).
+func _floor_texts(item_id: String) -> Array:
+	return Economy.material_sources(item_id, 4, 99, true, true).map(func(lead: Dictionary) -> String: return lead["text"])
+
+
 func _kinds(item_id: String) -> Array:
 	return Economy.material_sources(item_id).map(func(lead: Dictionary) -> String: return lead["kind"])
 
 
 func test_a_lead_for_every_way_to_come_by_it() -> void:
 	assert_has(_texts("forest_herb"), "in a chest in the Ashenreach", "a chest of herbs")
-	assert_has(_texts("marsh_reed"), "picked from the patch on floors 4-6", "the floors grow it too")
+	# The old mountain's floors left play (PIX-257): no lead names them now,
+	# but they are still worked out where asked, for what re-homes them.
+	assert_false(_texts("marsh_reed").any(func(text: String) -> bool: return "floor" in text), "no floor named")
+	assert_has(_floor_texts("marsh_reed"), "picked from the patch on floors 4-6", "the floors grew it too")
 	assert_has(_texts("ember_shard"), "Smith Hilda's reward for Black Iron for the Forge", "a quest pays one")
 	assert_eq(Economy.material_sources("ember_shard")[0]["kind"], "forage", "the Ash before Hilda's reward for ore from the mines")
 	assert_has(_texts("icefin"), "caught fishing at the Frostgate Pass", "the hole in the ice has its own catch")
-	assert_true(_texts("gem").has("the hoards of floors 2, 4, 7, 8, 10, 13, 14, 15"), "one line for every hoard")
+	assert_true(_floor_texts("gem").has("the hoards of floors 2, 4, 7, 8, 10, 13, 14, 15"), "one line for every hoard")
+	assert_false(_texts("gem").any(func(text: String) -> bool: return "hoard" in text), "none in play")
 
 
 func test_loot_names_the_wilds_that_drop_it() -> void:

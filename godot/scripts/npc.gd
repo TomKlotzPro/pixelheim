@@ -137,6 +137,10 @@ func _refresh_mark() -> void:
 	var kind := ""
 	if GameState.settings.quest_marks:
 		kind = Quests.mark_for(String(data.get("id", "")), GameState.progression.quests, GameState.pack.items, GameState.questing.quest_open)
+		# Maren with the whole story to tell and the fifth letter to give
+		# (PIX-253 step 8): the main story's gold "!".
+		if data.get("id", "") == "elder" and Letters.fifth_due(GameState.progression, GameState.settlement):
+			kind = "letter"
 	if kind == _mark_kind:
 		return
 	_mark_kind = kind

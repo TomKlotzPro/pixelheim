@@ -202,5 +202,12 @@
       ],
       "note": "Greyhold's garrison, laid in rows under their own stone knights. Someone used to leave candles here. Nobody has for a long time."
     }
-  }
+  },
+  "shut": [
+    {
+      "about": "PIX-257: the Undermountain's cave at the west end of the Ash, filled with rock now its floors have left play. A save stood by its mouth (the cells the floor select stepped the hero back to, and its waypoint's arrival) wakes in town (Depths.waking).",
+      "mapId": "overworld",
+      "rect": [23, 9, 4, 3]
+    }
+  ]
 }

@@ -322,15 +322,33 @@ func talk(npc: Dictionary) -> void:
 		box.npc = npc
 		world.add_child(box)
 		return
-	# A letter carried to them (PIX-253): their answer, and as it closes the
-	# letter is theirs.
-	var letter := GameState.questing.letter_for(npc["id"])
-	if not letter.is_empty():
+	# Once the four keepsakes are home, Maren tells it all at the shrine
+	# (PIX-253 step 8); closing it gives the fifth letter and her promise
+	# (Questing.hear_out).
+	if npc["id"] == "elder" and Letters.fifth_due(GameState.progression, GameState.settlement):
 		npc = npc.duplicate()
-		npc["lines"] = letter["answer"]
+		npc["lines"] = Letters.fifth_lines(GameState.progression, GameState.settlement)
 		box.npc = npc
 		world.add_child(box)
 		return
+	# A letter carried to them (PIX-253): their answer, and as it closes the
+	# letter is theirs - and, for Morvax's, the mountain shakes (step 8).
+	var letter := GameState.questing.letter_for(npc["id"])
+	if not letter.is_empty():
+		npc = npc.duplicate()
+		npc["lines"] = Letters.answer(letter, GameState.progression, GameState.settlement)
+		var then := Letters.then_lines(letter, GameState.progression, GameState.settlement)
+		if not then.is_empty():
+			var who: Dictionary = npc
+			GameState.dialogue_closed.connect(func(_who: String) -> void: world.stage.mountain_shakes(who, then), CONNECT_ONE_SHOT)
+		box.npc = npc
+		world.add_child(box)
+		return
+	# What they say once a letter carried to them is answered (Morvax).
+	var after := Letters.after_lines(npc["id"], GameState.progression, GameState.settlement)
+	if not after.is_empty():
+		npc = npc.duplicate()
+		npc["lines"] = after
 	# Maren tells what the hero's floors have earned, once each (PIX-153).
 	if npc["id"] == "elder":
 		var told := Story.elder_story(GameState.progression.cleared_levels, GameState.progression.story_seen, GameState.progression.hunted)

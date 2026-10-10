@@ -433,19 +433,6 @@
       }
     },
     {
-      "id": "undermountain_cave",
-      "name": "The Undermountain",
-      "mapId": "overworld",
-      "at": {
-        "x": 24,
-        "y": 10
-      },
-      "arrival": {
-        "x": 26,
-        "y": 10
-      }
-    },
-    {
       "id": "town_square",
       "name": "Pixelheim Square",
       "mapId": "town",

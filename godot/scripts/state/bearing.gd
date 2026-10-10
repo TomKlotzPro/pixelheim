@@ -62,9 +62,9 @@ static func behind(lead: Dictionary, progression: ProgressionState, settlement: 
 
 ## A main story step's lead: its chapter, its line, and where it is - the
 ## giver of the quest it waits on (or that quest's own way once taken), the
-## mountain's gate for a floor, the board on the square for the town's
-## projects, a named monster's lair, Maren over her tin or a letter's
-## recipient (PIX-253).
+## board on the square for the town's projects, a named monster's lair,
+## Maren over her tin or at the shrine, a letter's recipient (PIX-253), or
+## the place a step names (`mapId`: home, for the run home).
 static func of_step(step: Dictionary, progression: ProgressionState, settlement: SettlementState, items: Dictionary) -> Dictionary:
 	var lead := _blank(String(step.get("chapter", "")), String(step["text"]))
 	lead["main"] = true
@@ -81,16 +81,22 @@ static func of_step(step: Dictionary, progression: ProgressionState, settlement:
 			else:
 				_at_giver(lead, quest, settlement)
 		"cleared":
-			_at_gate(lead, int(when["level"]))
+			# The old mountain's floors left play (PIX-257): no gate opens
+			# onto them, and no step of the story asks for one now (a floor
+			# cleared is only an old save's `or`).
+			pass
 		"project", "townTier":
 			_at(lead, "town", Town.project_board())
 		"hunted":
 			_at_lair(lead, Hunts.named(when["named"]))
 		"seen":
-			# Maren digging for her tin (PIX-253), or a letter's answer
-			# waiting to be read (PIX-255: Hale's order book on his table).
+			# Maren digging for her tin (PIX-253), or at the shrine with the
+			# whole story to tell (step 8), or a letter's answer waiting to
+			# be read (PIX-255: Hale's order book on his table).
 			if when["sceneId"] == Letters.scene_id():
 				_at_tin(lead, progression, settlement)
+			elif when["sceneId"] == Letters.confession_id():
+				_at_npc(lead, "elder", settlement)
 			else:
 				var reading := Letters.reading(String(when["sceneId"]))
 				if not reading.is_empty():
@@ -105,6 +111,10 @@ static func of_step(step: Dictionary, progression: ProgressionState, settlement:
 					lead[key] = way[key]
 			else:
 				_at_tin(lead, progression, settlement)
+	# A step that names its place (PIX-253 step 8: run home, to the square).
+	if step.has("mapId") and lead["map_id"] == "":
+		var map_id := String(step["mapId"])
+		_at(lead, map_id, Town.square() if map_id == "town" else NOWHERE)
 	return lead
 
 
@@ -201,34 +211,6 @@ static func _at_tin(lead: Dictionary, progression: ProgressionState, settlement:
 static func _at_lair(lead: Dictionary, named: Dictionary) -> void:
 	if named.has("mapId") and named.has("lair"):
 		_at(lead, named["mapId"], Hunts.lair(named))
-
-
-## The gate of the dungeon whose floors hold `level`: a portal on some map
-## that opens onto it.
-static func _at_gate(lead: Dictionary, level: int) -> void:
-	for dungeon_id: String in ["mountain", "undermountain"]:
-		var dungeon := Dungeons.dungeon(dungeon_id)
-		if level not in dungeon.get("floors", []):
-			continue
-		var gate := gate_of(dungeon_id)
-		if not gate.is_empty():
-			_at(lead, gate["mapId"], gate["cell"])
-		return
-
-
-static var _gates := {}
-
-
-## Where a dungeon's gate stands: {mapId, cell}, looked for once on the
-## overworld's portals.
-static func gate_of(dungeon_id: String) -> Dictionary:
-	if _gates.is_empty():
-		var overworld := MapData.load_by_id("overworld")
-		for cell: Vector2i in overworld.portals:
-			var target: Dictionary = overworld.portals[cell]
-			if target.get("kind", "") == "dungeon":
-				_gates[target["dungeon"]] = {"mapId": "overworld", "cell": cell}
-	return _gates.get(dungeon_id, {})
 
 
 static var _doors := {}

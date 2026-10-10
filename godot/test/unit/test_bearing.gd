@@ -64,14 +64,31 @@ func test_a_followed_quest_done_hands_back_to_the_story() -> void:
 	assert_true(_lead()["main"], "done: the story leads again")
 
 
-func test_a_floor_to_clear_leads_to_the_mountains_gate() -> void:
-	var gate := Bearing.gate_of("mountain")
-	assert_eq(gate["mapId"], "overworld")
+## The old mountain's floors left play (PIX-257): nothing leads to one.
+func test_no_lead_points_at_a_floor() -> void:
 	var floors: Array = Dungeons.dungeon("mountain")["floors"]
 	var step := {"text": "Climb", "when": {"kind": "cleared", "level": int(floors[0])}}
 	var lead := Bearing.of_step(step, state.progression, state.settlement, state.pack.items)
-	assert_eq(lead["map_id"], "overworld")
-	assert_eq(lead["cell"], gate["cell"])
+	assert_eq(lead["map_id"], "", "no gate opens onto the floors")
+	for at: Dictionary in MapData.load_by_id("overworld").portals.values():
+		assert_ne(at.get("kind", ""), "dungeon", "no way into a dungeon's floors from the Ashenreach")
+
+
+## PIX-253 step 8: the confession leads to Maren at the shrine, the fifth
+## letter up the road to Morvax at his forge, and the run home to the square.
+func test_the_fifth_letter_leads_up_the_road_and_home() -> void:
+	state.mark_seen(Letters.scene_id())
+	state.progression.quests[Relics.quest_id()] = {"progress": 4, "done": true}
+	var lead := Bearing.active(state.progression, state.settlement, state.pack.items)
+	assert_eq([lead["who"], lead["map_id"]], ["elder", "town"], "Maren, at the shrine")
+	state.questing.finish_dialogue("elder")
+	lead = Bearing.active(state.progression, state.settlement, state.pack.items)
+	assert_eq([lead["who"], lead["map_id"]], ["mountain_morvax", "morvax_forge"])
+	assert_eq(Bearing.way_out("overworld", "morvax_forge"), Vector2i(48, 6), "through the mountain's gate")
+	assert_eq(Bearing.way_out("mountain_road", "morvax_forge"), Vector2i(17, 5), "up the road to his door")
+	state.questing.finish_dialogue("mountain_morvax")
+	lead = Bearing.active(state.progression, state.settlement, state.pack.items)
+	assert_eq([lead["map_id"], lead["cell"]], ["town", Town.square()], "run home, to the square")
 
 
 func test_the_line_names_the_place_once() -> void:
