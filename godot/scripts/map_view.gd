@@ -1038,8 +1038,8 @@ func _add_decor_sprite(texture_path: String, region: Rect2, cell: Vector2i, h: i
 
 ## A piece of a sheet, cut once a session and shared by every sprite that
 ## shows it (PIX-269): a field's hundreds of trees and bushes are a dozen
-## pieces, and cutting one for each sprite was most of what entering a
-## wooded map cost on screen (Mirefen's 50 ms).
+## pieces, not a resource made (and freed again) for each one at every
+## visit.
 static var _cuts := {}
 
 

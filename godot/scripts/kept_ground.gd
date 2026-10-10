@@ -11,7 +11,7 @@ extends RefCounted
 ## hero a strip at a time from the same kept rows.
 ## One per drawing of a map (a village that has grown since works its own
 ## out again and replaces it), a tile to an int: everything kept for the
-## whole Reach is well under a megabyte.
+## whole Reach, the village and its six regions is about a megabyte.
 
 ## The dual grid's first corner (`-pad`, `-pad`) and how many corners a row
 ## holds: corner i is `corner + Vector2i(i % width, i / width)`.
@@ -60,6 +60,9 @@ static func of(data: MapData, look: Dictionary, pad: int) -> KeptGround:
 ## as it loads, before anything is drawn over it): kept, or dealt now. The
 ## decks are only read, never changed.
 static func decks(data: MapData) -> Dictionary:
+	# A dungeon's floor is dealt its own patch (Delve), and drawn anew each time.
+	if data.floor_level > 0:
+		return Gathering.decks(data)
 	var fingerprint := hash([data.grid.hash(), data.regions.hash(), data.portals.hash(), data.spawn])
 	var drawing := data.id + data.variant
 	var kept: Dictionary = _decks.get(drawing, {})
