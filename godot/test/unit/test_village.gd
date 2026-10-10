@@ -3,8 +3,8 @@ extends GutTest
 ## mountain. These keep the plan honest: the gate road looks straight down to
 ## the hall, which faces the square; every door, villager, stall and corner
 ## worth finding can be walked to from the gate at every age; the square's
-## boards and lanterns stand on it; and the river is crossed only where a
-## bridge or the dock says so.
+## boards and lanterns stand on it; and the river is crossed only where the
+## bridge does (the fishing dock that ran part way over it went, PIX-287).
 
 const AGES := [0, 1, 2, 3, 4]
 
@@ -64,12 +64,12 @@ func test_the_corners_worth_finding_can_be_reached() -> void:
 			var cell := Vector2i(int(chest["x"]), int(chest["y"]))
 			var beside := [cell + Vector2i.LEFT, cell + Vector2i.RIGHT, cell + Vector2i.UP, cell + Vector2i.DOWN]
 			assert_true(beside.any(func(c: Vector2i) -> bool: return seen.has(c)), "the chest %s" % chest["id"])
-	assert_true(seen.has(Vector2i(40, 36)), "the end of the dock")
+	assert_true(seen.has(Vector2i(40, 34)), "the green's end on the river bank")
 	assert_true(seen.has(Vector2i(78, 21)), "the farms across the bridge")
 	assert_true(seen.has(Vector2i(10, 6)) or seen.has(Vector2i(10, 7)), "the shrine yard")
 
 
-func test_the_river_is_crossed_only_by_the_bridge_and_the_dock() -> void:
+func test_the_river_is_crossed_only_by_the_bridge() -> void:
 	var map := MapData.load_by_id("town")
 	var crossings := 0
 	for y in map.size.y:

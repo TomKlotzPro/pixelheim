@@ -114,11 +114,24 @@ func test_every_house_stands_in_its_own_roof_with_a_window_and_a_door() -> void:
 	assert_has(village["decor"].values(), Skyline.CHIMNEY, "a stack on the inn's tall roof")
 
 
-func test_its_river_bridge_and_dock() -> void:
-	var ground: Dictionary = _village(1)["ground"]
-	assert_has(ground.values(), "water")
-	assert_eq(_count_of(ground, "bridge"), 2, "the bridge, one row across the river")
-	assert_eq(_count_of(ground, "dock"), 1)
+## The river and its bridge, whole: the bridge lands on ground both ways
+## as the overworld draws it, at every age (PIX-287: the town's fishing dock,
+## shrunk, ran from the street into the rampart, half a bridge from the
+## Reach; it's gone from the town).
+func test_its_river_and_bridge() -> void:
+	for age in range(Town.MAX_TIER + 1):
+		var village := _village(age)
+		var ground: Dictionary = village["ground"]
+		assert_has(ground.values(), "water")
+		assert_eq(_count_of(ground, "bridge"), 2, "the bridge, one row across the river")
+		assert_eq(_count_of(ground, "dock"), 0, "no pier into the river")
+		var look: Dictionary = MapData.load_by_id("overworld").grid.merged(ground, true)
+		for cell: Vector2i in ground:
+			if ground[cell] in PunyTerrain.SPANS:
+				var axis := PunyTerrain.span_axis(look, cell)
+				for step: Vector2i in [-axis, axis]:
+					var end := PunyTerrain.span_end(look, cell, step)
+					assert_true(WorldTiles.is_walkable(look.get(end, "")), "age %d: the span at %s lands on ground at %s, not %s" % [age, cell, end, look.get(end, "")])
 
 
 func _count_of(ground: Dictionary, tile: String) -> int:
