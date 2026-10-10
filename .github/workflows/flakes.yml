@@ -160,6 +160,9 @@ jobs:
         runner: ${{ fromJSON(needs.plan.outputs.windowed) }}
     env:
       SCREEN: "-screen 0 2560x1440x24"
+      # Software rendering on a slow runner: the watchdog, a backstop for a
+      # run that never quits, waits longer than on a machine with a GPU.
+      FLOWS_WATCHDOG: "150"
     steps:
       - uses: actions/checkout@v4
 
