@@ -2361,6 +2361,10 @@ msgid "Each material grows a set number a day, so the rare ones stay rare: one F
 msgstr "Chaque matériau pousse en nombre fixe chaque jour, si bien que les rares le restent : un Lys de givre, un Minerai de Fernoir et un Vieil acier par jour, leurs deux foyers à tour de rôle"
 
 #: assets/data/changelog.json
+msgid "Each rank shows on the hero, in the class's colours: an edge at rank II, a rim of light at III, a weapon that glows as it strikes at IV, and light trailing your steps at V"
+msgstr "Chaque rang se voit sur le héros, aux couleurs de la classe : un liseré au rang II, un contour de lumière au III, une arme qui luit quand elle frappe au IV, et la lumière qui suit vos pas au V"
+
+#: assets/data/changelog.json
 msgid "Each region has its own air: heat shimmers over the Ash Fields as embers drift up, snow falls on the Frostgate and frost creeps in at the edges of the view, low fog rolls over the Mirefen and the marshes, and salt spray blows off the Saltmere coast"
 msgstr "Chaque région a son air : la chaleur fait trembler les Champs de Cendres où montent des braises, la neige tombe sur la Porte-Givre et le givre gagne les bords de l'écran, un brouillard bas roule sur les Marais de Fange et les marécages, et les embruns soufflent sur la côte de Saltmere"
 
@@ -3701,6 +3705,10 @@ msgid "Rank shows on the hero: an aura that deepens with each ascension (silver,
 msgstr "Le rang se voit sur le héros : une aura qui s'intensifie à chaque ascension (argentée, dorée, rayonnante) et un peu plus de présence sur la carte"
 
 #: assets/data/changelog.json
+msgid "Reaching a new rank is a moment: the world darkens, a shaft of your class's light lifts the hero, the old look burns away into the new, and the rank's name and what it unlocks follow"
+msgstr "Atteindre un nouveau rang devient un moment : le monde s'assombrit, un rai de la lumière de votre classe soulève le héros, l'ancienne allure se consume dans la nouvelle, puis viennent le nom du rang et ce qu'il débloque"
+
+#: assets/data/changelog.json
 msgid "Readable Danger"
 msgstr "Le danger se lit"
 
@@ -4711,6 +4719,10 @@ msgstr "Les cols deviennent des relais de voyage rapide dès que vous les aperce
 #: assets/data/changelog.json
 msgid "The quest is now Relics of the Five - four to find, the five's to bring home - and the town's goals and the bounty board no longer offer floors behind a barred gate"
 msgstr "La quête s'appelle désormais Les Reliques des Cinq - quatre à trouver, celles des cinq à ramener - et les objectifs du village comme le tableau des primes ne proposent plus d'étages derrière une porte barrée"
+
+#: assets/data/changelog.json
+msgid "The rank's look sits over your clothes and gear and never hides them; with Reduce motion the old look simply fades into the new"
+msgstr "L'allure du rang se pose sur vos vêtements et votre équipement sans jamais les cacher ; avec Réduire les animations, l'ancienne allure se fond simplement dans la nouvelle"
 
 #: assets/data/changelog.json
 msgid "The rank-up says what its bonus point is truly for"

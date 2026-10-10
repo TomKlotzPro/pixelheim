@@ -2361,6 +2361,10 @@ msgid "Each material grows a set number a day, so the rare ones stay rare: one F
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Each rank shows on the hero, in the class's colours: an edge at rank II, a rim of light at III, a weapon that glows as it strikes at IV, and light trailing your steps at V"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Each region has its own air: heat shimmers over the Ash Fields as embers drift up, snow falls on the Frostgate and frost creeps in at the edges of the view, low fog rolls over the Mirefen and the marshes, and salt spray blows off the Saltmere coast"
 msgstr ""
 
@@ -3701,6 +3705,10 @@ msgid "Rank shows on the hero: an aura that deepens with each ascension (silver,
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Reaching a new rank is a moment: the world darkens, a shaft of your class's light lifts the hero, the old look burns away into the new, and the rank's name and what it unlocks follow"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Readable Danger"
 msgstr ""
 
@@ -4710,6 +4718,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The quest is now Relics of the Five - four to find, the five's to bring home - and the town's goals and the bounty board no longer offer floors behind a barred gate"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The rank's look sits over your clothes and gear and never hides them; with Reduce motion the old look simply fades into the new"
 msgstr ""
 
 #: assets/data/changelog.json

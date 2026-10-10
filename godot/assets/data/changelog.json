@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.196.0",
+      "date": "2026-10-10",
+      "codename": "Ascension",
+      "notes": [
+        "Reaching a new rank is a moment: the world darkens, a shaft of your class's light lifts the hero, the old look burns away into the new, and the rank's name and what it unlocks follow",
+        "Each rank shows on the hero, in the class's colours: an edge at rank II, a rim of light at III, a weapon that glows as it strikes at IV, and light trailing your steps at V",
+        "The rank's look sits over your clothes and gear and never hides them; with Reduce motion the old look simply fades into the new"
+      ]
+    },
+    {
       "version": "0.195.0",
       "date": "2026-10-10",
       "codename": "Night Watch",
