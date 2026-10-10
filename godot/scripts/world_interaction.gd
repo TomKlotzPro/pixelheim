@@ -2,8 +2,9 @@ class_name Interaction
 extends Node
 ## What E does in the world (Solid Ground, PIX-260: moved out of world.gd as
 ## it was), in the web's INTERACT order: the well's water on the Night of
-## Ash, a faced chest, a dungeon's set piece's words (PIX-255), the house's
-## door and fixtures, a trade's station (a
+## Ash, a faced chest, a letter's answer waiting to be read and a dungeon's
+## set piece's words (PIX-255), the house's door and fixtures, a trade's
+## station (a
 ## forge, an anvil, a cauldron: PIX-234), the stairs down to a cellar
 ## (PIX-256), a fishing spot, the square's boards, then the villager beside
 ## the hero (a keeper's counter, a stall, the bank, or a talk). What the
@@ -62,6 +63,12 @@ func interact() -> void:
 	var chest := _chest_at(faced)
 	if not chest.is_empty() and chest["look"] == "chest" and not GameState.spoils.is_opened(chest):
 		_open_chest(chest)
+		return
+	# A letter's answer that waits where it was written (PIX-255: Captain
+	# Hale's order book, on his table).
+	var reading := Letters.reading_at(world.map.id, faced)
+	if not reading.is_empty():
+		read(reading)
 		return
 	# What a region dungeon's set piece says, faced (PIX-255: the wreck).
 	if world.map.notes.has(faced):
@@ -214,6 +221,23 @@ func _station(cell: Vector2i) -> bool:
 		_:
 			_open_shop("Craft")
 	return true
+
+
+## A letter's answer read where it was written (PIX-255, chapter 4: Captain
+## Hale's order book, the last page he wrote). Shut until its letter is
+## delivered; the first time, its page in a conversation, kept in the story
+## ledger as it closes (a main quest step); a short word after.
+func read(reading: Dictionary) -> void:
+	var lines := Letters.reading_lines(reading, GameState.progression)
+	if not Letters.reads_now(reading, GameState.progression):
+		world.messages.flash(String(lines[0]))
+		return
+	var scene_id := String(reading["sceneId"])
+	GameState.dialogue_closed.connect(func(_who: String) -> void: GameState.mark_seen(scene_id), CONNECT_ONE_SHOT)
+	var box := preload("res://scripts/dialogue_box.gd").new()
+	box.npc = {"id": scene_id, "name": String(reading["name"]), "lines": lines}
+	world.add_child(box)
+	Sound.play_ui("page")
 
 
 ## The stairs down from a room to the cellar under it (PIX-256: a house
@@ -499,7 +523,8 @@ func update_prompt() -> void:
 	var map: MapData = world.map
 	var show: bool = (
 		not chest.is_empty() and chest["look"] == "chest" and not GameState.spoils.is_opened(chest)
-	) or _fishing_here() or _station_at(facing_cell()) != "" or _bed_at(facing_cell()) or Ways.goes_down(map, facing_cell()) or map.notes.has(facing_cell())
+	) or _fishing_here() or _station_at(facing_cell()) != "" or _bed_at(facing_cell()) or Ways.goes_down(map, facing_cell()) or map.notes.has(facing_cell()) \
+			or not Letters.reading_at(map.id, facing_cell()).is_empty()
 	if show:
 		_show_prompt(facing_cell(), -12)
 	else:

@@ -132,3 +132,67 @@ static func satchel(progression: ProgressionState) -> Array[Dictionary]:
 ## {addressed, note}.
 static func fifth() -> Dictionary:
 	return _doc()["fifth"]
+
+
+# ---- Answers that wait where they were written (PIX-255) --------------------------
+
+## Every letter's answer to be read in the world (chapter 4: Captain Hale's
+## order book, on his table in the keep): the letter's `reading`, with its
+## `quest`.
+static func readings() -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	for quest: Dictionary in all():
+		if quest.has("reading"):
+			var reading: Dictionary = quest["reading"].duplicate()
+			reading["quest"] = quest
+			out.append(reading)
+	return out
+
+
+## The reading by its id in the story ledger (the main quest's step that
+## waits on it), {} for none.
+static func reading(scene_id: String) -> Dictionary:
+	for entry: Dictionary in readings():
+		if entry["sceneId"] == scene_id:
+			return entry
+	return {}
+
+
+## The maps a reading waits on (asked every frame by the prompt): map id ->
+## true, worked out once (ids don't change with the language).
+static var _reading_maps := {}
+
+
+## The reading E meets facing `cell` of `map_id`, {} for none.
+static func reading_at(map_id: String, cell: Vector2i) -> Dictionary:
+	if _reading_maps.is_empty():
+		_reading_maps[""] = true
+		for entry: Dictionary in readings():
+			_reading_maps[String(entry["mapId"])] = true
+	if map_id == "" or not _reading_maps.has(map_id):
+		return {}
+	for entry: Dictionary in readings():
+		if String(entry["mapId"]) == map_id and reading_rect(entry).has_point(cell):
+			return entry
+	return {}
+
+
+## The cells a reading is read from (a table's).
+static func reading_rect(entry: Dictionary) -> Rect2i:
+	var rect: Array = entry["rect"]
+	return Rect2i(int(rect[0]), int(rect[1]), int(rect[2]), int(rect[3]))
+
+
+## Whether reading it now is its first time: its letter delivered (until
+## then it stays shut: a courier never reads the post) and not yet in the
+## story ledger.
+static func reads_now(entry: Dictionary, progression: ProgressionState) -> bool:
+	return delivered(entry["quest"], progression) and String(entry["sceneId"]) not in progression.story_seen
+
+
+## What it says: shut until its letter is delivered, its lines the first
+## time it's read, a short word after.
+static func reading_lines(entry: Dictionary, progression: ProgressionState) -> Array:
+	if not delivered(entry["quest"], progression):
+		return [String(entry["shut"])]
+	return entry["lines"] if reads_now(entry, progression) else [String(entry["again"])]

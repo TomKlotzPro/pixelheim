@@ -29,7 +29,7 @@ class_name Atlas
 const ORDER := [
 	"overworld", "town", "saltmere", "seacave", "seacave_galleries", "seacave_grotto", "mirefen",
 	"blackiron", "shafts", "shafts_gallery", "shafts_blackseam",
-	"frostgate", "icecave", "greyhold", "cellars", "deepwood",
+	"frostgate", "icecave", "greyhold", "cellars", "cellars_crypt", "cellars_hall", "deepwood",
 ]
 ## Pixels per tile on a page: whole, as large as the window allows, within these.
 const MIN_TILE := 2

@@ -2180,6 +2180,8 @@
     "greyhold": "Greyhold",
     "keep": "Captain Hale's Hall",
     "cellars": "The Greyhold Cellars",
+    "cellars_crypt": "The Garrison's Crypt",
+    "cellars_hall": "The Captain's Hall",
     "frostgate": "The Frostgate Pass",
     "observatory": "Liane's Room",
     "icecave": "The Ice Cave"

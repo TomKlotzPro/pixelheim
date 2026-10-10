@@ -257,6 +257,8 @@ func test_the_story_runs_letter_by_letter() -> void:
 	state.settlement.projects.append("street_lamps")
 	assert_eq(_next(), "letter_hale")
 	state.questing.finish_dialogue("greyhold_ulla")
+	assert_eq(_next(), "order_book", "Ulla sends the courier to the captain's order book (PIX-255)")
+	state.mark_seen("hale_order_book")
 	assert_eq(_next(), "shield")
 	_win("hollow_captain")
 	assert_eq(_next(), "letter_aske")

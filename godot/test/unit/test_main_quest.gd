@@ -36,7 +36,9 @@ func test_every_step_names_a_real_quest_or_floor() -> void:
 			"seen":
 				var stories: Array = Story._data()["elderLines"].map(func(entry: Dictionary) -> String: return entry["id"])
 				stories.append(Letters.scene_id())
-				assert_has(stories, when["sceneId"], "%s: one of Maren's stories, or her tin" % step["id"])
+				# A letter's answer read where it waits (PIX-255: Hale's order book).
+				stories.append_array(Letters.readings().map(func(entry: Dictionary) -> String: return entry["sceneId"]))
+				assert_has(stories, when["sceneId"], "%s: one of Maren's stories, her tin, or a letter's answer" % step["id"])
 			"hunted":
 				var relic: Array = Relics.all().filter(func(entry: Dictionary) -> bool: return entry["named"] == when["named"])
 				assert_eq(relic.size(), 1, "%s: a relic's chapter boss" % step["id"])

@@ -87,9 +87,14 @@ static func of_step(step: Dictionary, progression: ProgressionState, settlement:
 		"hunted":
 			_at_lair(lead, Hunts.named(when["named"]))
 		"seen":
-			# Maren digging for her tin (PIX-253).
+			# Maren digging for her tin (PIX-253), or a letter's answer
+			# waiting to be read (PIX-255: Hale's order book on his table).
 			if when["sceneId"] == Letters.scene_id():
 				_at_tin(lead, progression, settlement)
+			else:
+				var reading := Letters.reading(String(when["sceneId"]))
+				if not reading.is_empty():
+					_at(lead, String(reading["mapId"]), Letters.reading_rect(reading).get_center())
 		"delivered":
 			# A letter (PIX-253): its recipient once it's in hand; Maren
 			# while the tin still waits, or for one she has yet to give.

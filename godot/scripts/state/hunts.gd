@@ -124,6 +124,27 @@ static func next_notice(cleared: Array) -> Dictionary:
 	return {}
 
 
+## A named foe that stands down rather than falls (PIX-255): the Hollow
+## Captain, once he's low enough to hear Maren's line read to him. The
+## share of its health it yields at (`yieldsAt`), 0 for one that fights to
+## the end.
+static func yields_at(named_id: String) -> float:
+	return float(named(named_id).get("yieldsAt", 0.0))
+
+
+## Whether a fighter stands down now, with the health it has left: a named
+## foe at or under its `yieldsAt` share.
+static func yields(fighter: Dictionary) -> bool:
+	var share := yields_at(String(fighter.get("named", "")))
+	return share > 0.0 and int(fighter["hp"]) <= ceili(int(fighter["maxHp"]) * share)
+
+
+## What a named foe says as it stands down ({lines, card, line}: its
+## words heard out, then the card over the world), {} for one that doesn't.
+static func standing_down(named_id: String) -> Dictionary:
+	return named(named_id).get("yields", {})
+
+
 static func lair(entry: Dictionary) -> Vector2i:
 	return Vector2i(int(entry["lair"]["x"]), int(entry["lair"]["y"]))
 

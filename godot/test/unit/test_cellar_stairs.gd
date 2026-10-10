@@ -84,6 +84,10 @@ func test_each_room_leads_down_to_its_cave_and_the_cave_back_up_into_it() -> voi
 		var below := Vector2i(int(room.portals[down]["x"]), int(room.portals[down]["y"]))
 		assert_true(Ways.open_ground(cave, below), "%s: down the stair onto open ground" % cave.id)
 		for up: Vector2i in cave.portals:
+			# A region dungeon's first floor goes on down too (PIX-255: the
+			# cellars' stair to the crypt).
+			if Ways.kind_of(cave, up) == "down":
+				continue
 			var target: Dictionary = cave.portals[up]
 			assert_eq(Ways.kind_of(cave, up), "stairs")
 			assert_eq(target["mapId"], room.id, "%s's stairs lead up into %s, not outside" % [cave.id, room.id])

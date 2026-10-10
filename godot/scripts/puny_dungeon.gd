@@ -47,8 +47,13 @@ const DOORWAY := 434
 ## cage's barred gate in the rock (open, it is the doorway's dark).
 const LEVER := 465
 const CAGE := 459
-## A shortcut's door by its look (depths.json `look`): [shut, open].
-const DOORS := {"gate": [GATE_SHUT, DOORWAY], "cage": [CAGE, DOORWAY]}
+## The Greyhold cellars' (PIX-255): the same iron bars as a crypt's grilles
+## and the north stair while it's shut, and the stone knights over the
+## garrison's dead (STATUE, the shrine's).
+const GRILLE := CAGE
+## A shortcut's door by its look (depths.json `look`): [shut, open]; the
+## cellars' north stair opens on a stair up.
+const DOORS := {"gate": [GATE_SHUT, DOORWAY], "cage": [CAGE, DOORWAY], "stair": [GRILLE, STAIRS]}
 
 static var _sheet: PunySheet
 

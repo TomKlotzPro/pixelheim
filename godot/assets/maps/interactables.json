@@ -199,7 +199,8 @@
         "kind": "item",
         "itemId": "fenwicks_locket",
         "qty": 1
-      }
+      },
+      "said": "Under the straw of the end cell: a silver locket on a broken chain. A girl smiles out of it. Fenwick's sister."
     },
     {
       "id": "cellars_armoury",
@@ -262,15 +263,16 @@
     },
     {
       "id": "cellars_badge",
-      "mapId": "cellars",
-      "x": 23,
-      "y": 22,
+      "mapId": "cellars_crypt",
+      "x": -1,
+      "y": -1,
       "look": "chest",
       "loot": {
         "kind": "item",
         "itemId": "guard_badge",
         "qty": 1
-      }
+      },
+      "said": "A guard's badge on the last slab, the tower on it rubbed smooth by somebody's thumb."
     }
   ],
   "signs": {

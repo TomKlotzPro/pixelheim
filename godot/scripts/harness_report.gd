@@ -53,6 +53,7 @@ const TABLE := [
 	{"field": "maps", "says": "the maps drawn on the map's page, while the map is open: 7 on the Reach's with every region found (PIX-269)"},
 	{"field": "motes", "says": "with rankup: the ascension's motes and sparks flying (PIX-244)"},
 	{"field": "music", "says": "with fled: the track playing (PIX-251)"},
+	{"field": "next", "says": "the main quest's next step, by id, once the Night of Ash is over: shield (PIX-255)"},
 	{"field": "older", "says": "on the journal's Letters page: the older papers under the letters (PIX-253)"},
 	{"field": "overflow", "says": "with overflow: pieces of an open screen running off the canvas (Solid Ground)"},
 	{"field": "packs", "says": "on a wild map: the packs standing in the hero's region, :asleep by their fire (PIX-252)"},
@@ -62,6 +63,7 @@ const TABLE := [
 	{"field": "rise", "says": "with --rise: how far the building on the tour has risen: ruin, rising, built (PIX-264)"},
 	{"field": "rose", "says": "a chapter card's title, how far it rose coming in (PIX-253)"},
 	{"field": "shortcut", "says": "on a dungeon floor with a shortcut out to its way in: open or shut (PIX-255)"},
+	{"field": "stood", "says": "named foes that stood down rather than fell, when one did (PIX-255)"},
 	{"field": "story", "says": "the main story's hollow diamond on the map's page, while something else is followed (PIX-253)"},
 	{"field": "tab", "says": "with station: the tab the counter opened on (PIX-234)"},
 	{"field": "tracked", "says": "the quest or bounty followed, while the journal is open or one is (PIX-239)"},
@@ -329,6 +331,12 @@ func field_music() -> String:
 	return str(Sound.track) if world.foes.fled > 0 else ""
 
 
+func field_next() -> String:
+	if GameState.progression.prologue != Prologue.DONE:
+		return ""
+	return String(MainQuest.next_step(GameState.progression, GameState.settlement).get("id", ""))
+
+
 func field_older() -> String:
 	return str(Story.found_pages(GameState.progression.cleared_levels).size()) if _letters_page() != null else ""
 
@@ -383,6 +391,10 @@ func field_shortcut() -> String:
 	if door.is_empty():
 		return ""
 	return "open" if world.map.portals.has(door["cell"]) else "shut"
+
+
+func field_stood() -> String:
+	return str(world.foes.stood) if world.foes.stood > 0 else ""
 
 
 func field_story() -> String:

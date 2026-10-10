@@ -1353,6 +1353,10 @@ msgid "The Blackiron Valley"
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "The Captain's Hall"
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "The Chancellor's Letter"
 msgstr ""
 
@@ -1366,6 +1370,10 @@ msgstr ""
 
 #: assets/data/catalog.json
 msgid "The Frostgate Pass"
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "The Garrison's Crypt"
 msgstr ""
 
 #: assets/data/catalog.json
@@ -2210,6 +2218,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "CURRENT WORDS: Loras wants his lute back from the troll and Mirelle two gems for her vault, as their quests say, not old prices; the Town age's goal says its fountain will still want Fafnyr's scale; a recipe's missing material always names itself"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Captain Hale's order book waits on his table at Greyhold: read it once his letter is delivered, and learn what the old guard found on the mountain"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3609,6 +3621,10 @@ msgid "Once Upon a Mountain"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Once he stands down, the north stair takes you back up to the cellars' door"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Once the Seam Warden falls, the ore cage takes you back up to the pithead"
 msgstr ""
 
@@ -4693,6 +4709,10 @@ msgid "The Great Expansion"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Greyhold cellars now go three floors down: the cells with Fenwick's locket, the garrison's crypt with Ana's father's badge, and the captain's great hall"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The HUD's Map button speaks a proper event now instead of faking an M keypress - it keeps working even after you rebind your keys"
 msgstr ""
 
@@ -4702,6 +4722,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The Hamlet's projects each bring something: Odo pays a tenth more, Hilda forges and Vex brews for a tenth less, and a night at the rebuilt inn leaves you well rested for a while"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The Hollow Captain no longer fights to the end: wear him down and read him Maren's words, and he stands down, hands you Oskar's shield and lies down to rest"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5277,6 +5301,10 @@ msgid "UNDER THE HOOD: the map you walk is now drawn by its own part of the game
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Ulla and the old guard come home to keep Pixelheim's gate, and Brother Teo hangs Greyhold's mended bell in the town hall"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Under its name, what it brings: who is back at work, the new perk, or who has moved into town"
 msgstr ""
 
@@ -5590,6 +5618,22 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Your title lives on the HUD and the stat sheet - you are not 'Lv 12 Warrior', you are a Champion"
+msgstr ""
+
+#: assets/data/combat.json
+msgid "(A breath fifty years long.) ...Then my watch is over. (He holds out Oskar's shield.) Take it to her. Tell her I kept it."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "(Captain Hale lies down on the stone between his knights, and is still.)"
+msgstr ""
+
+#: assets/data/combat.json
+msgid "(The Hollow Captain staggers and lowers his sword. Now he'll listen.)"
+msgstr ""
+
+#: assets/data/combat.json
+msgid "(You give him Maren's line.) \"Oskar isn't coming home. Stand down, Captain.\""
 msgstr ""
 
 #: assets/data/combat.json
@@ -6058,6 +6102,10 @@ msgstr ""
 
 #: assets/data/combat.json
 msgid "Calls a piece of the sky down: colossal INT damage."
+msgstr ""
+
+#: assets/data/combat.json
+msgid "Captain Hale has laid down his watch."
 msgstr ""
 
 #: assets/data/combat.json
@@ -7233,6 +7281,10 @@ msgid "Stone Golem"
 msgstr ""
 
 #: assets/data/combat.json
+msgid "Stood down"
+msgstr ""
+
+#: assets/data/combat.json
 msgid "Stormbow"
 msgstr ""
 
@@ -7933,6 +7985,10 @@ msgid "the Blackiron valley"
 msgstr ""
 
 #: assets/data/combat.json
+msgid "the Captain's Hall, three floors down the Greyhold cellars"
+msgstr ""
+
+#: assets/data/combat.json
 msgid "the Deepwood"
 msgstr ""
 
@@ -7958,10 +8014,6 @@ msgstr ""
 
 #: assets/data/combat.json
 msgid "the Whispering Forest"
-msgstr ""
-
-#: assets/data/combat.json
-msgid "the captain's hall at the far end of the Greyhold cellars"
 msgstr ""
 
 #: assets/data/combat.json
@@ -7997,7 +8049,15 @@ msgid "the west bank of the Mirefen"
 msgstr ""
 
 #: assets/data/depths.json
+msgid "Greyhold's garrison, laid in rows under their own stone knights. Someone used to leave candles here. Nobody has for a long time."
+msgstr ""
+
+#: assets/data/depths.json
 msgid "Rails buckled under a fall of rock, and a lever somebody pulled far too hard. From the rubble, a very small voice is shouting."
+msgstr ""
+
+#: assets/data/depths.json
+msgid "The iron bars on the north stair swing open behind him: a straight way up, to the foot of the keep's stair."
 msgstr ""
 
 #: assets/data/depths.json
@@ -8229,6 +8289,14 @@ msgid "{what} It's on key {slot} of your dock: press it to use it. Energy comes 
 msgstr ""
 
 #: assets/data/npcs.json
+msgid "\"It rings a little flat. So did the garrison. They'd have liked it here.\""
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "\"Wardens! Shovels. The Frostgate road won't dig itself.\""
+msgstr ""
+
+#: assets/data/npcs.json
 msgid "\"You owe me fifty years of letters. Start with a bowl of stew.\""
 msgstr ""
 
@@ -8349,6 +8417,14 @@ msgid "Brother Teo"
 msgstr ""
 
 #: assets/data/npcs.json
+msgid "Brother Teo has hung Greyhold's mended bell in the town hall."
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "Brother Teo is bringing Greyhold's bell down to Pixelheim, to hang in the town hall."
+msgstr ""
+
+#: assets/data/npcs.json
 msgid "Capital received. Find my ledger by the city hall - bring your idle gold."
 msgstr ""
 
@@ -8401,6 +8477,10 @@ msgid "Fifty years back five strangers came up this road for a cartload of black
 msgstr ""
 
 #: assets/data/npcs.json
+msgid "Fifty years he waited for somebody to give the order. You gave it, and he took it. ...Mind how you go, courier."
+msgstr ""
+
+#: assets/data/npcs.json
 msgid "Fishing? Stand at the end of the jetty, face the water, press E. The fish come back every little while."
 msgstr ""
 
@@ -8418,6 +8498,14 @@ msgstr ""
 
 #: assets/data/npcs.json
 msgid "Greyhold was Oskar's fort before it was anyone's ruin. We keep this camp because somebody has to."
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "Greyhold's bell hangs in your hall now. The mayor jumps every time I ring it. That's half the fun."
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "Greyhold's mended bell in the town hall: Pixelheim has a bell to ring again"
 msgstr ""
 
 #: assets/data/npcs.json
@@ -8681,6 +8769,10 @@ msgid "Pixelheim stands again. Whatever lives on that mountain has noticed."
 msgstr ""
 
 #: assets/data/npcs.json
+msgid "Pixelheim's gate is kept now. The old guard walks your walls, and my wardens are up the Frostgate road with shovels."
+msgstr ""
+
+#: assets/data/npcs.json
 msgid "Put two gems in a vault worth guarding, and I will make Pixelheim's money WORK."
 msgstr ""
 
@@ -8718,6 +8810,14 @@ msgstr ""
 
 #: assets/data/npcs.json
 msgid "Sergeant Ulla"
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "Sergeant Ulla and the old guard have taken Pixelheim's gate."
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "Sergeant Ulla is marching the old guard to Pixelheim: a village with a gate wants someone on it. Her wardens are off to dig out the Frostgate road."
 msgstr ""
 
 #: assets/data/npcs.json
@@ -8933,11 +9033,19 @@ msgid "Ulla let me stay. I fetch the water. It's a living."
 msgstr ""
 
 #: assets/data/npcs.json
+msgid "Ulla's old guard keeps Pixelheim's gate, and her wardens have dug out the Frostgate road"
+msgstr ""
+
+#: assets/data/npcs.json
 msgid "Welcome, welcome! Finest goods this side of the mountain. The counter is always open."
 msgstr ""
 
 #: assets/data/npcs.json
 msgid "Well rested, too, after a bowl of Tam's stew: more XP for your next %d fights."
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "When the bell rings, everyone comes. That's what a bell is for. Remember that, if the mountain ever wakes."
 msgstr ""
 
 #: assets/data/npcs.json
@@ -8993,11 +9101,19 @@ msgid "(\"Letters that aren't delivered are just paper,\" you say.)"
 msgstr ""
 
 #: assets/data/progression.json
+msgid "(Captain Hale's order book lies open on his table, the ink gone brown. The last page is fifty years old.)"
+msgstr ""
+
+#: assets/data/progression.json
 msgid "(From his coat he takes a folded page in Liane's hand.) She left this with me. Her sums, from before the climb: \"The seal only buys time. Fifty years, at most.\""
 msgstr ""
 
 #: assets/data/progression.json
 msgid "(Maren turns a tin box over in her hands, black with soot.) I dug this out of my hearth. Five letters I wrote fifty years ago, and never sent."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "(She reads it twice, and goes quiet.) His order book's still on his table, in his hall inside the keep. Read the last page. Then you'll know why the gate was barred."
 msgstr ""
 
 #: assets/data/progression.json
@@ -9041,7 +9157,7 @@ msgid "A fire imp's horn, hollowed out, sounds like the end of the world. Bring 
 msgstr ""
 
 #: assets/data/progression.json
-msgid "A letter for the captain? He's... not receiving. But a letter's a letter. (She reads it, then opens his order book.)"
+msgid "A letter for the captain? He's... not receiving. But a letter's a letter. Go on."
 msgstr ""
 
 #: assets/data/progression.json
@@ -9165,10 +9281,6 @@ msgid "Brin's oilskin has more holes than coat. He wants a new one, made the Sal
 msgstr ""
 
 #: assets/data/progression.json
-msgid "Bring Oskar's Shield out of Greyhold's cellars"
-msgstr ""
-
-#: assets/data/progression.json
 msgid "Bring Tam's ladle up from the wreck in the sea cave"
 msgstr ""
 
@@ -9198,6 +9310,22 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Canary found"
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Captain Hale's hall is behind the keep's door at Greyhold. Ulla says his order book is still on his table."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Captain Hale's order book"
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Captain Hale's order book, open at day 12: \"I agreed. I was wrong.\""
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Captain Hale's order book, shut on his table. It isn't yours to read."
 msgstr ""
 
 #: assets/data/progression.json
@@ -9354,6 +9482,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Down the keep's stair, through the crypt, to the captain's hall. That's where Oskar's shield hung. Whatever's there has kept it all this while."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Down the stair in Captain Hale's hall: the cellars run three floors down to the Captain's Hall, where the Hollow Captain still guards Oskar's shield."
 msgstr ""
 
 #: assets/data/progression.json
@@ -9594,10 +9726,6 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Gravedigger"
-msgstr ""
-
-#: assets/data/progression.json
-msgid "Greyhold stands off the east edge of the Ash Fields. Sergeant Ulla keeps the old guard's camp by the road."
 msgstr ""
 
 #: assets/data/progression.json
@@ -9857,7 +9985,7 @@ msgid "Maren keeps this one. It has no address."
 msgstr ""
 
 #: assets/data/progression.json
-msgid "Maren says Oskar isn't coming home, and the captain can stand down. He's down in the cellars under his hall, still guarding Oskar's shield. Go and tell him."
+msgid "Maren says Oskar isn't coming home, and the captain can stand down. He's down in the cellars under his hall, still guarding Oskar's shield. Three floors down. Go and tell him."
 msgstr ""
 
 #: assets/data/progression.json
@@ -9905,7 +10033,7 @@ msgid "Mushrooms for the whole winter! My grandson will be sick of them by sprin
 msgstr ""
 
 #: assets/data/progression.json
-msgid "My father wore Greyhold's badge till the day the fort fell. If his is still down in those cellars - the guardroom, he always said - I'd like it home."
+msgid "My father wore Greyhold's badge till the day the fort fell. They laid the garrison in the crypt under the cellars. If his badge is down there with them, I'd like it home."
 msgstr ""
 
 #: assets/data/progression.json
@@ -10074,6 +10202,14 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Reach Slayer III against every family."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Read Hale's order book in his hall"
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Read Maren's letter to the Hollow Captain"
 msgstr ""
 
 #: assets/data/progression.json
@@ -11645,6 +11781,10 @@ msgid "A black-rinded wheel, aged down here in the dark. It hums. Faintly, and s
 msgstr ""
 
 #: assets/maps/interactables.json
+msgid "A guard's badge on the last slab, the tower on it rubbed smooth by somebody's thumb."
+msgstr ""
+
+#: assets/maps/interactables.json
 msgid "BREWS"
 msgstr ""
 
@@ -11714,6 +11854,10 @@ msgstr ""
 
 #: assets/maps/interactables.json
 msgid "The Old Guard's Camp"
+msgstr ""
+
+#: assets/maps/interactables.json
+msgid "Under the straw of the end cell: a silver locket on a broken chain. A girl smiles out of it. Fenwick's sister."
 msgstr ""
 
 #: scripts/bank_screen.gd

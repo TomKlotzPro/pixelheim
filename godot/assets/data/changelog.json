@@ -1,6 +1,18 @@
 {
   "releases": [
     {
+      "version": "0.213.0",
+      "date": "2026-10-10",
+      "codename": "Stand Down",
+      "notes": [
+        "Captain Hale's order book waits on his table at Greyhold: read it once his letter is delivered, and learn what the old guard found on the mountain",
+        "The Greyhold cellars now go three floors down: the cells with Fenwick's locket, the garrison's crypt with Ana's father's badge, and the captain's great hall",
+        "The Hollow Captain no longer fights to the end: wear him down and read him Maren's words, and he stands down, hands you Oskar's shield and lies down to rest",
+        "Once he stands down, the north stair takes you back up to the cellars' door",
+        "Ulla and the old guard come home to keep Pixelheim's gate, and Brother Teo hangs Greyhold's mended bell in the town hall"
+      ]
+    },
+    {
       "version": "0.212.0",
       "date": "2026-10-10",
       "codename": "The Canary",

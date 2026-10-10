@@ -21,6 +21,9 @@ const COMBAT_LINGER_S := 3.0
 const BOSS_HUSH_S := 3.5
 const BOSS_SLOW := 0.25
 const BOSS_SLOW_S := 0.8
+## A foe standing down (PIX-255): the breath between the blow and his words,
+## the blow's flash and number gone by.
+const STAND_DOWN_BEAT := 0.8
 var kills := 0
 ## spawn id -> monsters of its pack still standing
 var pack_alive := {}
@@ -33,6 +36,9 @@ var hunted_by_boss := false
 var noticed_at := -100.0
 ## Bosses and named monsters felled on this visit (the harness reports it).
 var bosses_fallen := 0
+## Named foes that stood down rather than fell (PIX-255; the harness
+## reports it).
+var stood := 0
 ## Monsters that took fright and ran from the hero (PIX-251; the harness
 ## reports it), and when the last did.
 var fled := 0
@@ -348,6 +354,40 @@ func on_enemy_died(enemy: Node) -> void:
 		floor_foes -= 1
 		if floor_foes == 0:
 			world.delve.floor_cleared(Vector2i((enemy.position / MapView.TILE).floor()))
+
+
+## A named foe stands down rather than falls (PIX-255: the Hollow Captain,
+## low enough at last to hear Maren's line). The fight's music hushes and
+## what it says plays out (combat.json's `yields`: the line read to him,
+## Oskar's shield given up); then it's paid as a fall is - its keepsake,
+## its named hunt and the main quest's step, the dungeon's shortcut, the
+## settlers it brings home - a card names the moment, and it lies down.
+func stood_down(enemy: Node) -> void:
+	hunted_by_boss = false
+	Sound.stop_music()
+	world.soundscape.hush(BOSS_HUSH_S)
+	var visit: MapView = world.view
+	await get_tree().create_timer(STAND_DOWN_BEAT).timeout
+	if not is_instance_valid(enemy) or world.view != visit:
+		return
+	var said := Hunts.standing_down(String(enemy.fighter.get("named", "")))
+	var heard := func(_who: String) -> void:
+		if not is_instance_valid(enemy):
+			return
+		stood += 1
+		on_enemy_died(enemy)
+		GameState.spoils.slay_boss()
+		world.hud.title_card(String(said.get("card", Text.t("Stood down"))), String(said.get("line", "")))
+		Sound.play("victory")
+		enemy.lie_down()
+	var lines: Array = said.get("lines", [])
+	if lines.is_empty():
+		heard.call("")
+		return
+	GameState.dialogue_closed.connect(heard, CONNECT_ONE_SHOT)
+	var box := preload("res://scripts/dialogue_box.gd").new()
+	box.npc = {"id": String(enemy.fighter["named"]), "name": String(enemy.fighter["name"]), "lines": lines}
+	world.add_child(box)
 
 
 ## A boss falls (PIX-210): the world slows a moment, shakes and flashes

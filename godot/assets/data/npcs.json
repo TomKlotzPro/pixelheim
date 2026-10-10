@@ -362,32 +362,6 @@
       ]
     },
     {
-      "id": "greyhold_ulla",
-      "mapId": "greyhold",
-      "x": 14,
-      "y": 26,
-      "sprite": "guard",
-      "name": "Sergeant Ulla",
-      "wander": false,
-      "lines": [
-        "Greyhold was Oskar's fort before it was anyone's ruin. We keep this camp because somebody has to.",
-        "Turncoats hold the yard now - the ones who sold the garrison's stores and stayed for the walls."
-      ]
-    },
-    {
-      "id": "greyhold_teo",
-      "mapId": "greyhold",
-      "x": 10,
-      "y": 24,
-      "sprite": "monk",
-      "name": "Brother Teo",
-      "wander": false,
-      "lines": [
-        "The dead below don't rest. They were good men. Nobody ever gave them the order to stand down.",
-        "If you go down, mind the crypt. And say a word for them, if you know one."
-      ]
-    },
-    {
       "id": "greyhold_fenwick",
       "mapId": "greyhold",
       "x": 19,
@@ -750,6 +724,82 @@
         "y": 19,
         "line": "Old Pell and his canary have moved in above Hilda's forge.",
         "detail": "The canary and the cat have reached an understanding. The understanding is shouting."
+      }
+    },
+    {
+      "id": "greyhold_ulla",
+      "about": "PIX-255 (story chapter 4): Captain Hale's sergeant, who took Maren's letter for him. Once it's delivered (`comesHome.letter`) and the Hollow Captain has stood down (`comesHome.named`), she brings the old guard to keep Pixelheim's gate (`home`), and her wardens dig out the Frostgate road (the avalanche, gates.json, opens on the same step). The town's tour stops at the gate (`homecoming`).",
+      "name": "Sergeant Ulla",
+      "sprite": "guard",
+      "found": {
+        "mapId": "greyhold",
+        "x": 14,
+        "y": 26,
+        "wander": false
+      },
+      "home": {
+        "mapId": "town",
+        "x": 42,
+        "y": 2,
+        "wander": false
+      },
+      "comesHome": {
+        "letter": "letter_hale",
+        "named": "hollow_captain",
+        "line": "Sergeant Ulla is marching the old guard to Pixelheim: a village with a gate wants someone on it. Her wardens are off to dig out the Frostgate road."
+      },
+      "meetLines": [
+        "Greyhold was Oskar's fort before it was anyone's ruin. We keep this camp because somebody has to.",
+        "Turncoats hold the yard now - the ones who sold the garrison's stores and stayed for the walls."
+      ],
+      "townLines": [
+        "Pixelheim's gate is kept now. The old guard walks your walls, and my wardens are up the Frostgate road with shovels.",
+        "Fifty years he waited for somebody to give the order. You gave it, and he took it. ...Mind how you go, courier."
+      ],
+      "perk": "Ulla's old guard keeps Pixelheim's gate, and her wardens have dug out the Frostgate road",
+      "homecoming": {
+        "x": 40,
+        "y": 3,
+        "line": "Sergeant Ulla and the old guard have taken Pixelheim's gate.",
+        "detail": "\"Wardens! Shovels. The Frostgate road won't dig itself.\""
+      }
+    },
+    {
+      "id": "greyhold_teo",
+      "about": "PIX-255 (story chapter 4): Greyhold's chaplain, who wanted the garrison stood down. Once Maren's letter to Captain Hale is delivered and the Hollow Captain has stood down, he brings Greyhold's mended bell to Pixelheim and hangs it in the town hall (`home`); the town's tour stops at the hall (`homecoming`).",
+      "name": "Brother Teo",
+      "sprite": "monk",
+      "found": {
+        "mapId": "greyhold",
+        "x": 10,
+        "y": 24,
+        "wander": false
+      },
+      "home": {
+        "mapId": "town_hall",
+        "x": 14,
+        "y": 5,
+        "wander": false
+      },
+      "comesHome": {
+        "letter": "letter_hale",
+        "named": "hollow_captain",
+        "line": "Brother Teo is bringing Greyhold's bell down to Pixelheim, to hang in the town hall."
+      },
+      "meetLines": [
+        "The dead below don't rest. They were good men. Nobody ever gave them the order to stand down.",
+        "If you go down, mind the crypt. And say a word for them, if you know one."
+      ],
+      "townLines": [
+        "Greyhold's bell hangs in your hall now. The mayor jumps every time I ring it. That's half the fun.",
+        "When the bell rings, everyone comes. That's what a bell is for. Remember that, if the mountain ever wakes."
+      ],
+      "perk": "Greyhold's mended bell in the town hall: Pixelheim has a bell to ring again",
+      "homecoming": {
+        "x": 40,
+        "y": 16,
+        "line": "Brother Teo has hung Greyhold's mended bell in the town hall.",
+        "detail": "\"It rings a little flat. So did the garrison. They'd have liked it here.\""
       }
     }
   ],

@@ -647,6 +647,10 @@ func _run_test_harness() -> void:
 	if flags.has("--take"):
 		# A quest taken, nothing done yet: `--take gunnar_wagon`.
 		GameState.progression.quests[flags.value("--take")] = {"progress": 0, "done": false}
+	if flags.has("--delivered"):
+		# One of Maren's letters handed over and answered (PIX-255):
+		# `--delivered letter_hale`, and Hale's order book is there to read.
+		GameState.progression.quests[flags.value("--delivered")] = {"progress": 1, "done": true}
 	if flags.has("--follow-wagon"):
 		# The hero walks beside the escort's wagon for that many seconds (PIX-192).
 		var until := Time.get_ticks_msec() / 1000.0 + float(flags.value("--follow-wagon"))
@@ -837,17 +841,37 @@ func _run_test_harness() -> void:
 		world.player.invulnerable = not flags.has("hurt")
 		# `--foe-distance N` stands it N cells off (an elite's opener from range).
 		var foe_distance := int(flags.value("--foe-distance", "2"))
-		# A named monster's id (`--foe greymaw`) brings it out of its lair (PIX-156).
-		var opponent: Node
+		# A named monster's id (`--foe greymaw`) brings it out of its lair (PIX-156):
+		# the one in its lair on this map when it's here (PIX-255: no twin
+		# beside it in the shot).
+		var opponent: Node = null
+		var at: Vector2i = world.player_cell + Vector2i(foe_distance, 0)
 		if not Hunts.named(foe).is_empty():
-			opponent = world.foes.spawn_named(foe, world.player_cell + Vector2i(foe_distance, 0))
+			for mob in get_tree().get_nodes_in_group("mobs"):
+				if not mob.dying and mob.fighter.get("named", "") == foe:
+					opponent = mob
+			if opponent != null:
+				opponent.position = MapView.center(at)
+				opponent.home = opponent.position
+				opponent.reset_physics_interpolation()
+			else:
+				opponent = world.foes.spawn_named(foe, at)
 		else:
 			opponent = world.foes.spawn_enemy(foe, world.player_cell + Vector2i(foe_distance, 0), "ash", "", flags.has("elite"))
 		world.player.face(Vector2.RIGHT)
 		if flags.has("slay"):
-			# Felled outright: what its death pays (a named one's bounty).
+			# Felled outright: what its death pays (a named one's bounty); a
+			# blow as big as its health, so the number over it reads true.
 			await get_tree().create_timer(0.2).timeout
-			opponent.take_hit(99999, opponent.global_position + Vector2.LEFT)
+			opponent.guarding = false
+			opponent.take_hit(int(opponent.fighter["hp"]), opponent.global_position + Vector2.LEFT)
+			# One that stands down rather than falls (PIX-255) has its say:
+			# the run waits for its words, which --keys then read through.
+			var waited := 0.0
+			while opponent.stood_down and waited < 3.0 and not world.get_children().any(func(node: Node) -> bool:
+					return node.get_script() == preload("res://scripts/dialogue_box.gd")):
+				await get_tree().create_timer(0.1).timeout
+				waited += 0.1
 		# `kill` swings until the foe drops (or 12 swings); plain `fight`
 		# captures mid-swing.
 		var swings := 12 if flags.has("kill") else 1

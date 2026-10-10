@@ -211,7 +211,7 @@ static func boss(dungeon_id: String) -> String:
 ## The shortcut out of `map_id`'s dungeon when it's on that floor: {cell,
 ## to (the portal: the dungeon's way in), opened (what's said as it opens),
 ## boss, look (PunyDungeon.DOORS: the sea cave's wooden gate, the shafts'
-## ore cage)}; {} otherwise.
+## ore cage, the cellars' north stair)}; {} otherwise.
 static func shortcut_on(map_id: String) -> Dictionary:
 	var entry := floor_of(map_id)
 	if entry.is_empty():
@@ -233,8 +233,8 @@ static func shortcut_open(map_id: String, hunted: Array) -> bool:
 
 
 ## The shortcut as it stands for a hero who has felled `hunted`: once the
-## boss is down, a dark doorway straight out to the way in (one way: there
-## is no door on the far side). Returns whether it opened.
+## boss is down, a dark doorway (or a stair up) straight out to the way in
+## (one way: there is no door on the far side). Returns whether it opened.
 static func open_shortcut(map: MapData, hunted: Array) -> bool:
 	if not shortcut_open(map.id, hunted):
 		return false

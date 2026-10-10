@@ -1353,6 +1353,10 @@ msgid "The Blackiron Valley"
 msgstr "La vallée de Fernoir"
 
 #: assets/data/catalog.json
+msgid "The Captain's Hall"
+msgstr "La grande salle du capitaine"
+
+#: assets/data/catalog.json
 msgid "The Chancellor's Letter"
 msgstr "La lettre du chancelier"
 
@@ -1367,6 +1371,10 @@ msgstr "Les Galeries noyées"
 #: assets/data/catalog.json
 msgid "The Frostgate Pass"
 msgstr "Le col de la Porte-Givre"
+
+#: assets/data/catalog.json
+msgid "The Garrison's Crypt"
+msgstr "La crypte de la garnison"
 
 #: assets/data/catalog.json
 msgid "The Greyhold Cellars"
@@ -2211,6 +2219,10 @@ msgstr "DES QUÊTES D'ARTISANAT : Brin veut un manteau ciré pour le port, Gar
 #: assets/data/changelog.json
 msgid "CURRENT WORDS: Loras wants his lute back from the troll and Mirelle two gems for her vault, as their quests say, not old prices; the Town age's goal says its fountain will still want Fafnyr's scale; a recipe's missing material always names itself"
 msgstr "DES MOTS À JOUR : Loras veut reprendre son luth au troll et Mirelle deux gemmes pour sa chambre forte, comme le disent leurs quêtes, et non d'anciens prix ; l'objectif de l'âge du Bourg précise que sa fontaine réclamera toujours l'écaille de Fafnyr ; le matériau manquant d'une recette donne toujours son nom"
+
+#: assets/data/changelog.json
+msgid "Captain Hale's order book waits on his table at Greyhold: read it once his letter is delivered, and learn what the old guard found on the mountain"
+msgstr "Le registre du capitaine Hale attend sur sa table à Greyhold : lisez-le une fois sa lettre remise, et apprenez ce que la vieille garde a trouvé sur la montagne"
 
 #: assets/data/changelog.json
 msgid "Cave mouths are framed and lit by torches, the mountain gate stands in the rock, and stairs up name the place above"
@@ -3609,6 +3621,10 @@ msgid "Once Upon a Mountain"
 msgstr "Il était une montagne"
 
 #: assets/data/changelog.json
+msgid "Once he stands down, the north stair takes you back up to the cellars' door"
+msgstr "Une fois qu'il a quitté son poste, l'escalier nord vous remonte jusqu'à la porte des caves"
+
+#: assets/data/changelog.json
 msgid "Once the Seam Warden falls, the ore cage takes you back up to the pithead"
 msgstr "Une fois le Gardien du Filon tombé, la cage à minerai vous remonte jusqu'au carreau de la mine"
 
@@ -4693,6 +4709,10 @@ msgid "The Great Expansion"
 msgstr "La Grande Expansion"
 
 #: assets/data/changelog.json
+msgid "The Greyhold cellars now go three floors down: the cells with Fenwick's locket, the garrison's crypt with Ana's father's badge, and the captain's great hall"
+msgstr "Les caves de Greyhold descendent désormais sur trois étages : les cellules avec le médaillon de Fenwick, la crypte de la garnison avec l'insigne du père d'Ana, et la grande salle du capitaine"
+
+#: assets/data/changelog.json
 msgid "The HUD's Map button speaks a proper event now instead of faking an M keypress - it keeps working even after you rebind your keys"
 msgstr "Le bouton Carte de l'interface émet désormais un vrai événement au lieu de simuler un appui sur M - il fonctionne même après que vous avez réassigné vos touches"
 
@@ -4703,6 +4723,10 @@ msgstr "Le pic de morts de la Salle des échos est adouci : les spectres se so
 #: assets/data/changelog.json
 msgid "The Hamlet's projects each bring something: Odo pays a tenth more, Hilda forges and Vex brews for a tenth less, and a night at the rebuilt inn leaves you well rested for a while"
 msgstr "Chaque projet du Hameau apporte quelque chose : Odo paie un dixième de plus, Hilda forge et Vex brasse pour un dixième de moins, et une nuit à l'auberge rebâtie vous offre un vrai repos pendant un temps"
+
+#: assets/data/changelog.json
+msgid "The Hollow Captain no longer fights to the end: wear him down and read him Maren's words, and he stands down, hands you Oskar's shield and lies down to rest"
+msgstr "Le Capitaine creux ne se bat plus jusqu'au bout : épuisez-le et lisez-lui les mots de Maren, il quitte son poste, vous remet le bouclier d'Oskar et s'allonge pour se reposer"
 
 #: assets/data/changelog.json
 msgid "The JOURNAL (J) tracks every promise with progress bars and tells you who to see when it's ready"
@@ -5277,6 +5301,10 @@ msgid "UNDER THE HOOD: the map you walk is now drawn by its own part of the game
 msgstr "SOUS LE CAPOT : la carte que vous parcourez est désormais dessinée par sa propre partie du jeu, à l'écart de l'action"
 
 #: assets/data/changelog.json
+msgid "Ulla and the old guard come home to keep Pixelheim's gate, and Brother Teo hangs Greyhold's mended bell in the town hall"
+msgstr "Ulla et la vieille garde rentrent garder la porte de Pixelheim, et Frère Teo suspend la cloche réparée de Greyhold dans la mairie"
+
+#: assets/data/changelog.json
 msgid "Under its name, what it brings: who is back at work, the new perk, or who has moved into town"
 msgstr "Sous son nom, ce qu'il apporte : qui reprend le travail, le nouvel avantage, ou qui s'est installé au bourg"
 
@@ -5591,6 +5619,22 @@ msgstr "Votre ombre a cessé de vous suivre comme une malédiction : les perso
 #: assets/data/changelog.json
 msgid "Your title lives on the HUD and the stat sheet - you are not 'Lv 12 Warrior', you are a Champion"
 msgstr "Votre titre s'affiche dans l'interface et sur la fiche de caractéristiques - vous n'êtes pas « Niv. 12 Guerrier », vous êtes Champion"
+
+#: assets/data/combat.json
+msgid "(A breath fifty years long.) ...Then my watch is over. (He holds out Oskar's shield.) Take it to her. Tell her I kept it."
+msgstr "(Un soupir long de cinquante ans.) ...Alors ma garde est finie. (Il vous tend le bouclier d'Oskar.) Portez-le-lui. Dites-lui que je l'ai gardé."
+
+#: assets/data/combat.json
+msgid "(Captain Hale lies down on the stone between his knights, and is still.)"
+msgstr "(Le capitaine Hale s'allonge sur la pierre, entre ses chevaliers, et ne bouge plus.)"
+
+#: assets/data/combat.json
+msgid "(The Hollow Captain staggers and lowers his sword. Now he'll listen.)"
+msgstr "(Le Capitaine creux chancelle et abaisse son épée. Maintenant, il écoutera.)"
+
+#: assets/data/combat.json
+msgid "(You give him Maren's line.) \"Oskar isn't coming home. Stand down, Captain.\""
+msgstr "(Vous lui dites les mots de Maren.) « Oskar ne rentrera pas. Quittez votre poste, capitaine. »"
 
 #: assets/data/combat.json
 msgid "+1% of damage dealt comes back as health, a rank"
@@ -6059,6 +6103,10 @@ msgstr "Dégâts de brûlure dans la durée."
 #: assets/data/combat.json
 msgid "Calls a piece of the sky down: colossal INT damage."
 msgstr "Fait tomber un morceau du ciel : dégâts d'INT colossaux."
+
+#: assets/data/combat.json
+msgid "Captain Hale has laid down his watch."
+msgstr "Le capitaine Hale a quitté son poste."
 
 #: assets/data/combat.json
 msgid "Catch your breath mid-fight: restores health with your STR."
@@ -7233,6 +7281,10 @@ msgid "Stone Golem"
 msgstr "Golem de pierre"
 
 #: assets/data/combat.json
+msgid "Stood down"
+msgstr "Fin de la garde"
+
+#: assets/data/combat.json
 msgid "Stormbow"
 msgstr "Arc-tempête"
 
@@ -7933,6 +7985,10 @@ msgid "the Blackiron valley"
 msgstr "la vallée de Fernoir"
 
 #: assets/data/combat.json
+msgid "the Captain's Hall, three floors down the Greyhold cellars"
+msgstr "la grande salle du capitaine, tout au fond des caves de Greyhold, trois étages plus bas"
+
+#: assets/data/combat.json
 msgid "the Deepwood"
 msgstr "les Bois-Profonds"
 
@@ -7959,10 +8015,6 @@ msgstr "le Marais englouti"
 #: assets/data/combat.json
 msgid "the Whispering Forest"
 msgstr "la Forêt murmurante"
-
-#: assets/data/combat.json
-msgid "the captain's hall at the far end of the Greyhold cellars"
-msgstr "la salle du capitaine, tout au fond des caves de Greyhold"
 
 #: assets/data/combat.json
 msgid "the drowned road at the south of the Sunken Marsh"
@@ -7997,8 +8049,16 @@ msgid "the west bank of the Mirefen"
 msgstr "la rive ouest des Marais de Fange"
 
 #: assets/data/depths.json
+msgid "Greyhold's garrison, laid in rows under their own stone knights. Someone used to leave candles here. Nobody has for a long time."
+msgstr "La garnison de Greyhold, couchée en rangées sous ses propres chevaliers de pierre. Quelqu'un laissait des bougies ici, autrefois. Plus personne, depuis longtemps."
+
+#: assets/data/depths.json
 msgid "Rails buckled under a fall of rock, and a lever somebody pulled far too hard. From the rubble, a very small voice is shouting."
 msgstr "Des rails tordus sous un éboulement, et un levier que quelqu'un a tiré bien trop fort. Sous les gravats, une toute petite voix crie."
+
+#: assets/data/depths.json
+msgid "The iron bars on the north stair swing open behind him: a straight way up, to the foot of the keep's stair."
+msgstr "Les barreaux de l'escalier nord s'ouvrent derrière lui : un chemin tout droit vers le haut, jusqu'au pied de l'escalier du donjon."
 
 #: assets/data/depths.json
 msgid "The ore cage comes rattling down its shaft and its gate swings open: a ride up to the pithead, and daylight."
@@ -8229,6 +8289,14 @@ msgid "{what} It's on key {slot} of your dock: press it to use it. Energy comes 
 msgstr "{what} Elle est sur la touche {slot} de votre barre : appuyez sur cette touche pour l'utiliser. L'énergie revient en marchant."
 
 #: assets/data/npcs.json
+msgid "\"It rings a little flat. So did the garrison. They'd have liked it here.\""
+msgstr "« Elle sonne un peu faux. La garnison aussi chantait faux. Ils se seraient plu ici. »"
+
+#: assets/data/npcs.json
+msgid "\"Wardens! Shovels. The Frostgate road won't dig itself.\""
+msgstr "« Gardiens ! Les pelles. La route de la Porte-Givre ne va pas se dégager toute seule. »"
+
+#: assets/data/npcs.json
 msgid "\"You owe me fifty years of letters. Start with a bowl of stew.\""
 msgstr "« Tu me dois cinquante ans de lettres. Commence par un bol de ragoût. »"
 
@@ -8349,6 +8417,14 @@ msgid "Brother Teo"
 msgstr "Frère Teo"
 
 #: assets/data/npcs.json
+msgid "Brother Teo has hung Greyhold's mended bell in the town hall."
+msgstr "Frère Teo a suspendu la cloche réparée de Greyhold dans la mairie."
+
+#: assets/data/npcs.json
+msgid "Brother Teo is bringing Greyhold's bell down to Pixelheim, to hang in the town hall."
+msgstr "Frère Teo descend la cloche de Greyhold jusqu'à Pixelheim, pour la suspendre dans la mairie."
+
+#: assets/data/npcs.json
 msgid "Capital received. Find my ledger by the city hall - bring your idle gold."
 msgstr "Capital reçu. Mon registre est près de la mairie - apportez votre or qui dort."
 
@@ -8401,6 +8477,10 @@ msgid "Fifty years back five strangers came up this road for a cartload of black
 msgstr "Il y a cinquante ans, cinq étrangers sont montés par cette route chercher une charretée de fer noir. Ils disaient que c'était pour un sceau. Et ils ont payé en or."
 
 #: assets/data/npcs.json
+msgid "Fifty years he waited for somebody to give the order. You gave it, and he took it. ...Mind how you go, courier."
+msgstr "Cinquante ans qu'il attendait qu'on lui donne l'ordre. Vous l'avez donné, et il l'a suivi. ...Prenez garde à vous, messager."
+
+#: assets/data/npcs.json
 msgid "Fishing? Stand at the end of the jetty, face the water, press E. The fish come back every little while."
 msgstr "La pêche ? Placez-vous au bout de la jetée, face à l'eau, et appuyez sur E. Les poissons reviennent de temps en temps."
 
@@ -8419,6 +8499,14 @@ msgstr "Les lys de givre ne s'ouvrent que dans la neige. Vex, à Pixelheim, ne j
 #: assets/data/npcs.json
 msgid "Greyhold was Oskar's fort before it was anyone's ruin. We keep this camp because somebody has to."
 msgstr "Greyhold était le fort d'Oskar avant d'être la ruine de qui que ce soit. Nous tenons ce camp parce qu'il faut bien que quelqu'un le fasse."
+
+#: assets/data/npcs.json
+msgid "Greyhold's bell hangs in your hall now. The mayor jumps every time I ring it. That's half the fun."
+msgstr "La cloche de Greyhold est suspendue dans votre mairie, maintenant. Le maire sursaute chaque fois que je la sonne. C'est la moitié du plaisir."
+
+#: assets/data/npcs.json
+msgid "Greyhold's mended bell in the town hall: Pixelheim has a bell to ring again"
+msgstr "La cloche réparée de Greyhold à la mairie : Pixelheim a de nouveau une cloche à sonner"
 
 #: assets/data/npcs.json
 msgid "Gunnar"
@@ -8681,6 +8769,10 @@ msgid "Pixelheim stands again. Whatever lives on that mountain has noticed."
 msgstr "Pixelheim est de nouveau debout. Ce qui vit sur cette montagne l'a remarqué."
 
 #: assets/data/npcs.json
+msgid "Pixelheim's gate is kept now. The old guard walks your walls, and my wardens are up the Frostgate road with shovels."
+msgstr "La porte de Pixelheim est gardée, maintenant. La vieille garde fait la ronde sur vos murs, et mes gardiens sont sur la route de la Porte-Givre, pelle à la main."
+
+#: assets/data/npcs.json
 msgid "Put two gems in a vault worth guarding, and I will make Pixelheim's money WORK."
 msgstr "Mettez deux gemmes dans un coffre digne d'être gardé, et je ferai TRAVAILLER l'argent de Pixelheim."
 
@@ -8719,6 +8811,14 @@ msgstr "Sela a monté une tente sur la place pour les blessés. Vas-y. Je te sui
 #: assets/data/npcs.json
 msgid "Sergeant Ulla"
 msgstr "La sergente Ulla"
+
+#: assets/data/npcs.json
+msgid "Sergeant Ulla and the old guard have taken Pixelheim's gate."
+msgstr "La sergente Ulla et la vieille garde ont pris leur poste à la porte de Pixelheim."
+
+#: assets/data/npcs.json
+msgid "Sergeant Ulla is marching the old guard to Pixelheim: a village with a gate wants someone on it. Her wardens are off to dig out the Frostgate road."
+msgstr "La sergente Ulla mène la vieille garde jusqu'à Pixelheim : un village qui a une porte a besoin de quelqu'un pour la tenir. Ses gardiens partent dégager la route de la Porte-Givre."
 
 #: assets/data/npcs.json
 msgid "Serra"
@@ -8933,12 +9033,20 @@ msgid "Ulla let me stay. I fetch the water. It's a living."
 msgstr "Ulla m'a laissé rester. Je vais chercher l'eau. Faut bien vivre."
 
 #: assets/data/npcs.json
+msgid "Ulla's old guard keeps Pixelheim's gate, and her wardens have dug out the Frostgate road"
+msgstr "La vieille garde d'Ulla tient la porte de Pixelheim, et ses gardiens ont dégagé la route de la Porte-Givre"
+
+#: assets/data/npcs.json
 msgid "Welcome, welcome! Finest goods this side of the mountain. The counter is always open."
 msgstr "Bienvenue, bienvenue ! Les meilleures marchandises de ce côté-ci de la montagne. Le comptoir est toujours ouvert."
 
 #: assets/data/npcs.json
 msgid "Well rested, too, after a bowl of Tam's stew: more XP for your next %d fights."
 msgstr "Et un vrai repos, après un bol du ragoût de Tam : plus d'XP pour vos %d prochains combats."
+
+#: assets/data/npcs.json
+msgid "When the bell rings, everyone comes. That's what a bell is for. Remember that, if the mountain ever wakes."
+msgstr "Quand la cloche sonne, tout le monde vient. C'est à ça que sert une cloche. Souvenez-vous-en, si la montagne se réveille un jour."
 
 #: assets/data/npcs.json
 msgid "Wren the Stablemaster"
@@ -8993,12 +9101,20 @@ msgid "(\"Letters that aren't delivered are just paper,\" you say.)"
 msgstr "(« Une lettre qu'on ne remet pas, ce n'est que du papier », dites-vous.)"
 
 #: assets/data/progression.json
+msgid "(Captain Hale's order book lies open on his table, the ink gone brown. The last page is fifty years old.)"
+msgstr "(Le registre du capitaine Hale est ouvert sur sa table, l'encre a bruni. La dernière page a cinquante ans.)"
+
+#: assets/data/progression.json
 msgid "(From his coat he takes a folded page in Liane's hand.) She left this with me. Her sums, from before the climb: \"The seal only buys time. Fifty years, at most.\""
 msgstr "(Il sort de son manteau une page pliée, de la main de Liane.) Elle me l'a laissée. Ses calculs, d'avant l'ascension : « Le sceau ne fait que gagner du temps. Cinquante ans, tout au plus. »"
 
 #: assets/data/progression.json
 msgid "(Maren turns a tin box over in her hands, black with soot.) I dug this out of my hearth. Five letters I wrote fifty years ago, and never sent."
 msgstr "(Maren tourne entre ses mains une boîte en fer-blanc, noire de suie.) Je l'ai sortie de mon âtre. Cinq lettres écrites il y a cinquante ans, et jamais envoyées."
+
+#: assets/data/progression.json
+msgid "(She reads it twice, and goes quiet.) His order book's still on his table, in his hall inside the keep. Read the last page. Then you'll know why the gate was barred."
+msgstr "(Elle la lit deux fois, puis se tait.) Son registre est toujours sur sa table, dans sa salle, au donjon. Lisez la dernière page. Vous saurez pourquoi la porte a été barrée."
 
 #: assets/data/progression.json
 msgid "(She reads it twice.) Tam's things never came home, courier. The boat went down off the headland. Whatever the sea kept of him washed into the cave under it."
@@ -9041,8 +9157,8 @@ msgid "A fire imp's horn, hollowed out, sounds like the end of the world. Bring 
 msgstr "Une corne de diablotin de feu, évidée, ça sonne comme la fin du monde. Rapportez-m'en une."
 
 #: assets/data/progression.json
-msgid "A letter for the captain? He's... not receiving. But a letter's a letter. (She reads it, then opens his order book.)"
-msgstr "Une lettre pour le capitaine ? Il... ne reçoit plus. Mais une lettre est une lettre. (Elle la lit, puis ouvre son registre.)"
+msgid "A letter for the captain? He's... not receiving. But a letter's a letter. Go on."
+msgstr "Une lettre pour le capitaine ? Il... ne reçoit plus. Mais une lettre est une lettre. Allez, donnez."
 
 #: assets/data/progression.json
 msgid "A marching song needs a horn, and Loras knows just the one."
@@ -9165,10 +9281,6 @@ msgid "Brin's oilskin has more holes than coat. He wants a new one, made the Sal
 msgstr "Le ciré de Brin a plus de trous que de toile. Il en veut un neuf, fait à la manière de Saltmere."
 
 #: assets/data/progression.json
-msgid "Bring Oskar's Shield out of Greyhold's cellars"
-msgstr "Rapporter le Bouclier d'Oskar des caves de Greyhold"
-
-#: assets/data/progression.json
 msgid "Bring Tam's ladle up from the wreck in the sea cave"
 msgstr "Remonter la louche de Tam de l'épave, dans la Grotte marine"
 
@@ -9199,6 +9311,22 @@ msgstr "Les affaires marchent. Ne demandez pas lesquelles."
 #: assets/data/progression.json
 msgid "Canary found"
 msgstr "Canari trouvé"
+
+#: assets/data/progression.json
+msgid "Captain Hale's hall is behind the keep's door at Greyhold. Ulla says his order book is still on his table."
+msgstr "La salle du capitaine Hale est derrière la porte du donjon, à Greyhold. Ulla dit que son registre est toujours sur sa table."
+
+#: assets/data/progression.json
+msgid "Captain Hale's order book"
+msgstr "Le registre du capitaine Hale"
+
+#: assets/data/progression.json
+msgid "Captain Hale's order book, open at day 12: \"I agreed. I was wrong.\""
+msgstr "Le registre du capitaine Hale, ouvert au jour 12 : « J'ai accepté. J'ai eu tort. »"
+
+#: assets/data/progression.json
+msgid "Captain Hale's order book, shut on his table. It isn't yours to read."
+msgstr "Le registre du capitaine Hale, fermé sur sa table. Ce n'est pas à vous de le lire."
 
 #: assets/data/progression.json
 msgid "Captain Hale. He swore to keep Oskar's shield till Oskar came home, and he kept it fifty years. Take it to Maren. Hale would want it to go home."
@@ -9355,6 +9483,10 @@ msgstr "Arrivé en bas en un seul morceau ! Ou presque. La dernière descente 
 #: assets/data/progression.json
 msgid "Down the keep's stair, through the crypt, to the captain's hall. That's where Oskar's shield hung. Whatever's there has kept it all this while."
 msgstr "Descendez l'escalier du donjon, traversez la crypte, jusqu'à la salle du capitaine. C'est là qu'était accroché le bouclier d'Oskar. Ce qui s'y trouve l'a gardé pendant tout ce temps."
+
+#: assets/data/progression.json
+msgid "Down the stair in Captain Hale's hall: the cellars run three floors down to the Captain's Hall, where the Hollow Captain still guards Oskar's shield."
+msgstr "Par l'escalier de la salle du capitaine Hale : les caves descendent sur trois étages jusqu'à la grande salle du capitaine, où le Capitaine creux garde toujours le bouclier d'Oskar."
 
 #: assets/data/progression.json
 msgid "Dressed for It"
@@ -9595,10 +9727,6 @@ msgstr "Mousse des tombes apportée"
 #: assets/data/progression.json
 msgid "Gravedigger"
 msgstr "Fossoyeur"
-
-#: assets/data/progression.json
-msgid "Greyhold stands off the east edge of the Ash Fields. Sergeant Ulla keeps the old guard's camp by the road."
-msgstr "Greyhold se dresse à l'écart, à l'est des Champs de Cendres. La sergente Ulla tient le camp de l'ancienne garde, au bord de la route."
 
 #: assets/data/progression.json
 msgid "Greyhold stands off the east edge of the Ash Fields. The captain isn't receiving visitors: Sergeant Ulla keeps his camp by the road."
@@ -9857,8 +9985,8 @@ msgid "Maren keeps this one. It has no address."
 msgstr "Maren garde celle-ci. Elle n'a pas d'adresse."
 
 #: assets/data/progression.json
-msgid "Maren says Oskar isn't coming home, and the captain can stand down. He's down in the cellars under his hall, still guarding Oskar's shield. Go and tell him."
-msgstr "Maren dit qu'Oskar ne rentrera pas, et que le capitaine peut quitter son poste. Il est en bas, dans les caves sous sa salle, et garde toujours le bouclier d'Oskar. Allez le lui dire."
+msgid "Maren says Oskar isn't coming home, and the captain can stand down. He's down in the cellars under his hall, still guarding Oskar's shield. Three floors down. Go and tell him."
+msgstr "Maren dit qu'Oskar ne rentrera pas, et que le capitaine peut quitter son poste. Il est en bas, dans les caves sous sa salle, et garde toujours le bouclier d'Oskar. Trois étages plus bas. Allez le lui dire."
 
 #: assets/data/progression.json
 msgid "Maren waits for all four relics. She'll open the gate with the last of them: her promise."
@@ -9905,8 +10033,8 @@ msgid "Mushrooms for the whole winter! My grandson will be sick of them by sprin
 msgstr "Des champignons pour tout l'hiver ! Mon petit-fils en sera dégoûté avant le printemps."
 
 #: assets/data/progression.json
-msgid "My father wore Greyhold's badge till the day the fort fell. If his is still down in those cellars - the guardroom, he always said - I'd like it home."
-msgstr "Mon père a porté l'insigne de Greyhold jusqu'au jour où le fort est tombé. Si le sien est encore dans ces caves - la salle des gardes, disait-il toujours - j'aimerais le ramener à la maison."
+msgid "My father wore Greyhold's badge till the day the fort fell. They laid the garrison in the crypt under the cellars. If his badge is down there with them, I'd like it home."
+msgstr "Mon père a porté l'insigne de Greyhold jusqu'au jour où le fort est tombé. On a couché la garnison dans la crypte, sous les caves. Si son insigne est là-bas avec eux, j'aimerais le ramener à la maison."
 
 #: assets/data/progression.json
 msgid "My house is along Upper Street, or what's left of it. Bring your back, courier. There's a hearthstone to lift."
@@ -10075,6 +10203,14 @@ msgstr "Pillards sur la route des Cendres"
 #: assets/data/progression.json
 msgid "Reach Slayer III against every family."
 msgstr "Atteindre Pourfendeur III contre chaque famille."
+
+#: assets/data/progression.json
+msgid "Read Hale's order book in his hall"
+msgstr "Lire le registre de Hale dans sa salle"
+
+#: assets/data/progression.json
+msgid "Read Maren's letter to the Hollow Captain"
+msgstr "Lire la lettre de Maren au Capitaine creux"
 
 #: assets/data/progression.json
 msgid "Real, and terrible, and the regulars will love it. Your drinks are on the house. Well - the first one."
@@ -11645,6 +11781,10 @@ msgid "A black-rinded wheel, aged down here in the dark. It hums. Faintly, and s
 msgstr "Une meule à croûte noire, affinée ici dans le noir. Elle fredonne. Faiblement, et un peu faux."
 
 #: assets/maps/interactables.json
+msgid "A guard's badge on the last slab, the tower on it rubbed smooth by somebody's thumb."
+msgstr "Un insigne de garde sur la dernière dalle, la tour qu'il porte usée par le pouce de quelqu'un."
+
+#: assets/maps/interactables.json
 msgid "BREWS"
 msgstr "POTIONS"
 
@@ -11715,6 +11855,10 @@ msgstr "Le passage des Marais de Fange"
 #: assets/maps/interactables.json
 msgid "The Old Guard's Camp"
 msgstr "Le camp de l'ancienne garde"
+
+#: assets/maps/interactables.json
+msgid "Under the straw of the end cell: a silver locket on a broken chain. A girl smiles out of it. Fenwick's sister."
+msgstr "Sous la paille de la dernière cellule : un médaillon d'argent à la chaîne cassée. Une jeune fille y sourit. La sœur de Fenwick."
 
 #: scripts/bank_screen.gd
 msgid "%dg deposited, %dg earned so far (at most %dg)."

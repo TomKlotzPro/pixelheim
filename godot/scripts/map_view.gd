@@ -492,6 +492,11 @@ func _build_dungeon(data: MapData) -> Node2D:
 			"winch":
 				# The ore cage's winch by its gate (PIX-255: the Black Seam).
 				dungeon.place(dungeon_objects, cell, PunyDungeon.WHEEL)
+			# The Greyhold cellars' stone knights and iron grilles (PIX-255).
+			"statue":
+				dungeon.place(dungeon_objects, cell, PunyDungeon.STATUE)
+			"grille":
+				dungeon.place(dungeon_objects, cell, PunyDungeon.GRILLE)
 	root.add_child(layer)
 	root.add_child(dungeon_objects)
 	return root
