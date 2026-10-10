@@ -248,6 +248,80 @@ func _beside() -> void:
 		await get_tree().process_frame
 
 
+## Waits (up to ten seconds) until the maps wanted beside the hero's are
+## drawn and stitched (Neighbours) and the camera may look over them, and a
+## few frames more.
+func _settled() -> void:
+	for i in 600:
+		if not world.neighbours.drawn.is_empty() and world.neighbours.settled() and world.camera_rig.settled():
+			break
+		await get_tree().process_frame
+	for i in 3:
+		await get_tree().process_frame
+
+
+## `crossing` (PIX-269): each frame timed while the hero walks, its work
+## (from its first physics tick to the drawing, as PerfProbe reads it) and
+## its length (from one drawing to the next), and what the maps beside the
+## hero were doing; stopped by _read_clock.
+func _frame_clock() -> Dictionary:
+	var clock := {"phys": 0, "last": 0, "work": [], "length": [], "streaming": [], "doing": [], "was": ""}
+	clock["on_phys"] = func() -> void:
+		if int(clock["phys"]) == 0:
+			clock["phys"] = Time.get_ticks_usec()
+	clock["on_proc"] = func() -> void:
+		if int(clock["phys"]) == 0:
+			clock["phys"] = Time.get_ticks_usec()
+	clock["on_pre"] = func() -> void:
+		var now := Time.get_ticks_usec()
+		if int(clock["phys"]) > 0:
+			(clock["work"] as Array).append((now - int(clock["phys"])) / 1000.0)
+		clock["phys"] = 0
+		if int(clock["last"]) > 0:
+			(clock["length"] as Array).append((now - int(clock["last"])) / 1000.0)
+		clock["last"] = now
+		(clock["streaming"] as Array).append(world.neighbours.spent)
+		# What changed beside the hero this frame: a map drawn, stitched,
+		# ready, let go; the hand-over.
+		var doing: Array = world.neighbours.drawn.keys().map(func(id: String) -> String: return "%s %s" % [id, world.neighbours.drawn[id]["state"]])
+		var now_doing := "%s, %d handed over" % [", ".join(doing), world.neighbours.handovers]
+		(clock["doing"] as Array).append(now_doing if now_doing != clock["was"] else "")
+		clock["was"] = now_doing
+	get_tree().physics_frame.connect(clock["on_phys"])
+	get_tree().process_frame.connect(clock["on_proc"])
+	RenderingServer.frame_pre_draw.connect(clock["on_pre"])
+	return clock
+
+
+## The walk's frames: a CROSSING line with the work's and the length's most,
+## 99th percentile and middle, ms; the report's frames= text.
+func _read_clock(clock: Dictionary) -> String:
+	get_tree().physics_frame.disconnect(clock["on_phys"])
+	get_tree().process_frame.disconnect(clock["on_proc"])
+	RenderingServer.frame_pre_draw.disconnect(clock["on_pre"])
+	var said := {}
+	for part: String in ["work", "length", "streaming"]:
+		var times: Array = (clock[part] as Array).duplicate()
+		times.sort()
+		if times.is_empty():
+			times = [0.0]
+		said[part] = [times[-1], times[mini(times.size() - 1, int(times.size() * 0.99))], times[times.size() / 2]]
+	print("CROSSING frames %d  work: max %.2f p99 %.2f median %.2f ms  length: max %.2f p99 %.2f median %.2f ms  streaming: max %.2f p99 %.2f ms  handovers %d" % [
+		(clock["work"] as Array).size(), said["work"][0], said["work"][1], said["work"][2], said["length"][0], said["length"][1], said["length"][2],
+		said["streaming"][0], said["streaming"][1], world.neighbours.handovers])
+	# The longest frames, and what changed beside the hero when.
+	var lengths: Array = clock["length"]
+	var order := range(lengths.size())
+	order.sort_custom(func(a: int, b: int) -> bool: return lengths[a] > lengths[b])
+	for i: int in order.slice(0, 3):
+		print("CROSSING long frame %d: %.1f ms long" % [i + 1, lengths[i]])
+	var doing: Array = clock["doing"]
+	for i in doing.size():
+		if doing[i] != "":
+			print("CROSSING at frame %d: %s" % [i, doing[i]])
+	return "%d max %.1f p99 %.1f" % [(clock["work"] as Array).size(), said["work"][0], said["work"][1]]
+
+
 ## Runs the flags it was given, in a fixed order, then shoots and quits.
 ## Every flag is declared in HarnessFlags.TABLE (PIX-262) and read from its
 ## one parse of the command line; `-- --help` prints the table.
@@ -311,6 +385,34 @@ func _run_test_harness() -> void:
 	# The report line's fields (HarnessReport.TABLE); a value known only
 	# part-way through is noted as it's known.
 	var report := HarnessReport.new(self, flags)
+	# Terrain review: `--at x,y` stands the hero on a cell (before `--walk`,
+	# so a walk can test what stops them), `--zoom Z` changes the camera
+	# (`--zoom play`: the play zoom, CameraRig.ZOOM, which a headless run's
+	# window doesn't fit); `overview` (below) frames the whole map.
+	# `--role necromancer`: the hero's role, for how a role wears gear (PIX-175).
+	if flags.has("--role"):
+		GameState.hero.role_id = flags.value("--role")
+	# `--wear iron_helm,iron_armor`: gear put on the hero (drawn on them, PIX-129).
+	if flags.has("--wear"):
+		for item_id: String in flags.list("--wear"):
+			var piece := InventoryState.create_gear(item_id)
+			GameState.pack.gear.append(piece)
+			GameState.upkeep.equip(piece["uid"])
+	if flags.has("--at"):
+		var at := flags.list("--at")
+		world.player_cell = Vector2i(int(at[0]), int(at[1]))
+		world.player.position = MapView.center(world.player_cell)
+		world.camera_rig.cut()
+		world.camera_rig.camera.reset_smoothing()
+	if flags.has("--zoom"):
+		var zoom: String = flags.value("--zoom")
+		world.camera_rig.camera.zoom = Vector2.ONE * (CameraRig.ZOOM if zoom == "play" else float(zoom))
+	if flags.has("seamless"):
+		# The maps beside the hero drawn and stitched first (One Reach,
+		# PIX-269), so a road out is walked over, not a door.
+		await _settled()
+	# After `--at` (and `seamless`), so the walk can be measured anywhere:
+	# over a line between two maps too (PIX-269).
 	if flags.has("motion"):
 		# `motion` (PIX-135): what the screen shows each rendered frame while
 		# the hero walks right: the hero found by its shirt's reds in the image
@@ -335,6 +437,9 @@ func _run_test_harness() -> void:
 		var hero_x: Array[float] = []
 		var scroll_x: Array[float] = []
 		var walking := false
+		# Over a line (`seamless`, PIX-269) the air of the map walked into
+		# tints the shirt (Atmosphere's mood): its reds are matched by hue.
+		var by_hue := flags.has("seamless")
 		for i in roundi(45 * float(flags.value("--fps", "60")) / 60.0):
 			await RenderingServer.frame_post_draw
 			var moving: bool = world.player.get_real_velocity().x >= 1.0
@@ -349,6 +454,14 @@ func _run_test_harness() -> void:
 			for y in range(int(around.y) - 90, int(around.y) + 30):
 				for x in range(int(around.x) - 50, int(around.x) + 50):
 					var pixel := image.get_pixel(x, y)
+					if by_hue:
+						if pixel.r < 0.1 or pixel.g > 0.05 or pixel.b > 0.05:
+							continue
+						var seen := DesktopLook.shown(pixel, DesktopLook.linear)
+						if seen.r > 0.4 and seen.g < 0.15 and seen.b < 0.15:
+							sum += x
+							n += 1
+						continue
 					# A pure red, in either light, before the exact test:
 					# turning every pixel into its hex took most of a slow
 					# frame.
@@ -383,36 +496,17 @@ func _run_test_harness() -> void:
 		# A hero found in too few frames would leave too few steps to judge:
 		# say so, not pass.
 		report.note("backsteps", str(back) if found >= 10 and found * 2 >= hero_x.size() else "lost")
-	# Terrain review: `--at x,y` stands the hero on a cell (before `--walk`,
-	# so a walk can test what stops them), `--zoom Z` changes the camera
-	# (`--zoom play`: the play zoom, CameraRig.ZOOM, which a headless run's
-	# window doesn't fit); `overview` (below) frames the whole map.
-	# `--role necromancer`: the hero's role, for how a role wears gear (PIX-175).
-	if flags.has("--role"):
-		GameState.hero.role_id = flags.value("--role")
-	# `--wear iron_helm,iron_armor`: gear put on the hero (drawn on them, PIX-129).
-	if flags.has("--wear"):
-		for item_id: String in flags.list("--wear"):
-			var piece := InventoryState.create_gear(item_id)
-			GameState.pack.gear.append(piece)
-			GameState.upkeep.equip(piece["uid"])
-	if flags.has("--at"):
-		var at := flags.list("--at")
-		world.player_cell = Vector2i(int(at[0]), int(at[1]))
-		world.player.position = MapView.center(world.player_cell)
-		world.camera_rig.cut()
-		world.camera_rig.camera.reset_smoothing()
-	if flags.has("--zoom"):
-		var zoom: String = flags.value("--zoom")
-		world.camera_rig.camera.zoom = Vector2.ONE * (CameraRig.ZOOM if zoom == "play" else float(zoom))
 	if flags.has("--walk"):
 		var dirs := {
 			"l": Vector2i.LEFT, "r": Vector2i.RIGHT, "u": Vector2i.UP, "d": Vector2i.DOWN,
 		}
+		var clock := _frame_clock() if flags.has("crossing") else {}
 		for move in flags.list("--walk"):
 			world.player.scripted_dir = Vector2(dirs[move])
 			await get_tree().create_timer(0.2).timeout
 		world.player.scripted_dir = Vector2.ZERO
+		if not clock.is_empty():
+			report.note("frames", _read_clock(clock))
 	if flags.has("night"):
 		# That day's night (`--day`'s, else the first's).
 		GameState.world.steps = (Gathering.day_of(GameState.world.steps) + 0.7) * DayNight.DAY_CYCLE_STEPS

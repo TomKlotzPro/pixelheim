@@ -13,12 +13,24 @@ shader_type canvas_item;
 // `canopy` sways a whole forest's crowns as one sheet, in pixels. On the
 // ground (`water_life`) the water swells with light, glints here and there,
 // and foam laps where PunyTerrain.water_map's water meets the land.
+//
+// One plane (One Reach, PIX-269, step 5): a map drawn beside the hero's
+// reads its masks from its own corner (`map_origin`, where its cell (0, 0)
+// lies in the plane), and everything that wanders - a region's edge, the
+// water's swell and glints, the foam's lapping - runs on the plane's own
+// pixels (the world's plus `plane_origin`, the hero's map's place), so it
+// runs on unbroken across the line and doesn't jump when the hero's map
+// changes there. Beside another map the masks are laid out a few cells past
+// this map's edges with the other's (`mask_origin`, the map pixel at their
+// first texel), so a region's tone and the shore's foam cross the line too.
 
 #include "res://shaders/wind.gdshaderinc"
 #include "res://shaders/linear.gdshaderinc"
 
 uniform sampler2D tint_map : filter_linear, repeat_disable;
 uniform vec2 map_pixels;
+uniform vec2 map_origin = vec2(0.0);
+uniform vec2 mask_origin = vec2(0.0);
 uniform float strength = 0.85;
 uniform float sway = 0.0;
 uniform bool sway_alone = false;
@@ -30,6 +42,7 @@ uniform sampler2D water_map : filter_linear, repeat_disable;
 // pixels in every layer drawn with it, so it goes as one picture.
 uniform float dissolve = 0.0;
 
+// Where the pixel lies in the plane (see above).
 varying vec2 world_pos;
 
 const float BAYER[16] = float[16](
@@ -66,14 +79,14 @@ bool is_water(vec3 c) {
 }
 
 void vertex() {
-	world_pos = (MODEL_MATRIX * vec4(VERTEX, 0.0, 1.0)).xy;
-	float lean = canopy * wind_lean(world_pos, 0.0);
+	world_pos = (MODEL_MATRIX * vec4(VERTEX, 0.0, 1.0)).xy + plane_origin;
+	float lean = canopy * wind_lean(world_pos - plane_origin, 0.0);
 	if (sway > 0.0 && top_corner(VERTEX_ID)) {
 		if (sway_alone) {
 			vec2 foot = MODEL_MATRIX[3].xy;
-			lean += sway * wind_lean(foot, hash(foot) * 6.2832);
+			lean += sway * wind_lean(foot, hash(foot + plane_origin) * 6.2832);
 		} else {
-			lean += sway * wind_lean(world_pos, 0.0);
+			lean += sway * wind_lean(world_pos - plane_origin, 0.0);
 		}
 	}
 	VERTEX.x += lean;
@@ -99,7 +112,8 @@ vec4 soft_tint(vec2 at) {
 	vec2 block = floor(at / 2.0) * 2.0;
 	vec2 cells = block / CELL;
 	vec2 bend = vec2(value_noise(cells / EDGE_BENDS), value_noise(cells / EDGE_BENDS + 17.3)) - 0.5;
-	vec2 read = block + bend * 2.0 * EDGE_WANDER * CELL;
+	// The masks are the map's own, from its corner in the plane.
+	vec2 read = block + bend * 2.0 * EDGE_WANDER * CELL - map_origin - mask_origin;
 	float reach = EDGE_SOFT * CELL;
 	vec4 sum = texture(tint_map, read / map_pixels) * 2.0;
 	sum += texture(tint_map, (read + vec2(reach, reach)) / map_pixels);
@@ -136,7 +150,7 @@ void fragment() {
 		base.rgb *= 1.0 + 0.045 * swell;
 		// Lighter in the shallows, and a broken line of foam lapping at the
 		// shore.
-		float out_from_shore = texture(water_map, (px + 0.5) / map_pixels).r;
+		float out_from_shore = texture(water_map, (px - map_origin - mask_origin + 0.5) / map_pixels).r;
 		if (out_from_shore < SHALLOWS) {
 			base.rgb = mix(base.rgb, FOAM, 0.12);
 		}

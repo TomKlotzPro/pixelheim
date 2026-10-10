@@ -79,11 +79,49 @@ const SKYLINE_MAPS := ["overworld"]
 static var _sheet: PunySheet
 
 
-## Shade's overworld sheet, read once.
+## Shade's overworld sheet, read once, with every tile the open air draws
+## on tile layers made in its tileset at once (prepare).
 static func sheet() -> PunySheet:
 	if _sheet == null:
 		_sheet = PunySheet.new(SHEET, TSX, COLUMNS)
+		_prepare(_sheet)
 	return _sheet
+
+
+## Bridges' and docks' planks (object_at), and the village far off's well,
+## debris and roofs as icons (Skyline): tiles laid on the objects' layer.
+const OBJECTS := [821, 876, 875, 877, 848, 847, 820, 874]
+
+
+## Makes every tile the ground, the crowns and what stands on them may draw
+## (Shade's corner tiles, the objects, the ramparts, the gates in the rock,
+## the field's growth) before any layer is drawn with the tileset (One
+## Reach, PIX-269). Made as first used, a tile new to the session changed
+## the tileset under every layer drawn with it, and they all drew again in
+## that frame: drawing the map beside the hero's redrew the hero's, some
+## 10 ms. Two hundred tiles, a couple of milliseconds once.
+static func _prepare(puny: PunySheet) -> void:
+	var sorted := made_ahead(puny).keys()
+	sorted.sort()
+	for id: int in sorted:
+		puny.slot(id)
+
+
+## The tiles _prepare makes: id -> true.
+static func made_ahead(puny: PunySheet) -> Dictionary:
+	var ids := {}
+	for wangset: String in puny.corners:
+		for key: String in puny.corners[wangset]:
+			for id: int in puny.corners[wangset][key]:
+				ids[id] = true
+	var more: Array = OBJECTS + [CAVE_MOUTH, TOWER, TOWER_ACROSS, WALL_ACROSS, WALL_DOWN, GATE, Ways.ROCK_GATE, Ways.ROCK_GATE_BARRED, Skyline.WELL]
+	more.append_array(Skyline.DEBRIS)
+	more.append_array(Skyline.ICONS.values())
+	for tile: String in Scatter.SCATTER:
+		more.append_array(Scatter.SCATTER[tile][1])
+	for id: int in more:
+		ids[id] = true
+	return ids
 
 
 static func _combos() -> Dictionary:
@@ -137,6 +175,33 @@ static func settle(corners: Array) -> Array:
 	return settled
 
 
+## Grounds a cliff stands in, not over a strip of grass (One Reach, PIX-269).
+## Shade drew his cliffs with grass alone, so where one met the sea, a river,
+## a beach, a road or the ash, that ground settled to grass at its foot, and
+## the grass ended in a straight edge where the ground's own tiles began: a
+## block of grass along every cliff by the water and on the ash, the sea's
+## corner cut square. His transparent cliffs stand on any ground: the water
+## and the road run on under them.
+const RIM_GROUNDS := ["dirt", "sand", "river", "seawater-light", "seawater-medium", "seawater-deep"]
+
+
+## The tiles at a corner of four terrains [tl, tr, br, bl]: [the ground, the
+## cliff standing on it (-1 for none)]. A cliff by the water, sand or a
+## road stands on it (Shade's transparent cliff over it, its foot in it);
+## by grass the ground is corner_tile's and no cliff stands on it.
+static func rimmed(corners: Array, pick: int) -> Array:
+	if "cliff" in corners:
+		for terrain: String in STRENGTH:
+			if terrain == "cliff" or terrain not in corners:
+				continue
+			if terrain not in RIM_GROUNDS:
+				break
+			var ground := corners.map(func(c: String) -> String: return terrain if c == "cliff" else c)
+			var rim := corners.map(func(c: String) -> String: return "cliff-transparent" if c == "cliff" else "air")
+			return [corner_tile(ground, pick), corner_tile(rim, pick)]
+	return [corner_tile(corners, pick), -1]
+
+
 ## Every ground tile of a map, keyed by dual cell: dual cell (x, y) sits on
 ## the corner shared by cells (x-1, y-1) to (x, y), so the layer drawing them
 ## is shifted half a tile up-left. Off-map cells repeat the nearest edge, and
@@ -188,16 +253,24 @@ const WATER_GROUNDS := ["river", "seawater-light", "seawater-medium", "seawater-
 ## reflections.gdshader finds the bank that a cell's water mirrors.
 static func water_map(grid: Dictionary, size: Vector2i) -> ImageTexture:
 	var image := Image.create(size.x, size.y, false, Image.FORMAT_RG8)
-	for x in size.x:
-		var above := 0
-		for y in size.y:
+	var above := PackedInt32Array()
+	above.resize(size.x)
+	water_rows(image, grid, 0, size.y, above)
+	return ImageTexture.create_from_image(image)
+
+
+## Rows [from, to) of the water mask into `image` (One Reach, PIX-269: a
+## map's masks are worked out a few rows a frame beside the hero), `above`
+## carrying each column's count of water cells down from the rows before.
+static func water_rows(image: Image, grid: Dictionary, from: int, to: int, above: PackedInt32Array) -> void:
+	for y in range(from, to):
+		for x in image.get_width():
 			var cell := Vector2i(x, y)
 			if ground_of(grid.get(cell, "")) in WATER_GROUNDS:
-				image.set_pixelv(cell, Color(1.0, mini(above, 255) / 255.0, 0.0))
-				above += 1
+				image.set_pixelv(cell, Color(1.0, mini(above[x], 255) / 255.0, 0.0))
+				above[x] += 1
 			else:
-				above = 0
-	return ImageTexture.create_from_image(image)
+				above[x] = 0
 
 
 ## The per-cell mask region_tint.gdshader reads: a region's hue with full
@@ -205,32 +278,47 @@ static func water_map(grid: Dictionary, size: Vector2i) -> ImageTexture:
 static func tint_map(grid: Dictionary, size: Vector2i, regions := {}) -> ImageTexture:
 	var image := Image.create(size.x, size.y, false, Image.FORMAT_RGBA8)
 	image.fill(Color(0, 0, 0, 0))
-	for cell: Vector2i in grid:
-		var tile: String = grid[cell]
-		var region: String = regions.get(cell, "")
-		if tile == "path" and REGION_PATHS.has(region):
-			tile = REGION_PATHS[region]
-		elif not TINTS.has(tile) and REGION_TINTS.has(region):
-			tile = REGION_TINTS[region]
-		if TINTS.has(tile):
-			image.set_pixelv(cell, TINTS[tile])
-	# Water takes the tone of the land beside it, two cells out (PIX-247).
-	# Water is never toned itself (the shader keeps its colours), but the soft
-	# edge reads round each pixel, and an untoned shore thinned the land's
-	# tone to nothing along it.
+	tint_rows(image, grid, regions, 0, size.y)
 	for ring in 2:
-		var spilled := {}
-		for cell: Vector2i in grid:
-			if grid[cell] not in WATERS or image.get_pixelv(cell).a > 0.0:
-				continue
-			for side: Vector2i in [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN, Vector2i(1, 1), Vector2i(-1, 1), Vector2i(1, -1), Vector2i(-1, -1)]:
-				var next := cell + side
-				if next.x >= 0 and next.y >= 0 and next.x < size.x and next.y < size.y and image.get_pixelv(next).a > 0.0:
-					spilled[cell] = image.get_pixelv(next)
-					break
-		for cell: Vector2i in spilled:
-			image.set_pixelv(cell, spilled[cell])
+		tint_spill(image, grid)
 	return ImageTexture.create_from_image(image)
+
+
+## Rows [from, to) of the tint mask into `image`, a few rows a frame beside
+## the hero (PIX-269); then two rings of tint_spill.
+static func tint_rows(image: Image, grid: Dictionary, regions: Dictionary, from: int, to: int) -> void:
+	for y in range(from, to):
+		for x in image.get_width():
+			var cell := Vector2i(x, y)
+			if not grid.has(cell):
+				continue
+			var tile: String = grid[cell]
+			var region: String = regions.get(cell, "")
+			if tile == "path" and REGION_PATHS.has(region):
+				tile = REGION_PATHS[region]
+			elif not TINTS.has(tile) and REGION_TINTS.has(region):
+				tile = REGION_TINTS[region]
+			if TINTS.has(tile):
+				image.set_pixelv(cell, TINTS[tile])
+
+
+## Water takes the tone of the land beside it, two cells out (PIX-247), a
+## ring a call. Water is never toned itself (the shader keeps its colours),
+## but the soft edge reads round each pixel, and an untoned shore thinned
+## the land's tone to nothing along it.
+static func tint_spill(image: Image, grid: Dictionary) -> void:
+	var size := Vector2i(image.get_width(), image.get_height())
+	var spilled := {}
+	for cell: Vector2i in grid:
+		if grid[cell] not in WATERS or image.get_pixelv(cell).a > 0.0:
+			continue
+		for side: Vector2i in [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN, Vector2i(1, 1), Vector2i(-1, 1), Vector2i(1, -1), Vector2i(-1, -1)]:
+			var next := cell + side
+			if next.x >= 0 and next.y >= 0 and next.x < size.x and next.y < size.y and image.get_pixelv(next).a > 0.0:
+				spilled[cell] = image.get_pixelv(next)
+				break
+	for cell: Vector2i in spilled:
+		image.set_pixelv(cell, spilled[cell])
 
 
 ## Whether a region of the map tones every cell, the mountains' pines too.

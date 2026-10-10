@@ -40,6 +40,7 @@ var air: ColorRect
 var _air_copy: BackBufferCopy
 var _glow_copy: BackBufferCopy
 var _water_of: MapData
+var _mirror_version := -1
 ## The desktop app's wider glow (PIX-227, DesktopLook): the brights marked
 ## last on the layer (after a fresh copy), then spread by a pass alone on a
 ## canvas layer of its own right after this one (its screen copy is the one
@@ -250,19 +251,30 @@ func world_view() -> Array[Vector2]:
 	return [to_world * screen.position, to_world.basis_xform(screen.size)]
 
 
-## The banks mirrored in the water, on maps under the sky that have some.
+## The banks mirrored in the water, on maps under the sky that have some:
+## on the Reach's plane (One Reach, PIX-269) the water of every map drawn
+## round the hero's, laid out in the plane (Neighbours.mirror), the view in
+## the plane's pixels, so nothing jumps at a line.
 func _mirror_water(view: Array[Vector2]) -> void:
 	var map: MapData = world.map
 	var mirror := reflections.material as ShaderMaterial
-	if map != _water_of:
+	var laid: Dictionary = world.neighbours.mirror if world.get("neighbours") != null else {}
+	var version: int = world.neighbours.mirror_version if world.get("neighbours") != null else 0
+	if map != _water_of or version != _mirror_version:
 		_water_of = map
-		var wet := Lights.under_sky(map) and map.grid.values().any(func(tile: String) -> bool: return PunyTerrain.ground_of(tile) in PunyTerrain.WATER_GROUNDS)
+		_mirror_version = version
+		var wet := Lights.under_sky(map) and (not laid.is_empty() or map.grid.values().any(func(tile: String) -> bool: return PunyTerrain.ground_of(tile) in PunyTerrain.WATER_GROUNDS))
 		reflections.visible = wet
-		if wet:
+		if wet and not laid.is_empty():
+			mirror.set_shader_parameter("water_map", laid["texture"])
+			mirror.set_shader_parameter("map_cells", laid["cells"])
+			mirror.set_shader_parameter("mirror_origin", laid["origin"])
+		elif wet:
 			mirror.set_shader_parameter("water_map", PunyTerrain.water_map(map.grid, map.size))
 			mirror.set_shader_parameter("map_cells", Vector2(map.size))
+			mirror.set_shader_parameter("mirror_origin", world.plane_px() / MapView.TILE)
 	if reflections.visible:
-		mirror.set_shader_parameter("view_origin", view[0])
+		mirror.set_shader_parameter("view_origin", view[0] + world.plane_px())
 		mirror.set_shader_parameter("view_size", view[1])
 
 
@@ -274,6 +286,7 @@ func _drift_clouds(view: Array[Vector2], overcast: float) -> void:
 	if not clouds.visible:
 		return
 	var sky := clouds.material as ShaderMaterial
-	sky.set_shader_parameter("view_origin", view[0])
+	# The clouds drift over the plane, unbroken at a line (PIX-269).
+	sky.set_shader_parameter("view_origin", view[0] + world.plane_px())
 	sky.set_shader_parameter("view_size", view[1])
 	sky.set_shader_parameter("depth", amount)

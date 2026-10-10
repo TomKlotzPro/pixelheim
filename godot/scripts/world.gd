@@ -29,6 +29,9 @@ var soundscape: Soundscape
 var folk: Folk
 ## What E does, what the hero steps on, and the prompt (Interaction).
 var interaction: Interaction
+## The maps drawn beside the hero's under the Reach's sky, and the hand-over
+## at the line (One Reach, PIX-269: Neighbours).
+var neighbours: Neighbours
 ## The monsters and the fight's clock (Foes), and the dungeon floors (Delve).
 var foes: Foes
 var delve: Delve
@@ -167,6 +170,9 @@ func _ready() -> void:
 	hud = Hud.new()
 	hud.world = self
 	add_child(hud)
+	neighbours = Neighbours.new()
+	neighbours.world = self
+	add_child(neighbours)
 	_build_hud()
 	interaction.build_prompt()
 	enter_map(map, arrival)
@@ -270,7 +276,9 @@ func _process(delta: float) -> void:
 		# the top, like at a dungeon's gate.
 		_step_back()
 		interaction.ask_down(cell)
-	elif map.portals.has(cell):
+	elif map.portals.has(cell) and not neighbours.seamless(cell):
+		# A road out to a map drawn beside this one walks on into it (the
+		# hand-over at the line, Neighbours); every other way is a door.
 		use_portal(map.portals[cell])
 
 ## Maps as the town has grown: the village and the house redraw per tier.
@@ -300,8 +308,7 @@ func use_portal(target: Dictionary) -> void:
 	# No running from a boss (PIX-232): the way out holds until it falls.
 	var boss := foes.boss_hunting()
 	if boss != null:
-		_step_back()
-		messages.flash(Text.t("%s bars your way: no leaving until the fight is over.") % boss.fighter["name"])
+		bar_the_way(boss)
 		return
 	match target["kind"]:
 		"map":
@@ -365,6 +372,12 @@ func open_inventory() -> void:
 	add_child(screen)
 
 
+## A boss on the hunt holds the way out (PIX-232): back a step, and told.
+func bar_the_way(boss: Node) -> void:
+	_step_back()
+	messages.flash(Text.t("%s bars your way: no leaving until the fight is over.") % boss.fighter["name"])
+
+
 ## Back off a gate to the cell the hero came from (the web keeps them there).
 func _step_back() -> void:
 	var back := player_cell - Vector2i(player.facing)
@@ -381,6 +394,8 @@ func enter_map(next: MapData, arrival: Vector2i) -> void:
 	var changing := view != null
 	if changing:
 		Sound.play("door")
+	# Through a door every map drawn beside the hero's goes at once.
+	neighbours.forget()
 	foes.hunted_at = -100.0
 	soundscape.listen_again()
 	foes.arrived_at = GameClock.seconds()
@@ -391,6 +406,7 @@ func enter_map(next: MapData, arrival: Vector2i) -> void:
 	view = MapView.new(next, actors)
 	arrival = view.plan(arrival)
 	view.build(self)
+	_set_plane()
 	folk.spawn_for(next)
 	player.position = MapView.center(arrival)
 	camera_rig.cut()
@@ -424,6 +440,127 @@ func enter_map(next: MapData, arrival: Vector2i) -> void:
 	# story's moments) the new map comes in from the dark.
 	if changing and not _dissolving:
 		_fade_in()
+
+
+## The hand-over at a line (One Reach, PIX-269, step 6): the hero has
+## walked on past their map's edge onto `beside`, a map drawn beside it
+## (Neighbours), at `arrival`, its cell there; and it becomes theirs - no
+## door, no dissolve, no dark. In the physics tick they crossed in, the
+## world moves back by where that map lies, so its origin is the new map's:
+## every drawing, the hero, the camera and whatever floats in the world,
+## each as one, its smoothing between ticks moved with it, so nothing jumps
+## on screen. The map left is drawn beside it now. Then what a map entered
+## brings, as a walk brings it: the new map's packs come where they can't
+## be seen and the old map's go (fading, if in sight), its folk come, its
+## music cross-fades and its air eases in, the fog of war clears round the
+## hero, the save follows them (once for crossing back and forth), and its
+## name comes up as it would on arriving, with its three minutes' rest.
+func hand_over(beside: Dictionary, arrival: Vector2i) -> void:
+	var by := -Vector2(beside["offset"] * TILE)
+	var left := map
+	var left_view := view
+	# What lives on the map left goes with it: its foes, its folk, a wagon.
+	var leaving: Array[Node] = []
+	for node: Node in get_tree().get_nodes_in_group("mobs") + get_tree().get_nodes_in_group("npcs"):
+		if not node.is_queued_for_deletion():
+			node.remove_from_group("mobs")
+			node.remove_from_group("npcs")
+			leaving.append(node)
+	if stage.escort != null and is_instance_valid(stage.escort):
+		leaving.append(stage.escort)
+		stage.escort = null
+	_shift_world(by)
+	camera_rig.shift(by)
+	last_player_position += by
+	map = beside["data"]
+	view = beside["view"]
+	neighbours.handed_over(beside, left, left_view)
+	_set_plane()
+	for node: Node in leaving:
+		_let_go(node)
+	player_cell = arrival
+	scene_change = "seamless"
+	GameState.move_to(map, arrival, player.facing)
+	if neighbours.saves_now():
+		# A moment later, not in the very frame the line is crossed in.
+		get_tree().create_timer(SAVE_AFTER_S).timeout.connect(GameState.save_now)
+	hud.name_place(map, arrival)
+	stage.arrive(map)
+	atmosphere.carry_on()
+	soundscape.listen_again()
+	foes.come_in()
+	foes.spawn_lairs(true)
+	folk.come_in(_come)
+	soundscape.refresh()
+
+
+## How long what's left behind at a line takes to fade, and what comes to
+## fade in; and how long after crossing it the save follows.
+const LINE_FADE := 0.4
+const SAVE_AFTER_S := 0.5
+
+
+## Moves everything standing in the world by `by` (a hand-over): every
+## drawing, the actors one by one (the actors' layer stays at the origin:
+## its children's places are the world's), and whatever floats over them;
+## never the HUD or the screens.
+func _shift_world(by: Vector2) -> void:
+	for child: Node in get_children():
+		if child == actors:
+			for actor: Node in actors.get_children():
+				_shift(actor as CanvasItem, by)
+		elif child is CanvasItem:
+			_shift(child as CanvasItem, by)
+		elif not child is CanvasLayer:
+			for part: Node in child.get_children():
+				if part is CanvasItem:
+					_shift(part as CanvasItem, by)
+
+
+## `item` moved by `by`, and its smoothing between physics ticks with it
+## (what was drawn a tick ago moved too), so it doesn't streak across.
+static func _shift(item: CanvasItem, by: Vector2) -> void:
+	if item == null:
+		return
+	if item.is_physics_interpolated_and_enabled():
+		RenderingServer.canvas_item_transform_physics_interpolation(item.get_canvas_item(), Transform2D(0.0, by))
+	if item is Node2D:
+		(item as Node2D).position += by
+	elif item is Control:
+		(item as Control).position += by
+
+
+## Something of the map left behind at a line goes: at once out of sight,
+## fading in sight (at once with reduced motion), doing nothing meanwhile.
+func _let_go(node: Node) -> void:
+	var item := node as Node2D
+	if item == null or GameState.settings.reduce_motion or not camera_rig.in_view(item.global_position, TILE):
+		node.queue_free()
+		return
+	node.process_mode = Node.PROCESS_MODE_DISABLED
+	var fade := node.create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	fade.tween_property(item, "modulate:a", 0.0, LINE_FADE)
+	fade.tween_callback(node.queue_free)
+
+
+## Someone of the map walked into comes into sight fading in, not popping.
+func _come(node: Node) -> void:
+	var item := node as Node2D
+	if item == null or GameState.settings.reduce_motion or not item.visible or not camera_rig.in_view(item.global_position, TILE):
+		return
+	item.modulate.a = 0.0
+	item.create_tween().tween_property(item, "modulate:a", 1.0, LINE_FADE)
+
+
+## Where the hero's map lies in the plane, for the shaders (the wind, the
+## ground's slow noise, the water's light run on unbroken across a line).
+func _set_plane() -> void:
+	RenderingServer.global_shader_parameter_set("plane_origin", plane_px())
+
+
+## The same, in pixels: zero off the plane.
+func plane_px() -> Vector2:
+	return Vector2(neighbours.origin() * TILE) if neighbours != null else Vector2.ZERO
 
 
 ## Through a door the old place dissolves into the new one (One Reach,

@@ -58,9 +58,15 @@ static func load_tiered(map_id: String, projects: Array, house_tier: int) -> Map
 	return data
 
 
+## Each map file as parsed, once a session (One Reach, PIX-269): the maps
+## under the Reach's sky are loaded again each time one is drawn beside the
+## hero, and parsing the Ashenreach's file was most of its load. Only read.
+static var _docs := {}
+
+
 static func load_from(path: String) -> MapData:
 	var data := MapData.new()
-	var doc: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(path))
+	var doc := _doc(path)
 	data.id = doc["id"]
 	data.size = Vector2i(int(doc["width"]), int(doc["height"]))
 	data.spawn = Vector2i(int(doc["spawn"]["x"]), int(doc["spawn"]["y"]))
@@ -74,7 +80,7 @@ static func load_from(path: String) -> MapData:
 		for x in row.size():
 			data.grid[Vector2i(x, y)] = row[x]
 	for portal: Dictionary in doc["portals"]:
-		data.portals[Vector2i(int(portal["x"]), int(portal["y"]))] = portal["to"]
+		data.portals[Vector2i(int(portal["x"]), int(portal["y"]))] = (portal["to"] as Dictionary).duplicate(true)
 	var region_rows: Array = doc.get("regions", [])
 	for y in region_rows.size():
 		var row: Array = region_rows[y]
@@ -82,6 +88,42 @@ static func load_from(path: String) -> MapData:
 			if row[x] != null:
 				data.regions[Vector2i(x, y)] = row[x]
 	return data
+
+
+## A map file, parsed once a session.
+static func _doc(path: String) -> Dictionary:
+	if not _docs.has(path):
+		_docs[path] = JSON.parse_string(FileAccess.get_file_as_string(path))
+	return _docs[path]
+
+
+## How big map `map_id` is, read from its file without building it.
+static func size_by_id(map_id: String) -> Vector2i:
+	var doc := _doc("res://assets/maps/%s.json" % map_id)
+	return Vector2i(int(doc["width"]), int(doc["height"]))
+
+
+## The tile at `cell` of map `map_id` as its file has it, without building
+## the map: what a map under the Reach's sky draws past its edges where the
+## map beside it lies (KeptGround, PIX-269). "" off the map.
+static func tile_by_id(map_id: String, cell: Vector2i) -> String:
+	var tiles: Array = _doc("res://assets/maps/%s.json" % map_id)["tiles"]
+	if cell.y < 0 or cell.y >= tiles.size() or cell.x < 0 or cell.x >= (tiles[cell.y] as Array).size():
+		return ""
+	return tiles[cell.y][cell.x]
+
+
+## Whether `cells` already run row by row, west to east (a map's grid and
+## regions are read from its file that way): sorting them through a script
+## comparison was most of what planning the Reach's props and patches cost,
+## a slice of drawing the map beside the hero (PIX-269).
+static func in_rows(cells: Array) -> bool:
+	for i in range(1, cells.size()):
+		var a: Vector2i = cells[i - 1]
+		var b: Vector2i = cells[i]
+		if a.y > b.y or (a.y == b.y and a.x >= b.x):
+			return false
+	return true
 
 
 func tile_at(cell: Vector2i) -> String:

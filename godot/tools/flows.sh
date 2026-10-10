@@ -128,11 +128,12 @@ if [[ $list == 1 ]]; then
 	exit 0
 fi
 
-# Measures pixels: a quiet run has none to measure, and skips it. In a
-# window it walks alone after the rest: it draws every frame of its walk,
-# which the others don't (--draw-every), and alone it draws them several
-# times faster.
-windowed=" motion "
+# The motion flows (motion, and line-motion's walk over a line between two
+# maps) measure pixels: a quiet run has none to measure, and skips them.
+# In a window each walks alone after the rest: it draws every frame of its
+# walk, which the others don't (--draw-every), and alone it draws them
+# several times faster.
+windowed=" motion line-motion "
 
 # Each run's own folder: its picture, its output, its log and its result
 # (the boot check's apart: its maps share names with flows).

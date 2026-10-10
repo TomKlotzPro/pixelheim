@@ -75,8 +75,10 @@ func spawn_enemy(species: String, cell: Vector2i, region := "", spawn_id := "", 
 
 
 ## The named monsters the board has posted, each in its lair on this map
-## unless already out (PIX-156).
-func spawn_lairs() -> void:
+## unless already out (PIX-156); `unseen`, only those whose lair is out of
+## sight (a map walked into across a line, PIX-269: it doesn't appear in
+## view, and comes once the hero looks away).
+func spawn_lairs(unseen := false) -> void:
 	if world.map.floor_level > 0:
 		return
 	var out := []
@@ -84,8 +86,11 @@ func spawn_lairs() -> void:
 		if not enemy.is_queued_for_deletion():
 			out.append(enemy.fighter.get("named", ""))
 	for entry in Hunts.living_on(world.map.id, GameState.questing.board_floors(), GameState.progression.hunted):
-		if entry["id"] not in out:
-			spawn_named(entry["id"])
+		if entry["id"] in out:
+			continue
+		if unseen and world.camera_rig.in_view(MapView.center(Hunts.lair(Hunts.named(entry["id"]))), 2 * MapView.TILE):
+			continue
+		spawn_named(entry["id"])
 
 
 ## A named monster in its lair (PIX-156), or at `cell` (the harness): never
@@ -113,9 +118,10 @@ func spawn_named(named_id: String, cell := Vector2i(-1, -1)) -> Node:
 ## too, none hunting the hero or running from them - except on arriving,
 ## when the map is new to the eye anyway. A cleared pack whose time is up
 ## comes back here too, at a home out of view, even on arriving (PIX-142).
-func keep_hours(arriving := false) -> void:
+func keep_hours(arriving := false, at_most := -1) -> int:
+	var made := 0
 	if world.map.floor_level > 0:
-		return
+		return made
 	var minute := DayNight.minute_of(GameState.world.steps)
 	var night := DayNight.night_at(minute)
 	var standing := _standing()
@@ -138,19 +144,36 @@ func keep_hours(arriving := false) -> void:
 				GameState.spoils.revive_pack(id)
 			elif not hidden:
 				continue
+			if made == at_most:
+				continue
 			_spawn_pack(world.map, spawn, asleep)
+			made += 1
 			continue
 		if hidden and members.any(func(member: Node) -> bool: return member.asleep != asleep):
 			for member: Node in members:
 				member.set_asleep(asleep)
+	return made
+
+
+## The packs of a map walked into over a line (One Reach, PIX-269): they
+## come where the hero can't see them, as they would on the hour's look,
+## but one a frame, so the frame the hero crossed in doesn't make them all.
+var _coming := false
+
+
+func come_in() -> void:
+	_coming = true
 
 
 ## Level tags kept apart (Tom's playtest: two foes side by side read
 ## "Ni Niv. 7"): each frame, after the foes have said whether their tags show,
 ## the one nearest the hero keeps its tag and any tag it would overlap hides.
+## And the packs of a map walked into over a line come, a pack a frame.
 func _process(_delta: float) -> void:
 	if world == null or world.player == null:
 		return
+	if _coming:
+		_coming = world.map != null and keep_hours(false, 1) > 0
 	var shown: Array = []
 	for enemy in get_tree().get_nodes_in_group("mobs"):
 		if enemy.level_tag != null and enemy.level_tag.visible:

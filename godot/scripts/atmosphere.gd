@@ -67,6 +67,12 @@ func _ready() -> void:
 			bursts[kind].append(node)
 
 func _process(delta: float) -> void:
+	if _fall_again > 0:
+		_fall_again -= 1
+		if _fall_again == 0:
+			for node: CPUParticles2D in particles.values():
+				if node.emitting:
+					node.restart()
 	var map: MapData = world.map
 	air = Weather.air_at(map, world.player_cell)
 	var wet := Weather.rain_at(GameState.world.steps) if Weather.rains_in(map, air) else 0.0
@@ -80,6 +86,21 @@ func _process(delta: float) -> void:
 	_fall(arrived)
 
 
+## The hero walked over a line into the map beside theirs (One Reach,
+## PIX-269, step 6): not a new place come to through a door, so the air
+## eases from the one to the other as it does between regions. What falls
+## or drifts is in the world, which has just moved under it: it starts again
+## already falling round the view - the frame after, as starting again runs
+## each a lifetime ahead, and the crossing's own frame has enough to do.
+func carry_on() -> void:
+	_map_of = world.map
+	_fall_again = 2
+
+
+## Frames until what falls starts again (carry_on), 0 when it needn't.
+var _fall_again := 0
+
+
 ## The air's pass: on while any air, rain or mood shows.
 func _shade() -> void:
 	var lights: Node = world.lights
@@ -91,7 +112,8 @@ func _shade() -> void:
 		return
 	var shader := air_pass.material as ShaderMaterial
 	var view: Array[Vector2] = lights.world_view()
-	shader.set_shader_parameter("view_origin", view[0])
+	# Its fog and haze drift over the plane, unbroken at a line (PIX-269).
+	shader.set_shader_parameter("view_origin", view[0] + world.plane_px())
 	shader.set_shader_parameter("view_size", view[1])
 	for kind: String in Weather.DRAWN:
 		shader.set_shader_parameter(kind, weights[kind])

@@ -2077,6 +2077,10 @@ msgid "At the Bench"
 msgstr "À l'établi"
 
 #: assets/data/changelog.json
+msgid "At the line the region's name, music and weather take over, its creatures come out of sight, and your place is saved"
+msgstr "À la limite, le nom de la région, sa musique et son temps prennent le relais, ses créatures arrivent hors de vue, et votre position est sauvegardée"
+
+#: assets/data/changelog.json
 msgid "Audio That Breathes"
 msgstr "Un son qui respire"
 
@@ -2325,6 +2329,10 @@ msgid "Clearing a floor steps you back out of the door you entered"
 msgstr "Nettoyer un étage vous fait ressortir par la porte d'où vous êtes entré"
 
 #: assets/data/changelog.json
+msgid "Cliffs now stand in the sea, the sand and the roads instead of on a square of grass, and the snow, foam and tints run on across the lines"
+msgstr "Les falaises se dressent désormais dans la mer, le sable et les routes au lieu d'un carré d'herbe, et la neige, l'écume et les teintes continuent d'une région à l'autre"
+
+#: assets/data/changelog.json
 msgid "Closed Roads"
 msgstr "Routes coupées"
 
@@ -2415,6 +2423,10 @@ msgstr "Des portes dans la montagne"
 #: assets/data/changelog.json
 msgid "Doors no longer cut to black: through the town gate, a house or shop door, out of a cave or by fast travel, the old view melts into the new one"
 msgstr "Les portes ne coupent plus au noir : par la porte du village, celle d'une maison ou d'une boutique, en sortant d'une grotte ou en voyage rapide, l'ancienne vue se fond dans la nouvelle"
+
+#: assets/data/changelog.json
+msgid "Doors stay doors: the village gate, houses, caves and dungeon floors keep their soft change of scene"
+msgstr "Les portes restent des portes : la porte du village, les maisons, les grottes et les étages des donjons gardent leur doux changement de décor"
 
 #: assets/data/changelog.json
 msgid "Doors, cave mouths and shop signs now press flush against the walls behind them, like they were built there"
@@ -3497,6 +3509,10 @@ msgid "Names that sit in a sentence lose their capital article in French, gear a
 msgstr "Les noms pris dans une phrase perdent la majuscule de leur article, l'équipement et les ennemis des étages sont nommés dans l'ordre du français, et les enseignes, les icônes de compétences et les étiquettes de message fonctionnent dans les deux langues"
 
 #: assets/data/changelog.json
+msgid "Near a road out, the land beyond appears past the cliffs before you reach it, and a closed road still shows where it goes"
+msgstr "Près d'une route qui sort, la terre au-delà apparaît derrière les falaises avant que vous l'atteigniez, et une route coupée montre toujours où elle mène"
+
+#: assets/data/changelog.json
 msgid "Neighbors"
 msgstr "Voisins"
 
@@ -3707,6 +3723,10 @@ msgstr "Un seul jeu"
 #: assets/data/changelog.json
 msgid "One Hero Everywhere"
 msgstr "Un seul héros partout"
+
+#: assets/data/changelog.json
+msgid "One Land"
+msgstr "Une seule terre"
 
 #: assets/data/changelog.json
 msgid "One Look"
@@ -4707,6 +4727,10 @@ msgstr "La louche de Tam, le capitaine Hale et Maren s'accordent avec ce qui a �
 #: assets/data/changelog.json
 msgid "Ten floors of monsters, from cellar slimes to Fafnyr the Ashen"
 msgstr "Dix étages de monstres, des gelées de la cave à Fafnyr des Cendres"
+
+#: assets/data/changelog.json
+msgid "The Ashenreach and its six regions are one land now: walk on down a road out and the next region is already there, with no fade"
+msgstr "La Marche des Cendres et ses six régions ne forment plus qu'une seule terre : suivez une route qui sort et la région suivante est déjà là, sans fondu"
 
 #: assets/data/changelog.json
 msgid "The Bard Arrives"

@@ -238,6 +238,14 @@ func _voice_for(stream: AudioStream, pitch: float, level: float, priority: bool)
 
 
 ## Crossfades to a theme: the old one fades out, the new one in.
+## A track loaded ahead, not yet played (One Reach, PIX-269: the theme of a
+## map the hero may walk into over a line, so the walk doesn't load it in
+## the frame the line is crossed in).
+func ready_track(name: String) -> void:
+	if _doc.has("tracks") and _doc["tracks"].has(name):
+		_stream("res://assets/audio/music/%s.wav" % name)
+
+
 func play_track(name: String) -> void:
 	if name == track or not _doc["tracks"].has(name):
 		return

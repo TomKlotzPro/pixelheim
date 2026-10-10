@@ -31,11 +31,12 @@
 #   report shows open=<x>, and a changed flows.txt the flows it adds or changes.
 #   A file no line of AREAS names, or whose areas no flow covers, runs every
 #   flow, and quick says so; a flow without a tag AREAS knows runs every time.
-# The windowed motion flow never runs here: quick says when the diff calls
-# for it (player.gd, gait.gd, juice.gd, puny_art.gd, world_camera.gd), and
-# CI's windowed jobs walk it in a window on every pull request (PIX-275,
-# stepped since PIX-276: the same walk every time); flows.sh motion watches
-# it here.
+# The windowed motion flows never run here: quick says when the diff calls
+# for them (player.gd, gait.gd, juice.gd, puny_art.gd, world_camera.gd,
+# world_neighbours.gd), and CI's windowed jobs walk them in a window on
+# every pull request (PIX-275, stepped since PIX-276: the same walk every
+# time; line-motion walks over a line between two maps, PIX-269);
+# flows.sh motion line-motion watches them here.
 #
 # full runs what CI runs: the release script's tests and its check, the
 # catalogue check, the import, the web export, then GUT beside every map
@@ -71,7 +72,7 @@ town: scripts/town_hall_screen.gd scripts/ledger_screen.gd scripts/bank_screen.g
 rooms +town_house*: scripts/puny_interior.gd scripts/home_screen.gd assets/data/interiors.json
 travel field: scripts/puny_terrain.gd scripts/scatter.gd scripts/skyline.gd assets/puny/world/*
 town travel +town-age* +overworld*: scripts/rampart.gd
-travel: scripts/reach_plane.gd scripts/ways.gd scripts/waypoints.gd scripts/atlas.gd scripts/dissolve.gd scripts/place_title.gd scripts/map_screen.gd scripts/state/world_state.gd assets/data/plane.json
+travel: scripts/seam.gd scripts/slicer.gd scripts/world_neighbours.gd scripts/reach_plane.gd scripts/ways.gd scripts/waypoints.gd scripts/atlas.gd scripts/dissolve.gd scripts/place_title.gd scripts/map_screen.gd scripts/state/world_state.gd assets/data/plane.json
 travel story +overworld*: scripts/state/gates.gd scripts/gate_art.gd assets/data/gates.json
 quest travel: scripts/escort.gd
 dungeon travel +seacave* +shafts* +cellars* +icecave*: scripts/state/depths.gd assets/data/depths.json
@@ -107,9 +108,11 @@ screen: scripts/world_hud.gd scripts/hud_dock.gd scripts/screen.gd scripts/ui_st
 screen lang: assets/fonts/* scripts/ink.gd scripts/layout.gd
 lang: locale/* scripts/state/text.gd
 '
-# The motion flow measures the walk in a window: quick asks for it after a
-# change to these.
-MOTION=" scripts/player.gd scripts/gait.gd scripts/juice.gd scripts/puny_art.gd scripts/world_camera.gd "
+# The motion flows measure the walk in a window (line-motion over a line
+# between two maps, PIX-269): quick never runs them, and asks for them
+# after a change to these.
+WINDOWED=" motion line-motion "
+MOTION=" scripts/player.gd scripts/gait.gd scripts/juice.gd scripts/puny_art.gd scripts/world_camera.gd scripts/world_neighbours.gd "
 
 mode=${1:-}
 [[ $# -gt 0 ]] && shift
@@ -272,7 +275,7 @@ if [[ $mode == full ]]; then
 	fi
 	echo "GUT beside every map booted, then every flow ($jobs at a time)..."
 	run_suite all all
-	echo "check.sh full: $([[ $failed == 1 ]] && echo FAILED || echo "all ok") in $(since "$started")s; the windowed walk is CI's windowed jobs (or godot/tools/flows.sh motion)"
+	echo "check.sh full: $([[ $failed == 1 ]] && echo FAILED || echo "all ok") in $(since "$started")s; the windowed walk is CI's windowed jobs (or godot/tools/flows.sh motion line-motion)"
 	exit $failed
 fi
 
@@ -418,7 +421,7 @@ pick() {
 		label=$areas
 	fi
 	for i in "${!names[@]}"; do
-		[[ ${names[i]} == motion ]] && continue
+		[[ $WINDOWED == *" ${names[i]} "* ]] && continue
 		hit=0
 		for word in $areas; do
 			[[ ${tags[i]} == *" $word "* ]] && hit=1
@@ -460,7 +463,7 @@ fi
 # A flow no area can pick runs every time.
 untagged=""
 for i in "${!names[@]}"; do
-	[[ ${names[i]} == motion ]] && continue
+	[[ $WINDOWED == *" ${names[i]} "* ]] && continue
 	hit=0
 	for word in ${tags[i]}; do
 		[[ $known == *" $word "* ]] && hit=1
@@ -474,7 +477,7 @@ done
 flows=""
 total=0
 for name in "${names[@]}"; do
-	[[ $name == motion ]] && continue
+	[[ $WINDOWED == *" $name "* ]] && continue
 	total=$((total + 1))
 	[[ $everything == 1 || $picked == *" $name "* ]] && flows+="$name "
 done
@@ -492,7 +495,7 @@ if [[ -n $untagged ]]; then
 	echo "note:    no tag AREAS knows on ${untagged% }, so they run every time (tag them in flows.txt)"
 fi
 if [[ -n $motion ]]; then
-	echo "motion:  the diff touches ${motion% }: CI's windowed jobs walk it in a window on the PR (or watch it here: godot/tools/flows.sh motion)"
+	echo "motion:  the diff touches ${motion% }: CI's windowed jobs walk it in a window on the PR (or watch it here: godot/tools/flows.sh motion line-motion)"
 fi
 [[ $plan == 1 ]] && exit 0
 echo
@@ -507,5 +510,5 @@ if [[ -n $import ]]; then
 fi
 run_suite "$boot_picked" "$flows"
 echo "check.sh quick: $([[ $failed == 1 ]] && echo FAILED || echo "all ok") in $(since "$started")s; CI runs the rest"
-[[ -n $motion ]] && echo "the windowed walk: CI's windowed jobs, on the PR (or godot/tools/flows.sh motion)"
+[[ -n $motion ]] && echo "the windowed walk: CI's windowed jobs, on the PR (or godot/tools/flows.sh motion line-motion)"
 exit $failed
