@@ -8,6 +8,11 @@ concurrency:
   group: godot-ci-${{ github.ref }}
   cancel-in-progress: true
 
+# The checks only read the repository; the pictures job asks for what it
+# needs on top (PIX-275).
+permissions:
+  contents: read
+
 env:
   GODOT_VERSION: "4.7.1"
 
@@ -165,4 +170,223 @@ jobs:
           path: |
             godot/flows/runs/
             godot/flows/boot/
+          retention-days: 7
+
+  # The windowed checks (PIX-275): what needs a real window - the motion
+  # check (it measures the hero's pixels frame by frame) and the pictures -
+  # beside the godot job, so a visual change is reviewed without a window
+  # on the Mac. A virtual display (xvfb) and Mesa's software rendering: the
+  # flows on the desktop renderer as on the Mac (Forward+ on lavapipe, the
+  # app's look), the look book on the browser's (Compatibility on
+  # llvmpipe), as lookbook.sh shoots it. On Shade's CC0 art alone, always:
+  # this repository is public, and so are its artifacts to anyone signed in
+  # to GitHub, so the paid art is never fetched here nor pictured (no deploy
+  # key, and not the godot job's import either: its paid art's imports
+  # would draw it). A fresh import of the free art takes seconds.
+  pictures:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+      # The one comment on the pull request linking its pictures.
+      pull-requests: write
+    env:
+      SCREEN: "-screen 0 2560x1440x24"
+    steps:
+      - uses: actions/checkout@v4
+
+      # Main's Godot, as the deploy keeps it; only restored here, never saved:
+      # a save under that key without the web templates would cost the godot
+      # job their download on every run.
+      - name: Restore the Godot binary
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            ~/godot-bin
+            ~/.local/share/godot/export_templates
+          key: godot-${{ env.GODOT_VERSION }}
+
+      - name: Install Godot
+        run: |
+          if [ ! -x "$HOME/godot-bin/godot" ]; then
+            mkdir -p "$HOME/godot-bin"
+            curl -sL "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip" -o godot.zip
+            unzip -q godot.zip
+            mv "Godot_v${GODOT_VERSION}-stable_linux.x86_64" "$HOME/godot-bin/godot"
+          fi
+          echo "$HOME/godot-bin" >> "$GITHUB_PATH"
+
+      - name: Install a virtual display and software rendering
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends xvfb xauth libgl1-mesa-dri libglx-mesa0 libegl1 mesa-vulkan-drivers libvulkan1 python3-pil >/dev/null
+
+      - name: Import assets (Shade's CC0 art only)
+        run: |
+          if [ -e godot/assets/puny/medieval ] || [ -e godot/assets/puny/shade ]; then
+            echo "::error::the paid art is here, and these pictures are public"
+            exit 1
+          fi
+          godot --headless --path godot --import
+
+      # Three motion checks when the change touches how the hero walks or is
+      # drawn, or the camera (one pass could be luck), or this workflow.
+      - name: Does this change touch the hero's walk or the camera?
+        id: walk
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          if [ -z "$PR" ]; then
+            echo "touched=yes" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          files=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR/files" --paginate --jq '.[].filename')
+          walk='^godot/scripts/(player|gait|juice|puny_art|world_camera)\.gd$|^godot/assets/puny/characters/|^\.github/workflows/godot\.yml$'
+          if grep -qE "$walk" <<<"$files"; then
+            echo "touched=yes" >> "$GITHUB_OUTPUT"
+            grep -E "$walk" <<<"$files"
+          else
+            echo "touched=no" >> "$GITHUB_OUTPUT"
+          fi
+
+      # The motion flow as flows.sh lists it (its harness arguments and the
+      # report it must give), alone on the machine, before the flows, in a
+      # 960x540 window (three screen pixels to the art's, where the Mac's
+      # has four): software rendering draws a full-size one at about nine
+      # frames a second, six or seven physics ticks to a frame, and the walk
+      # wobbles by a pixel no screen would show (2 of 10 runs over the
+      # flow's limit of one step back); at 960x540 it draws about
+      # twenty-six, and 20 runs out of 20 passed, 19 with no step back.
+      # Beside other work it measures the machine (4 to 11 steps back).
+      - name: The motion check, three times
+        if: steps.walk.outputs.touched == 'yes'
+        run: |
+          IFS="|" read -r _ args expect _ < <(grep -E '^\s*"motion\|' godot/tools/flows.sh | tr -d '\t"')
+          failed=0
+          results=""
+          for i in 1 2 3; do
+            # shellcheck disable=SC2086 # the arguments are meant to split
+            timeout 120 xvfb-run -a -s "$SCREEN" godot --resolution 960x540 --audio-driver Dummy --path godot -- --screenshot $args --shot "$PWD/motion-$i.png" > "motion-$i.txt" 2>&1 || true
+            grep -E "^MOTION" "motion-$i.txt" || true
+            report=$(grep "screenshot saved" "motion-$i.txt" || true)
+            back=$(grep -oE "backsteps=[^ ]*" <<<"$report" || echo "no report")
+            if grep -qE "$expect" <<<"$report" && ! grep -qE "SCRIPT ERROR|Parse Error" "motion-$i.txt"; then
+              results+="${results:+, }ok $back"
+            else
+              results+="${results:+, }FAIL $back"
+              echo "::error title=motion check $i failed::expected /$expect/, got: ${report:-no report}"
+              failed=1
+            fi
+          done
+          echo "$results" > motion.txt
+          echo "**The motion check, three times:** $results" >> "$GITHUB_STEP_SUMMARY"
+          exit $failed
+
+      # Every release flow in a window, each leaving its picture: the Mac's
+      # windowed run (the motion flow alone, last). The godot job checks
+      # every flow's report headless; here a few frames a second stretch the
+      # flows timed in frames or by the clock (a dodge's length, a step onto
+      # a patch, a place's card still up, the motion flow at full size), so
+      # a report that differs is noted, not failed, and its picture kept.
+      - name: Release flows, windowed
+        if: success() || failure()
+        run: |
+          GITHUB_ACTIONS= GITHUB_STEP_SUMMARY= xvfb-run -a -s "$SCREEN" bash godot/tools/flows.sh -j "$(nproc)" | tee flows.txt || true
+          ran=$(grep -E "^Release flows:" flows.txt | sed -E 's/^Release flows: //; s/: (FAILED|all ok)$//' || true)
+          differs=$(grep -E "^FAIL " flows.txt | awk '{print $2}' | paste -sd, - | sed 's/,/, /g' || true)
+          echo "$differs" > differs.txt
+          {
+            echo "**Release flows, windowed:** ${ran:-no result}"
+            if [ -n "$differs" ]; then
+              echo
+              echo "Their reports differed in the window (timing on software rendering; the godot job checks every report headless): $differs."
+            fi
+            echo
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Look book
+        if: success() || failure()
+        run: xvfb-run -a -s "$SCREEN" bash godot/tools/lookbook.sh
+
+      - name: Contact sheets
+        if: success() || failure()
+        run: |
+          mkdir -p pictures
+          python3 godot/tools/flows_sheet.py godot/flows pictures/flows-sheet.png
+          cp godot/lookbook/sheet.png pictures/lookbook-sheet.png
+
+      - name: Upload every picture
+        id: zip
+        if: success() || failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pictures
+          path: |
+            godot/flows/*.png
+            godot/flows/runs/*/shot.png
+            godot/lookbook/
+          retention-days: 14
+
+      # The sheets on their own, unzipped: a link opens the picture.
+      - name: Upload the flows' sheet
+        id: flows_sheet
+        if: success() || failure()
+        uses: actions/upload-artifact@v7
+        with:
+          path: pictures/flows-sheet.png
+          archive: false
+          retention-days: 14
+
+      - name: Upload the look book's sheet
+        id: look_sheet
+        if: success() || failure()
+        uses: actions/upload-artifact@v7
+        with:
+          path: pictures/lookbook-sheet.png
+          archive: false
+          retention-days: 14
+
+      # The links in the job's summary and in one comment on the pull
+      # request, edited on each run (a fork's token can't comment).
+      - name: Link the pictures
+        if: success() || failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          FORK: ${{ github.event.pull_request.head.repo.full_name != github.repository }}
+          SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          ZIP: ${{ steps.zip.outputs.artifact-url }}
+          FLOWS_SHEET: ${{ steps.flows_sheet.outputs.artifact-url }}
+          LOOK_SHEET: ${{ steps.look_sheet.outputs.artifact-url }}
+          RUN: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          marker="<!-- pixelheim-pictures -->"
+          {
+            echo "$marker"
+            echo "**Pictures of ${SHA:0:7}** ([the run]($RUN)): [every flow on one sheet]($FLOWS_SHEET), [the look book's sheet]($LOOK_SHEET), [every picture at full size]($ZIP) (a zip)."
+            if [ -s motion.txt ]; then
+              echo
+              echo "The motion check, three times (this change touches the hero's walk, the camera or the check): $(cat motion.txt)."
+            fi
+            echo
+            echo "_Shade's CC0 art only (none of the paid houses, props, rooms or icons), drawn in a virtual display by software: the flows on the desktop renderer, the look book on the browser's._"
+          } > comment.md
+          cat comment.md >> "$GITHUB_STEP_SUMMARY"
+          if [ -z "$PR" ] || [ "$FORK" = true ]; then
+            exit 0
+          fi
+          id=$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" --paginate --jq ".[] | select(.user.login == \"github-actions[bot]\" and (.body | startswith(\"$marker\"))) | .id" | head -1 || true)
+          if [ -n "$id" ]; then
+            gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$id" -F body=@comment.md >/dev/null
+          else
+            gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" -F body=@comment.md >/dev/null
+          fi
+
+      - name: Keep the failed runs' output
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pictures-output
+          path: godot/flows/runs/
           retention-days: 7
