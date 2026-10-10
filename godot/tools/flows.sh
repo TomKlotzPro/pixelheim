@@ -47,7 +47,11 @@
 # the same dice every run (GameState.HARNESS_SEED). A flow is the same run
 # every time, and its report the same, window or not (but draws=). A flow
 # may ask for another pace with the harness's --fps N (the motion flow: a
-# fast screen's frames between the physics ticks).
+# fast screen's frames between the physics ticks). So no flow gets a second
+# try: the motion flow (timed frame by frame), the festival's and the
+# board's (timed by the clock) had one, and a second try only hid what made
+# the first fail. The flake hunt (.github/workflows/flakes.yml, nightly)
+# runs every flow round after round under load to keep it so.
 #
 # --boot boots every map the game can stand in (PIX-270): each map in
 # assets/maps, the village at each of its ages, the house at each of its
@@ -121,10 +125,6 @@ if [[ $list == 1 ]]; then
 	exit 0
 fi
 
-# Smooth walking is timed frame by frame, and the festival's and the board's
-# conversations by the clock: a long run's load can hitch one, so they get a
-# second try and only a real regression fails.
-retried=" motion festival board "
 # Measures pixels: a quiet run has none to measure, and skips it.
 windowed=" motion "
 
@@ -185,13 +185,6 @@ run_flow() {
 	ran=$?
 	output=$(<"$dir/output.txt")
 	report=$(grep "screenshot saved" <<<"$output")
-	if [[ $retried == *" $name "* ]] && ! shows "$expect" "$report"; then
-		rm -f "$dir/shot.png"
-		run_godot "$dir" "$args" "$2"
-		ran=$?
-		output=$(<"$dir/output.txt")
-		report=$(grep "screenshot saved" <<<"$output")
-	fi
 	# 128 + SIGALRM: the watchdog's.
 	if [[ $ran == 142 && -z $report ]]; then
 		report="none: the watchdog stopped it after ${watchdog}s"
