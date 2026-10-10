@@ -3441,6 +3441,10 @@ msgid "Monsters keep hours: after dark, night packs come out in every region und
 msgstr "Les monstres ont leurs heures : à la nuit tombée, des meutes nocturnes sortent dans chaque région à ciel ouvert, loups et squelettes dans la forêt, fantômes sur le marais, spectres dans les Bois-Profonds, wendigos au col de la Porte-Givre, un peu plus forts et plus riches que le jour"
 
 #: assets/data/changelog.json
+msgid "Morvax reads the letter; fifty years of tally marks count the village's lamps on his wall; then the mountain shakes"
+msgstr "Morvax lit la lettre ; sur son mur, cinquante ans de traits comptent les lanternes du village ; puis la montagne tremble"
+
+#: assets/data/changelog.json
 msgid "Most depths now have a twist, shown at the gate: swift foes, warded skills, venomous bites or proud elites, with richer drops and a richer hoard"
 msgstr "La plupart des profondeurs ont désormais une particularité, affichée à la porte : ennemis vifs, compétences scellées, morsures venimeuses ou élites altières, avec plus de butin et un trésor plus riche"
 
@@ -4881,6 +4885,10 @@ msgid "The Truth of It"
 msgstr "La vérité des choses"
 
 #: assets/data/changelog.json
+msgid "The Undermountain's cave and its floors leave the world; heroes saved there wake by the mountain gate or in town, with their gear and levels"
+msgstr "La grotte du Sous-Mont et ses étages quittent le monde ; les héros sauvegardés là-bas se réveillent près de la porte de la montagne ou au village, avec leur équipement et leurs niveaux"
+
+#: assets/data/changelog.json
 msgid "The Village Ledger"
 msgstr "Le Registre du village"
 
@@ -4975,6 +4983,10 @@ msgstr "Le point d'exclamation au-dessus d'un monstre qui vous a vu se place au-
 #: assets/data/changelog.json
 msgid "The fallen lie in one piece: a hero in a helmet from one set and armour from another no longer falls as two halves of two different heroes"
 msgstr "Les vaincus gisent d'un seul tenant : un héros portant le casque d'un ensemble et l'armure d'un autre ne tombe plus en deux moitiés de deux héros différents"
+
+#: assets/data/changelog.json
+msgid "The first dream's voice is Morvax's now"
+msgstr "La voix du premier rêve est désormais celle de Morvax"
 
 #: assets/data/changelog.json
 msgid "The first quest you take shows where the journal is, and every accepted quest says so"
@@ -5091,6 +5103,10 @@ msgstr "La mini-carte connaît les repères : des points dorés marquent la fo
 #: assets/data/changelog.json
 msgid "The mini-map no longer hides under the sound and settings buttons"
 msgstr "La mini-carte ne se cache plus sous les boutons du son et des réglages"
+
+#: assets/data/changelog.json
+msgid "The mountain gate opens onto the mountain road, ash and dead pines, ash hounds and wyverns, up to Morvax's forge"
+msgstr "La porte de la montagne s'ouvre sur la route de la montagne, cendres et pins morts, chiens de cendre et wyvernes, jusqu'à la forge de Morvax"
 
 #: assets/data/changelog.json
 msgid "The night classes stepped into the light: the necromancer's robes and the rogue's leathers brightened so they read on every lawn"
@@ -5575,6 +5591,10 @@ msgstr "Avec Réduire les animations, la ruine reste un instant, puis le bâtime
 #: assets/data/changelog.json
 msgid "With Reduce motion, the wins fade in where they stand"
 msgstr "Avec Réduire les animations, les gains apparaissent en fondu sur place"
+
+#: assets/data/changelog.json
+msgid "With the four keepsakes home, Maren tells it all at the shrine and gives you her fifth letter: it has an address now"
+msgstr "Avec les quatre souvenirs rapportés, Maren dit tout au sanctuaire et vous confie sa cinquième lettre : elle a une adresse, maintenant"
 
 #: assets/data/changelog.json
 msgid "With two keepsakes home and a settler, the board offers Pixelheim's way to a Village"

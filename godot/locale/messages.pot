@@ -3441,6 +3441,10 @@ msgid "Monsters keep hours: after dark, night packs come out in every region und
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Morvax reads the letter; fifty years of tally marks count the village's lamps on his wall; then the mountain shakes"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Most depths now have a twist, shown at the gate: swift foes, warded skills, venomous bites or proud elites, with richer drops and a richer hoard"
 msgstr ""
 
@@ -4881,6 +4885,10 @@ msgid "The Truth of It"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Undermountain's cave and its floors leave the world; heroes saved there wake by the mountain gate or in town, with their gear and levels"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Village Ledger"
 msgstr ""
 
@@ -4974,6 +4982,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The fallen lie in one piece: a hero in a helmet from one set and armour from another no longer falls as two halves of two different heroes"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The first dream's voice is Morvax's now"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5090,6 +5102,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The mini-map no longer hides under the sound and settings buttons"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The mountain gate opens onto the mountain road, ash and dead pines, ash hounds and wyverns, up to Morvax's forge"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5574,6 +5590,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "With Reduce motion, the wins fade in where they stand"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "With the four keepsakes home, Maren tells it all at the shrine and gives you her fifth letter: it has an address now"
 msgstr ""
 
 #: assets/data/changelog.json

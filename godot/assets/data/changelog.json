@@ -1,6 +1,18 @@
 {
   "releases": [
     {
+      "version": "0.218.0",
+      "date": "2026-10-10",
+      "codename": "The Fifth Letter",
+      "notes": [
+        "With the four keepsakes home, Maren tells it all at the shrine and gives you her fifth letter: it has an address now",
+        "The mountain gate opens onto the mountain road, ash and dead pines, ash hounds and wyverns, up to Morvax's forge",
+        "Morvax reads the letter; fifty years of tally marks count the village's lamps on his wall; then the mountain shakes",
+        "The Undermountain's cave and its floors leave the world; heroes saved there wake by the mountain gate or in town, with their gear and levels",
+        "The first dream's voice is Morvax's now"
+      ]
+    },
+    {
       "version": "0.217.0",
       "date": "2026-10-10",
       "codename": "The Gate",
