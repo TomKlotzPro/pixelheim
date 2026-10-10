@@ -115,7 +115,7 @@ fi
 # Smooth walking is timed frame by frame, and the festival's and the board's
 # conversations by the clock: a long run's load can hitch one, so they get a
 # second try and only a real regression fails.
-retried=" motion festival board "
+retried=" "
 # Walks alone, after the rest: frames timed while other runs share the
 # machine would measure the machine.
 alone=" motion "
