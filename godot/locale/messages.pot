@@ -3069,6 +3069,10 @@ msgid "In Their Own Words"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "In a conversation, Esc now says « quitter » in French"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "In the Ashes, Hilda's and Vex's crafts are at their stalls on the square; Sela's slimes are in her stores, Wren lost her stable to the fire, and Ana warns of the packs, not the grass"
 msgstr ""
 
@@ -3697,6 +3701,10 @@ msgid "Options menu: music and effects volume, CRT scanlines, reduced motion"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Options on the title screen opens again: it was opening behind the title"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Owned businesses pay RENT: +2g each after every victory, straight into your purse with a line in the battle log"
 msgstr ""
 
@@ -4146,6 +4154,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Sleep till morning: face a bed at the inn (for the night's coin) or your own bed at home and press E; the screen goes dark and you wake at dawn, restored. Walking into the inn no longer takes a bed by itself"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Small Mercies"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4745,6 +4757,10 @@ msgid "The Maker's Mark"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Menu button lists your screens, not your attacks: skills 4 to 6 show there only when you play with a pad, and only once learned"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Miners' Camp waypoint moved a few steps east, onto its road"
 msgstr ""
 
@@ -4986,6 +5002,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The map shows the world as it stands: every map you've found is a page, turned with left and right, its roads out and regions named, and the village drawn small inside its walls"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The menu is drawn over the Next line instead of under it"
 msgstr ""
 
 #: assets/data/changelog.json
