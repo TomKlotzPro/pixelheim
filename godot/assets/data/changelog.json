@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.217.0",
+      "date": "2026-10-10",
+      "codename": "The Gate",
+      "notes": [
+        "Pixelheim has one rampart now, not two stacked one over the other",
+        "A real gate in and out: three wide, a gatehouse with two towers and its portcullis raised, torches lit at night, and the road running through it",
+        "The same gate from the Ashenreach, where the road widens up to it; from inside the town you see the fields beyond",
+        "After the fire the gatehouse is scorched and a tower has lost its roof; the Hamlet mends it"
+      ]
+    },
+    {
       "version": "0.216.0",
       "date": "2026-10-10",
       "codename": "Forty Lamps",
