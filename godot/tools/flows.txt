@@ -258,6 +258,10 @@ follow | --map town journal --keys s,s,s,s,s,s,s,e,esc | open=none tracked=slime
 # Every screen fits the canvas in French, the longest language (PIX-258):
 # the harness's `overflow` counts pieces running off the screen.
 fit-title | title overflow --lang fr | open=title_screen overflow=0 | screen lang title
+# Tom (2026-10-10): Options on the title did nothing; each screen the title opens is drawn over it.
+title-options | title --keys s,s,e | top=options_screen | screen title
+title-saves | title --keys s,e | top=saves_screen | screen title
+title-whatsnew | title --keys s,s,s,e | top=changelog_screen | screen title
 fit-create | create overflow --lang fr | open=create_screen overflow=0 | screen lang title
 # Its English twin (PIX-228): the setting's card and Begin's row laid out
 # in the other words.

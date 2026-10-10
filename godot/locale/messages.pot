@@ -12313,6 +12313,10 @@ msgid "%d  %s"
 msgstr ""
 
 #: scripts/dialogue_box.gd
+msgid "leave"
+msgstr ""
+
+#: scripts/dialogue_box.gd
 msgid "not yet"
 msgstr ""
 
@@ -12558,10 +12562,6 @@ msgstr ""
 
 #: scripts/hud_dock.gd
 msgid "Pack"
-msgstr ""
-
-#: scripts/hud_dock.gd
-msgid "Skill %d: none yet"
 msgstr ""
 
 #: scripts/inventory_screen.gd

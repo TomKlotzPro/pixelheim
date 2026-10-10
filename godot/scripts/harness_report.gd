@@ -66,6 +66,7 @@ const TABLE := [
 	{"field": "stood", "says": "named foes that stood down rather than fell, when one did (PIX-255)"},
 	{"field": "story", "says": "the main story's hollow diamond on the map's page, while something else is followed (PIX-253)"},
 	{"field": "tab", "says": "with station: the tab the counter opened on (PIX-234)"},
+	{"field": "top", "says": "the screen drawn on top when one is opened over another (the title's Options); two sharing the top layer read a=b"},
 	{"field": "tracked", "says": "the quest or bounty followed, while the journal is open or one is (PIX-239)"},
 ]
 ## How many of TABLE's first rows are the head every run shows.
@@ -407,6 +408,29 @@ func field_story() -> String:
 
 func field_tab() -> String:
 	return noted("tab")
+
+
+func field_top() -> String:
+	var shown: Array[CanvasLayer] = []
+	_screens_in(world, shown)
+	if shown.size() < 2:
+		return ""
+	var most := -1000
+	for layer in shown:
+		most = maxi(most, layer.layer)
+	var names: PackedStringArray = []
+	for layer in shown:
+		if layer.layer == most:
+			names.append(layer.get_script().resource_path.get_file().get_basename())
+	return "=".join(names)
+
+
+## Every screen shown under `node`, those opened over another screen included.
+func _screens_in(node: Node, out: Array[CanvasLayer]) -> void:
+	for child in node.get_children():
+		if child is CanvasLayer and child.get_script() != null and child.visible and String(child.get_script().resource_path).ends_with("_screen.gd"):
+			out.append(child)
+		_screens_in(child, out)
 
 
 func field_tracked() -> String:

@@ -224,6 +224,8 @@ func _build_menu() -> void:
 	menu = PanelContainer.new()
 	menu.add_theme_stylebox_override("panel", UiStyle.window(12))
 	menu.visible = false
+	# Over the "Next" line, which floats where the menu's foot opens.
+	menu.z_index = 5
 	add_child(menu)
 	var lines := VBoxContainer.new()
 	lines.add_theme_constant_override("separation", 4)
@@ -242,6 +244,12 @@ func _build_menu() -> void:
 		var row := _menu_line(lines, cast)
 		row["skill"] = index
 	menu.resized.connect(_place)
+
+
+## Whether the menu lists the skill on dock key `index` + 1: for a pad,
+## which has no buttons for keys 4-6, and only once a skill sits there.
+static func menu_skill_shown(pad: bool, docked: Array, index: int) -> bool:
+	return pad and index < docked.size() and not (docked[index] as Dictionary).is_empty()
 
 
 ## One line of the menu: a keycap and a word, clicked or chosen to `run`.
@@ -281,6 +289,8 @@ func _show_focus() -> void:
 
 
 func toggle_menu() -> void:
+	if not menu.visible:
+		refresh()
 	menu.visible = not menu.visible
 	menu_focus = -1
 	_show_focus()
@@ -386,14 +396,18 @@ func refresh() -> void:
 		waiting_any = waiting_any or waiting > 0
 		line["word"].text = Text.t(line["name"]) + ("  +%d" % waiting if waiting > 0 else "")
 		line["word"].add_theme_color_override("font_color", UiStyle.LAMP if waiting > 0 else UiStyle.INK)
-	# Skills 4-6 by name (PIX-215), their keys as the keyboard has them.
+	# Skills 4-6 by name (PIX-215), only for a pad (it has no buttons for
+	# them) and only once learned: on a keyboard 4-6 are keys, and a menu of
+	# screens listing attacks reads oddly.
 	var docked := Skills.docked(hero)
 	for row: Dictionary in menu_lines:
 		if not row.has("skill"):
 			continue
 		var index: int = row["skill"]
+		var has: bool = index < docked.size() and not (docked[index] as Dictionary).is_empty()
+		row["line"].visible = menu_skill_shown(Controls.pad, docked, index)
 		UiStyle.keycap_text(row["cap"], str(index + 1))
-		row["word"].text = String(docked[index].get("name", Text.t("Skill %d: none yet") % (index + 1))) if index < docked.size() else Text.t("Skill %d: none yet") % (index + 1)
+		row["word"].text = String(docked[index].get("name", "")) if has else ""
 	# Points to spend light the menu, so they're never missed.
 	UiStyle.focus(menu_button, waiting_any)
 
@@ -445,7 +459,11 @@ func _unhandled_input(event: InputEvent) -> void:
 	for step: Array in [["move_up", -1], ["move_down", 1]]:
 		if event.is_action_pressed(step[0]):
 			get_viewport().set_input_as_handled()
-			menu_focus = posmod(menu_focus + int(step[1]), menu_lines.size())
+			# Past the lines hidden (a keyboard's skills), to the next one shown.
+			for _tries in menu_lines.size():
+				menu_focus = posmod(menu_focus + int(step[1]), menu_lines.size())
+				if (menu_lines[menu_focus]["line"] as Control).visible:
+					break
 			_show_focus()
 			Sound.play_ui("tick")
 			return
