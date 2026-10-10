@@ -36,7 +36,7 @@ const TABLE := [
 	{"flag": "fades", "takes": "", "does": "doors dissolve and the screen fades through the dark (harness runs cut at once); the report adds change= (dissolve, dark or cut: PIX-269) and dark= (PIX-238)"},
 	{"flag": "--dissolve-at", "takes": "<s>", "does": "with fades: a door's dissolve held s seconds in (of its 0.25), for the shot (PIX-269)"},
 	{"flag": "--set", "takes": "<a,b>", "does": "those settings on for this run only (large_text, clear_warnings)"},
-	{"flag": "reentry", "takes": "", "does": "every outdoor map entered twice, first visit then back again: REENTRY lines with what each took (ms) and the memory kept (PIX-269)"},
+	{"flag": "reentry", "takes": "", "does": "every outdoor map entered twice, first visit then back again: REENTRY lines with what each took (ms) and the memory kept, then BESIDE lines: each drawn beside the hero's map, its plan and build part by part (PIX-269)"},
 	{"flag": "--floor", "takes": "<n>", "does": "walk down dungeon floor n"},
 	{"flag": "--story", "takes": "<id>", "does": "a story scene from assets/data/story.json over the world"},
 	{"flag": "gate", "takes": "", "does": "a dungeon gate's floor select (the relics brought home first, PIX-170)"},
