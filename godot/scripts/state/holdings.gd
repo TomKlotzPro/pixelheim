@@ -235,6 +235,47 @@ func is_settled(id: String) -> bool:
 	return id in owner.settlement.settlers
 
 
+## The settlers the story brings home (PIX-255: Old Wenna, once her letter
+## is delivered and Tam's Ladle won - a hero who never carried the letter,
+## from before the letters, counts it delivered with the ladle): settled
+## now, in the settlers the save already keeps. Each says what they're
+## about as they go, the town's tour stops at their door the next time the
+## hero is in town, and the town gossips; `quiet` (a save loading) simply
+## finds them home. Returns what's said.
+func come_home(quiet := false) -> Array[String]:
+	var said: Array[String] = []
+	var moved := false
+	for recruit: Dictionary in Npcs._data()["recruits"]:
+		var due: Dictionary = recruit.get("comesHome", {})
+		if due.is_empty() or is_settled(recruit["id"]) or String(due["named"]) not in owner.progression.hunted:
+			continue
+		var letter: Dictionary = owner.progression.quests.get(String(due["letter"]), {})
+		if not letter.is_empty() and not letter.get("done", false):
+			continue
+		owner.settlement.settlers.append(recruit["id"])
+		moved = true
+		if quiet:
+			continue
+		owner.last_deed = {"kind": "settler", "settler": String(recruit["name"])}
+		owner.reveals.append("settler:%s" % recruit["id"])
+		said.append(String(due.get("line", "")))
+	if moved:
+		owner.mark_dirty()
+		owner.settlers_changed.emit()
+	return said
+
+
+## What a night at the inn adds to being rested, with the settlers who
+## cook there (PIX-255: Tam's stew): {fights, line}, line "" for none.
+func inn_rested() -> Dictionary:
+	var out := {"fights": 0, "line": ""}
+	for recruit: Dictionary in Npcs._data()["recruits"]:
+		if recruit.has("inn") and is_settled(recruit["id"]):
+			out["fights"] = int(out["fights"]) + int(recruit["inn"]["fights"])
+			out["line"] = String(recruit["inn"]["line"])
+	return out
+
+
 ## Recruiting where they wait; services once they live in town.
 func resolve_settler(npc_id: String) -> String:
 	var recruit := Town.recruit(npc_id)

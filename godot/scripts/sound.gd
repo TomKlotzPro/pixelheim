@@ -378,7 +378,8 @@ static func track_for(map_id: String, floor_level: int, fight: String) -> String
 		return fight
 	if floor_level > 0:
 		return "descent"
-	match map_id:
+	# A region dungeon's floors play its first's (PIX-255).
+	match Depths.root(map_id):
 		"deepwood", "mirefen", "town":
 			return map_id
 		"seacave", "shafts", "cellars", "icecave":

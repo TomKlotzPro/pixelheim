@@ -1353,8 +1353,9 @@
               "kind": "hunted",
               "named": "tidecaller"
             },
-            "text": "Win Tam's Ladle back from the Tidecaller, in Saltmere's sea cave",
-            "hint": "Saltmere is down the cliffs south of the marsh. Old Wenna there is Tam's sister - start with her."
+            "text": "Bring Tam's ladle up from the wreck in the sea cave",
+            "hint": "The sea cave runs three floors down under Saltmere's headland. The boat that carried Tam's things home went down there, and something at the bottom kept them.",
+            "elderHint": "Tam's ladle. He'd want it back in a kitchen, not under the sea. Wenna will tell you where the boat went down."
           }
         ]
       },

@@ -103,6 +103,30 @@ func floor_cleared(at: Vector2i) -> void:
 		world.stage.play_story(Cutscene.moment("cleared:%d" % map.floor_level))
 
 
+## A region dungeon's boss has fallen (PIX-255): on its floor, the
+## shortcut's door opens where the hero can see it, the way straight out
+## to the dungeon's way in. Nothing when there's none here, or it's open.
+func open_shortcut() -> void:
+	var map: MapData = world.map
+	var door := Depths.shortcut_on(map.id)
+	if door.is_empty() or map.portals.has(door["cell"]):
+		return
+	if not Depths.open_shortcut(map, GameState.progression.hunted):
+		return
+	world.view.reopen(door["cell"])
+	world.fx.dust(MapView.center(door["cell"]))
+	Sound.play("door")
+	world.messages.log_lines([String(door["opened"])])
+
+
+## The floor of a region's dungeon come to (PIX-255): which one of how
+## many, in the battle log.
+func arrive(map: MapData) -> void:
+	var line := Depths.floor_line(map.id)
+	if line != "":
+		world.messages.log_lines([line])
+
+
 ## How hard the hero's skills strike on this floor (PIX-216): less on a
 ## warded depth of the Deep Hunt.
 func skill_ward() -> float:

@@ -60,7 +60,7 @@ static func on_map(map_id: String, town_tier: int, settlers: Array, done: Varian
 					npc.merge({"x": dig.x, "y": dig.y}, true)
 			out.append(npc)
 	for recruit: Dictionary in _data()["recruits"]:
-		var npc := as_npc(recruit, recruit["id"] in settlers, town_tier)
+		var npc := as_npc(recruit, recruit["id"] in settlers, town_tier, done)
 		if npc["mapId"] == map_id:
 			out.append(npc)
 	# Builders at the village's construction sites (PIX-147).
@@ -139,7 +139,7 @@ static func people() -> Array[Dictionary]:
 			maps.append("town")
 		out.append({"id": npc["id"], "look": _look(npc["sprite"]), "maps": maps})
 	for recruit: Dictionary in _data()["recruits"]:
-		out.append({"id": recruit["id"], "look": _look(recruit["sprite"]), "maps": [recruit["found"]["mapId"], "town"]})
+		out.append({"id": recruit["id"], "look": _look(recruit["sprite"]), "maps": [recruit["found"]["mapId"], String(recruit["home"].get("mapId", "town"))]})
 	var barker: Dictionary = _data()["festivalBarker"]
 	out.append({"id": barker["id"], "look": _look(barker["sprite"]), "maps": ["town"]})
 	return out
@@ -166,11 +166,17 @@ static func face_indexes() -> Dictionary:
 	return out
 
 
-static func as_npc(recruit: Dictionary, settled: bool, town_tier := 1) -> Dictionary:
+## A settler may make their home in a room of the town (PIX-255: Wenna at
+## Sela's inn, `home.mapId`), and stand on the square by its keeper's stall
+## while that building is still ash (`homeRuined`, with `done` the projects
+## built; null skips it).
+static func as_npc(recruit: Dictionary, settled: bool, town_tier := 1, done: Variant = null) -> Dictionary:
 	var spot: Dictionary = recruit["home"] if settled else recruit["found"]
+	if settled and done != null and recruit.has("homeRuined") and recruit["homeRuined"]["project"] not in done:
+		spot = recruit["homeRuined"]
 	return {
 		"id": recruit["id"],
-		"mapId": "town" if settled else spot["mapId"],
+		"mapId": String(spot.get("mapId", "town")) if settled else spot["mapId"],
 		"x": spot["x"],
 		"y": spot["y"],
 		"sprite": recruit["sprite"],

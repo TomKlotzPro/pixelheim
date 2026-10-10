@@ -17,6 +17,13 @@ static func _data() -> Dictionary:
 		# icon and the door go by it; where it's shown, it translates itself.
 		_doc["signs"] = signs
 		_doc["signsHouseOwned"] = owned
+		# A chest on a region dungeon's planned floor (PIX-255) stands where
+		# the floor's plan puts its find.
+		for chest: Dictionary in _doc["chests"]:
+			if Depths.is_planned(String(chest["mapId"])):
+				var at := Depths.find_cell(String(chest["mapId"]))
+				chest["x"] = at.x
+				chest["y"] = at.y
 	return _doc
 
 

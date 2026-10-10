@@ -32,6 +32,17 @@ const STAIRS := 514
 const CHEST := 489
 const CHEST_OPEN := 490
 const STATUE := 491
+## A region dungeon's pieces (PIX-255): the stair down into the dark, the
+## sea's boulders, a wreck's hull beams (each two cells, left then right),
+## mast and wheel, and a door in the rock shut (a barred wooden gate) and
+## open (a dark doorway).
+const STAIRS_DOWN := 462
+const BOULDERS := [354, 355, 356, 357, 358, 359, 360, 361]
+const BEAMS := [[328, 329], [330, 331], [332, 333], [334, 335]]
+const MAST := 512
+const WHEEL := 466
+const GATE_SHUT := 461
+const DOORWAY := 434
 
 static var _sheet: PunySheet
 

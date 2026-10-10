@@ -1357,6 +1357,10 @@ msgid "The Deepwood"
 msgstr "Les Bois-Profonds"
 
 #: assets/data/catalog.json
+msgid "The Drowned Galleries"
+msgstr "Les Galeries noyées"
+
+#: assets/data/catalog.json
 msgid "The Frostgate Pass"
 msgstr "Le col de la Porte-Givre"
 
@@ -1383,6 +1387,10 @@ msgstr "Le Terrain d'épreuves"
 #: assets/data/catalog.json
 msgid "The Sea Cave"
 msgstr "La Grotte marine"
+
+#: assets/data/catalog.json
+msgid "The Tidecaller's Grotto"
+msgstr "La Grotte de l'Appelle-Marée"
 
 #: assets/data/catalog.json
 msgid "The amethyst on top is definitely watching you."
@@ -7289,8 +7297,8 @@ msgid "The Sunless Stair"
 msgstr "L'Escalier sans soleil"
 
 #: assets/data/combat.json
-msgid "The Tidecaller rises from its pool, and the cave fills with the sound of the sea!"
-msgstr "L'Appelle-Marée surgit de son bassin, et la grotte s'emplit du bruit de la mer !"
+msgid "The Tidecaller heaves itself up off a ladle, a dented stewpot on its head for a crown. That's Tam's pot!"
+msgstr "L'Appelle-Marée se soulève de la louche sur laquelle il trônait, une marmite cabossée sur la tête en guise de couronne. C'est la marmite de Tam !"
 
 #: assets/data/combat.json
 msgid "The Unbroken"
@@ -7893,8 +7901,8 @@ msgid "the glass hall at the back of the ice cave"
 msgstr "la salle de verre, au fond de la grotte de glace"
 
 #: assets/data/combat.json
-msgid "the grotto at the back of the sea cave"
-msgstr "la grotte au fond de la Grotte marine"
+msgid "the grotto three floors down the sea cave"
+msgstr "la grotte tout au fond de la Grotte marine, trois étages plus bas"
 
 #: assets/data/combat.json
 msgid "the ice cave"
@@ -7915,6 +7923,14 @@ msgstr "la clairière close de murs au cœur des Bois-Profonds"
 #: assets/data/combat.json
 msgid "the west bank of the Mirefen"
 msgstr "la rive ouest des Marais de Fange"
+
+#: assets/data/depths.json
+msgid "The tide door groans open on its old hinges: daylight, salt wind, and the beach under the headland."
+msgstr "La porte des marées s'ouvre en grinçant sur ses vieux gonds : la lumière du jour, le vent salé, et la plage sous le cap."
+
+#: assets/data/depths.json
+msgid "What's left of a fishing boat, wedged in the rock: the one that was bringing Tam's things home. One crate in her hold still says TAM on the lid, in Maren's hand."
+msgstr "Ce qui reste d'un bateau de pêche, coincé dans la roche : celui qui ramenait les affaires de Tam. Dans sa cale, une caisse porte encore TAM sur le couvercle, de la main de Maren."
 
 #: assets/data/economy.json
 msgid "Abyssal"
@@ -8131,6 +8147,10 @@ msgstr "{what} Les six touches sont prises : dans Compétences ({key:skills}),
 #: assets/data/hints.json
 msgid "{what} It's on key {slot} of your dock: press it to use it. Energy comes back as you walk."
 msgstr "{what} Elle est sur la touche {slot} de votre barre : appuyez sur cette touche pour l'utiliser. L'énergie revient en marchant."
+
+#: assets/data/npcs.json
+msgid "\"You owe me fifty years of letters. Start with a bowl of stew.\""
+msgstr "« Tu me dois cinquante ans de lettres. Commence par un bol de ragoût. »"
 
 #: assets/data/npcs.json
 msgid "'The Ballad of the Ashen Patron', verse nine: the fountain. It rhymes with mountain, which is a gift."
@@ -8453,6 +8473,10 @@ msgid "Mabel the Sutler"
 msgstr "Mabel la cantinière"
 
 #: assets/data/npcs.json
+msgid "Maren comes in most nights for a bowl. We don't talk about the mountain. We talk about everything else."
+msgstr "Maren passe presque tous les soirs pour un bol. On ne parle pas de la montagne. On parle de tout le reste."
+
+#: assets/data/npcs.json
 msgid "Maren's at the shrine. She's the elder - she'll want to know who you are, walking in out of the fire."
 msgstr "Maren est au sanctuaire. C'est l'Ancienne - elle voudra savoir qui vous êtes, vous qui sortez du feu."
 
@@ -8531,6 +8555,14 @@ msgstr "Le vieux Tomas"
 #: assets/data/npcs.json
 msgid "Old Wenna"
 msgstr "La vieille Wenna"
+
+#: assets/data/npcs.json
+msgid "Old Wenna has come to live at Sela's inn. Maren, in the doorway: \"Wenna.\""
+msgstr "La vieille Wenna est venue vivre à l'auberge de Sela. Maren, sur le seuil : « Wenna. »"
+
+#: assets/data/npcs.json
+msgid "Old Wenna is packing for Pixelheim: Sela's inn has a room going, and somebody has to make Tam's stew properly."
+msgstr "La vieille Wenna fait ses bagages pour Pixelheim : l'auberge de Sela a une chambre de libre, et il faut bien que quelqu'un fasse le ragoût de Tam comme il se doit."
 
 #: assets/data/npcs.json
 msgid "Paved streets! My cart has never rolled so smooth."
@@ -8631,6 +8663,14 @@ msgstr "Restez sur les routes si vous tenez à vos chevilles. Les meutes des cha
 #: assets/data/npcs.json
 msgid "Tag! You're it! ...You're not going to chase me, are you. Grown-ups never chase."
 msgstr "Chat ! C'est toi le chat ! ...Tu vas pas me courir après, hein. Les grands courent jamais."
+
+#: assets/data/npcs.json
+msgid "Tam's stew at Sela's inn: a night there leaves you rested for longer"
+msgstr "Le ragoût de Tam à l'auberge de Sela : une nuit là-bas prolonge votre repos"
+
+#: assets/data/npcs.json
+msgid "Tam's stew, the way he made it: too much pepper and a song. Sit down before Sela sells the lot."
+msgstr "Le ragoût de Tam, comme il le faisait : trop de poivre et une chanson. Asseyez-vous avant que Sela ne vende tout."
 
 #: assets/data/npcs.json
 msgid "Ten gold for a bed and no questions. The bards say my stew brought a man back from the brink."
@@ -8791,6 +8831,10 @@ msgstr "Ulla m'a laissé rester. Je vais chercher l'eau. Faut bien vivre."
 #: assets/data/npcs.json
 msgid "Welcome, welcome! Finest goods this side of the mountain. The counter is always open."
 msgstr "Bienvenue, bienvenue ! Les meilleures marchandises de ce côté-ci de la montagne. Le comptoir est toujours ouvert."
+
+#: assets/data/npcs.json
+msgid "Well rested, too, after a bowl of Tam's stew: more XP for your next %d fights."
+msgstr "Et un vrai repos, après un bol du ragoût de Tam : plus d'XP pour vos %d prochains combats."
 
 #: assets/data/npcs.json
 msgid "Wren the Stablemaster"
@@ -9019,6 +9063,10 @@ msgstr "Le ciré de Brin a plus de trous que de toile. Il en veut un neuf, fait 
 #: assets/data/progression.json
 msgid "Bring Oskar's Shield out of Greyhold's cellars"
 msgstr "Rapporter le Bouclier d'Oskar des caves de Greyhold"
+
+#: assets/data/progression.json
+msgid "Bring Tam's ladle up from the wreck in the sea cave"
+msgstr "Remonter la louche de Tam de l'épave, dans la Grotte marine"
 
 #: assets/data/progression.json
 msgid "Bring a settler home to Pixelheim"
@@ -9973,10 +10021,6 @@ msgid "Saint"
 msgstr "Saint"
 
 #: assets/data/progression.json
-msgid "Saltmere is down the cliffs south of the marsh. Old Wenna there is Tam's sister - start with her."
-msgstr "Saltmere se trouve au pied des falaises, au sud du marais. La vieille Wenna, là-bas, est la sœur de Tam - commencez par elle."
-
-#: assets/data/progression.json
 msgid "Saltmere's beaches are thick with sea glass, they say. Ground fine, it clears a potion like nothing else. Three pieces, please."
 msgstr "Les plages de Saltmere regorgent de verre de mer, à ce qu'on dit. Finement moulu, il clarifie une potion comme rien d'autre. Trois morceaux, s'il vous plaît."
 
@@ -10163,6 +10207,10 @@ msgstr "Prenez la route de la falaise vers Saltmere avec la première lettre de 
 #: assets/data/progression.json
 msgid "Take the stair below the hoard: clear the Sunless Stair (floor 11)"
 msgstr "Prendre l'escalier sous le trésor : venir à bout de l'Escalier sans soleil (étage 11)"
+
+#: assets/data/progression.json
+msgid "Tam's ladle. He'd want it back in a kitchen, not under the sea. Wenna will tell you where the boat went down."
+msgstr "La louche de Tam. Il la voudrait dans une cuisine, pas sous la mer. Wenna vous dira où le bateau a sombré."
 
 #: assets/data/progression.json
 msgid "Tam's last postcard: \"Morvax wants the kings' gold to make Pixelheim a city. Maren says over her dead body. I've brought cheese.\""
@@ -10461,6 +10509,10 @@ msgid "The road is clear. My riders taught you to travel light: from now on you 
 msgstr "La route est dégagée. Mes cavaliers vous ont appris à voyager léger : désormais, vous marchez un dixième plus vite à la surface."
 
 #: assets/data/progression.json
+msgid "The sea cave runs three floors down under Saltmere's headland. The boat that carried Tam's things home went down there, and something at the bottom kept them."
+msgstr "La Grotte marine descend sur trois étages sous le cap de Saltmere. Le bateau qui rapportait les affaires de Tam y a sombré, et quelque chose, tout au fond, les a gardées."
+
+#: assets/data/progression.json
 msgid "The slime was carrying a traveller's pouch: a health potion. {key:inventory} opens your pack."
 msgstr "La gelée transportait une bourse de voyageur : une potion de soin. {key:inventory} ouvre votre sac."
 
@@ -10691,10 +10743,6 @@ msgstr "Wenna. Tam n'est pas mort dans un éboulement. J'ai dit ça parce que la
 #: assets/data/progression.json
 msgid "Wildlord"
 msgstr "Seigneur des terres sauvages"
-
-#: assets/data/progression.json
-msgid "Win Tam's Ladle back from the Tidecaller, in Saltmere's sea cave"
-msgstr "Reprendre la Louche de Tam à l'Appelle-Marée, dans la grotte marine de Saltmere"
 
 #: assets/data/progression.json
 msgid "Wings like sails, fire like - no, don't tell me. I'll find the word."
@@ -12068,15 +12116,15 @@ msgstr "Première victoire : %s"
 msgid "%s howls - the forest answers!"
 msgstr "%s hurle - la forêt répond !"
 
-#: scripts/enemy.gd:228
+#: scripts/enemy.gd:229
 msgid "Lv %d"
 msgstr "Niv. %d"
 
-#: scripts/enemy.gd:719
+#: scripts/enemy.gd:742
 msgid "blocked"
 msgstr "paré"
 
-#: scripts/enemy.gd:754
+#: scripts/enemy.gd:777
 msgid "%s is afflicted by %s!"
 msgstr "%s est atteint : %s !"
 
@@ -13528,11 +13576,11 @@ msgstr "Remettez-la à %s."
 msgid "Slay %s in its lair"
 msgstr "Abattez %s dans son repaire"
 
-#: scripts/state/bestiary.gd:197
+#: scripts/state/bestiary.gd:200
 msgid "%s by night"
 msgstr "%s la nuit"
 
-#: scripts/state/bestiary.gd:203
+#: scripts/state/bestiary.gd:206
 msgid "floor %d"
 msgstr "étage %d"
 
@@ -13547,6 +13595,10 @@ msgstr "%s pièces : %s"
 #: scripts/state/catalog.gd:74
 msgid "%s (%d/%d): %s"
 msgstr "%s (%d/%d) : %s"
+
+#: scripts/state/depths.gd:262
+msgid "%s, floor %d of %d"
+msgstr "%s, étage %d sur %d"
 
 #: scripts/state/dungeons.gd:83
 msgid "%s, depth %d"
@@ -13576,67 +13628,67 @@ msgstr "%s %d (maîtrisée)"
 msgid "%s %d (%d/%d XP)"
 msgstr "%s %d (%d/%d XP)"
 
-#: scripts/state/economy.gd:271
+#: scripts/state/economy.gd:272
 msgid "the mountain from floor %d"
 msgstr "la montagne dès l'étage %d"
 
-#: scripts/state/economy.gd:272
+#: scripts/state/economy.gd:273
 msgid "floors %d-%d"
 msgstr "étages %d à %d"
 
-#: scripts/state/economy.gd:318
+#: scripts/state/economy.gd:319
 msgid "sold by %s"
 msgstr "en vente chez %s"
 
-#: scripts/state/economy.gd:323
+#: scripts/state/economy.gd:324
 msgid "picked from patches and foraged after fights in %s"
 msgstr "à cueillir aux points de récolte et à glaner après les combats (%s)"
 
-#: scripts/state/economy.gd:328
+#: scripts/state/economy.gd:329
 msgid "in a chest in %s"
 msgstr "dans un coffre (%s)"
 
-#: scripts/state/economy.gd:339
+#: scripts/state/economy.gd:340
 msgid "caught fishing at %s"
 msgstr "à la pêche (%s)"
 
-#: scripts/state/economy.gd:343
+#: scripts/state/economy.gd:344
 msgid "%s's reward for %s"
 msgstr "chez %s, en récompense de « %s »"
 
-#: scripts/state/economy.gd:349
+#: scripts/state/economy.gd:350
 msgid "every time"
 msgstr "à chaque fois"
 
-#: scripts/state/economy.gd:352
+#: scripts/state/economy.gd:353
 msgid "sure the first time, then %d%%"
 msgstr "à coup sûr la première fois, puis %d%%"
 
-#: scripts/state/economy.gd:361
+#: scripts/state/economy.gd:362
 msgid "now and then in loot in %s"
 msgstr "parfois dans le butin (%s)"
 
-#: scripts/state/economy.gd:365
+#: scripts/state/economy.gd:366
 msgid "now and then in loot on %s"
 msgstr "parfois dans le butin (%s)"
 
-#: scripts/state/economy.gd:368
+#: scripts/state/economy.gd:369
 msgid "picked from the patch on %s"
 msgstr "à cueillir au point de récolte (%s)"
 
-#: scripts/state/economy.gd:372
+#: scripts/state/economy.gd:373
 msgid "the hoard of %s"
 msgstr "le trésor de l'étage (%s)"
 
-#: scripts/state/economy.gd:374
+#: scripts/state/economy.gd:375
 msgid "the hoards of floors %s"
 msgstr "les trésors des étages %s"
 
-#: scripts/state/economy.gd:519
+#: scripts/state/economy.gd:520
 msgid "That takes %s %d."
 msgstr "Requis : %s %d."
 
-#: scripts/state/economy.gd:522
+#: scripts/state/economy.gd:523
 msgid "Still missing: %s."
 msgstr "Il manque encore : %s."
 
@@ -13656,33 +13708,33 @@ msgstr "%s x%d"
 msgid "Wanderer"
 msgstr "Vagabond"
 
-#: scripts/state/holdings.gd:247
+#: scripts/state/holdings.gd:288
 msgid "The town is not ready for me yet."
 msgstr "La ville n'est pas encore prête pour moi."
 
-#: scripts/state/holdings.gd:252
+#: scripts/state/holdings.gd:293
 msgid "Iva's hands glow warm. Fully healed, free of charge."
 msgstr "Les mains d'Iva rayonnent de chaleur. Soins complets, gratuits."
 
-#: scripts/state/holdings.gd:255
+#: scripts/state/holdings.gd:296
 msgid " She tucks %d healing potion%s in your pack."
 msgstr " Elle glisse %d potion%s de soin dans votre sac."
 
-#: scripts/state/holdings.gd:260
+#: scripts/state/holdings.gd:301
 msgid "Loras plays you a marching song%s. Your next hunt strikes truer. (+%d%% crit)"
 msgstr "Loras vous joue un air de marche%s. Votre prochaine chasse frappera plus juste. (+%d%% de critique)"
 
-#: scripts/state/holdings.gd:261
+#: scripts/state/holdings.gd:302
 msgid " on his war-horn"
 msgstr " sur son cor de guerre"
-
-#: scripts/state/holdings.gd:305
-msgid "The prize is yours: +%d gold and %d %ss!"
-msgstr "Vous remportez le lot : +%d or et %d %ss !"
 
 #: scripts/state/holdings.gd:31
 msgid "%s: commissioned. %s"
 msgstr "Commande passée : %s. %s"
+
+#: scripts/state/holdings.gd:346
+msgid "The prize is yours: +%d gold and %d %ss!"
+msgstr "Vous remportez le lot : +%d or et %d %ss !"
 
 #: scripts/state/holdings.gd:55
 msgid "%s: built. Walk outside and see."
@@ -13824,15 +13876,15 @@ msgstr "Remise : %s."
 msgid "Delivered: %s. %s."
 msgstr "Remise : %s. %s."
 
-#: scripts/state/questing.gd:364
+#: scripts/state/questing.gd:367
 msgid "%s: ready to hand in to %s."
 msgstr "%s : prêt à remettre à %s."
 
-#: scripts/state/questing.gd:416
+#: scripts/state/questing.gd:419
 msgid "That uses what %s needs (%s). Do it again to go ahead."
 msgstr "Cela entame ce que demande « %s » (%s). Recommencez pour confirmer."
 
-#: scripts/state/questing.gd:427
+#: scripts/state/questing.gd:430
 msgid "A feat done: %s. The %s is yours, for the shelf at home."
 msgstr "Un haut fait accompli : %s. La %s est à vous, pour l'étagère de la maison."
 
@@ -13956,51 +14008,51 @@ msgstr "La prime pour %s vous revient : +%d or."
 msgid "%s leaves you %s!"
 msgstr "%s vous laisse %s !"
 
-#: scripts/state/spoils.gd:201
+#: scripts/state/spoils.gd:203
 msgid "Level up: you are now level %d. +%d stat points and +%d skill point%s to spend."
 msgstr "Niveau supérieur : vous voici au niveau %d. +%d points de caractéristique et +%d point%s de compétence à dépenser."
 
-#: scripts/state/spoils.gd:252
+#: scripts/state/spoils.gd:254
 msgid "%s is cleared!"
 msgstr "Étage nettoyé : %s !"
 
-#: scripts/state/spoils.gd:283
+#: scripts/state/spoils.gd:285
 msgid "the %s"
 msgstr "%s"
 
-#: scripts/state/spoils.gd:286
+#: scripts/state/spoils.gd:288
 msgid "Behind the throne, a stair goes on down into the dark: the Deep Hunt."
 msgstr "Derrière le trône, un escalier s'enfonce encore dans le noir : la Traque des Profondeurs."
 
-#: scripts/state/spoils.gd:290
+#: scripts/state/spoils.gd:292
 msgid "A deeper way opens: %s."
 msgstr "Un passage plus profond s'ouvre : %s."
 
-#: scripts/state/spoils.gd:304
+#: scripts/state/spoils.gd:306
 msgid "Depth %d of the Deep Hunt is cleared!"
 msgstr "Profondeur %d de la Traque des Profondeurs : nettoyée !"
 
-#: scripts/state/spoils.gd:319
+#: scripts/state/spoils.gd:321
 msgid "depth %d of the Deep Hunt"
 msgstr "la profondeur %d de la Traque des Profondeurs"
 
-#: scripts/state/spoils.gd:323
+#: scripts/state/spoils.gd:325
 msgid "A milestone: %d depths below the throne. The %s is yours, a trophy for the shelf at home."
 msgstr "Un jalon : %d profondeurs sous le trône. Le %s est à vous, un trophée pour l'étagère de la maison."
 
-#: scripts/state/spoils.gd:326
+#: scripts/state/spoils.gd:328
 msgid "A hole into the dark opens beside the way up: depth %d waits below."
 msgstr "Un trou s'ouvre sur le noir près de la montée : la profondeur %d attend en dessous."
 
-#: scripts/state/spoils.gd:343
+#: scripts/state/spoils.gd:345
 msgid "The chest bares its teeth — a mimic!"
 msgstr "Le coffre montre les dents — c'est une mimique !"
 
-#: scripts/state/spoils.gd:355
+#: scripts/state/spoils.gd:357
 msgid "Too heavy to carry. Lighten the pack and come back."
 msgstr "Trop lourd à porter. Allégez votre sac et revenez."
 
-#: scripts/state/spoils.gd:404
+#: scripts/state/spoils.gd:406
 msgid "Nothing's biting here yet. Try again in a while, or somewhere else."
 msgstr "Ça ne mord pas encore ici. Réessayez dans un moment, ou ailleurs."
 
@@ -14088,15 +14140,15 @@ msgstr "Pas un sou, pas de lit : la nuit coûte %d or."
 msgid "You sleep at the inn and wake at dawn, fully restored. -%d gold."
 msgstr "Vous dormez à l'auberge et vous réveillez à l'aube, en pleine forme. -%d or."
 
-#: scripts/state/upkeep.gd:186
+#: scripts/state/upkeep.gd:188
 msgid "Well rested, too: more XP for your next %d fights."
 msgstr "Et un vrai repos : plus d'XP pour vos %d prochains combats."
 
-#: scripts/state/upkeep.gd:218
+#: scripts/state/upkeep.gd:221
 msgid "You wake at the inn, %d gold lighter. What isn't banked is a fallen hero's to lose."
 msgstr "Vous vous réveillez à l'auberge, avec %d or en moins. Ce qui n'est pas à la banque, un héros à terre le perd."
 
-#: scripts/state/upkeep.gd:220
+#: scripts/state/upkeep.gd:223
 msgid "You wake at the inn. The innkeeper says nothing. Kind of her."
 msgstr "Vous vous réveillez à l'auberge. L'aubergiste ne dit rien. C'est gentil de sa part."
 
@@ -14308,35 +14360,35 @@ msgstr "- %s : %d o gagnés, %d o en caisse (%d o par jour)"
 msgid "Arrows"
 msgstr "Flèches"
 
-#: scripts/ways.gd:165
+#: scripts/ways.gd:168
 msgid "Go down into %s?"
 msgstr "Descendre dans %s ?"
 
-#: scripts/ways.gd:168
+#: scripts/ways.gd:171
 msgid "Liane's stair goes down through the floor, and the cold comes up it like a draught."
 msgstr "L'escalier de Liane s'enfonce sous le plancher, et le froid en remonte comme un courant d'air."
 
-#: scripts/ways.gd:170
+#: scripts/ways.gd:173
 msgid "The keep's stair goes down to the cellars, where something still stands the old watch."
 msgstr "L'escalier du donjon descend aux caves, où quelque chose monte encore l'ancienne garde."
 
-#: scripts/ways.gd:173
+#: scripts/ways.gd:176
 msgid "The stairs"
 msgstr "L'escalier"
 
-#: scripts/ways.gd:175
+#: scripts/ways.gd:178
 msgid "Go down"
 msgstr "Descendre"
 
-#: scripts/ways.gd:175
+#: scripts/ways.gd:178
 msgid "Stay"
 msgstr "Rester"
 
-#: scripts/world.gd:291
+#: scripts/world.gd:299
 msgid "%s bars your way: no leaving until the fight is over."
 msgstr "%s vous barre la route : pas de fuite avant la fin du combat."
 
-#: scripts/world.gd:332
+#: scripts/world.gd:340
 msgid "No map reaches this deep."
 msgstr "Aucune carte ne va aussi profond."
 
@@ -14344,19 +14396,19 @@ msgstr "Aucune carte ne va aussi profond."
 msgid "{epithet} {name}"
 msgstr "{name} {epithet}"
 
-#: scripts/world_foes.gd:341
+#: scripts/world_foes.gd:345
 msgid "The pack is scattered. Another comes once you've walked a good way, or after a night's rest."
 msgstr "La meute est dispersée. Une autre reviendra quand vous aurez bien marché, ou après une nuit de repos."
 
-#: scripts/world_foes.gd:357
+#: scripts/world_foes.gd:361
 msgid "%s is no more."
 msgstr "%s n'est plus."
 
-#: scripts/world_foes.gd:357
+#: scripts/world_foes.gd:361
 msgid "Victory"
 msgstr "Victoire"
 
-#: scripts/world_foes.gd:358
+#: scripts/world_foes.gd:362
 msgid "Boss slayer: +%d%% damage for %d minutes."
 msgstr "Tueur de boss : +%d %% de dégâts pendant %d minutes."
 
@@ -14368,19 +14420,19 @@ msgstr "NIVEAU SUPÉRIEUR"
 msgid "Boss slayer +%d%%  %d:%02d"
 msgstr "Tueur de boss +%d %%  %d:%02d"
 
-#: scripts/world_interaction.gd:181
+#: scripts/world_interaction.gd:186
 msgid "A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it."
 msgstr "Un établi pour cette étagère : %d or. Il compte comme un niveau de métier en plus quand vous fabriquez chez vous. {key:interact} à nouveau pour l'acheter."
 
-#: scripts/world_interaction.gd:208
+#: scripts/world_interaction.gd:213
 msgid "Sela's stew simmers over the fire. Hunter's Stew is brewed at Vex's cauldron, behind the BREWS door."
 msgstr "Le ragoût de Sela mijote sur le feu. Le Ragoût du chasseur se prépare au chaudron de Vex, derrière la porte POTIONS."
 
-#: scripts/world_interaction.gd:67
+#: scripts/world_interaction.gd:72
 msgid "Only cinders where the house stood. The board on the square can change that."
 msgstr "Rien que des cendres là où se dressait la maison. Le tableau de la place peut y remédier."
 
-#: scripts/world_interaction.gd:72
+#: scripts/world_interaction.gd:77
 msgid "The deed costs %d gold. {key:interact} again to sign it."
 msgstr "Le titre de propriété coûte %d or. {key:interact} à nouveau pour le signer."
 
@@ -14424,7 +14476,7 @@ msgstr "Nouveaux venus au bourg : %s."
 msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
 msgstr "Et aujourd'hui, on fait la fête : des étals sur la place, et un lancer d'anneaux avec un lot pour le meilleur lancer."
 
-#: scripts/world_stage.gd:353
+#: scripts/world_stage.gd:362
 msgid "%s  %d:%02d"
 msgstr "%s  %d:%02d"
 

@@ -15,9 +15,10 @@ class_name Atlas
 
 ## The pages in the order they turn, and the order the waypoints are listed
 ## in: the Ashenreach, the village, then round the Reach from the south-west
-## as its roads leave it, each region followed by the cave under it.
+## as its roads leave it, each region followed by the cave under it (and the
+## cave's floors below, PIX-255).
 const ORDER := [
-	"overworld", "town", "saltmere", "seacave", "mirefen", "blackiron", "shafts",
+	"overworld", "town", "saltmere", "seacave", "seacave_galleries", "seacave_grotto", "mirefen", "blackiron", "shafts",
 	"frostgate", "icecave", "greyhold", "cellars", "deepwood",
 ]
 ## Pixels per tile on a page: whole, as large as the window allows, within these.

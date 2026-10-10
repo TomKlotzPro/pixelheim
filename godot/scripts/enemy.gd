@@ -167,6 +167,7 @@ func _ready() -> void:
 	gait = Gait.new(sprite, art, size)
 	_play("idle")
 	add_child(sprite)
+	_wear_crown()
 	sprite.animation_changed.connect(_turned)
 	# Fafnyr and Morvax fight with their own attacks too (PIX-150); an elite
 	# has its family's one trick (PIX-155), a named monster one of its own
@@ -337,6 +338,28 @@ func notice() -> void:
 	var rest := sprite.position
 	hop.tween_property(sprite, "position:y", rest.y - 5, alert_left * 0.4).set_ease(Tween.EASE_OUT)
 	hop.tween_property(sprite, "position:y", rest.y, alert_left * 0.6).set_ease(Tween.EASE_IN)
+
+
+## What a named monster may wear on its head (PIX-255), by the name the data
+## gives it: the dungeon sheet's piece.
+const CROWNS := {"stewpot": PunyDungeon.POT}
+
+
+## A named monster wearing something of the story's (combat.json's
+## "crown"): the Tidecaller with Tam's stewpot on its head, sitting on the
+## top of its figure, squashing and flashing with it.
+func _wear_crown() -> void:
+	if not CROWNS.has(String(named.get("crown", ""))):
+		return
+	var crown := Sprite2D.new()
+	crown.texture = PunyDungeon.sheet().tile_texture(CROWNS[named["crown"]])
+	# Pot-sized on the hero's scale, whatever the monster's.
+	crown.scale = Vector2.ONE * 0.75 / sprite.scale.x
+	var top := Ink.crown(sprite.sprite_frames, Array(sprite.sprite_frames.get_animation_names()))
+	crown.position = Vector2(0, top + 3.0 / sprite.scale.y)
+	# It flashes and dissolves with the one wearing it.
+	crown.use_parent_material = true
+	sprite.add_child(crown)
 
 
 ## A named monster's name over its head in the boss's red: the UI's type at

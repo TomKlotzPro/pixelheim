@@ -1,0 +1,60 @@
+{
+  "about": "PIX-255: a region's dungeon in floors (Tom: \"Les donjons, ça serait bien sur plusieurs étages, c'est un peu simple\"). A dungeon's floors are a list, top to bottom, each a map of its own (its own fog of war, Discovery being keyed by map id): a handcrafted one in assets/maps, or one DungeonFloor lays out from `plan` (its seed, a pack per room after the entrance, each `{monsterId, size}`, the last in the largest room with the way down, and a `setPiece` there), the same every visit. A floor's `up` and `down` are where its stairs stand on a handcrafted map and the cell beside them a hero arrives on; a planned floor's stand where its plan puts them, and Depths lays the stairs between each floor and the next both ways. Each floor's foes stand `lift` levels above their kind, a little harder than the floor above; the bottom one keeps the dungeon's `boss` (a named monster, combat.json) and, once it has fallen, `shortcut` opens: a door straight out to the dungeon's way in. A floor's `find` is a chest (interactables.json) worth the walk; a planned floor's stands where its set piece's c is. `light` is the floor's own dark, `tint` its stone. No field in the save: floors reached are the fog the save keeps per map, finds its opened chests, the shortcut the boss in its named hunts. A hero saved on any floor wakes at the dungeon's entrance (`entrance`, on the first floor).",
+  "dungeons": {
+    "seacave": {
+      "name": "The Sea Cave",
+      "region": "seacave",
+      "entrance": {"x": 5, "y": 25},
+      "floors": [
+        {
+          "mapId": "seacave",
+          "lift": 0,
+          "find": "seacave_rum",
+          "down": {"x": 35, "y": 3, "arrive": {"x": 35, "y": 4}}
+        },
+        {
+          "mapId": "seacave_galleries",
+          "lift": 1,
+          "find": "seacave_wreck",
+          "tint": [0.84, 0.95, 1.06],
+          "light": [0.3, 0.35, 0.47],
+          "plan": {
+            "seed": 2552,
+            "packs": [
+              {"monsterId": "crab", "size": 2},
+              {"monsterId": "skeleton", "size": 2},
+              {"monsterId": "crab", "size": 2},
+              {"monsterId": "skeleton", "size": 3}
+            ],
+            "setPiece": "wreck"
+          }
+        },
+        {
+          "mapId": "seacave_grotto",
+          "lift": 2,
+          "boss": "tidecaller",
+          "light": [0.27, 0.37, 0.45],
+          "up": {"x": 3, "y": 18, "arrive": {"x": 4, "y": 18}}
+        }
+      ],
+      "shortcut": {
+        "mapId": "seacave_grotto",
+        "x": 30,
+        "y": 4,
+        "to": {"kind": "map", "mapId": "saltmere", "x": 8, "y": 25},
+        "opened": "The tide door groans open on its old hinges: daylight, salt wind, and the beach under the headland."
+      }
+    }
+  },
+  "setPieces": {
+    "wreck": {
+      "about": "What's left of the fishing boat that was bringing Tam's things home (story chapter 2): hull beams (=), the mast (|) and the wheel (w) on the dungeon sheet, barrels (o) and pots (p) spilled round her, her crate the floor's find (c). Laid in the last room, a free ring round it.",
+      "rows": [
+        "o.==|==p",
+        "==w==.==",
+        ".p..c.o."
+      ],
+      "note": "What's left of a fishing boat, wedged in the rock: the one that was bringing Tam's things home. One crate in her hold still says TAM on the lid, in Maren's hand."
+    }
+  }
+}

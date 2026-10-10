@@ -185,6 +185,8 @@ func hunted(named_id: String) -> Array[String]:
 	owner.last_deed = {"kind": "hunt", "beast": entry["name"]}
 	if entry.has("homecoming"):
 		owner.reveals.append("hunt:%s" % named_id)
+	# A keepsake home brings its family with it (PIX-255: Wenna, with the ladle).
+	lines.append_array(owner.holdings.come_home())
 	return lines
 
 

@@ -15,10 +15,11 @@ func before_each() -> void:
 
 
 func test_the_tidecaller_waits_in_the_cave_and_not_on_the_board() -> void:
-	var living := Hunts.living_on("seacave", [], [])
+	# At the bottom of the sea cave since it has floors (PIX-255).
+	var living := Hunts.living_on("seacave_grotto", [], [])
 	assert_eq(living.map(func(entry: Dictionary) -> String: return entry["id"]), ["tidecaller"])
 	assert_false(Hunts.notices(range(1, 16), []).any(func(entry: Dictionary) -> bool: return entry["id"] == "tidecaller"))
-	var cave := MapData.load_by_id("seacave")
+	var cave := MapData.load_by_id("seacave_grotto")
 	assert_eq(cave.style, "cave")
 	assert_true(cave.is_walkable(Hunts.lair(Hunts.named("tidecaller"))))
 

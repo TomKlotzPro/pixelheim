@@ -1,0 +1,42 @@
+# The Tidecaller's grotto (PIX-255), the sea cave's third floor: the landing
+# at the foot of the stair up to the drowned galleries, the smugglers' old
+# store to the north-west, and the grotto itself, where the Tidecaller sits
+# on Tam's ladle with his stewpot for a crown. The tide door in its north
+# wall (D) opens onto Saltmere's beach once the Tidecaller is down, and the
+# stair up (c) leads back to the galleries (assets/data/depths.json).
+id seacave_grotto
+style cave
+spawn 4 18
+key X wall -
+key . floor seacave
+key L lamp -
+key b barrel -
+key k crate -
+key c cave -
+key r rock -
+key D sealed -
+map
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXLXXLXXXXXXXXXXXXXXXXXLXXXDXXXXX
+XXXb......XXXXXXXXXXXXLX........bXXX
+XXX.......XXXXXXXXXXX..r.........XXX
+XXX.......XXXXXXXXXX............LXXX
+XXX.......XXXXXXXXX.r............XXX
+XXX.......XXXXXXXX................XX
+XXX......kXXXXXXXX.............r..XX
+XXXXX..XXXXXXXXXX..................X
+XXXXX..XXXXXXXXXX..................X
+XXXXX..XXXXXXXXXX................r.X
+XXXXX..XXXXXXXXXXX................XX
+XXXXX..XLXXLXXXXXX.r..............XX
+XXX..........LXXXXX...........r..XXX
+XXX.............................XXXX
+XXXc...........................XXXXX
+XXX..........XXXX...........XXXXXXXX
+XXXk........bXXXX...........XXXXXXXX
+XXXXXXXXXXXXXXXXX...........XXXXXXXX
+XXXXXXXXXXXXXXXXXk.........bXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX

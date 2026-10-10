@@ -69,8 +69,9 @@ func test_the_relic_steps_follow_the_letters_in_order() -> void:
 	assert_eq(_next(), "letter_wenna", "Saltmere first")
 	_win("tidecaller")
 	assert_eq(_next(), "letter_pell", "the ladle is home: Wenna's chapter is behind")
+	assert_true(state.holdings.is_settled("saltmere_wenna"), "and Wenna came home with it (PIX-255)")
 	_win("seam_warden")
-	assert_eq(_next(), "settler", "then the Village's settler, on the way to Greyhold")
+	assert_eq(_next(), "lamps", "then the Village's lamps, on the way to Greyhold: Wenna is its settler")
 
 
 func test_maren_tells_of_each_relic_once() -> void:

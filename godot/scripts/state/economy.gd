@@ -253,7 +253,8 @@ static func place_stage(map_id: String, region_id := "") -> float:
 		return float(REGION_STAGE[region_id])
 	if map_id.begins_with("town"):
 		return 0.0
-	return float(MAP_STAGE.get(map_id, 8))
+	# A region dungeon's floors lie where its first does (PIX-255).
+	return float(MAP_STAGE.get(Depths.root(map_id), 8))
 
 
 ## The region names of `regions`, nearest first, at most three.

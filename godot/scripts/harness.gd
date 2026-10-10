@@ -665,7 +665,13 @@ func _run_test_harness() -> void:
 		# lamps' stop, then the age's. With `--hunted`, the first one's
 		# homecoming instead (PIX-156).
 		if flags.has("--hunted"):
-			GameState.reveals.assign(["hunt:" + GameState.progression.hunted[0]])
+			var first := GameState.progression.hunted[0]
+			GameState.reveals.assign(["hunt:" + first])
+			# A keepsake that brings someone home (PIX-255: the Tidecaller,
+			# Wenna) tours to their door instead.
+			if not Hunts.named(first).has("homecoming"):
+				GameState.reveals.assign(Npcs._data()["recruits"].filter(func(recruit: Dictionary) -> bool:
+					return recruit.get("comesHome", {}).get("named", "") == first).map(func(recruit: Dictionary) -> String: return "settler:" + String(recruit["id"])))
 		else:
 			GameState.reveals.assign(["project:street_lamps", "age:2"])
 		world.stage.play_reveals()
@@ -915,6 +921,14 @@ func _run_test_harness() -> void:
 	if not Bestiary.spawns_on(world.map.id).is_empty():
 		var packs: PackedStringArray = world.foes.standing_report(world.map.region_at(world.player_cell))
 		motion_report += " packs=%s" % (",".join(packs) if not packs.is_empty() else "none")
+	# A floor of a region's dungeon (PIX-255): which of how many, and its
+	# shortcut out, where it has one.
+	if Depths.number(world.map.id) > 0:
+		var entry := Depths.floor_of(world.map.id)
+		motion_report += " floor=%d/%d" % [int(entry["number"]), Depths.count(entry["dungeon"])]
+		var door := Depths.shortcut_on(world.map.id)
+		if not door.is_empty():
+			motion_report += " shortcut=%s" % ("open" if world.map.portals.has(door["cell"]) else "shut")
 	# On `--day`, the day and its patches still to pick (PIX-250), by cell.
 	if flags.has("--day"):
 		var cells: Array = world.view.patches.keys().filter(func(cell: Vector2i) -> bool:
@@ -959,6 +973,11 @@ func _run_test_harness() -> void:
 			letters.filter(func(quest: Dictionary) -> bool: return int(GameState.pack.items.get(quest["objective"]["itemId"], 0)) > 0).size(),
 			letters.filter(func(quest: Dictionary) -> bool: return GameState.progression.quests[quest["id"]]["done"]).size(),
 		]
+	# Who lives in town that the story brought home (PIX-255: wenna).
+	var homecomers: Array = Npcs._data()["recruits"].filter(func(recruit: Dictionary) -> bool:
+		return recruit.has("comesHome") and GameState.holdings.is_settled(recruit["id"]))
+	if not homecomers.is_empty():
+		motion_report += " home=%s" % ",".join(homecomers.map(func(recruit: Dictionary) -> String: return String(recruit["id"]).get_slice("_", 1)))
 	print("screenshot saved; map=%s cell=%s hp=%d gold=%d save=%s%s draws=%d paused=%s open=%s night=%d mobs=%d" % [
 		world.map.id, world.player_cell, world.player.hp, GameState.pack.gold, GameState.world.map_id, GameState.world.cell,
 		Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME), get_tree().paused,

@@ -286,6 +286,15 @@ func play_reveals() -> void:
 				stops.append({"at": MapView.center(Town.square()), "line": Town.homecoming(int(key))})
 			"hunt":
 				stops.append({"at": MapView.center(Town.bounty_board() + Vector2i(0, 3)), "line": Hunts.named(key)["homecoming"]})
+			"settler":
+				# Someone the story brought home, at their door (PIX-255: Wenna
+				# at Sela's inn, and Maren in the doorway).
+				var home: Dictionary = Town.recruit(key).get("homecoming", {})
+				if not home.is_empty():
+					stops.append({
+						"at": MapView.center(Vector2i(int(home["x"]), int(home["y"]))) + BUILDING_FRAMING,
+						"line": String(home["line"]), "detail": String(home.get("detail", "")),
+					})
 			"deep":
 				# A Deep Hunt milestone (PIX-216): the town has heard.
 				stops.append({"at": MapView.center(Town.square()), "line": Text.t(Dungeons.milestone(int(key))["homecoming"])})

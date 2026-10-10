@@ -35,7 +35,9 @@
 # journal's Letters page, a chapter's card as it opens, and the main
 # story's hollow diamond on the map (PIX-253 step 2), and each region's way
 # in shut until the story reaches it, its gate saying what opens it as the
-# hero walks up, and open once it has (PIX-254). Every flow leaves its
+# hero walks up, and open once it has (PIX-254), and the sea cave down its
+# three floors and back up, the Tidecaller falling and the tide door out to
+# the beach, and Old Wenna at Sela's inn (PIX-255). Every flow leaves its
 # picture in godot/flows/<name>.png for a human to look at, and the
 # harness's report line must match what the flow promises or the run fails.
 #
@@ -218,6 +220,19 @@ FLOWS=(
 	"coast|--map overworld --seen maren_tin --at 16,61 --walk d,d,d --wait 0.4|map=saltmere|travel story"
 	# Up the path into the sea cave's mouth (PIX-269).
 	"seacave|--map saltmere --at 6,24 --walk u --wait 0.4|map=seacave|travel"
+	# The sea cave in three floors (PIX-255): down the smugglers' caves' stair
+	# (it asks; going down keeps the dark) to the drowned galleries, down
+	# past the wreck to the grotto, and back up (it dissolves); the
+	# Tidecaller falls and the tide door opens, onto the beach by the cave's
+	# mouth; and Old Wenna at Sela's inn once the ladle is home, the town's
+	# tour stopping at her door.
+	"cave-down|--map seacave --at 35,4 --walk u --keys s,e fades --wait 0.4|map=seacave_galleries cell=\\(3, 9\\).* change=dark dark=0.* floor=2/3|dungeon travel"
+	"cave-deeper|--map seacave_galleries --at 64,6 --walk r,r --keys s,e --wait 0.4|map=seacave_grotto cell=\\(4, 18\\).* floor=3/3 shortcut=shut|dungeon travel"
+	"cave-up|--map seacave_grotto --at 4,18 --walk l fades --wait 0.4|map=seacave_galleries cell=\\(6[45], 6\\).* change=dissolve dark=0|dungeon travel"
+	"tidecaller|--map seacave_grotto fight slay --foe tidecaller --wait 0.3|map=seacave_grotto .* fell=1.* shortcut=open|dungeon combat"
+	"tidedoor|--map seacave_grotto --hunted tidecaller --at 30,5 --walk u --wait 0.4|map=saltmere cell=\\(8, 2[45]\\)|dungeon travel"
+	"wenna|--map town_inn --hunted tidecaller --talk-to saltmere_wenna --keys e,e,e|map=town_inn .*open=none.* home=wenna|town story"
+	"homecoming|--map town --hunted tidecaller reveal|open=reveal_screen.* home=wenna|town story"
 	# Out through the parted cliffs (PIX-269: no cave mouth, no post), and the
 	# place come to named on its card.
 	"mirepass|--map overworld --at 2,32 --walk l,l,l --wait 0.4 --lang en|map=mirefen .*card=The Mirefen|travel"
@@ -345,6 +360,12 @@ for path in sorted(glob.glob("assets/maps/*.json")):
 with open("assets/data/town.json") as file:
     for age in range(len(json.load(file)["tiers"])):
         boot(f"town-age{age}", f"--map town --town-tier {age}", "town")
+# A region dungeon's planned floors (PIX-255) are laid out, not files.
+with open("assets/data/depths.json") as file:
+    for dungeon in json.load(file)["dungeons"].values():
+        for floor in dungeon["floors"]:
+            if "plan" in floor:
+                boot(floor["mapId"], f"--map {floor['mapId']}", floor["mapId"])
 with open("assets/data/combat.json") as file:
     combat = json.load(file)
 floors = sorted({level for dungeon in combat["dungeons"].values() for level in dungeon["floors"]})

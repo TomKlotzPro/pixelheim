@@ -118,10 +118,13 @@ static func arrival_facing(map: MapData, arrival: Vector2i, from_map: String, fa
 
 
 ## How far under the ground a map lies: 0 under the sky or in a room, 1 in
-## a cave or a cellar, deeper on a dungeon's floors, one step a floor.
+## a cave or a cellar, deeper on a dungeon's floors, one step a floor - a
+## region dungeon's too (PIX-255: the sea cave's grotto lies 3 down).
 static func depth(map: MapData) -> int:
 	if map.floor_level > 0:
 		return 1 + map.floor_level
+	if Depths.number(map.id) > 0:
+		return Depths.number(map.id)
 	return 1 if map.style == "cave" else 0
 
 

@@ -88,7 +88,9 @@ func test_a_road_runs_up_to_every_way_on_outdoors() -> void:
 		if Ways.indoors(data):
 			continue
 		for way: Dictionary in Ways.on(data):
-			if way["kind"] == "stairs":
+			# The stairs up out of a cave, or down a dungeon's floors (PIX-255),
+			# stand on its stone, not at a road's end.
+			if way["kind"] in ["stairs", "down"]:
 				continue
 			roads += 1
 			assert_true(data.tile_at(way["from"]) in ROADS, "%s: a road runs up to the way on at %s" % [id, way["at"]])

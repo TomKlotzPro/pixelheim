@@ -1015,6 +1015,21 @@
       "species": "skeleton"
     },
     {
+      "id": "seacave_grotto_1",
+      "mapId": "seacave_grotto",
+      "x": 6,
+      "y": 7,
+      "species": "crab"
+    },
+    {
+      "id": "seacave_grotto_2",
+      "mapId": "seacave_grotto",
+      "x": 19,
+      "y": 21,
+      "species": "skeleton",
+      "size": 2
+    },
+    {
       "id": "mines_1",
       "mapId": "blackiron",
       "x": 9,
@@ -5523,10 +5538,10 @@
     "tidecaller": {
       "name": "The Tidecaller",
       "monsterId": "king_slime",
-      "mapId": "seacave",
+      "mapId": "seacave_grotto",
       "lair": {
-        "x": 35,
-        "y": 8
+        "x": 25,
+        "y": 12
       },
       "postedAfter": 0,
       "board": false,
@@ -5538,6 +5553,7 @@
       "gold": 60,
       "bounty": 0,
       "drop": "tams_ladle",
+      "crown": "stewpot",
       "scale": 2.2,
       "tint": [
         0.7,
@@ -5556,9 +5572,9 @@
         "count": 2,
         "max": 3
       },
-      "where": "the grotto at the back of the sea cave",
+      "where": "the grotto three floors down the sea cave",
       "notice": "",
-      "seen": "The Tidecaller rises from its pool, and the cave fills with the sound of the sea!"
+      "seen": "The Tidecaller heaves itself up off a ladle, a dented stewpot on its head for a crown. That's Tam's pot!"
     },
     "seam_warden": {
       "name": "The Seam Warden",

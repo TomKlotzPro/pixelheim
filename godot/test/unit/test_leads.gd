@@ -61,6 +61,9 @@ func test_a_quests_goods_are_not_for_sale() -> void:
 
 func test_the_recruits_ask_what_their_quests_ask() -> void:
 	for recruit: Dictionary in Npcs._data()["recruits"]:
+		# One the story brings home asks nothing (PIX-255: Wenna).
+		if recruit.has("comesHome"):
+			continue
 		var first: Dictionary = Quests.for_giver(recruit["id"])[0]
 		var objective: Dictionary = first["objective"]
 		var ask: Dictionary = recruit["ask"]
