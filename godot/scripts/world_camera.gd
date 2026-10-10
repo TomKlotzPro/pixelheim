@@ -40,6 +40,10 @@ var _shake_strength := 0.0
 ## A blow lands: the world holds its breath for a few hundredths of a second
 ## (PIX-155), counted in real time so the stop can end itself.
 var _stopped := false
+## The map the camera is held in, in pixels, and whether it may look past
+## its south edge under the dock (set_limits).
+var _map_px := Vector2.ZERO
+var _under_dock := false
 
 
 func _ready() -> void:
@@ -64,11 +68,30 @@ func attach(player: Node2D) -> void:
 	cut()
 
 
-## Holds the camera inside a map `size_px` pixels across.
-func set_limits(size_px: Vector2) -> void:
+## Holds the camera inside a map `size_px` pixels across. Under the sky
+## (`under_dock`, PIX-269) it may look past the south edge as far as the
+## dock covers, so the last rows of the map - a road out to the south, the
+## hero walking down it - stand above the dock rather than behind it; the
+## ground is drawn on past the edge to fill what shows beside the dock
+## (MapView.EDGE_PAD).
+func set_limits(size_px: Vector2, under_dock := false) -> void:
+	_map_px = size_px
+	_under_dock = under_dock
 	camera.limit_right = int(size_px.x)
-	camera.limit_bottom = int(size_px.y)
+	_hold_bottom()
 	camera.reset_smoothing()
+
+
+## The bottom limit for the dock as it stands now (it is laid out after the
+## first map is entered, and its height in the world changes with the zoom).
+func _hold_bottom() -> void:
+	# Not while something else frames the shot (the overview frees it).
+	if camera == null or _map_px == Vector2.ZERO or not follows:
+		return
+	var below := (720.0 - dock_top()) / camera.zoom.y if _under_dock else 0.0
+	var bottom := int(ceilf(_map_px.y + below))
+	if camera.limit_bottom != bottom:
+		camera.limit_bottom = bottom
 
 
 func _physics_process(_delta: float) -> void:
@@ -80,6 +103,7 @@ func _physics_process(_delta: float) -> void:
 
 ## The frame's camera: following the hero, then the shake on top.
 func update(delta: float) -> void:
+	_hold_bottom()
 	_follow_hero(delta)
 	_apply_shake(delta)
 

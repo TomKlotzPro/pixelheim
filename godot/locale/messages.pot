@@ -13648,11 +13648,43 @@ msgstr ""
 msgid "Arrows"
 msgstr ""
 
+#: scripts/ways.gd:116
+msgid "Through the cave"
+msgstr ""
+
+#: scripts/ways.gd:118
+msgid "Through the gate"
+msgstr ""
+
+#: scripts/ways.gd:120
+msgid "Through the door"
+msgstr ""
+
+#: scripts/ways.gd:122
+msgid "Up the stairs"
+msgstr ""
+
+#: scripts/ways.gd:125
+msgid "The road north"
+msgstr ""
+
+#: scripts/ways.gd:127
+msgid "The road east"
+msgstr ""
+
+#: scripts/ways.gd:129
+msgid "The road south"
+msgstr ""
+
+#: scripts/ways.gd:130
+msgid "The road west"
+msgstr ""
+
 #: scripts/world.gd:275
 msgid "%s bars your way: no leaving until the fight is over."
 msgstr ""
 
-#: scripts/world.gd:309
+#: scripts/world.gd:314
 msgid "No map reaches this deep."
 msgstr ""
 
@@ -13680,7 +13712,7 @@ msgstr ""
 msgid "LEVEL UP"
 msgstr ""
 
-#: scripts/world_hud.gd:212
+#: scripts/world_hud.gd:217
 msgid "Boss slayer +%d%%  %d:%02d"
 msgstr ""
 

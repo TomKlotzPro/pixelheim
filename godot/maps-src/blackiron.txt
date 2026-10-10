@@ -6,6 +6,8 @@ spawn 53 18
 portal 55 18 map overworld 2 20
 portal 55 19 map overworld 2 20
 portal 26 4 map shafts 4 28
+portal 55 17 map overworld 2 20
+portal 55 20 map overworld 2 20
 key ^ mountain -
 key s ash mines
 key . grass mines
@@ -31,10 +33,10 @@ map
 ^^s^sssssssssssssrrrrrssss::ssss^^^sssssssssssssssssss^^
 ^^sssssssssssssssrrdrrssss::ssss^^^sssssssssssssssssss^^
 ^^^^s.ssssssssss::::::::ss::ssssssssssssss.sssssssss^s^^
-^^ssssssssssssss::::::::s.::sssss.sss.ssssss.sssssss^s^^
+^^ssssssssssssss::::::::s.::sssss.sss.ssssss.sssssss^sss
 ^^ssssssssssssssss.sssssss::sssssssssssssssssssss:::::::
 ^^^sssssss.s.ssssss.sssss^^^:::::::sssss.s::::::::::::::
-^^ssss.ssssss.sssssssss::::::::::::::::::::::::::s.sss^^
+^^ssss.ssssss.sssssssss::::::::::::::::::::::::::s.sssss
 ^^sss.ss.ssss.sssssssss:::::s.rrrrr:::::::ssssssss.sss^^
 ^^ssssssssssssssssssssssssssssrrrrrsssssssssssssss.sss^^
 ^^ssssssssssssssssssssssssssssrrdrrs.sssssssssssssssss^^

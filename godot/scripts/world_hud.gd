@@ -23,9 +23,14 @@ static var _hint_generation := 0
 ## pill holding "Next" and the step.
 var objective_box: PanelContainer
 var objective_label: Label
-## The nameplate over the signed door the hero walks up to (ShopSign).
+## The nameplate over the signed door the hero walks up to (ShopSign), or
+## the signpost of a way on (PIX-269), and how far over its cell it sits.
 var nameplate: PanelContainer
 var nameplate_door := Vector2i(-1, -1)
+var nameplate_lift := 0.0
+## Which side of its sign the plate sits: "above" (a door sign's), or for a
+## signpost "below", "left" or "right", away from its road.
+var nameplate_anchor := "above"
 ## The boss slayer's edge while it lasts (PIX-232): a small plate at the top
 ## left, its time running down.
 var edge_plate: PanelContainer
@@ -363,6 +368,8 @@ func update_nameplate() -> void:
 		return
 	if near["door"] != nameplate_door:
 		nameplate_door = near["door"]
+		nameplate_lift = float(near.get("lift", ShopSign.BOARD.y + 10))
+		nameplate_anchor = String(near.get("anchor", "above"))
 		(nameplate.get_child(0).get_child(0) as Label).text = near["name"]
 		(nameplate.get_child(0).get_child(1) as Label).text = near["about"]
 		nameplate.get_child(0).get_child(1).visible = near["about"] != ""
@@ -371,10 +378,23 @@ func update_nameplate() -> void:
 		nameplate.modulate.a = 1.0 if GameState.settings.reduce_motion else 0.0
 		if not GameState.settings.reduce_motion:
 			nameplate.create_tween().tween_property(nameplate, "modulate:a", 1.0, 0.15)
-	# Over the board, wherever the camera has the door on screen.
-	var top := Vector2(nameplate_door.x * TILE + TILE / 2.0, nameplate_door.y * TILE - ShopSign.BOARD.y - 10)
-	var screen := get_viewport().get_canvas_transform() * top
-	nameplate.position = (screen - Vector2(nameplate.size.x / 2.0, nameplate.size.y)).round()
+	# Over the board, wherever the camera has the door on screen; beside a
+	# signpost, on the side away from its road (PIX-269).
+	var cell := Rect2(Vector2(nameplate_door * TILE), Vector2(TILE, TILE))
+	var at := Vector2(cell.get_center().x, cell.position.y - nameplate_lift)
+	var pull := Vector2(0.5, 1.0)  # which point of the plate sits there
+	match nameplate_anchor:
+		"below":
+			at = Vector2(cell.get_center().x, cell.end.y + nameplate_lift)
+			pull = Vector2(0.5, 0.0)
+		"left":
+			at = Vector2(cell.position.x - nameplate_lift, cell.get_center().y)
+			pull = Vector2(1.0, 0.5)
+		"right":
+			at = Vector2(cell.end.x + nameplate_lift, cell.get_center().y)
+			pull = Vector2(0.0, 0.5)
+	var screen := get_viewport().get_canvas_transform() * at
+	nameplate.position = (screen - nameplate.size * pull).round()
 
 
 ## The arrow itself: a small gold head pointing right (the HUD turns it),

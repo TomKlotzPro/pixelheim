@@ -1,8 +1,9 @@
 extends Node
 ## The look book (PIX-220): the same scenes, staged the same way every time -
 ## the town by day, at dusk and at night, the forest, the Ash, the Mire, the
-## Frostgate, a dungeon floor, a fight, the overworld at night and the
-## village seen from its road (PIX-248) - each saved
+## Frostgate, a dungeon floor, a fight, the overworld at night, the
+## village seen from its road (PIX-248) and the ways between maps
+## (PIX-269) - each saved
 ## as a picture, and all of them on one contact sheet, so a change to how the
 ## game looks is judged before and after, by eye. With `perf`, each shot also
 ## reports what its frames cost (PerfProbe); with `film`, each is filmed for
@@ -54,6 +55,13 @@ const SHOTS := [
 	{"name": "22_rise", "map": "town", "at": "street", "time": DAY, "rise": "odos_store"},
 	# Every class's ranks side by side, each rank's look on the hero (PIX-244).
 	{"name": "23_ranks", "map": "town", "at": "street", "time": DAY, "ranks": true},
+	# The ways between maps (PIX-269): the river road's end at the Deepwood
+	# pass by day and by night, the Mirefen's way back, and the road south
+	# out through the ridge.
+	{"name": "24_deepwood_pass", "map": "overworld", "cell": Vector2i(91, 33), "time": DAY},
+	{"name": "25_deepwood_pass_night", "map": "overworld", "cell": Vector2i(91, 33), "time": NIGHT},
+	{"name": "26_mire_pass", "map": "mirefen", "cell": Vector2i(55, 24), "time": DAY},
+	{"name": "27_road_south", "map": "overworld", "cell": Vector2i(16, 60), "time": DAY},
 ]
 ## Filming the walk: slowed to a quarter, a picture every WALK_STEP of the
 ## game's time (thirty a second: two or three of each frame of the walk),

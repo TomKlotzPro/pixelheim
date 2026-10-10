@@ -26,6 +26,26 @@
         "x": 4,
         "y": 25
       }
+    },
+    {
+      "x": 26,
+      "y": 47,
+      "to": {
+        "kind": "map",
+        "mapId": "overworld",
+        "x": 68,
+        "y": 2
+      }
+    },
+    {
+      "x": 28,
+      "y": 47,
+      "to": {
+        "kind": "map",
+        "mapId": "overworld",
+        "x": 68,
+        "y": 2
+      }
     }
   ],
   "tiles": [
@@ -75,8 +95,8 @@
     ["mountain", "mountain", "forest", "forest", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "path", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "barrel", "crate", "snow", "snow", "snow", "snow", "snow", "snow", "barrel", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "forest", "mountain", "mountain"],
     ["mountain", "mountain", "mountain", "forest", "snow", "snow", "forest", "forest", "snow", "forest", "snow", "snow", "snow", "snow", "snow", "forest", "snow", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "snow", "snow", "path", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "forest", "snow", "forest", "forest", "forest", "snow", "mountain", "mountain", "mountain"],
     ["mountain", "mountain", "mountain", "forest", "snow", "snow", "snow", "forest", "forest", "snow", "snow", "snow", "forest", "forest", "forest", "forest", "snow", "forest", "snow", "snow", "snow", "snow", "snow", "forest", "snow", "snow", "snow", "path", "snow", "snow", "forest", "snow", "forest", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "forest", "snow", "forest", "forest", "mountain", "mountain"],
-    ["mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "path", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain"],
-    ["mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "path", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain"]
+    ["mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "snow", "path", "snow", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain"],
+    ["mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "snow", "path", "snow", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain"]
   ],
   "regions": [
     ["frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost"],
