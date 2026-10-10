@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.201.0",
+      "date": "2026-10-10",
+      "codename": "Told True",
+      "notes": [
+        "Maren no longer skips a story: if you went far before visiting her, she tells each one in turn, oldest first, and the main quest's step that waits on it is met",
+        "The story says what really happened: five of the village climbed to mend the seal and only one came home, the dream counts three torches, and Fafnyr is awake on his hoard",
+        "Tam's Ladle, Captain Hale and Maren's lines now agree with where things were found, and the credits end: Thank you for staying."
+      ]
+    },
+    {
       "version": "0.200.0",
       "date": "2026-10-10",
       "codename": "The Whole Reach",

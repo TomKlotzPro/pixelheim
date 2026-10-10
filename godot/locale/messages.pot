@@ -37,7 +37,7 @@ msgid "A coated dagger that leaves the enemy poisoned."
 msgstr ""
 
 #: assets/data/catalog.json
-msgid "A cook's ladle, black iron, the handle wrapped in sailcloth. Tam carried it up the mountain fifty years ago. One of the relics the five left behind."
+msgid "A cook's ladle, black iron, the handle wrapped in sailcloth. Tam carried it on the climb fifty years ago, and the sea gave it back. One of the relics the five left behind."
 msgstr ""
 
 #: assets/data/catalog.json
@@ -3185,6 +3185,10 @@ msgid "Many Tongues"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Maren no longer skips a story: if you went far before visiting her, she tells each one in turn, oldest first, and the main quest's step that waits on it is met"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Market Day"
 msgstr ""
 
@@ -4425,6 +4429,10 @@ msgid "Talking is easy now: E finds whoever stands beside you and turns you towa
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Tam's Ladle, Captain Hale and Maren's lines now agree with where things were found, and the credits end: Thank you for staying."
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Ten floors of monsters, from cellar slimes to Fafnyr the Ashen"
 msgstr ""
 
@@ -4813,6 +4821,10 @@ msgid "The stat sheet got an identity: your portrait, name and rank up top, jewe
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The story says what really happened: five of the village climbed to mend the seal and only one came home, the dream counts three torches, and Fafnyr is awake on his hoard"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The tap bar carries what only a key did: drop, drop all and sort in the pack, put a skill on a key and forget in Skills, and it shrinks to fit the screen"
 msgstr ""
 
@@ -4946,6 +4958,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Timber and Plaster"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Told True"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7973,7 +7989,7 @@ msgid "Ana"
 msgstr ""
 
 #: assets/data/npcs.json
-msgid "And if you beat the dragon... come see me. There are older things below. I hear them some nights."
+msgid "And if you beat the dragon... come see me. Something waits below him. I hear it some nights."
 msgstr ""
 
 #: assets/data/npcs.json
@@ -8437,7 +8453,7 @@ msgid "The fountain spooks the young horses. They'll learn. So did I."
 msgstr ""
 
 #: assets/data/npcs.json
-msgid "The gate stands open now. Ten floors of teeth and worse manners, and Fafnyr asleep on the last of them."
+msgid "The gate stands open now. Ten floors of teeth and worse manners, and Fafnyr awake on the last of them."
 msgstr ""
 
 #: assets/data/npcs.json
@@ -8749,7 +8765,7 @@ msgid "Canary found"
 msgstr ""
 
 #: assets/data/progression.json
-msgid "Captain Hale. He swore to keep Oskar's shield till Oskar came home, and he kept it fifty years. Take it to Oskar, up the mountain. Hale would want it to go home."
+msgid "Captain Hale. He swore to keep Oskar's shield till Oskar came home, and he kept it fifty years. Take it to Maren. Hale would want it to go home."
 msgstr ""
 
 #: assets/data/progression.json
@@ -8921,7 +8937,7 @@ msgid "Exemplar"
 msgstr ""
 
 #: assets/data/progression.json
-msgid "Fafnyr sleeps on the hoard at the top of the mountain. Ten floors up. End it."
+msgid "Fafnyr is back on his hoard at the top of the mountain, and awake. Ten floors up. End it."
 msgstr ""
 
 #: assets/data/progression.json
@@ -9877,7 +9893,7 @@ msgid "The fire hisses out."
 msgstr ""
 
 #: assets/data/progression.json
-msgid "The gate's barred, courier. The old wardens sealed it when the five never came home, and only what the five left behind will open it: Tam's ladle in Saltmere, the black iron at Blackiron, Oskar's shield at Greyhold and Liane's lantern on the Frostgate. Bring them home to me."
+msgid "The gate's barred, courier. The old wardens sealed it when one of the five came home alone, and only what the five left behind will open it: Tam's ladle in Saltmere, the black iron at Blackiron, Oskar's shield at Greyhold and Liane's lantern on the Frostgate. Bring them home to me."
 msgstr ""
 
 #: assets/data/progression.json
@@ -10249,7 +10265,7 @@ msgid "\"...promised me your village. It lied - to us both.\""
 msgstr ""
 
 #: assets/data/story.json
-msgid "\"Five went up. Four came down. One went further.\""
+msgid "\"Five went up. One came home. One went further.\""
 msgstr ""
 
 #: assets/data/story.json
@@ -10321,6 +10337,10 @@ msgid "Fifty years I hated him, courier. I thought I'd feel lighter when he was 
 msgstr ""
 
 #: assets/data/story.json
+msgid "Fifty years ago the seal on him cracked, and five of the village climbed to mend it. Only one came home."
+msgstr ""
+
+#: assets/data/story.json
 msgid "Five lanterns burn on the square tonight. The tavern is loud, and the cheese has never tasted better."
 msgstr ""
 
@@ -10337,7 +10357,7 @@ msgid "He carried Liane the last mile up and complained the whole way. And Hale 
 msgstr ""
 
 #: assets/data/story.json
-msgid "He has slept on the hoard for a hundred years."
+msgid "He is awake, and back on his hoard."
 msgstr ""
 
 #: assets/data/story.json
@@ -10358,10 +10378,6 @@ msgstr ""
 
 #: assets/data/story.json
 msgid "Her lantern. Liane lit it the night before we climbed and said she'd blow it out herself when we were all home."
-msgstr ""
-
-#: assets/data/story.json
-msgid "Heroes climbed for its hoard. None came back."
 msgstr ""
 
 #: assets/data/story.json
@@ -10409,7 +10425,7 @@ msgid "Once a hero of Pixelheim. Now its oldest debt."
 msgstr ""
 
 #: assets/data/story.json
-msgid "One by one, four torches go out."
+msgid "One by one, three torches go out."
 msgstr ""
 
 #: assets/data/story.json
@@ -10501,7 +10517,7 @@ msgid "Tam, Liane, Oskar - they held the stair so I could run. I came home alone
 msgstr ""
 
 #: assets/data/story.json
-msgid "Thank you for climbing."
+msgid "Thank you for staying."
 msgstr ""
 
 #: assets/data/story.json

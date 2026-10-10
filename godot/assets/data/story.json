@@ -124,8 +124,8 @@
       },
       {
         "kind": "caption",
-        "text": "Heroes climbed for its hoard. None came back.",
-        "hold": 3.6
+        "text": "Fifty years ago the seal on him cracked, and five of the village climbed to mend it. Only one came home.",
+        "hold": 6.2
       },
       {
         "kind": "fade",
@@ -217,7 +217,7 @@
       {
         "kind": "card",
         "text": "Fafnyr the Ashen",
-        "sub": "He has slept on the hoard for a hundred years."
+        "sub": "He is awake, and back on his hoard."
       },
       {
         "kind": "caption",
@@ -403,7 +403,7 @@
         "after": [
           "and Infinite Cheese Wheels as themselves",
           "",
-          "Thank you for climbing."
+          "Thank you for staying."
         ]
       },
       {
@@ -556,12 +556,12 @@
       },
       {
         "kind": "caption",
-        "text": "\"Five went up. Four came down. One went further.\"",
+        "text": "\"Five went up. One came home. One went further.\"",
         "hold": 3.6
       },
       {
         "kind": "caption",
-        "text": "One by one, four torches go out.",
+        "text": "One by one, three torches go out.",
         "hold": 3.0
       },
       {
@@ -678,7 +678,7 @@
         "after": [
           "and Infinite Cheese Wheels as themselves",
           "",
-          "Thank you for climbing."
+          "Thank you for staying."
         ]
       },
       {

@@ -29,12 +29,40 @@ func test_ten_pages_one_per_floor_found_on_first_clears() -> void:
 	assert_eq(Story.found_pages(state.progression.cleared_levels).size(), 1)
 
 
-func test_maren_tells_each_story_once_and_the_deepest_first() -> void:
+func test_maren_tells_each_story_once_and_the_oldest_first() -> void:
 	assert_eq(Story.elder_story([], []), {}, "nothing before the crypt")
 	assert_eq(Story.elder_story([1, 2, 3], [])["id"], "maren_graves")
 	assert_eq(Story.elder_story([1, 2, 3], ["maren_graves"]), {}, "told once")
-	assert_eq(Story.elder_story(range(1, 11), ["maren_graves"])["id"], "maren_confession")
-	assert_string_contains(Story.elder_story(range(1, 11), [])["lines"][2], "rockfall")
+	assert_eq(Story.elder_story(range(1, 11), ["maren_graves"])["id"], "maren_seal", "the seal before the confession")
+	assert_string_contains(Story.elder_story(range(1, 11), ["maren_graves", "maren_seal"])["lines"][2], "rockfall")
+
+
+## PIX-279: a hero who earned several of her stories before calling on her
+## hears every one, a visit each, from the graves on - and the main quest's
+## step that waits on the graves is met by the first.
+func test_a_hero_who_went_deep_first_hears_every_story_in_turn() -> void:
+	state.progression.cleared_levels.assign(range(1, 11))
+	var graves := MainQuest.step("graves")
+	assert_false(MainQuest.is_met(graves, state.progression, state.settlement))
+	var heard: Array[String] = []
+	for visit in 4:
+		var told := Story.elder_story(state.progression.cleared_levels, state.progression.story_seen, state.progression.hunted)
+		if told.is_empty():
+			break
+		heard.append(told["id"])
+		state.mark_seen(told["id"])
+		if visit == 0:
+			assert_true(MainQuest.is_met(graves, state.progression, state.settlement), "the graves are asked about on the first visit")
+	assert_eq(heard, ["maren_graves", "maren_seal", "maren_confession"])
+	assert_true(MainQuest.is_met(MainQuest.step("confession"), state.progression, state.settlement))
+
+
+## Once the hero has ended it, only her last words are left to tell: the
+## stories that sent the hero down would ring false (PIX-279).
+func test_after_the_ending_she_speaks_only_of_it() -> void:
+	var all_floors := range(1, 16)
+	assert_eq(Story.elder_story(all_floors, ["ending"])["id"], "maren_after")
+	assert_eq(Story.elder_story(all_floors, ["ending", "maren_after"]), {}, "the confession never follows Morvax's end")
 
 
 func test_the_main_quest_asks_for_her_stories_on_the_side() -> void:
