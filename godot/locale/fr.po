@@ -2529,6 +2529,10 @@ msgid "Eight new items, and five of them can ONLY be made, never bought: from th
 msgstr "Huit nouveaux objets, dont cinq qui ne peuvent QUE se fabriquer, jamais s'acheter : de la Targe de roseaux à la Cotte d'écailles"
 
 #: assets/data/changelog.json
+msgid "Elbow Room"
+msgstr "Coudées franches"
+
+#: assets/data/changelog.json
 msgid "Elder Maren remembers the fire; Ana doubts the elixirs; Bram guards his fence"
 msgstr "L'Ancienne Maren se souvient de l'incendie ; Ana doute des élixirs ; Bram garde sa clôture"
 
@@ -2859,6 +2863,10 @@ msgstr "Corrigé : la ligne de la première nuit sur votre compétence afficha
 #: assets/data/changelog.json
 msgid "Fleeing and forage work exactly as before - only the surprise is gone"
 msgstr "La fuite et la cueillette fonctionnent exactement comme avant - seule la surprise a disparu"
+
+#: assets/data/changelog.json
+msgid "Foes standing side by side no longer stack their level tags: the nearest one shows its level, and a tag that would overlap it waits its turn"
+msgstr "Les ennemis côte à côte n'empilent plus leurs niveaux : le plus proche affiche le sien, et une étiquette qui le chevaucherait attend son tour"
 
 #: assets/data/changelog.json
 msgid "Fortune and Steel"
