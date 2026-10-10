@@ -35,10 +35,19 @@
 # where `--log-file` says. A harness run reads the player's settings but
 # never writes them (GameSettings.read_only) nor a save (slot 0), and only a
 # windowed run uses Godot's shader cache, which once warm it only reads:
-# there's nothing else they could race on. In a window, the motion flow
-# walks alone after the rest (it times frames), and each window stands a
-# little apart from the others: macOS stops drawing a window that another
+# there's nothing else they could race on. In a window, each window stands
+# a little apart from the others: macOS stops drawing a window that another
 # one covers.
+#
+# Every run is stepped (PIX-276): Godot's --fixed-fps 60 makes each frame a
+# sixtieth of a second of the game's time however long the machine took to
+# draw it, so a flow lives the same seconds headless on a fast core, in a
+# slow software-rendered window, or beside twenty others; the game reads
+# that time (GameClock, never the machine's clock) and the harness throws
+# the same dice every run (GameState.HARNESS_SEED). A flow is the same run
+# every time, and its report the same, window or not (but draws=). A flow
+# may ask for another pace with the harness's --fps N (the motion flow: a
+# fast screen's frames between the physics ticks).
 #
 # --boot boots every map the game can stand in (PIX-270): each map in
 # assets/maps, the village at each of its ages, the house at each of its
@@ -116,9 +125,8 @@ fi
 # conversations by the clock: a long run's load can hitch one, so they get a
 # second try and only a real regression fails.
 retried=" motion festival board "
-# Walks alone, after the rest: frames timed while other runs share the
-# machine would measure the machine.
-alone=" motion "
+# Measures pixels: a quiet run has none to measure, and skips it.
+windowed=" motion "
 
 # Each run's own folder: its picture, its output, its log and its result
 # (the boot check's apart: its maps share names with flows).
@@ -133,15 +141,17 @@ since() { perl -MTime::HiRes=time -e 'printf "%.1f", time - $ARGV[0]' "$1"; }
 # output.txt. A watchdog: a run that never quits fails instead of stalling
 # the rest.
 run_godot() {
-	local dir=$1 args=$2 slot=$3 godot watcher ran
+	local dir=$1 args=$2 slot=$3 godot watcher ran fps=60 pace=' --fps ([0-9]+) '
 	local window=(--headless)
 	if [[ $quiet == 0 ]]; then
 		# Each slot's window a little down and right of the one before:
 		# all of them on top, none of them covered whole.
 		window=(--position "$((40 + slot * 48)),$((60 + slot * 36))")
 	fi
+	# Stepped: 60 frames a second of the game's time, or the flow's --fps.
+	[[ " $args " =~ $pace ]] && fps=${BASH_REMATCH[1]}
 	# shellcheck disable=SC2086 # the arguments are meant to split
-	perl -e "alarm $watchdog; exec @ARGV" godot "${window[@]}" --audio-driver Dummy --log-file "$dir/godot.log" --path . -- --screenshot $args --shot "$dir/shot.png" ${FLOWS_EXTRA:-} >"$dir/output.txt" 2>&1 &
+	perl -e "alarm $watchdog; exec @ARGV" godot "${window[@]}" --fixed-fps "$fps" --audio-driver Dummy --log-file "$dir/godot.log" --path . -- --screenshot $args --shot "$dir/shot.png" ${FLOWS_EXTRA:-} >"$dir/output.txt" 2>&1 &
 	godot=$!
 	# A script that doesn't parse leaves Godot on an empty scene until the
 	# watchdog: every run would wait out its minute. It has failed, so it
@@ -311,25 +321,16 @@ launch() {
 	pid_of[$1]=$!
 }
 
-later=()
 for ((k = 0; k < count; k++)); do
 	name=${FLOWS[${picked[k]}]%%|*}
-	if [[ $alone == *" $name "* ]]; then
-		if [[ $quiet == 1 ]]; then
-			mkdir -p "$runs/$name"
-			printf "skip|%s|0|needs a window\n" "$name" >"$runs/$name/result"
-		else
-			later+=("$k")
-		fi
+	if [[ $quiet == 1 && $windowed == *" $name "* ]]; then
+		mkdir -p "$runs/$name"
+		printf "skip|%s|0|needs a window\n" "$name" >"$runs/$name/result"
 		continue
 	fi
 	launch "$k"
 done
 drain
-for k in ${later[@]+"${later[@]}"}; do
-	launch "$k"
-	drain
-done
 
 took=$(since "$started")
 title=$([[ $boot == 1 ]] && echo "Boot check" || echo "Release flows")

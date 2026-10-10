@@ -234,7 +234,7 @@ forage | --map overworld --day 2 --at 75,46 --walk u | cell=\(75, 45\) day=2 pat
 # The Night of Ash's dawn (PIX-197).
 dawn | --map town --prologue 5 --at 11,8 --keys w,e,e,e,e,e --wait 1.5 | open=dawn_screen | story screen
 # Walking without the camera shake (PIX-135): needs a window, so --quiet skips it.
-motion | --map town motion | backsteps=[01] | motion
+motion | --map town motion --fps 144 | backsteps=[01] | motion
 # Hero creation's first night skipped with Tab while the name field has the keys (PIX-228).
 firstnight | create --keys tab | open=create_screen firstnight=skip | title story
 # The Night of Ash's hounds and embers (PIX-129).
