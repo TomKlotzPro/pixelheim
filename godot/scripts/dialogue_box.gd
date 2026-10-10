@@ -177,7 +177,9 @@ func _show() -> void:
 			hints.add_child(answer)
 		hints.add_child(UiStyle.hints(["Esc", "not yet"]))
 	else:
-		hints.add_child(UiStyle.hints(["{key:interact}", "close"] if last else ["{key:interact}", "next", "Esc", "leave"]))
+		# Each list in its own call, so the catalogue finds every word (the
+		# second list's "leave" went untranslated).
+		hints.add_child(UiStyle.hints(["{key:interact}", "close"]) if last else UiStyle.hints(["{key:interact}", "next", "Esc", "leave"]))
 	more.visible = not last
 	_fit.call_deferred()
 

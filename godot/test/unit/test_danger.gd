@@ -76,3 +76,13 @@ func test_danger_has_its_sounds() -> void:
 	for name: String in ["tell", "mark", "slam", "heart"]:
 		assert_true(SoundScript.UI_SOUNDS.has(name), name)
 		assert_gt(SoundScript._synth(SoundScript.UI_SOUNDS[name]).data.size(), 0, name)
+
+
+## Tom (2026-10-10): « dans le menu pourquoi on affiche les attaques ? ». The
+## menu of screens lists skills 4-6 only for a pad, and only once learned.
+func test_the_menu_lists_skills_only_for_a_pad_and_once_learned() -> void:
+	var docked: Array = [{"name": "Strike"}, {}, {}, {"name": "Whirl"}, {}]
+	assert_false(HudDockScript.menu_skill_shown(false, docked, 3), "a keyboard has the 4 key")
+	assert_true(HudDockScript.menu_skill_shown(true, docked, 3))
+	assert_false(HudDockScript.menu_skill_shown(true, docked, 4), "nothing on 5 yet")
+	assert_false(HudDockScript.menu_skill_shown(true, docked, 5), "past the dock's skills")

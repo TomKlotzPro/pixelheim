@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.214.0",
+      "date": "2026-10-10",
+      "codename": "Small Mercies",
+      "notes": [
+        "Options on the title screen opens again: it was opening behind the title",
+        "The Menu button lists your screens, not your attacks: skills 4 to 6 show there only when you play with a pad, and only once learned",
+        "The menu is drawn over the Next line instead of under it",
+        "In a conversation, Esc now says « quitter » in French"
+      ]
+    },
+    {
       "version": "0.213.0",
       "date": "2026-10-10",
       "codename": "Stand Down",

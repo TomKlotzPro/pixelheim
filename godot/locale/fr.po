@@ -3069,6 +3069,10 @@ msgid "In Their Own Words"
 msgstr "De leur propre voix"
 
 #: assets/data/changelog.json
+msgid "In a conversation, Esc now says « quitter » in French"
+msgstr "Dans une conversation, la touche Esc indique désormais « quitter » en français"
+
+#: assets/data/changelog.json
 msgid "In the Ashes, Hilda's and Vex's crafts are at their stalls on the square; Sela's slimes are in her stores, Wren lost her stable to the fire, and Ana warns of the packs, not the grass"
 msgstr "Dans les Cendres, la forge de Hilda et le chaudron de Vex sont à leurs étals sur la place ; les gelées de Sela sont dans ses réserves, Wren a perdu son écurie dans l'incendie, et Ana met en garde contre les meutes, pas l'herbe"
 
@@ -3697,6 +3701,10 @@ msgid "Options menu: music and effects volume, CRT scanlines, reduced motion"
 msgstr "Menu Options : volume de la musique et des effets, lignes de balayage CRT, animations réduites"
 
 #: assets/data/changelog.json
+msgid "Options on the title screen opens again: it was opening behind the title"
+msgstr "Les options de l'écran titre s'ouvrent de nouveau : elles s'ouvraient derrière le titre"
+
+#: assets/data/changelog.json
 msgid "Owned businesses pay RENT: +2g each after every victory, straight into your purse with a line in the battle log"
 msgstr "Les commerces que vous possédez versent un LOYER : +2 o chacun après chaque victoire, droit dans votre bourse, avec une ligne dans le journal de combat"
 
@@ -4147,6 +4155,10 @@ msgstr "En abattre un fait de vous un Tueur de boss : +10 % de dégâts pend
 #: assets/data/changelog.json
 msgid "Sleep till morning: face a bed at the inn (for the night's coin) or your own bed at home and press E; the screen goes dark and you wake at dawn, restored. Walking into the inn no longer takes a bed by itself"
 msgstr "Dormir jusqu'au matin : face à un lit de l'auberge (contre le prix de la nuit) ou à votre propre lit, appuyez sur E ; l'écran s'assombrit et vous vous réveillez à l'aube, en pleine forme. Entrer à l'auberge ne prend plus un lit tout seul"
+
+#: assets/data/changelog.json
+msgid "Small Mercies"
+msgstr "Petites attentions"
 
 #: assets/data/changelog.json
 msgid "Small Things"
@@ -4745,6 +4757,10 @@ msgid "The Maker's Mark"
 msgstr "Le Poinçon de l'artisan"
 
 #: assets/data/changelog.json
+msgid "The Menu button lists your screens, not your attacks: skills 4 to 6 show there only when you play with a pad, and only once learned"
+msgstr "Le bouton Menu liste vos écrans, pas vos attaques : les compétences 4 à 6 n'y apparaissent qu'avec une manette, et seulement une fois apprises"
+
+#: assets/data/changelog.json
 msgid "The Miners' Camp waypoint moved a few steps east, onto its road"
 msgstr "Le relais du camp des mineurs s'est déplacée de quelques pas vers l'est, sur sa route"
 
@@ -4987,6 +5003,10 @@ msgstr "L'écran de la carte se lit nettement : sa légende se place sous la c
 #: assets/data/changelog.json
 msgid "The map shows the world as it stands: every map you've found is a page, turned with left and right, its roads out and regions named, and the village drawn small inside its walls"
 msgstr "La carte montre le monde tel qu'il est : chaque carte trouvée est une page que l'on tourne avec gauche et droite, ses routes et ses régions nommées, et le village dessiné en petit dans ses murs"
+
+#: assets/data/changelog.json
+msgid "The menu is drawn over the Next line instead of under it"
+msgstr "Le menu s'affiche par-dessus la ligne À suivre au lieu de passer dessous"
 
 #: assets/data/changelog.json
 msgid "The merchant opens shop: buy gear and potions, sell your loot"
@@ -12313,6 +12333,10 @@ msgid "%d  %s"
 msgstr "%d  %s"
 
 #: scripts/dialogue_box.gd
+msgid "leave"
+msgstr "quitter"
+
+#: scripts/dialogue_box.gd
 msgid "not yet"
 msgstr "plus tard"
 
@@ -12559,10 +12583,6 @@ msgstr "Carte"
 #: scripts/hud_dock.gd
 msgid "Pack"
 msgstr "Sac"
-
-#: scripts/hud_dock.gd
-msgid "Skill %d: none yet"
-msgstr "Compétence %d : aucune encore"
 
 #: scripts/inventory_screen.gd
 msgid " (two!)"

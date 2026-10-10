@@ -371,6 +371,8 @@ func _options() -> void:
 	var screen := preload("res://scripts/options_screen.gd").new()
 	screen.world = world
 	add_child(screen)
+	# Over the title, which shares its layer (Tom: "Options does nothing").
+	screen.layer = layer + 1
 
 
 func _leave() -> void:
