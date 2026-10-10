@@ -1849,6 +1849,10 @@ msgid "A monster's alert and fright bubbles sit centred over its head, and a nam
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A named foe's level now stands above its name instead of over it"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A necromancer's grave violet stays on their own robe and hood: borrowed iron, leather or a gilded plate keeps its colour"
 msgstr ""
 
@@ -2450,6 +2454,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Each comes with a full 12-node skill tree, its own look palette, and a proven path to the final boss - the balance sim clears the game with all seven classes"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Each floor down is a little harder, with something to find on each"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3537,6 +3545,10 @@ msgid "Oilskin"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Old Wenna comes home with you: she moves into Sela's inn and puts Tam's stew back on the menu, so the inn's rest lasts ten fights longer"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Old heroes are seeded their role's base grit automatically - no save lost"
 msgstr ""
 
@@ -4018,6 +4030,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Saltmere's doors are shut for now: its people, their quests and the sea cave come with the coast's own chapter"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Saltmere's sea cave now goes three floors down: the smugglers' caves, the drowned galleries where the wreck of Tam's boat lies, and the Tidecaller's grotto"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4717,6 +4733,10 @@ msgid "The Third Dimension"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Tidecaller wears Tam's stewpot as a crown; once he falls, the tide door opens onto the beach"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Truth of It"
 msgstr ""
 
@@ -5126,6 +5146,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Thirty wearables got hand-fitted overlays cut to the hero's anatomy - every sword, axe, bow, staff, robe, helm and shield, tiered by palette"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Three Floors Down"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -12116,15 +12140,15 @@ msgstr ""
 msgid "%s howls - the forest answers!"
 msgstr ""
 
-#: scripts/enemy.gd:229
+#: scripts/enemy.gd:230
 msgid "Lv %d"
 msgstr ""
 
-#: scripts/enemy.gd:742
+#: scripts/enemy.gd:754
 msgid "blocked"
 msgstr ""
 
-#: scripts/enemy.gd:777
+#: scripts/enemy.gd:789
 msgid "%s is afflicted by %s!"
 msgstr ""
 
