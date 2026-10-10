@@ -3897,6 +3897,10 @@ msgid "Settlers move in as the town rises: Mira the Weaver, Old Tomas, Serra and
 msgstr "De nouveaux habitants s'installent à mesure que la ville s'élève : Mira la tisserande, le vieux Tomas, Serra et Fenn arrivent chacun avec leur palier - et ont chacun leur mot à dire sur vous"
 
 #: assets/data/changelog.json
+msgid "Seven new waypoints reach every region: Saltmere Hamlet, the Sea Cave, the Miners' Camp, Gunnar's Camp, Liane's Observatory, the Old Guard's Camp and the Keep Yard"
+msgstr "Sept nouveaux relais desservent chaque région : le hameau de Saltmere, la Grotte marine, le camp des mineurs, le camp de Gunnar, l'observatoire de Liane, le camp de l'ancienne garde et la cour du donjon"
+
+#: assets/data/changelog.json
 msgid "Shadows became a tone, not a hole: half-strength and shorter under a higher sun - the long black smears are gone"
 msgstr "Les ombres deviennent une teinte, plus un trou : moitié moins fortes et plus courtes sous un soleil plus haut - fini les longues traînées noires"
 
@@ -4565,6 +4569,10 @@ msgid "The Village Reborn"
 msgstr "Le Village renaît"
 
 #: assets/data/changelog.json
+msgid "The Whole Reach"
+msgstr "Toute la Marche"
+
+#: assets/data/changelog.json
 msgid "The Wide View"
 msgstr "Le Grand Angle"
 
@@ -4599,6 +4607,10 @@ msgstr "La grotte au pied de la montagne mène en dessous, une fois le dragon to
 #: assets/data/changelog.json
 msgid "The choice happens INSIDE the ascension: the letterboxed scene holds, the fork appears as cards, and your hero changes clothes the moment you pick"
 msgstr "Le choix se fait AU CŒUR de l'ascension : la scène en format cinéma reste figée, la bifurcation apparaît sous forme de cartes, et votre héros change de tenue dès que vous choisissez"
+
+#: assets/data/changelog.json
+msgid "The chosen waypoint's ring and its marker share one centre at any window size"
+msgstr "L'anneau du relais choisi et son repère partagent le même centre, quelle que soit la taille de la fenêtre"
 
 #: assets/data/changelog.json
 msgid "The codex's bestiary turns its pages instead of running off the screen, the pause card stays centred in French, and the phone's tap bar shows real arrows"
@@ -4715,6 +4727,10 @@ msgstr "La touche de la carte se réassigne comme tout le reste"
 #: assets/data/changelog.json
 msgid "The map screen reads cleanly: its legend sits under the map, the HUD steps aside while it's open, and keys like the comma show as their mark instead of their name"
 msgstr "L'écran de la carte se lit nettement : sa légende se place sous la carte, l'interface s'efface tant qu'elle est ouverte, et les touches comme la virgule s'affichent par leur signe et non par leur nom"
+
+#: assets/data/changelog.json
+msgid "The map shows the world as it stands: every map you've found is a page, turned with left and right, its roads out and regions named, and the village drawn small inside its walls"
+msgstr "La carte montre le monde tel qu'il est : chaque carte trouvée est une page que l'on tourne avec gauche et droite, ses routes et ses régions nommées, et le village dessiné en petit dans ses murs"
 
 #: assets/data/changelog.json
 msgid "The merchant opens shop: buy gear and potions, sell your loot"
@@ -4851,6 +4867,10 @@ msgstr "Le village n'est plus fait de rectangles : rangs de bardeaux sur les t
 #: assets/data/changelog.json
 msgid "The water cleared: translucent shallows over the riverbed, and a lip of foam along every bank where water meets land"
 msgstr "L'eau s'est éclaircie : des hauts-fonds translucides au-dessus du lit de la rivière, et un liseré d'écume le long de chaque rive, là où l'eau rencontre la terre"
+
+#: assets/data/changelog.json
+msgid "The waypoint list shows every waypoint under its place, greys the ones not found yet, and names the region where you land"
+msgstr "La liste des relais les montre tous sous leur lieu, grise ceux qui ne sont pas encore trouvés et nomme la région où vous arrivez"
 
 #: assets/data/changelog.json
 msgid "The wind moves the world: trees, wheat and flowers sway, their tops more than their feet, as gusts roll across the land"
@@ -10909,6 +10929,10 @@ msgid "GOODS"
 msgstr "BAZAR"
 
 #: assets/maps/interactables.json
+msgid "Gunnar's Camp"
+msgstr "Le camp de Gunnar"
+
+#: assets/maps/interactables.json
 msgid "HALL"
 msgstr "MAIRIE"
 
@@ -10921,6 +10945,10 @@ msgid "INN"
 msgstr "AUBERGE"
 
 #: assets/maps/interactables.json
+msgid "Liane's Observatory"
+msgstr "L'observatoire de Liane"
+
+#: assets/maps/interactables.json
 msgid "Pixelheim Gate"
 msgstr "Porte de Pixelheim"
 
@@ -10929,12 +10957,28 @@ msgid "Pixelheim Square"
 msgstr "Place de Pixelheim"
 
 #: assets/maps/interactables.json
+msgid "Saltmere Hamlet"
+msgstr "Le hameau de Saltmere"
+
+#: assets/maps/interactables.json
 msgid "The Deepwood Pass"
 msgstr "Le passage des Bois-Profonds"
 
 #: assets/maps/interactables.json
+msgid "The Keep Yard"
+msgstr "La cour du donjon"
+
+#: assets/maps/interactables.json
+msgid "The Miners' Camp"
+msgstr "Le camp des mineurs"
+
+#: assets/maps/interactables.json
 msgid "The Mirefen Pass"
 msgstr "Le passage des Marais de Fange"
+
+#: assets/maps/interactables.json
+msgid "The Old Guard's Camp"
+msgstr "Le camp de l'ancienne garde"
 
 #: scripts/bank_screen.gd:14
 msgid "Idle gold is lazy gold. Savings, a caravan, an expansion: put it to work."
@@ -12032,37 +12076,45 @@ msgstr "valider"
 msgid "{key:move_up}/{key:move_down}  choose      {key:interact}  %s      Esc  close"
 msgstr "{key:move_up}/{key:move_down}  choisir      {key:interact}  %s      Esc  fermer"
 
-#: scripts/map_screen.gd:199
-msgid "You"
-msgstr "Vous"
-
-#: scripts/map_screen.gd:200
-msgid "Waypoint"
-msgstr "Relais"
-
-#: scripts/map_screen.gd:202
-msgid "Lair"
-msgstr "Repaire"
-
-#: scripts/map_screen.gd:204
-msgid "Quest"
-msgstr "Quête"
-
-#: scripts/map_screen.gd:206
-msgid "Goal"
-msgstr "Objectif"
-
-#: scripts/map_screen.gd:68
+#: scripts/map_screen.gd:118
 msgid "Waypoints"
 msgstr "Relais"
 
-#: scripts/map_screen.gd:84
+#: scripts/map_screen.gd:176
+msgid "Not found yet"
+msgstr "Pas encore trouvé"
+
+#: scripts/map_screen.gd:178
 msgid "Unstaffed: no one keeps this post yet"
 msgstr "Inoccupé : personne ne tient encore ce poste"
 
-#: scripts/map_screen.gd:96
-msgid "Nothing discovered yet. Waypoints you find on your travels show up here."
-msgstr "Rien de découvert pour l'instant. Les relais trouvés en voyage apparaissent ici."
+#: scripts/map_screen.gd:352
+msgid "You"
+msgstr "Vous"
+
+#: scripts/map_screen.gd:353
+msgid "Waypoint"
+msgstr "Relais"
+
+#: scripts/map_screen.gd:355
+msgid "Not yet open"
+msgstr "Pas encore ouvert"
+
+#: scripts/map_screen.gd:357
+msgid "Lair"
+msgstr "Repaire"
+
+#: scripts/map_screen.gd:359
+msgid "Quest"
+msgstr "Quête"
+
+#: scripts/map_screen.gd:361
+msgid "Goal"
+msgstr "Objectif"
+
+#: scripts/map_screen.gd:387
+msgid "maps"
+msgstr "cartes"
 
 #: scripts/options_screen.gd:113
 msgid "System (%s)"

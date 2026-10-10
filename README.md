@@ -6,7 +6,7 @@
 
 <p align="center">
   <b>A retro pixel-art open-world RPG in Godot 4.7: one hero, one village, fifteen floors of a mountain and what lies under it.</b><br />
-  The village burned. You stayed. Currently v0.199 - 1.0 has to be earned.
+  The village burned. You stayed. Currently v0.200 - 1.0 has to be earned.
 </p>
 
 ---

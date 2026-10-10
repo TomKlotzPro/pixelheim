@@ -1,36 +1,65 @@
 extends Screen
-## The map screen (M/Tab): the current map in a window, painted with the
-## tiles' map colours where the hero has been and night where they haven't
-## (mapColors.ts port), the hero, discovered waypoints and the lairs the
-## bounty board has posted (PIX-156) marked; beside it
-## the waypoints, and fast travel to the staffed ones. Pauses the world.
+## The map screen (M/Tab): a map in a window, painted with the tiles' map
+## colours where the hero has been and night where they haven't
+## (mapColors.ts port), the hero, the waypoints and the lairs the bounty
+## board has posted (PIX-156) marked; beside it the waypoints, and fast
+## travel to the open ones. Pauses the world.
+## Every map the hero has found is a page (PIX-266, Atlas): left and right
+## turn them in the world's order, the title names each, the page names its
+## regions and its ways to other places, and the Ashenreach shows the
+## village small inside its walls, as the overworld draws it.
 ## The waypoint chosen in the list is ringed on the map and named there with
 ## the region it sets you down in (PIX-241), so you see where you'd land
 ## before you go; one on another map turns the map to that map's page.
-## Arrows or the pad choose, and so does pointing at a card; E, the pad's A
-## or a click on the chosen card travels.
+## The list holds every waypoint under the place it stands in (PIX-266):
+## those not found yet, or with no one keeping them, greyed there and on
+## their page; it scrolls to the one chosen (and with none open yet, up and
+## down read down it).
+## Up and down or the pad choose, and so does pointing at a card; E, the
+## pad's A or a click on the chosen card travels.
 
 const MAP_BOX := Vector2(760, 540)
+## The list's window inside the side panel: the panel ends with the map's
+## tallest frame.
+const LIST_BOX := Vector2(320, 500)
+## How far up or down reads the list while there's nothing to choose.
+const SCROLL_STEP := 60
 
 var world: Node2D
-## The chosen staffed waypoint, by its place in `usable`; -1 while none is
-## (they're all on other maps, and choosing one turns the page).
+## The chosen open waypoint, by its place in `usable`; -1 while none is
+## (none on the page shown, and choosing one turns the page).
 var selected := -1
+## The maps the hero has found, in the order the pages turn (Atlas.pages),
+## and the one shown.
+var pages: Array[String] = []
+var page := ""
 var painting: Painting
+## The map's frame over its legend.
+var page_column: VBoxContainer
 var frame: PanelContainer
 var title: Label
+## "2 / 6" beside the title, between the planks that turn the page.
+var pager: HBoxContainer
+var counter: Label
 var legend: HBoxContainer
 var footer: Control
-## Which keys the footer shows now: what's to choose and whether E travels.
-var _footer_for := -2
+## Which keys the footer shows now: what's to choose, whether E travels and
+## whether there are pages to turn.
+var _footer_for := -1
+var scroll: ScrollContainer
+## Every card in the list, in its order: {card, usable, heading (the
+## place's heading when it's the first under it, else null)}.
 var cards: Array[Dictionary] = []
 var usable: Array[Dictionary] = []
-## Other maps drawn for a waypoint there, loaded once a visit, by id.
+## Other maps drawn for a page, loaded once a visit, by id.
 var _maps := {}
+## The village's block as the Ashenreach's page draws it, worked out once.
+var _village := {}
+var _village_for := ""
 
 
-## How wide a waypoint card's words run before they wrap: the side panel's
-## width less its margins.
+## How wide a waypoint card's words run before they wrap: the list's width
+## less the card's margins.
 const CARD_TEXT := 300.0
 
 func _open() -> void:
@@ -43,13 +72,34 @@ func _open() -> void:
 	if hud != null and hud.root != null:
 		hud.root.visible = false
 		tree_exiting.connect(func() -> void: hud.root.visible = true)
-	title = UiStyle.title(Catalog.place_name(world.map.id), Vector2(64, UiStyle.TITLE_AT.y))
-	add_child(title)
+	var heading := HBoxContainer.new()
+	heading.position = Vector2(64, UiStyle.TITLE_AT.y)
+	heading.add_theme_constant_override("separation", 20)
+	add_child(heading)
+	title = UiStyle.title(Catalog.place_name(world.map.id))
+	heading.add_child(title)
+	pager = HBoxContainer.new()
+	pager.add_theme_constant_override("separation", 10)
+	pager.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	heading.add_child(pager)
+	pager.add_child(UiStyle.button("<", _turn.bind(-1)))
+	counter = UiStyle.label("", 12, UiStyle.DUSK)
+	pager.add_child(counter)
+	pager.add_child(UiStyle.button(">", _turn.bind(1)))
 
+	# The map's frame and its legend under it, wherever its page ends
+	# (PIX-265: at y 630 the legend sat over the dock), laid out together:
+	# set by hand, the legend was put back where the first page left it by
+	# the screen's easing in when a page turned in its first fifth of a
+	# second (PIX-266).
+	page_column = VBoxContainer.new()
+	page_column.position = Vector2(56, 72)
+	page_column.add_theme_constant_override("separation", 10)
+	add_child(page_column)
 	frame = PanelContainer.new()
-	frame.position = Vector2(56, 72)
+	frame.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	frame.add_theme_stylebox_override("panel", UiStyle.window(14))
-	add_child(frame)
+	page_column.add_child(frame)
 	painting = Painting.new()
 	painting.world = world
 	# A ring at the map's edge (the Mirefen Pass) runs off the page, not
@@ -66,10 +116,24 @@ func _open() -> void:
 	column.add_theme_constant_override("separation", 8)
 	side.add_child(column)
 	column.add_child(UiStyle.strong("Waypoints", 16, UiStyle.LAMP))
-	for waypoint: Dictionary in Interactables.waypoints():
-		if not Interactables.waypoint_discovered(waypoint, GameState.world.discovered):
-			continue
-		var staffed := Interactables.waypoint_usable(
+	# The list scrolls (the wheel, or the choice moving); its window fits.
+	scroll = ScrollContainer.new()
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER
+	scroll.custom_minimum_size = LIST_BOX
+	column.add_child(scroll)
+	var list := VBoxContainer.new()
+	list.add_theme_constant_override("separation", 8)
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(list)
+	var group := ""
+	for waypoint: Dictionary in Atlas.listed(Interactables.waypoints()):
+		var place_heading: Label = null
+		if waypoint["mapId"] != group:
+			group = waypoint["mapId"]
+			place_heading = UiStyle.strong(Catalog.place_name(group), 12, UiStyle.FADED)
+			list.add_child(place_heading)
+		var open := Interactables.waypoint_usable(
 			waypoint, GameState.world.discovered, GameState.settlement.settlers
 		)
 		var card := PanelContainer.new()
@@ -79,37 +143,54 @@ func _open() -> void:
 		card.add_child(lines)
 		# Wrapped to the panel (Solid Ground): a long line in French breaks
 		# instead of pushing the panel off the screen.
-		lines.add_child(Layout.wrapped(UiStyle.label(waypoint["name"], 16, UiStyle.INK if staffed else UiStyle.FADED), CARD_TEXT))
-		lines.add_child(Layout.wrapped(UiStyle.label(
-			Catalog.place_name(waypoint["mapId"]) if staffed else "Unstaffed: no one keeps this post yet",
-			12, UiStyle.FADED
-		), CARD_TEXT))
-		column.add_child(card)
-		cards.append({"card": card, "usable": staffed})
-		if staffed:
+		lines.add_child(Layout.wrapped(UiStyle.label(waypoint["name"], 16, UiStyle.INK if open else UiStyle.FADED), CARD_TEXT))
+		var note := _note(waypoint, open)
+		if note != "":
+			lines.add_child(Layout.wrapped(UiStyle.label(note, 12, UiStyle.FADED), CARD_TEXT))
+		list.add_child(card)
+		cards.append({"card": card, "usable": open, "heading": place_heading})
+		if open:
 			# Pointing at a card chooses it; clicking the chosen one travels.
 			card.mouse_filter = Control.MOUSE_FILTER_STOP
 			card.mouse_entered.connect(_choose.bind(usable.size()))
 			card.gui_input.connect(_on_card_input.bind(usable.size()))
 			usable.append(waypoint)
-	if cards.is_empty():
-		var none := UiStyle.label("Nothing discovered yet. Waypoints you find on your travels show up here.", 12, UiStyle.FADED)
-		none.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		none.custom_minimum_size = Vector2(300, 0)
-		column.add_child(none)
 
+	var indent := MarginContainer.new()
+	indent.add_theme_constant_override("margin_left", 8)
+	page_column.add_child(indent)
 	legend = HBoxContainer.new()
 	legend.add_theme_constant_override("separation", 16)
-	# Under the map's frame, wherever its page ends (PIX-265: at y 630 it
-	# sat over the dock).
-	legend.position = Vector2(64, 0)
-	add_child(legend)
-	selected = Waypoints.first_on(usable, world.map.id)
+	indent.add_child(legend)
+	pages = Atlas.pages(GameState.world.discovered, world.map.id)
+	page = world.map.id
+	selected = Waypoints.first_on(usable, page)
 	_show()
 
 
+## What a card says under the waypoint's name: where it sets you down when
+## it's open (the region, where the map names its regions), else why it
+## isn't - not found yet, or no one keeps the post.
+func _note(waypoint: Dictionary, open: bool) -> String:
+	if not Interactables.waypoint_discovered(waypoint, GameState.world.discovered):
+		return Text.t("Not found yet")
+	if not open:
+		return Text.t("Unstaffed: no one keeps this post yet")
+	return Waypoints.region_name(waypoint, _map(waypoint["mapId"]))
+
+
 func _command(event: InputEvent) -> Callable:
+	if pages.size() > 1 and event.is_action_pressed("move_left"):
+		return _turn.bind(-1)
+	if pages.size() > 1 and event.is_action_pressed("move_right"):
+		return _turn.bind(1)
 	if usable.is_empty():
+		# Nothing to choose yet: up and down read down the list of what's
+		# to find.
+		if event.is_action_pressed("move_down"):
+			return func() -> void: scroll.scroll_vertical += SCROLL_STEP
+		if event.is_action_pressed("move_up"):
+			return func() -> void: scroll.scroll_vertical -= SCROLL_STEP
 		return Callable()
 	if event.is_action_pressed("move_down"):
 		return _choose.bind(Waypoints.step(selected, 1, usable.size()))
@@ -136,6 +217,17 @@ func _choose(index: int) -> void:
 	if index == selected or index < 0 or index >= usable.size():
 		return
 	selected = index
+	page = usable[index]["mapId"]
+	_show()
+
+
+## Another page (left and right, the pad, the planks by the title): the
+## list's choice moves to the first open waypoint on it, or to none.
+func _turn(delta: int) -> void:
+	if pages.size() < 2:
+		return
+	page = Atlas.turn(pages, page, delta)
+	selected = Waypoints.first_on(usable, page)
 	_show()
 
 
@@ -150,35 +242,62 @@ func destination_id() -> String:
 	return String(usable[selected]["id"]) if selected >= 0 else ""
 
 
+## The page shown, by map id (the harness reports it).
+func page_id() -> String:
+	return page
+
+
+## Chooses the open waypoint `id`, as pointing at its card would (the look
+## book's map, PIX-266): its page shown, the list scrolled to it.
+func show_waypoint(id: String) -> void:
+	for index in usable.size():
+		if usable[index]["id"] == id:
+			_choose(index)
+
+
 ## The list and the map agree on the choice: its card wears the red rim,
 ## and the map turns to the page it's on, ringed and named there; the title,
 ## the legend and the keys follow the page.
 func _show() -> void:
 	_highlight()
 	var destination: Dictionary = usable[selected] if selected >= 0 else {}
-	var map: MapData = world.map
-	if not destination.is_empty() and destination["mapId"] != map.id:
-		map = _map(destination["mapId"])
+	var map: MapData = _map(page)
 	var home: bool = map == world.map
-	# Whole pixels per tile, as large as the window allows.
-	var tile_px: int = clampi(mini(int(MAP_BOX.x / map.size.x), int(MAP_BOX.y / map.size.y)), 2, 12)
-	painting.paint(map, tile_px, home, destination)
-	# A smaller page shrinks the window round it, and the legend follows it.
-	frame.reset_size()
-	legend.position.y = frame.position.y + frame.size.y + 10
+	painting.village = _village_on(map)
+	painting.paint(map, Atlas.tile_px(map.size, MAP_BOX), home, destination)
 	title.text = Catalog.place_name(map.id)
+	pager.visible = pages.size() > 1
+	counter.text = "%d / %d" % [pages.find(page) + 1, pages.size()]
 	_fill_legend(map, home)
+	# A smaller page shrinks the window round it, and the legend follows it.
+	page_column.reset_size()
 	_set_footer()
 
 
 ## Another map's page, as the town has grown, loaded once.
 func _map(map_id: String) -> MapData:
+	if map_id == world.map.id:
+		return world.map
 	if not _maps.has(map_id):
 		_maps[map_id] = world.load_map(map_id)
 	return _maps[map_id]
 
 
-## The chosen staffed waypoint wears the red frame.
+## The village on the Ashenreach's page, as the overworld draws it now
+## (Atlas.village: the town as it has grown, its burnt houses ash), once the
+## hero knows the town; {} on the other pages.
+func _village_on(map: MapData) -> Dictionary:
+	if map.id not in PunyTerrain.SKYLINE_MAPS or not Atlas.found(GameState.world.discovered, "town"):
+		return {}
+	if _village_for != map.id:
+		var done := Town.done_projects(GameState.settlement)
+		var ruins: Array = Town.ruins(done).map(func(ruin: Dictionary) -> Rect2i: return ruin["rect"])
+		_village = Atlas.village(map, MapData.load_tiered("town", done, 1), ruins)
+		_village_for = map.id
+	return _village
+
+
+## The chosen open waypoint wears the red frame, scrolled into view.
 func _highlight() -> void:
 	var usable_index := 0
 	for entry: Dictionary in cards:
@@ -189,15 +308,51 @@ func _highlight() -> void:
 		entry["card"].add_theme_stylebox_override("panel", UiStyle.box(
 			UiStyle.CARD if entry["usable"] else Color(UiStyle.CARD, 0.4), UiStyle.LAMP if chosen else UiStyle.RIM, 8
 		))
+	if selected >= 0:
+		_reveal()
 
 
-## What the marks on this page mean: "You" only where the hero is.
+## The chosen card's entry in `cards`, {} while none is chosen.
+func _chosen_card() -> Dictionary:
+	var usable_index := 0
+	for entry: Dictionary in cards:
+		if entry["usable"]:
+			if usable_index == selected:
+				return entry
+			usable_index += 1
+	return {}
+
+
+## Scrolls the chosen card into the list's window, with its place's heading
+## when it's the first under it, once the list is laid out: at the frame's
+## end, and again just before the frame is drawn.
+func _reveal() -> void:
+	_reveal_now.call_deferred()
+	if not RenderingServer.frame_pre_draw.is_connected(_reveal_now):
+		RenderingServer.frame_pre_draw.connect(_reveal_now, CONNECT_ONE_SHOT)
+
+
+func _reveal_now() -> void:
+	if not is_instance_valid(scroll) or not scroll.is_inside_tree():
+		return
+	var entry := _chosen_card()
+	if entry.is_empty():
+		return
+	if entry["heading"] != null:
+		scroll.ensure_control_visible(entry["heading"])
+	scroll.ensure_control_visible(entry["card"])
+
+
+## What the marks on this page mean: "You" only where the hero is, the grey
+## mark only where a waypoint isn't open yet.
 func _fill_legend(map: MapData, home: bool) -> void:
 	Layout.clear(legend)
 	var marks: Array = []
 	if home:
 		marks.append([Color.WHITE, "You"])
 	marks.append([UiStyle.LAMP, "Waypoint"])
+	if painting.shows_closed():
+		marks.append([Painting.CLOSED, "Not yet open"])
 	if not Hunts.living_on(map.id, GameState.questing.board_floors(), GameState.progression.hunted).is_empty():
 		marks.append([Painting.LAIR, "Lair"])
 	if home and not Painting.givers(world).is_empty():
@@ -213,21 +368,31 @@ func _fill_legend(map: MapData, home: bool) -> void:
 		legend.add_child(UiStyle.label(mark[1], 12, UiStyle.FADED))
 
 
-## The keys as they stand: E travels only once a waypoint is chosen.
+## The keys as they stand: up and down choose, or with nothing to choose
+## read down the list; E travels only once a waypoint is chosen; left and
+## right turn the page only when there is another.
 func _set_footer() -> void:
-	var state := -1 if usable.is_empty() else (0 if selected < 0 else 1)
+	var choosing := 0 if usable.is_empty() else (1 if selected < 0 else 2)
+	var state := choosing * 2 + (1 if pages.size() > 1 else 0)
 	if state == _footer_for:
 		return
 	_footer_for = state
 	if footer != null:
 		remove_child(footer)
 		footer.queue_free()
-	if state < 0:
-		footer = UiStyle.screen_footer("{key:map} / Esc  close")
-	elif state == 0:
-		footer = UiStyle.screen_footer("{key:move_up}/{key:move_down}  choose      {key:map} / Esc  close")
-	else:
-		footer = UiStyle.screen_footer("{key:move_up}/{key:move_down}  choose      {key:interact}  travel      {key:map} / Esc  close")
+	match state:
+		0:
+			footer = UiStyle.screen_footer("{key:move_up}/{key:move_down}  scroll      {key:map} / Esc  close")
+		1:
+			footer = UiStyle.screen_footer("{key:move_up}/{key:move_down}  scroll      {key:move_left}/{key:move_right}  maps      {key:map} / Esc  close")
+		2:
+			footer = UiStyle.screen_footer("{key:move_up}/{key:move_down}  choose      {key:map} / Esc  close")
+		3:
+			footer = UiStyle.screen_footer("{key:move_up}/{key:move_down}  choose      {key:move_left}/{key:move_right}  maps      {key:map} / Esc  close")
+		4:
+			footer = UiStyle.screen_footer("{key:move_up}/{key:move_down}  choose      {key:interact}  travel      {key:map} / Esc  close")
+		_:
+			footer = UiStyle.screen_footer("{key:move_up}/{key:move_down}  choose      {key:move_left}/{key:move_right}  maps      {key:interact}  travel      {key:map} / Esc  close")
 	add_child(footer)
 
 
@@ -237,8 +402,14 @@ class Painting extends Control:
 	const QUEST := Color("5fdc7a")
 	## Where the hero is headed (PIX-240): the quest marks' gold.
 	const GOAL := Color("f2c14e")
+	## A waypoint not open yet (PIX-266): not found, or no one keeps it.
+	const CLOSED := Color("8e8880")
+	## The dark round a label's letters, and the shade under them (px each
+	## way past the letters), so they read on any ground.
+	const OUTLINE := 4
+	const PLATE := Vector2(4, 1)
 	var world: Node2D
-	## The page shown: the hero's map, or the chosen waypoint's.
+	## The page shown: the hero's map, or another the hero has found.
 	var map: MapData
 	var tile_px := 4
 	## Whether the hero is on this page (their marker, the quest givers).
@@ -248,6 +419,16 @@ class Painting extends Control:
 	## When it was chosen (ms): its ring starts wide from there.
 	var chosen_at := 0
 	var tag: PanelContainer
+	## The village's block on this page (Atlas.village), set before `paint`.
+	var village := {}
+	## What's drawn of the page: cell -> colour (seen ground, the village).
+	var _ground := {}
+	## What the page names, placed: [{text, at (px), size, way}].
+	var _labels: Array[Dictionary] = []
+	## The page's px to the screen's when it was last drawn (PIX-267): the
+	## marks are snapped to the screen's pixels through it, so a move or a
+	## new window draws them again.
+	var _shown := Transform2D()
 
 	## The villagers here with a word for the hero (PIX-171): a quest to
 	## offer, or one ready to turn in.
@@ -266,26 +447,78 @@ class Painting extends Control:
 		destination = chosen
 		chosen_at = Time.get_ticks_msec()
 		custom_minimum_size = Vector2(map.size * tile_px)
+		var seen: Dictionary = GameState.world.discovered.get(map.id, {})
+		_ground = {}
+		for cell: Vector2i in seen:
+			if map.grid.has(cell):
+				_ground[cell] = Atlas.color(map.grid[cell])
+		for cell: Vector2i in village:
+			_ground[cell] = Atlas.color(village[cell])
 		_name_destination()
+		_place_labels(seen)
 		queue_redraw()
 
-	## The ring breathes while a waypoint is chosen, unless motion is reduced.
+	## The ring breathes while a waypoint is chosen, unless motion is
+	## reduced; and the marks are drawn again on the screen's pixels when
+	## the page has moved on the screen (the screen easing in, a new window).
 	func _process(_delta: float) -> void:
-		if not destination.is_empty() and not GameState.settings.reduce_motion:
+		if (not destination.is_empty() and not GameState.settings.reduce_motion) or _on_screen() != _shown:
 			queue_redraw()
+
+	## The page's px to the screen's: its canvas layer and the window's
+	## stretch, a browser's uneven one included.
+	func _on_screen() -> Transform2D:
+		return get_viewport().get_final_transform() * get_global_transform_with_canvas()
 
 	## Markers are pixel squares with a dark rim, a little bigger than a tile.
 	func _mark() -> float:
 		return maxf(tile_px * 1.6, 6.0)
 
-	## The ring's half-width round the chosen marker, grown by `grow`: at its
-	## smallest it hugs the marker's dark rim, at its widest it takes in the
-	## spot two steps off where travelling sets you down.
-	func _ring_half(grow: int) -> float:
-		return floorf(_mark() / 2.0) + 6.0 + grow
-
 	func _center(cell: Vector2i) -> Vector2:
-		return Vector2(cell) * tile_px + Vector2.ONE * tile_px / 2.0
+		return Waypoints.mark_at(cell, tile_px)
+
+	## Whether a waypoint on this page isn't open yet (the legend's grey).
+	func shows_closed() -> bool:
+		for waypoint: Dictionary in Interactables.waypoints():
+			if waypoint["mapId"] == map.id and not _open(waypoint):
+				return true
+		return false
+
+	func _open(waypoint: Dictionary) -> bool:
+		return Interactables.waypoint_usable(waypoint, GameState.world.discovered, GameState.settlement.settlers)
+
+	## The page's names (Atlas.labels) placed on it, in the labels' type: a
+	## region's clear of the waypoints' marks, the hero's, the chosen one's
+	## tag and the names placed before it, or left off.
+	func _place_labels(seen: Dictionary) -> void:
+		_labels.clear()
+		var font := UiStyle.body_font()
+		var bounds := Vector2(map.size * tile_px)
+		var mark := _mark()
+		var taken: Array[Rect2] = []
+		var marked: Array[Vector2i] = []
+		for waypoint: Dictionary in Interactables.waypoints():
+			if waypoint["mapId"] == map.id:
+				marked.append(Waypoints.cell(waypoint))
+		if home:
+			marked.append(world.player_cell)
+		for cell in marked:
+			taken.append(Rect2(_center(cell), Vector2.ZERO).grow(floorf(mark / 2.0) + 2.0))
+		var goal := goal_cell()
+		if goal != Bearing.NOWHERE:
+			taken.append(Rect2(_center(goal), Vector2.ZERO).grow(floorf((mark + 6.0) / 2.0) + 3.0))
+		# The chosen waypoint's ring at its widest, and its tag over the names.
+		if tag != null:
+			taken.append(Rect2(_center(Waypoints.cell(destination)), Vector2.ZERO).grow(Waypoints.ring_half(mark, Waypoints.PULSE_PX) + 2.0))
+			taken.append(Rect2(tag.position, tag.get_combined_minimum_size()))
+		for label: Dictionary in Atlas.labels(map, seen):
+			var size := Vector2(font.get_string_size(label["text"], HORIZONTAL_ALIGNMENT_LEFT, -1, UiStyle.TEXT).x, font.get_height(UiStyle.TEXT))
+			var spot: Vector2 = label["at"] * tile_px
+			var at := Atlas.label_at(spot, size, bounds, label["way"], mark, taken)
+			if at == Atlas.NOWHERE:
+				continue
+			taken.append(Rect2(at, size).grow_individual(PLATE.x, PLATE.y, PLATE.x, PLATE.y))
+			_labels.append({"text": label["text"], "at": at, "size": size, "way": label["way"]})
 
 	## The chosen waypoint's tag: a card like the chosen one in the list, its
 	## name and the region it sets you down in, over its ring.
@@ -310,7 +543,7 @@ class Painting extends Control:
 		add_child(tag)
 		tag.reset_size()
 		# Clear of the ring at its widest, dark line and all.
-		var widest := _ring_half(Waypoints.PULSE_PX) + 2.0
+		var widest := Waypoints.ring_half(_mark(), Waypoints.PULSE_PX) + 2.0
 		tag.position = Waypoints.tag_at(
 			_center(Waypoints.cell(destination)).floor(), widest, tag.get_combined_minimum_size(), custom_minimum_size
 		)
@@ -318,19 +551,17 @@ class Painting extends Control:
 	func _draw() -> void:
 		if map == null:
 			return
-		var seen: Dictionary = GameState.world.discovered.get(map.id, {})
+		_shown = _on_screen()
 		# The whole map is night until walked.
 		draw_rect(Rect2(Vector2.ZERO, Vector2(map.size * tile_px)), UiStyle.NIGHT)
-		for cell: Vector2i in map.grid:
-			if seen.has(cell):
-				draw_rect(Rect2(Vector2(cell * tile_px), Vector2(tile_px, tile_px)), WorldTiles.map_color(map.grid[cell]))
+		for cell: Vector2i in _ground:
+			draw_rect(Rect2(Vector2(cell * tile_px), Vector2(tile_px, tile_px)), _ground[cell])
+		_draw_labels()
 		var mark := _mark()
+		# Every waypoint where it stands, greyed until it's open.
 		for waypoint: Dictionary in Interactables.waypoints():
-			if waypoint["mapId"] != map.id:
-				continue
-			if not Interactables.waypoint_discovered(waypoint, GameState.world.discovered):
-				continue
-			_marker(_center(Waypoints.cell(waypoint)), mark, UiStyle.LAMP)
+			if waypoint["mapId"] == map.id:
+				_marker(_center(Waypoints.cell(waypoint)), mark, UiStyle.LAMP if _open(waypoint) else CLOSED)
 		# The lairs of the named monsters the board has posted (PIX-156).
 		for entry in Hunts.living_on(map.id, GameState.questing.board_floors(), GameState.progression.hunted):
 			_marker(_center(Hunts.lair(entry)), mark, LAIR)
@@ -340,14 +571,26 @@ class Painting extends Control:
 		# The chosen waypoint (PIX-241), under the hero's own mark.
 		if not destination.is_empty():
 			var grow := Waypoints.ring_grow(Time.get_ticks_msec() - chosen_at, GameState.settings.reduce_motion)
-			_ring(_center(Waypoints.cell(destination)).floor(), _ring_half(grow))
+			_ring(_center(Waypoints.cell(destination)), mark, grow)
 		# Where the hero is headed (PIX-240), a diamond under the hero's mark.
 		var goal := goal_cell()
 		if goal != Bearing.NOWHERE:
-			_diamond(_center(goal).floor(), mark + 6.0)
+			_diamond(_center(goal), mark + 6.0)
 		if home:
 			var hero: Vector2i = world.player_cell
 			_marker(_center(hero), mark, Color.WHITE)
+
+	## The page's names in the type of the screen, in cream as on the dark
+	## round windows, with a dark line round them on a shade of the night:
+	## the line alone was lost on the Frostgate's snow.
+	func _draw_labels() -> void:
+		var font := UiStyle.body_font()
+		var ascent := font.get_ascent(UiStyle.TEXT)
+		for label: Dictionary in _labels:
+			draw_rect(Rect2(label["at"], label["size"]).grow_individual(PLATE.x, PLATE.y, PLATE.x, PLATE.y), Color(UiStyle.NIGHT, 0.6))
+			var base: Vector2 = label["at"] + Vector2(0, ascent)
+			draw_string_outline(font, base, label["text"], HORIZONTAL_ALIGNMENT_LEFT, -1, UiStyle.TEXT, OUTLINE, UiStyle.NIGHT)
+			draw_string(font, base, label["text"], HORIZONTAL_ALIGNMENT_LEFT, -1, UiStyle.TEXT, UiStyle.CREAM)
 
 	## Where the hero is headed on this page (PIX-240): the person the bearing
 	## is about where they stand now, its spot when it's on this map, or the
@@ -368,28 +611,32 @@ class Painting extends Control:
 			return bearing["cell"]
 		return Bearing.way_out(map.id, String(bearing["map_id"]))
 
-	## A gold diamond with a dark rim, `size` px across.
+	## A gold diamond with a dark rim, `size` px across, its points on the
+	## screen's pixels.
 	func _diamond(center: Vector2, size: float) -> void:
-		var half := floorf(size / 2.0)
-		var rim := half + 3.0
-		draw_colored_polygon(PackedVector2Array([center + Vector2(0, -rim), center + Vector2(rim, 0), center + Vector2(0, rim), center + Vector2(-rim, 0)]), UiStyle.NIGHT)
-		draw_colored_polygon(PackedVector2Array([center + Vector2(0, -half), center + Vector2(half, 0), center + Vector2(0, half), center + Vector2(-half, 0)]), GOAL)
+		var at := Waypoints.snap_point(center, _shown)
+		var half := Waypoints.snap_length(floorf(size / 2.0), _shown)
+		var rim := Waypoints.snap_length(floorf(size / 2.0) + 3.0, _shown)
+		draw_colored_polygon(PackedVector2Array([at + Vector2(0, -rim), at + Vector2(rim, 0), at + Vector2(0, rim), at + Vector2(-rim, 0)]), UiStyle.NIGHT)
+		draw_colored_polygon(PackedVector2Array([at + Vector2(0, -half), at + Vector2(half, 0), at + Vector2(0, half), at + Vector2(-half, 0)]), GOAL)
 
+	## A marker: a square of `color` in a dark rim, on the screen's pixels.
 	func _marker(center: Vector2, size: float, color: Color) -> void:
-		var half := floorf(size / 2.0)
-		draw_rect(Rect2(center - Vector2(half + 2, half + 2), Vector2(half * 2 + 4, half * 2 + 4)), UiStyle.NIGHT)
-		draw_rect(Rect2(center - Vector2(half, half), Vector2(half * 2, half * 2)), color)
+		var squares := Waypoints.marker_squares(center, size, _shown)
+		draw_rect(squares[0], UiStyle.NIGHT)
+		draw_rect(squares[1], color)
 
-	## A square ring `half` px out from `center`: two art pixels of gold
-	## between dark lines, so it reads on night and on walked ground alike.
-	func _ring(center: Vector2, half: float) -> void:
-		var outer := Rect2(center - Vector2(half, half), Vector2(half * 2, half * 2))
-		_band(outer.grow(2), 8, UiStyle.NIGHT)
-		_band(outer, 4, UiStyle.GOLD)
+	## The chosen waypoint's ring round its marker: two art pixels of gold
+	## between dark lines, so it reads on night and on walked ground alike,
+	## about the marker's own pixel (PIX-267).
+	func _ring(center: Vector2, mark: float, grow: int) -> void:
+		var squares := Waypoints.ring_squares(center, mark, grow, _shown)
+		_band(squares[0], squares[3], UiStyle.NIGHT)
+		_band(squares[1], squares[2], UiStyle.GOLD)
 
-	## A rect's edge `width` px thick, inwards, as four whole-pixel strips.
-	func _band(rect: Rect2, width: float, color: Color) -> void:
-		draw_rect(Rect2(rect.position, Vector2(rect.size.x, width)), color)
-		draw_rect(Rect2(rect.position + Vector2(0, rect.size.y - width), Vector2(rect.size.x, width)), color)
-		draw_rect(Rect2(rect.position + Vector2(0, width), Vector2(width, rect.size.y - width * 2)), color)
-		draw_rect(Rect2(rect.position + Vector2(rect.size.x - width, width), Vector2(width, rect.size.y - width * 2)), color)
+	## The frame between two squares about one middle, as four strips.
+	func _band(outer: Rect2, inner: Rect2, color: Color) -> void:
+		draw_rect(Rect2(outer.position, Vector2(outer.size.x, inner.position.y - outer.position.y)), color)
+		draw_rect(Rect2(Vector2(outer.position.x, inner.end.y), Vector2(outer.size.x, outer.end.y - inner.end.y)), color)
+		draw_rect(Rect2(Vector2(outer.position.x, inner.position.y), Vector2(inner.position.x - outer.position.x, inner.size.y)), color)
+		draw_rect(Rect2(Vector2(inner.end.x, inner.position.y), Vector2(outer.end.x - inner.end.x, inner.size.y)), color)

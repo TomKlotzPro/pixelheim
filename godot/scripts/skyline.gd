@@ -58,6 +58,8 @@ const ICONS := {"roof": 932, "roof_awning": 932, "roof_thatch": 734, "roof_moss"
 ## - growth: cell -> his trees and wheat;
 ## - pieces, decor: cell -> Medieval Age tile (the houses, their chimneys);
 ## - icons: cell -> one-tile house, drawn instead without the paid pack;
+## - roofs: cell -> the roof kind of the house standing on it (the map
+##   screen colours each house by it, PIX-266);
 ## - smoke: where each roof's smoke rises, in map pixels;
 ## - lamps: the cells the town's lamps light at night;
 ## - ruins: the burnt houses, in the block's cells, smouldering.
@@ -66,7 +68,7 @@ const ICONS := {"roof": 932, "roof_awning": 932, "roof_thatch": 734, "roof_moss"
 static func plan(grid: Dictionary, town: MapData, ruins: Array = []) -> Dictionary:
 	var out := {
 		"block": Rect2i(), "ground": {}, "objects": {}, "growth": {}, "pieces": {}, "decor": {},
-		"icons": {}, "smoke": [], "lamps": [], "ruins": [],
+		"icons": {}, "roofs": {}, "smoke": [], "lamps": [], "ruins": [],
 	}
 	var outer := block(grid)
 	var room := outer.grow(-1)
@@ -256,11 +258,12 @@ static func _houses(town: MapData, room: Rect2i, cols: Array[Vector2i], rows: Ar
 		var rect := _fit(want, door_x, taken)
 		if not rect.has_area():
 			continue
+		var kind: String = house["kind"]
 		for y in range(rect.position.y, rect.end.y):
 			for x in range(rect.position.x, rect.end.x):
 				taken[Vector2i(x, y)] = true
 				out["ground"][Vector2i(x, y)] = "grass"
-		var kind: String = house["kind"]
+				out["roofs"][Vector2i(x, y)] = kind
 		var pieces := PunyTown.wing_house(rect, door_x, kind)
 		# A window in every bit of wall but the door (and a wide house's
 		# corner posts): from afar the houses are small, and each shows its

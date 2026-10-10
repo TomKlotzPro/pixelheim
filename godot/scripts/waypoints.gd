@@ -5,6 +5,11 @@ class_name Waypoints
 ## marker that breathes (and holds still with reduce motion), and a tag with
 ## its name and the region it sets you down in. Pure: the map screen draws,
 ## this decides.
+## The ring and its marker are drawn about one pixel of the screen (PIX-267):
+## in a full-screen browser the canvas is stretched by an uneven amount, and
+## a marker centred half a pixel off the ring's centre came out a whole
+## screen pixel off it. Every mark now stands on a corner of the screen's
+## pixels with whole pixels each way (`snap_square`), whatever the stretch.
 
 ## How far from the landing a region still names it: the passes set you down
 ## on open road a step or two from the woods and the marsh they lead past.
@@ -15,6 +20,9 @@ const PULSE_MS := 1200
 const PULSE_PX := 8
 ## With reduce motion the ring holds still, this much grown.
 const STEADY_PX := 4
+## Between the marker's colour and the ring's gold at its smallest: the
+## marker's dark rim and a dark line.
+const RING_GAP := 6.0
 ## Between the ring and the tag, and the tag and the map's edge.
 const TAG_GAP := 4.0
 
@@ -66,13 +74,14 @@ static func region_of(waypoint: Dictionary, map: MapData) -> String:
 
 
 ## That region's name as a line of its own ("The Ash Fields", « Les Champs
-## de Cendres »: the data writes them for mid-sentence), or "".
+## de Cendres »), or "". Only where the map has regions of its own names
+## (Atlas.names_regions, PIX-266): on a map that is one region the place is
+## the region, and the list and the tag would say Greyhold twice.
 static func region_name(waypoint: Dictionary, map: MapData) -> String:
 	var region := region_of(waypoint, map)
-	if region == "":
+	if region == "" or not Atlas.names_regions(map):
 		return ""
-	var name := String(Bestiary.region(region).get("name", ""))
-	return name.left(1).to_upper() + name.substr(1)
+	return Atlas.region_title(region)
 
 
 ## How many pixels the ring has grown `elapsed` ms after its waypoint was
@@ -94,3 +103,60 @@ static func tag_at(center: Vector2, reach: float, tag: Vector2, bounds: Vector2)
 	if y < TAG_GAP:
 		y = center.y + reach + TAG_GAP
 	return Vector2(x, y).round()
+
+
+## Where a marker stands for `cell` on a page of `px` pixels a tile: its
+## cell's middle.
+static func mark_at(cell: Vector2i, px: int) -> Vector2:
+	return Vector2(cell) * px + Vector2.ONE * px / 2.0
+
+
+## How far the ring reaches each way from its marker's middle, a marker
+## `mark` px across, grown by `grow`: at its smallest it hugs the marker's
+## dark rim, at its widest it takes in the spot two steps off where
+## travelling sets you down.
+static func ring_half(mark: float, grow: int) -> float:
+	return floorf(mark / 2.0) + RING_GAP + grow
+
+
+## The map's pixel `at` moved onto the nearest corner of the screen's
+## pixels it is shown on (`shown`: the map's px to the screen's, the
+## canvas layer and the window's stretch included).
+static func snap_point(at: Vector2, shown: Transform2D) -> Vector2:
+	return shown.affine_inverse() * (shown * at).round()
+
+
+## A length on the map that is whole pixels on the screen, at least one.
+static func snap_length(length: float, shown: Transform2D) -> float:
+	var scale := shown.get_scale().x
+	return maxf(1.0, roundf(length * scale)) / scale
+
+
+## A square reaching `half` px each way from `center` on the map, with its
+## middle on a corner of the screen's pixels and whole screen pixels each
+## way: squares about one middle stay about one pixel at any stretch, as
+## near as the screen can draw them.
+static func snap_square(center: Vector2, half: float, shown: Transform2D) -> Rect2:
+	var mid := snap_point(center, shown)
+	var reach := snap_length(half, shown)
+	return Rect2(mid - Vector2(reach, reach), Vector2(reach, reach) * 2.0)
+
+
+## A marker `mark` px across at `center`: its dark rim, then its colour.
+static func marker_squares(center: Vector2, mark: float, shown: Transform2D) -> Array[Rect2]:
+	var half := floorf(mark / 2.0)
+	return [snap_square(center, half + 2.0, shown), snap_square(center, half, shown)]
+
+
+## The chosen waypoint's ring round a marker `mark` px across, grown by
+## `grow`: two pixels of gold between dark lines, as the squares its bands
+## run between, outermost first - the dark line's outside, the gold's
+## outside, the gold's inside, the dark line's inside.
+static func ring_squares(center: Vector2, mark: float, grow: int, shown: Transform2D) -> Array[Rect2]:
+	var half := ring_half(mark, grow)
+	return [
+		snap_square(center, half + 2.0, shown),
+		snap_square(center, half, shown),
+		snap_square(center, half - 4.0, shown),
+		snap_square(center, half - 6.0, shown),
+	]
