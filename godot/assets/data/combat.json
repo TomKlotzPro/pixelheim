@@ -751,7 +751,8 @@
       "mapId": "overworld",
       "x": 16,
       "y": 12,
-      "species": "orc"
+      "species": "orc",
+      "sleeps": "night"
     },
     {
       "id": "ash_3",
@@ -765,7 +766,24 @@
       "mapId": "overworld",
       "x": 89,
       "y": 23,
-      "species": "wyvern"
+      "species": "wyvern",
+      "sleeps": "night"
+    },
+    {
+      "id": "ash_night_1",
+      "mapId": "overworld",
+      "x": 42,
+      "y": 23,
+      "species": "wolf",
+      "hours": "night"
+    },
+    {
+      "id": "ash_night_2",
+      "mapId": "overworld",
+      "x": 80,
+      "y": 12,
+      "species": "ghost",
+      "hours": "night"
     },
     {
       "id": "forest_1",
@@ -779,7 +797,8 @@
       "mapId": "overworld",
       "x": 82,
       "y": 42,
-      "species": "goblin"
+      "species": "goblin",
+      "sleeps": "night"
     },
     {
       "id": "forest_3",
@@ -787,6 +806,22 @@
       "x": 72,
       "y": 52,
       "species": "wolf"
+    },
+    {
+      "id": "forest_night_1",
+      "mapId": "overworld",
+      "x": 72,
+      "y": 40,
+      "species": "wolf",
+      "hours": "night"
+    },
+    {
+      "id": "forest_night_2",
+      "mapId": "overworld",
+      "x": 92,
+      "y": 47,
+      "species": "skeleton",
+      "hours": "night"
     },
     {
       "id": "marsh_1",
@@ -810,6 +845,14 @@
       "species": "wolf"
     },
     {
+      "id": "marsh_night_1",
+      "mapId": "overworld",
+      "x": 12,
+      "y": 35,
+      "species": "ghost",
+      "hours": "night"
+    },
+    {
       "id": "deep_1",
       "mapId": "deepwood",
       "x": 20,
@@ -821,7 +864,8 @@
       "mapId": "deepwood",
       "x": 14,
       "y": 22,
-      "species": "troll"
+      "species": "troll",
+      "sleeps": "night"
     },
     {
       "id": "deep_3",
@@ -836,6 +880,14 @@
       "x": 56,
       "y": 44,
       "species": "golem"
+    },
+    {
+      "id": "deep_night_1",
+      "mapId": "deepwood",
+      "x": 42,
+      "y": 8,
+      "species": "shade",
+      "hours": "night"
     },
     {
       "id": "mire_1",
@@ -866,6 +918,22 @@
       "species": "skeleton"
     },
     {
+      "id": "mire_night_1",
+      "mapId": "mirefen",
+      "x": 54,
+      "y": 8,
+      "species": "boneknight",
+      "hours": "night"
+    },
+    {
+      "id": "mire_night_2",
+      "mapId": "mirefen",
+      "x": 30,
+      "y": 6,
+      "species": "shade",
+      "hours": "night"
+    },
+    {
       "id": "coast_1",
       "mapId": "saltmere",
       "x": 12,
@@ -891,7 +959,8 @@
       "mapId": "saltmere",
       "x": 9,
       "y": 15,
-      "species": "pirate_gunner"
+      "species": "pirate_gunner",
+      "sleeps": "night"
     },
     {
       "id": "coast_captain",
@@ -900,6 +969,22 @@
       "y": 9,
       "species": "pirate_captain",
       "size": 1
+    },
+    {
+      "id": "coast_night_1",
+      "mapId": "saltmere",
+      "x": 32,
+      "y": 22,
+      "species": "pirate",
+      "hours": "night"
+    },
+    {
+      "id": "coast_night_2",
+      "mapId": "saltmere",
+      "x": 22,
+      "y": 19,
+      "species": "skeleton",
+      "hours": "night"
     },
     {
       "id": "seacave_1",
@@ -941,7 +1026,8 @@
       "mapId": "blackiron",
       "x": 38,
       "y": 12,
-      "species": "goblin_digger"
+      "species": "goblin_digger",
+      "sleeps": "night"
     },
     {
       "id": "mines_3",
@@ -949,6 +1035,22 @@
       "x": 38,
       "y": 30,
       "species": "goblin_spear"
+    },
+    {
+      "id": "mines_night_1",
+      "mapId": "blackiron",
+      "x": 24,
+      "y": 28,
+      "species": "wolf",
+      "hours": "night"
+    },
+    {
+      "id": "mines_night_2",
+      "mapId": "blackiron",
+      "x": 52,
+      "y": 3,
+      "species": "ghost",
+      "hours": "night"
     },
     {
       "id": "shafts_1",
@@ -990,7 +1092,8 @@
       "mapId": "greyhold",
       "x": 45,
       "y": 12,
-      "species": "turncoat_bowman"
+      "species": "turncoat_bowman",
+      "hours": "day"
     },
     {
       "id": "greyhold_3",
@@ -1004,7 +1107,8 @@
       "mapId": "greyhold",
       "x": 44,
       "y": 23,
-      "species": "turncoat"
+      "species": "turncoat",
+      "sleeps": "night"
     },
     {
       "id": "greyhold_5",
@@ -1012,6 +1116,22 @@
       "x": 50,
       "y": 34,
       "species": "turncoat"
+    },
+    {
+      "id": "greyhold_night_1",
+      "mapId": "greyhold",
+      "x": 35,
+      "y": 32,
+      "species": "hollow_guard",
+      "hours": "night"
+    },
+    {
+      "id": "greyhold_night_2",
+      "mapId": "greyhold",
+      "x": 18,
+      "y": 8,
+      "species": "cutthroat",
+      "hours": "night"
     },
     {
       "id": "cellars_1",
@@ -1067,7 +1187,8 @@
       "mapId": "frostgate",
       "x": 46,
       "y": 14,
-      "species": "yeti"
+      "species": "yeti",
+      "sleeps": "night"
     },
     {
       "id": "frost_4",
@@ -1075,6 +1196,22 @@
       "x": 48,
       "y": 30,
       "species": "wendigo"
+    },
+    {
+      "id": "frost_night_1",
+      "mapId": "frostgate",
+      "x": 38,
+      "y": 24,
+      "species": "wendigo",
+      "hours": "night"
+    },
+    {
+      "id": "frost_night_2",
+      "mapId": "frostgate",
+      "x": 30,
+      "y": 20,
+      "species": "frost_wolf",
+      "hours": "night"
     },
     {
       "id": "icecave_1",
@@ -1116,7 +1253,15 @@
     "respawnSteps": 500,
     "graceSeconds": 1.5,
     "windUpSeconds": 0.4,
-    "biteTellSeconds": 0.4
+    "biteTellSeconds": 0.4,
+    "night": {
+      "about": "PIX-252: a pack that comes out only after dark (its spawn's hours \"night\") is a little stronger than its kind by day and pays a little more: its health, attack, XP and gold grow by these multipliers (its level stays its kind's, so its tag and whether it runs from the hero read as by day), and its kills add `loot` to their drop chance (a common foe's 22% becomes 30%, an elite's 40% 48%). Packs out at every hour, and those asleep at home after dark (sleeps \"night\"), fight as by day.",
+      "hp": 1.15,
+      "attack": 1.1,
+      "xp": 1.15,
+      "gold": 1.25,
+      "loot": 0.08
+    }
   },
   "gathering": {
     "jobXp": 5,

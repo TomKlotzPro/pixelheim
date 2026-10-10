@@ -3201,6 +3201,10 @@ msgid "Monsters fight dirty now: wyverns poison, the dragon burns, golems stun"
 msgstr "Les monstres jouent salement désormais : les wyvernes empoisonnent, le dragon brûle, les golems étourdissent"
 
 #: assets/data/changelog.json
+msgid "Monsters keep hours: after dark, night packs come out in every region under the sky, wolves and skeletons in the forest, ghosts over the marsh, shades in the Deepwood, wendigos on the Frostgate Pass, a little stronger and richer than by day"
+msgstr "Les monstres ont leurs heures : à la nuit tombée, des meutes nocturnes sortent dans chaque région à ciel ouvert, loups et squelettes dans la forêt, fantômes sur le marais, spectres dans les Bois-Profonds, wendigos au col de la Porte-Givre, un peu plus forts et plus riches que le jour"
+
+#: assets/data/changelog.json
 msgid "Most depths now have a twist, shown at the gate: swift foes, warded skills, venomous bites or proud elites, with richer drops and a richer hoard"
 msgstr "La plupart des profondeurs ont désormais une particularité, affichée à la porte : ennemis vifs, compétences scellées, morsures venimeuses ou élites altières, avec plus de butin et un trésor plus riche"
 
@@ -3303,6 +3307,10 @@ msgstr "Parmi les nouvelles compétences : Furie, Nova de givre, Lame empoison
 #: assets/data/changelog.json
 msgid "Next Steps"
 msgstr "Prochaines étapes"
+
+#: assets/data/changelog.json
+msgid "Night Watch"
+msgstr "Veille de nuit"
 
 #: assets/data/changelog.json
 msgid "No more ambushes. Monsters are VISIBLE in the wilds now - see them prowl, choose your fights"
@@ -3535,6 +3543,10 @@ msgstr "DES BIENS QUI RAPPORTENT : un commerce que vous possédez remplit dés
 #: assets/data/changelog.json
 msgid "PUNCHING UP PAYS: a foe above your level pays 5% more XP for each level it stands above you, up to a quarter more, so a hero who has fallen behind catches up faster"
 msgstr "VISER PLUS HAUT, ÇA PAIE : un ennemi de niveau supérieur rapporte 5 % d'XP en plus par niveau d'écart, jusqu'à un quart de plus, si bien qu'un héros à la traîne rattrape son retard plus vite"
+
+#: assets/data/changelog.json
+msgid "Packs change at dusk and dawn only out of your sight, and every quest's quarry can be found at any hour"
+msgstr "Les meutes changent au crépuscule et à l'aube seulement hors de votre vue, et la proie de chaque quête se trouve à toute heure"
 
 #: assets/data/changelog.json
 msgid "Pad in Hand"
@@ -3915,6 +3927,10 @@ msgstr "Le métier de Forge fait baisser les prix de la forge et, au niveau 5, d
 #: assets/data/changelog.json
 msgid "Soft Edges"
 msgstr "Bords doux"
+
+#: assets/data/changelog.json
+msgid "Some day camps sleep by their lit torch at night, a Z drifting up: walk right up to one or strike it and the whole pack wakes"
+msgstr "Certains camps de jour dorment la nuit près de leur torche allumée, un Z flottant au-dessus : approchez tout près ou frappez, et toute la meute se réveille"
 
 #: assets/data/changelog.json
 msgid "Sounds are never quite the same twice, a little higher or lower, louder or softer; a flurry of hits sounds as one, and footsteps are softer, left foot and right"
@@ -5039,6 +5055,10 @@ msgstr "Quand toutes les voix sont prises, les sons qui comptent (une blessure, 
 #: assets/data/changelog.json
 msgid "Where It Leads"
 msgstr "Où ça mène"
+
+#: assets/data/changelog.json
+msgid "Where a monster is found only after dark, the places it lives say so"
+msgstr "Là où un monstre ne se trouve qu'après la tombée de la nuit, les lieux où il vit l'indiquent"
 
 #: assets/data/changelog.json
 msgid "Where regions meet, the ground no longer changes along straight lines and square corners: the edge bends and wanders, still dithered pixel by pixel, and the land's tone runs right to the shore"
@@ -11392,15 +11412,15 @@ msgstr "Première victoire : %s"
 msgid "%s howls - the forest answers!"
 msgstr "%s hurle - la forêt répond !"
 
-#: scripts/enemy.gd:210
+#: scripts/enemy.gd:223
 msgid "Lv %d"
 msgstr "Niv. %d"
 
-#: scripts/enemy.gd:609
+#: scripts/enemy.gd:676
 msgid "blocked"
 msgstr "paré"
 
-#: scripts/enemy.gd:644
+#: scripts/enemy.gd:711
 msgid "%s is afflicted by %s!"
 msgstr "%s est atteint : %s !"
 
@@ -12804,7 +12824,11 @@ msgstr "Abattez %s dans son repaire"
 msgid "Hand it in to %s."
 msgstr "Remettez-la à %s."
 
-#: scripts/state/bestiary.gd:182
+#: scripts/state/bestiary.gd:197
+msgid "%s by night"
+msgstr "%s la nuit"
+
+#: scripts/state/bestiary.gd:203
 msgid "floor %d"
 msgstr "étage %d"
 
@@ -13196,71 +13220,71 @@ msgstr "PV %d"
 msgid "regen %d/turn"
 msgstr "régén. %d/tour"
 
-#: scripts/state/spoils.gd:134
+#: scripts/state/spoils.gd:135
 msgid "Foraging reached %d!"
 msgstr "Cueillette : niveau %d !"
 
-#: scripts/state/spoils.gd:155
+#: scripts/state/spoils.gd:156
 msgid "Mastery: %s Slayer %s. +%d%% damage against %s."
 msgstr "Maîtrise : %s, Tueur %s. +%d%% de dégâts (%s)."
 
-#: scripts/state/spoils.gd:171
+#: scripts/state/spoils.gd:172
 msgid "The bounty on %s is yours: +%d gold."
 msgstr "La prime pour %s vous revient : +%d or."
 
-#: scripts/state/spoils.gd:183
+#: scripts/state/spoils.gd:184
 msgid "%s leaves you %s!"
 msgstr "%s vous laisse %s !"
 
-#: scripts/state/spoils.gd:200
+#: scripts/state/spoils.gd:201
 msgid "Level up: you are now level %d. +%d stat points and +%d skill point%s to spend."
 msgstr "Niveau supérieur : vous voici au niveau %d. +%d points de caractéristique et +%d point%s de compétence à dépenser."
 
-#: scripts/state/spoils.gd:251
+#: scripts/state/spoils.gd:252
 msgid "%s is cleared!"
 msgstr "Étage nettoyé : %s !"
 
-#: scripts/state/spoils.gd:269
+#: scripts/state/spoils.gd:270
 msgid "Among the bones: a page of an old journal (%s). {key:journal} reads it."
 msgstr "Parmi les os : une page d'un vieux journal (%s). {key:journal} pour la lire."
 
-#: scripts/state/spoils.gd:283
+#: scripts/state/spoils.gd:284
 msgid "the %s"
 msgstr "%s"
 
-#: scripts/state/spoils.gd:286
+#: scripts/state/spoils.gd:287
 msgid "Behind the throne, a stair goes on down into the dark: the Deep Hunt."
 msgstr "Derrière le trône, un escalier s'enfonce encore dans le noir : la Traque des Profondeurs."
 
-#: scripts/state/spoils.gd:290
+#: scripts/state/spoils.gd:291
 msgid "A deeper way opens: %s."
 msgstr "Un passage plus profond s'ouvre : %s."
 
-#: scripts/state/spoils.gd:304
+#: scripts/state/spoils.gd:305
 msgid "Depth %d of the Deep Hunt is cleared!"
 msgstr "Profondeur %d de la Traque des Profondeurs : nettoyée !"
 
-#: scripts/state/spoils.gd:319
+#: scripts/state/spoils.gd:320
 msgid "depth %d of the Deep Hunt"
 msgstr "la profondeur %d de la Traque des Profondeurs"
 
-#: scripts/state/spoils.gd:323
+#: scripts/state/spoils.gd:324
 msgid "A milestone: %d depths below the throne. The %s is yours, a trophy for the shelf at home."
 msgstr "Un jalon : %d profondeurs sous le trône. Le %s est à vous, un trophée pour l'étagère de la maison."
 
-#: scripts/state/spoils.gd:326
+#: scripts/state/spoils.gd:327
 msgid "A hole into the dark opens beside the way up: depth %d waits below."
 msgstr "Un trou s'ouvre sur le noir près de la montée : la profondeur %d attend en dessous."
 
-#: scripts/state/spoils.gd:343
+#: scripts/state/spoils.gd:344
 msgid "The chest bares its teeth — a mimic!"
 msgstr "Le coffre montre les dents — c'est une mimique !"
 
-#: scripts/state/spoils.gd:355
+#: scripts/state/spoils.gd:356
 msgid "Too heavy to carry. Lighten the pack and come back."
 msgstr "Trop lourd à porter. Allégez votre sac et revenez."
 
-#: scripts/state/spoils.gd:404
+#: scripts/state/spoils.gd:405
 msgid "Nothing's biting here yet. Try again in a while, or somewhere else."
 msgstr "Ça ne mord pas encore ici. Réessayez dans un moment, ou ailleurs."
 
@@ -13580,19 +13604,19 @@ msgstr "Aucune carte ne va aussi profond."
 msgid "{epithet} {name}"
 msgstr "{name} {epithet}"
 
-#: scripts/world_foes.gd:259
+#: scripts/world_foes.gd:341
 msgid "The pack is scattered. Another comes once you've walked a good way, or after a night's rest."
 msgstr "La meute est dispersée. Une autre reviendra quand vous aurez bien marché, ou après une nuit de repos."
 
-#: scripts/world_foes.gd:275
+#: scripts/world_foes.gd:357
 msgid "%s is no more."
 msgstr "%s n'est plus."
 
-#: scripts/world_foes.gd:275
+#: scripts/world_foes.gd:357
 msgid "Victory"
 msgstr "Victoire"
 
-#: scripts/world_foes.gd:276
+#: scripts/world_foes.gd:358
 msgid "Boss slayer: +%d%% damage for %d minutes."
 msgstr "Tueur de boss : +%d %% de dégâts pendant %d minutes."
 

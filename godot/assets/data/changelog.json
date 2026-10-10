@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.195.0",
+      "date": "2026-10-10",
+      "codename": "Night Watch",
+      "notes": [
+        "Monsters keep hours: after dark, night packs come out in every region under the sky, wolves and skeletons in the forest, ghosts over the marsh, shades in the Deepwood, wendigos on the Frostgate Pass, a little stronger and richer than by day",
+        "Some day camps sleep by their lit torch at night, a Z drifting up: walk right up to one or strike it and the whole pack wakes",
+        "Packs change at dusk and dawn only out of your sight, and every quest's quarry can be found at any hour",
+        "Where a monster is found only after dark, the places it lives say so"
+      ]
+    },
+    {
       "version": "0.194.0",
       "date": "2026-10-10",
       "codename": "Lamplight",

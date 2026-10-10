@@ -60,6 +60,9 @@ func _check_camps(map_id: String) -> void:
 		var home := Vector2i(spawn["x"], spawn["y"])
 		assert_false(view.camps.has(home), "%s's home stays open" % spawn["id"])
 		assert_true(map.is_walkable(home))
+		# A night pack keeps no camp (PIX-252; test_night_packs).
+		if Packs.of_the_night(spawn):
+			continue
 		var kinds := []
 		for dy in range(-2, 3):
 			for dx in range(-2, 3):

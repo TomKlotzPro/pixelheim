@@ -13,6 +13,7 @@
 # was taken still finishing it (PIX-231), a named boss that falls as a
 # boss does and holds the way out while it hunts (PIX-232), weak monsters
 # running from a far stronger hero without the battle music (PIX-251), the
+# same field holding other packs by day and at night (PIX-252), the
 # map's waypoint list showing where a waypoint takes you before it does, then
 # taking you there (PIX-241), hero creation's first night skipped with
 # Tab while the name field has the keys (PIX-228), a quest chosen in the
@@ -85,6 +86,15 @@ FLOWS=(
 	# charging, and the music stays the place's. At play zoom: a quiet run's
 	# camera otherwise sees a few tiles, and a monster notices only on screen.
 	"fright|--map overworld --at 59,34 --zoom 4 --level 20 --wait 3|map=overworld .* fled=[1-9][0-9]* music=world"
+	# The same field by day and at night (PIX-252): the forest's slimes,
+	# goblins and wolves by day; after dark the goblins asleep by their fire,
+	# and a second wolf pack and the walking dead out among them.
+	"field-day|--map overworld --at 67,46|map=overworld cell=\\(67, 46\\).* packs=slime,goblin,wolf$"
+	"field-night|--map overworld --at 67,46 night|map=overworld cell=\\(67, 46\\).* packs=slime,goblin:asleep,wolf,wolf,skeleton$"
+	# Night falling while the hero watches the goblins' camp: nothing changes
+	# on the screen - the goblins stay up, the wolves whose home is in view
+	# wait - and the dead come out off it.
+	"nightfall|--map overworld --at 79,43 --zoom 4 nightfall|map=overworld cell=\\(79, 43\\).* packs=slime,goblin,wolf,skeleton$"
 	"bounty|--map town --at 43,22 --cleared 4 --keys w,e|open=bounty_screen"
 	"throne|--map town --cleared 15 --seen maren_confession throne --keys s,e --wait 0.5|open=reveal_screen"
 	"festival|--map town --town-tier 2 --at 43,27 festival --keys w,e,e,e|open=ring_toss_screen"
