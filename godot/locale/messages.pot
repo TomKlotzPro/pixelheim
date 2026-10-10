@@ -14060,27 +14060,27 @@ msgstr ""
 msgid "Arrows"
 msgstr ""
 
-#: scripts/ways.gd:149
+#: scripts/ways.gd:165
 msgid "Go down into %s?"
 msgstr ""
 
-#: scripts/ways.gd:152
+#: scripts/ways.gd:168
 msgid "Liane's stair goes down through the floor, and the cold comes up it like a draught."
 msgstr ""
 
-#: scripts/ways.gd:154
+#: scripts/ways.gd:170
 msgid "The keep's stair goes down to the cellars, where something still stands the old watch."
 msgstr ""
 
-#: scripts/ways.gd:157
+#: scripts/ways.gd:173
 msgid "The stairs"
 msgstr ""
 
-#: scripts/ways.gd:159
+#: scripts/ways.gd:175
 msgid "Go down"
 msgstr ""
 
-#: scripts/ways.gd:159
+#: scripts/ways.gd:175
 msgid "Stay"
 msgstr ""
 
@@ -14088,7 +14088,7 @@ msgstr ""
 msgid "%s bars your way: no leaving until the fight is over."
 msgstr ""
 
-#: scripts/world.gd:321
+#: scripts/world.gd:323
 msgid "No map reaches this deep."
 msgstr ""
 
