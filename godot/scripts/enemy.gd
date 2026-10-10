@@ -26,6 +26,10 @@ const NO_CELL := Vector2i(-1, -1)
 ## drop starts by the bubble's top (in the bubble's half-size units).
 const SHIVER := 1.0
 const DROP_FROM := 8.0
+## The alert's bubble: drawn at half the UI's size, its sides this far off
+## the "!"'s ink (in its own units, so three art pixels).
+const BUBBLE_SCALE := 0.5
+const BUBBLE_PAD := 6.0
 const CONTACT_RADIUS := 13.0
 ## A bite that was told lands if the hero is still this close.
 const BITE_REACH := 20.0
@@ -163,6 +167,7 @@ func _ready() -> void:
 	gait = Gait.new(sprite, art, size)
 	_play("idle")
 	add_child(sprite)
+	sprite.animation_changed.connect(_turned)
 	# Fafnyr and Morvax fight with their own attacks too (PIX-150); an elite
 	# has its family's one trick (PIX-155), a named monster one of its own
 	# besides (PIX-156).
@@ -322,6 +327,7 @@ func notice() -> void:
 		mark = _bubble(Color("d8433f"))
 		Lights.unshade(mark)
 		add_child(mark)
+	_place_bubble(mark)
 	mark.modulate.a = 1.0
 	mark.visible = true
 	var fade := mark.create_tween()
@@ -342,12 +348,16 @@ func _name_plate(lift: float) -> Label:
 	plate.scale = Vector2.ONE * 0.25
 	plate.z_index = 10
 	plate.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	plate.resized.connect(func() -> void: plate.position = Vector2(-plate.size.x * 0.125, lift - plate.size.y * 0.25))
+	# Its words' ink centred over the bar, not its box (PIX-268, Ink).
+	var words := Ink.of_text(plate.text, UiStyle.bold_font(), UiStyle.TEXT)
+	plate.resized.connect(func() -> void: plate.position = Vector2(-words.get_center().x * 0.25, lift - plate.size.y * 0.25))
 	return plate
 
 
 ## A "!" in `ink` in a white bubble over the head, built at the UI's size
-## and drawn at half of it: one art pixel per font pixel.
+## and drawn at half of it: one art pixel per font pixel. The bubble's
+## sides stand BUBBLE_PAD off the glyph's ink, not its box (PIX-268: the
+## face's spacing after the "!" pushed it left of the bubble's middle).
 func _bubble(ink: Color) -> PanelContainer:
 	var bubble := PanelContainer.new()
 	var box := StyleBoxFlat.new()
@@ -355,19 +365,51 @@ func _bubble(ink: Color) -> PanelContainer:
 	box.border_color = Color(0.12, 0.07, 0.05)
 	box.set_border_width_all(2)
 	box.set_corner_radius_all(4)
-	box.content_margin_left = 6
-	box.content_margin_right = 6
+	var sides := bubble_sides()
+	box.content_margin_left = sides.x
+	box.content_margin_right = sides.y
 	box.content_margin_top = 0
 	box.content_margin_bottom = 0
 	bubble.add_theme_stylebox_override("panel", box)
 	bubble.add_child(UiStyle.strong("!", 18, ink))
-	bubble.scale = Vector2.ONE * 0.5
+	bubble.scale = Vector2.ONE * BUBBLE_SCALE
 	bubble.z_index = 10
 	bubble.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	# Clear of the level tag (PIX-188) under it, which hid the "!"'s dot.
-	var lift := -20.0 * _rest_scale.y - 20
-	bubble.resized.connect(func() -> void: bubble.position = Vector2(-bubble.size.x * 0.25, lift))
+	bubble.resized.connect(_place_bubble.bind(bubble))
 	return bubble
+
+
+## The bubble's margins left and right of its "!": BUBBLE_PAD each side of
+## the glyph's ink, so the ink is the bubble's middle, and a whole number of
+## art pixels wide.
+static func bubble_sides() -> Vector2:
+	var face := UiStyle.bold_font()
+	var ink := Ink.of_text("!", face, UiStyle.TEXT)
+	var box := face.get_string_size("!", HORIZONTAL_ALIGNMENT_LEFT, -1, UiStyle.TEXT).x
+	return Vector2(BUBBLE_PAD - ink.position.x, BUBBLE_PAD - (box - ink.end.x))
+
+
+## A bubble over the head the way the monster faces now (PIX-268: its head
+## isn't always over its middle), in whole pixels; clear of the level tag
+## (PIX-188) under it, which hid the "!"'s dot.
+func _place_bubble(bubble: Control) -> void:
+	var head := Ink.head(sprite.sprite_frames, Ink.rest_pose(sprite.sprite_frames, sprite.animation), _rest_at, _rest_scale)
+	bubble.position = Vector2(bubble_x(bubble.size.x, head.get_center().x), -20.0 * _rest_scale.y - 20)
+
+
+## The alert or the fright's cue keeps over its head as it turns to the
+## chase or the flight.
+func _turned() -> void:
+	if mark != null and mark.visible:
+		_place_bubble(mark)
+	if fright_mark != null and fright_mark.visible:
+		_place_bubble(fright_mark.get_child(0) as Control)
+
+
+## Where a bubble `width` wide (in its own units) goes so its middle, its
+## "!", is over `centre`.
+static func bubble_x(width: float, centre: float) -> float:
+	return Ink.centred(Rect2(0, 0, width * BUBBLE_SCALE, 0), centre)
 
 
 ## The hero is seen, and far too strong (PIX-251): a pale "!" and a drop of
@@ -389,6 +431,7 @@ func take_fright(to_player: Vector2) -> void:
 	if fright_mark == null:
 		fright_mark = _fright_cue()
 		add_child(fright_mark)
+	_place_bubble(fright_mark.get_child(0) as Control)
 	var still := GameState.settings.reduce_motion
 	fright_mark.visible = true
 	fright_mark.modulate.a = 1.0

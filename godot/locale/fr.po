@@ -1793,6 +1793,10 @@ msgid "A monster running from you doesn't start the battle music"
 msgstr "Un monstre qui vous fuit ne lance pas la musique de combat"
 
 #: assets/data/changelog.json
+msgid "A monster's alert and fright bubbles sit centred over its head, and a named monster's plate over its health bar"
+msgstr "Les bulles d'alerte et de frayeur d'un monstre se centrent au-dessus de sa tête, et la plaque d'un monstre nommé au-dessus de sa barre de vie"
+
+#: assets/data/changelog.json
 msgid "A necromancer's grave violet stays on their own robe and hood: borrowed iron, leather or a gilded plate keeps its colour"
 msgstr "Le violet funèbre du nécromancien reste sur sa robe et sa capuche : le fer, le cuir ou les plates dorées qu'il emprunte gardent leur couleur"
 
@@ -2233,12 +2237,20 @@ msgid "DUSK ON THE SQUARE: as the sun goes down the townsfolk walk to the square
 msgstr "LE CRÉPUSCULE SUR LA PLACE : au coucher du soleil, les habitants se rendent sur la place et s'attardent autour du puits, puis rentrent chez eux pour la nuit"
 
 #: assets/data/changelog.json
+msgid "Damage numbers and the spoils that float up are centred on the foe, on whole pixels"
+msgstr "Les dégâts et le butin qui s'élèvent sont centrés sur l'adversaire, au pixel près"
+
+#: assets/data/changelog.json
 msgid "Danger, Visibly"
 msgstr "Danger visible"
 
 #: assets/data/changelog.json
 msgid "Dangerous ground is visible: wild terrain grows dark tufts on the map"
 msgstr "Les terrains dangereux se voient : les terres sauvages se couvrent de touffes sombres sur la carte"
+
+#: assets/data/changelog.json
+msgid "Dead Centre"
+msgstr "En plein centre"
 
 #: assets/data/changelog.json
 msgid "Deep Gear"
@@ -4719,6 +4731,10 @@ msgstr "Les cols deviennent des relais de voyage rapide dès que vous les aperce
 #: assets/data/changelog.json
 msgid "The quest is now Relics of the Five - four to find, the five's to bring home - and the town's goals and the bounty board no longer offer floors behind a barred gate"
 msgstr "La quête s'appelle désormais Les Reliques des Cinq - quatre à trouver, celles des cinq à ramener - et les objectifs du village comme le tableau des primes ne proposent plus d'étages derrière une porte barrée"
+
+#: assets/data/changelog.json
+msgid "The quest marks over villagers sit centred on their heads, whichever way they face, and hold still while they breathe or walk"
+msgstr "Les marques de quête au-dessus des villageois sont centrées sur leur tête, de quelque côté qu'ils se tournent, et restent immobiles quand ils respirent ou marchent"
 
 #: assets/data/changelog.json
 msgid "The rank's look sits over your clothes and gear and never hides them; with Reduce motion the old look simply fades into the new"
@@ -11424,15 +11440,15 @@ msgstr "Première victoire : %s"
 msgid "%s howls - the forest answers!"
 msgstr "%s hurle - la forêt répond !"
 
-#: scripts/enemy.gd:223
+#: scripts/enemy.gd:228
 msgid "Lv %d"
 msgstr "Niv. %d"
 
-#: scripts/enemy.gd:676
+#: scripts/enemy.gd:719
 msgid "blocked"
 msgstr "paré"
 
-#: scripts/enemy.gd:711
+#: scripts/enemy.gd:754
 msgid "%s is afflicted by %s!"
 msgstr "%s est atteint : %s !"
 
@@ -13660,7 +13676,7 @@ msgstr "Victoire"
 msgid "Boss slayer: +%d%% damage for %d minutes."
 msgstr "Tueur de boss : +%d %% de dégâts pendant %d minutes."
 
-#: scripts/world_fx.gd:147
+#: scripts/world_fx.gd:155
 msgid "LEVEL UP"
 msgstr "NIVEAU SUPÉRIEUR"
 
