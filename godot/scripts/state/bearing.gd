@@ -154,7 +154,12 @@ static func of_quest(quest: Dictionary, progression: ProgressionState, settlemen
 			for entry: Dictionary in Economy.recipes():
 				if entry["itemId"] == objective["itemId"]:
 					var station: Dictionary = Economy._data()["jobStations"].get(entry["job"]["id"], {})
-					if not station.is_empty():
+					var keeper := Npcs.keeper_of(String(station.get("mapId", "")))
+					if not keeper.is_empty() and Npcs.at_stall(keeper, Town.done_projects(settlement)):
+						# Crafted at the keeper's stall while the station is
+						# rubble (PIX-283), not behind its shut door.
+						_at_npc(lead, keeper["id"], settlement)
+					elif not station.is_empty():
 						_at(lead, station["mapId"], NOWHERE)
 					break
 	return lead
@@ -191,9 +196,11 @@ static func _at_giver(lead: Dictionary, quest: Dictionary, settlement: Settlemen
 	_at_npc(lead, quest["giver"], settlement)
 
 
-## At a villager, where they live.
+## At a villager, where they stand now: a keeper at their stall on the square
+## while their building is rubble (PIX-283: the lead went to the ruin's shut
+## door), else where they live.
 static func _at_npc(lead: Dictionary, npc_id: String, settlement: SettlementState) -> void:
-	var npc := Npcs.by_id(npc_id, settlement.settlers)
+	var npc := Npcs.by_id(npc_id, settlement.settlers, Town.done_projects(settlement))
 	lead["who"] = npc_id
 	if npc.has("mapId"):
 		_at(lead, npc["mapId"], Vector2i(int(npc.get("x", -1)), int(npc.get("y", -1))))

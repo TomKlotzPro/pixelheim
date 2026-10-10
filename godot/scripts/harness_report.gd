@@ -67,6 +67,7 @@ const TABLE := [
 	{"field": "rose", "says": "a chapter card's title, how far it rose coming in (PIX-253)"},
 	{"field": "saves", "says": "with seamless: the saves crossing lines made (once for crossing back and forth, PIX-269)"},
 	{"field": "shortcut", "says": "on a dungeon floor with a shortcut out to its way in: open or shut (PIX-255)"},
+	{"field": "speaker", "says": "who the open conversation is with, by id: innkeeper (PIX-283)"},
 	{"field": "stood", "says": "named foes that stood down rather than fell, when one did (PIX-255)"},
 	{"field": "story", "says": "the main story's hollow diamond on the map's page, while something else is followed (PIX-253)"},
 	{"field": "tab", "says": "with station: the tab the counter opened on (PIX-234)"},
@@ -420,6 +421,13 @@ func field_shortcut() -> String:
 	if door.is_empty():
 		return ""
 	return "open" if world.map.portals.has(door["cell"]) else "shut"
+
+
+func field_speaker() -> String:
+	for node in world.get_children():
+		if node.has_method("_advance"):
+			return String(node.npc.get("id", ""))
+	return ""
 
 
 func field_stood() -> String:

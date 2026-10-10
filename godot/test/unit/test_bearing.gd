@@ -26,8 +26,9 @@ func test_a_new_hero_is_sent_to_maren_then_sela() -> void:
 	var lead := _lead()
 	assert_true(lead["main"], "the main story leads")
 	assert_eq(lead["step"], "Ask Sela the innkeeper for work")
-	var sela := Npcs.by_id("innkeeper", state.settlement.settlers)
-	assert_eq(lead["map_id"], sela["mapId"], "to where Sela is")
+	# In the Ashes, her tent on the square (PIX-283), not her inn's ruin.
+	var sela := Npcs.by_id("innkeeper", state.settlement.settlers, Town.done_projects(state.settlement))
+	assert_eq(lead["map_id"], "town", "to where Sela is")
 	assert_eq(lead["cell"], Vector2i(int(sela["x"]), int(sela["y"])))
 	assert_ne(lead["place"], "", "and the place is named")
 
@@ -49,11 +50,13 @@ func test_a_followed_quest_leads_and_then_says_to_hand_it_in() -> void:
 	var lead := _lead()
 	assert_false(lead["main"], "the followed quest leads, not the story")
 	assert_eq(lead["title"], "A First Brew")
-	assert_eq(lead["map_id"], "town_alchemist", "to Vex's cauldron")
+	assert_eq(lead["map_id"], "town", "to Vex's stall while her house is ash (PIX-283)")
+	state.settlement.projects.assign(["vexs_brewery"])
+	assert_eq(_lead()["map_id"], "town_alchemist", "to Vex's cauldron once it stands")
 	state.progression.quests["herbs_for_vex"]["progress"] = 1
 	lead = _lead()
 	assert_string_contains(lead["step"], "Hand it in to")
-	var vex := Npcs.by_id("alchemist_vex", state.settlement.settlers)
+	var vex := Npcs.by_id("alchemist_vex", state.settlement.settlers, Town.done_projects(state.settlement))
 	assert_eq(lead["cell"], Vector2i(int(vex["x"]), int(vex["y"])), "to Vex herself")
 
 
