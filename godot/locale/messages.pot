@@ -3897,6 +3897,10 @@ msgid "Settlers move in as the town rises: Mira the Weaver, Old Tomas, Serra and
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Seven new waypoints reach every region: Saltmere Hamlet, the Sea Cave, the Miners' Camp, Gunnar's Camp, Liane's Observatory, the Old Guard's Camp and the Keep Yard"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Shadows became a tone, not a hole: half-strength and shorter under a higher sun - the long black smears are gone"
 msgstr ""
 
@@ -4565,6 +4569,10 @@ msgid "The Village Reborn"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Whole Reach"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Wide View"
 msgstr ""
 
@@ -4598,6 +4606,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The choice happens INSIDE the ascension: the letterboxed scene holds, the fork appears as cards, and your hero changes clothes the moment you pick"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The chosen waypoint's ring and its marker share one centre at any window size"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4714,6 +4726,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The map screen reads cleanly: its legend sits under the map, the HUD steps aside while it's open, and keys like the comma show as their mark instead of their name"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The map shows the world as it stands: every map you've found is a page, turned with left and right, its roads out and regions named, and the village drawn small inside its walls"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4850,6 +4866,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The water cleared: translucent shallows over the riverbed, and a lip of foam along every bank where water meets land"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The waypoint list shows every waypoint under its place, greys the ones not found yet, and names the region where you land"
 msgstr ""
 
 #: assets/data/changelog.json

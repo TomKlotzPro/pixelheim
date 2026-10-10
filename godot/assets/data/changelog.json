@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.200.0",
+      "date": "2026-10-10",
+      "codename": "The Whole Reach",
+      "notes": [
+        "The map shows the world as it stands: every map you've found is a page, turned with left and right, its roads out and regions named, and the village drawn small inside its walls",
+        "Seven new waypoints reach every region: Saltmere Hamlet, the Sea Cave, the Miners' Camp, Gunnar's Camp, Liane's Observatory, the Old Guard's Camp and the Keep Yard",
+        "The waypoint list shows every waypoint under its place, greys the ones not found yet, and names the region where you land",
+        "The chosen waypoint's ring and its marker share one centre at any window size"
+      ]
+    },
+    {
       "version": "0.199.0",
       "date": "2026-10-10",
       "codename": "You Stayed",
