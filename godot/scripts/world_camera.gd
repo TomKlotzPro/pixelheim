@@ -56,10 +56,16 @@ var _shake_strength := 0.0
 ## A blow lands: the world holds its breath for a few hundredths of a second
 ## (PIX-155), counted in real time so the stop can end itself.
 var _stopped := false
-## The map the camera is held in, in pixels, and whether it may look past
-## its south edge under the dock (set_limits).
-var _map_px := Vector2.ZERO
+## What the camera is held in, in world pixels (set_bounds): the map the
+## hero stands on, and the maps drawn beside it (One Reach, PIX-269, step
+## 5); the bounds as they're held now, eased toward those as they grow or
+## shrink (a map beside the hero's drawn, or let go) so the view never
+## jumps; and whether it may look past their south edge under the dock.
+var _bounds := Rect2()
+var _held := Rect2()
 var _under_dock := false
+## How fast the bounds ease to new ones, per second.
+const BOUNDS_EASE := 6.0
 
 
 func _ready() -> void:
@@ -91,23 +97,72 @@ func attach(player: Node2D) -> void:
 ## ground is drawn on past the edge to fill what shows beside the dock
 ## (MapView.EDGE_PAD).
 func set_limits(size_px: Vector2, under_dock := false) -> void:
-	_map_px = size_px
+	set_bounds(Rect2(Vector2.ZERO, size_px), under_dock)
+
+
+## Holds the camera inside `rect` (world pixels): at once (`cut`, a map
+## entered), or easing out to it or in from it (One Reach, PIX-269: the
+## maps beside the hero's drawn or let go) - a camera pressed against an
+## edge that opens drifts out over what's beyond rather than jumping.
+func set_bounds(rect: Rect2, under_dock := false, cut := true) -> void:
+	_bounds = rect
 	_under_dock = under_dock
-	camera.limit_right = int(size_px.x)
-	_hold_bottom()
+	if cut or not _held.has_area():
+		_held = rect
+	_hold()
 	camera.reset_smoothing()
 
 
-## The bottom limit for the dock as it stands now (it is laid out after the
-## first map is entered, and its height in the world changes with the zoom).
-func _hold_bottom() -> void:
+## The limits for the bounds as they're held now, and the dock as it stands
+## (it is laid out after the first map is entered, and its height in the
+## world changes with the zoom).
+func _hold() -> void:
 	# Not while something else frames the shot (the overview frees it).
-	if camera == null or _map_px == Vector2.ZERO or not follows:
+	if camera == null or not _held.has_area() or not follows:
 		return
 	var below := (720.0 - dock_top()) / camera.zoom.y if _under_dock else 0.0
-	var bottom := int(ceilf(_map_px.y + below))
-	if camera.limit_bottom != bottom:
-		camera.limit_bottom = bottom
+	var limits := [int(floorf(_held.position.x)), int(floorf(_held.position.y)), int(ceilf(_held.end.x)), int(ceilf(_held.end.y + below))]
+	if [camera.limit_left, camera.limit_top, camera.limit_right, camera.limit_bottom] != limits:
+		camera.limit_left = limits[0]
+		camera.limit_top = limits[1]
+		camera.limit_right = limits[2]
+		camera.limit_bottom = limits[3]
+
+
+## The held bounds a frame nearer the wanted ones, each edge easing on its
+## own and landing on the wanted one once within half a pixel.
+func _ease_bounds(delta: float) -> void:
+	if _held == _bounds:
+		return
+	var step := 1.0 - exp(-BOUNDS_EASE * delta)
+	var from := [_held.position.x, _held.position.y, _held.end.x, _held.end.y]
+	var to := [_bounds.position.x, _bounds.position.y, _bounds.end.x, _bounds.end.y]
+	for i in 4:
+		from[i] = lerpf(from[i], to[i], step)
+		if absf(from[i] - to[i]) < 0.5:
+			from[i] = to[i]
+	_held = Rect2(from[0], from[1], from[2] - from[0], from[3] - from[1])
+
+
+## Whether the bounds have eased to the wanted ones.
+func settled() -> bool:
+	return _held == _bounds
+
+
+## The world moved by `by` under the camera (One Reach, PIX-269: the hero
+## handed over to the map beside theirs, the world back at its origin):
+## everything the camera knows moves with it, so the view doesn't.
+func shift(by: Vector2) -> void:
+	_hero_tick_from += by
+	_hero_tick_to += by
+	_camera_at += by
+	_bounds.position += by
+	_held.position += by
+	if camera == null:
+		return
+	_hero_px += (by * camera.zoom.x * stretch()).round()
+	camera.global_position += by
+	_hold()
 
 
 func _physics_process(_delta: float) -> void:
@@ -119,7 +174,8 @@ func _physics_process(_delta: float) -> void:
 
 ## The frame's camera: following the hero, then the shake on top.
 func update(delta: float) -> void:
-	_hold_bottom()
+	_ease_bounds(delta)
+	_hold()
 	_follow_hero(delta)
 	_apply_shake(delta)
 

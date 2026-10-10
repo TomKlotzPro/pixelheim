@@ -29,6 +29,31 @@ func spawn_for(data: MapData) -> void:
 		world.actors.add_child(villager)
 
 
+## The folk of a map walked into over a line (One Reach, PIX-269): where
+## the hour puts them, each in sight `coming` into it (fading in) - two
+## frames on, as making them is a few milliseconds the crossing's own frame
+## can do without.
+var _coming := 0
+var _come: Callable
+
+
+func come_in(coming: Callable) -> void:
+	_come = coming
+	_coming = 2
+
+
+func _process(_delta: float) -> void:
+	if _coming <= 0:
+		return
+	_coming -= 1
+	if _coming > 0 or world.map == null:
+		return
+	spawn_for(world.map)
+	keep_hours(true)
+	for villager: Node in get_tree().get_nodes_in_group("npcs"):
+		_come.call(villager)
+
+
 ## A recruit settled or the town grew: redraw who stands on this map.
 func respawn() -> void:
 	for villager in get_tree().get_nodes_in_group("npcs"):

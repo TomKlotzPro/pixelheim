@@ -33,8 +33,9 @@ const TABLE := [
 	{"field": "mobs", "says": "monsters standing (not dying)"},
 	{"field": "ascension", "says": "with rankup: the ascension's beat, closed once it's gone (PIX-244)"},
 	{"field": "backsteps", "says": "with motion: frames the hero stepped back on screen while walking forward, lost if found in too few to judge (PIX-135, PIX-275)"},
+	{"field": "beside", "says": "with seamless: the maps drawn beside the hero's, by id, or none (PIX-269)"},
 	{"field": "card", "says": "the card naming the place the hero has come to, while it's up (PIX-269)"},
-	{"field": "change", "says": "with fades: how the last change of scene looked: dissolve, dark or cut (PIX-269)"},
+	{"field": "change", "says": "with fades: how the last change of scene looked: dissolve, dark or cut, or seamless for a line walked over (PIX-269)"},
 	{"field": "chapter", "says": "a chapter card's chapter, while it's up (PIX-253)"},
 	{"field": "clock", "says": "with sleep: the clock the hero woke at (PIX-246)"},
 	{"field": "continued", "says": "the honest card where the story runs out, while it's up: the chapter it waits on (PIX-253 step 8)"},
@@ -47,6 +48,7 @@ const TABLE := [
 	{"field": "fled", "says": "monsters that ran from a hero far above them, when any did (PIX-251)"},
 	{"field": "floats", "says": "what floated up from where it was won, merged, when anything did (PIX-245)"},
 	{"field": "floor", "says": "on a floor of a region's dungeon: which of how many, 2/3 (PIX-255)"},
+	{"field": "frames", "says": "with crossing: the walk's frames, the most work and the 99th percentile in ms: 240 max 3.1 p99 2.4 (PIX-269)"},
 	{"field": "gate", "says": "the gate the story keeps shut that said its line on this run (PIX-254)"},
 	{"field": "home", "says": "who the story brought home to live in town, by first name: wenna (PIX-255)"},
 	{"field": "letters", "says": "Maren's letters in the pack, once any is out (PIX-253)"},
@@ -63,6 +65,7 @@ const TABLE := [
 	{"field": "read", "says": "on the journal's Letters page: the letters it reads (PIX-253)"},
 	{"field": "rise", "says": "with --rise: how far the building on the tour has risen: ruin, rising, built (PIX-264)"},
 	{"field": "rose", "says": "a chapter card's title, how far it rose coming in (PIX-253)"},
+	{"field": "saves", "says": "with seamless: the saves crossing lines made (once for crossing back and forth, PIX-269)"},
 	{"field": "shortcut", "says": "on a dungeon floor with a shortcut out to its way in: open or shut (PIX-255)"},
 	{"field": "stood", "says": "named foes that stood down rather than fell, when one did (PIX-255)"},
 	{"field": "story", "says": "the main story's hollow diamond on the map's page, while something else is followed (PIX-253)"},
@@ -220,6 +223,14 @@ func field_backsteps() -> String:
 	return noted("backsteps")
 
 
+func field_beside() -> String:
+	if not flags.has("seamless"):
+		return ""
+	var ids: Array = world.neighbours.drawn.keys()
+	ids.sort()
+	return ",".join(ids) if not ids.is_empty() else "none"
+
+
 func field_card() -> String:
 	var card: Variant = world.hud.place_card
 	return (card as PanelContainer).get_child(0).get_child(0).text if is_instance_valid(card) else ""
@@ -295,6 +306,10 @@ func field_floor() -> String:
 		return ""
 	var entry := Depths.floor_of(world.map.id)
 	return "%d/%d" % [int(entry["number"]), Depths.count(entry["dungeon"])]
+
+
+func field_frames() -> String:
+	return noted("frames")
 
 
 func field_gate() -> String:
@@ -392,6 +407,10 @@ func field_rise() -> String:
 func field_rose() -> String:
 	var card := _chapter_card()
 	return str(roundi(card.rose)) if card != null else ""
+
+
+func field_saves() -> String:
+	return str(world.neighbours.saves) if flags.has("seamless") else ""
 
 
 func field_shortcut() -> String:

@@ -81,14 +81,38 @@ static func cap_in(region: String) -> int:
 ## and the packs' camps. Read from the map as it loads, before a house or a
 ## prop is drawn over it, so it's the same with or without the paid art.
 static func decks(map: MapData) -> Dictionary:
-	var out := {}
+	var dealing := dealing_decks(map)
+	deal_cells(dealing, 1 << 30)
+	return dealt_decks(dealing)
+
+
+## The decks dealt a few hundred cells at a time (One Reach, PIX-269: a
+## map's are worked out ahead a slice a frame, KeptGround.decks_working):
+## where it stands, then deal_cells until it's through, then dealt_decks.
+static func dealing_decks(map: MapData) -> Dictionary:
+	var dealing := {"map": map, "out": {}, "next": 0, "cells": [], "kept": {}}
 	if map.floor_level > 0:
-		return out
-	var ground: Dictionary = rules()["ground"]
-	var kept := _kept_clear(map)
+		return dealing
+	dealing["kept"] = _kept_clear(map)
 	var cells: Array = map.regions.keys()
-	cells.sort_custom(func(a: Vector2i, b: Vector2i) -> bool: return a.y < b.y or (a.y == b.y and a.x < b.x))
-	for cell: Vector2i in cells:
+	# Row by row: the order they're read in already (MapData.in_rows).
+	if not MapData.in_rows(cells):
+		cells.sort_custom(func(a: Vector2i, b: Vector2i) -> bool: return a.y < b.y or (a.y == b.y and a.x < b.x))
+	dealing["cells"] = cells
+	return dealing
+
+
+## Looks at up to `count` more of the map's cells; whether it's through.
+static func deal_cells(dealing: Dictionary, count: int) -> bool:
+	var map: MapData = dealing["map"]
+	var ground: Dictionary = rules()["ground"]
+	var kept: Dictionary = dealing["kept"]
+	var out: Dictionary = dealing["out"]
+	var cells: Array = dealing["cells"]
+	var from: int = dealing["next"]
+	var to := mini(cells.size(), from + count)
+	for i in range(from, to):
+		var cell: Vector2i = cells[i]
 		var region: String = map.regions[cell]
 		if not ground.has(region) or map.tile_at(cell) not in ground[region] or kept.has(cell):
 			continue
@@ -97,6 +121,14 @@ static func decks(map: MapData) -> Dictionary:
 		if not out.has(region):
 			out[region] = []
 		out[region].append(cell)
+	dealing["next"] = to
+	return to >= cells.size()
+
+
+## The decks, shuffled, once every cell has been looked at.
+static func dealt_decks(dealing: Dictionary) -> Dictionary:
+	var map: MapData = dealing["map"]
+	var out: Dictionary = dealing["out"]
 	for region: String in out:
 		_shuffle(out[region], "%d:%s:%s" % [SEED, map.id, region])
 	return out

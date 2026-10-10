@@ -7,7 +7,10 @@ shader_type canvas_item;
 // cells lie above) and mixes in what the screen shows mirrored about it.
 // Only water takes it: the screen's own colour must look like water, so a
 // bridge's planks or the hero wading stay as they are. LightRig passes the
-// view and the map.
+// view and the map: on the Reach's plane (One Reach, PIX-269, step 5) the
+// view in the plane's pixels and the water of every map drawn round it,
+// laid out from `mirror_origin` (the plane cell at its first texel), so a
+// map beside the hero's mirrors its banks too and nothing jumps at a line.
 
 #include "res://shaders/wind.gdshaderinc"
 #include "res://shaders/linear.gdshaderinc"
@@ -15,6 +18,7 @@ shader_type canvas_item;
 uniform sampler2D screen : hint_screen_texture, filter_nearest;
 uniform sampler2D water_map : filter_nearest, repeat_disable;
 uniform vec2 map_cells = vec2(1.0);
+uniform vec2 mirror_origin = vec2(0.0);
 // The world under the screen: its top-left corner and size, in pixels.
 uniform vec2 view_origin;
 uniform vec2 view_size = vec2(320.0, 180.0);
@@ -38,7 +42,7 @@ void fragment() {
 	vec2 per_uv = vec2(dFdx(SCREEN_UV.x) / dFdx(UV.x), dFdy(SCREEN_UV.y) / dFdy(UV.y));
 	vec2 px = floor(view_origin + UV * view_size) + 0.5;
 	vec2 cell = floor((px + vec2(0.0, SPILL)) / TILE);
-	vec4 water = texture(water_map, (cell + 0.5) / map_cells);
+	vec4 water = texture(water_map, (cell - mirror_origin + 0.5) / map_cells);
 	vec3 seen = to_display(texture(screen, SCREEN_UV).rgb);
 	COLOR = vec4(0.0);
 	if (water.r > 0.5 && looks_like_water(seen)) {

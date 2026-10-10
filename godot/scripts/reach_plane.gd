@@ -21,6 +21,10 @@ const RIDGE := "mountain"
 static var _doc := {}
 ## map id -> its size in cells, read once from its map file.
 static var _sizes := {}
+## The maps and the cells each covers, worked out once: a line between two
+## maps looks up a thousand cells at a time (Seam.stitch).
+static var _maps: Array[String] = []
+static var _rects: Array[Rect2i] = []
 
 
 static func _data() -> Dictionary:
@@ -31,10 +35,10 @@ static func _data() -> Dictionary:
 
 ## The maps in the plane, the Ashenreach first.
 static func maps() -> Array[String]:
-	var out: Array[String] = []
-	for map_id: String in _data()["origins"]:
-		out.append(map_id)
-	return out
+	if _maps.is_empty():
+		for map_id: String in _data()["origins"]:
+			_maps.append(map_id)
+	return _maps.duplicate()
 
 
 ## Whether `map_id` has a place in the plane.
@@ -51,7 +55,7 @@ static func origin(map_id: String) -> Vector2i:
 ## How big `map_id` is, in cells.
 static func size_of(map_id: String) -> Vector2i:
 	if not _sizes.has(map_id):
-		_sizes[map_id] = MapData.load_by_id(map_id).size
+		_sizes[map_id] = MapData.size_by_id(map_id)
 	return _sizes[map_id]
 
 
@@ -68,10 +72,20 @@ static func to_plane(map_id: String, cell: Vector2i) -> Vector2i:
 ## The map holding plane cell `cell` and its cell there: {"map", "cell"},
 ## or {} on the ridge between maps.
 static func at(cell: Vector2i) -> Dictionary:
-	for map_id: String in maps():
-		if rect_of(map_id).has_point(cell):
-			return {"map": map_id, "cell": cell - origin(map_id)}
+	if _rects.is_empty():
+		for map_id: String in maps():
+			_rects.append(rect_of(map_id))
+	for i in _rects.size():
+		if _rects[i].has_point(cell):
+			return {"map": _maps[i], "cell": cell - _rects[i].position}
 	return {}
+
+
+## The tile at plane cell `cell`: the map's there, as its file has it, or
+## the ridge's rock.
+static func tile(cell: Vector2i) -> String:
+	var there := at(cell)
+	return RIDGE if there.is_empty() else MapData.tile_by_id(there["map"], there["cell"])
 
 
 ## What lies one `step` from `cell` of `map_id`: a cell of the same map, of

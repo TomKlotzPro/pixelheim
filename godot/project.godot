@@ -55,6 +55,13 @@ world_wind={
 "type": "float",
 "value": 1.0
 }
+; Where the map the hero stands on lies in the plane of the Reach's maps, in
+; pixels (One Reach, PIX-269, step 5): the wind and the ground's slow noise
+; run on the plane, unbroken across a line; set by scripts/world.gd.
+plane_origin={
+"type": "vec2",
+"value": Vector2(0, 0)
+}
 ; 1 while the desktop app draws the canvas in linear light (PIX-227,
 ; shaders/linear.gdshaderinc), set by scripts/light_rig.gd; 0 in the browser.
 world_linear={

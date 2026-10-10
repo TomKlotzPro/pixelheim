@@ -286,7 +286,12 @@ static func _tint(tile: int, shift: int) -> int:
 	return tile
 
 
-## One atlas source over the whole sheet; tiles are created as first used.
+## One atlas source over the whole sheet; tiles are created as first used,
+## but for every piece of a house (in each roof colour) and the flowers,
+## made at once with it (One Reach, PIX-269): a tile made later redraws the
+## source's padded copy of this whole sheet, some 20 ms, and a map drawn
+## beside the hero's with flowers or houses the session hadn't drawn yet
+## made the hero's frame that long.
 static func tileset() -> TileSet:
 	if _tileset == null:
 		_tileset = TileSet.new()
@@ -295,7 +300,34 @@ static func tileset() -> TileSet:
 		_source.texture = load(SHEET)
 		_source.texture_region_size = Vector2i(16, 16)
 		_tileset.add_source(_source, 0)
+		if available():
+			for tile: int in pieces():
+				var coords := Vector2i(tile % COLUMNS, tile / COLUMNS)
+				if not _source.has_tile(coords):
+					_source.create_tile(coords)
 	return _tileset
+
+
+## Every tile a house may be built of, in each roof colour, the flowers
+## (PunyProps.FLOWERS) and Pixelheim's rampart and gatehouse (Rampart).
+static func pieces() -> Array[int]:
+	var base: Array = GABLE_TOP + GABLE_FOOT + GABLE_EAVE + GABLE_WALL + CHIMNEY + WING_TOP + WING_UPPER + WING_RIDGE \
+		+ WING_LOWER + WING_EAVE + UPPER_FILL + LOWER_FILL + [WALL_LEFT, WALL, WALL_RIGHT, WINDOW, DOOR]
+	for row: Array in GABLE_BODY:
+		base.append_array(row)
+	var out: Array[int] = []
+	for tile: int in base:
+		if tile < 0:
+			continue
+		for rows: int in ROOF_ROWS.values():
+			var tinted := _tint(tile, rows * COLUMNS)
+			if tinted not in out:
+				out.append(tinted)
+	var more: Array = PunyProps.FLOWERS + Rampart.WALL.values() + [Rampart.GATE, Rampart.ROOF_BURNT] + Rampart.TOWER + Rampart.ROOF
+	for tile: int in more:
+		if tile not in out:
+			out.append(tile)
+	return out
 
 
 static func place(layer: TileMapLayer, cell: Vector2i, tile: int) -> void:

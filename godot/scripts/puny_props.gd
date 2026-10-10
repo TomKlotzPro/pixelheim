@@ -83,7 +83,10 @@ static func plan(grid: Dictionary) -> Dictionary:
 	var drawn := {}
 	var taken := {}  # cells a bigger prop already stands on
 	var cells: Array = grid.keys()
-	cells.sort_custom(func(a: Vector2i, b: Vector2i) -> bool: return a.y < b.y or (a.y == b.y and a.x < b.x))
+	# Row by row, west to east: the order a map's grid is read in already
+	# (MapData.in_rows).
+	if not MapData.in_rows(cells):
+		cells.sort_custom(func(a: Vector2i, b: Vector2i) -> bool: return a.y < b.y or (a.y == b.y and a.x < b.x))
 	for cell: Vector2i in cells:
 		if taken.has(cell):
 			continue

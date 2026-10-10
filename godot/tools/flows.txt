@@ -194,6 +194,31 @@ coast-out | --map saltmere --at 16,2 --walk u,u,u --wait 0.4 | map=overworld | t
 pass-out | --map frostgate --at 28,45 --walk d,d,d --wait 0.4 | map=overworld | travel
 # Greyhold, through Ulla's barricade once the seam's warden is slain (PIX-168, PIX-254).
 castle | --map overworld --hunted seam_warden --at 93,15 --walk r,r,r --wait 0.4 | map=greyhold | travel story
+# One Reach (PIX-269, steps 5 and 6): near a road out, the map past it is
+# drawn beside the hero's, and walking on over the line hands the hero over
+# to it with no fade (change=seamless, not a door's dissolve) - over each of
+# the six roads out of the Ashenreach and back in. `seamless` waits for the
+# map beside to be drawn (a harness run draws it at the line if it isn't
+# yet); in play, on a machine too slow for that, the road is the soft door
+# it was (`unstreamed` makes it one). A gate the story keeps shut
+# still blocks, the land past it drawn; crossing back and forth saves once;
+# and the camera stays smooth over the line (the windowed walk).
+line-mire | --map overworld --at 2,32 seamless --walk l,l,l fades --lang en | map=mirefen change=seamless card=The Mirefen beside=.*overworld.* | travel
+line-mire-back | --map mirefen --at 56,5 seamless --walk r,r,r fades | map=overworld change=seamless beside=.*mirefen.* | travel
+line-wood | --map overworld --at 93,33 seamless --walk r,r,r fades --lang en | map=deepwood change=seamless card=The Deepwood beside=overworld | travel
+line-wood-back | --map deepwood --at 2,5 seamless --walk l,l,l fades | map=overworld change=seamless beside=.*deepwood.* | travel
+line-mines | --map overworld --at 2,20 seamless --walk l,l,l fades | map=blackiron change=seamless beside=.*overworld.* | travel
+line-mines-back | --map blackiron --at 53,30 seamless --walk r,r,r fades | map=overworld change=seamless beside=.*blackiron.* | travel
+line-coast | --map overworld --seen maren_tin --at 16,61 seamless --walk d,d,d fades | map=saltmere change=seamless beside=.*overworld.* | travel story
+line-coast-back | --map saltmere --seen maren_tin --at 16,2 seamless --walk u,u,u fades | map=overworld change=seamless beside=.*saltmere.* | travel story
+line-castle | --map overworld --hunted seam_warden --at 93,15 seamless --walk r,r,r fades | map=greyhold change=seamless beside=.*overworld.* | travel story
+line-castle-back | --map greyhold --hunted seam_warden --at 2,30 seamless --walk l,l,l fades | map=overworld change=seamless beside=.*greyhold.* | travel story
+line-pass | --map overworld --at 68,2 seamless --walk u,u,u fades | map=frostgate change=seamless beside=.*overworld.* | travel
+line-pass-back | --map frostgate --at 28,45 seamless --walk d,d,d fades | map=overworld change=seamless beside=.*frostgate.* | travel
+line-door | --map overworld --at 2,32 unstreamed --walk l,l,l fades --wait 0.4 | map=mirefen change=dissolve dark=0 | travel
+line-gate | --map overworld --at 16,58 seamless --walk d,d,d,d --wait 0.3 | map=overworld cell=\(16, 61\) gate=cliff beside=.*saltmere.* | travel story
+line-twice | --map overworld --seen maren_tin --at 16,61 seamless --walk d,d,d,u,u,u,d,d,d fades | map=saltmere change=seamless saves=1 | travel story save
+line-motion | --map overworld --at 94,33 seamless motion --fps 144 | map=deepwood backsteps=[01] | motion
 # A house opens onto a room, and the cave is down its stair (PIX-256): the
 # keep's door into Captain Hale's hall; the stair asks, and the hero waits
 # at the top; going down takes them to the cellars, staying keeps them in

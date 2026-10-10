@@ -6,11 +6,17 @@
 
 global uniform float world_time;
 global uniform float world_wind;
+// Where the map the hero stands on lies in the plane of the Reach's maps,
+// in pixels (One Reach, PIX-269, step 5): the wind blows across the plane,
+// so a map drawn beside it sways on with it, and nothing jumps when the
+// hero's map changes at a line. Zero off the plane (the village, rooms).
+global uniform vec2 plane_origin;
 
 // The lean at `world` (in pixels), roughly -0.4..1.4: mostly downwind in a
 // gust, a small sway between them. It changes slowly across the land, so a
 // quad's two top corners lean alike; `phase` gives a lone tree its own beat.
 float wind_lean(vec2 world, float phase) {
+	world += plane_origin;
 	float gust = 0.5 + 0.5 * sin(world_time * 0.55 - world.x * 0.011 - world.y * 0.004);
 	gust = gust * gust * gust;
 	float sway = sin(world_time * 1.7 + world.x * 0.023 + world.y * 0.017 + phase);

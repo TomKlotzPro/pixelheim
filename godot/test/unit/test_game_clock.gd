@@ -5,8 +5,10 @@ extends GutTest
 ## The machine's clock is for measuring the machine alone.
 
 ## The scripts that time the machine itself, and may read its clock: what a
-## frame costs, what a map's build costs, what entering a map costs.
-const MEASURES := ["perf_probe.gd", "map_view.gd", "harness.gd"]
+## frame costs, what a map's build costs, what entering a map costs, and the
+## milliseconds a frame of drawing the map beside the hero may take (One
+## Reach, PIX-269: Slicer's budget is the machine's work).
+const MEASURES := ["perf_probe.gd", "map_view.gd", "harness.gd", "slicer.gd"]
 
 
 func test_it_counts_the_physics_ticks() -> void:

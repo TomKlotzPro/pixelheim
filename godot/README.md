@@ -205,9 +205,9 @@ the flows tagged with the areas it touches. Each flow ends on its tags in
 screen, lang, save, gathering, title, rank, night), and `AREAS` in
 `check.sh` says which areas each file touches; a file it doesn't know runs
 every flow. `--plan` shows what it would run and why. `check.sh full` runs
-everything CI runs. Neither opens the motion flow's window: `quick` says when
-a change to the hero's sprite, walk or the camera calls for
-`godot/tools/flows.sh motion`.
+everything CI runs. Neither opens the motion flows' window: `quick` says when
+a change to the hero's sprite, walk, the camera or the hand-over at a line
+between two maps calls for `godot/tools/flows.sh motion line-motion`.
 
 What needs a window runs in CI too (PIX-275), beside the checks: a virtual
 display (xvfb) with Mesa's software rendering (the flows on the desktop
@@ -374,6 +374,7 @@ fr.po, and no msgstr has a plain or no-break space where U+202F belongs.
 - `scripts/map_data.gd` — loads the JSON maps in `assets/maps/` (pure data, unit-tested)
 - `scripts/world.gd` — the play: entering maps, the hero, villagers and monsters, the HUD, interaction, combat, music
 - `scripts/map_view.gd` — one visit to a map as drawn (PIX-136): Shade's ground, houses, rooms and dungeons, props, field scatter, chests, door signs, the house's furniture and the invisible blockers; `plan` marks what all that covers on the map before anything is drawn, `build` draws it behind the world's y-sorted actors
+- `scripts/world_neighbours.gd` + `scripts/seam.gd` + `scripts/slicer.gd` — one land (PIX-269): near a road out of a map under the Reach's sky, the map past it drawn beside it where `assets/data/plane.json` puts it, a few units a frame within 3 ms (`Slicer`), stitched along the line (`Seam`), let go again further off; walking over the line hands the hero over to it with no fade (`world.hand_over`); every map of the Reach worked out ahead early in a session (`KeptGround`)
 - `scripts/harness.gd` — the screenshot harness below, added only for `--screenshot` runs
 - `scripts/state/` — the `GameState` autoload and its typed sections (hero, pack, settlement, progression, world), the save codec, slots and settings
 - `scripts/player.gd` / `scripts/enemy.gd` — live combat actors
