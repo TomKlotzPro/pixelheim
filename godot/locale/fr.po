@@ -3201,6 +3201,10 @@ msgid "Monsters fight dirty now: wyverns poison, the dragon burns, golems stun"
 msgstr "Les monstres jouent salement désormais : les wyvernes empoisonnent, le dragon brûle, les golems étourdissent"
 
 #: assets/data/changelog.json
+msgid "Monsters keep hours: after dark, night packs come out in every region under the sky, wolves and skeletons in the forest, ghosts over the marsh, shades in the Deepwood, wendigos on the Frostgate Pass, a little stronger and richer than by day"
+msgstr "Les monstres ont leurs heures : à la nuit tombée, des meutes nocturnes sortent dans chaque région à ciel ouvert, loups et squelettes dans la forêt, fantômes sur le marais, spectres dans les Bois-Profonds, wendigos au col de la Porte-Givre, un peu plus forts et plus riches que le jour"
+
+#: assets/data/changelog.json
 msgid "Most depths now have a twist, shown at the gate: swift foes, warded skills, venomous bites or proud elites, with richer drops and a richer hoard"
 msgstr "La plupart des profondeurs ont désormais une particularité, affichée à la porte : ennemis vifs, compétences scellées, morsures venimeuses ou élites altières, avec plus de butin et un trésor plus riche"
 
@@ -3303,6 +3307,10 @@ msgstr "Parmi les nouvelles compétences : Furie, Nova de givre, Lame empoison
 #: assets/data/changelog.json
 msgid "Next Steps"
 msgstr "Prochaines étapes"
+
+#: assets/data/changelog.json
+msgid "Night Watch"
+msgstr "Veille de nuit"
 
 #: assets/data/changelog.json
 msgid "No more ambushes. Monsters are VISIBLE in the wilds now - see them prowl, choose your fights"
@@ -3535,6 +3543,10 @@ msgstr "DES BIENS QUI RAPPORTENT : un commerce que vous possédez remplit dés
 #: assets/data/changelog.json
 msgid "PUNCHING UP PAYS: a foe above your level pays 5% more XP for each level it stands above you, up to a quarter more, so a hero who has fallen behind catches up faster"
 msgstr "VISER PLUS HAUT, ÇA PAIE : un ennemi de niveau supérieur rapporte 5 % d'XP en plus par niveau d'écart, jusqu'à un quart de plus, si bien qu'un héros à la traîne rattrape son retard plus vite"
+
+#: assets/data/changelog.json
+msgid "Packs change at dusk and dawn only out of your sight, and every quest's quarry can be found at any hour"
+msgstr "Les meutes changent au crépuscule et à l'aube seulement hors de votre vue, et la proie de chaque quête se trouve à toute heure"
 
 #: assets/data/changelog.json
 msgid "Pad in Hand"
@@ -3915,6 +3927,10 @@ msgstr "Le métier de Forge fait baisser les prix de la forge et, au niveau 5, d
 #: assets/data/changelog.json
 msgid "Soft Edges"
 msgstr "Bords doux"
+
+#: assets/data/changelog.json
+msgid "Some day camps sleep by their lit torch at night, a Z drifting up: walk right up to one or strike it and the whole pack wakes"
+msgstr "Certains camps de jour dorment la nuit près de leur torche allumée, un Z flottant au-dessus : approchez tout près ou frappez, et toute la meute se réveille"
 
 #: assets/data/changelog.json
 msgid "Sounds are never quite the same twice, a little higher or lower, louder or softer; a flurry of hits sounds as one, and footsteps are softer, left foot and right"
@@ -5039,6 +5055,10 @@ msgstr "Quand toutes les voix sont prises, les sons qui comptent (une blessure, 
 #: assets/data/changelog.json
 msgid "Where It Leads"
 msgstr "Où ça mène"
+
+#: assets/data/changelog.json
+msgid "Where a monster is found only after dark, the places it lives say so"
+msgstr "Là où un monstre ne se trouve qu'après la tombée de la nuit, les lieux où il vit l'indiquent"
 
 #: assets/data/changelog.json
 msgid "Where regions meet, the ground no longer changes along straight lines and square corners: the edge bends and wanders, still dithered pixel by pixel, and the land's tone runs right to the shore"

@@ -3201,6 +3201,10 @@ msgid "Monsters fight dirty now: wyverns poison, the dragon burns, golems stun"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Monsters keep hours: after dark, night packs come out in every region under the sky, wolves and skeletons in the forest, ghosts over the marsh, shades in the Deepwood, wendigos on the Frostgate Pass, a little stronger and richer than by day"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Most depths now have a twist, shown at the gate: swift foes, warded skills, venomous bites or proud elites, with richer drops and a richer hoard"
 msgstr ""
 
@@ -3302,6 +3306,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Next Steps"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Night Watch"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3534,6 +3542,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "PUNCHING UP PAYS: a foe above your level pays 5% more XP for each level it stands above you, up to a quarter more, so a hero who has fallen behind catches up faster"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Packs change at dusk and dawn only out of your sight, and every quest's quarry can be found at any hour"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3914,6 +3926,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Soft Edges"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Some day camps sleep by their lit torch at night, a Z drifting up: walk right up to one or strike it and the whole pack wakes"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5038,6 +5054,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Where It Leads"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Where a monster is found only after dark, the places it lives say so"
 msgstr ""
 
 #: assets/data/changelog.json
