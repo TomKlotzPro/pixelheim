@@ -3793,6 +3793,10 @@ msgid "Roads and town stay clean-looking because they ARE safe"
 msgstr "Les routes et la ville restent dégagées parce qu'elles SONT sûres"
 
 #: assets/data/changelog.json
+msgid "Room to Spare"
+msgstr "De la marge"
+
+#: assets/data/changelog.json
 msgid "Rooms Upstairs"
 msgstr "Les pièces d'en haut"
 
@@ -4833,12 +4837,20 @@ msgid "The roads to the Mirefen and the Deepwood run out through the ridge inste
 msgstr "Les routes vers les Marais de Fange et les Bois-Profonds sortent par la crête au lieu d'entrer dans une grotte"
 
 #: assets/data/changelog.json
+msgid "The save screen fits again with every slot full: long names and places wrap inside their cards, so the right-hand column is never cut off"
+msgstr "L'écran des sauvegardes tient de nouveau avec tous les emplacements remplis : les noms et les lieux longs passent à la ligne dans leur carte, et la colonne de droite n'est plus jamais coupée"
+
+#: assets/data/changelog.json
 msgid "The skill tree fits all six tiers on one page, one line a skill, with the chosen one described in full below"
 msgstr "L'arbre de compétences tient ses six paliers sur une page, une ligne par compétence, celle choisie étant décrite en entier en dessous"
 
 #: assets/data/changelog.json
 msgid "The skill tree looks like a tree: three named paths, tier badges from I to CAP, connector lines, and the numbers on every skill - multiplier, stat, cost - before you commit"
 msgstr "L'arbre de compétences ressemble à un arbre : trois voies nommées, des insignes de palier de I à CAP, des lignes de liaison, et les chiffres de chaque compétence - multiplicateur, caractéristique, coût - avant de vous engager"
+
+#: assets/data/changelog.json
+msgid "The skills screen fits on narrow and tall screens too"
+msgstr "L'écran des compétences tient aussi sur les écrans étroits ou hauts"
 
 #: assets/data/changelog.json
 msgid "The sound and settings buttons got proper glyphs, and loading is a big honest LOADING with marching dots"

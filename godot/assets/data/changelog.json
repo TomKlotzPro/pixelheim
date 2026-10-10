@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.204.0",
+      "date": "2026-10-10",
+      "codename": "Room to Spare",
+      "notes": [
+        "The save screen fits again with every slot full: long names and places wrap inside their cards, so the right-hand column is never cut off",
+        "The skills screen fits on narrow and tall screens too"
+      ]
+    },
+    {
       "version": "0.203.0",
       "date": "2026-10-10",
       "codename": "Open Country",

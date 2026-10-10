@@ -3793,6 +3793,10 @@ msgid "Roads and town stay clean-looking because they ARE safe"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Room to Spare"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Rooms Upstairs"
 msgstr ""
 
@@ -4833,11 +4837,19 @@ msgid "The roads to the Mirefen and the Deepwood run out through the ridge inste
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The save screen fits again with every slot full: long names and places wrap inside their cards, so the right-hand column is never cut off"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The skill tree fits all six tiers on one page, one line a skill, with the chosen one described in full below"
 msgstr ""
 
 #: assets/data/changelog.json
 msgid "The skill tree looks like a tree: three named paths, tier badges from I to CAP, connector lines, and the numbers on every skill - multiplier, stat, cost - before you commit"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The skills screen fits on narrow and tall screens too"
 msgstr ""
 
 #: assets/data/changelog.json
