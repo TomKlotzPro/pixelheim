@@ -172,8 +172,9 @@ jobs:
             godot/flows/boot/
           retention-days: 7
 
+
   # The windowed checks (PIX-275): what needs a real window - the motion
-  # check (it measures the hero's pixels frame by frame) and the pictures -
+  # flow (it measures the hero's pixels frame by frame) and the pictures -
   # beside the godot job, so a visual change is reviewed without a window
   # on the Mac. A virtual display (xvfb) and Mesa's software rendering: the
   # flows on the desktop renderer as on the Mac (Forward+ on lavapipe, the
@@ -183,15 +184,23 @@ jobs:
   # to GitHub, so the paid art is never fetched here nor pictured (no deploy
   # key, and not the godot job's import either: its paid art's imports
   # would draw it). A fresh import of the free art takes seconds.
-  pictures:
+  #
+  # The flows in two shares side by side (PIX-276; flows.sh --shard), each
+  # its own runner, the look book with the second; the pictures job below
+  # puts their pictures on one sheet and links them in one comment.
+  windowed:
     runs-on: ubuntu-latest
     timeout-minutes: 25
-    permissions:
-      contents: read
-      # The one comment on the pull request linking its pictures.
-      pull-requests: write
+    strategy:
+      fail-fast: false
+      matrix:
+        share: [1, 2]
     env:
       SCREEN: "-screen 0 2560x1440x24"
+      # Software rendering on a slow runner: the watchdog, a backstop for a
+      # run that never quits, waits longer than on a machine with a GPU.
+      FLOWS_WATCHDOG: "150"
+      SHARE: ${{ matrix.share }}
     steps:
       - uses: actions/checkout@v4
 
@@ -219,7 +228,7 @@ jobs:
       - name: Install a virtual display and software rendering
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq --no-install-recommends xvfb xauth libgl1-mesa-dri libglx-mesa0 libegl1 mesa-vulkan-drivers libvulkan1 python3-pil >/dev/null
+          sudo apt-get install -y -qq --no-install-recommends xvfb xauth libgl1-mesa-dri libglx-mesa0 libegl1 mesa-vulkan-drivers libvulkan1 >/dev/null
 
       - name: Import assets (Shade's CC0 art only)
         run: |
@@ -229,115 +238,81 @@ jobs:
           fi
           godot --headless --path godot --import
 
-      # Three motion checks when the change touches how the hero walks or is
-      # drawn, or the camera (one pass could be luck), or this workflow.
-      - name: Does this change touch the hero's walk or the camera?
-        id: walk
-        env:
-          GH_TOKEN: ${{ github.token }}
-          PR: ${{ github.event.pull_request.number }}
-        run: |
-          if [ -z "$PR" ]; then
-            echo "touched=yes" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          files=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR/files" --paginate --jq '.[].filename')
-          walk='^godot/scripts/(player|gait|juice|puny_art|world_camera)\.gd$|^godot/assets/puny/characters/|^\.github/workflows/godot\.yml$'
-          if grep -qE "$walk" <<<"$files"; then
-            echo "touched=yes" >> "$GITHUB_OUTPUT"
-            grep -E "$walk" <<<"$files"
-          else
-            echo "touched=no" >> "$GITHUB_OUTPUT"
-          fi
-
-      # The motion flow as flows.txt lists it (its harness arguments, and the
-      # fields its report must show, matched by flows.py), alone on the
-      # machine, before the flows, in a 640x360 window (two screen pixels to
-      # the art's, where the Mac's has four), after one walk that isn't
-      # counted. Software rendering draws a full-size window at 9 to 18
-      # frames a second, by the runner's CPU, several physics ticks to a
-      # frame, and the walk wobbles by a pixel no screen would show: 4 of 20
-      # walks went over the flow's limit of one step back. At 640x360 it
-      # draws 20 to 32. The first walk on a fresh machine compiles the
-      # shaders, and its hitches read as steps back (1 or 2). After it, 1
-      # walk of 84 so far went over, with two, where the shake the check
-      # exists for steps back all along the walk: so the check passes when
-      # two walks of the three do, and a walk over the limit is a warning.
-      # Beside other work it would measure the machine (4 to 11 steps back),
-      # so it runs alone.
-      - name: The motion check, three times
-        if: steps.walk.outputs.touched == 'yes'
-        run: |
-          IFS="|" read -r _ args expect _ < <(python3 godot/tools/flows.py list | grep "^motion|")
-          passed=0
-          results=""
-          for i in 0 1 2 3; do
-            # shellcheck disable=SC2086 # the arguments are meant to split
-            timeout 120 xvfb-run -a -s "$SCREEN" godot --resolution 640x360 --audio-driver Dummy --path godot -- --screenshot $args --shot "$PWD/motion-$i.png" > "motion-$i.txt" 2>&1 || true
-            grep -E "^MOTION" "motion-$i.txt" || true
-            report=$(grep "screenshot saved" "motion-$i.txt" || true)
-            back=$(grep -oE "backsteps=[^ ]*" <<<"$report" || echo "no report")
-            if [ "$i" = 0 ]; then
-              # The shaders compiled: not counted.
-              warm="$back"
-              continue
-            fi
-            if grep -qE "SCRIPT ERROR|Parse Error|SHADER ERROR" "motion-$i.txt"; then
-              results+="${results:+, }FAIL $back"
-              echo "::error title=motion check $i failed::$(grep -m1 -E "SCRIPT ERROR|Parse Error|SHADER ERROR" "motion-$i.txt")"
-              passed=-9
-            elif why=$(python3 godot/tools/flows.py match "$expect" "$report"); then
-              results+="${results:+, }ok $back"
-              passed=$((passed + 1))
-            else
-              results+="${results:+, }over $back"
-              echo "::warning title=motion walk $i over the limit::$why"
-            fi
-          done
-          echo "$results" > motion.txt
-          verdict=$([ "$passed" -ge 2 ] && echo "passed" || echo "FAILED")
-          echo "**The motion check, three times:** $results: $verdict (the uncounted first walk: $warm)" >> "$GITHUB_STEP_SUMMARY"
-          if [ "$passed" -lt 2 ]; then
-            echo "::error title=motion check failed::fewer than two walks of three within the motion flow's limit: $results"
-            exit 1
-          fi
-
-      # Every release flow in a window, each leaving its picture: the Mac's
-      # windowed run (the motion flow alone, last). The godot job checks
-      # every flow's report headless; here a few frames a second stretch the
-      # flows timed in frames or by the clock (a dodge's length, a step onto
-      # a patch, a place's card still up, the motion flow at full size), so
-      # a report that differs is noted, not failed, and its picture kept.
+      # This share's release flows in a window, each leaving its picture,
+      # the motion flow among them. Stepped as every flow is (PIX-276:
+      # flows.sh gives Godot --fixed-fps), a few frames a second of software
+      # rendering live the same seconds as the godot job's headless runs, so
+      # every report must show what its flow expects here too: a flow that
+      # differs in a window fails the job, the motion flow's steps back too.
       - name: Release flows, windowed
-        if: success() || failure()
         run: |
-          GITHUB_ACTIONS= GITHUB_STEP_SUMMARY= xvfb-run -a -s "$SCREEN" bash godot/tools/flows.sh -j "$(nproc)" | tee windowed.txt || true
-          ran=$(grep -E "^Release flows:" windowed.txt | sed -E 's/^Release flows: //; s/: (FAILED|all ok)$//' || true)
-          differs=$(grep -E "^FAIL " windowed.txt | awk '{print $2}' | paste -sd, - | sed 's/,/, /g' || true)
-          echo "$differs" > differs.txt
-          {
-            echo "**Release flows, windowed:** ${ran:-no result}"
-            if [ -n "$differs" ]; then
-              echo
-              echo "Their reports differed in the window (timing on software rendering; the godot job checks every report headless): $differs."
-            fi
-            echo
-          } >> "$GITHUB_STEP_SUMMARY"
+          set +e
+          GITHUB_ACTIONS= GITHUB_STEP_SUMMARY= xvfb-run -a -s "$SCREEN" bash godot/tools/flows.sh --shard "$SHARE/2" -j "$(nproc)" > "windowed-$SHARE.txt" 2>&1
+          status=$?
+          cat "windowed-$SHARE.txt"
+          ran=$(grep -E "^Release flows:" "windowed-$SHARE.txt" | sed -E 's/^Release flows: //')
+          echo "**Release flows, windowed, share $SHARE of 2:** ${ran:-no result}" >> "$GITHUB_STEP_SUMMARY"
+          grep -E "^FAIL " "windowed-$SHARE.txt" | while read -r _ name _ why; do
+            echo "::error title=flow $name failed in a window::$why"
+            echo "- **$name** failed: $why" >> "$GITHUB_STEP_SUMMARY"
+          done
+          exit $status
 
       - name: Look book
-        if: success() || failure()
+        if: matrix.share == 2 && (success() || failure())
         run: xvfb-run -a -s "$SCREEN" bash godot/tools/lookbook.sh
 
-      - name: Contact sheets
+      # Every picture, each run's result and output, for the pictures job.
+      - name: Upload this share's pictures
         if: success() || failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pictures-share-${{ matrix.share }}
+          path: |
+            windowed-${{ matrix.share }}.txt
+            godot/flows/*.png
+            godot/flows/runs/*/result
+            godot/flows/runs/*/output.txt
+            godot/flows/runs/*/shot.png
+            godot/lookbook/
+          retention-days: 7
+
+  # The two shares' pictures on one contact sheet, the look book's beside
+  # it, linked from the run's summary and one comment on the pull request;
+  # passes when both shares did.
+  pictures:
+    needs: windowed
+    if: success() || failure()
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      # The one comment on the pull request linking its pictures.
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Pillow
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends python3-pil >/dev/null
+
+      - name: The shares' pictures
+        uses: actions/download-artifact@v4
+        with:
+          pattern: pictures-share-*
+          merge-multiple: true
+
+      - name: Contact sheets
         run: |
           mkdir -p pictures
           python3 godot/tools/flows_sheet.py godot/flows pictures/flows-sheet.png
-          cp godot/lookbook/sheet.png pictures/lookbook-sheet.png
+          if [ -f godot/lookbook/sheet.png ]; then
+            cp godot/lookbook/sheet.png pictures/lookbook-sheet.png
+          fi
 
       - name: Upload every picture
         id: zip
-        if: success() || failure()
         uses: actions/upload-artifact@v4
         with:
           name: pictures
@@ -350,7 +325,6 @@ jobs:
       # The sheets on their own, unzipped: a link opens the picture.
       - name: Upload the flows' sheet
         id: flows_sheet
-        if: success() || failure()
         uses: actions/upload-artifact@v7
         with:
           path: pictures/flows-sheet.png
@@ -359,7 +333,7 @@ jobs:
 
       - name: Upload the look book's sheet
         id: look_sheet
-        if: success() || failure()
+        if: hashFiles('pictures/lookbook-sheet.png') != ''
         uses: actions/upload-artifact@v7
         with:
           path: pictures/lookbook-sheet.png
@@ -369,7 +343,6 @@ jobs:
       # The links in the job's summary and in one comment on the pull
       # request, edited on each run (a fork's token can't comment).
       - name: Link the pictures
-        if: success() || failure()
         env:
           GH_TOKEN: ${{ github.token }}
           PR: ${{ github.event.pull_request.number }}
@@ -381,12 +354,24 @@ jobs:
           RUN: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           marker="<!-- pixelheim-pictures -->"
+          failed=$(cat windowed-*.txt 2>/dev/null | grep -E "^FAIL " | awk '{print $2}' | paste -sd, - | sed 's/,/, /g')
+          motion=$(cat windowed-*.txt 2>/dev/null | grep -E "^(ok|FAIL) +motion " | grep -oE "backsteps=[^ ]*" | head -1)
+          look=""
+          if [ -n "$LOOK_SHEET" ]; then
+            look="[the look book's sheet]($LOOK_SHEET), "
+          fi
+          walked=""
+          if [ -n "$motion" ]; then
+            walked="; the motion flow walked with $motion"
+          fi
           {
             echo "$marker"
-            echo "**Pictures of ${SHA:0:7}** ([the run]($RUN)): [every flow on one sheet]($FLOWS_SHEET), [the look book's sheet]($LOOK_SHEET), [every picture at full size]($ZIP) (a zip)."
-            if [ -s motion.txt ]; then
-              echo
-              echo "The motion check, three times (this change touches the hero's walk, the camera or the check): $(cat motion.txt)."
+            echo "**Pictures of ${SHA:0:7}** ([the run]($RUN)): [every flow on one sheet]($FLOWS_SHEET), $look[every picture at full size]($ZIP) (a zip)."
+            echo
+            if [ -n "$failed" ]; then
+              echo "**Failed in a window:** $failed (their pictures are on the sheet, named in red)."
+            else
+              echo "Every flow showed in a window what it shows headless$walked."
             fi
             echo
             echo "_Shade's CC0 art only (none of the paid houses, props, rooms or icons), drawn in a virtual display by software: the flows on the desktop renderer, the look book on the browser's._"
@@ -402,10 +387,8 @@ jobs:
             gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" -F body=@comment.md >/dev/null
           fi
 
-      - name: Keep the failed runs' output
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: pictures-output
-          path: godot/flows/runs/
-          retention-days: 7
+      - name: Both shares passed
+        if: needs.windowed.result != 'success'
+        run: |
+          echo "::error::a windowed share failed (${{ needs.windowed.result }}): see its job"
+          exit 1

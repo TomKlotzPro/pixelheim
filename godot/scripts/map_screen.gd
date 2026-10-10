@@ -513,7 +513,7 @@ class Painting extends Control:
 		tile_px = px
 		home = hero_here
 		destination = chosen
-		chosen_at = Time.get_ticks_msec()
+		chosen_at = GameClock.msec()
 		cells = Vector2i.ZERO
 		for sheet: Dictionary in sheets:
 			cells = cells.max(sheet["at"] + sheet["map"].size)
@@ -721,7 +721,7 @@ class Painting extends Control:
 				_marker(_center(Vector2i((villager.position / 16.0).floor()) + hero_at), mark, QUEST)
 		# The chosen waypoint (PIX-241), under the hero's own mark.
 		if not destination.is_empty():
-			var grow := Waypoints.ring_grow(Time.get_ticks_msec() - chosen_at, GameState.settings.reduce_motion)
+			var grow := Waypoints.ring_grow(GameClock.msec() - chosen_at, GameState.settings.reduce_motion)
 			_ring(_center(destination_cell()), mark, grow)
 		# The main story's next place while something else leads (PIX-253
 		# step 2), a hollow diamond; where the hero is headed (PIX-240), a

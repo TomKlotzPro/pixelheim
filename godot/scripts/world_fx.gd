@@ -169,7 +169,7 @@ func show_gains(gains: Dictionary, at: Vector2) -> void:
 	if Gains.is_empty(gains):
 		return
 	Gains.merge(floated, gains)
-	var now := Time.get_ticks_msec() / 1000.0
+	var now := GameClock.seconds()
 	for i in range(_rising.size() - 1, -1, -1):
 		var gone: Variant = _rising[i]["box"]
 		if not is_instance_valid(gone) or (gone as Node).is_queued_for_deletion():

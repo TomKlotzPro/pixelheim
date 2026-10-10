@@ -346,10 +346,10 @@ func _clip(shot: Dictionary, folders: Dictionary, images: Dictionary) -> void:
 			if rise != null and rise.phase != "ruin":
 				break
 			await drawn()
-		var began := Time.get_ticks_msec()
+		var began := GameClock.msec()
 		var frames: Array[Image] = []
 		for mark: float in CLIP_MARKS:
-			var left := mark - (Time.get_ticks_msec() - began) / 1000.0
+			var left := mark - (GameClock.msec() - began) / 1000.0
 			if left > 0.0:
 				await get_tree().create_timer(left).timeout
 			await drawn()

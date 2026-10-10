@@ -11,6 +11,7 @@
 #   godot/tools/flows.sh fight die  # just these
 #   godot/tools/flows.sh --quiet    # no window, no sound, no pictures
 #   godot/tools/flows.sh -j 1       # one at a time
+#   godot/tools/flows.sh --shard 2/3   # every third flow from the second (CI's shares)
 #   godot/tools/flows.sh --boot     # every map booted headless, by day and at night
 #   godot/tools/flows.sh --list     # every flow, a line each (--boot --list: the boots)
 #   FLOWS_EXTRA="--lang fr" godot/tools/flows.sh --quiet   # every flow in French (PIX-196)
@@ -34,10 +35,26 @@
 # where `--log-file` says. A harness run reads the player's settings but
 # never writes them (GameSettings.read_only) nor a save (slot 0), and only a
 # windowed run uses Godot's shader cache, which once warm it only reads:
-# there's nothing else they could race on. In a window, the motion flow
-# walks alone after the rest (it times frames), and each window stands a
-# little apart from the others: macOS stops drawing a window that another
+# there's nothing else they could race on. In a window, each window stands
+# a little apart from the others: macOS stops drawing a window that another
 # one covers.
+#
+# Every run is stepped (PIX-276): Godot's --fixed-fps 60 makes each frame a
+# sixtieth of a second of the game's time however long the machine took to
+# draw it, so a flow lives the same seconds headless on a fast core, in a
+# slow software-rendered window, or beside twenty others; the game reads
+# that time (GameClock, never the machine's clock) and the harness throws
+# the same dice every run (GameState.HARNESS_SEED). A flow is the same run
+# every time, and its report the same, window or not (but draws=). A flow
+# may ask for another pace with the harness's --fps N (the motion flow: a
+# fast screen's frames between the physics ticks). A window draws a frame a
+# second of the game's time (--draw-every 60) and every frame the run reads
+# the screen in: nothing the game decides reads what was drawn, and
+# software rendering takes most of a second a frame. So no flow gets a second try: the motion
+# flow (timed frame by frame), the festival's and the board's (timed by the
+# clock) had one, and a second try only hid what made the first fail. The
+# flake hunt (.github/workflows/flakes.yml, nightly) runs every flow round
+# after round under load to keep it so.
 #
 # --boot boots every map the game can stand in (PIX-270): each map in
 # assets/maps, the village at each of its ages, the house at each of its
@@ -59,17 +76,26 @@ boot=0
 list=0
 jobs=""
 only=""
+shard=1/1
 while [[ $# -gt 0 ]]; do
 	case $1 in
 		--quiet) quiet=1 ;;
 		--boot) boot=1 quiet=1 ;;
 		--list) list=1 ;;
+		--shard) shard=${2:-} && shift ;;
 		-j) jobs=${2:-} && shift ;;
 		-j*) jobs=${1#-j} ;;
 		*) only+=" $1" ;;
 	esac
 	shift
 done
+# --shard K/N: every Nth flow from the Kth, for N machines to share them.
+if [[ ! $shard =~ ^([1-9][0-9]*)/([1-9][0-9]*)$ ]] || ((BASH_REMATCH[1] > BASH_REMATCH[2])); then
+	echo "flows.sh: --shard takes K/N, the Kth of N shares (1/2)" >&2
+	exit 2
+fi
+shard_k=${BASH_REMATCH[1]}
+shard_n=${BASH_REMATCH[2]}
 if [[ -z $jobs ]]; then
 	cores=$(sysctl -n hw.ncpu 2>/dev/null || nproc 2>/dev/null || echo 3)
 	jobs=$((cores > 3 ? cores - 2 : 1))
@@ -102,13 +128,11 @@ if [[ $list == 1 ]]; then
 	exit 0
 fi
 
-# Smooth walking is timed frame by frame, and the festival's and the board's
-# conversations by the clock: a long run's load can hitch one, so they get a
-# second try and only a real regression fails.
-retried=" motion festival board "
-# Walks alone, after the rest: frames timed while other runs share the
-# machine would measure the machine.
-alone=" motion "
+# Measures pixels: a quiet run has none to measure, and skips it. In a
+# window it walks alone after the rest: it draws every frame of its walk,
+# which the others don't (--draw-every), and alone it draws them several
+# times faster.
+windowed=" motion "
 
 # Each run's own folder: its picture, its output, its log and its result
 # (the boot check's apart: its maps share names with flows).
@@ -123,15 +147,22 @@ since() { perl -MTime::HiRes=time -e 'printf "%.1f", time - $ARGV[0]' "$1"; }
 # output.txt. A watchdog: a run that never quits fails instead of stalling
 # the rest.
 run_godot() {
-	local dir=$1 args=$2 slot=$3 godot watcher ran
-	local window=(--headless)
+	local dir=$1 args=$2 slot=$3 godot watcher ran fps=60 pace=' --fps ([0-9]+) '
+	local window=(--headless) drawing=()
 	if [[ $quiet == 0 ]]; then
 		# Each slot's window a little down and right of the one before:
 		# all of them on top, none of them covered whole.
 		window=(--position "$((40 + slot * 48)),$((60 + slot * 36))")
+		# A frame a second of the game's time drawn, and every frame the
+		# run reads the screen in: stepped, the game is the same drawn or
+		# not, and software rendering (CI's windows) takes most of a second
+		# a frame.
+		drawing=(--draw-every 60)
 	fi
+	# Stepped: 60 frames a second of the game's time, or the flow's --fps.
+	[[ " $args " =~ $pace ]] && fps=${BASH_REMATCH[1]}
 	# shellcheck disable=SC2086 # the arguments are meant to split
-	perl -e "alarm $watchdog; exec @ARGV" godot "${window[@]}" --audio-driver Dummy --log-file "$dir/godot.log" --path . -- --screenshot $args --shot "$dir/shot.png" ${FLOWS_EXTRA:-} >"$dir/output.txt" 2>&1 &
+	perl -e "alarm $watchdog; exec @ARGV" godot "${window[@]}" --fixed-fps "$fps" --audio-driver Dummy --log-file "$dir/godot.log" --path . -- --screenshot $args ${drawing[@]+"${drawing[@]}"} --shot "$dir/shot.png" ${FLOWS_EXTRA:-} >"$dir/output.txt" 2>&1 &
 	godot=$!
 	# A script that doesn't parse leaves Godot on an empty scene until the
 	# watchdog: every run would wait out its minute. It has failed, so it
@@ -165,13 +196,6 @@ run_flow() {
 	ran=$?
 	output=$(<"$dir/output.txt")
 	report=$(grep "screenshot saved" <<<"$output")
-	if [[ $retried == *" $name "* ]] && ! shows "$expect" "$report"; then
-		rm -f "$dir/shot.png"
-		run_godot "$dir" "$args" "$2"
-		ran=$?
-		output=$(<"$dir/output.txt")
-		report=$(grep "screenshot saved" <<<"$output")
-	fi
 	# 128 + SIGALRM: the watchdog's.
 	if [[ $ran == 142 && -z $report ]]; then
 		report="none: the watchdog stopped it after ${watchdog}s"
@@ -208,7 +232,7 @@ for word in $only; do
 	fi
 done
 for i in "${!FLOWS[@]}"; do
-	if [[ -z $only || "$only " == *" ${FLOWS[i]%%|*} "* ]]; then
+	if [[ -z $only || "$only " == *" ${FLOWS[i]%%|*} "* ]] && ((i % shard_n == shard_k - 1)); then
 		picked+=("$i")
 	fi
 done
@@ -304,7 +328,7 @@ launch() {
 later=()
 for ((k = 0; k < count; k++)); do
 	name=${FLOWS[${picked[k]}]%%|*}
-	if [[ $alone == *" $name "* ]]; then
+	if [[ $windowed == *" $name "* ]]; then
 		if [[ $quiet == 1 ]]; then
 			mkdir -p "$runs/$name"
 			printf "skip|%s|0|needs a window\n" "$name" >"$runs/$name/result"

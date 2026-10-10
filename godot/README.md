@@ -155,8 +155,10 @@ by default; `-j 1` runs them one after another). Each run keeps its picture
 (`--shot`), output and log in its own folder under `godot/flows/runs/`, and
 the lines still come out in the flows' order, each with its time, the five
 slowest at the end. `--quiet` runs them headless with nothing on the screen
-(the motion flow, which needs a window, is skipped); a windowed run walks the
-motion flow alone after the rest. `godot/tools/flows.sh --boot` boots every
+(the motion flow, which needs a window, is skipped); a windowed run draws
+a frame a second of the game's time and the frames of its picture
+(`--draw-every 60`: stepped, the game is the same drawn or not) and walks
+the motion flow alone after the rest, every frame of its walk drawn. `--shard K/N` runs every Nth flow from the Kth. `godot/tools/flows.sh --boot` boots every
 map the data lists (each map file, the village's ages, the house's tiers,
 the dungeons' floors and the Deep Hunt's first depths), by day and at night,
 headless, and fails on any script error: GUT never loads the world's scripts.
@@ -165,6 +167,34 @@ The Godot CI runs both on every pull request, after GUT, headless, with as
 many flows at once as the runner has cores, and puts each result in the
 job's summary. A fork's pull request gets no key to the paid art, so both
 run on Shade's CC0 art alone, which they pass too.
+
+A flow is the same run every time (PIX-276). `flows.sh` steps Godot
+(`--fixed-fps 60`): each frame is a sixtieth of a second of the game's time
+however long the machine takes to draw it, so a flow headless on a fast
+core, beside twenty others on a loaded runner, or in a window that software
+draws at a few frames a second lives the same seconds, and its timers,
+`--wait` and keys with it. The game reads that time, `GameClock` (the
+world's physics ticks), wherever it asks how long since (a foe's grace on
+arrival, the place's card, a message, a second press to confirm), never the
+machine's clock, which only measuring the machine reads (`test_game_clock`
+keeps it so); and a harness run throws the same dice
+(`GameState.HARNESS_SEED`: the same loot, crits and wanderings). So a report
+is the same on every run, window or not (but `draws=`), and no flow gets a
+second try: the motion flow and the festival's and the board's had one, and
+it only hid what made the first fail. A flow can ask for another pace with
+`--fps N` (the motion flow walks at 144, a fast screen's frames between the
+ticks).
+
+The `Steady flows` workflow (`.github/workflows/flakes.yml`) keeps it so:
+every night on main, and on demand on any branch (`gh workflow run
+flakes.yml --ref <branch> -f runners=10`), it runs every flow five times
+headless with twice as many flows at once as the runner has cores, and once
+in a window, and its summary (`tools/flakes.py`) names every flow that failed
+even once, why and the end of its output, and every flow whose report
+changed between runs (headless with the paid art, or in a window with
+Shade's CC0 art alone: Godot's particles draw from the game's dice, so the
+paid houses' chimney smoke changes what a kill drops between the two), and
+it fails on either.
 
 On the laptop, `godot/tools/check.sh quick` runs only what a branch's diff
 against `origin/main` could break, in under a minute and with nothing on the
@@ -179,36 +209,32 @@ everything CI runs. Neither opens the motion flow's window: `quick` says when
 a change to the hero's sprite, walk or the camera calls for
 `godot/tools/flows.sh motion`.
 
-What needs a window runs in CI too (PIX-275), in its `pictures` job beside
-the checks: a virtual display (xvfb) with Mesa's software rendering (the
-flows on the desktop renderer as on the Mac, Forward+ on lavapipe; the look
-book on the browser's, as `lookbook.sh` shoots it), the release flows
-windowed (the motion flow alone, last), the look book, and a contact sheet
-of every flow's picture (`tools/flows_sheet.py`). Software rendering draws
-a few frames a second, which stretches the flows timed in frames or by the
-clock, so there a report that differs is noted, not failed (the headless
-run checks them all). When a pull request touches how the hero walks or is
-drawn or the camera (`player.gd`, `gait.gd`, `juice.gd`, `puny_art.gd`,
-`world_camera.gd`, the character sheets) or the workflow itself, the
-motion check runs three times first, alone, in a 640x360 window (where
-software rendering draws about thirty frames a second; a full-size one
-draws nine to eighteen, and the walk wobbles), after a first run that only
-warms the shaders, and fails the job unless two walks of the three stay
-within the motion flow's limit (a walk over it is a warning: software
-rendering now and then gives one walk a second step back, where the shake
-the check exists for steps back all along the walk). That is the motion
-flow `check.sh quick` calls for, run on the pull request. The pictures are
-the run's artifacts, and a comment on the pull request links them (the two sheets open in the
-browser). They are always of Shade's CC0 art alone: the repository is
-public, and so are its artifacts, so the paid art is never fetched there.
+What needs a window runs in CI too (PIX-275), beside the checks: a virtual
+display (xvfb) with Mesa's software rendering (the flows on the desktop
+renderer as on the Mac, Forward+ on lavapipe; the look book on the
+browser's, as `lookbook.sh` shoots it), the release flows windowed in two
+shares side by side (the `windowed` jobs, `flows.sh --shard`, the look book
+with the second), and the `pictures` job, which puts every flow's picture on
+one contact sheet (`tools/flows_sheet.py`) and passes when both shares did.
+Stepped, a window drawn by software at a few frames a second lives the same
+seconds as a headless run, so each windowed report must show what its flow
+expects too, the motion flow's steps back among them: that is the motion
+flow `check.sh quick` calls for, run on every pull request. The pictures are
+the run's artifacts, and a comment on the pull request links them (the two
+sheets open in the browser). They are always of Shade's CC0 art alone: the
+repository is public, and so are its artifacts, so the paid art is never
+fetched there.
 The Mac's windowed runs (`flows.sh`, `lookbook.sh`, both muted) stay the
 way to judge the paid art's looks.
 
-The motion check keeps the sky clear while it walks (a cloud's shadow over
-the shirt changes the reds it finds the hero by), counts frames only while
-the hero walks (a slow run reaches the river, where the camera catching up
-would read as a step back), and looks closely only at pure reds (turning
-every pixel into its hex took most of a slow frame).
+The motion check walks the hero's first three quarters of a second at the
+run's pace (`--fps 144`: two or three frames between the physics ticks,
+where the camera rides the hero as the interpolation draws them), keeps the
+sky clear while it walks (a cloud's shadow over the shirt changes the reds
+it finds the hero by), counts frames only while the hero walks (where the
+river stops the walk, the camera catching up would read as a step back),
+and looks closely only at pure reds (turning every pixel into its hex took
+most of a slow frame).
 
 ### Boot splash
 

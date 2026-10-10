@@ -46,6 +46,7 @@ const TABLE := [
 	{"flag": "leave", "takes": "", "does": "up the stairs, back to the gate"},
 	{"flag": "--level", "takes": "<n>", "does": "a hero of that level: the rank's title (the hero looks the same at every rank)"},
 	{"flag": "motion", "takes": "", "does": "the walking check (PIX-135): the hero walks right, measured frame by frame; the report adds backsteps= (needs a window)"},
+	{"flag": "--fps", "takes": "<n>", "does": "the frames a second the run is stepped at (PIX-276): tools/flows.sh gives Godot --fixed-fps n (60 when not given, a frame a physics tick); with motion, its walk measured over as many frames as 0.75 s takes at that pace"},
 	{"flag": "--role", "takes": "<id>", "does": "the hero's role, for how a role wears gear (PIX-175)"},
 	{"flag": "--wear", "takes": "<ids>", "does": "gear put on the hero, drawn on them (PIX-129)"},
 	{"flag": "--at", "takes": "<x,y>", "does": "stand the hero on that cell (before --walk, to test what stops them)"},
@@ -136,6 +137,7 @@ const TABLE := [
 	{"flag": "--out", "takes": "<dir>", "does": "with lookbook: where it saves (res://lookbook)"},
 	{"flag": "--wait", "takes": "<s>", "does": "hold the shot s seconds (an entrance still playing)"},
 	{"flag": "overflow", "takes": "", "does": "every piece of an open screen past the canvas, as OVERFLOW lines; the report adds overflow= (works headless)"},
+	{"flag": "--draw-every", "takes": "<n>", "does": "a windowed run draws one frame in n, and every frame of the motion check's walk and of the picture at the end: stepped, the game is the same drawn or not, and software rendering takes most of a second a frame (tools/flows.sh: 60 in a window, a frame a second of the game's time, PIX-276)"},
 	{"flag": "--shot", "takes": "<file>", "does": "save the picture there, not res://screenshot.png: runs side by side each keep their own (tools/flows.sh, PIX-270)"},
 	{"flag": "-NSAppSleepDisabled", "takes": "YES", "does": "macOS's, not the game's: no napping a run whose window is hidden (tools/lookbook.sh)"},
 ]

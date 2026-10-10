@@ -13,10 +13,34 @@ extends Node
 const DEVICE := 77
 
 var world: Node
+## `--draw-every N` (PIX-276): a windowed run draws one frame in N, and
+## every frame where it reads the screen (the motion check's walk, the
+## picture at the end). Stepped (tools/flows.sh), the game is the same
+## drawn or not: nothing it decides reads what was drawn, a frame's time
+## is a sixtieth of a second either way, and its particles and shaders run
+## on the game's own clock (only the water's tile frames count drawn
+## frames, so they ripple slower). Software rendering (CI's windows) takes
+## most of a second a frame, and drawing all sixty of each second made a
+## flow several times slower than headless.
+var _draw_every := 0
+var _draw_all := false
 
 
 func _ready() -> void:
+	if DisplayServer.get_name() != "headless":
+		_draw_every = int(HarnessFlags.given().value("--draw-every", "0"))
 	_run_test_harness()
+
+
+func _process(_delta: float) -> void:
+	if _draw_every > 1:
+		RenderingServer.render_loop_enabled = _draw_all or Engine.get_process_frames() % _draw_every == 0
+
+
+## Every frame drawn from now on (`--draw-every`), this one too.
+func _draw_every_frame() -> void:
+	_draw_all = true
+	RenderingServer.render_loop_enabled = true
 
 
 ## Keys from anyone but the harness are dropped, paused or not: the window
@@ -47,14 +71,14 @@ func _keys(flags: HarnessFlags) -> void:
 		for pressed: bool in [true, false]:
 			_press(codes[key], pressed)
 			# Held through two physics ticks too: walking and facing are read
-			# there, and a quiet run's frames come faster than its ticks.
+			# there, and a run stepped faster than its ticks (`--fps`) draws
+			# frames between them.
 			await get_tree().process_frame
 			await get_tree().physics_frame
 			await get_tree().physics_frame
 			await get_tree().process_frame
-		# Paced in time as well as frames, as a hand is: a quiet (headless)
-		# run draws frames far faster than a window, and a screen that
-		# ignores the press that opened it would miss the next.
+		# Paced in the game's time as well as frames, as a hand is: a
+		# screen that ignores the press that opened it would miss the next.
 		await get_tree().create_timer(0.08).timeout
 	await get_tree().create_timer(0.2).timeout
 
@@ -113,7 +137,8 @@ func _hold_rank_beat(beat: String) -> void:
 	if opened == null:
 		return
 	opened.hold_at(beat)
-	# By the clock: a quiet run's frames come far faster than a window's.
+	# In the game's time, a twentieth of a second at a time (PIX-276: every
+	# wait here is, the run stepped by tools/flows.sh).
 	for tick in 200:
 		if not is_instance_valid(opened) or opened.phase == beat:
 			break
@@ -291,19 +316,24 @@ func _run_test_harness() -> void:
 		# (a still frame of the walk, so only motion moves it), and the
 		# world's scroll from the camera. A hero who steps back on screen
 		# while walking forward is the shake that blurred every step.
-		# Slow frames (a loaded machine, CI's software rendering: PIX-275)
-		# walk the hero further in the same 45 frames, and two things there
-		# aren't the camera: a cloud's shadow drifting over the shirt changes
-		# its reds, so the sky is kept clear while it walks; and the river
-		# stops the walk, the camera catching up as a step back, so frames
-		# count only while the hero still walks.
+		# The walk's first three quarters of a second, in frames at the
+		# run's pace (`--fps`, PIX-276: the flow's 144, a fast screen's,
+		# draws two or three frames between the physics ticks, where the
+		# camera rides the hero as the interpolation draws them). Stepped,
+		# the walk is the same however fast the machine draws it; it used
+		# to be timed by the wall clock, and a slow frame walked the hero
+		# further. Two things aren't the camera: a cloud's shadow drifting
+		# over the shirt changes its reds, so the sky is kept clear while it
+		# walks; and the river stops the walk, the camera catching up as a
+		# step back, so frames count only while the hero still walks.
 		world.lights.clear_sky = true
+		_draw_every_frame()
 		world.player.scripted_dir = Vector2.RIGHT
 		world.player.sprite.speed_scale = 0.0
 		var hero_x: Array[float] = []
 		var scroll_x: Array[float] = []
 		var walking := false
-		for i in 45:
+		for i in roundi(45 * float(flags.value("--fps", "60")) / 60.0):
 			await RenderingServer.frame_post_draw
 			var moving: bool = world.player.get_real_velocity().x >= 1.0
 			if walking and not moving:
@@ -317,9 +347,9 @@ func _run_test_harness() -> void:
 			for y in range(int(around.y) - 90, int(around.y) + 30):
 				for x in range(int(around.x) - 50, int(around.x) + 50):
 					var pixel := image.get_pixel(x, y)
-					# A pure red, in either light, before the exact test: the
-					# frame's time is the measurement's too, and turning
-					# every pixel into its hex took most of a slow frame.
+					# A pure red, in either light, before the exact test:
+					# turning every pixel into its hex took most of a slow
+					# frame.
 					if pixel.r < 0.15 or pixel.g > 0.002 or pixel.b > 0.002:
 						continue
 					if DesktopLook.shown(pixel, DesktopLook.linear).to_html(false) in ["b60000", "770000"]:
@@ -653,8 +683,8 @@ func _run_test_harness() -> void:
 		GameState.progression.quests[flags.value("--delivered")] = {"progress": 1, "done": true}
 	if flags.has("--follow-wagon"):
 		# The hero walks beside the escort's wagon for that many seconds (PIX-192).
-		var until := Time.get_ticks_msec() / 1000.0 + float(flags.value("--follow-wagon"))
-		while Time.get_ticks_msec() / 1000.0 < until:
+		var until := GameClock.seconds() + float(flags.value("--follow-wagon"))
+		while GameClock.seconds() < until:
 			await get_tree().physics_frame
 			if world.stage.escort != null and is_instance_valid(world.stage.escort):
 				world.player.position = world.stage.escort.position + Vector2(20, 0)
@@ -945,18 +975,21 @@ func _run_test_harness() -> void:
 		for line in overflows:
 			print("%s %s" % ["OVERFLOW", line])
 		report.note("overflow", str(overflows.size()))
-	# A quiet run (--headless: no window, nothing drawn) still reports; only
-	# a windowed run has a picture to save.
-	if DisplayServer.get_name() == "headless":
-		await get_tree().process_frame
-	else:
+	# What the run left: every field the report has (HarnessReport.TABLE),
+	# read at the same step whether the run has a window or not (PIX-276):
+	# a windowed run read it after its picture, which takes frames of its
+	# own, so its report was a few steps later than a quiet run's.
+	await get_tree().process_frame
+	var line := report.line()
+	# A quiet run (--headless: no window, nothing drawn) has no picture.
+	if DisplayServer.get_name() != "headless":
+		_draw_every_frame()
 		await RenderingServer.frame_post_draw
 		# As the screen shows it (the desktop app's canvas is linear light),
 		# where `--shot` says (PIX-270): the flows run side by side, and one
 		# shared screenshot.png would be whichever run saved last.
 		(await DesktopLook.snapshot(self)).save_png(flags.value("--shot", "res://screenshot.png"))
-	# What the run left: every field the report has (HarnessReport.TABLE).
-	print(report.line())
+	print(line)
 	# Let the audio server let go of the music before the engine shuts down.
 	get_tree().paused = true  # nothing may start a track again
 	Sound.stop_all()

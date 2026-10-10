@@ -40,7 +40,7 @@ func listen_again() -> void:
 
 ## The music keeps quiet for `seconds` (a boss has fallen).
 func hush(seconds: float) -> void:
-	hushed_until = Time.get_ticks_msec() / 1000.0 + seconds
+	hushed_until = GameClock.seconds() + seconds
 
 
 ## Gold that grows rings (SFX.coin); health heard rising or falling.
@@ -64,7 +64,7 @@ func hear_hp(hp: int, _max_hp: int) -> void:
 func refresh() -> void:
 	if not GameState.title_seen and not HarnessFlags.given().has("--screenshot"):
 		return  # the title plays its own
-	var now := Time.get_ticks_msec() / 1000.0
+	var now := GameClock.seconds()
 	for enemy in get_tree().get_nodes_in_group("mobs"):
 		if enemy.hunting and not enemy.dying:
 			world.foes.hunted_at = now

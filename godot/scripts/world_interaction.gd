@@ -171,7 +171,7 @@ func place_from_pack(item_id: String) -> void:
 
 
 func _asked_twice(key: String) -> bool:
-	var now := Time.get_ticks_msec() / 1000.0
+	var now := GameClock.seconds()
 	if _asked.has(key) and now - float(_asked[key]) < 6.0:
 		_asked.erase(key)
 		return true
@@ -538,7 +538,7 @@ func _show_prompt(cell: Vector2i, rise: int) -> void:
 		(prompt_label as Keycap).show_key(_interact_key())
 		prompt_label.reset_size()
 	prompt_label.visible = true
-	var bob := roundf(sin(Time.get_ticks_msec() / 260.0)) if not GameState.settings.reduce_motion else 0.0
+	var bob := roundf(sin(GameClock.msec() / 260.0)) if not GameState.settings.reduce_motion else 0.0
 	var size := prompt_label.size
 	prompt_label.position = Vector2(cell * MapView.TILE) + Vector2(roundf((MapView.TILE - size.x) / 2.0), rise - size.y + 16 + bob)
 

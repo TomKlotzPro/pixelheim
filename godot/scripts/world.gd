@@ -371,7 +371,7 @@ func enter_map(next: MapData, arrival: Vector2i) -> void:
 		Sound.play("door")
 	foes.hunted_at = -100.0
 	soundscape.listen_again()
-	foes.arrived_at = Time.get_ticks_msec() / 1000.0
+	foes.arrived_at = GameClock.seconds()
 	for stale in get_tree().get_nodes_in_group("mobs") + get_tree().get_nodes_in_group("decor"):
 		stale.queue_free()
 	if view != null:

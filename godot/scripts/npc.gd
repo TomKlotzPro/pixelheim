@@ -280,7 +280,7 @@ func _idle(dir: String) -> void:
 
 
 func _beat() -> int:
-	return int(Time.get_ticks_msec() / 1000.0 / BEAT_SECONDS)
+	return int(GameClock.seconds() / BEAT_SECONDS)
 
 
 func _center(at: Vector2i) -> Vector2:
