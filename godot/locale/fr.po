@@ -3261,6 +3261,10 @@ msgid "Lamplight"
 msgstr "Lueur des lampes"
 
 #: assets/data/changelog.json
+msgid "Lamps and fires everywhere light the ground without hard edges, in town, on the Reach and underground"
+msgstr "Partout, lanternes et feux éclairent le sol sans bords nets, au village, dans la Marche et sous terre"
+
+#: assets/data/changelog.json
 msgid "Late-game hunting grounds: trolls and golems under the trees, ghosts and mimics in the bog - elites roam thick"
 msgstr "Terrains de chasse de fin de partie : trolls et golems sous les arbres, fantômes et mimiques dans la tourbière - les élites y pullulent"
 
@@ -3707,6 +3711,10 @@ msgstr "À la manette, A répond et confirme, X frappe, B revient en arrière pa
 #: assets/data/changelog.json
 msgid "On a phone the controls are sized for a thumb on any screen, the attack, roll and use buttons show a drawn sword, arrow and hand instead of words, and all six skill keys are on screen, with each skill's icon"
 msgstr "Sur téléphone, les commandes ont la taille d'un pouce sur tous les écrans, les boutons attaquer, rouler et utiliser montrent une épée, une flèche et une main dessinées au lieu de mots, et les six touches de compétence sont à l'écran, chacune avec son icône"
+
+#: assets/data/changelog.json
+msgid "On the first night, the burning houses light the square in soft pools: no more lit and dark areas ending in straight lines"
+msgstr "La première nuit, les maisons en feu éclairent la place en halos doux : fini les zones claires et sombres coupées en lignes droites"
 
 #: assets/data/changelog.json
 msgid "On the town's tour, a rebuilt building rises at its stop: the ruin gives way in a cloud of dust, the walls go up row by row, and it lands under confetti"
@@ -4279,6 +4287,10 @@ msgstr "Le métier de Forge fait baisser les prix de la forge et, au niveau 5, d
 #: assets/data/changelog.json
 msgid "Soft Edges"
 msgstr "Bords doux"
+
+#: assets/data/changelog.json
+msgid "Soft Light"
+msgstr "Lumière douce"
 
 #: assets/data/changelog.json
 msgid "Some day camps sleep by their lit torch at night, a Z drifting up: walk right up to one or strike it and the whole pack wakes"

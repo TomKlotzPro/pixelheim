@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.222.0",
+      "date": "2026-10-10",
+      "codename": "Soft Light",
+      "notes": [
+        "On the first night, the burning houses light the square in soft pools: no more lit and dark areas ending in straight lines",
+        "Lamps and fires everywhere light the ground without hard edges, in town, on the Reach and underground"
+      ]
+    },
+    {
       "version": "0.221.0",
       "date": "2026-10-10",
       "codename": "The Way Out",

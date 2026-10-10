@@ -175,12 +175,27 @@ const WAY_OUT_PLATE := 4.0
 ## A burnt house seen small from afar smokes with this share of a ruin's
 ## motes in town (PIX-248).
 const VILLAGE_RUIN_SMOKE := 0.4
-## A unit of drawing: a tile layers' rendering (and physics) quadrant, 16
-## cells square, laid and drawn once; the decor and the objects a few rows
-## at a time; the props a handful.
+## A unit of drawing: a tile layers' physics quadrant, 16 cells square, and
+## four whole rendering quadrants (LIGHT_BLOCK), laid and drawn once; the
+## decor and the objects a few rows at a time; the props a handful.
 const BLOCK := 16
 const DECOR_ROWS := 4
 const PROPS_A_UNIT := 16
+## Each tile layer's rendering quadrant, this many cells a side (PIX-285).
+## A rendering quadrant is one canvas item, and Godot lights a canvas item
+## with only the first Lights.PER_ITEM lights that reach it: with quadrants
+## of 16, three dozen fires reached one on the Night of Ash, and each light
+## left out of one stopped at its edge, the ground lit and dark in straight
+## lines. A quadrant of 8 is a quarter of the ground, and far fewer lights
+## reach it (test_night_light). It divides BLOCK, so a unit of drawing
+## still lays whole quadrants, each drawn once.
+const LIGHT_BLOCK := 8
+## A burning house lights the ground as a few soft pools (PIX-285): one for
+## each part of it at most FIRE_POOL cells a side, from the part's middle
+## to FIRE_REACH pixels past its corners. A light on every flame put three
+## dozen on the square and washed its ash white.
+const FIRE_POOL := 6
+const FIRE_REACH := 36.0
 
 
 func _init(map_data: MapData, actor_layer: Node2D) -> void:
@@ -360,7 +375,7 @@ static func parts_of(slices: Slicer) -> Dictionary:
 
 
 ## The drawing as units on `slices`, in order (`build` runs them at once,
-## Neighbours a few a frame): the ground (laid a quadrant at a time when
+## Neighbours a few a frame): the ground (laid a unit at a time when
 ## `sliced`), the blockers a band of rows at a time, the signs, the decor a
 ## few rows at a time, then the rest. The plan has run.
 func building(root: Node, slices: Slicer) -> void:
@@ -438,7 +453,7 @@ func _build_ground(_data: MapData) -> Node2D:
 	return root
 
 
-## The ground's units: its layers, the tiles (a quadrant a unit when sliced,
+## The ground's units: its layers, the tiles (a BLOCK a unit when sliced,
 ## else from the kept layers in one call), the objects a band of rows a
 ## unit, then the pieces (the village far off, gates in the rock, growth,
 ## flowers, houses).
@@ -466,8 +481,9 @@ func _ground_units(slices: Slicer) -> void:
 	slices.add("ground_pieces", _ground_pieces)
 
 
-## The rendering quadrants of a tile layer that `rect` (of its cells)
-## covers, each clipped to it: a quadrant laid in one unit is drawn once.
+## The units of a tile layer (BLOCK square) that `rect` (of its cells)
+## covers, each clipped to it: whole rendering quadrants (LIGHT_BLOCK), so a
+## quadrant laid in one unit is drawn once.
 static func quadrants(rect: Rect2i) -> Array[Rect2i]:
 	var out: Array[Rect2i] = []
 	var first := Vector2i(floori(rect.position.x / float(BLOCK)), floori(rect.position.y / float(BLOCK)))
@@ -478,13 +494,21 @@ static func quadrants(rect: Rect2i) -> Array[Rect2i]:
 	return out
 
 
+## A tile layer of `tile_set`, drawn in rendering quadrants of LIGHT_BLOCK
+## cells: every tile layer a drawing makes.
+static func tile_layer_of(tile_set: TileSet) -> TileMapLayer:
+	var layer := TileMapLayer.new()
+	layer.tile_set = tile_set
+	layer.rendering_quadrant_size = LIGHT_BLOCK
+	return layer
+
+
 ## The ground's layers, empty but for their materials, in drawing order:
 ## the corner tiles, the crowns, the objects, then the village's growth, the
 ## flowers and the houses where there are any.
 func _ground_layers() -> Node2D:
 	var root := Node2D.new()
-	ground_layer = TileMapLayer.new()
-	ground_layer.tile_set = PunyTerrain.tileset()
+	ground_layer = tile_layer_of(PunyTerrain.tileset())
 	ground_layer.position = Vector2(-TILE, -TILE) / 2.0
 	# The ground as drawn: the map's, but for the village far off (PIX-248),
 	# whose streets, river and ash lie where its block's cells are. On past
@@ -515,8 +539,7 @@ func _ground_layers() -> Node2D:
 	# Shade's cliffs standing in the water, the sand and the roads
 	# (PunyTerrain.rimmed), toned as the ground is, but still: the water
 	# under them swells.
-	rim_layer = TileMapLayer.new()
-	rim_layer.tile_set = PunyTerrain.tileset()
+	rim_layer = tile_layer_of(PunyTerrain.tileset())
 	rim_layer.position = ground_layer.position
 	rim_layer.material = ground_tint
 	root.add_child(rim_layer)
@@ -525,8 +548,7 @@ func _ground_layers() -> Node2D:
 	flowers_sway.set_shader_parameter("strength", 0.0)
 	canopy = _toning()
 	canopy.set_shader_parameter("canopy", CANOPY_SWAY)
-	crown_layer = TileMapLayer.new()
-	crown_layer.tile_set = PunyTerrain.tileset()
+	crown_layer = tile_layer_of(PunyTerrain.tileset())
 	crown_layer.position = ground_layer.position
 	# Under snow the pines on the ridges whiten with the ground (PIX-169);
 	# elsewhere they keep their green (but along a line with a snowy map
@@ -537,16 +559,14 @@ func _ground_layers() -> Node2D:
 	root.add_child(crown_layer)
 	# Bridges, cave mouths and ramparts stand on that ground as Puny objects;
 	# the village far off brings its own rampart, wells and growth.
-	_objects_layer = TileMapLayer.new()
-	_objects_layer.tile_set = PunyTerrain.tileset()
+	_objects_layer = tile_layer_of(PunyTerrain.tileset())
 	root.add_child(_objects_layer)
 	# Pixelheim's rampart in the Medieval Age's stone, its gatehouse at the
 	# road (PIX-248); what the fire left of it darker, on a layer of its own.
 	_rampart_layers = []
 	if not rampart.is_empty() and PunyTown.available():
 		for scorched: bool in [false, true]:
-			var stone := TileMapLayer.new()
-			stone.tile_set = PunyTown.tileset()
+			var stone := tile_layer_of(PunyTown.tileset())
 			if scorched:
 				stone.modulate = Rampart.SCORCHED
 			root.add_child(stone)
@@ -554,14 +574,12 @@ func _ground_layers() -> Node2D:
 	_growth_layer = null
 	if not skyline.get("growth", {}).is_empty():
 		# Its woods and fields lean in the wind together.
-		_growth_layer = TileMapLayer.new()
-		_growth_layer.tile_set = PunyTerrain.tileset()
+		_growth_layer = tile_layer_of(PunyTerrain.tileset())
 		_growth_layer.material = _swaying(TREE_SWAY, false)
 		root.add_child(_growth_layer)
 	# Shade's flowers, flat on the ground (the hero walks through them).
 	if not outdoor_props["flat"].is_empty():
-		var flowers := TileMapLayer.new()
-		flowers.tile_set = PunyTown.tileset()
+		var flowers := tile_layer_of(PunyTown.tileset())
 		flowers.material = flowers_sway
 		root.add_child(flowers)
 		layers["flowers"] = flowers
@@ -569,8 +587,7 @@ func _ground_layers() -> Node2D:
 	for part: String in ["pieces", "decor"]:
 		if buildings[part].is_empty():
 			continue
-		var houses := TileMapLayer.new()
-		houses.tile_set = PunyTown.tileset()
+		var houses := tile_layer_of(PunyTown.tileset())
 		root.add_child(houses)
 		layers[part] = houses
 	return root
@@ -583,7 +600,7 @@ func look() -> Dictionary:
 
 
 ## Bridges, cave mouths and ramparts on cell rows [i * BLOCK, (i + 1) *
-## BLOCK): a band of the objects layer's quadrants.
+## BLOCK): a band of the objects layer's quadrants, whole.
 func _object_rows(i: int) -> void:
 	var drawn := look()
 	var outdoor := PunyTerrain.is_outdoor(data.grid)
@@ -770,8 +787,7 @@ func _build_room(data: MapData) -> Node2D:
 	var root := Node2D.new()
 	root.add_child(_dark_beyond(data))
 	for part: String in ["floor", "walls", "rug", "pieces", "objects", "tops", "lifted"]:
-		var layer := TileMapLayer.new()
-		layer.tile_set = PunyTown.tileset()
+		var layer := tile_layer_of(PunyTown.tileset())
 		for cell: Vector2i in buildings.get(part, {}):
 			PunyTown.place(layer, cell, buildings[part][cell])
 		if part == "lifted":
@@ -797,10 +813,8 @@ func _build_dungeon(data: MapData) -> Node2D:
 	var root := Node2D.new()
 	root.add_child(_dark_beyond(data))
 	var dungeon := PunyDungeon.sheet()
-	var layer := TileMapLayer.new()
-	layer.tile_set = dungeon.tileset
-	dungeon_objects = TileMapLayer.new()
-	dungeon_objects.tile_set = dungeon.tileset
+	var layer := tile_layer_of(dungeon.tileset)
+	dungeon_objects = tile_layer_of(dungeon.tileset)
 	for cell: Vector2i in data.grid:
 		var tile: String = data.grid[cell]
 		match tile:
@@ -866,8 +880,7 @@ func _frozen(data: MapData) -> TileMapLayer:
 	if not frozen:
 		return null
 	var dungeon := PunyDungeon.sheet()
-	var layer := TileMapLayer.new()
-	layer.tile_set = dungeon.tileset
+	var layer := tile_layer_of(dungeon.tileset)
 	for cell: Vector2i in data.grid:
 		if data.grid[cell] not in ["wall", "lamp"] and _by_ice(data, cell):
 			dungeon.place(layer, cell, PunyDungeon.floor_tile(cell))
@@ -1086,9 +1099,14 @@ static func plan_camps(map: MapData) -> Dictionary:
 
 ## Flames on a house that's still burning (the Night of Ash): Shade's looped
 ## flame on a handful of its cells and his embers drifting over it; without
-## the paid pack, an orange flicker of motes instead.
+## the paid pack, an orange flicker of motes instead. Its light falls in a
+## few soft pools (fire_pools), not one to a flame.
 func _add_fire(rect: Rect2i) -> Array[Node2D]:
 	var nodes: Array[Node2D] = []
+	for pool: Dictionary in fire_pools(rect):
+		var light := Lights.make(pool["at"], pool["radius"], Lights.FIRE, Lights.BLAZE_ENERGY, true)
+		props.add_child(light)
+		nodes.append(light)
 	var flame := ItemIcons.effect("flame", 10.0)
 	var embers := ItemIcons.effect("embers", 8.0)
 	for y in range(rect.position.y, rect.end.y):
@@ -1107,7 +1125,7 @@ func _add_fire(rect: Rect2i) -> Array[Node2D]:
 				fire.add_to_group("decor")
 				props.add_child(fire)
 				nodes.append(fire)
-				nodes.append(_add_glow(at, 14, 0.4, 72.0, Lights.FIRE, true, Lights.FIRE_ENERGY))
+				nodes.append(_add_glow(at, 14, 0.4))
 			if embers != null and (x + y) % 3 == 0:
 				var drift := AnimatedSprite2D.new()
 				drift.sprite_frames = embers
@@ -1138,6 +1156,20 @@ func _add_fire(rect: Rect2i) -> Array[Node2D]:
 	return nodes
 
 
+## Where a burning house's light falls (PIX-285): [{at, radius}], a pool in
+## the middle of each part of `rect` (cells) at most FIRE_POOL cells a side,
+## in map pixels.
+static func fire_pools(rect: Rect2i) -> Array[Dictionary]:
+	var parts := Vector2i(ceili(rect.size.x / float(FIRE_POOL)), ceili(rect.size.y / float(FIRE_POOL)))
+	var part := Vector2(rect.size * TILE) / Vector2(parts)
+	var out: Array[Dictionary] = []
+	for j in parts.y:
+		for i in parts.x:
+			var at := Vector2(rect.position * TILE) + part * (Vector2(i, j) + Vector2(0.5, 0.5))
+			out.append({"at": at, "radius": part.length() / 2.0 + FIRE_REACH})
+	return out
+
+
 ## The fire on ruin `ruin` (Town.ruins' order), if it still burns.
 func douse_ruin(ruin: int, seconds := 1.2) -> void:
 	for i in fires.size():
@@ -1146,8 +1178,8 @@ func douse_ruin(ruin: int, seconds := 1.2) -> void:
 
 
 ## The fire on one burning ruin (the Night of Ash's dawn, PIX-197) gutters
-## out: its flames shrink and fade over `seconds`, a last breath of smoke
-## goes up, and they're gone.
+## out: its flames shrink and fade over `seconds`, its light dims, a last
+## breath of smoke goes up, and they're gone.
 func douse(index: int, seconds := 1.2) -> void:
 	if index < 0 or index >= fires.size():
 		return
@@ -1160,8 +1192,12 @@ func douse(index: int, seconds := 1.2) -> void:
 			continue
 		night_glows.erase(node)
 		var out := node.create_tween().set_parallel()
-		out.tween_property(node, "scale", node.scale * Vector2(0.2, 0.05), seconds).set_ease(Tween.EASE_IN)
-		out.tween_property(node, "modulate:a", 0.0, seconds)
+		if node is PointLight2D:
+			# The LightRig brings a light up to its "energy" every frame.
+			out.tween_method(func(energy: float) -> void: node.set_meta("energy", energy), float(node.get_meta("energy", 0.0)), 0.0, seconds)
+		else:
+			out.tween_property(node, "scale", node.scale * Vector2(0.2, 0.05), seconds).set_ease(Tween.EASE_IN)
+			out.tween_property(node, "modulate:a", 0.0, seconds)
 		out.chain().tween_callback(node.queue_free)
 	var rect: Rect2i = fire["rect"]
 	var puff := _still(CPUParticles2D.new())
@@ -1721,8 +1757,7 @@ func _place_furniture(item_id: String, cell: Vector2i) -> void:
 ## of the ruins, in his dungeon stone, under whatever stands on it. The
 ## layer, then a band of rows a unit (a band of its physics quadrants).
 func _blockers_setup() -> void:
-	tile_layer = TileMapLayer.new()
-	tile_layer.tile_set = _blockers()
+	tile_layer = tile_layer_of(_blockers())
 	under.add_child(tile_layer)
 
 

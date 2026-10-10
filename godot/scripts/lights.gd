@@ -39,6 +39,9 @@ const WAY_OUT := Color(1.0, 0.93, 0.74)
 ## out: these keep a lamp's pool warm, not white.
 const LAMP_ENERGY := 0.42
 const FIRE_ENERGY := 0.55
+## A burning house's pools (PIX-285): fewer lights over it than it had
+## flames, so each a little stronger.
+const BLAZE_ENERGY := 0.8
 const TORCH_ENERGY := 0.7
 const WINDOW_ENERGY := 0.3
 const LANTERN_ENERGY := 0.3
@@ -50,6 +53,11 @@ const PULSE_DEPTH := 0.3
 const PULSE_SPEED := 3.0
 ## The size of the shared light texture, in pixels.
 const TEXTURE_PX := 256
+## How many lights Godot lights one canvas item with, in both renderers
+## (its MAX_LIGHTS_PER_ITEM less one, PIX-285): the lights past these that
+## reach it light the items beside it but not it, and stop at its edge.
+## MapView draws tile layers in small blocks so none is reached by more.
+const PER_ITEM := 15
 
 
 ## The open air's light at `steps` on the day's wheel.

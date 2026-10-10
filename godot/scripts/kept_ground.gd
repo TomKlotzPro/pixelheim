@@ -335,8 +335,8 @@ func lay_crowns(layer: TileMapLayer) -> void:
 
 ## Lays one block of the ground, the cliffs standing in it and the crowns,
 ## corners `block` (a rect of dual cells), tile by tile: a map drawn beside
-## the hero a block a slice, each block a rendering quadrant of the layers,
-## drawn once.
+## the hero a block a slice, each block whole rendering quadrants of the
+## layers, drawn once.
 func lay_block(ground_layer: TileMapLayer, rim_layer: TileMapLayer, crown_layer: TileMapLayer, block: Rect2i) -> void:
 	for y in range(block.position.y, block.end.y):
 		for x in range(block.position.x, block.end.x):
