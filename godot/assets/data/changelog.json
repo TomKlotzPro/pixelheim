@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.198.0",
+      "date": "2026-10-10",
+      "codename": "Ways On",
+      "notes": [
+        "Every way out of a map reads as a way on: the road runs right to it, through an opening wide enough to look walkable, and a signpost names where it leads",
+        "Cave mouths are framed and lit by torches, the mountain gate stands in the rock, and stairs up name the place above",
+        "New roads lead across the Ashenreach to the Mirefen and Deepwood passes and to the Undermountain, and a path climbs to Saltmere's sea cave",
+        "A way out on a map's south edge no longer hides under the dock, and you arrive facing into the new map, on its road"
+      ]
+    },
+    {
       "version": "0.197.0",
       "date": "2026-10-10",
       "codename": "Dead Centre",

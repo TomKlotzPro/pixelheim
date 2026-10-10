@@ -277,8 +277,13 @@ func use_portal(target: Dictionary) -> void:
 	match target["kind"]:
 		"map":
 			_through_door(func() -> void:
+				var from_id := map.id
+				var arrival := Vector2i(int(target["x"]), int(target["y"]))
 				map = load_map(target["mapId"])
-				enter_map(map, Vector2i(int(target["x"]), int(target["y"])))
+				# Facing into the new map, away from the way back (PIX-269),
+				# not into the rock or the door they came out of.
+				player.face(Ways.arrival_facing(map, arrival, from_id, player.facing))
+				enter_map(map, arrival)
 			)
 		"dungeon":
 			# The floor select opens while the hero waits at the door.
@@ -366,7 +371,8 @@ func enter_map(next: MapData, arrival: Vector2i) -> void:
 		stage.festival()
 	stage.play_reveals.call_deferred()
 	folk.keep_hours(true)
-	camera_rig.set_limits(Vector2(next.size * TILE))
+	# Under the sky the camera may look past the south edge, under the dock.
+	camera_rig.set_limits(Vector2(next.size * TILE), next.floor_level == 0 and next.style != "cave" and PunyTerrain.is_outdoor(next.grid))
 	foes.spawn_for(next)
 	respawn_check = 0.0
 	soundscape.refresh()

@@ -1837,6 +1837,10 @@ msgid "A town's new age is heralded with a flourish and dust on the square, and 
 msgstr "Le nouvel âge d'une ville s'annonce par une fanfare et de la poussière sur la place, et chaque nouvelle carte sort de l'obscurité au lieu d'apparaître d'un coup (sauf avec les animations réduites)"
 
 #: assets/data/changelog.json
+msgid "A way out on a map's south edge no longer hides under the dock, and you arrive facing into the new map, on its road"
+msgstr "Une sortie au sud d'une carte ne se cache plus sous la barre, et vous arrivez face à la nouvelle carte, sur sa route"
+
+#: assets/data/changelog.json
 msgid "AGAINST THE CLOCK: Pell's canary can't breathe the shafts' bad air for long. Once she's in your pack you have a minute to get her to Pell - the clock shows top right - or she flies back to the west gallery and you fetch her again"
 msgstr "CONTRE LA MONTRE : le canari de Pell ne supporte pas longtemps le mauvais air des puits. Une fois l'oiseau dans votre sac, vous avez une minute pour le ramener à Pell - le chrono s'affiche en haut à droite - sinon il s'envole vers la galerie ouest et il faut retourner le chercher"
 
@@ -2131,6 +2135,10 @@ msgstr "DES QUÊTES D'ARTISANAT : Brin veut un manteau ciré pour le port, Gar
 #: assets/data/changelog.json
 msgid "CURRENT WORDS: Loras wants his lute back from the troll and Mirelle two gems for her vault, as their quests say, not old prices; the Town age's goal says its fountain will still want Fafnyr's scale; a recipe's missing material always names itself"
 msgstr "DES MOTS À JOUR : Loras veut reprendre son luth au troll et Mirelle deux gemmes pour sa chambre forte, comme le disent leurs quêtes, et non d'anciens prix ; l'objectif de l'âge du Bourg précise que sa fontaine réclamera toujours l'écaille de Fafnyr ; le matériau manquant d'une recette donne toujours son nom"
+
+#: assets/data/changelog.json
+msgid "Cave mouths are framed and lit by torches, the mountain gate stands in the rock, and stairs up name the place above"
+msgstr "Les entrées de grotte sont encadrées et éclairées de torches, la porte de la montagne se dresse dans la roche, et les escaliers indiquent le lieu au-dessus"
 
 #: assets/data/changelog.json
 msgid "Centered"
@@ -2523,6 +2531,10 @@ msgstr "Chaque apparition appartient à son terrain : bêtes de cendre dans la
 #: assets/data/changelog.json
 msgid "Every tenth depth a warden guards the stair down, a boss with its own attacks: the Deep Warden, then the Hollow King"
 msgstr "Toutes les dix profondeurs, un gardien tient l'escalier, un boss avec ses propres attaques : le Gardien des Profondeurs, puis le Roi Creux"
+
+#: assets/data/changelog.json
+msgid "Every way out of a map reads as a way on: the road runs right to it, through an opening wide enough to look walkable, and a signpost names where it leads"
+msgstr "Chaque sortie d'une carte se lit comme un passage : la route y mène tout droit, par une ouverture assez large pour sembler praticable, et un panneau indique où elle conduit"
 
 #: assets/data/changelog.json
 msgid "Everyone casts a shadow, and a quiet vignette frames the world"
@@ -3311,6 +3323,10 @@ msgstr "Les nouveaux héros se réveillent au village ; marchez jusqu'à la bo
 #: assets/data/changelog.json
 msgid "New monsters: Bone Knight, Shade, Mimic, Fire Imp, and Morvax the Deathless"
 msgstr "Nouveaux monstres : Chevalier d'os, Spectre, Mimique, Diablotin de feu, et Morvax le Sans-Mort"
+
+#: assets/data/changelog.json
+msgid "New roads lead across the Ashenreach to the Mirefen and Deepwood passes and to the Undermountain, and a path climbs to Saltmere's sea cave"
+msgstr "De nouvelles routes traversent la Marche des Cendres jusqu'aux passages des Marais de Fange et des Bois-Profonds et jusqu'au Sous-Mont, et un sentier monte à la grotte marine de Saltmere"
 
 #: assets/data/changelog.json
 msgid "New safety nets: the map parser and the loot tables got their first dedicated test suites"
@@ -5059,6 +5075,10 @@ msgstr "Avis de recherche"
 #: assets/data/changelog.json
 msgid "Water comes alive: it swells with light, glints here and there, foam laps along every shore, and what stands on a bank is mirrored in it"
 msgstr "L'eau prend vie : elle ondule de lumière, scintille çà et là, l'écume vient lécher chaque rive, et ce qui se dresse sur la berge s'y reflète"
+
+#: assets/data/changelog.json
+msgid "Ways On"
+msgstr "Par ici"
 
 #: assets/data/changelog.json
 msgid "Weather"
@@ -13648,11 +13668,43 @@ msgstr "COMMANDÉ"
 msgid "Arrows"
 msgstr "Flèches"
 
+#: scripts/ways.gd:116
+msgid "Through the cave"
+msgstr "Par la grotte"
+
+#: scripts/ways.gd:118
+msgid "Through the gate"
+msgstr "Par le portail"
+
+#: scripts/ways.gd:120
+msgid "Through the door"
+msgstr "Par la porte"
+
+#: scripts/ways.gd:122
+msgid "Up the stairs"
+msgstr "Par l'escalier"
+
+#: scripts/ways.gd:125
+msgid "The road north"
+msgstr "La route du nord"
+
+#: scripts/ways.gd:127
+msgid "The road east"
+msgstr "La route de l'est"
+
+#: scripts/ways.gd:129
+msgid "The road south"
+msgstr "La route du sud"
+
+#: scripts/ways.gd:130
+msgid "The road west"
+msgstr "La route de l'ouest"
+
 #: scripts/world.gd:275
 msgid "%s bars your way: no leaving until the fight is over."
 msgstr "%s vous barre la route : pas de fuite avant la fin du combat."
 
-#: scripts/world.gd:309
+#: scripts/world.gd:314
 msgid "No map reaches this deep."
 msgstr "Aucune carte ne va aussi profond."
 
@@ -13680,7 +13732,7 @@ msgstr "Tueur de boss : +%d %% de dégâts pendant %d minutes."
 msgid "LEVEL UP"
 msgstr "NIVEAU SUPÉRIEUR"
 
-#: scripts/world_hud.gd:212
+#: scripts/world_hud.gd:217
 msgid "Boss slayer +%d%%  %d:%02d"
 msgstr "Tueur de boss +%d %%  %d:%02d"
 

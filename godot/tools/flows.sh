@@ -107,7 +107,8 @@ FLOWS=(
 	"throne|--map town --cleared 15 --seen maren_confession throne --keys s,e --wait 0.5|open=reveal_screen"
 	"festival|--map town --town-tier 2 --at 43,27 festival --keys w,e,e,e|open=ring_toss_screen"
 	"coast|--map overworld --at 16,61 --walk d,d,d --wait 0.4|map=saltmere"
-	"seacave|--map saltmere --at 7,23 --walk l --wait 0.4|map=seacave"
+	# Up the path into the sea cave's mouth (PIX-269: its post stands beside it).
+	"seacave|--map saltmere --at 6,24 --walk u --wait 0.4|map=seacave"
 	"mines|--map overworld --at 2,20 --walk l,l,l --wait 0.4|map=blackiron"
 	"shafts|--map blackiron --at 26,5 --walk u --wait 0.4|map=shafts"
 	"castle|--map overworld --at 93,15 --walk r,r,r --wait 0.4|map=greyhold"
@@ -118,9 +119,11 @@ FLOWS=(
 	"deep|--floor 16 clear --wait 0.3|map=floor_16"
 	# What grows on the ground moves with the days (PIX-250): two days, two
 	# sets of cells, and one of the first day's picked as the hero steps on it.
-	"patches|--map overworld --day 2|day=2 patches=5,50;20,47;20,60;24,23;54,17;63,39;66,52;75,45$"
-	"regrown|--map overworld --day 3|day=3 patches=14,43;26,56;31,37;52,12;77,44;79,14;79,53;86,36$"
-	"forage|--map overworld --day 2 --at 75,46 --walk u|cell=\\(75, 45\\).* day=2 patches=5,50;20,47;20,60;24,23;54,17;63,39;66,52$"
+	# (The roads to the ways on, PIX-269, took some of the ash's and the
+	# marsh's ground: patches never grow on a road.)
+	"patches|--map overworld --day 2|day=2 patches=11,14;14,36;30,57;31,43;34,24;63,39;66,52;75,45$"
+	"regrown|--map overworld --day 3|day=3 patches=17,41;18,34;24,51;29,12;50,16;77,44;79,53;86,36$"
+	"forage|--map overworld --day 2 --at 75,46 --walk u|cell=\\(75, 45\\).* day=2 patches=11,14;14,36;30,57;31,43;34,24;63,39;66,52$"
 	"dawn|--map town --prologue 5 --at 11,8 --keys w,e,e,e,e,e --wait 1.5|open=dawn_screen"
 	"motion|--map town motion|backsteps=[01]$"
 	"firstnight|create --keys tab|open=create_screen.*firstnight=skip"

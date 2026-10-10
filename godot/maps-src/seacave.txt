@@ -4,7 +4,7 @@
 id seacave
 style cave
 spawn 5 25
-portal 3 26 map saltmere 7 23
+portal 3 26 map saltmere 6 24
 key X wall -
 key . floor seacave
 key L lamp -

@@ -60,6 +60,8 @@ const WALL_ACROSS := 721
 const WALL_DOWN := 747
 const GATE := 802
 const TOWER_EVERY := 8
+## A cave mouth: Shade's mine entrance, its dark in a timber frame.
+const CAVE_MOUTH := 127
 const RAMPART := ["wall", "door", "door_shut"]
 
 ## Maps that show the whole village as one block of roofs (the overworld):
@@ -126,34 +128,38 @@ static func settle(corners: Array) -> Array:
 
 ## Every ground tile of a map, keyed by dual cell: dual cell (x, y) sits on
 ## the corner shared by cells (x-1, y-1) to (x, y), so the layer drawing them
-## is shifted half a tile up-left. Off-map cells repeat the nearest edge.
-static func ground_tiles(grid: Dictionary, size: Vector2i) -> Dictionary:
-	return _dual_tiles(size, func(cell: Vector2i) -> String: return ground_at(grid, cell))
+## is shifted half a tile up-left. Off-map cells repeat the nearest edge, and
+## `pad` more all round carry the ground on past the map's edges (PIX-269:
+## the road runs on out of a way out, the ridge on past a corner, wherever
+## the camera sees past the edge).
+static func ground_tiles(grid: Dictionary, size: Vector2i, pad := 0) -> Dictionary:
+	return _dual_tiles(size, func(cell: Vector2i) -> String: return ground_at(grid, cell), pad)
 
 
 ## The pine forest crowning the mountains, on the same dual grid: it covers
 ## mountain cells walled in by mountains on all four sides, so the cliff rim
-## at a range's edge stays in view. Bare corners ("air") are left out.
-static func forest_tiles(grid: Dictionary, size: Vector2i) -> Dictionary:
+## at a range's edge stays in view. Bare corners ("air") are left out; `pad`
+## as for the ground.
+static func forest_tiles(grid: Dictionary, size: Vector2i, pad := 0) -> Dictionary:
 	var crowned := func(cell: Vector2i) -> String:
 		for step: Vector2i in [Vector2i.ZERO, Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]:
 			var near := Vector2i(clampi(cell.x + step.x, 0, size.x - 1), clampi(cell.y + step.y, 0, size.y - 1))
 			if grid.get(near, "") != "mountain":
 				return "air"
 		return "trees"
-	var tiles := _dual_tiles(size, crowned)
+	var tiles := _dual_tiles(size, crowned, pad)
 	for cell: Vector2i in tiles.keys():
 		if tiles[cell] == corner_tile(["air", "air", "air", "air"], 0):
 			tiles.erase(cell)
 	return tiles
 
 
-static func _dual_tiles(size: Vector2i, terrain_at: Callable) -> Dictionary:
+static func _dual_tiles(size: Vector2i, terrain_at: Callable, pad := 0) -> Dictionary:
 	var at := func(x: int, y: int) -> String:
 		return terrain_at.call(Vector2i(clampi(x, 0, size.x - 1), clampi(y, 0, size.y - 1)))
 	var tiles := {}
-	for y in size.y + 1:
-		for x in size.x + 1:
+	for y in range(-pad, size.y + 1 + pad):
+		for x in range(-pad, size.x + 1 + pad):
 			var corners := [at.call(x - 1, y - 1), at.call(x, y - 1), at.call(x, y), at.call(x - 1, y)]
 			tiles[Vector2i(x, y)] = corner_tile(corners, hash(Vector2i(x, y)))
 	return tiles
@@ -263,7 +269,9 @@ static func _run(grid: Dictionary, cell: Vector2i, step: Vector2i, tiles: Array)
 
 ## Puny objects standing on our cells, -1 where none: bridges and docks as
 ## planks the way they span (span_axis: a single plank, or the ends and
-## middles of a run) and cave mouths.
+## middles of a run) and cave mouths, every one a way on to somewhere: in a
+## timber frame (Shade's mine entrance, PIX-269), where a bare hole in a
+## mound read as a stone in the field.
 static func object_at(grid: Dictionary, cell: Vector2i) -> int:
 	match grid.get(cell, ""):
 		"bridge", "dock":
@@ -279,7 +287,7 @@ static func object_at(grid: Dictionary, cell: Vector2i) -> int:
 				return 848
 			return 847 if north and south else (820 if south else 874)
 		"cave":
-			return 128
+			return CAVE_MOUTH
 	return -1
 
 
