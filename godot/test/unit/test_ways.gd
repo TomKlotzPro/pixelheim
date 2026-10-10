@@ -12,6 +12,7 @@ const MAPS := [
 	"overworld", "deepwood", "mirefen", "saltmere", "seacave", "blackiron", "shafts", "greyhold", "cellars",
 	"frostgate", "icecave", "town", "town@2", "town@3", "town@4", "town_shop", "town_inn", "town_smith",
 	"town_alchemist", "town_hall", "town_house", "town_house@2", "town_house@3", "demo", "demo_hut",
+	"observatory", "keep",
 ]
 ## The ages of the village a way into it may land in.
 const TOWNS := ["town", "town@2", "town@3", "town@4"]
@@ -315,6 +316,7 @@ func test_what_a_way_looks_like() -> void:
 	assert_eq(Ways.about("edge", Vector2i.RIGHT), "The road east")
 	assert_eq(Ways.about("edge", Vector2i.DOWN), "The road south")
 	assert_eq(Ways.about("stairs", Vector2i.LEFT), "Up the stairs")
+	assert_eq(Ways.about("down", Vector2i.UP), "Down the stairs")
 	assert_eq(Ways.post_look({"kind": "edge", "out": Vector2i.RIGHT}), [Ways.POST_SIDE, false])
 	assert_eq(Ways.post_look({"kind": "edge", "out": Vector2i.UP}), [Ways.POST_AHEAD, false])
 	assert_eq(Ways.post_look({"kind": "stairs", "out": Vector2i.UP}), [Ways.POST_HERE, false])

@@ -289,6 +289,10 @@ msgid "Candelabra"
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "Captain Hale's Hall"
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "Channels light to restore health."
 msgstr ""
 
@@ -810,6 +814,10 @@ msgstr ""
 
 #: assets/data/catalog.json
 msgid "Liane's Lantern"
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "Liane's Room"
 msgstr ""
 
 #: assets/data/catalog.json
@@ -13744,43 +13752,71 @@ msgstr ""
 msgid "Arrows"
 msgstr ""
 
-#: scripts/ways.gd:116
+#: scripts/ways.gd:124
 msgid "Through the cave"
 msgstr ""
 
-#: scripts/ways.gd:118
+#: scripts/ways.gd:126
 msgid "Through the gate"
 msgstr ""
 
-#: scripts/ways.gd:120
+#: scripts/ways.gd:128
 msgid "Through the door"
 msgstr ""
 
-#: scripts/ways.gd:122
+#: scripts/ways.gd:130
 msgid "Up the stairs"
 msgstr ""
 
-#: scripts/ways.gd:125
+#: scripts/ways.gd:132
+msgid "Down the stairs"
+msgstr ""
+
+#: scripts/ways.gd:135
 msgid "The road north"
 msgstr ""
 
-#: scripts/ways.gd:127
+#: scripts/ways.gd:137
 msgid "The road east"
 msgstr ""
 
-#: scripts/ways.gd:129
+#: scripts/ways.gd:139
 msgid "The road south"
 msgstr ""
 
-#: scripts/ways.gd:130
+#: scripts/ways.gd:140
 msgid "The road west"
 msgstr ""
 
-#: scripts/world.gd:275
+#: scripts/ways.gd:278
+msgid "Go down into %s?"
+msgstr ""
+
+#: scripts/ways.gd:281
+msgid "Liane's stair goes down through the floor, and the cold comes up it like a draught."
+msgstr ""
+
+#: scripts/ways.gd:283
+msgid "The keep's stair goes down to the cellars, where something still stands the old watch."
+msgstr ""
+
+#: scripts/ways.gd:286
+msgid "The stairs"
+msgstr ""
+
+#: scripts/ways.gd:288
+msgid "Go down"
+msgstr ""
+
+#: scripts/ways.gd:288
+msgid "Stay"
+msgstr ""
+
+#: scripts/world.gd:280
 msgid "%s bars your way: no leaving until the fight is over."
 msgstr ""
 
-#: scripts/world.gd:314
+#: scripts/world.gd:319
 msgid "No map reaches this deep."
 msgstr ""
 
@@ -13812,19 +13848,19 @@ msgstr ""
 msgid "Boss slayer +%d%%  %d:%02d"
 msgstr ""
 
-#: scripts/world_interaction.gd:170
+#: scripts/world_interaction.gd:176
 msgid "A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it."
 msgstr ""
 
-#: scripts/world_interaction.gd:197
+#: scripts/world_interaction.gd:203
 msgid "Sela's stew simmers over the fire. Hunter's Stew is brewed at Vex's cauldron, behind the BREWS door."
 msgstr ""
 
-#: scripts/world_interaction.gd:66
+#: scripts/world_interaction.gd:67
 msgid "Only cinders where the house stood. The board on the square can change that."
 msgstr ""
 
-#: scripts/world_interaction.gd:71
+#: scripts/world_interaction.gd:72
 msgid "The deed costs %d gold. {key:interact} again to sign it."
 msgstr ""
 

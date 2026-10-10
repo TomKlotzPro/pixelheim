@@ -22,9 +22,9 @@
       "y": 6,
       "to": {
         "kind": "map",
-        "mapId": "icecave",
-        "x": 4,
-        "y": 25
+        "mapId": "observatory",
+        "x": 8,
+        "y": 8
       }
     },
     {

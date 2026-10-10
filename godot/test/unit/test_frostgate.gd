@@ -20,7 +20,11 @@ func test_the_pass_and_the_ice_cave_join_up() -> void:
 	assert_eq(cave.style, "cave")
 	assert_ne(cave.tint, Color.WHITE, "the ice cave has its frost")
 	var into: Array = pass_map.portals.values().map(func(to: Dictionary) -> String: return to.get("mapId", ""))
-	assert_has(into, "icecave")
+	# The observatory's door opens onto Liane's room, and the ice cave is
+	# down its stair (PIX-256).
+	assert_has(into, "observatory")
+	assert_does_not_have(into, "icecave", "no door opens straight onto the cave")
+	assert_eq(Ways.below("observatory"), "icecave")
 	assert_has(into, "overworld")
 	assert_true(cave.is_walkable(Hunts.lair(Hunts.named("rimefang"))))
 	assert_eq(Hunts.living_on("icecave", [], []).map(func(entry: Dictionary) -> String: return entry["id"]), ["rimefang"])

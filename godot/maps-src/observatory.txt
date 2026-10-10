@@ -1,0 +1,27 @@
+# Liane's room (PIX-256): the room behind the observatory's door at the head
+# of the Frostgate pass, a scholar's room where she did the sums - her desk
+# and her books, her bed, the lamp oil Aske still keeps dry - and in its
+# floor the stairwell down into the old ice cave she built it over. A house
+# opens onto a room; the cave is down its stair.
+id observatory
+spawn 8 8
+portal 8 10 map frostgate 27 7
+portal 13 5 map icecave 4 25
+key # wall -
+key . floor -
+key D door -
+key v stairwell -
+key B bed -
+map
+####################
+####################
+##B...............##
+##................##
+##................##
+##...........v....##
+##................##
+##................##
+##................##
+##................##
+########D###########
+####################

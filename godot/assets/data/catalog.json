@@ -2138,8 +2138,10 @@
     "blackiron": "The Blackiron Valley",
     "shafts": "The Blackiron Shafts",
     "greyhold": "Greyhold",
+    "keep": "Captain Hale's Hall",
     "cellars": "The Greyhold Cellars",
     "frostgate": "The Frostgate Pass",
+    "observatory": "Liane's Room",
     "icecave": "The Ice Cave"
   },
   "levelCount": 15,

@@ -22,9 +22,9 @@
       "y": 12,
       "to": {
         "kind": "map",
-        "mapId": "cellars",
-        "x": 4,
-        "y": 27
+        "mapId": "keep",
+        "x": 8,
+        "y": 8
       }
     },
     {

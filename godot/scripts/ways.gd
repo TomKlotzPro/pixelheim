@@ -11,6 +11,11 @@ class_name Ways
 ## gates in the rock; the HUD's nameplate names the place as the hero walks
 ## up; the world turns the hero on arrival to face into the new map
 ## (arrival_facing).
+## A house in the Reach opens onto a room, and the dungeon is down in its
+## cellar (PIX-256: "strange to walk into a house and find a dungeon"): a
+## stairwell in the room's floor is a way "down", which asks before it takes
+## the hero (going_down) and, like a room's door, needs no post: the
+## nameplate names where it goes as the hero walks up.
 
 const NOWHERE := Vector2i(-1, -1)
 const STEPS: Array[Vector2i] = [Vector2i.UP, Vector2i.RIGHT, Vector2i.DOWN, Vector2i.LEFT]
@@ -82,9 +87,12 @@ static func indoors(map: MapData) -> bool:
 
 
 ## What a portal cell is, as a way: a cave mouth (the stairs up, in a cave),
-## a gate (in a rampart or in the rock), a door, or an opening at the edge.
+## the stairs down from a room, a gate (in a rampart or in the rock), a
+## door, or an opening at the edge.
 static func kind_of(map: MapData, cell: Vector2i) -> String:
 	var tile := map.tile_at(cell)
+	if tile == "stairwell":
+		return "down"
 	if tile == "cave":
 		return "stairs" if map.style == "cave" else "cave"
 	if tile.begins_with("door"):
@@ -120,6 +128,8 @@ static func about(kind: String, out: Vector2i) -> String:
 			return Text.t("Through the door")
 		"stairs":
 			return Text.t("Up the stairs")
+		"down":
+			return Text.t("Down the stairs")
 	match out:
 		Vector2i.UP:
 			return Text.t("The road north")
@@ -234,6 +244,63 @@ static func arrival_facing(map: MapData, arrival: Vector2i, from_map: String, fa
 		if step != Vector2i.ZERO and open_ground(map, arrival + step):
 			return Vector2(step)
 	return facing
+
+
+## Whether `cell` is a way down from a room (a stairwell that leads
+## somewhere): walking onto it, or E facing it, asks first.
+static func goes_down(map: MapData, cell: Vector2i) -> bool:
+	return map.portals.has(cell) and kind_of(map, cell) == "down"
+
+
+static var _below := {}
+
+
+## Where the stairs in a room go down to (PIX-256): the map under `map_id`,
+## or "" for a room with none and any other map. Learned once per map.
+static func below(map_id: String) -> String:
+	if not _below.has(map_id):
+		var under := ""
+		if PunyInterior.is_room(map_id):
+			var room := MapData.load_by_id(map_id)
+			for cell: Vector2i in room.portals:
+				if goes_down(room, cell):
+					under = String(room.portals[cell].get("mapId", ""))
+		_below[map_id] = under
+	return _below[map_id]
+
+
+## The question a way down asks (PIX-256), as a conversation with no face:
+## {id, name, lines, choices}; the first answer goes down. One page, the
+## question on it with its answers: the stairs under a place the story knows
+## say what's below before they ask.
+static func going_down(map: MapData, cell: Vector2i) -> Dictionary:
+	var place := place_of(map.portals.get(cell, {}))
+	var line := Text.t("Go down into %s?") % Text.mid(place)
+	match map.id:
+		"observatory":
+			line = Text.t("Liane's stair goes down through the floor, and the cold comes up it like a draught.") + " " + line
+		"keep":
+			line = Text.t("The keep's stair goes down to the cellars, where something still stands the old watch.") + " " + line
+	return {
+		"id": "way_down",
+		"name": Text.t("The stairs"),
+		"lines": [line],
+		"choices": [Text.t("Go down"), Text.t("Stay")],
+	}
+
+
+## Where a hero saved at `cell` stands when the save loads (PIX-256): there,
+## on open ground; off a doorway onto the open ground beside it (below
+## first, the way out of a door), so a save made in the frame of a door that
+## now leads somewhere else wakes outside it; else the map's spawn.
+static func standing(map: MapData, cell: Vector2i) -> Vector2i:
+	if open_ground(map, cell):
+		return cell
+	if map.portals.has(cell):
+		for step: Vector2i in [Vector2i.DOWN, Vector2i.UP, Vector2i.LEFT, Vector2i.RIGHT]:
+			if open_ground(map, cell + step):
+				return cell + step
+	return map.spawn
 
 
 ## Ground the hero can stand on that doesn't take them anywhere.

@@ -1,12 +1,12 @@
 # The ice cave under Liane's observatory (PIX-169): the landing at the foot
 # of her stair, the galleries, the yetis' den where the caravan's strongbox
 # ended up, Liane's old store, and the glass hall where something white has
-# curled up on her lantern.
+# curled up on her lantern. Her stair leads back up into her room (PIX-256).
 id icecave
 style cave
 tint 0.8 0.92 1.12
 spawn 4 25
-portal 3 26 map frostgate 27 7
+portal 3 26 map observatory 13 7
 key X wall -
 key . floor icecave
 key L lamp -

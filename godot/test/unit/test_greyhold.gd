@@ -19,7 +19,11 @@ func test_the_fort_and_the_cellars_join_up() -> void:
 	var cellars := MapData.load_by_id("cellars")
 	assert_eq(cellars.style, "cave")
 	var into: Array = fort.portals.values().map(func(to: Dictionary) -> String: return to.get("mapId", ""))
-	assert_has(into, "cellars")
+	# The keep's door opens onto Captain Hale's hall, and the cellars are
+	# down its stair (PIX-256).
+	assert_has(into, "keep")
+	assert_does_not_have(into, "cellars", "no door opens straight onto the cellars")
+	assert_eq(Ways.below("keep"), "cellars")
 	assert_has(into, "overworld")
 	assert_true(cellars.is_walkable(Hunts.lair(Hunts.named("hollow_captain"))))
 	assert_eq(Hunts.living_on("cellars", [], []).map(func(entry: Dictionary) -> String: return entry["id"]), ["hollow_captain"])

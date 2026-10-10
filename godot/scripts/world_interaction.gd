@@ -3,11 +3,12 @@ extends Node
 ## What E does in the world (Solid Ground, PIX-260: moved out of world.gd as
 ## it was), in the web's INTERACT order: the well's water on the Night of
 ## Ash, a faced chest, the house's door and fixtures, a trade's station (a
-## forge, an anvil, a cauldron: PIX-234), a fishing spot, the square's
-## boards, then the villager beside the hero (a keeper's counter, a stall,
-## the bank, or a talk). What the hero steps on is picked up (ground
-## treasure, patches), and the prompt floats over whatever E would meet.
-## The screens it opens, and the prompt, stand on the world as before.
+## forge, an anvil, a cauldron: PIX-234), the stairs down to a cellar
+## (PIX-256), a fishing spot, the square's boards, then the villager beside
+## the hero (a keeper's counter, a stall, the bank, or a talk). What the
+## hero steps on is picked up (ground treasure, patches), and the prompt
+## floats over whatever E would meet. The screens it opens, and the prompt,
+## stand on the world as before.
 
 var world: Node
 ## A bucket of the well's water in hand, on the Night of Ash (PIX-197).
@@ -79,6 +80,11 @@ func interact() -> void:
 		_sleep_at_inn()
 		return
 	if _station(faced):
+		return
+	# The stairs down to the cellar (PIX-256) ask whether to go.
+	var map: MapData = world.map
+	if Ways.goes_down(map, faced):
+		ask_down(faced)
 		return
 	# A fishing spot facing the water: cast (PIX-165). The catch rises out of
 	# the water faced (PIX-245).
@@ -198,6 +204,23 @@ func _station(cell: Vector2i) -> bool:
 		_:
 			_open_shop("Craft")
 	return true
+
+
+## The stairs down from a room to the cellar under it (PIX-256: a house
+## opened straight onto a dungeon): where they go, asked as a question with
+## no face; going down takes them, staying (or Esc) leaves the hero at the
+## top.
+func ask_down(cell: Vector2i) -> void:
+	var map: MapData = world.map
+	var question := Ways.going_down(map, cell)
+	var target: Dictionary = map.portals[cell]
+	var box := preload("res://scripts/dialogue_box.gd").new()
+	box.npc = {"id": question["id"], "name": question["name"], "lines": question["lines"]}
+	box.choices = question["choices"]
+	box.on_choice = func(index: int) -> void:
+		if index == 0:
+			world.use_portal(target)
+	world.add_child(box)
 
 
 ## A night at the inn (PIX-246): in one of its beds, or in Sela's tent before
@@ -390,17 +413,19 @@ func _collect_ground_treasure(cell: Vector2i) -> void:
 
 
 ## The one interaction-prompt rule (interactionPrompt.ts): a villager beside
-## the hero wins, then a faced unopened chest, a station (PIX-234) or the
-## water from a fishing spot; the "!" floats over their head.
+## the hero wins, then a faced unopened chest, a station (PIX-234), the
+## water from a fishing spot, a bed or the stairs down (PIX-256); the "!"
+## floats over their head.
 func update_prompt() -> void:
 	var beside: Dictionary = world.folk.beside()
 	if not beside.is_empty():
 		_show_prompt(world.player_cell + Vector2i(beside["side"]), -18)
 		return
 	var chest := _chest_at(facing_cell())
+	var map: MapData = world.map
 	var show: bool = (
 		not chest.is_empty() and chest["look"] == "chest" and not GameState.spoils.is_opened(chest)
-	) or _fishing_here() or _station_at(facing_cell()) != "" or _bed_at(facing_cell())
+	) or _fishing_here() or _station_at(facing_cell()) != "" or _bed_at(facing_cell()) or Ways.goes_down(map, facing_cell())
 	if show:
 		_show_prompt(facing_cell(), -12)
 	else:

@@ -289,6 +289,10 @@ msgid "Candelabra"
 msgstr "Candélabre"
 
 #: assets/data/catalog.json
+msgid "Captain Hale's Hall"
+msgstr "La salle du capitaine Hale"
+
+#: assets/data/catalog.json
 msgid "Channels light to restore health."
 msgstr "Canalise la lumière pour rendre de la santé."
 
@@ -811,6 +815,10 @@ msgstr "Moins un bouclier qu'un mur portatif."
 #: assets/data/catalog.json
 msgid "Liane's Lantern"
 msgstr "Lanterne de Liane"
+
+#: assets/data/catalog.json
+msgid "Liane's Room"
+msgstr "La chambre de Liane"
 
 #: assets/data/catalog.json
 msgid "Light as a promise. Your feet believe it."
@@ -13744,43 +13752,71 @@ msgstr "COMMANDÉ"
 msgid "Arrows"
 msgstr "Flèches"
 
-#: scripts/ways.gd:116
+#: scripts/ways.gd:124
 msgid "Through the cave"
 msgstr "Par la grotte"
 
-#: scripts/ways.gd:118
+#: scripts/ways.gd:126
 msgid "Through the gate"
 msgstr "Par le portail"
 
-#: scripts/ways.gd:120
+#: scripts/ways.gd:128
 msgid "Through the door"
 msgstr "Par la porte"
 
-#: scripts/ways.gd:122
+#: scripts/ways.gd:130
 msgid "Up the stairs"
 msgstr "Par l'escalier"
 
-#: scripts/ways.gd:125
+#: scripts/ways.gd:132
+msgid "Down the stairs"
+msgstr "En bas de l'escalier"
+
+#: scripts/ways.gd:135
 msgid "The road north"
 msgstr "La route du nord"
 
-#: scripts/ways.gd:127
+#: scripts/ways.gd:137
 msgid "The road east"
 msgstr "La route de l'est"
 
-#: scripts/ways.gd:129
+#: scripts/ways.gd:139
 msgid "The road south"
 msgstr "La route du sud"
 
-#: scripts/ways.gd:130
+#: scripts/ways.gd:140
 msgid "The road west"
 msgstr "La route de l'ouest"
 
-#: scripts/world.gd:275
+#: scripts/ways.gd:278
+msgid "Go down into %s?"
+msgstr "Descendre dans %s ?"
+
+#: scripts/ways.gd:281
+msgid "Liane's stair goes down through the floor, and the cold comes up it like a draught."
+msgstr "L'escalier de Liane s'enfonce sous le plancher, et le froid en remonte comme un courant d'air."
+
+#: scripts/ways.gd:283
+msgid "The keep's stair goes down to the cellars, where something still stands the old watch."
+msgstr "L'escalier du donjon descend aux caves, où quelque chose monte encore l'ancienne garde."
+
+#: scripts/ways.gd:286
+msgid "The stairs"
+msgstr "L'escalier"
+
+#: scripts/ways.gd:288
+msgid "Go down"
+msgstr "Descendre"
+
+#: scripts/ways.gd:288
+msgid "Stay"
+msgstr "Rester"
+
+#: scripts/world.gd:280
 msgid "%s bars your way: no leaving until the fight is over."
 msgstr "%s vous barre la route : pas de fuite avant la fin du combat."
 
-#: scripts/world.gd:314
+#: scripts/world.gd:319
 msgid "No map reaches this deep."
 msgstr "Aucune carte ne va aussi profond."
 
@@ -13812,19 +13848,19 @@ msgstr "NIVEAU SUPÉRIEUR"
 msgid "Boss slayer +%d%%  %d:%02d"
 msgstr "Tueur de boss +%d %%  %d:%02d"
 
-#: scripts/world_interaction.gd:170
+#: scripts/world_interaction.gd:176
 msgid "A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it."
 msgstr "Un établi pour cette étagère : %d or. Il compte comme un niveau de métier en plus quand vous fabriquez chez vous. {key:interact} à nouveau pour l'acheter."
 
-#: scripts/world_interaction.gd:197
+#: scripts/world_interaction.gd:203
 msgid "Sela's stew simmers over the fire. Hunter's Stew is brewed at Vex's cauldron, behind the BREWS door."
 msgstr "Le ragoût de Sela mijote sur le feu. Le Ragoût du chasseur se prépare au chaudron de Vex, derrière la porte POTIONS."
 
-#: scripts/world_interaction.gd:66
+#: scripts/world_interaction.gd:67
 msgid "Only cinders where the house stood. The board on the square can change that."
 msgstr "Rien que des cendres là où se dressait la maison. Le tableau de la place peut y remédier."
 
-#: scripts/world_interaction.gd:71
+#: scripts/world_interaction.gd:72
 msgid "The deed costs %d gold. {key:interact} again to sign it."
 msgstr "Le titre de propriété coûte %d or. {key:interact} à nouveau pour le signer."
 

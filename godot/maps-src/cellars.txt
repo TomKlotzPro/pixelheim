@@ -1,10 +1,11 @@
 # The Greyhold cellars (PIX-168): the stair landing, the guardroom, the old
 # cells, the crypt of the garrison's dead, and the captain's hall where
 # Oskar's shield has hung for fifty years - and its keeper still stands guard.
+# The stair leads back up into the keep's guardroom (PIX-256).
 id cellars
 style cave
 spawn 4 27
-portal 3 28 map greyhold 37 13
+portal 3 28 map keep 13 7
 key X wall -
 key . floor cellars
 key L lamp -

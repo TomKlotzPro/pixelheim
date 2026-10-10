@@ -14,8 +14,8 @@
       "y": 26,
       "to": {
         "kind": "map",
-        "mapId": "frostgate",
-        "x": 27,
+        "mapId": "observatory",
+        "x": 13,
         "y": 7
       }
     }

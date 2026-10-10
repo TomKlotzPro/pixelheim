@@ -1,0 +1,26 @@
+# Captain Hale's hall (PIX-256): the room behind Greyhold's keep door, where
+# the garrison's captain kept his table - the weapons on the wall, the
+# armour on its stands, the banners and his shelves - and in its floor the
+# stair down to the cellars. A house opens onto a room; the cellars are down
+# its stair.
+id keep
+spawn 8 8
+portal 8 10 map greyhold 37 13
+portal 13 5 map cellars 4 27
+key # wall -
+key . floor -
+key D door -
+key v stairwell -
+map
+####################
+####################
+##................##
+##................##
+##................##
+##...........v....##
+##................##
+##................##
+##................##
+##................##
+########D###########
+####################

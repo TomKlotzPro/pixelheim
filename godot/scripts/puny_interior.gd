@@ -7,8 +7,13 @@ class_name PunyInterior
 ## cells - and since PIX-163 his furnished corners and rugs (furnish).
 ## Pure: tile ids only; PunyTown draws them (same atlas).
 
-## Interiors this restyles (the web's room maps; house tiers share an id).
-const ROOMS := ["town_inn", "town_shop", "town_smith", "town_alchemist", "town_hall", "town_house"]
+## Interiors this restyles (the web's room maps; house tiers share an id),
+## and since PIX-256 the rooms the Reach's buildings open onto, a stairwell
+## down to the cellar under each: Liane's room in her observatory over the
+## ice cave, Captain Hale's hall in Greyhold's keep over its cellars.
+const ROOMS := ["town_inn", "town_shop", "town_smith", "town_alchemist", "town_hall", "town_house", "observatory", "keep"]
+## Rooms with a stone floor: the smithy, and the keep of a fort.
+const STONE_ROOMS := ["town_smith", "keep"]
 
 const PLANKS := [5342, 5565, 3550]
 const STONE := [1792, 2233, 2453]
@@ -24,6 +29,18 @@ const WINDOW := 3659
 ## light comes from (PIX-221).
 const FIRE_TILES := [2565, 2567]
 const DOOR := 3875
+## The way down (PIX-256): Shade's stairwell from his royal castle sample, a
+## flight of stone steps going down into the dark (on his stone floor), in
+## the hole of a red carpet laid round it, offset from the stairwell -> tile.
+## Its carpet is his castle's, closed all round (his own runs on down the
+## hall below it).
+const STAIRWELL := 2247
+const STAIRWELL_FLOOR := 1790
+const STAIRWELL_RING := {
+	Vector2i(-1, -1): 8040, Vector2i(0, -1): 8701, Vector2i(1, -1): 8042,
+	Vector2i(-1, 0): 8259, Vector2i(1, 0): 8259,
+	Vector2i(-1, 1): 8480, Vector2i(0, 1): 8701, Vector2i(1, 1): 8482,
+}
 
 ## Furniture by web tile: [[offset from its cell, tile], ...]. Offsets above
 ## the cell lean on the back wall; offsets onto open floor block it (beds
@@ -90,6 +107,13 @@ static func reserved(data: MapData, placed: Array) -> Dictionary:
 			var at := Vector2i(int(npc["x"]), int(npc["y"]))
 			for step in [Vector2i.ZERO, Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT]:
 				out[at + step] = true
+	# A stairwell's carpet and the floor before it: the way down stays clear
+	# to walk up to (PIX-256).
+	for cell: Vector2i in data.grid:
+		if data.grid[cell] == "stairwell":
+			for dy in [-1, 0, 1, 2]:
+				for dx in [-1, 0, 1]:
+					out[cell + Vector2i(dx, dy)] = true
 	for piece: Dictionary in placed:
 		out[Vector2i(int(piece["x"]), int(piece["y"]))] = true
 	return out
@@ -168,7 +192,7 @@ static func plan(map_id: String, grid: Dictionary) -> Dictionary:
 	var beyond: Array[Vector2i] = []
 	var blocked: Array[Vector2i] = []
 	var over := {}
-	var choices: Array = STONE if map_id == "town_smith" else PLANKS
+	var choices: Array = STONE if map_id in STONE_ROOMS else PLANKS
 	# Wall cells furniture leans on, and wall cells it stands on.
 	var leaning := {}
 	var standing := {}
@@ -209,6 +233,16 @@ static func plan(map_id: String, grid: Dictionary) -> Dictionary:
 	for cell: Vector2i in grid:
 		if inside.call(cell) or String(grid[cell]).begins_with("door"):
 			floor[cell] = choices[absi(cell.x * 7 + cell.y * 13) % choices.size()]
+	# The way down (PIX-256): the steps on stone, the carpet round them on
+	# the floor about it.
+	for cell: Vector2i in grid:
+		if grid[cell] != "stairwell":
+			continue
+		floor[cell] = STAIRWELL_FLOOR
+		pieces[cell] = STAIRWELL
+		for step: Vector2i in STAIRWELL_RING:
+			if grid.get(cell + step, "") == "floor":
+				floor[cell + step] = STAIRWELL_RING[step]
 	# Walls touching the room are its walls; the rest is the dark beyond.
 	var ring := {}
 	for cell: Vector2i in grid:
