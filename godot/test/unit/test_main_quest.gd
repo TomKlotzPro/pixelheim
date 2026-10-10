@@ -80,7 +80,7 @@ func test_running_ahead_never_sends_the_hero_back() -> void:
 	state.progression.unlocked_level = 11
 	state.spoils.clear_floor(11)
 	assert_eq(_next(), "hoard")
-	assert_eq(MainQuest.steps()[MainQuest.steps().map(func(s: Dictionary) -> String: return s["id"]).find("stair")]["chapter"], "Home")
+	assert_eq(MainQuest.steps()[MainQuest.steps().map(func(s: Dictionary) -> String: return s["id"]).find("stair")]["chapter"], "Coming Home")
 
 
 func test_a_grown_town_never_skips_the_mountain() -> void:

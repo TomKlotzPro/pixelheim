@@ -20,12 +20,15 @@ func test_the_floors_moments_play_scenes_that_exist() -> void:
 	assert_true(descent.any(func(step: Dictionary) -> bool: return String(step.get("sub", "")).contains("lied")), "Fafnyr's last words")
 
 
-func test_ten_pages_one_per_floor_found_on_first_clears() -> void:
+## Liane's pages retired from play with Maren's letters (PIX-253 step 2): a
+## first clear no longer says it turned one up, but the floors a hero has
+## cleared still keep theirs, for the journal's older papers.
+func test_ten_pages_one_per_floor_kept_for_the_floors_cleared() -> void:
 	assert_eq(Story.lore().size(), 10)
 	var floors := Story.lore().map(func(page: Dictionary) -> int: return int(page["floor"]))
 	assert_eq(floors, [1, 3, 4, 5, 7, 9, 11, 12, 13, 14])
 	var lines: Array = state.spoils.clear_floor(1)["lines"]
-	assert_true(lines.any(func(line: String) -> bool: return line.contains("Page I")))
+	assert_false(lines.any(func(line: String) -> bool: return line.contains("Page I") or line.contains("journal")), "a clear says nothing of a page")
 	assert_eq(Story.found_pages(state.progression.cleared_levels).size(), 1)
 
 

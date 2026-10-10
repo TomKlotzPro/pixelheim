@@ -94,7 +94,14 @@
         "Fifty years late, and you've got mud on it. Give it here.",
         "(She reads it twice.) Tam's things never came home, courier. The boat went down off the headland. Whatever the sea kept of him washed into the cave under it.",
         "He sent me this from the foot of the mountain. (A postcard.) \"Morvax wants the kings' gold to make Pixelheim a city. Maren says over her dead body. I've brought cheese. Nobody fights over cheese.\""
-      ]
+      ],
+      "addressed": "Letter to Old Wenna, Saltmere",
+      "letter": [
+        "Wenna. Tam didn't die in a rockfall. I said that because the truth was harder to write. The hall came down and he held up the roof so I could run. He was laughing. Of course he was.",
+        "I sent his things home on a fishing boat. I couldn't write the rest. I'm sorry. - Maren"
+      ],
+      "answered": "Wenna answered, with Tam's last postcard.",
+      "gist": "Tam's last postcard: \"Morvax wants the kings' gold to make Pixelheim a city. Maren says over her dead body. I've brought cheese.\""
     },
     {
       "id": "letter_pell",
@@ -117,7 +124,14 @@
         "\"Sorry about the cage.\" Ha! She sat on my canary's cage, fifty years ago. Flat as a griddle. The bird never forgave her.",
         "Tell her this back. Morvax came down this road. Forty years ago, again ten years ago, and last spring. Thin as a rake, asking for iron. I sold him all we had.",
         "Last spring we had none. Something moved into the deep seam, right on top of the ingot the five of them stamped and forgot. He's alive, courier. Or he was in spring."
-      ]
+      ],
+      "addressed": "Letter to Old Pell, Blackiron",
+      "letter": [
+        "To Pell, the boy with the canary. Thank you for taking us down the shafts, and for the lamp.",
+        "Sorry about the cage. I sat on it. Your bird was right to be cross. - Maren"
+      ],
+      "answered": "Pell answered, with a tale of Morvax and the iron.",
+      "gist": "Pell's tale: Morvax came down the Blackiron road for iron, three times in fifty years. Last spring there was none. He's alive."
     },
     {
       "id": "letter_hale",
@@ -140,7 +154,14 @@
         "A letter for the captain? He's... not receiving. But a letter's a letter. (She reads it, then opens his order book.)",
         "\"Day 12. We went up and found Morvax alive at the old forge. He begged us to bar the gate and tell Maren nothing. 'Let her think I'm dead. It's kinder.' I agreed. I was wrong.\"",
         "Maren says Oskar isn't coming home, and the captain can stand down. He's down in the cellars under his hall, still guarding Oskar's shield. Go and tell him."
-      ]
+      ],
+      "addressed": "Letter to Captain Hale, Greyhold",
+      "letter": [
+        "Captain. Oskar isn't coming home. He held the roof with Tam and Liane so I could get out.",
+        "Give his shield to whoever brings you this, and stand down. Your watch is over. - Maren"
+      ],
+      "answered": "Ulla answered, with Captain Hale's order book.",
+      "gist": "Hale's order book, day 12: Morvax alive at the old forge, the gate barred because he asked. \"I agreed. I was wrong.\""
     },
     {
       "id": "letter_aske",
@@ -163,7 +184,14 @@
         "She told me to keep her door shut till someone came for the lantern. Fifty years. You took your time.",
         "(From his coat he takes a folded page in Liane's hand.) She left this with me. Her sums, from before the climb: \"The seal only buys time. Fifty years, at most.\"",
         "\"A thing chained a hundred years will burn anything. Don't seal him. Free him. The collar answers to our five marks.\""
-      ]
+      ],
+      "addressed": "Letter to Aske, the Frostgate",
+      "letter": [
+        "Aske. Liane isn't coming back. She asked you to keep her door until someone came for the lantern.",
+        "Someone has. Open it, give them her things, and go and sit in the sun. - Maren"
+      ],
+      "answered": "Aske answered, with Liane's sums.",
+      "gist": "Liane's sums: the seal only buys fifty years. \"Don't seal him. Free him. The collar answers to our five marks.\""
     },
     {
       "id": "maren_relics",
@@ -1519,7 +1547,7 @@
         ]
       },
       {
-        "title": "Home",
+        "title": "Coming Home",
         "about": "To be replaced (PIX-253 step 10): the stair below the hoard and Morvax's throne stand in until the homecoming and his choice.",
         "steps": [
           {
@@ -1731,7 +1759,7 @@
     "barred": "The mountain's gate is barred with old iron and older wards. Nothing passes. Maren will know what opens it."
   },
   "letters": {
-    "about": "PIX-253 step 1: Maren's five letters, found in a tin under her hearthstone the morning after the Night of Ash. Four go out across the Reach as quests of the deliverTo kind, in the story's order; the fifth, to Morvax, stays with her for chapter 6. `dig` is where she stands while the tin waits and her house is ash; `news` is what a villager says once the letters are out (Bram's crew clears the cliff road), until Wenna has hers; `room` is Sela's word the first night the courier pays for a bed. A letter pays its postage on delivery (the recipient paid the post, then) and no XP: the XP curve is retuned with the story's last step.",
+    "about": "PIX-253 step 1: Maren's five letters, found in a tin under her hearthstone the morning after the Night of Ash. Four go out across the Reach as quests of the deliverTo kind, in the story's order; the fifth, to Morvax, stays with her for chapter 6. `dig` is where she stands while the tin waits and her house is ash; `news` is what a villager says once the letters are out (Bram's crew clears the cliff road), until Wenna has hers; `room` is Sela's word the first night the courier pays for a bed. A letter pays its postage on delivery (the recipient paid the post, then) and no XP: the XP curve is retuned with the story's last step. Step 2, the satchel: each letter's `addressed` names its row in the journal; `letter` is Maren's own words, read in the journal's Letters tab once it's delivered (a courier never reads the post); `answered` is its row's line once it's answered, and `gist` the answer's heart, under the list. `fifth` is the letter Maren keeps.",
     "sceneId": "maren_tin",
     "quests": [
       "letter_wenna",
@@ -1739,6 +1767,10 @@
       "letter_hale",
       "letter_aske"
     ],
+    "fifth": {
+      "addressed": "Letter to Morvax",
+      "note": "Maren keeps this one. It has no address."
+    },
     "dig": {
       "x": 21,
       "y": 11
@@ -1754,8 +1786,8 @@
       "(Maren turns a tin box over in her hands, black with soot.) I dug this out of my hearth. Five letters I wrote fifty years ago, and never sent.",
       "You carry letters, courier. Take the ones that can still be delivered. The fifth has no address."
     ],
-    "taken": "Four letters in your pack: for Old Wenna in Saltmere, Old Pell at Blackiron, Captain Hale at Greyhold and Aske on the Frostgate. Maren keeps the fifth.",
-    "takenSome": "In your pack: %s. Maren keeps the fifth.",
+    "taken": "Four letters in your satchel: for Old Wenna in Saltmere, Old Pell at Blackiron, Captain Hale at Greyhold and Aske on the Frostgate. Maren keeps the fifth.",
+    "takenSome": "In your satchel: %s. Maren keeps the fifth.",
     "answered": "Maren's letters were answered long ago: you brought their keepsakes home. She keeps the fifth.",
     "road": "Bram's crew is out clearing the cliff road to Saltmere.",
     "news": {

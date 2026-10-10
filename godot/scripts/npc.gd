@@ -78,11 +78,15 @@ const NOWHERE := Vector2i(-1, -1)
 var gather_at := NOWHERE
 var _last_beat := -1
 ## What hangs over their head for the hero (PIX-240): a "!" with a quest to
-## give, a gold "?" with one to hand in, a grey "?" while it's under way.
-## Looked at twice a second, not every frame.
+## give, a gold "?" with one to hand in, a grey "?" while it's under way;
+## and the main story's, a letter of Maren's carried to them (PIX-253 step
+## 2), a gold "!" ringed in gold. Looked at twice a second, not every frame.
 const MARK_SECONDS := 0.5
 ## Gold for a quest to give or to hand in, grey while one is under way.
-const MARK_COLORS := {"offer": Color("f2c14e"), "ready": Color("f2c14e"), "waiting": Color("a8a39a")}
+const MARK_COLORS := {"offer": Color("f2c14e"), "ready": Color("f2c14e"), "waiting": Color("a8a39a"), "letter": Color("f2c14e")}
+## How far past its glyph's ink a mark draws: its dark line, a pixel; the
+## main story's ring of gold and the dark round it, three.
+const MARK_REACH := {"letter": 3}
 var _mark: Node2D
 var _mark_kind := ""
 var _mark_text := ""
@@ -141,8 +145,8 @@ func _refresh_mark() -> void:
 		_mark = null
 	if kind == "":
 		return
-	_mark_text = "!" if kind == "offer" else "?"
-	_mark = _outlined(_mark_text, MARK_COLORS[kind])
+	_mark_text = "!" if kind in ["offer", "letter"] else "?"
+	_mark = _outlined(_mark_text, MARK_COLORS[kind], int(MARK_REACH.get(kind, 1)))
 	_mark.z_index = 10
 	# Bright at night too (PIX-221).
 	_mark.material = Lights.unshaded()
@@ -155,7 +159,7 @@ func _refresh_mark() -> void:
 ## middle is.
 func _place_mark() -> void:
 	if _mark != null:
-		_mark.position = mark_spot(_mark_text, sprite.sprite_frames, sprite.animation, sprite.position, sprite.scale)
+		_mark.position = mark_spot(_mark_text, sprite.sprite_frames, sprite.animation, sprite.position, sprite.scale, int(MARK_REACH.get(_mark_kind, 1)))
 
 
 ## Where a mark of `text` goes over a figure drawn from `frames` playing
@@ -163,34 +167,56 @@ func _place_mark() -> void:
 ## centred on the head of the idle pose facing that way, in whole pixels (the
 ## label's box is no measure, Ink); its foot two pixels over the highest their
 ## head reaches standing or walking, whichever way they face, so it neither
-## bobs as they breathe, step and look about nor touches their head.
-static func mark_spot(text: String, frames: SpriteFrames, anim: String, at: Vector2, scale: Vector2) -> Vector2:
+## bobs as they breathe, step and look about nor touches their head. A mark
+## drawn `reach` pixels past its ink (the main story's ring) stands as much
+## higher, so the ring keeps the dark line's pixel of clearance too.
+static func mark_spot(text: String, frames: SpriteFrames, anim: String, at: Vector2, scale: Vector2, reach := 1) -> Vector2:
 	var ink := Ink.of_text(text, UiStyle.bold_font(), UiStyle.BODY_PX)
 	var poses := []
 	for way: String in PunyArt.DIRS:
 		poses.append(PunyArt.pick(frames, "idle", way))
 		poses.append(PunyArt.pick(frames, "walk", way))
 	var head := Ink.head(frames, Ink.rest_pose(frames, anim), at, scale)
-	return Vector2(Ink.centred(ink, head.get_center().x), floorf(Ink.crown(frames, poses, at, scale) - 2.0 - ink.end.y))
+	return Vector2(Ink.centred(ink, head.get_center().x), floorf(Ink.crown(frames, poses, at, scale) - 1.0 - reach - ink.end.y))
 
 
 ## `text` in the UI's bold pixel face at its own size, outlined in the night
 ## by four dark copies a pixel off each way: the pixel face draws no outline
-## of its own. The glyph itself is the last child. Each label sizes itself
-## once it is in the tree, with its own face.
-static func _outlined(text: String, color: Color) -> Node2D:
+## of its own. With a `reach` of 3 (the main story's), a ring of gold round
+## that line and the night round the ring, copies two and three pixels off
+## (a diamond's way, like the map's gold diamond). The glyph itself is the
+## last child. Each label sizes itself once it is in the tree, with its own
+## face.
+static func _outlined(text: String, color: Color, reach := 1) -> Node2D:
 	var mark := Node2D.new()
-	for offset: Vector2 in [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN, Vector2.ZERO]:
-		var glyph := Label.new()
-		glyph.text = text
-		glyph.add_theme_font_override("font", UiStyle.bold_font())
-		glyph.add_theme_font_size_override("font_size", UiStyle.BODY_PX)
-		glyph.add_theme_color_override("font_color", color if offset == Vector2.ZERO else UiStyle.NIGHT)
-		glyph.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		glyph.use_parent_material = true
-		glyph.position = offset
-		mark.add_child(glyph)
+	var rings: Array = []
+	for far in range(reach, 0, -1):
+		rings.append([_ring(far), color if far == 2 else UiStyle.NIGHT])
+	rings.append([[Vector2.ZERO], color])
+	for ring: Array in rings:
+		for offset: Vector2 in ring[0]:
+			var glyph := Label.new()
+			glyph.text = text
+			glyph.add_theme_font_override("font", UiStyle.bold_font())
+			glyph.add_theme_font_size_override("font_size", UiStyle.BODY_PX)
+			glyph.add_theme_color_override("font_color", ring[1])
+			glyph.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			glyph.use_parent_material = true
+			glyph.position = offset
+			mark.add_child(glyph)
 	return mark
+
+
+## The offsets `far` steps off along the grid's lines (|x| + |y| = far): a
+## pixel each way at 1, the four ways and the corners between at 2...
+static func _ring(far: int) -> Array[Vector2]:
+	var out: Array[Vector2] = []
+	for x in range(-far, far + 1):
+		var y := far - absi(x)
+		out.append(Vector2(x, y))
+		if y != 0:
+			out.append(Vector2(x, -y))
+	return out
 
 
 ## A step a beat toward their spot on the square: the longer way first, the

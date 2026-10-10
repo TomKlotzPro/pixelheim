@@ -17,6 +17,42 @@ var escort_lost_at := -100.0
 var run_clock: PanelContainer
 
 
+## How long the world must have been free before a chapter card comes
+## (PIX-253 step 2): not over a word just said, a fight, a message.
+const CARD_WAIT := 1.2
+var _card_wait := 0.0
+## Whether chapter cards come: always in play; in a harness run only once
+## the run asks (its `chapter` step), so no other run's shot is a card and
+## a run that sets the story up first shows the card of where it set it.
+var cards := true
+
+
+## A chapter card as a chapter of the main story opens (PIX-253 step 2):
+## once the world has run a moment with no fight on and nothing on the
+## message plate, the card of the chapter the story is in, if it hasn't been
+## shown (MainQuest.card_due). The world runs only while no screen holds it,
+## so a conversation, a menu or the dawn always comes first.
+func watch_chapters(delta: float) -> void:
+	if not cards:
+		return
+	var busy: bool = world.foes.in_fight() or world.messages.message_box.modulate.a > 0.05
+	_card_wait = 0.0 if busy else _card_wait + delta
+	if _card_wait < CARD_WAIT:
+		return
+	_card_wait = 0.0
+	var number := MainQuest.card_due(GameState.progression, GameState.settlement)
+	if number > 0:
+		show_chapter(number)
+
+
+## Chapter `number`'s card over the world, kept in the story ledger as shown.
+func show_chapter(number: int) -> void:
+	GameState.mark_seen(MainQuest.card_id(number))
+	var card := preload("res://scripts/chapter_screen.gd").new()
+	card.number = number
+	world.add_child(card)
+
+
 ## A story moment over the world (Cutscene, PIX-32), once per hero; "" or a
 ## moment already seen plays nothing.
 func play_story(scene_id: String) -> void:

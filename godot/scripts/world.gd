@@ -145,6 +145,7 @@ func _ready() -> void:
 	add_child(delve)
 	stage = Stage.new()
 	stage.world = self
+	stage.cards = not harness
 	add_child(stage)
 	hud = Hud.new()
 	hud.world = self
@@ -229,6 +230,7 @@ func _process(delta: float) -> void:
 	hud.update_objective()
 	hud.update_arrow()
 	hud.update_clock()
+	stage.watch_chapters(delta)
 	var cell := Vector2i((player.position / TILE).floor())
 	if cell == player_cell:
 		return

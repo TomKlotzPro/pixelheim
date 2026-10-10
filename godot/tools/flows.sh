@@ -31,7 +31,9 @@
 # them delivered (PIX-253), a door dissolving the old place into the new,
 # the dark kept for going under the ground and a cut with Reduce motion,
 # and each region's road back out where it moved so the Reach and its
-# regions lie in one plane (PIX-269). Every flow leaves its
+# regions lie in one plane (PIX-269), and the courier's satchel: the
+# journal's Letters page, a chapter's card as it opens, and the main
+# story's hollow diamond on the map (PIX-253 step 2). Every flow leaves its
 # picture in godot/flows/<name>.png for a human to look at, and the
 # harness's report line must match what the flow promises or the run fails.
 #
@@ -136,6 +138,16 @@ FLOWS=(
 	# and four letters in the pack; one handed to Old Wenna in Saltmere.
 	"tin|--map town --town-tier 0 talk --keys e,e,e,e,e|open=none.* letters=4 delivered=0"
 	"letter|--map saltmere --ready letter_wenna --talk-to saltmere_wenna --keys e,e,e|open=none.* letters=0 delivered=1"
+	# The courier's satchel (PIX-253 step 2): the journal's Letters page reads
+	# the two delivered and keeps the rest sealed; a chapter's card as the
+	# day begins, its title rising in, and still with Reduce motion; the
+	# second chapter's once Wenna has her letter; and on the map, the main
+	# story's hollow diamond kept while the slimes are followed.
+	"letters|--map town journal --tab letters|open=journal_screen.* read=2 older=0"
+	"chapter|--map town chapter|open=chapter_screen.* chapter=1 rose=12"
+	"chapter-still|--map town chapter still|open=chapter_screen.* chapter=1 rose=0"
+	"chapter-two|--map saltmere --ready letter_wenna --talk-to saltmere_wenna --keys e,e,e chapter|open=chapter_screen.* chapter=2 rose=12"
+	"storymap|--map town journal charted --keys s,s,s,s,s,s,s,e,esc,m,a|open=map_screen.*page=overworld story=[0-9]+,[0-9]+ tracked=slime_trouble"
 	"mimic|--map mirefen mimic --wait 0.75|map=mirefen cell=\(42, 13\) hp=42"
 	"mayor|--map town_hall talk --keys e,e,e|open=town_hall_screen"
 	"board|--map town --at 37,22 --keys w,e|open=town_hall_screen"
@@ -229,7 +241,9 @@ FLOWS=(
 	"atlas|--map town waypoints --keys m,d|open=map_screen.*dest=saltmere_hamlet page=saltmere"
 	# The journal's fourth thread (the slimes, under the story's three) chosen,
 	# E follows it, and it's still followed once the journal closes (PIX-239).
-	"follow|--map town journal --keys s,s,s,e,esc|open=none .*tracked=slime_trouble"
+	# (The eighth since PIX-253 step 2: the satchel's four letters are the
+	# story's rows too.)
+	"follow|--map town journal --keys s,s,s,s,s,s,s,e,esc|open=none .*tracked=slime_trouble"
 	# Every screen fits the canvas in French, the longest language (PIX-258):
 	# the harness's `overflow` counts pieces running off the screen.
 	"fit-title|title overflow --lang fr|open=title_screen.*overflow=0"
@@ -258,7 +272,11 @@ FLOWS=(
 	# of the list; its English twin; Liane's ten pages; the feats.
 	"fit-journal-full|--map town journal --cleared 4 --keys w,e overflow --lang fr|open=journal_screen.*overflow=0 tracked=drowned_knight"
 	"fit-journal-en|--map town journal --cleared 4 --keys w,e overflow --lang en|open=journal_screen.*overflow=0 tracked=drowned_knight"
-	"fit-journal-pages|--map town journal --tab pages --cleared 15 overflow --lang fr|open=journal_screen.*overflow=0"
+	# The satchel at the top of the quests; the Letters page with Liane's ten
+	# pages under it (PIX-253 step 2); the longest chapter card.
+	"fit-satchel|--map town journal overflow --lang fr|open=journal_screen.*overflow=0"
+	"fit-journal-letters|--map town journal --tab letters --cleared 15 overflow --lang fr|open=journal_screen.*overflow=0 .*read=2 older=10"
+	"fit-chapter|--map town --hunted tidecaller,seam_warden,hollow_captain chapter overflow --lang fr|open=chapter_screen.*overflow=0 .*chapter=5"
 	"fit-journal-feats|--map town journal --tab feats overflow --lang fr|open=journal_screen.*overflow=0"
 	"fit-skills|--map town --keys k overflow --lang fr|open=skills_screen.*overflow=0"
 	"fit-stats|--map town --keys c overflow --lang fr|open=stats_screen.*overflow=0"

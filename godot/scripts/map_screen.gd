@@ -160,7 +160,7 @@ func _open() -> void:
 	indent.add_theme_constant_override("margin_left", 8)
 	page_column.add_child(indent)
 	legend = HBoxContainer.new()
-	legend.add_theme_constant_override("separation", 16)
+	legend.add_theme_constant_override("separation", 12)
 	indent.add_child(legend)
 	pages = Atlas.pages(GameState.world.discovered, world.map.id)
 	page = world.map.id
@@ -357,15 +357,26 @@ func _fill_legend(map: MapData, home: bool) -> void:
 		marks.append([Painting.LAIR, "Lair"])
 	if home and not Painting.givers(world).is_empty():
 		marks.append([Painting.QUEST, "Quest"])
+	# The goal and the main story behind it as the page draws them, diamonds
+	# (PIX-253 step 2).
 	if painting.goal_cell() != Bearing.NOWHERE:
-		marks.append([Painting.GOAL, "Goal"])
+		marks.append([Painting.GOAL, "Goal", Swatch.FILLED])
+	if painting.story_cell() != Bearing.NOWHERE:
+		marks.append([Painting.GOAL, "Story", Swatch.HOLLOW])
+	# Each mark beside its word, the marks a little further apart: with the
+	# story's the row is one longer, and in French it still ends before the
+	# waypoints' panel.
 	for mark: Array in marks:
-		var swatch := ColorRect.new()
-		swatch.color = mark[0]
-		swatch.custom_minimum_size = Vector2(10, 10)
+		var entry := HBoxContainer.new()
+		entry.add_theme_constant_override("separation", 8)
+		var swatch: Control = Swatch.new(mark[2]) if mark.size() > 2 else ColorRect.new()
+		if swatch is ColorRect:
+			(swatch as ColorRect).color = mark[0]
+			swatch.custom_minimum_size = Vector2(10, 10)
 		swatch.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-		legend.add_child(swatch)
-		legend.add_child(UiStyle.label(mark[1], 12, UiStyle.FADED))
+		entry.add_child(swatch)
+		entry.add_child(UiStyle.label(mark[1], 12, UiStyle.FADED))
+		legend.add_child(entry)
 
 
 ## The keys as they stand: up and down choose, or with nothing to choose
@@ -397,11 +408,34 @@ func _set_footer() -> void:
 
 
 
+## The legend's diamonds (PIX-253 step 2): the goal's, filled, and the main
+## story's, hollow, drawn as the page draws them.
+class Swatch extends Control:
+	const FILLED := "filled"
+	const HOLLOW := "hollow"
+	var shape := FILLED
+
+	func _init(kind := FILLED) -> void:
+		shape = kind
+		custom_minimum_size = Vector2(16, 16)
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	func _draw() -> void:
+		var at := (size / 2.0).floor()
+		draw_colored_polygon(Painting._points(at, 8.0), UiStyle.NIGHT)
+		draw_colored_polygon(Painting._points(at, 6.0), Painting.GOAL)
+		if shape == HOLLOW:
+			draw_colored_polygon(Painting._points(at, 3.0), UiStyle.NIGHT)
+
+
 class Painting extends Control:
 	const LAIR := Color("c071ff")
 	const QUEST := Color("5fdc7a")
 	## Where the hero is headed (PIX-240): the quest marks' gold.
 	const GOAL := Color("f2c14e")
+	## How much wider than a marker the main story's hollow diamond is (the
+	## goal's is 6): a hole that shows the page.
+	const STORY_GROW := 10.0
 	## A waypoint not open yet (PIX-266): not found, or no one keeps it.
 	const CLOSED := Color("8e8880")
 	## The dark round a label's letters, and the shade under them (px each
@@ -507,6 +541,9 @@ class Painting extends Control:
 		var goal := goal_cell()
 		if goal != Bearing.NOWHERE:
 			taken.append(Rect2(_center(goal), Vector2.ZERO).grow(floorf((mark + 6.0) / 2.0) + 3.0))
+		var story := story_cell()
+		if story != Bearing.NOWHERE:
+			taken.append(Rect2(_center(story), Vector2.ZERO).grow(floorf((mark + STORY_GROW) / 2.0) + 3.0))
 		# The chosen waypoint's ring at its widest, and its tag over the names.
 		if tag != null:
 			taken.append(Rect2(_center(Waypoints.cell(destination)), Vector2.ZERO).grow(Waypoints.ring_half(mark, Waypoints.PULSE_PX) + 2.0))
@@ -572,7 +609,12 @@ class Painting extends Control:
 		if not destination.is_empty():
 			var grow := Waypoints.ring_grow(Time.get_ticks_msec() - chosen_at, GameState.settings.reduce_motion)
 			_ring(_center(Waypoints.cell(destination)), mark, grow)
-		# Where the hero is headed (PIX-240), a diamond under the hero's mark.
+		# The main story's next place while something else leads (PIX-253
+		# step 2), a hollow diamond; where the hero is headed (PIX-240), a
+		# diamond; both under the hero's mark.
+		var story := story_cell()
+		if story != Bearing.NOWHERE:
+			_diamond(_center(story), mark + STORY_GROW, true)
 		var goal := goal_cell()
 		if goal != Bearing.NOWHERE:
 			_diamond(_center(goal), mark + 6.0)
@@ -597,28 +639,59 @@ class Painting extends Control:
 	## door here that starts the way to its map; NOWHERE when there's none,
 	## or with the quest marks turned off.
 	func goal_cell() -> Vector2i:
+		return _cell_of(_lead("bearing"))
+
+	## Where the main story goes next on this page while a side quest or a
+	## bounty leads (PIX-253 step 2), found as the goal is: the hollow gold
+	## diamond, so the main goal is never lost. NOWHERE while the story leads
+	## (the goal is it), and where the two meet (the goal's diamond says it).
+	func story_cell() -> Vector2i:
+		var cell := _cell_of(_lead("story"))
+		return Bearing.NOWHERE if cell == goal_cell() else cell
+
+	## The HUD's lead `which` ("bearing", or "story" behind it), or {} where
+	## there's no saying: no HUD, no page, the quest marks turned off.
+	func _lead(which: String) -> Dictionary:
 		var hud: Variant = world.get("hud") if world != null else null
 		if hud == null or map == null or not GameState.settings.quest_marks:
+			return {}
+		var lead: Variant = hud.get(which)
+		return lead if lead is Dictionary else {}
+
+	## Where `lead` points on this page: the person it's about where they
+	## stand now, its spot when it's on this map, or the door here that
+	## starts the way to its map; NOWHERE for nowhere.
+	func _cell_of(lead: Dictionary) -> Vector2i:
+		if lead.is_empty():
 			return Bearing.NOWHERE
-		var bearing: Dictionary = hud.bearing
-		if bearing.is_empty():
-			return Bearing.NOWHERE
-		if home and String(bearing["who"]) != "":
+		if home and String(lead["who"]) != "":
 			for villager in world.get_tree().get_nodes_in_group("npcs"):
-				if not villager.away and String(villager.data.get("id", "")) == bearing["who"]:
+				if not villager.away and String(villager.data.get("id", "")) == lead["who"]:
 					return Vector2i((villager.position / 16.0).floor())
-		if bearing["map_id"] == map.id:
-			return bearing["cell"]
-		return Bearing.way_out(map.id, String(bearing["map_id"]))
+		if lead["map_id"] == map.id:
+			return lead["cell"]
+		return Bearing.way_out(map.id, String(lead["map_id"]))
 
 	## A gold diamond with a dark rim, `size` px across, its points on the
-	## screen's pixels.
-	func _diamond(center: Vector2, size: float) -> void:
+	## screen's pixels; `hollow` (the main story's, behind the goal) a ring of
+	## gold between dark lines, the page showing through.
+	func _diamond(center: Vector2, size: float, hollow := false) -> void:
 		var at := Waypoints.snap_point(center, _shown)
-		var half := Waypoints.snap_length(floorf(size / 2.0), _shown)
-		var rim := Waypoints.snap_length(floorf(size / 2.0) + 3.0, _shown)
-		draw_colored_polygon(PackedVector2Array([at + Vector2(0, -rim), at + Vector2(rim, 0), at + Vector2(0, rim), at + Vector2(-rim, 0)]), UiStyle.NIGHT)
-		draw_colored_polygon(PackedVector2Array([at + Vector2(0, -half), at + Vector2(half, 0), at + Vector2(0, half), at + Vector2(-half, 0)]), GOAL)
+		for band: Array in Waypoints.diamond_bands(floorf(size / 2.0), hollow, _shown):
+			var color := GOAL if band[2] else UiStyle.NIGHT
+			var outer := _points(at, band[0])
+			if band[1] <= 0.0:
+				draw_colored_polygon(outer, color)
+				continue
+			# A band with a hole: its four sides, each from the outer edge in.
+			var inner := _points(at, band[1])
+			for side in 4:
+				var next := (side + 1) % 4
+				draw_colored_polygon(PackedVector2Array([outer[side], outer[next], inner[next], inner[side]]), color)
+
+	## A diamond's four points, `reach` px from `at`: top, right, bottom, left.
+	static func _points(at: Vector2, reach: float) -> PackedVector2Array:
+		return PackedVector2Array([at + Vector2(0, -reach), at + Vector2(reach, 0), at + Vector2(0, reach), at + Vector2(-reach, 0)])
 
 	## A marker: a square of `color` in a dark rim, on the screen's pixels.
 	func _marker(center: Vector2, size: float, color: Color) -> void:

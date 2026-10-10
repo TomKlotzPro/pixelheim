@@ -2429,6 +2429,10 @@ msgid "EXPANSIONS: pour 1,000 gold into a business you own and its rent grows wi
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Each chapter opens with a card, \"Chapter 3: The Letter to Blackiron\", shown once"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Each comes with a full 12-node skill tree, its own look palette, and a proven path to the final boss - the balance sim clears the game with all seven classes"
 msgstr ""
 
@@ -3262,6 +3266,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Maren no longer skips a story: if you went far before visiting her, she tells each one in turn, oldest first, and the main quest's step that waits on it is met"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Maren's letters are the main story in the journal: the courier's satchel lists each letter, who it's for and where, and once it's delivered, what they answered"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4649,6 +4657,10 @@ msgid "The Open World"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Pages tab is now Letters: read Maren's own words once a letter is delivered (a courier never reads the post) and the answer that came back"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Painted World"
 msgstr ""
 
@@ -4658,6 +4670,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The Patron"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The Satchel"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4842,6 +4858,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The log keeps only what the world doesn't show: the story, quests, levels, mastery, bounties and the Boss Slayer's edge"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The main story stands out: a gold ring around the \"!\" over a letter's recipient, the edge arrow in gold while it leads the story, and a hollow gold diamond on the map while you follow a side quest"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -8873,7 +8893,15 @@ msgid "Ask Sela the innkeeper for work"
 msgstr ""
 
 #: assets/data/progression.json
+msgid "Aske answered, with Liane's sums."
+msgstr ""
+
+#: assets/data/progression.json
 msgid "Aske last. He's kept Liane's door shut fifty years because she asked him to. North, up the Frostgate road. Tell him he can stop."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Aske. Liane isn't coming back. She asked you to keep her door until someone came for the lantern."
 msgstr ""
 
 #: assets/data/progression.json
@@ -8965,6 +8993,10 @@ msgid "Captain Hale. He swore to keep Oskar's shield till Oskar came home, and h
 msgstr ""
 
 #: assets/data/progression.json
+msgid "Captain. Oskar isn't coming home. He held the roof with Tam and Liane so I could get out."
+msgstr ""
+
+#: assets/data/progression.json
 msgid "Captains retired"
 msgstr ""
 
@@ -9026,6 +9058,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Cliff road to Saltmere's clear, courier. Took the whole crew all morning. I lifted one rock. Supervised the rest."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Coming Home"
 msgstr ""
 
 #: assets/data/progression.json
@@ -9249,7 +9285,7 @@ msgid "Four forest herbs, fresh, from the patches in the Whispering Forest. The 
 msgstr ""
 
 #: assets/data/progression.json
-msgid "Four letters in your pack: for Old Wenna in Saltmere, Old Pell at Blackiron, Captain Hale at Greyhold and Aske on the Frostgate. Maren keeps the fifth."
+msgid "Four letters in your satchel: for Old Wenna in Saltmere, Old Pell at Blackiron, Captain Hale at Greyhold and Aske on the Frostgate. Maren keeps the fifth."
 msgstr ""
 
 #: assets/data/progression.json
@@ -9310,6 +9346,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Get into Pixelheim: the gate is just south"
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Give his shield to whoever brings you this, and stand down. Your watch is over. - Maren"
 msgstr ""
 
 #: assets/data/progression.json
@@ -9377,6 +9417,10 @@ msgid "Hale kept Greyhold when we climbed, and Oskar was his. East, over the Ash
 msgstr ""
 
 #: assets/data/progression.json
+msgid "Hale's order book, day 12: Morvax alive at the old forge, the gate barred because he asked. \"I agreed. I was wrong.\""
+msgstr ""
+
+#: assets/data/progression.json
 msgid "Half for you, half for me - or we hand it back to Saltmere and I go honest. Your call, hero."
 msgstr ""
 
@@ -9437,10 +9481,6 @@ msgid "Hollow guards stood down"
 msgstr ""
 
 #: assets/data/progression.json
-msgid "Home"
-msgstr ""
-
-#: assets/data/progression.json
 msgid "Honest work's slower. The beer tastes better, though."
 msgstr ""
 
@@ -9450,6 +9490,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "I fetch the water. It's a living. It's what's left of one."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "I sent his things home on a fishing boat. I couldn't write the rest. I'm sorry. - Maren"
 msgstr ""
 
 #: assets/data/progression.json
@@ -9473,7 +9517,7 @@ msgid "Imps taught a lesson"
 msgstr ""
 
 #: assets/data/progression.json
-msgid "In your pack: %s. Maren keeps the fifth."
+msgid "In your satchel: %s. Maren keeps the fifth."
 msgstr ""
 
 #: assets/data/progression.json
@@ -9541,6 +9585,30 @@ msgid "Letter delivered"
 msgstr ""
 
 #: assets/data/progression.json
+msgid "Letter to Aske, the Frostgate"
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Letter to Captain Hale, Greyhold"
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Letter to Morvax"
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Letter to Old Pell, Blackiron"
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Letter to Old Wenna, Saltmere"
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Liane's sums: the seal only buys fifty years. \"Don't seal him. Free him. The collar answers to our five marks.\""
+msgstr ""
+
+#: assets/data/progression.json
 msgid "Lichlord"
 msgstr ""
 
@@ -9570,6 +9638,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Magus"
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Maren keeps this one. It has no address."
 msgstr ""
 
 #: assets/data/progression.json
@@ -9745,11 +9817,19 @@ msgid "Pathfinder"
 msgstr ""
 
 #: assets/data/progression.json
+msgid "Pell answered, with a tale of Morvax and the iron."
+msgstr ""
+
+#: assets/data/progression.json
 msgid "Pell next. A boy with a canary, when we came through Blackiron. Over the bridge and west. I owe him an apology. And a cage."
 msgstr ""
 
 #: assets/data/progression.json
 msgid "Pell's canary"
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Pell's tale: Morvax came down the Blackiron road for iron, three times in fifty years. Last spring there was none. He's alive."
 msgstr ""
 
 #: assets/data/progression.json
@@ -9937,6 +10017,10 @@ msgid "Someone has to fish for the caravan's supper."
 msgstr ""
 
 #: assets/data/progression.json
+msgid "Someone has. Open it, give them her things, and go and sit in the sun. - Maren"
+msgstr ""
+
+#: assets/data/progression.json
 msgid "Something guards the seam the Ember Seal's iron came from."
 msgstr ""
 
@@ -9954,6 +10038,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Something white sleeps on Liane's lantern under the observatory."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Sorry about the cage. I sat on it. Your bird was right to be cross. - Maren"
 msgstr ""
 
 #: assets/data/progression.json
@@ -10010,6 +10098,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Take the stair below the hoard: clear the Sunless Stair (floor 11)"
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Tam's last postcard: \"Morvax wants the kings' gold to make Pixelheim a city. Maren says over her dead body. I've brought cheese.\""
 msgstr ""
 
 #: assets/data/progression.json
@@ -10413,6 +10505,10 @@ msgid "Tight weave. You'll do. Take this for the reeds."
 msgstr ""
 
 #: assets/data/progression.json
+msgid "To Pell, the boy with the canary. Thank you for taking us down the shafts, and for the lamp."
+msgstr ""
+
+#: assets/data/progression.json
 msgid "Toll-trolls removed"
 msgstr ""
 
@@ -10473,6 +10569,10 @@ msgid "Two wolf pelts for saddle leather. The wolves den in the fields east of h
 msgstr ""
 
 #: assets/data/progression.json
+msgid "Ulla answered, with Captain Hale's order book."
+msgstr ""
+
+#: assets/data/progression.json
 msgid "Ulla's coin for my friends' necks. ...Fine. It's your road, not mine."
 msgstr ""
 
@@ -10513,7 +10613,15 @@ msgid "Wear the cap Sela gave you ({key:inventory} opens your pack)"
 msgstr ""
 
 #: assets/data/progression.json
+msgid "Wenna answered, with Tam's last postcard."
+msgstr ""
+
+#: assets/data/progression.json
 msgid "Wenna first. Tam's sister, down in Saltmere: the cliff road, south past the marsh. ...Don't tell her I'm sorry. The letter says it."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Wenna. Tam didn't die in a rockfall. I said that because the truth was harder to write. The hall came down and he held up the roof so I could run. He was laughing. Of course he was."
 msgstr ""
 
 #: assets/data/progression.json
@@ -11576,6 +11684,10 @@ msgstr ""
 msgid "scroll"
 msgstr ""
 
+#: scripts/chapter_screen.gd:44
+msgid "Chapter %d"
+msgstr ""
+
 #: scripts/codex_screen.gd:103
 msgid "Page %d of %d"
 msgstr ""
@@ -12097,6 +12209,10 @@ msgid "Food"
 msgstr ""
 
 #: scripts/inventory_screen.gd:14
+msgid "Home"
+msgstr ""
+
+#: scripts/inventory_screen.gd:14
 msgid "Misc"
 msgstr ""
 
@@ -12324,83 +12440,107 @@ msgstr ""
 msgid "Buffs&Debuffs"
 msgstr ""
 
-#: scripts/journal_screen.gd:152
+#: scripts/journal_screen.gd:159
 msgid "follow"
 msgstr ""
 
-#: scripts/journal_screen.gd:154
+#: scripts/journal_screen.gd:161
 msgid "turn"
 msgstr ""
 
-#: scripts/journal_screen.gd:209
+#: scripts/journal_screen.gd:211
+msgid "The courier's satchel"
+msgstr ""
+
+#: scripts/journal_screen.gd:224
 msgid "Done: %d quests, the latest %s."
 msgstr ""
 
-#: scripts/journal_screen.gd:22
-msgid "Feats"
-msgstr ""
-
-#: scripts/journal_screen.gd:22
-msgid "Liane's pages"
-msgstr ""
-
-#: scripts/journal_screen.gd:22
-msgid "Quests"
-msgstr ""
-
-#: scripts/journal_screen.gd:229
+#: scripts/journal_screen.gd:244
 msgid "The story is told"
 msgstr ""
 
-#: scripts/journal_screen.gd:232
+#: scripts/journal_screen.gd:247
 msgid "No quests taken yet. Someone with a ! over their head has one for you."
 msgstr ""
 
-#: scripts/journal_screen.gd:236
+#: scripts/journal_screen.gd:251
 msgid "The Deep Hunt: deepest depth %d"
 msgstr ""
 
-#: scripts/journal_screen.gd:240
+#: scripts/journal_screen.gd:255
 msgid "No notices on the bounty board yet. The first goes up when %s."
 msgstr ""
 
-#: scripts/journal_screen.gd:27
-msgid "Bounty you follow"
+#: scripts/journal_screen.gd:28
+msgid "Feats"
 msgstr ""
 
-#: scripts/journal_screen.gd:27
-msgid "Main story"
+#: scripts/journal_screen.gd:28
+msgid "Letters"
 msgstr ""
 
-#: scripts/journal_screen.gd:27
-msgid "Quest you follow"
+#: scripts/journal_screen.gd:28
+msgid "Quests"
 msgstr ""
 
-#: scripts/journal_screen.gd:275
+#: scripts/journal_screen.gd:290
 msgid "FOLLOWING"
 msgstr ""
 
-#: scripts/journal_screen.gd:279
+#: scripts/journal_screen.gd:294
 msgid "READY"
 msgstr ""
 
-#: scripts/journal_screen.gd:401
+#: scripts/journal_screen.gd:296
+msgid "DELIVERED"
+msgstr ""
+
+#: scripts/journal_screen.gd:33
+msgid "Bounty you follow"
+msgstr ""
+
+#: scripts/journal_screen.gd:33
+msgid "Main story"
+msgstr ""
+
+#: scripts/journal_screen.gd:33
+msgid "Quest you follow"
+msgstr ""
+
+#: scripts/journal_screen.gd:421
 msgid "Next"
 msgstr ""
 
-#: scripts/journal_screen.gd:439
-msgid "No pages yet. Someone climbed this mountain before you - and wrote it down."
+#: scripts/journal_screen.gd:473
+msgid "Nothing in your satchel yet but the dust of the road."
 msgstr ""
 
-#: scripts/journal_screen.gd:441
-msgid "Liane's journal - %d of %d pages"
-msgstr ""
-
-#: scripts/journal_screen.gd:482
-msgid "Done"
+#: scripts/journal_screen.gd:476
+msgid "Maren's letters - %d of %d delivered"
 msgstr ""
 
 #: scripts/journal_screen.gd:484
+msgid "Older papers"
+msgstr ""
+
+#: scripts/journal_screen.gd:486
+msgid "Pages of Liane's journal, found on the mountain: %d of %d."
+msgstr ""
+
+#: scripts/journal_screen.gd:507
+msgid "SEALED"
+msgstr ""
+
+#: scripts/journal_screen.gd:510
+msgid "A courier never reads the post."
+msgstr ""
+
+#: scripts/journal_screen.gd:553
+msgid "Done"
+msgstr ""
+
+#: scripts/journal_screen.gd:555
 msgid "Brings home: %s"
 msgstr ""
 
@@ -12468,11 +12608,15 @@ msgstr ""
 msgid "Quest"
 msgstr ""
 
-#: scripts/map_screen.gd:361
+#: scripts/map_screen.gd:363
 msgid "Goal"
 msgstr ""
 
-#: scripts/map_screen.gd:387
+#: scripts/map_screen.gd:365
+msgid "Story"
+msgstr ""
+
+#: scripts/map_screen.gd:398
 msgid "maps"
 msgstr ""
 
@@ -13296,12 +13440,12 @@ msgstr ""
 msgid "The burn"
 msgstr ""
 
-#: scripts/state/bearing.gd:120
-msgid "Slay %s in its lair"
+#: scripts/state/bearing.gd:119
+msgid "Hand it in to %s."
 msgstr ""
 
-#: scripts/state/bearing.gd:92
-msgid "Hand it in to %s."
+#: scripts/state/bearing.gd:147
+msgid "Slay %s in its lair"
 msgstr ""
 
 #: scripts/state/bestiary.gd:197
@@ -13552,20 +13696,20 @@ msgstr ""
 msgid "Town and people"
 msgstr ""
 
-#: scripts/state/journal.gd:50
+#: scripts/state/journal.gd:57
 msgid "Its lair: %s. %s."
 msgstr ""
 
-#: scripts/state/journal.gd:62
+#: scripts/state/journal.gd:69
 msgid "Chapter %d: %s"
 msgstr ""
 
-#: scripts/state/main_quest.gd:107
-msgid "Maren"
+#: scripts/state/main_quest.gd:120
+msgid "Next: %s"
 msgstr ""
 
-#: scripts/state/main_quest.gd:94
-msgid "Next: %s"
+#: scripts/state/main_quest.gd:133
+msgid "Maren"
 msgstr ""
 
 #: scripts/state/questing.gd:144
@@ -13588,51 +13732,55 @@ msgstr ""
 msgid "%s: %d/%d %s."
 msgstr ""
 
-#: scripts/state/questing.gd:240
+#: scripts/state/questing.gd:208
+msgid "Your satchel is in the journal ({key:journal})."
+msgstr ""
+
+#: scripts/state/questing.gd:241
 msgid "Delivered: %s."
 msgstr ""
 
-#: scripts/state/questing.gd:242
+#: scripts/state/questing.gd:243
 msgid "Delivered: %s. %s."
 msgstr ""
 
-#: scripts/state/questing.gd:359
+#: scripts/state/questing.gd:360
 msgid "%s: ready to hand in to %s."
 msgstr ""
 
-#: scripts/state/questing.gd:411
+#: scripts/state/questing.gd:412
 msgid "That uses what %s needs (%s). Do it again to go ahead."
 msgstr ""
 
-#: scripts/state/questing.gd:422
+#: scripts/state/questing.gd:423
 msgid "A feat done: %s. The %s is yours, for the shelf at home."
 msgstr ""
 
-#: scripts/state/quests.gd:136
+#: scripts/state/quests.gd:141
 msgid "In %s."
 msgstr ""
 
-#: scripts/state/quests.gd:136
+#: scripts/state/quests.gd:141
 msgid "the wilds"
 msgstr ""
 
-#: scripts/state/quests.gd:139
+#: scripts/state/quests.gd:144
 msgid "Found in %s."
 msgstr ""
 
-#: scripts/state/quests.gd:143
+#: scripts/state/quests.gd:148
 msgid "In a chest somewhere in %s."
 msgstr ""
 
-#: scripts/state/quests.gd:149
+#: scripts/state/quests.gd:154
 msgid "%s, in %s."
 msgstr ""
 
-#: scripts/state/quests.gd:154
+#: scripts/state/quests.gd:159
 msgid "The five left them in %s."
 msgstr ""
 
-#: scripts/state/quests.gd:164
+#: scripts/state/quests.gd:169
 msgid "%s, from %s."
 msgstr ""
 
@@ -13736,47 +13884,43 @@ msgstr ""
 msgid "%s is cleared!"
 msgstr ""
 
-#: scripts/state/spoils.gd:270
-msgid "Among the bones: a page of an old journal (%s). {key:journal} reads it."
-msgstr ""
-
-#: scripts/state/spoils.gd:284
+#: scripts/state/spoils.gd:283
 msgid "the %s"
 msgstr ""
 
-#: scripts/state/spoils.gd:287
+#: scripts/state/spoils.gd:286
 msgid "Behind the throne, a stair goes on down into the dark: the Deep Hunt."
 msgstr ""
 
-#: scripts/state/spoils.gd:291
+#: scripts/state/spoils.gd:290
 msgid "A deeper way opens: %s."
 msgstr ""
 
-#: scripts/state/spoils.gd:305
+#: scripts/state/spoils.gd:304
 msgid "Depth %d of the Deep Hunt is cleared!"
 msgstr ""
 
-#: scripts/state/spoils.gd:320
+#: scripts/state/spoils.gd:319
 msgid "depth %d of the Deep Hunt"
 msgstr ""
 
-#: scripts/state/spoils.gd:324
+#: scripts/state/spoils.gd:323
 msgid "A milestone: %d depths below the throne. The %s is yours, a trophy for the shelf at home."
 msgstr ""
 
-#: scripts/state/spoils.gd:327
+#: scripts/state/spoils.gd:326
 msgid "A hole into the dark opens beside the way up: depth %d waits below."
 msgstr ""
 
-#: scripts/state/spoils.gd:344
+#: scripts/state/spoils.gd:343
 msgid "The chest bares its teeth — a mimic!"
 msgstr ""
 
-#: scripts/state/spoils.gd:356
+#: scripts/state/spoils.gd:355
 msgid "Too heavy to carry. Lighten the pack and come back."
 msgstr ""
 
-#: scripts/state/spoils.gd:405
+#: scripts/state/spoils.gd:404
 msgid "Nothing's biting here yet. Try again in a while, or somewhere else."
 msgstr ""
 
@@ -14108,11 +14252,11 @@ msgstr ""
 msgid "Stay"
 msgstr ""
 
-#: scripts/world.gd:282
+#: scripts/world.gd:284
 msgid "%s bars your way: no leaving until the fight is over."
 msgstr ""
 
-#: scripts/world.gd:323
+#: scripts/world.gd:325
 msgid "No map reaches this deep."
 msgstr ""
 
@@ -14140,7 +14284,7 @@ msgstr ""
 msgid "LEVEL UP"
 msgstr ""
 
-#: scripts/world_hud.gd:255
+#: scripts/world_hud.gd:262
 msgid "Boss slayer +%d%%  %d:%02d"
 msgstr ""
 
@@ -14176,31 +14320,31 @@ msgstr ""
 msgid "Quest complete"
 msgstr ""
 
-#: scripts/world_stage.gd:135
+#: scripts/world_stage.gd:171
 msgid "Five lanterns on the square, one for each of the five who climbed. Tonight the %s remembers them - and %s."
 msgstr ""
 
-#: scripts/world_stage.gd:136
+#: scripts/world_stage.gd:172
 msgid "Pixelheim, a %s raised from the ashes. Tonight it celebrates %s."
 msgstr ""
 
-#: scripts/world_stage.gd:233
+#: scripts/world_stage.gd:269
 msgid "%s: built."
 msgstr ""
 
-#: scripts/world_stage.gd:240
+#: scripts/world_stage.gd:276
 msgid "Pixelheim is a %s now."
 msgstr ""
 
-#: scripts/world_stage.gd:241
+#: scripts/world_stage.gd:277
 msgid "New in town: %s."
 msgstr ""
 
-#: scripts/world_stage.gd:247
+#: scripts/world_stage.gd:283
 msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
 msgstr ""
 
-#: scripts/world_stage.gd:317
+#: scripts/world_stage.gd:353
 msgid "%s  %d:%02d"
 msgstr ""
 

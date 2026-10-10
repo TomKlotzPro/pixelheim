@@ -2429,6 +2429,10 @@ msgid "EXPANSIONS: pour 1,000 gold into a business you own and its rent grows wi
 msgstr "AGRANDISSEMENTS : investissez 1 000 or dans un commerce qui vous appartient et sa rente augmente à chaque victoire"
 
 #: assets/data/changelog.json
+msgid "Each chapter opens with a card, \"Chapter 3: The Letter to Blackiron\", shown once"
+msgstr "Chaque chapitre s'ouvre sur un carton, « Chapitre 3 : La lettre pour Fernoir », montré une seule fois"
+
+#: assets/data/changelog.json
 msgid "Each comes with a full 12-node skill tree, its own look palette, and a proven path to the final boss - the balance sim clears the game with all seven classes"
 msgstr "Chacune arrive avec un arbre de compétences complet de 12 nœuds, sa propre palette d'apparence, et un chemin éprouvé jusqu'au boss final - la simulation d'équilibrage termine le jeu avec les sept classes"
 
@@ -3263,6 +3267,10 @@ msgstr "Mille langues"
 #: assets/data/changelog.json
 msgid "Maren no longer skips a story: if you went far before visiting her, she tells each one in turn, oldest first, and the main quest's step that waits on it is met"
 msgstr "Maren ne saute plus d'histoire : si vous avez exploré loin avant de lui rendre visite, elle les raconte chacune à leur tour, la plus ancienne d'abord, et l'étape de la quête principale qui l'attend est validée"
+
+#: assets/data/changelog.json
+msgid "Maren's letters are the main story in the journal: the courier's satchel lists each letter, who it's for and where, and once it's delivered, what they answered"
+msgstr "Les lettres de Maren sont l'histoire principale du journal : la sacoche du messager liste chaque lettre, son destinataire et où le trouver, puis, une fois remise, ce qu'il a répondu"
 
 #: assets/data/changelog.json
 msgid "Market Day"
@@ -4649,6 +4657,10 @@ msgid "The Open World"
 msgstr "Le Monde ouvert"
 
 #: assets/data/changelog.json
+msgid "The Pages tab is now Letters: read Maren's own words once a letter is delivered (a courier never reads the post) and the answer that came back"
+msgstr "L'onglet Pages devient Lettres : lisez les mots de Maren une fois la lettre remise (un messager ne lit jamais le courrier) et la réponse qui est revenue"
+
+#: assets/data/changelog.json
 msgid "The Painted World"
 msgstr "Le Monde peint"
 
@@ -4659,6 +4671,10 @@ msgstr "Le Graphe des voies"
 #: assets/data/changelog.json
 msgid "The Patron"
 msgstr "Le Mécène"
+
+#: assets/data/changelog.json
+msgid "The Satchel"
+msgstr "La sacoche"
 
 #: assets/data/changelog.json
 msgid "The Skills panel grew the full graph: nodes, ascension edges, your walked path aglow - and any missed choice can be claimed right there"
@@ -4843,6 +4859,10 @@ msgstr "La ligne sous le titre dit enfin de quoi parle le jeu : Le village a b
 #: assets/data/changelog.json
 msgid "The log keeps only what the world doesn't show: the story, quests, levels, mastery, bounties and the Boss Slayer's edge"
 msgstr "Le journal ne garde que ce que le monde ne montre pas : l'histoire, les quêtes, les niveaux, la maîtrise, les primes et l'avantage du Tueur de boss"
+
+#: assets/data/changelog.json
+msgid "The main story stands out: a gold ring around the \"!\" over a letter's recipient, the edge arrow in gold while it leads the story, and a hollow gold diamond on the map while you follow a side quest"
+msgstr "L'histoire principale se distingue : un anneau doré autour du « ! » au-dessus du destinataire d'une lettre, la flèche en bord d'écran dorée quand elle mène l'histoire, et un losange doré creux sur la carte quand vous suivez une quête secondaire"
 
 #: assets/data/changelog.json
 msgid "The map key is rebindable like everything else"
@@ -8873,8 +8893,16 @@ msgid "Ask Sela the innkeeper for work"
 msgstr "Demander du travail à Sela l'aubergiste"
 
 #: assets/data/progression.json
+msgid "Aske answered, with Liane's sums."
+msgstr "Aske a répondu, avec les calculs de Liane."
+
+#: assets/data/progression.json
 msgid "Aske last. He's kept Liane's door shut fifty years because she asked him to. North, up the Frostgate road. Tell him he can stop."
 msgstr "Aske en dernier. Il garde la porte de Liane fermée depuis cinquante ans parce qu'elle le lui a demandé. Au nord, par la route de la Porte-Givre. Dites-lui qu'il peut arrêter."
+
+#: assets/data/progression.json
+msgid "Aske. Liane isn't coming back. She asked you to keep her door until someone came for the lantern."
+msgstr "Aske. Liane ne reviendra pas. Elle vous a demandé de garder sa porte jusqu'à ce que quelqu'un vienne chercher la lanterne."
 
 #: assets/data/progression.json
 msgid "Badge found"
@@ -8965,6 +8993,10 @@ msgid "Captain Hale. He swore to keep Oskar's shield till Oskar came home, and h
 msgstr "Le capitaine Hale. Il avait juré de garder le bouclier d'Oskar jusqu'au retour de celui-ci, et il l'a gardé cinquante ans. Portez-le à Maren. Hale aurait voulu qu'il rentre chez lui."
 
 #: assets/data/progression.json
+msgid "Captain. Oskar isn't coming home. He held the roof with Tam and Liane so I could get out."
+msgstr "Capitaine. Oskar ne rentrera pas. Il a retenu le toit avec Tam et Liane pour que je puisse sortir."
+
+#: assets/data/progression.json
 msgid "Captains retired"
 msgstr "Capitaines mis à la retraite"
 
@@ -9027,6 +9059,10 @@ msgstr "Nettoyer le Trésor voûté (étage 13)"
 #: assets/data/progression.json
 msgid "Cliff road to Saltmere's clear, courier. Took the whole crew all morning. I lifted one rock. Supervised the rest."
 msgstr "La route de la falaise vers Saltmere est dégagée, messager. Toute l'équipe y a passé la matinée. J'ai soulevé une pierre. J'ai supervisé le reste."
+
+#: assets/data/progression.json
+msgid "Coming Home"
+msgstr "Le retour"
 
 #: assets/data/progression.json
 msgid "Crabs cracked"
@@ -9249,8 +9285,8 @@ msgid "Four forest herbs, fresh, from the patches in the Whispering Forest. The 
 msgstr "Quatre herbes des bois, fraîches, cueillies aux points de récolte de la Forêt murmurante. Les lits du sanctuaire ne restent jamais vides bien longtemps."
 
 #: assets/data/progression.json
-msgid "Four letters in your pack: for Old Wenna in Saltmere, Old Pell at Blackiron, Captain Hale at Greyhold and Aske on the Frostgate. Maren keeps the fifth."
-msgstr "Quatre lettres dans votre sac : pour la vieille Wenna à Saltmere, le vieux Pell à Fernoir, le capitaine Hale à Greyhold et Aske sur la Porte-Givre. Maren garde la cinquième."
+msgid "Four letters in your satchel: for Old Wenna in Saltmere, Old Pell at Blackiron, Captain Hale at Greyhold and Aske on the Frostgate. Maren keeps the fifth."
+msgstr "Quatre lettres dans votre sacoche : pour la vieille Wenna à Saltmere, le vieux Pell à Fernoir, le capitaine Hale à Greyhold et Aske sur la Porte-Givre. Maren garde la cinquième."
 
 #: assets/data/progression.json
 msgid "Four lumps of blackiron. The veins glint in the shafts' dead ends."
@@ -9311,6 +9347,10 @@ msgstr "Gemmes pour la chambre forte"
 #: assets/data/progression.json
 msgid "Get into Pixelheim: the gate is just south"
 msgstr "Entrer dans Pixelheim : la porte est juste au sud"
+
+#: assets/data/progression.json
+msgid "Give his shield to whoever brings you this, and stand down. Your watch is over. - Maren"
+msgstr "Donnez son bouclier à qui vous apportera cette lettre, et quittez votre poste. Votre garde est finie. - Maren"
 
 #: assets/data/progression.json
 msgid "Give it back to Saltmere"
@@ -9377,6 +9417,10 @@ msgid "Hale kept Greyhold when we climbed, and Oskar was his. East, over the Ash
 msgstr "Hale tenait Greyhold quand nous sommes montés, et Oskar était l'un des siens. À l'est, par les Champs de Cendres. S'il ne peut pas la prendre, quelqu'un des siens le fera."
 
 #: assets/data/progression.json
+msgid "Hale's order book, day 12: Morvax alive at the old forge, the gate barred because he asked. \"I agreed. I was wrong.\""
+msgstr "Le registre de Hale, jour 12 : Morvax vivant à la vieille forge, la porte barrée à sa demande. « J'ai accepté. J'ai eu tort. »"
+
+#: assets/data/progression.json
 msgid "Half for you, half for me - or we hand it back to Saltmere and I go honest. Your call, hero."
 msgstr "Moitié pour vous, moitié pour moi - ou on rend tout à Saltmere et je deviens honnête. À vous de voir, héros."
 
@@ -9437,10 +9481,6 @@ msgid "Hollow guards stood down"
 msgstr "Gardes creux relevés"
 
 #: assets/data/progression.json
-msgid "Home"
-msgstr "Maison"
-
-#: assets/data/progression.json
 msgid "Honest work's slower. The beer tastes better, though."
 msgstr "Le travail honnête, c'est plus lent. Mais la bière a meilleur goût."
 
@@ -9451,6 +9491,10 @@ msgstr "Honnête. Moi. Brin paie la tournée, et Ola dit que sa plus belle perle
 #: assets/data/progression.json
 msgid "I fetch the water. It's a living. It's what's left of one."
 msgstr "Je vais chercher l'eau. Faut bien vivre. Si on peut appeler ça vivre."
+
+#: assets/data/progression.json
+msgid "I sent his things home on a fishing boat. I couldn't write the rest. I'm sorry. - Maren"
+msgstr "J'ai renvoyé ses affaires chez vous sur un bateau de pêche. Je n'ai pas pu écrire le reste. Je suis désolée. - Maren"
 
 #: assets/data/progression.json
 msgid "I walked the whole road today and nothing bit me. Take this."
@@ -9473,8 +9517,8 @@ msgid "Imps taught a lesson"
 msgstr "Diablotins remis à leur place"
 
 #: assets/data/progression.json
-msgid "In your pack: %s. Maren keeps the fifth."
-msgstr "Dans votre sac : %s. Maren garde la cinquième."
+msgid "In your satchel: %s. Maren keeps the fifth."
+msgstr "Dans votre sacoche : %s. Maren garde la cinquième."
 
 #: assets/data/progression.json
 msgid "Ink Nobody Can Copy"
@@ -9541,6 +9585,30 @@ msgid "Letter delivered"
 msgstr "Lettre remise"
 
 #: assets/data/progression.json
+msgid "Letter to Aske, the Frostgate"
+msgstr "Lettre pour Aske, la Porte-Givre"
+
+#: assets/data/progression.json
+msgid "Letter to Captain Hale, Greyhold"
+msgstr "Lettre pour le capitaine Hale, Greyhold"
+
+#: assets/data/progression.json
+msgid "Letter to Morvax"
+msgstr "Lettre pour Morvax"
+
+#: assets/data/progression.json
+msgid "Letter to Old Pell, Blackiron"
+msgstr "Lettre pour le vieux Pell, Fernoir"
+
+#: assets/data/progression.json
+msgid "Letter to Old Wenna, Saltmere"
+msgstr "Lettre pour la vieille Wenna, Saltmere"
+
+#: assets/data/progression.json
+msgid "Liane's sums: the seal only buys fifty years. \"Don't seal him. Free him. The collar answers to our five marks.\""
+msgstr "Les calculs de Liane : le sceau ne fait gagner que cinquante ans. « Ne le scellez pas. Libérez-le. Le collier obéit à nos cinq marques. »"
+
+#: assets/data/progression.json
 msgid "Lichlord"
 msgstr "Seigneur liche"
 
@@ -9571,6 +9639,10 @@ msgstr "Magnifique. Roule, l'ami. Roule."
 #: assets/data/progression.json
 msgid "Magus"
 msgstr "Magister"
+
+#: assets/data/progression.json
+msgid "Maren keeps this one. It has no address."
+msgstr "Maren garde celle-ci. Elle n'a pas d'adresse."
 
 #: assets/data/progression.json
 msgid "Maren says Oskar isn't coming home, and the captain can stand down. He's down in the cellars under his hall, still guarding Oskar's shield. Go and tell him."
@@ -9745,12 +9817,20 @@ msgid "Pathfinder"
 msgstr "Éclaireur"
 
 #: assets/data/progression.json
+msgid "Pell answered, with a tale of Morvax and the iron."
+msgstr "Pell a répondu, avec une histoire de Morvax et de fer."
+
+#: assets/data/progression.json
 msgid "Pell next. A boy with a canary, when we came through Blackiron. Over the bridge and west. I owe him an apology. And a cage."
 msgstr "Pell ensuite. Un garçon avec un canari, quand nous sommes passés à Fernoir. Par le pont, puis à l'ouest. Je lui dois des excuses. Et une cage."
 
 #: assets/data/progression.json
 msgid "Pell's canary"
 msgstr "Le canari de Pell"
+
+#: assets/data/progression.json
+msgid "Pell's tale: Morvax came down the Blackiron road for iron, three times in fifty years. Last spring there was none. He's alive."
+msgstr "L'histoire de Pell : Morvax est descendu par la route de Fernoir chercher du fer, trois fois en cinquante ans. Au printemps dernier, il n'y en avait plus. Il est vivant."
 
 #: assets/data/progression.json
 msgid "Perfect. Now the notes are safe. The caravans are another matter."
@@ -9937,6 +10017,10 @@ msgid "Someone has to fish for the caravan's supper."
 msgstr "Il faut bien que quelqu'un pêche le souper de la caravane."
 
 #: assets/data/progression.json
+msgid "Someone has. Open it, give them her things, and go and sit in the sun. - Maren"
+msgstr "Quelqu'un est venu. Ouvrez-la, confiez-lui ses affaires, et allez vous asseoir au soleil. - Maren"
+
+#: assets/data/progression.json
 msgid "Something guards the seam the Ember Seal's iron came from."
 msgstr "Quelque chose garde le filon d'où vient le fer du Sceau de braise."
 
@@ -9955,6 +10039,10 @@ msgstr "Quelque chose, sous les Bois-Profonds, fait payer les voyageurs en dents
 #: assets/data/progression.json
 msgid "Something white sleeps on Liane's lantern under the observatory."
 msgstr "Quelque chose de blanc dort sur la lanterne de Liane, sous l'observatoire."
+
+#: assets/data/progression.json
+msgid "Sorry about the cage. I sat on it. Your bird was right to be cross. - Maren"
+msgstr "Désolée pour la cage. Je me suis assise dessus. Votre oiseau avait raison d'être fâché. - Maren"
 
 #: assets/data/progression.json
 msgid "Split it with Rook"
@@ -10011,6 +10099,10 @@ msgstr "Prenez la route de la falaise vers Saltmere avec la première lettre de 
 #: assets/data/progression.json
 msgid "Take the stair below the hoard: clear the Sunless Stair (floor 11)"
 msgstr "Prendre l'escalier sous le trésor : venir à bout de l'Escalier sans soleil (étage 11)"
+
+#: assets/data/progression.json
+msgid "Tam's last postcard: \"Morvax wants the kings' gold to make Pixelheim a city. Maren says over her dead body. I've brought cheese.\""
+msgstr "La dernière carte postale de Tam : « Morvax veut l'or des rois pour faire de Pixelheim une cité. Maren dit qu'il faudra lui passer sur le corps. J'ai apporté du fromage. »"
 
 #: assets/data/progression.json
 msgid "Tam, the iron, Oskar, Liane. And the fifth is mine: my promise that someone would finish what we started. Take it. The gate is open, courier - climb."
@@ -10413,6 +10505,10 @@ msgid "Tight weave. You'll do. Take this for the reeds."
 msgstr "Tressage serré. Vous ferez l'affaire. Prenez ça pour les roseaux."
 
 #: assets/data/progression.json
+msgid "To Pell, the boy with the canary. Thank you for taking us down the shafts, and for the lamp."
+msgstr "À Pell, le garçon au canari. Merci de nous avoir guidés dans les puits, et pour la lampe."
+
+#: assets/data/progression.json
 msgid "Toll-trolls removed"
 msgstr "Trolls du péage chassés"
 
@@ -10473,6 +10569,10 @@ msgid "Two wolf pelts for saddle leather. The wolves den in the fields east of h
 msgstr "Deux peaux de loup pour le cuir des selles. Les loups ont leur tanière dans les champs à l'est d'ici : gare à leurs crocs."
 
 #: assets/data/progression.json
+msgid "Ulla answered, with Captain Hale's order book."
+msgstr "Ulla a répondu, avec le registre du capitaine Hale."
+
+#: assets/data/progression.json
 msgid "Ulla's coin for my friends' necks. ...Fine. It's your road, not mine."
 msgstr "L'argent d'Ulla contre le cou de mes amis. ...Soit. C'est votre route, pas la mienne."
 
@@ -10513,8 +10613,16 @@ msgid "Wear the cap Sela gave you ({key:inventory} opens your pack)"
 msgstr "Mettre le bonnet que Sela vous a donné ({key:inventory} ouvre votre sac)"
 
 #: assets/data/progression.json
+msgid "Wenna answered, with Tam's last postcard."
+msgstr "Wenna a répondu, avec la dernière carte postale de Tam."
+
+#: assets/data/progression.json
 msgid "Wenna first. Tam's sister, down in Saltmere: the cliff road, south past the marsh. ...Don't tell her I'm sorry. The letter says it."
 msgstr "Wenna d'abord. La sœur de Tam, en bas, à Saltmere : la route de la falaise, au sud, après le marais. ...Ne lui dites pas que je suis désolée. La lettre le dit."
+
+#: assets/data/progression.json
+msgid "Wenna. Tam didn't die in a rockfall. I said that because the truth was harder to write. The hall came down and he held up the roof so I could run. He was laughing. Of course he was."
+msgstr "Wenna. Tam n'est pas mort dans un éboulement. J'ai dit ça parce que la vérité était plus dure à écrire. La salle s'est effondrée et il a retenu le toit pour que je puisse fuir. Il riait. Évidemment qu'il riait."
 
 #: assets/data/progression.json
 msgid "Wildlord"
@@ -11576,6 +11684,10 @@ msgstr "fermer"
 msgid "scroll"
 msgstr "défiler"
 
+#: scripts/chapter_screen.gd:44
+msgid "Chapter %d"
+msgstr "Chapitre %d"
+
 #: scripts/codex_screen.gd:103
 msgid "Page %d of %d"
 msgstr "Page %d sur %d"
@@ -12097,6 +12209,10 @@ msgid "Food"
 msgstr "Vivres"
 
 #: scripts/inventory_screen.gd:14
+msgid "Home"
+msgstr "Maison"
+
+#: scripts/inventory_screen.gd:14
 msgid "Misc"
 msgstr "Divers"
 
@@ -12324,83 +12440,107 @@ msgstr "Buff"
 msgid "Buffs&Debuffs"
 msgstr "Buffs&Debuffs"
 
-#: scripts/journal_screen.gd:152
+#: scripts/journal_screen.gd:159
 msgid "follow"
 msgstr "suivre"
 
-#: scripts/journal_screen.gd:154
+#: scripts/journal_screen.gd:161
 msgid "turn"
 msgstr "tourner"
 
-#: scripts/journal_screen.gd:209
+#: scripts/journal_screen.gd:211
+msgid "The courier's satchel"
+msgstr "La sacoche du messager"
+
+#: scripts/journal_screen.gd:224
 msgid "Done: %d quests, the latest %s."
 msgstr "Terminées : %d quêtes, les dernières : %s."
 
-#: scripts/journal_screen.gd:22
-msgid "Feats"
-msgstr "Hauts faits"
-
-#: scripts/journal_screen.gd:22
-msgid "Liane's pages"
-msgstr "Pages de Liane"
-
-#: scripts/journal_screen.gd:22
-msgid "Quests"
-msgstr "Quêtes"
-
-#: scripts/journal_screen.gd:229
+#: scripts/journal_screen.gd:244
 msgid "The story is told"
 msgstr "L'histoire est contée"
 
-#: scripts/journal_screen.gd:232
+#: scripts/journal_screen.gd:247
 msgid "No quests taken yet. Someone with a ! over their head has one for you."
 msgstr "Aucune quête en cours. Ceux qui ont un « ! » au-dessus de la tête en ont une pour vous."
 
-#: scripts/journal_screen.gd:236
+#: scripts/journal_screen.gd:251
 msgid "The Deep Hunt: deepest depth %d"
 msgstr "La Traque des Profondeurs : record de profondeur %d"
 
-#: scripts/journal_screen.gd:240
+#: scripts/journal_screen.gd:255
 msgid "No notices on the bounty board yet. The first goes up when %s."
 msgstr "Aucun avis au tableau des primes pour l'instant. Le premier s'affiche quand %s."
 
-#: scripts/journal_screen.gd:27
-msgid "Bounty you follow"
-msgstr "Prime suivie"
+#: scripts/journal_screen.gd:28
+msgid "Feats"
+msgstr "Hauts faits"
 
-#: scripts/journal_screen.gd:27
-msgid "Main story"
-msgstr "Histoire principale"
+#: scripts/journal_screen.gd:28
+msgid "Letters"
+msgstr "Lettres"
 
-#: scripts/journal_screen.gd:27
-msgid "Quest you follow"
-msgstr "Quête suivie"
+#: scripts/journal_screen.gd:28
+msgid "Quests"
+msgstr "Quêtes"
 
-#: scripts/journal_screen.gd:275
+#: scripts/journal_screen.gd:290
 msgid "FOLLOWING"
 msgstr "SUIVIE"
 
-#: scripts/journal_screen.gd:279
+#: scripts/journal_screen.gd:294
 msgid "READY"
 msgstr "PRÊTE"
 
-#: scripts/journal_screen.gd:401
+#: scripts/journal_screen.gd:296
+msgid "DELIVERED"
+msgstr "REMISE"
+
+#: scripts/journal_screen.gd:33
+msgid "Bounty you follow"
+msgstr "Prime suivie"
+
+#: scripts/journal_screen.gd:33
+msgid "Main story"
+msgstr "Histoire principale"
+
+#: scripts/journal_screen.gd:33
+msgid "Quest you follow"
+msgstr "Quête suivie"
+
+#: scripts/journal_screen.gd:421
 msgid "Next"
 msgstr "À suivre"
 
-#: scripts/journal_screen.gd:439
-msgid "No pages yet. Someone climbed this mountain before you - and wrote it down."
-msgstr "Aucune page pour l'instant. Quelqu'un a gravi cette montagne avant vous - et l'a consigné par écrit."
+#: scripts/journal_screen.gd:473
+msgid "Nothing in your satchel yet but the dust of the road."
+msgstr "Rien dans votre sacoche pour l'instant, à part la poussière de la route."
 
-#: scripts/journal_screen.gd:441
-msgid "Liane's journal - %d of %d pages"
-msgstr "Journal de Liane - %d pages sur %d"
+#: scripts/journal_screen.gd:476
+msgid "Maren's letters - %d of %d delivered"
+msgstr "Les lettres de Maren - remises : %d sur %d"
 
-#: scripts/journal_screen.gd:482
+#: scripts/journal_screen.gd:484
+msgid "Older papers"
+msgstr "Vieux papiers"
+
+#: scripts/journal_screen.gd:486
+msgid "Pages of Liane's journal, found on the mountain: %d of %d."
+msgstr "Pages du journal de Liane, trouvées sur la montagne : %d sur %d."
+
+#: scripts/journal_screen.gd:507
+msgid "SEALED"
+msgstr "SCELLÉE"
+
+#: scripts/journal_screen.gd:510
+msgid "A courier never reads the post."
+msgstr "Un messager ne lit jamais le courrier."
+
+#: scripts/journal_screen.gd:553
 msgid "Done"
 msgstr "Accompli"
 
-#: scripts/journal_screen.gd:484
+#: scripts/journal_screen.gd:555
 msgid "Brings home: %s"
 msgstr "Rapporte : %s"
 
@@ -12468,11 +12608,15 @@ msgstr "Repaire"
 msgid "Quest"
 msgstr "Quête"
 
-#: scripts/map_screen.gd:361
+#: scripts/map_screen.gd:363
 msgid "Goal"
 msgstr "Objectif"
 
-#: scripts/map_screen.gd:387
+#: scripts/map_screen.gd:365
+msgid "Story"
+msgstr "Histoire"
+
+#: scripts/map_screen.gd:398
 msgid "maps"
 msgstr "cartes"
 
@@ -13296,13 +13440,13 @@ msgstr "Le poison"
 msgid "The burn"
 msgstr "La brûlure"
 
-#: scripts/state/bearing.gd:120
-msgid "Slay %s in its lair"
-msgstr "Abattez %s dans son repaire"
-
-#: scripts/state/bearing.gd:92
+#: scripts/state/bearing.gd:119
 msgid "Hand it in to %s."
 msgstr "Remettez-la à %s."
+
+#: scripts/state/bearing.gd:147
+msgid "Slay %s in its lair"
+msgstr "Abattez %s dans son repaire"
 
 #: scripts/state/bestiary.gd:197
 msgid "%s by night"
@@ -13552,21 +13696,21 @@ msgstr "{item} {affix}"
 msgid "Town and people"
 msgstr "Le bourg et ses gens"
 
-#: scripts/state/journal.gd:50
+#: scripts/state/journal.gd:57
 msgid "Its lair: %s. %s."
 msgstr "Son repaire : %s. %s."
 
-#: scripts/state/journal.gd:62
+#: scripts/state/journal.gd:69
 msgid "Chapter %d: %s"
 msgstr "Chapitre %d : %s"
 
-#: scripts/state/main_quest.gd:107
-msgid "Maren"
-msgstr "Maren"
-
-#: scripts/state/main_quest.gd:94
+#: scripts/state/main_quest.gd:120
 msgid "Next: %s"
 msgstr "Ensuite : %s"
+
+#: scripts/state/main_quest.gd:133
+msgid "Maren"
+msgstr "Maren"
 
 #: scripts/state/questing.gd:144
 msgid "It's in your journal ({key:journal})."
@@ -13588,51 +13732,55 @@ msgstr "Quête terminée : %s. %s. « %s »"
 msgid "%s: %d/%d %s."
 msgstr "%s : %d/%d %s."
 
-#: scripts/state/questing.gd:240
+#: scripts/state/questing.gd:208
+msgid "Your satchel is in the journal ({key:journal})."
+msgstr "Votre sacoche est dans le journal ({key:journal})."
+
+#: scripts/state/questing.gd:241
 msgid "Delivered: %s."
 msgstr "Remise : %s."
 
-#: scripts/state/questing.gd:242
+#: scripts/state/questing.gd:243
 msgid "Delivered: %s. %s."
 msgstr "Remise : %s. %s."
 
-#: scripts/state/questing.gd:359
+#: scripts/state/questing.gd:360
 msgid "%s: ready to hand in to %s."
 msgstr "%s : prêt à remettre à %s."
 
-#: scripts/state/questing.gd:411
+#: scripts/state/questing.gd:412
 msgid "That uses what %s needs (%s). Do it again to go ahead."
 msgstr "Cela entame ce que demande « %s » (%s). Recommencez pour confirmer."
 
-#: scripts/state/questing.gd:422
+#: scripts/state/questing.gd:423
 msgid "A feat done: %s. The %s is yours, for the shelf at home."
 msgstr "Un haut fait accompli : %s. La %s est à vous, pour l'étagère de la maison."
 
-#: scripts/state/quests.gd:136
+#: scripts/state/quests.gd:141
 msgid "In %s."
 msgstr "Repaire : %s."
 
-#: scripts/state/quests.gd:136
+#: scripts/state/quests.gd:141
 msgid "the wilds"
 msgstr "les terres sauvages"
 
-#: scripts/state/quests.gd:139
+#: scripts/state/quests.gd:144
 msgid "Found in %s."
 msgstr "Se trouve : %s."
 
-#: scripts/state/quests.gd:143
+#: scripts/state/quests.gd:148
 msgid "In a chest somewhere in %s."
 msgstr "Dans un coffre, quelque part (%s)."
 
-#: scripts/state/quests.gd:149
+#: scripts/state/quests.gd:154
 msgid "%s, in %s."
 msgstr "%s, %s."
 
-#: scripts/state/quests.gd:154
+#: scripts/state/quests.gd:159
 msgid "The five left them in %s."
 msgstr "Les cinq les ont laissées ici : %s."
 
-#: scripts/state/quests.gd:164
+#: scripts/state/quests.gd:169
 msgid "%s, from %s."
 msgstr "%s, avec %s."
 
@@ -13736,47 +13884,43 @@ msgstr "Niveau supérieur : vous voici au niveau %d. +%d points de caractéris
 msgid "%s is cleared!"
 msgstr "Étage nettoyé : %s !"
 
-#: scripts/state/spoils.gd:270
-msgid "Among the bones: a page of an old journal (%s). {key:journal} reads it."
-msgstr "Parmi les os : une page d'un vieux journal (%s). {key:journal} pour la lire."
-
-#: scripts/state/spoils.gd:284
+#: scripts/state/spoils.gd:283
 msgid "the %s"
 msgstr "%s"
 
-#: scripts/state/spoils.gd:287
+#: scripts/state/spoils.gd:286
 msgid "Behind the throne, a stair goes on down into the dark: the Deep Hunt."
 msgstr "Derrière le trône, un escalier s'enfonce encore dans le noir : la Traque des Profondeurs."
 
-#: scripts/state/spoils.gd:291
+#: scripts/state/spoils.gd:290
 msgid "A deeper way opens: %s."
 msgstr "Un passage plus profond s'ouvre : %s."
 
-#: scripts/state/spoils.gd:305
+#: scripts/state/spoils.gd:304
 msgid "Depth %d of the Deep Hunt is cleared!"
 msgstr "Profondeur %d de la Traque des Profondeurs : nettoyée !"
 
-#: scripts/state/spoils.gd:320
+#: scripts/state/spoils.gd:319
 msgid "depth %d of the Deep Hunt"
 msgstr "la profondeur %d de la Traque des Profondeurs"
 
-#: scripts/state/spoils.gd:324
+#: scripts/state/spoils.gd:323
 msgid "A milestone: %d depths below the throne. The %s is yours, a trophy for the shelf at home."
 msgstr "Un jalon : %d profondeurs sous le trône. Le %s est à vous, un trophée pour l'étagère de la maison."
 
-#: scripts/state/spoils.gd:327
+#: scripts/state/spoils.gd:326
 msgid "A hole into the dark opens beside the way up: depth %d waits below."
 msgstr "Un trou s'ouvre sur le noir près de la montée : la profondeur %d attend en dessous."
 
-#: scripts/state/spoils.gd:344
+#: scripts/state/spoils.gd:343
 msgid "The chest bares its teeth — a mimic!"
 msgstr "Le coffre montre les dents — c'est une mimique !"
 
-#: scripts/state/spoils.gd:356
+#: scripts/state/spoils.gd:355
 msgid "Too heavy to carry. Lighten the pack and come back."
 msgstr "Trop lourd à porter. Allégez votre sac et revenez."
 
-#: scripts/state/spoils.gd:405
+#: scripts/state/spoils.gd:404
 msgid "Nothing's biting here yet. Try again in a while, or somewhere else."
 msgstr "Ça ne mord pas encore ici. Réessayez dans un moment, ou ailleurs."
 
@@ -14108,11 +14252,11 @@ msgstr "Descendre"
 msgid "Stay"
 msgstr "Rester"
 
-#: scripts/world.gd:282
+#: scripts/world.gd:284
 msgid "%s bars your way: no leaving until the fight is over."
 msgstr "%s vous barre la route : pas de fuite avant la fin du combat."
 
-#: scripts/world.gd:323
+#: scripts/world.gd:325
 msgid "No map reaches this deep."
 msgstr "Aucune carte ne va aussi profond."
 
@@ -14140,7 +14284,7 @@ msgstr "Tueur de boss : +%d %% de dégâts pendant %d minutes."
 msgid "LEVEL UP"
 msgstr "NIVEAU SUPÉRIEUR"
 
-#: scripts/world_hud.gd:255
+#: scripts/world_hud.gd:262
 msgid "Boss slayer +%d%%  %d:%02d"
 msgstr "Tueur de boss +%d %%  %d:%02d"
 
@@ -14176,31 +14320,31 @@ msgstr "Quête acceptée"
 msgid "Quest complete"
 msgstr "Quête terminée"
 
-#: scripts/world_stage.gd:135
+#: scripts/world_stage.gd:171
 msgid "Five lanterns on the square, one for each of the five who climbed. Tonight the %s remembers them - and %s."
 msgstr "Cinq lanternes sur la place, une pour chacun des cinq qui ont gravi la montagne. Ce soir, Pixelheim, désormais %s, se souvient d'eux - et salue %s."
 
-#: scripts/world_stage.gd:136
+#: scripts/world_stage.gd:172
 msgid "Pixelheim, a %s raised from the ashes. Tonight it celebrates %s."
 msgstr "Pixelheim, des cendres au rang de %s. Ce soir, on y fête %s."
 
-#: scripts/world_stage.gd:233
+#: scripts/world_stage.gd:269
 msgid "%s: built."
 msgstr "%s : chantier terminé."
 
-#: scripts/world_stage.gd:240
+#: scripts/world_stage.gd:276
 msgid "Pixelheim is a %s now."
 msgstr "Pixelheim passe au rang de %s."
 
-#: scripts/world_stage.gd:241
+#: scripts/world_stage.gd:277
 msgid "New in town: %s."
 msgstr "Nouveaux venus au bourg : %s."
 
-#: scripts/world_stage.gd:247
+#: scripts/world_stage.gd:283
 msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
 msgstr "Et aujourd'hui, on fait la fête : des étals sur la place, et un lancer d'anneaux avec un lot pour le meilleur lancer."
 
-#: scripts/world_stage.gd:317
+#: scripts/world_stage.gd:353
 msgid "%s  %d:%02d"
 msgstr "%s  %d:%02d"
 

@@ -79,8 +79,13 @@ static func awaits_word(giver: String, entries: Dictionary, items: Dictionary, o
 ## What hangs over a giver's head (PIX-240): "offer" with a quest to give
 ## (a "!"), "ready" with one to hand in (a gold "?"), "waiting" while one is
 ## under way (a grey "?"), or "" when there's nothing between them and the
-## hero. The giver's first quest not done decides, as for awaits_word.
+## hero. The giver's first quest not done decides, as for awaits_word. Above
+## all of it, the main story (PIX-253 step 2): "letter" while the hero
+## carries a letter of Maren's to them, a gold "!" ringed in gold.
 static func mark_for(giver: String, entries: Dictionary, items: Dictionary, opened := Callable()) -> String:
+	for quest: Dictionary in for_recipient(giver):
+		if is_ready(quest, entries, items):
+			return "letter"
 	for quest: Dictionary in for_giver(giver):
 		var entry: Dictionary = entries.get(quest["id"], {})
 		if entry.get("done", false):

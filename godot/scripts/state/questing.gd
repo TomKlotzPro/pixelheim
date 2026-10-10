@@ -182,7 +182,7 @@ func resolve_quests(giver_id: String) -> String:
 
 
 ## Maren's tin is opened (PIX-253): the letters still to deliver go in the
-## pack, their quests taken; those whose keepsake is already won stay with
+## satchel (the pack), their quests taken; those whose keepsake is already won stay with
 ## her, answered. Her own ask comes with them - the relics home, the five's
 ## errands in the Reach open - unless the gate stood open before it was
 ## barred. The tin is kept in the story ledger. Returns what the pack holds
@@ -204,7 +204,8 @@ func open_tin() -> String:
 	owner.pack_changed()
 	owner.save_now()
 	var line := Letters.taken_line(given)
-	return line + " " + Controls.say(Text.t("It's in your journal ({key:journal}).")) if not given.is_empty() else line
+	# The satchel is the journal's main story (PIX-253 step 2).
+	return line + " " + Controls.say(Text.t("Your satchel is in the journal ({key:journal}).")) if not given.is_empty() else line
 
 
 ## The letter `npc_id` is owed now (PIX-253): a deliverTo quest taken, not

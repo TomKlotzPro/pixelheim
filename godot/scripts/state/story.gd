@@ -1,7 +1,8 @@
 class_name Story
 ## The Ember Seal told through play (PIX-153): the pages of Liane's journal
-## found on the floors (one per floor's first clear, kept in the journal's
-## Story tab), what Maren has to say as the hero learns more - the graves,
+## found on the floors (one per floor's first clear; retired from play with
+## Maren's letters, PIX-253 step 2, and kept for a hero who cleared their
+## floors as the journal's older papers), what Maren has to say as the hero learns more - the graves,
 ## the seal, her confession, and her last words - and how the hero chose to
 ## end it at Morvax's throne (PIX-157). Pure, over story.json's "lore" and
 ## "elderLines"; scenes and moments stay with Cutscene.
@@ -17,14 +18,6 @@ static func _data() -> Dictionary:
 
 static func lore() -> Array:
 	return _data()["lore"]
-
-
-## The page a floor's first clear turns up, or {}.
-static func page_for(level: int) -> Dictionary:
-	for page: Dictionary in lore():
-		if int(page["floor"]) == level:
-			return page
-	return {}
 
 
 ## The pages a hero has found: one for each cleared floor that hides one.

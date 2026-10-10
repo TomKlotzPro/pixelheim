@@ -148,6 +148,21 @@ static func marker_squares(center: Vector2, mark: float, shown: Transform2D) -> 
 	return [snap_square(center, half + 2.0, shown), snap_square(center, half, shown)]
 
 
+## The goal's diamond, reaching `half` px each way to its gold's points
+## (PIX-240), as bands from the outside in: [outer, inner, gold], whole
+## screen pixels each, inner 0 where a band is filled to the middle. A dark
+## rim, then the gold; hollow (PIX-253 step 2: the main story's, kept on
+## the map while something else leads), the gold is a band between the rim
+## and a dark line inside it, and the page shows through the middle.
+static func diamond_bands(half: float, hollow: bool, shown: Transform2D) -> Array:
+	var rim := snap_length(half + 3.0, shown)
+	var edge := snap_length(half, shown)
+	if not hollow:
+		return [[rim, edge, false], [edge, 0.0, true]]
+	var inside := snap_length(half - 3.0, shown)
+	return [[rim, edge, false], [edge, inside, true], [inside, snap_length(half - 5.0, shown), false]]
+
+
 ## The chosen waypoint's ring round a marker `mark` px across, grown by
 ## `grow`: two pixels of gold between dark lines, as the squares its bands
 ## run between, outermost first - the dark line's outside, the gold's

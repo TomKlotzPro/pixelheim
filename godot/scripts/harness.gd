@@ -496,8 +496,10 @@ func _run_test_harness() -> void:
 	if flags.has("journal"):
 		# A few promises in hand: slimes half done, the cheese ready, the troll
 		# kept; Maren's relics asked for, the ladle won, the iron still out
-		# there (PIX-171). `--tab pages|feats` opens that page (PIX-239);
-		# `--cleared 4` puts notices on the board for its bounties.
+		# there (PIX-171). Her tin opened, and the satchel's letters: Wenna's
+		# answered with the ladle home, Pell's handed over, two still to
+		# deliver (PIX-253 step 2). `--tab letters|feats` opens that page
+		# (PIX-239); `--cleared 4` puts notices on the board for its bounties.
 		GameState.progression.quests.merge({
 			"slime_trouble": {"progress": 2, "done": false},
 			"cheese_run": {"progress": 0, "done": false},
@@ -511,6 +513,8 @@ func _run_test_harness() -> void:
 			GameState.progression.hunted.append("tidecaller")
 		GameState.pack.add_item("cheese_wheel")
 		GameState.pack.add_item("tams_ladle")
+		GameState.questing.open_tin()
+		GameState.questing.deliver("mines_pell")
 		var journal := preload("res://scripts/journal_screen.gd").new()
 		if flags.has("--tab"):
 			journal.tab = flags.value("--tab")
@@ -789,6 +793,17 @@ func _run_test_harness() -> void:
 				mob.notice()
 		world.use_portal(world.map.portals.values()[0])
 		await get_tree().create_timer(0.5).timeout
+	# `chapter` (PIX-253 step 2): chapter cards turned on now that the story
+	# stands where the run set it, and the one it's at waited for as the
+	# world shows it - once it has been free a moment - with its entrance;
+	# the report adds chapter= and rose=.
+	if flags.has("chapter"):
+		world.stage.cards = true
+		var waited := 0.0
+		while waited < 8.0 and not world.get_children().any(func(node: Node) -> bool: return node.has_method("rise_left")):
+			await get_tree().create_timer(0.1).timeout
+			waited += 0.1
+		await get_tree().create_timer(1.0).timeout
 	# `--keys` at whatever screen the run opened (talk, --talk-to and title
 	# press theirs earlier; --talk-to's were pressed twice until PIX-253):
 	# `inventory --keys esc` checks it closes and lets the world go.
@@ -911,11 +926,26 @@ func _run_test_harness() -> void:
 			var chosen: String = node.destination_id()
 			var shown: String = node.page_id()
 			motion_report += " dest=%s page=%s" % [chosen if chosen != "" else "none", shown]
+			# The main story's hollow diamond on the page, while something
+			# else is followed (PIX-253 step 2).
+			var story: Vector2i = node.painting.story_cell()
+			if story != Bearing.NOWHERE:
+				motion_report += " story=%d,%d" % [story.x, story.y]
+		# The journal's Letters page (PIX-253 step 2): the letters it reads,
+		# and the older papers under them.
+		if node.get_script() == preload("res://scripts/journal_screen.gd") and node.tab == "letters":
+			var read := Letters.satchel(GameState.progression).filter(func(carried: Dictionary) -> bool: return carried["delivered"]).size()
+			motion_report += " read=%d older=%d" % [read, Story.found_pages(GameState.progression.cleared_levels).size()]
 	# The quest or bounty followed (PIX-239), while the journal is open or
 	# one is followed: what the journal's E chose.
 	var tracked := GameState.progression.tracked
 	if open.has("journal_screen") or tracked != "":
 		motion_report += " tracked=%s" % (tracked if tracked != "" else "none")
+	# A chapter card while it's up (PIX-253 step 2): its chapter, and how far
+	# its title rose coming in (none with Reduce motion).
+	for node in world.get_children():
+		if node.has_method("rise_left"):
+			motion_report += " chapter=%d rose=%d" % [node.number, roundi(node.rose)]
 	# Maren's letters once any is out (PIX-253): how many are in the pack,
 	# and how many delivered.
 	var letters := Letters.all().filter(func(quest: Dictionary) -> bool: return GameState.progression.quests.has(quest["id"]))

@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.208.0",
+      "date": "2026-10-10",
+      "codename": "The Satchel",
+      "notes": [
+        "Maren's letters are the main story in the journal: the courier's satchel lists each letter, who it's for and where, and once it's delivered, what they answered",
+        "The Pages tab is now Letters: read Maren's own words once a letter is delivered (a courier never reads the post) and the answer that came back",
+        "The main story stands out: a gold ring around the \"!\" over a letter's recipient, the edge arrow in gold while it leads the story, and a hollow gold diamond on the map while you follow a side quest",
+        "Each chapter opens with a card, \"Chapter 3: The Letter to Blackiron\", shown once"
+      ]
+    },
+    {
       "version": "0.207.0",
       "date": "2026-10-10",
       "codename": "Open Roads",

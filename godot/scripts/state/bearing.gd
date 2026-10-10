@@ -25,8 +25,35 @@ static func active(progression: ProgressionState, settlement: SettlementState, i
 		var named := Hunts.named(progression.tracked)
 		if not named.is_empty() and Hunts.on_board(named) and Hunts.status(named, board_floors(progression), progression.hunted) == "wanted":
 			return of_bounty(named)
+	return main(progression, settlement, items)
+
+
+## The main story's lead, whatever is followed: its next step's, or {} once
+## it's told. While a side quest or a bounty leads, the map keeps this one
+## as a hollow gold diamond, so the main goal is never lost (PIX-253 step 2).
+static func main(progression: ProgressionState, settlement: SettlementState, items: Dictionary) -> Dictionary:
 	var step := MainQuest.next_step(progression, settlement)
 	return {} if step.is_empty() else of_step(step, progression, settlement, items)
+
+
+## Whether `lead` is the main story's (PIX-253 step 2: the arrow is gold
+## then): its next step, or a thread followed that carries it - one of
+## Maren's letters, her relics, a relic's hunt (Journal.is_main_line).
+static func tells_story(lead: Dictionary) -> bool:
+	if lead.is_empty():
+		return false
+	if lead["main"]:
+		return true
+	var quest := Quests.by_id(String(lead["quest_id"]))
+	return not quest.is_empty() and Journal.is_main_line(quest)
+
+
+## The main story's lead behind `lead` (the active one): {} while the main
+## story leads itself or is told, else its next step's.
+static func behind(lead: Dictionary, progression: ProgressionState, settlement: SettlementState, items: Dictionary) -> Dictionary:
+	if lead.is_empty() or lead["main"]:
+		return {}
+	return main(progression, settlement, items)
 
 
 ## A main story step's lead: its chapter, its line, and where it is - the
