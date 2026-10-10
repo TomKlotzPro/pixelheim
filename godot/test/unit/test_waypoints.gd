@@ -135,19 +135,21 @@ func test_every_waypoint_stands_on_open_ground_a_walk_reaches() -> void:
 
 func test_every_wild_region_has_a_waypoint_near_its_way_in() -> void:
 	var overworld := MapData.load_by_id("overworld")
-	var regions := 0
+	# A road out is several cells wide since PIX-269, every one a door: count
+	# the regions they lead to, and check each cell of each road.
+	var regions := {}
 	for door: Vector2i in overworld.portals:
 		var to: Dictionary = overworld.portals[door]
 		if to["kind"] != "map" or to["mapId"] == "town":
 			continue
-		regions += 1
+		regions[to["mapId"]] = true
 		var region := MapData.load_by_id(to["mapId"])
 		# One in the region, from where the road comes in; or one on the
 		# Ashenreach by the road's end, a step from it.
 		var inside := _nearest(region, Vector2i(int(to["x"]), int(to["y"])))
 		var outside := _nearest(overworld, door) + 1
 		assert_lte(mini(inside, outside), REACH, "%s: a waypoint within %d steps of its way in (%d inside, %d outside)" % [region.id, REACH, inside, outside])
-	assert_eq(regions, 6, "the Reach's six roads out")
+	assert_eq(regions.size(), 6, "the Reach's six roads out")
 
 
 func test_every_camp_and_cave_mouth_is_a_short_walk_from_a_waypoint() -> void:
