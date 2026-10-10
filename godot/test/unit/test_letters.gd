@@ -263,6 +263,8 @@ func test_the_story_runs_letter_by_letter() -> void:
 	_win("hollow_captain")
 	assert_eq(_next(), "letter_aske")
 	state.questing.finish_dialogue("frost_aske")
+	assert_eq(_next(), "sums", "Aske opens Liane's door to her sums (PIX-255)")
+	state.mark_seen("liane_sums")
 	assert_eq(_next(), "lantern")
 	_win("rimefang")
 	assert_eq(_next(), "gate")

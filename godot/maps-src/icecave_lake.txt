@@ -1,0 +1,50 @@
+# The frozen lake (PIX-255), the ice cave's second floor: the landing at the
+# foot of the stair up to the frosted galleries, and a cavern round a lake
+# frozen hard enough to walk on (~, ice: MapView frosts the stone under it),
+# rocks caught in it and frost-white columns along its shore. Somebody's
+# fur boots are frozen into its southern edge (a chest), and the stair down
+# (s) to the glass hall waits in an alcove past its eastern shore
+# (assets/data/depths.json).
+id icecave_lake
+style cave
+spawn 4 16
+key X wall -
+key . floor icecave
+key ~ ice icecave
+key L lamp -
+key b barrel -
+key k crate -
+key c cave -
+key r rock -
+key s stairwell -
+map
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXLXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXLXXX........XXXLXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXX...................XXXXXXXXXXXX
+XXXXXXXXXXXXXXXXX.......................XXXXXXXXXX
+XXXXXXXXXXXXXXXX...X...................X..XXXXXXXX
+XXXXXXXXXXXXXXX............................XXXXXXX
+XXXXXXXXXXXXXXX.........~~~~~~~~~~..........XXXXXX
+XXXXXXXXXXXXXX.....~~~~~~~~~~~~~~~~~~........XXXXX
+XXXXXLXXLXXXXX...~~~~~~~~~~~~~~~~~~~r~~~......XLXX
+XXXb.....kXXXX...~~~~~r~~~~~~~~~~~~~~~~~~~....s.XX
+XXX.......XXX....~~~~~~~~~~~~~~~~~~~~~~~~~~.....XX
+XXX.......XXX....~~~~~~~~~~~~~~~~~~~~~~~~~~.....XX
+XXX...............~~~~~~~~~~~~~~~~~~~~~~~~......XX
+XXXc...............~~~~~~~~~~~~~~~~~~~~~~~......XX
+XXX................~~~~~~~~~~~~~~~~~~~~~........XX
+XXX.......XXX.......~~~~~~~~~~~~~r~~~~~.........XX
+XXX.......XXX.......~~~~~~~~~~~~~~~~~~.........XXX
+XXXk.....bXXX....X...~~~~~~~~~~~~~~~~.....X...XXXX
+XXXXXXXXXXXXXX.........~~~~~~~~~~~~~........XXXXXX
+XXXXXXXXXXXXXX..............~~~~~~........XXXXXXXX
+XXXXXXXXXXXXXXXX........................XXXXXXXXXX
+XXXXXXXXXXXXXXXXX.....................XXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXX................XXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXX..........XXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX

@@ -1,7 +1,11 @@
 # The ice cave under Liane's observatory (PIX-169): the landing at the foot
 # of her stair, the galleries, the yetis' den where the caravan's strongbox
-# ended up, Liane's old store, and the glass hall where something white has
-# curled up on her lantern. Her stair leads back up into her room (PIX-256).
+# ended up, Liane's old store, and the frosted hall at the back. Her stair
+# leads back up into her room (PIX-256). Since PIX-255 they are the cave's
+# first floor, the frosted galleries: the frosted hall keeps the stair down
+# (s) to the frozen lake, and the glass hall, where something white has
+# curled up on Liane's lantern, lies two floors below
+# (assets/data/depths.json).
 id icecave
 style cave
 tint 0.8 0.92 1.12
@@ -13,10 +17,11 @@ key L lamp -
 key b barrel -
 key k crate -
 key c cave icecave
+key s stairwell -
 map
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXLXXXXXLXXXX
-XXXXXLXXXXXXXXXLXXXXXXXXXLXXXXXXX...........XX
+XXXXXLXXXXXXXXXLXXXXXXXXXLXXXXXXX.....s.....XX
 XX.......bXX.................XXXX...........XX
 XX........XX.................XXXX...........XX
 XX........XX.................XXXX...X...X...XX

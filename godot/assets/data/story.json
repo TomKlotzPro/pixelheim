@@ -663,6 +663,57 @@
         "seconds": 0.8
       }
     ],
+    "dream_corners": [
+      {
+        "kind": "stage",
+        "stage": "lair"
+      },
+      {
+        "kind": "fade",
+        "to": "clear",
+        "seconds": 0.8
+      },
+      {
+        "kind": "actor",
+        "sheet": "mini/RedDragon.png",
+        "family": "mini",
+        "frame": 32,
+        "anim": "walk",
+        "dir": "right",
+        "last": true,
+        "scale": 8,
+        "silhouette": true,
+        "at": [
+          640,
+          540
+        ]
+      },
+      {
+        "kind": "caption",
+        "text": "You dream you are very large, very old, and lying on something with too many corners.",
+        "hold": 4.4
+      },
+      {
+        "kind": "caption",
+        "text": "Someone promised to let you go.",
+        "hold": 3.2
+      },
+      {
+        "kind": "caption",
+        "text": "Someone always promises.",
+        "hold": 3.4
+      },
+      {
+        "kind": "caption",
+        "text": "You wake with a crick in your neck, to the street lamps going out one by one: Aske, on his dawn round.",
+        "hold": 3.4
+      },
+      {
+        "kind": "fade",
+        "to": "black",
+        "seconds": 0.8
+      }
+    ],
     "dream_five": [
       {
         "kind": "stage",
@@ -979,6 +1030,10 @@
     {
       "id": "dream_lamps",
       "home": "mines_pell"
+    },
+    {
+      "id": "dream_corners",
+      "home": "frost_aske"
     },
     {
       "id": "dream_five",

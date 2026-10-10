@@ -72,7 +72,7 @@ travel field: scripts/puny_terrain.gd scripts/scatter.gd scripts/skyline.gd asse
 travel: scripts/reach_plane.gd scripts/ways.gd scripts/waypoints.gd scripts/atlas.gd scripts/dissolve.gd scripts/place_title.gd scripts/map_screen.gd scripts/state/world_state.gd assets/data/plane.json
 travel story +overworld*: scripts/state/gates.gd scripts/gate_art.gd assets/data/gates.json
 quest travel: scripts/escort.gd
-dungeon travel +seacave* +shafts* +cellars*: scripts/state/depths.gd assets/data/depths.json
+dungeon travel +seacave* +shafts* +cellars* +icecave*: scripts/state/depths.gd assets/data/depths.json
 dungeon +floor*: scripts/world_delve.gd scripts/puny_dungeon.gd scripts/dungeon_floor.gd scripts/dungeon_screen.gd scripts/state/dungeons.gd assets/puny/dungeon/*
 combat dungeon: scripts/boss_brain.gd scripts/telegraph.gd scripts/boss_bar.gd
 combat field dungeon gathering +floor*: assets/data/combat.json
@@ -96,6 +96,7 @@ rank combat: scripts/state/hero_rules.gd
 field night: scripts/day_night.gd scripts/lights.gd scripts/light_rig.gd
 field: scripts/weather.gd scripts/atmosphere.gd
 field rank: scripts/motes.gd
+dungeon +icecave*: shaders/frozen.*
 town field title: shaders/*
 gathering: scripts/state/gathering.gd
 save: test/fixtures/* scripts/saves_screen.gd scripts/state/save_codec.gd scripts/state/save_slots.gd scripts/state/web_import.gd scripts/state/hero_state.gd

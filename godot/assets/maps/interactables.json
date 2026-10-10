@@ -223,7 +223,20 @@
         "kind": "item",
         "itemId": "caravan_strongbox",
         "qty": 1
-      }
+      },
+      "said": "Gunnar's strongbox, still locked, one corner chewed. Whatever dragged it here gave up on the lock and kept the box for a pillow."
+    },
+    {
+      "id": "icecave_boots",
+      "mapId": "icecave_lake",
+      "x": 30,
+      "y": 23,
+      "look": "chest",
+      "loot": {
+        "kind": "gear",
+        "itemId": "frost_boots"
+      },
+      "said": "A pair of fur boots, frozen into the lake's edge. Whoever wore them crossed the rest barefoot. Brave, or very late for something."
     },
     {
       "id": "icecave_cache",

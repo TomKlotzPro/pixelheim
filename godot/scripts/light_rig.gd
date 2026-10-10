@@ -55,6 +55,8 @@ var time := 0.0
 var wind := 1.0
 ## How dark a cloud's shadow is at its heart, in full day.
 const CLOUD_SHADE := 0.17
+## How far the hero's lantern reaches untrimmed, in pixels.
+const LANTERN_REACH := 96.0
 ## No cloud shadows while true: the harness's motion check (PIX-275) finds
 ## the hero by its shirt's exact reds, which a shadow drifting over it changes.
 var clear_sky := false
@@ -142,10 +144,24 @@ func _screen_pass(layer: CanvasLayer, shader: Shader) -> ColorRect:
 	return rect
 
 
-## The hero carries a lantern: it only shows when it's dark.
+## The hero carries a lantern: it only shows when it's dark. Once Aske
+## lives in Pixelheim he keeps it trimmed (PIX-255: his perk, the settlers'
+## `lantern` share), and it reaches that much further, from the moment he
+## comes home.
 func give_lantern(player: Node2D) -> void:
-	lantern = Lights.make(Vector2(0, -6), 96.0, Lights.LANTERN, Lights.LANTERN_ENERGY, true)
+	lantern = Lights.make(Vector2(0, -6), lantern_reach(GameState.holdings.settler_share("lantern")), Lights.LANTERN, Lights.LANTERN_ENERGY, true)
 	player.add_child(lantern)
+	GameState.settlers_changed.connect(_trim_lantern)
+
+
+## How far the hero's lantern reaches, in pixels, with `share` more.
+static func lantern_reach(share: float) -> float:
+	return LANTERN_REACH * (1.0 + share)
+
+
+func _trim_lantern() -> void:
+	if is_instance_valid(lantern):
+		lantern.texture_scale = lantern_reach(GameState.holdings.settler_share("lantern")) * 2.0 / Lights.TEXTURE_PX
 
 
 ## Seamless soft noise for the clouds: big puffs with ragged rims.

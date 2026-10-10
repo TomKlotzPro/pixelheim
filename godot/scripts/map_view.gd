@@ -115,6 +115,8 @@ const EDGE_PAD := 4
 const DARK_PAD := 32
 ## The dark beyond a room's walls and a dungeon's rock.
 const DARK := Color("0b0a0e")
+## One cold light over the ice (PIX-255) in every so many cells across and down.
+const ICE_LIGHT_EVERY := Vector2i(6, 5)
 ## A burnt house seen small from afar smokes with this share of a ruin's
 ## motes in town (PIX-248).
 const VILLAGE_RUIN_SMOKE := 0.4
@@ -498,8 +500,54 @@ func _build_dungeon(data: MapData) -> Node2D:
 			"grille":
 				dungeon.place(dungeon_objects, cell, PunyDungeon.GRILLE)
 	root.add_child(layer)
+	var ice := _frozen(data)
+	if ice != null:
+		root.add_child(ice)
+		# The ice gives the dark back a little cold light, here and there.
+		for cell: Vector2i in data.grid:
+			if data.grid[cell] == "ice" and posmod(cell.x, ICE_LIGHT_EVERY.x) == 2 and posmod(cell.y, ICE_LIGHT_EVERY.y) == 2:
+				root.add_child(Lights.make(center(cell), 72.0, Lights.ICE, Lights.ICE_ENERGY))
 	root.add_child(dungeon_objects)
 	return root
+
+
+## Ice over a dungeon's stone (PIX-255: the ice cave's frozen lake, and its
+## glass hall's floor): the floor of its `ice` cells and of the stone round
+## them laid again, frozen by shaders/frozen.gdshader from a mask a texel a
+## cell (the shore runs between cells, bent off the grid, frost creeping out
+## over the stone). Between the floor and what stands on it; null for a map
+## with no ice.
+func _frozen(data: MapData) -> TileMapLayer:
+	var mask := Image.create(maxi(data.size.x, 1), maxi(data.size.y, 1), false, Image.FORMAT_L8)
+	var frozen := false
+	for cell: Vector2i in data.grid:
+		if data.grid[cell] == "ice":
+			mask.set_pixelv(cell, Color.WHITE)
+			frozen = true
+	if not frozen:
+		return null
+	var dungeon := PunyDungeon.sheet()
+	var layer := TileMapLayer.new()
+	layer.tile_set = dungeon.tileset
+	for cell: Vector2i in data.grid:
+		if data.grid[cell] not in ["wall", "lamp"] and _by_ice(data, cell):
+			dungeon.place(layer, cell, PunyDungeon.floor_tile(cell))
+	var frost := ShaderMaterial.new()
+	frost.shader = preload("res://shaders/frozen.gdshader")
+	frost.set_shader_parameter("ice_map", ImageTexture.create_from_image(mask))
+	frost.set_shader_parameter("map_pixels", Vector2(data.size * TILE))
+	layer.material = frost
+	return layer
+
+
+## Whether `cell` is ice or touches it, corners too: where the frost may
+## reach.
+static func _by_ice(data: MapData, cell: Vector2i) -> bool:
+	for dy in range(-1, 2):
+		for dx in range(-1, 2):
+			if data.grid.get(cell + Vector2i(dx, dy), "") == "ice":
+				return true
+	return false
 
 
 ## A cell opened while the hero looks on (PIX-255: the shortcut's door once

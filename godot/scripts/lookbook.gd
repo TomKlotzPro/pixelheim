@@ -78,6 +78,9 @@ const SHOTS := {
 	# Come through the pass into the Mirefen: its name on a card, once.
 	"place_card": {"area": "ways", "map": "mirefen", "cell": Vector2i(55, 5), "time": DAY, "card": true},
 	"dungeon": {"area": "dungeon", "floor": 5, "time": DAY},
+	# The ice cave's frozen lake (PIX-255): ice over the stone, its cracks,
+	# polish and glints, frost at its shore, and the cold light it gives.
+	"frozen_lake": {"area": "dungeon", "map": "icecave_lake", "cell": Vector2i(30, 14), "time": DAY},
 	"fight": {"area": "combat", "map": "overworld", "at": "forest_1", "time": DAY, "foe": "orc"},
 	"strike": {"area": "combat", "map": "overworld", "at": "forest_1", "time": DAY, "foe": "orc", "strike": true},
 	# The map (PIX-266) of a hero who has walked the whole Reach, its list

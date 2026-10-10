@@ -1373,7 +1373,15 @@ msgid "The Frostgate Pass"
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "The Frozen Lake"
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "The Garrison's Crypt"
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "The Glass Hall"
 msgstr ""
 
 #: assets/data/catalog.json
@@ -7133,7 +7141,7 @@ msgid "Rimefang"
 msgstr ""
 
 #: assets/data/combat.json
-msgid "Rimefang uncoils from the ice, and the air turns to needles!"
+msgid "Rimefang uncoils from a brass lantern, the only warm thing down here, and the air turns to needles. It was never guarding it. It was only ever cold."
 msgstr ""
 
 #: assets/data/combat.json
@@ -8049,7 +8057,7 @@ msgid "the drowned road at the south of the Sunken Marsh"
 msgstr ""
 
 #: assets/data/combat.json
-msgid "the glass hall at the back of the ice cave"
+msgid "the glass hall, three floors down the ice cave"
 msgstr ""
 
 #: assets/data/combat.json
@@ -8082,6 +8090,10 @@ msgstr ""
 
 #: assets/data/depths.json
 msgid "Rails buckled under a fall of rock, and a lever somebody pulled far too hard. From the rubble, a very small voice is shouting."
+msgstr ""
+
+#: assets/data/depths.json
+msgid "The ice plugging the chute in the north wall cracks and slides away: a run of black ice, worn glass-smooth, all the way down to the foot of Liane's stair. Hold on to your hat."
 msgstr ""
 
 #: assets/data/depths.json
@@ -8321,6 +8333,10 @@ msgid "\"It rings a little flat. So did the garrison. They'd have liked it here.
 msgstr ""
 
 #: assets/data/npcs.json
+msgid "\"One lamp, fifty years. Forty lamps can't be harder.\""
+msgstr ""
+
+#: assets/data/npcs.json
 msgid "\"Wardens! Shovels. The Frostgate road won't dig itself.\""
 msgstr ""
 
@@ -8421,6 +8437,18 @@ msgid "Are you the one who fights the monsters? I fight monsters too. Mostly the
 msgstr ""
 
 #: assets/data/npcs.json
+msgid "Aske has come down from the Frostgate to light Pixelheim's lamps."
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "Aske is packing for Pixelheim: fifty years is long enough to keep one door, and he hears your village is short of a lamplighter."
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "Aske keeps your lantern trimmed: it lights the dark a third further"
+msgstr ""
+
+#: assets/data/npcs.json
 msgid "Aske the Hermit"
 msgstr ""
 
@@ -8474,6 +8502,10 @@ msgstr ""
 
 #: assets/data/npcs.json
 msgid "Don't look at me like that. I'm the honest kind of smuggler. I only rob other smugglers."
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "Dusk, I light them. Dawn, I put them out. In between, Maren and I sit on the square and talk about Liane. Fifty years nobody said her name to me."
 msgstr ""
 
 #: assets/data/npcs.json
@@ -8770,6 +8802,10 @@ msgstr ""
 
 #: assets/data/npcs.json
 msgid "Old Wenna is packing for Pixelheim: Sela's inn has a room going, and somebody has to make Tam's stew properly."
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "One lamp, fifty years. Forty lamps can't be harder."
 msgstr ""
 
 #: assets/data/npcs.json
@@ -9125,6 +9161,10 @@ msgid "\"The Crown can no longer defend the Ashenreach.\" That's the whole of th
 msgstr ""
 
 #: assets/data/progression.json
+msgid "\"The seal only buys time. Fifty years, at most.\""
+msgstr ""
+
+#: assets/data/progression.json
 msgid "(\"Letters that aren't delivered are just paper,\" you say.)"
 msgstr ""
 
@@ -9133,11 +9173,15 @@ msgid "(Captain Hale's order book lies open on his table, the ink gone brown. Th
 msgstr ""
 
 #: assets/data/progression.json
-msgid "(From his coat he takes a folded page in Liane's hand.) She left this with me. Her sums, from before the climb: \"The seal only buys time. Fifty years, at most.\""
+msgid "(He unlocks Liane's door.) Her sums are still on her desk. She did them the night before the climb. Read them. She'd want somebody to."
 msgstr ""
 
 #: assets/data/progression.json
 msgid "(Maren turns a tin box over in her hands, black with soot.) I dug this out of my hearth. Five letters I wrote fifty years ago, and never sent."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "(Pages of sums in a small, neat hand, weighed down with a brass star. Under the last of them she wrote it out in words.)"
 msgstr ""
 
 #: assets/data/progression.json
@@ -9245,7 +9289,11 @@ msgid "Ask Sela the innkeeper for work"
 msgstr ""
 
 #: assets/data/progression.json
-msgid "Aske answered, with Liane's sums."
+msgid "Aske answered, and opened Liane's door to her sums."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Aske has opened Liane's door at the head of the Frostgate pass. Her sums are still on the desk in her room."
 msgstr ""
 
 #: assets/data/progression.json
@@ -9309,6 +9357,10 @@ msgid "Brin's oilskin has more holes than coat. He wants a new one, made the Sal
 msgstr ""
 
 #: assets/data/progression.json
+msgid "Bring Liane's lantern up from the glass hall"
+msgstr ""
+
+#: assets/data/progression.json
 msgid "Bring Tam's ladle up from the wreck in the sea cave"
 msgstr ""
 
@@ -9317,7 +9369,7 @@ msgid "Bring a settler home to Pixelheim"
 msgstr ""
 
 #: assets/data/progression.json
-msgid "Bring the four relics home to Maren"
+msgid "Bring the four keepsakes home to Maren"
 msgstr ""
 
 #: assets/data/progression.json
@@ -9481,7 +9533,7 @@ msgid "Deepwood trolls tax Mirelle's caravans in blood and silver."
 msgstr ""
 
 #: assets/data/progression.json
-msgid "Deliver Maren's letter to Aske on the Frostgate pass"
+msgid "Deliver Maren's letter to Aske at Liane's observatory"
 msgstr ""
 
 #: assets/data/progression.json
@@ -9610,10 +9662,6 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Fifty years late, and you've got mud on it. Give it here."
-msgstr ""
-
-#: assets/data/progression.json
-msgid "Find Liane's Lantern under her observatory on the Frostgate pass"
 msgstr ""
 
 #: assets/data/progression.json
@@ -9821,6 +9869,10 @@ msgid "Help whoever is calling on Upper Street ({key:interact} to help)"
 msgstr ""
 
 #: assets/data/progression.json
+msgid "Her lantern. She lit it the night before we climbed, so we'd find our way home. Bring it home, courier. One of us should."
+msgstr ""
+
+#: assets/data/progression.json
 msgid "Her lantern. She said she'd blow it out herself when they all came home. Take it up the mountain, courier. Let it see the way she went."
 msgstr ""
 
@@ -9973,6 +10025,18 @@ msgid "Letter to Old Wenna, Saltmere"
 msgstr ""
 
 #: assets/data/progression.json
+msgid "Liane did the sums for all five of us. If she left any behind, read them. She was always right, and it was always annoying."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Liane's sums"
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Liane's sums, in her small neat hand: \"Don't seal him. Free him.\""
+msgstr ""
+
+#: assets/data/progression.json
 msgid "Liane's sums: the seal only buys fifty years. \"Don't seal him. Free him. The collar answers to our five marks.\""
 msgstr ""
 
@@ -10017,7 +10081,7 @@ msgid "Maren says Oskar isn't coming home, and the captain can stand down. He's 
 msgstr ""
 
 #: assets/data/progression.json
-msgid "Maren waits for all four relics. She'll open the gate with the last of them: her promise."
+msgid "Maren waits for all four keepsakes: Tam's ladle, the last ingot, Oskar's shield and Liane's lantern. She'll open the gate with the last of them: her promise."
 msgstr ""
 
 #: assets/data/progression.json
@@ -10181,6 +10245,10 @@ msgid "Over the river bridge north of town, then west along the Ash Fields road 
 msgstr ""
 
 #: assets/data/progression.json
+msgid "Pages of sums under a brass star. Aske keeps this room. Ask him first."
+msgstr ""
+
+#: assets/data/progression.json
 msgid "Pathfinder"
 msgstr ""
 
@@ -10234,6 +10302,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Read Hale's order book in his hall"
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Read Liane's sums in her room"
 msgstr ""
 
 #: assets/data/progression.json
@@ -10561,11 +10633,7 @@ msgid "The First Deposit"
 msgstr ""
 
 #: assets/data/progression.json
-msgid "The Frostgate road climbs north out of the Ash Fields. Aske the hermit has kept Liane's door for fifty years, because she asked him to."
-msgstr ""
-
-#: assets/data/progression.json
-msgid "The Frostgate road climbs north out of the Ash Fields. Aske the hermit has kept Liane's door for fifty years."
+msgid "The Frostgate road climbs north out of the Ash Fields to Liane's observatory, at the head of the pass. Aske has kept her door for fifty years, because she asked him to."
 msgstr ""
 
 #: assets/data/progression.json
@@ -10721,6 +10789,10 @@ msgid "The lamp's lit. Every boat in the bay saw it last night. Thank you."
 msgstr ""
 
 #: assets/data/progression.json
+msgid "The lantern's further down: the stair in her floor goes into the old ice cave, three floors deep. Something white sleeps on it. Mind the cold it breathes."
+msgstr ""
+
+#: assets/data/progression.json
 msgid "The last ember gutters out on the stones. Maren is waiting at the shrine."
 msgstr ""
 
@@ -10774,6 +10846,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "The slime was carrying a traveller's pouch: a health potion. {key:inventory} opens your pack."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "The stair in Liane's floor goes down into the old ice cave, three floors deep. At the bottom, in the glass hall, something white has curled up on her lantern."
 msgstr ""
 
 #: assets/data/progression.json
@@ -10877,7 +10953,7 @@ msgid "Three pieces of sea glass, clear as you can find. They wash up on the bea
 msgstr ""
 
 #: assets/data/progression.json
-msgid "Through her door and down the stair, to the glass hall at the back. Her lantern's there - the last thing she lit before the climb. Mind the cold it breathes."
+msgid "Through her door and down the stair, three floors down to the glass hall. Her lantern's there - the last thing she lit before the climb. Mind the cold it breathes."
 msgstr ""
 
 #: assets/data/progression.json
@@ -11349,6 +11425,14 @@ msgid "So he's gone. Truly gone."
 msgstr ""
 
 #: assets/data/story.json
+msgid "Someone always promises."
+msgstr ""
+
+#: assets/data/story.json
+msgid "Someone promised to let you go."
+msgstr ""
+
+#: assets/data/story.json
 msgid "Starring"
 msgstr ""
 
@@ -11437,6 +11521,10 @@ msgid "You dream of five torches climbing the mountain in the dark."
 msgstr ""
 
 #: assets/data/story.json
+msgid "You dream you are very large, very old, and lying on something with too many corners."
+msgstr ""
+
+#: assets/data/story.json
 msgid "You found the graves in the crypt. Oskar, Liane, Tam."
 msgstr ""
 
@@ -11450,6 +11538,10 @@ msgstr ""
 
 #: assets/data/story.json
 msgid "You wake to the smell of smoke and Sela snoring."
+msgstr ""
+
+#: assets/data/story.json
+msgid "You wake with a crick in your neck, to the street lamps going out one by one: Aske, on his dawn round."
 msgstr ""
 
 #: assets/data/story.json
@@ -11545,7 +11637,15 @@ msgid "A roof over the anvil again. Hilda says the steel sings better indoors."
 msgstr ""
 
 #: assets/data/town.json
+msgid "A slate hall and a cottage on the bend wait on the board, and Mason Dorran has the fountain's basin dug on the square. All it wants now is a dragon's scale."
+msgstr ""
+
+#: assets/data/town.json
 msgid "A thatched cottage"
+msgstr ""
+
+#: assets/data/town.json
+msgid "All four keepsakes home, and half the Reach in your streets: Pixelheim can grow into a Town."
 msgstr ""
 
 #: assets/data/town.json
@@ -11813,6 +11913,10 @@ msgid "A guard's badge on the last slab, the tower on it rubbed smooth by somebo
 msgstr ""
 
 #: assets/maps/interactables.json
+msgid "A pair of fur boots, frozen into the lake's edge. Whoever wore them crossed the rest barefoot. Brave, or very late for something."
+msgstr ""
+
+#: assets/maps/interactables.json
 msgid "BREWS"
 msgstr ""
 
@@ -11830,6 +11934,10 @@ msgstr ""
 
 #: assets/maps/interactables.json
 msgid "Gunnar's Camp"
+msgstr ""
+
+#: assets/maps/interactables.json
+msgid "Gunnar's strongbox, still locked, one corner chewed. Whatever dragged it here gave up on the lock and kept the box for a pillow."
 msgstr ""
 
 #: assets/maps/interactables.json

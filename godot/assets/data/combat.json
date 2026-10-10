@@ -1287,6 +1287,46 @@
       "x": 6,
       "y": 6,
       "species": "yeti"
+    },
+    {
+      "id": "icecave_lake_1",
+      "mapId": "icecave_lake",
+      "x": 21,
+      "y": 6,
+      "species": "wendigo",
+      "size": 2
+    },
+    {
+      "id": "icecave_lake_2",
+      "mapId": "icecave_lake",
+      "x": 38,
+      "y": 8,
+      "species": "yeti",
+      "size": 2
+    },
+    {
+      "id": "icecave_lake_3",
+      "mapId": "icecave_lake",
+      "x": 23,
+      "y": 23,
+      "species": "frost_mammoth",
+      "size": 1
+    },
+    {
+      "id": "icecave_glass_1",
+      "mapId": "icecave_glass",
+      "x": 16,
+      "y": 15,
+      "species": "wendigo",
+      "size": 2
+    },
+    {
+      "id": "icecave_glass_2",
+      "mapId": "icecave_glass",
+      "x": 36,
+      "y": 19,
+      "species": "frost_mammoth",
+      "size": 1
     }
   ],
   "packs": {
@@ -5700,19 +5740,19 @@
     "rimefang": {
       "name": "Rimefang",
       "monsterId": "frost_drake",
-      "mapId": "icecave",
+      "mapId": "icecave_glass",
       "lair": {
-        "x": 38,
-        "y": 7
+        "x": 28,
+        "y": 12
       },
       "postedAfter": 0,
       "board": false,
-      "level": 12,
-      "maxHp": 480,
-      "attack": 32,
-      "defense": 10,
+      "level": 13,
+      "maxHp": 520,
+      "attack": 34,
+      "defense": 11,
       "xp": 280,
-      "gold": 120,
+      "gold": 130,
       "bounty": 0,
       "drop": "lianes_lantern",
       "scale": 1.3,
@@ -5739,9 +5779,9 @@
           1.6
         ]
       },
-      "where": "the glass hall at the back of the ice cave",
+      "where": "the glass hall, three floors down the ice cave",
       "notice": "",
-      "seen": "Rimefang uncoils from the ice, and the air turns to needles!"
+      "seen": "Rimefang uncoils from a brass lantern, the only warm thing down here, and the air turns to needles. It was never guarding it. It was only ever cold."
     },
     "grimshade": {
       "name": "Grimshade",
