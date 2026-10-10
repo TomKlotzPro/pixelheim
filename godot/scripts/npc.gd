@@ -50,6 +50,8 @@ func _ready() -> void:
 	# Offset the idle phase per villager so the square doesn't breathe in unison.
 	sprite.frame = Npcs.id_hash(data["id"]) % 2
 	add_child(sprite)
+	# Their mark keeps over their head as they turn (PIX-268).
+	sprite.animation_changed.connect(_place_mark)
 	gait = Gait.new(sprite, art, size)
 	_was = position
 
@@ -83,6 +85,7 @@ const MARK_SECONDS := 0.5
 const MARK_COLORS := {"offer": Color("f2c14e"), "ready": Color("f2c14e"), "waiting": Color("a8a39a")}
 var _mark: Node2D
 var _mark_kind := ""
+var _mark_text := ""
 var _mark_left := 0.0
 
 
@@ -138,34 +141,43 @@ func _refresh_mark() -> void:
 		_mark = null
 	if kind == "":
 		return
-	_mark = _outlined("!" if kind == "offer" else "?", MARK_COLORS[kind])
+	_mark_text = "!" if kind == "offer" else "?"
+	_mark = _outlined(_mark_text, MARK_COLORS[kind])
 	_mark.z_index = 10
 	# Bright at night too (PIX-221).
 	_mark.material = Lights.unshaded()
-	# Its baseline just over the head, measured on the figure's first frame
-	# (its drawn pixels, not the frame's empty top).
-	var glyph: Label = _mark.get_child(-1)
-	var ascent := UiStyle.bold_font().get_ascent(UiStyle.BODY_PX)
-	_mark.position = Vector2(roundf(-glyph.size.x / 2.0), roundf(_head_top() - 2.0 - ascent))
+	_place_mark()
 	add_child(_mark)
 
 
-## Where the figure's head begins, from its middle (the sprite is centred):
-## the first drawn row of its first frame, scaled.
-func _head_top() -> float:
-	var frame := sprite.sprite_frames.get_frame_texture(sprite.animation, 0)
-	var image := frame.get_image()
-	# A frame cut from a sheet: only its own region counts.
-	if frame is AtlasTexture:
-		var cut := frame as AtlasTexture
-		image = cut.atlas.get_image().get_region(Rect2i(cut.region))
-	var drawn := image.get_used_rect()
-	return sprite.position.y + (drawn.position.y - frame.get_size().y / 2.0) * sprite.scale.y
+## The mark over their head the way they face now (PIX-268): they turn
+## after a step (PIX-243), and a figure's head isn't always where its frame's
+## middle is.
+func _place_mark() -> void:
+	if _mark != null:
+		_mark.position = mark_spot(_mark_text, sprite.sprite_frames, sprite.animation, sprite.position, sprite.scale)
+
+
+## Where a mark of `text` goes over a figure drawn from `frames` playing
+## `anim`, centred at `at` and drawn at `scale` (PIX-268): its glyph's ink
+## centred on the head of the idle pose facing that way, in whole pixels (the
+## label's box is no measure, Ink); its foot two pixels over the highest their
+## head reaches standing or walking, whichever way they face, so it neither
+## bobs as they breathe, step and look about nor touches their head.
+static func mark_spot(text: String, frames: SpriteFrames, anim: String, at: Vector2, scale: Vector2) -> Vector2:
+	var ink := Ink.of_text(text, UiStyle.bold_font(), UiStyle.BODY_PX)
+	var poses := []
+	for way: String in PunyArt.DIRS:
+		poses.append(PunyArt.pick(frames, "idle", way))
+		poses.append(PunyArt.pick(frames, "walk", way))
+	var head := Ink.head(frames, Ink.rest_pose(frames, anim), at, scale)
+	return Vector2(Ink.centred(ink, head.get_center().x), floorf(Ink.crown(frames, poses, at, scale) - 2.0 - ink.end.y))
 
 
 ## `text` in the UI's bold pixel face at its own size, outlined in the night
 ## by four dark copies a pixel off each way: the pixel face draws no outline
-## of its own. The glyph itself is the last child.
+## of its own. The glyph itself is the last child. Each label sizes itself
+## once it is in the tree, with its own face.
 static func _outlined(text: String, color: Color) -> Node2D:
 	var mark := Node2D.new()
 	for offset: Vector2 in [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN, Vector2.ZERO]:
@@ -176,7 +188,6 @@ static func _outlined(text: String, color: Color) -> Node2D:
 		glyph.add_theme_color_override("font_color", color if offset == Vector2.ZERO else UiStyle.NIGHT)
 		glyph.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		glyph.use_parent_material = true
-		glyph.size = glyph.get_minimum_size()
 		glyph.position = offset
 		mark.add_child(glyph)
 	return mark

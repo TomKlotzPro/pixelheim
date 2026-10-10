@@ -11424,15 +11424,15 @@ msgstr ""
 msgid "%s howls - the forest answers!"
 msgstr ""
 
-#: scripts/enemy.gd:223
+#: scripts/enemy.gd:228
 msgid "Lv %d"
 msgstr ""
 
-#: scripts/enemy.gd:676
+#: scripts/enemy.gd:719
 msgid "blocked"
 msgstr ""
 
-#: scripts/enemy.gd:711
+#: scripts/enemy.gd:754
 msgid "%s is afflicted by %s!"
 msgstr ""
 
@@ -13660,7 +13660,7 @@ msgstr ""
 msgid "Boss slayer: +%d%% damage for %d minutes."
 msgstr ""
 
-#: scripts/world_fx.gd:147
+#: scripts/world_fx.gd:155
 msgid "LEVEL UP"
 msgstr ""
 

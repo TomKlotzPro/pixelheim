@@ -58,7 +58,7 @@ var floated := Gains.none()
 ## pixel face's own (anything larger dwarfs the fighters), and stays longer.
 func float_text(text: String, at: Vector2, color: Color, big := false) -> void:
 	var label := _floating(text, color)
-	label.position = (at - Vector2(label.size.x / 2.0, 0)).round()
+	label.position = Vector2(Ink.centred(_ink(label), at.x), roundf(at.y))
 	label.z_index = 11 if big else 10
 	add_child(label)
 	var life := 1.8 if big else 0.6
@@ -85,12 +85,20 @@ func _floating(text: String, color: Color) -> Label:
 	return label
 
 
+## The pixels a floating label's words draw, from its top left (PIX-268).
+## Its box is no measure: taken before the label is in the tree, it is the
+## fallback font's at twice the size, and a number centred on it sat five
+## pixels or so left of its foe.
+static func _ink(label: Label) -> Rect2:
+	return Ink.of_text(label.text, UiStyle.bold_font(), UiStyle.BODY_PX)
+
+
 ## A label bursting in at twice its size (PIX-209, PIX-211), not when motion
-## is reduced.
+## is reduced: about the middle of its words.
 func _pop(label: Label, tween: Tween) -> void:
 	if GameState.settings.reduce_motion:
 		return
-	label.pivot_offset = label.size / 2.0
+	label.pivot_offset = _ink(label).get_center()
 	label.scale = Vector2.ONE * 2.0
 	tween.tween_property(label, "scale", Vector2.ONE, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
@@ -100,7 +108,7 @@ func _pop(label: Label, tween: Tween) -> void:
 ## and a spark, bursting in at twice its size unless motion is reduced.
 func float_number(value: int, at: Vector2, color: Color, crit := false) -> void:
 	var label := _floating(str(value) + ("!" if crit else ""), UiStyle.BRASS_LIGHT if crit else color)
-	label.position = at - Vector2(label.size.x / 2.0 + randf_range(-4.0, 4.0), 4 if crit else 0)
+	label.position = Vector2(Ink.centred(_ink(label), at.x + randf_range(-4.0, 4.0)), roundf(at.y - (4 if crit else 0)))
 	label.z_index = 11 if crit else 10
 	add_child(label)
 	var life := 0.8 if crit else 0.6
@@ -238,18 +246,20 @@ func _gain_row(row: Dictionary) -> Node2D:
 ## A row's pieces placed about its foot (the foot of its words): the mark,
 ## two pixels' gap, the words, centred together. The label's box runs wider
 ## and taller than the words it draws from its top left, so they're placed
-## by the font's measure of the words, not by the box.
+## by the font's measure of the words, not by the box, and across by their
+## ink (PIX-268: not the face's spacing after them).
 func _fit_row(line: Node2D) -> void:
 	var label: Label = line.get_node("text")
 	label.size = label.get_minimum_size()
 	var words := UiStyle.bold_font().get_string_size(label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, UiStyle.BODY_PX)
+	var ink := _ink(label)
 	var icon: Sprite2D = line.get_node_or_null("icon")
 	var side := icon.texture.get_size().x * icon.scale.x if icon != null else 0.0
 	var indent := side + 2.0 if icon != null else 0.0
-	var left := -roundf((indent + words.x) / 2.0)
+	var left := Ink.centred(Rect2(0, 0, indent + ink.size.x, 0), 0.0)
 	if icon != null:
 		icon.position = Vector2(left, -roundf((words.y + side) / 2.0))
-	label.position = Vector2(left + indent, -words.y)
+	label.position = Vector2(left + indent - ink.position.x, -words.y)
 
 
 ## A row fading in after `delay`; a fine or epic piece bursts in at twice

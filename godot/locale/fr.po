@@ -11424,15 +11424,15 @@ msgstr "Première victoire : %s"
 msgid "%s howls - the forest answers!"
 msgstr "%s hurle - la forêt répond !"
 
-#: scripts/enemy.gd:223
+#: scripts/enemy.gd:228
 msgid "Lv %d"
 msgstr "Niv. %d"
 
-#: scripts/enemy.gd:676
+#: scripts/enemy.gd:719
 msgid "blocked"
 msgstr "paré"
 
-#: scripts/enemy.gd:711
+#: scripts/enemy.gd:754
 msgid "%s is afflicted by %s!"
 msgstr "%s est atteint : %s !"
 
@@ -13660,7 +13660,7 @@ msgstr "Victoire"
 msgid "Boss slayer: +%d%% damage for %d minutes."
 msgstr "Tueur de boss : +%d %% de dégâts pendant %d minutes."
 
-#: scripts/world_fx.gd:147
+#: scripts/world_fx.gd:155
 msgid "LEVEL UP"
 msgstr "NIVEAU SUPÉRIEUR"
 
