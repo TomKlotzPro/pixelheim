@@ -1,6 +1,18 @@
 {
   "releases": [
     {
+      "version": "0.212.0",
+      "date": "2026-10-10",
+      "codename": "The Canary",
+      "notes": [
+        "The Blackiron shafts now go three floors down: the upper shafts with Bram's humming cheese, the west gallery where Pell's canary is waiting (and cross), and the Black Seam, where the Seam Warden sits on the last ingot",
+        "Once the Seam Warden falls, the ore cage takes you back up to the pithead",
+        "Old Pell comes home with his canary and takes the room above Hilda's forge; her upgrades cost a little less",
+        "With two keepsakes home and a settler, the board offers Pixelheim's way to a Village",
+        "A new dream under Sela's roof, the first night after Pell comes home"
+      ]
+    },
+    {
       "version": "0.211.0",
       "date": "2026-10-10",
       "codename": "One Page",

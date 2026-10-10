@@ -1873,6 +1873,10 @@ msgid "A new beginning: Maren's five letters, written fifty years ago and never 
 msgstr "Un nouveau départ : les cinq lettres de Maren, écrites il y a cinquante ans et jamais envoyées, attendent dans une boîte sous la pierre de son foyer. Porter des lettres, c'est votre métier, alors vous les remettez"
 
 #: assets/data/changelog.json
+msgid "A new dream under Sela's roof, the first night after Pell comes home"
+msgstr "Un nouveau rêve sous le toit de Sela, la première nuit après le retour de Pell"
+
+#: assets/data/changelog.json
 msgid "A path is a permanent identity: an always-on passive theme and a SIGNATURE SKILL no tree can teach"
 msgstr "Une voie est une identité permanente : un thème passif toujours actif et une COMPÉTENCE SIGNATURE qu'aucun arbre ne peut enseigner"
 
@@ -3553,6 +3557,10 @@ msgid "Oilskin"
 msgstr "Ciré"
 
 #: assets/data/changelog.json
+msgid "Old Pell comes home with his canary and takes the room above Hilda's forge; her upgrades cost a little less"
+msgstr "Le vieux Pell rentre avec son canari et s'installe dans la chambre au-dessus de la forge de Hilda ; ses améliorations coûtent un peu moins cher"
+
+#: assets/data/changelog.json
 msgid "Old Wenna comes home with you: she moves into Sela's inn and puts Tam's stew back on the menu, so the inn's rest lasts ten fights longer"
 msgstr "La vieille Wenna rentre avec vous : elle s'installe à l'auberge de Sela et remet le ragoût de Tam à la carte, si bien que le repos de l'auberge dure dix combats de plus"
 
@@ -3599,6 +3607,10 @@ msgstr "Pendant la visite du bourg, un bâtiment reconstruit s'élève à son ar
 #: assets/data/changelog.json
 msgid "Once Upon a Mountain"
 msgstr "Il était une montagne"
+
+#: assets/data/changelog.json
+msgid "Once the Seam Warden falls, the ore cage takes you back up to the pithead"
+msgstr "Une fois le Gardien du Filon tombé, la cage à minerai vous remonte jusqu'au carreau de la mine"
 
 #: assets/data/changelog.json
 msgid "Once your whole skill tree is learned, spare skill points buy ranks beyond it in Stats: more skill power, health back from every blow, and more health, each capped"
@@ -4609,12 +4621,20 @@ msgid "The Barred Gate"
 msgstr "La Porte barrée"
 
 #: assets/data/changelog.json
+msgid "The Blackiron shafts now go three floors down: the upper shafts with Bram's humming cheese, the west gallery where Pell's canary is waiting (and cross), and the Black Seam, where the Seam Warden sits on the last ingot"
+msgstr "Les puits de Fernoir descendent désormais sur trois étages : les puits du haut avec le fromage qui fredonne de Bram, la Galerie ouest où attend le canari de Pell (furieux), et le Filon noir, où le Gardien du Filon trône sur le dernier lingot"
+
+#: assets/data/changelog.json
 msgid "The Bosses Fight Back"
 msgstr "Les boss ripostent"
 
 #: assets/data/changelog.json
 msgid "The CODEX opens from the HUD: your mastery progress bars on one tab, a bestiary on the other - monsters reveal their numbers only once you've drawn their family's blood"
 msgstr "Le CODEX s'ouvre depuis l'interface : vos barres de progression de maîtrise dans un onglet, un bestiaire dans l'autre - les monstres ne révèlent leurs chiffres qu'une fois que vous avez fait couler le sang de leur famille"
+
+#: assets/data/changelog.json
+msgid "The Canary"
+msgstr "Le canari"
 
 #: assets/data/changelog.json
 msgid "The Cartographer"
@@ -5431,6 +5451,10 @@ msgstr "Avec Réduire les animations, la ruine reste un instant, puis le bâtime
 #: assets/data/changelog.json
 msgid "With Reduce motion, the wins fade in where they stand"
 msgstr "Avec Réduire les animations, les gains apparaissent en fondu sur place"
+
+#: assets/data/changelog.json
+msgid "With two keepsakes home and a settler, the board offers Pixelheim's way to a Village"
+msgstr "Avec deux souvenirs rapportés et un nouvel habitant, le tableau d'avis propose à Pixelheim de devenir un village"
 
 #: assets/data/changelog.json
 msgid "Wolves, spiders, cats, the mammoths and many villagers no longer walk backwards when they go left or right"
