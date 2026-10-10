@@ -57,7 +57,8 @@ godot --path godot             # play (or open godot/ in the Godot editor)
 ```bash
 godot --headless --path godot --import                        # after adding assets or scripts
 godot --headless --path godot -s res://addons/gut/gut_cmdln.gd # the unit tests (GUT)
-godot/tools/flows.sh                                          # the release flows, with screenshots
+godot/tools/flows.sh                                          # the release flows, with screenshots (--quiet: headless)
+godot/tools/flows.sh --boot                                   # every map booted, by day and at night
 python3 godot/tools/synth.py                                  # re-render the generated sounds and themes
 python3 godot/tools/vignettes.py <pixelheim-assets checkout>  # re-lift Shade's furnished corners for the rooms
 python3 godot/tools/mapgen.py                                 # maps from their sketches in godot/maps-src/
@@ -90,7 +91,7 @@ docs/                  screenshots, and godot-parity.md: the record of the port
 - **Rules are pure.** Game rules live in static GDScript classes with no nodes, so they test fast; scenes draw, move and route input. Everything that persists changes only through `GameState`.
 - **Saves keep the old web edition's format, byte for byte.** Its heroes still load, and migrations replay old saves forward.
 - **The look lives in one place.** `ui_style.gd` draws every window and picks every font size; pixel fonts render at whole sizes only.
-- **Verified by playing.** Besides the unit tests, `godot/tools/flows.sh` walks the release flows (spawn, doors, chests, shops, crafting, quests, rank-ups, fights, death, saves, conversations, smooth walking) through a real window and checks each one.
+- **Verified by playing.** Besides the unit tests, `godot/tools/flows.sh` walks the release flows (spawn, doors, chests, shops, crafting, quests, rank-ups, fights, death, saves, conversations, smooth walking) through a real window and checks each one, several at a time; every pull request runs them headless, and boots every map by day and at night, after the unit tests.
 
 ## History
 

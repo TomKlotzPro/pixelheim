@@ -796,8 +796,10 @@ func _run_test_harness() -> void:
 		await get_tree().process_frame
 	else:
 		await RenderingServer.frame_post_draw
-		# As the screen shows it (the desktop app's canvas is linear light).
-		(await DesktopLook.snapshot(self)).save_png("res://screenshot.png")
+		# As the screen shows it (the desktop app's canvas is linear light),
+		# where `--shot` says (PIX-270): the flows run side by side, and one
+		# shared screenshot.png would be whichever run saved last.
+		(await DesktopLook.snapshot(self)).save_png(flags.value("--shot", "res://screenshot.png"))
 	# The menus and conversations still open over the world, by script name.
 	var open := world.get_children().filter(func(node: Node) -> bool:
 		return node is CanvasLayer and node.get_script() != null and (

@@ -49,14 +49,16 @@ Pixelheim is a Godot 4.7 game (`godot/`), live at the Pages root. It began as a 
 godot --headless --path godot --import                        # after new assets/scripts
 godot --headless --path godot -s res://addons/gut/gut_cmdln.gd # GUT; ALSO grep the output for "Parse Error"
 godot --path godot -- --screenshot [--map <id>] [--walk l,d,r,u] [fight [kill] [hurt] [--foe <species>]] [chest] [talk] [near] [shop [--tab N]] [hall] [bank] [home --mode M] [--town-tier N] [--house-tier N] [lineup] [saves] [night] [worldmap] [overview] [--at x,y] [--zoom Z] [--floor N] [clear] [gate [--dungeon id] [descend]] [leave] [quest] [journal] [--level N] [rankup [walk-path]] [stats] [skills] [codex [bestiary]] [cast] [inventory] [title [splash]] [create] [pause [scanlines]] [options] [portal] [die] [talk --keys e,esc] [motion] [--slot N]
-godot/tools/flows.sh [name...]   # the release flows; pictures in godot/flows/
+godot/tools/flows.sh [--quiet] [-j N] [name...]   # the release flows, N at a time (cores-2); pictures in godot/flows/
+godot/tools/flows.sh --boot      # every map in the data booted headless, by day and at night (catches world.gd errors GUT can't)
 godot/tools/lookbook.sh [--desktop] [--looks browser,app] [--compare]   # the look book (opens a window; --compare doesn't)
 godot/tools/splash.sh            # re-render the web boot splash after title changes
 python3 godot/tools/favicon.py   # redraw the game's icon (assets/icon.png)
 ```
 
 - GUT **exits 0 when a test file fails to parse** (the whole suite is silently skipped); CI greps for it, do the same locally.
-- The harness writes `godot/screenshot.png` (gitignored) and prints `map=… cell=… hp=… gold=…`. Read the PNG; the owner judges looks from screenshots.
+- The harness writes `godot/screenshot.png` (gitignored; `--shot <file>` elsewhere) and prints `map=… cell=… hp=… gold=…`. Read the PNG; the owner judges looks from screenshots.
+- **The flows run side by side (PIX-270)**: each run has its own folder, `godot/flows/runs/<name>/` (`output.txt`, `godot.log`, `--shot`'s picture), so look there when one fails; the Godot CI runs `--boot` and every flow `--quiet` on each pull request and fails on any FAIL, `SCRIPT ERROR` or `Parse Error` (PIX-271). A flow must pass in English and French (`FLOWS_EXTRA="--lang en"`): the CI runner is English, a Mac harness run follows the system's language. Don't edit `tools/flows.sh` while it runs (bash reads it as it goes).
 - **Harness flags live in one table (PIX-262)**: `HarnessFlags.TABLE` (`scripts/harness_flags.gd`) declares every flag, its argument and what it does; `godot --headless --path godot -- --help` prints it. Read flags through the one parse, `HarnessFlags.given()` (`flags.has("fight")`, `flags.value("--foe", "orc")`, `flags.list("--keys")`), never `OS.get_cmdline_user_args()`. A new flag is a new row with a name no other feature uses: `test_harness_flags` fails on a name declared twice, a flag read or passed (flows.sh, lookbook.sh, the README) that isn't in the table, or a row nothing reads. A flag's argument never reads as a flag (`--story ending` is not `ending`).
 - Dungeons: `--floor N` walks down floor N, `clear` fells every foe on the map (the floor's clear and hoard), `gate` opens a floor select (`descend` takes the selected floor), `leave` climbs back to the gate. The printed `save=` shows where the save stands (it stays at the gate while below).
 - Terrain review: `overview` frames the whole map, `--at x,y` stands the hero on a cell, `--zoom Z` sets the camera (play zoom is 4).

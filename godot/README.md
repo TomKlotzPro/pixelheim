@@ -73,7 +73,8 @@ Config in `.gutconfig.json`; tests live in `test/unit/`.
 ## Agent verification harness
 
 Headless Godot cannot render, so visual verification drives a real window
-briefly, saves `screenshot.png` into `godot/`, and quits. It lives in
+briefly, saves `screenshot.png` into `godot/` (or where `--shot <file>` says),
+and quits. It lives in
 `scripts/harness.gd`, which `world.gd` adds only when `--screenshot` is
 passed. Harness runs play a fresh throwaway hero and never touch save slots
 unless `--slot N` is passed. Every flag is declared once, with its argument
@@ -128,7 +129,23 @@ reading a conversation to its end, leaving one with Esc, and walking without
 the camera shake)
 through the harness. Each one checks the harness's report line and leaves its
 picture in `godot/flows/<name>.png` (gitignored). `godot/tools/flows.sh fight die`
-runs just those. It needs a window, so it runs locally, not in CI.
+runs just those.
+
+The flows run side by side, `-j N` at a time (the machine's cores less two
+by default; `-j 1` runs them one after another). Each run keeps its picture
+(`--shot`), output and log in its own folder under `godot/flows/runs/`, and
+the lines still come out in the flows' order, each with its time, the five
+slowest at the end. `--quiet` runs them headless with nothing on the screen
+(the motion flow, which needs a window, is skipped); a windowed run walks the
+motion flow alone after the rest. `godot/tools/flows.sh --boot` boots every
+map the data lists (each map file, the village's ages, the house's tiers,
+the dungeons' floors and the Deep Hunt's first depths), by day and at night,
+headless, and fails on any script error: GUT never loads the world's scripts.
+
+The Godot CI runs both on every pull request, after GUT, headless, with as
+many flows at once as the runner has cores, and puts each result in the
+job's summary. A fork's pull request gets no key to the paid art, so both
+run on Shade's CC0 art alone, which they pass too.
 
 ### Boot splash
 

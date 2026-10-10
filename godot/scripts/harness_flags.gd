@@ -19,7 +19,7 @@ class_name HarnessFlags
 ## steps (harness.gd runs those in its own fixed order, whatever the order
 ## on the command line), then what the shot and the report line read.
 const TABLE := [
-	{"flag": "--screenshot", "takes": "", "does": "a harness run: a throwaway hero (no slot read or written), the steps below, then screenshot.png (not headless) and the report line, and quit"},
+	{"flag": "--screenshot", "takes": "", "does": "a harness run: a throwaway hero (no slot read or written), the steps below, then screenshot.png or --shot's file (not headless) and the report line, and quit"},
 	{"flag": "--help", "takes": "", "does": "this table, then quit (nothing booted, no save touched)"},
 	{"flag": "touch", "takes": "", "does": "the phone's canvas: the screen's own shape, not letterboxed (PIX-162)"},
 	{"flag": "--lang", "takes": "<xx>", "does": "the game in that language for the run (PIX-195)"},
@@ -131,6 +131,7 @@ const TABLE := [
 	{"flag": "--out", "takes": "<dir>", "does": "with lookbook: where it saves (res://lookbook)"},
 	{"flag": "--wait", "takes": "<s>", "does": "hold the shot s seconds (an entrance still playing)"},
 	{"flag": "overflow", "takes": "", "does": "every piece of an open screen past the canvas, as OVERFLOW lines; the report adds overflow= (works headless)"},
+	{"flag": "--shot", "takes": "<file>", "does": "save the picture there, not res://screenshot.png: runs side by side each keep their own (tools/flows.sh, PIX-270)"},
 	{"flag": "-NSAppSleepDisabled", "takes": "YES", "does": "macOS's, not the game's: no napping a run whose window is hidden (tools/lookbook.sh)"},
 ]
 
