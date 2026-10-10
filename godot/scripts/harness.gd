@@ -649,10 +649,6 @@ func _run_test_harness() -> void:
 		var sheet := "stats_screen" if flags.has("stats") else "skills_screen"
 		world.add_child(load("res://scripts/%s.gd" % sheet).new())
 		await get_tree().create_timer(0.3).timeout
-	if flags.has("splash"):
-		# Pair with `title`: the boot splash, once every letter has landed.
-		world.get_children().filter(func(node: Node) -> bool: return node.has_method("as_splash"))[0].as_splash()
-		await get_tree().create_timer(1.2).timeout
 	if flags.has("create"):
 		# Hero creation over the title, a role picked and a name typed.
 		var creation := preload("res://scripts/create_screen.gd").new()
@@ -669,11 +665,11 @@ func _run_test_harness() -> void:
 		await _keys(flags)
 	if flags.has("title") and flags.has("whatsnew"):
 		# What's new over the title, as the version line opens it.
-		world.get_children().filter(func(node: Node) -> bool: return node.has_method("as_splash"))[0]._whats_new()
+		world.get_children().filter(func(node: Node) -> bool: return node.has_method("_whats_new"))[0]._whats_new()
 		await get_tree().create_timer(0.3).timeout
 	if flags.has("title") and flags.has("options"):
 		# Options over the title, before any hero is made.
-		world.get_children().filter(func(node: Node) -> bool: return node.has_method("as_splash"))[0]._options()
+		world.get_children().filter(func(node: Node) -> bool: return node.has_method("_whats_new"))[0]._options()
 		await get_tree().create_timer(0.3).timeout
 	elif flags.has("pause") or flags.has("options"):
 		if flags.has("scanlines"):

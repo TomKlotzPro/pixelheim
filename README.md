@@ -87,7 +87,7 @@ godot/                 the game (Godot 4.7, GDScript)
     data/              items, monsters, quests, villagers, the town, the changelog (JSON)
     maps/              every map, one row of tiles per line (JSON); new ones drawn as sketches in godot/maps-src/
   test/unit/           GUT tests
-  tools/               the release flows, the boot splash, the icon, the sound synth, the room vignettes
+  tools/               the release flows, the icon, the sound synth, the room vignettes
 scripts/               fetch-private-art.sh, which installs the paid art
 docs/                  screenshots, and godot-parity.md: the record of the port
 ```

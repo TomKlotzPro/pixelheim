@@ -77,7 +77,6 @@ const TABLE := [
 	{"flag": "--cast", "takes": "<n>", "does": "dock key n pressed with energy to spare; prints the foes' hp before and after (PIX-190)"},
 	{"flag": "stats", "takes": "", "does": "the stats sheet, points to spend"},
 	{"flag": "skills", "takes": "", "does": "the skills sheet, points to spend"},
-	{"flag": "splash", "takes": "", "does": "with title: the boot splash, every letter landed (tools/splash.sh)"},
 	{"flag": "create", "takes": "", "does": "hero creation over the title, a role picked and a name typed"},
 	{"flag": "whatsnew", "takes": "", "does": "with title: What's new over it"},
 	{"flag": "options", "takes": "", "does": "the options: over the title with title, else from the pause menu"},

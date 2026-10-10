@@ -56,7 +56,7 @@ cd "$(dirname "$0")/.."
 # is a tools/*.py, and it checks every flow.
 AREAS='
 all: project.godot scenes/* tools/flows.sh tools/flows.py scripts/world.gd scripts/game_clock.gd scripts/harness.gd scripts/harness_flags.gd scripts/harness_report.gd scripts/state/game_state.gd scripts/state/catalog.gd assets/data/catalog.json
-none: README.md .gitignore .gutconfig.json export_presets.cfg addons/* test/unit/* test/hooks/* tools/*.py tools/check.sh tools/lookbook.sh tools/splash.sh scripts/lookbook.gd scripts/perf_probe.gd assets/puny/LICENSE.txt assets/fonts/*.txt
+none: README.md .gitignore .gutconfig.json export_presets.cfg addons/* test/unit/* test/hooks/* tools/*.py tools/check.sh tools/lookbook.sh scripts/lookbook.gd scripts/perf_probe.gd assets/puny/LICENSE.txt assets/fonts/*.txt
 travel combat: scripts/world_camera.gd
 combat field night: scripts/world_foes.gd
 combat town: scripts/world_fx.gd scripts/state/gains.gd

@@ -69,7 +69,8 @@ jobs:
           mkdir -p site
           cp -R godot/export/web/. site/
           # Old links: /godot/ (the beta) and /classic/ (the retired web
-          # edition, whose saves the game still imports) lead home.
+          # edition, whose saves the game still imports) lead home, on the
+          # loading screen's night with no words but the name (PIX-295).
           for old in godot classic; do
             mkdir -p "site/$old"
             cat > "site/$old/index.html" <<'HTML'
@@ -78,7 +79,8 @@ jobs:
           <title>Pixelheim</title>
           <meta http-equiv="refresh" content="0; url=../">
           <link rel="canonical" href="../">
-          <p>Pixelheim lives at <a href="../">its home</a> now; your heroes come with you.</p>
+          <style>html,body{margin:0;height:100%;background:#080c28}a{color:#c9bb90}</style>
+          <a href="../">Pixelheim</a>
           HTML
           done
       # Publishes to the gh-pages branch root; PR previews live under

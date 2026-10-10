@@ -53,7 +53,7 @@ const DRAGON_SPEED := 36.0
 ## The camera's slow drift (PIX-249): how far it travels each way, in art
 ## pixels at the village (the nearest layer), and how long one sweep takes
 ## along the street and one rise and fall (s). It starts on the frame the
-## title was composed for, so the boot splash hands over without a jump.
+## title was composed for.
 const DRIFT := Vector2(28, 5)
 const DRIFT_S := Vector2(96, 57)
 ## How far each layer travels with the camera, the village's 1: the sky
@@ -148,16 +148,6 @@ func _ready() -> void:
 	_answer_lights(village)
 	_glow()
 	_keep_time()
-
-
-## The boot splash: the scene as the title opens on it, with no one about
-## and nothing in the sky yet.
-func as_splash() -> void:
-	dragon.visible = false
-	if watchman != null:
-		watchman.visible = false
-		lantern.visible = false
-		lantern_light.visible = false
 
 
 ## A layer of the backdrop that travels `depth` as far as the camera does.
