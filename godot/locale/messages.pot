@@ -1801,6 +1801,14 @@ msgid "A blow shoves a foe back and the push fades, instead of a one-frame jolt:
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A boss finished off by poison or a burn now falls as it should, with its victory moment"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "A boss's health bar now goes away when it falls, however it falls"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A cleric's first night tells them to strike the embers down and mend between blows, since Mend is no weapon"
 msgstr ""
 
@@ -4929,6 +4937,10 @@ msgid "The Village Reborn"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Way Out"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Whole Reach"
 msgstr ""
 
@@ -5578,6 +5590,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "What's new is on the title menu now, keys and gamepads included, with a NEW badge until you've read the latest notes"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "When a boss falls far from its door, a way out opens right where it fell, lit and easy to spot, and the arrow points to it"
 msgstr ""
 
 #: assets/data/changelog.json

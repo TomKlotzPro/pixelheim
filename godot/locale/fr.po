@@ -1801,6 +1801,14 @@ msgid "A blow shoves a foe back and the push fades, instead of a one-frame jolt:
 msgstr "Un coup repousse l'ennemi et la poussée s'estompe, au lieu d'un sursaut d'une image : un élite recule deux fois moins, un boss pas du tout"
 
 #: assets/data/changelog.json
+msgid "A boss finished off by poison or a burn now falls as it should, with its victory moment"
+msgstr "Un boss achevé par le poison ou une brûlure tombe désormais comme il se doit, avec son moment de victoire"
+
+#: assets/data/changelog.json
+msgid "A boss's health bar now goes away when it falls, however it falls"
+msgstr "La barre de vie d'un boss disparaît désormais quand il tombe, quelle que soit la façon dont il tombe"
+
+#: assets/data/changelog.json
 msgid "A cleric's first night tells them to strike the embers down and mend between blows, since Mend is no weapon"
 msgstr "La première nuit d'un clerc lui dit de frapper les braises et de se soigner entre deux coups, puisque Soin n'est pas une arme"
 
@@ -4929,6 +4937,10 @@ msgid "The Village Reborn"
 msgstr "Le Village renaît"
 
 #: assets/data/changelog.json
+msgid "The Way Out"
+msgstr "La sortie"
+
+#: assets/data/changelog.json
 msgid "The Whole Reach"
 msgstr "Toute la Marche"
 
@@ -5579,6 +5591,10 @@ msgstr "Ce qui pousse au sol change de place d'un jour à l'autre : chaque mat
 #: assets/data/changelog.json
 msgid "What's new is on the title menu now, keys and gamepads included, with a NEW badge until you've read the latest notes"
 msgstr "« Quoi de neuf » est désormais dans le menu titre, au clavier comme à la manette, avec un badge NOUVEAU tant que vous n'avez pas lu les dernières notes"
+
+#: assets/data/changelog.json
+msgid "When a boss falls far from its door, a way out opens right where it fell, lit and easy to spot, and the arrow points to it"
+msgstr "Quand un boss tombe loin de sa porte, une sortie s'ouvre juste là où il est tombé, éclairée et facile à repérer, et la flèche la montre"
 
 #: assets/data/changelog.json
 msgid "When every voice is busy, the sounds that matter (a hurt, a level, a victory) still get through"
