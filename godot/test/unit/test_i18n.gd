@@ -113,8 +113,10 @@ func test_tags_and_compact_gold_speak_french() -> void:
 	# The journal's tags (PIX-239: FOLLOWING and READY, where its chapters said DONE and NEXT).
 	for tag: String in ["EQUIPPED", "SLAIN", "CLEARED", "FOLLOWING", "READY", "NEW", "BUILT", "COMMISSIONED", "SKILL", "UPGRADE", "PASSIVE", "locked"]:
 		assert_ne(Text.t(tag), tag, "%s is translated" % tag)
+	assert_eq(Text.listed(["la place", "les loyers"]), "la place\u202f; les loyers", "a narrow space before French's semicolon")
 	Text.apply("en")
 	assert_eq(Text.coins(55), "55g")
+	assert_eq(Text.listed(["the square", "the rents"]), "the square; the rents")
 	assert_eq(InventoryScreen.sort_name("kind"), "kind")
 
 

@@ -67,6 +67,7 @@ town: scripts/town_hall_screen.gd scripts/ledger_screen.gd scripts/bank_screen.g
 rooms +town_house*: scripts/puny_interior.gd scripts/home_screen.gd assets/data/interiors.json
 travel field: scripts/puny_terrain.gd scripts/scatter.gd scripts/skyline.gd assets/puny/world/*
 travel: scripts/reach_plane.gd scripts/ways.gd scripts/waypoints.gd scripts/atlas.gd scripts/dissolve.gd scripts/place_title.gd scripts/map_screen.gd scripts/state/world_state.gd assets/data/plane.json
+travel story +overworld*: scripts/state/gates.gd scripts/gate_art.gd assets/data/gates.json
 quest travel: scripts/escort.gd
 dungeon +floor*: scripts/world_delve.gd scripts/puny_dungeon.gd scripts/dungeon_floor.gd scripts/dungeon_screen.gd scripts/state/dungeons.gd assets/puny/dungeon/*
 combat dungeon: scripts/boss_brain.gd scripts/telegraph.gd scripts/boss_bar.gd

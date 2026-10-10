@@ -111,6 +111,13 @@ func _ready() -> void:
 	# `--day N`: the morning of day N, its patches grown (PIX-250).
 	if flags.has("--day"):
 		GameState.world.steps = float(int(flags.value("--day")) * DayNight.DAY_CYCLE_STEPS)
+	# `--seen` and `--hunted`: stories told and named monsters slain before
+	# the first map is drawn, so the gates they open stand open (PIX-254).
+	for story_id: String in flags.list("--seen"):
+		GameState.mark_seen(story_id)
+	for named_id: String in flags.list("--hunted"):
+		if named_id not in GameState.progression.hunted:
+			GameState.progression.hunted.append(named_id)
 	# Resume where the save stands; `--map <id>` (harness) boots at that map's spawn.
 	var override := flags.has("--map")
 	map = load_map(flags.value("--map", GameState.world.map_id))

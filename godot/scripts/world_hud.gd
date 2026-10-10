@@ -323,8 +323,8 @@ func update_objective() -> void:
 ## Where the hero is headed, looked at again now: the active lead, and the
 ## main story's behind it while something else leads.
 func look_again() -> void:
-	bearing = Bearing.active(GameState.progression, GameState.settlement, GameState.pack.items)
-	story = Bearing.behind(bearing, GameState.progression, GameState.settlement, GameState.pack.items)
+	bearing = Bearing.active(GameState.progression, GameState.settlement, GameState.pack.items, GameState.world.discovered)
+	story = Bearing.behind(bearing, GameState.progression, GameState.settlement, GameState.pack.items, GameState.world.discovered)
 	leads_story = Bearing.tells_story(bearing)
 
 

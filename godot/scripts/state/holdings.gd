@@ -66,6 +66,25 @@ func fund_project(project_id: String) -> String:
 	return line
 
 
+## Funds a work out on the Reach's roads (PIX-254, Town.works): paid as a
+## project is, part of no age; built, it opens its gate the next time the
+## Reach is drawn. Returns the ledger's line, "" if it can't.
+func fund_work(work_id: String) -> String:
+	if Town.work_blocker(work_id, owner.progression, owner.settlement, owner.pack.gold, owner.pack.items) != "":
+		return ""
+	var entry := Town.work(work_id)
+	owner.pack.gold -= int(entry["cost"]["gold"])
+	for item_id: String in entry["cost"]["items"]:
+		owner.pack.remove_item(item_id, int(entry["cost"]["items"][item_id]))
+	# Kept with the projects, so a save from before them keeps the ages its
+	# tier had reached (done_projects).
+	owner.settlement.projects.assign(Town.done_projects(owner.settlement) + [work_id])
+	owner.pack_changed()
+	owner.settlers_changed.emit()
+	owner.save_now()
+	return String(entry["built"])
+
+
 ## Whether a village project stands (PIX-206: the Hamlet's each bring a perk).
 func project_built(project_id: String) -> bool:
 	return project_id in Town.done_projects(owner.settlement)

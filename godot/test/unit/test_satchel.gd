@@ -62,8 +62,23 @@ func test_the_letters_are_rows_by_their_address_to_deliver() -> void:
 	assert_eq(wenna["detail"], Catalog.item("letter_wenna")["description"], "the envelope, under the list")
 	assert_string_contains(wenna["detail"], "A courier never reads the post")
 	for quest_id: String in RECIPIENTS:
-		assert_eq(_row(quest_id)["lead"]["who"], RECIPIENTS[quest_id], "%s leads to its recipient" % quest_id)
+		var lead: Dictionary = _row(quest_id)["lead"]
 		assert_ne(String(Quests.by_id(quest_id)["addressed"]), "")
+		if lead.has("gate"):
+			# Past a gate still shut (PIX-254): to what opens it, in its words.
+			var said := Gates.line(Gates.by_id(lead["gate"]), state.progression, state.settlement).trim_suffix(".")
+			assert_true(String(_row(quest_id)["line"]).begins_with(said), "%s waits on a gate" % quest_id)
+			continue
+		assert_eq(lead["who"], RECIPIENTS[quest_id], "%s leads to its recipient" % quest_id)
+	assert_false(_row("letter_wenna")["lead"].has("gate"), "the cliff road is clear once the letters are out")
+	assert_eq(_row("letter_pell")["lead"].get("gate", ""), "bridge", "Pell's letter waits on the burnt bridge")
+	# Every way open (a hero who has walked the whole Reach): each to its recipient.
+	var everywhere := {}
+	Atlas.walk_all(everywhere)
+	for quest_id: String in RECIPIENTS:
+		var row: Dictionary = Journal.rows(state.progression, state.settlement, state.pack.items, everywhere).filter(
+			func(each: Dictionary) -> bool: return each["id"] == quest_id)[0]
+		assert_eq(row["lead"]["who"], RECIPIENTS[quest_id], "%s leads to its recipient" % quest_id)
 
 
 func test_a_delivered_letter_is_answered_and_shows_its_answer() -> void:

@@ -438,6 +438,10 @@ class Painting extends Control:
 	const STORY_GROW := 10.0
 	## A waypoint not open yet (PIX-266): not found, or no one keeps it.
 	const CLOSED := Color("8e8880")
+	## A gate the story keeps shut (PIX-254): the alarm's red.
+	const SHUT := Color("d8433f")
+	## The gates shut on this page whose ground was seen (PIX-254).
+	var _gates: Array[Dictionary] = []
 	## The dark round a label's letters, and the shade under them (px each
 	## way past the letters), so they read on any ground.
 	const OUTLINE := 4
@@ -488,9 +492,20 @@ class Painting extends Control:
 				_ground[cell] = Atlas.color(map.grid[cell])
 		for cell: Vector2i in village:
 			_ground[cell] = Atlas.color(village[cell])
+		_gates = _shut_gates(seen)
 		_name_destination()
 		_place_labels(seen)
 		queue_redraw()
+
+	## The gates the story keeps shut on this page (PIX-254), once the
+	## ground they stand on has been seen: each marked and named where it
+	## stands.
+	func _shut_gates(seen: Dictionary) -> Array[Dictionary]:
+		var out: Array[Dictionary] = []
+		for gate: Dictionary in Gates.closed_on(map.id, GameState.progression, GameState.settlement, GameState.world.discovered):
+			if Gates.cells_of(gate).any(func(cell: Vector2i) -> bool: return seen.has(cell)):
+				out.append(gate)
+		return out
 
 	## The ring breathes while a waypoint is chosen, unless motion is
 	## reduced; and the marks are drawn again on the screen's pixels when
@@ -534,6 +549,8 @@ class Painting extends Control:
 		for waypoint: Dictionary in Interactables.waypoints():
 			if waypoint["mapId"] == map.id:
 				marked.append(Waypoints.cell(waypoint))
+		for gate: Dictionary in _gates:
+			marked.append(Gates.middle(gate))
 		if home:
 			marked.append(world.player_cell)
 		for cell in marked:
@@ -548,7 +565,11 @@ class Painting extends Control:
 		if tag != null:
 			taken.append(Rect2(_center(Waypoints.cell(destination)), Vector2.ZERO).grow(Waypoints.ring_half(mark, Waypoints.PULSE_PX) + 2.0))
 			taken.append(Rect2(tag.position, tag.get_combined_minimum_size()))
-		for label: Dictionary in Atlas.labels(map, seen):
+		# A shut gate's name first (PIX-254): it says why the way past it is shut.
+		var named: Array[Dictionary] = []
+		for gate: Dictionary in _gates:
+			named.append({"text": Gates.mark(gate), "at": Vector2(Gates.middle(gate)) + Vector2(0.5, 0.5), "way": true})
+		for label: Dictionary in named + Atlas.labels(map, seen):
 			var size := Vector2(font.get_string_size(label["text"], HORIZONTAL_ALIGNMENT_LEFT, -1, UiStyle.TEXT).x, font.get_height(UiStyle.TEXT))
 			var spot: Vector2 = label["at"] * tile_px
 			var at := Atlas.label_at(spot, size, bounds, label["way"], mark, taken)
@@ -602,6 +623,9 @@ class Painting extends Control:
 		# The lairs of the named monsters the board has posted (PIX-156).
 		for entry in Hunts.living_on(map.id, GameState.questing.board_floors(), GameState.progression.hunted):
 			_marker(_center(Hunts.lair(entry)), mark, LAIR)
+		# The gates the story keeps shut (PIX-254), a red cross named beside it.
+		for gate: Dictionary in _gates:
+			_cross(_center(Gates.middle(gate)), mark)
 		if home:
 			for villager in givers(world):
 				_marker(_center(Vector2i((villager.position / 16.0).floor())), mark, QUEST)
@@ -692,6 +716,17 @@ class Painting extends Control:
 	## A diamond's four points, `reach` px from `at`: top, right, bottom, left.
 	static func _points(at: Vector2, reach: float) -> PackedVector2Array:
 		return PackedVector2Array([at + Vector2(0, -reach), at + Vector2(reach, 0), at + Vector2(0, reach), at + Vector2(-reach, 0)])
+
+	## A shut gate's mark (PIX-254): a red cross in a dark rim, `size` px
+	## across, its ends on the screen's pixels - no waypoint's square.
+	func _cross(center: Vector2, size: float) -> void:
+		var at := Waypoints.snap_point(center, _shown)
+		var half := Waypoints.snap_length(floorf(size / 2.0), _shown)
+		var reach := Vector2(half, half)
+		var other := Vector2(half, -half)
+		for stroke: Array in [[UiStyle.NIGHT, maxf(4.0, size * 0.55)], [SHUT, maxf(2.0, size * 0.3)]]:
+			draw_line(at - reach, at + reach, stroke[0], stroke[1])
+			draw_line(at - other, at + other, stroke[0], stroke[1])
 
 	## A marker: a square of `color` in a dark rim, on the screen's pixels.
 	func _marker(center: Vector2, size: float, color: Color) -> void:

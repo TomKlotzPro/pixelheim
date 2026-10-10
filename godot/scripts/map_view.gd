@@ -42,6 +42,11 @@ var door_signs: Array = []
 ## The ways on from this map (PIX-269, Ways.on): bare ground and rock, but
 ## for the gate the story bars.
 var ways: Array[Dictionary] = []
+## The gates still shut on this visit (PIX-254, Gates): drawn across their
+## cells (GateArt), which block; and the cells whose objects they hide (a
+## burnt bridge's planks).
+var gates: Array[Dictionary] = []
+var gate_hides := {}
 var furniture_cells: Array[Vector2i] = []
 ## Night (PIX-149): each lamp's flame and its cold torch for the day, and
 ## the warm glows of lamps and windows; set_night shows one or the other.
@@ -186,6 +191,17 @@ func plan(arrival: Vector2i) -> Vector2i:
 			camps[tent] = {"kind": "tent", "tile": TENTS["marsh"]}
 	for cell: Vector2i in camps:
 		data.covered[cell] = true
+	# The gates the story still keeps shut (PIX-254): what's drawn across
+	# each blocks its cells, and a burnt bridge has no planks there.
+	gates = []
+	gate_hides = {}
+	if data.floor_level == 0:
+		gates = Gates.closed_on(data.id, GameState.progression, GameState.settlement, GameState.world.discovered)
+	for gate: Dictionary in gates:
+		for cell: Vector2i in Gates.cells_of(gate):
+			data.covered[cell] = true
+		for cell: Vector2i in GateArt.plan(gate, PunyProps.available())["hides"]:
+			gate_hides[cell] = true
 	ways = Ways.on(data)
 	# Today's patches (PIX-250): a few dealt from each region's ground.
 	patches = {}
@@ -278,7 +294,7 @@ func _build_ground(data: MapData) -> Node2D:
 		var object := PunyTerrain.object_at(look, cell)
 		if outdoor and object < 0 and not village.has_point(cell):
 			object = PunyTerrain.wall_piece(data.grid, cell)
-		if object >= 0:
+		if object >= 0 and not gate_hides.has(cell):
 			PunyTerrain.place(objects, cell, object)
 	if not skyline.is_empty():
 		var drawn: Dictionary = skyline["objects"].merged({} if PunyTown.available() else skyline["icons"])
@@ -515,6 +531,8 @@ func _build_decor(data: MapData) -> void:
 			actors.add_child(body)
 	for prop: Dictionary in outdoor_props["props"]:
 		_add_puny_prop(prop)
+	for gate: Dictionary in gates:
+		_add_gate(gate)
 	for cell: Vector2i in data.grid:
 		var choice := Scatter.choice(data.grid, cell)
 		if choice < 0 or outdoor_props["drawn"].has(cell):
@@ -955,6 +973,83 @@ func _add_solid_decor(choice: int, cell: Vector2i) -> void:
 	body.add_child(shape)
 	root.add_child(body)
 	actors.add_child(root)
+
+
+## A gate still shut (PIX-254): its pieces (GateArt) among the actors or flat
+## on the ground, and a box on each of its cells, so it blocks like any prop.
+func _add_gate(gate: Dictionary) -> void:
+	for piece: Dictionary in GateArt.plan(gate, PunyProps.available())["pieces"]:
+		_add_gate_piece(piece)
+	for cell: Vector2i in Gates.cells_of(gate):
+		var body := StaticBody2D.new()
+		var shape := CollisionShape2D.new()
+		var rect := RectangleShape2D.new()
+		rect.size = Vector2(TILE, TILE)
+		shape.shape = rect
+		body.add_child(shape)
+		body.position = center(cell)
+		body.add_to_group("decor")
+		actors.add_child(body)
+
+
+func _add_gate_piece(piece: Dictionary) -> void:
+	var cell: Vector2i = piece["cell"]
+	var at: Vector2 = piece["at"]
+	if piece["sheet"] == "villager":
+		# One of the old guard, standing his post, facing down the road.
+		var art := PunyArt.villager(piece["sprite"])
+		var guard := AnimatedSprite2D.new()
+		guard.sprite_frames = PunyArt.frames(art)
+		guard.play(PunyArt.pick(guard.sprite_frames, "idle", "left"))
+		# Sorted on the cell's foot, in front of the fence he keeps.
+		guard.position = Vector2(0, -TILE / 2.0 + PunyArt.lift(art))
+		var post := Node2D.new()
+		post.position = Vector2(cell * TILE) + Vector2(TILE / 2.0 + at.x, TILE)
+		post.add_to_group("decor")
+		post.add_child(guard)
+		actors.add_child(post)
+		return
+	var sprite := Sprite2D.new()
+	match String(piece["sheet"]):
+		"dungeon":
+			sprite.texture = PunyDungeon.sheet().tile_texture(piece["tile"])
+		"props":
+			sprite.texture = PunyProps.texture(piece["tile"])
+		_:
+			sprite.texture = PunyTerrain.sheet().tile_texture(piece["tile"])
+	sprite.centered = false
+	match String(piece["tone"]):
+		"snow":
+			sprite.material = _snow()
+		"charred":
+			sprite.modulate = GateArt.CHARRED
+	if piece["flat"]:
+		sprite.position = Vector2(cell * TILE) + at
+		ground.add_child(sprite)
+		return
+	# Sorted on its own foot, the bottom of its sprite.
+	var root := Node2D.new()
+	root.position = Vector2(cell * TILE) + Vector2(0, TILE + at.y)
+	root.add_to_group("decor")
+	sprite.position = Vector2(at.x, -TILE)
+	root.add_child(sprite)
+	actors.add_child(root)
+
+
+static var _snow_tone: ShaderMaterial
+
+
+## The Frostgate's snow on whatever wears it (PIX-254: the avalanche): the
+## region tint's whitening, everywhere.
+static func _snow() -> ShaderMaterial:
+	if _snow_tone == null:
+		var tint := Image.create(1, 1, false, Image.FORMAT_RGBA8)
+		tint.fill(PunyTerrain.TINTS["snow"])
+		_snow_tone = ShaderMaterial.new()
+		_snow_tone.shader = preload("res://shaders/region_tint.gdshader")
+		_snow_tone.set_shader_parameter("tint_map", ImageTexture.create_from_image(tint))
+		_snow_tone.set_shader_parameter("map_pixels", Vector2(TILE, TILE))
+	return _snow_tone
 
 
 ## A chest or ground treasure as it stands: Shade's chest, pouch or herbs

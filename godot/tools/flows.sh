@@ -33,7 +33,9 @@
 # and each region's road back out where it moved so the Reach and its
 # regions lie in one plane (PIX-269), and the courier's satchel: the
 # journal's Letters page, a chapter's card as it opens, and the main
-# story's hollow diamond on the map (PIX-253 step 2). Every flow leaves its
+# story's hollow diamond on the map (PIX-253 step 2), and each region's way
+# in shut until the story reaches it, its gate saying what opens it as the
+# hero walks up, and open once it has (PIX-254). Every flow leaves its
 # picture in godot/flows/<name>.png for a human to look at, and the
 # harness's report line must match what the flow promises or the run fails.
 #
@@ -203,7 +205,17 @@ FLOWS=(
 	"bounty|--map town --at 43,22 --cleared 4 --keys w,e|open=bounty_screen|town quest screen"
 	"throne|--map town --cleared 15 --seen maren_confession throne --keys s,e --wait 0.5|open=reveal_screen|story screen"
 	"festival|--map town --town-tier 2 --at 43,27 festival --keys w,e,e,e|open=ring_toss_screen|town screen"
-	"coast|--map overworld --at 16,61 --walk d,d,d --wait 0.4|map=saltmere|travel"
+	# The gates (PIX-254): each region's way in shut, the hero stopped before
+	# it and told what opens it; then open once the story has opened it (the
+	# cliff road once Maren's letters are out, the bridge, Ulla's barricade
+	# and the avalanche once a hero has won what lies past them).
+	"rockfall|--map overworld --at 16,59 --walk d,d,d --wait 0.3|map=overworld cell=\\(16, 61\\).* gate=cliff|travel story"
+	"burnt-bridge|--map overworld --at 48,34 --walk u,u,u,u --wait 0.3|map=overworld cell=\\(48, 31\\).* gate=bridge|travel story"
+	"barricade|--map overworld --at 91,15 --walk r,r,r --wait 0.3|map=overworld cell=\\(93, 15\\).* gate=barricade|travel story"
+	"avalanche|--map overworld --at 68,9 --walk u,u,u,u --wait 0.3|map=overworld cell=\\(68, 6\\).* gate=avalanche|travel story"
+	"bridge-open|--map overworld --hunted seam_warden --at 48,32 --walk u,u,u,u --wait 0.3|map=overworld cell=\\(48, [12][0-9]\\)|travel story"
+	"pass-open|--map overworld --hunted hollow_captain --at 68,8 --walk u,u,u,u,u,u,u,u --wait 0.4|map=frostgate|travel story"
+	"coast|--map overworld --seen maren_tin --at 16,61 --walk d,d,d --wait 0.4|map=saltmere|travel story"
 	# Up the path into the sea cave's mouth (PIX-269).
 	"seacave|--map saltmere --at 6,24 --walk u --wait 0.4|map=seacave|travel"
 	# Out through the parted cliffs (PIX-269: no cave mouth, no post), and the
@@ -219,7 +231,7 @@ FLOWS=(
 	"wood-out|--map deepwood --at 2,5 --walk l,l,l --wait 0.4|map=overworld |travel"
 	"coast-out|--map saltmere --at 16,2 --walk u,u,u --wait 0.4|map=overworld |travel"
 	"pass-out|--map frostgate --at 28,45 --walk d,d,d --wait 0.4|map=overworld |travel"
-	"castle|--map overworld --at 93,15 --walk r,r,r --wait 0.4|map=greyhold|travel"
+	"castle|--map overworld --hunted seam_warden --at 93,15 --walk r,r,r --wait 0.4|map=greyhold|travel story"
 	# A house opens onto a room, and the cave is down its stair (PIX-256): the
 	# keep's door into Captain Hale's hall; the stair asks, and the hero waits
 	# at the top; going down takes them to the cellars, staying keeps them in

@@ -1805,6 +1805,10 @@ msgid "A gold arrow at the edge of the screen points the way while your goal is 
 msgstr "Une flèche dorée au bord de l'écran montre le chemin tant que votre but est hors de vue, vers la personne, l'endroit ou la porte qui y mène ; la carte le marque d'un losange doré"
 
 #: assets/data/changelog.json
+msgid "A hero already past a road finds it open"
+msgstr "Un héros qui a déjà franchi une route la trouve ouverte"
+
+#: assets/data/changelog.json
 msgid "A hero from before keeps everything: whoever has cleared a floor finds the gate open, and Maren goes straight to her next ask"
 msgstr "Un ancien héros conserve tout : qui a déjà nettoyé un étage trouve la porte ouverte, et Maren passe directement à sa demande suivante"
 
@@ -2241,6 +2245,10 @@ msgid "Clearing a floor steps you back out of the door you entered"
 msgstr "Nettoyer un étage vous fait ressortir par la porte d'où vous êtes entré"
 
 #: assets/data/changelog.json
+msgid "Closed Roads"
+msgstr "Routes coupées"
+
+#: assets/data/changelog.json
 msgid "Cloud shadows drift slowly over the open land by day, never indoors or underground"
 msgstr "L'ombre des nuages glisse lentement sur les terres le jour, jamais à l'intérieur ni sous terre"
 
@@ -2459,6 +2467,10 @@ msgstr "Chaque région a sa propre ambiance de couleurs, et la nuit retire un pe
 #: assets/data/changelog.json
 msgid "Each region has its own monsters; deeper regions hit harder and drop better"
 msgstr "Chaque région a ses propres monstres ; les régions plus lointaines frappent plus fort et donnent un meilleur butin"
+
+#: assets/data/changelog.json
+msgid "Each region's road now waits for its chapter: a rockfall on the cliff road to Saltmere, the burnt river bridge north of town, Ulla's barricade before Greyhold and an avalanche on the Frostgate road"
+msgstr "La route de chaque région attend désormais son chapitre : un éboulement sur la route des falaises vers Saltmere, le pont brûlé sur la rivière au nord du village, la barricade d'Ulla devant Greyhold et une avalanche sur la route de la Porte-Givre"
 
 #: assets/data/changelog.json
 msgid "Early Stakes"
@@ -2815,6 +2827,10 @@ msgstr "Fortune et acier"
 #: assets/data/changelog.json
 msgid "Four roles: Warrior, Mage, Rogue, Cleric"
 msgstr "Quatre rôles : Guerrier, Mage, Voleur, Clerc"
+
+#: assets/data/changelog.json
+msgid "French lists now keep their narrow space before the semicolon"
+msgstr "Les listes en français gardent désormais leur espace fine avant le point-virgule"
 
 #: assets/data/changelog.json
 msgid "Fresh Ground"
@@ -3283,6 +3299,10 @@ msgstr "La maîtrise se voit"
 #: assets/data/changelog.json
 msgid "Materials weigh nothing and sell for pocket change - brew, don't hoard"
 msgstr "Les matériaux ne pèsent rien et se vendent pour trois sous - concoctez, n'amassez pas"
+
+#: assets/data/changelog.json
+msgid "Mend the river bridge at the board on the square once Wenna has her letter"
+msgstr "Réparez le pont de la rivière au tableau d'avis de la place une fois que Wenna a reçu sa lettre"
 
 #: assets/data/changelog.json
 msgid "Merchant Odo and Innkeeper Sela finally have faces"
@@ -5271,6 +5291,10 @@ msgstr "DES LOUPS DANS LES BOIS : une meute de loups vit désormais dans la Fo
 #: assets/data/changelog.json
 msgid "Walk in armor: the overlays ride the walk-cycle bob, so your gear moves with you instead of floating over you"
 msgstr "Marchez en armure : les calques suivent le balancement de la marche, et votre équipement bouge avec vous au lieu de flotter au-dessus de vous"
+
+#: assets/data/changelog.json
+msgid "Walk up to a closed road and it tells you what opens it; the journal, the arrow and the map then lead you there"
+msgstr "Approchez d'une route coupée et elle vous dit ce qui l'ouvrira ; le journal, la flèche et la carte vous y mènent ensuite"
 
 #: assets/data/changelog.json
 msgid "Wanted"
@@ -7984,6 +8008,42 @@ msgstr "de célérité"
 msgid "of the Wall"
 msgstr "du rempart"
 
+#: assets/data/gates.json
+msgid "A rockfall has shut the cliff road to Saltmere. Bram's crew will clear it once Maren has letters to send."
+msgstr "Un éboulement a fermé la route de la falaise vers Saltmere. L'équipe de Bram la dégagera dès que Maren aura des lettres à envoyer."
+
+#: assets/data/gates.json
+msgid "An avalanche buries the Frostgate road. Ulla's wardens will dig it out once Greyhold's captain stands down."
+msgstr "Une avalanche ensevelit la route de la Porte-Givre. Les gardiens d'Ulla la dégageront dès que le capitaine de Greyhold aura déposé les armes."
+
+#: assets/data/gates.json
+msgid "Avalanche"
+msgstr "Avalanche"
+
+#: assets/data/gates.json
+msgid "Barricade"
+msgstr "Barricade"
+
+#: assets/data/gates.json
+msgid "Burnt bridge"
+msgstr "Pont brûlé"
+
+#: assets/data/gates.json
+msgid "Rockfall"
+msgstr "Éboulement"
+
+#: assets/data/gates.json
+msgid "The river bridge burned on the Night of Ash. It wants rope, and the best rope is in Saltmere."
+msgstr "Le pont de la rivière a brûlé pendant la Nuit des Cendres. Il lui faut de la corde, et la meilleure corde est à Saltmere."
+
+#: assets/data/gates.json
+msgid "The river bridge burned on the Night of Ash. Mend it at the board on the square."
+msgstr "Le pont de la rivière a brûlé pendant la Nuit des Cendres. Réparez-le au tableau d'avis de la place."
+
+#: assets/data/gates.json
+msgid "Ulla's sentry, kindly: \"Greyhold's shut, courier. Sorry. Sort out whatever's down Pell's mine and he'll vouch for you.\""
+msgstr "La sentinelle d'Ulla, gentiment : « Greyhold est fermé, messager. Pardon. Réglez ce qui se terre au fond de la mine de Pell, et il répondra de vous. »"
+
 #: assets/data/hints.json
 msgid "A business you own fills its till with rent every day - its keeper hands it over when you walk in - and you pay a tenth less there."
 msgstr "Un commerce qui vous appartient remplit sa caisse de loyers chaque jour - son tenancier vous la remet quand vous entrez - et vous y payez un dixième de moins."
@@ -9761,6 +9821,10 @@ msgid "Old Tomas says the Deepwood's walking stones trample the mushrooms he for
 msgstr "Le vieux Tomas dit que les pierres qui marchent des Bois-Profonds piétinent les champignons qu'il cueille."
 
 #: assets/data/progression.json
+msgid "Old Wenna sends Brin's best rope home with you: \"Your river bridge burned, I hear. Mend it. Tam would have. Badly, but he would have.\""
+msgstr "La vieille Wenna vous confie la meilleure corde de Brin : « Votre pont sur la rivière a brûlé, à ce qu'on dit. Réparez-le. Tam l'aurait fait. Mal, mais il l'aurait fait. »"
+
+#: assets/data/progression.json
 msgid "Old Wenna wants to know what the smugglers found of her brother Tam."
 msgstr "La vieille Wenna veut savoir ce que les contrebandiers ont trouvé de son frère Tam."
 
@@ -11213,6 +11277,10 @@ msgid "Hope comes home: bring two of the relics back to Pixelheim"
 msgstr "L'espoir revient : rapporter deux des reliques à Pixelheim"
 
 #: assets/data/town.json
+msgid "It wants rope, and the best rope is in Saltmere"
+msgstr "Il lui faut de la corde, et la meilleure corde est à Saltmere"
+
+#: assets/data/town.json
 msgid "Iva's school, and its stronger brews: every potion heals a quarter more."
 msgstr "L'école d'Iva et ses breuvages plus puissants : chaque potion soigne un quart de plus."
 
@@ -11253,12 +11321,20 @@ msgid "Mason Pell"
 msgstr "Pell le maçon"
 
 #: assets/data/town.json
+msgid "Mend the river bridge"
+msgstr "Réparer le pont de la rivière"
+
+#: assets/data/town.json
 msgid "Merchants pay 20% more for everything you sell"
 msgstr "Les marchands paient 20 % plus cher tout ce que vous vendez"
 
 #: assets/data/town.json
 msgid "Mossy roofs on the river's bend. Builders whistle now."
 msgstr "Des toits moussus dans le méandre de la rivière. Les bâtisseurs sifflent, maintenant."
+
+#: assets/data/town.json
+msgid "New planks on the burnt bridge north of town, lashed with Brin's best rope. The road to Blackiron, Greyhold and the Frostgate."
+msgstr "Des planches neuves sur le pont brûlé au nord du village, liées avec la meilleure corde de Brin. La route de Fernoir, de Greyhold et de la Porte-Givre."
 
 #: assets/data/town.json
 msgid "Nothing stirs below: cast down Morvax"
@@ -11343,6 +11419,10 @@ msgstr "L'auberge et les maisons"
 #: assets/data/town.json
 msgid "The inn honors its patron: rest costs half"
 msgstr "L'auberge honore son mécène : repos à moitié prix"
+
+#: assets/data/town.json
+msgid "The river bridge is mended. Brin's rope holds, and Bram says he supervised."
+msgstr "Le pont de la rivière est réparé. La corde de Brin tient bon, et Bram dit qu'il a supervisé."
 
 #: assets/data/town.json
 msgid "The slate hall"
@@ -13440,11 +13520,11 @@ msgstr "Le poison"
 msgid "The burn"
 msgstr "La brûlure"
 
-#: scripts/state/bearing.gd:119
+#: scripts/state/bearing.gd:123
 msgid "Hand it in to %s."
 msgstr "Remettez-la à %s."
 
-#: scripts/state/bearing.gd:147
+#: scripts/state/bearing.gd:151
 msgid "Slay %s in its lair"
 msgstr "Abattez %s dans son repaire"
 
@@ -13576,27 +13656,27 @@ msgstr "%s x%d"
 msgid "Wanderer"
 msgstr "Vagabond"
 
-#: scripts/state/holdings.gd:228
+#: scripts/state/holdings.gd:247
 msgid "The town is not ready for me yet."
 msgstr "La ville n'est pas encore prête pour moi."
 
-#: scripts/state/holdings.gd:233
+#: scripts/state/holdings.gd:252
 msgid "Iva's hands glow warm. Fully healed, free of charge."
 msgstr "Les mains d'Iva rayonnent de chaleur. Soins complets, gratuits."
 
-#: scripts/state/holdings.gd:236
+#: scripts/state/holdings.gd:255
 msgid " She tucks %d healing potion%s in your pack."
 msgstr " Elle glisse %d potion%s de soin dans votre sac."
 
-#: scripts/state/holdings.gd:241
+#: scripts/state/holdings.gd:260
 msgid "Loras plays you a marching song%s. Your next hunt strikes truer. (+%d%% crit)"
 msgstr "Loras vous joue un air de marche%s. Votre prochaine chasse frappera plus juste. (+%d%% de critique)"
 
-#: scripts/state/holdings.gd:242
+#: scripts/state/holdings.gd:261
 msgid " on his war-horn"
 msgstr " sur son cor de guerre"
 
-#: scripts/state/holdings.gd:286
+#: scripts/state/holdings.gd:305
 msgid "The prize is yours: +%d gold and %d %ss!"
 msgstr "Vous remportez le lot : +%d or et %d %ss !"
 
@@ -13696,11 +13776,11 @@ msgstr "{item} {affix}"
 msgid "Town and people"
 msgstr "Le bourg et ses gens"
 
-#: scripts/state/journal.gd:57
+#: scripts/state/journal.gd:60
 msgid "Its lair: %s. %s."
 msgstr "Son repaire : %s. %s."
 
-#: scripts/state/journal.gd:69
+#: scripts/state/journal.gd:72
 msgid "Chapter %d: %s"
 msgstr "Chapitre %d : %s"
 
@@ -13744,15 +13824,15 @@ msgstr "Remise : %s."
 msgid "Delivered: %s. %s."
 msgstr "Remise : %s. %s."
 
-#: scripts/state/questing.gd:360
+#: scripts/state/questing.gd:364
 msgid "%s: ready to hand in to %s."
 msgstr "%s : prêt à remettre à %s."
 
-#: scripts/state/questing.gd:412
+#: scripts/state/questing.gd:416
 msgid "That uses what %s needs (%s). Do it again to go ahead."
 msgstr "Cela entame ce que demande « %s » (%s). Recommencez pour confirmer."
 
-#: scripts/state/questing.gd:423
+#: scripts/state/questing.gd:427
 msgid "A feat done: %s. The %s is yours, for the shelf at home."
 msgstr "Un haut fait accompli : %s. La %s est à vous, pour l'étagère de la maison."
 
@@ -13964,11 +14044,11 @@ msgstr "La trésorerie demande %d or."
 msgid "It takes %d %s."
 msgstr "Il faut %d %s."
 
-#: scripts/state/town.gd:316
+#: scripts/state/town.gd:352
 msgid "All it wants is %s. The board on the square takes it, and we'll have it up by the time you're back."
 msgstr "Il ne lui faut que %s. Ça se dépose au tableau de la place, et on l'aura monté d'ici votre retour."
 
-#: scripts/state/town.gd:382
+#: scripts/state/town.gd:418
 msgid "%s is back at work indoors."
 msgstr "%s travaille de nouveau sous son propre toit."
 
@@ -14160,17 +14240,21 @@ msgstr "NOUVEAU"
 msgid "Village projects"
 msgstr "Chantiers du village"
 
-#: scripts/town_hall_screen.gd:100
+#: scripts/town_hall_screen.gd:135
+msgid "COMMISSIONED"
+msgstr "COMMANDÉ"
+
+#: scripts/town_hall_screen.gd:137
 msgid "Already commissioned."
 msgstr "Déjà commandé."
-
-#: scripts/town_hall_screen.gd:119
-msgid "BUILT"
-msgstr "BÂTI"
 
 #: scripts/town_hall_screen.gd:14
 msgid "Fund a project and Pixelheim changes the moment you walk outside."
 msgstr "Financez un chantier et Pixelheim change dès que vous sortez."
+
+#: scripts/town_hall_screen.gd:156
+msgid "BUILT"
+msgstr "BÂTI"
 
 #: scripts/town_hall_screen.gd:20
 msgid "Pixelheim today: %s (age %d of %d)"
@@ -14188,41 +14272,37 @@ msgstr "Commandes : des ouvrages coûteux que la ville bâtirait en votre honn
 msgid "- %s: %s"
 msgstr "- %s : %s"
 
-#: scripts/town_hall_screen.gd:30
+#: scripts/town_hall_screen.gd:34
 msgid "Building the %s"
 msgstr "Prochain âge : %s"
 
-#: scripts/town_hall_screen.gd:33
+#: scripts/town_hall_screen.gd:37
 msgid "Done:"
 msgstr "Fait :"
 
-#: scripts/town_hall_screen.gd:33
+#: scripts/town_hall_screen.gd:37
 msgid "Needed:"
 msgstr "Requis :"
 
-#: scripts/town_hall_screen.gd:34
+#: scripts/town_hall_screen.gd:38
 msgid "When it's done: %s."
 msgstr "Une fois terminé : %s."
 
-#: scripts/town_hall_screen.gd:40
+#: scripts/town_hall_screen.gd:44
 msgid "Once built: %s."
 msgstr "Une fois bâti : %s."
 
-#: scripts/town_hall_screen.gd:55
+#: scripts/town_hall_screen.gd:59
 msgid "Townsfolk"
 msgstr "Habitants"
 
-#: scripts/town_hall_screen.gd:71
+#: scripts/town_hall_screen.gd:75
 msgid "Holdings"
 msgstr "Propriétés"
 
-#: scripts/town_hall_screen.gd:75
+#: scripts/town_hall_screen.gd:79
 msgid "- %s: %dg earned, %dg in the till (%dg a day)"
 msgstr "- %s : %d o gagnés, %d o en caisse (%d o par jour)"
-
-#: scripts/town_hall_screen.gd:98
-msgid "COMMISSIONED"
-msgstr "COMMANDÉ"
 
 #: scripts/ui_style.gd:534
 msgid "Arrows"
@@ -14252,11 +14332,11 @@ msgstr "Descendre"
 msgid "Stay"
 msgstr "Rester"
 
-#: scripts/world.gd:284
+#: scripts/world.gd:291
 msgid "%s bars your way: no leaving until the fight is over."
 msgstr "%s vous barre la route : pas de fuite avant la fin du combat."
 
-#: scripts/world.gd:325
+#: scripts/world.gd:332
 msgid "No map reaches this deep."
 msgstr "Aucune carte ne va aussi profond."
 
@@ -14288,11 +14368,11 @@ msgstr "NIVEAU SUPÉRIEUR"
 msgid "Boss slayer +%d%%  %d:%02d"
 msgstr "Tueur de boss +%d %%  %d:%02d"
 
-#: scripts/world_interaction.gd:176
+#: scripts/world_interaction.gd:181
 msgid "A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it."
 msgstr "Un établi pour cette étagère : %d or. Il compte comme un niveau de métier en plus quand vous fabriquez chez vous. {key:interact} à nouveau pour l'acheter."
 
-#: scripts/world_interaction.gd:203
+#: scripts/world_interaction.gd:208
 msgid "Sela's stew simmers over the fire. Hunter's Stew is brewed at Vex's cauldron, behind the BREWS door."
 msgstr "Le ragoût de Sela mijote sur le feu. Le Ragoût du chasseur se prépare au chaudron de Vex, derrière la porte POTIONS."
 

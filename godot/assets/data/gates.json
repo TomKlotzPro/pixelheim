@@ -1,0 +1,46 @@
+{
+  "about": "PIX-254 (the main story v2, step 3): each region's way in from the Reach stays shut until the story reaches it. A gate is its map's cells that something drawn blocks (its `look`, Gates' art), in story order, and what opens it: each of `opens` met in turn, a main quest step by id (`step`) or a step's kind of condition (`when`), the `line` of the first one not met said walking up to it and shown in the journal and by the arrow, which leads to what opens it. `mark` names it where it stands on the map. A hero already past a gate finds it open (Gates.passed: the ground past it seen, its letters delivered or keepsakes won, its named monsters slain; or past a later gate, or the mountain's own, its floors cleared), worked out from what the save holds. The Deepwood and the Mirefen stay open; the mountain's own gate is Relics'.",
+  "gates": [
+    {
+      "id": "cliff",
+      "mapId": "overworld",
+      "look": "rockfall",
+      "cells": [[15, 62], [16, 62], [17, 62]],
+      "mark": "Rockfall",
+      "opens": [
+        {"step": "tin", "line": "A rockfall has shut the cliff road to Saltmere. Bram's crew will clear it once Maren has letters to send."}
+      ]
+    },
+    {
+      "id": "bridge",
+      "mapId": "overworld",
+      "look": "burnt_bridge",
+      "cells": [[48, 29], [49, 29], [48, 30], [49, 30]],
+      "mark": "Burnt bridge",
+      "opens": [
+        {"step": "letter_wenna", "line": "The river bridge burned on the Night of Ash. It wants rope, and the best rope is in Saltmere."},
+        {"when": {"kind": "project", "projectId": "river_bridge"}, "line": "The river bridge burned on the Night of Ash. Mend it at the board on the square."}
+      ]
+    },
+    {
+      "id": "barricade",
+      "mapId": "overworld",
+      "look": "barricade",
+      "cells": [[94, 14], [94, 15], [94, 16]],
+      "mark": "Barricade",
+      "opens": [
+        {"step": "ingot", "line": "Ulla's sentry, kindly: \"Greyhold's shut, courier. Sorry. Sort out whatever's down Pell's mine and he'll vouch for you.\""}
+      ]
+    },
+    {
+      "id": "avalanche",
+      "mapId": "overworld",
+      "look": "avalanche",
+      "cells": [[67, 4], [68, 4], [69, 4], [67, 5], [68, 5], [69, 5]],
+      "mark": "Avalanche",
+      "opens": [
+        {"step": "shield", "line": "An avalanche buries the Frostgate road. Ulla's wardens will dig it out once Greyhold's captain stands down."}
+      ]
+    }
+  ]
+}

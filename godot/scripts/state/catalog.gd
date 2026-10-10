@@ -71,4 +71,4 @@ static func set_line(set_id: String, worn: int) -> String:
 		if armor > 0:
 			gives.append(Text.t("+%d armor") % armor)
 		parts.append(Text.t("%s pieces %s") % [at, ", ".join(gives)])
-	return Text.t("%s (%d/%d): %s") % [entry.get("name", set_id), worn, entry.get("pieces", []).size(), "; ".join(parts)]
+	return Text.t("%s (%d/%d): %s") % [entry.get("name", set_id), worn, entry.get("pieces", []).size(), Text.listed(parts)]

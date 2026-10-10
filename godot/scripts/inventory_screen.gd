@@ -393,7 +393,7 @@ func _about(row: Dictionary) -> String:
 					missing.append(lead if lead != "" else Catalog.item_name(need))
 			if missing.is_empty():
 				return about + " " + String(Catalog.item(row["item_id"]).get("description", ""))
-			return about + " " + "; ".join(missing) + "."
+			return about + " " + Text.listed(missing) + "."
 	var item := Catalog.item(row["item_id"])
 	if item.has("set"):
 		return "%s %s." % [item.get("description", ""), Catalog.set_line(item["set"], int(GameState.pack.set_counts().get(item["set"], 0)))]

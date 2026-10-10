@@ -14,26 +14,30 @@ const NOWHERE := Vector2i(-1, -1)
 ## The active lead: {title, step, place, map_id, cell, who, progress,
 ## quest_id, named, main} (`who`: the villager it's about, when it's a
 ## person; `named`: a followed bounty's named monster), or {} once the
-## story is done and nothing is followed.
-static func active(progression: ProgressionState, settlement: SettlementState, items: Dictionary) -> Dictionary:
+## story is done and nothing is followed. Where its place lies past a gate
+## still shut (PIX-254), it leads to what opens the gate, in the gate's
+## words (Gates.detour; `discovered`, the save's fog of war, says whether an
+## old hero is already past it).
+static func active(progression: ProgressionState, settlement: SettlementState, items: Dictionary, discovered: Dictionary = {}) -> Dictionary:
 	if progression.tracked != "":
 		var quest := Quests.by_id(progression.tracked)
 		var entry: Dictionary = progression.quests.get(progression.tracked, {})
 		if not quest.is_empty() and not entry.is_empty() and not entry.get("done", false):
-			return of_quest(quest, progression, settlement, items)
+			return Gates.detour(of_quest(quest, progression, settlement, items), progression, settlement, items, discovered)
 		# A notice on the bounty board, followed while its quarry lives.
 		var named := Hunts.named(progression.tracked)
 		if not named.is_empty() and Hunts.on_board(named) and Hunts.status(named, board_floors(progression), progression.hunted) == "wanted":
-			return of_bounty(named)
-	return main(progression, settlement, items)
+			return Gates.detour(of_bounty(named), progression, settlement, items, discovered)
+	return main(progression, settlement, items, discovered)
 
 
 ## The main story's lead, whatever is followed: its next step's, or {} once
 ## it's told. While a side quest or a bounty leads, the map keeps this one
 ## as a hollow gold diamond, so the main goal is never lost (PIX-253 step 2).
-static func main(progression: ProgressionState, settlement: SettlementState, items: Dictionary) -> Dictionary:
+## Past a gate still shut, what opens it (PIX-254).
+static func main(progression: ProgressionState, settlement: SettlementState, items: Dictionary, discovered: Dictionary = {}) -> Dictionary:
 	var step := MainQuest.next_step(progression, settlement)
-	return {} if step.is_empty() else of_step(step, progression, settlement, items)
+	return {} if step.is_empty() else Gates.detour(of_step(step, progression, settlement, items), progression, settlement, items, discovered)
 
 
 ## Whether `lead` is the main story's (PIX-253 step 2: the arrow is gold
@@ -50,10 +54,10 @@ static func tells_story(lead: Dictionary) -> bool:
 
 ## The main story's lead behind `lead` (the active one): {} while the main
 ## story leads itself or is told, else its next step's.
-static func behind(lead: Dictionary, progression: ProgressionState, settlement: SettlementState, items: Dictionary) -> Dictionary:
+static func behind(lead: Dictionary, progression: ProgressionState, settlement: SettlementState, items: Dictionary, discovered: Dictionary = {}) -> Dictionary:
 	if lead.is_empty() or lead["main"]:
 		return {}
-	return main(progression, settlement, items)
+	return main(progression, settlement, items, discovered)
 
 
 ## A main story step's lead: its chapter, its line, and where it is - the

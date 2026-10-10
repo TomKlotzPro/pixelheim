@@ -34,27 +34,30 @@ static func is_main_line(quest: Dictionary) -> bool:
 ## over and answered), follows (whether E can follow it: not a letter
 ## delivered)}. The main story is its chapter, then the courier's satchel
 ## (PIX-253 step 2: Maren's letters, those delivered with their answer),
-## then the other quests that carry it.
-static func rows(progression: ProgressionState, settlement: SettlementState, items: Dictionary) -> Array[Dictionary]:
+## then the other quests that carry it. A thread whose place lies past a
+## gate still shut says the gate's line and leads to what opens it
+## (PIX-254, Gates.detour; `discovered`: the save's fog of war).
+static func rows(progression: ProgressionState, settlement: SettlementState, items: Dictionary, discovered: Dictionary = {}) -> Array[Dictionary]:
 	var by_group := {"story": [], "people": [], "bounties": []}
+	var past_gates := func(lead: Dictionary) -> Dictionary: return Gates.detour(lead, progression, settlement, items, discovered)
 	var step := MainQuest.next_step(progression, settlement)
 	if not step.is_empty():
-		var lead := Bearing.of_step(step, progression, settlement, items)
+		var lead: Dictionary = past_gates.call(Bearing.of_step(step, progression, settlement, items))
 		by_group["story"].append(_row("story", STORY, chapter_title(step), lead, String(step.get("hint", ""))))
 	for carried: Dictionary in Letters.satchel(progression):
-		by_group["story"].append(_letter(carried["quest"], carried["delivered"], progression, settlement, items))
+		by_group["story"].append(_letter(carried["quest"], carried["delivered"], progression, settlement, items, discovered))
 	for quest: Dictionary in Quests.all():
 		var entry: Dictionary = progression.quests.get(quest["id"], {})
 		if entry.is_empty() or entry.get("done", false) or Letters.is_letter(quest):
 			continue
 		var group := "story" if is_main_line(quest) else "people"
-		var row := _row(group, quest["id"], quest["name"], Bearing.of_quest(quest, progression, settlement, items), _asked(quest, progression, settlement))
+		var row := _row(group, quest["id"], quest["name"], past_gates.call(Bearing.of_quest(quest, progression, settlement, items)), _asked(quest, progression, settlement))
 		row["ready"] = Quests.is_ready(quest, progression.quests, items)
 		by_group[group].append(row)
 	for notice: Dictionary in Hunts.notices(Bearing.board_floors(progression), progression.hunted):
 		if notice["id"] in progression.hunted:
 			continue
-		var row := _row("bounties", notice["id"], notice["name"], Bearing.of_bounty(notice), Text.t("Its lair: %s. %s.") % [notice["where"], Hunts.reward_line(notice)])
+		var row := _row("bounties", notice["id"], notice["name"], past_gates.call(Bearing.of_bounty(notice)), Text.t("Its lair: %s. %s.") % [notice["where"], Hunts.reward_line(notice)])
 		row["bounty"] = int(notice["bounty"])
 		by_group["bounties"].append(row)
 	var out: Array[Dictionary] = []
@@ -115,8 +118,8 @@ static func _row(group: String, id: String, title: String, lead: Dictionary, det
 ## and says what the envelope says; delivered, it's answered - who answered
 ## and with what, and under the list the answer's heart - and there's
 ## nothing left to follow.
-static func _letter(quest: Dictionary, delivered: bool, progression: ProgressionState, settlement: SettlementState, items: Dictionary) -> Dictionary:
-	var lead := Bearing.of_quest(quest, progression, settlement, items)
+static func _letter(quest: Dictionary, delivered: bool, progression: ProgressionState, settlement: SettlementState, items: Dictionary, discovered: Dictionary = {}) -> Dictionary:
+	var lead := Gates.detour(Bearing.of_quest(quest, progression, settlement, items), progression, settlement, items, discovered)
 	var row := _row("story", quest["id"], String(quest["addressed"]), lead, Catalog.item(quest["objective"]["itemId"]).get("description", ""))
 	row["letter"] = true
 	if delivered:
