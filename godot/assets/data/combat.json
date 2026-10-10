@@ -920,8 +920,8 @@
     {
       "id": "mire_night_1",
       "mapId": "mirefen",
-      "x": 54,
-      "y": 8,
+      "x": 55,
+      "y": 14,
       "species": "boneknight",
       "hours": "night"
     },
@@ -936,8 +936,8 @@
     {
       "id": "coast_1",
       "mapId": "saltmere",
-      "x": 12,
-      "y": 6,
+      "x": 6,
+      "y": 10,
       "species": "crab"
     },
     {

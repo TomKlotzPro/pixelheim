@@ -1,0 +1,11 @@
+{
+  "origins": {
+    "overworld": [0, 0],
+    "blackiron": [-56, -10],
+    "mirefen": [-60, 27],
+    "frostgate": [40, -48],
+    "greyhold": [96, -15],
+    "deepwood": [96, 27],
+    "saltmere": [0, 64]
+  }
+}

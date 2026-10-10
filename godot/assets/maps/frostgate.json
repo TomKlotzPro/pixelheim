@@ -3,12 +3,12 @@
   "width": 56,
   "height": 48,
   "spawn": {
-    "x": 27,
+    "x": 28,
     "y": 45
   },
   "portals": [
     {
-      "x": 27,
+      "x": 28,
       "y": 47,
       "to": {
         "kind": "map",
@@ -28,7 +28,7 @@
       }
     },
     {
-      "x": 26,
+      "x": 27,
       "y": 47,
       "to": {
         "kind": "map",
@@ -38,7 +38,7 @@
       }
     },
     {
-      "x": 28,
+      "x": 29,
       "y": 47,
       "to": {
         "kind": "map",
@@ -90,13 +90,13 @@
     ["mountain", "mountain", "forest", "forest", "snow", "snow", "snow", "crate", "roof_slate", "roof_slate", "door_shut", "roof_slate", "roof_slate", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "path", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "crate", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "forest", "snow", "mountain", "mountain"],
     ["mountain", "mountain", "forest", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "path", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "path", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "crate", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "mountain", "mountain"],
     ["mountain", "mountain", "forest", "forest", "snow", "snow", "snow", "snow", "snow", "snow", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "path", "snow", "snow", "snow", "snow", "lamp", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "forest", "snow", "mountain", "mountain"],
-    ["mountain", "mountain", "forest", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "path", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "mountain", "mountain", "mountain"],
-    ["mountain", "mountain", "mountain", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "forest", "snow", "snow", "path", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "crate", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "forest", "mountain", "mountain"],
-    ["mountain", "mountain", "forest", "forest", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "path", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "barrel", "crate", "snow", "snow", "snow", "snow", "snow", "snow", "barrel", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "forest", "mountain", "mountain"],
-    ["mountain", "mountain", "mountain", "forest", "snow", "snow", "forest", "forest", "snow", "forest", "snow", "snow", "snow", "snow", "snow", "forest", "snow", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "snow", "snow", "path", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "forest", "snow", "forest", "forest", "forest", "snow", "mountain", "mountain", "mountain"],
-    ["mountain", "mountain", "mountain", "forest", "snow", "snow", "snow", "forest", "forest", "snow", "snow", "snow", "forest", "forest", "forest", "forest", "snow", "forest", "snow", "snow", "snow", "snow", "snow", "forest", "snow", "snow", "snow", "path", "snow", "snow", "forest", "snow", "forest", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "forest", "snow", "forest", "forest", "mountain", "mountain"],
-    ["mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "snow", "path", "snow", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain"],
-    ["mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "snow", "path", "snow", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain"]
+    ["mountain", "mountain", "forest", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "path", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "mountain", "mountain", "mountain"],
+    ["mountain", "mountain", "mountain", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "forest", "snow", "snow", "snow", "path", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "crate", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "forest", "mountain", "mountain"],
+    ["mountain", "mountain", "forest", "forest", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "path", "snow", "snow", "snow", "snow", "snow", "snow", "barrel", "crate", "snow", "snow", "snow", "snow", "snow", "snow", "barrel", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "forest", "mountain", "mountain"],
+    ["mountain", "mountain", "mountain", "forest", "snow", "snow", "forest", "forest", "snow", "forest", "snow", "snow", "snow", "snow", "snow", "forest", "snow", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "forest", "snow", "snow", "snow", "path", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "forest", "snow", "forest", "forest", "forest", "snow", "mountain", "mountain", "mountain"],
+    ["mountain", "mountain", "mountain", "forest", "snow", "snow", "snow", "forest", "forest", "snow", "snow", "snow", "forest", "forest", "forest", "forest", "snow", "forest", "snow", "snow", "snow", "snow", "snow", "forest", "snow", "snow", "snow", "snow", "path", "snow", "forest", "snow", "forest", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "snow", "forest", "snow", "forest", "forest", "mountain", "mountain"],
+    ["mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "snow", "path", "snow", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain"],
+    ["mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "snow", "path", "snow", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain"]
   ],
   "regions": [
     ["frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost", "frost"],
