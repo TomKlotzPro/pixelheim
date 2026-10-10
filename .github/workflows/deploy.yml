@@ -89,3 +89,16 @@ jobs:
           branch: gh-pages
           clean-exclude: pr-preview/
           force: false
+      # Main's import, for the pull requests' checks (godot.yml, PIX-271): a
+      # pull request's run can restore a cache saved on main but not one saved
+      # on another pull request, and this job imports on every push to main.
+      # After the deploy, and never failing it. The paths are godot.yml's.
+      - name: Keep the import for pull requests
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            godot/.godot
+            godot/assets/puny/shade/**/*.import
+            godot/assets/puny/medieval/*.import
+          key: godot-import-4.7.1-art-success-${{ github.sha }}

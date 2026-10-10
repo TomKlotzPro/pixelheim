@@ -14,6 +14,8 @@ env:
 jobs:
   godot:
     runs-on: ubuntu-latest
+    # A stuck run is killed by flows.sh's watchdog; this is the backstop.
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
 
@@ -62,8 +64,38 @@ jobs:
           bash scripts/fetch-private-art.sh private-assets
           rm -rf private-assets
 
+      # The import (PIX-271), kept between runs: the job's time goes to the
+      # checks. A pull request's run restores only what its own branch or
+      # main saved, so the deploy keeps main's (deploy.yml) and this falls
+      # back on the newest one there: Godot then imports only the files that
+      # changed since (it compares each one's hash). The paid art's .import
+      # files sit beside it, git-ignored, so they're kept too, or all of it
+      # would import again. With or without the paid art, apart. The paths
+      # must stay the same as deploy.yml's: a cache restores only into the
+      # paths it was saved from.
+      - name: Restore the import
+        id: import
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            godot/.godot
+            godot/assets/puny/shade/**/*.import
+            godot/assets/puny/medieval/*.import
+          key: godot-import-${{ env.GODOT_VERSION }}-art-${{ steps.art.outcome }}-${{ hashFiles('godot/project.godot', 'godot/*.import', 'godot/assets/**', 'godot/addons/**', 'godot/locale/**', 'godot/scenes/**', 'godot/scripts/**', 'godot/shaders/**', 'godot/test/**') }}
+          restore-keys: godot-import-${{ env.GODOT_VERSION }}-art-${{ steps.art.outcome }}-
+
       - name: Import assets
         run: godot --headless --path godot --import
+
+      - name: Save the import
+        if: steps.import.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            godot/.godot
+            godot/assets/puny/shade/**/*.import
+            godot/assets/puny/medieval/*.import
+          key: ${{ steps.import.outputs.cache-primary-key }}
 
       - name: Unit tests (GUT)
         # GUT skips a test script that fails to parse and still exits 0, so a
@@ -91,4 +123,35 @@ jobs:
         with:
           name: godot-web
           path: godot/export/web
+          retention-days: 7
+
+      # Every map booted headless, by day and at night (PIX-270): GUT never
+      # loads the world's scripts, so a script that breaks only there fails
+      # here. It runs on Shade's CC0 art too, as the game must.
+      - name: Boot every map
+        run: bash godot/tools/flows.sh --boot -j "$(nproc)"
+
+      # The release flows (PIX-271), headless, as many at once as the runner
+      # has cores; each result goes to the job's summary. A fork's pull
+      # request gets no deploy key: its flows run on Shade's CC0 art alone,
+      # which every flow passes too (what blocks the way comes from the
+      # maps, not the art), and the summary says so.
+      - name: Release flows
+        env:
+          ART: ${{ steps.art.outcome }}
+        run: |
+          if [ "$ART" != success ]; then
+            echo "::notice title=No paid art::This run has no deploy key for the paid art (a fork's pull request): the flows run on Shade's CC0 art alone."
+            echo "_No paid art on this run (a fork's pull request): the flows ran on Shade's CC0 art alone._" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          bash godot/tools/flows.sh --quiet -j "$(nproc)"
+
+      - name: Keep the failed runs' output
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: flows-output
+          path: |
+            godot/flows/runs/
+            godot/flows/boot/
           retention-days: 7
