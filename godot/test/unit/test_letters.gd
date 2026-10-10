@@ -213,7 +213,7 @@ func test_a_letter_leads_to_its_recipient() -> void:
 func test_the_main_quest_is_v2s_eight_chapters() -> void:
 	assert_eq(MainQuest.chapters().map(func(chapter: Dictionary) -> String: return chapter["title"]), [
 		"Out of the Ashes", "The Letter to Saltmere", "The Letter to Blackiron", "The Letter to Greyhold",
-		"The Letter to the Frostgate", "The Fifth Letter", "The Night of Bells", "Home",
+		"The Letter to the Frostgate", "The Fifth Letter", "The Night of Bells", "Coming Home",
 	])
 	for index in range(1, 5):
 		assert_eq(MainQuest.chapters()[index]["steps"][0]["when"]["kind"], "delivered", "a chapter of the Reach opens on its letter")
