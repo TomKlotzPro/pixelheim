@@ -3377,6 +3377,10 @@ msgid "No more ambushes. Monsters are VISIBLE in the wilds now - see them prowl,
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "No more glow around the hero at higher ranks: you look the same at every rank, and your gear is what shows. The rank-up moment stays, a burst of your class's light"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "No teleporting over-encumbered. Lighten the pack."
 msgstr ""
 
@@ -3658,6 +3662,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Pixelheim village, marshland, forest, ash fields, and a river bridge"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Plain Sight"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4645,6 +4653,10 @@ msgid "The camera no longer leans ahead of your hero: it made them slip back on 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The camera sits a step further back: everyone is smaller on screen and you see more of the world"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The cave at the mountain's base leads below, once the dragon falls"
 msgstr ""
 
@@ -4714,6 +4726,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The gate opens the first depth of every five you've reached, so a long descent no longer starts from the top"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The hero no longer grows a little with each rank"
 msgstr ""
 
 #: assets/data/changelog.json

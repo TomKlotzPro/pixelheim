@@ -3377,6 +3377,10 @@ msgid "No more ambushes. Monsters are VISIBLE in the wilds now - see them prowl,
 msgstr "Fini les embuscades. Les monstres sont désormais VISIBLES dans les terres sauvages - regardez-les rôder, choisissez vos combats"
 
 #: assets/data/changelog.json
+msgid "No more glow around the hero at higher ranks: you look the same at every rank, and your gear is what shows. The rank-up moment stays, a burst of your class's light"
+msgstr "Plus de halo autour du héros aux rangs supérieurs : vous avez la même allure à chaque rang, et c'est votre équipement qui se voit. Le moment de l'ascension reste, un éclat de la lumière de votre classe"
+
+#: assets/data/changelog.json
 msgid "No teleporting over-encumbered. Lighten the pack."
 msgstr "Pas de téléportation en surcharge. Allégez votre sac."
 
@@ -3659,6 +3663,10 @@ msgstr "Le village de Pixelheim est devenu une vraie ville : plus grande, plus
 #: assets/data/changelog.json
 msgid "Pixelheim village, marshland, forest, ash fields, and a river bridge"
 msgstr "Le village de Pixelheim, des marais, une forêt, des champs de cendres et un pont sur la rivière"
+
+#: assets/data/changelog.json
+msgid "Plain Sight"
+msgstr "Sans artifice"
 
 #: assets/data/changelog.json
 msgid "Pocket Pixelheim"
@@ -4645,6 +4653,10 @@ msgid "The camera no longer leans ahead of your hero: it made them slip back on 
 msgstr "La caméra ne se penche plus en avant de votre héros : il reculait à l'écran en se mettant en marche, et le monde défile de nouveau net"
 
 #: assets/data/changelog.json
+msgid "The camera sits a step further back: everyone is smaller on screen and you see more of the world"
+msgstr "La caméra recule d'un cran : tout le monde est plus petit à l'écran et vous voyez davantage du monde"
+
+#: assets/data/changelog.json
 msgid "The cave at the mountain's base leads below, once the dragon falls"
 msgstr "La grotte au pied de la montagne mène en dessous, une fois le dragon tombé"
 
@@ -4715,6 +4727,10 @@ msgstr "Le jeu est en ligne, avec un déploiement automatique à chaque changeme
 #: assets/data/changelog.json
 msgid "The gate opens the first depth of every five you've reached, so a long descent no longer starts from the top"
 msgstr "La porte ouvre la première profondeur de chaque tranche de cinq atteinte, et une longue descente ne repart plus d'en haut"
+
+#: assets/data/changelog.json
+msgid "The hero no longer grows a little with each rank"
+msgstr "Le héros ne grandit plus un peu à chaque rang"
 
 #: assets/data/changelog.json
 msgid "The hero walks in four beats, rising as the feet pass, each step timed to the ground it covers, so the feet no longer slide"

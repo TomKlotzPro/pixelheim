@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.205.0",
+      "date": "2026-10-10",
+      "codename": "Plain Sight",
+      "notes": [
+        "No more glow around the hero at higher ranks: you look the same at every rank, and your gear is what shows. The rank-up moment stays, a burst of your class's light",
+        "The hero no longer grows a little with each rank",
+        "The camera sits a step further back: everyone is smaller on screen and you see more of the world"
+      ]
+    },
+    {
       "version": "0.204.0",
       "date": "2026-10-10",
       "codename": "Room to Spare",
