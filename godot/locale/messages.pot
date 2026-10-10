@@ -3377,6 +3377,10 @@ msgid "No more ambushes. Monsters are VISIBLE in the wilds now - see them prowl,
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "No more glow around the hero at higher ranks: you look the same at every rank, and your gear is what shows. The rank-up moment stays, a burst of your class's light"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "No teleporting over-encumbered. Lighten the pack."
 msgstr ""
 
@@ -3658,6 +3662,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Pixelheim village, marshland, forest, ash fields, and a river bridge"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Plain Sight"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4645,6 +4653,10 @@ msgid "The camera no longer leans ahead of your hero: it made them slip back on 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The camera sits a step further back: everyone is smaller on screen and you see more of the world"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The cave at the mountain's base leads below, once the dragon falls"
 msgstr ""
 
@@ -4714,6 +4726,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The gate opens the first depth of every five you've reached, so a long descent no longer starts from the top"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The hero no longer grows a little with each rank"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -11736,15 +11752,15 @@ msgstr ""
 msgid " +%d HP"
 msgstr ""
 
-#: scripts/hud_dock.gd:374
+#: scripts/hud_dock.gd:372
 msgid "Lv %d %s"
 msgstr ""
 
-#: scripts/hud_dock.gd:377
+#: scripts/hud_dock.gd:375
 msgid "HP"
 msgstr ""
 
-#: scripts/hud_dock.gd:398
+#: scripts/hud_dock.gd:396
 msgid "Skill %d: none yet"
 msgstr ""
 
@@ -12312,83 +12328,67 @@ msgstr ""
 msgid "Quit to title"
 msgstr ""
 
-#: scripts/player.gd:290
+#: scripts/player.gd:273
 msgid "dodged"
 msgstr ""
 
-#: scripts/player.gd:300
+#: scripts/player.gd:283
 msgid "You are afflicted by %s!"
 msgstr ""
 
-#: scripts/player.gd:378
+#: scripts/player.gd:327
 msgid "No skill on that key yet. Learn more, or set the keys, in Skills."
 msgstr ""
 
-#: scripts/player.gd:391
+#: scripts/player.gd:340
 msgid "No foe in reach for %s."
 msgstr ""
 
-#: scripts/player.gd:409
+#: scripts/player.gd:358
 msgid "All ailments are purged!"
 msgstr ""
 
-#: scripts/player.gd:412
+#: scripts/player.gd:361
 msgid "%s restores %d HP."
 msgstr ""
 
-#: scripts/player.gd:424
+#: scripts/player.gd:373
 msgid "%s hits %d foes for %d damage!"
 msgstr ""
 
-#: scripts/player.gd:426
+#: scripts/player.gd:375
 msgid "%s hits %s for %d damage!"
 msgstr ""
 
-#: scripts/rank_look.gd:92
-msgid "New look: an edge in your class's colour"
-msgstr ""
-
-#: scripts/rank_look.gd:94
-msgid "New look: a rim of light around you"
-msgstr ""
-
-#: scripts/rank_look.gd:96
-msgid "New look: your weapon glows as it strikes"
-msgstr ""
-
-#: scripts/rank_look.gd:98
-msgid "New look: light trails your steps"
-msgstr ""
-
-#: scripts/rankup_screen.gd:152
+#: scripts/rankup_screen.gd:175
 msgid "Ascension: rank %d of %d"
 msgstr ""
 
-#: scripts/rankup_screen.gd:192
+#: scripts/rankup_screen.gd:215
 msgid "+1 bonus skill point"
 msgstr ""
 
-#: scripts/rankup_screen.gd:194
+#: scripts/rankup_screen.gd:217
 msgid "Every skill mastered: the bonus point rests"
 msgstr ""
 
-#: scripts/rankup_screen.gd:196
+#: scripts/rankup_screen.gd:219
 msgid "+1 bonus skill point, to spend beyond the tree (Stats)"
 msgstr ""
 
-#: scripts/rankup_screen.gd:199
+#: scripts/rankup_screen.gd:222
 msgid "Level %d: +%d stat points, +%d max HP, +%d max %s"
 msgstr ""
 
-#: scripts/rankup_screen.gd:204
+#: scripts/rankup_screen.gd:227
 msgid "A new step on your path: choose it below"
 msgstr ""
 
-#: scripts/rankup_screen.gd:495
+#: scripts/rankup_screen.gd:547
 msgid "The path forks      A/D  choose      E  walk this path      Esc  choose later, in Skills"
 msgstr ""
 
-#: scripts/rankup_screen.gd:510
+#: scripts/rankup_screen.gd:562
 msgid "Signature: %s"
 msgstr ""
 
@@ -13848,7 +13848,7 @@ msgstr ""
 msgid "Boss slayer: +%d%% damage for %d minutes."
 msgstr ""
 
-#: scripts/world_fx.gd:155
+#: scripts/world_fx.gd:157
 msgid "LEVEL UP"
 msgstr ""
 
@@ -13888,31 +13888,31 @@ msgstr ""
 msgid "Quest complete"
 msgstr ""
 
-#: scripts/world_stage.gd:136
+#: scripts/world_stage.gd:135
 msgid "Five lanterns on the square, one for each of the five who climbed. Tonight the %s remembers them - and %s."
 msgstr ""
 
-#: scripts/world_stage.gd:137
+#: scripts/world_stage.gd:136
 msgid "Pixelheim, a %s raised from the ashes. Tonight it celebrates %s."
 msgstr ""
 
-#: scripts/world_stage.gd:234
+#: scripts/world_stage.gd:233
 msgid "%s: built."
 msgstr ""
 
-#: scripts/world_stage.gd:241
+#: scripts/world_stage.gd:240
 msgid "Pixelheim is a %s now."
 msgstr ""
 
-#: scripts/world_stage.gd:242
+#: scripts/world_stage.gd:241
 msgid "New in town: %s."
 msgstr ""
 
-#: scripts/world_stage.gd:248
+#: scripts/world_stage.gd:247
 msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
 msgstr ""
 
-#: scripts/world_stage.gd:318
+#: scripts/world_stage.gd:317
 msgid "%s  %d:%02d"
 msgstr ""
 

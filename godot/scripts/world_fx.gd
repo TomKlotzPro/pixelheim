@@ -39,10 +39,12 @@ const GAIN_RISE := 14.0
 ## it stands this much higher from the start, clear of the number's whole
 ## path.
 const GAIN_STILL_LIFT := 8.0
-## A row's mark at half its size: an item's 16 px icon and the purse's coin
-## (drawn at the UI's 2x) come out about the words' height, and the icon at
-## twice its art on screen at play zoom, as the pack shows it.
-const GAIN_ICON := 0.5
+## A row's mark: an item's 16 px icon and the purse's coin (drawn at the
+## UI's 2x) come out about the words' height, and the icon at twice its art
+## on screen at play zoom, as the pack shows it - in whole screen pixels
+## whatever CameraRig.ZOOM is (a half, made for 4, drew them a pixel and a
+## half wide at 3).
+const GAIN_ICON := 2.0 / CameraRig.ZOOM
 
 ## The wins rising now, each {box, at, joined, gains, rows (key -> row),
 ## fresh, tween}: a new win near one of them soon enough joins it.

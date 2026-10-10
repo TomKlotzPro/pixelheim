@@ -1,7 +1,8 @@
 extends GutTest
 ## Ranks and the Path Graph (hero/ranks.ts, hero/paths.ts, CHOOSE_PATH,
-## useRankUp): titles every five levels, the aura and presence they bring,
-## which step of the graph is on offer, and the ascension's signal.
+## useRankUp): titles every five levels (no aura or presence: the hero looks
+## the same at every rank, test_ascension), which step of the graph is on
+## offer, and the ascension's signal.
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
 
@@ -25,15 +26,11 @@ func test_titles_change_every_five_levels() -> void:
 		assert_eq(Ranks._data()["rankTitles"][role].size(), 5, role)
 
 
-func test_the_ascended_glow_and_stand_taller() -> void:
-	assert_eq(Ranks.aura(4), null)
-	assert_eq(Ranks.aura(5), Color("#9ab0d8"), "silver")
-	assert_eq(Ranks.aura(10), Color("#e8c34a"), "gold")
-	assert_eq(Ranks.aura(15), Color("#4ae6c8"), "radiant")
-	assert_almost_eq(Ranks.presence(1), 1.0, 0.001)
-	assert_almost_eq(Ranks.presence(15), 1.15, 0.001)
-	assert_eq(Ranks.aura(20), Color("#c58cff"), "amethyst")
-	assert_almost_eq(Ranks.presence(20), 1.2, 0.001)
+## Five ranks: a title for each, the last reached at 20.
+func test_there_are_as_many_ranks_as_titles() -> void:
+	assert_eq(HeroRules.rank_index(99) + 1, Ranks.COUNT)
+	for role: String in Ranks._data()["rankTitles"]:
+		assert_eq(Ranks._data()["rankTitles"][role].size(), Ranks.COUNT, role)
 
 
 func _ids(nodes: Array) -> Array:

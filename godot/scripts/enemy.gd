@@ -226,13 +226,13 @@ func _ready() -> void:
 	level_tag = PanelContainer.new()
 	level_tag.add_theme_stylebox_override("panel", UiStyle.plate(6))
 	level_tag.add_child(UiStyle.strong(Text.t("Lv %d") % level, 16, Bestiary.gap_color(level, GameState.hero.level)))
-	level_tag.scale = Vector2.ONE * 0.25
+	level_tag.scale = Vector2.ONE * CameraRig.LABEL_SCALE
 	level_tag.z_as_relative = false
 	level_tag.z_index = 20
 	level_tag.visible = false
 	level_tag.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	level_tag.resized.connect(func() -> void:
-		level_tag.position = Vector2(-level_tag.size.x * 0.125, -20 * size - level_tag.size.y * 0.25 - 0.5))
+		level_tag.position = Vector2(-level_tag.size.x * CameraRig.LABEL_SCALE / 2.0, -20 * size - level_tag.size.y * CameraRig.LABEL_SCALE - 0.5))
 	Lights.unshade(level_tag)
 	add_child(level_tag)
 
@@ -340,17 +340,17 @@ func notice() -> void:
 
 
 ## A named monster's name over its head in the boss's red: the UI's type at
-## a quarter, so at the usual zoom one font pixel is one screen pixel.
+## CameraRig.LABEL_SCALE, so at play zoom one font pixel is one screen pixel.
 func _name_plate(lift: float) -> Label:
 	var plate := UiStyle.strong(fighter["name"], 16, Color("ffb3a1"))
 	plate.add_theme_color_override("font_outline_color", Color(0.12, 0.04, 0.03))
 	plate.add_theme_constant_override("outline_size", 4)
-	plate.scale = Vector2.ONE * 0.25
+	plate.scale = Vector2.ONE * CameraRig.LABEL_SCALE
 	plate.z_index = 10
 	plate.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	# Its words' ink centred over the bar, not its box (PIX-268, Ink).
 	var words := Ink.of_text(plate.text, UiStyle.bold_font(), UiStyle.TEXT)
-	plate.resized.connect(func() -> void: plate.position = Vector2(-words.get_center().x * 0.25, lift - plate.size.y * 0.25))
+	plate.resized.connect(func() -> void: plate.position = Vector2(-words.get_center().x * CameraRig.LABEL_SCALE, lift - plate.size.y * CameraRig.LABEL_SCALE))
 	return plate
 
 
@@ -651,14 +651,14 @@ func _wake() -> void:
 
 
 ## A sleeper's "Z" (a capital: the small one read as a 2): the UI's type at
-## a quarter, as the level tag, beside its head, drifting up and fading a
-## whole art pixel at a time, then again - each sleeper on its own breath,
-## not in step with its pack; still with Reduce motion. Lit at night.
+## CameraRig.LABEL_SCALE, as the level tag, beside its head, drifting up and
+## fading a whole art pixel at a time, then again - each sleeper on its own
+## breath, not in step with its pack; still with Reduce motion. Lit at night.
 func _sleep_cue() -> Label:
 	var cue := UiStyle.strong("Z", 16, UiStyle.CREAM)
 	cue.add_theme_color_override("font_outline_color", UiStyle.NIGHT)
 	cue.add_theme_constant_override("outline_size", 4)
-	cue.scale = Vector2.ONE * 0.25
+	cue.scale = Vector2.ONE * CameraRig.LABEL_SCALE
 	cue.z_index = 10
 	cue.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var rest := Vector2(3.0, -20.0 * _rest_scale.y - 2.0)

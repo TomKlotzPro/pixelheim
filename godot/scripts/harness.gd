@@ -99,9 +99,9 @@ func _ascension() -> Node:
 
 
 ## How far into each of the ascension's beats `--rank-beat` holds it: the
-## light up and the hero lifted, the old look half burnt away, the name
-## landed, the lines shown, the hero down.
-const RANK_BEAT_INTO := {"hush": 0.5, "lift": 0.8, "change": 0.3, "named": 0.45, "unlocks": 0.7, "settled": 0.7}
+## light up and the hero lifted, the hero half back out of the flare's
+## white, the name landed, the lines shown, the hero down.
+const RANK_BEAT_INTO := {"hush": 0.5, "lift": 0.8, "flare": 0.3, "named": 0.45, "unlocks": 0.7, "settled": 0.7}
 
 
 ## Stops the ascension at `beat`, waits for it and a moment into it (its own
@@ -204,11 +204,10 @@ func _run_test_harness() -> void:
 		world.use_portal({"kind": "gate"})
 		await get_tree().create_timer(0.3).timeout
 	if flags.has("--level"):
-		# A hero of that level: the rank's title, aura, presence and look
-		# (PIX-244) - before the walking check, so it measures a ranked hero
-		# with `--level 20 motion`.
+		# A hero of that level: the rank's title (a rank no longer changes how
+		# the hero looks) - before the walking check, so `--level 20 motion`
+		# measures a ranked hero.
 		GameState.hero.level = int(flags.value("--level"))
-		world.player.refresh_rank()
 		world.hud.on_hp_changed(GameState.hero.hp, int(GameState.hero.stats["maxHp"]))
 	var motion_report := ""
 	if flags.has("motion"):
@@ -250,12 +249,12 @@ func _run_test_harness() -> void:
 		# A hero not found at all would make every step 0: say so, not pass.
 		motion_report = " backsteps=%d" % back if hero_x.any(func(x: float) -> bool: return x > 0.0) else " backsteps=lost"
 	# Terrain review: `--at x,y` stands the hero on a cell (before `--walk`,
-	# so a walk can test what stops them), `--zoom Z` changes the camera;
-	# `overview` (below) frames the whole map.
+	# so a walk can test what stops them), `--zoom Z` changes the camera
+	# (`--zoom play`: the play zoom, CameraRig.ZOOM, which a headless run's
+	# window doesn't fit); `overview` (below) frames the whole map.
 	# `--role necromancer`: the hero's role, for how a role wears gear (PIX-175).
 	if flags.has("--role"):
 		GameState.hero.role_id = flags.value("--role")
-		world.player.refresh_rank()
 	# `--wear iron_helm,iron_armor`: gear put on the hero (drawn on them, PIX-129).
 	if flags.has("--wear"):
 		for item_id: String in flags.list("--wear"):
@@ -269,7 +268,8 @@ func _run_test_harness() -> void:
 		world.camera_rig.cut()
 		world.camera_rig.camera.reset_smoothing()
 	if flags.has("--zoom"):
-		world.camera_rig.camera.zoom = Vector2.ONE * float(flags.value("--zoom"))
+		var zoom: String = flags.value("--zoom")
+		world.camera_rig.camera.zoom = Vector2.ONE * (CameraRig.ZOOM if zoom == "play" else float(zoom))
 	if flags.has("--walk"):
 		var dirs := {
 			"l": Vector2i.LEFT, "r": Vector2i.RIGHT, "u": Vector2i.UP, "d": Vector2i.DOWN,
@@ -351,7 +351,7 @@ func _run_test_harness() -> void:
 		hero.xp = hero.xp_to_next
 		GameState.spoils.grant_levels()
 		if flags.has("--rank-beat"):
-			# `--rank-beat change` (PIX-244): the moment held at that beat.
+			# `--rank-beat flare` (PIX-244): the moment held at that beat.
 			await _hold_rank_beat(flags.value("--rank-beat"))
 		else:
 			await get_tree().create_timer(1.6).timeout
@@ -821,9 +821,8 @@ func _run_test_harness() -> void:
 	if flags.has("--rise"):
 		var rise := _rise()
 		motion_report += " rise=%s" % (rise.phase if rise != null else ("built" if _rise_phase != "none" else "none"))
-	# The ascension (PIX-244): its beat (closed once it's gone), the motes
-	# and sparks flying in it (none with Reduce motion), and what the rank
-	# puts on the hero in the world.
+	# The ascension (PIX-244): its beat (closed once it's gone) and the motes
+	# and sparks flying in it (none with Reduce motion).
 	if flags.has("rankup"):
 		var screen := _ascension()
 		var flying := 0
@@ -832,9 +831,6 @@ func _run_test_harness() -> void:
 				if (node as CPUParticles2D).emitting:
 					flying += 1
 		motion_report += " ascension=%s motes=%d" % [screen.phase if screen != null else "closed", flying]
-	if flags.has("rankup") or flags.has("--level"):
-		var steps: Array = world.player.look.get("steps", [])
-		motion_report += " look=%s" % ("+".join(steps) if not steps.is_empty() else "survivor")
 	# A boss's fall (PIX-232), when one fell.
 	if world.foes.bosses_fallen > 0:
 		motion_report += " fell=%d" % world.foes.bosses_fallen

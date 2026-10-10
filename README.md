@@ -6,7 +6,7 @@
 
 <p align="center">
   <b>A retro pixel-art open-world RPG in Godot 4.7: a village the dragon burned, the courier who stayed, the Reach's regions and the relics they keep - and the mountain last.</b><br />
-  The village burned. You stayed. Currently v0.204 - 1.0 has to be earned.
+  The village burned. You stayed. Currently v0.205 - 1.0 has to be earned.
 </p>
 
 ---
@@ -25,7 +25,7 @@ A dragon burned Pixelheim in one night, and you - the courier who came up the ro
 
 - **One hand-drawn world**: hero, villagers, monsters, terrain and dungeons in Shade's Puny art; the town's timber houses, its wells, fountain, torches and fences, and the rooms behind its doors from his Medieval Age set
 - **Real-time fights**: monsters prowl in packs and hunt you (the weak ones run from a hero far above them), other packs by night than by day (wolves, the dead and worse come out after dark, a little stronger and richer, while some day packs sleep by their camp fires); swing, cast your skills on the number keys, and watch the ailments land - on the same numbers the game has always used
-- **7 classes that ascend**: every 5 levels a rank and its aura, and from the first rank a path that forks into 14 identities, each with a signature skill
+- **7 classes that ascend**: every 5 levels a rank, its title and its moment in the light, and from the first rank a path that forks into 14 identities, each with a signature skill
 - **Skill trees, stats and gear**: three named paths per class, stat points that explain themselves, loot with rarities on a nine-slot paper doll, and helmets and armour you can see on your hero
 - **Quests and the journal**, the **codex** of every beast you have fought, and mastery bonuses for the families you hunt
 - **A town that grows**: buy the house and furnish it, buy the shops and collect rent, fund the village into a city, bank and send caravans, recruit settlers from the wilds

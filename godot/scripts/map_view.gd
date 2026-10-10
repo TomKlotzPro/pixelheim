@@ -96,6 +96,14 @@ const TORCH_FOOT := Rect2(5, 9, 6, 7)
 ## more than the dock covers, so the camera looking past the south edge
 ## never shows the void.
 const EDGE_PAD := 4
+## Indoors and underground, the dark goes on this many cells past the map's
+## edges: a map smaller than the view (every room since the camera stood
+## back to CameraRig.ZOOM 3, a short dungeon floor) is shown whole in the
+## middle of the screen, and round it must be the dark, not the window's
+## flat grey, out to the screen's edges at any window size.
+const DARK_PAD := 32
+## The dark beyond a room's walls and a dungeon's rock.
+const DARK := Color("0b0a0e")
 ## A burnt house seen small from afar smokes with this share of a ruin's
 ## motes in town (PIX-248).
 const VILLAGE_RUIN_SMOKE := 0.4
@@ -383,10 +391,7 @@ func _swaying(sway: float, alone: bool) -> ShaderMaterial:
 ## samples.
 func _build_room(data: MapData) -> Node2D:
 	var root := Node2D.new()
-	var dark := ColorRect.new()
-	dark.color = Color("0b0a0e")
-	dark.size = Vector2(data.size * TILE)
-	root.add_child(dark)
+	root.add_child(_dark_beyond(data))
 	for part: String in ["floor", "walls", "rug", "pieces", "objects", "tops", "lifted"]:
 		var layer := TileMapLayer.new()
 		layer.tile_set = PunyTown.tileset()
@@ -398,12 +403,22 @@ func _build_room(data: MapData) -> Node2D:
 	return root
 
 
+## The dark under a room or a dungeon, on past the map's edges (DARK_PAD).
+static func _dark_beyond(data: MapData) -> ColorRect:
+	var dark := ColorRect.new()
+	dark.color = DARK
+	dark.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	dark.position = -Vector2.ONE * DARK_PAD * TILE
+	dark.size = Vector2(data.size * TILE) + Vector2.ONE * DARK_PAD * TILE * 2
+	return dark
+
 
 ## A dungeon floor in Shade's Puny Dungeon: stone, walls by his grammar and
 ## the dark beyond, torches flickering on their blocks, barrels, pots and the
 ## stairs up.
 func _build_dungeon(data: MapData) -> Node2D:
 	var root := Node2D.new()
+	root.add_child(_dark_beyond(data))
 	var dungeon := PunyDungeon.sheet()
 	var layer := TileMapLayer.new()
 	layer.tile_set = dungeon.tileset

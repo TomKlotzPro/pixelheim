@@ -47,34 +47,23 @@ var ailments := Ailments.new()
 var ailment_icon: Sprite2D
 ## PunyArt.hero spec: sheet, attack kind, tint.
 var art: Dictionary
-## The rank's glow under the hero's feet (silver, gold, radiant).
-var aura: Sprite2D
-## The sprite's shape (PIX-226): squashed or stretched for a moment around
-## the rank's presence, the feet kept on the ground.
+## The sprite's shape (PIX-226): squashed or stretched for a moment, the
+## feet kept on the ground. The hero is the same size at every rank: a rank
+## shows only in the ascension and the title (Tom found PIX-244's aura ugly
+## and the ranked hero too big; gear is what shows).
 var squash := Vector2.ONE:
 	set(value):
 		squash = value
 		_shape()
-var _presence := 1.0
 var _spring: Tween
 ## The walk (PIX-243): its frames step with the ground the hero covers.
 var gait: Gait
-## How the rank looks on the hero (PIX-244, RankLook.spec): the trim and the
-## rim ride on the sprite; the swing's sparks and the trail of light are
-## here, made once the rank reaches them.
-var look := {}
-var sparks: CPUParticles2D
-var light_trail: CPUParticles2D
 
 func _ready() -> void:
 	# Top-down: no floor, no walls by angle, just slide along what blocks.
 	motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
 	hp = GameState.hero.hp
 	art = GameState.upkeep.hero_art()
-	aura = Sprite2D.new()
-	aura.texture = _glow()
-	aura.position = Vector2(0, 5)
-	add_child(aura)
 	sprite = AnimatedSprite2D.new()
 	sprite.sprite_frames = PunyArt.frames(art)
 	sprite.position = Vector2(0, PunyArt.lift(art))
@@ -84,7 +73,6 @@ func _ready() -> void:
 	add_child(sprite)
 	gait = Gait.new(sprite, art)
 	_play("idle")
-	refresh_rank()
 	GameState.inventory_changed.connect(dress)
 
 	var shape := CollisionShape2D.new()
@@ -130,12 +118,7 @@ func dress() -> void:
 
 func _physics_process(delta: float) -> void:
 	if dead:
-		if light_trail != null:
-			light_trail.emitting = false
 		return
-	# The rank's trail of light (PIX-244) is shed while the hero walks or rolls.
-	if light_trail != null:
-		light_trail.emitting = (gait.walking or dodging) and not GameState.settings.reduce_motion
 	_tick_ailments(delta)
 	if dead:
 		return
@@ -316,42 +299,8 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null) -> void:
 		func() -> void: invulnerable = false
 	)
 
-## Rank shows (worldActors): an aura under the ascended and a touch more
-## presence, from the hero's level, and since PIX-244 the rank's own look
-## (RankLook): the trim and the rim of light on the sprite, sparks off the
-## swing, a trail of light behind the steps.
-func refresh_rank() -> void:
-	var level := GameState.hero.level
-	_presence = Ranks.presence(level)
-	_shape()
-	var glow: Variant = Ranks.aura(level)
-	aura.visible = glow != null
-	if glow != null:
-		aura.modulate = Color(glow, 0.4)
-	look = RankLook.of_hero(GameState.hero)
-	RankLook.wear(sprite, look)
-	sparks = _rank_emitter(sparks, look["weapon"], func(color: Color) -> CPUParticles2D: return RankLook.sparks(color))
-	light_trail = _rank_emitter(light_trail, look["trail"], func(color: Color) -> CPUParticles2D: return RankLook.trail(color))
-	# Both behind the aura and the sprite: they never cross the figure.
-	for emitter: CPUParticles2D in [sparks, light_trail]:
-		if emitter != null:
-			move_child(emitter, 0)
-
-
-## The rank's emitter `node` in `color`, made with `make` the first time;
-## gone (null) once the rank no longer reaches it.
-func _rank_emitter(node: CPUParticles2D, color: Color, make: Callable) -> CPUParticles2D:
-	if color.a == 0.0:
-		if node != null:
-			node.queue_free()
-		return null
-	if node == null:
-		node = make.call(color)
-		add_child(node)
-	return node
-
-
-## A soft oval of light, wider than tall, to sit under the feet.
+## A soft oval of light, wider than tall: a skill's flash where it lands,
+## the pool under the hero's feet at an ascension.
 static func _glow() -> Texture2D:
 	var gradient := Gradient.new()
 	gradient.set_color(0, Color.WHITE)
@@ -488,7 +437,6 @@ func heal() -> void:
 	if dead:
 		return
 	hp = GameState.hero.hp
-	refresh_rank()
 
 ## Ticks poison/burn into the hero's health and shows what still ails them.
 func _tick_ailments(delta: float) -> void:
@@ -537,19 +485,13 @@ func _on_animation_finished() -> void:
 		_play("idle")
 
 ## The weapon only bites on the striking frames, matching what the sheet
-## shows; a blade or a staff leaves its arc on the first (PIX-226), and from
-## rank IV every blow and cast flares there (PIX-244).
+## shows; a blade or a staff leaves its arc on the first (PIX-226).
 func _on_frame_changed() -> void:
-	if not attacking:
-		return
-	var strike: Array = STRIKE_FRAMES.get(art["attack"], [1, 2])
-	if sprite.frame == strike[0]:
-		_weapon_glow()
-	if casting:
-		return
-	hitbox.monitoring = sprite.frame >= strike[0] and sprite.frame <= strike[1]
-	if sprite.frame == strike[0] and art["attack"] != "bow":
-		_slash()
+	if attacking and not casting:
+		var strike: Array = STRIKE_FRAMES.get(art["attack"], [1, 2])
+		hitbox.monitoring = sprite.frame >= strike[0] and sprite.frame <= strike[1]
+		if sprite.frame == strike[0] and art["attack"] != "bow":
+			_slash()
 
 
 ## The swing's arc, a breath long, in the weapon's colour.
@@ -564,36 +506,8 @@ func _slash() -> void:
 	trail.z_index = Juice.SLASH_Z
 	add_child(trail)
 	var fade := trail.create_tween()
-	# A glowing weapon's arc lingers (PIX-244).
-	var lingers := RankLook.LINGER if look.get("weapon", RankLook.NONE).a > 0.0 else 1.0
-	fade.tween_property(trail, "modulate:a", 0.0, Juice.SLASH_SECONDS * lingers)
+	fade.tween_property(trail, "modulate:a", 0.0, Juice.SLASH_SECONDS)
 	fade.tween_callback(trail.queue_free)
-
-
-## The rank's weapon glow (PIX-244, RankLook, rank IV): the blow flares in
-## the class's light at the weapon, sparks of it fly (not with reduced
-## motion), and at night it lights the ground round the blow a moment.
-func _weapon_glow() -> void:
-	var color: Color = look.get("weapon", RankLook.NONE)
-	if color.a == 0.0:
-		return
-	var at := facing * Juice.SLASH_REACH + Vector2(0, -6)
-	var flare := Sprite2D.new()
-	flare.texture = RankLook.flare()
-	flare.material = Lights.glow()
-	flare.modulate = color
-	flare.position = at
-	flare.z_index = Juice.SLASH_Z
-	add_child(flare)
-	var fade := flare.create_tween()
-	fade.tween_property(flare, "modulate:a", 0.0, RankLook.FLARE_SECONDS).set_ease(Tween.EASE_IN)
-	fade.tween_callback(flare.queue_free)
-	var light := Lights.make(at, RankLook.FLARE_REACH, color, RankLook.FLARE_ENERGY)
-	add_child(light)
-	light.create_tween().tween_interval(RankLook.FLARE_SECONDS).finished.connect(light.queue_free)
-	if sparks != null and not GameState.settings.reduce_motion:
-		sparks.position = at
-		sparks.restart()
 
 
 ## Squashes or stretches the hero to `shape` and springs back; not with
@@ -610,14 +524,14 @@ func _spring_from(shape: Vector2) -> void:
 	_spring.tween_property(self, "squash", Vector2.ONE, Juice.SPRING_SECONDS).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
-## The sprite at the rank's presence times the squash, its feet where they
-## stand at rest whatever the rank (PIX-243: the presence used to grow the
-## hero from the middle, the feet sinking below the ground).
+## The sprite at the squash, its feet where they stand at rest (PIX-243: a
+## squash about the middle sank the feet below the ground). Its own size at
+## every rank.
 func _shape() -> void:
 	if sprite == null:
 		return
-	sprite.scale = Vector2.ONE * _presence * squash
-	sprite.position.y = PunyArt.lift(art) + Juice.FEET * (1.0 - _presence * squash.y)
+	sprite.scale = squash
+	sprite.position.y = PunyArt.lift(art) + Juice.FEET * (1.0 - squash.y)
 
 
 ## The way the hero faces, by name.
