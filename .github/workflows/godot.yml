@@ -252,26 +252,33 @@ jobs:
 
       # The motion flow as flows.sh lists it (its harness arguments and the
       # report it must give), alone on the machine, before the flows, in a
-      # 960x540 window (three screen pixels to the art's, where the Mac's
-      # has four): software rendering draws a full-size one at about nine
-      # frames a second, six or seven physics ticks to a frame, and the walk
-      # wobbles by a pixel no screen would show (2 of 10 runs over the
-      # flow's limit of one step back); at 960x540 it draws about
-      # twenty-six, and 20 runs out of 20 passed, 19 with no step back.
-      # Beside other work it measures the machine (4 to 11 steps back).
+      # 640x360 window (two screen pixels to the art's, where the Mac's has
+      # four), after one run that isn't counted. Software rendering draws a
+      # full-size window at 9 to 18 frames a second, by the runner's CPU,
+      # several physics ticks to a frame, and the walk wobbles by a pixel no
+      # screen would show: 4 of 20 runs went over the flow's limit of one
+      # step back. At 640x360 it draws 23 to 32. The first run on a fresh
+      # machine compiles the shaders, and its hitches read as steps back
+      # (2): after it, 19 runs of 19 had none. Beside other work it would
+      # measure the machine (4 to 11 steps back), so it runs alone.
       - name: The motion check, three times
         if: steps.walk.outputs.touched == 'yes'
         run: |
           IFS="|" read -r _ args expect _ < <(grep -E '^\s*"motion\|' godot/tools/flows.sh | tr -d '\t"')
           failed=0
           results=""
-          for i in 1 2 3; do
+          for i in 0 1 2 3; do
             # shellcheck disable=SC2086 # the arguments are meant to split
-            timeout 120 xvfb-run -a -s "$SCREEN" godot --resolution 960x540 --audio-driver Dummy --path godot -- --screenshot $args --shot "$PWD/motion-$i.png" > "motion-$i.txt" 2>&1 || true
+            timeout 120 xvfb-run -a -s "$SCREEN" godot --resolution 640x360 --audio-driver Dummy --path godot -- --screenshot $args --shot "$PWD/motion-$i.png" > "motion-$i.txt" 2>&1 || true
             grep -E "^MOTION" "motion-$i.txt" || true
             report=$(grep "screenshot saved" "motion-$i.txt" || true)
             back=$(grep -oE "backsteps=[^ ]*" <<<"$report" || echo "no report")
-            if grep -qE "$expect" <<<"$report" && ! grep -qE "SCRIPT ERROR|Parse Error" "motion-$i.txt"; then
+            if [ "$i" = 0 ]; then
+              # The shaders compiled: not counted.
+              warm="$back"
+              continue
+            fi
+            if grep -qE "$expect" <<<"$report" && ! grep -qE "SCRIPT ERROR|Parse Error|SHADER ERROR" "motion-$i.txt"; then
               results+="${results:+, }ok $back"
             else
               results+="${results:+, }FAIL $back"
@@ -280,7 +287,7 @@ jobs:
             fi
           done
           echo "$results" > motion.txt
-          echo "**The motion check, three times:** $results" >> "$GITHUB_STEP_SUMMARY"
+          echo "**The motion check, three times:** $results (the uncounted first run: $warm)" >> "$GITHUB_STEP_SUMMARY"
           exit $failed
 
       # Every release flow in a window, each leaving its picture: the Mac's

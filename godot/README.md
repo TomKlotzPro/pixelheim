@@ -190,9 +190,11 @@ clock, so there a report that differs is noted, not failed (the headless
 run checks them all). When a pull request touches how the hero walks or is
 drawn or the camera (`player.gd`, `gait.gd`, `juice.gd`, `puny_art.gd`,
 `world_camera.gd`, the character sheets) or the workflow itself, the
-motion check runs three times first, alone, in a 960x540 window, and fails
-the job on a step back too many: the motion flow `check.sh quick` calls for
-is run on the pull request. The pictures are the run's artifacts, and a
+motion check runs three times first, alone, in a 640x360 window (where
+software rendering draws about thirty frames a second; a full-size one
+draws nine to eighteen, and the walk wobbles), after a first run that only
+warms the shaders, and fails the job on a step back too many: the motion
+flow `check.sh quick` calls for is run on the pull request. The pictures are the run's artifacts, and a
 comment on the pull request links them (the two sheets open in the
 browser). They are always of Shade's CC0 art alone: the repository is
 public, and so are its artifacts, so the paid art is never fetched there.
@@ -200,9 +202,10 @@ The Mac's windowed runs (`flows.sh`, `lookbook.sh`, both muted) stay the
 way to judge the paid art's looks.
 
 The motion check keeps the sky clear while it walks (a cloud's shadow over
-the shirt changes the reds it finds the hero by) and counts frames only
-while the hero walks (a slow run reaches the river, where the camera
-catching up would read as a step back).
+the shirt changes the reds it finds the hero by), counts frames only while
+the hero walks (a slow run reaches the river, where the camera catching up
+would read as a step back), and looks closely only at pure reds (turning
+every pixel into its hex took most of a slow frame).
 
 ### Boot splash
 
