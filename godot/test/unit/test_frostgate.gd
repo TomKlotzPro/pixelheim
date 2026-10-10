@@ -26,8 +26,12 @@ func test_the_pass_and_the_ice_cave_join_up() -> void:
 	assert_does_not_have(into, "icecave", "no door opens straight onto the cave")
 	assert_eq(Ways.below("observatory"), "icecave")
 	assert_has(into, "overworld")
-	assert_true(cave.is_walkable(Hunts.lair(Hunts.named("rimefang"))))
-	assert_eq(Hunts.living_on("icecave", [], []).map(func(entry: Dictionary) -> String: return entry["id"]), ["rimefang"])
+	# Rimefang sleeps at the bottom of the ice cave since it has floors
+	# (PIX-255): the glass hall, two below the first.
+	var glass := MapData.load_by_id("icecave_glass")
+	assert_true(glass.is_walkable(Hunts.lair(Hunts.named("rimefang"))))
+	assert_eq(Hunts.living_on("icecave_glass", [], []).map(func(entry: Dictionary) -> String: return entry["id"]), ["rimefang"])
+	assert_eq(Hunts.living_on("icecave", [], []), [], "none on the first floor")
 	assert_false(Hunts.notices(range(1, 16), []).any(func(entry: Dictionary) -> bool: return entry["id"] == "rimefang"), "never on the board")
 
 
@@ -48,7 +52,7 @@ func test_askes_chain_ends_in_lianes_lantern() -> void:
 		state.spoils.defeat_monster(Bestiary.spawn("frost_wolf"), "frost", "", 14)
 	assert_string_contains(state.questing.resolve_quests("frost_aske"), "Quest complete")
 	assert_string_contains(state.questing.resolve_quests("frost_aske"), "Liane's Lantern")
-	state.spoils.defeat_monster(Hunts.fighter("rimefang"), "icecave", "", 14)
+	state.spoils.defeat_monster(Hunts.fighter("rimefang"), "icecave_glass", "", 14)
 	assert_eq(int(state.pack.items.get("lianes_lantern", 0)), 1, "the relic is the hero's")
 	assert_string_contains(state.questing.resolve_quests("frost_aske"), "the way she went")
 	assert_eq(int(state.pack.items.get("lianes_lantern", 0)), 1, "and stays the hero's")

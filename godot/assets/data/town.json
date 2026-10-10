@@ -465,6 +465,11 @@
           "line": "The five come home: bring all four relics to Maren. The fountain will still want Fafnyr's scale"
         }
       ],
+      "opens": {
+        "about": "PIX-253 step 7: the Town's beat, as the story brings it. Its four keepsakes come home in the gates' order, Liane's lantern last, so it opens with chapter 5: once Aske comes home with the lantern (or the Village is finished after him), the town's tour ends at the board with these words. The fountain still wants Fafnyr's scale (chapter 7), so the Town is finished then, as ever.",
+        "line": "All four keepsakes home, and half the Reach in your streets: Pixelheim can grow into a Town.",
+        "detail": "A slate hall and a cottage on the bend wait on the board, and Mason Dorran has the fountain's basin dug on the square. All it wants now is a dragon's scale."
+      },
       "projects": [
         {
           "id": "fountain",

@@ -1,5 +1,5 @@
 {
-  "about": "PIX-255: a region's dungeon in floors (Tom: \"Les donjons, ça serait bien sur plusieurs étages, c'est un peu simple\"). A dungeon's floors are a list, top to bottom, each a map of its own (its own fog of war, Discovery being keyed by map id): a handcrafted one in assets/maps, or one DungeonFloor lays out from `plan` (its seed, a pack per room after the entrance, each `{monsterId, size}`, the last in the largest room with the way down, and a `setPiece` there), the same every visit. A floor's `up` and `down` are where its stairs stand on a handcrafted map and the cell beside them a hero arrives on; a planned floor's stand where its plan puts them, and Depths lays the stairs between each floor and the next both ways. Each floor's foes stand `lift` levels above their kind, a little harder than the floor above; the bottom one keeps the dungeon's `boss` (a named monster, combat.json) and, once it has fallen, `shortcut` opens: a door straight out to the dungeon's way in (its `look` a wooden gate in the rock, `cage`: an ore cage up a shaft, or `stair`: a stair behind iron bars). A floor's `find` is a chest (interactables.json) worth the walk; a planned floor's stands where its set piece's c is. `light` is the floor's own dark, `tint` its stone. No field in the save: floors reached are the fog the save keeps per map, finds its opened chests, the shortcut the boss in its named hunts. A hero saved on any floor wakes at the dungeon's entrance (`entrance`, on the first floor).",
+  "about": "PIX-255: a region's dungeon in floors (Tom: \"Les donjons, ça serait bien sur plusieurs étages, c'est un peu simple\"). A dungeon's floors are a list, top to bottom, each a map of its own (its own fog of war, Discovery being keyed by map id): a handcrafted one in assets/maps, or one DungeonFloor lays out from `plan` (its seed, a pack per room after the entrance, each `{monsterId, size}`, the last in the largest room with the way down, and a `setPiece` there), the same every visit. A floor's `up` and `down` are where its stairs stand on a handcrafted map and the cell beside them a hero arrives on; a planned floor's stand where its plan puts them, and Depths lays the stairs between each floor and the next both ways. Each floor's foes stand `lift` levels above their kind, a little harder than the floor above; the bottom one keeps the dungeon's `boss` (a named monster, combat.json) and, once it has fallen, `shortcut` opens: a door straight out to the dungeon's way in (its `look` a wooden gate in the rock, `cage`: an ore cage up a shaft, `stair`: a stair behind iron bars, or `slide`: a chute of ice, plugged until then). A floor's `find` is a chest (interactables.json) worth the walk; a planned floor's stands where its set piece's c is. `light` is the floor's own dark, `tint` its stone. No field in the save: floors reached are the fog the save keeps per map, finds its opened chests, the shortcut the boss in its named hunts. A hero saved on any floor wakes at the dungeon's entrance (`entrance`, on the first floor).",
   "dungeons": {
     "seacave": {
       "name": "The Sea Cave",
@@ -134,6 +134,44 @@
         "look": "stair",
         "to": {"kind": "map", "mapId": "cellars", "x": 4, "y": 27},
         "opened": "The iron bars on the north stair swing open behind him: a straight way up, to the foot of the keep's stair."
+      }
+    },
+    "icecave": {
+      "name": "The Ice Cave",
+      "region": "icecave",
+      "entrance": {"x": 4, "y": 25},
+      "floors": [
+        {
+          "mapId": "icecave",
+          "lift": 0,
+          "find": "icecave_strongbox",
+          "down": {"x": 38, "y": 2, "arrive": {"x": 38, "y": 3}}
+        },
+        {
+          "mapId": "icecave_lake",
+          "lift": 1,
+          "find": "icecave_boots",
+          "tint": [0.78, 0.92, 1.14],
+          "light": [0.3, 0.36, 0.48],
+          "up": {"x": 3, "y": 16, "arrive": {"x": 4, "y": 16}},
+          "down": {"x": 46, "y": 12, "arrive": {"x": 46, "y": 13}}
+        },
+        {
+          "mapId": "icecave_glass",
+          "lift": 2,
+          "boss": "rimefang",
+          "tint": [0.84, 0.95, 1.16],
+          "light": [0.34, 0.4, 0.52],
+          "up": {"x": 3, "y": 18, "arrive": {"x": 4, "y": 18}}
+        }
+      ],
+      "shortcut": {
+        "mapId": "icecave_glass",
+        "x": 30,
+        "y": 3,
+        "look": "slide",
+        "to": {"kind": "map", "mapId": "icecave", "x": 5, "y": 25},
+        "opened": "The ice plugging the chute in the north wall cracks and slides away: a run of black ice, worn glass-smooth, all the way down to the foot of Liane's stair. Hold on to your hat."
       }
     }
   },

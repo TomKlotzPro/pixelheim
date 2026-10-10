@@ -375,19 +375,6 @@
       ]
     },
     {
-      "id": "frost_aske",
-      "mapId": "frostgate",
-      "x": 11,
-      "y": 40,
-      "sprite": "hermit",
-      "name": "Aske the Hermit",
-      "wander": false,
-      "lines": [
-        "Liane paid me to keep her lamp oil dry and her door shut. Fifty years on, I'm still doing it. Nobody told me to stop.",
-        "She built the observatory over the old ice cave. Said the cold kept her glass true."
-      ]
-    },
-    {
       "id": "frost_gunnar",
       "mapId": "frostgate",
       "x": 37,
@@ -800,6 +787,46 @@
         "y": 16,
         "line": "Brother Teo has hung Greyhold's mended bell in the town hall.",
         "detail": "\"It rings a little flat. So did the garrison. They'd have liked it here.\""
+      }
+    },
+    {
+      "id": "frost_aske",
+      "about": "PIX-255 (story chapter 5): Liane paid him to keep her lamp oil dry and her door shut, and he has, for fifty years, standing by the observatory's door at the head of the Frostgate pass. Once Maren's letter is delivered (`comesHome.letter`) and Liane's lantern is up from the glass hall (`comesHome.named`), he comes down to be Pixelheim's lamplighter (`home`, by the square), and keeps the courier's lantern trimmed: it lights the dark a third further (`perkValues.lantern`, LightRig). The town's tour stops on the square for his homecoming (`homecoming`).",
+      "name": "Aske the Hermit",
+      "sprite": "hermit",
+      "found": {
+        "mapId": "frostgate",
+        "x": 29,
+        "y": 8,
+        "wander": false
+      },
+      "home": {
+        "x": 35,
+        "y": 24,
+        "wander": true
+      },
+      "comesHome": {
+        "letter": "letter_aske",
+        "named": "rimefang",
+        "line": "Aske is packing for Pixelheim: fifty years is long enough to keep one door, and he hears your village is short of a lamplighter."
+      },
+      "meetLines": [
+        "Liane paid me to keep her lamp oil dry and her door shut. Fifty years on, I'm still doing it. Nobody told me to stop.",
+        "She built the observatory over the old ice cave. Said the cold kept her glass true."
+      ],
+      "townLines": [
+        "One lamp, fifty years. Forty lamps can't be harder.",
+        "Dusk, I light them. Dawn, I put them out. In between, Maren and I sit on the square and talk about Liane. Fifty years nobody said her name to me."
+      ],
+      "perk": "Aske keeps your lantern trimmed: it lights the dark a third further",
+      "perkValues": {
+        "lantern": 0.33
+      },
+      "homecoming": {
+        "x": 37,
+        "y": 23,
+        "line": "Aske has come down from the Frostgate to light Pixelheim's lamps.",
+        "detail": "\"One lamp, fifty years. Forty lamps can't be harder.\""
       }
     }
   ],

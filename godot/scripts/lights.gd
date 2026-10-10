@@ -29,6 +29,8 @@ const FIRE := Color(1.0, 0.62, 0.3)
 const LAMP := Color(1.0, 0.76, 0.45)
 const WINDOW := Color(1.0, 0.8, 0.5)
 const LANTERN := Color(1.0, 0.82, 0.58)
+## The ice cave's frozen floors (PIX-255): a cold light the ice gives back.
+const ICE := Color(0.62, 0.84, 1.0)
 ## How strong each kind of light is at full dark. A 2D light adds to the
 ## night before the colours are multiplied, so near 1 it washes the ground
 ## out: these keep a lamp's pool warm, not white.
@@ -37,6 +39,7 @@ const FIRE_ENERGY := 0.55
 const TORCH_ENERGY := 0.7
 const WINDOW_ENERGY := 0.3
 const LANTERN_ENERGY := 0.3
+const ICE_ENERGY := 0.22
 ## The size of the shared light texture, in pixels.
 const TEXTURE_PX := 256
 

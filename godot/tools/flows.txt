@@ -107,8 +107,8 @@ underground | --map saltmere --at 6,24 --walk u fades --wait 0.4 | map=seacave c
 upstairs | --map seacave --at 4,26 --walk l fades --wait 0.4 | map=saltmere change=dissolve dark=0 | travel
 door-still | --map town portal fades still | map=town_hall change=cut dark=0 | travel rooms
 # A named boss falls as a boss does, and holds the way out while it hunts (PIX-232).
-bossfell | --map icecave fight slay --foe rimefang --wait 0.3 | map=icecave fell=1 | combat dungeon
-noescape | --map icecave fight --foe rimefang flee | map=icecave | combat dungeon
+bossfell | --map icecave_glass fight slay --foe rimefang --wait 0.3 | map=icecave_glass fell=1 | combat dungeon
+noescape | --map icecave_glass fight --foe rimefang flee | map=icecave_glass | combat dungeon
 # A hero far above the forest's slimes (PIX-251): they run instead of
 # charging, and the music stays the place's. At play zoom: a quiet run's
 # camera otherwise sees a few tiles, and a monster notices only on screen.
@@ -220,6 +220,24 @@ pass | --map overworld --at 68,2 --walk u,u,u --wait 0.4 | map=frostgate | trave
 observatory | --map frostgate --at 27,7 --walk u --wait 0.4 | map=observatory | travel rooms
 icecave | --map observatory --at 13,7 --walk u,u --keys s,e --wait 0.4 | map=icecave cell=\(4, 25\) open=none | travel rooms
 observatory-up | --map icecave --at 4,26 --walk l --wait 0.4 | map=observatory | travel rooms
+# Maren's letter to Aske at Liane's observatory, who opens her door: her
+# sums on her desk, read once, and the Next line moves on to her lantern
+# (PIX-255, PIX-253 step 7).
+aske-letter | --map frostgate --ready letter_aske --talk-to frost_aske --keys e,e,e | map=frostgate open=none delivered=1 next=sums | story quest
+sums | --map observatory --delivered letter_aske --at 6,7 --walk u --keys e,e,e,e --wait 0.3 | map=observatory open=none next=lantern | rooms story quest
+# The ice cave in three floors (PIX-255, PIX-253 step 7): down the frosted
+# galleries' stair (it asks; going down keeps the dark) to the frozen
+# lake, down past it to the glass hall, and back up (it dissolves);
+# Rimefang falls off Liane's lantern and the ice slide opens, down to the
+# foot of Liane's stair; and Aske as Pixelheim's lamplighter once the
+# lantern is home, the town's tour stopping on the square.
+icecave-down | --map icecave --at 38,3 --walk u --keys s,e fades --wait 0.4 | map=icecave_lake cell=\(4, 16\) change=dark dark=0 floor=2/3 | dungeon travel
+icecave-deeper | --map icecave_lake --at 46,13 --walk u --keys s,e --wait 0.4 | map=icecave_glass cell=\(4, 18\) floor=3/3 shortcut=shut | dungeon travel
+icecave-up | --map icecave_glass --at 4,18 --walk l fades --wait 0.4 | map=icecave_lake cell=\(4[5-7], 1[34]\) change=dissolve dark=0 | dungeon travel
+rimefang | --map icecave_glass fight slay --foe rimefang --wait 0.3 | map=icecave_glass fell=1 shortcut=open next=gate home=aske | dungeon combat story
+iceslide | --map icecave_glass --hunted rimefang --at 30,4 --walk u --wait 0.4 | map=icecave cell=\([45], 2[45]\) | dungeon travel
+aske | --map town --hunted rimefang --talk-to frost_aske --keys e,e,e | map=town open=none home=aske | town story
+aske-home | --map town --hunted rimefang reveal | open=reveal_screen home=aske | town story
 # The mountain's gate barred to a new hero (PIX-170).
 gate | --map overworld --at 48,8 --walk u,u --wait 0.3 | map=overworld cell=\(48, 7\) open=none | travel dungeon
 # A depth of the Deep Hunt cleared (PIX-161).

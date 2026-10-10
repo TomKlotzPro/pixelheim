@@ -2184,7 +2184,9 @@
     "cellars_hall": "The Captain's Hall",
     "frostgate": "The Frostgate Pass",
     "observatory": "Liane's Room",
-    "icecave": "The Ice Cave"
+    "icecave": "The Ice Cave",
+    "icecave_lake": "The Frozen Lake",
+    "icecave_glass": "The Glass Hall"
   },
   "levelCount": 15,
   "townSpawn": {

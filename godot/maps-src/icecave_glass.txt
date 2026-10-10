@@ -1,0 +1,44 @@
+# The glass hall (PIX-255), the ice cave's third floor: the landing at the
+# foot of the stair up to the frozen lake, a gallery of frost-white columns,
+# and the hall itself, its floor clear ice but for a margin of stone (~,
+# ice), where Rimefang has curled up on Liane's lantern. The ice slide in
+# its north wall (D) runs all the way down to the foot of Liane's stair
+# once Rimefang is down, and the stair up (c) leads back to the lake
+# (assets/data/depths.json).
+id icecave_glass
+style cave
+spawn 4 18
+key X wall -
+key . floor icecave
+key ~ ice icecave
+key L lamp -
+key b barrel -
+key k crate -
+key c cave -
+key r rock -
+key D sealed -
+map
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXLXXXXLXXDXXXXLXXXX
+XXXXXXXXXXXXXXXXXXX..................XXX
+XXXXXXXXXXXXXXXXXXX..................XXX
+XXXXXXXXXXXXXXXXXXX..~~~~~~~~~~~~~~..XXX
+XXXXXXXXXXXXXXXXXXX..~~X~~~~~~~~X~~..XXX
+XXXXXXXXXXXXXXXXXXX..~~~~~~~~~~~~~~..XXX
+XXXXXXXXXXXXXXXXLXX..~~~~~~~~~~~~~~..XXX
+XXXXXXXXXXXXXXX......~~~~~~~~~~~~~~..XXX
+XXXXXXXXXXXXXXX......~~X~~~~~~~~X~~..XXX
+XXXXXXXXXXXXXXX..r...~~~~~~~~~~~~~~..XXX
+XXXXXLXXLXXXXXX......~~~~~~~~~~~~~~..XXX
+XXXb.....kXXXXX......~~~~~~~~~~~~~~..XXX
+XXX.......XXXXX......~~X~~~~~~~~X~~..XXX
+XXX.......XXXXX......~~~~~~~~~~~~~~..XXX
+XXX..................~~~~~~~~~~~~~~..XXX
+XXXc.................~~~~~~~~~~~~~~..XXX
+XXX..................................XXX
+XXX.......XXXXX.r..k................kXXX
+XXXk.....bXXXXX....XXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX

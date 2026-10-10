@@ -195,15 +195,28 @@
       "keepsake": "lianes_lantern",
       "answer": [
         "She told me to keep her door shut till someone came for the lantern. Fifty years. You took your time.",
-        "(From his coat he takes a folded page in Liane's hand.) She left this with me. Her sums, from before the climb: \"The seal only buys time. Fifty years, at most.\"",
-        "\"A thing chained a hundred years will burn anything. Don't seal him. Free him. The collar answers to our five marks.\""
+        "(He unlocks Liane's door.) Her sums are still on her desk. She did them the night before the climb. Read them. She'd want somebody to.",
+        "The lantern's further down: the stair in her floor goes into the old ice cave, three floors deep. Something white sleeps on it. Mind the cold it breathes."
       ],
+      "reading": {
+        "sceneId": "liane_sums",
+        "mapId": "observatory",
+        "rect": [5, 5, 3, 2],
+        "name": "Liane's sums",
+        "lines": [
+          "(Pages of sums in a small, neat hand, weighed down with a brass star. Under the last of them she wrote it out in words.)",
+          "\"The seal only buys time. Fifty years, at most.\"",
+          "\"A thing chained a hundred years will burn anything. Don't seal him. Free him. The collar answers to our five marks.\""
+        ],
+        "again": "Liane's sums, in her small neat hand: \"Don't seal him. Free him.\"",
+        "shut": "Pages of sums under a brass star. Aske keeps this room. Ask him first."
+      },
       "addressed": "Letter to Aske, the Frostgate",
       "letter": [
         "Aske. Liane isn't coming back. She asked you to keep her door until someone came for the lantern.",
         "Someone has. Open it, give them her things, and go and sit in the sun. - Maren"
       ],
-      "answered": "Aske answered, with Liane's sums.",
+      "answered": "Aske answered, and opened Liane's door to her sums.",
       "gist": "Liane's sums: the seal only buys fifty years. \"Don't seal him. Free him. The collar answers to our five marks.\""
     },
     {
@@ -1091,7 +1104,7 @@
         "gold": 200,
         "xp": 110
       },
-      "accepted": "Through her door and down the stair, to the glass hall at the back. Her lantern's there - the last thing she lit before the climb. Mind the cold it breathes.",
+      "accepted": "Through her door and down the stair, three floors down to the glass hall. Her lantern's there - the last thing she lit before the climb. Mind the cold it breathes.",
       "completed": "Her lantern. She said she'd blow it out herself when they all came home. Take it up the mountain, courier. Let it see the way she went."
     },
     {
@@ -1458,9 +1471,19 @@
               "kind": "delivered",
               "questId": "letter_aske"
             },
-            "text": "Deliver Maren's letter to Aske on the Frostgate pass",
-            "hint": "The Frostgate road climbs north out of the Ash Fields. Aske the hermit has kept Liane's door for fifty years, because she asked him to.",
+            "text": "Deliver Maren's letter to Aske at Liane's observatory",
+            "hint": "The Frostgate road climbs north out of the Ash Fields to Liane's observatory, at the head of the pass. Aske has kept her door for fifty years, because she asked him to.",
             "elderHint": "Aske last. He's kept Liane's door shut fifty years because she asked him to. North, up the Frostgate road. Tell him he can stop."
+          },
+          {
+            "id": "sums",
+            "when": {
+              "kind": "seen",
+              "sceneId": "liane_sums"
+            },
+            "text": "Read Liane's sums in her room",
+            "hint": "Aske has opened Liane's door at the head of the Frostgate pass. Her sums are still on the desk in her room.",
+            "elderHint": "Liane did the sums for all five of us. If she left any behind, read them. She was always right, and it was always annoying."
           },
           {
             "id": "lantern",
@@ -1468,8 +1491,9 @@
               "kind": "hunted",
               "named": "rimefang"
             },
-            "text": "Find Liane's Lantern under her observatory on the Frostgate pass",
-            "hint": "The Frostgate road climbs north out of the Ash Fields. Aske the hermit has kept Liane's door for fifty years."
+            "text": "Bring Liane's lantern up from the glass hall",
+            "hint": "The stair in Liane's floor goes down into the old ice cave, three floors deep. At the bottom, in the glass hall, something white has curled up on her lantern.",
+            "elderHint": "Her lantern. She lit it the night before we climbed, so we'd find our way home. Bring it home, courier. One of us should."
           },
           {
             "id": "gate",
@@ -1477,8 +1501,8 @@
               "kind": "questDone",
               "questId": "maren_relics"
             },
-            "text": "Bring the four relics home to Maren",
-            "hint": "Maren waits for all four relics. She'll open the gate with the last of them: her promise.",
+            "text": "Bring the four keepsakes home to Maren",
+            "hint": "Maren waits for all four keepsakes: Tam's ladle, the last ingot, Oskar's shield and Liane's lantern. She'll open the gate with the last of them: her promise.",
             "elderHint": "Bring them to me, all four, and I'll open the gate with the last of them: my promise."
           }
         ]
@@ -1783,7 +1807,7 @@
     "barred": "The mountain's gate is barred with old iron and older wards. Nothing passes. Maren will know what opens it."
   },
   "letters": {
-    "about": "PIX-253 step 1: Maren's five letters, found in a tin under her hearthstone the morning after the Night of Ash. Four go out across the Reach as quests of the deliverTo kind, in the story's order; the fifth, to Morvax, stays with her for chapter 6. `dig` is where she stands while the tin waits and her house is ash; `news` is what a villager says once the letters are out (Bram's crew clears the cliff road), until Wenna has hers; `room` is Sela's word the first night the courier pays for a bed. A letter pays its postage on delivery (the recipient paid the post, then) and no XP: the XP curve is retuned with the story's last step. Step 2, the satchel: each letter's `addressed` names its row in the journal; `letter` is Maren's own words, read in the journal's Letters tab once it's delivered (a courier never reads the post); `answered` is its row's line once it's answered, and `gist` the answer's heart, under the list. `fifth` is the letter Maren keeps. A letter's `reading` (PIX-255, chapter 4) is an answer that waits where it was written: Captain Hale's order book on his table (`rect`, the cells E reads it from), shut until the letter is delivered, its `lines` read once into the story ledger (`sceneId`, a main quest step of the seen kind), `again` after.",
+    "about": "PIX-253 step 1: Maren's five letters, found in a tin under her hearthstone the morning after the Night of Ash. Four go out across the Reach as quests of the deliverTo kind, in the story's order; the fifth, to Morvax, stays with her for chapter 6. `dig` is where she stands while the tin waits and her house is ash; `news` is what a villager says once the letters are out (Bram's crew clears the cliff road), until Wenna has hers; `room` is Sela's word the first night the courier pays for a bed. A letter pays its postage on delivery (the recipient paid the post, then) and no XP: the XP curve is retuned with the story's last step. Step 2, the satchel: each letter's `addressed` names its row in the journal; `letter` is Maren's own words, read in the journal's Letters tab once it's delivered (a courier never reads the post); `answered` is its row's line once it's answered, and `gist` the answer's heart, under the list. `fifth` is the letter Maren keeps. A letter's `reading` (PIX-255, chapters 4 and 5) is an answer that waits where it was written: Captain Hale's order book on his table, Liane's sums on her desk (`rect`, the cells E reads it from), shut until the letter is delivered, its `lines` read once into the story ledger (`sceneId`, a main quest step of the seen kind), `again` after.",
     "sceneId": "maren_tin",
     "quests": [
       "letter_wenna",
