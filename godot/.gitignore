@@ -4,6 +4,8 @@ screenshot*.png.import
 export/
 flows/
 # Paid art (PIX-133): fetched from the private pixelheim-assets repo, never committed.
-/assets/puny/medieval/
-/assets/puny/shade/
+# Without a trailing slash, so an agent's worktree that links to them
+# instead keeps the links out too (check.sh would count them as changed).
+/assets/puny/medieval
+/assets/puny/shade
 lookbook*/
