@@ -1,0 +1,239 @@
+name: Steady flows
+
+# The flake hunt (PIX-276): every release flow run again and again, side by
+# side under load, to find any that doesn't give the same answer every
+# time. A flow that fails one run in thirty costs a rerun of the whole CI
+# job, and a second try (flows.sh once gave three flows one) hides what made
+# it fail. Every night on main, and on demand on any branch:
+#
+#   gh workflow run flakes.yml --ref <branch> -f rounds=5 -f runners=10
+#
+# Headless, each runner runs the suite `rounds` times with `load` flows at
+# once per core (more than it has cores: a loaded machine is where timing
+# shows); in a window, under a virtual display with software rendering as
+# CI's pictures job draws it, `windowed_rounds` times on each of
+# `windowed_runners` (the motion flow needs a window). The summary names
+# every flow that failed even once, why, and the end of its output, and every
+# flow whose report changed between runs (godot/tools/flakes.py); the run
+# fails on a failure. The windowed runs use Shade's CC0 art alone, as the
+# pictures job does: this repository's artifacts are public.
+on:
+  schedule:
+    - cron: "40 2 * * *"
+  workflow_dispatch:
+    inputs:
+      rounds:
+        description: Times each headless runner runs the suite
+        default: "5"
+      runners:
+        description: Headless runners side by side
+        default: "1"
+      load:
+        description: Flows at once per core, headless
+        default: "2"
+      windowed_rounds:
+        description: Times each windowed runner runs the suite (0 for none)
+        default: "1"
+      windowed_runners:
+        description: Windowed runners side by side
+        default: "1"
+      flows:
+        description: Only these flows, by name (all when empty)
+        default: ""
+
+permissions:
+  contents: read
+
+env:
+  GODOT_VERSION: "4.7.1"
+  ROUNDS: ${{ inputs.rounds || '5' }}
+  LOAD: ${{ inputs.load || '2' }}
+  WINDOWED_ROUNDS: ${{ inputs.windowed_rounds || '1' }}
+  FLOWS: ${{ inputs.flows || '' }}
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      runners: ${{ steps.plan.outputs.runners }}
+      windowed: ${{ steps.plan.outputs.windowed }}
+    steps:
+      - id: plan
+        env:
+          RUNNERS: ${{ inputs.runners || '1' }}
+          WINDOWED_RUNNERS: ${{ inputs.windowed_runners || '1' }}
+        run: |
+          echo "runners=$(seq -s, 1 "$RUNNERS" | sed 's/^/[/; s/$/]/')" >> "$GITHUB_OUTPUT"
+          if [ "$WINDOWED_ROUNDS" -gt 0 ]; then
+            echo "windowed=$(seq -s, 1 "$WINDOWED_RUNNERS" | sed 's/^/[/; s/$/]/')" >> "$GITHUB_OUTPUT"
+          else
+            echo "windowed=[]" >> "$GITHUB_OUTPUT"
+          fi
+
+  headless:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: ${{ fromJSON(needs.plan.outputs.runners) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Restore the Godot binary
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            ~/godot-bin
+            ~/.local/share/godot/export_templates
+          key: godot-${{ env.GODOT_VERSION }}
+
+      - name: Install Godot
+        run: |
+          if [ ! -x "$HOME/godot-bin/godot" ]; then
+            mkdir -p "$HOME/godot-bin"
+            curl -sL "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip" -o godot.zip
+            unzip -q godot.zip
+            mv "Godot_v${GODOT_VERSION}-stable_linux.x86_64" "$HOME/godot-bin/godot"
+          fi
+          echo "$HOME/godot-bin" >> "$GITHUB_PATH"
+
+      # The paid art, as the godot job runs its flows: only text leaves this
+      # job (no pictures headless).
+      - name: Fetch the private art
+        id: art
+        continue-on-error: true
+        uses: actions/checkout@v4
+        with:
+          repository: TomKlotzPro/pixelheim-assets
+          ssh-key: ${{ secrets.PIXELHEIM_ASSETS_KEY }}
+          path: private-assets
+      - name: Install the private art
+        if: steps.art.outcome == 'success'
+        run: |
+          bash scripts/fetch-private-art.sh private-assets
+          rm -rf private-assets
+
+      # The godot job's import, restored only (the same paths and key).
+      - name: Restore the import
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            godot/.godot
+            godot/assets/puny/shade/**/*.import
+            godot/assets/puny/medieval/*.import
+          key: godot-import-${{ env.GODOT_VERSION }}-art-${{ steps.art.outcome }}-${{ hashFiles('godot/project.godot', 'godot/*.import', 'godot/assets/**', 'godot/addons/**', 'godot/locale/**', 'godot/scenes/**', 'godot/scripts/**', 'godot/shaders/**', 'godot/test/**') }}
+          restore-keys: godot-import-${{ env.GODOT_VERSION }}-art-${{ steps.art.outcome }}-
+
+      - name: Import assets
+        run: godot --headless --path godot --import
+
+      - name: Every flow, round after round, under load
+        env:
+          RUNNER: ${{ matrix.runner }}
+        run: |
+          mkdir -p results
+          jobs=$(($(nproc) * LOAD))
+          for round in $(seq 1 "$ROUNDS"); do
+            # shellcheck disable=SC2086 # the names are meant to split
+            GITHUB_ACTIONS= GITHUB_STEP_SUMMARY= bash godot/tools/flows.sh --quiet -j "$jobs" $FLOWS > "results/round-$round.txt" 2>&1 || true
+            tail -n 7 "results/round-$round.txt"
+            python3 godot/tools/flakes.py collect "headless $RUNNER.$round" >> "results/headless-$RUNNER.jsonl"
+          done
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: flakes-headless-${{ matrix.runner }}
+          path: results/
+          retention-days: 14
+
+  windowed:
+    needs: plan
+    if: needs.plan.outputs.windowed != '[]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: ${{ fromJSON(needs.plan.outputs.windowed) }}
+    env:
+      SCREEN: "-screen 0 2560x1440x24"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Restore the Godot binary
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            ~/godot-bin
+            ~/.local/share/godot/export_templates
+          key: godot-${{ env.GODOT_VERSION }}
+
+      - name: Install Godot
+        run: |
+          if [ ! -x "$HOME/godot-bin/godot" ]; then
+            mkdir -p "$HOME/godot-bin"
+            curl -sL "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip" -o godot.zip
+            unzip -q godot.zip
+            mv "Godot_v${GODOT_VERSION}-stable_linux.x86_64" "$HOME/godot-bin/godot"
+          fi
+          echo "$HOME/godot-bin" >> "$GITHUB_PATH"
+
+      - name: Install a virtual display and software rendering
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends xvfb xauth libgl1-mesa-dri libglx-mesa0 libegl1 mesa-vulkan-drivers libvulkan1 >/dev/null
+
+      - name: Import assets (Shade's CC0 art only)
+        run: |
+          if [ -e godot/assets/puny/medieval ] || [ -e godot/assets/puny/shade ]; then
+            echo "::error::the paid art is here, and this run's artifacts are public"
+            exit 1
+          fi
+          godot --headless --path godot --import
+
+      - name: Every flow in a window, round after round
+        env:
+          RUNNER: ${{ matrix.runner }}
+        run: |
+          mkdir -p results
+          for round in $(seq 1 "$WINDOWED_ROUNDS"); do
+            # shellcheck disable=SC2086 # the names are meant to split
+            GITHUB_ACTIONS= GITHUB_STEP_SUMMARY= xvfb-run -a -s "$SCREEN" bash godot/tools/flows.sh -j "$(nproc)" $FLOWS > "results/round-$round.txt" 2>&1 || true
+            tail -n 7 "results/round-$round.txt"
+            python3 godot/tools/flakes.py collect "windowed $RUNNER.$round" >> "results/windowed-$RUNNER.jsonl"
+          done
+
+      # Text only: the pictures stay here.
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: flakes-windowed-${{ matrix.runner }}
+          path: results/
+          retention-days: 14
+
+  tally:
+    needs: [headless, windowed]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: flakes-*
+          path: results
+
+      - name: The tally
+        run: |
+          set +e
+          python3 godot/tools/flakes.py tally results/*/*.jsonl > tally.md
+          status=$?
+          cat tally.md >> "$GITHUB_STEP_SUMMARY"
+          cat tally.md
+          for failed in $(grep -oE '^\| [a-z0-9-]+ \| [0-9]+ \(' tally.md | awk '{print $2}'); do
+            echo "::error title=flow $failed is unsteady::see the run's summary"
+          done
+          exit $status
