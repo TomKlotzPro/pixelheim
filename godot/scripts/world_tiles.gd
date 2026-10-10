@@ -28,6 +28,9 @@ const TILE_INFO := {
 	# boulders, and the shortcut's door in the rock while it's sealed; the
 	# shafts' ore cage's winch.
 	"wreck": false, "rock": false, "sealed": false, "winch": false,
+	# The Greyhold cellars' (PIX-255): a stone knight over a grave, and
+	# iron grilles.
+	"statue": false, "grille": false,
 }
 
 ## Terrain the Puny World ground draws (PunyTerrain, PIX-130).
@@ -52,6 +55,7 @@ const TILE_COLORS := {
 	"snow": "e8eef2", "ice": "a8d0e0", "stone": "8a8680",
 	"stairwell": "16181e",
 	"wreck": "6a4a2e", "rock": "6b6f7a", "sealed": "8a6238", "winch": "6b6f7a",
+	"statue": "8a8f9a", "grille": "3a3d44",
 }
 const ROOF_COLOR := "8a5638"
 const FALLBACK_COLOR := "4a4e58"

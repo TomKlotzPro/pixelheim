@@ -1,0 +1,46 @@
+# The Captain's Hall (PIX-255), the Greyhold cellars' third floor: the
+# landing at the foot of the stair up to the crypt (c), the gallery of the
+# old cells behind their iron grilles, the antechamber, and the hall itself,
+# its aisle kept by stone knights, where the Hollow Captain - Captain Hale,
+# fifty years dead and still on watch - guards Oskar's shield before his
+# chair. Read him Maren's line and he stands down. The north stair (D)
+# behind his chair opens then, a straight way up to the foot of the keep's
+# stair (assets/data/depths.json).
+id cellars_hall
+style cave
+spawn 3 19
+key X wall -
+key . floor cellars
+key L lamp -
+key b barrel -
+key k crate -
+key c cave -
+key D sealed -
+key s statue -
+key # grille -
+map
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXLXXXLXXXXXXLXXXLXXXLXXXXXXXDXXXLXXX
+XXb......XXXX......................kXX
+XX.......XXXX...s...s...s...s...s...XX
+XX.......XXXX.......................XX
+XX..................................XX
+XX..................................XX
+XX.......XXXX.......................XX
+XX......kXXXX.......................XX
+XXXX..XXXXXXX...s...s...s...........XX
+XXXX..XXXXXXXb.....................bXX
+XXXX..XXXXXXXXXXXXXXXXXXXX..XXXXXXXXXX
+XXXX..XXXXXXXXXXXXXXXXXXXX..XXXXXXXXXX
+XXXL..XXLXXXXXXXXLXXXLXXXX..XXLXXXXXXX
+XX.........XXXX................bXXXXXX
+XX.........XXXX.................XXXXXX
+XX..............................XXXXXX
+XXc.............................XXXXXX
+XX.........XXXX.................XXXXXX
+XX.........XXXX.................XXXXXX
+XXb.......kXXXXk..#..#..#..#..#.XXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX

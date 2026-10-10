@@ -194,6 +194,25 @@ keep-ask | --map keep --at 13,7 --walk u,u | map=keep cell=\(13, 6\) open=dialog
 cellars | --map keep --at 13,7 --walk u,u --keys s,e --wait 0.4 | map=cellars cell=\(4, 27\) open=none | travel rooms
 keep-stay | --map keep --at 13,7 --walk u,u --keys s,s,e --wait 0.3 | map=keep cell=\(13, 6\) open=none | travel rooms
 keep-up | --map cellars --at 4,28 --walk l --wait 0.4 | map=keep | travel rooms
+# Captain Hale's order book on his table, read once Maren's letter is
+# delivered: the Next line moves on to the Hollow Captain (PIX-255).
+order-book | --map keep --delivered letter_hale --at 8,6 --walk l --keys e,e,e --wait 0.3 | map=keep open=none next=shield | rooms story quest
+# The Greyhold cellars in three floors (PIX-255): down the cells' stair
+# where the Hollow Captain used to stand (it asks; going down keeps the
+# dark) to the garrison's crypt, down past its stone knights to the
+# Captain's Hall, and back up (it dissolves); the Hollow Captain stands
+# down once he's low, hears Maren's line read to him and gives up Oskar's
+# shield, the north stair opening straight up to the foot of the keep's
+# stair; and Ulla at Pixelheim's gate, Brother Teo with Greyhold's bell in
+# the town hall, the town's tour stopping at both.
+cellars-down | --map cellars --at 40,3 --walk u --keys s,e fades --wait 0.4 | map=cellars_crypt cell=\(3, 9\) change=dark dark=0 floor=2/3 | dungeon travel
+cellars-deeper | --map cellars_crypt --at 69,10 --walk d,d --keys s,e --wait 0.4 | map=cellars_hall cell=\(3, 19\) floor=3/3 shortcut=shut | dungeon travel
+cellars-up | --map cellars_hall --at 3,19 --walk l fades --wait 0.4 | map=cellars_crypt cell=\(6[78], 1[12]\) change=dissolve dark=0 | dungeon travel
+captain | --map cellars_hall fight slay --foe hollow_captain --keys e,e,e,e --wait 0.5 | map=cellars_hall open=none stood=1 shortcut=open next=letter_aske home=ulla,teo | dungeon combat story
+northstair | --map cellars_hall --hunted hollow_captain --at 30,4 --walk u --wait 0.4 | map=cellars cell=\(4, 2[67]\) | dungeon travel
+ulla | --map town --hunted hollow_captain --talk-to greyhold_ulla --keys e,e,e | map=town open=none home=ulla,teo | town story
+teo | --map town_hall --hunted hollow_captain --talk-to greyhold_teo --keys e,e,e | map=town_hall open=none home=ulla,teo | rooms story
+gatehome | --map town --hunted hollow_captain reveal | open=reveal_screen home=ulla,teo | town story
 # The Frostgate pass (PIX-169).
 pass | --map overworld --at 68,2 --walk u,u,u --wait 0.4 | map=frostgate | travel
 # The observatory's door into Liane's room, down her stair to the ice

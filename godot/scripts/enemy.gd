@@ -62,6 +62,9 @@ var fighter: Dictionary
 var region := ""
 var spawn_id := ""
 var dying := false
+## Stood down rather than fallen (PIX-255): out of the fight like a dying
+## foe, waiting for what it says to be heard before it lies down.
+var stood_down := false
 var can_bite := true
 var wander_dir := Vector2.ZERO
 var wander_time := 0.0
@@ -759,19 +762,21 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null, crit := fa
 	knock = (global_position - from).normalized() * knock_push(fighter, not named.is_empty())
 	knock_left = KNOCK_TIME
 	_lose(damage, Color(1, 0.95, 0.85), crit)
+	# The blow that made it stand down (PIX-255) is no killing blow.
+	var fell := dying and not stood_down
 	# A clean white flash (PIX-226), longer on the killing blow (PIX-209: a
 	# longer stop, a thud).
-	Juice.flash(sprite, Juice.KILL_FLASH_SECONDS if dying else Juice.FLASH_SECONDS)
-	if dying:
+	Juice.flash(sprite, Juice.KILL_FLASH_SECONDS if fell else Juice.FLASH_SECONDS)
+	if fell:
 		Sound.play_ui("kill")
 	# A named monster falls as a boss does (PIX-232), not just a boss.
-	if dying and Bestiary.fights_like_boss(fighter):
+	if fell and Bestiary.fights_like_boss(fighter):
 		world.foes.boss_fell(self)
 	else:
-		world.camera_rig.hit_stop(KILL_STOP if dying else HIT_STOP)
-	world.camera_rig.shake(2.5 if dying or crit else 1.5, 0.1)
+		world.camera_rig.hit_stop(KILL_STOP if fell else HIT_STOP)
+	world.camera_rig.shake(2.5 if fell or crit else 1.5, 0.1)
 	# The camera answers a crit or a killing blow with a little punch.
-	if dying or crit:
+	if fell or crit:
 		world.camera_rig.punch(global_position - from)
 	# Struck from anywhere, it turns on the hero at once; struck as it runs,
 	# it stands and fights where it is (PIX-251).
@@ -792,17 +797,51 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null, crit := fa
 func _lose(damage: int, color: Color, crit := false) -> void:
 	fighter["hp"] = maxi(0, int(fighter["hp"]) - damage)
 	world.fx.float_number(damage, global_position + Vector2(0, -18), color, crit)
+	# One that yields at a share of its health (PIX-255: the Hollow Captain)
+	# stands down there, even under a blow that would have felled it.
+	if Hunts.yields(fighter):
+		fighter["hp"] = maxi(1, int(fighter["hp"]))
+		stand_down()
 	health_bar.size.x = bar_width * fighter["hp"] / fighter["maxHp"]
 	# A boss's health is on the boss bar across the screen's top (PIX-210).
-	health_bar.visible = not world.foes.fights_like_boss(self)
+	health_bar.visible = not world.foes.fights_like_boss(self) and not dying
 	health_bar_back.visible = health_bar.visible
 	if fighter["hp"] == 0:
 		_die()
 
 
+## Stands down rather than falls (PIX-255; the piece the Night of Bells'
+## dragon will use at dawn): out of the fight at once - no blow lands, it
+## bites and tries its tricks no more, the boss bar lets it go - while the
+## world plays what it says (Foes.stood_down), pays it out as a fall would,
+## and has it lie down.
+func stand_down() -> void:
+	if dying:
+		return
+	dying = true
+	stood_down = true
+	hunting = false
+	mode = "idle"
+	velocity = Vector2.ZERO
+	tell_left = -1.0
+	knock_left = 0.0
+	if mark != null:
+		mark.visible = false
+	if fright_mark != null:
+		fright_mark.visible = false
+	_play("idle")
+	world.foes.stood_down(self)
+
+
 func _die() -> void:
 	dying = true
 	world.foes.on_enemy_died(self)
+	lie_down()
+
+
+## The fall (or, stood down, lying down at last): out of the way, its bars
+## gone, its death played, then the body dissolves.
+func lie_down() -> void:
 	if fright_mark != null:
 		fright_mark.visible = false
 	collision_layer = 0

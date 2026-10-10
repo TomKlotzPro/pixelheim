@@ -97,6 +97,7 @@ const TABLE := [
 	{"flag": "--slots", "takes": "<dir>", "does": "with saves: the slots read from that folder (res://test/fixtures/slots: three heroes, the longest lines a card shows), nothing written (PIX-230)"},
 	{"flag": "--ready", "takes": "<quest>", "does": "a quest accepted and its goal met (PIX-192)"},
 	{"flag": "--take", "takes": "<quest>", "does": "a quest taken, nothing done yet"},
+	{"flag": "--delivered", "takes": "<quest>", "does": "one of Maren's letters already handed over and answered (PIX-255: Hale's order book open to read)"},
 	{"flag": "--follow-wagon", "takes": "<s>", "does": "the hero walks beside the escort's wagon for s seconds (PIX-192)"},
 	{"flag": "--talk-to", "takes": "<villager>", "does": "a conversation with that villager, wherever they stand, then --keys"},
 	{"flag": "talk", "takes": "", "does": "below the map's first villager, facing them, E pressed, then --keys"},

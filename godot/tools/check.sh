@@ -72,7 +72,7 @@ travel field: scripts/puny_terrain.gd scripts/scatter.gd scripts/skyline.gd asse
 travel: scripts/reach_plane.gd scripts/ways.gd scripts/waypoints.gd scripts/atlas.gd scripts/dissolve.gd scripts/place_title.gd scripts/map_screen.gd scripts/state/world_state.gd assets/data/plane.json
 travel story +overworld*: scripts/state/gates.gd scripts/gate_art.gd assets/data/gates.json
 quest travel: scripts/escort.gd
-dungeon travel +seacave* +shafts*: scripts/state/depths.gd assets/data/depths.json
+dungeon travel +seacave* +shafts* +cellars*: scripts/state/depths.gd assets/data/depths.json
 dungeon +floor*: scripts/world_delve.gd scripts/puny_dungeon.gd scripts/dungeon_floor.gd scripts/dungeon_screen.gd scripts/state/dungeons.gd assets/puny/dungeon/*
 combat dungeon: scripts/boss_brain.gd scripts/telegraph.gd scripts/boss_bar.gd
 combat field dungeon gathering +floor*: assets/data/combat.json

@@ -1,5 +1,5 @@
 {
-  "about": "PIX-255: a region's dungeon in floors (Tom: \"Les donjons, ça serait bien sur plusieurs étages, c'est un peu simple\"). A dungeon's floors are a list, top to bottom, each a map of its own (its own fog of war, Discovery being keyed by map id): a handcrafted one in assets/maps, or one DungeonFloor lays out from `plan` (its seed, a pack per room after the entrance, each `{monsterId, size}`, the last in the largest room with the way down, and a `setPiece` there), the same every visit. A floor's `up` and `down` are where its stairs stand on a handcrafted map and the cell beside them a hero arrives on; a planned floor's stand where its plan puts them, and Depths lays the stairs between each floor and the next both ways. Each floor's foes stand `lift` levels above their kind, a little harder than the floor above; the bottom one keeps the dungeon's `boss` (a named monster, combat.json) and, once it has fallen, `shortcut` opens: a door straight out to the dungeon's way in (its `look` a wooden gate in the rock, or `cage`: an ore cage up a shaft). A floor's `find` is a chest (interactables.json) worth the walk; a planned floor's stands where its set piece's c is. `light` is the floor's own dark, `tint` its stone. No field in the save: floors reached are the fog the save keeps per map, finds its opened chests, the shortcut the boss in its named hunts. A hero saved on any floor wakes at the dungeon's entrance (`entrance`, on the first floor).",
+  "about": "PIX-255: a region's dungeon in floors (Tom: \"Les donjons, ça serait bien sur plusieurs étages, c'est un peu simple\"). A dungeon's floors are a list, top to bottom, each a map of its own (its own fog of war, Discovery being keyed by map id): a handcrafted one in assets/maps, or one DungeonFloor lays out from `plan` (its seed, a pack per room after the entrance, each `{monsterId, size}`, the last in the largest room with the way down, and a `setPiece` there), the same every visit. A floor's `up` and `down` are where its stairs stand on a handcrafted map and the cell beside them a hero arrives on; a planned floor's stand where its plan puts them, and Depths lays the stairs between each floor and the next both ways. Each floor's foes stand `lift` levels above their kind, a little harder than the floor above; the bottom one keeps the dungeon's `boss` (a named monster, combat.json) and, once it has fallen, `shortcut` opens: a door straight out to the dungeon's way in (its `look` a wooden gate in the rock, `cage`: an ore cage up a shaft, or `stair`: a stair behind iron bars). A floor's `find` is a chest (interactables.json) worth the walk; a planned floor's stands where its set piece's c is. `light` is the floor's own dark, `tint` its stone. No field in the save: floors reached are the fog the save keeps per map, finds its opened chests, the shortcut the boss in its named hunts. A hero saved on any floor wakes at the dungeon's entrance (`entrance`, on the first floor).",
   "dungeons": {
     "seacave": {
       "name": "The Sea Cave",
@@ -90,6 +90,51 @@
         "to": {"kind": "map", "mapId": "blackiron", "x": 27, "y": 5},
         "opened": "The ore cage comes rattling down its shaft and its gate swings open: a ride up to the pithead, and daylight."
       }
+    },
+    "cellars": {
+      "name": "The Greyhold Cellars",
+      "region": "cellars",
+      "entrance": {"x": 4, "y": 27},
+      "floors": [
+        {
+          "mapId": "cellars",
+          "lift": 0,
+          "find": "cellars_locket",
+          "down": {"x": 40, "y": 2, "arrive": {"x": 40, "y": 3}}
+        },
+        {
+          "mapId": "cellars_crypt",
+          "lift": 1,
+          "find": "cellars_badge",
+          "tint": [0.9, 0.93, 1.02],
+          "light": [0.25, 0.26, 0.36],
+          "plan": {
+            "seed": 4168,
+            "packs": [
+              {"monsterId": "ghost", "size": 2},
+              {"monsterId": "skeleton", "size": 3},
+              {"monsterId": "hollow_guard", "size": 2},
+              {"monsterId": "ghost", "size": 2}
+            ],
+            "setPiece": "crypt"
+          }
+        },
+        {
+          "mapId": "cellars_hall",
+          "lift": 2,
+          "boss": "hollow_captain",
+          "light": [0.31, 0.27, 0.27],
+          "up": {"x": 2, "y": 19, "arrive": {"x": 3, "y": 19}}
+        }
+      ],
+      "shortcut": {
+        "mapId": "cellars_hall",
+        "x": 30,
+        "y": 3,
+        "look": "stair",
+        "to": {"kind": "map", "mapId": "cellars", "x": 4, "y": 27},
+        "opened": "The iron bars on the north stair swing open behind him: a straight way up, to the foot of the keep's stair."
+      }
     }
   },
   "setPieces": {
@@ -109,6 +154,15 @@
         ".r..c..r"
       ],
       "note": "Rails buckled under a fall of rock, and a lever somebody pulled far too hard. From the rubble, a very small voice is shouting."
+    },
+    "crypt": {
+      "about": "Where Greyhold laid its garrison (story chapter 4): a stone knight over each of them (s), iron grilles (#) and urns (p) between, and on the last slab a box with a guard's badge in it, the floor's find (c). Laid in the last room, a free ring round it.",
+      "rows": [
+        "s.s.s.s.s",
+        "#...c...#",
+        "p.s...s.p"
+      ],
+      "note": "Greyhold's garrison, laid in rows under their own stone knights. Someone used to leave candles here. Nobody has for a long time."
     }
   }
 }

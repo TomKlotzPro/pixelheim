@@ -1,8 +1,9 @@
 extends GutTest
 ## Greyhold (PIX-168): the road east off the Ash Fields to Oskar's fort and
-## down its keep to the cellars, Ulla's chain to Oskar's Shield, Fenwick's
-## locket in the end cell, the dead garrison stood down, and the Greyhold
-## Warden set forged from the fort's old steel.
+## down its keep to the cellars (three floors since PIX-255, the Hollow
+## Captain at the bottom), Ulla's chain to Oskar's Shield, Fenwick's locket
+## in the end cell, the dead garrison stood down, and the Greyhold Warden set
+## forged from the fort's old steel.
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
 
@@ -25,8 +26,11 @@ func test_the_fort_and_the_cellars_join_up() -> void:
 	assert_does_not_have(into, "cellars", "no door opens straight onto the cellars")
 	assert_eq(Ways.below("keep"), "cellars")
 	assert_has(into, "overworld")
-	assert_true(cellars.is_walkable(Hunts.lair(Hunts.named("hollow_captain"))))
-	assert_eq(Hunts.living_on("cellars", [], []).map(func(entry: Dictionary) -> String: return entry["id"]), ["hollow_captain"])
+	# The Hollow Captain keeps his watch two floors further down (PIX-255).
+	var hall := MapData.load_by_id("cellars_hall")
+	assert_true(hall.is_walkable(Hunts.lair(Hunts.named("hollow_captain"))))
+	assert_eq(Hunts.living_on("cellars", [], []).size(), 0, "not on the first floor")
+	assert_eq(Hunts.living_on("cellars_hall", [], []).map(func(entry: Dictionary) -> String: return entry["id"]), ["hollow_captain"])
 	assert_false(Hunts.notices(range(1, 16), []).any(func(entry: Dictionary) -> bool: return entry["id"] == "hollow_captain"), "never on the board")
 
 

@@ -165,9 +165,10 @@ static func _regional(laid: Dictionary, spec: Dictionary) -> void:
 ## floor all round it, clear of the room's torches and barrels (its top and
 ## bottom rows): `=` a hull beam (or a rail), `|` a mast, `w` a wheel, `r`
 ## a fallen rock and `l` a lever (the shafts' canary, PIX-255), drawn on the
-## dungeon sheet over a blocking "wreck" cell; `o` a barrel, `p` a pot; `c`
-## the floor's find, a chest's cell; `.` floor. {find, cells (what blocks:
-## the set piece's words go with them), box}.
+## dungeon sheet over a blocking "wreck" cell; `o` a barrel, `p` a pot; `s`
+## a stone knight and `#` an iron grille (the Greyhold crypt's); `c` the
+## floor's find, a chest's cell; `.` floor. {find, cells (what blocks: the
+## set piece's words go with them), box}.
 static func _set_piece(map: MapData, room: Rect2i, piece: Dictionary) -> Dictionary:
 	var rows: Array = piece["rows"]
 	var size := Vector2i(String(rows[0]).length(), rows.size())
@@ -199,6 +200,10 @@ static func _set_piece(map: MapData, room: Rect2i, piece: Dictionary) -> Diction
 					tile = "barrel"
 				"p":
 					tile = "crate"
+				"s":
+					tile = "statue"
+				"#":
+					tile = "grille"
 				"c":
 					tile = "floor"
 					find = cell

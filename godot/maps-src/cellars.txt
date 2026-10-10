@@ -1,7 +1,11 @@
-# The Greyhold cellars (PIX-168): the stair landing, the guardroom, the old
-# cells, the crypt of the garrison's dead, and the captain's hall where
-# Oskar's shield has hung for fifty years - and its keeper still stands guard.
-# The stair leads back up into the keep's guardroom (PIX-256).
+# The Greyhold cellars (PIX-168), under Captain Hale's hall: the stair
+# landing, the guardroom, the old cells (Fenwick's locket under the straw of
+# the end one), the mess with its pillars and the armoury's strongbox. Since
+# PIX-255 it is the cellars' first floor, the cells: the hall in the
+# north-east, where the Hollow Captain kept his watch, holds the stair down
+# (s) to the garrison's crypt, and the captain waits two floors down
+# (assets/data/depths.json). The stair leads back up into the keep's
+# guardroom (PIX-256).
 id cellars
 style cave
 spawn 4 27
@@ -12,10 +16,11 @@ key L lamp -
 key b barrel -
 key k crate -
 key c cave cellars
+key s stairwell -
 map
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXLXXXLXXXXX
-XXXXXXXLXXXXXXXXLXXXXXXXLXXXXXXXXXX...........XX
+XXXXXXXLXXXXXXXXLXXXXXXXLXXXXXXXXXX.....s.....XX
 XX...X..X...XX.................XXXX...........XX
 XX...X..X...XX.................XXXX..X.....X..XX
 XX...X..X...XX.................XXXX...........XX
