@@ -55,6 +55,9 @@ var time := 0.0
 var wind := 1.0
 ## How dark a cloud's shadow is at its heart, in full day.
 const CLOUD_SHADE := 0.17
+## No cloud shadows while true: the harness's motion check (PIX-275) finds
+## the hero by its shirt's exact reds, which a shadow drifting over it changes.
+var clear_sky := false
 ## The clouds' noise: one seamless sheet, CLOUD_PX square.
 const CLOUD_PX := 256
 
@@ -250,7 +253,7 @@ func _mirror_water(view: Array[Vector2]) -> void:
 ## The cloud shadows lie on the world under the camera, by day under the
 ## sky; under an `overcast` sky there are none.
 func _drift_clouds(view: Array[Vector2], overcast: float) -> void:
-	var amount := (1.0 - dark) * (1.0 - overcast) * CLOUD_SHADE if Lights.under_sky(world.map) else 0.0
+	var amount := (1.0 - dark) * (1.0 - overcast) * CLOUD_SHADE if Lights.under_sky(world.map) and not clear_sky else 0.0
 	clouds.visible = amount > 0.0
 	if not clouds.visible:
 		return

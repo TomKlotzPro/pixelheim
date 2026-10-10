@@ -291,12 +291,24 @@ func _run_test_harness() -> void:
 		# (a still frame of the walk, so only motion moves it), and the
 		# world's scroll from the camera. A hero who steps back on screen
 		# while walking forward is the shake that blurred every step.
+		# Slow frames (a loaded machine, CI's software rendering: PIX-275)
+		# walk the hero further in the same 45 frames, and two things there
+		# aren't the camera: a cloud's shadow drifting over the shirt changes
+		# its reds, so the sky is kept clear while it walks; and the river
+		# stops the walk, the camera catching up as a step back, so frames
+		# count only while the hero still walks.
+		world.lights.clear_sky = true
 		world.player.scripted_dir = Vector2.RIGHT
 		world.player.sprite.speed_scale = 0.0
 		var hero_x: Array[float] = []
 		var scroll_x: Array[float] = []
+		var walking := false
 		for i in 45:
 			await RenderingServer.frame_post_draw
+			var moving: bool = world.player.get_real_velocity().x >= 1.0
+			if walking and not moving:
+				break
+			walking = walking or moving
 			var image := get_viewport().get_texture().get_image()
 			var sum := 0.0
 			var n := 0
@@ -304,24 +316,41 @@ func _run_test_harness() -> void:
 			var around: Vector2 = (get_viewport().get_canvas_transform() * world.player.global_position) * (image.get_width() / get_viewport().get_visible_rect().size.x)
 			for y in range(int(around.y) - 90, int(around.y) + 30):
 				for x in range(int(around.x) - 50, int(around.x) + 50):
-					if DesktopLook.shown(image.get_pixel(x, y), DesktopLook.linear).to_html(false) in ["b60000", "770000"]:
+					var pixel := image.get_pixel(x, y)
+					# A pure red, in either light, before the exact test: the
+					# frame's time is the measurement's too, and turning
+					# every pixel into its hex took most of a slow frame.
+					if pixel.r < 0.15 or pixel.g > 0.002 or pixel.b > 0.002:
+						continue
+					if DesktopLook.shown(pixel, DesktopLook.linear).to_html(false) in ["b60000", "770000"]:
 						sum += x
 						n += 1
-			hero_x.append(sum / maxf(n, 1))
+			# -1: not found in this frame.
+			hero_x.append(sum / n if n > 0 else -1.0)
 			scroll_x.append(get_viewport().get_canvas_transform().origin.x)
 		world.player.scripted_dir = Vector2.ZERO
+		world.lights.clear_sky = false
 		var hero_steps: Array = []
 		var scroll_steps: Array = []
 		for i in range(1, hero_x.size()):
-			hero_steps.append(snappedf(hero_x[i] - hero_x[i - 1], 0.1))
+			# A frame the hero wasn't found in is no step either way.
+			if hero_x[i] >= 0.0 and hero_x[i - 1] >= 0.0:
+				hero_steps.append(snappedf(hero_x[i] - hero_x[i - 1], 0.1))
 			scroll_steps.append(snappedf(scroll_x[i] - scroll_x[i - 1], 0.1))
-		var back := hero_steps.filter(func(d: float) -> bool: return d < -0.05).size()
+		# Which steps went back, by their place in the walk.
+		var back_at: Array[int] = []
+		for i in hero_steps.size():
+			if hero_steps[i] < -0.05:
+				back_at.append(i)
+		var back := back_at.size()
 		var frozen := scroll_steps.filter(func(d: float) -> bool: return absf(d) < 0.05).size()
-		print("MOTION fps=%d hero_backsteps=%d scroll_frozen=%d hero=%s scroll=%s" % [
-			Engine.get_frames_per_second(), back, frozen, str(hero_steps.slice(5, 17)), str(scroll_steps.slice(5, 17))])
+		var found := hero_x.filter(func(x: float) -> bool: return x >= 0.0).size()
+		print("MOTION fps=%d frames=%d found=%d hero_backsteps=%d at=%s scroll_frozen=%d hero=%s scroll=%s" % [
+			Engine.get_frames_per_second(), hero_x.size(), found, back, str(back_at), frozen, str(hero_steps.slice(5, 17)), str(scroll_steps.slice(5, 17))])
 		# The release flow reads it off the report line (PIX-135).
-		# A hero not found at all would make every step 0: say so, not pass.
-		report.note("backsteps", str(back) if hero_x.any(func(x: float) -> bool: return x > 0.0) else "lost")
+		# A hero found in too few frames would leave too few steps to judge:
+		# say so, not pass.
+		report.note("backsteps", str(back) if found >= 10 and found * 2 >= hero_x.size() else "lost")
 	# Terrain review: `--at x,y` stands the hero on a cell (before `--walk`,
 	# so a walk can test what stops them), `--zoom Z` changes the camera
 	# (`--zoom play`: the play zoom, CameraRig.ZOOM, which a headless run's

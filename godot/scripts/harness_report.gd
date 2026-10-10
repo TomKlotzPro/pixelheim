@@ -32,7 +32,7 @@ const TABLE := [
 	{"field": "night", "says": "the Night of Ash's step"},
 	{"field": "mobs", "says": "monsters standing (not dying)"},
 	{"field": "ascension", "says": "with rankup: the ascension's beat, closed once it's gone (PIX-244)"},
-	{"field": "backsteps", "says": "with motion: frames the hero stepped back on screen while walking forward, lost if never found (PIX-135)"},
+	{"field": "backsteps", "says": "with motion: frames the hero stepped back on screen while walking forward, lost if found in too few to judge (PIX-135, PIX-275)"},
 	{"field": "card", "says": "the card naming the place the hero has come to, while it's up (PIX-269)"},
 	{"field": "change", "says": "with fades: how the last change of scene looked: dissolve, dark or cut (PIX-269)"},
 	{"field": "chapter", "says": "a chapter card's chapter, while it's up (PIX-253)"},
