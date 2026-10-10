@@ -11,6 +11,7 @@
 #   godot/tools/flows.sh fight die  # just these
 #   godot/tools/flows.sh --quiet    # no window, no sound, no pictures
 #   godot/tools/flows.sh -j 1       # one at a time
+#   godot/tools/flows.sh --shard 2/3   # every third flow from the second (CI's shares)
 #   godot/tools/flows.sh --boot     # every map booted headless, by day and at night
 #   godot/tools/flows.sh --list     # every flow, a line each (--boot --list: the boots)
 #   FLOWS_EXTRA="--lang fr" godot/tools/flows.sh --quiet   # every flow in French (PIX-196)
@@ -59,17 +60,26 @@ boot=0
 list=0
 jobs=""
 only=""
+shard=1/1
 while [[ $# -gt 0 ]]; do
 	case $1 in
 		--quiet) quiet=1 ;;
 		--boot) boot=1 quiet=1 ;;
 		--list) list=1 ;;
+		--shard) shard=${2:-} && shift ;;
 		-j) jobs=${2:-} && shift ;;
 		-j*) jobs=${1#-j} ;;
 		*) only+=" $1" ;;
 	esac
 	shift
 done
+# --shard K/N: every Nth flow from the Kth, for N machines to share them.
+if [[ ! $shard =~ ^([1-9][0-9]*)/([1-9][0-9]*)$ ]] || ((BASH_REMATCH[1] > BASH_REMATCH[2])); then
+	echo "flows.sh: --shard takes K/N, the Kth of N shares (1/2)" >&2
+	exit 2
+fi
+shard_k=${BASH_REMATCH[1]}
+shard_n=${BASH_REMATCH[2]}
 if [[ -z $jobs ]]; then
 	cores=$(sysctl -n hw.ncpu 2>/dev/null || nproc 2>/dev/null || echo 3)
 	jobs=$((cores > 3 ? cores - 2 : 1))
@@ -208,7 +218,7 @@ for word in $only; do
 	fi
 done
 for i in "${!FLOWS[@]}"; do
-	if [[ -z $only || "$only " == *" ${FLOWS[i]%%|*} "* ]]; then
+	if [[ -z $only || "$only " == *" ${FLOWS[i]%%|*} "* ]] && ((i % shard_n == shard_k - 1)); then
 		picked+=("$i")
 	fi
 done
