@@ -23,7 +23,7 @@ const NOT_WORDS := [
 	"family", "anim", "dir", "questId", "who", "icon", "facing", "then", "ending", "sceneId", "region", "shop",
 	"projectId", "settles", "upgrades", "hunted", "items", "summon", "prizeItem", "requiresSettler", "about",
 	"rewardItemIds", "gearIds", "stackIds", "foes", "floorMaterials", "catches", "cures", "beds", "stingers",
-	"bossIds", "resource", "rugs", "rankAuras", "tile", "unlock", "inflicts", "effect",
+	"bossIds", "resource", "rugs", "tile", "unlock", "inflicts", "effect",
 ]
 
 

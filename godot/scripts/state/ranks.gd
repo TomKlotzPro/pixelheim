@@ -1,9 +1,15 @@
 class_name Ranks
 ## Rank evolution (src/game/hero/ranks.ts): every 5 levels the hero ascends
-## to a new title, stands a touch taller with an aura under them, and banks a
-## bonus skill point (HeroRules.apply_level_ups). Rank comes from level, never
-## stored, so old saves are already ranked. Also the Path Graph's choices
-## (hero/paths.ts): which step the hero may take now, and from where.
+## to a new title and banks a bonus skill point (HeroRules.apply_level_ups).
+## A rank no longer shows on the hero in the world (the web's aura and its
+## few per cent more presence went with PIX-244's look, which Tom found
+## ugly): the hero looks the same at every rank and gear is what shows; the
+## ascension (rankup_screen.gd) is the rank's moment. Rank comes from level,
+## never stored, so old saves are already ranked. Also the Path Graph's
+## choices (hero/paths.ts): which step the hero may take now, and from where.
+
+## How many ranks there are (HeroRules.rank_index: 1, 5, 10, 15 and 20).
+const COUNT := 5
 
 static var _doc := {}
 
@@ -17,17 +23,6 @@ static func _data() -> Dictionary:
 ## The role's title at this level (rankTitle).
 static func title(role_id: String, level: int) -> String:
 	return _data()["rankTitles"][role_id][HeroRules.rank_index(level)]
-
-
-## The aura under the ascended: none, then silver, gold, radiant.
-static func aura(level: int) -> Variant:
-	var hex: Variant = _data()["rankAuras"][HeroRules.rank_index(level)]
-	return Color(hex) if hex != null else null
-
-
-## How much bigger the hero stands at this rank (rankPresence).
-static func presence(level: int) -> float:
-	return 1.0 + HeroRules.rank_index(level) * 0.05
 
 
 ## The path tier the hero may choose right now, 0 if none (pendingTier): one

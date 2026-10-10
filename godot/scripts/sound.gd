@@ -135,8 +135,8 @@ const UI_SOUNDS := {
 	# A foe far below the hero takes fright and runs (PIX-251): a yelp that
 	# jumps up and falls away.
 	"fright": [[0.03, "square", 990.0, 1480.0, 0.04], [0.07, "triangle", 1480.0, 620.0, 0.06]],
-	# The old look burning away into the new at an ascension (PIX-244): a
-	# climb of three bright steps.
+	# The light flaring on the hero at an ascension (PIX-244): a climb of
+	# three bright steps.
 	"ascend": [[0.04, "triangle", 660.0, 990.0, 0.07], [0.04, "triangle", 990.0, 1320.0, 0.07], [0.06, "square", 1320.0, 1760.0, 0.03]],
 }
 const UI_RATE := 22050

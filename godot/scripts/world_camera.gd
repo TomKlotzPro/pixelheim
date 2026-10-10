@@ -15,10 +15,21 @@ var camera: Camera2D
 ## False while something else frames the shot (the harness overview, the
 ## dawn and reveal tours).
 var follows := true
-## Shade's figures are 16px: about 4x shows ~20x11 tiles, close to the web
-## game's view. The exact zoom keeps an art pixel a whole number of screen
-## pixels at any window size (fit_zoom).
-const ZOOM := 4.0
+## How many screen pixels an art pixel covers on the 1280x720 canvas: the
+## one number for how close the camera stands. 3 shows ~27x15 tiles of
+## Shade's 16px world; it was 4 (~20x11, close to the web game's view) until
+## Tom found the hero too tall and big on screen (PIX-244). Going back is
+## this line: everything that hangs on it (the dock's cover, the view,
+## the words over the world, the harness's `--zoom play`) reads it. The
+## exact zoom keeps an art pixel a whole number of screen pixels at any
+## window size (fit_zoom).
+const ZOOM := 3.0
+## The UI's type drawn over the world (a foe's level and name, a sleeper's
+## Z) at this scale: one pixel of the label per screen pixel at play zoom, so
+## those words read at the UI's size and stay crisp whatever ZOOM is (a
+## quarter, made for 4, drew them in pixels a screen pixel and a half wide
+## at 3).
+const LABEL_SCALE := 1.0 / ZOOM
 ## How fast the camera catches up with the hero (per second, eased).
 const CAMERA_EASE := 8.0
 ## A crit or a killing blow punches it (PIX-226); not with reduced motion.
@@ -32,6 +43,11 @@ var _hero_tick_to := Vector2.ZERO
 ## Where the camera eases to stand, before it settles on a whole pixel.
 var _camera_at := Vector2.ZERO
 var _punch := Vector2.ZERO
+## As the last frame stood them (_follow_hero): how many screen pixels the
+## hero was drawn from the camera (INF: not yet, or the camera was cut),
+## and the screen pixel the hero was drawn on.
+var _lag_shown := Vector2.INF
+var _hero_px := Vector2.ZERO
 ## The screen shakes (PIX-155): `strength` pixels at first, easing out over
 ## `seconds`. Reduce motion keeps it still.
 var _shake_left := 0.0
@@ -116,6 +132,7 @@ func cut() -> void:
 	_hero_tick_from = player.position
 	_hero_tick_to = player.position
 	_punch = Vector2.ZERO
+	_lag_shown = Vector2.INF
 	if camera != null:
 		_camera_at = player.position + Vector2(0, frame_lift())
 		camera.global_position = _camera_at
@@ -124,7 +141,15 @@ func cut() -> void:
 
 ## The camera eases toward where the hero is drawn this frame (between the
 ## last two ticks, as the physics interpolation draws them) and stands on a
-## whole screen pixel, so the world scrolls crisp, all of a piece.
+## whole screen pixel, so the world scrolls crisp, all of a piece. It stands
+## a whole number of screen pixels (its lag) from the pixel the hero is
+## drawn on, so the hero moves on the screen only as the lag grows or
+## shrinks: rounded each on its own, the hero and the camera crossed a
+## pixel on different frames, and the hero stepped a pixel back and forth
+## once the camera had caught up (the motion check's back-steps; at 3
+## screen pixels an art pixel, PIX-244, most runs saw two or three). The
+## lag changes by no more than the hero moves (lag_step), so the world
+## never steps back either.
 func _follow_hero(delta: float) -> void:
 	if camera == null or not follows:
 		return
@@ -133,7 +158,27 @@ func _follow_hero(delta: float) -> void:
 	_punch = _punch.lerp(Vector2.ZERO, 1.0 - exp(-PUNCH_EASE * delta))
 	_camera_at = _camera_at.lerp(drawn, 1.0 - exp(-CAMERA_EASE * delta))
 	var pixels_per_unit := camera.zoom.x * stretch()
-	camera.global_position = ((_camera_at + _punch) * pixels_per_unit).round() / pixels_per_unit
+	var hero_px := (drawn * pixels_per_unit).round()
+	var lag := ((drawn - _camera_at) * pixels_per_unit).round()
+	if _lag_shown != Vector2.INF:
+		var moved := hero_px - _hero_px
+		lag = Vector2(lag_step(lag.x, _lag_shown.x, moved.x), lag_step(lag.y, _lag_shown.y, moved.y))
+	_lag_shown = lag
+	_hero_px = hero_px
+	camera.global_position = (hero_px - lag + (_punch * pixels_per_unit).round()) / pixels_per_unit
+
+
+## The camera's lag behind the hero this frame on one axis, in screen
+## pixels: the eased camera's (`wanted`), but while the hero moves `moved`
+## pixels it grows by no more than that, so the camera never steps back
+## against them (as they set off, the lag can grow by more pixels in a frame
+## than they move); standing, the camera only closes in.
+static func lag_step(wanted: float, shown: float, moved: float) -> float:
+	if moved > 0.0:
+		return minf(wanted, shown + moved)
+	if moved < 0.0:
+		return maxf(wanted, shown + moved)
+	return wanted if absf(wanted) <= absf(shown) else shown
 
 
 ## A crit or a killing blow nudges the camera along the blow's `direction`
@@ -186,10 +231,19 @@ func view_rect(margin := 0.0) -> Rect2:
 	var view := Touch.view_size(world)
 	var half := view / 2.0 / camera.zoom.x
 	# Where the camera stands, held inside the map as its limits hold it.
-	var center := camera.global_position
-	center.x = clampf(center.x, camera.limit_left + half.x, maxf(camera.limit_left + half.x, camera.limit_right - half.x))
-	center.y = clampf(center.y, camera.limit_top + half.y, maxf(camera.limit_top + half.y, camera.limit_bottom - half.y))
+	var center := Vector2(
+		held(camera.global_position.x, camera.limit_left, camera.limit_right, half.x),
+		held(camera.global_position.y, camera.limit_top, camera.limit_bottom, half.y))
 	return Rect2(center - half, Vector2(view.x, view.y - (720.0 - dock_top())) / camera.zoom.x).grow(margin)
+
+
+## Where the camera's middle stands on one axis, `half` the view each way,
+## held between the limits `low` and `high` as Camera2D holds it: a map
+## smaller than the view stands in the middle of it (every room at ZOOM 3).
+static func held(at: float, low: float, high: float, half: float) -> float:
+	if high - low < half * 2.0:
+		return (low + high) / 2.0
+	return clampf(at, low + half, high - half)
 
 
 func in_view(at: Vector2, margin := 0.0) -> bool:
@@ -226,3 +280,5 @@ func fit_zoom() -> void:
 	# (PIX-162): a hero you can see.
 	var least := 2.0 if Touch.enabled() else 1.0
 	camera.zoom = Vector2.ONE * maxf(least, roundf(ZOOM * scale)) / scale
+	# The lag shown was counted in the old size's pixels.
+	_lag_shown = Vector2.INF

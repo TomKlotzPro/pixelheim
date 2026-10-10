@@ -26,8 +26,8 @@
 # a building rising out of its ruin on the town's tour, a cut with Reduce
 # motion (PIX-264), a kill's XP and gold floating up over the foe, a
 # chest's gold over the chest, with nothing said of them in the log
-# (PIX-245), and the ascension's beats and each rank's look on the hero,
-# still with Reduce motion (PIX-244). Every flow leaves its
+# (PIX-245), and the ascension's beats, still with Reduce motion
+# (PIX-244). Every flow leaves its
 # picture in godot/flows/<name>.png for a human to look at, and the
 # harness's report line must match what the flow promises or the run fails.
 #
@@ -111,14 +111,12 @@ FLOWS=(
 	"forge|--map town_smith station|open=shop_screen.*tab=Craft"
 	"quest|--map town quest|map=town cell"
 	"brew|--map town_alchemist brew|map=town_alchemist .*gold=100 "
-	# The ascension (PIX-244): held as the old look burns away into the new,
-	# its motes and sparks flying; with Reduce motion, held on the name with
-	# nothing flying; a fifth rank's whole look on the hero; and a hero's
-	# rank worn in the world.
-	"rankup|rankup --rank-beat change|open=rankup_screen.* ascension=change motes=[1-9][0-9]* look=trim$"
-	"rankup-still|rankup still --rank-beat named|open=rankup_screen.* ascension=named motes=0 look=trim$"
-	"rankup-five|--level 17 rankup --rank-beat settled|open=rankup_screen.* ascension=settled motes=0 look=trim\+rim\+weapon\+trail$"
-	"ranklook|--map town --level 10|look=trim\+rim$"
+	# The ascension (PIX-244): held as the light flares, its motes and sparks
+	# flying; with Reduce motion, held on the name with nothing flying; and
+	# the fifth rank's, landed.
+	"rankup|rankup --rank-beat flare|open=rankup_screen.* ascension=flare motes=[1-9][0-9]*$"
+	"rankup-still|rankup still --rank-beat named|open=rankup_screen.* ascension=named motes=0$"
+	"rankup-five|--level 17 rankup --rank-beat settled|open=rankup_screen.* ascension=settled motes=0$"
 	"fight|fight kill|screenshot saved"
 	# The kill's XP and gold float up over the fallen foe and the battle log
 	# says nothing of them (PIX-245): floats= is what rose, logged= the lines.
@@ -145,7 +143,7 @@ FLOWS=(
 	# A hero far above the forest's slimes (PIX-251): they run instead of
 	# charging, and the music stays the place's. At play zoom: a quiet run's
 	# camera otherwise sees a few tiles, and a monster notices only on screen.
-	"fright|--map overworld --at 59,34 --zoom 4 --level 20 --wait 3|map=overworld .* fled=[1-9][0-9]* music=world"
+	"fright|--map overworld --at 59,34 --zoom play --level 20 --wait 3|map=overworld .* fled=[1-9][0-9]* music=world"
 	# The same field by day and at night (PIX-252): the forest's slimes,
 	# goblins and wolves by day; after dark the goblins asleep by their fire,
 	# and a second wolf pack and the walking dead out among them.
@@ -153,8 +151,10 @@ FLOWS=(
 	"field-night|--map overworld --at 67,46 night|map=overworld cell=\\(67, 46\\).* packs=slime,goblin:asleep,wolf,wolf,skeleton$"
 	# Night falling while the hero watches the goblins' camp: nothing changes
 	# on the screen - the goblins stay up, the wolves whose home is in view
-	# wait - and the dead come out off it.
-	"nightfall|--map overworld --at 79,43 --zoom 4 nightfall|map=overworld cell=\\(79, 43\\).* packs=slime,goblin,wolf,skeleton$"
+	# wait - and the dead come out off it. From a few steps west of the camp
+	# (it was 79,43): the wider view since PIX-244 took in the dead's home
+	# there, and from here it's off the screen at 3 or 4.
+	"nightfall|--map overworld --at 75,43 --zoom play nightfall|map=overworld cell=\\(75, 43\\).* packs=slime,goblin,wolf,skeleton$"
 	"bounty|--map town --at 43,22 --cleared 4 --keys w,e|open=bounty_screen"
 	"throne|--map town --cleared 15 --seen maren_confession throne --keys s,e --wait 0.5|open=reveal_screen"
 	"festival|--map town --town-tier 2 --at 43,27 festival --keys w,e,e,e|open=ring_toss_screen"

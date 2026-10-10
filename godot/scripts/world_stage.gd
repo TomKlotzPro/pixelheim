@@ -31,7 +31,6 @@ func play_story(scene_id: String) -> void:
 ## The ascension scene: a new title, and at a fork the path cards.
 func ascend(title: String) -> void:
 	Sound.play("evolve")
-	world.player.refresh_rank()
 	var scene := preload("res://scripts/rankup_screen.gd").new()
 	scene.title = title
 	world.add_child(scene)

@@ -1,17 +1,19 @@
 extends Screen
 ## The ascension (RankUpOverlay.tsx, useRankUp; PIX-244 made it a moment).
 ## Tom asked for « une meilleure animation quand on passe d'une classe
-## au-dessus ». Beat by beat (BEATS):
+## au-dessus ». The hero looks the same at every rank (Tom found the rank's
+## aura ugly: gear is what shows), so the moment is the light, the rank's
+## name and what it unlocks. Beat by beat (BEATS):
 ## - hush: the world falls dark behind letterbox bars; the hero stands in
-##   the old rank's look, on its pool of light;
+##   the dark on a faint pool of light;
 ## - lift: a shaft of the class's light falls on them, a halo opens behind
 ##   them, motes of light rise, and they are lifted off the ground;
-## - change: the old look flashes white and burns away pixel by pixel into
-##   the new one (RankLook: the trim, the rim of light...), which comes out
-##   of the white; sparks fly and the pool takes the new rank's colour;
+## - flare: the light peaks - the hero flashes white in it and comes back
+##   out of the white, sparks fly, the halo swells and the pool under them
+##   takes the class's light;
 ## - named: the new rank's name;
 ## - unlocks: what it brings - the bonus skill point, the level's stats, a
-##   step on the path (its cards, at a fork in the Path Graph), the new look;
+##   step on the path (its cards, at a fork in the Path Graph);
 ## - settled: the hero comes back down to the ground and the light softens.
 ## The stage is drawn at 6x in the art's whole pixels: the light's bands,
 ## the motes and sparks are its pixels, and the glow pass (bloom) makes the
@@ -19,13 +21,13 @@ extends Screen
 ## put off to the skill tree); otherwise it passes a few seconds after it
 ## settles. E before the cards skips to them. The world holds still
 ## meanwhile. With Reduce motion the moment holds still: the light stands at
-## once, nothing flies or rises, the old look cross-fades into the new, and
-## the words simply appear.
+## once and brightens, nothing flies, rises or flashes, and the words simply
+## appear.
 
 ## The beats, [name, seconds from the open], in order; with Reduce motion,
-## STILL_BEATS (the light already standing, the change a cross-fade).
-const BEATS := [["hush", 0.0], ["lift", 0.35], ["change", 1.35], ["named", 2.15], ["unlocks", 2.6], ["settled", 3.4]]
-const STILL_BEATS := [["hush", 0.0], ["lift", 0.0], ["change", 0.45], ["named", 1.1], ["unlocks", 1.4], ["settled", 1.7]]
+## STILL_BEATS (the light already standing, the flare a brightening).
+const BEATS := [["hush", 0.0], ["lift", 0.35], ["flare", 1.35], ["named", 2.15], ["unlocks", 2.6], ["settled", 3.4]]
+const STILL_BEATS := [["hush", 0.0], ["lift", 0.0], ["flare", 0.45], ["named", 1.1], ["unlocks", 1.4], ["settled", 1.7]]
 ## The moment passes this long after it settles, unless a fork holds it.
 const HOLD_AFTER := 2.8
 ## After a walk is taken at the fork with nothing further to choose.
@@ -38,9 +40,9 @@ const SCALE := 6.0
 ## The lift: how high (art px) and how long it takes.
 const LIFT_PX := 4.0
 const LIFT_SECONDS := 0.9
-## The change: the old look's white burning away, and Reduce motion's
-## cross-fade.
-const BURN_SECONDS := 0.65
+## The flare: the hero's white fading back to them, and Reduce motion's
+## brightening.
+const FLARE_SECONDS := 0.65
 const FADE_SECONDS := 0.6
 ## The landing, as the moment settles.
 const LAND_SECONDS := 0.4
@@ -51,6 +53,23 @@ const HUSH := 0.86
 ## How bright the light stands at its height, and once the moment settles.
 const BEAM_ALPHA := 0.8
 const BEAM_SETTLED := 0.4
+## The halo at its height, and once the moment settles.
+const HALO_ALPHA := 0.6
+const HALO_SETTLED := 0.4
+## The pool under the feet: faint in the dark, then in the class's light.
+const POOL_DARK := Color(1, 1, 1, 0.12)
+const POOL_LIT := 0.5
+## Each class's light - the shaft, the halo, the motes and the sparks of its
+## moment: one a class, bright enough to bloom (bloom.gdshader's threshold).
+const LIGHTS := {
+	"warrior": "ff8a5c",
+	"paladin": "ffe07a",
+	"rogue": "6dffc8",
+	"cleric": "fff4c4",
+	"mage": "7cc4ff",
+	"necromancer": "c9a2ff",
+	"ranger": "bdf06a",
+}
 
 var title := ""
 var choices: Array = []
@@ -59,10 +78,9 @@ var closing := false
 ## Where the moment is (a name from BEATS; "" before it starts): the
 ## harness reports it and holds the scene on one.
 var phase := ""
-## The rank reached (HeroRules.rank_index) and the looks either side of it.
+## The rank reached (HeroRules.rank_index) and the class's light.
 var rank := 0
-var old_look := {}
-var new_look := {}
+var light := Color.WHITE
 ## Reduce motion, as the moment opened.
 var still := false
 
@@ -70,14 +88,13 @@ var rays: Node2D
 var shade: ColorRect
 ## The hero's ground, at SCALE: the pool, the shaft of light, the motes.
 var stage: Node2D
-## What's lifted: the halo, the two looks and the sparks.
+## What's lifted: the halo, the hero and the sparks.
 var figure: Node2D
-var old_hero: AnimatedSprite2D
-var new_hero: AnimatedSprite2D
+var hero_sprite: AnimatedSprite2D
 var pool: Sprite2D
 var beam: Sprite2D
 var halo: Sprite2D
-## The motes rising in the light and the sparks of the change (none with
+## The motes rising in the light and the sparks of the flare (none with
 ## Reduce motion).
 var motes: CPUParticles2D
 var sparks: CPUParticles2D
@@ -90,6 +107,9 @@ var _timeline: Tween
 var _offered := false
 ## The beat the moment stops at (`hold_at`), "" to play through.
 var _hold_beat := ""
+
+static var _beam: Texture2D
+static var _halo: Texture2D
 
 
 ## Its own entrance, not the screens' ease (PIX-212).
@@ -110,16 +130,19 @@ static func beat_at(beat: String, reduced: bool) -> float:
 	return -1.0
 
 
+## The class's light (LIGHTS; a warrior's for a role without one).
+static func light_of(role_id: String) -> Color:
+	return Color(String(LIGHTS.get(role_id, LIGHTS["warrior"])))
+
+
 func _open() -> void:
 	layer = 6
 	still = GameState.settings.reduce_motion
 	var hero := GameState.hero
 	rank = HeroRules.rank_index(hero.level)
-	old_look = RankLook.spec(hero.role_id, rank - 1)
-	new_look = RankLook.spec(hero.role_id, rank)
+	light = light_of(hero.role_id)
 	choices = Ranks.path_choices(hero)
 	var view := Vector2(1280, 720)
-	var light: Color = new_look["light"]
 	shade = ColorRect.new()
 	shade.color = Color(0.02, 0.02, 0.04, _hush_alpha() if still else 0.0)
 	shade.position = -offset
@@ -135,7 +158,7 @@ func _open() -> void:
 		ray.rotation = TAU * i / 12.0
 		rays.add_child(ray)
 	add_child(rays)
-	_build_stage(light)
+	_build_stage()
 	if not still:
 		# Out of the dark with the hush.
 		stage.modulate.a = 0.0
@@ -149,7 +172,7 @@ func _open() -> void:
 	name_card.add_theme_constant_override("separation", 2)
 	name_card.visible = false
 	add_child(name_card)
-	name_card.add_child(_line(Text.t("Ascension: rank %d of %d") % [rank + 1, RankLook.STEPS.size()], UiStyle.CREAM))
+	name_card.add_child(_line(Text.t("Ascension: rank %d of %d") % [rank + 1, Ranks.COUNT], UiStyle.CREAM))
 	name_card.add_child(_line(title, UiStyle.GOLD, true))
 
 	unlocks = VBoxContainer.new()
@@ -185,8 +208,8 @@ func _open() -> void:
 
 
 ## What the new rank brings, as [line, colour] rows: the bonus skill point
-## (what it's truly for, PIX-217), the level's stats, a step on the path when
-## one is on offer, and the new look.
+## (what it's truly for, PIX-217), the level's stats, and a step on the path
+## when one is on offer.
 func brings(hero: HeroState) -> Array:
 	var rows: Array = []
 	var bonus := Text.t("+1 bonus skill point")
@@ -202,9 +225,6 @@ func brings(hero: HeroState) -> Array:
 	], UiStyle.CREAM])
 	if not choices.is_empty():
 		rows.append([Text.t("A new step on your path: choose it below"), UiStyle.CREAM])
-	var look_line := RankLook.line(rank)
-	if look_line != "":
-		rows.append([look_line, (new_look["light"] as Color).lerp(UiStyle.CREAM, 0.35)])
 	return rows
 
 
@@ -220,9 +240,9 @@ func _line(text: String, color: Color, big := false) -> Label:
 
 ## The hero's ground at SCALE, in the art's pixels: the pool of light under
 ## the feet, the shaft falling on them, the motes rising in it; over it the
-## figure that is lifted: the halo behind, the new look behind the old one,
-## and the sparks the change throws.
-func _build_stage(light: Color) -> void:
+## figure that is lifted: the halo behind, the hero, and the sparks the
+## flare throws.
+func _build_stage() -> void:
 	stage = Node2D.new()
 	stage.position = STAGE_AT
 	stage.scale = Vector2.ONE * SCALE
@@ -231,15 +251,15 @@ func _build_stage(light: Color) -> void:
 	pool = Sprite2D.new()
 	pool.texture = preload("res://scripts/player.gd")._glow()
 	pool.position = Vector2(0, 5)
-	# A little narrower than the world's, so the name below reads clear of it.
+	# Short of its full size, so the name below reads clear of it.
 	pool.scale = Vector2.ONE * 0.7
-	pool.modulate = _pool_color(old_look)
+	pool.modulate = POOL_DARK
 	stage.add_child(pool)
 	beam = Sprite2D.new()
-	beam.texture = RankLook.beam()
+	beam.texture = beam_texture()
 	beam.material = Lights.glow()
 	# Its foot on the ground the hero stands on.
-	beam.position = Vector2(0, 3 - RankLook.beam().get_height() / 2.0)
+	beam.position = Vector2(0, 3 - beam_texture().get_height() / 2.0)
 	beam.modulate = Color(light, BEAM_SETTLED if still else 0.0)
 	stage.add_child(beam)
 	if not still:
@@ -264,17 +284,13 @@ func _build_stage(light: Color) -> void:
 	figure.position = Vector2(0, 3)
 	stage.add_child(figure)
 	halo = Sprite2D.new()
-	halo.texture = RankLook.halo()
+	halo.texture = halo_texture()
 	halo.material = Lights.glow()
 	halo.position = Vector2(0, -8)
-	halo.modulate = Color(light, 0.45 if still else 0.0)
+	halo.modulate = Color(light, HALO_SETTLED if still else 0.0)
 	figure.add_child(halo)
-	new_hero = _hero(new_look)
-	old_hero = _hero(old_look)
-	if still:
-		new_hero.modulate.a = 0.0
-	else:
-		new_hero.visible = false
+	hero_sprite = _hero()
+	if not still:
 		sparks = Motes.burst(28, 0.8, 180.0, Vector2(26, 52), Vector2(0, 24))
 		sparks.emission_sphere_radius = 4.0
 		sparks.damping_min = 30.0
@@ -290,26 +306,65 @@ func _build_stage(light: Color) -> void:
 		figure.add_child(sparks)
 
 
-## The hero as drawn now (plain clothes and gear), wearing `look`, facing
-## down; held on one frame with Reduce motion.
-func _hero(look: Dictionary) -> AnimatedSprite2D:
+## The hero as the world draws them (plain clothes and gear), facing down;
+## held on one frame with Reduce motion.
+func _hero() -> AnimatedSprite2D:
 	var art := GameState.upkeep.hero_art()
 	var sprite := AnimatedSprite2D.new()
 	sprite.sprite_frames = PunyArt.frames(art)
 	sprite.self_modulate = art["tint"]
 	sprite.position = Vector2(0, PunyArt.lift(art) - 3)
+	# For the flare's white (Juice.flash).
 	sprite.material = Juice.fighter_material()
 	figure.add_child(sprite)
-	RankLook.wear(sprite, look)
 	sprite.animation = PunyArt.pick(sprite.sprite_frames, "idle", "down")
 	if not still:
 		sprite.play()
 	return sprite
 
 
-static func _pool_color(look: Dictionary) -> Color:
-	var aura: Color = look["aura"]
-	return Color(aura, 0.5) if aura.a > 0.0 else Color(1, 1, 1, 0.12)
+## A shaft of light falling on the hero: brightest in its middle columns and
+## nearest the ground, in steps, not a smooth ramp, so at the stage's size it
+## stands in the art's whole pixels.
+static func beam_texture() -> Texture2D:
+	if _beam == null:
+		var size := Vector2i(15, 64)
+		var image := Image.create(size.x, size.y, false, Image.FORMAT_RGBA8)
+		var middle := size.x / 2
+		for y in size.y:
+			# Six steps from faint at the top to full at the feet.
+			var down := floorf(float(y) / size.y * 6.0) / 5.0
+			for x in size.x:
+				var across := absi(x - middle)
+				var band := 1.0 if across <= 1 else (0.6 if across <= 3 else (0.32 if across <= 5 else 0.14))
+				image.set_pixel(x, y, Color(1, 1, 1, band * lerpf(0.15, 1.0, down)))
+		_beam = ImageTexture.create_from_image(image)
+	return _beam
+
+
+## The halo behind the lifted hero: rings of light in steps, a Bayer
+## dither between them (the ground's own 2px blocks, PIX-264, at one pixel).
+static func halo_texture() -> Texture2D:
+	if _halo == null:
+		var size := 41
+		var image := Image.create(size, size, false, Image.FORMAT_RGBA8)
+		var middle := Vector2(size / 2.0, size / 2.0)
+		var bayer := [[0.0, 0.5], [0.75, 0.25]]
+		var rings := [[7.0, 0.8], [12.0, 0.5], [16.5, 0.28], [20.5, 0.12]]
+		for y in size:
+			for x in size:
+				var reach := (Vector2(x + 0.5, y + 0.5) - middle).length()
+				var alpha := 0.0
+				for ring: Array in rings:
+					# Within a pixel and a half of the ring's edge, alternate
+					# pixels take the next ring's light.
+					var edge: float = ring[0]
+					if reach < edge - 1.5 or (reach < edge and float(bayer[y % 2][x % 2]) < (edge - reach) / 1.5):
+						alpha = ring[1]
+						break
+				image.set_pixel(x, y, Color(1, 1, 1, alpha))
+		_halo = ImageTexture.create_from_image(image)
+	return _halo
 
 
 ## The glow pass (PIX-222) on the moment's own layer: over the stage, under
@@ -351,8 +406,8 @@ func _beat(beat: String) -> void:
 			_hush()
 		"lift":
 			_lift()
-		"change":
-			_change()
+		"flare":
+			_flare()
 		"named":
 			_named()
 		"unlocks":
@@ -390,33 +445,29 @@ static func _hush_alpha() -> float:
 func _lift() -> void:
 	if still:
 		return
-	var light := create_tween().set_parallel()
-	light.tween_property(beam, "modulate:a", BEAM_ALPHA, 0.5)
-	light.tween_property(halo, "modulate:a", 0.6, 0.7)
+	var rise := create_tween().set_parallel()
+	rise.tween_property(beam, "modulate:a", BEAM_ALPHA, 0.5)
+	rise.tween_property(halo, "modulate:a", HALO_ALPHA, 0.7)
 	halo.scale = Vector2.ONE * 0.5
-	light.tween_property(halo, "scale", Vector2.ONE, 0.9).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-	light.tween_property(figure, "position:y", 3.0 - LIFT_PX, LIFT_SECONDS).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	rise.tween_property(halo, "scale", Vector2.ONE, 0.9).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	rise.tween_property(figure, "position:y", 3.0 - LIFT_PX, LIFT_SECONDS).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	motes.emitting = true
 
 
-## The old look gives way to the new: a flash, burnt away pixel by pixel in
-## the class's light (or, with Reduce motion, a plain cross-fade).
-func _change() -> void:
+## The light peaks: the hero flashes white in it and comes back out of the
+## white, sparks fly, the halo swells and the pool takes the class's light.
+## With Reduce motion the light only brightens.
+func _flare() -> void:
 	Sound.play_ui("ascend")
-	var pool_turn := pool.create_tween()
-	pool_turn.tween_property(pool, "modulate", _pool_color(new_look), FADE_SECONDS if still else BURN_SECONDS)
-	var old_rim := RankLook.rim_of(old_hero)
+	var lit := Color(light, POOL_LIT)
 	if still:
-		var fade := create_tween().set_parallel()
-		fade.tween_property(old_hero, "modulate:a", 0.0, FADE_SECONDS)
-		fade.tween_property(new_hero, "modulate:a", 1.0, FADE_SECONDS)
+		var brighten := create_tween().set_parallel()
+		brighten.tween_property(pool, "modulate", lit, FADE_SECONDS)
+		brighten.tween_property(beam, "modulate:a", BEAM_ALPHA, FADE_SECONDS)
+		brighten.tween_property(halo, "modulate:a", HALO_ALPHA, FADE_SECONDS)
 		return
-	new_hero.visible = true
-	Juice.flash(new_hero, BURN_SECONDS + 0.2)
-	(old_hero.material as ShaderMaterial).set_shader_parameter("flash", 1.0)
-	Juice.dissolve(old_hero, new_look["light"], BURN_SECONDS)
-	if old_rim != null:
-		old_rim.create_tween().tween_property(old_rim, "modulate:a", 0.0, BURN_SECONDS * 0.5)
+	pool.create_tween().tween_property(pool, "modulate", lit, FLARE_SECONDS)
+	Juice.flash(hero_sprite, FLARE_SECONDS)
 	sparks.restart()
 	var swell := halo.create_tween()
 	swell.tween_property(halo, "scale", Vector2.ONE * 1.35, 0.18).set_ease(Tween.EASE_OUT)
@@ -449,8 +500,12 @@ func _unlocks() -> void:
 	_offer()
 
 
-## Down to the ground, landing on the feet; the light softens.
+## Down to the ground, landing on the feet, and the light softens (with
+## Reduce motion it only softens).
 func _settle() -> void:
+	var soften := create_tween().set_parallel()
+	soften.tween_property(beam, "modulate:a", BEAM_SETTLED, 0.8)
+	soften.tween_property(halo, "modulate:a", HALO_SETTLED, 0.8)
 	if still:
 		return
 	motes.emitting = false
@@ -458,9 +513,6 @@ func _settle() -> void:
 	down.tween_property(figure, "position:y", 3.0, LAND_SECONDS).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	down.tween_callback(func() -> void: figure.scale = Juice.LAND)
 	down.tween_property(figure, "scale", Vector2.ONE, Juice.SPRING_SECONDS * 2.0).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	var soften := create_tween().set_parallel()
-	soften.tween_property(beam, "modulate:a", BEAM_SETTLED, 0.8)
-	soften.tween_property(halo, "modulate:a", 0.4, 0.8)
 
 
 ## Stops the moment at `beat` when it comes, its own motion playing on (the
