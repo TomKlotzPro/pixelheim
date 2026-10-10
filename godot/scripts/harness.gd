@@ -156,6 +156,36 @@ func _lineup() -> void:
 			y += 1
 
 
+## The maps `reentry` times: the open air, where the ground is worked out.
+const REENTRY_MAPS := ["overworld", "town", "saltmere", "blackiron", "mirefen", "greyhold", "deepwood", "frostgate"]
+
+
+## `reentry` (One Reach, PIX-269): what entering each outdoor map costs, in
+## milliseconds of the frame it happens in - its first visit this session,
+## then coming back to it - and the memory the session keeps between. A
+## change of scene is that long a hitch, and a map streamed in beside the
+## hero has to fit its building into a few milliseconds a frame.
+func _reentry() -> void:
+	var took := {}
+	var before := Performance.get_monitor(Performance.MEMORY_STATIC)
+	for visit in 2:
+		for id: String in REENTRY_MAPS:
+			var started := Time.get_ticks_usec()
+			world.map = world.load_map(id)
+			var loaded := Time.get_ticks_usec()
+			world.enter_map(world.map, world.map.spawn)
+			var done := Time.get_ticks_usec()
+			took[id] = took.get(id, []) + [(loaded - started) / 1000.0, (done - loaded) / 1000.0]
+			# The old map's nodes go at the end of the frame.
+			await get_tree().process_frame
+			await get_tree().process_frame
+	for id: String in REENTRY_MAPS:
+		var times: Array = took[id]
+		print("REENTRY %-10s load %5.1f  first %6.1f  again %6.1f ms" % [id, times[0], times[1], times[3]])
+	print("REENTRY memory %+.1f MB after both rounds (static), kept ground %.2f MB" % [
+		(Performance.get_monitor(Performance.MEMORY_STATIC) - before) / 1048576.0, KeptGround.bytes() / 1048576.0])
+
+
 ## Runs the flags it was given, in a fixed order, then shoots and quits.
 ## Every flag is declared in HarnessFlags.TABLE (PIX-262) and read from its
 ## one parse of the command line; `-- --help` prints the table.
@@ -175,6 +205,8 @@ func _run_test_harness() -> void:
 		for setting: String in flags.list("--set"):
 			GameState.settings.set(setting, true)
 		world.apply_video()
+	if flags.has("reentry"):
+		await _reentry()
 	# Dungeons: `--floor N` walks down floor N, `gate [--dungeon id]` opens a
 	# gate's floor select (mountain by default).
 	if flags.has("--floor"):

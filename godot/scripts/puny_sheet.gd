@@ -16,6 +16,10 @@ var corners := {}
 var tileset: TileSet
 ## tile id -> [atlas source id, atlas coords] in tileset.
 var _slots := {}
+## The sheet's image while tiles are being cut from it, and tile id -> its
+## texture (tile_texture).
+var _image: Image
+var _textures := {}
 
 
 func _init(sheet_path: String, tsx_path: String, column_count: int) -> void:
@@ -78,9 +82,22 @@ func region(tile_id: int) -> Rect2:
 
 
 ## One tile as its own texture (for tile layers built on other sheets).
+## Cut once a session and shared (PIX-269): a texture's image comes back
+## off the graphics card, and a field's hundreds of reeds and stones each
+## read the whole sheet back and cut their own, most of what entering a
+## marsh cost on screen (Mirefen's 45 ms of 60).
 func tile_texture(tile_id: int) -> Texture2D:
-	var image := (load(path) as Texture2D).get_image()
-	return ImageTexture.create_from_image(image.get_region(Rect2i(region(tile_id))))
+	if not _textures.has(tile_id):
+		if _image == null:
+			_image = (load(path) as Texture2D).get_image()
+			# Held through this frame's cutting only, not for the session.
+			_let_go.call_deferred()
+		_textures[tile_id] = ImageTexture.create_from_image(_image.get_region(Rect2i(region(tile_id))))
+	return _textures[tile_id]
+
+
+func _let_go() -> void:
+	_image = null
 
 
 ## Where a tile lives in the tileset. Frames must sit at one even stride for

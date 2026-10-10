@@ -124,8 +124,9 @@ static func center(cell: Vector2i) -> Vector2:
 ## now covered).
 func plan(arrival: Vector2i) -> Vector2i:
 	# Where patches may grow is read before anything is drawn over the map
-	# (PIX-250), so it's the same with or without the paid art.
-	patch_decks = Gathering.decks(data)
+	# (PIX-250), so it's the same with or without the paid art; worked out
+	# on the first visit this session and kept (KeptGround, PIX-269).
+	patch_decks = KeptGround.decks(data)
 	# Far off (the overworld) the town's block of roofs is the village, small.
 	var near := data.floor_level == 0 and data.id not in PunyTerrain.SKYLINE_MAPS
 	buildings = PunyTown.compose(data.grid) if near else {"pieces": {}, "decor": {}, "freed": []}
@@ -238,18 +239,18 @@ func _build_ground(data: MapData) -> Node2D:
 	var look: Dictionary = data.grid.merged(skyline["ground"], true) if not skyline.is_empty() else data.grid
 	# On past the map's edges: below the dock the camera looks past the
 	# south edge (CameraRig.set_limits, PIX-269), and sees the ground go on.
-	var tiles := PunyTerrain.ground_tiles(look, data.size, EDGE_PAD)
-	for cell: Vector2i in tiles:
-		PunyTerrain.place(layer, cell, tiles[cell])
+	# Worked out on the map's first visit this session, and kept (PIX-269).
+	var kept := KeptGround.of(data, look, EDGE_PAD)
+	kept.lay_ground(layer)
 	# Ash and mire are toned from Shade's dirt and grass, decor included.
 	ground_tint = ShaderMaterial.new()
 	ground_tint.shader = preload("res://shaders/region_tint.gdshader")
-	ground_tint.set_shader_parameter("tint_map", PunyTerrain.tint_map(look, data.size, data.regions))
+	ground_tint.set_shader_parameter("tint_map", kept.tint_map)
 	ground_tint.set_shader_parameter("map_pixels", Vector2(data.size * TILE))
 	# The water swells, glints and foams at the shore (PIX-223).
 	var water := ground_tint.duplicate() as ShaderMaterial
 	water.set_shader_parameter("water_life", true)
-	water.set_shader_parameter("water_map", PunyTerrain.water_map(look, data.size))
+	water.set_shader_parameter("water_map", kept.water_map)
 	layer.material = water
 	root.add_child(layer)
 	decor_sway = _swaying(TREE_SWAY, true)
@@ -260,9 +261,7 @@ func _build_ground(data: MapData) -> Node2D:
 	var forest := TileMapLayer.new()
 	forest.tile_set = PunyTerrain.tileset()
 	forest.position = layer.position
-	var crowns := PunyTerrain.forest_tiles(data.grid, data.size, EDGE_PAD)
-	for cell: Vector2i in crowns:
-		PunyTerrain.place(forest, cell, crowns[cell])
+	kept.lay_crowns(forest)
 	# Under snow the pines on the ridges whiten with the ground (PIX-169);
 	# elsewhere they keep their green.
 	if not PunyTerrain.region_toned(data.regions):
@@ -1028,16 +1027,30 @@ func _add_puny_prop(prop: Dictionary) -> Node2D:
 
 
 func _add_decor_sprite(texture_path: String, region: Rect2, cell: Vector2i, h: int) -> void:
-	var atlas := AtlasTexture.new()
-	atlas.atlas = load(texture_path)
-	atlas.region = region
 	var sprite := Sprite2D.new()
-	sprite.texture = atlas
+	sprite.texture = _cut(texture_path, region)
 	# Feet on the ground with a little organic jitter.
 	sprite.position = center(cell) + Vector2((h >> 12) % 7 - 3, (h >> 16) % 5 - 2)
 	sprite.offset = Vector2(0, -region.size.y / 2 + 6)
 	sprite.add_to_group("decor")
 	actors.add_child(sprite)
+
+
+## A piece of a sheet, cut once a session and shared by every sprite that
+## shows it (PIX-269): a field's hundreds of trees and bushes are a dozen
+## pieces, and cutting one for each sprite was most of what entering a
+## wooded map cost on screen (Mirefen's 50 ms).
+static var _cuts := {}
+
+
+static func _cut(texture_path: String, region: Rect2) -> AtlasTexture:
+	var key := "%s@%s" % [texture_path, region]
+	if not _cuts.has(key):
+		var atlas := AtlasTexture.new()
+		atlas.atlas = load(texture_path)
+		atlas.region = region
+		_cuts[key] = atlas
+	return _cuts[key]
 
 
 ## Door signs float above the world, outside the y-sort: Shade's hanging
