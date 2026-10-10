@@ -572,7 +572,7 @@ static func flees_from(fighter: Dictionary, hero_level: int, held := false) -> b
 ## waves in the village), a mimic just burst from its chest, or the dead a
 ## boss raised at its side.
 func held_to_fight() -> bool:
-	return _hunts_wagon() or has_meta("prologue") or has_meta("prologue_wave") or woken or is_in_group("summoned")
+	return _hunts_wagon() or has_meta("prologue") or has_meta("prologue_wave") or has_meta("bells_wave") or woken or is_in_group("summoned")
 
 
 ## Straight at the hero; in reach, a flash tells the bite, which lands if the
@@ -796,6 +796,17 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null, crit := fa
 	if not dying and ailments.inflict(infliction, GameState.roll):
 		Sound.play_ui("ail")
 		world.messages.log_line(Text.t("%s is afflicted by %s!") % [fighter["name"], Ailments.label(infliction["kind"])])
+
+
+## A blow from someone else's hand (PIX-253 step 9: Ulla's old guard on the
+## walls, Bram's cheese): the health it takes and its number, and the
+## share a foe yields at, but none of the hero's hit - no flash, no shove,
+## no stop. It never turns a foe on anyone.
+func chip(damage: int, color: Color) -> void:
+	if dying:
+		return
+	Sound.play("hit")
+	_lose(damage, color)
 
 
 func _lose(damage: int, color: Color, crit := false) -> void:

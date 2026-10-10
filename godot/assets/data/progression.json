@@ -686,7 +686,8 @@
       },
       "accepted": "Two imps. Little red, horns, laughing. One of them has my knife. I'd know it anywhere.",
       "completed": "No knife? Doesn't matter. The principle of the thing. Here - and a wedge of the good stuff, later.",
-      "opensAfter": "run_home"
+      "opensAfter": "run_home",
+      "where": "On the square, the Night of Bells: every ember is an imp."
     },
     {
       "id": "mira_moss",
@@ -1591,7 +1592,7 @@
       },
       {
         "title": "The Night of Bells",
-        "about": "PIX-253 step 9 builds it: the dragon comes back to the square and the village holds. Until then its first step is never met (`unbuilt`), and arriving home shows the honest card (`continued`). A hero who slew Fafnyr on the old mountain keeps him slain and skips this chapter (`skipIf`); step 9 and 10 must honour that: no Night of Bells for them, and the ending's forge is Hilda's alone.",
+        "about": "PIX-253 step 9: the dragon comes back to the square and the village holds (progression.json's `bells`, played by the world's Night). Its steps are the night's beats (`bells`): met while the night runs past them (ProgressionState.bells, never saved: a save made in the night plays it again from the start) or once it's over (the collar's scene in the story ledger). A hero who slew Fafnyr on the old mountain keeps him slain and skips this chapter (`skipIf`): no Night of Bells for them, and the ending's forge is Hilda's alone (step 10).",
         "skipIf": {
           "kind": "cleared",
           "level": 10,
@@ -1604,19 +1605,68 @@
           {
             "id": "run_home",
             "when": {
-              "kind": "unbuilt"
+              "kind": "bells",
+              "beat": 1
             },
             "mapId": "town",
             "text": "Run home: the dragon is awake",
             "hint": "The mountain shook, and Morvax said it plainly: the dragon goes for the lights. Pixelheim's are the nearest. Run.",
             "elderHint": "I felt it from here, courier. He's awake. ...Then this time we'll be ready for him."
+          },
+          {
+            "id": "lanterns",
+            "when": {
+              "kind": "bells",
+              "beat": 2
+            },
+            "mapId": "town",
+            "text": "Light the five lanterns on the square",
+            "hint": "Aske is putting out every lamp in Pixelheim but five: the lanterns on the square, between the two boards. Light them, and the dragon comes down where you're ready.",
+            "elderHint": "Five lanterns, courier, one for each of us who climbed. Light them. He'll come where the light is."
+          },
+          {
+            "id": "embers",
+            "when": {
+              "kind": "bells",
+              "beat": 3
+            },
+            "mapId": "town",
+            "text": "Drive off the embers and douse the fires",
+            "hint": "Embers have come over the roofs: drive them off the square, and carry water from the well below it to the burning homes.",
+            "elderHint": "Embers first, then the roofs. The well's where it always was, below the square."
+          },
+          {
+            "id": "hold",
+            "when": {
+              "kind": "bells",
+              "beat": 4
+            },
+            "mapId": "town",
+            "text": "Hold the square until dawn",
+            "hint": "Fafnyr is on the square. Hold it until the sky turns: the bell, the walls and Bram's cheese are with you, and Iva's tent stands at the square's west edge.",
+            "elderHint": "Hold him here till the sky turns, courier. He's never once stayed past dawn."
           }
         ]
       },
       {
         "title": "Coming Home",
-        "about": "PIX-253 step 10 builds it: Morvax's choice and the ending. Until then it has no step, and the story is told for a hero past the fifth letter who skips the Night of Bells.",
-        "steps": []
+        "about": "PIX-253 step 10 builds it: Morvax's choice and the ending. Until then its first step is never met (`unbuilt`) and the honest card shows (`continued`: \"To be continued: Coming Home\"), for a hero past the Night of Bells or one who skips it; the late web hero who cast Morvax down has it met by its `or`.",
+        "steps": [
+          {
+            "id": "morvax_choice",
+            "when": {
+              "kind": "unbuilt",
+              "or": {
+                "kind": "cleared",
+                "level": 15
+              }
+            },
+            "mapId": "town",
+            "text": "Morvax's choice: does Pixelheim want him back?",
+            "hint": "Morvax has a question for Pixelheim, fifty years in the asking: does it want him back? He's working up to it.",
+            "elderHint": "He has something to ask, and he's never once asked anyone for anything. Give him time, courier. Not fifty years."
+          }
+        ]
       }
     ],
     "continued": "To be continued",
@@ -1760,6 +1810,189 @@
       "doused": "The fire hisses out.",
       "done": "The last of the fires you can reach is out. The square is glowing - embers, blown off the roofs."
     }
+  },
+  "bells": {
+    "about": "PIX-253 step 9, chapter 7: the Night of Bells, played on the town map. Arriving home with the run home next starts it (Bells.due); its beats are the chapter's `bells` steps: the five lanterns on the square, then the embers (imps, as on the Night of Ash: Bram's imps count them) and the roofs (the well's water, or the fountain's where it stands), then Fafnyr held on the square until the sky turns (`fafnyr`: his numbers for the night; he stands down at dawn, `dawnSeconds` of holding the square, or at his `yieldsAt` share). The beat is never saved (ProgressionState.bells): a save made in the night plays it again from its start. The townsfolk out that night and their jobs are `jobs`, each only where its person lives in Pixelheim (a settler home, a townsperson the town has grown for); `job` says what it does (bell: a stun every `every` seconds; arrows and cheese: blows every `every` seconds; heal: whole again at their tent, at most every `every` seconds; shelter: whole again for a word; song: Loras's crit for the fight; lamps, goose, watch: words only). At dawn the scenes `dawn` and `collar` play (story.json), the collar's id goes in the story ledger (the night over for good), Fafnyr's scale goes in the fountain (the project built), and the day begins.",
+    "collar": "bells_collar",
+    "dawnScene": "bells_dawn",
+    "fountain": "fountain",
+    "start": "Teo's bell is ringing over Pixelheim. Everyone to their places: the dragon goes for the lights.",
+    "startQuiet": "Someone is banging a pot on the square. Everyone to their places: the dragon goes for the lights.",
+    "lanterns": {
+      "lit": "The lantern takes.",
+      "again": "That one's lit.",
+      "dark": "Five lanterns on the square, and Aske puts out every other lamp in Pixelheim. He'll come down where you're ready.",
+      "darkQuiet": "Five lanterns on the square. Street by street, Pixelheim puts its lamps out. He'll come down where you're ready."
+    },
+    "embers": {
+      "monsterId": "imp",
+      "level": 12,
+      "name": "Ember",
+      "cells": [[36, 24], [44, 24], [37, 27], [43, 27], [40, 28]],
+      "quest": "bram_imps",
+      "come": "Embers come over the roofs like sparks off a forge. Three homes are burning.",
+      "cleared": "The last ember gutters out on the stones."
+    },
+    "fires": {
+      "roofs": [[19, 14, 27, 19], [22, 22, 27, 25], [51, 13, 60, 18]],
+      "well": "You fill a bucket. Water, for once, is on our side.",
+      "empty": "Your hands are empty: the well is on the green, below the square.",
+      "doused": "The fire hisses out.",
+      "done": "The roofs are out."
+    },
+    "quiet": "The embers are gone and the roofs are out. The bell stops. In the quiet, wings.",
+    "barred": "Not tonight, courier. Every door is shut and the gate barred till dawn: the square needs you.",
+    "fafnyr": {
+      "monsterId": "dragon",
+      "level": 14,
+      "maxHp": 10000,
+      "attack": 36,
+      "defense": 12,
+      "xp": 600,
+      "gold": 0,
+      "yieldsAt": 0.2,
+      "at": [40, 27],
+      "dawnSeconds": 100,
+      "holdRadius": 10,
+      "card": "Fafnyr the Ashen",
+      "cardLine": "He came for the lights. He found the village.",
+      "roars": [
+        "Fafnyr rears up over the square - the air shimmers with heat!",
+        "Fafnyr's scales split with fire - the roofs smoke and the cobbles crack!"
+      ],
+      "away": "Back to the square! The sky won't turn while he has the village.",
+      "clock": "Dawn",
+      "fallen": "Sela hauls you into the inn's doorway and pours stew into you. Back out there: the night isn't over, and neither is he."
+    },
+    "jobs": [
+      {
+        "who": "elder",
+        "job": "watch",
+        "at": [38, 20],
+        "lines": [
+          "Fifty years I've waited for this night, courier. I'd have waited fifty more.",
+          "Light them, all five. He'll come where the light is."
+        ]
+      },
+      {
+        "who": "frost_aske",
+        "job": "lamps",
+        "at": [44, 22],
+        "lines": [
+          "Every lamp but the five. He goes for the lights, so the lights are where we want him.",
+          "Fifty years I kept one lamp. Tonight I put out forty."
+        ]
+      },
+      {
+        "who": "greyhold_teo",
+        "job": "bell",
+        "at": [42, 20],
+        "every": 18,
+        "stun": 2,
+        "first": "Fafnyr: \"Bells. Why is it always bells.\"",
+        "log": "Teo rings the bell. Fafnyr flinches.",
+        "lines": [
+          "Every ring, he flinches. I don't know why. I'm not asking.",
+          "Go on, courier. When the bell rings, you swing."
+        ]
+      },
+      {
+        "who": "greyhold_ulla",
+        "job": "arrows",
+        "at": [43, 3],
+        "every": 5,
+        "count": 3,
+        "damage": 25,
+        "log": "Arrows rattle down from the walls: Ulla's old guard.",
+        "lines": [
+          "Gate's shut and the walls are manned. Nobody leaves till dawn, courier, not even you.",
+          "My old guard couldn't hit a barn door. Good thing he's bigger than a barn."
+        ]
+      },
+      {
+        "who": "innkeeper",
+        "job": "shelter",
+        "at": [49, 11],
+        "said": "Sela sits you on the bench by the door and puts a bowl in your hands. Whole again. Out you go.",
+        "lines": [
+          "The inn's a shelter tonight: a bench, a bowl, five minutes. Then back out there.",
+          "Eat. You're no use to anyone hungry."
+        ]
+      },
+      {
+        "who": "saltmere_wenna",
+        "job": "shelter",
+        "at": [51, 11],
+        "said": "Wenna ladles Tam's stew into you, too much pepper and all. Whole again.",
+        "lines": [
+          "Tam's stew. It never stops, and neither do you.",
+          "Tam would've been out there with a ladle. I'll do the ladling in here."
+        ]
+      },
+      {
+        "who": "settler_iva",
+        "job": "heal",
+        "at": [31, 25],
+        "tent": [30, 24],
+        "every": 12,
+        "said": "Iva's hands glow warm at her tent. Whole again.",
+        "lines": [
+          "Come back to my tent whenever he hurts you. Whenever. That's a healer's order.",
+          "Sit. Breathe. There. Now go and stand in front of a dragon again, apparently."
+        ]
+      },
+      {
+        "who": "settler_loras",
+        "job": "song",
+        "at": [34, 26],
+        "log": "Loras strikes up the marching song: your blows strike truer until dawn.",
+        "lines": [
+          "The marching song, all night long! Not my best verse, but it's my loudest.",
+          "Verse forty: the courier holds the square. It rhymes with nothing. I'll manage."
+        ]
+      },
+      {
+        "who": "villager_bram",
+        "job": "cheese",
+        "at": [48, 12],
+        "every": 12,
+        "damage": 180,
+        "first": "Bram: \"I've waited my whole life for this.\"",
+        "log": "A cheese wheel comes rolling down Upper Street.",
+        "lines": [
+          "I've waited my whole life for this.",
+          "Rolls beautifully downhill. I always said so. Nobody listened."
+        ]
+      },
+      {
+        "who": "smith",
+        "job": "watch",
+        "at": [57, 19],
+        "lines": [
+          "Every poker in Pixelheim is hot and pointed at the sky.",
+          "If he lands on my forge, he's paying for the roof."
+        ]
+      },
+      {
+        "who": "mines_pell",
+        "job": "watch",
+        "at": [53, 19],
+        "lines": [
+          "The canary is furious. So am I.",
+          "I went down the shafts for fifty years. One dragon doesn't frighten me. Much."
+        ]
+      },
+      {
+        "who": "kid_pip",
+        "job": "goose",
+        "at": [33, 30],
+        "lines": [
+          "I'm guarding the goose. Nobody touches the goose.",
+          "The goose is guarding me, actually. We have an arrangement."
+        ]
+      }
+    ],
+    "won": "The sky turns grey behind the mountain, and Fafnyr folds onto the square. Pixelheim held."
   },
   "relics": {
     "questId": "maren_relics",

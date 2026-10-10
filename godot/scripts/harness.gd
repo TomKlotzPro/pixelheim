@@ -417,11 +417,31 @@ func _run_test_harness() -> void:
 			# Take the selected floor, as E would.
 			world.get_children().filter(func(node: Node) -> bool: return node.has_method("_descend"))[0]._act()
 			await get_tree().create_timer(0.4).timeout
+	# `--bells N` (PIX-253 step 9): the Night of Bells, begun as the hero
+	# came home, moved on to beat N.
+	if flags.has("--bells"):
+		# Nothing bites the throwaway hero tonight unless `hurt` says so.
+		world.player.invulnerable = not flags.has("hurt")
+		world.night.jump_to(int(flags.value("--bells")))
+		# What the beats skipped said isn't the shot's to show.
+		world.messages.clear()
+		await get_tree().create_timer(0.3).timeout
+	if flags.has("light"):
+		world.night.light_all()
+		await get_tree().create_timer(0.3).timeout
 	if flags.has("clear"):
 		# Fell every foe on the floor at once (after `gate descend`): the clear, its hoard, the way up.
 		for foe in get_tree().get_nodes_in_group("mobs"):
 			foe.take_hit(99999, foe.global_position + Vector2.LEFT)
 		await get_tree().create_timer(0.6).timeout
+	if flags.has("douse"):
+		world.night.douse_all()
+		await get_tree().create_timer(0.3).timeout
+	if flags.has("daybreak"):
+		# The dawn clock run out: Fafnyr stands down, and after a breath the
+		# dawn's scene opens over the square.
+		world.night.daybreak()
+		await get_tree().create_timer(2.2).timeout
 	if flags.has("leave"):
 		# Up the stairs, back to the gate.
 		world.use_portal({"kind": "gate"})

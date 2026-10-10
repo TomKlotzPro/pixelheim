@@ -378,7 +378,9 @@ func move_to(map: MapData, cell: Vector2i, facing: Vector2) -> void:
 
 
 func walk(tiles: float) -> void:
-	if tiles <= 0.0:
+	# The Night of Bells keeps its own clock (PIX-253 step 9): it holds at
+	# the middle of the night, and turns toward dawn as the square is held.
+	if tiles <= 0.0 or progression.bells != Bells.NONE:
 		return
 	world.steps += tiles
 	mark_dirty()

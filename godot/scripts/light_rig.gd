@@ -67,6 +67,9 @@ const CLOUD_PX := 256
 
 func _ready() -> void:
 	darkness = CanvasModulate.new()
+	# A story played over the world stands its actors in this light too
+	# (Cutscene's world stage, PIX-253 step 9).
+	darkness.add_to_group(&"world_light")
 	world.add_child(darkness)
 	# Its own layer, under the HUD's: only the world blooms.
 	var layer := CanvasLayer.new()

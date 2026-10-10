@@ -33,8 +33,10 @@ const TABLE := [
 	{"field": "mobs", "says": "monsters standing (not dying)"},
 	{"field": "ascension", "says": "with rankup: the ascension's beat, closed once it's gone (PIX-244)"},
 	{"field": "backsteps", "says": "with motion: frames the hero stepped back on screen while walking forward, lost if found in too few to judge (PIX-135, PIX-275)"},
+	{"field": "bells", "says": "the Night of Bells' beat while it runs (lanterns, embers, hold, dawn), done once Fafnyr is freed (PIX-253 step 9)"},
 	{"field": "beside", "says": "with seamless: the maps drawn beside the hero's, by id, or none (PIX-269)"},
 	{"field": "bossbar", "says": "the boss bar across the top: its foe's share of health while it shows, or none once it has gone; on a fight or a boss's floor (PIX-288)"},
+	{"field": "burning", "says": "on the Night of Bells' embers: the roofs still burning (PIX-253 step 9)"},
 	{"field": "card", "says": "the card naming the place the hero has come to, while it's up (PIX-269)"},
 	{"field": "change", "says": "with fades: how the last change of scene looked: dissolve, dark or cut, or seamless for a line walked over (PIX-269)"},
 	{"field": "chapter", "says": "a chapter card's chapter, while it's up (PIX-253)"},
@@ -52,7 +54,9 @@ const TABLE := [
 	{"field": "frames", "says": "with crossing: the walk's frames, the most work and the 99th percentile in ms: 240 max 3.1 p99 2.4 (PIX-269)"},
 	{"field": "gate", "says": "the gate the story keeps shut that said its line on this run (PIX-254)"},
 	{"field": "home", "says": "who the story brought home to live in town, by first name: wenna (PIX-255)"},
+	{"field": "jobs", "says": "on the Night of Bells: the townsfolk's jobs that have acted, by kind: arrows,bell,cheese (PIX-253 step 9)"},
 	{"field": "letters", "says": "Maren's letters in the pack, once any is out (PIX-253)"},
+	{"field": "lit", "says": "on the Night of Bells: the lanterns on the square lit (PIX-253 step 9)"},
 	{"field": "logged", "says": "with floats: the lines the battle log showed (PIX-245)"},
 	{"field": "maps", "says": "the maps drawn on the map's page, while the map is open: 7 on the Reach's with every region found (PIX-269)"},
 	{"field": "motes", "says": "with rankup: the ascension's motes and sparks flying (PIX-244)"},
@@ -67,6 +71,7 @@ const TABLE := [
 	{"field": "rise", "says": "with --rise: how far the building on the tour has risen: ruin, rising, built (PIX-264)"},
 	{"field": "rose", "says": "a chapter card's title, how far it rose coming in (PIX-253)"},
 	{"field": "saves", "says": "with seamless: the saves crossing lines made (once for crossing back and forth, PIX-269)"},
+	{"field": "scene", "says": "the story scene playing over the world, by id: bells_dawn (PIX-253 step 9)"},
 	{"field": "shortcut", "says": "on a dungeon floor with a shortcut out to its way in: open or shut (PIX-255)"},
 	{"field": "speaker", "says": "who the open conversation is with, by id: innkeeper (PIX-283)"},
 	{"field": "stood", "says": "named foes that stood down rather than fell, when one did (PIX-255)"},
@@ -226,6 +231,12 @@ func field_backsteps() -> String:
 	return noted("backsteps")
 
 
+func field_bells() -> String:
+	if GameState.progression.bells != Bells.NONE:
+		return Bells.beat_name(GameState.progression.bells)
+	return "done" if Bells.over(GameState.progression) else ""
+
+
 func field_beside() -> String:
 	if not flags.has("seamless"):
 		return ""
@@ -239,6 +250,12 @@ func field_bossbar() -> String:
 	if bar.showing():
 		return bar.reading()
 	return "none" if flags.has("fight") or not Depths.shortcut_on(world.map.id).is_empty() else ""
+
+
+func field_burning() -> String:
+	if GameState.progression.bells != Bells.EMBERS:
+		return ""
+	return str(Bells.roofs().size() - world.night.doused.size())
 
 
 func field_card() -> String:
@@ -334,11 +351,23 @@ func field_home() -> String:
 	return ",".join(homecomers.map(func(recruit: Dictionary) -> String: return String(recruit["id"]).get_slice("_", 1)))
 
 
+func field_jobs() -> String:
+	if GameState.progression.bells == Bells.NONE:
+		return ""
+	var kinds: Array[String] = world.night.acted.duplicate()
+	kinds.sort()
+	return ",".join(kinds) if not kinds.is_empty() else "none"
+
+
 func field_letters() -> String:
 	var letters := _letters()
 	if letters.is_empty():
 		return ""
 	return str(letters.filter(func(quest: Dictionary) -> bool: return int(GameState.pack.items.get(quest["objective"]["itemId"], 0)) > 0).size())
+
+
+func field_lit() -> String:
+	return str(world.night.lit.size()) if GameState.progression.bells != Bells.NONE else ""
 
 
 func field_logged() -> String:
@@ -421,6 +450,13 @@ func field_rose() -> String:
 
 func field_saves() -> String:
 	return str(world.neighbours.saves) if flags.has("seamless") else ""
+
+
+func field_scene() -> String:
+	for node in world.get_children():
+		if node is Cutscene and not node.finished:
+			return node.scene_id
+	return ""
 
 
 func field_shortcut() -> String:

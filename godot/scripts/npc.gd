@@ -135,7 +135,8 @@ func _process(delta: float) -> void:
 ## turned off in Options.
 func _refresh_mark() -> void:
 	var kind := ""
-	if GameState.settings.quest_marks:
+	# Nobody asks or hands in anything on the Night of Bells (PIX-253 step 9).
+	if GameState.settings.quest_marks and GameState.progression.bells == Bells.NONE:
 		kind = Quests.mark_for(String(data.get("id", "")), GameState.progression.quests, GameState.pack.items, GameState.questing.quest_open)
 		# Maren with the whole story to tell and the fifth letter to give
 		# (PIX-253 step 8): the main story's gold "!".

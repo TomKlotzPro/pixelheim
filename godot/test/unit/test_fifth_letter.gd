@@ -134,17 +134,18 @@ func test_morvax_reads_it_and_the_mountain_shakes() -> void:
 	assert_eq(MainQuest.card_due(state.progression, state.settlement), 7, "the Night of Bells' card")
 	var lead := Bearing.active(state.progression, state.settlement, state.pack.items)
 	assert_eq([lead["map_id"], lead["cell"]], ["town", Town.square()], "run home")
-	assert_eq(MainQuest.continued(state.progression, state.settlement), "The Night of Bells", "home, the honest card")
+	assert_eq(MainQuest.continued(state.progression, state.settlement), "", "no card: home, the Night of Bells begins (step 9)")
+	assert_true(Bells.due(state.progression, state.settlement))
 	assert_eq(Letters.satchel(state.progression)[-1], {"quest": quest, "delivered": true})
 
 
-func test_the_story_holds_at_the_run_home_until_the_night_is_written() -> void:
+func test_the_run_home_begins_the_night_of_bells() -> void:
 	_keepsakes_home()
 	state.questing.finish_dialogue("elder")
 	state.questing.finish_dialogue("mountain_morvax")
 	var step := MainQuest.next_step(state.progression, state.settlement)
-	assert_eq(step["when"]["kind"], "unbuilt", "step 9 writes it")
-	assert_false(MainQuest.is_met(step, state.progression, state.settlement))
+	assert_eq(step["when"]["kind"], "bells", "step 9 wrote it")
+	assert_false(MainQuest.is_met(step, state.progression, state.settlement), "until the night begins")
 	assert_eq(MainQuest.objective(state.progression, state.settlement), "Next: Run home: the dragon is awake")
 	assert_eq(MainQuest.continued_word(), "To be continued")
 	# No broken quest: nothing else is asked of the hero meanwhile.
@@ -152,6 +153,9 @@ func test_the_story_holds_at_the_run_home_until_the_night_is_written() -> void:
 	assert_eq(state.questing.letter_for("mountain_morvax"), {})
 	var bram := Quests.by_id("bram_imps")
 	assert_false(state.questing.quest_open(bram), "Bram's imps wait for the Night of Bells")
+	state.questing.bells_begin()
+	assert_true(MainQuest.is_met(step, state.progression, state.settlement), "home, and the night begins")
+	assert_true(state.questing.quest_open(bram), "the embers are imps")
 
 
 # ---- The mountain road and the forge -----------------------------------------------
@@ -309,8 +313,9 @@ func test_a_dragon_slayer_skips_the_night_of_bells() -> void:
 	state.questing.finish_dialogue("mountain_morvax")
 	assert_eq(Letters.after_lines("mountain_morvax", state.progression, state.settlement), quest["slain"]["after"])
 	assert_true(MainQuest.skips(7, state.progression, state.settlement))
-	assert_eq(_next(), "", "no run home, no Night of Bells")
-	assert_eq(MainQuest.card_due(state.progression, state.settlement), 0)
+	assert_eq(_next(), "morvax_choice", "no run home, no Night of Bells: home, still to write")
+	assert_false(Bells.due(state.progression, state.settlement), "no night for a dragon slayer")
+	assert_eq(MainQuest.card_due(state.progression, state.settlement), 8, "the card of home's chapter")
 	assert_eq(MainQuest.continued(state.progression, state.settlement), "Coming Home", "the card says what's to come")
 
 

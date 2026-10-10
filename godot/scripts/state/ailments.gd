@@ -60,6 +60,14 @@ func inflict(infliction: Variant, roll: Callable, passives := {}) -> bool:
 	return true
 
 
+## Held still for `turns` whatever the stun guard (PIX-253 step 9: Teo's
+## bell, every ring a breath for Fafnyr). A longer stun already on holds.
+func stun_for(turns: int) -> void:
+	var current := _find("stun")
+	effects = effects.filter(func(effect: Dictionary) -> bool: return effect["kind"] != "stun")
+	effects.append({"kind": "stun", "turnsLeft": maxi(turns, int(current.get("turnsLeft", 0))), "power": 0})
+
+
 ## Advances the clock; on each elapsed turn, damage ticks fire and every
 ## effect (stun included) spends a turn. Returns [{kind, damage}] ticks.
 func tick(delta: float) -> Array[Dictionary]:

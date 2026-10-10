@@ -414,6 +414,9 @@ func on_enemy_died(enemy: Node) -> void:
 			return mob != enemy and mob.has_meta("prologue_wave") and not mob.dying)
 		if left.is_empty():
 			world.messages.flash(GameState.questing.prologue_wave_cleared())
+	# One of the Night of Bells' embers (PIX-253 step 9): the night counts them.
+	if enemy.has_meta("bells_wave"):
+		world.night.ember_fell(enemy)
 	if enemy.fighter.has("named"):
 		Sound.play("bounty")
 		# A region dungeon's boss down: its shortcut out opens (PIX-255), and
@@ -437,6 +440,11 @@ func on_enemy_died(enemy: Node) -> void:
 ## its named hunt and the main quest's step, the dungeon's shortcut, the
 ## settlers it brings home - a card names the moment, and it lies down.
 func stood_down(enemy: Node) -> void:
+	# The Night of Bells' dragon stands down at dawn (PIX-253 step 9): the
+	# night plays what comes of it - the dawn, the collar, the day.
+	if enemy.has_meta("bells"):
+		world.night.dragon_spent(enemy)
+		return
 	hunted_by_boss = false
 	Sound.stop_music()
 	world.soundscape.hush(BOSS_HUSH_S)

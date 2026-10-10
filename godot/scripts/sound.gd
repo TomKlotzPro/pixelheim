@@ -141,6 +141,8 @@ const UI_SOUNDS := {
 	# A way out opening once a boss is down (PIX-292): a quick run up a
 	# chord to its octave, like a door's bell.
 	"wayout": [[0.03, "triangle", 523.0, 523.0, 0.08], [0.03, "triangle", 659.0, 659.0, 0.08], [0.03, "triangle", 784.0, 784.0, 0.08], [0.05, "triangle", 1046.0, 1046.0, 0.08]],
+	# A volley off the walls on the Night of Bells, loosed (PIX-253 step 9).
+	"loose": [[0.03, "noise", 0.0, 0.0, 0.05], [0.06, "triangle", 900.0, 520.0, 0.04]],
 }
 const UI_RATE := 22050
 

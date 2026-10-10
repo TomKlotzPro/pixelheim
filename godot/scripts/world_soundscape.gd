@@ -99,10 +99,13 @@ func _soundscape() -> Array[String]:
 	var out: Array[String] = []
 	if world.map.floor_level > 0:
 		return out
-	var burning: bool = world.map.id == "town" and GameState.progression.prologue != Prologue.DONE
+	# The roofs the Night of Bells' embers set alight burn too (PIX-253 step
+	# 9), and the crickets keep quiet all that night.
+	var bells: int = GameState.progression.bells if world.map.id == "town" else Bells.NONE
+	var burning: bool = world.map.id == "town" and (GameState.progression.prologue != Prologue.DONE or bells == Bells.EMBERS)
 	var outdoors: bool = world.map.id == "town" or (PunyTerrain.is_outdoor(world.map.grid) and not world.map.id.begins_with("town_"))
 	# The birds keep quiet in the rain.
-	if outdoors and not burning and world.map.id not in WINDY_MAPS and not raining():
+	if outdoors and not burning and bells == Bells.NONE and world.map.id not in WINDY_MAPS and not raining():
 		out.append("crickets" if DayNight.is_night(GameState.world.steps) else "birds")
 		if world.map.id == "town" and GameState.town_tier() >= 1 and not DayNight.is_night(GameState.world.steps):
 			out.append("chatter")

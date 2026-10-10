@@ -15,8 +15,12 @@ func spawn_for(data: MapData) -> void:
 	# On the night of the fire only the survivors are about (PIX-152).
 	if GameState.progression.prologue != Prologue.DONE and data.id == "town":
 		folk = Prologue.survivors()
+	# On the Night of Bells everyone is out at their job (PIX-253 step 9).
+	var bells: bool = GameState.progression.bells != Bells.NONE and data.id == "town"
+	if bells:
+		folk = Bells.folk(settlers, GameState.settlement.town_tier)
 	# A festival day's barker runs the ring toss on the square (PIX-159).
-	if data.id == "town" and GameState.holdings.festival_on() and GameState.progression.prologue == Prologue.DONE:
+	if data.id == "town" and GameState.holdings.festival_on() and GameState.progression.prologue == Prologue.DONE and not bells:
 		var barker: Dictionary = Npcs._data()["festivalBarker"].duplicate()
 		barker.merge({"x": int(Town.festival("barker")["x"]), "y": int(Town.festival("barker")["y"])})
 		folk.append(barker)

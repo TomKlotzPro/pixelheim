@@ -2,7 +2,7 @@
 # of the rest: square, triangle and stepped noise, each note shaped and the
 # whole normalised to the levels the older sounds sit at. Writes WAVs the
 # game plays as they are (Godot compresses them on import):
-# - sfx/: the dodge, a named monster's roar, a bounty claimed;
+# - sfx/: the dodge, a named monster's roar, a bounty claimed, Teo's bell;
 # - ambience/: one-shots for birds, crickets, town chatter and fire, a few
 #   variants each, the looping wind beds of the mountain's floors and the
 #   rain's (PIX-224);
@@ -136,6 +136,20 @@ def bounty():
     for i, note in enumerate(["G6", "C7"]):
         parts.append((0.3 + i * 0.05, tone(0.05, "triangle", hz(note), hz(note), 0.25, FX_RATE), FX_RATE))
     return mix(int(0.55 * FX_RATE), *parts)
+
+
+def bell():
+    """Teo's bell on the Night of Bells (PIX-253 step 9): struck, then left
+    to ring down, its partials fading at their own pace, a slow beat in it."""
+    rng = random.Random(31)
+    length = 1.4
+    strike = tone(0.03, "noise", 6000, 3000, 0.5, FX_RATE, attack=0.001, rng=rng)
+    hum = tone(length, "triangle", hz("G4"), hz("G4") * 0.998, 0.8, FX_RATE, attack=0.004)
+    prime = tone(length * 0.8, "triangle", hz("G5"), hz("G5"), 0.45, FX_RATE, attack=0.004)
+    tierce = tone(length * 0.6, "square", hz("B5"), hz("B5"), 0.12, FX_RATE, duty=0.25, attack=0.004)
+    nominal = tone(length * 0.4, "triangle", hz("D6"), hz("D6"), 0.3, FX_RATE, attack=0.002)
+    out = mix(int(length * FX_RATE), (0, strike, FX_RATE), (0, hum, FX_RATE), (0, prime, FX_RATE), (0, tierce, FX_RATE), (0, nominal, FX_RATE))
+    return [s * (0.85 + 0.15 * math.cos(2 * math.pi * 3.2 * i / FX_RATE)) for i, s in enumerate(out)]
 
 
 # ---- ambience one-shots ----------------------------------------------------
@@ -290,6 +304,7 @@ def main():
     write(os.path.join(AUDIO, "sfx", "dodge.wav"), dodge(), FX_RATE, 1900)
     write(os.path.join(AUDIO, "sfx", "roar.wav"), roar(), FX_RATE, 2600)
     write(os.path.join(AUDIO, "sfx", "bounty.wav"), bounty(), FX_RATE, 2300)
+    write(os.path.join(AUDIO, "sfx", "bell.wav"), bell(), FX_RATE, 2400)
     makers = {"birds": (birds, 650), "crickets": (crickets, 420), "chatter": (chatter, 520), "fire": (fire, 760)}
     for name, extra in doc["ambienceExtras"].items():
         make, peak = makers[name]

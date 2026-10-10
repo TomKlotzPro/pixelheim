@@ -1170,6 +1170,36 @@ static func fire_pools(rect: Rect2i) -> Array[Dictionary]:
 	return out
 
 
+## A roof set burning on the Night of Bells (PIX-253 step 9): flames over
+## the house, as over the Night of Ash's ruins. Its index in `fires`, for
+## douse.
+func burn(rect: Rect2i) -> int:
+	fires.append({"rect": rect, "nodes": _add_fire(rect)})
+	return fires.size() - 1
+
+
+## Every lamp in the village out (PIX-253 step 9: Aske puts them out, all
+## but the five lanterns, so the dragon comes down on the square): each
+## flame and its glow gone, its light dark, the cold torch shown.
+func lamps_out() -> void:
+	for lamp: Dictionary in lamps:
+		lamp["out"] = true
+		if is_instance_valid(lamp["flame"]):
+			lamp["flame"].visible = false
+			lamp["unlit"].visible = true
+		var glow: Node2D = lamp.get("glow")
+		if not is_instance_valid(glow):
+			continue
+		glow.visible = false
+		night_glows.erase(glow)
+		# Its light gone with it, so the square's own lights have the
+		# ground's blocks to themselves (PIX-285, test_night_light).
+		var light: Node = glow.get_meta("light", null)
+		if is_instance_valid(light):
+			light.free()
+		glow.remove_meta("light")
+
+
 ## The fire on ruin `ruin` (Town.ruins' order), if it still burns.
 func douse_ruin(ruin: int, seconds := 1.2) -> void:
 	for i in fires.size():
@@ -1275,6 +1305,7 @@ func _add_glow(at: Vector2, radius: int, peak: float, light_radius := 0.0, light
 		var lamp := Lights.make(at, light_radius, light_color, energy, flicker)
 		props.add_child(lamp)
 		glow.tree_exiting.connect(lamp.queue_free)
+		glow.set_meta("light", lamp)
 	glow.position = at
 	glow.z_index = 5
 	glow.add_to_group("decor")
@@ -1289,7 +1320,7 @@ func set_night(night: bool) -> void:
 		return
 	_night = int(night)
 	for lamp: Dictionary in lamps:
-		if is_instance_valid(lamp["flame"]):
+		if is_instance_valid(lamp["flame"]) and not lamp.get("out", false):
 			lamp["flame"].visible = night
 			lamp["unlit"].visible = not night
 	for glow in night_glows:
@@ -1397,6 +1428,17 @@ func refresh_patches() -> void:
 			_add_patch_sprite(cell)
 	for spot_id: String in patch_sprites:
 		patch_sprites[spot_id].visible = Gathering.is_ready(GameState.world, spot_id)
+
+
+## A tent pitched on the map as it stands (PIX-253 step 9: Iva's on the
+## square's edge, the Night of Bells): drawn among the actors, its cell
+## blocked, gone with the visit.
+func pitch_tent(cell: Vector2i) -> void:
+	if camps.has(cell):
+		return
+	camps[cell] = {"kind": "tent", "tile": TENTS["marsh"]}
+	data.covered[cell] = true
+	_add_camp_piece(cell, camps[cell])
 
 
 ## A camp's tent or torch: sorted among the actors at its foot, which blocks.
@@ -1614,8 +1656,8 @@ func _add_puny_prop(prop: Dictionary) -> Node2D:
 				unlit.position = Vector2(piece[0] * TILE) - Vector2(0, sort_y)
 				root.add_child(unlit)
 				var flame := AnimatedSprite2D.new()
-				lamps.append({"flame": flame, "unlit": unlit})
-				_add_glow(Vector2(prop["cell"] * TILE) + Vector2(TILE / 2.0, 4), 22, 0.35, 76.0, Lights.LAMP, true, Lights.LAMP_ENERGY)
+				var glow := _add_glow(Vector2(prop["cell"] * TILE) + Vector2(TILE / 2.0, 4), 22, 0.35, 76.0, Lights.LAMP, true, Lights.LAMP_ENERGY)
+				lamps.append({"flame": flame, "unlit": unlit, "glow": glow})
 				flame.sprite_frames = PunyProps.animation(prop["frames"], PunyProps.LAMP_FPS)
 				flame.material = Lights.unshaded()
 				flame.centered = false

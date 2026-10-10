@@ -10,6 +10,9 @@ extends Node2D
 ## GameState autoload.
 
 const TILE := 16
+## The level a harness run's hero comes home to the Night of Bells at
+## (`--bells`, PIX-253 step 9): the story's, about 13.
+const BELLS_LEVEL := 13
 
 var map: MapData
 ## The map as drawn on this visit (MapView): ground, houses, props, chests,
@@ -37,6 +40,8 @@ var foes: Foes
 var delve: Delve
 ## The story over the world: moments, the night, the ending, reveals (Stage).
 var stage: Stage
+## The Night of Bells on the town map (Night, PIX-253 step 9).
+var night: Night
 ## The HUD: its layer and widgets, hints, the objective, the nameplate (Hud).
 var hud: Hud
 var player_cell := Vector2i.ZERO
@@ -134,8 +139,29 @@ func _ready() -> void:
 	for level in range(1, int(flags.value("--cleared", "0")) + 1):
 		if level not in GameState.progression.cleared_levels:
 			GameState.progression.cleared_levels.append(level)
+	# `--bells N` (PIX-253 step 9): the story at the Night of Bells - the tin
+	# found, the four keepsakes and their families home, Maren heard out,
+	# the fifth letter delivered - in a Village building its Town (unless
+	# `--town-tier` says otherwise); arriving home begins the night, and the
+	# harness moves it on to beat N.
+	if flags.has("--bells"):
+		GameState.mark_seen(Letters.scene_id())
+		GameState.mark_seen(Letters.confession_id())
+		GameState.progression.quests[Relics.quest_id()] = {"progress": Relics.all().size(), "done": true}
+		GameState.progression.quests[Letters.fifth_quest()["id"]] = {"progress": 1, "done": true}
+		for relic: Dictionary in Relics.all():
+			if relic["named"] not in GameState.progression.hunted:
+				GameState.progression.hunted.append(relic["named"])
+		if not flags.has("--town-tier"):
+			GameState.settlement.town_tier = 2
+		# A hero of the night's level, grown as levels grow them.
+		while GameState.hero.level < BELLS_LEVEL:
+			GameState.hero.xp = GameState.hero.xp_to_next
+			HeroRules.apply_level_ups(GameState.hero)
+		GameState.hero.xp = 0
+		GameState.hero.hp = int(GameState.hero.stats["maxHp"])
 	# The family a keepsake brings home is home already (PIX-255).
-	if flags.has("--hunted"):
+	if flags.has("--hunted") or flags.has("--bells"):
 		GameState.holdings.come_home(true)
 	# Resume where the save stands; `--map <id>` (harness) boots at that map's spawn.
 	var override := flags.has("--map")
@@ -175,6 +201,9 @@ func _ready() -> void:
 	stage.world = self
 	stage.cards = not harness
 	add_child(stage)
+	night = Night.new()
+	night.world = self
+	add_child(night)
 	hud = Hud.new()
 	hud.world = self
 	add_child(hud)
@@ -301,6 +330,11 @@ func is_walkable(cell: Vector2i) -> bool:
 
 func on_player_died() -> void:
 	await get_tree().create_timer(1.2).timeout
+	# A fall on the Night of Bells wakes in the inn's doorway, the beat set
+	# out again (PIX-253 step 9).
+	if night.running():
+		night.hero_fell()
+		return
 	# Defeat is forgiving: wake at the inn, healed, purse intact.
 	var inn: Dictionary = GameState.upkeep.wake_at_inn()
 	var bed := Vector2i(inn["x"], inn["y"])
@@ -317,6 +351,12 @@ func use_portal(target: Dictionary) -> void:
 	var boss := foes.boss_hunting()
 	if boss != null:
 		bar_the_way(boss)
+		return
+	# Every way out of town is shut on the Night of Bells (PIX-253 step 9).
+	var barred := night.barred()
+	if barred != "":
+		_step_back()
+		messages.flash(barred)
 		return
 	match target["kind"]:
 		"map":
@@ -435,6 +475,8 @@ func enter_map(next: MapData, arrival: Vector2i) -> void:
 	# (PIX-269); the map the game opens on is only noted.
 	hud.name_place(next, arrival, not changing)
 	stage.arrive(next)
+	# Home after the run, the Night of Bells (PIX-253 step 9).
+	night.arrive(next)
 	# A floor of a region's dungeon says which (PIX-255).
 	delve.arrive(next)
 	# A festival day: confetti over the square (PIX-159).
@@ -681,6 +723,10 @@ func open_saves(web_save := {}, welcome := false) -> void:
 ## Fast travel from the map screen; the waypoint is already usability-checked.
 ## The map and the place left dissolve into where it lands, as a door does.
 func travel_to(waypoint: Dictionary) -> void:
+	# Not on the Night of Bells: the square needs the hero (PIX-253 step 9).
+	if night.barred() != "":
+		messages.flash(night.barred())
+		return
 	Sound.play("travel")
 	var arrival := Vector2i(int(waypoint["arrival"]["x"]), int(waypoint["arrival"]["y"]))
 	var next := map if waypoint["mapId"] == map.id else load_map(waypoint["mapId"])

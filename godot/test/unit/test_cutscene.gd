@@ -18,15 +18,29 @@ func test_every_step_is_a_kind_the_player_knows_with_what_it_needs() -> void:
 	for scene_id: String in Cutscene.scenes():
 		var steps: Array = Cutscene.scenes()[scene_id]
 		assert_gt(steps.size(), 0, "%s has steps" % scene_id)
+		# The actors a scene has named so far, and whether its stage is the world.
+		var cast := {}
+		var on_world := false
 		for step: Dictionary in steps:
 			assert_true(String(step["kind"]) in Cutscene.KINDS, "%s: %s is a step" % [scene_id, step["kind"]])
+			if step["kind"] == "stage":
+				assert_true(String(step["stage"]) in Cutscene.STAGES, "%s is a stage" % step["stage"])
+				on_world = step["stage"] == "world"
+				cast.clear()
+			# A step naming an actor on stage moves it on or changes what it does
+			# (PIX-253 step 9: Fafnyr takes off).
+			if step["kind"] == "actor" and cast.has(String(step.get("name", ""))):
+				assert_true(step.has("to") or step.has("to_cell") or step.has("anim") or step.has("dir"), "%s: %s does something" % [scene_id, step["name"]])
+				continue
 			for field: String in needs.get(step["kind"], []):
 				assert_true(step.has(field), "%s: a %s step needs %s" % [scene_id, step["kind"], field])
 			if step["kind"] == "actor":
 				assert_true(ResourceLoader.exists(PunyArt.path(step["sheet"])), "%s is one of Shade's sheets" % step["sheet"])
-				assert_true(step.has("at") or (step.has("from") and step.has("to")), "an actor stands or crosses")
-			if step["kind"] == "stage":
-				assert_true(String(step["stage"]) in Cutscene.STAGES, "%s is a stage" % step["stage"])
+				assert_true(step.has("at") or step.has("cell") or (step.has("from") and step.has("to")), "an actor stands or crosses")
+				# On the world's stage an actor stands on a cell of it.
+				assert_eq(step.has("cell"), on_world, "%s: %s stands where its stage is" % [scene_id, step["sheet"]])
+				if step.has("name"):
+					cast[String(step["name"])] = true
 
 
 func test_the_opening_ends_on_black_before_hero_creation() -> void:
