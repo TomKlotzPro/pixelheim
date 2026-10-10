@@ -179,6 +179,31 @@ everything CI runs. Neither opens the motion flow's window: `quick` says when
 a change to the hero's sprite, walk or the camera calls for
 `godot/tools/flows.sh motion`.
 
+What needs a window runs in CI too (PIX-275), in its `pictures` job beside
+the checks: a virtual display (xvfb) with Mesa's software rendering (the
+flows on the desktop renderer as on the Mac, Forward+ on lavapipe; the look
+book on the browser's, as `lookbook.sh` shoots it), the release flows
+windowed (the motion flow alone, last), the look book, and a contact sheet
+of every flow's picture (`tools/flows_sheet.py`). Software rendering draws
+a few frames a second, which stretches the flows timed in frames or by the
+clock, so there a report that differs is noted, not failed (the headless
+run checks them all). When a pull request touches how the hero walks or is
+drawn or the camera (`player.gd`, `gait.gd`, `juice.gd`, `puny_art.gd`,
+`world_camera.gd`, the character sheets) or the workflow itself, the
+motion check runs three times first, alone, in a 960x540 window, and fails
+the job on a step back too many: the motion flow `check.sh quick` calls for
+is run on the pull request. The pictures are the run's artifacts, and a
+comment on the pull request links them (the two sheets open in the
+browser). They are always of Shade's CC0 art alone: the repository is
+public, and so are its artifacts, so the paid art is never fetched there.
+The Mac's windowed runs (`flows.sh`, `lookbook.sh`, both muted) stay the
+way to judge the paid art's looks.
+
+The motion check keeps the sky clear while it walks (a cloud's shadow over
+the shirt changes the reds it finds the hero by) and counts frames only
+while the hero walks (a slow run reaches the river, where the camera
+catching up would read as a step back).
+
 ### Boot splash
 
 The web build loads behind `assets/splash.png`, which is the title screen
