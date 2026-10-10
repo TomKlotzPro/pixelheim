@@ -203,10 +203,16 @@ func test_a_night_kill_drops_more_often() -> void:
 	var state: Node = autofree(GameStateScript.new())
 	state.new_game("Robin", "warrior")
 	state.roll = func() -> float: return 0.25
-	var log: Array[String] = state.spoils.defeat_monster(Bestiary.wild(Bestiary.spawn("wolf"), "forest"), "forest", "", 1)
-	assert_false(log.any(func(line: String) -> bool: return line.contains("drops:") and not line.contains("Wolf Pelt")), "by day, no loot at 0.25")
-	log = state.spoils.defeat_monster(Packs.by_night(Bestiary.wild(Bestiary.spawn("wolf"), "forest")), "forest", "", 1)
-	assert_true(log.any(func(line: String) -> bool: return line.contains("drops:") and not line.contains("Wolf Pelt")), "by night, loot at 0.25")
+	# What a kill won floats up (PIX-245): its items are in its gains. The same
+	# roll by night carries all the day's (the pelt, what was foraged) and the
+	# loot the day's luck missed.
+	var ids_of := func(won: Dictionary) -> Array:
+		return won["gains"]["items"].map(func(item: Dictionary) -> String: return item["id"])
+	var by_day: Array = ids_of.call(state.spoils.defeat_monster(Bestiary.wild(Bestiary.spawn("wolf"), "forest"), "forest", "", 1))
+	var by_night: Array = ids_of.call(state.spoils.defeat_monster(Packs.by_night(Bestiary.wild(Bestiary.spawn("wolf"), "forest")), "forest", "", 1))
+	for id: String in by_day:
+		assert_has(by_night, id)
+	assert_eq(by_night.size(), by_day.size() + 1, "by night, loot at 0.25: %s by day, %s by night" % [by_day, by_night])
 
 
 ## A quest's quarry, a recruit's and the way to it are out at every hour, or
