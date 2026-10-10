@@ -264,10 +264,9 @@ func clear_floor(level: int) -> Dictionary:
 			else:
 				owner.pack.add_item(item_id)
 				Gains.add_item(gains, item_id)
-		# A page of Liane's journal, dropped on the way down (PIX-153).
-		var page := Story.page_for(level)
-		if not page.is_empty():
-			lines.append(Controls.say(Text.t("Among the bones: a page of an old journal (%s). {key:journal} reads it.") % page["title"]))
+		# Liane's pages (PIX-153) retired from play with Maren's letters
+		# (PIX-253 step 2): a clear says nothing of one any more. The floors'
+		# pages stay in the journal's older papers for a hero who has them.
 		# A first clear is worth more than its fights (PIX-141): going deeper
 		# levels the hero, farming what's beaten doesn't.
 		var clear_xp := Dungeons.clear_xp(level)

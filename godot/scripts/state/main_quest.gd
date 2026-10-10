@@ -88,6 +88,32 @@ static func next_step(progression: ProgressionState, settlement: SettlementState
 	return {}
 
 
+## The chapter whose card is due (PIX-253 step 2: a card like the dawn's
+## "Day one" as a chapter opens): the one the next step is in, once the
+## Night of Ash is over, until its card has been shown; 0 when none is. Each
+## is shown once, and the story ledger keeps it ("chapter_3"): no new field
+## in the save. A hero who runs ahead past a chapter, or loads a save from
+## before the cards, sees only the card of the chapter they're in.
+static func card_due(progression: ProgressionState, settlement: SettlementState) -> int:
+	if progression.prologue != Prologue.DONE:
+		return 0
+	var step := next_step(progression, settlement)
+	if step.is_empty():
+		return 0
+	var number := int(step["chapter_number"])
+	return 0 if card_id(number) in progression.story_seen else number
+
+
+## A chapter card's id in the story ledger.
+static func card_id(number: int) -> String:
+	return "chapter_%d" % number
+
+
+## A chapter's title by its number, from 1.
+static func title_of(number: int) -> String:
+	return String(chapters()[number - 1]["title"])
+
+
 ## The line above the dock: "Next: ...", or "" once the story is done.
 static func objective(progression: ProgressionState, settlement: SettlementState) -> String:
 	var step := next_step(progression, settlement)

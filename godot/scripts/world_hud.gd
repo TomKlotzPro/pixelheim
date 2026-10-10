@@ -42,6 +42,13 @@ var edge_plate: PanelContainer
 ## twice a second.
 const BEARING_SECONDS := 0.5
 var bearing := {}
+## The main story's lead while a side quest or a bounty leads (Bearing.behind,
+## PIX-253 step 2): the map keeps it as a hollow gold diamond. {} while the
+## story leads itself.
+var story := {}
+## Whether the bearing is the main story's, or a thread that carries it:
+## the arrow is gold then (Bearing.tells_story).
+var leads_story := true
 var _bearing_left := 0.0
 ## The arrow at the view's edge (PIX-240): toward where the hero is headed
 ## while that's off screen; how far in from the edge it stands.
@@ -286,7 +293,7 @@ func update_objective() -> void:
 	_bearing_left -= get_process_delta_time()
 	if _bearing_left <= 0.0:
 		_bearing_left = BEARING_SECONDS
-		bearing = Bearing.active(GameState.progression, GameState.settlement, GameState.pack.items)
+		look_again()
 	var text := Bearing.line(bearing)
 	if GameState.progression.prologue != Prologue.DONE:
 		text = Prologue.objective(GameState.progression.prologue, GameState.progression.prologue_doused.size(), GameState.questing.first_skill_heals())
@@ -311,6 +318,14 @@ func update_objective() -> void:
 	if objective_box.get_meta("fading_to", -1.0) != target:
 		objective_box.set_meta("fading_to", target)
 		objective_box.create_tween().tween_property(objective_box, "modulate:a", target, 0.3)
+
+
+## Where the hero is headed, looked at again now: the active lead, and the
+## main story's behind it while something else leads.
+func look_again() -> void:
+	bearing = Bearing.active(GameState.progression, GameState.settlement, GameState.pack.items)
+	story = Bearing.behind(bearing, GameState.progression, GameState.settlement, GameState.pack.items)
+	leads_story = Bearing.tells_story(bearing)
 
 
 ## The clock as the steps stand (PIX-246); redrawn only when the minute turns.
@@ -344,13 +359,16 @@ func update_clock() -> void:
 ## The arrow at the view's edge (PIX-240): toward the bearing's spot on this
 ## map, or the door that starts the way to its map, while it's off screen;
 ## gone once it's in view, with nowhere to head for, on the first night
-## (which has its own steps), or with the quest marks turned off.
+## (which has its own steps), or with the quest marks turned off. Gold while
+## it leads the main story, cream for a side quest or a bounty (PIX-253
+## step 2).
 func update_arrow() -> void:
 	if root == null:
 		return
 	if arrow == null:
 		arrow = Arrow.new()
 		root.add_child(arrow)
+	arrow.main = leads_story
 	var target := _bearing_point()
 	# Above the line over the dock too (the objective's plate stands there),
 	# never on its words.
@@ -420,19 +438,31 @@ func update_nameplate() -> void:
 	nameplate.position = (screen - Vector2(nameplate.size.x / 2.0, nameplate.size.y)).round()
 
 
-## The arrow itself: a small gold head pointing right (the HUD turns it),
-## rimmed in the night so it reads on any ground.
+## The arrow itself: a small head pointing right (the HUD turns it), rimmed
+## in the night so it reads on any ground; gold for the main story, cream
+## for anything else followed (PIX-253 step 2).
 class Arrow extends Control:
 	## Long and narrow, so it reads as pointing whichever way it's turned.
 	const SHAPE := [Vector2(12, 0), Vector2(-7, -6), Vector2(-7, 6)]
 	const RIM := [Vector2(16, 0), Vector2(-9, -8), Vector2(-9, 8)]
 
+	## Whether it leads the main story.
+	var main := true:
+		set(value):
+			if value != main:
+				main = value
+				queue_redraw()
+
 	func _init() -> void:
 		mouse_filter = Control.MOUSE_FILTER_IGNORE
 
+	## Its colour: the main story's gold, or cream.
+	func ink() -> Color:
+		return UiStyle.GOLD if main else UiStyle.CREAM
+
 	func _draw() -> void:
 		draw_colored_polygon(PackedVector2Array(RIM), UiStyle.NIGHT)
-		draw_colored_polygon(PackedVector2Array(SHAPE), Color("f2c14e"))
+		draw_colored_polygon(PackedVector2Array(SHAPE), ink())
 
 	## Where a ray from `from` (inside `area`) along `heading` leaves it.
 	static func edge_point(area: Rect2, from: Vector2, heading: Vector2) -> Vector2:

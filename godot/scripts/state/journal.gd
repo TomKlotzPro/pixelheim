@@ -29,16 +29,23 @@ static func is_main_line(quest: Dictionary) -> bool:
 ## line (the next step and where, as Bearing.line says it, without the
 ## count), progress ("2/3", "" for a single thing), ready (it can be handed
 ## in), bounty (a notice's gold, 0 otherwise), lead (Bearing's), detail
-## (the longer word: the elder's hint, what the giver asked, the lair)}.
+## (the longer word: the elder's hint, what the giver asked, the lair),
+## letter (one of Maren's, in the satchel), delivered (a letter handed
+## over and answered), follows (whether E can follow it: not a letter
+## delivered)}. The main story is its chapter, then the courier's satchel
+## (PIX-253 step 2: Maren's letters, those delivered with their answer),
+## then the other quests that carry it.
 static func rows(progression: ProgressionState, settlement: SettlementState, items: Dictionary) -> Array[Dictionary]:
 	var by_group := {"story": [], "people": [], "bounties": []}
 	var step := MainQuest.next_step(progression, settlement)
 	if not step.is_empty():
 		var lead := Bearing.of_step(step, progression, settlement, items)
 		by_group["story"].append(_row("story", STORY, chapter_title(step), lead, String(step.get("hint", ""))))
+	for carried: Dictionary in Letters.satchel(progression):
+		by_group["story"].append(_letter(carried["quest"], carried["delivered"], progression, settlement, items))
 	for quest: Dictionary in Quests.all():
 		var entry: Dictionary = progression.quests.get(quest["id"], {})
-		if entry.is_empty() or entry.get("done", false):
+		if entry.is_empty() or entry.get("done", false) or Letters.is_letter(quest):
 			continue
 		var group := "story" if is_main_line(quest) else "people"
 		var row := _row(group, quest["id"], quest["name"], Bearing.of_quest(quest, progression, settlement, items), _asked(quest, progression, settlement))
@@ -72,8 +79,9 @@ static func followed(progression: ProgressionState, settlement: SettlementState,
 
 
 ## Follows row `id` (STORY: the main story); whether that changed anything.
+## A letter already delivered is read, not followed: nothing changes.
 static func follow(progression: ProgressionState, id: String) -> bool:
-	if progression.tracked == id:
+	if progression.tracked == id or progression.quests.get(id, {}).get("done", false):
 		return false
 	progression.tracked = id
 	return true
@@ -98,8 +106,22 @@ static func _row(group: String, id: String, title: String, lead: Dictionary, det
 	bare["progress"] = ""
 	return {
 		"group": group, "id": id, "title": title, "line": Bearing.line(bare), "progress": String(lead["progress"]),
-		"ready": false, "bounty": 0, "lead": lead, "detail": detail,
+		"ready": false, "bounty": 0, "lead": lead, "detail": detail, "letter": false, "delivered": false, "follows": true,
 	}
+
+
+## One of Maren's letters in the satchel (PIX-253 step 2), by its address
+## ("Letter to Old Wenna, Saltmere"): to deliver, it leads to its recipient
+## and says what the envelope says; delivered, it's answered - who answered
+## and with what, and under the list the answer's heart - and there's
+## nothing left to follow.
+static func _letter(quest: Dictionary, delivered: bool, progression: ProgressionState, settlement: SettlementState, items: Dictionary) -> Dictionary:
+	var lead := Bearing.of_quest(quest, progression, settlement, items)
+	var row := _row("story", quest["id"], String(quest["addressed"]), lead, Catalog.item(quest["objective"]["itemId"]).get("description", ""))
+	row["letter"] = true
+	if delivered:
+		row.merge({"line": String(quest["answered"]), "detail": String(quest["gist"]), "delivered": true, "follows": false}, true)
+	return row
 
 
 ## What a giver asked, who and where they are, and where to look (PIX-171);

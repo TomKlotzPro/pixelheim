@@ -116,7 +116,7 @@ func test_the_tin_gives_four_letters_and_the_step_is_met() -> void:
 	assert_true(_met("tin"))
 	assert_false(Letters.tin_waits(state.progression))
 	assert_eq(said.size(), 1)
-	assert_string_contains(said[0], "Four letters in your pack")
+	assert_string_contains(said[0], "Four letters in your satchel")
 	assert_string_contains(said[0], "cliff road", "Bram's crew clears the road to Saltmere")
 	for quest: Dictionary in Letters.all():
 		assert_eq(state.progression.quests[quest["id"]], {"progress": 0, "done": false}, "%s taken" % quest["id"])
@@ -126,7 +126,7 @@ func test_the_tin_gives_four_letters_and_the_step_is_met() -> void:
 	# It's found once: the next word with her is a word.
 	state.questing.finish_dialogue("elder")
 	assert_eq(_letters_carried().size(), 4)
-	assert_false("letters in your pack" in said[-1], "nothing more from the tin")
+	assert_false("letters in your satchel" in said[-1], "nothing more from the tin")
 
 
 func test_the_letters_are_the_journals_main_story() -> void:

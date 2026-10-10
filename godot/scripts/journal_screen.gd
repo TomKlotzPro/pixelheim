@@ -13,16 +13,22 @@ extends Screen
 ##   the pad's A or a click follows it: the top, the line above the dock, the
 ##   arrow at the view's edge and the map's goal all turn to it. Following
 ##   the main story follows nothing else.
-## Liane's pages and the feats are reading, not doing: two more pages beside
-## the quests (A/D), where the five chapters were before. Q or Esc closes it.
+## The main story's rows are the courier's satchel (PIX-253 step 2): Maren's
+## letters by their address, each to deliver or delivered and answered (a
+## delivered one's answer under the list when it's chosen).
+## The letters and the feats are reading, not doing: two more pages beside
+## the quests (A/D), where the five chapters were before. The Letters page
+## reads Maren's letters once delivered - a courier never reads the post -
+## with their answers, and under them, for a hero who found any, Liane's
+## pages from the mountain (the page they had before). Q or Esc closes it.
 ## The world holds still while it is open.
 
 const BountyScreen := preload("res://scripts/bounty_screen.gd")
-const TABS := ["quests", "pages", "feats"]
-const TAB_NAMES := {"quests": "Quests", "pages": "Liane's pages", "feats": "Feats"}
-## The chapters the journal had before (PIX-171), as the harness's --tab
-## still names them.
-const OLD_TABS := {"main": "quests", "side": "quests", "bounties": "quests", "story": "pages", "deeds": "feats"}
+const TABS := ["quests", "letters", "feats"]
+const TAB_NAMES := {"quests": "Quests", "letters": "Letters", "feats": "Feats"}
+## The chapters the journal had before (PIX-171), and Liane's pages (until
+## PIX-253 step 2), as the harness's --tab still names them.
+const OLD_TABS := {"main": "quests", "side": "quests", "bounties": "quests", "story": "letters", "pages": "letters", "deeds": "feats"}
 ## Which thread the top is about, said plainly.
 const KINDS := {"main": "Main story", "quest": "Quest you follow", "bounty": "Bounty you follow"}
 ## The pages' frame: from under the title to over the keys.
@@ -55,7 +61,8 @@ var now_step: Label
 var now_place: Label
 ## The chosen row's longer word, under the list.
 var detail: Label
-## Liane's pages: the first one in view, and each page's words.
+## The Letters page: what W/S turn to - each letter, then each of Liane's
+## pages - and the first one in view.
 var from := 0
 var pages: Array[Control] = []
 
@@ -96,7 +103,7 @@ func _command(event: InputEvent) -> Callable:
 			return _choose.bind(wrapi(selected + by, 0, rows.size()))
 		if event.is_action_pressed("interact"):
 			return _follow.bind(selected)
-	if tab == "pages" and by != 0 and not pages.is_empty():
+	if tab == "letters" and by != 0 and not pages.is_empty():
 		return _turn.bind(by)
 	return Callable()
 
@@ -136,8 +143,8 @@ func _show() -> void:
 	match tab:
 		"quests":
 			_quests()
-		"pages":
-			_pages()
+		"letters":
+			_letters()
 		"feats":
 			_feats()
 	_set_footer()
@@ -150,7 +157,7 @@ func _set_footer() -> void:
 	match tab:
 		"quests":
 			footer = UiStyle.screen_footer("{key:move_up}/{key:move_down}  choose      {key:interact}  follow      {key:move_left}/{key:move_right}  tabs      {key:journal} / Esc  close")
-		"pages":
+		"letters":
 			footer = UiStyle.screen_footer("{key:move_up}/{key:move_down}  turn      {key:move_left}/{key:move_right}  tabs      {key:journal} / Esc  close")
 		_:
 			footer = UiStyle.screen_footer("{key:move_left}/{key:move_right}  tabs      {key:journal} / Esc  close")
@@ -197,8 +204,16 @@ func _quests() -> void:
 		var heading := UiStyle.strong(Journal.GROUP_NAMES[group], 18, UiStyle.LAMP)
 		list.add_child(heading)
 		for at in members.size():
+			# The courier's satchel (PIX-253 step 2): named over the first
+			# letter; under the last, the fifth that Maren keeps.
+			var letter: bool = members[at]["letter"]
+			if letter and (at == 0 or not members[at - 1]["letter"]):
+				list.add_child(UiStyle.strong("The courier's satchel", 14, UiStyle.FADED))
 			list.add_child(_card(index, heading if at == 0 else null))
 			index += 1
+			if letter and (at == members.size() - 1 or not members[at + 1]["letter"]):
+				var fifth := Letters.fifth()
+				list.add_child(Layout.wrapped(UiStyle.label(Text.t("%s: %s") % [fifth["addressed"], fifth["note"]], 14, UiStyle.FADED), ROW_TEXT))
 		for note: String in notes:
 			list.add_child(Layout.wrapped(UiStyle.label(note, 14, UiStyle.FADED), ROW_TEXT))
 	var kept := Journal.kept(progression)
@@ -277,6 +292,8 @@ func _card(index: int, heading: Control) -> Control:
 	var status: String = row["progress"]
 	if row["ready"]:
 		status = Text.t("READY")
+	elif row["delivered"]:
+		status = Text.t("DELIVERED")
 	elif int(row["bounty"]) > 0:
 		status = Text.coins(int(row["bounty"]))
 	if status != "":
@@ -331,12 +348,13 @@ func _reveal_now() -> void:
 
 
 ## Follows a row (E, the pad's A, a click): the top, the marks and the HUD
-## turn to it, and the save keeps it.
+## turn to it, and the save keeps it. A letter delivered is only chosen:
+## its answer is there to read, there's nowhere left to take it.
 func _follow(index: int) -> void:
 	if index < 0 or index >= rows.size():
 		return
 	_choose(index, false)
-	if not Journal.follow(GameState.progression, rows[index]["id"]):
+	if not rows[index]["follows"] or not Journal.follow(GameState.progression, rows[index]["id"]):
 		return
 	GameState.mark_dirty()
 	followed = Journal.followed(GameState.progression, GameState.settlement, GameState.pack.items)
@@ -361,7 +379,7 @@ func _mark_rows() -> void:
 func _tell_hud() -> void:
 	var hud: Variant = _hud()
 	if hud != null:
-		hud.bearing = Bearing.active(GameState.progression, GameState.settlement, GameState.pack.items)
+		hud.look_again()
 
 
 ## The world's HUD (the journal stands on the world), or null where there's
@@ -384,7 +402,9 @@ func _fill_now() -> void:
 		now_box.add_child(UiStyle.heading("The story is told", 18, UiStyle.LAMP))
 		now_box.add_child(Layout.wrapped(UiStyle.label(MainQuest.hint(progression, GameState.settlement), 16, UiStyle.INK), TEXT_WIDTH))
 		return
-	var kind := "main" if lead["main"] else ("bounty" if String(lead["named"]) != "" else "quest")
+	# A thread that carries the story (a letter in the satchel, Maren's
+	# relics) is the main story's too, as the arrow's gold says (PIX-253).
+	var kind := "main" if Bearing.tells_story(lead) else ("bounty" if String(lead["named"]) != "" else "quest")
 	var step := String(lead["step"])
 	var place := String(lead["place"])
 	var progress := String(lead["progress"])
@@ -431,30 +451,81 @@ func _fill_now() -> void:
 	now_box.add_child(where)
 
 
-## Liane's journal (PIX-153): the pages found, in order; W/S turn them.
-func _pages() -> void:
+## The Letters page (PIX-253 step 2): Maren's letters in the satchel's
+## order, each sealed until it's delivered (a courier never reads the post),
+## then her words and the answer that came back; the fifth, that she keeps;
+## and for a hero who found any on the mountain, Liane's pages under them as
+## older papers (her journal retired from play with the letters). W/S turn
+## from one to the next.
+func _letters() -> void:
 	var sheet := _sheet()
-	var found := Story.found_pages(GameState.progression.cleared_levels)
-	if found.is_empty():
-		sheet.add_child(Layout.wrapped(UiStyle.label("No pages yet. Someone climbed this mountain before you - and wrote it down.", 16, UiStyle.FADED), TEXT_WIDTH))
-		return
-	sheet.add_child(UiStyle.strong(Text.t("Liane's journal - %d of %d pages") % [found.size(), Story.lore().size()], 18, UiStyle.LAMP))
 	scroll = ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	sheet.add_child(scroll)
 	var list := VBoxContainer.new()
-	list.add_theme_constant_override("separation", 14)
+	list.add_theme_constant_override("separation", 10)
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(list)
+	var satchel := Letters.satchel(GameState.progression)
+	if satchel.is_empty():
+		list.add_child(Layout.wrapped(UiStyle.label("Nothing in your satchel yet but the dust of the road.", 16, UiStyle.FADED), TEXT_WIDTH))
+	else:
+		var delivered := satchel.filter(func(carried: Dictionary) -> bool: return carried["delivered"]).size()
+		list.add_child(UiStyle.strong(Text.t("Maren's letters - %d of %d delivered") % [delivered, satchel.size()], 18, UiStyle.LAMP))
+		for carried: Dictionary in satchel:
+			_letter_card(list, carried["quest"], carried["delivered"])
+		var fifth := Letters.fifth()
+		_letter_card(list, {"addressed": fifth["addressed"], "note": fifth["note"]}, false)
+	var found := Story.found_pages(GameState.progression.cleared_levels)
+	if found.is_empty():
+		return
+	var older := UiStyle.strong("Older papers", 18, UiStyle.LAMP)
+	list.add_child(older)
+	list.add_child(Layout.wrapped(UiStyle.label(Text.t("Pages of Liane's journal, found on the mountain: %d of %d.") % [found.size(), Story.lore().size()], 14, UiStyle.FADED), TEXT_WIDTH))
 	for page: Dictionary in found:
 		var words := Layout.wrapped(UiStyle.label("%s.  %s" % [page["title"], page["text"]], 14, UiStyle.INK), TEXT_WIDTH)
-		pages.append(words)
+		pages.append(older if page == found[0] else words)
 		list.add_child(words)
 
 
-## Turns Liane's pages: the next or the last one at the top, until the last
-## is in view (then W turns back at once, not after the pages it couldn't).
+## One letter on the Letters page, a card: its address and, delivered,
+## Maren's words and the answer; sealed, the courier's rule (or for the
+## fifth, Maren's own note).
+func _letter_card(list: VBoxContainer, quest: Dictionary, delivered: bool) -> void:
+	var card := PanelContainer.new()
+	card.add_theme_stylebox_override("panel", UiStyle.box(Color(UiStyle.CARD, 0.5), UiStyle.RIM, 8))
+	var words := VBoxContainer.new()
+	words.add_theme_constant_override("separation", 4)
+	card.add_child(words)
+	var top := HBoxContainer.new()
+	top.add_theme_constant_override("separation", 16)
+	var name := UiStyle.strong(String(quest["addressed"]), 18, UiStyle.INK)
+	name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	top.add_child(name)
+	top.add_child(UiStyle.strong(Text.t("DELIVERED") if delivered else Text.t("SEALED"), 18, UiStyle.LAMP if delivered else UiStyle.FADED))
+	words.add_child(top)
+	if not delivered:
+		var note := String(quest.get("note", Text.t("A courier never reads the post.")))
+		words.add_child(Layout.wrapped(UiStyle.label(note, 14, UiStyle.FADED), ROW_TEXT))
+	else:
+		for line: String in quest["letter"]:
+			words.add_child(Layout.wrapped(UiStyle.label(line, 14, UiStyle.INK), ROW_TEXT))
+		# A breath between her words and theirs.
+		var gap := Control.new()
+		gap.custom_minimum_size = Vector2(0, 6)
+		words.add_child(gap)
+		words.add_child(Layout.wrapped(UiStyle.strong(String(quest["answered"]), 14, UiStyle.LAMP), ROW_TEXT))
+		for line: String in quest["answer"]:
+			words.add_child(Layout.wrapped(UiStyle.label(line, 14, UiStyle.INK), ROW_TEXT))
+	pages.append(card)
+	list.add_child(card)
+
+
+## Turns the Letters page: the next or the last letter (or page) at the top,
+## until the last is in view (then W turns back at once, not after the ones
+## it couldn't).
 func _turn(by: int) -> void:
 	var bottom := int(pages[0].get_parent().size.y - scroll.size.y)
 	if by > 0 and scroll.scroll_vertical >= bottom:

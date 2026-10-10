@@ -11,7 +11,9 @@ class_name Letters
 ## letter whose keepsake is already won counts as delivered, and a hero past
 ## the night who never saw the tin gets the letters at the first word with
 ## Maren. Pure, over progression.json's "letters"; Questing gives them out
-## and hands them over.
+## and hands them over. Step 2 carries them in the courier's satchel: the
+## journal's main story rows, and its Letters tab, where a letter delivered
+## can be read with its answer.
 
 
 static func _doc() -> Dictionary:
@@ -91,8 +93,8 @@ static func room_line(progression: ProgressionState) -> String:
 	return String(_doc()["room"]) if first not in progression.story_seen else ""
 
 
-## What the tin left in the pack, said once it's opened: the letters given
-## (by item id), and whether the cliff road is being cleared.
+## What the tin left in the satchel, said once it's opened: the letters
+## given (by item id), and whether the cliff road is being cleared.
 static func taken_line(given: Array[String]) -> String:
 	var line := String(_doc()["answered"])
 	if given.size() == all().size():
@@ -102,3 +104,31 @@ static func taken_line(given: Array[String]) -> String:
 	if all()[0]["objective"]["itemId"] in given:
 		line += " " + String(_doc()["road"])
 	return line
+
+
+## Whether the tin has been found: the letters are out of it, in the
+## satchel or delivered.
+static func found(progression: ProgressionState) -> bool:
+	return scene_id() in progression.story_seen
+
+
+## The courier's satchel (PIX-253 step 2): Maren's four letters in the
+## story's order once the tin is found, {quest, delivered} for each one in
+## hand or delivered (handed over, or its keepsake won before the letters
+## were written into the story); nothing before. The journal's main story
+## is these rows, and its Letters tab their words.
+static func satchel(progression: ProgressionState) -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	if not found(progression):
+		return out
+	for quest: Dictionary in all():
+		var done := delivered(quest, progression)
+		if done or progression.quests.has(quest["id"]):
+			out.append({"quest": quest, "delivered": done})
+	return out
+
+
+## The fifth letter, to Morvax, that Maren keeps (until chapter 6):
+## {addressed, note}.
+static func fifth() -> Dictionary:
+	return _doc()["fifth"]
