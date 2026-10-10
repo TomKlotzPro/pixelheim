@@ -2077,6 +2077,10 @@ msgid "At the Bench"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "At the line the region's name, music and weather take over, its creatures come out of sight, and your place is saved"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Audio That Breathes"
 msgstr ""
 
@@ -2325,6 +2329,10 @@ msgid "Clearing a floor steps you back out of the door you entered"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Cliffs now stand in the sea, the sand and the roads instead of on a square of grass, and the snow, foam and tints run on across the lines"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Closed Roads"
 msgstr ""
 
@@ -2414,6 +2422,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Doors no longer cut to black: through the town gate, a house or shop door, out of a cave or by fast travel, the old view melts into the new one"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Doors stay doors: the village gate, houses, caves and dungeon floors keep their soft change of scene"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3497,6 +3509,10 @@ msgid "Names that sit in a sentence lose their capital article in French, gear a
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Near a road out, the land beyond appears past the cliffs before you reach it, and a closed road still shows where it goes"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Neighbors"
 msgstr ""
 
@@ -3706,6 +3722,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "One Hero Everywhere"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "One Land"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4706,6 +4726,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Ten floors of monsters, from cellar slimes to Fafnyr the Ashen"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The Ashenreach and its six regions are one land now: walk on down a road out and the next region is already there, with no fade"
 msgstr ""
 
 #: assets/data/changelog.json
