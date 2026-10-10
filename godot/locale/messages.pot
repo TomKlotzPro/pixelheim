@@ -3261,6 +3261,10 @@ msgid "Lamplight"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Lamps and fires everywhere light the ground without hard edges, in town, on the Reach and underground"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Late-game hunting grounds: trolls and golems under the trees, ghosts and mimics in the bog - elites roam thick"
 msgstr ""
 
@@ -3706,6 +3710,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "On a phone the controls are sized for a thumb on any screen, the attack, roll and use buttons show a drawn sword, arrow and hand instead of words, and all six skill keys are on screen, with each skill's icon"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "On the first night, the burning houses light the square in soft pools: no more lit and dark areas ending in straight lines"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4278,6 +4286,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Soft Edges"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Soft Light"
 msgstr ""
 
 #: assets/data/changelog.json
