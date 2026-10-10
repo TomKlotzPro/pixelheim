@@ -117,6 +117,22 @@ static func arrival_facing(map: MapData, arrival: Vector2i, from_map: String, fa
 	return facing
 
 
+## How far under the ground a map lies: 0 under the sky or in a room, 1 in
+## a cave or a cellar, deeper on a dungeon's floors, one step a floor.
+static func depth(map: MapData) -> int:
+	if map.floor_level > 0:
+		return 1 + map.floor_level
+	return 1 if map.style == "cave" else 0
+
+
+## Whether the way from `from` to `to` goes down under the ground (into a
+## cave, a cellar, a dungeon's floor or the next one down): the change of
+## scene keeps a brief dark there, the mood of going under (One Reach,
+## PIX-269). Every other way, and every way back up, dissolves.
+static func goes_under(from: MapData, to: MapData) -> bool:
+	return depth(to) > depth(from)
+
+
 ## Whether `cell` is a way down from a room (a stairwell that leads
 ## somewhere): walking onto it, or E facing it, asks first.
 static func goes_down(map: MapData, cell: Vector2i) -> bool:

@@ -165,6 +165,9 @@ func _run_test_harness() -> void:
 		return
 	for problem in flags.problems:
 		push_warning("harness: %s (-- --help lists the flags)" % problem)
+	# `--dissolve-at S`: a door's dissolve held S seconds in (PIX-269).
+	if flags.has("--dissolve-at"):
+		Dissolve.held_at = float(flags.value("--dissolve-at"))
 	await get_tree().create_timer(0.4).timeout
 	# `--set large_text,clear_warnings`: those settings on for this run only
 	# (the harness never writes the player's settings).
@@ -817,10 +820,14 @@ func _run_test_harness() -> void:
 		)
 	).map(func(node: Node) -> String: return node.get_script().resource_path.get_file().get_basename())
 	var mobs := get_tree().get_nodes_in_group("mobs").filter(func(mob: Node) -> bool: return not mob.dying).size()
-	# What's left of a fade from the dark (PIX-238), when fades run.
+	# How the last change of scene looked (One Reach, PIX-269: a door
+	# dissolves, going under the ground keeps the dark, a cut with Reduce
+	# motion), and what's left of a fade from the dark (PIX-238), when fades
+	# run.
 	if flags.has("fades"):
 		var dark: int = world.hud.root.get_children().filter(func(node: Node) -> bool: return node.has_meta("fade") and node.color.a > 0.5).size()
-		motion_report += " dark=%d" % dark
+		var change: String = world.scene_change
+		motion_report += " change=%s dark=%d" % [change if change != "" else "none", dark]
 	# How far the building on the tour has risen (PIX-264): ruin, rising, built.
 	if flags.has("--rise"):
 		var rise := _rise()

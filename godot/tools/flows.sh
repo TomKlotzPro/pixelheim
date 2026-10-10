@@ -27,8 +27,10 @@
 # motion (PIX-264), a kill's XP and gold floating up over the foe, a
 # chest's gold over the chest, with nothing said of them in the log
 # (PIX-245), and the ascension's beats, still with Reduce motion
-# (PIX-244), and Maren's tin of letters dug out of her house with one of
-# them delivered (PIX-253). Every flow leaves its
+# (PIX-244), Maren's tin of letters dug out of her house with one of
+# them delivered (PIX-253), and a door dissolving the old place into the
+# new, the dark kept for going under the ground and a cut with Reduce
+# motion (PIX-269). Every flow leaves its
 # picture in godot/flows/<name>.png for a human to look at, and the
 # harness's report line must match what the flow promises or the run fails.
 #
@@ -145,6 +147,13 @@ FLOWS=(
 	# dark screen (PIX-264); with Reduce motion the ruin simply cuts to it.
 	"rise|--map town --rise odos_store fades --wait 1.6|open=reveal_screen.* dark=0 rise=built"
 	"rise-still|--map town --rise odos_store still --wait 0.8|open=reveal_screen.* rise=built"
+	# Soft doors (One Reach, PIX-269): through a door the old place
+	# dissolves into the new one, no black between; going under the ground
+	# keeps a brief dark, and coming back up dissolves; Reduce motion cuts.
+	"dissolve|--map town portal fades|map=town_hall .* change=dissolve dark=0"
+	"underground|--map saltmere --at 6,24 --walk u fades --wait 0.4|map=seacave .* change=dark dark=0"
+	"upstairs|--map seacave --at 4,26 --walk l fades --wait 0.4|map=saltmere .* change=dissolve dark=0"
+	"door-still|--map town portal fades still|map=town_hall .* change=cut dark=0"
 	"bossfell|--map icecave fight slay --foe rimefang --wait 0.3|map=icecave .* fell=1"
 	"noescape|--map icecave fight --foe rimefang flee|map=icecave "
 	# A hero far above the forest's slimes (PIX-251): they run instead of
