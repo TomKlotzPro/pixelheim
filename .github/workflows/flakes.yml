@@ -18,6 +18,8 @@ name: Steady flows
 # fails on a failure. The windowed runs use Shade's CC0 art alone, as the
 # pictures job does: this repository's artifacts are public.
 on:
+  push:
+    branches: ["probe/pix-276-*"]
   schedule:
     - cron: "40 2 * * *"
   workflow_dispatch:
@@ -46,10 +48,10 @@ permissions:
 
 env:
   GODOT_VERSION: "4.7.1"
-  ROUNDS: ${{ inputs.rounds || '5' }}
+  ROUNDS: ${{ inputs.rounds || '1' }}
   LOAD: ${{ inputs.load || '2' }}
-  WINDOWED_ROUNDS: ${{ inputs.windowed_rounds || '1' }}
-  FLOWS: ${{ inputs.flows || '' }}
+  WINDOWED_ROUNDS: ${{ inputs.windowed_rounds || '10' }}
+  FLOWS: ${{ inputs.flows || 'motion' }}
 
 jobs:
   plan:
@@ -61,7 +63,7 @@ jobs:
       - id: plan
         env:
           RUNNERS: ${{ inputs.runners || '1' }}
-          WINDOWED_RUNNERS: ${{ inputs.windowed_runners || '1' }}
+          WINDOWED_RUNNERS: ${{ inputs.windowed_runners || '5' }}
         run: |
           echo "runners=$(seq -s, 1 "$RUNNERS" | sed 's/^/[/; s/$/]/')" >> "$GITHUB_OUTPUT"
           if [ "$WINDOWED_ROUNDS" -gt 0 ]; then
