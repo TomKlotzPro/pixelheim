@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.202.0",
+      "date": "2026-10-10",
+      "codename": "Rooms Upstairs",
+      "notes": [
+        "Liane's observatory and Greyhold's keep open into rooms now, not straight into a cave: Liane's room with her desk and books, and Captain Hale's hall with his table, banners and armour",
+        "A stairwell in each room goes down to the cave, and going into the dark is a choice: the stair asks first",
+        "Coming back up from the Ice Cave or the cellars brings you into the room, beside the stair"
+      ]
+    },
+    {
       "version": "0.201.0",
       "date": "2026-10-10",
       "codename": "Told True",

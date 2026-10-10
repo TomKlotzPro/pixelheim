@@ -1841,6 +1841,10 @@ msgid "A small-screen pass: panels fit, the HUD compacts, and nothing overlaps a
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A stairwell in each room goes down to the cave, and going into the dark is a choice: the stair asks first"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A town's new age is heralded with a flourish and dust on the square, and each new map fades in from the dark instead of cutting (not with reduced motion)"
 msgstr ""
 
@@ -2206,6 +2210,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Come Home"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Coming back up from the Ice Cave or the cellars brings you into the room, beside the stair"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3077,6 +3085,10 @@ msgid "Level-ups now bank 5 stat points: spend them on STR, INT, DEX or DEF"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Liane's observatory and Greyhold's keep open into rooms now, not straight into a cave: Liane's room with her desk and books, and Captain Hale's hall with his table, banners and armour"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Liane's pages and the feats are the journal's two other tabs, where there were five chapters"
 msgstr ""
 
@@ -3770,6 +3782,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Roads and town stay clean-looking because they ARE safe"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Rooms Upstairs"
 msgstr ""
 
 #: assets/data/changelog.json

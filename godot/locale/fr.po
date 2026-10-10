@@ -1841,6 +1841,10 @@ msgid "A small-screen pass: panels fit, the HUD compacts, and nothing overlaps a
 msgstr "Un passage pour les petits écrans : les panneaux tiennent, l'interface se resserre, et rien ne se chevauche, quelle que soit la largeur"
 
 #: assets/data/changelog.json
+msgid "A stairwell in each room goes down to the cave, and going into the dark is a choice: the stair asks first"
+msgstr "Un escalier dans chaque pièce descend vers la grotte, et descendre dans le noir est un choix : l'escalier vous le demande d'abord"
+
+#: assets/data/changelog.json
 msgid "A town's new age is heralded with a flourish and dust on the square, and each new map fades in from the dark instead of cutting (not with reduced motion)"
 msgstr "Le nouvel âge d'une ville s'annonce par une fanfare et de la poussière sur la place, et chaque nouvelle carte sort de l'obscurité au lieu d'apparaître d'un coup (sauf avec les animations réduites)"
 
@@ -2207,6 +2211,10 @@ msgstr "L'ombre des nuages glisse lentement sur les terres le jour, jamais à l'
 #: assets/data/changelog.json
 msgid "Come Home"
 msgstr "Rentrer au foyer"
+
+#: assets/data/changelog.json
+msgid "Coming back up from the Ice Cave or the cellars brings you into the room, beside the stair"
+msgstr "En remontant de la Grotte de glace ou des caves, vous revenez dans la pièce, à côté de l'escalier"
 
 #: assets/data/changelog.json
 msgid "Controls are rebindable, and French keyboards get ZQSD out of the box"
@@ -3077,6 +3085,10 @@ msgid "Level-ups now bank 5 stat points: spend them on STR, INT, DEX or DEF"
 msgstr "Chaque montée de niveau met de côté 5 points de caractéristique : dépensez-les en FOR, INT, DEX ou DEF"
 
 #: assets/data/changelog.json
+msgid "Liane's observatory and Greyhold's keep open into rooms now, not straight into a cave: Liane's room with her desk and books, and Captain Hale's hall with his table, banners and armour"
+msgstr "L'observatoire de Liane et le donjon de Greyhold ouvrent désormais sur des pièces, et non plus directement sur une grotte : la chambre de Liane avec son bureau et ses livres, et la salle du capitaine Hale avec sa table, ses bannières et ses armures"
+
+#: assets/data/changelog.json
 msgid "Liane's pages and the feats are the journal's two other tabs, where there were five chapters"
 msgstr "Les pages de Liane et les hauts faits sont les deux autres onglets du journal, là où il y avait cinq chapitres"
 
@@ -3771,6 +3783,10 @@ msgstr "Les loyers et les intérêts de la banque viennent toujours par jour :
 #: assets/data/changelog.json
 msgid "Roads and town stay clean-looking because they ARE safe"
 msgstr "Les routes et la ville restent dégagées parce qu'elles SONT sûres"
+
+#: assets/data/changelog.json
+msgid "Rooms Upstairs"
+msgstr "Les pièces d'en haut"
 
 #: assets/data/changelog.json
 msgid "Running Scared"
