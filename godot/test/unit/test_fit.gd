@@ -112,9 +112,10 @@ func _make(kind: String, view: SubViewport) -> Screen:
 			screen.web_save = GameState.slots.read(1)
 			screen.welcome = true
 			return screen
-		"map":
+		"map", "map, the Reach":
+			# The Reach's page (PIX-269 step 7) from Saltmere, its south edge.
 			var world := StandIn.new()
-			world.map = MapData.load_by_id("town")
+			world.map = MapData.load_by_id("town" if kind == "map" else "saltmere")
 			view.add_child(world)
 			var chart: Screen = MapScreen.new()
 			chart.world = world
@@ -171,4 +172,15 @@ func test_every_screen_fits_every_view() -> void:
 		"changelog", "bank", "town_hall", "bounty", "dungeon", "home",
 	]
 	var out := await _fits(kinds)
+	assert_eq(out.size(), 0, "\n".join(out))
+
+
+func test_the_reachs_page_fits_every_view() -> void:
+	# A hero who has walked the whole Reach: every region on the page, every
+	# name on it, in both languages.
+	var discovered: Dictionary = GameState.world.discovered
+	GameState.world.discovered = {}
+	Atlas.walk_all(GameState.world.discovered)
+	var out := await _fits(["map, the Reach"] as Array[String])
+	GameState.world.discovered = discovered
 	assert_eq(out.size(), 0, "\n".join(out))

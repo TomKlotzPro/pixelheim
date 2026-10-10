@@ -38,11 +38,20 @@ static func landing(waypoint: Dictionary) -> Vector2i:
 
 
 ## Where the list's choice starts: the first waypoint in `usable` on the map
-## the hero stands on, so the map opens on where they are; -1 (none chosen)
-## when every one is elsewhere, since choosing one turns the map to its page.
+## the hero stands on, so the map opens on where they are, else the first on
+## its page (the Reach's, PIX-269 step 7); -1 (none chosen) when every one
+## is on another page, since choosing one turns the map to its page.
 static func first_on(usable: Array, map_id: String) -> int:
 	for index in usable.size():
 		if usable[index]["mapId"] == map_id:
+			return index
+	return first_on_page(usable, Atlas.page_of(map_id))
+
+
+## The first waypoint in `usable` drawn on `page` (Atlas.page_of), -1 for none.
+static func first_on_page(usable: Array, page: String) -> int:
+	for index in usable.size():
+		if Atlas.page_of(usable[index]["mapId"]) == page:
 			return index
 	return -1
 

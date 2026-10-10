@@ -50,6 +50,7 @@ const TABLE := [
 	{"field": "home", "says": "who the story brought home to live in town, by first name: wenna (PIX-255)"},
 	{"field": "letters", "says": "Maren's letters in the pack, once any is out (PIX-253)"},
 	{"field": "logged", "says": "with floats: the lines the battle log showed (PIX-245)"},
+	{"field": "maps", "says": "the maps drawn on the map's page, while the map is open: 7 on the Reach's with every region found (PIX-269)"},
 	{"field": "motes", "says": "with rankup: the ascension's motes and sparks flying (PIX-244)"},
 	{"field": "music", "says": "with fled: the track playing (PIX-251)"},
 	{"field": "older", "says": "on the journal's Letters page: the older papers under the letters (PIX-253)"},
@@ -305,6 +306,11 @@ func field_letters() -> String:
 
 func field_logged() -> String:
 	return str(world.messages.logged) if not Gains.is_empty(world.fx.floated) else ""
+
+
+func field_maps() -> String:
+	var screen := _map_screen()
+	return str(screen.painting.sheets.size()) if screen != null else ""
 
 
 func field_motes() -> String:

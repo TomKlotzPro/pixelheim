@@ -26,8 +26,11 @@ func test_the_list_starts_where_the_hero_is() -> void:
 	var usable := _usable(["town_gate", "mountain_gate", "town_square"])
 	assert_eq(Waypoints.first_on(usable, "overworld"), 0, "the first on the hero's map, as before")
 	assert_eq(Waypoints.first_on(usable, "town"), 2, "the square, in town")
-	assert_eq(Waypoints.first_on(usable, "deepwood"), -1, "none chosen: the map opens on where you are")
+	assert_eq(Waypoints.first_on(usable, "deepwood"), 0, "none in the Deepwood: the first on the Reach's page it's drawn on (PIX-269)")
+	assert_eq(Waypoints.first_on(usable, "cellars"), -1, "none chosen: the map opens on where you are")
 	assert_eq(Waypoints.first_on([], "overworld"), -1)
+	assert_eq(Waypoints.first_on_page(_usable(["town_square", "saltmere_hamlet"]), "overworld"), 1, "Saltmere's is on the Reach's page")
+	assert_eq(Waypoints.first_on_page(usable, "seacave"), -1)
 
 
 func test_the_choice_moves_and_wraps() -> void:

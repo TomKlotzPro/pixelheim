@@ -81,7 +81,8 @@ const SHOTS := {
 	"fight": {"area": "combat", "map": "overworld", "at": "forest_1", "time": DAY, "foe": "orc"},
 	"strike": {"area": "combat", "map": "overworld", "at": "forest_1", "time": DAY, "foe": "orc", "strike": true},
 	# The map (PIX-266) of a hero who has walked the whole Reach, its list
-	# scrolled down to the last waypoint, on Greyhold's page.
+	# scrolled down to the last waypoint, in Greyhold on the Reach's one page
+	# (PIX-269 step 7).
 	"map": {"area": "screens", "map": "town", "at": "street", "time": DAY, "chart": "greyhold_keep"},
 }
 ## Filming the walk: slowed to a quarter, a picture every WALK_STEP of the
