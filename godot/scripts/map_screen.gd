@@ -674,10 +674,11 @@ class Painting extends Control:
 			lines.add_child(UiStyle.label(region, 12, UiStyle.FADED))
 		add_child(tag)
 		tag.reset_size()
-		# Clear of the ring at its widest, dark line and all.
+		# Clear of the ring at its widest, dark line and all, and of the hero's mark.
 		var widest := Waypoints.ring_half(_mark(), Waypoints.PULSE_PX) + 2.0
+		var hero := Rect2(_center(hero_cell()), Vector2.ZERO).grow(floorf(_mark() / 2.0) + 2.0) if home else Rect2()
 		tag.position = Waypoints.tag_at(
-			_center(destination_cell()).floor(), widest, tag.get_combined_minimum_size(), custom_minimum_size
+			_center(destination_cell()).floor(), widest, tag.get_combined_minimum_size(), custom_minimum_size, hero
 		)
 
 	## The map `map_id` drawn on the page.
