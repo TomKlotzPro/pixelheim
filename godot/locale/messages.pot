@@ -11568,15 +11568,15 @@ msgstr ""
 msgid " +%d HP"
 msgstr ""
 
-#: scripts/hud_dock.gd:372
+#: scripts/hud_dock.gd:374
 msgid "Lv %d %s"
 msgstr ""
 
-#: scripts/hud_dock.gd:375
+#: scripts/hud_dock.gd:377
 msgid "HP"
 msgstr ""
 
-#: scripts/hud_dock.gd:396
+#: scripts/hud_dock.gd:398
 msgid "Skill %d: none yet"
 msgstr ""
 
@@ -12136,56 +12136,84 @@ msgstr ""
 msgid "Quit to title"
 msgstr ""
 
-#: scripts/player.gd:279
+#: scripts/player.gd:290
 msgid "dodged"
 msgstr ""
 
-#: scripts/player.gd:289
+#: scripts/player.gd:300
 msgid "You are afflicted by %s!"
 msgstr ""
 
-#: scripts/player.gd:344
+#: scripts/player.gd:378
 msgid "No skill on that key yet. Learn more, or set the keys, in Skills."
 msgstr ""
 
-#: scripts/player.gd:357
+#: scripts/player.gd:391
 msgid "No foe in reach for %s."
 msgstr ""
 
-#: scripts/player.gd:375
+#: scripts/player.gd:409
 msgid "All ailments are purged!"
 msgstr ""
 
-#: scripts/player.gd:378
+#: scripts/player.gd:412
 msgid "%s restores %d HP."
 msgstr ""
 
-#: scripts/player.gd:390
+#: scripts/player.gd:424
 msgid "%s hits %d foes for %d damage!"
 msgstr ""
 
-#: scripts/player.gd:392
+#: scripts/player.gd:426
 msgid "%s hits %s for %d damage!"
 msgstr ""
 
-#: scripts/rankup_screen.gd:119
-msgid "The path forks      A/D  choose      E  walk this path      Esc  choose later, in Skills"
+#: scripts/rank_look.gd:92
+msgid "New look: an edge in your class's colour"
 msgstr ""
 
-#: scripts/rankup_screen.gd:134
-msgid "Signature: %s"
+#: scripts/rank_look.gd:94
+msgid "New look: a rim of light around you"
 msgstr ""
 
-#: scripts/rankup_screen.gd:66
+#: scripts/rank_look.gd:96
+msgid "New look: your weapon glows as it strikes"
+msgstr ""
+
+#: scripts/rank_look.gd:98
+msgid "New look: light trails your steps"
+msgstr ""
+
+#: scripts/rankup_screen.gd:152
+msgid "Ascension: rank %d of %d"
+msgstr ""
+
+#: scripts/rankup_screen.gd:192
 msgid "+1 bonus skill point"
 msgstr ""
 
-#: scripts/rankup_screen.gd:68
+#: scripts/rankup_screen.gd:194
 msgid "Every skill mastered: the bonus point rests"
 msgstr ""
 
-#: scripts/rankup_screen.gd:70
+#: scripts/rankup_screen.gd:196
 msgid "+1 bonus skill point, to spend beyond the tree (Stats)"
+msgstr ""
+
+#: scripts/rankup_screen.gd:199
+msgid "Level %d: +%d stat points, +%d max HP, +%d max %s"
+msgstr ""
+
+#: scripts/rankup_screen.gd:204
+msgid "A new step on your path: choose it below"
+msgstr ""
+
+#: scripts/rankup_screen.gd:495
+msgid "The path forks      A/D  choose      E  walk this path      Esc  choose later, in Skills"
+msgstr ""
+
+#: scripts/rankup_screen.gd:510
+msgid "Signature: %s"
 msgstr ""
 
 #: scripts/ring_toss_screen.gd:119

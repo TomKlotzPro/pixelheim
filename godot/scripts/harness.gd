@@ -90,6 +90,38 @@ func _rise() -> RebuildRise:
 	return rise
 
 
+## The ascension (PIX-244), while it's open.
+func _ascension() -> Node:
+	for node in world.get_children():
+		if node.get_script() == preload("res://scripts/rankup_screen.gd"):
+			return node
+	return null
+
+
+## How far into each of the ascension's beats `--rank-beat` holds it: the
+## light up and the hero lifted, the old look half burnt away, the name
+## landed, the lines shown, the hero down.
+const RANK_BEAT_INTO := {"hush": 0.5, "lift": 0.8, "change": 0.3, "named": 0.45, "unlocks": 0.7, "settled": 0.7}
+
+
+## Stops the ascension at `beat`, waits for it and a moment into it (its own
+## motion playing on), then holds it there for the picture. Asked as the
+## moment opens, before its first beat.
+func _hold_rank_beat(beat: String) -> void:
+	var opened := _ascension()
+	if opened == null:
+		return
+	opened.hold_at(beat)
+	# By the clock: a quiet run's frames come far faster than a window's.
+	for tick in 200:
+		if not is_instance_valid(opened) or opened.phase == beat:
+			break
+		await get_tree().create_timer(0.05).timeout
+	await get_tree().create_timer(float(RANK_BEAT_INTO.get(beat, 0.3))).timeout
+	if is_instance_valid(opened):
+		opened.hold_still()
+
+
 ## Harness `lineup`: the cast PunyArt assigns, side by side with names.
 func _lineup() -> void:
 	for node in get_tree().get_nodes_in_group("mobs") + get_tree().get_nodes_in_group("npcs"):
@@ -171,6 +203,13 @@ func _run_test_harness() -> void:
 		# Up the stairs, back to the gate.
 		world.use_portal({"kind": "gate"})
 		await get_tree().create_timer(0.3).timeout
+	if flags.has("--level"):
+		# A hero of that level: the rank's title, aura, presence and look
+		# (PIX-244) - before the walking check, so it measures a ranked hero
+		# with `--level 20 motion`.
+		GameState.hero.level = int(flags.value("--level"))
+		world.player.refresh_rank()
+		world.hud.on_hp_changed(GameState.hero.hp, int(GameState.hero.stats["maxHp"]))
 	var motion_report := ""
 	if flags.has("motion"):
 		# `motion` (PIX-135): what the screen shows each rendered frame while
@@ -300,11 +339,6 @@ func _run_test_harness() -> void:
 		screen.world = world
 		world.add_child(screen)
 		await get_tree().create_timer(0.3).timeout
-	if flags.has("--level"):
-		# A hero of that level: the rank's title, aura and presence.
-		GameState.hero.level = int(flags.value("--level"))
-		world.player.refresh_rank()
-		world.hud.on_hp_changed(GameState.hero.hp, int(GameState.hero.stats["maxHp"]))
 	if flags.has("rankup"):
 		# Enough XP to cross into the next rank: the ascension plays.
 		var hero := GameState.hero
@@ -312,7 +346,11 @@ func _run_test_harness() -> void:
 		hero.xp_to_next = HeroState.xp_to_next_for(hero.level)
 		hero.xp = hero.xp_to_next
 		GameState.spoils.grant_levels()
-		await get_tree().create_timer(1.6).timeout
+		if flags.has("--rank-beat"):
+			# `--rank-beat change` (PIX-244): the moment held at that beat.
+			await _hold_rank_beat(flags.value("--rank-beat"))
+		else:
+			await get_tree().create_timer(1.6).timeout
 		if flags.has("walk-path"):
 			world.get_children().filter(func(node: Node) -> bool: return node.has_method("_walk"))[0]._walk()
 			await get_tree().create_timer(0.3).timeout
@@ -772,6 +810,20 @@ func _run_test_harness() -> void:
 	if flags.has("--rise"):
 		var rise := _rise()
 		motion_report += " rise=%s" % (rise.phase if rise != null else ("built" if _rise_phase != "none" else "none"))
+	# The ascension (PIX-244): its beat (closed once it's gone), the motes
+	# and sparks flying in it (none with Reduce motion), and what the rank
+	# puts on the hero in the world.
+	if flags.has("rankup"):
+		var screen := _ascension()
+		var flying := 0
+		if screen != null:
+			for node in screen.find_children("*", "CPUParticles2D", true, false):
+				if (node as CPUParticles2D).emitting:
+					flying += 1
+		motion_report += " ascension=%s motes=%d" % [screen.phase if screen != null else "closed", flying]
+	if flags.has("rankup") or flags.has("--level"):
+		var steps: Array = world.player.look.get("steps", [])
+		motion_report += " look=%s" % ("+".join(steps) if not steps.is_empty() else "survivor")
 	# A boss's fall (PIX-232), when one fell.
 	if world.foes.bosses_fallen > 0:
 		motion_report += " fell=%d" % world.foes.bosses_fallen

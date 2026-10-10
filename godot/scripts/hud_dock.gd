@@ -368,6 +368,8 @@ func refresh() -> void:
 	portrait.sprite_frames = PunyArt.frames(art)
 	portrait.self_modulate = art["tint"]
 	portrait.play(PunyArt.pick(portrait.sprite_frames, "idle", "down"))
+	# The rank's trim and rim on the portrait too (PIX-244).
+	RankLook.wear(portrait, RankLook.of_hero(hero))
 	name_label.text = hero.hero_name
 	rank_label.text = Text.t("Lv %d %s") % [hero.level, Ranks.title(hero.role_id, hero.level)]
 	UiStyle.purse_set(purse, pack.gold)

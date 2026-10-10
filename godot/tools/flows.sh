@@ -20,9 +20,10 @@
 # journal and followed after it closes (PIX-239), what grows on the
 # ground somewhere new each day, picked off as you step on it (PIX-250),
 # a building rising out of its ruin on the town's tour, a cut with Reduce
-# motion (PIX-264), and a kill's XP and gold floating up over the foe, a
+# motion (PIX-264), a kill's XP and gold floating up over the foe, a
 # chest's gold over the chest, with nothing said of them in the log
-# (PIX-245). Every flow leaves its
+# (PIX-245), and the ascension's beats and each rank's look on the hero,
+# still with Reduce motion (PIX-244). Every flow leaves its
 # picture in godot/flows/<name>.png for a human to look at, and the
 # harness's report line must match what the flow promises or the run fails.
 #
@@ -58,7 +59,14 @@ FLOWS=(
 	"forge|--map town_smith station|open=shop_screen.*tab=Craft"
 	"quest|--map town quest|map=town cell"
 	"brew|--map town_alchemist brew|map=town_alchemist .*gold=100 "
-	"rankup|rankup|screenshot saved"
+	# The ascension (PIX-244): held as the old look burns away into the new,
+	# its motes and sparks flying; with Reduce motion, held on the name with
+	# nothing flying; a fifth rank's whole look on the hero; and a hero's
+	# rank worn in the world.
+	"rankup|rankup --rank-beat change|open=rankup_screen.* ascension=change motes=[1-9][0-9]* look=trim$"
+	"rankup-still|rankup still --rank-beat named|open=rankup_screen.* ascension=named motes=0 look=trim$"
+	"rankup-five|--level 17 rankup --rank-beat settled|open=rankup_screen.* ascension=settled motes=0 look=trim\+rim\+weapon\+trail$"
+	"ranklook|--map town --level 10|look=trim\+rim$"
 	"fight|fight kill|screenshot saved"
 	# The kill's XP and gold float up over the fallen foe and the battle log
 	# says nothing of them (PIX-245): floats= is what rose, logged= the lines.
@@ -152,7 +160,7 @@ FLOWS=(
 	"fit-shop|--map town_shop shop overflow --lang fr|open=shop_screen.*overflow=0"
 	"fit-craft|--map town_alchemist shop --tab 2 overflow --lang fr|open=shop_screen.*overflow=0"
 	"fit-refusal|--map town_alchemist station --keys e overflow --lang fr|open=shop_screen.*tab=Craft.*overflow=0"
-	"fit-rankup|--map town rankup overflow --lang fr|open=rankup_screen.*overflow=0"
+	"fit-rankup|--map town rankup --rank-beat unlocks overflow --lang fr|open=rankup_screen.*overflow=0"
 	"fit-hall|--map town_hall talk --keys e,e,e overflow --lang fr|open=town_hall_screen.*overflow=0"
 	"fit-bounty|--map town --at 43,22 --cleared 4 --keys w,e overflow --lang fr|open=bounty_screen.*overflow=0"
 )
