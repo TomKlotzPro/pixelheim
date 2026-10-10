@@ -203,7 +203,9 @@ static func bounty_board() -> Vector2i:
 
 ## What Fafnyr left (PIX-146): each Hamlet project not yet built stands as
 ## ruins - [{rect: Rect2i, door: Vector2i (-1, -1 for a house with none),
-## project}] - its doors shut.
+## project, home}] - its doors shut. `home` names whose house it was, where
+## the story needs to know ("elder": Maren's, where her letters wait,
+## PIX-253), else "".
 static func ruins(done: Array) -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	for project_entry: Dictionary in age(1).get("projects", []):
@@ -215,6 +217,7 @@ static func ruins(done: Array) -> Array[Dictionary]:
 				"rect": _rect(ruin["rect"]),
 				"door": Vector2i(int(door[0]), int(door[1])),
 				"project": project_entry["id"],
+				"home": String(ruin.get("home", "")),
 			})
 	return out
 

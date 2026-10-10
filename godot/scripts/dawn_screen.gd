@@ -8,6 +8,8 @@ extends Screen
 ## 2. a breath of dark, and the survivors stand round the square's heart;
 ## 3. they speak, each line in a bubble over whoever says it (the telling in
 ##    a plate below); on Fafnyr's name a roar, and his shadow sweeps across;
+##    last, the tagline's moment (PIX-253): the courier should have ridden
+##    south by noon, and stayed;
 ## 4. a card - Pixelheim, day one - and the day begins.
 ## E (or a strike) moves the talk on; Esc skips to the day. With Reduce
 ## motion the camera cuts, nothing shakes and the shadow stays away.
@@ -34,6 +36,8 @@ var _speaker: Node2D
 var _black: ColorRect
 var _shadow: AnimatedSprite2D
 var _card: VBoxContainer
+## The tagline's words, mid-screen (PIX-253).
+var _tag: VBoxContainer
 var _shake_left := 0.0
 
 
@@ -194,6 +198,9 @@ func _next() -> void:
 		_day_card()
 		return
 	var beat: Dictionary = _beats[_index]
+	if beat.get("tagline", false):
+		_tagline(String(beat["line"]))
+		return
 	var who := String(beat["who"])
 	if who == "" or not _actors.has(who):
 		_bubble.visible = false
@@ -216,6 +223,41 @@ func _tell(line: String) -> void:
 	_plate.reset_size()
 	_plate.position = Vector2(roundf((1280 - _plate.size.x) / 2.0), 560 - _plate.size.y)
 	_plate.visible = true
+
+
+## The tagline's moment (PIX-253), the last word before the card: the town
+## dims behind it and the line stands alone mid-screen, its last sentence
+## ("You stayed.") a breath after the rest, in gold.
+func _tagline(line: String) -> void:
+	_bubble.visible = false
+	_speaker = null
+	_plate.visible = false
+	var cut := line.rfind(". ")
+	var told := line if cut < 0 else line.left(cut + 1)
+	var stayed := "" if cut < 0 else line.substr(cut + 2)
+	_tag = VBoxContainer.new()
+	_tag.alignment = BoxContainer.ALIGNMENT_CENTER
+	_tag.add_theme_constant_override("separation", 18)
+	_tag.position = Vector2(140, 250)
+	_tag.size = Vector2(1000, 180)
+	_tag.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	for part: String in [told, stayed]:
+		if part == "":
+			continue
+		var words := UiStyle.heading(part, 18, UiStyle.CREAM if part == told else UiStyle.GOLD)
+		words.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		words.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		words.custom_minimum_size = Vector2(1000, 0)
+		_tag.add_child(words)
+	add_child(_tag)
+	var still := GameState.settings.reduce_motion
+	_flow = create_tween()
+	_flow.tween_property(_black, "color:a", 0.55, 0.0 if still else 0.8)
+	if _tag.get_child_count() > 1 and not still:
+		var last: Control = _tag.get_child(1)
+		last.modulate.a = 0.0
+		_flow.tween_interval(0.6)
+		_flow.tween_property(last, "modulate:a", 1.0, 0.8)
 
 
 ## On Fafnyr's name: a roar, the ground shaking, his shadow across the town.
@@ -243,6 +285,10 @@ func _day_card() -> void:
 	_phase = "card"
 	_bubble.visible = false
 	_plate.visible = false
+	if _tag != null:
+		_tag.visible = false
+	if _flow != null:
+		_flow.kill()
 	var card: Dictionary = Prologue.data()["dayCard"]
 	_card = VBoxContainer.new()
 	_card.alignment = BoxContainer.ALIGNMENT_CENTER

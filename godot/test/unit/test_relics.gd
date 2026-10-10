@@ -58,16 +58,19 @@ func test_a_hero_who_climbed_before_keeps_the_gate_open() -> void:
 	assert_string_contains(state.questing.resolve_quests("elder"), "The Troll Toll", "Maren goes on to her next ask")
 
 
-func test_the_relic_steps_point_at_the_first_one_missing() -> void:
+## Since the letters (PIX-253) the relics come in the story's order, each
+## after its letter; one already won counts its letter delivered.
+func test_the_relic_steps_follow_the_letters_in_order() -> void:
 	state.progression.quests["slime_trouble"] = {"progress": 3, "done": true}
 	state.progression.quests["innkeeper"] = {"progress": 0, "done": true}
 	state.questing.resolve_quests("elder")
 	state.settlement.town_tier = 1
 	state.progression.quests["herbs_for_vex"] = {"progress": 1, "done": true}
-	_win("seam_warden")
-	assert_eq(_next(), "ladle", "the ingot is won; the ladle is still out there")
+	assert_eq(_next(), "letter_wenna", "Saltmere first")
 	_win("tidecaller")
-	assert_eq(_next(), "settler")
+	assert_eq(_next(), "letter_pell", "the ladle is home: Wenna's chapter is behind")
+	_win("seam_warden")
+	assert_eq(_next(), "settler", "then the Village's settler, on the way to Greyhold")
 
 
 func test_maren_tells_of_each_relic_once() -> void:

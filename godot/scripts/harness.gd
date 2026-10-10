@@ -445,7 +445,8 @@ func _run_test_harness() -> void:
 		world.add_child(codex)
 		await get_tree().create_timer(0.3).timeout
 	if flags.has("quest"):
-		# A conversation with the elder closes: his quest is accepted.
+		# A conversation with the elder closes: a new hero's first is her
+		# tin, its letters and her quest taken (PIX-253).
 		GameState.questing.finish_dialogue("elder")
 		await get_tree().create_timer(0.3).timeout
 	if flags.has("brew"):
@@ -532,7 +533,9 @@ func _run_test_harness() -> void:
 		var quest := Quests.by_id(flags.value("--ready"))
 		var objective: Dictionary = quest["objective"]
 		GameState.progression.quests[quest["id"]] = {"progress": int(objective["count"]), "done": false}
-		if objective["kind"] == "deliver":
+		# What's carried, in the pack: goods for a delivery, one of Maren's
+		# letters for its recipient (PIX-253).
+		if objective["kind"] in ["deliver", "deliverTo"]:
 			GameState.pack.add_item(objective["itemId"], int(objective["count"]))
 	if flags.has("--take"):
 		# A quest taken, nothing done yet: `--take gunnar_wagon`.
@@ -751,9 +754,10 @@ func _run_test_harness() -> void:
 				mob.notice()
 		world.use_portal(world.map.portals.values()[0])
 		await get_tree().create_timer(0.5).timeout
-	# `--keys` at whatever screen the run opened (talk and title press theirs
-	# earlier): `inventory --keys esc` checks it closes and lets the world go.
-	if not flags.has("talk") and not flags.has("title"):
+	# `--keys` at whatever screen the run opened (talk, --talk-to and title
+	# press theirs earlier; --talk-to's were pressed twice until PIX-253):
+	# `inventory --keys esc` checks it closes and lets the world go.
+	if not flags.has("talk") and not flags.has("--talk-to") and not flags.has("title"):
 		await _keys(flags)
 	# `--dawn-beat N`: the Night of Ash's dawn (PIX-197) jumped to beat N.
 	if flags.has("--dawn-beat"):
@@ -873,6 +877,14 @@ func _run_test_harness() -> void:
 	var tracked := GameState.progression.tracked
 	if open.has("journal_screen") or tracked != "":
 		motion_report += " tracked=%s" % (tracked if tracked != "" else "none")
+	# Maren's letters once any is out (PIX-253): how many are in the pack,
+	# and how many delivered.
+	var letters := Letters.all().filter(func(quest: Dictionary) -> bool: return GameState.progression.quests.has(quest["id"]))
+	if not letters.is_empty():
+		motion_report += " letters=%d delivered=%d" % [
+			letters.filter(func(quest: Dictionary) -> bool: return int(GameState.pack.items.get(quest["objective"]["itemId"], 0)) > 0).size(),
+			letters.filter(func(quest: Dictionary) -> bool: return GameState.progression.quests[quest["id"]]["done"]).size(),
+		]
 	print("screenshot saved; map=%s cell=%s hp=%d gold=%d save=%s%s draws=%d paused=%s open=%s night=%d mobs=%d" % [
 		world.map.id, world.player_cell, world.player.hp, GameState.pack.gold, GameState.world.map_id, GameState.world.cell,
 		Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME), get_tree().paused,

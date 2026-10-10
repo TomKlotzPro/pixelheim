@@ -87,6 +87,16 @@ func finish_dialogue(npc_id: String) -> void:
 		_prologue_talk(npc_id)
 		owner.dialogue_closed.emit(npc_id)
 		return
+	# The first word with Maren after the night is her tin (PIX-253): the
+	# letters, and nothing else asked or handed in that time.
+	var said := open_tin() if npc_id == "elder" else ""
+	# A letter carried to this villager is theirs as the talk ends.
+	if said == "":
+		said = deliver(npc_id)
+	if said != "":
+		owner.dialogue_closed.emit(npc_id)
+		owner.message.emit(said)
+		return
 	# Settlers first (recruiting and services ride the close), then quests;
 	# a settler with an ask of their arc to make or take back (PIX-157) says
 	# it after their service.
@@ -169,6 +179,68 @@ func resolve_quests(giver_id: String) -> String:
 			String(objective["label"]).to_lower(),
 		]
 	return ""
+
+
+## Maren's tin is opened (PIX-253): the letters still to deliver go in the
+## pack, their quests taken; those whose keepsake is already won stay with
+## her, answered. Her own ask comes with them - the relics home, the five's
+## errands in the Reach open - unless the gate stood open before it was
+## barred. The tin is kept in the story ledger. Returns what the pack holds
+## now, "" when the tin was found already (or the night isn't over).
+func open_tin() -> String:
+	if not Letters.tin_waits(owner.progression):
+		return ""
+	owner.mark_seen(Letters.scene_id())
+	var given: Array[String] = []
+	for quest: Dictionary in Letters.all():
+		if owner.progression.quests.has(quest["id"]) or Letters.delivered(quest, owner.progression):
+			continue
+		owner.progression.quests[quest["id"]] = {"progress": 0, "done": false}
+		owner.pack.add_item(quest["objective"]["itemId"])
+		given.append(quest["objective"]["itemId"])
+	var relics := Quests.by_id(Relics.quest_id())
+	if not owner.progression.quests.has(relics["id"]) and quest_open(relics):
+		owner.progression.quests[relics["id"]] = {"progress": 0, "done": false}
+	owner.pack_changed()
+	owner.save_now()
+	var line := Letters.taken_line(given)
+	return line + " " + Controls.say(Text.t("It's in your journal ({key:journal}).")) if not given.is_empty() else line
+
+
+## The letter `npc_id` is owed now (PIX-253): a deliverTo quest taken, not
+## yet handed over, its letter in the pack; {} otherwise.
+func letter_for(npc_id: String) -> Dictionary:
+	for quest: Dictionary in Quests.for_recipient(npc_id):
+		if Quests.is_ready(quest, owner.progression.quests, owner.pack.items):
+			return quest
+	return {}
+
+
+## The letter handed over (PIX-253): out of the pack, the quest done, its
+## postage paid (the recipient paid the post, then). Returns the line to
+## show, "" when `npc_id` is owed none.
+func deliver(npc_id: String) -> String:
+	var quest := letter_for(npc_id)
+	if quest.is_empty():
+		return ""
+	var objective: Dictionary = quest["objective"]
+	owner.pack.remove_item(objective["itemId"], int(objective["count"]))
+	owner.progression.quests[quest["id"]] = {"progress": int(objective["count"]), "done": true}
+	Journal.let_go(owner.progression)
+	var reward: Dictionary = quest["reward"]
+	owner.pack.gold += int(reward.get("gold", 0))
+	var level_line := owner.spoils.earn_xp(int(reward.get("xp", 0)))
+	owner.pack_changed()
+	owner.save_now()
+	var paid: Array[String] = []
+	if int(reward.get("gold", 0)) > 0:
+		paid.append(Text.t("+%d gold") % reward["gold"])
+	if int(reward.get("xp", 0)) > 0:
+		paid.append(Text.t("+%d XP") % reward["xp"])
+	var done := Text.t("Delivered: %s.") % quest["name"]
+	if not paid.is_empty():
+		done = Text.t("Delivered: %s. %s.") % [quest["name"], ", ".join(paid)]
+	return done + ("\n" + level_line if level_line != "" else "")
 
 
 ## The hero's answer to a quest that ends in a choice (PIX-192): the

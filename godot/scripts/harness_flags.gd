@@ -79,7 +79,7 @@ const TABLE := [
 	{"flag": "--tab", "takes": "<n|name>", "does": "the tab the opened screen shows: inventory and shop by number, journal by name (quests, pages, feats)"},
 	{"flag": "codex", "takes": "", "does": "the codex, a record to read"},
 	{"flag": "bestiary", "takes": "", "does": "with codex: its bestiary"},
-	{"flag": "quest", "takes": "", "does": "the elder's conversation closes: his quest accepted"},
+	{"flag": "quest", "takes": "", "does": "the elder's conversation closes: Maren's tin opened, its letters and her quest taken (PIX-253)"},
 	{"flag": "brew", "takes": "", "does": "a potion brewed at Vex's cauldron before her quest, then the quest taken and handed in (PIX-231)"},
 	{"flag": "journal", "takes": "", "does": "the journal, a few quests in hand (PIX-171); the report adds tracked= (PIX-239)"},
 	{"flag": "dockmenu", "takes": "", "does": "the dock's menu of screens, open"},

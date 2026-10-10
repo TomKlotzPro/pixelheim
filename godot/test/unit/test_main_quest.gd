@@ -35,17 +35,24 @@ func test_every_step_names_a_real_quest_or_floor() -> void:
 				assert_gt(int(when["count"]), 0)
 			"seen":
 				var stories: Array = Story._data()["elderLines"].map(func(entry: Dictionary) -> String: return entry["id"])
-				assert_has(stories, when["sceneId"], "%s: one of Maren's stories" % step["id"])
+				stories.append(Letters.scene_id())
+				assert_has(stories, when["sceneId"], "%s: one of Maren's stories, or her tin" % step["id"])
 			"hunted":
 				var relic: Array = Relics.all().filter(func(entry: Dictionary) -> bool: return entry["named"] == when["named"])
 				assert_eq(relic.size(), 1, "%s: a relic's chapter boss" % step["id"])
-				assert_true(step.get("optional", false), "%s: the relics come in any order" % step["id"])
+				# Since the letters (PIX-253) the relics come in the story's order.
+				assert_false(step.get("optional", false), "%s: the relics are the story" % step["id"])
+			"delivered":
+				assert_true(Letters.is_letter(Quests.by_id(when["questId"])), "%s: one of Maren's letters" % step["id"])
 			_:
 				fail_test("%s: unknown kind %s" % [step["id"], when["kind"]])
 		assert_ne(step["hint"], "")
 
 
-func test_the_story_starts_at_the_inn_and_follows_the_real_rules() -> void:
+func test_the_story_starts_with_marens_tin_and_follows_the_real_rules() -> void:
+	# PIX-253: Maren's tin first, then Sela's work.
+	assert_eq(_next(), "tin")
+	state.questing.finish_dialogue("elder")
 	assert_eq(_next(), "ask_sela")
 	assert_eq(MainQuest.objective(state.progression, state.settlement), "Next: Ask Sela the innkeeper for work")
 	state.questing.resolve_quests("innkeeper")
@@ -54,11 +61,11 @@ func test_the_story_starts_at_the_inn_and_follows_the_real_rules() -> void:
 	for i in 3:
 		state.spoils.defeat_monster(Bestiary.spawn("slime"), "forest", "", 1)
 	state.questing.resolve_quests("innkeeper")
-	assert_eq(_next(), "relics_taken", "the mountain's barred: Maren knows why")
-	state.questing.resolve_quests("elder")
-	assert_eq(_next(), "rebuild", "a new hero's town is ashes: rebuild the inn")
+	assert_eq(_next(), "rebuild", "a new hero's town is ashes: a roof on the inn")
 	state.settlement.town_tier = 1
 	assert_eq(_next(), "first_brew")
+	state.progression.quests["herbs_for_vex"] = {"progress": 1, "done": true}
+	assert_eq(_next(), "letter_wenna", "Maren asked for the relics with the tin: the first letter")
 
 
 func test_running_ahead_never_sends_the_hero_back() -> void:
@@ -73,12 +80,12 @@ func test_running_ahead_never_sends_the_hero_back() -> void:
 	state.progression.unlocked_level = 11
 	state.spoils.clear_floor(11)
 	assert_eq(_next(), "hoard")
-	assert_eq(MainQuest.steps()[MainQuest.steps().map(func(s: Dictionary) -> String: return s["id"]).find("stair")]["chapter"], "The Deathless")
+	assert_eq(MainQuest.steps()[MainQuest.steps().map(func(s: Dictionary) -> String: return s["id"]).find("stair")]["chapter"], "Home")
 
 
 func test_a_grown_town_never_skips_the_mountain() -> void:
 	state.settlement.town_tier = 4
-	assert_eq(_next(), "ask_sela", "the projects are done, the floors aren't")
+	assert_eq(_next(), "tin", "the projects are done, the story isn't")
 	state.progression.unlocked_level = 9
 	state.spoils.clear_floor(9)
 	assert_eq(_next(), "fafnyr")

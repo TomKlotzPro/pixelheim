@@ -83,6 +83,8 @@ func test_some_quests_pay_an_item_too() -> void:
 func test_closing_a_conversation_resolves_quests() -> void:
 	var said: Array[String] = []
 	state.message.connect(func(text: String) -> void: said.append(text))
+	# Her tin found already (PIX-253: a first word with her opens it).
+	state.mark_seen(Letters.scene_id())
 	state.questing.finish_dialogue("elder")
 	# Since the gate was barred (PIX-170) Maren's first ask is the relics.
 	assert_eq(said.size(), 1)

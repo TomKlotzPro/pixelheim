@@ -74,6 +74,98 @@
       "completed": "I walked the whole road today and nothing bit me. Take this."
     },
     {
+      "id": "letter_wenna",
+      "giver": "elder",
+      "name": "The Letter to Saltmere",
+      "brief": "Deliver Maren's letter to Old Wenna in Saltmere.",
+      "objective": {
+        "kind": "deliverTo",
+        "itemId": "letter_wenna",
+        "to": "saltmere_wenna",
+        "count": 1,
+        "label": "Letter delivered"
+      },
+      "reward": {
+        "gold": 15,
+        "xp": 0
+      },
+      "keepsake": "tams_ladle",
+      "answer": [
+        "Fifty years late, and you've got mud on it. Give it here.",
+        "(She reads it twice.) Tam's things never came home, courier. The boat went down off the headland. Whatever the sea kept of him washed into the cave under it.",
+        "He sent me this from the foot of the mountain. (A postcard.) \"Morvax wants the kings' gold to make Pixelheim a city. Maren says over her dead body. I've brought cheese. Nobody fights over cheese.\""
+      ]
+    },
+    {
+      "id": "letter_pell",
+      "giver": "elder",
+      "name": "The Letter to Blackiron",
+      "brief": "Deliver Maren's letter to Old Pell at Blackiron.",
+      "objective": {
+        "kind": "deliverTo",
+        "itemId": "letter_pell",
+        "to": "mines_pell",
+        "count": 1,
+        "label": "Letter delivered"
+      },
+      "reward": {
+        "gold": 20,
+        "xp": 0
+      },
+      "keepsake": "black_ingot",
+      "answer": [
+        "\"Sorry about the cage.\" Ha! She sat on my canary's cage, fifty years ago. Flat as a griddle. The bird never forgave her.",
+        "Tell her this back. Morvax came down this road. Forty years ago, again ten years ago, and last spring. Thin as a rake, asking for iron. I sold him all we had.",
+        "Last spring we had none. Something moved into the deep seam, right on top of the ingot the five of them stamped and forgot. He's alive, courier. Or he was in spring."
+      ]
+    },
+    {
+      "id": "letter_hale",
+      "giver": "elder",
+      "name": "The Letter to Greyhold",
+      "brief": "Take Maren's letter to Captain Hale at Greyhold.",
+      "objective": {
+        "kind": "deliverTo",
+        "itemId": "letter_hale",
+        "to": "greyhold_ulla",
+        "count": 1,
+        "label": "Letter delivered"
+      },
+      "reward": {
+        "gold": 25,
+        "xp": 0
+      },
+      "keepsake": "oskars_shield",
+      "answer": [
+        "A letter for the captain? He's... not receiving. But a letter's a letter. (She reads it, then opens his order book.)",
+        "\"Day 12. We went up and found Morvax alive at the old forge. He begged us to bar the gate and tell Maren nothing. 'Let her think I'm dead. It's kinder.' I agreed. I was wrong.\"",
+        "Maren says Oskar isn't coming home, and the captain can stand down. He's down in the cellars under his hall, still guarding Oskar's shield. Go and tell him."
+      ]
+    },
+    {
+      "id": "letter_aske",
+      "giver": "elder",
+      "name": "The Letter to the Frostgate",
+      "brief": "Deliver Maren's letter to Aske on the Frostgate pass.",
+      "objective": {
+        "kind": "deliverTo",
+        "itemId": "letter_aske",
+        "to": "frost_aske",
+        "count": 1,
+        "label": "Letter delivered"
+      },
+      "reward": {
+        "gold": 30,
+        "xp": 0
+      },
+      "keepsake": "lianes_lantern",
+      "answer": [
+        "She told me to keep her door shut till someone came for the lantern. Fifty years. You took your time.",
+        "(From his coat he takes a folded page in Liane's hand.) She left this with me. Her sums, from before the climb: \"The seal only buys time. Fifty years, at most.\"",
+        "\"A thing chained a hundred years will burn anything. Don't seal him. Free him. The collar answers to our five marks.\""
+      ]
+    },
+    {
       "id": "maren_relics",
       "giver": "elder",
       "name": "Relics of the Five",
@@ -1153,6 +1245,16 @@
         "title": "Out of the Ashes",
         "steps": [
           {
+            "id": "tin",
+            "when": {
+              "kind": "seen",
+              "sceneId": "maren_tin"
+            },
+            "text": "Help Maren dig through what's left of her house",
+            "hint": "Maren wants a hand with what's left of her house, along Upper Street from the shrine. She won't ask. Go anyway.",
+            "elderHint": "My house is along Upper Street, or what's left of it. Bring your back, courier. There's a hearthstone to lift."
+          },
+          {
             "id": "ask_sela",
             "when": {
               "kind": "questTaken",
@@ -1171,24 +1273,14 @@
             "hint": "Slimes nest in the fields east of the town gate. Three of them, and Sela pays."
           },
           {
-            "id": "relics_taken",
-            "when": {
-              "kind": "questTaken",
-              "questId": "maren_relics"
-            },
-            "text": "Ask Maren about the barred mountain gate",
-            "hint": "The mountain's gate has been barred since the fire. Maren knows why, and what opens it - ask her.",
-            "elderHint": "The gate's been barred since the fire. Sit a moment, courier - I'll tell you why, and what opens it."
-          },
-          {
             "id": "rebuild",
             "when": {
               "kind": "project",
               "projectId": "the_inn"
             },
-            "optional": true,
-            "text": "Help rebuild the inn: fund it at the board on the square",
-            "hint": "The board on the square lists what Pixelheim needs to rise again. Sela's inn and the homes around the square first."
+            "text": "Put a roof back on Sela's inn",
+            "hint": "The board on the square lists what Pixelheim needs to rise again. Sela's inn first: a roof, real beds, and the homes around it.",
+            "optional": true
           },
           {
             "id": "first_brew",
@@ -1199,21 +1291,65 @@
             "text": "Brew a first potion at Vex's cauldron",
             "hint": "Vex will show you the cauldron - at her stall on the square, or behind the BREWS door once it stands again. Potions you brew cost you a herb, not a fortune.",
             "optional": true
+          },
+          {
+            "id": "relics_taken",
+            "when": {
+              "kind": "questTaken",
+              "questId": "maren_relics"
+            },
+            "text": "Ask Maren about the barred mountain gate",
+            "hint": "The mountain's gate has been barred since the fire. Maren knows why, and what opens it - ask her.",
+            "elderHint": "The gate's been barred since the fire. Sit a moment, courier - I'll tell you why, and what opens it.",
+            "optional": true
           }
         ]
       },
       {
-        "title": "Relics of the Five",
+        "title": "The Letter to Saltmere",
         "steps": [
+          {
+            "id": "letter_wenna",
+            "when": {
+              "kind": "delivered",
+              "questId": "letter_wenna"
+            },
+            "text": "Deliver Maren's letter to Old Wenna in Saltmere",
+            "hint": "Take the cliff road to Saltmere with Maren's first letter: south past the marsh, then down the cliffs. Old Wenna is Tam's sister.",
+            "elderHint": "Wenna first. Tam's sister, down in Saltmere: the cliff road, south past the marsh. ...Don't tell her I'm sorry. The letter says it."
+          },
           {
             "id": "ladle",
             "when": {
               "kind": "hunted",
               "named": "tidecaller"
             },
-            "optional": true,
             "text": "Win Tam's Ladle back from the Tidecaller, in Saltmere's sea cave",
             "hint": "Saltmere is down the cliffs south of the marsh. Old Wenna there is Tam's sister - start with her."
+          }
+        ]
+      },
+      {
+        "title": "The Letter to Blackiron",
+        "steps": [
+          {
+            "id": "letter_pell",
+            "when": {
+              "kind": "delivered",
+              "questId": "letter_pell"
+            },
+            "text": "Cross the river and deliver Maren's letter to Old Pell at Blackiron",
+            "hint": "Over the river bridge north of town, then west along the Ash Fields road to the miners' camp. Old Pell guided the five down the shafts, once.",
+            "elderHint": "Pell next. A boy with a canary, when we came through Blackiron. Over the bridge and west. I owe him an apology. And a cage."
+          },
+          {
+            "id": "ingot",
+            "when": {
+              "kind": "hunted",
+              "named": "seam_warden"
+            },
+            "text": "Take the Black Ingot from the Seam Warden, deep in the Blackiron shafts",
+            "hint": "The Blackiron road leaves the west edge of the Ash Fields. Foreman Garrick runs the miners' camp."
           },
           {
             "id": "settler",
@@ -1226,16 +1362,6 @@
             "optional": true
           },
           {
-            "id": "ingot",
-            "when": {
-              "kind": "hunted",
-              "named": "seam_warden"
-            },
-            "optional": true,
-            "text": "Take the Black Ingot from the Seam Warden, deep in the Blackiron shafts",
-            "hint": "The Blackiron road leaves the west edge of the Ash Fields. Foreman Garrick runs the miners' camp."
-          },
-          {
             "id": "lamps",
             "when": {
               "kind": "project",
@@ -1244,6 +1370,21 @@
             "text": "Fund the street lamps at the board on the square",
             "hint": "The board on the square lists what Pixelheim needs next. Lamps first: some coin and three marsh reeds.",
             "optional": true
+          }
+        ]
+      },
+      {
+        "title": "The Letter to Greyhold",
+        "steps": [
+          {
+            "id": "letter_hale",
+            "when": {
+              "kind": "delivered",
+              "questId": "letter_hale"
+            },
+            "text": "Take Maren's letter to Captain Hale at Greyhold",
+            "hint": "Greyhold stands off the east edge of the Ash Fields. The captain isn't receiving visitors: Sergeant Ulla keeps his camp by the road.",
+            "elderHint": "Hale kept Greyhold when we climbed, and Oskar was his. East, over the Ash Fields. If he can't take it, someone of his will."
           },
           {
             "id": "shield",
@@ -1251,9 +1392,23 @@
               "kind": "hunted",
               "named": "hollow_captain"
             },
-            "optional": true,
             "text": "Bring Oskar's Shield out of Greyhold's cellars",
             "hint": "Greyhold stands off the east edge of the Ash Fields. Sergeant Ulla keeps the old guard's camp by the road."
+          }
+        ]
+      },
+      {
+        "title": "The Letter to the Frostgate",
+        "steps": [
+          {
+            "id": "letter_aske",
+            "when": {
+              "kind": "delivered",
+              "questId": "letter_aske"
+            },
+            "text": "Deliver Maren's letter to Aske on the Frostgate pass",
+            "hint": "The Frostgate road climbs north out of the Ash Fields. Aske the hermit has kept Liane's door for fifty years, because she asked him to.",
+            "elderHint": "Aske last. He's kept Liane's door shut fifty years because she asked him to. North, up the Frostgate road. Tell him he can stop."
           },
           {
             "id": "lantern",
@@ -1261,7 +1416,6 @@
               "kind": "hunted",
               "named": "rimefang"
             },
-            "optional": true,
             "text": "Find Liane's Lantern under her observatory on the Frostgate pass",
             "hint": "The Frostgate road climbs north out of the Ash Fields. Aske the hermit has kept Liane's door for fifty years."
           },
@@ -1278,7 +1432,8 @@
         ]
       },
       {
-        "title": "The Ashen Throne",
+        "title": "The Fifth Letter",
+        "about": "To be replaced (PIX-253 step 8): today's climb of the Ashen Mountain stands in until the mountain road, Morvax's forge and the fifth letter are built.",
         "steps": [
           {
             "id": "cellar",
@@ -1335,7 +1490,13 @@
             },
             "text": "Clear the Stormcrag Aerie (floor 9)",
             "hint": "Wyverns nest in the Stormcrag Aerie, one floor below the dragon. Mind the sky."
-          },
+          }
+        ]
+      },
+      {
+        "title": "The Night of Bells",
+        "about": "To be replaced (PIX-253 step 9): Fafnyr on the Ashen Throne stands in until the Night of Bells is played on the square.",
+        "steps": [
           {
             "id": "fafnyr",
             "when": {
@@ -1344,12 +1505,7 @@
             },
             "text": "Slay Fafnyr on the Ashen Throne (floor 10)",
             "hint": "Fafnyr is back on his hoard at the top of the mountain, and awake. Ten floors up. End it."
-          }
-        ]
-      },
-      {
-        "title": "The Deathless",
-        "steps": [
+          },
           {
             "id": "fountain",
             "when": {
@@ -1359,7 +1515,13 @@
             "text": "Set Fafnyr's scale in a fountain on the square",
             "hint": "Fafnyr's scale belongs on the square, where everyone can see it. The board will tell you what else the fountain takes.",
             "optional": true
-          },
+          }
+        ]
+      },
+      {
+        "title": "Home",
+        "about": "To be replaced (PIX-253 step 10): the stair below the hoard and Morvax's throne stand in until the homecoming and his choice.",
+        "steps": [
           {
             "id": "confession",
             "optional": true,
@@ -1481,6 +1643,11 @@
         "who": "elder",
         "line": "Fafnyr will come back for what's left of us. Unless someone climbs.",
         "shadow": true
+      },
+      {
+        "who": "",
+        "line": "The Chancellor's courier should have ridden south by noon. You stayed.",
+        "tagline": true
       }
     ],
     "dayCard": {
@@ -1562,6 +1729,39 @@
       }
     ],
     "barred": "The mountain's gate is barred with old iron and older wards. Nothing passes. Maren will know what opens it."
+  },
+  "letters": {
+    "about": "PIX-253 step 1: Maren's five letters, found in a tin under her hearthstone the morning after the Night of Ash. Four go out across the Reach as quests of the deliverTo kind, in the story's order; the fifth, to Morvax, stays with her for chapter 6. `dig` is where she stands while the tin waits and her house is ash; `news` is what a villager says once the letters are out (Bram's crew clears the cliff road), until Wenna has hers; `room` is Sela's word the first night the courier pays for a bed. A letter pays its postage on delivery (the recipient paid the post, then) and no XP: the XP curve is retuned with the story's last step.",
+    "sceneId": "maren_tin",
+    "quests": [
+      "letter_wenna",
+      "letter_pell",
+      "letter_hale",
+      "letter_aske"
+    ],
+    "dig": {
+      "x": 21,
+      "y": 11
+    },
+    "tin": [
+      "You came. Good. Mind that beam, it's still warm. My hearthstone's under there somewhere, and I'm too old to lift it alone.",
+      "(You lift the hearthstone together. Under it is a tin box, and in the tin five letters, addressed in a young woman's hand. The fifth says only \"Morvax\".)",
+      "Leave those. They were never meant to be sent.",
+      "(\"Letters that aren't delivered are just paper,\" you say.)",
+      "...Four of them, then. The fifth has no address."
+    ],
+    "late": [
+      "(Maren turns a tin box over in her hands, black with soot.) I dug this out of my hearth. Five letters I wrote fifty years ago, and never sent.",
+      "You carry letters, courier. Take the ones that can still be delivered. The fifth has no address."
+    ],
+    "taken": "Four letters in your pack: for Old Wenna in Saltmere, Old Pell at Blackiron, Captain Hale at Greyhold and Aske on the Frostgate. Maren keeps the fifth.",
+    "takenSome": "In your pack: %s. Maren keeps the fifth.",
+    "answered": "Maren's letters were answered long ago: you brought their keepsakes home. She keeps the fifth.",
+    "road": "Bram's crew is out clearing the cliff road to Saltmere.",
+    "news": {
+      "villager_bram": "Cliff road to Saltmere's clear, courier. Took the whole crew all morning. I lifted one rock. Supervised the rest."
+    },
+    "room": "Sela takes your coin. \"You're paying now, you know. Heroes pay double. ...Fine. Half.\""
   },
   "deeds": [
     {

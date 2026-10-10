@@ -1,8 +1,12 @@
 class_name MainQuest
 ## The main quest (PIX-144): chapters of steps read from the save, so the
 ## game can always say what comes next - on the line above the dock, in the
-## journal, from the elder and the mayor. A step is met by the save's own
-## records (a quest taken or kept, a floor cleared, a project, a settler);
+## journal, from the elder and the mayor. Since PIX-253 it is the story of
+## Maren's letters in eight chapters: the tin, a letter and its region's
+## relic for each of the four, then the mountain, the Night of Bells and
+## home (the last three still today's climb, to be replaced). A step is met
+## by the save's own records (a quest taken or kept, a letter delivered, a
+## floor cleared, a project, a settler);
 ## the next step is the first unmet one after the furthest met, so a hero who
 ## runs ahead is never sent back for a side errand. Optional steps (errands
 ## and village projects) never count as the furthest: a town grown before
@@ -63,6 +67,10 @@ static func is_met(step: Dictionary, progression: ProgressionState, settlement: 
 		"hunted":
 			# A relic's chapter boss laid low (PIX-170).
 			return when["named"] in progression.hunted
+		"delivered":
+			# One of Maren's letters handed over, or its keepsake already
+			# home: an old save is never sent back with it (PIX-253).
+			return Letters.delivered(Quests.by_id(when["questId"]), progression)
 	push_warning("MainQuest: unknown step kind %s" % when["kind"])
 	return false
 

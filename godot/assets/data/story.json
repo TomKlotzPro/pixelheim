@@ -13,61 +13,130 @@
       {
         "kind": "caption",
         "text": "Pixelheim. A village under a mountain, and glad of it.",
-        "hold": 3.2
-      },
-      {
-        "kind": "tint",
-        "color": "#ff3a1a",
-        "alpha": 0.28,
-        "seconds": 1.2
-      },
-      {
-        "kind": "ash"
-      },
-      {
-        "kind": "shake",
-        "strength": 6,
-        "seconds": 1.1
+        "hold": 3.8
       },
       {
         "kind": "actor",
         "sheet": "mini/RedDragon.png",
         "family": "mini",
         "frame": 32,
-        "anim": "walk",
+        "anim": "idle",
         "dir": "left",
-        "scale": 3,
+        "scale": 2,
         "silhouette": true,
-        "from": [
-          1380,
-          120
-        ],
-        "to": [
-          -120,
-          170
-        ],
-        "seconds": 5.5
+        "at": [
+          236,
+          212
+        ]
       },
       {
         "kind": "caption",
-        "text": "Then the Ashen Mountain woke, and Fafnyr with it.",
-        "hold": 3.6
+        "text": "On top of the mountain a dragon sleeps on a chain. Everyone agrees this is the best place for him.",
+        "hold": 8.0
       },
       {
-        "kind": "tint",
-        "color": "#ff5a1a",
-        "alpha": 0.5,
+        "kind": "fade",
+        "to": "black",
+        "seconds": 0.7
+      },
+      {
+        "kind": "stage",
+        "stage": "path"
+      },
+      {
+        "kind": "actor",
+        "sheet": "characters/Warrior-Red.png",
+        "family": "puny",
+        "anim": "walk",
+        "dir": "right",
+        "scale": 4,
+        "from": [
+          100,
+          560
+        ],
+        "to": [
+          800,
+          548
+        ],
+        "seconds": 9.0
+      },
+      {
+        "kind": "actor",
+        "sheet": "characters/Soldier-Blue.png",
+        "family": "puny",
+        "anim": "walk",
+        "dir": "right",
+        "scale": 4,
+        "from": [
+          20,
+          560
+        ],
+        "to": [
+          720,
+          548
+        ],
+        "seconds": 9.0
+      },
+      {
+        "kind": "actor",
+        "sheet": "characters/Archer-Green.png",
+        "family": "puny",
+        "anim": "walk",
+        "dir": "right",
+        "scale": 4,
+        "from": [
+          -60,
+          560
+        ],
+        "to": [
+          640,
+          548
+        ],
+        "seconds": 9.0
+      },
+      {
+        "kind": "actor",
+        "sheet": "characters/Mage-Red.png",
+        "family": "puny",
+        "anim": "walk",
+        "dir": "right",
+        "scale": 4,
+        "from": [
+          -140,
+          560
+        ],
+        "to": [
+          560,
+          548
+        ],
+        "seconds": 9.0
+      },
+      {
+        "kind": "actor",
+        "sheet": "characters/Soldier-Yellow.png",
+        "family": "puny",
+        "anim": "walk",
+        "dir": "right",
+        "scale": 4,
+        "from": [
+          -220,
+          560
+        ],
+        "to": [
+          480,
+          548
+        ],
+        "seconds": 9.0
+      },
+      {
+        "kind": "fade",
+        "to": "clear",
         "seconds": 0.8
       },
       {
-        "kind": "shake",
-        "strength": 9,
-        "seconds": 1.4
-      },
-      {
         "kind": "caption",
-        "text": "In one night he burned Pixelheim to the ground.",
-        "hold": 3.4
+        "text": "Fifty years ago five of the village climbed up to keep it that way. Only one came home, and she never talked about it.",
+        "hold": 8.2
       },
       {
         "kind": "fade",
@@ -123,9 +192,8 @@
         "seconds": 0.8
       },
       {
-        "kind": "caption",
-        "text": "Fifty years ago the seal on him cracked, and five of the village climbed to mend it. Only one came home.",
-        "hold": 6.2
+        "kind": "wait",
+        "seconds": 2.2
       },
       {
         "kind": "fade",
@@ -134,28 +202,49 @@
       },
       {
         "kind": "stage",
-        "stage": "dark"
+        "stage": "village"
+      },
+      {
+        "kind": "tint",
+        "color": "#ff3a1a",
+        "alpha": 0.34,
+        "seconds": 1.4
+      },
+      {
+        "kind": "ash"
       },
       {
         "kind": "fade",
         "to": "clear",
-        "seconds": 0.1
+        "seconds": 0.6
       },
       {
-        "kind": "wait",
-        "seconds": 0.8
+        "kind": "shake",
+        "strength": 8,
+        "seconds": 1.3
       },
       {
-        "kind": "eyes",
-        "at": [
-          640,
-          300
+        "kind": "actor",
+        "sheet": "mini/RedDragon.png",
+        "family": "mini",
+        "frame": 32,
+        "anim": "walk",
+        "dir": "left",
+        "scale": 3,
+        "silhouette": true,
+        "from": [
+          1380,
+          120
         ],
-        "color": "#b46cff"
+        "to": [
+          -120,
+          170
+        ],
+        "seconds": 5.5
       },
       {
         "kind": "caption",
-        "text": "And now the whispers come from below.",
+        "text": "Tonight, the dragon woke up.",
         "hold": 3.6
       },
       {

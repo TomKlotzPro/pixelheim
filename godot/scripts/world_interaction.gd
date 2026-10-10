@@ -279,6 +279,24 @@ func talk(npc: Dictionary) -> void:
 		box.npc = npc
 		world.add_child(box)
 		return
+	# The first word with Maren after the night is her tin (PIX-253): dug
+	# out of her hearth together while her house is ash, a short word for a
+	# hero who comes to her later. Closing it gives the letters (Questing).
+	if npc["id"] == "elder" and Letters.tin_waits(GameState.progression):
+		npc = npc.duplicate()
+		npc["lines"] = Letters.tin_lines(Town.done_projects(GameState.settlement))
+		box.npc = npc
+		world.add_child(box)
+		return
+	# A letter carried to them (PIX-253): their answer, and as it closes the
+	# letter is theirs.
+	var letter := GameState.questing.letter_for(npc["id"])
+	if not letter.is_empty():
+		npc = npc.duplicate()
+		npc["lines"] = letter["answer"]
+		box.npc = npc
+		world.add_child(box)
+		return
 	# Maren tells what the hero's floors have earned, once each (PIX-153).
 	if npc["id"] == "elder":
 		var told := Story.elder_story(GameState.progression.cleared_levels, GameState.progression.story_seen, GameState.progression.hunted)
@@ -311,6 +329,11 @@ func talk(npc: Dictionary) -> void:
 	if reaction != "":
 		npc = npc.duplicate()
 		npc["lines"] = [reaction] + npc["lines"]
+	# And about the letters going out (PIX-253: Bram's crew and the road).
+	var news := Letters.news_for(npc["id"], GameState.progression)
+	if news != "":
+		npc = npc.duplicate()
+		npc["lines"] = [news] + npc["lines"]
 	# The elder and the mayor always know what comes next (PIX-144).
 	if npc["id"] in ["elder", "mayor"]:
 		var next := MainQuest.hint(GameState.progression, GameState.settlement, npc["id"])

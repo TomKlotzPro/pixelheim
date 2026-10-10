@@ -27,7 +27,8 @@
 # motion (PIX-264), a kill's XP and gold floating up over the foe, a
 # chest's gold over the chest, with nothing said of them in the log
 # (PIX-245), and the ascension's beats, still with Reduce motion
-# (PIX-244). Every flow leaves its
+# (PIX-244), and Maren's tin of letters dug out of her house with one of
+# them delivered (PIX-253). Every flow leaves its
 # picture in godot/flows/<name>.png for a human to look at, and the
 # harness's report line must match what the flow promises or the run fails.
 #
@@ -124,8 +125,14 @@ FLOWS=(
 	"die|die|map=town_inn cell=\(2, 3\)"
 	"saves|saves|screenshot saved"
 	"decline|saves --web-save res://test/fixtures/web_save_v4.txt --keys esc|open=title_screen"
-	"talk|--map town talk --keys e,e,e,e,e|open=none"
+	# A hero's first word with Maren after the night is her tin (PIX-253):
+	# in the Hamlet her house stands again and she says it short, two lines.
+	"talk|--map town talk --keys e,e|open=none.* letters=4 delivered=0"
 	"leave|--map town talk --keys e,esc|open=none"
+	# In the Ashes she digs in front of her house: the tin, its five lines,
+	# and four letters in the pack; one handed to Old Wenna in Saltmere.
+	"tin|--map town --town-tier 0 talk --keys e,e,e,e,e|open=none.* letters=4 delivered=0"
+	"letter|--map saltmere --ready letter_wenna --talk-to saltmere_wenna --keys e,e,e|open=none.* letters=0 delivered=1"
 	"mimic|--map mirefen mimic --wait 0.75|map=mirefen cell=\(42, 13\) hp=42"
 	"mayor|--map town_hall talk --keys e,e,e|open=town_hall_screen"
 	"board|--map town --at 37,22 --keys w,e|open=town_hall_screen"
