@@ -191,7 +191,10 @@ flakes.yml --ref <branch> -f runners=10`), it runs every flow five times
 headless with twice as many flows at once as the runner has cores, and once
 in a window, and its summary (`tools/flakes.py`) names every flow that failed
 even once, why and the end of its output, and every flow whose report
-changed between runs.
+changed between runs (headless with the paid art, or in a window with
+Shade's CC0 art alone: Godot's particles draw from the game's dice, so the
+paid houses' chimney smoke changes what a kill drops between the two), and
+it fails on either.
 
 On the laptop, `godot/tools/check.sh quick` runs only what a branch's diff
 against `origin/main` could break, in under a minute and with nothing on the

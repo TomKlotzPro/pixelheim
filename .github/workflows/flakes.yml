@@ -11,12 +11,15 @@ name: Steady flows
 # Headless, each runner runs the suite `rounds` times with `load` flows at
 # once per core (more than it has cores: a loaded machine is where timing
 # shows); in a window, under a virtual display with software rendering as
-# CI's pictures job draws it, `windowed_rounds` times on each of
+# CI's windowed jobs draw it, `windowed_rounds` times on each of
 # `windowed_runners` (the motion flow needs a window). The summary names
 # every flow that failed even once, why, and the end of its output, and every
-# flow whose report changed between runs (godot/tools/flakes.py); the run
-# fails on a failure. The windowed runs use Shade's CC0 art alone, as the
-# pictures job does: this repository's artifacts are public.
+# flow whose report changed between runs of a kind (godot/tools/flakes.py);
+# the run fails on either: stepped, on the game's clock and with the same
+# dice, a flow gives the same report every run (6500 runs headless and the
+# windowed ones did, on PIX-276's pull request). The windowed runs use
+# Shade's CC0 art alone, as CI's windowed jobs do: this repository's
+# artifacts are public.
 on:
   schedule:
     - cron: "40 2 * * *"
@@ -232,7 +235,7 @@ jobs:
       - name: The tally
         run: |
           set +e
-          python3 godot/tools/flakes.py tally results/*/*.jsonl > tally.md
+          python3 godot/tools/flakes.py tally --strict results/*/*.jsonl > tally.md
           status=$?
           cat tally.md >> "$GITHUB_STEP_SUMMARY"
           cat tally.md
