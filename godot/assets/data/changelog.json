@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.194.0",
+      "date": "2026-10-10",
+      "codename": "Lamplight",
+      "notes": [
+        "The title screen comes alive: a slow camera drifts over the street under the mountain, the torches, the lit windows and the watchman's lantern pool warm light on the walls and the road, and the moon and the flames glow",
+        "A lake behind the square swells and glints, the trees and the hill's pines lean in the wind, mist rolls along the valley and embers rise off the torches",
+        "With Reduce motion the scene holds still, and the world behind the title rests, so the title costs no more to draw than before"
+      ]
+    },
+    {
       "version": "0.193.0",
       "date": "2026-10-10",
       "codename": "Spoils Aloft",

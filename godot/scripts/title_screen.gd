@@ -1,8 +1,9 @@
 extends Screen
 ## The title (PIX-139): Pixelheim's street at night under the Ashen Mountain
-## (TitleScene), PIXELHEIM cut in gold above it, and the menu: Continue, New
-## Game (hero creation), the saves, options, or What's new. W/S choose, E or
-## Enter takes it. The world waits paused behind.
+## (TitleScene, alive under a drifting camera since PIX-249), PIXELHEIM cut
+## in gold above it, and the menu: Continue, New Game (hero creation), the
+## saves, options, or What's new. W/S choose, E or Enter takes it. The world
+## waits paused behind, resting from drawing while the backdrop covers it.
 
 const VIEW := Vector2(1280, 720)
 const LOGO_Y := 84.0
@@ -34,10 +35,31 @@ func _open() -> void:
 	Sound.set_ambience("")
 	scene = TitleScene.new()
 	add_child(scene)
+	_rest_world(true)
 	_vignette()
 	_logo()
 	_card()
 	_arrive()
+
+
+func _exit_tree() -> void:
+	_rest_world(false)
+	super()
+
+
+## The backdrop covers the whole view, so the world under it rests from
+## drawing until the title goes - its map, its actors and its passes over
+## them (PIX-249): that pays for the backdrop's own light and glow in the
+## browser. A phone's wider view shows the world round the title, so there
+## it keeps drawing.
+func _rest_world(resting: bool) -> void:
+	if world == null or not is_instance_valid(world):
+		return
+	if resting and Touch.view_size(self) != Touch.DESIGN:
+		return
+	world.visible = not resting
+	if world.lights != null:
+		world.lights.rest(resting)
 
 
 ## The corners fall into night, so the eye rests on the middle.
@@ -95,10 +117,16 @@ func _logo() -> void:
 	var tagline := UiStyle.label("Fifteen floors. One dragon. Worse things below.", 18, UiStyle.CREAM, Vector2(0, LOGO_Y + 92))
 	tagline.custom_minimum_size = Vector2(VIEW.x, 0)
 	tagline.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	tagline.add_theme_color_override("font_shadow_color", Color(0.02, 0.01, 0.05, 0.9))
-	tagline.add_theme_constant_override("shadow_offset_x", 2)
-	tagline.add_theme_constant_override("shadow_offset_y", 2)
-	add_child(tagline)
+	add_child(_shadowed(tagline))
+
+
+## Words over the scene keep a night shadow, so they read wherever the
+## drifting scene puts a lamplit wall or the moon behind them.
+static func _shadowed(words: Label) -> Label:
+	words.add_theme_color_override("font_shadow_color", Color(0.02, 0.01, 0.05, 0.9))
+	words.add_theme_constant_override("shadow_offset_x", 2)
+	words.add_theme_constant_override("shadow_offset_y", 2)
+	return words
 
 
 func _logo_word(font: Font, color: Color) -> Label:
@@ -158,7 +186,7 @@ func _card() -> void:
 		var warning := UiStyle.label("This browser window won't keep your saves (a private window?). Your hero lasts only while it's open.", 13, UiStyle.LAMP, Vector2(0, 664))
 		warning.custom_minimum_size = Vector2(VIEW.x, 0)
 		warning.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		add_child(warning)
+		add_child(_shadowed(warning))
 	# The version line opens What's new (the web's changelog link).
 	footer = UiStyle.label(Text.t("v%s  ·  What's new") % version, 13, UiStyle.DUSK, Vector2(0, 690))
 	footer.custom_minimum_size = Vector2(VIEW.x, 0)
@@ -171,7 +199,7 @@ func _card() -> void:
 		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 			_whats_new()
 	)
-	add_child(footer)
+	add_child(_shadowed(footer))
 
 
 ## The boot splash (tools/splash.sh renders it): the scene and the name the
