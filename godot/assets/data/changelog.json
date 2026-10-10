@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.211.0",
+      "date": "2026-10-10",
+      "codename": "One Page",
+      "notes": [
+        "The map draws the Ashenreach and every region you've found on one page, each where its road leads, so the Reach reads as one land",
+        "The ridge between regions shows where you've seen it, waypoints and goals stay on the page, and a goal underground shows at its door",
+        "The chosen waypoint's name no longer hides your mark on the map"
+      ]
+    },
+    {
       "version": "0.210.0",
       "date": "2026-10-10",
       "codename": "Three Floors Down",
