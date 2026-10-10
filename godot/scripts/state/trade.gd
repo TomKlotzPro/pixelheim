@@ -81,11 +81,12 @@ func trophy_sell_multiplier() -> float:
 	return 1.1 if "gem" in owner.settlement.house.get("trophies", []) else 1.0
 
 
-## Hilda's price for a +1 (PIX-206): a tenth less once her forge stands.
+## Hilda's price for a +1 (PIX-206): a tenth less once her forge stands, a
+## tenth less again with Old Pell at her bellows (PIX-255).
 func forge_price(instance: Dictionary, smithing: int, masterwork: bool) -> int:
 	var cost := Economy.masterwork_cost(instance["itemId"], instance["bonus"], smithing) if masterwork else Economy.forge_cost_for(instance["itemId"], instance["bonus"], smithing)
 	if owner.holdings.project_built("hildas_forge"):
-		cost = roundi(cost * (1.0 - Town.project_perk("hildas_forge", "forge")))
+		cost = roundi(cost * (1.0 - Town.project_perk("hildas_forge", "forge") - owner.holdings.settler_share("forge")))
 	return cost
 
 

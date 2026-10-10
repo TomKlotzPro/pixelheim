@@ -489,6 +489,9 @@ func _build_dungeon(data: MapData) -> Node2D:
 				dungeon.place(dungeon_objects, cell, PunyDungeon.STAIRS_DOWN)
 			"rock":
 				dungeon.place(dungeon_objects, cell, PunyDungeon.BOULDERS[absi(hash(cell)) % PunyDungeon.BOULDERS.size()])
+			"winch":
+				# The ore cage's winch by its gate (PIX-255: the Black Seam).
+				dungeon.place(dungeon_objects, cell, PunyDungeon.WHEEL)
 	root.add_child(layer)
 	root.add_child(dungeon_objects)
 	return root

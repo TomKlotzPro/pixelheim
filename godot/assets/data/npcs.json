@@ -362,19 +362,6 @@
       ]
     },
     {
-      "id": "mines_pell",
-      "mapId": "blackiron",
-      "x": 16,
-      "y": 18,
-      "sprite": "villager",
-      "name": "Old Pell",
-      "wander": false,
-      "lines": [
-        "My canary's down there. She tells us when the air goes bad. Without her we're digging blind.",
-        "Last I heard her singing, it was off the west gallery. Small cage. Very cross bird."
-      ]
-    },
-    {
       "id": "greyhold_ulla",
       "mapId": "greyhold",
       "x": 14,
@@ -716,6 +703,53 @@
         "y": 11,
         "line": "Old Wenna has come to live at Sela's inn. Maren, in the doorway: \"Wenna.\"",
         "detail": "\"You owe me fifty years of letters. Start with a bowl of stew.\""
+      }
+    },
+    {
+      "id": "mines_pell",
+      "about": "PIX-255 (story chapter 3): the boy with the canary who took the five down the shafts, old now. Once his letter is delivered (`comesHome.letter`) and the last ingot is up from the Black Seam (`comesHome.named`), he and his canary move in above Hilda's forge (`home`, by her stall on the square while the forge is ash: `homeRuined`), and he works her bellows: her +1s cost a tenth less again (`perkValues.forge`). The town's tour stops at the forge's door for his homecoming (`homecoming`).",
+      "name": "Old Pell",
+      "sprite": "villager",
+      "found": {
+        "mapId": "blackiron",
+        "x": 16,
+        "y": 18,
+        "wander": false
+      },
+      "home": {
+        "mapId": "town_smith",
+        "x": 15,
+        "y": 4,
+        "wander": false
+      },
+      "homeRuined": {
+        "project": "hildas_forge",
+        "x": 47,
+        "y": 24,
+        "wander": false
+      },
+      "comesHome": {
+        "letter": "letter_pell",
+        "named": "seam_warden",
+        "line": "Old Pell is packing for Pixelheim, canary and all: a forge with a room over it, and nobody digging under his bed."
+      },
+      "meetLines": [
+        "My canary's down there. She tells us when the air goes bad. Without her we're digging blind.",
+        "Last I heard her singing, it was off the west gallery. Small cage. Very cross bird."
+      ],
+      "townLines": [
+        "Hilda lets me work her bellows. The canary supervises. Loudly.",
+        "The cat sits on the anvil to watch the canary. The canary sits on Hilda's head to watch the cat. Hilda has opinions."
+      ],
+      "perk": "Pell works Hilda's bellows: her +1s cost a tenth less again",
+      "perkValues": {
+        "forge": 0.1
+      },
+      "homecoming": {
+        "x": 55,
+        "y": 19,
+        "line": "Old Pell and his canary have moved in above Hilda's forge.",
+        "detail": "The canary and the cat have reached an understanding. The understanding is shouting."
       }
     }
   ],

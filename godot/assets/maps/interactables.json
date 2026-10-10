@@ -167,21 +167,22 @@
     },
     {
       "id": "shafts_canary",
-      "mapId": "shafts",
-      "x": 1,
-      "y": 9,
+      "mapId": "shafts_gallery",
+      "x": -1,
+      "y": -1,
       "look": "chest",
       "loot": {
         "kind": "item",
         "itemId": "canary",
         "qty": 1
-      }
+      },
+      "said": "Pell's canary glares at you through the bars of her cage, and shouts. Three days she's been down here, and somehow it's your fault."
     },
     {
       "id": "shafts_seam",
-      "mapId": "shafts",
-      "x": 43,
-      "y": 11,
+      "mapId": "shafts_blackseam",
+      "x": 5,
+      "y": 6,
       "look": "chest",
       "loot": {
         "kind": "gold",
@@ -256,7 +257,8 @@
         "kind": "item",
         "itemId": "shaft_cheese",
         "qty": 1
-      }
+      },
+      "said": "A black-rinded wheel, aged down here in the dark. It hums. Faintly, and slightly off-key."
     },
     {
       "id": "cellars_badge",

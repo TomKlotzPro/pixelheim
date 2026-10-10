@@ -1,0 +1,45 @@
+# The Black Seam (PIX-255), the Blackiron shafts' third floor: the landing
+# at the foot of the stair up to the west gallery, the miners' old tool store
+# to the north-west, and the seam itself, where the five's black iron was
+# dug and the Seam Warden sits on the last ingot they stamped and forgot,
+# ore heaped about the hall. The ore cage in its north wall (D), by its
+# winch (w), runs up to the pithead by the shafts' mouth once the Warden is
+# down, and the stair up (c) leads back to the gallery
+# (assets/data/depths.json).
+id shafts_blackseam
+style cave
+spawn 4 18
+key X wall -
+key . floor shafts
+key L lamp -
+key b barrel -
+key k crate -
+key c cave -
+key r rock -
+key w winch -
+key D sealed -
+map
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXLXXXLXXXXXXXXXXXXLXXXXXLXXDXXXLXXXX
+XXXk.....bXXXXXXXXXXX.........w.....XXXX
+XXX.......XXXXXXXXXX..r...............XX
+XXX.......XXXXXXXXX..............r....XX
+XXX.......XXXXXXXXX...................XX
+XXXb......XXXXXXXX..r.................XX
+XXX.....k.XXXXXXXX....................XX
+XXXXX..XXXXXXXXXX.............r.......XX
+XXXXX..XXXXXXXXXX.....................XX
+XXXXX..XXXXXXXXXX..r..................XX
+XXXXX..XXLXXLXXXXX..................r.XX
+XXX..........LXXXX.......r............XX
+XXX..............XL...................XX
+XXX..............................r...XXX
+XXXc...............................XXXXX
+XXX...............................XXXXXX
+XXXk.......bXXXXX...........b...XXXXXXXX
+XXXXXXXXXXXXXXXXXk..........XXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX

@@ -1341,6 +1341,10 @@ msgid "The Black Ingot"
 msgstr "Le Lingot noir"
 
 #: assets/data/catalog.json
+msgid "The Black Seam"
+msgstr "Le Filon noir"
+
+#: assets/data/catalog.json
 msgid "The Blackiron Shafts"
 msgstr "Les puits de Fernoir"
 
@@ -1391,6 +1395,10 @@ msgstr "La Grotte marine"
 #: assets/data/catalog.json
 msgid "The Tidecaller's Grotto"
 msgstr "La Grotte de l'Appelle-Marée"
+
+#: assets/data/catalog.json
+msgid "The West Gallery"
+msgstr "La Galerie ouest"
 
 #: assets/data/catalog.json
 msgid "The amethyst on top is definitely watching you."
@@ -1863,6 +1871,10 @@ msgstr "Un nouveau chapitre Hauts faits dans le journal : des buts au long cou
 #: assets/data/changelog.json
 msgid "A new beginning: Maren's five letters, written fifty years ago and never sent, wait in a tin under her hearthstone. You carry letters for a living, so you deliver them"
 msgstr "Un nouveau départ : les cinq lettres de Maren, écrites il y a cinquante ans et jamais envoyées, attendent dans une boîte sous la pierre de son foyer. Porter des lettres, c'est votre métier, alors vous les remettez"
+
+#: assets/data/changelog.json
+msgid "A new dream under Sela's roof, the first night after Pell comes home"
+msgstr "Un nouveau rêve sous le toit de Sela, la première nuit après le retour de Pell"
 
 #: assets/data/changelog.json
 msgid "A path is a permanent identity: an always-on passive theme and a SIGNATURE SKILL no tree can teach"
@@ -3545,6 +3557,10 @@ msgid "Oilskin"
 msgstr "Ciré"
 
 #: assets/data/changelog.json
+msgid "Old Pell comes home with his canary and takes the room above Hilda's forge; her upgrades cost a little less"
+msgstr "Le vieux Pell rentre avec son canari et s'installe dans la chambre au-dessus de la forge de Hilda ; ses améliorations coûtent un peu moins cher"
+
+#: assets/data/changelog.json
 msgid "Old Wenna comes home with you: she moves into Sela's inn and puts Tam's stew back on the menu, so the inn's rest lasts ten fights longer"
 msgstr "La vieille Wenna rentre avec vous : elle s'installe à l'auberge de Sela et remet le ragoût de Tam à la carte, si bien que le repos de l'auberge dure dix combats de plus"
 
@@ -3591,6 +3607,10 @@ msgstr "Pendant la visite du bourg, un bâtiment reconstruit s'élève à son ar
 #: assets/data/changelog.json
 msgid "Once Upon a Mountain"
 msgstr "Il était une montagne"
+
+#: assets/data/changelog.json
+msgid "Once the Seam Warden falls, the ore cage takes you back up to the pithead"
+msgstr "Une fois le Gardien du Filon tombé, la cage à minerai vous remonte jusqu'au carreau de la mine"
 
 #: assets/data/changelog.json
 msgid "Once your whole skill tree is learned, spare skill points buy ranks beyond it in Stats: more skill power, health back from every blow, and more health, each capped"
@@ -4601,12 +4621,20 @@ msgid "The Barred Gate"
 msgstr "La Porte barrée"
 
 #: assets/data/changelog.json
+msgid "The Blackiron shafts now go three floors down: the upper shafts with Bram's humming cheese, the west gallery where Pell's canary is waiting (and cross), and the Black Seam, where the Seam Warden sits on the last ingot"
+msgstr "Les puits de Fernoir descendent désormais sur trois étages : les puits du haut avec le fromage qui fredonne de Bram, la Galerie ouest où attend le canari de Pell (furieux), et le Filon noir, où le Gardien du Filon trône sur le dernier lingot"
+
+#: assets/data/changelog.json
 msgid "The Bosses Fight Back"
 msgstr "Les boss ripostent"
 
 #: assets/data/changelog.json
 msgid "The CODEX opens from the HUD: your mastery progress bars on one tab, a bestiary on the other - monsters reveal their numbers only once you've drawn their family's blood"
 msgstr "Le CODEX s'ouvre depuis l'interface : vos barres de progression de maîtrise dans un onglet, un bestiaire dans l'autre - les monstres ne révèlent leurs chiffres qu'une fois que vous avez fait couler le sang de leur famille"
+
+#: assets/data/changelog.json
+msgid "The Canary"
+msgstr "Le canari"
 
 #: assets/data/changelog.json
 msgid "The Cartographer"
@@ -5423,6 +5451,10 @@ msgstr "Avec Réduire les animations, la ruine reste un instant, puis le bâtime
 #: assets/data/changelog.json
 msgid "With Reduce motion, the wins fade in where they stand"
 msgstr "Avec Réduire les animations, les gains apparaissent en fondu sur place"
+
+#: assets/data/changelog.json
+msgid "With two keepsakes home and a settler, the board offers Pixelheim's way to a Village"
+msgstr "Avec deux souvenirs rapportés et un nouvel habitant, le tableau d'avis propose à Pixelheim de devenir un village"
 
 #: assets/data/changelog.json
 msgid "Wolves, spiders, cats, the mammoths and many villagers no longer walk backwards when they go left or right"
@@ -7329,8 +7361,8 @@ msgid "The Seam Warden"
 msgstr "Le Gardien du Filon"
 
 #: assets/data/combat.json
-msgid "The Seam Warden tears a lump of black iron from the wall!"
-msgstr "Le Gardien du Filon arrache un bloc de fer noir à la paroi !"
+msgid "The Seam Warden heaves itself up off a black ingot stamped with five marks. It has been keeping it warm since spring."
+msgstr "Le Gardien du Filon se soulève d'un lingot noir frappé de cinq marques. Il le tient au chaud depuis le printemps."
 
 #: assets/data/combat.json
 msgid "The Sunless Stair"
@@ -7889,6 +7921,10 @@ msgid "the Ash Fields"
 msgstr "les Champs de Cendres"
 
 #: assets/data/combat.json
+msgid "the Black Seam, three floors down the Blackiron shafts"
+msgstr "le Filon noir, tout au fond des puits de Fernoir, trois étages plus bas"
+
+#: assets/data/combat.json
 msgid "the Blackiron shafts"
 msgstr "les puits de Fernoir"
 
@@ -7929,10 +7965,6 @@ msgid "the captain's hall at the far end of the Greyhold cellars"
 msgstr "la salle du capitaine, tout au fond des caves de Greyhold"
 
 #: assets/data/combat.json
-msgid "the deep seam at the bottom of the Blackiron shafts"
-msgstr "le filon profond, tout en bas des puits de Fernoir"
-
-#: assets/data/combat.json
 msgid "the drowned road at the south of the Sunken Marsh"
 msgstr "la route noyée, au sud du Marais englouti"
 
@@ -7963,6 +7995,14 @@ msgstr "la clairière close de murs au cœur des Bois-Profonds"
 #: assets/data/combat.json
 msgid "the west bank of the Mirefen"
 msgstr "la rive ouest des Marais de Fange"
+
+#: assets/data/depths.json
+msgid "Rails buckled under a fall of rock, and a lever somebody pulled far too hard. From the rubble, a very small voice is shouting."
+msgstr "Des rails tordus sous un éboulement, et un levier que quelqu'un a tiré bien trop fort. Sous les gravats, une toute petite voix crie."
+
+#: assets/data/depths.json
+msgid "The ore cage comes rattling down its shaft and its gate swings open: a ride up to the pithead, and daylight."
+msgstr "La cage à minerai descend son puits dans un fracas de chaînes, et sa grille s'ouvre : une montée jusqu'au carreau de la mine, et le jour."
 
 #: assets/data/depths.json
 msgid "The tide door groans open on its old hinges: daylight, salt wind, and the beach under the headland."
@@ -8401,6 +8441,10 @@ msgid "Hilda in Pixelheim would kill for this ore. Bring her some and see her sm
 msgstr "Hilda, à Pixelheim, tuerait pour ce minerai. Apportez-lui-en et vous la verrez sourire. Elle sourit une fois par an."
 
 #: assets/data/npcs.json
+msgid "Hilda lets me work her bellows. The canary supervises. Loudly."
+msgstr "Hilda me laisse tirer son soufflet. Le canari surveille. Bruyamment."
+
+#: assets/data/npcs.json
 msgid "Horses hate the ash fields. Smart animals."
 msgstr "Les chevaux détestent les Champs de Cendres. Bêtes intelligentes."
 
@@ -8589,6 +8633,14 @@ msgid "Old Pell"
 msgstr "Le vieux Pell"
 
 #: assets/data/npcs.json
+msgid "Old Pell and his canary have moved in above Hilda's forge."
+msgstr "Le vieux Pell et son canari se sont installés au-dessus de la forge de Hilda."
+
+#: assets/data/npcs.json
+msgid "Old Pell is packing for Pixelheim, canary and all: a forge with a room over it, and nobody digging under his bed."
+msgstr "Le vieux Pell fait ses bagages pour Pixelheim, canari compris : une forge avec une chambre au-dessus, et personne pour creuser sous son lit."
+
+#: assets/data/npcs.json
 msgid "Old Tomas"
 msgstr "Le vieux Tomas"
 
@@ -8607,6 +8659,10 @@ msgstr "La vieille Wenna fait ses bagages pour Pixelheim : l'auberge de Sela a
 #: assets/data/npcs.json
 msgid "Paved streets! My cart has never rolled so smooth."
 msgstr "Des rues pavées ! Ma charrette n'a jamais roulé aussi bien."
+
+#: assets/data/npcs.json
+msgid "Pell works Hilda's bellows: her +1s cost a tenth less again"
+msgstr "Pell tire le soufflet de Hilda : ses +1 coûtent encore un dixième de moins"
 
 #: assets/data/npcs.json
 msgid "Pip"
@@ -8725,12 +8781,20 @@ msgid "The board on the square lists what we need to rebuild. Coin and a little 
 msgstr "Le tableau d'avis de la place liste ce qu'il faut pour reconstruire. De l'or, et un peu de ce qu'on trouve dans les terres sauvages - nous ferons le reste."
 
 #: assets/data/npcs.json
+msgid "The canary and the cat have reached an understanding. The understanding is shouting."
+msgstr "Le canari et le chat sont parvenus à une entente. L'entente consiste à hurler."
+
+#: assets/data/npcs.json
 msgid "The cat"
 msgstr "Le chat"
 
 #: assets/data/npcs.json
 msgid "The cat looks at you, then at your boots, then away. You have been judged."
 msgstr "Le chat vous regarde, puis regarde vos bottes, puis détourne les yeux. Le verdict est tombé."
+
+#: assets/data/npcs.json
+msgid "The cat sits on the anvil to watch the canary. The canary sits on Hilda's head to watch the cat. Hilda has opinions."
+msgstr "Le chat s'assoit sur l'enclume pour surveiller le canari. Le canari s'assoit sur la tête de Hilda pour surveiller le chat. Hilda a son avis sur la question."
 
 #: assets/data/npcs.json
 msgid "The dead below don't rest. They were good men. Nobody ever gave them the order to stand down."
@@ -9289,10 +9353,6 @@ msgid "Down in one piece! Mostly. The pass's last run of the season, and the fir
 msgstr "Arrivé en bas en un seul morceau ! Ou presque. La dernière descente de la saison, et la première depuis des années à ne pas avoir nourri les loups."
 
 #: assets/data/progression.json
-msgid "Down past the cart hall, the deep seam. Whatever's there has been there a long while."
-msgstr "Passé la halle des wagonnets, le filon profond. Ce qui s'y trouve y est depuis bien longtemps."
-
-#: assets/data/progression.json
 msgid "Down the keep's stair, through the crypt, to the captain's hall. That's where Oskar's shield hung. Whatever's there has kept it all this while."
 msgstr "Descendez l'escalier du donjon, traversez la crypte, jusqu'à la salle du capitaine. C'est là qu'était accroché le bouclier d'Oskar. Ce qui s'y trouve l'a gardé pendant tout ce temps."
 
@@ -9379,6 +9439,10 @@ msgstr "Sentez-moi ce poids. J'en ferai quelque chose qui en vaille la peine - e
 #: assets/data/progression.json
 msgid "Fenwick left something in the cells."
 msgstr "Fenwick a laissé quelque chose dans les cellules."
+
+#: assets/data/progression.json
+msgid "Fetch the last ingot from the Black Seam"
+msgstr "Rapporter le dernier lingot du Filon noir"
 
 #: assets/data/progression.json
 msgid "Fever-ghosts laid"
@@ -9885,10 +9949,6 @@ msgid "Now that's a coat. Here - a pearl from the jetty. Make something sharp wi
 msgstr "Ça, c'est un ciré. Tenez - une perle de la jetée. Faites-en quelque chose de tranchant."
 
 #: assets/data/progression.json
-msgid "Off the west gallery, last I heard her. Small cage. Mind your fingers."
-msgstr "Du côté de la galerie ouest, la dernière fois que je l'ai entendu. Petite cage. Gare à vos doigts."
-
-#: assets/data/progression.json
 msgid "Oilskin coats made"
 msgstr "Manteaux cirés confectionnés"
 
@@ -10237,10 +10297,6 @@ msgid "Take Maren's letter to Captain Hale at Greyhold."
 msgstr "Porter la lettre de Maren au capitaine Hale, à Greyhold."
 
 #: assets/data/progression.json
-msgid "Take the Black Ingot from the Seam Warden, deep in the Blackiron shafts"
-msgstr "Prendre le Lingot noir au Gardien du Filon, au fond des puits de Fernoir"
-
-#: assets/data/progression.json
 msgid "Take the cliff road to Saltmere with Maren's first letter: south past the marsh, then down the cliffs. Old Wenna is Tam's sister."
 msgstr "Prenez la route de la falaise vers Saltmere avec la première lettre de Maren : au sud, après le marais, puis en contrebas des falaises. La vieille Wenna est la sœur de Tam."
 
@@ -10301,16 +10357,12 @@ msgid "That's his. The tower's worn right off it from his thumb. Thank you. He k
 msgstr "C'est le sien. Son pouce a usé la tour jusqu'à l'effacer. Merci. Il le gardait en cas de coup dur, et c'en est un."
 
 #: assets/data/progression.json
-msgid "The Black Seam"
-msgstr "Le Filon noir"
-
-#: assets/data/progression.json
 msgid "The Blackiron miners age a cheese down their shafts."
 msgstr "Les mineurs de Fernoir affinent un fromage au fond de leurs puits."
 
 #: assets/data/progression.json
-msgid "The Blackiron road leaves the west edge of the Ash Fields. Foreman Garrick runs the miners' camp."
-msgstr "La route de Fernoir part de la lisière ouest des Champs de Cendres. Le contremaître Garrick dirige le camp des mineurs."
+msgid "The Blackiron shafts run three floors down under the valley. At the bottom, in the Black Seam, something sits on the ingot the five stamped and forgot."
+msgstr "Les puits de Fernoir descendent sur trois étages sous la vallée. Tout au fond, dans le Filon noir, quelque chose couve le lingot que les cinq ont marqué puis oublié."
 
 #: assets/data/progression.json
 msgid "The Captain's Due"
@@ -10509,6 +10561,10 @@ msgid "The last ember gutters out on the stones. Maren is waiting at the shrine.
 msgstr "La dernière braise s'éteint sur les pavés. Maren attend au sanctuaire."
 
 #: assets/data/progression.json
+msgid "The last ingot. We stamped our five marks on it and left it in the seam for luck. Luck's run out, by the sound of it."
+msgstr "Le dernier lingot. Nous y avons frappé nos cinq marques et l'avons laissé dans le filon, pour la chance. La chance a tourné, on dirait."
+
+#: assets/data/progression.json
 msgid "The last of the fires you can reach is out. The square is glowing - embers, blown off the roofs."
 msgstr "Le dernier feu à votre portée est éteint. La place rougeoie : des braises, soufflées des toits."
 
@@ -10559,6 +10615,10 @@ msgstr "La gelée transportait une bourse de voyageur : une potion de soin. {k
 #: assets/data/progression.json
 msgid "The stores thank you. So does my nose. Here - you've earned it."
 msgstr "Les réserves vous remercient. Mon nez aussi. Tenez, vous l'avez bien mérité."
+
+#: assets/data/progression.json
+msgid "The west gallery, one floor down, last I heard her. Small cage. Mind your fingers."
+msgstr "La galerie ouest, un étage plus bas, la dernière fois que je l'ai entendu. Petite cage. Gare à vos doigts."
 
 #: assets/data/progression.json
 msgid "The yard's quiet. First time in years. Now the keep: its door goes down to the cellars, and something down there won't let anyone near the captain's hall."
@@ -10615,6 +10675,10 @@ msgstr "Trois pillards de moins dans les Champs de Cendres, et mes cavaliers pou
 #: assets/data/progression.json
 msgid "Three fewer slimes in the world and there's coin in it for you."
 msgstr "Trois gelées de moins en ce monde, et il y aura quelques pièces pour vous."
+
+#: assets/data/progression.json
+msgid "Three floors down, past the cart hall and the west gallery: the Black Seam. Whatever's down there moved in last spring, and it isn't paying rent."
+msgstr "Trois étages plus bas, passé la halle des wagonnets et la galerie ouest : le Filon noir. Ce qui s'y est installé au printemps dernier ne paie pas de loyer."
 
 #: assets/data/progression.json
 msgid "Three fresh fish, please! Saltmere's down the cliffs, south of the marsh - follow the path out of the reeds. Mind the crabs."
@@ -10897,6 +10961,10 @@ msgid "\"The voice below...\""
 msgstr "« La voix d'en bas... »"
 
 #: assets/data/story.json
+msgid "\"Thirty-one. They've a new one by the bridge. Crooked.\""
+msgstr "« Trente et un. Ils en ont un nouveau, près du pont. Tout de travers. »"
+
+#: assets/data/story.json
 msgid "\"You're late, courier. Fifty years late.\""
 msgstr "« Vous êtes en retard, messager. Cinquante ans de retard. »"
 
@@ -10971,6 +11039,10 @@ msgstr "Il est éveillé, et de retour sur son trésor."
 #: assets/data/story.json
 msgid "He isn't dead, courier. He's waiting. Go down and end it - for them, if not for me."
 msgstr "Il n'est pas mort, messager. Il attend. Descendez et mettez-y fin : pour eux, sinon pour moi."
+
+#: assets/data/story.json
+msgid "He isn't working. He is looking down at the valley, counting lamps."
+msgstr "Il ne travaille pas. Il regarde la vallée tout en bas, et il compte les lampes."
 
 #: assets/data/story.json
 msgid "He said I was right to run? ...Then maybe I can stop running."
@@ -11185,6 +11257,10 @@ msgid "You bring the blade down. Morvax the Deathless breaks like old glass, and
 msgstr "Vous abattez la lame. Morvax le Sans-Mort se brise comme du vieux verre, et les ténèbres emportent ce qu'il reste de lui."
 
 #: assets/data/story.json
+msgid "You dream of a forge high up in the cold, and an old man at it, thin as a rake."
+msgstr "Vous rêvez d'une forge, tout là-haut dans le froid, et d'un vieil homme devant elle, maigre comme un clou."
+
+#: assets/data/story.json
 msgid "You dream of a great door in the mountain, and of a dragon asleep against it."
 msgstr "Vous rêvez d'une grande porte dans la montagne, et d'un dragon endormi contre elle."
 
@@ -11203,6 +11279,10 @@ msgstr "Vous avez trouvé les tombes dans la crypte. Oskar, Liane, Tam."
 #: assets/data/story.json
 msgid "You read him Liane's last page. When you say their names - Tam, Oskar, Liane, Maren - Morvax lowers his hands."
 msgstr "Vous lui lisez la dernière page de Liane. Tam, Oskar, Liane, Maren : quand vous prononcez leurs noms, Morvax baisse les mains."
+
+#: assets/data/story.json
+msgid "You wake to Hilda's hammer across the square, and a canary telling it off."
+msgstr "Vous vous réveillez au son du marteau de Hilda, de l'autre côté de la place, et d'un canari qui le sermonne."
 
 #: assets/data/story.json
 msgid "You wake to the smell of smoke and Sela snoring."
@@ -11469,6 +11549,10 @@ msgid "Street lamps"
 msgstr "Réverbères"
 
 #: assets/data/town.json
+msgid "Street lamps, market stalls and a cottage for newcomers wait on the board on the square."
+msgstr "Réverbères, étals du marché et une chaumière pour les nouveaux venus attendent au tableau d'avis de la place."
+
+#: assets/data/town.json
 msgid "The Healers' Hall"
 msgstr "La Maison des guérisseurs"
 
@@ -11529,6 +11613,10 @@ msgid "Town"
 msgstr "Bourg"
 
 #: assets/data/town.json
+msgid "Two keepsakes home and new faces in town: Pixelheim can grow into a Village."
+msgstr "Deux souvenirs rentrés au pays et de nouveaux visages en ville : Pixelheim peut devenir un village."
+
+#: assets/data/town.json
 msgid "Two stalls on the square, and somewhere to haggle."
 msgstr "Deux étals sur la place, et de quoi marchander."
 
@@ -11551,6 +11639,10 @@ msgstr "Village"
 #: assets/data/town.json
 msgid "What Fafnyr left: footings, cinders, and the people too stubborn to leave."
 msgstr "Ce que Fafnyr a laissé : des fondations, des cendres, et les gens trop têtus pour partir."
+
+#: assets/maps/interactables.json
+msgid "A black-rinded wheel, aged down here in the dark. It hums. Faintly, and slightly off-key."
+msgstr "Une meule à croûte noire, affinée ici dans le noir. Elle fredonne. Faiblement, et un peu faux."
 
 #: assets/maps/interactables.json
 msgid "BREWS"
@@ -11587,6 +11679,10 @@ msgstr "AUBERGE"
 #: assets/maps/interactables.json
 msgid "Liane's Observatory"
 msgstr "L'observatoire de Liane"
+
+#: assets/maps/interactables.json
+msgid "Pell's canary glares at you through the bars of her cage, and shouts. Three days she's been down here, and somehow it's your fault."
+msgstr "Le canari de Pell vous fusille du regard à travers les barreaux de sa cage, et crie. Trois jours qu'il est coincé là-dessous, et c'est votre faute, allez savoir comment."
 
 #: assets/maps/interactables.json
 msgid "Pixelheim Gate"

@@ -25,8 +25,9 @@ const TILE_INFO := {
 	# cellar under a house, walked onto (it asks first).
 	"stairwell": true,
 	# A region dungeon's floors (PIX-255): a wreck's beams, the sea's
-	# boulders, and the shortcut's door in the rock while it's sealed.
-	"wreck": false, "rock": false, "sealed": false,
+	# boulders, and the shortcut's door in the rock while it's sealed; the
+	# shafts' ore cage's winch.
+	"wreck": false, "rock": false, "sealed": false, "winch": false,
 }
 
 ## Terrain the Puny World ground draws (PunyTerrain, PIX-130).
@@ -50,7 +51,7 @@ const TILE_COLORS := {
 	"shore": "5aa0c8", "sea": "2a6fa8", "deep_sea": "1d4a7a", "dock": "8a6238",
 	"snow": "e8eef2", "ice": "a8d0e0", "stone": "8a8680",
 	"stairwell": "16181e",
-	"wreck": "6a4a2e", "rock": "6b6f7a", "sealed": "8a6238",
+	"wreck": "6a4a2e", "rock": "6b6f7a", "sealed": "8a6238", "winch": "6b6f7a",
 }
 const ROOF_COLOR := "8a5638"
 const FALLBACK_COLOR := "4a4e58"

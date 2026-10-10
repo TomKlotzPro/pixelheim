@@ -77,7 +77,7 @@ func ascend(title: String) -> void:
 func dream() -> void:
 	if GameState.progression.prologue != Prologue.DONE:
 		return
-	play_story(Story.next_dream(GameState.progression.cleared_levels, GameState.progression.story_seen))
+	play_story(Story.next_dream(GameState.progression.cleared_levels, GameState.progression.story_seen, GameState.settlement.settlers))
 
 
 ## The Night of Ash on arriving somewhere (PIX-152): on the road, the
@@ -294,6 +294,15 @@ func play_reveals() -> void:
 					stops.append({
 						"at": MapView.center(Vector2i(int(home["x"]), int(home["y"]))) + BUILDING_FRAMING,
 						"line": String(home["line"]), "detail": String(home.get("detail", "")),
+					})
+			"opens":
+				# The next age stands open (PIX-253 step 5: the Village, as
+				# Old Pell comes home): the board says what it asks.
+				var opens: Dictionary = Town.age(int(key)).get("opens", {})
+				if not opens.is_empty():
+					stops.append({
+						"at": MapView.center(Town.project_board()), "line": String(opens["line"]),
+						"detail": String(opens.get("detail", "")),
 					})
 			"deep":
 				# A Deep Hunt milestone (PIX-216): the town has heard.

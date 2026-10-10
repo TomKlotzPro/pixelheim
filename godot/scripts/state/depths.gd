@@ -194,7 +194,7 @@ static func dress(map: MapData) -> MapData:
 	var door := shortcut_on(map.id)
 	if not door.is_empty():
 		map.grid[door["cell"]] = "sealed"
-		map.pieces[door["cell"]] = PunyDungeon.GATE_SHUT
+		map.pieces[door["cell"]] = PunyDungeon.DOORS[door["look"]][0]
 	if entry.has("plan") and entry["plan"].has("setPiece"):
 		var note := String(_data()["setPieces"][entry["plan"]["setPiece"]].get("note", ""))
 		for cell: Vector2i in plan(map.id)["piece_cells"]:
@@ -210,7 +210,8 @@ static func boss(dungeon_id: String) -> String:
 
 ## The shortcut out of `map_id`'s dungeon when it's on that floor: {cell,
 ## to (the portal: the dungeon's way in), opened (what's said as it opens),
-## boss}; {} otherwise.
+## boss, look (PunyDungeon.DOORS: the sea cave's wooden gate, the shafts'
+## ore cage)}; {} otherwise.
 static func shortcut_on(map_id: String) -> Dictionary:
 	var entry := floor_of(map_id)
 	if entry.is_empty():
@@ -218,7 +219,10 @@ static func shortcut_on(map_id: String) -> Dictionary:
 	var cut: Dictionary = dungeon(entry["dungeon"]).get("shortcut", {})
 	if String(cut.get("mapId", "")) != map_id:
 		return {}
-	return {"cell": _cell(cut), "to": cut["to"], "opened": String(cut.get("opened", "")), "boss": boss(entry["dungeon"])}
+	return {
+		"cell": _cell(cut), "to": cut["to"], "opened": String(cut.get("opened", "")), "boss": boss(entry["dungeon"]),
+		"look": String(cut.get("look", "gate")),
+	}
 
 
 ## Whether the shortcut on `map_id` stands open for a hero who has felled
@@ -237,7 +241,7 @@ static func open_shortcut(map: MapData, hunted: Array) -> bool:
 	var door := shortcut_on(map.id)
 	var cell: Vector2i = door["cell"]
 	map.grid[cell] = "cave"
-	map.pieces[cell] = PunyDungeon.DOORWAY
+	map.pieces[cell] = PunyDungeon.DOORS[door["look"]][1]
 	map.portals[cell] = (door["to"] as Dictionary).duplicate()
 	return true
 

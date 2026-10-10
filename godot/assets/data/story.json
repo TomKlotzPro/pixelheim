@@ -614,6 +614,55 @@
         "seconds": 0.8
       }
     ],
+    "dream_lamps": [
+      {
+        "kind": "stage",
+        "stage": "lair"
+      },
+      {
+        "kind": "fade",
+        "to": "clear",
+        "seconds": 0.8
+      },
+      {
+        "kind": "caption",
+        "text": "You dream of a forge high up in the cold, and an old man at it, thin as a rake.",
+        "hold": 4.0
+      },
+      {
+        "kind": "actor",
+        "sheet": "mini/Okomo.png",
+        "family": "mini",
+        "anim": "idle",
+        "dir": "down",
+        "scale": 6,
+        "silhouette": true,
+        "at": [
+          640,
+          500
+        ]
+      },
+      {
+        "kind": "caption",
+        "text": "He isn't working. He is looking down at the valley, counting lamps.",
+        "hold": 3.6
+      },
+      {
+        "kind": "caption",
+        "text": "\"Thirty-one. They've a new one by the bridge. Crooked.\"",
+        "hold": 3.8
+      },
+      {
+        "kind": "caption",
+        "text": "You wake to Hilda's hammer across the square, and a canary telling it off.",
+        "hold": 3.0
+      },
+      {
+        "kind": "fade",
+        "to": "black",
+        "seconds": 0.8
+      }
+    ],
     "dream_five": [
       {
         "kind": "stage",
@@ -926,6 +975,10 @@
     {
       "id": "dream_courier",
       "after": 0
+    },
+    {
+      "id": "dream_lamps",
+      "home": "mines_pell"
     },
     {
       "id": "dream_five",
