@@ -3185,6 +3185,10 @@ msgid "Many Tongues"
 msgstr "Mille langues"
 
 #: assets/data/changelog.json
+msgid "Maren no longer skips a story: if you went far before visiting her, she tells each one in turn, oldest first, and the main quest's step that waits on it is met"
+msgstr "Maren ne saute plus d'histoire : si vous avez exploré loin avant de lui rendre visite, elle les raconte chacune à leur tour, la plus ancienne d'abord, et l'étape de la quête principale qui l'attend est validée"
+
+#: assets/data/changelog.json
 msgid "Market Day"
 msgstr "Jour de marché"
 
@@ -4425,6 +4429,10 @@ msgid "Talking is easy now: E finds whoever stands beside you and turns you towa
 msgstr "Parler est simple désormais : E trouve qui se tient à côté de vous et vous tourne vers lui"
 
 #: assets/data/changelog.json
+msgid "Tam's Ladle, Captain Hale and Maren's lines now agree with where things were found, and the credits end: Thank you for staying."
+msgstr "La louche de Tam, le capitaine Hale et Maren s'accordent avec ce qui a été trouvé, et le générique se termine par : Merci d'avoir choisi de rester."
+
+#: assets/data/changelog.json
 msgid "Ten floors of monsters, from cellar slimes to Fafnyr the Ashen"
 msgstr "Dix étages de monstres, des gelées de la cave à Fafnyr des Cendres"
 
@@ -4813,6 +4821,10 @@ msgid "The stat sheet got an identity: your portrait, name and rank up top, jewe
 msgstr "La fiche de caractéristiques prend une identité : votre portrait, votre nom et votre rang en haut, les bonus des bijoux affichés en « +n porté » à côté de chaque caractéristique"
 
 #: assets/data/changelog.json
+msgid "The story says what really happened: five of the village climbed to mend the seal and only one came home, the dream counts three torches, and Fafnyr is awake on his hoard"
+msgstr "L'histoire dit ce qui s'est vraiment passé : cinq villageois sont montés réparer le sceau et une seule est revenue, le rêve compte trois torches, et Fafnyr est éveillé sur son trésor"
+
+#: assets/data/changelog.json
 msgid "The tap bar carries what only a key did: drop, drop all and sort in the pack, put a skill on a key and forget in Skills, and it shrinks to fit the screen"
 msgstr "La barre tactile reprend ce que seul le clavier faisait : jeter, tout jeter et trier dans le sac, placer une compétence sur une touche et oublier dans Compétences, et elle se resserre pour tenir à l'écran"
 
@@ -4947,6 +4959,10 @@ msgstr "Bois & pierre"
 #: assets/data/changelog.json
 msgid "Timber and Plaster"
 msgstr "Bois et plâtre"
+
+#: assets/data/changelog.json
+msgid "Told True"
+msgstr "Au plus juste"
 
 #: assets/data/changelog.json
 msgid "Townsfolk drawn from the same sheet now wear their own colours, so no two people on a map look alike"

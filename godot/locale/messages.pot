@@ -3185,6 +3185,10 @@ msgid "Many Tongues"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Maren no longer skips a story: if you went far before visiting her, she tells each one in turn, oldest first, and the main quest's step that waits on it is met"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Market Day"
 msgstr ""
 
@@ -4425,6 +4429,10 @@ msgid "Talking is easy now: E finds whoever stands beside you and turns you towa
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Tam's Ladle, Captain Hale and Maren's lines now agree with where things were found, and the credits end: Thank you for staying."
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Ten floors of monsters, from cellar slimes to Fafnyr the Ashen"
 msgstr ""
 
@@ -4813,6 +4821,10 @@ msgid "The stat sheet got an identity: your portrait, name and rank up top, jewe
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The story says what really happened: five of the village climbed to mend the seal and only one came home, the dream counts three torches, and Fafnyr is awake on his hoard"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The tap bar carries what only a key did: drop, drop all and sort in the pack, put a skill on a key and forget in Skills, and it shrinks to fit the screen"
 msgstr ""
 
@@ -4946,6 +4958,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Timber and Plaster"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Told True"
 msgstr ""
 
 #: assets/data/changelog.json
