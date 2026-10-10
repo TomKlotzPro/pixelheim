@@ -1925,6 +1925,10 @@ msgid "A stairwell in each room goes down to the cave, and going into the dark i
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A third dream under Sela's roof, the first night after Aske comes home"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A town's new age is heralded with a flourish and dust on the square, and each new map fades in from the dark instead of cutting (not with reduced motion)"
 msgstr ""
 
@@ -2030,6 +2034,14 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Ascension is a scene now: letterbox bars, turning light, your hero marching in their NEW look, the title stamped over it"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Aske comes home as Pixelheim's lamplighter, and your lantern reaches a third further; with all four keepsakes home, the board offers the Town"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Aske waits by Liane's door at the observatory; deliver Maren's letter and he opens it, and Liane's sums lie on her desk"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -2881,6 +2893,10 @@ msgid "Fortune and Steel"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Forty Lamps"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Four roles: Warrior, Mage, Rogue, Cleric"
 msgstr ""
 
@@ -3634,6 +3650,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "On the town's tour, a rebuilt building rises at its stop: the ruin gives way in a cloud of dust, the walls go up row by row, and it lands under confetti"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Once Rimefang falls, an ice slide takes you back down to the foot of Liane's stair"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4958,6 +4978,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The hub screen retires with honor. It served well."
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The ice cave now goes three floors down: the frosted galleries with Gunnar's strongbox, a frozen lake you can walk across, and the glass hall where Rimefang sleeps on Liane's lantern"
 msgstr ""
 
 #: assets/data/changelog.json

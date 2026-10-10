@@ -1925,6 +1925,10 @@ msgid "A stairwell in each room goes down to the cave, and going into the dark i
 msgstr "Un escalier dans chaque pièce descend vers la grotte, et descendre dans le noir est un choix : l'escalier vous le demande d'abord"
 
 #: assets/data/changelog.json
+msgid "A third dream under Sela's roof, the first night after Aske comes home"
+msgstr "Un troisième rêve sous le toit de Sela, la première nuit après le retour d'Aske"
+
+#: assets/data/changelog.json
 msgid "A town's new age is heralded with a flourish and dust on the square, and each new map fades in from the dark instead of cutting (not with reduced motion)"
 msgstr "Le nouvel âge d'une ville s'annonce par une fanfare et de la poussière sur la place, et chaque nouvelle carte sort de l'obscurité au lieu d'apparaître d'un coup (sauf avec les animations réduites)"
 
@@ -2031,6 +2035,14 @@ msgstr "L'ascension est un moment : un carton-titre, une fanfare, et un point 
 #: assets/data/changelog.json
 msgid "Ascension is a scene now: letterbox bars, turning light, your hero marching in their NEW look, the title stamped over it"
 msgstr "L'ascension est désormais une scène : bandes noires, lumière tournoyante, votre héros qui défile dans sa NOUVELLE apparence, le titre frappé par-dessus"
+
+#: assets/data/changelog.json
+msgid "Aske comes home as Pixelheim's lamplighter, and your lantern reaches a third further; with all four keepsakes home, the board offers the Town"
+msgstr "Aske rentre comme allumeur de réverbères de Pixelheim, et votre lanterne porte un tiers plus loin ; avec les quatre souvenirs rapportés, le tableau d'avis propose la ville"
+
+#: assets/data/changelog.json
+msgid "Aske waits by Liane's door at the observatory; deliver Maren's letter and he opens it, and Liane's sums lie on her desk"
+msgstr "Aske attend près de la porte de Liane, à l'observatoire ; remettez-lui la lettre de Maren et il l'ouvre, et les calculs de Liane vous attendent sur son bureau"
 
 #: assets/data/changelog.json
 msgid "At night its windows and lamps are lit, and smoke rises from its roofs"
@@ -2881,6 +2893,10 @@ msgid "Fortune and Steel"
 msgstr "Fortune et acier"
 
 #: assets/data/changelog.json
+msgid "Forty Lamps"
+msgstr "Quarante lanternes"
+
+#: assets/data/changelog.json
 msgid "Four roles: Warrior, Mage, Rogue, Cleric"
 msgstr "Quatre rôles : Guerrier, Mage, Voleur, Clerc"
 
@@ -3635,6 +3651,10 @@ msgstr "Sur téléphone, les commandes ont la taille d'un pouce sur tous les éc
 #: assets/data/changelog.json
 msgid "On the town's tour, a rebuilt building rises at its stop: the ruin gives way in a cloud of dust, the walls go up row by row, and it lands under confetti"
 msgstr "Pendant la visite du bourg, un bâtiment reconstruit s'élève à son arrêt : la ruine cède dans un nuage de poussière, les murs montent rang par rang, et il se pose sous les confettis"
+
+#: assets/data/changelog.json
+msgid "Once Rimefang falls, an ice slide takes you back down to the foot of Liane's stair"
+msgstr "Une fois Crocgivre tombé, une glissade de glace vous ramène au pied de l'escalier de Liane"
 
 #: assets/data/changelog.json
 msgid "Once Upon a Mountain"
@@ -4959,6 +4979,10 @@ msgstr "Le héros marche en quatre temps, se soulevant quand les pieds se croise
 #: assets/data/changelog.json
 msgid "The hub screen retires with honor. It served well."
 msgstr "L'écran central prend sa retraite avec les honneurs. Il a bien servi."
+
+#: assets/data/changelog.json
+msgid "The ice cave now goes three floors down: the frosted galleries with Gunnar's strongbox, a frozen lake you can walk across, and the glass hall where Rimefang sleeps on Liane's lantern"
+msgstr "La Grotte de glace descend désormais sur trois étages : les galeries givrées avec le coffre de Gunnar, un lac gelé que l'on peut traverser, et la Salle de verre où Crocgivre dort sur la lanterne de Liane"
 
 #: assets/data/changelog.json
 msgid "The inventory doll wears your gear live - equip a piece and watch your character change right there in the preview"
