@@ -2529,6 +2529,10 @@ msgid "Eight new items, and five of them can ONLY be made, never bought: from th
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Elbow Room"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Elder Maren remembers the fire; Ana doubts the elixirs; Bram guards his fence"
 msgstr ""
 
@@ -2858,6 +2862,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Fleeing and forage work exactly as before - only the surprise is gone"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Foes standing side by side no longer stack their level tags: the nearest one shows its level, and a tag that would overlap it waits its turn"
 msgstr ""
 
 #: assets/data/changelog.json

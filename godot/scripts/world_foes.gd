@@ -145,6 +145,47 @@ func keep_hours(arriving := false) -> void:
 				member.set_asleep(asleep)
 
 
+## Level tags kept apart (Tom's playtest: two foes side by side read
+## "Ni Niv. 7"): each frame, after the foes have said whether their tags show,
+## the one nearest the hero keeps its tag and any tag it would overlap hides.
+func _process(_delta: float) -> void:
+	if world == null or world.player == null:
+		return
+	var shown: Array = []
+	for enemy in get_tree().get_nodes_in_group("mobs"):
+		if enemy.level_tag != null and enemy.level_tag.visible:
+			shown.append(enemy)
+	if shown.size() < 2:
+		return
+	var hero: Vector2 = world.player.global_position
+	shown.sort_custom(func(a: Node2D, b: Node2D) -> bool:
+		return a.global_position.distance_squared_to(hero) < b.global_position.distance_squared_to(hero))
+	var rects: Array[Rect2] = []
+	for enemy in shown:
+		rects.append((enemy.level_tag as Control).get_global_rect())
+	var keep := Foes.apart(rects)
+	for index in shown.size():
+		if not keep[index]:
+			shown[index].level_tag.visible = false
+
+
+## Which of `rects`, nearest first, may show: each one that overlaps none
+## already kept.
+static func apart(rects: Array[Rect2]) -> Array[bool]:
+	var kept: Array[Rect2] = []
+	var out: Array[bool] = []
+	for rect in rects:
+		var clear := true
+		for other in kept:
+			if rect.intersects(other):
+				clear = false
+				break
+		out.append(clear)
+		if clear:
+			kept.append(rect)
+	return out
+
+
 ## Each pack standing on the map: spawn id -> its living monsters (none
 ## dying, none left over from the map before).
 func _standing() -> Dictionary:

@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.215.0",
+      "date": "2026-10-10",
+      "codename": "Elbow Room",
+      "notes": [
+        "Foes standing side by side no longer stack their level tags: the nearest one shows its level, and a tag that would overlap it waits its turn"
+      ]
+    },
+    {
       "version": "0.214.0",
       "date": "2026-10-10",
       "codename": "Small Mercies",
