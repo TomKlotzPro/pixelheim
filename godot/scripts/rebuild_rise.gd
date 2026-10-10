@@ -290,6 +290,7 @@ func _lift(layer: TileMapLayer, cells: Array) -> TileMapLayer:
 			copy = TileMapLayer.new()
 			copy.tile_set = layer.tile_set
 			copy.material = layer.material
+			copy.rendering_quadrant_size = layer.rendering_quadrant_size
 		var coords := layer.get_cell_atlas_coords(cell)
 		var alternative := layer.get_cell_alternative_tile(cell)
 		copy.set_cell(cell, source, coords, alternative)
