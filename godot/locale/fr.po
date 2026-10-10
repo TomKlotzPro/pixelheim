@@ -9529,8 +9529,8 @@ msgid "Magus"
 msgstr "Magister"
 
 #: assets/data/progression.json
-msgid "Maren says Oskar isn't coming home, and the captain can stand down. He's in his hall under the keep, still guarding Oskar's shield. Go and tell him."
-msgstr "Maren dit qu'Oskar ne rentrera pas, et que le capitaine peut quitter son poste. Il est dans sa salle sous le donjon, et garde toujours le bouclier d'Oskar. Allez le lui dire."
+msgid "Maren says Oskar isn't coming home, and the captain can stand down. He's down in the cellars under his hall, still guarding Oskar's shield. Go and tell him."
+msgstr "Maren dit qu'Oskar ne rentrera pas, et que le capitaine peut quitter son poste. Il est en bas, dans les caves sous sa salle, et garde toujours le bouclier d'Oskar. Allez le lui dire."
 
 #: assets/data/progression.json
 msgid "Maren waits for all four relics. She'll open the gate with the last of them: her promise."

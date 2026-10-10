@@ -9529,7 +9529,7 @@ msgid "Magus"
 msgstr ""
 
 #: assets/data/progression.json
-msgid "Maren says Oskar isn't coming home, and the captain can stand down. He's in his hall under the keep, still guarding Oskar's shield. Go and tell him."
+msgid "Maren says Oskar isn't coming home, and the captain can stand down. He's down in the cellars under his hall, still guarding Oskar's shield. Go and tell him."
 msgstr ""
 
 #: assets/data/progression.json
