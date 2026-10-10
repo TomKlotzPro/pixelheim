@@ -117,6 +117,22 @@ static func arrival_facing(map: MapData, arrival: Vector2i, from_map: String, fa
 	return facing
 
 
+## How far under the ground a map lies: 0 under the sky or in a room, 1 in
+## a cave or a cellar, deeper on a dungeon's floors, one step a floor.
+static func depth(map: MapData) -> int:
+	if map.floor_level > 0:
+		return 1 + map.floor_level
+	return 1 if map.style == "cave" else 0
+
+
+## Whether the way from `from` to `to` goes down under the ground (into a
+## cave, a cellar, a dungeon's floor or the next one down): the change of
+## scene keeps a brief dark there, the mood of going under (One Reach,
+## PIX-269). Every other way, and every way back up, dissolves.
+static func goes_under(from: MapData, to: MapData) -> bool:
+	return depth(to) > depth(from)
+
+
 ## Whether `cell` is a way down from a room (a stairwell that leads
 ## somewhere): walking onto it, or E facing it, asks first.
 static func goes_down(map: MapData, cell: Vector2i) -> bool:
@@ -160,10 +176,19 @@ static func going_down(map: MapData, cell: Vector2i) -> Dictionary:
 	}
 
 
+## How far from where a save stood the hero may wake when that ground is
+## gone.
+const NEARBY := 6
+
+
 ## Where a hero saved at `cell` stands when the save loads (PIX-256): there,
 ## on open ground; off a doorway onto the open ground beside it (below
 ## first, the way out of a door), so a save made in the frame of a door that
-## now leads somewhere else wakes outside it; else the map's spawn.
+## now leads somewhere else wakes outside it; on the nearest open ground
+## within NEARBY that the map's way in reaches, where the ground is rock or
+## wood now (One Reach, PIX-269: the roads out of four regions moved along
+## their edges, and the cliff closed over the old ones); else the map's
+## spawn. The save's format is the same (web v4): only where it wakes moves.
 static func standing(map: MapData, cell: Vector2i) -> Vector2i:
 	if open_ground(map, cell):
 		return cell
@@ -171,7 +196,36 @@ static func standing(map: MapData, cell: Vector2i) -> Vector2i:
 		for step: Vector2i in [Vector2i.DOWN, Vector2i.UP, Vector2i.LEFT, Vector2i.RIGHT]:
 			if open_ground(map, cell + step):
 				return cell + step
+	var reached := {}
+	for radius in range(1, NEARBY + 1):
+		var best := NOWHERE
+		for y in range(-radius, radius + 1):
+			for x in range(-radius, radius + 1):
+				var near := cell + Vector2i(x, y)
+				if maxi(absi(x), absi(y)) != radius or not open_ground(map, near):
+					continue
+				if best == NOWHERE or Vector2(near - cell).length() < Vector2(best - cell).length():
+					if reached.is_empty():
+						reached = _walked_from(map, map.spawn)
+					if reached.has(near):
+						best = near
+		if best != NOWHERE:
+			return best
 	return map.spawn
+
+
+## Every cell a walk from `from` reaches without being taken anywhere.
+static func _walked_from(map: MapData, from: Vector2i) -> Dictionary:
+	var seen := {from: true}
+	var queue: Array[Vector2i] = [from]
+	while not queue.is_empty():
+		var here: Vector2i = queue.pop_back()
+		for step: Vector2i in STEPS:
+			var next := here + step
+			if not seen.has(next) and open_ground(map, next):
+				seen[next] = true
+				queue.append(next)
+	return seen
 
 
 ## Ground the hero can stand on that doesn't take them anywhere.

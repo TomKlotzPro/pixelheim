@@ -1,6 +1,18 @@
 {
   "releases": [
     {
+      "version": "0.207.0",
+      "date": "2026-10-10",
+      "codename": "Open Roads",
+      "notes": [
+        "Doors no longer cut to black: through the town gate, a house or shop door, out of a cave or by fast travel, the old view melts into the new one",
+        "Going underground still goes dark for a moment, and coming back up melts into the daylight",
+        "The six regions now lie around the Ashenreach the way their roads run: the roads into the Blackiron valley, the Mirefen, the Deepwood and Saltmere moved, and every pass is three wide",
+        "Entering a map you have already visited this session is about four times faster",
+        "The Miners' Camp waypoint moved a few steps east, onto its road"
+      ]
+    },
+    {
       "version": "0.206.0",
       "date": "2026-10-10",
       "codename": "The Letters",

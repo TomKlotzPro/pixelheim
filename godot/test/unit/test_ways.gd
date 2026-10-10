@@ -264,6 +264,21 @@ func test_arriving_faces_away_from_the_way_back_onto_open_ground() -> void:
 	assert_eq(Ways.arrival_facing(data, Vector2i(1, 1), "town", Vector2.DOWN), Vector2.DOWN, "no way back: the way walked in")
 
 
+func test_a_save_on_ground_that_is_rock_now_wakes_on_open_ground_nearby() -> void:
+	# One Reach (PIX-269): a road moved, the cliff closed over the old one.
+	var data := _map([
+		"^^^^^^^^",
+		"^.^.....",
+		"^^^.....",
+		"^^^^^^^^",
+	])
+	data.spawn = Vector2i(5, 1)
+	assert_eq(Ways.standing(data, Vector2i(5, 2)), Vector2i(5, 2), "open ground: where the save stood")
+	assert_eq(Ways.standing(data, Vector2i(2, 2)), Vector2i(3, 2), "rock: the open ground beside it")
+	assert_eq(Ways.standing(data, Vector2i(1, 2)), Vector2i(3, 2), "not the pocket beside it the hero couldn't leave")
+	assert_eq(Ways.standing(data, Vector2i(40, 40)), data.spawn, "nothing near: the way in")
+
+
 func test_a_room_door_leads_out_facing_the_room() -> void:
 	var data := _map([
 		"######",

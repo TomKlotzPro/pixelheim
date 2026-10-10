@@ -283,15 +283,16 @@ func use_portal(target: Dictionary) -> void:
 		return
 	match target["kind"]:
 		"map":
+			var next := load_map(target["mapId"])
 			_through_door(func() -> void:
 				var from_id := map.id
 				var arrival := Vector2i(int(target["x"]), int(target["y"]))
-				map = load_map(target["mapId"])
+				map = next
 				# Facing into the new map, away from the way back (PIX-269),
 				# not into the rock or the door they came out of.
 				player.face(Ways.arrival_facing(map, arrival, from_id, player.facing))
 				enter_map(map, arrival)
-			)
+			, Ways.goes_under(map, next))
 		"dungeon":
 			# The floor select opens while the hero waits at the door.
 			_step_back()
@@ -304,7 +305,8 @@ func use_portal(target: Dictionary) -> void:
 			screen.dungeon_id = target["dungeon"]
 			add_child(screen)
 		"gate":
-			delve.leave_floor()
+			# Back up the stairs: up out of the dark dissolves.
+			_through_door(delve.leave_floor)
 		"deeper":
 			delve.enter_floor(map.floor_level + 1)
 
@@ -386,24 +388,54 @@ func enter_map(next: MapData, arrival: Vector2i) -> void:
 	foes.spawn_for(next)
 	respawn_check = 0.0
 	soundscape.refresh()
-	if changing:
+	# Through a door that dissolves, the old picture is already fading out
+	# over this one; otherwise (a dungeon's floors, waking at the inn, the
+	# story's moments) the new map comes in from the dark.
+	if changing and not _dissolving:
 		_fade_in()
 
 
-## Through a door the world fades to the dark first (PIX-226), then the new
-## map fades in (_fade_in): no cut either way. Once at a time; at once with
-## reduced motion or in harness runs.
+## Through a door the old place dissolves into the new one (One Reach,
+## PIX-269: Tom found crossing a cut): the town's gate, a house's or a
+## shop's door, a cave's mouth and the stairs back up are short changes of
+## scene, the screen as it stood fading out over the new map in a quarter
+## of a second (Dissolve), with no black between. Going under the ground
+## (into a cave, a cellar, a dungeon's floor: Ways.goes_under) keeps a
+## brief dark, the mood down there: the world fades to the dark first
+## (PIX-226), then the new map fades in (_fade_in). At once with reduced
+## motion, and in harness runs unless they ask (`fades`).
 const DOOR_FADE := 0.15
 var _passing := false
+## While a dissolve's new map is built under its picture.
+var _dissolving := false
+## How the last change of scene looked: "dissolve", "dark", or "cut" (with
+## reduced motion); the harness reports it (`fades`).
+var scene_change := ""
 
 
-func _through_door(then: Callable) -> void:
+func _through_door(then: Callable, down := false) -> void:
+	if down or not _fades():
+		_through_dark(then)
+		return
+	scene_change = "dissolve"
+	Dissolve.hold(self)
+	_dissolving = true
+	then.call()
+	_dissolving = false
+
+
+## Through the dark: the screen fades to it, `then` changes the scene, and
+## whatever comes next fades in from it. Once at a time; at once (a cut)
+## with no fades.
+func _through_dark(then: Callable) -> void:
 	if not _fades():
+		scene_change = "cut"
 		then.call()
 		return
 	if _passing:
 		return
 	_passing = true
+	scene_change = "dark"
 	var dark := _fade_rect(Color(UiStyle.NIGHT, 0.0))
 	var fade := dark.create_tween()
 	fade.tween_property(dark, "color:a", 1.0, DOOR_FADE).set_ease(Tween.EASE_OUT)
@@ -419,7 +451,7 @@ func _through_door(then: Callable) -> void:
 ## folk where the morning puts them - fading in. With no fades (reduced
 ## motion, a harness run) it simply happens.
 func sleep_through(then: Callable) -> void:
-	_through_door(func() -> void:
+	_through_dark(func() -> void:
 		then.call()
 		folk.keep_hours(true)
 		_fade_in()
@@ -467,18 +499,23 @@ func open_saves(web_save := {}, welcome := false) -> void:
 	add_child(screen)
 
 ## Fast travel from the map screen; the waypoint is already usability-checked.
+## The map and the place left dissolve into where it lands, as a door does.
 func travel_to(waypoint: Dictionary) -> void:
 	Sound.play("travel")
 	var arrival := Vector2i(int(waypoint["arrival"]["x"]), int(waypoint["arrival"]["y"]))
-	if waypoint["mapId"] != map.id:
-		map = load_map(waypoint["mapId"])
-	enter_map(map, arrival)
+	var next := map if waypoint["mapId"] == map.id else load_map(waypoint["mapId"])
+	_through_door(func() -> void:
+		map = next
+		enter_map(map, arrival)
+	, Ways.goes_under(map, next))
 
 ## Into the bought house, at its door (E on the door, or walking into it).
 func enter_house() -> void:
-	map = load_map("town_house")
-	enter_map(map, Vector2i(8, 8))
-	hud.hint("house")
+	_through_door(func() -> void:
+		map = load_map("town_house")
+		enter_map(map, Vector2i(8, 8))
+		hud.hint("house")
+	)
 
 
 ## The objective line hides while the world is paused (menus,

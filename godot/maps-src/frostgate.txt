@@ -2,13 +2,15 @@
 # frozen lake with a fishing hole cut in its ice, the hermit's hut and a
 # stranded caravan by the road, and at the head of the pass Liane's
 # observatory, built over the old ice cave (its door opens onto her room,
-# the stair down in its floor: PIX-256).
+# the stair down in its floor: PIX-256). Below the crossroads the road runs a
+# column east (One Reach, PIX-269), so the pass ends at the Reach's last
+# column in the one plane and Greyhold's corner stays clear of it.
 id frostgate
-spawn 27 45
-portal 27 47 map overworld 68 2
-portal 27 6 map observatory 8 8
-portal 26 47 map overworld 68 2
+spawn 28 45
 portal 28 47 map overworld 68 2
+portal 27 6 map observatory 8 8
+portal 27 47 map overworld 68 2
+portal 29 47 map overworld 68 2
 key ^ mountain frost
 key T forest frost
 key . snow frost
@@ -65,10 +67,10 @@ map
 ^^TT...krrdrr..............:................k.......T.^^
 ^^T.......:................:................k.........^^
 ^^TT......:::::::::::::::::::::::::....L............T.^^
-^^T........................:.........................^^^
-^^^.....................T..:................k........T^^
-^^TT.......................:.......bk......b.........T^^
-^^^T..TT.T.....T.TTTTTTTT..:...................T.TTT.^^^
-^^^T...TT...TTTT.T.....T...:..T.T.................T.TT^^
-^^^^^^^^^^^^^^^^^^^^^^^^^^.:.^^^^^^^^^^^^^^^^^^^^^^^^^^^
-^^^^^^^^^^^^^^^^^^^^^^^^^^.:.^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^T.........................:........................^^^
+^^^.....................T...:...............k........T^^
+^^TT........................:......bk......b.........T^^
+^^^T..TT.T.....T.TTTTTTTT...:..................T.TTT.^^^
+^^^T...TT...TTTT.T.....T....:.T.T.................T.TT^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^.:.^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^.:.^^^^^^^^^^^^^^^^^^^^^^^^^^

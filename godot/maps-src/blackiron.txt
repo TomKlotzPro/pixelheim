@@ -1,13 +1,14 @@
 # The Blackiron valley (PIX-167): spoil heaps and scrub on stone, a miners'
 # camp on the road, the shaft mouth in the northern cliff. The road east leads
-# back to the Ash Fields.
+# back to the Ash Fields, out low on the east edge (One Reach, PIX-269): in
+# the Reach's one plane the valley lies north of the Mirefen, its road meeting
+# the Ash Fields' cell for cell (assets/data/plane.json).
 id blackiron
-spawn 53 18
-portal 55 18 map overworld 2 20
-portal 55 19 map overworld 2 20
+spawn 53 30
+portal 55 30 map overworld 2 20
 portal 26 4 map shafts 4 28
-portal 55 17 map overworld 2 20
-portal 55 20 map overworld 2 20
+portal 55 29 map overworld 2 20
+portal 55 31 map overworld 2 20
 key ^ mountain -
 key s ash mines
 key . grass mines
@@ -33,21 +34,21 @@ map
 ^^s^sssssssssssssrrrrrssss::ssss^^^sssssssssssssssssss^^
 ^^sssssssssssssssrrdrrssss::ssss^^^sssssssssssssssssss^^
 ^^^^s.ssssssssss::::::::ss::ssssssssssssss.sssssssss^s^^
-^^ssssssssssssss::::::::s.::sssss.sss.ssssss.sssssss^sss
-^^ssssssssssssssss.sssssss::sssssssssssssssssssss:::::::
-^^^sssssss.s.ssssss.sssss^^^:::::::sssss.s::::::::::::::
-^^ssss.ssssss.sssssssss::::::::::::::::::::::::::s.sssss
-^^sss.ss.ssss.sssssssss:::::s.rrrrr:::::::ssssssss.sss^^
-^^ssssssssssssssssssssssssssssrrrrrsssssssssssssss.sss^^
-^^ssssssssssssssssssssssssssssrrdrrs.sssssssssssssssss^^
-^^^ssssss^^^sssssssssssssssssssssssssssssss^^^ssssssss^^
-^^ssssss^^^^^ssssssssss.s.ssssssssssssssss^^^^^sssssss^^
-^^ssssss^^^^^sss.sss.ssssssssssssssssssss.^^^^^.ssss^s^^
-^^^sssss^^^^^sssssssssss.sssssssssssssssss^^^^^ssssss^^^
-^^sssssss^^^sssssssssssssssssssssssssssssss^^^ss.sssss^^
-^^^^ssssssssssssssssssssssssssssssssssssssssssssssss^s^^
-^^^^ssssssssssssssssss.sssssssssssssssssssssssssssssss^^
-^^sssssssss.sssssssssss.ssss.sssssssssssssssssssssss^s^^
+^^ssssssssssssss::::::::s.::sssss.sss.ssssss.sssssss^s^^
+^^ssssssssssssssss.sssssss::ssssssssssssssssssssssssss^^
+^^^sssssss.s.ssssss.sssss^^^:::::::sssss.s:::::::sssss^^
+^^ssss.ssssss.sssssssss::::::::::::::::::::::::::s.sss^^
+^^sss.ss.ssss.sssssssss:::::s.rrrrr:::::::sssss::s.sss^^
+^^ssssssssssssssssssssssssssssrrrrrssssssssssss::s.sss^^
+^^ssssssssssssssssssssssssssssrrdrrs.ssssssssss::sssss^^
+^^^ssssss^^^sssssssssssssssssssssssssssssss^^^s::sssss^^
+^^ssssss^^^^^ssssssssss.s.ssssssssssssssss^^^^^::sssss^^
+^^ssssss^^^^^sss.sss.ssssssssssssssssssss.^^^^^::sss^s^^
+^^^sssss^^^^^sssssssssss.sssssssssssssssss^^^^^::ssss^^^
+^^sssssss^^^sssssssssssssssssssssssssssssss^^^s::sssss^^
+^^^^sssssssssssssssssssssssssssssssssssssssssss::sss^sss
+^^^^ssssssssssssssssss.ssssssssssssssssssssssss:::::::::
+^^sssssssss.sssssssssss.ssss.sssssssssssssssssssssss^sss
 ^^^ssssss^^sssss^^s^^sss^sss^^s^ss^s^^s^s^^^sssssss^s^^^
 ^^^ss^^^sssssss^ss^ssssssssss^ssss^sssss^ss^^ssss^s^s^^^
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -156,6 +156,36 @@ func _lineup() -> void:
 			y += 1
 
 
+## The maps `reentry` times: the open air, where the ground is worked out.
+const REENTRY_MAPS := ["overworld", "town", "saltmere", "blackiron", "mirefen", "greyhold", "deepwood", "frostgate"]
+
+
+## `reentry` (One Reach, PIX-269): what entering each outdoor map costs, in
+## milliseconds of the frame it happens in - its first visit this session,
+## then coming back to it - and the memory the session keeps between. A
+## change of scene is that long a hitch, and a map streamed in beside the
+## hero has to fit its building into a few milliseconds a frame.
+func _reentry() -> void:
+	var took := {}
+	var before := Performance.get_monitor(Performance.MEMORY_STATIC)
+	for visit in 2:
+		for id: String in REENTRY_MAPS:
+			var started := Time.get_ticks_usec()
+			world.map = world.load_map(id)
+			var loaded := Time.get_ticks_usec()
+			world.enter_map(world.map, world.map.spawn)
+			var done := Time.get_ticks_usec()
+			took[id] = took.get(id, []) + [(loaded - started) / 1000.0, (done - loaded) / 1000.0]
+			# The old map's nodes go at the end of the frame.
+			await get_tree().process_frame
+			await get_tree().process_frame
+	for id: String in REENTRY_MAPS:
+		var times: Array = took[id]
+		print("REENTRY %-10s load %5.1f  first %6.1f  again %6.1f ms" % [id, times[0], times[1], times[3]])
+	print("REENTRY memory %+.1f MB after both rounds (static), kept ground %.2f MB" % [
+		(Performance.get_monitor(Performance.MEMORY_STATIC) - before) / 1048576.0, KeptGround.bytes() / 1048576.0])
+
+
 ## Runs the flags it was given, in a fixed order, then shoots and quits.
 ## Every flag is declared in HarnessFlags.TABLE (PIX-262) and read from its
 ## one parse of the command line; `-- --help` prints the table.
@@ -165,6 +195,9 @@ func _run_test_harness() -> void:
 		return
 	for problem in flags.problems:
 		push_warning("harness: %s (-- --help lists the flags)" % problem)
+	# `--dissolve-at S`: a door's dissolve held S seconds in (PIX-269).
+	if flags.has("--dissolve-at"):
+		Dissolve.held_at = float(flags.value("--dissolve-at"))
 	await get_tree().create_timer(0.4).timeout
 	# `--set large_text,clear_warnings`: those settings on for this run only
 	# (the harness never writes the player's settings).
@@ -172,6 +205,8 @@ func _run_test_harness() -> void:
 		for setting: String in flags.list("--set"):
 			GameState.settings.set(setting, true)
 		world.apply_video()
+	if flags.has("reentry"):
+		await _reentry()
 	# Dungeons: `--floor N` walks down floor N, `gate [--dungeon id]` opens a
 	# gate's floor select (mountain by default).
 	if flags.has("--floor"):
@@ -817,10 +852,14 @@ func _run_test_harness() -> void:
 		)
 	).map(func(node: Node) -> String: return node.get_script().resource_path.get_file().get_basename())
 	var mobs := get_tree().get_nodes_in_group("mobs").filter(func(mob: Node) -> bool: return not mob.dying).size()
-	# What's left of a fade from the dark (PIX-238), when fades run.
+	# How the last change of scene looked (One Reach, PIX-269: a door
+	# dissolves, going under the ground keeps the dark, a cut with Reduce
+	# motion), and what's left of a fade from the dark (PIX-238), when fades
+	# run.
 	if flags.has("fades"):
 		var dark: int = world.hud.root.get_children().filter(func(node: Node) -> bool: return node.has_meta("fade") and node.color.a > 0.5).size()
-		motion_report += " dark=%d" % dark
+		var change: String = world.scene_change
+		motion_report += " change=%s dark=%d" % [change if change != "" else "none", dark]
 	# How far the building on the tour has risen (PIX-264): ruin, rising, built.
 	if flags.has("--rise"):
 		var rise := _rise()

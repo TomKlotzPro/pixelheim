@@ -2325,6 +2325,10 @@ msgid "Doors in the Mountain"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Doors no longer cut to black: through the town gate, a house or shop door, out of a cave or by fast travel, the old view melts into the new one"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Doors, cave mouths and shop signs now press flush against the walls behind them, like they were built there"
 msgstr ""
 
@@ -2494,6 +2498,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Enter the village, poke around the shop and the inn"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Entering a map you have already visited this session is about four times faster"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -2846,6 +2854,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Goals to Chase"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Going underground still goes dark for a moment, and coming back up melts into the daylight"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3566,6 +3578,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Open Country"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Open Roads"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4621,6 +4637,10 @@ msgid "The Maker's Mark"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Miners' Camp waypoint moved a few steps east, onto its road"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Night of Ash"
 msgstr ""
 
@@ -4906,6 +4926,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The save screen fits again with every slot full: long names and places wrap inside their cards, so the right-hand column is never cut off"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The six regions now lie around the Ashenreach the way their roads run: the roads into the Blackiron valley, the Mirefen, the Deepwood and Saltmere moved, and every pass is three wide"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -14060,27 +14084,27 @@ msgstr ""
 msgid "Arrows"
 msgstr ""
 
-#: scripts/ways.gd:149
+#: scripts/ways.gd:165
 msgid "Go down into %s?"
 msgstr ""
 
-#: scripts/ways.gd:152
+#: scripts/ways.gd:168
 msgid "Liane's stair goes down through the floor, and the cold comes up it like a draught."
 msgstr ""
 
-#: scripts/ways.gd:154
+#: scripts/ways.gd:170
 msgid "The keep's stair goes down to the cellars, where something still stands the old watch."
 msgstr ""
 
-#: scripts/ways.gd:157
+#: scripts/ways.gd:173
 msgid "The stairs"
 msgstr ""
 
-#: scripts/ways.gd:159
+#: scripts/ways.gd:175
 msgid "Go down"
 msgstr ""
 
-#: scripts/ways.gd:159
+#: scripts/ways.gd:175
 msgid "Stay"
 msgstr ""
 
@@ -14088,7 +14112,7 @@ msgstr ""
 msgid "%s bars your way: no leaving until the fight is over."
 msgstr ""
 
-#: scripts/world.gd:321
+#: scripts/world.gd:323
 msgid "No map reaches this deep."
 msgstr ""
 
