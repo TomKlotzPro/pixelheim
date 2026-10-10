@@ -69,6 +69,9 @@ var camps := {}
 ## The village seen from outside (PIX-248, Skyline.plan), on the maps that
 ## hold it as one block (PunyTerrain.SKYLINE_MAPS); empty elsewhere.
 var skyline := {}
+## Pixelheim's rampart and its gatehouse (PIX-248, Rampart.plan): the
+## town's own, or the ring round the village far off; empty elsewhere.
+var rampart := {}
 ## What a building rising on the town's tour lifts out and puts back
 ## (PIX-264): the houses' layers and the flat flowers' ("pieces", "decor",
 ## "flowers"), and each outdoor prop's node by its cell.
@@ -159,6 +162,13 @@ func plan(arrival: Vector2i) -> Vector2i:
 		skyline = Skyline.plan(data.grid, MapData.load_tiered("town", done, 1), ruins)
 		if PunyTown.available():
 			buildings = {"pieces": skyline["pieces"], "decor": skyline["decor"], "freed": []}
+	# One wall round the village, its gatehouse where the road runs through
+	# (PIX-248): the town's, or the ring round it far off.
+	rampart = {}
+	if data.floor_level == 0 and data.id in Rampart.MAPS:
+		rampart = Rampart.plan(data.grid, Rampart.ashen(Town.done_projects(GameState.settlement)))
+	elif not skyline.is_empty():
+		rampart = skyline["rampart"]
 	# Inside, Shade's rooms (PunyInterior): furniture spreading onto the floor
 	# blocks it, like the rest of the furniture.
 	if PunyTown.available() and PunyInterior.is_room(data.id):
@@ -182,6 +192,11 @@ func plan(arrival: Vector2i) -> Vector2i:
 		if (prop["foot"] as Rect2).has_area():
 			for cell: Vector2i in prop["covers"]:
 				data.covered[cell] = true
+	# The gatehouse's towers stand a cell above the wall: nothing grows or
+	# walks there.
+	for cell: Vector2i in rampart.get("covers", []):
+		data.covered[cell] = true
+		outdoor_props["drawn"][cell] = true
 	camps = plan_camps(data)
 	if data.id == "town":
 		camps[Town.project_board()] = {"kind": "board", "tile": PROJECT_BOARD}
@@ -313,9 +328,10 @@ func _build_ground(data: MapData) -> Node2D:
 	objects.tile_set = PunyTerrain.tileset()
 	var outdoor := PunyTerrain.is_outdoor(data.grid)
 	var village: Rect2i = skyline.get("block", Rect2i())
+	var walled: Dictionary = rampart.get("pieces", {})
 	for cell: Vector2i in look:
 		var object := PunyTerrain.object_at(look, cell)
-		if outdoor and object < 0 and not village.has_point(cell):
+		if outdoor and object < 0 and not village.has_point(cell) and not walled.has(cell):
 			object = PunyTerrain.wall_piece(data.grid, cell)
 		if object >= 0 and not gate_hides.has(cell):
 			PunyTerrain.place(objects, cell, object)
@@ -323,6 +339,10 @@ func _build_ground(data: MapData) -> Node2D:
 		var drawn: Dictionary = skyline["objects"].merged({} if PunyTown.available() else skyline["icons"])
 		for cell: Vector2i in drawn:
 			PunyTerrain.place(objects, cell, drawn[cell])
+	# Pixelheim's rampart in Shade's CC0 castle pieces, without the paid pack.
+	if not PunyTown.available():
+		for cell: Vector2i in rampart.get("fallback", {}):
+			PunyTerrain.place(objects, cell, rampart["fallback"][cell])
 	# A gate set in the rock (the Ashen Mountain's, PIX-269), where nothing
 	# stood in the notch: Shade's castle gate, its portcullis down while the
 	# gate is barred.
@@ -331,6 +351,18 @@ func _build_ground(data: MapData) -> Node2D:
 			var barred: bool = way["to"].get("dungeon", "") == "mountain" and not Relics.gate_open(GameState.progression)
 			PunyTerrain.place(objects, way["at"], Ways.ROCK_GATE_BARRED if barred else Ways.ROCK_GATE)
 	root.add_child(objects)
+	# Pixelheim's rampart in the Medieval Age's stone, its gatehouse at the
+	# road (PIX-248); what the fire left of it darker, on a layer of its own.
+	if not rampart.is_empty() and PunyTown.available():
+		for scorched: bool in [false, true]:
+			var stone := TileMapLayer.new()
+			stone.tile_set = PunyTown.tileset()
+			for cell: Vector2i in rampart["pieces"]:
+				if rampart["scorched"].has(cell) == scorched:
+					PunyTown.place(stone, cell, rampart["pieces"][cell])
+			if scorched:
+				stone.modulate = Rampart.SCORCHED
+			root.add_child(stone)
 	if not skyline.get("growth", {}).is_empty():
 		# Its woods and fields lean in the wind together.
 		var growth := TileMapLayer.new()
@@ -1352,6 +1384,8 @@ func _build_tile_layer(data: MapData) -> TileMapLayer:
 	var layer := TileMapLayer.new()
 	layer.tile_set = tileset
 	var ruins := data.floor_level == 0 and PunyTerrain.is_outdoor(data.grid)
+	# The gatehouse's towers block a cell above the wall too (PIX-248).
+	var towers: Array = rampart.get("covers", [])
 	for cell: Vector2i in data.grid:
 		var tile: String = data.grid[cell]
 		var prop: bool = outdoor_props["drawn"].has(cell)
@@ -1360,6 +1394,6 @@ func _build_tile_layer(data: MapData) -> TileMapLayer:
 		))):
 			layer.set_cell(cell, stone_id, Vector2i.ZERO)
 			continue
-		if not prop and not WorldTiles.is_walkable(tile):
+		if (not prop and not WorldTiles.is_walkable(tile)) or cell in towers:
 			layer.set_cell(cell, blocker_id, Vector2i.ZERO)
 	return layer

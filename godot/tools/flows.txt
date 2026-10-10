@@ -31,6 +31,15 @@
 spawn | --map town | map=town | town
 # Through the nearest door into one of its rooms (PIX-129).
 portal | --map town portal | map=town_.* | town travel
+# Out of the village through its gate and back in (PIX-248: one rampart,
+# the gate three wide between its towers): up the gate road, through the
+# middle of the gate and through its side, onto the road just past the gate
+# outside, the old place dissolving into the new; and down the Reach's road
+# through the gate onto the gate road inside. Set down just past the gate,
+# the step still held carries the hero on a cell, away from it.
+gate-out | --map town --at 40,4 --walk u,u fades --wait 0.4 | map=overworld cell=\(48, 4[01]\) change=dissolve dark=0 | town travel
+gate-side | --map town --at 41,4 --walk u,u --wait 0.4 | map=overworld cell=\(48, 4[01]\) | town travel
+gate-in | --map overworld --at 48,39 --walk d,d,d fades --wait 0.4 | map=town cell=\(40, [34]\) change=dissolve dark=0 | town travel
 # The nook chest's gold floats up over the chest and the log says nothing of it (PIX-245).
 chest | --map town chest | map=town cell=\(79, 4\) gold=90 floats=\+60 [a-z]+ logged=0 | town
 # A keeper's counter, and the alchemist's craft tab (PIX-129).

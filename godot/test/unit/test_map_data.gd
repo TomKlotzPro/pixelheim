@@ -22,10 +22,12 @@ func test_spawn_is_the_village_path() -> void:
 
 
 func test_village_door_opens_and_walls_block() -> void:
-	assert_eq(map.tile_at(Vector2i(48, 42)), "door")
-	assert_true(map.is_walkable(Vector2i(48, 42)))
-	assert_eq(map.tile_at(Vector2i(47, 42)), "wall")
-	assert_false(map.is_walkable(Vector2i(47, 42)))
+	# The gate three wide (PIX-248), the wall either side of it.
+	for x in [47, 48, 49]:
+		assert_eq(map.tile_at(Vector2i(x, 42)), "door")
+		assert_true(map.is_walkable(Vector2i(x, 42)))
+	assert_eq(map.tile_at(Vector2i(46, 42)), "wall")
+	assert_false(map.is_walkable(Vector2i(46, 42)))
 
 
 func test_village_door_is_the_town_portal() -> void:
@@ -39,8 +41,9 @@ func test_overworld_has_all_its_portals() -> void:
 	# roads out to the bigger Reach (PIX-164: Saltmere; PIX-167: the mines;
 	# PIX-168: Greyhold; PIX-169: the Frostgate pass), each road out three
 	# cells wide (PIX-269), the two passes too since they open in the cliffs
-	# rather than through a cave mouth.
-	assert_eq(map.portals.size(), 21)
+	# rather than through a cave mouth; the village's gate three wide too
+	# (PIX-248).
+	assert_eq(map.portals.size(), 23)
 	assert_eq(map.portals[Vector2i(16, 63)]["mapId"], "saltmere")
 	assert_eq(map.portals[Vector2i(0, 20)]["mapId"], "blackiron")
 	assert_eq(map.portals[Vector2i(95, 15)]["mapId"], "greyhold")

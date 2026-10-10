@@ -10,7 +10,10 @@ class_name Skyline
 ## night and smoke from its roof; the river, its bridge and the dock, the
 ## streets, the fields and the woods on Shade's ground; ash and charred logs
 ## where a house still lies burnt; and one ring of the town's own rampart
-## round it, with the gate where the road comes in.
+## round it, its gatehouse where the road comes in as the town draws it
+## (Rampart: the same stone, towers, raised portcullis, and as scorched while
+## the ruins stand), whole-size, so the gate seen from the road is the gate
+## the hero walks out of.
 ##
 ## The town is some three times the block's size each way: its columns
 ## shrink evenly, its rows by TOWN_ROWS. Everything stays whole 16px tiles,
@@ -18,12 +21,16 @@ class_name Skyline
 ## stay what they were, so nothing is walked on.
 
 ## Each of the block's rows inside its ring, as the first of the town's rows
-## (inside its walls) it stands for: three for the inn's tall roof and the
-## houses along the top street, the street, two for each band of houses
-## below, the cottages' two, then the south river with the woods behind it.
-## An even shrink lost the streets between the bands. Used when the block
-## has as many rows as this; otherwise the rows shrink evenly too.
-const TOWN_ROWS := [0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 29, 33]
+## (inside its walls) it stands for: two for the top of the inn's tall roof
+## under the wall, three for the rest of it and the houses along the top
+## street, the street, two for each band of houses below, the cottages'
+## two, then the south river with the woods behind it. An even shrink lost
+## the streets between the bands. Used when the block has as many rows as
+## this; otherwise the rows shrink evenly too.
+const TOWN_ROWS := [0, 2, 5, 8, 11, 14, 17, 20, 23, 26, 28, 32]
+## How far in from the town map's edge its wall may stand: past it, the
+## fields outside (PIX-248).
+const FIELDS_OUTSIDE := 4
 ## What the town's tiles read as from afar; the rest is grass. The shrine's
 ## wooded hill reads as its woods: Shade's cliffs, three times too big for
 ## it, stood about like hedges.
@@ -53,8 +60,9 @@ const ICONS := {"roof": 932, "roof_awning": 932, "roof_thatch": 734, "roof_moss"
 ## - block: the block, rampart included;
 ## - ground: cell -> the tile its ground is drawn as (streets, the river,
 ##   ash where a house burnt, the fields and woods under their growth);
-## - objects: cell -> Shade's overworld tile (the rampart and its gate, wells,
-##   burnt logs);
+## - rampart: the ring round it and its gatehouse, as Rampart.plan draws
+##   them (scorched while `ruins` stand);
+## - objects: cell -> Shade's overworld tile (wells, burnt logs);
 ## - growth: cell -> his trees and wheat;
 ## - pieces, decor: cell -> Medieval Age tile (the houses, their chimneys);
 ## - icons: cell -> one-tile house, drawn instead without the paid pack;
@@ -67,7 +75,7 @@ const ICONS := {"roof": 932, "roof_awning": 932, "roof_thatch": 734, "roof_moss"
 ## rects).
 static func plan(grid: Dictionary, town: MapData, ruins: Array = []) -> Dictionary:
 	var out := {
-		"block": Rect2i(), "ground": {}, "objects": {}, "growth": {}, "pieces": {}, "decor": {},
+		"block": Rect2i(), "ground": {}, "rampart": {}, "objects": {}, "growth": {}, "pieces": {}, "decor": {},
 		"icons": {}, "roofs": {}, "smoke": [], "lamps": [], "ruins": [],
 	}
 	var outer := block(grid)
@@ -78,7 +86,7 @@ static func plan(grid: Dictionary, town: MapData, ruins: Array = []) -> Dictiona
 	out["block"] = outer
 	var cols := _spans(room.size.x, from.position.x, from.size.x, [])
 	var rows := _spans(room.size.y, from.position.y, from.size.y, TOWN_ROWS)
-	_rampart(grid, outer, out["objects"])
+	out["rampart"] = _rampart(grid, outer, not ruins.is_empty())
 	var ground: Dictionary = out["ground"]
 	for j in rows.size():
 		for i in cols.size():
@@ -134,12 +142,21 @@ static func block(grid: Dictionary) -> Rect2i:
 	return rect
 
 
-## The town inside its own walls: its map less the bands of wall round it.
+## The town inside its own walls: its map less the wall round it and the
+## fields beyond it (up to FIELDS_OUTSIDE lines in from each edge).
 static func inside(town: MapData) -> Rect2i:
 	var rect := Rect2i(Vector2i.ZERO, town.size)
 	for side: int in [SIDE_TOP, SIDE_BOTTOM, SIDE_LEFT, SIDE_RIGHT]:
-		while rect.has_area() and _mostly_wall(town.grid, _edge(rect, side)):
-			rect = rect.grow_side(side, -1)
+		var probe := rect
+		var steps := 0
+		while probe.has_area() and steps < FIELDS_OUTSIDE and not _mostly_wall(town.grid, _edge(probe, side)):
+			probe = probe.grow_side(side, -1)
+			steps += 1
+		if not probe.has_area() or not _mostly_wall(town.grid, _edge(probe, side)):
+			continue
+		while probe.has_area() and _mostly_wall(town.grid, _edge(probe, side)):
+			probe = probe.grow_side(side, -1)
+		rect = probe
 	return rect
 
 
@@ -175,19 +192,17 @@ static func _spans(count: int, start: int, length: int, tuned: Array) -> Array[V
 	return out
 
 
-## One ring of the town's rampart round the block (PunyTerrain.wall_piece's
-## pieces: towers on the corners and every few steps, the gate in the door),
-## where the overworld's band is two thick: at a third of the town's size,
-## its two cells of wall are less than one.
-static func _rampart(grid: Dictionary, outer: Rect2i, objects: Dictionary) -> void:
+## One ring of the town's rampart round the block, where the overworld's
+## band is two thick (at a third of the town's size, its two cells of wall
+## are less than one), drawn as the town draws its own (Rampart.plan): the
+## stone, and the gatehouse where the doors are; `ashen` while the ruins
+## stand.
+static func _rampart(grid: Dictionary, outer: Rect2i, ashen: bool) -> Dictionary:
 	var ring := {}
 	for side: int in [SIDE_TOP, SIDE_BOTTOM, SIDE_LEFT, SIDE_RIGHT]:
 		for cell in _edge(outer, side):
 			ring[cell] = grid.get(cell, "wall") if grid.get(cell, "") in PunyTerrain.RAMPART else "wall"
-	for cell: Vector2i in ring:
-		var piece := PunyTerrain.wall_piece(ring, cell)
-		if piece >= 0:
-			objects[cell] = piece
+	return Rampart.plan(ring, ashen)
 
 
 ## The town's tiles over `cols` x `rows`, each once.

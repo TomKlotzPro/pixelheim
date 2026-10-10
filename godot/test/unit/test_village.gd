@@ -14,7 +14,9 @@ const AGES := [0, 1, 2, 3, 4]
 func _reach(tier: int) -> Array:
 	var map := MapData.load_tiered("town", Town.projects_through(tier), 1)
 	MapView.new(map, null).plan(map.spawn)
-	var gate := Vector2i(40, 2)
+	# The gate road just inside the gate (PIX-248), where the Reach sets a
+	# hero down.
+	var gate := Vector2i(40, 3)
 	var seen := {gate: true}
 	var queue: Array[Vector2i] = [gate]
 	while not queue.is_empty():
@@ -32,7 +34,8 @@ func _reach(tier: int) -> Array:
 
 func test_the_gate_road_runs_straight_to_the_hall_on_the_square() -> void:
 	var map := MapData.load_by_id("town")
-	for y in range(2, 12):
+	assert_eq(map.tile_at(Vector2i(40, 2)), "door", "the gate")
+	for y in range(3, 12):
 		assert_eq(map.tile_at(Vector2i(40, y)), "path", "the gate road at (40, %d)" % y)
 	var hall := Vector2i(40, 19)
 	assert_true(map.portals.has(hall), "the hall's door on the road's line")

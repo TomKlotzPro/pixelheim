@@ -125,13 +125,17 @@ func test_nothing_the_world_places_stands_at_a_way_on() -> void:
 					assert_false(data.covered.has(inside), "%s: the opening at %s is clear" % [id, inside])
 
 
+## Ground at the edge a hero can walk to leads on. The fields beyond
+## Pixelheim's rampart (PIX-248) reach the map's edge, but no walk does: the
+## gate takes the hero straight out onto the Reach.
 func test_the_edge_of_a_map_is_rock_or_a_way_on() -> void:
 	for id: String in MAPS:
 		var data := _load(id)
+		var walked := Ways._walked_from(data, data.spawn)
 		for cell: Vector2i in data.grid:
 			var border := cell.x == 0 or cell.y == 0 or cell.x == data.size.x - 1 or cell.y == data.size.y - 1
-			if border and data.is_walkable(cell):
-				assert_true(data.portals.has(cell), "%s: %s at the edge leads on (no strip of ground going nowhere)" % [id, cell])
+			if border and data.is_walkable(cell) and not data.portals.has(cell):
+				assert_false(walked.has(cell), "%s: %s at the edge leads on (no strip of ground going nowhere)" % [id, cell])
 
 
 func test_an_opening_at_the_edge_is_wide_and_its_road_runs_out_through_it() -> void:

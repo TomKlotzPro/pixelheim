@@ -1909,6 +1909,10 @@ msgid "A question in a conversation is answered with 1 or 2, or a click on the a
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A real gate in and out: three wide, a gatehouse with two towers and its portcullis raised, torches lit at night, and the road running through it"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A real sun wheels over the world: dawn light, long dusk shadows, and true darkness answered by lamplight, door glow and hearth fire"
 msgstr ""
 
@@ -1982,6 +1986,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "ASKED BEFORE BIG BUYS: the house deed and the workbench ask before they take your gold - press again to buy. Furniture never blocks the doorway, an upgrade hands back what stood in its way, and new hints explain the house, deeds and the bank"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "After the fire the gatehouse is scorched and a tower has lost its roof; the Hamlet mends it"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3837,6 +3845,10 @@ msgid "Pixelheim doubled east: new houses, a market corner, an orchard - and sho
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Pixelheim has one rampart now, not two stacked one over the other"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Pixelheim is an open-world game now: you live on the map, not in menus"
 msgstr ""
 
@@ -4753,6 +4765,10 @@ msgid "The Frostgate"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Gate"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Great Expansion"
 msgstr ""
 
@@ -5118,6 +5134,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The roads to the Mirefen and the Deepwood run out through the ridge instead of into a cave"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The same gate from the Ashenreach, where the road widens up to it; from inside the town you see the fields beyond"
 msgstr ""
 
 #: assets/data/changelog.json

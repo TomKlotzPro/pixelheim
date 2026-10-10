@@ -70,6 +70,7 @@ town rooms +town-age* +town_house*: assets/data/town.json scripts/state/settleme
 town: scripts/town_hall_screen.gd scripts/ledger_screen.gd scripts/bank_screen.gd scripts/ring_toss_screen.gd
 rooms +town_house*: scripts/puny_interior.gd scripts/home_screen.gd assets/data/interiors.json
 travel field: scripts/puny_terrain.gd scripts/scatter.gd scripts/skyline.gd assets/puny/world/*
+town travel +town-age* +overworld*: scripts/rampart.gd
 travel: scripts/reach_plane.gd scripts/ways.gd scripts/waypoints.gd scripts/atlas.gd scripts/dissolve.gd scripts/place_title.gd scripts/map_screen.gd scripts/state/world_state.gd assets/data/plane.json
 travel story +overworld*: scripts/state/gates.gd scripts/gate_art.gd assets/data/gates.json
 quest travel: scripts/escort.gd

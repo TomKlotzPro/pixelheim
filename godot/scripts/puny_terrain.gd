@@ -96,13 +96,16 @@ static func ground_of(tile: String) -> String:
 ## The ground drawn under one cell of a map. A dock stands in the water
 ## around it: the coast's piers over their pale shallows, but one built out
 ## into a river (the village's, PIX-236) over the river, or a pale square of
-## sea would show round its planks.
+## sea would show round its planks. A gate in a rampart stands on the road
+## that runs through it (PIX-248), not on a strip of grass across it.
 static func ground_at(grid: Dictionary, cell: Vector2i) -> String:
 	var tile: String = grid.get(cell, "")
 	if tile == "dock":
 		for step: Vector2i in [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]:
 			if grid.get(span_end(grid, cell, step), "") == "water":
 				return ground_of("water")
+	if tile == "door" and Rampart.on_road(grid, cell):
+		return ground_of("path")
 	return ground_of(tile)
 
 
