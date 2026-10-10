@@ -410,7 +410,7 @@ func ask_before_dip(what: String, costs: Dictionary) -> String:
 	var dip := delivery_dip(costs)
 	if dip.is_empty():
 		return ""
-	var now := Time.get_ticks_msec() / 1000.0
+	var now := GameClock.seconds()
 	if _dip_asked == what and now - _dip_asked_at <= DIP_CONFIRM_SECONDS:
 		_dip_asked = ""
 		return ""

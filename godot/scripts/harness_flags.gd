@@ -46,6 +46,7 @@ const TABLE := [
 	{"flag": "leave", "takes": "", "does": "up the stairs, back to the gate"},
 	{"flag": "--level", "takes": "<n>", "does": "a hero of that level: the rank's title (the hero looks the same at every rank)"},
 	{"flag": "motion", "takes": "", "does": "the walking check (PIX-135): the hero walks right, measured frame by frame; the report adds backsteps= (needs a window)"},
+	{"flag": "--fps", "takes": "<n>", "does": "the frames a second the run is stepped at (PIX-276): tools/flows.sh gives Godot --fixed-fps n (60 when not given, a frame a physics tick); with motion, its walk measured over as many frames as 0.75 s takes at that pace"},
 	{"flag": "--role", "takes": "<id>", "does": "the hero's role, for how a role wears gear (PIX-175)"},
 	{"flag": "--wear", "takes": "<ids>", "does": "gear put on the hero, drawn on them (PIX-129)"},
 	{"flag": "--at", "takes": "<x,y>", "does": "stand the hero on that cell (before --walk, to test what stops them)"},

@@ -203,7 +203,7 @@ func _process(delta: float) -> void:
 	_mirror_water(at)
 	_drift_clouds(at, overcast)
 	var still: bool = GameState.settings.reduce_motion
-	var t := Time.get_ticks_msec() / 1000.0
+	var t := GameClock.seconds()
 	for node in get_tree().get_nodes_in_group("lights"):
 		var lamp := node as PointLight2D
 		if lamp.has_meta("tint"):

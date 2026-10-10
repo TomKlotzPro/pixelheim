@@ -161,7 +161,7 @@ static func tag_of(text: String, tags: Array) -> String:
 func update() -> void:
 	if _messages.is_empty():
 		return
-	if _message_now != "" and (_message_tagged or Time.get_ticks_msec() / 1000.0 - _message_since < PLAIN_MESSAGE_S):
+	if _message_now != "" and (_message_tagged or GameClock.seconds() - _message_since < PLAIN_MESSAGE_S):
 		return
 	_show_message(_messages.pop_front())
 
@@ -171,7 +171,7 @@ func update() -> void:
 ## long enough to read (UiStyle.reading_seconds).
 func _show_message(text: String) -> void:
 	_message_now = text
-	_message_since = Time.get_ticks_msec() / 1000.0
+	_message_since = GameClock.seconds()
 	var tag := tag_of(text, _tags())
 	_message_tagged = tag != ""
 	if tag != "":

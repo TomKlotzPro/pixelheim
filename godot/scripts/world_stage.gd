@@ -317,7 +317,7 @@ func tend_escort() -> void:
 		return
 	if escort != null and is_instance_valid(escort):
 		return
-	if Time.get_ticks_msec() / 1000.0 - escort_lost_at < 4.0:
+	if GameClock.seconds() - escort_lost_at < 4.0:
 		return
 	var quest_id: String = due["quest"]["id"]
 	escort = preload("res://scripts/escort.gd").new()
@@ -329,7 +329,7 @@ func tend_escort() -> void:
 		world.messages.flash(due["def"]["arrived"]))
 	escort.lost.connect(func() -> void:
 		world.messages.flash(due["def"]["lost"])
-		escort_lost_at = Time.get_ticks_msec() / 1000.0
+		escort_lost_at = GameClock.seconds()
 		var gone := escort
 		gone.create_tween().tween_property(gone, "modulate:a", 0.0, 1.0).finished.connect(gone.queue_free))
 	world.actors.add_child(escort)

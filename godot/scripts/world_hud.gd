@@ -220,7 +220,7 @@ func name_place(map: MapData, cell: Vector2i, quiet := false) -> void:
 		_place_map = map
 		_place_regions = Atlas.names_regions(map)
 	var here := PlaceTitle.at(map, cell, _place_regions)
-	var card := PlaceTitle.next(here, place_was, place_shown, Time.get_ticks_msec(), quiet)
+	var card := PlaceTitle.next(here, place_was, place_shown, GameClock.msec(), quiet)
 	if card.is_empty():
 		return
 	_drop_place_card()

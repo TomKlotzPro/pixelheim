@@ -78,7 +78,7 @@ func _physics_process(delta: float) -> void:
 	var near: Array = _foes()
 	for foe: Node in near:
 		var gap: float = (foe.global_position - global_position).length()
-		var now := Time.get_ticks_msec() / 1000.0
+		var now := GameClock.seconds()
 		if gap < BITE_REACH and now - float(bitten_at.get(foe.get_instance_id(), -99.0)) >= BITE_EVERY:
 			bitten_at[foe.get_instance_id()] = now
 			_hurt(ceili(int(foe.fighter["attack"]) * 0.5))

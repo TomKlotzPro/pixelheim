@@ -147,7 +147,7 @@ const UI_RATE := 22050
 func play_ui(name: String) -> void:
 	if not UI_SOUNDS.has(name):
 		return
-	var now := Time.get_ticks_msec()
+	var now := GameClock.msec()
 	if now - int(_played_at.get(name, -1000)) < 40:
 		return
 	_played_at[name] = now
@@ -199,7 +199,7 @@ func _input(event: InputEvent) -> void:
 func play(sfx: String, vary := true) -> void:
 	if not _doc["stingers"].has(sfx):
 		return
-	var now := Time.get_ticks_msec()
+	var now := GameClock.msec()
 	if now - int(_sfx_at.get(sfx, -1000)) < SAME_GAP_MS:
 		return
 	_sfx_at[sfx] = now
@@ -234,7 +234,7 @@ func _voice_for(stream: AudioStream, pitch: float, level: float, priority: bool)
 	chosen.pitch_scale = pitch
 	chosen.volume_db = level
 	chosen.play()
-	_began[chosen] = Time.get_ticks_msec()
+	_began[chosen] = GameClock.msec()
 
 
 ## Crossfades to a theme: the old one fades out, the new one in.

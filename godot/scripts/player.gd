@@ -143,7 +143,7 @@ func _physics_process(delta: float) -> void:
 			if body.has_method("take_hit") and body not in hit_this_swing:
 				hit_this_swing.append(body)
 				# A blow after a priming dodge is a sure crit, once (PIX-190).
-				var primed := Time.get_ticks_msec() / 1000.0 < crit_primed_until
+				var primed := GameClock.seconds() < crit_primed_until
 				crit_primed_until = 0.0
 				# The web's swing: scaling stat + weapon, crits, mastery, through armour (PIX-185).
 				var swing := Bestiary.hero_attack(
@@ -254,7 +254,7 @@ func dodge() -> void:
 	# Passives ready the next roll sooner, and some make it the setup for a crit (PIX-190).
 	var passives := HeroRules.passives(GameState.hero)
 	if passives["dodgeCrit"]:
-		crit_primed_until = Time.get_ticks_msec() / 1000.0 + PRIMED_SECONDS
+		crit_primed_until = GameClock.seconds() + PRIMED_SECONDS
 	var cooldown := float(rules["cooldown"]) * (1.0 - float(passives["dodgeCooldown"]))
 	get_tree().create_timer(cooldown).timeout.connect(func() -> void: dodge_ready = true)
 
