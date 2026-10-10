@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.192.0",
+      "date": "2026-10-10",
+      "codename": "Raised Roofs",
+      "notes": [
+        "On the town's tour, a rebuilt building rises at its stop: the ruin gives way in a cloud of dust, the walls go up row by row, and it lands under confetti",
+        "Under its name, what it brings: who is back at work, the new perk, or who has moved into town",
+        "The tour now looks at the inn itself and at the flower beds, and its dust drifts instead of hanging in the air",
+        "With Reduce motion, the ruin stands a moment and then the building is there"
+      ]
+    },
+    {
       "version": "0.191.0",
       "date": "2026-10-10",
       "codename": "Sure Footing",

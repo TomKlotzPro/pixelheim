@@ -210,14 +210,18 @@ static func ruins(done: Array) -> Array[Dictionary]:
 		if project_entry["id"] in done:
 			continue
 		for ruin: Dictionary in project_entry.get("ruins", []):
-			var r: Array = ruin["rect"]
 			var door: Array = ruin.get("door", [-1, -1])
 			out.append({
-				"rect": Rect2i(int(r[0]), int(r[1]), int(r[2]) - int(r[0]) + 1, int(r[3]) - int(r[1]) + 1),
+				"rect": _rect(ruin["rect"]),
 				"door": Vector2i(int(door[0]), int(door[1])),
 				"project": project_entry["id"],
 			})
 	return out
+
+
+## town.json's [x0, y0, x1, y1] (corners included) as a rect of cells.
+static func _rect(corners: Array) -> Rect2i:
+	return Rect2i(int(corners[0]), int(corners[1]), int(corners[2]) - int(corners[0]) + 1, int(corners[3]) - int(corners[1]) + 1)
 
 
 ## A ruin as tiles: ash where the house stood, its burnt frame as a log fence
@@ -278,8 +282,7 @@ static func sites(done: Array) -> Array[Dictionary]:
 	for candidate: Dictionary in age(building_age(done)).get("projects", []):
 		if candidate["id"] in done or not candidate.has("site"):
 			continue
-		var r: Array = candidate["site"]
-		out.append({"project": candidate["id"], "rect": Rect2i(int(r[0]), int(r[1]), int(r[2]) - int(r[0]) + 1, int(r[3]) - int(r[1]) + 1)})
+		out.append({"project": candidate["id"], "rect": _rect(candidate["site"])})
 	return out
 
 
@@ -313,23 +316,72 @@ static func site_workers(done: Array) -> Array[Dictionary]:
 	return out
 
 
-## Where a project stands on the map, for the camera to show it built.
+## About how far the tour's camera sees round a stop, in cells, above the
+## lines under it.
+const SEEN := Vector2i(9, 4)
+
+
+## Where a project stands on the map, for the camera to show it built: its
+## main building, the first of its ruins (the one with the door), else the
+## middle of what it sets - or, when none of that is in sight from there,
+## the nearest of it. The camera used to take the middle of everything: of
+## the inn's six roofs all over town, a bare street with no inn in sight;
+## of the lamps, the hall with them at the screen's edge; of the flower
+## beds in four corners of town, the bare square (PIX-264).
 static func project_center(project_id: String) -> Vector2i:
 	var entry := project(project_id)
+	var ruins: Array = entry.get("ruins", [])
+	if not ruins.is_empty():
+		var main := _rect(ruins[0]["rect"])
+		return main.position + (main.size - Vector2i.ONE) / 2
 	var cells: Array[Vector2i] = []
 	for cell: Array in entry["tiles"]:
 		cells.append(Vector2i(int(cell[0]), int(cell[1])))
-	for ruin: Dictionary in entry.get("ruins", []):
-		var r: Array = ruin["rect"]
-		cells.append_array([Vector2i(int(r[0]), int(r[1])), Vector2i(int(r[2]), int(r[3]))])
 	if cells.is_empty():
 		return square()
-	var low := cells[0]
-	var high := cells[0]
+	var sum := Vector2i.ZERO
 	for cell in cells:
-		low = Vector2i(mini(low.x, cell.x), mini(low.y, cell.y))
-		high = Vector2i(maxi(high.x, cell.x), maxi(high.y, cell.y))
-	return (low + high) / 2
+		sum += cell
+	var middle := Vector2i((Vector2(sum) / cells.size()).round())
+	var nearest := cells[0]
+	for cell in cells:
+		if Vector2(cell - middle).length() < Vector2(nearest - middle).length():
+			nearest = cell
+	var off := (nearest - middle).abs()
+	return middle if off.x <= SEEN.x and off.y <= SEEN.y else nearest
+
+
+## The cells a project changes as it's built (PIX-264): its ruins, its plot
+## and each cell it sets. The tour shows the old town there giving way to it.
+static func footprint(project_id: String) -> Array[Rect2i]:
+	var entry := project(project_id)
+	var out: Array[Rect2i] = []
+	for ruin: Dictionary in entry.get("ruins", []):
+		out.append(_rect(ruin["rect"]))
+	if entry.has("site"):
+		out.append(_rect(entry["site"]))
+	for cell: Array in entry.get("tiles", []):
+		var at := Vector2i(int(cell[0]), int(cell[1]))
+		if not out.any(func(rect: Rect2i) -> bool: return rect.has_point(at)):
+			out.append(Rect2i(at, Vector2i.ONE))
+	return out
+
+
+## What a project brings the town, as the tour says it once it stands
+## (PIX-264): the keepers it takes off the square and back under their own
+## roof, the perk it lends (the Hamlet's), and for one with neither, what its
+## builders promised.
+static func brings(project_id: String) -> Array[String]:
+	var entry := project(project_id)
+	var out: Array[String] = []
+	for npc: Dictionary in Npcs._data()["npcs"]:
+		if npc.get("stall", {}).get("project", "") == project_id:
+			out.append(Text.t("%s is back at work indoors.") % npc["name"])
+	if entry.has("perk"):
+		out.append(String(entry["perk"]) + ".")
+	if out.is_empty():
+		out.append(String(entry["blurb"]))
+	return out
 
 
 ## The town map's cells a set of finished projects changes: cell -> tile,

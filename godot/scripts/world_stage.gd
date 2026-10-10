@@ -177,11 +177,18 @@ func _lanterns() -> void:
 		world.actors.add_child(lantern)
 
 
+## The festival's colours, and a building's as it stands (PIX-264).
+const CONFETTI: Array[Color] = [Color("f2c14e"), Color("d8433f"), Color("4f7cff"), Color("5cbf4a")]
+## A building's stop on the tour looks a little below its middle (PIX-264),
+## so it stands above its name and what it brings rather than behind them.
+const BUILDING_FRAMING := Vector2(0, 24)
+
+
 ## Confetti over the square: the town's festival, until the hero leaves.
 func festival() -> void:
 	if GameState.settings.reduce_motion:
 		return
-	for color: Color in [Color("f2c14e"), Color("d8433f"), Color("4f7cff"), Color("5cbf4a")]:
+	for color: Color in CONFETTI:
 		var confetti := CPUParticles2D.new()
 		confetti.position = MapView.center(Town.square() + Vector2i(0, -4))
 		confetti.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
@@ -212,6 +219,8 @@ func after_board() -> void:
 
 ## The town risen (PIX-147): what was built since the hero last saw the town,
 ## the age it reached, a homecoming - the camera tours them, then hands back.
+## A project's stop raises it out of its ruin (PIX-264) and says what it
+## brings; an age's names who moved in with it.
 func play_reveals() -> void:
 	if GameState.reveals.is_empty() or world.map.id != "town" or not world.is_inside_tree():
 		return
@@ -220,11 +229,17 @@ func play_reveals() -> void:
 		var key := entry.get_slice(":", 1)
 		match entry.get_slice(":", 0):
 			"project":
-				stops.append({"at": MapView.center(Town.project_center(key)), "line": Text.t("%s: built.") % Town.project(key)["name"]})
+				stops.append({
+					"at": MapView.center(Town.project_center(key)) + BUILDING_FRAMING,
+					"line": Text.t("%s: built.") % Town.project(key)["name"],
+					"detail": "\n".join(Town.brings(key)), "project": key,
+				})
 			"age":
+				var newcomers := Npcs.newcomers(int(key))
 				stops.append({
 					"at": MapView.center(Town.square()),
 					"line": Text.t("Pixelheim is a %s now.") % String(Town.tier(int(key))["name"]).to_lower(),
+					"detail": Text.t("New in town: %s.") % ", ".join(newcomers) if not newcomers.is_empty() else "",
 					"sound": "evolve", "dust": true,
 				})
 				if GameState.holdings.festival_on():
@@ -241,7 +256,8 @@ func play_reveals() -> void:
 				stops.append({"at": MapView.center(Town.square()), "line": Text.t(Dungeons.milestone(int(key))["homecoming"])})
 	GameState.reveals.clear()
 	var flags := HarnessFlags.given()
-	if stops.is_empty() or (world.harness and not (flags.has("reveal") or flags.has("rebuilt"))):
+	var staged := flags.has("reveal") or flags.has("rebuilt") or flags.has("--rise") or flags.has("lookbook")
+	if stops.is_empty() or (world.harness and not staged):
 		return
 	var tour := preload("res://scripts/reveal_screen.gd").new()
 	tour.world = world

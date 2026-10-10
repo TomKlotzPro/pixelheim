@@ -25,6 +25,10 @@ uniform bool sway_alone = false;
 uniform float canopy = 0.0;
 uniform bool water_life = false;
 uniform sampler2D water_map : filter_linear, repeat_disable;
+// The town as it stood giving way to the town as it stands (PIX-264): as
+// this goes 0 to 1 its 2px blocks drop out in the Bayer order, the same
+// pixels in every layer drawn with it, so it goes as one picture.
+uniform float dissolve = 0.0;
 
 varying vec2 world_pos;
 
@@ -115,6 +119,9 @@ void fragment() {
 	vec4 tint = soft_tint(world_pos);
 	ivec2 block = ivec2(floor(world_pos / 2.0)) & ivec2(3);
 	float threshold = (BAYER[block.y * 4 + block.x] + 0.5) / 16.0;
+	if (threshold < dissolve) {
+		discard;
+	}
 	bool water = base.b > base.g;
 	if (tint.a > threshold && !water) {
 		vec3 hue = tint.rgb / tint.a;
