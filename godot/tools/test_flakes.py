@@ -65,8 +65,17 @@ class TallyTest(unittest.TestCase):
         runs = [run("dodge"), run("dodge", report=(REPORT % 0).replace("(40, 33)", "(40, 34)"))]
         summary, passed = flakes.tally(runs)
         self.assertTrue(passed)
-        self.assertIn("| dodge | 2 | cell |", summary)
+        self.assertIn("| dodge | headless 2 | cell |", summary)
         self.assertFalse(flakes.tally(runs, strict=True)[1])
+
+    def test_reports_compare_within_their_mode(self):
+        # The windowed runs have Shade's CC0 art alone, the headless ones the
+        # paid art: the dice can fall another way between them, never within.
+        windowed = (REPORT % 55).replace("gold=30", "gold=31")
+        summary, passed = flakes.tally([run("fight"), run("fight"), run("fight", mode="windowed", report=windowed),
+                                        run("fight", mode="windowed", report=windowed)], strict=True)
+        self.assertTrue(passed)
+        self.assertIn("all steady", summary)
 
     def test_a_skipped_run_is_no_run(self):
         summary, passed = flakes.tally([run("motion", "skip"), run("dodge")])

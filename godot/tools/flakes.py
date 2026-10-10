@@ -8,9 +8,9 @@ rerun of the whole job, and one that passes on its second try hides what made
 it fail. .github/workflows/flakes.yml runs the suite several rounds on
 several runners, headless and in a window, collects each round here, and
 tallies them all in its summary: every flow that failed even once, why, and
-the end of its output, and every flow whose report changed between runs
-(every field but draws=, which only a window counts), which is how a flake
-starts before any flow fails on it.
+the end of its output, and every flow whose report changed between runs of
+a kind, headless or in a window (every field but draws=, which only a window
+counts), which is how a flake starts before any flow fails on it.
 
     python3 godot/tools/flakes.py collect TAG [RUNS]   # a round's results, as JSON lines
     python3 godot/tools/flakes.py tally FILE...        # the summary (markdown); exit 1 on a failure
@@ -85,13 +85,22 @@ def tally(runs, strict=False):
     modes = sorted({run["mode"] for runs_of in flows.values() for run in runs_of})
     failed = {name: [run for run in of if run["status"] == "FAIL"] for name, of in flows.items()}
     failed = {name: of for name, of in failed.items() if of}
+    # Compared within a mode: the headless runs have the paid art and the
+    # windowed ones Shade's CC0 art alone, and the paid houses' chimney
+    # smoke draws from the same dice as the game (Godot's particles do), so
+    # what a kill drops can differ between the two, the same every run.
     changed = {}
     for name, of in flows.items():
-        seen = [steady_part(run["report"]) for run in of if run["report"]]
-        distinct = {json.dumps(fields, sort_keys=True) for fields in seen}
-        if len(distinct) > 1:
-            fields = sorted({key for one in seen for key in one if len({json.dumps(other.get(key)) for other in seen}) > 1})
-            changed[name] = (len(distinct), fields)
+        counts = []
+        fields = set()
+        for mode in modes:
+            seen = [steady_part(run["report"]) for run in of if run["report"] and run["mode"] == mode]
+            distinct = {json.dumps(one, sort_keys=True) for one in seen}
+            if len(distinct) > 1:
+                counts.append("%s %d" % (mode, len(distinct)))
+                fields |= {key for one in seen for key in one if len({json.dumps(other.get(key)) for other in seen}) > 1}
+        if counts:
+            changed[name] = (", ".join(counts), sorted(fields))
     total = sum(len(of) for of in flows.values())
     passed = not failed and not (strict and changed)
     lines = ["### Steady flows: %s" % ("all steady" if not failed and not changed else
@@ -109,7 +118,7 @@ def tally(runs, strict=False):
         lines += ["Reports that changed between runs (every field but %s):" % ", ".join("%s=" % field for field in sorted(IGNORED)), "",
                   "| Flow | Reports | Fields that changed |", "|---|---|---|"]
         for name in sorted(changed):
-            lines.append("| %s | %d | %s |" % (name, changed[name][0], ", ".join(changed[name][1])))
+            lines.append("| %s | %s | %s |" % (name, changed[name][0], ", ".join(changed[name][1])))
         lines.append("")
     slowest = sorted(((max(run["seconds"] for run in of), name) for name, of in flows.items()), reverse=True)[:5]
     if slowest:

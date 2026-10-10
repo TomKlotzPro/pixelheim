@@ -197,6 +197,9 @@ jobs:
         share: [1, 2]
     env:
       SCREEN: "-screen 0 2560x1440x24"
+      # Software rendering on a slow runner: the watchdog, a backstop for a
+      # run that never quits, waits longer than on a machine with a GPU.
+      FLOWS_WATCHDOG: "150"
       SHARE: ${{ matrix.share }}
     steps:
       - uses: actions/checkout@v4
@@ -353,14 +356,22 @@ jobs:
           marker="<!-- pixelheim-pictures -->"
           failed=$(cat windowed-*.txt 2>/dev/null | grep -E "^FAIL " | awk '{print $2}' | paste -sd, - | sed 's/,/, /g')
           motion=$(cat windowed-*.txt 2>/dev/null | grep -E "^(ok|FAIL) +motion " | grep -oE "backsteps=[^ ]*" | head -1)
+          look=""
+          if [ -n "$LOOK_SHEET" ]; then
+            look="[the look book's sheet]($LOOK_SHEET), "
+          fi
+          walked=""
+          if [ -n "$motion" ]; then
+            walked="; the motion flow walked with $motion"
+          fi
           {
             echo "$marker"
-            echo "**Pictures of ${SHA:0:7}** ([the run]($RUN)): [every flow on one sheet]($FLOWS_SHEET), ${LOOK_SHEET:+[the look book's sheet]($LOOK_SHEET), }[every picture at full size]($ZIP) (a zip)."
+            echo "**Pictures of ${SHA:0:7}** ([the run]($RUN)): [every flow on one sheet]($FLOWS_SHEET), $look[every picture at full size]($ZIP) (a zip)."
             echo
             if [ -n "$failed" ]; then
               echo "**Failed in a window:** $failed (their pictures are on the sheet, named in red)."
             else
-              echo "Every flow showed in a window what it shows headless${motion:+; the motion flow walked with $motion}."
+              echo "Every flow showed in a window what it shows headless$walked."
             fi
             echo
             echo "_Shade's CC0 art only (none of the paid houses, props, rooms or icons), drawn in a virtual display by software: the flows on the desktop renderer, the look book on the browser's._"
