@@ -255,6 +255,10 @@ func _physics_process(delta: float) -> void:
 	for tick in ailments.tick(delta):
 		_lose(tick["damage"], Color(0.75, 0.5, 1))
 		if dying:
+			# A boss an ailment finishes falls as one a blow fells does
+			# (PIX-288): its moment, its title, the music cut.
+			if not stood_down and Bestiary.fights_like_boss(fighter):
+				world.foes.boss_fell(self)
 			return
 	if ailments.is_stunned():
 		_play("idle")

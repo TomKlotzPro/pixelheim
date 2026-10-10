@@ -14,6 +14,13 @@ class_name Depths
 ## floors, the world draws and walks them.
 
 const NOWHERE := Vector2i(-1, -1)
+## How far from its door a boss may fall and the door still be its way out,
+## in cells (PIX-292: "a few steps", and on the screen); further off, a way
+## out opens where it fell as well.
+const WAY_OUT_NEAR := 4.0
+## How far round where a boss fell its way out may open, in cells, when
+## that cell itself won't take it.
+const WAY_OUT_REACH := 2
 
 static var _doc := {}
 ## Map id -> its floor: the data's entry with its "dungeon" and its
@@ -211,7 +218,9 @@ static func boss(dungeon_id: String) -> String:
 ## The shortcut out of `map_id`'s dungeon when it's on that floor: {cell,
 ## to (the portal: the dungeon's way in), opened (what's said as it opens),
 ## boss, look (PunyDungeon.DOORS: the sea cave's wooden gate, the shafts'
-## ore cage, the cellars' north stair)}; {} otherwise.
+## ore cage, the cellars' north stair), fell (what's said as a way out opens
+## where the boss fell, PIX-292), sign (where it leads, over a way out as
+## the hero comes near)}; {} otherwise.
 static func shortcut_on(map_id: String) -> Dictionary:
 	var entry := floor_of(map_id)
 	if entry.is_empty():
@@ -221,7 +230,7 @@ static func shortcut_on(map_id: String) -> Dictionary:
 		return {}
 	return {
 		"cell": _cell(cut), "to": cut["to"], "opened": String(cut.get("opened", "")), "boss": boss(entry["dungeon"]),
-		"look": String(cut.get("look", "gate")),
+		"look": String(cut.get("look", "gate")), "fell": String(cut.get("fell", "")), "sign": String(cut.get("sign", "")),
 	}
 
 
@@ -244,6 +253,76 @@ static func open_shortcut(map: MapData, hunted: Array) -> bool:
 	map.pieces[cell] = PunyDungeon.DOORS[door["look"]][1]
 	map.portals[cell] = (door["to"] as Dictionary).duplicate()
 	return true
+
+
+## Where a way out opens beside a boss that fell at `fell` (PIX-292, Tom:
+## « Porte de sortie direct après un boss »): NOWHERE when its floor has no
+## shortcut or the door stands within WAY_OUT_NEAR of it, else the open
+## floor nearest where it fell (that cell first, then out to WAY_OUT_REACH),
+## never a portal, nor `avoid` (where the hero stands: a way out opens to
+## be stepped onto).
+static func way_out_cell(map: MapData, fell: Vector2i, avoid := NOWHERE) -> Vector2i:
+	var door := shortcut_on(map.id)
+	if door.is_empty() or fell == NOWHERE or Vector2(fell).distance_to(Vector2(door["cell"])) <= WAY_OUT_NEAR:
+		return NOWHERE
+	var best := NOWHERE
+	for dy in range(-WAY_OUT_REACH, WAY_OUT_REACH + 1):
+		for dx in range(-WAY_OUT_REACH, WAY_OUT_REACH + 1):
+			var cell := fell + Vector2i(dx, dy)
+			if cell == avoid or map.portals.has(cell) or not map.is_walkable(cell):
+				continue
+			if String(map.grid.get(cell, "")) not in ["floor", "ice", "stone"]:
+				continue
+			if best == NOWHERE or fell.distance_squared_to(cell) < fell.distance_squared_to(best):
+				best = cell
+	return best
+
+
+## A way out opened at `cell` (way_out_cell): a stair up, straight out to
+## the dungeon's way in as the shortcut is. Only for this visit: the floor
+## is laid afresh on the next, its door in the rock standing open.
+static func open_way_out(map: MapData, cell: Vector2i) -> void:
+	var door := shortcut_on(map.id)
+	if door.is_empty() or cell == NOWHERE:
+		return
+	map.grid[cell] = "cave"
+	map.pieces[cell] = PunyDungeon.STAIRS
+	map.portals[cell] = (door["to"] as Dictionary).duplicate()
+
+
+## The ways straight out of `map` to its dungeon's way in (PIX-292): the
+## shortcut's door once open, and a way out opened where its boss fell, in
+## the order they opened; [] for any other map.
+static func exits(map: MapData) -> Array[Vector2i]:
+	var out: Array[Vector2i] = []
+	var door := shortcut_on(map.id)
+	if door.is_empty():
+		return out
+	var to: Dictionary = door["to"]
+	for cell: Vector2i in map.portals:
+		var target: Dictionary = map.portals[cell]
+		if String(target.get("mapId", "")) == String(to["mapId"]) and int(target.get("x", -1)) == int(to["x"]) and int(target.get("y", -1)) == int(to["y"]):
+			out.append(cell)
+	return out
+
+
+## The way out the arrow takes from `map` toward `to_map` for a hero at
+## `from` (PIX-292): once its boss is down, the nearest of its exits, for
+## anywhere but the floors above (their stairs lead there); NOWHERE
+## otherwise (nowhere to go, or no way out open), and the arrow goes by the
+## doors as before.
+static func way_out_toward(map: MapData, to_map: String, from: Vector2i) -> Vector2i:
+	var door := shortcut_on(map.id)
+	if door.is_empty() or to_map == "" or to_map == map.id:
+		return NOWHERE
+	var upstairs := String(floor_of(to_map).get("dungeon", "")) == String(floor_of(map.id)["dungeon"])
+	if upstairs and to_map != String(door["to"]["mapId"]):
+		return NOWHERE
+	var best := NOWHERE
+	for cell: Vector2i in exits(map):
+		if best == NOWHERE or from.distance_squared_to(cell) < from.distance_squared_to(best):
+			best = cell
+	return best
 
 
 ## Where a hero saved at `cell` of `map_id` wakes: at the entrance of the

@@ -1801,6 +1801,14 @@ msgid "A blow shoves a foe back and the push fades, instead of a one-frame jolt:
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A boss finished off by poison or a burn now falls as it should, with its victory moment"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "A boss's health bar now goes away when it falls, however it falls"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A cleric's first night tells them to strike the embers down and mend between blows, since Mend is no weapon"
 msgstr ""
 
@@ -4929,6 +4937,10 @@ msgid "The Village Reborn"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Way Out"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Whole Reach"
 msgstr ""
 
@@ -5578,6 +5590,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "What's new is on the title menu now, keys and gamepads included, with a NEW badge until you've read the latest notes"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "When a boss falls far from its door, a way out opens right where it fell, lit and easy to spot, and the arrow points to it"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -8233,7 +8249,39 @@ msgid "The tide door groans open on its old hinges: daylight, salt wind, and the
 msgstr ""
 
 #: assets/data/depths.json
+msgid "To the foot of Liane's stair"
+msgstr ""
+
+#: assets/data/depths.json
+msgid "Up to Saltmere's beach"
+msgstr ""
+
+#: assets/data/depths.json
+msgid "Up to the keep's stair"
+msgstr ""
+
+#: assets/data/depths.json
+msgid "Up to the pithead"
+msgstr ""
+
+#: assets/data/depths.json
 msgid "What's left of a fishing boat, wedged in the rock: the one that was bringing Tam's things home. One crate in her hold still says TAM on the lid, in Maren's hand."
+msgstr ""
+
+#: assets/data/depths.json
+msgid "Where Captain Hale lay down, a flagstone lifts on a stair: straight up to the foot of the keep's stair."
+msgstr ""
+
+#: assets/data/depths.json
+msgid "Where Rimefang fell, the ice splits over an old stair: straight back to the foot of Liane's stair."
+msgstr ""
+
+#: assets/data/depths.json
+msgid "Where the Seam Warden fell, an old miners' stair shows under the rubble: straight up to the pithead."
+msgstr ""
+
+#: assets/data/depths.json
+msgid "Where the Tidecaller fell, a stair shows in the rock, salt wind blowing down it: straight up to the beach."
 msgstr ""
 
 #: assets/data/economy.json
@@ -13254,6 +13302,10 @@ msgstr ""
 
 #: scripts/map_screen.gd
 msgid "maps"
+msgstr ""
+
+#: scripts/map_view.gd
+msgid "Way out"
 msgstr ""
 
 #: scripts/options_screen.gd

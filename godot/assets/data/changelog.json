@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.221.0",
+      "date": "2026-10-10",
+      "codename": "The Way Out",
+      "notes": [
+        "A boss's health bar now goes away when it falls, however it falls",
+        "When a boss falls far from its door, a way out opens right where it fell, lit and easy to spot, and the arrow points to it",
+        "A boss finished off by poison or a burn now falls as it should, with its victory moment"
+      ]
+    },
+    {
       "version": "0.220.0",
       "date": "2026-10-10",
       "codename": "Open for Business",

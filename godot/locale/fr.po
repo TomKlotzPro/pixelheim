@@ -1801,6 +1801,14 @@ msgid "A blow shoves a foe back and the push fades, instead of a one-frame jolt:
 msgstr "Un coup repousse l'ennemi et la poussée s'estompe, au lieu d'un sursaut d'une image : un élite recule deux fois moins, un boss pas du tout"
 
 #: assets/data/changelog.json
+msgid "A boss finished off by poison or a burn now falls as it should, with its victory moment"
+msgstr "Un boss achevé par le poison ou une brûlure tombe désormais comme il se doit, avec son moment de victoire"
+
+#: assets/data/changelog.json
+msgid "A boss's health bar now goes away when it falls, however it falls"
+msgstr "La barre de vie d'un boss disparaît désormais quand il tombe, quelle que soit la façon dont il tombe"
+
+#: assets/data/changelog.json
 msgid "A cleric's first night tells them to strike the embers down and mend between blows, since Mend is no weapon"
 msgstr "La première nuit d'un clerc lui dit de frapper les braises et de se soigner entre deux coups, puisque Soin n'est pas une arme"
 
@@ -4929,6 +4937,10 @@ msgid "The Village Reborn"
 msgstr "Le Village renaît"
 
 #: assets/data/changelog.json
+msgid "The Way Out"
+msgstr "La sortie"
+
+#: assets/data/changelog.json
 msgid "The Whole Reach"
 msgstr "Toute la Marche"
 
@@ -5579,6 +5591,10 @@ msgstr "Ce qui pousse au sol change de place d'un jour à l'autre : chaque mat
 #: assets/data/changelog.json
 msgid "What's new is on the title menu now, keys and gamepads included, with a NEW badge until you've read the latest notes"
 msgstr "« Quoi de neuf » est désormais dans le menu titre, au clavier comme à la manette, avec un badge NOUVEAU tant que vous n'avez pas lu les dernières notes"
+
+#: assets/data/changelog.json
+msgid "When a boss falls far from its door, a way out opens right where it fell, lit and easy to spot, and the arrow points to it"
+msgstr "Quand un boss tombe loin de sa porte, une sortie s'ouvre juste là où il est tombé, éclairée et facile à repérer, et la flèche la montre"
 
 #: assets/data/changelog.json
 msgid "When every voice is busy, the sounds that matter (a hurt, a level, a victory) still get through"
@@ -8233,8 +8249,40 @@ msgid "The tide door groans open on its old hinges: daylight, salt wind, and the
 msgstr "La porte des marées s'ouvre en grinçant sur ses vieux gonds : la lumière du jour, le vent salé, et la plage sous le cap."
 
 #: assets/data/depths.json
+msgid "To the foot of Liane's stair"
+msgstr "Vers le pied de l'escalier de Liane"
+
+#: assets/data/depths.json
+msgid "Up to Saltmere's beach"
+msgstr "Vers la plage de Saltmere"
+
+#: assets/data/depths.json
+msgid "Up to the keep's stair"
+msgstr "Vers l'escalier du donjon"
+
+#: assets/data/depths.json
+msgid "Up to the pithead"
+msgstr "Vers le carreau de la mine"
+
+#: assets/data/depths.json
 msgid "What's left of a fishing boat, wedged in the rock: the one that was bringing Tam's things home. One crate in her hold still says TAM on the lid, in Maren's hand."
 msgstr "Ce qui reste d'un bateau de pêche, coincé dans la roche : celui qui ramenait les affaires de Tam. Dans sa cale, une caisse porte encore TAM sur le couvercle, de la main de Maren."
+
+#: assets/data/depths.json
+msgid "Where Captain Hale lay down, a flagstone lifts on a stair: straight up to the foot of the keep's stair."
+msgstr "Là où le capitaine Hale s'est couché, une dalle se soulève sur un escalier : tout droit vers le haut, jusqu'au pied de l'escalier du donjon."
+
+#: assets/data/depths.json
+msgid "Where Rimefang fell, the ice splits over an old stair: straight back to the foot of Liane's stair."
+msgstr "Là où Crocgivre est tombé, la glace se fend sur un vieil escalier : tout droit jusqu'au pied de l'escalier de Liane."
+
+#: assets/data/depths.json
+msgid "Where the Seam Warden fell, an old miners' stair shows under the rubble: straight up to the pithead."
+msgstr "Là où le Gardien du Filon est tombé, un vieil escalier de mineurs apparaît sous les gravats : tout droit jusqu'au carreau de la mine."
+
+#: assets/data/depths.json
+msgid "Where the Tidecaller fell, a stair shows in the rock, salt wind blowing down it: straight up to the beach."
+msgstr "Là où l'Appelle-Marée est tombé, un escalier apparaît dans la roche, le vent salé s'y engouffre : tout droit jusqu'à la plage."
 
 #: assets/data/economy.json
 msgid "Abyssal"
@@ -13255,6 +13303,10 @@ msgstr "Vous"
 #: scripts/map_screen.gd
 msgid "maps"
 msgstr "cartes"
+
+#: scripts/map_view.gd
+msgid "Way out"
+msgstr "Sortie"
 
 #: scripts/options_screen.gd
 msgid "%s already does %s. Choose another key."
