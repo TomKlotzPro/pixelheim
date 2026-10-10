@@ -2361,6 +2361,10 @@ msgid "Each material grows a set number a day, so the rare ones stay rare: one F
 msgstr "Chaque matériau pousse en nombre fixe chaque jour, si bien que les rares le restent : un Lys de givre, un Minerai de Fernoir et un Vieil acier par jour, leurs deux foyers à tour de rôle"
 
 #: assets/data/changelog.json
+msgid "Each rank shows on the hero, in the class's colours: an edge at rank II, a rim of light at III, a weapon that glows as it strikes at IV, and light trailing your steps at V"
+msgstr "Chaque rang se voit sur le héros, aux couleurs de la classe : un liseré au rang II, un contour de lumière au III, une arme qui luit quand elle frappe au IV, et la lumière qui suit vos pas au V"
+
+#: assets/data/changelog.json
 msgid "Each region has its own air: heat shimmers over the Ash Fields as embers drift up, snow falls on the Frostgate and frost creeps in at the edges of the view, low fog rolls over the Mirefen and the marshes, and salt spray blows off the Saltmere coast"
 msgstr "Chaque région a son air : la chaleur fait trembler les Champs de Cendres où montent des braises, la neige tombe sur la Porte-Givre et le givre gagne les bords de l'écran, un brouillard bas roule sur les Marais de Fange et les marécages, et les embruns soufflent sur la côte de Saltmere"
 
@@ -3701,6 +3705,10 @@ msgid "Rank shows on the hero: an aura that deepens with each ascension (silver,
 msgstr "Le rang se voit sur le héros : une aura qui s'intensifie à chaque ascension (argentée, dorée, rayonnante) et un peu plus de présence sur la carte"
 
 #: assets/data/changelog.json
+msgid "Reaching a new rank is a moment: the world darkens, a shaft of your class's light lifts the hero, the old look burns away into the new, and the rank's name and what it unlocks follow"
+msgstr "Atteindre un nouveau rang devient un moment : le monde s'assombrit, un rai de la lumière de votre classe soulève le héros, l'ancienne allure se consume dans la nouvelle, puis viennent le nom du rang et ce qu'il débloque"
+
+#: assets/data/changelog.json
 msgid "Readable Danger"
 msgstr "Le danger se lit"
 
@@ -4711,6 +4719,10 @@ msgstr "Les cols deviennent des relais de voyage rapide dès que vous les aperce
 #: assets/data/changelog.json
 msgid "The quest is now Relics of the Five - four to find, the five's to bring home - and the town's goals and the bounty board no longer offer floors behind a barred gate"
 msgstr "La quête s'appelle désormais Les Reliques des Cinq - quatre à trouver, celles des cinq à ramener - et les objectifs du village comme le tableau des primes ne proposent plus d'étages derrière une porte barrée"
+
+#: assets/data/changelog.json
+msgid "The rank's look sits over your clothes and gear and never hides them; with Reduce motion the old look simply fades into the new"
+msgstr "L'allure du rang se pose sur vos vêtements et votre équipement sans jamais les cacher ; avec Réduire les animations, l'ancienne allure se fond simplement dans la nouvelle"
 
 #: assets/data/changelog.json
 msgid "The rank-up says what its bonus point is truly for"
@@ -11568,15 +11580,15 @@ msgstr "Sac"
 msgid " +%d HP"
 msgstr " +%d PV"
 
-#: scripts/hud_dock.gd:372
+#: scripts/hud_dock.gd:374
 msgid "Lv %d %s"
 msgstr "Niv. %d %s"
 
-#: scripts/hud_dock.gd:375
+#: scripts/hud_dock.gd:377
 msgid "HP"
 msgstr "PV"
 
-#: scripts/hud_dock.gd:396
+#: scripts/hud_dock.gd:398
 msgid "Skill %d: none yet"
 msgstr "Compétence %d : aucune encore"
 
@@ -12136,57 +12148,85 @@ msgstr "Sauvegardes"
 msgid "Quit to title"
 msgstr "Quitter vers le titre"
 
-#: scripts/player.gd:279
+#: scripts/player.gd:290
 msgid "dodged"
 msgstr "esquivé"
 
-#: scripts/player.gd:289
+#: scripts/player.gd:300
 msgid "You are afflicted by %s!"
 msgstr "Vous voilà atteint : %s !"
 
-#: scripts/player.gd:344
+#: scripts/player.gd:378
 msgid "No skill on that key yet. Learn more, or set the keys, in Skills."
 msgstr "Aucune compétence sur cette touche. Apprenez-en d'autres, ou réglez les touches, dans Compétences."
 
-#: scripts/player.gd:357
+#: scripts/player.gd:391
 msgid "No foe in reach for %s."
 msgstr "Aucun ennemi à portée pour %s."
 
-#: scripts/player.gd:375
+#: scripts/player.gd:409
 msgid "All ailments are purged!"
 msgstr "Tous les maux sont purgés !"
 
-#: scripts/player.gd:378
+#: scripts/player.gd:412
 msgid "%s restores %d HP."
 msgstr "%s rend %d PV."
 
-#: scripts/player.gd:390
+#: scripts/player.gd:424
 msgid "%s hits %d foes for %d damage!"
 msgstr "%s touche %d ennemis : %d dégâts !"
 
-#: scripts/player.gd:392
+#: scripts/player.gd:426
 msgid "%s hits %s for %d damage!"
 msgstr "%s touche %s : %d dégâts !"
 
-#: scripts/rankup_screen.gd:119
-msgid "The path forks      A/D  choose      E  walk this path      Esc  choose later, in Skills"
-msgstr "La voie bifurque      A/D  choisir      E  suivre cette voie      Esc  choisir plus tard, dans Compétences"
+#: scripts/rank_look.gd:92
+msgid "New look: an edge in your class's colour"
+msgstr "Nouvelle allure : un liseré aux couleurs de votre classe"
 
-#: scripts/rankup_screen.gd:134
-msgid "Signature: %s"
-msgstr "Signature : %s"
+#: scripts/rank_look.gd:94
+msgid "New look: a rim of light around you"
+msgstr "Nouvelle allure : un contour de lumière vous entoure"
 
-#: scripts/rankup_screen.gd:66
+#: scripts/rank_look.gd:96
+msgid "New look: your weapon glows as it strikes"
+msgstr "Nouvelle allure : votre arme luit quand elle frappe"
+
+#: scripts/rank_look.gd:98
+msgid "New look: light trails your steps"
+msgstr "Nouvelle allure : la lumière suit vos pas"
+
+#: scripts/rankup_screen.gd:152
+msgid "Ascension: rank %d of %d"
+msgstr "Ascension : rang %d sur %d"
+
+#: scripts/rankup_screen.gd:192
 msgid "+1 bonus skill point"
 msgstr "+1 point de compétence bonus"
 
-#: scripts/rankup_screen.gd:68
+#: scripts/rankup_screen.gd:194
 msgid "Every skill mastered: the bonus point rests"
 msgstr "Toutes les compétences maîtrisées : le point bonus attend"
 
-#: scripts/rankup_screen.gd:70
+#: scripts/rankup_screen.gd:196
 msgid "+1 bonus skill point, to spend beyond the tree (Stats)"
 msgstr "+1 point de compétence bonus, à dépenser au-delà de l'arbre (Stats)"
+
+#: scripts/rankup_screen.gd:199
+msgid "Level %d: +%d stat points, +%d max HP, +%d max %s"
+msgstr "Niveau %d : +%d points de caractéristique, +%d PV max, +%d %s max"
+
+#: scripts/rankup_screen.gd:204
+msgid "A new step on your path: choose it below"
+msgstr "Un nouveau pas sur votre voie : choisissez-le ci-dessous"
+
+#: scripts/rankup_screen.gd:495
+msgid "The path forks      A/D  choose      E  walk this path      Esc  choose later, in Skills"
+msgstr "La voie bifurque      A/D  choisir      E  suivre cette voie      Esc  choisir plus tard, dans Compétences"
+
+#: scripts/rankup_screen.gd:510
+msgid "Signature: %s"
+msgstr "Signature : %s"
 
 #: scripts/ring_toss_screen.gd:119
 msgid "On the peg again! The prize is already yours this festival. {key:interact} to throw again."

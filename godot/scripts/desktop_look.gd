@@ -91,6 +91,14 @@ static func shown(color: Color, is_linear: bool) -> Color:
 	return color.linear_to_srgb() if is_linear else color
 
 
+## How opaque a dark veil must be to darken the screen as much as `alpha`
+## does in the browser (the shaders' `veil`, PIX-244): blended in linear
+## light, a half-transparent black darkens less (the ascension's dark hush
+## let the day's world show through at half its brightness).
+static func veil(alpha: float, is_linear: bool) -> float:
+	return 1.0 - pow(1.0 - clampf(alpha, 0.0, 1.0), 2.2) if is_linear else alpha
+
+
 ## Waits for a frame drawn. While the window is hidden (another app full
 ## screen over it) the engine draws nothing of its own accord, so this draws
 ## the frame itself.

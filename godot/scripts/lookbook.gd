@@ -12,7 +12,9 @@ extends Node
 ## folder with its own sheet. A shot that is a moment rather than a place (a
 ## clip: `rise`, PIX-264) is staged afresh for each look and kept as a strip
 ## of frames through it, <name>_strip.png; its last frame stands in the
-## sheet. Run by tools/lookbook.sh.
+## sheet. A shot that is a page rather than a place (`ranks`, PIX-244: every
+## class's five ranks side by side, RankSheet) is laid over the staged town.
+## Run by tools/lookbook.sh.
 
 ## Where in the day a shot stands (DayNight's wheel, 0..1).
 const DAY := 0.2
@@ -50,6 +52,8 @@ const SHOTS := [
 	{"name": "21_walk", "map": "town", "cell": Vector2i(38, 13), "time": DAY, "walk": true},
 	# Odo's store rising out of its ruin on the town's tour (PIX-264).
 	{"name": "22_rise", "map": "town", "at": "street", "time": DAY, "rise": "odos_store"},
+	# Every class's ranks side by side, each rank's look on the hero (PIX-244).
+	{"name": "23_ranks", "map": "town", "at": "street", "time": DAY, "ranks": true},
 ]
 ## Filming the walk: slowed to a quarter, a picture every WALK_STEP of the
 ## game's time (thirty a second: two or three of each frame of the walk),
@@ -126,6 +130,10 @@ func run() -> void:
 			await _clip(shot, folders, images)
 			continue
 		_stage(shot)
+		var page: RankSheet = null
+		if shot.get("ranks", false):
+			page = RankSheet.new()
+			world.add_child(page)
 		await get_tree().create_timer(SETTLE_SECONDS).timeout
 		await drawn()
 		for look: String in folders:
@@ -136,6 +144,8 @@ func run() -> void:
 			var image: Image = await DesktopLook.snapshot(self)
 			image.save_png("%s/%s.png" % [folders[look], shot["name"]])
 			images[look].append(image)
+		if page != null:
+			page.queue_free()
 		var line := "%s %s" % ["LOOK", shot["name"]]
 		if with_perf:
 			line += "  " + await PerfProbe.sample(self, 180)
