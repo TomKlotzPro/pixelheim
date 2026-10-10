@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.220.0",
+      "date": "2026-10-10",
+      "codename": "Open for Business",
+      "notes": [
+        "A keeper stands in their building the day it is rebuilt: Sela in her inn, Vex at her brews, whatever the village's age",
+        "The first brew works at every stage: at Vex's stall while her house is ash, at her cauldron once it stands",
+        "No more half bridge south of the village",
+        "The loading screen shows only the night sky and a quiet bar: no old title, no English"
+      ]
+    },
+    {
       "version": "0.219.0",
       "date": "2026-10-10",
       "codename": "One Land",
