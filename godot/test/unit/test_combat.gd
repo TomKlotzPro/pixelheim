@@ -111,7 +111,7 @@ func test_drops_match_the_web() -> void:
 func test_mastery_announces_a_crossed_tier() -> void:
 	state.hero.mastery = {"beasts": 9}
 	state.roll = _dice([0.99, 0.99])  # no drop, no forage
-	var log: Array[String] = state.spoils.defeat_monster(Bestiary.wild(Bestiary.spawn("wolf")), "forest", "forest_2", 1)
+	var log: Array = state.spoils.defeat_monster(Bestiary.wild(Bestiary.spawn("wolf")), "forest", "forest_2", 1)["lines"]
 	assert_eq(log[0], "Mastery: Beasts Slayer I. +5% damage against beasts.")
 	assert_almost_eq(Bestiary.mastery_bonus(state.hero.mastery, "slime"), 0.05, 0.0001)
 
@@ -124,9 +124,12 @@ func test_a_kill_pays_xp_and_gold_and_clears_the_spawn() -> void:
 	var wolf := Bestiary.wild(Bestiary.spawn("wolf"))
 	var slain := []
 	state.monster_slain.connect(func(id: String) -> void: slain.append(id))
-	var log: Array[String] = state.spoils.defeat_monster(wolf, "forest", "forest_2", 1)
+	var won: Dictionary = state.spoils.defeat_monster(wolf, "forest", "forest_2", 1)
+	var log: Array = won["lines"]
 	assert_false(log.any(func(line: String) -> bool: return line.begins_with("Rent")), "no rent line per kill")
-	assert_has(log, "Dire Wolf is defeated! +9 XP, +9 gold.", "a wolf above a new hero pays a little more (PIX-189)")
+	# PIX-245: the XP and gold float over the wolf, not in the log.
+	assert_eq([won["gains"]["xp"], won["gains"]["gold"]], [9, 9], "a wolf above a new hero pays a little more (PIX-189)")
+	assert_true(log.is_empty(), "nothing to read for a plain kill: %s" % [log])
 	assert_eq(state.hero.xp, 9)
 	assert_eq(state.pack.gold, 30 + 9)
 	assert_eq(state.world.slain, ["forest_2"])
@@ -137,10 +140,15 @@ func test_a_kill_pays_xp_and_gold_and_clears_the_spawn() -> void:
 func test_foraging_and_drops_land_in_the_pack() -> void:
 	# drop: chance yes, stack, apple; forage: yes, double yes
 	state.roll = _dice([0.1, 0.9, 0.3, 0.1, 0.1])
-	var log: Array[String] = state.spoils.defeat_monster(Bestiary.wild(Bestiary.spawn("slime")), "forest", "", 1)
+	var won: Dictionary = state.spoils.defeat_monster(Bestiary.wild(Bestiary.spawn("slime")), "forest", "", 1)
 	assert_eq(state.pack.items["apple"], 1)
 	assert_eq(state.pack.items["forest_herb"], 2)
-	assert_has(log, "You forage 2 Forest Herbs.")
+	# PIX-245: the drop and the herbs float up from the slime.
+	assert_eq(won["gains"]["items"], [
+		{"id": "apple", "count": 1, "rarity": "common", "name": "Apple"},
+		{"id": "forest_herb", "count": 2, "rarity": "common", "name": "Forest Herb"},
+	])
+	assert_true(won["lines"].is_empty(), "no forage line: %s" % [won["lines"]])
 	assert_eq(state.hero.jobs["foraging"]["xp"], 5)
 
 
@@ -149,7 +157,7 @@ func test_the_manor_garden_ripens_on_the_sixth_win() -> void:
 	state.settlement.house["tier"] = 3
 	state.settlement.house["gardenWins"] = 5
 	state.roll = _dice([0.99, 0.99])
-	var log: Array[String] = state.spoils.defeat_monster(Bestiary.spawn("slime"), "", "", 1)
+	var log: Array = state.spoils.defeat_monster(Bestiary.spawn("slime"), "", "", 1)["lines"]
 	assert_has(log, "Your garden ripens: +2 Forest Herb.", "PIX-179: herbs and reeds for the cauldron")
 	assert_eq(state.settlement.house["gardenWins"], 0)
 	assert_eq(state.settlement.house["gardenHarvests"], 1)

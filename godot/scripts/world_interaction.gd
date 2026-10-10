@@ -80,10 +80,14 @@ func interact() -> void:
 		return
 	if _station(faced):
 		return
-	# A fishing spot facing the water: cast (PIX-165).
+	# A fishing spot facing the water: cast (PIX-165). The catch rises out of
+	# the water faced (PIX-245).
 	if _fishing_here():
 		Sound.play("drop")
-		world.messages.flash(GameState.spoils.fish(Gathering.fishing_spot_at(world.map.id, world.player_cell)["id"]))
+		var cast := GameState.spoils.fish(Gathering.fishing_spot_at(world.map.id, world.player_cell)["id"])
+		world.messages.flash(cast["message"])
+		world.messages.log_lines(cast["lines"])
+		world.fx.show_gains(cast["gains"], MapView.center(faced) + WorldFx.OVER_THING)
 		return
 	# The projects board on the square opens the village's ledger (PIX-145);
 	# what it built, the town shows off as it closes (PIX-147).
@@ -318,6 +322,8 @@ func _open_chest(chest: Dictionary) -> void:
 		return
 	sprite.texture = MapView.treasure_texture(chest, true)
 	Sound.play("chest")
+	# What it held rises out of it (PIX-245).
+	world.fx.show_gains(result["gains"], MapView.center(Vector2i(int(chest["x"]), int(chest["y"]))) + WorldFx.OVER_THING)
 
 
 ## The fires beat (PIX-197): the well fills a bucket; a burning home's
@@ -354,19 +360,23 @@ func step_on(cell: Vector2i) -> void:
 	_gather_at(cell)
 
 
-## A patch underfoot is picked (PIX-143).
+## A patch underfoot is picked (PIX-143); what it gave rises over the hero
+## standing in it (PIX-245).
 func _gather_at(cell: Vector2i) -> void:
 	var patch: Dictionary = world.view.patches.get(cell, {})
 	if patch.is_empty():
 		return
-	var lines := GameState.spoils.gather(patch["id"], patch["item"])
-	if lines.is_empty():
+	var picked := GameState.spoils.gather(patch["id"], patch["item"])
+	if Gains.is_empty(picked["gains"]):
 		return
 	Sound.play("drop")
-	world.messages.log_lines(lines)
+	world.messages.log_lines(picked["lines"])
+	world.fx.show_gains(picked["gains"], MapView.center(cell) + WorldFx.OVER_HERO)
 	world.view.refresh_patches()
 
 
+## Treasure underfoot (a glint on the road, herbs): picked up, and what it
+## was rises over the hero (PIX-245).
 func _collect_ground_treasure(cell: Vector2i) -> void:
 	var chest := _chest_at(cell)
 	if chest.is_empty() or chest["look"] == "chest" or GameState.spoils.is_opened(chest):
@@ -376,6 +386,7 @@ func _collect_ground_treasure(cell: Vector2i) -> void:
 	if result["opened"]:
 		world.view.chest_sprites[chest["id"]].queue_free()
 		world.view.chest_sprites.erase(chest["id"])
+		world.fx.show_gains(result["gains"], MapView.center(cell) + WorldFx.OVER_HERO)
 
 
 ## The one interaction-prompt rule (interactionPrompt.ts): a villager beside

@@ -33,8 +33,9 @@ func test_each_trade_starts_at_level_one() -> void:
 
 func test_wolves_carry_pelts_and_fafnyr_his_scales() -> void:
 	state.roll = func() -> float: return 0.4
-	var log: Array[String] = state.spoils.defeat_monster(Bestiary.spawn("wolf"), "forest", "", 1)
-	assert_has(log, "Dire Wolf drops: Wolf Pelt.")
+	var won: Dictionary = state.spoils.defeat_monster(Bestiary.spawn("wolf"), "forest", "", 1)
+	# PIX-245: the pelt floats up from the wolf.
+	assert_true(won["gains"]["items"].any(func(item: Dictionary) -> bool: return item["id"] == "wolf_pelt" and item["name"] == "Wolf Pelt"))
 	assert_eq(state.pack.items.get("wolf_pelt", 0), 1)
 	state.roll = func() -> float: return 0.99
 	state.spoils.defeat_monster(Bestiary.spawn("dragon"), "", "", 10)

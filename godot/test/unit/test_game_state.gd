@@ -61,32 +61,38 @@ func test_gold_chest_pays_once() -> void:
 	var nook := _chest("town_nook")
 	var result: Dictionary = state.spoils.open_chest(nook)
 	assert_true(result["opened"])
-	assert_eq(result["message"], "The chest holds 60 gold.")
+	# PIX-245: the gold floats up from the chest; there are no words to read.
+	assert_eq(Gains.summary(result["gains"]), "+60 gold")
+	assert_eq(result["message"], "")
 	assert_eq(state.pack.gold, 90)
 	assert_true(state.spoils.is_opened(nook))
 	assert_false(state.spoils.open_chest(nook)["opened"], "an opened chest stays empty")
 	assert_eq(state.pack.gold, 90)
 
 
-func test_ground_treasure_speaks_in_its_own_words() -> void:
-	assert_eq(state.spoils.open_chest(_chest("road_glint"))["message"], "Something glitters on the road: 45 gold.")
+## PIX-245: treasure on the ground floats up over the hero who picks it up,
+## instead of a line about it.
+func test_ground_treasure_floats_up_without_a_word() -> void:
+	var glint: Dictionary = state.spoils.open_chest(_chest("road_glint"))
+	assert_eq([glint["message"], Gains.summary(glint["gains"])], ["", "+45 gold"])
 	var herb := {}
 	for chest: Dictionary in Interactables._data()["chests"]:
 		if chest["look"] == "herb":
 			herb = chest
 	var result: Dictionary = state.spoils.open_chest(herb)
-	assert_string_starts_with(result["message"], "You gather %dx " % herb["loot"]["qty"])
+	assert_eq(result["message"], "")
+	assert_eq(int(result["gains"]["items"][0]["count"]), int(herb["loot"]["qty"]))
 
 
 func test_item_chest_stacks_into_the_pack() -> void:
 	var result: Dictionary = state.spoils.open_chest(_chest("town_corner"))
-	assert_eq(result["message"], "The chest holds 2x Health Potion.")
+	assert_eq(Gains.summary(result["gains"]), "Health Potion x2")
 	assert_eq(state.pack.items["potion_hp"], 4)
 
 
 func test_gear_chest_adds_an_instance() -> void:
 	var result: Dictionary = state.spoils.open_chest(_chest("ash_west"))
-	assert_eq(result["message"], "The chest holds Iron Sword!")
+	assert_eq(result["gains"]["items"], [{"id": "iron_sword", "count": 1, "rarity": "common", "name": "Iron Sword"}])
 	assert_eq(state.pack.gear.size(), 2)
 	assert_eq(state.pack.gear[1]["itemId"], "iron_sword")
 

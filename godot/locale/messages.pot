@@ -3621,6 +3621,10 @@ msgid "QUESTS! Five promises around the village: slimes for Sela, cheese for Bra
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Quick wins stack: a pack's kills rise as one float that counts up, not a pile of lines"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "READABLE DANGER: a foe shows its level as you come near, on a small plate over its head - grey well below you, cream a match, orange a step above, red far above - so you can choose your fights before the charge"
 msgstr ""
 
@@ -3922,6 +3926,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Spent points are permanent. Choose like it matters."
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Spoils Aloft"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4637,6 +4645,10 @@ msgid "The line above the dock says where: the next step, the place it's in and 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The log keeps only what the world doesn't show: the story, quests, levels, mastery, bounties and the Boss Slayer's edge"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The map key is rebindable like everything else"
 msgstr ""
 
@@ -5053,6 +5065,10 @@ msgid "With Reduce motion, the ruin stands a moment and then the building is the
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "With Reduce motion, the wins fade in where they stand"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Wolves, spiders, cats, the mammoths and many villagers no longer walk backwards when they go left or right"
 msgstr ""
 
@@ -5078,6 +5094,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Wren the Stablemaster walks horses by the gate - two wolf pelts for saddle leather and fast travel drops you straight at Pixelheim Square, no gate queue"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "XP, gold and loot float up from where you won them, the fallen foe, the chest, the patch or the water, like the damage numbers: XP in sea-glass green, gold behind a coin, each item with its icon in its rarity's colour"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -12880,6 +12900,18 @@ msgstr ""
 msgid "Still missing: %s."
 msgstr ""
 
+#: scripts/state/gains.gd:76
+msgid "+%d XP"
+msgstr ""
+
+#: scripts/state/gains.gd:78
+msgid "+%d gold"
+msgstr ""
+
+#: scripts/state/gains.gd:83
+msgid "%s x%d"
+msgstr ""
+
 #: scripts/state/game_state.gd:47
 msgid "Wanderer"
 msgstr ""
@@ -13032,14 +13064,6 @@ msgstr ""
 msgid "%s: they wait on your answer."
 msgstr ""
 
-#: scripts/state/questing.gd:163
-msgid "+%d gold"
-msgstr ""
-
-#: scripts/state/questing.gd:164
-msgid "+%d XP"
-msgstr ""
-
 #: scripts/state/questing.gd:165
 msgid "Quest complete: %s. %s. “%s”"
 msgstr ""
@@ -13160,144 +13184,76 @@ msgstr ""
 msgid "regen %d/turn"
 msgstr ""
 
-#: scripts/state/spoils.gd:108
-msgid "%s drops: %s."
-msgstr ""
-
-#: scripts/state/spoils.gd:116
-msgid "%s drops: %s!"
-msgstr ""
-
-#: scripts/state/spoils.gd:126
-msgid "You forage %d %s%s."
-msgstr ""
-
-#: scripts/state/spoils.gd:128
+#: scripts/state/spoils.gd:134
 msgid "Foraging reached %d!"
 msgstr ""
 
-#: scripts/state/spoils.gd:149
+#: scripts/state/spoils.gd:155
 msgid "Mastery: %s Slayer %s. +%d%% damage against %s."
 msgstr ""
 
-#: scripts/state/spoils.gd:165
+#: scripts/state/spoils.gd:171
 msgid "The bounty on %s is yours: +%d gold."
 msgstr ""
 
-#: scripts/state/spoils.gd:177
+#: scripts/state/spoils.gd:183
 msgid "%s leaves you %s!"
 msgstr ""
 
-#: scripts/state/spoils.gd:194
+#: scripts/state/spoils.gd:200
 msgid "Level up: you are now level %d. +%d stat points and +%d skill point%s to spend."
 msgstr ""
 
-#: scripts/state/spoils.gd:243
+#: scripts/state/spoils.gd:251
 msgid "%s is cleared!"
 msgstr ""
 
-#: scripts/state/spoils.gd:248
-msgid "%d gold"
-msgstr ""
-
-#: scripts/state/spoils.gd:257
-msgid "The floor's hoard: %s."
-msgstr ""
-
-#: scripts/state/spoils.gd:261
+#: scripts/state/spoils.gd:269
 msgid "Among the bones: a page of an old journal (%s). {key:journal} reads it."
 msgstr ""
 
-#: scripts/state/spoils.gd:265
-msgid "+%d XP for the way down."
-msgstr ""
-
-#: scripts/state/spoils.gd:275
+#: scripts/state/spoils.gd:283
 msgid "the %s"
 msgstr ""
 
-#: scripts/state/spoils.gd:278
+#: scripts/state/spoils.gd:286
 msgid "Behind the throne, a stair goes on down into the dark: the Deep Hunt."
 msgstr ""
 
-#: scripts/state/spoils.gd:282
+#: scripts/state/spoils.gd:290
 msgid "A deeper way opens: %s."
 msgstr ""
 
-#: scripts/state/spoils.gd:295
+#: scripts/state/spoils.gd:304
 msgid "Depth %d of the Deep Hunt is cleared!"
 msgstr ""
 
-#: scripts/state/spoils.gd:304
-msgid "The deepest yet. Its hoard: %s."
-msgstr ""
-
-#: scripts/state/spoils.gd:310
+#: scripts/state/spoils.gd:319
 msgid "depth %d of the Deep Hunt"
 msgstr ""
 
-#: scripts/state/spoils.gd:314
+#: scripts/state/spoils.gd:323
 msgid "A milestone: %d depths below the throne. The %s is yours, a trophy for the shelf at home."
 msgstr ""
 
-#: scripts/state/spoils.gd:317
+#: scripts/state/spoils.gd:326
 msgid "A hole into the dark opens beside the way up: depth %d waits below."
 msgstr ""
 
-#: scripts/state/spoils.gd:331
+#: scripts/state/spoils.gd:343
 msgid "The chest bares its teeth — a mimic!"
 msgstr ""
 
-#: scripts/state/spoils.gd:337
-msgid "Something glitters on the road: %d gold."
-msgstr ""
-
-#: scripts/state/spoils.gd:338
-msgid "The chest holds %d gold."
-msgstr ""
-
-#: scripts/state/spoils.gd:347
+#: scripts/state/spoils.gd:355
 msgid "Too heavy to carry. Lighten the pack and come back."
 msgstr ""
 
-#: scripts/state/spoils.gd:353
-msgid "The chest holds %s!"
-msgstr ""
-
-#: scripts/state/spoils.gd:358
-msgid "You gather %dx %s."
-msgstr ""
-
-#: scripts/state/spoils.gd:359
-msgid "The chest holds %dx %s."
-msgstr ""
-
-#: scripts/state/spoils.gd:382
-msgid "You gather %d %s%s."
-msgstr ""
-
-#: scripts/state/spoils.gd:393
+#: scripts/state/spoils.gd:404
 msgid "Nothing's biting here yet. Try again in a while, or somewhere else."
 msgstr ""
 
-#: scripts/state/spoils.gd:397
-msgid "You cast, wait... and haul up an old boot."
-msgstr ""
-
-#: scripts/state/spoils.gd:397
-msgid "You cast, wait... and land %s!"
-msgstr ""
-
-#: scripts/state/spoils.gd:399
-msgid " Foraging reached %d!"
-msgstr ""
-
-#: scripts/state/spoils.gd:82
+#: scripts/state/spoils.gd:87
 msgid "Your garden ripens: +%d %s."
-msgstr ""
-
-#: scripts/state/spoils.gd:91
-msgid "%s is defeated! +%d XP, +%d gold."
 msgstr ""
 
 #: scripts/state/text.gd:17
@@ -13612,23 +13568,23 @@ msgstr ""
 msgid "{epithet} {name}"
 msgstr ""
 
-#: scripts/world_foes.gd:256
+#: scripts/world_foes.gd:259
 msgid "The pack is scattered. Another comes once you've walked a good way, or after a night's rest."
 msgstr ""
 
-#: scripts/world_foes.gd:272
+#: scripts/world_foes.gd:275
 msgid "%s is no more."
 msgstr ""
 
-#: scripts/world_foes.gd:272
+#: scripts/world_foes.gd:275
 msgid "Victory"
 msgstr ""
 
-#: scripts/world_foes.gd:273
+#: scripts/world_foes.gd:276
 msgid "Boss slayer: +%d%% damage for %d minutes."
 msgstr ""
 
-#: scripts/world_fx.gd:108
+#: scripts/world_fx.gd:147
 msgid "LEVEL UP"
 msgstr ""
 
@@ -13636,11 +13592,11 @@ msgstr ""
 msgid "Boss slayer +%d%%  %d:%02d"
 msgstr ""
 
-#: scripts/world_interaction.gd:166
+#: scripts/world_interaction.gd:170
 msgid "A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it."
 msgstr ""
 
-#: scripts/world_interaction.gd:193
+#: scripts/world_interaction.gd:197
 msgid "Sela's stew simmers over the fire. Hunter's Stew is brewed at Vex's cauldron, behind the BREWS door."
 msgstr ""
 

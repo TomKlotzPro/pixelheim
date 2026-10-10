@@ -79,10 +79,11 @@ func test_a_first_clear_pays_xp_once() -> void:
 	var state: Node = autofree(GameStateScript.new())
 	state.new_game("Robin", "warrior")
 	state.progression.unlocked_level = 3
-	var lines: Array = state.spoils.clear_floor(3)["lines"]
+	var gains: Dictionary = state.spoils.clear_floor(3)["gains"]
 	assert_eq(state.hero.xp, Dungeons.clear_xp(3))
-	assert_true("+36 XP for the way down." in lines)
-	state.spoils.clear_floor(3)
+	# The way down's XP floats up with the hoard (PIX-245).
+	assert_eq(int(gains["xp"]), 36)
+	assert_true(Gains.is_empty(state.spoils.clear_floor(3)["gains"]), "a replay has no hoard")
 	assert_eq(state.hero.xp, 36, "a replay pays only its fights")
 
 
