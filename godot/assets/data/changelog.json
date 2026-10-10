@@ -1,6 +1,18 @@
 {
   "releases": [
     {
+      "version": "0.209.0",
+      "date": "2026-10-10",
+      "codename": "Closed Roads",
+      "notes": [
+        "Each region's road now waits for its chapter: a rockfall on the cliff road to Saltmere, the burnt river bridge north of town, Ulla's barricade before Greyhold and an avalanche on the Frostgate road",
+        "Walk up to a closed road and it tells you what opens it; the journal, the arrow and the map then lead you there",
+        "Mend the river bridge at the board on the square once Wenna has her letter",
+        "A hero already past a road finds it open",
+        "French lists now keep their narrow space before the semicolon"
+      ]
+    },
+    {
       "version": "0.208.0",
       "date": "2026-10-10",
       "codename": "The Satchel",

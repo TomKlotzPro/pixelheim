@@ -1805,6 +1805,10 @@ msgid "A gold arrow at the edge of the screen points the way while your goal is 
 msgstr "Une flèche dorée au bord de l'écran montre le chemin tant que votre but est hors de vue, vers la personne, l'endroit ou la porte qui y mène ; la carte le marque d'un losange doré"
 
 #: assets/data/changelog.json
+msgid "A hero already past a road finds it open"
+msgstr "Un héros qui a déjà franchi une route la trouve ouverte"
+
+#: assets/data/changelog.json
 msgid "A hero from before keeps everything: whoever has cleared a floor finds the gate open, and Maren goes straight to her next ask"
 msgstr "Un ancien héros conserve tout : qui a déjà nettoyé un étage trouve la porte ouverte, et Maren passe directement à sa demande suivante"
 
@@ -2241,6 +2245,10 @@ msgid "Clearing a floor steps you back out of the door you entered"
 msgstr "Nettoyer un étage vous fait ressortir par la porte d'où vous êtes entré"
 
 #: assets/data/changelog.json
+msgid "Closed Roads"
+msgstr "Routes coupées"
+
+#: assets/data/changelog.json
 msgid "Cloud shadows drift slowly over the open land by day, never indoors or underground"
 msgstr "L'ombre des nuages glisse lentement sur les terres le jour, jamais à l'intérieur ni sous terre"
 
@@ -2459,6 +2467,10 @@ msgstr "Chaque région a sa propre ambiance de couleurs, et la nuit retire un pe
 #: assets/data/changelog.json
 msgid "Each region has its own monsters; deeper regions hit harder and drop better"
 msgstr "Chaque région a ses propres monstres ; les régions plus lointaines frappent plus fort et donnent un meilleur butin"
+
+#: assets/data/changelog.json
+msgid "Each region's road now waits for its chapter: a rockfall on the cliff road to Saltmere, the burnt river bridge north of town, Ulla's barricade before Greyhold and an avalanche on the Frostgate road"
+msgstr "La route de chaque région attend désormais son chapitre : un éboulement sur la route des falaises vers Saltmere, le pont brûlé sur la rivière au nord du village, la barricade d'Ulla devant Greyhold et une avalanche sur la route de la Porte-Givre"
 
 #: assets/data/changelog.json
 msgid "Early Stakes"
@@ -2815,6 +2827,10 @@ msgstr "Fortune et acier"
 #: assets/data/changelog.json
 msgid "Four roles: Warrior, Mage, Rogue, Cleric"
 msgstr "Quatre rôles : Guerrier, Mage, Voleur, Clerc"
+
+#: assets/data/changelog.json
+msgid "French lists now keep their narrow space before the semicolon"
+msgstr "Les listes en français gardent désormais leur espace fine avant le point-virgule"
 
 #: assets/data/changelog.json
 msgid "Fresh Ground"
@@ -3283,6 +3299,10 @@ msgstr "La maîtrise se voit"
 #: assets/data/changelog.json
 msgid "Materials weigh nothing and sell for pocket change - brew, don't hoard"
 msgstr "Les matériaux ne pèsent rien et se vendent pour trois sous - concoctez, n'amassez pas"
+
+#: assets/data/changelog.json
+msgid "Mend the river bridge at the board on the square once Wenna has her letter"
+msgstr "Réparez le pont de la rivière au tableau d'avis de la place une fois que Wenna a reçu sa lettre"
 
 #: assets/data/changelog.json
 msgid "Merchant Odo and Innkeeper Sela finally have faces"
@@ -5271,6 +5291,10 @@ msgstr "DES LOUPS DANS LES BOIS : une meute de loups vit désormais dans la Fo
 #: assets/data/changelog.json
 msgid "Walk in armor: the overlays ride the walk-cycle bob, so your gear moves with you instead of floating over you"
 msgstr "Marchez en armure : les calques suivent le balancement de la marche, et votre équipement bouge avec vous au lieu de flotter au-dessus de vous"
+
+#: assets/data/changelog.json
+msgid "Walk up to a closed road and it tells you what opens it; the journal, the arrow and the map then lead you there"
+msgstr "Approchez d'une route coupée et elle vous dit ce qui l'ouvrira ; le journal, la flèche et la carte vous y mènent ensuite"
 
 #: assets/data/changelog.json
 msgid "Wanted"
