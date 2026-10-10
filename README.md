@@ -55,6 +55,8 @@ godot --path godot             # play (or open godot/ in the Godot editor)
 ```
 
 ```bash
+godot/tools/check.sh quick                                    # before a pull request: what the diff could break, headless, under a minute
+godot/tools/check.sh full                                     # everything CI runs, side by side
 godot --headless --path godot --import                        # after adding assets or scripts
 godot --headless --path godot -s res://addons/gut/gut_cmdln.gd # the unit tests (GUT)
 godot/tools/flows.sh                                          # the release flows, with screenshots (--quiet: headless)

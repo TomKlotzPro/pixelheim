@@ -149,6 +149,19 @@ many flows at once as the runner has cores, and puts each result in the
 job's summary. A fork's pull request gets no key to the paid art, so both
 run on Shade's CC0 art alone, which they pass too.
 
+On the laptop, `godot/tools/check.sh quick` runs only what a branch's diff
+against `origin/main` could break, in under a minute and with nothing on the
+screen: the release and catalogue checks, the import when art or scripts
+changed, GUT beside a boot of the town and of the maps the diff touches, and
+the flows tagged with the areas it touches. Each flow ends on its tags in
+`flows.sh` (town, rooms, travel, field, combat, dungeon, trade, story, quest,
+screen, lang, save, gathering, title, rank, night), and `AREAS` in
+`check.sh` says which areas each file touches; a file it doesn't know runs
+every flow. `--plan` shows what it would run and why. `check.sh full` runs
+everything CI runs. Neither opens the motion flow's window: `quick` says when
+a change to the hero's sprite, walk or the camera calls for
+`godot/tools/flows.sh motion`.
+
 ### Boot splash
 
 The web build loads behind `assets/splash.png`, which is the title screen
