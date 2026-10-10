@@ -31,6 +31,9 @@ const WINDOW := Color(1.0, 0.8, 0.5)
 const LANTERN := Color(1.0, 0.82, 0.58)
 ## The ice cave's frozen floors (PIX-255): a cold light the ice gives back.
 const ICE := Color(0.62, 0.84, 1.0)
+## A way out of a dungeon once its boss is down (PIX-292): daylight, pale
+## and warm, that breathes.
+const WAY_OUT := Color(1.0, 0.93, 0.74)
 ## How strong each kind of light is at full dark. A 2D light adds to the
 ## night before the colours are multiplied, so near 1 it washes the ground
 ## out: these keep a lamp's pool warm, not white.
@@ -40,6 +43,11 @@ const TORCH_ENERGY := 0.7
 const WINDOW_ENERGY := 0.3
 const LANTERN_ENERGY := 0.3
 const ICE_ENERGY := 0.22
+const WAY_OUT_ENERGY := 0.5
+## How far a breathing light swells and fades, a share of its energy, and
+## how fast (radians a second).
+const PULSE_DEPTH := 0.3
+const PULSE_SPEED := 3.0
 ## The size of the shared light texture, in pixels.
 const TEXTURE_PX := 256
 

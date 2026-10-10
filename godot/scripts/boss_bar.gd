@@ -81,9 +81,23 @@ func bottom() -> float:
 	return plate.position.y + plate.size.y
 
 
-## Whether a foe has the bar now (alive and hunting, or still fading).
+## Whether a foe has the bar now (alive and hunting, or the bar still
+## fading out after it).
 func following() -> bool:
-	return _live() or (target != null and modulate.a > 0.0)
+	return _live() or modulate.a > 0.0
+
+
+## Whether the bar is on the screen at all, even fading (the report's
+## `bossbar`, PIX-288).
+func showing() -> bool:
+	return modulate.a > 0.0
+
+
+## What the bar reads (the report's `bossbar`): its foe's share of health,
+## `fading` once that foe is out of the fight.
+func reading() -> String:
+	var shown := "%d%%" % roundi(maxf(share, ghost_share) * 100.0)
+	return shown if _live() else "fading " + shown
 
 
 ## From now on the bar shows `enemy` (the world calls it as a boss hunts).
@@ -98,18 +112,35 @@ func follow(enemy: Node) -> void:
 	hold = 0.0
 
 
+## Off the screen at once, whatever it followed (PIX-288): the hero has
+## left for another map, where that fight is over.
+func let_go() -> void:
+	target = null
+	modulate.a = 0.0
+	share = 0.0
+	ghost_share = 0.0
+	hold = 0.0
+
+
+## Its foe still in the fight. A foe already freed reads as out of it:
+## `is_instance_valid`, never `target != null`, which a freed foe passes.
 func _live() -> bool:
-	return target != null and is_instance_valid(target) and not target.dying and target.hunting
+	return is_instance_valid(target) and not target.dying and target.hunting
 
 
 func _health() -> float:
-	if target == null or not is_instance_valid(target) or target.dying:
+	if not is_instance_valid(target) or target.dying:
 		return 0.0
 	return clampf(float(target.fighter["hp"]) / maxi(1, int(target.fighter["maxHp"])), 0.0, 1.0)
 
 
 func _process(delta: float) -> void:
-	if target == null:
+	# Out of the screen with nothing hunting: nothing to draw. This used to be
+	# `target == null`, which a freed foe is too (Godot 4): a boss whose body
+	# dissolved before its bar had faded left the bar frozen on the screen,
+	# a blow's pale ghost on an empty bar, for good (PIX-288, PIX-232).
+	if modulate.a == 0.0 and not _live():
+		target = null
 		return
 	var now := _health()
 	if now < share:

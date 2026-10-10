@@ -229,6 +229,9 @@ func _process(delta: float) -> void:
 		if lamp.get_meta("flicker", false) and not still:
 			var phase := float(lamp.get_meta("phase", 0.0))
 			energy *= 1.0 + 0.07 * sin(t * 8.3 + phase) + 0.04 * sin(t * 21.7 + phase * 1.9)
+		# A way out breathes (PIX-292), held still with reduced motion.
+		if lamp.get_meta("pulse", false) and not still:
+			energy *= 1.0 + Lights.PULSE_DEPTH * sin(t * Lights.PULSE_SPEED)
 		lamp.energy = energy
 		lamp.visible = energy > 0.01
 

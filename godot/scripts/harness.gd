@@ -116,6 +116,23 @@ func _word_with(villager: Node) -> void:
 		await _tap(KEY_E)
 
 
+## Scripted steps, a fifth of a second each (l, r, u, d).
+func _walk(moves: PackedStringArray) -> void:
+	var dirs := {
+		"l": Vector2i.LEFT, "r": Vector2i.RIGHT, "u": Vector2i.UP, "d": Vector2i.DOWN,
+	}
+	for move in moves:
+		world.player.scripted_dir = Vector2(dirs[move])
+		await get_tree().create_timer(0.2).timeout
+	world.player.scripted_dir = Vector2.ZERO
+
+
+## A blow no hero survives: the fall, then waking at the inn.
+func _die() -> void:
+	world.player.take_hit(99999, world.player.global_position + Vector2.LEFT)
+	await get_tree().create_timer(1.8).timeout
+
+
 ## A harness key press, as a player's would land: the Input singleton's
 ## actions (what polling reads) and the event itself, straight to the
 ## viewport, which needs no window focus (an unfocused window's keys are
@@ -530,14 +547,8 @@ func _run_test_harness() -> void:
 		# say so, not pass.
 		report.note("backsteps", str(back) if found >= 10 and found * 2 >= hero_x.size() else "lost")
 	if flags.has("--walk"):
-		var dirs := {
-			"l": Vector2i.LEFT, "r": Vector2i.RIGHT, "u": Vector2i.UP, "d": Vector2i.DOWN,
-		}
 		var clock := _frame_clock() if flags.has("crossing") else {}
-		for move in flags.list("--walk"):
-			world.player.scripted_dir = Vector2(dirs[move])
-			await get_tree().create_timer(0.2).timeout
-		world.player.scripted_dir = Vector2.ZERO
+		await _walk(flags.list("--walk"))
 		if not clock.is_empty():
 			report.note("frames", _read_clock(clock))
 	if flags.has("night"):
@@ -987,10 +998,10 @@ func _run_test_harness() -> void:
 			world.player.scripted_dir = Vector2.ZERO
 			break
 		await get_tree().create_timer(0.3).timeout
-	if flags.has("die"):
-		# A blow no hero survives: the fall, then waking at the inn.
-		world.player.take_hit(99999, world.player.global_position + Vector2.LEFT)
-		await get_tree().create_timer(1.8).timeout
+	# A blow no hero survives: the fall, then waking at the inn; after the
+	# fight when there's one (PIX-288: felled mid-fight).
+	if flags.has("die") and not flags.has("fight"):
+		await _die()
 	if flags.has("cast"):
 		# A foe two steps away, then the first skill: the strike, the flash, the log.
 		world.player.invulnerable = true
@@ -1023,6 +1034,19 @@ func _run_test_harness() -> void:
 		else:
 			opponent = world.foes.spawn_enemy(foe, world.player_cell + Vector2i(foe_distance, 0), "ash", "", flags.has("elite"))
 		world.player.face(Vector2.RIGHT)
+		# `--foe-left S` (PIX-288): the fight already on, the foe hunting the
+		# hero with its bar up, then a blow down to that share of its health,
+		# its ghost still easing as the swings that follow land.
+		if flags.has("--foe-left"):
+			opponent.notice()
+			await get_tree().create_timer(0.3).timeout
+			var left := maxi(1, roundi(int(opponent.fighter["maxHp"]) * float(flags.value("--foe-left"))))
+			opponent.take_hit(maxi(0, int(opponent.fighter["hp"]) - left), opponent.global_position + Vector2.LEFT)
+		# `--foe-ail poison`: afflicted, sure to take, its next tick as strong
+		# as the health it has left (PIX-288: a boss an ailment finishes).
+		if flags.has("--foe-ail"):
+			var ailment := {"kind": flags.value("--foe-ail"), "chance": 1.0, "turns": 3, "power": int(opponent.fighter["hp"])}
+			opponent.ailments.inflict(ailment, func() -> float: return 0.0)
 		if flags.has("slay"):
 			# Felled outright: what its death pays (a named one's bounty); a
 			# blow as big as its health, so the number over it reads true.
@@ -1047,6 +1071,8 @@ func _run_test_harness() -> void:
 			if world.foes.kills > kills_before:
 				break
 		await get_tree().create_timer(0.4 if flags.has("kill") else 0.1).timeout
+		if flags.has("die"):
+			await _die()
 	else:
 		await get_tree().create_timer(0.2).timeout
 	if flags.has("flee"):
@@ -1073,6 +1099,10 @@ func _run_test_harness() -> void:
 	# `inventory --keys esc` checks it closes and lets the world go.
 	if not flags.has("talk") and not flags.has("--talk-to") and not flags.has("title"):
 		await _keys(flags)
+	# `--then-walk r,u`: steps taken once all that is done (PIX-292: a boss
+	# down, straight out by its way out).
+	if flags.has("--then-walk"):
+		await _walk(flags.list("--then-walk"))
 	# `--dawn-beat N`: the Night of Ash's dawn (PIX-197) jumped to beat N.
 	if flags.has("--dawn-beat"):
 		for node in world.get_children():

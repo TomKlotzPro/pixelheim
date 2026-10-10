@@ -138,6 +138,9 @@ const UI_SOUNDS := {
 	# The light flaring on the hero at an ascension (PIX-244): a climb of
 	# three bright steps.
 	"ascend": [[0.04, "triangle", 660.0, 990.0, 0.07], [0.04, "triangle", 990.0, 1320.0, 0.07], [0.06, "square", 1320.0, 1760.0, 0.03]],
+	# A way out opening once a boss is down (PIX-292): a quick run up a
+	# chord to its octave, like a door's bell.
+	"wayout": [[0.03, "triangle", 523.0, 523.0, 0.08], [0.03, "triangle", 659.0, 659.0, 0.08], [0.03, "triangle", 784.0, 784.0, 0.08], [0.05, "triangle", 1046.0, 1046.0, 0.08]],
 }
 const UI_RATE := 22050
 

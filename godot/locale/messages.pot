@@ -8233,7 +8233,39 @@ msgid "The tide door groans open on its old hinges: daylight, salt wind, and the
 msgstr ""
 
 #: assets/data/depths.json
+msgid "To the foot of Liane's stair"
+msgstr ""
+
+#: assets/data/depths.json
+msgid "Up to Saltmere's beach"
+msgstr ""
+
+#: assets/data/depths.json
+msgid "Up to the keep's stair"
+msgstr ""
+
+#: assets/data/depths.json
+msgid "Up to the pithead"
+msgstr ""
+
+#: assets/data/depths.json
 msgid "What's left of a fishing boat, wedged in the rock: the one that was bringing Tam's things home. One crate in her hold still says TAM on the lid, in Maren's hand."
+msgstr ""
+
+#: assets/data/depths.json
+msgid "Where Captain Hale lay down, a flagstone lifts on a stair: straight up to the foot of the keep's stair."
+msgstr ""
+
+#: assets/data/depths.json
+msgid "Where Rimefang fell, the ice splits over an old stair: straight back to the foot of Liane's stair."
+msgstr ""
+
+#: assets/data/depths.json
+msgid "Where the Seam Warden fell, an old miners' stair shows under the rubble: straight up to the pithead."
+msgstr ""
+
+#: assets/data/depths.json
+msgid "Where the Tidecaller fell, a stair shows in the rock, salt wind blowing down it: straight up to the beach."
 msgstr ""
 
 #: assets/data/economy.json
@@ -13254,6 +13286,10 @@ msgstr ""
 
 #: scripts/map_screen.gd
 msgid "maps"
+msgstr ""
+
+#: scripts/map_view.gd
+msgid "Way out"
 msgstr ""
 
 #: scripts/options_screen.gd

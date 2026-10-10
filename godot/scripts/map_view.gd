@@ -168,6 +168,10 @@ const DARK_PAD := 32
 const DARK := Color("0b0a0e")
 ## One cold light over the ice (PIX-255) in every so many cells across and down.
 const ICE_LIGHT_EVERY := Vector2i(6, 5)
+## How far a way out's light reaches, in pixels (PIX-292), and how far
+## over its cell its plate stands.
+const WAY_OUT_GLOW := 80.0
+const WAY_OUT_PLATE := 4.0
 ## A burnt house seen small from afar smokes with this share of a ruin's
 ## motes in town (PIX-248).
 const VILLAGE_RUIN_SMOKE := 0.4
@@ -371,7 +375,10 @@ func building(root: Node, slices: Slicer) -> void:
 	slices.add_each("blockers_rows", ceili(data.size.y / float(BLOCK)), _blocker_rows)
 	slices.add("signs", func() -> void:
 		props = _build_props(data)
-		under.add_child(props))
+		under.add_child(props)
+		# A dungeon's ways straight out, once its boss is down: lit (PIX-292).
+		for cell: Vector2i in Depths.exits(data):
+			light_way_out(cell))
 	_decor_units(slices)
 	slices.add("set_pieces", _add_set_pieces.bind(data))
 	slices.add("rest", func() -> void:
@@ -890,6 +897,21 @@ func reopen(cell: Vector2i) -> void:
 		PunyDungeon.sheet().place(dungeon_objects, cell, int(data.pieces[cell]))
 	if data.is_walkable(cell):
 		tile_layer.erase_cell(cell)
+
+
+## A way straight out of a dungeon's bottom floor (PIX-292: its shortcut's
+## door, or a way out opened where its boss fell): a lamp of daylight over
+## it that breathes, and its plate as the hero comes near - "Way out", and
+## where it leads (depths.json `sign`).
+func light_way_out(cell: Vector2i) -> void:
+	var door := Depths.shortcut_on(data.id)
+	# The door in the rock spills its daylight onto the floor before it, as a
+	# torch in the wall does; a way out in the floor lights round itself.
+	var spill := Vector2(0, TILE * 0.7) if door.get("cell") == cell else Vector2.ZERO
+	var lamp := Lights.make(center(cell) + spill, WAY_OUT_GLOW, Lights.WAY_OUT, Lights.WAY_OUT_ENERGY)
+	lamp.set_meta("pulse", true)
+	props.add_child(lamp)
+	door_signs.append({"door": cell, "name": Text.t("Way out"), "about": String(door.get("sign", "")), "node": null, "over": WAY_OUT_PLATE})
 
 
 ## Chests and terrain decor live in the y-sorted actors layer: units of the

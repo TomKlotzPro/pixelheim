@@ -27,6 +27,9 @@ var objective_label: Label
 ## The nameplate over the signed door the hero walks up to (ShopSign).
 var nameplate: PanelContainer
 var nameplate_door := Vector2i(-1, -1)
+## How far over its door's cell the nameplate stands, in world pixels: over
+## a sign's board, or just over a way out (PIX-292: an entry's `over`).
+var nameplate_over := 0.0
 ## Where the hero has come to (PlaceTitle, PIX-269): the place and region
 ## named last, when each name was last shown, and the card showing it now.
 var place_was := {}
@@ -399,6 +402,11 @@ func _bearing_point() -> Vector2:
 	var here: String = world.map.id
 	if bearing["map_id"] == here:
 		return MapView.center(bearing["cell"]) if bearing["cell"] != Bearing.NOWHERE else Vector2.INF
+	# A dungeon's boss down (PIX-292): out by the nearest way straight out,
+	# not back up its floors' stairs.
+	var out := Depths.way_out_toward(world.map, String(bearing["map_id"]), world.player_cell)
+	if out != Depths.NOWHERE:
+		return MapView.center(out)
 	var door := Bearing.way_out(here, String(bearing["map_id"]))
 	return MapView.center(door) if door != Bearing.NOWHERE else Vector2.INF
 
@@ -424,6 +432,7 @@ func update_nameplate() -> void:
 		return
 	if near["door"] != nameplate_door:
 		nameplate_door = near["door"]
+		nameplate_over = float(near.get("over", ShopSign.BOARD.y + 10))
 		(nameplate.get_child(0).get_child(0) as Label).text = near["name"]
 		(nameplate.get_child(0).get_child(1) as Label).text = near["about"]
 		nameplate.get_child(0).get_child(1).visible = near["about"] != ""
@@ -433,7 +442,7 @@ func update_nameplate() -> void:
 		if not GameState.settings.reduce_motion:
 			nameplate.create_tween().tween_property(nameplate, "modulate:a", 1.0, 0.15)
 	# Over the board, wherever the camera has the door on screen.
-	var top := Vector2(nameplate_door.x * TILE + TILE / 2.0, nameplate_door.y * TILE - ShopSign.BOARD.y - 10)
+	var top := Vector2(nameplate_door.x * TILE + TILE / 2.0, nameplate_door.y * TILE - nameplate_over)
 	var screen := get_viewport().get_canvas_transform() * top
 	nameplate.position = (screen - Vector2(nameplate.size.x / 2.0, nameplate.size.y)).round()
 

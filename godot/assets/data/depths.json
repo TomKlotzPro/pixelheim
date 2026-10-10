@@ -1,5 +1,5 @@
 {
-  "about": "PIX-255: a region's dungeon in floors (Tom: \"Les donjons, ça serait bien sur plusieurs étages, c'est un peu simple\"). A dungeon's floors are a list, top to bottom, each a map of its own (its own fog of war, Discovery being keyed by map id): a handcrafted one in assets/maps, or one DungeonFloor lays out from `plan` (its seed, a pack per room after the entrance, each `{monsterId, size}`, the last in the largest room with the way down, and a `setPiece` there), the same every visit. A floor's `up` and `down` are where its stairs stand on a handcrafted map and the cell beside them a hero arrives on; a planned floor's stand where its plan puts them, and Depths lays the stairs between each floor and the next both ways. Each floor's foes stand `lift` levels above their kind, a little harder than the floor above; the bottom one keeps the dungeon's `boss` (a named monster, combat.json) and, once it has fallen, `shortcut` opens: a door straight out to the dungeon's way in (its `look` a wooden gate in the rock, `cage`: an ore cage up a shaft, `stair`: a stair behind iron bars, or `slide`: a chute of ice, plugged until then). A floor's `find` is a chest (interactables.json) worth the walk; a planned floor's stands where its set piece's c is. `light` is the floor's own dark, `tint` its stone. No field in the save: floors reached are the fog the save keeps per map, finds its opened chests, the shortcut the boss in its named hunts. A hero saved on any floor wakes at the dungeon's entrance (`entrance`, on the first floor).",
+  "about": "PIX-255: a region's dungeon in floors (Tom: \"Les donjons, ça serait bien sur plusieurs étages, c'est un peu simple\"). A dungeon's floors are a list, top to bottom, each a map of its own (its own fog of war, Discovery being keyed by map id): a handcrafted one in assets/maps, or one DungeonFloor lays out from `plan` (its seed, a pack per room after the entrance, each `{monsterId, size}`, the last in the largest room with the way down, and a `setPiece` there), the same every visit. A floor's `up` and `down` are where its stairs stand on a handcrafted map and the cell beside them a hero arrives on; a planned floor's stand where its plan puts them, and Depths lays the stairs between each floor and the next both ways. Each floor's foes stand `lift` levels above their kind, a little harder than the floor above; the bottom one keeps the dungeon's `boss` (a named monster, combat.json) and, once it has fallen, `shortcut` opens: a door straight out to the dungeon's way in (its `look` a wooden gate in the rock, `cage`: an ore cage up a shaft, `stair`: a stair behind iron bars, or `slide`: a chute of ice, plugged until then). PIX-292 (Tom: \"Porte de sortie direct après un boss\"): a boss that falls more than a few steps from its door opens a way out where it fell as well, a stair up to the same place (`fell` is what's said then), for that visit; every way out is lit, and says over it where it leads as the hero comes near (`sign`). A floor's `find` is a chest (interactables.json) worth the walk; a planned floor's stands where its set piece's c is. `light` is the floor's own dark, `tint` its stone. No field in the save: floors reached are the fog the save keeps per map, finds its opened chests, the shortcut the boss in its named hunts. A hero saved on any floor wakes at the dungeon's entrance (`entrance`, on the first floor).",
   "dungeons": {
     "seacave": {
       "name": "The Sea Cave",
@@ -42,7 +42,9 @@
         "x": 30,
         "y": 4,
         "to": {"kind": "map", "mapId": "saltmere", "x": 8, "y": 25},
-        "opened": "The tide door groans open on its old hinges: daylight, salt wind, and the beach under the headland."
+        "opened": "The tide door groans open on its old hinges: daylight, salt wind, and the beach under the headland.",
+        "fell": "Where the Tidecaller fell, a stair shows in the rock, salt wind blowing down it: straight up to the beach.",
+        "sign": "Up to Saltmere's beach"
       }
     },
     "shafts": {
@@ -88,7 +90,9 @@
         "y": 4,
         "look": "cage",
         "to": {"kind": "map", "mapId": "blackiron", "x": 27, "y": 5},
-        "opened": "The ore cage comes rattling down its shaft and its gate swings open: a ride up to the pithead, and daylight."
+        "opened": "The ore cage comes rattling down its shaft and its gate swings open: a ride up to the pithead, and daylight.",
+        "fell": "Where the Seam Warden fell, an old miners' stair shows under the rubble: straight up to the pithead.",
+        "sign": "Up to the pithead"
       }
     },
     "cellars": {
@@ -133,7 +137,9 @@
         "y": 3,
         "look": "stair",
         "to": {"kind": "map", "mapId": "cellars", "x": 4, "y": 27},
-        "opened": "The iron bars on the north stair swing open behind him: a straight way up, to the foot of the keep's stair."
+        "opened": "The iron bars on the north stair swing open behind him: a straight way up, to the foot of the keep's stair.",
+        "fell": "Where Captain Hale lay down, a flagstone lifts on a stair: straight up to the foot of the keep's stair.",
+        "sign": "Up to the keep's stair"
       }
     },
     "icecave": {
@@ -171,7 +177,9 @@
         "y": 3,
         "look": "slide",
         "to": {"kind": "map", "mapId": "icecave", "x": 5, "y": 25},
-        "opened": "The ice plugging the chute in the north wall cracks and slides away: a run of black ice, worn glass-smooth, all the way down to the foot of Liane's stair. Hold on to your hat."
+        "opened": "The ice plugging the chute in the north wall cracks and slides away: a run of black ice, worn glass-smooth, all the way down to the foot of Liane's stair. Hold on to your hat.",
+        "fell": "Where Rimefang fell, the ice splits over an old stair: straight back to the foot of Liane's stair.",
+        "sign": "To the foot of Liane's stair"
       }
     }
   },

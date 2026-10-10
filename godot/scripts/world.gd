@@ -409,6 +409,10 @@ func enter_map(next: MapData, arrival: Vector2i) -> void:
 	foes.arrived_at = GameClock.seconds()
 	for stale in get_tree().get_nodes_in_group("mobs") + get_tree().get_nodes_in_group("decor"):
 		stale.queue_free()
+	# A boss's bar goes with the place it was fought in (PIX-288: a hero
+	# felled mid-fight wakes at the inn, not under it).
+	if hud.boss_bar != null:
+		hud.boss_bar.let_go()
 	if view != null:
 		view.clear()
 	view = MapView.new(next, actors)
