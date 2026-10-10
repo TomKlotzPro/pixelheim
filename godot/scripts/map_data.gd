@@ -21,10 +21,20 @@ var variant := ""
 var style := ""
 ## A cast over the whole map's ground (the ice cave's frost, PIX-169).
 var tint := Color.WHITE
+## A region dungeon's floor (PIX-255): its own dark under the ground (alpha
+## 0: the usual), what the dungeon sheet draws over a cell (a wreck's beams,
+## a door in the rock: cell -> tile), and the words E reads facing a cell.
+var light := Color(0, 0, 0, 0)
+var pieces := {}
+var notes := {}
 
 
+## A map by its id: its JSON, or a region dungeon's planned floor laid out
+## (PIX-255); a floor of a dungeon dressed with its stairs (Depths).
 static func load_by_id(map_id: String) -> MapData:
-	return load_from("res://assets/maps/%s.json" % map_id)
+	if Depths.is_planned(map_id):
+		return Depths.dress(Depths.generate(map_id))
+	return Depths.dress(load_from("res://assets/maps/%s.json" % map_id))
 
 
 ## The map as the town has grown: the village is its base map with every

@@ -159,7 +159,9 @@ func test_the_reach_then_the_mountain_levels_the_hero_on_pace() -> void:
 	assert_lt(int(arrived["castle"]), int(arrived["gate"]))
 	assert_between(int(arrived["gate"]), 11, 13, "about level 12 at the gate")
 	assert_between(int(arrived[10]), 15, 17, "about level 16 at the Ashen Throne")
-	assert_between(int(arrived[15]), 17, 19, "about level 18 at the Throne of the Deathless")
+	# The sea cave's two floors below the first (PIX-255) add a few packs on
+	# the coast; the curve is retuned with the story's last step (PIX-257).
+	assert_between(int(arrived[15]), 17, 20, "about level 18 at the Throne of the Deathless")
 	for level: int in guardians:
 		assert_between(int(arrived[level]) - int(guardians[level]), -2, 2, "floor %d's guardian is about the hero's match" % level)
 

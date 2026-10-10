@@ -69,6 +69,17 @@ static func head(frames: SpriteFrames, anim: String, at := Vector2.ZERO, scale :
 	return Rect2(at + drawn.position * scale, drawn.size * scale)
 
 
+## Where the figure's top is in the frame `sprite` shows now, from its
+## centre (`fallback` for an empty frame): something worn on the head rides
+## each squash and hop with it.
+static func top_now(sprite: AnimatedSprite2D, fallback: float) -> float:
+	var frames := sprite.sprite_frames
+	if frames == null or not frames.has_animation(sprite.animation) or sprite.frame >= frames.get_frame_count(sprite.animation):
+		return fallback
+	var drawn := _head(frames.get_frame_texture(sprite.animation, sprite.frame))
+	return drawn.position.y if drawn.has_area() else fallback
+
+
 ## The highest a figure's head reaches in any frame of `anims` (a breath in,
 ## a walk's rise), as a centred sprite at `at` and `scale` draws it: a mark
 ## standing over it never touches it.

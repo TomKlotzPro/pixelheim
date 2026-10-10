@@ -118,12 +118,17 @@ func _ready() -> void:
 	for named_id: String in flags.list("--hunted"):
 		if named_id not in GameState.progression.hunted:
 			GameState.progression.hunted.append(named_id)
+	# The family a keepsake brings home is home already (PIX-255).
+	if flags.has("--hunted"):
+		GameState.holdings.come_home(true)
 	# Resume where the save stands; `--map <id>` (harness) boots at that map's spawn.
 	var override := flags.has("--map")
-	map = load_map(flags.value("--map", GameState.world.map_id))
+	# A save on a floor of a region's dungeon wakes at its entrance (PIX-255).
+	var woke := Depths.waking(GameState.world.map_id, GameState.world.cell)
+	map = load_map(flags.value("--map", woke["mapId"]))
 	# A save standing in a doorway (the old doors into the caves, PIX-256)
 	# wakes on the open ground beside it, not in the way through.
-	var arrival: Vector2i = map.spawn if override else Ways.standing(map, GameState.world.cell)
+	var arrival: Vector2i = map.spawn if override else Ways.standing(map, woke["cell"])
 	# Hero, mobs, and decor share one y-sorted layer so the hero walks in
 	# front of trunks and behind canopies.
 	actors = Node2D.new()
@@ -265,7 +270,10 @@ func _process(delta: float) -> void:
 
 ## Maps as the town has grown: the village and the house redraw per tier.
 func load_map(map_id: String) -> MapData:
-	return MapData.load_tiered(map_id, Town.done_projects(GameState.settlement), int(GameState.settlement.house.get("tier", 1)))
+	var loaded := MapData.load_tiered(map_id, Town.done_projects(GameState.settlement), int(GameState.settlement.house.get("tier", 1)))
+	# A region dungeon's shortcut stands open once its boss is down (PIX-255).
+	Depths.open_shortcut(loaded, GameState.progression.hunted)
+	return loaded
 
 func is_walkable(cell: Vector2i) -> bool:
 	return map.is_walkable(cell)
@@ -387,6 +395,8 @@ func enter_map(next: MapData, arrival: Vector2i) -> void:
 	# (PIX-269); the map the game opens on is only noted.
 	hud.name_place(next, arrival, not changing)
 	stage.arrive(next)
+	# A floor of a region's dungeon says which (PIX-255).
+	delve.arrive(next)
 	# A festival day: confetti over the square (PIX-159).
 	if next.id == "town" and GameState.holdings.festival_on():
 		stage.festival()

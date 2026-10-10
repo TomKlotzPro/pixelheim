@@ -297,19 +297,6 @@
       ]
     },
     {
-      "id": "saltmere_wenna",
-      "mapId": "saltmere",
-      "x": 22,
-      "y": 16,
-      "sprite": "villager_woman",
-      "name": "Old Wenna",
-      "wander": false,
-      "lines": [
-        "My brother Tam went up that mountain fifty years ago with a ladle in his belt and a joke for everyone. He never came back.",
-        "The smugglers pick over every wreck on this beach. If anyone knows what the sea gave back of him, it's them."
-      ]
-    },
-    {
       "id": "saltmere_brin",
       "mapId": "saltmere",
       "x": 33,
@@ -682,6 +669,54 @@
         ]
       },
       "perkUp": "Mirelle's bank: savings that grow 3% a day, caravans and expansions"
+    },
+    {
+      "id": "saltmere_wenna",
+      "about": "PIX-255 (story chapter 2): Tam's sister doesn't ask to be helped; the story brings her home. Once her letter is delivered (`comesHome.letter`) and Tam's Ladle is won (`comesHome.named`), she moves into Sela's inn (`home`, beside Sela's tent while the inn is ash: `homeRuined`) and puts Tam's stew back on the menu: a night at the inn leaves the hero rested `inn.fights` fights longer. The town's tour stops at the inn's door for her homecoming (`homecoming`).",
+      "name": "Old Wenna",
+      "sprite": "villager_woman",
+      "found": {
+        "mapId": "saltmere",
+        "x": 22,
+        "y": 16,
+        "wander": false
+      },
+      "home": {
+        "mapId": "town_inn",
+        "x": 15,
+        "y": 3,
+        "wander": false
+      },
+      "homeRuined": {
+        "project": "the_inn",
+        "x": 47,
+        "y": 27,
+        "wander": false
+      },
+      "comesHome": {
+        "letter": "letter_wenna",
+        "named": "tidecaller",
+        "line": "Old Wenna is packing for Pixelheim: Sela's inn has a room going, and somebody has to make Tam's stew properly."
+      },
+      "meetLines": [
+        "My brother Tam went up that mountain fifty years ago with a ladle in his belt and a joke for everyone. He never came back.",
+        "The smugglers pick over every wreck on this beach. If anyone knows what the sea gave back of him, it's them."
+      ],
+      "townLines": [
+        "Tam's stew, the way he made it: too much pepper and a song. Sit down before Sela sells the lot.",
+        "Maren comes in most nights for a bowl. We don't talk about the mountain. We talk about everything else."
+      ],
+      "perk": "Tam's stew at Sela's inn: a night there leaves you rested for longer",
+      "inn": {
+        "fights": 10,
+        "line": "Well rested, too, after a bowl of Tam's stew: more XP for your next %d fights."
+      },
+      "homecoming": {
+        "x": 50,
+        "y": 11,
+        "line": "Old Wenna has come to live at Sela's inn. Maren, in the doorway: \"Wenna.\"",
+        "detail": "\"You owe me fifty years of letters. Start with a bowl of stew.\""
+      }
     }
   ],
   "reactions": {

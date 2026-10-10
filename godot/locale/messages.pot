@@ -1357,6 +1357,10 @@ msgid "The Deepwood"
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "The Drowned Galleries"
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "The Frostgate Pass"
 msgstr ""
 
@@ -1382,6 +1386,10 @@ msgstr ""
 
 #: assets/data/catalog.json
 msgid "The Sea Cave"
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "The Tidecaller's Grotto"
 msgstr ""
 
 #: assets/data/catalog.json
@@ -1838,6 +1846,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "A monster's alert and fright bubbles sit centred over its head, and a named monster's plate over its health bar"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "A named foe's level now stands above its name instead of over it"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -2442,6 +2454,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Each comes with a full 12-node skill tree, its own look palette, and a proven path to the final boss - the balance sim clears the game with all seven classes"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Each floor down is a little harder, with something to find on each"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3529,6 +3545,10 @@ msgid "Oilskin"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Old Wenna comes home with you: she moves into Sela's inn and puts Tam's stew back on the menu, so the inn's rest lasts ten fights longer"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Old heroes are seeded their role's base grit automatically - no save lost"
 msgstr ""
 
@@ -4010,6 +4030,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Saltmere's doors are shut for now: its people, their quests and the sea cave come with the coast's own chapter"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Saltmere's sea cave now goes three floors down: the smugglers' caves, the drowned galleries where the wreck of Tam's boat lies, and the Tidecaller's grotto"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4709,6 +4733,10 @@ msgid "The Third Dimension"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Tidecaller wears Tam's stewpot as a crown; once he falls, the tide door opens onto the beach"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Truth of It"
 msgstr ""
 
@@ -5118,6 +5146,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Thirty wearables got hand-fitted overlays cut to the hero's anatomy - every sword, axe, bow, staff, robe, helm and shield, tiered by palette"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Three Floors Down"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7289,7 +7321,7 @@ msgid "The Sunless Stair"
 msgstr ""
 
 #: assets/data/combat.json
-msgid "The Tidecaller rises from its pool, and the cave fills with the sound of the sea!"
+msgid "The Tidecaller heaves itself up off a ladle, a dented stewpot on its head for a crown. That's Tam's pot!"
 msgstr ""
 
 #: assets/data/combat.json
@@ -7893,7 +7925,7 @@ msgid "the glass hall at the back of the ice cave"
 msgstr ""
 
 #: assets/data/combat.json
-msgid "the grotto at the back of the sea cave"
+msgid "the grotto three floors down the sea cave"
 msgstr ""
 
 #: assets/data/combat.json
@@ -7914,6 +7946,14 @@ msgstr ""
 
 #: assets/data/combat.json
 msgid "the west bank of the Mirefen"
+msgstr ""
+
+#: assets/data/depths.json
+msgid "The tide door groans open on its old hinges: daylight, salt wind, and the beach under the headland."
+msgstr ""
+
+#: assets/data/depths.json
+msgid "What's left of a fishing boat, wedged in the rock: the one that was bringing Tam's things home. One crate in her hold still says TAM on the lid, in Maren's hand."
 msgstr ""
 
 #: assets/data/economy.json
@@ -8130,6 +8170,10 @@ msgstr ""
 
 #: assets/data/hints.json
 msgid "{what} It's on key {slot} of your dock: press it to use it. Energy comes back as you walk."
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "\"You owe me fifty years of letters. Start with a bowl of stew.\""
 msgstr ""
 
 #: assets/data/npcs.json
@@ -8453,6 +8497,10 @@ msgid "Mabel the Sutler"
 msgstr ""
 
 #: assets/data/npcs.json
+msgid "Maren comes in most nights for a bowl. We don't talk about the mountain. We talk about everything else."
+msgstr ""
+
+#: assets/data/npcs.json
 msgid "Maren's at the shrine. She's the elder - she'll want to know who you are, walking in out of the fire."
 msgstr ""
 
@@ -8530,6 +8578,14 @@ msgstr ""
 
 #: assets/data/npcs.json
 msgid "Old Wenna"
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "Old Wenna has come to live at Sela's inn. Maren, in the doorway: \"Wenna.\""
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "Old Wenna is packing for Pixelheim: Sela's inn has a room going, and somebody has to make Tam's stew properly."
 msgstr ""
 
 #: assets/data/npcs.json
@@ -8630,6 +8686,14 @@ msgstr ""
 
 #: assets/data/npcs.json
 msgid "Tag! You're it! ...You're not going to chase me, are you. Grown-ups never chase."
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "Tam's stew at Sela's inn: a night there leaves you rested for longer"
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "Tam's stew, the way he made it: too much pepper and a song. Sit down before Sela sells the lot."
 msgstr ""
 
 #: assets/data/npcs.json
@@ -8790,6 +8854,10 @@ msgstr ""
 
 #: assets/data/npcs.json
 msgid "Welcome, welcome! Finest goods this side of the mountain. The counter is always open."
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "Well rested, too, after a bowl of Tam's stew: more XP for your next %d fights."
 msgstr ""
 
 #: assets/data/npcs.json
@@ -9018,6 +9086,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Bring Oskar's Shield out of Greyhold's cellars"
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Bring Tam's ladle up from the wreck in the sea cave"
 msgstr ""
 
 #: assets/data/progression.json
@@ -9973,10 +10045,6 @@ msgid "Saint"
 msgstr ""
 
 #: assets/data/progression.json
-msgid "Saltmere is down the cliffs south of the marsh. Old Wenna there is Tam's sister - start with her."
-msgstr ""
-
-#: assets/data/progression.json
 msgid "Saltmere's beaches are thick with sea glass, they say. Ground fine, it clears a potion like nothing else. Three pieces, please."
 msgstr ""
 
@@ -10162,6 +10230,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Take the stair below the hoard: clear the Sunless Stair (floor 11)"
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Tam's ladle. He'd want it back in a kitchen, not under the sea. Wenna will tell you where the boat went down."
 msgstr ""
 
 #: assets/data/progression.json
@@ -10461,6 +10533,10 @@ msgid "The road is clear. My riders taught you to travel light: from now on you 
 msgstr ""
 
 #: assets/data/progression.json
+msgid "The sea cave runs three floors down under Saltmere's headland. The boat that carried Tam's things home went down there, and something at the bottom kept them."
+msgstr ""
+
+#: assets/data/progression.json
 msgid "The slime was carrying a traveller's pouch: a health potion. {key:inventory} opens your pack."
 msgstr ""
 
@@ -10690,10 +10766,6 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Wildlord"
-msgstr ""
-
-#: assets/data/progression.json
-msgid "Win Tam's Ladle back from the Tidecaller, in Saltmere's sea cave"
 msgstr ""
 
 #: assets/data/progression.json
@@ -12068,15 +12140,15 @@ msgstr ""
 msgid "%s howls - the forest answers!"
 msgstr ""
 
-#: scripts/enemy.gd:228
+#: scripts/enemy.gd:230
 msgid "Lv %d"
 msgstr ""
 
-#: scripts/enemy.gd:719
+#: scripts/enemy.gd:754
 msgid "blocked"
 msgstr ""
 
-#: scripts/enemy.gd:754
+#: scripts/enemy.gd:789
 msgid "%s is afflicted by %s!"
 msgstr ""
 
@@ -13528,11 +13600,11 @@ msgstr ""
 msgid "Slay %s in its lair"
 msgstr ""
 
-#: scripts/state/bestiary.gd:197
+#: scripts/state/bestiary.gd:200
 msgid "%s by night"
 msgstr ""
 
-#: scripts/state/bestiary.gd:203
+#: scripts/state/bestiary.gd:206
 msgid "floor %d"
 msgstr ""
 
@@ -13546,6 +13618,10 @@ msgstr ""
 
 #: scripts/state/catalog.gd:74
 msgid "%s (%d/%d): %s"
+msgstr ""
+
+#: scripts/state/depths.gd:262
+msgid "%s, floor %d of %d"
 msgstr ""
 
 #: scripts/state/dungeons.gd:83
@@ -13576,67 +13652,67 @@ msgstr ""
 msgid "%s %d (%d/%d XP)"
 msgstr ""
 
-#: scripts/state/economy.gd:271
+#: scripts/state/economy.gd:272
 msgid "the mountain from floor %d"
 msgstr ""
 
-#: scripts/state/economy.gd:272
+#: scripts/state/economy.gd:273
 msgid "floors %d-%d"
 msgstr ""
 
-#: scripts/state/economy.gd:318
+#: scripts/state/economy.gd:319
 msgid "sold by %s"
 msgstr ""
 
-#: scripts/state/economy.gd:323
+#: scripts/state/economy.gd:324
 msgid "picked from patches and foraged after fights in %s"
 msgstr ""
 
-#: scripts/state/economy.gd:328
+#: scripts/state/economy.gd:329
 msgid "in a chest in %s"
 msgstr ""
 
-#: scripts/state/economy.gd:339
+#: scripts/state/economy.gd:340
 msgid "caught fishing at %s"
 msgstr ""
 
-#: scripts/state/economy.gd:343
+#: scripts/state/economy.gd:344
 msgid "%s's reward for %s"
 msgstr ""
 
-#: scripts/state/economy.gd:349
+#: scripts/state/economy.gd:350
 msgid "every time"
 msgstr ""
 
-#: scripts/state/economy.gd:352
+#: scripts/state/economy.gd:353
 msgid "sure the first time, then %d%%"
 msgstr ""
 
-#: scripts/state/economy.gd:361
+#: scripts/state/economy.gd:362
 msgid "now and then in loot in %s"
 msgstr ""
 
-#: scripts/state/economy.gd:365
+#: scripts/state/economy.gd:366
 msgid "now and then in loot on %s"
 msgstr ""
 
-#: scripts/state/economy.gd:368
+#: scripts/state/economy.gd:369
 msgid "picked from the patch on %s"
 msgstr ""
 
-#: scripts/state/economy.gd:372
+#: scripts/state/economy.gd:373
 msgid "the hoard of %s"
 msgstr ""
 
-#: scripts/state/economy.gd:374
+#: scripts/state/economy.gd:375
 msgid "the hoards of floors %s"
 msgstr ""
 
-#: scripts/state/economy.gd:519
+#: scripts/state/economy.gd:520
 msgid "That takes %s %d."
 msgstr ""
 
-#: scripts/state/economy.gd:522
+#: scripts/state/economy.gd:523
 msgid "Still missing: %s."
 msgstr ""
 
@@ -13656,32 +13732,32 @@ msgstr ""
 msgid "Wanderer"
 msgstr ""
 
-#: scripts/state/holdings.gd:247
+#: scripts/state/holdings.gd:288
 msgid "The town is not ready for me yet."
 msgstr ""
 
-#: scripts/state/holdings.gd:252
+#: scripts/state/holdings.gd:293
 msgid "Iva's hands glow warm. Fully healed, free of charge."
 msgstr ""
 
-#: scripts/state/holdings.gd:255
+#: scripts/state/holdings.gd:296
 msgid " She tucks %d healing potion%s in your pack."
 msgstr ""
 
-#: scripts/state/holdings.gd:260
+#: scripts/state/holdings.gd:301
 msgid "Loras plays you a marching song%s. Your next hunt strikes truer. (+%d%% crit)"
 msgstr ""
 
-#: scripts/state/holdings.gd:261
+#: scripts/state/holdings.gd:302
 msgid " on his war-horn"
-msgstr ""
-
-#: scripts/state/holdings.gd:305
-msgid "The prize is yours: +%d gold and %d %ss!"
 msgstr ""
 
 #: scripts/state/holdings.gd:31
 msgid "%s: commissioned. %s"
+msgstr ""
+
+#: scripts/state/holdings.gd:346
+msgid "The prize is yours: +%d gold and %d %ss!"
 msgstr ""
 
 #: scripts/state/holdings.gd:55
@@ -13824,15 +13900,15 @@ msgstr ""
 msgid "Delivered: %s. %s."
 msgstr ""
 
-#: scripts/state/questing.gd:364
+#: scripts/state/questing.gd:367
 msgid "%s: ready to hand in to %s."
 msgstr ""
 
-#: scripts/state/questing.gd:416
+#: scripts/state/questing.gd:419
 msgid "That uses what %s needs (%s). Do it again to go ahead."
 msgstr ""
 
-#: scripts/state/questing.gd:427
+#: scripts/state/questing.gd:430
 msgid "A feat done: %s. The %s is yours, for the shelf at home."
 msgstr ""
 
@@ -13956,51 +14032,51 @@ msgstr ""
 msgid "%s leaves you %s!"
 msgstr ""
 
-#: scripts/state/spoils.gd:201
+#: scripts/state/spoils.gd:203
 msgid "Level up: you are now level %d. +%d stat points and +%d skill point%s to spend."
 msgstr ""
 
-#: scripts/state/spoils.gd:252
+#: scripts/state/spoils.gd:254
 msgid "%s is cleared!"
 msgstr ""
 
-#: scripts/state/spoils.gd:283
+#: scripts/state/spoils.gd:285
 msgid "the %s"
 msgstr ""
 
-#: scripts/state/spoils.gd:286
+#: scripts/state/spoils.gd:288
 msgid "Behind the throne, a stair goes on down into the dark: the Deep Hunt."
 msgstr ""
 
-#: scripts/state/spoils.gd:290
+#: scripts/state/spoils.gd:292
 msgid "A deeper way opens: %s."
 msgstr ""
 
-#: scripts/state/spoils.gd:304
+#: scripts/state/spoils.gd:306
 msgid "Depth %d of the Deep Hunt is cleared!"
 msgstr ""
 
-#: scripts/state/spoils.gd:319
+#: scripts/state/spoils.gd:321
 msgid "depth %d of the Deep Hunt"
 msgstr ""
 
-#: scripts/state/spoils.gd:323
+#: scripts/state/spoils.gd:325
 msgid "A milestone: %d depths below the throne. The %s is yours, a trophy for the shelf at home."
 msgstr ""
 
-#: scripts/state/spoils.gd:326
+#: scripts/state/spoils.gd:328
 msgid "A hole into the dark opens beside the way up: depth %d waits below."
 msgstr ""
 
-#: scripts/state/spoils.gd:343
+#: scripts/state/spoils.gd:345
 msgid "The chest bares its teeth — a mimic!"
 msgstr ""
 
-#: scripts/state/spoils.gd:355
+#: scripts/state/spoils.gd:357
 msgid "Too heavy to carry. Lighten the pack and come back."
 msgstr ""
 
-#: scripts/state/spoils.gd:404
+#: scripts/state/spoils.gd:406
 msgid "Nothing's biting here yet. Try again in a while, or somewhere else."
 msgstr ""
 
@@ -14088,15 +14164,15 @@ msgstr ""
 msgid "You sleep at the inn and wake at dawn, fully restored. -%d gold."
 msgstr ""
 
-#: scripts/state/upkeep.gd:186
+#: scripts/state/upkeep.gd:188
 msgid "Well rested, too: more XP for your next %d fights."
 msgstr ""
 
-#: scripts/state/upkeep.gd:218
+#: scripts/state/upkeep.gd:221
 msgid "You wake at the inn, %d gold lighter. What isn't banked is a fallen hero's to lose."
 msgstr ""
 
-#: scripts/state/upkeep.gd:220
+#: scripts/state/upkeep.gd:223
 msgid "You wake at the inn. The innkeeper says nothing. Kind of her."
 msgstr ""
 
@@ -14308,35 +14384,35 @@ msgstr ""
 msgid "Arrows"
 msgstr ""
 
-#: scripts/ways.gd:165
+#: scripts/ways.gd:168
 msgid "Go down into %s?"
 msgstr ""
 
-#: scripts/ways.gd:168
+#: scripts/ways.gd:171
 msgid "Liane's stair goes down through the floor, and the cold comes up it like a draught."
 msgstr ""
 
-#: scripts/ways.gd:170
+#: scripts/ways.gd:173
 msgid "The keep's stair goes down to the cellars, where something still stands the old watch."
 msgstr ""
 
-#: scripts/ways.gd:173
+#: scripts/ways.gd:176
 msgid "The stairs"
 msgstr ""
 
-#: scripts/ways.gd:175
+#: scripts/ways.gd:178
 msgid "Go down"
 msgstr ""
 
-#: scripts/ways.gd:175
+#: scripts/ways.gd:178
 msgid "Stay"
 msgstr ""
 
-#: scripts/world.gd:291
+#: scripts/world.gd:299
 msgid "%s bars your way: no leaving until the fight is over."
 msgstr ""
 
-#: scripts/world.gd:332
+#: scripts/world.gd:340
 msgid "No map reaches this deep."
 msgstr ""
 
@@ -14344,19 +14420,19 @@ msgstr ""
 msgid "{epithet} {name}"
 msgstr ""
 
-#: scripts/world_foes.gd:341
+#: scripts/world_foes.gd:345
 msgid "The pack is scattered. Another comes once you've walked a good way, or after a night's rest."
 msgstr ""
 
-#: scripts/world_foes.gd:357
+#: scripts/world_foes.gd:361
 msgid "%s is no more."
 msgstr ""
 
-#: scripts/world_foes.gd:357
+#: scripts/world_foes.gd:361
 msgid "Victory"
 msgstr ""
 
-#: scripts/world_foes.gd:358
+#: scripts/world_foes.gd:362
 msgid "Boss slayer: +%d%% damage for %d minutes."
 msgstr ""
 
@@ -14368,19 +14444,19 @@ msgstr ""
 msgid "Boss slayer +%d%%  %d:%02d"
 msgstr ""
 
-#: scripts/world_interaction.gd:181
+#: scripts/world_interaction.gd:186
 msgid "A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it."
 msgstr ""
 
-#: scripts/world_interaction.gd:208
+#: scripts/world_interaction.gd:213
 msgid "Sela's stew simmers over the fire. Hunter's Stew is brewed at Vex's cauldron, behind the BREWS door."
 msgstr ""
 
-#: scripts/world_interaction.gd:67
+#: scripts/world_interaction.gd:72
 msgid "Only cinders where the house stood. The board on the square can change that."
 msgstr ""
 
-#: scripts/world_interaction.gd:72
+#: scripts/world_interaction.gd:77
 msgid "The deed costs %d gold. {key:interact} again to sign it."
 msgstr ""
 
@@ -14424,7 +14500,7 @@ msgstr ""
 msgid "And today it celebrates: stalls on the square, and a ring toss with a prize for the best throw."
 msgstr ""
 
-#: scripts/world_stage.gd:353
+#: scripts/world_stage.gd:362
 msgid "%s  %d:%02d"
 msgstr ""
 

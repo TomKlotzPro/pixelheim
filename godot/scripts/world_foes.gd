@@ -202,10 +202,12 @@ func _spawn_pack(data: MapData, spawn: Dictionary, asleep := false) -> void:
 			cells.append(cell)
 	# A spawn may name its size: one captain, not three (PIX-165).
 	cells.resize(mini(cells.size(), int(spawn.get("size", PACK_SIZE))))
+	# Each floor of a region's dungeon a little harder than the one above (PIX-255).
+	var lift := Depths.lift(data.id)
 	for i in cells.size():
 		# The pack's leader is the spawn's kind; the rest the region's mix (PIX-191).
 		var kind := Bestiary.pack_species(spawn, region, i, cells[i])
-		var enemy := spawn_enemy(kind, cells[i], region, spawn["id"], GameState.roll.call() < elite_chance, true, home)
+		var enemy := spawn_enemy(kind, cells[i], region, spawn["id"], GameState.roll.call() < elite_chance, true, home, lift)
 		if Packs.of_the_night(spawn):
 			enemy.fighter = Packs.by_night(enemy.fighter)
 		if asleep:
@@ -335,6 +337,8 @@ func on_enemy_died(enemy: Node) -> void:
 			world.messages.flash(GameState.questing.prologue_wave_cleared())
 	if enemy.fighter.has("named"):
 		Sound.play("bounty")
+		# A region dungeon's boss down: its shortcut out opens (PIX-255).
+		world.delve.open_shortcut()
 	if GameState.pack.gear.size() > gear_before:
 		Sound.play("drop")
 	if cleared != "":

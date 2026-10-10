@@ -2,7 +2,8 @@ class_name Interaction
 extends Node
 ## What E does in the world (Solid Ground, PIX-260: moved out of world.gd as
 ## it was), in the web's INTERACT order: the well's water on the Night of
-## Ash, a faced chest, the house's door and fixtures, a trade's station (a
+## Ash, a faced chest, a dungeon's set piece's words (PIX-255), the house's
+## door and fixtures, a trade's station (a
 ## forge, an anvil, a cauldron: PIX-234), the stairs down to a cellar
 ## (PIX-256), a fishing spot, the square's boards, then the villager beside
 ## the hero (a keeper's counter, a stall, the bank, or a talk). What the
@@ -61,6 +62,10 @@ func interact() -> void:
 	var chest := _chest_at(faced)
 	if not chest.is_empty() and chest["look"] == "chest" and not GameState.spoils.is_opened(chest):
 		_open_chest(chest)
+		return
+	# What a region dungeon's set piece says, faced (PIX-255: the wreck).
+	if world.map.notes.has(faced):
+		world.messages.flash(String(world.map.notes[faced]))
 		return
 	if world.map.id == "town" and faced == Town.house_door():
 		if Town.ashes_tent(Town.done_projects(GameState.settlement)).x >= 0:
@@ -494,7 +499,7 @@ func update_prompt() -> void:
 	var map: MapData = world.map
 	var show: bool = (
 		not chest.is_empty() and chest["look"] == "chest" and not GameState.spoils.is_opened(chest)
-	) or _fishing_here() or _station_at(facing_cell()) != "" or _bed_at(facing_cell()) or Ways.goes_down(map, facing_cell())
+	) or _fishing_here() or _station_at(facing_cell()) != "" or _bed_at(facing_cell()) or Ways.goes_down(map, facing_cell()) or map.notes.has(facing_cell())
 	if show:
 		_show_prompt(facing_cell(), -12)
 	else:

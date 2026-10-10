@@ -245,6 +245,9 @@ func deliver(npc_id: String) -> String:
 	# bridge, mended at the board), a story beat in the log.
 	if quest.has("postscript"):
 		owner.noted.emit([String(quest["postscript"])])
+	# The keepsake already home, the family comes too (PIX-255: Wenna).
+	for line: String in owner.holdings.come_home():
+		done += " " + line
 	return done + ("\n" + level_line if level_line != "" else "")
 
 

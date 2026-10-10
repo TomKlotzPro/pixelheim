@@ -452,6 +452,11 @@ func _build_dungeon(data: MapData) -> Node2D:
 				root.add_child(Lights.make(center(cell) + Vector2(0, TILE * 0.7), 92.0, Lights.FIRE, Lights.TORCH_ENERGY, true))
 				continue
 		dungeon.place(layer, cell, PunyDungeon.floor_tile(cell))
+		# What a region dungeon's floor draws over a cell (PIX-255): a wreck's
+		# beams, the shortcut's door, shut or open.
+		if data.pieces.has(cell):
+			dungeon.place(dungeon_objects, cell, int(data.pieces[cell]))
+			continue
 		match tile:
 			"barrel":
 				dungeon.place(dungeon_objects, cell, PunyDungeon.BARRELS[absi(hash(cell)) % 2])
@@ -459,9 +464,23 @@ func _build_dungeon(data: MapData) -> Node2D:
 				dungeon.place(dungeon_objects, cell, PunyDungeon.POT)
 			"cave":
 				dungeon.place(dungeon_objects, cell, PunyDungeon.STAIRS)
+			"stairwell":
+				dungeon.place(dungeon_objects, cell, PunyDungeon.STAIRS_DOWN)
+			"rock":
+				dungeon.place(dungeon_objects, cell, PunyDungeon.BOULDERS[absi(hash(cell)) % PunyDungeon.BOULDERS.size()])
 	root.add_child(layer)
 	root.add_child(dungeon_objects)
 	return root
+
+
+## A cell opened while the hero looks on (PIX-255: the shortcut's door once
+## the dungeon's boss is down): drawn again as it stands now, and its
+## invisible box gone once it's open ground.
+func reopen(cell: Vector2i) -> void:
+	if dungeon_objects != null and data.pieces.has(cell):
+		PunyDungeon.sheet().place(dungeon_objects, cell, int(data.pieces[cell]))
+	if data.is_walkable(cell):
+		tile_layer.erase_cell(cell)
 
 
 ## Chests and terrain decor live in the y-sorted actors layer.

@@ -167,6 +167,7 @@ func _ready() -> void:
 	gait = Gait.new(sprite, art, size)
 	_play("idle")
 	add_child(sprite)
+	_wear_crown()
 	sprite.animation_changed.connect(_turned)
 	# Fafnyr and Morvax fight with their own attacks too (PIX-150); an elite
 	# has its family's one trick (PIX-155), a named monster one of its own
@@ -214,8 +215,9 @@ func _ready() -> void:
 	# A foe's bar and name read at night too (PIX-221).
 	health_bar_back.material = Lights.unshaded()
 	health_bar.material = Lights.unshaded()
+	var plate: Label = null
 	if not named.is_empty():
-		var plate := _name_plate(-20 * size - 1)
+		plate = _name_plate(-20 * size - 1)
 		Lights.unshade(plate)
 		add_child(plate)
 	# Its level by the health bar (PIX-188), coloured by the gap to the
@@ -231,8 +233,13 @@ func _ready() -> void:
 	level_tag.z_index = 20
 	level_tag.visible = false
 	level_tag.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	level_tag.resized.connect(func() -> void:
-		level_tag.position = Vector2(-level_tag.size.x * CameraRig.LABEL_SCALE / 2.0, -20 * size - level_tag.size.y * CameraRig.LABEL_SCALE - 0.5))
+	# A named foe's tag stands above its name, not over it.
+	var place_tag := func() -> void:
+		var above := -20 * size - 0.5 - (plate.size.y * CameraRig.LABEL_SCALE if plate != null else 0.0)
+		level_tag.position = Vector2(-level_tag.size.x * CameraRig.LABEL_SCALE / 2.0, above - level_tag.size.y * CameraRig.LABEL_SCALE)
+	level_tag.resized.connect(place_tag)
+	if plate != null:
+		plate.resized.connect(place_tag)
 	Lights.unshade(level_tag)
 	add_child(level_tag)
 
@@ -337,6 +344,34 @@ func notice() -> void:
 	var rest := sprite.position
 	hop.tween_property(sprite, "position:y", rest.y - 5, alert_left * 0.4).set_ease(Tween.EASE_OUT)
 	hop.tween_property(sprite, "position:y", rest.y, alert_left * 0.6).set_ease(Tween.EASE_IN)
+
+
+## What a named monster may wear on its head (PIX-255), by the name the data
+## gives it: the dungeon sheet's piece.
+const CROWNS := {"stewpot": PunyDungeon.POT}
+
+
+## A named monster wearing something of the story's (combat.json's
+## "crown"): the Tidecaller with Tam's stewpot on its head, sitting on the
+## top of the frame it shows, squashing and flashing with it.
+func _wear_crown() -> void:
+	if not CROWNS.has(String(named.get("crown", ""))):
+		return
+	var crown := Sprite2D.new()
+	crown.texture = PunyDungeon.sheet().tile_texture(CROWNS[named["crown"]])
+	# Pot-sized on the hero's scale, whatever the monster's.
+	crown.scale = Vector2.ONE * 0.75 / sprite.scale.x
+	var top := Ink.crown(sprite.sprite_frames, Array(sprite.sprite_frames.get_animation_names()))
+	# On the head of the frame showing, so it rides each squash rather than
+	# floating at the figure's highest reach.
+	var sit := func() -> void:
+		crown.position = Vector2(0, Ink.top_now(sprite, top) + 3.0 / sprite.scale.y)
+	sprite.frame_changed.connect(sit)
+	sprite.animation_changed.connect(sit)
+	sit.call()
+	# It flashes and dissolves with the one wearing it.
+	crown.use_parent_material = true
+	sprite.add_child(crown)
 
 
 ## A named monster's name over its head in the boss's red: the UI's type at

@@ -23,7 +23,7 @@ import sys
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 LOCALE = os.path.join(ROOT, "locale")
 POT = os.path.join(LOCALE, "messages.pot")
-DATA = ["catalog", "progression", "npcs", "combat", "economy", "town", "story", "changelog", "hints", "gates"]
+DATA = ["catalog", "progression", "npcs", "combat", "economy", "town", "story", "changelog", "hints", "gates", "depths"]
 MAPS_DATA = ["interactables"]
 LANGUAGES = ["fr"]
 ## Short words the game shows that read like ids (PIX-196): labels, stat

@@ -299,6 +299,9 @@ func apply(state: Dictionary) -> void:
 	mark_dirty()
 	questing.forget_deliveries()
 	questing.note_deliveries(false)
+	# A save that won a keepsake before its family could come home finds
+	# them home (PIX-255: Wenna at Sela's inn, with the ladle won).
+	holdings.come_home(true)
 	# Another hero: the last one's boss slayer's edge isn't theirs.
 	spoils.slayer_left = 0.0
 	loaded.emit()

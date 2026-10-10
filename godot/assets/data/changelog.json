@@ -1,6 +1,18 @@
 {
   "releases": [
     {
+      "version": "0.210.0",
+      "date": "2026-10-10",
+      "codename": "Three Floors Down",
+      "notes": [
+        "Saltmere's sea cave now goes three floors down: the smugglers' caves, the drowned galleries where the wreck of Tam's boat lies, and the Tidecaller's grotto",
+        "The Tidecaller wears Tam's stewpot as a crown; once he falls, the tide door opens onto the beach",
+        "Each floor down is a little harder, with something to find on each",
+        "Old Wenna comes home with you: she moves into Sela's inn and puts Tam's stew back on the menu, so the inn's rest lasts ten fights longer",
+        "A named foe's level now stands above its name instead of over it"
+      ]
+    },
+    {
       "version": "0.209.0",
       "date": "2026-10-10",
       "codename": "Closed Roads",

@@ -181,9 +181,12 @@ func rest_at_inn() -> String:
 	# The inn rebuilt (PIX-206): a real bed leaves the hero rested a while.
 	var line := Text.t("You sleep at the inn and wake at dawn, fully restored. -%d gold.") % cost
 	if owner.holdings.project_built("the_inn"):
-		var fights := int(Town._data()["rested"]["innFights"])
+		# Tam's stew back on the menu (PIX-255): longer, with a word for it.
+		var stew := owner.holdings.inn_rested()
+		var fights := int(Town._data()["rested"]["innFights"]) + int(stew["fights"])
 		owner.settlement.house["rested"] = maxi(int(owner.settlement.house.get("rested", 0)), fights)
-		line += " " + Text.t("Well rested, too: more XP for your next %d fights.") % fights
+		var rested := String(stew["line"]) if String(stew["line"]) != "" else Text.t("Well rested, too: more XP for your next %d fights.")
+		line += " " + rested % fights
 	owner.pack_changed()
 	return sela + " " + line if sela != "" else line
 

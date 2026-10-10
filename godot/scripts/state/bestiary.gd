@@ -10,6 +10,9 @@ static var _doc := {}
 static func _data() -> Dictionary:
 	if _doc.is_empty():
 		_doc = Text.localize(SaveCodec.parse_json(FileAccess.get_file_as_string("res://assets/data/combat.json")))
+		# A region dungeon's planned floors keep their packs in their plans
+		# (PIX-255): they live here with the others.
+		_doc["spawns"].append_array(Depths.planned_spawns())
 	return _doc
 
 

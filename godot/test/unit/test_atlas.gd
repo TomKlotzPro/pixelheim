@@ -26,7 +26,8 @@ func test_the_pages_are_the_maps_found_in_the_worlds_order() -> void:
 	assert_true(Atlas.found(discovered, "greyhold"))
 	assert_false(Atlas.found(discovered, "frostgate"))
 	for map_id: String in Atlas.ORDER:
-		assert_true(FileAccess.file_exists("res://assets/maps/%s.json" % map_id), "%s is a map" % map_id)
+		# A region dungeon's planned floor is laid out, not read (PIX-255).
+		assert_true(FileAccess.file_exists("res://assets/maps/%s.json" % map_id) or Depths.is_planned(map_id), "%s is a map" % map_id)
 
 
 func test_the_pages_turn_round() -> void:

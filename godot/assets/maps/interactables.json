@@ -133,9 +133,9 @@
     },
     {
       "id": "seacave_wreck",
-      "mapId": "seacave",
-      "x": 38,
-      "y": 20,
+      "mapId": "seacave_galleries",
+      "x": -1,
+      "y": -1,
       "look": "chest",
       "loot": {
         "kind": "gear",
