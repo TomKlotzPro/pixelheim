@@ -83,4 +83,9 @@ func test_a_giver_speaks_their_ask() -> void:
 	assert_string_contains(said, "journal", "the accept points at the journal")
 	assert_true(state.questing.quest_on_offer("innkeeper").is_empty(), "taken: nothing more to ask")
 	for quest: Dictionary in Quests.all():
+		# Maren's letters (PIX-253) aren't asked in talk: the tin gives them,
+		# and their words are their recipients' answers.
+		if quest["objective"]["kind"] == "deliverTo":
+			assert_gt(quest["answer"].size(), 0, "%s has its answer" % quest["id"])
+			continue
 		assert_ne(String(quest.get("accepted", "")), "", "%s has its ask" % quest["id"])

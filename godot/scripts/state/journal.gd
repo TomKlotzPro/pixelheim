@@ -16,9 +16,10 @@ const GROUP_NAMES := {"story": "Main story", "people": "Town and people", "bount
 const STORY := ""
 
 
-## The quests that carry the story (PIX-171): Maren's relics and each relic's hunt.
+## The quests that carry the story (PIX-171): Maren's relics, her letters
+## (PIX-253) and each relic's hunt.
 static func is_main_line(quest: Dictionary) -> bool:
-	if quest["id"] == Relics.quest_id():
+	if quest["id"] == Relics.quest_id() or Letters.is_letter(quest):
 		return true
 	var named: String = quest["objective"].get("named", "")
 	return Relics.all().any(func(relic: Dictionary) -> bool: return relic["named"] == named)
@@ -101,9 +102,14 @@ static func _row(group: String, id: String, title: String, lead: Dictionary, det
 	}
 
 
-## What a giver asked, who and where they are, and where to look (PIX-171).
+## What a giver asked, who and where they are, and where to look (PIX-171);
+## for a letter, who it goes to (PIX-253).
 static func _asked(quest: Dictionary, progression: ProgressionState, settlement: SettlementState) -> String:
-	var npc: Dictionary = Npcs.by_id(quest["giver"], settlement.settlers)
+	var objective: Dictionary = quest["objective"]
+	var who: String = objective["to"] if objective["kind"] == "deliverTo" else quest["giver"]
+	var npc: Dictionary = Npcs.by_id(who, settlement.settlers)
 	var asked := "%s (%s, %s)" % [quest["brief"], npc.get("name", ""), Catalog.place_name(npc.get("mapId", ""))]
+	if objective["kind"] == "deliverTo":
+		return asked
 	var where := Quests.where(quest, Relics.gate_open(progression), Town.done_projects(settlement))
 	return asked + ("  " + where if where != "" else "")

@@ -21,7 +21,13 @@ func _guidance() -> Array[String]:
 		out.append(String(step["text"]))
 	out.append(String(progression["prologue"]["pouch"]))
 	for quest: Dictionary in Quests.all():
-		out.append_array([String(quest["name"]), String(quest["brief"]), String(quest["accepted"]), String(quest["completed"])])
+		out.append_array([String(quest["name"]), String(quest["brief"])])
+		# A letter (PIX-253) has its recipient's answer instead of an ask
+		# and a thanks.
+		for line: String in quest.get("answer", [quest.get("accepted", ""), quest.get("completed", "")]):
+			out.append(line)
+	var letters: Dictionary = progression["letters"]
+	out.append_array(letters["tin"] + letters["late"] + [letters["taken"], letters["takenSome"], letters["answered"], letters["road"], letters["room"]])
 	var hints: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/data/hints.json"))
 	for id: String in hints:
 		out.append_array([String(hints[id]["title"]), String(hints[id]["text"])])

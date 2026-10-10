@@ -17,7 +17,12 @@ func _lead() -> Dictionary:
 	return Bearing.active(state.progression, state.settlement, state.pack.items)
 
 
-func test_a_new_hero_is_sent_to_sela() -> void:
+func test_a_new_hero_is_sent_to_maren_then_sela() -> void:
+	# Maren's tin first (PIX-253), in the ashes of her house.
+	var dig := _lead()
+	assert_eq(dig["step"], "Help Maren dig through what's left of her house")
+	assert_eq([dig["map_id"], dig["cell"], dig["who"]], ["town", Letters.dig_spot([]), "elder"])
+	state.questing.finish_dialogue("elder")
 	var lead := _lead()
 	assert_true(lead["main"], "the main story leads")
 	assert_eq(lead["step"], "Ask Sela the innkeeper for work")

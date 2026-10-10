@@ -316,6 +316,9 @@ func test_closing_any_conversation_is_announced() -> void:
 func test_a_night_at_the_inn_wakes_at_dawn_and_halves_in_a_town() -> void:
 	# Whole or hurt, a night is a night (PIX-246): it skips the dark.
 	state.world.steps = 0.7 * DayNight.DAY_CYCLE_STEPS
+	# The first night has Sela's word first (PIX-253); the dream it brings
+	# is dreamt after.
+	state.mark_seen("dream_courier")
 	assert_eq(state.upkeep.rest_at_inn(), "You sleep at the inn and wake at dawn, fully restored. -10 gold.")
 	assert_eq(state.pack.gold, 20)
 	assert_eq(state.world.steps, float(DayNight.DAY_CYCLE_STEPS), "the next morning")

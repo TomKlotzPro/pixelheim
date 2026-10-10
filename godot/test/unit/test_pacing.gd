@@ -17,15 +17,15 @@ const STAGES := [
 	{"id": "town", "sweep": ["forest", "marsh"], "hunt": "", "quests": [
 		"slime_trouble", "cheese_run", "herbs_for_vex", "hildas_buckler", "wren_leather", "iva_reeds", "wren_apples", "iva_herbs", "wolf_watch"]},
 	{"id": "coast", "sweep": ["coast", "seacave"], "hunt": "tidecaller", "quests": [
-		"wenna_smugglers", "wenna_tidecaller", "brin_crabs", "brin_lens", "brin_oilskin", "ola_catch", "rook_captain", "pip_fish", "vex_glass", "sela_rum"]},
+		"letter_wenna", "wenna_smugglers", "wenna_tidecaller", "brin_crabs", "brin_lens", "brin_oilskin", "ola_catch", "rook_captain", "pip_fish", "vex_glass", "sela_rum"]},
 	{"id": "road", "sweep": [], "packs": ["ash_1", "ash_2"], "hunt": "", "quests": ["ash_orcs", "wren_road", "iva_fever"]},
 	{"id": "mines", "sweep": ["mines", "shafts"], "hunt": "seam_warden", "quests": [
-		"garrick_crew", "garrick_seam", "garrick_helm", "dagny_ore", "dagny_carts", "pell_canary", "hildas_ore", "bram_shaftcheese"]},
+		"letter_pell", "garrick_crew", "garrick_seam", "garrick_helm", "dagny_ore", "dagny_carts", "pell_canary", "hildas_ore", "bram_shaftcheese"]},
 	{"id": "deepwood", "sweep": ["deepwood"], "hunt": "", "quests": ["loras_lute", "tomas_golems", "mira_moss"]},
 	{"id": "castle", "sweep": ["castle", "cellars"], "hunt": "hollow_captain", "quests": [
-		"ulla_turncoats", "ulla_captain", "teo_rest", "teo_steel", "fenwick_locket", "ana_badge"]},
+		"letter_hale", "ulla_turncoats", "ulla_captain", "teo_rest", "teo_steel", "fenwick_locket", "ana_badge"]},
 	{"id": "frost", "sweep": ["frost", "icecave"], "hunt": "rimefang", "quests": [
-		"aske_wolves", "aske_rimefang", "gunnar_strongbox", "gunnar_wagon", "linnea_lilies", "linnea_icefin", "linnea_hood", "mira_fur"]},
+		"letter_aske", "aske_wolves", "aske_rimefang", "gunnar_strongbox", "gunnar_wagon", "linnea_lilies", "linnea_icefin", "linnea_hood", "mira_fur"]},
 	{"id": "gate", "sweep": [], "hunt": "", "quests": ["maren_relics"]},
 ]
 ## On the climb: the floor a hero is on when each of the rest is handed in,

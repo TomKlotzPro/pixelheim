@@ -535,7 +535,7 @@ func _solid_scatter(data: MapData, arrival: Vector2i) -> Dictionary:
 	if data.floor_level > 0 or not PunyTerrain.is_outdoor(data.grid):
 		return {}
 	var kept := {arrival: true}
-	for npc: Dictionary in Npcs.on_map(data.id, GameState.settlement.town_tier, GameState.settlement.settlers, Town.done_projects(GameState.settlement), Relics.gate_open(GameState.progression)):
+	for npc: Dictionary in Npcs.on_map(data.id, GameState.settlement.town_tier, GameState.settlement.settlers, Town.done_projects(GameState.settlement), Relics.gate_open(GameState.progression), GameState.progression.deepest, Letters.tin_waits(GameState.progression)):
 		kept[Vector2i(int(npc["x"]), int(npc["y"]))] = true
 	for chest: Dictionary in Interactables.chests_on(data.id):
 		kept[Vector2i(int(chest["x"]), int(chest["y"]))] = true

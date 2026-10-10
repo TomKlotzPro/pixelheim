@@ -813,6 +813,22 @@ msgid "Less a shield, more a portable wall."
 msgstr "Moins un bouclier qu'un mur portatif."
 
 #: assets/data/catalog.json
+msgid "Letter to Aske"
+msgstr "Lettre pour Aske"
+
+#: assets/data/catalog.json
+msgid "Letter to Captain Hale"
+msgstr "Lettre pour le capitaine Hale"
+
+#: assets/data/catalog.json
+msgid "Letter to Old Pell"
+msgstr "Lettre pour le vieux Pell"
+
+#: assets/data/catalog.json
+msgid "Letter to Old Wenna"
+msgstr "Lettre pour la vieille Wenna"
+
+#: assets/data/catalog.json
 msgid "Liane's Lantern"
 msgstr "Lanterne de Liane"
 
@@ -971,6 +987,22 @@ msgstr "Du bois de cœur de vieille forêt, dense comme la pierre. Les Bois-Prof
 #: assets/data/catalog.json
 msgid "One of Grandmother Gulp's gold teeth, on a chain. It bites, a little, when it is hungry. Hunted, never sold."
 msgstr "L'une des dents en or de Grand-mère Glouglou, au bout d'une chaîne. Elle mord un peu quand elle a faim. Trophée de chasse, jamais en vente."
+
+#: assets/data/catalog.json
+msgid "One of Maren's five, addressed to \"Pell, the boy with the canary\", Blackiron. A courier never reads the post."
+msgstr "L'une des cinq lettres de Maren, adressée à « Pell, le garçon au canari », Fernoir. Un messager ne lit jamais le courrier."
+
+#: assets/data/catalog.json
+msgid "One of Maren's five, addressed to Aske, who keeps Liane's door on the Frostgate. A courier never reads the post."
+msgstr "L'une des cinq lettres de Maren, adressée à Aske, qui garde la porte de Liane sur la Porte-Givre. Un messager ne lit jamais le courrier."
+
+#: assets/data/catalog.json
+msgid "One of Maren's five, addressed to Captain Hale of Greyhold and sealed with a thumbprint of soot. A courier never reads the post."
+msgstr "L'une des cinq lettres de Maren, adressée au capitaine Hale de Greyhold et scellée d'une empreinte de pouce dans la suie. Un messager ne lit jamais le courrier."
+
+#: assets/data/catalog.json
+msgid "One of Maren's five, addressed to Old Wenna of Saltmere in a young woman's hand. Fifty years in a tin. A courier never reads the post."
+msgstr "L'une des cinq lettres de Maren, adressée à la vieille Wenna de Saltmere d'une main de jeune femme. Cinquante ans dans une boîte en fer-blanc. Un messager ne lit jamais le courrier."
 
 #: assets/data/catalog.json
 msgid "Oskar's Shield"
@@ -7113,6 +7145,10 @@ msgid "The Ashen Mountain"
 msgstr "La Montagne des Cendres"
 
 #: assets/data/combat.json
+msgid "The Ashen Throne"
+msgstr "Le Trône de cendres"
+
+#: assets/data/combat.json
 msgid "The Bone Abbot"
 msgstr "L'Abbé des Os"
 
@@ -7985,8 +8021,8 @@ msgid "(She looks up at the mountain for a long time.) Rest. We'll talk at dawn.
 msgstr "(Elle regarde longuement la montagne.) Reposez-vous. Nous parlerons à l'aube."
 
 #: assets/data/npcs.json
-msgid "(She reads it twice.) Then no one is coming."
-msgstr "(Elle la lit deux fois.) Alors personne ne viendra."
+msgid "(She reads it twice.) Then no one is coming. Again. Fifty years ago I asked the Crown for soldiers too."
+msgstr "(Elle la lit deux fois.) Alors personne ne viendra. Encore. Il y a cinquante ans, j'avais déjà demandé des soldats à la Couronne."
 
 #: assets/data/npcs.json
 msgid "(You hand her the letter.) Vellmar's seal. I wrote to them three times."
@@ -8665,8 +8701,44 @@ msgid "{settler} moved in! Pixelheim is filling up again."
 msgstr "{settler} vient d'emménager ! Pixelheim se remplit de nouveau."
 
 #: assets/data/progression.json
+msgid "\"A thing chained a hundred years will burn anything. Don't seal him. Free him. The collar answers to our five marks.\""
+msgstr "« Une bête enchaînée depuis cent ans brûlera n'importe quoi. Ne le scellez pas. Libérez-le. Le collier obéit à nos cinq marques. »"
+
+#: assets/data/progression.json
+msgid "\"Day 12. We went up and found Morvax alive at the old forge. He begged us to bar the gate and tell Maren nothing. 'Let her think I'm dead. It's kinder.' I agreed. I was wrong.\""
+msgstr "« Jour 12. Nous sommes montés et avons trouvé Morvax vivant à la vieille forge. Il nous a suppliés de barrer la porte et de ne rien dire à Maren. \"Qu'elle me croie mort. C'est plus doux.\" J'ai accepté. J'ai eu tort. »"
+
+#: assets/data/progression.json
+msgid "\"Sorry about the cage.\" Ha! She sat on my canary's cage, fifty years ago. Flat as a griddle. The bird never forgave her."
+msgstr "« Désolée pour la cage. » Ha ! Elle s'est assise sur la cage de mon canari, il y a cinquante ans. Plate comme une galette. L'oiseau ne lui a jamais pardonné."
+
+#: assets/data/progression.json
 msgid "\"The Crown can no longer defend the Ashenreach.\" That's the whole of the Chancellor's letter."
 msgstr "« La Couronne ne peut plus défendre la Marche des Cendres. » C'est tout ce que dit la lettre du chancelier."
+
+#: assets/data/progression.json
+msgid "(\"Letters that aren't delivered are just paper,\" you say.)"
+msgstr "(« Une lettre qu'on ne remet pas, ce n'est que du papier », dites-vous.)"
+
+#: assets/data/progression.json
+msgid "(From his coat he takes a folded page in Liane's hand.) She left this with me. Her sums, from before the climb: \"The seal only buys time. Fifty years, at most.\""
+msgstr "(Il sort de son manteau une page pliée, de la main de Liane.) Elle me l'a laissée. Ses calculs, d'avant l'ascension : « Le sceau ne fait que gagner du temps. Cinquante ans, tout au plus. »"
+
+#: assets/data/progression.json
+msgid "(Maren turns a tin box over in her hands, black with soot.) I dug this out of my hearth. Five letters I wrote fifty years ago, and never sent."
+msgstr "(Maren tourne entre ses mains une boîte en fer-blanc, noire de suie.) Je l'ai sortie de mon âtre. Cinq lettres écrites il y a cinquante ans, et jamais envoyées."
+
+#: assets/data/progression.json
+msgid "(She reads it twice.) Tam's things never came home, courier. The boat went down off the headland. Whatever the sea kept of him washed into the cave under it."
+msgstr "(Elle la lit deux fois.) Les affaires de Tam ne sont jamais rentrées, messager. Le bateau a sombré au large du cap. Ce que la mer a gardé de lui s'est échoué dans la grotte, en dessous."
+
+#: assets/data/progression.json
+msgid "(You lift the hearthstone together. Under it is a tin box, and in the tin five letters, addressed in a young woman's hand. The fifth says only \"Morvax\".)"
+msgstr "(Vous soulevez la pierre d'âtre ensemble. Dessous, une boîte en fer-blanc, et dans la boîte, cinq lettres adressées d'une main de jeune femme. La cinquième porte seulement « Morvax ».)"
+
+#: assets/data/progression.json
+msgid "...Four of them, then. The fifth has no address."
+msgstr "...Quatre, alors. La cinquième n'a pas d'adresse."
 
 #: assets/data/progression.json
 msgid "A Coat for the Harbour"
@@ -8695,6 +8767,10 @@ msgstr "Un cor de guerre"
 #: assets/data/progression.json
 msgid "A fire imp's horn, hollowed out, sounds like the end of the world. Bring me one."
 msgstr "Une corne de diablotin de feu, évidée, ça sonne comme la fin du monde. Rapportez-m'en une."
+
+#: assets/data/progression.json
+msgid "A letter for the captain? He's... not receiving. But a letter's a letter. (She reads it, then opens his order book.)"
+msgstr "Une lettre pour le capitaine ? Il... ne reçoit plus. Mais une lettre est une lettre. (Elle la lit, puis ouvre son registre.)"
 
 #: assets/data/progression.json
 msgid "A marching song needs a horn, and Loras knows just the one."
@@ -8753,6 +8829,10 @@ msgid "Ask Sela the innkeeper for work"
 msgstr "Demander du travail à Sela l'aubergiste"
 
 #: assets/data/progression.json
+msgid "Aske last. He's kept Liane's door shut fifty years because she asked him to. North, up the Frostgate road. Tell him he can stop."
+msgstr "Aske en dernier. Il garde la porte de Liane fermée depuis cinquante ans parce qu'elle le lui a demandé. Au nord, par la route de la Porte-Givre. Dites-lui qu'il peut arrêter."
+
+#: assets/data/progression.json
 msgid "Badge found"
 msgstr "Insigne trouvé"
 
@@ -8787,6 +8867,10 @@ msgstr "Bram jure que des diablotins des étages profonds de la montagne lui ont
 #: assets/data/progression.json
 msgid "Bram wants a cheese wheel. Of course he does."
 msgstr "Bram veut une meule de fromage. Évidemment."
+
+#: assets/data/progression.json
+msgid "Bram's crew is out clearing the cliff road to Saltmere."
+msgstr "L'équipe de Bram est partie dégager la route de la falaise vers Saltmere."
 
 #: assets/data/progression.json
 msgid "Brew a first potion at Vex's cauldron"
@@ -8897,12 +8981,20 @@ msgid "Clear the Vaulted Hoard (floor 13)"
 msgstr "Nettoyer le Trésor voûté (étage 13)"
 
 #: assets/data/progression.json
+msgid "Cliff road to Saltmere's clear, courier. Took the whole crew all morning. I lifted one rock. Supervised the rest."
+msgstr "La route de la falaise vers Saltmere est dégagée, messager. Toute l'équipe y a passé la matinée. J'ai soulevé une pierre. J'ai supervisé le reste."
+
+#: assets/data/progression.json
 msgid "Crabs cracked"
 msgstr "Crabes décortiqués"
 
 #: assets/data/progression.json
 msgid "Crabs on the Jetty"
 msgstr "Des crabes sur la jetée"
+
+#: assets/data/progression.json
+msgid "Cross the river and deliver Maren's letter to Old Pell at Blackiron"
+msgstr "Traverser la rivière et remettre la lettre de Maren au vieux Pell, à Fernoir"
 
 #: assets/data/progression.json
 msgid "Crusader"
@@ -8939,6 +9031,26 @@ msgstr "Plus profond encore, une chambre forte que les morts gardent pour leur m
 #: assets/data/progression.json
 msgid "Deepwood trolls tax Mirelle's caravans in blood and silver."
 msgstr "Les trolls des Bois-Profonds prélèvent sur les caravanes de Mirelle un tribut de sang et d'argent."
+
+#: assets/data/progression.json
+msgid "Deliver Maren's letter to Aske on the Frostgate pass"
+msgstr "Remettre la lettre de Maren à Aske, sur le col de la Porte-Givre"
+
+#: assets/data/progression.json
+msgid "Deliver Maren's letter to Aske on the Frostgate pass."
+msgstr "Remettre la lettre de Maren à Aske, sur le col de la Porte-Givre."
+
+#: assets/data/progression.json
+msgid "Deliver Maren's letter to Old Pell at Blackiron."
+msgstr "Remettre la lettre de Maren au vieux Pell, à Fernoir."
+
+#: assets/data/progression.json
+msgid "Deliver Maren's letter to Old Wenna in Saltmere"
+msgstr "Remettre la lettre de Maren à la vieille Wenna, à Saltmere"
+
+#: assets/data/progression.json
+msgid "Deliver Maren's letter to Old Wenna in Saltmere."
+msgstr "Remettre la lettre de Maren à la vieille Wenna, à Saltmere."
 
 #: assets/data/progression.json
 msgid "Dire wolves driven off"
@@ -9045,6 +9157,10 @@ msgid "Fever-ghosts laid"
 msgstr "Fantômes de fièvre apaisés"
 
 #: assets/data/progression.json
+msgid "Fifty years late, and you've got mud on it. Give it here."
+msgstr "Cinquante ans de retard, et il y a de la boue dessus. Donnez-moi ça."
+
+#: assets/data/progression.json
 msgid "Find Liane's Lantern under her observatory on the Frostgate pass"
 msgstr "Trouver la Lanterne de Liane sous son observatoire, sur le col de la Porte-Givre"
 
@@ -9087,6 +9203,10 @@ msgstr "Herbes des bois apportées"
 #: assets/data/progression.json
 msgid "Four forest herbs, fresh, from the patches in the Whispering Forest. The shrine's beds are never empty for long."
 msgstr "Quatre herbes des bois, fraîches, cueillies aux points de récolte de la Forêt murmurante. Les lits du sanctuaire ne restent jamais vides bien longtemps."
+
+#: assets/data/progression.json
+msgid "Four letters in your pack: for Old Wenna in Saltmere, Old Pell at Blackiron, Captain Hale at Greyhold and Aske on the Frostgate. Maren keeps the fifth."
+msgstr "Quatre lettres dans votre sac : pour la vieille Wenna à Saltmere, le vieux Pell à Fernoir, le capitaine Hale à Greyhold et Aske sur la Porte-Givre. Maren garde la cinquième."
 
 #: assets/data/progression.json
 msgid "Four lumps of blackiron. The veins glint in the shafts' dead ends."
@@ -9185,6 +9305,10 @@ msgid "Greyhold stands off the east edge of the Ash Fields. Sergeant Ulla keeps 
 msgstr "Greyhold se dresse à l'écart, à l'est des Champs de Cendres. La sergente Ulla tient le camp de l'ancienne garde, au bord de la route."
 
 #: assets/data/progression.json
+msgid "Greyhold stands off the east edge of the Ash Fields. The captain isn't receiving visitors: Sergeant Ulla keeps his camp by the road."
+msgstr "Greyhold se dresse à la lisière est des Champs de Cendres. Le capitaine ne reçoit plus de visites : la sergente Ulla tient son camp au bord de la route."
+
+#: assets/data/progression.json
 msgid "Greyhold's dead garrison still keeps watch below."
 msgstr "La garnison morte de Greyhold monte toujours la garde, en bas."
 
@@ -9205,8 +9329,16 @@ msgid "Ha! The nets are ours again. Saltmere owes you a supper."
 msgstr "Ha ! Les filets sont de nouveau à nous. Saltmere vous doit un souper."
 
 #: assets/data/progression.json
+msgid "Hale kept Greyhold when we climbed, and Oskar was his. East, over the Ash Fields. If he can't take it, someone of his will."
+msgstr "Hale tenait Greyhold quand nous sommes montés, et Oskar était l'un des siens. À l'est, par les Champs de Cendres. S'il ne peut pas la prendre, quelqu'un des siens le fera."
+
+#: assets/data/progression.json
 msgid "Half for you, half for me - or we hand it back to Saltmere and I go honest. Your call, hero."
 msgstr "Moitié pour vous, moitié pour moi - ou on rend tout à Saltmere et je deviens honnête. À vous de voir, héros."
+
+#: assets/data/progression.json
+msgid "He sent me this from the foot of the mountain. (A postcard.) \"Morvax wants the kings' gold to make Pixelheim a city. Maren says over her dead body. I've brought cheese. Nobody fights over cheese.\""
+msgstr "Il m'a envoyé ceci du pied de la montagne. (Une carte postale.) « Morvax veut l'or des rois pour faire de Pixelheim une cité. Maren dit qu'il faudra lui passer sur le corps. J'ai apporté du fromage. Personne ne se dispute pour du fromage. »"
 
 #: assets/data/progression.json
 msgid "He'll come home with his ears. Thank you. Take a lily - they only bloom up here."
@@ -9225,8 +9357,8 @@ msgid "Heavy, true, and it fits my thick head. Take this - we found it in the se
 msgstr "Lourd, solide, et il va à ma tête de mule. Prenez ceci - on l'a trouvé dans le filon."
 
 #: assets/data/progression.json
-msgid "Help rebuild the inn: fund it at the board on the square"
-msgstr "Aider à reconstruire l'auberge : la financer au tableau d'avis de la place"
+msgid "Help Maren dig through what's left of her house"
+msgstr "Aider Maren à fouiller ce qui reste de sa maison"
 
 #: assets/data/progression.json
 msgid "Help whoever is calling on Upper Street ({key:interact} to help)"
@@ -9261,6 +9393,10 @@ msgid "Hollow guards stood down"
 msgstr "Gardes creux relevés"
 
 #: assets/data/progression.json
+msgid "Home"
+msgstr "Maison"
+
+#: assets/data/progression.json
 msgid "Honest work's slower. The beer tastes better, though."
 msgstr "Le travail honnête, c'est plus lent. Mais la bière a meilleur goût."
 
@@ -9291,6 +9427,10 @@ msgstr "Au diable les diablotins"
 #: assets/data/progression.json
 msgid "Imps taught a lesson"
 msgstr "Diablotins remis à leur place"
+
+#: assets/data/progression.json
+msgid "In your pack: %s. Maren keeps the fifth."
+msgstr "Dans votre sac : %s. Maren garde la cinquième."
 
 #: assets/data/progression.json
 msgid "Ink Nobody Can Copy"
@@ -9337,12 +9477,24 @@ msgid "Knight"
 msgstr "Chevalier"
 
 #: assets/data/progression.json
+msgid "Last spring we had none. Something moved into the deep seam, right on top of the ingot the five of them stamped and forgot. He's alive, courier. Or he was in spring."
+msgstr "Au printemps, on n'en avait plus. Quelque chose s'est installé dans le filon profond, juste sur le lingot que les cinq avaient frappé de leurs marques et oublié. Il est vivant, messager. Ou il l'était au printemps."
+
+#: assets/data/progression.json
 msgid "Leather enough! The post stands by the north road - the square is a whistle away now."
 msgstr "Assez de cuir ! Le relais se dresse près de la route du nord - la place n'est plus qu'à un coup de sifflet."
 
 #: assets/data/progression.json
 msgid "Leather for the Stable"
 msgstr "Du cuir pour l'écurie"
+
+#: assets/data/progression.json
+msgid "Leave those. They were never meant to be sent."
+msgstr "Laissez-les. Elles n'étaient pas faites pour être envoyées."
+
+#: assets/data/progression.json
+msgid "Letter delivered"
+msgstr "Lettre remise"
 
 #: assets/data/progression.json
 msgid "Lichlord"
@@ -9377,8 +9529,20 @@ msgid "Magus"
 msgstr "Magister"
 
 #: assets/data/progression.json
+msgid "Maren says Oskar isn't coming home, and the captain can stand down. He's in his hall under the keep, still guarding Oskar's shield. Go and tell him."
+msgstr "Maren dit qu'Oskar ne rentrera pas, et que le capitaine peut quitter son poste. Il est dans sa salle sous le donjon, et garde toujours le bouclier d'Oskar. Allez le lui dire."
+
+#: assets/data/progression.json
 msgid "Maren waits for all four relics. She'll open the gate with the last of them: her promise."
 msgstr "Maren attend les quatre reliques. Elle ouvrira la porte avec la dernière : sa promesse."
+
+#: assets/data/progression.json
+msgid "Maren wants a hand with what's left of her house, along Upper Street from the shrine. She won't ask. Go anyway."
+msgstr "Maren a besoin d'un coup de main avec ce qui reste de sa maison, dans la Grand-Rue, près du sanctuaire. Elle ne demandera pas. Allez-y quand même."
+
+#: assets/data/progression.json
+msgid "Maren's letters were answered long ago: you brought their keepsakes home. She keeps the fifth."
+msgstr "Les lettres de Maren ont reçu leur réponse depuis longtemps : vous avez rapporté leurs souvenirs. Elle garde la cinquième."
 
 #: assets/data/progression.json
 msgid "Marsh reeds brought"
@@ -9415,6 +9579,10 @@ msgstr "Des champignons pour tout l'hiver ! Mon petit-fils en sera dégoûté 
 #: assets/data/progression.json
 msgid "My father wore Greyhold's badge till the day the fort fell. If his is still down in those cellars - the guardroom, he always said - I'd like it home."
 msgstr "Mon père a porté l'insigne de Greyhold jusqu'au jour où le fort est tombé. Si le sien est encore dans ces caves - la salle des gardes, disait-il toujours - j'aimerais le ramener à la maison."
+
+#: assets/data/progression.json
+msgid "My house is along Upper Street, or what's left of it. Bring your back, courier. There's a hearthstone to lift."
+msgstr "Ma maison est dans la Grand-Rue, ou ce qu'il en reste. Apportez votre dos, messager. Il y a une pierre d'âtre à soulever."
 
 #: assets/data/progression.json
 msgid "My lute! Slightly chewed. It adds character. Pixelheim gains its first verse tonight."
@@ -9525,8 +9693,16 @@ msgid "Out of the Ashes"
 msgstr "Renaître des cendres"
 
 #: assets/data/progression.json
+msgid "Over the river bridge north of town, then west along the Ash Fields road to the miners' camp. Old Pell guided the five down the shafts, once."
+msgstr "Par le pont sur la rivière, au nord de la ville, puis à l'ouest par la route des Champs de Cendres jusqu'au camp des mineurs. Le vieux Pell a guidé les cinq dans les puits, autrefois."
+
+#: assets/data/progression.json
 msgid "Pathfinder"
 msgstr "Éclaireur"
+
+#: assets/data/progression.json
+msgid "Pell next. A boy with a canary, when we came through Blackiron. Over the bridge and west. I owe him an apology. And a cage."
+msgstr "Pell ensuite. Un garçon avec un canari, quand nous sommes passés à Fernoir. Par le pont, puis à l'ouest. Je lui dois des excuses. Et une cage."
 
 #: assets/data/progression.json
 msgid "Pell's canary"
@@ -9547,6 +9723,10 @@ msgstr "Pixelheim est en sécurité. La montagne s'est tue ; la taverne, beauc
 #: assets/data/progression.json
 msgid "Prelate"
 msgstr "Prélat"
+
+#: assets/data/progression.json
+msgid "Put a roof back on Sela's inn"
+msgstr "Remettre un toit sur l'auberge de Sela"
 
 #: assets/data/progression.json
 msgid "Raiders driven off"
@@ -9645,6 +9825,10 @@ msgid "Sela keeps the inn - or a tent on the square, if that's all there is. She
 msgstr "Sela tient l'auberge - ou une tente sur la place, s'il ne reste que ça. Elle a toujours du travail à proposer."
 
 #: assets/data/progression.json
+msgid "Sela takes your coin. \"You're paying now, you know. Heroes pay double. ...Fine. Half.\""
+msgstr "Sela prend votre pièce. « Vous payez, maintenant, vous savez. Les héros paient double. ...Bon. La moitié. »"
+
+#: assets/data/progression.json
 msgid "Set Fafnyr's scale in a fountain on the square"
 msgstr "Placer l'écaille de Fafnyr dans une fontaine sur la place"
 
@@ -9655,6 +9839,10 @@ msgstr "Ombre"
 #: assets/data/progression.json
 msgid "Shaft cheese found"
 msgstr "Fromage des puits trouvé"
+
+#: assets/data/progression.json
+msgid "She told me to keep her door shut till someone came for the lantern. Fifty years. You took your time."
+msgstr "Elle m'a dit de garder sa porte fermée jusqu'à ce que quelqu'un vienne chercher la lanterne. Cinquante ans. Vous avez pris votre temps."
 
 #: assets/data/progression.json
 msgid "She's eating! Look at her go. You can keep the bones."
@@ -9761,8 +9949,20 @@ msgid "Supper! Real supper. Gunnar will stop complaining for a whole hour."
 msgstr "Le souper ! Un vrai souper. Gunnar va arrêter de râler pendant une heure entière."
 
 #: assets/data/progression.json
+msgid "Take Maren's letter to Captain Hale at Greyhold"
+msgstr "Porter la lettre de Maren au capitaine Hale, à Greyhold"
+
+#: assets/data/progression.json
+msgid "Take Maren's letter to Captain Hale at Greyhold."
+msgstr "Porter la lettre de Maren au capitaine Hale, à Greyhold."
+
+#: assets/data/progression.json
 msgid "Take the Black Ingot from the Seam Warden, deep in the Blackiron shafts"
 msgstr "Prendre le Lingot noir au Gardien du Filon, au fond des puits de Fernoir"
+
+#: assets/data/progression.json
+msgid "Take the cliff road to Saltmere with Maren's first letter: south past the marsh, then down the cliffs. Old Wenna is Tam's sister."
+msgstr "Prenez la route de la falaise vers Saltmere avec la première lettre de Maren : au sud, après le marais, puis en contrebas des falaises. La vieille Wenna est la sœur de Tam."
 
 #: assets/data/progression.json
 msgid "Take the stair below the hoard: clear the Sunless Stair (floor 11)"
@@ -9779,6 +9979,10 @@ msgstr "Rapporter à Maren ce que Fafnyr a dit de la voix d'en bas"
 #: assets/data/progression.json
 msgid "Tell Ulla"
 msgstr "Le dire à Ulla"
+
+#: assets/data/progression.json
+msgid "Tell her this back. Morvax came down this road. Forty years ago, again ten years ago, and last spring. Thin as a rake, asking for iron. I sold him all we had."
+msgstr "Dites-lui ceci en retour. Morvax est descendu par cette route. Il y a quarante ans, puis il y a dix ans, et au printemps dernier. Maigre comme un clou, à demander du fer. Je lui ai vendu tout ce qu'on avait."
 
 #: assets/data/progression.json
 msgid "Ten Below"
@@ -9809,10 +10013,6 @@ msgid "That's his. The tower's worn right off it from his thumb. Thank you. He k
 msgstr "C'est le sien. Son pouce a usé la tour jusqu'à l'effacer. Merci. Il le gardait en cas de coup dur, et c'en est un."
 
 #: assets/data/progression.json
-msgid "The Ashen Throne"
-msgstr "Le Trône de cendres"
-
-#: assets/data/progression.json
 msgid "The Black Seam"
 msgstr "Le Filon noir"
 
@@ -9833,6 +10033,10 @@ msgid "The Cart Hall"
 msgstr "La Halle des wagonnets"
 
 #: assets/data/progression.json
+msgid "The Chancellor's courier should have ridden south by noon. You stayed."
+msgstr "Le messager du chancelier aurait dû repartir vers le sud avant midi. Vous restez."
+
+#: assets/data/progression.json
 msgid "The Chapel Bell"
 msgstr "La Cloche de la chapelle"
 
@@ -9841,16 +10045,20 @@ msgid "The Cheese Run"
 msgstr "La Course au fromage"
 
 #: assets/data/progression.json
-msgid "The Deathless"
-msgstr "Le Sans-Mort"
-
-#: assets/data/progression.json
 msgid "The Fen Fever"
 msgstr "La Fièvre des marais"
 
 #: assets/data/progression.json
+msgid "The Fifth Letter"
+msgstr "La cinquième lettre"
+
+#: assets/data/progression.json
 msgid "The First Deposit"
 msgstr "Le Premier Dépôt"
+
+#: assets/data/progression.json
+msgid "The Frostgate road climbs north out of the Ash Fields. Aske the hermit has kept Liane's door for fifty years, because she asked him to."
+msgstr "La route de la Porte-Givre monte vers le nord depuis les Champs de Cendres. Aske l'ermite garde la porte de Liane depuis cinquante ans, parce qu'elle le lui a demandé."
 
 #: assets/data/progression.json
 msgid "The Frostgate road climbs north out of the Ash Fields. Aske the hermit has kept Liane's door for fifty years."
@@ -9867,6 +10075,22 @@ msgstr "Le Trou dans la glace"
 #: assets/data/progression.json
 msgid "The Last Wagon Down"
 msgstr "Le Dernier Chariot"
+
+#: assets/data/progression.json
+msgid "The Letter to Blackiron"
+msgstr "La lettre pour Fernoir"
+
+#: assets/data/progression.json
+msgid "The Letter to Greyhold"
+msgstr "La lettre pour Greyhold"
+
+#: assets/data/progression.json
+msgid "The Letter to Saltmere"
+msgstr "La lettre pour Saltmere"
+
+#: assets/data/progression.json
+msgid "The Letter to the Frostgate"
+msgstr "La lettre pour la Porte-Givre"
 
 #: assets/data/progression.json
 msgid "The Lighthouse Lens"
@@ -9893,6 +10117,10 @@ msgid "The Missing Canary"
 msgstr "Le Canari disparu"
 
 #: assets/data/progression.json
+msgid "The Night of Bells"
+msgstr "La Nuit des Cloches"
+
+#: assets/data/progression.json
 msgid "The North Road"
 msgstr "La Route du nord"
 
@@ -9917,8 +10145,8 @@ msgid "The board on the square lists what Pixelheim needs next. Lamps first: som
 msgstr "Le tableau d'avis de la place indique ce dont Pixelheim a besoin ensuite. Les réverbères d'abord : quelques pièces et trois roseaux des marais."
 
 #: assets/data/progression.json
-msgid "The board on the square lists what Pixelheim needs to rise again. Sela's inn and the homes around the square first."
-msgstr "Le tableau d'avis de la place indique ce qu'il faut à Pixelheim pour se relever. D'abord l'auberge de Sela et les maisons autour de la place."
+msgid "The board on the square lists what Pixelheim needs to rise again. Sela's inn first: a roof, real beds, and the homes around it."
+msgstr "Le tableau d'avis de la place liste ce dont Pixelheim a besoin pour se relever. L'auberge de Sela d'abord : un toit, de vrais lits, et les maisons tout autour."
 
 #: assets/data/progression.json
 msgid "The canary coughs in the bad air. Get her to Pell in %d seconds."
@@ -10241,6 +10469,10 @@ msgid "Wear the cap Sela gave you ({key:inventory} opens your pack)"
 msgstr "Mettre le bonnet que Sela vous a donné ({key:inventory} ouvre votre sac)"
 
 #: assets/data/progression.json
+msgid "Wenna first. Tam's sister, down in Saltmere: the cliff road, south past the marsh. ...Don't tell her I'm sorry. The letter says it."
+msgstr "Wenna d'abord. La sœur de Tam, en bas, à Saltmere : la route de la falaise, au sud, après le marais. ...Ne lui dites pas que je suis désolée. La lettre le dit."
+
+#: assets/data/progression.json
 msgid "Wildlord"
 msgstr "Seigneur des terres sauvages"
 
@@ -10305,8 +10537,16 @@ msgid "You beat the dragon. Then you've seen the stair behind its hoard. That's 
 msgstr "Vous avez vaincu le dragon. Alors vous avez vu l'escalier derrière son trésor. C'est de là que viennent les murmures."
 
 #: assets/data/progression.json
+msgid "You came. Good. Mind that beam, it's still warm. My hearthstone's under there somewhere, and I'm too old to lift it alone."
+msgstr "Ah, vous voilà. Bien. Attention à cette poutre, elle est encore chaude. Ma pierre d'âtre est là-dessous, quelque part, et je suis trop vieille pour la soulever seule."
+
+#: assets/data/progression.json
 msgid "You carried bad news a long way, and you didn't run from the fire. Stay a while."
 msgstr "Vous avez porté de mauvaises nouvelles bien loin, et vous n'avez pas fui le feu. Restez un peu."
+
+#: assets/data/progression.json
+msgid "You carry letters, courier. Take the ones that can still be delivered. The fifth has no address."
+msgstr "Vous portez des lettres, messager. Prenez celles qui peuvent encore être remises. La cinquième n'a pas d'adresse."
 
 #: assets/data/progression.json
 msgid "You fill a bucket at the well."
@@ -10365,10 +10605,6 @@ msgid "A game by Tom Klotz"
 msgstr "Un jeu de Tom Klotz"
 
 #: assets/data/story.json
-msgid "And now the whispers come from below."
-msgstr "Et maintenant, les murmures viennent d'en bas."
-
-#: assets/data/story.json
 msgid "Art by Shade (merchant-shade.itch.io)"
 msgstr "Graphismes de Shade (merchant-shade.itch.io)"
 
@@ -10405,8 +10641,8 @@ msgid "Fifty years I hated him, courier. I thought I'd feel lighter when he was 
 msgstr "Pendant cinquante ans, je l'ai haï, messager. Je pensais me sentir plus légère quand il ne serait plus que poussière. ...Demain, peut-être."
 
 #: assets/data/story.json
-msgid "Fifty years ago the seal on him cracked, and five of the village climbed to mend it. Only one came home."
-msgstr "Il y a cinquante ans, le sceau qui le tenait s'est fissuré, et cinq villageois sont montés le réparer. Une seule est revenue."
+msgid "Fifty years ago five of the village climbed up to keep it that way. Only one came home, and she never talked about it."
+msgstr "Il y a cinquante ans, cinq villageois sont montés pour que ça dure. Une seule est revenue, et elle n'en a jamais parlé."
 
 #: assets/data/story.json
 msgid "Five lanterns burn on the square tonight. The tavern is loud, and the cheese has never tasted better."
@@ -10469,10 +10705,6 @@ msgid "If you find her pages up there, read them. She'd want someone to."
 msgstr "Si vous trouvez ses pages là-haut, lisez-les. Elle aurait voulu que quelqu'un le fasse."
 
 #: assets/data/story.json
-msgid "In one night he burned Pixelheim to the ground."
-msgstr "En une seule nuit, il réduisit Pixelheim en cendres."
-
-#: assets/data/story.json
 msgid "It kept him asleep a hundred years. Fifty years ago it cracked, and five fools climbed to make a new one."
 msgstr "Il l'a tenu endormi cent ans. Il y a cinquante ans, il s'est fissuré, et cinq idiots sont montés en faire un nouveau."
 
@@ -10487,6 +10719,10 @@ msgstr "Sur l'enclume repose son jumeau : un vieux sceau, fendu de part en par
 #: assets/data/story.json
 msgid "On the wall above them hangs a shield, its paint gone grey: MORVAX OF PIXELHEIM."
 msgstr "Au mur, au-dessus d'elles, pend un bouclier à la peinture grisée : MORVAX DE PIXELHEIM."
+
+#: assets/data/story.json
+msgid "On top of the mountain a dragon sleeps on a chain. Everyone agrees this is the best place for him."
+msgstr "Au sommet de la montagne, un dragon dort au bout d'une chaîne. Tout le monde s'accorde à dire que c'est très bien ainsi."
 
 #: assets/data/story.json
 msgid "Once a hero of Pixelheim. Now its oldest debt."
@@ -10617,12 +10853,12 @@ msgid "The summit is his. So is everything the heroes carried up."
 msgstr "Le sommet est à lui. Comme tout ce que les héros y ont monté."
 
 #: assets/data/story.json
-msgid "Then the Ashen Mountain woke, and Fafnyr with it."
-msgstr "Puis la Montagne des Cendres s'éveilla, et Fafnyr avec elle."
-
-#: assets/data/story.json
 msgid "There were five of us. Morvax led. When the seal was set, he went down the stair behind the hoard, and we followed him."
 msgstr "Nous étions cinq. Morvax menait. Une fois le sceau posé, il a descendu l'escalier derrière le trésor, et nous l'avons suivi."
+
+#: assets/data/story.json
+msgid "Tonight, the dragon woke up."
+msgstr "Cette nuit, le dragon s'est réveillé."
 
 #: assets/data/story.json
 msgid "We cast the new seal from the old one's mould. Morvax watched the fire for a long time and said: 'Imagine what else could be forged down here.' Nobody answered him."
@@ -11815,10 +12051,6 @@ msgstr "Artisanat"
 #: scripts/inventory_screen.gd:14
 msgid "Food"
 msgstr "Vivres"
-
-#: scripts/inventory_screen.gd:14
-msgid "Home"
-msgstr "Maison"
 
 #: scripts/inventory_screen.gd:14
 msgid "Misc"
@@ -13020,11 +13252,11 @@ msgstr "Le poison"
 msgid "The burn"
 msgstr "La brûlure"
 
-#: scripts/state/bearing.gd:100
+#: scripts/state/bearing.gd:120
 msgid "Slay %s in its lair"
 msgstr "Abattez %s dans son repaire"
 
-#: scripts/state/bearing.gd:72
+#: scripts/state/bearing.gd:92
 msgid "Hand it in to %s."
 msgstr "Remettez-la à %s."
 
@@ -13276,75 +13508,87 @@ msgstr "{item} {affix}"
 msgid "Town and people"
 msgstr "Le bourg et ses gens"
 
-#: scripts/state/journal.gd:49
+#: scripts/state/journal.gd:50
 msgid "Its lair: %s. %s."
 msgstr "Son repaire : %s. %s."
 
-#: scripts/state/journal.gd:61
+#: scripts/state/journal.gd:62
 msgid "Chapter %d: %s"
 msgstr "Chapitre %d : %s"
 
-#: scripts/state/main_quest.gd:86
-msgid "Next: %s"
-msgstr "Ensuite : %s"
-
-#: scripts/state/main_quest.gd:99
+#: scripts/state/main_quest.gd:107
 msgid "Maren"
 msgstr "Maren"
 
-#: scripts/state/questing.gd:134
+#: scripts/state/main_quest.gd:94
+msgid "Next: %s"
+msgstr "Ensuite : %s"
+
+#: scripts/state/questing.gd:144
 msgid "It's in your journal ({key:journal})."
 msgstr "Elle est dans votre journal ({key:journal})."
 
-#: scripts/state/questing.gd:134
+#: scripts/state/questing.gd:144
 msgid "Quest accepted: %s. %s"
 msgstr "Quête acceptée : %s. %s"
 
-#: scripts/state/questing.gd:138
+#: scripts/state/questing.gd:148
 msgid "%s: they wait on your answer."
 msgstr "%s : on attend votre réponse."
 
-#: scripts/state/questing.gd:165
+#: scripts/state/questing.gd:175
 msgid "Quest complete: %s. %s. “%s”"
 msgstr "Quête terminée : %s. %s. « %s »"
 
-#: scripts/state/questing.gd:167
+#: scripts/state/questing.gd:177
 msgid "%s: %d/%d %s."
 msgstr "%s : %d/%d %s."
 
-#: scripts/state/questing.gd:287
+#: scripts/state/questing.gd:240
+msgid "Delivered: %s."
+msgstr "Remise : %s."
+
+#: scripts/state/questing.gd:242
+msgid "Delivered: %s. %s."
+msgstr "Remise : %s. %s."
+
+#: scripts/state/questing.gd:359
 msgid "%s: ready to hand in to %s."
 msgstr "%s : prêt à remettre à %s."
 
-#: scripts/state/questing.gd:339
+#: scripts/state/questing.gd:411
 msgid "That uses what %s needs (%s). Do it again to go ahead."
 msgstr "Cela entame ce que demande « %s » (%s). Recommencez pour confirmer."
 
-#: scripts/state/questing.gd:350
+#: scripts/state/questing.gd:422
 msgid "A feat done: %s. The %s is yours, for the shelf at home."
 msgstr "Un haut fait accompli : %s. La %s est à vous, pour l'étagère de la maison."
 
-#: scripts/state/quests.gd:127
+#: scripts/state/quests.gd:136
 msgid "In %s."
 msgstr "Repaire : %s."
 
-#: scripts/state/quests.gd:127
+#: scripts/state/quests.gd:136
 msgid "the wilds"
 msgstr "les terres sauvages"
 
-#: scripts/state/quests.gd:130
+#: scripts/state/quests.gd:139
 msgid "Found in %s."
 msgstr "Se trouve : %s."
 
-#: scripts/state/quests.gd:134
+#: scripts/state/quests.gd:143
 msgid "In a chest somewhere in %s."
 msgstr "Dans un coffre, quelque part (%s)."
 
-#: scripts/state/quests.gd:141
+#: scripts/state/quests.gd:149
+msgid "%s, in %s."
+msgstr "%s, %s."
+
+#: scripts/state/quests.gd:154
 msgid "The five left them in %s."
 msgstr "Les cinq les ont laissées ici : %s."
 
-#: scripts/state/quests.gd:151
+#: scripts/state/quests.gd:164
 msgid "%s, from %s."
 msgstr "%s, avec %s."
 
@@ -13532,11 +13776,11 @@ msgstr "La trésorerie demande %d or."
 msgid "It takes %d %s."
 msgstr "Il faut %d %s."
 
-#: scripts/state/town.gd:313
+#: scripts/state/town.gd:316
 msgid "All it wants is %s. The board on the square takes it, and we'll have it up by the time you're back."
 msgstr "Il ne lui faut que %s. Ça se dépose au tableau de la place, et on l'aura monté d'ici votre retour."
 
-#: scripts/state/town.gd:379
+#: scripts/state/town.gd:382
 msgid "%s is back at work indoors."
 msgstr "%s travaille de nouveau sous son propre toit."
 
@@ -13572,19 +13816,19 @@ msgstr " Vous récupérez %s."
 msgid "No coin, no bed: a night costs %d gold."
 msgstr "Pas un sou, pas de lit : la nuit coûte %d or."
 
-#: scripts/state/upkeep.gd:179
+#: scripts/state/upkeep.gd:182
 msgid "You sleep at the inn and wake at dawn, fully restored. -%d gold."
 msgstr "Vous dormez à l'auberge et vous réveillez à l'aube, en pleine forme. -%d or."
 
-#: scripts/state/upkeep.gd:183
+#: scripts/state/upkeep.gd:186
 msgid "Well rested, too: more XP for your next %d fights."
 msgstr "Et un vrai repos : plus d'XP pour vos %d prochains combats."
 
-#: scripts/state/upkeep.gd:215
+#: scripts/state/upkeep.gd:218
 msgid "You wake at the inn, %d gold lighter. What isn't banked is a fallen hero's to lose."
 msgstr "Vous vous réveillez à l'auberge, avec %d or en moins. Ce qui n'est pas à la banque, un héros à terre le perd."
 
-#: scripts/state/upkeep.gd:217
+#: scripts/state/upkeep.gd:220
 msgid "You wake at the inn. The innkeeper says nothing. Kind of her."
 msgstr "Vous vous réveillez à l'auberge. L'aubergiste ne dit rien. C'est gentil de sa part."
 

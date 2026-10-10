@@ -169,6 +169,9 @@ func rest_at_inn() -> String:
 	var cost := Town.rest_cost_for(owner.town_tier())
 	if owner.pack.gold < cost:
 		return Text.t("No coin, no bed: a night costs %d gold.") % cost
+	# The courier's first paid night under Sela's roof (PIX-253): she has a
+	# word about it.
+	var sela := Letters.room_line(owner.progression)
 	owner.pack.gold -= cost
 	owner.make_whole()
 	owner.spoils.wake_the_wilds()
@@ -182,7 +185,7 @@ func rest_at_inn() -> String:
 		owner.settlement.house["rested"] = maxi(int(owner.settlement.house.get("rested", 0)), fights)
 		line += " " + Text.t("Well rested, too: more XP for your next %d fights.") % fights
 	owner.pack_changed()
-	return line
+	return sela + " " + line if sela != "" else line
 
 
 ## A night's sleep (PIX-246): the clock runs on to the next morning, and

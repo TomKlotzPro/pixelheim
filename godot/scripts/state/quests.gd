@@ -24,9 +24,18 @@ static func by_id(quest_id: String) -> Dictionary:
 	return {}
 
 
-## A giver's quests, in the web's order (questsFor).
+## A giver's quests, in the web's order (questsFor): those they offer and
+## take back. One carried to someone else (PIX-253: Maren's letters) is
+## neither offered in talk nor handed back to its giver, so it isn't here.
 static func for_giver(giver: String) -> Array:
-	return all().filter(func(quest: Dictionary) -> bool: return quest["giver"] == giver)
+	return all().filter(func(quest: Dictionary) -> bool: return quest["giver"] == giver and quest["objective"]["kind"] != "deliverTo")
+
+
+## The quests carried to someone other than their giver (PIX-253, the
+## "deliverTo" kind: Maren's letters) that `npc_id` receives.
+static func for_recipient(npc_id: String) -> Array:
+	return all().filter(func(quest: Dictionary) -> bool:
+		return quest["objective"]["kind"] == "deliverTo" and quest["objective"]["to"] == npc_id)
 
 
 ## How far along a quest is (questProgress): kills counted so far, or the
@@ -38,7 +47,7 @@ static func progress(quest: Dictionary, entries: Dictionary, items: Dictionary) 
 	var objective: Dictionary = quest["objective"]
 	var have := int(entry["progress"])
 	match String(objective["kind"]):
-		"deliver":
+		"deliver", "deliverTo":
 			have = items.get(objective["itemId"], 0)
 		"relics":
 			# Maren's ask (PIX-170): one of each relic, in any order.
@@ -134,6 +143,10 @@ static func where(quest: Dictionary, gate_open := true, done: Variant = null) ->
 					return Text.t("In a chest somewhere in %s.") % Text.mid(Catalog.place_name(chest["mapId"]))
 			var lead := Economy.where_to_find(objective["itemId"])
 			return lead + "." if lead != "" else ""
+		"deliverTo":
+			# Who it goes to, and where they live (PIX-253).
+			var to := Npcs.by_id(objective["to"], [])
+			return Text.t("%s, in %s.") % [to.get("name", objective["to"]), Text.mid(Catalog.place_name(String(to.get("mapId", ""))))]
 		"relics":
 			var out: Array[String] = []
 			for relic: Dictionary in Relics.all():

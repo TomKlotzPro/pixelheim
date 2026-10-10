@@ -32,7 +32,8 @@ static func active(progression: ProgressionState, settlement: SettlementState, i
 ## A main story step's lead: its chapter, its line, and where it is - the
 ## giver of the quest it waits on (or that quest's own way once taken), the
 ## mountain's gate for a floor, the board on the square for the town's
-## projects, a named monster's lair.
+## projects, a named monster's lair, Maren over her tin or a letter's
+## recipient (PIX-253).
 static func of_step(step: Dictionary, progression: ProgressionState, settlement: SettlementState, items: Dictionary) -> Dictionary:
 	var lead := _blank(String(step.get("chapter", "")), String(step["text"]))
 	lead["main"] = true
@@ -54,6 +55,20 @@ static func of_step(step: Dictionary, progression: ProgressionState, settlement:
 			_at(lead, "town", Town.project_board())
 		"hunted":
 			_at_lair(lead, Hunts.named(when["named"]))
+		"seen":
+			# Maren digging for her tin (PIX-253).
+			if when["sceneId"] == Letters.scene_id():
+				_at_tin(lead, progression, settlement)
+		"delivered":
+			# A letter (PIX-253): its recipient once it's in hand; Maren
+			# while the tin still waits, or for one she has yet to give.
+			var letter := Quests.by_id(when["questId"])
+			if progression.quests.has(letter["id"]):
+				var way := of_quest(letter, progression, settlement, items)
+				for key: String in ["place", "map_id", "cell", "who", "progress", "quest_id"]:
+					lead[key] = way[key]
+			else:
+				_at_tin(lead, progression, settlement)
 	return lead
 
 
@@ -67,6 +82,11 @@ static func of_quest(quest: Dictionary, progression: ProgressionState, settlemen
 	var have := Quests.progress(quest, progression.quests, items)
 	if count > 1:
 		lead["progress"] = "%d/%d" % [have, count]
+	# Carried to someone else (PIX-253): to them, whatever the pack holds.
+	if objective["kind"] == "deliverTo":
+		lead["step"] = String(quest["brief"])
+		_at_npc(lead, objective["to"], settlement)
+		return lead
 	if Quests.is_ready(quest, progression.quests, items):
 		var giver := Npcs.by_id(quest["giver"], settlement.settlers)
 		lead["step"] = Text.t("Hand it in to %s.") % String(giver.get("name", quest["giver"]))
@@ -122,10 +142,24 @@ static func _at(lead: Dictionary, map_id: String, cell: Vector2i) -> void:
 static func _at_giver(lead: Dictionary, quest: Dictionary, settlement: SettlementState) -> void:
 	if quest.is_empty():
 		return
-	var giver := Npcs.by_id(quest["giver"], settlement.settlers)
-	lead["who"] = quest["giver"]
-	if giver.has("mapId"):
-		_at(lead, giver["mapId"], Vector2i(int(giver.get("x", -1)), int(giver.get("y", -1))))
+	_at_npc(lead, quest["giver"], settlement)
+
+
+## At a villager, where they live.
+static func _at_npc(lead: Dictionary, npc_id: String, settlement: SettlementState) -> void:
+	var npc := Npcs.by_id(npc_id, settlement.settlers)
+	lead["who"] = npc_id
+	if npc.has("mapId"):
+		_at(lead, npc["mapId"], Vector2i(int(npc.get("x", -1)), int(npc.get("y", -1))))
+
+
+## At Maren (PIX-253): in the ashes of her house while her tin waits there
+## (Npcs.on_map stands her there), else where she always stands.
+static func _at_tin(lead: Dictionary, progression: ProgressionState, settlement: SettlementState) -> void:
+	_at_npc(lead, "elder", settlement)
+	var dig := Letters.dig_spot(Town.done_projects(settlement))
+	if dig.x >= 0 and Letters.tin_waits(progression):
+		lead["cell"] = dig
 
 
 static func _at_lair(lead: Dictionary, named: Dictionary) -> void:

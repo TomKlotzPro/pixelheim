@@ -941,6 +941,42 @@
       "quest": true,
       "description": "Sealed with the Crown's red wax, addressed to Elder Maren of Pixelheim. You were paid to carry it, not to read it."
     },
+    "letter_wenna": {
+      "name": "Letter to Old Wenna",
+      "category": "misc",
+      "sprite": "letter",
+      "weight": 0,
+      "value": 0,
+      "quest": true,
+      "description": "One of Maren's five, addressed to Old Wenna of Saltmere in a young woman's hand. Fifty years in a tin. A courier never reads the post."
+    },
+    "letter_pell": {
+      "name": "Letter to Old Pell",
+      "category": "misc",
+      "sprite": "letter",
+      "weight": 0,
+      "value": 0,
+      "quest": true,
+      "description": "One of Maren's five, addressed to \"Pell, the boy with the canary\", Blackiron. A courier never reads the post."
+    },
+    "letter_hale": {
+      "name": "Letter to Captain Hale",
+      "category": "misc",
+      "sprite": "letter",
+      "weight": 0,
+      "value": 0,
+      "quest": true,
+      "description": "One of Maren's five, addressed to Captain Hale of Greyhold and sealed with a thumbprint of soot. A courier never reads the post."
+    },
+    "letter_aske": {
+      "name": "Letter to Aske",
+      "category": "misc",
+      "sprite": "letter",
+      "weight": 0,
+      "value": 0,
+      "quest": true,
+      "description": "One of Maren's five, addressed to Aske, who keeps Liane's door on the Frostgate. A courier never reads the post."
+    },
     "greymaw_hood": {
       "name": "Greymaw's Hood",
       "category": "apparel",
