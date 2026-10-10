@@ -1793,6 +1793,10 @@ msgid "A monster running from you doesn't start the battle music"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A monster's alert and fright bubbles sit centred over its head, and a named monster's plate over its health bar"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A necromancer's grave violet stays on their own robe and hood: borrowed iron, leather or a gilded plate keeps its colour"
 msgstr ""
 
@@ -2233,11 +2237,19 @@ msgid "DUSK ON THE SQUARE: as the sun goes down the townsfolk walk to the square
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Damage numbers and the spoils that float up are centred on the foe, on whole pixels"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Danger, Visibly"
 msgstr ""
 
 #: assets/data/changelog.json
 msgid "Dangerous ground is visible: wild terrain grows dark tufts on the map"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Dead Centre"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4718,6 +4730,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The quest is now Relics of the Five - four to find, the five's to bring home - and the town's goals and the bounty board no longer offer floors behind a barred gate"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The quest marks over villagers sit centred on their heads, whichever way they face, and hold still while they breathe or walk"
 msgstr ""
 
 #: assets/data/changelog.json

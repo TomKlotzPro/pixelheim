@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.197.0",
+      "date": "2026-10-10",
+      "codename": "Dead Centre",
+      "notes": [
+        "The quest marks over villagers sit centred on their heads, whichever way they face, and hold still while they breathe or walk",
+        "A monster's alert and fright bubbles sit centred over its head, and a named monster's plate over its health bar",
+        "Damage numbers and the spoils that float up are centred on the foe, on whole pixels"
+      ]
+    },
+    {
       "version": "0.196.0",
       "date": "2026-10-10",
       "codename": "Ascension",
