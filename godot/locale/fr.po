@@ -2457,6 +2457,10 @@ msgid "Enter the village, poke around the shop and the inn"
 msgstr "Entrez dans le village, furetez dans la boutique et l'auberge"
 
 #: assets/data/changelog.json
+msgid "Entering a place, or walking into one of the Ashenreach's regions, shows its name once on a title card"
+msgstr "En entrant dans un lieu, ou dans l'une des régions de la Marche des Cendres, son nom s'affiche une fois sur un carton"
+
+#: assets/data/changelog.json
 msgid "Entering the world shows 'Entering the Ashenreach...' instead of a silent black box while it loads"
 msgstr "Entrer dans le monde affiche « Entrée dans la Marche des Cendres... » au lieu d'un écran noir muet pendant le chargement"
 
@@ -3515,6 +3519,10 @@ msgstr "Une seule source de vérité pour votre apparence : le monde, le comba
 #: assets/data/changelog.json
 msgid "Open Book"
 msgstr "Livre ouvert"
+
+#: assets/data/changelog.json
+msgid "Open Country"
+msgstr "Rase campagne"
 
 #: assets/data/changelog.json
 msgid "Open Season"
@@ -4821,6 +4829,10 @@ msgid "The release flows give the camera-smoothness check a second try, so a bus
 msgstr "Les parcours de publication retentent la vérification de fluidité de la caméra, pour qu'une machine chargée ne la fasse plus échouer"
 
 #: assets/data/changelog.json
+msgid "The roads to the Mirefen and the Deepwood run out through the ridge instead of into a cave"
+msgstr "Les routes vers les Marais de Fange et les Bois-Profonds sortent par la crête au lieu d'entrer dans une grotte"
+
+#: assets/data/changelog.json
 msgid "The skill tree fits all six tiers on one page, one line a skill, with the chosen one described in full below"
 msgstr "L'arbre de compétences tient ses six paliers sur une page, une ligne par compétence, celle choisie étant décrite en entier en dessous"
 
@@ -4907,6 +4919,10 @@ msgstr "L'eau s'est éclaircie : des hauts-fonds translucides au-dessus du lit
 #: assets/data/changelog.json
 msgid "The waypoint list shows every waypoint under its place, greys the ones not found yet, and names the region where you land"
 msgstr "La liste des relais les montre tous sous leur lieu, grise ceux qui ne sont pas encore trouvés et nomme la région où vous arrivez"
+
+#: assets/data/changelog.json
+msgid "The ways between maps are natural passes now: the cliffs part and the road runs through, with no signposts, no name boxes and no framed caves or torches"
+msgstr "Les passages entre les cartes sont naturels : les falaises s'écartent et la route passe, sans panneaux, sans encadrés de nom, sans grottes encadrées ni torches"
 
 #: assets/data/changelog.json
 msgid "The wind moves the world: trees, wheat and flowers sway, their tops more than their feet, as gusts roll across the land"

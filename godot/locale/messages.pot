@@ -2457,6 +2457,10 @@ msgid "Enter the village, poke around the shop and the inn"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Entering a place, or walking into one of the Ashenreach's regions, shows its name once on a title card"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Entering the world shows 'Entering the Ashenreach...' instead of a silent black box while it loads"
 msgstr ""
 
@@ -3514,6 +3518,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Open Book"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Open Country"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4821,6 +4829,10 @@ msgid "The release flows give the camera-smoothness check a second try, so a bus
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The roads to the Mirefen and the Deepwood run out through the ridge instead of into a cave"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The skill tree fits all six tiers on one page, one line a skill, with the chosen one described in full below"
 msgstr ""
 
@@ -4906,6 +4918,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The waypoint list shows every waypoint under its place, greys the ones not found yet, and names the region where you land"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The ways between maps are natural passes now: the cliffs part and the road runs through, with no signposts, no name boxes and no framed caves or torches"
 msgstr ""
 
 #: assets/data/changelog.json
