@@ -19,6 +19,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # A release is whole (PIX-274): the README's "Currently vX.Y" is the
+      # newest changelog entry's, every release's codename and notes have
+      # their French in fr.po, and the French has U+202F, not a plain or
+      # no-break space, before : ; ! ? and inside « ». First, before Godot:
+      # it takes a second. The release script's own tests run with it.
+      - name: Release script tests
+        run: python3 -m unittest discover -s godot/tools -p 'test_*.py'
+
+      - name: Release is whole
+        run: python3 godot/tools/release.py --check
+
       - name: Cache Godot binary and export templates
         uses: actions/cache@v4
         with:

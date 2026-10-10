@@ -228,6 +228,45 @@ godot/tools/lookbook.sh --compare                    # no window: lookbook/ | lo
 python3 godot/tools/lookbook_compare.py godot/lookbook-desktop/browser godot/lookbook-desktop/app godot/lookbook-compare
 ```
 
+## Releasing
+
+Every change a player can see ships as a release (PIX-274): an entry at the
+top of `assets/data/changelog.json` (its version is the game's, its notes
+What's new), the root README's "Currently vX.Y" line, the catalogue
+regenerated and the French filled in `locale/fr.po`. `tools/release.py` makes
+the four edits together from a spec, a JSON file kept outside the repo:
+
+```json
+{
+  "version": "0.204.0",
+  "codename": ["Open Country", "Rase campagne"],
+  "notes": [["The roads run out through the ridge", "Les routes sortent par la crête"]],
+  "extra": {"A string the change added": "Sa traduction"}
+}
+```
+
+```sh
+python3 godot/tools/release.py ~/release.json   # cut the release, print what changed
+python3 godot/tools/release.py --linear         # its section for Linear's Changelog
+python3 godot/tools/release.py --check          # what CI checks
+python3 -m unittest discover -s godot/tools -p 'test_*.py'   # the script's tests
+```
+
+- The version is the next patch, minor or major after the newest entry
+  (0.203.1, 0.204.0 or 1.0.0 after 0.203.0), never a repeat or a jump.
+- Type the French plainly: it's written with straight apostrophes and a
+  narrow no-break space (U+202F) before `: ; ! ?` and inside « », except in
+  clocks, links and placeholders. Address the player as « vous », and keep
+  them gender-neutral: no être + past participle agreeing with « vous ».
+- Every string the change added needs its French in `extra`: the script
+  refuses to leave a string untranslated in fr.po. A refused release changes
+  nothing.
+- Its paths are its own checkout's: run it from the worktree being released.
+
+The Godot CI runs `release.py --check` on every pull request: the README's
+version is the newest release's, every codename and note has its French in
+fr.po, and no msgstr has a plain or no-break space where U+202F belongs.
+
 ## Layout
 
 - `scenes/main.tscn` — entry scene; all other nodes are built in code

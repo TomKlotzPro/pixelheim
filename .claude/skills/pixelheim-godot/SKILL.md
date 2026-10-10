@@ -7,7 +7,12 @@ description: Pixelheim, a Godot 4.7 game (godot/) - where its data lives, the Ga
 
 Pixelheim is a Godot 4.7 game (`godot/`), live at the Pages root. It began as a React/Pixi web game; that classic edition was **removed in v0.75** (Tom's call, 2026-10-08). Its code is only in git history; its heroes still import from the browser (`WebImport`, same-origin localStorage) and from save codes.
 
-- **Releases:** add an entry at the top of `godot/assets/data/changelog.json` (newest first, the CAPS-lead style); its version *is* the game's version (the title and What's new read it). Mirror each release in the Linear document "Changelog" (project Godot Migration). Keep `README.md` current with what the game does.
+- **Releases (PIX-274):** cut every one with `python3 godot/tools/release.py <spec.json>`, from the worktree being released (its paths are its own checkout's; keep the spec outside the repo). The spec is `{"version": "0.204.0", "codename": [en, fr], "notes": [[en, fr], ...], "extra": {en: fr}}`; the version must be the next patch, minor or major after the newest entry. It prepends the entry to `godot/assets/data/changelog.json` (newest first, today's date; its version *is* the game's version: the title and What's new read it), bumps the root README's "Currently vX.Y - 1.0 has to be earned." to the new major.minor, regenerates the catalogue (`i18n.py`) and fills the French in `godot/locale/fr.po` (the game shows the changelog through it), then prints what it changed.
+  - French house style: « vous »; straight apostrophes; a narrow no-break space U+202F before `: ; ! ?` and inside « » (the script sets these itself, whatever the spec was typed with, except in clocks, links and placeholders); the player gender-neutral (no être + past participle agreeing with « vous »: « vous avez atteint le col », not « vous êtes arrivé »). Quote a glyph the game draws: un « ! » doré.
+  - Put every new string the change added in `extra`: the script refuses to leave a string untranslated in fr.po, and a refused release changes nothing (rerun with the spec fixed).
+  - Then mirror it in the Linear document "Changelog" (project Godot Migration): `release.py --linear` prints its section (`## vX.Y.Z · Codename · date` and the notes).
+  - The Godot CI runs `release.py --check` (and `test_release.py`): the README's version is the newest release's, every codename and note has its French, and no msgstr has a plain or no-break space where U+202F belongs.
+  - Keep `README.md` current with what the game does.
 
 ## Data lives with the game
 

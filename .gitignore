@@ -18,3 +18,6 @@ site/
 
 # graphify's output for the code graph (godot/tools/codegraph.py)
 graphify-out/
+
+# Python's bytecode: release.py imports i18n.py, and its tests import both
+__pycache__/

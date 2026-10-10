@@ -1766,7 +1766,7 @@ msgstr "Un ennemi vous laisse plus de temps pour voir venir sa morsure, et la mo
 
 #: assets/data/changelog.json
 msgid "A gold ! over someone with a quest for you, a gold ? over someone waiting for you to hand one in, and a grey ? while a quest you took from them is under way; Options can turn them off (Quest markers)"
-msgstr "Un ! doré au-dessus de qui a une quête pour vous, un ? doré au-dessus de qui attend que vous en remettiez une, et un ? gris tant qu'une quête prise auprès de lui est en cours ; les Options peuvent les masquer (Marqueurs de quête)"
+msgstr "Un « ! » doré au-dessus de qui a une quête pour vous, un « ? » doré au-dessus de qui attend que vous en remettiez une, et un « ? » gris tant qu'une quête prise auprès de lui est en cours ; les Options peuvent les masquer (Marqueurs de quête)"
 
 #: assets/data/changelog.json
 msgid "A gold arrow at the edge of the screen points the way while your goal is out of sight, to the person, the spot or the door that leads there; the map marks it with a gold diamond"
@@ -1918,7 +1918,7 @@ msgstr "Et aussi : la porte de la ville a déménagé sur le mur nord - fini l
 
 #: assets/data/changelog.json
 msgid "Ambushes feel like ambushes: the monster lunges in, the screen shakes, !"
-msgstr "Une embuscade, ça se sent : le monstre bondit, l'écran tremble, !"
+msgstr "Une embuscade, ça se sent : le monstre bondit, l'écran tremble, « ! »"
 
 #: assets/data/changelog.json
 msgid "An Honest Bank"
@@ -6274,7 +6274,7 @@ msgstr "Sombrombre a quitté la sixième profondeur. Odo jure que les ombres de 
 
 #: assets/data/combat.json
 msgid "Grimshade peels itself off the wall!"
-msgstr "Sombrombre se décolle du mur !"
+msgstr "Sombrombre se décolle du mur !"
 
 #: assets/data/combat.json
 msgid "Guardian"
@@ -6422,7 +6422,7 @@ msgstr "Le fourneau de Cœur-de-Fer est froid. Hilda a pendu ses poignes au-dess
 
 #: assets/data/combat.json
 msgid "Ironheart's furnace roars open!"
-msgstr "Le fourneau de Cœur-de-Fer s'ouvre en rugissant !"
+msgstr "Le fourneau de Cœur-de-Fer s'ouvre en rugissant !"
 
 #: assets/data/combat.json
 msgid "It knows the way."
