@@ -185,6 +185,42 @@ func _reentry() -> void:
 		print("REENTRY %-10s load %5.1f  first %6.1f  again %6.1f ms" % [id, times[0], times[1], times[3]])
 	print("REENTRY memory %+.1f MB after both rounds (static), kept ground %.2f MB" % [
 		(Performance.get_monitor(Performance.MEMORY_STATIC) - before) / 1048576.0, KeptGround.bytes() / 1048576.0])
+	await _beside()
+
+
+## What drawing each map beside the one the hero stands on takes, its ground
+## kept from the rounds before (One Reach, PIX-269, step 8): what the step
+## that streams the neighbour in has to cut into slices a frame. Drawn
+## only, as that step draws it - no folk, foes or music - and taken down
+## again: BESIDE lines with its plan, each part of its build (MapView.took)
+## and the nodes it adds.
+func _beside() -> void:
+	for id: String in REENTRY_MAPS:
+		var data: MapData = world.load_map(id)
+		var drawn := Node2D.new()
+		var standing := Node2D.new()
+		drawn.add_child(standing)
+		world.add_child(drawn)
+		var nodes := Performance.get_monitor(Performance.OBJECT_NODE_COUNT)
+		var view := MapView.new(data, standing)
+		view.timed = true
+		var started := Time.get_ticks_usec()
+		view.plan(data.spawn)
+		var planned := (Time.get_ticks_usec() - started) / 1000.0
+		view.build(drawn)
+		var parts: Array[String] = []
+		var total := planned
+		for part: String in view.took:
+			parts.append("%s %.1f" % [part, view.took[part]])
+			total += float(view.took[part])
+		var added := Performance.get_monitor(Performance.OBJECT_NODE_COUNT) - nodes
+		# Dropped again once the hero is far from it: what that takes too.
+		started = Time.get_ticks_usec()
+		drawn.free()
+		print("BESIDE %-10s plan %5.1f  %s  = %6.1f ms, %d nodes, taken down in %.1f ms" % [
+			id, planned, "  ".join(parts), total, added, (Time.get_ticks_usec() - started) / 1000.0])
+		await get_tree().process_frame
+		await get_tree().process_frame
 
 
 ## Runs the flags it was given, in a fixed order, then shoots and quits.

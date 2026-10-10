@@ -38,11 +38,20 @@ static func landing(waypoint: Dictionary) -> Vector2i:
 
 
 ## Where the list's choice starts: the first waypoint in `usable` on the map
-## the hero stands on, so the map opens on where they are; -1 (none chosen)
-## when every one is elsewhere, since choosing one turns the map to its page.
+## the hero stands on, so the map opens on where they are, else the first on
+## its page (the Reach's, PIX-269 step 7); -1 (none chosen) when every one
+## is on another page, since choosing one turns the map to its page.
 static func first_on(usable: Array, map_id: String) -> int:
 	for index in usable.size():
 		if usable[index]["mapId"] == map_id:
+			return index
+	return first_on_page(usable, Atlas.page_of(map_id))
+
+
+## The first waypoint in `usable` drawn on `page` (Atlas.page_of), -1 for none.
+static func first_on_page(usable: Array, page: String) -> int:
+	for index in usable.size():
+		if Atlas.page_of(usable[index]["mapId"]) == page:
 			return index
 	return -1
 
@@ -96,13 +105,31 @@ static func ring_grow(elapsed: int, reduce_motion: bool) -> int:
 
 ## Where the tag naming the chosen waypoint goes on a `bounds`-sized map:
 ## centred over its ring (`center`, reaching `reach` px out at its widest),
-## under it when there's no room above, and kept inside the map at the sides.
-static func tag_at(center: Vector2, reach: float, tag: Vector2, bounds: Vector2) -> Vector2:
-	var x := clampf(center.x - tag.x / 2.0, TAG_GAP, maxf(TAG_GAP, bounds.x - tag.x - TAG_GAP))
-	var y := center.y - reach - TAG_GAP - tag.y
-	if y < TAG_GAP:
-		y = center.y + reach + TAG_GAP
-	return Vector2(x, y).round()
+## under it when there's no room above, and kept inside the map at the
+## sides. Where that would hide `avoid` (the hero's mark: on the Reach's
+## small page, PIX-269 step 7, the hero often stands a few cells from a
+## waypoint), under the ring when there's room, else slid aside.
+static func tag_at(center: Vector2, reach: float, tag: Vector2, bounds: Vector2, avoid := Rect2()) -> Vector2:
+	var over := center.y - reach - TAG_GAP - tag.y
+	var under := center.y + reach + TAG_GAP
+	var tries: Array[Vector2] = []
+	if over >= TAG_GAP:
+		tries.append(Vector2(_tag_x(center.x - tag.x / 2.0, tag, bounds), over))
+	if over < TAG_GAP or under + tag.y <= bounds.y - TAG_GAP:
+		tries.append(Vector2(_tag_x(center.x - tag.x / 2.0, tag, bounds), under))
+	if avoid.has_area():
+		var y := tries[0].y
+		tries.append(Vector2(_tag_x(avoid.end.x + TAG_GAP, tag, bounds), y))
+		tries.append(Vector2(_tag_x(avoid.position.x - TAG_GAP - tag.x, tag, bounds), y))
+	for at: Vector2 in tries:
+		if not avoid.has_area() or not Rect2(at, tag).intersects(avoid):
+			return at.round()
+	return tries[0].round()
+
+
+## A tag's left edge at `x`, kept inside the map.
+static func _tag_x(x: float, tag: Vector2, bounds: Vector2) -> float:
+	return clampf(x, TAG_GAP, maxf(TAG_GAP, bounds.x - tag.x - TAG_GAP))
 
 
 ## Where a marker stands for `cell` on a page of `px` pixels a tile: its

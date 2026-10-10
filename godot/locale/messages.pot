@@ -3609,6 +3609,10 @@ msgid "One Look"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "One Page"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "One Voice"
 msgstr ""
 
@@ -4793,6 +4797,10 @@ msgid "The choice happens INSIDE the ascension: the letterboxed scene holds, the
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The chosen waypoint's name no longer hides your mark on the map"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The chosen waypoint's ring and its marker share one centre at any window size"
 msgstr ""
 
@@ -4913,6 +4921,10 @@ msgid "The main story stands out: a gold ring around the \"!\" over a letter's r
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The map draws the Ashenreach and every region you've found on one page, each where its road leads, so the Reach reads as one land"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The map key is rebindable like everything else"
 msgstr ""
 
@@ -4986,6 +4998,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The relics now come in order, one region after another"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The ridge between regions shows where you've seen it, waypoints and goals stay on the page, and a goal underground shows at its door"
 msgstr ""
 
 #: assets/data/changelog.json

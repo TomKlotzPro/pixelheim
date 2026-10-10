@@ -74,6 +74,12 @@ var skyline := {}
 ## "flowers"), and each outdoor prop's node by its cell.
 var layers := {}
 var prop_nodes := {}
+## What each part of `build` took, in ms, when `timed` (the harness's
+## `reentry`, One Reach step 8): what drawing a map beside the hero would
+## cost part by part, the slices streaming it in could be cut along. Off,
+## nothing is timed.
+var timed := false
+var took := {}
 
 ## How far the wind leans what grows, in pixels at its top (PIX-223): a
 ## tree or a sheaf, a flower, a forest's crowns (all of a piece, so less).
@@ -219,17 +225,32 @@ func plan(arrival: Vector2i) -> Vector2i:
 ## children of `root` (behind the actors layer), then what stands among the
 ## actors, then the house's furniture.
 func build(root: Node) -> void:
+	var lap := Time.get_ticks_usec() if timed else 0
 	ground = _build_dungeon(data) if data.floor_level > 0 or data.style == "cave" else _build_ground(data)
 	ground.modulate = data.tint
+	lap = _lap("ground", lap)
 	tile_layer = _build_tile_layer(data)
+	lap = _lap("blockers", lap)
 	props = _build_props(data)
 	for layer: Node in [props, tile_layer, ground]:
 		root.add_child(layer)
 		root.move_child(layer, 0)
+	lap = _lap("signs", lap)
 	_build_decor(data)
+	lap = _lap("decor", lap)
 	furnish()
 	_night = -1
 	set_night(DayNight.is_night(GameState.world.steps))
+	_lap("rest", lap)
+
+
+## Notes in `took` the ms since `since` under `part` when timed; the time now.
+func _lap(part: String, since: int) -> int:
+	if not timed:
+		return 0
+	var now := Time.get_ticks_usec()
+	took[part] = (now - since) / 1000.0
+	return now
 
 
 ## Takes the drawing down (what stands among the actors is in the "decor"

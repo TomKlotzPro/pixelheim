@@ -250,6 +250,18 @@ static func way_out(from_map: String, to_map: String) -> Vector2i:
 	return NOWHERE
 
 
+## Where a door way_out found on `map_id` leads: the map behind it, "" for
+## a cell that isn't one (the map screen follows a way across the maps on
+## one page, PIX-269 step 7).
+static func through(map_id: String, door: Vector2i) -> String:
+	_learn_doors()
+	var doors: Dictionary = _doors.get(map_id, {})
+	for next: String in doors:
+		if doors[next] == door:
+			return next
+	return ""
+
+
 ## Each named map's doors to other maps: map id -> {its target: a door cell}.
 static func _learn_doors() -> void:
 	if not _doors.is_empty():

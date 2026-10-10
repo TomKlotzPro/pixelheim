@@ -26,8 +26,11 @@ func test_the_list_starts_where_the_hero_is() -> void:
 	var usable := _usable(["town_gate", "mountain_gate", "town_square"])
 	assert_eq(Waypoints.first_on(usable, "overworld"), 0, "the first on the hero's map, as before")
 	assert_eq(Waypoints.first_on(usable, "town"), 2, "the square, in town")
-	assert_eq(Waypoints.first_on(usable, "deepwood"), -1, "none chosen: the map opens on where you are")
+	assert_eq(Waypoints.first_on(usable, "deepwood"), 0, "none in the Deepwood: the first on the Reach's page it's drawn on (PIX-269)")
+	assert_eq(Waypoints.first_on(usable, "cellars"), -1, "none chosen: the map opens on where you are")
 	assert_eq(Waypoints.first_on([], "overworld"), -1)
+	assert_eq(Waypoints.first_on_page(_usable(["town_square", "saltmere_hamlet"]), "overworld"), 1, "Saltmere's is on the Reach's page")
+	assert_eq(Waypoints.first_on_page(usable, "seacave"), -1)
 
 
 func test_the_choice_moves_and_wraps() -> void:
@@ -89,6 +92,16 @@ func test_the_tag_stays_on_the_map() -> void:
 	assert_eq(left.x, Waypoints.TAG_GAP, "kept in at the map's left edge")
 	var right := Waypoints.tag_at(Vector2(669, 227), 20, tag, bounds)
 	assert_eq(right.x, bounds.x - tag.x - Waypoints.TAG_GAP, "and at its right edge")
+	# The hero a few cells over the ring (the Reach's small page, PIX-269).
+	var hero := Rect2(Vector2(300, 230), Vector2(10, 10))
+	var clear := Waypoints.tag_at(Vector2(336, 280), 20, tag, bounds, hero)
+	assert_eq(clear.y, 280.0 + 20 + Waypoints.TAG_GAP, "under the ring, the hero's mark left in sight")
+	assert_eq(Waypoints.tag_at(Vector2(336, 280), 20, tag, bounds, Rect2(Vector2(10, 10), Vector2(10, 10))), above, "over it when the hero is elsewhere")
+	var low_hero := Rect2(Vector2(330, 360), Vector2(10, 10))
+	var aside := Waypoints.tag_at(Vector2(336, 420), 20, tag, bounds, low_hero)
+	assert_eq(aside.y, 420.0 - 20 - Waypoints.TAG_GAP - tag.y, "over it still where there's no room under")
+	assert_false(Rect2(aside, tag).intersects(low_hero), "slid aside off the hero's mark")
+	assert_true(Rect2(Vector2.ZERO, bounds).encloses(Rect2(aside, tag)), "and kept on the map")
 
 
 ## Fast travel for the grown Reach (PIX-266): no trip back to a region is a

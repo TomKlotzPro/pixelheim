@@ -6,7 +6,7 @@
 
 <p align="center">
   <b>A retro pixel-art open-world RPG in Godot 4.7: a village the dragon burned, the courier who stayed, the Reach's regions and the relics they keep - and the mountain last.</b><br />
-  The village burned. You stayed. Currently v0.210 - 1.0 has to be earned.
+  The village burned. You stayed. Currently v0.211 - 1.0 has to be earned.
 </p>
 
 ---
