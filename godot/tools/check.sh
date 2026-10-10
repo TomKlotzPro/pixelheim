@@ -33,8 +33,9 @@
 #   flow, and quick says so; a flow without a tag AREAS knows runs every time.
 # The windowed motion flow never runs here: quick says when the diff calls
 # for it (player.gd, gait.gd, juice.gd, puny_art.gd, world_camera.gd), and
-# CI's pictures job walks it three times in a window on the pull request
-# (PIX-275); flows.sh motion watches it here.
+# CI's windowed jobs walk it in a window on every pull request (PIX-275,
+# stepped since PIX-276: the same walk every time); flows.sh motion watches
+# it here.
 #
 # full runs what CI runs: the release script's tests and its check, the
 # catalogue check, the import, the web export, then GUT beside every map
@@ -269,7 +270,7 @@ if [[ $mode == full ]]; then
 	fi
 	echo "GUT beside every map booted, then every flow ($jobs at a time)..."
 	run_suite all all
-	echo "check.sh full: $([[ $failed == 1 ]] && echo FAILED || echo "all ok") in $(since "$started")s; the windowed walk is CI's pictures job (or godot/tools/flows.sh motion)"
+	echo "check.sh full: $([[ $failed == 1 ]] && echo FAILED || echo "all ok") in $(since "$started")s; the windowed walk is CI's windowed jobs (or godot/tools/flows.sh motion)"
 	exit $failed
 fi
 
@@ -489,7 +490,7 @@ if [[ -n $untagged ]]; then
 	echo "note:    no tag AREAS knows on ${untagged% }, so they run every time (tag them in flows.txt)"
 fi
 if [[ -n $motion ]]; then
-	echo "motion:  the diff touches ${motion% }: CI's pictures job walks it three times in a window on the PR (or watch it here: godot/tools/flows.sh motion)"
+	echo "motion:  the diff touches ${motion% }: CI's windowed jobs walk it in a window on the PR (or watch it here: godot/tools/flows.sh motion)"
 fi
 [[ $plan == 1 ]] && exit 0
 echo
@@ -504,5 +505,5 @@ if [[ -n $import ]]; then
 fi
 run_suite "$boot_picked" "$flows"
 echo "check.sh quick: $([[ $failed == 1 ]] && echo FAILED || echo "all ok") in $(since "$started")s; CI runs the rest"
-[[ -n $motion ]] && echo "the windowed walk: CI's pictures job, three times on the PR (or godot/tools/flows.sh motion)"
+[[ -n $motion ]] && echo "the windowed walk: CI's windowed jobs, on the PR (or godot/tools/flows.sh motion)"
 exit $failed
