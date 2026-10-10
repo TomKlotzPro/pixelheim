@@ -1837,6 +1837,10 @@ msgid "A town's new age is heralded with a flourish and dust on the square, and 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A way out on a map's south edge no longer hides under the dock, and you arrive facing into the new map, on its road"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "AGAINST THE CLOCK: Pell's canary can't breathe the shafts' bad air for long. Once she's in your pack you have a minute to get her to Pell - the clock shows top right - or she flies back to the west gallery and you fetch her again"
 msgstr ""
 
@@ -2130,6 +2134,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "CURRENT WORDS: Loras wants his lute back from the troll and Mirelle two gems for her vault, as their quests say, not old prices; the Town age's goal says its fountain will still want Fafnyr's scale; a recipe's missing material always names itself"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Cave mouths are framed and lit by torches, the mountain gate stands in the rock, and stairs up name the place above"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -2522,6 +2530,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Every tenth depth a warden guards the stair down, a boss with its own attacks: the Deep Warden, then the Hollow King"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Every way out of a map reads as a way on: the road runs right to it, through an opening wide enough to look walkable, and a signpost names where it leads"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3310,6 +3322,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "New monsters: Bone Knight, Shade, Mimic, Fire Imp, and Morvax the Deathless"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "New roads lead across the Ashenreach to the Mirefen and Deepwood passes and to the Undermountain, and a path climbs to Saltmere's sea cave"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5058,6 +5074,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Water comes alive: it swells with light, glints here and there, foam laps along every shore, and what stands on a bank is mirrored in it"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Ways On"
 msgstr ""
 
 #: assets/data/changelog.json
