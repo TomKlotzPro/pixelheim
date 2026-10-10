@@ -638,7 +638,7 @@ func _drop(whole_stack: bool) -> void:
 	var lasting: bool = row["kind"] == "gear" or (whole_stack and int(row.get("count", 1)) > 1)
 	if lasting and not Catalog.item(row.get("item_id", "")).get("quest", false):
 		var which := "%s|%s|%s" % [row["kind"], row.get("item_id", ""), String(row.get("piece", {}).get("uid", ""))]
-		var now := Time.get_ticks_msec() / 1000.0
+		var now := GameClock.seconds()
 		if _drop_armed != which or now - _drop_armed_at > DROP_CONFIRM_SECONDS:
 			_drop_armed = which
 			_drop_armed_at = now

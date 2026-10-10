@@ -42,6 +42,8 @@ signal skill_learned(entry: Dictionary, key: int)
 
 ## Slot 0 never touches disk: harness runs and tests leave real saves alone.
 const NO_SLOT := 0
+## The dice a harness run throws (PIX-276): any number, the same every run.
+const HARNESS_SEED := 276
 const AUTOSAVE_SECONDS := 3.0
 ## Until character creation lands (PIX-127), new games start this hero.
 const DEFAULT_HERO_NAME := "Wanderer"
@@ -151,6 +153,13 @@ func boot(flags: HarnessFlags) -> void:
 	if _booted:
 		return
 	_booted = true
+	# A harness run throws the same dice every run (PIX-276): what a kill
+	# drops, a crit, where a foe wanders, a sound's pitch (it draws from the
+	# same dice), all as the run before; unseeded, a flow whose loot rolled
+	# another way read differently on every run. With GameClock and the
+	# stepped frames (tools/flows.sh), a flow is the same run each time.
+	if flags.has("--screenshot"):
+		seed(HARNESS_SEED)
 	settings.load_file()
 	# The game speaks the player's language from the first screen (PIX-195);
 	# `--lang xx` (harness) picks one for the run.

@@ -297,7 +297,7 @@ func mimic_wakes(sprite: Sprite2D, chest: Dictionary) -> void:
 ## after an arrival, only close by, only where the player can see it (on
 ## screen, above the dock) and only with nothing solid between them.
 func can_notice(enemy: Node) -> bool:
-	if Time.get_ticks_msec() / 1000.0 - arrived_at < float(Packs.rules()["graceSeconds"]):
+	if GameClock.seconds() - arrived_at < float(Packs.rules()["graceSeconds"]):
 		return false
 	var at: Vector2 = enemy.global_position
 	# At its meal or asleep by its fire (PIX-252), only a hero at arm's length.
@@ -310,7 +310,7 @@ func can_notice(enemy: Node) -> bool:
 
 ## Something has seen the hero: a growl (SFX.bump), not more than once a beat.
 func on_enemy_noticed(enemy: Node) -> void:
-	var now := Time.get_ticks_msec() / 1000.0
+	var now := GameClock.seconds()
 	world.hud.hint("dodge")
 	# A named monster or a boss roars (PIX-158, PIX-210); anything else bumps.
 	if fights_like_boss(enemy):
@@ -329,7 +329,7 @@ func on_enemy_noticed(enemy: Node) -> void:
 ## is no fight: the fight's clock isn't wound (the music stays the place's),
 ## no growl, no word of dodging.
 func on_enemy_frightened(_enemy: Node) -> void:
-	var now := Time.get_ticks_msec() / 1000.0
+	var now := GameClock.seconds()
 	fled += 1
 	world.hud.hint("fright")
 	if now - frightened_at > 1.5:
@@ -353,7 +353,7 @@ func boss_hunting() -> Node:
 
 ## A fight is on: something has hunted the hero in the last few seconds.
 func in_fight() -> bool:
-	return Time.get_ticks_msec() / 1000.0 - hunted_at < COMBAT_LINGER_S
+	return GameClock.seconds() - hunted_at < COMBAT_LINGER_S
 
 
 ## A monster fell: the web's victory pays out, and the last of a spawn's pack

@@ -346,7 +346,7 @@ func _warn_low_hp(delta: float) -> void:
 	if GameState.settings.reduce_motion:
 		fill.modulate = bright
 	else:
-		var beat := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 1000.0 * TAU / HEARTBEAT_S)
+		var beat := 0.5 + 0.5 * sin(GameClock.seconds() * TAU / HEARTBEAT_S)
 		fill.modulate = Color.WHITE.lerp(bright, beat)
 	if world != null and world.foes.in_fight():
 		_beat_left -= delta
