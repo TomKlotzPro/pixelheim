@@ -47,10 +47,10 @@
 # the same dice every run (GameState.HARNESS_SEED). A flow is the same run
 # every time, and its report the same, window or not (but draws=). A flow
 # may ask for another pace with the harness's --fps N (the motion flow: a
-# fast screen's frames between the physics ticks). A window draws one frame
-# in ten (--draw-every 10) and every frame the run reads the screen in:
-# nothing the game decides reads what was drawn, and software rendering
-# takes most of a second a frame. So no flow gets a second try: the motion
+# fast screen's frames between the physics ticks). A window draws a frame a
+# second of the game's time (--draw-every 60) and every frame the run reads
+# the screen in: nothing the game decides reads what was drawn, and
+# software rendering takes most of a second a frame. So no flow gets a second try: the motion
 # flow (timed frame by frame), the festival's and the board's (timed by the
 # clock) had one, and a second try only hid what made the first fail. The
 # flake hunt (.github/workflows/flakes.yml, nightly) runs every flow round
@@ -153,10 +153,11 @@ run_godot() {
 		# Each slot's window a little down and right of the one before:
 		# all of them on top, none of them covered whole.
 		window=(--position "$((40 + slot * 48)),$((60 + slot * 36))")
-		# One frame in ten drawn, and every frame the run reads the screen
-		# in: stepped, the game is the same drawn or not, and software
-		# rendering (CI's windows) takes most of a second a frame.
-		drawing=(--draw-every 10)
+		# A frame a second of the game's time drawn, and every frame the
+		# run reads the screen in: stepped, the game is the same drawn or
+		# not, and software rendering (CI's windows) takes most of a second
+		# a frame.
+		drawing=(--draw-every 60)
 	fi
 	# Stepped: 60 frames a second of the game's time, or the flow's --fps.
 	[[ " $args " =~ $pace ]] && fps=${BASH_REMATCH[1]}
