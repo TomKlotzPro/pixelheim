@@ -136,6 +136,7 @@ const TABLE := [
 	{"flag": "--out", "takes": "<dir>", "does": "with lookbook: where it saves (res://lookbook)"},
 	{"flag": "--wait", "takes": "<s>", "does": "hold the shot s seconds (an entrance still playing)"},
 	{"flag": "overflow", "takes": "", "does": "every piece of an open screen past the canvas, as OVERFLOW lines; the report adds overflow= (works headless)"},
+	{"flag": "--draw-every", "takes": "<n>", "does": "a windowed run draws one frame in n, and every frame of the motion check's walk and of the picture at the end: stepped, the game is the same drawn or not, and software rendering takes most of a second a frame (tools/flows.sh: 10 in a window, PIX-276)"},
 	{"flag": "--shot", "takes": "<file>", "does": "save the picture there, not res://screenshot.png: runs side by side each keep their own (tools/flows.sh, PIX-270)"},
 	{"flag": "-NSAppSleepDisabled", "takes": "YES", "does": "macOS's, not the game's: no napping a run whose window is hidden (tools/lookbook.sh)"},
 ]

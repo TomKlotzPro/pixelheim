@@ -13,10 +13,34 @@ extends Node
 const DEVICE := 77
 
 var world: Node
+## `--draw-every N` (PIX-276): a windowed run draws one frame in N, and
+## every frame where it reads the screen (the motion check's walk, the
+## picture at the end). Stepped (tools/flows.sh), the game is the same
+## drawn or not: nothing it decides reads what was drawn, a frame's time
+## is a sixtieth of a second either way, and its particles and shaders run
+## on the game's own clock (only the water's tile frames count drawn
+## frames, so they ripple slower). Software rendering (CI's windows) takes
+## most of a second a frame, and drawing all sixty of each second made a
+## flow several times slower than headless.
+var _draw_every := 0
+var _draw_all := false
 
 
 func _ready() -> void:
+	if DisplayServer.get_name() != "headless":
+		_draw_every = int(HarnessFlags.given().value("--draw-every", "0"))
 	_run_test_harness()
+
+
+func _process(_delta: float) -> void:
+	if _draw_every > 1:
+		RenderingServer.render_loop_enabled = _draw_all or Engine.get_process_frames() % _draw_every == 0
+
+
+## Every frame drawn from now on (`--draw-every`), this one too.
+func _draw_every_frame() -> void:
+	_draw_all = true
+	RenderingServer.render_loop_enabled = true
 
 
 ## Keys from anyone but the harness are dropped, paused or not: the window
@@ -303,6 +327,7 @@ func _run_test_harness() -> void:
 		# walks; and the river stops the walk, the camera catching up as a
 		# step back, so frames count only while the hero still walks.
 		world.lights.clear_sky = true
+		_draw_every_frame()
 		world.player.scripted_dir = Vector2.RIGHT
 		world.player.sprite.speed_scale = 0.0
 		var hero_x: Array[float] = []
@@ -934,6 +959,7 @@ func _run_test_harness() -> void:
 	var line := report.line()
 	# A quiet run (--headless: no window, nothing drawn) has no picture.
 	if DisplayServer.get_name() != "headless":
+		_draw_every_frame()
 		await RenderingServer.frame_post_draw
 		# As the screen shows it (the desktop app's canvas is linear light),
 		# where `--shot` says (PIX-270): the flows run side by side, and one

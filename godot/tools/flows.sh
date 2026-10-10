@@ -47,11 +47,14 @@
 # the same dice every run (GameState.HARNESS_SEED). A flow is the same run
 # every time, and its report the same, window or not (but draws=). A flow
 # may ask for another pace with the harness's --fps N (the motion flow: a
-# fast screen's frames between the physics ticks). So no flow gets a second
-# try: the motion flow (timed frame by frame), the festival's and the
-# board's (timed by the clock) had one, and a second try only hid what made
-# the first fail. The flake hunt (.github/workflows/flakes.yml, nightly)
-# runs every flow round after round under load to keep it so.
+# fast screen's frames between the physics ticks). A window draws one frame
+# in ten (--draw-every 10) and every frame the run reads the screen in:
+# nothing the game decides reads what was drawn, and software rendering
+# takes most of a second a frame. So no flow gets a second try: the motion
+# flow (timed frame by frame), the festival's and the board's (timed by the
+# clock) had one, and a second try only hid what made the first fail. The
+# flake hunt (.github/workflows/flakes.yml, nightly) runs every flow round
+# after round under load to keep it so.
 #
 # --boot boots every map the game can stand in (PIX-270): each map in
 # assets/maps, the village at each of its ages, the house at each of its
@@ -125,7 +128,10 @@ if [[ $list == 1 ]]; then
 	exit 0
 fi
 
-# Measures pixels: a quiet run has none to measure, and skips it.
+# Measures pixels: a quiet run has none to measure, and skips it. In a
+# window it walks alone after the rest: it draws every frame of its walk,
+# which the others don't (--draw-every), and alone it draws them several
+# times faster.
 windowed=" motion "
 
 # Each run's own folder: its picture, its output, its log and its result
@@ -142,16 +148,20 @@ since() { perl -MTime::HiRes=time -e 'printf "%.1f", time - $ARGV[0]' "$1"; }
 # the rest.
 run_godot() {
 	local dir=$1 args=$2 slot=$3 godot watcher ran fps=60 pace=' --fps ([0-9]+) '
-	local window=(--headless)
+	local window=(--headless) drawing=()
 	if [[ $quiet == 0 ]]; then
 		# Each slot's window a little down and right of the one before:
 		# all of them on top, none of them covered whole.
 		window=(--position "$((40 + slot * 48)),$((60 + slot * 36))")
+		# One frame in ten drawn, and every frame the run reads the screen
+		# in: stepped, the game is the same drawn or not, and software
+		# rendering (CI's windows) takes most of a second a frame.
+		drawing=(--draw-every 10)
 	fi
 	# Stepped: 60 frames a second of the game's time, or the flow's --fps.
 	[[ " $args " =~ $pace ]] && fps=${BASH_REMATCH[1]}
 	# shellcheck disable=SC2086 # the arguments are meant to split
-	perl -e "alarm $watchdog; exec @ARGV" godot "${window[@]}" --fixed-fps "$fps" --audio-driver Dummy --log-file "$dir/godot.log" --path . -- --screenshot $args --shot "$dir/shot.png" ${FLOWS_EXTRA:-} >"$dir/output.txt" 2>&1 &
+	perl -e "alarm $watchdog; exec @ARGV" godot "${window[@]}" --fixed-fps "$fps" --audio-driver Dummy --log-file "$dir/godot.log" --path . -- --screenshot $args ${drawing[@]+"${drawing[@]}"} --shot "$dir/shot.png" ${FLOWS_EXTRA:-} >"$dir/output.txt" 2>&1 &
 	godot=$!
 	# A script that doesn't parse leaves Godot on an empty scene until the
 	# watchdog: every run would wait out its minute. It has failed, so it
@@ -314,16 +324,25 @@ launch() {
 	pid_of[$1]=$!
 }
 
+later=()
 for ((k = 0; k < count; k++)); do
 	name=${FLOWS[${picked[k]}]%%|*}
-	if [[ $quiet == 1 && $windowed == *" $name "* ]]; then
-		mkdir -p "$runs/$name"
-		printf "skip|%s|0|needs a window\n" "$name" >"$runs/$name/result"
+	if [[ $windowed == *" $name "* ]]; then
+		if [[ $quiet == 1 ]]; then
+			mkdir -p "$runs/$name"
+			printf "skip|%s|0|needs a window\n" "$name" >"$runs/$name/result"
+		else
+			later+=("$k")
+		fi
 		continue
 	fi
 	launch "$k"
 done
 drain
+for k in ${later[@]+"${later[@]}"}; do
+	launch "$k"
+	drain
+done
 
 took=$(since "$started")
 title=$([[ $boot == 1 ]] && echo "Boot check" || echo "Release flows")
