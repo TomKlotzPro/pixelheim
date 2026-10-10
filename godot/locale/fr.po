@@ -4701,6 +4701,10 @@ msgid "The line above the dock says where: the next step, the place it's in and 
 msgstr "La ligne au-dessus de la barre dit où : la prochaine étape, le lieu où elle se trouve et où vous en êtes"
 
 #: assets/data/changelog.json
+msgid "The line under the title now says what the game is about: The village burned. You stayed."
+msgstr "La ligne sous le titre dit enfin de quoi parle le jeu : Le village a brûlé. Vous restez."
+
+#: assets/data/changelog.json
 msgid "The log keeps only what the world doesn't show: the story, quests, levels, mastery, bounties and the Boss Slayer's edge"
 msgstr "Le journal ne garde que ce que le monde ne montre pas : l'histoire, les quêtes, les niveaux, la maîtrise, les primes et l'avantage du Tueur de boss"
 
@@ -5223,6 +5227,10 @@ msgstr "VOTRE HÉROS WEB, À LA LETTRE : un héros venu de l'édition classiqu
 #: assets/data/changelog.json
 msgid "YOURS TO SKIP: E moves on to the next line and Esc skips straight to making your hero; with Reduce motion the words stay and the movement goes"
 msgstr "LIBRE À VOUS DE PASSER : E passe à la ligne suivante et Esc mène directement à la création de votre héros ; avec Réduire les animations, les mots restent et le mouvement disparaît"
+
+#: assets/data/changelog.json
+msgid "You Stayed"
+msgstr "Vous restez"
 
 #: assets/data/changelog.json
 msgid "You can own a HOUSE. The shut door in the south of town names its price: the deed costs 1,500g - press E and it's yours"
@@ -13573,8 +13581,8 @@ msgid "Figure"
 msgstr "Silhouette"
 
 #: scripts/title_screen.gd:117
-msgid "Fifteen floors. One dragon. Worse things below."
-msgstr "Quinze étages. Un dragon. Et pire en dessous."
+msgid "The village burned. You stayed."
+msgstr "Le village a brûlé. Vous restez."
 
 #: scripts/title_screen.gd:178
 msgid "Continue  %s, Lv %d"

@@ -4701,6 +4701,10 @@ msgid "The line above the dock says where: the next step, the place it's in and 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The line under the title now says what the game is about: The village burned. You stayed."
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The log keeps only what the world doesn't show: the story, quests, levels, mastery, bounties and the Boss Slayer's edge"
 msgstr ""
 
@@ -5222,6 +5226,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "YOURS TO SKIP: E moves on to the next line and Esc skips straight to making your hero; with Reduce motion the words stay and the movement goes"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "You Stayed"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -13573,7 +13581,7 @@ msgid "Figure"
 msgstr ""
 
 #: scripts/title_screen.gd:117
-msgid "Fifteen floors. One dragon. Worse things below."
+msgid "The village burned. You stayed."
 msgstr ""
 
 #: scripts/title_screen.gd:178
