@@ -8,6 +8,7 @@ const ROOMS := {
 	"town_inn": ["town_inn", 1], "town_shop": ["town_shop", 1], "town_smith": ["town_smith", 1],
 	"town_alchemist": ["town_alchemist", 1], "town_hall": ["town_hall", 1],
 	"town_house": ["town_house", 1], "town_house@2": ["town_house", 2], "town_house@3": ["town_house", 3],
+	"observatory": ["observatory", 1], "keep": ["keep", 1],
 }
 ## What the hero uses by facing it.
 const FIXTURES := ["bed", "hearth", "forge", "anvil", "cauldron", "shelf", "trophy_shelf", "counter", "garden", "crate", "barrel"]

@@ -1,11 +1,12 @@
 # The Frostgate pass (PIX-169): snow and pines between closing cliffs, a
 # frozen lake with a fishing hole cut in its ice, the hermit's hut and a
 # stranded caravan by the road, and at the head of the pass Liane's
-# observatory, built over the old ice cave.
+# observatory, built over the old ice cave (its door opens onto her room,
+# the stair down in its floor: PIX-256).
 id frostgate
 spawn 27 45
 portal 27 47 map overworld 68 2
-portal 27 6 map icecave 4 25
+portal 27 6 map observatory 8 8
 portal 26 47 map overworld 68 2
 portal 28 47 map overworld 68 2
 key ^ mountain frost

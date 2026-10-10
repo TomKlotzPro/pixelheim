@@ -6,7 +6,7 @@ extends GutTest
 
 const ROOMS := [
 	"town_inn", "town_shop", "town_smith", "town_alchemist", "town_hall",
-	"town_house", "town_house@2", "town_house@3",
+	"town_house", "town_house@2", "town_house@3", "observatory", "keep",
 ]
 
 

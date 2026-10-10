@@ -2,8 +2,9 @@ extends Node
 ## The look book (PIX-220): the same scenes, staged the same way every time -
 ## the town by day, at dusk and at night, the forest, the Ash, the Mire, the
 ## Frostgate, a dungeon floor, a fight, the overworld at night, the
-## village seen from its road (PIX-248), the ways between maps (PIX-269)
-## and the map screen (PIX-266) - each saved
+## village seen from its road (PIX-248), the ways between maps (PIX-269),
+## the map screen (PIX-266) and the rooms behind the Reach's doors with the
+## stairs down in their floors (PIX-256) - each saved
 ## as a picture, and all of them on one contact sheet, so a change to how the
 ## game looks is judged before and after, by eye. With `perf`, each shot also
 ## reports what its frames cost (PerfProbe); with `film`, each is filmed for
@@ -65,6 +66,13 @@ const SHOTS := [
 	# The map (PIX-266) of a hero who has walked the whole Reach, its list
 	# scrolled down to the last waypoint, on Greyhold's page.
 	{"name": "28_map", "map": "town", "at": "street", "time": DAY, "chart": "greyhold_keep"},
+	# A house opens onto a room, the cave down a stair in its floor (PIX-256):
+	# Liane's room and Captain Hale's hall from beside the stairwell, then at
+	# its top, the stairs asking.
+	{"name": "29_lianes_room", "map": "observatory", "cell": Vector2i(13, 7), "time": DAY},
+	{"name": "30_lianes_stair", "map": "observatory", "cell": Vector2i(13, 6), "time": DAY, "down": true},
+	{"name": "31_hales_hall", "map": "keep", "cell": Vector2i(13, 7), "time": DAY},
+	{"name": "32_hales_stair", "map": "keep", "cell": Vector2i(13, 6), "time": DAY, "down": true},
 ]
 ## Filming the walk: slowed to a quarter, a picture every WALK_STEP of the
 ## game's time (thirty a second: two or three of each frame of the walk),
@@ -85,6 +93,8 @@ const STREET := Vector2i(40, 13)
 ## The contact sheet: three across, each shot at half size.
 const SHEET_COLUMNS := 3
 const SETTLE_SECONDS := 1.2
+## A stair's shot (`down`, PIX-256): this long facing it before it asks.
+const ASK_AFTER := 0.5
 ## Filming (`film`): this many frames, this far apart, into
 ## <out>/motion/<shot>/NN.png.
 const MOTION_FRAMES := 24
@@ -141,6 +151,9 @@ func run() -> void:
 			await _clip(shot, folders, images)
 			continue
 		_stage(shot)
+		if shot.get("down", false):
+			await get_tree().create_timer(ASK_AFTER).timeout
+			world.interaction.ask_down(world.player_cell + Vector2i.UP)
 		var page: RankSheet = null
 		if shot.get("ranks", false):
 			page = RankSheet.new()
@@ -192,6 +205,11 @@ func _stage(shot: Dictionary) -> void:
 		world.player.face(Vector2.RIGHT)
 		foe.notice()
 		_foe = foe
+	if shot.get("down", false):
+		# At the top of a room's stair, facing it (PIX-256): the stairs ask
+		# once the world has drawn the hero turned and the stair's nameplate
+		# up (run).
+		world.player.face(Vector2.UP)
 	if shot.has("chart"):
 		# The map over a hero who has walked it all, a waypoint chosen.
 		Atlas.walk_all(GameState.world.discovered)

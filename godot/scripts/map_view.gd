@@ -97,6 +97,9 @@ const TORCH_FOOT := Rect2(5, 9, 6, 7)
 ## A signpost's nameplate sits just over its boards (a door sign's sits
 ## over the board hanging above its door).
 const POST_LIFT := 4.0
+## A stairwell's nameplate (PIX-256) sits over the steps, above the key's
+## prompt that floats there when the hero faces them.
+const STAIRS_LIFT := 10.0
 ## How many cells of ground are drawn on past the map's edges (PIX-269):
 ## more than the dock covers, so the camera looking past the south edge
 ## never shows the void.
@@ -210,6 +213,11 @@ func build(root: Node) -> void:
 	ground.modulate = data.tint
 	tile_layer = _build_tile_layer(data)
 	props = _build_props(data)
+	# A room's stairs down (PIX-256) name where they go as the hero walks up,
+	# as a shop's board does its door, high enough to clear the key's prompt.
+	for way: Dictionary in ways:
+		if way["kind"] == "down":
+			door_signs.append({"door": way["at"], "name": way["name"], "about": way["about"], "node": null, "lift": STAIRS_LIFT})
 	for layer: Node in [props, tile_layer, ground]:
 		root.add_child(layer)
 		root.move_child(layer, 0)

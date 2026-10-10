@@ -1,11 +1,12 @@
 # Greyhold (PIX-168): Oskar's old fort on its hill, walls breached in three
-# places, the keep's door down to the cellars, a well and his statue in the
-# yard. The road from the Ash Fields comes in from the west past the old
-# guard's camp and round to the south gate.
+# places, the keep's door (into its guardroom, the stair to the cellars in
+# its floor: PIX-256), a well and his statue in the yard. The road from the
+# Ash Fields comes in from the west past the old guard's camp and round to
+# the south gate.
 id greyhold
 spawn 2 30
 portal 0 30 map overworld 93 15
-portal 37 12 map cellars 4 27
+portal 37 12 map keep 8 8
 portal 0 29 map overworld 93 15
 portal 0 31 map overworld 93 15
 key ^ mountain -

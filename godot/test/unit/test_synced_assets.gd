@@ -6,6 +6,7 @@ extends GutTest
 const MAP_IDS := [
 	"overworld", "deepwood", "mirefen", "town", "town_shop", "town_inn",
 	"town_smith", "town_alchemist", "town_house", "town_hall", "demo", "demo_hut",
+	"observatory", "keep",
 ]
 
 

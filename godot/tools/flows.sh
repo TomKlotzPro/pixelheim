@@ -8,7 +8,8 @@
 # Morvax's throne (PIX-157), a festival's ring toss (PIX-159), the road to
 # Saltmere (PIX-164), its sea cave (PIX-165), the Blackiron mines (PIX-167),
 # Greyhold with its cellars (PIX-168) and the Frostgate pass with its ice cave
-# (PIX-169), the mountain's gate barred to a new hero (PIX-170) and a depth
+# (PIX-169), each down the stair of the room behind a door, which asks first
+# (PIX-256), the mountain's gate barred to a new hero (PIX-170) and a depth
 # of the Deep Hunt cleared (PIX-161), and a potion brewed before Vex's quest
 # was taken still finishing it (PIX-231), a named boss that falls as a
 # boss does and holds the way out while it hunts (PIX-232), weak monsters
@@ -113,9 +114,21 @@ FLOWS=(
 	"mines|--map overworld --at 2,20 --walk l,l,l --wait 0.4|map=blackiron"
 	"shafts|--map blackiron --at 26,5 --walk u --wait 0.4|map=shafts"
 	"castle|--map overworld --at 93,15 --walk r,r,r --wait 0.4|map=greyhold"
-	"cellars|--map greyhold --at 37,13 --walk u --wait 0.4|map=cellars"
+	# A house opens onto a room, and the cave is down its stair (PIX-256): the
+	# keep's door into Captain Hale's hall; the stair asks, and the hero waits
+	# at the top; going down takes them to the cellars, staying keeps them in
+	# the hall; and the cellars' stairs lead back up into the hall.
+	"keep|--map greyhold --at 37,13 --walk u --wait 0.4|map=keep "
+	"keep-ask|--map keep --at 13,7 --walk u,u|map=keep cell=\\(13, 6\\).*open=dialogue_box"
+	"cellars|--map keep --at 13,7 --walk u,u --keys s,e --wait 0.4|map=cellars cell=\\(4, 27\\).*open=none"
+	"keep-stay|--map keep --at 13,7 --walk u,u --keys s,s,e --wait 0.3|map=keep cell=\\(13, 6\\).*open=none"
+	"keep-up|--map cellars --at 4,28 --walk l --wait 0.4|map=keep "
 	"pass|--map overworld --at 68,2 --walk u,u,u --wait 0.4|map=frostgate"
-	"icecave|--map frostgate --at 27,7 --walk u --wait 0.4|map=icecave"
+	# The observatory's door into Liane's room, down her stair to the ice
+	# cave, and back up into her room (PIX-256).
+	"observatory|--map frostgate --at 27,7 --walk u --wait 0.4|map=observatory "
+	"icecave|--map observatory --at 13,7 --walk u,u --keys s,e --wait 0.4|map=icecave cell=\\(4, 25\\).*open=none"
+	"observatory-up|--map icecave --at 4,26 --walk l --wait 0.4|map=observatory "
 	"gate|--map overworld --at 48,8 --walk u,u --wait 0.3|map=overworld cell=\\(48, 7\\).*open=none"
 	"deep|--floor 16 clear --wait 0.3|map=floor_16"
 	# What grows on the ground moves with the days (PIX-250): two days, two

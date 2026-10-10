@@ -155,7 +155,9 @@ static func color(tile: String) -> Color:
 ## of what has been seen of it (`seen`: cell -> true), once at least
 ## REGION_SEEN of its cells have been (a corner glimpsed from a pass isn't
 ## the marsh). Doors into the village's rooms aren't ways to another place,
-## and the gates down into a dungeon have their waypoints standing there.
+## and the gates down into a dungeon have their waypoints standing there. A
+## door into a room with a stair down (PIX-256: Liane's room, Captain Hale's
+## hall) is named for the cave below it, which is where it leads on to.
 static func labels(map: MapData, seen: Dictionary) -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	var place := Catalog.place_name(map.id)
@@ -164,7 +166,8 @@ static func labels(map: MapData, seen: Dictionary) -> Array[Dictionary]:
 		var to: Dictionary = map.portals[cell]
 		if to["kind"] != "map" or not seen.has(cell):
 			continue
-		var name := Catalog.place_name(String(to["mapId"]))
+		var beyond := Ways.below(String(to["mapId"]))
+		var name := Catalog.place_name(beyond if beyond != "" else String(to["mapId"]))
 		if name == place or named.has(name):
 			continue
 		named[name] = true

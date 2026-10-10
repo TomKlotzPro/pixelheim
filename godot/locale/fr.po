@@ -289,6 +289,10 @@ msgid "Candelabra"
 msgstr "Candélabre"
 
 #: assets/data/catalog.json
+msgid "Captain Hale's Hall"
+msgstr "La salle du capitaine Hale"
+
+#: assets/data/catalog.json
 msgid "Channels light to restore health."
 msgstr "Canalise la lumière pour rendre de la santé."
 
@@ -811,6 +815,10 @@ msgstr "Moins un bouclier qu'un mur portatif."
 #: assets/data/catalog.json
 msgid "Liane's Lantern"
 msgstr "Lanterne de Liane"
+
+#: assets/data/catalog.json
+msgid "Liane's Room"
+msgstr "La chambre de Liane"
 
 #: assets/data/catalog.json
 msgid "Light as a promise. Your feet believe it."
@@ -1833,6 +1841,10 @@ msgid "A small-screen pass: panels fit, the HUD compacts, and nothing overlaps a
 msgstr "Un passage pour les petits écrans : les panneaux tiennent, l'interface se resserre, et rien ne se chevauche, quelle que soit la largeur"
 
 #: assets/data/changelog.json
+msgid "A stairwell in each room goes down to the cave, and going into the dark is a choice: the stair asks first"
+msgstr "Un escalier dans chaque pièce descend vers la grotte, et descendre dans le noir est un choix : l'escalier vous le demande d'abord"
+
+#: assets/data/changelog.json
 msgid "A town's new age is heralded with a flourish and dust on the square, and each new map fades in from the dark instead of cutting (not with reduced motion)"
 msgstr "Le nouvel âge d'une ville s'annonce par une fanfare et de la poussière sur la place, et chaque nouvelle carte sort de l'obscurité au lieu d'apparaître d'un coup (sauf avec les animations réduites)"
 
@@ -2199,6 +2211,10 @@ msgstr "L'ombre des nuages glisse lentement sur les terres le jour, jamais à l'
 #: assets/data/changelog.json
 msgid "Come Home"
 msgstr "Rentrer au foyer"
+
+#: assets/data/changelog.json
+msgid "Coming back up from the Ice Cave or the cellars brings you into the room, beside the stair"
+msgstr "En remontant de la Grotte de glace ou des caves, vous revenez dans la pièce, à côté de l'escalier"
 
 #: assets/data/changelog.json
 msgid "Controls are rebindable, and French keyboards get ZQSD out of the box"
@@ -3069,6 +3085,10 @@ msgid "Level-ups now bank 5 stat points: spend them on STR, INT, DEX or DEF"
 msgstr "Chaque montée de niveau met de côté 5 points de caractéristique : dépensez-les en FOR, INT, DEX ou DEF"
 
 #: assets/data/changelog.json
+msgid "Liane's observatory and Greyhold's keep open into rooms now, not straight into a cave: Liane's room with her desk and books, and Captain Hale's hall with his table, banners and armour"
+msgstr "L'observatoire de Liane et le donjon de Greyhold ouvrent désormais sur des pièces, et non plus directement sur une grotte : la chambre de Liane avec son bureau et ses livres, et la salle du capitaine Hale avec sa table, ses bannières et ses armures"
+
+#: assets/data/changelog.json
 msgid "Liane's pages and the feats are the journal's two other tabs, where there were five chapters"
 msgstr "Les pages de Liane et les hauts faits sont les deux autres onglets du journal, là où il y avait cinq chapitres"
 
@@ -3763,6 +3783,10 @@ msgstr "Les loyers et les intérêts de la banque viennent toujours par jour :
 #: assets/data/changelog.json
 msgid "Roads and town stay clean-looking because they ARE safe"
 msgstr "Les routes et la ville restent dégagées parce qu'elles SONT sûres"
+
+#: assets/data/changelog.json
+msgid "Rooms Upstairs"
+msgstr "Les pièces d'en haut"
 
 #: assets/data/changelog.json
 msgid "Running Scared"
@@ -13744,43 +13768,71 @@ msgstr "COMMANDÉ"
 msgid "Arrows"
 msgstr "Flèches"
 
-#: scripts/ways.gd:116
+#: scripts/ways.gd:124
 msgid "Through the cave"
 msgstr "Par la grotte"
 
-#: scripts/ways.gd:118
+#: scripts/ways.gd:126
 msgid "Through the gate"
 msgstr "Par le portail"
 
-#: scripts/ways.gd:120
+#: scripts/ways.gd:128
 msgid "Through the door"
 msgstr "Par la porte"
 
-#: scripts/ways.gd:122
+#: scripts/ways.gd:130
 msgid "Up the stairs"
 msgstr "Par l'escalier"
 
-#: scripts/ways.gd:125
+#: scripts/ways.gd:132
+msgid "Down the stairs"
+msgstr "En bas de l'escalier"
+
+#: scripts/ways.gd:135
 msgid "The road north"
 msgstr "La route du nord"
 
-#: scripts/ways.gd:127
+#: scripts/ways.gd:137
 msgid "The road east"
 msgstr "La route de l'est"
 
-#: scripts/ways.gd:129
+#: scripts/ways.gd:139
 msgid "The road south"
 msgstr "La route du sud"
 
-#: scripts/ways.gd:130
+#: scripts/ways.gd:140
 msgid "The road west"
 msgstr "La route de l'ouest"
 
-#: scripts/world.gd:275
+#: scripts/ways.gd:278
+msgid "Go down into %s?"
+msgstr "Descendre dans %s ?"
+
+#: scripts/ways.gd:281
+msgid "Liane's stair goes down through the floor, and the cold comes up it like a draught."
+msgstr "L'escalier de Liane s'enfonce sous le plancher, et le froid en remonte comme un courant d'air."
+
+#: scripts/ways.gd:283
+msgid "The keep's stair goes down to the cellars, where something still stands the old watch."
+msgstr "L'escalier du donjon descend aux caves, où quelque chose monte encore l'ancienne garde."
+
+#: scripts/ways.gd:286
+msgid "The stairs"
+msgstr "L'escalier"
+
+#: scripts/ways.gd:288
+msgid "Go down"
+msgstr "Descendre"
+
+#: scripts/ways.gd:288
+msgid "Stay"
+msgstr "Rester"
+
+#: scripts/world.gd:280
 msgid "%s bars your way: no leaving until the fight is over."
 msgstr "%s vous barre la route : pas de fuite avant la fin du combat."
 
-#: scripts/world.gd:314
+#: scripts/world.gd:319
 msgid "No map reaches this deep."
 msgstr "Aucune carte ne va aussi profond."
 
@@ -13812,19 +13864,19 @@ msgstr "NIVEAU SUPÉRIEUR"
 msgid "Boss slayer +%d%%  %d:%02d"
 msgstr "Tueur de boss +%d %%  %d:%02d"
 
-#: scripts/world_interaction.gd:170
+#: scripts/world_interaction.gd:176
 msgid "A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it."
 msgstr "Un établi pour cette étagère : %d or. Il compte comme un niveau de métier en plus quand vous fabriquez chez vous. {key:interact} à nouveau pour l'acheter."
 
-#: scripts/world_interaction.gd:197
+#: scripts/world_interaction.gd:203
 msgid "Sela's stew simmers over the fire. Hunter's Stew is brewed at Vex's cauldron, behind the BREWS door."
 msgstr "Le ragoût de Sela mijote sur le feu. Le Ragoût du chasseur se prépare au chaudron de Vex, derrière la porte POTIONS."
 
-#: scripts/world_interaction.gd:66
+#: scripts/world_interaction.gd:67
 msgid "Only cinders where the house stood. The board on the square can change that."
 msgstr "Rien que des cendres là où se dressait la maison. Le tableau de la place peut y remédier."
 
-#: scripts/world_interaction.gd:71
+#: scripts/world_interaction.gd:72
 msgid "The deed costs %d gold. {key:interact} again to sign it."
 msgstr "Le titre de propriété coûte %d or. {key:interact} à nouveau pour le signer."
 

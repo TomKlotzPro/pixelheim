@@ -114,9 +114,9 @@ func _ready() -> void:
 	# Resume where the save stands; `--map <id>` (harness) boots at that map's spawn.
 	var override := flags.has("--map")
 	map = load_map(flags.value("--map", GameState.world.map_id))
-	var arrival := map.spawn if override else GameState.world.cell
-	if not map.is_walkable(arrival):
-		arrival = map.spawn
+	# A save standing in a doorway (the old doors into the caves, PIX-256)
+	# wakes on the open ground beside it, not in the way through.
+	var arrival: Vector2i = map.spawn if override else Ways.standing(map, GameState.world.cell)
 	# Hero, mobs, and decor share one y-sorted layer so the hero walks in
 	# front of trunks and behind canopies.
 	actors = Node2D.new()
@@ -244,7 +244,12 @@ func _process(delta: float) -> void:
 		enter_house()
 		return
 	interaction.step_on(cell)
-	if map.portals.has(cell):
+	if Ways.goes_down(map, cell):
+		# The stairs down from a room ask first (PIX-256): the hero waits at
+		# the top, like at a dungeon's gate.
+		_step_back()
+		interaction.ask_down(cell)
+	elif map.portals.has(cell):
 		use_portal(map.portals[cell])
 
 ## Maps as the town has grown: the village and the house redraw per tier.

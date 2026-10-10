@@ -87,4 +87,5 @@ python3 godot/tools/favicon.py   # redraw the game's icon (assets/icon.png)
 - Shade's animations that pause or loop back can't be TileSet atlas animations; `PunySheet` holds them on their first frame.
 - `--map <id>` boots at that map's spawn, not the save's position; `GameState.boot` runs once per session (slot switches reload the scene).
 - Interiors chart under their town's place name (`Catalog.place_name`).
+- **A door in a building opens onto a room, never straight onto a cave or a dungeon (PIX-256)**: the cave is down a `stairwell` tile in the room's floor (Liane's room `observatory`, Captain Hale's hall `keep`: sketches in `maps-src/`, rooms in `PunyInterior.ROOMS`, dressing in `interiors.json`). A stairwell portal is a way `down` (`Ways.goes_down`): walking onto it or E facing it asks first (`Interaction.ask_down`), the cave's stairs lead back up into the room, and `test_cellar_stairs` checks every door.
 - The village and the house redraw per tier: load runtime maps through `world._load_map` (→ `MapData.load_tiered`), never `MapData.load_by_id`, or a funded town shows its old self.

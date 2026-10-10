@@ -21,6 +21,9 @@ const TILE_INFO := {
 	# castle.
 	"shore": false, "sea": false, "deep_sea": false, "dock": true,
 	"snow": true, "ice": true, "stone": true,
+	# A stairwell cut in a room's floor (PIX-256): the way down to the
+	# cellar under a house, walked onto (it asks first).
+	"stairwell": true,
 }
 
 ## Terrain the Puny World ground draws (PunyTerrain, PIX-130).
@@ -43,6 +46,7 @@ const TILE_COLORS := {
 	"garden": "4a3524", "lamp": "3d7a35", "well": "8a8f9a",
 	"shore": "5aa0c8", "sea": "2a6fa8", "deep_sea": "1d4a7a", "dock": "8a6238",
 	"snow": "e8eef2", "ice": "a8d0e0", "stone": "8a8680",
+	"stairwell": "16181e",
 }
 const ROOF_COLOR := "8a5638"
 const FALLBACK_COLOR := "4a4e58"
