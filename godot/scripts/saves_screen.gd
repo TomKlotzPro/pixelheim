@@ -6,10 +6,23 @@ extends Screen
 ## world while open; switching heroes reloads the world scene.
 
 const PORTRAIT := Rect2(8, 6, 16, 20)  # hero body within a 32px Puny idle frame
-const WINDOW := Vector2(1080, 0)
+## The window, set and never grown (PIX-230): the canvas less the 56 px
+## margins the map keeps. Each column has its own width and everything in it
+## wraps or flows at that width, so no line, however long, pushes the window
+## past the canvas. A full slot's line did: "Niveau 18, nécromancien - Le col
+## de la Porte-Givre" widened its card, the slots' column and the window,
+## and ran the right column 86 px off the screen.
+const WINDOW := Vector2(1168, 0)
+## The slots' column: wide enough for the longest such line beside the
+## portrait ("Niveau 18, nécromancien - La salle du capitaine Hale", 506 px),
+## so it reads on one line in French; a longer one wraps.
+const SLOTS_WIDTH := 648.0
+## A slot card's words: the column less the card's margins, the portrait
+## and the gap after it.
+const CARD_TEXT := SLOTS_WIDTH - 28.0 - PORTRAIT.size.x * 3 - 16.0
 ## The window's right column: the window less its margins, the slots' column
 ## and the gap between.
-const RIGHT_WIDTH := WINDOW.x - 44.0 - 560.0 - 32.0
+const RIGHT_WIDTH := WINDOW.x - 44.0 - SLOTS_WIDTH - 32.0
 ## Its words, inside a card's margins.
 const RIGHT_TEXT := RIGHT_WIDTH - 20.0
 
@@ -20,6 +33,8 @@ var web_save := {}
 var welcome := false
 var selected := 0
 var cards: Array[PanelContainer] = []
+## The window: WINDOW.x wide whatever it holds (what the tests measure).
+var window: PanelContainer
 var status: Label
 var code_field: LineEdit
 var bring_button: Button
@@ -39,14 +54,16 @@ func _open() -> void:
 	# across from the web game on the right, what just happened underneath.
 	# Placed, not centred by a container: a wrapping line measures itself tall
 	# before it knows its width, and a centring container would grow with it.
-	var stack := VBoxContainer.new()
+	# The window is WINDOW.x wide, so placed it is centred; it hugs its
+	# content, shrinking back once those lines know their width.
+	var stack := Layout.hugging(VBoxContainer.new())
 	stack.position = Vector2((1280 - WINDOW.x) / 2, 56)
 	stack.add_theme_constant_override("separation", 18)
 	add_child(stack)
 	var title := UiStyle.heading("Saves", 20, UiStyle.CREAM)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	stack.add_child(title)
-	var window := PanelContainer.new()
+	window = PanelContainer.new()
 	window.custom_minimum_size = Vector2(WINDOW.x, 0)
 	window.add_theme_stylebox_override("panel", UiStyle.window(22))
 	stack.add_child(window)
@@ -59,16 +76,16 @@ func _open() -> void:
 
 	var left := VBoxContainer.new()
 	left.add_theme_constant_override("separation", 10)
-	left.custom_minimum_size = Vector2(560, 0)
+	left.custom_minimum_size = Vector2(SLOTS_WIDTH, 0)
 	columns.add_child(left)
 	for index in SaveSlots.SLOT_COUNT:
 		var card := PanelContainer.new()
-		card.custom_minimum_size = Vector2(560, 96)
+		card.custom_minimum_size = Vector2(SLOTS_WIDTH, 96)
 		card.gui_input.connect(_on_card_input.bind(index))
 		left.add_child(card)
 		cards.append(card)
-	var actions := HBoxContainer.new()
-	actions.add_theme_constant_override("separation", 10)
+	# Flowing onto a second line in a longer language, not past the column.
+	var actions := Layout.flow()
 	actions.add_child(UiStyle.button(Text.t("Play"), _play, "{key:interact}"))
 	actions.add_child(UiStyle.button(Text.t("New hero"), _new_hero, "N"))
 	actions.add_child(UiStyle.button(Text.t("Clear slot"), _clear, "X"))
@@ -87,9 +104,9 @@ func _open() -> void:
 	var web_lines := VBoxContainer.new()
 	web_lines.add_theme_constant_override("separation", 8)
 	web.add_child(web_lines)
-	web_lines.add_child(UiStyle.strong(
+	web_lines.add_child(Layout.wrapped(UiStyle.strong(
 		"Welcome back" if welcome else "From the old web edition", 16, UiStyle.LAMP if welcome else UiStyle.INK
-	))
+	), RIGHT_TEXT))
 	if web_save.is_empty():
 		var hint := (
 			"No hero from the old web edition in this browser. One you saved as a code comes across below."
@@ -102,10 +119,9 @@ func _open() -> void:
 			Text.t("Your web game hero %s, %d gold.") % [WebImport.describe(web_save), web_save["gold"]], 14, UiStyle.INK
 		)
 		web_lines.add_child(Layout.wrapped(found, RIGHT_TEXT))
+		# "Bring <name> to slot N" runs long in French with a long name: its
+		# words wrap on the plank (_refresh), past its key.
 		bring_button = UiStyle.button("", _bring)
-		# "Bring <name> into slot N" runs long in French: it wraps.
-		bring_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		bring_button.custom_minimum_size.x = RIGHT_TEXT
 		if welcome:
 			# The one thing a first visit is for: make it the brightest control.
 			UiStyle.focus(bring_button)
@@ -117,7 +133,7 @@ func _open() -> void:
 	var code_lines := VBoxContainer.new()
 	code_lines.add_theme_constant_override("separation", 8)
 	code.add_child(code_lines)
-	code_lines.add_child(UiStyle.strong("Save code", 16, UiStyle.INK))
+	code_lines.add_child(Layout.wrapped(UiStyle.strong("Save code", 16, UiStyle.INK), RIGHT_TEXT))
 	code_field = LineEdit.new()
 	code_field.placeholder_text = "Paste a save code"
 	code_field.add_theme_color_override("font_color", UiStyle.INK)
@@ -293,7 +309,9 @@ func _refresh() -> void:
 		_fill_card(cards[index], index)
 	if bring_button != null:
 		UiStyle.button_keyed(bring_button, "B", Text.t("Bring %s to slot %d") % [web_save["hero"]["name"], _target()])
+		Layout.capped(bring_button, RIGHT_TEXT)
 	load_button.text = Text.t("Load into slot %d") % _target()
+	Layout.capped(load_button, RIGHT_TEXT)
 
 func _fill_card(card: PanelContainer, index: int) -> void:
 	for child in card.get_children():
@@ -325,25 +343,38 @@ func _fill_card(card: PanelContainer, index: int) -> void:
 		portrait.self_modulate = spec["tint"]
 	row.add_child(portrait)
 
+	# The card's words in CARD_TEXT (PIX-230): the slot's tag shares the
+	# name's line, so where and when have the card's whole width, and wrap
+	# past it rather than widen the card.
 	var lines := VBoxContainer.new()
-	lines.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	lines.custom_minimum_size.x = CARD_TEXT
 	lines.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_child(lines)
-	if summary.is_empty():
-		lines.add_child(UiStyle.label("Empty slot", 20, UiStyle.FADED))
-		lines.add_child(UiStyle.label("N starts a new hero here.", 14, UiStyle.FADED))
-	else:
-		var role: String = Catalog.role(summary["roleId"]).get("name", "").to_lower()
-		lines.add_child(UiStyle.label(summary["name"], 20, UiStyle.INK))
-		lines.add_child(UiStyle.label(
-			Text.t("Level %d %s in %s") % [summary["level"], role, Catalog.place_name(summary["mapId"])], 14, UiStyle.FADED
-		))
-		lines.add_child(UiStyle.label(Text.t("%d gold, saved %s") % [summary["gold"], _ago(summary["savedAt"])], 14, UiStyle.FADED))
-
+	var top := HBoxContainer.new()
+	top.add_theme_constant_override("separation", 16)
+	top.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	lines.add_child(top)
+	var name_line := UiStyle.label("Empty slot" if summary.is_empty() else summary["name"], 20,
+		UiStyle.FADED if summary.is_empty() else UiStyle.INK)
+	name_line.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	top.add_child(name_line)
 	var tag := UiStyle.label("Playing" if index + 1 == GameState.slot else Text.t("Slot %d") % (index + 1), 12,
 		UiStyle.LAMP if index + 1 == GameState.slot else UiStyle.FADED)
 	tag.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
-	row.add_child(tag)
+	top.add_child(tag)
+	# A name from a save code may run longer than creation allows: it wraps
+	# before the tag (measured now it's in the tree and has its font).
+	Layout.wrapped(name_line, CARD_TEXT - 16.0 - tag.get_minimum_size().x)
+	if summary.is_empty():
+		lines.add_child(Layout.wrapped(UiStyle.label("N starts a new hero here.", 14, UiStyle.FADED), CARD_TEXT))
+	else:
+		var role: String = Catalog.role(summary["roleId"]).get("name", "").to_lower()
+		lines.add_child(Layout.wrapped(UiStyle.label(
+			Text.t("Level %d %s in %s") % [summary["level"], role, Catalog.place_name(summary["mapId"])], 14, UiStyle.FADED
+		), CARD_TEXT))
+		lines.add_child(Layout.wrapped(
+			UiStyle.label(Text.t("%d gold, saved %s") % [summary["gold"], _ago(summary["savedAt"])], 14, UiStyle.FADED), CARD_TEXT
+		))
 
 static func _ago(saved_at: int) -> String:
 	var seconds := int(Time.get_unix_time_from_system()) - saved_at

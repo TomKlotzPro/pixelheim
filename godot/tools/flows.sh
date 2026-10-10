@@ -216,6 +216,12 @@ FLOWS=(
 	"fit-whatsnew|title whatsnew overflow --lang fr|overflow=0"
 	"fit-saves|--map town --keys esc,s,e overflow --lang fr|open=saves_screen.*overflow=0"
 	"fit-webhero|saves --web-save res://test/fixtures/web_save_v4.txt overflow --lang fr|open=saves_screen.*overflow=0"
+	# Every slot full (PIX-230): a full slot's line widened the window off
+	# the right of the screen in French, which empty slots never showed; and
+	# a web hero with a long name to bring across, in both languages.
+	"fit-saves-full|--map town saves --slots res://test/fixtures/slots overflow --lang fr|open=saves_screen.*overflow=0"
+	"fit-saves-full-en|--map town saves --slots res://test/fixtures/slots overflow --lang en|open=saves_screen.*overflow=0"
+	"fit-webhero-full|saves --slots res://test/fixtures/slots --web-save res://test/fixtures/slots/slot_1.json overflow --lang fr|open=saves_screen.*overflow=0"
 	"fit-pause|--map town --keys esc overflow --lang fr|open=pause_screen.*overflow=0"
 	"fit-options|--map town --keys esc,s,s,e overflow --lang fr|overflow=0"
 	"fit-map|--map town waypoints worldmap overflow --lang fr|open=map_screen.*overflow=0"

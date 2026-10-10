@@ -92,6 +92,7 @@ const TABLE := [
 	{"flag": "--own", "takes": "<map ids>", "does": "with hall or bank: deeds held, four days of rent waiting (PIX-178)"},
 	{"flag": "saves", "takes": "", "does": "the saves screen"},
 	{"flag": "--web-save", "takes": "<file>", "does": "with saves: a browser's web save (a code or JSON), offered as on a first visit"},
+	{"flag": "--slots", "takes": "<dir>", "does": "with saves: the slots read from that folder (res://test/fixtures/slots: three heroes, the longest lines a card shows), nothing written (PIX-230)"},
 	{"flag": "--ready", "takes": "<quest>", "does": "a quest accepted and its goal met (PIX-192)"},
 	{"flag": "--take", "takes": "<quest>", "does": "a quest taken, nothing done yet"},
 	{"flag": "--follow-wagon", "takes": "<s>", "does": "the hero walks beside the escort's wagon for s seconds (PIX-192)"},
