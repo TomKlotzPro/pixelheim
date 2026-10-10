@@ -49,26 +49,26 @@ static func next_dream(cleared_levels: Array, seen: Array) -> String:
 
 ## What Maren has to tell now: a relic's story once its boss is laid low
 ## (PIX-170: Tam, the iron, Oskar, Liane - whichever came home first), else
-## the deepest of her stories the hero's floors have reached ({id, lines}),
-## or {} before the crypt. Each is told once (its id goes in the story
-## ledger); after that she talks as usual. Her last words depend on the
-## ending the hero chose (PIX-157).
+## the oldest of her stories the hero's floors have earned and she hasn't
+## told yet ({id, lines}), or {} before the crypt. One a visit, oldest first
+## (PIX-279): she used to tell only the deepest, so a hero who went past the
+## watchtower before calling on her never heard the graves, and the main
+## quest's step that waits on them could never be met. Each is told once
+## (its id goes in the story ledger); after that she talks as usual. Her
+## last words depend on the ending the hero chose (PIX-157), and once it's
+## played they're all she has left to say: the stories that sent the hero
+## down would ring false after it.
 static func elder_story(cleared_levels: Array, seen: Array, hunted := []) -> Dictionary:
 	for entry: Dictionary in _data()["elderLines"]:
 		if entry.has("hunted") and entry["hunted"] in hunted and entry["id"] not in seen:
 			return entry
-	var latest := {}
 	var ending := ending_of(seen)
 	for entry: Dictionary in _data()["elderLines"]:
-		if not entry.has("after"):
+		if not entry.has("after") or entry["id"] in seen or int(entry["after"]) not in cleared_levels:
 			continue
-		if entry.has("ending") and entry["ending"] != ending:
-			continue
-		if int(entry["after"]) in cleared_levels:
-			latest = entry
-	if latest.is_empty() or latest["id"] in seen:
-		return {}
-	return latest
+		if String(entry.get("ending", "")) == ending:
+			return entry
+	return {}
 
 
 ## How the hero ended it at Morvax's throne (PIX-157): "rest", "destroy",

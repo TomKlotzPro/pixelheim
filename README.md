@@ -5,7 +5,7 @@
 <h1 align="center">Pixelheim</h1>
 
 <p align="center">
-  <b>A retro pixel-art open-world RPG in Godot 4.7: one hero, one village, fifteen floors of a mountain and what lies under it.</b><br />
+  <b>A retro pixel-art open-world RPG in Godot 4.7: a village the dragon burned, the courier who stayed, the Reach's regions and the relics they keep - and the mountain last.</b><br />
   The village burned. You stayed. Currently v0.200 - 1.0 has to be earned.
 </p>
 
@@ -21,7 +21,7 @@ What changed release by release: **What's new** on the title menu, or [`godot/as
 
 ## The game
 
-You wake in Pixelheim village, in an open world called **the Ashenreach**: walk the roads (safe) or the wilds (not safe), talk to villagers, forage, trade, and climb the Ashen Mountain - ten floors of increasingly rude monsters - to slay **Fafnyr the Ashen** at the summit. Behind the dragon's hoard a stairway descends: five more floors of the **Undermountain**, down to **Morvax the Deathless**.
+A dragon burned Pixelheim in one night, and you - the courier who came up the road with a letter for Elder Maren - stayed. Put out the fires, help the survivors rebuild, and walk out into **the Ashenreach**: the roads (safe) and the wilds (not safe), past the forest and the marsh to the Saltmere coast, the Blackiron mines, the castle of Greyhold and the Frostgate pass, each region with its people, its quests, its armour and a boss in a cave, a shaft or a cellar of its own. Fifty years ago five of the village climbed the Ashen Mountain to mend the seal that held the dragon, and only one came home. What the five left behind waits out in those regions, and only those relics open the mountain's barred gate. The mountain comes last: ten floors of increasingly rude monsters up to **Fafnyr the Ashen** on his hoard, and behind it a stair down to **Morvax the Deathless**.
 
 - **One hand-drawn world**: hero, villagers, monsters, terrain and dungeons in Shade's Puny art; the town's timber houses, its wells, fountain, torches and fences, and the rooms behind its doors from his Medieval Age set
 - **Real-time fights**: monsters prowl in packs and hunt you (the weak ones run from a hero far above them), other packs by night than by day (wolves, the dead and worse come out after dark, a little stronger and richer, while some day packs sleep by their camp fires); swing, cast your skills on the number keys, and watch the ailments land - on the same numbers the game has always used
@@ -32,7 +32,7 @@ You wake in Pixelheim village, in an open world called **the Ashenreach**: walk 
 - **Crafting** at the forge, the cauldron and your own workbench; foraging in the wilds
 - **Music, stingers and weather** for every place, rendered from the game's own chiptune synth
 - **Saves that never break**: three slots, autosave, save codes, and heroes from the old web edition brought over byte for byte
-- **A story told in moments**: New Game opens on the village, the mountain waking and the heroes who never came back; each boss rises with its name before you fight it, the stairway below is found, and the ending rolls credits starring every creature you fought - all skippable
+- **A story told in moments**: New Game opens on the village, the mountain waking and the five who climbed it fifty years ago; each boss rises with its name before you fight it, the stairway below is found, and the ending rolls credits starring every creature you fought - all skippable
 - **A title to arrive at**: Pixelheim's street at night under the Ashen Mountain, lit windows and chimney smoke below, the dragon's fire smouldering in the crater above, and your hero in the street looking up at it
 - **A UI like a village ledger**: one clear pixel type throughout, parchment pages in carved wooden frames, a wooden dock along the bottom with your bars, skills and gold, and screens that ease in with the sound of turning paper
 - **Comfort**: rebindable keys, gamepad, options from the title, reduced motion, CRT scanlines, a fog-of-war map with fast travel

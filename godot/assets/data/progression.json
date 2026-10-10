@@ -94,7 +94,7 @@
         "xp": 300,
         "itemId": "marens_promise"
       },
-      "accepted": "The gate's barred, courier. The old wardens sealed it when the five never came home, and only what the five left behind will open it: Tam's ladle in Saltmere, the black iron at Blackiron, Oskar's shield at Greyhold and Liane's lantern on the Frostgate. Bring them home to me.",
+      "accepted": "The gate's barred, courier. The old wardens sealed it when one of the five came home alone, and only what the five left behind will open it: Tam's ladle in Saltmere, the black iron at Blackiron, Oskar's shield at Greyhold and Liane's lantern on the Frostgate. Bring them home to me.",
       "completed": "Tam, the iron, Oskar, Liane. And the fifth is mine: my promise that someone would finish what we started. Take it. The gate is open, courier - climb.",
       "unlessGateOpen": true
     },
@@ -839,7 +839,7 @@
         "xp": 100
       },
       "accepted": "Down the keep's stair, through the crypt, to the captain's hall. That's where Oskar's shield hung. Whatever's there has kept it all this while.",
-      "completed": "Captain Hale. He swore to keep Oskar's shield till Oskar came home, and he kept it fifty years. Take it to Oskar, up the mountain. Hale would want it to go home."
+      "completed": "Captain Hale. He swore to keep Oskar's shield till Oskar came home, and he kept it fifty years. Take it to Maren. Hale would want it to go home."
     },
     {
       "id": "teo_rest",
@@ -1350,7 +1350,7 @@
               "level": 10
             },
             "text": "Slay Fafnyr on the Ashen Throne (floor 10)",
-            "hint": "Fafnyr sleeps on the hoard at the top of the mountain. Ten floors up. End it."
+            "hint": "Fafnyr is back on his hoard at the top of the mountain, and awake. Ten floors up. End it."
           }
         ]
       },
