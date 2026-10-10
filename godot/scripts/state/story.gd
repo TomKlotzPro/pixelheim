@@ -31,10 +31,14 @@ static func found_pages(cleared_levels: Array) -> Array[Dictionary]:
 
 ## The dream a night's rest brings (PIX-154): the first one earned and not yet
 ## dreamt - the first night after the Night of Ash, then after the crypt,
-## then after the forge - or "" when there's none.
-static func next_dream(cleared_levels: Array, seen: Array) -> String:
+## then after the forge - or "" when there's none. Since the story's letters
+## (PIX-253 step 5) a dream may come once someone is home instead (`home`, a
+## settler's id among `settlers`): the old man counting lamps, after Old
+## Pell moves in.
+static func next_dream(cleared_levels: Array, seen: Array, settlers := []) -> String:
 	for dream: Dictionary in _data()["dreams"]:
-		var earned := int(dream["after"]) == 0 or int(dream["after"]) in cleared_levels
+		var earned := String(dream["home"]) in settlers if dream.has("home") else (
+			int(dream["after"]) == 0 or int(dream["after"]) in cleared_levels)
 		if earned and dream["id"] not in seen:
 			return dream["id"]
 	return ""

@@ -1096,6 +1096,22 @@
       "species": "goblin_spear"
     },
     {
+      "id": "shafts_blackseam_1",
+      "mapId": "shafts_blackseam",
+      "x": 14,
+      "y": 16,
+      "species": "goblin_spear",
+      "size": 2
+    },
+    {
+      "id": "shafts_blackseam_2",
+      "mapId": "shafts_blackseam",
+      "x": 19,
+      "y": 20,
+      "species": "golem",
+      "size": 2
+    },
+    {
       "id": "greyhold_1",
       "mapId": "greyhold",
       "x": 27,
@@ -5579,10 +5595,10 @@
     "seam_warden": {
       "name": "The Seam Warden",
       "monsterId": "iron_demon",
-      "mapId": "shafts",
+      "mapId": "shafts_blackseam",
       "lair": {
-        "x": 38,
-        "y": 7
+        "x": 26,
+        "y": 11
       },
       "postedAfter": 0,
       "board": false,
@@ -5611,9 +5627,9 @@
         "radius": 1.6,
         "power": 1.5
       },
-      "where": "the deep seam at the bottom of the Blackiron shafts",
+      "where": "the Black Seam, three floors down the Blackiron shafts",
       "notice": "",
-      "seen": "The Seam Warden tears a lump of black iron from the wall!"
+      "seen": "The Seam Warden heaves itself up off a black ingot stamped with five marks. It has been keeping it warm since spring."
     },
     "hollow_captain": {
       "name": "The Hollow Captain",

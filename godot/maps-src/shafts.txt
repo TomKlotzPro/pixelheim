@@ -1,6 +1,9 @@
 # The Blackiron shafts (PIX-167): the landing by the stair, the goblins' camp,
-# the galleries, the cart hall and the deep seam where the black iron was dug
-# for the Ember Seal - and where something still guards it.
+# the galleries, the cart hall and the old working where the black iron was
+# dug for the Ember Seal. Since PIX-255 they are the shafts' first floor, the
+# upper shafts: the old working keeps the stair down (s) to the west gallery,
+# and the Black Seam, where something still guards the last ingot, lies two
+# floors below (assets/data/depths.json).
 id shafts
 style cave
 spawn 4 27
@@ -11,11 +14,12 @@ key L lamp -
 key b barrel -
 key k crate -
 key c cave shafts
+key s stairwell -
 map
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXLXXXXXXXXXXLXXXX
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX..............XXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.......s......XXX
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.............kXXX
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX..............XXX
 XXXXXXXXXXXXXXXXXXX..XXXXXXXXXX..............XXX

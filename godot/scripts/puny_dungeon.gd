@@ -43,6 +43,12 @@ const MAST := 512
 const WHEEL := 466
 const GATE_SHUT := 461
 const DOORWAY := 434
+## The Blackiron shafts' pieces (PIX-255): a lever thrown, and the ore
+## cage's barred gate in the rock (open, it is the doorway's dark).
+const LEVER := 465
+const CAGE := 459
+## A shortcut's door by its look (depths.json `look`): [shut, open].
+const DOORS := {"gate": [GATE_SHUT, DOORWAY], "cage": [CAGE, DOORWAY]}
 
 static var _sheet: PunySheet
 

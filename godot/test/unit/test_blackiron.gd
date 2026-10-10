@@ -20,8 +20,11 @@ func test_the_valley_and_the_shafts_join_up() -> void:
 	var into: Array = valley.portals.values().map(func(to: Dictionary) -> String: return to.get("mapId", ""))
 	assert_has(into, "shafts")
 	assert_has(into, "overworld")
-	assert_true(shafts.is_walkable(Hunts.lair(Hunts.named("seam_warden"))))
-	assert_eq(Hunts.living_on("shafts", [], []).map(func(entry: Dictionary) -> String: return entry["id"]), ["seam_warden"])
+	# The Seam Warden sits at the bottom of the shafts since they have
+	# floors (PIX-255): the Black Seam, two below the first.
+	var seam := MapData.load_by_id("shafts_blackseam")
+	assert_true(seam.is_walkable(Hunts.lair(Hunts.named("seam_warden"))))
+	assert_eq(Hunts.living_on("shafts_blackseam", [], []).map(func(entry: Dictionary) -> String: return entry["id"]), ["seam_warden"])
 
 
 func test_garricks_chain_ends_in_the_black_ingot() -> void:
@@ -37,10 +40,11 @@ func test_garricks_chain_ends_in_the_black_ingot() -> void:
 
 
 func test_pells_canary_waits_in_a_chest() -> void:
-	var chest: Array = Interactables.chests_on("shafts").filter(func(c: Dictionary) -> bool: return c["id"] == "shafts_canary")
+	# In the west gallery, the shafts' second floor (PIX-255).
+	var chest: Array = Interactables.chests_on("shafts_gallery").filter(func(c: Dictionary) -> bool: return c["id"] == "shafts_canary")
 	assert_eq(chest.size(), 1)
 	assert_eq(chest[0]["loot"]["itemId"], "canary")
-	assert_true(MapData.load_by_id("shafts").is_walkable(Vector2i(int(chest[0]["x"]), int(chest[0]["y"]))))
+	assert_true(MapData.load_by_id("shafts_gallery").is_walkable(Vector2i(int(chest[0]["x"]), int(chest[0]["y"]))))
 
 
 func test_the_plate_is_forged_from_the_seam() -> void:

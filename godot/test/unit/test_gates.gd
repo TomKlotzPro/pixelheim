@@ -268,7 +268,7 @@ func test_a_followed_thread_past_a_shut_gate_leads_there_too() -> void:
 	state.holdings.fund_work("river_bridge")
 	lead = Bearing.active(state.progression, state.settlement, state.pack.items)
 	assert_eq(lead["gate"], "barricade", "then Ulla's barricade")
-	assert_eq([lead["map_id"], lead["cell"]], ["shafts", Hunts.lair(Hunts.named("seam_warden"))], "to the Seam Warden, whose ingot opens it")
+	assert_eq([lead["map_id"], lead["cell"]], ["shafts_blackseam", Hunts.lair(Hunts.named("seam_warden"))], "to the Seam Warden, whose ingot opens it")
 	# A hero who has walked everywhere is never detoured.
 	var everywhere := {}
 	Atlas.walk_all(everywhere)

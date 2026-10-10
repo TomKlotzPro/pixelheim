@@ -163,6 +163,19 @@ woodpass | --map overworld --at 93,33 --walk r,r,r --wait 0.4 --lang en | map=de
 # The Blackiron mines and their shafts (PIX-167).
 mines | --map overworld --at 2,20 --walk l,l,l --wait 0.4 | map=blackiron | travel
 shafts | --map blackiron --at 26,5 --walk u --wait 0.4 | map=shafts | travel
+# The Blackiron shafts in three floors (PIX-255, PIX-253 step 5): down the
+# upper shafts' stair (it asks; going down keeps the dark) to the west
+# gallery, down past Pell's canary to the Black Seam, and back up (it
+# dissolves); the Seam Warden falls and the ore cage opens, up to the
+# pithead by the shafts' mouth; and Old Pell above Hilda's forge once the
+# ingot is home, the town's tour stopping at the forge's door.
+shafts-down | --map shafts --at 38,4 --walk u --keys s,e fades --wait 0.4 | map=shafts_gallery cell=\(3, 9\) change=dark dark=0 floor=2/3 | dungeon travel
+shafts-deeper | --map shafts_gallery --at 74,16 --walk r,r --keys s,e --wait 0.4 | map=shafts_blackseam cell=\(4, 18\) floor=3/3 shortcut=shut | dungeon travel
+shafts-up | --map shafts_blackseam --at 4,18 --walk l fades --wait 0.4 | map=shafts_gallery cell=\(7[34], 16\) change=dissolve dark=0 | dungeon travel
+seamwarden | --map shafts_blackseam fight slay --foe seam_warden --wait 0.3 | map=shafts_blackseam fell=1 shortcut=open | dungeon combat
+orecage | --map shafts_blackseam --hunted seam_warden --at 31,5 --walk u --wait 0.4 | map=blackiron cell=\(2[67], [56]\) | dungeon travel
+pell | --map town_smith --hunted seam_warden --talk-to mines_pell --keys e,e,e | map=town_smith open=none home=pell | town story
+pell-home | --map town --hunted seam_warden reveal | open=reveal_screen home=pell | town story
 # Each region's road back out, moved along its edge so the Reach and its
 # regions lie in one plane without overlapping (PIX-269).
 mines-out | --map blackiron --at 53,30 --walk r,r,r --wait 0.4 | map=overworld | travel

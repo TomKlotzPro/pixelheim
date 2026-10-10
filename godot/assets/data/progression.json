@@ -861,7 +861,7 @@
         "gold": 150,
         "xp": 80
       },
-      "accepted": "Down past the cart hall, the deep seam. Whatever's there has been there a long while.",
+      "accepted": "Three floors down, past the cart hall and the west gallery: the Black Seam. Whatever's down there moved in last spring, and it isn't paying rent.",
       "completed": "Black iron, stamped with five marks - the same seam the Ember Seal was poured from. That ingot's theirs as much as ours. Keep it."
     },
     {
@@ -916,7 +916,7 @@
         "xp": 15,
         "itemId": "potion_hp"
       },
-      "accepted": "Off the west gallery, last I heard her. Small cage. Mind your fingers.",
+      "accepted": "The west gallery, one floor down, last I heard her. Small cage. Mind your fingers.",
       "completed": "There's my girl! Cross as ever. Thank you - the air's safe to breathe as long as she's singing.",
       "opensAfter": "garrick_crew",
       "timed": {
@@ -1378,8 +1378,9 @@
               "kind": "hunted",
               "named": "seam_warden"
             },
-            "text": "Take the Black Ingot from the Seam Warden, deep in the Blackiron shafts",
-            "hint": "The Blackiron road leaves the west edge of the Ash Fields. Foreman Garrick runs the miners' camp."
+            "text": "Fetch the last ingot from the Black Seam",
+            "hint": "The Blackiron shafts run three floors down under the valley. At the bottom, in the Black Seam, something sits on the ingot the five stamped and forgot.",
+            "elderHint": "The last ingot. We stamped our five marks on it and left it in the seam for luck. Luck's run out, by the sound of it."
           },
           {
             "id": "settler",

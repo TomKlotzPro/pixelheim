@@ -368,7 +368,9 @@ func open_chest(chest: Dictionary) -> Dictionary:
 		owner.inventory_changed.emit()
 	owner.world.opened_chests.append(chest["id"])
 	owner.save_now()
-	return {"opened": true, "message": "", "mimic": false, "gains": gains}
+	# A find may say something as it's opened (PIX-255: Pell's canary).
+	var said := Text.t(String(chest["said"])) if chest.has("said") else ""
+	return {"opened": true, "message": said, "mimic": false, "gains": gains}
 
 
 func is_opened(chest: Dictionary) -> bool:

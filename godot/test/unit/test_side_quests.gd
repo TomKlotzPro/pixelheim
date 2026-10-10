@@ -54,7 +54,7 @@ func test_what_the_town_wants_waits_in_the_regions_chests() -> void:
 
 
 func test_every_promise_says_where_to_go() -> void:
-	assert_string_contains(Quests.where(Quests.by_id("garrick_seam")), "deep seam")
+	assert_string_contains(Quests.where(Quests.by_id("garrick_seam")), "Black Seam")
 	assert_string_contains(Quests.where(Quests.by_id("sela_rum")), "Sea Cave")
 	assert_string_contains(Quests.where(Quests.by_id("wolf_watch")), "Found in")
 	assert_string_contains(Quests.where(Quests.by_id("maren_relics")), "Saltmere")

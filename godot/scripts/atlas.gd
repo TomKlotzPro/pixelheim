@@ -27,7 +27,8 @@ class_name Atlas
 ## it (and the cave's floors below, PIX-255); the regions are on the Reach's
 ## page, their caves and each cave's floor a page of their own.
 const ORDER := [
-	"overworld", "town", "saltmere", "seacave", "seacave_galleries", "seacave_grotto", "mirefen", "blackiron", "shafts",
+	"overworld", "town", "saltmere", "seacave", "seacave_galleries", "seacave_grotto", "mirefen",
+	"blackiron", "shafts", "shafts_gallery", "shafts_blackseam",
 	"frostgate", "icecave", "greyhold", "cellars", "deepwood",
 ]
 ## Pixels per tile on a page: whole, as large as the window allows, within these.

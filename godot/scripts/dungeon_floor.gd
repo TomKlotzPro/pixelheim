@@ -163,7 +163,8 @@ static func _regional(laid: Dictionary, spec: Dictionary) -> void:
 
 ## The set piece's rows laid in `room`'s lower half, centred, a row of
 ## floor all round it, clear of the room's torches and barrels (its top and
-## bottom rows): `=` a hull beam, `|` a mast and `w` a wheel, drawn on the
+## bottom rows): `=` a hull beam (or a rail), `|` a mast, `w` a wheel, `r`
+## a fallen rock and `l` a lever (the shafts' canary, PIX-255), drawn on the
 ## dungeon sheet over a blocking "wreck" cell; `o` a barrel, `p` a pot; `c`
 ## the floor's find, a chest's cell; `.` floor. {find, cells (what blocks:
 ## the set piece's words go with them), box}.
@@ -190,6 +191,10 @@ static func _set_piece(map: MapData, room: Rect2i, piece: Dictionary) -> Diction
 					map.pieces[cell] = PunyDungeon.MAST
 				"w":
 					map.pieces[cell] = PunyDungeon.WHEEL
+				"r":
+					map.pieces[cell] = PunyDungeon.BOULDERS[absi(hash(cell)) % PunyDungeon.BOULDERS.size()]
+				"l":
+					map.pieces[cell] = PunyDungeon.LEVER
 				"o":
 					tile = "barrel"
 				"p":

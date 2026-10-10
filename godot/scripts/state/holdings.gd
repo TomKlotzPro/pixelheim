@@ -60,6 +60,8 @@ func fund_project(project_id: String) -> String:
 		owner.reveals.append("age:%d" % tier_number)
 		line = Text.t("%s: built - and Pixelheim is a %s now.") % [entry["name"], String(Town.tier(tier_number)["name"]).to_lower()]
 		start_festival(tier_number)
+		# The next age may stand open already (PIX-253 step 5).
+		note_age_open()
 	owner.pack_changed()
 	owner.settlers_changed.emit()
 	owner.save_now()
@@ -260,9 +262,31 @@ func come_home(quiet := false) -> Array[String]:
 		owner.reveals.append("settler:%s" % recruit["id"])
 		said.append(String(due.get("line", "")))
 	if moved:
+		if not quiet:
+			note_age_open()
 		owner.mark_dirty()
 		owner.settlers_changed.emit()
 	return said
+
+
+## The age the town builds next, opened by the story (PIX-253 step 5: the
+## Village, as Old Pell comes home with the ingot): its asks all met,
+## nothing of it built yet, and words for it (town.json `opens`), so the
+## town's tour ends at the board saying so - or as the age before it is
+## finished, for a hero who brought Pell home first. Nothing once any of it
+## is built.
+func note_age_open() -> void:
+	var tier_number := Town.current_age(owner.settlement)
+	if tier_number <= 0 or not Town.age(tier_number).has("opens"):
+		return
+	if not Town.age_blockers(tier_number, owner.progression, owner.settlement).is_empty():
+		return
+	var done := Town.done_projects(owner.settlement)
+	if Town.age(tier_number)["projects"].any(func(project: Dictionary) -> bool: return project["id"] in done):
+		return
+	var key := "opens:%d" % tier_number
+	if key not in owner.reveals:
+		owner.reveals.append(key)
 
 
 ## What a night at the inn adds to being rested, with the settlers who
@@ -274,6 +298,16 @@ func inn_rested() -> Dictionary:
 			out["fights"] = int(out["fights"]) + int(recruit["inn"]["fights"])
 			out["line"] = String(recruit["inn"]["line"])
 	return out
+
+
+## What the settlers who came home add to a trade's share (PIX-255: Pell
+## at Hilda's bellows, "forge"), 0 with none: their `perkValues`.
+func settler_share(key: String) -> float:
+	var total := 0.0
+	for recruit: Dictionary in Npcs._data()["recruits"]:
+		if is_settled(recruit["id"]):
+			total += float(recruit.get("perkValues", {}).get(key, 0.0))
+	return total
 
 
 ## Recruiting where they wait; services once they live in town.

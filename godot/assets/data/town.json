@@ -227,6 +227,11 @@
           "line": "Someone has chosen to live here: bring one settler home"
         }
       ],
+      "opens": {
+        "about": "PIX-253 step 5: the Village's beat, as the story brings it. Its keepsakes are Saltmere's and Blackiron's, and the gates take them in that order, so it opens with chapter 3: once someone the story brings home completes what it asks (Old Pell, with the ingot), the town's tour ends at the board with these words.",
+        "line": "Two keepsakes home and new faces in town: Pixelheim can grow into a Village.",
+        "detail": "Street lamps, market stalls and a cottage for newcomers wait on the board on the square."
+      },
       "projects": [
         {
           "id": "street_lamps",

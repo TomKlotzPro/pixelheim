@@ -327,6 +327,11 @@ func tick_runs(delta: float) -> Dictionary:
 		var entry: Dictionary = owner.progression.quests.get(quest["id"], {})
 		if entry.is_empty() or entry["done"]:
 			continue
+		# Its giver gone to live in Pixelheim (PIX-255: Old Pell, with the
+		# ingot won), there's no racing the goods across the Reach: no clock.
+		if owner.holdings.is_settled(String(quest["giver"])):
+			entry.erase("left")
+			continue
 		var item: String = quest["objective"]["itemId"]
 		var carried := int(owner.pack.items.get(item, 0)) > 0
 		if not entry.has("left"):

@@ -1,5 +1,5 @@
 {
-  "about": "PIX-255: a region's dungeon in floors (Tom: \"Les donjons, ça serait bien sur plusieurs étages, c'est un peu simple\"). A dungeon's floors are a list, top to bottom, each a map of its own (its own fog of war, Discovery being keyed by map id): a handcrafted one in assets/maps, or one DungeonFloor lays out from `plan` (its seed, a pack per room after the entrance, each `{monsterId, size}`, the last in the largest room with the way down, and a `setPiece` there), the same every visit. A floor's `up` and `down` are where its stairs stand on a handcrafted map and the cell beside them a hero arrives on; a planned floor's stand where its plan puts them, and Depths lays the stairs between each floor and the next both ways. Each floor's foes stand `lift` levels above their kind, a little harder than the floor above; the bottom one keeps the dungeon's `boss` (a named monster, combat.json) and, once it has fallen, `shortcut` opens: a door straight out to the dungeon's way in. A floor's `find` is a chest (interactables.json) worth the walk; a planned floor's stands where its set piece's c is. `light` is the floor's own dark, `tint` its stone. No field in the save: floors reached are the fog the save keeps per map, finds its opened chests, the shortcut the boss in its named hunts. A hero saved on any floor wakes at the dungeon's entrance (`entrance`, on the first floor).",
+  "about": "PIX-255: a region's dungeon in floors (Tom: \"Les donjons, ça serait bien sur plusieurs étages, c'est un peu simple\"). A dungeon's floors are a list, top to bottom, each a map of its own (its own fog of war, Discovery being keyed by map id): a handcrafted one in assets/maps, or one DungeonFloor lays out from `plan` (its seed, a pack per room after the entrance, each `{monsterId, size}`, the last in the largest room with the way down, and a `setPiece` there), the same every visit. A floor's `up` and `down` are where its stairs stand on a handcrafted map and the cell beside them a hero arrives on; a planned floor's stand where its plan puts them, and Depths lays the stairs between each floor and the next both ways. Each floor's foes stand `lift` levels above their kind, a little harder than the floor above; the bottom one keeps the dungeon's `boss` (a named monster, combat.json) and, once it has fallen, `shortcut` opens: a door straight out to the dungeon's way in (its `look` a wooden gate in the rock, or `cage`: an ore cage up a shaft). A floor's `find` is a chest (interactables.json) worth the walk; a planned floor's stands where its set piece's c is. `light` is the floor's own dark, `tint` its stone. No field in the save: floors reached are the fog the save keeps per map, finds its opened chests, the shortcut the boss in its named hunts. A hero saved on any floor wakes at the dungeon's entrance (`entrance`, on the first floor).",
   "dungeons": {
     "seacave": {
       "name": "The Sea Cave",
@@ -44,6 +44,52 @@
         "to": {"kind": "map", "mapId": "saltmere", "x": 8, "y": 25},
         "opened": "The tide door groans open on its old hinges: daylight, salt wind, and the beach under the headland."
       }
+    },
+    "shafts": {
+      "name": "The Blackiron Shafts",
+      "region": "shafts",
+      "entrance": {"x": 4, "y": 27},
+      "floors": [
+        {
+          "mapId": "shafts",
+          "lift": 0,
+          "find": "shafts_cheese",
+          "down": {"x": 38, "y": 3, "arrive": {"x": 38, "y": 4}}
+        },
+        {
+          "mapId": "shafts_gallery",
+          "lift": 1,
+          "find": "shafts_canary",
+          "tint": [1.04, 0.97, 0.9],
+          "light": [0.33, 0.31, 0.38],
+          "plan": {
+            "seed": 2553,
+            "packs": [
+              {"monsterId": "goblin_digger", "size": 2},
+              {"monsterId": "goblin_spear", "size": 2},
+              {"monsterId": "golem", "size": 2},
+              {"monsterId": "goblin_spear", "size": 3}
+            ],
+            "setPiece": "canary"
+          }
+        },
+        {
+          "mapId": "shafts_blackseam",
+          "lift": 2,
+          "boss": "seam_warden",
+          "tint": [0.9, 0.88, 0.94],
+          "light": [0.4, 0.34, 0.37],
+          "up": {"x": 3, "y": 18, "arrive": {"x": 4, "y": 18}}
+        }
+      ],
+      "shortcut": {
+        "mapId": "shafts_blackseam",
+        "x": 31,
+        "y": 4,
+        "look": "cage",
+        "to": {"kind": "map", "mapId": "blackiron", "x": 27, "y": 5},
+        "opened": "The ore cage comes rattling down its shaft and its gate swings open: a ride up to the pithead, and daylight."
+      }
     }
   },
   "setPieces": {
@@ -55,6 +101,14 @@
         ".p..c.o."
       ],
       "note": "What's left of a fishing boat, wedged in the rock: the one that was bringing Tam's things home. One crate in her hold still says TAM on the lid, in Maren's hand."
+    },
+    "canary": {
+      "about": "Where Pell's canary got stuck (story chapter 3): rails (=) buckled under a fall of rock (r), the lever (l) that should have stopped the cart, and the canary's cage, the floor's find (c). Laid in the last room, a free ring round it.",
+      "rows": [
+        "rr.==.l.",
+        ".r..c..r"
+      ],
+      "note": "Rails buckled under a fall of rock, and a lever somebody pulled far too hard. From the rubble, a very small voice is shouting."
     }
   }
 }
