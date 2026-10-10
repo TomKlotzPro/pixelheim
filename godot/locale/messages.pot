@@ -2429,6 +2429,10 @@ msgid "EXPANSIONS: pour 1,000 gold into a business you own and its rent grows wi
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Each chapter opens with a card, \"Chapter 3: The Letter to Blackiron\", shown once"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Each comes with a full 12-node skill tree, its own look palette, and a proven path to the final boss - the balance sim clears the game with all seven classes"
 msgstr ""
 
@@ -3262,6 +3266,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Maren no longer skips a story: if you went far before visiting her, she tells each one in turn, oldest first, and the main quest's step that waits on it is met"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Maren's letters are the main story in the journal: the courier's satchel lists each letter, who it's for and where, and once it's delivered, what they answered"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4649,6 +4657,10 @@ msgid "The Open World"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Pages tab is now Letters: read Maren's own words once a letter is delivered (a courier never reads the post) and the answer that came back"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Painted World"
 msgstr ""
 
@@ -4658,6 +4670,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The Patron"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The Satchel"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4842,6 +4858,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The log keeps only what the world doesn't show: the story, quests, levels, mastery, bounties and the Boss Slayer's edge"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The main story stands out: a gold ring around the \"!\" over a letter's recipient, the edge arrow in gold while it leads the story, and a hollow gold diamond on the map while you follow a side quest"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -9041,6 +9061,10 @@ msgid "Cliff road to Saltmere's clear, courier. Took the whole crew all morning.
 msgstr ""
 
 #: assets/data/progression.json
+msgid "Coming Home"
+msgstr ""
+
+#: assets/data/progression.json
 msgid "Crabs cracked"
 msgstr ""
 
@@ -9454,10 +9478,6 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Hollow guards stood down"
-msgstr ""
-
-#: assets/data/progression.json
-msgid "Home"
 msgstr ""
 
 #: assets/data/progression.json
@@ -12186,6 +12206,10 @@ msgstr ""
 
 #: scripts/inventory_screen.gd:14
 msgid "Food"
+msgstr ""
+
+#: scripts/inventory_screen.gd:14
+msgid "Home"
 msgstr ""
 
 #: scripts/inventory_screen.gd:14

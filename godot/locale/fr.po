@@ -2429,6 +2429,10 @@ msgid "EXPANSIONS: pour 1,000 gold into a business you own and its rent grows wi
 msgstr "AGRANDISSEMENTS : investissez 1 000 or dans un commerce qui vous appartient et sa rente augmente à chaque victoire"
 
 #: assets/data/changelog.json
+msgid "Each chapter opens with a card, \"Chapter 3: The Letter to Blackiron\", shown once"
+msgstr "Chaque chapitre s'ouvre sur un carton, « Chapitre 3 : La lettre pour Fernoir », montré une seule fois"
+
+#: assets/data/changelog.json
 msgid "Each comes with a full 12-node skill tree, its own look palette, and a proven path to the final boss - the balance sim clears the game with all seven classes"
 msgstr "Chacune arrive avec un arbre de compétences complet de 12 nœuds, sa propre palette d'apparence, et un chemin éprouvé jusqu'au boss final - la simulation d'équilibrage termine le jeu avec les sept classes"
 
@@ -3263,6 +3267,10 @@ msgstr "Mille langues"
 #: assets/data/changelog.json
 msgid "Maren no longer skips a story: if you went far before visiting her, she tells each one in turn, oldest first, and the main quest's step that waits on it is met"
 msgstr "Maren ne saute plus d'histoire : si vous avez exploré loin avant de lui rendre visite, elle les raconte chacune à leur tour, la plus ancienne d'abord, et l'étape de la quête principale qui l'attend est validée"
+
+#: assets/data/changelog.json
+msgid "Maren's letters are the main story in the journal: the courier's satchel lists each letter, who it's for and where, and once it's delivered, what they answered"
+msgstr "Les lettres de Maren sont l'histoire principale du journal : la sacoche du messager liste chaque lettre, son destinataire et où le trouver, puis, une fois remise, ce qu'il a répondu"
 
 #: assets/data/changelog.json
 msgid "Market Day"
@@ -4649,6 +4657,10 @@ msgid "The Open World"
 msgstr "Le Monde ouvert"
 
 #: assets/data/changelog.json
+msgid "The Pages tab is now Letters: read Maren's own words once a letter is delivered (a courier never reads the post) and the answer that came back"
+msgstr "L'onglet Pages devient Lettres : lisez les mots de Maren une fois la lettre remise (un messager ne lit jamais le courrier) et la réponse qui est revenue"
+
+#: assets/data/changelog.json
 msgid "The Painted World"
 msgstr "Le Monde peint"
 
@@ -4659,6 +4671,10 @@ msgstr "Le Graphe des voies"
 #: assets/data/changelog.json
 msgid "The Patron"
 msgstr "Le Mécène"
+
+#: assets/data/changelog.json
+msgid "The Satchel"
+msgstr "La sacoche"
 
 #: assets/data/changelog.json
 msgid "The Skills panel grew the full graph: nodes, ascension edges, your walked path aglow - and any missed choice can be claimed right there"
@@ -4843,6 +4859,10 @@ msgstr "La ligne sous le titre dit enfin de quoi parle le jeu : Le village a b
 #: assets/data/changelog.json
 msgid "The log keeps only what the world doesn't show: the story, quests, levels, mastery, bounties and the Boss Slayer's edge"
 msgstr "Le journal ne garde que ce que le monde ne montre pas : l'histoire, les quêtes, les niveaux, la maîtrise, les primes et l'avantage du Tueur de boss"
+
+#: assets/data/changelog.json
+msgid "The main story stands out: a gold ring around the \"!\" over a letter's recipient, the edge arrow in gold while it leads the story, and a hollow gold diamond on the map while you follow a side quest"
+msgstr "L'histoire principale se distingue : un anneau doré autour du « ! » au-dessus du destinataire d'une lettre, la flèche en bord d'écran dorée quand elle mène l'histoire, et un losange doré creux sur la carte quand vous suivez une quête secondaire"
 
 #: assets/data/changelog.json
 msgid "The map key is rebindable like everything else"
@@ -9041,6 +9061,10 @@ msgid "Cliff road to Saltmere's clear, courier. Took the whole crew all morning.
 msgstr "La route de la falaise vers Saltmere est dégagée, messager. Toute l'équipe y a passé la matinée. J'ai soulevé une pierre. J'ai supervisé le reste."
 
 #: assets/data/progression.json
+msgid "Coming Home"
+msgstr "Le retour"
+
+#: assets/data/progression.json
 msgid "Crabs cracked"
 msgstr "Crabes décortiqués"
 
@@ -9455,10 +9479,6 @@ msgstr "Capitaine creux apaisé"
 #: assets/data/progression.json
 msgid "Hollow guards stood down"
 msgstr "Gardes creux relevés"
-
-#: assets/data/progression.json
-msgid "Home"
-msgstr "Maison"
 
 #: assets/data/progression.json
 msgid "Honest work's slower. The beer tastes better, though."
@@ -12187,6 +12207,10 @@ msgstr "Artisanat"
 #: scripts/inventory_screen.gd:14
 msgid "Food"
 msgstr "Vivres"
+
+#: scripts/inventory_screen.gd:14
+msgid "Home"
+msgstr "Maison"
 
 #: scripts/inventory_screen.gd:14
 msgid "Misc"
