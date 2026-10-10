@@ -193,9 +193,12 @@ drawn or the camera (`player.gd`, `gait.gd`, `juice.gd`, `puny_art.gd`,
 motion check runs three times first, alone, in a 640x360 window (where
 software rendering draws about thirty frames a second; a full-size one
 draws nine to eighteen, and the walk wobbles), after a first run that only
-warms the shaders, and fails the job on a step back too many: the motion
-flow `check.sh quick` calls for is run on the pull request. The pictures are the run's artifacts, and a
-comment on the pull request links them (the two sheets open in the
+warms the shaders, and fails the job unless two walks of the three stay
+within the motion flow's limit (a walk over it is a warning: software
+rendering now and then gives one walk a second step back, where the shake
+the check exists for steps back all along the walk). That is the motion
+flow `check.sh quick` calls for, run on the pull request. The pictures are
+the run's artifacts, and a comment on the pull request links them (the two sheets open in the
 browser). They are always of Shade's CC0 art alone: the repository is
 public, and so are its artifacts, so the paid art is never fetched there.
 The Mac's windowed runs (`flows.sh`, `lookbook.sh`, both muted) stay the

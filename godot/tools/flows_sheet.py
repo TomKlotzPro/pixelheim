@@ -14,10 +14,11 @@ on it, so an older run's pictures left in the folder aren't.
 """
 
 import os
-import re
 import sys
 
 from PIL import Image, ImageDraw, ImageFont
+
+from flows import read_flows
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 # Each picture at a quarter of the canvas, this many across.
@@ -31,9 +32,8 @@ FAILED = (232, 84, 64)
 
 
 def order():
-    """The flows' names as flows.sh lists them."""
-    with open(os.path.join(HERE, "flows.sh")) as file:
-        return re.findall(r'^\t"([a-z0-9-]+)\|', file.read(), re.M)
+    """The flows' names as flows.txt lists them."""
+    return [flow[0] for flow in read_flows()]
 
 
 def pictures(folder):
