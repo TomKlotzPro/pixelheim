@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.206.0",
+      "date": "2026-10-10",
+      "codename": "The Letters",
+      "notes": [
+        "A new beginning: Maren's five letters, written fifty years ago and never sent, wait in a tin under her hearthstone. You carry letters for a living, so you deliver them",
+        "Each letter is a chapter: Old Wenna in Saltmere, Old Pell in the Blackiron valley, Captain Hale's old guard at Greyhold and Aske on the Frostgate pass each answer with something Maren never knew",
+        "The opening and the dawn are rewritten: a dragon asleep on a chain, five who climbed and one who came home, and a courier who should have ridden south by noon",
+        "The relics now come in order, one region after another"
+      ]
+    },
+    {
       "version": "0.205.0",
       "date": "2026-10-10",
       "codename": "Plain Sight",

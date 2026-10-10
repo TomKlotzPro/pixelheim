@@ -1845,6 +1845,10 @@ msgid "A new Feats chapter in the journal: long goals - ten and thirty depths, e
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A new beginning: Maren's five letters, written fifty years ago and never sent, wait in a tin under her hearthstone. You carry letters for a living, so you deliver them"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A path is a permanent identity: an always-on passive theme and a SIGNATURE SKILL no tree can teach"
 msgstr ""
 
@@ -2422,6 +2426,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Each comes with a full 12-node skill tree, its own look palette, and a proven path to the final boss - the balance sim clears the game with all seven classes"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Each letter is a chapter: Old Wenna in Saltmere, Old Pell in the Blackiron valley, Captain Hale's old guard at Greyhold and Aske on the Frostgate pass each answer with something Maren never knew"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4605,6 +4613,10 @@ msgid "The Landlord"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Letters"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Maker's Mark"
 msgstr ""
 
@@ -4841,6 +4853,10 @@ msgid "The night classes stepped into the light: the necromancer's robes and the
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The opening and the dawn are rewritten: a dragon asleep on a chain, five who climbed and one who came home, and a courier who should have ridden south by noon"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The pack's Craft tab knows your home station: 'You are at your own workbench - craft freely'"
 msgstr ""
 
@@ -4878,6 +4894,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The release flows give the camera-smoothness check a second try, so a busy machine no longer fails it"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The relics now come in order, one region after another"
 msgstr ""
 
 #: assets/data/changelog.json
