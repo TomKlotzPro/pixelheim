@@ -44,6 +44,31 @@ func test_a_cell_centre_is_half_a_tile_in() -> void:
 	assert_eq(MapView.center(Vector2i(2, 3)), Vector2(40, 56))
 
 
+## PIX-286: Tom found things on the ground a bit big - a herb lay as big as
+## the hero. A pickup is its icon at half size, half a cell and narrower
+## than the hero's head, its pixels on the art's grid, on a shadow (only
+## under something), with a glint a pixel of the art.
+func test_a_pickup_lies_half_a_cell() -> void:
+	var icon := ImageTexture.create_from_image(Image.create(16, 16, false, Image.FORMAT_RGBA8))
+	var root: Node2D = autofree(MapView.pickup(icon, Vector2i(3, 4)))
+	assert_eq(root.position, MapView.center(Vector2i(3, 4)), "in the middle of its cell")
+	var item: Sprite2D = root.get_node("item")
+	var size: Vector2 = icon.get_size() * item.scale
+	assert_eq(size, Vector2.ONE * MapView.TILE / 2.0, "half a cell")
+	var corner: Vector2 = root.position + item.position - size / 2.0
+	assert_eq(corner, corner.round(), "on the art's grid")
+	# The hero's head: the figure's top seven rows (PunyArt.HEADS' cut).
+	var figure := PunyArt.frames(PunyArt.plain("warrior", 0)).get_frame_texture("idle_down", 0).get_image()
+	var used := figure.get_used_rect()
+	var head := figure.get_region(Rect2i(used.position, Vector2i(used.size.x, 7))).get_used_rect()
+	assert_lt(size.x, float(head.size.x), "narrower than the hero's head")
+	assert_true(root.get_children().any(func(node: Node) -> bool: return node is Sprite2D and node != item), "on a shadow")
+	var glint: ColorRect = item.get_child(0)
+	assert_eq(glint.size * item.scale, Vector2.ONE, "a glint, a pixel of the art")
+	var bare: Node2D = autofree(MapView.pickup(null, Vector2i(3, 4)))
+	assert_eq(bare.get_child_count(), 1, "without the paid icon, only the glint: no shadow of nothing")
+
+
 ## Camps (PIX-142): each wild pack's tent and torch stand on open ground of
 ## its region, never on its home or a door, and block like the art they are.
 func test_packs_camp_beside_their_homes() -> void:

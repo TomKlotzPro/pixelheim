@@ -48,6 +48,11 @@ const SHOTS := {
 	# The hero's walk (PIX-243), filmed (`film`) setting off, striding, turning
 	# right round and settling, then walking up the street.
 	"walk": {"area": "town", "map": "town", "cell": Vector2i(38, 13), "time": DAY, "walk": true},
+	# Turning in the walk (PIX-293), filmed: down, then right with both keys
+	# held a moment on the way (the diagonal), up then left the same way,
+	# and down then right with no overlap; then a diagonal held and one key
+	# let go.
+	"turn": {"area": "town", "map": "town", "cell": Vector2i(38, 13), "time": DAY, "walk": true, "legs": "turn"},
 	# Odo's store rising out of its ruin on the town's tour (PIX-264).
 	"rise": {"area": "town", "map": "town", "at": "street", "time": DAY, "rise": "odos_store"},
 	"inn_night": {"area": "rooms", "map": "town_inn", "time": NIGHT},
@@ -71,6 +76,16 @@ const SHOTS := {
 	"village_road": {"area": "reach", "map": "overworld", "cell": Vector2i(48, 40), "time": DAY},
 	"village_gate_night": {"area": "reach", "map": "overworld", "cell": Vector2i(48, 41), "time": NIGHT},
 	"village_west_night": {"area": "reach", "map": "overworld", "cell": Vector2i(34, 47), "time": NIGHT},
+	# Things lying on the ground beside the hero (PIX-286): the pouch on the
+	# road west of the village where it lies, and a patch of each kind laid
+	# round it, half a cell each.
+	"drops": {
+		"area": "reach", "map": "overworld", "cell": Vector2i(42, 59), "time": DAY,
+		"drops": {
+			Vector2i(40, 60): "forest_herb", Vector2i(41, 61): "blackiron_ore", Vector2i(43, 61): "ember_shard",
+			Vector2i(44, 59): "sea_glass", Vector2i(44, 57): "frost_lily", Vector2i(42, 57): "old_steel",
+		},
+	},
 	"mire": {"area": "regions", "map": "mirefen", "time": DAY},
 	"frostgate": {"area": "regions", "map": "frostgate", "time": DAY},
 	"coast": {"area": "regions", "map": "saltmere", "cell": Vector2i(33, 27), "time": DAY},
@@ -110,6 +125,15 @@ const WALK_SLOW := 0.25
 const WALK_STEP := 1.0 / 30.0
 const WALK_CROP := Vector2(22, 26)
 const WALK_LEGS := [[Vector2.ZERO, 3], [Vector2.RIGHT, 20], [Vector2.LEFT, 12], [Vector2.ZERO, 9], [Vector2.UP, 12], [Vector2.ZERO, 9]]
+## The turning walk's legs (PIX-293), keys as a player holds them: a
+## diagonal is two keys at once.
+const TURN_LEGS := [
+	[Vector2.ZERO, 3], [Vector2.DOWN, 12], [Vector2(0.7071068, 0.7071068), 6], [Vector2.RIGHT, 12], [Vector2.ZERO, 9],
+	[Vector2.UP, 12], [Vector2(-0.7071068, -0.7071068), 6], [Vector2.LEFT, 12], [Vector2.ZERO, 9],
+	[Vector2.DOWN, 12], [Vector2.RIGHT, 12], [Vector2(0.7071068, -0.7071068), 12], [Vector2.UP, 12], [Vector2.ZERO, 9],
+]
+## Each filmed walk's legs, by the shot's `legs`.
+const LEGS := {"walk": WALK_LEGS, "turn": TURN_LEGS}
 ## The strip of crops: this many across.
 const STRIP_COLUMNS := 11
 ## A clip's frames, in seconds after the rise begins: the ruin, giving way
@@ -204,7 +228,7 @@ func run() -> void:
 			line += "  " + await PerfProbe.sample(self, 180)
 		print(line)
 		if with_motion and shot.get("walk", false):
-			await _film_walk(shot["name"])
+			await _film_walk(shot["name"], LEGS[shot.get("legs", "walk")])
 		elif with_motion:
 			await _film(shot["name"], shot.get("strike", false))
 		# A screen a shot opened goes, so the next finds the world its own.
@@ -251,6 +275,9 @@ func _stage(shot: Dictionary) -> void:
 		# At the top of a room's stair, facing it (PIX-256): the stairs ask
 		# once the world has drawn the hero turned (run).
 		world.player.face(Vector2.UP)
+	for cell: Vector2i in shot.get("drops", {}):
+		# Laid as the map lays a patch (MapView.pickup), gone with the visit.
+		world.view.ground.add_child(MapView.pickup(ItemIcons.texture(shot["drops"][cell]), cell))
 	if shot.has("chart"):
 		# The map over a hero who has walked it all, a waypoint chosen.
 		Atlas.walk_all(GameState.world.discovered)
@@ -289,15 +316,16 @@ func _film(shot_name: String, strike := false) -> void:
 
 ## The hero's walk (PIX-243), slowed to WALK_SLOW: standing, setting off to
 ## the right, a stride, turning right round, settling, then up the street
-## and settling again (the back's four beats). Every picture is cropped round
-## the hero into <out>/motion/<shot>/NN.png, and all of them, in order and
-## STRIP_COLUMNS across, into walk_strip.png beside them.
-func _film_walk(shot_name: String) -> void:
+## and settling again (the back's four beats); or another walk's `legs`
+## (the turns, PIX-293). Every picture is cropped round the hero into
+## <out>/motion/<shot>/NN.png, and all of them, in order and STRIP_COLUMNS
+## across, into walk_strip.png beside them.
+func _film_walk(shot_name: String, legs: Array = WALK_LEGS) -> void:
 	var folder := "%s/motion/%s" % [out_dir, shot_name]
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(folder))
 	var crops: Array[Image] = []
 	Engine.time_scale = WALK_SLOW
-	for leg: Array in WALK_LEGS:
+	for leg: Array in legs:
 		world.player.scripted_dir = leg[0]
 		for picture in int(leg[1]):
 			# The game's time, not drawn frames: a window drawing faster than

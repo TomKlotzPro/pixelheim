@@ -116,6 +116,53 @@ func _word_with(villager: Node) -> void:
 		await _tap(KEY_E)
 
 
+## The turning walk's legs (PIX-293), as a player holds the keys: a way and
+## how long, two keys at once being a diagonal; a leg with a second way
+## swaps between the two every tick (a stick wobbling either side of the
+## line between down and down-right, 20 and 25 degrees off down).
+const TURNING := [
+	[Vector2.DOWN, 0.4], [Vector2(1, 1), 0.2], [Vector2.RIGHT, 0.4],
+	[Vector2.UP, 0.4], [Vector2(-1, -1), 0.2], [Vector2.LEFT, 0.4],
+	[Vector2.DOWN, 0.4], [Vector2.RIGHT, 0.4],
+	[Vector2(1, -1), 0.4], [Vector2.UP, 0.4], [Vector2.RIGHT, 0.3],
+	[Vector2(0.342, 0.94), 0.5, Vector2(0.423, 0.906)],
+]
+
+
+## The turning walk (PIX-293): TURNING's legs, the way the hero is drawn
+## read off the sprite every tick. turns= is the most times it changed in
+## any one second (a flicker between two ways shows as many), jumps= the
+## changes of more than an eighth of a turn at once (a snap round a corner,
+## where Shade drew the way between).
+func _turning(report: HarnessReport) -> void:
+	var ways: PackedStringArray = []
+	for leg: Array in TURNING:
+		for tick in roundi(float(leg[1]) * Engine.physics_ticks_per_second):
+			var way: Vector2 = leg[2] if leg.size() > 2 and tick % 2 == 1 else leg[0]
+			world.player.scripted_dir = way.normalized()
+			await get_tree().physics_frame
+			ways.append(String(world.player.sprite.animation).trim_prefix("walk_").trim_prefix("idle_"))
+	world.player.scripted_dir = Vector2.ZERO
+	var changed: Array[int] = []
+	var jumps := 0
+	var drawn: PackedStringArray = [ways[0]]
+	for i in range(1, ways.size()):
+		if ways[i] == ways[i - 1]:
+			continue
+		changed.append(i)
+		drawn.append(ways[i])
+		var apart := absi(Gait.EIGHT.find(ways[i]) - Gait.EIGHT.find(ways[i - 1]))
+		if mini(apart, 8 - apart) > 1:
+			jumps += 1
+	var most := 0
+	for at in changed.size():
+		var within := changed.filter(func(i: int) -> bool: return i >= changed[at] and i < changed[at] + Engine.physics_ticks_per_second)
+		most = maxi(most, within.size())
+	print("TURNING %s" % " ".join(drawn))
+	report.note("turns", str(most))
+	report.note("jumps", str(jumps))
+
+
 ## Scripted steps, a fifth of a second each (l, r, u, d).
 func _walk(moves: PackedStringArray) -> void:
 	var dirs := {
@@ -548,6 +595,8 @@ func _run_test_harness() -> void:
 		# A hero found in too few frames would leave too few steps to judge:
 		# say so, not pass.
 		report.note("backsteps", str(back) if found >= 10 and found * 2 >= hero_x.size() else "lost")
+	if flags.has("turning"):
+		await _turning(report)
 	if flags.has("--walk"):
 		var clock := _frame_clock() if flags.has("crossing") else {}
 		await _walk(flags.list("--walk"))

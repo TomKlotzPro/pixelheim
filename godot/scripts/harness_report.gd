@@ -60,6 +60,7 @@ const TABLE := [
 	{"field": "gate", "says": "the gate the story keeps shut that said its line on this run (PIX-254)"},
 	{"field": "home", "says": "who the story brought home to live in town, by first name: wenna (PIX-255)"},
 	{"field": "jobs", "says": "on the Night of Bells: the townsfolk's jobs that have acted, by kind: arrows,bell,cheese (PIX-253 step 9)"},
+	{"field": "jumps", "says": "with turning: the hero's drawn way changing more than an eighth of a turn at once, a snap round a corner (PIX-293)"},
 	{"field": "letters", "says": "Maren's letters in the pack, once any is out (PIX-253)"},
 	{"field": "lit", "says": "on the Night of Bells: the lanterns on the square lit (PIX-253 step 9)"},
 	{"field": "logged", "says": "with floats: the lines the battle log showed (PIX-245)"},
@@ -85,6 +86,7 @@ const TABLE := [
 	{"field": "tab", "says": "with station: the tab the counter opened on (PIX-234)"},
 	{"field": "top", "says": "the screen drawn on top when one is opened over another (the title's Options); two sharing the top layer read a=b"},
 	{"field": "tracked", "says": "the quest or bounty followed, while the journal is open or one is (PIX-239)"},
+	{"field": "turns", "says": "with turning: the most times the way the hero is drawn changed in any one second, a flicker showing as many (PIX-293)"},
 	{"field": "wayout", "says": "on a dungeon's bottom floor: its ways straight out to its way in, by cell, as they opened - the door, then one where its boss fell - or none (PIX-292)"},
 ]
 ## How many of TABLE's first rows are the head every run shows.
@@ -393,6 +395,10 @@ func field_jobs() -> String:
 	return ",".join(kinds) if not kinds.is_empty() else "none"
 
 
+func field_jumps() -> String:
+	return noted("jumps")
+
+
 func field_letters() -> String:
 	var letters := _letters()
 	if letters.is_empty():
@@ -560,6 +566,10 @@ func field_tracked() -> String:
 	if not screens().has("journal_screen") and tracked == "":
 		return ""
 	return tracked if tracked != "" else "none"
+
+
+func field_turns() -> String:
+	return noted("turns")
 
 
 func field_wayout() -> String:

@@ -18,6 +18,12 @@ extends RefCounted
 ## a frame (Neighbours), the same units, so it draws the same map.
 
 const TILE := 16
+## Things lying on the ground to pick up (PIX-286): their icons at this
+## scale, half a cell; their shadow this far below their middle; and the
+## bob's beat, in seconds.
+const PICKUP_SCALE := 0.5
+const PICKUP_SHADOW := 3.0
+const PICKUP_BOB := 0.6
 
 var data: MapData
 ## What stands among the actors goes here: this drawing's own y-sorted layer
@@ -1001,25 +1007,31 @@ func _decor_chests() -> void:
 		if texture == null:
 			continue
 		var cell := Vector2i(int(chest["x"]), int(chest["y"]))
+		if chest["look"] != "chest":
+			# A pouch on the road, herbs in the grass: picked up, the size
+			# of what lies about (PIX-286).
+			var lying := pickup(texture, cell)
+			actors.add_child(lying)
+			chest_sprites[chest["id"]] = lying
+			continue
 		var sprite := Sprite2D.new()
 		sprite.texture = texture
 		sprite.position = center(cell)
 		sprite.add_to_group("decor")
 		actors.add_child(sprite)
 		chest_sprites[chest["id"]] = sprite
-		if chest["look"] == "chest":
-			# Furniture blocks the tile; ground treasure never does. The grid
-			# knows too, so nothing spawns or paces into it.
-			data.covered[cell] = true
-			var body := StaticBody2D.new()
-			var shape := CollisionShape2D.new()
-			var rect := RectangleShape2D.new()
-			rect.size = Vector2(TILE, TILE)
-			shape.shape = rect
-			body.add_child(shape)
-			body.position = center(cell)
-			body.add_to_group("decor")
-			actors.add_child(body)
+		# Furniture blocks the tile; ground treasure never does. The grid
+		# knows too, so nothing spawns or paces into it.
+		data.covered[cell] = true
+		var body := StaticBody2D.new()
+		var shape := CollisionShape2D.new()
+		var rect := RectangleShape2D.new()
+		rect.size = Vector2(TILE, TILE)
+		shape.shape = rect
+		body.add_child(shape)
+		body.position = center(cell)
+		body.add_to_group("decor")
+		actors.add_child(body)
 
 
 ## A cell's field decor: a bush or a stump that blocks, a tuft flat on the
@@ -1374,30 +1386,75 @@ func _add_smoke_thread(at: Vector2) -> void:
 	props.add_child(motes)
 
 
-## A patch on the ground: its material, with a glint that comes and goes so
-## it reads as something to pick; hidden while it grows back.
+## A patch on the ground: its material, hidden while it grows back.
 func _add_patch_sprite(cell: Vector2i) -> void:
 	var patch: Dictionary = patches[cell]
-	var root := Node2D.new()
-	root.position = center(cell)
-	root.add_to_group("decor")
-	var sprite := Sprite2D.new()
-	sprite.texture = ItemIcons.texture(patch["item"])
-	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	root.add_child(sprite)
-	var glint := ColorRect.new()
-	glint.color = Color(1, 1, 0.9)
-	glint.size = Vector2(1, 1)
-	glint.position = Vector2(3, -5)
-	glint.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	root.add_child(glint)
-	# The glint's own tween: it goes when the glint goes.
-	var twinkle := glint.create_tween().set_loops()
-	twinkle.tween_property(glint, "modulate:a", 0.0, 0.6).set_delay(absf(sin(cell.x * 12.9 + cell.y * 78.2)) * 1.5)
-	twinkle.tween_property(glint, "modulate:a", 1.0, 0.25)
+	var root := pickup(ItemIcons.texture(patch["item"]), cell)
 	ground.add_child(root)
 	patch_sprites[patch["id"]] = root
 	root.visible = Gathering.is_ready(GameState.world, patch["id"])
+
+
+## Something lying on the ground to pick up (PIX-286): Shade's 16 px icon at
+## half its size, half a cell and smaller than the hero's head (at full size
+## a herb lay as big as the hero), on a small shadow, lifting a pixel off it
+## and down again, with a glint that comes and goes, so it reads as
+## something to pick by more than its size. In the middle of `cell`, its
+## pixels on the art's grid; still with Reduce motion but for the glint.
+static func pickup(texture: Texture2D, cell: Vector2i) -> Node2D:
+	var root := Node2D.new()
+	root.position = center(cell)
+	root.add_to_group("decor")
+	var beat := absf(sin(cell.x * 12.9 + cell.y * 78.2))
+	# Without the paid icons only the glint shows, as before: no shadow of
+	# nothing.
+	if texture != null:
+		var shadow := Sprite2D.new()
+		shadow.texture = _pickup_shadow()
+		shadow.position = Vector2(0, PICKUP_SHADOW)
+		shadow.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		root.add_child(shadow)
+	var sprite := Sprite2D.new()
+	sprite.name = "item"
+	sprite.texture = texture
+	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	sprite.scale = Vector2.ONE * PICKUP_SCALE
+	root.add_child(sprite)
+	if not GameState.settings.reduce_motion:
+		# A whole pixel of the art up, a while, and down: its own tween,
+		# gone with it.
+		var bob := sprite.create_tween().set_loops()
+		bob.tween_interval(PICKUP_BOB * (0.5 + beat))
+		bob.tween_property(sprite, "position:y", -1.0, 0.0)
+		bob.tween_interval(PICKUP_BOB)
+		bob.tween_property(sprite, "position:y", 0.0, 0.0)
+		bob.tween_interval(PICKUP_BOB * (1.5 - beat))
+	var glint := ColorRect.new()
+	glint.color = Color(1, 1, 0.9)
+	glint.size = Vector2(2, 2)
+	glint.position = Vector2(4, -6)
+	glint.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	sprite.add_child(glint)
+	# The glint's own tween: it goes when the glint goes.
+	var twinkle := glint.create_tween().set_loops()
+	twinkle.tween_property(glint, "modulate:a", 0.0, 0.6).set_delay(beat * 1.5)
+	twinkle.tween_property(glint, "modulate:a", 1.0, 0.25)
+	return root
+
+
+## The shadow a pickup lies on: a soft dark lozenge, a little narrower than
+## the half-size icon, made once.
+static var _shadow_texture: Texture2D
+
+
+static func _pickup_shadow() -> Texture2D:
+	if _shadow_texture == null:
+		var image := Image.create(6, 2, false, Image.FORMAT_RGBA8)
+		image.fill(Color(0, 0, 0, 0.28))
+		for corner: Vector2i in [Vector2i(0, 0), Vector2i(5, 0), Vector2i(0, 1), Vector2i(5, 1)]:
+			image.set_pixelv(corner, Color(0, 0, 0, 0.12))
+		_shadow_texture = ImageTexture.create_from_image(image)
+	return _shadow_texture
 
 
 ## Deals day `day`'s wild patches (PIX-250), unless they're dealt already;

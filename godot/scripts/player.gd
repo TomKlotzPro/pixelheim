@@ -131,7 +131,7 @@ func _physics_process(delta: float) -> void:
 		velocity = dodge_dir * float(Bestiary._data()["dodge"]["speed"])
 		var rolled_from := global_position
 		move_and_slide()
-		gait.walk(_dir_name(), (global_position - rolled_from).length(), delta)
+		gait.walk(gait.drawn_way(dodge_dir, _dir_name()), (global_position - rolled_from).length(), delta)
 		return
 	if attacking:
 		if not hitbox.monitoring:
@@ -172,9 +172,11 @@ func _physics_process(delta: float) -> void:
 		# frame, the rise off the back foot.
 		if not gait.walking:
 			_spring_from(Juice.SET_OFF)
-		# A diagonal holds the way the hero faces rather than flickering.
-		face(Gait.VECTORS[Gait.steer(_dir_name(), input)])
-		gait.walk(_dir_name(), (global_position - from).length(), delta)
+		# A diagonal holds the way the hero faces (a swing, a word) rather
+		# than flickering; the walk is drawn eight ways, a diagonal facing
+		# it and a quarter turn through the way between (PIX-293).
+		_face(Gait.VECTORS[Gait.steer(_dir_name(), input)])
+		gait.walk(gait.drawn_way(input, _dir_name()), (global_position - from).length(), delta)
 	elif gait.rest(delta):
 		# Settling: the weight comes down onto both feet, unless a landing's
 		# spring is still playing out.
@@ -204,7 +206,16 @@ func _unhandled_input(event: InputEvent) -> void:
 			cast(index)
 			return
 
+## Turned to face `direction` (a word with someone, an arrival, a stage):
+## drawn that way at once, not on a diagonal a walk left (PIX-293).
 func face(direction: Vector2) -> void:
+	_face(direction)
+	if gait != null:
+		gait.face(_dir_name())
+
+
+## The way the hero faces, the nearest of the four to `direction`.
+func _face(direction: Vector2) -> void:
 	if absf(direction.x) >= absf(direction.y):
 		facing = Vector2.RIGHT if direction.x >= 0 else Vector2.LEFT
 	else:
@@ -235,7 +246,7 @@ func dodge() -> void:
 	if scripted_dir != Vector2.ZERO:
 		heading = scripted_dir
 	dodge_dir = heading.normalized() if heading != Vector2.ZERO else facing
-	face(dodge_dir)
+	_face(dodge_dir)
 	dodging = true
 	dodge_ready = false
 	Sound.play("dodge")
@@ -463,7 +474,7 @@ func respawn(at: Vector2) -> void:
 	hp = GameState.hero.hp
 	dead = false
 	sprite.modulate = Color.WHITE
-	facing = Vector2.DOWN
+	face(Vector2.DOWN)
 	_play("idle")
 
 func _die() -> void:
@@ -539,9 +550,16 @@ func _dir_name() -> String:
 
 
 ## Shade draws all four directions, so there's no mirroring. The walk is the
-## gait's (PIX-243); anything else played takes the hero out of it.
+## gait's (PIX-243); anything else played takes the hero out of it. The hero
+## stands the way the walk left them, a diagonal too (PIX-293); a swing, a
+## hurt or a fall turns them to the way they face.
 func _play(anim: String) -> void:
 	gait.halt()
-	var name := PunyArt.pick(sprite.sprite_frames, anim, _dir_name())
+	var way := _dir_name()
+	if anim == "idle":
+		way = gait.shown
+	else:
+		gait.face(way)
+	var name := PunyArt.pick(sprite.sprite_frames, anim, way)
 	if sprite.animation != name or not sprite.is_playing():
 		sprite.play(name)
