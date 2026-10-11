@@ -1,6 +1,18 @@
 {
   "releases": [
     {
+      "version": "0.223.0",
+      "date": "2026-10-11",
+      "codename": "The Night of Bells",
+      "notes": [
+        "Run home: the dragon comes back to Pixelheim, and this time the village is ready",
+        "Light the five lanterns on the square, drive off the embers and douse the burning roofs from the well",
+        "Hold the square against Fafnyr until dawn, with everyone you brought home: Teo's bell, Ulla's archers, Bram's cheese wheels, Loras's song, Iva's care and Sela's inn",
+        "At dawn Morvax comes down the mountain road, the collar comes off, and the dragon leaves a scale in the fountain and flies home, free",
+        "No more being stuck on \"Run home\": the night begins whether you come through the gate, load a save in town, or are already there"
+      ]
+    },
+    {
       "version": "0.222.0",
       "date": "2026-10-10",
       "codename": "Soft Light",

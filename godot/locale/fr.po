@@ -2081,6 +2081,10 @@ msgid "Aske waits by Liane's door at the observatory; deliver Maren's letter and
 msgstr "Aske attend près de la porte de Liane, à l'observatoire ; remettez-lui la lettre de Maren et il l'ouvre, et les calculs de Liane vous attendent sur son bureau"
 
 #: assets/data/changelog.json
+msgid "At dawn Morvax comes down the mountain road, the collar comes off, and the dragon leaves a scale in the fountain and flies home, free"
+msgstr "À l'aube, Morvax descend la route de la montagne, le collier tombe, et le dragon laisse une écaille dans la fontaine avant de rentrer chez lui, libre"
+
+#: assets/data/changelog.json
 msgid "At night its windows and lamps are lit, and smoke rises from its roofs"
 msgstr "La nuit, ses fenêtres et ses lanternes s'allument, et la fumée monte de ses toits"
 
@@ -3093,6 +3097,10 @@ msgid "Hit Feel"
 msgstr "Des coups qui portent"
 
 #: assets/data/changelog.json
+msgid "Hold the square against Fafnyr until dawn, with everyone you brought home: Teo's bell, Ulla's archers, Bram's cheese wheels, Loras's song, Iva's care and Sela's inn"
+msgstr "Tenez la place face à Fafnyr jusqu'à l'aube, avec tous ceux que vous avez ramenés : la cloche de Teo, les archers d'Ulla, les meules de fromage de Bram, le chant de Loras, les soins d'Iva et l'auberge de Sela"
+
+#: assets/data/changelog.json
 msgid "Home & Hearth"
 msgstr "Toit et foyer"
 
@@ -3307,6 +3315,10 @@ msgstr "L'ombre et la lumière"
 #: assets/data/changelog.json
 msgid "Light on Your Feet"
 msgstr "Le pied léger"
+
+#: assets/data/changelog.json
+msgid "Light the five lanterns on the square, drive off the embers and douse the burning roofs from the well"
+msgstr "Allumez les cinq lanternes de la place, chassez les braises et éteignez les toits en feu avec l'eau du puits"
 
 #: assets/data/changelog.json
 msgid "Lights Up"
@@ -3591,6 +3603,10 @@ msgstr "Veille de nuit"
 #: assets/data/changelog.json
 msgid "No more ambushes. Monsters are VISIBLE in the wilds now - see them prowl, choose your fights"
 msgstr "Fini les embuscades. Les monstres sont désormais VISIBLES dans les terres sauvages - regardez-les rôder, choisissez vos combats"
+
+#: assets/data/changelog.json
+msgid "No more being stuck on \"Run home\": the night begins whether you come through the gate, load a save in town, or are already there"
+msgstr "Fini le blocage sur « Rentrer au village » : la nuit commence que vous passiez la porte, chargiez une sauvegarde au village ou y soyez déjà"
 
 #: assets/data/changelog.json
 msgid "No more glow around the hero at higher ranks: you look the same at every rank, and your gear is what shows. The rank-up moment stays, a burst of your class's light"
@@ -4071,6 +4087,10 @@ msgstr "De la marge"
 #: assets/data/changelog.json
 msgid "Rooms Upstairs"
 msgstr "Les pièces d'en haut"
+
+#: assets/data/changelog.json
+msgid "Run home: the dragon comes back to Pixelheim, and this time the village is ready"
+msgstr "Rentrez au village : le dragon revient sur Pixelheim, et cette fois le village est prêt"
 
 #: assets/data/changelog.json
 msgid "Running Scared"

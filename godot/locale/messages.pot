@@ -2081,6 +2081,10 @@ msgid "Aske waits by Liane's door at the observatory; deliver Maren's letter and
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "At dawn Morvax comes down the mountain road, the collar comes off, and the dragon leaves a scale in the fountain and flies home, free"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "At night its windows and lamps are lit, and smoke rises from its roofs"
 msgstr ""
 
@@ -3093,6 +3097,10 @@ msgid "Hit Feel"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Hold the square against Fafnyr until dawn, with everyone you brought home: Teo's bell, Ulla's archers, Bram's cheese wheels, Loras's song, Iva's care and Sela's inn"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Home & Hearth"
 msgstr ""
 
@@ -3306,6 +3314,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Light on Your Feet"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Light the five lanterns on the square, drive off the embers and douse the burning roofs from the well"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3590,6 +3602,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "No more ambushes. Monsters are VISIBLE in the wilds now - see them prowl, choose your fights"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "No more being stuck on \"Run home\": the night begins whether you come through the gate, load a save in town, or are already there"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4070,6 +4086,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Rooms Upstairs"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Run home: the dragon comes back to Pixelheim, and this time the village is ready"
 msgstr ""
 
 #: assets/data/changelog.json
