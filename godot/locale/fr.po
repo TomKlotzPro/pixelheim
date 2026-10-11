@@ -2045,6 +2045,10 @@ msgid "A foe gives you longer to see its bite coming, and shows it: it crouches 
 msgstr "Un ennemi vous laisse plus de temps pour voir venir sa morsure, et la montre : il se ramasse avec une lueur rouge et un son. Avec les Avertissements clairs, une bande au sol marque où elle tombera"
 
 #: assets/data/changelog.json
+msgid "A foe that spots you flashes a red burst, a frightened one a blue one, so danger and talk never look alike"
+msgstr "Un ennemi qui vous repère fait jaillir une étincelle rouge, un ennemi apeuré une bleue : le danger et la parole ne se confondent plus"
+
+#: assets/data/changelog.json
 msgid "A gold ! over someone with a quest for you, a gold ? over someone waiting for you to hand one in, and a grey ? while a quest you took from them is under way; Options can turn them off (Quest markers)"
 msgstr "Un « ! » doré au-dessus de qui a une quête pour vous, un « ? » doré au-dessus de qui attend que vous en remettiez une, et un « ? » gris tant qu'une quête prise auprès de lui est en cours ; les Options peuvent les masquer (Marqueurs de quête)"
 
@@ -2539,6 +2543,10 @@ msgstr "Encre nette"
 #: assets/data/changelog.json
 msgid "Clear Map"
 msgstr "Carte nette"
+
+#: assets/data/changelog.json
+msgid "Clear Signs"
+msgstr "Signes clairs"
 
 #: assets/data/changelog.json
 msgid "Clear Waters"
@@ -4149,6 +4157,10 @@ msgid "People live here now - talk to them with E, Enter or Space"
 msgstr "Des gens vivent ici désormais - parlez-leur avec E, Enter ou Space"
 
 #: assets/data/changelog.json
+msgid "People with something for you wear a speech bubble: \"!\" for a new quest, \"?\" to hand one in, gold when it's the main story"
+msgstr "Les personnes qui ont quelque chose pour vous portent une bulle : « ! » pour une nouvelle quête, « ? » pour en rendre une, dorée quand c'est l'histoire principale"
+
+#: assets/data/changelog.json
 msgid "Pitched Tents"
 msgstr "Tentes dressées"
 
@@ -5243,6 +5255,10 @@ msgstr "Les Terres sauvages mordent"
 #: assets/data/changelog.json
 msgid "The app shell slimmed from four hundred lines to a router: the soundscape, the ascension scene and the keyboard each live in their own room now"
 msgstr "La coquille de l'appli passe de quatre cents lignes à un simple routeur : l'ambiance sonore, la scène d'ascension et le clavier ont désormais chacun leur pièce"
+
+#: assets/data/changelog.json
+msgid "The arrow at the screen's edge is a brass arrow in the game's own style: gold for the main story, cream for anything else"
+msgstr "La flèche au bord de l'écran est une flèche de laiton dans le style du jeu : dorée pour l'histoire principale, crème pour le reste"
 
 #: assets/data/changelog.json
 msgid "The arrow toward your goal keeps clear of the line over the dock"
