@@ -76,6 +76,94 @@ static func calmed(at: Vector2, hero: Vector2) -> bool:
 	return at.distance_to(hero) > tiles("calmTiles")
 
 
+## A boss or a named monster never gives a chase up for a few steps
+## (PIX-232: walking off used to send it home whole), but it isn't bound to
+## one forever either (PIX-288: Old Greymaw hunted a hero gone far away, his
+## bar across the screen and every road out of the Reach barred). These are
+## its reasons; enemy.gd times them and gives up.
+##
+## Lost: so far behind the hero (bossLoseTiles) it's past the screen's
+## edge whichever way it lies (at play zoom the screen is some 27 cells
+## across). By distance alone, so a run reads the same with a window or
+## without.
+static func lost(at: Vector2, hero: Vector2) -> bool:
+	return at.distance_to(hero) > tiles("bossLoseTiles")
+
+
+## Strayed: a named monster of the wilds (Hunts.of_the_wilds) led out of its
+## ground, bossLeashTiles from its lair, by a hero now beyond its notice. A
+## hero fighting it at the edge of its ground keeps it there.
+static func strays(home: Vector2, at: Vector2, hero: Vector2) -> bool:
+	return at.distance_to(home) > tiles("bossLeashTiles") and not within_notice(at, hero)
+
+
+## The cell a point of the world is in.
+static func cell_of(at: Vector2) -> Vector2i:
+	return Vector2i((at / TILE).floor())
+
+
+## A foe's feet, centred on its position (enemy.gd's collision box).
+const FEET := Vector2(10, 8)
+
+
+## Whether a foe walks straight from `from` to `to` over open ground: every
+## cell under its feet's corners along the way, a few pixels at a time. A
+## boss charging straight at a hero across water or past a wall's end stood
+## against it forever (PIX-288); where this fails it follows a route.
+static func walks_straight(map: MapData, from: Vector2, to: Vector2) -> bool:
+	var along := to - from
+	var steps := maxi(1, ceili(along.length() / 4.0))
+	var half := FEET / 2.0
+	var corners: Array[Vector2] = [Vector2(-half.x, -half.y), Vector2(half.x - 0.01, -half.y), Vector2(-half.x, half.y - 0.01), half - Vector2(0.01, 0.01)]
+	for i in steps + 1:
+		var at := from + along * (float(i) / steps)
+		for corner in corners:
+			if not map.is_walkable(cell_of(at + corner)):
+				return false
+	return true
+
+
+## The open ground of `map` within `area` (cells), to route a foe over:
+## walkable cells, never a doorway or a way out (a foe never leaves its
+## map). Diagonal steps only past open corners, where its feet can't catch.
+static func route_grid(map: MapData, area: Rect2i) -> AStarGrid2D:
+	var grid := AStarGrid2D.new()
+	grid.region = area.intersection(Rect2i(Vector2i.ZERO, map.size))
+	grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_ONLY_IF_NO_OBSTACLES
+	grid.default_compute_heuristic = AStarGrid2D.HEURISTIC_OCTILE
+	grid.default_estimate_heuristic = AStarGrid2D.HEURISTIC_OCTILE
+	grid.update()
+	for y in range(grid.region.position.y, grid.region.end.y):
+		for x in range(grid.region.position.x, grid.region.end.x):
+			var cell := Vector2i(x, y)
+			if not map.is_walkable(cell) or map.portals.has(cell):
+				grid.set_point_solid(cell)
+	return grid
+
+
+## The area a foe at `from` routes within to reach `to`: both cells and
+## `margin` cells round them. A way round further than that (Greymaw's to a
+## hero across the river: by the bridge, twenty cells off) is no way.
+static func route_area(from: Vector2i, to: Vector2i, margin: int) -> Rect2i:
+	return Rect2i(from, Vector2i.ONE).merge(Rect2i(to, Vector2i.ONE)).grow(margin)
+
+
+## The way from `from` to `to` over `grid`, both cells included, or [] when
+## it has none. The two ends count as open whatever they stand on (a foe's
+## feet, or the hero's, may reach into a covered cell's open half).
+static func route(grid: AStarGrid2D, from: Vector2i, to: Vector2i) -> Array[Vector2i]:
+	var out: Array[Vector2i] = []
+	if not grid.is_in_boundsv(from) or not grid.is_in_boundsv(to):
+		return out
+	var shut := [grid.is_point_solid(from), grid.is_point_solid(to)]
+	grid.set_point_solid(from, false)
+	grid.set_point_solid(to, false)
+	out.assign(grid.get_id_path(from, to))
+	grid.set_point_solid(from, shut[0])
+	grid.set_point_solid(to, shut[1])
+	return out
+
+
 ## Where a frightened monster at `at` runs from a hero at `hero` (PIX-251):
 ## the step to the cell beside it that leads most straight away from the
 ## hero - sideways along a wall if it must - never across a blocked corner
