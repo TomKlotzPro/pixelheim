@@ -14,8 +14,6 @@ extends GutTest
 ## What moves among the lights a map lays: the hero's lantern and the
 ## flares of two spells landing at once.
 const MOVING := 3
-## Mountain floors to lay (DungeonFloor.plan), shallow to deep.
-const MOUNTAIN_FLOORS := [1, 4, 8, 12, 16]
 
 var _saved := {}
 
@@ -146,8 +144,6 @@ func test_every_dungeon_floor() -> void:
 		for entry: Dictionary in Depths.floors(dungeon_id):
 			if Depths.is_planned(entry["mapId"]):
 				_check(entry["mapId"], _drawn(MapData.load_by_id(entry["mapId"])))
-	for level: int in MOUNTAIN_FLOORS:
-		_check("the mountain's floor %d" % level, _drawn(DungeonFloor.plan(level)["map"]))
 
 
 ## The Reach and the regions round it, each drawn as Neighbours draws a map

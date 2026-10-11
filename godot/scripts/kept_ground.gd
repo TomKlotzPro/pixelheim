@@ -118,7 +118,7 @@ static func working(data: MapData, look: Dictionary, pad: int, slices: Slicer) -
 	kept._ring = pad + 2
 	kept._across = data.size.x + 2 * kept._ring
 	var ring_rows := data.size.y + 2 * kept._ring
-	kept._plane = ReachPlane.holds(data.id) and data.floor_level == 0
+	kept._plane = ReachPlane.holds(data.id)
 	kept.crowns_toned = PunyTerrain.region_toned(data.regions)
 	kept._tiles.resize(kept._across * ring_rows)
 	kept._terrain.resize(kept._across * ring_rows)
@@ -251,9 +251,6 @@ func _corner_rows(from: int) -> void:
 ## as it loads, before anything is drawn over it): kept, or dealt now. The
 ## decks are only read, never changed.
 static func decks(data: MapData) -> Dictionary:
-	# A dungeon's floor is dealt its own patch (Delve), and drawn anew each time.
-	if data.floor_level > 0:
-		return Gathering.decks(data)
 	var fingerprint := hash([data.grid.hash(), data.regions.hash(), data.portals.hash(), data.spawn])
 	var drawing := data.id + data.variant
 	var kept: Dictionary = _decks.get(drawing, {})
@@ -267,8 +264,6 @@ static func decks(data: MapData) -> Dictionary:
 ## The same, kept already, or dealt by `slices` a few hundred cells at a
 ## time (kept once its last slice has run).
 static func decks_working(data: MapData, slices: Slicer) -> void:
-	if data.floor_level > 0:
-		return
 	var fingerprint := hash([data.grid.hash(), data.regions.hash(), data.portals.hash(), data.spawn])
 	var kept: Dictionary = _decks.get(data.id + data.variant, {})
 	if not kept.is_empty() and int(kept["fingerprint"]) == fingerprint:

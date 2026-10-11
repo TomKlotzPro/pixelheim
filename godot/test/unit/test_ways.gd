@@ -245,7 +245,7 @@ func test_a_cave_mouth_is_come_at_from_its_road() -> void:
 		"..=...",
 		"..=...",
 		"......",
-	], {Vector2i(2, 1): {"kind": "dungeon", "dungeon": "undermountain"}})
+	], {Vector2i(2, 1): {"kind": "map", "mapId": "seacave", "x": 5, "y": 25}})
 	var way: Dictionary = Ways.on(data)[0]
 	assert_eq(way["kind"], "cave")
 	assert_eq(way["out"], Vector2i.UP, "in from the road below")
@@ -259,7 +259,7 @@ func test_a_door_in_the_rock_is_a_gate() -> void:
 		"^^D^^",
 		"..=..",
 		".....",
-	], {Vector2i(2, 1): {"kind": "dungeon", "dungeon": "mountain"}})
+	], {Vector2i(2, 1): {"kind": "map", "mapId": "vault_1", "x": 3, "y": 9, "barred": "vault"}})
 	var way: Dictionary = Ways.on(data)[0]
 	assert_eq(way["kind"], "gate")
 	assert_true(way["rock"], "set in the rock: drawn as Shade's castle gate, barred while the story bars it")

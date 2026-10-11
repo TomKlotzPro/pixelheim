@@ -319,50 +319,6 @@
         "seconds": 0.4
       }
     ],
-    "descent": [
-      {
-        "kind": "stage",
-        "stage": "dark"
-      },
-      {
-        "kind": "fade",
-        "to": "clear",
-        "seconds": 0.4
-      },
-      {
-        "kind": "eyes",
-        "at": [
-          640,
-          300
-        ],
-        "color": "#b46cff"
-      },
-      {
-        "kind": "caption",
-        "text": "Fafnyr's last breath rattles out of him, and with it, words.",
-        "hold": 3.2
-      },
-      {
-        "kind": "card",
-        "text": "\"The voice below...\"",
-        "sub": "\"...promised me your village. It lied - to us both.\""
-      },
-      {
-        "kind": "caption",
-        "text": "Behind the hoard, a stairway runs down into the dark.",
-        "hold": 3.2
-      },
-      {
-        "kind": "caption",
-        "text": "The Undermountain is open.",
-        "hold": 2.4
-      },
-      {
-        "kind": "fade",
-        "to": "black",
-        "seconds": 0.4
-      }
-    ],
     "morvax": [
       {
         "kind": "theme",
@@ -499,74 +455,6 @@
         "kind": "fade",
         "to": "black",
         "seconds": 0.8
-      }
-    ],
-    "crypt": [
-      {
-        "kind": "stage",
-        "stage": "dark"
-      },
-      {
-        "kind": "fade",
-        "to": "clear",
-        "seconds": 0.5
-      },
-      {
-        "kind": "caption",
-        "text": "Behind the Barrow Crypt's guardian: three graves under one stone, and a fourth name chiselled away.",
-        "hold": 4.0
-      },
-      {
-        "kind": "card",
-        "text": "Oskar, Liane and Tam",
-        "sub": "of the Ember Five, who held the stair."
-      },
-      {
-        "kind": "caption",
-        "text": "On the wall above them hangs a shield, its paint gone grey: MORVAX OF PIXELHEIM.",
-        "hold": 4.0
-      },
-      {
-        "kind": "fade",
-        "to": "black",
-        "seconds": 0.5
-      }
-    ],
-    "forge": [
-      {
-        "kind": "stage",
-        "stage": "dark"
-      },
-      {
-        "kind": "tint",
-        "color": "#ff6a2a",
-        "alpha": 0.18,
-        "seconds": 0.6
-      },
-      {
-        "kind": "fade",
-        "to": "clear",
-        "seconds": 0.5
-      },
-      {
-        "kind": "caption",
-        "text": "The Sunken Forge's great mould is cold. Something was cast here once - a disc of black iron the size of a cartwheel.",
-        "hold": 4.2
-      },
-      {
-        "kind": "caption",
-        "text": "On the anvil lies its twin: an old seal, cracked clean through.",
-        "hold": 3.4
-      },
-      {
-        "kind": "caption",
-        "text": "The crack runs from beneath. Someone broke it from below.",
-        "hold": 3.6
-      },
-      {
-        "kind": "fade",
-        "to": "black",
-        "seconds": 0.5
       }
     ],
     "dream_courier": [
@@ -998,15 +886,90 @@
         "to": "black",
         "seconds": 0.8
       }
+    ],
+    "vault_door": [
+      {
+        "kind": "stage",
+        "stage": "lair"
+      },
+      {
+        "kind": "fade",
+        "to": "clear",
+        "seconds": 0.5
+      },
+      {
+        "kind": "actor",
+        "sheet": "mini/RedDragon.png",
+        "family": "mini",
+        "frame": 32,
+        "anim": "walk",
+        "dir": "down",
+        "scale": 7,
+        "at": [
+          640,
+          380
+        ]
+      },
+      {
+        "kind": "caption",
+        "text": "Fafnyr lies along the summit in the sun, free, and opens one eye at you.",
+        "hold": 3.2
+      },
+      {
+        "kind": "caption",
+        "text": "\"Courier. You'll want the kings' gold, then. A hundred years I lay on it.\"",
+        "hold": 3.4
+      },
+      {
+        "kind": "caption",
+        "text": "\"Take it. It's all corners.\"",
+        "hold": 2.8
+      },
+      {
+        "kind": "card",
+        "text": "The Kings' Vault",
+        "sub": "Under the summit, the old kings' hoard."
+      },
+      {
+        "kind": "fade",
+        "to": "black",
+        "seconds": 0.4
+      }
+    ],
+    "vault_door_quiet": [
+      {
+        "kind": "stage",
+        "stage": "lair"
+      },
+      {
+        "kind": "fade",
+        "to": "clear",
+        "seconds": 0.5
+      },
+      {
+        "kind": "caption",
+        "text": "Under the summit, where the dragon lay, the old kings' door stands open on its hinges.",
+        "hold": 3.4
+      },
+      {
+        "kind": "caption",
+        "text": "The hoard is nobody's now. It might as well be yours.",
+        "hold": 3.0
+      },
+      {
+        "kind": "card",
+        "text": "The Kings' Vault",
+        "sub": "Under the summit, the old kings' hoard."
+      },
+      {
+        "kind": "fade",
+        "to": "black",
+        "seconds": 0.4
+      }
     ]
   },
   "moments": {
-    "boss:dragon": "fafnyr",
-    "boss:lich": "morvax",
-    "cleared:10": "descent",
     "victory": "ending",
-    "cleared:3": "crypt",
-    "cleared:7": "forge",
     "victory:rest": "ending_rest"
   },
   "lore": [

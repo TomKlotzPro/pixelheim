@@ -386,26 +386,23 @@ func _ambient_file(path: String) -> void:
 
 ## Which theme a moment deserves (trackForState): places, then a fight on top.
 ## `fight` is "" (none), "battle" or "boss".
-static func track_for(map_id: String, floor_level: int, fight: String) -> String:
+static func track_for(map_id: String, fight: String) -> String:
 	if fight != "":
 		return fight
-	if floor_level > 0:
+	# Every dungeon's floors play the way down (PIX-255; the Kings' Vault's
+	# too, PIX-257).
+	if not Depths.floor_of(map_id).is_empty():
 		return "descent"
-	# A region dungeon's floors play its first's (PIX-255).
-	match Depths.root(map_id):
+	match map_id:
 		"deepwood", "mirefen", "town":
 			return map_id
-		"seacave", "shafts", "cellars", "icecave":
-			return "descent"
 		"overworld", "demo", "saltmere", "blackiron", "greyhold", "frostgate":
 			return "world"
 	return "interior"
 
 
 ## Where the hero's ears are (ambienceForState).
-static func ambience_for(map_id: String, floor_level: int) -> String:
-	if floor_level > 0:
-		return "indoor"
+static func ambience_for(map_id: String) -> String:
 	match map_id:
 		"overworld", "town", "demo", "saltmere", "blackiron", "greyhold":
 			return "greenwood"

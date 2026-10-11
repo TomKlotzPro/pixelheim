@@ -131,9 +131,9 @@ func test_a_kill_pays_xp_and_gold_and_clears_the_spawn() -> void:
 	var log: Array = won["lines"]
 	assert_false(log.any(func(line: String) -> bool: return line.begins_with("Rent")), "no rent line per kill")
 	# PIX-245: the XP and gold float over the wolf, not in the log.
-	assert_eq([won["gains"]["xp"], won["gains"]["gold"]], [9, 9], "a wolf above a new hero pays a little more (PIX-189)")
+	assert_eq([won["gains"]["xp"], won["gains"]["gold"]], [7, 9], "a wolf above a new hero pays a little more (PIX-189; a quarter of a kill in the fields, PIX-294)")
 	assert_true(log.is_empty(), "nothing to read for a plain kill: %s" % [log])
-	assert_eq(state.hero.xp, 9)
+	assert_eq(state.hero.xp, 7)
 	assert_eq(state.pack.gold, 30 + 9)
 	assert_eq(state.world.slain, ["forest_2"])
 	assert_eq(slain, ["wolf"])
@@ -189,28 +189,21 @@ func test_in_the_ashes_the_hero_wakes_by_selas_tent() -> void:
 ## PIX-188: readable danger.
 func test_a_foe_shows_its_level_coloured_by_the_gap() -> void:
 	assert_eq(Bestiary.level_of(Bestiary.spawn("imp")), 14)
-	assert_eq(Bestiary.level_of(Bestiary.spawn("slime", false, Dungeons.lift(1))), 1 + Dungeons.lift(1), "a lifted slime is its floor's level")
+	assert_eq(Bestiary.level_of(Bestiary.spawn("slime", false, 11)), 12, "a lifted slime is its lifted level")
 	assert_eq(Bestiary.gap_color(14, 5), Color("ff5a4a"), "far above: red")
 	assert_eq(Bestiary.gap_color(6, 5), Color("ffb347"), "a step above: orange")
 	assert_eq(Bestiary.gap_color(5, 5), Color("f3e6c4"), "a match")
 	assert_eq(Bestiary.gap_color(1, 5), Color("a8a294"), "far below: grey")
 
 
-func test_every_floor_names_its_foes() -> void:
-	for level in range(1, Dungeons.floor_count() + 1):
-		assert_ne(Dungeons.epithet(level), "", "floor %d" % level)
-	assert_eq(Dungeons.epithet(1), "Cellar")
-	assert_eq(Dungeons.epithet(Dungeons.floor_count() + 3), "Deep")
-
-
 func test_the_codex_remembers_each_kind_and_the_level_it_was_met_at() -> void:
 	state.roll = _dice([0.99, 0.99, 0.99, 0.99])
-	state.spoils.defeat_monster(Bestiary.spawn("slime", false, Dungeons.lift(1)), "", "", 1)
-	assert_eq(int(state.progression.met["slime"]), 1 + Dungeons.lift(1))
+	state.spoils.defeat_monster(Bestiary.spawn("slime", false, 11), "", "", 1)
+	assert_eq(int(state.progression.met["slime"]), 12)
 	assert_false(state.progression.met.has("king_slime"), "one slime doesn't reveal its family")
 	var saved := {}
 	state.progression.write_into(saved)
-	assert_eq(int(saved["met"]["slime"]), 1 + Dungeons.lift(1))
+	assert_eq(int(saved["met"]["slime"]), 12)
 
 
 ## PIX-205: every class starts with a weapon for its own best stat, and a

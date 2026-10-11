@@ -110,8 +110,9 @@ func test_tags_and_compact_gold_speak_french() -> void:
 	assert_eq(InventoryScreen.sort_name("kind"), "type")
 	assert_eq(Ailments.label("burn"), "brûlure")
 	assert_string_contains(InventoryScreen.stat_line(Catalog.item("iron_sword"), 0, 120), "FOR")
-	# The journal's tags (PIX-239: FOLLOWING and READY, where its chapters said DONE and NEXT).
-	for tag: String in ["EQUIPPED", "SLAIN", "CLEARED", "FOLLOWING", "READY", "NEW", "BUILT", "COMMISSIONED", "SKILL", "UPGRADE", "PASSIVE", "locked"]:
+	# The journal's tags (PIX-239: FOLLOWING and READY, where its chapters said DONE and NEXT;
+	# the floor select's CLEARED left with the old floors, PIX-257).
+	for tag: String in ["EQUIPPED", "SLAIN", "FOLLOWING", "READY", "NEW", "BUILT", "COMMISSIONED", "SKILL", "UPGRADE", "PASSIVE", "locked"]:
 		assert_ne(Text.t(tag), tag, "%s is translated" % tag)
 	assert_eq(Text.listed(["la place", "les loyers"]), "la place\u202f; les loyers", "a narrow space before French's semicolon")
 	Text.apply("en")
@@ -148,16 +149,18 @@ func test_french_is_complete() -> void:
 	assert_eq(holes, [] as Array[String], "every string has its French, placeholders kept")
 
 
-## PIX-208: the corners French still missed.
-func test_french_reaches_signs_the_deep_and_the_cutscenes() -> void:
+## PIX-208: the corners French still missed (the Deep Hunt's name was one; the
+## Kings' Vault's is now, PIX-257).
+func test_french_reaches_signs_the_vault_and_the_cutscenes() -> void:
 	Text.apply("fr")
 	var owned: Dictionary = Interactables._data()["signsHouseOwned"]
 	for map_id: String in owned:
 		for sign_def: Dictionary in owned[map_id]:
 			assert_true(ShopSign.ICONS.has(sign_def["label"]), "%s keeps its icon" % sign_def["label"])
-	var english_deep: String = Dungeons.floor_def(Dungeons.floor_count() + 1)["name"]
+	var french_vault := String(Depths.dungeon("vault")["name"])
 	Text.apply("en")
-	assert_ne(Dungeons.floor_def(Dungeons.floor_count() + 1)["name"], english_deep, "the Deep Hunt's name follows the language")
+	assert_eq(String(Depths.dungeon("vault")["name"]), "The Kings' Vault")
+	assert_ne(String(Depths.dungeon("vault")["name"]), french_vault, "the Kings' Vault's name follows the language")
 	Text.apply("fr")
 	var titles: Array = []
 	for scene: String in Cutscene.scenes():

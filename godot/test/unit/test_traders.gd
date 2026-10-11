@@ -57,6 +57,6 @@ func test_buying_from_a_trader() -> void:
 	state.trade.stall_shop = "chandler"
 	state.pack.gold = 500
 	var gold: int = state.pack.gold
-	assert_true(state.trade.buy_item("longbow"))
-	assert_eq(state.pack.gold, gold - Economy.buy_price("longbow"))
+	assert_true(state.trade.buy_item("hunting_bow"))
+	assert_eq(state.pack.gold, gold - Economy.buy_price("hunting_bow"))
 	state.trade.stall_shop = ""

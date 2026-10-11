@@ -187,7 +187,7 @@ static func cloud_noise() -> NoiseTexture2D:
 func light_for(map: MapData) -> Color:
 	if map == null:
 		return Lights.DAY
-	if map.floor_level > 0 or map.style == "cave":
+	if map.style == "cave":
 		# A region dungeon's floor may keep its own dark (PIX-255).
 		return Color(map.light, 1.0) if map.light.a > 0.0 else Lights.UNDERGROUND
 	if GameState.progression.prologue != Prologue.DONE and map.id == "town":

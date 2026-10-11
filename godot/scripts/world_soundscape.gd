@@ -79,15 +79,16 @@ func refresh() -> void:
 		world.foes.hunted_by_boss = false
 	# A fallen boss's silence holds a moment before the place's music.
 	if now >= hushed_until and (Sound.track != "victory" or fight != ""):
-		Sound.play_track(Sound.track_for(world.map.id, world.map.floor_level, fight))
-	Sound.set_ambience(Sound.ambience_for(world.map.id, world.map.floor_level))
+		Sound.play_track(Sound.track_for(world.map.id, fight))
+	Sound.set_ambience(Sound.ambience_for(world.map.id))
 	# The soundscape changes slowly: twice a second is plenty.
 	soundscape_left -= get_process_delta_time()
 	if soundscape_left <= 0.0:
 		soundscape_left = 0.5
 		Sound.set_extras(_soundscape())
-		var windy: bool = world.map.floor_level > 0 or world.map.style == "cave" or world.map.id in WINDY_MAPS
-		var bed := ("deepwind" if world.map.floor_level > 10 else "wind") if windy else ""
+		var windy: bool = world.map.style == "cave" or world.map.id in WINDY_MAPS
+		# The Kings' Vault breathes the deeper wind (PIX-257): a dungeon's own.
+		var bed := Depths.wind(world.map.id) if windy else ""
 		Sound.set_bed("rain" if raining() else bed)
 
 
@@ -97,8 +98,6 @@ func refresh() -> void:
 ## Ash.
 func _soundscape() -> Array[String]:
 	var out: Array[String] = []
-	if world.map.floor_level > 0:
-		return out
 	# The roofs the Night of Bells' embers set alight burn too (PIX-253 step
 	# 9), and the crickets keep quiet all that night.
 	var bells: int = GameState.progression.bells if world.map.id == "town" else Bells.NONE

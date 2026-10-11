@@ -156,6 +156,10 @@ const BODIES := {
 	"blackiron_plate": "characters/Warrior-Blackiron.png",
 	"warden_hauberk": "characters/Guard-Warden.png",
 	"frostweave_robe": "characters/Mage-Frost.png",
+	# The shops' later tiers (PIX-294): colourways of their kind's looks.
+	"knights_mail": "characters/Guard-Knight.png",
+	"ranger_jerkin": "characters/Archer-Ranger.png",
+	"silkweave_robe": "characters/Mage-Silk.png",
 }
 ## Gloves and boots (PIX-174): Shade's hands are the skin below the neck,
 ## his boots the two leather browns along the figure's last rows. Worn ones

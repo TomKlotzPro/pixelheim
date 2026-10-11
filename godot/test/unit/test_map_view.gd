@@ -33,8 +33,7 @@ func test_blocking_scatter_is_covered_and_never_under_the_hero() -> void:
 
 
 func test_a_dungeon_floor_plans_no_houses_or_scatter() -> void:
-	var map := MapData.load_by_id("overworld")
-	map.floor_level = 1
+	var map := MapData.load_by_id("vault_1")
 	var view := MapView.new(map, null)
 	view.plan(map.spawn)
 	assert_true(view.buildings["pieces"].is_empty())

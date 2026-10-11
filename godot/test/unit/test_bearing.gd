@@ -69,8 +69,7 @@ func test_a_followed_quest_done_hands_back_to_the_story() -> void:
 
 ## The old mountain's floors left play (PIX-257): nothing leads to one.
 func test_no_lead_points_at_a_floor() -> void:
-	var floors: Array = Dungeons.dungeon("mountain")["floors"]
-	var step := {"text": "Climb", "when": {"kind": "cleared", "level": int(floors[0])}}
+	var step := {"text": "Climb", "when": {"kind": "cleared", "level": 1}}
 	var lead := Bearing.of_step(step, state.progression, state.settlement, state.pack.items)
 	assert_eq(lead["map_id"], "", "no gate opens onto the floors")
 	for at: Dictionary in MapData.load_by_id("overworld").portals.values():

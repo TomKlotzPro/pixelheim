@@ -28,7 +28,7 @@ static func _data() -> Dictionary:
 ## Ashes the elder and the mayor say their Ashes lines. While her tin waits
 ## (`tin_waits`, PIX-253) and her house is still ash, Maren stands digging
 ## in front of it rather than at the shrine.
-static func on_map(map_id: String, town_tier: int, settlers: Array, done: Variant = null, gate_open := true, deepest := 0, tin_waits := false) -> Array[Dictionary]:
+static func on_map(map_id: String, town_tier: int, settlers: Array, done: Variant = null, gate_open := true, tin_waits := false) -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	for npc: Dictionary in _data()["npcs"]:
 		if at_stall(npc, done):
@@ -46,12 +46,6 @@ static func on_map(map_id: String, town_tier: int, settlers: Array, done: Varian
 			elif npc.has("linesByTier"):
 				npc = npc.duplicate()
 				npc["lines"] = lines_for_tier(npc["linesByTier"], town_tier, npc["lines"])
-			# Maren hears how deep the hero has gone (PIX-216): the deepest
-			# milestone's word first.
-			var mark := Dungeons.milestone_reached(deepest)
-			if npc["id"] == "elder" and not mark.is_empty():
-				npc = npc.duplicate()
-				npc["lines"] = [Text.t(mark["elder"])] + Array(npc["lines"])
 			if npc["id"] == "elder" and tin_waits and done != null:
 				var dig := Letters.dig_spot(done)
 				if dig.x >= 0:

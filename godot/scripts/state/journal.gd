@@ -54,7 +54,7 @@ static func rows(progression: ProgressionState, settlement: SettlementState, ite
 		var row := _row(group, quest["id"], quest["name"], past_gates.call(Bearing.of_quest(quest, progression, settlement, items)), _asked(quest, progression, settlement))
 		row["ready"] = Quests.is_ready(quest, progression.quests, items)
 		by_group[group].append(row)
-	for notice: Dictionary in Hunts.notices(Bearing.board_floors(progression), progression.hunted):
+	for notice: Dictionary in Hunts.notices(Bearing.board_floors(progression, settlement), progression.hunted):
 		if notice["id"] in progression.hunted:
 			continue
 		var row := _row("bounties", notice["id"], notice["name"], past_gates.call(Bearing.of_bounty(notice)), Text.t("Its lair: %s. %s.") % [notice["where"], Hunts.reward_line(notice)])

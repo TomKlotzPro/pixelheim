@@ -76,8 +76,8 @@ static func gap_color(level: int, hero_level: int) -> Color:
 	return Color("a8a294")
 
 
-## A monster `lift` levels above its kind (PIX-170: the mountain's floors,
-## climbed last): each stat grows by the ratio of combat.json's floorLift
+## A monster `lift` levels above its kind (PIX-170; a dungeon floor's foes,
+## the Kings' Vault's the highest, PIX-257): each stat grows by the ratio of combat.json's floorLift
 ## curve at the new level to the curve at its own.
 ## Its poison and burn bite harder by the attack curve's ratio (PIX-186: a
 ## floor-2 goblin at level 12 no longer poisons for 2).
@@ -85,15 +85,8 @@ static func lifted(base: Dictionary, lift: int) -> Dictionary:
 	var out := base.duplicate()
 	var level := int(base["level"])
 	var curves: Dictionary = _data()["floorLift"]["curves"]
-	var rules: Dictionary = _data()["floorLift"]
-	var linear_from := int(rules.get("goldLinearFrom", 999))
 	for stat: String in curves:
-		var grown := _grown(curves[stat], level, level + lift)
-		# Past the mountain (the Deep Hunt, PIX-180) gold climbs by a step a
-		# level, not on its curve: depth 30 pays about 2.7x depth 1, not 6x.
-		if stat == "gold" and level + lift > linear_from:
-			grown = _grown(curves[stat], level, linear_from) * (1.0 + float(rules["goldLinearStep"]) * (level + lift - linear_from))
-		out[stat] = roundi(float(base[stat]) * grown)
+		out[stat] = roundi(float(base[stat]) * _grown(curves[stat], level, level + lift))
 	if base.get("inflicts") is Dictionary:
 		var inflicts: Dictionary = base["inflicts"].duplicate()
 		inflicts["power"] = roundi(float(inflicts["power"]) * _grown(curves["attack"], level, level + lift))
@@ -138,24 +131,20 @@ static func drops_of(monster_id: String) -> Array:
 
 
 static var _found := {}
-static var _found_floors := {}
 ## kind -> the regions where it comes out only after dark, named so (PIX-252).
 static var _found_at_night := {}
 ## kind -> the first spawn whose pack is of it: {mapId, x, y} (PIX-239).
 static var _homes := {}
 
 
-## Where a monster lives: the wild regions with a pack of it, then the floors
-## that field it (for "where to find" hints), then the regions where it
-## comes out only after dark, saying so ("the Ash Fields by night", PIX-252):
-## a hint's first few are where it is at any hour.
-static func where_found(monster_id: String, with_floors := true) -> Array[String]:
+## Where a monster lives: the regions with a pack of it (a dungeon's floors
+## are its region's), then the regions where it comes out only after dark,
+## saying so ("the Ash Fields by night", PIX-252): a hint's first few are
+## where it is at any hour.
+static func where_found(monster_id: String) -> Array[String]:
 	_learn_places()
 	var out: Array[String] = []
 	out.assign(_found.get(monster_id, []))
-	# The mountain's floors, once there's a way up (PIX-203).
-	if with_floors:
-		out.append_array(_found_floors.get(monster_id, []))
 	out.append_array(_found_at_night.get(monster_id, []))
 	return out
 
@@ -169,9 +158,9 @@ static func home_of(monster_id: String) -> Dictionary:
 	return _homes.get(monster_id, {})
 
 
-## Who lives where, learned once from the spawns and the floors.
+## Who lives where, learned once from the spawns.
 static func _learn_places() -> void:
-	if not (_found.is_empty() and _found_floors.is_empty()):
+	if not _found.is_empty():
 		return
 	var maps := {}
 	# kind -> region name -> whether a pack of it is out there by day.
@@ -200,13 +189,6 @@ static func _learn_places() -> void:
 				at_night.append(Text.t("%s by night") % name)
 		_found[species] = places
 		_found_at_night[species] = at_night
-	for level in range(1, _data()["levels"].size() + 1):
-		for encounter: Dictionary in _data()["levels"][level - 1]["encounters"]:
-			var places: Array = _found_floors.get(encounter["monsterId"], [])
-			var floor_name := Text.t("floor %d") % level
-			if floor_name not in places:
-				places.append(floor_name)
-			_found_floors[encounter["monsterId"]] = places
 
 
 ## Weighted as the region says (PIX-183: an Ash Fields spawn is twice as
@@ -352,28 +334,24 @@ static func monster_attack_damage(fighter: Dictionary, hero: HeroState, pack: In
 
 ## A kill's drop, or {} (rollDrop): chance by kind, then gear (gearShare by
 ## kind: a boss always drops gear, PIX-191) with a rarity roll, or a stack.
-## The wilds roll dropPools by the foe's level (`floor_level`); the mountain
-## (`mountain`, its real floor) rolls floorPools, each floor a step, and the
-## Deep Hunt's floors forge their gear deeper every few depths.
+## Kills roll dropPools by the foe's level (`floor_level`, never above its
+## region's cap); a floor that forges (`forged`: the Kings' Vault's, PIX-257)
+## forges its gear that deep (InventoryState.deepen, PIX-191).
 ## Returns {kind: "gear"|"stack", ...}.
-static func roll_drop(floor_level: int, kind: String, roll: Callable, mountain := 0, luck := 0.0) -> Dictionary:
+static func roll_drop(floor_level: int, kind: String, roll: Callable, forged := 0, luck := 0.0) -> Dictionary:
 	if roll.call() >= float(_data()["dropChance"][kind]) + luck:
 		return {}
-	var pools: Array = _data()["floorPools"]["pools"] if mountain > 0 else _data()["dropPools"]
-	var at := mini(mountain, Dungeons.floor_count()) if mountain > 0 else floor_level
+	var pools: Array = _data()["dropPools"]
 	var pool: Dictionary = pools[0]
 	for entry: Dictionary in pools:
-		if int(entry["floor"]) <= at:
+		if int(entry["floor"]) <= floor_level:
 			pool = entry
 	if roll.call() < float(_data()["gearShare"][kind]):
-		# The Deep Hunt deepens every slot's best (PIX-218), not only the
-		# mountain's last pool.
-		var gear_ids: Array = _data()["deepHunt"]["gearIds"] if mountain > Dungeons.floor_count() else pool["gearIds"]
-		var item_id: String = _pick(gear_ids, roll)
+		var item_id: String = _pick(pool["gearIds"], roll)
 		var rarity := _roll_rarity(_data()["rarityWeights"][kind], roll)
 		var gear := InventoryState.create_gear(item_id, rarity, roll)
-		if mountain > Dungeons.floor_count():
-			InventoryState.deepen(gear, Dungeons.deep_tier(mountain), roll)
+		if forged > 0:
+			InventoryState.deepen(gear, forged, roll)
 		return {"kind": "gear", "gear": gear}
 	return {"kind": "stack", "itemId": _pick(pool["stackIds"], roll)}
 

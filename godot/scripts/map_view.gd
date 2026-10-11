@@ -239,7 +239,7 @@ func _plan_houses() -> void:
 	# on the first visit this session and kept (KeptGround, PIX-269).
 	patch_decks = KeptGround.decks(data)
 	# Far off (the overworld) the town's block of roofs is the village, small.
-	var near := data.floor_level == 0 and data.id not in PunyTerrain.SKYLINE_MAPS
+	var near := data.id not in PunyTerrain.SKYLINE_MAPS
 	buildings = PunyTown.compose(data.grid) if near else {"pieces": {}, "decor": {}, "freed": []}
 	# What a house covers is house: its corners stop the hero and villagers
 	# too; the roof cells it leaves open are ground.
@@ -252,7 +252,7 @@ func _plan_houses() -> void:
 	# what each age added. Only drawn: the block's cells stay as they are.
 	# Kept while the town doesn't change (KeptGround.skyline).
 	skyline = {}
-	if data.floor_level == 0 and data.id in PunyTerrain.SKYLINE_MAPS:
+	if data.id in PunyTerrain.SKYLINE_MAPS:
 		var done := Town.done_projects(GameState.settlement)
 		var ruins: Array = Town.ruins(done).map(func(ruin: Dictionary) -> Rect2i: return ruin["rect"])
 		skyline = KeptGround.skyline(data, done, ruins)
@@ -261,7 +261,7 @@ func _plan_houses() -> void:
 	# One wall round the village, its gatehouse where the road runs through
 	# (PIX-248): the town's, or the ring round it far off.
 	rampart = {}
-	if data.floor_level == 0 and data.id in Rampart.MAPS:
+	if data.id in Rampart.MAPS:
 		rampart = Rampart.plan(data.grid, Rampart.ashen(Town.done_projects(GameState.settlement)))
 	elif not skyline.is_empty():
 		rampart = skyline["rampart"]
@@ -289,7 +289,7 @@ func _plan_room() -> void:
 ## stand on blocks, even ground the web left open (the fountain's basin).
 ## Then the packs' camps, and the town's boards, stalls and tent.
 func _plan_props() -> void:
-	var outdoor := data.floor_level == 0 and PunyTerrain.is_outdoor(data.grid)
+	var outdoor := PunyTerrain.is_outdoor(data.grid)
 	outdoor_props = KeptGround.props(data) if outdoor else {"props": [], "flat": {}, "drawn": {}}
 	data.covered = {}
 	for prop: Dictionary in outdoor_props["props"]:
@@ -329,10 +329,8 @@ func _plan_props() -> void:
 ## blocks its cells, and a burnt bridge has no planks there. Then the ways
 ## on, and today's patches (PIX-250): a few dealt from each region's ground.
 func _plan_gates() -> void:
-	gates = []
 	gate_hides = {}
-	if data.floor_level == 0:
-		gates = Gates.closed_on(data.id, GameState.progression, GameState.settlement, GameState.world.discovered)
+	gates = Gates.closed_on(data.id, GameState.progression, GameState.settlement, GameState.world.discovered)
 	for gate: Dictionary in gates:
 		for cell: Vector2i in Gates.cells_of(gate):
 			data.covered[cell] = true
@@ -380,7 +378,7 @@ static func parts_of(slices: Slicer) -> Dictionary:
 ## few rows at a time, then the rest. The plan has run.
 func building(root: Node, slices: Slicer) -> void:
 	slices.add("ground_setup", _setup.bind(root))
-	if data.floor_level > 0 or data.style == "cave":
+	if data.style == "cave":
 		slices.add("ground_dungeon", func() -> void: _ground_root(_build_dungeon(data)))
 	elif buildings.has("floor"):
 		slices.add("ground_room", func() -> void: _ground_root(_build_room(data)))
@@ -638,12 +636,13 @@ func _ground_pieces() -> void:
 			if rampart["scorched"].has(cell) == scorched:
 				PunyTown.place(layer, cell, rampart["pieces"][cell])
 	# A gate set in the rock (the Ashen Mountain's, PIX-269; its other side
-	# at the foot of the mountain road, PIX-253 step 8), where nothing stood
-	# in the notch: Shade's castle gate, its portcullis down while the story
-	# bars it (`barred`, until Maren's promise).
+	# at the foot of the mountain road, PIX-253 step 8; the Kings' Vault's
+	# door under the summit, PIX-257), where nothing stood in the notch:
+	# Shade's castle gate, its portcullis down while the story bars it
+	# (`barred`: until Maren's promise, until the dragon is freed).
 	for way: Dictionary in ways:
 		if way["rock"]:
-			var barred: bool = way["to"].get("barred", false) and not Relics.gate_open(GameState.progression)
+			var barred: bool = Ways.barred(way["to"], GameState.progression, GameState.settlement)
 			PunyTerrain.place(_objects_layer, way["at"], Ways.ROCK_GATE_BARRED if barred else Ways.ROCK_GATE)
 	if _growth_layer != null:
 		for cell: Vector2i in skyline["growth"]:
@@ -1049,10 +1048,10 @@ static func _still(motes: CPUParticles2D) -> CPUParticles2D:
 ## Field decor that blocks (Scatter.solid), kept off the cell the hero
 ## arrives on, villagers' homes and chests.
 func _solid_scatter(data: MapData, arrival: Vector2i) -> Dictionary:
-	if data.floor_level > 0 or not PunyTerrain.is_outdoor(data.grid):
+	if not PunyTerrain.is_outdoor(data.grid):
 		return {}
 	var kept := {arrival: true}
-	for npc: Dictionary in Npcs.on_map(data.id, GameState.settlement.town_tier, GameState.settlement.settlers, Town.done_projects(GameState.settlement), Relics.gate_open(GameState.progression), GameState.progression.deepest, Letters.tin_waits(GameState.progression)):
+	for npc: Dictionary in Npcs.on_map(data.id, GameState.settlement.town_tier, GameState.settlement.settlers, Town.done_projects(GameState.settlement), Relics.gate_open(GameState.progression), Letters.tin_waits(GameState.progression)):
 		kept[Vector2i(int(npc["x"]), int(npc["y"]))] = true
 	for chest: Dictionary in Interactables.chests_on(data.id):
 		kept[Vector2i(int(chest["x"]), int(chest["y"]))] = true
@@ -1072,7 +1071,7 @@ func _solid_scatter(data: MapData, arrival: Vector2i) -> Dictionary:
 ## drawn once for the visit, would stand empty all day.
 static func plan_camps(map: MapData) -> Dictionary:
 	var out := {}
-	if map.floor_level > 0 or map.style == "cave":
+	if map.style == "cave":
 		return out
 	for spawn: Dictionary in Bestiary.spawns_on(map.id):
 		if Packs.of_the_night(spawn):
@@ -1373,12 +1372,6 @@ func _add_smoke_thread(at: Vector2) -> void:
 	motes.z_index = 6
 	motes.add_to_group("decor")
 	props.add_child(motes)
-
-
-## A patch the world adds after planning (a dungeon floor's).
-func add_patch(cell: Vector2i, spot_id: String, item_id: String) -> void:
-	patches[cell] = {"id": spot_id, "item": item_id}
-	_add_patch_sprite(cell)
 
 
 ## A patch on the ground: its material, with a glint that comes and goes so
@@ -1804,7 +1797,7 @@ func _blockers_setup() -> void:
 
 
 func _blocker_rows(i: int) -> void:
-	var ruins := data.floor_level == 0 and PunyTerrain.is_outdoor(data.grid)
+	var ruins := PunyTerrain.is_outdoor(data.grid)
 	# The gatehouse's towers block a cell above the wall too (PIX-248).
 	var towers: Array = rampart.get("covers", [])
 	for y in range(i * BLOCK, mini((i + 1) * BLOCK, data.size.y)):

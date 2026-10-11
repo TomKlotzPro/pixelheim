@@ -286,6 +286,123 @@
         "qty": 1
       },
       "said": "A guard's badge on the last slab, the tower on it rubbed smooth by somebody's thumb."
+    },
+    {
+      "id": "grotto_hoard",
+      "mapId": "seacave_grotto",
+      "x": 34,
+      "y": 12,
+      "look": "chest",
+      "loot": {
+        "kind": "gear",
+        "itemId": "duelists_ring"
+      },
+      "said": "Behind the Tidecaller's rock, a smuggler's strongbox, and in it a duellist's ring nobody came back for."
+    },
+    {
+      "id": "seam_hoard",
+      "mapId": "shafts_blackseam",
+      "x": 37,
+      "y": 8,
+      "look": "chest",
+      "loot": {
+        "kind": "gear",
+        "itemId": "wyrm_visor"
+      },
+      "said": "Hung on a peg by the seam, a helm that's no miner's: a wyrm's visor, hammered from something black and scaly."
+    },
+    {
+      "id": "hall_hoard",
+      "mapId": "cellars_hall",
+      "x": 35,
+      "y": 9,
+      "look": "chest",
+      "loot": {
+        "kind": "gear",
+        "itemId": "moon_pendant"
+      },
+      "said": "In the captain's chest, under fifty years of orders nobody gave: a pendant with a moon in it."
+    },
+    {
+      "id": "glass_hoard",
+      "mapId": "icecave_glass",
+      "x": 36,
+      "y": 5,
+      "look": "chest",
+      "loot": {
+        "kind": "gear",
+        "itemId": "dragonbane"
+      },
+      "said": "A sword with a dragon etched down the blade, made for a fight up the mountain that nobody came back to have."
+    },
+    {
+      "id": "vault_bow",
+      "mapId": "vault_1",
+      "x": -1,
+      "y": -1,
+      "look": "chest",
+      "loot": {
+        "kind": "gear",
+        "itemId": "gale_longbow",
+        "rarity": "fine",
+        "forged": 1
+      },
+      "said": "A king's hunting bow, strung and waiting a hundred years. The string still sings when you touch it."
+    },
+    {
+      "id": "vault_blade",
+      "mapId": "vault_2",
+      "x": -1,
+      "y": -1,
+      "look": "chest",
+      "loot": {
+        "kind": "gear",
+        "itemId": "obsidian_blade",
+        "rarity": "fine",
+        "forged": 1
+      },
+      "said": "The one strongbox the dragon didn't sit on, and in it the Obsidian Blade, black as the inside of a mountain."
+    },
+    {
+      "id": "vault_armour",
+      "mapId": "vault_3",
+      "x": -1,
+      "y": -1,
+      "look": "chest",
+      "loot": {
+        "kind": "gear",
+        "itemId": "runic_armor",
+        "rarity": "fine",
+        "forged": 2
+      },
+      "said": "A king's own mail, laid at his stone feet. It fits you better than it fits him now."
+    },
+    {
+      "id": "vault_staff",
+      "mapId": "vault_4",
+      "x": -1,
+      "y": -1,
+      "look": "chest",
+      "loot": {
+        "kind": "gear",
+        "itemId": "starfall_staff",
+        "rarity": "fine",
+        "forged": 2
+      },
+      "said": "A staff with a star caught in its head, packed in straw against the damp by somebody very careful, a hundred years ago."
+    },
+    {
+      "id": "vault_hoard",
+      "mapId": "vault_5",
+      "x": -1,
+      "y": -1,
+      "look": "chest",
+      "loot": {
+        "kind": "item",
+        "itemId": "dragon_scale",
+        "qty": 3
+      },
+      "said": "Scales the size of shields, shed on the hoard over a hundred years of bad sleep. Hilda will want these."
     }
   ],
   "signs": {

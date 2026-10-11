@@ -41,16 +41,17 @@ func test_the_wilds_have_more_stories() -> void:
 ## PIX-186: sized for real time. A hero matched to the boss (their level,
 ## the stage's weapon forged up two, their points in what they hit with),
 ## swinging every 0.45 s for half the fight (the rest is spent stepping out
-## of marks and closing in), takes 20-45 s to bring Fafnyr or Morvax down:
-## long enough for all three phases.
-const WEAPONS := {"warrior": "warden_longsword", "mage": "rime_staff", "ranger": "deeproot_bow"}
+## of marks and closing in), takes 20-45 s to bring it down: long enough to
+## be a fight. Fafnyr and Morvax were measured on the old floors 10 and 15;
+## since PIX-257 the last guardian is the Hollow King, on the Kings' Vault's
+## hoard, and the stage's weapons are the Vault's finds.
+const WEAPONS := {"warrior": "obsidian_blade", "mage": "starfall_staff", "ranger": "gale_longbow"}
 const MAIN := {"warrior": ["strength", 2], "mage": ["intelligence", 3], "ranger": ["dexterity", 3]}
 const UPTIME := 0.5
 
 
-func test_the_great_bosses_last_through_their_three_phases() -> void:
-	for floor_level: int in [10, 15]:
-		var boss := Bestiary.spawn(Dungeons.boss_of(floor_level)["monsterId"], false, Dungeons.lift(floor_level))
+func test_the_last_guardian_lasts_a_real_fight() -> void:
+	for boss: Dictionary in [Hunts.fighter("hollow_king")]:
 		for role: String in WEAPONS:
 			var hero := HeroState.create("Match", role)
 			hero.level = int(boss["level"])
@@ -67,14 +68,14 @@ func test_the_great_bosses_last_through_their_three_phases() -> void:
 
 
 func test_a_guardian_outlasts_its_kind() -> void:
-	var plain := Bestiary.spawn("wyvern", false, Dungeons.lift(9))
-	var guardian := Bestiary.spawn("wyvern", true, Dungeons.lift(9))
+	var plain := Bestiary.spawn("wyvern", false, 7)
+	var guardian := Bestiary.spawn("wyvern", true, 7)
 	assert_eq(guardian["maxHp"], roundi(plain["maxHp"] * 2.25))
-	assert_gt(Bestiary.spawn("dragon", false, Dungeons.lift(10))["maxHp"], guardian["maxHp"] * 3, "Fafnyr far outlasts the wyvern before him")
+	assert_gt(Bestiary.spawn("dragon", false, 6)["maxHp"], guardian["maxHp"] * 3, "Fafnyr far outlasts a wyvern guardian")
 
 
 func test_the_dead_rise_at_their_masters_level() -> void:
-	var morvax := Bestiary.spawn("lich", false, Dungeons.lift(15))
+	var morvax := Bestiary.spawn("lich", false, 3)
 	var summon: String = Bestiary._data()["bossPatterns"]["lich"]["summon"]
 	var risen := Bestiary.spawn(summon, false, Bestiary.lift_to(summon, int(morvax["level"])))
 	assert_eq(int(risen["level"]), int(morvax["level"]))

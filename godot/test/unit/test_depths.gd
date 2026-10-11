@@ -4,24 +4,22 @@ extends GutTest
 ## every one reached from the entrance down the stairs and back up them,
 ## each harder than the one above, the Tidecaller at the bottom and the
 ## tide door straight out to the beach once he's down; the planned floor
-## the same every visit; the Undermountain laid as it was; old saves at
+## the same every visit; every planned floor laid as it was; old saves at
 ## each stage; and Old Wenna coming home to Sela's inn with Tam's stew.
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
 const STEPS: Array[Vector2i] = [Vector2i.UP, Vector2i.RIGHT, Vector2i.DOWN, Vector2i.LEFT]
 const FLOORS := ["seacave", "seacave_galleries", "seacave_grotto"]
 
-## The Undermountain's floors as DungeonFloor planned them before it learned
-## to plan a region's floors too: an md5 of each level's whole plan.
-const UNDERMOUNTAIN := {
-	1: "d7decc54b48c9bff324c168f8b4240d6", 2: "cef717b82181153d639338744fae1f65",
-	3: "0555e903c678d8df6c8746d161b1f4f1", 4: "f15dc997c61d9a198785f7ae34711e37",
-	5: "5c5529f581fdbeb209a5e45c023c0a66", 7: "b24a4da3e0e4d1804dced8ca14c52042",
-	10: "a231e11652f5e1456a819bbdb31c3b39", 11: "db37cd7afaa30bdff8aadc33b54843a8",
-	13: "5e00512290e75305c818f91043a82959", 15: "5089a39f0bb12f16b08e49123db9f072",
-	16: "a660e38ec69713be905db6071154ac32", 17: "44a30a2065faa1d08807c3622df430d1",
-	20: "dd8a86337df6e6ac098c5ce71873c31f", 25: "f70260391f235063b9d5f0970d2c39b2",
-	30: "96e405c573c1bd9c7938db884bceb9a6",
+## The planned floors' rooms as DungeonFloor lays them: an md5 of each one's
+## grid. The old mountain's numbered floors, which these rooms were first
+## laid for, left play (PIX-257): taking them out of DungeonFloor must
+## leave every region's planned floor, and the Kings' Vault's, as it is.
+const PLANNED := {
+	"seacave_galleries": "cebbf5ec86ef48009a6183b88211e116", "shafts_gallery": "e6a1f12228804dd0a8fe16ebb1ff48fe",
+	"cellars_crypt": "a5a1b03ef43086e6f99c6e80d37691e9", "vault_1": "42a03c5a474ce811f3374337c58e92c9",
+	"vault_2": "a59c21c41a8760be44b02bc092e0a4e9", "vault_3": "ca93ab6ce41cbb0823988811134b917a",
+	"vault_4": "f96d02603fd978bf949e491028b7511a", "vault_5": "38d888593a2c33c1a7c401b12b9da177",
 }
 
 var state: Node
@@ -161,7 +159,6 @@ func test_the_planned_floor_is_the_same_every_visit() -> void:
 	assert_eq(first.pieces, again.pieces)
 	assert_eq(first.id, "seacave_galleries")
 	assert_eq(first.style, "cave")
-	assert_eq(first.floor_level, 0, "a map of the Reach, not one of the Undermountain's levels")
 	var spec := Depths._spec("seacave_galleries")
 	spec["seed"] = int(spec["seed"]) + 1
 	assert_ne(DungeonFloor.lay(spec)["map"].grid, first.grid, "another seed, another floor")
@@ -172,9 +169,15 @@ func test_the_planned_floor_is_the_same_every_visit() -> void:
 		assert_eq(first.region_at(Vector2i(int(spawn["x"]), int(spawn["y"]))), "seacave", "%s lives in the sea cave's region" % spawn["id"])
 
 
-func test_the_undermountains_floors_are_planned_as_before() -> void:
-	for level: int in UNDERMOUNTAIN:
-		assert_eq(_fingerprint(DungeonFloor.plan(level)), UNDERMOUNTAIN[level], "floor %d" % level)
+func test_the_planned_floors_lay_as_they_did() -> void:
+	for map_id: String in ["seacave_galleries", "shafts_gallery", "cellars_crypt", "vault_1", "vault_2", "vault_3", "vault_4", "vault_5"]:
+		var grid: Dictionary = Depths.plan(map_id)["map"].grid
+		var cells: Array = grid.keys()
+		cells.sort()
+		var rows: PackedStringArray = []
+		for cell: Vector2i in cells:
+			rows.append("%d,%d=%s" % [cell.x, cell.y, grid[cell]])
+		assert_eq("|".join(rows).md5_text(), PLANNED.get(map_id, ""), map_id)
 
 
 func test_the_next_line_leads_down_the_floors_through_chapter_two() -> void:
@@ -343,7 +346,7 @@ static func _fingerprint(plan: Dictionary) -> String:
 	var cells: Array = map.grid.keys()
 	cells.sort()
 	var parts: PackedStringArray = []
-	parts.append("%s %s %s %d" % [map.id, map.size, map.spawn, map.floor_level])
+	parts.append("%s %s %s" % [map.id, map.size, map.spawn])
 	for cell: Vector2i in cells:
 		parts.append("%d,%d=%s" % [cell.x, cell.y, map.grid[cell]])
 	for cell: Vector2i in map.portals:

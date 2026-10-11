@@ -183,7 +183,7 @@
       "sprite": "staff",
       "weight": 4,
       "value": 680,
-      "description": "A shard of a fallen star set in blackwood. The mountain's deep floors keep a few.",
+      "description": "A shard of a fallen star set in blackwood. The old kings kept a few, deep under the summit.",
       "damage": 22,
       "scaling": "intelligence",
       "slot": "weapon",
@@ -493,12 +493,12 @@
       "description": "Still warm. Proof of the deed."
     },
     "lich_crown": {
-      "name": "Crown of the Deathless",
+      "name": "Old King's Crown",
       "category": "misc",
       "sprite": "gold",
       "weight": 1,
       "value": 800,
-      "description": "Its previous owner has no further use for it. Probably."
+      "description": "The Hollow King wore it for a hundred years. It's heavier than it looks, and it looks heavy."
     },
     "reed_buckler": {
       "name": "Reedwoven Buckler",
@@ -1767,6 +1767,269 @@
       "shape": "kite",
       "description": "Forged from the beams that burned on the Night of Ash. Nothing gets through it twice."
     },
+    "thornwood_bow": {
+      "name": "Thornwood Bow",
+      "category": "weapons",
+      "sprite": "bow",
+      "weight": 5,
+      "value": 300,
+      "description": "Bent from a thornwood bough and strung with gut. It bites back if you hold it wrong.",
+      "damage": 16,
+      "scaling": "dexterity",
+      "slot": "weapon",
+      "tint": [
+        0.78,
+        0.62,
+        0.45
+      ]
+    },
+    "briarwood_staff": {
+      "name": "Briarwood Staff",
+      "category": "weapons",
+      "sprite": "staff",
+      "weight": 5,
+      "value": 300,
+      "description": "Briar grown round a crystal and left a year to set. Prickly about who holds it.",
+      "damage": 16,
+      "scaling": "intelligence",
+      "slot": "weapon",
+      "tint": [
+        0.72,
+        0.56,
+        0.42
+      ]
+    },
+    "knights_broadsword": {
+      "name": "Knight's Broadsword",
+      "category": "weapons",
+      "sprite": "sword",
+      "weight": 10,
+      "value": 440,
+      "description": "Greyhold's old pattern, made for a garrison that isn't there any more. Still sharp.",
+      "damage": 19,
+      "scaling": "strength",
+      "slot": "weapon",
+      "tint": [
+        0.86,
+        0.88,
+        0.92
+      ]
+    },
+    "stalker_knife": {
+      "name": "Stalker's Knife",
+      "category": "weapons",
+      "sprite": "dagger",
+      "weight": 3,
+      "value": 430,
+      "description": "Long, thin and quiet. Comes with a sheath that doesn't creak.",
+      "damage": 18,
+      "scaling": "dexterity",
+      "slot": "weapon",
+      "tint": [
+        0.8,
+        0.86,
+        0.96
+      ]
+    },
+    "stormglass_wand": {
+      "name": "Stormglass Wand",
+      "category": "weapons",
+      "sprite": "wand",
+      "weight": 2,
+      "value": 430,
+      "description": "A rod of glass with a little weather trapped inside. Shake gently.",
+      "damage": 18,
+      "scaling": "intelligence",
+      "slot": "weapon",
+      "tint": [
+        0.62,
+        0.76,
+        1.0
+      ]
+    },
+    "ashsteel_greataxe": {
+      "name": "Ashsteel Greataxe",
+      "category": "weapons",
+      "sprite": "axe",
+      "weight": 15,
+      "value": 620,
+      "description": "Quenched in the Ash Fields' black dust. It keeps an edge like a grudge.",
+      "damage": 21,
+      "scaling": "strength",
+      "slot": "weapon",
+      "tint": [
+        0.92,
+        0.76,
+        0.5
+      ]
+    },
+    "windrunner_bow": {
+      "name": "Windrunner Bow",
+      "category": "weapons",
+      "sprite": "bow",
+      "weight": 5,
+      "value": 600,
+      "description": "Gunnar swears the wind runs ahead of the arrow. Gunnar swears a lot.",
+      "damage": 20,
+      "scaling": "dexterity",
+      "slot": "weapon",
+      "tint": [
+        0.92,
+        0.82,
+        0.55
+      ]
+    },
+    "emberheart_staff": {
+      "name": "Emberheart Staff",
+      "category": "weapons",
+      "sprite": "staff",
+      "weight": 4,
+      "value": 600,
+      "description": "A coal at its heart that never quite goes out. Warm hands all winter.",
+      "damage": 20,
+      "scaling": "intelligence",
+      "slot": "weapon",
+      "tint": [
+        1.0,
+        0.62,
+        0.5
+      ]
+    },
+    "knights_mail": {
+      "name": "Knight's Mail",
+      "category": "apparel",
+      "sprite": "armor",
+      "weight": 18,
+      "value": 420,
+      "description": "Rings on rings on rings. Heavy, honest, and very loud on stairs.",
+      "armor": 9,
+      "slot": "body",
+      "grants": {
+        "strength": 1
+      }
+    },
+    "ranger_jerkin": {
+      "name": "Ranger's Jerkin",
+      "category": "apparel",
+      "sprite": "cloak",
+      "weight": 6,
+      "value": 380,
+      "description": "Oiled leather the colours of a wet wood. Hard to see, easy to move in.",
+      "armor": 7,
+      "slot": "body",
+      "grants": {
+        "dexterity": 1
+      }
+    },
+    "silkweave_robe": {
+      "name": "Silkweave Robe",
+      "category": "apparel",
+      "sprite": "robe",
+      "weight": 3,
+      "value": 380,
+      "description": "Woven with a thread of silver that hums when a spell goes through it.",
+      "armor": 7,
+      "slot": "body",
+      "grants": {
+        "intelligence": 1
+      }
+    },
+    "inkwell_charm": {
+      "name": "Inkwell Charm",
+      "category": "apparel",
+      "sprite": "amulet",
+      "weight": 0,
+      "value": 45,
+      "description": "A scribe's charm: a glass inkwell the size of a pea, on a cord. Clever thoughts, blue fingers.",
+      "slot": "neck",
+      "grants": {
+        "intelligence": 1
+      }
+    },
+    "rabbit_foot": {
+      "name": "Rabbit's Foot",
+      "category": "apparel",
+      "sprite": "amulet",
+      "weight": 0,
+      "value": 45,
+      "description": "Lucky for you. Less so for the rabbit.",
+      "slot": "neck",
+      "grants": {
+        "dexterity": 1
+      }
+    },
+    "fang_necklace": {
+      "name": "Fang Necklace",
+      "category": "apparel",
+      "sprite": "amulet",
+      "weight": 0,
+      "value": 180,
+      "description": "A cutthroat's string of wolf fangs. It rattles when you're quick, so be quicker.",
+      "slot": "neck",
+      "grants": {
+        "dexterity": 2
+      }
+    },
+    "garnet_ring": {
+      "name": "Garnet Ring",
+      "category": "apparel",
+      "sprite": "ring",
+      "weight": 0,
+      "value": 260,
+      "description": "A blood-red stone in plain silver. Gunnar's drivers wear them to arm-wrestle.",
+      "slot": "ring",
+      "grants": {
+        "strength": 2
+      }
+    },
+    "sapphire_ring": {
+      "name": "Sapphire Ring",
+      "category": "apparel",
+      "sprite": "ring",
+      "weight": 0,
+      "value": 260,
+      "description": "Blue as the ice it came over the pass on. Cold to wear, clear to think in.",
+      "slot": "ring",
+      "grants": {
+        "intelligence": 2
+      }
+    },
+    "lion_brooch": {
+      "name": "Lion Brooch",
+      "category": "apparel",
+      "sprite": "amulet",
+      "weight": 0,
+      "value": 520,
+      "description": "A gold lion, mouth open. Pin it on and you stand up straighter.",
+      "slot": "neck",
+      "grants": {
+        "strength": 3
+      }
+    },
+    "owl_brooch": {
+      "name": "Owl Brooch",
+      "category": "apparel",
+      "sprite": "amulet",
+      "weight": 0,
+      "value": 520,
+      "description": "A silver owl with garnet eyes. It looks like it knows the answer.",
+      "slot": "neck",
+      "grants": {
+        "intelligence": 3
+      }
+    },
+    "hawk_brooch": {
+      "name": "Hawk Brooch",
+      "category": "apparel",
+      "sprite": "amulet",
+      "weight": 0,
+      "value": 520,
+      "description": "A bronze hawk, wings swept back. You'll swear you're quicker. You are.",
+      "slot": "neck",
+      "grants": {
+        "dexterity": 3
+      }
+    },
     "everflask": {
       "name": "Everflask",
       "category": "potions",
@@ -1872,6 +2135,22 @@
       "weight": 0,
       "value": 10,
       "description": "Every page of the codex, filled."
+    },
+    "medal_letters": {
+      "name": "Medal of the Empty Satchel",
+      "category": "misc",
+      "sprite": "gem",
+      "weight": 0,
+      "value": 10,
+      "description": "Five letters, fifty years late, every one delivered. A courier's medal."
+    },
+    "medal_full_house": {
+      "name": "Medal of the Full House",
+      "category": "misc",
+      "sprite": "gem",
+      "weight": 0,
+      "value": 10,
+      "description": "Every bed in Pixelheim slept in. Sela has started turning people away, and loves it."
     }
   },
   "roles": {
@@ -2197,7 +2476,12 @@
     "icecave_lake": "The Frozen Lake",
     "icecave_glass": "The Glass Hall",
     "mountain_road": "The Mountain Road",
-    "morvax_forge": "Morvax's Forge"
+    "morvax_forge": "Morvax's Forge",
+    "vault_1": "The Gilded Stair",
+    "vault_2": "The Kings' Strongroom",
+    "vault_3": "The Tombs of the Kings",
+    "vault_4": "The Kings' Armoury",
+    "vault_5": "The Old Kings' Hoard"
   },
   "levelCount": 15,
   "townSpawn": {

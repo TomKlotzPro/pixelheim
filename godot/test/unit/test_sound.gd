@@ -65,22 +65,26 @@ func test_extras_and_beds_take_only_what_exists() -> void:
 
 
 func test_places_and_fights_choose_the_webs_themes() -> void:
-	assert_eq(Sound.track_for("town", 0, ""), "town")
-	assert_eq(Sound.track_for("overworld", 0, ""), "world")
-	assert_eq(Sound.track_for("deepwood", 0, ""), "deepwood")
-	assert_eq(Sound.track_for("town_inn", 0, ""), "interior")
-	assert_eq(Sound.track_for("floor_3", 3, ""), "descent", "below ground")
-	assert_eq(Sound.track_for("overworld", 0, "battle"), "battle", "a hunt takes over")
-	assert_eq(Sound.track_for("floor_10", 10, "boss"), "boss")
+	assert_eq(Sound.track_for("town", ""), "town")
+	assert_eq(Sound.track_for("overworld", ""), "world")
+	assert_eq(Sound.track_for("deepwood", ""), "deepwood")
+	assert_eq(Sound.track_for("town_inn", ""), "interior")
+	assert_eq(Sound.track_for("seacave_galleries", ""), "descent", "below ground")
+	assert_eq(Sound.track_for("vault_3", ""), "descent", "the Kings' Vault too (PIX-257)")
+	assert_eq(Sound.track_for("overworld", "battle"), "battle", "a hunt takes over")
+	assert_eq(Sound.track_for("vault_5", "boss"), "boss")
 
 
 func test_the_weather_follows_the_place() -> void:
-	assert_eq(Sound.ambience_for("overworld", 0), "greenwood")
-	assert_eq(Sound.ambience_for("town", 0), "greenwood")
-	assert_eq(Sound.ambience_for("deepwood", 0), "deepforest")
-	assert_eq(Sound.ambience_for("mirefen", 0), "marsh")
-	assert_eq(Sound.ambience_for("town_house", 0), "indoor")
-	assert_eq(Sound.ambience_for("floor_1", 1), "indoor")
+	assert_eq(Sound.ambience_for("overworld"), "greenwood")
+	assert_eq(Sound.ambience_for("town"), "greenwood")
+	assert_eq(Sound.ambience_for("deepwood"), "deepforest")
+	assert_eq(Sound.ambience_for("mirefen"), "marsh")
+	assert_eq(Sound.ambience_for("town_house"), "indoor")
+	assert_eq(Sound.ambience_for("vault_1"), "indoor")
+	# The Kings' Vault breathes the deeper wind (PIX-257); the caves their own.
+	assert_eq(Depths.wind("vault_2"), "deepwind")
+	assert_eq(Depths.wind("seacave"), "wind")
 
 
 func test_music_loops_its_whole_render() -> void:

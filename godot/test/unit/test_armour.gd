@@ -4,11 +4,14 @@ extends GutTest
 ## hit for 1) while a mage died in two to five bites at every stage. Now a
 ## hit loses a share of itself, and every role, in what it would wear at the
 ## pacing model's marks (level 5 on the road to Saltmere, 12 at the gate, 19
-## at the bottom), takes about 6-15 hits from a foe of its own level.
+## at the bottom of the Kings' Vault, PIX-257), takes about 6-15 hits from a
+## foe of its own level.
 
 ## What each kind of hero wears at each mark: plate for fighters, the
 ## regions' leathers for rogues and rangers, cloth for casters. At level 19
-## every piece is forged up two (the forge caps at 7).
+## the shops' last body armour of their kind (PIX-294) and the Vault's
+## plate, every piece forged up two and deep-forged twice (the Vault's
+## floors, PIX-257).
 const KITS := {
 	5: {
 		"plate": ["leather_armor", "leather_cap", "reed_buckler", "wool_gloves", "worn_boots"],
@@ -21,9 +24,9 @@ const KITS := {
 		"cloth": ["frost_hood", "frostweave_robe", "frost_mitts", "frost_boots", "frost_ward"],
 	},
 	19: {
-		"plate": ["wyrm_visor", "city_plate", "blackiron_gauntlets", "scaled_greaves", "cinderscale_shield"],
-		"leather": ["warden_helm", "warden_hauberk", "warden_gloves", "warden_boots", "warden_kite"],
-		"cloth": ["frost_hood", "frostweave_robe", "frost_mitts", "frost_boots", "frost_ward"],
+		"plate": ["wyrm_visor", "runic_armor", "blackiron_gauntlets", "scaled_greaves", "cinderscale_shield"],
+		"leather": ["warden_helm", "ranger_jerkin", "warden_gloves", "warden_boots", "warden_kite"],
+		"cloth": ["frost_hood", "silkweave_robe", "frost_mitts", "frost_boots", "frost_ward"],
 	},
 }
 const KIND := {
@@ -74,7 +77,8 @@ func test_the_heros_swings_still_cut_through_a_monsters_light_armour() -> void:
 
 
 func test_a_foe_of_a_level_hits_like_the_kinds_brought_to_it() -> void:
-	assert_eq([Bestiary.matched_attack(5), Bestiary.matched_attack(12), Bestiary.matched_attack(19)], [13.5, 30.0, 46.0])
+	# Greyhold's and the Frostgate's kinds hit a quarter harder (PIX-294).
+	assert_eq([Bestiary.matched_attack(5), Bestiary.matched_attack(12), Bestiary.matched_attack(19)], [15.0, 32.5, 50.0])
 
 
 func test_casters_and_rogues_who_levelled_before_catch_up() -> void:
@@ -112,6 +116,8 @@ func _kitted(role: String, level: int) -> Array:
 	for item_id: String in KITS[level][KIND[role]]:
 		var piece := InventoryState.create_gear(item_id)
 		piece["bonus"] = 2 if level >= 19 else 0
+		if level >= 19:
+			InventoryState.deepen(piece, 2, func() -> float: return 0.5)
 		pack.gear.append(piece)
 		pack.equipped[Catalog.item(item_id)["slot"]] = piece["uid"]
 	return [hero, pack]

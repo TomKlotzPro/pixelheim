@@ -563,8 +563,8 @@ func _flee(to_player: Vector2) -> void:
 
 ## Whether `fighter` runs from a hero of `hero_level` instead of fighting
 ## (PIX-251): far enough below the hero (Packs.outmatched, an elite counting
-## higher), but never a boss, a Deep Hunt warden (a boss under the deep's
-## name) or a named monster, and never one `held` to its fight
+## higher), but never a boss or a named monster (the Vault's guardians
+## among them), and never one `held` to its fight
 ## (held_to_fight).
 static func flees_from(fighter: Dictionary, hero_level: int, held := false) -> bool:
 	if held or Bestiary.fights_like_boss(fighter):

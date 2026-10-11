@@ -13,22 +13,14 @@ func before_each() -> void:
 	state.new_game("Robin", "warrior")
 
 
-func test_the_floors_moments_play_scenes_that_exist() -> void:
-	for key: String in ["cleared:3", "cleared:7", "cleared:10"]:
-		assert_true(Cutscene.scenes().has(Cutscene.moment(key)), key)
-	var descent: Array = Cutscene.scenes()["descent"]
-	assert_true(descent.any(func(step: Dictionary) -> bool: return String(step.get("sub", "")).contains("lied")), "Fafnyr's last words")
-
-
-## Liane's pages retired from play with Maren's letters (PIX-253 step 2): a
-## first clear no longer says it turned one up, but the floors a hero has
-## cleared still keep theirs, for the journal's older papers.
+## Liane's pages retired from play with Maren's letters (PIX-253 step 2), and
+## the floors with them (PIX-257), but the floors an old save cleared still
+## keep theirs, for the journal's older papers.
 func test_ten_pages_one_per_floor_kept_for_the_floors_cleared() -> void:
 	assert_eq(Story.lore().size(), 10)
 	var floors := Story.lore().map(func(page: Dictionary) -> int: return int(page["floor"]))
 	assert_eq(floors, [1, 3, 4, 5, 7, 9, 11, 12, 13, 14])
-	var lines: Array = state.spoils.clear_floor(1)["lines"]
-	assert_false(lines.any(func(line: String) -> bool: return line.contains("Page I") or line.contains("journal")), "a clear says nothing of a page")
+	state.progression.cleared_levels.append(1)
 	assert_eq(Story.found_pages(state.progression.cleared_levels).size(), 1)
 
 

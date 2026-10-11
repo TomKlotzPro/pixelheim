@@ -54,6 +54,10 @@ var lights: Node
 var atmosphere: Node
 ## A `--screenshot` run: the harness drives, nobody else.
 var harness := false
+## The way the story kept shut that last stopped the hero (`barred`: true
+## for the mountain's gate, "vault" for the Kings' Vault's door), for the
+## harness's report.
+var barred_said := ""
 
 func _ready() -> void:
 	# The command line's flags, parsed once against the harness's table (PIX-262).
@@ -298,9 +302,7 @@ func _process(delta: float) -> void:
 	Sound.play("step")
 	# Dust off dry ground, a splash in a bog (PIX-225).
 	atmosphere.footfall(player.global_position + Vector2(0, 2), map.tile_at(cell))
-	# Down a dungeon the save keeps the hero at its gate, as the web does.
-	if map.floor_level == 0:
-		GameState.move_to(map, cell, player.facing)
+	GameState.move_to(map, cell, player.facing)
 	# Into a region of the Reach: its name, once (PIX-269).
 	hud.name_place(map, cell)
 	# Walking into the bought house's shut door walks you in.
@@ -344,8 +346,9 @@ func on_player_died() -> void:
 	last_player_position = player.position  # a respawn is not a walk
 
 ## Through a portal the hero stepped on (or the harness sent them to): a
-## door to another map, a dungeon's gate and its floor select, the stairs
-## up from a floor, or the hole deeper.
+## door, a gate or a stair to another map. A gate the story keeps shut
+## (`barred`: the mountain's until Maren's promise, the Kings' Vault's until
+## the dragon is freed) holds the hero before it.
 func use_portal(target: Dictionary) -> void:
 	# No running from a boss (PIX-232): the way out holds until it falls.
 	var boss := foes.boss_hunting()
@@ -358,41 +361,34 @@ func use_portal(target: Dictionary) -> void:
 		_step_back()
 		messages.flash(barred)
 		return
-	match target["kind"]:
-		"map":
-			# The mountain's gate (`barred`), shut since the Night of Ash
-			# until Maren's promise opens it on the road up to Morvax's forge
-			# (PIX-170, PIX-253 step 8): the hero waits before it.
-			if target.get("barred", false) and not Relics.gate_open(GameState.progression):
-				_step_back()
-				messages.flash(Relics.barred_line())
-				return
-			var next := load_map(target["mapId"])
-			_through_door(func() -> void:
-				var from_id := map.id
-				var arrival := Vector2i(int(target["x"]), int(target["y"]))
-				map = next
-				# Facing into the new map, away from the way back (PIX-269),
-				# not into the rock or the door they came out of.
-				player.face(Ways.arrival_facing(map, arrival, from_id, player.facing))
-				enter_map(map, arrival)
-			, Ways.goes_under(map, next))
-		"dungeon":
-			# The floor select opens while the hero waits at the door.
-			_step_back()
-			# Barred since the Night of Ash until the relics come home (PIX-170).
-			if target["dungeon"] == "mountain" and not Relics.gate_open(GameState.progression):
-				messages.flash(Relics.barred_line())
-				return
-			var screen := preload("res://scripts/dungeon_screen.gd").new()
-			screen.world = self
-			screen.dungeon_id = target["dungeon"]
-			add_child(screen)
-		"gate":
-			# Back up the stairs: up out of the dark dissolves.
-			_through_door(delve.leave_floor)
-		"deeper":
-			delve.enter_floor(map.floor_level + 1)
+	if target["kind"] != "map":
+		return
+	# The mountain's gate, shut since the Night of Ash until Maren's promise
+	# opens it on the road up to Morvax's forge (PIX-170, PIX-253 step 8),
+	# and the Kings' Vault's door under the summit, shut until the dragon is
+	# freed (PIX-257): the hero waits before it.
+	if Ways.barred(target, GameState.progression, GameState.settlement):
+		_step_back()
+		messages.flash(Ways.barred_line(target))
+		barred_said = "vault" if str(target.get("barred", "")) == Vault.DUNGEON else "mountain"
+		return
+	var next := load_map(target["mapId"])
+	var through := func() -> void:
+		var from_id := map.id
+		var arrival := Vector2i(int(target["x"]), int(target["y"]))
+		map = next
+		# Facing into the new map, away from the way back (PIX-269),
+		# not into the rock or the door they came out of.
+		player.face(Ways.arrival_facing(map, arrival, from_id, player.facing))
+		enter_map(map, arrival)
+	# The Vault's door opened the first time (PIX-257): Fafnyr shows the
+	# hoard he hated, then the hero goes in.
+	var first := Vault.first_word(target, GameState.progression)
+	if first != "":
+		_step_back()
+		stage.play_story(first, func() -> void: _through_door(through, Ways.goes_under(map, next)))
+		return
+	_through_door(through, Ways.goes_under(map, next))
 
 
 ## One of the hero's screens, from its key or the panel's button.
@@ -403,9 +399,6 @@ func open_screen(screen: String) -> void:
 		"inventory":
 			open_inventory()
 		"map":
-			if map.floor_level > 0:
-				messages.flash("No map reaches this deep.")
-				return
 			var chart := preload("res://scripts/map_screen.gd").new()
 			chart.world = self
 			add_child(chart)
@@ -465,12 +458,9 @@ func enter_map(next: MapData, arrival: Vector2i) -> void:
 	player.ailments.clear()
 	last_player_position = player.position
 	player_cell = arrival
-	# Crossing into a map is a moment worth keeping: save at once. Dungeon
-	# floors aren't web maps: the save keeps the gate.
-	if next.floor_level == 0:
-		GameState.move_to(next, arrival, player.facing)
-		GameState.save_now()
-	foes.floor_foes = 0
+	# Crossing into a map is a moment worth keeping: save at once.
+	GameState.move_to(next, arrival, player.facing)
+	GameState.save_now()
 	# The place's name once the hero is there, not on a post by the way out
 	# (PIX-269); the map the game opens on is only noted.
 	hud.name_place(next, arrival, not changing)
@@ -485,7 +475,7 @@ func enter_map(next: MapData, arrival: Vector2i) -> void:
 	stage.play_reveals.call_deferred()
 	folk.keep_hours(true)
 	# Under the sky the camera may look past the south edge, under the dock.
-	camera_rig.set_limits(Vector2(next.size * TILE), next.floor_level == 0 and next.style != "cave" and PunyTerrain.is_outdoor(next.grid))
+	camera_rig.set_limits(Vector2(next.size * TILE), next.style != "cave" and PunyTerrain.is_outdoor(next.grid))
 	foes.spawn_for(next)
 	respawn_check = 0.0
 	soundscape.refresh()

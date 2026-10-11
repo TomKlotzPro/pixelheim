@@ -43,10 +43,10 @@ func test_the_first_of_a_flag_given_twice_counts() -> void:
 
 
 func test_a_flag_without_its_argument_is_not_given() -> void:
-	var flags := HarnessFlags.new(PackedStringArray(["--screenshot", "--floor"]))
-	assert_false(flags.has("--floor"))
-	assert_eq(flags.value("--floor", "1"), "1")
-	assert_eq(flags.problems, PackedStringArray(["--floor takes <n>"]))
+	var flags := HarnessFlags.new(PackedStringArray(["--screenshot", "--level"]))
+	assert_false(flags.has("--level"))
+	assert_eq(flags.value("--level", "1"), "1")
+	assert_eq(flags.problems, PackedStringArray(["--level takes <n>"]))
 
 
 func test_a_word_the_table_does_not_know_is_reported() -> void:

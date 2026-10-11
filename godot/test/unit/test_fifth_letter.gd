@@ -17,6 +17,13 @@ const BEFORE_GATE := Vector2i(48, 7)
 ## Where the Undermountain's cave was.
 const OLD_CAVE := Vector2i(24, 10)
 const LATE := "res://test/fixtures/web_save_late.txt"
+## The old mountain's fifteen floors by name: their data left with them
+## (PIX-257 step 11), so a word naming one is caught by this list.
+const OLD_FLOORS := [
+	"Mossy Cellar", "Whispering Woods", "Barrow Crypt", "Frosthowl Pass", "Ruined Watchtower", "Drowned Chapel",
+	"Sunken Forge", "Gloomdeep Caverns", "Stormcrag Aerie", "The Ashen Throne", "The Sunless Stair", "Hall of Echoes",
+	"The Vaulted Hoard", "Ember Warrens", "Throne of the Deathless",
+]
 
 var state: Node
 
@@ -386,12 +393,13 @@ func test_nothing_in_the_world_leads_to_the_old_floors() -> void:
 
 
 ## Whether `text` names one of the old mountain's floors: by number ("floor
-## 7", "floors 4-6", "from floor 8"), by name (the Sunken Forge), or the
-## Undermountain. A region dungeon's "three floors down" is no old floor.
+## 7", "floors 4-6", "from floor 8"), by name (the Sunken Forge), the
+## Undermountain or the Deep Hunt. A region dungeon's "three floors down" is
+## no old floor.
 func _names_old_floor(text: String) -> bool:
-	if RegEx.create_from_string("floors? \\d").search(text) != null or text.contains("Undermountain"):
+	if RegEx.create_from_string("floors? \\d").search(text) != null or text.contains("Undermountain") or text.contains("Deep Hunt"):
 		return true
-	for level in range(1, Dungeons.floor_count() + 1):
-		if text.contains(String(Dungeons.floor_def(level)["name"])):
+	for name: String in OLD_FLOORS:
+		if text.contains(name):
 			return true
 	return false

@@ -93,9 +93,24 @@ static func lift(map_id: String) -> int:
 	return int(floor_of(map_id).get("lift", 0))
 
 
+## How deep a floor forges the gear its kills and its guardian drop
+## (InventoryState.deepen): the Kings' Vault's, a tier deeper every floor
+## or two (PIX-257, the Deep Hunt's forging re-homed); 0 for any other map.
+static func forged(map_id: String) -> int:
+	return int(floor_of(map_id).get("forged", 0))
+
+
+## The wind a dungeon's floors breathe (the Kings' Vault's deeper wind,
+## PIX-257): its `wind`, else the caves' own.
+static func wind(map_id: String) -> String:
+	var entry := floor_of(map_id)
+	return String(dungeon(entry["dungeon"]).get("wind", "wind")) if not entry.is_empty() else "wind"
+
+
 ## A planned floor as DungeonFloor.lay takes it: its seed, a pack per room
 ## after the entrance, its region and lift, a stair down unless it's the
-## bottom, its set piece.
+## bottom, its set piece; on a first floor (the Kings' Vault's, PIX-257),
+## its stairs up lead out the dungeon's way in (`out`).
 static func _spec(map_id: String) -> Dictionary:
 	var entry := floor_of(map_id)
 	var planned: Dictionary = entry["plan"]
@@ -106,6 +121,8 @@ static func _spec(map_id: String) -> Dictionary:
 		# No pack at home within this many cells of where a hero comes in.
 		"clear": int(Packs.rules()["safeTiles"]),
 	}
+	if int(entry["number"]) == 1 and dungeon(entry["dungeon"]).has("out"):
+		spec["out"] = dungeon(entry["dungeon"])["out"]
 	if planned.has("setPiece"):
 		spec["setPiece"] = _data()["setPieces"][planned["setPiece"]]
 	return spec

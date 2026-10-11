@@ -246,9 +246,7 @@ func _notes(group: String, empty: bool) -> Array[String]:
 			if empty:
 				out.append(Text.t("No quests taken yet. Someone with a ! over their head has one for you."))
 		"bounties":
-			var floors := Bearing.board_floors(GameState.progression)
-			if GameState.progression.deepest > 0:
-				out.append(Text.t("The Deep Hunt: deepest depth %d") % GameState.progression.deepest)
+			var floors := Bearing.board_floors(GameState.progression, GameState.settlement)
 			var next := Hunts.next_notice(floors)
 			if Hunts.notices(floors, GameState.progression.hunted).is_empty():
 				if not next.is_empty():
@@ -538,13 +536,14 @@ func _turn(by: int) -> void:
 
 
 ## Feats (PIX-219: Deeds in the code; the word was the shops' deeds'):
-## every long goal, done or how far along, and its medal.
+## every long goal, done or how far along, and its medal (a retired one
+## only for a hero who earned it, PIX-257).
 func _feats() -> void:
 	var sheet := _sheet()
 	var state := GameState
-	for deed: Dictionary in Deeds.all():
+	for deed: Dictionary in Deeds.shown(state.progression):
 		var done: bool = deed["id"] in state.progression.deeds
-		var counted := Deeds.count(deed, state.hero, state.pack, state.progression)
+		var counted := Deeds.count(deed, state.hero, state.pack, state.progression, state.settlement)
 		var line := HBoxContainer.new()
 		line.add_theme_constant_override("separation", 12)
 		# Columns that hold in French: a long name wraps rather than pushing

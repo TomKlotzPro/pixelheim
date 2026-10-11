@@ -102,7 +102,7 @@ func origin() -> Vector2i:
 
 
 static func _on_plane(map: MapData) -> bool:
-	return map.floor_level == 0 and ReachPlane.holds(map.id)
+	return ReachPlane.holds(map.id)
 
 
 func _process(delta: float) -> void:
@@ -552,7 +552,7 @@ func _warm(left: float, fresh: bool) -> void:
 				return
 			var data: MapData = world.load_map(next)
 			var view := MapView.new(data, null)
-			Sound.ready_track(Sound.track_for(next, 0, ""))
+			Sound.ready_track(Sound.track_for(next, ""))
 			KeptGround.decks_working(data, slices)
 			view.planning(data.spawn, slices)
 			slices.add("plan_kept", func() -> void:

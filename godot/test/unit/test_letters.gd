@@ -97,7 +97,7 @@ func test_maren_digs_in_front_of_her_house_while_it_is_ash() -> void:
 	var rect: Rect2i = house[0]["rect"]
 	assert_true(rect.grow(1).has_point(dig), "right in front of it")
 	var elder := func(tin: bool, done: Array) -> Dictionary:
-		return Npcs.on_map("town", 0, [], done, false, 0, tin).filter(func(npc: Dictionary) -> bool: return npc["id"] == "elder")[0]
+		return Npcs.on_map("town", 0, [], done, false, tin).filter(func(npc: Dictionary) -> bool: return npc["id"] == "elder")[0]
 	assert_eq(Vector2i(elder.call(true, [])["x"], elder.call(true, [])["y"]), dig)
 	assert_eq(Vector2i(elder.call(false, [])["x"], elder.call(false, [])["y"]), Vector2i(12, 6), "at the shrine once it's found")
 	assert_eq(Letters.dig_spot(["the_inn"]), Vector2i(-1, -1), "rebuilt with the inn")

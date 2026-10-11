@@ -25,12 +25,24 @@ msgid "A blessed blow of righteous strength."
 msgstr "Un coup béni, d'une force vertueuse."
 
 #: assets/data/catalog.json
+msgid "A blood-red stone in plain silver. Gunnar's drivers wear them to arm-wrestle."
+msgstr "Une pierre rouge sang sur de l'argent tout simple. Les charretiers de Gunnar la portent pour le bras de fer."
+
+#: assets/data/catalog.json
 msgid "A brass storm-lantern, its glass etched with stars. Liane lit it the night before the climb so the five could find their way home. One of the relics the five left behind."
 msgstr "Une lampe-tempête en laiton, au verre gravé d'étoiles. Liane l'a allumée la veille de l'ascension, pour que les cinq retrouvent le chemin du retour. L'une des reliques que les cinq ont laissées derrière eux."
 
 #: assets/data/catalog.json
+msgid "A bronze hawk, wings swept back. You'll swear you're quicker. You are."
+msgstr "Un faucon de bronze, ailes repliées. Vous jureriez être plus vif. Vous l'êtes."
+
+#: assets/data/catalog.json
 msgid "A bronze-rimmed shield, dented and polished. Oskar left it at Greyhold when he climbed the mountain: \"Keep it till I'm home.\" One of the relics the five left behind."
 msgstr "Un bouclier cerclé de bronze, cabossé et poli. Oskar l'a laissé à Greyhold quand il a gravi la montagne : « Garde-le jusqu'à mon retour. » L'une des reliques que les cinq ont laissées derrière eux."
+
+#: assets/data/catalog.json
+msgid "A coal at its heart that never quite goes out. Warm hands all winter."
+msgstr "Une braise en son cœur qui ne s'éteint jamais tout à fait. Les mains au chaud tout l'hiver."
 
 #: assets/data/catalog.json
 msgid "A coated dagger that leaves the enemy poisoned."
@@ -51,6 +63,10 @@ msgstr "Une pointe cruelle qui laisse la plaie empoisonnée."
 #: assets/data/catalog.json
 msgid "A crushing blow dealing heavy physical damage."
 msgstr "Un coup écrasant qui inflige de lourds dégâts physiques."
+
+#: assets/data/catalog.json
+msgid "A cutthroat's string of wolf fangs. It rattles when you're quick, so be quicker."
+msgstr "Un collier de crocs de loup, pris à un coupe-jarret. Il cliquette quand vous êtes vif, alors soyez plus vif encore."
 
 #: assets/data/catalog.json
 msgid "A dependable blade of honest iron."
@@ -75,6 +91,10 @@ msgstr "Une grosse perle blanche des hauts-fonds de Saltmere. Odo la voudra ; 
 #: assets/data/catalog.json
 msgid "A fisher's long coat, oiled until the sea gives up on it. Crafted, never sold."
 msgstr "Un long manteau de pêcheur, huilé jusqu'à ce que la mer abandonne la partie. Fait main, jamais en vente."
+
+#: assets/data/catalog.json
+msgid "A gold lion, mouth open. Pin it on and you stand up straighter."
+msgstr "Un lion d'or, gueule ouverte. Épinglez-le et vous vous tenez plus droit."
 
 #: assets/data/catalog.json
 msgid "A knight's seal ring, a hundred years under the bog. It still remembers its oath. Hunted, never sold."
@@ -105,16 +125,28 @@ msgid "A pebble of the mountain's anger. Warm forever. Found in the ash fields."
 msgstr "Un caillou de la colère de la montagne. Chaud pour toujours. Se trouve dans les Champs de Cendres."
 
 #: assets/data/catalog.json
+msgid "A rod of glass with a little weather trapped inside. Shake gently."
+msgstr "Une tige de verre avec un peu de météo enfermée dedans. Agiter doucement."
+
+#: assets/data/catalog.json
 msgid "A round shield in the town's blue, its rim beaten from the old gate's hinges."
 msgstr "Un bouclier rond peint du bleu de la ville, le bord martelé dans les gonds de l'ancienne porte."
 
 #: assets/data/catalog.json
-msgid "A shard of a fallen star set in blackwood. The mountain's deep floors keep a few."
-msgstr "Un éclat d'étoile tombée, serti dans du bois noir. Les étages profonds de la montagne en gardent quelques-uns."
+msgid "A scribe's charm: a glass inkwell the size of a pea, on a cord. Clever thoughts, blue fingers."
+msgstr "Le porte-bonheur d'un scribe : un encrier de verre gros comme un pois, au bout d'un cordon. Les idées claires, les doigts bleus."
+
+#: assets/data/catalog.json
+msgid "A shard of a fallen star set in blackwood. The old kings kept a few, deep under the summit."
+msgstr "Un éclat d'étoile filante serti dans du bois noir. Les anciens rois en gardaient quelques-uns, tout au fond, sous le sommet."
 
 #: assets/data/catalog.json
 msgid "A short blade gone dull with use. Quick in quick hands."
 msgstr "Une lame courte émoussée par l'usage. Vive dans des mains vives."
+
+#: assets/data/catalog.json
+msgid "A silver owl with garnet eyes. It looks like it knows the answer."
+msgstr "Une chouette d'argent aux yeux de grenat. Elle a l'air de connaître la réponse."
 
 #: assets/data/catalog.json
 msgid "A small brass locket with a red stone. Inside, a girl's face, worn soft by a thumb."
@@ -193,6 +225,10 @@ msgid "Ash-field shards bound in living wood. Crafted, never sold."
 msgstr "Des éclats des Champs de Cendres, enchâssés dans du bois vivant. Fait main, jamais en vente."
 
 #: assets/data/catalog.json
+msgid "Ashsteel Greataxe"
+msgstr "Grande hache d'acier cendré"
+
+#: assets/data/catalog.json
 msgid "Backstab"
 msgstr "Coup dans le dos"
 
@@ -211,6 +247,10 @@ msgstr "Flèche barbelée"
 #: assets/data/catalog.json
 msgid "Beast Cleaver"
 msgstr "Couperet des bêtes"
+
+#: assets/data/catalog.json
+msgid "Bent from a thornwood bough and strung with gut. It bites back if you hold it wrong."
+msgstr "Taillé dans une branche d'épineux et tendu de boyau. Il mord si on le tient mal."
 
 #: assets/data/catalog.json
 msgid "Berserk"
@@ -257,6 +297,10 @@ msgid "Blight"
 msgstr "Flétrissure"
 
 #: assets/data/catalog.json
+msgid "Blue as the ice it came over the pass on. Cold to wear, clear to think in."
+msgstr "Bleu comme la glace sur laquelle il a passé le col. Froid à porter, clair pour penser."
+
+#: assets/data/catalog.json
 msgid "Boiled leather. Keeps the rain and the smaller teeth out."
 msgstr "Cuir bouilli. Protège de la pluie et des plus petites dents."
 
@@ -279,6 +323,14 @@ msgstr "Miche de pain"
 #: assets/data/catalog.json
 msgid "Brewed round a dragon's scale. One swallow and every wound and every spent breath comes back."
 msgstr "Infusé autour d'une écaille de dragon. Une gorgée, et chaque blessure se referme, chaque souffle perdu revient."
+
+#: assets/data/catalog.json
+msgid "Briar grown round a crystal and left a year to set. Prickly about who holds it."
+msgstr "De la ronce poussée autour d'un cristal et laissée un an à prendre. Elle choisit qui la tient, et elle pique."
+
+#: assets/data/catalog.json
+msgid "Briarwood Staff"
+msgstr "Bâton de ronce"
 
 #: assets/data/catalog.json
 msgid "Broken blades and rusted mail from Greyhold's armoury. Good steel under the rust."
@@ -331,10 +383,6 @@ msgstr "Consécration"
 #: assets/data/catalog.json
 msgid "Crimson wool from the western looms. Ties the room together. Placed at home: +5% gold from every fight."
 msgstr "Laine cramoisie des métiers à tisser de l'ouest. Il harmonise toute la pièce. Chez vous : +5 % d'or à chaque combat."
-
-#: assets/data/catalog.json
-msgid "Crown of the Deathless"
-msgstr "Couronne des Sans-Mort"
 
 #: assets/data/catalog.json
 msgid "Crystal of the Fifteenth Depth"
@@ -445,6 +493,10 @@ msgid "Ember Shard"
 msgstr "Éclat de braise"
 
 #: assets/data/catalog.json
+msgid "Emberheart Staff"
+msgstr "Bâton cœur-de-braise"
+
+#: assets/data/catalog.json
 msgid "Emberwood Staff"
 msgstr "Bâton de bois de braise"
 
@@ -455,6 +507,10 @@ msgstr "Robe enchantée"
 #: assets/data/catalog.json
 msgid "Everflask"
 msgstr "Flasque éternelle"
+
+#: assets/data/catalog.json
+msgid "Every bed in Pixelheim slept in. Sela has started turning people away, and loves it."
+msgstr "Tous les lits de Pixelheim sont pris. Sela refuse du monde, et elle adore ça."
 
 #: assets/data/catalog.json
 msgid "Every family of monster knows your step."
@@ -475,6 +531,10 @@ msgstr "Chaque pas résonne. La discrétion, c'est pour les autres. Fait main, j
 #: assets/data/catalog.json
 msgid "Everything they touch keeps dying"
 msgstr "Tout ce qu'il touche se meurt"
+
+#: assets/data/catalog.json
+msgid "Fang Necklace"
+msgstr "Collier de crocs"
 
 #: assets/data/catalog.json
 msgid "Fast and sneaky. Quick on their feet, deadly with a backstab."
@@ -507,6 +567,10 @@ msgstr "Sans doigts, pour que les mains puissent encore façonner un sort. Fait 
 #: assets/data/catalog.json
 msgid "Fireball"
 msgstr "Boule de feu"
+
+#: assets/data/catalog.json
+msgid "Five letters, fifty years late, every one delivered. A courier's medal."
+msgstr "Cinq lettres, cinquante ans de retard, toutes remises. Une médaille de messager."
 
 #: assets/data/catalog.json
 msgid "Flawless Emerald"
@@ -593,6 +657,10 @@ msgid "Gale Longbow"
 msgstr "Arc long des bourrasques"
 
 #: assets/data/catalog.json
+msgid "Garnet Ring"
+msgstr "Anneau de grenat"
+
+#: assets/data/catalog.json
 msgid "Glass cannon, loud spells"
 msgstr "Canon de verre, sorts bruyants"
 
@@ -637,6 +705,10 @@ msgid "Greyhold Warden"
 msgstr "Gardien de Greyhold"
 
 #: assets/data/catalog.json
+msgid "Greyhold's old pattern, made for a garrison that isn't there any more. Still sharp."
+msgstr "Le vieux modèle de Greyhold, forgé pour une garnison qui n'est plus. Toujours affûtée."
+
+#: assets/data/catalog.json
 msgid "Greyhold's old pattern: a steel cap, a slit to see by. Crafted, never sold."
 msgstr "Le vieux modèle de Greyhold : une calotte d'acier, une fente pour y voir. Fait main, jamais en vente."
 
@@ -649,12 +721,20 @@ msgid "Gulp's Gilded Tooth"
 msgstr "Dent dorée de Glouglou"
 
 #: assets/data/catalog.json
+msgid "Gunnar swears the wind runs ahead of the arrow. Gunnar swears a lot."
+msgstr "Gunnar jure que le vent court devant la flèche. Gunnar jure beaucoup."
+
+#: assets/data/catalog.json
 msgid "Gunnar's Strongbox"
 msgstr "Coffre de Gunnar"
 
 #: assets/data/catalog.json
 msgid "Hammered from the seam's own iron, dark as a cellar. Crafted, never sold."
 msgstr "Martelé dans le fer même du filon, sombre comme une cave. Fait main, jamais en vente."
+
+#: assets/data/catalog.json
+msgid "Hawk Brooch"
+msgstr "Broche du faucon"
 
 #: assets/data/catalog.json
 msgid "Healing light through gauntleted palms."
@@ -745,6 +825,10 @@ msgid "Imp Horn"
 msgstr "Corne de diablotin"
 
 #: assets/data/catalog.json
+msgid "Inkwell Charm"
+msgstr "Breloque d'encrier"
+
+#: assets/data/catalog.json
 msgid "Iron Armor"
 msgstr "Armure de fer"
 
@@ -769,16 +853,20 @@ msgid "It only grows where something is buried. The Mirefen is full of it."
 msgstr "Elle ne pousse que là où quelque chose est enterré. Les Marais de Fange en sont pleins."
 
 #: assets/data/catalog.json
-msgid "Its previous owner has no further use for it. Probably."
-msgstr "Son ancien propriétaire n'en a plus l'usage. Sans doute."
-
-#: assets/data/catalog.json
 msgid "Judgement"
 msgstr "Jugement"
 
 #: assets/data/catalog.json
 msgid "King's Signet"
 msgstr "Chevalière du roi"
+
+#: assets/data/catalog.json
+msgid "Knight's Broadsword"
+msgstr "Épée large de chevalier"
+
+#: assets/data/catalog.json
+msgid "Knight's Mail"
+msgstr "Cotte de chevalier"
 
 #: assets/data/catalog.json
 msgid "Knuckles like anvils. Crafted, never sold."
@@ -849,12 +937,24 @@ msgid "Light as a whisper, sharp as a grudge."
 msgstr "Légère comme un murmure, tranchante comme une rancune."
 
 #: assets/data/catalog.json
+msgid "Lion Brooch"
+msgstr "Broche du lion"
+
+#: assets/data/catalog.json
 msgid "Long enough to kneel behind. Greyhold's tower is still painted on it, faintly. Crafted, never sold."
 msgstr "Assez long pour s'agenouiller derrière. La tour de Greyhold y est encore peinte, à peine visible. Fait main, jamais en vente."
 
 #: assets/data/catalog.json
+msgid "Long, thin and quiet. Comes with a sheath that doesn't creak."
+msgstr "Long, fin et silencieux. Vendu avec un fourreau qui ne grince pas."
+
+#: assets/data/catalog.json
 msgid "Longbow"
 msgstr "Arc long"
+
+#: assets/data/catalog.json
+msgid "Lucky for you. Less so for the rabbit."
+msgstr "Ça porte bonheur. Moins au lapin."
 
 #: assets/data/catalog.json
 msgid "Made for walking walls all night. Crafted, never sold."
@@ -913,8 +1013,16 @@ msgid "Medal of Thirty Below"
 msgstr "Médaille des Trente Profondeurs"
 
 #: assets/data/catalog.json
+msgid "Medal of the Empty Satchel"
+msgstr "Médaille de la sacoche vide"
+
+#: assets/data/catalog.json
 msgid "Medal of the Full Bestiary"
 msgstr "Médaille du bestiaire complet"
+
+#: assets/data/catalog.json
+msgid "Medal of the Full House"
+msgstr "Médaille de la maison pleine"
 
 #: assets/data/catalog.json
 msgid "Medal of the Matched Set"
@@ -961,6 +1069,10 @@ msgid "Obsidian Blade"
 msgstr "Lame d'obsidienne"
 
 #: assets/data/catalog.json
+msgid "Oiled leather the colours of a wet wood. Hard to see, easy to move in."
+msgstr "Du cuir huilé aux couleurs d'un bois mouillé. Difficile à voir, facile à porter."
+
+#: assets/data/catalog.json
 msgid "Oilskin Boots"
 msgstr "Bottes cirées"
 
@@ -983,6 +1095,10 @@ msgstr "Vieille botte"
 #: assets/data/catalog.json
 msgid "Old Greymaw's grey head, worn as a hood. The forest goes quiet when you walk by. Hunted, never sold."
 msgstr "La tête grise de Vieille-Gueule-Grise, portée en capuche. La forêt se tait sur votre passage. Trophée de chasse, jamais en vente."
+
+#: assets/data/catalog.json
+msgid "Old King's Crown"
+msgstr "Couronne du Vieux Roi"
 
 #: assets/data/catalog.json
 msgid "Old Steel"
@@ -1015,6 +1131,10 @@ msgstr "L'une des cinq lettres de Maren, adressée à la vieille Wenna de Saltme
 #: assets/data/catalog.json
 msgid "Oskar's Shield"
 msgstr "Bouclier d'Oskar"
+
+#: assets/data/catalog.json
+msgid "Owl Brooch"
+msgstr "Broche de la chouette"
 
 #: assets/data/catalog.json
 msgid "Paladin"
@@ -1057,8 +1177,16 @@ msgid "Power Strike"
 msgstr "Frappe puissante"
 
 #: assets/data/catalog.json
+msgid "Quenched in the Ash Fields' black dust. It keeps an edge like a grudge."
+msgstr "Trempée dans la poussière noire des Champs de Cendres. Elle garde son fil comme une rancune."
+
+#: assets/data/catalog.json
 msgid "Quickstep Ring"
 msgstr "Anneau de pas leste"
+
+#: assets/data/catalog.json
+msgid "Rabbit's Foot"
+msgstr "Patte de lapin"
 
 #: assets/data/catalog.json
 msgid "Rain of Arrows"
@@ -1067,6 +1195,10 @@ msgstr "Pluie de flèches"
 #: assets/data/catalog.json
 msgid "Ranger"
 msgstr "Rôdeur"
+
+#: assets/data/catalog.json
+msgid "Ranger's Jerkin"
+msgstr "Pourpoint de rôdeur"
 
 #: assets/data/catalog.json
 msgid "Reckless fury: massive damage, but it costs 8 HP."
@@ -1165,6 +1297,10 @@ msgid "Ring of Clarity"
 msgstr "Anneau de clarté"
 
 #: assets/data/catalog.json
+msgid "Rings on rings on rings. Heavy, honest, and very loud on stairs."
+msgstr "Des anneaux sur des anneaux sur des anneaux. Lourde, honnête, et très bruyante dans les escaliers."
+
+#: assets/data/catalog.json
 msgid "Rogue"
 msgstr "Voleur"
 
@@ -1199,6 +1335,10 @@ msgstr "Targe de bois salé"
 #: assets/data/catalog.json
 msgid "Sanctuary"
 msgstr "Sanctuaire"
+
+#: assets/data/catalog.json
+msgid "Sapphire Ring"
+msgstr "Anneau de saphir"
 
 #: assets/data/catalog.json
 msgid "Scaled Greaves"
@@ -1253,6 +1393,10 @@ msgid "Shield Slam"
 msgstr "Coup de bouclier"
 
 #: assets/data/catalog.json
+msgid "Silkweave Robe"
+msgstr "Robe de soie tissée"
+
+#: assets/data/catalog.json
 msgid "Smells like adventure. And cow."
 msgstr "Ça sent l'aventure. Et la vache."
 
@@ -1279,6 +1423,10 @@ msgstr "Quelqu'un a marché loin avec. À votre tour, maintenant."
 #: assets/data/catalog.json
 msgid "Soul Bolt"
 msgstr "Trait d'âme"
+
+#: assets/data/catalog.json
+msgid "Stalker's Knife"
+msgstr "Couteau de traqueur"
 
 #: assets/data/catalog.json
 msgid "Stamina Draught"
@@ -1315,6 +1463,10 @@ msgstr "Encore un peu tiède. Les collectionneurs sont bizarres."
 #: assets/data/catalog.json
 msgid "Still warm. Proof of the deed."
 msgstr "Encore chaude. La preuve de l'exploit."
+
+#: assets/data/catalog.json
+msgid "Stormglass Wand"
+msgstr "Baguette de verre-tempête"
 
 #: assets/data/catalog.json
 msgid "Strikes a vital spot for heavy dexterity damage."
@@ -1389,6 +1541,10 @@ msgid "The Garrison's Crypt"
 msgstr "La crypte de la garnison"
 
 #: assets/data/catalog.json
+msgid "The Gilded Stair"
+msgstr "L'Escalier doré"
+
+#: assets/data/catalog.json
 msgid "The Glass Hall"
 msgstr "La Salle de verre"
 
@@ -1401,8 +1557,20 @@ msgid "The Hollow King wore a shard of it. Now it's yours."
 msgstr "Le Roi Creux en portait un éclat. Désormais, il est à vous."
 
 #: assets/data/catalog.json
+msgid "The Hollow King wore it for a hundred years. It's heavier than it looks, and it looks heavy."
+msgstr "Le Roi Creux l'a portée cent ans. Elle est plus lourde qu'elle n'en a l'air, et elle en a l'air."
+
+#: assets/data/catalog.json
 msgid "The Ice Cave"
 msgstr "La Grotte de glace"
+
+#: assets/data/catalog.json
+msgid "The Kings' Armoury"
+msgstr "L'Arsenal des rois"
+
+#: assets/data/catalog.json
+msgid "The Kings' Strongroom"
+msgstr "La Chambre forte des rois"
 
 #: assets/data/catalog.json
 msgid "The Mirefen"
@@ -1411,6 +1579,10 @@ msgstr "Les Marais de Fange"
 #: assets/data/catalog.json
 msgid "The Mountain Road"
 msgstr "La route de la montagne"
+
+#: assets/data/catalog.json
+msgid "The Old Kings' Hoard"
+msgstr "Le Trésor des anciens rois"
 
 #: assets/data/catalog.json
 msgid "The Proving Grounds"
@@ -1423,6 +1595,10 @@ msgstr "La Grotte marine"
 #: assets/data/catalog.json
 msgid "The Tidecaller's Grotto"
 msgstr "La Grotte de l'Appelle-Marée"
+
+#: assets/data/catalog.json
+msgid "The Tombs of the Kings"
+msgstr "Les Tombeaux des rois"
 
 #: assets/data/catalog.json
 msgid "The West Gallery"
@@ -1487,6 +1663,10 @@ msgstr "La langue universelle."
 #: assets/data/catalog.json
 msgid "Thick, white and warm, and it smells exactly like a yeti."
 msgstr "Épaisse, blanche et chaude, et elle sent exactement le yéti."
+
+#: assets/data/catalog.json
+msgid "Thornwood Bow"
+msgstr "Arc d'épineux"
 
 #: assets/data/catalog.json
 msgid "Three flames against the dark. Cozy, not haunted. Placed at home: your mana or stamina comes back a point faster."
@@ -1577,6 +1757,10 @@ msgid "Wilds-born archer. Fast on their feet, deadly from a distance."
 msgstr "Archer né dans les terres sauvages. Vif sur ses appuis, mortel à distance."
 
 #: assets/data/catalog.json
+msgid "Windrunner Bow"
+msgstr "Arc coureur-de-vent"
+
+#: assets/data/catalog.json
 msgid "Wolf Pelt"
 msgstr "Peau de loup"
 
@@ -1607,6 +1791,10 @@ msgstr "Vaut une fortune pour le bon collectionneur."
 #: assets/data/catalog.json
 msgid "Woven Rug"
 msgstr "Tapis tissé"
+
+#: assets/data/catalog.json
+msgid "Woven with a thread of silver that hums when a spell goes through it."
+msgstr "Tissée d'un fil d'argent qui bourdonne quand un sort la traverse."
 
 #: assets/data/catalog.json
 msgid "Woven with wards. Machine wash cold."
@@ -4777,6 +4965,10 @@ msgid "Ten floors of monsters, from cellar slimes to Fafnyr the Ashen"
 msgstr "Dix étages de monstres, des gelées de la cave à Fafnyr des Cendres"
 
 #: assets/data/changelog.json
+msgid "The Ashen Mountain"
+msgstr "La Montagne des Cendres"
+
+#: assets/data/changelog.json
 msgid "The Ashenreach and its six regions are one land now: walk on down a road out and the next region is already there, with no fade"
 msgstr "La Marche des Cendres et ses six régions ne forment plus qu'une seule terre : suivez une route qui sort et la région suivante est déjà là, sans fondu"
 
@@ -4807,6 +4999,10 @@ msgstr "Le canari"
 #: assets/data/changelog.json
 msgid "The Cartographer"
 msgstr "Le Cartographe"
+
+#: assets/data/changelog.json
+msgid "The Deep Hunt"
+msgstr "La Traque des Profondeurs"
 
 #: assets/data/changelog.json
 msgid "The Deep Hunt Has a Reason"
@@ -4955,6 +5151,10 @@ msgstr "L'Appelle-Marée porte la marmite de Tam en guise de couronne ; une fo
 #: assets/data/changelog.json
 msgid "The Truth of It"
 msgstr "La vérité des choses"
+
+#: assets/data/changelog.json
+msgid "The Undermountain"
+msgstr "Le Sous-Mont"
 
 #: assets/data/changelog.json
 msgid "The Undermountain's cave and its floors leave the world; heroes saved there wake by the mountain gate or in town, with their gear and levels"
@@ -5989,10 +6189,6 @@ msgid "A crushing blow."
 msgstr "Un coup écrasant."
 
 #: assets/data/combat.json
-msgid "A forge-demon walks the twenty-first depth with a furnace where its heart should be. Hilda wants the grips off its hands. She says she'll know what to do with them."
-msgstr "Un démon-forge arpente la vingt et unième profondeur, un fourneau à la place du cœur. Hilda veut les poignes de ses mains. Elle dit qu'elle saura quoi en faire."
-
-#: assets/data/combat.json
 msgid "A fortress that marches. +5 DEF, unstaggerable, stronger when bloodied."
 msgstr "Une forteresse en marche. +5 DEF, inébranlable, plus redoutable une fois en sang."
 
@@ -6063,10 +6259,6 @@ msgstr "Un choc qui fait vaciller et peut étourdir un tour."
 #: assets/data/combat.json
 msgid "A staggering bash."
 msgstr "Un choc qui fait vaciller."
-
-#: assets/data/combat.json
-msgid "A treasury untouched for centuries. Some of the chests are hungry."
-msgstr "Une salle du trésor intacte depuis des siècles. Certains coffres ont faim."
 
 #: assets/data/combat.json
 msgid "A troll so old that moss grows on its back sleeps in the walled glade of the Deepwood. When it wakes it throws the glade's stones at whoever woke it."
@@ -6165,10 +6357,6 @@ msgid "An arrow for the last breath: enormous DEX damage."
 msgstr "Une flèche pour le dernier souffle : énormes dégâts de DEX."
 
 #: assets/data/combat.json
-msgid "An orc warband has claimed the old garrison."
-msgstr "Une bande de guerre orque s'est emparée de l'ancienne garnison."
-
-#: assets/data/combat.json
 msgid "Applause from an empty room."
 msgstr "Des applaudissements dans une salle vide."
 
@@ -6197,10 +6385,6 @@ msgid "Ash follows you like a court. Attacks burn far more often."
 msgstr "La cendre vous suit comme une cour. Les attaques brûlent bien plus souvent."
 
 #: assets/data/combat.json
-msgid "Ashen"
-msgstr "des Cendres"
-
-#: assets/data/combat.json
 msgid "Assassin"
 msgstr "Assassin"
 
@@ -6215,14 +6399,6 @@ msgstr "Coup dans le dos II"
 #: assets/data/combat.json
 msgid "Backstab cuts deeper."
 msgstr "Coup dans le dos entaille plus profond."
-
-#: assets/data/combat.json
-msgid "Barrow"
-msgstr "du Tertre"
-
-#: assets/data/combat.json
-msgid "Barrow Crypt"
-msgstr "La Crypte du tertre"
 
 #: assets/data/combat.json
 msgid "Bastion"
@@ -6247,10 +6423,6 @@ msgstr "Maître des bêtes"
 #: assets/data/combat.json
 msgid "Beasts"
 msgstr "Bêtes"
-
-#: assets/data/combat.json
-msgid "Behind the dragon's hoard, a stairway descends into the dark."
-msgstr "Derrière le trésor du dragon, un escalier s'enfonce dans le noir."
 
 #: assets/data/combat.json
 msgid "Berserk costs only 4 HP."
@@ -6289,10 +6461,6 @@ msgid "Bonelord"
 msgstr "Seigneur des os"
 
 #: assets/data/combat.json
-msgid "Bones of every kind, gnawed by every kind."
-msgstr "Des os de toute espèce, rongés par toute espèce."
-
-#: assets/data/combat.json
 msgid "Bulwark"
 msgstr "Rempart"
 
@@ -6321,10 +6489,6 @@ msgid "Cave Troll"
 msgstr "Troll des cavernes"
 
 #: assets/data/combat.json
-msgid "Cellar"
-msgstr "de la Cave"
-
-#: assets/data/combat.json
 msgid "Cinderjaw"
 msgstr "Mâchebraise"
 
@@ -6349,16 +6513,8 @@ msgid "Cleave"
 msgstr "Moulinet"
 
 #: assets/data/combat.json
-msgid "Climbers who came back from the sixth depth speak of a shadow that holds you where you stand while the rest of the dark closes in. Nobody has seen its face. Nobody wants to."
-msgstr "Ceux qui sont revenus de la sixième profondeur parlent d'une ombre qui vous cloue sur place pendant que le reste du noir se referme. Personne n'a vu son visage. Personne n'y tient."
-
-#: assets/data/combat.json
 msgid "Cold blast, may stun."
 msgstr "Souffle glacé, peut étourdir."
-
-#: assets/data/combat.json
-msgid "Cold voices sing hymns in the flooded nave."
-msgstr "Des voix froides chantent des hymnes dans la nef inondée."
 
 #: assets/data/combat.json
 msgid "Consecrate burns hotter."
@@ -6421,10 +6577,6 @@ msgid "Deathblow"
 msgstr "Coup fatal"
 
 #: assets/data/combat.json
-msgid "Deathless"
-msgstr "des Sans-Mort"
-
-#: assets/data/combat.json
 msgid "Deathless Step"
 msgstr "Pas immortel"
 
@@ -6435,10 +6587,6 @@ msgstr "Garde-mort"
 #: assets/data/combat.json
 msgid "Decay sends invitations. Attacks poison far more often."
 msgstr "La pourriture envoie ses invitations. Les attaques empoisonnent bien plus souvent."
-
-#: assets/data/combat.json
-msgid "Deep"
-msgstr "des Profondeurs"
 
 #: assets/data/combat.json
 msgid "Deep Freeze"
@@ -6477,28 +6625,8 @@ msgid "Doubt breaks on you first. +5 DEF, unstaggerable."
 msgstr "Le doute se brise sur vous en premier. +5 DEF, inébranlable."
 
 #: assets/data/combat.json
-msgid "Down in the eleventh depth an old knight keeps a congregation of bones, and it rings them up out of the floor whenever someone comes to pray. Bring something heavier than a prayer."
-msgstr "Au fond de la onzième profondeur, un vieux chevalier tient une congrégation d'os, et il les fait surgir du sol dès qu'on vient prier. Apportez plus lourd qu'une prière."
-
-#: assets/data/combat.json
 msgid "Drain Life"
 msgstr "Drain de vie"
-
-#: assets/data/combat.json
-msgid "Drowned"
-msgstr "noyé"
-
-#: assets/data/combat.json
-msgid "Drowned Chapel"
-msgstr "La Chapelle noyée"
-
-#: assets/data/combat.json
-msgid "Echoing"
-msgstr "des Échos"
-
-#: assets/data/combat.json
-msgid "Ember Warrens"
-msgstr "Les Terriers de braise"
 
 #: assets/data/combat.json
 msgid "Epidemics cite you. Attacks fester; kills feed the mind."
@@ -6507,10 +6635,6 @@ msgstr "Les épidémies vous citent en exemple. Vos attaques infectent ; chaqu
 #: assets/data/combat.json
 msgid "Evasion"
 msgstr "Esquive"
-
-#: assets/data/combat.json
-msgid "Every bite down here carries poison."
-msgstr "Chaque morsure, ici, porte du poison."
 
 #: assets/data/combat.json
 msgid "Every hoof, claw and wing you ever spared."
@@ -6541,10 +6665,6 @@ msgid "Fafnyr rears up - the air shimmers with heat!"
 msgstr "Fafnyr se dresse - l'air tremble de chaleur !"
 
 #: assets/data/combat.json
-msgid "Fafnyr the Ashen waits atop the mountain. End this."
-msgstr "Fafnyr des Cendres attend au sommet de la montagne. Finissez-en."
-
-#: assets/data/combat.json
 msgid "Fafnyr's last brood-wyrm still nests on the high ash. It spits fire three ways at once and the caravans have stopped coming over the ridge."
 msgstr "Le dernier wyrm de la couvée de Fafnyr niche encore sur les hauteurs de cendre. Il crache le feu dans trois directions à la fois, et les caravanes ne franchissent plus la crête."
 
@@ -6569,22 +6689,6 @@ msgid "Fieldcraft"
 msgstr "Sens du terrain"
 
 #: assets/data/combat.json
-msgid "Fifteen depths. Hilda has started keeping the crystals you bring up on her mantel, 'for safekeeping'."
-msgstr "Quinze profondeurs. Hilda a commencé à garder sur sa cheminée les cristaux que vous remontez, « pour les mettre à l'abri »."
-
-#: assets/data/combat.json
-msgid "Fifteen. Deeper than the mountain is tall, if the old maps are right. Are you still looking for the bottom?"
-msgstr "Quinze. Plus profond que la montagne n'est haute, si les vieilles cartes disent vrai. Vous cherchez toujours le fond ?"
-
-#: assets/data/combat.json
-msgid "Fifty depths below the throne. Whatever is at the bottom, I hope it knows your name by now."
-msgstr "Cinquante profondeurs sous le trône. Quoi qu'il y ait au fond, j'espère qu'il connaît votre nom, maintenant."
-
-#: assets/data/combat.json
-msgid "Fifty depths. The whole town is on the square when you come home, and for once nobody says a word. They just clap."
-msgstr "Cinquante profondeurs. Toute la ville est sur la place quand vous rentrez, et pour une fois personne ne dit mot. On applaudit, c'est tout."
-
-#: assets/data/combat.json
 msgid "Final Dawn"
 msgstr "Ultime aurore"
 
@@ -6607,10 +6711,6 @@ msgstr "Boule de feu flambe plus fort."
 #: assets/data/combat.json
 msgid "Firestorm"
 msgstr "Tempête de feu"
-
-#: assets/data/combat.json
-msgid "Five depths under the throne, and you came back up. I didn't think the mountain had a cellar."
-msgstr "Cinq profondeurs sous le trône, et vous êtes remonté. Je ne savais pas que la montagne avait une cave."
 
 #: assets/data/combat.json
 msgid "Flame Wave"
@@ -6641,14 +6741,6 @@ msgid "Frost Wolf"
 msgstr "Loup de givre"
 
 #: assets/data/combat.json
-msgid "Frosthowl"
-msgstr "des Hurle-Givre"
-
-#: assets/data/combat.json
-msgid "Frosthowl Pass"
-msgstr "Le Col des Hurle-Givre"
-
-#: assets/data/combat.json
 msgid "Garrote"
 msgstr "Garrot"
 
@@ -6669,14 +6761,6 @@ msgid "Glacial Heart"
 msgstr "Cœur glacial"
 
 #: assets/data/combat.json
-msgid "Gloomdeep"
-msgstr "de Sombrefond"
-
-#: assets/data/combat.json
-msgid "Gloomdeep Caverns"
-msgstr "Les Cavernes de Sombrefond"
-
-#: assets/data/combat.json
 msgid "Goblin"
 msgstr "Gobelin"
 
@@ -6687,10 +6771,6 @@ msgstr "Gobelin terrassier"
 #: assets/data/combat.json
 msgid "Goblin Spearman"
 msgstr "Gobelin lancier"
-
-#: assets/data/combat.json
-msgid "Goblins have been robbing travelers on the forest road."
-msgstr "Des gobelins détroussent les voyageurs sur la route de la forêt."
 
 #: assets/data/combat.json
 msgid "Grandmother Gulp"
@@ -6717,8 +6797,8 @@ msgid "Grimshade"
 msgstr "Sombrombre"
 
 #: assets/data/combat.json
-msgid "Grimshade is gone from the sixth depth. Odo swears the shadows in his cellar are smaller now."
-msgstr "Sombrombre a quitté la sixième profondeur. Odo jure que les ombres de sa cave ont rapetissé."
+msgid "Grimshade is gone from the kings' strongroom. Odo swears the shadows in his cellar are smaller now."
+msgstr "Sombrombre a quitté la chambre forte des rois. Odo jure que les ombres de sa cave ont rapetissé."
 
 #: assets/data/combat.json
 msgid "Grimshade peels itself off the wall!"
@@ -6727,10 +6807,6 @@ msgstr "Sombrombre se décolle du mur !"
 #: assets/data/combat.json
 msgid "Guardian"
 msgstr "Gardien"
-
-#: assets/data/combat.json
-msgid "Hall of Echoes"
-msgstr "La Salle des échos"
 
 #: assets/data/combat.json
 msgid "Halo"
@@ -6785,10 +6861,6 @@ msgid "High Judge"
 msgstr "Grand juge"
 
 #: assets/data/combat.json
-msgid "Hoard"
-msgstr "du Trésor"
-
-#: assets/data/combat.json
 msgid "Hollow Guard"
 msgstr "Garde creux"
 
@@ -6797,8 +6869,8 @@ msgid "Hollowmother"
 msgstr "Mère-Creuse"
 
 #: assets/data/combat.json
-msgid "Hollowmother is slain. The children have stopped daring each other to look down the well."
-msgstr "Mère-Creuse est abattue. Les enfants ne se défient plus de regarder au fond du puits."
+msgid "Hollowmother is slain, down in the kings' vault. The children have stopped daring each other to look down the well."
+msgstr "Mère-Creuse est morte, là-bas dans le caveau des rois. Les enfants ne se mettent plus au défi de regarder au fond du puits."
 
 #: assets/data/combat.json
 msgid "Hollowmother unfolds, all limbs and hunger."
@@ -6875,10 +6947,6 @@ msgstr "Le fourneau de Cœur-de-Fer s'ouvre en rugissant !"
 #: assets/data/combat.json
 msgid "It knows the way."
 msgstr "Elle connaît le chemin."
-
-#: assets/data/combat.json
-msgid "Its foes move quicker than anything should."
-msgstr "Ses ennemis vont plus vite que rien ne devrait."
 
 #: assets/data/combat.json
 msgid "Judgement II"
@@ -7005,20 +7073,12 @@ msgid "Mimic"
 msgstr "Mimique"
 
 #: assets/data/combat.json
-msgid "Miners fled when the bridge trolls stopped charging tolls and started charging people."
-msgstr "Les mineurs ont fui quand les trolls du pont ont cessé de faire payer le passage pour faire payer les passants."
-
-#: assets/data/combat.json
 msgid "Mirror Feint"
 msgstr "Feinte miroir"
 
 #: assets/data/combat.json
 msgid "Morning, weaponized. +4 DEF, +8% crit."
 msgstr "Le matin, transformé en arme. +4 DEF, +8 % de critique."
-
-#: assets/data/combat.json
-msgid "Morvax has waited below since before the mountain had a name. End this. Again."
-msgstr "Morvax attend là-dessous depuis l'époque où la montagne n'avait pas de nom. Finissez-en. Encore une fois."
 
 #: assets/data/combat.json
 msgid "Morvax laughs, and the floor goes cold beneath you!"
@@ -7039,10 +7099,6 @@ msgstr "Dos-de-Mousse"
 #: assets/data/combat.json
 msgid "Mossback wakes and tears a stone from the wall!"
 msgstr "Dos-de-Mousse s'éveille et arrache une pierre au mur !"
-
-#: assets/data/combat.json
-msgid "Mossy Cellar"
-msgstr "La Cave moussue"
 
 #: assets/data/combat.json
 msgid "Mountainheart"
@@ -7229,10 +7285,6 @@ msgid "Predator"
 msgstr "Prédateur"
 
 #: assets/data/combat.json
-msgid "Proud"
-msgstr "Altière"
-
-#: assets/data/combat.json
 msgid "Providence"
 msgstr "Providence"
 
@@ -7333,10 +7385,6 @@ msgid "Rot with ambition. Plain attacks can poison."
 msgstr "La pourriture a de l'ambition. Les attaques simples peuvent empoisonner."
 
 #: assets/data/combat.json
-msgid "Ruined Watchtower"
-msgstr "La Tour de guet en ruine"
-
-#: assets/data/combat.json
 msgid "Sainthood"
 msgstr "Sainteté"
 
@@ -7433,14 +7481,6 @@ msgid "Smuggler Gunner"
 msgstr "Canonnier contrebandier"
 
 #: assets/data/combat.json
-msgid "Something gelatinous lurks beneath the tavern."
-msgstr "Quelque chose de gélatineux rôde sous la taverne."
-
-#: assets/data/combat.json
-msgid "Something in the stone dulls your skills."
-msgstr "Quelque chose dans la pierre émousse vos compétences."
-
-#: assets/data/combat.json
 msgid "Something tall moves in the pines by the road. Keep the wagon going!"
 msgstr "Quelque chose de grand bouge dans les pins au bord de la route. Gardez le chariot en marche !"
 
@@ -7493,14 +7533,6 @@ msgid "Stormcaller"
 msgstr "Mande-Orage"
 
 #: assets/data/combat.json
-msgid "Stormcrag"
-msgstr "de Crêtorage"
-
-#: assets/data/combat.json
-msgid "Stormcrag Aerie"
-msgstr "L'Aire de Crêtorage"
-
-#: assets/data/combat.json
 msgid "Stormlash"
 msgstr "Fouet d'orage"
 
@@ -7517,24 +7549,8 @@ msgid "Sunfire"
 msgstr "Feu solaire"
 
 #: assets/data/combat.json
-msgid "Sunken"
-msgstr "de la Forge"
-
-#: assets/data/combat.json
-msgid "Sunken Forge"
-msgstr "La Forge engloutie"
-
-#: assets/data/combat.json
-msgid "Sunless"
-msgstr "sans soleil"
-
-#: assets/data/combat.json
 msgid "Supernova"
 msgstr "Supernova"
-
-#: assets/data/combat.json
-msgid "Swift"
-msgstr "Vive"
 
 #: assets/data/combat.json
 msgid "Tears the seam between body and soul: enormous INT damage."
@@ -7553,22 +7569,6 @@ msgid "Templar"
 msgstr "Templier"
 
 #: assets/data/combat.json
-msgid "Ten depths down, and a warden of the deep beneath your boots. Children play 'the Deep Hunt' in the square now; nobody wants to be the warden."
-msgstr "Dix profondeurs, et un gardien des profondeurs sous vos bottes. Les enfants jouent à « la Traque des Profondeurs » sur la place ; personne ne veut être le gardien."
-
-#: assets/data/combat.json
-msgid "Ten depths. Something guarded the tenth, they say. Something you put down."
-msgstr "Dix profondeurs. Quelque chose gardait la dixième, dit-on. Quelque chose que vous avez abattu."
-
-#: assets/data/combat.json
-msgid "The Ashen Mountain"
-msgstr "La Montagne des Cendres"
-
-#: assets/data/combat.json
-msgid "The Ashen Throne"
-msgstr "Le Trône de cendres"
-
-#: assets/data/combat.json
 msgid "The Bone Abbot"
 msgstr "L'Abbé des Os"
 
@@ -7577,16 +7577,8 @@ msgid "The Bone Abbot raises its hand, and the floor answers."
 msgstr "L'Abbé des Os lève la main, et le sol répond."
 
 #: assets/data/combat.json
-msgid "The Bone Abbot's congregation is dust. The chapel in Greyhold rang its bell for you."
-msgstr "La congrégation de l'Abbé des Os n'est plus que poussière. La chapelle de Greyhold a sonné sa cloche pour vous."
-
-#: assets/data/combat.json
-msgid "The Deep Hunt"
-msgstr "La Traque des Profondeurs"
-
-#: assets/data/combat.json
-msgid "The Deep Warden"
-msgstr "Le Gardien des Profondeurs"
+msgid "The Bone Abbot's congregation is dust, down among the stone kings. Brother Teo rang Greyhold's bell for you."
+msgstr "La congrégation de l'Abbé des Os n'est plus que poussière, en bas parmi les rois de pierre. Frère Teo a sonné la cloche de Greyhold pour vous."
 
 #: assets/data/combat.json
 msgid "The Drowned Knight"
@@ -7609,16 +7601,20 @@ msgid "The Hollow King"
 msgstr "Le Roi Creux"
 
 #: assets/data/combat.json
+msgid "The Hollow King is dust, and the old kings' hoard is open to anyone with a sack. Odo has bought three sacks."
+msgstr "Le Roi Creux n'est plus que poussière, et le trésor des anciens rois est ouvert à qui a un sac. Odo a acheté trois sacs."
+
+#: assets/data/combat.json
+msgid "The Hollow King rises off the hoard, crowned and empty-eyed. \"Thieves,\" he rattles. \"Every one of you. Thieves.\""
+msgstr "Le Roi Creux se dresse sur le trésor, couronné, les orbites vides. « Voleurs », râle-t-il. « Tous autant que vous êtes. Voleurs. »"
+
+#: assets/data/combat.json
 msgid "The Seam Warden"
 msgstr "Le Gardien du Filon"
 
 #: assets/data/combat.json
 msgid "The Seam Warden heaves itself up off a black ingot stamped with five marks. It has been keeping it warm since spring."
 msgstr "Le Gardien du Filon se soulève d'un lingot noir frappé de cinq marques. Il le tient au chaud depuis le printemps."
-
-#: assets/data/combat.json
-msgid "The Sunless Stair"
-msgstr "L'Escalier sans soleil"
 
 #: assets/data/combat.json
 msgid "The Tidecaller heaves itself up off a ladle, a dented stewpot on its head for a crown. That's Tam's pot!"
@@ -7633,24 +7629,12 @@ msgid "The Undead"
 msgstr "Les Morts-vivants"
 
 #: assets/data/combat.json
-msgid "The Undermountain"
-msgstr "Le Sous-Mont"
-
-#: assets/data/combat.json
 msgid "The Undying Shield"
 msgstr "Le Bouclier immortel"
 
 #: assets/data/combat.json
 msgid "The Unseen"
 msgstr "L'Invisible"
-
-#: assets/data/combat.json
-msgid "The Vaulted Hoard"
-msgstr "Le Trésor voûté"
-
-#: assets/data/combat.json
-msgid "The air is warm and old. Something below is breathing."
-msgstr "L'air est tiède et ancien. Quelque chose respire, en dessous."
 
 #: assets/data/combat.json
 msgid "The artery, found."
@@ -7685,24 +7669,12 @@ msgid "The dark keeps your appointments. +22% crit."
 msgstr "L'obscurité tient votre agenda. +22 % de critique."
 
 #: assets/data/combat.json
-msgid "The dead of the deep kingdom whisper. Some of them still march."
-msgstr "Les morts du royaume profond murmurent. Certains marchent encore."
-
-#: assets/data/combat.json
-msgid "The dead of the old kingdom do not rest easy."
-msgstr "Les morts de l'ancien royaume ne reposent pas en paix."
-
-#: assets/data/combat.json
 msgid "The dead pay rent. +4 DEF, venom-proof, kills refund 4 MP."
 msgstr "Les morts paient un loyer. +4 DEF, immunité au venin, chaque ennemi tué rend 4 PM."
 
 #: assets/data/combat.json
 msgid "The dead stand between you and harm, then lash out."
 msgstr "Les morts s'interposent entre vous et le danger, puis frappent."
-
-#: assets/data/combat.json
-msgid "The dwarven guardians still obey their final order: none shall pass."
-msgstr "Les gardiens nains obéissent toujours à leur dernier ordre : nul ne passera."
 
 #: assets/data/combat.json
 msgid "The field reaps itself."
@@ -7773,10 +7745,6 @@ msgid "The room becomes a furnace."
 msgstr "La pièce devient une fournaise."
 
 #: assets/data/combat.json
-msgid "The seal on the deep holds fast. The dragon above still reigns."
-msgstr "Le sceau des profondeurs tient bon. Le dragon règne toujours, là-haut."
-
-#: assets/data/combat.json
 msgid "The shepherds have hung Greymaw's tail over the well. The sheep sleep easy tonight."
 msgstr "Les bergers ont pendu la queue de Vieille-Gueule-Grise au-dessus du puits. Les moutons dorment tranquilles ce soir."
 
@@ -7811,18 +7779,6 @@ msgstr "Le ciel choisit son camp."
 #: assets/data/combat.json
 msgid "The sky takes a side: massive STR damage."
 msgstr "Le ciel choisit son camp : dégâts de FOR massifs."
-
-#: assets/data/combat.json
-msgid "The stair below the throne goes on down. Nobody built this far."
-msgstr "L'escalier sous le trône continue de descendre. Personne n'a bâti aussi loin."
-
-#: assets/data/combat.json
-msgid "The thing at the sixteenth depth is thin as a hunger and it leaps further than a horse. The hunters who drew it call it Hollowmother, and won't say why."
-msgstr "La chose de la seizième profondeur est maigre comme une faim et bondit plus loin qu'un cheval. Les chasseurs qui l'ont dessinée l'appellent Mère-Creuse, et refusent de dire pourquoi."
-
-#: assets/data/combat.json
-msgid "The tunnels glow warm. The imps that dug them think you look flammable."
-msgstr "Les tunnels rougeoient de chaleur. Les diablotins qui les ont creusés vous trouvent l'air inflammable."
 
 #: assets/data/combat.json
 msgid "The wagon's down! Gunnar is waving his hat at you."
@@ -7865,28 +7821,12 @@ msgid "They hit the laugh, not the throat."
 msgstr "Ils frappent le rire, pas la gorge."
 
 #: assets/data/combat.json
-msgid "Things that fled the light came here to wait. They're done waiting."
-msgstr "Ce qui fuyait la lumière est venu attendre ici. L'attente est finie."
-
-#: assets/data/combat.json
-msgid "Thirty depths. Merchants from the coast come up just to see the one who goes down."
-msgstr "Trente profondeurs. Des marchands de la côte montent rien que pour voir celui qui descend."
-
-#: assets/data/combat.json
-msgid "Thirty. Nobody in the Reach has a number for how deep that is. You'll have to be the number."
-msgstr "Trente. Personne dans la Marche n'a de chiffre pour une telle profondeur. Il faudra que ce chiffre, ce soit vous."
-
-#: assets/data/combat.json
 msgid "Thousand Cuts"
 msgstr "Mille entailles"
 
 #: assets/data/combat.json
 msgid "Throatseeker"
 msgstr "Cherche-gorge"
-
-#: assets/data/combat.json
-msgid "Throne of the Deathless"
-msgstr "Le Trône des Sans-Mort"
 
 #: assets/data/combat.json
 msgid "Through armor, through excuses."
@@ -7925,24 +7865,12 @@ msgid "Turncoat Bowman"
 msgstr "Archer renégat"
 
 #: assets/data/combat.json
-msgid "Twenty depths, and a king of the hollow places fallen. The bard's new song has a verse for every ten."
-msgstr "Vingt profondeurs, et un roi des lieux creux tombé. La nouvelle chanson du barde a un couplet par dizaine."
-
-#: assets/data/combat.json
-msgid "Twenty depths. The Hollow King, they're calling the thing you beat. I'd rather they called you something."
-msgstr "Vingt profondeurs. Le Roi Creux, voilà comment ils appellent la chose que vous avez battue. J'aimerais qu'ils vous trouvent un nom, à vous."
-
-#: assets/data/combat.json
 msgid "Twin Arrows"
 msgstr "Flèches jumelles"
 
 #: assets/data/combat.json
 msgid "Two answers to one question."
 msgstr "Deux réponses à une seule question."
-
-#: assets/data/combat.json
-msgid "Two of its foes are elites, besides whatever guards it."
-msgstr "Deux de ses ennemis sont des élites, sans compter ce qui la garde."
 
 #: assets/data/combat.json
 msgid "Unmakes wounds."
@@ -7969,10 +7897,6 @@ msgid "Venom Master"
 msgstr "Maître des venins"
 
 #: assets/data/combat.json
-msgid "Venomous"
-msgstr "Venimeuse"
-
-#: assets/data/combat.json
 msgid "Verdicts, delivered. +12% crit and richer spoils."
 msgstr "Verdicts rendus. +12 % de critique et un meilleur butin."
 
@@ -7997,10 +7921,6 @@ msgid "War Cry"
 msgstr "Cri de guerre"
 
 #: assets/data/combat.json
-msgid "Warded"
-msgstr "Scellée"
-
-#: assets/data/combat.json
 msgid "Warfather"
 msgstr "Père des batailles"
 
@@ -8013,10 +7933,6 @@ msgid "Warpath"
 msgstr "Sentier de la guerre"
 
 #: assets/data/combat.json
-msgid "Watchtower"
-msgstr "de la Tour"
-
-#: assets/data/combat.json
 msgid "Weather with a grudge. Kills refund 6 MP; the bolts bite harder."
 msgstr "Un ciel rancunier. Chaque ennemi tué rend 6 PM ; les éclairs mordent plus fort."
 
@@ -8027,14 +7943,6 @@ msgstr "Wendigo"
 #: assets/data/combat.json
 msgid "Where you stand, the losing stops."
 msgstr "Là où vous vous tenez, la défaite s'arrête."
-
-#: assets/data/combat.json
-msgid "Whispering"
-msgstr "murmurant"
-
-#: assets/data/combat.json
-msgid "Whispering Woods"
-msgstr "Les Bois murmurants"
 
 #: assets/data/combat.json
 msgid "Wild Sovereign"
@@ -8057,14 +7965,6 @@ msgid "Wolves out of the trees - they've smelled the wagon!"
 msgstr "Des loups sortent des arbres - ils ont flairé le chariot !"
 
 #: assets/data/combat.json
-msgid "Wolves with eyes like embers stalk the mountain trail."
-msgstr "Des loups aux yeux de braise rôdent sur le sentier de la montagne."
-
-#: assets/data/combat.json
-msgid "Word comes up the road before you do: five depths below the throne. The tavern names a stool after you."
-msgstr "La nouvelle monte la route avant vous : cinq profondeurs sous le trône. La taverne donne votre nom à un tabouret."
-
-#: assets/data/combat.json
 msgid "Worldsplitter"
 msgstr "Fend-le-monde"
 
@@ -8075,10 +7975,6 @@ msgstr "Courroux céleste"
 #: assets/data/combat.json
 msgid "Wyvern"
 msgstr "Wyverne"
-
-#: assets/data/combat.json
-msgid "Wyverns nest in the high crags, guarding the path to the summit."
-msgstr "Des wyvernes nichent dans les hautes crêtes et gardent le chemin du sommet."
 
 #: assets/data/combat.json
 msgid "Yeti"
@@ -8153,22 +8049,6 @@ msgid "Zealotry"
 msgstr "Fanatisme"
 
 #: assets/data/combat.json
-msgid "depth 11 of the Deep Hunt, where it guards the stair"
-msgstr "la profondeur 11 de la Traque des Profondeurs, au pied de l'escalier"
-
-#: assets/data/combat.json
-msgid "depth 16 of the Deep Hunt, where it guards the stair"
-msgstr "la profondeur 16 de la Traque des Profondeurs, au pied de l'escalier"
-
-#: assets/data/combat.json
-msgid "depth 21 of the Deep Hunt, where it guards the stair"
-msgstr "la profondeur 21 de la Traque des Profondeurs, au pied de l'escalier"
-
-#: assets/data/combat.json
-msgid "depth 6 of the Deep Hunt, where it guards the stair"
-msgstr "la profondeur 6 de la Traque des Profondeurs, au pied de l'escalier"
-
-#: assets/data/combat.json
 msgid "the Ash Fields"
 msgstr "les Champs de Cendres"
 
@@ -8197,6 +8077,10 @@ msgid "the Greyhold cellars"
 msgstr "les caves de Greyhold"
 
 #: assets/data/combat.json
+msgid "the Kings' Vault"
+msgstr "le Caveau des rois"
+
+#: assets/data/combat.json
 msgid "the Mirefen"
 msgstr "les Marais de Fange"
 
@@ -8221,6 +8105,10 @@ msgid "the drowned road at the south of the Sunken Marsh"
 msgstr "la route noyée, au sud du Marais englouti"
 
 #: assets/data/combat.json
+msgid "the foot of the Kings' Vault's stair, one floor under the summit"
+msgstr "le pied de l'escalier du Caveau des rois, un étage sous le sommet"
+
+#: assets/data/combat.json
 msgid "the glass hall, three floors down the ice cave"
 msgstr "la salle de verre, tout au fond de la Grotte de glace, trois étages plus bas"
 
@@ -8229,12 +8117,24 @@ msgid "the grotto three floors down the sea cave"
 msgstr "la grotte tout au fond de la Grotte marine, trois étages plus bas"
 
 #: assets/data/combat.json
+msgid "the hoard at the bottom of the Kings' Vault"
+msgstr "le trésor, tout au fond du Caveau des rois"
+
+#: assets/data/combat.json
 msgid "the ice cave"
 msgstr "la grotte de glace"
 
 #: assets/data/combat.json
+msgid "the kings' armoury, four floors down the Kings' Vault"
+msgstr "l'arsenal des rois, quatre étages sous le Caveau des rois"
+
+#: assets/data/combat.json
 msgid "the mountain road"
 msgstr "la route de la montagne"
+
+#: assets/data/combat.json
+msgid "the old kings' strongroom, two floors down the Kings' Vault"
+msgstr "la chambre forte des anciens rois, deux étages sous le Caveau des rois"
 
 #: assets/data/combat.json
 msgid "the scorched hollow in the Ash Fields' south-east"
@@ -8245,6 +8145,10 @@ msgid "the south-east corner of the Whispering Forest"
 msgstr "le coin sud-est de la Forêt murmurante"
 
 #: assets/data/combat.json
+msgid "the tombs of the kings, three floors down the Kings' Vault"
+msgstr "les tombeaux des rois, trois étages sous le Caveau des rois"
+
+#: assets/data/combat.json
 msgid "the walled glade at the heart of the Deepwood"
 msgstr "la clairière close de murs au cœur des Bois-Profonds"
 
@@ -8253,12 +8157,28 @@ msgid "the west bank of the Mirefen"
 msgstr "la rive ouest des Marais de Fange"
 
 #: assets/data/depths.json
+msgid "A door of black iron in the rock under the summit, warm to the touch. Somewhere behind it, something very large is grumbling about corners."
+msgstr "Une porte de fer noir dans la roche, sous le sommet, tiède au toucher. Quelque part derrière, quelque chose de très grand ronchonne à propos des coins."
+
+#: assets/data/depths.json
+msgid "Behind the Hollow King's throne the bars on the old kings' own stair swing open: a straight way up, out of the door under the summit and into the mountain air."
+msgstr "Derrière le trône du Roi Creux, la grille de l'escalier des anciens rois s'ouvre : un chemin tout droit vers le haut, par la porte sous le sommet, jusqu'à l'air de la montagne."
+
+#: assets/data/depths.json
 msgid "Greyhold's garrison, laid in rows under their own stone knights. Someone used to leave candles here. Nobody has for a long time."
 msgstr "La garnison de Greyhold, couchée en rangées sous ses propres chevaliers de pierre. Quelqu'un laissait des bougies ici, autrefois. Plus personne, depuis longtemps."
 
 #: assets/data/depths.json
+msgid "Kings in stone, row on row, each with a hand held out for something that isn't there any more."
+msgstr "Des rois de pierre, rang après rang, chacun la main tendue vers quelque chose qui n'est plus là."
+
+#: assets/data/depths.json
 msgid "Rails buckled under a fall of rock, and a lever somebody pulled far too hard. From the rubble, a very small voice is shouting."
 msgstr "Des rails tordus sous un éboulement, et un levier que quelqu'un a tiré bien trop fort. Sous les gravats, une toute petite voix crie."
+
+#: assets/data/depths.json
+msgid "The hoard: a hundred years of the old kings' gold, pressed flat in the shape of a very large dragon. He was right. It's all corners."
+msgstr "Le trésor : cent ans d'or des anciens rois, aplati en forme de très grand dragon. Il avait raison. Ce ne sont que des coins."
 
 #: assets/data/depths.json
 msgid "The ice plugging the chute in the north wall cracks and slides away: a run of black ice, worn glass-smooth, all the way down to the foot of Liane's stair. Hold on to your hat."
@@ -8267,6 +8187,14 @@ msgstr "La glace qui bouche le boyau du mur nord se fend et glisse : une coul�
 #: assets/data/depths.json
 msgid "The iron bars on the north stair swing open behind him: a straight way up, to the foot of the keep's stair."
 msgstr "Les barreaux de l'escalier nord s'ouvrent derrière lui : un chemin tout droit vers le haut, jusqu'au pied de l'escalier du donjon."
+
+#: assets/data/depths.json
+msgid "The kings' armoury: racks of rust, a hundred years of it. The fire imps like it down here. It's warm."
+msgstr "L'arsenal des rois : des râteliers de rouille, cent ans de rouille. Les diablotins de feu s'y plaisent. Il fait chaud."
+
+#: assets/data/depths.json
+msgid "The old kings' strongboxes, every one dented in the shape of a sleeping dragon and rusted shut. Most of them are empty. Most."
+msgstr "Les coffres des anciens rois, tous cabossés en forme de dragon endormi et rouillés, fermés pour de bon. Presque tous sont vides. Presque."
 
 #: assets/data/depths.json
 msgid "The ore cage comes rattling down its shaft and its gate swings open: a ride up to the pithead, and daylight."
@@ -8281,12 +8209,20 @@ msgid "To the foot of Liane's stair"
 msgstr "Vers le pied de l'escalier de Liane"
 
 #: assets/data/depths.json
+msgid "Two stone kings keep the foot of the stair, their noses worn smooth. Something very large used to rest its chin on them."
+msgstr "Deux rois de pierre gardent le pied de l'escalier, le nez tout usé. Quelque chose de très grand y posait le menton."
+
+#: assets/data/depths.json
 msgid "Up to Saltmere's beach"
 msgstr "Vers la plage de Saltmere"
 
 #: assets/data/depths.json
 msgid "Up to the keep's stair"
 msgstr "Vers l'escalier du donjon"
+
+#: assets/data/depths.json
+msgid "Up to the mountain road"
+msgstr "Vers la route de la montagne"
 
 #: assets/data/depths.json
 msgid "Up to the pithead"
@@ -8303,6 +8239,10 @@ msgstr "Là où le capitaine Hale s'est couché, une dalle se soulève sur un es
 #: assets/data/depths.json
 msgid "Where Rimefang fell, the ice splits over an old stair: straight back to the foot of Liane's stair."
 msgstr "Là où Crocgivre est tombé, la glace se fend sur un vieil escalier : tout droit jusqu'au pied de l'escalier de Liane."
+
+#: assets/data/depths.json
+msgid "Where the Hollow King fell, the gold slides off an old stair: straight up to the door under the summit."
+msgstr "Là où le Roi Creux est tombé, l'or glisse et découvre un vieil escalier : tout droit jusqu'à la porte sous le sommet."
 
 #: assets/data/depths.json
 msgid "Where the Seam Warden fell, an old miners' stair shows under the rubble: straight up to the pithead."
@@ -9437,6 +9377,10 @@ msgid "A First Brew"
 msgstr "Un premier breuvage"
 
 #: assets/data/progression.json
+msgid "A Full House"
+msgstr "Maison pleine"
+
+#: assets/data/progression.json
 msgid "A Hood Against the Pass"
 msgstr "Une capuche contre le col"
 
@@ -9613,6 +9557,10 @@ msgid "Bring a settler home to Pixelheim"
 msgstr "Ramener un nouvel habitant à Pixelheim"
 
 #: assets/data/progression.json
+msgid "Bring every settler home to Pixelheim."
+msgstr "Ramener chaque colon chez lui, à Pixelheim."
+
+#: assets/data/progression.json
 msgid "Bring the four keepsakes home to Maren"
 msgstr "Rapporter les quatre souvenirs à Maren"
 
@@ -9785,6 +9733,10 @@ msgid "Deliver Maren's letter to Old Wenna in Saltmere."
 msgstr "Remettre la lettre de Maren à la vieille Wenna, à Saltmere."
 
 #: assets/data/progression.json
+msgid "Deliver all five of Maren's letters."
+msgstr "Remettre les cinq lettres de Maren."
+
+#: assets/data/progression.json
 msgid "Dire wolves driven off"
 msgstr "Loups sanguinaires chassés"
 
@@ -9859,6 +9811,10 @@ msgstr "Les braises envahissent la place : frappez-les ({key:attack}) - {key:s
 #: assets/data/progression.json
 msgid "Every Bounty Paid"
 msgstr "Toutes les primes payées"
+
+#: assets/data/progression.json
+msgid "Every Letter Delivered"
+msgstr "Toutes les lettres remises"
 
 #: assets/data/progression.json
 msgid "Every ballad needs a dragon. Loras can't afford a dragon."
@@ -10817,8 +10773,8 @@ msgid "Sit. Breathe. There. Now go and stand in front of a dragon again, apparen
 msgstr "Asseyez-vous. Respirez. Voilà. Et maintenant, retournez vous planter devant un dragon, apparemment."
 
 #: assets/data/progression.json
-msgid "Slay every named monster, the Reach's and the deep's."
-msgstr "Abattre chaque monstre nommé, de la Marche comme des profondeurs."
+msgid "Slay every named monster, the Reach's and the Vault's."
+msgstr "Abattre chaque monstre nommé, de la Marche comme du Caveau."
 
 #: assets/data/progression.json
 msgid "Slayer of All Kinds"
@@ -11645,20 +11601,20 @@ msgid "the Frostgate pass"
 msgstr "le col de la Porte-Givre"
 
 #: assets/data/story.json
-msgid "\"...promised me your village. It lied - to us both.\""
-msgstr "« ...m'avait promis votre village. Elle nous a menti, à tous les deux. »"
+msgid "\"Courier. You'll want the kings' gold, then. A hundred years I lay on it.\""
+msgstr "« Messager. Vous voulez l'or des rois, j'imagine. Cent ans que je suis couché dessus. »"
 
 #: assets/data/story.json
 msgid "\"I carried a letter,\" you say. \"You broke a seal.\""
 msgstr "« J'ai porté une lettre, dites-vous. Vous avez brisé un sceau. »"
 
 #: assets/data/story.json
-msgid "\"Tell Maren... she was right to run.\" Then he is only dust, and the dead around the throne lie down."
-msgstr "« Dites à Maren... qu'elle a eu raison de fuir. » Puis il n'est plus que poussière, et les morts autour du trône se couchent."
+msgid "\"Take it. It's all corners.\""
+msgstr "« Prenez-le. Ce ne sont que des coins. »"
 
 #: assets/data/story.json
-msgid "\"The voice below...\""
-msgstr "« La voix d'en bas... »"
+msgid "\"Tell Maren... she was right to run.\" Then he is only dust, and the dead around the throne lie down."
+msgstr "« Dites à Maren... qu'elle a eu raison de fuir. » Puis il n'est plus que poussière, et les morts autour du trône se couchent."
 
 #: assets/data/story.json
 msgid "\"Thirty-one. They've a new one by the bridge. Crooked.\""
@@ -11705,14 +11661,6 @@ msgid "Art by Shade (merchant-shade.itch.io)"
 msgstr "Graphismes de Shade (merchant-shade.itch.io)"
 
 #: assets/data/story.json
-msgid "Behind the Barrow Crypt's guardian: three graves under one stone, and a fourth name chiselled away."
-msgstr "Derrière le gardien de la Crypte du tertre : trois tombes sous une même pierre, et un quatrième nom effacé au burin."
-
-#: assets/data/story.json
-msgid "Behind the hoard, a stairway runs down into the dark."
-msgstr "Derrière le trésor, un escalier s'enfonce dans le noir."
-
-#: assets/data/story.json
 msgid "Below the hoard, the dead keep their own court."
 msgstr "Sous le trésor, les morts tiennent leur propre cour."
 
@@ -11729,12 +11677,12 @@ msgid "Down the mountain road, for the first time in fifty years, comes Morvax."
 msgstr "Par la route de la montagne, pour la première fois en cinquante ans, Morvax descend."
 
 #: assets/data/story.json
-msgid "Fafnyr sleeps. It took all five of us to lift the seal onto the chain. Then Morvax found a stair behind the hoard, going down."
-msgstr "Fafnyr dort. Il a fallu nous cinq pour hisser le sceau sur la chaîne. Puis Morvax a trouvé un escalier derrière le trésor, qui descendait."
+msgid "Fafnyr lies along the summit in the sun, free, and opens one eye at you."
+msgstr "Fafnyr est allongé au soleil sur le sommet, libre, et entrouvre un œil en vous voyant."
 
 #: assets/data/story.json
-msgid "Fafnyr's last breath rattles out of him, and with it, words."
-msgstr "Le dernier souffle de Fafnyr s'échappe en un râle, et avec lui, des mots."
+msgid "Fafnyr sleeps. It took all five of us to lift the seal onto the chain. Then Morvax found a stair behind the hoard, going down."
+msgstr "Fafnyr dort. Il a fallu nous cinq pour hisser le sceau sur la chaîne. Puis Morvax a trouvé un escalier derrière le trésor, qui descendait."
 
 #: assets/data/story.json
 msgid "Fafnyr: \"A hundred years on a pile of gold. Do you know what gold is like to sleep on? Corners. All corners.\""
@@ -11821,14 +11769,6 @@ msgid "Maren and Morvax open the collar together. Neither of them says a word. N
 msgstr "Maren et Morvax ouvrent le collier ensemble. Ni l'un ni l'autre ne dit un mot. Ni l'un ni l'autre n'en a besoin."
 
 #: assets/data/story.json
-msgid "On the anvil lies its twin: an old seal, cracked clean through."
-msgstr "Sur l'enclume repose son jumeau : un vieux sceau, fendu de part en part."
-
-#: assets/data/story.json
-msgid "On the wall above them hangs a shield, its paint gone grey: MORVAX OF PIXELHEIM."
-msgstr "Au mur, au-dessus d'elles, pend un bouclier à la peinture grisée : MORVAX DE PIXELHEIM."
-
-#: assets/data/story.json
 msgid "On top of the mountain a dragon sleeps on a chain. Everyone agrees this is the best place for him."
 msgstr "Au sommet de la montagne, un dragon dort au bout d'une chaîne. Tout le monde s'accorde à dire que c'est très bien ainsi."
 
@@ -11843,10 +11783,6 @@ msgstr "Oskar maniait la pioche, Liane faisait les comptes, Tam nourrissait les 
 #: assets/data/story.json
 msgid "Oskar's shield. He left it at Greyhold and told his captain to keep it till he came home."
 msgstr "Le bouclier d'Oskar. Il l'avait laissé à Greyhold en disant à son capitaine de le garder jusqu'à son retour."
-
-#: assets/data/story.json
-msgid "Oskar, Liane and Tam"
-msgstr "Oskar, Liane et Tam"
 
 #: assets/data/story.json
 msgid "PIXELHEIM"
@@ -11937,24 +11873,20 @@ msgid "Thank you for staying."
 msgstr "Merci d'avoir choisi de rester."
 
 #: assets/data/story.json
-msgid "The Sunken Forge's great mould is cold. Something was cast here once - a disc of black iron the size of a cartwheel."
-msgstr "Le grand moule de la Forge engloutie est froid. On y a coulé quelque chose, autrefois : un disque de fer noir de la taille d'une roue de charrette."
-
-#: assets/data/story.json
-msgid "The Undermountain is open."
-msgstr "Le Sous-Mont est ouvert."
+msgid "The Kings' Vault"
+msgstr "Le Caveau des rois"
 
 #: assets/data/story.json
 msgid "The cat looks at the dragon, then at you, then away. The verdict is in."
 msgstr "Le chat regarde le dragon, puis vous, puis détourne les yeux. Le verdict est tombé."
 
 #: assets/data/story.json
-msgid "The crack runs from beneath. Someone broke it from below."
-msgstr "La fissure vient du dessous. Quelqu'un l'a brisé d'en bas."
-
-#: assets/data/story.json
 msgid "The crypt is older than the village. I read the walls: kings were buried here before the mountain had a name. Morvax lingered by the gold. He always lingers by the gold."
 msgstr "La crypte est plus ancienne que le village. J'ai lu les murs : des rois ont été enterrés ici avant que la montagne n'ait un nom. Morvax s'est attardé près de l'or. Il s'attarde toujours près de l'or."
+
+#: assets/data/story.json
+msgid "The hoard is nobody's now. It might as well be yours."
+msgstr "Le trésor n'est plus à personne. Autant qu'il soit à vous."
 
 #: assets/data/story.json
 msgid "The mountain is quiet at last, the tavern is loud, and the cheese has never tasted better."
@@ -11979,6 +11911,14 @@ msgstr "Les bâtons"
 #: assets/data/story.json
 msgid "Tonight, the dragon woke up."
 msgstr "Cette nuit, le dragon s'est réveillé."
+
+#: assets/data/story.json
+msgid "Under the summit, the old kings' hoard."
+msgstr "Sous le sommet, le trésor des anciens rois."
+
+#: assets/data/story.json
+msgid "Under the summit, where the dragon lay, the old kings' door stands open on its hinges."
+msgstr "Sous le sommet, là où dormait le dragon, la porte des anciens rois est ouverte sur ses gonds."
 
 #: assets/data/story.json
 msgid "We cast the new seal from the old one's mould. Morvax watched the fire for a long time and said: 'Imagine what else could be forged down here.' Nobody answered him."
@@ -12035,10 +11975,6 @@ msgstr "Vous vous réveillez avec un torticolis, au moment où les réverbères 
 #: assets/data/story.json
 msgid "and Infinite Cheese Wheels as themselves"
 msgstr "et une infinité de meules de fromage dans leur propre rôle"
-
-#: assets/data/story.json
-msgid "of the Ember Five, who held the stair."
-msgstr "des Cinq de braise, qui ont tenu l'escalier."
 
 #: assets/data/story.json
 msgid "{hero} slew Fafnyr the Ashen above and destroyed Morvax the Deathless below."
@@ -12397,12 +12333,32 @@ msgid "A guard's badge on the last slab, the tower on it rubbed smooth by somebo
 msgstr "Un insigne de garde sur la dernière dalle, la tour qu'il porte usée par le pouce de quelqu'un."
 
 #: assets/maps/interactables.json
+msgid "A king's hunting bow, strung and waiting a hundred years. The string still sings when you touch it."
+msgstr "L'arc de chasse d'un roi, tendu et en attente depuis cent ans. La corde chante encore quand on la touche."
+
+#: assets/maps/interactables.json
+msgid "A king's own mail, laid at his stone feet. It fits you better than it fits him now."
+msgstr "La cotte d'un roi, posée à ses pieds de pierre. Elle vous va mieux qu'à lui, désormais."
+
+#: assets/maps/interactables.json
 msgid "A pair of fur boots, frozen into the lake's edge. Whoever wore them crossed the rest barefoot. Brave, or very late for something."
 msgstr "Une paire de bottes fourrées, prises dans la glace au bord du lac. Qui les portait a traversé le reste pieds nus. Courageux, ou très en retard pour quelque chose."
 
 #: assets/maps/interactables.json
+msgid "A staff with a star caught in its head, packed in straw against the damp by somebody very careful, a hundred years ago."
+msgstr "Un bâton avec une étoile prise dans sa tête, rangé dans la paille contre l'humidité par quelqu'un de très soigneux, il y a cent ans."
+
+#: assets/maps/interactables.json
+msgid "A sword with a dragon etched down the blade, made for a fight up the mountain that nobody came back to have."
+msgstr "Une épée avec un dragon gravé sur la lame, forgée pour un combat là-haut dont personne n'est revenu."
+
+#: assets/maps/interactables.json
 msgid "BREWS"
 msgstr "POTIONS"
+
+#: assets/maps/interactables.json
+msgid "Behind the Tidecaller's rock, a smuggler's strongbox, and in it a duellist's ring nobody came back for."
+msgstr "Derrière le rocher de l'Appelle-Marée, le coffre d'un contrebandier, et dedans l'anneau d'un duelliste que personne n'est venu reprendre."
 
 #: assets/maps/interactables.json
 msgid "FOR SALE"
@@ -12433,8 +12389,16 @@ msgid "HOME"
 msgstr "MAISON"
 
 #: assets/maps/interactables.json
+msgid "Hung on a peg by the seam, a helm that's no miner's: a wyrm's visor, hammered from something black and scaly."
+msgstr "Accroché à une cheville près du filon, un casque qui n'a rien d'un casque de mineur : une visière de wyrm, martelée dans quelque chose de noir et d'écailleux."
+
+#: assets/maps/interactables.json
 msgid "INN"
 msgstr "AUBERGE"
+
+#: assets/maps/interactables.json
+msgid "In the captain's chest, under fifty years of orders nobody gave: a pendant with a moon in it."
+msgstr "Dans le coffre du capitaine, sous cinquante ans d'ordres que personne n'a donnés : un pendentif avec une lune dedans."
 
 #: assets/maps/interactables.json
 msgid "Liane's Observatory"
@@ -12457,6 +12421,10 @@ msgid "Saltmere Hamlet"
 msgstr "Le hameau de Saltmere"
 
 #: assets/maps/interactables.json
+msgid "Scales the size of shields, shed on the hoard over a hundred years of bad sleep. Hilda will want these."
+msgstr "Des écailles grandes comme des boucliers, perdues sur le trésor en cent ans de mauvais sommeil. Hilda va les vouloir."
+
+#: assets/maps/interactables.json
 msgid "The Deepwood Pass"
 msgstr "Le passage des Bois-Profonds"
 
@@ -12475,6 +12443,10 @@ msgstr "Le passage des Marais de Fange"
 #: assets/maps/interactables.json
 msgid "The Old Guard's Camp"
 msgstr "Le camp de l'ancienne garde"
+
+#: assets/maps/interactables.json
+msgid "The one strongbox the dragon didn't sit on, and in it the Obsidian Blade, black as the inside of a mountain."
+msgstr "Le seul coffre sur lequel le dragon ne s'est pas assis, et dedans la Lame d'obsidienne, noire comme le dedans d'une montagne."
 
 #: assets/maps/interactables.json
 msgid "Under the straw of the end cell: a silver locket on a broken chain. A girl smiles out of it. Fenwick's sister."
@@ -12601,14 +12573,6 @@ msgid "expanded"
 msgstr "agrandi"
 
 #: scripts/bounty_screen.gd
-msgid "   Deepest Hunt: depth %d."
-msgstr "   Record de la Traque : profondeur %d."
-
-#: scripts/bounty_screen.gd
-msgid "%s keeps to %s."
-msgstr "%s se tient dans %s."
-
-#: scripts/bounty_screen.gd
 msgid "%s keeps to %s. Its lair is marked on your map."
 msgstr "%s hante %s. Son repaire est marqué sur votre carte."
 
@@ -12633,8 +12597,8 @@ msgid "Its lair: %s."
 msgstr "Son repaire : %s."
 
 #: scripts/bounty_screen.gd
-msgid "Kill a named monster and the bounty is yours where it falls.%s"
-msgstr "Abattez un monstre nommé et la prime est à vous, là où il tombe.%s"
+msgid "Kill a named monster and the bounty is yours where it falls."
+msgstr "Abattez un monstre nommé et la prime est à vous, là où il tombe."
 
 #: scripts/bounty_screen.gd
 msgid "No notices yet. The board waits for word from the wilds."
@@ -12643,6 +12607,10 @@ msgstr "Aucun avis pour l'instant. Le tableau attend des nouvelles des terres sa
 #: scripts/bounty_screen.gd
 msgid "No notices yet. The board waits for word from the wilds.\n\nThe first one goes up when %s."
 msgstr "Aucun avis pour l'instant. Le tableau attend des nouvelles des terres sauvages.\n\nLe premier s'affiche quand %s."
+
+#: scripts/bounty_screen.gd
+msgid "Pixelheim has grown into a town"
+msgstr "Pixelheim est devenu une ville"
 
 #: scripts/bounty_screen.gd
 msgid "SLAIN"
@@ -12919,82 +12887,6 @@ msgstr "quitter"
 #: scripts/dialogue_box.gd
 msgid "not yet"
 msgstr "plus tard"
-
-#: scripts/dungeon_screen.gd
-msgid "%d XP"
-msgstr "%d XP"
-
-#: scripts/dungeon_screen.gd
-msgid "A new deepest: %s"
-msgstr "Nouveau record : %s"
-
-#: scripts/dungeon_screen.gd
-msgid "Beaten before: only its fights pay now."
-msgstr "Déjà vaincu : seuls ses combats rapportent encore."
-
-#: scripts/dungeon_screen.gd
-msgid "CLEARED"
-msgstr "TERMINÉ"
-
-#: scripts/dungeon_screen.gd
-msgid "Choose a floor. Beat its guardian and the stairs lead back to this gate."
-msgstr "Choisissez un étage. Battez son gardien et l'escalier vous ramène à cette porte."
-
-#: scripts/dungeon_screen.gd
-msgid "Clear the previous floor to unlock."
-msgstr "Terminez l'étage précédent pour le déverrouiller."
-
-#: scripts/dungeon_screen.gd
-msgid "Cleared. Its hoard is already yours."
-msgstr "Terminé. Son trésor est déjà à vous."
-
-#: scripts/dungeon_screen.gd
-msgid "DEEPEST %d"
-msgstr "RECORD %d"
-
-#: scripts/dungeon_screen.gd
-msgid "Deepest cleared so far: depth %d."
-msgstr "Record actuel : profondeur %d."
-
-#: scripts/dungeon_screen.gd
-msgid "Elite %s"
-msgstr "%s d'élite"
-
-#: scripts/dungeon_screen.gd
-msgid "First clear: %s"
-msgstr "Première victoire : %s"
-
-#: scripts/dungeon_screen.gd
-msgid "Floor %d\n\nClear the previous floor to unlock."
-msgstr "Étage %d\n\nTerminez l'étage précédent pour le déverrouiller."
-
-#: scripts/dungeon_screen.gd
-msgid "Floor %d: %s"
-msgstr "Étage %d : %s"
-
-#: scripts/dungeon_screen.gd
-msgid "Guardian: %s, level %d"
-msgstr "Gardien : %s, niveau %d"
-
-#: scripts/dungeon_screen.gd
-msgid "Next milestone: depth %d, for the %s."
-msgstr "Prochain jalon : profondeur %d, pour le %s."
-
-#: scripts/dungeon_screen.gd
-msgid "No one has gone this deep and come back."
-msgstr "Personne n'est jamais revenu d'aussi profond."
-
-#: scripts/dungeon_screen.gd
-msgid "Over-encumbered! Drop something before venturing in."
-msgstr "Sac trop lourd ! Posez quelque chose avant d'entrer."
-
-#: scripts/dungeon_screen.gd
-msgid "Step away"
-msgstr "S'éloigner"
-
-#: scripts/dungeon_screen.gd
-msgid "Twist: %s. %s Its foes drop more."
-msgstr "Particularité : %s. %s Ses ennemis lâchent davantage."
 
 #: scripts/elite_brain.gd
 msgid "%s howls - the forest answers!"
@@ -13531,10 +13423,6 @@ msgstr "PRÊTE"
 #: scripts/journal_screen.gd
 msgid "SEALED"
 msgstr "SCELLÉE"
-
-#: scripts/journal_screen.gd
-msgid "The Deep Hunt: deepest depth %d"
-msgstr "La Traque des Profondeurs : record de profondeur %d"
 
 #: scripts/journal_screen.gd
 msgid "The courier's satchel"
@@ -14477,8 +14365,8 @@ msgid "%s by night"
 msgstr "%s la nuit"
 
 #: scripts/state/bestiary.gd
-msgid "floor %d"
-msgstr "étage %d"
+msgid "Elite %s"
+msgstr "%s d'élite"
 
 #: scripts/state/catalog.gd
 msgid "%s (%d/%d): %s"
@@ -14495,10 +14383,6 @@ msgstr "+%d armure"
 #: scripts/state/depths.gd
 msgid "%s, floor %d of %d"
 msgstr "%s, étage %d sur %d"
-
-#: scripts/state/dungeons.gd
-msgid "%s, depth %d"
-msgstr "%s, profondeur %d"
 
 #: scripts/state/economy.gd
 msgid "%s %d (%d/%d XP)"
@@ -14545,10 +14429,6 @@ msgid "every time"
 msgstr "à chaque fois"
 
 #: scripts/state/economy.gd
-msgid "floors %d-%d"
-msgstr "étages %d à %d"
-
-#: scripts/state/economy.gd
 msgid "in a chest in %s"
 msgstr "dans un coffre (%s)"
 
@@ -14557,16 +14437,8 @@ msgid "now and then in loot in %s"
 msgstr "parfois dans le butin (%s)"
 
 #: scripts/state/economy.gd
-msgid "now and then in loot on %s"
-msgstr "parfois dans le butin (%s)"
-
-#: scripts/state/economy.gd
 msgid "picked from patches and foraged after fights in %s"
 msgstr "à cueillir aux points de récolte et à glaner après les combats (%s)"
-
-#: scripts/state/economy.gd
-msgid "picked from the patch on %s"
-msgstr "à cueillir au point de récolte (%s)"
 
 #: scripts/state/economy.gd
 msgid "sold by %s"
@@ -14575,18 +14447,6 @@ msgstr "en vente chez %s"
 #: scripts/state/economy.gd
 msgid "sure the first time, then %d%%"
 msgstr "à coup sûr la première fois, puis %d%%"
-
-#: scripts/state/economy.gd
-msgid "the hoard of %s"
-msgstr "le trésor de l'étage (%s)"
-
-#: scripts/state/economy.gd
-msgid "the hoards of floors %s"
-msgstr "les trésors des étages %s"
-
-#: scripts/state/economy.gd
-msgid "the mountain from floor %d"
-msgstr "la montagne dès l'étage %d"
 
 #: scripts/state/gains.gd
 msgid "%s x%d"
@@ -14893,32 +14753,8 @@ msgid "turns aside %d%% of a level-%d hit"
 msgstr "détourne %d%% d'un coup de niveau %d"
 
 #: scripts/state/spoils.gd
-msgid "%s is cleared!"
-msgstr "Étage nettoyé : %s !"
-
-#: scripts/state/spoils.gd
 msgid "%s leaves you %s!"
 msgstr "%s vous laisse %s !"
-
-#: scripts/state/spoils.gd
-msgid "A deeper way opens: %s."
-msgstr "Un passage plus profond s'ouvre : %s."
-
-#: scripts/state/spoils.gd
-msgid "A hole into the dark opens beside the way up: depth %d waits below."
-msgstr "Un trou s'ouvre sur le noir près de la montée : la profondeur %d attend en dessous."
-
-#: scripts/state/spoils.gd
-msgid "A milestone: %d depths below the throne. The %s is yours, a trophy for the shelf at home."
-msgstr "Un jalon : %d profondeurs sous le trône. Le %s est à vous, un trophée pour l'étagère de la maison."
-
-#: scripts/state/spoils.gd
-msgid "Behind the throne, a stair goes on down into the dark: the Deep Hunt."
-msgstr "Derrière le trône, un escalier s'enfonce encore dans le noir : la Traque des Profondeurs."
-
-#: scripts/state/spoils.gd
-msgid "Depth %d of the Deep Hunt is cleared!"
-msgstr "Profondeur %d de la Traque des Profondeurs : nettoyée !"
 
 #: scripts/state/spoils.gd
 msgid "Foraging reached %d!"
@@ -14937,10 +14773,6 @@ msgid "Nothing's biting here yet. Try again in a while, or somewhere else."
 msgstr "Ça ne mord pas encore ici. Réessayez dans un moment, ou ailleurs."
 
 #: scripts/state/spoils.gd
-msgid "The "
-msgstr "The "
-
-#: scripts/state/spoils.gd
 msgid "The bounty on %s is yours: +%d gold."
 msgstr "La prime pour %s vous revient : +%d or."
 
@@ -14955,14 +14787,6 @@ msgstr "Trop lourd à porter. Allégez votre sac et revenez."
 #: scripts/state/spoils.gd
 msgid "Your garden ripens: +%d %s."
 msgstr "Votre jardin donne sa récolte : +%d %s."
-
-#: scripts/state/spoils.gd
-msgid "depth %d of the Deep Hunt"
-msgstr "la profondeur %d de la Traque des Profondeurs"
-
-#: scripts/state/spoils.gd
-msgid "the %s"
-msgstr "%s"
 
 #: scripts/state/text.gd
 msgid "English"
@@ -14983,6 +14807,10 @@ msgstr "Le "
 #: scripts/state/text.gd
 msgid "Les "
 msgstr "Les "
+
+#: scripts/state/text.gd
+msgid "The "
+msgstr "The "
 
 #: scripts/state/town.gd
 msgid "%s is back at work indoors."
@@ -15292,17 +15120,9 @@ msgstr "L'escalier"
 msgid "%s bars your way: no leaving until the fight is over."
 msgstr "%s vous barre la route : pas de fuite avant la fin du combat."
 
-#: scripts/world.gd
-msgid "No map reaches this deep."
-msgstr "Aucune carte ne va aussi profond."
-
 #: scripts/world_bells.gd
 msgid "Dong!"
 msgstr "Dong !"
-
-#: scripts/world_delve.gd
-msgid "{epithet} {name}"
-msgstr "{name} {epithet}"
 
 #: scripts/world_foes.gd
 msgid "%s is no more."

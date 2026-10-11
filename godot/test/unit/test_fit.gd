@@ -124,11 +124,6 @@ func _make(kind: String, view: SubViewport) -> Screen:
 		"shop":
 			# The general store's counter, as talking to its keeper opens it.
 			GameState.trade.stall_shop = Economy.shop_at("town_shop")
-		"dungeon":
-			# The mountain's gate: the longest list of floors.
-			var gate: Screen = load("res://scripts/dungeon_screen.gd").new()
-			gate.dungeon_id = "mountain"
-			return gate
 	return load("res://scripts/%s_screen.gd" % kind).new()
 
 
@@ -169,7 +164,7 @@ func test_the_saves_window_keeps_its_width_and_its_place() -> void:
 func test_every_screen_fits_every_view() -> void:
 	var kinds: Array[String] = [
 		"title", "create", "pause", "options", "journal", "inventory", "stats", "skills", "codex", "map", "shop",
-		"changelog", "bank", "town_hall", "bounty", "dungeon", "home",
+		"changelog", "bank", "town_hall", "bounty", "home",
 	]
 	var out := await _fits(kinds)
 	assert_eq(out.size(), 0, "\n".join(out))

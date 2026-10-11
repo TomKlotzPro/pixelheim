@@ -51,6 +51,10 @@ const CAGE := 459
 ## and the north stair while it's shut, and the stone knights over the
 ## garrison's dead (STATUE, the shrine's).
 const GRILLE := CAGE
+## The Kings' Vault's (PIX-257): the old kings' strongboxes, iron-bound and
+## dented where a dragon slept on them for a hundred years (a set piece's;
+## the floor's find is the plain chest).
+const STRONGBOX := 458
 ## A shortcut's door by its look (depths.json `look`): [shut, open]; the
 ## cellars' north stair opens on a stair up, and the ice cave's slide is a
 ## chute plugged with a boulder of ice, then a run down into the dark.

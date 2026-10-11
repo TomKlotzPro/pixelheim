@@ -73,10 +73,10 @@ func givers_waiting(npcs: Array) -> Array[Dictionary]:
 	return out
 
 
-## The floors the bounty board counts (PIX-170): the hero's own, and the
-## notices the relics won have earned out in the Reach.
+## The floors the bounty board counts (PIX-170): an old save's own, and the
+## notices the relics won, or the town's age, have earned (PIX-257).
 func board_floors() -> Array:
-	return Hunts.board_floors(owner.progression.cleared_levels, Relics.found(owner.progression), owner.progression.deepest)
+	return Hunts.board_floors(owner.progression.cleared_levels, Relics.found(owner.progression), owner.settlement.town_tier)
 
 
 ## A conversation closed: recruits answer (resolveSettler), then the quest
@@ -460,8 +460,8 @@ func ask_before_dip(what: String, costs: Dictionary) -> String:
 ## A deed newly done (PIX-219): kept, its medal in the pack, the log told.
 func note_deeds() -> void:
 	var lines: Array[String] = []
-	for deed: Dictionary in Deeds.all():
-		if deed["id"] in owner.progression.deeds or not Deeds.met(deed, owner.hero, owner.pack, owner.progression):
+	for deed: Dictionary in Deeds.in_play():
+		if deed["id"] in owner.progression.deeds or not Deeds.met(deed, owner.hero, owner.pack, owner.progression, owner.settlement):
 			continue
 		owner.progression.deeds.append(deed["id"])
 		owner.pack.add_item(deed["itemId"])

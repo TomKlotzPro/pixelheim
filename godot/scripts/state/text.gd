@@ -22,7 +22,7 @@ const NOT_WORDS := [
 	"scaling", "sells", "set", "stage", "wave", "move", "shape", "color", "named", "phases", "opensAfter", "drop",
 	"family", "anim", "dir", "questId", "who", "icon", "facing", "then", "ending", "sceneId", "region", "shop",
 	"projectId", "settles", "upgrades", "hunted", "items", "summon", "prizeItem", "requiresSettler", "about",
-	"rewardItemIds", "gearIds", "stackIds", "foes", "floorMaterials", "catches", "cures", "beds", "stingers",
+	"rewardItemIds", "gearIds", "stackIds", "foes", "catches", "cures", "beds", "stingers",
 	"bossIds", "resource", "rugs", "tile", "unlock", "inflicts", "effect",
 ]
 
@@ -120,7 +120,5 @@ static func forget() -> void:
 	Ranks._doc = {}
 	Gates._doc = {}
 	Bestiary._found = {}
-	Dungeons._deep = {}
-	Bestiary._found_floors = {}
 	Bestiary._found_at_night = {}
 	generation += 1

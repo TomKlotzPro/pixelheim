@@ -249,7 +249,7 @@ func test_a_recruits_story_is_a_quest_that_brings_them_home() -> void:
 	var moved := [false]
 	state.settlers_changed.connect(func() -> void: moved[0] = true)
 	state.questing.finish_dialogue("settler_iva")
-	assert_string_starts_with(messages[1], "Quest complete: Reeds for a Healer. +25 XP. \u201cReeds enough")
+	assert_string_starts_with(messages[1], "Quest complete: Reeds for a Healer. +20 XP. \u201cReeds enough")
 	assert_true(state.holdings.is_settled("settler_iva"))
 	assert_false(state.pack.items.has("marsh_reed"), "the reeds were handed over")
 	assert_true(moved[0])

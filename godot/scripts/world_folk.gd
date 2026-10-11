@@ -11,7 +11,7 @@ var world: Node
 ## Villagers who live on this map now: tier-gated townsfolk and recruits.
 func spawn_for(data: MapData) -> void:
 	var settlers := GameState.settlement.settlers
-	var folk := Npcs.on_map(data.id, GameState.settlement.town_tier, settlers, Town.done_projects(GameState.settlement), Relics.gate_open(GameState.progression), GameState.progression.deepest, Letters.tin_waits(GameState.progression))
+	var folk := Npcs.on_map(data.id, GameState.settlement.town_tier, settlers, Town.done_projects(GameState.settlement), Relics.gate_open(GameState.progression), Letters.tin_waits(GameState.progression))
 	# On the night of the fire only the survivors are about (PIX-152).
 	if GameState.progression.prologue != Prologue.DONE and data.id == "town":
 		folk = Prologue.survivors()

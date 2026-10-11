@@ -57,8 +57,9 @@ func test_the_gate_is_barred_until_the_relics_are_home() -> void:
 
 
 func test_a_hero_who_climbed_before_keeps_the_gate_open() -> void:
+	# An old save's floor 1, cleared before the floors left play (PIX-257).
 	state.progression.unlocked_level = 2
-	state.spoils.clear_floor(1)
+	state.progression.cleared_levels.append(1)
 	assert_true(Relics.gate_open(state.progression))
 	assert_eq(_next(), "confession", "and the relics never block the way they already went: Maren's story is next")
 	assert_string_contains(state.questing.resolve_quests("elder"), "The Troll Toll", "Maren goes on to her next ask")

@@ -45,9 +45,7 @@ func test_clouds_pass_only_under_the_sky() -> void:
 	assert_true(Lights.under_sky(MapData.load_by_id("overworld")))
 	assert_true(Lights.under_sky(MapData.load_by_id("town")))
 	assert_false(Lights.under_sky(MapData.load_by_id("town_inn")), "never indoors")
-	var floor := MapData.new()
-	floor.floor_level = 4
-	assert_false(Lights.under_sky(floor), "never under the mountain")
+	assert_false(Lights.under_sky(MapData.load_by_id("vault_4")), "never under the mountain")
 	assert_false(Lights.under_sky(null))
 
 

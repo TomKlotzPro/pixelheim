@@ -1047,6 +1047,12 @@
     },
     "medal_seen_all": {
       "label": "A feat, displayed with pride"
+    },
+    "medal_letters": {
+      "label": "A feat, displayed with pride"
+    },
+    "medal_full_house": {
+      "label": "A feat, displayed with pride"
     }
   },
   "nookCombines": [

@@ -43,8 +43,6 @@ var stood := 0
 ## reports it), and when the last did.
 var fled := 0
 var frightened_at := -100.0
-## Foes still standing on the dungeon floor the hero walks (0 when cleared).
-var floor_foes := 0
 
 
 ## Packs at their homes (the spawns): the species its region and position
@@ -79,8 +77,6 @@ func spawn_enemy(species: String, cell: Vector2i, region := "", spawn_id := "", 
 ## sight (a map walked into across a line, PIX-269: it doesn't appear in
 ## view, and comes once the hero looks away).
 func spawn_lairs(unseen := false) -> void:
-	if world.map.floor_level > 0:
-		return
 	var out := []
 	for enemy in get_tree().get_nodes_in_group("mobs"):
 		if not enemy.is_queued_for_deletion():
@@ -120,8 +116,6 @@ func spawn_named(named_id: String, cell := Vector2i(-1, -1)) -> Node:
 ## comes back here too, at a home out of view, even on arriving (PIX-142).
 func keep_hours(arriving := false, at_most := -1) -> int:
 	var made := 0
-	if world.map.floor_level > 0:
-		return made
 	var minute := DayNight.minute_of(GameState.world.steps)
 	var night := DayNight.night_at(minute)
 	var standing := _standing()
@@ -398,12 +392,11 @@ func on_enemy_died(enemy: Node) -> void:
 		if pack_alive[enemy.spawn_id] <= 0:
 			cleared = enemy.spawn_id
 	var floor_level := Bestiary.wild_drop_floor(enemy.region, enemy.fighter) if enemy.region != "" else 1
-	if world.map.floor_level > 0:
-		floor_level = Dungeons.drop_floor(world.map.floor_level)
 	var gear_before := GameState.pack.gear.size()
 	# Its XP, gold and drops float up from where it fell (PIX-245); the log
-	# keeps only what the world doesn't show.
-	var won := GameState.spoils.defeat_monster(enemy.fighter, enemy.region, cleared, floor_level, world.map.floor_level)
+	# keeps only what the world doesn't show. The Kings' Vault forges its
+	# gear deep, a tier a floor or two (PIX-257).
+	var won := GameState.spoils.defeat_monster(enemy.fighter, enemy.region, cleared, floor_level, Depths.forged(world.map.id))
 	world.messages.log_lines(won["lines"])
 	world.fx.show_gains(won["gains"], enemy.global_position + WorldFx.OVER_FOE)
 	if enemy.has_meta("prologue"):
@@ -426,11 +419,6 @@ func on_enemy_died(enemy: Node) -> void:
 		Sound.play("drop")
 	if cleared != "":
 		world.messages.log_lines([Text.t("The pack is scattered. Another comes once you've walked a good way, or after a night's rest.")])
-	# The dead a boss summons aren't the floor's own foes (PIX-150).
-	if world.map.floor_level > 0 and floor_foes > 0 and not enemy.is_in_group("summoned"):
-		floor_foes -= 1
-		if floor_foes == 0:
-			world.delve.floor_cleared(Vector2i((enemy.position / MapView.TILE).floor()))
 
 
 ## A named foe stands down rather than falls (PIX-255: the Hollow Captain,
@@ -473,8 +461,7 @@ func stood_down(enemy: Node) -> void:
 
 
 ## A boss falls (PIX-210): the world slows a moment, shakes and flashes
-## white, and the music cuts so the victory sting rings out alone (the
-## floor's clearing plays it; a boss with foes still about plays its own).
+## white, and the music cuts so the victory sting rings out alone.
 ## Its fall is the hero's moment (PIX-232): a title over the world, and the
 ## boss slayer's edge for a while.
 func boss_fell(boss: Node) -> void:
@@ -485,8 +472,7 @@ func boss_fell(boss: Node) -> void:
 	Sound.stop_music()
 	world.soundscape.hush(BOSS_HUSH_S)
 	hunted_by_boss = false
-	if world.map.floor_level == 0 or floor_foes > 0:
-		Sound.play("victory")
+	Sound.play("victory")
 	world.camera_rig.shake(8.0, 0.6)
 	if GameState.settings.reduce_motion:
 		return

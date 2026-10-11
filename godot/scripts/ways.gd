@@ -34,11 +34,9 @@ const ROCK_GATE_BARRED := 803
 ## "cave" | "gate" | "door" | "stairs" | "down" (a room's stair), "rock":
 ## bool (a gate in the rock), "out": Vector2i (the step through), "from":
 ## Vector2i (the cell the hero comes at it from), "to": the portal's
-## target}]. Dungeon floors have none.
+## target}].
 static func on(map: MapData) -> Array[Dictionary]:
 	var ways: Array[Dictionary] = []
-	if map.floor_level > 0:
-		return ways
 	var seen := {}
 	for cell: Vector2i in map.portals:
 		if seen.has(cell):
@@ -79,15 +77,29 @@ static func kind_of(map: MapData, cell: Vector2i) -> String:
 	return "door"
 
 
+## Whether the story keeps a way shut for this hero (`barred` on its
+## portal): the Ashen Mountain's gate (true) until Maren's promise, the
+## Kings' Vault's door ("vault", PIX-257) until the dragon is freed.
+static func barred(target: Dictionary, progression: ProgressionState, settlement: SettlementState) -> bool:
+	var why: Variant = target.get("barred", false)
+	if why is bool:
+		return why and not Relics.gate_open(progression)
+	if str(why) == Vault.DUNGEON:
+		return not Vault.door_open(progression, settlement)
+	return false
+
+
+## What a barred way says to a hero who tries it.
+static func barred_line(target: Dictionary) -> String:
+	return Vault.barred_line() if str(target.get("barred", "")) == Vault.DUNGEON else Relics.barred_line()
+
+
 ## The place a way leads to, in the player's language: a map's place name
-## (the waypoints' list names places the same way), a dungeon's name - what
-## a stair's question asks about.
+## (the waypoints' list names places the same way) - what a stair's
+## question asks about.
 static func place_of(target: Dictionary) -> String:
-	match String(target.get("kind", "")):
-		"map":
-			return Catalog.place_name(String(target["mapId"]))
-		"dungeon":
-			return String(Dungeons.dungeon(String(target["dungeon"])).get("name", String(target["dungeon"]).capitalize()))
+	if String(target.get("kind", "")) == "map":
+		return Catalog.place_name(String(target["mapId"]))
 	return ""
 
 
@@ -120,11 +132,9 @@ static func arrival_facing(map: MapData, arrival: Vector2i, from_map: String, fa
 
 
 ## How far under the ground a map lies: 0 under the sky or in a room, 1 in
-## a cave or a cellar, deeper on a dungeon's floors, one step a floor - a
-## region dungeon's too (PIX-255: the sea cave's grotto lies 3 down).
+## a cave or a cellar, deeper on a dungeon's floors, one step a floor
+## (PIX-255: the sea cave's grotto lies 3 down).
 static func depth(map: MapData) -> int:
-	if map.floor_level > 0:
-		return 1 + map.floor_level
 	if Depths.number(map.id) > 0:
 		return Depths.number(map.id)
 	return 1 if map.style == "cave" else 0

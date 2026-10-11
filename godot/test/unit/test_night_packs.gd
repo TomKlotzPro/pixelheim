@@ -273,13 +273,16 @@ func test_where_a_kind_comes_out_only_at_night_says_so() -> void:
 	assert_eq(wolves.slice(0, 2), ["the Whispering Forest", "the Sunken Marsh"], "where wolves are at any hour, first")
 	assert_has(wolves, "the Ash Fields by night")
 	assert_does_not_have(wolves, "the Whispering Forest by night", "the forest has wolves by day too")
-	assert_has(Bestiary.where_found("boneknight"), "the Mirefen by night")
-	assert_eq(Bestiary.where_found("boneknight", false), ["the Mirefen by night"])
+	# Bone knights keep the Kings' Vault at every hour (PIX-257), and come
+	# out in the Mirefen only by night.
+	assert_eq(Bestiary.where_found("boneknight"), ["the Kings' Vault", "the Mirefen by night"])
 	# The way to a kind leads to a pack out at every hour when there is one.
 	var home := Bestiary.home_of("wolf")
 	assert_eq([home["mapId"], int(home["x"]), int(home["y"])], ["overworld", 72, 52], "forest_3's wolves")
+	# The Deepwood's shades come out only at night; the Kings' Vault's keep it
+	# at every hour (PIX-257), so the way leads there.
 	home = Bestiary.home_of("shade")
-	assert_eq(home["mapId"], "deepwood", "a night pack, when only the night has one")
+	assert_eq(home["mapId"], "vault_1", "a pack out at every hour before a night one")
 
 
 ## The night's homes stand where any pack's may (test_packs checks every

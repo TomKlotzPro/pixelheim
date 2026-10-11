@@ -26,7 +26,9 @@ var bells := 0
 ## once there is one.
 var hunted: Array[String] = []
 ## The deepest depth of the Deep Hunt cleared (PIX-161); saved only once
-## there is one.
+## there is one. The Deep Hunt left play with PIX-257: the field is kept so
+## an old save round-trips, and read only as a sign the hero is past every
+## gate (Gates.is_open) and for the medals it earned.
 var deepest := 0
 ## The deeds done (PIX-219); saved only once there is one.
 var deeds: Array[String] = []

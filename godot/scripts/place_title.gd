@@ -22,7 +22,7 @@ const AGAIN_MS := 180000
 ## a visit), "" between them and on a map that is its one region}; {} in a
 ## room (Ways.indoors) or down a dungeon, where the place before holds.
 static func at(map: MapData, cell: Vector2i, regions: bool) -> Dictionary:
-	if map.floor_level > 0 or Ways.indoors(map):
+	if Ways.indoors(map):
 		return {}
 	var region := map.region_at(cell) if regions else ""
 	return {"place": Catalog.place_name(map.id), "region": Atlas.region_title(region) if region != "" else ""}

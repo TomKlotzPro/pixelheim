@@ -1,7 +1,7 @@
 extends Node
 ## The look book (PIX-220): the same scenes, staged the same way every time -
 ## the town by day, at dusk and at night, the forest, the Ash, the Mire, the
-## Frostgate, a dungeon floor, a fight, the overworld at night, the
+## Frostgate, the Kings' Vault, a fight, the overworld at night, the
 ## village seen from its road (PIX-248), the ways between maps (PIX-269),
 ## the map screen (PIX-266), the rooms behind the Reach's doors with the
 ## stairs down in their floors (PIX-256) and the card naming a place come
@@ -30,7 +30,7 @@ const AREAS := ["town", "rooms", "reach", "regions", "ways", "dungeon", "combat"
 ## Each shot by its name (its picture's file, and `--only`'s word: never a
 ## number, which every branch adding a shot took the same next one of): its
 ## area; a map and where on it (Upper Street, a pack's home, a cell, or the
-## map's arrival), or a dungeon floor; the hour, or the first shower by day
+## map's arrival); the hour, or the first shower by day
 ## (`rain`); and a foe to face, for the fight, struck on a beat while it's
 ## filmed (`strike`), the third blow felling it. Only a shot with `card`
 ## keeps the title card naming the place it enters (PIX-269). A new shot
@@ -88,7 +88,10 @@ const SHOTS := {
 	"road_south": {"area": "ways", "map": "overworld", "cell": Vector2i(16, 60), "time": DAY},
 	# Come through the pass into the Mirefen: its name on a card, once.
 	"place_card": {"area": "ways", "map": "mirefen", "cell": Vector2i(55, 5), "time": DAY, "card": true},
-	"dungeon": {"area": "dungeon", "floor": 5, "time": DAY},
+	# The Kings' Vault (PIX-257): its first floor, laid from a seed in the
+	# vault's gilded stone, and its last, the Hollow King's hoard.
+	"vault": {"area": "dungeon", "map": "vault_1", "time": DAY},
+	"vault_hoard": {"area": "dungeon", "map": "vault_5", "cell": Vector2i(46, 11), "time": DAY},
 	# The ice cave's frozen lake (PIX-255): ice over the stone, its cracks,
 	# polish and glints, frost at its shore, and the cold light it gives.
 	"frozen_lake": {"area": "dungeon", "map": "icecave_lake", "cell": Vector2i(30, 14), "time": DAY},
@@ -231,12 +234,9 @@ func _stage(shot: Dictionary) -> void:
 	world.messages.clear()
 	world.hud.forget_places()
 	GameState.world.steps = shower_by_day() if shot.get("rain", false) else float(shot["time"]) * DayNight.DAY_CYCLE_STEPS
-	if shot.has("floor"):
-		world.delve.enter_floor(int(shot["floor"]))
-	else:
-		world.map = world.load_map(shot["map"])
-		var at: Vector2i = nearest_walkable(world.map, shot["cell"]) if shot.has("cell") else _cell(world.map, String(shot.get("at", "")))
-		world.enter_map(world.map, at)
+	world.map = world.load_map(shot["map"])
+	var at: Vector2i = nearest_walkable(world.map, shot["cell"]) if shot.has("cell") else _cell(world.map, String(shot.get("at", "")))
+	world.enter_map(world.map, at)
 	# The card naming the place stands over its own shot only.
 	if not shot.get("card", false):
 		world.hud.forget_places()

@@ -75,10 +75,11 @@ town travel +town-age* +overworld*: scripts/rampart.gd
 travel: scripts/seam.gd scripts/slicer.gd scripts/world_neighbours.gd scripts/reach_plane.gd scripts/ways.gd scripts/waypoints.gd scripts/atlas.gd scripts/dissolve.gd scripts/place_title.gd scripts/map_screen.gd scripts/state/world_state.gd assets/data/plane.json
 travel story +overworld*: scripts/state/gates.gd scripts/gate_art.gd assets/data/gates.json
 quest travel: scripts/escort.gd
-dungeon travel +seacave* +shafts* +cellars* +icecave*: scripts/state/depths.gd assets/data/depths.json
-dungeon +floor*: scripts/world_delve.gd scripts/puny_dungeon.gd scripts/dungeon_floor.gd scripts/dungeon_screen.gd scripts/state/dungeons.gd assets/puny/dungeon/*
+dungeon travel +seacave* +shafts* +cellars* +icecave* +vault*: scripts/state/depths.gd assets/data/depths.json
+dungeon story travel +vault* +mountain_road*: scripts/state/vault.gd
+dungeon +vault*: scripts/world_delve.gd scripts/puny_dungeon.gd scripts/dungeon_floor.gd assets/puny/dungeon/*
 combat dungeon: scripts/boss_brain.gd scripts/telegraph.gd scripts/boss_bar.gd
-combat field dungeon gathering +floor*: assets/data/combat.json
+combat field dungeon gathering +vault*: assets/data/combat.json
 combat field: scripts/enemy.gd scripts/elite_brain.gd scripts/firebolt.gd scripts/state/packs.gd
 combat town title: scripts/player.gd scripts/gait.gd scripts/puny_art.gd assets/puny/characters/* assets/puny/beasts/* assets/puny/mini/*
 combat screen: scripts/state/upkeep.gd

@@ -28,6 +28,9 @@ sheet, so whatever goes on shows.
 - Guard-Iron: the soldier's helm with a leather plume (Iron Helm).
 - Guard-Runic: violet runes on steel (Runic Armor).
 - Guard-Warden: Greyhold slate (the Warden's helm and hauberk).
+- Guard-Knight: bright steel and crimson (Knight's Mail, PIX-294).
+- Archer-Ranger: wet-wood greens and browns (Ranger's Jerkin, PIX-294).
+- Mage-Silk: silver and lilac (Silkweave Robe, PIX-294).
 Run from godot/: python3 tools/outfits.py
 """
 import os
@@ -88,6 +91,12 @@ LOOKS = {
         **ramp(STEEL, ["2e3744", "3f4a5a", "5f6d82", "8090a6", "a6b3c6"]),
         **ramp(GUARD_TEAL, ["0f3a44", "1c5a66", "3a8a96"]),
     }),
+    "Guard-Knight": ("aligned/Human-Soldier-Cyan", {
+        **ramp(STEEL, ["3a3836", "5a5754", "8e8a84", "b8b3ab", "dcd8d0"]),
+        **ramp(GUARD_TEAL, ["3a0a10", "6a1420", "a82a34"]),
+    }),
+    "Archer-Ranger": ("Archer-Green", ramp(ARCHER_GREEN, ["1a2414", "2a3a1f", "3f5630", "5b7a44"])),
+    "Mage-Silk": ("Mage-Cyan", ramp(MAGE_TEAL, ["3a3550", "5e5880", "8d86b3", "c8c2e8"])),
 }
 
 
