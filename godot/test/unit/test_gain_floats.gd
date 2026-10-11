@@ -139,17 +139,18 @@ func test_a_chest_floats_its_loot_and_a_mimic_still_speaks() -> void:
 	assert_eq([opened["message"], Gains.summary(opened["gains"])], ["", "+60 gold"])
 
 
-func test_a_floors_hoard_floats_with_the_way_downs_xp() -> void:
-	var result: Dictionary = state.spoils.clear_floor(5)
-	var floor_def := Dungeons.floor_def(5)
-	var gains: Dictionary = result["gains"]
-	assert_eq(int(gains["gold"]), int(floor_def["rewardGold"]))
-	assert_eq(int(gains["xp"]), Dungeons.clear_xp(5))
-	var ids: Array = gains["items"].map(func(item: Dictionary) -> String: return item["id"])
-	assert_has(ids, "wyrm_visor", "the hoard's piece")
-	var lines: Array = result["lines"]
-	assert_eq(lines[0], "%s is cleared!" % floor_def["name"], "the moment is still said")
-	assert_false(lines.any(func(line: String) -> bool: return line.contains("hoard") or line.contains("way down")), "the hoard isn't: %s" % [lines])
+## A hoard's piece floats up from its chest (PIX-257: the old floors' hoards
+## went to the regions' bottom floors and the Kings' Vault, where its finds
+## come forged deep).
+func test_a_hoards_piece_floats_up_forged() -> void:
+	var chest: Dictionary = Interactables._data()["chests"].filter(func(entry: Dictionary) -> bool: return entry["id"] == "vault_blade")[0]
+	var opened: Dictionary = state.spoils.open_chest(chest)
+	assert_true(opened["opened"])
+	var ids: Array = opened["gains"]["items"].map(func(item: Dictionary) -> String: return item["id"])
+	assert_has(ids, "obsidian_blade", "the hoard's piece")
+	var piece: Dictionary = state.pack.gear[-1]
+	assert_eq([piece["itemId"], int(piece["deep"]), piece["rarity"]], ["obsidian_blade", 1, "fine"], "forged as deep as its floor")
+	assert_eq(opened["message"], String(chest["said"]), "and the find says what it is")
 
 
 func test_a_patch_and_a_catch_float_up() -> void:

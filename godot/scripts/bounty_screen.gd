@@ -2,8 +2,9 @@ extends "res://scripts/ledger_screen.gd"
 ## The bounty board on the square (PIX-156): the named monsters posted so far,
 ## the wanted first, then the slain. The card tells the chosen one's tale,
 ## where its lair is and what it pays; the lairs of the wanted are marked on
-## the map too. A new notice goes up as the relics come home (the old
-## mountain's floors posted some too, before they left play: PIX-257).
+## the map too. A new notice goes up as the relics come home, or as the
+## town grows (Grandmother Gulp, once Pixelheim is a Town: PIX-257); the old
+## mountain's floors posted some too, before they left play.
 
 
 func _title() -> String:
@@ -11,9 +12,7 @@ func _title() -> String:
 
 
 func _intro() -> String:
-	var deepest := GameState.progression.deepest
-	var record := Text.t("   Deepest Hunt: depth %d.") % deepest if deepest > 0 else ""
-	return Text.t("Kill a named monster and the bounty is yours where it falls.%s") % record
+	return Text.t("Kill a named monster and the bounty is yours where it falls.")
 
 
 func _info() -> String:
@@ -49,8 +48,7 @@ func _rows() -> Array[Dictionary]:
 			"note": Text.t("SLAIN") if slain else Text.coins(int(entry["bounty"])),
 			"enabled": not slain,
 			"why": "Slain. Pixelheim still talks about it.",
-			# A Deep Hunt one guards its depth's stair (PIX-219), not a lair on the map.
-			"action": func() -> String: return Text.t("%s keeps to %s.") % [entry["name"], entry["where"]] if entry.has("deepDepth") else Text.t("%s keeps to %s. Its lair is marked on your map.") % [entry["name"], entry["where"]],
+			"action": func() -> String: return Text.t("%s keeps to %s. Its lair is marked on your map.") % [entry["name"], entry["where"]],
 		})
 	return out
 
@@ -62,11 +60,13 @@ func _chosen() -> Dictionary:
 
 
 ## When a notice goes up: enough of the five relics won out in the Reach
-## (PIX-170); "" for one the old mountain's floors or the Deep Hunt posted,
-## which left play (PIX-257): the board says nothing of when, rather than
-## send the hero to a floor.
+## (PIX-170), or Pixelheim grown to a town (PIX-257: Grandmother Gulp); ""
+## for one only the old mountain's floors posted, which left play: the
+## board says nothing of when, rather than send the hero to a floor.
 static func _when(entry: Dictionary) -> String:
-	if entry.has("deepDepth") or not entry.has("postedRelics"):
+	if entry.has("postedTier"):
+		return Text.t("Pixelheim has grown into a town")
+	if not entry.has("postedRelics"):
 		return ""
 	var relics := int(entry["postedRelics"])
 	# Words a language can say its own way (PIX-196): the count, and is/are.

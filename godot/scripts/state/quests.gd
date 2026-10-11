@@ -145,7 +145,7 @@ static func where(quest: Dictionary, done: Variant = null) -> String:
 		"hunt":
 			return Text.t("In %s.") % Hunts.named(objective["named"]).get("where", Text.t("the wilds"))
 		"kill":
-			var places := Bestiary.where_found(objective["monsterId"], false)
+			var places := Bestiary.where_found(objective["monsterId"])
 			return Text.t("Found in %s.") % ", ".join(places.slice(0, 3)) if not places.is_empty() else ""
 		"deliver":
 			for chest: Dictionary in Interactables._data()["chests"]:

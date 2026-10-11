@@ -5,11 +5,14 @@
 # into the rock: Morvax's, its door opening onto his room (a cot, a cold
 # anvil, fifty years of tally marks), and beside it the lamp Maren saw some
 # nights and told herself was a star. Its gate at the foot of the road is
-# the mountain gate seen from inside, back down to the Ashenreach.
+# the mountain gate seen from inside, back down to the Ashenreach. Beside
+# the forge, under the summit, a door of black iron in the rock: the Kings'
+# Vault (PIX-257), shut until the dragon is freed.
 id mountain_road
 spawn 17 29
 portal 17 30 map overworld 48 7
 portal 17 5 map morvax_forge 8 8
+portal 12 2 map vault_1 3 9 barred vault
 key ^ mountain road
 key . ash road
 key : path road
@@ -22,7 +25,7 @@ key k crate road
 map
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-^^^^^^^^^^^^^^rrrrrrr^^^^^^^^^^^^^^^
+^^^^^^^^^^^^d^rrrrrrr^^^^^^^^^^^^^^^
 ^^^^^^^^^^^^..rrrrrrr..^^^^^^^^^^^^^
 ^^^^^^^^^^^...rrrrrrr...^^^^^^^^^^^^
 ^^^^^^^^^^kb..rrrDrrr.L..^^^^^^^^^^^

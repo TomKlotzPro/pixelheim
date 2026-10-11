@@ -2,8 +2,7 @@ class_name Spoils
 extends RefCounted
 ## What the hero wins (PIX-261, out of game_state.gd): a monster's fall
 ## (mastery, bounties, the garden, gold, drops, foraging), XP and the levels
-## it makes, named hunts, cleared packs and the wilds waking, floors and
-## depths cleared, chests, gathering and fishing, what a fall costs, and the
+## it makes, named hunts, cleared packs and the wilds waking, chests, gathering and fishing, what a fall costs, and the
 ## boss slayer's edge. Apart from that edge, which lasts the session only, it
 ## holds nothing of its own: it all lives in GameState's sections, reached
 ## through `owner`.
@@ -50,8 +49,9 @@ func damage_scale() -> float:
 ## foe instead of being said (PIX-245): its XP, gold, drops and what was
 ## foraged. The log keeps the rest: mastery, a quest's count, the garden at
 ## home, a bounty paid, a level (which goes on the plate), a trade's level.
-## `mountain`: the mountain's floor the kill was on (its loot pools, PIX-191), 0 in the wilds.
-func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, floor_level: int, mountain := 0) -> Dictionary:
+## `forged`: how deep the floor the kill was on forges its gear (the Kings'
+## Vault's, PIX-257), 0 elsewhere.
+func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, floor_level: int, forged := 0) -> Dictionary:
 	var log: Array[String] = []
 	var gains := Gains.none()
 	var mastery_line := _record_kill(fighter["id"])
@@ -115,9 +115,8 @@ func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, fl
 	if fighter.has("named"):
 		log.append_array(hunted(fighter["named"]))
 	var kind := "boss" if Bestiary.is_boss(fighter["id"]) else ("elite" if fighter["elite"] else "normal")
-	# A twisted depth of the Deep Hunt drops more often (PIX-216), and so does
-	# a pack that comes out only after dark (PIX-252).
-	var drop := Bestiary.roll_drop(floor_level, kind, owner.roll, mountain, Dungeons.loot_luck(mountain) + Packs.night_luck(fighter))
+	# A pack that comes out only after dark drops more often (PIX-252).
+	var drop := Bestiary.roll_drop(floor_level, kind, owner.roll, forged, Packs.night_luck(fighter))
 	if drop.get("kind") == "gear":
 		owner.pack.gear.append(drop["gear"])
 		Gains.add_piece(gains, drop["gear"])
@@ -171,12 +170,13 @@ func hunted(named_id: String) -> Array[String]:
 		owner.pack.gold += int(entry["bounty"])
 		lines.append(Text.t("The bounty on %s is yours: +%d gold.") % [entry["name"], int(entry["bounty"])])
 	# Gear comes as a fresh piece; anything else (a relic) into the pack. A
-	# Deep Hunt named one's is epic and forged as deep as its lair (PIX-219).
+	# guardian of the Kings' Vault's is epic and forged as deep as its floor
+	# forges (PIX-219, PIX-257).
 	var prize_name := Catalog.item_name(entry["drop"])
 	if Catalog.item(entry["drop"]).has("slot"):
 		var prize := InventoryState.create_gear(entry["drop"], String(entry.get("dropRarity", "common")), owner.roll)
-		if entry.has("deepDepth"):
-			InventoryState.deepen(prize, Dungeons.deep_tier(Dungeons.floor_count() + int(entry["deepDepth"])), owner.roll)
+		if Depths.forged(String(entry.get("mapId", ""))) > 0:
+			InventoryState.deepen(prize, Depths.forged(String(entry["mapId"])), owner.roll)
 		owner.pack.gear.append(prize)
 		prize_name = InventoryState.gear_name(prize)
 	else:
@@ -242,94 +242,6 @@ func wake_the_wilds() -> void:
 	owner.mark_dirty()
 
 
-## A dungeon floor's last foe falls (COLLECT_AND_RETURN): the first clear
-## pays the floor's gold and items (gear arrives as fresh pieces, whatever the
-## pack weighs) and opens the next floor; later clears pay only their kills.
-## The bard's song fades with the outing. Returns {first, lines, victory,
-## gains}: the hoard and the way down's XP are a win that floats up where
-## the last foe fell (PIX-245); the lines say the rest.
-func clear_floor(level: int) -> Dictionary:
-	owner.settlement.bard_song = false
-	var floor_def := Dungeons.floor_def(level)
-	var lines: Array[String] = [Text.t("%s is cleared!") % floor_def["name"]]
-	var gains := Gains.none()
-	var first: bool = level not in owner.progression.cleared_levels
-	if first:
-		owner.progression.cleared_levels.append(level)
-		owner.pack.gold += int(floor_def["rewardGold"])
-		gains["gold"] = int(floor_def["rewardGold"])
-		for item_id: String in floor_def["rewardItemIds"]:
-			if Catalog.item(item_id).has("slot"):
-				var piece := InventoryState.create_gear(item_id)
-				owner.pack.gear.append(piece)
-				Gains.add_piece(gains, piece)
-			else:
-				owner.pack.add_item(item_id)
-				Gains.add_item(gains, item_id)
-		# Liane's pages (PIX-153) retired from play with Maren's letters
-		# (PIX-253 step 2): a clear says nothing of one any more. The floors'
-		# pages stay in the journal's older papers for a hero who has them.
-		# A first clear is worth more than its fights (PIX-141): going deeper
-		# levels the hero, farming what's beaten doesn't.
-		var clear_xp := Dungeons.clear_xp(level)
-		gains["xp"] = clear_xp
-		var level_line := earn_xp(clear_xp)
-		if level_line != "":
-			lines.append(level_line)
-		if Town.homecoming(level) != "":
-			owner.reveals.append("home:%d" % level)
-		var boss_id: String = Dungeons.boss_of(level)["monsterId"]
-		if Bestiary.is_boss(boss_id):
-			owner.last_deed = {"kind": "boss", "boss": Bestiary.monster(boss_id)["name"]}
-		else:
-			owner.last_deed = {"kind": "cleared", "floor": Text.t("the %s") % String(floor_def["name"]).trim_prefix("The ")}
-		# Below the throne the stair goes on (PIX-161).
-		if Dungeons.is_final(level):
-			lines.append(Text.t("Behind the throne, a stair goes on down into the dark: the Deep Hunt."))
-		var before := owner.progression.unlocked_level
-		owner.progression.unlocked_level = Dungeons.unlocked_after(level, before)
-		if owner.progression.unlocked_level > before:
-			lines.append(Text.t("A deeper way opens: %s.") % Dungeons.floor_def(owner.progression.unlocked_level)["name"])
-		owner.pack_changed()
-	owner.save_now()
-	return {"first": first, "lines": lines, "victory": first and Dungeons.is_final(level), "gains": gains}
-
-
-## A depth of the Deep Hunt cleared (PIX-161): a new deepest depth is
-## recorded and pays its hoard and the way down (a win that floats up where
-## the last foe fell, PIX-245); a depth already beaten pays only its fights.
-## Returns {first, lines, victory, gains}, as clear_floor does.
-func clear_deep(level: int) -> Dictionary:
-	owner.settlement.bard_song = false
-	var depth := Dungeons.depth_of(level)
-	var floor_def := Dungeons.floor_def(level)
-	var lines: Array[String] = [Text.t("Depth %d of the Deep Hunt is cleared!") % depth]
-	var gains := Gains.none()
-	var record := depth > owner.progression.deepest
-	if record:
-		owner.progression.deepest = depth
-		owner.pack.gold += int(floor_def["rewardGold"])
-		gains["gold"] = int(floor_def["rewardGold"])
-		for item_id: String in floor_def["rewardItemIds"]:
-			owner.pack.add_item(item_id)
-			Gains.add_item(gains, item_id)
-		var clear_xp := Dungeons.clear_xp(level)
-		gains["xp"] = clear_xp
-		var level_line := earn_xp(clear_xp)
-		if level_line != "":
-			lines.append(level_line)
-		owner.last_deed = {"kind": "cleared", "floor": Text.t("depth %d of the Deep Hunt") % depth}
-		# A milestone (PIX-216): its crystal came with the hoard; the town hears.
-		var mark := Dungeons.milestone(depth)
-		if not mark.is_empty():
-			lines.append(Text.t("A milestone: %d depths below the throne. The %s is yours, a trophy for the shelf at home.") % [depth, Catalog.item_name(mark["itemId"])])
-			owner.reveals.append("deep:%d" % depth)
-		owner.pack_changed()
-	lines.append(Text.t("A hole into the dark opens beside the way up: depth %d waits below.") % (depth + 1))
-	owner.save_now()
-	return {"first": record, "lines": lines, "victory": false, "gains": gains}
-
-
 ## Grants a chest's payout (openChest in reducers/world.ts): gold, a stack, a
 ## gear piece, or a mimic's teeth. Loot that would overload the pack leaves the
 ## chest closed. Returns {opened, message, mimic, gains}: what it held is a
@@ -359,7 +271,11 @@ func open_chest(chest: Dictionary) -> Dictionary:
 				"gains": gains,
 			}
 		if loot["kind"] == "gear":
-			var instance := InventoryState.create_gear(loot["itemId"])
+			# A hoard's piece may be rarer than plain, and forged deep (the
+			# Kings' Vault's, PIX-257).
+			var instance := InventoryState.create_gear(loot["itemId"]) if not loot.has("rarity") else InventoryState.create_gear(loot["itemId"], String(loot["rarity"]), owner.roll)
+			if int(loot.get("forged", 0)) > 0:
+				InventoryState.deepen(instance, int(loot["forged"]), owner.roll)
 			owner.pack.gear.append(instance)
 			Gains.add_piece(gains, instance)
 		else:

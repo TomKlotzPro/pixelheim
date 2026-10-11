@@ -363,8 +363,20 @@ bells-gate | --map town --bells 1 --at 40,4 --walk u,u --wait 0.4 | map=town bel
 bells-fall | --map town --bells 3 hurt die | map=town cell=\(50, 12\) bells=hold mobs=1 | story night combat
 bells-slayer | --map town --bells 1 --cleared 10 | map=town mobs=0 next=morvax_choice | story town save
 bells-midnight | --load res://test/fixtures/bells_night.json --wait 0.3 | map=town bells=lanterns lit=0 next=lanterns | save story night
-# A depth of the Deep Hunt cleared (PIX-161).
-deep | --floor 16 clear --wait 0.3 | map=floor_16 | dungeon combat
+# The Kings' Vault after the story (PIX-257, PIX-253 step 11): its door of
+# black iron under the summit holds a new hero back until the dragon is
+# freed; a hero who slew Fafnyr on the old mountain finds it open, the
+# quiet word playing as it first opens; Fafnyr's own word, the scene; down
+# a floor of the Vault; its last floor cleared, the Hollow King down, the
+# kings' stair out and a way out where he fell; and a hero saved in the old
+# Deep Hunt waking in town with the medal it earned, in the journal's Feats.
+vault-shut | --map mountain_road --at 12,4 --walk u,u --wait 0.3 | map=mountain_road cell=\(12, 3\) barred=vault | travel story dungeon
+vault-open | --map mountain_road --cleared 10 --at 12,4 --walk u,u --wait 0.6 | map=mountain_road scene=vault_door_quiet | travel story dungeon
+vault-word | --map mountain_road --story vault_door --wait 1.5 | map=mountain_road scene=vault_door | story
+vault-down | --map vault_1 --at 61,9 --walk r --keys s,e --wait 0.4 | map=vault_2 cell=\(3, 9\) floor=2/5 | dungeon travel
+vault-hoard | --map vault_5 clear --wait 0.6 | map=vault_5 floor=5/5 fell=1 shortcut=open wayout=\(46, 7\) | dungeon combat
+oldsave-deep | --load res://test/fixtures/old_deep.json --wait 0.3 | map=town feats=deep_10 | save story travel
+feats-old | --load res://test/fixtures/old_deep.json journal --tab feats --wait 0.3 | open=journal_screen feats=deep_10 | screen quest save
 # What grows on the ground moves with the days (PIX-250): two days, two
 # sets of cells, and one of the first day's picked as the hero steps on it.
 # (The roads to the ways on, PIX-269, took some of the ash's and the

@@ -33,6 +33,7 @@ const TABLE := [
 	{"field": "mobs", "says": "monsters standing (not dying)"},
 	{"field": "ascension", "says": "with rankup: the ascension's beat, closed once it's gone (PIX-244)"},
 	{"field": "backsteps", "says": "with motion: frames the hero stepped back on screen while walking forward, lost if found in too few to judge (PIX-135, PIX-275)"},
+	{"field": "barred", "says": "the way the story keeps shut that stopped the hero on this run: mountain or vault (PIX-257)"},
 	{"field": "bells", "says": "the Night of Bells' beat while it runs (lanterns, embers, hold, dawn), done once Fafnyr is freed (PIX-253 step 9)"},
 	{"field": "beside", "says": "with seamless: the maps drawn beside the hero's, by id, or none (PIX-269)"},
 	{"field": "bossbar", "says": "the boss bar across the top: its foe's share of health while it shows, or none once it has gone; on a fight or a boss's floor (PIX-288)"},
@@ -46,6 +47,7 @@ const TABLE := [
 	{"field": "day", "says": "with --day: the day (PIX-250)"},
 	{"field": "delivered", "says": "Maren's letters delivered, once any is out (PIX-253)"},
 	{"field": "dest", "says": "the waypoint the map's list has chosen, while the map is open (PIX-241)"},
+	{"field": "feats", "says": "the feats done, by id, once any is (PIX-257)"},
 	{"field": "fell", "says": "bosses fallen, when one fell (PIX-232)"},
 	{"field": "firstnight", "says": "hero creation's first night: play or skip (PIX-228)"},
 	{"field": "fled", "says": "monsters that ran from a hero far above them, when any did (PIX-251)"},
@@ -71,7 +73,7 @@ const TABLE := [
 	{"field": "rise", "says": "with --rise: how far the building on the tour has risen: ruin, rising, built (PIX-264)"},
 	{"field": "rose", "says": "a chapter card's title, how far it rose coming in (PIX-253)"},
 	{"field": "saves", "says": "with seamless: the saves crossing lines made (once for crossing back and forth, PIX-269)"},
-	{"field": "scene", "says": "the story scene playing over the world, by id: bells_dawn (PIX-253 step 9)"},
+	{"field": "scene", "says": "the story scene playing over the world, by id: bells_dawn (PIX-253 step 9), vault_door (PIX-257)"},
 	{"field": "shortcut", "says": "on a dungeon floor with a shortcut out to its way in: open or shut (PIX-255)"},
 	{"field": "speaker", "says": "who the open conversation is with, by id: innkeeper (PIX-283)"},
 	{"field": "stood", "says": "named foes that stood down rather than fell, when one did (PIX-255)"},
@@ -231,6 +233,10 @@ func field_backsteps() -> String:
 	return noted("backsteps")
 
 
+func field_barred() -> String:
+	return world.barred_said
+
+
 func field_bells() -> String:
 	if GameState.progression.bells != Bells.NONE:
 		return Bells.beat_name(GameState.progression.bells)
@@ -307,6 +313,10 @@ func field_dest() -> String:
 		return ""
 	var chosen: String = screen.destination_id()
 	return chosen if chosen != "" else "none"
+
+
+func field_feats() -> String:
+	return ",".join(GameState.progression.deeds)
 
 
 func field_fell() -> String:

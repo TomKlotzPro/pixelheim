@@ -64,6 +64,19 @@ static func is_met(step: Dictionary, progression: ProgressionState, settlement: 
 	return _holds(step["when"], progression, settlement)
 
 
+## Whether a condition written as a step's is met by the save (the Kings'
+## Vault's door asks this way, PIX-257).
+static func holds(when: Dictionary, progression: ProgressionState, settlement: SettlementState) -> bool:
+	return _holds(when, progression, settlement)
+
+
+## Whether every step of chapter `number` (from 1) is met, its optional
+## errands aside: the chapter is done. A chapter with no step yet isn't.
+static func chapter_done(number: int, progression: ProgressionState, settlement: SettlementState) -> bool:
+	var asked: Array = chapters()[number - 1]["steps"].filter(func(step: Dictionary) -> bool: return not step.get("optional", false))
+	return not asked.is_empty() and asked.all(func(step: Dictionary) -> bool: return is_met(step, progression, settlement))
+
+
 ## Whether a step's condition holds for the save (`when`, with its `or`).
 static func _holds(when: Dictionary, progression: ProgressionState, settlement: SettlementState) -> bool:
 	if when.has("or") and _holds(when["or"], progression, settlement):
@@ -105,6 +118,10 @@ static func _holds(when: Dictionary, progression: ProgressionState, settlement: 
 			# A step the story hasn't written yet (PIX-253: home, Morvax's
 			# choice, which step 10 builds): never met.
 			return false
+		"chapterDone":
+			# A whole chapter told (PIX-257: the Night of Bells, the dragon
+			# freed, opens the Kings' Vault).
+			return chapter_done(int(when["chapter"]), progression, settlement)
 	push_warning("MainQuest: unknown step kind %s" % when["kind"])
 	return false
 

@@ -67,7 +67,7 @@ static func cells_of(gate: Dictionary) -> Array[Vector2i]:
 ## later one is past this one too - and past them all once past the
 ## mountain's own gate (Relics.gate_open: its relics home, or any of its
 ## floors cleared, as the late web hero who beat Morvax has) or into the
-## Deep Hunt.
+## old Deep Hunt (an old save's, PIX-257).
 static func is_open(gate: Dictionary, progression: ProgressionState, settlement: SettlementState, discovered: Dictionary) -> bool:
 	if Relics.gate_open(progression) or progression.deepest > 0:
 		return true

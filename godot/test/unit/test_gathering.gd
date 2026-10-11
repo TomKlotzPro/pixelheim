@@ -221,25 +221,6 @@ func test_the_map_grows_a_new_days_patches_while_the_hero_is_there() -> void:
 	GameState.world.steps = steps
 
 
-func test_every_floor_has_a_patch_that_deepens_and_moves() -> void:
-	for level in range(1, Dungeons.floor_count() + 1):
-		var plan := DungeonFloor.plan(level)
-		var map: MapData = plan["map"]
-		var ground: Array = plan["patch_ground"]
-		assert_gt(ground.size(), 1, "floor %d's patch has room to move" % level)
-		for cell: Vector2i in ground:
-			assert_eq(map.grid[cell], "floor", "floor %d's patch is on the floor" % level)
-			assert_ne(cell, plan["foes"][0]["cell"])
-		for day in 10:
-			var today := Gathering.floor_patch(ground, level, day)
-			assert_has(ground, today)
-			assert_eq(today, Gathering.floor_patch(ground, level, day), "the same for the same day")
-			assert_ne(today, Gathering.floor_patch(ground, level, day + 1), "floor %d: elsewhere the next day" % level)
-	assert_eq(Gathering.floor_material(1), "forest_herb")
-	assert_eq(Gathering.floor_material(5), "marsh_reed")
-	assert_eq(Gathering.floor_material(15), "grave_moss")
-
-
 func test_a_first_brew_for_vex_and_a_buckler_for_hilda() -> void:
 	assert_eq(Quests.by_id("herbs_for_vex")["objective"]["kind"], "craft")
 	assert_eq(Quests.by_id("hildas_buckler")["giver"], "smith")

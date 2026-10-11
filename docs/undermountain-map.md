@@ -1,6 +1,8 @@
 # The Undermountain: what it touches, before it goes
 
 > **A planning record for PIX-263**, which prepares PIX-257 (Tom: « On dégage le Sous-Mont »). Project: Pixelheim: Solid Ground. Built 2026-10-09 from `6a1578c` (v0.171.0). No game code was changed to write it.
+>
+> **Done since:** the main story's step 8 took the floors, the cave and its waypoint out of play; step 11 retired the Deep Hunt and the old floors' code and data, and built the Kings' Vault after the story (`depths.json` "vault", `Vault`). The map below is kept as it was written; the step 11 pull request ticks it off.
 
 ## What "the Undermountain" is in the code
 

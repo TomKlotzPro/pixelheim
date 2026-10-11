@@ -93,12 +93,17 @@ func mountain_shakes(npc: Dictionary, lines: Array) -> void:
 
 ## A story moment over the world (Cutscene, PIX-32), once per hero; "" or a
 ## moment already seen plays nothing.
-func play_story(scene_id: String) -> void:
+func play_story(scene_id: String, then := Callable()) -> void:
 	if scene_id == "" or GameState.has_seen(scene_id):
+		if then.is_valid():
+			then.call()
 		return
 	GameState.mark_seen(scene_id)
 	var scene := Cutscene.new()
 	scene.scene_id = scene_id
+	# What comes after it, skipped or not (the Vault's door, PIX-257).
+	if then.is_valid():
+		scene.on_done = then
 	world.add_child(scene)
 
 
@@ -342,9 +347,6 @@ func play_reveals() -> void:
 						"at": MapView.center(Town.project_board()), "line": String(opens["line"]),
 						"detail": String(opens.get("detail", "")),
 					})
-			"deep":
-				# A Deep Hunt milestone (PIX-216): the town has heard.
-				stops.append({"at": MapView.center(Town.square()), "line": Text.t(Dungeons.milestone(int(key))["homecoming"])})
 	GameState.reveals.clear()
 	var flags := HarnessFlags.given()
 	var staged := flags.has("reveal") or flags.has("rebuilt") or flags.has("--rise") or flags.has("lookbook")

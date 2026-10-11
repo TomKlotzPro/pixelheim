@@ -161,8 +161,8 @@ func _physics_process(delta: float) -> void:
 		# The pad steers the dock's menu while it's open (PIX-215), not the hero.
 		if world.hud.dock != null and world.hud.dock.steering():
 			input = Vector2.ZERO
-	# Wren's riders taught the hero to travel light (PIX-157): above ground only.
-	var pace := SPEED * (1.0 + (GameState.holdings.walk_bonus() if world.map.floor_level == 0 else 0.0))
+	# Wren's riders taught the hero to travel light (PIX-157).
+	var pace := SPEED * (1.0 + GameState.holdings.walk_bonus())
 	pace *= 1.0 + float(HeroRules.passives(GameState.hero)["moveSpeed"])
 	velocity = input * pace
 	var from := global_position
@@ -364,8 +364,7 @@ func cast(index: int) -> void:
 	var targets: Array = _foes_in_reach() if skill.get("area", false) else [target]
 	var dealt := 0
 	for foe: Node in targets:
-		# A warded depth dulls skills (PIX-216).
-		var damage := roundi(Bestiary.hero_skill_damage(GameState.hero, GameState.pack, skill, foe.fighter, GameState.roll) * world.delve.skill_ward() * GameState.spoils.damage_scale())
+		var damage := roundi(Bestiary.hero_skill_damage(GameState.hero, GameState.pack, skill, foe.fighter, GameState.roll) * GameState.spoils.damage_scale())
 		world.fx.skill_flash(foe.global_position, color)
 		foe.take_hit(damage, global_position, skill.get("inflicts"))
 		dealt += damage

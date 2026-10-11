@@ -237,7 +237,8 @@
         "chance": 0.45,
         "turns": 3,
         "power": 10
-      }
+      },
+      "retired": true
     },
     "crab": {
       "id": "crab",
@@ -343,8 +344,8 @@
       "id": "turncoat",
       "name": "Turncoat",
       "sprite": "turncoat",
-      "maxHp": 46,
-      "attack": 18,
+      "maxHp": 60,
+      "attack": 22,
       "defense": 5,
       "xp": 40,
       "gold": 24,
@@ -360,8 +361,8 @@
       "id": "turncoat_bowman",
       "name": "Turncoat Bowman",
       "sprite": "turncoat_bowman",
-      "maxHp": 38,
-      "attack": 20,
+      "maxHp": 49,
+      "attack": 25,
       "defense": 3,
       "xp": 42,
       "gold": 26,
@@ -371,8 +372,8 @@
       "id": "cutthroat",
       "name": "Cutthroat",
       "sprite": "cutthroat",
-      "maxHp": 50,
-      "attack": 22,
+      "maxHp": 65,
+      "attack": 28,
       "defense": 4,
       "xp": 50,
       "gold": 32,
@@ -388,8 +389,8 @@
       "id": "hollow_guard",
       "name": "Hollow Guard",
       "sprite": "hollow_guard",
-      "maxHp": 58,
-      "attack": 21,
+      "maxHp": 75,
+      "attack": 26,
       "defense": 7,
       "xp": 52,
       "gold": 20,
@@ -405,8 +406,8 @@
       "id": "frost_wolf",
       "name": "Frost Wolf",
       "sprite": "frost_wolf",
-      "maxHp": 52,
-      "attack": 21,
+      "maxHp": 68,
+      "attack": 26,
       "defense": 4,
       "xp": 46,
       "gold": 18,
@@ -422,8 +423,8 @@
       "id": "yeti",
       "name": "Yeti",
       "sprite": "yeti",
-      "maxHp": 72,
-      "attack": 24,
+      "maxHp": 94,
+      "attack": 30,
       "defense": 6,
       "xp": 58,
       "gold": 24,
@@ -439,8 +440,8 @@
       "id": "wendigo",
       "name": "Wendigo",
       "sprite": "wendigo",
-      "maxHp": 64,
-      "attack": 26,
+      "maxHp": 83,
+      "attack": 32,
       "defense": 5,
       "xp": 60,
       "gold": 26,
@@ -456,8 +457,8 @@
       "id": "frost_mammoth",
       "name": "Frost Mammoth",
       "sprite": "frost_mammoth",
-      "maxHp": 120,
-      "attack": 26,
+      "maxHp": 156,
+      "attack": 32,
       "defense": 10,
       "xp": 80,
       "gold": 30,
@@ -473,8 +474,8 @@
       "id": "frost_drake",
       "name": "Frost Drake",
       "sprite": "frost_drake",
-      "maxHp": 140,
-      "attack": 30,
+      "maxHp": 182,
+      "attack": 38,
       "defense": 9,
       "xp": 110,
       "gold": 60,
@@ -580,7 +581,7 @@
       ]
     },
     "coast": {
-      "wildXp": 0.5,
+      "wildXp": 0.3,
       "name": "the Saltmere coast",
       "dropFloor": 2,
       "eliteChance": 0.1,
@@ -600,7 +601,7 @@
       ]
     },
     "seacave": {
-      "wildXp": 0.5,
+      "wildXp": 0.3,
       "name": "the Sea Cave",
       "dropFloor": 4,
       "eliteChance": 0.15,
@@ -620,7 +621,7 @@
       ]
     },
     "mines": {
-      "wildXp": 0.5,
+      "wildXp": 0.35,
       "name": "the Blackiron valley",
       "dropFloor": 6,
       "eliteChance": 0.12,
@@ -636,7 +637,7 @@
       ]
     },
     "shafts": {
-      "wildXp": 0.5,
+      "wildXp": 0.35,
       "name": "the Blackiron shafts",
       "dropFloor": 7,
       "eliteChance": 0.15,
@@ -656,7 +657,7 @@
       ]
     },
     "castle": {
-      "wildXp": 0.5,
+      "wildXp": 0.4,
       "name": "Greyhold",
       "dropFloor": 8,
       "eliteChance": 0.12,
@@ -676,7 +677,7 @@
       ]
     },
     "cellars": {
-      "wildXp": 0.5,
+      "wildXp": 0.4,
       "name": "the Greyhold cellars",
       "dropFloor": 9,
       "eliteChance": 0.15,
@@ -696,7 +697,7 @@
       ]
     },
     "frost": {
-      "wildXp": 0.5,
+      "wildXp": 0.4,
       "name": "the Frostgate pass",
       "dropFloor": 9,
       "eliteChance": 0.12,
@@ -716,7 +717,7 @@
       ]
     },
     "icecave": {
-      "wildXp": 0.5,
+      "wildXp": 0.4,
       "name": "the ice cave",
       "dropFloor": 10,
       "eliteChance": 0.15,
@@ -736,7 +737,7 @@
       ]
     },
     "road": {
-      "wildXp": 0.5,
+      "wildXp": 1.0,
       "name": "the mountain road",
       "dropFloor": 10,
       "eliteChance": 0.15,
@@ -753,10 +754,34 @@
       "called": {
         "wolf": "Ash Hound"
       }
+    },
+    "vault": {
+      "wildXp": 0.42,
+      "name": "the Kings' Vault",
+      "dropFloor": 15,
+      "eliteChance": 0.2,
+      "monsters": [
+        {
+          "monsterId": "boneknight",
+          "weight": 3
+        },
+        {
+          "monsterId": "shade",
+          "weight": 3
+        },
+        {
+          "monsterId": "mimic",
+          "weight": 2
+        },
+        {
+          "monsterId": "imp",
+          "weight": 2
+        }
+      ]
     }
   },
   "wildRewardMult": 0.65,
-  "wildXpMult": 0.35,
+  "wildXpMult": 0.25,
   "spawns": [
     {
       "id": "ash_1",
@@ -1449,29 +1474,7 @@
       "icecave": [
         "floor"
       ]
-    },
-    "floorMaterials": [
-      [
-        1,
-        "forest_herb"
-      ],
-      [
-        4,
-        "marsh_reed"
-      ],
-      [
-        7,
-        "ember_shard"
-      ],
-      [
-        11,
-        "deep_root"
-      ],
-      [
-        14,
-        "grave_moss"
-      ]
-    ]
+    }
   },
   "bossIds": [
     "dragon",
@@ -1702,7 +1705,6 @@
         "arch_staff",
         "shadow_cloak",
         "runic_armor",
-        "obsidian_blade",
         "wyrm_visor",
         "duelists_ring"
       ],
@@ -1714,96 +1716,58 @@
         "imp_horn",
         "gem"
       ]
+    },
+    {
+      "floor": 15,
+      "gearIds": [
+        "obsidian_blade",
+        "dragonbane",
+        "mossback_maul",
+        "starfall_staff",
+        "gale_longbow",
+        "moonsteel_dagger",
+        "wyrmfang_dagger",
+        "city_plate",
+        "runic_armor",
+        "scaled_mail",
+        "warden_hauberk",
+        "blackiron_plate",
+        "frostweave_robe",
+        "grave_ward",
+        "fountain_guard",
+        "cinderscale_shield",
+        "blackiron_bulwark",
+        "warden_kite",
+        "frost_ward",
+        "wyrm_visor",
+        "warden_helm",
+        "blackiron_helm",
+        "frost_hood",
+        "greymaw_hood",
+        "runed_grips",
+        "blackiron_gauntlets",
+        "warden_gloves",
+        "frost_mitts",
+        "scaled_greaves",
+        "blackiron_sabatons",
+        "warden_boots",
+        "frost_boots",
+        "gulp_tooth",
+        "wolfstooth_collar",
+        "moon_pendant",
+        "drowned_signet",
+        "duelists_ring"
+      ],
+      "stackIds": [
+        "greater_potion",
+        "elixir",
+        "phoenix_draught",
+        "gem",
+        "dragon_scale",
+        "imp_horn"
+      ]
     }
   ],
-  "floorPools": {
-    "about": "PIX-191: the mountain's loot by its real floor number, so each floor is a step (the wilds keep dropPools, by the foe's level). Crafted, named and hoard gear stays out of them.",
-    "pools": [
-      {
-        "floor": 1,
-        "gearIds": [
-          "war_hammer",
-          "arch_staff",
-          "longbow",
-          "shadow_dagger",
-          "iron_armor",
-          "shadow_cloak",
-          "iron_helm",
-          "tower_shield",
-          "runed_grips",
-          "duelists_ring"
-        ],
-        "stackIds": [
-          "greater_potion",
-          "elixir",
-          "antidote",
-          "ember_salve",
-          "gem"
-        ]
-      },
-      {
-        "floor": 4,
-        "gearIds": [
-          "war_hammer",
-          "arch_staff",
-          "longbow",
-          "runic_armor",
-          "wyrm_visor",
-          "tower_shield",
-          "runed_grips",
-          "moon_pendant",
-          "duelists_ring"
-        ],
-        "stackIds": [
-          "greater_potion",
-          "elixir",
-          "antidote",
-          "ember_salve",
-          "gem"
-        ]
-      },
-      {
-        "floor": 8,
-        "gearIds": [
-          "dragonbane",
-          "starfall_staff",
-          "gale_longbow",
-          "moonsteel_dagger",
-          "runic_armor",
-          "wyrm_visor",
-          "city_plate",
-          "moon_pendant"
-        ],
-        "stackIds": [
-          "greater_potion",
-          "elixir",
-          "ember_salve",
-          "gem",
-          "imp_horn"
-        ]
-      },
-      {
-        "floor": 12,
-        "gearIds": [
-          "obsidian_blade",
-          "starfall_staff",
-          "gale_longbow",
-          "moonsteel_dagger",
-          "city_plate",
-          "wyrm_visor",
-          "runic_armor",
-          "duelists_ring"
-        ],
-        "stackIds": [
-          "greater_potion",
-          "elixir",
-          "ember_salve",
-          "gem",
-          "imp_horn"
-        ]
-      }
-    ]
-  },
   "gearShare": {
     "about": "PIX-191: of the drops, the share that is gear rather than a stack: a boss always drops gear.",
     "normal": 0.45,
@@ -5029,394 +4993,6 @@
       }
     }
   ],
-  "levels": [
-    {
-      "level": 1,
-      "name": "Mossy Cellar",
-      "description": "Something gelatinous lurks beneath the tavern.",
-      "encounters": [
-        {
-          "monsterId": "slime"
-        },
-        {
-          "monsterId": "slime"
-        },
-        {
-          "monsterId": "slime",
-          "elite": true
-        }
-      ],
-      "rewardItemIds": [
-        "greater_potion",
-        "elixir"
-      ],
-      "rewardGold": 55,
-      "lift": 11,
-      "epithet": "Cellar"
-    },
-    {
-      "level": 2,
-      "name": "Whispering Woods",
-      "description": "Goblins have been robbing travelers on the forest road.",
-      "encounters": [
-        {
-          "monsterId": "slime"
-        },
-        {
-          "monsterId": "goblin"
-        },
-        {
-          "monsterId": "goblin",
-          "elite": true
-        }
-      ],
-      "rewardItemIds": [
-        "greater_potion",
-        "gem"
-      ],
-      "rewardGold": 75,
-      "lift": 10,
-      "epithet": "Whispering"
-    },
-    {
-      "level": 3,
-      "name": "Barrow Crypt",
-      "description": "The dead of the old kingdom do not rest easy.",
-      "encounters": [
-        {
-          "monsterId": "goblin"
-        },
-        {
-          "monsterId": "skeleton"
-        },
-        {
-          "monsterId": "skeleton",
-          "elite": true
-        }
-      ],
-      "rewardItemIds": [
-        "duelists_ring",
-        "greater_potion"
-      ],
-      "rewardGold": 110,
-      "lift": 10,
-      "epithet": "Barrow"
-    },
-    {
-      "level": 4,
-      "name": "Frosthowl Pass",
-      "description": "Wolves with eyes like embers stalk the mountain trail.",
-      "encounters": [
-        {
-          "monsterId": "skeleton"
-        },
-        {
-          "monsterId": "wolf"
-        },
-        {
-          "monsterId": "wolf",
-          "elite": true
-        }
-      ],
-      "rewardItemIds": [
-        "cheese_wheel",
-        "gem",
-        "greater_potion"
-      ],
-      "rewardGold": 140,
-      "lift": 9,
-      "epithet": "Frosthowl"
-    },
-    {
-      "level": 5,
-      "name": "Ruined Watchtower",
-      "description": "An orc warband has claimed the old garrison.",
-      "encounters": [
-        {
-          "monsterId": "wolf"
-        },
-        {
-          "monsterId": "orc"
-        },
-        {
-          "monsterId": "orc",
-          "elite": true
-        }
-      ],
-      "rewardItemIds": [
-        "wyrm_visor",
-        "elixir"
-      ],
-      "rewardGold": 200,
-      "lift": 9,
-      "epithet": "Watchtower"
-    },
-    {
-      "level": 6,
-      "name": "Drowned Chapel",
-      "description": "Cold voices sing hymns in the flooded nave.",
-      "encounters": [
-        {
-          "monsterId": "orc"
-        },
-        {
-          "monsterId": "ghost"
-        },
-        {
-          "monsterId": "ghost",
-          "elite": true
-        }
-      ],
-      "rewardItemIds": [
-        "moon_pendant",
-        "greater_potion"
-      ],
-      "rewardGold": 240,
-      "lift": 8,
-      "epithet": "Drowned"
-    },
-    {
-      "level": 7,
-      "name": "Sunken Forge",
-      "description": "The dwarven guardians still obey their final order: none shall pass.",
-      "encounters": [
-        {
-          "monsterId": "ghost"
-        },
-        {
-          "monsterId": "golem"
-        },
-        {
-          "monsterId": "golem",
-          "elite": true
-        }
-      ],
-      "rewardItemIds": [
-        "runic_armor",
-        "gem"
-      ],
-      "rewardGold": 310,
-      "lift": 8,
-      "epithet": "Sunken"
-    },
-    {
-      "level": 8,
-      "name": "Gloomdeep Caverns",
-      "description": "Miners fled when the bridge trolls stopped charging tolls and started charging people.",
-      "encounters": [
-        {
-          "monsterId": "golem"
-        },
-        {
-          "monsterId": "troll"
-        },
-        {
-          "monsterId": "troll",
-          "elite": true
-        }
-      ],
-      "rewardItemIds": [
-        "gem",
-        "greater_potion",
-        "elixir"
-      ],
-      "rewardGold": 370,
-      "lift": 7,
-      "epithet": "Gloomdeep"
-    },
-    {
-      "level": 9,
-      "name": "Stormcrag Aerie",
-      "description": "Wyverns nest in the high crags, guarding the path to the summit.",
-      "encounters": [
-        {
-          "monsterId": "troll"
-        },
-        {
-          "monsterId": "wyvern"
-        },
-        {
-          "monsterId": "wyvern",
-          "elite": true
-        }
-      ],
-      "rewardItemIds": [
-        "dragonbane",
-        "potion_hp",
-        "potion_mp",
-        "cheese_wheel"
-      ],
-      "rewardGold": 490,
-      "lift": 7,
-      "epithet": "Stormcrag"
-    },
-    {
-      "level": 10,
-      "name": "The Ashen Throne",
-      "description": "Fafnyr the Ashen waits atop the mountain. End this.",
-      "encounters": [
-        {
-          "monsterId": "wyvern"
-        },
-        {
-          "monsterId": "dragon"
-        }
-      ],
-      "rewardItemIds": [
-        "dragon_scale",
-        "gem"
-      ],
-      "rewardGold": 950,
-      "lift": 6,
-      "epithet": "Ashen"
-    },
-    {
-      "level": 11,
-      "name": "The Sunless Stair",
-      "description": "Behind the dragon's hoard, a stairway descends into the dark.",
-      "encounters": [
-        {
-          "monsterId": "wyvern"
-        },
-        {
-          "monsterId": "boneknight"
-        },
-        {
-          "monsterId": "boneknight",
-          "elite": true
-        }
-      ],
-      "rewardItemIds": [
-        "greater_potion",
-        "greater_potion"
-      ],
-      "rewardGold": 570,
-      "lift": 6,
-      "epithet": "Sunless"
-    },
-    {
-      "level": 12,
-      "name": "Hall of Echoes",
-      "description": "The dead of the deep kingdom whisper. Some of them still march.",
-      "encounters": [
-        {
-          "monsterId": "boneknight"
-        },
-        {
-          "monsterId": "shade"
-        },
-        {
-          "monsterId": "shade",
-          "elite": true
-        }
-      ],
-      "rewardItemIds": [
-        "obsidian_blade",
-        "greater_potion"
-      ],
-      "rewardGold": 610,
-      "lift": 5,
-      "epithet": "Echoing"
-    },
-    {
-      "level": 13,
-      "name": "The Vaulted Hoard",
-      "description": "A treasury untouched for centuries. Some of the chests are hungry.",
-      "encounters": [
-        {
-          "monsterId": "shade"
-        },
-        {
-          "monsterId": "mimic"
-        },
-        {
-          "monsterId": "mimic",
-          "elite": true
-        }
-      ],
-      "rewardItemIds": [
-        "runic_armor",
-        "gem"
-      ],
-      "rewardGold": 735,
-      "lift": 5,
-      "epithet": "Hoard"
-    },
-    {
-      "level": 14,
-      "name": "Ember Warrens",
-      "description": "The tunnels glow warm. The imps that dug them think you look flammable.",
-      "encounters": [
-        {
-          "monsterId": "mimic"
-        },
-        {
-          "monsterId": "imp"
-        },
-        {
-          "monsterId": "imp",
-          "elite": true
-        }
-      ],
-      "rewardItemIds": [
-        "elixir",
-        "greater_potion",
-        "gem"
-      ],
-      "rewardGold": 800,
-      "lift": 4,
-      "epithet": "Ember"
-    },
-    {
-      "level": 15,
-      "name": "Throne of the Deathless",
-      "description": "Morvax has waited below since before the mountain had a name. End this. Again.",
-      "encounters": [
-        {
-          "monsterId": "imp"
-        },
-        {
-          "monsterId": "lich"
-        }
-      ],
-      "rewardItemIds": [
-        "lich_crown",
-        "gem"
-      ],
-      "rewardGold": 1740,
-      "lift": 3,
-      "epithet": "Deathless"
-    }
-  ],
-  "dungeons": {
-    "mountain": {
-      "name": "The Ashen Mountain",
-      "floors": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10
-      ]
-    },
-    "undermountain": {
-      "name": "The Undermountain",
-      "floors": [
-        11,
-        12,
-        13,
-        14,
-        15
-      ],
-      "sealed": "The seal on the deep holds fast. The dragon above still reigns."
-    }
-  },
-  "clearXpPerFloor": 12,
   "levelUpHeal": 0.5,
   "armor": {
     "about": "PIX-185: armour turns aside a share of every hit instead of a flat amount, so it always helps and never makes anyone immune: a hit of `raw` against armour `a` lands raw*raw/(raw + weight*a). Both ways - the hero's swings against a monster's defense, a monster's against the hero's.",
@@ -5649,7 +5225,8 @@
       "where": "the west bank of the Mirefen",
       "notice": "The mother of every mimic in the fen sits on the west bank looking like a treasure chest the size of a cart. She leaps. Bring a friend you don't like.",
       "seen": "Grandmother Gulp springs open - she has seen you!",
-      "homecoming": "Odo has counted the treasure that came back from Grandmother Gulp twice. He is smiling, which nobody has seen before."
+      "homecoming": "Odo has counted the treasure that came back from Grandmother Gulp twice. He is smiling, which nobody has seen before.",
+      "postedTier": 3
     },
     "tidecaller": {
       "name": "The Tidecaller",
@@ -5665,7 +5242,7 @@
       "maxHp": 220,
       "attack": 17,
       "defense": 4,
-      "xp": 130,
+      "xp": 80,
       "gold": 60,
       "bounty": 0,
       "drop": "tams_ladle",
@@ -5706,7 +5283,7 @@
       "maxHp": 360,
       "attack": 26,
       "defense": 9,
-      "xp": 210,
+      "xp": 160,
       "gold": 90,
       "bounty": 0,
       "drop": "black_ingot",
@@ -5742,10 +5319,10 @@
       "postedAfter": 0,
       "board": false,
       "level": 12,
-      "maxHp": 440,
-      "attack": 30,
+      "maxHp": 520,
+      "attack": 34,
       "defense": 10,
-      "xp": 240,
+      "xp": 200,
       "gold": 100,
       "bounty": 0,
       "drop": "oskars_shield",
@@ -5792,10 +5369,10 @@
       "postedAfter": 0,
       "board": false,
       "level": 13,
-      "maxHp": 520,
-      "attack": 34,
+      "maxHp": 620,
+      "attack": 38,
       "defense": 11,
-      "xp": 280,
+      "xp": 220,
       "gold": 130,
       "bounty": 0,
       "drop": "lianes_lantern",
@@ -5830,9 +5407,22 @@
     "grimshade": {
       "name": "Grimshade",
       "monsterId": "shade",
-      "deepDepth": 6,
-      "bounty": 1500,
+      "mapId": "vault_2",
+      "lair": {
+        "x": 65,
+        "y": 6
+      },
+      "postedAfter": 0,
+      "board": false,
+      "bounty": 0,
+      "level": 18,
+      "maxHp": 850,
+      "attack": 54,
+      "defense": 12,
+      "xp": 350,
+      "gold": 624,
       "drop": "shadow_cloak",
+      "dropRarity": "epic",
       "scale": 1.5,
       "tint": [
         0.7,
@@ -5856,23 +5446,30 @@
           "power": 0
         }
       },
-      "where": "depth 6 of the Deep Hunt, where it guards the stair",
-      "notice": "Climbers who came back from the sixth depth speak of a shadow that holds you where you stand while the rest of the dark closes in. Nobody has seen its face. Nobody wants to.",
+      "where": "the old kings' strongroom, two floors down the Kings' Vault",
+      "notice": "",
       "seen": "Grimshade peels itself off the wall!",
-      "homecoming": "Grimshade is gone from the sixth depth. Odo swears the shadows in his cellar are smaller now.",
-      "mapId": "deep",
-      "lair": {
-        "x": 0,
-        "y": 0
-      },
-      "dropRarity": "epic"
+      "homecoming": "Grimshade is gone from the kings' strongroom. Odo swears the shadows in his cellar are smaller now."
     },
     "bone_abbot": {
       "name": "The Bone Abbot",
       "monsterId": "boneknight",
-      "deepDepth": 11,
-      "bounty": 3000,
+      "mapId": "vault_3",
+      "lair": {
+        "x": 64,
+        "y": 7
+      },
+      "postedAfter": 0,
+      "board": false,
+      "bounty": 0,
+      "level": 19,
+      "maxHp": 1000,
+      "attack": 58,
+      "defense": 16,
+      "xp": 420,
+      "gold": 729,
       "drop": "grave_ward",
+      "dropRarity": "epic",
       "scale": 1.5,
       "tint": [
         0.85,
@@ -5891,23 +5488,30 @@
         "count": 2,
         "max": 3
       },
-      "where": "depth 11 of the Deep Hunt, where it guards the stair",
-      "notice": "Down in the eleventh depth an old knight keeps a congregation of bones, and it rings them up out of the floor whenever someone comes to pray. Bring something heavier than a prayer.",
+      "where": "the tombs of the kings, three floors down the Kings' Vault",
+      "notice": "",
       "seen": "The Bone Abbot raises its hand, and the floor answers.",
-      "homecoming": "The Bone Abbot's congregation is dust. The chapel in Greyhold rang its bell for you.",
-      "mapId": "deep",
-      "lair": {
-        "x": 0,
-        "y": 0
-      },
-      "dropRarity": "epic"
+      "homecoming": "The Bone Abbot's congregation is dust, down among the stone kings. Brother Teo rang Greyhold's bell for you."
     },
     "hollowmother": {
       "name": "Hollowmother",
       "monsterId": "wendigo",
-      "deepDepth": 16,
-      "bounty": 5000,
+      "mapId": "vault_1",
+      "lair": {
+        "x": 57,
+        "y": 7
+      },
+      "postedAfter": 0,
+      "board": false,
+      "bounty": 0,
+      "level": 17,
+      "maxHp": 700,
+      "attack": 50,
+      "defense": 9,
+      "xp": 260,
+      "gold": 252,
       "drop": "moon_pendant",
+      "dropRarity": "epic",
       "scale": 1.6,
       "tint": [
         0.8,
@@ -5925,23 +5529,30 @@
         "radius": 1.7,
         "power": 1.5
       },
-      "where": "depth 16 of the Deep Hunt, where it guards the stair",
-      "notice": "The thing at the sixteenth depth is thin as a hunger and it leaps further than a horse. The hunters who drew it call it Hollowmother, and won't say why.",
+      "where": "the foot of the Kings' Vault's stair, one floor under the summit",
+      "notice": "",
       "seen": "Hollowmother unfolds, all limbs and hunger.",
-      "homecoming": "Hollowmother is slain. The children have stopped daring each other to look down the well.",
-      "mapId": "deep",
-      "lair": {
-        "x": 0,
-        "y": 0
-      },
-      "dropRarity": "epic"
+      "homecoming": "Hollowmother is slain, down in the kings' vault. The children have stopped daring each other to look down the well."
     },
     "ironheart": {
       "name": "Ironheart",
       "monsterId": "iron_demon",
-      "deepDepth": 21,
-      "bounty": 8000,
+      "mapId": "vault_4",
+      "lair": {
+        "x": 59,
+        "y": 13
+      },
+      "postedAfter": 0,
+      "board": false,
+      "bounty": 0,
+      "level": 20,
+      "maxHp": 1050,
+      "attack": 60,
+      "defense": 18,
+      "xp": 500,
+      "gold": 630,
       "drop": "runed_grips",
+      "dropRarity": "epic",
       "scale": 1.5,
       "tint": [
         1.3,
@@ -5961,16 +5572,56 @@
         "speed": 130,
         "power": 1.0
       },
-      "where": "depth 21 of the Deep Hunt, where it guards the stair",
-      "notice": "A forge-demon walks the twenty-first depth with a furnace where its heart should be. Hilda wants the grips off its hands. She says she'll know what to do with them.",
+      "where": "the kings' armoury, four floors down the Kings' Vault",
+      "notice": "",
       "seen": "Ironheart's furnace roars open!",
-      "homecoming": "Ironheart's furnace is cold. Hilda has hung its grips over her anvil and won't let anyone touch them.",
-      "mapId": "deep",
+      "homecoming": "Ironheart's furnace is cold. Hilda has hung its grips over her anvil and won't let anyone touch them."
+    },
+    "hollow_king": {
+      "name": "The Hollow King",
+      "monsterId": "boneknight",
+      "mapId": "vault_5",
       "lair": {
-        "x": 0,
-        "y": 0
+        "x": 46,
+        "y": 9
       },
-      "dropRarity": "epic"
+      "postedAfter": 0,
+      "board": false,
+      "bounty": 0,
+      "level": 21,
+      "maxHp": 1750,
+      "attack": 42,
+      "defense": 18,
+      "xp": 700,
+      "gold": 1818,
+      "drop": "lich_crown",
+      "scale": 1.9,
+      "tint": [
+        1.4,
+        1.22,
+        0.62
+      ],
+      "move": {
+        "move": "grasp",
+        "every": 5.5,
+        "tell": 0.8,
+        "range": [
+          0,
+          6.5
+        ],
+        "radius": 1.5,
+        "power": 1.0,
+        "inflicts": {
+          "kind": "stun",
+          "chance": 1.0,
+          "turns": 1,
+          "power": 0
+        }
+      },
+      "where": "the hoard at the bottom of the Kings' Vault",
+      "notice": "",
+      "seen": "The Hollow King rises off the hoard, crowned and empty-eyed. \"Thieves,\" he rattles. \"Every one of you. Thieves.\"",
+      "homecoming": "The Hollow King is dust, and the old kings' hoard is open to anyone with a sack. Odo has bought three sacks."
     }
   },
   "fishingSpots": [
@@ -6053,7 +5704,7 @@
     ]
   },
   "floorLift": {
-    "about": "PIX-170: the mountain comes last, so each floor's foes stand `lift` levels above their kind. A stat grows by the ratio of its curve (a + b*L + c*L*L) at the lifted level to its curve at the kind's own; XP grows gentler than the rest. Past goldLinearFrom (the Deep Hunt, PIX-180) gold grows by goldLinearStep a level instead of on the curve.",
+    "about": "PIX-170: a foe can stand `lift` levels above its kind (a dungeon floor's, the Kings' Vault's the highest, PIX-257; a guardian's). A stat grows by the ratio of its curve (a + b*L + c*L*L) at the lifted level to its curve at the kind's own; XP grows gentler than the rest.",
     "curves": {
       "maxHp": [
         4,
@@ -6080,184 +5731,7 @@
         0,
         0.3
       ]
-    },
-    "goldLinearFrom": 19,
-    "goldLinearStep": 0.06
-  },
-  "deepHunt": {
-    "about": "PIX-161: below Morvax's throne, generated depths without end. Depth d's foes stand at startLevel + d - 1, drawn from every family; every eliteEvery-th depth an elite guards the stair down. The hoard pays once per new deepest depth. A depth already cleared pays its foes replayGoldShare of their gold (PIX-180). PIX-216: milestones bring a crystal home (a trophy) with the elder's word and the town's; every bossEvery-th depth a warden (a lifted dragon or lich, renamed) guards it; every other depth past the first has one twist, shown at the gate, its kills dropping more often (modifierLuck); the gate opens the first depth of every tier reached. PIX-217: foes climb levelsPerDepth levels a depth, faster than a hero levels, so the deepest depth measures a build; a new deepest's potion is the best of hoardPotions its depth has reached. PIX-218: its gear rolls from gearIds, every slot's best, the regions' sets and the named pieces, not only the mountain's last pool.",
-    "startLevel": 19,
-    "eliteEvery": 3,
-    "foes": [
-      "ghost",
-      "golem",
-      "troll",
-      "wyvern",
-      "boneknight",
-      "shade",
-      "imp",
-      "iron_demon",
-      "goblin_spear",
-      "pirate_captain",
-      "turncoat",
-      "cutthroat",
-      "hollow_guard",
-      "yeti",
-      "wendigo",
-      "frost_mammoth",
-      "frost_wolf",
-      "king_slime",
-      "orc"
-    ],
-    "rewardGold": [
-      150,
-      45
-    ],
-    "names": [
-      "The Deep Hunt"
-    ],
-    "descriptions": [
-      "The stair below the throne goes on down. Nobody built this far.",
-      "Things that fled the light came here to wait. They're done waiting.",
-      "The air is warm and old. Something below is breathing.",
-      "Bones of every kind, gnawed by every kind."
-    ],
-    "replayGoldShare": 0.25,
-    "epithet": "Deep",
-    "bossEvery": 10,
-    "wardens": [
-      {
-        "monsterId": "dragon",
-        "name": "The Deep Warden"
-      },
-      {
-        "monsterId": "lich",
-        "name": "The Hollow King"
-      }
-    ],
-    "modifiers": [
-      {
-        "id": "swift",
-        "name": "Swift",
-        "line": "Its foes move quicker than anything should."
-      },
-      {
-        "id": "warded",
-        "name": "Warded",
-        "line": "Something in the stone dulls your skills."
-      },
-      {
-        "id": "venom",
-        "name": "Venomous",
-        "line": "Every bite down here carries poison."
-      },
-      {
-        "id": "proud",
-        "name": "Proud",
-        "line": "Two of its foes are elites, besides whatever guards it."
-      }
-    ],
-    "modifierLuck": 0.15,
-    "swiftPace": 1.25,
-    "wardedSkills": 0.7,
-    "venom": {
-      "kind": "poison",
-      "chance": 0.3,
-      "turns": 3,
-      "attackShare": 0.15
-    },
-    "milestones": [
-      {
-        "depth": 5,
-        "itemId": "deep_crystal_5",
-        "elder": "Five depths under the throne, and you came back up. I didn't think the mountain had a cellar.",
-        "homecoming": "Word comes up the road before you do: five depths below the throne. The tavern names a stool after you."
-      },
-      {
-        "depth": 10,
-        "itemId": "deep_crystal_10",
-        "elder": "Ten depths. Something guarded the tenth, they say. Something you put down.",
-        "homecoming": "Ten depths down, and a warden of the deep beneath your boots. Children play 'the Deep Hunt' in the square now; nobody wants to be the warden."
-      },
-      {
-        "depth": 15,
-        "itemId": "deep_crystal_15",
-        "elder": "Fifteen. Deeper than the mountain is tall, if the old maps are right. Are you still looking for the bottom?",
-        "homecoming": "Fifteen depths. Hilda has started keeping the crystals you bring up on her mantel, 'for safekeeping'."
-      },
-      {
-        "depth": 20,
-        "itemId": "deep_crystal_20",
-        "elder": "Twenty depths. The Hollow King, they're calling the thing you beat. I'd rather they called you something.",
-        "homecoming": "Twenty depths, and a king of the hollow places fallen. The bard's new song has a verse for every ten."
-      },
-      {
-        "depth": 30,
-        "itemId": "deep_crystal_30",
-        "elder": "Thirty. Nobody in the Reach has a number for how deep that is. You'll have to be the number.",
-        "homecoming": "Thirty depths. Merchants from the coast come up just to see the one who goes down."
-      },
-      {
-        "depth": 50,
-        "itemId": "deep_crystal_50",
-        "elder": "Fifty depths below the throne. Whatever is at the bottom, I hope it knows your name by now.",
-        "homecoming": "Fifty depths. The whole town is on the square when you come home, and for once nobody says a word. They just clap."
-      }
-    ],
-    "levelsPerDepth": 1.5,
-    "hoardPotions": [
-      {
-        "from": 1,
-        "itemId": "greater_potion"
-      },
-      {
-        "from": 11,
-        "itemId": "phoenix_draught"
-      },
-      {
-        "from": 26,
-        "itemId": "dragon_tonic"
-      }
-    ],
-    "gearIds": [
-      "obsidian_blade",
-      "dragonbane",
-      "mossback_maul",
-      "starfall_staff",
-      "gale_longbow",
-      "moonsteel_dagger",
-      "wyrmfang_dagger",
-      "city_plate",
-      "runic_armor",
-      "scaled_mail",
-      "warden_hauberk",
-      "blackiron_plate",
-      "frostweave_robe",
-      "grave_ward",
-      "fountain_guard",
-      "cinderscale_shield",
-      "blackiron_bulwark",
-      "warden_kite",
-      "frost_ward",
-      "wyrm_visor",
-      "warden_helm",
-      "blackiron_helm",
-      "frost_hood",
-      "greymaw_hood",
-      "runed_grips",
-      "blackiron_gauntlets",
-      "warden_gloves",
-      "frost_mitts",
-      "scaled_greaves",
-      "blackiron_sabatons",
-      "warden_boots",
-      "frost_boots",
-      "gulp_tooth",
-      "wolfstooth_collar",
-      "moon_pendant",
-      "drowned_signet",
-      "duelists_ring"
-    ]
+    }
   },
   "escorts": {
     "gunnar_wagon": {
@@ -6391,13 +5865,5 @@
         "cap": 20
       }
     ]
-  },
-  "namedDeep": {
-    "about": "PIX-219: the Deep Hunt's own named monsters stand as their depth's guardian, posted once the depth above is cleared; their numbers are an elite of their kind at the depth's level, made bigger.",
-    "hp": 2.5,
-    "attack": 1.2,
-    "xp": 3.0,
-    "gold": 3.0,
-    "levels": 2
   }
 }

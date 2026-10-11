@@ -13,7 +13,7 @@
       },
       "reward": {
         "gold": 60,
-        "xp": 30
+        "xp": 20
       },
       "accepted": "Three fewer slimes in the world and there's coin in it for you.",
       "completed": "The stores thank you. So does my nose. Here - you've earned it."
@@ -31,7 +31,7 @@
       },
       "reward": {
         "gold": 70,
-        "xp": 30
+        "xp": 15
       },
       "accepted": "Rook in Saltmere swears the smugglers left a cask of their rum in the sea cave. If it's real, I want it behind my bar.",
       "completed": "Real, and terrible, and the regulars will love it. Your drinks are on the house. Well - the first one.",
@@ -50,7 +50,7 @@
       },
       "reward": {
         "gold": 25,
-        "xp": 15
+        "xp": 10
       },
       "accepted": "One wheel. Uncut. I'll know if you nibbled.",
       "completed": "Magnificent. Roll on, friend. Roll on."
@@ -68,7 +68,7 @@
       },
       "reward": {
         "gold": 90,
-        "xp": 45
+        "xp": 35
       },
       "accepted": "Two of the big ones, gone. Then I'll walk where I please.",
       "completed": "I walked the whole road today and nothing bit me. Take this."
@@ -323,7 +323,7 @@
       },
       "reward": {
         "gold": 70,
-        "xp": 35,
+        "xp": 25,
         "itemId": "greater_potion"
       },
       "accepted": "One health potion, brewed by your own hand: a forest herb, a marsh reed, my cauldron. Then we talk.",
@@ -342,7 +342,7 @@
       },
       "reward": {
         "gold": 50,
-        "xp": 30,
+        "xp": 15,
         "itemId": "greater_potion"
       },
       "accepted": "Saltmere's beaches are thick with sea glass, they say. Ground fine, it clears a potion like nothing else. Three pieces, please.",
@@ -362,7 +362,7 @@
       },
       "reward": {
         "gold": 60,
-        "xp": 30
+        "xp": 20
       },
       "accepted": "Three marsh reeds, woven tight, at my forge. Make me a buckler and keep it - it's yours.",
       "completed": "Tight weave. You'll do. Take this for the reeds."
@@ -380,7 +380,7 @@
       },
       "reward": {
         "gold": 60,
-        "xp": 35,
+        "xp": 20,
         "itemId": "ember_shard"
       },
       "accepted": "Garrick's lot at Blackiron dig the best iron in the Reach. Bring me three lumps of it and I'll show you what a forge is for.",
@@ -401,7 +401,7 @@
       },
       "reward": {
         "gold": 0,
-        "xp": 25
+        "xp": 20
       },
       "accepted": "Three marsh reeds, and my tent moves to Pixelheim. The marsh west of the gate grows plenty.",
       "completed": "Reeds enough to start with. Find me by the shrine - and come to me before you climb."
@@ -419,7 +419,7 @@
       },
       "reward": {
         "gold": 60,
-        "xp": 40
+        "xp": 30
       },
       "accepted": "Four forest herbs, fresh, from the patches in the Whispering Forest. The shrine's beds are never empty for long.",
       "completed": "These will do nicely. One more thing, and I can do more for you than patch you up."
@@ -438,7 +438,7 @@
       },
       "reward": {
         "gold": 0,
-        "xp": 80
+        "xp": 65
       },
       "accepted": "The fen's ghosts bring a fever in on the mist. Lay three of them and I can brew against it.",
       "completed": "The mist is clean again, and I have brewing to spare. From now on, when I heal you, I top your healing potions up to three."
@@ -457,7 +457,7 @@
       },
       "reward": {
         "gold": 0,
-        "xp": 25
+        "xp": 20
       },
       "accepted": "Two wolf pelts for saddle leather. The wolves den in the fields east of here - mind their teeth.",
       "completed": "Leather enough! The post stands by the north road - the square is a whistle away now."
@@ -475,7 +475,7 @@
       },
       "reward": {
         "gold": 50,
-        "xp": 30
+        "xp": 20
       },
       "accepted": "Five apples. Odo sells them, the horses love them, and I can't afford either.",
       "completed": "Look at them eat! Now, about the road north..."
@@ -494,7 +494,7 @@
       },
       "reward": {
         "gold": 0,
-        "xp": 80
+        "xp": 65
       },
       "accepted": "Three fewer raiders on the Ash Fields and my riders can go out again. Mind the big ones.",
       "completed": "The road is clear. My riders taught you to travel light: from now on you walk a tenth faster above ground."
@@ -513,7 +513,7 @@
       },
       "reward": {
         "gold": 0,
-        "xp": 45
+        "xp": 35
       },
       "accepted": "Big, green, smells of moss, wearing my lute as an earring. Bring it back and I'll sing you into legend.",
       "completed": "My lute! Slightly chewed. It adds character. Pixelheim gains its first verse tonight."
@@ -624,7 +624,7 @@
       },
       "reward": {
         "gold": 120,
-        "xp": 40
+        "xp": 30
       },
       "accepted": "Three of them, north of town where the grass turns grey. The carts bring my thread.",
       "completed": "The carts came through this morning. Every spool. Take this."
@@ -662,7 +662,7 @@
       },
       "reward": {
         "gold": 40,
-        "xp": 30,
+        "xp": 20,
         "itemId": "cheese_wheel"
       },
       "accepted": "The miners at Blackiron age a cheese down the shafts. Black rind, they say, and it hums. I need it. For science.",
@@ -702,7 +702,7 @@
       },
       "reward": {
         "gold": 150,
-        "xp": 50,
+        "xp": 40,
         "itemId": "antidote"
       },
       "accepted": "Three clumps of grave moss. It grows where the fen is quietest. Too quiet, if you ask me.",
@@ -741,7 +741,7 @@
       },
       "reward": {
         "gold": 250,
-        "xp": 80
+        "xp": 60
       },
       "accepted": "Two of the big grey brutes in the Deepwood. Forty years I foraged there in peace.",
       "completed": "Mushrooms for the whole winter! My grandson will be sick of them by spring."
@@ -759,7 +759,7 @@
       },
       "reward": {
         "gold": 40,
-        "xp": 20
+        "xp": 10
       },
       "accepted": "Drive off three of them and the rest will talk. They always do.",
       "completed": "They say a thing called the Tidecaller nests in the sea cave under the headland, and keeps what the sea brings in. Tam's things too, maybe."
@@ -777,7 +777,7 @@
       },
       "reward": {
         "gold": 100,
-        "xp": 60
+        "xp": 35
       },
       "accepted": "The cave mouth is under the western headland, past the lagoon. Mind the steps - and come back.",
       "completed": "That's his ladle. That's Tam's. He stirred soup with it and conducted the whole tavern with it after. Keep it - Maren will know what it means."
@@ -795,7 +795,7 @@
       },
       "reward": {
         "gold": 50,
-        "xp": 20
+        "xp": 10
       },
       "accepted": "Four of the big ones. Go for the legs, not the shell.",
       "completed": "Ha! The nets are ours again. Saltmere owes you a supper."
@@ -813,7 +813,7 @@
       },
       "reward": {
         "gold": 60,
-        "xp": 20,
+        "xp": 10,
         "itemId": "potion_hp"
       },
       "accepted": "Three pieces of sea glass, clear as you can find. They wash up on the beaches and in the cave.",
@@ -850,7 +850,7 @@
       },
       "reward": {
         "gold": 120,
-        "xp": 30
+        "xp": 20
       },
       "accepted": "North-east beach, sitting on his chests like a hen. He bites.",
       "completed": "Ha! Saltmere breathes easier. And so do I. Here's your share - fair's fair.",
@@ -898,7 +898,7 @@
       },
       "reward": {
         "gold": 40,
-        "xp": 15
+        "xp": 10
       },
       "accepted": "Three fresh fish, please! Saltmere's down the cliffs, south of the marsh - follow the path out of the reeds. Mind the crabs.",
       "completed": "She's eating! Look at her go. You can keep the bones."
@@ -916,7 +916,7 @@
       },
       "reward": {
         "gold": 60,
-        "xp": 30
+        "xp": 20
       },
       "accepted": "Four of the diggers, and the crew can get out. The shaft mouth's at the north end of the valley.",
       "completed": "They're out - dusty, hungry, alive. And they say the deep seam is open again, and something is guarding it."
@@ -934,7 +934,7 @@
       },
       "reward": {
         "gold": 150,
-        "xp": 80
+        "xp": 50
       },
       "accepted": "Three floors down, past the cart hall and the west gallery: the Black Seam. Whatever's down there moved in last spring, and it isn't paying rent.",
       "completed": "Black iron, stamped with five marks - the same seam the Ember Seal was poured from. That ingot's theirs as much as ours. Keep it."
@@ -952,7 +952,7 @@
       },
       "reward": {
         "gold": 70,
-        "xp": 20
+        "xp": 15
       },
       "accepted": "Four lumps of blackiron. The veins glint in the shafts' dead ends.",
       "completed": "Good ore, that. Hilda can make you something that'll outlast us both."
@@ -970,7 +970,7 @@
       },
       "reward": {
         "gold": 80,
-        "xp": 30
+        "xp": 20
       },
       "accepted": "Two of the walking stones. Hit the joints.",
       "completed": "The carts are running! Listen to that racket. Beautiful."
@@ -1032,7 +1032,7 @@
       },
       "reward": {
         "gold": 180,
-        "xp": 100
+        "xp": 80
       },
       "accepted": "Down the keep's stair, through the crypt, to the captain's hall. That's where Oskar's shield hung. Whatever's there has kept it all this while.",
       "completed": "Captain Hale. He swore to keep Oskar's shield till Oskar came home, and he kept it fifty years. Take it to Maren. Hale would want it to go home."
@@ -1152,7 +1152,7 @@
       },
       "reward": {
         "gold": 200,
-        "xp": 110
+        "xp": 80
       },
       "accepted": "Through her door and down the stair, three floors down to the glass hall. Her lantern's there - the last thing she lit before the climb. Mind the cold it breathes.",
       "completed": "Her lantern. She said she'd blow it out herself when they all came home. Take it up the mountain, courier. Let it see the way she went."
@@ -1189,7 +1189,7 @@
       },
       "reward": {
         "gold": 260,
-        "xp": 50
+        "xp": 40
       },
       "accepted": "Old Bergit pulls it - she's slow, and she stops dead if anything with teeth comes near. Stay close, clear the road, and she'll get there.",
       "completed": "Down in one piece! Mostly. The pass's last run of the season, and the first in years that didn't feed the wolves."
@@ -1244,7 +1244,7 @@
       },
       "reward": {
         "gold": 90,
-        "xp": 50,
+        "xp": 30,
         "itemId": "pearl"
       },
       "accepted": "Sea glass and pelts, sewn tight at a forge. Make me an oilskin coat and I'll make it worth your while.",
@@ -1264,7 +1264,7 @@
       },
       "reward": {
         "gold": 150,
-        "xp": 80,
+        "xp": 50,
         "itemId": "gem"
       },
       "accepted": "Three lumps of ore and a pelt for the lining. Forge me a Blackiron helm and the seam's yours to work.",
@@ -1284,7 +1284,7 @@
       },
       "reward": {
         "gold": 160,
-        "xp": 90,
+        "xp": 70,
         "itemId": "frost_lily"
       },
       "accepted": "Yeti fur and a frost lily, woven at a cauldron. A Frostweave hood, for my brother. Please.",
@@ -2073,7 +2073,8 @@
       "line": "Clear depth 10 of the Deep Hunt.",
       "kind": "deepest",
       "count": 10,
-      "itemId": "medal_ten_below"
+      "itemId": "medal_ten_below",
+      "retired": true
     },
     {
       "id": "deep_30",
@@ -2081,12 +2082,13 @@
       "line": "Clear depth 30 of the Deep Hunt.",
       "kind": "deepest",
       "count": 30,
-      "itemId": "medal_thirty_below"
+      "itemId": "medal_thirty_below",
+      "retired": true
     },
     {
       "id": "all_hunts",
       "name": "Every Bounty Paid",
-      "line": "Slay every named monster, the Reach's and the deep's.",
+      "line": "Slay every named monster, the Reach's and the Vault's.",
       "kind": "hunts",
       "itemId": "medal_every_bounty"
     },
@@ -2110,6 +2112,20 @@
       "line": "Meet every kind in the bestiary.",
       "kind": "bestiary",
       "itemId": "medal_seen_all"
+    },
+    {
+      "id": "all_letters",
+      "name": "Every Letter Delivered",
+      "line": "Deliver all five of Maren's letters.",
+      "kind": "letters",
+      "itemId": "medal_letters"
+    },
+    {
+      "id": "full_house",
+      "name": "A Full House",
+      "line": "Bring every settler home to Pixelheim.",
+      "kind": "settlers",
+      "itemId": "medal_full_house"
     }
   ]
 }

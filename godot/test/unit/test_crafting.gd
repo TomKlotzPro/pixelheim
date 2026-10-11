@@ -65,7 +65,8 @@ func test_a_trade_level_is_announced() -> void:
 func test_a_missing_material_says_where_it_comes_from() -> void:
 	assert_eq(Economy.where_to_find("wolf_pelt"), "Wolf Pelt: Dire Wolf, 50% (the Whispering Forest, the Sunken Marsh, the mountain road)")
 	assert_eq(Economy.where_to_find("marsh_reed"), "Marsh Reed: picked from patches and foraged after fights in the Sunken Marsh")
-	assert_eq(Economy.where_to_find("dragon_scale"), "Dragon Scale: Fafnyr the Ashen, sure the first time, then 10%", "no floor: the old mountain's left play (PIX-257)")
+	# Fafnyr's scales lie on his old hoard (PIX-257), no old floor named.
+	assert_eq(Economy.where_to_find("dragon_scale"), "Dragon Scale: in a chest in the Kings' Vault")
 
 
 ## PIX-181: no dead recipes, trades that keep up.
@@ -99,14 +100,20 @@ func test_the_bucklers_climb_and_the_dragon_gear_is_endgame() -> void:
 	assert_gte(int(Catalog.item("dragon_tonic")["restoreHp"]), 999, "a dragon tonic is everything back")
 
 
+## A hoard (PIX-257: a region's bottom floor's, the Kings' Vault's finds,
+## where the old mountain's floor hoards went) never gives away a piece the
+## forge makes.
 func test_no_hoard_gives_away_what_the_forge_makes() -> void:
 	var forged := {}
 	for entry: Dictionary in Economy._data()["recipes"]:
 		if Catalog.item(entry["itemId"]).has("slot"):
 			forged[entry["itemId"]] = true
-	for level: Dictionary in Bestiary._data()["levels"]:
-		for item_id: String in level.get("rewardItemIds", []):
-			assert_false(forged.has(item_id), "floor %d's hoard: %s" % [level["level"], item_id])
+	var hoards := 0
+	for chest: Dictionary in Interactables._data()["chests"]:
+		if String(chest["id"]).ends_with("_hoard") or String(chest["mapId"]).begins_with("vault_"):
+			hoards += 1
+			assert_false(forged.has(String(chest.get("loot", {}).get("itemId", ""))), "%s: %s" % [chest["id"], chest["loot"]])
+	assert_eq(hoards, 9, "four regions' bottom floors and the Vault's five")
 
 
 func test_each_trade_level_is_a_handful_of_crafts_away() -> void:

@@ -44,15 +44,6 @@ func test_a_funded_plot_becomes_its_house_and_the_town_shows_it() -> void:
 	assert_eq(next_sites, ["fountain", "slate_hall", "moss_cottage"], "the Town's plots come next")
 
 
-func test_a_bosss_floor_is_a_homecoming() -> void:
-	state.progression.unlocked_level = 10
-	state.spoils.clear_floor(10)
-	assert_has(state.reveals, "home:10")
-	state.reveals.clear()
-	state.spoils.clear_floor(10)
-	assert_true(state.reveals.is_empty(), "once")
-
-
 func test_every_age_with_its_plots_keeps_the_town_walkable() -> void:
 	for tier in range(0, 4):
 		var map := MapData.load_tiered("town", Town.projects_through(tier), 1)

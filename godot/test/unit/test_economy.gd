@@ -24,7 +24,9 @@ func test_stock_matches_the_web() -> void:
 		"odo@1": "bread,cheese_wheel,apple,dried_meat,furn_candles,furn_plant",
 		"odo@3": "bread,cheese_wheel,apple,dried_meat,furn_candles,furn_plant,furn_rug,furn_bench",
 		"smith@1": "rusty_sword,hunting_bow,traveler_cloak,wool_gloves,worn_boots",
-		"smith@3": "rusty_sword,hunting_bow,traveler_cloak,leather_armor,iron_sword,apprentice_staff,wool_gloves,worn_boots,leather_cap,bone_charm",
+		# Each class finds its first tier at the third stage (PIX-294): a
+		# weapon for its stat and a charm for its neck.
+		"smith@3": "rusty_sword,hunting_bow,traveler_cloak,wool_gloves,worn_boots,leather_armor,leather_cap,iron_sword,apprentice_staff,moon_wand,shadow_dagger,bone_charm,inkwell_charm,rabbit_foot",
 		"alchemist@1": "potion_hp,potion_mp,antidote",
 		"alchemist@3": "potion_hp,potion_mp,antidote",
 		"alchemist@15": "potion_hp,potion_mp,antidote,elixir,ember_salve,greater_potion",
@@ -302,16 +304,14 @@ func test_a_refused_craft_says_what_it_lacks() -> void:
 
 # ---- PIX-180: late-game gold -----------------------------------------------------
 
-func test_the_deep_hunts_gold_climbs_by_a_step_not_a_curve() -> void:
-	var at := func(depth: int) -> int:
-		var base := Bestiary.monster("troll")
-		return int(Bestiary.lifted(base, 18 + depth - int(base["level"]))["gold"])
-	var first: int = at.call(1)
-	assert_lt(float(at.call(30)) / first, 3.2, "depth 30 pays under about three times depth 1")
-	assert_lt(at.call(20) - at.call(10), (at.call(10) - at.call(1)) * 1.4, "and each ten depths add about the same")
-	# The mountain itself keeps its curve.
-	var slime := Bestiary.spawn("slime", false, Dungeons.lift(1))
-	assert_gt(int(slime["gold"]), 50)
+## A lifted foe pays on its gold curve (the Deep Hunt's straight line for
+## its depths left with it, PIX-257): the Kings' Vault's pay more, floor
+## by floor.
+func test_a_lifted_foes_gold_climbs_on_its_curve() -> void:
+	var at := func(map_id: String) -> int:
+		return int(Bestiary.spawn("boneknight", false, Depths.lift(map_id))["gold"])
+	assert_gt(at.call("vault_3"), at.call("vault_1"), "deeper pays more")
+	assert_gt(at.call("vault_1"), int(Bestiary.monster("boneknight")["gold"]), "lifted pays more than its kind")
 
 
 func test_fafnyrs_scale_is_sure_once_then_rare() -> void:

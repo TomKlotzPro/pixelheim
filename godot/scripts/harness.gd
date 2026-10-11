@@ -393,30 +393,10 @@ func _run_test_harness() -> void:
 		world.apply_video()
 	if flags.has("reentry"):
 		await _reentry()
-	# Dungeons: `--floor N` walks down floor N, `gate [--dungeon id]` opens a
-	# gate's floor select (mountain by default).
-	if flags.has("--floor"):
-		world.delve.enter_floor(int(flags.value("--floor")))
-		await get_tree().create_timer(0.3).timeout
 	# `--story <id>`: a story scene from assets/data/story.json, over the world.
 	if flags.has("--story"):
 		world.stage.play_story(flags.value("--story"))
 		await get_tree().create_timer(0.3).timeout
-	if flags.has("gate"):
-		# The floor select, not the barred gate (PIX-170): the relics are home.
-		if not Relics.gate_open(GameState.progression):
-			GameState.progression.quests[Relics.quest_id()] = {"progress": Relics.all().size(), "done": true}
-			# Maren's promise opens it since the fifth letter (PIX-253 step 8).
-			GameState.mark_seen(Letters.confession_id())
-		world.use_portal({
-			"kind": "dungeon",
-			"dungeon": flags.value("--dungeon", "mountain"),
-		})
-		await get_tree().create_timer(0.3).timeout
-		if flags.has("descend"):
-			# Take the selected floor, as E would.
-			world.get_children().filter(func(node: Node) -> bool: return node.has_method("_descend"))[0]._act()
-			await get_tree().create_timer(0.4).timeout
 	# `--bells N` (PIX-253 step 9): the Night of Bells, begun as the hero
 	# came home, moved on to beat N.
 	if flags.has("--bells"):
@@ -430,7 +410,7 @@ func _run_test_harness() -> void:
 		world.night.light_all()
 		await get_tree().create_timer(0.3).timeout
 	if flags.has("clear"):
-		# Fell every foe on the floor at once (after `gate descend`): the clear, its hoard, the way up.
+		# Fell every foe on the map at once (a floor of the Kings' Vault, PIX-257).
 		for foe in get_tree().get_nodes_in_group("mobs"):
 			foe.take_hit(99999, foe.global_position + Vector2.LEFT)
 		await get_tree().create_timer(0.6).timeout
@@ -442,10 +422,6 @@ func _run_test_harness() -> void:
 		# dawn's scene opens over the square.
 		world.night.daybreak()
 		await get_tree().create_timer(2.2).timeout
-	if flags.has("leave"):
-		# Up the stairs, back to the gate.
-		world.use_portal({"kind": "gate"})
-		await get_tree().create_timer(0.3).timeout
 	if flags.has("--level"):
 		# A hero of that level: the rank's title (a rank no longer changes how
 		# the hero looks) - before the walking check, so `--level 20 motion`
@@ -604,7 +580,7 @@ func _run_test_harness() -> void:
 		for level in range(1, deepest + 1):
 			if level not in GameState.progression.cleared_levels:
 				GameState.progression.cleared_levels.append(level)
-		GameState.progression.unlocked_level = maxi(GameState.progression.unlocked_level, mini(deepest + 1, Dungeons.floor_count()))
+		GameState.progression.unlocked_level = maxi(GameState.progression.unlocked_level, mini(deepest + 1, Catalog.level_count()))
 		# The named monsters those floors post come out to their lairs (PIX-156).
 		world.foes.spawn_lairs()
 	if flags.has("festival"):

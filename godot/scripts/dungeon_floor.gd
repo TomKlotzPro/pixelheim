@@ -1,20 +1,16 @@
 class_name DungeonFloor
-## A dungeon floor to walk (PIX-126). The web fights a floor's encounters as
-## a run of turn-based battles; here each encounter waits in its own room,
-## one foe per encounter as on the web, the floor's guardian in the last and
-## largest, along a winding chain of halls from the stairs back up. The plan
-## grows from the floor number, so a floor is the same every visit.
+## A dungeon floor laid out from a seed (PIX-126, PIX-255): a winding chain
+## of rooms and halls from the stairs back up, a pack waiting in each room
+## after the entrance and the last pack in the last and largest, the same
+## every visit. Floors are built from our own tile ids, so walking and
+## collision work as on any map: floor, wall, barrel, crate (a pot), lamp
+## (a torch block) and cave (the stairs up).
 ##
-## Floors are built from our own tile ids, so walking and collision work as
-## on any map: floor, wall, barrel, crate (a pot), lamp (a torch block) and
-## cave (the stairs out, a portal back to the gate).
-##
-## Since PIX-255 the same rooms and halls lay a region dungeon's planned
-## floors too (Depths: the sea cave's drowned galleries): `lay` takes the
-## seed and the encounters, and a floor of a region (`region`) becomes a
-## cave of it - a pack where each foe stood, its ground the region's, a
-## stair down in the last room and its set piece there. The Undermountain's
-## levels lay exactly as before (test_depths pins them).
+## A planned floor of a dungeon in depths.json (Depths: the sea cave's
+## drowned galleries, the Kings' Vault) is a cave of its region (`region`):
+## a pack where each foe stood, its ground the region's, a stair down in
+## the last room and its set piece there. The old mountain's numbered
+## floors, which these rooms were first laid for, left play with PIX-257.
 
 const ENTRANCE := Vector2i(6, 5)
 const ROOM_MIN := Vector2i(8, 6)
@@ -28,24 +24,19 @@ const MARGIN := 2
 const STAGGER := 5
 
 
-## {map: MapData, foes: [{id, elite, cell}], rooms: [Rect2i], stairs: Vector2i,
-## patch_ground: [Vector2i] (where the floor's gathering patch may grow,
-## PIX-143; Gathering.floor_patch picks the day's, PIX-250)}
-static func plan(level: int) -> Dictionary:
-	return lay({"seed": level * 7919 + 17, "level": level, "encounters": Dungeons.floor_def(level)["encounters"]})
-
-
 ## A floor laid out from `spec`: rooms from its `seed`, one per encounter
-## after the entrance ({monsterId, elite, lift, name, size}), the last and
-## largest for the last one; `level` the Undermountain's level (0 for a
-## region's floor), `id` the map's id, `lift` how far its foes stand above
-## their kind (else the level's). With a `region` it is that region's
-## cave (_regional): its plan adds {spawns, down, find, piece_cells}.
+## after the entrance ({monsterId, elite, size}), the last and largest for
+## the last one; `id` the map's id, `lift` how far its foes stand above
+## their kind, `out` the portal its stairs up take (on a first floor: the
+## dungeon's way in; Depths.dress wires a lower floor's to the floor above).
+## With a `region` it is that region's cave (_regional): its plan adds
+## {spawns, down, find, piece_cells}. Returns {map, foes: [{id, elite,
+## cell, lift}], rooms: [Rect2i], stairs: Vector2i, patch_ground:
+## [Vector2i] (where a gathering patch could grow, PIX-143)}.
 static func lay(spec: Dictionary) -> Dictionary:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = int(spec["seed"])
 	var encounters: Array = spec["encounters"]
-	var level := int(spec.get("level", 0))
 	var rooms: Array[Rect2i] = []
 	var x := MARGIN
 	var y := MARGIN + STAGGER
@@ -60,8 +51,7 @@ static func lay(spec: Dictionary) -> Dictionary:
 		rooms.append(Rect2i(Vector2i(x, y), size))
 		x += size.x + rng.randi_range(HALL_MIN, HALL_MAX)
 	var map := MapData.new()
-	map.floor_level = level
-	map.id = String(spec.get("id", "floor_%d" % level))
+	map.id = String(spec["id"])
 	var far := Vector2i.ZERO
 	for room in rooms:
 		far = Vector2i(maxi(far.x, room.end.x), maxi(far.y, room.end.y))
@@ -78,7 +68,8 @@ static func lay(spec: Dictionary) -> Dictionary:
 	var first := rooms[0]
 	var stairs := Vector2i(first.position.x, first.position.y + first.size.y / 2)
 	map.grid[stairs] = "cave"
-	map.portals[stairs] = {"kind": "gate"}
+	if spec.has("out"):
+		map.portals[stairs] = (spec["out"] as Dictionary).duplicate()
 	map.spawn = stairs + Vector2i.RIGHT
 	for i in rooms.size():
 		_furnish(map, rooms[i], openings + [stairs, map.spawn], rng)
@@ -90,10 +81,7 @@ static func lay(spec: Dictionary) -> Dictionary:
 			"id": encounter["monsterId"],
 			"elite": encounter.get("elite", false),
 			"cell": room.position + room.size / 2,
-			# The floor's lift, or the Deep Hunt's own per foe (PIX-161).
-			"lift": int(encounter.get("lift", spec["lift"] if spec.has("lift") else Dungeons.lift(level))),
-			# A Deep Hunt warden's own name (PIX-216).
-			"name": String(encounter.get("name", "")),
+			"lift": int(spec.get("lift", 0)),
 		})
 	# A patch of something worth picking in the first hall, clear of its foe:
 	# where it may grow (each day picks one, PIX-250).
@@ -164,8 +152,9 @@ static func _regional(laid: Dictionary, spec: Dictionary) -> void:
 ## The set piece's rows laid in `room`'s lower half, centred, a row of
 ## floor all round it, clear of the room's torches and barrels (its top and
 ## bottom rows): `=` a hull beam (or a rail), `|` a mast, `w` a wheel, `r`
-## a fallen rock and `l` a lever (the shafts' canary, PIX-255), drawn on the
-## dungeon sheet over a blocking "wreck" cell; `o` a barrel, `p` a pot; `s`
+## a fallen rock and `l` a lever (the shafts' canary, PIX-255), `h` a
+## strongbox (the Kings' Vault's, PIX-257), drawn on the dungeon sheet over
+## a blocking "wreck" cell; `o` a barrel, `p` a pot; `s`
 ## a stone knight and `#` an iron grille (the Greyhold crypt's); `c` the
 ## floor's find, a chest's cell; `.` floor. {find, cells (what blocks: the
 ## set piece's words go with them), box}.
@@ -196,6 +185,8 @@ static func _set_piece(map: MapData, room: Rect2i, piece: Dictionary) -> Diction
 					map.pieces[cell] = PunyDungeon.BOULDERS[absi(hash(cell)) % PunyDungeon.BOULDERS.size()]
 				"l":
 					map.pieces[cell] = PunyDungeon.LEVER
+				"h":
+					map.pieces[cell] = PunyDungeon.STRONGBOX
 				"o":
 					tile = "barrel"
 				"p":

@@ -112,8 +112,8 @@ godot --path godot -- --screenshot title options     # options over the title, b
 godot --path godot -- --screenshot title --wait 8      # hold the shot (the dragon crosses the moon about 8 s in)
 godot --path godot -- --screenshot title still        # with Reduce motion on (no sway, drift, dragon or shine)
 godot --path godot -- --screenshot title --keys enter --wait 6.5   # the opening, mid-way (Fafnyr wakes); `--keys enter,esc` skips it
-godot --path godot -- --screenshot --floor 10 --wait 2.5   # a boss floor: its intro plays the first time (Fafnyr; 15 for Morvax)
-godot --path godot -- --screenshot --story ending --wait 20  # any story scene over the world (descent, ending: the credits roll)
+godot --path godot -- --screenshot --map vault_3 clear   # a floor of the Kings' Vault, every foe on it felled (its guardian too)
+godot --path godot -- --screenshot --story ending --wait 20  # any story scene over the world (vault_door, ending: the credits roll)
 godot --path godot -- --screenshot title --keys s,s,s # walk the title's menu with real keys (w, s, e, enter, esc, space)
 godot --path godot -- --screenshot dockmenu           # the dock's menu of screens, open
 godot --path godot -- --screenshot inventory --keys i # press keys at whatever screen the run opened (here: I closes the pack)
@@ -159,7 +159,7 @@ a frame a second of the game's time and the frames of its picture
 (`--draw-every 60`: stepped, the game is the same drawn or not) and walks
 the motion flow alone after the rest, every frame of its walk drawn. `--shard K/N` runs every Nth flow from the Kth. `godot/tools/flows.sh --boot` boots every
 map the data lists (each map file, the village's ages, the house's tiers,
-the dungeons' floors and the Deep Hunt's first depths), by day and at night,
+every dungeon's floors, the Kings' Vault's among them), by day and at night,
 headless, and fails on any script error: GUT never loads the world's scripts.
 
 The Godot CI runs both on every pull request, after GUT, headless, with as
@@ -392,7 +392,7 @@ fr.po, and no msgstr has a plain or no-break space where U+202F belongs.
 - `scripts/pause_screen.gd` + `scripts/options_screen.gd` + `scripts/controls.gd` — Esc's pause menu (Resume, Saves, Options, Quit to title) and the options (volumes, CRT scanlines, fullscreen, reduced motion, key rebinding); `Controls` rebuilds the InputMap from `GameSettings.bindings` (one rebindable primary per action plus fixed alternates and the pad)
 - `scripts/inventory_screen.gd` — the pack and paperdoll on I (ported from `Inventory.tsx`): nine slots around the hero and the numbers gear makes, everything carried by category; equip, take off, drink, place furniture, drop (`GameState.upkeep.equip` / `unequip` / `use_item` / `drop_item` / `drop_gear`). item icons are Shade's (`scripts/item_icons.gd`, `assets/puny/icons.json`), and a Craft tab guides crafting
 - `scripts/codex_screen.gd` — the codex on B (ported from `Codex.tsx`): family masteries with their Slayer tiers, and the bestiary of every monster whose family the hero has met
-- `scripts/state/dungeons.gd` + `scripts/dungeon_screen.gd` + `scripts/dungeon_floor.gd` — the two dungeons and their fifteen floors (ported from `src/game/hero/levels.ts`), the gate's floor select, and the floors the hero walks: generated from the floor number, one room per web encounter with the guardian last; the save keeps the hero at the gate while below (`GameState.spoils.clear_floor` pays a first clear)
+- `scripts/state/depths.gd` + `scripts/dungeon_floor.gd` + `scripts/state/vault.gd` — every dungeon as a list of floors (`assets/data/depths.json`), handcrafted or laid from a seed (a pack a room, the last and largest for the last), their stairs both ways, the boss's shortcut out; the Kings' Vault after the story, behind a door that opens once the dragon is freed (the old mountain's fifteen numbered floors and the Deep Hunt left play with PIX-257)
 - `scripts/puny_sheet.gd` / `scripts/puny_dungeon.gd` — one Shade tileset with its `.tsx` (animations, wang corners, a lazily built TileSet), and Puny Dungeon's wall grammar, stone, torches, barrels and stairs
 - `scripts/home_screen.gd` — the house's barrel, workbench, trophy shelf, nook and furniture placement (house rules live in `state/town.gd`)
 - `scripts/ui_style.gd` — the one look (PIX-138): parchment pages in carved wooden frames, ink on the page and cream on the dark, pixel fonts at whole scales, Press Start 2P headings

@@ -26,12 +26,23 @@
         "x": 8,
         "y": 8
       }
+    },
+    {
+      "x": 12,
+      "y": 2,
+      "to": {
+        "kind": "map",
+        "mapId": "vault_1",
+        "x": 3,
+        "y": 9,
+        "barred": "vault"
+      }
     }
   ],
   "tiles": [
     ["mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain"],
     ["mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain"],
-    ["mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "roof_slate", "roof_slate", "roof_slate", "roof_slate", "roof_slate", "roof_slate", "roof_slate", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain"],
+    ["mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "door", "mountain", "roof_slate", "roof_slate", "roof_slate", "roof_slate", "roof_slate", "roof_slate", "roof_slate", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain"],
     ["mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "ash", "ash", "roof_slate", "roof_slate", "roof_slate", "roof_slate", "roof_slate", "roof_slate", "roof_slate", "ash", "ash", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain"],
     ["mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "ash", "ash", "ash", "roof_slate", "roof_slate", "roof_slate", "roof_slate", "roof_slate", "roof_slate", "roof_slate", "ash", "ash", "ash", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain"],
     ["mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "crate", "barrel", "ash", "ash", "roof_slate", "roof_slate", "roof_slate", "door", "roof_slate", "roof_slate", "roof_slate", "ash", "lamp", "ash", "ash", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain"],

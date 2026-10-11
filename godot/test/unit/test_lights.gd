@@ -27,8 +27,8 @@ func test_the_day_turns_gold_orange_and_blue() -> void:
 func test_each_place_has_its_own_dark() -> void:
 	var rig: Node = autofree(LightRig.new())
 	var floor := MapData.new()
-	floor.floor_level = 3
-	assert_eq(rig.light_for(floor), Lights.UNDERGROUND, "under the mountain, whatever the hour")
+	floor.style = "cave"
+	assert_eq(rig.light_for(floor), Lights.UNDERGROUND, "under the ground, whatever the hour")
 	var room := MapData.load_by_id("town_inn")
 	GameState.world.steps = _at(0.2)
 	assert_eq(rig.light_for(room), Lights.INDOOR_DAY)

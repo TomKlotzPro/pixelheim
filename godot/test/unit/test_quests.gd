@@ -51,12 +51,11 @@ func test_turning_in_pays_and_closes_the_quest() -> void:
 	var xp: int = state.hero.xp
 	assert_eq(
 		state.questing.resolve_quests("innkeeper"),
-		"Quest complete: Slime Trouble. +60 gold, +30 XP. \u201cThe stores thank you. So does my nose. Here - you've earned it.\u201d"
-		+ "\nLevel up: you are now level 2. +3 stat points and +1 skill point to spend.",
-		"the three slimes and the reward make a level"
+		"Quest complete: Slime Trouble. +60 gold, +20 XP. \u201cThe stores thank you. So does my nose. Here - you've earned it.\u201d",
+		"the reward, said (PIX-294: three slimes and the reward no longer make a level)"
 	)
 	assert_eq(state.pack.gold, gold + 60)
-	assert_true(state.hero.xp == xp + 30 or state.hero.level > 1, "xp paid (a level-up may spend it)")
+	assert_eq(state.hero.xp, xp + 20, "xp paid")
 	assert_true(state.progression.quests["slime_trouble"]["done"])
 	assert_eq(state.questing.resolve_quests("innkeeper"), "", "a kept promise stays kept")
 	assert_false(_slay("slime").has("Slime Trouble: 4/3."))
@@ -68,7 +67,7 @@ func test_deliveries_count_the_pack_and_leave_it_on_turn_in() -> void:
 	assert_eq(state.questing.resolve_quests("villager_bram"), "The Cheese Run: 0/1 cheese wheels delivered.")
 	state.pack.add_item("cheese_wheel", 2)
 	assert_true(Quests.is_ready(Quests.by_id("cheese_run"), state.progression.quests, state.pack.items))
-	assert_string_starts_with(state.questing.resolve_quests("villager_bram"), "Quest complete: The Cheese Run. +25 gold, +15 XP.")
+	assert_string_starts_with(state.questing.resolve_quests("villager_bram"), "Quest complete: The Cheese Run. +25 gold, +10 XP.")
 	assert_eq(state.pack.items.get("cheese_wheel", 0), 1, "one wheel handed over")
 
 

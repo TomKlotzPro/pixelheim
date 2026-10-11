@@ -17,6 +17,13 @@ func _next() -> String:
 	return MainQuest.next_step(state.progression, state.settlement).get("id", "")
 
 
+## An old save's floor of the old mountain, cleared before the floors left
+## play (PIX-257): the save keeps it, nothing clears one now.
+func _old_floor(level: int) -> void:
+	if level not in state.progression.cleared_levels:
+		state.progression.cleared_levels.append(level)
+
+
 func test_every_step_names_a_real_quest_or_floor() -> void:
 	var ids := {}
 	for step: Dictionary in MainQuest.steps():
@@ -29,7 +36,7 @@ func test_every_step_names_a_real_quest_or_floor() -> void:
 		if not other.is_empty():
 			assert_has(["cleared", "climbed"], other["kind"], "%s: its `or` is an old save's floors" % step["id"])
 			if other["kind"] == "cleared":
-				assert_between(int(other["level"]), 1, Dungeons.floor_count())
+				assert_between(int(other["level"]), 1, Catalog.level_count())
 		assert_ne(step["hint"], "")
 	# The old mountain's floors left play (PIX-257): no step asks for one.
 	for step: Dictionary in MainQuest.steps():
@@ -96,12 +103,12 @@ func test_the_story_starts_with_marens_tin_and_follows_the_real_rules() -> void:
 ## (PIX-253 step 8), never for the letters or the floors behind it.
 func test_running_ahead_never_sends_the_hero_back() -> void:
 	state.progression.unlocked_level = 3
-	state.spoils.clear_floor(3)
+	_old_floor(3)
 	assert_eq(_next(), "confession", "past the mountain's gate: the brew, the inn and the letters are behind now")
 	state.mark_seen("maren_confession")
 	assert_eq(_next(), "letter_morvax")
 	state.progression.unlocked_level = 10
-	state.spoils.clear_floor(10)
+	_old_floor(10)
 	state.progression.quests["letter_morvax"] = {"progress": 1, "done": true}
 	assert_eq(_next(), "morvax_choice", "Fafnyr slain on the old mountain: no Night of Bells, and home waits to be written")
 	assert_eq(MainQuest.continued(state.progression, state.settlement), "Coming Home")
@@ -111,7 +118,7 @@ func test_a_grown_town_never_skips_the_mountain() -> void:
 	state.settlement.town_tier = 4
 	assert_eq(_next(), "tin", "the projects are done, the story isn't")
 	state.progression.unlocked_level = 9
-	state.spoils.clear_floor(9)
+	_old_floor(9)
 	assert_eq(_next(), "confession")
 
 
@@ -140,7 +147,7 @@ func test_the_night_of_bells_follows_the_night() -> void:
 
 func test_the_end_is_quiet() -> void:
 	state.progression.unlocked_level = 15
-	state.spoils.clear_floor(15)
+	_old_floor(15)
 	assert_eq(_next(), "")
 	assert_eq(MainQuest.objective(state.progression, state.settlement), "", "no line once it's done")
 	assert_string_contains(MainQuest.hint(state.progression, state.settlement), "Pixelheim is safe")

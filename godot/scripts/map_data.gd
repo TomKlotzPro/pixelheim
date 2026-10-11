@@ -9,8 +9,6 @@ var size := Vector2i.ZERO
 var spawn := Vector2i.ZERO
 var portals := {}  # Vector2i -> target Dictionary ({kind, ...})
 var regions := {}  # Vector2i -> encounter region id (forest, marsh, ash, ...)
-## A dungeon floor's number (DungeonFloor); 0 for the web's own maps.
-var floor_level := 0
 ## Cells something drawn stands on although the web's tile is open ground
 ## (a fountain's basin, a well's second half, a statue): they block too.
 var covered := {}

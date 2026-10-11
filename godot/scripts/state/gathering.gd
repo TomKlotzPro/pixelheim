@@ -91,8 +91,6 @@ static func decks(map: MapData) -> Dictionary:
 ## where it stands, then deal_cells until it's through, then dealt_decks.
 static func dealing_decks(map: MapData) -> Dictionary:
 	var dealing := {"map": map, "out": {}, "next": 0, "cells": [], "kept": {}}
-	if map.floor_level > 0:
-		return dealing
 	dealing["kept"] = _kept_clear(map)
 	var cells: Array = map.regions.keys()
 	# Row by row: the order they're read in already (MapData.in_rows).

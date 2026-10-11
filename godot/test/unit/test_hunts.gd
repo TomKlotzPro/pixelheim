@@ -10,11 +10,12 @@ const MOVES := ["lunge", "cleave", "stamp", "guard", "firebolt", "howl", "grasp"
 
 
 ## The bounty board's own out in the Reach: a chapter's boss (the
-## Tidecaller) is a quest's, and the Deep Hunt's (PIX-219) have no lairs.
+## Tidecaller) is a quest's, and the Kings' Vault's guardians (PIX-257) keep
+## their floors, never posted.
 func _board() -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	for entry in Hunts.all():
-		if Hunts.on_board(entry) and not entry.has("deepDepth"):
+		if Hunts.on_board(entry):
 			out.append(entry)
 	return out
 
@@ -37,12 +38,16 @@ func test_one_named_monster_per_wild_region_in_board_order() -> void:
 
 func test_each_lair_is_open_ground_well_away_from_the_packs() -> void:
 	for entry in Hunts.all():
-		if entry.has("deepDepth"):
-			continue
 		var map := MapData.load_by_id(entry["mapId"])
 		var lair := Hunts.lair(entry)
 		assert_true(map.is_walkable(lair), "%s's lair is walkable" % entry["id"])
 		assert_false(map.portals.has(lair), "%s's lair is no doorway" % entry["id"])
+		# A guardian of the Kings' Vault (PIX-257) keeps its floor's last
+		# room, with the pack that waits there.
+		if Depths.is_planned(entry["mapId"]):
+			var rooms: Array = Depths.plan(entry["mapId"])["rooms"]
+			assert_true((rooms[-1] as Rect2i).has_point(lair), "%s keeps the last room" % entry["id"])
+			continue
 		for spawn: Dictionary in Bestiary.spawns_on(entry["mapId"]):
 			var home := Vector2i(spawn["x"], spawn["y"])
 			assert_gt(Vector2(lair).distance_to(Vector2(home)), 10.0, "%s clear of %s" % [entry["id"], spawn["id"]])
@@ -72,8 +77,9 @@ func test_the_board_posts_them_as_floors_are_cleared() -> void:
 	var deep := range(1, 10)
 	assert_eq(Hunts.notices(deep, []).size(), 4)
 	assert_eq(Hunts.next_notice(deep)["id"], "gulp")
-	# Past the mountain, the next is the Deep Hunt's first (PIX-219).
-	assert_eq(Hunts.next_notice(range(1, 16))["id"], "grimshade")
+	# Past the old mountain, every notice is up: the Deep Hunt's left with
+	# it, its named keeping the Kings' Vault now (PIX-257).
+	assert_eq(Hunts.next_notice(range(1, 16)), {})
 	# The slain go to the bottom of the board, and out of their lairs.
 	var board := Hunts.notices(deep, ["greymaw"]).map(func(entry: Dictionary) -> String: return entry["id"])
 	assert_eq(board, ["drowned_knight", "cinderjaw", "mossback", "greymaw"])
@@ -126,3 +132,15 @@ func test_the_slain_are_kept_in_the_save_and_only_once_there_are_any() -> void:
 	assert_eq(written["hunted"], ["cinderjaw"])
 	var back := ProgressionState.from_dict(written)
 	assert_eq(back.hunted, ["cinderjaw"] as Array[String])
+
+
+## Grandmother Gulp is posted once Pixelheim is a Town (PIX-257: she waited
+## on the old floor 12 before), or for an old save that cleared it.
+func test_gulp_is_posted_at_the_town_age() -> void:
+	var gulp := Hunts.named("gulp")
+	assert_eq(Hunts.status(gulp, Hunts.board_floors([], 4, 2), []), "", "not in the Village")
+	assert_eq(Hunts.status(gulp, Hunts.board_floors([], 4, 3), []), "wanted", "the Town posts her")
+	assert_eq(Hunts.status(gulp, Hunts.board_floors([12], 0, 0), []), "wanted", "an old save's floor 12 did")
+	assert_eq(preload("res://scripts/bounty_screen.gd")._when(gulp), "Pixelheim has grown into a town")
+	state.settlement.town_tier = 3
+	assert_has(Hunts.notices(state.questing.board_floors(), []).map(func(entry: Dictionary) -> String: return entry["id"]), "gulp")

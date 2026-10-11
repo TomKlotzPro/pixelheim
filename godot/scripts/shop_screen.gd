@@ -40,7 +40,7 @@ func _open() -> void:
 		tabs.append("Salvage")
 		if int(GameState.hero.jobs["smithing"]["level"]) >= int(Economy._data()["reforge"]["smithing"]):
 			tabs.append("Reforge")
-		# Deep pieces can be quenched (PIX-218): the Deep Hunt's gold sink.
+		# Deep pieces can be quenched (PIX-218): the Vault's gold sink (PIX-257).
 		if GameState.pack.gear.any(func(piece: Dictionary) -> bool: return int(piece.get("deep", 0)) > 0):
 			tabs.append("Quench")
 	if _craft_job() != "":

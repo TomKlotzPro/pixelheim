@@ -24,24 +24,24 @@ func test_a_hitch_counts_as_one_ordinary_frame() -> void:
 	assert_gt(picture.modulate.a, 0.9, "the old place still all but whole")
 
 
-func _place(style := "", floor_level := 0) -> MapData:
+func _place(style := "") -> MapData:
 	var map := MapData.new()
 	map.style = style
-	map.floor_level = floor_level
 	return map
 
 
 func test_going_under_the_ground_keeps_the_dark_and_coming_up_dissolves() -> void:
 	var sky := _place()
 	var cave := _place("cave")
-	var floor_one := _place("", 1)
-	var floor_two := _place("", 2)
+	# The Kings' Vault's floors (PIX-257), one under the next.
+	var floor_one := MapData.load_by_id("vault_1")
+	var floor_two := MapData.load_by_id("vault_2")
 	assert_true(Ways.goes_under(sky, cave), "into a cave or a cellar: the dark")
 	assert_true(Ways.goes_under(sky, floor_one), "down to a dungeon's floor")
 	assert_true(Ways.goes_under(floor_one, floor_two), "and the next one down")
-	assert_true(Ways.goes_under(cave, floor_one), "from a cave down to a floor")
+	assert_true(Ways.goes_under(cave, floor_two), "from a cave down to a floor below it")
 	assert_false(Ways.goes_under(cave, sky), "up out of the cave: a dissolve")
-	assert_false(Ways.goes_under(floor_two, sky), "up the stairs to the gate")
+	assert_false(Ways.goes_under(floor_two, sky), "up the stairs and out")
 	assert_false(Ways.goes_under(sky, _place()), "a door to a house, the town's gate: a dissolve")
 	var room := MapData.load_by_id("keep")
 	var cellars := MapData.load_by_id("cellars")

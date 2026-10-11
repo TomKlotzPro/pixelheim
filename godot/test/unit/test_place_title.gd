@@ -21,10 +21,16 @@ func test_a_place_is_named_and_the_ashenreach_by_its_regions() -> void:
 	assert_eq(_here("town_inn", Vector2i(2, 3)), {}, "a room is a door's way in, not a place")
 
 
-func test_a_dungeon_floor_names_nothing() -> void:
-	var floor_map := MapData.load_by_id("overworld")
-	floor_map.floor_level = 3
-	assert_eq(PlaceTitle.at(floor_map, Vector2i(2, 19), true), {})
+## Every floor of a dungeon is a place come to (PIX-257: the Kings' Vault's
+## five, each its own, as a region dungeon's are).
+func test_a_dungeon_floor_is_a_place_of_its_own() -> void:
+	var names := []
+	for i in range(1, 6):
+		var here := _here("vault_%d" % i, Depths.plan("vault_%d" % i)["map"].spawn)
+		assert_eq(here["region"], "", "floor %d is all one region" % i)
+		assert_false(String(here["place"]) in names, "floor %d has a name of its own" % i)
+		names.append(here["place"])
+	assert_eq(names[0], "The Gilded Stair")
 	assert_eq(PlaceTitle.next({}, {"place": "The Ashenreach"}, {}, 0), [])
 
 

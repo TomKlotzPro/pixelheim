@@ -8,7 +8,8 @@
 #   tint 0.8 0.92 1.1                    (optional: a cast over the ground)
 #   spawn 4 20
 #   portal 0 20 map overworld 16 61      (x y map <mapId> <x> <y>)
-#   portal 30 5 dungeon seacave          (x y dungeon <dungeonId>)
+#   portal 22 2 map vault_1 3 9 barred vault   (a way the story keeps shut:
+#                                        Ways.barred, PIX-257)
 #   key . grass coast                    (char, tile, region or -)
 #   key ~ shore -
 #   map
@@ -48,10 +49,11 @@ def parse(path):
             doc["spawn"] = {"x": int(word[1]), "y": int(word[2])}
         elif word[0] == "portal":
             at = {"x": int(word[1]), "y": int(word[2])}
-            if word[3] == "map":
-                at["to"] = {"kind": "map", "mapId": word[4], "x": int(word[5]), "y": int(word[6])}
-            else:
-                at["to"] = {"kind": "dungeon", "dungeon": word[4]}
+            if word[3] != "map":
+                raise SystemExit("%s: a portal leads to a map, not %s" % (path, word[3]))
+            at["to"] = {"kind": "map", "mapId": word[4], "x": int(word[5]), "y": int(word[6])}
+            if len(word) > 8 and word[7] == "barred":
+                at["to"]["barred"] = word[8]
             doc["portals"].append(at)
         elif word[0] == "key":
             char = raw.split()[1]

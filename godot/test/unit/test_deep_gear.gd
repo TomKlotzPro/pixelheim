@@ -1,7 +1,9 @@
 extends GutTest
-## Endgame gear and gold (PIX-218): the Deep Hunt deepens every slot, its
-## bonus kept apart so the forge still works on a deep piece, its tiers
-## counting on past the last name, and Hilda's quench a sink that grows.
+## Endgame gear and gold (PIX-218): deep-forged pieces for every slot, their
+## bonus kept apart so the forge still works on one, the tiers counting on
+## past the last name, and Hilda's quench a sink that grows. The Deep Hunt
+## forged them; since PIX-257 the Kings' Vault does, floor by floor, and an
+## old save's deep pieces keep working.
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
 
@@ -13,24 +15,24 @@ func before_each() -> void:
 	state.new_game("Robin", "warrior")
 
 
-func test_the_deep_pool_covers_every_slot() -> void:
+func test_the_vaults_band_covers_every_slot() -> void:
 	var slots := {}
-	for item_id: String in Bestiary._data()["deepHunt"]["gearIds"]:
+	for item_id: String in Bestiary._data()["dropPools"][-1]["gearIds"]:
 		slots[Catalog.item(item_id)["slot"]] = true
 	for slot: String in ["weapon", "body", "offhand", "head", "hands", "feet", "neck", "ring"]:
 		assert_true(slots.has(slot), "deep %s" % slot)
 
 
-func test_a_deep_drop_comes_from_the_deep_pool() -> void:
-	var deep_ids: Array = Bestiary._data()["deepHunt"]["gearIds"]
+func test_a_vault_drop_comes_forged_from_the_vaults_band() -> void:
+	var deep_ids: Array = Bestiary._data()["dropPools"][-1]["gearIds"]
 	var seen := 0
 	for seed in 60:
 		var rng := RandomNumberGenerator.new()
 		rng.seed = seed
-		var drop := Bestiary.roll_drop(1, "elite", func() -> float: return rng.randf(), Dungeons.floor_count() + 12)
+		var drop := Bestiary.roll_drop(int(Bestiary.region("vault")["dropFloor"]), "elite", func() -> float: return rng.randf(), Depths.forged("vault_5"))
 		if drop.get("kind", "") == "gear":
 			assert_has(deep_ids, drop["gear"]["itemId"])
-			assert_eq(int(drop["gear"]["deep"]), Dungeons.deep_tier(Dungeons.floor_count() + 12))
+			assert_eq(int(drop["gear"]["deep"]), Depths.forged("vault_5"))
 			seen += 1
 	assert_gt(seen, 0, "some gear fell")
 

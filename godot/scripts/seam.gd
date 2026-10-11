@@ -41,7 +41,7 @@ const RIDGE_MARGIN := 16
 ## map's cell (0, 0) lies from this one's, in cells}]. None off the plane.
 static func roads_out(map: MapData) -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
-	if map.floor_level > 0 or not ReachPlane.holds(map.id):
+	if not ReachPlane.holds(map.id):
 		return out
 	for way: Dictionary in Ways.on(map):
 		var to := String(way["to"].get("mapId", ""))

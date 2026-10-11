@@ -181,6 +181,118 @@
         "fell": "Where Rimefang fell, the ice splits over an old stair: straight back to the foot of Liane's stair.",
         "sign": "To the foot of Liane's stair"
       }
+    },
+    "vault": {
+      "about": "PIX-257 (PIX-253 step 11): the Kings' Vault, after the story. The old kings' hoard under the summit, behind a door of black iron on the mountain road (`barred: vault` there) that opens once the dragon is freed (`opens`, MainQuest's kinds: the Night of Bells' chapter done, or an old save that slew Fafnyr on the old floors 10 or 15). Five floors laid from seeds, the old foes of the mountain's deep floors (bone knights, shades, mimics, fire imps) lifted higher each floor down, a guardian on each floor from the second (combat.json `named`: the Deep Hunt's four, and the Hollow King on the hoard), the very best gear in its chests, and the kills' gear forged deep (`forged`, the Deep Hunt's tiers). It replaces the Deep Hunt. Its first floor's stair leads back out the door (`out`).",
+      "name": "The Kings' Vault",
+      "region": "vault",
+      "wind": "deepwind",
+      "entrance": {"x": 3, "y": 9},
+      "out": {"kind": "map", "mapId": "mountain_road", "x": 12, "y": 3},
+      "opens": {"kind": "chapterDone", "chapter": 7, "or": {"kind": "cleared", "level": 10, "or": {"kind": "cleared", "level": 15}}},
+      "barred": "A door of black iron in the rock under the summit, warm to the touch. Somewhere behind it, something very large is grumbling about corners.",
+      "floors": [
+        {
+          "mapId": "vault_1",
+          "lift": 4,
+          "forged": 1,
+          "find": "vault_bow",
+          "tint": [1.08, 1.0, 0.86],
+          "light": [0.36, 0.3, 0.24],
+          "plan": {
+            "seed": 2571,
+            "packs": [
+              {"monsterId": "boneknight", "size": 2},
+              {"monsterId": "boneknight", "size": 2},
+              {"monsterId": "shade", "size": 2},
+              {"monsterId": "boneknight", "size": 3}
+            ],
+            "setPiece": "stair_kings"
+          }
+        },
+        {
+          "mapId": "vault_2",
+          "lift": 5,
+          "forged": 1,
+          "find": "vault_blade",
+          "tint": [1.1, 1.0, 0.84],
+          "light": [0.36, 0.29, 0.22],
+          "plan": {
+            "seed": 2572,
+            "packs": [
+              {"monsterId": "shade", "size": 2},
+              {"monsterId": "boneknight", "size": 3},
+              {"monsterId": "mimic", "size": 2},
+              {"monsterId": "shade", "size": 3}
+            ],
+            "setPiece": "strongroom"
+          }
+        },
+        {
+          "mapId": "vault_3",
+          "lift": 6,
+          "forged": 2,
+          "find": "vault_armour",
+          "tint": [1.04, 0.98, 0.9],
+          "light": [0.3, 0.27, 0.26],
+          "plan": {
+            "seed": 2573,
+            "packs": [
+              {"monsterId": "boneknight", "size": 3},
+              {"monsterId": "mimic", "size": 2},
+              {"monsterId": "shade", "size": 3},
+              {"monsterId": "boneknight", "size": 3}
+            ],
+            "setPiece": "tombs"
+          }
+        },
+        {
+          "mapId": "vault_4",
+          "lift": 5,
+          "forged": 2,
+          "find": "vault_staff",
+          "tint": [1.14, 0.96, 0.82],
+          "light": [0.42, 0.27, 0.2],
+          "plan": {
+            "seed": 2574,
+            "packs": [
+              {"monsterId": "imp", "size": 2},
+              {"monsterId": "mimic", "size": 2},
+              {"monsterId": "imp", "size": 3},
+              {"monsterId": "mimic", "size": 2}
+            ],
+            "setPiece": "armoury"
+          }
+        },
+        {
+          "mapId": "vault_5",
+          "lift": 7,
+          "forged": 3,
+          "find": "vault_hoard",
+          "boss": "hollow_king",
+          "tint": [1.16, 1.02, 0.78],
+          "light": [0.44, 0.33, 0.2],
+          "plan": {
+            "seed": 2575,
+            "packs": [
+              {"monsterId": "imp", "size": 2},
+              {"monsterId": "boneknight", "size": 3},
+              {"monsterId": "boneknight", "size": 2}
+            ],
+            "setPiece": "hoard"
+          }
+        }
+      ],
+      "shortcut": {
+        "mapId": "vault_5",
+        "x": 46,
+        "y": 7,
+        "look": "stair",
+        "to": {"kind": "map", "mapId": "mountain_road", "x": 12, "y": 3},
+        "opened": "Behind the Hollow King's throne the bars on the old kings' own stair swing open: a straight way up, out of the door under the summit and into the mountain air.",
+        "fell": "Where the Hollow King fell, the gold slides off an old stair: straight up to the door under the summit.",
+        "sign": "Up to the mountain road"
+      }
     }
   },
   "setPieces": {
@@ -209,6 +321,51 @@
         "p.s...s.p"
       ],
       "note": "Greyhold's garrison, laid in rows under their own stone knights. Someone used to leave candles here. Nobody has for a long time."
+    },
+    "stair_kings": {
+      "about": "The Kings' Vault's first floor (PIX-257): two stone kings (s) keep the foot of the stair, urns (p) at their feet, and a chest between them, the floor's find (c).",
+      "rows": [
+        "s.p...p.s",
+        "....c....",
+        "s.......s"
+      ],
+      "note": "Two stone kings keep the foot of the stair, their noses worn smooth. Something very large used to rest its chin on them."
+    },
+    "strongroom": {
+      "about": "The Kings' Vault's second floor (PIX-257): the old kings' strongboxes (h) behind iron grilles (#), a stone king at each end (s), urns (p), and the one box the dragon didn't sit on, the floor's find (c).",
+      "rows": [
+        "s.#h#h#.s",
+        "....c....",
+        "p.h...h.p"
+      ],
+      "note": "The old kings' strongboxes, every one dented in the shape of a sleeping dragon and rusted shut. Most of them are empty. Most."
+    },
+    "tombs": {
+      "about": "The Kings' Vault's third floor (PIX-257): the kings themselves in stone (s), row on row between iron grilles (#), and a chest at the feet of the last, the floor's find (c).",
+      "rows": [
+        "s..s.s..s",
+        "#.#.c.#.#",
+        "...s.s..."
+      ],
+      "note": "Kings in stone, row on row, each with a hand held out for something that isn't there any more."
+    },
+    "armoury": {
+      "about": "The Kings' Vault's fourth floor (PIX-257): the kings' armoury, racks gone to rust behind grilles (#), strongboxes (h), barrels (o), and one chest the rust missed, the floor's find (c).",
+      "rows": [
+        "#.h.#.h.#",
+        "....c....",
+        "o.o...o.o"
+      ],
+      "note": "The kings' armoury: racks of rust, a hundred years of it. The fire imps like it down here. It's warm."
+    },
+    "hoard": {
+      "about": "The Kings' Vault's last floor (PIX-257): the hoard itself, strongboxes (h) and urns of coin (p) heaped round a stone king (s), and the chest at its heart, the floor's find (c). The Hollow King keeps it.",
+      "rows": [
+        "h.p.s.p.h",
+        ".h..c..h.",
+        "p.h...h.p"
+      ],
+      "note": "The hoard: a hundred years of the old kings' gold, pressed flat in the shape of a very large dragon. He was right. It's all corners."
     }
   },
   "shut": [

@@ -50,19 +50,6 @@ func test_bosses_and_named_monsters_never_run() -> void:
 		assert_false(Enemy.flees_from(fighter, 999), "%s never runs" % entry["id"])
 
 
-func test_a_deep_hunt_warden_never_runs() -> void:
-	# A warden is a boss under the deep's name: should one ever be another
-	# kind, it must be kept from running some other way.
-	for warden: Dictionary in Bestiary._data()["deepHunt"]["wardens"]:
-		assert_true(Bestiary.is_boss(warden["monsterId"]), "%s is a boss" % warden["name"])
-	var depth := int(Bestiary._data()["deepHunt"]["bossEvery"])
-	assert_true(Dungeons.is_warden_depth(depth))
-	var guard: Dictionary = Dungeons.deep_def(depth)["encounters"][-1]
-	assert_true(guard.get("warden", false), "the depth's last foe is its warden")
-	var fighter := Bestiary.spawn(guard["monsterId"], false, int(guard["lift"]))
-	assert_false(Enemy.flees_from(fighter, 999))
-
-
 func test_a_foe_held_to_its_fight_never_runs() -> void:
 	assert_false(Enemy.flees_from(Bestiary.spawn("slime"), 99, true))
 

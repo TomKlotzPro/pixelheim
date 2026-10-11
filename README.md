@@ -6,7 +6,7 @@
 
 <p align="center">
   <b>A retro pixel-art open-world RPG in Godot 4.7: a village the dragon burned, the courier who stayed, the Reach's regions and the relics they keep - and the mountain last.</b><br />
-  The village burned. You stayed. Currently v0.223 - 1.0 has to be earned.
+  The village burned. You stayed. Currently v0.224 - 1.0 has to be earned.
 </p>
 
 ---
@@ -104,7 +104,9 @@ Pixelheim began as a React + TypeScript + PixiJS game in the browser, with a pur
 ## Roadmap ideas
 
 - [x] Shops, crafting, a house to own, a town that grows
-- [x] The Undermountain: floors 11-15 and a second boss
+- [x] The Undermountain: floors 11-15 and a second boss (retired with the old mountain's floors and the Deep Hunt for the main story's end)
+- [x] Dungeons in floors in every region, and the Kings' Vault after the story
+- [x] A harder climb, with gear to buy for every class at every stage
 - [x] Skill trees, ranks and paths
 - [x] Music, ambience and sound
 - [x] The move to Godot, with one artist for the whole world

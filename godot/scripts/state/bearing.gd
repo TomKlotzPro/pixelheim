@@ -26,7 +26,7 @@ static func active(progression: ProgressionState, settlement: SettlementState, i
 			return Gates.detour(of_quest(quest, progression, settlement, items), progression, settlement, items, discovered)
 		# A notice on the bounty board, followed while its quarry lives.
 		var named := Hunts.named(progression.tracked)
-		if not named.is_empty() and Hunts.on_board(named) and Hunts.status(named, board_floors(progression), progression.hunted) == "wanted":
+		if not named.is_empty() and Hunts.on_board(named) and Hunts.status(named, board_floors(progression, settlement), progression.hunted) == "wanted":
 			return Gates.detour(of_bounty(named), progression, settlement, items, discovered)
 	return main(progression, settlement, items, discovered)
 
@@ -175,8 +175,8 @@ static func of_bounty(named: Dictionary) -> Dictionary:
 
 
 ## The floors the bounty board counts (Hunts.board_floors), read off the save.
-static func board_floors(progression: ProgressionState) -> Array:
-	return Hunts.board_floors(progression.cleared_levels, Relics.found(progression), progression.deepest)
+static func board_floors(progression: ProgressionState, settlement: SettlementState) -> Array:
+	return Hunts.board_floors(progression.cleared_levels, Relics.found(progression), settlement.town_tier)
 
 
 static func _blank(title: String, step: String) -> Dictionary:

@@ -73,26 +73,29 @@ func _best(pool: Dictionary, stat := "") -> int:
 	return best
 
 
-func test_each_band_of_the_mountain_is_a_step() -> void:
-	var pools: Array = Bestiary._data()["floorPools"]["pools"]
+## Each band of loot a step up from the last, the Kings' Vault's the top
+## (PIX-257: it took the old mountain's floor pools and the Deep Hunt's gear).
+func test_each_band_of_loot_is_a_step() -> void:
+	var pools: Array = Bestiary._data()["dropPools"]
 	for i in range(1, pools.size()):
-		assert_gte(_best(pools[i]), _best(pools[i - 1]), "floor %d's pool is no step down" % pools[i]["floor"])
-	assert_gt(_best(pools[-1]), _best(pools[0]), "the deep floors beat the first")
+		assert_gte(_best(pools[i]), _best(pools[i - 1]), "the band from %d is no step down" % pools[i]["floor"])
+	assert_eq(int(pools[-1]["floor"]), int(Bestiary.region("vault")["dropFloor"]), "the top band is the Vault's")
 	for stat: String in ["strength", "intelligence", "dexterity"]:
 		assert_gt(_best(pools[-1], stat), _best(pools[0], stat), "a %s hero has better to find deeper" % stat)
+	assert_has(pools[-1]["stackIds"], "dragon_scale", "Fafnyr's scales lie in the Vault")
 
 
-func test_the_mountain_rolls_its_own_floors_pool() -> void:
-	# Drop, gear, pick the first item, common: the floor's pool decides.
-	var first := Bestiary.roll_drop(1, "normal", _dice([0.0, 0.0, 0.0, 0.0]), 2)
-	assert_eq(first["gear"]["itemId"], Bestiary._data()["floorPools"]["pools"][0]["gearIds"][0])
-	var deep := Bestiary.roll_drop(1, "normal", _dice([0.0, 0.0, 0.0, 0.0]), 13)
-	assert_eq(deep["gear"]["itemId"], "obsidian_blade", "floor 13 rolls the deepest pool")
+func test_a_kill_rolls_the_band_of_its_level() -> void:
+	# Drop, gear, pick the first item, common: the band decides.
+	var first := Bestiary.roll_drop(1, "normal", _dice([0.0, 0.0, 0.0, 0.0]))
+	assert_eq(first["gear"]["itemId"], Bestiary._data()["dropPools"][0]["gearIds"][0])
+	var deep := Bestiary.roll_drop(17, "normal", _dice([0.0, 0.0, 0.0, 0.0]))
+	assert_eq(deep["gear"]["itemId"], "obsidian_blade", "a level-17 foe rolls the Vault's band")
 
 
 func test_a_boss_always_drops_gear() -> void:
 	for roll in [0.0, 0.5, 0.99]:
-		var drop := Bestiary.roll_drop(10, "boss", _dice([roll, roll, roll, roll, roll, roll]), 10)
+		var drop := Bestiary.roll_drop(10, "boss", _dice([roll, roll, roll, roll, roll, roll]))
 		assert_eq(drop["kind"], "gear", "whatever the dice (%s)" % roll)
 
 
@@ -111,12 +114,16 @@ func test_fine_and_epic_gear_carry_affixes_that_count() -> void:
 	assert_gt(Economy.gear_value(epic), Economy.gear_value(InventoryState.create_gear("iron_sword", "epic", _dice([0.0]))) - 1)
 
 
-func test_the_deep_hunt_forges_deeper_every_five_depths() -> void:
-	var top := Dungeons.floor_count()
-	assert_eq(Dungeons.deep_tier(top), 0)
-	assert_eq(Dungeons.deep_tier(top + 1), 1)
-	assert_eq(Dungeons.deep_tier(top + 6), 2)
-	var drop := Bestiary.roll_drop(1, "elite", _dice([0.0, 0.0, 0.0, 0.0]), top + 6)
+## The Kings' Vault forges its kills' gear deeper floor by floor (PIX-257: the
+## Deep Hunt's tiers, re-homed): nowhere else forges.
+func test_the_vault_forges_deeper_floor_by_floor() -> void:
+	var tiers: Array = range(1, 6).map(func(i: int) -> int: return Depths.forged("vault_%d" % i))
+	assert_eq(tiers[0], 1, "the first floor forges")
+	for i in range(1, tiers.size()):
+		assert_gte(int(tiers[i]), int(tiers[i - 1]), "floor %d no shallower" % (i + 1))
+	assert_eq(Depths.forged("vault_5"), 3)
+	assert_eq(Depths.forged("seacave_grotto"), 0, "a region's floor forges nothing")
+	var drop := Bestiary.roll_drop(15, "elite", _dice([0.0, 0.0, 0.0, 0.0]), Depths.forged("vault_3"))
 	var gear: Dictionary = drop["gear"]
 	assert_eq(int(gear["deep"]), 2)
 	assert_string_starts_with(InventoryState.gear_name(gear), "Abyssal ")
@@ -135,11 +142,16 @@ func test_casters_and_archers_have_late_weapons_too() -> void:
 	assert_gte(int(best["dexterity"]), 21)
 
 
+## Dragonbane, in the glass hall's hoard (PIX-257: from the old floor 9's), is
+## no step down from what the Reach's loot drops; the Obsidian Blade is the
+## Kings' Vault's alone.
 func test_dragonbanes_hoard_is_no_step_down() -> void:
-	var pools: Array = Bestiary._data()["floorPools"]["pools"]
-	for pool: Dictionary in pools:
-		if int(pool["floor"]) <= 9:
-			assert_lte(_best(pool, "strength"), int(Catalog.item("dragonbane")["damage"]), "floor %d" % pool["floor"])
+	for pool: Dictionary in Bestiary._data()["dropPools"]:
+		if int(pool["floor"]) < int(Bestiary.region("vault")["dropFloor"]):
+			assert_lte(_best(pool, "strength"), int(Catalog.item("dragonbane")["damage"]), "the band from %d" % pool["floor"])
+			assert_does_not_have(pool["gearIds"], "obsidian_blade", "the band from %d" % pool["floor"])
+	var hoard: Array = Interactables._data()["chests"].filter(func(chest: Dictionary) -> bool: return chest["id"] == "glass_hoard")
+	assert_eq(hoard[0]["loot"]["itemId"], "dragonbane")
 
 
 func test_packs_mix_but_never_hide_a_stronger_kind() -> void:

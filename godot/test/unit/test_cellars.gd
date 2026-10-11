@@ -142,7 +142,6 @@ func test_the_planned_floor_is_the_same_every_visit() -> void:
 	assert_eq(first.grid, again.grid)
 	assert_eq(first.regions, again.regions)
 	assert_eq(first.style, "cave")
-	assert_eq(first.floor_level, 0, "a map of the Reach, not one of the Undermountain's levels")
 	var spawns := Bestiary.spawns_on("cellars_crypt")
 	assert_eq(spawns.map(func(spawn: Dictionary) -> String: return spawn["id"]), ["cellars_crypt_1", "cellars_crypt_2", "cellars_crypt_3", "cellars_crypt_4"])
 	for spawn: Dictionary in spawns:

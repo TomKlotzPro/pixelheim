@@ -159,18 +159,14 @@ def boot_flows():
     with open(os.path.join(GODOT, "assets", "data", "town.json"), encoding="utf-8") as file:
         for age in range(len(json.load(file)["tiers"])):
             boot("town-age%d" % age, "--map town --town-tier %d" % age, "town")
-    # A region dungeon's planned floors (PIX-255) are laid out, not files.
+    # A dungeon's planned floors (PIX-255; the Kings' Vault's, PIX-257) are
+    # laid out, not files. The old mountain's numbered floors and the Deep
+    # Hunt's depths left play with PIX-257.
     with open(os.path.join(GODOT, "assets", "data", "depths.json"), encoding="utf-8") as file:
         for dungeon in json.load(file)["dungeons"].values():
             for floor in dungeon["floors"]:
                 if "plan" in floor:
                     boot(floor["mapId"], "--map " + floor["mapId"], floor["mapId"])
-    with open(os.path.join(GODOT, "assets", "data", "combat.json"), encoding="utf-8") as file:
-        combat = json.load(file)
-    floors = sorted({level for dungeon in combat["dungeons"].values() for level in dungeon["floors"]})
-    deep = [len(combat["levels"]) + depth for depth in range(1, combat["deepHunt"]["bossEvery"] + 1)]
-    for level in floors + deep:
-        boot("floor%d" % level, "--floor %d" % level, "floor_%d" % level)
     return out
 
 
