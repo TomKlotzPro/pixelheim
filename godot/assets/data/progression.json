@@ -1650,21 +1650,20 @@
       },
       {
         "title": "Coming Home",
-        "about": "PIX-253 step 10 builds it: Morvax's choice and the ending. Until then its first step is never met (`unbuilt`) and the honest card shows (`continued`: \"To be continued: Coming Home\"), for a hero past the Night of Bells or one who skips it; the late web hero who cast Morvax down has it met by its `or`.",
+        "about": "PIX-253 step 10: Morvax's choice and the endings (progression.json's `home`, rules in Homecoming). After the collar Morvax waits by the fountain (at his forge for a hero who slew Fafnyr on the old mountain, who never had the night) with one question, and the courier's answer is the story's last word (`chosen`: an ending in the story ledger). \"Come home.\" plays the festival ending and he takes the bench by the fountain; \"Stay with them.\" plays the lanterns ending and he goes back up to the three, coming down on festival days. A hero who saw the old game's ending, or the late web hero who cast Morvax down, has it met by its `or`, ending and City kept.",
         "steps": [
           {
             "id": "morvax_choice",
             "when": {
-              "kind": "unbuilt",
+              "kind": "chosen",
               "or": {
                 "kind": "cleared",
                 "level": 15
               }
             },
-            "mapId": "town",
             "text": "Morvax's choice: does Pixelheim want him back?",
-            "hint": "Morvax has a question for Pixelheim, fifty years in the asking: does it want him back? He's working up to it.",
-            "elderHint": "He has something to ask, and he's never once asked anyone for anything. Give him time, courier. Not fifty years."
+            "hint": "Morvax has a question for Pixelheim, fifty years in the asking: does it want him back? He'd rather hear it from the courier.",
+            "elderHint": "He has something to ask, and he's never once asked anyone for anything. Don't make him wait, courier. Not another fifty years."
           }
         ]
       }
@@ -1994,6 +1993,79 @@
       }
     ],
     "won": "The sky turns grey behind the mountain, and Fafnyr folds onto the square. Pixelheim held."
+  },
+  "home": {
+    "about": "PIX-253 step 10, chapter 8: Morvax's choice and the endings, played by Homecoming and the world's Stage. Once the collar is off Morvax waits by the fountain (`waits`; at his forge for a hero who slew Fafnyr on the old mountain and never had the night) with his question (`ask`); closing his words opens the choice (throne_screen.gd, re-aimed): each of `choices` is an ending, its scene in story.json's moments (`ending:home`, `ending:stay`), kept in the story ledger (no new save field). The ending tours the town: Morvax's `reply` (at his bench, or at the town's gate for one going back up), each age's landmark, the square, Hilda's forge (`forge`: Fafnyr on her roof warming his belly, or Hilda alone for a hero who slew him) and Maren (`maren`), then the scene and the credits. After it: home, he sits on the bench by the fountain (`waits`) with his `bench` lines and the day's `argument` (a pair a day: his side, and Maren's at her shrine); staying, he is at his forge (`peace`) and comes down to his bench on festival days (`festival`), and Maren says `marenStay`. The fifth letter's row in the satchel says how it came out (`answered`, by the answer).",
+    "waits": [43, 24],
+    "ask": [
+      "(Morvax turns Maren's letter over in his hands. It has gone soft at the folds.)",
+      "Fifty years I counted Pixelheim's lamps from the mountain. Forty-one, last night. I counted twice.",
+      "I won't ask Maren. She'd say yes to be kind, or no to be right, and I'd never know which.",
+      "You carry everyone's words, courier. Carry mine. Do they want me back?"
+    ],
+    "question": "\"Do they want me back?\"",
+    "waiting": "Fifty years Morvax kept the dragon asleep and counted the village's lamps from the mountain. Now he waits for one word from the courier, Maren's letter in his hands.",
+    "choices": [
+      {
+        "id": "home",
+        "label": "Come home.",
+        "detail": "He takes a room at the inn and a bench by the fountain, and argues with Maren every day.",
+        "reply": "Morvax: \"...Is the stew still on?\""
+      },
+      {
+        "id": "stay",
+        "label": "Stay with them.",
+        "detail": "He goes back up to the three, at peace, and comes down on festival days.",
+        "reply": "Morvax: \"Then I'll go up and tell the three. They'll want to know how it all came out.\"",
+        "at": [40, 4]
+      }
+    ],
+    "forge": {
+      "dragon": [57, 14],
+      "line": "Every morning Fafnyr warms his belly on Hilda's new forge.",
+      "detail": "Hilda pays him a cheese wheel a day. Bram calls it the cheese's finest hour.",
+      "alone": "Every morning Hilda lights her new forge herself, the way she always has.",
+      "aloneDetail": "\"Dragons,\" she says. \"Who needs them.\""
+    },
+    "maren": "Maren: \"And you, courier... no. You're one of ours now.\"",
+    "bench": [
+      "(He shifts along the bench to make room.) Sit, courier. The fountain's too loud, but the company's improving."
+    ],
+    "argument": [
+      [
+        "Maren says the fountain's too loud. It's a fountain. It's meant to be loud.",
+        "The fountain is too loud, and Morvax sits right beside it so he can complain about it. Explain that to me."
+      ],
+      [
+        "She says I salt the stew before I taste it. I've tasted Sela's stew. It needs the salt.",
+        "He salts the stew before he tastes it. Fifty years on a mountain, and the first thing he does is insult Sela."
+      ],
+      [
+        "Today it's the lamps. I say forty-one. She says forty. One of them is the moon, apparently.",
+        "Forty lamps, not forty-one. He counts the moon. He always counted the moon."
+      ],
+      [
+        "She says I should have come down sooner. I say she should have climbed up. We'll settle it at supper.",
+        "He says I should have climbed up. I say he should have come down. We'll settle it at supper. We never settle it at supper."
+      ],
+      [
+        "She cheats at cards. Fifty years, and she still keeps the queen up her sleeve.",
+        "I don't cheat at cards. He just never learned to watch my sleeves."
+      ]
+    ],
+    "peace": [
+      "(The forge is lit for once, and the tally marks stop at forty-one.) I tell the three about the village. Tam laughs at the cheese.",
+      "I come down on festival days. Somebody has to tell Maren she's wrong in person."
+    ],
+    "festival": [
+      "Festival day. I came down for the pie, and to tell Maren she's wrong in person.",
+      "I'll tell the three all about it tonight. Tam always asks about the cheese."
+    ],
+    "marenStay": "He comes down on festival days. I save him a slice of pie and a fresh argument.",
+    "answered": {
+      "home": "Morvax read it twice, and came home.",
+      "stay": "Morvax read it, and keeps the three company now, at peace. He comes down on festival days."
+    }
   },
   "relics": {
     "questId": "maren_relics",

@@ -39,6 +39,12 @@ var black: ColorRect
 ## The actors on stage that a scene named (`name`), so a later step can
 ## move them on or change what they do.
 var cast := {}
+## A scene begun at its first step of this kind (the harness's `credits`,
+## PIX-253 step 10): the steps before it pass but for the backdrops, and
+## the screen clears as it begins.
+var from_kind := ""
+## The credits' last line while they roll (the harness reports it).
+var roll_end := ""
 
 
 ## Every scene, by id: its steps (see KINDS).
@@ -124,6 +130,13 @@ func _play() -> void:
 	for step: Dictionary in steps:
 		if finished:
 			return
+		if from_kind != "":
+			if step["kind"] == "stage":
+				_stage(step["stage"])
+			if step["kind"] != from_kind:
+				continue
+			from_kind = ""
+			black.color.a = 0.0
 		await _run(step)
 	finish()
 
@@ -378,6 +391,8 @@ func _credits(step: Dictionary) -> void:
 	for line: String in step.get("after", []):
 		roll.add_child(_credit_line(line))
 	front.add_child(roll)
+	var after: Array = step.get("after", [])
+	roll_end = String(after[-1]) if not after.is_empty() else ""
 	var seconds := float(step.get("seconds", 30.0))
 	if still:
 		# Page by page instead of a crawl.

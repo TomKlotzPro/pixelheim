@@ -396,6 +396,12 @@ func _run_test_harness() -> void:
 	# `--story <id>`: a story scene from assets/data/story.json, over the world.
 	if flags.has("--story"):
 		world.stage.play_story(flags.value("--story"))
+		# `credits` (PIX-253 step 10): the scene moved on to its credits'
+		# roll, before it begins to play.
+		if flags.has("credits"):
+			for node in world.get_children():
+				if node is Cutscene:
+					node.from_kind = "credits"
 		await get_tree().create_timer(0.3).timeout
 	# `--bells N` (PIX-253 step 9): the Night of Bells, begun as the hero
 	# came home, moved on to beat N.
@@ -948,20 +954,21 @@ func _run_test_harness() -> void:
 					break
 				await get_tree().process_frame
 	if flags.has("ending"):
-		# The ending (PIX-150): home to the festival and the tour's first stop;
-		# `rest` the ending where Morvax is laid to rest (PIX-157).
-		world.stage.play_ending("rest" if flags.has("rest") else "destroy")
+		# The ending (PIX-150; PIX-253 step 10, Morvax's choice): "Come
+		# home.", to the festival and the tour's first stop, his answer;
+		# `stay` the lanterns ending, his going back up to the three.
+		world.stage.play_ending(Homecoming.STAY if flags.has("stay") else Homecoming.HOME)
 		await get_tree().create_timer(1.4).timeout
 	if flags.has("--seen"):
 		# `--seen maren_confession`: stories already told this hero.
 		for story_id: String in flags.list("--seen"):
 			GameState.mark_seen(story_id)
-	if flags.has("throne"):
-		# Morvax beaten (PIX-157): the choice. Pair with `--cleared 15` and
-		# `--seen maren_confession` to have "lay him to rest" open.
-		var throne := preload("res://scripts/throne_screen.gd").new()
-		throne.on_choice = world.stage.play_ending
-		world.add_child(throne)
+	if flags.has("choice"):
+		# Morvax's choice (PIX-253 step 10; the old throne's, PIX-157):
+		# the courier's last word, asked outright.
+		var choice := preload("res://scripts/throne_screen.gd").new()
+		choice.on_choice = world.stage.play_ending
+		world.add_child(choice)
 		await get_tree().create_timer(0.3).timeout
 	if flags.has("mimic"):
 		# Pair with `--map mirefen`: open the mire's mimic chest; `--wait`

@@ -111,6 +111,12 @@ static func of_step(step: Dictionary, progression: ProgressionState, settlement:
 					lead[key] = way[key]
 			else:
 				_at_tin(lead, progression, settlement)
+		"chosen":
+			# Morvax with his question (PIX-253 step 10): by the fountain
+			# after the collar, at his forge for a hero who slew Fafnyr.
+			var where := Homecoming.place(progression)
+			_at(lead, String(where["mapId"]), Vector2i(int(where["x"]), int(where["y"])))
+			lead["who"] = Homecoming.MORVAX
 	# A step that names its place (PIX-253 step 8: run home, to the square).
 	if step.has("mapId") and lead["map_id"] == "":
 		var map_id := String(step["mapId"])
