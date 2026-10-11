@@ -9,8 +9,8 @@
 #   scripts/fetch-private-art.sh            clones the repo (your GitHub login)
 #   scripts/fetch-private-art.sh <checkout> uses a checkout already made (CI)
 #
-# Without it the game still runs, with the town's old buildings and props and
-# the web's item icons.
+# Without it the game still runs on Shade's free art alone: the town's
+# houses, props and paid icons are missing (collision is the same).
 set -euo pipefail
 
 cd "$(dirname "$0")/.."

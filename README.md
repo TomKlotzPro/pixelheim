@@ -6,7 +6,7 @@
 
 <p align="center">
   <b>A retro pixel-art open-world RPG in Godot 4.7: a village the dragon burned, the courier who stayed, the Reach's regions and the relics they keep - and the mountain last.</b><br />
-  The village burned. You stayed. Currently v0.229 - 1.0 has to be earned.
+  The village burned. You stayed. Currently v0.230 - 1.0 has to be earned.
 </p>
 
 ---
@@ -33,7 +33,7 @@ A dragon burned Pixelheim in one night, and you - the courier who came up the ro
 - **A town that grows**: buy the house and furnish it, buy the shops and collect rent, fund the village into a city, bank and send caravans, recruit settlers from the wilds
 - **Crafting** at the forge, the cauldron and your own workbench; foraging in the wilds
 - **Music, stingers and weather** for every place, rendered from the game's own chiptune synth
-- **Saves that never break**: three slots, autosave, save codes, and heroes from the old web edition brought over byte for byte
+- **Saves that never break**: three slots, autosave, and save codes that carry a hero to another computer or browser; every save ever written still loads
 - **A story told in moments**: New Game opens on the village, the mountain waking and the five who climbed it fifty years ago; each boss rises with its name before you fight it, each letter is answered, and the ending rolls credits starring every creature you fought - all skippable
 - **A title to arrive at**: Pixelheim's street at night under the Ashen Mountain, lit windows and chimney smoke below, the dragon's fire smouldering in the crater above, and your hero in the street looking up at it
 - **A UI like a village ledger**: one clear pixel type throughout, parchment pages in carved wooden frames, a wooden dock along the bottom with your bars, skills and gold, and screens that ease in with the sound of turning paper
@@ -89,17 +89,18 @@ godot/                 the game (Godot 4.7, GDScript)
   test/unit/           GUT tests
   tools/               the release flows, the icon, the sound synth, the room vignettes
 scripts/               fetch-private-art.sh, which installs the paid art
-docs/                  screenshots, and godot-parity.md: the record of the port
+docs/                  screenshots, and the reports behind two big changes (Solid Ground, the Undermountain)
 ```
 
 - **Rules are pure.** Game rules live in static GDScript classes with no nodes, so they test fast; scenes draw, move and route input. Everything that persists changes only through `GameState`.
-- **Saves keep the old web edition's format, byte for byte.** Its heroes still load, and migrations replay old saves forward.
+- **The data is edited where it lives.** Maps (`godot/assets/maps/`, or a sketch in `godot/maps-src/` run through `mapgen.py`) and data tables (`godot/assets/data/`) are the source; the unit tests check every map file (known tiles, the spawn and every way's landing on open ground, the packs in their regions) and every chest (its own id, known loot, clear of the packs).
+- **Old saves keep loading.** The save format (schema v4) is kept byte for byte, and migrations replay older saves forward; a late-game save from the first edition is frozen in the tests.
 - **The look lives in one place.** `ui_style.gd` draws every window and picks every font size; pixel fonts render at whole sizes only.
 - **Verified by playing.** Besides the unit tests, `godot/tools/flows.sh` walks the release flows (spawn, doors, chests, shops, crafting, quests, rank-ups, fights, death, saves, conversations, smooth walking) through a real window and checks each one, several at a time, each the same run every time (stepped on the game's own clock, with the same dice, and hunted for flakes every night); every pull request runs them headless, and boots every map by day and at night, after the unit tests, and runs them again in a virtual window beside that, leaving every flow's picture and the look book on the pull request (on Shade's free art only).
 
 ## History
 
-Pixelheim began as a React + TypeScript + PixiJS game in the browser, with a pure reducer for its rules and a WebGL canvas for its world. It moved to Godot in v0.66 and the web edition was retired in v0.75: its maps, data tables and changelog now live with the game (`godot/assets/`), and its heroes still come across from the saves screen. Everything it was is in this repository's history; `docs/godot-parity.md` records how each of its features was ported.
+Pixelheim began as a React + TypeScript + PixiJS game in the browser. It moved to Godot in v0.66, the web edition was retired in v0.75, and its last traces (the browser hero import, the old `/classic/` links, the record of the port) went in PIX-301. Its maps and data tables live with the game now (`godot/assets/`) and are edited there; everything it was is in this repository's history.
 
 ## Roadmap ideas
 

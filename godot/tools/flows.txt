@@ -76,9 +76,8 @@ fight | fight kill | map=town | combat
 spoils | fight kill | floats=\+[0-9]+ XP;\+[0-9]+ [a-z]+.* logged=0 | combat
 # Death, and waking at the inn (PIX-129).
 die | die | map=town_inn cell=\(2, 3\) | combat rooms
-# The saves screen (PIX-129), and a web hero's import declined with Esc (PIX-131).
+# The saves screen (PIX-129).
 saves | saves | open=saves_screen | save screen
-decline | saves --web-save res://test/fixtures/web_save_v4.txt --keys esc | open=title_screen | save title screen
 # A hero's first word with Maren after the night is her tin (PIX-253):
 # in the Hamlet her house stands again and she says it short, two lines.
 talk | --map town talk --keys e,e | open=none letters=4 delivered=0 | town story
@@ -481,13 +480,11 @@ fit-create | create overflow --lang fr | open=create_screen overflow=0 | screen 
 fit-create-en | create overflow --lang en | open=create_screen overflow=0 | screen lang title
 fit-whatsnew | title whatsnew overflow --lang fr | overflow=0 | screen lang title
 fit-saves | --map town --keys esc,s,e overflow --lang fr | open=saves_screen overflow=0 | screen lang save
-fit-webhero | saves --web-save res://test/fixtures/web_save_v4.txt overflow --lang fr | open=saves_screen overflow=0 | screen lang save
 # Every slot full (PIX-230): a full slot's line widened the window off
-# the right of the screen in French, which empty slots never showed; and
-# a web hero with a long name to bring across, in both languages.
+# the right of the screen in French, which empty slots never showed; in
+# both languages.
 fit-saves-full | --map town saves --slots res://test/fixtures/slots overflow --lang fr | open=saves_screen overflow=0 | screen lang save
 fit-saves-full-en | --map town saves --slots res://test/fixtures/slots overflow --lang en | open=saves_screen overflow=0 | screen lang save
-fit-webhero-full | saves --slots res://test/fixtures/slots --web-save res://test/fixtures/slots/slot_1.json overflow --lang fr | open=saves_screen overflow=0 | screen lang save
 fit-pause | --map town --keys esc overflow --lang fr | open=pause_screen overflow=0 | screen lang
 fit-options | --map town --keys esc,s,s,e overflow --lang fr | overflow=0 | screen lang
 fit-map | --map town waypoints worldmap overflow --lang fr | open=map_screen overflow=0 | screen lang travel

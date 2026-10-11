@@ -1,6 +1,6 @@
 # Pixelheim — Godot
 
-Pixelheim in Godot 4.7 ([Godot Migration](https://linear.app/pixelheim/project/godot-migration-4ba6c77b3226) project). It began as a React/Pixi web game, retired in v0.75; its maps and data tables now live here (`assets/maps/`, `assets/data/`) and are edited directly.
+Pixelheim in Godot 4.7 ([Godot Migration](https://linear.app/pixelheim/project/godot-migration-4ba6c77b3226) project). Its maps and data tables live here (`assets/maps/`, `assets/data/`) and are edited directly; see [Data](#data).
 
 ## Run
 
@@ -24,13 +24,14 @@ installs the atlas into `godot/assets/puny/medieval/` and every icon
 `icons.json` names into `godot/assets/puny/shade/` (both git-ignored) with your
 GitHub login; the deploy and the Godot CI run the same script on a checkout
 made with a read-only deploy key (secret `PIXELHEIM_ASSETS_KEY`). Without it
-the game runs with the town's old buildings and props and the web's item
-icons.
+the game runs on Shade's free art alone: the town's houses, props and paid
+icons are missing, and collision is the same.
 
-Combat runs on the web game's numbers, kept: the hero's real HP and stats, each
-species' stats per region, elites, ailments (a web turn = 1 s), drops, xp and
-level-ups; defeat wakes you at the inn. Monsters stand in packs at the web's
-visible spawn points and stay cleared until you leave the map.
+Combat runs on the game's numbers since its first edition: the hero's real HP
+and stats, each species' stats per region, elites, ailments (a turn of the
+first edition = 1 s), drops, xp and level-ups; defeat wakes you at the inn.
+Monsters stand in packs at their spawn points and stay cleared until you leave
+the map.
 
 Controls: WASD/arrows or left stick to move, Space/J or gamepad A to attack,
 E to talk or open chests, M/Tab for the map, Esc (gamepad Start) for saves.
@@ -46,18 +47,38 @@ autoload (`scripts/state/`) and autosaves within 3 s of any change, at once on
 map changes and loot, and when the window closes or loses focus.
 
 Slot files (`user://saves/slot_<n>.json`; IndexedDB on the web export) use
-the old web game's save format, schema v4 — envelope, migrations and `PXH1.`
-save codes are ported in `save_codec.gd` — so its heroes load here. Device
-settings live apart in `user://settings.cfg`.
+the save format of the game's first edition, schema v4, byte for byte —
+envelope, migrations and `PXH1.` save codes in `save_codec.gd` — so every save
+ever written still loads (`test_save_codec.gd` keeps a frozen late-game save
+and its re-encode). Device settings live apart in `user://settings.cfg`.
 
-The saves screen (Esc) plays, starts or clears slots and brings heroes across
-from the retired web game (`scripts/saves_screen.gd`, `state/web_import.gd`):
+The saves screen plays, starts or clears slots (`scripts/saves_screen.gd`),
+and carries a hero to another computer or browser: `C` copies the hero's save
+code, and a code pasted into Save code (raw save JSON works too) loads into
+the chosen slot.
 
-- **Same browser**: the game is served from the web game's old origin, so it
-  still reads that hero from `localStorage` (`pixelheim-save-v1`). A first
-  visit with no saves offers to bring them over right away.
-- **Anywhere else**: paste a save code (raw save JSON works too). `C` copies a
-  hero's code.
+## Data
+
+Maps (`assets/maps/<id>.json`, one row of tiles per line) and the data
+tables (`assets/data/*.json`: items, monsters and their packs, quests,
+villagers, the town, the economy, audio, the story, the dungeons' floors, the
+changelog) are the source: edit them directly, keeping their shape. A region
+map can be drawn as a sketch in `maps-src/` and written by `tools/mapgen.py`.
+Nothing regenerates them, so the unit tests keep them whole:
+
+- `test_map_files.gd` reads every file in `assets/maps/`: a rectangle of
+  known tiles (`WorldTiles.TILE_INFO`), its id its file's name, its spawn on
+  open ground, its regions the map's size and known to `combat.json`; every
+  way between maps (the planned dungeon floors' too) leads to a map that
+  exists and lands on open ground; every pack stands on open ground in an
+  encounter region, off the ways out.
+- `test_interactables.gd`: every chest has its own id and known loot, stands
+  on open ground off any way out and clear of the packs; a mimic stands in
+  an encounter region.
+- `test_ways.gd`, `test_reach_plane.gd`, `test_waypoints.gd`, `test_depths.gd`,
+  `test_item_icons.gd` and the regions' own tests hold the rest: a road up to
+  every way, the Reach's seams, the waypoints, the floors, an icon for every
+  item.
 
 ## Tests
 
@@ -102,8 +123,6 @@ godot --path godot -- --screenshot --map town --town-tier 4  # preview the villa
 godot --path godot -- --screenshot home --map town_house --house-tier 3 --mode nook  # a house fixture (storage|workbench|trophies|nook|furniture)
 godot --path godot -- --screenshot lineup             # every hero role, villager and monster sheet, walking down and right
 godot --path godot -- --screenshot saves              # the saves screen
-godot --path godot -- --screenshot saves --web-save res://test/fixtures/web_save_v4.txt
-                                                      # first-visit web import offer
 godot --path godot -- --screenshot saves --slots res://test/fixtures/slots
                                                       # every slot full (the longest lines a card shows); nothing written
 godot --path godot -- --screenshot --map town portal  # walk into the nearest doorway
@@ -275,8 +294,9 @@ python3 -m http.server -d godot/export/web            # play in a browser
 
 Single-threaded preset (`export_presets.cfg`): no cross-origin-isolation
 headers needed, so any static host works — GitHub Pages included (~9.6 MB
-gzipped over the wire). The deploy puts it at the root of the Pages site; old
-`/classic/` and `/godot/` links lead there.
+gzipped over the wire). The deploy puts it at the root of the Pages site, and
+nothing else: the web edition's old `/classic/`, `/godot/` and pull request
+preview pages are gone (PIX-301).
 
 ## Desktop app
 
@@ -393,18 +413,18 @@ fr.po, and no msgstr has a plain or no-break space where U+202F belongs.
 - `scripts/harness.gd` — the screenshot harness below, added only for `--screenshot` runs
 - `scripts/state/` — the `GameState` autoload and its typed sections (hero, pack, settlement, progression, world), the save codec, slots and settings
 - `scripts/player.gd` / `scripts/enemy.gd` — live combat actors
-- `scripts/npcs.gd` / `scripts/npc.gd` / `scripts/dialogue_box.gd` — villagers: who lives where (ported from `src/world/npcs.ts`), their pacing, and conversations
-- `scripts/state/economy.gd` + `scripts/shop_screen.gd` — shops, forge and crafting rules (ported from `src/game/economy`) and the keeper's counter
+- `scripts/npcs.gd` / `scripts/npc.gd` / `scripts/dialogue_box.gd` — villagers: who lives where, their pacing, and conversations
+- `scripts/state/economy.gd` + `scripts/shop_screen.gd` — shops, forge and crafting rules and the keeper's counter
 - `scripts/state/town.gd` + `scripts/{town_hall,bank}_screen.gd` (on `ledger_screen.gd`) — town tiers, deeds, the bank, recruits, the inn
-- `scripts/state/quests.gd` + `scripts/journal_screen.gd` — the villagers' quests (ported from `src/game/quests.ts`): a giver's first word accepts, kills tick bounties, deliveries leave the pack on turn-in (`GameState.questing.resolve_quests`); Q opens the journal
-- `scripts/state/ranks.gd` + `scripts/rankup_screen.gd` — rank titles every five levels (ported from `src/game/hero/ranks.ts`; the hero looks the same at every rank), the Path Graph's choices (`hero/paths.ts`, `GameState.training.choose_path`), and the ascension scene that plays when a rank is crossed, holding at a fork for the path cards
-- `scripts/state/skills.gd` + `scripts/stats_screen.gd` + `scripts/skills_screen.gd` — the stat sheet (ported from `hero/statInfo.ts`, `applyStatPoint`) on C and the skill tree with the Path Graph (`hero/skillTree.ts`, `SkillTree.tsx`) on K; points are spent through `GameState.training.spend_stat_point` / `buy_skill_node`
-- `scripts/title_screen.gd` + `scripts/title_scene.gd` + `scripts/create_screen.gd` — the title (PIX-139: Pixelheim's street at night under the smoking Ashen Mountain, built from Shade's art at 2x, with lit windows, torches, the watchman's round, the hero in the street and the dragon crossing the moon; the gold logo; Continue / New Game / Saves / Options / What's new) and hero creation (`CharacterCreation.tsx`: role, look among Shade's colourways, name). A plain launch with no hero keeps an unsaved stand-in behind the title (`GameState.standing_in`) until one is made
+- `scripts/state/quests.gd` + `scripts/journal_screen.gd` — the villagers' quests: a giver's first word accepts, kills tick bounties, deliveries leave the pack on turn-in (`GameState.questing.resolve_quests`); Q opens the journal
+- `scripts/state/ranks.gd` + `scripts/rankup_screen.gd` — rank titles every five levels (the hero looks the same at every rank), the Path Graph's choices (`GameState.training.choose_path`), and the ascension scene that plays when a rank is crossed, holding at a fork for the path cards
+- `scripts/state/skills.gd` + `scripts/stats_screen.gd` + `scripts/skills_screen.gd` — the stat sheet on C and the skill tree with the Path Graph on K; points are spent through `GameState.training.spend_stat_point` / `buy_skill_node`
+- `scripts/title_screen.gd` + `scripts/title_scene.gd` + `scripts/create_screen.gd` — the title (PIX-139: Pixelheim's street at night under the smoking Ashen Mountain, built from Shade's art at 2x, with lit windows, torches, the watchman's round, the hero in the street and the dragon crossing the moon; the gold logo; Continue / New Game / Saves / Options / What's new) and hero creation (role, look among Shade's colourways, name). A plain launch with no hero keeps an unsaved stand-in behind the title (`GameState.standing_in`) until one is made
 - `scripts/cutscene.gd` + `assets/data/story.json` — story moments (PIX-31): a scene is data, ordered steps (stage, fade, caption, tint, ash, shake, actor, eyes, logo, wait) the Cutscene screen plays over a letterboxed stage; E moves on, Esc skips to what comes next, Reduce motion keeps the words and drops the movement. The opening plays on New Game, before hero creation; `moments` in story.json map play to scenes (a boss's floor, the first clear of floor 10, victory), each played once per hero (`storySeen` in the save, written only once there is one)
 - `scripts/screen.gd` — what every menu, page and conversation shares (PIX-136): built in `_open`, `dim()` behind, keys through `_command` (handled before they run), Esc / the menu key / its own key close it, and it holds the world still, counted, so the world runs again only when the last screen closes
 - `scripts/pause_screen.gd` + `scripts/options_screen.gd` + `scripts/controls.gd` — Esc's pause menu (Resume, Saves, Options, Quit to title) and the options (volumes, CRT scanlines, fullscreen, reduced motion, key rebinding); `Controls` rebuilds the InputMap from `GameSettings.bindings` (one rebindable primary per action plus fixed alternates and the pad)
-- `scripts/inventory_screen.gd` — the pack and paperdoll on I (ported from `Inventory.tsx`): nine slots around the hero and the numbers gear makes, everything carried by category; equip, take off, drink, place furniture, drop (`GameState.upkeep.equip` / `unequip` / `use_item` / `drop_item` / `drop_gear`). item icons are Shade's (`scripts/item_icons.gd`, `assets/puny/icons.json`), and a Craft tab guides crafting
-- `scripts/codex_screen.gd` — the codex on B (ported from `Codex.tsx`): family masteries with their Slayer tiers, and the bestiary of every monster whose family the hero has met
+- `scripts/inventory_screen.gd` — the pack and paperdoll on I: nine slots around the hero and the numbers gear makes, everything carried by category; equip, take off, drink, place furniture, drop (`GameState.upkeep.equip` / `unequip` / `use_item` / `drop_item` / `drop_gear`). item icons are Shade's (`scripts/item_icons.gd`, `assets/puny/icons.json`), and a Craft tab guides crafting
+- `scripts/codex_screen.gd` — the codex on B: family masteries with their Slayer tiers, and the bestiary of every monster whose family the hero has met
 - `scripts/state/depths.gd` + `scripts/dungeon_floor.gd` + `scripts/state/vault.gd` — every dungeon as a list of floors (`assets/data/depths.json`), handcrafted or laid from a seed (a pack a room, the last and largest for the last), their stairs both ways, the boss's shortcut out; the Kings' Vault after the story, behind a door that opens once the dragon is freed (the old mountain's fifteen numbered floors and the Deep Hunt left play with PIX-257)
 - `scripts/puny_sheet.gd` / `scripts/puny_dungeon.gd` — one Shade tileset with its `.tsx` (animations, wang corners, a lazily built TileSet), and Puny Dungeon's wall grammar, stone, torches, barrels and stairs
 - `scripts/home_screen.gd` — the house's barrel, workbench, trophy shelf, nook and furniture placement (house rules live in `state/town.gd`)

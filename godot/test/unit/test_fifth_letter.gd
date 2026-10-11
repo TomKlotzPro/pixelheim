@@ -274,11 +274,11 @@ func test_a_save_from_the_old_floors_wakes_by_the_gate() -> void:
 ## The flows' old saves (test/fixtures, `--load`): one saved on the old
 ## seventh floor, one by the Undermountain's cave.
 func test_the_old_save_fixtures_wake_where_they_should() -> void:
-	state.apply(WebImport.parse_any(FileAccess.get_file_as_string("res://test/fixtures/old_floor7.json")))
+	state.apply(SaveCodec.parse_any(FileAccess.get_file_as_string("res://test/fixtures/old_floor7.json")))
 	assert_eq(_wakes(state.world.map_id, state.world.cell), {"mapId": "overworld", "cell": BEFORE_GATE})
 	assert_eq(state.hero.level, 13)
 	assert_eq(_next(), "confession")
-	state.apply(WebImport.parse_any(FileAccess.get_file_as_string("res://test/fixtures/old_cave.json")))
+	state.apply(SaveCodec.parse_any(FileAccess.get_file_as_string("res://test/fixtures/old_cave.json")))
 	assert_eq(_wakes(state.world.map_id, state.world.cell)["mapId"], "town")
 	assert_eq(state.hero.level, 17, "levels kept")
 	assert_true(state.pack.equipped.has("weapon"), "gear kept")

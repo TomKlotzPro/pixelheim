@@ -68,28 +68,13 @@ jobs:
           godot --headless --path godot --export-release Web export/web/index.html
           mkdir -p site
           cp -R godot/export/web/. site/
-          # Old links: /godot/ (the beta) and /classic/ (the retired web
-          # edition, whose saves the game still imports) lead home, on the
-          # loading screen's night with no words but the name (PIX-295).
-          for old in godot classic; do
-            mkdir -p "site/$old"
-            cat > "site/$old/index.html" <<'HTML'
-          <!doctype html>
-          <meta charset="utf-8">
-          <title>Pixelheim</title>
-          <meta http-equiv="refresh" content="0; url=../">
-          <link rel="canonical" href="../">
-          <style>html,body{margin:0;height:100%;background:#080c28}a{color:#c9bb90}</style>
-          <a href="../">Pixelheim</a>
-          HTML
-          done
-      # Publishes to the gh-pages branch root; PR previews live under
-      # pr-preview/ and must survive production deploys.
+      # Publishes to the gh-pages branch root, and nothing else stays there:
+      # the web edition's old pages (/classic/, /godot/ and its pull requests'
+      # previews under /pr-preview/) went with PIX-301.
       - uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: site
           branch: gh-pages
-          clean-exclude: pr-preview/
           force: false
       # Main's import, for the pull requests' checks (godot.yml, PIX-271): a
       # pull request's run can restore a cache saved on main but not one saved

@@ -44,7 +44,7 @@ func test_a_written_slot_reads_back_the_same_state() -> void:
 	assert_eq(slots.read(1), state.to_dict())
 
 
-func test_a_slot_file_is_a_web_save_envelope() -> void:
+func test_a_slot_file_is_the_save_envelope() -> void:
 	slots.write(2, _fresh_state().to_dict())
 	var raw: Dictionary = SaveCodec.parse_json(FileAccess.get_file_as_string(slots.path_for(2)))
 	assert_eq(raw["version"], 4)
@@ -155,16 +155,18 @@ func test_boot_runs_once_per_session() -> void:
 func test_a_first_visit_lasts_until_a_hero_is_made() -> void:
 	var first := _fresh_state()
 	first.boot(HarnessFlags.new())
-	assert_true(first.first_run)
+	assert_true(first.standing_in)
 	first.save_now()
 	var second := _fresh_state()
 	second.boot(HarnessFlags.new())
-	assert_true(second.first_run, "the stand-in behind the title is never written")
+	assert_true(second.standing_in, "the stand-in behind the title is never written")
+	for slot in range(1, SaveSlots.SLOT_COUNT + 1):
+		assert_false(FileAccess.file_exists(slots.path_for(slot)), "slot %d stays empty" % slot)
 	assert_eq(second.free_slot(), second.slot, "the new hero takes the slot in hand")
 	second.new_hero_in(second.free_slot(), "Robin", "ranger", 1)
 	var third := _fresh_state()
 	third.boot(HarnessFlags.new())
-	assert_false(third.first_run)
+	assert_false(third.standing_in)
 	assert_eq(third.hero.hero_name, "Robin")
 	assert_eq(third.hero.role_id, "ranger")
 	assert_eq(third.hero.look, 1)
@@ -193,7 +195,7 @@ func test_an_empty_slot_is_no_hero_to_play() -> void:
 func test_importing_writes_the_slot_and_plays_it() -> void:
 	var state := _fresh_state()
 	state.boot(HarnessFlags.new(PackedStringArray(["--slot", "1"])))
-	var imported := WebImport.parse_any(FileAccess.get_file_as_string("res://test/fixtures/web_save_v4.txt"))
+	var imported := SaveCodec.parse_any(FileAccess.get_file_as_string("res://test/fixtures/web_save_v4.txt"))
 	state.import_into(2, imported)
 	assert_eq(state.slot, 2)
 	assert_eq(state.hero.hero_name, "Brann")
@@ -231,7 +233,7 @@ func test_any_slot_clears_and_the_hero_in_hand_becomes_a_stand_in() -> void:
 	assert_eq(state.free_slot(), 2, "the next hero takes the cleared slot")
 
 
-func test_save_code_carries_the_hero_to_the_web() -> void:
+func test_save_code_carries_the_hero_whole() -> void:
 	var state := _fresh_state()
 	state.pack.gold = 321
 	var decoded := SaveCodec.decode_code(state.save_code())

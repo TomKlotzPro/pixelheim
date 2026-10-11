@@ -1,6 +1,6 @@
 extends GutTest
 ## WorldTiles says what the hero may walk on; Shade's layers draw it all
-## (PIX-137). Its walkability must stay the web's (src/world/tiles.ts).
+## (PIX-137). Its walkability is pinned: every map and save was made on it.
 
 
 func test_walkability_is_the_webs() -> void:

@@ -5497,6 +5497,10 @@ msgid "The night classes stepped into the light: the necromancer's robes and the
 msgstr "Les classes de la nuit sortent de l'ombre : les robes du nécromancien et les cuirs du voleur s'éclaircissent pour rester lisibles sur toutes les pelouses"
 
 #: assets/data/changelog.json
+msgid "The old web version is gone for good: no more offer to bring a hero over from it, and its old pages are off the site"
+msgstr "L'ancienne version web s'en va pour de bon : plus de proposition d'en ramener un héros, et ses anciennes pages quittent le site"
+
+#: assets/data/changelog.json
 msgid "The opening and the dawn are rewritten: a dragon asleep on a chain, five who climbed and one who came home, and a courier who should have ridden south by noon"
 msgstr "L'ouverture et l'aube sont réécrites : un dragon endormi au bout d'une chaîne, cinq qui sont montés et une seule revenue, et un messager qui aurait dû repartir vers le sud avant midi"
 
@@ -5739,6 +5743,10 @@ msgstr "Bois & pierre"
 #: assets/data/changelog.json
 msgid "Timber and Plaster"
 msgstr "Bois et plâtre"
+
+#: assets/data/changelog.json
+msgid "To move a hero to another machine, use Copy mine here and Save code there"
+msgstr "Pour emmener un héros sur une autre machine, utilisez Copier le mien ici et Code de sauvegarde là-bas"
 
 #: assets/data/changelog.json
 msgid "Told True"
@@ -14045,16 +14053,16 @@ msgid "%s Press %s again to confirm."
 msgstr "%s Appuyez de nouveau sur %s pour confirmer."
 
 #: scripts/saves_screen.gd
+msgid "%s, level %d %s"
+msgstr "%s, niveau %d, %s"
+
+#: scripts/saves_screen.gd
 msgid "1 hour ago"
 msgstr "il y a 1 heure"
 
 #: scripts/saves_screen.gd
-msgid "A hero from the old web edition comes across by their save code: paste it below."
-msgstr "Un héros de l'ancienne version web s'importe avec son code de sauvegarde : collez-le ci-dessous."
-
-#: scripts/saves_screen.gd
-msgid "Bring %s to slot %d"
-msgstr "Amener %s dans l'emplacement %d"
+msgid "A hero to another computer or browser: copy their code here, paste it there."
+msgstr "Un héros vers un autre ordinateur ou navigateur : copiez son code ici, collez-le là-bas."
 
 #: scripts/saves_screen.gd
 msgid "Clear %s from slot %d for good?"
@@ -14077,14 +14085,6 @@ msgid "Empty slot"
 msgstr "Emplacement vide"
 
 #: scripts/saves_screen.gd
-msgid "Found %s in this browser's web game. Press B to bring them here, or Esc for the title and a new hero."
-msgstr "%s trouvé dans le jeu web de ce navigateur. Appuyez sur B pour l'amener ici, ou sur Esc pour l'écran titre et un nouveau héros."
-
-#: scripts/saves_screen.gd
-msgid "From the old web edition"
-msgstr "Depuis l'ancienne version web"
-
-#: scripts/saves_screen.gd
 msgid "Level %d %s in %s"
 msgstr "Niveau %d, %s - %s"
 
@@ -14099,10 +14099,6 @@ msgstr "N crée ici un nouveau héros."
 #: scripts/saves_screen.gd
 msgid "New hero"
 msgstr "Nouveau héros"
-
-#: scripts/saves_screen.gd
-msgid "No hero from the old web edition in this browser. One you saved as a code comes across below."
-msgstr "Aucun héros de l'ancienne version web dans ce navigateur. Un héros sauvegardé sous forme de code s'importe ci-dessous."
 
 #: scripts/saves_screen.gd
 msgid "Paste a save code"
@@ -14125,8 +14121,8 @@ msgid "Save code"
 msgstr "Code de sauvegarde"
 
 #: scripts/saves_screen.gd
-msgid "Save code copied. Paste it into Import save code in the web game's Options."
-msgstr "Code de sauvegarde copié. Collez-le dans « Import save code », dans les Options du jeu web."
+msgid "Save code copied. On the other machine, paste it under Save code in Saves."
+msgstr "Code de sauvegarde copié. Sur l'autre machine, collez-le dans Code de sauvegarde, sous Sauvegardes."
 
 #: scripts/saves_screen.gd
 msgid "Slot %d"
@@ -14141,16 +14137,8 @@ msgid "Slot %d is empty now."
 msgstr "L'emplacement %d est maintenant vide."
 
 #: scripts/saves_screen.gd
-msgid "That is not a save code. In the web game, open Options and use Copy save code, then paste it here."
-msgstr "Ce n'est pas un code de sauvegarde. Dans le jeu web, ouvrez Options, utilisez « Copy save code », puis collez-le ici."
-
-#: scripts/saves_screen.gd
-msgid "Welcome back"
-msgstr "Bon retour"
-
-#: scripts/saves_screen.gd
-msgid "Your web game hero %s, %d gold."
-msgstr "Votre héros du jeu web : %s, %d or."
+msgid "That is not a save code. On the other machine, open Saves and use Copy mine, then paste it here."
+msgstr "Ce n'est pas un code de sauvegarde. Sur l'autre machine, ouvrez Sauvegardes et utilisez Copier le mien, puis collez-le ici."
 
 #: scripts/saves_screen.gd
 msgid "clear"
@@ -14163,10 +14151,6 @@ msgstr "copier"
 #: scripts/saves_screen.gd
 msgid "from the code"
 msgstr "du code"
-
-#: scripts/saves_screen.gd
-msgid "from the web game"
-msgstr "du jeu web"
 
 #: scripts/saves_screen.gd
 msgid "just now"
@@ -15167,14 +15151,6 @@ msgstr "Vous vous réveillez à l'auberge, avec %d or en moins. Ce qui n'est pas
 #: scripts/state/upkeep.gd
 msgid "You wake at the inn. The innkeeper says nothing. Kind of her."
 msgstr "Vous vous réveillez à l'auberge. L'aubergiste ne dit rien. C'est gentil de sa part."
-
-#: scripts/state/web_import.gd
-msgid "%s, level %d %s"
-msgstr "%s, niveau %d, %s"
-
-#: scripts/state/web_import.gd
-msgid "(() => { try { return localStorage.getItem('%s'); } catch (e) { return null; } })()"
-msgstr "(() => { try { return localStorage.getItem('%s'); } catch (e) { return null; } })()"
 
 #: scripts/stats_screen.gd
 msgid "%d stat point%s to spend. Spending is permanent."

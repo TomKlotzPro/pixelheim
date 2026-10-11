@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.230.0",
+      "date": "2026-10-11",
+      "codename": "Clean Slate",
+      "notes": [
+        "The old web version is gone for good: no more offer to bring a hero over from it, and its old pages are off the site",
+        "To move a hero to another machine, use Copy mine here and Save code there"
+      ]
+    },
+    {
       "version": "0.229.0",
       "date": "2026-10-11",
       "codename": "Light Step",

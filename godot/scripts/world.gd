@@ -1,5 +1,5 @@
 extends Node2D
-## World orchestration: loads maps exported from the web game, builds their
+## World orchestration: loads the maps (assets/maps), builds their
 ## TileMapLayer, moves the hero through portals and doors, and runs the
 ## frame. Its pieces do the rest (Solid Ground, PIX-260, world_*.gd): the
 ## camera (CameraRig), what floats over the world (WorldFx), words
@@ -217,16 +217,8 @@ func _ready() -> void:
 	_build_hud()
 	interaction.build_prompt()
 	enter_map(map, arrival)
-	# A first visit to the Godot build that finds a web game hero in this
-	# browser offers to bring them along before anything else.
-	var greeted := false
-	if GameState.first_run:
-		var found := WebImport.find_in_browser()
-		if not found.is_empty():
-			open_saves(found, true)
-			greeted = true
 	# The title greets a launch (not a slot switch or a reload, and not the harness).
-	if not greeted and not GameState.title_seen and (not harness or flags.has("title")):
+	if not GameState.title_seen and (not harness or flags.has("title")):
 		open_title()
 	# The web page's loading screen fades as the first screen rises out of
 	# the same picture (PIX-296, web/shell.html); it waits for this word.
@@ -714,12 +706,9 @@ func _fade_rect(color: Color) -> ColorRect:
 	return dark
 
 
-## The saves screen; `web_save` defaults to whatever this browser's web game holds.
-func open_saves(web_save := {}, welcome := false) -> void:
-	var screen := preload("res://scripts/saves_screen.gd").new()
-	screen.web_save = web_save if not web_save.is_empty() else WebImport.find_in_browser()
-	screen.welcome = welcome
-	add_child(screen)
+## The saves screen.
+func open_saves() -> void:
+	add_child(preload("res://scripts/saves_screen.gd").new())
 
 ## Fast travel from the map screen; the waypoint is already usability-checked.
 ## The map and the place left dissolve into where it lands, as a door does.
