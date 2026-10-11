@@ -124,7 +124,20 @@ const SCENE = {"stars":[[36,39,"#040515"],[372,30,"#040619"],[447,117,"#080c27"]
 /* splash.py: end */
 
 // The loading screen's life, before the engine's script has even arrived.
+// It must never stand in the game's way: should it fail, the picture waits
+// without it and goes when the game is up.
 const loading = (function () {
+	try {
+		return alive();
+	} catch (err) {
+		console.error(err);
+		const away = () => document.getElementById('status') && document.getElementById('status').remove();
+		window.pixelheimShown = away;
+		return {progress: () => {}, started: () => setTimeout(away, 10000), fail: () => {}};
+	}
+}());
+
+function alive() {
 	const status = document.getElementById('status');
 	const stage = document.getElementById('status-stage');
 	const picture = document.getElementById('status-splash');
@@ -310,7 +323,7 @@ const loading = (function () {
 			status.style.pointerEvents = 'auto';
 		},
 	};
-}());
+}
 		</script>
 		<script src="$GODOT_URL"></script>
 		<script>
