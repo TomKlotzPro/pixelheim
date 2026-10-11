@@ -20,9 +20,6 @@ const FIELD_KEYS := [KEY_UP, KEY_DOWN, KEY_TAB, KEY_PAGEUP, KEY_PAGEDOWN]
 const RIGHT := Rect2(522, 82, 694, 520)
 
 var world: Node
-## The slot this hero goes into (Saves: an empty slot played, or one to
-## replace); 0 for the first free one.
-var target_slot := 0
 ## Begin with the Night of Ash, the first night and the tutorial (PIX-197).
 var play_night := true
 ## The first night's two states, Play and Skip (PIX-228): side by side on
@@ -376,13 +373,15 @@ func _pad_command(event: InputEvent) -> Callable:
 
 
 ## The hero takes the slot in hand on a first visit, else the first empty
-## one, and the world starts over around them in the village.
+## one, and the world starts over around them in the village. New Game on
+## the title is the one way here (PIX-316), and it never writes over a hero
+## or a save the game can't read (PIX-303).
 func _begin() -> void:
 	var name := name_field.text.strip_edges()
 	if name == "":
 		status.text = "A hero needs a name."
 		return
-	var target := target_slot if target_slot > 0 else GameState.free_slot()
+	var target := GameState.free_slot()
 	if target == 0:
 		status.text = "Every slot holds a hero. Clear one in Saves first."
 		return

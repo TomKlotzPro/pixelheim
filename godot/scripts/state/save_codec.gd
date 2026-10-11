@@ -57,6 +57,32 @@ static func serialize(state: Dictionary) -> String:
 	return JSON.stringify({"version": SAVE_VERSION, "state": state}, "", false)
 
 
+## Whether `raw` is a save envelope a later version wrote (PIX-303): a hero
+## this version can't read but a newer one can, so its slot is never empty.
+static func from_newer(raw: Variant) -> bool:
+	return (
+		raw is Dictionary and raw.has("state") and typeof(raw.get("version")) in [TYPE_INT, TYPE_FLOAT]
+		and int(raw["version"]) > SAVE_VERSION
+	)
+
+
+## Whether a slot file's text, just written, reads back as a hero this
+## version plays (PIX-303): JSON that parses, this version's envelope, and
+## a playable hero, as `migrate` would take it (a bug that broke the state
+## writes a save no one could load). Godot's own parse, not `parse_json`:
+## a well-explored save's integers take four times as long to restore, and
+## the check needs none of them.
+static func decodes(text: String) -> bool:
+	var json := JSON.new()
+	if json.parse(text) != OK or not json.data is Dictionary:
+		return false
+	var raw: Dictionary = json.data
+	return (
+		typeof(raw.get("version")) in [TYPE_INT, TYPE_FLOAT] and int(raw["version"]) == SAVE_VERSION
+		and raw.get("state") is Dictionary and valid_hero(raw["state"].get("hero"))
+	)
+
+
 ## Takes any historical save payload and upgrades it to the current version.
 ## Returns {} for saves from the future and for garbage.
 static func migrate(raw: Variant) -> Dictionary:
@@ -117,7 +143,7 @@ static func _v3_gear_instances(state: Dictionary) -> Dictionary:
 ## Validates a parsed save and rebases it on the current defaults (normalizeSave):
 ## purely additive fields need no version bump, they pick up their defaults here.
 static func normalize(state: Dictionary) -> Dictionary:
-	if not _valid_hero(state.get("hero")):
+	if not valid_hero(state.get("hero")):
 		return {}
 	var save := initial_state()
 	save.merge(state, true)
@@ -177,7 +203,7 @@ static func fresh_world() -> Dictionary:
 
 
 ## A hero the game could not play (a field missing, an unknown role) is refused.
-static func _valid_hero(hero: Variant) -> bool:
+static func valid_hero(hero: Variant) -> bool:
 	if not hero is Dictionary:
 		return false
 	for key in ["name", "roleId", "level", "xp", "xpToNext", "hp", "mp"]:

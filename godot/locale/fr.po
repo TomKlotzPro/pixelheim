@@ -2121,6 +2121,10 @@ msgid "A new dream under Sela's roof, the first night after Pell comes home"
 msgstr "Un nouveau rêve sous le toit de Sela, la première nuit après le retour de Pell"
 
 #: assets/data/changelog.json
+msgid "A new hero starts only from New Game on the title screen; with every slot taken, it says so instead of overwriting anyone"
+msgstr "Un nouveau héros ne commence que depuis Nouvelle partie, sur l'écran titre ; si tous les emplacements sont pris, le jeu le dit au lieu d'écraser qui que ce soit"
+
+#: assets/data/changelog.json
 msgid "A path is a permanent identity: an always-on passive theme and a SIGNATURE SKILL no tree can teach"
 msgstr "Une voie est une identité permanente : un thème passif toujours actif et une COMPÉTENCE SIGNATURE qu'aucun arbre ne peut enseigner"
 
@@ -2143,6 +2147,10 @@ msgstr "Une vraie porte pour entrer et sortir : trois cases de large, une port
 #: assets/data/changelog.json
 msgid "A real sun wheels over the world: dawn light, long dusk shadows, and true darkness answered by lamplight, door glow and hearth fire"
 msgstr "Un vrai soleil tourne au-dessus du monde : lumière de l'aube, longues ombres du crépuscule, et une vraie nuit à laquelle répondent lampes, lueurs des portes et feux de l'âtre"
+
+#: assets/data/changelog.json
+msgid "A save the game can't read is never shown as an empty slot or written over: it gets its own card and is kept as it is"
+msgstr "Une sauvegarde que le jeu ne sait pas lire n'est plus jamais affichée comme un emplacement vide ni écrasée : elle a sa propre carte et reste telle quelle"
 
 #: assets/data/changelog.json
 msgid "A settler with something to ask still heals you or plays first, then asks"
@@ -2939,6 +2947,10 @@ msgstr "Chaque rôle apprend trois compétences, débloquées aux niveaux 1, 3 e
 #: assets/data/changelog.json
 msgid "Every role verified to be able to finish the game"
 msgstr "Vérifié : chaque rôle peut terminer le jeu"
+
+#: assets/data/changelog.json
+msgid "Every save is checked before it replaces the last one, which is kept as a backup; if a save is ever damaged, your hero comes back from it and the game tells you"
+msgstr "Chaque sauvegarde est vérifiée avant de remplacer la précédente, gardée en secours ; si une sauvegarde est un jour abîmée, votre héros revient depuis celle-ci et le jeu vous le dit"
 
 #: assets/data/changelog.json
 msgid "Every screen keeps its title and its keys in the same places, with leaving always last as Esc close, and the keys on buttons stand on keycaps instead of being spelled out"
@@ -3861,6 +3873,10 @@ msgid "No more being stuck on \"Run home\": the night begins whether you come th
 msgstr "Fini le blocage sur « Rentrer au village » : la nuit commence que vous passiez la porte, chargiez une sauvegarde au village ou y soyez déjà"
 
 #: assets/data/changelog.json
+msgid "No more bumping into invisible bushes, and nothing grows over a camp, a chest, a door or the road"
+msgstr "Fini de buter contre des buissons invisibles, et rien ne pousse plus sur un camp, un coffre, une porte ou la route"
+
+#: assets/data/changelog.json
 msgid "No more glow around the hero at higher ranks: you look the same at every rank, and your gear is what shows. The rank-up moment stays, a burst of your class's light"
 msgstr "Plus de halo autour du héros aux rangs supérieurs : vous avez la même allure à chaque rang, et c'est votre équipement qui se voit. Le moment de l'ascension reste, un éclat de la lumière de votre classe"
 
@@ -4467,6 +4483,10 @@ msgstr "LES ÉTOURDISSEMENTS ONT DES LIMITES : un monstre étourdi ne lance pl
 #: assets/data/changelog.json
 msgid "STURDIER CASTERS AND ROGUES: mages, necromancers and rogues grow 6 health a level, and cloth wards better (the Mage Robe, the Traveler's Cloak and the whole Frostweave set). Heroes who levelled before catch up when their save loads. Every hero now takes about 6 to 15 hits from a foe of their own level, at every stage"
 msgstr "LANCEURS DE SORTS ET VOLEURS PLUS ROBUSTES : les mages, nécromanciens et voleurs gagnent 6 PV par niveau, et le tissu protège mieux (la Robe de mage, la Cape de voyageur et tout l'ensemble Tisse-givre). Les héros qui ont déjà progressé rattrapent leur retard au chargement de leur sauvegarde. Tout héros encaisse désormais environ 6 à 15 coups d'un ennemi de son niveau, à chaque étape"
+
+#: assets/data/changelog.json
+msgid "Safe Keeping"
+msgstr "En lieu sûr"
 
 #: assets/data/changelog.json
 msgid "Safe Roads"
@@ -5249,6 +5269,10 @@ msgid "The Tidecaller wears Tam's stewpot as a crown; once he falls, the tide do
 msgstr "L'Appelle-Marée porte la marmite de Tam en guise de couronne ; une fois qu'il est tombé, la porte des marées s'ouvre sur la plage"
 
 #: assets/data/changelog.json
+msgid "The Trees Came Back"
+msgstr "Le retour des arbres"
+
+#: assets/data/changelog.json
 msgid "The Truth of It"
 msgstr "La vérité des choses"
 
@@ -5775,6 +5799,10 @@ msgstr "Les habitants dessinés d'après le même modèle portent désormais leu
 #: assets/data/changelog.json
 msgid "Tracks crossfade instead of cutting, and the whole score plays through a touch of echo"
 msgstr "Les morceaux se fondent l'un dans l'autre au lieu de couper net, et toute la bande-son passe par une pointe d'écho"
+
+#: assets/data/changelog.json
+msgid "Trees, wheat and field stones are back on every outdoor map: the Deepwood is a forest again and Pixelheim's field grows wheat"
+msgstr "Les arbres, le blé et les pierres des champs reviennent sur toutes les cartes en plein air : les Bois-Profonds redeviennent une forêt et le champ de Pixelheim pousse du blé"
 
 #: assets/data/changelog.json
 msgid "Trophies like wolf pelts and imp horns to sell at the shop"
@@ -14081,6 +14109,10 @@ msgid "A hero to another computer or browser: copy their code here, paste it the
 msgstr "Un héros vers un autre ordinateur ou navigateur : copiez son code ici, collez-le là-bas."
 
 #: scripts/saves_screen.gd
+msgid "A newer Pixelheim wrote it: update the game to play this hero. It's kept as it is."
+msgstr "Une version plus récente de Pixelheim l'a écrite : mettez le jeu à jour pour jouer ce héros. Elle est gardée telle quelle."
+
+#: scripts/saves_screen.gd
 msgid "Clear %s from slot %d for good?"
 msgstr "Effacer %s de l'emplacement %d pour de bon ?"
 
@@ -14093,12 +14125,28 @@ msgid "Clear slot"
 msgstr "Vider l'emplacement"
 
 #: scripts/saves_screen.gd
+msgid "Clear slot %d's damaged save for good?"
+msgstr "Effacer pour de bon la sauvegarde endommagée de l'emplacement %d ?"
+
+#: scripts/saves_screen.gd
+msgid "Clear slot %d's save from a newer version for good?"
+msgstr "Effacer pour de bon la sauvegarde de l'emplacement %d, venue d'une version plus récente ?"
+
+#: scripts/saves_screen.gd
 msgid "Copy mine"
 msgstr "Copier le mien"
 
 #: scripts/saves_screen.gd
+msgid "Damaged save"
+msgstr "Sauvegarde endommagée"
+
+#: scripts/saves_screen.gd
 msgid "Empty slot"
 msgstr "Emplacement vide"
+
+#: scripts/saves_screen.gd
+msgid "Its last save couldn't be read: this is the one before it."
+msgstr "Sa dernière sauvegarde était illisible : voici la précédente."
 
 #: scripts/saves_screen.gd
 msgid "Level %d %s in %s"
@@ -14109,12 +14157,12 @@ msgid "Load into slot %d"
 msgstr "Charger dans l'emplacement %d"
 
 #: scripts/saves_screen.gd
-msgid "N starts a new hero here."
-msgstr "N crée ici un nouveau héros."
+msgid "New Game, on the title screen, starts a hero."
+msgstr "Nouvelle partie, sur l'écran titre, crée un héros."
 
 #: scripts/saves_screen.gd
-msgid "New hero"
-msgstr "Nouveau héros"
+msgid "Once cleared, it's gone for good: nothing brings it back. Press X once more to clear slot %d."
+msgstr "Une fois effacée, elle est perdue pour de bon : rien ne la ramène. Appuyez encore une fois sur X pour vider l'emplacement %d."
 
 #: scripts/saves_screen.gd
 msgid "Paste a save code"
@@ -14129,10 +14177,6 @@ msgid "Replace %s in slot %d with %s %s? Their progress here would be lost."
 msgstr "Remplacer %s (emplacement %d) par %s %s ? Sa progression ici serait perdue."
 
 #: scripts/saves_screen.gd
-msgid "Replace %s with a new hero?"
-msgstr "Remplacer %s par un nouveau héros ?"
-
-#: scripts/saves_screen.gd
 msgid "Save code"
 msgstr "Code de sauvegarde"
 
@@ -14141,8 +14185,16 @@ msgid "Save code copied. On the other machine, paste it under Save code in Saves
 msgstr "Code de sauvegarde copié. Sur l'autre machine, collez-le dans Code de sauvegarde, sous Sauvegardes."
 
 #: scripts/saves_screen.gd
+msgid "Saved by a newer version"
+msgstr "Sauvegarde d'une version plus récente"
+
+#: scripts/saves_screen.gd
 msgid "Slot %d"
 msgstr "Emplacement %d"
+
+#: scripts/saves_screen.gd
+msgid "Slot %d holds a save this version can't read, so nothing is written there. X clears it, if you mean to."
+msgstr "L'emplacement %d contient une sauvegarde que cette version ne sait pas lire : rien n'y est écrit. X l'efface, si vous le voulez vraiment."
 
 #: scripts/saves_screen.gd
 msgid "Slot %d is already empty."
@@ -14153,8 +14205,20 @@ msgid "Slot %d is empty now."
 msgstr "L'emplacement %d est maintenant vide."
 
 #: scripts/saves_screen.gd
+msgid "Slot %d was saved by a newer version. Update Pixelheim to play this hero."
+msgstr "La sauvegarde de l'emplacement %d vient d'une version plus récente. Mettez Pixelheim à jour pour jouer ce héros."
+
+#: scripts/saves_screen.gd
+msgid "Slot %d's save can't be read, so there's no one to play. It's kept as it is."
+msgstr "La sauvegarde de l'emplacement %d est illisible : il n'y a personne à jouer. Elle est gardée telle quelle."
+
+#: scripts/saves_screen.gd
 msgid "That is not a save code. On the other machine, open Saves and use Copy mine, then paste it here."
 msgstr "Ce n'est pas un code de sauvegarde. Sur l'autre machine, ouvrez Sauvegardes et utilisez Copier le mien, puis collez-le ici."
+
+#: scripts/saves_screen.gd
+msgid "The game can't read this save, so it's kept as it is. X clears it, if you mean to."
+msgstr "Le jeu ne peut pas lire cette sauvegarde : elle est gardée telle quelle. X l'efface, si vous le voulez vraiment."
 
 #: scripts/saves_screen.gd
 msgid "clear"
@@ -14171,10 +14235,6 @@ msgstr "du code"
 #: scripts/saves_screen.gd
 msgid "just now"
 msgstr "à l'instant"
-
-#: scripts/saves_screen.gd
-msgid "new hero"
-msgstr "nouveau héros"
 
 #: scripts/saves_screen.gd
 msgid "paste"
@@ -14745,6 +14805,18 @@ msgid "+%d gold"
 msgstr "+%d or"
 
 #: scripts/state/game_state.gd
+msgid "%s's last save couldn't be read, so the game loaded the one before it."
+msgstr "La dernière sauvegarde de %s était illisible : le jeu a chargé la précédente."
+
+#: scripts/state/game_state.gd
+msgid "Slot %d was saved by a newer version of Pixelheim. It's kept as it is, in Saves."
+msgstr "La sauvegarde de l'emplacement %d vient d'une version plus récente de Pixelheim. Elle est gardée telle quelle, dans Sauvegardes."
+
+#: scripts/state/game_state.gd
+msgid "Slot %d's save can't be read. It's kept as it is, in Saves."
+msgstr "La sauvegarde de l'emplacement %d est illisible. Elle est gardée telle quelle, dans Sauvegardes."
+
+#: scripts/state/game_state.gd
 msgid "Wanderer"
 msgstr "Vagabond"
 
@@ -15231,6 +15303,10 @@ msgstr "Silhouette"
 #: scripts/title_screen.gd
 msgid "Continue  %s, Lv %d"
 msgstr "Continuer  %s, Niv. %d"
+
+#: scripts/title_screen.gd
+msgid "Every slot holds a save. Clear one in Saves to start a new hero."
+msgstr "Chaque emplacement contient une sauvegarde. Videz-en un dans Sauvegardes pour créer un nouveau héros."
 
 #: scripts/title_screen.gd
 msgid "NEW"
