@@ -2733,6 +2733,10 @@ msgid "Dungeons live in the world now: walk to the mountain gate to climb"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Dust drifts in the torchlight, and no two floors open in the same room any more"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "E moves the talk on and Esc skips to the morning; with Reduce motion the camera cuts and nothing shakes"
 msgstr ""
 
@@ -2802,6 +2806,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Each comes with a full 12-node skill tree, its own look palette, and a proven path to the final boss - the balance sim clears the game with all seven classes"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Each dungeon looks like its place: the Sea Cave wet rock with shallow pools and weed, the Blackiron Shafts rails, timber props and glinting ore"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3142,6 +3150,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "First look at the open world: walk the Ashenreach from town (beta)"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Five Halls"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5214,6 +5226,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The Great Expansion"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The Greyhold Cellars have niches, cobwebs and bones, the Ice Cave frost creeping off its walls, and the Kings' Vault red rugs, banners and gold trim"
 msgstr ""
 
 #: assets/data/changelog.json

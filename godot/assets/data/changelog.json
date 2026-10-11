@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.237.0",
+      "date": "2026-10-11",
+      "codename": "Five Halls",
+      "notes": [
+        "Each dungeon looks like its place: the Sea Cave wet rock with shallow pools and weed, the Blackiron Shafts rails, timber props and glinting ore",
+        "The Greyhold Cellars have niches, cobwebs and bones, the Ice Cave frost creeping off its walls, and the Kings' Vault red rugs, banners and gold trim",
+        "Dust drifts in the torchlight, and no two floors open in the same room any more"
+      ]
+    },
+    {
       "version": "0.236.0",
       "date": "2026-10-11",
       "codename": "Paved Ways",
