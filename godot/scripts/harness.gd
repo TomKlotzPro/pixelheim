@@ -850,11 +850,10 @@ func _run_test_harness() -> void:
 		world.add_child(load("res://scripts/%s.gd" % ledger).new())
 		await get_tree().create_timer(0.3).timeout
 	if flags.has("saves"):
-		# `--slots <dir>`: full slots read from a folder (PIX-230: the cards'
-		# lines widened the window off the screen only once heroes filled
-		# them), instead of the player's own.
-		if flags.has("--slots"):
-			GameState.slots = SaveSlots.new(flags.value("--slots"))
+		# With `--slots <dir>`, GameState.boot has read the slots from that
+		# folder (PIX-230: the cards' lines widened the window off the screen
+		# only once heroes filled them; PIX-303: the cards of saves it can't
+		# read), instead of the player's own.
 		world.open_saves()
 		await get_tree().create_timer(0.3).timeout
 	if flags.has("--ready"):

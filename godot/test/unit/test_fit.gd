@@ -67,7 +67,7 @@ func before_each() -> void:
 		"maren_relics": {"progress": 0, "done": false},
 	})
 	GameState.pack.items.merge({"potion_hp": 4, "gem": 1, "furn_plant": 1})
-	GameState.slots = SaveSlots.new(FULL_SLOTS)
+	GameState.slots = SaveSlots.new(FULL_SLOTS, true)
 	# Laid out where they settle, not 10 px down mid-entrance.
 	GameState.settings.reduce_motion = true
 
@@ -137,6 +137,15 @@ func _fits(kinds: Array[String]) -> Array[String]:
 func test_the_saves_screen_fits_with_every_slot_full() -> void:
 	var out := await _fits(["saves"])
 	assert_eq(out.size(), 0, "\n".join(out))
+
+
+func test_the_saves_screen_fits_with_saves_it_cant_read() -> void:
+	# PIX-303: a damaged and a newer version's card, then a hero from the
+	# save before, its line said on the card.
+	for folder in ["res://test/fixtures/slots_unread", "res://test/fixtures/slots_backup"]:
+		GameState.slots = SaveSlots.new(folder, true)
+		var out := await _fits(["saves"])
+		assert_eq(out.size(), 0, "%s\n%s" % [folder, "\n".join(out)])
 
 
 func test_the_saves_window_keeps_its_width_and_its_place() -> void:

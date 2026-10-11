@@ -14093,6 +14093,10 @@ msgid "A hero to another computer or browser: copy their code here, paste it the
 msgstr ""
 
 #: scripts/saves_screen.gd
+msgid "A newer Pixelheim wrote it: update the game to play this hero. It's kept as it is."
+msgstr ""
+
+#: scripts/saves_screen.gd
 msgid "Clear %s from slot %d for good?"
 msgstr ""
 
@@ -14105,11 +14109,27 @@ msgid "Clear slot"
 msgstr ""
 
 #: scripts/saves_screen.gd
+msgid "Clear slot %d's damaged save for good?"
+msgstr ""
+
+#: scripts/saves_screen.gd
+msgid "Clear slot %d's save from a newer version for good?"
+msgstr ""
+
+#: scripts/saves_screen.gd
 msgid "Copy mine"
 msgstr ""
 
 #: scripts/saves_screen.gd
+msgid "Damaged save"
+msgstr ""
+
+#: scripts/saves_screen.gd
 msgid "Empty slot"
+msgstr ""
+
+#: scripts/saves_screen.gd
+msgid "Its last save couldn't be read: this is the one before it."
 msgstr ""
 
 #: scripts/saves_screen.gd
@@ -14126,6 +14146,10 @@ msgstr ""
 
 #: scripts/saves_screen.gd
 msgid "New hero"
+msgstr ""
+
+#: scripts/saves_screen.gd
+msgid "Once cleared, it's gone for good: nothing brings it back. Press X once more to clear slot %d."
 msgstr ""
 
 #: scripts/saves_screen.gd
@@ -14153,7 +14177,15 @@ msgid "Save code copied. On the other machine, paste it under Save code in Saves
 msgstr ""
 
 #: scripts/saves_screen.gd
+msgid "Saved by a newer version"
+msgstr ""
+
+#: scripts/saves_screen.gd
 msgid "Slot %d"
+msgstr ""
+
+#: scripts/saves_screen.gd
+msgid "Slot %d holds a save this version can't read, so nothing is written there. X clears it, if you mean to."
 msgstr ""
 
 #: scripts/saves_screen.gd
@@ -14165,7 +14197,19 @@ msgid "Slot %d is empty now."
 msgstr ""
 
 #: scripts/saves_screen.gd
+msgid "Slot %d was saved by a newer version. Update Pixelheim to play this hero."
+msgstr ""
+
+#: scripts/saves_screen.gd
+msgid "Slot %d's save can't be read, so there's no one to play. It's kept as it is."
+msgstr ""
+
+#: scripts/saves_screen.gd
 msgid "That is not a save code. On the other machine, open Saves and use Copy mine, then paste it here."
+msgstr ""
+
+#: scripts/saves_screen.gd
+msgid "The game can't read this save, so it's kept as it is. X clears it, if you mean to."
 msgstr ""
 
 #: scripts/saves_screen.gd
@@ -14754,6 +14798,18 @@ msgstr ""
 
 #: scripts/state/gains.gd
 msgid "+%d gold"
+msgstr ""
+
+#: scripts/state/game_state.gd
+msgid "%s's last save couldn't be read, so the game loaded the one before it."
+msgstr ""
+
+#: scripts/state/game_state.gd
+msgid "Slot %d was saved by a newer version of Pixelheim. It's kept as it is, in Saves."
+msgstr ""
+
+#: scripts/state/game_state.gd
+msgid "Slot %d's save can't be read. It's kept as it is, in Saves."
 msgstr ""
 
 #: scripts/state/game_state.gd

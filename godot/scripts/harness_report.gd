@@ -40,6 +40,7 @@ const TABLE := [
 	{"field": "bossbar", "says": "the boss bar across the top: its foe's share of health while it shows, or none once it has gone; on a fight or a boss's floor (PIX-288)"},
 	{"field": "burning", "says": "on the Night of Bells' embers: the roofs still burning (PIX-253 step 9)"},
 	{"field": "card", "says": "the card naming the place the hero has come to, while it's up (PIX-269)"},
+	{"field": "cards", "says": "with --slots: what each slot's card on the saves screen shows: hero, backup (the save before, its last unreadable), damaged, newer or empty (PIX-303)"},
 	{"field": "change", "says": "with fades: how the last change of scene looked: dissolve, dark or cut, or seamless for a line walked over (PIX-269)"},
 	{"field": "chapter", "says": "a chapter card's chapter, while it's up (PIX-253)"},
 	{"field": "clock", "says": "with sleep: the clock the hero woke at (PIX-246)"},
@@ -59,6 +60,7 @@ const TABLE := [
 	{"field": "floats", "says": "what floated up from where it was won, merged, when anything did (PIX-245)"},
 	{"field": "floor", "says": "on a floor of a region's dungeon: which of how many, 2/3 (PIX-255)"},
 	{"field": "frames", "says": "with crossing: the walk's frames, the most work and the 99th percentile in ms: 240 max 3.1 p99 2.4 (PIX-269)"},
+	{"field": "free", "says": "with launch: the slot New Game makes its hero in, 0 when none is free (PIX-303: never one holding a save the game can't read)"},
 	{"field": "gate", "says": "the gate the story keeps shut that said its line on this run (PIX-254)"},
 	{"field": "home", "says": "who the story brought home to live in town, by first name: wenna (PIX-255)"},
 	{"field": "jobs", "says": "on the Night of Bells: the townsfolk's jobs that have acted, by kind: arrows,bell,cheese (PIX-253 step 9)"},
@@ -287,6 +289,16 @@ func field_card() -> String:
 	return (card as PanelContainer).get_child(0).get_child(0).text if is_instance_valid(card) else ""
 
 
+func field_cards() -> String:
+	if not flags.has("--slots"):
+		return ""
+	var kinds: PackedStringArray = []
+	for slot in range(1, SaveSlots.SLOT_COUNT + 1):
+		var summary := GameState.slots.summary(slot)
+		kinds.append("backup" if summary.get("backup", false) else String(summary["kind"]))
+	return ",".join(kinds)
+
+
 func field_change() -> String:
 	if not flags.has("fades"):
 		return ""
@@ -393,6 +405,10 @@ func field_floor() -> String:
 
 func field_frames() -> String:
 	return noted("frames")
+
+
+func field_free() -> String:
+	return str(GameState.free_slot()) if flags.has("launch") else ""
 
 
 func field_gate() -> String:

@@ -72,6 +72,11 @@ var title_seen := false
 ## A plain launch found no hero in its slot: a stand-in plays behind the title
 ## and is never written, until a hero is made or brought in.
 var standing_in := false
+## A quiet word about the slot in hand (PIX-303), for whoever shows it first
+## (the title's line, else the world's plate), then cleared: its hero came
+## from the save before, or the slot a launch opened couldn't be read.
+## Not saved.
+var slot_note := ""
 ## The hero's latest deed, for the town's gossip (PIX-149): {kind: cleared |
 ## boss | project | settler, and the name to say}. Not saved.
 var last_deed := {}
@@ -176,9 +181,17 @@ func boot(flags: HarnessFlags) -> void:
 		# `still`: the run with Reduce motion on, as a player can set it.
 		if flags.has("still"):
 			settings.reduce_motion = true
+		# `--slots <dir>`: the slots read from a folder of fixtures, never
+		# written (PIX-230); `launch` opens its first slot as a plain launch
+		# opens the last one played (PIX-303: one it can't read).
+		if flags.has("--slots"):
+			slots = SaveSlots.new(flags.value("--slots"), true)
+			if flags.has("launch"):
+				slot = 1
 	else:
 		slot = clampi(settings.last_slot, 1, SaveSlots.SLOT_COUNT)
-	var saved := slots.read(slot) if slot != NO_SLOT else {}
+	var seen := slots.look(slot) if slot != NO_SLOT else {"kind": SaveSlots.EMPTY}
+	var saved: Dictionary = seen["state"] if seen["kind"] == SaveSlots.HERO else {}
 	# `--load <file>` (harness): an old save played as it loads from a slot
 	# (a code or JSON: the fixtures in test/fixtures), nothing written back
 	# (PIX-257: a hero saved on the old mountain's floors wakes by its gate).
@@ -186,11 +199,15 @@ func boot(flags: HarnessFlags) -> void:
 		saved = SaveCodec.parse_any(FileAccess.get_file_as_string(flags.value("--load")))
 	if saved.is_empty():
 		new_game()
-		# A plain launch waits for the title's hero; a named slot starts at once.
-		standing_in = not flags.has("--slot")
+		# A plain launch waits for the title's hero; a named slot starts at
+		# once, unless what's in it can't be read: nothing is written over
+		# that, and a hero made at the title goes to a free slot (PIX-303).
+		standing_in = not flags.has("--slot") or seen["kind"] != SaveSlots.EMPTY
+		slot_note = unread_note(slot, seen["kind"])
 		save_now()
 	else:
 		apply(saved)
+		slot_note = backup_note(seen)
 	if slot != NO_SLOT and settings.last_slot != slot:
 		settings.last_slot = slot
 		settings.save_file()
@@ -201,13 +218,32 @@ func boot(flags: HarnessFlags) -> void:
 func play_slot(target: int) -> bool:
 	# An empty slot holds no one to play (Tom: playing one skipped the hero's
 	# making and the Night of Ash): a new hero is made, in creation.
-	var saved := slots.read(target)
-	if saved.is_empty():
+	var seen := slots.look(target)
+	if seen["kind"] != SaveSlots.HERO:
 		return false
 	save_now()
 	_use_slot(target)
-	apply(saved)
+	apply(seen["state"])
+	slot_note = backup_note(seen)
 	return true
+
+
+## What a hero read from the save before is told (PIX-303), or "".
+static func backup_note(seen: Dictionary) -> String:
+	if not seen.get("backup", false):
+		return ""
+	return Text.t("%s's last save couldn't be read, so the game loaded the one before it.") % seen["state"]["hero"]["name"]
+
+
+## What a launch that couldn't read its slot says (PIX-303): it's kept as
+## it was, and the saves screen shows it. "" for an empty slot.
+static func unread_note(target: int, kind: String) -> String:
+	match kind:
+		SaveSlots.DAMAGED:
+			return Text.t("Slot %d's save can't be read. It's kept as it is, in Saves.") % target
+		SaveSlots.NEWER:
+			return Text.t("Slot %d was saved by a newer version of Pixelheim. It's kept as it is, in Saves.") % target
+	return ""
 
 
 ## Writes a brand-new hero into a slot (replacing whatever was there) and plays it.
@@ -215,6 +251,7 @@ func play_slot(target: int) -> bool:
 func new_hero_in(target: int, name := DEFAULT_HERO_NAME, role_id := DEFAULT_ROLE, look := 0, night := true) -> void:
 	save_now()
 	_use_slot(target)
+	slot_note = ""
 	new_game(name, role_id, look, night)
 	save_now()
 	if settings.last_slot != target:
@@ -223,12 +260,15 @@ func new_hero_in(target: int, name := DEFAULT_HERO_NAME, role_id := DEFAULT_ROLE
 
 
 ## Where a new hero should live: the slot in hand while a stand-in holds it,
-## else the first empty one; 0 when all are taken.
+## else the first empty one; 0 when all are taken. A slot holding a save
+## this version can't read is never free, the one in hand neither (PIX-303:
+## a launch that couldn't read the last slot played made its next hero
+## there, over the file).
 func free_slot() -> int:
-	if standing_in:
+	if standing_in and (slot == NO_SLOT or slots.is_free(slot)):
 		return slot
 	for n in range(1, SaveSlots.SLOT_COUNT + 1):
-		if slots.summary(n).is_empty():
+		if slots.is_free(n):
 			return n
 	return 0
 
@@ -237,13 +277,14 @@ func free_slot() -> int:
 func import_into(target: int, state: Dictionary) -> void:
 	save_now()
 	_use_slot(target)
+	slot_note = ""
 	apply(state)
 	save_now()
 
 
-## Empties a slot; false when it already was.
+## Empties a slot, a save it couldn't read too; false when it already was.
 func clear_slot(target: int) -> bool:
-	if slots.summary(target).is_empty():
+	if slots.is_free(target):
 		return false
 	slots.erase(target)
 	# The hero in play goes too: what's left is the title's unsaved stand-in,

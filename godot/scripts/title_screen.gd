@@ -13,6 +13,10 @@ const SHINE_EVERY_S := 8.0
 ## The picture the game loaded under (PIX-296: the boot splash and the web
 ## page's, drawn by tools/splash.py), which a launch's title rises out of.
 const SPLASH := "res://assets/splash.png"
+## The word about the slot in hand (PIX-303): this far under the menu, over
+## the night's dark sky rather than the lit street, two lines at most.
+const NOTE_GAP := 20.0
+const NOTE_WIDTH := 1000.0
 
 ## Whether this session's first title has risen: later ones (back from the
 ## saves) rise out of the night's colour.
@@ -225,6 +229,16 @@ func _card() -> void:
 	options.append({"label": "Options", "action": _options})
 	options.append({"label": "What's new", "action": _whats_new})
 	_draw_menu()
+	# A word about the slot in hand, said once (PIX-303): the one this launch
+	# opened can't be read (so no Continue, and New Game makes its hero in
+	# a free slot), or its hero is the save before, the last unreadable.
+	if GameState.slot_note != "":
+		var note := _shadowed(Layout.wrapped(UiStyle.label(GameState.slot_note, 13, UiStyle.CREAM), NOTE_WIDTH))
+		note.position = Vector2((VIEW.x - NOTE_WIDTH) / 2.0, middle.position.y + menu.get_combined_minimum_size().y + NOTE_GAP)
+		note.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		# Placed, so kept to its lines once they know their width.
+		add_child(Layout.hugging(note))
+		GameState.slot_note = ""
 	# A browser that won't keep saves says so before anyone plays (PIX-200).
 	if not GameState.saves_kept():
 		var warning := UiStyle.label("This browser window won't keep your saves (a private window?). Your hero lasts only while it's open.", 13, UiStyle.LAMP, Vector2(0, 664))
