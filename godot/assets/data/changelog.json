@@ -1,6 +1,19 @@
 {
   "releases": [
     {
+      "version": "0.224.0",
+      "date": "2026-10-11",
+      "codename": "The Kings' Vault",
+      "notes": [
+        "After the Night of Bells, a door of black iron opens under the summit: the Kings' Vault, five floors of the hoard Fafnyr hated",
+        "The Hollow King waits at the bottom with the Old King's Crown, and the Obsidian Blade, Runic Armor and Starfall Staff are down there too",
+        "Levels come more slowly, and from Greyhold on the bosses want bought gear: every class finds a new weapon, armour and trinket to buy at each chapter",
+        "Each region's last floor hides a hoard chest with its best piece",
+        "Two new feats, Every Letter Delivered and A Full House, and Grandmother Gulp is posted once Pixelheim is a town",
+        "The Deep Hunt is gone: its gear, crystals and medals stay, and a hero saved down there wakes in town"
+      ]
+    },
+    {
       "version": "0.223.0",
       "date": "2026-10-11",
       "codename": "The Night of Bells",

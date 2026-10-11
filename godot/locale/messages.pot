@@ -2205,6 +2205,10 @@ msgid "ASKED BEFORE BIG BUYS: the house deed and the workbench ask before they t
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "After the Night of Bells, a door of black iron opens under the summit: the Kings' Vault, five floors of the hoard Fafnyr hated"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "After the fire the gatehouse is scorched and a tower has lost its roof; the Hamlet mends it"
 msgstr ""
 
@@ -2766,6 +2770,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Each region has its own monsters; deeper regions hit harder and drop better"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Each region's last floor hides a hoard chest with its best piece"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3482,6 +3490,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Level-ups now bank 5 stat points: spend them on STR, INT, DEX or DEF"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Levels come more slowly, and from Greyhold on the bosses want bought gear: every class finds a new weapon, armour and trinket to buy at each chapter"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5017,6 +5029,10 @@ msgid "The Deep Hunt has named monsters of its own, posted on the board as you r
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Deep Hunt is gone: its gear, crystals and medals stay, and a hero saved down there wakes in town"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Deep Hunt now deepens gear for every slot, from gloves and boots to amulets and shields, the regions' sets and the named pieces"
 msgstr ""
 
@@ -5078,6 +5094,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The Hollow Captain no longer fights to the end: wear him down and read him Maren's words, and he stands down, hands you Oskar's shield and lies down to rest"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The Hollow King waits at the bottom with the Old King's Crown, and the Obsidian Blade, Runic Armor and Starfall Staff are down there too"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5674,6 +5694,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Turning down your old web hero takes you to the title to make a new one - no more playing a stand-in that's never saved"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Two new feats, Every Letter Delivered and A Full House, and Grandmother Gulp is posted once Pixelheim is a town"
 msgstr ""
 
 #: assets/data/changelog.json

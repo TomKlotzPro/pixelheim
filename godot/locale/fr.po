@@ -2205,6 +2205,10 @@ msgid "ASKED BEFORE BIG BUYS: the house deed and the workbench ask before they t
 msgstr "CONFIRMATION AVANT LES GROS ACHATS : le titre de propriété de la maison et l'établi demandent confirmation avant de prendre votre or - appuyez de nouveau pour acheter. Les meubles ne bloquent jamais l'entrée, une amélioration vous rend ce qui se trouvait sur son passage, et de nouvelles astuces expliquent la maison, les titres de propriété et la banque"
 
 #: assets/data/changelog.json
+msgid "After the Night of Bells, a door of black iron opens under the summit: the Kings' Vault, five floors of the hoard Fafnyr hated"
+msgstr "Après la Nuit des Cloches, une porte de fer noir s'ouvre sous le sommet : le Caveau des rois, cinq étages du trésor que Fafnyr détestait"
+
+#: assets/data/changelog.json
 msgid "After the fire the gatehouse is scorched and a tower has lost its roof; the Hamlet mends it"
 msgstr "Après l'incendie, la porterie est noircie et une tour a perdu son toit ; le hameau la répare"
 
@@ -2767,6 +2771,10 @@ msgstr "Chaque région a sa propre ambiance de couleurs, et la nuit retire un pe
 #: assets/data/changelog.json
 msgid "Each region has its own monsters; deeper regions hit harder and drop better"
 msgstr "Chaque région a ses propres monstres ; les régions plus lointaines frappent plus fort et donnent un meilleur butin"
+
+#: assets/data/changelog.json
+msgid "Each region's last floor hides a hoard chest with its best piece"
+msgstr "Le dernier étage de chaque région cache un coffre au trésor avec sa meilleure pièce"
 
 #: assets/data/changelog.json
 msgid "Each region's road now waits for its chapter: a rockfall on the cliff road to Saltmere, the burnt river bridge north of town, Ulla's barricade before Greyhold and an avalanche on the Frostgate road"
@@ -3483,6 +3491,10 @@ msgstr "Laissez-moi partir"
 #: assets/data/changelog.json
 msgid "Level-ups now bank 5 stat points: spend them on STR, INT, DEX or DEF"
 msgstr "Chaque montée de niveau met de côté 5 points de caractéristique : dépensez-les en FOR, INT, DEX ou DEF"
+
+#: assets/data/changelog.json
+msgid "Levels come more slowly, and from Greyhold on the bosses want bought gear: every class finds a new weapon, armour and trinket to buy at each chapter"
+msgstr "Les niveaux viennent plus lentement, et dès Greyhold les boss demandent un équipement acheté : chaque classe trouve une nouvelle arme, une armure et un bijou à acheter à chaque chapitre"
 
 #: assets/data/changelog.json
 msgid "Liane's observatory and Greyhold's keep open into rooms now, not straight into a cave: Liane's room with her desk and books, and Captain Hale's hall with his table, banners and armour"
@@ -5017,6 +5029,10 @@ msgid "The Deep Hunt has named monsters of its own, posted on the board as you r
 msgstr "La Traque des Profondeurs a ses propres monstres nommés, affichés au tableau à mesure que vous les atteignez : Sombrombre, l'Abbé des Os, Mère-Creuse et Cœur-de-Fer gardent chacun l'escalier d'une profondeur et laissent une pièce épique forgée dans les profondeurs"
 
 #: assets/data/changelog.json
+msgid "The Deep Hunt is gone: its gear, crystals and medals stay, and a hero saved down there wakes in town"
+msgstr "La Traque des Profondeurs disparaît : son équipement, ses cristaux et ses médailles restent, et un héros sauvegardé là-dessous se réveille au village"
+
+#: assets/data/changelog.json
 msgid "The Deep Hunt now deepens gear for every slot, from gloves and boots to amulets and shields, the regions' sets and the named pieces"
 msgstr "La Traque des Profondeurs approfondit désormais l'équipement de chaque emplacement, des gants et bottes aux amulettes et boucliers, les ensembles des régions et les pièces nommées"
 
@@ -5079,6 +5095,10 @@ msgstr "Chaque projet du Hameau apporte quelque chose : Odo paie un dixième d
 #: assets/data/changelog.json
 msgid "The Hollow Captain no longer fights to the end: wear him down and read him Maren's words, and he stands down, hands you Oskar's shield and lies down to rest"
 msgstr "Le Capitaine creux ne se bat plus jusqu'au bout : épuisez-le et lisez-lui les mots de Maren, il quitte son poste, vous remet le bouclier d'Oskar et s'allonge pour se reposer"
+
+#: assets/data/changelog.json
+msgid "The Hollow King waits at the bottom with the Old King's Crown, and the Obsidian Blade, Runic Armor and Starfall Staff are down there too"
+msgstr "Le Roi Creux attend tout en bas avec la Couronne du Vieux Roi, et la Lame d'obsidienne, l'Armure runique et le Bâton d'étoile filante y sont aussi"
 
 #: assets/data/changelog.json
 msgid "The JOURNAL (J) tracks every promise with progress bars and tells you who to see when it's ready"
@@ -5675,6 +5695,10 @@ msgstr "Dévié"
 #: assets/data/changelog.json
 msgid "Turning down your old web hero takes you to the title to make a new one - no more playing a stand-in that's never saved"
 msgstr "Refuser votre ancien héros du web vous ramène à l'écran titre pour en créer un nouveau - fini la doublure qu'on ne sauvegarde jamais"
+
+#: assets/data/changelog.json
+msgid "Two new feats, Every Letter Delivered and A Full House, and Grandmother Gulp is posted once Pixelheim is a town"
+msgstr "Deux nouveaux hauts faits, Toutes les lettres remises et Maison pleine, et Grand-mère Glouglou est affichée dès que Pixelheim devient une ville"
 
 #: assets/data/changelog.json
 msgid "Two new regions past the mountain ring: the old-growth Deepwood in the east, the drowned Mirefen in the west"
