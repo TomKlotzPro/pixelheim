@@ -590,6 +590,8 @@ func _ground_layers() -> Node2D:
 	water.set_shader_parameter("water_map", kept.water_map)
 	ground_tint.set_shader_parameter("water_map", kept.water_map)
 	ground_layer.material = water
+	# The floor answers to a boss's glow too (Lights.FLOOR, PIX-314).
+	ground_layer.light_mask |= Lights.FLOOR
 	root.add_child(ground_layer)
 	# The streets' paving (PIX-307), the pack's own stone, untoned but where
 	# a region tones all its ground (the Frostgate's snow: its road's stone
@@ -613,6 +615,7 @@ func _ground_layers() -> Node2D:
 	rim_layer = tile_layer_of(PunyTerrain.tileset())
 	rim_layer.position = ground_layer.position
 	rim_layer.material = ground_tint
+	rim_layer.light_mask |= Lights.FLOOR
 	root.add_child(rim_layer)
 	decor_sway = _swaying(TREE_SWAY, true)
 	flowers_sway = _swaying(FLOWER_SWAY, false)
@@ -631,6 +634,12 @@ func _ground_layers() -> Node2D:
 	# Bridges, cave mouths and ramparts stand on that ground as Puny objects;
 	# the village far off brings its own rampart, wells and growth.
 	_objects_layer = tile_layer_of(PunyTerrain.tileset())
+	# The river Shade drew between a bridge's planks takes the water's own
+	# look (PIX-306): the mire's murk under its bridges, not his cyan.
+	var planks := _toning()
+	planks.set_shader_parameter("strength", 0.0)
+	planks.set_shader_parameter("planks", true)
+	_objects_layer.material = planks
 	root.add_child(_objects_layer)
 	# Pixelheim's rampart in the Medieval Age's stone, its gatehouse at the
 	# road (PIX-248); what the fire left of it darker, on a layer of its own.
@@ -958,6 +967,9 @@ func _build_dungeon(data: MapData) -> Node2D:
 	root.add_child(_dark_beyond(data))
 	var dungeon := PunyDungeon.sheet()
 	var layer := tile_layer_of(dungeon.tileset)
+	# Its floor and walls answer to a boss's glow (Lights.FLOOR, PIX-314);
+	# what stands on them doesn't.
+	layer.light_mask |= Lights.FLOOR
 	dungeon_objects = tile_layer_of(dungeon.tileset)
 	wall_torches = []
 	for cell: Vector2i in data.grid:
@@ -1003,6 +1015,7 @@ func _build_dungeon(data: MapData) -> Node2D:
 	root.add_child(layer)
 	var ice := _frozen(data)
 	if ice != null:
+		ice.light_mask |= Lights.FLOOR
 		root.add_child(ice)
 		# The ice gives the dark back a little cold light, here and there.
 		for cell: Vector2i in data.grid:

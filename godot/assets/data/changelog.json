@@ -1,6 +1,26 @@
 {
   "releases": [
     {
+      "version": "0.235.0",
+      "date": "2026-10-11",
+      "codename": "Deep Water",
+      "notes": [
+        "Rivers, ponds and the Deepwood's lake have depth now: darker down the middle, lighter at the banks, with foam where they lap the shore and streaks drifting downstream",
+        "Banks curve like real shores instead of ruler-straight steps, and rivers foam against the bridge piles",
+        "The Mirefen's pools are murky olive water with lily pads, duckweed and reeds, the Deepwood's lake dark teal and the Frostgate's water icy"
+      ]
+    },
+    {
+      "version": "0.234.0",
+      "date": "2026-10-11",
+      "codename": "Clean Pixels",
+      "notes": [
+        "Bosses and named beasts are drawn at whole sizes, twice their kind (the Tidecaller three times), so their pixels are as crisp as everything around them",
+        "Cinderjaw and Rimefang now tower over their kind, and every boss stands on its own shadow, with a glow of its colour at its feet in the dark",
+        "Health bars, names and level tags sit just over a boss's head instead of floating far above it"
+      ]
+    },
+    {
       "version": "0.233.0",
       "date": "2026-10-11",
       "codename": "Safe Keeping",

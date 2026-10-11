@@ -2353,6 +2353,10 @@ msgid "Balance pass, informed by simulating hundreds of playthroughs"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Banks curve like real shores instead of ruler-straight steps, and rivers foam against the bridge piles"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Battles got a stage: lunges, hit flashes and floating damage numbers"
 msgstr ""
 
@@ -2402,6 +2406,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Boss Slayer"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Bosses and named beasts are drawn at whole sizes, twice their kind (the Tidecaller three times), so their pixels are as crisp as everything around them"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -2545,6 +2553,14 @@ msgid "Choose in the Skills menu; your title on the stat sheet carries the path.
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Cinderjaw and Rimefang now tower over their kind, and every boss stands on its own shadow, with a glow of its colour at its feet in the dark"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Clean Pixels"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Clean Slate"
 msgstr ""
 
@@ -2650,6 +2666,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Deep Gear"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Deep Water"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3318,6 +3338,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Head to Toe"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Health bars, names and level tags sit just over a boss's head instead of floating far above it"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4361,6 +4385,10 @@ msgid "Rent and the bank's interest still come by the day, so with longer days t
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Rivers, ponds and the Deepwood's lake have depth now: darker down the middle, lighter at the banks, with foam where they lap the shore and streaks drifting downstream"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Roads and town stay clean-looking because they ARE safe"
 msgstr ""
 
@@ -5218,6 +5246,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The Miners' Camp waypoint moved a few steps east, onto its road"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The Mirefen's pools are murky olive water with lily pads, duckweed and reeds, the Deepwood's lake dark teal and the Frostgate's water icy"
 msgstr ""
 
 #: assets/data/changelog.json

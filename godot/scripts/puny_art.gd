@@ -230,34 +230,38 @@ const VILLAGERS := {
 	"hermit": {"sheet": "mini/Gangblanc.png", "family": "mini"},
 }
 
-## The bestiary by monster id: the closest creature Shade drew, tinted or
-## scaled where one sheet stands in for a kin (bone knights, ghosts, shades).
+## The bestiary by monster id: the closest creature Shade drew, tinted where
+## one sheet stands in for a kin (bone knights, ghosts, shades). Every kind
+## is drawn at its sheet's 1x on the art's grid (PIX-314: a troll, a king
+## slime or a dragon grown by a fraction drew its pixels uneven, fatter than
+## everything round it); a kind drawn bigger would say so as a whole
+## `scale`, and a boss is grown a whole size more (Enemy.drawn_size).
 const MONSTERS := {
 	"slime": {"sheet": "characters/Slime.png", "family": "strip"},
 	"goblin": {"sheet": "characters/aligned/Orc-Peon-Red.png", "family": "puny", "attack": "sword"},
 	"orc": {"sheet": "characters/aligned/Orc-Grunt.png", "family": "puny", "attack": "sword"},
-	"troll": {"sheet": "mini/Minotaur.png", "family": "mini", "scale": 1.25},
+	"troll": {"sheet": "mini/Minotaur.png", "family": "mini"},
 	"wolf": {"sheet": "beasts/Gray-Wolf-32x32.png", "family": "beast"},
 	"skeleton": {"sheet": "mini/Skeleton-Soldier.png", "family": "mini"},
-	"boneknight": {"sheet": "mini/Skeleton-Soldier.png", "family": "mini", "scale": 1.25, "tint": Color(0.7, 0.72, 0.85)},
-	"lich": {"sheet": "mini/Necromancer.png", "family": "mini", "scale": 1.2},
+	"boneknight": {"sheet": "mini/Skeleton-Soldier.png", "family": "mini", "tint": Color(0.7, 0.72, 0.85)},
+	"lich": {"sheet": "mini/Necromancer.png", "family": "mini"},
 	"ghost": {"sheet": "mini/Yeti.png", "family": "mini", "tint": Color(0.75, 0.9, 1.0, 0.72)},
 	"shade": {"sheet": "mini/Wendigo.png", "family": "mini", "tint": Color(0.45, 0.38, 0.6)},
 	"golem": {"sheet": "mini/Mammoth.png", "family": "mini", "tint": Color(0.75, 0.75, 0.72)},
 	"imp": {"sheet": "mini/RedDemon.png", "family": "mini"},
-	"wyvern": {"sheet": "mini/YellowDragon.png", "family": "mini", "frame": 32, "scale": 0.8},
-	"dragon": {"sheet": "mini/RedDragon.png", "family": "mini", "frame": 32, "scale": 1.15},
+	"wyvern": {"sheet": "mini/YellowDragon.png", "family": "mini", "frame": 32},
+	"dragon": {"sheet": "mini/RedDragon.png", "family": "mini", "frame": 32},
 	"mimic": {"sheet": "beasts/Purple-Spider-32x32.png", "family": "beast"},
 	# Saltmere's coast (PIX-165): Mini World's crabs, smugglers and a slime king.
 	"crab": {"sheet": "mini/GiantCrab.png", "family": "mini"},
 	"pirate": {"sheet": "mini/PirateGrunt.png", "family": "mini"},
 	"pirate_gunner": {"sheet": "mini/PirateGunner.png", "family": "mini"},
-	"pirate_captain": {"sheet": "mini/PirateCaptain.png", "family": "mini", "scale": 1.15},
-	"king_slime": {"sheet": "mini/KingSlimeBlue.png", "family": "mini", "scale": 1.3},
+	"pirate_captain": {"sheet": "mini/PirateCaptain.png", "family": "mini"},
+	"king_slime": {"sheet": "mini/KingSlimeBlue.png", "family": "mini"},
 	# The Blackiron shafts (PIX-167).
 	"goblin_digger": {"sheet": "mini/ClubGoblin.png", "family": "mini"},
 	"goblin_spear": {"sheet": "mini/SpearGoblin.png", "family": "mini"},
-	"iron_demon": {"sheet": "mini/ArmouredRedDemon.png", "family": "mini", "scale": 1.2},
+	"iron_demon": {"sheet": "mini/ArmouredRedDemon.png", "family": "mini"},
 	# Greyhold (PIX-168): turncoats in the red cloaks, and the fort's dead
 	# garrison, the same cyan as the living guard, gone pale.
 	"turncoat": {"sheet": "mini/SwordsmanRed.png", "family": "mini"},
@@ -269,8 +273,8 @@ const MONSTERS := {
 	"frost_wolf": {"sheet": "beasts/Gray-Wolf-32x32.png", "family": "beast", "tint": Color(0.9, 0.96, 1.12)},
 	"yeti": {"sheet": "mini/Yeti.png", "family": "mini"},
 	"wendigo": {"sheet": "mini/Wendigo.png", "family": "mini"},
-	"frost_mammoth": {"sheet": "mini/Mammoth.png", "family": "mini", "scale": 1.2},
-	"frost_drake": {"sheet": "mini/WhiteDragon.png", "family": "mini", "frame": 32, "scale": 0.85},
+	"frost_mammoth": {"sheet": "mini/Mammoth.png", "family": "mini"},
+	"frost_drake": {"sheet": "mini/WhiteDragon.png", "family": "mini", "frame": 32},
 }
 
 static var _frames_cache := {}
