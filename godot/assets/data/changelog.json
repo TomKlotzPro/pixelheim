@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.233.0",
+      "date": "2026-10-11",
+      "codename": "Safe Keeping",
+      "notes": [
+        "A save the game can't read is never shown as an empty slot or written over: it gets its own card and is kept as it is",
+        "Every save is checked before it replaces the last one, which is kept as a backup; if a save is ever damaged, your hero comes back from it and the game tells you",
+        "A new hero starts only from New Game on the title screen; with every slot taken, it says so instead of overwriting anyone"
+      ]
+    },
+    {
       "version": "0.232.0",
       "date": "2026-10-11",
       "codename": "The Trees Came Back",

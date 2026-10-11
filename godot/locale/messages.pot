@@ -2121,6 +2121,10 @@ msgid "A new dream under Sela's roof, the first night after Pell comes home"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A new hero starts only from New Game on the title screen; with every slot taken, it says so instead of overwriting anyone"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A path is a permanent identity: an always-on passive theme and a SIGNATURE SKILL no tree can teach"
 msgstr ""
 
@@ -2142,6 +2146,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "A real sun wheels over the world: dawn light, long dusk shadows, and true darkness answered by lamplight, door glow and hearth fire"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "A save the game can't read is never shown as an empty slot or written over: it gets its own card and is kept as it is"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -2938,6 +2946,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Every role verified to be able to finish the game"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Every save is checked before it replaces the last one, which is kept as a backup; if a save is ever damaged, your hero comes back from it and the game tells you"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4470,6 +4482,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "STURDIER CASTERS AND ROGUES: mages, necromancers and rogues grow 6 health a level, and cloth wards better (the Mage Robe, the Traveler's Cloak and the whole Frostweave set). Heroes who levelled before catch up when their save loads. Every hero now takes about 6 to 15 hits from a foe of their own level, at every stage"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Safe Keeping"
 msgstr ""
 
 #: assets/data/changelog.json

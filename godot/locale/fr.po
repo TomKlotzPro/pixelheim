@@ -2121,6 +2121,10 @@ msgid "A new dream under Sela's roof, the first night after Pell comes home"
 msgstr "Un nouveau rêve sous le toit de Sela, la première nuit après le retour de Pell"
 
 #: assets/data/changelog.json
+msgid "A new hero starts only from New Game on the title screen; with every slot taken, it says so instead of overwriting anyone"
+msgstr "Un nouveau héros ne commence que depuis Nouvelle partie, sur l'écran titre ; si tous les emplacements sont pris, le jeu le dit au lieu d'écraser qui que ce soit"
+
+#: assets/data/changelog.json
 msgid "A path is a permanent identity: an always-on passive theme and a SIGNATURE SKILL no tree can teach"
 msgstr "Une voie est une identité permanente : un thème passif toujours actif et une COMPÉTENCE SIGNATURE qu'aucun arbre ne peut enseigner"
 
@@ -2143,6 +2147,10 @@ msgstr "Une vraie porte pour entrer et sortir : trois cases de large, une port
 #: assets/data/changelog.json
 msgid "A real sun wheels over the world: dawn light, long dusk shadows, and true darkness answered by lamplight, door glow and hearth fire"
 msgstr "Un vrai soleil tourne au-dessus du monde : lumière de l'aube, longues ombres du crépuscule, et une vraie nuit à laquelle répondent lampes, lueurs des portes et feux de l'âtre"
+
+#: assets/data/changelog.json
+msgid "A save the game can't read is never shown as an empty slot or written over: it gets its own card and is kept as it is"
+msgstr "Une sauvegarde que le jeu ne sait pas lire n'est plus jamais affichée comme un emplacement vide ni écrasée : elle a sa propre carte et reste telle quelle"
 
 #: assets/data/changelog.json
 msgid "A settler with something to ask still heals you or plays first, then asks"
@@ -2939,6 +2947,10 @@ msgstr "Chaque rôle apprend trois compétences, débloquées aux niveaux 1, 3 e
 #: assets/data/changelog.json
 msgid "Every role verified to be able to finish the game"
 msgstr "Vérifié : chaque rôle peut terminer le jeu"
+
+#: assets/data/changelog.json
+msgid "Every save is checked before it replaces the last one, which is kept as a backup; if a save is ever damaged, your hero comes back from it and the game tells you"
+msgstr "Chaque sauvegarde est vérifiée avant de remplacer la précédente, gardée en secours ; si une sauvegarde est un jour abîmée, votre héros revient depuis celle-ci et le jeu vous le dit"
 
 #: assets/data/changelog.json
 msgid "Every screen keeps its title and its keys in the same places, with leaving always last as Esc close, and the keys on buttons stand on keycaps instead of being spelled out"
@@ -4471,6 +4483,10 @@ msgstr "LES ÉTOURDISSEMENTS ONT DES LIMITES : un monstre étourdi ne lance pl
 #: assets/data/changelog.json
 msgid "STURDIER CASTERS AND ROGUES: mages, necromancers and rogues grow 6 health a level, and cloth wards better (the Mage Robe, the Traveler's Cloak and the whole Frostweave set). Heroes who levelled before catch up when their save loads. Every hero now takes about 6 to 15 hits from a foe of their own level, at every stage"
 msgstr "LANCEURS DE SORTS ET VOLEURS PLUS ROBUSTES : les mages, nécromanciens et voleurs gagnent 6 PV par niveau, et le tissu protège mieux (la Robe de mage, la Cape de voyageur et tout l'ensemble Tisse-givre). Les héros qui ont déjà progressé rattrapent leur retard au chargement de leur sauvegarde. Tout héros encaisse désormais environ 6 à 15 coups d'un ennemi de son niveau, à chaque étape"
+
+#: assets/data/changelog.json
+msgid "Safe Keeping"
+msgstr "En lieu sûr"
 
 #: assets/data/changelog.json
 msgid "Safe Roads"
