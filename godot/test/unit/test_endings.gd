@@ -1,8 +1,9 @@
 extends GutTest
-## How it ends (PIX-157): at Morvax's throne the hero destroys him, or -
-## knowing Maren's story of the five and holding Liane's last page - lays
-## him to rest; each ending has its scene and Maren's own last words. And
-## the settlers' arcs: two asks after moving in, the last growing their perk.
+## How it ends: Morvax's choice (PIX-253 step 10), "Come home." or "Stay
+## with them.", each an ending with its scene and credits; an old save's
+## ending at his throne (PIX-157), destroyed or laid to rest, kept with
+## Maren's own last words for it. And the settlers' arcs: two asks after
+## moving in, the last growing their perk.
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
 const RECRUITS := ["settler_iva", "settler_wren", "settler_loras", "settler_mirelle"]
@@ -18,18 +19,33 @@ func before_each() -> void:
 
 func test_the_ending_is_whichever_was_played() -> void:
 	assert_eq(Story.ending_of([]), "")
+	assert_eq(Story.ending_of(["ending_home"]), "home")
+	assert_eq(Story.ending_of(["ending_stay"]), "stay")
+	# An old save's, at the throne.
 	assert_eq(Story.ending_of(["ending"]), "destroy", "the old single ending destroyed him")
 	assert_eq(Story.ending_of(["ending_rest"]), "rest")
-	for choice: String in ["destroy", "rest"]:
+	for choice: String in ["home", "stay", "destroy", "rest"]:
 		assert_true(Cutscene.scenes().has(Story.ending_scene(choice)), "%s has its scene" % choice)
-	assert_ne(Story.ending_scene("rest"), Story.ending_scene("destroy"))
+	assert_ne(Story.ending_scene("home"), Story.ending_scene("stay"))
+	assert_ne(Story.ending_scene("home"), Story.ending_scene("destroy"), "Morvax's choice has endings of its own: an old save's stays apart")
 
 
-func test_laying_him_to_rest_needs_marens_story_and_lianes_last_page() -> void:
-	var all_floors := range(1, 16)
-	assert_false(Story.can_lay_to_rest(all_floors, []), "not without Maren's story")
-	assert_false(Story.can_lay_to_rest(range(1, 14), ["maren_confession"]), "not without the last page")
-	assert_true(Story.can_lay_to_rest(all_floors, ["maren_confession"]))
+## Both of Morvax's endings roll the credits with the cheese wheels and end
+## "Thank you for staying."; staying, the last caption is the lantern up on
+## the mountain.
+func test_morvaxs_endings_end_on_the_credits() -> void:
+	for choice: String in ["home", "stay"]:
+		var steps: Array = Cutscene.scenes()[Story.ending_scene(choice)]
+		var credits: Array = steps.filter(func(step: Dictionary) -> bool: return step["kind"] == "credits")
+		assert_eq(credits.size(), 1, "%s rolls the credits" % choice)
+		assert_has(credits[0]["after"], "and Infinite Cheese Wheels as themselves")
+		assert_eq(credits[0]["after"][-1], "Thank you for staying.")
+		var themes: Array = steps.filter(func(step: Dictionary) -> bool: return step["kind"] == "theme")
+		assert_eq(themes.size(), 1, "%s opens with its theme" % choice)
+	var stay: Array = Cutscene.scenes()[Story.ending_scene("stay")].filter(func(step: Dictionary) -> bool: return step["kind"] == "caption")
+	assert_eq(stay[-1]["text"], "That night there were five lanterns on the square, and one more up on the mountain.")
+	var home: Array = Cutscene.scenes()[Story.ending_scene("home")].filter(func(step: Dictionary) -> bool: return step["kind"] == "caption")
+	assert_string_contains(home[0]["text"], "bench by the fountain")
 
 
 func test_maren_has_last_words_for_each_ending() -> void:

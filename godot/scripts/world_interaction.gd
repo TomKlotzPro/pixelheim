@@ -349,11 +349,32 @@ func talk(npc: Dictionary) -> void:
 		box.npc = npc
 		world.add_child(box)
 		return
+	# Morvax once the night is behind him (PIX-253 step 10): his question
+	# while his choice waits - closing it opens the choice - and then his
+	# own words wherever he is; his letter's are said.
+	if npc["id"] == Homecoming.MORVAX:
+		var day := Gathering.day_of(GameState.world.steps)
+		var own := Homecoming.lines(GameState.progression, GameState.settlement, GameState.holdings.festival_on(), day)
+		if not own.is_empty():
+			npc = npc.duplicate()
+			npc["lines"] = own
+			if Homecoming.choice_due(GameState.progression, GameState.settlement):
+				GameState.dialogue_closed.connect(func(_who: String) -> void: world.stage.ask_morvax(), CONNECT_ONE_SHOT)
+			box.npc = npc
+			world.add_child(box)
+			return
 	# What they say once a letter carried to them is answered (Morvax).
 	var after := Letters.after_lines(npc["id"], GameState.progression, GameState.settlement)
 	if not after.is_empty():
 		npc = npc.duplicate()
 		npc["lines"] = after
+	# Maren on Morvax, home or up the mountain (PIX-253 step 10): the day's
+	# argument, or festival days.
+	if npc["id"] == "elder":
+		var word := Homecoming.maren_word(GameState.progression, Gathering.day_of(GameState.world.steps))
+		if word != "":
+			npc = npc.duplicate()
+			npc["lines"] = [word] + Array(npc["lines"])
 	# Maren tells what the hero's floors have earned, once each (PIX-153).
 	if npc["id"] == "elder":
 		var told := Story.elder_story(GameState.progression.cleared_levels, GameState.progression.story_seen, GameState.progression.hunted)

@@ -228,8 +228,10 @@ func test_the_main_quest_is_v2s_eight_chapters() -> void:
 		"Run home: the dragon is awake", "Light the five lanterns on the square",
 		"Drive off the embers and douse the fires", "Hold the square until dawn",
 	])
-	# Home, still to write (step 10), marked.
-	assert_string_contains(String(MainQuest.chapters()[7].get("about", "")), "builds it", "a chapter still to write, marked")
+	# Home (step 10): Morvax's choice, the story's last word.
+	assert_eq(MainQuest.chapters()[7]["steps"].map(func(step: Dictionary) -> String: return step["text"]), [
+		"Morvax's choice: does Pixelheim want him back?",
+	])
 	var first: Array = MainQuest.chapters()[0]["steps"].filter(func(step: Dictionary) -> bool: return not step.get("optional", false) or step["id"] == "rebuild")
 	assert_eq(first.map(func(step: Dictionary) -> String: return step["text"]), [
 		"Help Maren dig through what's left of her house", "Ask Sela the innkeeper for work",
