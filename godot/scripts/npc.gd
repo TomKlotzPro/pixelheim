@@ -98,19 +98,20 @@ var body: CollisionShape2D
 const NOWHERE := Vector2i(-1, -1)
 var gather_at := NOWHERE
 var _last_beat := -1
-## What hangs over their head for the hero (PIX-240): a "!" with a quest to
-## give, a gold "?" with one to hand in, a grey "?" while it's under way;
-## and the main story's, a letter of Maren's carried to them (PIX-253 step
-## 2), a gold "!" ringed in gold. Looked at twice a second, not every frame.
+## What hangs over their head for the hero (PIX-240): the talk mark
+## (Marks, PIX-289), a "!" with a quest to give, a "?" with one to hand in, a
+## faded "?" while it's under way; gold when it's the main story's (a letter
+## of Maren's carried to them, PIX-253 step 2, or her relics and a relic's
+## hunt: Quests.mark_tells_story), parchment for a side quest. Looked at
+## twice a second, not every frame.
 const MARK_SECONDS := 0.5
-## Gold for a quest to give or to hand in, grey while one is under way.
-const MARK_COLORS := {"offer": Color("f2c14e"), "ready": Color("f2c14e"), "waiting": Color("a8a39a"), "letter": Color("f2c14e")}
-## How far past its glyph's ink a mark draws: its dark line, a pixel; the
-## main story's ring of gold and the dark round it, three.
-const MARK_REACH := {"letter": 3}
-var _mark: Node2D
-var _mark_kind := ""
-var _mark_text := ""
+## Each kind's glyph.
+const MARK_GLYPHS := {"offer": "!", "letter": "!", "ready": "?", "waiting": "?"}
+## Air between the mark's tail and the highest their head reaches.
+const MARK_CLEAR := 1.0
+var _mark: Sprite2D
+## The mark showing, as "<kind> <tone>", or "".
+var _mark_shown := ""
 var _mark_left := 0.0
 
 
@@ -156,31 +157,51 @@ func _process(delta: float) -> void:
 ## turned off in Options.
 func _refresh_mark() -> void:
 	var kind := ""
+	var story := false
 	# Nobody asks or hands in anything on the Night of Bells (PIX-253 step 9).
 	if GameState.settings.quest_marks and GameState.progression.bells == Bells.NONE:
-		kind = Quests.mark_for(String(data.get("id", "")), GameState.progression.quests, GameState.pack.items, GameState.questing.quest_open)
+		var id := String(data.get("id", ""))
+		kind = Quests.mark_for(id, GameState.progression.quests, GameState.pack.items, GameState.questing.quest_open)
+		story = Quests.mark_tells_story(id, GameState.progression.quests, GameState.pack.items, GameState.questing.quest_open)
 		# Maren with the whole story to tell and the fifth letter to give
 		# (PIX-253 step 8): the main story's gold "!".
-		if data.get("id", "") == "elder" and Letters.fifth_due(GameState.progression, GameState.settlement):
+		if id == "elder" and Letters.fifth_due(GameState.progression, GameState.settlement):
 			kind = "letter"
 		# Morvax with his question (PIX-253 step 10): the same.
-		if data.get("id", "") == Homecoming.MORVAX and Homecoming.choice_due(GameState.progression, GameState.settlement):
+		if id == Homecoming.MORVAX and Homecoming.choice_due(GameState.progression, GameState.settlement):
 			kind = "letter"
-	if kind == _mark_kind:
+	var shown := "" if kind == "" else "%s %s" % [kind, mark_tone(kind, story)]
+	if shown == _mark_shown:
 		return
-	_mark_kind = kind
+	_mark_shown = shown
 	if _mark != null:
 		_mark.queue_free()
 		_mark = null
 	if kind == "":
 		return
-	_mark_text = "!" if kind in ["offer", "letter"] else "?"
-	_mark = _outlined(_mark_text, MARK_COLORS[kind], int(MARK_REACH.get(kind, 1)))
-	_mark.z_index = 10
-	# Bright at night too (PIX-221).
-	_mark.material = Lights.unshaded()
+	_mark = mark_sprite(kind, story)
 	_place_mark()
 	add_child(_mark)
+
+
+## The talk mark for a mark of `kind` (Quests.mark_for), the main story's
+## when `story`: drawn at the world's scale, over the people round it, and
+## bright at night too (PIX-221).
+static func mark_sprite(kind: String, story: bool) -> Sprite2D:
+	var mark := Sprite2D.new()
+	mark.texture = Marks.talk(MARK_GLYPHS[kind], mark_tone(kind, story))
+	mark.centered = false
+	mark.z_index = 10
+	mark.material = Lights.unshaded()
+	return mark
+
+
+## A mark's tone (Marks.TALK_TONES): faded while a quest is under way, gold
+## for the main story (a letter carried is always its), else parchment.
+static func mark_tone(kind: String, story: bool) -> String:
+	if kind == "waiting":
+		return "waiting"
+	return "gold" if story or kind == "letter" else "plain"
 
 
 ## The mark over their head the way they face now (PIX-268): they turn
@@ -188,64 +209,22 @@ func _refresh_mark() -> void:
 ## middle is.
 func _place_mark() -> void:
 	if _mark != null:
-		_mark.position = mark_spot(_mark_text, sprite.sprite_frames, sprite.animation, sprite.position, sprite.scale, int(MARK_REACH.get(_mark_kind, 1)))
+		_mark.position = mark_spot(_mark.texture.get_size(), sprite.sprite_frames, sprite.animation, sprite.position, sprite.scale)
 
 
-## Where a mark of `text` goes over a figure drawn from `frames` playing
-## `anim`, centred at `at` and drawn at `scale` (PIX-268): its glyph's ink
-## centred on the head of the idle pose facing that way, in whole pixels (the
-## label's box is no measure, Ink); its foot two pixels over the highest their
+## Where a mark `size` pixels big goes over a figure drawn from `frames`
+## playing `anim`, centred at `at` and drawn at `scale` (PIX-268): its middle
+## (the glyph's two middle columns) on the head of the idle pose facing that
+## way, in whole pixels; its tail's tip MARK_CLEAR over the highest their
 ## head reaches standing or walking, whichever way they face, so it neither
-## bobs as they breathe, step and look about nor touches their head. A mark
-## drawn `reach` pixels past its ink (the main story's ring) stands as much
-## higher, so the ring keeps the dark line's pixel of clearance too.
-static func mark_spot(text: String, frames: SpriteFrames, anim: String, at: Vector2, scale: Vector2, reach := 1) -> Vector2:
-	var ink := Ink.of_text(text, UiStyle.bold_font(), UiStyle.BODY_PX)
+## bobs as they breathe, step and look about nor touches their head.
+static func mark_spot(size: Vector2, frames: SpriteFrames, anim: String, at: Vector2, scale: Vector2) -> Vector2:
 	var poses := []
 	for way: String in PunyArt.DIRS:
 		poses.append(PunyArt.pick(frames, "idle", way))
 		poses.append(PunyArt.pick(frames, "walk", way))
 	var head := Ink.head(frames, Ink.rest_pose(frames, anim), at, scale)
-	return Vector2(Ink.centred(ink, head.get_center().x), floorf(Ink.crown(frames, poses, at, scale) - 1.0 - reach - ink.end.y))
-
-
-## `text` in the UI's bold pixel face at its own size, outlined in the night
-## by four dark copies a pixel off each way: the pixel face draws no outline
-## of its own. With a `reach` of 3 (the main story's), a ring of gold round
-## that line and the night round the ring, copies two and three pixels off
-## (a diamond's way, like the map's gold diamond). The glyph itself is the
-## last child. Each label sizes itself once it is in the tree, with its own
-## face.
-static func _outlined(text: String, color: Color, reach := 1) -> Node2D:
-	var mark := Node2D.new()
-	var rings: Array = []
-	for far in range(reach, 0, -1):
-		rings.append([_ring(far), color if far == 2 else UiStyle.NIGHT])
-	rings.append([[Vector2.ZERO], color])
-	for ring: Array in rings:
-		for offset: Vector2 in ring[0]:
-			var glyph := Label.new()
-			glyph.text = text
-			glyph.add_theme_font_override("font", UiStyle.bold_font())
-			glyph.add_theme_font_size_override("font_size", UiStyle.BODY_PX)
-			glyph.add_theme_color_override("font_color", ring[1])
-			glyph.mouse_filter = Control.MOUSE_FILTER_IGNORE
-			glyph.use_parent_material = true
-			glyph.position = offset
-			mark.add_child(glyph)
-	return mark
-
-
-## The offsets `far` steps off along the grid's lines (|x| + |y| = far): a
-## pixel each way at 1, the four ways and the corners between at 2...
-static func _ring(far: int) -> Array[Vector2]:
-	var out: Array[Vector2] = []
-	for x in range(-far, far + 1):
-		var y := far - absi(x)
-		out.append(Vector2(x, y))
-		if y != 0:
-			out.append(Vector2(x, -y))
-	return out
+	return Vector2(Marks.centred(size.x, head.get_center().x), floorf(Ink.crown(frames, poses, at, scale) - MARK_CLEAR - size.y))
 
 
 ## A step a beat toward their spot on the square: the longer way first, the

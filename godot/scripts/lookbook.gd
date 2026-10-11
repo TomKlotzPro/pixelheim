@@ -32,9 +32,11 @@ const AREAS := ["town", "rooms", "reach", "regions", "ways", "dungeon", "combat"
 ## area; a map and where on it (Upper Street, a pack's home, a cell, or the
 ## map's arrival); the hour, or the first shower by day
 ## (`rain`); and a foe to face, for the fight, struck on a beat while it's
-## filmed (`strike`), the third blow felling it. Only a shot with `card`
-## keeps the title card naming the place it enters (PIX-269). A new shot
-## goes with its area's.
+## filmed (`strike`), the third blow felling it, or caught as it notices the
+## hero (`notice`, PIX-289). A `letter` of Maren's is carried for that shot
+## alone (its recipient's mark). Only a shot with `card` keeps the title
+## card naming the place it enters (PIX-269). A new shot goes with its
+## area's.
 const SHOTS := {
 	"town_day": {"area": "town", "map": "town", "at": "street", "time": DAY},
 	"town_dusk": {"area": "town", "map": "town", "at": "street", "time": DUSK},
@@ -78,6 +80,15 @@ const SHOTS := {
 	# The mountain road (PIX-253 step 8): its switchbacks up the ash to the
 	# forge in the rock, and the lamp by its door.
 	"mountain_road": {"area": "regions", "map": "mountain_road", "cell": Vector2i(17, 8), "time": DAY},
+	# The marks over the world (PIX-284, PIX-289): on Saltmere's sand the
+	# givers' parchment talk marks and Old Wenna's gold one, a letter of
+	# Maren's carried to her (`letter`, only for the shot), and the arrow
+	# toward the story at the view's edge; on the Frostgate's snow the same,
+	# by day and at night.
+	"coast_marks": {"area": "regions", "map": "saltmere", "cell": Vector2i(24, 19), "time": DAY, "letter": "letter_wenna"},
+	"coast_marks_night": {"area": "regions", "map": "saltmere", "cell": Vector2i(24, 19), "time": NIGHT, "letter": "letter_wenna"},
+	"snow_marks": {"area": "regions", "map": "frostgate", "cell": Vector2i(39, 36), "time": DAY},
+	"snow_marks_night": {"area": "regions", "map": "frostgate", "cell": Vector2i(39, 36), "time": NIGHT},
 	# The ways between maps (PIX-269): the river road running out through
 	# the cliffs at the Deepwood pass by day and by night, the Mirefen's way
 	# back (high on its east edge since the Reach became one plane), and the
@@ -95,8 +106,15 @@ const SHOTS := {
 	# The ice cave's frozen lake (PIX-255): ice over the stone, its cracks,
 	# polish and glints, frost at its shore, and the cold light it gives.
 	"frozen_lake": {"area": "dungeon", "map": "icecave_lake", "cell": Vector2i(30, 14), "time": DAY},
+	# The arrow in the sea cave's dark (PIX-284), toward its way out.
+	"cave_marks": {"area": "dungeon", "map": "seacave", "cell": Vector2i(24, 18), "time": DAY},
 	"fight": {"area": "combat", "map": "overworld", "at": "forest_1", "time": DAY, "foe": "orc"},
 	"strike": {"area": "combat", "map": "overworld", "at": "forest_1", "time": DAY, "foe": "orc", "strike": true},
+	# A foe noticing the hero on the grass west of the village (PIX-289): its
+	# danger mark, caught as it notices (`notice`), and the arrow toward the
+	# village's gate (PIX-284); by day and at night.
+	"notice": {"area": "combat", "map": "overworld", "cell": Vector2i(28, 47), "time": DAY, "foe": "orc", "notice": true},
+	"notice_night": {"area": "combat", "map": "overworld", "cell": Vector2i(28, 47), "time": NIGHT, "foe": "orc", "notice": true},
 	# The map (PIX-266) of a hero who has walked the whole Reach, its list
 	# scrolled down to the last waypoint, in Greyhold on the Reach's one page
 	# (PIX-269 step 7).
@@ -123,6 +141,9 @@ const SHEET_COLUMNS := 3
 const SETTLE_SECONDS := 1.2
 ## A stair's shot (`down`, PIX-256): this long facing it before it asks.
 const ASK_AFTER := 0.5
+## A foe noticing (`notice`, PIX-289): the picture this long after it does,
+## its danger mark up and its hop under way.
+const NOTICE_HOLD := 0.2
 ## Filming (`film`): this many frames, this far apart, into
 ## <out>/motion/<shot>/NN.png.
 const MOTION_FRAMES := 24
@@ -190,6 +211,9 @@ func run() -> void:
 			await get_tree().create_timer(ASK_AFTER).timeout
 			world.interaction.ask_down(world.player_cell + Vector2i.UP)
 		await get_tree().create_timer(SETTLE_SECONDS).timeout
+		if shot.get("notice", false) and is_instance_valid(_foe):
+			_foe.notice()
+			await get_tree().create_timer(NOTICE_HOLD).timeout
 		await drawn()
 		for look: String in folders:
 			if look != "":
@@ -207,6 +231,7 @@ func run() -> void:
 			await _film_walk(shot["name"])
 		elif with_motion:
 			await _film(shot["name"], shot.get("strike", false))
+		_unstage(shot)
 		# A screen a shot opened goes, so the next finds the world its own.
 		for node in world.get_children():
 			if node is Screen:
@@ -245,8 +270,14 @@ func _stage(shot: Dictionary) -> void:
 	if shot.has("foe"):
 		var foe: Node = world.foes.spawn_enemy(shot["foe"], world.player_cell + Vector2i(2, 0), "", "", true, false)
 		world.player.face(Vector2.RIGHT)
-		foe.notice()
+		# One caught as it notices does so just before its picture (run).
+		if not shot.get("notice", false):
+			foe.notice()
 		_foe = foe
+	if shot.has("letter"):
+		# A letter of Maren's carried, for this shot alone (_unstage).
+		GameState.progression.quests[shot["letter"]] = {"progress": 0, "done": false}
+		GameState.pack.add_item(shot["letter"])
 	if shot.get("down", false):
 		# At the top of a room's stair, facing it (PIX-256): the stairs ask
 		# once the world has drawn the hero turned (run).
@@ -258,6 +289,14 @@ func _stage(shot: Dictionary) -> void:
 		for node in world.get_children():
 			if node.has_method("show_waypoint"):
 				node.show_waypoint(shot["chart"])
+
+
+## What a shot set up for itself alone taken back, so the shots after it
+## find the hero as they were: its letter.
+func _unstage(shot: Dictionary) -> void:
+	if shot.has("letter"):
+		GameState.pack.remove_item(shot["letter"])
+		GameState.progression.quests.erase(shot["letter"])
 
 
 ## Waits for a frame drawn and ready to save. While the window is hidden

@@ -389,7 +389,9 @@ func update_arrow() -> void:
 	var from := area.get_center()
 	var heading := (on_screen - from).normalized()
 	arrow.position = Arrow.edge_point(area, from, heading).round()
-	arrow.rotation = heading.angle()
+	# Drawn for the nearest of eight ways, never turned (PIX-284): its pixels
+	# stay square, and where it stands on the edge says the rest.
+	arrow.way = Marks.way_of(heading)
 
 
 ## Where the arrow points in the world, or Vector2.INF for nowhere.
@@ -450,19 +452,22 @@ func update_nameplate() -> void:
 	nameplate.position = (screen - Vector2(nameplate.size.x / 2.0, nameplate.size.y)).round()
 
 
-## The arrow itself: a small head pointing right (the HUD turns it), rimmed
-## in the night so it reads on any ground; gold for the main story, cream
-## for anything else followed (PIX-253 step 2).
+## The arrow itself (Marks, PIX-284): a bevelled arrow in the dock's brass,
+## ringed in the night so it reads on any ground, standing on its middle and
+## pointing one of eight ways; gold for the main story, cream for anything
+## else followed (PIX-253 step 2).
 class Arrow extends Control:
-	## Long and narrow, so it reads as pointing whichever way it's turned.
-	const SHAPE := [Vector2(12, 0), Vector2(-7, -6), Vector2(-7, 6)]
-	const RIM := [Vector2(16, 0), Vector2(-9, -8), Vector2(-9, 8)]
-
 	## Whether it leads the main story.
 	var main := true:
 		set(value):
 			if value != main:
 				main = value
+				queue_redraw()
+	## Which of the eight ways it points (Marks.way_of).
+	var way := 0:
+		set(value):
+			if value != way:
+				way = value
 				queue_redraw()
 
 	func _init() -> void:
@@ -473,8 +478,7 @@ class Arrow extends Control:
 		return UiStyle.GOLD if main else UiStyle.CREAM
 
 	func _draw() -> void:
-		draw_colored_polygon(PackedVector2Array(RIM), UiStyle.NIGHT)
-		draw_colored_polygon(PackedVector2Array(SHAPE), ink())
+		draw_texture(Marks.arrow(way, main), -Marks.arrow_middle())
 
 	## Where a ray from `from` (inside `area`) along `heading` leaves it.
 	static func edge_point(area: Rect2, from: Vector2, heading: Vector2) -> Vector2:
