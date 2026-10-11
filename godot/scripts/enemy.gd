@@ -77,6 +77,26 @@ const ROUTE_SLACK := 4
 ## wall, deaf to the hero, for good) is home at once where nobody sees it,
 ## or settles where it stands.
 const HOME_STUCK_SECONDS := 2.5
+## Over the head (PIX-314): a foe's health bar stands BAR_Y over its feet,
+## or HEAD_CLEAR over the top of a head that reaches higher (over_head).
+const BAR_Y := -20.0
+const HEAD_CLEAR := 6.0
+## Its box for blows at its kind's size, from its feet up (grown with its
+## drawing); an elite's a little bigger, as it was when it was drawn so
+## (PIX-314 drew it its kind's size: whole sizes only).
+const BODY := Vector2(16, 24)
+const ELITE_BODY := 1.2
+## A boss's weight besides its size (PIX-314): its shadow on the ground,
+## how dark; and a glow of its own colour on the floor round its feet in the
+## dark: a light that lights the floor alone (Lights.FLOOR), so nothing
+## standing in it is tinted, reaching this far past its body either side
+## (half as far before and behind it), in this many steps of whole pixels
+## (as a wall torch's glow), how strong at full dark, and how near white.
+const SHADOW_ALPHA := 0.3
+const AURA_PAST := 12
+const AURA_STEPS := 4
+const AURA_ENERGY := 0.5
+const AURA_WHITE := 0.15
 
 var world: Node2D
 ## Bestiary.spawn record: id, name, elite, hp, maxHp, attack, defense, xp, gold.
@@ -189,6 +209,13 @@ var _grid_map: MapData
 ## answer holds (a boss watching a hero it can't reach asks twice a second).
 var _reaches := false
 var _reach_until := -100.0
+## Where its bar stands, from its feet (over_head, PIX-314); a boss's
+## shadow and glow (_weigh).
+var _over_head := BAR_Y
+var _shadow: Sprite2D
+var _aura: PointLight2D
+static var _shadows := {}
+static var _auras := {}
 
 
 func _ready() -> void:
@@ -198,16 +225,17 @@ func _ready() -> void:
 	art = PunyArt.monster(fighter["id"])
 	sprite = AnimatedSprite2D.new()
 	sprite.sprite_frames = PunyArt.frames(art)
-	# How much bigger than its kind: an elite a little, a named monster huge
-	# and in its own colour (PIX-156).
-	var grown := 1.2 if fighter["elite"] else 1.0
+	# How much bigger than its kind (drawn_size, PIX-314: whole sizes only):
+	# a named monster twice its kind or more and in its own colour
+	# (PIX-156), an elite its kind's size in gold.
+	var grown := growth(fighter)
+	var size := drawn_size(fighter)
 	var tint: Color = art.get("tint", Color.WHITE)
 	sprite.self_modulate = tint * ELITE_TINT if fighter["elite"] else tint
 	boss_like = Bestiary.fights_like_boss(fighter)
 	if fighter.has("named"):
 		named = Hunts.named(fighter["named"])
 		of_the_wilds = Hunts.of_the_wilds(fighter["named"])
-		grown = float(named["scale"])
 		var own: Array = named["tint"]
 		# Its own colour may brighten past its kind's (Greymaw's silver).
 		sprite.self_modulate = tint * Color(float(own[0]), float(own[1]), float(own[2]))
@@ -215,9 +243,7 @@ func _ready() -> void:
 	# A foe the story sizes itself (the Night of Bells' Fafnyr, towering
 	# over the square).
 	if fighter.has("size"):
-		grown = float(fighter["size"])
 		bar_width = 28.0
-	var size: float = art.get("scale", 1.0) * grown
 	sprite.scale = Vector2.ONE * size
 	sprite.position = Vector2(0, PunyArt.lift(art) * size)
 	_rest_scale = sprite.scale
@@ -226,8 +252,11 @@ func _ready() -> void:
 	sprite.material = Juice.fighter_material()
 	gait = Gait.new(sprite, art, size)
 	_play("idle")
+	if boss_like:
+		_weigh(size)
 	add_child(sprite)
-	_wear_crown()
+	# Its words over its head as drawn, and over what it wears on it.
+	_over_head = over_head(sprite.sprite_frames, _rest_at, size, _wear_crown())
 	sprite.animation_changed.connect(_turned)
 	# Fafnyr and Morvax fight with their own attacks too (PIX-150); an elite
 	# has its family's one trick (PIX-155), a named monster one of its own
@@ -253,9 +282,11 @@ func _ready() -> void:
 	hurtbox.monitoring = false
 	var hurt_shape := CollisionShape2D.new()
 	var hurt_rect := RectangleShape2D.new()
-	hurt_rect.size = Vector2(16, 24) * grown
+	hurt_rect.size = body_of(fighter)
 	hurt_shape.shape = hurt_rect
-	hurt_shape.position = Vector2(0, -8)
+	# Grown with its drawing, from where its kind's stands (PIX-314: a big
+	# foe's box hung half below its feet).
+	hurt_shape.position = Vector2(0, -8 * grown)
 	hurtbox.add_child(hurt_shape)
 	add_child(hurtbox)
 
@@ -263,13 +294,13 @@ func _ready() -> void:
 	health_bar_back = ColorRect.new()
 	health_bar_back.color = Color(0, 0, 0, 0.6)
 	health_bar_back.size = Vector2(bar_width, 2)
-	health_bar_back.position = Vector2(-bar_width / 2.0, -20 * size)
+	health_bar_back.position = Vector2(-bar_width / 2.0, _over_head)
 	health_bar_back.visible = false
 	add_child(health_bar_back)
 	health_bar = ColorRect.new()
 	health_bar.color = Color(1, 0.8, 0.3) if fighter["elite"] else Color(0.9, 0.25, 0.25)
 	health_bar.size = Vector2(bar_width, 2)
-	health_bar.position = Vector2(-bar_width / 2.0, -20 * size)
+	health_bar.position = Vector2(-bar_width / 2.0, _over_head)
 	health_bar.visible = false
 	add_child(health_bar)
 	# A foe's bar and name read at night too (PIX-221).
@@ -277,7 +308,7 @@ func _ready() -> void:
 	health_bar.material = Lights.unshaded()
 	var plate: Label = null
 	if not named.is_empty():
-		plate = _name_plate(-20 * size - 1)
+		plate = _name_plate(_over_head - 1)
 		Lights.unshade(plate)
 		add_child(plate)
 	# Its level by the health bar (PIX-188), coloured by the gap to the
@@ -295,7 +326,7 @@ func _ready() -> void:
 	level_tag.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	# A named foe's tag stands above its name, not over it.
 	var place_tag := func() -> void:
-		var above := -20 * size - 0.5 - (plate.size.y * CameraRig.LABEL_SCALE if plate != null else 0.0)
+		var above := _over_head - 0.5 - (plate.size.y * CameraRig.LABEL_SCALE if plate != null else 0.0)
 		level_tag.position = Vector2(-level_tag.size.x * CameraRig.LABEL_SCALE / 2.0, above - level_tag.size.y * CameraRig.LABEL_SCALE)
 	level_tag.resized.connect(place_tag)
 	if plate != null:
@@ -387,6 +418,128 @@ func _physics_process(delta: float) -> void:
 		_play("idle")
 
 
+## How many times its kind's size it is grown (PIX-314): as the story sizes
+## it (the Night of Bells' Fafnyr, `size`), as a named monster (its own
+## `scale`), or not at all. Whole: twice its kind, not one and a half.
+static func growth(fighter: Dictionary) -> int:
+	if fighter.has("size"):
+		return roundi(float(fighter["size"]))
+	if fighter.has("named"):
+		return roundi(float(Hunts.named(fighter["named"])["scale"]))
+	return 1
+
+
+## How big it is drawn (PIX-314): its kind's sheet at its whole scale
+## (PunyArt), grown. Whole, so each of the art's pixels is a square of whole
+## world pixels, every one the same: grown by fractions (the Tidecaller at
+## 2.86) a boss's pixels came out uneven and fatter than everything round it.
+static func drawn_size(fighter: Dictionary) -> int:
+	return roundi(float(PunyArt.monster(fighter["id"]).get("scale", 1))) * growth(fighter)
+
+
+## Its box for blows: its kind's body grown with its drawing, an elite's a
+## little bigger.
+static func body_of(fighter: Dictionary) -> Vector2:
+	var grown := growth(fighter)
+	return BODY * (ELITE_BODY if grown == 1 and fighter["elite"] else float(grown))
+
+
+## The line its health bar stands on, from its feet (PIX-314): HEAD_CLEAR
+## over the highest its head reaches as drawn at `at` and `size`, standing or
+## walking any way it faces, or what it wears there (`worn`, its top), and
+## never lower than BAR_Y. A foe its kind's size keeps its bar where it was;
+## a big one's sits over its head, not out in the air twenty pixels a size
+## put it (the Tidecaller's name floated two heads over it).
+static func over_head(frames: SpriteFrames, at: Vector2, size: float, worn := INF) -> float:
+	var poses := Array(frames.get_animation_names()).filter(func(anim: String) -> bool: return anim.begins_with("idle") or anim.begins_with("walk"))
+	var top := minf(Ink.crown(frames, poses, at, Vector2.ONE * size), worn)
+	return minf(BAR_Y, floorf(top) - HEAD_CLEAR)
+
+
+## The colour of a boss's glow (PIX-314): its own (a named monster's tint)
+## as a light's, toward white; fire for one without (Fafnyr).
+static func aura_color(fighter: Dictionary) -> Color:
+	if not fighter.has("named"):
+		return Lights.FIRE
+	var own: Array = Hunts.named(fighter["named"])["tint"]
+	var tint := Color(float(own[0]), float(own[1]), float(own[2]))
+	var top := maxf(tint.r, maxf(tint.g, tint.b))
+	return Color(tint.r / top, tint.g / top, tint.b / top).lerp(Color.WHITE, AURA_WHITE)
+
+
+## A boss's weight besides its size (PIX-314): its shadow on the ground
+## under its feet, on its own pixels, before its sprite so it lies under it;
+## and a glow of its own colour on the floor round its feet that breathes in
+## the dark, a light on the floor alone (Lights.FLOOR): drawn with the
+## ground, under every actor and pickup, so a hero standing in it looks as
+## without it.
+func _weigh(size: int) -> void:
+	var frame := sprite.sprite_frames.get_frame_texture(sprite.animation, 0)
+	var ink := _ink(frame)
+	var half := Vector2i(frame.get_size()) / 2
+	var wide := ink.size.x + ink.size.x % 2
+	_shadow = Sprite2D.new()
+	_shadow.texture = shadow_texture(wide)
+	_shadow.scale = Vector2.ONE * size
+	# Under the middle of its body, reaching a pixel past its feet: whole
+	# art pixels from the frame's corner, on the foe's own grid.
+	var tall := _shadow.texture.get_height()
+	_shadow.position = Vector2(ink.position.x + ink.size.x / 2 - half.x, ink.end.y + 1 - tall / 2 - half.y) * size + Vector2(0, _rest_at.y)
+	add_child(_shadow)
+	# Round its feet, a little past its body either side, on whole pixels.
+	_aura = Lights.make(_shadow.position, 0.0, aura_color(fighter), AURA_ENERGY)
+	_aura.texture = aura_texture(wide * size / 2 + AURA_PAST)
+	_aura.texture_scale = 1.0
+	_aura.range_item_cull_mask = Lights.FLOOR
+	_aura.set_meta("pulse", true)
+	add_child(_aura)
+
+
+## A boss's glow `reach` world pixels either side and half that before and
+## behind: an oval in AURA_STEPS rings of whole pixels, brightest at its
+## middle, as a wall torch's glow is stepped (TitleScene.glow_texture).
+static func aura_texture(reach: int) -> Texture2D:
+	if _auras.has(reach):
+		return _auras[reach]
+	var size := Vector2i(reach * 2, reach)
+	var image := Image.create(size.x, size.y, false, Image.FORMAT_RGBA8)
+	var middle := Vector2(size) / 2.0
+	for y in size.y:
+		for x in size.x:
+			var d := ((Vector2(x, y) + Vector2(0.5, 0.5) - middle) / middle).length()
+			if d >= 1.0:
+				continue
+			var level := ceilf((1.0 - d) * AURA_STEPS) / AURA_STEPS
+			image.set_pixel(x, y, Color(level * level, level * level, level * level))
+	_auras[reach] = ImageTexture.create_from_image(image)
+	return _auras[reach]
+
+
+## A boss's shadow `wide` art pixels across: an oval a quarter as tall (two
+## pixels at least, even), dark and see-through, its edge on whole pixels.
+static func shadow_texture(wide: int) -> Texture2D:
+	if _shadows.has(wide):
+		return _shadows[wide]
+	var tall := maxi(2, wide / 4 + (wide / 4) % 2)
+	var image := Image.create(wide, tall, false, Image.FORMAT_RGBA8)
+	var middle := Vector2(wide, tall) / 2.0
+	for y in tall:
+		for x in wide:
+			var off := (Vector2(x, y) + Vector2(0.5, 0.5) - middle) / middle
+			if off.length_squared() <= 1.0:
+				image.set_pixel(x, y, Color(0, 0, 0, SHADOW_ALPHA))
+	_shadows[wide] = ImageTexture.create_from_image(image)
+	return _shadows[wide]
+
+
+## The pixels a frame draws, in the frame.
+static func _ink(frame: Texture2D) -> Rect2i:
+	if frame is AtlasTexture:
+		var cut := frame as AtlasTexture
+		return cut.atlas.get_image().get_region(Rect2i(cut.region)).get_used_rect()
+	return frame.get_image().get_used_rect()
+
+
 ## The hero is seen: the danger mark over the head and a hop, then the
 ## chase.
 func notice() -> void:
@@ -415,31 +568,38 @@ func notice() -> void:
 
 
 ## What a named monster may wear on its head (PIX-255), by the name the data
-## gives it: the dungeon sheet's piece.
+## gives it: the dungeon sheet's piece, its middle this many world pixels
+## under the top of the head.
 const CROWNS := {"stewpot": PunyDungeon.POT}
+const CROWN_SINK := 3.0
 
 
 ## A named monster wearing something of the story's (combat.json's
 ## "crown"): the Tidecaller with Tam's stewpot on its head, sitting on the
-## top of the frame it shows, squashing and flashing with it.
-func _wear_crown() -> void:
+## top of the frame it shows, squashing and flashing with it. The highest
+## its top reaches, from the foe's feet (INF: nothing worn).
+func _wear_crown() -> float:
 	if not CROWNS.has(String(named.get("crown", ""))):
-		return
+		return INF
 	var crown := Sprite2D.new()
 	crown.texture = PunyDungeon.sheet().tile_texture(CROWNS[named["crown"]])
-	# Pot-sized on the hero's scale, whatever the monster's.
-	crown.scale = Vector2.ONE * 0.75 / sprite.scale.x
+	# Pot-sized on the hero's scale, whatever the monster's: the world's own
+	# 1x, as every pot on a shelf (PIX-314: three quarters of it drew its
+	# pixels uneven).
+	crown.scale = Vector2.ONE / sprite.scale.x
 	var top := Ink.crown(sprite.sprite_frames, Array(sprite.sprite_frames.get_animation_names()))
 	# On the head of the frame showing, so it rides each squash rather than
 	# floating at the figure's highest reach.
 	var sit := func() -> void:
-		crown.position = Vector2(0, Ink.top_now(sprite, top) + 3.0 / sprite.scale.y)
+		crown.position = Vector2(0, Ink.top_now(sprite, top) + CROWN_SINK / sprite.scale.y)
 	sprite.frame_changed.connect(sit)
 	sprite.animation_changed.connect(sit)
 	sit.call()
 	# It flashes and dissolves with the one wearing it.
 	crown.use_parent_material = true
 	sprite.add_child(crown)
+	var ink := crown.texture.get_image().get_used_rect()
+	return _rest_at.y + top * _rest_scale.y + CROWN_SINK - crown.texture.get_height() / 2.0 + ink.position.y
 
 
 ## A named monster's name over its head in the boss's red: the UI's type at
@@ -481,7 +641,7 @@ func _place_mark(burst: Sprite2D) -> void:
 ## (PIX-188; a named foe's tag stands over its name), or over where the tag
 ## stands before it is laid out.
 func mark_foot() -> float:
-	var tag_top := -20.0 * _rest_scale.y - TAG_HEIGHT
+	var tag_top := _over_head - TAG_HEIGHT
 	if level_tag != null and level_tag.size.y > 0.0:
 		tag_top = level_tag.position.y
 	return floorf(tag_top - MARK_CLEAR)
@@ -888,7 +1048,7 @@ func _sleep_cue() -> Label:
 	cue.scale = Vector2.ONE * CameraRig.LABEL_SCALE
 	cue.z_index = 10
 	cue.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var rest := Vector2(3.0, -20.0 * _rest_scale.y - 2.0)
+	var rest := Vector2(3.0, _over_head - 2.0)
 	cue.position = rest
 	Lights.unshade(cue)
 	if not GameState.settings.reduce_motion:
@@ -1072,6 +1232,12 @@ func _dissolve() -> void:
 	var color := Juice.remains_color(Bestiary.family_of(fighter["id"]))
 	if world.get("atmosphere") != null:
 		world.atmosphere.remains(global_position + Vector2(0, -8), color)
+	# A boss's shadow and glow go with it (PIX-314).
+	if _shadow != null:
+		_shadow.create_tween().tween_property(_shadow, "modulate:a", 0.0, Juice.DISSOLVE_SECONDS)
+	if _aura != null:
+		var light := _aura
+		light.create_tween().tween_method(func(energy: float) -> void: light.set_meta("energy", energy), AURA_ENERGY, 0.0, Juice.DISSOLVE_SECONDS)
 	Juice.dissolve(sprite, color).tween_callback(queue_free)
 
 

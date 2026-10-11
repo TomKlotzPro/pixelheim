@@ -266,31 +266,193 @@ static func _dual_tiles(size: Vector2i, terrain_at: Callable, pad := 0) -> Dicti
 const WATER_GROUNDS := ["river", "seawater-light", "seawater-medium", "seawater-deep"]
 
 
+## Water inland (PIX-306): rivers, ponds, the Deepwood's lake, the Mirefen's
+## pools. Shade drew them one flat colour, so the shaders give them what his
+## sea has, from the water mask: how deep each cell lies, and what water it
+## is - its tone, by the map it lies in (`WATER_TONES`: the mire's murk, the
+## Deepwood's dark, the Frostgate's cold, clear elsewhere), whether it runs
+## and which way, and whether a bridge stands in it. The sea keeps Shade's
+## own three depths (tone 0).
+const WATER_CLEAR := 1
+const WATER_MIRE := 2
+const WATER_DEEP := 3
+const WATER_ICE := 4
+const WATER_TONES := {"mirefen": WATER_MIRE, "deepwood": WATER_DEEP, "frostgate": WATER_ICE}
+## The tones and the ways water runs by name (FLOWS' order), for the harness.
+const TONE_NAMES := ["sea", "clear", "mire", "deep", "ice"]
+const FLOW_NAMES := ["still", "west", "south"]
+## Pools, a lake, a hole in the ice lie still; rivers run.
+const STILL_WATERS := [WATER_MIRE, WATER_DEEP, WATER_ICE]
+## Which way water runs, by its code: still; west along a river that runs
+## across the map, south down one that runs down it (on toward the sea,
+## south-west of the Reach). The village's river comes down from the north
+## and turns west along the south wall.
+const FLOWS := [Vector2i.ZERO, Vector2i.LEFT, Vector2i.DOWN]
+const DIAGONALS := [Vector2i(-1, -1), Vector2i(1, -1), Vector2i(1, 1), Vector2i(-1, 1)]
+## How many cells out from its bank water deepens.
+const DEPTH_CELLS := 3
+## How far a run of water is measured each way to tell which way it runs.
+const RUN_CELLS := 8
+## The code's bits (the mask's alpha, /255): the tone times TONE_BIT, a
+## bridge or a dock standing in it SPAN_BIT, and the way it runs (FLOWS).
+const TONE_BIT := 16
+const SPAN_BIT := 8
+## On the land by a bank the code's low bits say which ground it is, so
+## where the bank bends back the shader draws Shade's own tile of it there:
+## grass (the mire's and the snow's too, toned), dirt (a road, the ash, the
+## rock's foot), sand (the beach, the ice).
+const BANK_GROUNDS := {"grass": 0, "dirt": 1, "cliff": 1, "sand": 2}
+
+static var _wet := {}
+
+
 ## Where the water lies, cell by cell, for the shaders (PIX-223). Red is 1 on
 ## water and 0 on land, for the foam region_tint.gdshader lays along the
 ## shore: filtered between cells it reads a half on the shore line, rising
 ## out into the water. Green counts the water cells straight above (/255), so
-## reflections.gdshader finds the bank that a cell's water mirrors.
-static func water_map(grid: Dictionary, size: Vector2i) -> ImageTexture:
-	var image := Image.create(size.x, size.y, false, Image.FORMAT_RG8)
+## reflections.gdshader finds the bank that a cell's water mirrors. Inland
+## (PIX-306), blue is how far the bank lies (water_depth / DEPTH_CELLS) and
+## alpha the water's code (water_code / 255); both 0 on the sea and the land.
+static func water_map(grid: Dictionary, size: Vector2i, map_id := "") -> ImageTexture:
+	var image := Image.create(size.x, size.y, false, Image.FORMAT_RGBA8)
 	var above := PackedInt32Array()
 	above.resize(size.x)
-	water_rows(image, grid, 0, size.y, above)
+	water_rows(image, grid, 0, size.y, above, map_id)
 	return ImageTexture.create_from_image(image)
 
 
 ## Rows [from, to) of the water mask into `image` (One Reach, PIX-269: a
 ## map's masks are worked out a few rows a frame beside the hero), `above`
 ## carrying each column's count of water cells down from the rows before.
-static func water_rows(image: Image, grid: Dictionary, from: int, to: int, above: PackedInt32Array) -> void:
+## A row's runs west and east are counted in two passes along it; only
+## inland water looks down its column and along its diagonals, a few cells.
+static func water_rows(image: Image, grid: Dictionary, from: int, to: int, above: PackedInt32Array, map_id := "") -> void:
+	var size := Vector2i(image.get_width(), image.get_height())
+	var tone: int = WATER_TONES.get(map_id, WATER_CLEAR)
+	is_wet("")
+	var tiles := PackedStringArray()
+	tiles.resize(size.x)
+	var west := PackedInt32Array()
+	west.resize(size.x)
 	for y in range(from, to):
-		for x in image.get_width():
-			var cell := Vector2i(x, y)
-			if ground_of(grid.get(cell, "")) in WATER_GROUNDS:
-				image.set_pixelv(cell, Color(1.0, mini(above[x], 255) / 255.0, 0.0))
-				above[x] += 1
-			else:
+		# Whether the row above was wet, column by column, before this row
+		# counts on.
+		var wet_above := above.duplicate()
+		for x in size.x:
+			tiles[x] = grid.get(Vector2i(x, y), "")
+		# Past the map's edge its edge cell is carried on.
+		var run := RUN_CELLS if _wet.has(tiles[0]) else 0
+		for x in size.x:
+			west[x] = run
+			run = mini(run + 1, RUN_CELLS) if _wet.has(tiles[x]) else 0
+		run = RUN_CELLS if _wet.has(tiles[size.x - 1]) else 0
+		for x in range(size.x - 1, -1, -1):
+			var east := run
+			var tile := tiles[x]
+			if not _wet.has(tile):
+				run = 0
 				above[x] = 0
+				continue
+			run = mini(run + 1, RUN_CELLS)
+			var cell := Vector2i(x, y)
+			var depth := 0.0
+			var code := 0
+			if tile == "water" or tile == "bridge" or (tile == "dock" and ground_at(grid, cell) == "river"):
+				# Water up to the map's top edge runs on past it.
+				var north := RUN_CELLS if above[x] >= y else mini(above[x], RUN_CELLS)
+				var south := _run_down(grid, cell, size)
+				var cells := water_depth(grid, cell, size, west[x], east, north, south)
+				depth = cells / float(DEPTH_CELLS)
+				code = water_code(tile, tone, west[x] + east, north + south)
+				if cells == 1:
+					_mark_bank(image, grid, cell, tone, tiles, wet_above)
+			image.set_pixelv(cell, Color(1.0, mini(above[x], 255) / 255.0, depth, code / 255.0))
+			above[x] += 1
+
+
+## Whether our tile `tile` is drawn as water (WATER_GROUNDS).
+static func is_wet(tile: String) -> bool:
+	if _wet.is_empty():
+		for kind: String in GROUND:
+			if GROUND[kind] in WATER_GROUNDS:
+				_wet[kind] = true
+	return _wet.has(tile)
+
+
+## How many cells from inland water's `cell` to the nearest bank, along the
+## rows, the columns and the diagonals, up to DEPTH_CELLS: 1 by a bank.
+## `west`, `east`, `north` and `south` count the wet cells straight that way.
+static func water_depth(grid: Dictionary, cell: Vector2i, size: Vector2i, west: int, east: int, north: int, south: int) -> int:
+	var depth := mini(mini(mini(west, east), mini(north, south)) + 1, DEPTH_CELLS)
+	for reach in range(1, depth):
+		for step: Vector2i in DIAGONALS:
+			if not is_wet(grid.get(_inside(cell + step * reach, size), "")):
+				return reach
+	return depth
+
+
+## Inland water's code (the mask's alpha) on a cell of tile `tile`: its
+## tone, a bridge or a dock standing in it, and which way it runs (FLOWS):
+## still in pools, lakes and the ice, else along its longer run, `across`
+## (wet cells west and east of it) or `down` (north and south).
+static func water_code(tile: String, tone: int, across: int, down: int) -> int:
+	var code := tone * TONE_BIT
+	if tile == "bridge" or tile == "dock":
+		code += SPAN_BIT
+	if tone not in STILL_WATERS:
+		code += 1 if across >= down else 2
+	return code
+
+
+## The land round inland water's `cell` by its bank takes the water's tone
+## in the mask's alpha (red still 0), and which ground it is (BANK_GROUNDS),
+## so the shaders know to draw the bank that bends out over it, and the
+## land's own ground where it bends back. The row above and this one are
+## known dry by `wet_above` and this row's `tiles`; the row below is marked
+## as it stands, and its water writes over the mark when its row comes.
+static func _mark_bank(image: Image, grid: Dictionary, cell: Vector2i, tone: int, tiles: PackedStringArray, wet_above: PackedInt32Array) -> void:
+	for dy in range(-1, 2):
+		var y := cell.y + dy
+		if y < 0 or y >= image.get_height():
+			continue
+		for dx in range(-1, 2):
+			var x := cell.x + dx
+			if x < 0 or x >= image.get_width() or (dx == 0 and dy == 0):
+				continue
+			if (dy < 0 and wet_above[x] > 0) or (dy == 0 and _wet.has(tiles[x])):
+				continue
+			var land: int = BANK_GROUNDS.get(ground_of(tiles[x] if dy == 0 else grid.get(Vector2i(x, y), "")), 0)
+			image.set_pixel(x, y, Color(0.0, 0.0, 0.0, (tone * TONE_BIT + land) / 255.0))
+
+
+## The inland water nearest `cell` in a water mask `image` (water_map's),
+## within `reach` cells: its tone and the way it runs, "clear west", "mire
+## still"; "" when there's none (the harness's water=).
+static func water_near(image: Image, cell: Vector2i, reach: int) -> String:
+	var best := ""
+	var nearest := reach * reach * 2 + 1
+	for y in range(maxi(cell.y - reach, 0), mini(cell.y + reach + 1, image.get_height())):
+		for x in range(maxi(cell.x - reach, 0), mini(cell.x + reach + 1, image.get_width())):
+			var texel := image.get_pixel(x, y)
+			var code := roundi(texel.a * 255.0)
+			var away := (Vector2i(x, y) - cell).length_squared()
+			if texel.r > 0.5 and code >= TONE_BIT and away < nearest:
+				nearest = away
+				best = "%s %s" % [TONE_NAMES[code / TONE_BIT], FLOW_NAMES[code % SPAN_BIT]]
+	return best
+
+
+## How many wet cells lie straight south of `cell`, up to RUN_CELLS (the
+## map's bottom edge carried on).
+static func _run_down(grid: Dictionary, cell: Vector2i, size: Vector2i) -> int:
+	var count := 0
+	while count < RUN_CELLS and _wet.has(grid.get(Vector2i(cell.x, mini(cell.y + count + 1, size.y - 1)), "")):
+		count += 1
+	return count
+
+
+static func _inside(cell: Vector2i, size: Vector2i) -> Vector2i:
+	return Vector2i(clampi(cell.x, 0, size.x - 1), clampi(cell.y, 0, size.y - 1))
 
 
 ## The per-cell mask region_tint.gdshader reads: a region's hue, and what

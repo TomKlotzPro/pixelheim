@@ -249,9 +249,10 @@ func play_ending(choice := Homecoming.HOME) -> void:
 
 
 ## Fafnyr on Hilda's forge for the ending's tour (PIX-253 step 10): his
-## Mini World sheet lying over her chimney, warming his belly, a little
-## larger than his kind, until the hero leaves the square.
-const FORGE_DRAGON_SCALE := 1.4
+## Mini World sheet lying over her chimney, warming his belly, his kind's
+## size on the art's own grid (PIX-314: a little larger drew its pixels
+## uneven), until the hero leaves the square.
+const FORGE_DRAGON_SCALE := 1
 ## His belly on the chimney's top, not his feet.
 const FORGE_DRAGON_LIFT := Vector2(0, -6)
 

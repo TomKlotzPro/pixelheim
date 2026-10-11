@@ -358,7 +358,7 @@ godot/tools/lookbook.sh                              # the browser's renderer: l
 godot/tools/lookbook.sh --desktop                    # the app's look: lookbook-desktop/
 godot/tools/lookbook.sh --desktop --looks browser,app  # both on the desktop renderer, a folder each
 godot/tools/lookbook.sh --compare                    # no window: lookbook/ | lookbook-desktop/ side by side in lookbook-compare/
-godot/tools/lookbook.sh --only strike                # one shot, by its name
+godot/tools/lookbook.sh --only strike                # one shot, by its name (or a few: bosses,boss_lair)
 python3 godot/tools/lookbook_compare.py godot/lookbook-desktop/browser godot/lookbook-desktop/app godot/lookbook-compare
 ```
 

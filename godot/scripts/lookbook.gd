@@ -42,6 +42,10 @@ const SHOTS := {
 	"town_dusk": {"area": "town", "map": "town", "at": "street", "time": DUSK},
 	"town_night": {"area": "town", "map": "town", "at": "street", "time": NIGHT},
 	"riverside": {"area": "town", "map": "town", "cell": Vector2i(72, 8), "time": DAY},
+	# The village's river where it turns west under the rampart (PIX-306):
+	# deep down its middle, flowing, foam at its banks; by day and at night.
+	"town_river": {"area": "town", "map": "town", "cell": Vector2i(60, 33), "time": DAY},
+	"town_river_night": {"area": "town", "map": "town", "cell": Vector2i(60, 33), "time": NIGHT},
 	# The village's gate from inside (PIX-248): one rampart, the gatehouse
 	# three wide between its towers, the road running on out through the
 	# fields; and its torches at night.
@@ -85,6 +89,11 @@ const SHOTS := {
 	"village_road": {"area": "reach", "map": "overworld", "cell": Vector2i(48, 40), "time": DAY},
 	"village_gate_night": {"area": "reach", "map": "overworld", "cell": Vector2i(48, 41), "time": NIGHT},
 	"village_west_night": {"area": "reach", "map": "overworld", "cell": Vector2i(34, 47), "time": NIGHT},
+	# The Reach's river at its bridge (PIX-306): its depth, its banks bent
+	# off the grid, streaks drifting downstream and foam at the bridge's
+	# piles; by day and at night.
+	"reach_river": {"area": "reach", "map": "overworld", "cell": Vector2i(48, 32), "time": DAY},
+	"reach_river_night": {"area": "reach", "map": "overworld", "cell": Vector2i(48, 32), "time": NIGHT},
 	# Things lying on the ground beside the hero (PIX-286): the pouch on the
 	# road west of the village where it lies, and a patch of each kind laid
 	# round it, half a cell each.
@@ -112,6 +121,13 @@ const SHOTS := {
 	# The Deepwood's forest, its pines and round trees (PIX-304: from One
 	# Land, v0.219, no map grew any).
 	"deepwood_trees": {"area": "regions", "map": "deepwood", "cell": Vector2i(44, 10), "time": DAY},
+	# Still water inland (PIX-306): the Deepwood's dark lake, and the
+	# Mirefen's murky pools by a bridge, their lily pads and reeds; by day
+	# and at night.
+	"deepwood_lake": {"area": "regions", "map": "deepwood", "cell": Vector2i(18, 9), "time": DAY},
+	"deepwood_lake_night": {"area": "regions", "map": "deepwood", "cell": Vector2i(18, 9), "time": NIGHT},
+	"mire_pool": {"area": "regions", "map": "mirefen", "cell": Vector2i(21, 25), "time": DAY},
+	"mire_pool_night": {"area": "regions", "map": "mirefen", "cell": Vector2i(21, 25), "time": NIGHT},
 	# The mountain road (PIX-253 step 8): its switchbacks up the ash to the
 	# forge in the rock, and the lamp by its door.
 	"mountain_road": {"area": "regions", "map": "mountain_road", "cell": Vector2i(17, 8), "time": DAY},
@@ -162,6 +178,16 @@ const SHOTS := {
 	# village's gate (PIX-284); by day and at night.
 	"notice": {"area": "combat", "map": "overworld", "cell": Vector2i(28, 47), "time": DAY, "foe": "orc", "notice": true},
 	"notice_night": {"area": "combat", "map": "overworld", "cell": Vector2i(28, 47), "time": NIGHT, "foe": "orc", "notice": true},
+	# Bosses on the art's own grid (PIX-314): every named monster and Fafnyr
+	# as the Night of Bells sizes him in rows beside the hero, held still,
+	# wider than play (`bosses`, `zoom`); the Tidecaller beside the hero in
+	# its grotto (`named`, in its lair), its name and level over its head;
+	# Old Greymaw in his corner of the forest at night; Fafnyr come down on
+	# the square on the Night of Bells (`fafnyr`).
+	"bosses": {"area": "combat", "map": "overworld", "cell": Vector2i(77, 44), "time": DAY, "bosses": true, "zoom": 2.0},
+	"boss_lair": {"area": "combat", "map": "seacave_grotto", "cell": Vector2i(22, 12), "time": DAY, "named": "tidecaller"},
+	"boss_night": {"area": "combat", "map": "overworld", "cell": Vector2i(87, 59), "time": NIGHT, "named": "greymaw"},
+	"fafnyr_square": {"area": "combat", "map": "town", "cell": Vector2i(35, 28), "time": NIGHT, "fafnyr": true},
 	# The map (PIX-266) of a hero who has walked the whole Reach, its list
 	# scrolled down to the last waypoint, in Greyhold on the Reach's one page
 	# (PIX-269 step 7).
@@ -215,10 +241,17 @@ var world: Node
 var out_dir := "res://lookbook"
 var with_perf := false
 var with_motion := false
-## Only the shot of this name ("" for all), to look at one quickly.
-var only := ""
+## Only the shots of these names (none: all), to look at a few quickly: a
+## before and after of a handful (PIX-314: the bosses).
+var only: PackedStringArray = []
 ## The shot's foe, to strike while filming.
 var _foe: Node
+## The bosses' lineup (`bosses`, PIX-314): who stands in it, and how far
+## apart, in world pixels: BOSS_ROW across, the hero in the first row's
+## middle, the second row below it.
+var _lined_up: Array[Node] = []
+const BOSS_STEP := Vector2(60, 76)
+const BOSS_ROW := 9
 ## Filming a strike: the frames the hero swings on (the second a crit, the
 ## last one felling it), and what each blow takes.
 const STRIKES := [2, 8, 14]
@@ -249,12 +282,13 @@ func run() -> void:
 		images[look] = shots
 	# Developer output, not the player's: no words for the translators.
 	print("%s %s=%s" % ["LOOK", "look", DesktopLook.look])
-	if only != "" and not SHOTS.has(only):
-		push_error("lookbook: no shot is called %s (%s)" % [only, ", ".join(ordered())])
-		return
+	for wanted in only:
+		if not SHOTS.has(wanted):
+			push_error("lookbook: no shot is called %s (%s)" % [wanted, ", ".join(ordered())])
+			return
 	var shot_names: PackedStringArray = []
 	for shot_name in ordered():
-		if only != "" and shot_name != only:
+		if not only.is_empty() and not only.has(shot_name):
 			continue
 		shot_names.append(shot_name)
 		var shot: Dictionary = SHOTS[shot_name].duplicate()
@@ -330,6 +364,17 @@ func _stage(shot: Dictionary) -> void:
 		if not shot.get("notice", false):
 			foe.notice()
 		_foe = foe
+	if shot.has("named"):
+		var lair := Hunts.lair(Hunts.named(shot["named"]))
+		_foe = _named_at(String(shot["named"]), MapView.center(lair))
+		world.player.face(Vector2.RIGHT)
+	if shot.get("bosses", false):
+		_line_up_bosses()
+	if shot.get("fafnyr", false):
+		_foe = _fafnyr_at(MapView.center(Bells.landing()))
+		world.player.face(Vector2.RIGHT)
+	if shot.has("zoom"):
+		world.camera_rig.camera.zoom = Vector2.ONE * float(shot["zoom"])
 	if shot.has("letter"):
 		# A letter of Maren's carried, for this shot alone (_unstage).
 		GameState.progression.quests[shot["letter"]] = {"progress": 0, "done": false}
@@ -356,6 +401,75 @@ func _unstage(shot: Dictionary) -> void:
 	if shot.has("letter"):
 		GameState.pack.remove_item(shot["letter"])
 		GameState.progression.quests.erase(shot["letter"])
+	if shot.has("zoom"):
+		world.camera_rig.camera.zoom = Vector2.ONE * CameraRig.ZOOM
+	for foe in _lined_up:
+		if is_instance_valid(foe):
+			foe.queue_free()
+	_lined_up.clear()
+
+
+## A named monster held still at `at` (PIX-314): the one in its lair on this
+## map, or brought out of it, facing the camera, its level shown as the
+## hero beside it would see it.
+func _named_at(named_id: String, at: Vector2) -> Node:
+	var foe: Node = null
+	for mob in get_tree().get_nodes_in_group("mobs"):
+		# Not one the last shot's map left going.
+		if not mob.dying and not mob.is_queued_for_deletion() and mob.fighter.get("named", "") == named_id:
+			foe = mob
+	if foe == null:
+		foe = world.foes.spawn_named(named_id, Vector2i((at / MapView.TILE).floor()))
+	_hold(foe, at)
+	return foe
+
+
+## Still where it is put: no wandering, no noticing, no chase.
+func _hold(foe: Node, at: Vector2) -> void:
+	foe.position = at
+	foe.home = at
+	foe.reset_physics_interpolation()
+	foe.set_physics_process(false)
+	foe.level_tag.visible = true
+
+
+## Every named monster, and Fafnyr as the Night of Bells sizes him, in rows
+## beside the hero, held still facing the camera, their words hidden: how
+## big each is drawn, side by side with the hero (PIX-314).
+func _line_up_bosses() -> void:
+	var origin: Vector2 = world.player.position - Vector2(BOSS_STEP.x * (BOSS_ROW / 2), 0)
+	var slots: Array[Vector2] = []
+	for slot in BOSS_ROW * 2:
+		if slot != BOSS_ROW / 2:
+			slots.append(origin + Vector2(BOSS_STEP.x * (slot % BOSS_ROW), BOSS_STEP.y * (slot / BOSS_ROW)))
+	var named := Hunts.all()
+	for i in named.size():
+		var foe := _named_at(String(named[i]["id"]), slots[i])
+		_quiet(foe)
+		_lined_up.append(foe)
+	# The last of the second row, and the room of the one after it.
+	var fafnyr := _fafnyr_at((slots[named.size() + 1] + slots[named.size() + 2]) / 2.0)
+	_quiet(fafnyr)
+
+
+## Fafnyr as the Night of Bells brings him down, held still at `at`.
+func _fafnyr_at(at: Vector2) -> Node:
+	var fafnyr: Node = preload("res://scripts/enemy.gd").new()
+	fafnyr.world = world
+	fafnyr.fighter = Bells.fafnyr()
+	fafnyr.add_to_group("mobs")
+	world.actors.add_child(fafnyr)
+	_hold(fafnyr, at)
+	_lined_up.append(fafnyr)
+	return fafnyr
+
+
+## A lined-up foe's name, level and bars hidden: the lineup is about bodies.
+func _quiet(foe: Node) -> void:
+	for child in foe.get_children():
+		if child is Control:
+			(child as Control).visible = false
+	foe.level_tag.visible = false
 
 
 ## Waits for a frame drawn and ready to save. While the window is hidden

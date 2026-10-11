@@ -68,8 +68,11 @@ var _above := PackedInt32Array()
 ## village, a cave) carries its own edge on past it.
 var _plane := false
 
-## How many rows of cells, or of corners, one slice works out.
+## How many rows of cells, or of corners, one slice works out; the water's
+## a row at a time, inland water's depth and banks being the dearest rows
+## (PIX-306: a river's row is about a third of a millisecond).
 const ROWS_A_SLICE := 4
+const WATER_ROWS_A_SLICE := 1
 
 ## A drawing of a map (its id and variant) -> its KeptGround.
 static var _kept := {}
@@ -133,7 +136,7 @@ static func working(data: MapData, look: Dictionary, pad: int, slices: Slicer) -
 	kept.crowns.resize(kept.width * corner_rows)
 	kept.tint_image = Image.create(data.size.x, data.size.y, false, Image.FORMAT_RGBA8)
 	kept.tint_image.fill(Color(0, 0, 0, 0))
-	kept.water_image = Image.create(data.size.x, data.size.y, false, Image.FORMAT_RG8)
+	kept.water_image = Image.create(data.size.x, data.size.y, false, Image.FORMAT_RGBA8)
 	kept._above.resize(data.size.x)
 	var cell_slices := ceili(data.size.y / float(ROWS_A_SLICE))
 	var ring_slices := ceili(ring_rows / float(ROWS_A_SLICE))
@@ -146,8 +149,8 @@ static func working(data: MapData, look: Dictionary, pad: int, slices: Slicer) -
 	slices.add_each("kept_tint_fringe", cell_slices, func(i: int) -> void:
 		PunyTerrain.tint_fringe_rows(kept.tint_image, look, i * ROWS_A_SLICE, mini((i + 1) * ROWS_A_SLICE, data.size.y)))
 	slices.add_each("kept_tint_spill", 2, func(_ring: int) -> void: PunyTerrain.tint_spill(kept.tint_image, look))
-	slices.add_each("kept_water", cell_slices, func(i: int) -> void:
-		PunyTerrain.water_rows(kept.water_image, look, i * ROWS_A_SLICE, mini((i + 1) * ROWS_A_SLICE, data.size.y), kept._above))
+	slices.add_each("kept_water", ceili(data.size.y / float(WATER_ROWS_A_SLICE)), func(i: int) -> void:
+		PunyTerrain.water_rows(kept.water_image, look, i * WATER_ROWS_A_SLICE, mini((i + 1) * WATER_ROWS_A_SLICE, data.size.y), kept._above, data.id))
 	slices.add_each("kept_detail", cell_slices, func(i: int) -> void: kept._detail_rows(i * ROWS_A_SLICE))
 	# The Medieval Age's patches in the open land only: in Pixelheim's yards
 	# and gardens, a few cells across, one read as a rug laid on the lawn.
@@ -418,9 +421,9 @@ static func bytes() -> int:
 		var kept: KeptGround = _kept[drawing]
 		total += (kept.ground.size() + kept.rims.size() + kept.crowns.size()) * 4
 		total += kept.ground_cells.size() + kept.rim_cells.size() + kept.crown_cells.size()
-		# Eight bits a channel: the tint's four, the water's two, each once
+		# Eight bits a channel, four each (the tint, the water), each once
 		# as an image and once as a texture.
-		total += 2 * (kept.tint_image.get_width() * kept.tint_image.get_height() * 4 + kept.water_image.get_width() * kept.water_image.get_height() * 2)
+		total += 2 * (kept.tint_image.get_width() * kept.tint_image.get_height() * 4 + kept.water_image.get_width() * kept.water_image.get_height() * 4)
 	for drawing: String in _decks:
 		for deck: Array in (_decks[drawing]["decks"] as Dictionary).values():
 			total += deck.size() * 24

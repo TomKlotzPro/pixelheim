@@ -581,11 +581,13 @@ func _ground_layers() -> Node2D:
 	water.set_shader_parameter("water_map", kept.water_map)
 	ground_tint.set_shader_parameter("water_map", kept.water_map)
 	ground_layer.material = water
+	# The floor answers to a boss's glow too (Lights.FLOOR, PIX-314).
+	ground_layer.light_mask |= Lights.FLOOR
 	root.add_child(ground_layer)
 	# The open ground's patches of the Medieval Age's greens and snow, in
 	# their own colours (the region's tone would whiten its snow's blue tufts
 	# away) with the ground's own patches over the greens, then its small
-	# things toned with the region (PIX-305).
+	# things toned with the region (PIX-305); the floor, a boss's glow too.
 	patch_layer = null
 	if not kept.patches.is_empty() and PunyTown.available():
 		patch_layer = tile_layer_of(PunyTown.tileset())
@@ -593,9 +595,11 @@ func _ground_layers() -> Node2D:
 		patched.set_shader_parameter("ground_life", true)
 		patched.set_shader_parameter("strength", 0.0)
 		patch_layer.material = patched
+		patch_layer.light_mask |= Lights.FLOOR
 		root.add_child(patch_layer)
 	detail_layer = tile_layer_of(GroundDetail.tileset())
 	detail_layer.material = ground_tint
+	detail_layer.light_mask |= Lights.FLOOR
 	root.add_child(detail_layer)
 	# Shade's cliffs standing in the water, the sand and the roads
 	# (PunyTerrain.rimmed), toned as the ground is, but still: the water
@@ -603,6 +607,7 @@ func _ground_layers() -> Node2D:
 	rim_layer = tile_layer_of(PunyTerrain.tileset())
 	rim_layer.position = ground_layer.position
 	rim_layer.material = ground_tint
+	rim_layer.light_mask |= Lights.FLOOR
 	root.add_child(rim_layer)
 	decor_sway = _swaying(TREE_SWAY, true)
 	flowers_sway = _swaying(FLOWER_SWAY, false)
@@ -621,6 +626,12 @@ func _ground_layers() -> Node2D:
 	# Bridges, cave mouths and ramparts stand on that ground as Puny objects;
 	# the village far off brings its own rampart, wells and growth.
 	_objects_layer = tile_layer_of(PunyTerrain.tileset())
+	# The river Shade drew between a bridge's planks takes the water's own
+	# look (PIX-306): the mire's murk under its bridges, not his cyan.
+	var planks := _toning()
+	planks.set_shader_parameter("strength", 0.0)
+	planks.set_shader_parameter("planks", true)
+	_objects_layer.material = planks
 	root.add_child(_objects_layer)
 	# Pixelheim's rampart in the Medieval Age's stone, its gatehouse at the
 	# road (PIX-248); what the fire left of it darker, on a layer of its own.
@@ -914,6 +925,9 @@ func _build_dungeon(data: MapData) -> Node2D:
 	root.add_child(_dark_beyond(data))
 	var dungeon := PunyDungeon.sheet()
 	var layer := tile_layer_of(dungeon.tileset)
+	# Its floor and walls answer to a boss's glow (Lights.FLOOR, PIX-314);
+	# what stands on them doesn't.
+	layer.light_mask |= Lights.FLOOR
 	dungeon_objects = tile_layer_of(dungeon.tileset)
 	wall_torches = []
 	for cell: Vector2i in data.grid:
@@ -959,6 +973,7 @@ func _build_dungeon(data: MapData) -> Node2D:
 	root.add_child(layer)
 	var ice := _frozen(data)
 	if ice != null:
+		ice.light_mask |= Lights.FLOOR
 		root.add_child(ice)
 		# The ice gives the dark back a little cold light, here and there.
 		for cell: Vector2i in data.grid:
