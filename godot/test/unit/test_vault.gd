@@ -217,7 +217,7 @@ func test_fafnyr_shows_the_hoard_he_hated() -> void:
 ## gear, crystals, crown and medal as they were, the Vault open to them.
 func test_a_hero_from_the_deep_hunt_wakes_safe_with_what_it_gave() -> void:
 	var raw := FileAccess.get_file_as_string(OLD_DEEP)
-	state.apply(WebImport.parse_any(raw))
+	state.apply(SaveCodec.parse_any(raw))
 	assert_eq(state.progression.deepest, 12, "the depth kept, unread")
 	var woke := Depths.waking(state.world.map_id, state.world.cell)
 	assert_eq(woke["mapId"], "town", "by the filled-in cave: home to town")

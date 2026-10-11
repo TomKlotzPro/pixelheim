@@ -106,12 +106,6 @@ func _make(kind: String, view: SubViewport) -> Screen:
 	match kind:
 		"saves":
 			return SavesScreen.new()
-		"saves, a web hero":
-			# The first visit's offer, for a hero with a long name.
-			var screen := SavesScreen.new()
-			screen.web_save = GameState.slots.read(1)
-			screen.welcome = true
-			return screen
 		"map", "map, the Reach":
 			# The Reach's page (PIX-269 step 7) from Saltmere, its south edge.
 			var world := StandIn.new()
@@ -137,7 +131,7 @@ func _fits(kinds: Array[String]) -> Array[String]:
 
 
 func test_the_saves_screen_fits_with_every_slot_full() -> void:
-	var out := await _fits(["saves", "saves, a web hero"])
+	var out := await _fits(["saves"])
 	assert_eq(out.size(), 0, "\n".join(out))
 
 
@@ -147,8 +141,6 @@ func test_the_saves_window_keeps_its_width_and_its_place() -> void:
 	for language in LANGUAGES:
 		Text.apply(language)
 		var screen: Screen = SavesScreen.new()
-		screen.web_save = GameState.slots.read(1)
-		screen.welcome = true
 		add_child(screen)
 		await wait_process_frames(3)
 		var window: PanelContainer = screen.window

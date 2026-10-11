@@ -1,9 +1,9 @@
 extends Screen
-## The saves screen (Esc): three slots to play, start fresh or clear, and the
-## way across from the web game — its save found in this browser, or a pasted
-## save code. Keyboard first (letters drive every action, the same key twice
-## confirms anything destructive), every action also clickable. Pauses the
-## world while open; switching heroes reloads the world scene.
+## The saves screen (Esc): three slots to play, start fresh or clear, and a
+## hero carried between machines as a save code (copy here, paste there).
+## Keyboard first (letters drive every action, the same key twice confirms
+## anything destructive), every action also clickable. Pauses the world while
+## open; switching heroes reloads the world scene.
 
 const PORTRAIT := Rect2(8, 6, 16, 20)  # hero body within a 32px Puny idle frame
 ## The window, set and never grown (PIX-230): the canvas less the 56 px
@@ -26,18 +26,12 @@ const RIGHT_WIDTH := WINDOW.x - 44.0 - SLOTS_WIDTH - 32.0
 ## Its words, inside a card's margins.
 const RIGHT_TEXT := RIGHT_WIDTH - 20.0
 
-## A save found in this browser's web game (or passed in by the harness).
-var web_save := {}
-## Opened by the first-visit offer: bringing the web hero needs no confirm,
-## the slot only holds the throwaway hero boot just created.
-var welcome := false
 var selected := 0
 var cards: Array[PanelContainer] = []
 ## The window: WINDOW.x wide whatever it holds (what the tests measure).
 var window: PanelContainer
 var status: Label
 var code_field: LineEdit
-var bring_button: Button
 var load_button: Button
 var pending := ""
 ## What playing the hero already in hand means here: just closing (over the
@@ -50,8 +44,8 @@ func _open() -> void:
 
 	dim()
 
-	# One window in the middle of the screen: the slots on the left, the way
-	# across from the web game on the right, what just happened underneath.
+	# One window in the middle of the screen: the slots on the left, the save
+	# code on the right, what just happened underneath.
 	# Placed, not centred by a container: a wrapping line measures itself tall
 	# before it knows its width, and a centring container would grow with it.
 	# The window is WINDOW.x wide, so placed it is centred; it hugs its
@@ -98,35 +92,6 @@ func _open() -> void:
 	right.custom_minimum_size = Vector2(RIGHT_WIDTH, 0)
 	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	columns.add_child(right)
-	var web := PanelContainer.new()
-	web.add_theme_stylebox_override("panel", UiStyle.box(UiStyle.CARD, UiStyle.LAMP if welcome else UiStyle.RIM, 10))
-	right.add_child(web)
-	var web_lines := VBoxContainer.new()
-	web_lines.add_theme_constant_override("separation", 8)
-	web.add_child(web_lines)
-	web_lines.add_child(Layout.wrapped(UiStyle.strong(
-		"Welcome back" if welcome else "From the old web edition", 16, UiStyle.LAMP if welcome else UiStyle.INK
-	), RIGHT_TEXT))
-	if web_save.is_empty():
-		var hint := (
-			"No hero from the old web edition in this browser. One you saved as a code comes across below."
-			if OS.has_feature("web")
-			else "A hero from the old web edition comes across by their save code: paste it below."
-		)
-		web_lines.add_child(Layout.wrapped(UiStyle.label(hint, 14, UiStyle.FADED), RIGHT_TEXT))
-	else:
-		var found := UiStyle.label(
-			Text.t("Your web game hero %s, %d gold.") % [WebImport.describe(web_save), web_save["gold"]], 14, UiStyle.INK
-		)
-		web_lines.add_child(Layout.wrapped(found, RIGHT_TEXT))
-		# "Bring <name> to slot N" runs long in French with a long name: its
-		# words wrap on the plank (_refresh), past its key.
-		bring_button = UiStyle.button("", _bring)
-		if welcome:
-			# The one thing a first visit is for: make it the brightest control.
-			UiStyle.focus(bring_button)
-		web_lines.add_child(bring_button)
-
 	var code := PanelContainer.new()
 	code.add_theme_stylebox_override("panel", UiStyle.box(UiStyle.CARD, UiStyle.RIM, 10))
 	right.add_child(code)
@@ -134,6 +99,9 @@ func _open() -> void:
 	code_lines.add_theme_constant_override("separation", 8)
 	code.add_child(code_lines)
 	code_lines.add_child(Layout.wrapped(UiStyle.strong("Save code", 16, UiStyle.INK), RIGHT_TEXT))
+	code_lines.add_child(Layout.wrapped(UiStyle.label(
+		"A hero to another computer or browser: copy their code here, paste it there.", 14, UiStyle.FADED
+	), RIGHT_TEXT))
 	code_field = LineEdit.new()
 	code_field.placeholder_text = "Paste a save code"
 	code_field.add_theme_color_override("font_color", UiStyle.INK)
@@ -152,12 +120,6 @@ func _open() -> void:
 	status.custom_minimum_size = Vector2(WINDOW.x - 44, 0)
 	body.add_child(status)
 	add_child(UiStyle.screen_footer("{key:move_up}/{key:move_down}  choose      {key:interact}  play      N  new hero      X  clear      P  paste      C  copy      Esc  close"))
-
-	if welcome:
-		status.text = (
-			Text.t("Found %s in this browser's web game. Press B to bring them here, or Esc for the title and a new hero.")
-			% WebImport.describe(web_save)
-		)
 	_refresh()
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -171,10 +133,6 @@ func _unhandled_input(event: InputEvent) -> void:
 	super(event)
 
 func _command(event: InputEvent) -> Callable:
-	# Turning down the web hero (PIX-200) goes to the title, where a new one
-	# is made and kept - not on as a stand-in nobody saves.
-	if welcome and (event.is_action_pressed("ui_cancel") or event.is_action_pressed("menu")):
-		return _decline
 	if event.is_action_pressed("move_up"):
 		return _select.bind(selected - 1)
 	if event.is_action_pressed("move_down"):
@@ -187,8 +145,6 @@ func _command(event: InputEvent) -> Callable:
 				return _new_hero
 			KEY_X:
 				return _clear
-			KEY_B:
-				return _bring
 			KEY_C:
 				return _copy
 			KEY_P:
@@ -226,11 +182,6 @@ func _play() -> void:
 	if GameState.play_slot(_target()):
 		_reload()
 
-func _decline() -> void:
-	close()
-	get_tree().current_scene.open_title()
-
-
 func _new_hero() -> void:
 	var summary := GameState.slots.summary(_target())
 	if not summary.is_empty() and not _confirm("new", Text.t("Replace %s with a new hero?") % summary["name"], "N"):
@@ -260,36 +211,35 @@ func _clear() -> void:
 		_say(Text.t("Slot %d is empty now.") % _target())
 		_refresh()
 
-func _bring() -> void:
-	if web_save.is_empty():
-		return
-	if welcome or _may_replace("bring", "B", web_save, Text.t("from the web game")):
-		GameState.import_into(_target(), web_save)
-		_reload()
-
 func _load_code() -> void:
-	var state := WebImport.parse_any(code_field.text)
+	var state := SaveCodec.parse_any(code_field.text)
 	if state.is_empty():
-		_say("That is not a save code. In the web game, open Options and use Copy save code, then paste it here.")
+		_say("That is not a save code. On the other machine, open Saves and use Copy mine, then paste it here.")
 		return
-	if _may_replace("code", "Enter", state, Text.t("from the code")):
+	if _may_replace(state):
 		GameState.import_into(_target(), state)
 		_reload()
 
 func _copy() -> void:
 	DisplayServer.clipboard_set(GameState.save_code())
-	_say("Save code copied. Paste it into Import save code in the web game's Options.")
+	_say("Save code copied. On the other machine, paste it under Save code in Saves.")
 
-## Importing over an occupied slot asks first, naming both heroes and where
-## each comes from (re-importing the same hero would undo progress made here).
-func _may_replace(action: String, key: String, incoming: Dictionary, source: String) -> bool:
+## Loading a code over an occupied slot asks first, naming both heroes
+## (loading the same hero again would undo progress made here).
+func _may_replace(incoming: Dictionary) -> bool:
 	var summary := GameState.slots.summary(_target())
 	if summary.is_empty():
 		return true
 	var question := Text.t("Replace %s in slot %d with %s %s? Their progress here would be lost.") % [
-		summary["name"], _target(), WebImport.describe(incoming), source,
+		summary["name"], _target(), describe(incoming), Text.t("from the code"),
 	]
-	return _confirm(action, question, key)
+	return _confirm("code", question, "Enter")
+
+## "Brann, level 7 ranger"
+static func describe(state: Dictionary) -> String:
+	var hero: Dictionary = state["hero"]
+	var role: String = Catalog.role(hero["roleId"]).get("name", hero["roleId"]).to_lower()
+	return Text.t("%s, level %d %s") % [hero["name"], hero["level"], role]
 
 ## Destructive actions take the same key twice: the first press asks.
 func _confirm(action: String, question: String, key: String) -> bool:
@@ -307,9 +257,6 @@ func _say(text: String) -> void:
 func _refresh() -> void:
 	for index in cards.size():
 		_fill_card(cards[index], index)
-	if bring_button != null:
-		UiStyle.button_keyed(bring_button, "B", Text.t("Bring %s to slot %d") % [web_save["hero"]["name"], _target()])
-		Layout.capped(bring_button, RIGHT_TEXT)
 	load_button.text = Text.t("Load into slot %d") % _target()
 	Layout.capped(load_button, RIGHT_TEXT)
 

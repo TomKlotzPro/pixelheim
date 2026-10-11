@@ -349,7 +349,6 @@ func _create_hero() -> void:
 ## the hero in hand is Continue.
 func _saves() -> void:
 	var screen := preload("res://scripts/saves_screen.gd").new()
-	screen.web_save = WebImport.find_in_browser()
 	screen.on_play_current = _continue
 	add_child(screen)
 	screen.layer = layer + 1

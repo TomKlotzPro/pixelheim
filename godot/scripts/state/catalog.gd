@@ -1,8 +1,7 @@
 class_name Catalog
-## Game data exported from the web game (assets/data/catalog.json, regenerated
-## by pnpm godot:sync): item slots and weights, role base stats, skill-tree
-## roots, carry-weight passives, the spawn points. Read-only — the web modules
-## in src/game stay the source of truth until the web build is sunset.
+## Game data (assets/data/catalog.json, edited by hand): items, their slots
+## and weights, armour sets, role base stats, skill-tree roots, place names,
+## the town's spawn and the inn's bed. Read-only at runtime.
 
 static var _doc := {}
 

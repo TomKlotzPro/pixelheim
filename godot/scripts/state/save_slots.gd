@@ -1,6 +1,6 @@
 class_name SaveSlots
-## Save slots on disk: <dir>/slot_<n>.json, each file a web-format envelope
-## (version + state) plus savedAt, so any slot also loads in the web game.
+## Save slots on disk: <dir>/slot_<n>.json, each file the save envelope
+## (version + state, SaveCodec) plus savedAt.
 ## Writes go to a temp file renamed over the slot: a crash mid-write never
 ## eats the previous save. On the web export user:// lives in IndexedDB.
 

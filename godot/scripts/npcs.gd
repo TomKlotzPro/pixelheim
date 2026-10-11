@@ -1,9 +1,8 @@
 class_name Npcs
-## Villagers exported from the web game (assets/data/npcs.json): the fixed
-## townsfolk, tier-gated settlers included, and the recruits who wait in the
-## wilds until they move to town. Pure rules ported from src/world/npcs.ts —
-## who stands on which map, where a wanderer paces, who is beside the hero —
-## so the scene code only draws and moves them.
+## Villagers (assets/data/npcs.json): the fixed townsfolk, tier-gated
+## settlers included, and the recruits who wait in the wilds until they move
+## to town. Pure rules - who stands on which map, where a wanderer paces, who
+## is beside the hero - so the scene code only draws and moves them.
 
 ## The pacing loop, clockwise around home (LOOP in npcs.ts).
 const LOOP: Array[Vector2i] = [Vector2i(0, 0), Vector2i(1, 0), Vector2i(1, 1), Vector2i(0, 1)]
