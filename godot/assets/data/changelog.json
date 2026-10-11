@@ -1,6 +1,19 @@
 {
   "releases": [
     {
+      "version": "0.226.0",
+      "date": "2026-10-11",
+      "codename": "Coming Home",
+      "notes": [
+        "The morning after the Night of Bells, Morvax waits by the fountain with Maren's letter and one question: do they want him back?",
+        "Answer \"Come home.\" for the festival ending or \"Stay with them.\" for the lanterns ending, each with its own tour of the village and new credits",
+        "Fafnyr warms his belly on Hilda's new forge, and Maren has a last word for you",
+        "Afterwards Morvax sits on his bench by the fountain and argues with Maren every day, or keeps his forge and comes down on festival days",
+        "Pixelheim can grow into a City once the dragon is free",
+        "In the endings the villagers stand where they live again, instead of all in the town's corner"
+      ]
+    },
+    {
       "version": "0.225.0",
       "date": "2026-10-11",
       "codename": "Letting Go",

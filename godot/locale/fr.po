@@ -2217,6 +2217,10 @@ msgid "After the fire the gatehouse is scorched and a tower has lost its roof; t
 msgstr "Après l'incendie, la porterie est noircie et une tour a perdu son toit ; le hameau la répare"
 
 #: assets/data/changelog.json
+msgid "Afterwards Morvax sits on his bench by the fountain and argues with Maren every day, or keeps his forge and comes down on festival days"
+msgstr "Ensuite, Morvax s'assoit sur son banc près de la fontaine et se dispute chaque jour avec Maren, ou garde sa forge et descend les jours de fête"
+
+#: assets/data/changelog.json
 msgid "Against the Clock"
 msgstr "Contre la montre"
 
@@ -2243,6 +2247,10 @@ msgstr "Une banque honnête"
 #: assets/data/changelog.json
 msgid "An empty lot sits between the lower houses. For sale? Soon."
 msgstr "Un terrain vide attend entre les maisons du bas. À vendre ? Bientôt."
+
+#: assets/data/changelog.json
+msgid "Answer \"Come home.\" for the festival ending or \"Stay with them.\" for the lanterns ending, each with its own tour of the village and new credits"
+msgstr "Répondez « Rentrez à la maison. » pour la fin de la fête, ou « Restez avec eux. » pour celle des lanternes, chacune avec sa visite du village et un nouveau générique"
 
 #: assets/data/changelog.json
 msgid "Answers in a conversation are chosen with up and down and given with A or E, and keycaps show the pad's buttons while you play with one"
@@ -3025,6 +3033,10 @@ msgid "Fafnyr and Morvax hit harder and last longer - bosses are events again"
 msgstr "Fafnyr et Morvax frappent plus fort et tiennent plus longtemps - les boss redeviennent des événements"
 
 #: assets/data/changelog.json
+msgid "Fafnyr warms his belly on Hilda's new forge, and Maren has a last word for you"
+msgstr "Fafnyr se chauffe le ventre sur la nouvelle forge de Hilda, et Maren a un dernier mot pour vous"
+
+#: assets/data/changelog.json
 msgid "Fall in a dungeon you entered from the world? The inn takes you in"
 msgstr "Vaincu dans un donjon atteint depuis le monde ? L'auberge vous recueille"
 
@@ -3367,6 +3379,10 @@ msgstr "Dans les Cendres, la forge de Hilda et le chaudron de Vex sont à leurs 
 #: assets/data/changelog.json
 msgid "In the browser, the game saves the moment its tab is hidden or closed, and a private window that won't keep saves says so on the title"
 msgstr "Dans le navigateur, le jeu sauvegarde dès que son onglet est masqué ou fermé, et une fenêtre privée qui ne garde pas les sauvegardes le signale sur l'écran titre"
+
+#: assets/data/changelog.json
+msgid "In the endings the villagers stand where they live again, instead of all in the town's corner"
+msgstr "Dans les fins, les villageois se tiennent de nouveau chez eux, et non plus tous dans un coin du village"
 
 #: assets/data/changelog.json
 msgid "In-world lettering is TRUE pixel text: door signs on wooden plates, the talk prompt and battle damage numbers use a hand-built bitmap font, crisp at any zoom"
@@ -4135,6 +4151,10 @@ msgstr "Des gens vivent ici désormais - parlez-leur avec E, Enter ou Space"
 #: assets/data/changelog.json
 msgid "Pitched Tents"
 msgstr "Tentes dressées"
+
+#: assets/data/changelog.json
+msgid "Pixelheim can grow into a City once the dragon is free"
+msgstr "Pixelheim peut devenir une Cité une fois le dragon libéré"
 
 #: assets/data/changelog.json
 msgid "Pixelheim doubled east: new houses, a market corner, an orchard - and shops are rooms you walk into and trade by talking"
@@ -5423,6 +5443,10 @@ msgstr "La mini-carte connaît les repères : des points dorés marquent la fo
 #: assets/data/changelog.json
 msgid "The mini-map no longer hides under the sound and settings buttons"
 msgstr "La mini-carte ne se cache plus sous les boutons du son et des réglages"
+
+#: assets/data/changelog.json
+msgid "The morning after the Night of Bells, Morvax waits by the fountain with Maren's letter and one question: do they want him back?"
+msgstr "Au lendemain de la Nuit des Cloches, Morvax attend près de la fontaine avec la lettre de Maren et une seule question : veulent-ils encore de lui ?"
 
 #: assets/data/changelog.json
 msgid "The mountain gate opens onto the mountain road, ash and dead pines, ash hounds and wyverns, up to Morvax's forge"

@@ -2217,6 +2217,10 @@ msgid "After the fire the gatehouse is scorched and a tower has lost its roof; t
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Afterwards Morvax sits on his bench by the fountain and argues with Maren every day, or keeps his forge and comes down on festival days"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Against the Clock"
 msgstr ""
 
@@ -2242,6 +2246,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "An empty lot sits between the lower houses. For sale? Soon."
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Answer \"Come home.\" for the festival ending or \"Stay with them.\" for the lanterns ending, each with its own tour of the village and new credits"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3025,6 +3033,10 @@ msgid "Fafnyr and Morvax hit harder and last longer - bosses are events again"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Fafnyr warms his belly on Hilda's new forge, and Maren has a last word for you"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Fall in a dungeon you entered from the world? The inn takes you in"
 msgstr ""
 
@@ -3366,6 +3378,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "In the browser, the game saves the moment its tab is hidden or closed, and a private window that won't keep saves says so on the title"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "In the endings the villagers stand where they live again, instead of all in the town's corner"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4134,6 +4150,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Pitched Tents"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Pixelheim can grow into a City once the dragon is free"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5422,6 +5442,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The mini-map no longer hides under the sound and settings buttons"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The morning after the Night of Bells, Morvax waits by the fountain with Maren's letter and one question: do they want him back?"
 msgstr ""
 
 #: assets/data/changelog.json
