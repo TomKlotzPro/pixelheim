@@ -18,8 +18,13 @@ const STATIONS := {"smithing": "Hilda's forge", "alchemy": "Vex's cauldron"}
 ## Slots down the doll's left, then its right.
 const DOLL_LEFT := [["head", "Head"], ["neck", "Neck"], ["body", "Body"], ["hands", "Hands"], ["feet", "Feet"]]
 const DOLL_RIGHT := [["weapon", "Weapon"], ["offhand", "Off-hand"], ["ring1", "Ring"], ["ring2", "Ring"]]
-const LIST := Vector2(710, 412)
+## The list's window: a row a little short of seven and a half, leaving the
+## strip under it room for a whole name, three lines about it and the news.
+const LIST := Vector2(710, 394)
+const LIST_TOP := 114.0
 const ROW_HEIGHT := 50
+## Between a row's icon, its words and the right-hand column.
+const ROW_GAP := 10
 ## What an empty slot shows, faintly: the kind of thing that goes there.
 const GHOSTS := {
 	"head": "leather_cap", "neck": "bone_charm", "body": "leather_armor", "hands": "wool_gloves",
@@ -41,6 +46,10 @@ var sort_label: Label
 var purse: HBoxContainer
 ## The chosen row in full: an item's description, a recipe's station.
 var about: Label
+## The chosen row's whole name, over `about`, when the row shortened it.
+var about_name: Label
+## Which rows shortened their names to fit (PIX-298), by index.
+var cut: Array[bool] = []
 ## How full the pack is, beside the weight (red near capacity).
 var weight_fill: ColorRect
 var status: Label
@@ -91,7 +100,7 @@ func _open() -> void:
 	tab_row.add_theme_constant_override("separation", 6)
 	add_child(tab_row)
 	scroll = ScrollContainer.new()
-	scroll.position = Vector2(490, 114)
+	scroll.position = Vector2(490, LIST_TOP)
 	scroll.custom_minimum_size = LIST
 	scroll.size = LIST
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -102,17 +111,21 @@ func _open() -> void:
 	scroll.add_child(list)
 	var rule := ColorRect.new()
 	rule.color = UiStyle.RIM
-	rule.position = Vector2(490, 530)
+	rule.position = Vector2(490, LIST_TOP + LIST.y + 4)
 	rule.size = Vector2(LIST.x, 2)
 	add_child(rule)
-	about = UiStyle.label("", 14, UiStyle.FADED, Vector2(490, 536))
-	about.custom_minimum_size = Vector2(LIST.x, 0)
-	about.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	add_child(about)
-	status = UiStyle.label("", 14, UiStyle.LAMP, Vector2(490, 590))
-	status.custom_minimum_size = Vector2(710, 0)
-	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	add_child(status)
+	# Under the list, one after the other: the chosen row's whole name when
+	# its row had to shorten it, what it is, then what just happened.
+	var notes := Layout.hugging(VBoxContainer.new())
+	notes.position = Vector2(490, LIST_TOP + LIST.y + 10)
+	notes.add_theme_constant_override("separation", 0)
+	add_child(notes)
+	about_name = Layout.wrapped(UiStyle.strong("", 14, UiStyle.INK), LIST.x)
+	notes.add_child(about_name)
+	about = Layout.wrapped(UiStyle.label("", 14, UiStyle.FADED), LIST.x)
+	notes.add_child(about)
+	status = Layout.wrapped(UiStyle.label("", 14, UiStyle.LAMP), LIST.x)
+	notes.add_child(status)
 	add_child(UiStyle.screen_footer("{key:move_left}/{key:move_right}  tabs      {key:move_up}/{key:move_down}  choose      {key:interact}  equip / use      X  drop      Z  drop all      R  sort      {key:inventory} / Esc  close"))
 	_refresh()
 
@@ -147,11 +160,20 @@ func _refresh() -> void:
 		child.queue_free()
 	if rows.is_empty():
 		list.add_child(UiStyle.label("Nothing here. Go hit some monsters.", 15, UiStyle.FADED))
+	cut.resize(rows.size())
 	for index in rows.size():
 		list.add_child(_row(index))
 	about.text = _about(rows[selected]) if not rows.is_empty() else ""
+	# A name its row cut short is read whole here (PIX-298).
+	about_name.text = _row_name(rows[selected]) if not rows.is_empty() and cut[selected] else ""
+	about_name.add_theme_color_override("font_color", _rarity_color(rows[selected]) if not rows.is_empty() else UiStyle.INK)
+	about_name.visible = about_name.text != ""
 	if not rows.is_empty():
-		scroll.scroll_vertical = clampi(scroll.scroll_vertical, (selected + 1) * (ROW_HEIGHT + 4) - int(LIST.y), selected * (ROW_HEIGHT + 4))
+		# The chosen row in the window, by the rows' real height: two lines
+		# of type and the frame stand taller than ROW_HEIGHT, so counting by
+		# it let a row far down the list be chosen out of sight.
+		var pitch := int(list.get_child(0).get_combined_minimum_size().y) + list.get_theme_constant("separation")
+		scroll.scroll_vertical = clampi(scroll.scroll_vertical, (selected + 1) * pitch - int(LIST.y), selected * pitch)
 
 
 ## Gear first, then stacks, each by category then name; the tab filters.
@@ -216,11 +238,40 @@ func _row(index: int) -> Control:
 	if row["kind"] in ["guide", "recipe"]:
 		return _craft_row(index)
 	var item := Catalog.item(row["item_id"])
-	var chosen := index == selected
+	var panel := _row_panel(index)
+	var line := panel.get_child(0) as HBoxContainer
+	line.add_child(_icon(row["item_id"]))
+	var stats := ""
+	var tag := ""
+	if row["kind"] == "gear":
+		var piece: Dictionary = row["piece"]
+		tag = Text.t("EQUIPPED") if GameState.pack.is_equipped(piece["uid"]) else ""
+		# The forge's and the deep's bonus, the affixes and what was quenched (PIX-218).
+		stats = stat_line(item, int(piece["bonus"]) + int(piece.get("deepBonus", 0)), Economy.gear_value(piece), InventoryState.shown_affixes(piece))
+	else:
+		stats = stat_line(item, 0, int(item["value"]))
+	_row_words(index, panel, _row_name(row), _rarity_color(row), stats, tag)
+	return panel
+
+
+## A row's name as the list writes it: a piece's whole title (its rarity,
+## depth and best affix), a stack's name and count.
+func _row_name(row: Dictionary) -> String:
+	if row["kind"] == "gear":
+		return InventoryState.gear_name(row["piece"])
+	if row["kind"] == "guide":
+		return _guide_lines()[0]
+	if row["kind"] == "recipe":
+		return Catalog.item_name(row["item_id"])
+	return Catalog.item_name(row["item_id"]) + ("  x%d" % row["count"] if row["count"] > 1 else "")
+
+
+## A row's page: inked on the list, lit when chosen, clickable.
+func _row_panel(index: int) -> PanelContainer:
 	var panel := PanelContainer.new()
 	panel.custom_minimum_size = Vector2(LIST.x - 14, ROW_HEIGHT)
 	panel.add_theme_stylebox_override("panel", UiStyle.box(
-		UiStyle.CARD if chosen else Color(UiStyle.CARD, 0.5), UiStyle.LAMP if chosen else UiStyle.RIM, 6
+		UiStyle.CARD if index == selected else Color(UiStyle.CARD, 0.5), UiStyle.LAMP if index == selected else UiStyle.RIM, 6
 	))
 	panel.gui_input.connect(func(event: InputEvent) -> void:
 		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
@@ -231,63 +282,62 @@ func _row(index: int) -> Control:
 	)
 	var line := HBoxContainer.new()
 	line.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	line.add_theme_constant_override("separation", 10)
+	line.add_theme_constant_override("separation", ROW_GAP)
 	panel.add_child(line)
-	line.add_child(_icon(row["item_id"]))
+	return panel
+
+
+## A row's words (PIX-298): the name over its numbers, and on the right the
+## tag (EQUIPPED) level with the name and what E does level with the
+## numbers. Those keep their words whole and the name gives way, shortened
+## to an ellipsis when it would run longer (the strip under the list reads
+## it whole), so no row is wider than the list: the longest French names
+## ("Grande hache d'acier cendré des forges profondes de perspicacité")
+## with ÉQUIPÉ after them pushed every row past the page, and "E retirer"
+## under the scrollbar.
+func _row_words(index: int, panel: PanelContainer, name: String, ink: Color, small: String, tag: String) -> void:
+	var line := panel.get_child(0) as HBoxContainer
+	# What the words may take: the row less its frame and what stands before them.
+	var room := panel.custom_minimum_size.x - panel.get_theme_stylebox("panel").get_minimum_size().x
+	for before in line.get_children():
+		room -= (before as Control).custom_minimum_size.x + ROW_GAP
 	var text := VBoxContainer.new()
 	text.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text.add_theme_constant_override("separation", 0)
 	text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	line.add_child(text)
-	var name := ""
-	var stats := ""
-	if row["kind"] == "gear":
-		var piece: Dictionary = row["piece"]
-		name = InventoryState.gear_name(piece) + ("   " + Text.t("EQUIPPED") if GameState.pack.is_equipped(piece["uid"]) else "")
-		# The forge's and the deep's bonus, the affixes and what was quenched (PIX-218).
-		stats = stat_line(item, int(piece["bonus"]) + int(piece.get("deepBonus", 0)), Economy.gear_value(piece), InventoryState.shown_affixes(piece))
+	var title := UiStyle.strong(name, 15, ink)
+	cut[index] = _beside(text, title, UiStyle.strong(tag, 15, ink), room)
+	_beside(text, UiStyle.label(small, 12, UiStyle.FADED), UiStyle.label(_primary_label(rows[index]), 13, UiStyle.LAMP if index == selected else UiStyle.FADED), room)
+
+
+## One line of a row: `words` filling it, shortened to fit `room` beside
+## `right` (kept whole at its end, when it says anything). True when the
+## words were cut.
+static func _beside(column: VBoxContainer, words: Label, right: Label, room: float) -> bool:
+	var line := HBoxContainer.new()
+	line.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	line.add_theme_constant_override("separation", ROW_GAP)
+	column.add_child(line)
+	words.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	line.add_child(words)
+	if right.text != "":
+		line.add_child(right)
+		room -= Layout.words_width(right) + ROW_GAP
 	else:
-		name = String(item["name"]) + ("  x%d" % row["count"] if row["count"] > 1 else "")
-		stats = stat_line(item, 0, int(item["value"]))
-	text.add_child(UiStyle.strong(name, 15, _rarity_color(row)))
-	var detail := UiStyle.label(stats, 12, UiStyle.FADED)
-	detail.clip_text = true
-	detail.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	text.add_child(detail)
-	line.add_child(UiStyle.label(_primary_label(row), 13, UiStyle.LAMP if chosen else UiStyle.FADED))
-	return panel
+		right.free()
+	return Layout.shortened(words, room)
 
 
 ## A Craft tab row: the guide, or a recipe with its materials (each with
 ## how many are carried), its trade and level, and where it's made.
 func _craft_row(index: int) -> Control:
 	var row: Dictionary = rows[index]
-	var chosen := index == selected
-	var panel := PanelContainer.new()
-	panel.custom_minimum_size = Vector2(LIST.x - 14, ROW_HEIGHT)
-	panel.add_theme_stylebox_override("panel", UiStyle.box(
-		UiStyle.CARD if chosen else Color(UiStyle.CARD, 0.5), UiStyle.LAMP if chosen else UiStyle.RIM, 6
-	))
-	panel.gui_input.connect(func(event: InputEvent) -> void:
-		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-			if event.double_click and index == selected:
-				_primary()
-			else:
-				_select(index)
-	)
-	var line := HBoxContainer.new()
-	line.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	line.add_theme_constant_override("separation", 10)
-	panel.add_child(line)
-	var text := VBoxContainer.new()
-	text.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	text.add_theme_constant_override("separation", 0)
-	text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var title := ""
+	var panel := _row_panel(index)
+	var line := panel.get_child(0) as HBoxContainer
 	var detail := ""
 	var ink := UiStyle.INK
 	if row["kind"] == "guide":
-		title = _guide_lines()[0]
 		# The trades' standing, always in view (PIX-143).
 		detail = "%s    %s" % [Economy.job_line(GameState.hero.jobs, "smithing"), Economy.job_line(GameState.hero.jobs, "alchemy")]
 		ink = UiStyle.LAMP
@@ -298,17 +348,9 @@ func _craft_row(index: int) -> Control:
 		var needs: Array[String] = []
 		for need: String in entry["needs"]:
 			needs.append("%s %d/%d" % [Catalog.item_name(need), mini(pack.items.get(need, 0), entry["needs"][need]), entry["needs"][need]])
-		var job: String = entry["job"]["id"]
-		title = Catalog.item_name(row["item_id"])
 		detail = ", ".join(needs)
 		ink = UiStyle.INK if Economy.can_craft(entry, pack.items, GameState.hero.jobs) else UiStyle.FADED
-	line.add_child(text)
-	text.add_child(UiStyle.strong(title, 15, ink))
-	var small := UiStyle.label(detail, 12, UiStyle.FADED)
-	small.clip_text = true
-	small.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	text.add_child(small)
-	line.add_child(UiStyle.label(_primary_label(row), 13, UiStyle.LAMP if chosen else UiStyle.FADED))
+	_row_words(index, panel, _row_name(row), ink, detail, "")
 	return panel
 
 

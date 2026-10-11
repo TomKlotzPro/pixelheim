@@ -12,12 +12,15 @@ config/custom_user_dir_name="pixelheim"
 ; The gold P on the title's night (tools/favicon.py): the web build's favicon,
 ; its home-screen icon and the desktop window's.
 config/icon="res://assets/icon.png"
-; While the game loads, nothing but the title's night sky (TitleScene.SKY's
-; #080c28), no picture and no words (PIX-295: the old title's picture, with
-; its English tagline, outlived the title); the web page's quiet bar is
-; export_presets.cfg's html/head_include, and the title rises out of this.
-boot_splash/bg_color=Color(0.03137255, 0.04705882, 0.15686275, 1)
-boot_splash/show_image=false
+; While the game loads, the title's night (PIX-296): assets/splash.png, drawn
+; in code by tools/splash.py (the sky, the mountain, the village asleep and
+; the logo where the title draws it, no other words: PIX-295), fitted to the
+; window unsmoothed (2x at 1280x720), in black bars on a window of another
+; shape as the game's own canvas is. The web page shows the same picture with life in it
+; (web/shell.html), and the title rises out of it on a launch.
+boot_splash/bg_color=Color(0, 0, 0, 1)
+boot_splash/image="res://assets/splash.png"
+boot_splash/use_filter=false
 
 [autoload]
 

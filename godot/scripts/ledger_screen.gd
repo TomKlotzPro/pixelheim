@@ -4,9 +4,17 @@ extends Screen
 ## row clickable too. Subclasses fill `_title`, `_intro` and `_rows`. Pauses
 ## the world while open.
 
+## The list's window on the page: what runs past its foot scrolls (PIX-298:
+## the workbench's every recipe stood 2250 px tall, off the canvas), and a
+## row is never wider than it, its name giving way to an ellipsis.
+const LIST := Rect2(640, 110, 560, 438)
+## The most of a row its note takes before it wraps, so the name keeps room.
+const NOTE_SHARE := 0.45
+
 var rows: Array[Dictionary] = []
 var selected := 0
 var list: VBoxContainer
+var scroll: ScrollContainer
 var info: Label
 var info_card: PanelContainer
 var purse: HBoxContainer
@@ -39,11 +47,16 @@ func _open() -> void:
 	info.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	card.add_child(info)
 
+	scroll = ScrollContainer.new()
+	scroll.position = LIST.position
+	scroll.custom_minimum_size = LIST.size
+	scroll.size = LIST.size
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	add_child(scroll)
 	list = VBoxContainer.new()
-	list.position = Vector2(640, 110)
-	list.custom_minimum_size = Vector2(560, 0)
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	list.add_theme_constant_override("separation", 6)
-	add_child(list)
+	scroll.add_child(list)
 
 	status = UiStyle.label("", 14, UiStyle.GOLD, Vector2(80, 604))
 	status.custom_minimum_size = Vector2(1120, 0)
@@ -121,15 +134,14 @@ func _refresh() -> void:
 		child.queue_free()
 	for index in rows.size():
 		list.add_child(_row(index))
-	# A method, not a lambda: if the ledger closes first, the deferred
-	# call is dropped with it.
-	_fit.call_deferred()
-
-
-## The page grows with a long list (the mountain's floors), never shrinks
-## below the card beside it.
-func _fit() -> void:
-	page.size.y = maxf(470.0, list.get_combined_minimum_size().y + 32.0)
+	# The chosen row in the window, by the rows' heights (a wrapped note
+	# makes one taller).
+	if not rows.is_empty():
+		var top := 0
+		for index in selected:
+			top += int(list.get_child(index).get_combined_minimum_size().y) + list.get_theme_constant("separation")
+		var tall := int(list.get_child(selected).get_combined_minimum_size().y)
+		scroll.scroll_vertical = clampi(scroll.scroll_vertical, top + tall - int(LIST.size.y), top)
 
 
 func _row(index: int) -> Control:
@@ -148,10 +160,13 @@ func _row(index: int) -> Control:
 	)
 	var line := HBoxContainer.new()
 	line.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	line.add_theme_constant_override("separation", 10)
 	panel.add_child(line)
 	var color := UiStyle.INK if row["enabled"] else UiStyle.FADED
 	var name := UiStyle.label(row["label"], 16, color)
 	name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	line.add_child(name)
-	line.add_child(UiStyle.label(row.get("note", ""), 16, UiStyle.LAMP if row["enabled"] else UiStyle.FADED))
+	line.add_child(Layout.ellipsis(name))
+	var note := Layout.narrowed(UiStyle.label(row.get("note", ""), 16, UiStyle.LAMP if row["enabled"] else UiStyle.FADED), NOTE_SHARE * LIST.size.x)
+	note.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	line.add_child(note)
 	return panel

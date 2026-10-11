@@ -2081,6 +2081,10 @@ msgid "A live stats panel beside the doll: ATK, DEF and every granted bonus, upd
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A loading screen of its own: the night over Pixelheim, the smoking mountain and the lake, with the village's windows lighting up one by one as the game loads"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A lost fight still wakes you tucked into the inn's bed"
 msgstr ""
 
@@ -4609,6 +4613,10 @@ msgid "Standing at a station, the Craft tab says so in green: craft freely"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Stars twinkle, embers rise and chimneys smoke while it loads, then the title rises out of the same picture"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Status effects: poison and burn tick every turn, stun steals turns"
 msgstr ""
 
@@ -5373,6 +5381,10 @@ msgid "The first stone of Your Town: property, the city hall and the settlers co
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The forge, the town hall, the bank, the bounties, the workbench, storage and the trophies scroll inside their page instead of running off it"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The four ages grew with it: stalls and lamps at Village, a fountain and a thatched row-house at Town, a slate townhouse and a farmhouse at City"
 msgstr ""
 
@@ -5506,6 +5518,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The pack's Craft tab knows your home station: 'You are at your own workbench - craft freely'"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The pack's rows fit their panel again: long names end in an ellipsis with the full name below, and \"equipped\" and the E hint always show in full"
 msgstr ""
 
 #: assets/data/changelog.json
