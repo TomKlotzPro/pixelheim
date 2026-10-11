@@ -1171,7 +1171,7 @@ func _run_test_harness() -> void:
 		# `film`, not `motion`: that's the walking-scroll check above, which
 		# would stop the hero's animations for the whole book.
 		book.with_motion = flags.has("film")
-		book.only = flags.value("--only")
+		book.only = flags.list("--only")
 		book.looks = book.looks_from(flags)
 		book.out_dir = flags.value("--out", book.out_dir)
 		world.add_child(book)

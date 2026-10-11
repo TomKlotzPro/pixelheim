@@ -809,7 +809,7 @@
         "frame": 32,
         "anim": "idle",
         "dir": "left",
-        "scale": 1.15,
+        "scale": 1,
         "cell": [
           40,
           27

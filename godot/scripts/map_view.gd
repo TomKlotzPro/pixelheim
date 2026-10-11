@@ -574,6 +574,8 @@ func _ground_layers() -> Node2D:
 	water.set_shader_parameter("water_map", kept.water_map)
 	ground_tint.set_shader_parameter("water_map", kept.water_map)
 	ground_layer.material = water
+	# The floor answers to a boss's glow too (Lights.FLOOR, PIX-314).
+	ground_layer.light_mask |= Lights.FLOOR
 	root.add_child(ground_layer)
 	# Shade's cliffs standing in the water, the sand and the roads
 	# (PunyTerrain.rimmed), toned as the ground is, but still: the water
@@ -581,6 +583,7 @@ func _ground_layers() -> Node2D:
 	rim_layer = tile_layer_of(PunyTerrain.tileset())
 	rim_layer.position = ground_layer.position
 	rim_layer.material = ground_tint
+	rim_layer.light_mask |= Lights.FLOOR
 	root.add_child(rim_layer)
 	decor_sway = _swaying(TREE_SWAY, true)
 	flowers_sway = _swaying(FLOWER_SWAY, false)
@@ -875,6 +878,9 @@ func _build_dungeon(data: MapData) -> Node2D:
 	root.add_child(_dark_beyond(data))
 	var dungeon := PunyDungeon.sheet()
 	var layer := tile_layer_of(dungeon.tileset)
+	# Its floor and walls answer to a boss's glow (Lights.FLOOR, PIX-314);
+	# what stands on them doesn't.
+	layer.light_mask |= Lights.FLOOR
 	dungeon_objects = tile_layer_of(dungeon.tileset)
 	wall_torches = []
 	for cell: Vector2i in data.grid:
@@ -920,6 +926,7 @@ func _build_dungeon(data: MapData) -> Node2D:
 	root.add_child(layer)
 	var ice := _frozen(data)
 	if ice != null:
+		ice.light_mask |= Lights.FLOOR
 		root.add_child(ice)
 		# The ice gives the dark back a little cold light, here and there.
 		for cell: Vector2i in data.grid:
