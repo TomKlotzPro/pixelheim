@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.229.0",
+      "date": "2026-10-11",
+      "codename": "Light Step",
+      "notes": [
+        "Herbs, ore and pouches on the ground are half the size, sitting on a small shadow and bobbing gently, so they no longer look as big as you",
+        "Your hero walks in eight directions and turns through the diagonal, instead of snapping a quarter turn at once",
+        "Villagers and foes drawn like you turn smoothly too"
+      ]
+    },
+    {
       "version": "0.228.0",
       "date": "2026-10-11",
       "codename": "Ways In",
