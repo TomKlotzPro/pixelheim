@@ -52,8 +52,19 @@ envelope, migrations and `PXH1.` save codes in `save_codec.gd` — so every save
 ever written still loads (`test_save_codec.gd` keeps a frozen late-game save
 and its re-encode). Device settings live apart in `user://settings.cfg`.
 
-The saves screen plays, starts or clears slots (`scripts/saves_screen.gd`),
-and carries a hero to another computer or browser: `C` copies the hero's save
+No hero is lost to a file (`save_slots.gd`): a save is written to a temp
+file, read back and decoded, then the slot's file becomes `slot_<n>.json.bak`
+(the save before) and the temp file takes its place. When a slot's file
+can't be read, the game plays the save before and says so (a line on the
+card, a word on the title or the plate). A file it can't read at all, or one
+a newer version wrote, is never an empty slot: it gets its own card, New
+Game and New hero pass it by, nothing is written over it, and clearing it
+asks twice.
+
+The saves screen plays or clears slots (`scripts/saves_screen.gd`); a new
+hero starts from the title's New Game alone, in the first free slot, and
+with none free New Game says so rather than writing over anyone. It also
+carries a hero to another computer or browser: `C` copies the hero's save
 code, and a code pasted into Save code (raw save JSON works too) loads into
 the chosen slot.
 
@@ -347,7 +358,7 @@ godot/tools/lookbook.sh                              # the browser's renderer: l
 godot/tools/lookbook.sh --desktop                    # the app's look: lookbook-desktop/
 godot/tools/lookbook.sh --desktop --looks browser,app  # both on the desktop renderer, a folder each
 godot/tools/lookbook.sh --compare                    # no window: lookbook/ | lookbook-desktop/ side by side in lookbook-compare/
-godot/tools/lookbook.sh --only strike                # one shot, by its name
+godot/tools/lookbook.sh --only strike                # one shot, by its name (or a few: bosses,boss_lair)
 python3 godot/tools/lookbook_compare.py godot/lookbook-desktop/browser godot/lookbook-desktop/app godot/lookbook-compare
 ```
 

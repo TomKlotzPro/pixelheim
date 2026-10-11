@@ -2121,6 +2121,10 @@ msgid "A new dream under Sela's roof, the first night after Pell comes home"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A new hero starts only from New Game on the title screen; with every slot taken, it says so instead of overwriting anyone"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A path is a permanent identity: an always-on passive theme and a SIGNATURE SKILL no tree can teach"
 msgstr ""
 
@@ -2142,6 +2146,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "A real sun wheels over the world: dawn light, long dusk shadows, and true darkness answered by lamplight, door glow and hearth fire"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "A save the game can't read is never shown as an empty slot or written over: it gets its own card and is kept as it is"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -2397,6 +2405,10 @@ msgid "Boss Slayer"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Bosses and named beasts are drawn at whole sizes, twice their kind (the Tidecaller three times), so their pixels are as crisp as everything around them"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Bosses and named monsters carry a bar across the top of the screen, notched where a boss's next phase begins. Each phase is roared, marks on the ground are heard as they appear and as they strike, and a boss falls in slow motion, with a flash and a silence before the victory sting"
 msgstr ""
 
@@ -2534,6 +2546,14 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Choose in the Skills menu; your title on the stat sheet carries the path. A path is for life - choose like it matters"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Cinderjaw and Rimefang now tower over their kind, and every boss stands on its own shadow, with a glow of its colour at its feet in the dark"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Clean Pixels"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -2941,6 +2961,10 @@ msgid "Every role verified to be able to finish the game"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Every save is checked before it replaces the last one, which is kept as a backup; if a save is ever damaged, your hero comes back from it and the game tells you"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Every screen keeps its title and its keys in the same places, with leaving always last as Esc close, and the keys on buttons stand on keycaps instead of being spelled out"
 msgstr ""
 
@@ -3306,6 +3330,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Head to Toe"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Health bars, names and level tags sit just over a boss's head instead of floating far above it"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4470,6 +4498,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "STURDIER CASTERS AND ROGUES: mages, necromancers and rogues grow 6 health a level, and cloth wards better (the Mage Robe, the Traveler's Cloak and the whole Frostweave set). Heroes who levelled before catch up when their save loads. Every hero now takes about 6 to 15 hits from a foe of their own level, at every stage"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Safe Keeping"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -14093,6 +14125,10 @@ msgid "A hero to another computer or browser: copy their code here, paste it the
 msgstr ""
 
 #: scripts/saves_screen.gd
+msgid "A newer Pixelheim wrote it: update the game to play this hero. It's kept as it is."
+msgstr ""
+
+#: scripts/saves_screen.gd
 msgid "Clear %s from slot %d for good?"
 msgstr ""
 
@@ -14105,11 +14141,27 @@ msgid "Clear slot"
 msgstr ""
 
 #: scripts/saves_screen.gd
+msgid "Clear slot %d's damaged save for good?"
+msgstr ""
+
+#: scripts/saves_screen.gd
+msgid "Clear slot %d's save from a newer version for good?"
+msgstr ""
+
+#: scripts/saves_screen.gd
 msgid "Copy mine"
 msgstr ""
 
 #: scripts/saves_screen.gd
+msgid "Damaged save"
+msgstr ""
+
+#: scripts/saves_screen.gd
 msgid "Empty slot"
+msgstr ""
+
+#: scripts/saves_screen.gd
+msgid "Its last save couldn't be read: this is the one before it."
 msgstr ""
 
 #: scripts/saves_screen.gd
@@ -14121,11 +14173,11 @@ msgid "Load into slot %d"
 msgstr ""
 
 #: scripts/saves_screen.gd
-msgid "N starts a new hero here."
+msgid "New Game, on the title screen, starts a hero."
 msgstr ""
 
 #: scripts/saves_screen.gd
-msgid "New hero"
+msgid "Once cleared, it's gone for good: nothing brings it back. Press X once more to clear slot %d."
 msgstr ""
 
 #: scripts/saves_screen.gd
@@ -14141,10 +14193,6 @@ msgid "Replace %s in slot %d with %s %s? Their progress here would be lost."
 msgstr ""
 
 #: scripts/saves_screen.gd
-msgid "Replace %s with a new hero?"
-msgstr ""
-
-#: scripts/saves_screen.gd
 msgid "Save code"
 msgstr ""
 
@@ -14153,7 +14201,15 @@ msgid "Save code copied. On the other machine, paste it under Save code in Saves
 msgstr ""
 
 #: scripts/saves_screen.gd
+msgid "Saved by a newer version"
+msgstr ""
+
+#: scripts/saves_screen.gd
 msgid "Slot %d"
+msgstr ""
+
+#: scripts/saves_screen.gd
+msgid "Slot %d holds a save this version can't read, so nothing is written there. X clears it, if you mean to."
 msgstr ""
 
 #: scripts/saves_screen.gd
@@ -14165,7 +14221,19 @@ msgid "Slot %d is empty now."
 msgstr ""
 
 #: scripts/saves_screen.gd
+msgid "Slot %d was saved by a newer version. Update Pixelheim to play this hero."
+msgstr ""
+
+#: scripts/saves_screen.gd
+msgid "Slot %d's save can't be read, so there's no one to play. It's kept as it is."
+msgstr ""
+
+#: scripts/saves_screen.gd
 msgid "That is not a save code. On the other machine, open Saves and use Copy mine, then paste it here."
+msgstr ""
+
+#: scripts/saves_screen.gd
+msgid "The game can't read this save, so it's kept as it is. X clears it, if you mean to."
 msgstr ""
 
 #: scripts/saves_screen.gd
@@ -14182,10 +14250,6 @@ msgstr ""
 
 #: scripts/saves_screen.gd
 msgid "just now"
-msgstr ""
-
-#: scripts/saves_screen.gd
-msgid "new hero"
 msgstr ""
 
 #: scripts/saves_screen.gd
@@ -14757,6 +14821,18 @@ msgid "+%d gold"
 msgstr ""
 
 #: scripts/state/game_state.gd
+msgid "%s's last save couldn't be read, so the game loaded the one before it."
+msgstr ""
+
+#: scripts/state/game_state.gd
+msgid "Slot %d was saved by a newer version of Pixelheim. It's kept as it is, in Saves."
+msgstr ""
+
+#: scripts/state/game_state.gd
+msgid "Slot %d's save can't be read. It's kept as it is, in Saves."
+msgstr ""
+
+#: scripts/state/game_state.gd
 msgid "Wanderer"
 msgstr ""
 
@@ -15242,6 +15318,10 @@ msgstr ""
 
 #: scripts/title_screen.gd
 msgid "Continue  %s, Lv %d"
+msgstr ""
+
+#: scripts/title_screen.gd
+msgid "Every slot holds a save. Clear one in Saves to start a new hero."
 msgstr ""
 
 #: scripts/title_screen.gd
