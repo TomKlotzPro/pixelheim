@@ -1,8 +1,8 @@
 extends Node
-## The one game state (autoload `GameState`), replacing the web's Zustand
-## store: typed sections for the hero, the pack, the settlement, progression
-## and the explored world. Mutations go through methods that keep the web
-## reducers' invariants; signals replace store subscriptions. Persistence is
+## The one game state (autoload `GameState`): typed sections for the hero,
+## the pack, the settlement, progression and the explored world. Mutations
+## go through methods that keep the save's invariants; signals tell the world
+## and the screens. Persistence is
 ## write-behind: changes mark the state dirty, the autosave flushes it within
 ## AUTOSAVE_SECONDS, and moments that matter (map change, loot) save at once.
 ## The methods live in seven modules, one per part of the game (PIX-261):
@@ -15,12 +15,11 @@ extends Node
 signal loaded
 signal gold_changed(gold: int)
 signal inventory_changed
-## A conversation ended: settlers (PIX-124) and quests (PIX-125) answer here,
-## like the web game resolves them when its dialogue closes.
+## A conversation ended: settlers (PIX-124) and quests (PIX-125) answer here.
 signal dialogue_closed(npc_id: String)
 ## The letter is in Maren's hands: the world plays the dawn (PIX-152).
 signal prologue_dawn
-## One line of feedback for the world (the web's worldMessage).
+## One line of feedback for the world.
 signal message(text: String)
 ## Lines for the battle log from outside a fight (PIX-206: a delivery's progress).
 signal noted(lines: Array)
@@ -68,8 +67,6 @@ var slot := NO_SLOT
 var dirty := false
 ## Dice for chance rolls (double brews); tests swap in a loaded die.
 var roll: Callable = func() -> float: return randf()
-## True when boot found no save in any slot: a first visit (offer the web hero).
-var first_run := false
 ## The title has been passed this session (it greets the first load only).
 var title_seen := false
 ## A plain launch found no hero in its slot: a stand-in plays behind the title
@@ -186,10 +183,7 @@ func boot(flags: HarnessFlags) -> void:
 	# (a code or JSON: the fixtures in test/fixtures), nothing written back
 	# (PIX-257: a hero saved on the old mountain's floors wakes by its gate).
 	if slot == NO_SLOT and flags.has("--load"):
-		saved = WebImport.parse_any(FileAccess.get_file_as_string(flags.value("--load")))
-	first_run = slot != NO_SLOT and range(1, SaveSlots.SLOT_COUNT + 1).all(
-		func(n: int) -> bool: return slots.summary(n).is_empty()
-	)
+		saved = SaveCodec.parse_any(FileAccess.get_file_as_string(flags.value("--load")))
 	if saved.is_empty():
 		new_game()
 		# A plain launch waits for the title's hero; a named slot starts at once.
@@ -239,7 +233,7 @@ func free_slot() -> int:
 	return 0
 
 
-## Brings a migrated save (the web game's, a pasted code) into a slot and plays it.
+## Brings a migrated save (a pasted code) into a slot and plays it.
 func import_into(target: int, state: Dictionary) -> void:
 	save_now()
 	_use_slot(target)
@@ -261,14 +255,13 @@ func clear_slot(target: int) -> bool:
 	return true
 
 
-## This hero as a PXH1 code: loads in the web game's Import too.
+## This hero as a PXH1 code: pasted into another copy's Saves, it loads there.
 func save_code() -> String:
 	return SaveCodec.encode_code(to_dict())
 
 
 func _use_slot(target: int) -> void:
 	slot = target
-	first_run = false
 	standing_in = false
 	if settings.last_slot != target:
 		settings.last_slot = target
@@ -303,7 +296,7 @@ func new_game(name := DEFAULT_HERO_NAME, role_id := DEFAULT_ROLE, look := 0, pro
 	apply(state)
 
 
-## Replaces the whole state with a normalized web-shaped save.
+## Replaces the whole state with a normalized save.
 func apply(state: Dictionary) -> void:
 	hero = HeroState.from_dict(state["hero"])
 	pack = InventoryState.from_dict(state)
@@ -323,7 +316,7 @@ func apply(state: Dictionary) -> void:
 	inventory_changed.emit()
 
 
-## The full web GameState: what a slot file, a save code, or the web game reads.
+## The whole state as a save holds it: what a slot file or a save code carries.
 func to_dict() -> Dictionary:
 	var state := SaveCodec.initial_state()
 	state.merge(SaveCodec.RESUME_INTO, true)

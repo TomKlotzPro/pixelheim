@@ -404,7 +404,7 @@ func test_a_save_made_in_the_night_plays_it_again_from_the_start() -> void:
 func test_a_save_in_town_on_the_run_home_begins_the_night() -> void:
 	for fixture: String in ["run_home_town", "bells_night"]:
 		var hero: Node = autofree(GameStateScript.new())
-		hero.apply(WebImport.parse_any(FileAccess.get_file_as_string("res://test/fixtures/%s.json" % fixture)))
+		hero.apply(SaveCodec.parse_any(FileAccess.get_file_as_string("res://test/fixtures/%s.json" % fixture)))
 		assert_eq(hero.world.map_id, "town", fixture)
 		assert_eq(_next(hero), "run_home", "%s: the run home next" % fixture)
 		assert_true(Bells.due(hero.progression, hero.settlement), "%s: the bell rings" % fixture)

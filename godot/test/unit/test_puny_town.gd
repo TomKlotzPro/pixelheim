@@ -94,7 +94,7 @@ func test_every_town_tier_keeps_its_doors_and_roads() -> void:
 
 func test_the_pack_draws_when_installed() -> void:
 	if not PunyTown.available():
-		pass_test("Medieval Age pack not installed here (pnpm godot:art); the town keeps its old houses.")
+		pass_test("Medieval Age pack not installed here (scripts/fetch-private-art.sh); the town keeps its old houses.")
 		return
 	var sheet: Texture2D = load(PunyTown.SHEET)
 	assert_eq(sheet.get_size(), Vector2(PunyTown.COLUMNS * 16, 132 * 16), "the whole atlas")

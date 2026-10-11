@@ -1,7 +1,9 @@
 class_name MapData
-## A world map loaded from the JSON the web game exports (pnpm godot:sync).
-## Tiles arrive as tile ids already parsed and validated by src/world/maps —
-## Godot never re-parses ASCII. Pure data, no scene nodes, unit-testable.
+## A world map loaded from its JSON (assets/maps/<id>.json, edited by hand or
+## drawn as a sketch in maps-src and run through tools/mapgen.py): tile ids
+## row by row, regions, spawn and portals. test_map_files keeps every file
+## whole (known tiles, the spawn and every landing on open ground). Pure data,
+## no scene nodes, unit-testable.
 
 var id := ""
 var grid := {}  # Vector2i -> tile id
@@ -9,7 +11,7 @@ var size := Vector2i.ZERO
 var spawn := Vector2i.ZERO
 var portals := {}  # Vector2i -> target Dictionary ({kind, ...})
 var regions := {}  # Vector2i -> encounter region id (forest, marsh, ash, ...)
-## Cells something drawn stands on although the web's tile is open ground
+## Cells something drawn stands on although the map's tile is open ground
 ## (a fountain's basin, a well's second half, a statue): they block too.
 var covered := {}
 ## Which drawing of the map this is: "@2", "@3" for the bigger houses.

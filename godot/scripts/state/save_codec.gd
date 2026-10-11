@@ -1,8 +1,8 @@
 class_name SaveCodec
-## The web save contract (src/state/save.ts, schema v4) in GDScript: the
-## version envelope, the migration chain every historical save replays, the
-## rebase onto current defaults, and PXH1 save codes. It works on web-shaped
-## Dictionaries, so a Godot save IS a web save: either game loads the other's.
+## The save format (schema v4, the one the game's first, web edition wrote):
+## the version envelope, the migration chain every historical save replays,
+## the rebase onto current defaults, and PXH1 save codes. It keeps that
+## format to the byte, so every save ever written still loads.
 
 const SAVE_VERSION := 4
 const CODE_PREFIX := "PXH1."
@@ -13,7 +13,7 @@ const RESUME_INTO := {
 }
 
 
-## initialState in src/state/shared.ts.
+## A new game's state before a hero is made.
 static func initial_state() -> Dictionary:
 	return {
 		"screen": "title", "hero": null, "gold": 0, "inventory": {}, "gear": [], "equipped": {},
@@ -32,7 +32,7 @@ static func parse_json(text: String) -> Variant:
 	return intify(json.data)
 
 
-## JSON numbers arrive as floats; the web's integers must stay integers so
+## JSON numbers arrive as floats; a save's integers must stay integers so
 ## saves round-trip byte for byte.
 static func intify(value: Variant) -> Variant:
 	match typeof(value):
@@ -52,7 +52,7 @@ static func intify(value: Variant) -> Variant:
 
 
 ## Keys keep the order the save came with (Godot sorts them by default), so a
-## web save Godot loads and writes back is the very text the web would write.
+## save loaded and written back is the very text it was.
 static func serialize(state: Dictionary) -> String:
 	return JSON.stringify({"version": SAVE_VERSION, "state": state}, "", false)
 
@@ -163,7 +163,7 @@ static func normalize(state: Dictionary) -> Dictionary:
 	return save
 
 
-## A web world record standing at the town spawn, its surroundings seen.
+## A save's world record standing at the town spawn, its surroundings seen.
 static func fresh_world() -> Dictionary:
 	var spawn := Catalog.town_spawn()
 	var discovered := {}
@@ -176,7 +176,7 @@ static func fresh_world() -> Dictionary:
 	}
 
 
-## The web trusts any truthy hero; Godot also refuses heroes it could not play.
+## A hero the game could not play (a field missing, an unknown role) is refused.
 static func _valid_hero(hero: Variant) -> bool:
 	if not hero is Dictionary:
 		return false
@@ -191,7 +191,7 @@ static func encode_code(state: Dictionary) -> String:
 	return CODE_PREFIX + Marshalls.utf8_to_base64(serialize(state))
 
 
-## Parses a save code from any past version of either game; {} on anything invalid.
+## Parses a save code from any past version; {} on anything invalid.
 static func decode_code(code: String) -> Dictionary:
 	var trimmed := code.strip_edges()
 	if not trimmed.begins_with(CODE_PREFIX):
@@ -202,3 +202,15 @@ static func decode_code(code: String) -> Dictionary:
 	if payload.length() % 4 != 0 or base64.search(payload) == null:
 		return {}
 	return migrate(parse_json(Marshalls.base64_to_utf8(payload)))
+
+
+## Accepts what a player is likely to paste: a PXH1 save code, or the raw
+## JSON of a save (enveloped or bare, any version), migrated. {} when it is
+## neither. The harness's `--load` and the old-save fixtures go through it too.
+static func parse_any(text: String) -> Dictionary:
+	var trimmed := text.strip_edges()
+	if trimmed.begins_with(CODE_PREFIX):
+		return decode_code(trimmed)
+	if trimmed.begins_with("{"):
+		return migrate(parse_json(trimmed))
+	return {}

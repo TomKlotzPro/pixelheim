@@ -1,7 +1,7 @@
 class_name WorldTiles
-## Tile tables ported verbatim from src/world/tiles.ts. The web game remains
-## the source of truth until it is sunset — map grids arrive pre-parsed as
-## tile ids via `pnpm godot:sync`, so no char table lives on this side.
+## Tile tables: the tile ids a map file may use (test_map_files refuses any
+## other), which the hero walks on, and their colours on the map screen. Map
+## files hold tile ids, never characters (the sketches' keys name them).
 
 ## Tile id -> walkable. Every tile is drawn by Shade's art now (PunyTerrain,
 ## PunyTown, PunyInterior, PunyProps, PunyDungeon); this only says what the
@@ -41,7 +41,7 @@ const GROUND_TILES := {
 	"shore": true, "sea": true, "deep_sea": true, "dock": true, "snow": true, "ice": true, "stone": true,
 }
 
-## One color per tile for map paintings (ported from src/world/mapColors.ts);
+## One color per tile for map paintings;
 ## sprites are for the world itself.
 const TILE_COLORS := {
 	"grass": "3d7a35", "forest": "2a5f24", "mountain": "6b6f7a",

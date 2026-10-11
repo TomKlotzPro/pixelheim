@@ -5,7 +5,7 @@ extends Node
 ## screenshot.png, prints a report line (HarnessReport: every field in its
 ## table, PIX-273), and quits:
 ## `godot --path godot -- --screenshot [fight] [kill] [saves] [--map <id>]
-## [--walk l,d,r,u,...] [--web-save <file>] ...`. Every flag is declared once
+## [--walk l,d,r,u,...] [--slots <dir>] ...`. Every flag is declared once
 ## in HarnessFlags.TABLE (scripts/harness_flags.gd, PIX-262), which
 ## `-- --help` prints; the release flows (tools/flows.sh) drive it.
 
@@ -850,16 +850,12 @@ func _run_test_harness() -> void:
 		world.add_child(load("res://scripts/%s.gd" % ledger).new())
 		await get_tree().create_timer(0.3).timeout
 	if flags.has("saves"):
-		# `--web-save <file>` stands in for a browser's web save (a code or JSON)
-		# and opens the first-visit offer.
-		var web_file := flags.value("--web-save")
-		var stand_in := WebImport.parse_any(FileAccess.get_file_as_string(web_file)) if web_file != "" else {}
 		# `--slots <dir>`: full slots read from a folder (PIX-230: the cards'
 		# lines widened the window off the screen only once heroes filled
 		# them), instead of the player's own.
 		if flags.has("--slots"):
 			GameState.slots = SaveSlots.new(flags.value("--slots"))
-		world.open_saves(stand_in, not stand_in.is_empty())
+		world.open_saves()
 		await get_tree().create_timer(0.3).timeout
 	if flags.has("--ready"):
 		# A quest accepted and its goal met (PIX-192): `--ready fenwick_locket`.
