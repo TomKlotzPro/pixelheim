@@ -88,6 +88,7 @@ const TABLE := [
 	{"field": "stood", "says": "named foes that stood down rather than fell, when one did (PIX-255)"},
 	{"field": "story", "says": "the main story's hollow diamond on the map's page, while something else is followed (PIX-253)"},
 	{"field": "tab", "says": "with station: the tab the counter opened on (PIX-234)"},
+	{"field": "titleline", "says": "the title's line under its menu, by what it's about: slot (the slot in hand: unreadable, or its hero the save before, PIX-303) or full (New Game with no slot free, PIX-316)"},
 	{"field": "top", "says": "the screen drawn on top when one is opened over another (the title's Options); two sharing the top layer read a=b"},
 	{"field": "torches", "says": "on a dungeon floor: its torches on the walls, and N loose for any not hung on a wall's face (PIX-291)"},
 	{"field": "tracked", "says": "the quest or bounty followed, while the journal is open or one is (PIX-239)"},
@@ -572,6 +573,13 @@ func field_story() -> String:
 
 func field_tab() -> String:
 	return noted("tab")
+
+
+func field_titleline() -> String:
+	for child in world.get_children():
+		if child.get_script() != null and String(child.get_script().resource_path).ends_with("title_screen.gd"):
+			return child.said
+	return ""
 
 
 func field_top() -> String:

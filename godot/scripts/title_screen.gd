@@ -31,6 +31,11 @@ var menu: VBoxContainer
 var lines: Array = []
 var footer: Label
 var shine: ColorRect
+## The line under the menu (PIX-303, PIX-316), and what it last said: slot
+## (about the slot in hand) or full (New Game with no slot free), for the
+## harness's report.
+var note: Label
+var said := ""
 var logo: Control
 var tagline: Label
 ## The game's version: the newest release in What's new.
@@ -229,15 +234,17 @@ func _card() -> void:
 	options.append({"label": "Options", "action": _options})
 	options.append({"label": "What's new", "action": _whats_new})
 	_draw_menu()
+	# The line under the menu, for a word the title has to say.
+	note = _shadowed(Layout.wrapped(UiStyle.label("", 13, UiStyle.CREAM), NOTE_WIDTH))
+	note.position = Vector2((VIEW.x - NOTE_WIDTH) / 2.0, middle.position.y + menu.get_combined_minimum_size().y + NOTE_GAP)
+	note.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	# Placed, so kept to its lines once they know their width.
+	add_child(Layout.hugging(note))
 	# A word about the slot in hand, said once (PIX-303): the one this launch
 	# opened can't be read (so no Continue, and New Game makes its hero in
 	# a free slot), or its hero is the save before, the last unreadable.
 	if GameState.slot_note != "":
-		var note := _shadowed(Layout.wrapped(UiStyle.label(GameState.slot_note, 13, UiStyle.CREAM), NOTE_WIDTH))
-		note.position = Vector2((VIEW.x - NOTE_WIDTH) / 2.0, middle.position.y + menu.get_combined_minimum_size().y + NOTE_GAP)
-		note.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		# Placed, so kept to its lines once they know their width.
-		add_child(Layout.hugging(note))
+		_say("slot", GameState.slot_note)
 		GameState.slot_note = ""
 	# A browser that won't keep saves says so before anyone plays (PIX-200).
 	if not GameState.saves_kept():
@@ -376,12 +383,24 @@ func _take(index: int) -> void:
 	options[index]["action"].call()
 
 
+## A word on the line under the menu; `kind` is what it's about.
+func _say(kind: String, text: String) -> void:
+	said = kind
+	note.text = text
+
+
 func _continue() -> void:
 	_leave()
 
 
 ## New Game: the opening (PIX-31), skippable, then hero creation.
+## It's the one way to a new hero (PIX-316), and it never writes over one:
+## with every slot holding a save, it says so and starts nothing.
 func _new_game() -> void:
+	if not GameState.room_for_hero():
+		Sound.play_ui("deny")
+		_say("full", "Every slot holds a save. Clear one in Saves to start a new hero.")
+		return
 	var opening := Cutscene.new()
 	opening.scene_id = "opening"
 	opening.on_done = _create_hero

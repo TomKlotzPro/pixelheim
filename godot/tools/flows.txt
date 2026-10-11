@@ -502,9 +502,18 @@ fit-saves-unread-en | --map town saves --slots res://test/fixtures/slots_unread 
 # A launch whose last slot can't be read stands in with no Continue, says
 # so under the menu, and New Game makes its hero in the first free slot,
 # never over the file (PIX-303).
-launch-unread | title --slots res://test/fixtures/slots_unread launch | open=title_screen free=3 | title save
-fit-launch-unread | title --slots res://test/fixtures/slots_unread launch overflow --lang fr | open=title_screen overflow=0 free=3 | screen lang title save
-fit-launch-unread-en | title --slots res://test/fixtures/slots_unread launch overflow --lang en | open=title_screen overflow=0 free=3 | screen lang title save
+launch-unread | title --slots res://test/fixtures/slots_unread launch | open=title_screen titleline=slot free=3 | title save
+fit-launch-unread | title --slots res://test/fixtures/slots_unread launch overflow --lang fr | open=title_screen overflow=0 titleline=slot free=3 | screen lang title save
+fit-launch-unread-en | title --slots res://test/fixtures/slots_unread launch overflow --lang en | open=title_screen overflow=0 titleline=slot free=3 | screen lang title save
+# Tom (2026-10-11, PIX-316): a new hero starts from the title's New Game
+# alone. On the Saves screen an empty slot's E makes no one, and N is no
+# key there...
+saves-no-new | --map town --slots res://test/fixtures/slots_unread --keys esc,s,e,s,s,e,n | open=saves_screen cards=damaged,newer,empty | screen save
+# ...and with every slot holding a save, New Game says so under the menu
+# and starts nothing, in both languages.
+newgame-full | title --slots res://test/fixtures/slots launch --keys s,e | open=title_screen titleline=full free=0 | title save
+fit-newgame-full | title --slots res://test/fixtures/slots launch --keys s,e overflow --lang fr | open=title_screen overflow=0 titleline=full free=0 | screen lang title save
+fit-newgame-full-en | title --slots res://test/fixtures/slots launch --keys s,e overflow --lang en | open=title_screen overflow=0 titleline=full free=0 | screen lang title save
 # The save before (PIX-303): slot 1's file cut short plays its backup, said
 # on its card; slot 2's good file plays though its backup is cut short;
 # slot 3's temp file, left alone by a first write cut off, is no save.
@@ -512,7 +521,7 @@ saves-backup | --map town saves --slots res://test/fixtures/slots_backup | open=
 fit-saves-backup | --map town saves --slots res://test/fixtures/slots_backup overflow --lang fr | open=saves_screen overflow=0 cards=backup,hero,empty | screen lang save
 # A launch on it plays Brann from the save before (his 4321 gold), and the
 # title says so.
-launch-backup | title --slots res://test/fixtures/slots_backup launch overflow --lang fr | open=title_screen overflow=0 gold=4321 free=3 | screen lang title save
+launch-backup | title --slots res://test/fixtures/slots_backup launch overflow --lang fr | open=title_screen overflow=0 gold=4321 titleline=slot free=3 | screen lang title save
 fit-pause | --map town --keys esc overflow --lang fr | open=pause_screen overflow=0 | screen lang
 fit-options | --map town --keys esc,s,s,e overflow --lang fr | overflow=0 | screen lang
 fit-map | --map town waypoints worldmap overflow --lang fr | open=map_screen overflow=0 | screen lang travel

@@ -14141,12 +14141,8 @@ msgid "Load into slot %d"
 msgstr "Charger dans l'emplacement %d"
 
 #: scripts/saves_screen.gd
-msgid "N starts a new hero here."
-msgstr "N crée ici un nouveau héros."
-
-#: scripts/saves_screen.gd
-msgid "New hero"
-msgstr "Nouveau héros"
+msgid "New Game, on the title screen, starts a hero."
+msgstr "Nouvelle partie, sur l'écran titre, crée un héros."
 
 #: scripts/saves_screen.gd
 msgid "Once cleared, it's gone for good: nothing brings it back. Press X once more to clear slot %d."
@@ -14163,10 +14159,6 @@ msgstr "En jeu"
 #: scripts/saves_screen.gd
 msgid "Replace %s in slot %d with %s %s? Their progress here would be lost."
 msgstr "Remplacer %s (emplacement %d) par %s %s ? Sa progression ici serait perdue."
-
-#: scripts/saves_screen.gd
-msgid "Replace %s with a new hero?"
-msgstr "Remplacer %s par un nouveau héros ?"
 
 #: scripts/saves_screen.gd
 msgid "Save code"
@@ -14227,10 +14219,6 @@ msgstr "du code"
 #: scripts/saves_screen.gd
 msgid "just now"
 msgstr "à l'instant"
-
-#: scripts/saves_screen.gd
-msgid "new hero"
-msgstr "nouveau héros"
 
 #: scripts/saves_screen.gd
 msgid "paste"
@@ -15299,6 +15287,10 @@ msgstr "Silhouette"
 #: scripts/title_screen.gd
 msgid "Continue  %s, Lv %d"
 msgstr "Continuer  %s, Niv. %d"
+
+#: scripts/title_screen.gd
+msgid "Every slot holds a save. Clear one in Saves to start a new hero."
+msgstr "Chaque emplacement contient une sauvegarde. Videz-en un dans Sauvegardes pour créer un nouveau héros."
 
 #: scripts/title_screen.gd
 msgid "NEW"

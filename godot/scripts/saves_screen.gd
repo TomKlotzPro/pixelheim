@@ -1,6 +1,7 @@
 extends Screen
-## The saves screen (Esc): three slots to play, start fresh or clear, and a
-## hero carried between machines as a save code (copy here, paste there).
+## The saves screen (Esc): the heroes you have, in three slots to play or
+## clear, and a hero carried between machines as a save code (copy here,
+## paste there). A new hero starts from the title's New Game alone (PIX-316).
 ## Keyboard first (letters drive every action, the same key twice confirms
 ## anything destructive), every action also clickable. Pauses the world while
 ## open; switching heroes reloads the world scene. A save the game can't read
@@ -82,8 +83,9 @@ func _open() -> void:
 		cards.append(card)
 	# Flowing onto a second line in a longer language, not past the column.
 	var actions := Layout.flow()
+	# The heroes you have (PIX-316): a new one starts from the title's New
+	# Game alone.
 	actions.add_child(UiStyle.button(Text.t("Play"), _play, "{key:interact}"))
-	actions.add_child(UiStyle.button(Text.t("New hero"), _new_hero, "N"))
 	actions.add_child(UiStyle.button(Text.t("Clear slot"), _clear, "X"))
 	left.add_child(actions)
 
@@ -121,7 +123,7 @@ func _open() -> void:
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	status.custom_minimum_size = Vector2(WINDOW.x - 44, 0)
 	body.add_child(status)
-	add_child(UiStyle.screen_footer("{key:move_up}/{key:move_down}  choose      {key:interact}  play      N  new hero      X  clear      P  paste      C  copy      Esc  close"))
+	add_child(UiStyle.screen_footer("{key:move_up}/{key:move_down}  choose      {key:interact}  play      X  clear      P  paste      C  copy      Esc  close"))
 	_refresh()
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -143,8 +145,6 @@ func _command(event: InputEvent) -> Callable:
 		return _play
 	if event is InputEventKey and event.pressed and not event.echo:
 		match event.physical_keycode:
-			KEY_N:
-				return _new_hero
 			KEY_X:
 				return _clear
 			KEY_C:
@@ -172,12 +172,11 @@ func _target() -> int:
 
 func _play() -> void:
 	var kind := _kind()
-	# An empty slot has no one to play: a hero is made for it, from the
-	# start (creation, then the Night of Ash).
+	# An empty slot has no one to play, and makes no one here: a hero starts
+	# from the title's New Game alone (PIX-316), as its card says.
 	if kind == SaveSlots.EMPTY:
-		_create_in(_target())
 		return
-	# Nor has a save this version can't read, and no hero is made over it.
+	# Nor has a save this version can't read.
 	if kind == SaveSlots.DAMAGED:
 		_say(Text.t("Slot %d's save can't be read, so there's no one to play. It's kept as it is.") % _target())
 		return
@@ -192,16 +191,8 @@ func _play() -> void:
 	if GameState.play_slot(_target()):
 		_reload()
 
-func _new_hero() -> void:
-	var summary := GameState.slots.summary(_target())
-	if _unread(summary):
-		return
-	if summary["kind"] == SaveSlots.HERO and not _confirm("new", Text.t("Replace %s with a new hero?") % summary["name"], "N"):
-		return
-	_create_in(_target())
-
 ## A slot holding a save this version can't read takes nothing written over
-## it (PIX-303): no new hero, no code. Says so; true when it does.
+## it (PIX-303): no code pasted in. Says so; true when it does.
 func _unread(summary: Dictionary) -> bool:
 	if summary["kind"] in [SaveSlots.DAMAGED, SaveSlots.NEWER]:
 		_say(Text.t("Slot %d holds a save this version can't read, so nothing is written there. X clears it, if you mean to.") % _target())
@@ -211,14 +202,6 @@ func _unread(summary: Dictionary) -> bool:
 ## What the chosen slot holds (SaveSlots: empty, hero, damaged, newer).
 func _kind() -> String:
 	return GameState.slots.look(_target())["kind"]
-
-## Hero creation over this screen, for one slot; Esc there comes back here.
-func _create_in(target: int) -> void:
-	var creation := preload("res://scripts/create_screen.gd").new()
-	creation.world = get_tree().current_scene
-	creation.target_slot = target
-	add_child(creation)
-	creation.layer = layer + 1
 
 func _clear() -> void:
 	var summary := GameState.slots.summary(_target())
@@ -363,7 +346,7 @@ func _fill_card(card: PanelContainer, index: int) -> void:
 	Layout.wrapped(name_line, CARD_TEXT - 16.0 - tag.get_minimum_size().x)
 	match kind:
 		SaveSlots.EMPTY:
-			lines.add_child(Layout.wrapped(UiStyle.label("N starts a new hero here.", 14, UiStyle.FADED), CARD_TEXT))
+			lines.add_child(Layout.wrapped(UiStyle.label("New Game, on the title screen, starts a hero.", 14, UiStyle.FADED), CARD_TEXT))
 		SaveSlots.DAMAGED:
 			lines.add_child(Layout.wrapped(UiStyle.label(
 				"The game can't read this save, so it's kept as it is. X clears it, if you mean to.", 14, UiStyle.FADED

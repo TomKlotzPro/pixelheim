@@ -14141,11 +14141,7 @@ msgid "Load into slot %d"
 msgstr ""
 
 #: scripts/saves_screen.gd
-msgid "N starts a new hero here."
-msgstr ""
-
-#: scripts/saves_screen.gd
-msgid "New hero"
+msgid "New Game, on the title screen, starts a hero."
 msgstr ""
 
 #: scripts/saves_screen.gd
@@ -14162,10 +14158,6 @@ msgstr ""
 
 #: scripts/saves_screen.gd
 msgid "Replace %s in slot %d with %s %s? Their progress here would be lost."
-msgstr ""
-
-#: scripts/saves_screen.gd
-msgid "Replace %s with a new hero?"
 msgstr ""
 
 #: scripts/saves_screen.gd
@@ -14226,10 +14218,6 @@ msgstr ""
 
 #: scripts/saves_screen.gd
 msgid "just now"
-msgstr ""
-
-#: scripts/saves_screen.gd
-msgid "new hero"
 msgstr ""
 
 #: scripts/saves_screen.gd
@@ -15298,6 +15286,10 @@ msgstr ""
 
 #: scripts/title_screen.gd
 msgid "Continue  %s, Lv %d"
+msgstr ""
+
+#: scripts/title_screen.gd
+msgid "Every slot holds a save. Clear one in Saves to start a new hero."
 msgstr ""
 
 #: scripts/title_screen.gd

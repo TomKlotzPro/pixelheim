@@ -521,12 +521,11 @@ func test_the_saves_screen_writes_nothing_over_an_unread_slot() -> void:
 	add_child(screen)
 	await wait_process_frames(2)
 	screen._select(0)
-	# E and N make no hero over it, a code goes nowhere near it.
+	# E makes no hero over it, a code goes nowhere near it.
 	screen._play()
-	screen._new_hero()
 	screen.code_field.text = SaveCodec.encode_code(_state(9))
 	screen._load_code()
-	assert_false(screen.get_children().any(func(child: Node) -> bool: return child.get_script() == preload("res://scripts/create_screen.gd")), "no creation opened")
+	assert_false(_creating(screen), "no creation opened")
 	assert_eq(_text(slots.path_for(1)), "{ damaged")
 	# X asks twice, then clears.
 	screen._clear()
@@ -538,3 +537,71 @@ func test_the_saves_screen_writes_nothing_over_an_unread_slot() -> void:
 	GameState.slots = kept
 	await get_tree().process_frame
 	get_tree().paused = false
+
+
+## Whether hero creation is open over `screen`.
+func _creating(screen: Node) -> bool:
+	return screen.get_children().any(func(child: Node) -> bool: return child.get_script() == preload("res://scripts/create_screen.gd"))
+
+
+# PIX-316: a new hero starts from the title's New Game alone.
+
+func test_the_saves_screen_makes_no_new_hero() -> void:
+	var kept: SaveSlots = GameState.slots
+	GameState.slots = slots
+	var screen: Screen = preload("res://scripts/saves_screen.gd").new()
+	add_child(screen)
+	await wait_process_frames(2)
+	screen._select(2)
+	assert_eq(screen._kind(), SaveSlots.EMPTY)
+	screen._play()
+	assert_false(_creating(screen), "E on an empty slot makes no one")
+	# The game's keys, which a key is checked against.
+	Controls.apply({})
+	var key := InputEventKey.new()
+	key.physical_keycode = KEY_N
+	key.pressed = true
+	assert_false(screen._command(key).is_valid(), "N is no key here")
+	var planks: Array = screen.find_children("*", "Button", true, false).map(func(button: Button) -> String: return button.text)
+	assert_false("New hero" in planks, "nor a plank: %s" % [planks])
+	assert_false(FileAccess.file_exists(slots.path_for(3)))
+	screen.close()
+	GameState.slots = kept
+	await get_tree().process_frame
+	get_tree().paused = false
+
+
+func test_new_game_with_every_slot_taken_says_so_and_starts_nothing() -> void:
+	var kept: SaveSlots = GameState.slots
+	var standing: bool = GameState.standing_in
+	GameState.standing_in = false
+	# Three heroes; then two saves it can't read and a slot free.
+	GameState.slots = SaveSlots.new("res://test/fixtures/slots", true)
+	assert_false(GameState.room_for_hero())
+	var title: Screen = preload("res://scripts/title_screen.gd").new()
+	add_child(title)
+	await wait_process_frames(2)
+	title._new_game()
+	assert_false(title.get_children().any(func(child: Node) -> bool: return child is Cutscene), "no opening")
+	assert_eq(title.said, "full")
+	assert_ne(title.note.text, "", "said under the menu")
+	GameState.slots = SaveSlots.new("res://test/fixtures/slots_unread", true)
+	assert_eq(GameState.free_slot(), 3, "never a save it can't read")
+	title._new_game()
+	assert_true(title.get_children().any(func(child: Node) -> bool: return child is Cutscene), "the opening, then creation")
+	title.close()
+	GameState.slots = kept
+	GameState.standing_in = standing
+	await get_tree().process_frame
+	get_tree().paused = false
+
+
+func test_a_harness_run_reads_the_players_slots_and_never_writes_them() -> void:
+	slots.write(1, _state(100))
+	var state := _fresh_state()
+	state.boot(HarnessFlags.new(PackedStringArray(["--screenshot"])))
+	assert_true(slots.read_only)
+	state.new_hero_in(2, "Robin", "warrior")
+	assert_false(FileAccess.file_exists(slots.path_for(2)), "creation's Begin writes nothing")
+	state.clear_slot(1)
+	assert_eq(slots.read(1)["gold"], 100, "nor does clearing one")

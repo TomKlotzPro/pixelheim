@@ -188,6 +188,10 @@ func boot(flags: HarnessFlags) -> void:
 			slots = SaveSlots.new(flags.value("--slots"), true)
 			if flags.has("launch"):
 				slot = 1
+		else:
+			# The player's own slots, read at most: no key a run presses (a
+			# saves screen's, creation's Begin) writes or clears one.
+			slots.read_only = true
 	else:
 		slot = clampi(settings.last_slot, 1, SaveSlots.SLOT_COUNT)
 	var seen := slots.look(slot) if slot != NO_SLOT else {"kind": SaveSlots.EMPTY}
@@ -271,6 +275,13 @@ func free_slot() -> int:
 		if slots.is_free(n):
 			return n
 	return 0
+
+
+## Whether New Game has a slot for a new hero (PIX-316: with none free it
+## says so, never writing over a hero or a save it can't read). A harness
+## run's throwaway stand-in always has, and writes nowhere.
+func room_for_hero() -> bool:
+	return free_slot() != NO_SLOT or (standing_in and slot == NO_SLOT)
 
 
 ## Brings a migrated save (a pasted code) into a slot and plays it.

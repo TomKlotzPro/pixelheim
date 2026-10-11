@@ -61,8 +61,10 @@ a newer version wrote, is never an empty slot: it gets its own card, New
 Game and New hero pass it by, nothing is written over it, and clearing it
 asks twice.
 
-The saves screen plays, starts or clears slots (`scripts/saves_screen.gd`),
-and carries a hero to another computer or browser: `C` copies the hero's save
+The saves screen plays or clears slots (`scripts/saves_screen.gd`); a new
+hero starts from the title's New Game alone, in the first free slot, and
+with none free New Game says so rather than writing over anyone. It also
+carries a hero to another computer or browser: `C` copies the hero's save
 code, and a code pasted into Save code (raw save JSON works too) loads into
 the chosen slot.
 
