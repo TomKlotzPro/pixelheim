@@ -50,6 +50,7 @@ const TABLE := [
 	{"field": "decor", "says": "on a map in the open air: how many pieces of field decor its drawing grew, its trees, wheat, bushes, stumps and stones (PIX-304)"},
 	{"field": "delivered", "says": "Maren's letters delivered, once any is out (PIX-253)"},
 	{"field": "dest", "says": "the waypoint the map's list has chosen, while the map is open (PIX-241)"},
+	{"field": "detail", "says": "on a map in the open air: how many small things its open ground grew, tufts, clover, flowers, pebbles, twigs, reeds and sedge (PIX-305)"},
 	{"field": "ending", "says": "the ending this hero chose for Morvax once it has played: home or stay (an old save's throne: destroy or rest) (PIX-253 step 10)"},
 	{"field": "entrance", "says": "the ways in drawn as entrances in their setting on this map, by look: mine, sea_cave, mountain_gate, vault_door, ice_stair (PIX-290)"},
 	{"field": "feats", "says": "the feats done, by id, once any is (PIX-257)"},
@@ -86,6 +87,7 @@ const TABLE := [
 	{"field": "stood", "says": "named foes that stood down rather than fell, when one did (PIX-255)"},
 	{"field": "story", "says": "the main story's hollow diamond on the map's page, while something else is followed (PIX-253)"},
 	{"field": "tab", "says": "with station: the tab the counter opened on (PIX-234)"},
+	{"field": "tone", "says": "on a map in the open air: how the region's tone takes the hero's cell: whole (tone), the mire's with its murk and puddles (mire), its dirt only beside the ash (fringe), or none (PIX-305)"},
 	{"field": "top", "says": "the screen drawn on top when one is opened over another (the title's Options); two sharing the top layer read a=b"},
 	{"field": "torches", "says": "on a dungeon floor: its torches on the walls, and N loose for any not hung on a wall's face (PIX-291)"},
 	{"field": "tracked", "says": "the quest or bounty followed, while the journal is open or one is (PIX-239)"},
@@ -346,6 +348,12 @@ func field_dest() -> String:
 	return chosen if chosen != "" else "none"
 
 
+func field_detail() -> String:
+	if world.view == null or not PunyTerrain.is_outdoor(world.map.grid) or not world.view.has_ground_layers():
+		return ""
+	return str(world.view.detail_layer.get_used_cells().size())
+
+
 func field_ending() -> String:
 	return Story.ending_of(GameState.progression.story_seen)
 
@@ -556,6 +564,12 @@ func field_story() -> String:
 
 func field_tab() -> String:
 	return noted("tab")
+
+
+func field_tone() -> String:
+	if world.view == null or not PunyTerrain.is_outdoor(world.map.grid) or world.view.kept == null:
+		return ""
+	return PunyTerrain.tone_at(world.view.kept.tint_image, world.player_cell)
 
 
 func field_top() -> String:

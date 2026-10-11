@@ -60,6 +60,9 @@ var rim_layer: TileMapLayer
 var crown_layer: TileMapLayer
 var _objects_layer: TileMapLayer
 var _growth_layer: TileMapLayer
+## The open ground's patches (paid pack only) and small things (PIX-305).
+var patch_layer: TileMapLayer
+var detail_layer: TileMapLayer
 ## Pixelheim's rampart in the Medieval Age's stone: whole, and scorched.
 var _rampart_layers: Array[TileMapLayer] = []
 ## Every material that reads the region's masks (region_tint.gdshader), to
@@ -488,6 +491,7 @@ func _build_ground(_data: MapData) -> Node2D:
 	kept.lay_crowns(crown_layer)
 	for i in ceili(data.size.y / float(BLOCK)):
 		_object_rows(i)
+		_detail_rows(i)
 	_ground_pieces()
 	return root
 
@@ -517,6 +521,7 @@ func _ground_units(slices: Slicer) -> void:
 			kept.lay_rims(rim_layer)
 			kept.lay_crowns(crown_layer))
 	slices.add_each("ground_objects", ceili(data.size.y / float(BLOCK)), _object_rows)
+	slices.add_each("ground_detail", ceili(data.size.y / float(BLOCK)), _detail_rows)
 	slices.add("ground_pieces", _ground_pieces)
 
 
@@ -571,10 +576,27 @@ func _ground_layers() -> Node2D:
 	# The water swells, glints and foams at the shore (PIX-223).
 	var water := _toning()
 	water.set_shader_parameter("water_life", true)
+	# And the open ground has its patches, drifts, murk and puddles (PIX-305).
+	water.set_shader_parameter("ground_life", true)
 	water.set_shader_parameter("water_map", kept.water_map)
 	ground_tint.set_shader_parameter("water_map", kept.water_map)
 	ground_layer.material = water
 	root.add_child(ground_layer)
+	# The open ground's patches of the Medieval Age's greens and snow, in
+	# their own colours (the region's tone would whiten its snow's blue tufts
+	# away) with the ground's own patches over the greens, then its small
+	# things toned with the region (PIX-305).
+	patch_layer = null
+	if not kept.patches.is_empty() and PunyTown.available():
+		patch_layer = tile_layer_of(PunyTown.tileset())
+		var patched := _toning()
+		patched.set_shader_parameter("ground_life", true)
+		patched.set_shader_parameter("strength", 0.0)
+		patch_layer.material = patched
+		root.add_child(patch_layer)
+	detail_layer = tile_layer_of(GroundDetail.tileset())
+	detail_layer.material = ground_tint
+	root.add_child(detail_layer)
 	# Shade's cliffs standing in the water, the sand and the roads
 	# (PunyTerrain.rimmed), toned as the ground is, but still: the water
 	# under them swells.
@@ -657,6 +679,23 @@ func _object_rows(i: int) -> void:
 				PunyTerrain.place(_objects_layer, cell, object)
 	if sliced:
 		_objects_layer.update_internals()
+
+
+## The open ground's patches and small things on cell rows [i * BLOCK,
+## (i + 1) * BLOCK) (PIX-305): whole quadrants of their layers. Nothing
+## small grows where something stands or a way leads on (`bare`).
+func _detail_rows(i: int) -> void:
+	for y in range(i * BLOCK, mini((i + 1) * BLOCK, data.size.y)):
+		for x in data.size.x:
+			var cell := Vector2i(x, y)
+			if patch_layer != null and kept.patches.has(cell):
+				PunyTown.place(patch_layer, cell, kept.patches[cell])
+			if kept.details.has(cell) and not bare.has(cell):
+				GroundDetail.place(detail_layer, cell, kept.details[cell])
+	if sliced:
+		detail_layer.update_internals()
+		if patch_layer != null:
+			patch_layer.update_internals()
 
 
 ## What stands on the ground but the objects: the village far off's wells,

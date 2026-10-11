@@ -162,6 +162,20 @@ field-night | --map overworld --at 67,46 night | map=overworld cell=\(67, 46\) p
 decor-wood | --map deepwood --at 44,10 | map=deepwood decor=1[0-9]{3} | field
 decor-wheat | --map town --at 76,25 | map=town decor=6[0-9]{2} | town field
 decor-line | --map overworld --at 93,33 seamless --walk r,r,r fades | map=deepwood change=seamless decor=1[0-9]{3} | field travel
+# Open ground (PIX-305): the small things in the grass, the snow and the
+# mire (detail=), and how the region's tone takes the hero's cell (tone=):
+# the Reach's meadow untoned, the Ash whole and its road through it left
+# its own (no band of dither either side), the grass at the Ash's edge
+# toned over its dirt alone, the mire's murk and puddles, the Frostgate's
+# snow; and the small things of the Deepwood drawn beside the Reach, a few
+# rows a frame, then walked into over the line.
+ground-meadow | --map overworld --at 70,40 | map=overworld detail=2[0-9]{2} tone=none | field
+ground-ash | --map overworld --at 30,15 | map=overworld cell=\(30, 15\) tone=tone | field
+ground-road | --map overworld --at 30,11 | map=overworld cell=\(30, 11\) tone=none | field
+ground-fringe | --map overworld --at 69,9 | map=overworld cell=\(69, 9\) tone=fringe | field
+ground-mire | --map mirefen --at 30,20 | map=mirefen detail=2[0-9]{2} tone=mire | field
+ground-snow | --map frostgate --at 14,40 | map=frostgate detail=1[0-9]{2} tone=tone | field
+ground-line | --map overworld --at 93,33 seamless --walk r,r,r fades | map=deepwood change=seamless detail=[4-9][0-9] | field travel
 # Night falling while the hero watches the goblins' camp: nothing changes
 # on the screen - the goblins stay up, the wolves whose home is in view
 # wait - and the dead come out off it. From a few steps west of the camp
