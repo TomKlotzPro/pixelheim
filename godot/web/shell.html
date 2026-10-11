@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+		<title>$GODOT_PROJECT_NAME</title>
+		<!--
+		The web build's page (PIX-296), Godot's own shell with the game's
+		loading screen in it: the title's night (assets/splash.png, drawn by
+		tools/splash.py, which the export copies beside this page) over the
+		same night colour from the first instant, alive while the game
+		downloads - stars twinkling, embers off the summit, smoke from the
+		chimneys - and the village's windows lighting one by one with the
+		dock's pixel bar where the title's menu will rise. No words: the logo
+		is the only text. Reduced motion keeps it still but for the progress.
+		The game says when its first screen is up (world.gd calls
+		window.pixelheimShown), and the page fades as the title rises out of
+		the same picture.
+		-->
+		<link rel="preload" href="$GODOT_SPLASH" as="image">
+		<style>
+html, body, #canvas {
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+body {
+	color: white;
+	background-color: $GODOT_SPLASH_COLOR;
+	overflow: hidden;
+	touch-action: none;
+}
+
+#canvas {
+	display: block;
+}
+
+#canvas:focus {
+	outline: none;
+}
+
+#status {
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: $GODOT_SPLASH_COLOR;
+	pointer-events: none;
+	transition: opacity 0.45s ease;
+}
+
+#status.leaving {
+	opacity: 0;
+}
+
+#status-stage {
+	position: relative;
+	width: min(100vw, calc(100vh * 16 / 9));
+	aspect-ratio: 16 / 9;
+	/* The picture's night until the picture is there; round it, black bars
+	   like the game's own canvas on a window of another shape. */
+	background-color: #080c28;
+}
+
+#status-stage img, #status-stage canvas {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	image-rendering: crisp-edges;
+	image-rendering: pixelated;
+	/* The picture and its life come out of the night once it has arrived
+	   (a moment on a slow line), not drawn half in. */
+	opacity: 0;
+	transition: opacity 0.35s ease;
+}
+
+#status-stage.arrived img, #status-stage.arrived canvas {
+	opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	#status-stage img, #status-stage canvas, #status {
+		transition: none;
+	}
+}
+
+#status-notice {
+	display: none;
+	position: absolute;
+	pointer-events: auto;
+	background-color: #5b3943;
+	border-radius: 0.5rem;
+	border: 1px solid #9b3943;
+	color: #e0e0e0;
+	font-family: 'Noto Sans', 'Droid Sans', Arial, sans-serif;
+	line-height: 1.3;
+	margin: 0 2rem;
+	overflow: hidden;
+	padding: 1rem;
+	text-align: center;
+	z-index: 2;
+}
+		</style>
+		$GODOT_HEAD_INCLUDE
+	</head>
+	<body>
+		<canvas id="canvas"></canvas>
+
+		<div id="status">
+			<div id="status-stage">
+				<img id="status-splash" src="$GODOT_SPLASH" alt="">
+				<canvas id="status-life" width="640" height="360"></canvas>
+			</div>
+			<div id="status-notice"></div>
+		</div>
+
+		<script>
+/* splash.py: the scene's live points */
+const SCENE = {"stars":[[36,39,"#040515"],[372,30,"#040619"],[447,117,"#080c27"],[453,147,"#080c27"],[276,20,"#040619"],[189,141,"#080c27"],[191,160,"#0e1136"],[224,12,"#040619"],[487,108,"#080b25"],[76,73,"#040517"],[110,54,"#040618"],[274,30,"#040619"],[65,87,"#070a23"],[531,25,"#090a1b"],[251,96,"#080c27"],[612,168,"#0c0e2b"],[607,182,"#0c0e2d"],[539,169,"#0e1034"],[141,31,"#040619"],[419,152,"#080c27"]],"windows":[[10,300,10,8,"#100d20","#251611"],[34,300,10,8,"#110e21","#271712"],[62,300,10,8,"#120f23","#2d1a12"],[108,300,10,8,"#131126","#321d13"],[142,300,10,8,"#151229","#351f13"],[446,300,10,8,"#151229","#351f13"],[494,300,10,8,"#151229","#351f13"],[544,300,10,8,"#131126","#2f1c13"],[572,300,10,8,"#121024","#2a1912"],[604,300,10,8,"#110e21","#271712"]],"chimneys":[[63,248],[115,265],[473,244],[613,245]],"summit":[118,110],"bar":{"x":272,"y":146,"w":96,"h":5},"outline":"#1c120a","gold":"#e8b33a","goldLight":"#ffe08a"};
+/* splash.py: end */
+
+// The loading screen's life, before the engine's script has even arrived.
+const loading = (function () {
+	const status = document.getElementById('status');
+	const stage = document.getElementById('status-stage');
+	const picture = document.getElementById('status-splash');
+	const arrived = () => stage.classList.add('arrived');
+	if (picture.complete && picture.naturalWidth > 0) {
+		arrived();
+	} else {
+		picture.addEventListener('load', arrived);
+	}
+	const life = document.getElementById('status-life');
+	const pen = life.getContext('2d');
+	const still = window.matchMedia !== undefined && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+	const windows = SCENE.windows || [];
+	const bar = SCENE.bar;
+	// How much has arrived (0..1), and the share the bar shows, easing to it.
+	let target = 0;
+	let shown = 0;
+	let gone = false;
+	let clock = 0;
+	let last = performance.now();
+	// When each window lit (in the page's seconds), for its warm fade-in.
+	const litAt = windows.map(() => -1);
+	const embers = [];
+	const puffs = [];
+	let nextPuff = 0;
+
+	// A small stepped glow, the way the game draws light (TitleScene.glow_texture).
+	function glowSprite(radius, rgb, peak, steps) {
+		const sprite = document.createElement('canvas');
+		sprite.width = sprite.height = radius * 2;
+		const ink = sprite.getContext('2d');
+		for (let y = 0; y < radius * 2; y++) {
+			for (let x = 0; x < radius * 2; x++) {
+				const d = Math.hypot(x + 0.5 - radius, y + 0.5 - radius) / radius;
+				if (d >= 1) {
+					continue;
+				}
+				const level = Math.ceil((1 - d) * steps) / steps;
+				ink.fillStyle = 'rgba(' + rgb + ',' + (peak * level * level) + ')';
+				ink.fillRect(x, y, 1, 1);
+			}
+		}
+		return sprite;
+	}
+	const windowGlow = glowSprite(14, '255,176,80', 0.18, 4);
+
+	function draw() {
+		pen.clearRect(0, 0, life.width, life.height);
+		// A third of the stars dim and brighten, each on its own beat.
+		if (!still) {
+			(SCENE.stars || []).forEach(function (star, index) {
+				const beat = 0.5 + 0.5 * Math.sin(clock * (0.7 + (index % 5) * 0.23) + index * 1.7);
+				pen.globalAlpha = 0.85 * (1 - beat);
+				pen.fillStyle = star[2];
+				pen.fillRect(star[0], star[1], 1, 1);
+			});
+		}
+		// The windows light one by one, left to right, as the game arrives.
+		windows.forEach(function (pane, index) {
+			const lit = litAt[index] < 0 ? 0 : (still ? 1 : Math.min(1, (clock - litAt[index]) / 0.5));
+			if (lit < 1) {
+				// The picture's own dark glass, then its frame's cross.
+				pen.globalAlpha = 1 - lit;
+				pen.fillStyle = pane[4];
+				pen.fillRect(pane[0], pane[1], pane[2], pane[3]);
+				pen.fillStyle = pane[5];
+				pen.fillRect(pane[0] + 4, pane[1], 2, pane[3]);
+				pen.fillRect(pane[0], pane[1] + 4, pane[2], 1);
+			}
+			if (lit > 0) {
+				pen.globalAlpha = lit;
+				pen.globalCompositeOperation = 'lighter';
+				pen.drawImage(windowGlow, Math.round(pane[0] + pane[2] / 2 - 14), Math.round(pane[1] + pane[3] / 2 - 14));
+				pen.globalCompositeOperation = 'source-over';
+			}
+		});
+		// Embers riding up off the summit, smoke rising from the chimneys.
+		embers.forEach(function (ember) {
+			pen.globalAlpha = Math.max(0, 1 - ember.age / ember.life);
+			pen.fillStyle = ember.age < ember.life * 0.4 ? '#ffd27a' : '#ff8a30';
+			pen.fillRect(Math.round(ember.x), Math.round(ember.y), 1, 1);
+		});
+		puffs.forEach(function (puff) {
+			const size = Math.round(2 + puff.age / puff.life * 4);
+			pen.globalAlpha = 0.3 * Math.max(0, 1 - puff.age / puff.life);
+			pen.fillStyle = '#8c8cb4';
+			pen.fillRect(Math.round(puff.x - size / 2), Math.round(puff.y - size / 2), size, size);
+		});
+		// The dock's pixel bar: a night outline, the gold fill lit along its top.
+		pen.globalAlpha = 1;
+		if (bar) {
+			pen.fillStyle = SCENE.outline;
+			pen.fillRect(bar.x, bar.y, bar.w, bar.h);
+			const fill = Math.floor((bar.w - 2) * shown);
+			if (fill > 0) {
+				pen.fillStyle = SCENE.gold;
+				pen.fillRect(bar.x + 1, bar.y + 1, fill, bar.h - 2);
+				pen.fillStyle = SCENE.goldLight;
+				pen.fillRect(bar.x + 1, bar.y + 1, fill, 1);
+			}
+		}
+	}
+
+	function step(seconds) {
+		clock += seconds;
+		shown += (target - shown) * Math.min(1, seconds * (still ? 60 : 5));
+		windows.forEach(function (pane, index) {
+			if (litAt[index] < 0 && shown >= (index + 1) / (windows.length + 1)) {
+				litAt[index] = clock;
+			}
+		});
+		if (still) {
+			return;
+		}
+		if (SCENE.summit && Math.random() < seconds * 5 && embers.length < 14) {
+			embers.push({x: SCENE.summit[0] + (Math.random() - 0.5) * 8, y: SCENE.summit[1], vx: -2 - Math.random() * 5, vy: -9 - Math.random() * 7, age: 0, life: 1.6 + Math.random() * 1.6});
+		}
+		nextPuff -= seconds;
+		if (nextPuff <= 0 && SCENE.chimneys) {
+			SCENE.chimneys.forEach(function (top) {
+				puffs.push({x: top[0] + (Math.random() - 0.5) * 2, y: top[1], age: 0, life: 4 + Math.random() * 2});
+			});
+			nextPuff = 1.1;
+		}
+		[embers, puffs].forEach(function (list) {
+			for (let i = list.length - 1; i >= 0; i--) {
+				const bit = list[i];
+				bit.age += seconds;
+				if (bit.vx !== undefined) {
+					bit.x += bit.vx * seconds;
+					bit.y += bit.vy * seconds;
+					bit.vx -= 1.5 * seconds;
+				} else {
+					bit.x -= 2.5 * seconds;
+					bit.y -= 5 * seconds;
+				}
+				if (bit.age >= bit.life) {
+					list.splice(i, 1);
+				}
+			}
+		});
+	}
+
+	function frame(now) {
+		if (gone) {
+			return;
+		}
+		step(Math.min(0.05, (now - last) / 1000));
+		last = now;
+		draw();
+		requestAnimationFrame(frame);
+	}
+	requestAnimationFrame(frame);
+
+	// The page leaves as the title rises out of the same picture under it.
+	function leave() {
+		if (gone || status.classList.contains('leaving')) {
+			return;
+		}
+		target = 1;
+		status.classList.add('leaving');
+		setTimeout(function () {
+			gone = true;
+			status.remove();
+		}, still ? 0 : 450);
+	}
+	window.pixelheimShown = leave;
+
+	return {
+		progress: function (share) {
+			target = Math.max(target, Math.min(1, share));
+		},
+		// The engine runs: everything has arrived; the game builds its first
+		// screen and says so. Should it never, the page goes anyway.
+		started: function () {
+			target = 1;
+			setTimeout(leave, 10000);
+		},
+		// Something went wrong: the notice shows over the night, and the
+		// page stays.
+		fail: function () {
+			gone = true;
+			status.style.pointerEvents = 'auto';
+		},
+	};
+}());
+		</script>
+		<script src="$GODOT_URL"></script>
+		<script>
+const GODOT_CONFIG = $GODOT_CONFIG;
+const GODOT_THREADS_ENABLED = $GODOT_THREADS_ENABLED;
+const engine = new Engine(GODOT_CONFIG);
+
+(function () {
+	const statusNotice = document.getElementById('status-notice');
+
+	function setStatusNotice(text) {
+		while (statusNotice.lastChild) {
+			statusNotice.removeChild(statusNotice.lastChild);
+		}
+		const lines = text.split('\n');
+		lines.forEach((line) => {
+			statusNotice.appendChild(document.createTextNode(line));
+			statusNotice.appendChild(document.createElement('br'));
+		});
+	}
+
+	function displayFailureNotice(err) {
+		console.error(err);
+		if (err instanceof Error) {
+			setStatusNotice(err.message);
+		} else if (typeof err === 'string') {
+			setStatusNotice(err);
+		} else {
+			setStatusNotice('An unknown error occurred.');
+		}
+		statusNotice.style.display = 'block';
+		loading.fail();
+	}
+
+	const missing = Engine.getMissingFeatures({
+		threads: GODOT_THREADS_ENABLED,
+	});
+
+	if (missing.length !== 0) {
+		if (GODOT_CONFIG['serviceWorker'] && GODOT_CONFIG['ensureCrossOriginIsolationHeaders'] && 'serviceWorker' in navigator) {
+			let serviceWorkerRegistrationPromise;
+			try {
+				serviceWorkerRegistrationPromise = navigator.serviceWorker.getRegistration();
+			} catch (err) {
+				serviceWorkerRegistrationPromise = Promise.reject(new Error('Service worker registration failed.'));
+			}
+			// There's a chance that installing the service worker would fix the issue
+			Promise.race([
+				serviceWorkerRegistrationPromise.then((registration) => {
+					if (registration != null) {
+						return Promise.reject(new Error('Service worker already exists.'));
+					}
+					return registration;
+				}).then(() => engine.installServiceWorker()),
+				// For some reason, `getRegistration()` can stall
+				new Promise((resolve) => {
+					setTimeout(() => resolve(), 2000);
+				}),
+			]).then(() => {
+				// Reload if there was no error.
+				window.location.reload();
+			}).catch((err) => {
+				console.error('Error while registering service worker:', err);
+			});
+		} else {
+			// Display the message as usual
+			const missingMsg = 'Error\nThe following features required to run Godot projects on the Web are missing:\n';
+			displayFailureNotice(missingMsg + missing.join('\n'));
+		}
+	} else {
+		engine.startGame({
+			'onProgress': function (current, total) {
+				if (current > 0 && total > 0) {
+					loading.progress(current / total);
+				}
+			},
+		}).then(() => {
+			loading.started();
+		}, displayFailureNotice);
+	}
+}());
+		</script>
+	</body>
+</html>

@@ -109,6 +109,7 @@ town field title: shaders/*
 gathering: scripts/state/gathering.gd
 save: test/fixtures/* scripts/saves_screen.gd scripts/state/save_codec.gd scripts/state/save_slots.gd scripts/state/web_import.gd scripts/state/hero_state.gd
 title: scripts/title_scene.gd scripts/title_screen.gd scripts/create_screen.gd scripts/changelog_screen.gd assets/data/changelog.json assets/*.png
+title: web/*
 screen: scripts/world_hud.gd scripts/hud_dock.gd scripts/screen.gd scripts/ui_style.gd scripts/keycap.gd scripts/controls.gd scripts/touch.gd scripts/touch_controls.gd scripts/inventory_screen.gd scripts/stats_screen.gd scripts/codex_screen.gd scripts/options_screen.gd scripts/pause_screen.gd scripts/state/game_settings.gd
 screen lang: assets/fonts/* scripts/ink.gd scripts/layout.gd
 town combat screen quest: scripts/marks.gd

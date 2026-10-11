@@ -237,13 +237,26 @@ most of a slow frame).
 
 ### Loading
 
-While the game loads there is nothing but the title's night sky colour
-(`#080c28`, `boot_splash/bg_color` with no picture) and, on the web, a quiet
-thin bar in the middle of the page (`html/head_include` in
-`export_presets.cfg`); the tab and the window are titled just "Pixelheim".
-No words, so nothing shows in English before the title (PIX-295: the old
-title's picture, with its English tagline, outlived the title). The title
-then rises out of that colour.
+While the game loads it shows the title's night (PIX-296): `assets/splash.png`,
+drawn pixel by pixel by `tools/splash.py` (no pack art, so it lives in the
+repo): the dithered sky, the moon, the Ashen Mountain smoking, the pine
+hills, the lake, the village asleep with its windows lit, and PIXELHEIM
+exactly where the title draws it. It is the desktop app's boot splash
+(`boot_splash/image`, unsmoothed, in black bars on a window of another shape
+like the game's canvas) and the web page's picture: the web export uses the
+game's own shell, `web/shell.html`, where the picture shows from the first
+instant and comes alive while the build downloads (stars twinkling, embers
+off the summit, smoke from the chimneys) as the village's windows light one
+by one, left to right, with the dock's pixel bar where the title's menu will
+rise; reduced motion keeps only the progress. No words but the logo, so
+nothing shows in English before the title (PIX-295), and the tab and the
+window are titled just "Pixelheim". The game tells the page when its first
+screen is up (`window.pixelheimShown`, from `world.gd`), and a launch's
+title rises out of the same picture, laid under the name so the name holds
+still; titles after it (back from the saves) rise out of the night's colour.
+`python3 godot/tools/splash.py` redraws the picture and writes its live
+points (the twinkling stars, the windows, the chimneys) into the shell;
+`--check` says when either is stale.
 
 ### Icon
 
