@@ -2685,6 +2685,10 @@ msgid "Dropping a piece of gear or a whole stack asks for the same key again, an
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Dungeon torches hang on the wall with a soft glow, instead of sitting in a square hole cut into it"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Dungeons and caves are dark and torchlit, and the Night of Ash glows red; damage numbers, prompts, health bars and danger marks stay bright in the dark"
 msgstr ""
 
@@ -3186,6 +3190,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "From the Ashes"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Frost creeps over the stair down to the ice cave in Liane's room"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5041,6 +5049,10 @@ msgid "The Barred Gate"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Blackiron Shafts open as a real mine: timber posts, an ore cart, rails down the road and a winch at the pithead"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Blackiron shafts now go three floors down: the upper shafts with Bram's humming cheese, the west gallery where Pell's canary is waiting (and cross), and the Black Seam, where the Seam Warden sits on the last ingot"
 msgstr ""
 
@@ -5198,6 +5210,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The Satchel"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The Sea Cave is a rock arch at the foot of the cliff, the Ashen Mountain's gate a gatehouse with towers, and the Kings' Vault a dark doorway between two stone kings"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5882,6 +5898,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Water comes alive: it swells with light, glints here and there, foam laps along every shore, and what stands on a bank is mirrored in it"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Ways In"
 msgstr ""
 
 #: assets/data/changelog.json

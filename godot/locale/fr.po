@@ -2685,6 +2685,10 @@ msgid "Dropping a piece of gear or a whole stack asks for the same key again, an
 msgstr "Jeter une pièce d'équipement ou tout un lot demande la même touche une seconde fois, et une touche qui a déjà un rôle (jeter, une compétence, Esc) ne peut pas être donnée à une autre action"
 
 #: assets/data/changelog.json
+msgid "Dungeon torches hang on the wall with a soft glow, instead of sitting in a square hole cut into it"
+msgstr "Les torches des donjons sont accrochées au mur avec un doux halo, au lieu de loger dans un trou carré taillé dedans"
+
+#: assets/data/changelog.json
 msgid "Dungeons and caves are dark and torchlit, and the Night of Ash glows red; damage numbers, prompts, health bars and danger marks stay bright in the dark"
 msgstr "Les donjons et les grottes sont sombres et éclairés à la torche, et la Nuit des Cendres rougeoie ; les dégâts, les invites, les barres de vie et les zones de danger restent bien lisibles dans le noir"
 
@@ -3187,6 +3191,10 @@ msgstr "Plâtre frais"
 #: assets/data/changelog.json
 msgid "From the Ashes"
 msgstr "Des cendres"
+
+#: assets/data/changelog.json
+msgid "Frost creeps over the stair down to the ice cave in Liane's room"
+msgstr "Le givre gagne l'escalier qui descend à la grotte de glace, dans la chambre de Liane"
 
 #: assets/data/changelog.json
 msgid "GATHERING TEACHES FORAGING: every patch you pick trains it, and a better forager often picks two"
@@ -5041,6 +5049,10 @@ msgid "The Barred Gate"
 msgstr "La Porte barrée"
 
 #: assets/data/changelog.json
+msgid "The Blackiron Shafts open as a real mine: timber posts, an ore cart, rails down the road and a winch at the pithead"
+msgstr "Les puits de Fernoir s'ouvrent comme une vraie mine : poutres de bois, wagonnet de minerai, rails le long de la route et treuil au sommet du puits"
+
+#: assets/data/changelog.json
 msgid "The Blackiron shafts now go three floors down: the upper shafts with Bram's humming cheese, the west gallery where Pell's canary is waiting (and cross), and the Black Seam, where the Seam Warden sits on the last ingot"
 msgstr "Les puits de Fernoir descendent désormais sur trois étages : les puits du haut avec le fromage qui fredonne de Bram, la Galerie ouest où attend le canari de Pell (furieux), et le Filon noir, où le Gardien du Filon trône sur le dernier lingot"
 
@@ -5199,6 +5211,10 @@ msgstr "Le Mécène"
 #: assets/data/changelog.json
 msgid "The Satchel"
 msgstr "La sacoche"
+
+#: assets/data/changelog.json
+msgid "The Sea Cave is a rock arch at the foot of the cliff, the Ashen Mountain's gate a gatehouse with towers, and the Kings' Vault a dark doorway between two stone kings"
+msgstr "La Grotte marine est une arche de roche au pied de la falaise, la porte de la Montagne des Cendres un corps de garde à tours, et le Caveau des rois une porte sombre entre deux rois de pierre"
 
 #: assets/data/changelog.json
 msgid "The Skills panel grew the full graph: nodes, ascension edges, your walked path aglow - and any missed choice can be claimed right there"
@@ -5883,6 +5899,10 @@ msgstr "Avis de recherche"
 #: assets/data/changelog.json
 msgid "Water comes alive: it swells with light, glints here and there, foam laps along every shore, and what stands on a bank is mirrored in it"
 msgstr "L'eau prend vie : elle ondule de lumière, scintille çà et là, l'écume vient lécher chaque rive, et ce qui se dresse sur la berge s'y reflète"
+
+#: assets/data/changelog.json
+msgid "Ways In"
+msgstr "Les entrées"
 
 #: assets/data/changelog.json
 msgid "Ways On"
