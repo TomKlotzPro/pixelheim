@@ -3301,6 +3301,10 @@ msgid "Greater potions, phoenix draughts and elixirs heal a share of your health
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Green Fields"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Green Thumbs"
 msgstr ""
 
@@ -3757,6 +3761,10 @@ msgid "Materials weigh nothing and sell for pocket change - brew, don't hoard"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Meadows have patches of lusher and drier grass, tufts, clover, flowers and pebbles, and the long grass ripples when the wind gusts"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Mend the river bridge at the board on the square once Wenna has her letter"
 msgstr ""
 
@@ -3934,6 +3942,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "No more half bridge south of the village"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "No more yellow dither bands where a region meets a road: the ash fields' roads, the cliff feet and the Frostgate's road have clean edges"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4662,6 +4674,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Smithing shaves the Forge's prices and, at level 5, unlocks the +8 masterwork cap"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Snow lies in drifts with blue shadows, and the Mirefen is murk, sedge and puddles instead of camouflage dots"
 msgstr ""
 
 #: assets/data/changelog.json

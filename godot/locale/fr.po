@@ -3301,6 +3301,10 @@ msgid "Greater potions, phoenix draughts and elixirs heal a share of your health
 msgstr "Les grandes potions de soin, les breuvages du phénix et les élixirs soignent une part de votre santé quand c'est plus que leur valeur, et le trésor d'une nouvelle profondeur record contient une meilleure potion à mesure que vous descendez"
 
 #: assets/data/changelog.json
+msgid "Green Fields"
+msgstr "Prés verts"
+
+#: assets/data/changelog.json
 msgid "Green Thumbs"
 msgstr "La main verte"
 
@@ -3757,6 +3761,10 @@ msgid "Materials weigh nothing and sell for pocket change - brew, don't hoard"
 msgstr "Les matériaux ne pèsent rien et se vendent pour trois sous - concoctez, n'amassez pas"
 
 #: assets/data/changelog.json
+msgid "Meadows have patches of lusher and drier grass, tufts, clover, flowers and pebbles, and the long grass ripples when the wind gusts"
+msgstr "Les prés ont des taches d'herbe plus grasse ou plus sèche, des touffes, du trèfle, des fleurs et des cailloux, et les hautes herbes ondulent sous les rafales"
+
+#: assets/data/changelog.json
 msgid "Mend the river bridge at the board on the square once Wenna has her letter"
 msgstr "Réparez le pont de la rivière au tableau d'avis de la place une fois que Wenna a reçu sa lettre"
 
@@ -3935,6 +3943,10 @@ msgstr "Plus de halo autour du héros aux rangs supérieurs : vous avez la mê
 #: assets/data/changelog.json
 msgid "No more half bridge south of the village"
 msgstr "Plus de demi-pont au sud du village"
+
+#: assets/data/changelog.json
+msgid "No more yellow dither bands where a region meets a road: the ash fields' roads, the cliff feet and the Frostgate's road have clean edges"
+msgstr "Fini les bandes jaunes tramées là où une région rencontre une route : les routes des champs de cendre, le pied des falaises et la route de la Porte-Givre ont des bords nets"
 
 #: assets/data/changelog.json
 msgid "No teleporting over-encumbered. Lighten the pack."
@@ -4663,6 +4675,10 @@ msgstr "Petites choses réparées : la création du héros répond de nouveau 
 #: assets/data/changelog.json
 msgid "Smithing shaves the Forge's prices and, at level 5, unlocks the +8 masterwork cap"
 msgstr "Le métier de Forge fait baisser les prix de la forge et, au niveau 5, débloque le plafond de chef-d'œuvre à +8"
+
+#: assets/data/changelog.json
+msgid "Snow lies in drifts with blue shadows, and the Mirefen is murk, sedge and puddles instead of camouflage dots"
+msgstr "La neige s'amoncelle en congères aux ombres bleues, et les Marais de Fange sont faits de vase, de laîches et de flaques au lieu de points de camouflage"
 
 #: assets/data/changelog.json
 msgid "Soft Edges"
