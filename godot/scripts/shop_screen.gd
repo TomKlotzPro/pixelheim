@@ -7,6 +7,9 @@ extends Screen
 ## closes; everything is clickable too. Pauses the world while open.
 
 const LIST_SIZE := Vector2(700, 400)
+## The most of a row a tag or a price takes before it wraps, so the name
+## beside it keeps room.
+const NOTE_SHARE := 0.4
 
 var shop_id := ""
 var tabs: Array[String] = []
@@ -237,7 +240,7 @@ func _build_rows() -> Array[Dictionary]:
 				var maxed: bool = past and not Economy.masterwork_open(smithing, instance["bonus"])
 				var cost := GameState.trade.forge_price(instance, smithing, past)
 				out.append({
-					"label": _gear_label(instance) + (Text.t("  (worn)") if pack.is_equipped(uid) else ""), "icon": instance["itemId"],
+					"label": _gear_label(instance), "tag": Text.t("  (worn)").strip_edges() if pack.is_equipped(uid) else "", "icon": instance["itemId"],
 					"price": Text.t("max") if maxed else (Text.t("%dg + gem") % cost if past else Text.coins(cost)),
 					"detail": _describe(instance["itemId"], instance), "verb": "Temper +1",
 					"enabled": not maxed and pack.gold >= cost,
@@ -251,7 +254,7 @@ func _build_rows() -> Array[Dictionary]:
 				var uid: String = instance["uid"]
 				var cost := Economy.quench_cost(instance)
 				out.append({
-					"label": _gear_label(instance) + (Text.t("  (worn)") if pack.is_equipped(uid) else ""), "icon": instance["itemId"],
+					"label": _gear_label(instance), "tag": Text.t("  (worn)").strip_edges() if pack.is_equipped(uid) else "", "icon": instance["itemId"],
 					"price": Text.t("%dg + gem") % cost,
 					"detail": _describe(instance["itemId"], instance) + "\n\n" + Text.t("Quenching adds +1 %s, for gold and a gem; each time costs half again.") % Text.t(Skills.ABBR[Economy.quench_stat(instance)]),
 					"verb": "Quench",
@@ -281,7 +284,7 @@ func _build_rows() -> Array[Dictionary]:
 				var uid: String = instance["uid"]
 				var cost := Economy.reforge_cost(instance)
 				out.append({
-					"label": _gear_label(instance) + (Text.t("  (worn)") if pack.is_equipped(uid) else ""), "icon": instance["itemId"],
+					"label": _gear_label(instance), "tag": Text.t("  (worn)").strip_edges() if pack.is_equipped(uid) else "", "icon": instance["itemId"],
 					"price": Text.coins(cost), "detail": _describe(instance["itemId"], instance), "verb": "Reforge",
 					"enabled": pack.gold >= cost,
 					"action": func() -> void:
@@ -364,13 +367,20 @@ func _row(index: int) -> Control:
 		icon.modulate.a = 1.0 if row["enabled"] else 0.55
 		line.add_child(icon)
 	var color := UiStyle.INK if row["enabled"] else UiStyle.FADED
+	# The name gives way to an ellipsis (the side panel reads it whole), the
+	# tag and the price keep their words, wrapping when they'd take more than
+	# a share of the row: a deep piece's French name with its price ran the
+	# Forge's rows 200 px past the page (PIX-298).
 	var name := UiStyle.label(row["label"], 16, color)
 	name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	line.add_child(name)
-	# A signature item's mark (PIX-159), before its price.
+	line.add_child(Layout.ellipsis(name))
+	# A signature item's mark (PIX-159) or a piece worn, before its price.
+	var notes: Array[Label] = [UiStyle.label(row["price"], 16, UiStyle.LAMP if row["enabled"] else UiStyle.FADED)]
 	if row.get("tag", "") != "":
-		line.add_child(UiStyle.label(row["tag"], 16, UiStyle.FADED))
-	line.add_child(UiStyle.label(row["price"], 16, UiStyle.LAMP if row["enabled"] else UiStyle.FADED))
+		notes.push_front(UiStyle.label(row["tag"], 16, UiStyle.FADED))
+	for note in notes:
+		note.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		line.add_child(Layout.narrowed(note, NOTE_SHARE * LIST_SIZE.x))
 	return panel
 
 

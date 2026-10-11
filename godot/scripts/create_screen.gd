@@ -131,10 +131,12 @@ func _night_card() -> PanelContainer:
 	var cap := UiStyle.keys("{key:inventory}" if Controls.pad else "Tab")
 	cap.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	row.add_child(cap)
-	# What it is, then what skipping it means: a line each.
+	# What it is, then what skipping it means: a line each, as wide as the
+	# column less the card's frame (14 a side: 24 ran the card 4 px past
+	# the column, PIX-298).
 	lines.add_child(Layout.wrapped(UiStyle.label(
 		"A guided first night in the burning village.\nSkip it to start in town by day.", 14, UiStyle.FADED
-	), RIGHT.size.x - 24))
+	), RIGHT.size.x - card.get_theme_stylebox("panel").get_minimum_size().x))
 	return card
 
 

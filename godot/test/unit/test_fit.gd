@@ -13,6 +13,10 @@ extends GutTest
 const GameStateScript := preload("res://scripts/state/game_state.gd")
 const SavesScreen := preload("res://scripts/saves_screen.gd")
 const MapScreen := preload("res://scripts/map_screen.gd")
+const InventoryScreen := preload("res://scripts/inventory_screen.gd")
+const ShopScreen := preload("res://scripts/shop_screen.gd")
+const TownHallScreen := preload("res://scripts/town_hall_screen.gd")
+const HomeScreen := preload("res://scripts/home_screen.gd")
 ## Three heroes with the longest lines a slot card shows (`--slots` in the
 ## harness reads them too).
 const FULL_SLOTS := "res://test/fixtures/slots"
@@ -167,6 +171,59 @@ func test_every_screen_fits_every_view() -> void:
 		"changelog", "bank", "town_hall", "bounty", "home",
 	]
 	var out := await _fits(kinds)
+	assert_eq(out.size(), 0, "\n".join(out))
+
+
+## PIX-298: Tom's level-15 mage in Frostweave, with the longest names a
+## piece can carry (deep-forged, two affixes: "Grande hache d'acier cendré
+## des forges profondes de perspicacité") worn: no row is wider than its
+## list in the pack (every tab), at the smithy's counter (every tab), the
+## town's ledger with holdings and every fixture of the house, in either
+## language. The pack's rows ran 75 px past its page in French, "E retirer"
+## under the scrollbar, the Forge's 200 px.
+func test_long_names_keep_to_their_lists() -> void:
+	var saved: Dictionary = SaveCodec.parse_json(FileAccess.get_file_as_string("res://test/fixtures/frostweave_mage.json"))["state"]
+	GameState.pack.gear.assign(saved["gear"])
+	GameState.pack.equipped = saved["equipped"].duplicate()
+	GameState.pack.items.merge(saved["inventory"])
+	for trophy: String in Town.trophy_buffs():
+		GameState.pack.items[trophy] = 1
+	GameState.hero.jobs["smithing"]["level"] = 8
+	GameState.settlement.properties.assign(["town_shop", "town_smith"])
+	var screens: Array[Array] = []
+	for index in InventoryScreen.TABS.size():
+		screens.append(["pack " + String(InventoryScreen.TABS[index][0]), func() -> Screen:
+			var pack: Screen = InventoryScreen.new()
+			pack.tab = index
+			return pack])
+	for tab: String in ["Buy", "Sell", "Forge", "Salvage", "Reforge", "Quench"]:
+		screens.append(["smithy " + tab, func() -> Screen:
+			GameState.trade.stall_shop = Economy.shop_at("town_smith")
+			var counter: Screen = ShopScreen.new()
+			counter.start_tab = tab
+			return counter])
+	screens.append(["town hall", func() -> Screen: return TownHallScreen.new()])
+	for mode: String in ["storage", "workbench", "trophies", "nook", "furniture"]:
+		screens.append(["house " + mode, func() -> Screen:
+			var fixture: Screen = HomeScreen.new()
+			fixture.mode = mode
+			return fixture])
+	var out: Array[String] = []
+	for language in LANGUAGES:
+		Text.apply(language)
+		for entry: Array in screens:
+			var view := SubViewport.new()
+			view.size = VIEWS[0]
+			view.disable_3d = true
+			add_child(view)
+			var screen: Screen = entry[1].call()
+			view.add_child(screen)
+			await wait_process_frames(3)
+			for line in Layout.overflows(view, Vector2(VIEWS[0])):
+				out.append("%s %s: %s" % [entry[0], language, line])
+			screen.close()
+			view.queue_free()
+			await get_tree().process_frame
 	assert_eq(out.size(), 0, "\n".join(out))
 
 
