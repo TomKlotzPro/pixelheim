@@ -232,6 +232,16 @@ woodpass | --map overworld --at 93,33 --walk r,r,r --wait 0.4 --lang en | map=de
 # The Blackiron mines and their shafts (PIX-167).
 mines | --map overworld --at 2,20 --walk l,l,l --wait 0.4 | map=blackiron | travel
 shafts | --map blackiron --at 26,5 --walk u --wait 0.4 | map=shafts | travel
+# Each dungeon's way in drawn as an entrance in its setting (PIX-290): the
+# shafts' mine mouth in the cliff with its rails and winch, the sea cave's
+# arch at the cliff's foot by the beach, the Ashen Mountain's gatehouse in
+# the rock from both its sides, the Kings' Vault's black iron door, and the
+# frost round the ice cave's stair in Liane's floor.
+mouth-shafts | --map blackiron --at 26,6 | map=blackiron entrance=mine | travel
+mouth-seacave | --map saltmere --at 6,25 | map=saltmere entrance=sea_cave | travel
+mouth-gate | --map overworld --at 48,9 | map=overworld entrance=mountain_gate | travel story
+mouth-road | --map mountain_road --at 13,5 | map=mountain_road entrance=mountain_gate,vault_door | travel story
+mouth-ice | --map observatory --at 12,8 | map=observatory entrance=ice_stair | rooms
 # The Blackiron shafts in three floors (PIX-255, PIX-253 step 5): down the
 # upper shafts' stair (it asks; going down keeps the dark) to the west
 # gallery, down past Pell's canary to the Black Seam, and back up (it
@@ -413,6 +423,12 @@ vault-open | --map mountain_road --cleared 10 --at 12,4 --walk u,u --wait 0.6 | 
 vault-word | --map mountain_road --story vault_door --wait 1.5 | map=mountain_road scene=vault_door | story
 vault-down | --map vault_1 --at 61,9 --walk r --keys s,e --wait 0.4 | map=vault_2 cell=\(3, 9\) floor=2/5 | dungeon travel
 vault-hoard | --map vault_5 clear --wait 0.6 | map=vault_5 floor=5/5 fell=1 shortcut=open wayout=\(46, 7\) | dungeon combat
+# Torches hang on the walls' faces, the wall running on through them, on
+# the handcrafted floors and the planned ones, the Kings' Vault's too
+# (PIX-291).
+torches-shafts | --map shafts | map=shafts torches=12 | dungeon
+torches-glass | --map icecave_glass | map=icecave_glass torches=6 | dungeon
+torches-vault | --map vault_1 | map=vault_1 torches=\d+ | dungeon
 oldsave-deep | --load res://test/fixtures/old_deep.json --wait 0.3 | map=town feats=deep_10 | save story travel
 feats-old | --load res://test/fixtures/old_deep.json journal --tab feats --wait 0.3 | open=journal_screen feats=deep_10 | screen quest save
 # What grows on the ground moves with the days (PIX-250): two days, two

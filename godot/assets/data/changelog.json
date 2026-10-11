@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.228.0",
+      "date": "2026-10-11",
+      "codename": "Ways In",
+      "notes": [
+        "The Blackiron Shafts open as a real mine: timber posts, an ore cart, rails down the road and a winch at the pithead",
+        "The Sea Cave is a rock arch at the foot of the cliff, the Ashen Mountain's gate a gatehouse with towers, and the Kings' Vault a dark doorway between two stone kings",
+        "Frost creeps over the stair down to the ice cave in Liane's room",
+        "Dungeon torches hang on the wall with a soft glow, instead of sitting in a square hole cut into it"
+      ]
+    },
+    {
       "version": "0.227.0",
       "date": "2026-10-11",
       "codename": "Clear Signs",

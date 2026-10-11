@@ -50,6 +50,7 @@ const TABLE := [
 	{"field": "delivered", "says": "Maren's letters delivered, once any is out (PIX-253)"},
 	{"field": "dest", "says": "the waypoint the map's list has chosen, while the map is open (PIX-241)"},
 	{"field": "ending", "says": "the ending this hero chose for Morvax once it has played: home or stay (an old save's throne: destroy or rest) (PIX-253 step 10)"},
+	{"field": "entrance", "says": "the ways in drawn as entrances in their setting on this map, by look: mine, sea_cave, mountain_gate, vault_door, ice_stair (PIX-290)"},
 	{"field": "feats", "says": "the feats done, by id, once any is (PIX-257)"},
 	{"field": "fell", "says": "bosses fallen, when one fell (PIX-232)"},
 	{"field": "firstnight", "says": "hero creation's first night: play or skip (PIX-228)"},
@@ -84,6 +85,7 @@ const TABLE := [
 	{"field": "story", "says": "the main story's hollow diamond on the map's page, while something else is followed (PIX-253)"},
 	{"field": "tab", "says": "with station: the tab the counter opened on (PIX-234)"},
 	{"field": "top", "says": "the screen drawn on top when one is opened over another (the title's Options); two sharing the top layer read a=b"},
+	{"field": "torches", "says": "on a dungeon floor: its torches on the walls, and N loose for any not hung on a wall's face (PIX-291)"},
 	{"field": "tracked", "says": "the quest or bounty followed, while the journal is open or one is (PIX-239)"},
 	{"field": "wayout", "says": "on a dungeon's bottom floor: its ways straight out to its way in, by cell, as they opened - the door, then one where its boss fell - or none (PIX-292)"},
 ]
@@ -339,6 +341,17 @@ func field_ending() -> String:
 	return Story.ending_of(GameState.progression.story_seen)
 
 
+func field_entrance() -> String:
+	if world.view == null:
+		return ""
+	var looks: PackedStringArray = []
+	for entrance: Dictionary in world.view.entrances:
+		looks.append(entrance["look"])
+	for _stair: Vector2i in EntranceArt.frosted_stairs(world.map):
+		looks.append("ice_stair")
+	return ",".join(looks)
+
+
 func field_feats() -> String:
 	return ",".join(GameState.progression.deeds)
 
@@ -553,6 +566,14 @@ func _screens_in(node: Node, out: Array[CanvasLayer]) -> void:
 		if child is CanvasLayer and child.get_script() != null and child.visible and String(child.get_script().resource_path).ends_with("_screen.gd"):
 			out.append(child)
 		_screens_in(child, out)
+
+
+func field_torches() -> String:
+	if world.view == null or world.map.style != "cave":
+		return ""
+	var torches: Array[Vector2i] = world.view.wall_torches
+	var loose := torches.filter(func(cell: Vector2i) -> bool: return not PunyDungeon.on_face(world.map.grid, cell)).size()
+	return str(torches.size()) + (" %d loose" % loose if loose > 0 else "")
 
 
 func field_tracked() -> String:
