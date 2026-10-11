@@ -2,9 +2,9 @@ extends Node
 ## The one game state (autoload `GameState`): typed sections for the hero,
 ## the pack, the settlement, progression and the explored world. Mutations
 ## go through methods that keep the save's invariants; signals tell the world
-## and the screens. Persistence is
-## write-behind: changes mark the state dirty, the autosave flushes it within
-## AUTOSAVE_SECONDS, and moments that matter (map change, loot) save at once.
+## and the screens. Persistence is write-behind: changes mark the state
+## dirty, the autosave flushes it within AUTOSAVE_SECONDS, and moments that
+## matter (map change, loot) save at once.
 ## The methods live in seven modules, one per part of the game (PIX-261):
 ## `trade`, `holdings`, `household`, `questing`, `spoils`, `upkeep` and
 ## `training`, and callers reach them there (`GameState.questing.choose()`,

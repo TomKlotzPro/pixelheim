@@ -1,8 +1,8 @@
 class_name SaveCodec
-## The save format (schema v4, the one the game's first, web edition wrote):
-## the version envelope, the migration chain every historical save replays,
-## the rebase onto current defaults, and PXH1 save codes. It keeps that
-## format to the byte, so every save ever written still loads.
+## The save format, schema v4: first written by the game's web edition and
+## kept to the byte since, so every save ever written still loads. The
+## version envelope, the migration chain every historical save replays, the
+## rebase onto current defaults, and PXH1 save codes.
 
 const SAVE_VERSION := 4
 const CODE_PREFIX := "PXH1."
