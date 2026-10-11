@@ -60,10 +60,29 @@ const DRIFTWOOD := 703
 const BLACK_IRON := Color(0.32, 0.31, 0.38)
 ## The dungeons whose stair down from a room breathes frost up it.
 const FROSTED := ["icecave"]
-## How far the frost creeps from such a stair, in cells (thinning over the
-## outer half), and how far the cold's light reaches, in pixels.
-const FROST_REACH := 2.6
-const FROST_GLOW := 56.0
+## How far the frost creeps from such a stair, in cells, and how far the
+## cold's light reaches, in pixels, and how strong it is at full dark.
+const FROST_REACH := 3.0
+const FROST_GLOW := 64.0
+const FROST_ENERGY := 0.36
+## Where the frost's rim wanders (PIX-317), shares of its reach: nearest
+## and farthest. In from the carpet's sides round the stair and out past
+## its corners, so the frost never follows the carpet's square.
+const FROST_RIM := Vector2(0.5, 1.1)
+## The frost's colours (PIX-317), the shader's in the screen's colours: the
+## rime, its deeper blue in the grain and the shade, snow where it lies
+## thick and in a crystal's heart, the stair's steps and the dark down it.
+## Cold enough to stay blue under the room's warm light (Lights.INDOOR_DAY,
+## a candle at night), lit as `on_frost` says.
+const FROST_TONES := {
+	"rime": Color(0.74, 0.86, 1.0),
+	"rime_deep": Color(0.5, 0.64, 0.88),
+	"snow": Color(0.9, 0.96, 1.0),
+	"steps": Color(0.6, 0.72, 0.9),
+	"depths": Color(0.06, 0.08, 0.2),
+}
+## How sharply on_frost tells a warm light from a cold one.
+const WARM_SHARPNESS := 8.0
 
 
 ## The look of `way` ("" for none): a cave mouth, or a gate in the rock,
@@ -168,6 +187,17 @@ static func _vault_door(at: Vector2i, barred: bool, pieces: Array[Dictionary]) -
 		pieces.append(_piece(at, "dungeon", PunyDungeon.GRILLE, Vector2.ZERO, "iron"))
 	pieces.append(_piece(at + Vector2i.LEFT, "dungeon", PunyDungeon.STATUE, Vector2(3, 0)))
 	pieces.append(_piece(at + Vector2i.RIGHT, "dungeon", PunyDungeon.STATUE, Vector2(-3, 0)))
+
+
+## How `light` falls on the frost (PIX-317, shaders/stair_frost.gdshader's
+## light(), which does the same): a warm light - a candle, the sun through
+## the window - comes back white, as bright but not as warm, so the frost
+## stays cold under a lamplit room's light (it went pink); a cold one, the
+## stair's own, stays itself.
+static func on_frost(light: Color) -> Color:
+	var grey := light.r * 0.299 + light.g * 0.587 + light.b * 0.114
+	var warm := clampf((grey - light.b) / maxf(grey, 0.001) * WARM_SHARPNESS, 0.0, 1.0)
+	return light.lerp(Color(grey, grey, grey, light.a), warm)
 
 
 ## The stairs down from a room into a frosted dungeon (FROSTED): the ice

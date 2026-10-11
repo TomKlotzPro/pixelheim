@@ -994,18 +994,26 @@ func _day_windows(root: Node2D) -> void:
 
 ## The ice cave's stair down through Liane's floor (PIX-290, EntranceArt):
 ## frost creeps out over the boards, the carpet and the stair
-## (shaders/stair_frost.gdshader), and the cold's pale light comes up it.
-## The material, or null in a room with no such stair.
+## (shaders/stair_frost.gdshader: rime and crystals in its blues, cold
+## under the room's warm light, PIX-317), and the cold's pale light comes
+## up it, keeping the way down seen at night. The material, or null in a
+## room with no such stair.
 func _stair_frost(data: MapData, root: Node2D) -> ShaderMaterial:
 	var stairs := EntranceArt.frosted_stairs(data)
 	if stairs.is_empty():
 		return null
 	var stair := stairs[0]
-	root.add_child(Lights.make(center(stair), EntranceArt.FROST_GLOW, Lights.ICE, Lights.ICE_ENERGY))
+	root.add_child(Lights.make(center(stair), EntranceArt.FROST_GLOW, Lights.ICE, EntranceArt.FROST_ENERGY))
 	var frost := ShaderMaterial.new()
 	frost.shader = preload("res://shaders/stair_frost.gdshader")
 	frost.set_shader_parameter("stair", center(stair) + offset)
 	frost.set_shader_parameter("reach", EntranceArt.FROST_REACH * TILE)
+	frost.set_shader_parameter("rim_range", EntranceArt.FROST_RIM)
+	frost.set_shader_parameter("stair_half", TILE / 2.0)
+	frost.set_shader_parameter("warm_sharpness", EntranceArt.WARM_SHARPNESS)
+	for tone: String in EntranceArt.FROST_TONES:
+		var color: Color = EntranceArt.FROST_TONES[tone]
+		frost.set_shader_parameter(tone, Vector3(color.r, color.g, color.b))
 	return frost
 
 
