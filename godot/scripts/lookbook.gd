@@ -174,6 +174,21 @@ const SHOTS := {
 	"frozen_lake": {"area": "dungeon", "map": "icecave_lake", "cell": Vector2i(30, 14), "time": DAY},
 	# The arrow in the sea cave's dark (PIX-284), toward its way out.
 	"cave_marks": {"area": "dungeon", "map": "seacave", "cell": Vector2i(24, 18), "time": DAY},
+	# Each dungeon as its place (PIX-310), a room and a hall: the sea cave's
+	# wet rock and pools of the sea, the shafts' rail line, timber and ore,
+	# the cellars' crypt, the ice cave's frost, the Kings' Vault's rugs,
+	# banners and gilded walls; and a planned floor's entrance, its own.
+	"sea_cave_room": {"area": "dungeon", "map": "seacave", "cell": Vector2i(20, 12), "time": DAY},
+	"sea_cave_hall": {"area": "dungeon", "map": "seacave_galleries", "cell": Vector2i(25, 9), "time": DAY},
+	"shafts_room": {"area": "dungeon", "map": "shafts_gallery", "cell": Vector2i(19, 15), "time": DAY},
+	"shafts_hall": {"area": "dungeon", "map": "shafts", "cell": Vector2i(19, 8), "time": DAY},
+	"crypt_room": {"area": "dungeon", "map": "cellars_crypt", "cell": Vector2i(17, 12), "time": DAY},
+	"crypt_hall": {"area": "dungeon", "map": "cellars", "cell": Vector2i(19, 17), "time": DAY},
+	"ice_cave_room": {"area": "dungeon", "map": "icecave", "cell": Vector2i(20, 7), "time": DAY},
+	"ice_cave_hall": {"area": "dungeon", "map": "icecave", "cell": Vector2i(19, 15), "time": DAY},
+	"vault_room": {"area": "dungeon", "map": "vault_2", "cell": Vector2i(18, 12), "time": DAY},
+	"vault_hall": {"area": "dungeon", "map": "vault_1", "cell": Vector2i(12, 11), "time": DAY},
+	"gallery_entrance": {"area": "dungeon", "map": "shafts_gallery", "time": DAY},
 	"fight": {"area": "combat", "map": "overworld", "at": "forest_1", "time": DAY, "foe": "orc"},
 	"strike": {"area": "combat", "map": "overworld", "at": "forest_1", "time": DAY, "foe": "orc", "strike": true},
 	# A foe noticing the hero on the grass west of the village (PIX-289): its

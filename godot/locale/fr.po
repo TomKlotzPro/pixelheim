@@ -2733,6 +2733,10 @@ msgid "Dungeons live in the world now: walk to the mountain gate to climb"
 msgstr "Les donjons font désormais partie du monde : marchez jusqu'à la porte de la montagne pour grimper"
 
 #: assets/data/changelog.json
+msgid "Dust drifts in the torchlight, and no two floors open in the same room any more"
+msgstr "La poussière flotte dans la lumière des torches, et deux étages ne s'ouvrent plus jamais sur la même salle"
+
+#: assets/data/changelog.json
 msgid "E moves the talk on and Esc skips to the morning; with Reduce motion the camera cuts and nothing shakes"
 msgstr "E fait avancer la discussion et Esc passe directement au matin ; avec Réduire les animations, la caméra coupe et rien ne tremble"
 
@@ -2803,6 +2807,10 @@ msgstr "Chaque chapitre s'ouvre sur un carton, « Chapitre 3 : La lettre pou
 #: assets/data/changelog.json
 msgid "Each comes with a full 12-node skill tree, its own look palette, and a proven path to the final boss - the balance sim clears the game with all seven classes"
 msgstr "Chacune arrive avec un arbre de compétences complet de 12 nœuds, sa propre palette d'apparence, et un chemin éprouvé jusqu'au boss final - la simulation d'équilibrage termine le jeu avec les sept classes"
+
+#: assets/data/changelog.json
+msgid "Each dungeon looks like its place: the Sea Cave wet rock with shallow pools and weed, the Blackiron Shafts rails, timber props and glinting ore"
+msgstr "Chaque donjon ressemble à son lieu : la Grotte marine, roche mouillée, flaques et algues ; les puits de Fernoir, rails, étais de bois et minerai qui scintille"
 
 #: assets/data/changelog.json
 msgid "Each floor down is a little harder, with something to find on each"
@@ -3143,6 +3151,10 @@ msgstr "Premières impressions"
 #: assets/data/changelog.json
 msgid "First look at the open world: walk the Ashenreach from town (beta)"
 msgstr "Premier aperçu du monde ouvert : parcourez la Marche des Cendres depuis la ville (bêta)"
+
+#: assets/data/changelog.json
+msgid "Five Halls"
+msgstr "Cinq demeures"
 
 #: assets/data/changelog.json
 msgid "Five families keep the ledger readable: Beasts, Greenskins, the Undead, Constructs, the Fireborn"
@@ -5215,6 +5227,10 @@ msgstr "La porte"
 #: assets/data/changelog.json
 msgid "The Great Expansion"
 msgstr "La Grande Expansion"
+
+#: assets/data/changelog.json
+msgid "The Greyhold Cellars have niches, cobwebs and bones, the Ice Cave frost creeping off its walls, and the Kings' Vault red rugs, banners and gold trim"
+msgstr "Les caves de Greyhold ont leurs niches, leurs toiles d'araignée et leurs os, la Grotte de glace son givre qui gagne les murs, et le Caveau des rois ses tapis rouges, ses bannières et ses dorures"
 
 #: assets/data/changelog.json
 msgid "The Greyhold cellars now go three floors down: the cells with Fenwick's locket, the garrison's crypt with Ana's father's badge, and the captain's great hall"

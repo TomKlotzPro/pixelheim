@@ -461,6 +461,16 @@ vault-hoard | --map vault_5 clear --wait 0.6 | map=vault_5 floor=5/5 fell=1 shor
 torches-shafts | --map shafts | map=shafts torches=12 | dungeon
 torches-glass | --map icecave_glass | map=icecave_glass torches=6 | dungeon
 torches-vault | --map vault_1 | map=vault_1 torches=\d+ | dungeon
+# Each dungeon dressed as its place (PIX-310): the sea cave's pools and the
+# weed at its walls' feet, the shafts' rail line and timber props, the
+# cellars' niches, cobwebs and bones, the ice cave's frost (in its stone),
+# the Kings' Vault's rugs and banners; on the planned floors too.
+look-seacave | --map seacave | map=seacave dressed=sea:water\d+,weed\d+ | dungeon
+look-galleries | --map seacave_galleries | map=seacave_galleries dressed=sea:water\d+,weed\d+ | dungeon
+look-shafts | --map shafts_gallery | map=shafts_gallery dressed=mine:.*props\d+,rail\d+ | dungeon
+look-cellars | --map cellars_crypt | map=cellars_crypt dressed=crypt:bones\d+,.*niches\d+,webs\d+ | dungeon
+look-icecave | --map icecave | map=icecave dressed=ice | dungeon
+look-vault | --map vault_3 | map=vault_3 dressed=vault:banners\d+,rugs\d+ | dungeon
 oldsave-deep | --load res://test/fixtures/old_deep.json --wait 0.3 | map=town feats=deep_10 | save story travel
 feats-old | --load res://test/fixtures/old_deep.json journal --tab feats --wait 0.3 | open=journal_screen feats=deep_10 | screen quest save
 # What grows on the ground moves with the days (PIX-250): two days, two

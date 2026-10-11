@@ -124,6 +124,10 @@ var gate_hides := {}
 var entrances: Array[Dictionary] = []
 ## A dungeon floor's torches on the wall (PIX-291), by cell.
 var wall_torches: Array[Vector2i] = []
+## How a dungeon floor is dressed as its place (DungeonLook.plan, PIX-310);
+## empty on any other map.
+var dressing := {}
+static var _motes_texture: ImageTexture
 var furniture_cells: Array[Vector2i] = []
 ## Night (PIX-149): each lamp's flame and its cold torch for the day, and
 ## the warm glows of lamps and windows; set_night shows one or the other.
@@ -177,6 +181,10 @@ const CAMP_TORCH := [16, 17, 18, 19, 20, 21, 22, 23]
 ## burns this far from its cell's middle (over the wall's top).
 const TORCH_GLOW := [13, 0.28]
 const TORCH_FLAME := Vector2(0, -3)
+## The pool of a wall torch's light its dust drifts in (PIX-310), in pixels,
+## from its flame down onto the floor before it, centred this far below it.
+const TORCH_MOTES := Vector2(40, 40)
+const MOTES_BELOW := 9.0
 ## Where a camp's pieces may stand around its home, best first: behind it,
 ## then beside, then in front (the pack itself takes the home and its sides).
 const CAMP_RING := [
@@ -961,15 +969,32 @@ static func _dark_beyond(data: MapData) -> ColorRect:
 
 ## A dungeon floor in Shade's Puny Dungeon: stone, walls by his grammar and
 ## the dark beyond, torches flickering on the walls, barrels, pots and the
-## stairs up.
+## stairs up; dressed as its own place (DungeonLook, PIX-310): the look's
+## floor (the Medieval Age's, with the pack), its stone worn and lit by
+## shaders/dungeon.gdshader, what lies flat on it, what hangs on its walls'
+## faces, what its barrels and pots are drawn as, and dust drifting in each
+## torch's light.
 func _build_dungeon(data: MapData) -> Node2D:
 	var root := Node2D.new()
 	root.add_child(_dark_beyond(data))
 	var dungeon := PunyDungeon.sheet()
+	var paid := PunyProps.available()
+	dressing = DungeonLook.plan(data, paid)
+	var stone := _stone(data)
 	var layer := tile_layer_of(dungeon.tileset)
+	layer.material = stone
 	# Its floor and walls answer to a boss's glow (Lights.FLOOR, PIX-314);
 	# what stands on them doesn't.
 	layer.light_mask |= Lights.FLOOR
+	# The Medieval Age's floor, and what stands drawn from it (ore carts),
+	# only with the pack: its sheet isn't there without it.
+	var floors: Dictionary = dressing["floors"]
+	var laid: TileMapLayer = tile_layer_of(PunyTown.tileset()) if paid else null
+	var standing: TileMapLayer = tile_layer_of(PunyTown.tileset()) if paid else null
+	if laid != null:
+		laid.material = stone
+		laid.light_mask |= Lights.FLOOR
+	var swaps: Dictionary = dressing["swaps"]
 	dungeon_objects = tile_layer_of(dungeon.tileset)
 	wall_torches = []
 	for cell: Vector2i in data.grid:
@@ -987,11 +1012,22 @@ func _build_dungeon(data: MapData) -> Node2D:
 				# Its fire lights the floor before it (PIX-221).
 				root.add_child(Lights.make(center(cell) + Vector2(0, TILE * 0.7), 92.0, Lights.FIRE, Lights.TORCH_ENERGY, true))
 				continue
-		dungeon.place(layer, cell, PunyDungeon.floor_tile(cell))
+		if floors.has(cell):
+			PunyTown.place(laid, cell, int(floors[cell]))
+		else:
+			dungeon.place(layer, cell, PunyDungeon.floor_tile(cell))
 		# What a region dungeon's floor draws over a cell (PIX-255): a wreck's
 		# beams, the shortcut's door, shut or open.
 		if data.pieces.has(cell):
 			dungeon.place(dungeon_objects, cell, int(data.pieces[cell]))
+			continue
+		# A blocker the look draws as something else: an ore cart, ore.
+		if swaps.has(cell):
+			var swap: Dictionary = swaps[cell]
+			if swap["sheet"] == "props" and standing != null:
+				PunyTown.place(standing, cell, int(swap["tile"]))
+			else:
+				dungeon.place(dungeon_objects, cell, int(swap["tile"]))
 			continue
 		match tile:
 			"barrel":
@@ -1013,7 +1049,9 @@ func _build_dungeon(data: MapData) -> Node2D:
 			"grille":
 				dungeon.place(dungeon_objects, cell, PunyDungeon.GRILLE)
 	root.add_child(layer)
-	var ice := _frozen(data)
+	_keep(root, laid)
+	root.add_child(_dressed(dressing["flats"]))
+	var ice := _frozen(data, floors)
 	if ice != null:
 		ice.light_mask |= Lights.FLOOR
 		root.add_child(ice)
@@ -1021,11 +1059,82 @@ func _build_dungeon(data: MapData) -> Node2D:
 		for cell: Vector2i in data.grid:
 			if data.grid[cell] == "ice" and posmod(cell.x, ICE_LIGHT_EVERY.x) == 2 and posmod(cell.y, ICE_LIGHT_EVERY.y) == 2:
 				root.add_child(Lights.make(center(cell), 72.0, Lights.ICE, Lights.ICE_ENERGY))
+	root.add_child(_dressed(dressing["faces"]))
 	root.add_child(dungeon_objects)
-	# Each torch's flame glows softly on the wall round it (PIX-291).
+	_keep(root, standing)
+	# Each torch's flame glows softly on the wall round it (PIX-291), and
+	# dust drifts in its light (PIX-310), but for reduced motion.
 	for cell: Vector2i in wall_torches:
 		root.add_child(_torch_glow(cell))
+		if not GameState.settings.reduce_motion:
+			root.add_child(_torch_motes(cell))
 	return root
+
+
+## The dungeon's stone (shaders/dungeon.gdshader): its look, and the mask
+## of its cells, its sea and its walls (DungeonLook.mask).
+func _stone(data: MapData) -> ShaderMaterial:
+	var stone := ShaderMaterial.new()
+	stone.shader = preload("res://shaders/dungeon.gdshader")
+	var cells := ImageTexture.create_from_image(DungeonLook.mask(data, dressing.get("water", {})))
+	stone.set_shader_parameter("cells", cells)
+	stone.set_shader_parameter("cells_soft", cells)
+	stone.set_shader_parameter("map_pixels", Vector2(data.size * TILE))
+	stone.set_shader_parameter("look", int(DungeonLook.SHADER.get(String(dressing.get("look", "")), 0)))
+	return stone
+
+
+## What a dungeon's look lays on its cells (DungeonLook's flats or faces),
+## a tile layer a sheet: Shade's, the Medieval Age's (only with the pack:
+## the plan has none without it), our own.
+func _dressed(pieces: Dictionary) -> Node2D:
+	var root := Node2D.new()
+	var layers := {}
+	for cell: Vector2i in pieces:
+		var piece: Dictionary = pieces[cell]
+		var sheet := String(piece["sheet"])
+		if not layers.has(sheet):
+			var tile_set: TileSet = DungeonArt.tileset() if sheet == "art" else (PunyTown.tileset() if sheet == "props" else PunyDungeon.sheet().tileset)
+			layers[sheet] = tile_layer_of(tile_set)
+		match sheet:
+			"art":
+				DungeonArt.place(layers[sheet], cell, String(piece["tile"]))
+			"props":
+				PunyTown.place(layers[sheet], cell, int(piece["tile"]))
+			"dungeon":
+				PunyDungeon.sheet().place(layers[sheet], cell, int(piece["tile"]))
+	for sheet: String in ["dungeon", "props", "art"]:
+		if layers.has(sheet):
+			root.add_child(layers[sheet])
+	return root
+
+
+## `layer` under `root` when it holds any tile; otherwise let go.
+static func _keep(root: Node, layer: TileMapLayer) -> void:
+	if layer == null:
+		return
+	if layer.get_used_cells().is_empty():
+		layer.free()
+	else:
+		root.add_child(layer)
+
+
+## Dust drifting in a torch's light (PIX-310, shaders/torch_motes.gdshader):
+## a few motes over the pool its fire lights on the floor before it.
+func _torch_motes(cell: Vector2i) -> Sprite2D:
+	if _motes_texture == null:
+		var blank := Image.create(int(TORCH_MOTES.x), int(TORCH_MOTES.y), false, Image.FORMAT_RGBA8)
+		blank.fill(Color.WHITE)
+		_motes_texture = ImageTexture.create_from_image(blank)
+	var motes := Sprite2D.new()
+	motes.texture = _motes_texture
+	var material := ShaderMaterial.new()
+	material.shader = preload("res://shaders/torch_motes.gdshader")
+	material.set_shader_parameter("size", TORCH_MOTES)
+	material.set_shader_parameter("seed", float(absi(hash(cell)) % 997) / 97.0)
+	motes.material = material
+	motes.position = center(cell) + Vector2(0, MOTES_BELOW)
+	return motes
 
 
 ## A torch's soft glow on the wall round its flame (PIX-291): added onto the
@@ -1047,8 +1156,9 @@ func _torch_glow(cell: Vector2i) -> Sprite2D:
 ## them laid again, frozen by shaders/frozen.gdshader from a mask a texel a
 ## cell (the shore runs between cells, bent off the grid, frost creeping out
 ## over the stone). Between the floor and what stands on it; null for a map
-## with no ice.
-func _frozen(data: MapData) -> TileMapLayer:
+## with no ice. The stone under it is the floor as laid (`floors`: the
+## look's Medieval Age floor, PIX-310), Shade's elsewhere.
+func _frozen(data: MapData, floors: Dictionary) -> Node2D:
 	var mask := Image.create(maxi(data.size.x, 1), maxi(data.size.y, 1), false, Image.FORMAT_L8)
 	var frozen := false
 	for cell: Vector2i in data.grid:
@@ -1059,15 +1169,23 @@ func _frozen(data: MapData) -> TileMapLayer:
 		return null
 	var dungeon := PunyDungeon.sheet()
 	var layer := tile_layer_of(dungeon.tileset)
+	var laid: TileMapLayer = tile_layer_of(PunyTown.tileset()) if not floors.is_empty() else null
 	for cell: Vector2i in data.grid:
 		if data.grid[cell] not in ["wall", "lamp"] and _by_ice(data, cell):
-			dungeon.place(layer, cell, PunyDungeon.floor_tile(cell))
+			if floors.has(cell):
+				PunyTown.place(laid, cell, int(floors[cell]))
+			else:
+				dungeon.place(layer, cell, PunyDungeon.floor_tile(cell))
 	var frost := ShaderMaterial.new()
 	frost.shader = preload("res://shaders/frozen.gdshader")
 	frost.set_shader_parameter("ice_map", ImageTexture.create_from_image(mask))
 	frost.set_shader_parameter("map_pixels", Vector2(data.size * TILE))
-	layer.material = frost
-	return layer
+	var root := Node2D.new()
+	for each: TileMapLayer in [layer, laid]:
+		if each != null:
+			each.material = frost
+			_keep(root, each)
+	return root
 
 
 ## Whether `cell` is ice or touches it, corners too: where the frost may

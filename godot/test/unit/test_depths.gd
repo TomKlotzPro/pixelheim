@@ -16,12 +16,18 @@ const FLOORS := ["seacave", "seacave_galleries", "seacave_grotto"]
 ## laid for, left play (PIX-257): taking them out of DungeonFloor must
 ## leave every region's planned floor, and the Kings' Vault's, as it is.
 ## Their torches went up into the rooms' north walls (PIX-291), a row up
-## from the floor they stood on; nothing else moved.
+## from the floor they stood on; nothing else moved. Each entrance room
+## took a shape of its own from its seed (PIX-310: they all opened in the
+## same 6x5 room; DungeonFloor.ENTRANCES), grown into the rock north or
+## south, its corners cut, a pillar or an alcove, lit and furnished afresh:
+## only its own cells changed, its stair and where a hero arrives stayed,
+## and the floor beyond its east wall lays as it did (test_dungeon_look's
+## BEYOND).
 const PLANNED := {
-	"seacave_galleries": "a0b11dcfc6dc072d431bcb8feb9c19fc", "shafts_gallery": "133ad78e60f7474f3422c4d8d8bb2a63",
-	"cellars_crypt": "771f5d596b685adcf30702995cb3cf16", "vault_1": "4ad8ab46a42e003fddbfdf27bf84cb9a",
-	"vault_2": "c9af1caef7c0d09e8d8acb321e5c06aa", "vault_3": "6f9be834babe8d7899a0da3dead398bc",
-	"vault_4": "3a75b6861c4241c0b51471f6ed8948db", "vault_5": "e7d58325c104cfcd84386bc653a22ce5",
+	"seacave_galleries": "d8942e05a6c76d1bb26369081a24971d", "shafts_gallery": "794ec8553ac06383fc213d701f4b3354",
+	"cellars_crypt": "12841ea4f9dc210a902c38cfeb3ec57d", "vault_1": "1f5b67f2956b2ab7cca3f0c7d60b8d0d",
+	"vault_2": "fa6d62116f95789252c5b924205226fc", "vault_3": "fa8715f67dfc98dc1566917a1c0d8f1e",
+	"vault_4": "c09c86ad0774c4c6068d3c6c9c1f8379", "vault_5": "5dab669a46fb1d4fd298b8c741a55364",
 }
 
 var state: Node

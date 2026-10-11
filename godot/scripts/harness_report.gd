@@ -51,7 +51,8 @@ const TABLE := [
 	{"field": "decor", "says": "on a map in the open air: how many pieces of field decor its drawing grew, its trees, wheat, bushes, stumps and stones (PIX-304)"},
 	{"field": "delivered", "says": "Maren's letters delivered, once any is out (PIX-253)"},
 	{"field": "dest", "says": "the waypoint the map's list has chosen, while the map is open (PIX-241)"},
-	{"field": "ending", "says": "the ending this hero chose for Morvax once it has played: home or stay (an old save's throne: destroy or rest) (PIX-253 step 10)"},
+	{"field": "dressed", "says": "on a dungeon floor: its look and what it is dressed in, counted by kind: mine:ore3,props6,rail68 (PIX-310)"},
+	{"field": "ending", "says":"the ending this hero chose for Morvax once it has played: home or stay (an old save's throne: destroy or rest) (PIX-253 step 10)"},
 	{"field": "entrance", "says": "the ways in drawn as entrances in their setting on this map, by look: mine, sea_cave, mountain_gate, vault_door, ice_stair (PIX-290)"},
 	{"field": "feats", "says": "the feats done, by id, once any is (PIX-257)"},
 	{"field": "fell", "says": "bosses fallen, when one fell (PIX-232)"},
@@ -359,6 +360,19 @@ func field_dest() -> String:
 		return ""
 	var chosen: String = screen.destination_id()
 	return chosen if chosen != "" else "none"
+
+
+func field_dressed() -> String:
+	if world.view == null or String(world.view.dressing.get("look", "")) == "":
+		return ""
+	var counts: Dictionary = world.view.dressing["counts"]
+	var kinds: Array = counts.keys()
+	kinds.sort()
+	var parts: PackedStringArray = []
+	for kind: String in kinds:
+		parts.append("%s%d" % [kind, counts[kind]])
+	var look := String(world.view.dressing["look"])
+	return look if parts.is_empty() else "%s:%s" % [look, ",".join(parts)]
 
 
 func field_ending() -> String:
