@@ -1380,6 +1380,8 @@
     "fleeLevels": 6,
     "fleeEliteLevels": 2,
     "calmTiles": 8,
+    "bossLoseTiles": 14,
+    "bossLeashTiles": 12,
     "safeTiles": 8,
     "respawnSteps": 500,
     "graceSeconds": 1.5,

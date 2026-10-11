@@ -35,6 +35,7 @@ const TABLE := [
 	{"field": "backsteps", "says": "with motion: frames the hero stepped back on screen while walking forward, lost if found in too few to judge (PIX-135, PIX-275)"},
 	{"field": "bells", "says": "the Night of Bells' beat while it runs (lanterns, embers, hold, dawn), done once Fafnyr is freed (PIX-253 step 9)"},
 	{"field": "beside", "says": "with seamless: the maps drawn beside the hero's, by id, or none (PIX-269)"},
+	{"field": "boss", "says": "the bosses and named monsters standing on the map, each as id:what it does (alert, chase, cast, homeward, idle):its share of health, when there are any (PIX-288)"},
 	{"field": "bossbar", "says": "the boss bar across the top: its foe's share of health while it shows, or none once it has gone; on a fight or a boss's floor (PIX-288)"},
 	{"field": "burning", "says": "on the Night of Bells' embers: the roofs still burning (PIX-253 step 9)"},
 	{"field": "card", "says": "the card naming the place the hero has come to, while it's up (PIX-269)"},
@@ -243,6 +244,15 @@ func field_beside() -> String:
 	var ids: Array = world.neighbours.drawn.keys()
 	ids.sort()
 	return ",".join(ids) if not ids.is_empty() else "none"
+
+
+func field_boss() -> String:
+	var out: PackedStringArray = []
+	for enemy in world.get_tree().get_nodes_in_group("mobs"):
+		if not enemy.dying and not enemy.is_queued_for_deletion() and Bestiary.fights_like_boss(enemy.fighter):
+			var share := roundi(100.0 * int(enemy.fighter["hp"]) / maxi(1, int(enemy.fighter["maxHp"])))
+			out.append("%s:%s:%d%%" % [enemy.fighter.get("named", enemy.fighter["id"]), enemy.mode, share])
+	return ",".join(out)
 
 
 func field_bossbar() -> String:

@@ -94,8 +94,8 @@ func spawn_lairs(unseen := false) -> void:
 
 
 ## A named monster in its lair (PIX-156), or at `cell` (the harness): never
-## a pack, never respawned once dead; a chase it gives up ends with it home
-## and whole again.
+## a pack, never respawned once dead; a chase it gives up (PIX-288: lost,
+## blocked, or led out of its ground) ends with it home, its wounds kept.
 func spawn_named(named_id: String, cell := Vector2i(-1, -1)) -> Node:
 	var at := Hunts.lair(Hunts.named(named_id)) if cell == Vector2i(-1, -1) else cell
 	var enemy := preload("res://scripts/enemy.gd").new()

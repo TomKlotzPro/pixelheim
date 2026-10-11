@@ -54,6 +54,27 @@ const KILL_STOP := 0.08
 const SLEEP_BREATH := 0.35
 const SLEEP_DRIFT_SECONDS := 1.6
 const SLEEP_PAUSE_SECONDS := 0.3
+## A boss or a named monster on the hunt (PIX-288): it gives the chase up
+## once it has lost the hero this long (Packs.lost: so far behind them it's
+## past the screen's edge), had no way to them this long, or stood stuck
+## this long, though never in the moments after a blow (BOUND_SECONDS). It
+## looks again for its way every ROUTE_EVERY seconds, round what stands
+## between within ROUTE_MARGIN cells of itself and the hero, and at once
+## after standing stuck HELD_REROUTE.
+const LOST_SECONDS := 2.5
+const BLOCKED_SECONDS := 2.0
+const HELD_SECONDS := 3.0
+const HELD_REROUTE := 0.5
+const BOUND_SECONDS := 3.0
+const ROUTE_EVERY := 0.4
+const ROUTE_MARGIN := 8
+## The grid it routes over reaches this much further, so a hero moving a
+## few cells doesn't make it lay a new one.
+const ROUTE_SLACK := 4
+## Any foe walking home that stands stuck this long (PIX-288: against a
+## wall, deaf to the hero, for good) is home at once where nobody sees it,
+## or settles where it stands.
+const HOME_STUCK_SECONDS := 2.5
 
 var world: Node2D
 ## Bestiary.spawn record: id, name, elite, hp, maxHp, attack, defense, xp, gold.
@@ -139,6 +160,32 @@ var _rest_at := Vector2.ZERO
 ## Its walk (PIX-243): stepping with the ground it covers, wandering slowly
 ## or hunting fast.
 var gait: Gait
+## A boss's hunt (PIX-288): how long it has lost the hero, had no way to
+## them, and stood stuck (chasing, or any foe walking home); and until when
+## a blow binds it to the fight.
+var lost_for := 0.0
+var blocked_for := 0.0
+var held_for := 0.0
+var bound_until := -100.0
+## A boss or a named monster (Bestiary.fights_like_boss), and one of the
+## wilds that keeps to its ground (Hunts.of_the_wilds): known from the start.
+var boss_like := false
+var of_the_wilds := false
+## Its way (PIX-288): the cells to walk and the next one it heads for, the
+## cell the way leads to, seconds till it looks again, whether the straight
+## line is open, and the grid it routes over (kept while the map and the
+## area hold).
+var _route: Array[Vector2i] = []
+var _route_next := 0
+var _route_to := NO_CELL
+var _route_left := 0.0
+var _straight := true
+var _grid: AStarGrid2D
+var _grid_map: MapData
+## Whether it had a way to the hero when last asked, and until when that
+## answer holds (a boss watching a hero it can't reach asks twice a second).
+var _reaches := false
+var _reach_until := -100.0
 
 
 func _ready() -> void:
@@ -153,8 +200,10 @@ func _ready() -> void:
 	var grown := 1.2 if fighter["elite"] else 1.0
 	var tint: Color = art.get("tint", Color.WHITE)
 	sprite.self_modulate = tint * ELITE_TINT if fighter["elite"] else tint
+	boss_like = Bestiary.fights_like_boss(fighter)
 	if fighter.has("named"):
 		named = Hunts.named(fighter["named"])
+		of_the_wilds = Hunts.of_the_wilds(fighter["named"])
 		grown = float(named["scale"])
 		var own: Array = named["tint"]
 		# Its own colour may brighten past its kind's (Greymaw's silver).
@@ -282,13 +331,15 @@ func _physics_process(delta: float) -> void:
 			var leash := global_position if at_bay else home
 			if player.dead or (not _hunts_wagon() and gives_up(fighter, leash, global_position, player.global_position)):
 				_give_up()
+			elif _lets_go(delta):
+				_give_up()
 			else:
 				_chase(aim, delta)
 		"cast":
 			velocity = Vector2.ZERO
 		"homeward":
 			var back := home - global_position
-			velocity = back.normalized() * HOMEWARD_SPEED
+			velocity = _heading(back, delta) * HOMEWARD_SPEED
 			if back.length() < 4:
 				_settle()
 		"flee":
@@ -302,7 +353,7 @@ func _physics_process(delta: float) -> void:
 			else:
 				_flee(to_player)
 		_:
-			if not player.dead and world.foes.can_notice(self):
+			if not player.dead and world.foes.can_notice(self) and _can_reach(to_player):
 				if flees_from(fighter, GameState.hero.level, held_to_fight()):
 					take_fright(to_player)
 				else:
@@ -319,6 +370,7 @@ func _physics_process(delta: float) -> void:
 		velocity = walk
 	if mode == "flee" and alert_left <= 0:
 		stuck_for = stuck_for + delta if get_real_velocity().length() < FLEE_SPEED * 0.25 else 0.0
+	_measure_held(walk, to_player, delta)
 	# Heading off at an angle, it holds its facing rather than flickering
 	# between two (PIX-243).
 	if velocity.length() > 1:
@@ -337,6 +389,7 @@ func notice() -> void:
 	_wake()
 	mode = "alert"
 	hunting = true
+	_fresh_hunt()
 	alert_left = float(Packs.rules()["windUpSeconds"])
 	world.foes.on_enemy_noticed(self)
 	_play("idle")
@@ -580,10 +633,11 @@ func held_to_fight() -> bool:
 	return _hunts_wagon() or has_meta("prologue") or has_meta("prologue_wave") or has_meta("bells_wave") or woken or is_in_group("summoned")
 
 
-## Straight at the hero; in reach, a flash tells the bite, which lands if the
-## hero is still close when the tell is done.
+## At the hero (straight, or a boss by its way round: _heading); in reach,
+## a flash tells the bite, which lands if the hero is still close when the
+## tell is done.
 func _chase(to_player: Vector2, delta: float) -> void:
-	velocity = to_player.normalized() * CHASE_SPEED * pace
+	velocity = _heading(to_player, delta) * CHASE_SPEED * pace
 	if tell_left >= 0:
 		velocity *= 0.3
 		tell_left -= delta
@@ -654,19 +708,156 @@ func _give_up() -> void:
 	hunting = false
 	at_bay = false
 	tell_left = -1.0
+	_fresh_hunt()
 
 
 ## Whether `fighter` gives up the chase: too far from its home or the hero
 ## (Packs.gives_up), but never a boss or a named monster (PIX-232): walking
-## off a few tiles used to send it home and make it whole again.
+## off a few tiles used to send it home and make it whole again. Those
+## answer to _lets_go (PIX-288).
 static func gives_up(fighter: Dictionary, home_at: Vector2, at: Vector2, hero: Vector2) -> bool:
 	return not Bestiary.fights_like_boss(fighter) and Packs.gives_up(home_at, at, hero)
 
 
-## Home again: whole, and watching.
+## Whether a boss or a named monster gives the chase up now (PIX-288): it
+## has lost the hero, had no way to them, or stood stuck, each a while; or,
+## one of the wilds, the hero has led it out of its ground (Packs.strays).
+## Never in the moments after a blow, and never one sent at an escort's
+## wagon. Any other foe answers to gives_up.
+## Old Greymaw hunted a hero gone far across the Reach, his bar across the
+## screen and every road out barred for as long as he lived.
+func _lets_go(delta: float) -> bool:
+	if not boss_like or _hunts_wagon():
+		return false
+	var hero: Vector2 = world.player.global_position
+	lost_for = lost_for + delta if Packs.lost(global_position, hero) else 0.0
+	if GameClock.seconds() < bound_until:
+		return false
+	if lost_for > LOST_SECONDS or blocked_for > BLOCKED_SECONDS or held_for > HELD_SECONDS:
+		return true
+	return of_the_wilds and Packs.strays(home, global_position, hero)
+
+
+## A hunt begun or ended: nothing lost, blocked or stuck yet, its way to
+## be found again.
+func _fresh_hunt() -> void:
+	lost_for = 0.0
+	blocked_for = 0.0
+	held_for = 0.0
+	_route.clear()
+	_route_to = NO_CELL
+	_route_left = 0.0
+
+
+## Which way to head for what lies `to_target` away, a unit vector (ZERO
+## for no way): straight at it, or, for a boss or a named monster (PIX-288),
+## by the next step of its way round what stands between. With no way at
+## all it stands and watches, and that counts toward giving up.
+func _heading(to_target: Vector2, delta: float) -> Vector2:
+	if not boss_like or to_target.length() <= BITE_REACH:
+		blocked_for = 0.0
+		return to_target.normalized()
+	var way := _way(to_target, delta)
+	blocked_for = blocked_for + delta if way == Vector2.ZERO else 0.0
+	return way.normalized()
+
+
+## Where to step for what lies `to_target` away: straight at it while the
+## line is open, else toward the next cell of a way round (Packs.route),
+## found again every ROUTE_EVERY seconds, when the target changes cell, or
+## once it stands stuck; ZERO when there is none.
+func _way(to_target: Vector2, delta: float) -> Vector2:
+	var here := Packs.cell_of(global_position)
+	var there := Packs.cell_of(global_position + to_target)
+	_route_left -= delta
+	if _route_left <= 0.0 or there != _route_to or (_straight and held_for > HELD_REROUTE):
+		_route_left = ROUTE_EVERY
+		_route_to = there
+		_straight = held_for <= HELD_REROUTE and Packs.walks_straight(world.map, global_position, global_position + to_target)
+		_route.clear()
+		if not _straight:
+			_route = _plan(here, there)
+		# From the middle of the cell it stands in, unless it can step
+		# straight on to the next one from where it is (no step back).
+		_route_next = 1 if _route.size() > 1 and Packs.walks_straight(world.map, global_position, Packs.middle(_route[1])) else 0
+	if _straight:
+		return to_target
+	if _route.is_empty():
+		return Vector2.ZERO
+	# On to the next cell once at the middle of this one (the first is the
+	# one it stands in: it steps out from its middle, clear of the corners).
+	while _route_next < _route.size() - 1 and global_position.distance_to(Packs.middle(_route[_route_next])) < 3.0:
+		_route_next += 1
+	if _route_next >= _route.size() - 1:
+		return to_target
+	return Packs.middle(_route[_route_next]) - global_position
+
+
+## A way from `from` to `to` (cells) over the open ground round both, or []:
+## the grid is kept while the map and the area it needs hold.
+func _plan(from: Vector2i, to: Vector2i) -> Array[Vector2i]:
+	var area := Packs.route_area(from, to, ROUTE_MARGIN).intersection(Rect2i(Vector2i.ZERO, world.map.size))
+	if _grid == null or _grid_map != world.map or not _grid.region.encloses(area):
+		_grid = Packs.route_grid(world.map, area.grow(ROUTE_SLACK))
+		_grid_map = world.map
+	var way := Packs.route(_grid, from, to)
+	# The grid kept may reach past this area: a way round further is no way.
+	for cell in way:
+		if not area.has_point(cell):
+			way.clear()
+			break
+	return way
+
+
+## Whether this foe has a way to the hero `to_player` away: always for a
+## pack's, but a boss or a named monster with none (PIX-288: across the
+## river, behind the wall) takes up no chase it would only give up - it
+## watches. Asked twice a second at most.
+func _can_reach(to_player: Vector2) -> bool:
+	if not boss_like:
+		return true
+	var now := GameClock.seconds()
+	if now >= _reach_until:
+		_reach_until = now + ROUTE_EVERY
+		var hero := global_position + to_player
+		_reaches = Packs.walks_straight(world.map, global_position, hero) or not _plan(Packs.cell_of(global_position), Packs.cell_of(hero)).is_empty()
+	return _reaches
+
+
+## Whether it stood stuck this tick (PIX-288), counted while it presses on
+## and gets nowhere: a boss chasing (not in reach, not telling a bite), any
+## foe walking home - which, stuck long enough, is home at last.
+func _measure_held(walk: Vector2, to_player: Vector2, delta: float) -> void:
+	var pressing := walk.length() > 1.0
+	if mode == "chase" and boss_like:
+		pressing = pressing and tell_left < 0 and to_player.length() > BITE_REACH
+		held_for = held_for + delta if pressing and get_real_velocity().length() < CHASE_SPEED * pace * 0.25 else 0.0
+	elif mode == "homeward":
+		held_for = held_for + delta if get_real_velocity().length() < HOMEWARD_SPEED * 0.25 else 0.0
+		if held_for > HOME_STUCK_SECONDS:
+			_home_at_last()
+
+
+## Stuck on its way home (PIX-288): home at once while it and its home are
+## both past the screen's edge (Packs.lost's distance: nobody sees it go),
+## else it settles where it stands, watching again.
+func _home_at_last() -> void:
+	var hero: Vector2 = world.player.global_position
+	if Packs.lost(global_position, hero) and Packs.lost(home, hero):
+		global_position = home
+		reset_physics_interpolation()
+	_settle()
+
+
+## Home again, and watching: a pack's foe whole again; a boss or a named
+## monster keeps its wounds (PIX-232: walking off never made one whole
+## again), so its bar comes back as it was when the fight does (PIX-288).
 func _settle() -> void:
 	mode = "idle"
 	woken = false
+	_fresh_hunt()
+	if boss_like:
+		return
 	fighter["hp"] = fighter["maxHp"]
 	health_bar.visible = false
 	health_bar_back.visible = false
@@ -787,6 +978,11 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null, crit := fa
 	# The camera answers a crit or a killing blow with a little punch.
 	if fell or crit:
 		world.camera_rig.punch(global_position - from)
+	# A blow binds a boss to the fight a while, whatever it was about to give
+	# up for (PIX-288).
+	if not dying:
+		bound_until = GameClock.seconds() + BOUND_SECONDS
+		_fresh_hunt()
 	# Struck from anywhere, it turns on the hero at once; struck as it runs,
 	# it stands and fights where it is (PIX-251).
 	if not dying and mode != "chase":

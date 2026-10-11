@@ -150,6 +150,15 @@ static func lair(entry: Dictionary) -> Vector2i:
 	return Vector2i(int(entry["lair"]["x"]), int(entry["lair"]["y"]))
 
 
+## A named monster of the wilds (PIX-288): its lair out in the open, not on
+## a dungeon's floor. It keeps to its ground (Packs.strays) - Greymaw goes
+## back to his corner of the forest - where a dungeon's boss fights the hero
+## anywhere in its hall (PIX-232).
+static func of_the_wilds(named_id: String) -> bool:
+	var entry := named(named_id)
+	return entry.has("lair") and entry.has("mapId") and Depths.floor_of(String(entry["mapId"])).is_empty()
+
+
 ## Its fighting record, as Bestiary.spawn makes one: its kind's sprite and
 ## family (its "id" is the kind's), its own name and numbers, and "named"
 ## for the bounty. It fights as an elite (its family's trick, gold bar).

@@ -130,6 +130,7 @@ const TABLE := [
 	{"flag": "fight", "takes": "", "does": "a foe two steps off and one swing, caught mid-swing"},
 	{"flag": "--foe", "takes": "<species>", "does": "with fight: the foe (default orc; a named monster's id brings it out of its lair)"},
 	{"flag": "--foe-distance", "takes": "<n>", "does": "with fight: the foe n cells off (an elite's opener from range)"},
+	{"flag": "--foe-at", "takes": "<x,y>", "does": "with fight: the foe on that cell, its home there (PIX-288: a boss across water from the hero)"},
 	{"flag": "--foe-left", "takes": "<share>", "does": "with fight: the foe already hunting the hero, its bar up, then struck down to that share of its health before the swings (PIX-288)"},
 	{"flag": "--foe-ail", "takes": "<kind>", "does": "with fight: the foe afflicted (poison, burn), sure to take, its next tick as strong as the health it has left (PIX-288)"},
 	{"flag": "hurt", "takes": "", "does": "with fight or --bells: the foe may bite back (the throwaway hero is untouchable otherwise)"},
