@@ -2405,6 +2405,10 @@ msgid "Boss Slayer"
 msgstr "Tueur de boss"
 
 #: assets/data/changelog.json
+msgid "Bosses and named beasts are drawn at whole sizes, twice their kind (the Tidecaller three times), so their pixels are as crisp as everything around them"
+msgstr "Les boss et les bêtes nommées sont dessinés à des tailles entières, deux fois leur espèce (l'Appelle-Marée trois fois) : leurs pixels sont aussi nets que tout le reste"
+
+#: assets/data/changelog.json
 msgid "Bosses and named monsters carry a bar across the top of the screen, notched where a boss's next phase begins. Each phase is roared, marks on the ground are heard as they appear and as they strike, and a boss falls in slow motion, with a flash and a silence before the victory sting"
 msgstr "Les boss et les monstres nommés ont une barre en haut de l'écran, crantée là où commence la phase suivante d'un boss. Chaque phase est rugie, les marques au sol s'entendent quand elles apparaissent et quand elles frappent, et un boss tombe au ralenti, avec un éclair et un silence avant la fanfare de victoire"
 
@@ -2543,6 +2547,14 @@ msgstr "Choisissez une ligne avec les flèches, la manette ou la souris et suive
 #: assets/data/changelog.json
 msgid "Choose in the Skills menu; your title on the stat sheet carries the path. A path is for life - choose like it matters"
 msgstr "Choisissez dans le menu Compétences ; votre titre sur la fiche de caractéristiques porte la voie. Une voie, c'est pour la vie - choisissez comme si ça comptait"
+
+#: assets/data/changelog.json
+msgid "Cinderjaw and Rimefang now tower over their kind, and every boss stands on its own shadow, with a glow of its colour at its feet in the dark"
+msgstr "Mâchebraise et Crocgivre dominent maintenant leur espèce, et chaque boss se tient sur son ombre, avec une lueur de sa couleur à ses pieds dans le noir"
+
+#: assets/data/changelog.json
+msgid "Clean Pixels"
+msgstr "Pixels nets"
 
 #: assets/data/changelog.json
 msgid "Clean Slate"
@@ -3319,6 +3331,10 @@ msgstr "Casques de chantier"
 #: assets/data/changelog.json
 msgid "Head to Toe"
 msgstr "De la tête aux pieds"
+
+#: assets/data/changelog.json
+msgid "Health bars, names and level tags sit just over a boss's head instead of floating far above it"
+msgstr "Les barres de vie, les noms et les niveaux se placent juste au-dessus de la tête d'un boss au lieu de flotter loin au-dessus"
 
 #: assets/data/changelog.json
 msgid "Health comes back slowly while you're out of a fight"

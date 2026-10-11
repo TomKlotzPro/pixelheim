@@ -2405,6 +2405,10 @@ msgid "Boss Slayer"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Bosses and named beasts are drawn at whole sizes, twice their kind (the Tidecaller three times), so their pixels are as crisp as everything around them"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Bosses and named monsters carry a bar across the top of the screen, notched where a boss's next phase begins. Each phase is roared, marks on the ground are heard as they appear and as they strike, and a boss falls in slow motion, with a flash and a silence before the victory sting"
 msgstr ""
 
@@ -2542,6 +2546,14 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Choose in the Skills menu; your title on the stat sheet carries the path. A path is for life - choose like it matters"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Cinderjaw and Rimefang now tower over their kind, and every boss stands on its own shadow, with a glow of its colour at its feet in the dark"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Clean Pixels"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3318,6 +3330,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Head to Toe"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Health bars, names and level tags sit just over a boss's head instead of floating far above it"
 msgstr ""
 
 #: assets/data/changelog.json

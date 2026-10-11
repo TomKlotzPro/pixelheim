@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.234.0",
+      "date": "2026-10-11",
+      "codename": "Clean Pixels",
+      "notes": [
+        "Bosses and named beasts are drawn at whole sizes, twice their kind (the Tidecaller three times), so their pixels are as crisp as everything around them",
+        "Cinderjaw and Rimefang now tower over their kind, and every boss stands on its own shadow, with a glow of its colour at its feet in the dark",
+        "Health bars, names and level tags sit just over a boss's head instead of floating far above it"
+      ]
+    },
+    {
       "version": "0.233.0",
       "date": "2026-10-11",
       "codename": "Safe Keeping",
