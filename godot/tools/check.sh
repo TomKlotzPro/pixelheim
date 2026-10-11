@@ -74,6 +74,7 @@ travel field: scripts/puny_terrain.gd scripts/scatter.gd scripts/skyline.gd asse
 town travel +town-age* +overworld*: scripts/rampart.gd
 travel: scripts/seam.gd scripts/slicer.gd scripts/world_neighbours.gd scripts/reach_plane.gd scripts/ways.gd scripts/waypoints.gd scripts/atlas.gd scripts/dissolve.gd scripts/place_title.gd scripts/map_screen.gd scripts/state/world_state.gd assets/data/plane.json
 travel story +overworld*: scripts/state/gates.gd scripts/gate_art.gd assets/data/gates.json
+travel story rooms +blackiron* +saltmere* +overworld* +mountain_road* +observatory*: scripts/entrance_art.gd
 quest travel: scripts/escort.gd
 dungeon travel +seacave* +shafts* +cellars* +icecave* +vault*: scripts/state/depths.gd assets/data/depths.json
 dungeon story travel +vault* +mountain_road*: scripts/state/vault.gd
@@ -103,12 +104,14 @@ field night: scripts/day_night.gd scripts/lights.gd scripts/light_rig.gd
 field: scripts/weather.gd scripts/atmosphere.gd
 field rank: scripts/motes.gd
 dungeon +icecave*: shaders/frozen.*
+rooms +observatory*: shaders/stair_frost.*
 town field title: shaders/*
 gathering: scripts/state/gathering.gd
 save: test/fixtures/* scripts/saves_screen.gd scripts/state/save_codec.gd scripts/state/save_slots.gd scripts/state/web_import.gd scripts/state/hero_state.gd
 title: scripts/title_scene.gd scripts/title_screen.gd scripts/create_screen.gd scripts/changelog_screen.gd assets/data/changelog.json assets/*.png
 screen: scripts/world_hud.gd scripts/hud_dock.gd scripts/screen.gd scripts/ui_style.gd scripts/keycap.gd scripts/controls.gd scripts/touch.gd scripts/touch_controls.gd scripts/inventory_screen.gd scripts/stats_screen.gd scripts/codex_screen.gd scripts/options_screen.gd scripts/pause_screen.gd scripts/state/game_settings.gd
 screen lang: assets/fonts/* scripts/ink.gd scripts/layout.gd
+town combat screen quest: scripts/marks.gd
 lang: locale/* scripts/state/text.gd
 '
 # The motion flows measure the walk in a window (line-motion over a line

@@ -77,23 +77,37 @@ static func awaits_word(giver: String, entries: Dictionary, items: Dictionary, o
 
 
 ## What hangs over a giver's head (PIX-240): "offer" with a quest to give
-## (a "!"), "ready" with one to hand in (a gold "?"), "waiting" while one is
-## under way (a grey "?"), or "" when there's nothing between them and the
+## (a "!"), "ready" with one to hand in (a "?"), "waiting" while one is
+## under way (a faded "?"), or "" when there's nothing between them and the
 ## hero. The giver's first quest not done decides, as for awaits_word. Above
 ## all of it, the main story (PIX-253 step 2): "letter" while the hero
-## carries a letter of Maren's to them, a gold "!" ringed in gold.
+## carries a letter of Maren's to them, a gold "!" (Marks, PIX-289).
 static func mark_for(giver: String, entries: Dictionary, items: Dictionary, opened := Callable()) -> String:
+	return String(_marked(giver, entries, items, opened)[0])
+
+
+## Whether a giver's mark is the main story's (PIX-289: drawn in gold, as
+## the arrow is while it leads the story): a letter of Maren's carried to
+## them, or the quest deciding the mark one that carries the story
+## (Journal.is_main_line: her relics, a relic's hunt).
+static func mark_tells_story(giver: String, entries: Dictionary, items: Dictionary, opened := Callable()) -> bool:
+	var marked := _marked(giver, entries, items, opened)
+	return marked[0] == "letter" or (marked[0] != "" and Journal.is_main_line(marked[1]))
+
+
+## The mark over a giver (mark_for) and the quest it is for, or ["", {}].
+static func _marked(giver: String, entries: Dictionary, items: Dictionary, opened: Callable) -> Array:
 	for quest: Dictionary in for_recipient(giver):
 		if is_ready(quest, entries, items):
-			return "letter"
+			return ["letter", quest]
 	for quest: Dictionary in for_giver(giver):
 		var entry: Dictionary = entries.get(quest["id"], {})
 		if entry.get("done", false):
 			continue
 		if entry.is_empty():
-			return "" if opened.is_valid() and not opened.call(quest) else "offer"
-		return "ready" if is_ready(quest, entries, items) else "waiting"
-	return ""
+			return ["", {}] if opened.is_valid() and not opened.call(quest) else ["offer", quest]
+		return ["ready" if is_ready(quest, entries, items) else "waiting", quest]
+	return ["", {}]
 
 
 ## A giver's quest that's finished and waits on the hero's answer (PIX-192):

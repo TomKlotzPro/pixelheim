@@ -2045,6 +2045,10 @@ msgid "A foe gives you longer to see its bite coming, and shows it: it crouches 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A foe that spots you flashes a red burst, a frightened one a blue one, so danger and talk never look alike"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A gold ! over someone with a quest for you, a gold ? over someone waiting for you to hand one in, and a grey ? while a quest you took from them is under way; Options can turn them off (Quest markers)"
 msgstr ""
 
@@ -2541,6 +2545,10 @@ msgid "Clear Map"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Clear Signs"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Clear Waters"
 msgstr ""
 
@@ -2674,6 +2682,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Dropping a piece of gear or a whole stack asks for the same key again, and a key with a fixed job (drop, a skill, Esc) can't be given to another action"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Dungeon torches hang on the wall with a soft glow, instead of sitting in a square hole cut into it"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3178,6 +3190,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "From the Ashes"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Frost creeps over the stair down to the ice cave in Liane's room"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4149,6 +4165,10 @@ msgid "People live here now - talk to them with E, Enter or Space"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "People with something for you wear a speech bubble: \"!\" for a new quest, \"?\" to hand one in, gold when it's the main story"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Pitched Tents"
 msgstr ""
 
@@ -5029,6 +5049,10 @@ msgid "The Barred Gate"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Blackiron Shafts open as a real mine: timber posts, an ore cart, rails down the road and a winch at the pithead"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Blackiron shafts now go three floors down: the upper shafts with Bram's humming cheese, the west gallery where Pell's canary is waiting (and cross), and the Black Seam, where the Seam Warden sits on the last ingot"
 msgstr ""
 
@@ -5189,6 +5213,10 @@ msgid "The Satchel"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Sea Cave is a rock arch at the foot of the cliff, the Ashen Mountain's gate a gatehouse with towers, and the Kings' Vault a dark doorway between two stone kings"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Skills panel grew the full graph: nodes, ascension edges, your walked path aglow - and any missed choice can be claimed right there"
 msgstr ""
 
@@ -5242,6 +5270,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The app shell slimmed from four hundred lines to a router: the soundscape, the ascension scene and the keyboard each live in their own room now"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The arrow at the screen's edge is a brass arrow in the game's own style: gold for the main story, cream for anything else"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5866,6 +5898,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Water comes alive: it swells with light, glints here and there, foam laps along every shore, and what stands on a bank is mirrored in it"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Ways In"
 msgstr ""
 
 #: assets/data/changelog.json

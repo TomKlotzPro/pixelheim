@@ -2045,6 +2045,10 @@ msgid "A foe gives you longer to see its bite coming, and shows it: it crouches 
 msgstr "Un ennemi vous laisse plus de temps pour voir venir sa morsure, et la montre : il se ramasse avec une lueur rouge et un son. Avec les Avertissements clairs, une bande au sol marque où elle tombera"
 
 #: assets/data/changelog.json
+msgid "A foe that spots you flashes a red burst, a frightened one a blue one, so danger and talk never look alike"
+msgstr "Un ennemi qui vous repère fait jaillir une étincelle rouge, un ennemi apeuré une bleue : le danger et la parole ne se confondent plus"
+
+#: assets/data/changelog.json
 msgid "A gold ! over someone with a quest for you, a gold ? over someone waiting for you to hand one in, and a grey ? while a quest you took from them is under way; Options can turn them off (Quest markers)"
 msgstr "Un « ! » doré au-dessus de qui a une quête pour vous, un « ? » doré au-dessus de qui attend que vous en remettiez une, et un « ? » gris tant qu'une quête prise auprès de lui est en cours ; les Options peuvent les masquer (Marqueurs de quête)"
 
@@ -2541,6 +2545,10 @@ msgid "Clear Map"
 msgstr "Carte nette"
 
 #: assets/data/changelog.json
+msgid "Clear Signs"
+msgstr "Signes clairs"
+
+#: assets/data/changelog.json
 msgid "Clear Waters"
 msgstr "Eaux claires"
 
@@ -2675,6 +2683,10 @@ msgstr "Tenue assortie"
 #: assets/data/changelog.json
 msgid "Dropping a piece of gear or a whole stack asks for the same key again, and a key with a fixed job (drop, a skill, Esc) can't be given to another action"
 msgstr "Jeter une pièce d'équipement ou tout un lot demande la même touche une seconde fois, et une touche qui a déjà un rôle (jeter, une compétence, Esc) ne peut pas être donnée à une autre action"
+
+#: assets/data/changelog.json
+msgid "Dungeon torches hang on the wall with a soft glow, instead of sitting in a square hole cut into it"
+msgstr "Les torches des donjons sont accrochées au mur avec un doux halo, au lieu de loger dans un trou carré taillé dedans"
 
 #: assets/data/changelog.json
 msgid "Dungeons and caves are dark and torchlit, and the Night of Ash glows red; damage numbers, prompts, health bars and danger marks stay bright in the dark"
@@ -3179,6 +3191,10 @@ msgstr "Plâtre frais"
 #: assets/data/changelog.json
 msgid "From the Ashes"
 msgstr "Des cendres"
+
+#: assets/data/changelog.json
+msgid "Frost creeps over the stair down to the ice cave in Liane's room"
+msgstr "Le givre gagne l'escalier qui descend à la grotte de glace, dans la chambre de Liane"
 
 #: assets/data/changelog.json
 msgid "GATHERING TEACHES FORAGING: every patch you pick trains it, and a better forager often picks two"
@@ -4149,6 +4165,10 @@ msgid "People live here now - talk to them with E, Enter or Space"
 msgstr "Des gens vivent ici désormais - parlez-leur avec E, Enter ou Space"
 
 #: assets/data/changelog.json
+msgid "People with something for you wear a speech bubble: \"!\" for a new quest, \"?\" to hand one in, gold when it's the main story"
+msgstr "Les personnes qui ont quelque chose pour vous portent une bulle : « ! » pour une nouvelle quête, « ? » pour en rendre une, dorée quand c'est l'histoire principale"
+
+#: assets/data/changelog.json
 msgid "Pitched Tents"
 msgstr "Tentes dressées"
 
@@ -5029,6 +5049,10 @@ msgid "The Barred Gate"
 msgstr "La Porte barrée"
 
 #: assets/data/changelog.json
+msgid "The Blackiron Shafts open as a real mine: timber posts, an ore cart, rails down the road and a winch at the pithead"
+msgstr "Les puits de Fernoir s'ouvrent comme une vraie mine : poutres de bois, wagonnet de minerai, rails le long de la route et treuil au sommet du puits"
+
+#: assets/data/changelog.json
 msgid "The Blackiron shafts now go three floors down: the upper shafts with Bram's humming cheese, the west gallery where Pell's canary is waiting (and cross), and the Black Seam, where the Seam Warden sits on the last ingot"
 msgstr "Les puits de Fernoir descendent désormais sur trois étages : les puits du haut avec le fromage qui fredonne de Bram, la Galerie ouest où attend le canari de Pell (furieux), et le Filon noir, où le Gardien du Filon trône sur le dernier lingot"
 
@@ -5189,6 +5213,10 @@ msgid "The Satchel"
 msgstr "La sacoche"
 
 #: assets/data/changelog.json
+msgid "The Sea Cave is a rock arch at the foot of the cliff, the Ashen Mountain's gate a gatehouse with towers, and the Kings' Vault a dark doorway between two stone kings"
+msgstr "La Grotte marine est une arche de roche au pied de la falaise, la porte de la Montagne des Cendres un corps de garde à tours, et le Caveau des rois une porte sombre entre deux rois de pierre"
+
+#: assets/data/changelog.json
 msgid "The Skills panel grew the full graph: nodes, ascension edges, your walked path aglow - and any missed choice can be claimed right there"
 msgstr "Le panneau des compétences affiche tout le graphe : nœuds, liens d'ascension, votre chemin parcouru illuminé - et tout choix manqué peut s'y réclamer sur-le-champ"
 
@@ -5243,6 +5271,10 @@ msgstr "Les Terres sauvages mordent"
 #: assets/data/changelog.json
 msgid "The app shell slimmed from four hundred lines to a router: the soundscape, the ascension scene and the keyboard each live in their own room now"
 msgstr "La coquille de l'appli passe de quatre cents lignes à un simple routeur : l'ambiance sonore, la scène d'ascension et le clavier ont désormais chacun leur pièce"
+
+#: assets/data/changelog.json
+msgid "The arrow at the screen's edge is a brass arrow in the game's own style: gold for the main story, cream for anything else"
+msgstr "La flèche au bord de l'écran est une flèche de laiton dans le style du jeu : dorée pour l'histoire principale, crème pour le reste"
 
 #: assets/data/changelog.json
 msgid "The arrow toward your goal keeps clear of the line over the dock"
@@ -5867,6 +5899,10 @@ msgstr "Avis de recherche"
 #: assets/data/changelog.json
 msgid "Water comes alive: it swells with light, glints here and there, foam laps along every shore, and what stands on a bank is mirrored in it"
 msgstr "L'eau prend vie : elle ondule de lumière, scintille çà et là, l'écume vient lécher chaque rive, et ce qui se dresse sur la berge s'y reflète"
+
+#: assets/data/changelog.json
+msgid "Ways In"
+msgstr "Les entrées"
 
 #: assets/data/changelog.json
 msgid "Ways On"

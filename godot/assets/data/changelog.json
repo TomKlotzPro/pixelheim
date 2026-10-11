@@ -1,6 +1,27 @@
 {
   "releases": [
     {
+      "version": "0.228.0",
+      "date": "2026-10-11",
+      "codename": "Ways In",
+      "notes": [
+        "The Blackiron Shafts open as a real mine: timber posts, an ore cart, rails down the road and a winch at the pithead",
+        "The Sea Cave is a rock arch at the foot of the cliff, the Ashen Mountain's gate a gatehouse with towers, and the Kings' Vault a dark doorway between two stone kings",
+        "Frost creeps over the stair down to the ice cave in Liane's room",
+        "Dungeon torches hang on the wall with a soft glow, instead of sitting in a square hole cut into it"
+      ]
+    },
+    {
+      "version": "0.227.0",
+      "date": "2026-10-11",
+      "codename": "Clear Signs",
+      "notes": [
+        "The arrow at the screen's edge is a brass arrow in the game's own style: gold for the main story, cream for anything else",
+        "People with something for you wear a speech bubble: \"!\" for a new quest, \"?\" to hand one in, gold when it's the main story",
+        "A foe that spots you flashes a red burst, a frightened one a blue one, so danger and talk never look alike"
+      ]
+    },
+    {
       "version": "0.226.0",
       "date": "2026-10-11",
       "codename": "Coming Home",

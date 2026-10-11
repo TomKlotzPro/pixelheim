@@ -100,6 +100,12 @@ var ways: Array[Dictionary] = []
 ## burnt bridge's planks).
 var gates: Array[Dictionary] = []
 var gate_hides := {}
+## Each dungeon's way in drawn as an entrance in its setting (PIX-290,
+## EntranceArt.plan): its look, pieces and the open cells they block; their
+## cells' own objects (the plain mouth, the castle gate) go in gate_hides.
+var entrances: Array[Dictionary] = []
+## A dungeon floor's torches on the wall (PIX-291), by cell.
+var wall_torches: Array[Vector2i] = []
 var furniture_cells: Array[Vector2i] = []
 ## Night (PIX-149): each lamp's flame and its cold torch for the day, and
 ## the warm glows of lamps and windows; set_night shows one or the other.
@@ -149,6 +155,10 @@ const BOARD_FOOT := Rect2(1, 8, 14, 8)
 const TENTS := {"forest": 895, "deepwood": 895, "marsh": 706, "mire": 706, "ash": 905}
 ## The CC0 dungeon sheet's torch flame, planted in the ground by a camp.
 const CAMP_TORCH := [16, 17, 18, 19, 20, 21, 22, 23]
+## A wall torch's glow (PIX-291): [radius px, peak], round its flame, which
+## burns this far from its cell's middle (over the wall's top).
+const TORCH_GLOW := [13, 0.28]
+const TORCH_FLAME := Vector2(0, -3)
 ## Where a camp's pieces may stand around its home, best first: behind it,
 ## then beside, then in front (the pack itself takes the home and its sides).
 const CAMP_RING := [
@@ -343,6 +353,18 @@ func _plan_gates() -> void:
 		for cell: Vector2i in GateArt.plan(gate, PunyProps.available())["hides"]:
 			gate_hides[cell] = true
 	ways = Ways.on(data)
+	# Each dungeon's way in as an entrance in its setting (PIX-290).
+	entrances = []
+	for way: Dictionary in ways:
+		var barred := Ways.barred(way["to"], GameState.progression, GameState.settlement)
+		var entrance := EntranceArt.plan(data, way, barred, PunyProps.available())
+		if entrance["look"] == "":
+			continue
+		entrances.append(entrance)
+		for cell: Vector2i in entrance["hides"]:
+			gate_hides[cell] = true
+		for cell: Vector2i in entrance["blocks"]:
+			data.covered[cell] = true
 	patches = {}
 	patch_day = -1
 	deal_patches(Gathering.day_of(GameState.world.steps))
@@ -645,9 +667,10 @@ func _ground_pieces() -> void:
 	# at the foot of the mountain road, PIX-253 step 8; the Kings' Vault's
 	# door under the summit, PIX-257), where nothing stood in the notch:
 	# Shade's castle gate, its portcullis down while the story bars it
-	# (`barred`: until Maren's promise, until the dragon is freed).
+	# (`barred`: until Maren's promise, until the dragon is freed). One drawn
+	# as an entrance in its setting (EntranceArt, PIX-290) has its own.
 	for way: Dictionary in ways:
-		if way["rock"]:
+		if way["rock"] and not gate_hides.has(way["at"]):
 			var barred: bool = Ways.barred(way["to"], GameState.progression, GameState.settlement)
 			PunyTerrain.place(_objects_layer, way["at"], Ways.ROCK_GATE_BARRED if barred else Ways.ROCK_GATE)
 	if _growth_layer != null:
@@ -791,14 +814,34 @@ func _toning() -> ShaderMaterial:
 func _build_room(data: MapData) -> Node2D:
 	var root := Node2D.new()
 	root.add_child(_dark_beyond(data))
+	var frost := _stair_frost(data, root)
 	for part: String in ["floor", "walls", "rug", "pieces", "objects", "tops", "lifted"]:
 		var layer := tile_layer_of(PunyTown.tileset())
 		for cell: Vector2i in buildings.get(part, {}):
 			PunyTown.place(layer, cell, buildings[part][cell])
 		if part == "lifted":
 			layer.position.y = -6
+		if frost != null and part in ["floor", "rug", "pieces"]:
+			layer.material = frost
 		root.add_child(layer)
 	return root
+
+
+## The ice cave's stair down through Liane's floor (PIX-290, EntranceArt):
+## frost creeps out over the boards, the carpet and the stair
+## (shaders/stair_frost.gdshader), and the cold's pale light comes up it.
+## The material, or null in a room with no such stair.
+func _stair_frost(data: MapData, root: Node2D) -> ShaderMaterial:
+	var stairs := EntranceArt.frosted_stairs(data)
+	if stairs.is_empty():
+		return null
+	var stair := stairs[0]
+	root.add_child(Lights.make(center(stair), EntranceArt.FROST_GLOW, Lights.ICE, Lights.ICE_ENERGY))
+	var frost := ShaderMaterial.new()
+	frost.shader = preload("res://shaders/stair_frost.gdshader")
+	frost.set_shader_parameter("stair", center(stair) + offset)
+	frost.set_shader_parameter("reach", EntranceArt.FROST_REACH * TILE)
+	return frost
 
 
 ## The dark under a room or a dungeon, on past the map's edges (DARK_PAD).
@@ -812,7 +855,7 @@ static func _dark_beyond(data: MapData) -> ColorRect:
 
 
 ## A dungeon floor in Shade's Puny Dungeon: stone, walls by his grammar and
-## the dark beyond, torches flickering on their blocks, barrels, pots and the
+## the dark beyond, torches flickering on the walls, barrels, pots and the
 ## stairs up.
 func _build_dungeon(data: MapData) -> Node2D:
 	var root := Node2D.new()
@@ -820,6 +863,7 @@ func _build_dungeon(data: MapData) -> Node2D:
 	var dungeon := PunyDungeon.sheet()
 	var layer := tile_layer_of(dungeon.tileset)
 	dungeon_objects = tile_layer_of(dungeon.tileset)
+	wall_torches = []
 	for cell: Vector2i in data.grid:
 		var tile: String = data.grid[cell]
 		match tile:
@@ -827,8 +871,11 @@ func _build_dungeon(data: MapData) -> Node2D:
 				dungeon.place(layer, cell, PunyDungeon.wall_tile(data.grid, cell))
 				continue
 			"lamp":
-				dungeon.place(layer, cell, PunyDungeon.TORCH_BLOCK)
+				# A torch fixed to the wall's face (PIX-291): the wall runs on
+				# through it, the torch over it.
+				dungeon.place(layer, cell, PunyDungeon.wall_tile(data.grid, cell))
 				dungeon.place(dungeon_objects, cell, PunyDungeon.TORCH)
+				wall_torches.append(cell)
 				# Its fire lights the floor before it (PIX-221).
 				root.add_child(Lights.make(center(cell) + Vector2(0, TILE * 0.7), 92.0, Lights.FIRE, Lights.TORCH_ENERGY, true))
 				continue
@@ -866,7 +913,24 @@ func _build_dungeon(data: MapData) -> Node2D:
 			if data.grid[cell] == "ice" and posmod(cell.x, ICE_LIGHT_EVERY.x) == 2 and posmod(cell.y, ICE_LIGHT_EVERY.y) == 2:
 				root.add_child(Lights.make(center(cell), 72.0, Lights.ICE, Lights.ICE_ENERGY))
 	root.add_child(dungeon_objects)
+	# Each torch's flame glows softly on the wall round it (PIX-291).
+	for cell: Vector2i in wall_torches:
+		root.add_child(_torch_glow(cell))
 	return root
+
+
+## A torch's soft glow on the wall round its flame (PIX-291): added onto the
+## dark, never darkened by it, under the dungeon's own dark as much as at
+## night.
+func _torch_glow(cell: Vector2i) -> Sprite2D:
+	var key := "%d:%f" % [TORCH_GLOW[0], TORCH_GLOW[1]]
+	if not _glow_textures.has(key):
+		_glow_textures[key] = TitleScene.glow_texture(TORCH_GLOW[0], Color(1.0, 0.72, 0.38), TORCH_GLOW[1], 4)
+	var glow := Sprite2D.new()
+	glow.texture = _glow_textures[key]
+	glow.material = Lights.glow()
+	glow.position = center(cell) + TORCH_FLAME
+	return glow
 
 
 ## Ice over a dungeon's stone (PIX-255: the ice cave's frozen lake, and its
@@ -954,7 +1018,9 @@ func _decor_units(slices: Slicer) -> void:
 			_add_puny_prop(prop))
 	slices.add("decor_gates", func() -> void:
 		for gate: Dictionary in gates:
-			_add_gate(gate))
+			_add_gate(gate)
+		for entrance: Dictionary in entrances:
+			_add_entrance(entrance))
 	var a_unit := maxi(1, data.size.x * DECOR_ROWS)
 	slices.add_each("decor_field", ceili(_keys.size() / float(a_unit)), func(i: int) -> void:
 		for cell: Vector2i in _keys.slice(i * a_unit, (i + 1) * a_unit):
@@ -1607,6 +1673,24 @@ func _add_gate(gate: Dictionary) -> void:
 		actors.add_child(body)
 
 
+## A dungeon's way in drawn in its setting (PIX-290): its pieces (EntranceArt,
+## GateArt's kind) among the actors or flat on the ground, and a box on each
+## open cell they stand on.
+func _add_entrance(entrance: Dictionary) -> void:
+	for piece: Dictionary in entrance["pieces"]:
+		_add_gate_piece(piece)
+	for cell: Vector2i in entrance["blocks"]:
+		var body := StaticBody2D.new()
+		var shape := CollisionShape2D.new()
+		var rect := RectangleShape2D.new()
+		rect.size = Vector2(TILE, TILE)
+		shape.shape = rect
+		body.add_child(shape)
+		body.position = center(cell)
+		body.add_to_group("decor")
+		actors.add_child(body)
+
+
 func _add_gate_piece(piece: Dictionary) -> void:
 	var cell: Vector2i = piece["cell"]
 	var at: Vector2 = piece["at"]
@@ -1638,6 +1722,8 @@ func _add_gate_piece(piece: Dictionary) -> void:
 			sprite.material = _snow()
 		"charred":
 			sprite.modulate = GateArt.CHARRED
+		"iron":
+			sprite.modulate = EntranceArt.BLACK_IRON
 	if piece["flat"]:
 		sprite.position = Vector2(cell * TILE) + at
 		ground.add_child(sprite)

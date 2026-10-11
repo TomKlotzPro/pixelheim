@@ -249,12 +249,13 @@ static func _hall(map: MapData, from: Rect2i, to: Rect2i, rng: RandomNumberGener
 	return openings
 
 
-## Torch blocks in the north corners, barrels and a pot by the south wall,
-## never in a doorway's way.
+## Torches on the north wall's face by the corners (in the wall, PIX-291:
+## standing on the room's top row they read as a box set on the floor),
+## barrels and a pot by the south wall, never in a doorway's way.
 static func _furnish(map: MapData, room: Rect2i, keep_clear: Array, rng: RandomNumberGenerator) -> void:
 	var spots := [
-		[Vector2i(room.position.x + 1, room.position.y), "lamp"],
-		[Vector2i(room.end.x - 2, room.position.y), "lamp"],
+		[Vector2i(room.position.x + 1, room.position.y - 1), "lamp"],
+		[Vector2i(room.end.x - 2, room.position.y - 1), "lamp"],
 		[Vector2i(room.position.x, room.end.y - 1), "barrel"],
 		[Vector2i(room.end.x - 1, room.end.y - 1), "crate" if rng.randf() < 0.5 else "barrel"],
 		[Vector2i(room.position.x + 1, room.end.y - 1), "barrel"],
@@ -265,5 +266,8 @@ static func _furnish(map: MapData, room: Rect2i, keep_clear: Array, rng: RandomN
 		for other: Vector2i in keep_clear:
 			if absi(other.x - cell.x) <= 1 and absi(other.y - cell.y) <= 1:
 				crowded = true
+		# A torch only in the wall itself, over the room.
+		if spot[1] == "lamp" and map.grid.get(cell, "") != "wall":
+			crowded = true
 		if not crowded and (spot[1] == "lamp" or rng.randf() < 0.6):
 			map.grid[cell] = spot[1]
