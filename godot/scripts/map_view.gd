@@ -65,9 +65,6 @@ var _rampart_layers: Array[TileMapLayer] = []
 ## Every material that reads the region's masks (region_tint.gdshader), to
 ## hand them a neighbour's masks beside their own (set_masks).
 var _toned: Array[ShaderMaterial] = []
-## The map's cells in the grid's own order (row by row), for its decor a
-## few rows a unit.
-var _keys: Array = []
 ## Houses (PunyTown) or a room (PunyInterior): {"pieces", "decor", "freed"},
 ## a room adding "floor", "walls", "void" and "over".
 var buildings := {"pieces": {}, "decor": {}, "freed": []}
@@ -75,6 +72,15 @@ var buildings := {"pieces": {}, "decor": {}, "freed": []}
 var outdoor_props := {"props": [], "flat": {}, "drawn": {}}
 ## Field decor that blocks: cell -> Puny World tile.
 var solid_scatter := {}
+## The cells that grow no field decor (PIX-304), as the plan settles them:
+## where a prop, a camp, a shut gate or a dungeon's entrance stands, a chest
+## or a pickup lies, a villager lives, or a way leads on. No tree hides a
+## tent or a pickup, and no log lies under a gate.
+var bare := {}
+## The field decor the drawing grew (PIX-304), cell -> its Puny World tile:
+## the trees, the wheat, the bushes, stumps, stones and tufts. The harness
+## reports how many (decor=).
+var field := {}
 var ground: Node2D
 var ground_tint: ShaderMaterial
 ## The same toning for what the wind moves (PIX-223): each tree and wheat
@@ -195,7 +201,11 @@ const VILLAGE_RUIN_SMOKE := 0.4
 ## four whole rendering quadrants (LIGHT_BLOCK), laid and drawn once; the
 ## decor and the objects a few rows at a time; the props a handful.
 const BLOCK := 16
-const DECOR_ROWS := 4
+## The field's decor two rows a unit (PIX-304): four rows of the Deepwood's
+## forest are some two hundred trees, about a millisecond on the desktop and
+## a few times that in the browser, past a frame's budget (Slicer); two rows
+## fit it.
+const DECOR_ROWS := 2
 const PROPS_A_UNIT := 16
 ## Each tile layer's rendering quadrant, this many cells a side (PIX-285).
 ## A rendering quadrant is one canvas item, and Godot lights a canvas item
@@ -370,11 +380,12 @@ func _plan_gates() -> void:
 	deal_patches(Gathering.day_of(GameState.world.steps))
 
 
-## Where the hero arrives (the spawn when the arrival is covered now), and
-## the field decor that blocks, kept off it.
+## Where the hero arrives (the spawn when the arrival is covered now), the
+## cells left bare, and the field decor that blocks, kept off both.
 func _plan_scatter() -> void:
 	if not data.is_walkable(arrival):
 		arrival = data.spawn
+	bare = _bare_cells()
 	solid_scatter = _solid_scatter(data, arrival)
 	for cell: Vector2i in solid_scatter:
 		data.covered[cell] = true
@@ -403,7 +414,10 @@ static func parts_of(slices: Slicer) -> Dictionary:
 ## The drawing as units on `slices`, in order (`build` runs them at once,
 ## Neighbours a few a frame): the ground (laid a unit at a time when
 ## `sliced`), the blockers a band of rows at a time, the signs, the decor a
-## few rows at a time, then the rest. The plan has run.
+## few rows at a time, then the rest. The plan has run, and the units are
+## counted from what it settled (the map's size, its props), never from what
+## an earlier unit fills: the field's decor, counted from a list the first
+## unit filled, came to no unit at all and no map grew a tree (PIX-304).
 func building(root: Node, slices: Slicer) -> void:
 	slices.add("ground_setup", _setup.bind(root))
 	if data.style == "cave":
@@ -445,7 +459,6 @@ func _setup(root: Node) -> void:
 	if _actor_layer != null:
 		_actor_layer.add_child(stand)
 	actors = stand
-	_keys = data.grid.keys()
 
 
 func _ground_root(node: Node2D) -> void:
@@ -1021,10 +1034,14 @@ func _decor_units(slices: Slicer) -> void:
 			_add_gate(gate)
 		for entrance: Dictionary in entrances:
 			_add_entrance(entrance))
-	var a_unit := maxi(1, data.size.x * DECOR_ROWS)
-	slices.add_each("decor_field", ceili(_keys.size() / float(a_unit)), func(i: int) -> void:
-		for cell: Vector2i in _keys.slice(i * a_unit, (i + 1) * a_unit):
-			_add_field_decor(cell))
+	slices.add_each("decor_field", ceili(data.size.y / float(DECOR_ROWS)), _field_rows)
+
+
+## The field decor of DECOR_ROWS rows from the `i`-th band down.
+func _field_rows(i: int) -> void:
+	for y in range(i * DECOR_ROWS, mini((i + 1) * DECOR_ROWS, data.size.y)):
+		for x in data.size.x:
+			_add_field_decor(Vector2i(x, y))
 
 
 ## The town's ruins smoking, and on the night of the fire still burning
@@ -1104,8 +1121,9 @@ func _decor_chests() -> void:
 ## ground, or a tree or a sheaf among the actors.
 func _add_field_decor(cell: Vector2i) -> void:
 	var choice := Scatter.choice(data.grid, cell)
-	if choice < 0 or outdoor_props["drawn"].has(cell):
+	if choice < 0 or bare.has(cell):
 		return
+	field[cell] = choice
 	if solid_scatter.has(cell):
 		_add_solid_decor(choice, cell)
 	elif _is_flat_decor(cell, choice):
@@ -1123,16 +1141,36 @@ static func _still(motes: CPUParticles2D) -> CPUParticles2D:
 	return motes
 
 
+## The cells that grow no field decor (`bare`): what the props stand on,
+## the camps, each shut gate's cells and pieces, each entrance's pieces and
+## the cells it blocks or hides, the chests and pickups, the villagers' homes
+## and the ways on.
+func _bare_cells() -> Dictionary:
+	var out: Dictionary = (outdoor_props["drawn"] as Dictionary).duplicate()
+	var cells: Array = camps.keys() + data.portals.keys() + gate_hides.keys()
+	for gate: Dictionary in gates:
+		cells.append_array(Gates.cells_of(gate))
+		for piece: Dictionary in GateArt.plan(gate, PunyProps.available())["pieces"]:
+			cells.append(piece["cell"])
+	for entrance: Dictionary in entrances:
+		cells.append_array(entrance["blocks"])
+		for piece: Dictionary in entrance["pieces"]:
+			cells.append(piece["cell"])
+	for chest: Dictionary in Interactables.chests_on(data.id):
+		cells.append(Vector2i(int(chest["x"]), int(chest["y"])))
+	for npc: Dictionary in Npcs.on_map(data.id, GameState.settlement.town_tier, GameState.settlement.settlers, Town.done_projects(GameState.settlement), Relics.gate_open(GameState.progression), Letters.tin_waits(GameState.progression)):
+		cells.append(Vector2i(int(npc["x"]), int(npc["y"])))
+	for cell: Vector2i in cells:
+		out[cell] = true
+	return out
+
+
 ## Field decor that blocks (Scatter.solid), kept off the cell the hero
-## arrives on, villagers' homes and chests.
+## arrives on, today's patches, the packs' homes and the cells left bare.
 func _solid_scatter(data: MapData, arrival: Vector2i) -> Dictionary:
 	if not PunyTerrain.is_outdoor(data.grid):
 		return {}
 	var kept := {arrival: true}
-	for npc: Dictionary in Npcs.on_map(data.id, GameState.settlement.town_tier, GameState.settlement.settlers, Town.done_projects(GameState.settlement), Relics.gate_open(GameState.progression), Letters.tin_waits(GameState.progression)):
-		kept[Vector2i(int(npc["x"]), int(npc["y"]))] = true
-	for chest: Dictionary in Interactables.chests_on(data.id):
-		kept[Vector2i(int(chest["x"]), int(chest["y"]))] = true
 	for cell: Vector2i in patches:
 		kept[cell] = true
 	# A pack's home and the cells around it stay open for the pack.
@@ -1140,7 +1178,7 @@ func _solid_scatter(data: MapData, arrival: Vector2i) -> Dictionary:
 		for dy in [-1, 0, 1]:
 			for dx in [-1, 0, 1]:
 				kept[Vector2i(spawn["x"] + dx, spawn["y"] + dy)] = true
-	return Scatter.solid(data, kept, outdoor_props["drawn"])
+	return Scatter.solid(data, kept, bare)
 
 
 ## Where each wild pack's camp stands: a tent on the first open cell of its
