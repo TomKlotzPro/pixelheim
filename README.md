@@ -6,7 +6,7 @@
 
 <p align="center">
   <b>A retro pixel-art open-world RPG in Godot 4.7: a village the dragon burned, the courier who stayed, the Reach's regions and the relics they keep - and the mountain last.</b><br />
-  The village burned. You stayed. Currently v0.235 - 1.0 has to be earned.
+  The village burned. You stayed. Currently v0.238 - 1.0 has to be earned.
 </p>
 
 ---
@@ -23,7 +23,7 @@ What changed release by release: **What's new** on the title menu, or [`godot/as
 
 A dragon burned Pixelheim in one night, and you - the courier who came up the road with a letter for Elder Maren - stayed. Put out the fires, help the survivors rebuild, and walk out into **the Ashenreach**: the roads (safe) and the wilds (not safe), past the forest and the marsh to the Saltmere coast, the Blackiron mines, the castle of Greyhold and the Frostgate pass, each region with its people, its quests, its armour and a boss in a cave, a shaft or a cellar of its own. Fifty years ago five of the village climbed the Ashen Mountain to mend the seal that held the dragon, and only one came home. Maren never sent the letters she wrote to their families: you carry them out to the regions, where what the five left behind waits, and each answer tells her something she never knew. The mountain comes last: with the keepsakes home Maren tells it all at last and gives you the fifth letter, and past the mountain's gate the old road climbs through the ash to the forge where **Morvax**, the one who never came down, has kept the dragon asleep for fifty years. He reads the letter and the mountain shakes, and you run home to **the Night of Bells**: the five lanterns lit on the square, the embers driven off and the roofs doused, then the dragon held on the square until dawn with everyone you brought home at a job - Teo's bell, the old guard on the walls, Iva's tent, Bram's cheese down Upper Street - until the collar comes off and he flies home, free. Then Morvax asks the courier the one thing he can't ask Maren - do they want him back? - and your answer is the story's last word: **come home**, to a room at the inn and a bench by the fountain and an argument with Maren every day, or **stay with them**, up on the mountain with the three, down on festival days. Either way Fafnyr warms his belly on Hilda's forge every morning for a cheese wheel a day, and Pixelheim can grow into a City.
 
-- **One hand-drawn world**: hero, villagers, monsters, terrain and dungeons in Shade's Puny art; the town's timber houses, its wells, fountain, torches and fences, and the rooms behind its doors from his Medieval Age set
+- **One hand-drawn world**: hero, villagers, monsters, terrain and dungeons in Shade's Puny art; the town's timber houses, its wells, fountain, lamp posts and fences, and the rooms behind its doors from his Medieval Age set, the day lying on their floors under the windows and their candles lit at night
 - **Open ground that lives**: meadows in patches of lusher and drier green, tufts, clover and flowers in the grass and the wind rolling over the long grass; snow lying in drifts with blue shadows; the Mirefen's murk, sedge, reeds and still puddles
 - **Real-time fights**: monsters prowl in packs and hunt you (the weak ones run from a hero far above them), other packs by night than by day (wolves, the dead and worse come out after dark, a little stronger and richer, while some day packs sleep by their camp fires); swing, cast your skills on the number keys, and watch the ailments land - on the same numbers the game has always used
 - **7 classes that ascend**: every 5 levels a rank, its title and its moment in the light, and from the first rank a path that forks into 14 identities, each with a signature skill
@@ -31,7 +31,7 @@ A dragon burned Pixelheim in one night, and you - the courier who came up the ro
 - **Quests and the journal**, the **codex** of every beast you have fought, and mastery bonuses for the families you hunt
 - **One land**: the Ashenreach and its six regions lie side by side; near a road out the land past it is drawn beside you, and you walk on into it with no fade - the village's gate, houses and caves stay short changes of scene
 - **Roads the story opens**: each region's way in from the Reach - a rockfall on the cliff road, the river bridge burnt on the Night of Ash, Ulla's barricade, an avalanche on the Frostgate road - stays shut until the story reaches it, says what opens it, and the arrow leads there
-- **A town that grows**: buy the house and furnish it, buy the shops and collect rent, fund the village into a city, bank and send caravans, recruit settlers from the wilds
+- **A town that grows**: buy the house and furnish it, buy the shops and collect rent, fund the village into a city (its rutted dirt streets gravelled, then cobbled, the square flagged round its fountain), bank and send caravans, recruit settlers from the wilds
 - **Crafting** at the forge, the cauldron and your own workbench; foraging in the wilds
 - **Music, stingers and weather** for every place, rendered from the game's own chiptune synth
 - **Saves that never break**: three slots, autosave, a backup of the save before, and save codes that carry a hero to another computer or browser; every save ever written still loads, and one the game can't read is kept, never written over
@@ -69,7 +69,7 @@ python3 godot/tools/vignettes.py <pixelheim-assets checkout>  # re-lift Shade's 
 python3 godot/tools/mapgen.py                                 # maps from their sketches in godot/maps-src/
 ```
 
-**Paid art.** The town's houses, props and rooms use Shade's paid _Puny World Medieval Age_ pack, and the item, skill and ailment icons come from his paid icon packs (with his free CC0 ones). None of the paid art may be redistributed, so it lives in the private `TomKlotzPro/pixelheim-assets` repository (`retro-rpg/shade/`). `scripts/fetch-private-art.sh` installs it with your GitHub login, and the deploy fetches it with a read-only deploy key. Without it the game still runs on Shade's free art alone: the town's houses, props and paid icons are missing.
+**Paid art.** The town's houses, props and rooms use Shade's paid _Puny World Medieval Age_ pack, and the item, skill and ailment icons come from his paid icon packs (with his free CC0 ones). None of the paid art may be redistributed, so it lives in the private `TomKlotzPro/pixelheim-assets` repository (`retro-rpg/shade/`). `scripts/fetch-private-art.sh` installs it with your GitHub login, and the deploy fetches it with a read-only deploy key. Without it the game still runs on Shade's free art alone: the town's houses, props and paid icons are missing (its street lamps, drawn in his palette in code, still stand).
 
 More on the Godot project - the save format, the screenshot harness, the release flows, web export - in [`godot/README.md`](godot/README.md).
 

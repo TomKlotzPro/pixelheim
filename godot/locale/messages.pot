@@ -2609,6 +2609,10 @@ msgid "Controls are rebindable, and French keyboards get ZQSD out of the box"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Country roads carry cart ruts, grass on the crown, pebbles and grass creeping in at the edges"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Crackle and Hum"
 msgstr ""
 
@@ -2729,6 +2733,10 @@ msgid "Dungeons live in the world now: walk to the mountain gate to climb"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Dust drifts in the torchlight, and no two floors open in the same room any more"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "E moves the talk on and Esc skips to the morning; with Reduce motion the camera cuts and nothing shakes"
 msgstr ""
 
@@ -2798,6 +2806,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Each comes with a full 12-node skill tree, its own look palette, and a proven path to the final boss - the balance sim clears the game with all seven classes"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Each dungeon looks like its place: the Sea Cave wet rock with shallow pools and weed, the Blackiron Shafts rails, timber props and glinting ore"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3141,6 +3153,10 @@ msgid "First look at the open world: walk the Ashenreach from town (beta)"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Five Halls"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Five families keep the ledger readable: Beasts, Greenskins, the Undead, Constructs, the Fireborn"
 msgstr ""
 
@@ -3286,6 +3302,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Green Thumbs"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Greyhold's courtyard is flagged and its paths cobbled, and the Frostgate's road is cobbled up to a flagged yard before the observatory"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3610,6 +3630,14 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Lights Up"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Lit Windows"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Lit windows glow as warm panes and throw their shape onto the ground below, instead of round orbs on the walls"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4213,6 +4241,14 @@ msgid "Paths, bridges and town stay safe - stray off the road at your own risk"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Patterned rugs in every room, and Liane's observatory finally has a telescope, a chart of the two skies and a celestial globe"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Paved Ways"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "People live here now - talk to them with E, Enter or Space"
 msgstr ""
 
@@ -4250,6 +4286,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Pixelheim village, marshland, forest, ash fields, and a river bridge"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Pixelheim's streets grow with the town: rutted dirt, then gravel with edge stones, then cobbles on Upper Street, and in the City a flagged square with brick round the fountain"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4398,6 +4438,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Rooms Upstairs"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Rooms are lit by the day slanting through their windows, and at night by the hearth and the candles, their corners left dark"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4686,6 +4730,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Story captions now wrap instead of running past the edge of the screen"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Street lamps are posts with lanterns, cold by day; at night only their glass glows, with a soft halo and light pooled at their foot"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5198,6 +5246,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The Great Expansion"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The Greyhold Cellars have niches, cobwebs and bones, the Ice Cave frost creeping off its walls, and the Kings' Vault red rugs, banners and gold trim"
 msgstr ""
 
 #: assets/data/changelog.json

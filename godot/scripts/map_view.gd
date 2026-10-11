@@ -63,6 +63,18 @@ var _growth_layer: TileMapLayer
 ## The open ground's patches (paid pack only) and small things (PIX-305).
 var patch_layer: TileMapLayer
 var detail_layer: TileMapLayer
+## The streets' paving in the Medieval Age's stone, by the town's age, and
+## the roads' wear and verges (PIX-307): the look each street takes
+## (Streets.plan), what of it is paved (with the paid pack: all of it) and
+## each paved cell's tile, and the layers they lie on, over the ground and
+## under the cliffs standing in it.
+var streets := {}
+var street_tiles := {}
+var _paved := {}
+var _street_bands: Array[Dictionary] = []
+var paving_layer: TileMapLayer
+var wear_layer: TileMapLayer
+var verge_layer: TileMapLayer
 ## Pixelheim's rampart in the Medieval Age's stone: whole, and scorched.
 var _rampart_layers: Array[TileMapLayer] = []
 ## Every material that reads the region's masks (region_tint.gdshader), to
@@ -115,11 +127,23 @@ var gate_hides := {}
 var entrances: Array[Dictionary] = []
 ## A dungeon floor's torches on the wall (PIX-291), by cell.
 var wall_torches: Array[Vector2i] = []
+## How a dungeon floor is dressed as its place (DungeonLook.plan, PIX-310);
+## empty on any other map.
+var dressing := {}
+static var _motes_texture: ImageTexture
 var furniture_cells: Array[Vector2i] = []
 ## Night (PIX-149): each lamp's flame and its cold torch for the day, and
 ## the warm glows of lamps and windows; set_night shows one or the other.
 var lamps: Array[Dictionary] = []
 var night_glows: Array[Node2D] = []
+## A room's windows full of the day, shown until night (PIX-311).
+var day_glows: Array[Node2D] = []
+## What lights the map for the harness's `lamplight` (PIX-311): the lit
+## windows' glass, a room's candles and sconces (their halos) and the day
+## through its windows (their lights).
+var panes: Array[Node2D] = []
+var flames: Array[Node2D] = []
+var beams: Array[PointLight2D] = []
 ## The ruins burning on the Night of Ash (PIX-197): [{rect, nodes}], in
 ## Town.ruins' order, so the dawn can put them out one by one.
 var fires: Array[Dictionary] = []
@@ -168,6 +192,25 @@ const CAMP_TORCH := [16, 17, 18, 19, 20, 21, 22, 23]
 ## burns this far from its cell's middle (over the wall's top).
 const TORCH_GLOW := [13, 0.28]
 const TORCH_FLAME := Vector2(0, -3)
+## A street lamp at night (PIX-311): a soft halo this big round its glass,
+## and its light pooled on the ground about its foot (from its cell's top
+## left), reaching this far.
+const LAMP_HALO := 11
+const LAMP_HALO_PEAK := 0.32
+const LAMP_POOL := Vector2(8, 12)
+const LAMP_REACH := 72.0
+## A lit window's light thrown on the ground below it, and the day through a
+## room's window on its floor (Lights.spill, Lights.shaft), this far.
+const WINDOW_SPILL := 48.0
+const SUN_REACH := 64.0
+## A candle's or a sconce's light in a room at night, and its halo.
+const CANDLE_REACH := 46.0
+const CANDLE_HALO := 6
+const CANDLE_HALO_PEAK := 0.45
+## The pool of a wall torch's light its dust drifts in (PIX-310), in pixels,
+## from its flame down onto the floor before it, centred this far below it.
+const TORCH_MOTES := Vector2(40, 40)
+const MOTES_BELOW := 9.0
 ## Where a camp's pieces may stand around its home, best first: behind it,
 ## then beside, then in front (the pack itself takes the home and its sides).
 const CAMP_RING := [
@@ -200,6 +243,8 @@ const WAY_OUT_PLATE := 4.0
 ## A burnt house seen small from afar smokes with this share of a ruin's
 ## motes in town (PIX-248).
 const VILLAGE_RUIN_SMOKE := 0.4
+## Its lamps lit one to each this many cells about (PIX-311).
+const VILLAGE_LAMPS_APART := 2
 ## A unit of drawing: a tile layers' physics quadrant, 16 cells square, and
 ## four whole rendering quadrants (LIGHT_BLOCK), laid and drawn once; the
 ## decor and the objects a few rows at a time; the props a handful.
@@ -308,7 +353,7 @@ func _plan_room() -> void:
 	var dressed := PunyInterior.furnish(data.id + data.variant, data.grid, PunyInterior.reserved(data, placed))
 	buildings = {
 		"pieces": room["pieces"], "decor": {}, "freed": [], "floor": room["floor"], "walls": room["walls"], "void": room["void"], "over": room["over"],
-		"rug": dressed["rug"], "objects": dressed["objects"], "tops": dressed["tops"], "lifted": dressed["lifted"],
+		"rug": dressed["rug"], "objects": dressed["objects"], "tops": dressed["tops"], "lifted": dressed["lifted"], "art": dressed["art"],
 	}
 	for cell: Vector2i in room["blocked"] + dressed["blocked"]:
 		data.grid[cell] = "wall"
@@ -489,7 +534,9 @@ func _build_ground(_data: MapData) -> Node2D:
 	kept.lay_ground(ground_layer)
 	kept.lay_rims(rim_layer)
 	kept.lay_crowns(crown_layer)
+	_plan_streets()
 	for i in ceili(data.size.y / float(BLOCK)):
+		_street_rows(i)
 		_object_rows(i)
 		_detail_rows(i)
 	_ground_pieces()
@@ -520,6 +567,8 @@ func _ground_units(slices: Slicer) -> void:
 			kept.lay_ground(ground_layer)
 			kept.lay_rims(rim_layer)
 			kept.lay_crowns(crown_layer))
+	slices.add("ground_streets", _plan_streets)
+	slices.add_each("ground_paving", ceili(data.size.y / float(BLOCK)), _street_rows)
 	slices.add_each("ground_objects", ceili(data.size.y / float(BLOCK)), _object_rows)
 	slices.add_each("ground_detail", ceili(data.size.y / float(BLOCK)), _detail_rows)
 	slices.add("ground_pieces", _ground_pieces)
@@ -586,8 +635,8 @@ func _ground_layers() -> Node2D:
 	root.add_child(ground_layer)
 	# The open ground's patches of the Medieval Age's greens and snow, in
 	# their own colours (the region's tone would whiten its snow's blue tufts
-	# away) with the ground's own patches over the greens, then its small
-	# things toned with the region (PIX-305); the floor, a boss's glow too.
+	# away) with the ground's own patches over the greens (PIX-305); the
+	# floor, a boss's glow too.
 	patch_layer = null
 	if not kept.patches.is_empty() and PunyTown.available():
 		patch_layer = tile_layer_of(PunyTown.tileset())
@@ -597,6 +646,24 @@ func _ground_layers() -> Node2D:
 		patch_layer.material = patched
 		patch_layer.light_mask |= Lights.FLOOR
 		root.add_child(patch_layer)
+	# The streets' paving (PIX-307), the pack's own stone, untoned but where
+	# a region tones all its ground (the Frostgate's snow: its road's stone
+	# greys and the snow drifts in at its edges); then the roads' wear and
+	# the grass at their edges, toned as the ground is.
+	paving_layer = null
+	if PunyTown.available():
+		paving_layer = tile_layer_of(PunyTown.tileset())
+		if kept.crowns_toned:
+			paving_layer.material = ground_tint
+		root.add_child(paving_layer)
+	wear_layer = tile_layer_of(RoadWear.tileset())
+	wear_layer.material = ground_tint
+	root.add_child(wear_layer)
+	verge_layer = tile_layer_of(RoadWear.tileset())
+	verge_layer.material = ground_tint
+	root.add_child(verge_layer)
+	# The open ground's small things (PIX-305), toned with the region, over
+	# the grass at the roads' edges.
 	detail_layer = tile_layer_of(GroundDetail.tileset())
 	detail_layer.material = ground_tint
 	detail_layer.light_mask |= Lights.FLOOR
@@ -707,6 +774,57 @@ func _detail_rows(i: int) -> void:
 		detail_layer.update_internals()
 		if patch_layer != null:
 			patch_layer.update_internals()
+
+
+## The streets this visit paves (PIX-307): each cell's look at the town's
+## age (Streets), and with the pack the tile for it; without it the streets
+## stay bare dirt, worn as a road is.
+func _plan_streets() -> void:
+	streets = Streets.plan(data.id, data.grid, GameState.town_tier())
+	_paved = streets if paving_layer != null else {}
+	street_tiles = Streets.tiles(_paved)
+	# By band of rows, for _street_rows: the paving's tiles, and the cells of
+	# a look that sets kerbs.
+	_street_bands = []
+	for i in ceili(data.size.y / float(BLOCK)):
+		_street_bands.append({"tiles": {}, "kerbed": {}})
+	for cell: Vector2i in street_tiles:
+		var band: Dictionary = _street_bands[floori(cell.y / float(BLOCK))]
+		band["tiles"][cell] = street_tiles[cell]
+		if _paved[cell] in Streets.KERBED:
+			band["kerbed"][cell] = true
+
+
+## The paving, the wear, the verges and a gravelled street's kerbs on cell
+## rows [i * BLOCK, (i + 1) * BLOCK): a band of their layers' quadrants,
+## whole. A road's wear reads the ground past the map's edges where it runs
+## on out (the plane's, or the edge carried on), so its ruts meet the next
+## map's.
+func _street_rows(i: int) -> void:
+	var from := i * BLOCK
+	var to := mini((i + 1) * BLOCK, data.size.y)
+	var band: Dictionary = _street_bands[i]
+	for cell: Vector2i in band["tiles"]:
+		PunyTown.place(paving_layer, cell, band["tiles"][cell])
+	var plane := ReachPlane.holds(data.id)
+	var origin := ReachPlane.origin(data.id) if plane else Vector2i.ZERO
+	var beyond := func(cell: Vector2i) -> String:
+		if plane:
+			return ReachPlane.tile(origin + cell)
+		return data.grid.get(Vector2i(clampi(cell.x, 0, data.size.x - 1), clampi(cell.y, 0, data.size.y - 1)), "")
+	var style := RoadWear.TOWN if data.id in Rampart.MAPS else RoadWear.COUNTRY
+	var worn := RoadWear.rows(data.grid, beyond, data.size, from, to, _paved, origin, style)
+	for cell: Vector2i in worn["wear"]:
+		RoadWear.place(wear_layer, cell, worn["wear"][cell])
+	for cell: Vector2i in worn["verge"]:
+		RoadWear.place(verge_layer, cell, worn["verge"][cell])
+	var kerbs := RoadWear.kerbs(band["kerbed"], _paved, data.grid, from, to)
+	for cell: Vector2i in kerbs:
+		RoadWear.place(verge_layer, cell, kerbs[cell])
+	if sliced:
+		for layer: TileMapLayer in [paving_layer, wear_layer, verge_layer]:
+			if layer != null:
+				layer.update_internals()
 
 
 ## What stands on the ground but the objects: the village far off's wells,
@@ -873,7 +991,9 @@ func _toning() -> ShaderMaterial:
 ## walls, the floor, walls and rugs, then door and furniture (on the walls
 ## where they lean on them, PIX-237), then his furnished corners (PIX-163):
 ## what stands, what stands on it, and what sits on that, 6 px up as in his
-## samples.
+## samples. The windows' glass is full of the day until night, under what
+## leans on the wall; a keeper's pieces drawn in code (RoomArt, PIX-315)
+## stand with the furniture.
 func _build_room(data: MapData) -> Node2D:
 	var root := Node2D.new()
 	root.add_child(_dark_beyond(data))
@@ -887,7 +1007,32 @@ func _build_room(data: MapData) -> Node2D:
 		if frost != null and part in ["floor", "rug", "pieces"]:
 			layer.material = frost
 		root.add_child(layer)
+		if part == "walls":
+			_day_windows(root)
+		elif part == "objects":
+			for cell: Vector2i in buildings.get("art", {}):
+				var piece := Sprite2D.new()
+				piece.texture = RoomArt.texture(buildings["art"][cell])
+				piece.centered = false
+				piece.position = Vector2(cell * TILE)
+				root.add_child(piece)
 	return root
+
+
+## A room's windows by day (PIX-311): the sky in their glass, bright whatever
+## the room's own light, shown until night.
+func _day_windows(root: Node2D) -> void:
+	var glass := LampArt.day_panes()
+	for cell: Vector2i in buildings.get("walls", {}):
+		if buildings["walls"][cell] != PunyTown.WINDOW or glass == null:
+			continue
+		var pane := Sprite2D.new()
+		pane.texture = glass
+		pane.centered = false
+		pane.position = Vector2(cell * TILE)
+		pane.material = Lights.unshaded()
+		root.add_child(pane)
+		day_glows.append(pane)
 
 
 ## The ice cave's stair down through Liane's floor (PIX-290, EntranceArt):
@@ -919,15 +1064,32 @@ static func _dark_beyond(data: MapData) -> ColorRect:
 
 ## A dungeon floor in Shade's Puny Dungeon: stone, walls by his grammar and
 ## the dark beyond, torches flickering on the walls, barrels, pots and the
-## stairs up.
+## stairs up; dressed as its own place (DungeonLook, PIX-310): the look's
+## floor (the Medieval Age's, with the pack), its stone worn and lit by
+## shaders/dungeon.gdshader, what lies flat on it, what hangs on its walls'
+## faces, what its barrels and pots are drawn as, and dust drifting in each
+## torch's light.
 func _build_dungeon(data: MapData) -> Node2D:
 	var root := Node2D.new()
 	root.add_child(_dark_beyond(data))
 	var dungeon := PunyDungeon.sheet()
+	var paid := PunyProps.available()
+	dressing = DungeonLook.plan(data, paid)
+	var stone := _stone(data)
 	var layer := tile_layer_of(dungeon.tileset)
+	layer.material = stone
 	# Its floor and walls answer to a boss's glow (Lights.FLOOR, PIX-314);
 	# what stands on them doesn't.
 	layer.light_mask |= Lights.FLOOR
+	# The Medieval Age's floor, and what stands drawn from it (ore carts),
+	# only with the pack: its sheet isn't there without it.
+	var floors: Dictionary = dressing["floors"]
+	var laid: TileMapLayer = tile_layer_of(PunyTown.tileset()) if paid else null
+	var standing: TileMapLayer = tile_layer_of(PunyTown.tileset()) if paid else null
+	if laid != null:
+		laid.material = stone
+		laid.light_mask |= Lights.FLOOR
+	var swaps: Dictionary = dressing["swaps"]
 	dungeon_objects = tile_layer_of(dungeon.tileset)
 	wall_torches = []
 	for cell: Vector2i in data.grid:
@@ -945,11 +1107,22 @@ func _build_dungeon(data: MapData) -> Node2D:
 				# Its fire lights the floor before it (PIX-221).
 				root.add_child(Lights.make(center(cell) + Vector2(0, TILE * 0.7), 92.0, Lights.FIRE, Lights.TORCH_ENERGY, true))
 				continue
-		dungeon.place(layer, cell, PunyDungeon.floor_tile(cell))
+		if floors.has(cell):
+			PunyTown.place(laid, cell, int(floors[cell]))
+		else:
+			dungeon.place(layer, cell, PunyDungeon.floor_tile(cell))
 		# What a region dungeon's floor draws over a cell (PIX-255): a wreck's
 		# beams, the shortcut's door, shut or open.
 		if data.pieces.has(cell):
 			dungeon.place(dungeon_objects, cell, int(data.pieces[cell]))
+			continue
+		# A blocker the look draws as something else: an ore cart, ore.
+		if swaps.has(cell):
+			var swap: Dictionary = swaps[cell]
+			if swap["sheet"] == "props" and standing != null:
+				PunyTown.place(standing, cell, int(swap["tile"]))
+			else:
+				dungeon.place(dungeon_objects, cell, int(swap["tile"]))
 			continue
 		match tile:
 			"barrel":
@@ -971,7 +1144,9 @@ func _build_dungeon(data: MapData) -> Node2D:
 			"grille":
 				dungeon.place(dungeon_objects, cell, PunyDungeon.GRILLE)
 	root.add_child(layer)
-	var ice := _frozen(data)
+	_keep(root, laid)
+	root.add_child(_dressed(dressing["flats"]))
+	var ice := _frozen(data, floors)
 	if ice != null:
 		ice.light_mask |= Lights.FLOOR
 		root.add_child(ice)
@@ -979,11 +1154,82 @@ func _build_dungeon(data: MapData) -> Node2D:
 		for cell: Vector2i in data.grid:
 			if data.grid[cell] == "ice" and posmod(cell.x, ICE_LIGHT_EVERY.x) == 2 and posmod(cell.y, ICE_LIGHT_EVERY.y) == 2:
 				root.add_child(Lights.make(center(cell), 72.0, Lights.ICE, Lights.ICE_ENERGY))
+	root.add_child(_dressed(dressing["faces"]))
 	root.add_child(dungeon_objects)
-	# Each torch's flame glows softly on the wall round it (PIX-291).
+	_keep(root, standing)
+	# Each torch's flame glows softly on the wall round it (PIX-291), and
+	# dust drifts in its light (PIX-310), but for reduced motion.
 	for cell: Vector2i in wall_torches:
 		root.add_child(_torch_glow(cell))
+		if not GameState.settings.reduce_motion:
+			root.add_child(_torch_motes(cell))
 	return root
+
+
+## The dungeon's stone (shaders/dungeon.gdshader): its look, and the mask
+## of its cells, its sea and its walls (DungeonLook.mask).
+func _stone(data: MapData) -> ShaderMaterial:
+	var stone := ShaderMaterial.new()
+	stone.shader = preload("res://shaders/dungeon.gdshader")
+	var cells := ImageTexture.create_from_image(DungeonLook.mask(data, dressing.get("water", {})))
+	stone.set_shader_parameter("cells", cells)
+	stone.set_shader_parameter("cells_soft", cells)
+	stone.set_shader_parameter("map_pixels", Vector2(data.size * TILE))
+	stone.set_shader_parameter("look", int(DungeonLook.SHADER.get(String(dressing.get("look", "")), 0)))
+	return stone
+
+
+## What a dungeon's look lays on its cells (DungeonLook's flats or faces),
+## a tile layer a sheet: Shade's, the Medieval Age's (only with the pack:
+## the plan has none without it), our own.
+func _dressed(pieces: Dictionary) -> Node2D:
+	var root := Node2D.new()
+	var layers := {}
+	for cell: Vector2i in pieces:
+		var piece: Dictionary = pieces[cell]
+		var sheet := String(piece["sheet"])
+		if not layers.has(sheet):
+			var tile_set: TileSet = DungeonArt.tileset() if sheet == "art" else (PunyTown.tileset() if sheet == "props" else PunyDungeon.sheet().tileset)
+			layers[sheet] = tile_layer_of(tile_set)
+		match sheet:
+			"art":
+				DungeonArt.place(layers[sheet], cell, String(piece["tile"]))
+			"props":
+				PunyTown.place(layers[sheet], cell, int(piece["tile"]))
+			"dungeon":
+				PunyDungeon.sheet().place(layers[sheet], cell, int(piece["tile"]))
+	for sheet: String in ["dungeon", "props", "art"]:
+		if layers.has(sheet):
+			root.add_child(layers[sheet])
+	return root
+
+
+## `layer` under `root` when it holds any tile; otherwise let go.
+static func _keep(root: Node, layer: TileMapLayer) -> void:
+	if layer == null:
+		return
+	if layer.get_used_cells().is_empty():
+		layer.free()
+	else:
+		root.add_child(layer)
+
+
+## Dust drifting in a torch's light (PIX-310, shaders/torch_motes.gdshader):
+## a few motes over the pool its fire lights on the floor before it.
+func _torch_motes(cell: Vector2i) -> Sprite2D:
+	if _motes_texture == null:
+		var blank := Image.create(int(TORCH_MOTES.x), int(TORCH_MOTES.y), false, Image.FORMAT_RGBA8)
+		blank.fill(Color.WHITE)
+		_motes_texture = ImageTexture.create_from_image(blank)
+	var motes := Sprite2D.new()
+	motes.texture = _motes_texture
+	var material := ShaderMaterial.new()
+	material.shader = preload("res://shaders/torch_motes.gdshader")
+	material.set_shader_parameter("size", TORCH_MOTES)
+	material.set_shader_parameter("seed", float(absi(hash(cell)) % 997) / 97.0)
+	motes.material = material
+	motes.position = center(cell) + Vector2(0, MOTES_BELOW)
+	return motes
 
 
 ## A torch's soft glow on the wall round its flame (PIX-291): added onto the
@@ -1005,8 +1251,9 @@ func _torch_glow(cell: Vector2i) -> Sprite2D:
 ## them laid again, frozen by shaders/frozen.gdshader from a mask a texel a
 ## cell (the shore runs between cells, bent off the grid, frost creeping out
 ## over the stone). Between the floor and what stands on it; null for a map
-## with no ice.
-func _frozen(data: MapData) -> TileMapLayer:
+## with no ice. The stone under it is the floor as laid (`floors`: the
+## look's Medieval Age floor, PIX-310), Shade's elsewhere.
+func _frozen(data: MapData, floors: Dictionary) -> Node2D:
 	var mask := Image.create(maxi(data.size.x, 1), maxi(data.size.y, 1), false, Image.FORMAT_L8)
 	var frozen := false
 	for cell: Vector2i in data.grid:
@@ -1017,15 +1264,23 @@ func _frozen(data: MapData) -> TileMapLayer:
 		return null
 	var dungeon := PunyDungeon.sheet()
 	var layer := tile_layer_of(dungeon.tileset)
+	var laid: TileMapLayer = tile_layer_of(PunyTown.tileset()) if not floors.is_empty() else null
 	for cell: Vector2i in data.grid:
 		if data.grid[cell] not in ["wall", "lamp"] and _by_ice(data, cell):
-			dungeon.place(layer, cell, PunyDungeon.floor_tile(cell))
+			if floors.has(cell):
+				PunyTown.place(laid, cell, int(floors[cell]))
+			else:
+				dungeon.place(layer, cell, PunyDungeon.floor_tile(cell))
 	var frost := ShaderMaterial.new()
 	frost.shader = preload("res://shaders/frozen.gdshader")
 	frost.set_shader_parameter("ice_map", ImageTexture.create_from_image(mask))
 	frost.set_shader_parameter("map_pixels", Vector2(data.size * TILE))
-	layer.material = frost
-	return layer
+	var root := Node2D.new()
+	for each: TileMapLayer in [layer, laid]:
+		if each != null:
+			each.material = frost
+			_keep(root, each)
+	return root
 
 
 ## Whether `cell` is ice or touches it, corners too: where the frost may
@@ -1113,15 +1368,18 @@ func _decor_ruins() -> void:
 ## room's windows are in its walls. The village far off has its own.
 func _decor_lights() -> void:
 	var built: Dictionary = buildings.get("walls", {}).merged(buildings["pieces"], true)
+	var room := buildings.has("floor")
 	for cell: Vector2i in built:
 		var tile: int = built[cell]
-		if tile == PunyTown.WINDOW and skyline.is_empty():
-			# A candle behind the glass lights the street a little (PIX-221).
-			_add_glow(center(cell), 10, 0.5, 40.0, Lights.WINDOW, false, Lights.WINDOW_ENERGY)
+		if tile == PunyTown.WINDOW and room:
+			# The day comes in through a room's window and lies on the floor
+			# below it, slanting (PIX-311); its glass is full of the sky
+			# (_build_room).
+			var beam := Lights.daylight(Vector2(cell * TILE) + Vector2(TILE / 2.0, TILE), SUN_REACH, Lights.SUN, Lights.SUN_ENERGY, Lights.shaft())
+			props.add_child(beam)
+			beams.append(beam)
 		elif tile == PunyTown.WINDOW:
-			# Far off the windows stand side by side: a smaller candle each,
-			# on the glass rather than round it (PIX-248).
-			_add_glow(center(cell) + Vector2(0, -1), 6, 0.55, 30.0, Lights.WINDOW, false, Lights.WINDOW_ENERGY)
+			_add_lit_window(cell, not skyline.is_empty())
 		elif tile in PunyInterior.FIRE_TILES:
 			# A hearth or a forge warms the room it's in, and embers rise off
 			# it (PIX-225).
@@ -1132,8 +1390,45 @@ func _decor_lights() -> void:
 			props.add_child(embers)
 		elif tile == PunyTown.DOOR and skyline.is_empty():
 			_add_chimney_smoke(cell)
+	# A room's candles and sconces burn at night, each warming the floor
+	# round it, the corners left dark (PIX-311).
+	for part: String in ["objects", "tops", "lifted"]:
+		var pieces: Dictionary = buildings.get(part, {})
+		for cell: Vector2i in pieces:
+			if PunyInterior.FLAMES.has(pieces[cell]):
+				var at: Vector2 = Vector2(cell * TILE) + PunyInterior.FLAMES[pieces[cell]] - Vector2(0, 6 if part == "lifted" else 0)
+				var halo := _add_halo(at, CANDLE_HALO, CANDLE_HALO_PEAK)
+				var light := Lights.make(at + Vector2(0, TILE / 2.0), CANDLE_REACH, Lights.CANDLE, Lights.CANDLE_ENERGY, true)
+				props.add_child(light)
+				halo.set_meta("light", light)
+				flames.append(halo)
 	if not skyline.is_empty():
 		_add_village_life()
+
+
+## A window lit at night (PIX-311: it was a round orb on the wall): its own
+## glass lit amber (LampArt.panes), the dark untouched; and near, its light
+## thrown on the ground below it in the window's shape (Lights.spill). Far
+## off (the village from the Reach) the lit glass alone: its lamps light its
+## streets, and a light for every window crowded the ground's blocks.
+func _add_lit_window(cell: Vector2i, far: bool) -> void:
+	var glass := LampArt.panes()
+	if glass == null:
+		return
+	var pane := Sprite2D.new()
+	pane.texture = glass
+	pane.centered = false
+	pane.position = Vector2(cell * TILE)
+	pane.material = Lights.unshaded()
+	pane.add_to_group("decor")
+	props.add_child(pane)
+	night_glows.append(pane)
+	panes.append(pane)
+	if far:
+		return
+	var light := Lights.make(Vector2(cell * TILE) + Vector2(TILE / 2.0, TILE), WINDOW_SPILL, Lights.WINDOW, Lights.WINDOW_ENERGY, false, Lights.spill())
+	props.add_child(light)
+	pane.set_meta("light", light)
 
 
 ## The chests and the treasure on the ground, as they stand.
@@ -1483,7 +1778,36 @@ func _add_glow(at: Vector2, radius: int, peak: float, light_radius := 0.0, light
 	return glow
 
 
-## Lamps and windows for the hour: lit from dusk's end to dawn, cold by day.
+static var _halo_textures := {}
+
+
+## A soft halo round a small flame (PIX-311): smooth to nothing at its rim,
+## not a disc of steps, added onto the night and shown only then; the glow
+## pass blooms the flame itself.
+func _add_halo(at: Vector2, radius: int, peak: float) -> Sprite2D:
+	var key := "%d:%f" % [radius, peak]
+	if not _halo_textures.has(key):
+		var size := radius * 2
+		var image := Image.create(size, size, false, Image.FORMAT_RGBA8)
+		for y in size:
+			for x in size:
+				var d := Vector2(x + 0.5 - radius, y + 0.5 - radius).length() / radius
+				if d < 1.0:
+					image.set_pixel(x, y, Color(1.0, 0.72, 0.38, peak * pow(1.0 - d, 2.2)))
+		_halo_textures[key] = ImageTexture.create_from_image(image)
+	var halo := Sprite2D.new()
+	halo.texture = _halo_textures[key]
+	halo.material = Lights.glow()
+	halo.position = at
+	halo.z_index = 5
+	halo.add_to_group("decor")
+	props.add_child(halo)
+	night_glows.append(halo)
+	return halo
+
+
+## Lamps and windows for the hour: lit from dusk's end to dawn, cold by day;
+## a room's windows full of the day until then (PIX-311).
 func set_night(night: bool) -> void:
 	if int(night) == _night:
 		return
@@ -1491,10 +1815,12 @@ func set_night(night: bool) -> void:
 	for lamp: Dictionary in lamps:
 		if is_instance_valid(lamp["flame"]) and not lamp.get("out", false):
 			lamp["flame"].visible = night
-			lamp["unlit"].visible = not night
 	for glow in night_glows:
 		if is_instance_valid(glow):
 			glow.visible = night
+	for pane in day_glows:
+		if is_instance_valid(pane):
+			pane.visible = not night
 
 
 ## A thread of smoke from a house's chimney: up from its door to the roof's
@@ -1516,8 +1842,18 @@ func _add_village_life() -> void:
 			_add_smoke_thread(at)
 	for ruin: Rect2i in skyline["ruins"]:
 		_add_smoke(ruin, VILLAGE_RUIN_SMOKE)
+	# Every lamp glows, but the town's lamps stand close here, small: one
+	# light to each few (PIX-311), so its blocks of ground keep room for
+	# what moves at the City age (test_night_light).
+	var lit: Array[Vector2i] = []
 	for cell: Vector2i in skyline["lamps"]:
-		_add_glow(center(cell), 5, 0.4, 26.0, Lights.LAMP, true, Lights.LAMP_ENERGY)
+		var halo := _add_halo(center(cell), 5, 0.5)
+		if lit.any(func(other: Vector2i) -> bool: return maxi(absi(other.x - cell.x), absi(other.y - cell.y)) <= VILLAGE_LAMPS_APART):
+			continue
+		lit.append(cell)
+		var light := Lights.make(center(cell), 26.0, Lights.LAMP, Lights.LAMP_ENERGY, true)
+		props.add_child(light)
+		halo.set_meta("light", light)
 
 
 ## A thread of chimney smoke rising from `at`. Still with Reduce motion.
@@ -1665,18 +2001,24 @@ func _add_camp_piece(cell: Vector2i, piece: Dictionary) -> void:
 		# (PIX-225).
 		root.add_child(Lights.make(Vector2(TILE / 2.0, -foot.end.y + 4), 72.0, Lights.FIRE, Lights.FIRE_ENERGY, true))
 		var embers := _still(Motes.make_embers(3))
-		embers.position = Vector2(TILE / 2.0, -foot.end.y - 2)
+		embers.position = Vector2(TILE / 2.0, -foot.end.y - 2 - LampArt.STAKE_LIFT)
 		embers.z_index = 6
 		root.add_child(embers)
 		# Each camp's fire flickers on its own beat.
 		flame.frame = absi(hash(cell)) % CAMP_TORCH.size()
 		sprite = flame
+		# On a stake driven into the ground, not a flame afloat (PIX-311).
+		var stake := Sprite2D.new()
+		stake.texture = LampArt.stake()
+		stake.centered = false
+		stake.position = Vector2(0, -foot.end.y)
+		root.add_child(stake)
 	else:
 		var tent := Sprite2D.new()
 		tent.texture = PunyTerrain.sheet().tile_texture(piece["tile"])
 		sprite = tent
 	sprite.set("centered", false)
-	sprite.position = Vector2(0, -foot.end.y)
+	sprite.position = Vector2(0, -foot.end.y - (LampArt.STAKE_LIFT if piece["kind"] == "torch" else 0))
 	root.add_child(sprite)
 	if piece.get("wanted", false):
 		var poster := Sprite2D.new()
@@ -1873,33 +2215,15 @@ func _add_puny_prop(prop: Dictionary) -> Node2D:
 		jet.position = Vector2(0, -TILE / 2.0 - sort_y)
 		jet.play()
 		root.add_child(jet)
+	elif prop["kind"] == "lamp":
+		_add_lamp_post(root, prop["cell"], sort_y)
 	else:
 		for piece: Array in prop["tiles"]:
-			var sprite: Node2D
-			if not prop["frames"].is_empty():
-				# Lit at night only, a cold torch by day, a warm glow around it.
-				var unlit := Sprite2D.new()
-				unlit.texture = PunyProps.texture(PunyProps.LAMP_UNLIT)
-				unlit.centered = false
-				unlit.position = Vector2(piece[0] * TILE) - Vector2(0, sort_y)
-				root.add_child(unlit)
-				var flame := AnimatedSprite2D.new()
-				var glow := _add_glow(Vector2(prop["cell"] * TILE) + Vector2(TILE / 2.0, 4), 22, 0.35, 76.0, Lights.LAMP, true, Lights.LAMP_ENERGY)
-				lamps.append({"flame": flame, "unlit": unlit, "glow": glow})
-				flame.sprite_frames = PunyProps.animation(prop["frames"], PunyProps.LAMP_FPS)
-				flame.material = Lights.unshaded()
-				flame.centered = false
-				# Each torch flickers on its own beat.
-				flame.play()
-				flame.frame = absi(hash(prop["cell"])) % prop["frames"].size()
-				sprite = flame
-			else:
-				var still := Sprite2D.new()
-				still.texture = PunyDungeon.sheet().tile_texture(piece[1]) if prop["sheet"] == "dungeon" else PunyProps.texture(piece[1])
-				still.centered = false
-				sprite = still
-			sprite.position = Vector2(piece[0] * TILE) - Vector2(0, sort_y)
-			root.add_child(sprite)
+			var still := Sprite2D.new()
+			still.texture = PunyDungeon.sheet().tile_texture(piece[1]) if prop["sheet"] == "dungeon" else PunyProps.texture(piece[1])
+			still.centered = false
+			still.position = Vector2(piece[0] * TILE) - Vector2(0, sort_y)
+			root.add_child(still)
 	if foot.has_area():
 		var body := StaticBody2D.new()
 		var shape := CollisionShape2D.new()
@@ -1912,6 +2236,35 @@ func _add_puny_prop(prop: Dictionary) -> Node2D:
 	actors.add_child(root)
 	prop_nodes[prop["cell"]] = root
 	return root
+
+
+## A street lamp (PIX-311: a cold torch read as a bug on the road by day):
+## a post with its lantern (LampArt), its foot on the bottom of the cell;
+## at night its glass lit (the dark doesn't touch it), a soft halo round
+## the glass and its light pooled on the ground about its foot.
+func _add_lamp_post(root: Node2D, cell: Vector2i, sort_y: float) -> void:
+	var top := Vector2(0, TILE - LampArt.size().y - sort_y)
+	var post := Sprite2D.new()
+	post.texture = LampArt.post()
+	post.centered = false
+	post.position = top
+	root.add_child(post)
+	var flame := AnimatedSprite2D.new()
+	flame.sprite_frames = LampArt.glass()
+	flame.material = Lights.unshaded()
+	flame.centered = false
+	flame.position = top
+	flame.play()
+	# Each lamp flickers on its own beat.
+	flame.frame = absi(hash(cell)) % flame.sprite_frames.get_frame_count("default")
+	root.add_child(flame)
+	var at := Vector2(cell * TILE) + Vector2(0, TILE - LampArt.size().y)
+	var halo := _add_halo(at + LampArt.HALO_AT, LAMP_HALO, LAMP_HALO_PEAK)
+	var light := Lights.make(Vector2(cell * TILE) + LAMP_POOL, LAMP_REACH, Lights.LAMP, Lights.LAMP_ENERGY, true)
+	props.add_child(light)
+	halo.tree_exiting.connect(light.queue_free)
+	halo.set_meta("light", light)
+	lamps.append({"flame": flame, "unlit": post, "glow": halo})
 
 
 func _add_decor_sprite(texture_path: String, region: Rect2, cell: Vector2i, h: int) -> void:

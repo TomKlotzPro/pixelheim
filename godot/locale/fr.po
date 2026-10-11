@@ -2609,6 +2609,10 @@ msgid "Controls are rebindable, and French keyboards get ZQSD out of the box"
 msgstr "Les commandes sont reconfigurables, et les claviers français ont droit au ZQSD d'office"
 
 #: assets/data/changelog.json
+msgid "Country roads carry cart ruts, grass on the crown, pebbles and grass creeping in at the edges"
+msgstr "Les routes de campagne portent des ornières de charrette, de l'herbe au milieu, des cailloux et de l'herbe qui gagne les bords"
+
+#: assets/data/changelog.json
 msgid "Crackle and Hum"
 msgstr "Crépitements et bourdonnements"
 
@@ -2729,6 +2733,10 @@ msgid "Dungeons live in the world now: walk to the mountain gate to climb"
 msgstr "Les donjons font désormais partie du monde : marchez jusqu'à la porte de la montagne pour grimper"
 
 #: assets/data/changelog.json
+msgid "Dust drifts in the torchlight, and no two floors open in the same room any more"
+msgstr "La poussière flotte dans la lumière des torches, et deux étages ne s'ouvrent plus jamais sur la même salle"
+
+#: assets/data/changelog.json
 msgid "E moves the talk on and Esc skips to the morning; with Reduce motion the camera cuts and nothing shakes"
 msgstr "E fait avancer la discussion et Esc passe directement au matin ; avec Réduire les animations, la caméra coupe et rien ne tremble"
 
@@ -2799,6 +2807,10 @@ msgstr "Chaque chapitre s'ouvre sur un carton, « Chapitre 3 : La lettre pou
 #: assets/data/changelog.json
 msgid "Each comes with a full 12-node skill tree, its own look palette, and a proven path to the final boss - the balance sim clears the game with all seven classes"
 msgstr "Chacune arrive avec un arbre de compétences complet de 12 nœuds, sa propre palette d'apparence, et un chemin éprouvé jusqu'au boss final - la simulation d'équilibrage termine le jeu avec les sept classes"
+
+#: assets/data/changelog.json
+msgid "Each dungeon looks like its place: the Sea Cave wet rock with shallow pools and weed, the Blackiron Shafts rails, timber props and glinting ore"
+msgstr "Chaque donjon ressemble à son lieu : la Grotte marine, roche mouillée, flaques et algues ; les puits de Fernoir, rails, étais de bois et minerai qui scintille"
 
 #: assets/data/changelog.json
 msgid "Each floor down is a little harder, with something to find on each"
@@ -3141,6 +3153,10 @@ msgid "First look at the open world: walk the Ashenreach from town (beta)"
 msgstr "Premier aperçu du monde ouvert : parcourez la Marche des Cendres depuis la ville (bêta)"
 
 #: assets/data/changelog.json
+msgid "Five Halls"
+msgstr "Cinq demeures"
+
+#: assets/data/changelog.json
 msgid "Five families keep the ledger readable: Beasts, Greenskins, the Undead, Constructs, the Fireborn"
 msgstr "Cinq familles gardent le registre lisible : Bêtes, Peaux-vertes, Morts-vivants, Créations, Nés-du-feu"
 
@@ -3287,6 +3303,10 @@ msgstr "Les grandes potions de soin, les breuvages du phénix et les élixirs so
 #: assets/data/changelog.json
 msgid "Green Thumbs"
 msgstr "La main verte"
+
+#: assets/data/changelog.json
+msgid "Greyhold's courtyard is flagged and its paths cobbled, and the Frostgate's road is cobbled up to a flagged yard before the observatory"
+msgstr "La cour de Greyhold est dallée et ses allées pavées, et la route de la Porte-Givre est pavée jusqu'à une cour dallée devant l'observatoire"
 
 #: assets/data/changelog.json
 msgid "Ground treasure is taken in stride: walk over a glint or herb patch and it is yours"
@@ -3611,6 +3631,14 @@ msgstr "Allumez les cinq lanternes de la place, chassez les braises et éteignez
 #: assets/data/changelog.json
 msgid "Lights Up"
 msgstr "Lumière"
+
+#: assets/data/changelog.json
+msgid "Lit Windows"
+msgstr "Fenêtres allumées"
+
+#: assets/data/changelog.json
+msgid "Lit windows glow as warm panes and throw their shape onto the ground below, instead of round orbs on the walls"
+msgstr "Les fenêtres allumées brillent comme des carreaux chauds et projettent leur forme sur le sol en dessous, au lieu de boules rondes sur les murs"
 
 #: assets/data/changelog.json
 msgid "Lived In"
@@ -4213,6 +4241,14 @@ msgid "Paths, bridges and town stay safe - stray off the road at your own risk"
 msgstr "Chemins, ponts et ville restent sûrs - quittez la route à vos risques et périls"
 
 #: assets/data/changelog.json
+msgid "Patterned rugs in every room, and Liane's observatory finally has a telescope, a chart of the two skies and a celestial globe"
+msgstr "Des tapis à motifs dans chaque pièce, et l'observatoire de Liane a enfin une lunette, une carte des deux ciels et un globe céleste"
+
+#: assets/data/changelog.json
+msgid "Paved Ways"
+msgstr "Rues pavées"
+
+#: assets/data/changelog.json
 msgid "People live here now - talk to them with E, Enter or Space"
 msgstr "Des gens vivent ici désormais - parlez-leur avec E, Enter ou Space"
 
@@ -4251,6 +4287,10 @@ msgstr "Le village de Pixelheim est devenu une vraie ville : plus grande, plus
 #: assets/data/changelog.json
 msgid "Pixelheim village, marshland, forest, ash fields, and a river bridge"
 msgstr "Le village de Pixelheim, des marais, une forêt, des champs de cendres et un pont sur la rivière"
+
+#: assets/data/changelog.json
+msgid "Pixelheim's streets grow with the town: rutted dirt, then gravel with edge stones, then cobbles on Upper Street, and in the City a flagged square with brick round the fountain"
+msgstr "Les rues de Pixelheim grandissent avec le village : terre creusée d'ornières, puis gravier bordé de pierres, puis pavés dans la Grand-Rue, et à l'âge de la Cité une place dallée avec des briques autour de la fontaine"
 
 #: assets/data/changelog.json
 msgid "Plain Sight"
@@ -4399,6 +4439,10 @@ msgstr "De la marge"
 #: assets/data/changelog.json
 msgid "Rooms Upstairs"
 msgstr "Les pièces d'en haut"
+
+#: assets/data/changelog.json
+msgid "Rooms are lit by the day slanting through their windows, and at night by the hearth and the candles, their corners left dark"
+msgstr "Les pièces sont éclairées par le jour qui entre en biais par les fenêtres, et la nuit par l'âtre et les bougies, leurs coins laissés dans l'ombre"
 
 #: assets/data/changelog.json
 msgid "Run home: the dragon comes back to Pixelheim, and this time the village is ready"
@@ -4687,6 +4731,10 @@ msgstr "Pierre et eau"
 #: assets/data/changelog.json
 msgid "Story captions now wrap instead of running past the edge of the screen"
 msgstr "Les textes du récit passent désormais à la ligne au lieu de déborder de l'écran"
+
+#: assets/data/changelog.json
+msgid "Street lamps are posts with lanterns, cold by day; at night only their glass glows, with a soft halo and light pooled at their foot"
+msgstr "Les réverbères sont des poteaux à lanterne, éteints le jour ; la nuit, seul leur verre s'allume, avec un doux halo et une flaque de lumière à leur pied"
 
 #: assets/data/changelog.json
 msgid "Sure Footing"
@@ -5199,6 +5247,10 @@ msgstr "La porte"
 #: assets/data/changelog.json
 msgid "The Great Expansion"
 msgstr "La Grande Expansion"
+
+#: assets/data/changelog.json
+msgid "The Greyhold Cellars have niches, cobwebs and bones, the Ice Cave frost creeping off its walls, and the Kings' Vault red rugs, banners and gold trim"
+msgstr "Les caves de Greyhold ont leurs niches, leurs toiles d'araignée et leurs os, la Grotte de glace son givre qui gagne les murs, et le Caveau des rois ses tapis rouges, ses bannières et ses dorures"
 
 #: assets/data/changelog.json
 msgid "The Greyhold cellars now go three floors down: the cells with Fenwick's locket, the garrison's crypt with Ana's father's badge, and the captain's great hall"

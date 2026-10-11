@@ -52,7 +52,8 @@ const TABLE := [
 	{"field": "delivered", "says": "Maren's letters delivered, once any is out (PIX-253)"},
 	{"field": "dest", "says": "the waypoint the map's list has chosen, while the map is open (PIX-241)"},
 	{"field": "detail", "says": "on a map in the open air: how many small things its open ground grew, tufts, clover, flowers, pebbles, twigs, reeds and sedge (PIX-305)"},
-	{"field": "ending", "says": "the ending this hero chose for Morvax once it has played: home or stay (an old save's throne: destroy or rest) (PIX-253 step 10)"},
+	{"field": "dressed", "says": "on a dungeon floor: its look and what it is dressed in, counted by kind: mine:ore3,props6,rail68 (PIX-310)"},
+	{"field": "ending", "says":"the ending this hero chose for Morvax once it has played: home or stay (an old save's throne: destroy or rest) (PIX-253 step 10)"},
 	{"field": "entrance", "says": "the ways in drawn as entrances in their setting on this map, by look: mine, sea_cave, mountain_gate, vault_door, ice_stair (PIX-290)"},
 	{"field": "feats", "says": "the feats done, by id, once any is (PIX-257)"},
 	{"field": "fell", "says": "bosses fallen, when one fell (PIX-232)"},
@@ -66,6 +67,7 @@ const TABLE := [
 	{"field": "home", "says": "who the story brought home to live in town, by first name: wenna (PIX-255)"},
 	{"field": "jobs", "says": "on the Night of Bells: the townsfolk's jobs that have acted, by kind: arrows,bell,cheese (PIX-253 step 9)"},
 	{"field": "jumps", "says": "with turning: the hero's drawn way changing more than an eighth of a turn at once, a snap round a corner (PIX-293)"},
+	{"field": "lamplight", "says": "on a map with lamps or lit windows, and in every room: its street lamps lit of all, its windows' lit glass, a room's candles burning and the day through its windows: posts 6/6 panes 12 flames 0 beams 0 (PIX-311)"},
 	{"field": "letters", "says": "Maren's letters in the pack, once any is out (PIX-253)"},
 	{"field": "lit", "says": "on the Night of Bells: the lanterns on the square lit (PIX-253 step 9)"},
 	{"field": "logged", "says": "with floats: the lines the battle log showed (PIX-245)"},
@@ -88,6 +90,7 @@ const TABLE := [
 	{"field": "speaker", "says": "who the open conversation is with, by id: innkeeper (PIX-283)"},
 	{"field": "stood", "says": "named foes that stood down rather than fell, when one did (PIX-255)"},
 	{"field": "story", "says": "the main story's hollow diamond on the map's page, while something else is followed (PIX-253)"},
+	{"field": "street", "says": "the street under the hero: the paving its age lays (gravel, cobbles, sandstone, bricks, flags; drawn with the paid art, bare dirt without), or worn on a rutted road (PIX-307)"},
 	{"field": "tab", "says": "with station: the tab the counter opened on (PIX-234)"},
 	{"field": "titleline", "says": "the title's line under its menu, by what it's about: slot (the slot in hand: unreadable, or its hero the save before, PIX-303) or full (New Game with no slot free, PIX-316)"},
 	{"field": "tone", "says": "on a map in the open air: how the region's tone takes the hero's cell: whole (tone), the mire's with its murk and puddles (mire), its dirt only beside the ash (fringe), or none (PIX-305)"},
@@ -368,6 +371,19 @@ func field_detail() -> String:
 	return str(world.view.detail_layer.get_used_cells().size())
 
 
+func field_dressed() -> String:
+	if world.view == null or String(world.view.dressing.get("look", "")) == "":
+		return ""
+	var counts: Dictionary = world.view.dressing["counts"]
+	var kinds: Array = counts.keys()
+	kinds.sort()
+	var parts: PackedStringArray = []
+	for kind: String in kinds:
+		parts.append("%s%d" % [kind, counts[kind]])
+	var look := String(world.view.dressing["look"])
+	return look if parts.is_empty() else "%s:%s" % [look, ",".join(parts)]
+
+
 func field_ending() -> String:
 	return Story.ending_of(GameState.progression.story_seen)
 
@@ -443,6 +459,20 @@ func field_jobs() -> String:
 
 func field_jumps() -> String:
 	return noted("jumps")
+
+
+func field_lamplight() -> String:
+	var view: MapView = world.view
+	if view == null:
+		return ""
+	# A room always says (without the paid pack it has none of them).
+	var room := PunyInterior.is_room(world.map.id)
+	if not room and view.lamps.is_empty() and view.panes.is_empty() and view.flames.is_empty() and view.beams.is_empty():
+		return ""
+	var lit := view.lamps.filter(func(lamp: Dictionary) -> bool: return is_instance_valid(lamp["flame"]) and lamp["flame"].visible).size()
+	var shown := func(nodes: Array) -> int:
+		return nodes.filter(func(node: Node) -> bool: return is_instance_valid(node) and (node as CanvasItem).visible).size()
+	return "posts %d/%d panes %d flames %d beams %d" % [lit, view.lamps.size(), shown.call(view.panes), shown.call(view.flames), shown.call(view.beams)]
 
 
 func field_letters() -> String:
@@ -578,6 +608,16 @@ func field_story() -> String:
 		return ""
 	var story: Vector2i = screen.painting.story_cell()
 	return "%d,%d" % [story.x, story.y] if story != Bearing.NOWHERE else ""
+
+
+func field_street() -> String:
+	var view: MapView = world.view
+	if view == null or not view.has_ground_layers():
+		return ""
+	var cell: Vector2i = world.player_cell
+	if view.streets.has(cell):
+		return view.streets[cell]
+	return "worn" if view.wear_layer.get_cell_source_id(cell) >= 0 else ""
 
 
 func field_tab() -> String:

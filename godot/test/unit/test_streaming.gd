@@ -56,6 +56,7 @@ func _draw(map_id: String, sliced: bool) -> Dictionary:
 	return {
 		"nodes": _count(root), "ground": _cells(view.ground_layer), "crowns": _cells(view.crown_layer), "rims": _cells(view.rim_layer),
 		"blockers": _cells(view.tile_layer), "covered": data.covered.keys(), "frames": frames, "view": view, "data": data,
+		"paving": _cells(view.paving_layer) if view.paving_layer != null else {}, "wear": _cells(view.wear_layer), "verges": _cells(view.verge_layer),
 		# The open ground's small things and patches (PIX-305).
 		"details": _cells(view.detail_layer), "patches": _cells(view.patch_layer) if view.patch_layer != null else {},
 	}
@@ -68,7 +69,7 @@ func test_a_map_drawn_in_slices_is_the_map_a_door_draws() -> void:
 		var sliced := _draw(map_id, true)
 		var whole := _draw(map_id, false)
 		assert_gt(sliced["frames"], 2, "%s took a few frames" % map_id)
-		for part: String in ["nodes", "ground", "rims", "crowns", "blockers", "covered", "details", "patches"]:
+		for part: String in ["nodes", "ground", "rims", "crowns", "blockers", "covered", "paving", "wear", "verges", "details", "patches"]:
 			assert_eq(sliced[part], whole[part], "%s: its %s the same" % [map_id, part])
 		var kept: KeptGround = whole["view"].kept
 		assert_eq(sliced["ground"].size(), kept.ground.size(), "%s: every corner of its kept ground laid, its edges' padding too" % map_id)
@@ -120,6 +121,12 @@ func test_every_tile_the_reach_draws_is_made_ahead() -> void:
 		for tile: int in used:
 			assert_true(terrain.has(tile), "%s draws Puny World tile %d, made ahead" % [map_id, tile])
 		var built: Array = view.buildings["pieces"].values() + view.buildings["decor"].values() + view.outdoor_props["flat"].values() \
-			+ view.rampart.get("pieces", {}).values() + view.kept.patches.values()
+			+ view.rampart.get("pieces", {}).values() + view.street_tiles.values() + view.kept.patches.values()
 		for tile: int in built:
-			assert_true(town.has(tile), "%s draws house or flower tile %d, made ahead" % [map_id, tile])
+			assert_true(town.has(tile), "%s draws house, flower or paving tile %d, made ahead" % [map_id, tile])
+		# The roads' wear is drawn in code, its every tile made with its
+		# tileset at once (PIX-307).
+		var wear := RoadWear.tileset().get_source(0) as TileSetAtlasSource
+		for layer: TileMapLayer in [view.wear_layer, view.verge_layer]:
+			for cell: Vector2i in layer.get_used_cells():
+				assert_true(wear.has_tile(layer.get_cell_atlas_coords(cell)), "%s's wear at %s made ahead" % [map_id, cell])

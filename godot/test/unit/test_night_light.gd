@@ -134,6 +134,17 @@ func test_the_town_at_night_at_every_age() -> void:
 		_check("the town at age %d" % tier, _drawn(MapData.load_tiered("town", projects, 1)), moving)
 
 
+## The village seen from the Reach at every age (PIX-311): its lamps stand
+## close there, small, and at the City age a light to each crowded one of
+## the ground's blocks with fifteen.
+func test_the_village_far_off_at_every_age() -> void:
+	GameState.progression.prologue = Prologue.DONE
+	for tier in Town.MAX_TIER + 1:
+		GameState.settlement.town_tier = tier
+		GameState.settlement.projects.assign(Town.projects_through(tier))
+		_check("the Reach with the village at age %d" % tier, _drawn(MapData.load_by_id("overworld")))
+
+
 func test_every_map_at_night() -> void:
 	GameState.progression.prologue = Prologue.DONE
 	var maps := DirAccess.get_files_at("res://assets/maps")

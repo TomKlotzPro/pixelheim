@@ -1,6 +1,37 @@
 {
   "releases": [
     {
+      "version": "0.238.0",
+      "date": "2026-10-11",
+      "codename": "Lit Windows",
+      "notes": [
+        "Street lamps are posts with lanterns, cold by day; at night only their glass glows, with a soft halo and light pooled at their foot",
+        "Lit windows glow as warm panes and throw their shape onto the ground below, instead of round orbs on the walls",
+        "Rooms are lit by the day slanting through their windows, and at night by the hearth and the candles, their corners left dark",
+        "Patterned rugs in every room, and Liane's observatory finally has a telescope, a chart of the two skies and a celestial globe"
+      ]
+    },
+    {
+      "version": "0.237.0",
+      "date": "2026-10-11",
+      "codename": "Five Halls",
+      "notes": [
+        "Each dungeon looks like its place: the Sea Cave wet rock with shallow pools and weed, the Blackiron Shafts rails, timber props and glinting ore",
+        "The Greyhold Cellars have niches, cobwebs and bones, the Ice Cave frost creeping off its walls, and the Kings' Vault red rugs, banners and gold trim",
+        "Dust drifts in the torchlight, and no two floors open in the same room any more"
+      ]
+    },
+    {
+      "version": "0.236.0",
+      "date": "2026-10-11",
+      "codename": "Paved Ways",
+      "notes": [
+        "Pixelheim's streets grow with the town: rutted dirt, then gravel with edge stones, then cobbles on Upper Street, and in the City a flagged square with brick round the fountain",
+        "Country roads carry cart ruts, grass on the crown, pebbles and grass creeping in at the edges",
+        "Greyhold's courtyard is flagged and its paths cobbled, and the Frostgate's road is cobbled up to a flagged yard before the observatory"
+      ]
+    },
+    {
       "version": "0.235.0",
       "date": "2026-10-11",
       "codename": "Deep Water",

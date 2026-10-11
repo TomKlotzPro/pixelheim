@@ -24,6 +24,8 @@ const GLOW_LAYER := 1
 ## (sunlit sand is bright too), a soft halo round every flame in the dark.
 const GLOW_DAY := 0.0
 const GLOW_NIGHT := 0.9
+## How strongly a room blooms at night, a share of the open air's (PIX-311).
+const ROOM_GLOW := 0.7
 ## The light now and how dark it is (0 by day, 1 at night).
 var light := Color.WHITE
 var dark := 0.0
@@ -96,6 +98,10 @@ func _ready() -> void:
 		glow_wide = _screen_pass(_wide_layer, preload("res://shaders/glow_wide.gdshader"))
 		_show_wide(false)
 	wear(DesktopLook.pick(app, HarnessFlags.given()))
+	# The windows' light shapes made now (PIX-311), not in the frame a map
+	# with windows is first drawn beside the hero.
+	Lights.spill()
+	Lights.shaft()
 
 
 ## Wears a look (DesktopLook.LOOKS): the canvas in linear HDR or not, and
@@ -212,10 +218,15 @@ func _process(delta: float) -> void:
 	bloom.visible = GameState.settings.glow
 	_glow_copy.visible = bloom.visible
 	_air_copy.visible = air.visible
+	# A room blooms with the night outside, a little less (PIX-311): by its
+	# own dim day its sunlit windows would glow into the dark round it.
+	var glowing := dark
+	if world.map != null and PunyInterior.is_room(world.map.id):
+		glowing = ROOM_GLOW * Lights.darkness(Lights.outdoor(GameState.world.steps))
 	if bloom.visible:
-		(bloom.material as ShaderMaterial).set_shader_parameter("strength", lerpf(GLOW_DAY, GLOW_NIGHT, dark))
+		(bloom.material as ShaderMaterial).set_shader_parameter("strength", lerpf(GLOW_DAY, GLOW_NIGHT, glowing))
 	if glow_wide != null:
-		var wide := DesktopLook.wide(DesktopLook.look, dark, GameState.settings.glow)
+		var wide := DesktopLook.wide(DesktopLook.look, glowing, GameState.settings.glow)
 		_show_wide(wide > 0.0)
 		(glow_wide.material as ShaderMaterial).set_shader_parameter("strength", wide)
 	tick(delta)
@@ -224,11 +235,14 @@ func _process(delta: float) -> void:
 	_drift_clouds(at, overcast)
 	var still: bool = GameState.settings.reduce_motion
 	var t := GameClock.seconds()
+	# The day through a room's window follows the sky, not the room's dark
+	# (PIX-311), and dims under rain.
+	var day := (1.0 - Lights.darkness(Lights.outdoor(GameState.world.steps))) * (1.0 - 0.5 * rain)
 	for node in get_tree().get_nodes_in_group("lights"):
 		var lamp := node as PointLight2D
 		if lamp.has_meta("tint"):
 			lamp.color = DesktopLook.canvas_color(lamp.get_meta("tint"), DesktopLook.linear)
-		var energy := float(lamp.get_meta("energy", 1.0)) * dark
+		var energy := float(lamp.get_meta("energy", 1.0)) * (day if lamp.get_meta("by_day", false) else dark)
 		if lamp.get_meta("flicker", false) and not still:
 			var phase := float(lamp.get_meta("phase", 0.0))
 			energy *= 1.0 + 0.07 * sin(t * 8.3 + phase) + 0.04 * sin(t * 21.7 + phase * 1.9)

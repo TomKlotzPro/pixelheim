@@ -34,9 +34,10 @@ const AREAS := ["town", "rooms", "reach", "regions", "ways", "dungeon", "combat"
 ## (`rain`); and a foe to face, for the fight, struck on a beat while it's
 ## filmed (`strike`), the third blow felling it, or caught as it notices the
 ## hero (`notice`, PIX-289). A `letter` of Maren's is carried for that shot
-## alone (its recipient's mark). Only a shot with `card` keeps the title
-## card naming the place it enters (PIX-269). A new shot goes with its
-## area's.
+## alone (its recipient's mark), and the town stands at age `tier` for it
+## alone (PIX-307; every age built otherwise). Only a shot with `card` keeps
+## the title card naming the place it enters (PIX-269). A new shot goes
+## with its area's.
 const SHOTS := {
 	"town_day": {"area": "town", "map": "town", "at": "street", "time": DAY},
 	"town_dusk": {"area": "town", "map": "town", "at": "street", "time": DUSK},
@@ -61,13 +62,30 @@ const SHOTS := {
 	"turn": {"area": "town", "map": "town", "cell": Vector2i(38, 13), "time": DAY, "walk": true, "legs": "turn"},
 	# Odo's store rising out of its ruin on the town's tour (PIX-264).
 	"rise": {"area": "town", "map": "town", "at": "street", "time": DAY, "rise": "odos_store"},
+	# The streets by the town's age (PIX-307, `tier`): Upper Street trodden
+	# and rutted in the Ashes, the square in gravel in the Village, Upper
+	# Street cobbled in the Town, and the City's square in sandstone, brick
+	# round its fountain, by day and at night.
+	"streets_ashes": {"area": "town", "map": "town", "cell": Vector2i(40, 13), "time": DAY, "tier": 0},
+	"streets_village": {"area": "town", "map": "town", "cell": Vector2i(40, 22), "time": DAY, "tier": 2},
+	"streets_town": {"area": "town", "map": "town", "cell": Vector2i(40, 13), "time": DAY, "tier": 3},
+	"streets_city": {"area": "town", "map": "town", "cell": Vector2i(40, 22), "time": DAY},
+	"streets_city_night": {"area": "town", "map": "town", "cell": Vector2i(40, 22), "time": NIGHT},
 	"inn_night": {"area": "rooms", "map": "town_inn", "time": NIGHT},
+	# A room by day, the day through its windows lying on the floor, and
+	# Odo's store's patterned rug (PIX-311, PIX-315).
+	"inn_day": {"area": "rooms", "map": "town_inn", "time": DAY},
+	"odos_store": {"area": "rooms", "map": "town_shop", "time": DAY},
 	"smithy_day": {"area": "rooms", "map": "town_smith", "time": DAY},
 	# A house opens onto a room, the cave down a stair in its floor (PIX-256):
 	# Liane's room and Captain Hale's hall from beside the stairwell, then at
 	# its top, the stairs asking.
 	"lianes_room": {"area": "rooms", "map": "observatory", "cell": Vector2i(13, 7), "time": DAY},
 	"lianes_stair": {"area": "rooms", "map": "observatory", "cell": Vector2i(13, 6), "time": DAY, "down": true},
+	# Liane's observatory at night (PIX-311, PIX-315): her telescope at the
+	# window, the chart of the sky on the wall, the globe of it by her desk,
+	# her candles lit and the corners dark.
+	"lianes_room_night": {"area": "rooms", "map": "observatory", "cell": Vector2i(10, 6), "time": NIGHT},
 	"hales_hall": {"area": "rooms", "map": "keep", "cell": Vector2i(13, 7), "time": DAY},
 	"hales_stair": {"area": "rooms", "map": "keep", "cell": Vector2i(13, 6), "time": DAY, "down": true},
 	# Morvax's forge (PIX-253 step 8): the cot, the cold anvil, and fifty
@@ -89,6 +107,10 @@ const SHOTS := {
 	"village_road": {"area": "reach", "map": "overworld", "cell": Vector2i(48, 40), "time": DAY},
 	"village_gate_night": {"area": "reach", "map": "overworld", "cell": Vector2i(48, 41), "time": NIGHT},
 	"village_west_night": {"area": "reach", "map": "overworld", "cell": Vector2i(34, 47), "time": NIGHT},
+	# A country road's wear (PIX-307): the road south from the river to the
+	# village, its ruts, the grass on its crown and at its edges, its stones.
+	"country_road": {"area": "reach", "map": "overworld", "cell": Vector2i(48, 36), "time": DAY},
+	"country_road_night": {"area": "reach", "map": "overworld", "cell": Vector2i(48, 36), "time": NIGHT},
 	# The Reach's river at its bridge (PIX-306): its depth, its banks bent
 	# off the grid, streaks drifting downstream and foam at the bridge's
 	# piles; by day and at night.
@@ -113,6 +135,12 @@ const SHOTS := {
 	"frostgate": {"area": "regions", "map": "frostgate", "time": DAY},
 	"frost_fields": {"area": "regions", "map": "frostgate", "cell": Vector2i(14, 40), "time": DAY},
 	"frost_fields_night": {"area": "regions", "map": "frostgate", "cell": Vector2i(14, 40), "time": NIGHT},
+	# Lamps by a door and a camp's torches on their stakes (PIX-311): Greyhold's
+	# keep by day and at night, its windows lit; the Frostgate's observatory
+	# at night.
+	"greyhold_keep": {"area": "regions", "map": "greyhold", "cell": Vector2i(36, 15), "time": DAY},
+	"greyhold_keep_night": {"area": "regions", "map": "greyhold", "cell": Vector2i(36, 15), "time": NIGHT},
+	"frostgate_night": {"area": "regions", "map": "frostgate", "cell": Vector2i(28, 12), "time": NIGHT},
 	"coast": {"area": "regions", "map": "saltmere", "cell": Vector2i(33, 27), "time": DAY},
 	"saltmere_fields": {"area": "regions", "map": "saltmere", "cell": Vector2i(8, 8), "time": DAY},
 	"saltmere_fields_night": {"area": "regions", "map": "saltmere", "cell": Vector2i(8, 8), "time": NIGHT},
@@ -131,6 +159,12 @@ const SHOTS := {
 	# The mountain road (PIX-253 step 8): its switchbacks up the ash to the
 	# forge in the rock, and the lamp by its door.
 	"mountain_road": {"area": "regions", "map": "mountain_road", "cell": Vector2i(17, 8), "time": DAY},
+	# Paving beyond the village (PIX-307): Greyhold's courtyard flagged, its
+	# paths cobbled, by day and at night; the Frostgate's observatory in its
+	# flagged yard at the end of a cobbled road.
+	"courtyard": {"area": "regions", "map": "greyhold", "cell": Vector2i(36, 20), "time": DAY},
+	"courtyard_night": {"area": "regions", "map": "greyhold", "cell": Vector2i(36, 20), "time": NIGHT},
+	"frost_road": {"area": "regions", "map": "frostgate", "cell": Vector2i(28, 13), "time": DAY},
 	# The marks over the world (PIX-284, PIX-289): on Saltmere's sand the
 	# givers' parchment talk marks and Old Wenna's gold one, a letter of
 	# Maren's carried to her (`letter`, only for the shot), and the arrow
@@ -171,6 +205,21 @@ const SHOTS := {
 	"frozen_lake": {"area": "dungeon", "map": "icecave_lake", "cell": Vector2i(30, 14), "time": DAY},
 	# The arrow in the sea cave's dark (PIX-284), toward its way out.
 	"cave_marks": {"area": "dungeon", "map": "seacave", "cell": Vector2i(24, 18), "time": DAY},
+	# Each dungeon as its place (PIX-310), a room and a hall: the sea cave's
+	# wet rock and pools of the sea, the shafts' rail line, timber and ore,
+	# the cellars' crypt, the ice cave's frost, the Kings' Vault's rugs,
+	# banners and gilded walls; and a planned floor's entrance, its own.
+	"sea_cave_room": {"area": "dungeon", "map": "seacave", "cell": Vector2i(20, 12), "time": DAY},
+	"sea_cave_hall": {"area": "dungeon", "map": "seacave_galleries", "cell": Vector2i(25, 9), "time": DAY},
+	"shafts_room": {"area": "dungeon", "map": "shafts_gallery", "cell": Vector2i(19, 15), "time": DAY},
+	"shafts_hall": {"area": "dungeon", "map": "shafts", "cell": Vector2i(19, 8), "time": DAY},
+	"crypt_room": {"area": "dungeon", "map": "cellars_crypt", "cell": Vector2i(17, 12), "time": DAY},
+	"crypt_hall": {"area": "dungeon", "map": "cellars", "cell": Vector2i(19, 17), "time": DAY},
+	"ice_cave_room": {"area": "dungeon", "map": "icecave", "cell": Vector2i(20, 7), "time": DAY},
+	"ice_cave_hall": {"area": "dungeon", "map": "icecave", "cell": Vector2i(19, 15), "time": DAY},
+	"vault_room": {"area": "dungeon", "map": "vault_2", "cell": Vector2i(18, 12), "time": DAY},
+	"vault_hall": {"area": "dungeon", "map": "vault_1", "cell": Vector2i(12, 11), "time": DAY},
+	"gallery_entrance": {"area": "dungeon", "map": "shafts_gallery", "time": DAY},
 	"fight": {"area": "combat", "map": "overworld", "at": "forest_1", "time": DAY, "foe": "orc"},
 	"strike": {"area": "combat", "map": "overworld", "at": "forest_1", "time": DAY, "foe": "orc", "strike": true},
 	# A foe noticing the hero on the grass west of the village (PIX-289): its
@@ -348,6 +397,10 @@ static func ordered() -> PackedStringArray:
 func _stage(shot: Dictionary) -> void:
 	world.messages.clear()
 	world.hud.forget_places()
+	if shot.has("tier"):
+		# The town at an earlier age, for this shot alone (_unstage).
+		GameState.settlement.town_tier = int(shot["tier"])
+		GameState.settlement.projects.assign(Town.projects_through(int(shot["tier"])))
 	GameState.world.steps = shower_by_day() if shot.get("rain", false) else float(shot["time"]) * DayNight.DAY_CYCLE_STEPS
 	world.map = world.load_map(shot["map"])
 	var at: Vector2i = nearest_walkable(world.map, shot["cell"]) if shot.has("cell") else _cell(world.map, String(shot.get("at", "")))
@@ -396,8 +449,11 @@ func _stage(shot: Dictionary) -> void:
 
 
 ## What a shot set up for itself alone taken back, so the shots after it
-## find the hero as they were: its letter.
+## find the hero as they were: its letter, the town's age.
 func _unstage(shot: Dictionary) -> void:
+	if shot.has("tier"):
+		GameState.settlement.town_tier = Town.MAX_TIER
+		GameState.settlement.projects.assign(Town.projects_through(Town.MAX_TIER))
 	if shot.has("letter"):
 		GameState.pack.remove_item(shot["letter"])
 		GameState.progression.quests.erase(shot["letter"])
