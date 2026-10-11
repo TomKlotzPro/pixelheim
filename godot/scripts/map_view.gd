@@ -60,6 +60,18 @@ var rim_layer: TileMapLayer
 var crown_layer: TileMapLayer
 var _objects_layer: TileMapLayer
 var _growth_layer: TileMapLayer
+## The streets' paving in the Medieval Age's stone, by the town's age, and
+## the roads' wear and verges (PIX-307): the look each street takes
+## (Streets.plan), what of it is paved (with the paid pack: all of it) and
+## each paved cell's tile, and the layers they lie on, over the ground and
+## under the cliffs standing in it.
+var streets := {}
+var street_tiles := {}
+var _paved := {}
+var _street_bands: Array[Dictionary] = []
+var paving_layer: TileMapLayer
+var wear_layer: TileMapLayer
+var verge_layer: TileMapLayer
 ## Pixelheim's rampart in the Medieval Age's stone: whole, and scorched.
 var _rampart_layers: Array[TileMapLayer] = []
 ## Every material that reads the region's masks (region_tint.gdshader), to
@@ -486,7 +498,9 @@ func _build_ground(_data: MapData) -> Node2D:
 	kept.lay_ground(ground_layer)
 	kept.lay_rims(rim_layer)
 	kept.lay_crowns(crown_layer)
+	_plan_streets()
 	for i in ceili(data.size.y / float(BLOCK)):
+		_street_rows(i)
 		_object_rows(i)
 	_ground_pieces()
 	return root
@@ -516,6 +530,8 @@ func _ground_units(slices: Slicer) -> void:
 			kept.lay_ground(ground_layer)
 			kept.lay_rims(rim_layer)
 			kept.lay_crowns(crown_layer))
+	slices.add("ground_streets", _plan_streets)
+	slices.add_each("ground_paving", ceili(data.size.y / float(BLOCK)), _street_rows)
 	slices.add_each("ground_objects", ceili(data.size.y / float(BLOCK)), _object_rows)
 	slices.add("ground_pieces", _ground_pieces)
 
@@ -575,6 +591,22 @@ func _ground_layers() -> Node2D:
 	ground_tint.set_shader_parameter("water_map", kept.water_map)
 	ground_layer.material = water
 	root.add_child(ground_layer)
+	# The streets' paving (PIX-307), the pack's own stone, untoned but where
+	# a region tones all its ground (the Frostgate's snow: its road's stone
+	# greys and the snow drifts in at its edges); then the roads' wear and
+	# the grass at their edges, toned as the ground is.
+	paving_layer = null
+	if PunyTown.available():
+		paving_layer = tile_layer_of(PunyTown.tileset())
+		if kept.crowns_toned:
+			paving_layer.material = ground_tint
+		root.add_child(paving_layer)
+	wear_layer = tile_layer_of(RoadWear.tileset())
+	wear_layer.material = ground_tint
+	root.add_child(wear_layer)
+	verge_layer = tile_layer_of(RoadWear.tileset())
+	verge_layer.material = ground_tint
+	root.add_child(verge_layer)
 	# Shade's cliffs standing in the water, the sand and the roads
 	# (PunyTerrain.rimmed), toned as the ground is, but still: the water
 	# under them swells.
@@ -657,6 +689,57 @@ func _object_rows(i: int) -> void:
 				PunyTerrain.place(_objects_layer, cell, object)
 	if sliced:
 		_objects_layer.update_internals()
+
+
+## The streets this visit paves (PIX-307): each cell's look at the town's
+## age (Streets), and with the pack the tile for it; without it the streets
+## stay bare dirt, worn as a road is.
+func _plan_streets() -> void:
+	streets = Streets.plan(data.id, data.grid, GameState.town_tier())
+	_paved = streets if paving_layer != null else {}
+	street_tiles = Streets.tiles(_paved)
+	# By band of rows, for _street_rows: the paving's tiles, and the cells of
+	# a look that sets kerbs.
+	_street_bands = []
+	for i in ceili(data.size.y / float(BLOCK)):
+		_street_bands.append({"tiles": {}, "kerbed": {}})
+	for cell: Vector2i in street_tiles:
+		var band: Dictionary = _street_bands[floori(cell.y / float(BLOCK))]
+		band["tiles"][cell] = street_tiles[cell]
+		if _paved[cell] in Streets.KERBED:
+			band["kerbed"][cell] = true
+
+
+## The paving, the wear, the verges and a gravelled street's kerbs on cell
+## rows [i * BLOCK, (i + 1) * BLOCK): a band of their layers' quadrants,
+## whole. A road's wear reads the ground past the map's edges where it runs
+## on out (the plane's, or the edge carried on), so its ruts meet the next
+## map's.
+func _street_rows(i: int) -> void:
+	var from := i * BLOCK
+	var to := mini((i + 1) * BLOCK, data.size.y)
+	var band: Dictionary = _street_bands[i]
+	for cell: Vector2i in band["tiles"]:
+		PunyTown.place(paving_layer, cell, band["tiles"][cell])
+	var plane := ReachPlane.holds(data.id)
+	var origin := ReachPlane.origin(data.id) if plane else Vector2i.ZERO
+	var beyond := func(cell: Vector2i) -> String:
+		if plane:
+			return ReachPlane.tile(origin + cell)
+		return data.grid.get(Vector2i(clampi(cell.x, 0, data.size.x - 1), clampi(cell.y, 0, data.size.y - 1)), "")
+	var style := RoadWear.TOWN if data.id in Rampart.MAPS else RoadWear.COUNTRY
+	var worn := RoadWear.rows(data.grid, beyond, data.size, from, to, _paved, origin, style)
+	for cell: Vector2i in worn["wear"]:
+		RoadWear.place(wear_layer, cell, worn["wear"][cell])
+	for cell: Vector2i in worn["verge"]:
+		RoadWear.place(verge_layer, cell, worn["verge"][cell])
+	var kerbs := RoadWear.kerbs(band["kerbed"], _paved, data.grid, from, to)
+	for cell: Vector2i in kerbs:
+		RoadWear.place(verge_layer, cell, kerbs[cell])
+	if sliced:
+		for layer: TileMapLayer in [paving_layer, wear_layer, verge_layer]:
+			if layer != null:
+				layer.update_internals()
 
 
 ## What stands on the ground but the objects: the village far off's wells,
