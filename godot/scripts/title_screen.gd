@@ -10,6 +10,13 @@ const LOGO_Y := 84.0
 ## The shine crosses the logo this long after the title opens, then this often (s).
 const SHINE_FIRST_S := 0.7
 const SHINE_EVERY_S := 8.0
+## The picture the game loaded under (PIX-296: the boot splash and the web
+## page's, drawn by tools/splash.py), which a launch's title rises out of.
+const SPLASH := "res://assets/splash.png"
+
+## Whether this session's first title has risen: later ones (back from the
+## saves) rise out of the night's colour.
+static var _risen := false
 
 var world: Node
 var scene: TitleScene
@@ -20,6 +27,8 @@ var menu: VBoxContainer
 var lines: Array = []
 var footer: Label
 var shine: ColorRect
+var logo: Control
+var tagline: Label
 ## The game's version: the newest release in What's new.
 var version := ""
 
@@ -85,7 +94,7 @@ func _logo() -> void:
 	var font := FontVariation.new()
 	font.base_font = UiStyle.logo_font()
 	font.spacing_glyph = 4
-	var logo := Control.new()
+	logo = Control.new()
 	logo.position = Vector2(0, LOGO_Y)
 	logo.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(logo)
@@ -114,7 +123,7 @@ func _logo() -> void:
 	# It sweeps in from off the screen on purpose: not a layout to fit.
 	shine.set_meta(Layout.DECOR, true)
 	face.add_child(shine)
-	var tagline := UiStyle.label("The village burned. You stayed.", 18, UiStyle.CREAM, Vector2(0, LOGO_Y + 92))
+	tagline = UiStyle.label("The village burned. You stayed.", 18, UiStyle.CREAM, Vector2(0, LOGO_Y + 92))
 	tagline.custom_minimum_size = Vector2(VIEW.x, 0)
 	tagline.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(_shadowed(tagline))
@@ -141,20 +150,21 @@ func _logo_word(font: Font, color: Color) -> Label:
 	return word
 
 
-## The one entrance: the scene rises out of the night's colour loading
-## showed (PIX-295: the boot splash, nothing but that colour now), the menu
-## rises in line by line, then the shine crosses the name.
+## The one entrance: the scene rises out of what loading showed, the menu
+## rises in line by line, then the shine crosses the name. A launch rises
+## out of the loading screen's picture (PIX-296: the boot splash, the web
+## page's), laid under the name, which the picture draws in the same place,
+## so the name holds still while the night comes alive round it; a title
+## after that (back from the saves) out of the night's colour.
 func _arrive() -> void:
+	var launch := not _risen
+	_risen = true
 	if GameState.settings.reduce_motion:
 		return
-	var night := ColorRect.new()
-	night.color = ProjectSettings.get_setting("application/boot_splash/bg_color", Color.BLACK)
-	night.set_anchors_preset(Control.PRESET_FULL_RECT)
-	night.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(night)
-	var lift := night.create_tween()
-	lift.tween_property(night, "modulate:a", 0.0, 0.6).set_trans(Tween.TRANS_SINE)
-	lift.tween_callback(night.queue_free)
+	var veil := _veil(launch)
+	var lift := veil.create_tween()
+	lift.tween_property(veil, "modulate:a", 0.0, 0.6).set_trans(Tween.TRANS_SINE)
+	lift.tween_callback(veil.queue_free)
 	# The menu's container rises (the menu itself is placed by it), line by line.
 	var middle: Control = menu.get_parent()
 	create_tween().tween_property(middle, "position:y", middle.position.y, 0.5).from(middle.position.y + 12).set_trans(Tween.TRANS_QUART).set_ease(Tween.EASE_OUT)
@@ -170,6 +180,31 @@ func _arrive() -> void:
 	sweep.tween_interval(SHINE_FIRST_S)
 	sweep.tween_property(shine, "position:x", VIEW.x + 200, 1.1).from(-200.0).set_trans(Tween.TRANS_SINE)
 	sweep.tween_interval(SHINE_EVERY_S - SHINE_FIRST_S)
+
+
+## What the title rises out of: on a launch the loading screen's picture,
+## at the canvas's size in whole pixels like the boot splash, under the name
+## (and over the line below it, which rises with the scene); else, or on a
+## phone's wider canvas, the night's colour over everything.
+func _veil(launch: bool) -> Control:
+	if launch and Touch.view_size(self) == Touch.DESIGN and ResourceLoader.exists(SPLASH):
+		var picture := TextureRect.new()
+		picture.texture = load(SPLASH)
+		picture.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		picture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		picture.stretch_mode = TextureRect.STRETCH_SCALE
+		picture.size = VIEW
+		picture.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		add_child(picture)
+		move_child(picture, logo.get_index())
+		move_child(tagline, picture.get_index())
+		return picture
+	var night := ColorRect.new()
+	night.color = TitleScene.SKY[1]
+	night.set_anchors_preset(Control.PRESET_FULL_RECT)
+	night.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(night)
+	return night
 
 
 func _card() -> void:

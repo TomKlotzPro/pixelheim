@@ -524,3 +524,17 @@ fit-refusal | --map town_alchemist station --keys e overflow --lang fr | open=sh
 fit-rankup | --map town rankup --rank-beat unlocks overflow --lang fr | open=rankup_screen overflow=0 | screen lang rank
 fit-hall | --map town_hall talk --keys e,e,e overflow --lang fr | open=town_hall_screen overflow=0 | screen lang town
 fit-bounty | --map town --at 43,22 --cleared 4 --keys w,e overflow --lang fr | open=bounty_screen overflow=0 | screen lang quest
+# Tom's level-15 mage in Frostweave with the longest names a piece carries
+# worn (PIX-298): the pack's rows ran past its page, "E retirer" under the
+# scrollbar; its weapons tab with a deep-forged greataxe worn; English;
+# Hilda's Forge and Salvage tabs (a name gives way, the materials wrap);
+# the town's ledger with two deeds held; the house's workbench (every
+# recipe, scrolling on its page) and trophy shelf.
+fit-pack-long | --load res://test/fixtures/frostweave_mage.json --map town --keys i overflow --lang fr | open=inventory_screen overflow=0 | screen lang save
+fit-pack-worn | --load res://test/fixtures/frostweave_mage.json --map town --keys i,d overflow --lang fr | open=inventory_screen overflow=0 | screen lang save
+fit-pack-long-en | --load res://test/fixtures/frostweave_mage.json --map town --keys i overflow --lang en | open=inventory_screen overflow=0 | screen lang save
+fit-forge-long | --load res://test/fixtures/frostweave_mage.json --map town_smith shop --tab 2 overflow --lang fr | open=shop_screen overflow=0 | screen lang trade save
+fit-salvage-long | --load res://test/fixtures/frostweave_mage.json --map town_smith shop --tab 3 overflow --lang en | open=shop_screen overflow=0 | screen lang trade save
+fit-hall-holdings | --load res://test/fixtures/frostweave_mage.json --map town_hall hall --own town_shop,town_smith overflow --lang fr | open=town_hall_screen overflow=0 | screen lang town save
+fit-workbench | --map town_house home --mode workbench overflow --lang fr | open=home_screen overflow=0 | screen lang rooms
+fit-trophies | --map town_house home --mode trophies overflow --lang fr | open=home_screen overflow=0 | screen lang rooms

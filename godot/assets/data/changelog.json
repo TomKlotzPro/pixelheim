@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.231.0",
+      "date": "2026-10-11",
+      "codename": "Lamplight",
+      "notes": [
+        "A loading screen of its own: the night over Pixelheim, the smoking mountain and the lake, with the village's windows lighting up one by one as the game loads",
+        "Stars twinkle, embers rise and chimneys smoke while it loads, then the title rises out of the same picture",
+        "The pack's rows fit their panel again: long names end in an ellipsis with the full name below, and \"equipped\" and the E hint always show in full",
+        "The forge, the town hall, the bank, the bounties, the workbench, storage and the trophies scroll inside their page instead of running off it"
+      ]
+    },
+    {
       "version": "0.230.0",
       "date": "2026-10-11",
       "codename": "Clean Slate",

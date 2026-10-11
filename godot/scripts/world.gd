@@ -220,6 +220,12 @@ func _ready() -> void:
 	# The title greets a launch (not a slot switch or a reload, and not the harness).
 	if not GameState.title_seen and (not harness or flags.has("title")):
 		open_title()
+	# The web page's loading screen fades as the first screen rises out of
+	# the same picture (PIX-296, web/shell.html); it waits for this word.
+	if OS.has_feature("web"):
+		var page: Variant = JavaScriptBridge.get_interface("window")
+		if page.pixelheimShown:
+			page.pixelheimShown()
 	if harness:
 		var driver := preload("res://scripts/harness.gd").new()
 		driver.world = self
