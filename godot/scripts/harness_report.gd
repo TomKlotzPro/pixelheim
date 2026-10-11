@@ -87,6 +87,7 @@ const TABLE := [
 	{"field": "speaker", "says": "who the open conversation is with, by id: innkeeper (PIX-283)"},
 	{"field": "stood", "says": "named foes that stood down rather than fell, when one did (PIX-255)"},
 	{"field": "story", "says": "the main story's hollow diamond on the map's page, while something else is followed (PIX-253)"},
+	{"field": "street", "says": "the street under the hero: the paving its age lays (gravel, cobbles, sandstone, bricks, flags; drawn with the paid art, bare dirt without), or worn on a rutted road (PIX-307)"},
 	{"field": "tab", "says": "with station: the tab the counter opened on (PIX-234)"},
 	{"field": "titleline", "says": "the title's line under its menu, by what it's about: slot (the slot in hand: unreadable, or its hero the save before, PIX-303) or full (New Game with no slot free, PIX-316)"},
 	{"field": "top", "says": "the screen drawn on top when one is opened over another (the title's Options); two sharing the top layer read a=b"},
@@ -570,6 +571,16 @@ func field_story() -> String:
 		return ""
 	var story: Vector2i = screen.painting.story_cell()
 	return "%d,%d" % [story.x, story.y] if story != Bearing.NOWHERE else ""
+
+
+func field_street() -> String:
+	var view: MapView = world.view
+	if view == null or not view.has_ground_layers():
+		return ""
+	var cell: Vector2i = world.player_cell
+	if view.streets.has(cell):
+		return view.streets[cell]
+	return "worn" if view.wear_layer.get_cell_source_id(cell) >= 0 else ""
 
 
 func field_tab() -> String:

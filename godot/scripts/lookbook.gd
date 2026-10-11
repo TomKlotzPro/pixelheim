@@ -34,9 +34,10 @@ const AREAS := ["town", "rooms", "reach", "regions", "ways", "dungeon", "combat"
 ## (`rain`); and a foe to face, for the fight, struck on a beat while it's
 ## filmed (`strike`), the third blow felling it, or caught as it notices the
 ## hero (`notice`, PIX-289). A `letter` of Maren's is carried for that shot
-## alone (its recipient's mark). Only a shot with `card` keeps the title
-## card naming the place it enters (PIX-269). A new shot goes with its
-## area's.
+## alone (its recipient's mark), and the town stands at age `tier` for it
+## alone (PIX-307; every age built otherwise). Only a shot with `card` keeps
+## the title card naming the place it enters (PIX-269). A new shot goes
+## with its area's.
 const SHOTS := {
 	"town_day": {"area": "town", "map": "town", "at": "street", "time": DAY},
 	"town_dusk": {"area": "town", "map": "town", "at": "street", "time": DUSK},
@@ -61,6 +62,15 @@ const SHOTS := {
 	"turn": {"area": "town", "map": "town", "cell": Vector2i(38, 13), "time": DAY, "walk": true, "legs": "turn"},
 	# Odo's store rising out of its ruin on the town's tour (PIX-264).
 	"rise": {"area": "town", "map": "town", "at": "street", "time": DAY, "rise": "odos_store"},
+	# The streets by the town's age (PIX-307, `tier`): Upper Street trodden
+	# and rutted in the Ashes, the square in gravel in the Village, Upper
+	# Street cobbled in the Town, and the City's square in sandstone, brick
+	# round its fountain, by day and at night.
+	"streets_ashes": {"area": "town", "map": "town", "cell": Vector2i(40, 13), "time": DAY, "tier": 0},
+	"streets_village": {"area": "town", "map": "town", "cell": Vector2i(40, 22), "time": DAY, "tier": 2},
+	"streets_town": {"area": "town", "map": "town", "cell": Vector2i(40, 13), "time": DAY, "tier": 3},
+	"streets_city": {"area": "town", "map": "town", "cell": Vector2i(40, 22), "time": DAY},
+	"streets_city_night": {"area": "town", "map": "town", "cell": Vector2i(40, 22), "time": NIGHT},
 	"inn_night": {"area": "rooms", "map": "town_inn", "time": NIGHT},
 	"smithy_day": {"area": "rooms", "map": "town_smith", "time": DAY},
 	# A house opens onto a room, the cave down a stair in its floor (PIX-256):
@@ -82,6 +92,10 @@ const SHOTS := {
 	"village_road": {"area": "reach", "map": "overworld", "cell": Vector2i(48, 40), "time": DAY},
 	"village_gate_night": {"area": "reach", "map": "overworld", "cell": Vector2i(48, 41), "time": NIGHT},
 	"village_west_night": {"area": "reach", "map": "overworld", "cell": Vector2i(34, 47), "time": NIGHT},
+	# A country road's wear (PIX-307): the road south from the river to the
+	# village, its ruts, the grass on its crown and at its edges, its stones.
+	"country_road": {"area": "reach", "map": "overworld", "cell": Vector2i(48, 36), "time": DAY},
+	"country_road_night": {"area": "reach", "map": "overworld", "cell": Vector2i(48, 36), "time": NIGHT},
 	# The Reach's river at its bridge (PIX-306): its depth, its banks bent
 	# off the grid, streaks drifting downstream and foam at the bridge's
 	# piles; by day and at night.
@@ -114,6 +128,12 @@ const SHOTS := {
 	# The mountain road (PIX-253 step 8): its switchbacks up the ash to the
 	# forge in the rock, and the lamp by its door.
 	"mountain_road": {"area": "regions", "map": "mountain_road", "cell": Vector2i(17, 8), "time": DAY},
+	# Paving beyond the village (PIX-307): Greyhold's courtyard flagged, its
+	# paths cobbled, by day and at night; the Frostgate's observatory in its
+	# flagged yard at the end of a cobbled road.
+	"courtyard": {"area": "regions", "map": "greyhold", "cell": Vector2i(36, 20), "time": DAY},
+	"courtyard_night": {"area": "regions", "map": "greyhold", "cell": Vector2i(36, 20), "time": NIGHT},
+	"frost_road": {"area": "regions", "map": "frostgate", "cell": Vector2i(28, 13), "time": DAY},
 	# The marks over the world (PIX-284, PIX-289): on Saltmere's sand the
 	# givers' parchment talk marks and Old Wenna's gold one, a letter of
 	# Maren's carried to her (`letter`, only for the shot), and the arrow
@@ -331,6 +351,10 @@ static func ordered() -> PackedStringArray:
 func _stage(shot: Dictionary) -> void:
 	world.messages.clear()
 	world.hud.forget_places()
+	if shot.has("tier"):
+		# The town at an earlier age, for this shot alone (_unstage).
+		GameState.settlement.town_tier = int(shot["tier"])
+		GameState.settlement.projects.assign(Town.projects_through(int(shot["tier"])))
 	GameState.world.steps = shower_by_day() if shot.get("rain", false) else float(shot["time"]) * DayNight.DAY_CYCLE_STEPS
 	world.map = world.load_map(shot["map"])
 	var at: Vector2i = nearest_walkable(world.map, shot["cell"]) if shot.has("cell") else _cell(world.map, String(shot.get("at", "")))
@@ -379,8 +403,11 @@ func _stage(shot: Dictionary) -> void:
 
 
 ## What a shot set up for itself alone taken back, so the shots after it
-## find the hero as they were: its letter.
+## find the hero as they were: its letter, the town's age.
 func _unstage(shot: Dictionary) -> void:
+	if shot.has("tier"):
+		GameState.settlement.town_tier = Town.MAX_TIER
+		GameState.settlement.projects.assign(Town.projects_through(Town.MAX_TIER))
 	if shot.has("letter"):
 		GameState.pack.remove_item(shot["letter"])
 		GameState.progression.quests.erase(shot["letter"])

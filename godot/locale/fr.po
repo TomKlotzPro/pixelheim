@@ -2609,6 +2609,10 @@ msgid "Controls are rebindable, and French keyboards get ZQSD out of the box"
 msgstr "Les commandes sont reconfigurables, et les claviers français ont droit au ZQSD d'office"
 
 #: assets/data/changelog.json
+msgid "Country roads carry cart ruts, grass on the crown, pebbles and grass creeping in at the edges"
+msgstr "Les routes de campagne portent des ornières de charrette, de l'herbe au milieu, des cailloux et de l'herbe qui gagne les bords"
+
+#: assets/data/changelog.json
 msgid "Crackle and Hum"
 msgstr "Crépitements et bourdonnements"
 
@@ -3287,6 +3291,10 @@ msgstr "Les grandes potions de soin, les breuvages du phénix et les élixirs so
 #: assets/data/changelog.json
 msgid "Green Thumbs"
 msgstr "La main verte"
+
+#: assets/data/changelog.json
+msgid "Greyhold's courtyard is flagged and its paths cobbled, and the Frostgate's road is cobbled up to a flagged yard before the observatory"
+msgstr "La cour de Greyhold est dallée et ses allées pavées, et la route de la Porte-Givre est pavée jusqu'à une cour dallée devant l'observatoire"
 
 #: assets/data/changelog.json
 msgid "Ground treasure is taken in stride: walk over a glint or herb patch and it is yours"
@@ -4213,6 +4221,10 @@ msgid "Paths, bridges and town stay safe - stray off the road at your own risk"
 msgstr "Chemins, ponts et ville restent sûrs - quittez la route à vos risques et périls"
 
 #: assets/data/changelog.json
+msgid "Paved Ways"
+msgstr "Rues pavées"
+
+#: assets/data/changelog.json
 msgid "People live here now - talk to them with E, Enter or Space"
 msgstr "Des gens vivent ici désormais - parlez-leur avec E, Enter ou Space"
 
@@ -4251,6 +4263,10 @@ msgstr "Le village de Pixelheim est devenu une vraie ville : plus grande, plus
 #: assets/data/changelog.json
 msgid "Pixelheim village, marshland, forest, ash fields, and a river bridge"
 msgstr "Le village de Pixelheim, des marais, une forêt, des champs de cendres et un pont sur la rivière"
+
+#: assets/data/changelog.json
+msgid "Pixelheim's streets grow with the town: rutted dirt, then gravel with edge stones, then cobbles on Upper Street, and in the City a flagged square with brick round the fountain"
+msgstr "Les rues de Pixelheim grandissent avec le village : terre creusée d'ornières, puis gravier bordé de pierres, puis pavés dans la Grand-Rue, et à l'âge de la Cité une place dallée avec des briques autour de la fontaine"
 
 #: assets/data/changelog.json
 msgid "Plain Sight"
