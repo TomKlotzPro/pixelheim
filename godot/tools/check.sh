@@ -104,6 +104,7 @@ field night: scripts/day_night.gd scripts/lights.gd scripts/light_rig.gd
 field: scripts/weather.gd scripts/atmosphere.gd
 field rank: scripts/motes.gd
 dungeon +icecave*: shaders/frozen.*
+dungeon +seacave* +shafts* +cellars* +icecave* +vault*: scripts/dungeon_look.gd scripts/dungeon_art.gd shaders/dungeon.* shaders/torch_motes.*
 rooms +observatory*: shaders/stair_frost.*
 town field title: shaders/*
 gathering: scripts/state/gathering.gd
