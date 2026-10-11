@@ -3861,6 +3861,10 @@ msgid "No more being stuck on \"Run home\": the night begins whether you come th
 msgstr "Fini le blocage sur « Rentrer au village » : la nuit commence que vous passiez la porte, chargiez une sauvegarde au village ou y soyez déjà"
 
 #: assets/data/changelog.json
+msgid "No more bumping into invisible bushes, and nothing grows over a camp, a chest, a door or the road"
+msgstr "Fini de buter contre des buissons invisibles, et rien ne pousse plus sur un camp, un coffre, une porte ou la route"
+
+#: assets/data/changelog.json
 msgid "No more glow around the hero at higher ranks: you look the same at every rank, and your gear is what shows. The rank-up moment stays, a burst of your class's light"
 msgstr "Plus de halo autour du héros aux rangs supérieurs : vous avez la même allure à chaque rang, et c'est votre équipement qui se voit. Le moment de l'ascension reste, un éclat de la lumière de votre classe"
 
@@ -5249,6 +5253,10 @@ msgid "The Tidecaller wears Tam's stewpot as a crown; once he falls, the tide do
 msgstr "L'Appelle-Marée porte la marmite de Tam en guise de couronne ; une fois qu'il est tombé, la porte des marées s'ouvre sur la plage"
 
 #: assets/data/changelog.json
+msgid "The Trees Came Back"
+msgstr "Le retour des arbres"
+
+#: assets/data/changelog.json
 msgid "The Truth of It"
 msgstr "La vérité des choses"
 
@@ -5775,6 +5783,10 @@ msgstr "Les habitants dessinés d'après le même modèle portent désormais leu
 #: assets/data/changelog.json
 msgid "Tracks crossfade instead of cutting, and the whole score plays through a touch of echo"
 msgstr "Les morceaux se fondent l'un dans l'autre au lieu de couper net, et toute la bande-son passe par une pointe d'écho"
+
+#: assets/data/changelog.json
+msgid "Trees, wheat and field stones are back on every outdoor map: the Deepwood is a forest again and Pixelheim's field grows wheat"
+msgstr "Les arbres, le blé et les pierres des champs reviennent sur toutes les cartes en plein air : les Bois-Profonds redeviennent une forêt et le champ de Pixelheim pousse du blé"
 
 #: assets/data/changelog.json
 msgid "Trophies like wolf pelts and imp horns to sell at the shop"

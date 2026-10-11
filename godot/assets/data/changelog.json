@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.232.0",
+      "date": "2026-10-11",
+      "codename": "The Trees Came Back",
+      "notes": [
+        "Trees, wheat and field stones are back on every outdoor map: the Deepwood is a forest again and Pixelheim's field grows wheat",
+        "No more bumping into invisible bushes, and nothing grows over a camp, a chest, a door or the road"
+      ]
+    },
+    {
       "version": "0.231.0",
       "date": "2026-10-11",
       "codename": "Lamplight",
