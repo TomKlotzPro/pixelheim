@@ -299,8 +299,8 @@ func test_a_hero_who_heard_the_old_confession_gets_the_letter_at_the_next_word()
 
 
 ## A hero who slew Fafnyr on the old mountain keeps him slain: Morvax reads
-## the letter to a quiet mountain, the Night of Bells is skipped, and the
-## story waits for home (step 10), honestly.
+## the letter to a quiet mountain, the Night of Bells is skipped, and home
+## (step 10) is next: Morvax's choice, asked at his forge.
 func test_a_dragon_slayer_skips_the_night_of_bells() -> void:
 	state.progression.cleared_levels.assign(range(1, 11))
 	state.mark_seen(Letters.scene_id())
@@ -313,10 +313,10 @@ func test_a_dragon_slayer_skips_the_night_of_bells() -> void:
 	state.questing.finish_dialogue("mountain_morvax")
 	assert_eq(Letters.after_lines("mountain_morvax", state.progression, state.settlement), quest["slain"]["after"])
 	assert_true(MainQuest.skips(7, state.progression, state.settlement))
-	assert_eq(_next(), "morvax_choice", "no run home, no Night of Bells: home, still to write")
+	assert_eq(_next(), "morvax_choice", "no run home, no Night of Bells: home, and Morvax's choice")
 	assert_false(Bells.due(state.progression, state.settlement), "no night for a dragon slayer")
 	assert_eq(MainQuest.card_due(state.progression, state.settlement), 8, "the card of home's chapter")
-	assert_eq(MainQuest.continued(state.progression, state.settlement), "Coming Home", "the card says what's to come")
+	assert_eq(MainQuest.continued(state.progression, state.settlement), "", "the story is written to its end: no card")
 
 
 ## The late web hero who beat Morvax on the old mountain: their story stays

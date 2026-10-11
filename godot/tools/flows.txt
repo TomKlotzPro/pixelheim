@@ -147,8 +147,26 @@ field-night | --map overworld --at 67,46 night | map=overworld cell=\(67, 46\) p
 nightfall | --map overworld --at 75,43 --zoom play nightfall | map=overworld cell=\(75, 43\) packs=slime,goblin,wolf,skeleton | field night
 # A named monster's bounty on the board (PIX-156).
 bounty | --map town --at 43,22 --cleared 4 --keys w,e | open=bounty_screen | town quest screen
-# The choice at Morvax's throne (PIX-157).
-throne | --map town --cleared 15 --seen maren_confession throne --keys s,e --wait 0.5 | open=reveal_screen | story screen
+# Morvax's choice asked outright (PIX-253 step 10; the old throne's,
+# PIX-157): "Stay with them." chosen, and the lanterns ending's tour.
+choice | --map town choice --keys s,e --wait 0.5 | open=reveal_screen ending=stay | story screen
+# Coming Home (PIX-253 step 10): the morning after the Night of Bells
+# Morvax waits by the fountain with his question; his words, then the
+# choice; "Come home." and the festival ending's tour, Morvax on his bench
+# by the fountain at its first stop; "Stay with them." and the lanterns
+# ending; the credits' last line; a hero home sees him on his bench by
+# the fountain, one he left up the mountain finds him at his forge, and
+# on festival days on his bench; and a hero who slew Fafnyr on the old
+# mountain, who never had the night, is asked at Morvax's forge.
+home-waits | --map town --bells 3 daybreak --keys esc,esc --wait 0.5 | map=town bells=done morvax=\(43, 24\) next=morvax_choice | story town
+home-ask | --map town --seen bells_collar --talk-to mountain_morvax --keys e,e,e,e | map=town open=throne_screen next=morvax_choice | story town screen
+come-home | --map town --seen bells_collar --talk-to mountain_morvax --keys e,e,e,e,e --wait 0.5 | open=reveal_screen ending=home morvax=\(43, 24\) bench | story town screen
+stay-up | --map town --seen bells_collar --talk-to mountain_morvax --keys e,e,e,e,s,e --wait 0.5 | open=reveal_screen ending=stay | story town screen
+credits | --map town --story ending_home credits --wait 1 --lang en | scene=ending_home credits=Thank you for staying\. | story screen
+morvax-bench | --map town --seen ending_home --wait 0.3 | map=town ending=home morvax=\(43, 24\) bench | story town
+morvax-forge | --map morvax_forge --seen ending_stay --wait 0.3 | map=morvax_forge ending=stay morvax=\(8, 4\) | story rooms
+morvax-festival | --map town --seen ending_stay festival --wait 0.3 | map=town ending=stay morvax=\(43, 24\) bench | story town
+slayer-ask | --map morvax_forge --cleared 10 --seen maren_confession --delivered letter_morvax --talk-to mountain_morvax --keys e,e,e,e | map=morvax_forge open=throne_screen next=morvax_choice | story rooms screen
 # A festival's ring toss (PIX-159).
 festival | --map town --town-tier 2 --at 43,27 festival --keys w,e,e,e | open=ring_toss_screen | town screen
 # The gates (PIX-254): each region's way in shut, the hero stopped before

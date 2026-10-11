@@ -834,11 +834,16 @@
       "tier": 4,
       "requires": [
         {
-          "kind": "cleared",
-          "level": 15,
-          "line": "Nothing stirs below: cast down Morvax"
+          "kind": "freed",
+          "orCleared": 15,
+          "line": "The dragon comes back: hold the square till dawn and set him free"
         }
       ],
+      "opens": {
+        "about": "PIX-253 step 10: the City is the age after the Night of Bells. It asks for the dragon freed (the collar's scene in the story ledger), or slain on the old mountain by a hero who never had the night, or the old floor 15 for a hero who cast Morvax down (`orCleared`); once the Town is finished and it stands open, the town's tour ends at the board with these words.",
+        "line": "The mountain is quiet, and the whole Reach has heard of Pixelheim: it can grow into a City.",
+        "detail": "The grand avenue and the flower beds wait on the board."
+      },
       "projects": [
         {
           "id": "grand_avenue",

@@ -174,12 +174,23 @@ func play_dawn() -> void:
 	world.add_child(dawn)
 
 
-## The ending (PIX-150): home to the square, the camera touring each age's
-## landmark the hero built, then the square - and then the story's ending
-## and credits. How Morvax ended (PIX-157) sets the evening: a festival
-## with confetti for the one destroyed, five lanterns for the five who
-## climbed for the one laid to rest.
-func play_ending(choice := "destroy") -> void:
+## Morvax's choice (PIX-253 step 10): his question said, the courier
+## answers (throne_screen.gd, re-aimed), and the ending plays.
+func ask_morvax() -> void:
+	if not Homecoming.choice_due(GameState.progression, GameState.settlement):
+		return
+	var choice := preload("res://scripts/throne_screen.gd").new()
+	choice.on_choice = play_ending
+	world.add_child(choice)
+
+
+## The ending (PIX-150; since PIX-253 step 10, Morvax's choice): home to
+## the square, Morvax's answer, the camera touring each age's landmark the
+## hero built, the square, Hilda's forge and Maren - and then the story's
+## ending and credits. The answer sets the evening: a festival with
+## confetti for "Come home.", five lanterns for the five who climbed for
+## "Stay with them." (the old throne's "destroy" and "rest" the same way).
+func play_ending(choice := Homecoming.HOME) -> void:
 	var scene_id := Story.ending_scene(choice)
 	GameState.mark_seen(scene_id)
 	GameState.reveals.clear()
@@ -187,12 +198,16 @@ func play_ending(choice := "destroy") -> void:
 	# Below the fountain, facing the hall.
 	var square := Town.square() + Vector2i(0, 3)
 	world.enter_map(world.map, square)
-	if choice == "rest":
+	var lanterns := choice in [Homecoming.STAY, "rest"]
+	if lanterns:
 		_lanterns()
 	else:
 		festival()
 	Sound.play_track("victory")
 	var stops: Array[Dictionary] = []
+	var reply := Homecoming.reply(choice)
+	if reply != "":
+		stops.append({"at": MapView.center(Homecoming.reply_at(choice)), "line": reply})
 	var done := Town.done_projects(GameState.settlement)
 	for entry: Dictionary in Town.ages():
 		var built: Array = entry["projects"].filter(func(project_entry: Dictionary) -> bool: return project_entry["id"] in done)
@@ -207,8 +222,17 @@ func play_ending(choice := "destroy") -> void:
 	stops.append({
 		"at": MapView.center(square),
 		"line": (Text.t("Five lanterns on the square, one for each of the five who climbed. Tonight the %s remembers them - and %s.")
-			if choice == "rest" else Text.t("Pixelheim, a %s raised from the ashes. Tonight it celebrates %s.")) % [town_name, GameState.hero.hero_name],
+			if lanterns else Text.t("Pixelheim, a %s raised from the ashes. Tonight it celebrates %s.")) % [town_name, GameState.hero.hero_name],
 	})
+	if choice in [Homecoming.HOME, Homecoming.STAY]:
+		# Hilda's forge, Fafnyr on its roof (or Hilda alone, for a hero who
+		# slew him on the old mountain), then Maren at her shrine.
+		var forge := Homecoming.forge_words(GameState.progression, GameState.settlement)
+		if not Homecoming.slew_fafnyr(GameState.progression, GameState.settlement):
+			_dragon_on_forge()
+		stops.append({"at": MapView.center(Homecoming.dragon_cell()) + BUILDING_FRAMING, "line": forge["line"], "detail": forge["detail"]})
+		var maren := Npcs.by_id("elder", GameState.settlement.settlers, done)
+		stops.append({"at": MapView.center(Vector2i(int(maren["x"]), int(maren["y"]))), "line": Homecoming.maren_line()})
 	var tour := preload("res://scripts/reveal_screen.gd").new()
 	tour.world = world
 	tour.stops = stops
@@ -217,6 +241,26 @@ func play_ending(choice := "destroy") -> void:
 		ending.scene_id = scene_id
 		world.add_child(ending)
 	world.add_child(tour)
+
+
+## Fafnyr on Hilda's forge for the ending's tour (PIX-253 step 10): his
+## Mini World sheet lying over her chimney, warming his belly, a little
+## larger than his kind, until the hero leaves the square.
+const FORGE_DRAGON_SCALE := 1.4
+## His belly on the chimney's top, not his feet.
+const FORGE_DRAGON_LIFT := Vector2(0, -6)
+
+
+func _dragon_on_forge() -> void:
+	var spec := PunyArt.monster("dragon")
+	var dragon := AnimatedSprite2D.new()
+	dragon.sprite_frames = PunyArt.frames(spec)
+	dragon.scale = Vector2.ONE * FORGE_DRAGON_SCALE
+	dragon.position = MapView.center(Homecoming.dragon_cell()) + FORGE_DRAGON_LIFT
+	dragon.play(PunyArt.pick(dragon.sprite_frames, "idle", "left"))
+	dragon.speed_scale = 0.5
+	dragon.add_to_group("decor")
+	world.actors.add_child(dragon)
 
 
 ## Five lanterns in a row on the square (PIX-157), for Maren, Oskar,

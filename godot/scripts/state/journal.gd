@@ -123,7 +123,7 @@ static func _letter(quest: Dictionary, delivered: bool, progression: Progression
 	var row := _row("story", quest["id"], String(quest["addressed"]), lead, Catalog.item(quest["objective"]["itemId"]).get("description", ""))
 	row["letter"] = true
 	if delivered:
-		row.merge({"line": String(quest["answered"]), "detail": String(quest["gist"]), "delivered": true, "follows": false}, true)
+		row.merge({"line": Homecoming.answered(quest, progression), "detail": String(quest["gist"]), "delivered": true, "follows": false}, true)
 	return row
 
 

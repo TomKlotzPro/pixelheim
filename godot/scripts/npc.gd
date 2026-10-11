@@ -12,6 +12,12 @@ const STEP_SECONDS := 0.35
 ## to face the street (PIX-243: they used to snap round the moment they
 ## stopped).
 const LOOK_SECONDS := 0.5
+## Morvax's bench by the fountain (PIX-253 step 10): Shade's long bench in
+## the Medieval Age atlas, its two ends, a little below his middle so he
+## sits on the left of it with the right kept free (for Maren, if she ever
+## sits down).
+const BENCH: Array[int] = [1659, 1661]
+const BENCH_AT := Vector2(0, 3)
 
 var world: Node2D
 var data: Dictionary
@@ -49,6 +55,14 @@ func _ready() -> void:
 	sprite.play(PunyArt.pick(sprite.sprite_frames, "idle", "down"))
 	# Offset the idle phase per villager so the square doesn't breathe in unison.
 	sprite.frame = Npcs.id_hash(data["id"]) % 2
+	# Morvax's bench by the fountain (PIX-253 step 10): Shade's Medieval Age
+	# bench behind him and on to the next cell east, when the pack is here.
+	if data.get("bench", false) and PunyTown.available():
+		for i in BENCH.size():
+			var seat := Sprite2D.new()
+			seat.texture = PunyProps.texture(BENCH[i])
+			seat.position = BENCH_AT + Vector2(TILE * i, 0)
+			add_child(seat)
 	add_child(sprite)
 	# Their mark keeps over their head as they turn (PIX-268).
 	sprite.animation_changed.connect(_place_mark)
@@ -67,6 +81,13 @@ func _ready() -> void:
 	shape.position = Vector2(0, 5.5)
 	add_child(shape)
 	body = shape
+	# The bench's free end blocks its cell as he does his, with the art or
+	# without it.
+	if data.get("bench", false):
+		var end := CollisionShape2D.new()
+		end.shape = rect
+		end.position = shape.position + Vector2(TILE, 0)
+		add_child(end)
 
 
 ## Home for the night (PIX-149): out of sight and out of the way.
@@ -141,6 +162,9 @@ func _refresh_mark() -> void:
 		# Maren with the whole story to tell and the fifth letter to give
 		# (PIX-253 step 8): the main story's gold "!".
 		if data.get("id", "") == "elder" and Letters.fifth_due(GameState.progression, GameState.settlement):
+			kind = "letter"
+		# Morvax with his question (PIX-253 step 10): the same.
+		if data.get("id", "") == Homecoming.MORVAX and Homecoming.choice_due(GameState.progression, GameState.settlement):
 			kind = "letter"
 	if kind == _mark_kind:
 		return

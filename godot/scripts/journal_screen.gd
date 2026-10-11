@@ -519,7 +519,7 @@ func _letter_card(list: VBoxContainer, quest: Dictionary, delivered: bool) -> vo
 		var gap := Control.new()
 		gap.custom_minimum_size = Vector2(0, 6)
 		words.add_child(gap)
-		words.add_child(Layout.wrapped(UiStyle.strong(String(quest["answered"]), 14, UiStyle.LAMP), ROW_TEXT))
+		words.add_child(Layout.wrapped(UiStyle.strong(Homecoming.answered(quest, GameState.progression), 14, UiStyle.LAMP), ROW_TEXT))
 		for line: String in Letters.answer(quest, GameState.progression, GameState.settlement):
 			words.add_child(Layout.wrapped(UiStyle.label(line, 14, UiStyle.INK), ROW_TEXT))
 	pages.append(card)

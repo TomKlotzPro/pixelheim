@@ -4,7 +4,8 @@ class_name Story
 ## Maren's letters, PIX-253 step 2, and kept for a hero who cleared their
 ## floors as the journal's older papers), what Maren has to say as the hero
 ## learns more - each relic's story, and her last words - and how the hero
-## chose to end it at Morvax's throne (PIX-157). Her stories of the old
+## chose to end it: Morvax's choice (PIX-253 step 10, Homecoming), or for
+## an old save at his throne (PIX-157). Her stories of the old
 ## mountain's floors (the graves, the seal) left play with them (PIX-257);
 ## her confession is told at the shrine once the four keepsakes are home
 ## (Letters, PIX-253 step 8). Pure, over story.json's "lore" and
@@ -73,24 +74,35 @@ static func elder_story(cleared_levels: Array, seen: Array, hunted := []) -> Dic
 	return {}
 
 
-## How the hero ended it at Morvax's throne (PIX-157): "rest", "destroy",
-## or "" before. The ending played is in the story ledger; a hero who saw
-## the old single ending destroyed him.
+## How the hero ended it: Morvax's choice (PIX-253 step 10), "home" or
+## "stay"; the old game's, at his throne (PIX-157), "rest" or "destroy"; or
+## "" before. The ending played is in the story ledger; a hero who saw the
+## old single ending destroyed him. Asked whenever the main quest looks for
+## its next step (twice a second, by the line above the dock), so it reads
+## the moments from this class's own copy of story.json, not Cutscene's
+## (parsed afresh each time).
 static func ending_of(seen: Array) -> String:
-	if Cutscene.moment("victory:rest") in seen:
+	for choice: String in [Homecoming.HOME, Homecoming.STAY]:
+		if _moment("ending:" + choice) in seen:
+			return choice
+	if _moment("victory:rest") in seen:
 		return "rest"
-	if Cutscene.moment("victory") in seen:
+	if _moment("victory") in seen:
 		return "destroy"
 	return ""
 
 
-## The ending scene for a choice.
+## The ending scene for a choice: Morvax's two (story.json's moments
+## `ending:home`, `ending:stay`), and the old throne's for its own.
 static func ending_scene(choice: String) -> String:
-	return Cutscene.moment("victory:rest" if choice == "rest" else "victory")
+	match choice:
+		Homecoming.HOME, Homecoming.STAY:
+			return _moment("ending:" + choice)
+		"rest":
+			return _moment("victory:rest")
+	return _moment("victory")
 
 
-## Whether the hero knows enough of Morvax to lay him to rest: Maren's
-## story of the five, and Liane's last page.
-static func can_lay_to_rest(cleared_levels: Array, seen: Array) -> bool:
-	var last_page: Dictionary = lore()[-1]
-	return "maren_confession" in seen and int(last_page["floor"]) in cleared_levels
+## The scene a moment of play calls for (Cutscene.moment's, read once).
+static func _moment(key: String) -> String:
+	return String(_data()["moments"].get(key, ""))

@@ -42,10 +42,12 @@ const TABLE := [
 	{"field": "chapter", "says": "a chapter card's chapter, while it's up (PIX-253)"},
 	{"field": "clock", "says": "with sleep: the clock the hero woke at (PIX-246)"},
 	{"field": "continued", "says": "the honest card where the story runs out, while it's up: the chapter it waits on (PIX-253 step 8)"},
+	{"field": "credits", "says": "the credits' last line while they roll (PIX-253 step 10)"},
 	{"field": "dark", "says": "with fades: what's left of a fade from the dark (PIX-238)"},
 	{"field": "day", "says": "with --day: the day (PIX-250)"},
 	{"field": "delivered", "says": "Maren's letters delivered, once any is out (PIX-253)"},
 	{"field": "dest", "says": "the waypoint the map's list has chosen, while the map is open (PIX-241)"},
+	{"field": "ending", "says": "the ending this hero chose for Morvax once it has played: home or stay (an old save's throne: destroy or rest) (PIX-253 step 10)"},
 	{"field": "fell", "says": "bosses fallen, when one fell (PIX-232)"},
 	{"field": "firstnight", "says": "hero creation's first night: play or skip (PIX-228)"},
 	{"field": "fled", "says": "monsters that ran from a hero far above them, when any did (PIX-251)"},
@@ -59,6 +61,7 @@ const TABLE := [
 	{"field": "lit", "says": "on the Night of Bells: the lanterns on the square lit (PIX-253 step 9)"},
 	{"field": "logged", "says": "with floats: the lines the battle log showed (PIX-245)"},
 	{"field": "maps", "says": "the maps drawn on the map's page, while the map is open: 7 on the Reach's with every region found (PIX-269)"},
+	{"field": "morvax", "says": "Morvax on the hero's map: his cell, and bench when he sits on his bench by the fountain (PIX-253 step 10)"},
 	{"field": "motes", "says": "with rankup: the ascension's motes and sparks flying (PIX-244)"},
 	{"field": "music", "says": "with fled: the track playing (PIX-251)"},
 	{"field": "next", "says": "the main quest's next step, by id, once the Night of Ash is over: shield (PIX-255)"},
@@ -284,6 +287,13 @@ func field_continued() -> String:
 	return str(card.number) if card != null and card.continued else ""
 
 
+func field_credits() -> String:
+	for node in world.get_children():
+		if node is Cutscene and not node.finished and node.roll_end != "":
+			return node.roll_end
+	return ""
+
+
 func field_dark() -> String:
 	if not flags.has("fades"):
 		return ""
@@ -307,6 +317,10 @@ func field_dest() -> String:
 		return ""
 	var chosen: String = screen.destination_id()
 	return chosen if chosen != "" else "none"
+
+
+func field_ending() -> String:
+	return Story.ending_of(GameState.progression.story_seen)
 
 
 func field_fell() -> String:
@@ -377,6 +391,13 @@ func field_logged() -> String:
 func field_maps() -> String:
 	var screen := _map_screen()
 	return str(screen.painting.sheets.size()) if screen != null else ""
+
+
+func field_morvax() -> String:
+	var villager: Node = harness._villager(Homecoming.MORVAX)
+	if villager == null:
+		return ""
+	return "%s%s" % [villager.cell, " bench" if villager.data.get("bench", false) else ""]
 
 
 func field_motes() -> String:

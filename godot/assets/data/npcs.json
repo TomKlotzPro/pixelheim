@@ -441,8 +441,9 @@
     },
     {
       "id": "mountain_morvax",
-      "about": "PIX-253 step 8: the last of the five who climbed, who never came down. Fifty years at the forge at the top of the mountain road mending the seal on Fafnyr's collar with Blackiron iron, counting the village's lamps on his wall; the fifth letter is to him (letter_morvax: its answer, `quake` and `after`). Step 10 brings him home, or not.",
+      "about": "PIX-253 step 8: the last of the five who climbed, who never came down. Fifty years at the forge at the top of the mountain road mending the seal on Fafnyr's collar with Blackiron iron, counting the village's lamps on his wall; the fifth letter is to him (letter_morvax: its answer, `quake` and `after`). Step 10 brings him home, or not (Homecoming: by the fountain after the collar, on his bench there once home, `alsoOn`), saying what progression.json's `home` has him say.",
       "mapId": "morvax_forge",
+      "alsoOn": ["town"],
       "x": 8,
       "y": 4,
       "sprite": "elder",

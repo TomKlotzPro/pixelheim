@@ -998,6 +998,140 @@
         "to": "black",
         "seconds": 0.8
       }
+    ],
+    "ending_home": [
+      {
+        "kind": "stage",
+        "stage": "village"
+      },
+      {
+        "kind": "fade",
+        "to": "clear",
+        "seconds": 1.6
+      },
+      {
+        "kind": "theme",
+        "name": "ending",
+        "then": "victory"
+      },
+      {
+        "kind": "caption",
+        "text": "Morvax takes a room at the inn and a bench by the fountain, and argues with Maren every day.",
+        "hold": 4.4
+      },
+      {
+        "kind": "caption",
+        "text": "{hero} came to Pixelheim with a letter that said no help was coming, and stayed.",
+        "hold": 4.0
+      },
+      {
+        "kind": "caption",
+        "text": "The mountain is quiet, the tavern isn't, and the cheese has never tasted better.",
+        "hold": 4.0
+      },
+      {
+        "kind": "fade",
+        "to": "black",
+        "seconds": 0.8
+      },
+      {
+        "kind": "stage",
+        "stage": "dark"
+      },
+      {
+        "kind": "fade",
+        "to": "clear",
+        "seconds": 0.2
+      },
+      {
+        "kind": "credits",
+        "seconds": 32,
+        "before": [
+          "PIXELHEIM",
+          "",
+          "A game by Tom Klotz",
+          "Art by Shade (merchant-shade.itch.io)",
+          "",
+          "Starring"
+        ],
+        "after": [
+          "and Infinite Cheese Wheels as themselves",
+          "",
+          "Thank you for staying."
+        ]
+      },
+      {
+        "kind": "fade",
+        "to": "black",
+        "seconds": 0.8
+      }
+    ],
+    "ending_stay": [
+      {
+        "kind": "stage",
+        "stage": "village"
+      },
+      {
+        "kind": "fade",
+        "to": "clear",
+        "seconds": 1.6
+      },
+      {
+        "kind": "theme",
+        "name": "ending_rest",
+        "then": "victory"
+      },
+      {
+        "kind": "caption",
+        "text": "Morvax goes back up the mountain road to the three, at peace. He comes down on festival days.",
+        "hold": 4.4
+      },
+      {
+        "kind": "caption",
+        "text": "{hero} came to Pixelheim with a letter that said no help was coming, and stayed.",
+        "hold": 4.0
+      },
+      {
+        "kind": "caption",
+        "text": "That night there were five lanterns on the square, and one more up on the mountain.",
+        "hold": 4.6
+      },
+      {
+        "kind": "fade",
+        "to": "black",
+        "seconds": 0.8
+      },
+      {
+        "kind": "stage",
+        "stage": "dark"
+      },
+      {
+        "kind": "fade",
+        "to": "clear",
+        "seconds": 0.2
+      },
+      {
+        "kind": "credits",
+        "seconds": 32,
+        "before": [
+          "PIXELHEIM",
+          "",
+          "A game by Tom Klotz",
+          "Art by Shade (merchant-shade.itch.io)",
+          "",
+          "Starring"
+        ],
+        "after": [
+          "and Infinite Cheese Wheels as themselves",
+          "",
+          "Thank you for staying."
+        ]
+      },
+      {
+        "kind": "fade",
+        "to": "black",
+        "seconds": 0.8
+      }
     ]
   },
   "moments": {
@@ -1007,7 +1141,9 @@
     "victory": "ending",
     "cleared:3": "crypt",
     "cleared:7": "forge",
-    "victory:rest": "ending_rest"
+    "victory:rest": "ending_rest",
+    "ending:home": "ending_home",
+    "ending:stay": "ending_stay"
   },
   "lore": [
     {
