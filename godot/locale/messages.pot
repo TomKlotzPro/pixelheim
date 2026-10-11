@@ -3861,6 +3861,10 @@ msgid "No more being stuck on \"Run home\": the night begins whether you come th
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "No more bumping into invisible bushes, and nothing grows over a camp, a chest, a door or the road"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "No more glow around the hero at higher ranks: you look the same at every rank, and your gear is what shows. The rank-up moment stays, a burst of your class's light"
 msgstr ""
 
@@ -5249,6 +5253,10 @@ msgid "The Tidecaller wears Tam's stewpot as a crown; once he falls, the tide do
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Trees Came Back"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Truth of It"
 msgstr ""
 
@@ -5774,6 +5782,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Tracks crossfade instead of cutting, and the whole score plays through a touch of echo"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Trees, wheat and field stones are back on every outdoor map: the Deepwood is a forest again and Pixelheim's field grows wheat"
 msgstr ""
 
 #: assets/data/changelog.json

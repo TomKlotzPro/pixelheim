@@ -101,6 +101,9 @@ const SHOTS := {
 	"frostgate": {"area": "regions", "map": "frostgate", "time": DAY},
 	"coast": {"area": "regions", "map": "saltmere", "cell": Vector2i(33, 27), "time": DAY},
 	"deepwood": {"area": "regions", "map": "deepwood", "time": DAY},
+	# The Deepwood's forest, its pines and round trees (PIX-304: from One
+	# Land, v0.219, no map grew any).
+	"deepwood_trees": {"area": "regions", "map": "deepwood", "cell": Vector2i(44, 10), "time": DAY},
 	# Still water inland (PIX-306): the Deepwood's dark lake, and the
 	# Mirefen's murky pools by a bridge, their lily pads and reeds; by day
 	# and at night.
