@@ -1041,6 +1041,10 @@ func _run_test_harness() -> void:
 		# beside it in the shot).
 		var opponent: Node = null
 		var at: Vector2i = world.player_cell + Vector2i(foe_distance, 0)
+		# `--foe-at x,y` (PIX-288): on that cell instead (a boss across water).
+		if flags.has("--foe-at"):
+			var spot := flags.list("--foe-at")
+			at = Vector2i(int(spot[0]), int(spot[1]))
 		if not Hunts.named(foe).is_empty():
 			for mob in get_tree().get_nodes_in_group("mobs"):
 				if not mob.dying and mob.fighter.get("named", "") == foe:
@@ -1052,7 +1056,7 @@ func _run_test_harness() -> void:
 			else:
 				opponent = world.foes.spawn_named(foe, at)
 		else:
-			opponent = world.foes.spawn_enemy(foe, world.player_cell + Vector2i(foe_distance, 0), "ash", "", flags.has("elite"))
+			opponent = world.foes.spawn_enemy(foe, at, "ash", "", flags.has("elite"))
 		world.player.face(Vector2.RIGHT)
 		# `--foe-left S` (PIX-288): the fight already on, the foe hunting the
 		# hero with its bar up, then a blow down to that share of its health,

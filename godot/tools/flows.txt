@@ -114,6 +114,22 @@ hunt | --map overworld --at 70,40 fight slay --foe greymaw --wait 0.3 | map=over
 # A named monster's bar goes once it falls, worn down first so the last
 # blow lands while a blow's ghost still eases (PIX-288).
 hunt-bar | --map overworld --at 70,40 fight kill --foe greymaw --foe-left 0.05 --wait 2.5 | map=overworld fell=1 bossbar=none | combat field
+# A named monster still alive lets the hero go for good reasons, its bar
+# with it (PIX-288, Tom: « les bosses sont toujours bloqués »): led out of
+# his ground Greymaw walks home with his wounds (his bar comes back as it
+# was when the fight does); with no way to the hero across the river he
+# gives up rather than hunt forever, and no longer bars the road out; at
+# the line while he's at the hero, the way holds (PIX-232) and his bar
+# stays.
+greymaw-leave | --map overworld --at 88,59 fight --foe greymaw --foe-left 0.55 --then-walk l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l --wait 1 | map=overworld boss=greymaw:[hi][a-z]+:[0-9]{1,2}% bossbar=none | combat field
+greymaw-stuck | --map overworld --at 70,27 fight --foe greymaw --foe-at 70,32 --foe-left 0.55 --wait 5 | map=overworld boss=greymaw:idle:[0-9]{1,2}% bossbar=none | combat field
+greymaw-line | --map overworld --at 92,33 seamless fight --foe greymaw --foe-at 90,27 --foe-left 0.55 --then-walk u,u,u,u,u,u,u,u,u,u,u,u,u,u,u,u,r,r,r,r,r --wait 0.5 | map=deepwood bossbar=none | combat field travel
+greymaw-held | --map overworld --at 90,33 seamless fight --foe greymaw --foe-distance -3 --foe-left 0.55 --then-walk r,r,r,r,r,r,r --wait 0.5 | map=overworld boss=greymaw:[ac][a-z]+:[0-9]+% bossbar=[0-9]+% | combat field travel
+# A boss that keeps no ground (the Tidecaller, brought out onto the Reach)
+# hunts a hero who walks off for as long as they're near, and lets them
+# go, its bar with it, once it has lost them past the screen's edge
+# (PIX-288).
+boss-lost | --map overworld --at 92,46 fight --foe tidecaller --foe-at 92,61 --foe-left 0.55 --then-walk u,u,u,u,u,u,u,u,u,u,u --wait 1 | map=overworld boss=tidecaller:[hi][a-z]+:[0-9]+% bossbar=none | combat field
 # Back from the board with the village rebuilt, faded in from the dark (PIX-238).
 rebuilt | --map town --town-tier 2 rebuilt fades | open=reveal_screen dark=0 | town story screen
 # A building rises out of its ruin at its stop on the tour, never over a
@@ -187,6 +203,10 @@ tidecaller-bar | --map seacave_grotto --at 23,12 fight kill --foe tidecaller --f
 tidecaller-tick | --map seacave_grotto --at 23,12 fight --foe tidecaller --foe-left 0.2 --foe-ail poison --wait 3 | map=seacave_grotto fell=1 bossbar=none | dungeon combat
 tidecaller-felled | --map seacave_grotto --at 23,12 fight hurt --foe tidecaller --foe-left 0.5 die --wait 0.5 | map=town_inn bossbar=none | dungeon combat
 tidecaller-out | --map seacave_grotto --at 23,12 fight kill --foe tidecaller --foe-left 0.05 --then-walk r,r --wait 0.4 | map=saltmere cell=\([89], 2[45]\) bossbar=none | dungeon travel combat
+# A dungeon's boss alive, the hero walked off to the far end of the cave:
+# it follows round the rocks by its way and never loses them in its hall,
+# so the fight and its bar hold, the stairs barred (PIX-232, PIX-288).
+tidecaller-leave | --map seacave_grotto --at 21,17 fight --foe tidecaller --foe-at 25,13 --foe-left 0.55 --then-walk l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l --wait 1 | map=seacave_grotto boss=tidecaller:[ac][a-z]+:[0-9]+% bossbar=[0-9]+% | dungeon combat
 # Out through the parted cliffs (PIX-269: no cave mouth, no post), and the
 # place come to named on its card.
 mirepass | --map overworld --at 2,32 --walk l,l,l --wait 0.4 --lang en | map=mirefen card=The Mirefen | travel

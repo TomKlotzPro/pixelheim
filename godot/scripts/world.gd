@@ -523,6 +523,11 @@ func hand_over(beside: Dictionary, arrival: Vector2i) -> void:
 	if stage.escort != null and is_instance_valid(stage.escort):
 		leaving.append(stage.escort)
 		stage.escort = null
+	# A boss's bar goes with the boss left behind (PIX-288): no boss hunting
+	# lets the hero over the line, but one that gave up may still be fading.
+	var followed: Variant = hud.boss_bar.target
+	if is_instance_valid(followed) and leaving.has(followed):
+		hud.boss_bar.let_go()
 	_shift_world(by)
 	camera_rig.shift(by)
 	last_player_position += by
