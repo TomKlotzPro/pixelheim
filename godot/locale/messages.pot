@@ -1993,6 +1993,10 @@ msgid "A boss finished off by poison or a burn now falls as it should, with its 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A boss you run from gives up at last: lose it for a few seconds, or leave it with no way to reach you, and it walks home and its bar fades"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A boss's health bar now goes away when it falls, however it falls"
 msgstr ""
 
@@ -3489,6 +3493,10 @@ msgid "Let Me Go"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Letting Go"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Level-ups now bank 5 stat points: spend them on STR, INT, DEX or DEF"
 msgstr ""
 
@@ -3885,6 +3893,10 @@ msgid "Oilskin"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Old Greymaw, Mossback and the other named beasts no longer get stuck on a riverbank or inside their ruins, and walk round what blocks them"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Old Pell comes home with his canary and takes the room above Hilda's forge; her upgrades cost a little less"
 msgstr ""
 
@@ -3942,6 +3954,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Once Upon a Mountain"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Once a boss lets go the roads out open again, and it keeps its wounds: the bar comes back where it was when the fight starts again"
 msgstr ""
 
 #: assets/data/changelog.json

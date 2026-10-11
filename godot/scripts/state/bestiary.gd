@@ -25,8 +25,9 @@ static func is_boss(id: String) -> bool:
 
 
 ## A boss, or a named monster (PIX-156): it fights like one - the boss bar,
-## its music and its roar - never gives up the chase, and falls like one,
-## the world holding its breath (PIX-232).
+## its music and its roar - gives up a chase only for good reasons (lost,
+## blocked or led out of its ground: PIX-288, never a few steps' walk), and
+## falls like one, the world holding its breath (PIX-232).
 static func fights_like_boss(fighter: Dictionary) -> bool:
 	return is_boss(String(fighter["id"])) or fighter.has("named")
 
