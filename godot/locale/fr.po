@@ -2081,6 +2081,10 @@ msgid "A live stats panel beside the doll: ATK, DEF and every granted bonus, upd
 msgstr "Un panneau de caractéristiques en direct à côté du mannequin : ATQ, DEF et chaque bonus accordé, mis à jour pendant que vous vous équipez"
 
 #: assets/data/changelog.json
+msgid "A loading screen of its own: the night over Pixelheim, the smoking mountain and the lake, with the village's windows lighting up one by one as the game loads"
+msgstr "Un écran de chargement bien à lui : la nuit sur Pixelheim, la montagne qui fume et le lac, avec les fenêtres du village qui s'allument une à une pendant le chargement"
+
+#: assets/data/changelog.json
 msgid "A lost fight still wakes you tucked into the inn's bed"
 msgstr "Un combat perdu vous réveille toujours bordé dans le lit de l'auberge"
 
@@ -4609,6 +4613,10 @@ msgid "Standing at a station, the Craft tab says so in green: craft freely"
 msgstr "Devant un atelier, l'onglet Artisanat l'indique en vert : fabriquez à volonté"
 
 #: assets/data/changelog.json
+msgid "Stars twinkle, embers rise and chimneys smoke while it loads, then the title rises out of the same picture"
+msgstr "Les étoiles scintillent, les braises montent et les cheminées fument pendant le chargement, puis le titre surgit de la même image"
+
+#: assets/data/changelog.json
 msgid "Status effects: poison and burn tick every turn, stun steals turns"
 msgstr "Effets d'état : le poison et la brûlure frappent à chaque tour, l'étourdissement fait perdre des tours"
 
@@ -5373,6 +5381,10 @@ msgid "The first stone of Your Town: property, the city hall and the settlers co
 msgstr "La première pierre de Votre ville : la propriété, la mairie et les nouveaux habitants suivront"
 
 #: assets/data/changelog.json
+msgid "The forge, the town hall, the bank, the bounties, the workbench, storage and the trophies scroll inside their page instead of running off it"
+msgstr "La forge, la mairie, la banque, les primes, l'établi, le rangement et les trophées défilent dans leur page au lieu d'en déborder"
+
+#: assets/data/changelog.json
 msgid "The four ages grew with it: stalls and lamps at Village, a fountain and a thatched row-house at Town, a slate townhouse and a farmhouse at City"
 msgstr "Les quatre âges ont suivi : des étals et des réverbères dès le Village, une fontaine et des maisons mitoyennes à toit de chaume dès le Bourg, une maison de ville en ardoise et une ferme dès la Cité"
 
@@ -5507,6 +5519,10 @@ msgstr "L'ouverture et l'aube sont réécrites : un dragon endormi au bout d'u
 #: assets/data/changelog.json
 msgid "The pack's Craft tab knows your home station: 'You are at your own workbench - craft freely'"
 msgstr "L'onglet Artisanat du sac reconnaît votre atelier : « Vous êtes à votre propre établi - fabriquez librement »"
+
+#: assets/data/changelog.json
+msgid "The pack's rows fit their panel again: long names end in an ellipsis with the full name below, and \"equipped\" and the E hint always show in full"
+msgstr "Les lignes du sac tiennent de nouveau dans leur cadre : les noms trop longs finissent par des points de suspension avec le nom entier dessous, et « équipé » et l'indication E s'affichent toujours en entier"
 
 #: assets/data/changelog.json
 msgid "The pad's Back button opens the dock's menu with a line chosen: every screen, and skills four to six, so a pad player can spend points and reach everything"
