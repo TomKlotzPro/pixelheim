@@ -2045,6 +2045,10 @@ msgid "A foe gives you longer to see its bite coming, and shows it: it crouches 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A foe that spots you flashes a red burst, a frightened one a blue one, so danger and talk never look alike"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A gold ! over someone with a quest for you, a gold ? over someone waiting for you to hand one in, and a grey ? while a quest you took from them is under way; Options can turn them off (Quest markers)"
 msgstr ""
 
@@ -2538,6 +2542,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Clear Map"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Clear Signs"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4149,6 +4157,10 @@ msgid "People live here now - talk to them with E, Enter or Space"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "People with something for you wear a speech bubble: \"!\" for a new quest, \"?\" to hand one in, gold when it's the main story"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Pitched Tents"
 msgstr ""
 
@@ -5242,6 +5254,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The app shell slimmed from four hundred lines to a router: the soundscape, the ascension scene and the keyboard each live in their own room now"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The arrow at the screen's edge is a brass arrow in the game's own style: gold for the main story, cream for anything else"
 msgstr ""
 
 #: assets/data/changelog.json

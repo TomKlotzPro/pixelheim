@@ -1,8 +1,8 @@
 extends GutTest
 ## The courier's satchel (PIX-253 step 2, v2 §5 "Main quests stand out"):
 ## the journal's main story is Maren's letters by their address, to deliver
-## or delivered and answered; a letter carried hangs a gold "!" ringed in
-## gold over its recipient; the arrow at the view's edge is gold only while
+## or delivered and answered; a letter carried hangs the gold talk mark over
+## its recipient (PIX-289); the arrow at the view's edge is gold only while
 ## it leads the main story; the map keeps the main story's next place as a
 ## hollow gold diamond while something else leads; and each chapter opens on
 ## a card, shown once, kept in the story ledger - no new field in the save.
@@ -40,6 +40,10 @@ func _lead() -> Dictionary:
 
 func _mark(npc_id: String) -> String:
 	return Quests.mark_for(npc_id, state.progression.quests, state.pack.items, state.questing.quest_open)
+
+
+func _story_mark(npc_id: String) -> bool:
+	return Quests.mark_tells_story(npc_id, state.progression.quests, state.pack.items, state.questing.quest_open)
 
 
 # ---- The satchel's rows -----------------------------------------------------------
@@ -116,25 +120,34 @@ func test_a_recipient_wears_the_gold_mark_only_while_their_letter_is_carried() -
 	assert_eq(_mark("mines_pell"), "", "no letter in the pack, no mark")
 	state.questing.finish_dialogue("saltmere_wenna")
 	assert_ne(_mark("saltmere_wenna"), "letter", "delivered: nothing more of the story with her")
-	assert_eq(Npc.MARK_COLORS["letter"], UiStyle.GOLD, "gold")
-	assert_eq(Npc.MARK_COLORS["offer"], Color("f2c14e"), "and a side quest's marks keep their colours")
-	assert_eq(Npc.MARK_COLORS["waiting"], Color("a8a39a"))
+	assert_eq(Npc.mark_tone("letter", false), "gold", "gold")
+	assert_eq(Npc.mark_tone("offer", false), "plain", "and a side quest's in parchment")
+	assert_eq(Npc.mark_tone("waiting", true), "waiting", "faded while it's under way, the story's too")
 
 
-func test_the_gold_mark_is_ringed_and_stands_clear_of_the_head() -> void:
-	var plain: Node2D = autofree(Npc._outlined("!", UiStyle.GOLD))
-	var ringed: Node2D = autofree(Npc._outlined("!", UiStyle.GOLD, 3))
-	assert_eq(plain.get_child_count(), 5, "a side quest's: the glyph in a dark line")
-	assert_eq(ringed.get_child_count(), 25, "the main story's: a gold ring and the night round it too")
-	var glyph: Label = ringed.get_child(-1)
-	assert_eq([glyph.position, glyph.get_theme_color("font_color")], [Vector2.ZERO, UiStyle.GOLD], "the gold glyph on top")
-	var golds := ringed.get_children().filter(func(label: Label) -> bool: return label.get_theme_color("font_color") == UiStyle.GOLD)
-	assert_eq(golds.size(), 9, "the glyph and its ring two pixels out")
+## PIX-289: the main story's talk mark is the gold bubble (it was a gold
+## "!" ringed in gold): a letter's recipient, Maren with her relics to ask
+## for, a relic's hunt; a side quest's is parchment.
+func test_the_main_storys_mark_is_gold() -> void:
+	assert_eq(_mark("elder"), "offer", "a new hero: Maren has her relics to ask for")
+	assert_true(_story_mark("elder"), "the main story")
+	assert_eq(_mark("villager_bram"), "offer")
+	assert_false(_story_mark("villager_bram"), "Bram's cheese is a side quest")
+	state.questing.finish_dialogue("elder")
+	for npc_id: String in RECIPIENTS.values():
+		assert_true(_story_mark(npc_id), "%s: a letter of the story carried to them" % npc_id)
+	state.progression.quests["wenna_smugglers"] = {"progress": 0, "done": true}
+	state.progression.quests["letter_wenna"] = {"progress": 1, "done": true}
+	state.pack.remove_item("letter_wenna")
+	assert_eq(_mark("saltmere_wenna"), "offer", "her own errands, the letter delivered")
+	assert_true(_story_mark("saltmere_wenna"), "the Tidecaller's hunt carries the story (Tam's ladle)")
+	var gold: Sprite2D = autofree(Npc.mark_sprite("letter", false))
+	var plain: Sprite2D = autofree(Npc.mark_sprite("offer", false))
+	assert_eq(gold.texture, Marks.talk("!", "gold"))
+	assert_eq(plain.texture, Marks.talk("!", "plain"))
+	assert_ne(gold.texture, plain.texture, "told apart")
 	var frames := PunyArt.frames(PunyArt.villager("villager"))
-	var low: Vector2 = Npc.mark_spot("!", frames, "idle_down", Vector2(0, -3), Vector2.ONE)
-	var high: Vector2 = Npc.mark_spot("!", frames, "idle_down", Vector2(0, -3), Vector2.ONE, 3)
-	assert_eq(high.x, low.x, "centred alike")
-	assert_eq(low.y - high.y, 2.0, "two pixels higher: its ring clears the head as the dark line does")
+	assert_eq(Npc.mark_spot(gold.texture.get_size(), frames, "idle_down", Vector2(0, -3), Vector2.ONE), Npc.mark_spot(plain.texture.get_size(), frames, "idle_down", Vector2(0, -3), Vector2.ONE), "and stand alike")
 
 
 # ---- The gold arrow -----------------------------------------------------------------

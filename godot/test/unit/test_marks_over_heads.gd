@@ -1,11 +1,11 @@
 extends GutTest
 ## The marks over heads sit centred on them (PIX-268: Tom found the "!" over
-## a villager a pixel left of their head). A quest's "!" and "?" are centred
-## by the glyph's ink on the head of every villager sheet, whichever way they
-## face, in whole pixels; a monster's alert and fright bubbles on its head;
-## the words and numbers floating over the world on where they happened. The
-## heads are read off the art here, apart from Ink, so the two check each
-## other.
+## a villager a pixel left of their head). A quest's talk mark (Marks,
+## PIX-289) is centred by its glyph on the head of every villager sheet,
+## whichever way they face, in whole pixels; a monster's danger and fright
+## marks on its head; the words and numbers floating over the world on where
+## they happened. The heads are read off the art here, apart from Ink, so the
+## two check each other.
 
 const Npc := preload("res://scripts/npc.gd")
 const Enemy := preload("res://scripts/enemy.gd")
@@ -86,6 +86,18 @@ func test_whole_pixels_lean_the_same_way() -> void:
 	assert_eq(Ink.centred(Rect2(0, 0, 13, 7), 100.0), 94.0)
 
 
+## The middle of the glyph (`i`) in a mark's rows, in its own pixels.
+func _glyph_middle(rows: Array) -> float:
+	var left := 1000
+	var right := -1
+	for row: String in rows:
+		for x in row.length():
+			if row[x] == "i":
+				left = mini(left, x)
+				right = maxi(right, x)
+	return (left + right + 1) / 2.0
+
+
 func test_a_villagers_mark_is_centred_on_their_head_every_way_they_face() -> void:
 	for sprite: String in PunyArt.VILLAGERS:
 		var art := PunyArt.villager(sprite)
@@ -94,22 +106,24 @@ func test_a_villagers_mark_is_centred_on_their_head_every_way_they_face() -> voi
 		# As the villager's sprite stands (npc.gd).
 		var at := Vector2(0, PunyArt.lift(art) * size)
 		var crown := _crown(frames, at, size)
-		for text: String in ["!", "?"]:
-			var ink := Ink.of_text(text, _face(), UiStyle.BODY_PX)
+		for glyph: String in Marks.TALK:
+			var mark := Marks.talk(glyph, "plain").get_size()
+			var middle := _glyph_middle(Marks.TALK[glyph])
 			for way: String in PunyArt.DIRS:
 				var head := _head_middle(frames, PunyArt.pick(frames, "idle", way), at, size)
 				for anim: String in [PunyArt.pick(frames, "idle", way), PunyArt.pick(frames, "walk", way)]:
-					var spot: Vector2 = Npc.mark_spot(text, frames, anim, at, Vector2.ONE * size)
-					var who := "%s's %s, %s" % [sprite, text, anim]
+					var spot: Vector2 = Npc.mark_spot(mark, frames, anim, at, Vector2.ONE * size)
+					var who := "%s's %s, %s" % [sprite, glyph, anim]
 					assert_eq(spot, spot.round(), "%s: on whole pixels" % who)
-					assert_almost_eq(spot.x + ink.get_center().x, head, 0.5, "%s: centred on the head" % who)
-					var gap := crown - (spot.y + ink.end.y)
-					assert_true(gap >= 2.0 and gap < 3.0, "%s: two pixels over the head's highest (%s)" % [who, gap])
+					assert_almost_eq(spot.x + middle, head, 0.5, "%s: its glyph centred on the head" % who)
+					var gap := crown - (spot.y + mark.y)
+					assert_true(gap >= 1.0 and gap < 2.0, "%s: its tail a pixel over the head's highest (%s)" % [who, gap])
 
 
 func test_the_old_box_centring_missed_by_a_pixel() -> void:
 	# What Tom saw (v0.193): the "!" box-centred sat its ink a pixel left of
-	# a farmer's head; the "?" three.
+	# a farmer's head; the "?" three. The talk mark that replaced the glyph
+	# (PIX-289) centres its glyph on the head.
 	var frames := PunyArt.frames(PunyArt.villager("villager"))
 	var head := _head_middle(frames, "idle_down", Vector2(0, -3), 1.0)
 	var fallback_box := {"!": 4.0, "?": 12.0}
@@ -117,24 +131,20 @@ func test_the_old_box_centring_missed_by_a_pixel() -> void:
 		var ink := Ink.of_text(text, _face(), UiStyle.BODY_PX)
 		var old := roundf(-fallback_box[text] / 2.0) + ink.get_center().x
 		assert_gt(absf(old - head), 0.5, "%s was off" % text)
-		var spot: Vector2 = Npc.mark_spot(text, frames, "idle_down", Vector2(0, -3), Vector2.ONE)
-		assert_eq(spot.x + ink.get_center().x, head, "%s is centred now" % text)
+		var spot: Vector2 = Npc.mark_spot(Marks.talk(text, "plain").get_size(), frames, "idle_down", Vector2(0, -3), Vector2.ONE)
+		assert_eq(spot.x + _glyph_middle(Marks.TALK[text]), head, "%s is centred now" % text)
 
 
-func test_the_alerts_bang_is_the_middle_of_its_bubble() -> void:
-	var sides := Enemy.bubble_sides()
-	var ink := Ink.of_text("!", _face(), UiStyle.TEXT)
-	var box := _face().get_string_size("!", HORIZONTAL_ALIGNMENT_LEFT, -1, UiStyle.TEXT).x
-	var width := sides.x + box + sides.y
-	assert_eq(sides.x + ink.get_center().x, width / 2.0, "the ink in the middle")
-	assert_eq(width * Enemy.BUBBLE_SCALE, roundf(width * Enemy.BUBBLE_SCALE), "a whole number of art pixels wide")
-	assert_eq(sides.x - ink.position.x, Enemy.BUBBLE_PAD, "its pad off the ink each side")
+func test_the_danger_marks_bang_is_its_middle() -> void:
+	var size := Marks.alert().get_size()
+	assert_eq(_glyph_middle(Marks.BURST), size.x / 2.0, "the \"!\" in the burst's middle columns")
+	for glyph: String in Marks.TALK:
+		assert_eq(_glyph_middle(Marks.TALK[glyph]), Marks.talk(glyph, "plain").get_width() / 2.0, "the talk mark's %s in its middle" % glyph)
 
 
-## Every monster's alert and fright bubble, laid out by their containers as
-## in the world, every way it faces.
-func test_a_monsters_bubbles_are_centred_on_its_head() -> void:
-	var laid := []
+## Every monster's danger and fright mark, placed as in the world, every way
+## it faces.
+func test_a_monsters_marks_are_centred_on_its_head() -> void:
 	for species: String in PunyArt.MONSTERS:
 		var art := PunyArt.monster(species)
 		var size: float = art.get("scale", 1.0)
@@ -147,19 +157,14 @@ func test_a_monsters_bubbles_are_centred_on_its_head() -> void:
 			foe.sprite.play(PunyArt.pick(frames, "walk", way))
 			foe._rest_at = Vector2(0, PunyArt.lift(art) * size)
 			foe._rest_scale = Vector2.ONE * size
-			for ink_color: Color in [Color("d8433f"), Juice.FRIGHT_INK]:
-				var bubble: PanelContainer = foe._bubble(ink_color)
-				add_child_autofree(bubble)
-				var head := _head_middle(frames, PunyArt.pick(frames, "idle", way), foe._rest_at, size)
-				laid.append([bubble, head, "%s facing %s" % [species, way]])
-	await wait_physics_frames(2)
-	var ink := Ink.of_text("!", _face(), UiStyle.TEXT)
-	for entry: Array in laid:
-		var bubble: PanelContainer = entry[0]
-		var bang: Label = bubble.get_child(0)
-		var middle := bubble.position.x + (bang.position.x + ink.get_center().x) * Enemy.BUBBLE_SCALE
-		assert_eq(bubble.position, bubble.position.round(), "%s: on whole pixels" % entry[2])
-		assert_almost_eq(middle, float(entry[1]), 0.5, "%s: centred on the head" % entry[2])
+			var head := _head_middle(frames, PunyArt.pick(frames, "idle", way), foe._rest_at, size)
+			for tone: String in Marks.BURST_TONES:
+				var burst: Sprite2D = autofree(Enemy.alert_mark(tone))
+				foe._place_mark(burst)
+				var who := "%s's %s facing %s" % [species, tone, way]
+				assert_eq(burst.position, burst.position.round(), "%s: on whole pixels" % who)
+				assert_almost_eq(burst.position.x + burst.texture.get_width() / 2.0, head, 0.5, "%s: centred on the head" % who)
+				assert_lt(burst.position.y + burst.texture.get_height(), -20.0 * size - Enemy.TAG_HEIGHT, "%s: its foot over the level tag" % who)
 
 
 func test_words_over_the_world_are_centred_by_their_ink() -> void:

@@ -23,13 +23,15 @@ const STUCK_SECONDS := 0.35
 ## No cell yet: a flight just begun.
 const NO_CELL := Vector2i(-1, -1)
 ## The fright's "!" and drop shiver this many art pixels either way; the
-## drop starts by the bubble's top (in the bubble's half-size units).
+## drop starts this far under the burst's top and runs this far down.
 const SHIVER := 1.0
-const DROP_FROM := 8.0
-## The alert's bubble: drawn at half the UI's size, its sides this far off
-## the "!"'s ink (in its own units, so three art pixels).
-const BUBBLE_SCALE := 0.5
-const BUBBLE_PAD := 6.0
+const DROP_FROM := 4.0
+const DROP_RUN := 3.0
+## The danger mark's foot stands this far over the level tag (PIX-188),
+## which hid the old "!"'s dot; where no tag has been laid out, the tag's
+## height over the health bar.
+const MARK_CLEAR := 1.0
+const TAG_HEIGHT := 9.0
 const CONTACT_RADIUS := 13.0
 ## A bite that was told lands if the hero is still this close.
 const BITE_REACH := 20.0
@@ -115,7 +117,8 @@ var mode := "idle"
 var alert_left := 0.0
 ## Seconds until a told bite lands; negative while no bite is coming.
 var tell_left := -1.0
-var mark: PanelContainer
+## The danger mark over its head as it notices the hero (Marks, PIX-289).
+var mark: Sprite2D
 ## An undead elite's raised guard (PIX-155): blows mostly glance off.
 var guarding := false
 ## Busy where it stands (the Night of Ash's scavenger at its meal): it
@@ -147,7 +150,7 @@ var stuck_for := 0.0
 var _step := Vector2i.ZERO
 var _fled_from := NO_CELL
 var _taken: Array[Vector2i] = []
-## The fright's cue over the head: a pale "!" and a drop of sweat.
+## The fright's cue over the head: the cold burst and a drop of sweat.
 var fright_mark: Node2D
 var _fright_tween: Tween
 var _drop: Sprite2D
@@ -384,7 +387,8 @@ func _physics_process(delta: float) -> void:
 		_play("idle")
 
 
-## The hero is seen: a "!" over the head and a hop, then the chase.
+## The hero is seen: the danger mark over the head and a hop, then the
+## chase.
 func notice() -> void:
 	_wake()
 	mode = "alert"
@@ -396,10 +400,9 @@ func notice() -> void:
 	if fright_mark != null:
 		fright_mark.visible = false
 	if mark == null:
-		mark = _bubble(Color("d8433f"))
-		Lights.unshade(mark)
+		mark = alert_mark("danger")
 		add_child(mark)
-	_place_bubble(mark)
+	_place_mark(mark)
 	mark.modulate.a = 1.0
 	mark.visible = true
 	var fade := mark.create_tween()
@@ -454,62 +457,50 @@ func _name_plate(lift: float) -> Label:
 	return plate
 
 
-## A "!" in `ink` in a white bubble over the head, built at the UI's size
-## and drawn at half of it: one art pixel per font pixel. The bubble's
-## sides stand BUBBLE_PAD off the glyph's ink, not its box (PIX-268: the
-## face's spacing after the "!" pushed it left of the bubble's middle).
-func _bubble(ink: Color) -> PanelContainer:
-	var bubble := PanelContainer.new()
-	var box := StyleBoxFlat.new()
-	box.bg_color = Color("fff6dc")
-	box.border_color = Color(0.12, 0.07, 0.05)
-	box.set_border_width_all(2)
-	box.set_corner_radius_all(4)
-	var sides := bubble_sides()
-	box.content_margin_left = sides.x
-	box.content_margin_right = sides.y
-	box.content_margin_top = 0
-	box.content_margin_bottom = 0
-	bubble.add_theme_stylebox_override("panel", box)
-	bubble.add_child(UiStyle.strong("!", 18, ink))
-	bubble.scale = Vector2.ONE * BUBBLE_SCALE
-	bubble.z_index = 10
-	bubble.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	bubble.resized.connect(_place_bubble.bind(bubble))
-	return bubble
+## The danger mark in `tone` (Marks.alert: "danger", or "fright"), at the
+## world's scale, over the fighters round it and bright at night (PIX-221).
+static func alert_mark(tone: String) -> Sprite2D:
+	var burst := Sprite2D.new()
+	burst.texture = Marks.alert(tone)
+	burst.centered = false
+	burst.z_index = 10
+	Lights.unshade(burst)
+	return burst
 
 
-## The bubble's margins left and right of its "!": BUBBLE_PAD each side of
-## the glyph's ink, so the ink is the bubble's middle, and a whole number of
-## art pixels wide.
-static func bubble_sides() -> Vector2:
-	var face := UiStyle.bold_font()
-	var ink := Ink.of_text("!", face, UiStyle.TEXT)
-	var box := face.get_string_size("!", HORIZONTAL_ALIGNMENT_LEFT, -1, UiStyle.TEXT).x
-	return Vector2(BUBBLE_PAD - ink.position.x, BUBBLE_PAD - (box - ink.end.x))
-
-
-## A bubble over the head the way the monster faces now (PIX-268: its head
-## isn't always over its middle), in whole pixels; clear of the level tag
-## (PIX-188) under it, which hid the "!"'s dot.
-func _place_bubble(bubble: Control) -> void:
+## A mark over the head the way the monster faces now (PIX-268: its head
+## isn't always over its middle), its middle (the "!") on the head's in
+## whole pixels, its foot over the level tag.
+func _place_mark(burst: Sprite2D) -> void:
 	var head := Ink.head(sprite.sprite_frames, Ink.rest_pose(sprite.sprite_frames, sprite.animation), _rest_at, _rest_scale)
-	bubble.position = Vector2(bubble_x(bubble.size.x, head.get_center().x), -20.0 * _rest_scale.y - 20)
+	var size := burst.texture.get_size()
+	burst.position = Vector2(Marks.centred(size.x, head.get_center().x), mark_foot() - size.y)
+
+
+## Where a mark over the head has its foot: MARK_CLEAR over the level tag
+## (PIX-188; a named foe's tag stands over its name), or over where the tag
+## stands before it is laid out.
+func mark_foot() -> float:
+	var tag_top := -20.0 * _rest_scale.y - TAG_HEIGHT
+	if level_tag != null and level_tag.size.y > 0.0:
+		tag_top = level_tag.position.y
+	return floorf(tag_top - MARK_CLEAR)
 
 
 ## The alert or the fright's cue keeps over its head as it turns to the
 ## chase or the flight.
 func _turned() -> void:
 	if mark != null and mark.visible:
-		_place_bubble(mark)
+		_place_mark(mark)
 	if fright_mark != null and fright_mark.visible:
-		_place_bubble(fright_mark.get_child(0) as Control)
+		_place_fright()
 
 
-## Where a bubble `width` wide (in its own units) goes so its middle, its
-## "!", is over `centre`.
-static func bubble_x(width: float, centre: float) -> float:
-	return Ink.centred(Rect2(0, 0, width * BUBBLE_SCALE, 0), centre)
+## The fright's burst over the head, its drop of sweat beside it.
+func _place_fright() -> void:
+	var burst := fright_mark.get_child(0) as Sprite2D
+	_place_mark(burst)
+	_drop.position.x = burst.position.x + burst.texture.get_width() + 1.0
 
 
 ## The hero is seen, and far too strong (PIX-251): a pale "!" and a drop of
@@ -531,12 +522,13 @@ func take_fright(to_player: Vector2) -> void:
 	if fright_mark == null:
 		fright_mark = _fright_cue()
 		add_child(fright_mark)
-	_place_bubble(fright_mark.get_child(0) as Control)
+	_place_fright()
 	var still := GameState.settings.reduce_motion
 	fright_mark.visible = true
 	fright_mark.modulate.a = 1.0
 	fright_mark.position = Vector2.ZERO
-	_drop.position.y = DROP_FROM
+	var from: float = (fright_mark.get_child(0) as Sprite2D).position.y + DROP_FROM
+	_drop.position.y = from
 	if _fright_tween != null:
 		_fright_tween.kill()
 	_fright_tween = fright_mark.create_tween()
@@ -548,24 +540,21 @@ func take_fright(to_player: Vector2) -> void:
 			_fright_tween.tween_interval(0.06)
 		_fright_tween.tween_callback(func() -> void: fright_mark.position.x = 0.0)
 		var run := _drop.create_tween()
-		run.tween_method(func(y: float) -> void: _drop.position.y = 2.0 * roundf(y / 2.0), DROP_FROM, DROP_FROM + 6.0, 0.5)
+		run.tween_method(func(y: float) -> void: _drop.position.y = roundf(y), from, from + DROP_RUN, 0.5)
 		_flinch(to_player)
 	_fright_tween.tween_interval(0.5 if not still else 1.0)
 	_fright_tween.tween_property(fright_mark, "modulate:a", 0.0, 0.25)
 
 
-## The fright's cue: the pale "!" in its bubble, and a drop of sweat at its
-## side. The drop rides in the bubble, which is drawn at half size: drawn
-## twice its own size there, its pixels are the art's.
+## The fright's cue: the danger mark's cold burst, and a drop of sweat at
+## its side, both at the world's scale.
 func _fright_cue() -> Node2D:
 	var cue := Node2D.new()
-	var bubble := _bubble(Juice.FRIGHT_INK)
-	cue.add_child(bubble)
+	cue.add_child(alert_mark("fright"))
 	_drop = Sprite2D.new()
 	_drop.texture = Juice.sweat_drop()
-	_drop.scale = Vector2.ONE * 2.0
-	bubble.add_child(_drop)
-	bubble.resized.connect(func() -> void: _drop.position.x = bubble.size.x + 8.0)
+	_drop.centered = false
+	cue.add_child(_drop)
 	Lights.unshade(cue)
 	return cue
 

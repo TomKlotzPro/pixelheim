@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.227.0",
+      "date": "2026-10-11",
+      "codename": "Clear Signs",
+      "notes": [
+        "The arrow at the screen's edge is a brass arrow in the game's own style: gold for the main story, cream for anything else",
+        "People with something for you wear a speech bubble: \"!\" for a new quest, \"?\" to hand one in, gold when it's the main story",
+        "A foe that spots you flashes a red burst, a frightened one a blue one, so danger and talk never look alike"
+      ]
+    },
+    {
       "version": "0.226.0",
       "date": "2026-10-11",
       "codename": "Coming Home",
