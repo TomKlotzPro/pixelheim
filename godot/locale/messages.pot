@@ -2609,6 +2609,10 @@ msgid "Controls are rebindable, and French keyboards get ZQSD out of the box"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Country roads carry cart ruts, grass on the crown, pebbles and grass creeping in at the edges"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Crackle and Hum"
 msgstr ""
 
@@ -3286,6 +3290,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Green Thumbs"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Greyhold's courtyard is flagged and its paths cobbled, and the Frostgate's road is cobbled up to a flagged yard before the observatory"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4213,6 +4221,10 @@ msgid "Paths, bridges and town stay safe - stray off the road at your own risk"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Paved Ways"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "People live here now - talk to them with E, Enter or Space"
 msgstr ""
 
@@ -4250,6 +4262,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Pixelheim village, marshland, forest, ash fields, and a river bridge"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Pixelheim's streets grow with the town: rutted dirt, then gravel with edge stones, then cobbles on Upper Street, and in the City a flagged square with brick round the fountain"
 msgstr ""
 
 #: assets/data/changelog.json
