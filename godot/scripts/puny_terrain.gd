@@ -44,6 +44,25 @@ const TINTS := {
 	# The mountain road's trodden way through the ash (REGION_PATHS).
 	"trodden": Color(0.62, 0.52, 0.4),
 }
+## What each cell of the tint mask asks of region_tint.gdshader, in its
+## alpha (PIX-305): the region's tone over all its ground; the mire's, which
+## lays its murk and puddles too (MIRES); or, in a cell of grass or rock
+## beside a region toned from Shade's dirt, that tone over the cell's dirt
+## alone (tint_fringe_rows). Each pixel takes one cell's tone, whole.
+const KIND_TONE := 1.0
+const KIND_MIRE := 0.75
+const KIND_FRINGE := 0.375
+## Tiles whose tone is the mire's.
+const MIRES := ["marsh"]
+## Regions whose grass takes another tone: the Mirefen's is the mire's own
+## (PIX-305: its tussocks, two cells square, were Shade's bright lawn
+## dithered into the murk in blobs that read as camouflage; the mire's
+## murk, sedge and puddles are the shader's now, open_ground.gdshaderinc).
+const REGION_GRASS := {"mire": "marsh"}
+## The grounds a dirt-toned region's edge reaches into: the grass beside the
+## ash, where Shade's dirt runs a few pixels past the cell's edge in tufts,
+## and the rock, whose cliff stands in the ash at its foot.
+const FRINGED := ["grass", "cliff"]
 ## Regions whose every ground cell takes a tone, trees' included (the pass's
 ## snow under its pines; the mountain road's ash over its ridges, PIX-253 step 8).
 const REGION_TINTS := {"frost": "snow", "road": "ash"}
@@ -436,33 +455,77 @@ static func _inside(cell: Vector2i, size: Vector2i) -> Vector2i:
 	return Vector2i(clampi(cell.x, 0, size.x - 1), clampi(cell.y, 0, size.y - 1))
 
 
-## The per-cell mask region_tint.gdshader reads: a region's hue with full
-## coverage, premultiplied so blending between cells keeps the hue true.
+## The per-cell mask region_tint.gdshader reads: a region's hue, and what
+## kind of toning the cell asks for in its alpha (KIND_*).
 static func tint_map(grid: Dictionary, size: Vector2i, regions := {}) -> ImageTexture:
 	var image := Image.create(size.x, size.y, false, Image.FORMAT_RGBA8)
 	image.fill(Color(0, 0, 0, 0))
 	tint_rows(image, grid, regions, 0, size.y)
+	tint_fringe_rows(image, grid, 0, size.y)
 	for ring in 2:
 		tint_spill(image, grid)
 	return ImageTexture.create_from_image(image)
 
 
 ## Rows [from, to) of the tint mask into `image`, a few rows a frame beside
-## the hero (PIX-269); then two rings of tint_spill.
+## the hero (PIX-269); then the fringe's rows once every row is in, then two
+## rings of tint_spill.
 static func tint_rows(image: Image, grid: Dictionary, regions: Dictionary, from: int, to: int) -> void:
 	for y in range(from, to):
 		for x in image.get_width():
 			var cell := Vector2i(x, y)
 			if not grid.has(cell):
 				continue
-			var tile: String = grid[cell]
-			var region: String = regions.get(cell, "")
-			if tile == "path" and REGION_PATHS.has(region):
-				tile = REGION_PATHS[region]
-			elif not TINTS.has(tile) and REGION_TINTS.has(region):
-				tile = REGION_TINTS[region]
+			var tile := toned_as(grid[cell], regions.get(cell, ""))
 			if TINTS.has(tile):
-				image.set_pixelv(cell, TINTS[tile])
+				image.set_pixelv(cell, Color(TINTS[tile], KIND_MIRE if tile in MIRES else KIND_TONE))
+
+
+## The TINTS entry a tile takes in a region ("" for none): a region's own
+## road, grass or ground, or the tile's.
+static func toned_as(tile: String, region: String) -> String:
+	if tile == "path" and REGION_PATHS.has(region):
+		return REGION_PATHS[region]
+	if tile == "grass" and REGION_GRASS.has(region):
+		return REGION_GRASS[region]
+	if not TINTS.has(tile) and REGION_TINTS.has(region):
+		return REGION_TINTS[region]
+	return tile if TINTS.has(tile) else ""
+
+
+## Rows [from, to) of the fringe (PIX-305): an untoned cell of grass or
+## rock beside a cell toned from Shade's dirt takes its tone over its own
+## dirt alone (KIND_FRINGE), so the ash's dirt reaching past its cells in
+## tufts, or under a cliff's foot, isn't left a yellow rim round it. Read
+## once every row of tint_rows is in; it writes untoned cells only.
+static func tint_fringe_rows(image: Image, grid: Dictionary, from: int, to: int) -> void:
+	var size := Vector2i(image.get_width(), image.get_height())
+	for y in range(from, to):
+		for x in size.x:
+			var cell := Vector2i(x, y)
+			if image.get_pixelv(cell).a > 0.0 or ground_of(grid.get(cell, "")) not in FRINGED:
+				continue
+			for side: Vector2i in [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN, Vector2i(1, 1), Vector2i(-1, 1), Vector2i(1, -1), Vector2i(-1, -1)]:
+				var next := cell + side
+				if next.x < 0 or next.y < 0 or next.x >= size.x or next.y >= size.y:
+					continue
+				var tone := image.get_pixelv(next)
+				if tone.a > KIND_MIRE and ground_of(grid.get(next, "")) == "dirt":
+					image.set_pixelv(cell, Color(tone, KIND_FRINGE))
+					break
+
+
+## How the tint mask `image` asks a cell to be toned: "tone", "mire",
+## "fringe" or "none" (KIND_*), as the shader reads its alpha.
+static func tone_at(image: Image, cell: Vector2i) -> String:
+	if cell.x < 0 or cell.y < 0 or cell.x >= image.get_width() or cell.y >= image.get_height():
+		return "none"
+	var alpha := image.get_pixelv(cell).a
+	if alpha < (KIND_FRINGE / 2.0):
+		return "none"
+	if alpha < (KIND_FRINGE + KIND_MIRE) / 2.0:
+		return "fringe"
+	return "mire" if alpha < (KIND_MIRE + KIND_TONE) / 2.0 else "tone"
 
 
 ## Water takes the tone of the land beside it, two cells out (PIX-247), a

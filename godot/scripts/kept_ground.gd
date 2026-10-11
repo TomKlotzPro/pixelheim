@@ -38,6 +38,11 @@ var water_image: Image
 ## Whether the region tones the pines on its ridges too (PIX-169: under
 ## snow), so a map beside it tones its own along the line alike.
 var crowns_toned := false
+## The open ground's small things (Scatter.detail: cell -> GroundDetail's
+## tile) and, with the paid pack, the Medieval Age's patches of green and
+## snow (OpenGround.plan: cell -> its tile), PIX-305.
+var details := {}
+var patches := {}
 ## The layers as the first visit filled them (TileMapLayer.tile_map_data).
 var ground_cells := PackedByteArray()
 var rim_cells := PackedByteArray()
@@ -141,9 +146,21 @@ static func working(data: MapData, look: Dictionary, pad: int, slices: Slicer) -
 	slices.add_each("kept_corners", ceili(corner_rows / float(ROWS_A_SLICE)), func(i: int) -> void: kept._corner_rows(i * ROWS_A_SLICE - pad))
 	slices.add_each("kept_tint", cell_slices, func(i: int) -> void:
 		PunyTerrain.tint_rows(kept.tint_image, look, data.regions, i * ROWS_A_SLICE, mini((i + 1) * ROWS_A_SLICE, data.size.y)))
+	slices.add_each("kept_tint_fringe", cell_slices, func(i: int) -> void:
+		PunyTerrain.tint_fringe_rows(kept.tint_image, look, i * ROWS_A_SLICE, mini((i + 1) * ROWS_A_SLICE, data.size.y)))
 	slices.add_each("kept_tint_spill", 2, func(_ring: int) -> void: PunyTerrain.tint_spill(kept.tint_image, look))
 	slices.add_each("kept_water", ceili(data.size.y / float(WATER_ROWS_A_SLICE)), func(i: int) -> void:
 		PunyTerrain.water_rows(kept.water_image, look, i * WATER_ROWS_A_SLICE, mini((i + 1) * WATER_ROWS_A_SLICE, data.size.y), kept._above, data.id))
+	slices.add_each("kept_detail", cell_slices, func(i: int) -> void: kept._detail_rows(i * ROWS_A_SLICE))
+	# The Medieval Age's patches in the open land only: in Pixelheim's yards
+	# and gardens, a few cells across, one read as a rug laid on the lawn.
+	if PunyTown.available() and kept._plane:
+		var origin := ReachPlane.origin(data.id)
+		var lattice := {}
+		var kind := {}
+		slices.add_each("kept_patch", cell_slices, func(i: int) -> void:
+			OpenGround.rows(look, data.size, data.regions, origin, i * ROWS_A_SLICE, (i + 1) * ROWS_A_SLICE, lattice, kind))
+		slices.add("kept_patch_shape", func() -> void: kept.patches = OpenGround.shape(kind))
 	slices.add("kept_masks", func() -> void:
 		kept.tint_map = ImageTexture.create_from_image(kept.tint_image)
 		kept.water_map = ImageTexture.create_from_image(kept.water_image)
@@ -159,6 +176,17 @@ static func working(data: MapData, look: Dictionary, pad: int, slices: Slicer) -
 
 static func _fingerprint_of(data: MapData, look: Dictionary, pad: int) -> int:
 	return hash([look.hash() if not is_same(look, data.grid) else 0, data.grid.hash(), data.regions.hash(), data.size, pad])
+
+
+## The small things in the open ground (Scatter.detail, PIX-305), rows
+## [from, from + ROWS_A_SLICE): cell -> GroundDetail's tile.
+func _detail_rows(from: int) -> void:
+	for y in range(from, mini(from + ROWS_A_SLICE, _data.size.y)):
+		for x in _data.size.x:
+			var cell := Vector2i(x, y)
+			var kind := Scatter.detail(_look, cell, _data.regions.get(cell, ""))
+			if kind != "":
+				details[cell] = GroundDetail.coords(kind, Scatter.detail_variant(cell))
 
 
 ## Each cell's tile and ground terrain (PunyTerrain.ground_at), rows

@@ -24,6 +24,18 @@ const SWAYS := [197, 224, 251, 206, 233, 260, 705, 729, 732, 783, 810, 756, 757]
 ## A solid one's foot, in pixels from its cell's top-left: it covers the
 ## middle-bottom of the cell, as PunyProps' feet do.
 const FOOT := Rect2(3, 6, 10, 10)
+## The small things in open ground (PIX-305): tufts, clover, flowers and a
+## few pebbles in the grass, pebbles and twigs in the snow, reeds and sedge
+## in the mire. Tile -> [density %, [GroundDetail kinds]], picked by a hash
+## of their own where no field decor grows (choice), so what stands where
+## doesn't move; flat on the ground, never in the way. The fields grew the
+## odd stone in 3% of their cells, and most of every outdoor screen was one
+## grass tuft repeated.
+const DETAIL := {
+	"grass": [10, ["tuft", "tuft", "tuft_small", "tuft_small", "clover", "clover", "flowers_white", "flowers_yellow", "flowers_red", "flowers_blue", "pebbles"]],
+	"snow": [7, ["pebbles", "pebbles", "twig", "tuft_small"]],
+	"marsh": [12, ["reeds", "reeds", "sedge", "sedge", "tuft_small"]],
+}
 
 
 ## The Puny World decor a cell grows, or -1.
@@ -36,6 +48,31 @@ static func choice(grid: Dictionary, cell: Vector2i) -> int:
 		return -1
 	var choices: Array = SCATTER[tile][1]
 	return choices[(h >> 7) % choices.size()]
+
+
+## The small detail a cell grows ("" for none): one of DETAIL's kinds for
+## its tile (the mire's grass is the mire's, PunyTerrain.REGION_GRASS),
+## never where choice grows something.
+static func detail(grid: Dictionary, cell: Vector2i, region := "") -> String:
+	var tile: String = grid.get(cell, "")
+	if not DETAIL.has(tile) or choice(grid, cell) >= 0:
+		return ""
+	if tile == "grass" and PunyTerrain.REGION_GRASS.has(region):
+		tile = PunyTerrain.REGION_GRASS[region]
+	var h := _detail_hash(cell)
+	if h % 100 >= DETAIL[tile][0]:
+		return ""
+	var kinds: Array = DETAIL[tile][1]
+	return kinds[(h >> 7) % kinds.size()]
+
+
+## Which of GroundDetail's spots in its cell a cell's detail stands on.
+static func detail_variant(cell: Vector2i) -> int:
+	return (_detail_hash(cell) >> 13) % GroundDetail.VARIANTS.size()
+
+
+static func _detail_hash(cell: Vector2i) -> int:
+	return absi(hash(Vector3i(cell.x, cell.y, 305)))
 
 
 ## The field decor that blocks on a map: cell -> tile. Only a bush, stump or
