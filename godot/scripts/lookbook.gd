@@ -92,6 +92,9 @@ const SHOTS := {
 	"frostgate": {"area": "regions", "map": "frostgate", "time": DAY},
 	"coast": {"area": "regions", "map": "saltmere", "cell": Vector2i(33, 27), "time": DAY},
 	"deepwood": {"area": "regions", "map": "deepwood", "time": DAY},
+	# The Deepwood's forest, its pines and round trees (PIX-304: from One
+	# Land, v0.219, no map grew any).
+	"deepwood_trees": {"area": "regions", "map": "deepwood", "cell": Vector2i(44, 10), "time": DAY},
 	# The mountain road (PIX-253 step 8): its switchbacks up the ash to the
 	# forge in the rock, and the lamp by its door.
 	"mountain_road": {"area": "regions", "map": "mountain_road", "cell": Vector2i(17, 8), "time": DAY},

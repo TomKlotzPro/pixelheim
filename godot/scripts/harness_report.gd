@@ -47,6 +47,7 @@ const TABLE := [
 	{"field": "credits", "says": "the credits' last line while they roll (PIX-253 step 10)"},
 	{"field": "dark", "says": "with fades: what's left of a fade from the dark (PIX-238)"},
 	{"field": "day", "says": "with --day: the day (PIX-250)"},
+	{"field": "decor", "says": "on a map in the open air: how many pieces of field decor its drawing grew, its trees, wheat, bushes, stumps and stones (PIX-304)"},
 	{"field": "delivered", "says": "Maren's letters delivered, once any is out (PIX-253)"},
 	{"field": "dest", "says": "the waypoint the map's list has chosen, while the map is open (PIX-241)"},
 	{"field": "ending", "says": "the ending this hero chose for Morvax once it has played: home or stay (an old save's throne: destroy or rest) (PIX-253 step 10)"},
@@ -322,6 +323,12 @@ func field_dark() -> String:
 
 func field_day() -> String:
 	return str(Gathering.day_of(GameState.world.steps)) if flags.has("--day") else ""
+
+
+func field_decor() -> String:
+	if world.view == null or not PunyTerrain.is_outdoor(world.map.grid):
+		return ""
+	return str(world.view.field.size())
 
 
 func field_delivered() -> String:
