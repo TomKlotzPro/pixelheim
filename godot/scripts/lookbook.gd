@@ -86,6 +86,10 @@ const SHOTS := {
 	# window, the chart of the sky on the wall, the globe of it by her desk,
 	# her candles lit and the corners dark.
 	"lianes_room_night": {"area": "rooms", "map": "observatory", "cell": Vector2i(10, 6), "time": NIGHT},
+	# The frost round her stair at night (PIX-317): rime and crystals in cold
+	# blues under her candles' warm light, and the stair's own cold light
+	# keeping the way down seen.
+	"lianes_frost_night": {"area": "rooms", "map": "observatory", "cell": Vector2i(13, 7), "time": NIGHT},
 	"hales_hall": {"area": "rooms", "map": "keep", "cell": Vector2i(13, 7), "time": DAY},
 	"hales_stair": {"area": "rooms", "map": "keep", "cell": Vector2i(13, 6), "time": DAY, "down": true},
 	# Morvax's forge (PIX-253 step 8): the cot, the cold anvil, and fifty

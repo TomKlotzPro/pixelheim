@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.240.0",
+      "date": "2026-10-11",
+      "codename": "Hoarfrost",
+      "notes": [
+        "The frost on Liane's stair reads as frost: cold blue rime and crystals thinning out across the floor, with a glint now and then",
+        "Her stair goes cold and blue and its light reaches a little further, so the way down to the ice cave still shows by candlelight"
+      ]
+    },
+    {
       "version": "0.239.0",
       "date": "2026-10-11",
       "codename": "Green Fields",

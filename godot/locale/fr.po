@@ -3373,6 +3373,10 @@ msgid "Health comes back slowly while you're out of a fight"
 msgstr "La santé revient lentement hors des combats"
 
 #: assets/data/changelog.json
+msgid "Her stair goes cold and blue and its light reaches a little further, so the way down to the ice cave still shows by candlelight"
+msgstr "Son escalier devient froid et bleu et sa lumière porte un peu plus loin : le chemin vers la grotte de glace se voit même à la lueur des bougies"
+
+#: assets/data/changelog.json
 msgid "Herbs, ore and pouches on the ground are half the size, sitting on a small shadow and bobbing gently, so they no longer look as big as you"
 msgstr "Les herbes, le minerai et les bourses au sol sont deux fois plus petits, posés sur une petite ombre et flottant doucement : ils ne paraissent plus aussi grands que vous"
 
@@ -3391,6 +3395,10 @@ msgstr "Hilda trempe les pièces des profondeurs : de l'or et une gemme pour +
 #: assets/data/changelog.json
 msgid "Hit Feel"
 msgstr "Des coups qui portent"
+
+#: assets/data/changelog.json
+msgid "Hoarfrost"
+msgstr "Givre blanc"
 
 #: assets/data/changelog.json
 msgid "Hold the square against Fafnyr until dawn, with everyone you brought home: Teo's bell, Ulla's archers, Bram's cheese wheels, Loras's song, Iva's care and Sela's inn"
@@ -5511,6 +5519,10 @@ msgstr "La forge, la mairie, la banque, les primes, l'établi, le rangement et l
 #: assets/data/changelog.json
 msgid "The four ages grew with it: stalls and lamps at Village, a fountain and a thatched row-house at Town, a slate townhouse and a farmhouse at City"
 msgstr "Les quatre âges ont suivi : des étals et des réverbères dès le Village, une fontaine et des maisons mitoyennes à toit de chaume dès le Bourg, une maison de ville en ardoise et une ferme dès la Cité"
+
+#: assets/data/changelog.json
+msgid "The frost on Liane's stair reads as frost: cold blue rime and crystals thinning out across the floor, with a glint now and then"
+msgstr "Le givre de l'escalier de Liane ressemble enfin à du givre : une gelée bleue et des cristaux qui s'éclaircissent sur le plancher, avec un éclat de temps en temps"
 
 #: assets/data/changelog.json
 msgid "The game has sound: hits, heals, coins, level-ups, loot drops"
