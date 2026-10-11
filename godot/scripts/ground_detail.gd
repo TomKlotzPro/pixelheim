@@ -13,22 +13,22 @@ class_name GroundDetail
 const DRAWINGS := {
 	"tuft": [
 		"..L..L..",
-		"L.bL.bL.",
-		"LbLmLbLL",
-		"DmLDmLDm",
-		".DmDDmD.",
+		"L.BL.BL.",
+		"LBLMLBLL",
+		"DMLDMLDM",
+		".DMDDMD.",
 	],
 	"tuft_small": [
 		".L.L.",
-		"LbLbL",
-		"DmLmD",
+		"LBLBL",
+		"DMLMD",
 		".DDD.",
 	],
 	"clover": [
 		".GG.GG.",
-		"GmLGmLG",
+		"GMLGMLG",
 		".GGgGG.",
-		"..GmLG.",
+		"..GMLG.",
 		"...Gg..",
 	],
 	"flowers_white": [
@@ -98,8 +98,8 @@ const DRAWINGS := {
 ## Age's deeper greens, a bright tip; petals white, yellow, rose and
 ## lavender with their hearts; his stones and twig; a cattail's brown.
 const INKS := {
-	"L": Color("9fb747"), "D": Color("7e9e3f"), "m": Color("96b146"), "G": Color("6b9447"),
-	"g": Color("506930"), "b": Color("b4ce45"),
+	"L": Color("9fb747"), "D": Color("7e9e3f"), "M": Color("96b146"), "G": Color("6b9447"),
+	"g": Color("506930"), "B": Color("b4ce45"),
 	"w": Color("f2f2f2"), "y": Color("f1d068"), "o": Color("cbae41"), "r": Color("da866d"),
 	"R": Color("b46150"), "v": Color("9a98e4"), "V": Color("8774b7"),
 	"s": Color("b2ba82"), "S": Color("787f4f"), "z": Color("4b4f2b"),
