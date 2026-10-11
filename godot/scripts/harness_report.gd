@@ -89,6 +89,7 @@ const TABLE := [
 	{"field": "torches", "says": "on a dungeon floor: its torches on the walls, and N loose for any not hung on a wall's face (PIX-291)"},
 	{"field": "tracked", "says": "the quest or bounty followed, while the journal is open or one is (PIX-239)"},
 	{"field": "turns", "says": "with turning: the most times the way the hero is drawn changed in any one second, a flicker showing as many (PIX-293)"},
+	{"field": "water", "says": "the inland water nearest the hero, within six cells: its tone and the way it runs, as the map's water mask has them: clear west, mire still (PIX-306)"},
 	{"field": "wayout", "says": "on a dungeon's bottom floor: its ways straight out to its way in, by cell, as they opened - the door, then one where its boss fell - or none (PIX-292)"},
 ]
 ## How many of TABLE's first rows are the head every run shows.
@@ -591,6 +592,12 @@ func field_tracked() -> String:
 
 func field_turns() -> String:
 	return noted("turns")
+
+
+func field_water() -> String:
+	if world.view == null or world.view.kept == null:
+		return ""
+	return PunyTerrain.water_near(world.view.kept.water_image, world.player_cell, 6)
 
 
 func field_wayout() -> String:

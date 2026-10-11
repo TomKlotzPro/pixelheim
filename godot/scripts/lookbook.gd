@@ -42,6 +42,10 @@ const SHOTS := {
 	"town_dusk": {"area": "town", "map": "town", "at": "street", "time": DUSK},
 	"town_night": {"area": "town", "map": "town", "at": "street", "time": NIGHT},
 	"riverside": {"area": "town", "map": "town", "cell": Vector2i(72, 8), "time": DAY},
+	# The village's river where it turns west under the rampart (PIX-306):
+	# deep down its middle, flowing, foam at its banks; by day and at night.
+	"town_river": {"area": "town", "map": "town", "cell": Vector2i(60, 33), "time": DAY},
+	"town_river_night": {"area": "town", "map": "town", "cell": Vector2i(60, 33), "time": NIGHT},
 	# The village's gate from inside (PIX-248): one rampart, the gatehouse
 	# three wide between its towers, the road running on out through the
 	# fields; and its torches at night.
@@ -78,6 +82,11 @@ const SHOTS := {
 	"village_road": {"area": "reach", "map": "overworld", "cell": Vector2i(48, 40), "time": DAY},
 	"village_gate_night": {"area": "reach", "map": "overworld", "cell": Vector2i(48, 41), "time": NIGHT},
 	"village_west_night": {"area": "reach", "map": "overworld", "cell": Vector2i(34, 47), "time": NIGHT},
+	# The Reach's river at its bridge (PIX-306): its depth, its banks bent
+	# off the grid, streaks drifting downstream and foam at the bridge's
+	# piles; by day and at night.
+	"reach_river": {"area": "reach", "map": "overworld", "cell": Vector2i(48, 32), "time": DAY},
+	"reach_river_night": {"area": "reach", "map": "overworld", "cell": Vector2i(48, 32), "time": NIGHT},
 	# Things lying on the ground beside the hero (PIX-286): the pouch on the
 	# road west of the village where it lies, and a patch of each kind laid
 	# round it, half a cell each.
@@ -92,6 +101,13 @@ const SHOTS := {
 	"frostgate": {"area": "regions", "map": "frostgate", "time": DAY},
 	"coast": {"area": "regions", "map": "saltmere", "cell": Vector2i(33, 27), "time": DAY},
 	"deepwood": {"area": "regions", "map": "deepwood", "time": DAY},
+	# Still water inland (PIX-306): the Deepwood's dark lake, and the
+	# Mirefen's murky pools by a bridge, their lily pads and reeds; by day
+	# and at night.
+	"deepwood_lake": {"area": "regions", "map": "deepwood", "cell": Vector2i(18, 9), "time": DAY},
+	"deepwood_lake_night": {"area": "regions", "map": "deepwood", "cell": Vector2i(18, 9), "time": NIGHT},
+	"mire_pool": {"area": "regions", "map": "mirefen", "cell": Vector2i(21, 25), "time": DAY},
+	"mire_pool_night": {"area": "regions", "map": "mirefen", "cell": Vector2i(21, 25), "time": NIGHT},
 	# The mountain road (PIX-253 step 8): its switchbacks up the ash to the
 	# forge in the rock, and the lamp by its door.
 	"mountain_road": {"area": "regions", "map": "mountain_road", "cell": Vector2i(17, 8), "time": DAY},

@@ -276,7 +276,7 @@ func _mirror_water(view: Array[Vector2]) -> void:
 			mirror.set_shader_parameter("map_cells", laid["cells"])
 			mirror.set_shader_parameter("mirror_origin", laid["origin"])
 		elif wet:
-			mirror.set_shader_parameter("water_map", PunyTerrain.water_map(map.grid, map.size))
+			mirror.set_shader_parameter("water_map", PunyTerrain.water_map(map.grid, map.size, map.id))
 			mirror.set_shader_parameter("map_cells", Vector2(map.size))
 			mirror.set_shader_parameter("mirror_origin", world.plane_px() / MapView.TILE)
 	if reflections.visible:
