@@ -5497,6 +5497,10 @@ msgid "The night classes stepped into the light: the necromancer's robes and the
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The old web version is gone for good: no more offer to bring a hero over from it, and its old pages are off the site"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The opening and the dawn are rewritten: a dragon asleep on a chain, five who climbed and one who came home, and a courier who should have ridden south by noon"
 msgstr ""
 
@@ -5738,6 +5742,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Timber and Plaster"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "To move a hero to another machine, use Copy mine here and Save code there"
 msgstr ""
 
 #: assets/data/changelog.json

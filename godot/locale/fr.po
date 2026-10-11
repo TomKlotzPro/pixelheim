@@ -5497,6 +5497,10 @@ msgid "The night classes stepped into the light: the necromancer's robes and the
 msgstr "Les classes de la nuit sortent de l'ombre : les robes du nécromancien et les cuirs du voleur s'éclaircissent pour rester lisibles sur toutes les pelouses"
 
 #: assets/data/changelog.json
+msgid "The old web version is gone for good: no more offer to bring a hero over from it, and its old pages are off the site"
+msgstr "L'ancienne version web s'en va pour de bon : plus de proposition d'en ramener un héros, et ses anciennes pages quittent le site"
+
+#: assets/data/changelog.json
 msgid "The opening and the dawn are rewritten: a dragon asleep on a chain, five who climbed and one who came home, and a courier who should have ridden south by noon"
 msgstr "L'ouverture et l'aube sont réécrites : un dragon endormi au bout d'une chaîne, cinq qui sont montés et une seule revenue, et un messager qui aurait dû repartir vers le sud avant midi"
 
@@ -5739,6 +5743,10 @@ msgstr "Bois & pierre"
 #: assets/data/changelog.json
 msgid "Timber and Plaster"
 msgstr "Bois et plâtre"
+
+#: assets/data/changelog.json
+msgid "To move a hero to another machine, use Copy mine here and Save code there"
+msgstr "Pour emmener un héros sur une autre machine, utilisez Copier le mien ici et Code de sauvegarde là-bas"
 
 #: assets/data/changelog.json
 msgid "Told True"
