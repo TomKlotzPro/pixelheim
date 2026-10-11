@@ -15,11 +15,13 @@ const FLOORS := ["seacave", "seacave_galleries", "seacave_grotto"]
 ## grid. The old mountain's numbered floors, which these rooms were first
 ## laid for, left play (PIX-257): taking them out of DungeonFloor must
 ## leave every region's planned floor, and the Kings' Vault's, as it is.
+## Their torches went up into the rooms' north walls (PIX-291), a row up
+## from the floor they stood on; nothing else moved.
 const PLANNED := {
-	"seacave_galleries": "cebbf5ec86ef48009a6183b88211e116", "shafts_gallery": "e6a1f12228804dd0a8fe16ebb1ff48fe",
-	"cellars_crypt": "a5a1b03ef43086e6f99c6e80d37691e9", "vault_1": "42a03c5a474ce811f3374337c58e92c9",
-	"vault_2": "a59c21c41a8760be44b02bc092e0a4e9", "vault_3": "ca93ab6ce41cbb0823988811134b917a",
-	"vault_4": "f96d02603fd978bf949e491028b7511a", "vault_5": "38d888593a2c33c1a7c401b12b9da177",
+	"seacave_galleries": "a0b11dcfc6dc072d431bcb8feb9c19fc", "shafts_gallery": "133ad78e60f7474f3422c4d8d8bb2a63",
+	"cellars_crypt": "771f5d596b685adcf30702995cb3cf16", "vault_1": "4ad8ab46a42e003fddbfdf27bf84cb9a",
+	"vault_2": "c9af1caef7c0d09e8d8acb321e5c06aa", "vault_3": "6f9be834babe8d7899a0da3dead398bc",
+	"vault_4": "3a75b6861c4241c0b51471f6ed8948db", "vault_5": "e7d58325c104cfcd84386bc653a22ce5",
 }
 
 var state: Node

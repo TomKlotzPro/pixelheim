@@ -26,8 +26,12 @@ const COLUMN_FOOT := 52
 ## Our tile ids for a floor's furnishings -> Shade's pieces.
 const BARRELS := [515, 516]
 const POT := 517
-const TORCH_BLOCK := 78
+## A torch fixed to a wall's face (PIX-291): the wall runs on through its
+## cell (it is a wall to the grammar, `_solid`), the torch's iron cuff on the
+## face and its flame above, over the wall's top. Its first frame; the sheet
+## animates it.
 const TORCH := 16
+const TORCH_FRAMES := [16, 17, 18, 19, 20, 21, 22, 23]
 const STAIRS := 514
 const CHEST := 489
 const CHEST_OPEN := 490
@@ -47,6 +51,8 @@ const DOORWAY := 434
 ## cage's barred gate in the rock (open, it is the doorway's dark).
 const LEVER := 465
 const CAGE := 459
+## An iron-banded timber post (the pithead's winch stands on two, PIX-290).
+const POST := 513
 ## The Greyhold cellars' (PIX-255): the same iron bars as a crypt's grilles
 ## and the north stair while it's shut, and the stone knights over the
 ## garrison's dead (STATUE, the shrine's).
@@ -72,9 +78,18 @@ static func sheet() -> PunySheet:
 	return _sheet
 
 
-## Cells that build walls: walls themselves and torch blocks set into a room.
+## Cells that build walls: walls themselves and the torches fixed to them.
+## A torch's cell is wall (PIX-291): counted as open ground, the wall above
+## it showed its face and the walls beside it their ends, and the torch
+## stood in a square recess cut into the wall.
 static func _solid(grid: Dictionary, cell: Vector2i) -> bool:
-	return grid.get(cell, "wall") == "wall"
+	return grid.get(cell, "wall") in ["wall", "lamp"]
+
+
+## Whether a torch at `cell` hangs on a wall's face: wall over it, ground
+## before it, so its cuff sits on the face and its flame over the top.
+static func on_face(grid: Dictionary, cell: Vector2i) -> bool:
+	return _solid(grid, cell + Vector2i.UP) and not _solid(grid, cell + Vector2i.DOWN)
 
 
 ## Whether the hero could ever see this wall: it touches open ground, even

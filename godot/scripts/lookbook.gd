@@ -88,10 +88,22 @@ const SHOTS := {
 	"road_south": {"area": "ways", "map": "overworld", "cell": Vector2i(16, 60), "time": DAY},
 	# Come through the pass into the Mirefen: its name on a card, once.
 	"place_card": {"area": "ways", "map": "mirefen", "cell": Vector2i(55, 5), "time": DAY, "card": true},
+	# Each dungeon's way in, in its setting (PIX-290): the shafts' mine mouth
+	# in the cliff, its rails and winch, by day and by night; the sea cave's
+	# arch at the cliff's foot by the beach; the Ashen Mountain's gatehouse in
+	# the rock; the Kings' Vault's black iron door between its stone kings.
+	"mine_mouth": {"area": "ways", "map": "blackiron", "cell": Vector2i(26, 7), "time": DAY},
+	"mine_mouth_night": {"area": "ways", "map": "blackiron", "cell": Vector2i(26, 7), "time": NIGHT},
+	"sea_cave_mouth": {"area": "ways", "map": "saltmere", "cell": Vector2i(7, 26), "time": DAY},
+	"mountain_gate": {"area": "ways", "map": "overworld", "cell": Vector2i(48, 10), "time": DAY},
+	"vault_door": {"area": "ways", "map": "mountain_road", "cell": Vector2i(12, 5), "time": DAY},
 	# The Kings' Vault (PIX-257): its first floor, laid from a seed in the
 	# vault's gilded stone, and its last, the Hollow King's hoard.
 	"vault": {"area": "dungeon", "map": "vault_1", "time": DAY},
 	"vault_hoard": {"area": "dungeon", "map": "vault_5", "cell": Vector2i(46, 11), "time": DAY},
+	# Torches on the walls (PIX-291): the shafts' first hall, handcrafted,
+	# its torches on the north wall's face, their flames glowing over its top.
+	"wall_torches": {"area": "dungeon", "map": "shafts", "cell": Vector2i(34, 5), "time": DAY},
 	# The ice cave's frozen lake (PIX-255): ice over the stone, its cracks,
 	# polish and glints, frost at its shore, and the cold light it gives.
 	"frozen_lake": {"area": "dungeon", "map": "icecave_lake", "cell": Vector2i(30, 14), "time": DAY},
