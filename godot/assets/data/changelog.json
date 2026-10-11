@@ -1,6 +1,17 @@
 {
   "releases": [
     {
+      "version": "0.238.0",
+      "date": "2026-10-11",
+      "codename": "Lit Windows",
+      "notes": [
+        "Street lamps are posts with lanterns, cold by day; at night only their glass glows, with a soft halo and light pooled at their foot",
+        "Lit windows glow as warm panes and throw their shape onto the ground below, instead of round orbs on the walls",
+        "Rooms are lit by the day slanting through their windows, and at night by the hearth and the candles, their corners left dark",
+        "Patterned rugs in every room, and Liane's observatory finally has a telescope, a chart of the two skies and a celestial globe"
+      ]
+    },
+    {
       "version": "0.237.0",
       "date": "2026-10-11",
       "codename": "Five Halls",

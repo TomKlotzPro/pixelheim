@@ -206,14 +206,21 @@ func _draw_past() -> void:
 			_past_materials.append(item.material as ShaderMaterial)
 
 
-## A prop of the town as it stood, still (a torch unlit), on its foot.
+## A prop of the town as it stood, still (a lamp unlit, PIX-311), on its foot.
 func _still_prop(prop: Dictionary) -> Node2D:
 	var foot: Rect2 = prop["foot"]
 	var sort_y := foot.end.y if foot.has_area() else float(TILE)
 	var root := Node2D.new()
 	root.position = Vector2(prop["cell"] * TILE) + Vector2(0, sort_y)
+	if prop["kind"] == "lamp":
+		var post := Sprite2D.new()
+		post.texture = LampArt.post()
+		post.centered = false
+		post.position = Vector2(0, TILE - LampArt.size().y - sort_y)
+		root.add_child(post)
+		return root
 	for piece: Array in prop["tiles"]:
-		var tile: int = PunyProps.LAMP_UNLIT if not prop["frames"].is_empty() else piece[1]
+		var tile: int = piece[1]
 		var sprite := Sprite2D.new()
 		sprite.texture = PunyDungeon.sheet().tile_texture(tile) if prop["sheet"] == "dungeon" else PunyProps.texture(tile)
 		sprite.centered = false

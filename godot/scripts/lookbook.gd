@@ -72,12 +72,20 @@ const SHOTS := {
 	"streets_city": {"area": "town", "map": "town", "cell": Vector2i(40, 22), "time": DAY},
 	"streets_city_night": {"area": "town", "map": "town", "cell": Vector2i(40, 22), "time": NIGHT},
 	"inn_night": {"area": "rooms", "map": "town_inn", "time": NIGHT},
+	# A room by day, the day through its windows lying on the floor, and
+	# Odo's store's patterned rug (PIX-311, PIX-315).
+	"inn_day": {"area": "rooms", "map": "town_inn", "time": DAY},
+	"odos_store": {"area": "rooms", "map": "town_shop", "time": DAY},
 	"smithy_day": {"area": "rooms", "map": "town_smith", "time": DAY},
 	# A house opens onto a room, the cave down a stair in its floor (PIX-256):
 	# Liane's room and Captain Hale's hall from beside the stairwell, then at
 	# its top, the stairs asking.
 	"lianes_room": {"area": "rooms", "map": "observatory", "cell": Vector2i(13, 7), "time": DAY},
 	"lianes_stair": {"area": "rooms", "map": "observatory", "cell": Vector2i(13, 6), "time": DAY, "down": true},
+	# Liane's observatory at night (PIX-311, PIX-315): her telescope at the
+	# window, the chart of the sky on the wall, the globe of it by her desk,
+	# her candles lit and the corners dark.
+	"lianes_room_night": {"area": "rooms", "map": "observatory", "cell": Vector2i(10, 6), "time": NIGHT},
 	"hales_hall": {"area": "rooms", "map": "keep", "cell": Vector2i(13, 7), "time": DAY},
 	"hales_stair": {"area": "rooms", "map": "keep", "cell": Vector2i(13, 6), "time": DAY, "down": true},
 	# Morvax's forge (PIX-253 step 8): the cot, the cold anvil, and fifty
@@ -113,6 +121,12 @@ const SHOTS := {
 	},
 	"mire": {"area": "regions", "map": "mirefen", "time": DAY},
 	"frostgate": {"area": "regions", "map": "frostgate", "time": DAY},
+	# Lamps by a door and a camp's torches on their stakes (PIX-311): Greyhold's
+	# keep by day and at night, its windows lit; the Frostgate's observatory
+	# at night.
+	"greyhold_keep": {"area": "regions", "map": "greyhold", "cell": Vector2i(36, 15), "time": DAY},
+	"greyhold_keep_night": {"area": "regions", "map": "greyhold", "cell": Vector2i(36, 15), "time": NIGHT},
+	"frostgate_night": {"area": "regions", "map": "frostgate", "cell": Vector2i(28, 12), "time": NIGHT},
 	"coast": {"area": "regions", "map": "saltmere", "cell": Vector2i(33, 27), "time": DAY},
 	"deepwood": {"area": "regions", "map": "deepwood", "time": DAY},
 	# The Deepwood's forest, its pines and round trees (PIX-304: from One

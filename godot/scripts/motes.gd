@@ -135,6 +135,23 @@ static func make_leaves() -> CPUParticles2D:
 	return node
 
 
+## Where a room's dust floats (PIX-315): over its floor, in map pixels - the
+## box round every cell that isn't wall - never in the dark round a room
+## smaller than the view, where it twinkled like stars.
+static func room_rect(map: MapData) -> Rect2:
+	var box := Rect2i()
+	var first := true
+	for cell: Vector2i in map.grid:
+		if map.grid[cell] == "wall":
+			continue
+		if first:
+			box = Rect2i(cell, Vector2i.ONE)
+			first = false
+		else:
+			box = box.expand(cell).expand(cell + Vector2i.ONE)
+	return Rect2(Vector2(box.position * MapView.TILE), Vector2(box.size * MapView.TILE))
+
+
 ## Dust floating in a room's light: faint warm specks, drifting slowly.
 static func make_room_dust() -> CPUParticles2D:
 	var node := over_view(48, 8.0, Vector2.UP, 180.0, Vector2(1, 4), Vector2(0, 0.6))

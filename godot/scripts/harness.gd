@@ -607,8 +607,11 @@ func _run_test_harness() -> void:
 		# That day's night (`--day`'s, else the first's).
 		GameState.world.steps = (Gathering.day_of(GameState.world.steps) + 0.7) * DayNight.DAY_CYCLE_STEPS
 		# The night's packs out, as if the hero had just arrived after dark
-		# (PIX-252): play swaps them only off the screen (nightfall).
+		# (PIX-252): play swaps them only off the screen (nightfall). The
+		# lamps and windows lit for it too (PIX-311), as the world's next
+		# second would.
 		world.foes.keep_hours(true)
+		world.view.set_night(true)
 	if flags.has("nightfall"):
 		# Night falls while the hero looks on (PIX-252): the world's look
 		# each second changes only the packs whose homes are off the screen.

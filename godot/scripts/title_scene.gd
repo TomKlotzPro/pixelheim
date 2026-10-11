@@ -818,25 +818,11 @@ func _lit_window(at: Vector2) -> void:
 	_light(at + Vector2(8, 8), WINDOW_LIGHT, false)
 
 
-static var _panes: ImageTexture
-
-
 ## The window tile's glass, recoloured as lamplight (the frame stays
-## moonlit underneath): bright panes, warm shadows in the glazing bars.
+## moonlit underneath): bright panes, warm shadows in the glazing bars -
+## the world's lit windows wear the same (LampArt.panes, PIX-311).
 static func _panes_texture() -> ImageTexture:
-	if _panes == null:
-		var tile := PunyProps.texture(PunyTown.WINDOW).get_image()
-		tile.convert(Image.FORMAT_RGBA8)
-		var image := Image.create(16, 16, false, Image.FORMAT_RGBA8)
-		for y in range(1, 11):
-			for x in range(1, 15):
-				match tile.get_pixel(x, y).to_html(false):
-					"2e2036":
-						image.set_pixel(x, y, Color("ffd27a") if y < 6 else Color("ffbb55"))
-					"4a3132":
-						image.set_pixel(x, y, Color("c9772e"))
-		_panes = ImageTexture.create_from_image(image)
-	return _panes
+	return LampArt.panes()
 
 
 func _fireflies() -> void:
