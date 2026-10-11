@@ -156,7 +156,7 @@ func test_an_elites_box_is_as_big_as_it_ever_was() -> void:
 	assert_eq(Enemy.body_of(Bestiary.spawn("orc")), Enemy.BODY, "a common foe's as it was")
 
 
-func test_a_boss_stands_on_its_shadow_in_a_glow_of_its_own() -> void:
+func test_a_boss_stands_on_its_shadow() -> void:
 	for fighter in _bosses():
 		var foe := _foe(fighter)
 		var who := String(fighter["name"])
@@ -170,18 +170,74 @@ func test_a_boss_stands_on_its_shadow_in_a_glow_of_its_own() -> void:
 		assert_true(below > 0.0 and below <= shadow.scale.y, "%s: a pixel of shadow under its feet (%s)" % [who, below])
 		assert_almost_eq(shadow.position.x, body.get_center().x, shadow.scale.x, "%s: under its body" % who)
 		assert_true(shadow.get_index() < foe.sprite.get_index(), "%s: the shadow drawn under it" % who)
-		var aura: Sprite2D = foe._aura
+
+
+
+## The glow round a boss's feet is a light on the floor alone: drawn with
+## the ground, under every actor and pickup, so nothing standing in it is
+## tinted or faded (the first glow, a sprite added over the boss, washed
+## out the hero beside the Tidecaller).
+func test_a_bosses_glow_lights_the_floor_alone_round_its_feet() -> void:
+	assert_eq(Lights.FLOOR & 1, 0, "the floor's bit is not the one every canvas item answers to")
+	for fighter in _bosses():
+		var foe := _foe(fighter)
+		var who := String(fighter["name"])
+		var aura: PointLight2D = foe._aura
 		assert_not_null(aura, "%s: a glow of its own" % who)
-		assert_eq(aura.material, Lights.glow(), "%s: its glow added over the ground, bright in the dark" % who)
-		assert_false(aura.is_in_group("lights"), "%s: a glow, not a light the maps' blocks must leave room for" % who)
-		assert_true(aura.get_index() < foe.sprite.get_index(), "%s: its glow round it, under it" % who)
+		assert_eq(aura.range_item_cull_mask, Lights.FLOOR, "%s: it lights the floor alone" % who)
+		assert_true(aura.is_in_group("lights") and aura.get_meta("pulse", false), "%s: lit in the dark, breathing" % who)
+		assert_eq(foe.sprite.light_mask & Lights.FLOOR, 0, "%s: not its own body" % who)
+		assert_eq(aura.position, foe._shadow.position, "%s: round its feet" % who)
+		# Tight round them: a little past its body either side, half as far
+		# before and behind (the first one reached the hero five cells off).
+		var reach := aura.texture.get_size() * aura.texture_scale / 2.0
+		var body := _drawn(foe)
+		assert_lte(reach.x, body.size.x / 2.0 + Enemy.AURA_PAST + 1.0, "%s: no further than a little past its body" % who)
+		assert_eq(reach.y, reach.x / 2.0, "%s: an oval on the ground" % who)
+		# Stepped in whole pixels, as a wall torch's glow.
+		assert_eq(aura.texture_scale, 1.0, "%s: a texel a world pixel" % who)
+		var levels := {}
+		var image := aura.texture.get_image()
+		for y in image.get_height():
+			for x in image.get_width():
+				levels[image.get_pixel(x, y).r8] = true
+		assert_lte(levels.size(), Enemy.AURA_STEPS + 1, "%s: in %d steps (and none)" % [who, Enemy.AURA_STEPS])
 
 
-func test_a_common_foe_has_no_shadow_or_light() -> void:
+## What stands in the glow answers to the world's lights only: the hero,
+## the foes, a patch or a pouch on the ground, a prop. The floor under them
+## answers to it, outdoors and in a dungeon.
+func test_only_the_floor_answers_to_a_bosses_glow() -> void:
+	var standing: Array[CanvasItem] = [
+		autofree(preload("res://scripts/player.gd").new()),
+		autofree(MapView.pickup(PunyDungeon.sheet().tile_texture(PunyDungeon.POT), Vector2i(2, 2))),
+	]
+	var foe := _foe(Bestiary.spawn("orc"))
+	standing.append(foe.sprite)
+	for item in standing:
+		for node: Node in [item] + item.find_children("*", "CanvasItem", true, false):
+			assert_eq((node as CanvasItem).light_mask & Lights.FLOOR, 0, "%s stands untinted" % node.name)
+	for map_id: String in ["seacave_grotto", "overworld"]:
+		var root := Node2D.new()
+		add_child_autofree(root)
+		var actors := Node2D.new()
+		root.add_child(actors)
+		var data := MapData.load_by_id(map_id)
+		var view := MapView.new(data, actors)
+		view.plan(data.spawn)
+		view.build(root)
+		var floors := view.under.find_children("*", "TileMapLayer", true, false).filter(
+			func(layer: Node) -> bool: return (layer as CanvasItem).light_mask & Lights.FLOOR != 0)
+		assert_gt(floors.size(), 0, "%s: its floor answers to the glow" % map_id)
+		assert_lt(view.under.get_index(), actors.get_index(), "%s: the floor it lights drawn before the actors" % map_id)
+		for node in actors.find_children("*", "CanvasItem", true, false):
+			assert_eq((node as CanvasItem).light_mask & Lights.FLOOR, 0, "%s: %s stands untinted" % [map_id, node.name])
+
+
+func test_a_common_foe_has_no_shadow_or_glow() -> void:
 	var foe := _foe(Bestiary.spawn("orc", true))
 	assert_null(foe._shadow, "an elite's weight is its gold")
 	assert_null(foe._aura)
-	assert_false(foe.is_processing(), "nothing of it drawn each frame")
 
 
 func test_a_bosses_glow_is_its_own_colour() -> void:

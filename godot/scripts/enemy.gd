@@ -87,15 +87,15 @@ const HEAD_CLEAR := 6.0
 const BODY := Vector2(16, 24)
 const ELITE_BODY := 1.2
 ## A boss's weight besides its size (PIX-314): its shadow on the ground,
-## how dark; a glow of its own colour on the ground round its feet in the
-## dark, how far it reaches either side for each size it is drawn (half as
-## far before and behind), how bright at full dark, and how near white. A
-## glow added over the ground, not a light: the maps' light blocks leave
-## room for the hero's lantern and two spells, not a boss's light too
-## (test_night_light).
+## how dark; and a glow of its own colour on the floor round its feet in the
+## dark: a light that lights the floor alone (Lights.FLOOR), so nothing
+## standing in it is tinted, reaching this far past its body either side
+## (half as far before and behind it), in this many steps of whole pixels
+## (as a wall torch's glow), how strong at full dark, and how near white.
 const SHADOW_ALPHA := 0.3
-const AURA_REACH := 26.0
-const AURA_GLOW := 0.22
+const AURA_PAST := 12
+const AURA_STEPS := 4
+const AURA_ENERGY := 0.5
 const AURA_WHITE := 0.15
 
 var world: Node2D
@@ -213,16 +213,15 @@ var _reach_until := -100.0
 ## shadow and glow (_weigh).
 var _over_head := BAR_Y
 var _shadow: Sprite2D
-var _aura: Sprite2D
+var _aura: PointLight2D
 static var _shadows := {}
+static var _auras := {}
 
 
 func _ready() -> void:
 	# Placed before entering the tree: start interpolating from here.
 	reset_physics_interpolation()
 	motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
-	# Only a boss's glow is drawn each frame (_weigh).
-	set_process(false)
 	art = PunyArt.monster(fighter["id"])
 	sprite = AnimatedSprite2D.new()
 	sprite.sprite_frames = PunyArt.frames(art)
@@ -469,11 +468,12 @@ static func aura_color(fighter: Dictionary) -> Color:
 
 
 ## A boss's weight besides its size (PIX-314): its shadow on the ground
-## under its feet, on its own pixels, and a glow of its own colour round its
-## feet that breathes in the dark (_process). Before its sprite, so both lie
-## under it.
+## under its feet, on its own pixels, before its sprite so it lies under it;
+## and a glow of its own colour on the floor round its feet that breathes in
+## the dark, a light on the floor alone (Lights.FLOOR): drawn with the
+## ground, under every actor and pickup, so a hero standing in it looks as
+## without it.
 func _weigh(size: int) -> void:
-	set_process(true)
 	var frame := sprite.sprite_frames.get_frame_texture(sprite.animation, 0)
 	var ink := _ink(frame)
 	var half := Vector2i(frame.get_size()) / 2
@@ -485,29 +485,34 @@ func _weigh(size: int) -> void:
 	# art pixels from the frame's corner, on the foe's own grid.
 	var tall := _shadow.texture.get_height()
 	_shadow.position = Vector2(ink.position.x + ink.size.x / 2 - half.x, ink.end.y + 1 - tall / 2 - half.y) * size + Vector2(0, _rest_at.y)
-	_aura = Sprite2D.new()
-	_aura.texture = Lights.soft()
-	_aura.material = Lights.glow()
-	_aura.scale = Vector2(2.0, 1.0) * AURA_REACH * size / Lights.TEXTURE_PX
-	_aura.position = _shadow.position
-	_aura.self_modulate = aura_color(fighter)
-	_aura.modulate.a = 0.0
+	add_child(_shadow)
+	# Round its feet, a little past its body either side, on whole pixels.
+	_aura = Lights.make(_shadow.position, 0.0, aura_color(fighter), AURA_ENERGY)
+	_aura.texture = aura_texture(wide * size / 2 + AURA_PAST)
+	_aura.texture_scale = 1.0
+	_aura.range_item_cull_mask = Lights.FLOOR
+	_aura.set_meta("pulse", true)
 	add_child(_aura)
-	# Under the shadow, which lies darker on it.
-	move_child(_aura, _shadow.get_index())
 
 
-## A boss's glow as dark as it is round it (none by day), swelling and
-## fading like a breath, as a way out's light does (Lights' pulse); held
-## with Reduce motion. Drawn, not played: it breathes while the fight's
-## held too.
-func _process(_delta: float) -> void:
-	if _aura == null or dying or world == null or world.get("lights") == null:
-		return
-	var glow := AURA_GLOW * float(world.lights.dark)
-	if not GameState.settings.reduce_motion:
-		glow *= 1.0 + Lights.PULSE_DEPTH * sin(GameClock.seconds() * Lights.PULSE_SPEED)
-	_aura.modulate.a = glow
+## A boss's glow `reach` world pixels either side and half that before and
+## behind: an oval in AURA_STEPS rings of whole pixels, brightest at its
+## middle, as a wall torch's glow is stepped (TitleScene.glow_texture).
+static func aura_texture(reach: int) -> Texture2D:
+	if _auras.has(reach):
+		return _auras[reach]
+	var size := Vector2i(reach * 2, reach)
+	var image := Image.create(size.x, size.y, false, Image.FORMAT_RGBA8)
+	var middle := Vector2(size) / 2.0
+	for y in size.y:
+		for x in size.x:
+			var d := ((Vector2(x, y) + Vector2(0.5, 0.5) - middle) / middle).length()
+			if d >= 1.0:
+				continue
+			var level := ceilf((1.0 - d) * AURA_STEPS) / AURA_STEPS
+			image.set_pixel(x, y, Color(level * level, level * level, level * level))
+	_auras[reach] = ImageTexture.create_from_image(image)
+	return _auras[reach]
 
 
 ## A boss's shadow `wide` art pixels across: an oval a quarter as tall (two
@@ -1231,7 +1236,8 @@ func _dissolve() -> void:
 	if _shadow != null:
 		_shadow.create_tween().tween_property(_shadow, "modulate:a", 0.0, Juice.DISSOLVE_SECONDS)
 	if _aura != null:
-		_aura.create_tween().tween_property(_aura, "self_modulate:a", 0.0, Juice.DISSOLVE_SECONDS)
+		var light := _aura
+		light.create_tween().tween_method(func(energy: float) -> void: light.set_meta("energy", energy), AURA_ENERGY, 0.0, Juice.DISSOLVE_SECONDS)
 	Juice.dissolve(sprite, color).tween_callback(queue_free)
 
 
