@@ -54,7 +54,9 @@ func _check_phase() -> void:
 		return
 	phase = now
 	cooldown = minf(cooldown, 1.0)
-	world.messages.log_line(pattern["roars"][phase - 1])
+	# A boss may roar its own words where it fights (PIX-253 step 9: the
+	# Night of Bells' Fafnyr, over the square rather than his cave).
+	world.messages.log_line(enemy.fighter.get("roars", pattern["roars"])[phase - 1])
 	# A new phase is roared (PIX-210), not bumped.
 	Sound.play("roar")
 	world.camera_rig.shake(6.0, 0.5)

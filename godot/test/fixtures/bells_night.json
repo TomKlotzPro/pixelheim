@@ -1,0 +1,156 @@
+{
+  "version": 4,
+  "state": {
+    "screen": "world",
+    "hero": {
+      "name": "Bryn",
+      "roleId": "ranger",
+      "level": 13,
+      "xp": 120,
+      "xpToNext": 862,
+      "hp": 108,
+      "mp": 22,
+      "stats": {
+        "maxHp": 108,
+        "maxMp": 22,
+        "strength": 5,
+        "intelligence": 4,
+        "dexterity": 9,
+        "defense": 3,
+        "endurance": 7
+      },
+      "statPoints": 36,
+      "skillPoints": 14,
+      "skillNodes": [
+        "ranger_aimed_shot"
+      ],
+      "jobs": {
+        "smithing": {
+          "level": 1,
+          "xp": 0
+        },
+        "alchemy": {
+          "level": 1,
+          "xp": 0
+        },
+        "foraging": {
+          "level": 1,
+          "xp": 0
+        }
+      },
+      "look": 0
+    },
+    "gold": 1480,
+    "inventory": {
+      "potion_hp": 2,
+      "bread": 2,
+      "cheese_wheel": 1
+    },
+    "gear": [
+      {
+        "uid": "gmv31hpxw1471x5qb",
+        "itemId": "hunting_bow",
+        "rarity": "common",
+        "bonus": 0
+      }
+    ],
+    "equipped": {
+      "weapon": "gmv31hpxw1471x5qb"
+    },
+    "unlockedLevel": 1,
+    "clearedLevels": [],
+    "battle": null,
+    "openPanel": null,
+    "house": {
+      "owned": false,
+      "storage": {}
+    },
+    "properties": [],
+    "townTier": 2,
+    "settlers": [
+      "saltmere_wenna",
+      "mines_pell",
+      "greyhold_ulla",
+      "greyhold_teo",
+      "frost_aske"
+    ],
+    "quests": {
+      "maren_relics": {
+        "progress": 4,
+        "done": true
+      },
+      "letter_morvax": {
+        "progress": 1,
+        "done": true
+      },
+      "bram_imps": {
+        "progress": 0,
+        "done": false
+      }
+    },
+    "world": {
+      "position": {
+        "mapId": "town",
+        "x": 40,
+        "y": 26,
+        "facing": "up"
+      },
+      "discovered": {
+        "town": [
+          "38,28",
+          "39,28",
+          "40,28",
+          "41,28",
+          "42,28",
+          "38,29",
+          "39,29",
+          "40,29",
+          "41,29",
+          "42,29",
+          "38,30",
+          "39,30",
+          "40,30",
+          "41,30",
+          "42,30",
+          "38,31",
+          "39,31",
+          "40,31",
+          "41,31",
+          "42,31",
+          "38,32",
+          "39,32",
+          "40,32",
+          "41,32",
+          "42,32"
+        ]
+      },
+      "openedChests": [],
+      "slain": []
+    },
+    "dungeonSelect": null,
+    "introSeen": false,
+    "worldMessage": null,
+    "worldSteps": 1036,
+    "dialogue": null,
+    "projects": [
+      "odos_store",
+      "hildas_forge",
+      "vexs_brewery",
+      "the_inn",
+      "street_lamps",
+      "market_stalls",
+      "thatch_cottage"
+    ],
+    "storySeen": [
+      "maren_tin",
+      "chapter_7",
+      "maren_confession"
+    ],
+    "hunted": [
+      "tidecaller",
+      "seam_warden",
+      "hollow_captain",
+      "rimefang"
+    ]
+  }
+}

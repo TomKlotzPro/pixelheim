@@ -15,8 +15,11 @@ const BAR := 76
 const TYPE_S := 0.035
 ## What a step can be.
 const KINDS := ["stage", "fade", "caption", "card", "tint", "ash", "shake", "actor", "eyes", "logo", "credits", "wait", "theme"]
-## The stages a scene can set.
-const STAGES := ["village", "path", "lair", "dark"]
+## The stages a scene can set: a painted backdrop, or the world itself
+## (PIX-253 step 9: the square at dawn after the Night of Bells, held still
+## under the letterbox), where an actor stands on a cell (`cell`) and
+## crosses to one (`to_cell`) at the world's own scale.
+const STAGES := ["village", "path", "lair", "dark", "world"]
 
 ## Which scene to play, and what to do after (skipped or not).
 var scene_id := "opening"
@@ -33,6 +36,9 @@ var ash: CPUParticles2D
 var caption: Label
 var front: Control
 var black: ColorRect
+## The actors on stage that a scene named (`name`), so a later step can
+## move them on or change what they do.
+var cast := {}
 
 
 ## Every scene, by id: its steps (see KINDS).
@@ -209,6 +215,7 @@ func _caption(text: String, hold: float) -> void:
 func _stage(name: String) -> void:
 	for node: Node in stage.get_children() + actors.get_children():
 		node.queue_free()
+	cast.clear()
 	tint.color = Color(0, 0, 0, 0)
 	ash.emitting = false
 	ash.visible = false
@@ -222,6 +229,9 @@ func _stage(name: String) -> void:
 			stage.add_child(_path())
 		"lair":
 			stage.add_child(_lair())
+		"world":
+			# Nothing drawn: the world shows through, held where it stands.
+			pass
 		_:
 			stage.add_child(_sheet(Color("07060c")))
 
@@ -408,32 +418,99 @@ func _cast_member(monster_id: String) -> Control:
 
 
 ## One of Shade's sprites on stage: still at `at` (its last frame with
-## `last`, a fallen hero), or crossing from `from` to `to`.
+## `last`, a fallen hero), or crossing from `from` to `to`. On the world's
+## stage it stands on a world cell (`cell`) at the world's scale, and may
+## cross to another (`to_cell`). A step naming an actor (`name`) already
+## on stage moves it on (`to`, `to_cell`) or changes what it does (`anim`,
+## `dir`) instead: Fafnyr, lying on the square, takes off. `tint` colours
+## it (Morvax beside Maren: Shade drew one old man).
 func _actor(step: Dictionary) -> void:
-	var moving := step.has("to")
-	if moving and still:
+	var named := String(step.get("name", ""))
+	if named != "" and cast.has(named) and is_instance_valid(cast[named]):
+		_direct(cast[named], step)
+		return
+	var on_cell := step.has("cell")
+	var moving := step.has("to") or step.has("to_cell")
+	if moving and still and not on_cell:
 		return
 	var spec := {"sheet": step["sheet"], "family": step["family"]}
 	if step.has("frame"):
 		spec["frame"] = int(step["frame"])
 	var sprite := AnimatedSprite2D.new()
 	sprite.sprite_frames = PunyArt.frames(spec)
-	sprite.scale = Vector2.ONE * float(step.get("scale", 3))
+	sprite.set_meta("spec", spec)
+	sprite.set_meta("art_scale", float(step.get("scale", 1.0 if on_cell else 3.0)))
+	sprite.scale = Vector2.ONE * float(sprite.get_meta("art_scale")) * (world_zoom() if on_cell else 1.0)
+	_animate(sprite, step)
+	if step.get("silhouette", false):
+		sprite.modulate = Color(0.04, 0.02, 0.06)
+	if step.has("tint"):
+		sprite.self_modulate = Color(step["tint"])
+	if on_cell:
+		sprite.position = _on_screen(sprite, step["cell"])
+		# In the world's light, as the folk around it are.
+		sprite.modulate *= _world_light()
+	else:
+		var points: Array = step["from"] if moving else step["at"]
+		sprite.position = Vector2(points[0], points[1])
+	actors.add_child(sprite)
+	if named != "":
+		cast[named] = sprite
+	if moving:
+		_move(sprite, step)
+
+
+## A named actor's next step: what it does now, and where it goes.
+func _direct(sprite: AnimatedSprite2D, step: Dictionary) -> void:
+	if step.has("anim") or step.has("dir"):
+		_animate(sprite, step)
+	if step.has("to") or step.has("to_cell"):
+		_move(sprite, step)
+
+
+func _animate(sprite: AnimatedSprite2D, step: Dictionary) -> void:
 	var anim := PunyArt.pick(sprite.sprite_frames, step.get("anim", "idle"), step.get("dir", "down"))
 	if step.get("last", false):
 		sprite.animation = anim
 		sprite.frame = sprite.sprite_frames.get_frame_count(anim) - 1
 	else:
 		sprite.play(anim)
-	if step.get("silhouette", false):
-		sprite.modulate = Color(0.04, 0.02, 0.06)
-	var points: Array = step["from"] if moving else step["at"]
-	sprite.position = Vector2(points[0], points[1])
-	actors.add_child(sprite)
-	if moving:
+
+
+## Crosses to `to` (the screen's pixels) or `to_cell` (the world's) over
+## `seconds`; with Reduce motion it is simply there.
+func _move(sprite: AnimatedSprite2D, step: Dictionary) -> void:
+	var goal: Vector2
+	if step.has("to_cell"):
+		goal = _on_screen(sprite, step["to_cell"])
+	else:
 		var to: Array = step["to"]
-		# Its own tween, gone with it when the stage changes mid-crossing.
-		sprite.create_tween().tween_property(sprite, "position", Vector2(to[0], to[1]), float(step.get("seconds", 4.0)))
+		goal = Vector2(to[0], to[1])
+	if still:
+		sprite.position = goal
+		return
+	# Its own tween, gone with it when the stage changes mid-crossing.
+	sprite.create_tween().tween_property(sprite, "position", goal, float(step.get("seconds", 4.0)))
+
+
+## The light the world stands in now (the LightRig's darkness), white
+## where there is none.
+func _world_light() -> Color:
+	var shade := get_tree().get_first_node_in_group(&"world_light") as CanvasModulate
+	return shade.color if shade != null else Color.WHITE
+
+
+## How many screen pixels the world draws an art pixel at: the camera's zoom.
+func world_zoom() -> float:
+	return get_viewport().get_canvas_transform().get_scale().x
+
+
+## Where a world cell is on the screen, for an actor standing on it as the
+## world stands its folk: its feet on the cell, lifted as PunyArt lifts it.
+func _on_screen(sprite: AnimatedSprite2D, at: Array) -> Vector2:
+	var feet := MapView.center(Vector2i(int(at[0]), int(at[1])))
+	feet.y += PunyArt.lift(sprite.get_meta("spec")) * float(sprite.get_meta("art_scale"))
+	return get_viewport().get_canvas_transform() * feet
 
 
 ## Two eyes in the dark, breathing light.

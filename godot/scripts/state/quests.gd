@@ -136,6 +136,10 @@ static func is_open(quest: Dictionary, progression: ProgressionState, settlement
 ## mountain's floors, which left play: PIX-257), the chest that holds
 ## what's wanted or the best lead for a material; "" when there's none.
 static func where(quest: Dictionary, done: Variant = null) -> String:
+	# A quest that says where itself (PIX-253 step 9: Bram's imps, the
+	# Night of Bells' embers).
+	if quest.has("where"):
+		return String(quest["where"])
 	var objective: Dictionary = quest["objective"]
 	match String(objective["kind"]):
 		"hunt":

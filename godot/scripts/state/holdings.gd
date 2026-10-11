@@ -50,6 +50,27 @@ func fund_project(project_id: String) -> String:
 	owner.pack.gold -= int(entry["cost"]["gold"])
 	for item_id: String in entry["cost"]["items"]:
 		owner.pack.remove_item(item_id, int(entry["cost"]["items"][item_id]))
+	return _raise(project_id)
+
+
+## Fafnyr's scale in the fountain (PIX-253 step 9): he leaves it in the
+## basin as he goes free at the end of the Night of Bells, and the fountain
+## stands - the masons had the rest of it ready long since - as if funded:
+## its stop on the town's tour, and the Town once its age is whole. Nothing
+## when it stands already. Returns the line, "" for none.
+func scale_in_fountain() -> String:
+	var project_id := String(Bells.data()["fountain"])
+	if project_built(project_id):
+		return ""
+	return _raise(project_id)
+
+
+## A project stands (funded, or the fountain's scale given): kept with the
+## projects, shown on the town's tour, and its age finished with it when
+## it's the last - the age's festival and the next age's words. Returns
+## the line to say.
+func _raise(project_id: String) -> String:
+	var entry := Town.project(project_id)
 	var tier_number := Town.age_of(project_id)
 	owner.settlement.projects.assign(Town.done_projects(owner.settlement) + [project_id])
 	var line := Text.t("%s: built. Walk outside and see.") % entry["name"]

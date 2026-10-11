@@ -60,6 +60,10 @@ func interact() -> void:
 	var faced := facing_cell()
 	if world.map.id == "town" and GameState.progression.prologue == Prologue.FIRES and _carry_water(faced):
 		return
+	# The Night of Bells' lanterns, the well's water and the burning roofs
+	# (PIX-253 step 9).
+	if world.night.interact(faced):
+		return
 	var chest := _chest_at(faced)
 	if not chest.is_empty() and chest["look"] == "chest" and not GameState.spoils.is_opened(chest):
 		_open_chest(chest)
@@ -308,8 +312,9 @@ func _open_stall(shop_id: String) -> void:
 
 func talk(npc: Dictionary) -> void:
 	var box := preload("res://scripts/dialogue_box.gd").new()
-	# On the night of the fire the survivors say only the night's lines.
-	if GameState.progression.prologue != Prologue.DONE:
+	# On the night of the fire the survivors say only the night's lines, and
+	# on the Night of Bells everyone theirs (PIX-253 step 9).
+	if GameState.progression.prologue != Prologue.DONE or GameState.progression.bells != Bells.NONE:
 		box.npc = npc
 		world.add_child(box)
 		return

@@ -133,9 +133,10 @@ static func yields_at(named_id: String) -> float:
 
 
 ## Whether a fighter stands down now, with the health it has left: a named
-## foe at or under its `yieldsAt` share.
+## foe at or under its `yieldsAt` share, or one that carries its own (the
+## Night of Bells' Fafnyr, PIX-253 step 9).
 static func yields(fighter: Dictionary) -> bool:
-	var share := yields_at(String(fighter.get("named", "")))
+	var share := float(fighter.get("yieldsAt", yields_at(String(fighter.get("named", "")))))
 	return share > 0.0 and int(fighter["hp"]) <= ceili(int(fighter["maxHp"]) * share)
 
 

@@ -319,8 +319,8 @@ gate | --map overworld --at 48,8 --walk u,u --wait 0.3 | map=overworld cell=\(48
 # promise; through the mountain's gate, open now, onto the road up to
 # Morvax's forge (its packs out), and back down through it; his tally marks
 # read on the forge's wall; the letter handed to Morvax, and as he says he
-# won't come, the mountain shakes; home with the story run out, the honest
-# card ("To be continued"); and old saves: one saved on the old floors
+# won't come, the mountain shakes; home, and the Night of Bells begins
+# (step 9, below); and old saves: one saved on the old floors
 # wakes by the gate with Maren's story next, one by the Undermountain's
 # filled-in cave wakes in town, and the late web hero plays on.
 confession | --map town --seen maren_tin --delivered maren_relics --talk-to elder --keys e,e,e,e,e --wait 0.3 | map=town open=none letters=1 next=letter_morvax | story quest town
@@ -329,10 +329,40 @@ mountain-road | --map mountain_road --wait 0.3 | map=mountain_road mobs=[5-8] | 
 road-down | --map mountain_road --at 17,29 --walk d --wait 0.4 | map=overworld cell=\(48, 8\) | travel
 tally | --map morvax_forge --at 12,2 --walk u --keys e --wait 0.3 | map=morvax_forge open=dialogue_box | rooms story
 morvax | --map morvax_forge --ready letter_morvax --talk-to mountain_morvax --keys e,e,e --wait 1.6 | map=morvax_forge open=dialogue_box delivered=1 next=run_home | story quest rooms
-run-home | --map town --delivered letter_morvax --seen maren_confession,chapter_7 chapter | map=town continued=7 next=run_home | story town
 oldsave-floor7 | --load res://test/fixtures/old_floor7.json --wait 0.3 | map=overworld cell=\(48, 7\) next=confession | save story travel
 oldsave-cave | --load res://test/fixtures/old_cave.json --wait 0.3 | map=town | save travel
 late-web | --load res://test/fixtures/web_save_late.txt --wait 0.3 | map=town | save story
+# The Night of Bells (PIX-253 step 9): home from the forge through the
+# town's gate, the bell rings and the night begins; a lantern lit with E,
+# then all five and every other lamp out; the embers on the square and
+# three roofs burning, the roofs doused with the well's water; the embers
+# driven off too, and Fafnyr comes down on the square; held there with the
+# townsfolk at their jobs (Teo's bell, the walls' arrows, Bram's cheese);
+# worn down to his share he stands down, or the dawn comes first: the
+# dawn over the square, the collar, and the morning, home still to write;
+# the town's gate shut that night; a hero who falls wakes in the inn's
+# doorway with Fafnyr there again; a dragon slayer never sees the night;
+# and a save made in the night plays it again from the bell.
+bells-home | --map overworld --bells 1 --at 48,39 --walk d,d,d --wait 0.6 | map=town bells=lanterns lit=0 next=lanterns | story town travel night
+# A hero already in town on the run home begins the night where they stand
+# (PIX-297: Tom stood in Pixelheim with "Run home" on the Next line and
+# nothing happened): the letter handed over while they're there, and a
+# save loaded in town by day on that step.
+run-home | --map town --delivered letter_morvax --seen maren_confession,chapter_7 --wait 1.2 | map=town bells=lanterns next=lanterns | story town night
+run-home-load | --load res://test/fixtures/run_home_town.json --wait 0.3 | map=town cell=\(41, 30\) bells=lanterns lit=0 next=lanterns | save story town night
+bells-lantern | --map town --bells 1 --at 40,22 --keys w,e | bells=lanterns lit=1 | story town night
+bells-lanterns | --map town --bells 1 light | bells=embers lit=5 burning=3 mobs=5 next=embers | story town night
+bells-douse | --map town --bells 2 douse | bells=embers burning=0 mobs=5 | story town night
+bells-quiet | --map town --bells 2 clear douse --wait 0.5 | bells=hold mobs=1 next=hold | story town night combat
+bells-fight | --map town --bells 3 --wait 10 | bells=hold mobs=1 jobs=arrows,bell,cheese bossbar=9[0-9]% | story town night combat
+bells-yield | --map town --bells 3 clear --wait 2.5 | stood=1 scene=bells_dawn bells=dawn next=morvax_choice | story night combat
+bells-dawn | --map town --bells 3 daybreak | scene=bells_dawn stood=1 | story night screen
+bells-collar | --map town --bells 3 daybreak --keys esc --wait 0.5 | scene=bells_collar | story night screen
+bells-day | --map town --bells 3 daybreak --keys esc,esc --wait 0.5 | map=town cell=\(40, 28\) bells=done mobs=0 next=morvax_choice | story town night
+bells-gate | --map town --bells 1 --at 40,4 --walk u,u --wait 0.4 | map=town bells=lanterns | story town travel night
+bells-fall | --map town --bells 3 hurt die | map=town cell=\(50, 12\) bells=hold mobs=1 | story night combat
+bells-slayer | --map town --bells 1 --cleared 10 | map=town mobs=0 next=morvax_choice | story town save
+bells-midnight | --load res://test/fixtures/bells_night.json --wait 0.3 | map=town bells=lanterns lit=0 next=lanterns | save story night
 # A depth of the Deep Hunt cleared (PIX-161).
 deep | --floor 16 clear --wait 0.3 | map=floor_16 | dungeon combat
 # What grows on the ground moves with the days (PIX-250): two days, two

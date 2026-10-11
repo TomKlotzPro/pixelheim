@@ -18,6 +18,10 @@ var prologue := 0
 ## The burning homes put out with the well's water on that night (their
 ## ruin indices, PIX-197); saved only while there are some and it runs.
 var prologue_doused: Array[int] = []
+## The Night of Bells' beat while it runs (Bells, PIX-253 step 9): never
+## written to the save, so a save made in the night plays it again from its
+## start (the format stays web v4, no new field); 0 when it isn't running.
+var bells := 0
 ## The named monsters killed (Hunts, PIX-156): they stay dead. Saved only
 ## once there is one.
 var hunted: Array[String] = []

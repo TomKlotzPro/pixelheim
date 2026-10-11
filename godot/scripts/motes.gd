@@ -33,8 +33,8 @@ const NO_FIREFLIES := ["ash", "frost", "coast"]
 static func fireflies(map: MapData, air: String, dark: float, rain: float) -> float:
 	if not Lights.under_sky(map) or air in NO_FIREFLIES:
 		return 0.0
-	# Not the night the village burns.
-	if map.id == "town" and GameState.progression.prologue != Prologue.DONE:
+	# Not the night the village burns, nor the night it holds (PIX-253 step 9).
+	if map.id == "town" and (GameState.progression.prologue != Prologue.DONE or GameState.progression.bells != Bells.NONE):
 		return 0.0
 	return clampf((dark - FIREFLY_DUSK) / (FIREFLY_NIGHT - FIREFLY_DUSK), 0.0, 1.0) * (1.0 - rain)
 

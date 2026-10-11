@@ -300,6 +300,9 @@ func update_objective() -> void:
 	var text := Bearing.line(bearing)
 	if GameState.progression.prologue != Prologue.DONE:
 		text = Prologue.objective(GameState.progression.prologue, GameState.progression.prologue_doused.size(), GameState.questing.first_skill_heals())
+	elif GameState.progression.bells != Bells.NONE:
+		# The Night of Bells says how far each beat has got (PIX-253 step 9).
+		text = world.night.objective()
 	if text != objective_label.text:
 		objective_label.text = text
 		objective_box.reset_size()

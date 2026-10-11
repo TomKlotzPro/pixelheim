@@ -4,8 +4,9 @@ class_name MainQuest
 ## journal, from the elder and the mayor. Since PIX-253 it is the story of
 ## Maren's letters in eight chapters: the tin, a letter and its region's
 ## relic for each of the four, then the fifth letter up the mountain road
-## (step 8), the Night of Bells and home (steps 9 and 10, not written yet:
-## the Night's first step is `unbuilt`, never met, and home has no step).
+## (step 8), the Night of Bells (step 9: its beats, `bells` steps met while
+## the night runs past them or once it's over) and home (step 10, not
+## written yet: its first step is `unbuilt`, never met).
 ## A step is met by the save's own records (a quest taken or kept, a letter
 ## delivered, a floor cleared, a project, a settler), or by its `or`, the
 ## same kind of condition another way (an old save's floors: past the
@@ -96,9 +97,13 @@ static func _holds(when: Dictionary, progression: ProgressionState, settlement: 
 			# who went up before the mountain's gate was barred, or before
 			# the floors left play, is past the gate.
 			return not progression.cleared_levels.is_empty()
+		"bells":
+			# A beat of the Night of Bells (PIX-253 step 9): met while the
+			# night runs past it, or once the collar is off.
+			return Bells.step_met(when, progression)
 		"unbuilt":
-			# A step the story hasn't written yet (PIX-253 step 8: the
-			# Night of Bells' first, which step 9 builds): never met.
+			# A step the story hasn't written yet (PIX-253: home, Morvax's
+			# choice, which step 10 builds): never met.
 			return false
 	push_warning("MainQuest: unknown step kind %s" % when["kind"])
 	return false
@@ -119,8 +124,8 @@ static func next_step(progression: ProgressionState, settlement: SettlementState
 	return {}
 
 
-## The honest card's chapter (PIX-253 step 8: "To be continued: the Night
-## of Bells."): once the fifth letter is delivered, the title of the
+## The honest card's chapter (PIX-253 step 8; since step 9, "To be
+## continued: Coming Home."): once the fifth letter is delivered, the title of the
 ## chapter where the story runs out for this hero - the one its next step
 ## waits in while that step isn't written (`unbuilt`), or, with no step
 ## left, the first chapter this hero plays that has none yet (home, for a

@@ -219,13 +219,17 @@ func test_the_main_quest_is_v2s_eight_chapters() -> void:
 	for index in range(1, 5):
 		assert_eq(MainQuest.chapters()[index]["steps"][0]["when"]["kind"], "delivered", "a chapter of the Reach opens on its letter")
 	# The fifth letter's chapter (PIX-253 step 8): Maren heard out, then the
-	# letter up the mountain road; the last two written by steps 9 and 10.
+	# letter up the mountain road.
 	assert_eq(MainQuest.chapters()[5]["steps"].map(func(step: Dictionary) -> String: return step["text"]), [
 		"Hear Maren out at the shrine", "Climb the mountain road and deliver the fifth letter",
 	])
-	for index in range(6, 8):
-		assert_string_contains(String(MainQuest.chapters()[index].get("about", "")), "builds it", "a chapter still to write, marked")
-	assert_eq(MainQuest.chapters()[6]["steps"][0]["text"], "Run home: the dragon is awake")
+	# The Night of Bells (step 9): home, then the night's three beats (§5's Next).
+	assert_eq(MainQuest.chapters()[6]["steps"].map(func(step: Dictionary) -> String: return step["text"]), [
+		"Run home: the dragon is awake", "Light the five lanterns on the square",
+		"Drive off the embers and douse the fires", "Hold the square until dawn",
+	])
+	# Home, still to write (step 10), marked.
+	assert_string_contains(String(MainQuest.chapters()[7].get("about", "")), "builds it", "a chapter still to write, marked")
 	var first: Array = MainQuest.chapters()[0]["steps"].filter(func(step: Dictionary) -> bool: return not step.get("optional", false) or step["id"] == "rebuild")
 	assert_eq(first.map(func(step: Dictionary) -> String: return step["text"]), [
 		"Help Maren dig through what's left of her house", "Ask Sela the innkeeper for work",

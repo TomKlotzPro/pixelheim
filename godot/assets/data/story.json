@@ -789,6 +789,215 @@
         "to": "black",
         "seconds": 0.8
       }
+    ],
+    "bells_dawn": [
+      {
+        "kind": "stage",
+        "stage": "world"
+      },
+      {
+        "kind": "theme",
+        "name": "dawn"
+      },
+      {
+        "kind": "fade",
+        "to": "clear",
+        "seconds": 0.6
+      },
+      {
+        "kind": "tint",
+        "color": "#e0b49a",
+        "alpha": 0.06,
+        "seconds": 2.4
+      },
+      {
+        "kind": "caption",
+        "text": "The sky turns grey behind the mountain. Fafnyr sinks onto the square, spent, and the collar drags at him: north, always north.",
+        "hold": 5.0
+      },
+      {
+        "kind": "actor",
+        "name": "cat",
+        "sheet": "beasts/Orange-Cat-32x32.png",
+        "family": "beast",
+        "anim": "walk",
+        "dir": "left",
+        "scale": 0.7,
+        "cell": [
+          46,
+          29
+        ],
+        "to_cell": [
+          42,
+          28
+        ],
+        "seconds": 3.0
+      },
+      {
+        "kind": "wait",
+        "seconds": 3.0
+      },
+      {
+        "kind": "actor",
+        "name": "cat",
+        "anim": "idle",
+        "dir": "left"
+      },
+      {
+        "kind": "caption",
+        "text": "The cat looks at the dragon, then at you, then away. The verdict is in.",
+        "hold": 4.6
+      },
+      {
+        "kind": "fade",
+        "to": "black",
+        "seconds": 0.8
+      }
+    ],
+    "bells_collar": [
+      {
+        "kind": "stage",
+        "stage": "path"
+      },
+      {
+        "kind": "tint",
+        "color": "#e0b49a",
+        "alpha": 0.12,
+        "seconds": 0.1
+      },
+      {
+        "kind": "fade",
+        "to": "clear",
+        "seconds": 0.8
+      },
+      {
+        "kind": "actor",
+        "sheet": "mini/Okomo.png",
+        "family": "mini",
+        "anim": "walk",
+        "dir": "left",
+        "scale": 4,
+        "tint": "#c8c0d8",
+        "from": [
+          760,
+          540
+        ],
+        "to": [
+          420,
+          556
+        ],
+        "seconds": 8.0
+      },
+      {
+        "kind": "caption",
+        "text": "Down the mountain road, for the first time in fifty years, comes Morvax.",
+        "hold": 4.4
+      },
+      {
+        "kind": "caption",
+        "text": "He made the seal on that collar, and mended it every spring since. He knows the lock.",
+        "hold": 4.4
+      },
+      {
+        "kind": "fade",
+        "to": "black",
+        "seconds": 0.6
+      },
+      {
+        "kind": "stage",
+        "stage": "world"
+      },
+      {
+        "kind": "tint",
+        "color": "#e0b49a",
+        "alpha": 0.06,
+        "seconds": 0.1
+      },
+      {
+        "kind": "actor",
+        "name": "fafnyr",
+        "sheet": "mini/RedDragon.png",
+        "family": "mini",
+        "frame": 32,
+        "anim": "idle",
+        "dir": "left",
+        "scale": 1.15,
+        "cell": [
+          40,
+          27
+        ]
+      },
+      {
+        "kind": "actor",
+        "sheet": "mini/Okomo.png",
+        "family": "mini",
+        "anim": "idle",
+        "dir": "right",
+        "scale": 1,
+        "tint": "#c8c0d8",
+        "cell": [
+          38,
+          27
+        ]
+      },
+      {
+        "kind": "actor",
+        "sheet": "mini/Okomo.png",
+        "family": "mini",
+        "anim": "idle",
+        "dir": "left",
+        "scale": 1,
+        "cell": [
+          42,
+          27
+        ]
+      },
+      {
+        "kind": "fade",
+        "to": "clear",
+        "seconds": 0.6
+      },
+      {
+        "kind": "caption",
+        "text": "You set the five keepsakes in the five lanterns: Tam's ladle, the last ingot, Oskar's shield, Liane's lantern and Maren's promise.",
+        "hold": 5.0
+      },
+      {
+        "kind": "caption",
+        "text": "Maren and Morvax open the collar together. Neither of them says a word. Neither of them needs to.",
+        "hold": 4.6
+      },
+      {
+        "kind": "shake",
+        "strength": 6,
+        "seconds": 0.8
+      },
+      {
+        "kind": "caption",
+        "text": "Fafnyr: \"A hundred years on a pile of gold. Do you know what gold is like to sleep on? Corners. All corners.\"",
+        "hold": 6.0
+      },
+      {
+        "kind": "actor",
+        "name": "fafnyr",
+        "anim": "walk",
+        "dir": "up",
+        "to_cell": [
+          40,
+          4
+        ],
+        "seconds": 3.0
+      },
+      {
+        "kind": "caption",
+        "text": "He leaves a scale in the fountain, still warm, and flies home to the mountain. Free.",
+        "hold": 4.6
+      },
+      {
+        "kind": "fade",
+        "to": "black",
+        "seconds": 0.8
+      }
     ]
   },
   "moments": {

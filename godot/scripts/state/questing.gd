@@ -87,6 +87,14 @@ func finish_dialogue(npc_id: String) -> void:
 		_prologue_talk(npc_id)
 		owner.dialogue_closed.emit(npc_id)
 		return
+	# On the Night of Bells everyone is at their job (PIX-253 step 9): the
+	# shelter and Iva's tent heal, and nothing is asked or handed in.
+	if owner.progression.bells != Bells.NONE:
+		var helped := bells_talk(npc_id)
+		owner.dialogue_closed.emit(npc_id)
+		if helped != "":
+			owner.message.emit(helped)
+		return
 	# The first word with Maren after the night is her tin (PIX-253): the
 	# letters, and nothing else asked or handed in that time. Once the four
 	# keepsakes are home, her confession gives the fifth (step 8).
@@ -540,3 +548,68 @@ func finish_prologue() -> void:
 	owner.pack.remove_item("chancellors_letter")
 	owner.pack_changed()
 	owner.save_now()
+
+
+# ---- The Night of Bells (PIX-253 step 9) --------------------------------------
+
+## Home after the run: the night begins. Its first beat, the clock to the
+## middle of the night (it holds there: no time passes walking tonight),
+## and Bram's imps asked of the hero if they weren't yet - the embers are
+## imps, so the night finishes his errand. Nothing of the night itself is
+## saved (ProgressionState.bells): a save made tonight plays it again from
+## here.
+func bells_begin() -> void:
+	owner.progression.bells = Bells.LANTERNS
+	owner.world.steps = Bells.night_start(owner.world.steps)
+	var imps := String(Bells.embers().get("quest", ""))
+	if imps != "" and not owner.progression.quests.has(imps):
+		owner.progression.quests[imps] = {"progress": 0, "done": false}
+	owner.mark_dirty()
+
+
+## The night's next beat: the lanterns lit, the embers and fires out.
+func bells_on() -> void:
+	if owner.progression.bells in [Bells.LANTERNS, Bells.EMBERS, Bells.HOLD]:
+		owner.progression.bells += 1
+
+
+## A word with someone out on the Night of Bells: the inn's shelter and
+## Iva's tent make the hero whole again (their words for it); everyone
+## else only talks. "" when nothing came of it.
+func bells_talk(npc_id: String) -> String:
+	var job := Bells.job_of(npc_id, owner.settlement.settlers, owner.town_tier())
+	if String(job.get("job", "")) in ["shelter", "heal"]:
+		owner.make_whole()
+		return String(job["said"])
+	return ""
+
+
+## Fafnyr stood down (PIX-253 step 9): the night is won, for good. The dawn
+## and the collar go in the story ledger (the collar's is the night's end,
+## Bells.over), his scale goes in the fountain (Holdings.scale_in_fountain),
+## holding the square earns its XP (banked now, its levels come with the
+## day), and it's saved: a hero who quits while the scenes play wakes to
+## the morning after. The world plays the scenes, then bells_day. Returns
+## what the scale built, for the morning ("" when the fountain stood).
+func bells_dawn() -> String:
+	owner.progression.bells = Bells.DAWN
+	owner.mark_seen(Bells.dawn_id())
+	owner.mark_seen(Bells.collar_id())
+	owner.hero.xp += int(Bells.fafnyr_spec()["xp"])
+	var built := owner.holdings.scale_in_fountain()
+	owner.save_now()
+	return built
+
+
+## The morning after the Night of Bells: the night over, the clock at its
+## dawn, the song done, the levels the night earned. Returns what's said.
+func bells_day() -> String:
+	owner.progression.bells = Bells.NONE
+	owner.world.steps = Bells.morning(owner.world.steps)
+	owner.settlement.bard_song = false
+	var line := Text.t("Pixelheim held: +%d XP.") % int(Bells.fafnyr_spec()["xp"])
+	if owner.spoils.grant_levels() > 0:
+		line += " " + Text.t("Level up: you are now level %d.") % owner.hero.level
+	owner.pack_changed()
+	owner.save_now()
+	return line

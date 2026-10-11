@@ -41,8 +41,12 @@ func _names_something_real(step: Dictionary) -> void:
 	match String(when["kind"]):
 		"questTaken", "questDone":
 			assert_false(Quests.by_id(when["questId"]).is_empty(), "%s: a real quest" % step["id"])
+		"bells":
+			# A beat of the Night of Bells (PIX-253 step 9), leading home.
+			assert_between(int(when["beat"]), Bells.LANTERNS, Bells.DAWN, "%s: a beat of the night" % step["id"])
+			assert_eq(step.get("mapId", ""), "town", "%s: on the town map" % step["id"])
 		"unbuilt":
-			# A step a later part of the story writes (PIX-253 step 9):
+			# A step a later part of the story writes (PIX-253 step 10):
 			# its chapter says so, and it leads somewhere meanwhile.
 			var chapter: Dictionary = MainQuest.chapters()[int(step["chapter_number"]) - 1]
 			assert_string_contains(String(chapter.get("about", "")), "builds it", "%s: its chapter says what builds it" % step["id"])
@@ -99,7 +103,8 @@ func test_running_ahead_never_sends_the_hero_back() -> void:
 	state.progression.unlocked_level = 10
 	state.spoils.clear_floor(10)
 	state.progression.quests["letter_morvax"] = {"progress": 1, "done": true}
-	assert_eq(_next(), "", "Fafnyr slain on the old mountain: no Night of Bells, and home isn't written yet")
+	assert_eq(_next(), "morvax_choice", "Fafnyr slain on the old mountain: no Night of Bells, and home waits to be written")
+	assert_eq(MainQuest.continued(state.progression, state.settlement), "Coming Home")
 
 
 func test_a_grown_town_never_skips_the_mountain() -> void:
@@ -110,16 +115,27 @@ func test_a_grown_town_never_skips_the_mountain() -> void:
 	assert_eq(_next(), "confession")
 
 
-## Until PIX-253 step 9 writes the Night of Bells, its first step is never
-## met: the story waits there, and the run home is honest about it.
-func test_the_night_of_bells_waits_unwritten() -> void:
+## The Night of Bells (PIX-253 step 9): the run home, then its beats one
+## after another as the night runs past them, then home - not written yet
+## (step 10), so the honest card says what's to come.
+func test_the_night_of_bells_follows_the_night() -> void:
 	state.mark_seen("maren_confession")
 	state.progression.quests["letter_morvax"] = {"progress": 1, "done": true}
 	var step := MainQuest.next_step(state.progression, state.settlement)
 	assert_eq(step["id"], "run_home")
 	assert_eq(step["chapter"], "The Night of Bells")
 	assert_eq(MainQuest.objective(state.progression, state.settlement), "Next: Run home: the dragon is awake")
-	assert_eq(MainQuest.continued(state.progression, state.settlement), "The Night of Bells")
+	assert_eq(MainQuest.continued(state.progression, state.settlement), "", "the night is written: no card, home begins it")
+	var order: Array[String] = []
+	for beat in [Bells.LANTERNS, Bells.EMBERS, Bells.HOLD, Bells.DAWN]:
+		state.progression.bells = beat
+		order.append(_next())
+	assert_eq(order, ["lanterns", "embers", "hold", "morvax_choice"] as Array[String])
+	state.progression.bells = Bells.NONE
+	assert_eq(_next(), "run_home", "the night isn't saved: from the start again")
+	state.mark_seen(Bells.collar_id())
+	assert_eq(_next(), "morvax_choice", "once the collar is off, for good")
+	assert_eq(MainQuest.continued(state.progression, state.settlement), "Coming Home")
 
 
 func test_the_end_is_quiet() -> void:
