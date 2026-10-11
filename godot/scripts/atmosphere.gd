@@ -99,6 +99,8 @@ func carry_on() -> void:
 
 ## Frames until what falls starts again (carry_on), 0 when it needn't.
 var _fall_again := 0
+## The room's floor the dust floats over (Motes.room_rect), or nothing.
+var _room := Rect2()
 
 
 ## The air's pass: on while any air, rain or mood shows.
@@ -137,18 +139,31 @@ func _fall(arrived: bool) -> void:
 		"embers": weights["ash"], "spray": weights["coast"],
 		"fireflies": Motes.fireflies(map, air, world.lights.dark, rain),
 		"leaves": weights["woods"] * (1.0 - 0.5 * rain),
-		"room_dust": 1.0 if map != null and PunyInterior.is_room(map.id) else 0.0,
+		# Fainter at night, when it shows only in the candles' light.
+		"room_dust": 1.0 - 0.6 * world.lights.dark if map != null and PunyInterior.is_room(map.id) else 0.0,
 	}
+	if arrived:
+		_room = Motes.room_rect(map) if amounts["room_dust"] > 0.0 else Rect2()
 	for name: String in particles:
 		var node: CPUParticles2D = particles[name]
 		var amount: float = amounts[name]
 		var on := amount > 0.05 and not still
 		node.global_position = view[0] + view[1] / 2.0
 		node.emission_rect_extents = view[1] / 2.0 + Vector2(MARGIN, MARGIN)
+		if name == "room_dust" and _room.has_area():
+			# Over the room's floor, not the dark round it (PIX-315).
+			node.global_position = _room.get_center()
+			node.emission_rect_extents = _room.size / 2.0
 		node.modulate.a = amount
 		if on and arrived:
 			node.restart()
 		node.emitting = on
+	# The time a system runs ahead as it starts again is laid where it stood
+	# the frame before (at the world's corner for a room's dust, which then
+	# twinkled in the dark round the room like stars): the room's start again
+	# once they stand over it (PIX-315).
+	if arrived and _room.has_area():
+		_fall_again = 2
 
 
 ## A footfall on `tile` at `at`: a little dust off dry ground, a splash in

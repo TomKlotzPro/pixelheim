@@ -29,6 +29,11 @@
 
 # Standing in the village (PIX-129).
 spawn | --map town | map=town | town
+# Upper Street's lamps by day and at night (PIX-311): posts with their
+# lanterns cold by day, every lantern lit at night and the windows' glass
+# with them (no glass without the paid pack's houses).
+lamps-day | --map town --at 40,13 | lamplight=posts 0/[1-9]\d* panes 0 flames 0 beams 0 | town
+lamps-night | --map town --at 40,13 night | lamplight=posts ([1-9]\d*)/\1 panes \d+ flames 0 beams 0 | town night
 # Through the nearest door into one of its rooms (PIX-129).
 portal | --map town portal | map=town_.* | town travel
 # Out of the village through its gate and back in (PIX-248: one rampart,
@@ -47,6 +52,11 @@ shop | --map town_shop shop | map=town_shop | rooms trade screen
 craft | --map town_alchemist shop --tab 2 | map=town_alchemist | rooms trade screen
 # A night at the inn: paid for, and woken at six (PIX-246).
 sleep | --map town_inn night sleep | map=town_inn gold=20 clock=06:00 | rooms night
+# The inn by day and at night (PIX-311): the day through its windows on the
+# floor, gone at night when its candles burn (a room without the paid pack
+# has neither).
+inn-day | --map town_inn | lamplight=posts 0/0 panes 0 flames 0 beams \d+ | rooms
+inn-night | --map town_inn night | lamplight=posts 0/0 panes 0 flames \d+ beams 0 | rooms night
 # E at a cauldron or a forge opens its counter on the craft tab (PIX-234).
 station | --map town_alchemist station | open=shop_screen tab=Craft | rooms trade screen
 forge | --map town_smith station | open=shop_screen tab=Craft | rooms trade screen

@@ -62,6 +62,7 @@ const TABLE := [
 	{"field": "home", "says": "who the story brought home to live in town, by first name: wenna (PIX-255)"},
 	{"field": "jobs", "says": "on the Night of Bells: the townsfolk's jobs that have acted, by kind: arrows,bell,cheese (PIX-253 step 9)"},
 	{"field": "jumps", "says": "with turning: the hero's drawn way changing more than an eighth of a turn at once, a snap round a corner (PIX-293)"},
+	{"field": "lamplight", "says": "on a map with lamps or lit windows, and in every room: its street lamps lit of all, its windows' lit glass, a room's candles burning and the day through its windows: posts 6/6 panes 12 flames 0 beams 0 (PIX-311)"},
 	{"field": "letters", "says": "Maren's letters in the pack, once any is out (PIX-253)"},
 	{"field": "lit", "says": "on the Night of Bells: the lanterns on the square lit (PIX-253 step 9)"},
 	{"field": "logged", "says": "with floats: the lines the battle log showed (PIX-245)"},
@@ -410,6 +411,20 @@ func field_jobs() -> String:
 
 func field_jumps() -> String:
 	return noted("jumps")
+
+
+func field_lamplight() -> String:
+	var view: MapView = world.view
+	if view == null:
+		return ""
+	# A room always says (without the paid pack it has none of them).
+	var room := PunyInterior.is_room(world.map.id)
+	if not room and view.lamps.is_empty() and view.panes.is_empty() and view.flames.is_empty() and view.beams.is_empty():
+		return ""
+	var lit := view.lamps.filter(func(lamp: Dictionary) -> bool: return is_instance_valid(lamp["flame"]) and lamp["flame"].visible).size()
+	var shown := func(nodes: Array) -> int:
+		return nodes.filter(func(node: Node) -> bool: return is_instance_valid(node) and (node as CanvasItem).visible).size()
+	return "posts %d/%d panes %d flames %d beams %d" % [lit, view.lamps.size(), shown.call(view.panes), shown.call(view.flames), shown.call(view.beams)]
 
 
 func field_letters() -> String:

@@ -16,9 +16,12 @@ const NIGHT := Color(0.3, 0.34, 0.56)
 const UNDERGROUND := Color(0.36, 0.34, 0.46)
 ## The Night of Ash: the sky red with the burning village.
 const ASH_NIGHT := Color(0.56, 0.34, 0.32)
-## Indoors: a little warm by day, lamplit at night.
-const INDOOR_DAY := Color(0.97, 0.94, 0.89)
-const INDOOR_NIGHT := Color(0.6, 0.53, 0.5)
+## Indoors: a little dim and warm by day, so the day through the windows
+## pools on the floor below them; at night dark but where the hearth and the
+## candles burn, the corners left in shadow (PIX-311: rooms were lit flat by
+## day and only a little darker at night).
+const INDOOR_DAY := Color(0.86, 0.82, 0.77)
+const INDOOR_NIGHT := Color(0.4, 0.35, 0.4)
 ## [position in the day's wheel 0..1 (DayNight), the world's light then].
 const DAY_LIGHT := [
 	[0.0, DAY], [0.45, DAY], [0.53, DUSK], [0.62, NIGHT],
@@ -29,6 +32,10 @@ const FIRE := Color(1.0, 0.62, 0.3)
 const LAMP := Color(1.0, 0.76, 0.45)
 const WINDOW := Color(1.0, 0.8, 0.5)
 const LANTERN := Color(1.0, 0.82, 0.58)
+## A candle or a sconce in a room (PIX-311), and the day through a room's
+## window.
+const CANDLE := Color(1.0, 0.7, 0.38)
+const SUN := Color(1.0, 0.95, 0.82)
 ## The ice cave's frozen floors (PIX-255): a cold light the ice gives back.
 const ICE := Color(0.62, 0.84, 1.0)
 ## A way out of a dungeon once its boss is down (PIX-292): daylight, pale
@@ -43,8 +50,11 @@ const FIRE_ENERGY := 0.55
 ## flames, so each a little stronger.
 const BLAZE_ENERGY := 0.8
 const TORCH_ENERGY := 0.7
-const WINDOW_ENERGY := 0.3
+const WINDOW_ENERGY := 0.36
 const LANTERN_ENERGY := 0.3
+const CANDLE_ENERGY := 0.55
+## The sun through a window at noon: added to a room a little dim by day.
+const SUN_ENERGY := 0.85
 const ICE_ENERGY := 0.22
 const WAY_OUT_ENERGY := 0.5
 ## How far a breathing light swells and fades, a share of its energy, and
@@ -113,9 +123,10 @@ static func soft() -> Texture2D:
 
 ## A light at `at` reaching `radius` pixels, of `color`, at full `energy`
 ## when it's darkest; fire flickers. The LightRig sets its energy each frame.
-static func make(at: Vector2, radius: float, color: Color, energy: float, flicker := false) -> PointLight2D:
+## Its `shape` is soft() unless given (a window's spill, a sunbeam).
+static func make(at: Vector2, radius: float, color: Color, energy: float, flicker := false, shape: Texture2D = null) -> PointLight2D:
 	var light := PointLight2D.new()
-	light.texture = soft()
+	light.texture = shape if shape != null else soft()
 	light.texture_scale = radius * 2.0 / TEXTURE_PX
 	# Picked by eye, in the screen's colours: on the desktop app's linear
 	# canvas made linear (PIX-227, DesktopLook), the LightRig keeping it so.
@@ -128,6 +139,59 @@ static func make(at: Vector2, radius: float, color: Color, energy: float, flicke
 	light.set_meta("phase", fmod(absf(at.x * 0.37 + at.y * 0.61), TAU))
 	light.add_to_group("lights")
 	return light
+
+
+## The day through a window (PIX-311): up with the sky, gone with the dusk
+## (the LightRig reads `by_day`), whatever the room's own dark.
+static func daylight(at: Vector2, radius: float, color: Color, energy: float, shape: Texture2D) -> PointLight2D:
+	var light := make(at, radius, color, energy, false, shape)
+	light.set_meta("by_day", true)
+	return light
+
+
+static var _spill: Texture2D
+static var _shaft: Texture2D
+
+
+## A lit window's light (PIX-311): a little round the glass on the wall, and
+## thrown out on the ground below it, wider as it goes and fading - the
+## window's shape on the street, not a ball of light round it. Its middle
+## stands on the foot of the wall.
+static func spill() -> Texture2D:
+	if _spill == null:
+		_spill = cast(0.0, 0.24, 0.55, 0.3)
+	return _spill
+
+
+## The day through a room's window (PIX-311): a pool slanting down the floor
+## from the foot of the back wall, as the sun comes in from the left.
+static func shaft() -> Texture2D:
+	if _shaft == null:
+		_shaft = cast(0.4, 0.22, 0.12, 0.0, 1.0, 0.55)
+	return _shaft
+
+
+## A light thrown down from a window, TEXTURE_PX square, its middle at the
+## foot of the wall: below it a band `width` wide at the top (a share of the
+## half size) widening by `spread` and leaning by `lean` as it goes down,
+## soft at its sides from `edge` of its width and fading to nothing at the
+## bottom (the steeper, the higher `fade`); above it a soft `halo` round the
+## middle. Smooth, as every light is: built small and scaled up.
+static func cast(lean: float, width: float, spread: float, halo: float, fade := 2.0, edge := 0.3) -> Texture2D:
+	var size := 32
+	var image := Image.create(size, size, false, Image.FORMAT_RGBA8)
+	for y in size:
+		for x in size:
+			var u := (x + 0.5) / size * 2.0 - 1.0
+			var v := (y + 0.5) / size * 2.0 - 1.0
+			var amount := 0.0
+			if v > 0.0:
+				var across := absf(u - lean * v) / (width + spread * v)
+				amount = (1.0 - smoothstep(edge, 1.0, across)) * pow(1.0 - v, fade) * smoothstep(0.0, 0.05, v)
+			amount = maxf(amount, halo * (1.0 - smoothstep(0.0, 0.32, Vector2(u, v * 1.3).length())))
+			image.set_pixel(x, y, Color(1, 1, 1, amount))
+	image.resize(TEXTURE_PX, TEXTURE_PX, Image.INTERPOLATE_BILINEAR)
+	return ImageTexture.create_from_image(image)
 
 
 static var _unshaded: CanvasItemMaterial

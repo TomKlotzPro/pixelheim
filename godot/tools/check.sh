@@ -67,9 +67,11 @@ story travel: scripts/world_stage.gd
 town story: scripts/world_folk.gd scripts/npc.gd scripts/npcs.gd scripts/dialogue_box.gd scripts/reveal_screen.gd scripts/rebuild_rise.gd assets/data/npcs.json
 town rooms travel +town-age*: scripts/world_tiles.gd scripts/map_view.gd scripts/map_data.gd scripts/kept_ground.gd scripts/puny_sheet.gd scripts/discovery.gd scripts/interactables.gd assets/maps/interactables.json
 town +town-age*: scripts/puny_town.gd scripts/puny_props.gd scripts/shop_sign.gd scripts/state/town.gd
+town rooms field night title +town-age*: scripts/lamp_art.gd
 town rooms +town-age* +town_house*: assets/data/town.json scripts/state/settlement_state.gd scripts/state/holdings.gd scripts/state/household.gd
 town: scripts/town_hall_screen.gd scripts/ledger_screen.gd scripts/bank_screen.gd scripts/ring_toss_screen.gd
 rooms +town_house*: scripts/puny_interior.gd scripts/home_screen.gd assets/data/interiors.json
+rooms +observatory*: scripts/room_art.gd
 travel field: scripts/puny_terrain.gd scripts/scatter.gd scripts/skyline.gd assets/puny/world/*
 town travel +town-age* +overworld*: scripts/rampart.gd
 travel: scripts/seam.gd scripts/slicer.gd scripts/world_neighbours.gd scripts/reach_plane.gd scripts/ways.gd scripts/waypoints.gd scripts/atlas.gd scripts/dissolve.gd scripts/place_title.gd scripts/map_screen.gd scripts/state/world_state.gd assets/data/plane.json

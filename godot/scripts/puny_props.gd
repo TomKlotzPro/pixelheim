@@ -13,10 +13,11 @@ class_name PunyProps
 ## can never be inside a blocked cell.
 
 ## Props by the web's tile. Offsets are cells from the prop's cell; a foot is
-## in pixels from that cell's top-left corner.
+## in pixels from that cell's top-left corner. A lamp is a post with its
+## lantern drawn in code (LampArt, PIX-311: Shade's cold torch read as a bug
+## on the road by day); its tile here marks where it stands. The torch's
+## flames still burn by the title's village (TitleScene).
 const LAMP_FRAMES := [151, 152, 153, 154, 155, 156, 157]
-## The same torch, cold: the lamps by day (PIX-149).
-const LAMP_UNLIT := 150
 const LAMP_FPS := 8.0
 const WELL := [[Vector2i(0, -2), 3007], [Vector2i(1, -2), 3008], [Vector2i(0, -1), 3227], [Vector2i(1, -1), 3228], [Vector2i(0, 0), 3447], [Vector2i(1, 0), 3448]]
 const SMALL_WELL := 3444
@@ -68,10 +69,14 @@ static func available() -> bool:
 ##   "frames", "foot": Rect2 (no size: walk through), "covers": [cells]}],
 ##  "flat": {cell: tile} (flowers, drawn on the ground under everyone),
 ##  "drawn": {cell: true} (web prop cells these replace)}.
-## Empty when the pack is missing.
+## Without the pack only the lamps, drawn in code (LampArt, PIX-311).
 static func compose(grid: Dictionary) -> Dictionary:
 	if not available():
-		return {"props": [], "flat": {}, "drawn": {}}
+		var lamps: Array = plan(grid)["props"].filter(func(prop: Dictionary) -> bool: return prop["kind"] == "lamp")
+		var drawn := {}
+		for lamp: Dictionary in lamps:
+			drawn[lamp["cell"]] = true
+		return {"props": lamps, "flat": {}, "drawn": drawn}
 	return plan(grid)
 
 

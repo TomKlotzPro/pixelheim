@@ -29,6 +29,12 @@ const WINDOW := 3659
 ## A hearth's and a forge's fire (their lower left), where a room's warm
 ## light comes from (PIX-221).
 const FIRE_TILES := [2565, 2567]
+## The candles and sconces in a room, by tile, and where each one's flame
+## burns in its tile: at night each warms the floor round it (PIX-311).
+const FLAMES := {
+	145: Vector2(7.5, 10.5), 159: Vector2(7.5, 7.5), 585: Vector2(6.5, 6.5),
+	588: Vector2(7.5, 2.5), 808: Vector2(7.5, 2.5),
+}
 const DOOR := 3875
 ## The way down (PIX-256): Shade's stairwell from his royal castle sample, a
 ## flight of stone steps going down into the dark (on his stone floor), in
@@ -125,10 +131,12 @@ static func reserved(data: MapData, placed: Array) -> Dictionary:
 ## rug ([family, x, y, w, h], bordered). A vignette goes in whole or not at
 ## all: never off the floor, onto a wall that isn't the back wall's, onto
 ## `reserved` cells (keepers, the way in, the hero's own furniture) or onto
-## another piece. {"rug", "objects", "tops", "lifted": {cell: tile},
-## "blocked": [cells], "skipped": [names]}.
+## another piece. A vignette's `art` ([x, y, name]) is a piece drawn in code
+## (RoomArt, PIX-315), taking as many cells as it is big, named at its top
+## left; on the floor it blocks. {"rug", "objects", "tops", "lifted":
+## {cell: tile}, "art": {cell: name}, "blocked": [cells], "skipped": [names]}.
 static func furnish(room_key: String, grid: Dictionary, reserved: Dictionary) -> Dictionary:
-	var out := {"rug": {}, "objects": {}, "tops": {}, "lifted": {}, "blocked": [], "skipped": []}
+	var out := {"rug": {}, "objects": {}, "tops": {}, "lifted": {}, "art": {}, "blocked": [], "skipped": []}
 	var layout: Dictionary = interiors()["rooms"].get(room_key, {})
 	for rug: Array in layout.get("rugs", []):
 		var tiles: Array = interiors()["rugFamilies"][rug[0]]
@@ -143,21 +151,35 @@ static func furnish(room_key: String, grid: Dictionary, reserved: Dictionary) ->
 				var row := 0 if dy == 0 else (2 if dy == h - 1 else 1)
 				out["rug"][cell] = int(tiles[row * 3 + col])
 	var taken := {}
+	# The floor the pieces drawn in code stand on.
+	var art_floor := {}
 	for placement: Array in layout.get("pieces", []):
 		var piece: Dictionary = interiors()["vignettes"][placement[0]]
 		var origin := Vector2i(int(placement[1]), int(placement[2]) - int(piece["floorRow"]))
 		var cells := {}
 		var fits := true
+		# Every cell a part takes: [cell, its row in the vignette].
+		var parts: Array = []
 		for kind: String in ["rug", "objects", "tops", "lifted"]:
 			for part: Array in piece[kind]:
-				var cell := origin + Vector2i(int(part[0]), int(part[1]))
-				var on_wall := int(part[1]) < int(piece["floorRow"])
-				var tile: String = grid.get(cell, "")
-				if on_wall:
-					fits = fits and tile == "wall" and grid.get(cell + Vector2i.DOWN, "") != "wall"
-				else:
-					fits = fits and tile == "floor" and not reserved.has(cell) and not taken.has(cell)
-				cells[cell] = on_wall
+				parts.append([origin + Vector2i(int(part[0]), int(part[1])), int(part[1])])
+		var drawn: Array[Vector2i] = []
+		for part: Array in piece.get("art", []):
+			var big := RoomArt.cells(String(part[2]))
+			for dy in big.y:
+				for dx in big.x:
+					var cell := origin + Vector2i(int(part[0]) + dx, int(part[1]) + dy)
+					parts.append([cell, int(part[1]) + dy])
+					drawn.append(cell)
+		for part: Array in parts:
+			var cell: Vector2i = part[0]
+			var on_wall: bool = int(part[1]) < int(piece["floorRow"])
+			var tile: String = grid.get(cell, "")
+			if on_wall:
+				fits = fits and tile == "wall" and grid.get(cell + Vector2i.DOWN, "") != "wall"
+			else:
+				fits = fits and tile == "floor" and not reserved.has(cell) and not taken.has(cell)
+			cells[cell] = on_wall
 		if not fits:
 			out["skipped"].append(placement[0])
 			continue
@@ -167,10 +189,15 @@ static func furnish(room_key: String, grid: Dictionary, reserved: Dictionary) ->
 				out[kind][cell] = int(part[2])
 				if kind in ["objects", "tops"] and not cells[cell]:
 					taken[cell] = true
+		for part: Array in piece.get("art", []):
+			out["art"][origin + Vector2i(int(part[0]), int(part[1]))] = String(part[2])
+		for cell: Vector2i in drawn:
+			if not cells[cell]:
+				art_floor[cell] = true
 		for cell: Vector2i in cells:
 			taken[cell] = true
 	for cell: Vector2i in taken:
-		if out["objects"].has(cell) or out["tops"].has(cell):
+		if out["objects"].has(cell) or out["tops"].has(cell) or art_floor.has(cell):
 			out["blocked"].append(cell)
 	return out
 
