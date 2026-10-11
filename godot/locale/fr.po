@@ -1993,6 +1993,10 @@ msgid "A boss finished off by poison or a burn now falls as it should, with its 
 msgstr "Un boss achevé par le poison ou une brûlure tombe désormais comme il se doit, avec son moment de victoire"
 
 #: assets/data/changelog.json
+msgid "A boss you run from gives up at last: lose it for a few seconds, or leave it with no way to reach you, and it walks home and its bar fades"
+msgstr "Un boss que vous fuyez finit par lâcher : semez-le quelques secondes, ou laissez-le sans chemin jusqu'à vous, et il rentre chez lui pendant que sa barre s'efface"
+
+#: assets/data/changelog.json
 msgid "A boss's health bar now goes away when it falls, however it falls"
 msgstr "La barre de vie d'un boss disparaît désormais quand il tombe, quelle que soit la façon dont il tombe"
 
@@ -3489,6 +3493,10 @@ msgid "Let Me Go"
 msgstr "Laissez-moi partir"
 
 #: assets/data/changelog.json
+msgid "Letting Go"
+msgstr "Lâcher prise"
+
+#: assets/data/changelog.json
 msgid "Level-ups now bank 5 stat points: spend them on STR, INT, DEX or DEF"
 msgstr "Chaque montée de niveau met de côté 5 points de caractéristique : dépensez-les en FOR, INT, DEX ou DEF"
 
@@ -3885,6 +3893,10 @@ msgid "Oilskin"
 msgstr "Ciré"
 
 #: assets/data/changelog.json
+msgid "Old Greymaw, Mossback and the other named beasts no longer get stuck on a riverbank or inside their ruins, and walk round what blocks them"
+msgstr "Vieille-Gueule-Grise, Dos-de-Mousse et les autres bêtes nommées ne restent plus coincés au bord d'une rivière ou dans leurs ruines, et contournent ce qui leur barre la route"
+
+#: assets/data/changelog.json
 msgid "Old Pell comes home with his canary and takes the room above Hilda's forge; her upgrades cost a little less"
 msgstr "Le vieux Pell rentre avec son canari et s'installe dans la chambre au-dessus de la forge de Hilda ; ses améliorations coûtent un peu moins cher"
 
@@ -3943,6 +3955,10 @@ msgstr "Une fois Crocgivre tombé, une glissade de glace vous ramène au pied de
 #: assets/data/changelog.json
 msgid "Once Upon a Mountain"
 msgstr "Il était une montagne"
+
+#: assets/data/changelog.json
+msgid "Once a boss lets go the roads out open again, and it keeps its wounds: the bar comes back where it was when the fight starts again"
+msgstr "Dès qu'un boss lâche, les routes s'ouvrent à nouveau, et il garde ses blessures : sa barre revient là où elle en était quand le combat reprend"
 
 #: assets/data/changelog.json
 msgid "Once he stands down, the north stair takes you back up to the cellars' door"
