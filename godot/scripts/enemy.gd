@@ -160,6 +160,11 @@ func _ready() -> void:
 		# Its own colour may brighten past its kind's (Greymaw's silver).
 		sprite.self_modulate = tint * Color(float(own[0]), float(own[1]), float(own[2]))
 		bar_width = 28.0
+	# A foe the story sizes itself (the Night of Bells' Fafnyr, towering
+	# over the square).
+	if fighter.has("size"):
+		grown = float(fighter["size"])
+		bar_width = 28.0
 	var size: float = art.get("scale", 1.0) * grown
 	sprite.scale = Vector2.ONE * size
 	sprite.position = Vector2(0, PunyArt.lift(art) * size)

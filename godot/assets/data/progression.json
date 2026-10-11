@@ -1844,6 +1844,7 @@
     "barred": "Not tonight, courier. Every door is shut and the gate barred till dawn: the square needs you.",
     "fafnyr": {
       "monsterId": "dragon",
+      "scale": 3.0,
       "level": 14,
       "maxHp": 10000,
       "attack": 36,

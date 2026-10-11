@@ -190,7 +190,7 @@ static func fafnyr() -> Dictionary:
 		"hp": int(spec["maxHp"]), "maxHp": int(spec["maxHp"]), "attack": int(spec["attack"]),
 		"defense": int(spec["defense"]), "xp": int(spec["xp"]), "gold": int(spec["gold"]),
 		"level": int(spec["level"]), "yieldsAt": float(spec["yieldsAt"]), "roars": spec["roars"],
-		"bells": true,
+		"bells": true, "size": float(spec.get("scale", 1.0)),
 	}, true)
 	return fighter
 
