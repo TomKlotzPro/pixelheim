@@ -220,6 +220,11 @@ func _ready() -> void:
 	# The title greets a launch (not a slot switch or a reload, and not the harness).
 	if not GameState.title_seen and (not harness or flags.has("title")):
 		open_title()
+	elif GameState.slot_note != "":
+		# What the title would have said (PIX-303: this hero is the save
+		# before, its last unreadable), on the plate.
+		messages.flash(GameState.slot_note)
+		GameState.slot_note = ""
 	# The web page's loading screen fades as the first screen rises out of
 	# the same picture (PIX-296, web/shell.html); it waits for this word.
 	if OS.has_feature("web"):

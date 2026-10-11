@@ -119,8 +119,9 @@ hunt-bar | --map overworld --at 70,40 fight kill --foe greymaw --foe-left 0.05 -
 # was when the fight does); with no way to the hero across the river he
 # gives up rather than hunt forever, and no longer bars the road out; at
 # the line while he's at the hero, the way holds (PIX-232) and his bar
-# stays.
-greymaw-leave | --map overworld --at 88,59 fight --foe greymaw --foe-left 0.55 --then-walk l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l --wait 1 | map=overworld boss=greymaw:[hi][a-z]+:[0-9]{1,2}% bossbar=none | combat field
+# stays. Led out along the row above the bush at 74,59: undrawn from
+# v0.219 to PIX-304 it had no body, and the walk went through it.
+greymaw-leave | --map overworld --at 88,58 fight --foe greymaw --foe-left 0.55 --then-walk l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l --wait 1 | map=overworld boss=greymaw:[hi][a-z]+:[0-9]{1,2}% bossbar=none | combat field
 greymaw-stuck | --map overworld --at 70,27 fight --foe greymaw --foe-at 70,32 --foe-left 0.55 --wait 5 | map=overworld boss=greymaw:idle:[0-9]{1,2}% bossbar=none | combat field
 greymaw-line | --map overworld --at 92,33 seamless fight --foe greymaw --foe-at 90,27 --foe-left 0.55 --then-walk u,u,u,u,u,u,u,u,u,u,u,u,u,u,u,u,r,r,r,r,r --wait 0.5 | map=deepwood bossbar=none | combat field travel
 greymaw-held | --map overworld --at 90,33 seamless fight --foe greymaw --foe-distance -3 --foe-left 0.55 --then-walk r,r,r,r,r,r,r --wait 0.5 | map=overworld boss=greymaw:[ac][a-z]+:[0-9]+% bossbar=[0-9]+% | combat field travel
@@ -154,6 +155,13 @@ fright | --map overworld --at 59,34 --zoom play --level 20 --wait 3 | map=overwo
 # and a second wolf pack and the walking dead out among them.
 field-day | --map overworld --at 67,46 | map=overworld cell=\(67, 46\) packs=slime,goblin,wolf | field
 field-night | --map overworld --at 67,46 night | map=overworld cell=\(67, 46\) packs=slime,goblin:asleep,wolf,wolf,skeleton | field night
+# The field's decor (PIX-304: from One Land, v0.219, no map grew any): the
+# Deepwood's forest, Pixelheim's woods and its fields of wheat (some 660
+# with the wheat, at every age; 530 without), and the Deepwood drawn beside
+# the Reach, a few rows a frame, then walked into over the line.
+decor-wood | --map deepwood --at 44,10 | map=deepwood decor=1[0-9]{3} | field
+decor-wheat | --map town --at 76,25 | map=town decor=6[0-9]{2} | town field
+decor-line | --map overworld --at 93,33 seamless --walk r,r,r fades | map=deepwood change=seamless decor=1[0-9]{3} | field travel
 # Night falling while the hero watches the goblins' camp: nothing changes
 # on the screen - the goblins stay up, the wolves whose home is in view
 # wait - and the dead come out off it. From a few steps west of the camp
@@ -495,6 +503,35 @@ fit-saves | --map town --keys esc,s,e overflow --lang fr | open=saves_screen ove
 # both languages.
 fit-saves-full | --map town saves --slots res://test/fixtures/slots overflow --lang fr | open=saves_screen overflow=0 | screen lang save
 fit-saves-full-en | --map town saves --slots res://test/fixtures/slots overflow --lang en | open=saves_screen overflow=0 | screen lang save
+# A save the game can't read is never an empty slot (PIX-303): slot 1's
+# file cut short, slot 2's from a newer version, slot 3 empty; their cards
+# fit in both languages.
+saves-damaged | --map town saves --slots res://test/fixtures/slots_unread | open=saves_screen cards=damaged,newer,empty | screen save
+fit-saves-unread | --map town saves --slots res://test/fixtures/slots_unread overflow --lang fr | open=saves_screen overflow=0 cards=damaged,newer,empty | screen lang save
+fit-saves-unread-en | --map town saves --slots res://test/fixtures/slots_unread overflow --lang en | open=saves_screen overflow=0 cards=damaged,newer,empty | screen lang save
+# A launch whose last slot can't be read stands in with no Continue, says
+# so under the menu, and New Game makes its hero in the first free slot,
+# never over the file (PIX-303).
+launch-unread | title --slots res://test/fixtures/slots_unread launch | open=title_screen titleline=slot free=3 | title save
+fit-launch-unread | title --slots res://test/fixtures/slots_unread launch overflow --lang fr | open=title_screen overflow=0 titleline=slot free=3 | screen lang title save
+fit-launch-unread-en | title --slots res://test/fixtures/slots_unread launch overflow --lang en | open=title_screen overflow=0 titleline=slot free=3 | screen lang title save
+# Tom (2026-10-11, PIX-316): a new hero starts from the title's New Game
+# alone. On the Saves screen an empty slot's E makes no one, and N is no
+# key there...
+saves-no-new | --map town --slots res://test/fixtures/slots_unread --keys esc,s,e,s,s,e,n | open=saves_screen cards=damaged,newer,empty | screen save
+# ...and with every slot holding a save, New Game says so under the menu
+# and starts nothing, in both languages.
+newgame-full | title --slots res://test/fixtures/slots launch --keys s,e | open=title_screen titleline=full free=0 | title save
+fit-newgame-full | title --slots res://test/fixtures/slots launch --keys s,e overflow --lang fr | open=title_screen overflow=0 titleline=full free=0 | screen lang title save
+fit-newgame-full-en | title --slots res://test/fixtures/slots launch --keys s,e overflow --lang en | open=title_screen overflow=0 titleline=full free=0 | screen lang title save
+# The save before (PIX-303): slot 1's file cut short plays its backup, said
+# on its card; slot 2's good file plays though its backup is cut short;
+# slot 3's temp file, left alone by a first write cut off, is no save.
+saves-backup | --map town saves --slots res://test/fixtures/slots_backup | open=saves_screen cards=backup,hero,empty | screen save
+fit-saves-backup | --map town saves --slots res://test/fixtures/slots_backup overflow --lang fr | open=saves_screen overflow=0 cards=backup,hero,empty | screen lang save
+# A launch on it plays Brann from the save before (his 4321 gold), and the
+# title says so.
+launch-backup | title --slots res://test/fixtures/slots_backup launch overflow --lang fr | open=title_screen overflow=0 gold=4321 titleline=slot free=3 | screen lang title save
 fit-pause | --map town --keys esc overflow --lang fr | open=pause_screen overflow=0 | screen lang
 fit-options | --map town --keys esc,s,s,e overflow --lang fr | overflow=0 | screen lang
 fit-map | --map town waypoints worldmap overflow --lang fr | open=map_screen overflow=0 | screen lang travel
