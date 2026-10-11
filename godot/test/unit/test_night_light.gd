@@ -12,8 +12,11 @@ extends GutTest
 ## for what moves: the hero's lantern and a spell or two.
 
 ## What moves among the lights a map lays: the hero's lantern and the
-## flares of two spells landing at once.
+## flares of two spells landing at once; and where a boss can stand, its
+## glow on the floor round its feet (PIX-314, Enemy._weigh: it lights the
+## floor's blocks alone).
 const MOVING := 3
+const BOSS_GLOW := 1
 
 var _saved := {}
 
@@ -61,9 +64,9 @@ static func _reaches(root: Node) -> Array[Rect2]:
 
 ## Every tile layer drawn in light blocks, and none reached by more lights
 ## than leave room for what moves.
-func _check(label: String, root: Node) -> void:
+func _check(label: String, root: Node, moving := MOVING) -> void:
 	var reaches := _reaches(root)
-	var budget := Lights.PER_ITEM - MOVING
+	var budget := Lights.PER_ITEM - moving
 	var worst := 0
 	var at := ""
 	for node in root.find_children("*", "TileMapLayer", true, false):
@@ -81,6 +84,13 @@ func _check(label: String, root: Node) -> void:
 				worst = reached
 				at = "the block at cell %s" % (corner * block)
 	assert_lte(worst, budget, "%s: %d lights reach %s" % [label, worst, at])
+
+
+## What moves on `maps`: a boss's glow too where a named monster has its
+## lair (PIX-314).
+static func _moving_on(maps: Array) -> int:
+	var bosses := Hunts.all().any(func(entry: Dictionary) -> bool: return String(entry["mapId"]) in maps)
+	return MOVING + (BOSS_GLOW if bosses else 0)
 
 
 func test_the_night_of_ash_burns_in_soft_pools() -> void:
@@ -118,7 +128,10 @@ func test_the_town_at_night_at_every_age() -> void:
 		GameState.settlement.town_tier = tier
 		var projects := Town.projects_through(tier)
 		GameState.settlement.projects.assign(projects)
-		_check("the town at age %d" % tier, _drawn(MapData.load_tiered("town", projects, 1)))
+		# Fafnyr lands on the square on the Night of Bells, before the City
+		# (whose age asks for the dragon freed).
+		var moving := MOVING + (BOSS_GLOW if tier < Town.MAX_TIER else 0)
+		_check("the town at age %d" % tier, _drawn(MapData.load_tiered("town", projects, 1)), moving)
 
 
 func test_every_map_at_night() -> void:
@@ -134,7 +147,7 @@ func test_every_map_at_night() -> void:
 			map = MapData.load_tiered(map_id.get_slice("@", 0), [], int(map_id.get_slice("@", 1)))
 		else:
 			map = MapData.load_by_id(map_id)
-		_check(map_id, _drawn(map))
+		_check(map_id, _drawn(map), _moving_on([map_id]))
 		seen += 1
 	assert_gt(seen, 20, "the maps on disk")
 
@@ -143,7 +156,7 @@ func test_every_dungeon_floor() -> void:
 	for dungeon_id: String in Depths.dungeons():
 		for entry: Dictionary in Depths.floors(dungeon_id):
 			if Depths.is_planned(entry["mapId"]):
-				_check(entry["mapId"], _drawn(MapData.load_by_id(entry["mapId"])))
+				_check(entry["mapId"], _drawn(MapData.load_by_id(entry["mapId"])), _moving_on([entry["mapId"]]))
 
 
 ## The Reach and the regions round it, each drawn as Neighbours draws a map
@@ -169,7 +182,7 @@ func test_the_reach_drawn_as_one_land() -> void:
 			slices.add("plan_draw", func() -> void: view.building(root, slices)))
 		slices.finish()
 	assert_gt(ReachPlane.maps().size(), 5, "the Reach and its regions")
-	_check("the Reach as one land", root)
+	_check("the Reach as one land", root, _moving_on(ReachPlane.maps()))
 
 
 ## A unit of drawing lays whole light blocks, so each is drawn once.

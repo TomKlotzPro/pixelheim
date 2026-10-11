@@ -31,6 +31,15 @@
 spawn | --map town | map=town | town
 # Through the nearest door into one of its rooms (PIX-129).
 portal | --map town portal | map=town_.* | town travel
+# The streets by the town's age (PIX-307): Upper Street trodden and rutted
+# in the Ashes and the Hamlet, in gravel in the Village, cobbled in the
+# Town; the City's square in sandstone, brick round its fountain.
+streets-ashes | --map town --town-tier 0 --at 40,12 | map=town street=worn | town
+streets-hamlet | --map town --town-tier 1 --at 40,12 | map=town street=worn | town
+streets-village | --map town --town-tier 2 --at 40,12 | map=town street=gravel | town
+streets-town | --map town --town-tier 3 --at 40,12 | map=town street=cobbles | town
+streets-city | --map town --town-tier 4 --at 36,22 | map=town street=sandstone | town
+streets-fountain | --map town --town-tier 4 --at 39,24 | map=town street=bricks | town
 # Out of the village through its gate and back in (PIX-248: one rampart,
 # the gate three wide between its towers): up the gate road, through the
 # middle of the gate and through its side, onto the road just past the gate
@@ -168,6 +177,14 @@ decor-line | --map overworld --at 93,33 seamless --walk r,r,r fades | map=deepwo
 # (it was 79,43): the wider view since PIX-244 took in the dead's home
 # there, and from here it's off the screen at 3 or 4.
 nightfall | --map overworld --at 75,43 --zoom play nightfall | map=overworld cell=\(75, 43\) packs=slime,goblin,wolf,skeleton | field night
+# Water inland held to the sea (PIX-306): the Reach's river and the
+# village's run (west along the one, south down the other), deep down their
+# middles; the Deepwood's lake lies still and dark, the Mirefen's pools
+# still and murky.
+water-reach | --map overworld --at 48,32 | map=overworld water=clear west | field
+water-town | --map town --at 72,8 | map=town water=clear south | field town
+water-wood | --map deepwood --at 18,9 | map=deepwood water=deep still | field
+water-mire | --map mirefen --at 21,25 | map=mirefen water=mire still | field
 # A named monster's bounty on the board (PIX-156).
 bounty | --map town --at 43,22 --cleared 4 --keys w,e | open=bounty_screen | town quest screen
 # Morvax's choice asked outright (PIX-253 step 10; the old throne's,
@@ -249,6 +266,14 @@ mouth-seacave | --map saltmere --at 6,25 | map=saltmere entrance=sea_cave | trav
 mouth-gate | --map overworld --at 48,9 | map=overworld entrance=mountain_gate | travel story
 mouth-road | --map mountain_road --at 13,5 | map=mountain_road entrance=mountain_gate,vault_door | travel story
 mouth-ice | --map observatory --at 12,8 | map=observatory entrance=ice_stair | rooms
+# The roads beyond the village (PIX-307): the Reach's road south of the
+# river rutted, Greyhold's courtyard flagged and its paths cobbled, and the
+# Frostgate's road cobbled up to the observatory's flagged yard.
+road-worn | --map overworld --at 48,36 | map=overworld street=worn | travel
+courtyard | --map greyhold --at 33,20 | map=greyhold street=flags | travel
+courtyard-path | --map greyhold --at 37,20 | map=greyhold street=cobbles | travel
+frost-road | --map frostgate --at 27,14 | map=frostgate street=cobbles | travel
+frost-yard | --map frostgate --at 25,9 | map=frostgate street=flags | travel
 # The Blackiron shafts in three floors (PIX-255, PIX-253 step 5): down the
 # upper shafts' stair (it asks; going down keeps the dark) to the west
 # gallery, down past Pell's canary to the Black Seam, and back up (it

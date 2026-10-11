@@ -309,7 +309,8 @@ static func tileset() -> TileSet:
 
 
 ## Every tile a house may be built of, in each roof colour, the flowers
-## (PunyProps.FLOWERS) and Pixelheim's rampart and gatehouse (Rampart).
+## (PunyProps.FLOWERS), Pixelheim's rampart and gatehouse (Rampart) and the
+## streets' paving (Streets).
 static func pieces() -> Array[int]:
 	var base: Array = GABLE_TOP + GABLE_FOOT + GABLE_EAVE + GABLE_WALL + CHIMNEY + WING_TOP + WING_UPPER + WING_RIDGE \
 		+ WING_LOWER + WING_EAVE + UPPER_FILL + LOWER_FILL + [WALL_LEFT, WALL, WALL_RIGHT, WINDOW, DOOR]
@@ -323,7 +324,8 @@ static func pieces() -> Array[int]:
 			var tinted := _tint(tile, rows * COLUMNS)
 			if tinted not in out:
 				out.append(tinted)
-	var more: Array = PunyProps.FLOWERS + Rampart.WALL.values() + [Rampart.GATE, Rampart.ROOF_BURNT] + Rampart.TOWER + Rampart.ROOF
+	var more: Array = PunyProps.FLOWERS + Rampart.WALL.values() + [Rampart.GATE, Rampart.ROOF_BURNT] + Rampart.TOWER + Rampart.ROOF \
+		+ Streets.pieces()
 	for tile: int in more:
 		if tile not in out:
 			out.append(tile)
