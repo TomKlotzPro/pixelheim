@@ -68,6 +68,12 @@ const TEXTURE_PX := 256
 ## reach it light the items beside it but not it, and stop at its edge.
 ## MapView draws tile layers in small blocks so none is reached by more.
 const PER_ITEM := 15
+## The floor's own light bit (PIX-314): the ground's and the dungeons' floor
+## layers answer to it besides the world's lights (MapView), and a light
+## that lights only it (`range_item_cull_mask`) falls on the floor alone -
+## a boss's glow round its feet, under every actor and pickup standing in
+## it, none of them tinted.
+const FLOOR := 1 << 10
 
 
 ## The open air's light at `steps` on the day's wheel.

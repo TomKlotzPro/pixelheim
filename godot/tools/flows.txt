@@ -36,6 +36,15 @@ lamps-day | --map town --at 40,13 | lamplight=posts 0/[1-9]\d* panes 0 flames 0 
 lamps-night | --map town --at 40,13 night | lamplight=posts ([1-9]\d*)/\1 panes \d+ flames 0 beams 0 | town night
 # Through the nearest door into one of its rooms (PIX-129).
 portal | --map town portal | map=town_.* | town travel
+# The streets by the town's age (PIX-307): Upper Street trodden and rutted
+# in the Ashes and the Hamlet, in gravel in the Village, cobbled in the
+# Town; the City's square in sandstone, brick round its fountain.
+streets-ashes | --map town --town-tier 0 --at 40,12 | map=town street=worn | town
+streets-hamlet | --map town --town-tier 1 --at 40,12 | map=town street=worn | town
+streets-village | --map town --town-tier 2 --at 40,12 | map=town street=gravel | town
+streets-town | --map town --town-tier 3 --at 40,12 | map=town street=cobbles | town
+streets-city | --map town --town-tier 4 --at 36,22 | map=town street=sandstone | town
+streets-fountain | --map town --town-tier 4 --at 39,24 | map=town street=bricks | town
 # Out of the village through its gate and back in (PIX-248: one rampart,
 # the gate three wide between its towers): up the gate road, through the
 # middle of the gate and through its side, onto the road just past the gate
@@ -178,6 +187,14 @@ decor-line | --map overworld --at 93,33 seamless --walk r,r,r fades | map=deepwo
 # (it was 79,43): the wider view since PIX-244 took in the dead's home
 # there, and from here it's off the screen at 3 or 4.
 nightfall | --map overworld --at 75,43 --zoom play nightfall | map=overworld cell=\(75, 43\) packs=slime,goblin,wolf,skeleton | field night
+# Water inland held to the sea (PIX-306): the Reach's river and the
+# village's run (west along the one, south down the other), deep down their
+# middles; the Deepwood's lake lies still and dark, the Mirefen's pools
+# still and murky.
+water-reach | --map overworld --at 48,32 | map=overworld water=clear west | field
+water-town | --map town --at 72,8 | map=town water=clear south | field town
+water-wood | --map deepwood --at 18,9 | map=deepwood water=deep still | field
+water-mire | --map mirefen --at 21,25 | map=mirefen water=mire still | field
 # A named monster's bounty on the board (PIX-156).
 bounty | --map town --at 43,22 --cleared 4 --keys w,e | open=bounty_screen | town quest screen
 # Morvax's choice asked outright (PIX-253 step 10; the old throne's,
@@ -259,6 +276,14 @@ mouth-seacave | --map saltmere --at 6,25 | map=saltmere entrance=sea_cave | trav
 mouth-gate | --map overworld --at 48,9 | map=overworld entrance=mountain_gate | travel story
 mouth-road | --map mountain_road --at 13,5 | map=mountain_road entrance=mountain_gate,vault_door | travel story
 mouth-ice | --map observatory --at 12,8 | map=observatory entrance=ice_stair | rooms
+# The roads beyond the village (PIX-307): the Reach's road south of the
+# river rutted, Greyhold's courtyard flagged and its paths cobbled, and the
+# Frostgate's road cobbled up to the observatory's flagged yard.
+road-worn | --map overworld --at 48,36 | map=overworld street=worn | travel
+courtyard | --map greyhold --at 33,20 | map=greyhold street=flags | travel
+courtyard-path | --map greyhold --at 37,20 | map=greyhold street=cobbles | travel
+frost-road | --map frostgate --at 27,14 | map=frostgate street=cobbles | travel
+frost-yard | --map frostgate --at 25,9 | map=frostgate street=flags | travel
 # The Blackiron shafts in three floors (PIX-255, PIX-253 step 5): down the
 # upper shafts' stair (it asks; going down keeps the dark) to the west
 # gallery, down past Pell's canary to the Black Seam, and back up (it
@@ -446,6 +471,16 @@ vault-hoard | --map vault_5 clear --wait 0.6 | map=vault_5 floor=5/5 fell=1 shor
 torches-shafts | --map shafts | map=shafts torches=12 | dungeon
 torches-glass | --map icecave_glass | map=icecave_glass torches=6 | dungeon
 torches-vault | --map vault_1 | map=vault_1 torches=\d+ | dungeon
+# Each dungeon dressed as its place (PIX-310): the sea cave's pools and the
+# weed at its walls' feet, the shafts' rail line and timber props, the
+# cellars' niches, cobwebs and bones, the ice cave's frost (in its stone),
+# the Kings' Vault's rugs and banners; on the planned floors too.
+look-seacave | --map seacave | map=seacave dressed=sea:water\d+,weed\d+ | dungeon
+look-galleries | --map seacave_galleries | map=seacave_galleries dressed=sea:water\d+,weed\d+ | dungeon
+look-shafts | --map shafts_gallery | map=shafts_gallery dressed=mine:.*props\d+,rail\d+ | dungeon
+look-cellars | --map cellars_crypt | map=cellars_crypt dressed=crypt:bones\d+,.*niches\d+,webs\d+ | dungeon
+look-icecave | --map icecave | map=icecave dressed=ice | dungeon
+look-vault | --map vault_3 | map=vault_3 dressed=vault:banners\d+,rugs\d+ | dungeon
 oldsave-deep | --load res://test/fixtures/old_deep.json --wait 0.3 | map=town feats=deep_10 | save story travel
 feats-old | --load res://test/fixtures/old_deep.json journal --tab feats --wait 0.3 | open=journal_screen feats=deep_10 | screen quest save
 # What grows on the ground moves with the days (PIX-250): two days, two

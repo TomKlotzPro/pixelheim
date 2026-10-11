@@ -68,6 +68,7 @@ town story: scripts/world_folk.gd scripts/npc.gd scripts/npcs.gd scripts/dialogu
 town rooms travel +town-age*: scripts/world_tiles.gd scripts/map_view.gd scripts/map_data.gd scripts/kept_ground.gd scripts/puny_sheet.gd scripts/discovery.gd scripts/interactables.gd assets/maps/interactables.json
 town +town-age*: scripts/puny_town.gd scripts/puny_props.gd scripts/shop_sign.gd scripts/state/town.gd
 town rooms field night title +town-age*: scripts/lamp_art.gd
+town travel +town-age* +greyhold* +frostgate* +overworld*: scripts/streets.gd scripts/road_wear.gd assets/data/streets.json
 town rooms +town-age* +town_house*: assets/data/town.json scripts/state/settlement_state.gd scripts/state/holdings.gd scripts/state/household.gd
 town: scripts/town_hall_screen.gd scripts/ledger_screen.gd scripts/bank_screen.gd scripts/ring_toss_screen.gd
 rooms +town_house*: scripts/puny_interior.gd scripts/home_screen.gd assets/data/interiors.json
@@ -106,6 +107,7 @@ field night: scripts/day_night.gd scripts/lights.gd scripts/light_rig.gd
 field: scripts/weather.gd scripts/atmosphere.gd
 field rank: scripts/motes.gd
 dungeon +icecave*: shaders/frozen.*
+dungeon +seacave* +shafts* +cellars* +icecave* +vault*: scripts/dungeon_look.gd scripts/dungeon_art.gd shaders/dungeon.* shaders/torch_motes.*
 rooms +observatory*: shaders/stair_frost.*
 town field title: shaders/*
 gathering: scripts/state/gathering.gd

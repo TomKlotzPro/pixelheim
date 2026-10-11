@@ -2353,6 +2353,10 @@ msgid "Balance pass, informed by simulating hundreds of playthroughs"
 msgstr "Passe d'équilibrage, guidée par la simulation de centaines de parties"
 
 #: assets/data/changelog.json
+msgid "Banks curve like real shores instead of ruler-straight steps, and rivers foam against the bridge piles"
+msgstr "Les berges ondulent comme de vrais rivages au lieu de marches tirées à la règle, et les rivières moussent contre les piles des ponts"
+
+#: assets/data/changelog.json
 msgid "Battles got a stage: lunges, hit flashes and floating damage numbers"
 msgstr "Les combats ont leur mise en scène : assauts, éclairs d'impact et chiffres de dégâts flottants"
 
@@ -2403,6 +2407,10 @@ msgstr "Les coups ont du poids : la cible s'illumine d'un blanc pur, un arc de
 #: assets/data/changelog.json
 msgid "Boss Slayer"
 msgstr "Tueur de boss"
+
+#: assets/data/changelog.json
+msgid "Bosses and named beasts are drawn at whole sizes, twice their kind (the Tidecaller three times), so their pixels are as crisp as everything around them"
+msgstr "Les boss et les bêtes nommées sont dessinés à des tailles entières, deux fois leur espèce (l'Appelle-Marée trois fois) : leurs pixels sont aussi nets que tout le reste"
 
 #: assets/data/changelog.json
 msgid "Bosses and named monsters carry a bar across the top of the screen, notched where a boss's next phase begins. Each phase is roared, marks on the ground are heard as they appear and as they strike, and a boss falls in slow motion, with a flash and a silence before the victory sting"
@@ -2545,6 +2553,14 @@ msgid "Choose in the Skills menu; your title on the stat sheet carries the path.
 msgstr "Choisissez dans le menu Compétences ; votre titre sur la fiche de caractéristiques porte la voie. Une voie, c'est pour la vie - choisissez comme si ça comptait"
 
 #: assets/data/changelog.json
+msgid "Cinderjaw and Rimefang now tower over their kind, and every boss stands on its own shadow, with a glow of its colour at its feet in the dark"
+msgstr "Mâchebraise et Crocgivre dominent maintenant leur espèce, et chaque boss se tient sur son ombre, avec une lueur de sa couleur à ses pieds dans le noir"
+
+#: assets/data/changelog.json
+msgid "Clean Pixels"
+msgstr "Pixels nets"
+
+#: assets/data/changelog.json
 msgid "Clean Slate"
 msgstr "Table rase"
 
@@ -2591,6 +2607,10 @@ msgstr "En remontant de la Grotte de glace ou des caves, vous revenez dans la pi
 #: assets/data/changelog.json
 msgid "Controls are rebindable, and French keyboards get ZQSD out of the box"
 msgstr "Les commandes sont reconfigurables, et les claviers français ont droit au ZQSD d'office"
+
+#: assets/data/changelog.json
+msgid "Country roads carry cart ruts, grass on the crown, pebbles and grass creeping in at the edges"
+msgstr "Les routes de campagne portent des ornières de charrette, de l'herbe au milieu, des cailloux et de l'herbe qui gagne les bords"
 
 #: assets/data/changelog.json
 msgid "Crackle and Hum"
@@ -2653,6 +2673,10 @@ msgid "Deep Gear"
 msgstr "L'équipement des profondeurs"
 
 #: assets/data/changelog.json
+msgid "Deep Water"
+msgstr "Eaux profondes"
+
+#: assets/data/changelog.json
 msgid "Doors got a carpenter: beam posts and lintel, a plank door with a brass knob, a little shingled awning, a stone doorstep"
 msgstr "Les portes ont eu leur menuisier : poteaux et linteau, une porte en planches avec un bouton en laiton, un petit auvent en bardeaux, un seuil en pierre"
 
@@ -2707,6 +2731,10 @@ msgstr "Les donjons et les grottes sont sombres et éclairés à la torche, et l
 #: assets/data/changelog.json
 msgid "Dungeons live in the world now: walk to the mountain gate to climb"
 msgstr "Les donjons font désormais partie du monde : marchez jusqu'à la porte de la montagne pour grimper"
+
+#: assets/data/changelog.json
+msgid "Dust drifts in the torchlight, and no two floors open in the same room any more"
+msgstr "La poussière flotte dans la lumière des torches, et deux étages ne s'ouvrent plus jamais sur la même salle"
 
 #: assets/data/changelog.json
 msgid "E moves the talk on and Esc skips to the morning; with Reduce motion the camera cuts and nothing shakes"
@@ -2779,6 +2807,10 @@ msgstr "Chaque chapitre s'ouvre sur un carton, « Chapitre 3 : La lettre pou
 #: assets/data/changelog.json
 msgid "Each comes with a full 12-node skill tree, its own look palette, and a proven path to the final boss - the balance sim clears the game with all seven classes"
 msgstr "Chacune arrive avec un arbre de compétences complet de 12 nœuds, sa propre palette d'apparence, et un chemin éprouvé jusqu'au boss final - la simulation d'équilibrage termine le jeu avec les sept classes"
+
+#: assets/data/changelog.json
+msgid "Each dungeon looks like its place: the Sea Cave wet rock with shallow pools and weed, the Blackiron Shafts rails, timber props and glinting ore"
+msgstr "Chaque donjon ressemble à son lieu : la Grotte marine, roche mouillée, flaques et algues ; les puits de Fernoir, rails, étais de bois et minerai qui scintille"
 
 #: assets/data/changelog.json
 msgid "Each floor down is a little harder, with something to find on each"
@@ -3121,6 +3153,10 @@ msgid "First look at the open world: walk the Ashenreach from town (beta)"
 msgstr "Premier aperçu du monde ouvert : parcourez la Marche des Cendres depuis la ville (bêta)"
 
 #: assets/data/changelog.json
+msgid "Five Halls"
+msgstr "Cinq demeures"
+
+#: assets/data/changelog.json
 msgid "Five families keep the ledger readable: Beasts, Greenskins, the Undead, Constructs, the Fireborn"
 msgstr "Cinq familles gardent le registre lisible : Bêtes, Peaux-vertes, Morts-vivants, Créations, Nés-du-feu"
 
@@ -3269,6 +3305,10 @@ msgid "Green Thumbs"
 msgstr "La main verte"
 
 #: assets/data/changelog.json
+msgid "Greyhold's courtyard is flagged and its paths cobbled, and the Frostgate's road is cobbled up to a flagged yard before the observatory"
+msgstr "La cour de Greyhold est dallée et ses allées pavées, et la route de la Porte-Givre est pavée jusqu'à une cour dallée devant l'observatoire"
+
+#: assets/data/changelog.json
 msgid "Ground treasure is taken in stride: walk over a glint or herb patch and it is yours"
 msgstr "Les trésors au sol se ramassent en passant : marchez sur un éclat ou un point de récolte d'herbes et il est à vous"
 
@@ -3319,6 +3359,10 @@ msgstr "Casques de chantier"
 #: assets/data/changelog.json
 msgid "Head to Toe"
 msgstr "De la tête aux pieds"
+
+#: assets/data/changelog.json
+msgid "Health bars, names and level tags sit just over a boss's head instead of floating far above it"
+msgstr "Les barres de vie, les noms et les niveaux se placent juste au-dessus de la tête d'un boss au lieu de flotter loin au-dessus"
 
 #: assets/data/changelog.json
 msgid "Health comes back slowly while you're out of a fight"
@@ -4189,6 +4233,10 @@ msgid "Paths, bridges and town stay safe - stray off the road at your own risk"
 msgstr "Chemins, ponts et ville restent sûrs - quittez la route à vos risques et périls"
 
 #: assets/data/changelog.json
+msgid "Paved Ways"
+msgstr "Rues pavées"
+
+#: assets/data/changelog.json
 msgid "People live here now - talk to them with E, Enter or Space"
 msgstr "Des gens vivent ici désormais - parlez-leur avec E, Enter ou Space"
 
@@ -4227,6 +4275,10 @@ msgstr "Le village de Pixelheim est devenu une vraie ville : plus grande, plus
 #: assets/data/changelog.json
 msgid "Pixelheim village, marshland, forest, ash fields, and a river bridge"
 msgstr "Le village de Pixelheim, des marais, une forêt, des champs de cendres et un pont sur la rivière"
+
+#: assets/data/changelog.json
+msgid "Pixelheim's streets grow with the town: rutted dirt, then gravel with edge stones, then cobbles on Upper Street, and in the City a flagged square with brick round the fountain"
+msgstr "Les rues de Pixelheim grandissent avec le village : terre creusée d'ornières, puis gravier bordé de pierres, puis pavés dans la Grand-Rue, et à l'âge de la Cité une place dallée avec des briques autour de la fontaine"
 
 #: assets/data/changelog.json
 msgid "Plain Sight"
@@ -4359,6 +4411,10 @@ msgstr "Renommés par souci de clarté : le guerrier culmine désormais en POR
 #: assets/data/changelog.json
 msgid "Rent and the bank's interest still come by the day, so with longer days they come in less often"
 msgstr "Les loyers et les intérêts de la banque viennent toujours par jour : avec des journées plus longues, ils tombent moins souvent"
+
+#: assets/data/changelog.json
+msgid "Rivers, ponds and the Deepwood's lake have depth now: darker down the middle, lighter at the banks, with foam where they lap the shore and streaks drifting downstream"
+msgstr "Les rivières, les étangs et le lac des Bois-Profonds ont désormais de la profondeur : plus sombres au milieu, plus clairs vers les berges, avec de l'écume au bord et des reflets qui filent au fil du courant"
 
 #: assets/data/changelog.json
 msgid "Roads and town stay clean-looking because they ARE safe"
@@ -5173,6 +5229,10 @@ msgid "The Great Expansion"
 msgstr "La Grande Expansion"
 
 #: assets/data/changelog.json
+msgid "The Greyhold Cellars have niches, cobwebs and bones, the Ice Cave frost creeping off its walls, and the Kings' Vault red rugs, banners and gold trim"
+msgstr "Les caves de Greyhold ont leurs niches, leurs toiles d'araignée et leurs os, la Grotte de glace son givre qui gagne les murs, et le Caveau des rois ses tapis rouges, ses bannières et ses dorures"
+
+#: assets/data/changelog.json
 msgid "The Greyhold cellars now go three floors down: the cells with Fenwick's locket, the garrison's crypt with Ana's father's badge, and the captain's great hall"
 msgstr "Les caves de Greyhold descendent désormais sur trois étages : les cellules avec le médaillon de Fenwick, la crypte de la garnison avec l'insigne du père d'Ana, et la grande salle du capitaine"
 
@@ -5219,6 +5279,10 @@ msgstr "Le bouton Menu liste vos écrans, pas vos attaques : les compétences 
 #: assets/data/changelog.json
 msgid "The Miners' Camp waypoint moved a few steps east, onto its road"
 msgstr "Le relais du camp des mineurs s'est déplacée de quelques pas vers l'est, sur sa route"
+
+#: assets/data/changelog.json
+msgid "The Mirefen's pools are murky olive water with lily pads, duckweed and reeds, the Deepwood's lake dark teal and the Frostgate's water icy"
+msgstr "Les mares des Marais de Fange sont d'une eau olive trouble avec nénuphars, lentilles d'eau et roseaux, le lac des Bois-Profonds sarcelle sombre et l'eau de la Porte-Givre glacée"
 
 #: assets/data/changelog.json
 msgid "The Night of Ash"

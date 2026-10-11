@@ -157,6 +157,8 @@ func test_a_monsters_marks_are_centred_on_its_head() -> void:
 			foe.sprite.play(PunyArt.pick(frames, "walk", way))
 			foe._rest_at = Vector2(0, PunyArt.lift(art) * size)
 			foe._rest_scale = Vector2.ONE * size
+			# Its words over its head as drawn (PIX-314).
+			foe._over_head = Enemy.over_head(frames, foe._rest_at, size)
 			var head := _head_middle(frames, PunyArt.pick(frames, "idle", way), foe._rest_at, size)
 			for tone: String in Marks.BURST_TONES:
 				var burst: Sprite2D = autofree(Enemy.alert_mark(tone))
@@ -164,7 +166,7 @@ func test_a_monsters_marks_are_centred_on_its_head() -> void:
 				var who := "%s's %s facing %s" % [species, tone, way]
 				assert_eq(burst.position, burst.position.round(), "%s: on whole pixels" % who)
 				assert_almost_eq(burst.position.x + burst.texture.get_width() / 2.0, head, 0.5, "%s: centred on the head" % who)
-				assert_lt(burst.position.y + burst.texture.get_height(), -20.0 * size - Enemy.TAG_HEIGHT, "%s: its foot over the level tag" % who)
+				assert_lt(burst.position.y + burst.texture.get_height(), foe._over_head - Enemy.TAG_HEIGHT, "%s: its foot over the level tag" % who)
 
 
 func test_words_over_the_world_are_centred_by_their_ink() -> void:

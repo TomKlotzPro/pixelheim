@@ -2353,6 +2353,10 @@ msgid "Balance pass, informed by simulating hundreds of playthroughs"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Banks curve like real shores instead of ruler-straight steps, and rivers foam against the bridge piles"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Battles got a stage: lunges, hit flashes and floating damage numbers"
 msgstr ""
 
@@ -2402,6 +2406,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Boss Slayer"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Bosses and named beasts are drawn at whole sizes, twice their kind (the Tidecaller three times), so their pixels are as crisp as everything around them"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -2545,6 +2553,14 @@ msgid "Choose in the Skills menu; your title on the stat sheet carries the path.
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Cinderjaw and Rimefang now tower over their kind, and every boss stands on its own shadow, with a glow of its colour at its feet in the dark"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Clean Pixels"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Clean Slate"
 msgstr ""
 
@@ -2590,6 +2606,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Controls are rebindable, and French keyboards get ZQSD out of the box"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Country roads carry cart ruts, grass on the crown, pebbles and grass creeping in at the edges"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -2653,6 +2673,10 @@ msgid "Deep Gear"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Deep Water"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Doors got a carpenter: beam posts and lintel, a plank door with a brass knob, a little shingled awning, a stone doorstep"
 msgstr ""
 
@@ -2706,6 +2730,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Dungeons live in the world now: walk to the mountain gate to climb"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Dust drifts in the torchlight, and no two floors open in the same room any more"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -2778,6 +2806,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Each comes with a full 12-node skill tree, its own look palette, and a proven path to the final boss - the balance sim clears the game with all seven classes"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Each dungeon looks like its place: the Sea Cave wet rock with shallow pools and weed, the Blackiron Shafts rails, timber props and glinting ore"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3121,6 +3153,10 @@ msgid "First look at the open world: walk the Ashenreach from town (beta)"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Five Halls"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Five families keep the ledger readable: Beasts, Greenskins, the Undead, Constructs, the Fireborn"
 msgstr ""
 
@@ -3269,6 +3305,10 @@ msgid "Green Thumbs"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Greyhold's courtyard is flagged and its paths cobbled, and the Frostgate's road is cobbled up to a flagged yard before the observatory"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Ground treasure is taken in stride: walk over a glint or herb patch and it is yours"
 msgstr ""
 
@@ -3318,6 +3358,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Head to Toe"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Health bars, names and level tags sit just over a boss's head instead of floating far above it"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4189,6 +4233,10 @@ msgid "Paths, bridges and town stay safe - stray off the road at your own risk"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Paved Ways"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "People live here now - talk to them with E, Enter or Space"
 msgstr ""
 
@@ -4226,6 +4274,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Pixelheim village, marshland, forest, ash fields, and a river bridge"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Pixelheim's streets grow with the town: rutted dirt, then gravel with edge stones, then cobbles on Upper Street, and in the City a flagged square with brick round the fountain"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4358,6 +4410,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Rent and the bank's interest still come by the day, so with longer days they come in less often"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Rivers, ponds and the Deepwood's lake have depth now: darker down the middle, lighter at the banks, with foam where they lap the shore and streaks drifting downstream"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5173,6 +5229,10 @@ msgid "The Great Expansion"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Greyhold Cellars have niches, cobwebs and bones, the Ice Cave frost creeping off its walls, and the Kings' Vault red rugs, banners and gold trim"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Greyhold cellars now go three floors down: the cells with Fenwick's locket, the garrison's crypt with Ana's father's badge, and the captain's great hall"
 msgstr ""
 
@@ -5218,6 +5278,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The Miners' Camp waypoint moved a few steps east, onto its road"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The Mirefen's pools are murky olive water with lily pads, duckweed and reeds, the Deepwood's lake dark teal and the Frostgate's water icy"
 msgstr ""
 
 #: assets/data/changelog.json

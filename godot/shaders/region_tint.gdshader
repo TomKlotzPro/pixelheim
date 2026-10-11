@@ -12,7 +12,9 @@ shader_type canvas_item;
 // sprite as one (`sway_alone`, its own beat) or a layer's tiles together;
 // `canopy` sways a whole forest's crowns as one sheet, in pixels. On the
 // ground (`water_life`) the water swells with light, glints here and there,
-// and foam laps where PunyTerrain.water_map's water meets the land.
+// and foam laps where PunyTerrain.water_map's water meets the land; inland
+// (PIX-306, inland_water.gdshaderinc) rivers, ponds and pools are drawn
+// again with depth, banks bent off the grid and each region's own water.
 //
 // One plane (One Reach, PIX-269, step 5): a map drawn beside the hero's
 // reads its masks from its own corner (`map_origin`, where its cell (0, 0)
@@ -37,6 +39,9 @@ uniform bool sway_alone = false;
 uniform float canopy = 0.0;
 uniform bool water_life = false;
 uniform sampler2D water_map : filter_linear, repeat_disable;
+// Bridges' planks (PIX-306): Shade drew his river showing between them,
+// which takes the water's own look under them.
+uniform bool planks = false;
 // The town as it stood giving way to the town as it stands (PIX-264): as
 // this goes 0 to 1 its 2px blocks drop out in the Bayer order, the same
 // pixels in every layer drawn with it, so it goes as one picture.
@@ -60,6 +65,8 @@ const float SHALLOWS = 0.45;
 const float FOAM_REACH = 0.34;
 const float FOAM_LAP = 0.035;
 const float FOAM_LINE = 0.032;
+// Shade's river between his planks.
+const vec3 PLANK_GAP = vec3(0.039, 0.565, 0.627);
 
 // A cell of the ground, in pixels.
 const float CELL = 16.0;
@@ -127,6 +134,8 @@ vec4 soft_tint(vec2 at) {
 	return soft.a > 0.0 ? vec4(soft.rgb / soft.a * covered, covered) : vec4(0.0);
 }
 
+#include "res://shaders/inland_water.gdshaderinc"
+
 void fragment() {
 	vec4 base = COLOR;  // already the texel times the modulate
 	base.rgb = to_display(base.rgb);
@@ -136,13 +145,26 @@ void fragment() {
 	if (threshold < dissolve) {
 		discard;
 	}
-	bool water = base.b > base.g;
+	// Rivers, ponds and pools drawn again with their banks (PIX-306); the
+	// bank is toned as the land is, the water keeps its own.
+	int inland = water_life ? inland_water(world_pos, base.rgb, TEXTURE_PIXEL_SIZE) : INLAND_NONE;
+	if (inland == INLAND_LAND) {
+		base.rgb = to_display(texture(TEXTURE, base.xy * TEXTURE_PIXEL_SIZE).rgb);
+		inland = INLAND_BANK;
+	}
+	if (planks && distance(base.rgb, PLANK_GAP) < 0.03) {
+		vec3 under = base.rgb;
+		if (inland_water(world_pos, under, TEXTURE_PIXEL_SIZE) == INLAND_WATER) {
+			base.rgb = under;
+		}
+	}
+	bool water = inland == INLAND_WATER || (inland == INLAND_NONE && base.b > base.g);
 	if (tint.a > threshold && !water) {
 		vec3 hue = tint.rgb / tint.a;
 		float luma = dot(base.rgb, vec3(0.299, 0.587, 0.114));
 		base.rgb = mix(base.rgb, luma * hue * 2.0, strength);
 	}
-	if (water_life && is_water(base.rgb)) {
+	if (water_life && inland == INLAND_NONE && is_water(base.rgb)) {
 		vec2 px = floor(world_pos);
 		// A slow swell of light rolling over the water.
 		float swell = 0.6 * sin(world_time * 1.1 + px.x * 0.09 + px.y * 0.17)

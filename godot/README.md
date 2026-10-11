@@ -358,7 +358,7 @@ godot/tools/lookbook.sh                              # the browser's renderer: l
 godot/tools/lookbook.sh --desktop                    # the app's look: lookbook-desktop/
 godot/tools/lookbook.sh --desktop --looks browser,app  # both on the desktop renderer, a folder each
 godot/tools/lookbook.sh --compare                    # no window: lookbook/ | lookbook-desktop/ side by side in lookbook-compare/
-godot/tools/lookbook.sh --only strike                # one shot, by its name
+godot/tools/lookbook.sh --only strike                # one shot, by its name (or a few: bosses,boss_lair)
 python3 godot/tools/lookbook_compare.py godot/lookbook-desktop/browser godot/lookbook-desktop/app godot/lookbook-compare
 ```
 
@@ -438,6 +438,7 @@ fr.po, and no msgstr has a plain or no-break space where U+202F belongs.
 - `scripts/codex_screen.gd` — the codex on B: family masteries with their Slayer tiers, and the bestiary of every monster whose family the hero has met
 - `scripts/state/depths.gd` + `scripts/dungeon_floor.gd` + `scripts/state/vault.gd` — every dungeon as a list of floors (`assets/data/depths.json`), handcrafted or laid from a seed (a pack a room, the last and largest for the last), their stairs both ways, the boss's shortcut out; the Kings' Vault after the story, behind a door that opens once the dragon is freed (the old mountain's fifteen numbered floors and the Deep Hunt left play with PIX-257)
 - `scripts/puny_sheet.gd` / `scripts/puny_dungeon.gd` — one Shade tileset with its `.tsx` (animations, wang corners, a lazily built TileSet), and Puny Dungeon's wall grammar, stone, torches, barrels and stairs
+- `scripts/dungeon_look.gd` + `scripts/dungeon_art.gd` + `shaders/dungeon.gdshader` — each dungeon dressed as its place (PIX-310): the sea cave's wet rock and pools of the sea, the shafts' rail line, timber props, carts and ore, the cellars' niches, cobwebs and bones, the ice cave's frost and icicles, the Kings' Vault's rugs, banners and gilded walls; each look's floor in the Medieval Age's ground with the pack (Shade's CC0 stone and our own pieces without it), worn and cracked by the shader, dust drifting in every torch's light (`shaders/torch_motes.gdshader`). The plan only reads the map: nothing it draws blocks or moves
 - `scripts/home_screen.gd` — the house's barrel, workbench, trophy shelf, nook and furniture placement (house rules live in `state/town.gd`)
 - `scripts/ui_style.gd` — the one look (PIX-138): parchment pages in carved wooden frames, ink on the page and cream on the dark, pixel fonts at whole scales, Press Start 2P headings
 - `scripts/marks.gd` — the marks over the world in that look (PIX-284, PIX-289), pixel art drawn from the UI's palette: the talk mark over someone with a quest ("!" to give, "?" to hand in; parchment, gold for the main story), the red burst over a foe that notices the hero, and the bevelled arrow at the view's edge toward where the hero is headed, drawn for eight ways rather than turned
