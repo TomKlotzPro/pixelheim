@@ -55,6 +55,7 @@ const TABLE := [
 	{"flag": "unstreamed", "takes": "", "does": "no map is drawn beside the hero's: every road out is the soft door it was, as on a machine too slow to draw one in time (One Reach, PIX-269)"},
 	{"flag": "seamless", "takes": "", "does": "before --walk, wait until the maps beside the hero's are drawn and stitched (One Reach, PIX-269: Neighbours), so a road out is walked over with no fade; the report adds beside= and saves="},
 	{"flag": "motion", "takes": "", "does": "the walking check (PIX-135): the hero walks right, measured frame by frame; the report adds backsteps= (needs a window); after --at, so it can walk over a line between two maps (PIX-269)"},
+	{"flag": "turning", "takes": "", "does": "the turning walk (PIX-293): keys held through turns - down then right holding both a moment, up then left, down then right with no overlap, a diagonal let go of one key, a stick wobbling near a diagonal's edge - the way the hero is drawn read every tick; the report adds turns= and jumps= (no window needed)"},
 	{"flag": "--walk", "takes": "<l,d,r,u>", "does": "scripted steps, a fifth of a second each"},
 	{"flag": "crossing", "takes": "", "does": "with --walk: each frame of the walk timed, its work (physics to drawing) and its length; a CROSSING line with the most and the 99th percentile, the report adds frames= (PIX-269)"},
 	{"flag": "--then-walk", "takes": "<l,d,r,u>", "does": "scripted steps as --walk's, once the fight and --keys are done (PIX-292: a boss down, straight out by its way out)"},

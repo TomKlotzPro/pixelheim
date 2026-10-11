@@ -3309,6 +3309,10 @@ msgid "Health comes back slowly while you're out of a fight"
 msgstr "La santé revient lentement hors des combats"
 
 #: assets/data/changelog.json
+msgid "Herbs, ore and pouches on the ground are half the size, sitting on a small shadow and bobbing gently, so they no longer look as big as you"
+msgstr "Les herbes, le minerai et les bourses au sol sont deux fois plus petits, posés sur une petite ombre et flottant doucement : ils ne paraissent plus aussi grands que vous"
+
+#: assets/data/changelog.json
 msgid "Hero creation reads clearly: the first night is a setting of its own (The first night (tutorial): Play / Skip, with a line on what each means), and Begin the adventure is the start, alone at the bottom; Tab, a click or the pad's Y flips the night, and a pad can now reach every control"
 msgstr "La création du héros se lit clairement : la première nuit est un réglage à part (La première nuit (tutoriel) : Jouer / Passer, avec une ligne sur ce que chacun veut dire), et Commencer l'aventure est le départ, seul en bas ; Tab, un clic ou le Y de la manette change la nuit, et une manette atteint désormais chaque commande"
 
@@ -3547,6 +3551,10 @@ msgstr "Les pages de Liane et les hauts faits sont les deux autres onglets du jo
 #: assets/data/changelog.json
 msgid "Light Feet"
 msgstr "Pieds légers"
+
+#: assets/data/changelog.json
+msgid "Light Step"
+msgstr "Pas léger"
 
 #: assets/data/changelog.json
 msgid "Light and Dark"
@@ -5841,6 +5849,10 @@ msgid "Vex's quest can finally be taken: he talks before he trades while Greens 
 msgstr "La quête de Vex peut enfin être acceptée : il parle avant de commercer tant que « Des herbes pour le chaudron » attend, dans les deux éditions"
 
 #: assets/data/changelog.json
+msgid "Villagers and foes drawn like you turn smoothly too"
+msgstr "Les villageois et les ennemis dessinés comme vous tournent eux aussi en douceur"
+
+#: assets/data/changelog.json
 msgid "Villagers and monsters breathe their true 2-beat idle instead of floating up and down"
 msgstr "Villageois et monstres respirent sur leur vraie animation d'attente en 2 temps, au lieu de flotter de haut en bas"
 
@@ -6107,6 +6119,10 @@ msgstr "Votre héros s'élance d'un bond, retombe de sa roulade en s'écrasant e
 #: assets/data/changelog.json
 msgid "Your hero steps into the light: figures carry their own inner glow, so the champion of Pixelheim never disappears into a shadow"
 msgstr "Votre héros entre dans la lumière : les personnages portent leur propre lueur intérieure, et le champion de Pixelheim ne disparaît jamais dans l'ombre"
+
+#: assets/data/changelog.json
+msgid "Your hero walks in eight directions and turns through the diagonal, instead of snapping a quarter turn at once"
+msgstr "Votre héros marche dans huit directions et tourne en passant par la diagonale, au lieu de pivoter d'un quart de tour d'un coup"
 
 #: assets/data/changelog.json
 msgid "Your house announces itself: a FOR SALE sign hangs over the door, and turns to HOME once the deed is yours"

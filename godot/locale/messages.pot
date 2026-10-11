@@ -3309,6 +3309,10 @@ msgid "Health comes back slowly while you're out of a fight"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Herbs, ore and pouches on the ground are half the size, sitting on a small shadow and bobbing gently, so they no longer look as big as you"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Hero creation reads clearly: the first night is a setting of its own (The first night (tutorial): Play / Skip, with a line on what each means), and Begin the adventure is the start, alone at the bottom; Tab, a click or the pad's Y flips the night, and a pad can now reach every control"
 msgstr ""
 
@@ -3546,6 +3550,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Light Feet"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Light Step"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5841,6 +5849,10 @@ msgid "Vex's quest can finally be taken: he talks before he trades while Greens 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Villagers and foes drawn like you turn smoothly too"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Villagers and monsters breathe their true 2-beat idle instead of floating up and down"
 msgstr ""
 
@@ -6106,6 +6118,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Your hero steps into the light: figures carry their own inner glow, so the champion of Pixelheim never disappears into a shadow"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Your hero walks in eight directions and turns through the diagonal, instead of snapping a quarter turn at once"
 msgstr ""
 
 #: assets/data/changelog.json

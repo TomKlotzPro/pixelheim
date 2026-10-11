@@ -110,6 +110,22 @@ func test_the_hero_walks_four_beats() -> void:
 		assert_eq(_columns(frames, "walk_" + dir, 32), [1, 2, 1, 3], dir)
 
 
+## PIX-293: Puny Characters draw the four ways between in the rows between
+## (down-right 1, up-right 3, up-left 5, down-left 7); the hero walks and
+## stands in them, the same four beats. A sheet that draws four ways has
+## none.
+func test_the_ways_between_are_drawn() -> void:
+	var frames := PunyArt.frames(PunyArt.plain("warrior", 0))
+	var rows := {"down_right": 1, "up_right": 3, "up_left": 5, "down_left": 7}
+	for dir: String in rows:
+		assert_eq(_columns(frames, "walk_" + dir, 32), [1, 2, 1, 3], dir)
+		assert_true(frames.has_animation("idle_" + dir), "standing %s" % dir)
+		var region := (frames.get_frame_texture("walk_" + dir, 0) as AtlasTexture).region
+		assert_eq(int(region.position.y) / 32, rows[dir], "%s from its row" % dir)
+	assert_false(frames.has_animation("sword_down_right"), "a swing faces one of the four")
+	assert_false(PunyArt.frames(PunyArt.villager("villager")).has_animation("walk_down_right"), "Mini World draws four ways")
+
+
 ## PIX-243: Mini World's walkers stand in column 0 and walk 1-4; the old
 ## walk (0-3) never put the second foot down.
 func test_villagers_put_both_feet_down() -> void:

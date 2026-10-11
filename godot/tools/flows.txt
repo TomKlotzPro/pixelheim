@@ -443,6 +443,11 @@ forage | --map overworld --day 2 --at 75,46 --walk u | cell=\(75, 45\) day=2 pat
 dawn | --map town --prologue 5 --at 11,8 --keys w,e,e,e,e,e --wait 1.5 | open=dawn_screen | story screen
 # Walking without the camera shake (PIX-135): needs a window, so --quiet skips it.
 motion | --map town motion --fps 144 | backsteps=[01] | motion
+# Turning in the walk (PIX-293): down then right holding both keys a moment,
+# up then left, down then right with no overlap, a diagonal let go of one
+# key, a stick wobbling near a diagonal's edge - every turn passes the way
+# between (no quarter turn in one frame) and nothing flickers. Headless.
+turning | --map town turning | jumps=0 turns=[1-6] | town
 # Hero creation's first night skipped with Tab while the name field has the keys (PIX-228).
 firstnight | create --keys tab | open=create_screen firstnight=skip | title story
 # The Night of Ash's hounds and embers (PIX-129).

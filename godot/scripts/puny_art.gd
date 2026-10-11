@@ -19,9 +19,15 @@ class_name PunyArt
 ## - "strip": one row of frames, no directions (the slime).
 
 const DIRS := ["down", "right", "up", "left"]
+## The actions drawn the ways between the four too, where a family draws
+## them (its `between` rows, PIX-293).
+const BETWEEN_ANIMS := ["idle", "walk"]
 const FAMILIES := {
 	"puny": {
 		"frame": 32, "rows": {"down": 0, "right": 2, "up": 4, "left": 6},
+		# The ways between, drawn in the rows between (PIX-293): walked and
+		# stood in, a diagonal and a turn's middle (Gait).
+		"between": {"down_right": 1, "up_right": 3, "up_left": 5, "down_left": 7},
 		"anims": {
 			"idle": [0, 2, 4.0, true], "sword": [4, 4, 14.0, false],
 			"bow": [8, 4, 12.0, false], "staff": [12, 3, 10.0, false], "hurt": [18, 3, 12.0, false],
@@ -587,6 +593,13 @@ static func frames(spec: Dictionary) -> SpriteFrames:
 			if row < 0 or (row + 1) * size > texture.get_height():
 				continue
 			_add(sheet, "%s_%s" % [anim, dir], _mirrored(texture) if flipped else texture, size, row, drawn, def[1], def[2], flipped)
+		# The ways between the four, where the family draws them: only the
+		# walk and the stand (a swing, a hurt, a fall face one of the four).
+		if anim in BETWEEN_ANIMS and not layout.has("rows"):
+			var between: Dictionary = family.get("between", {})
+			for dir: String in between:
+				if (int(between[dir]) + 1) * size <= texture.get_height():
+					_add(sheet, "%s_%s" % [anim, dir], texture, size, int(between[dir]), drawn, def[1], def[2])
 	_frames_cache[key] = sheet
 	return sheet
 
