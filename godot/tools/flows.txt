@@ -168,6 +168,14 @@ decor-line | --map overworld --at 93,33 seamless --walk r,r,r fades | map=deepwo
 # (it was 79,43): the wider view since PIX-244 took in the dead's home
 # there, and from here it's off the screen at 3 or 4.
 nightfall | --map overworld --at 75,43 --zoom play nightfall | map=overworld cell=\(75, 43\) packs=slime,goblin,wolf,skeleton | field night
+# Water inland held to the sea (PIX-306): the Reach's river and the
+# village's run (west along the one, south down the other), deep down their
+# middles; the Deepwood's lake lies still and dark, the Mirefen's pools
+# still and murky.
+water-reach | --map overworld --at 48,32 | map=overworld water=clear west | field
+water-town | --map town --at 72,8 | map=town water=clear south | field town
+water-wood | --map deepwood --at 18,9 | map=deepwood water=deep still | field
+water-mire | --map mirefen --at 21,25 | map=mirefen water=mire still | field
 # A named monster's bounty on the board (PIX-156).
 bounty | --map town --at 43,22 --cleared 4 --keys w,e | open=bounty_screen | town quest screen
 # Morvax's choice asked outright (PIX-253 step 10; the old throne's,

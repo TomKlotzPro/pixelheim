@@ -2353,6 +2353,10 @@ msgid "Balance pass, informed by simulating hundreds of playthroughs"
 msgstr "Passe d'équilibrage, guidée par la simulation de centaines de parties"
 
 #: assets/data/changelog.json
+msgid "Banks curve like real shores instead of ruler-straight steps, and rivers foam against the bridge piles"
+msgstr "Les berges ondulent comme de vrais rivages au lieu de marches tirées à la règle, et les rivières moussent contre les piles des ponts"
+
+#: assets/data/changelog.json
 msgid "Battles got a stage: lunges, hit flashes and floating damage numbers"
 msgstr "Les combats ont leur mise en scène : assauts, éclairs d'impact et chiffres de dégâts flottants"
 
@@ -2663,6 +2667,10 @@ msgstr "En plein centre"
 #: assets/data/changelog.json
 msgid "Deep Gear"
 msgstr "L'équipement des profondeurs"
+
+#: assets/data/changelog.json
+msgid "Deep Water"
+msgstr "Eaux profondes"
 
 #: assets/data/changelog.json
 msgid "Doors got a carpenter: beam posts and lintel, a plank door with a brass knob, a little shingled awning, a stone doorstep"
@@ -4377,6 +4385,10 @@ msgid "Rent and the bank's interest still come by the day, so with longer days t
 msgstr "Les loyers et les intérêts de la banque viennent toujours par jour : avec des journées plus longues, ils tombent moins souvent"
 
 #: assets/data/changelog.json
+msgid "Rivers, ponds and the Deepwood's lake have depth now: darker down the middle, lighter at the banks, with foam where they lap the shore and streaks drifting downstream"
+msgstr "Les rivières, les étangs et le lac des Bois-Profonds ont désormais de la profondeur : plus sombres au milieu, plus clairs vers les berges, avec de l'écume au bord et des reflets qui filent au fil du courant"
+
+#: assets/data/changelog.json
 msgid "Roads and town stay clean-looking because they ARE safe"
 msgstr "Les routes et la ville restent dégagées parce qu'elles SONT sûres"
 
@@ -5235,6 +5247,10 @@ msgstr "Le bouton Menu liste vos écrans, pas vos attaques : les compétences 
 #: assets/data/changelog.json
 msgid "The Miners' Camp waypoint moved a few steps east, onto its road"
 msgstr "Le relais du camp des mineurs s'est déplacée de quelques pas vers l'est, sur sa route"
+
+#: assets/data/changelog.json
+msgid "The Mirefen's pools are murky olive water with lily pads, duckweed and reeds, the Deepwood's lake dark teal and the Frostgate's water icy"
+msgstr "Les mares des Marais de Fange sont d'une eau olive trouble avec nénuphars, lentilles d'eau et roseaux, le lac des Bois-Profonds sarcelle sombre et l'eau de la Porte-Givre glacée"
 
 #: assets/data/changelog.json
 msgid "The Night of Ash"

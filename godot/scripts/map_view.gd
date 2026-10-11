@@ -602,6 +602,12 @@ func _ground_layers() -> Node2D:
 	# Bridges, cave mouths and ramparts stand on that ground as Puny objects;
 	# the village far off brings its own rampart, wells and growth.
 	_objects_layer = tile_layer_of(PunyTerrain.tileset())
+	# The river Shade drew between a bridge's planks takes the water's own
+	# look (PIX-306): the mire's murk under its bridges, not his cyan.
+	var planks := _toning()
+	planks.set_shader_parameter("strength", 0.0)
+	planks.set_shader_parameter("planks", true)
+	_objects_layer.material = planks
 	root.add_child(_objects_layer)
 	# Pixelheim's rampart in the Medieval Age's stone, its gatehouse at the
 	# road (PIX-248); what the fire left of it darker, on a layer of its own.

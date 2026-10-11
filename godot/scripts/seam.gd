@@ -199,7 +199,7 @@ static func water_beside(maps: Dictionary) -> Dictionary:
 	for map_id: String in maps:
 		var rect := ReachPlane.rect_of(map_id)
 		bounds = rect if not bounds.has_area() else bounds.merge(rect)
-	var out := Image.create(maxi(1, bounds.size.x), maxi(1, bounds.size.y), false, Image.FORMAT_RG8)
+	var out := Image.create(maxi(1, bounds.size.x), maxi(1, bounds.size.y), false, Image.FORMAT_RGBA8)
 	for map_id: String in maps:
 		var image: Image = maps[map_id]
 		out.blit_rect(image, Rect2i(Vector2i.ZERO, image.get_size()), ReachPlane.origin(map_id) - bounds.position)
