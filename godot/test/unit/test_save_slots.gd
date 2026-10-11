@@ -53,19 +53,21 @@ func test_a_slot_file_is_the_save_envelope() -> void:
 	assert_false(FileAccess.file_exists(slots.path_for(2) + ".tmp"), "temp file renamed away")
 
 
-func test_empty_and_corrupt_slots_read_as_nothing() -> void:
+func test_an_empty_slot_is_free_and_a_corrupt_one_is_not() -> void:
 	assert_eq(slots.read(3), {})
-	assert_eq(slots.summary(3), {})
-	DirAccess.make_dir_recursive_absolute(DIR)
-	var file := FileAccess.open(slots.path_for(3), FileAccess.WRITE)
-	file.store_string("{ not json")
-	file.close()
-	assert_eq(slots.read(3), {})
+	assert_eq(slots.summary(3), {"kind": SaveSlots.EMPTY})
+	assert_true(slots.is_free(3))
+	_put(slots.path_for(3), "{ not json")
+	assert_eq(slots.read(3), {}, "no hero to play")
+	assert_eq(slots.summary(3), {"kind": SaveSlots.DAMAGED}, "but no empty slot either (PIX-303)")
+	assert_false(slots.is_free(3))
 
 
 func test_summary_names_the_hero_and_place() -> void:
 	slots.write(1, _fresh_state().to_dict())
 	var summary := slots.summary(1)
+	assert_eq(summary["kind"], SaveSlots.HERO)
+	assert_false(summary["backup"])
 	assert_eq(summary["name"], "Wanderer")
 	assert_eq(summary["level"], 1)
 	assert_eq(summary["gold"], 30)
@@ -252,3 +254,354 @@ func test_summary_says_what_the_hero_wears() -> void:
 	assert_true(spec.has("body"), "drawn in the armour")
 	assert_not_null(PunyArt.sheet_texture(spec), "the portrait's sheet")
 	assert_typeof(spec["tint"], TYPE_COLOR)
+
+
+# PIX-303: no hero is lost to a file. Every case below keeps the hero, or
+# the bytes of a save the game can't read, safe.
+
+## `text` as a file's whole contents, the folder made first.
+func _put(path: String, text: String) -> void:
+	DirAccess.make_dir_recursive_absolute(DIR)
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	file.store_string(text)
+	file.close()
+
+
+func _text(path: String) -> String:
+	return FileAccess.get_file_as_string(path)
+
+
+## A state with `gold`, as a hero's save holds it.
+func _state(gold: int) -> Dictionary:
+	var state := _fresh_state()
+	state.pack.gold = gold
+	return state.to_dict()
+
+
+## A save a later version wrote: this one's envelope, version 5.
+func _newer_text() -> String:
+	return JSON.stringify({"version": SaveCodec.SAVE_VERSION + 1, "state": _state(64), "savedAt": 1})
+
+
+func test_each_write_keeps_the_save_before() -> void:
+	assert_true(slots.write(1, _state(100)))
+	assert_false(FileAccess.file_exists(slots.backup_for(1)), "a first save has none before it")
+	assert_true(slots.write(1, _state(200)))
+	assert_eq(slots.read(1)["gold"], 200)
+	assert_eq(SaveCodec.migrate(SaveCodec.parse_json(_text(slots.backup_for(1))))["gold"], 100, "the save before")
+	assert_true(slots.write(1, _state(300)))
+	assert_eq(SaveCodec.migrate(SaveCodec.parse_json(_text(slots.backup_for(1))))["gold"], 200)
+	assert_false(FileAccess.file_exists(slots.temp_for(1)))
+
+
+func test_a_write_that_does_not_read_back_replaces_nothing() -> void:
+	slots.write(1, _state(100))
+	var before := _text(slots.path_for(1))
+	# A bug's state: no hero at all, or one this version can't play.
+	var broken := _state(5)
+	broken["hero"] = null
+	assert_false(slots.write(1, broken))
+	var stranger := _state(5)
+	stranger["hero"]["roleId"] = "no_such_role"
+	assert_false(slots.write(1, stranger))
+	assert_eq(_text(slots.path_for(1)), before, "the last good save stands")
+	assert_false(FileAccess.file_exists(slots.temp_for(1)), "the bad write is gone")
+	assert_false(FileAccess.file_exists(slots.backup_for(1)), "and rotated nothing")
+
+
+func test_a_damaged_file_is_never_empty_and_keeps_its_bytes() -> void:
+	_put(slots.path_for(1), "{\"version\":4,\"state\":{\"hero\":")
+	assert_eq(slots.summary(1)["kind"], SaveSlots.DAMAGED)
+	assert_false(slots.is_free(1))
+	assert_eq(slots.read(1), {})
+	assert_eq(_text(slots.path_for(1)), "{\"version\":4,\"state\":{\"hero\":", "reading changes nothing")
+
+
+func test_a_truncated_save_is_damaged_not_empty() -> void:
+	slots.write(2, _state(400))
+	var whole := _text(slots.path_for(2))
+	DirAccess.remove_absolute(slots.path_for(2))
+	_put(slots.path_for(2), whole.left(whole.length() / 2))
+	assert_eq(slots.summary(2)["kind"], SaveSlots.DAMAGED)
+	assert_false(slots.is_free(2))
+
+
+func test_a_newer_versions_save_is_kept_and_never_written_over() -> void:
+	var newer := _newer_text()
+	_put(slots.path_for(1), newer)
+	assert_eq(slots.summary(1)["kind"], SaveSlots.NEWER)
+	assert_false(slots.is_free(1))
+	assert_eq(slots.read(1), {}, "this version can't play it")
+	assert_false(slots.write(1, _state(1)), "nor replace it")
+	assert_eq(_text(slots.path_for(1)), newer)
+	assert_false(FileAccess.file_exists(slots.temp_for(1)))
+	# Even with an older save before it: falling back would lose its progress.
+	slots.write(2, _state(2))
+	_put(slots.backup_for(1), _text(slots.path_for(2)))
+	assert_eq(slots.summary(1)["kind"], SaveSlots.NEWER)
+
+
+func test_a_leftover_temp_file_spoils_nothing() -> void:
+	slots.write(1, _state(100))
+	# A write cut off mid-file left half a temp file behind.
+	_put(slots.temp_for(1), "{\"version\":4,\"sta")
+	assert_eq(slots.read(1)["gold"], 100, "the save itself reads")
+	assert_true(slots.write(1, _state(200)))
+	assert_eq(slots.read(1)["gold"], 200)
+	assert_false(FileAccess.file_exists(slots.temp_for(1)))
+	# Alone (a first write cut off), it was never a save.
+	_put(slots.temp_for(3), "{\"version\":4,\"sta")
+	assert_true(slots.is_free(3))
+
+
+func test_a_write_cut_off_between_its_renames_loses_nothing() -> void:
+	slots.write(1, _state(100))
+	slots.write(1, _state(200))
+	# The new save decoded in the temp file, the slot's file already the
+	# backup, then the power went.
+	slots.write(2, _state(300))
+	DirAccess.rename_absolute(slots.path_for(2), slots.temp_for(1))
+	DirAccess.rename_absolute(slots.path_for(1), slots.backup_for(1))
+	assert_false(FileAccess.file_exists(slots.path_for(1)))
+	var seen := slots.look(1)
+	assert_eq(seen["state"]["gold"], 300, "the newest save, from the temp file")
+	assert_false(seen.get("backup", false), "nothing was lost, so nothing to say")
+
+
+func test_a_missing_file_falls_back_to_the_save_before() -> void:
+	slots.write(1, _state(100))
+	slots.write(1, _state(200))
+	DirAccess.remove_absolute(slots.path_for(1))
+	var seen := slots.look(1)
+	assert_eq(seen["kind"], SaveSlots.HERO)
+	assert_eq(seen["state"]["gold"], 100)
+	assert_true(seen["backup"], "said: this is the save before")
+	assert_true(slots.summary(1)["backup"])
+
+
+func test_a_good_save_with_a_bad_backup_plays_and_mends_it() -> void:
+	slots.write(1, _state(100))
+	_put(slots.backup_for(1), "garbage")
+	assert_eq(slots.read(1)["gold"], 100)
+	assert_false(slots.summary(1)["backup"])
+	assert_true(slots.write(1, _state(200)))
+	assert_eq(SaveCodec.migrate(SaveCodec.parse_json(_text(slots.backup_for(1))))["gold"], 100, "a good backup again")
+
+
+func test_a_bad_save_with_a_good_backup_plays_the_backup_and_keeps_both() -> void:
+	slots.write(1, _state(100))
+	slots.write(1, _state(200))
+	DirAccess.remove_absolute(slots.path_for(1))
+	_put(slots.path_for(1), "{ broken")
+	var seen := slots.look(1)
+	assert_eq(seen["state"]["gold"], 100)
+	assert_true(seen["backup"])
+	# The hero saved again: the good backup stays, the bad bytes go aside.
+	assert_true(slots.write(1, _state(150)))
+	assert_eq(slots.read(1)["gold"], 150)
+	assert_false(slots.summary(1)["backup"])
+	assert_eq(SaveCodec.migrate(SaveCodec.parse_json(_text(slots.backup_for(1))))["gold"], 100)
+	assert_eq(_text(slots.aside_for(1)), "{ broken")
+
+
+func test_a_save_spoiled_since_it_was_written_never_becomes_the_backup() -> void:
+	slots.write(1, _state(100))
+	slots.write(1, _state(200))
+	# This session wrote it; something else spoiled it since.
+	DirAccess.remove_absolute(slots.path_for(1))
+	_put(slots.path_for(1), "{ spoiled")
+	assert_true(slots.write(1, _state(300)))
+	assert_eq(SaveCodec.migrate(SaveCodec.parse_json(_text(slots.backup_for(1))))["gold"], 100, "the good one kept")
+	assert_eq(_text(slots.aside_for(1)), "{ spoiled")
+
+
+func test_erasing_a_slot_takes_every_file_of_it() -> void:
+	slots.write(1, _state(100))
+	slots.write(1, _state(200))
+	_put(slots.temp_for(1), "x")
+	_put(slots.aside_for(1), "y")
+	slots.erase(1)
+	for path in [slots.path_for(1), slots.backup_for(1), slots.temp_for(1), slots.aside_for(1)]:
+		assert_false(FileAccess.file_exists(path), path)
+	assert_true(slots.is_free(1))
+
+
+func test_read_only_slots_are_never_written_or_erased() -> void:
+	slots.write(1, _state(100))
+	var fixtures := SaveSlots.new(DIR, true)
+	assert_false(fixtures.write(1, _state(5)))
+	assert_false(fixtures.write(2, _state(5)))
+	fixtures.erase(1)
+	assert_eq(slots.read(1)["gold"], 100)
+	assert_false(FileAccess.file_exists(slots.path_for(2)))
+
+
+func test_a_launch_that_cant_read_its_slot_never_writes_over_it() -> void:
+	_put(slots.path_for(1), "{ damaged")
+	var first := _fresh_state()
+	first.boot(HarnessFlags.new())
+	assert_eq(first.slot, 1, "the last slot played")
+	assert_true(first.standing_in, "a stand-in, no Continue")
+	assert_string_contains(first.slot_note, "1")
+	first.mark_dirty()
+	first.save_now()
+	assert_eq(_text(slots.path_for(1)), "{ damaged", "nothing written over it")
+	# The title's New Game: the hero goes to the first free slot.
+	assert_eq(first.free_slot(), 2)
+	first.new_hero_in(first.free_slot(), "Robin", "rogue")
+	assert_eq(first.slot, 2)
+	assert_eq(slots.read(2)["hero"]["name"], "Robin")
+	assert_eq(_text(slots.path_for(1)), "{ damaged", "still untouched")
+
+
+func test_a_named_slot_it_cant_read_stands_in_too() -> void:
+	var newer := _newer_text()
+	_put(slots.path_for(1), newer)
+	var state := _fresh_state()
+	state.boot(HarnessFlags.new(PackedStringArray(["--slot", "1"])))
+	assert_true(state.standing_in)
+	assert_string_contains(state.slot_note, "1")
+	state.save_now()
+	assert_eq(_text(slots.path_for(1)), newer)
+
+
+func test_new_game_skips_every_slot_it_cant_read() -> void:
+	_put(slots.path_for(1), "{ damaged")
+	_put(slots.path_for(2), _newer_text())
+	var state := _fresh_state()
+	state.boot(HarnessFlags.new())
+	assert_eq(state.free_slot(), 3)
+	_put(slots.path_for(3), "{ damaged too")
+	assert_eq(state.free_slot(), 0, "none free: creation says so")
+
+
+func test_an_unread_slot_is_no_hero_to_play_but_clears() -> void:
+	var state := _fresh_state()
+	state.boot(HarnessFlags.new(PackedStringArray(["--slot", "1"])))
+	state.pack.gold = 777
+	_put(slots.path_for(2), "{ damaged")
+	_put(slots.path_for(3), _newer_text())
+	assert_false(state.play_slot(2))
+	assert_false(state.play_slot(3))
+	assert_eq([state.slot, state.pack.gold], [1, 777], "the hero in hand stays")
+	assert_true(state.clear_slot(2), "cleared, once the screen has asked twice")
+	assert_true(slots.is_free(2))
+
+
+func test_a_hero_from_the_save_before_is_told_and_saved_back() -> void:
+	slots.write(1, _state(100))
+	slots.write(1, _state(200))
+	DirAccess.remove_absolute(slots.path_for(1))
+	_put(slots.path_for(1), "{ broken")
+	var state := _fresh_state()
+	state.boot(HarnessFlags.new())
+	assert_false(state.standing_in)
+	assert_eq(state.pack.gold, 100, "the save before")
+	assert_string_contains(state.slot_note, "Wanderer")
+	state.mark_dirty()
+	state.save_now()
+	assert_eq(slots.read(1)["gold"], 100)
+	assert_false(slots.summary(1)["backup"], "a good save again")
+	assert_eq(_text(slots.aside_for(1)), "{ broken", "the bad bytes kept aside")
+	# Switching to it from another slot says so too.
+	state.new_hero_in(2, "Robin", "mage")
+	assert_eq(state.slot_note, "")
+	DirAccess.remove_absolute(slots.path_for(1))
+	_put(slots.path_for(1), "{ broken again")
+	assert_true(state.play_slot(1))
+	assert_eq(state.pack.gold, 100)
+	assert_string_contains(state.slot_note, "Wanderer")
+
+
+func test_the_saves_screen_writes_nothing_over_an_unread_slot() -> void:
+	_put(slots.path_for(1), "{ damaged")
+	var kept: SaveSlots = GameState.slots
+	GameState.slots = slots
+	var screen: Screen = preload("res://scripts/saves_screen.gd").new()
+	add_child(screen)
+	await wait_process_frames(2)
+	screen._select(0)
+	# E makes no hero over it, a code goes nowhere near it.
+	screen._play()
+	screen.code_field.text = SaveCodec.encode_code(_state(9))
+	screen._load_code()
+	assert_false(_creating(screen), "no creation opened")
+	assert_eq(_text(slots.path_for(1)), "{ damaged")
+	# X asks twice, then clears.
+	screen._clear()
+	screen._clear()
+	assert_true(FileAccess.file_exists(slots.path_for(1)), "asked twice")
+	screen._clear()
+	assert_true(slots.is_free(1), "then cleared")
+	screen.close()
+	GameState.slots = kept
+	await get_tree().process_frame
+	get_tree().paused = false
+
+
+## Whether hero creation is open over `screen`.
+func _creating(screen: Node) -> bool:
+	return screen.get_children().any(func(child: Node) -> bool: return child.get_script() == preload("res://scripts/create_screen.gd"))
+
+
+# PIX-316: a new hero starts from the title's New Game alone.
+
+func test_the_saves_screen_makes_no_new_hero() -> void:
+	var kept: SaveSlots = GameState.slots
+	GameState.slots = slots
+	var screen: Screen = preload("res://scripts/saves_screen.gd").new()
+	add_child(screen)
+	await wait_process_frames(2)
+	screen._select(2)
+	assert_eq(screen._kind(), SaveSlots.EMPTY)
+	screen._play()
+	assert_false(_creating(screen), "E on an empty slot makes no one")
+	# The game's keys, which a key is checked against.
+	Controls.apply({})
+	var key := InputEventKey.new()
+	key.physical_keycode = KEY_N
+	key.pressed = true
+	assert_false(screen._command(key).is_valid(), "N is no key here")
+	var planks: Array = screen.find_children("*", "Button", true, false).map(func(button: Button) -> String: return button.text)
+	assert_false("New hero" in planks, "nor a plank: %s" % [planks])
+	assert_false(FileAccess.file_exists(slots.path_for(3)))
+	screen.close()
+	GameState.slots = kept
+	await get_tree().process_frame
+	get_tree().paused = false
+
+
+func test_new_game_with_every_slot_taken_says_so_and_starts_nothing() -> void:
+	var kept: SaveSlots = GameState.slots
+	var standing: bool = GameState.standing_in
+	GameState.standing_in = false
+	# Three heroes; then two saves it can't read and a slot free.
+	GameState.slots = SaveSlots.new("res://test/fixtures/slots", true)
+	assert_false(GameState.room_for_hero())
+	var title: Screen = preload("res://scripts/title_screen.gd").new()
+	add_child(title)
+	await wait_process_frames(2)
+	title._new_game()
+	assert_false(title.get_children().any(func(child: Node) -> bool: return child is Cutscene), "no opening")
+	assert_eq(title.said, "full")
+	assert_ne(title.note.text, "", "said under the menu")
+	GameState.slots = SaveSlots.new("res://test/fixtures/slots_unread", true)
+	assert_eq(GameState.free_slot(), 3, "never a save it can't read")
+	title._new_game()
+	assert_true(title.get_children().any(func(child: Node) -> bool: return child is Cutscene), "the opening, then creation")
+	title.close()
+	GameState.slots = kept
+	GameState.standing_in = standing
+	await get_tree().process_frame
+	get_tree().paused = false
+
+
+func test_a_harness_run_reads_the_players_slots_and_never_writes_them() -> void:
+	slots.write(1, _state(100))
+	var state := _fresh_state()
+	state.boot(HarnessFlags.new(PackedStringArray(["--screenshot"])))
+	assert_true(slots.read_only)
+	state.new_hero_in(2, "Robin", "warrior")
+	assert_false(FileAccess.file_exists(slots.path_for(2)), "creation's Begin writes nothing")
+	state.clear_slot(1)
+	assert_eq(slots.read(1)["gold"], 100, "nor does clearing one")

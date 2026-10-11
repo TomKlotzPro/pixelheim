@@ -6,7 +6,7 @@
 
 <p align="center">
   <b>A retro pixel-art open-world RPG in Godot 4.7: a village the dragon burned, the courier who stayed, the Reach's regions and the relics they keep - and the mountain last.</b><br />
-  The village burned. You stayed. Currently v0.232 - 1.0 has to be earned.
+  The village burned. You stayed. Currently v0.233 - 1.0 has to be earned.
 </p>
 
 ---
@@ -33,7 +33,7 @@ A dragon burned Pixelheim in one night, and you - the courier who came up the ro
 - **A town that grows**: buy the house and furnish it, buy the shops and collect rent, fund the village into a city (its rutted dirt streets gravelled, then cobbled, the square flagged round its fountain), bank and send caravans, recruit settlers from the wilds
 - **Crafting** at the forge, the cauldron and your own workbench; foraging in the wilds
 - **Music, stingers and weather** for every place, rendered from the game's own chiptune synth
-- **Saves that never break**: three slots, autosave, and save codes that carry a hero to another computer or browser; every save ever written still loads
+- **Saves that never break**: three slots, autosave, a backup of the save before, and save codes that carry a hero to another computer or browser; every save ever written still loads, and one the game can't read is kept, never written over
 - **A story told in moments**: New Game opens on the village, the mountain waking and the five who climbed it fifty years ago; each boss rises with its name before you fight it, each letter is answered, and the ending rolls credits starring every creature you fought - all skippable
 - **A title to arrive at**: Pixelheim's street at night under the Ashen Mountain, lit windows and chimney smoke below, the dragon's fire smouldering in the crater above, and your hero in the street looking up at it
 - **A UI like a village ledger**: one clear pixel type throughout, parchment pages in carved wooden frames, a wooden dock along the bottom with your bars, skills and gold, and screens that ease in with the sound of turning paper
