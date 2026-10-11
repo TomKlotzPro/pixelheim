@@ -173,6 +173,9 @@ static func people() -> Array[Dictionary]:
 		var maps: Array = [npc["mapId"]]
 		if npc.has("stall"):
 			maps.append("town")
+		# Where the story takes them too (PIX-253 step 10: Morvax home, by
+		# the fountain): not Maren's face beside hers.
+		maps.append_array(npc.get("alsoOn", []))
 		out.append({"id": npc["id"], "look": _look(npc["sprite"]), "maps": maps})
 	for recruit: Dictionary in _data()["recruits"]:
 		out.append({"id": recruit["id"], "look": _look(recruit["sprite"]), "maps": [recruit["found"]["mapId"], String(recruit["home"].get("mapId", "town"))]})

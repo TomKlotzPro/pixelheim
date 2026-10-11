@@ -88,6 +88,7 @@ trade screen: scripts/item_icons.gd scripts/state/inventory_state.gd assets/puny
 story: scripts/cutscene.gd scripts/dawn_screen.gd scripts/chapter_screen.gd scripts/throne_screen.gd scripts/state/story.gd scripts/state/letters.gd scripts/state/relics.gd assets/data/story.json
 story night: scripts/state/prologue.gd
 story night combat town: scripts/world_bells.gd scripts/state/bells.gd
+story town: scripts/state/homecoming.gd
 story quest rank: assets/data/progression.json
 story quest: scripts/state/main_quest.gd scripts/state/quests.gd scripts/state/questing.gd
 quest: scripts/journal_screen.gd scripts/bounty_screen.gd scripts/state/journal.gd scripts/state/bearing.gd

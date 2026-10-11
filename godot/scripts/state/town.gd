@@ -106,6 +106,11 @@ static func age_blockers(tier_number: int, progression: ProgressionState, settle
 				# The ages come from the Reach's chapters too (PIX-170); a
 				# hero who climbed first still has the floor that did it.
 				met = Relics.found(progression) >= int(need["count"]) or int(need.get("orCleared", 0)) in progression.cleared_levels
+			"freed":
+				# The age after the Night of Bells (PIX-253 step 10): the
+				# dragon freed at dawn, or slain on the old mountain by a
+				# hero who never had the night, or the old floor 15.
+				met = Homecoming.dragon_done(progression, settlement) or int(need.get("orCleared", 0)) in progression.cleared_levels
 		if not met:
 			out.append(need["line"])
 	return out

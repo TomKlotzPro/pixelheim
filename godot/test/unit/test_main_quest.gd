@@ -46,11 +46,17 @@ func _names_something_real(step: Dictionary) -> void:
 			assert_between(int(when["beat"]), Bells.LANTERNS, Bells.DAWN, "%s: a beat of the night" % step["id"])
 			assert_eq(step.get("mapId", ""), "town", "%s: on the town map" % step["id"])
 		"unbuilt":
-			# A step a later part of the story writes (PIX-253 step 10):
-			# its chapter says so, and it leads somewhere meanwhile.
+			# A step a later part of the story writes: its chapter says so,
+			# and it leads somewhere meanwhile.
 			var chapter: Dictionary = MainQuest.chapters()[int(step["chapter_number"]) - 1]
 			assert_string_contains(String(chapter.get("about", "")), "builds it", "%s: its chapter says what builds it" % step["id"])
 			assert_true(step.has("mapId"), "%s leads somewhere meanwhile" % step["id"])
+		"chosen":
+			# Morvax's choice (PIX-253 step 10): the story's last step, its
+			# answers each an ending with its scene.
+			assert_eq(step["id"], MainQuest.steps()[-1]["id"], "%s: the story's last word" % step["id"])
+			for choice: Dictionary in Homecoming.choices():
+				assert_true(Cutscene.scenes().has(Story.ending_scene(choice["id"])), "%s: %s has its ending" % [step["id"], choice["id"]])
 		"project":
 			assert_false(Town.project(when["projectId"]).is_empty(), "%s: a real project" % step["id"])
 		"settlers":
@@ -103,8 +109,8 @@ func test_running_ahead_never_sends_the_hero_back() -> void:
 	state.progression.unlocked_level = 10
 	state.spoils.clear_floor(10)
 	state.progression.quests["letter_morvax"] = {"progress": 1, "done": true}
-	assert_eq(_next(), "morvax_choice", "Fafnyr slain on the old mountain: no Night of Bells, and home waits to be written")
-	assert_eq(MainQuest.continued(state.progression, state.settlement), "Coming Home")
+	assert_eq(_next(), "morvax_choice", "Fafnyr slain on the old mountain: no Night of Bells, and Morvax's choice")
+	assert_eq(MainQuest.continued(state.progression, state.settlement), "", "the story is written to its end")
 
 
 func test_a_grown_town_never_skips_the_mountain() -> void:
@@ -116,8 +122,8 @@ func test_a_grown_town_never_skips_the_mountain() -> void:
 
 
 ## The Night of Bells (PIX-253 step 9): the run home, then its beats one
-## after another as the night runs past them, then home - not written yet
-## (step 10), so the honest card says what's to come.
+## after another as the night runs past them, then home: Morvax's choice
+## (step 10), and once it's made the story is told.
 func test_the_night_of_bells_follows_the_night() -> void:
 	state.mark_seen("maren_confession")
 	state.progression.quests["letter_morvax"] = {"progress": 1, "done": true}
@@ -135,7 +141,11 @@ func test_the_night_of_bells_follows_the_night() -> void:
 	assert_eq(_next(), "run_home", "the night isn't saved: from the start again")
 	state.mark_seen(Bells.collar_id())
 	assert_eq(_next(), "morvax_choice", "once the collar is off, for good")
-	assert_eq(MainQuest.continued(state.progression, state.settlement), "Coming Home")
+	assert_eq(MainQuest.continued(state.progression, state.settlement), "", "no card: home is written")
+	state.mark_seen(Story.ending_scene(Homecoming.STAY))
+	assert_eq(_next(), "", "his choice made, the story is told")
+	assert_eq(MainQuest.objective(state.progression, state.settlement), "")
+	assert_eq(MainQuest.hint(state.progression, state.settlement), "Pixelheim is safe. The mountain is quiet, and the tavern isn't.")
 
 
 func test_the_end_is_quiet() -> void:

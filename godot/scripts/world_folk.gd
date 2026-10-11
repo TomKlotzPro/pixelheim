@@ -12,6 +12,10 @@ var world: Node
 func spawn_for(data: MapData) -> void:
 	var settlers := GameState.settlement.settlers
 	var folk := Npcs.on_map(data.id, GameState.settlement.town_tier, settlers, Town.done_projects(GameState.settlement), Relics.gate_open(GameState.progression), GameState.progression.deepest, Letters.tin_waits(GameState.progression))
+	# Morvax where the story has him (PIX-253 step 10): by the fountain
+	# once the collar is off, on his bench there once he's home, and up at
+	# his forge staying but for festival days.
+	folk = Homecoming.placed(folk, data.id, GameState.progression, GameState.settlement, GameState.holdings.festival_on(), Gathering.day_of(GameState.world.steps))
 	# On the night of the fire only the survivors are about (PIX-152).
 	if GameState.progression.prologue != Prologue.DONE and data.id == "town":
 		folk = Prologue.survivors()
@@ -28,6 +32,12 @@ func spawn_for(data: MapData) -> void:
 		var villager := preload("res://scripts/npc.gd").new()
 		villager.world = world
 		villager.data = npc
+		# Home before they enter the world (PIX-253 step 10): a villager is
+		# a body synced to physics, which takes its first place as it enters
+		# the tree and holds it until physics runs - and the ending's tour
+		# holds the world the moment the town is drawn, so everyone stood at
+		# the map's corner through it (Morvax's bench empty).
+		villager.position = MapView.center(Vector2i(int(npc["x"]), int(npc["y"])))
 		villager.add_to_group("decor")
 		villager.add_to_group("npcs")
 		world.actors.add_child(villager)

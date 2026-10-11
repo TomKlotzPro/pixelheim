@@ -76,10 +76,10 @@ func test_the_chapter_is_the_nights_beats_in_order() -> void:
 	for index in chapter["steps"].size():
 		var when: Dictionary = chapter["steps"][index]["when"]
 		assert_eq([when["kind"], int(when["beat"])], ["bells", index + 1], "a beat a step")
-	# Home's first step points at Morvax's choice, still to write (step 10).
+	# Home's first step is Morvax's choice (step 10).
 	var home: Dictionary = MainQuest.chapters()[7]["steps"][0]
 	assert_eq(home["id"], "morvax_choice")
-	assert_eq(home["when"]["kind"], "unbuilt")
+	assert_eq(home["when"]["kind"], "chosen")
 
 
 func test_home_after_the_run_begins_the_night() -> void:
@@ -350,7 +350,7 @@ func test_dawn_frees_him_for_good_and_his_scale_builds_the_fountain() -> void:
 	assert_true(Bells.over(back.progression), "kept by the save")
 	assert_false(Bells.due(back.progression, back.settlement), "no second night")
 	assert_eq(_next(back), "morvax_choice")
-	assert_eq(MainQuest.continued(back.progression, back.settlement), "Coming Home", "the honest card")
+	assert_eq(MainQuest.continued(back.progression, back.settlement), "", "home is written: no card")
 	assert_eq(MainQuest.card_due(back.progression, back.settlement), 8)
 	assert_eq(state.holdings.scale_in_fountain(), "", "one scale, one fountain")
 
@@ -366,7 +366,7 @@ func test_the_fountain_finishes_the_town_when_it_is_the_last_of_it() -> void:
 # ---- Old saves ------------------------------------------------------------------
 
 ## A hero who slew Fafnyr on the old mountain keeps him slain (step 8): no
-## night at all, home still to write - and their fountain is as it was,
+## night at all, Morvax's choice next - and their fountain is as it was,
 ## theirs to build with the scale they won.
 func test_a_dragon_slayer_never_sees_the_night() -> void:
 	_home_from_the_forge()
