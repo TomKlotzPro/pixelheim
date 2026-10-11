@@ -3633,6 +3633,14 @@ msgid "Lights Up"
 msgstr "Lumière"
 
 #: assets/data/changelog.json
+msgid "Lit Windows"
+msgstr "Fenêtres allumées"
+
+#: assets/data/changelog.json
+msgid "Lit windows glow as warm panes and throw their shape onto the ground below, instead of round orbs on the walls"
+msgstr "Les fenêtres allumées brillent comme des carreaux chauds et projettent leur forme sur le sol en dessous, au lieu de boules rondes sur les murs"
+
+#: assets/data/changelog.json
 msgid "Lived In"
 msgstr "Habité"
 
@@ -4233,6 +4241,10 @@ msgid "Paths, bridges and town stay safe - stray off the road at your own risk"
 msgstr "Chemins, ponts et ville restent sûrs - quittez la route à vos risques et périls"
 
 #: assets/data/changelog.json
+msgid "Patterned rugs in every room, and Liane's observatory finally has a telescope, a chart of the two skies and a celestial globe"
+msgstr "Des tapis à motifs dans chaque pièce, et l'observatoire de Liane a enfin une lunette, une carte des deux ciels et un globe céleste"
+
+#: assets/data/changelog.json
 msgid "Paved Ways"
 msgstr "Rues pavées"
 
@@ -4427,6 +4439,10 @@ msgstr "De la marge"
 #: assets/data/changelog.json
 msgid "Rooms Upstairs"
 msgstr "Les pièces d'en haut"
+
+#: assets/data/changelog.json
+msgid "Rooms are lit by the day slanting through their windows, and at night by the hearth and the candles, their corners left dark"
+msgstr "Les pièces sont éclairées par le jour qui entre en biais par les fenêtres, et la nuit par l'âtre et les bougies, leurs coins laissés dans l'ombre"
 
 #: assets/data/changelog.json
 msgid "Run home: the dragon comes back to Pixelheim, and this time the village is ready"
@@ -4715,6 +4731,10 @@ msgstr "Pierre et eau"
 #: assets/data/changelog.json
 msgid "Story captions now wrap instead of running past the edge of the screen"
 msgstr "Les textes du récit passent désormais à la ligne au lieu de déborder de l'écran"
+
+#: assets/data/changelog.json
+msgid "Street lamps are posts with lanterns, cold by day; at night only their glass glows, with a soft halo and light pooled at their foot"
+msgstr "Les réverbères sont des poteaux à lanterne, éteints le jour ; la nuit, seul leur verre s'allume, avec un doux halo et une flaque de lumière à leur pied"
 
 #: assets/data/changelog.json
 msgid "Sure Footing"
