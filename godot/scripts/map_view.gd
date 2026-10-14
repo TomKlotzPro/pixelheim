@@ -60,6 +60,9 @@ var rim_layer: TileMapLayer
 var crown_layer: TileMapLayer
 var _objects_layer: TileMapLayer
 var _growth_layer: TileMapLayer
+## The open ground's patches (paid pack only) and small things (PIX-305).
+var patch_layer: TileMapLayer
+var detail_layer: TileMapLayer
 ## The streets' paving in the Medieval Age's stone, by the town's age, and
 ## the roads' wear and verges (PIX-307): the look each street takes
 ## (Streets.plan), what of it is paved (with the paid pack: all of it) and
@@ -574,6 +577,7 @@ func _build_ground(_data: MapData) -> Node2D:
 	for i in ceili(data.size.y / float(BLOCK)):
 		_street_rows(i)
 		_object_rows(i)
+		_detail_rows(i)
 	_ground_pieces()
 	return root
 
@@ -605,6 +609,7 @@ func _ground_units(slices: Slicer) -> void:
 	slices.add("ground_streets", _plan_streets)
 	slices.add_each("ground_paving", ceili(data.size.y / float(BLOCK)), _street_rows)
 	slices.add_each("ground_objects", ceili(data.size.y / float(BLOCK)), _object_rows)
+	slices.add_each("ground_detail", ceili(data.size.y / float(BLOCK)), _detail_rows)
 	slices.add("ground_pieces", _ground_pieces)
 
 
@@ -659,12 +664,27 @@ func _ground_layers() -> Node2D:
 	# The water swells, glints and foams at the shore (PIX-223).
 	var water := _toning()
 	water.set_shader_parameter("water_life", true)
+	# And the open ground has its patches, drifts, murk and puddles (PIX-305).
+	water.set_shader_parameter("ground_life", true)
 	water.set_shader_parameter("water_map", kept.water_map)
 	ground_tint.set_shader_parameter("water_map", kept.water_map)
 	ground_layer.material = water
 	# The floor answers to a boss's glow too (Lights.FLOOR, PIX-314).
 	ground_layer.light_mask |= Lights.FLOOR
 	root.add_child(ground_layer)
+	# The open ground's patches of the Medieval Age's greens and snow, in
+	# their own colours (the region's tone would whiten its snow's blue tufts
+	# away) with the ground's own patches over the greens (PIX-305); the
+	# floor, a boss's glow too.
+	patch_layer = null
+	if not kept.patches.is_empty() and PunyTown.available():
+		patch_layer = tile_layer_of(PunyTown.tileset())
+		var patched := _toning()
+		patched.set_shader_parameter("ground_life", true)
+		patched.set_shader_parameter("strength", 0.0)
+		patch_layer.material = patched
+		patch_layer.light_mask |= Lights.FLOOR
+		root.add_child(patch_layer)
 	# The streets' paving (PIX-307), the pack's own stone, untoned but where
 	# a region tones all its ground (the Frostgate's snow: its road's stone
 	# greys and the snow drifts in at its edges); then the roads' wear and
@@ -681,6 +701,12 @@ func _ground_layers() -> Node2D:
 	verge_layer = tile_layer_of(RoadWear.tileset())
 	verge_layer.material = ground_tint
 	root.add_child(verge_layer)
+	# The open ground's small things (PIX-305), toned with the region, over
+	# the grass at the roads' edges.
+	detail_layer = tile_layer_of(GroundDetail.tileset())
+	detail_layer.material = ground_tint
+	detail_layer.light_mask |= Lights.FLOOR
+	root.add_child(detail_layer)
 	# Shade's cliffs standing in the water, the sand and the roads
 	# (PunyTerrain.rimmed), toned as the ground is, but still: the water
 	# under them swells.
@@ -777,6 +803,23 @@ func _object_rows(i: int) -> void:
 				PunyTerrain.place(_objects_layer, cell, object)
 	if sliced:
 		_objects_layer.update_internals()
+
+
+## The open ground's patches and small things on cell rows [i * BLOCK,
+## (i + 1) * BLOCK) (PIX-305): whole quadrants of their layers. Nothing
+## small grows where something stands or a way leads on (`bare`).
+func _detail_rows(i: int) -> void:
+	for y in range(i * BLOCK, mini((i + 1) * BLOCK, data.size.y)):
+		for x in data.size.x:
+			var cell := Vector2i(x, y)
+			if patch_layer != null and kept.patches.has(cell):
+				PunyTown.place(patch_layer, cell, kept.patches[cell])
+			if kept.details.has(cell) and not bare.has(cell):
+				GroundDetail.place(detail_layer, cell, kept.details[cell])
+	if sliced:
+		detail_layer.update_internals()
+		if patch_layer != null:
+			patch_layer.update_internals()
 
 
 ## The streets this visit paves (PIX-307): each cell's look at the town's
@@ -1044,18 +1087,26 @@ func _day_windows(root: Node2D) -> void:
 
 ## The ice cave's stair down through Liane's floor (PIX-290, EntranceArt):
 ## frost creeps out over the boards, the carpet and the stair
-## (shaders/stair_frost.gdshader), and the cold's pale light comes up it.
-## The material, or null in a room with no such stair.
+## (shaders/stair_frost.gdshader: rime and crystals in its blues, cold
+## under the room's warm light, PIX-317), and the cold's pale light comes
+## up it, keeping the way down seen at night. The material, or null in a
+## room with no such stair.
 func _stair_frost(data: MapData, root: Node2D) -> ShaderMaterial:
 	var stairs := EntranceArt.frosted_stairs(data)
 	if stairs.is_empty():
 		return null
 	var stair := stairs[0]
-	root.add_child(Lights.make(center(stair), EntranceArt.FROST_GLOW, Lights.ICE, Lights.ICE_ENERGY))
+	root.add_child(Lights.make(center(stair), EntranceArt.FROST_GLOW, Lights.ICE, EntranceArt.FROST_ENERGY))
 	var frost := ShaderMaterial.new()
 	frost.shader = preload("res://shaders/stair_frost.gdshader")
 	frost.set_shader_parameter("stair", center(stair) + offset)
 	frost.set_shader_parameter("reach", EntranceArt.FROST_REACH * TILE)
+	frost.set_shader_parameter("rim_range", EntranceArt.FROST_RIM)
+	frost.set_shader_parameter("stair_half", TILE / 2.0)
+	frost.set_shader_parameter("warm_sharpness", EntranceArt.WARM_SHARPNESS)
+	for tone: String in EntranceArt.FROST_TONES:
+		var color: Color = EntranceArt.FROST_TONES[tone]
+		frost.set_shader_parameter(tone, Vector3(color.r, color.g, color.b))
 	return frost
 
 

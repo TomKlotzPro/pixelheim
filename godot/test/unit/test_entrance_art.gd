@@ -124,3 +124,58 @@ func test_the_ice_cave_s_stair_breathes_frost_and_the_keep_s_does_not() -> void:
 	assert_eq(EntranceArt.frosted_stairs(MapData.load_by_id("observatory")), [Vector2i(13, 5)] as Array[Vector2i], "Liane's stair down to the ice cave")
 	assert_true(EntranceArt.frosted_stairs(MapData.load_by_id("keep")).is_empty(), "the keep's down to the cellars is dry stone")
 	assert_true(EntranceArt.frosted_stairs(MapData.load_by_id("town")).is_empty())
+
+
+## Brightness as the frost shader reads it.
+static func _luma(color: Color) -> float:
+	return color.r * 0.299 + color.g * 0.587 + color.b * 0.114
+
+
+func test_the_frost_stays_cold_under_the_room_s_warm_light() -> void:
+	# PIX-317: under Liane's lamplit room the frost read pink. Lit as the
+	# shader lights it (EntranceArt.on_frost), every one of its tones keeps
+	# more blue than red, by day in the sun through her window and at night
+	# by a candle, at their strongest.
+	var lights := {
+		"by day in the sun through the window": [Lights.INDOOR_DAY, Lights.SUN, Lights.SUN_ENERGY],
+		"at night by a candle": [Lights.INDOOR_NIGHT, Lights.CANDLE, Lights.CANDLE_ENERGY],
+	}
+	for tone: String in EntranceArt.FROST_TONES:
+		var color: Color = EntranceArt.FROST_TONES[tone]
+		for when: String in lights:
+			var room: Color = lights[when][0]
+			var light := EntranceArt.on_frost(lights[when][1])
+			var energy: float = lights[when][2]
+			var lit := Color(color.r * (room.r + light.r * energy), color.g * (room.g + light.g * energy), color.b * (room.b + light.b * energy))
+			assert_gt(lit.b, lit.r, "the frost's %s %s reads cold, not pink: %s" % [tone, when, lit])
+
+
+func test_a_warm_light_comes_back_white_on_the_frost_and_a_cold_one_stays() -> void:
+	for warm: Color in [Lights.CANDLE, Lights.SUN, Lights.LAMP, Lights.FIRE]:
+		var on := EntranceArt.on_frost(warm)
+		assert_almost_eq(on.r, on.b, 0.001, "%s comes back white" % warm)
+		assert_almost_eq(on.g, on.b, 0.001, "%s comes back white" % warm)
+		assert_almost_eq(_luma(on), _luma(warm), 0.001, "%s as bright as it was" % warm)
+	assert_eq(EntranceArt.on_frost(Lights.ICE), Lights.ICE, "the stair's own cold light stays blue on it")
+
+
+func test_the_frost_s_rim_never_follows_the_carpet_s_square() -> void:
+	# The red carpet round the stair (PunyInterior.STAIRWELL_RING) showed the
+	# old frost's edge as a square: its rim now wanders in from the carpet's
+	# sides and out past its corners.
+	var ring := 0
+	for step: Vector2i in PunyInterior.STAIRWELL_RING:
+		ring = maxi(ring, maxi(absi(step.x), absi(step.y)))
+	var side := (ring + 0.5) * MapView.TILE
+	var reach := EntranceArt.FROST_REACH * MapView.TILE
+	assert_lte(EntranceArt.FROST_RIM.x * reach, side, "in from the carpet's sides")
+	assert_gte(EntranceArt.FROST_RIM.y * reach, side * sqrt(2.0), "out past its corners")
+
+
+func test_the_stair_reads_as_a_way_down_through_its_frost() -> void:
+	# Its dark goes deep, well under the rime round it, and its cold light
+	# reaches as far as the frost.
+	var tones := EntranceArt.FROST_TONES
+	assert_lt(_luma(tones["depths"]) * 4.0, _luma(tones["rime_deep"]), "the dark down the stair under the rime's deepest blue")
+	assert_lt(_luma(tones["steps"]), _luma(tones["rime"]), "its steps under the rime round them")
+	assert_gte(EntranceArt.FROST_GLOW, EntranceArt.FROST_RIM.y * EntranceArt.FROST_REACH * MapView.TILE, "the cold light reaches the frost's rim")

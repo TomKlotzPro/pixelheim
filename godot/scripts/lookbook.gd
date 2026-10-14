@@ -86,6 +86,10 @@ const SHOTS := {
 	# window, the chart of the sky on the wall, the globe of it by her desk,
 	# her candles lit and the corners dark.
 	"lianes_room_night": {"area": "rooms", "map": "observatory", "cell": Vector2i(10, 6), "time": NIGHT},
+	# The frost round her stair at night (PIX-317): rime and crystals in cold
+	# blues under her candles' warm light, and the stair's own cold light
+	# keeping the way down seen.
+	"lianes_frost_night": {"area": "rooms", "map": "observatory", "cell": Vector2i(13, 7), "time": NIGHT},
 	"hales_hall": {"area": "rooms", "map": "keep", "cell": Vector2i(13, 7), "time": DAY},
 	"hales_stair": {"area": "rooms", "map": "keep", "cell": Vector2i(13, 6), "time": DAY, "down": true},
 	# Morvax's forge (PIX-253 step 8): the cot, the cold anvil, and fifty
@@ -93,6 +97,13 @@ const SHOTS := {
 	"morvax_forge": {"area": "rooms", "map": "morvax_forge", "cell": Vector2i(11, 3), "time": DAY},
 	"forest": {"area": "reach", "map": "overworld", "at": "forest_2", "time": DAY},
 	"ash": {"area": "reach", "map": "overworld", "at": "ash_3", "time": DAY},
+	# Open ground (PIX-305): the Reach's meadow south-east of the village, its
+	# patches of lusher and drier grass, clover and the wind over it, by day
+	# and at night; and the Ash's road, where the region's tone used to leave
+	# wandering bands of dither either side of it.
+	"meadow": {"area": "reach", "map": "overworld", "cell": Vector2i(70, 40), "time": DAY},
+	"meadow_night": {"area": "reach", "map": "overworld", "cell": Vector2i(70, 40), "time": NIGHT},
+	"ash_road": {"area": "reach", "map": "overworld", "cell": Vector2i(30, 15), "time": DAY},
 	"overworld_night": {"area": "reach", "map": "overworld", "at": "forest_2", "time": NIGHT},
 	"rain": {"area": "reach", "map": "overworld", "at": "forest_1", "rain": true},
 	# The village seen from outside (PIX-248): up the road to its gate by day
@@ -120,7 +131,14 @@ const SHOTS := {
 		},
 	},
 	"mire": {"area": "regions", "map": "mirefen", "time": DAY},
+	# Open ground in the regions (PIX-305): the Mirefen's murk, sedge and
+	# puddles, the Frostgate's drifts, Saltmere's and Greyhold's fields; by
+	# day and at night.
+	"mire_fen": {"area": "regions", "map": "mirefen", "cell": Vector2i(30, 20), "time": DAY},
+	"mire_fen_night": {"area": "regions", "map": "mirefen", "cell": Vector2i(30, 20), "time": NIGHT},
 	"frostgate": {"area": "regions", "map": "frostgate", "time": DAY},
+	"frost_fields": {"area": "regions", "map": "frostgate", "cell": Vector2i(14, 40), "time": DAY},
+	"frost_fields_night": {"area": "regions", "map": "frostgate", "cell": Vector2i(14, 40), "time": NIGHT},
 	# Lamps by a door and a camp's torches on their stakes (PIX-311): Greyhold's
 	# keep by day and at night, its windows lit; the Frostgate's observatory
 	# at night.
@@ -128,6 +146,9 @@ const SHOTS := {
 	"greyhold_keep_night": {"area": "regions", "map": "greyhold", "cell": Vector2i(36, 15), "time": NIGHT},
 	"frostgate_night": {"area": "regions", "map": "frostgate", "cell": Vector2i(28, 12), "time": NIGHT},
 	"coast": {"area": "regions", "map": "saltmere", "cell": Vector2i(33, 27), "time": DAY},
+	"saltmere_fields": {"area": "regions", "map": "saltmere", "cell": Vector2i(8, 8), "time": DAY},
+	"saltmere_fields_night": {"area": "regions", "map": "saltmere", "cell": Vector2i(8, 8), "time": NIGHT},
+	"greyhold_fields": {"area": "regions", "map": "greyhold", "cell": Vector2i(12, 30), "time": DAY},
 	"deepwood": {"area": "regions", "map": "deepwood", "time": DAY},
 	# The Deepwood's forest, its pines and round trees (PIX-304: from One
 	# Land, v0.219, no map grew any).

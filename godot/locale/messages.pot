@@ -3301,6 +3301,10 @@ msgid "Greater potions, phoenix draughts and elixirs heal a share of your health
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Green Fields"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Green Thumbs"
 msgstr ""
 
@@ -3369,6 +3373,10 @@ msgid "Health comes back slowly while you're out of a fight"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Her stair goes cold and blue and its light reaches a little further, so the way down to the ice cave still shows by candlelight"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Herbs, ore and pouches on the ground are half the size, sitting on a small shadow and bobbing gently, so they no longer look as big as you"
 msgstr ""
 
@@ -3386,6 +3394,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Hit Feel"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Hoarfrost"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3757,6 +3769,10 @@ msgid "Materials weigh nothing and sell for pocket change - brew, don't hoard"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Meadows have patches of lusher and drier grass, tufts, clover, flowers and pebbles, and the long grass ripples when the wind gusts"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Mend the river bridge at the board on the square once Wenna has her letter"
 msgstr ""
 
@@ -3934,6 +3950,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "No more half bridge south of the village"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "No more yellow dither bands where a region meets a road: the ash fields' roads, the cliff feet and the Frostgate's road have clean edges"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4662,6 +4682,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Smithing shaves the Forge's prices and, at level 5, unlocks the +8 masterwork cap"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Snow lies in drifts with blue shadows, and the Mirefen is murk, sedge and puddles instead of camouflage dots"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5494,6 +5518,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The four ages grew with it: stalls and lamps at Village, a fountain and a thatched row-house at Town, a slate townhouse and a farmhouse at City"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The frost on Liane's stair reads as frost: cold blue rime and crystals thinning out across the floor, with a glint now and then"
 msgstr ""
 
 #: assets/data/changelog.json

@@ -51,6 +51,7 @@ const TABLE := [
 	{"field": "decor", "says": "on a map in the open air: how many pieces of field decor its drawing grew, its trees, wheat, bushes, stumps and stones (PIX-304)"},
 	{"field": "delivered", "says": "Maren's letters delivered, once any is out (PIX-253)"},
 	{"field": "dest", "says": "the waypoint the map's list has chosen, while the map is open (PIX-241)"},
+	{"field": "detail", "says": "on a map in the open air: how many small things its open ground grew, tufts, clover, flowers, pebbles, twigs, reeds and sedge (PIX-305)"},
 	{"field": "dressed", "says": "on a dungeon floor: its look and what it is dressed in, counted by kind: mine:ore3,props6,rail68 (PIX-310)"},
 	{"field": "ending", "says":"the ending this hero chose for Morvax once it has played: home or stay (an old save's throne: destroy or rest) (PIX-253 step 10)"},
 	{"field": "entrance", "says": "the ways in drawn as entrances in their setting on this map, by look: mine, sea_cave, mountain_gate, vault_door, ice_stair (PIX-290)"},
@@ -92,6 +93,7 @@ const TABLE := [
 	{"field": "street", "says": "the street under the hero: the paving its age lays (gravel, cobbles, sandstone, bricks, flags; drawn with the paid art, bare dirt without), or worn on a rutted road (PIX-307)"},
 	{"field": "tab", "says": "with station: the tab the counter opened on (PIX-234)"},
 	{"field": "titleline", "says": "the title's line under its menu, by what it's about: slot (the slot in hand: unreadable, or its hero the save before, PIX-303) or full (New Game with no slot free, PIX-316)"},
+	{"field": "tone", "says": "on a map in the open air: how the region's tone takes the hero's cell: whole (tone), the mire's with its murk and puddles (mire), its dirt only beside the ash (fringe), or none (PIX-305)"},
 	{"field": "top", "says": "the screen drawn on top when one is opened over another (the title's Options); two sharing the top layer read a=b"},
 	{"field": "torches", "says": "on a dungeon floor: its torches on the walls, and N loose for any not hung on a wall's face (PIX-291)"},
 	{"field": "tracked", "says": "the quest or bounty followed, while the journal is open or one is (PIX-239)"},
@@ -363,6 +365,12 @@ func field_dest() -> String:
 	return chosen if chosen != "" else "none"
 
 
+func field_detail() -> String:
+	if world.view == null or not PunyTerrain.is_outdoor(world.map.grid) or not world.view.has_ground_layers():
+		return ""
+	return str(world.view.detail_layer.get_used_cells().size())
+
+
 func field_dressed() -> String:
 	if world.view == null or String(world.view.dressing.get("look", "")) == "":
 		return ""
@@ -621,6 +629,12 @@ func field_titleline() -> String:
 		if child.get_script() != null and String(child.get_script().resource_path).ends_with("title_screen.gd"):
 			return child.said
 	return ""
+
+
+func field_tone() -> String:
+	if world.view == null or not PunyTerrain.is_outdoor(world.map.grid) or world.view.kept == null:
+		return ""
+	return PunyTerrain.tone_at(world.view.kept.tint_image, world.player_cell)
 
 
 func field_top() -> String:
