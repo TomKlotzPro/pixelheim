@@ -35,6 +35,9 @@ const DETAIL := {
 	"grass": [10, ["tuft", "tuft", "tuft_small", "tuft_small", "clover", "clover", "flowers_white", "flowers_yellow", "flowers_red", "flowers_blue", "pebbles"]],
 	"snow": [7, ["pebbles", "pebbles", "twig", "tuft_small"]],
 	"marsh": [12, ["reeds", "reeds", "sedge", "sedge", "tuft_small"]],
+	# The Ash (PIX-308): burnt tufts, charcoal, pale stones of ash, and
+	# cinders that glow (MapView lays them on a layer of their own).
+	"ash": [11, ["burnt_tuft", "burnt_tuft", "charcoal", "ash_stones", "cinders", "cinders"]],
 }
 
 

@@ -63,6 +63,14 @@ var _growth_layer: TileMapLayer
 ## The open ground's patches (paid pack only) and small things (PIX-305).
 var patch_layer: TileMapLayer
 var detail_layer: TileMapLayer
+## The Ash's cinders, lit by nothing but themselves (PIX-308).
+var ember_layer: TileMapLayer
+## The dead trees on the burnt rock (AshLand.snag), cell -> which; and the
+## workings dressing a mining country (AshLand.workings) with the cells
+## their pieces take, where nothing else is drawn (PIX-308).
+var snags := {}
+var workings := {}
+var worked := {}
 ## The streets' paving in the Medieval Age's stone, by the town's age, and
 ## the roads' wear and verges (PIX-307): the look each street takes
 ## (Streets.plan), what of it is paved (with the paid pack: all of it) and
@@ -437,6 +445,12 @@ func _plan_scatter() -> void:
 	solid_scatter = _solid_scatter(data, arrival)
 	for cell: Vector2i in solid_scatter:
 		data.covered[cell] = true
+	# A mining country's workings (PIX-308), clear of all that, the blocking
+	# scatter too: they block nothing.
+	workings = AshLand.workings(data, bare.merged(solid_scatter), PunyProps.available())
+	worked = {}
+	for piece: Dictionary in workings["pieces"]:
+		worked[piece["cell"]] = true
 
 
 ## Draws the map at once: its ground, the blockers and door signs under the
@@ -668,12 +682,21 @@ func _ground_layers() -> Node2D:
 	detail_layer.material = ground_tint
 	detail_layer.light_mask |= Lights.FLOOR
 	root.add_child(detail_layer)
+	# The Ash's cinders on a layer of their own, glowing (PIX-308).
+	ember_layer = tile_layer_of(GroundDetail.tileset())
+	var glowing := ShaderMaterial.new()
+	glowing.shader = preload("res://shaders/embers.gdshader")
+	ember_layer.material = glowing
+	root.add_child(ember_layer)
 	# Shade's cliffs standing in the water, the sand and the roads
 	# (PunyTerrain.rimmed), toned as the ground is, but still: the water
 	# under them swells.
 	rim_layer = tile_layer_of(PunyTerrain.tileset())
 	rim_layer.position = ground_layer.position
-	rim_layer.material = ground_tint
+	# Their tops scorched where the rock burns (PIX-308).
+	var rims := _toning()
+	rims.set_shader_parameter("scorch_life", true)
+	rim_layer.material = rims
 	rim_layer.light_mask |= Lights.FLOOR
 	root.add_child(rim_layer)
 	decor_sway = _swaying(TREE_SWAY, true)
@@ -768,10 +791,12 @@ func _detail_rows(i: int) -> void:
 			var cell := Vector2i(x, y)
 			if patch_layer != null and kept.patches.has(cell):
 				PunyTown.place(patch_layer, cell, kept.patches[cell])
-			if kept.details.has(cell) and not bare.has(cell):
-				GroundDetail.place(detail_layer, cell, kept.details[cell])
+			if kept.details.has(cell) and not bare.has(cell) and not worked.has(cell):
+				var tile: Vector2i = kept.details[cell]
+				GroundDetail.place(ember_layer if GroundDetail.glows(tile) else detail_layer, cell, tile)
 	if sliced:
 		detail_layer.update_internals()
+		ember_layer.update_internals()
 		if patch_layer != null:
 			patch_layer.update_internals()
 
@@ -1350,7 +1375,10 @@ func _decor_units(slices: Slicer) -> void:
 		for gate: Dictionary in gates:
 			_add_gate(gate)
 		for entrance: Dictionary in entrances:
-			_add_entrance(entrance))
+			_add_entrance(entrance)
+		# A mining country's workings (PIX-308).
+		for piece: Dictionary in workings.get("pieces", []):
+			_add_gate_piece(piece))
 	slices.add_each("decor_field", ceili(data.size.y / float(DECOR_ROWS)), _field_rows)
 
 
@@ -1477,8 +1505,24 @@ func _decor_chests() -> void:
 ## A cell's field decor: a bush or a stump that blocks, a tuft flat on the
 ## ground, or a tree or a sheaf among the actors.
 func _add_field_decor(cell: Vector2i) -> void:
+	if bare.has(cell) or worked.has(cell):
+		return
 	var choice := Scatter.choice(data.grid, cell)
-	if choice < 0 or bare.has(cell):
+	# Burnt rock grows dead trees, not pines; its boulders stay (PIX-308).
+	if kept != null and kept.burnt.has(cell) and choice != AshLand.BOULDER:
+		var snag := AshLand.snag(data.grid, cell)
+		if snag >= 0:
+			snags[cell] = snag
+			var h := absi(hash(cell))
+			var sprite := Sprite2D.new()
+			sprite.texture = AshArt.texture("snag_%d" % snag)
+			sprite.position = center(cell) + Vector2((h >> 12) % 7 - 3, (h >> 16) % 5 - 2)
+			sprite.offset = Vector2(0, -AshArt.SNAG_HEIGHT / 2.0 + 6)
+			sprite.flip_h = (h >> 20) % 2 == 1
+			sprite.add_to_group("decor")
+			actors.add_child(sprite)
+		return
+	if choice < 0:
 		return
 	field[cell] = choice
 	if solid_scatter.has(cell):
@@ -2156,6 +2200,10 @@ func _add_gate_piece(piece: Dictionary) -> void:
 			sprite.texture = PunyDungeon.sheet().tile_texture(piece["tile"])
 		"props":
 			sprite.texture = PunyProps.texture(piece["tile"])
+		"art":
+			sprite.texture = DungeonArt.texture(piece["tile"])
+		"ash":
+			sprite.texture = AshArt.texture(piece["tile"])
 		_:
 			sprite.texture = PunyTerrain.sheet().tile_texture(piece["tile"])
 	sprite.centered = false

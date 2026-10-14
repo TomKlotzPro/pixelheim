@@ -43,6 +43,9 @@ const TINTS := {
 	"stone": Color(0.56, 0.56, 0.58),
 	# The mountain road's trodden way through the ash (REGION_PATHS).
 	"trodden": Color(0.62, 0.52, 0.4),
+	# Rock by the ash, burnt (PIX-308, AshLand.burnt): a sooty grey-brown,
+	# its grassy top scorched (open_ground.gdshaderinc).
+	"burnt_rock": Color(0.43, 0.4, 0.38),
 }
 ## What each cell of the tint mask asks of region_tint.gdshader, in its
 ## alpha (PIX-305): the region's tone over all its ground; the mire's, which
@@ -58,7 +61,10 @@ const MIRES := ["marsh"]
 ## (PIX-305: its tussocks, two cells square, were Shade's bright lawn
 ## dithered into the murk in blobs that read as camouflage; the mire's
 ## murk, sedge and puddles are the shader's now, open_ground.gdshaderinc).
-const REGION_GRASS := {"mire": "marsh"}
+## Blackiron's few cells of grass are burnt (PIX-308): toned and dressed
+## as the ash about them. (The verges of the Reach's road north stay the
+## grass at the Ash's edge, its dirt alone toned.)
+const REGION_GRASS := {"mire": "marsh", "mines": "ash"}
 ## The grounds a dirt-toned region's edge reaches into: the grass beside the
 ## ash, where Shade's dirt runs a few pixels past the cell's edge in tufts,
 ## and the rock, whose cliff stands in the ash at its foot.
@@ -460,7 +466,7 @@ static func _inside(cell: Vector2i, size: Vector2i) -> Vector2i:
 static func tint_map(grid: Dictionary, size: Vector2i, regions := {}) -> ImageTexture:
 	var image := Image.create(size.x, size.y, false, Image.FORMAT_RGBA8)
 	image.fill(Color(0, 0, 0, 0))
-	tint_rows(image, grid, regions, 0, size.y)
+	tint_rows(image, grid, regions, 0, size.y, AshLand.burnt(grid, size, regions))
 	tint_fringe_rows(image, grid, 0, size.y)
 	for ring in 2:
 		tint_spill(image, grid)
@@ -469,14 +475,15 @@ static func tint_map(grid: Dictionary, size: Vector2i, regions := {}) -> ImageTe
 
 ## Rows [from, to) of the tint mask into `image`, a few rows a frame beside
 ## the hero (PIX-269); then the fringe's rows once every row is in, then two
-## rings of tint_spill.
-static func tint_rows(image: Image, grid: Dictionary, regions: Dictionary, from: int, to: int) -> void:
+## rings of tint_spill. The rock that burns (`burnt`, AshLand.burnt) is
+## burnt rock (PIX-308).
+static func tint_rows(image: Image, grid: Dictionary, regions: Dictionary, from: int, to: int, burnt := {}) -> void:
 	for y in range(from, to):
 		for x in image.get_width():
 			var cell := Vector2i(x, y)
 			if not grid.has(cell):
 				continue
-			var tile := toned_as(grid[cell], regions.get(cell, ""))
+			var tile := "burnt_rock" if burnt.has(cell) else toned_as(grid[cell], regions.get(cell, ""))
 			if TINTS.has(tile):
 				image.set_pixelv(cell, Color(TINTS[tile], KIND_MIRE if tile in MIRES else KIND_TONE))
 

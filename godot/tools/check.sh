@@ -75,6 +75,7 @@ rooms +town_house*: scripts/puny_interior.gd scripts/home_screen.gd assets/data/
 rooms +observatory*: scripts/room_art.gd
 travel field: scripts/puny_terrain.gd scripts/scatter.gd scripts/skyline.gd assets/puny/world/*
 town travel field: scripts/open_ground.gd scripts/ground_detail.gd
+travel field +blackiron* +overworld* +mountain_road*: scripts/ash_land.gd scripts/ash_art.gd
 town travel +town-age* +overworld*: scripts/rampart.gd
 travel: scripts/seam.gd scripts/slicer.gd scripts/world_neighbours.gd scripts/reach_plane.gd scripts/ways.gd scripts/waypoints.gd scripts/atlas.gd scripts/dissolve.gd scripts/place_title.gd scripts/map_screen.gd scripts/state/world_state.gd assets/data/plane.json
 travel story +overworld*: scripts/state/gates.gd scripts/gate_art.gd assets/data/gates.json
