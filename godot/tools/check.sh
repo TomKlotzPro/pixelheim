@@ -74,6 +74,7 @@ town: scripts/town_hall_screen.gd scripts/ledger_screen.gd scripts/bank_screen.g
 rooms +town_house*: scripts/puny_interior.gd scripts/home_screen.gd assets/data/interiors.json
 rooms +observatory*: scripts/room_art.gd
 travel field: scripts/puny_terrain.gd scripts/scatter.gd scripts/skyline.gd assets/puny/world/*
+travel field: scripts/woods.gd shaders/canopy_shade.*
 town travel field: scripts/open_ground.gd scripts/ground_detail.gd
 town travel +town-age* +overworld*: scripts/rampart.gd
 travel: scripts/seam.gd scripts/slicer.gd scripts/world_neighbours.gd scripts/reach_plane.gd scripts/ways.gd scripts/waypoints.gd scripts/atlas.gd scripts/dissolve.gd scripts/place_title.gd scripts/map_screen.gd scripts/state/world_state.gd assets/data/plane.json

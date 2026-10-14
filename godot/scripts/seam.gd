@@ -82,7 +82,8 @@ static func saves(now: int, last: int) -> bool:
 static func tile_at(cell: Vector2i, grids: Dictionary) -> String:
 	var at := ReachPlane.at(cell)
 	if at.is_empty():
-		return ReachPlane.RIDGE
+		# The ridge, or the sea running on past a map's edge (PIX-309).
+		return ReachPlane.tile(cell)
 	if not grids.has(at["map"]):
 		return ReachPlane.tile(cell)
 	return String((grids[at["map"]] as Dictionary).get(at["cell"], ReachPlane.RIDGE))
@@ -117,13 +118,13 @@ static func stitch(map_id: String, other_id: String, grids: Dictionary, kept: Ke
 		return out
 	# The plane's cells round the zone, their ground and whether the forest
 	# crowns them, looked up once.
-	var window := Rect2i(zone.position + origin, zone.size).grow(2)
+	var window := Rect2i(zone.position + origin, zone.size).grow(3)
 	var tiles := {}
 	for y in range(window.position.y, window.end.y):
 		for x in range(window.position.x, window.end.x):
 			tiles[Vector2i(x, y)] = tile_at(Vector2i(x, y), grids)
 	var terrain := {}
-	var crowned := {}
+	var walled := {}
 	for cell: Vector2i in tiles:
 		terrain[cell] = PunyTerrain.ground_of(tiles[cell])
 		var rock: bool = tiles[cell] == "mountain"
@@ -131,7 +132,14 @@ static func stitch(map_id: String, other_id: String, grids: Dictionary, kept: Ke
 			if not rock:
 				break
 			rock = tiles.get(cell + step, ReachPlane.RIDGE) == "mountain"
-		crowned[cell] = "trees" if rock else "air"
+		walled[cell] = rock
+	# Its edge ragged as each map keeps it (PunyTerrain.crown_kept, PIX-309).
+	var crowned := {}
+	for cell: Vector2i in tiles:
+		var deep := true
+		for step: Vector2i in [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]:
+			deep = deep and walled.get(cell + step, true)
+		crowned[cell] = "trees" if walled[cell] and PunyTerrain.crown_kept(cell, deep) else "air"
 	var air := PunyTerrain.corner_tile(["air", "air", "air", "air"], 0)
 	for y in range(zone.position.y, zone.end.y):
 		for x in range(zone.position.x, zone.end.x):

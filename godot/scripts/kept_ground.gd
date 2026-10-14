@@ -38,6 +38,16 @@ var water_image: Image
 ## Whether the region tones the pines on its ridges too (PIX-169: under
 ## snow), so a map beside it tones its own along the line alike.
 var crowns_toned := false
+## The tone the crowns take, a cell a texel (null where they keep their
+## green): the region's (crowns_toned), or the snow a few cells past a
+## snowfield's edge (PIX-309, PunyTerrain.snow_image).
+var crown_image: Image
+var crown_map: ImageTexture
+## How much of each cell the forest covers (Woods.shade_rows), for the
+## ground darker under its canopy (PIX-309); null on a map with none.
+var shade_image: Image
+var shade_map: ImageTexture
+var _shaded := 0
 ## The open ground's small things (Scatter.detail: cell -> GroundDetail's
 ## tile) and, with the paid pack, the Medieval Age's patches of green and
 ## snow (OpenGround.plan: cell -> its tile), PIX-305.
@@ -67,6 +77,7 @@ var _above := PackedInt32Array()
 ## beside it there, or the ridge's rock (PIX-269). A map off the plane (the
 ## village, a cave) carries its own edge on past it.
 var _plane := false
+var _origin := Vector2i.ZERO
 
 ## How many rows of cells, or of corners, one slice works out; the water's
 ## a row at a time, inland water's depth and banks being the dearest rows
@@ -122,11 +133,13 @@ static func working(data: MapData, look: Dictionary, pad: int, slices: Slicer) -
 	kept.width = data.size.x + 1 + 2 * pad
 	var corner_rows := data.size.y + 1 + 2 * pad
 	# The corners read the cells one past the pad; whether the forest crowns
-	# those reads one more.
-	kept._ring = pad + 2
+	# those reads one more, and whether they lie deep in the rock (its
+	# ragged edge, PIX-309) one more again.
+	kept._ring = pad + 3
 	kept._across = data.size.x + 2 * kept._ring
 	var ring_rows := data.size.y + 2 * kept._ring
 	kept._plane = ReachPlane.holds(data.id)
+	kept._origin = ReachPlane.origin(data.id) if kept._plane else Vector2i.ZERO
 	kept.crowns_toned = PunyTerrain.region_toned(data.regions)
 	kept._tiles.resize(kept._across * ring_rows)
 	kept._terrain.resize(kept._across * ring_rows)
@@ -161,9 +174,19 @@ static func working(data: MapData, look: Dictionary, pad: int, slices: Slicer) -
 		slices.add_each("kept_patch", cell_slices, func(i: int) -> void:
 			OpenGround.rows(look, data.size, data.regions, origin, i * ROWS_A_SLICE, (i + 1) * ROWS_A_SLICE, lattice, kind))
 		slices.add("kept_patch_shape", func() -> void: kept.patches = OpenGround.shape(kind))
+	# The ground under the forest, darker (PIX-309).
+	slices.add_each("kept_shade", cell_slices, func(i: int) -> void:
+		if kept.shade_image == null:
+			kept.shade_image = Image.create(data.size.x, data.size.y, false, Image.FORMAT_RGBA8)
+		kept._shaded += Woods.shade_rows(kept.shade_image, look, i * ROWS_A_SLICE, (i + 1) * ROWS_A_SLICE))
 	slices.add("kept_masks", func() -> void:
 		kept.tint_map = ImageTexture.create_from_image(kept.tint_image)
 		kept.water_map = ImageTexture.create_from_image(kept.water_image)
+		# The pines whiten under snow (PIX-169), and a few cells past a
+		# snowfield's edge too (PIX-309, PunyTerrain.snow_image).
+		kept.crown_image = kept.tint_image if kept.crowns_toned else PunyTerrain.snow_image(data.id, data.size)
+		kept.crown_map = null if kept.crown_image == null else (kept.tint_map if kept.crowns_toned else ImageTexture.create_from_image(kept.crown_image))
+		kept.shade_map = ImageTexture.create_from_image(kept.shade_image) if kept._shaded > 0 else null
 		# Done: kept, and what it was worked out from let go.
 		kept._data = null
 		kept._look = {}
@@ -235,8 +258,22 @@ func _crowned_rows(from: int) -> void:
 		for x in range(-_ring, size.x + _ring):
 			var cell := Vector2i(x, y)
 			var own := x >= 0 and y >= 0 and x < size.x and y < size.y
-			var looked := cell if own or _plane else Vector2i(clampi(x, 0, size.x - 1), clampi(y, 0, size.y - 1))
-			_crowned[_index(cell)] = 1 if _walled_in(looked) else 0
+			var looked := cell if own or _plane else _clamped(cell)
+			_crowned[_index(cell)] = 1 if _walled_in(looked) and _crown_kept(looked) else 0
+
+
+## Whether the forest keeps its crown on walled-in rock `cell` (PunyTerrain
+## .crown_kept: its edge ragged), picked by where it lies in the plane; off
+## the plane by the map's own cell, its edge repeating past it.
+func _crown_kept(cell: Vector2i) -> bool:
+	var deep := true
+	for step: Vector2i in [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]:
+		deep = deep and _walled_in(cell + step if _plane else _clamped(cell + step))
+	return PunyTerrain.crown_kept(_origin + cell, deep)
+
+
+func _clamped(cell: Vector2i) -> Vector2i:
+	return Vector2i(clampi(cell.x, 0, _data.size.x - 1), clampi(cell.y, 0, _data.size.y - 1))
 
 
 ## Whether `cell` and its four neighbours are all rock (false at the ring's
