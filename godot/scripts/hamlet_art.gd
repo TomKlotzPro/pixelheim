@@ -199,18 +199,18 @@ const PIECES := {
 		"................",
 		"................",
 		"................",
-		"................",
-		"....ooooooooo...",
-		"...ohjrlhCljlo..",
-		"..olliiiiiiiillo",
-		"..okhhhhhhhhhko.",
-		"..oklllllllllko.",
-		"..okiiiiiiiiiko.",
-		"..okkkkkkkkkkko.",
-		"...ok2o...ok2o..",
-		"..o1hko1o1khko1o",
+		".....oooooo.....",
+		"...ooljrlCloo...",
+		"..olhjlrClhjlo..",
+		".ooooooooooooooo",
+		".okhhhhhhhhhhhko",
+		"..okllllllllko..",
+		"..okiillliiiko..",
+		"...okkkkkkkko...",
+		"..oZzo....oZzo..",
+		".o3ozo3333ozo3o.",
 		".o3333333333333o",
-		"..oko.oko.oko.o.",
+		"..o.o..o..o..o..",
 		"................",
 	],
 	## Lobster pots stacked on the sand: woven cages, a rope's eye on top.
@@ -302,19 +302,19 @@ const PIECES := {
 	"lantern": [
 		"................",
 		"................",
-		"...........oo...",
-		"..........okio..",
-		"..ooooooookko...",
-		"..okkkkkkkko....",
-		"...oo..oko......",
-		"......okkko.....",
+		"..oooooo........",
+		"..okiiikoo......",
+		"..oooookiko.....",
+		"........oko.....",
+		".......o4o......",
+		"......o464o.....",
+		".....okkkkko....",
+		".....okhgGko....",
 		".....okgggko....",
-		".....okgGgko....",
-		".....okgggko....",
-		"......okkko.....",
-		".......oko......",
-		"........o.......",
-		"................",
+		".....okggako....",
+		".....okkkkko....",
+		"......o464o.....",
+		".......ooo......",
 		"................",
 	],
 	## Its glass lit at night (the only part the dark doesn't touch).
@@ -327,10 +327,10 @@ const PIECES := {
 		"................",
 		"................",
 		"................",
-		".......aaa......",
+		"................",
+		".......Yqa......",
 		".......aYa......",
 		".......aaa......",
-		"................",
 		"................",
 		"................",
 		"................",
@@ -340,20 +340,20 @@ const PIECES := {
 	## and carrot tops.
 	"garden": [
 		"................",
-		"..oooooooooooo..",
-		".o222222222222o.",
-		".o2FvF2FvF2Fv2o.",
-		".o2fFf2fFf2fF2o.",
-		".o222222222222o.",
-		".o2v2v2v2v2v22o.",
-		".o2C2C2C2C2C22o.",
-		".o222222222222o.",
-		".o2FvF2FvF2Fv2o.",
-		".o2fFf2fFf2fF2o.",
-		".o222222222222o.",
-		".o1v1v1v1v1v11o.",
-		".o1C1C1C1C1C11o.",
-		"..oooooooooooo..",
+		"................",
+		"..2.2..2...2.2..",
+		".2121212121212..",
+		".21fF1fF1fF1f12.",
+		"..1FvF1FvF1Fv1..",
+		".2111111111111..",
+		"..21v1v1v1v1v12.",
+		".212C1C1C1C1C1..",
+		"..21111111111112",
+		".21fF1fF1fF1f12.",
+		"..1FvF1FvF1Fv1..",
+		".2111111111111..",
+		"..2121212121212.",
+		"...2..2.2..2....",
 		"................",
 	],
 	## The Kings' Vault's door (PIX-312): two leaves of black iron studded and
@@ -419,21 +419,21 @@ const PIECES := {
 	## mouth glowing, taller than a cottage's.
 	"forge_stack": [
 		"................",
-		"....oooooooo....",
-		"...ozzzzzzzzo...",
-		"...olaaaaaaalo..",
-		"...ohhhhhhhhho..",
-		"....olhlhlhlo...",
-		"....ohlhlhlho...",
-		"....olhhlhhlo...",
-		"....ohlhlhlho...",
-		"....olhlhlhlo...",
-		"....ohhlhhlho...",
-		"....olhlhlhlo...",
-		"...oollllllloo..",
-		"..olllllllllllo.",
-		"..oiiiiiiiiiiio.",
-		"...ooooooooooo..",
+		"...oooooooooo...",
+		"..ozzzzzzzzzzo..",
+		"..oZnnnnnnnnZo..",
+		"..olhhhhhhhhlo..",
+		"...oZlZlZlZlo...",
+		"...olZlZlZlZo...",
+		"...oZliZlZilo...",
+		"...olZlZiZlZo...",
+		"...oZlZlZlZlo...",
+		"...olZiZlZlZo...",
+		"...oZlZlZiZlo...",
+		"..oolZlZlZlZoo..",
+		".olhlhlhlhlhlhlo",
+		".oiiiiiiiiiiiiio",
+		"..oooooooooooo..",
 	],
 	## Saltmere's fish stall by the jetty road: a striped awning on two poles
 	## over a plank counter on trestles, the morning's catch laid out on it and
@@ -459,6 +459,45 @@ const PIECES := {
 		"...o2o.....................o2o..",
 		"...o2o.....................o2o..",
 		"...ooo.....................ooo..",
+	],
+	## The fire's glow in the forge stack's mouth, over it: untouched by the
+	## dark, so it shows red at night.
+	"forge_mouth": [
+		"................",
+		"................",
+		"................",
+		"...CaaYaaYaaC...",
+		"................",
+		"................",
+		"................",
+		"................",
+		"................",
+		"................",
+		"................",
+		"................",
+		"................",
+		"................",
+		"................",
+		"................",
+	],
+	## A net hung to dry on a fisher's wall, its corks along the top.
+	"wall_net": [
+		"................",
+		"..oo........oo..",
+		"..o4oooooooo4o..",
+		"...orTrTrTrTo...",
+		"...oTtTtTtTto...",
+		"...otTtTtTtTo...",
+		"...oTtTtTtTto...",
+		"....oTtTtTtTo...",
+		"....otTtTtTo....",
+		".....oTtTtTo....",
+		".....otTtTo.....",
+		"......oTtTo.....",
+		"......otTo......",
+		".......oo.......",
+		"................",
+		"................",
 	],
 }
 
@@ -595,14 +634,19 @@ static func door_glow() -> SpriteFrames:
 			var image := Image.create(TILE, TILE + TILE / 2, false, Image.FORMAT_RGBA8)
 			for at: Vector2i in [Vector2i(11, 8), Vector2i(10, 9), Vector2i(11, 9), Vector2i(12, 9)]:
 				image.set_pixel(at.x, at.y, beat)
-			for x in range(2, 14):
+			# The gap under the door, and the light along its jambs.
+			for x in range(1, 15):
 				image.set_pixel(x, 13, beat)
+			for y in range(6, 13):
+				var seam := Color(beat, beat.a * 0.55)
+				image.set_pixel(0, y, seam)
+				image.set_pixel(15, y, seam)
 			for y in range(14, TILE + TILE / 2):
 				var fade := 1.0 - (y - 13) / float(TILE / 2 + 3)
 				for x in range(1, 15):
 					var middle := clampf((1.0 - absf(x - 7.5) / 8.0) * 1.6, 0.0, 1.0)
 					var tint := beat
-					tint.a = beat.a * 0.45 * fade * fade * middle
+					tint.a = beat.a * 0.7 * fade * fade * middle
 					if tint.a > 0.02:
 						image.set_pixel(x, y, tint)
 			_door_glow.add_frame("default", ImageTexture.create_from_image(image))

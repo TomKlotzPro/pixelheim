@@ -453,15 +453,13 @@ func _plan_gates() -> void:
 
 ## A settlement's set dressing (Hamlet, PIX-313): what stands blocks the
 ## open ground it takes, never where the hero arrives, a villager stands or
-## today's patches grow.
+## any day's patches may grow.
 func _plan_hamlet() -> void:
 	hamlet = {"look": "", "pieces": [], "blocks": []}
 	if Hamlet.look_of(data.id) == "":
 		return
-	var kept := Hamlet.kept_on(data)
+	var kept := Hamlet.kept_on(data, patch_decks)
 	kept[arrival] = true
-	for cell: Vector2i in patches:
-		kept[cell] = true
 	hamlet = Hamlet.plan(data, kept)
 	for cell: Vector2i in hamlet["blocks"]:
 		data.covered[cell] = true
@@ -762,7 +760,7 @@ func _ground_layers() -> Node2D:
 		root.add_child(flowers)
 		layers["flowers"] = flowers
 	# The houses, their roofs under the snow where a settlement's lie under it
-	# (PIX-313: the Frostgate's, toned as its ground is), then what stands on
+	# (PIX-313: the Frostgate's, shaders/snowed_roof.gdshader), then what stands on
 	# their roofs (chimneys).
 	for part: String in ["pieces", "snowed", "decor"]:
 		if part == "snowed":
@@ -772,7 +770,9 @@ func _ground_layers() -> Node2D:
 			continue
 		var houses := tile_layer_of(PunyTown.tileset())
 		if part == "snowed":
-			houses.material = _toning()
+			var snowed := ShaderMaterial.new()
+			snowed.shader = preload("res://shaders/snowed_roof.gdshader")
+			houses.material = snowed
 		root.add_child(houses)
 		layers[part] = houses
 	return root
@@ -1950,6 +1950,8 @@ func _add_smoke_thread(at: Vector2, forge := false) -> void:
 	motes.position = at
 	motes.amount = 10 if forge else 7
 	motes.lifetime = 4.5 if forge else 4.0
+	# Already rising when the map comes into view.
+	motes.preprocess = motes.lifetime
 	motes.direction = Vector2.UP
 	motes.spread = 10.0
 	motes.gravity = Vector2(4, -3)
@@ -2010,6 +2012,13 @@ func _decor_hamlet() -> void:
 				elif art == "lantern":
 					_add_lantern_light(root, cell)
 				elif art == "forge_stack":
+					# The fire's glow in its mouth, untouched by the dark.
+					var fire := Sprite2D.new()
+					fire.texture = HamletArt.texture("forge_mouth")
+					fire.centered = false
+					fire.material = Lights.unshaded()
+					fire.position = still.position
+					root.add_child(fire)
 					var mouth := Vector2(cell * TILE) + HamletArt.STACK_MOUTH
 					_add_smoke_thread(mouth, true)
 					if not GameState.settings.reduce_motion:

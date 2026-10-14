@@ -54,7 +54,7 @@ const STORES := {
 ## - (default) on open ground, blocking it (`fits`);
 ## - `flat`: lying on the ground, the hero walks over it;
 ## - `moored`: afloat (or drawn up in the shallows), on cells no one walks;
-## - `wall`: hung on a house's wall beside its door (a lantern, lit at night);
+## - `wall`: hung on a house's wall (a net drying, a lantern lit at night);
 ## - `roof`: standing on a roof (Morvax's forge stack, smoking);
 ## - `line`: a washing line strung that many cells across, between walls;
 ## - `glow`: the fire's light under a door;
@@ -64,10 +64,13 @@ const DRESSING := {
 		{"art": "boat", "cell": Vector2i(29, 26), "moored": true},
 		{"art": "boat", "cell": Vector2i(32, 28), "moored": true},
 		{"art": "nets", "cell": Vector2i(35, 20)},
-		{"art": "fish_rack", "cell": Vector2i(38, 21)},
-		{"art": "creels", "cell": Vector2i(33, 23)},
+		{"art": "fish_rack", "cell": Vector2i(37, 21)},
+		{"art": "creels", "cell": Vector2i(44, 18)},
 		{"art": "fish_stall", "cell": Vector2i(42, 17)},
 		{"line": 2, "cell": Vector2i(40, 14)},
+		{"art": "wall_net", "cell": Vector2i(23, 14), "wall": true},
+		{"art": "wall_net", "cell": Vector2i(36, 14), "wall": true},
+		{"art": "wall_net", "cell": Vector2i(45, 14), "wall": true},
 	],
 	"greyhold": [
 		{"art": "garden", "cell": Vector2i(17, 22), "flat": true},
@@ -227,10 +230,15 @@ static func fits(map: MapData, cells: Array[Vector2i], kept: Dictionary, blocks:
 
 
 ## The cells every piece of a map's dressing keeps open: where its
-## villagers stand (whatever the story's hour), its portals, its spawn and
-## the packs' homes and the cells round them.
-static func kept_on(map: MapData) -> Dictionary:
+## villagers stand (whatever the story's hour), its portals, its spawn, its
+## chests, the packs' homes and the cells round them, and wherever a day's
+## patches may grow (`decks`, Gathering's; worked out here when not given).
+static func kept_on(map: MapData, decks: Variant = null) -> Dictionary:
 	var out := {map.spawn: true}
+	var grown: Dictionary = decks if decks != null else Gathering.decks(map)
+	for region: String in grown:
+		for cell: Vector2i in grown[region]:
+			out[cell] = true
 	for cell: Vector2i in map.portals:
 		out[cell] = true
 	for npc: Dictionary in Npcs._data()["npcs"]:
