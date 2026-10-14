@@ -13,9 +13,12 @@ class_name EntranceArt
 ##   side of it, a barrel of the smugglers' rum, driftwood on the sand;
 ## - the Ashen Mountain's gate (both its sides): a gatehouse in the rock, a
 ##   tower either side with its cone roof and the gate between them, its
-##   portcullis down while the story bars it;
-## - the Kings' Vault: a door of black iron bars over a dark doorway in the
-##   rock, a stone king keeping it either side; open, the dark doorway;
+##   portcullis down while the story bars it, a torch on each tower burning
+##   at night (PIX-312);
+## - the Kings' Vault (PIX-312: it was a pale grille tile): a door of black
+##   iron, studded and banded, in an arch cut in the rock under the old
+##   kings' carved crown, a stone king keeping it either side; open, its
+##   leaves swung in on the dark and the hoard's gold glinting in it;
 ## - the ice cave's stair down through Liane's floor: frost creeping out
 ##   over the boards and the carpet round it, and the cold's pale light
 ##   coming up it (shaders/stair_frost.gdshader). The Greyhold cellars'
@@ -24,8 +27,9 @@ class_name EntranceArt
 ## The cliff round each cave mouth runs on unbroken in the map itself
 ## (blackiron, saltmere), so the mouth sits in the rock's face.
 ## Without the paid pack (PunyProps.available() false) every look keeps to
-## Shade's CC0 sheets: the overworld's framed mine door, plain mouth and
-## castle towers, the dungeon's winch, posts, barrels, boulders and kings.
+## Shade's CC0 sheets (the overworld's framed mine door, plain mouth and
+## castle towers, the dungeon's winch, posts, barrels, boulders, kings and
+## torches) and our own drawn in code (HamletArt: the Vault's door).
 ## Pure: MapView draws the pieces (GateArt's: a cell, a sheet, a tile, a
 ## pixel offset, a tone, flat on the ground or standing on its cell's foot),
 ## and a piece standing on open ground blocks that cell, as the art stands.
@@ -56,8 +60,12 @@ const GATE_OPEN := 1501
 const MINE_DOOR := 127
 const MOUTH := 128
 const DRIFTWOOD := 703
-## How dark the Vault's door is: black iron.
+## How dark the Vault's door was (a grille tile toned): black iron. Its own
+## door is drawn black now (HamletArt, PIX-312).
 const BLACK_IRON := Color(0.32, 0.31, 0.38)
+## Where each tower's torch burns by the mountain's gate, from its tower's
+## cell (west tower, east): on the face toward the gate.
+const GATE_TORCH := [Vector2(5, -5), Vector2(-5, -5)]
 ## The dungeons whose stair down from a room breathes frost up it.
 const FROSTED := ["icecave"]
 ## How far the frost creeps from such a stair, in cells (thinning over the
@@ -109,6 +117,14 @@ static func _piece(cell: Vector2i, sheet: String, tile: int, at := Vector2.ZERO,
 	return {"cell": cell, "sheet": sheet, "tile": tile, "sprite": "", "at": at, "tone": tone, "flat": flat}
 
 
+## One of our own pieces drawn in code (HamletArt, PIX-312), by its name:
+## sheet "hamlet"; or a moving one ("glint", "torch") MapView animates.
+static func _art(cell: Vector2i, sheet: String, name: String, at := Vector2.ZERO) -> Dictionary:
+	var piece := _piece(cell, sheet, -1, at)
+	piece["sprite"] = name
+	return piece
+
+
 ## The shafts' mouth at `at`, come at from below: the mouth in the cliff (its
 ## rock and lintel on the cell above), the rails out down the road, ore and
 ## a barrel at the rock's foot west, the winch at the pithead east.
@@ -145,7 +161,8 @@ static func _sea_cave(at: Vector2i, paid: bool, pieces: Array[Dictionary]) -> vo
 
 
 ## A gatehouse in the rock at `at`: the gate, a tower on the rock either
-## side, their roofs a cell above.
+## side, their roofs a cell above, and a torch on each tower's face by the
+## gate (PIX-312), burning at night.
 static func _mountain_gate(at: Vector2i, barred: bool, paid: bool, pieces: Array[Dictionary]) -> void:
 	if paid:
 		pieces.append(_piece(at, "props", GATE_BARRED if barred else GATE_OPEN))
@@ -158,14 +175,19 @@ static func _mountain_gate(at: Vector2i, barred: bool, paid: bool, pieces: Array
 			pieces.append(_piece(tower + Vector2i.UP, "props", Rampart.ROOF[side]))
 		else:
 			pieces.append(_piece(tower, "world", PunyTerrain.TOWER))
+		pieces.append(_art(tower, "torch", "torch", GATE_TORCH[side]))
 
 
-## The Kings' Vault's door at `at`: black iron bars over a dark doorway while
-## it's shut, the doorway open; a stone king either side.
+## The Kings' Vault's door at `at` (PIX-312: it was a pale grille tile): a
+## door of black iron, studded and banded, its two leaves in an arch cut in
+## the rock, the old kings' crown carved over it and a stone king keeping it
+## either side; open, its leaves swung in on the dark, and the hoard's gold
+## glinting in it.
 static func _vault_door(at: Vector2i, barred: bool, pieces: Array[Dictionary]) -> void:
-	pieces.append(_piece(at, "dungeon", PunyDungeon.DOORWAY))
-	if barred:
-		pieces.append(_piece(at, "dungeon", PunyDungeon.GRILLE, Vector2.ZERO, "iron"))
+	pieces.append(_art(at, "hamlet", "vault_door" if barred else "vault_door_open"))
+	pieces.append(_art(at + Vector2i.UP, "hamlet", "vault_lintel"))
+	if not barred:
+		pieces.append(_art(at, "glint", "glint"))
 	pieces.append(_piece(at + Vector2i.LEFT, "dungeon", PunyDungeon.STATUE, Vector2(3, 0)))
 	pieces.append(_piece(at + Vector2i.RIGHT, "dungeon", PunyDungeon.STATUE, Vector2(-3, 0)))
 
