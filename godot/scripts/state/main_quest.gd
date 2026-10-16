@@ -10,17 +10,15 @@ class_name MainQuest
 ## step the story hasn't written yet would be `unbuilt`, never met, with
 ## the honest card (`continued`) where it waits.
 ## A step is met by the save's own records (a quest taken or kept, a letter
-## delivered, a floor cleared, a project, a settler), or by its `or`, the
-## same kind of condition another way (an old save's floors: past the
-## mountain's gate, or Morvax cast down);
-## the next step is the first unmet one after the furthest met, so a hero who
+## delivered, a project, a settler, a scene seen, a named foe down); the
+## next step is the first unmet one after the furthest met, so a hero who
 ## runs ahead is never sent back for a side errand. Optional steps (errands
 ## and village projects) never count as the furthest: a town grown before
-## its hero went deep doesn't skip the mountain. A chapter may be skipped
-## by a save (`skipIf`): a hero who slew Fafnyr on the old mountain keeps
-## him slain and never plays the Night of Bells. Pure, over
+## its hero went deep doesn't skip the mountain. Pure, over
 ## progression.json's "mainQuest"; Phase 2's village projects slot in as
-## more kinds of step.
+## more kinds of step. (The old mountain's floors, which met steps by an
+## `or` and skipped a chapter for a hero who slew Fafnyr there, left with
+## the old saves, PIX-319.)
 
 
 static func _doc() -> Dictionary:
@@ -31,8 +29,7 @@ static func chapters() -> Array:
 	return _doc()["chapters"]
 
 
-## Every step in order, each with its chapter's title and number (and the
-## chapter's `skipIf`, as `skip_if`, where it has one).
+## Every step in order, each with its chapter's title and number.
 static func steps() -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	for index in chapters().size():
@@ -41,16 +38,8 @@ static func steps() -> Array[Dictionary]:
 			var entry := step.duplicate()
 			entry["chapter"] = chapter["title"]
 			entry["chapter_number"] = index + 1
-			if chapter.has("skipIf"):
-				entry["skip_if"] = chapter["skipIf"]
 			out.append(entry)
 	return out
-
-
-## Whether this save skips chapter `number` (from 1): its `skipIf` met.
-static func skips(number: int, progression: ProgressionState, settlement: SettlementState) -> bool:
-	var chapter: Dictionary = chapters()[number - 1]
-	return chapter.has("skipIf") and _holds(chapter["skipIf"], progression, settlement)
 
 
 ## A step by its id, {} if there is none.
@@ -61,7 +50,7 @@ static func step(step_id: String) -> Dictionary:
 	return {}
 
 
-## Whether the save has met a step: its condition, or its `or`.
+## Whether the save has met a step: its condition.
 static func is_met(step: Dictionary, progression: ProgressionState, settlement: SettlementState) -> bool:
 	return _holds(step["when"], progression, settlement)
 
@@ -79,17 +68,13 @@ static func chapter_done(number: int, progression: ProgressionState, settlement:
 	return not asked.is_empty() and asked.all(func(step: Dictionary) -> bool: return is_met(step, progression, settlement))
 
 
-## Whether a step's condition holds for the save (`when`, with its `or`).
+## Whether a step's condition holds for the save (`when`).
 static func _holds(when: Dictionary, progression: ProgressionState, settlement: SettlementState) -> bool:
-	if when.has("or") and _holds(when["or"], progression, settlement):
-		return true
 	match String(when["kind"]):
 		"questTaken":
 			return progression.quests.has(when["questId"])
 		"questDone":
 			return progression.quests.get(when["questId"], {}).get("done", false)
-		"cleared":
-			return int(when["level"]) in progression.cleared_levels
 		"townTier":
 			return settlement.town_tier >= int(when["tier"])
 		"settler":
@@ -105,20 +90,15 @@ static func _holds(when: Dictionary, progression: ProgressionState, settlement: 
 			return when["named"] in progression.hunted
 		"delivered":
 			# One of Maren's letters handed over, or its keepsake already
-			# home: an old save is never sent back with it (PIX-253).
+			# won: a hero who ran ahead is never sent back with it (PIX-253).
 			return Letters.delivered(Quests.by_id(when["questId"]), progression)
-		"climbed":
-			# Any of the old mountain's floors cleared (PIX-257): a hero
-			# who went up before the mountain's gate was barred, or before
-			# the floors left play, is past the gate.
-			return not progression.cleared_levels.is_empty()
 		"bells":
 			# A beat of the Night of Bells (PIX-253 step 9): met while the
 			# night runs past it, or once the collar is off.
 			return Bells.step_met(when, progression)
 		"chosen":
-			# Morvax's choice made (PIX-253 step 10): an ending in the
-			# story ledger, his two or the old throne's.
+			# Morvax's choice made (PIX-253 step 10): one of his two
+			# endings in the story ledger.
 			return Story.ending_of(progression.story_seen) != ""
 		"unbuilt":
 			# A step the story hasn't written yet (PIX-253 steps 8 and 9
@@ -132,11 +112,9 @@ static func _holds(when: Dictionary, progression: ProgressionState, settlement: 
 	return false
 
 
-## The step to do next, or {} when the story is done. A chapter the save
-## skips (`skipIf`) is no part of it.
+## The step to do next, or {} when the story is done.
 static func next_step(progression: ProgressionState, settlement: SettlementState) -> Dictionary:
-	var all := steps().filter(func(step: Dictionary) -> bool:
-		return not step.has("skip_if") or not _holds(step["skip_if"], progression, settlement))
+	var all := steps()
 	var furthest := -1
 	for index in all.size():
 		if not all[index].get("optional", false) and is_met(all[index], progression, settlement):
@@ -152,9 +130,8 @@ static func next_step(progression: ProgressionState, settlement: SettlementState
 ## since): once the fifth letter is delivered, the title of the
 ## chapter where the story runs out for this hero - the one its next step
 ## waits in while that step isn't written (`unbuilt`), or, with no step
-## left, the first chapter this hero plays that has none yet (home, for a
-## hero who skips the Night of Bells); "" while there's a step to take, or
-## before the fifth letter.
+## left, the first chapter that has none yet; "" while there's a step to
+## take, or before the fifth letter.
 static func continued(progression: ProgressionState, settlement: SettlementState) -> String:
 	if not progression.quests.get(Letters.fifth_quest()["id"], {}).get("done", false):
 		return ""
@@ -162,7 +139,7 @@ static func continued(progression: ProgressionState, settlement: SettlementState
 	if not step.is_empty():
 		return String(step["chapter"]) if step["when"]["kind"] == "unbuilt" else ""
 	for number in range(1, chapters().size() + 1):
-		if chapters()[number - 1]["steps"].is_empty() and not skips(number, progression, settlement):
+		if chapters()[number - 1]["steps"].is_empty():
 			return title_of(number)
 	return ""
 

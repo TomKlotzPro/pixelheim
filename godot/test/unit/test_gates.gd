@@ -9,7 +9,6 @@ extends GutTest
 ## worked out from what the save holds.
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
-const LATE := "res://test/fixtures/web_save_late.json"
 const ORDER := ["cliff", "bridge", "barricade", "avalanche"]
 ## The region each gate stands before, and the maps past it.
 const REGIONS := {"cliff": "saltmere", "bridge": "blackiron", "barricade": "greyhold", "avalanche": "frostgate"}
@@ -187,10 +186,6 @@ func test_an_old_save_at_each_stage_finds_what_it_earned_open() -> void:
 	assert_eq(_open(_reloaded()), ["cliff", "bridge", "barricade"], "after the ingot")
 	state.progression.hunted.append("hollow_captain")
 	assert_eq(_open(_reloaded()), ORDER, "after the shield")
-	var late: Node = autofree(GameStateScript.new())
-	late.apply(SaveCodec.parse_any(FileAccess.get_file_as_string(LATE)))
-	assert_false(late.world.discovered.is_empty(), "the late web hero has walked")
-	assert_eq(_open(late), ORDER, "the late web hero who beat Morvax: every way in open")
 
 
 func test_a_hero_already_past_a_gate_finds_it_open() -> void:
@@ -219,11 +214,8 @@ func test_a_hero_already_past_a_gate_finds_it_open() -> void:
 	state.progression.quests["letter_hale"] = {"progress": 1, "done": true}
 	assert_eq(_open(), ["cliff", "bridge", "barricade"], "Captain Hale's letter delivered")
 	before_each()
-	state.progression.cleared_levels.append(1)
-	assert_eq(_open(), ORDER, "a floor of the mountain cleared")
-	before_each()
-	state.progression.deepest = 1
-	assert_eq(_open(), ORDER, "down in the Deep Hunt")
+	state.mark_seen(Letters.confession_id())
+	assert_eq(_open(), ORDER, "past the mountain's own gate")
 
 
 # ---- Saying what opens it ----------------------------------------------------------

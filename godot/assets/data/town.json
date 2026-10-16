@@ -218,7 +218,6 @@
         {
           "kind": "relics",
           "count": 2,
-          "orCleared": 5,
           "line": "Hope comes home: bring two of the relics back to Pixelheim"
         },
         {
@@ -461,7 +460,6 @@
         {
           "kind": "relics",
           "count": 4,
-          "orCleared": 10,
           "line": "The five come home: bring all four relics to Maren. The fountain will still want Fafnyr's scale"
         }
       ],
@@ -835,12 +833,11 @@
       "requires": [
         {
           "kind": "freed",
-          "orCleared": 15,
           "line": "The dragon comes back: hold the square till dawn and set him free"
         }
       ],
       "opens": {
-        "about": "PIX-253 step 10: the City is the age after the Night of Bells. It asks for the dragon freed (the collar's scene in the story ledger), or slain on the old mountain by a hero who never had the night, or the old floor 15 for a hero who cast Morvax down (`orCleared`); once the Town is finished and it stands open, the town's tour ends at the board with these words.",
+        "about": "PIX-253 step 10: the City is the age after the Night of Bells. It asks for the dragon freed (the collar's scene in the story ledger); once the Town is finished and it stands open, the town's tour ends at the board with these words.",
         "line": "The mountain is quiet, and the whole Reach has heard of Pixelheim: it can grow into a City.",
         "detail": "The grand avenue and the flower beds wait on the board."
       },
@@ -994,52 +991,6 @@
     },
     "gem": {
       "label": "+10% shop sell price while displayed"
-    },
-    "deep_crystal_5": {
-      "label": "+2 END while displayed",
-      "stats": {
-        "endurance": 2
-      }
-    },
-    "deep_crystal_10": {
-      "label": "+2 STR while displayed",
-      "stats": {
-        "strength": 2
-      }
-    },
-    "deep_crystal_15": {
-      "label": "+2 DEX while displayed",
-      "stats": {
-        "dexterity": 2
-      }
-    },
-    "deep_crystal_20": {
-      "label": "+2 INT while displayed",
-      "stats": {
-        "intelligence": 2
-      }
-    },
-    "deep_crystal_30": {
-      "label": "+3 DEF while displayed",
-      "stats": {
-        "defense": 3
-      }
-    },
-    "deep_crystal_50": {
-      "label": "+2 to every stat while displayed",
-      "stats": {
-        "strength": 2,
-        "intelligence": 2,
-        "dexterity": 2,
-        "defense": 2,
-        "endurance": 2
-      }
-    },
-    "medal_ten_below": {
-      "label": "A feat, displayed with pride"
-    },
-    "medal_thirty_below": {
-      "label": "A feat, displayed with pride"
     },
     "medal_every_bounty": {
       "label": "A feat, displayed with pride"

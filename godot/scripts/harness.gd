@@ -710,15 +710,6 @@ func _run_test_harness() -> void:
 		# `--settlers iva,wren`: recruits already living in town.
 		for short: String in flags.list("--settlers"):
 			GameState.settlement.settlers.append("settler_" + short)
-	if flags.has("--cleared"):
-		# `--cleared N`: floors 1 to N beaten, for the main quest's later chapters.
-		var deepest := int(flags.value("--cleared"))
-		for level in range(1, deepest + 1):
-			if level not in GameState.progression.cleared_levels:
-				GameState.progression.cleared_levels.append(level)
-		GameState.progression.unlocked_level = maxi(GameState.progression.unlocked_level, mini(deepest + 1, Catalog.level_count()))
-		# The named monsters those floors post come out to their lairs (PIX-156).
-		world.foes.spawn_lairs()
 	if flags.has("festival"):
 		# A festival day (PIX-159): the town comes back with its stalls, its
 		# barker and confetti, everyone on the square.
@@ -743,7 +734,7 @@ func _run_test_harness() -> void:
 		# map drawn whole.
 		Atlas.walk_all(GameState.world.discovered)
 	if flags.has("worldmap"):
-		# After `--cleared`: the lairs it posts are on the map.
+		# The map over the world: the lairs the board posts on it (`--hunted`).
 		var screen := preload("res://scripts/map_screen.gd").new()
 		screen.world = world
 		world.add_child(screen)
@@ -876,7 +867,8 @@ func _run_test_harness() -> void:
 		# there (PIX-171). Her tin opened, and the satchel's letters: Wenna's
 		# answered with the ladle home, Pell's handed over, two still to
 		# deliver (PIX-253 step 2). `--tab letters|feats` opens that page
-		# (PIX-239); `--cleared 4` puts notices on the board for its bounties.
+		# (PIX-239); `--hunted seam_warden`, a second relic, posts the next
+		# notice on the board for its bounties (PIX-170).
 		GameState.progression.quests.merge({
 			"slime_trouble": {"progress": 2, "done": false},
 			"cheese_run": {"progress": 0, "done": false},

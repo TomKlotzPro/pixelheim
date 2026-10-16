@@ -53,7 +53,7 @@ func before_all() -> void:
 func stock_at(mark: String) -> Array:
 	var spec: Dictionary = MARKS[mark]
 	var stock := {}
-	for item_id: String in Economy.shop_stock("smith", Economy.stock_stage(0, int(spec["relics"])), int(spec["tier"])):
+	for item_id: String in Economy.shop_stock("smith", Economy.stock_stage(int(spec["relics"])), int(spec["tier"])):
 		stock[item_id] = true
 	for shop_id: String in spec["shops"]:
 		for item_id: String in Economy.shop_stock(shop_id, 99, 0):

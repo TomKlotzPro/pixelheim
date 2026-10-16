@@ -143,9 +143,5 @@
     "chests": [],
     "slain": []
   },
-  "buffs": {},
-  "legacy": {
-    "unlockedLevel": 1,
-    "clearedLevels": []
-  }
+  "buffs": {}
 }

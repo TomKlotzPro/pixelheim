@@ -2,9 +2,7 @@ class_name SaveCodec
 ## Pixelheim's own save format, v5 (PIX-302): one JSON file a slot, a
 ## section for each part of the game - `hero`, `pack`, `home`, `town`,
 ## `story`, `quests`, `world`, `post` (the Pixelheim Post's, PIX-320, once
-## it holds anything), `buffs`, and `legacy` for what only old
-## saves still read (the old mountain's floors, the Deep Hunt, the throne's
-## endings; PIX-319 takes them out) - under a `card` the Saves screen reads
+## it holds anything) and `buffs` - under a `card` the Saves screen reads
 ## without the rest, the play time and the game's version. The fog of war is
 ## a bitmap per map (`WorldState.pack_fog`). `PXH2.` save codes are that
 ## file compressed, with a checksum, so a code cut short or changed is
@@ -12,9 +10,11 @@ class_name SaveCodec
 ##
 ## No older save loads until the beta (Tom, 2026-10-16): a file or a code
 ## from before v5 (the first edition's v1-v4 envelope, `PXH1.` codes) is
-## said to be older and plays no one. Until then a field that needs more
-## than an empty default bumps VERSION, with no migration (said in the
-## release note); from the beta, compatibility comes back.
+## said to be older and plays no one, and nothing reads what only an old
+## save held (PIX-319: the old mountain's floors, the Deep Hunt, the old
+## throne's endings, the first edition's catch-ups). Until then a field
+## that needs more than an empty default bumps VERSION, with no migration
+## (said in the release note); from the beta, compatibility comes back.
 ##
 ## In play the state is one Dictionary in the game's own keys (`to_dict`
 ## and `apply` in GameState, the sections' from_dict/write_into): `to_file`
@@ -36,11 +36,6 @@ const NOT_A_SAVE := "none"
 ## A code's file is never bigger than this (a fully explored hero's is a
 ## few tens of KB): a code claiming more is refused before it's unpacked.
 const MAX_CODE_BYTES := 8 * 1024 * 1024
-## Never resume mid-battle or mid-menu; wake up back in the world.
-const RESUME_INTO := {
-	"screen": "world", "battle": null, "openPanel": null, "dungeonSelect": null,
-	"worldMessage": null, "dialogue": null,
-}
 ## The hero's numbers, the same name in the state and the file.
 const HERO_NUMBERS := ["level", "xp", "xpToNext", "hp", "mp", "stats", "statPoints", "skillPoints"]
 ## The hero's skills: the state's key -> the file's (hero.skills).
@@ -57,11 +52,9 @@ static var _game := ""
 ## A new game's state before a hero is made.
 static func initial_state() -> Dictionary:
 	return {
-		"screen": "title", "hero": null, "gold": 0, "inventory": {}, "gear": [], "equipped": {},
-		"unlockedLevel": 1, "clearedLevels": [], "battle": null, "openPanel": null,
+		"hero": null, "gold": 0, "inventory": {}, "gear": [], "equipped": {},
 		"house": {"owned": false, "storage": {}}, "properties": [], "townTier": 1, "settlers": [],
-		"quests": {}, "world": null, "dungeonSelect": null,
-		"worldMessage": null, "worldSteps": 0, "dialogue": null, "playSeconds": 0,
+		"quests": {}, "world": null, "worldSteps": 0, "playSeconds": 0,
 	}
 
 
@@ -147,16 +140,7 @@ static func to_file(state: Dictionary, saved_at := 0) -> Dictionary:
 			town["invested"] = rest
 
 	var story := {}
-	var legacy := {"unlockedLevel": state["unlockedLevel"], "clearedLevels": state["clearedLevels"]}
-	_put(legacy, "deepHunt", state.get("deepHunt"))
-	var seen: Variant = state.get("storySeen")
-	if seen is Array:
-		# The old throne's endings are an old save's: legacy's, not the story's.
-		var old := Story.old_endings()
-		story["seen"] = seen.filter(func(id: Variant) -> bool: return not String(id) in old)
-		var endings: Array = seen.filter(func(id: Variant) -> bool: return String(id) in old)
-		if not endings.is_empty():
-			legacy["endings"] = endings
+	_put(story, "seen", state.get("storySeen"))
 	_put(story, "prologue", state.get("prologue"))
 	_put(story, "doused", state.get("prologueDoused"))
 	# The Night of Bells while it runs (PIX-302 step 4): its beat, the
@@ -198,7 +182,6 @@ static func to_file(state: Dictionary, saved_at := 0) -> Dictionary:
 	# anything.
 	_put(doc, "post", state.get("post"))
 	doc["buffs"] = buffs
-	doc["legacy"] = legacy
 	return doc
 
 
@@ -277,16 +260,10 @@ static func from_file(raw: Variant) -> Dictionary:
 		state["investments"] = invested
 
 	var story := _section(doc, "story")
-	var legacy := _section(doc, "legacy")
-	var seen: Array = story.get("seen", []) + legacy.get("endings", [])
-	if story.has("seen") or not seen.is_empty():
-		state["storySeen"] = seen
+	_put(state, "storySeen", story.get("seen"))
 	_put(state, "prologue", story.get("prologue"))
 	_put(state, "prologueDoused", story.get("doused"))
 	_put(state, "bells", story.get("night") if story.get("night") is Dictionary else null)
-	state["unlockedLevel"] = legacy.get("unlockedLevel", 1)
-	state["clearedLevels"] = legacy.get("clearedLevels", [])
-	_put(state, "deepHunt", legacy.get("deepHunt"))
 
 	var quests := _section(doc, "quests")
 	state["quests"] = quests.get("ledger", {})
@@ -346,57 +323,22 @@ static func decodes(text: String) -> bool:
 		and valid_hero({
 			"name": hero.get("name"), "roleId": hero.get("role"), "level": hero.get("level"), "xp": hero.get("xp"),
 			"xpToNext": hero.get("xpToNext"), "hp": hero.get("hp"), "mp": hero.get("mp"), "stats": hero.get("stats"),
+			"statPoints": hero.get("statPoints"), "skillPoints": hero.get("skillPoints"), "jobs": hero.get("jobs"),
 		})
 		and _section(_section(doc, "world"), "at").get("map") is String
 	)
 
 
 ## Rebases a state on the current defaults: a field with an empty default
-## needs no version bump, it picks it up here.
+## needs no version bump, it picks it up here. A save with nowhere to stand
+## wakes up in town.
 static func normalize(state: Dictionary) -> Dictionary:
 	if not valid_hero(state.get("hero")):
 		return {}
 	var save := initial_state()
 	save.merge(state, true)
-	save.merge(RESUME_INTO, true)
-	var hero: Dictionary = save["hero"]
-	# Heroes from before spendable growth start banking from their next level.
-	if not hero.has("statPoints"):
-		hero["statPoints"] = 0
-	# Heroes from before professions start every job at level 1.
-	if not hero.has("jobs"):
-		hero["jobs"] = HeroState.fresh_jobs()
-	# Heroes from before the endurance stat get their role's base grit.
-	if not hero["stats"].has("endurance"):
-		hero["stats"]["endurance"] = Catalog.role(hero["roleId"])["baseStats"]["endurance"]
-	# Heroes from before the skill tree keep the skills their level had earned
-	# under the old gates (1/3/6) and bank the leftover points retroactively.
-	if not hero.has("skillNodes"):
-		var roots := Catalog.skill_roots(hero["roleId"])
-		var owned := [roots[0]]
-		if hero["level"] >= 3 and roots.size() > 1:
-			owned.append(roots[1])
-		if hero["level"] >= 6 and roots.size() > 2:
-			owned.append(roots[2])
-		hero["skillNodes"] = owned
-		hero["skillPoints"] = maxi(0, hero["level"] - 1 - (owned.size() - 1))
-	# Heroes who levelled before casters and rogues grew sturdier (PIX-185)
-	# catch up, the difference healed in too; it only ever raises.
-	var grown := HeroRules.grown_hp(hero)
-	if grown > int(hero["stats"]["maxHp"]):
-		hero["hp"] = int(hero["hp"]) + grown - int(hero["stats"]["maxHp"])
-		hero["stats"]["maxHp"] = grown
-	# Saves from before visible monsters have no kill ledger for the map.
-	if save["world"] is Dictionary and not save["world"].has("slain"):
-		save["world"]["slain"] = []
-	# A save with nowhere to stand wakes up in town.
 	if not save["world"] is Dictionary:
 		save["world"] = fresh_world()
-	# New floors must open for players who cleared the old final floor.
-	var max_cleared := 0
-	for level: int in save["clearedLevels"]:
-		max_cleared = maxi(max_cleared, level)
-	save["unlockedLevel"] = maxi(save["unlockedLevel"], mini(max_cleared + 1, Catalog.level_count()))
 	return save
 
 
@@ -413,14 +355,16 @@ static func fresh_world() -> Dictionary:
 	}
 
 
-## A hero the game could not play (a field missing, an unknown role) is refused.
+## A hero the game could not play (a field missing, an unknown role) is
+## refused: nothing patches one up (PIX-319: the first edition's heroes
+## caught up as they loaded; a v5 file has every field).
 static func valid_hero(hero: Variant) -> bool:
 	if not hero is Dictionary:
 		return false
-	for key in ["name", "roleId", "level", "xp", "xpToNext", "hp", "mp"]:
+	for key in ["name", "roleId", "level", "xp", "xpToNext", "hp", "mp", "statPoints", "skillPoints"]:
 		if hero.get(key) == null:
 			return false
-	return hero.get("stats") is Dictionary and not Catalog.role(str(hero["roleId"])).is_empty()
+	return hero.get("stats") is Dictionary and hero.get("jobs") is Dictionary and not Catalog.role(str(hero["roleId"])).is_empty()
 
 
 ## A copy-pastable code, to carry a hero to another computer or browser:

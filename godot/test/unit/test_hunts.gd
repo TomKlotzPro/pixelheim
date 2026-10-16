@@ -135,12 +135,11 @@ func test_the_slain_are_kept_in_the_save_and_only_once_there_are_any() -> void:
 
 
 ## Grandmother Gulp is posted once Pixelheim is a Town (PIX-257: she waited
-## on the old floor 12 before), or for an old save that cleared it.
+## on the old floor 12 before).
 func test_gulp_is_posted_at_the_town_age() -> void:
 	var gulp := Hunts.named("gulp")
-	assert_eq(Hunts.status(gulp, Hunts.board_floors([], 4, 2), []), "", "not in the Village")
-	assert_eq(Hunts.status(gulp, Hunts.board_floors([], 4, 3), []), "wanted", "the Town posts her")
-	assert_eq(Hunts.status(gulp, Hunts.board_floors([12], 0, 0), []), "wanted", "an old save's floor 12 did")
+	assert_eq(Hunts.status(gulp, Hunts.board_floors(4, 2), []), "", "not in the Village")
+	assert_eq(Hunts.status(gulp, Hunts.board_floors(4, 3), []), "wanted", "the Town posts her")
 	assert_eq(preload("res://scripts/bounty_screen.gd")._when(gulp), "Pixelheim has grown into a town")
 	state.settlement.town_tier = 3
 	assert_has(Hunts.notices(state.questing.board_floors(), []).map(func(entry: Dictionary) -> String: return entry["id"]), "gulp")

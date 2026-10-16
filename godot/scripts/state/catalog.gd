@@ -34,10 +34,6 @@ static func place_name(map_id: String) -> String:
 	return _data()["places"].get(map_id, map_id.capitalize())
 
 
-static func level_count() -> int:
-	return _data()["levelCount"]
-
-
 ## {mapId, x, y, facing}: where new heroes wake (TOWN_SPAWN in shared.ts).
 static func town_spawn() -> Dictionary:
 	return _data()["townSpawn"]

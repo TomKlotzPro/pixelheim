@@ -73,14 +73,14 @@ func test_e_moves_on_without_ending() -> void:
 
 ## The story's big moments (PIX-32): each names a scene that exists. The
 ## old floors' own (a boss's intro, a floor's first clear) left play with
-## them (PIX-257).
+## them (PIX-257), and the old throne's endings with the old saves (PIX-319).
 func test_every_moment_plays_a_scene_that_exists() -> void:
-	for key: String in ["victory", "victory:rest"]:
+	for key: String in ["ending:home", "ending:stay"]:
 		var scene_id := Cutscene.moment(key)
 		assert_ne(scene_id, "", "%s has a moment" % key)
 		assert_true(Cutscene.scenes().has(scene_id), "%s plays %s" % [key, scene_id])
-	for key: String in ["boss:dragon", "boss:lich", "cleared:3", "cleared:7", "cleared:10"]:
-		assert_eq(Cutscene.moment(key), "", "%s left play with the old floors" % key)
+	for key: String in ["boss:dragon", "boss:lich", "cleared:3", "cleared:7", "cleared:10", "victory", "victory:rest"]:
+		assert_eq(Cutscene.moment(key), "", "%s left play" % key)
 
 
 func test_a_seen_moment_is_kept_in_the_save_and_only_once() -> void:
@@ -92,8 +92,6 @@ func test_a_seen_moment_is_kept_in_the_save_and_only_once() -> void:
 	var written := {}
 	state.write_into(written)
 	assert_eq(written["storySeen"], ["fafnyr"])
-	written["unlockedLevel"] = 1
-	written["clearedLevels"] = []
 	written["quests"] = {}
 	var back := ProgressionState.from_dict(written)
 	assert_eq(back.story_seen, ["fafnyr"] as Array[String])

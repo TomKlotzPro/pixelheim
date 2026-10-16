@@ -1,9 +1,8 @@
 extends GutTest
 ## How it ends: Morvax's choice (PIX-253 step 10), "Come home." or "Stay
-## with them.", each an ending with its scene and credits; an old save's
-## ending at his throne (PIX-157), destroyed or laid to rest, kept with
-## Maren's own last words for it. And the settlers' arcs: two asks after
-## moving in, the last growing their perk.
+## with them.", each an ending with its scene and credits (the old throne's
+## two left with the old saves, PIX-319). And the settlers' arcs: two asks
+## after moving in, the last growing their perk.
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
 const RECRUITS := ["settler_iva", "settler_wren", "settler_loras", "settler_mirelle"]
@@ -21,13 +20,12 @@ func test_the_ending_is_whichever_was_played() -> void:
 	assert_eq(Story.ending_of([]), "")
 	assert_eq(Story.ending_of(["ending_home"]), "home")
 	assert_eq(Story.ending_of(["ending_stay"]), "stay")
-	# An old save's, at the throne.
-	assert_eq(Story.ending_of(["ending"]), "destroy", "the old single ending destroyed him")
-	assert_eq(Story.ending_of(["ending_rest"]), "rest")
-	for choice: String in ["home", "stay", "destroy", "rest"]:
+	assert_eq(Story.ending_of(["ending", "ending_rest"]), "", "the old throne's endings are no ending now")
+	for choice: String in ["home", "stay"]:
 		assert_true(Cutscene.scenes().has(Story.ending_scene(choice)), "%s has its scene" % choice)
 	assert_ne(Story.ending_scene("home"), Story.ending_scene("stay"))
-	assert_ne(Story.ending_scene("home"), Story.ending_scene("destroy"), "Morvax's choice has endings of its own: an old save's stays apart")
+	for gone: String in ["ending", "ending_rest", "vault_door_quiet"]:
+		assert_false(Cutscene.scenes().has(gone), "%s left with the old saves" % gone)
 
 
 ## Both of Morvax's endings roll the credits with the cheese wheels and end
@@ -46,15 +44,6 @@ func test_morvaxs_endings_end_on_the_credits() -> void:
 	assert_eq(stay[-1]["text"], "That night there were five lanterns on the square, and one more up on the mountain.")
 	var home: Array = Cutscene.scenes()[Story.ending_scene("home")].filter(func(step: Dictionary) -> bool: return step["kind"] == "caption")
 	assert_string_contains(home[0]["text"], "bench by the fountain")
-
-
-func test_maren_has_last_words_for_each_ending() -> void:
-	var all_floors := range(1, 16)
-	var told := ["maren_graves", "maren_seal", "maren_confession"]
-	assert_eq(Story.elder_story(all_floors, told), {}, "nothing new before the ending")
-	assert_eq(Story.elder_story(all_floors, told + ["ending_rest"])["id"], "maren_peace")
-	assert_eq(Story.elder_story(all_floors, told + ["ending"])["id"], "maren_after")
-	assert_string_contains(Story.elder_story(all_floors, told + ["ending_rest"])["lines"][0], "right to run")
 
 
 func test_each_recruit_has_a_two_step_arc_ending_in_their_perk() -> void:

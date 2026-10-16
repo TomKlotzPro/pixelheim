@@ -5,8 +5,7 @@ extends GutTest
 ## townsfolk at a job only where that one lives in Pixelheim; at dawn, or
 ## worn down to his share, he stands down, the collar comes off, his scale
 ## builds the fountain and the day begins. The night is saved as it goes
-## and a save made in it resumes at its beat (PIX-302 step 4); a hero who
-## slew Fafnyr on the old mountain never sees it.
+## and a save made in it resumes at its beat (PIX-302 step 4).
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
 const NightLight := preload("res://test/unit/test_night_light.gd")
@@ -364,20 +363,7 @@ func test_the_fountain_finishes_the_town_when_it_is_the_last_of_it() -> void:
 	assert_has(state.reveals, "age:3")
 
 
-# ---- Old saves ------------------------------------------------------------------
-
-## A hero who slew Fafnyr on the old mountain keeps him slain (step 8): no
-## night at all, Morvax's choice next - and their fountain is as it was,
-## theirs to build with the scale they won.
-func test_a_dragon_slayer_never_sees_the_night() -> void:
-	_home_from_the_forge()
-	state.progression.cleared_levels.assign(range(1, 11))
-	assert_true(MainQuest.skips(7, state.progression, state.settlement))
-	assert_false(Bells.due(state.progression, state.settlement))
-	assert_eq(_next(), "morvax_choice")
-	assert_false(Town.done_projects(state.settlement).has("fountain"), "no scale left in it for them")
-	assert_true(Town.project("fountain")["cost"]["items"].has("dragon_scale"), "the board still asks the scale they won")
-
+# ---- Saved in the night ---------------------------------------------------------
 
 ## A save made in the night (it autosaves as a hero walks, and each beat is
 ## kept at once) resumes at its beat (PIX-302 step 4, Tom: yes, at the beat
@@ -446,13 +432,6 @@ func test_a_save_in_town_on_the_run_home_begins_the_night() -> void:
 		assert_eq(hero.world.map_id, "town", fixture)
 		assert_eq(_next(hero), "run_home", "%s: the run home next" % fixture)
 		assert_true(Bells.due(hero.progression, hero.settlement), "%s: the bell rings" % fixture)
-
-
-func test_the_late_web_hero_keeps_their_story_told() -> void:
-	var late := SaveCodec.parse_any(FileAccess.get_file_as_string("res://test/fixtures/web_save_late.json"))
-	state.apply(late.duplicate(true))
-	assert_false(Bells.due(state.progression, state.settlement), "no night for the hero who cast Morvax down")
-	assert_eq(_next(), "", "their story is told")
 
 
 # ---- The scenes -----------------------------------------------------------------

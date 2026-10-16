@@ -7,7 +7,7 @@ class_name Letters
 ## Pell at Blackiron, Captain Hale at Greyhold and Aske on the Frostgate -
 ## and each is answered as it's handed over; the fifth, to Morvax, stays
 ## with her. A letter is a quest of the "deliverTo" kind: Maren's, carried
-## to someone else (Quests). Old saves are never sent back with one: a
+## to someone else (Quests). A hero who ran ahead is never sent back with one: a
 ## letter whose keepsake is already won counts as delivered, and a hero past
 ## the night who never saw the tin gets the letters at the first word with
 ## Maren. Pure, over progression.json's "letters"; Questing gives them out
@@ -173,12 +173,10 @@ static func confession_lines() -> Array:
 
 
 ## Whether Maren has the fifth letter to give now: the story's next step is
-## to hear her out (the four keepsakes home), or to deliver it while she
-## still keeps it (a hero who heard her old confession, after the dragon
-## on the old mountain). As she says so, it's given (Questing.hear_out).
+## to hear her out (the four keepsakes home). As she says it all, it's
+## given (Questing.hear_out).
 static func fifth_due(progression: ProgressionState, settlement: SettlementState) -> bool:
-	return confession_due(progression, settlement) or (
-		_next_waits_on(fifth_quest()["id"], progression, settlement) and fifth_kept(progression))
+	return confession_due(progression, settlement)
 
 
 ## Whether the next word with Maren is her confession: the main quest's
@@ -188,51 +186,23 @@ static func confession_due(progression: ProgressionState, settlement: Settlement
 	return not step.is_empty() and step["when"]["kind"] == "seen" and String(step["when"]["sceneId"]) == confession_id()
 
 
-static func _next_waits_on(quest_id: String, progression: ProgressionState, settlement: SettlementState) -> bool:
-	var step := MainQuest.next_step(progression, settlement)
-	return not step.is_empty() and step["when"]["kind"] == "delivered" and String(step["when"]["questId"]) == quest_id
-
-
-## What Maren says giving it: the whole story, or for a hero who heard it
-## before (her old confession, after the old mountain's dragon) a word.
-static func fifth_lines(progression: ProgressionState, settlement: SettlementState) -> Array:
-	return confession_lines() if confession_due(progression, settlement) else fifth()["late"]
-
-
-## Whether a letter's answer goes its other way for this hero (`slain`):
-## a hero who slew Fafnyr on the old mountain keeps him slain, and the
-## mountain stays quiet when Morvax reads his (PIX-253 step 8).
-static func _slain(quest: Dictionary, progression: ProgressionState, settlement: SettlementState) -> bool:
-	return quest.has("slain") and MainQuest.skips(_night_of_bells(), progression, settlement)
-
-
-## The chapter a dragon-slayer skips (the Night of Bells): the first that
-## says what skips it.
-static func _night_of_bells() -> int:
-	for number in range(1, MainQuest.chapters().size() + 1):
-		if MainQuest.chapters()[number - 1].has("skipIf"):
-			return number
-	return 0
-
-
-## A letter's answer as its recipient reads it (its `slain` one for a hero
-## who slew the dragon).
-static func answer(quest: Dictionary, progression: ProgressionState, settlement: SettlementState) -> Array:
-	return quest["slain"]["answer"] if _slain(quest, progression, settlement) else quest["answer"]
+## A letter's answer as its recipient reads it.
+static func answer(quest: Dictionary) -> Array:
+	return quest["answer"]
 
 
 ## What the recipient says after a moment, once the answer is read: the
 ## mountain shaking under Morvax's forge (`quake`), or nothing.
-static func then_lines(quest: Dictionary, progression: ProgressionState, settlement: SettlementState) -> Array:
-	return [] if _slain(quest, progression, settlement) else quest.get("quake", [])
+static func then_lines(quest: Dictionary) -> Array:
+	return quest.get("quake", [])
 
 
 ## What `npc_id` says once a letter carried to them is answered (`after`),
 ## or [] when they say as they always did.
-static func after_lines(npc_id: String, progression: ProgressionState, settlement: SettlementState) -> Array:
+static func after_lines(npc_id: String, progression: ProgressionState) -> Array:
 	for quest: Dictionary in Quests.for_recipient(npc_id):
 		if progression.quests.get(quest["id"], {}).get("done", false) and quest.has("after"):
-			return quest["slain"]["after"] if _slain(quest, progression, settlement) else quest["after"]
+			return quest["after"]
 	return []
 
 

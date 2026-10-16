@@ -150,11 +150,6 @@ func _ready() -> void:
 		GameState.progression.quests[first["id"]] = {"progress": 1, "done": true}
 		var wenna := Npcs.by_id(String(first["objective"]["to"]), GameState.settlement.settlers)
 		Discovery.discover_around(GameState.world.discovered, MapData.load_by_id(String(wenna["mapId"])), Vector2i(int(wenna["x"]), int(wenna["y"])))
-	# `--cleared N`: the old mountain's floors 1 to N cleared before the
-	# first map is drawn too, so the gate they open is drawn open (PIX-257).
-	for level in range(1, int(flags.value("--cleared", "0")) + 1):
-		if level not in GameState.progression.cleared_levels:
-			GameState.progression.cleared_levels.append(level)
 	# `--bells N` (PIX-253 step 9): the story at the Night of Bells - the tin
 	# found, the four keepsakes and their families home, Maren heard out,
 	# the fifth letter delivered - in a Village building its Town (unless

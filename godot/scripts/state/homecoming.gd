@@ -1,21 +1,17 @@
 class_name Homecoming
 ## Coming Home (PIX-253 step 10, chapter 8): Morvax's choice and the
-## endings. Once the collar is off he waits by the fountain - at his forge
-## for a hero who slew Fafnyr on the old mountain and never had the night -
-## with one question: "Do they want me back?" The courier's answer is the
-## story's last word. "Come home." plays the festival ending, and he takes
-## a room at the inn and the bench by the fountain and argues with Maren
-## every day; "Stay with them." plays the lanterns ending, and he goes back
-## up to the three and comes down on festival days. Both endings stop at
-## Hilda's forge (Fafnyr warming his belly on her roof, or Hilda alone for
-## a hero who slew him) and at Maren, then roll the credits.
+## endings. Once the collar is off he waits by the fountain with one
+## question: "Do they want me back?" The courier's answer is the story's
+## last word. "Come home." plays the festival ending, and he takes a room at
+## the inn and the bench by the fountain and argues with Maren every day;
+## "Stay with them." plays the lanterns ending, and he goes back up to the
+## three and comes down on festival days. Both endings stop at Hilda's
+## forge (Fafnyr warming his belly on her roof) and at Maren, then roll the
+## credits.
 ##
-## The answer is its ending's scene in the story
-## ledger (story.json's moments `ending:home` and `ending:stay`). A hero who
-## saw the old game's ending (Morvax destroyed or laid to rest at his
-## throne), or the late web hero who cast him down, has the step met and
-## keeps it: nobody asks, and Morvax stays where step 8 left him. Pure,
-## over progression.json's "home"; the world's Stage and Folk act on it.
+## The answer is its ending's scene in the story ledger (story.json's
+## moments `ending:home` and `ending:stay`). Pure, over progression.json's
+## "home"; the world's Stage and Folk act on it.
 
 ## Morvax, by his id in the villagers' data (his forge's).
 const MORVAX := "mountain_morvax"
@@ -45,27 +41,15 @@ static func title() -> String:
 	return String(MainQuest.step("morvax_choice").get("chapter", ""))
 
 
-## What this hero answered Morvax: "home", "stay", or "" - not yet, or an
-## old game's ending (he was destroyed or laid to rest at his throne).
+## What this hero answered Morvax: "home", "stay", or "" - not yet.
 static func chosen(progression: ProgressionState) -> String:
-	var ending := Story.ending_of(progression.story_seen)
-	return ending if ending in [HOME, STAY] else ""
-
-
-## Whether this hero slew Fafnyr on the old mountain: the Night of Bells
-## is the chapter they skip (its `skipIf`).
-static func slew_fafnyr(progression: ProgressionState, settlement: SettlementState) -> bool:
-	for number in range(1, MainQuest.chapters().size() + 1):
-		if MainQuest.chapters()[number - 1].has("skipIf"):
-			return MainQuest.skips(number, progression, settlement)
-	return false
+	return Story.ending_of(progression.story_seen)
 
 
 ## Whether the dragon's night is behind this hero: freed at dawn (the
-## collar off), or slain on the old mountain by a hero who never had the
-## night. The City asks it (town.json's `freed`).
-static func dragon_done(progression: ProgressionState, settlement: SettlementState) -> bool:
-	return Bells.over(progression) or slew_fafnyr(progression, settlement)
+## collar off). The City asks it (town.json's `freed`).
+static func dragon_done(progression: ProgressionState) -> bool:
+	return Bells.over(progression)
 
 
 ## Whether Morvax's question is the story's next step: an ending to choose
@@ -167,12 +151,9 @@ static func reply_at(choice_id: String) -> Vector2i:
 
 
 ## Hilda's forge on the ending's tour: {line, detail} - Fafnyr warming his
-## belly on her roof every morning, or, for a hero who slew him on the old
-## mountain, Hilda lighting it herself.
-static func forge_words(progression: ProgressionState, settlement: SettlementState) -> Dictionary:
+## belly on her roof every morning.
+static func forge_words() -> Dictionary:
 	var forge: Dictionary = data()["forge"]
-	if slew_fafnyr(progression, settlement):
-		return {"line": String(forge["alone"]), "detail": String(forge["aloneDetail"])}
 	return {"line": String(forge["line"]), "detail": String(forge["detail"])}
 
 

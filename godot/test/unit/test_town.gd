@@ -110,7 +110,7 @@ func test_a_project_waits_for_its_age_then_for_its_price() -> void:
 	var blocker := func() -> String:
 		return Town.project_blocker("street_lamps", state.progression, state.settlement, state.pack.gold, state.pack.items)
 	assert_string_contains(blocker.call(), "two of the relics", "PIX-204: no floor named while the gate is barred")
-	state.progression.cleared_levels.append(5)
+	state.progression.hunted.append_array(["tidecaller", "seam_warden"])
 	assert_string_contains(blocker.call(), "settler")
 	state.settlement.settlers.append("settler_iva")
 	state.pack.gold = 100
@@ -125,7 +125,7 @@ func test_a_project_waits_for_its_age_then_for_its_price() -> void:
 func test_the_last_project_of_an_age_raises_the_town() -> void:
 	state.new_game("Robin", "warrior")
 	state.settlement.town_tier = 1
-	state.progression.cleared_levels.append(5)
+	state.progression.hunted.append_array(["tidecaller", "seam_warden"])
 	state.settlement.settlers.append("settler_iva")
 	state.pack.gold = 5000
 	state.pack.items.merge({"marsh_reed": 8, "wolf_pelt": 2})

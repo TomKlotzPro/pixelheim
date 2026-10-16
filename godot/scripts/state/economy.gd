@@ -22,14 +22,14 @@ static func shop_at(map_id: String) -> String:
 	return _data()["shopMaps"].get(map_id, "")
 
 
-## Item ids a shop stocks at a stage (`stock_stage`: floors or relics), catalog
+## Item ids a shop stocks at a stage (`stock_stage`: the relics won), catalog
 ## order; then what the town's age has brought (PIX-159): stock the shop
 ## carries early once Pixelheim has grown, and each age's signature item.
-static func shop_stock(shop_id: String, unlocked_level: int, town_tier := 0) -> Array[String]:
+static func shop_stock(shop_id: String, stage: int, town_tier := 0) -> Array[String]:
 	var stock: Array[String] = []
 	var entries: Dictionary = shop(shop_id).get("stock", {})
 	for item_id: String in entries:
-		if int(entries[item_id]) <= unlocked_level:
+		if int(entries[item_id]) <= stage:
 			stock.append(item_id)
 	var by_age: Dictionary = shop(shop_id).get("ageStock", {})
 	for item_id: String in by_age:
@@ -38,12 +38,12 @@ static func shop_stock(shop_id: String, unlocked_level: int, town_tier := 0) -> 
 	return stock
 
 
-## How far along the shops' stock is (PIX-176): the floors climbed, or -
-## out in the Reach before the mountain - the relics won, each a step up
-## (economy.json "stockByRelics"), whichever is further.
-static func stock_stage(unlocked_level: int, relics: int) -> int:
+## How far along the shops' stock is (PIX-176): the relics won, each a step
+## up (economy.json "stockByRelics"; a shop's stock still counts in the old
+## mountain's floors).
+static func stock_stage(relics: int) -> int:
 	var steps: Array = _data()["stockByRelics"]
-	return maxi(unlocked_level, int(steps[clampi(relics, 0, steps.size() - 1)]))
+	return int(steps[clampi(relics, 0, steps.size() - 1)])
 
 
 ## The age that brings an item to a shop, or 0.

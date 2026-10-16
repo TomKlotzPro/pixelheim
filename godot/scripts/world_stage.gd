@@ -120,7 +120,7 @@ func ascend(title: String) -> void:
 func dream() -> void:
 	if GameState.progression.prologue != Prologue.DONE:
 		return
-	play_story(Story.next_dream(GameState.progression.cleared_levels, GameState.progression.story_seen, GameState.settlement.settlers))
+	play_story(Story.next_dream(GameState.progression.story_seen, GameState.settlement.settlers))
 
 
 ## The Night of Ash on arriving somewhere (PIX-152): on the road, the
@@ -194,7 +194,7 @@ func ask_morvax() -> void:
 ## hero built, the square, Hilda's forge and Maren - and then the story's
 ## ending and credits. The answer sets the evening: a festival with
 ## confetti for "Come home.", five lanterns for the five who climbed for
-## "Stay with them." (the old throne's "destroy" and "rest" the same way).
+## "Stay with them.".
 func play_ending(choice := Homecoming.HOME) -> void:
 	var scene_id := Story.ending_scene(choice)
 	GameState.mark_seen(scene_id)
@@ -203,7 +203,7 @@ func play_ending(choice := Homecoming.HOME) -> void:
 	# Below the fountain, facing the hall.
 	var square := Town.square() + Vector2i(0, 3)
 	world.enter_map(world.map, square)
-	var lanterns := choice in [Homecoming.STAY, "rest"]
+	var lanterns := choice == Homecoming.STAY
 	if lanterns:
 		_lanterns()
 	else:
@@ -229,15 +229,12 @@ func play_ending(choice := Homecoming.HOME) -> void:
 		"line": (Text.t("Five lanterns on the square, one for each of the five who climbed. Tonight the %s remembers them - and %s.")
 			if lanterns else Text.t("Pixelheim, a %s raised from the ashes. Tonight it celebrates %s.")) % [town_name, GameState.hero.hero_name],
 	})
-	if choice in [Homecoming.HOME, Homecoming.STAY]:
-		# Hilda's forge, Fafnyr on its roof (or Hilda alone, for a hero who
-		# slew him on the old mountain), then Maren at her shrine.
-		var forge := Homecoming.forge_words(GameState.progression, GameState.settlement)
-		if not Homecoming.slew_fafnyr(GameState.progression, GameState.settlement):
-			_dragon_on_forge()
-		stops.append({"at": MapView.center(Homecoming.dragon_cell()) + BUILDING_FRAMING, "line": forge["line"], "detail": forge["detail"]})
-		var maren := Npcs.by_id("elder", GameState.settlement.settlers, done)
-		stops.append({"at": MapView.center(Vector2i(int(maren["x"]), int(maren["y"]))), "line": Homecoming.maren_line()})
+	# Hilda's forge, Fafnyr on its roof, then Maren at her shrine.
+	var forge := Homecoming.forge_words()
+	_dragon_on_forge()
+	stops.append({"at": MapView.center(Homecoming.dragon_cell()) + BUILDING_FRAMING, "line": forge["line"], "detail": forge["detail"]})
+	var maren := Npcs.by_id("elder", GameState.settlement.settlers, done)
+	stops.append({"at": MapView.center(Vector2i(int(maren["x"]), int(maren["y"]))), "line": Homecoming.maren_line()})
 	var tour := preload("res://scripts/reveal_screen.gd").new()
 	tour.world = world
 	tour.stops = stops

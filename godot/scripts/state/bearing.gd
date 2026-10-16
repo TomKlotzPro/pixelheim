@@ -16,8 +16,8 @@ const NOWHERE := Vector2i(-1, -1)
 ## person; `named`: a followed bounty's named monster), or {} once the
 ## story is done and nothing is followed. Where its place lies past a gate
 ## still shut (PIX-254), it leads to what opens the gate, in the gate's
-## words (Gates.detour; `discovered`, the save's fog of war, says whether an
-## old hero is already past it).
+## words (Gates.detour; `discovered`, the save's fog of war, says whether the
+## hero is already past it).
 static func active(progression: ProgressionState, settlement: SettlementState, items: Dictionary, discovered: Dictionary = {}) -> Dictionary:
 	if progression.tracked != "":
 		var quest := Quests.by_id(progression.tracked)
@@ -80,11 +80,6 @@ static func of_step(step: Dictionary, progression: ProgressionState, settlement:
 					lead[key] = way[key]
 			else:
 				_at_giver(lead, quest, settlement)
-		"cleared":
-			# The old mountain's floors left play (PIX-257): no gate opens
-			# onto them, and no step of the story asks for one now (a floor
-			# cleared is only an old save's `or`).
-			pass
 		"project", "townTier":
 			_at(lead, "town", Town.project_board())
 		"hunted":
@@ -113,7 +108,7 @@ static func of_step(step: Dictionary, progression: ProgressionState, settlement:
 				_at_tin(lead, progression, settlement)
 		"chosen":
 			# Morvax with his question (PIX-253 step 10): by the fountain
-			# after the collar, at his forge for a hero who slew Fafnyr.
+			# after the collar.
 			var where := Homecoming.place(progression)
 			_at(lead, String(where["mapId"]), Vector2i(int(where["x"]), int(where["y"])))
 			lead["who"] = Homecoming.MORVAX
@@ -182,7 +177,7 @@ static func of_bounty(named: Dictionary) -> Dictionary:
 
 ## The floors the bounty board counts (Hunts.board_floors), read off the save.
 static func board_floors(progression: ProgressionState, settlement: SettlementState) -> Array:
-	return Hunts.board_floors(progression.cleared_levels, Relics.found(progression), settlement.town_tier)
+	return Hunts.board_floors(Relics.found(progression), settlement.town_tier)
 
 
 static func _blank(title: String, step: String) -> Dictionary:

@@ -52,8 +52,9 @@ static func scenes() -> Dictionary:
 	return _story()["scenes"]
 
 
-## The scene a moment of play calls for ("victory", "victory:rest"), or ""
-## (PIX-32; the old floors' own moments left play with them, PIX-257).
+## The scene a moment of play calls for ("ending:home", "ending:stay"), or
+## "" (PIX-32; the old floors' own moments left play with them, PIX-257,
+## and the old throne's with the old saves, PIX-319).
 static func moment(key: String) -> String:
 	return String(_story()["moments"].get(key, ""))
 

@@ -30,7 +30,7 @@ func test_the_villages_plots_are_staked_with_a_builder_each() -> void:
 
 
 func test_a_funded_plot_becomes_its_house_and_the_town_shows_it() -> void:
-	state.progression.cleared_levels.append(5)
+	state.progression.hunted.append_array(["tidecaller", "seam_warden"])
 	state.settlement.settlers.append("settler_iva")
 	state.pack.gold = 2000
 	state.pack.items.merge({"marsh_reed": 8, "wolf_pelt": 2})

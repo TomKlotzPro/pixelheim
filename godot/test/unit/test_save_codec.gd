@@ -6,7 +6,7 @@ extends GutTest
 const GameStateScript := preload("res://scripts/state/game_state.gd")
 const FIXTURES := "res://test/fixtures/"
 ## The sections a file holds, beside its card, version and times.
-const SECTIONS := ["hero", "pack", "home", "town", "story", "quests", "world", "buffs", "legacy"]
+const SECTIONS := ["hero", "pack", "home", "town", "story", "quests", "world", "buffs"]
 
 
 func _game() -> Node:
@@ -39,7 +39,7 @@ func _loaded(text: String) -> Node:
 
 func test_every_fixture_comes_back_from_a_save_the_same() -> void:
 	var fixtures := _fixtures()
-	assert_gt(fixtures.size(), 12, "the loose fixtures and the slots' heroes")
+	assert_gt(fixtures.size(), 10, "the loose fixtures and the slots' heroes")
 	for path in fixtures:
 		var first := _loaded(FileAccess.get_file_as_string(path))
 		var saved := SaveCodec.serialize(SaveCodec.to_file(first.to_dict(), 1))
@@ -63,11 +63,13 @@ func test_a_file_has_its_sections_in_order_and_nothing_left_over() -> void:
 	assert_eq(doc["pixelheim"], SaveCodec.VERSION)
 	assert_eq(doc["game"], SaveCodec.game_version())
 	assert_eq(doc["savedAt"], 7)
-	# The web edition's screens and menus, and its unused intro, are gone.
-	for gone in ["screen", "battle", "openPanel", "dungeonSelect", "worldMessage", "dialogue", "introSeen"]:
+	# The web edition's screens and menus, and its unused intro, are gone,
+	# and the old mountain's floors and the Deep Hunt with the old saves
+	# (PIX-319).
+	for gone in ["screen", "battle", "openPanel", "dungeonSelect", "worldMessage", "dialogue", "introSeen", "clearedLevels", "unlockedLevel", "deepHunt", "legacy"]:
 		assert_eq(_holding(doc, gone), [], gone)
-	assert_eq(_holding(doc, "clearedLevels"), ["legacy"], "the old floors are legacy's")
-	assert_eq(_holding(doc, "unlockedLevel"), ["legacy"])
+	for gone in ["screen", "battle", "openPanel", "dungeonSelect", "worldMessage", "dialogue", "clearedLevels", "unlockedLevel", "deepHunt"]:
+		assert_false(_game().to_dict().has(gone), "%s: not in play either" % gone)
 
 
 ## The sections holding `key` as a field of their own ("" the file itself).
@@ -89,12 +91,11 @@ func test_every_field_a_hero_can_have_finds_its_place_and_comes_back() -> void:
 	game.settlement.projects.assign(["street_lamps"])
 	game.settlement.festival = {"until": 900, "age": 2, "won": false}
 	game.settlement.investments = {"expansions": ["town_shop"], "savings": {"principal": 5, "earned": 1, "at": 2}, "tills": {"town_shop": {"gold": 1, "earned": 2, "at": 3}}, "venture": {"x": 1}, "keepsake": 9}
-	game.progression.story_seen.assign(["chapter_1", "ending"])
+	game.progression.story_seen.assign(["chapter_1", "ending_home"])
 	game.progression.prologue = 3
 	game.progression.prologue_doused.assign([1, 2])
 	game.progression.hunted.assign(["cinderjaw"])
-	game.progression.deepest = 4
-	game.progression.deeds.assign(["deep_10"])
+	game.progression.deeds.assign(["full_set"])
 	game.progression.firsts.assign(["fafnyr_scale"])
 	game.progression.met = {"wolf": 3}
 	game.progression.crafted = {"potion_hp": 2}
@@ -103,8 +104,6 @@ func test_every_field_a_hero_can_have_finds_its_place_and_comes_back() -> void:
 	game.progression.bells_lit.assign([0, 1, 2, 3, 4])
 	game.progression.bells_doused.assign([2])
 	game.progression.bells_embers = 3
-	game.progression.cleared_levels.assign([1, 2])
-	game.progression.unlocked_level = 3
 	game.world.slain_at = {"ash_1": 12}
 	game.world.gathered_at = {"herb_1": 13}
 	game.play_seconds = 4321.7
@@ -115,11 +114,10 @@ func test_every_field_a_hero_can_have_finds_its_place_and_comes_back() -> void:
 	assert_eq(doc["town"]["bank"], {"principal": 5, "earned": 1, "at": 2})
 	assert_eq(doc["town"]["tills"], {"town_shop": {"gold": 1, "earned": 2, "at": 3}})
 	assert_eq(doc["town"]["invested"], {"keepsake": 9}, "the rest of the purse rides along")
-	assert_eq(doc["story"]["seen"], ["chapter_1"])
+	assert_eq(doc["story"]["seen"], ["chapter_1", "ending_home"])
 	assert_eq(doc["story"]["night"], {"beat": Bells.EMBERS, "lit": [0, 1, 2, 3, 4], "doused": [2], "embers": 3}, "the Night of Bells as it stands (PIX-302 step 4)")
-	assert_eq(doc["legacy"]["endings"], ["ending"], "the old throne's ending is legacy's")
-	assert_eq(doc["legacy"]["deepHunt"], 4)
 	assert_eq(doc["quests"]["named"], ["cinderjaw"])
+	assert_eq(doc["quests"]["deeds"], ["full_set"])
 	assert_eq(doc["playSeconds"], 4321)
 	assert_eq_deep(SaveCodec.from_file(SaveCodec.parse_json(SaveCodec.serialize(doc))), state)
 
@@ -130,7 +128,6 @@ func test_what_a_hero_never_had_stays_out_of_the_file() -> void:
 	assert_false(doc["town"].has("invested"))
 	assert_false(doc["story"].has("seen"))
 	assert_false(doc["story"].has("night"), "no Night of Bells running")
-	assert_false(doc["legacy"].has("deepHunt"))
 	assert_false(doc["buffs"].has("rested"))
 	var back := SaveCodec.reread(_game().to_dict())
 	assert_false(back.has("investments"))
@@ -162,8 +159,9 @@ func test_the_cards_chapter_runs_from_the_night_of_ash_to_after_the_story() -> v
 	var game := _game()
 	game.new_game("Bryn", "ranger", 0, true)
 	assert_eq(SaveCodec.card(game.to_dict())["chapter"], 0, "the Night of Ash")
-	var late := _loaded(FileAccess.get_file_as_string(FIXTURES + "web_save_late.json"))
-	assert_eq(SaveCodec.card(late.to_dict())["chapter"], MainQuest.chapters().size() + 1, "the story told")
+	var told := _game()
+	told.mark_seen(Story.ending_scene(Homecoming.HOME))
+	assert_eq(SaveCodec.card(told.to_dict())["chapter"], MainQuest.chapters().size() + 1, "the story told")
 
 
 # ---- Play time -----------------------------------------------------------------------
@@ -255,6 +253,32 @@ func test_a_file_says_its_age() -> void:
 	assert_eq(SaveCodec.age(null), "")
 
 
+## Nothing reads what only an old save held (PIX-319): a v5 file written
+## before it, its `legacy` section holding the old mountain's floors, the
+## Deep Hunt's depth and the old throne's ending, plays a hero who never
+## climbed, and its next save leaves the section out.
+func test_a_files_old_legacy_section_is_read_no_more() -> void:
+	var doc := SaveCodec.to_file(_game().to_dict(), 3)
+	doc["legacy"] = {"unlockedLevel": 15, "clearedLevels": [10, 15], "deepHunt": 12, "endings": ["ending"]}
+	var game := _loaded(SaveCodec.serialize(doc))
+	assert_false(game.to_dict().has("clearedLevels"))
+	assert_eq(Story.ending_of(game.progression.story_seen), "", "no ending seen")
+	assert_false(Relics.gate_open(game.progression), "the mountain's gate shut")
+	assert_false(Vault.door_open(game.progression, game.settlement), "the Vault's door shut")
+	assert_eq(MainQuest.next_step(game.progression, game.settlement)["id"], "tin", "the story from its start")
+	assert_false(SaveCodec.to_file(game.to_dict()).has("legacy"), "and gone from the next save")
+
+
+## A hero missing a field the game reads is refused, not patched up
+## (PIX-319: the first edition's heroes caught up as they loaded).
+func test_a_hero_missing_a_field_is_refused() -> void:
+	for key: String in ["statPoints", "skillPoints", "jobs"]:
+		var doc := SaveCodec.to_file(_game().to_dict())
+		doc["hero"].erase(key)
+		assert_eq(SaveCodec.from_file(doc), {}, "%s missing: no hero to play" % key)
+		assert_false(SaveCodec.decodes(SaveCodec.serialize(doc)), "%s missing: no write lands" % key)
+
+
 func test_only_this_versions_files_load() -> void:
 	var older: Variant = SaveCodec.parse_json(FileAccess.get_file_as_string(FIXTURES + "slots_older/slot_1.json"))
 	assert_eq(SaveCodec.from_file(older), {}, "no migration until the beta")
@@ -282,7 +306,7 @@ func test_decodes_takes_a_whole_v5_file_alone() -> void:
 # ---- PXH2 codes ----------------------------------------------------------------------
 
 func test_a_code_carries_the_hero_whole() -> void:
-	var game := _loaded(FileAccess.get_file_as_string(FIXTURES + "web_save_late.json"))
+	var game := _loaded(FileAccess.get_file_as_string(FIXTURES + "frostweave_mage.json"))
 	game.play_seconds = 99.0
 	var code: String = game.save_code()
 	assert_true(code.begins_with("PXH2."))

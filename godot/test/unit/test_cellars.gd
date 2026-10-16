@@ -316,16 +316,6 @@ func test_a_hero_who_won_the_shield_is_not_asked_to_fight_again() -> void:
 	assert_true(reloaded.holdings.is_settled("greyhold_teo"), "Teo's bell in the hall")
 
 
-func test_the_late_web_save_loads_and_plays() -> void:
-	var late := SaveCodec.parse_any(FileAccess.get_file_as_string("res://test/fixtures/web_save_late.json"))
-	state.apply(late.duplicate(true))
-	var woke := Depths.waking(state.world.map_id, state.world.cell)
-	assert_true(MapData.load_by_id(woke["mapId"]).is_walkable(woke["cell"]), "it wakes on open ground")
-	for map_id: String in FLOORS:
-		assert_gt(MapData.load_by_id(map_id).size.x, 0, "%s loads for it" % map_id)
-	assert_true(Gates.is_open(Gates.by_id("avalanche"), state.progression, state.settlement, state.world.discovered))
-
-
 # ---- Ulla and Teo come home ---------------------------------------------------------
 
 func test_ulla_and_teo_come_home_once_the_letter_is_delivered_and_the_captain_stands_down() -> void:

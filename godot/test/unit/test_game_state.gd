@@ -49,12 +49,6 @@ func test_state_round_trips_through_a_save() -> void:
 	assert_eq(state.to_dict(), before)
 
 
-func test_fields_godot_does_not_play_yet_survive_untouched() -> void:
-	var imported := SaveCodec.parse_any(FileAccess.get_file_as_string("res://test/fixtures/web_save_v4.json"))
-	state.apply(imported)
-	assert_eq(state.to_dict(), imported)
-
-
 func test_gold_chest_pays_once() -> void:
 	var nook := _chest("town_nook")
 	var result: Dictionary = state.spoils.open_chest(nook)
@@ -156,9 +150,3 @@ func test_owned_house_sign_reads_home() -> void:
 	assert_does_not_have(labels, "FOR SALE")
 	state.settlement.house["owned"] = true
 	assert_true(state.household.owns_house())
-
-
-func test_a_late_game_web_save_survives_godot_untouched() -> void:
-	var imported := SaveCodec.parse_any(FileAccess.get_file_as_string("res://test/fixtures/web_save_late.json"))
-	state.apply(imported)
-	assert_eq(state.to_dict(), imported)

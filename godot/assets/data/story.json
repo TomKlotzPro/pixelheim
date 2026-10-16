@@ -390,73 +390,6 @@
         "seconds": 0.4
       }
     ],
-    "ending": [
-      {
-        "kind": "stage",
-        "stage": "village"
-      },
-      {
-        "kind": "fade",
-        "to": "clear",
-        "seconds": 1.6
-      },
-      {
-        "kind": "theme",
-        "name": "ending",
-        "then": "victory"
-      },
-      {
-        "kind": "caption",
-        "text": "You bring the blade down. Morvax the Deathless breaks like old glass, and the dark takes what is left of him.",
-        "hold": 4.0
-      },
-      {
-        "kind": "caption",
-        "text": "{hero} slew Fafnyr the Ashen above and destroyed Morvax the Deathless below.",
-        "hold": 4.0
-      },
-      {
-        "kind": "caption",
-        "text": "The mountain is quiet at last, the tavern is loud, and the cheese has never tasted better.",
-        "hold": 4.0
-      },
-      {
-        "kind": "fade",
-        "to": "black",
-        "seconds": 0.8
-      },
-      {
-        "kind": "stage",
-        "stage": "dark"
-      },
-      {
-        "kind": "fade",
-        "to": "clear",
-        "seconds": 0.2
-      },
-      {
-        "kind": "credits",
-        "seconds": 32,
-        "before": [
-          "PIXELHEIM",
-          "",
-          "A game by Tom Klotz",
-          "Art by Shade (merchant-shade.itch.io)",
-          "",
-          "Starring"
-        ],
-        "after": [
-          "and Infinite Cheese Wheels as themselves",
-          "",
-          "Thank you for staying."
-        ]
-      },
-      {
-        "kind": "fade",
-        "to": "black",
-        "seconds": 0.8
-      }
-    ],
     "dream_courier": [
       {
         "kind": "stage",
@@ -599,78 +532,6 @@
         "kind": "caption",
         "text": "You wake with a crick in your neck, to the street lamps going out one by one: Aske, on his dawn round.",
         "hold": 3.4
-      },
-      {
-        "kind": "fade",
-        "to": "black",
-        "seconds": 0.8
-      }
-    ],
-    "ending_rest": [
-      {
-        "kind": "stage",
-        "stage": "village"
-      },
-      {
-        "kind": "fade",
-        "to": "clear",
-        "seconds": 1.6
-      },
-      {
-        "kind": "theme",
-        "name": "ending_rest",
-        "then": "victory"
-      },
-      {
-        "kind": "caption",
-        "text": "You read him Liane's last page. When you say their names - Tam, Oskar, Liane, Maren - Morvax lowers his hands.",
-        "hold": 4.0
-      },
-      {
-        "kind": "caption",
-        "text": "\"Tell Maren... she was right to run.\" Then he is only dust, and the dead around the throne lie down.",
-        "hold": 4.0
-      },
-      {
-        "kind": "caption",
-        "text": "{hero} slew Fafnyr the Ashen above and laid Morvax, once a hero of Pixelheim, to rest below.",
-        "hold": 4.0
-      },
-      {
-        "kind": "caption",
-        "text": "Five lanterns burn on the square tonight. The tavern is loud, and the cheese has never tasted better.",
-        "hold": 4.0
-      },
-      {
-        "kind": "fade",
-        "to": "black",
-        "seconds": 0.8
-      },
-      {
-        "kind": "stage",
-        "stage": "dark"
-      },
-      {
-        "kind": "fade",
-        "to": "clear",
-        "seconds": 0.2
-      },
-      {
-        "kind": "credits",
-        "seconds": 32,
-        "before": [
-          "PIXELHEIM",
-          "",
-          "A game by Tom Klotz",
-          "Art by Shade (merchant-shade.itch.io)",
-          "",
-          "Starring"
-        ],
-        "after": [
-          "and Infinite Cheese Wheels as themselves",
-          "",
-          "Thank you for staying."
-        ]
       },
       {
         "kind": "fade",
@@ -1069,97 +930,12 @@
         "to": "black",
         "seconds": 0.4
       }
-    ],
-    "vault_door_quiet": [
-      {
-        "kind": "stage",
-        "stage": "lair"
-      },
-      {
-        "kind": "fade",
-        "to": "clear",
-        "seconds": 0.5
-      },
-      {
-        "kind": "caption",
-        "text": "Under the summit, where the dragon lay, the old kings' door stands open on its hinges.",
-        "hold": 3.4
-      },
-      {
-        "kind": "caption",
-        "text": "The hoard is nobody's now. It might as well be yours.",
-        "hold": 3.0
-      },
-      {
-        "kind": "card",
-        "text": "The Kings' Vault",
-        "sub": "Under the summit, the old kings' hoard."
-      },
-      {
-        "kind": "fade",
-        "to": "black",
-        "seconds": 0.4
-      }
     ]
   },
   "moments": {
-    "victory": "ending",
-    "victory:rest": "ending_rest",
     "ending:home": "ending_home",
     "ending:stay": "ending_stay"
   },
-  "lore": [
-    {
-      "floor": 1,
-      "title": "Page I",
-      "text": "We set out at first light, five of us, to renew the Ember Seal. Morvax says it will hold another hundred years once it's done. Tam brought cheese. Of course Tam brought cheese."
-    },
-    {
-      "floor": 3,
-      "title": "Page II",
-      "text": "The crypt is older than the village. I read the walls: kings were buried here before the mountain had a name. Morvax lingered by the gold. He always lingers by the gold."
-    },
-    {
-      "floor": 4,
-      "title": "Page III",
-      "text": "Frosthowl. Oskar carried me the last mile and complained the whole way. Maren laughed for the first time since we left. I'm writing that down so I remember it."
-    },
-    {
-      "floor": 5,
-      "title": "Page IV",
-      "text": "The old seal is cracking. It sits on Fafnyr's chain, a disc of black iron, warm like something asleep. We have to forge a new one in the Sunken Forge and carry it up."
-    },
-    {
-      "floor": 7,
-      "title": "Page V",
-      "text": "We cast the new seal from the old one's mould. Morvax watched the fire for a long time and said: 'Imagine what else could be forged down here.' Nobody answered him."
-    },
-    {
-      "floor": 9,
-      "title": "Page VI",
-      "text": "Fafnyr sleeps. It took all five of us to lift the seal onto the chain. Then Morvax found a stair behind the hoard, going down."
-    },
-    {
-      "floor": 11,
-      "title": "Page VII",
-      "text": "He says the deep holds a power to rebuild the old kingdom. Oskar told him kingdoms are built of people, not gold. They haven't spoken since."
-    },
-    {
-      "floor": 12,
-      "title": "Page VIII",
-      "text": "We followed him down. I wish we hadn't. The dead don't stay dead here. They wait, and they listen to him."
-    },
-    {
-      "floor": 13,
-      "title": "Page IX",
-      "text": "I'm writing in the dark. Tam fell holding the stair. Oskar is still fighting. I told Maren to run, and she ran. Good. Morvax didn't even look back."
-    },
-    {
-      "floor": 14,
-      "title": "Page X",
-      "text": "If anyone finds this: Maren got out. Tell her it wasn't her fault. Tell her to seal the stair. - Liane"
-    }
-  ],
   "elderLines": [
     {
       "id": "maren_tam",
@@ -1206,31 +982,11 @@
         "Some nights I saw a lamp up there. I told myself it was a star. I was too proud to climb, and so was he. Two old fools and a mountain.",
         "(She takes a letter from her sleeve, and the brooch with five marks on it, hers the last.) My promise, courier: the fifth mark. And this. It has an address now."
       ]
-    },
-    {
-      "after": 15,
-      "id": "maren_peace",
-      "lines": [
-        "He said I was right to run? ...Then maybe I can stop running.",
-        "Sit with me a while. The fire's warm, and for once the mountain is quiet."
-      ],
-      "ending": "rest"
-    },
-    {
-      "after": 15,
-      "id": "maren_after",
-      "ending": "destroy",
-      "lines": [
-        "So he's gone. Truly gone.",
-        "Fifty years I hated him, courier. I thought I'd feel lighter when he was dust. ...Maybe tomorrow.",
-        "Go on, the festival is for you. I'll sit by the fire a while."
-      ]
     }
   ],
   "dreams": [
     {
-      "id": "dream_courier",
-      "after": 0
+      "id": "dream_courier"
     },
     {
       "id": "dream_lamps",

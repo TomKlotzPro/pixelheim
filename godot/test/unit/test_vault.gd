@@ -2,18 +2,16 @@ extends GutTest
 ## After the story (PIX-257, the main story's step 11): the Deep Hunt is
 ## retired and the Kings' Vault takes its place. Five floors under the
 ## summit, laid from seeds, reached through a door of black iron on the
-## mountain road that opens once the dragon is freed (or at once for a hero
-## who slew him on the old mountain); each floor harder than the one above,
-## a guardian on each, the very best gear in its chests and forged into its
-## drops. Old saves keep what the Deep Hunt gave them and wake safe; nothing
-## in the world points at the old floors or the Hunt any more.
+## mountain road that opens once the dragon is freed; each floor harder than
+## the one above, a guardian on each, the very best gear in its chests and
+## forged into its drops. Nothing in the world points at the old floors or
+## the Hunt any more, nor keeps what they gave (PIX-319).
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
 const STEPS: Array[Vector2i] = [Vector2i.UP, Vector2i.RIGHT, Vector2i.DOWN, Vector2i.LEFT]
 const FLOORS := ["vault_1", "vault_2", "vault_3", "vault_4", "vault_5"]
 const GUARDIANS := ["hollowmother", "grimshade", "bone_abbot", "ironheart", "hollow_king"]
 const DOOR := Vector2i(12, 2)
-const OLD_DEEP := "res://test/fixtures/old_deep.json"
 
 var state: Node
 
@@ -175,18 +173,6 @@ func test_the_door_waits_for_the_dragon_freed() -> void:
 	assert_eq(Vault.first_word(door, state.progression), Vault.FIRST_WORD, "and he shows the hoard himself")
 
 
-func test_a_hero_who_slew_fafnyr_finds_it_open() -> void:
-	var door: Dictionary = MapData.load_by_id("mountain_road").portals[DOOR]
-	for level: int in [10, 15]:
-		var progression := ProgressionState.new()
-		progression.cleared_levels.append(level)
-		assert_true(Vault.door_open(progression, state.settlement), "floor %d cleared on the old mountain" % level)
-		assert_false(Ways.barred(door, progression, state.settlement))
-		assert_eq(Vault.first_word(door, progression), Vault.QUIET_WORD, "no dragon to show the hoard: the door alone")
-		progression.story_seen.append(Vault.QUIET_WORD)
-		assert_eq(Vault.first_word(door, progression), "", "once")
-
-
 func test_a_whole_chapter_told_is_done() -> void:
 	var settlement := SettlementState.new()
 	assert_false(MainQuest.chapter_done(1, state.progression, settlement))
@@ -207,34 +193,8 @@ func test_fafnyr_shows_the_hoard_he_hated() -> void:
 	var said: Array = scene.filter(func(step: Dictionary) -> bool: return step["kind"] == "caption").map(func(step: Dictionary) -> String: return step["text"])
 	assert_true(said.any(func(line: String) -> bool: return line.contains("It's all corners.")), "Take it. It's all corners.")
 	assert_true(scene.any(func(step: Dictionary) -> bool: return step["kind"] == "actor" and String(step["sheet"]).contains("Dragon")), "Fafnyr himself")
-	assert_false(Cutscene.scenes()[Vault.QUIET_WORD].any(func(step: Dictionary) -> bool: return step["kind"] == "actor"), "no dragon for one who slew him")
-
-
-# ---- Old saves ----------------------------------------------------------------------
-
-## A hero saved deep in the Hunt (PIX-257): the save stood by the
-## Undermountain's old cave, filled in now, so they wake in town, their
-## gear, crystals, crown and medal as they were, the Vault open to them.
-func test_a_hero_from_the_deep_hunt_wakes_safe_with_what_it_gave() -> void:
-	var raw := FileAccess.get_file_as_string(OLD_DEEP)
-	state.apply(SaveCodec.parse_any(raw))
-	assert_eq(state.progression.deepest, 12, "the depth kept, unread")
-	var woke := Depths.waking(state.world.map_id, state.world.cell)
-	assert_eq(woke["mapId"], "town", "by the filled-in cave: home to town")
-	var blade: Dictionary = state.pack.gear_by_uid(state.pack.equipped["weapon"])
-	assert_eq(int(blade["deep"]), 2)
-	assert_string_starts_with(InventoryState.gear_name(blade), "Abyssal ", "a deep piece keeps its name")
-	assert_eq(HeroRules.gear_damage(blade), int(Catalog.item("obsidian_blade")["damage"]) + int(blade["bonus"]) + int(blade["deepBonus"]), "and its bonus")
-	assert_eq(int(InventoryState.shown_affixes(blade)["strength"]), 5, "and what Hilda quenched into it")
-	assert_gt(Economy.quench_cost(blade), 0, "Hilda still quenches it")
-	assert_eq(Town.trophy_stat_delta("deep_crystal_5"), {"endurance": 2}, "the crystals still stand on the shelf")
-	assert_eq(Town.trophy_stat_delta("lich_crown").size(), 5, "the crown still lends every stat")
-	assert_has(Deeds.shown(state.progression).map(func(deed: Dictionary) -> String: return deed["id"]), "deep_10", "the medal earned stays in the journal")
-	assert_true(Vault.door_open(state.progression, state.settlement), "past Morvax: the Vault's door stands open")
-	# And it all goes back into the save as it came.
-	var saved: Dictionary = state.to_dict()
-	assert_eq(int(saved["deepHunt"]), 12)
-	assert_eq(saved["deeds"], ["deep_10"])
+	state.mark_seen(Vault.FIRST_WORD)
+	assert_eq(Vault.first_word(door, state.progression), "", "once")
 
 
 # ---- Nothing points at what left ------------------------------------------------------
@@ -254,8 +214,11 @@ func test_nothing_leads_to_the_old_floors_or_the_deep_hunt() -> void:
 	var hints := FileAccess.get_file_as_string("res://assets/data/hints.json")
 	for word: String in ["Deep Hunt", "Undermountain", "depth"]:
 		assert_false(hints.contains(word), "no hint names %s" % word)
-	for deed: Dictionary in Deeds.in_play():
+	for deed: Dictionary in Deeds.all():
 		assert_ne(String(deed["kind"]), "deepest", "%s asks for no depth" % deed["id"])
+	for item_id: String in ["deep_crystal_5", "deep_crystal_50", "medal_ten_below", "medal_thirty_below"]:
+		assert_true(Catalog.item(item_id).is_empty(), "%s left with the Deep Hunt" % item_id)
+		assert_false(Town.trophy_buffs().has(item_id))
 	for entry: Dictionary in Hunts.all():
 		assert_false(entry.has("deepDepth"), "%s waits on no depth" % entry["id"])
 		assert_ne(String(entry["mapId"]), "deep")

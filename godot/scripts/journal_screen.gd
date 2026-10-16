@@ -19,8 +19,7 @@ extends Screen
 ## The letters and the feats are reading, not doing: two more pages beside
 ## the quests (A/D), where the five chapters were before. The Letters page
 ## reads Maren's letters once delivered - a courier never reads the post -
-## with their answers, and under them, for a hero who found any, Liane's
-## pages from the mountain (the page they had before). Once the Post is
+## with their answers. Once the Post is
 ## open (PIX-320) a Post page joins them: what the box on the square holds
 ## this morning, the pieces in the satchel, sealed, and those delivered, to
 ## read. Q or Esc closes it.
@@ -463,10 +462,8 @@ func _fill_now() -> void:
 
 ## The Letters page (PIX-253 step 2): Maren's letters in the satchel's
 ## order, each sealed until it's delivered (a courier never reads the post),
-## then her words and the answer that came back; the fifth, that she keeps;
-## and for a hero who found any on the mountain, Liane's pages under them as
-## older papers (her journal retired from play with the letters). W/S turn
-## from one to the next.
+## then her words and the answer that came back; the fifth, that she keeps.
+## W/S turn from one to the next.
 func _letters() -> void:
 	var sheet := _sheet()
 	scroll = ScrollContainer.new()
@@ -491,16 +488,6 @@ func _letters() -> void:
 		if Letters.fifth_kept(GameState.progression):
 			var fifth := Letters.fifth()
 			_letter_card(list, {"addressed": fifth["addressed"], "note": fifth["note"]}, false)
-	var found := Story.found_pages(GameState.progression.cleared_levels)
-	if found.is_empty():
-		return
-	var older := UiStyle.strong("Older papers", 18, UiStyle.LAMP)
-	list.add_child(older)
-	list.add_child(Layout.wrapped(UiStyle.label(Text.t("Pages of Liane's journal, found on the mountain: %d of %d.") % [found.size(), Story.lore().size()], 14, UiStyle.FADED), TEXT_WIDTH))
-	for page: Dictionary in found:
-		var words := Layout.wrapped(UiStyle.label("%s.  %s" % [page["title"], page["text"]], 14, UiStyle.INK), TEXT_WIDTH)
-		pages.append(older if page == found[0] else words)
-		list.add_child(words)
 
 
 ## One letter on the Letters page, a card: its address and, delivered,
@@ -530,7 +517,7 @@ func _letter_card(list: VBoxContainer, quest: Dictionary, delivered: bool) -> vo
 		gap.custom_minimum_size = Vector2(0, 6)
 		words.add_child(gap)
 		words.add_child(Layout.wrapped(UiStyle.strong(Homecoming.answered(quest, GameState.progression), 14, UiStyle.LAMP), ROW_TEXT))
-		for line: String in Letters.answer(quest, GameState.progression, GameState.settlement):
+		for line: String in Letters.answer(quest):
 			words.add_child(Layout.wrapped(UiStyle.label(line, 14, UiStyle.INK), ROW_TEXT))
 	pages.append(card)
 	list.add_child(card)
@@ -627,12 +614,11 @@ func _turn(by: int) -> void:
 
 
 ## Feats (PIX-219: Deeds in the code; the word was the shops' deeds'):
-## every long goal, done or how far along, and its medal (a retired one
-## only for a hero who earned it, PIX-257).
+## every long goal, done or how far along, and its medal.
 func _feats() -> void:
 	var sheet := _sheet()
 	var state := GameState
-	for deed: Dictionary in Deeds.shown(state.progression):
+	for deed: Dictionary in Deeds.all():
 		var done: bool = deed["id"] in state.progression.deeds
 		var counted := Deeds.count(deed, state.hero, state.pack, state.progression, state.settlement)
 		var line := HBoxContainer.new()

@@ -183,13 +183,13 @@
       }
     },
     "vault": {
-      "about": "PIX-257 (PIX-253 step 11): the Kings' Vault, after the story. The old kings' hoard under the summit, behind a door of black iron on the mountain road (`barred: vault` there) that opens once the dragon is freed (`opens`, MainQuest's kinds: the Night of Bells' chapter done, or an old save that slew Fafnyr on the old floors 10 or 15). Five floors laid from seeds, the old foes of the mountain's deep floors (bone knights, shades, mimics, fire imps) lifted higher each floor down, a guardian on each floor from the second (combat.json `named`: the Deep Hunt's four, and the Hollow King on the hoard), the very best gear in its chests, and the kills' gear forged deep (`forged`, the Deep Hunt's tiers). It replaces the Deep Hunt. Its first floor's stair leads back out the door (`out`).",
+      "about": "PIX-257 (PIX-253 step 11): the Kings' Vault, after the story. The old kings' hoard under the summit, behind a door of black iron on the mountain road (`barred: vault` there) that opens once the dragon is freed (`opens`, MainQuest's kinds: the Night of Bells' chapter done). Five floors laid from seeds, the old foes of the mountain's deep floors (bone knights, shades, mimics, fire imps) lifted higher each floor down, a guardian on each floor from the second (combat.json `named`: the Deep Hunt's four, and the Hollow King on the hoard), the very best gear in its chests, and the kills' gear forged deep (`forged`, the Deep Hunt's tiers). It replaces the Deep Hunt. Its first floor's stair leads back out the door (`out`).",
       "name": "The Kings' Vault",
       "region": "vault",
       "wind": "deepwind",
       "entrance": {"x": 3, "y": 9},
       "out": {"kind": "map", "mapId": "mountain_road", "x": 12, "y": 3},
-      "opens": {"kind": "chapterDone", "chapter": 7, "or": {"kind": "cleared", "level": 10, "or": {"kind": "cleared", "level": 15}}},
+      "opens": {"kind": "chapterDone", "chapter": 7},
       "barred": "A door of black iron in the rock under the summit, warm to the touch. Somewhere behind it, something very large is grumbling about corners.",
       "floors": [
         {
@@ -367,12 +367,5 @@
       ],
       "note": "The hoard: a hundred years of the old kings' gold, pressed flat in the shape of a very large dragon. He was right. It's all corners."
     }
-  },
-  "shut": [
-    {
-      "about": "PIX-257: the Undermountain's cave at the west end of the Ash, filled with rock now its floors have left play. A save stood by its mouth (the cells the floor select stepped the hero back to, and its waypoint's arrival) wakes in town (Depths.waking).",
-      "mapId": "overworld",
-      "rect": [23, 9, 4, 3]
-    }
-  ]
+  }
 }

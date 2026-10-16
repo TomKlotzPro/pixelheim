@@ -41,13 +41,9 @@ static func found(progression: ProgressionState) -> int:
 
 ## Whether the mountain's gate stands open: Maren's promise given, with the
 ## fifth letter, as she tells it all once the relics are home (PIX-253 step
-## 8: her confession, or the letter given to a hero who heard her old one),
-## or any of the old mountain's floors ever cleared (a hero from before the
-## gate was barred, or before the floors left play, PIX-257). It opens on
-## the mountain road now, up to Morvax's forge.
+## 8: her confession). It opens on the mountain road, up to Morvax's forge.
 static func gate_open(progression: ProgressionState) -> bool:
-	return Letters.confession_id() in progression.story_seen or not Letters.fifth_kept(progression) \
-			or not progression.cleared_levels.is_empty()
+	return Letters.confession_id() in progression.story_seen or not Letters.fifth_kept(progression)
 
 
 ## What the barred gate says to a hero who tries it.

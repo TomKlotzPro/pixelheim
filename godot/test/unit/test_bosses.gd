@@ -74,14 +74,6 @@ func test_a_guardian_outlasts_its_kind() -> void:
 	assert_gt(Bestiary.spawn("dragon", false, 6)["maxHp"], guardian["maxHp"] * 3, "Fafnyr far outlasts a wyvern guardian")
 
 
-func test_the_dead_rise_at_their_masters_level() -> void:
-	var morvax := Bestiary.spawn("lich", false, 3)
-	var summon: String = Bestiary._data()["bossPatterns"]["lich"]["summon"]
-	var risen := Bestiary.spawn(summon, false, Bestiary.lift_to(summon, int(morvax["level"])))
-	assert_eq(int(risen["level"]), int(morvax["level"]))
-	assert_eq(Bestiary.lift_to("lich", 3), 0, "never lifted below its own level")
-
-
 func test_a_lifted_monster_poisons_like_its_level() -> void:
 	var goblin := Bestiary.spawn("goblin", false, 10)
 	assert_eq(int(goblin["level"]), 12)

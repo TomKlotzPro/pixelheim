@@ -1,8 +1,8 @@
 extends GutTest
 ## The mountain last (PIX-170): the gate is barred after the Night of Ash
-## until Maren has the four relics, in any order; a hero who climbed before
-## keeps the gate open; each relic brings Maren's story of its owner, a
-## bounty notice and, two at a time, the town's next age.
+## until Maren has the four relics, in any order; each relic brings Maren's
+## story of its owner, a bounty notice and, two at a time, the town's next
+## age.
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
 
@@ -56,15 +56,6 @@ func test_the_gate_is_barred_until_the_relics_are_home() -> void:
 	assert_eq(_next(), "letter_morvax", "then the road up to Morvax")
 
 
-func test_a_hero_who_climbed_before_keeps_the_gate_open() -> void:
-	# An old save's floor 1, cleared before the floors left play (PIX-257).
-	state.progression.unlocked_level = 2
-	state.progression.cleared_levels.append(1)
-	assert_true(Relics.gate_open(state.progression))
-	assert_eq(_next(), "confession", "and the relics never block the way they already went: Maren's story is next")
-	assert_string_contains(state.questing.resolve_quests("elder"), "The Troll Toll", "Maren goes on to her next ask")
-
-
 ## Since the letters (PIX-253) the relics come in the story's order, each
 ## after its letter; one already won counts its letter delivered.
 func test_the_relic_steps_follow_the_letters_in_order() -> void:
@@ -82,13 +73,13 @@ func test_the_relic_steps_follow_the_letters_in_order() -> void:
 
 
 func test_maren_tells_of_each_relic_once() -> void:
-	assert_eq(Story.elder_story([], [], []), {})
-	assert_eq(Story.elder_story([], [], ["hollow_captain"])["id"], "maren_oskar")
-	assert_eq(Story.elder_story([], ["maren_oskar"], ["hollow_captain"]), {})
+	assert_eq(Story.elder_story([], []), {})
+	assert_eq(Story.elder_story([], ["hollow_captain"])["id"], "maren_oskar")
+	assert_eq(Story.elder_story(["maren_oskar"], ["hollow_captain"]), {})
 	# A relic's story, and no news of the old mountain's floors: they left
 	# play (PIX-257), and their stories with them.
-	assert_eq(Story.elder_story([3], [], ["rimefang"])["id"], "maren_liane")
-	assert_eq(Story.elder_story([3, 5, 10], ["maren_liane"], ["rimefang"]), {})
+	assert_eq(Story.elder_story([], ["rimefang"])["id"], "maren_liane")
+	assert_eq(Story.elder_story(["maren_liane"], ["rimefang"]), {})
 
 
 func test_the_relics_post_bounties_and_grow_the_town() -> void:
@@ -100,9 +91,3 @@ func test_the_relics_post_bounties_and_grow_the_town() -> void:
 	_win("seam_warden")
 	assert_eq(Town.age_blockers(2, state.progression, state.settlement), [] as Array[String])
 	assert_eq(Town.age_blockers(3, state.progression, state.settlement).size(), 1)
-
-
-func test_the_old_way_still_grows_the_town() -> void:
-	state.settlement.settlers.append("settler_iva")
-	state.progression.cleared_levels.append(5)
-	assert_eq(Town.age_blockers(2, state.progression, state.settlement), [] as Array[String], "a hero who cleared the Watchtower first")

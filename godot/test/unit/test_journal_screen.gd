@@ -26,7 +26,7 @@ func before_each() -> void:
 	GameState.settlement = _lent.settlement
 	GameState.progression = _lent.progression
 	# The harness's `journal`: the slimes part done, the cheese ready, the
-	# rum; Maren's relics and the Black Seam carrying the story; a bounty up.
+	# rum; Maren's relics and the Black Seam carrying the story.
 	GameState.progression.quests.merge({
 		"slime_trouble": {"progress": 2, "done": false},
 		"cheese_run": {"progress": 0, "done": false},
@@ -34,7 +34,11 @@ func before_each() -> void:
 		"garrick_seam": {"progress": 0, "done": false},
 		"sela_rum": {"progress": 0, "done": false},
 	})
-	GameState.progression.cleared_levels.append(2)
+
+
+## A bounty up: the ladle won posts Old Greymaw's notice (PIX-170).
+func _bounty_up() -> void:
+	GameState.progression.hunted.append("tidecaller")
 
 
 func after_each() -> void:
@@ -138,6 +142,7 @@ func test_following_the_story_again_follows_nothing_else() -> void:
 
 
 func test_up_from_the_first_wraps_to_the_last() -> void:
+	_bounty_up()
 	_open()
 	_key(KEY_UP)
 	assert_eq(screen.selected, screen.rows.size() - 1)
@@ -145,6 +150,7 @@ func test_up_from_the_first_wraps_to_the_last() -> void:
 
 
 func test_the_pad_chooses_and_a_follows() -> void:
+	_bounty_up()
 	_open()
 	_pad(JOY_BUTTON_DPAD_UP)
 	_pad(JOY_BUTTON_A)
@@ -202,11 +208,12 @@ func test_the_old_chapters_open_their_new_pages() -> void:
 	assert_eq(screen.tab, "quests", "the bounties are threads among the rest")
 
 
-func test_older_papers_turn() -> void:
-	GameState.progression.cleared_levels.assign(range(1, 16))
+func test_the_letters_turn() -> void:
+	GameState.questing.open_tin()
+	GameState.questing.deliver("saltmere_wenna")
+	GameState.questing.deliver("mines_pell")
 	_open("letters")
-	assert_eq(screen.pages.size(), Story.found_pages(GameState.progression.cleared_levels).size(), "no letters yet: every page found, in its order")
-	assert_gt(screen.pages.size(), 1)
+	assert_eq(screen.pages.size(), 5, "four letters and the fifth, in the satchel's order")
 	# Laid out, so the page knows how far it runs.
 	await wait_process_frames(2)
 	var runs_over: bool = screen.pages[-1].get_parent().size.y > screen.scroll.size.y
@@ -250,14 +257,13 @@ func test_the_main_story_is_the_satchel() -> void:
 		_key(KEY_S)
 	_key(KEY_E)
 	assert_eq(GameState.progression.tracked, "letter_pell", "one to deliver is")
-	assert_eq(_lead()["who"], "mines_pell", "to Old Pell")
+	assert_eq(_lead()["quest_id"], "letter_pell", "Old Pell's (past the burnt bridge, what mends it first)")
 
 
 func test_the_letters_tab_reads_a_letter_only_once_it_is_delivered() -> void:
 	_open("letters")
 	assert_true(_says("Nothing in your satchel yet"), "before the tin")
 	assert_true(screen.pages.is_empty(), "nothing to turn")
-	assert_false(_says("Older papers"), "no pages found, no older papers")
 	screen.close()
 	GameState.questing.open_tin()
 	GameState.questing.deliver("saltmere_wenna")
@@ -275,19 +281,6 @@ func test_the_letters_tab_reads_a_letter_only_once_it_is_delivered() -> void:
 	assert_false(_says(pell["answer"][0]))
 	assert_true(_says("A courier never reads the post."))
 	assert_true(_says("Maren keeps this one. It has no address."))
-	assert_false(_says("Older papers"), "no pages found, no older papers")
-
-
-func test_older_papers_are_kept_for_a_hero_who_found_pages() -> void:
-	GameState.questing.open_tin()
-	GameState.progression.cleared_levels.assign([1, 2, 3])
-	_open("letters")
-	assert_true(_says("Older papers"), "under the letters")
-	assert_true(_says("Pages of Liane's journal, found on the mountain: 2 of 10."))
-	for page: Dictionary in Story.found_pages([1, 3]):
-		assert_true(_says(page["title"]), page["title"])
-	assert_eq(screen.pages.size(), 5 + 2, "the letters, then each page to turn to")
-	assert_false(_says(Story.lore()[2]["title"]), "only the pages of floors cleared")
 
 
 func test_q_closes_it() -> void:
