@@ -92,6 +92,12 @@ static func ending_of(seen: Array) -> String:
 	return ""
 
 
+## The old throne's ending scenes (PIX-157), in the story ledger of an old
+## save alone: the save keeps them in its legacy (PIX-302).
+static func old_endings() -> Array[String]:
+	return [_moment("victory"), _moment("victory:rest")]
+
+
 ## The ending scene for a choice: Morvax's two (story.json's moments
 ## `ending:home`, `ending:stay`), and the old throne's for its own.
 static func ending_scene(choice: String) -> String:

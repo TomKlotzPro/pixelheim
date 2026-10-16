@@ -16,7 +16,7 @@ const GATE := Vector2i(48, 6)
 const BEFORE_GATE := Vector2i(48, 7)
 ## Where the Undermountain's cave was.
 const OLD_CAVE := Vector2i(24, 10)
-const LATE := "res://test/fixtures/web_save_late.txt"
+const LATE := "res://test/fixtures/web_save_late.json"
 ## The old mountain's fifteen floors by name: their data left with them
 ## (PIX-257 step 11), so a word naming one is caught by this list.
 const OLD_FLOORS := [
@@ -48,7 +48,7 @@ func _keepsakes_home() -> void:
 func _reloaded(hero: Node = null) -> Node:
 	var who: Node = hero if hero != null else state
 	var back: Node = autofree(GameStateScript.new())
-	back.apply(SaveCodec.parse_json(SaveCodec.serialize(who.to_dict()))["state"])
+	back.apply(SaveCodec.reread(who.to_dict()))
 	return back
 
 
@@ -268,7 +268,6 @@ func test_a_save_from_the_old_floors_wakes_by_the_gate() -> void:
 	assert_true(Relics.gate_open(back.progression), "the gate open: it went up before")
 	assert_eq(_next(back), "confession", "past the old gate, before the confession: Maren's story next")
 	assert_true(Letters.fifth_due(back.progression, back.settlement))
-	assert_eq(back.to_dict().keys(), state.to_dict().keys(), "no new field")
 
 
 ## The flows' old saves (test/fixtures, `--load`): one saved on the old
@@ -329,7 +328,7 @@ func test_a_dragon_slayer_skips_the_night_of_bells() -> void:
 ## The late web hero who beat Morvax on the old mountain: their story stays
 ## told, nothing is given them, nothing points at the floors.
 func test_the_late_web_save_loads_and_plays() -> void:
-	var late := SaveCodec.decode_code(FileAccess.get_file_as_string(LATE))
+	var late := SaveCodec.parse_any(FileAccess.get_file_as_string(LATE))
 	state.apply(late.duplicate(true))
 	assert_eq(state.hero.hero_name, "Hrafna")
 	var woke := _wakes(state.world.map_id, state.world.cell)
@@ -339,7 +338,6 @@ func test_the_late_web_save_loads_and_plays() -> void:
 	assert_eq(MainQuest.continued(state.progression, state.settlement), "", "no card")
 	assert_true(Relics.gate_open(state.progression), "the road is open to them")
 	assert_eq(Array(state.progression.cleared_levels), Array(late["clearedLevels"]), "its floors kept, unread")
-	assert_eq(state.to_dict().keys(), late.keys(), "its fields, no more")
 
 
 func test_a_save_after_the_letter_holds_its_place() -> void:
@@ -351,7 +349,6 @@ func test_a_save_after_the_letter_holds_its_place() -> void:
 	var back := _reloaded()
 	assert_eq(_next(back), "run_home")
 	assert_true(Relics.gate_open(back.progression))
-	assert_eq(back.to_dict().keys(), state.to_dict().keys(), "no new field")
 
 
 # ---- Nothing points at the floors -------------------------------------------------

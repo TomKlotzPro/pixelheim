@@ -147,7 +147,7 @@ func test_a_save_from_before_projects_keeps_its_town() -> void:
 	assert_eq(Town.current_age(town), 4)
 	var written := {}
 	town.write_into(written)
-	assert_false(written.has("projects"), "saves from before stay byte for byte")
+	assert_false(written.has("projects"), "none written while there is none")
 	town.projects.assign(["street_lamps"])
 	town.write_into(written)
 	assert_eq(written["projects"], ["street_lamps"])

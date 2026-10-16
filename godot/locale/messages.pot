@@ -14277,6 +14277,10 @@ msgid "A newer Pixelheim wrote it: update the game to play this hero. It's kept 
 msgstr ""
 
 #: scripts/saves_screen.gd
+msgid "An older Pixelheim wrote it, before saves changed, and this version can't play it. It's kept as it is. X clears it, if you mean to."
+msgstr ""
+
+#: scripts/saves_screen.gd
 msgid "Clear %s from slot %d for good?"
 msgstr ""
 
@@ -14294,6 +14298,10 @@ msgstr ""
 
 #: scripts/saves_screen.gd
 msgid "Clear slot %d's save from a newer version for good?"
+msgstr ""
+
+#: scripts/saves_screen.gd
+msgid "Clear slot %d's save from an older version for good?"
 msgstr ""
 
 #: scripts/saves_screen.gd
@@ -14353,6 +14361,10 @@ msgid "Saved by a newer version"
 msgstr ""
 
 #: scripts/saves_screen.gd
+msgid "Saved by an older version"
+msgstr ""
+
+#: scripts/saves_screen.gd
 msgid "Slot %d"
 msgstr ""
 
@@ -14373,7 +14385,23 @@ msgid "Slot %d was saved by a newer version. Update Pixelheim to play this hero.
 msgstr ""
 
 #: scripts/saves_screen.gd
+msgid "Slot %d was saved by an older version of Pixelheim, so there's no one to play. It's kept as it is."
+msgstr ""
+
+#: scripts/saves_screen.gd
 msgid "Slot %d's save can't be read, so there's no one to play. It's kept as it is."
+msgstr ""
+
+#: scripts/saves_screen.gd
+msgid "That code is cut short or changed. On the other machine, use Copy mine again and paste all of it here."
+msgstr ""
+
+#: scripts/saves_screen.gd
+msgid "That code is from a newer version of Pixelheim. Update the game to bring this hero in."
+msgstr ""
+
+#: scripts/saves_screen.gd
+msgid "That code is from an older version of Pixelheim: heroes from before this update can't be brought in."
 msgstr ""
 
 #: scripts/saves_screen.gd
@@ -14974,6 +15002,10 @@ msgstr ""
 
 #: scripts/state/game_state.gd
 msgid "Slot %d was saved by a newer version of Pixelheim. It's kept as it is, in Saves."
+msgstr ""
+
+#: scripts/state/game_state.gd
+msgid "Slot %d was saved by an older version of Pixelheim. It's kept as it is, in Saves."
 msgstr ""
 
 #: scripts/state/game_state.gd

@@ -87,7 +87,7 @@ func test_a_seen_moment_is_kept_in_the_save_and_only_once() -> void:
 	var state := ProgressionState.new()
 	var bare := {}
 	state.write_into(bare)
-	assert_false(bare.has("storySeen"), "saves from before stay byte for byte")
+	assert_false(bare.has("storySeen"), "none written while there is none")
 	state.story_seen.append("fafnyr")
 	var written := {}
 	state.write_into(written)
@@ -95,7 +95,6 @@ func test_a_seen_moment_is_kept_in_the_save_and_only_once() -> void:
 	written["unlockedLevel"] = 1
 	written["clearedLevels"] = []
 	written["quests"] = {}
-	written["introSeen"] = true
 	var back := ProgressionState.from_dict(written)
 	assert_eq(back.story_seen, ["fafnyr"] as Array[String])
 

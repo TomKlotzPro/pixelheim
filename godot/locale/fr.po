@@ -14277,6 +14277,10 @@ msgid "A newer Pixelheim wrote it: update the game to play this hero. It's kept 
 msgstr "Une version plus récente de Pixelheim l'a écrite : mettez le jeu à jour pour jouer ce héros. Elle est gardée telle quelle."
 
 #: scripts/saves_screen.gd
+msgid "An older Pixelheim wrote it, before saves changed, and this version can't play it. It's kept as it is. X clears it, if you mean to."
+msgstr "Une version plus ancienne de Pixelheim l'a écrite, avant que les sauvegardes ne changent, et cette version ne peut pas la jouer. Elle est gardée telle quelle. X l'efface, si vous le voulez vraiment."
+
+#: scripts/saves_screen.gd
 msgid "Clear %s from slot %d for good?"
 msgstr "Effacer %s de l'emplacement %d pour de bon ?"
 
@@ -14295,6 +14299,10 @@ msgstr "Effacer pour de bon la sauvegarde endommagée de l'emplacement %d ?"
 #: scripts/saves_screen.gd
 msgid "Clear slot %d's save from a newer version for good?"
 msgstr "Effacer pour de bon la sauvegarde de l'emplacement %d, venue d'une version plus récente ?"
+
+#: scripts/saves_screen.gd
+msgid "Clear slot %d's save from an older version for good?"
+msgstr "Effacer pour de bon la sauvegarde de l'emplacement %d, venue d'une version plus ancienne ?"
 
 #: scripts/saves_screen.gd
 msgid "Copy mine"
@@ -14353,6 +14361,10 @@ msgid "Saved by a newer version"
 msgstr "Sauvegarde d'une version plus récente"
 
 #: scripts/saves_screen.gd
+msgid "Saved by an older version"
+msgstr "Sauvegarde d'une version plus ancienne"
+
+#: scripts/saves_screen.gd
 msgid "Slot %d"
 msgstr "Emplacement %d"
 
@@ -14373,8 +14385,24 @@ msgid "Slot %d was saved by a newer version. Update Pixelheim to play this hero.
 msgstr "La sauvegarde de l'emplacement %d vient d'une version plus récente. Mettez Pixelheim à jour pour jouer ce héros."
 
 #: scripts/saves_screen.gd
+msgid "Slot %d was saved by an older version of Pixelheim, so there's no one to play. It's kept as it is."
+msgstr "La sauvegarde de l'emplacement %d vient d'une version plus ancienne de Pixelheim : il n'y a personne à jouer. Elle est gardée telle quelle."
+
+#: scripts/saves_screen.gd
 msgid "Slot %d's save can't be read, so there's no one to play. It's kept as it is."
 msgstr "La sauvegarde de l'emplacement %d est illisible : il n'y a personne à jouer. Elle est gardée telle quelle."
+
+#: scripts/saves_screen.gd
+msgid "That code is cut short or changed. On the other machine, use Copy mine again and paste all of it here."
+msgstr "Ce code est incomplet ou a été modifié. Sur l'autre machine, utilisez de nouveau Copier le mien, puis collez-le ici en entier."
+
+#: scripts/saves_screen.gd
+msgid "That code is from a newer version of Pixelheim. Update the game to bring this hero in."
+msgstr "Ce code vient d'une version plus récente de Pixelheim. Mettez le jeu à jour pour accueillir ce héros."
+
+#: scripts/saves_screen.gd
+msgid "That code is from an older version of Pixelheim: heroes from before this update can't be brought in."
+msgstr "Ce code vient d'une version plus ancienne de Pixelheim : les héros d'avant cette mise à jour ne peuvent pas être repris."
 
 #: scripts/saves_screen.gd
 msgid "That is not a save code. On the other machine, open Saves and use Copy mine, then paste it here."
@@ -14975,6 +15003,10 @@ msgstr "La dernière sauvegarde de %s était illisible : le jeu a chargé la p
 #: scripts/state/game_state.gd
 msgid "Slot %d was saved by a newer version of Pixelheim. It's kept as it is, in Saves."
 msgstr "La sauvegarde de l'emplacement %d vient d'une version plus récente de Pixelheim. Elle est gardée telle quelle, dans Sauvegardes."
+
+#: scripts/state/game_state.gd
+msgid "Slot %d was saved by an older version of Pixelheim. It's kept as it is, in Saves."
+msgstr "La sauvegarde de l'emplacement %d vient d'une version plus ancienne de Pixelheim. Elle est gardée telle quelle, dans Sauvegardes."
 
 #: scripts/state/game_state.gd
 msgid "Slot %d's save can't be read. It's kept as it is, in Saves."

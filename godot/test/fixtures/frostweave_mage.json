@@ -1,1 +1,214 @@
-{"version":4,"state":{"screen":"world","hero":{"name":"Tom","roleId":"mage","look":0,"level":15,"xp":120,"xpToNext":900,"hp":140,"mp":90,"stats":{"maxHp":140,"maxMp":90,"strength":3,"intelligence":32,"dexterity":4,"defense":4,"endurance":5},"statPoints":0,"skillPoints":0,"skillNodes":["mage_fireball"],"jobs":{"smithing":{"level":1,"xp":0},"alchemy":{"level":1,"xp":0},"foraging":{"level":1,"xp":0}},"mastery":{}},"gold":153,"inventory":{"potion_hp":3,"greater_potion":2,"frost_lily":4,"bread":2},"gear":[{"uid":"gtom01","itemId":"frost_boots","rarity":"common","bonus":8},{"uid":"gtom02","itemId":"cinderscale_shield","rarity":"common","bonus":0},{"uid":"gtom03","itemId":"frost_hood","rarity":"fine","bonus":7,"affixes":{"strength":1}},{"uid":"gtom04","itemId":"drowned_signet","rarity":"common","bonus":0},{"uid":"gtom05","itemId":"frost_mitts","rarity":"fine","bonus":7,"affixes":{"endurance":2}},{"uid":"gtom06","itemId":"moon_pendant","rarity":"common","bonus":0},{"uid":"gtom07","itemId":"frostweave_robe","rarity":"common","bonus":7},{"uid":"gtom08","itemId":"rime_staff","rarity":"fine","bonus":3,"affixes":{"intelligence":2}},{"uid":"gtom09","itemId":"ashsteel_greataxe","rarity":"epic","bonus":2,"affixes":{"intelligence":4,"strength":2},"deep":1,"deepBonus":2},{"uid":"gtom10","itemId":"warden_kite","rarity":"epic","bonus":2,"affixes":{"dexterity":4,"defense":2},"deep":1,"deepBonus":2},{"uid":"gtom11","itemId":"stormglass_wand","rarity":"fine","bonus":1,"affixes":{"intelligence":2}}],"equipped":{"feet":"gtom01","offhand":"gtom02","head":"gtom03","ring1":"gtom04","hands":"gtom05","neck":"gtom06","body":"gtom07","weapon":"gtom09"},"unlockedLevel":1,"clearedLevels":[],"battle":null,"openPanel":null,"house":{"owned":false,"storage":{}},"properties":[],"townTier":2,"settlers":[],"quests":{},"world":{"position":{"mapId":"town","x":40,"y":30,"facing":"down"},"discovered":{},"openedChests":[],"slain":[]},"dungeonSelect":null,"introSeen":false,"worldMessage":null,"worldSteps":0,"dialogue":null,"bardSong":false,"investments":{"expansions":[],"savings":{"principal":0,"at":0}}},"savedAt":1791331200}
+{
+  "pixelheim": 5,
+  "game": "0.242.0",
+  "savedAt": 1791331200,
+  "playSeconds": 0,
+  "card": {
+    "name": "Tom",
+    "role": "mage",
+    "look": 0,
+    "worn": {
+      "feet": "frost_boots",
+      "offhand": "cinderscale_shield",
+      "head": "frost_hood",
+      "ring1": "drowned_signet",
+      "hands": "frost_mitts",
+      "neck": "moon_pendant",
+      "body": "frostweave_robe",
+      "weapon": "ashsteel_greataxe"
+    },
+    "level": 15,
+    "place": "town",
+    "chapter": 1,
+    "playSeconds": 0
+  },
+  "hero": {
+    "name": "Tom",
+    "role": "mage",
+    "look": 0,
+    "level": 15,
+    "xp": 120,
+    "xpToNext": 900,
+    "hp": 140,
+    "mp": 90,
+    "stats": {
+      "maxHp": 140,
+      "maxMp": 90,
+      "strength": 3,
+      "intelligence": 32,
+      "dexterity": 4,
+      "defense": 4,
+      "endurance": 5
+    },
+    "statPoints": 0,
+    "skillPoints": 0,
+    "skills": {
+      "nodes": [
+        "mage_fireball"
+      ],
+      "mastery": {}
+    },
+    "jobs": {
+      "smithing": {
+        "level": 1,
+        "xp": 0
+      },
+      "alchemy": {
+        "level": 1,
+        "xp": 0
+      },
+      "foraging": {
+        "level": 1,
+        "xp": 0
+      }
+    }
+  },
+  "pack": {
+    "gold": 153,
+    "items": {
+      "potion_hp": 3,
+      "greater_potion": 2,
+      "frost_lily": 4,
+      "bread": 2
+    },
+    "gear": [
+      {
+        "uid": "gtom01",
+        "itemId": "frost_boots",
+        "rarity": "common",
+        "bonus": 8
+      },
+      {
+        "uid": "gtom02",
+        "itemId": "cinderscale_shield",
+        "rarity": "common",
+        "bonus": 0
+      },
+      {
+        "uid": "gtom03",
+        "itemId": "frost_hood",
+        "rarity": "fine",
+        "bonus": 7,
+        "affixes": {
+          "strength": 1
+        }
+      },
+      {
+        "uid": "gtom04",
+        "itemId": "drowned_signet",
+        "rarity": "common",
+        "bonus": 0
+      },
+      {
+        "uid": "gtom05",
+        "itemId": "frost_mitts",
+        "rarity": "fine",
+        "bonus": 7,
+        "affixes": {
+          "endurance": 2
+        }
+      },
+      {
+        "uid": "gtom06",
+        "itemId": "moon_pendant",
+        "rarity": "common",
+        "bonus": 0
+      },
+      {
+        "uid": "gtom07",
+        "itemId": "frostweave_robe",
+        "rarity": "common",
+        "bonus": 7
+      },
+      {
+        "uid": "gtom08",
+        "itemId": "rime_staff",
+        "rarity": "fine",
+        "bonus": 3,
+        "affixes": {
+          "intelligence": 2
+        }
+      },
+      {
+        "uid": "gtom09",
+        "itemId": "ashsteel_greataxe",
+        "rarity": "epic",
+        "bonus": 2,
+        "affixes": {
+          "intelligence": 4,
+          "strength": 2
+        },
+        "deep": 1,
+        "deepBonus": 2
+      },
+      {
+        "uid": "gtom10",
+        "itemId": "warden_kite",
+        "rarity": "epic",
+        "bonus": 2,
+        "affixes": {
+          "dexterity": 4,
+          "defense": 2
+        },
+        "deep": 1,
+        "deepBonus": 2
+      },
+      {
+        "uid": "gtom11",
+        "itemId": "stormglass_wand",
+        "rarity": "fine",
+        "bonus": 1,
+        "affixes": {
+          "intelligence": 2
+        }
+      }
+    ],
+    "worn": {
+      "feet": "gtom01",
+      "offhand": "gtom02",
+      "head": "gtom03",
+      "ring1": "gtom04",
+      "hands": "gtom05",
+      "neck": "gtom06",
+      "body": "gtom07",
+      "weapon": "gtom09"
+    }
+  },
+  "home": {
+    "owned": false,
+    "storage": {}
+  },
+  "town": {
+    "age": 2,
+    "settlers": [],
+    "properties": [],
+    "bank": {
+      "principal": 0,
+      "at": 0
+    },
+    "expansions": []
+  },
+  "story": {},
+  "quests": {
+    "ledger": {}
+  },
+  "world": {
+    "at": {
+      "map": "town",
+      "x": 40,
+      "y": 30,
+      "facing": "down"
+    },
+    "steps": 0,
+    "fog": {},
+    "chests": [],
+    "slain": []
+  },
+  "buffs": {
+    "song": false
+  },
+  "legacy": {
+    "unlockedLevel": 1,
+    "clearedLevels": []
+  }
+}

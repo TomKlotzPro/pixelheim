@@ -174,7 +174,7 @@ func test_saves_from_before_stand_where_they_stood() -> void:
 		state.world.map_id = spot[0]
 		state.world.cell = spot[1]
 		var back: Node = autofree(GameStateScript.new())
-		back.apply(SaveCodec.migrate(SaveCodec.parse_json(SaveCodec.serialize(state.to_dict()))))
+		back.apply(SaveCodec.reread(state.to_dict()))
 		assert_eq(back.world.map_id, spot[0], "%s %s: the save keeps its map" % spot)
 		assert_eq(back.world.cell, spot[1], "%s %s: and its cell" % spot)
 		var map := MapData.load_by_id(spot[0])
