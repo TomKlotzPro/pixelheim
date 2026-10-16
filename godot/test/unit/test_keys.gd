@@ -36,6 +36,10 @@ func test_a_fixed_key_keeps_its_job() -> void:
 ## keys go through {key:action}, so a rebinding or another layout shows true.
 func test_no_screen_names_a_movable_key_by_its_letter() -> void:
 	var movable := ["W", "A", "S", "D", "E", "I", "M", "Q", "K", "J"]
+	# A screen's own key, never a movement there, read by its place on the
+	# board and named as the keyboard names it (Controls.shown): the Saves
+	# screen's Duplicate (PIX-302), which has no left or right to move.
+	var own := {"saves_screen.gd": ["D"]}
 	var spots := RegEx.create_from_string("(UiStyle\\.footer|UiStyle\\.screen_footer|UiStyle\\.keyed|UiStyle\\.button_keyed\\([^,]*,|Text\\.t)\\(?\\s*\"([^\"]*)\"")
 	var hinted := RegEx.create_from_string("UiStyle\\.hints\\(\\[([^\\]]*)\\]")
 	var bad: Array[String] = []
@@ -55,7 +59,7 @@ func test_no_screen_names_a_movable_key_by_its_letter() -> void:
 				if cut <= 0:
 					continue
 				for key in command.substr(0, cut).replace(" / ", "/").split("/"):
-					if key.strip_edges() in movable:
+					if key.strip_edges() in movable and not key.strip_edges() in own.get(file, []):
 						bad.append("%s: %s" % [file, command])
 		for found in hinted.search_all(source):
 			var parts := found.get_string(1).split(",")

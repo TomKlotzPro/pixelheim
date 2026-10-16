@@ -399,7 +399,7 @@ func _continue() -> void:
 func _new_game() -> void:
 	if not GameState.room_for_hero():
 		Sound.play_ui("deny")
-		_say("full", "Every slot holds a save. Clear one in Saves to start a new hero.")
+		_say("full", "Every slot holds a save. Delete one in Saves to start a new hero.")
 		return
 	var opening := Cutscene.new()
 	opening.scene_id = "opening"

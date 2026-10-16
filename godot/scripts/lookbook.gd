@@ -299,6 +299,10 @@ const SHOTS := {
 	# scrolled down to the last waypoint, in Greyhold on the Reach's one page
 	# (PIX-269 step 7).
 	"map": {"area": "screens", "map": "town", "at": "street", "time": DAY, "chart": "greyhold_keep"},
+	# The Saves screen (PIX-302) over the street: two heroes' cards, the
+	# chapter and the hours each, and an empty slot (`slots`: the fixture
+	# folder read, never written).
+	"saves": {"area": "screens", "map": "town", "at": "street", "time": DAY, "slots": "res://test/fixtures/slots_room"},
 }
 ## Filming the walk: slowed to a quarter, a picture every WALK_STEP of the
 ## game's time (thirty a second: two or three of each frame of the walk),
@@ -357,6 +361,8 @@ var _foe: Node
 ## apart, in world pixels: BOSS_ROW across, the hero in the first row's
 ## middle, the second row below it.
 var _lined_up: Array[Node] = []
+## The slots a shot with `slots` stood in for, given back after it.
+var _slots_kept: SaveSlots
 const BOSS_STEP := Vector2(60, 76)
 const BOSS_ROW := 9
 ## Filming a strike: the frames the hero swings on (the second a crit, the
@@ -509,6 +515,11 @@ func _stage(shot: Dictionary) -> void:
 		for node in world.get_children():
 			if node.has_method("show_waypoint"):
 				node.show_waypoint(shot["chart"])
+	if shot.has("slots"):
+		# The saves screen over a folder of fixture slots, for this shot alone.
+		_slots_kept = GameState.slots
+		GameState.slots = SaveSlots.new(shot["slots"], true)
+		world.open_saves()
 
 
 ## What a shot set up for itself alone taken back, so the shots after it
@@ -524,6 +535,8 @@ func _unstage(shot: Dictionary) -> void:
 		GameState.progression.quests.erase(shot["letter"])
 	if shot.has("zoom"):
 		world.camera_rig.camera.zoom = Vector2.ONE * CameraRig.ZOOM
+	if shot.has("slots"):
+		GameState.slots = _slots_kept
 	for foe in _lined_up:
 		if is_instance_valid(foe):
 			foe.queue_free()

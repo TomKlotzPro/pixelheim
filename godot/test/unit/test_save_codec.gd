@@ -19,7 +19,7 @@ func _fixtures() -> Array[String]:
 	for file in DirAccess.get_files_at(FIXTURES):
 		if file.ends_with(".json"):
 			out.append(FIXTURES + file)
-	for folder in ["slots", "slots_backup", "slots_older"]:
+	for folder in ["slots", "slots_backup", "slots_older", "slots_room"]:
 		for file in DirAccess.get_files_at(FIXTURES + folder):
 			var path: String = FIXTURES + folder + "/" + file
 			if SaveCodec.decodes(FileAccess.get_file_as_string(path)):

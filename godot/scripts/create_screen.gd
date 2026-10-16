@@ -383,7 +383,7 @@ func _begin() -> void:
 		return
 	var target := GameState.free_slot()
 	if target == 0:
-		status.text = "Every slot holds a hero. Clear one in Saves first."
+		status.text = "Every slot holds a hero. Delete one in Saves first."
 		return
 	GameState.new_hero_in(target, name, _role(), look, play_night)
 	GameState.title_seen = true

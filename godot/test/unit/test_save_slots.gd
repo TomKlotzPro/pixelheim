@@ -441,12 +441,21 @@ func test_erasing_a_slot_takes_every_file_of_it() -> void:
 
 func test_read_only_slots_are_never_written_or_erased() -> void:
 	slots.write(1, _state(100))
+	var before := _text(slots.path_for(1))
 	var fixtures := SaveSlots.new(DIR, true)
-	assert_false(fixtures.write(1, _state(5)))
-	assert_false(fixtures.write(2, _state(5)))
+	# The run sees what it did (PIX-302: a flow's Duplicate, Delete and R)...
+	assert_true(fixtures.write(1, _state(5)))
+	assert_true(fixtures.write(2, _state(6)))
+	assert_eq(fixtures.read(1)["gold"], 5)
 	fixtures.erase(1)
-	assert_eq(slots.read(1)["gold"], 100)
-	assert_false(FileAccess.file_exists(slots.path_for(2)))
+	assert_true(fixtures.is_free(1))
+	assert_eq(fixtures.deleted(1)["gold"], 5, "the deleted hero waits")
+	assert_true(fixtures.restore(1))
+	assert_eq(fixtures.read(1)["gold"], 5)
+	# ...and the disk none of it.
+	assert_eq(_text(slots.path_for(1)), before)
+	assert_eq(DirAccess.get_files_at(DIR), PackedStringArray(["slot_1.save"]))
+	assert_eq(SaveSlots.new(DIR).read(1)["gold"], 100)
 
 
 func test_a_launch_that_cant_read_its_slot_never_writes_over_it() -> void:
@@ -535,17 +544,18 @@ func test_the_saves_screen_writes_nothing_over_an_unread_slot() -> void:
 	await wait_process_frames(2)
 	screen._select(0)
 	# E makes no hero over it, a code goes nowhere near it.
-	screen._play()
-	screen.code_field.text = SaveCodec.encode_code(_state(9))
-	screen._load_code()
+	screen._continue()
+	screen.paste_text(SaveCodec.encode_code(_state(9)))
+	screen.paste_text(SaveCodec.encode_code(_state(9)))
 	assert_false(_creating(screen), "no creation opened")
 	assert_eq(_text(slots.path_for(1)), "{ damaged")
 	# X asks twice, then clears.
-	screen._clear()
-	screen._clear()
+	screen._delete()
+	screen._delete()
 	assert_true(FileAccess.file_exists(slots.path_for(1)), "asked twice")
-	screen._clear()
+	screen._delete()
 	assert_true(slots.is_free(1), "then cleared")
+	assert_eq(slots.deleted(1), {}, "for good: nothing waits to come back")
 	screen.close()
 	GameState.slots = kept
 	await get_tree().process_frame
@@ -567,7 +577,7 @@ func test_the_saves_screen_makes_no_new_hero() -> void:
 	await wait_process_frames(2)
 	screen._select(2)
 	assert_eq(screen._kind(), SaveSlots.EMPTY)
-	screen._play()
+	screen._continue()
 	assert_false(_creating(screen), "E on an empty slot makes no one")
 	# The game's keys, which a key is checked against.
 	Controls.apply({})
@@ -617,7 +627,8 @@ func test_a_harness_run_reads_the_players_slots_and_never_writes_them() -> void:
 	state.new_hero_in(2, "Robin", "warrior")
 	assert_false(FileAccess.file_exists(slots.path_for(2)), "creation's Begin writes nothing")
 	state.clear_slot(1)
-	assert_eq(slots.read(1)["gold"], 100, "nor does clearing one")
+	assert_eq(SaveSlots.new(DIR).read(1)["gold"], 100, "nor does clearing one")
+	assert_false(FileAccess.file_exists(slots.deleted_for(1)))
 
 
 # PIX-302: our own format, v5. A save from before it (the first edition's
@@ -688,16 +699,16 @@ func test_the_saves_screen_writes_no_code_over_an_older_slot_and_clears_it_on_a_
 	add_child(screen)
 	await wait_process_frames(2)
 	screen._select(0)
-	screen._play()
+	screen._continue()
 	assert_string_contains(screen.status.text, "older")
-	screen.code_field.text = SaveCodec.encode_code(_state(9))
-	screen._load_code()
+	screen.paste_text(SaveCodec.encode_code(_state(9)))
+	screen.paste_text(SaveCodec.encode_code(_state(9)))
 	assert_eq(_text(slots.older_for(1)[0]), old)
 	assert_false(FileAccess.file_exists(slots.path_for(1)), "no code written over it")
-	screen._clear()
-	screen._clear()
+	screen._delete()
+	screen._delete()
 	assert_true(FileAccess.file_exists(slots.older_for(1)[0]), "asked twice")
-	screen._clear()
+	screen._delete()
 	assert_true(slots.is_free(1), "then cleared")
 	screen.close()
 	GameState.slots = kept
@@ -712,13 +723,13 @@ func test_a_pasted_older_code_says_so_and_loads_nothing() -> void:
 	add_child(screen)
 	await wait_process_frames(2)
 	screen._select(2)
-	screen.code_field.text = "PXH1." + Marshalls.utf8_to_base64(FileAccess.get_file_as_string(OLDER_FILE))
-	screen._load_code()
+	screen.paste_text("PXH1." + Marshalls.utf8_to_base64(FileAccess.get_file_as_string(OLDER_FILE)))
 	assert_string_contains(screen.status.text, "older version")
 	var cut := SaveCodec.encode_code(_state(9))
-	screen.code_field.text = cut.left(cut.length() - 8)
-	screen._load_code()
+	screen.paste_text(cut.left(cut.length() - 8))
 	assert_string_contains(screen.status.text, "cut short")
+	screen.paste_text("hello")
+	assert_string_contains(screen.status.text, "no save code")
 	assert_false(FileAccess.file_exists(slots.path_for(3)), "nothing written")
 	screen.close()
 	GameState.slots = kept
