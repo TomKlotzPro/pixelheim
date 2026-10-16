@@ -101,9 +101,12 @@ func finish_dialogue(npc_id: String) -> void:
 	var said := open_tin() if npc_id == "elder" else ""
 	if said == "" and npc_id == "elder":
 		said = hear_out()
-	# A letter carried to this villager is theirs as the talk ends.
+	# A letter carried to this villager is theirs as the talk ends; then a
+	# piece of the Post's for them (PIX-320).
 	if said == "":
 		said = deliver(npc_id)
+	if said == "":
+		said = owner.posting.deliver(npc_id)
 	if said != "":
 		owner.dialogue_closed.emit(npc_id)
 		owner.message.emit(said)
@@ -258,6 +261,7 @@ func deliver(npc_id: String) -> String:
 	if quest.is_empty():
 		return ""
 	var objective: Dictionary = quest["objective"]
+	var post_was_open := owner.posting.is_open()
 	owner.pack.remove_item(objective["itemId"], int(objective["count"]))
 	owner.progression.quests[quest["id"]] = {"progress": int(objective["count"]), "done": true}
 	Journal.let_go(owner.progression)
@@ -278,6 +282,10 @@ func deliver(npc_id: String) -> String:
 	# bridge, mended at the board), a story beat in the log.
 	if quest.has("postscript"):
 		owner.noted.emit([String(quest["postscript"])])
+	# Maren's first letter in Wenna's hands: word goes round that Pixelheim
+	# has a courier, and the post box goes up on the square (PIX-320).
+	if not post_was_open and owner.posting.is_open():
+		owner.noted.emit([Post.opened_line()])
 	# The keepsake already home, the family comes too (PIX-255: Wenna).
 	for line: String in owner.holdings.come_home():
 		done += " " + line

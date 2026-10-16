@@ -1,0 +1,288 @@
+{
+  "about": "PIX-320, the Pixelheim Post's first step (Something to Come Back To, direction A): once Maren's first letter reaches Saltmere (`opens`, a main quest step's kind of condition), word goes round that Pixelheim has a courier who delivers anything, and a post box goes up on the square (`box`, beside the bounty board; `opened` is the line the log says as it does). Each game morning (DayNight's day, the one a night's sleep ends) the box holds up to `bag` pieces, worked out from the day, `seed` and the threads (Post.in_box): each thread offers its next piece once the one before it is delivered, a piece for someone where the hero has been, never past a shut gate (Gates), its sender home and its `when` met (a main quest step's kinds of condition, all of them). E at the box takes them into the satchel; walking up to a piece's addressee and pressing E hands it over: they say `said`, the courier is paid `tip` (and `gift`, an item, now and then), and a `reply` that follows it comes straight back into the satchel to carry home. A delivered piece's `words` read in the journal's Post tab, as Maren's letters do; `note` is what its outside says while it's sealed. `correspondents` are the people who write and are written to: the villager it's handed to (`npc`), and for one with no door of their own (Fafnyr, on Hilda's chimney) the villager who takes it for them. Nothing expires: a piece waits in the box or the satchel as long as it likes, and a day skipped costs nothing. Only what the hero did is saved (Post's own section of the save: the satchel, each thread's step, the pieces delivered and the day the box was last emptied).",
+  "opens": {"kind": "delivered", "questId": "letter_wenna"},
+  "opened": "Word has reached Pixelheim: its courier delivers anything, even fifty years late. A post box goes up on the square, beside the bounty board.",
+  "box": {"mapId": "town", "x": 44, "y": 21},
+  "bag": 3,
+  "seed": 320,
+  "correspondents": {
+    "bram": {"npc": "villager_bram"},
+    "ola": {"npc": "saltmere_ola"},
+    "garrick": {"npc": "mines_garrick"},
+    "mabel": {"npc": "greyhold_mabel"},
+    "sela": {"npc": "innkeeper"},
+    "wenna": {"npc": "saltmere_wenna"},
+    "pell": {"npc": "mines_pell"},
+    "pip": {"npc": "kid_pip"},
+    "fafnyr": {"npc": "smith"}
+  },
+  "threads": [
+    {
+      "id": "cheese_club",
+      "title": "Bram's Cheese Club",
+      "pieces": [
+        {
+          "id": "club_ola",
+          "kind": "parcel",
+          "from": "bram",
+          "to": "ola",
+          "tip": 6,
+          "addressed": "Parcel for Ola the Fisher",
+          "note": "A wheel of cheese in a sack. The label is in Bram's hand.",
+          "words": ["Bram's Cheese Club, wheel number one. Handle with care. Or don't. It's cheese."],
+          "said": [
+            "Cheese? For me? Nobody sends me anything but weather.",
+            "(She sniffs it.) Tell Bram the gulls say thank you. No, wait. I'll write to him myself."
+          ]
+        },
+        {
+          "id": "club_ola_reply",
+          "kind": "letter",
+          "reply": true,
+          "from": "ola",
+          "to": "bram",
+          "tip": 3,
+          "addressed": "Reply for Bram",
+          "note": "From Ola, in Saltmere. It smells of the harbour.",
+          "words": ["Dear Bram. Best cheese in Saltmere. Only cheese in Saltmere. The gulls got the rind. Send another, and a lid. - Ola"],
+          "said": [
+            "A lid! Why didn't I think of a lid?",
+            "The club has its first member, courier. Two, with me. Three, if you count the gulls."
+          ]
+        },
+        {
+          "id": "club_garrick",
+          "kind": "parcel",
+          "from": "bram",
+          "to": "garrick",
+          "tip": 8,
+          "addressed": "Parcel for Foreman Garrick",
+          "note": "A wheel of cheese, with a lid on it this time.",
+          "words": ["Bram's Cheese Club, wheel number two. Members get a wheel a week. Membership is free. You're a member now. No refunds."],
+          "said": [
+            "We didn't join anything. ...Is that smoked?",
+            "Lads! Down tools! Cheese!"
+          ]
+        },
+        {
+          "id": "club_mabel",
+          "kind": "parcel",
+          "from": "bram",
+          "to": "mabel",
+          "tip": 10,
+          "addressed": "Parcel for Mabel the Sutler",
+          "note": "A hard old wheel. Bram has drawn a sword on the label, badly.",
+          "words": ["Bram's Cheese Club, wheel number three. For soldiers. Hard cheese for hard times. Don't throw it at anyone. Unless you must."],
+          "said": [
+            "\"Unless you must.\" Your Bram knows soldiers.",
+            "The lads will want to thank him properly. Hold on, courier. Somebody find a pen that isn't a spear."
+          ]
+        },
+        {
+          "id": "club_mabel_reply",
+          "kind": "letter",
+          "reply": true,
+          "from": "mabel",
+          "to": "bram",
+          "tip": 4,
+          "gift": "cheese_wheel",
+          "addressed": "The garrison's reply for Bram",
+          "note": "Signed by Mabel and eleven soldiers. Two of them signed with a cross.",
+          "words": ["Dear Mister Bram. The garrison thanks the Cheese Club. Nobody threw it at anyone. The lads want to know: does the club have a song? - Mabel, and the lads"],
+          "said": [
+            "A song. The club needs a song.",
+            "Give me a week. Give me two. Here, courier, for your trouble: a wheel of your own. You're a member."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "salty_stew",
+      "title": "Wenna and Pell",
+      "pieces": [
+        {
+          "id": "stew_salt",
+          "kind": "letter",
+          "from": "sela",
+          "to": "wenna",
+          "tip": 5,
+          "addressed": "Letter for Old Wenna",
+          "note": "From Sela, at the inn. It smells of onions.",
+          "words": ["Mistress Wenna. A question from the inn's kitchen: how much salt goes in Tam's stew? I'd like to get it right before you taste it. - Sela"],
+          "said": [
+            "How much salt? Tell her: until the spoon stands up on its own.",
+            "Tam salted it like the sea. That's how you know it's from Saltmere."
+          ]
+        },
+        {
+          "id": "canary_bite",
+          "kind": "letter",
+          "from": "wenna",
+          "to": "pell",
+          "tip": 8,
+          "addressed": "Letter for Old Pell",
+          "note": "From Wenna. Tam's sister's hand, firm and round.",
+          "words": ["To Old Pell, who had the canary. Maren's courier says you're still alive, and so is the bird. Tam wrote me once that she bit Morvax. Is it true? - Wenna, Tam's sister"],
+          "said": [
+            "(He reads it twice.) Tam's sister. Tam's sister!",
+            "Wait there, courier. This wants an answer, and the canary wants a say."
+          ]
+        },
+        {
+          "id": "canary_bite_reply",
+          "kind": "letter",
+          "reply": true,
+          "from": "pell",
+          "to": "wenna",
+          "tip": 4,
+          "addressed": "Reply for Old Wenna",
+          "note": "From Pell. Smudged with coal, with a small peck through one corner.",
+          "words": ["Mistress Wenna. She bit Morvax twice, and Maren once, by mistake. That was this one's great-great-grandmother. This one bites too. It runs in the family. - Pell"],
+          "said": [
+            "\"It runs in the family.\" Ha! So does salt, in mine."
+          ]
+        },
+        {
+          "id": "canary_song",
+          "kind": "letter",
+          "from": "wenna",
+          "to": "pell",
+          "tip": 3,
+          "when": [
+            {"kind": "settler", "settlerId": "saltmere_wenna"},
+            {"kind": "settler", "settlerId": "mines_pell"}
+          ],
+          "addressed": "Note for Old Pell",
+          "note": "From the inn, next door. Written in a hurry.",
+          "words": ["Mister Pell. Your canary sang all night under my window. Every song she knows, twice. - W."],
+          "said": [
+            "That's her welcome song. She likes Wenna.",
+            "Gods help her. Hold on, courier. The canary has something to add."
+          ]
+        },
+        {
+          "id": "canary_song_reply",
+          "kind": "letter",
+          "reply": true,
+          "from": "pell",
+          "to": "wenna",
+          "tip": 3,
+          "addressed": "Reply for Old Wenna",
+          "note": "From Pell, over the forge. A yellow feather is tucked in the fold.",
+          "words": ["Mistress Wenna. The canary finds your stew too salty. The canary has never been wrong. - P."],
+          "said": [
+            "Too salty. TOO SALTY.",
+            "Tam salted it like that for forty years and nobody died. Well. Not of the stew."
+          ]
+        },
+        {
+          "id": "canary_supper",
+          "kind": "letter",
+          "from": "wenna",
+          "to": "pell",
+          "tip": 5,
+          "addressed": "Invitation for Old Pell",
+          "note": "From Wenna. Folded twice, very neatly.",
+          "words": ["Mister Pell. A pot with no salt in it at all, tonight at six. Bring the bird. She can say it to my face. - W."],
+          "said": [
+            "Supper. With Tam's sister.",
+            "...I'll wear the good coat. The canary will wear what she always wears: an opinion."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pip_dragon",
+      "title": "Pip and the dragon",
+      "pieces": [
+        {
+          "id": "dragon_fish",
+          "kind": "letter",
+          "from": "pip",
+          "to": "wenna",
+          "tip": 4,
+          "addressed": "Letter for Old Wenna",
+          "note": "From Pip. There's a fish drawn on the envelope. Or a boot.",
+          "words": ["Dear Old Wenna. You come from the sea, so you know about fish. Does a dragon like fish? I am asking for a friend. The friend is a dragon. From Pip."],
+          "said": [
+            "A dragon. Of course it is.",
+            "Well, a question deserves an answer. Take this back to the child."
+          ]
+        },
+        {
+          "id": "dragon_fish_reply",
+          "kind": "letter",
+          "reply": true,
+          "from": "wenna",
+          "to": "pip",
+          "tip": 2,
+          "addressed": "Reply for Pip",
+          "note": "From Old Wenna. It smells of the sea, and a little of stew.",
+          "words": ["Hello, Pip. Everything likes fish, except other fish. Ask your cat. - Old Wenna"],
+          "said": [
+            "\"Ask your cat.\" I did. The cat said yes.",
+            "The cat says yes to everybody's fish. That's not science."
+          ]
+        },
+        {
+          "id": "dragon_letter",
+          "kind": "letter",
+          "from": "pip",
+          "to": "fafnyr",
+          "tip": 5,
+          "when": [{"kind": "chapterDone", "chapter": 7}],
+          "addressed": "Letter for Mister Dragon, care of Hilda's chimney",
+          "note": "From Pip. Addressed in very large letters, so a dragon can read it.",
+          "words": ["Dear Mister Dragon. Do you like fish? The cat says no. Write back. From Pip (not the cat)."],
+          "said": [
+            "A letter for the big lump on my chimney? I'll read it to him with his cheese.",
+            "(Hilda climbs the ladder. A long rumble on the roof. She comes down with a letter, scorched round the edges.) He moves his lips when he writes."
+          ]
+        },
+        {
+          "id": "dragon_letter_reply",
+          "kind": "letter",
+          "reply": true,
+          "from": "fafnyr",
+          "to": "pip",
+          "tip": 3,
+          "addressed": "Reply for Pip, from the dragon",
+          "note": "Scorched round the edges. Still warm.",
+          "words": ["Small human. Fish: acceptable. Cat: suspicious. Do not send the cat. - F."],
+          "said": [
+            "He wrote back! It's all burnt at the edges!",
+            "\"Do not send the cat.\" ...I wasn't going to send the cat. Was I going to send the cat?"
+          ]
+        },
+        {
+          "id": "dragon_cat",
+          "kind": "letter",
+          "from": "pip",
+          "to": "fafnyr",
+          "tip": 5,
+          "addressed": "Letter for Mister Dragon, care of Hilda's chimney",
+          "note": "From Pip. There are paw prints on it.",
+          "words": ["Dear Mister Dragon. I did not send the cat. The cat went by itself. Sorry. From Pip."],
+          "said": [
+            "So that's what's been on my chimney all morning.",
+            "(Another rumble on the roof, a long one. A letter flutters down, smoking a little.)"
+          ]
+        },
+        {
+          "id": "dragon_cat_reply",
+          "kind": "letter",
+          "reply": true,
+          "from": "fafnyr",
+          "to": "pip",
+          "tip": 3,
+          "addressed": "Reply for Pip, from the dragon",
+          "note": "Scorched round the edges. A cat's hair is stuck in the wax.",
+          "words": ["Small human. The cat sleeps on my tail. It is warm. I have decided to allow it. Do not tell the cat. - F."],
+          "said": [
+            "I won't tell. ...The cat knows."
+          ]
+        }
+      ]
+    }
+  ]
+}

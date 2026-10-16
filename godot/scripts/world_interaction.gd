@@ -6,8 +6,9 @@ extends Node
 ## set piece's words (PIX-255), the house's door and fixtures, a trade's
 ## station (a
 ## forge, an anvil, a cauldron: PIX-234), the stairs down to a cellar
-## (PIX-256), a fishing spot, the square's boards, then the villager beside
-## the hero (a keeper's counter, a stall, the bank, or a talk). What the
+## (PIX-256), a fishing spot, the square's boards and its post box
+## (PIX-320), then the villager beside the hero (a keeper's counter, a
+## stall, the bank, or a talk; a piece of the post for them first). What the
 ## hero steps on is picked up (ground treasure, patches), and the prompt
 ## floats over whatever E would meet. The screens it opens, and the prompt,
 ## stand on the world as before.
@@ -122,6 +123,11 @@ func interact() -> void:
 	if world.map.id == "town" and faced == Town.bounty_board():
 		world.add_child(preload("res://scripts/bounty_screen.gd").new())
 		return
+	# And past that, once Maren's first letter is delivered, the post box
+	# (PIX-320): E takes the day's post.
+	if world.map.id == Post.box_map() and faced == Post.box_cell() and GameState.posting.is_open():
+		take_post()
+		return
 	# A gate the story keeps shut says again what opens it (PIX-254).
 	var gate := _gate_at(faced)
 	if not gate.is_empty():
@@ -135,7 +141,9 @@ func interact() -> void:
 		# the next word opens the counter), a settled Mirelle her bank (her
 		# arc's asks first, PIX-157). The
 		# mayor talks, then opens the projects ledger (see talk).
-		var quest_word := Quests.awaits_word(beside["npc"]["id"], GameState.progression.quests, GameState.pack.items, GameState.questing.quest_open)
+		# A piece of the Post's for them is handed over in a word too (PIX-320).
+		var quest_word := Quests.awaits_word(beside["npc"]["id"], GameState.progression.quests, GameState.pack.items, GameState.questing.quest_open) \
+				or not GameState.posting.carried_for(beside["npc"]["id"]).is_empty()
 		var at_stall: bool = world.map.id == "town" and beside["npc"].has("stall") and beside["npc"]["mapId"] == "town"
 		# A trader out in the Reach (PIX-176) sells from their own pack.
 		var trader: String = beside["npc"].get("shop", "")
@@ -156,6 +164,17 @@ func interact() -> void:
 		else:
 			talk(beside["npc"])
 		return
+
+
+## The day's post out of the box on the square (PIX-320), its line said,
+## the box drawn empty.
+func take_post() -> void:
+	var said := GameState.posting.take_bag()
+	if said == "":
+		return
+	Sound.play_ui("open")
+	world.messages.flash(said)
+	world.view.show_post_box()
 
 
 ## What the hero's hands meet on a cell: the furniture drawn over it (a
@@ -346,6 +365,15 @@ func talk(npc: Dictionary) -> void:
 		if not then.is_empty():
 			var who: Dictionary = npc
 			GameState.dialogue_closed.connect(func(_who: String) -> void: world.stage.mountain_shakes(who, then), CONNECT_ONE_SHOT)
+		box.npc = npc
+		world.add_child(box)
+		return
+	# A piece of the Post's carried to them (PIX-320): what they say to it,
+	# and as the word ends it's theirs (Posting.deliver).
+	var piece := GameState.posting.carried_for(npc["id"])
+	if not piece.is_empty():
+		npc = npc.duplicate()
+		npc["lines"] = piece["said"]
 		box.npc = npc
 		world.add_child(box)
 		return

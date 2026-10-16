@@ -276,6 +276,9 @@ func hint_boards() -> void:
 	if cell.distance_to(Vector2(Town.bounty_board())) <= 2.0 \
 			and not Hunts.notices(GameState.questing.board_floors(), GameState.progression.hunted).is_empty():
 		hint("bounty")
+	# The post box past it, once it stands (PIX-320).
+	if cell.distance_to(Vector2(Post.box_cell())) <= 2.0 and GameState.posting.is_open():
+		hint("post")
 
 
 func on_hp_changed(hp: int, max_hp: int) -> void:

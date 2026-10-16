@@ -35,7 +35,9 @@ const AREAS := ["town", "rooms", "reach", "regions", "ways", "dungeon", "combat"
 ## filmed (`strike`), the third blow felling it, or caught as it notices the
 ## hero (`notice`, PIX-289). A `letter` of Maren's is carried for that shot
 ## alone (its recipient's mark), and the town stands at age `tier` for it
-## alone (PIX-307; every age built otherwise). Only a shot with `card` keeps
+## alone (PIX-307; every age built otherwise), and `post` opens the
+## Pixelheim Post for it (PIX-320: its `box` faced, or its `tab` read).
+## Only a shot with `card` keeps
 ## the title card naming the place it enters (PIX-269). A new shot goes
 ## with its area's.
 const SHOTS := {
@@ -71,6 +73,11 @@ const SHOTS := {
 	"streets_town": {"area": "town", "map": "town", "cell": Vector2i(40, 13), "time": DAY, "tier": 3},
 	"streets_city": {"area": "town", "map": "town", "cell": Vector2i(40, 22), "time": DAY},
 	"streets_city_night": {"area": "town", "map": "town", "cell": Vector2i(40, 22), "time": NIGHT},
+	# The Pixelheim Post's box on the square past the bounty board (PIX-320,
+	# `post`: the Post open for the shot alone), holding the day's post, its
+	# pennant up; by day and at night.
+	"post_box": {"area": "town", "map": "town", "cell": Vector2i(44, 23), "time": DAY, "post": "box"},
+	"post_box_night": {"area": "town", "map": "town", "cell": Vector2i(44, 23), "time": NIGHT, "post": "box"},
 	"inn_night": {"area": "rooms", "map": "town_inn", "time": NIGHT},
 	# A room by day, the day through its windows lying on the floor, and
 	# Odo's store's patterned rug (PIX-311, PIX-315).
@@ -303,6 +310,11 @@ const SHOTS := {
 	# chapter and the hours each, and an empty slot (`slots`: the fixture
 	# folder read, never written).
 	"saves": {"area": "screens", "map": "town", "at": "street", "time": DAY, "slots": "res://test/fixtures/slots_room"},
+	# The journal's Post tab (PIX-320): the day's post taken, one piece
+	# handed over and its reply to carry back, the rest sealed; over the
+	# square by day and at night.
+	"post_tab": {"area": "screens", "map": "town", "cell": Vector2i(44, 23), "time": DAY, "post": "tab"},
+	"post_tab_night": {"area": "screens", "map": "town", "cell": Vector2i(44, 23), "time": NIGHT, "post": "tab"},
 }
 ## Filming the walk: slowed to a quarter, a picture every WALK_STEP of the
 ## game's time (thirty a second: two or three of each frame of the walk),
@@ -435,10 +447,13 @@ func run() -> void:
 		elif with_motion:
 			await _film(shot["name"], shot.get("strike", false))
 		_unstage(shot)
-		# A screen a shot opened goes, so the next finds the world its own.
+		# A screen a shot opened goes, so the next finds the world its own:
+		# gone from the tree before the next is staged, or the HUD it hid
+		# came back over the next shot's journal or map (PIX-320).
 		for node in world.get_children():
 			if node is Screen:
 				(node as Screen).close()
+		await get_tree().process_frame
 	for look: String in folders:
 		sheet(images[look]).save_png("%s/sheet.png" % folders[look])
 		FileAccess.open("%s/shots.txt" % folders[look], FileAccess.WRITE).store_string("\n".join(shot_names) + "\n")
@@ -471,6 +486,8 @@ func _stage(shot: Dictionary) -> void:
 		GameState.settlement.town_tier = int(shot["tier"])
 		GameState.settlement.projects.assign(Town.projects_through(int(shot["tier"])))
 	GameState.world.steps = shower_by_day() if shot.get("rain", false) else float(shot["time"]) * DayNight.DAY_CYCLE_STEPS
+	if shot.has("post"):
+		_open_post()
 	world.map = world.load_map(shot["map"])
 	var at: Vector2i = nearest_walkable(world.map, shot["cell"]) if shot.has("cell") else _cell(world.map, String(shot.get("at", "")))
 	world.enter_map(world.map, at)
@@ -508,6 +525,16 @@ func _stage(shot: Dictionary) -> void:
 	for cell: Vector2i in shot.get("drops", {}):
 		# Laid as the map lays a patch (MapView.pickup), gone with the visit.
 		world.view.ground.add_child(MapView.pickup(ItemIcons.texture(shot["drops"][cell]), cell))
+	if shot.get("post", "") == "box":
+		world.player.face(Vector2.UP)
+	if shot.get("post", "") == "tab":
+		# The day's post taken, the first piece handed over (its reply in
+		# the satchel), then the journal at its Post page.
+		Post.take(GameState.post, GameState.posting.in_box(), GameState.posting.today())
+		Post.hand_over(GameState.post, GameState.post.bag[0])
+		var journal := preload("res://scripts/journal_screen.gd").new()
+		journal.tab = "post"
+		world.add_child(journal)
 	if shot.has("chart"):
 		# The map over a hero who has walked it all, a waypoint chosen.
 		Atlas.walk_all(GameState.world.discovered)
@@ -533,6 +560,8 @@ func _unstage(shot: Dictionary) -> void:
 	if shot.has("letter"):
 		GameState.pack.remove_item(shot["letter"])
 		GameState.progression.quests.erase(shot["letter"])
+	if shot.has("post"):
+		_close_post()
 	if shot.has("zoom"):
 		world.camera_rig.camera.zoom = Vector2.ONE * CameraRig.ZOOM
 	if shot.has("slots"):
@@ -541,6 +570,41 @@ func _unstage(shot: Dictionary) -> void:
 		if is_instance_valid(foe):
 			foe.queue_free()
 	_lined_up.clear()
+
+
+## What the Post's shots changed (PIX-320), to put back: whether the tin
+## was found, Maren's first letter's entry, and whether Saltmere was walked.
+var _before_post := {}
+
+
+## The Pixelheim Post open for a shot alone (PIX-320), as the harness's
+## `--post` opens it: Maren's first letter in Wenna's hands and Saltmere
+## walked, before the town is drawn (its box on the square).
+func _open_post() -> void:
+	var first: Dictionary = Letters.all()[0]
+	var wenna := Npcs.by_id(String(first["objective"]["to"]), GameState.settlement.settlers)
+	_before_post = {
+		"tin": GameState.has_seen(Letters.scene_id()),
+		"letter": GameState.progression.quests.get(first["id"], {}),
+		"walked": GameState.world.discovered.has(String(wenna["mapId"])),
+	}
+	GameState.mark_seen(Letters.scene_id())
+	GameState.progression.quests[first["id"]] = {"progress": 1, "done": true}
+	Discovery.discover_around(GameState.world.discovered, MapData.load_by_id(String(wenna["mapId"])), Vector2i(int(wenna["x"]), int(wenna["y"])))
+
+
+## The Post as it was before its shot: shut, and nothing in it kept.
+func _close_post() -> void:
+	var first: Dictionary = Letters.all()[0]
+	if not _before_post.get("tin", true):
+		GameState.progression.story_seen.erase(Letters.scene_id())
+	if (_before_post.get("letter", {}) as Dictionary).is_empty():
+		GameState.progression.quests.erase(first["id"])
+	else:
+		GameState.progression.quests[first["id"]] = _before_post["letter"]
+	if not _before_post.get("walked", true):
+		GameState.world.discovered.erase(String(Npcs.by_id(String(first["objective"]["to"]), GameState.settlement.settlers)["mapId"]))
+	GameState.post = PostState.new()
 
 
 ## A named monster held still at `at` (PIX-314): the one in its lair on this

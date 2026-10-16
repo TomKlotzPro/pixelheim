@@ -82,6 +82,7 @@ const TABLE := [
 	{"field": "packs", "says": "on a wild map: the packs standing in the hero's region, :asleep by their fire (PIX-252)"},
 	{"field": "page", "says": "the map's page, while the map is open (PIX-266)"},
 	{"field": "patches", "says": "with --day: the patches still to pick, by cell (PIX-250)"},
+	{"field": "post", "says": "once the Pixelheim Post is open: standing when its box is drawn on this map, then the pieces in the box this morning, in the satchel and delivered, and while the map is open the addressees it marks on its page: standing,box:0,bag:2,sent:1,marked:1 (PIX-320)"},
 	{"field": "read", "says": "on the journal's Letters page: the letters it reads (PIX-253)"},
 	{"field": "rise", "says": "with --rise: how far the building on the tour has risen: ruin, rising, built (PIX-264)"},
 	{"field": "rooms", "says": "with rooms: what the rooms are drawn from (paid, free or none), how many of them have walls and a floor, and those with a stair down: free walled 9/9 stairs keep,observatory (PIX-318)"},
@@ -565,6 +566,16 @@ func field_patches() -> String:
 		return Gathering.is_ready(GameState.world, world.view.patches[cell]["id"]))
 	cells.sort()
 	return ";".join(cells.map(func(cell: Vector2i) -> String: return "%d,%d" % [cell.x, cell.y])) if not cells.is_empty() else "none"
+
+
+func field_post() -> String:
+	if not GameState.posting.is_open():
+		return ""
+	var counts := "box:%d,bag:%d,sent:%d" % [GameState.posting.in_box().size(), GameState.post.bag.size(), GameState.post.delivered.size()]
+	var screen := _map_screen()
+	if screen != null:
+		counts += ",marked:%d" % screen.painting.post_cells().size()
+	return ("standing," + counts) if world.view.post_box != null and is_instance_valid(world.view.post_box) else counts
 
 
 func field_read() -> String:
