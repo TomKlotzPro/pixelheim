@@ -133,15 +133,20 @@ chapter-two | --map saltmere --ready letter_wenna --talk-to saltmere_wenna --key
 storymap | --map town journal charted --keys s,s,s,s,s,s,s,e,esc,m,a | open=map_screen page=overworld story=[0-9]+,[0-9]+ tracked=slime_trouble | travel quest screen
 # The Pixelheim Post (PIX-320): once Maren's first letter reaches Saltmere
 # its box stands on the square past the bounty board, and E there takes the
-# day's post (Bram's first wheel and Sela's question, both for Saltmere);
-# the wheel handed to Ola on her jetty, her reply in the satchel to carry
-# back; and Bram reading it in town. On the map, faintly, who the satchel's
-# post is for: Bram on the village's page, Wenna on the Reach's.
-post-box | --map town --post box | post=standing,box:0,bag:2,sent:0 open=none | town story quest
-post-deliver | --map saltmere --post club_ola --keys e,e | post=box:1,bag:1,sent:1 open=none | story quest
-post-reply | --map town --post club_ola_reply --keys e,e | post=standing,box:1,bag:0,sent:2 open=none | town story quest
-post-map | --map town --post read worldmap | open=map_screen post=standing,box:0,bag:2,sent:1,marked:1 | town quest travel screen
-post-map-reach | --map saltmere --post read worldmap | open=map_screen page=overworld post=box:0,bag:2,sent:1,marked:1 | quest travel screen
+# day's post (three pieces of seven threads' between Pixelheim, Saltmere and
+# the Reach's road, PIX-321); the wheel handed to Ola on her jetty, her
+# reply in the satchel to carry back, Saltmere's page stamped in the
+# courier's book; and Bram reading it in town. On the map, faintly, who the
+# satchel's post is for: on the village's page, and on the Reach's.
+post-box | --map town --post box | post=standing,box:0,bag:3,sent:0 open=none | town story quest
+post-deliver | --map saltmere --post club_ola --keys e,e | post=box:3,bag:1,sent:1 stamps=saltmere open=none | story quest
+post-reply | --map town --post club_ola_reply --keys e,e | post=standing,box:3,bag:0,sent:2 stamps=town open=none | town story quest
+post-map | --map town --post read worldmap | open=map_screen post=standing,box:0,bag:3,sent:1,marked:2 | town quest travel screen
+post-map-reach | --map saltmere --post read worldmap | open=map_screen page=overworld post=box:0,bag:3,sent:1,marked:1 | quest travel screen
+# The courier's book (PIX-321): the day's post all delivered, replies too,
+# and the journal open at its Postmarks: Pixelheim's, Saltmere's and the
+# Reach's pages stamped.
+post-book | --map town --post book journal --tab book | open=journal_screen post=standing,box:0,bag:0,sent:5 stamps=town,saltmere,overworld | town quest screen
 # The mire's mimic chest shudders, then ambushes (PIX-129).
 mimic | --map mirefen mimic --wait 0.75 | map=mirefen cell=\(42, 13\) hp=42 | combat field
 # The mayor's word opens the town ledger; the board on the square opens it too (PIX-147).
@@ -672,7 +677,9 @@ fit-chapter | --map town --hunted tidecaller,seam_warden,hollow_captain chapter 
 fit-journal-feats | --map town journal --tab feats overflow --lang fr | open=journal_screen overflow=0 | screen lang quest
 # The journal's Post page (PIX-320): the day's post taken, one piece read
 # and its reply carried, in French.
-fit-journal-post | --map town --post read journal --tab post overflow --lang fr | open=journal_screen overflow=0 post=standing,box:0,bag:2,sent:1 | screen lang quest
+fit-journal-post | --map town --post read journal --tab post overflow --lang fr | open=journal_screen overflow=0 post=standing,box:0,bag:3,sent:1 | screen lang quest
+# The courier's book's pages, in French (PIX-321).
+fit-journal-book | --map town --post book journal --tab book overflow --lang fr | open=journal_screen overflow=0 stamps=town,saltmere,overworld | screen lang quest
 fit-skills | --map town --keys k overflow --lang fr | open=skills_screen overflow=0 | screen lang rank
 fit-stats | --map town --keys c overflow --lang fr | open=stats_screen overflow=0 | screen lang
 fit-codex | --map town --keys b overflow --lang fr | open=codex_screen overflow=0 | screen lang

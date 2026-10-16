@@ -5385,6 +5385,10 @@ msgid "The Pixelheim Post opens: once Maren's first letter reaches Saltmere, a p
 msgstr "La Poste de Pixelheim ouvre : dès que la première lettre de Maren arrive à Saltmere, une boîte aux lettres se dresse sur la place, et chaque matin elle contient quelques lettres et colis à porter en chemin"
 
 #: assets/data/changelog.json
+msgid "The Post now carries twelve stories across the whole Reach: Maren writing to Wenna after fifty years, Mirelle's gentle reminders about interest, Wren's horse that eats mittens, Fenwick in charge of Greyhold, and Morvax and Maren still arguing over forty lamps or forty-one"
+msgstr "La Poste porte maintenant douze histoires dans toute la Reach : Maren qui écrit à Wenna après cinquante ans, les doux rappels de Mirelle sur les intérêts, le cheval de Wren qui mange les moufles, Fenwick seul maître de Greyhold, et Morvax et Maren qui se disputent toujours : quarante lampes ou quarante et une"
+
+#: assets/data/changelog.json
 msgid "The Quill"
 msgstr "La plume"
 
@@ -5511,6 +5515,10 @@ msgstr "Les commandes passent dans une légende sur le côté - toutes les touch
 #: assets/data/changelog.json
 msgid "The corner buttons speak pixel now: a proper gold speaker and gear instead of emoji"
 msgstr "Les boutons du coin parlent pixel désormais : un vrai haut-parleur et un vrai engrenage dorés au lieu d'emoji"
+
+#: assets/data/changelog.json
+msgid "The courier's book: a postmark for every place your post reaches, with who got letters there and what you were given"
+msgstr "Le carnet du messager : un cachet pour chaque lieu où arrive votre courrier, avec qui a reçu des lettres et ce qu'on vous a offert"
 
 #: assets/data/changelog.json
 msgid "The craft guide now knows fishing: it tells you where the fish and pearls a recipe needs come from"
@@ -5711,6 +5719,10 @@ msgstr "Le mannequin et le portrait de la barre le portent aussi"
 #: assets/data/changelog.json
 msgid "The passes are fast-travel waypoints the moment you lay eyes on them"
 msgstr "Les cols deviennent des relais de voyage rapide dès que vous les apercevez"
+
+#: assets/data/changelog.json
+msgid "The post box holds three pieces a day from the start, and some parcels leave you something to keep: a recipe, a banner, a candelabra"
+msgstr "La boîte aux lettres contient trois plis par jour dès le début, et certains colis vous laissent quelque chose : une recette, une bannière, un chandelier"
 
 #: assets/data/changelog.json
 msgid "The quest is now Relics of the Five - four to find, the five's to bring home - and the town's goals and the bounty board no longer offer floors behind a barred gate"
@@ -5987,6 +5999,10 @@ msgstr "Dévié"
 #: assets/data/changelog.json
 msgid "Turning down your old web hero takes you to the title to make a new one - no more playing a stand-in that's never saved"
 msgstr "Refuser votre ancien héros du web vous ramène à l'écran titre pour en créer un nouveau - fini la doublure qu'on ne sauvegarde jamais"
+
+#: assets/data/changelog.json
+msgid "Twelve Threads"
+msgstr "Douze fils"
 
 #: assets/data/changelog.json
 msgid "Two new feats, Every Letter Delivered and A Full House, and Grandmother Gulp is posted once Pixelheim is a town"
@@ -9621,12 +9637,40 @@ msgid "\"Ask your cat.\" I did. The cat said yes."
 msgstr "« Demande à ton chat. » Je lui ai demandé. Le chat a dit oui."
 
 #: assets/data/post.json
+msgid "\"Carry on.\""
+msgstr "« Continuez. »"
+
+#: assets/data/post.json
 msgid "\"Do not send the cat.\" ...I wasn't going to send the cat. Was I going to send the cat?"
 msgstr "« N'envoyez pas le chat. » ... Je n'allais pas envoyer le chat. Si ? J'allais envoyer le chat ?"
 
 #: assets/data/post.json
+msgid "\"In charge\", twice. He'll be fine."
+msgstr "« Aux commandes », deux fois. Ça ira."
+
+#: assets/data/post.json
 msgid "\"It runs in the family.\" Ha! So does salt, in mine."
 msgstr "« C'est de famille. » Ha ! Chez moi, c'est le sel."
+
+#: assets/data/post.json
+msgid "\"Morale: good.\" Thirty years, and I never once wrote that."
+msgstr "« Moral : bon. » Trente ans, et je ne l'ai jamais écrit une seule fois."
+
+#: assets/data/post.json
+msgid "\"No questions. Some questions.\" Make up your mind, banker."
+msgstr "« Sans questions. Quelques questions. » Faudrait savoir, la banquière."
+
+#: assets/data/post.json
+msgid "\"Of what?\" Ha! He's interested."
+msgstr "« De quoi ? » Ha ! Ça l'intéresse."
+
+#: assets/data/post.json
+msgid "\"The Ballad of the Cheese Club\", verse one. A wheel came down the cliff road / on a fair and salty breeze, / and the gulls cried out in Saltmere: / It is cheese! It's cheese! It's cheese! - L."
+msgstr "« La Ballade du Club du fromage », premier couplet. Une meule a pris la route / des falaises en voyage, / et les mouettes de Saltmere crièrent : / Fromage ! Fromage ! Fromage ! - L."
+
+#: assets/data/post.json
+msgid "\"The sea's just visiting.\" (She laughs out loud.) Every single time!"
+msgstr "« C'est la mer qui passe dire bonjour. » (Elle éclate de rire.) À chaque fois !"
 
 #: assets/data/post.json
 msgid "\"Unless you must.\" Your Bram knows soldiers."
@@ -9637,28 +9681,152 @@ msgid "(Another rumble on the roof, a long one. A letter flutters down, smoking 
 msgstr "(Un autre grondement sur le toit, un long. Une lettre redescend en voletant, fumant un peu.)"
 
 #: assets/data/post.json
+msgid "(He checks the ledger. Twice.) We don't. She means we could be earning it. ...Hm."
+msgstr "(Il vérifie le registre. Deux fois.) On ne lui doit rien. Elle veut dire qu'on pourrait en toucher. ... Hum."
+
+#: assets/data/post.json
+msgid "(He finds an old helmet and a spoon.) There. That'll ring. Not well, but it'll ring."
+msgstr "(Il trouve un vieux casque et une cuillère.) Voilà. Ça sonnera. Pas bien, mais ça sonnera."
+
+#: assets/data/post.json
+msgid "(He holds the wheel for a long moment.) Tam would have joined twice."
+msgstr "(Il tient la meule un long moment.) Tam se serait inscrit deux fois."
+
+#: assets/data/post.json
+msgid "(He laughs, a big rusty laugh that turns into a cough, then back into a laugh.)"
+msgstr "(Il rit, d'un grand rire rouillé qui tourne à la toux, puis redevient un rire.)"
+
+#: assets/data/post.json
+msgid "(He moves the strongbox. Then he moves it back.)"
+msgstr "(Il déplace le coffre. Puis il le remet à sa place.)"
+
+#: assets/data/post.json
+msgid "(He reads it again, and again.) Nobody's said that to me since the red cloak."
+msgstr "(Il la relit, encore et encore.) Personne ne m'avait dit ça depuis la cape rouge."
+
+#: assets/data/post.json
 msgid "(He reads it twice.) Tam's sister. Tam's sister!"
 msgstr "(Il la lit deux fois.) La sœur de Tam. La sœur de Tam !"
+
+#: assets/data/post.json
+msgid "(He sings it. All of it. Twice.)"
+msgstr "(Il la chante. En entier. Deux fois.)"
+
+#: assets/data/post.json
+msgid "(He sniffs the cask, and his eyes water.) Smugglers' rum."
+msgstr "(Il renifle le tonnelet et en a les larmes aux yeux.) Du rhum de contrebandier."
+
+#: assets/data/post.json
+msgid "(He stands up very straight.) The water, at least. I was already in charge of the water. Wait, she'll want a report."
+msgstr "(Il se tient très droit.) L'eau, au moins. J'étais déjà chargé de l'eau. Attendez, elle voudra un rapport."
+
+#: assets/data/post.json
+msgid "(Her shoulders shake.) It isn't funny at all."
+msgstr "(Ses épaules tremblent.) Elle n'est pas drôle du tout."
 
 #: assets/data/post.json
 msgid "(Hilda climbs the ladder. A long rumble on the roof. She comes down with a letter, scorched round the edges.) He moves his lips when he writes."
 msgstr "(Hilda grimpe à l'échelle. Un long grondement sur le toit. Elle redescend avec une lettre roussie sur les bords.) Il remue les lèvres quand il écrit."
 
 #: assets/data/post.json
+msgid "(It isn't. She practises at the anvil when she thinks nobody's looking.)"
+msgstr "(Il ne l'est pas. Elle s'entraîne devant l'enclume quand elle croit que personne ne regarde.)"
+
+#: assets/data/post.json
+msgid "(She barely unfolds it.) Forty-one. Of course."
+msgstr "(Elle la déplie à peine.) Quarante et une. Évidemment."
+
+#: assets/data/post.json
+msgid "(She fills a jar off the jetty anyway, and waits for a good wave.) Hold on, I'll write the label."
+msgstr "(Elle remplit quand même un bocal au bout de la jetée, en attendant une belle vague.) Attendez, j'écris l'étiquette."
+
+#: assets/data/post.json
+msgid "(She folds it very small and keeps it.) Fifty years of letters I never sent, and he writes me numbers."
+msgstr "(Elle la plie tout petit et la garde.) Cinquante ans de lettres que je n'ai jamais envoyées, et il m'écrit des nombres."
+
+#: assets/data/post.json
+msgid "(She laughs until she has to sit down on a bucket.) Wait. I'll answer him properly."
+msgstr "(Elle rit tellement qu'elle doit s'asseoir sur un seau.) Attendez. Je vais lui répondre comme il faut."
+
+#: assets/data/post.json
+msgid "(She laughs, and wipes her eyes, and laughs again.) Wait. I'll tell her about the weather."
+msgstr "(Elle rit, s'essuie les yeux, et rit encore.) Attendez. Je vais lui parler du temps."
+
+#: assets/data/post.json
+msgid "(She shades her eyes and counts under her breath.) ...Don't tell him he's right. Wait there."
+msgstr "(Elle met la main en visière et compte à mi-voix.) ... Ne lui dites pas qu'il a raison. Attendez là."
+
+#: assets/data/post.json
 msgid "(She sniffs it.) Tell Bram the gulls say thank you. No, wait. I'll write to him myself."
 msgstr "(Elle le renifle.) Dites à Bram que les mouettes le remercient. Non, attendez. Je vais lui écrire moi-même."
+
+#: assets/data/post.json
+msgid "(She tastes it.) Oh, that IS the saltiest."
+msgstr "(Elle y goûte.) Oh, c'est VRAIMENT la plus salée."
+
+#: assets/data/post.json
+msgid "(She weighs it in her palm. Something happens to her face.)"
+msgstr "(Elle le soupèse dans sa main. Il se passe quelque chose sur son visage.)"
+
+#: assets/data/post.json
+msgid "...Does iron earn interest? Ask her that. No, don't."
+msgstr "... Est-ce que le fer rapporte des intérêts ? Demandez-lui. Non, ne lui demandez pas."
+
+#: assets/data/post.json
+msgid "...How much? Wait. I'll ask her myself."
+msgstr "... Combien ? Attendez. Je vais lui demander moi-même."
+
+#: assets/data/post.json
+msgid "...I'll find one. I'll find one of his."
+msgstr "... J'en trouverai une. J'en retrouverai une des siennes."
+
+#: assets/data/post.json
+msgid "...I'll take the numbers. Here, courier: three more lights, for your own count."
+msgstr "... Je prendrai les nombres. Tenez, messager : trois lumières de plus, pour votre propre compte."
 
 #: assets/data/post.json
 msgid "...I'll wear the good coat. The canary will wear what she always wears: an opinion."
 msgstr "... Je mettrai mon bon manteau. Le canari portera ce qu'il porte toujours : un avis sur tout."
 
 #: assets/data/post.json
+msgid "...It's a very bright lamp, the moon."
+msgstr "... C'est une lampe très brillante, la lune."
+
+#: assets/data/post.json
+msgid "...Rope's the thing this year, with all this building. Wait there."
+msgstr "... La corde, c'est ce qu'il faut cette année, avec tout ce qu'on rebâtit. Attendez là."
+
+#: assets/data/post.json
+msgid "...They're very good mittens. Here, courier: copy it into your book, and take the lily. Your hands are colder than mine."
+msgstr "... Ce sont de très bonnes mitaines. Tenez, messager : recopiez-la dans votre carnet, et prenez le lys. Vous avez les mains plus froides que moi."
+
+#: assets/data/post.json
+msgid "...Top shelf. For emergencies. Very small emergencies."
+msgstr "... Étagère du haut. Pour les urgences. Les toutes petites urgences."
+
+#: assets/data/post.json
+msgid "...Who told her once a year?"
+msgstr "... Qui lui a dit une fois par an ?"
+
+#: assets/data/post.json
 msgid "A dragon. Of course it is."
 msgstr "Un dragon. Évidemment."
 
 #: assets/data/post.json
+msgid "A gentle reminder"
+msgstr "Un petit rappel"
+
+#: assets/data/post.json
 msgid "A hard old wheel. Bram has drawn a sword on the label, badly."
 msgstr "Une vieille meule bien dure. Bram a dessiné une épée sur l'étiquette, mal."
+
+#: assets/data/post.json
+msgid "A horse that likes snow."
+msgstr "Un cheval qui aime la neige."
+
+#: assets/data/post.json
+msgid "A jar of seawater, corked, labelled in Marta's hand."
+msgstr "Un bocal d'eau de mer, bouché, étiqueté de la main de Marta."
 
 #: assets/data/post.json
 msgid "A letter for the big lump on my chimney? I'll read it to him with his cheese."
@@ -9669,6 +9837,14 @@ msgid "A lid! Why didn't I think of a lid?"
 msgstr "Un couvercle ! Comment je n'y ai pas pensé ?"
 
 #: assets/data/post.json
+msgid "A new lamp by the bridge?"
+msgstr "Une nouvelle lampe près du pont ?"
+
+#: assets/data/post.json
+msgid "A sack of ore with a note pinned to it. It clanks."
+msgstr "Un sac de minerai, un mot épinglé dessus. Ça cliquette."
+
+#: assets/data/post.json
 msgid "A song. The club needs a song."
 msgstr "Une chanson. Il faut une chanson au club."
 
@@ -9677,8 +9853,44 @@ msgid "A wheel of cheese in a sack. The label is in Bram's hand."
 msgstr "Une meule de fromage dans un sac. L'étiquette est de la main de Bram."
 
 #: assets/data/post.json
+msgid "A wheel of cheese with a ribbon round it. Bram has written FOR TAM on the rind."
+msgstr "Une meule de fromage avec un ruban autour. Bram a écrit POUR TAM sur la croûte."
+
+#: assets/data/post.json
 msgid "A wheel of cheese, with a lid on it this time."
 msgstr "Une meule de fromage, avec un couvercle cette fois."
+
+#: assets/data/post.json
+msgid "Across the square, and she still writes."
+msgstr "De l'autre côté de la place, et elle écrit encore."
+
+#: assets/data/post.json
+msgid "Alchemist. One jar, the saltiest. It's the same as the rest, but I picked the wave myself. Two coppers. - Marta"
+msgstr "Alchimiste. Un bocal, la plus salée. C'est la même que le reste, mais j'ai choisi la vague moi-même. Deux sous. - Marta"
+
+#: assets/data/post.json
+msgid "Alchemist. Reeds, yes, as many as the fen will spare. In return: what do you put in a fever draught? Mine taste of boots. - Iva"
+msgstr "Alchimiste. Des roseaux, oui, autant que le marais voudra bien en donner. En échange : que mettez-vous dans une potion contre la fièvre ? Les miennes ont un goût de vieille botte. - Iva"
+
+#: assets/data/post.json
+msgid "Alchemist. Snow, mostly. And mittens: a yeti fur and a frost lily, worked at a cauldron. Warm hands don't crush petals. Recipe enclosed. - Linnea"
+msgstr "Alchimiste. De la neige, surtout. Et des mitaines : une fourrure de yéti et un lys de givre, travaillés au chaudron. Des mains chaudes n'écrasent pas les pétales. Recette jointe. - Linnea"
+
+#: assets/data/post.json
+msgid "Apples! She'll take apples."
+msgstr "Des pommes ! Elle prend des pommes."
+
+#: assets/data/post.json
+msgid "Banker. Insure me a wagon against yetis, wolves, avalanches and Bergit stopping dead. If you dare. - Gunnar"
+msgstr "Banquière. Assurez-moi un chariot contre les yétis, les loups, les avalanches et Bergit qui s'arrête net. Si vous osez. - Gunnar"
+
+#: assets/data/post.json
+msgid "Bergit hates it loudly. She'll be glad of the company."
+msgstr "Bergit la déteste bruyamment. Elle sera contente d'avoir de la compagnie."
+
+#: assets/data/post.json
+msgid "Boots! Ha. Everyone's tastes of boots."
+msgstr "De vieille botte ! Ha. Celles de tout le monde ont ce goût-là."
 
 #: assets/data/post.json
 msgid "Bram's Cheese Club"
@@ -9697,12 +9909,64 @@ msgid "Bram's Cheese Club, wheel number two. Members get a wheel a week. Members
 msgstr "Club du fromage de Bram, meule numéro deux. Les membres reçoivent une meule par semaine. L'adhésion est gratuite. Vous êtes membre, maintenant. Pas de remboursement."
 
 #: assets/data/post.json
+msgid "Bram. It's always Bram."
+msgstr "Bram. C'est toujours Bram."
+
+#: assets/data/post.json
+msgid "Can I do cheese? Friend, I can do anything."
+msgstr "Si je sais faire le fromage ? Mon ami, je sais tout faire."
+
+#: assets/data/post.json
+msgid "Chandler. One jar of seawater, please. The saltiest you have. - Vex"
+msgstr "Marchande. Un bocal d'eau de mer, s'il vous plaît. La plus salée que vous ayez. - Vex"
+
+#: assets/data/post.json
+msgid "Cheese is merely... difficult. Let me write back."
+msgstr "Le fromage est simplement... difficile. Laissez-moi répondre."
+
+#: assets/data/post.json
 msgid "Cheese? For me? Nobody sends me anything but weather."
 msgstr "Du fromage ? Pour moi ? D'habitude, on ne m'envoie que du mauvais temps."
 
 #: assets/data/post.json
+msgid "Courier, you're in the chorus. Everybody's in the chorus. That's how a club works."
+msgstr "Messager, vous êtes dans le chœur. Tout le monde est dans le chœur. C'est ça, un club."
+
+#: assets/data/post.json
+msgid "DELIVERED"
+msgstr "REMISE"
+
+#: assets/data/post.json
+msgid "Dagny. I've a new man on the bellows, an old one: your Pell. The canary sends her regards, loudly. Come and see the forge. - H."
+msgstr "Dagny. J'ai un nouveau souffleur, un vieux : votre Pell. Le canari vous salue, bruyamment. Venez voir la forge. - H."
+
+#: assets/data/post.json
+msgid "Dagny. It was not a smile. Send ten more. - Hilda"
+msgstr "Dagny. Ce n'était pas un sourire. Envoyez-en dix autres. - Hilda"
+
+#: assets/data/post.json
 msgid "Dear Bram. Best cheese in Saltmere. Only cheese in Saltmere. The gulls got the rind. Send another, and a lid. - Ola"
 msgstr "Cher Bram. Meilleur fromage de Saltmere. Seul fromage de Saltmere. Les mouettes ont eu la croûte. Envoyez-en un autre, avec un couvercle. - Ola"
+
+#: assets/data/post.json
+msgid "Dear Bram. What rhymes with cheese? I have tried everything. Please write back. - Loras, a bard in some distress"
+msgstr "Cher Bram. Qu'est-ce qui rime avec fromage ? J'ai tout essayé. Répondez-moi, je vous en prie. - Loras, un barde en détresse"
+
+#: assets/data/post.json
+msgid "Dear Friend. Forty barrels of what? - Odo, merchant (honest)"
+msgstr "Cher ami. Quarante tonneaux de quoi ? - Odo, marchand (honnête)"
+
+#: assets/data/post.json
+msgid "Dear Loras. Knees. Trees. Please. Breeze. Sneeze. Also Greyhold, which doesn't rhyme, but they asked first. - Bram"
+msgstr "Cher Loras. Plage. Nuage. Voyage. Orage. Courage. Et aussi Greyhold, qui ne rime pas, mais ils ont demandé les premiers. - Bram"
+
+#: assets/data/post.json
+msgid "Dear Mabel and the lads. The club has a song. Verse one is enclosed. There are nine more. Loras is working on the tenth. - Bram"
+msgstr "Chère Mabel, chers les gars. Le club a une chanson. Le premier couplet est joint. Il y en a neuf autres. Loras travaille au dixième. - Bram"
+
+#: assets/data/post.json
+msgid "Dear Mister Bard. The Cheese Club needs a song. The garrison at Greyhold asked. Can you do cheese? - Bram"
+msgstr "Cher monsieur le barde. Le Club du fromage a besoin d'une chanson. La garnison de Greyhold l'a demandée. Vous savez faire le fromage ? - Bram"
 
 #: assets/data/post.json
 msgid "Dear Mister Bram. The garrison thanks the Cheese Club. Nobody threw it at anyone. The lads want to know: does the club have a song? - Mabel, and the lads"
@@ -9717,8 +9981,208 @@ msgid "Dear Mister Dragon. I did not send the cat. The cat went by itself. Sorry
 msgstr "Cher monsieur le Dragon. Je n'ai pas envoyé le chat. Le chat y est allé tout seul. Pardon. De la part de Pip."
 
 #: assets/data/post.json
+msgid "Dear Mister Morvax. I hear Tam liked cheese. The club sends a wheel, for him and for you. Membership is free. No refunds. - Bram"
+msgstr "Cher monsieur Morvax. On m'a dit que Tam aimait le fromage. Le club vous envoie une meule, pour lui et pour vous. L'adhésion est gratuite. Pas de remboursement. - Bram"
+
+#: assets/data/post.json
 msgid "Dear Old Wenna. You come from the sea, so you know about fish. Does a dragon like fish? I am asking for a friend. The friend is a dragon. From Pip."
 msgstr "Chère madame Wenna. Vous venez de la mer, alors vous vous y connaissez en poissons. Est-ce qu'un dragon aime le poisson ? Je demande pour un ami. L'ami est un dragon. De la part de Pip."
+
+#: assets/data/post.json
+msgid "Dry! He wants them dry."
+msgstr "Secs ! Il les veut secs."
+
+#: assets/data/post.json
+msgid "Eight shoes for two horses. Tell her I'll take apples. Wait there."
+msgstr "Huit fers pour deux chevaux. Dites-lui que je prendrai des pommes. Attendez là."
+
+#: assets/data/post.json
+msgid "Everyone KNOWS?"
+msgstr "Tout le monde le SAIT ?"
+
+#: assets/data/post.json
+msgid "Everything else"
+msgstr "Tout le reste"
+
+#: assets/data/post.json
+msgid "FOLDED"
+msgstr "PLIÉ"
+
+#: assets/data/post.json
+msgid "Fenwick in charge"
+msgstr "Fenwick aux commandes"
+
+#: assets/data/post.json
+msgid "Fenwick. Greyhold is yours to keep now. Don't let it go to your head. - Sergeant Ulla"
+msgstr "Fenwick. C'est à vous de garder Greyhold, maintenant. Que ça ne vous monte pas à la tête. - Sergente Ulla"
+
+#: assets/data/post.json
+msgid "Fenwick. The bell hangs in Pixelheim's hall now, and the mayor jumps every time I ring it. I tell him it's practice. Ring something for me at Greyhold. - Brother Teo"
+msgstr "Fenwick. La cloche est pendue dans la salle de Pixelheim, maintenant, et le maire sursaute chaque fois que je la sonne. Je lui dis que je m'entraîne. Sonnez quelque chose pour moi à Greyhold. - Frère Teo"
+
+#: assets/data/post.json
+msgid "Fenwick. Yes. It was always allowed. Carry on. - U."
+msgstr "Fenwick. Oui. Ça l'a toujours été. Continuez. - U."
+
+#: assets/data/post.json
+msgid "Forty barrels of WHAT?"
+msgstr "Quarante tonneaux de QUOI ?"
+
+#: assets/data/post.json
+msgid "Forty-one"
+msgstr "Quarante et une"
+
+#: assets/data/post.json
+msgid "Forty-one, then. Forty-two with the moon. And you still owe me a game of cards. - M."
+msgstr "Quarante et une, alors. Quarante-deux avec la lune. Et vous me devez toujours une partie de cartes. - M."
+
+#: assets/data/post.json
+msgid "Forty-one. - M."
+msgstr "Quarante et une. - M."
+
+#: assets/data/post.json
+msgid "Forty-one. I went and looked. It isn't the moon. There's a new lamp by the bridge. Ask your lamplighter. - Morvax"
+msgstr "Quarante et une. Je suis allé voir. Ce n'est pas la lune. Il y a une nouvelle lampe près du pont. Demandez à votre allumeur. - Morvax"
+
+#: assets/data/post.json
+msgid "Forty-two, with the moon. Bring the cards. - M."
+msgstr "Quarante-deux, avec la lune. Apportez les cartes. - M."
+
+#: assets/data/post.json
+msgid "Forty. It's the moon, you old goat. - M."
+msgstr "Quarante. C'est la lune, vieille tête de mule. - M."
+
+#: assets/data/post.json
+msgid "Friend. Rope does not fall off boats. Rope is what keeps things ON boats. Ten coils. Dry ones. - Odo"
+msgstr "Ami. La corde ne tombe pas des bateaux. La corde, c'est ce qui retient les choses SUR les bateaux. Dix rouleaux. Secs. - Odo"
+
+#: assets/data/post.json
+msgid "From Alchemist Vex. A pressed reed is stuck inside."
+msgstr "De Vex l'alchimiste. Un roseau séché est collé dedans."
+
+#: assets/data/post.json
+msgid "From Alchemist Vex. It smells of something that fizzed."
+msgstr "De Vex l'alchimiste. Elle sent quelque chose qui a pétillé."
+
+#: assets/data/post.json
+msgid "From Alchemist Vex. Written small, to fit a lot of questions."
+msgstr "De Vex l'alchimiste. Écrite tout petit, pour y faire tenir beaucoup de questions."
+
+#: assets/data/post.json
+msgid "From Bram. A song sheet is folded inside, and there's cheese on it."
+msgstr "De Bram. Une partition est pliée dedans, et il y a du fromage dessus."
+
+#: assets/data/post.json
+msgid "From Bram. It's mostly a list."
+msgstr "De Bram. C'est surtout une liste."
+
+#: assets/data/post.json
+msgid "From Bram. There's a cheese drawn on it, wearing a crown."
+msgstr "De Bram. Il y a un fromage dessiné dessus, avec une couronne."
+
+#: assets/data/post.json
+msgid "From Brother Teo. It smells of candle wax."
+msgstr "De frère Teo. Elle sent la cire de bougie."
+
+#: assets/data/post.json
+msgid "From Dagny. It smells of the shafts."
+msgstr "De Dagny. Elle sent les galeries."
+
+#: assets/data/post.json
+msgid "From Elder Maren, across the square."
+msgstr "De l'Ancienne Maren, de l'autre côté de la place."
+
+#: assets/data/post.json
+msgid "From Elder Maren. Folded once, hard."
+msgstr "De l'Ancienne Maren. Pliée une fois, sèchement."
+
+#: assets/data/post.json
+msgid "From Elder Maren. The ink has been gone over twice."
+msgstr "De l'Ancienne Maren. L'encre a été repassée deux fois."
+
+#: assets/data/post.json
+msgid "From Elder Maren. There's a smudge where something was crossed out."
+msgstr "De l'Ancienne Maren. Il y a une tache là où quelque chose a été rayé."
+
+#: assets/data/post.json
+msgid "From Elder Maren. Written fast, the letters leaning forward."
+msgstr "De l'Ancienne Maren. Écrite vite, les lettres penchées en avant."
+
+#: assets/data/post.json
+msgid "From Fenwick, at Greyhold. Every line starts with a capital."
+msgstr "De Fenwick, à Greyhold. Chaque ligne commence par une majuscule."
+
+#: assets/data/post.json
+msgid "From Fenwick. A report, with a drawing of a helmet."
+msgstr "De Fenwick. Un rapport, avec un dessin de casque."
+
+#: assets/data/post.json
+msgid "From Gunnar's caravan, up on the Frostgate. Frost on the seal."
+msgstr "De la caravane de Gunnar, là-haut sur la Porte-Givre. Du givre sur le cachet."
+
+#: assets/data/post.json
+msgid "From Gunnar's caravan. It smells of wet fur."
+msgstr "De la caravane de Gunnar. Elle sent la fourrure mouillée."
+
+#: assets/data/post.json
+msgid "From Gunnar's caravan. There's a mitten in it, chewed."
+msgstr "De la caravane de Gunnar. Il y a une moufle dedans, mâchouillée."
+
+#: assets/data/post.json
+msgid "From Iva the Healer. It smells of the fen, and of mint."
+msgstr "D'Iva la guérisseuse. Elle sent le marais, et la menthe."
+
+#: assets/data/post.json
+msgid "From Linnea. A pressed lily, still cold, and a recipe."
+msgstr "De Linnea. Un lys séché, encore froid, et une recette."
+
+#: assets/data/post.json
+msgid "From Loras the Bard. Several words are crossed out."
+msgstr "De Loras le barde. Plusieurs mots sont barrés."
+
+#: assets/data/post.json
+msgid "From Loras the Bard. Written out fair, with the tune in the margin."
+msgstr "De Loras le barde. Recopiée au propre, avec l'air dans la marge."
+
+#: assets/data/post.json
+msgid "From Merchant Odo. Neatly written, with prices."
+msgstr "D'Odo le marchand. Soigneusement écrite, avec des prix."
+
+#: assets/data/post.json
+msgid "From Merchant Odo. The question is underlined twice."
+msgstr "D'Odo le marchand. La question est soulignée deux fois."
+
+#: assets/data/post.json
+msgid "From Mirelle the Banker. Crisp, and a little perfumed."
+msgstr "De Mirelle la banquière. Impeccable, et un peu parfumée."
+
+#: assets/data/post.json
+msgid "From Mirelle the Banker. Crisp, and underlined in red."
+msgstr "De Mirelle la banquière. Impeccable, et soulignée en rouge."
+
+#: assets/data/post.json
+msgid "From Mirelle the Banker. Crisp, even up here."
+msgstr "De Mirelle la banquière. Impeccable, même ici."
+
+#: assets/data/post.json
+msgid "From Mirelle the Banker. Not a crease on it."
+msgstr "De Mirelle la banquière. Pas un pli de travers."
+
+#: assets/data/post.json
+msgid "From Mirelle the Banker. The envelope is very crisp."
+msgstr "De Mirelle la banquière. L'enveloppe est impeccable."
+
+#: assets/data/post.json
+msgid "From Morvax. Longer this time: two lines."
+msgstr "De Morvax. Plus longue, cette fois : deux lignes."
+
+#: assets/data/post.json
+msgid "From Morvax. One word, and it's a number."
+msgstr "De Morvax. Un seul mot, et c'est un nombre."
+
+#: assets/data/post.json
+msgid "From Morvax. The ink is fresh, and so is the number."
+msgstr "De Morvax. L'encre est fraîche, et le nombre aussi."
 
 #: assets/data/post.json
 msgid "From Ola, in Saltmere. It smells of the harbour."
@@ -9727,6 +10191,14 @@ msgstr "D'Ola, à Saltmere. Elle sent le port."
 #: assets/data/post.json
 msgid "From Old Wenna. It smells of the sea, and a little of stew."
 msgstr "De la vieille Wenna. Elle sent la mer, et un peu le ragoût."
+
+#: assets/data/post.json
+msgid "From Old Wenna. It smells of the sea."
+msgstr "De la vieille Wenna. Elle sent la mer."
+
+#: assets/data/post.json
+msgid "From Old Wenna. There's a tear stain on it, or a splash of stew."
+msgstr "De la vieille Wenna. Il y a une trace de larme dessus, ou une goutte de ragoût."
 
 #: assets/data/post.json
 msgid "From Pell, over the forge. A yellow feather is tucked in the fold."
@@ -9749,8 +10221,36 @@ msgid "From Pip. There's a fish drawn on the envelope. Or a boot."
 msgstr "De Pip. Il y a un poisson dessiné sur l'enveloppe. Ou une botte."
 
 #: assets/data/post.json
+msgid "From Saltmere again. The tar is still a little sticky."
+msgstr "Encore de Saltmere. Le goudron colle encore un peu."
+
+#: assets/data/post.json
+msgid "From Saltmere. Sealed with tar, and someone has tried to scrape a skull off the wax."
+msgstr "De Saltmere. Cachetée au goudron, et quelqu'un a essayé de gratter une tête de mort dans la cire."
+
+#: assets/data/post.json
 msgid "From Sela, at the inn. It smells of onions."
 msgstr "De Sela, à l'auberge. Elle sent l'oignon."
+
+#: assets/data/post.json
+msgid "From Sergeant Ulla, in Pixelheim. Folded into a perfect square."
+msgstr "De la sergente Ulla, à Pixelheim. Pliée en un carré parfait."
+
+#: assets/data/post.json
+msgid "From Sergeant Ulla. Short, and stamped with her seal."
+msgstr "De la sergente Ulla. Courte, et marquée de son sceau."
+
+#: assets/data/post.json
+msgid "From Smith Hilda. Longer than anything she has ever written."
+msgstr "De Hilda la forgeronne. Plus longue que tout ce qu'elle a jamais écrit."
+
+#: assets/data/post.json
+msgid "From Smith Hilda. Short and sooty."
+msgstr "De Hilda la forgeronne. Courte et pleine de suie."
+
+#: assets/data/post.json
+msgid "From Smith Hilda. Short, with a sooty thumbprint."
+msgstr "De Hilda la forgeronne. Courte, avec une empreinte de pouce noire de suie."
 
 #: assets/data/post.json
 msgid "From Wenna. Folded twice, very neatly."
@@ -9761,8 +10261,24 @@ msgid "From Wenna. Tam's sister's hand, firm and round."
 msgstr "De Wenna. L'écriture de la sœur de Tam, ferme et ronde."
 
 #: assets/data/post.json
+msgid "From Wren the Stablemaster. It smells of hay and apples."
+msgstr "De Wren la palefrenière. Elle sent le foin et la pomme."
+
+#: assets/data/post.json
+msgid "From Wren the Stablemaster. There's straw in the fold."
+msgstr "De Wren la palefrenière. Il y a de la paille dans le pli."
+
+#: assets/data/post.json
 msgid "From the inn, next door. Written in a hurry."
 msgstr "De l'auberge, juste à côté. Écrite à la hâte."
+
+#: assets/data/post.json
+msgid "Full price! For reeds!"
+msgstr "Le prix fort ! Pour des roseaux !"
+
+#: assets/data/post.json
+msgid "Garrick! The smith in Pixelheim wants ten!"
+msgstr "Garrick ! La forgeronne de Pixelheim en veut dix !"
 
 #: assets/data/post.json
 msgid "Give me a week. Give me two. Here, courier, for your trouble: a wheel of your own. You're a member."
@@ -9773,28 +10289,140 @@ msgid "Gods help her. Hold on, courier. The canary has something to add."
 msgstr "Que les dieux la protègent. Attendez, messager. Le canari a quelque chose à ajouter."
 
 #: assets/data/post.json
+msgid "Gunnar. There's no horse that likes snow. There are horses that hate it quietly. I'm sending you two. - Wren"
+msgstr "Gunnar. Il n'existe pas de cheval qui aime la neige. Il y a des chevaux qui la détestent en silence. Je vous en envoie deux. - Wren"
+
+#: assets/data/post.json
+msgid "HANDED OVER"
+msgstr "REMIS"
+
+#: assets/data/post.json
+msgid "Hate it quietly. That's all I ask of anyone up here."
+msgstr "La détester en silence. C'est tout ce que je demande à tout le monde, ici."
+
+#: assets/data/post.json
 msgid "He wrote back! It's all burnt at the edges!"
 msgstr "Il m'a répondu ! C'est tout brûlé sur les bords !"
+
+#: assets/data/post.json
+msgid "Healer. They say the fen grows reeds as thick as your arm. I pay full price. - Vex"
+msgstr "Guérisseuse. On dit que le marais fait pousser des roseaux gros comme le bras. Je paie le prix fort. - Vex"
+
+#: assets/data/post.json
+msgid "Heavy for its size. Something wrapped in an old sock."
+msgstr "Lourd pour sa taille. Quelque chose d'enveloppé dans une vieille chaussette."
 
 #: assets/data/post.json
 msgid "Hello, Pip. Everything likes fish, except other fish. Ask your cat. - Old Wenna"
 msgstr "Bonjour, Pip. Tout le monde aime le poisson, sauf les autres poissons. Demande à ton chat. - La vieille Wenna"
 
 #: assets/data/post.json
+msgid "Herbalist. Your frost lilies keep a spell cold. Mine wilt before they reach the gate. How? Why? What am I doing wrong? - Vex"
+msgstr "Herboriste. Vos lys de givre gardent un sort au froid. Les miens fanent avant d'arriver à la porte. Comment ? Pourquoi ? Qu'est-ce que je fais de travers ? - Vex"
+
+#: assets/data/post.json
+msgid "Here, courier: interest, on all that walking. My bank pays its couriers."
+msgstr "Tenez, messager : les intérêts de toute cette marche. Ma banque paie ses messagers."
+
+#: assets/data/post.json
+msgid "Honey. Tell her honey. Don't tell anyone else."
+msgstr "Du miel. Dites-lui du miel. Ne le dites à personne d'autre."
+
+#: assets/data/post.json
+msgid "How could I forget that one? Hold on, courier. I've one for her."
+msgstr "Comment j'ai pu oublier celle-là ? Attendez, messager. J'en ai une pour elle."
+
+#: assets/data/post.json
 msgid "How much salt? Tell her: until the spoon stands up on its own."
 msgstr "Combien de sel ? Dites-lui : jusqu'à ce que la cuillère tienne debout toute seule."
+
+#: assets/data/post.json
+msgid "I bind wounds with them, and she brews them. We should talk. Hold on."
+msgstr "Moi, j'en fais des bandages, elle, des potions. Il faut qu'on parle. Attendez."
+
+#: assets/data/post.json
+msgid "I like her. Don't tell her I like her."
+msgstr "Elle me plaît. Ne lui dites pas qu'elle me plaît."
+
+#: assets/data/post.json
+msgid "I owe her? She keeps the queen up her sleeve."
+msgstr "Moi, je lui dois ? C'est elle qui cache la dame dans sa manche."
 
 #: assets/data/post.json
 msgid "I won't tell. ...The cat knows."
 msgstr "Je ne dirai rien. ... Le chat le sait déjà."
 
 #: assets/data/post.json
+msgid "I'm going. Not for Hilda. For the bird. ...Wait, I'll tell her when."
+msgstr "J'y vais. Pas pour Hilda. Pour l'oiseau. ... Attendez, je vais lui dire quand."
+
+#: assets/data/post.json
+msgid "Insurance. Against yetis."
+msgstr "Une assurance. Contre les yétis."
+
+#: assets/data/post.json
+msgid "Interest? We don't owe her anything."
+msgstr "Des intérêts ? On ne lui doit rien."
+
+#: assets/data/post.json
 msgid "Invitation for Old Pell"
 msgstr "Invitation pour le vieux Pell"
 
 #: assets/data/post.json
+msgid "It FELL off a boat."
+msgstr "Elle est TOMBÉE d'un bateau."
+
+#: assets/data/post.json
+msgid "It was his joke about me. He had a hundred of them."
+msgstr "C'était sa blague sur moi. Il en avait cent."
+
+#: assets/data/post.json
 msgid "Lads! Down tools! Cheese!"
 msgstr "Les gars ! Posez les pioches ! Fromage !"
+
+#: assets/data/post.json
+msgid "Letter for Dagny"
+msgstr "Lettre pour Dagny"
+
+#: assets/data/post.json
+msgid "Letter for Elder Maren"
+msgstr "Lettre pour l'Ancienne Maren"
+
+#: assets/data/post.json
+msgid "Letter for Fenwick"
+msgstr "Lettre pour Fenwick"
+
+#: assets/data/post.json
+msgid "Letter for Gunnar"
+msgstr "Lettre pour Gunnar"
+
+#: assets/data/post.json
+msgid "Letter for Iva the Healer"
+msgstr "Lettre pour Iva la guérisseuse"
+
+#: assets/data/post.json
+msgid "Letter for Linnea"
+msgstr "Lettre pour Linnea"
+
+#: assets/data/post.json
+msgid "Letter for Loras the Bard"
+msgstr "Lettre pour Loras le barde"
+
+#: assets/data/post.json
+msgid "Letter for Mabel the Sutler"
+msgstr "Lettre pour Mabel la cantinière"
+
+#: assets/data/post.json
+msgid "Letter for Marta the Chandler"
+msgstr "Lettre pour Marta la marchande"
+
+#: assets/data/post.json
+msgid "Letter for Mayor Aldric"
+msgstr "Lettre pour le maire Aldric"
+
+#: assets/data/post.json
+msgid "Letter for Merchant Odo"
+msgstr "Lettre pour Odo le marchand"
 
 #: assets/data/post.json
 msgid "Letter for Mister Dragon, care of Hilda's chimney"
@@ -9807,6 +10435,70 @@ msgstr "Lettre pour le vieux Pell"
 #: assets/data/post.json
 msgid "Letter for Old Wenna"
 msgstr "Lettre pour la vieille Wenna"
+
+#: assets/data/post.json
+msgid "Letter for Quartermaster Brann"
+msgstr "Lettre pour le quartier-maître Brann"
+
+#: assets/data/post.json
+msgid "Letter for Rook"
+msgstr "Lettre pour Rook"
+
+#: assets/data/post.json
+msgid "Letter for Smith Hilda"
+msgstr "Lettre pour Hilda la forgeronne"
+
+#: assets/data/post.json
+msgid "Letter for Wren the Stablemaster"
+msgstr "Lettre pour Wren la palefrenière"
+
+#: assets/data/post.json
+msgid "MARTA! Have we got any dry rope?"
+msgstr "MARTA ! On a de la corde sèche ?"
+
+#: assets/data/post.json
+msgid "Maren. Another of his: \"Why did the cheese climb the mountain? Because Maren said not to.\" He wrote me that one. It isn't funny. I laughed for a week. - W."
+msgstr "Maren. Une autre des siennes : « Pourquoi le fromage a-t-il grimpé la montagne ? Parce que Maren avait dit non. » Il me l'avait écrite. Elle n'est pas drôle. J'en ai ri pendant une semaine. - W."
+
+#: assets/data/post.json
+msgid "Maren. The weather here is wet. It has been wet for fifty years. Tam would have made a joke about it. I can't think of one either. - Wenna"
+msgstr "Maren. Ici, il fait humide. Il fait humide depuis cinquante ans. Tam en aurait fait une blague. Moi non plus, je n'en trouve pas. - Wenna"
+
+#: assets/data/post.json
+msgid "Marta has a gift. Don't tell her."
+msgstr "Marta a un don. Ne le lui dites pas."
+
+#: assets/data/post.json
+msgid "Master Gunnar. Three wagons up, one wagon down. Have you thought about insurance? A gentle reminder: interest. - M."
+msgstr "Maître Gunnar. Trois chariots montent, un seul redescend. Avez-vous pensé à une assurance ? Un petit rappel : les intérêts. - M."
+
+#: assets/data/post.json
+msgid "Master Rook. Gold in a cave earns nothing. Gold in my vault earns interest. No questions asked. Some questions asked. A gentle reminder: interest. - M."
+msgstr "Maître Rook. L'or dans une grotte ne rapporte rien. L'or dans mon coffre rapporte des intérêts. Sans poser de questions. Enfin, quelques questions. Un petit rappel : les intérêts. - M."
+
+#: assets/data/post.json
+msgid "Mayor Aldric. A gentle reminder: interest. - Mirelle"
+msgstr "Monsieur le maire. Un petit rappel : les intérêts. - Mirelle"
+
+#: assets/data/post.json
+msgid "Merchant Odo. Your strongbox is under the counter, behind the third barrel. Everyone knows. A gentle reminder: interest. - M."
+msgstr "Monsieur Odo. Votre coffre est sous le comptoir, derrière le troisième tonneau. Tout le monde le sait. Un petit rappel : les intérêts. - M."
+
+#: assets/data/post.json
+msgid "Merchant. I have forty barrels of something. You have a shop. Let's talk. - A friend"
+msgstr "Marchand. J'ai quarante tonneaux de quelque chose. Vous avez une boutique. Parlons-en. - Un ami"
+
+#: assets/data/post.json
+msgid "Merchant. Rope. Very good rope, a little wet. It fell off a boat. - Your friend in Saltmere"
+msgstr "Marchand. De la corde. De la très bonne corde, un peu mouillée. Elle est tombée d'un bateau. - Votre ami de Saltmere"
+
+#: assets/data/post.json
+msgid "Merchant. Ten coils, dry-ish. The cask is a present. Don't open it near a candle. Pleasure doing honest business. - Rook"
+msgstr "Marchand. Dix rouleaux, plutôt secs. Le tonnelet est un cadeau. Ne l'ouvrez pas près d'une bougie. Ravi de faire des affaires honnêtes. - Rook"
+
+#: assets/data/post.json
+msgid "Mine? Greyhold? To keep?"
+msgstr "À moi ? Greyhold ? À garder ?"
 
 #: assets/data/post.json
 msgid "Mister Pell. A pot with no salt in it at all, tonight at six. Bring the bird. She can say it to my face. - W."
@@ -9829,8 +10521,48 @@ msgid "Mistress Wenna. The canary finds your stew too salty. The canary has neve
 msgstr "Madame Wenna. Le canari trouve votre ragoût trop salé. Le canari ne s'est jamais trompé. - P."
 
 #: assets/data/post.json
+msgid "Mittens. She's sent me a mitten recipe."
+msgstr "Des mitaines. Elle m'a envoyé une recette de mitaines."
+
+#: assets/data/post.json
+msgid "My face is always ready."
+msgstr "Mon visage est toujours prêt."
+
+#: assets/data/post.json
+msgid "Never answer the first question, courier. Make them ask two."
+msgstr "Ne répondez jamais à la première question, messager. Faites-en poser deux."
+
+#: assets/data/post.json
+msgid "No joke. Tam always had one."
+msgstr "Pas de blague. Tam en avait toujours une."
+
+#: assets/data/post.json
 msgid "Note for Old Pell"
 msgstr "Mot pour le vieux Pell"
+
+#: assets/data/post.json
+msgid "Note for Old Wenna"
+msgstr "Mot pour la vieille Wenna"
+
+#: assets/data/post.json
+msgid "Nothing rhymes with Greyhold. I'll make something. Wait there."
+msgstr "Rien ne rime avec Greyhold. Je vais arranger ça. Attendez là."
+
+#: assets/data/post.json
+msgid "On account. Everybody wants on account."
+msgstr "À crédit. Tout le monde veut à crédit."
+
+#: assets/data/post.json
+msgid "Once a year, she smiles"
+msgstr "Une fois par an, elle sourit"
+
+#: assets/data/post.json
+msgid "One soldier. He's raising a garrison one lad at a time."
+msgstr "Un soldat. Il refait une garnison, un gars à la fois."
+
+#: assets/data/post.json
+msgid "Parcel for Alchemist Vex"
+msgstr "Colis pour Vex l'alchimiste"
 
 #: assets/data/post.json
 msgid "Parcel for Foreman Garrick"
@@ -9841,16 +10573,64 @@ msgid "Parcel for Mabel the Sutler"
 msgstr "Colis pour Mabel la cantinière"
 
 #: assets/data/post.json
+msgid "Parcel for Merchant Odo"
+msgstr "Colis pour Odo le marchand"
+
+#: assets/data/post.json
+msgid "Parcel for Morvax"
+msgstr "Colis pour Morvax"
+
+#: assets/data/post.json
 msgid "Parcel for Ola the Fisher"
 msgstr "Colis pour Ola la pêcheuse"
+
+#: assets/data/post.json
+msgid "Parcel for Smith Hilda"
+msgstr "Colis pour Hilda la forgeronne"
+
+#: assets/data/post.json
+msgid "Pell's at her forge? With the bird?"
+msgstr "Pell est à sa forge ? Avec l'oiseau ?"
 
 #: assets/data/post.json
 msgid "Pip and the dragon"
 msgstr "Pip et le dragon"
 
 #: assets/data/post.json
+msgid "Quartermaster. You pay in iron. Iron rusts. Gold grows. A gentle reminder: interest. - M."
+msgstr "Quartier-maître. Vous payez en fer. Le fer rouille. L'or fructifie. Un petit rappel : les intérêts. - M."
+
+#: assets/data/post.json
+msgid "Reply for Alchemist Vex"
+msgstr "Réponse pour Vex l'alchimiste"
+
+#: assets/data/post.json
 msgid "Reply for Bram"
 msgstr "Réponse pour Bram"
+
+#: assets/data/post.json
+msgid "Reply for Dagny"
+msgstr "Réponse pour Dagny"
+
+#: assets/data/post.json
+msgid "Reply for Elder Maren"
+msgstr "Réponse pour l'Ancienne Maren"
+
+#: assets/data/post.json
+msgid "Reply for Fenwick"
+msgstr "Réponse pour Fenwick"
+
+#: assets/data/post.json
+msgid "Reply for Gunnar"
+msgstr "Réponse pour Gunnar"
+
+#: assets/data/post.json
+msgid "Reply for Mirelle the Banker"
+msgstr "Réponse pour Mirelle la banquière"
+
+#: assets/data/post.json
+msgid "Reply for Morvax"
+msgstr "Réponse pour Morvax"
 
 #: assets/data/post.json
 msgid "Reply for Old Wenna"
@@ -9865,12 +10645,48 @@ msgid "Reply for Pip, from the dragon"
 msgstr "Réponse du dragon pour Pip"
 
 #: assets/data/post.json
+msgid "Reply for Rook"
+msgstr "Réponse pour Rook"
+
+#: assets/data/post.json
+msgid "Reply for Smith Hilda"
+msgstr "Réponse pour Hilda la forgeronne"
+
+#: assets/data/post.json
+msgid "Reply for Wren the Stablemaster"
+msgstr "Réponse pour Wren la palefrenière"
+
+#: assets/data/post.json
+msgid "Report for Sergeant Ulla"
+msgstr "Rapport pour la sergente Ulla"
+
+#: assets/data/post.json
+msgid "Ring something? There's nothing left to ring."
+msgstr "Sonner quelque chose ? Il ne reste rien à sonner."
+
+#: assets/data/post.json
+msgid "Rope, a little wet"
+msgstr "De la corde, un peu mouillée"
+
+#: assets/data/post.json
+msgid "SEALED"
+msgstr "SCELLÉE"
+
+#: assets/data/post.json
 msgid "Scorched round the edges. A cat's hair is stuck in the wax."
 msgstr "Roussie sur les bords. Un poil de chat est collé dans la cire."
 
 #: assets/data/post.json
 msgid "Scorched round the edges. Still warm."
 msgstr "Roussie sur les bords. Encore tiède."
+
+#: assets/data/post.json
+msgid "Sergeant. Report, day forty. Water: fetched. Helmet: rung. A lad from the valley asked to join the garrison. I said yes. Was that allowed? - Fenwick (in charge, with one soldier)"
+msgstr "Sergente. Rapport, jour quarante. Eau : puisée. Casque : sonné. Un gars de la vallée a demandé à entrer dans la garnison. J'ai dit oui. C'était permis ? - Fenwick (aux commandes, avec un soldat)"
+
+#: assets/data/post.json
+msgid "Sergeant. Report, day one. Water: fetched. Mabel: selling. Turncoats: gone. Morale: good. Me: in charge. - Fenwick (in charge)"
+msgstr "Sergente. Rapport, jour un. Eau : puisée. Mabel : vend. Renégats : partis. Moral : bon. Moi : aux commandes. - Fenwick (aux commandes)"
 
 #: assets/data/post.json
 msgid "Signed by Mabel and eleven soldiers. Two of them signed with a cross."
@@ -9885,8 +10701,40 @@ msgid "Small human. The cat sleeps on my tail. It is warm. I have decided to all
 msgstr "Petit humain. Le chat dort sur ma queue. Il a chaud. J'ai décidé de le permettre. Ne le dites pas au chat. - F."
 
 #: assets/data/post.json
+msgid "Smith. Eight horseshoes, please. On account. - Wren"
+msgstr "Forgeronne. Huit fers à cheval, s'il vous plaît. À crédit. - Wren"
+
+#: assets/data/post.json
+msgid "Smith. Festival day. Have the forge hot and your face ready. - D."
+msgstr "Forgeronne. Le jour de la fête. Ayez la forge chaude et le visage prêt. - D."
+
+#: assets/data/post.json
+msgid "Smith. Ten lumps. Garrick says that's a cartload, and a cartload costs. I told him you smile once a year. He said worth it. - D."
+msgstr "Forgeronne. Dix morceaux. Garrick dit que ça fait une charrette, et qu'une charrette, ça se paie. Je lui ai dit que vous souriez une fois par an. Il a dit que ça valait le coup. - D."
+
+#: assets/data/post.json
+msgid "Smith. That's Blackiron ore, the real thing. Smile if you like it. Nobody's looking. - Dagny"
+msgstr "Forgeronne. Ça, c'est du minerai de Fernoir, du vrai. Souriez, s'il vous plaît. Personne ne regarde. - Dagny"
+
+#: assets/data/post.json
+msgid "Sneeze! Hold on, courier, I'm making a list."
+msgstr "Orage ! Attendez, messager, je fais une liste."
+
+#: assets/data/post.json
+msgid "Sneeze! Of course. A sneeze is a cheese's applause."
+msgstr "Courage ! Bien sûr. Il en faut, du courage, pour chanter le fromage."
+
+#: assets/data/post.json
+msgid "Snow. You keep them in snow. Up here that's the answer to everything."
+msgstr "Dans la neige. On les garde dans la neige. Ici, c'est la réponse à tout."
+
+#: assets/data/post.json
 msgid "So that's what's been on my chimney all morning."
 msgstr "Alors c'est ça qui était sur ma cheminée toute la matinée."
+
+#: assets/data/post.json
+msgid "Song for Bram"
+msgstr "Chanson pour Bram"
 
 #: assets/data/post.json
 msgid "Supper. With Tam's sister."
@@ -9901,8 +10749,44 @@ msgid "Tam salted it like the sea. That's how you know it's from Saltmere."
 msgstr "Tam le salait comme la mer. C'est comme ça qu'on sait qu'il vient de Saltmere."
 
 #: assets/data/post.json
+msgid "Tell Bram thank you. And the rind's for the crows. Tam always gave the crows the rind."
+msgstr "Dites merci à Bram. Et la croûte, c'est pour les corneilles. Tam donnait toujours la croûte aux corneilles."
+
+#: assets/data/post.json
+msgid "Tell her I'll argue about salt any day she likes. I'm right about salt."
+msgstr "Dites-lui que je me disputerai sur le sel quand elle voudra. J'ai raison, pour le sel."
+
+#: assets/data/post.json
+msgid "Tell him Turnip's on loan. Turnip is always on loan. Nobody keeps Turnip."
+msgstr "Dites-lui que Navet est prêté. Navet est toujours prêté. Personne ne garde Navet."
+
+#: assets/data/post.json
+msgid "Ten coils of rope, mostly dry, and a small cask nobody ordered."
+msgstr "Dix rouleaux de corde, presque secs, et un petit tonnelet que personne n'a commandé."
+
+#: assets/data/post.json
+msgid "Ten more! She smiled. I knew she'd smile."
+msgstr "Dix autres ! Elle a souri. Je savais qu'elle sourirait."
+
+#: assets/data/post.json
+msgid "Ten verses. About cheese."
+msgstr "Dix couplets. Sur le fromage."
+
+#: assets/data/post.json
+msgid "That was not a smile. Tell her it was not a smile. Wait there."
+msgstr "Ce n'était pas un sourire. Dites-lui que ce n'était pas un sourire. Attendez là."
+
+#: assets/data/post.json
+msgid "That's Turnip. Turnip eats everything."
+msgstr "C'est Navet. Navet mange tout."
+
+#: assets/data/post.json
 msgid "That's her welcome song. She likes Wenna."
 msgstr "C'est sa chanson de bienvenue. Il aime bien Wenna."
+
+#: assets/data/post.json
+msgid "The Cheese Club's song"
+msgstr "La chanson du Club du fromage"
 
 #: assets/data/post.json
 msgid "The cat says yes to everybody's fish. That's not science."
@@ -9917,20 +10801,72 @@ msgid "The garrison's reply for Bram"
 msgstr "Réponse de la garnison pour Bram"
 
 #: assets/data/post.json
+msgid "The horses will be thrilled. I'm thrilled. Odo won't be: I still owe him for the last lot."
+msgstr "Les chevaux vont être ravis. Je suis ravie. Odo, beaucoup moins : je lui dois encore les dernières."
+
+#: assets/data/post.json
+msgid "The lads had it by heart by supper. Here, courier: they stitched you a banner for carrying it. Your colours, more or less."
+msgstr "Les gars la savaient par cœur avant le souper. Tenez, messager : ils vous ont cousu une bannière pour l'avoir apportée. À vos couleurs, à peu près."
+
+#: assets/data/post.json
 msgid "The lads will want to thank him properly. Hold on, courier. Somebody find a pen that isn't a spear."
 msgstr "Les gars voudront le remercier comme il faut. Attendez, messager. Que quelqu'un trouve une plume qui ne soit pas une lance."
+
+#: assets/data/post.json
+msgid "The mine pays in iron. I sell in iron. I'll save in iron."
+msgstr "La mine paie en fer. Je vends en fer. J'épargnerai en fer."
+
+#: assets/data/post.json
+msgid "The moon. She always says the moon."
+msgstr "La lune. Elle dit toujours la lune."
+
+#: assets/data/post.json
+msgid "The saltiest. It's the sea. It's all the same salt."
+msgstr "La plus salée. C'est la mer. C'est partout le même sel."
+
+#: assets/data/post.json
+msgid "The weather! Fifty years, and she asks about the weather."
+msgstr "Le temps ! Cinquante ans, et elle me demande le temps qu'il fait."
 
 #: assets/data/post.json
 msgid "To Old Pell, who had the canary. Maren's courier says you're still alive, and so is the bird. Tam wrote me once that she bit Morvax. Is it true? - Wenna, Tam's sister"
 msgstr "Au vieux Pell, qui avait le canari. Le messager de Maren dit que vous êtes toujours en vie, et l'oiseau aussi. Tam m'a écrit un jour qu'il avait mordu Morvax. C'est vrai ? - Wenna, la sœur de Tam"
 
 #: assets/data/post.json
+msgid "To the stablemaster. I need a horse that likes snow. - Gunnar"
+msgstr "À la palefrenière. Il me faut un cheval qui aime la neige. - Gunnar"
+
+#: assets/data/post.json
 msgid "Too salty. TOO SALTY."
 msgstr "Trop salé. TROP SALÉ."
 
 #: assets/data/post.json
+msgid "Vex's reagents"
+msgstr "Les ingrédients de Vex"
+
+#: assets/data/post.json
+msgid "WRAPPED"
+msgstr "EMBALLÉ"
+
+#: assets/data/post.json
+msgid "Wait there, courier. An honest merchant asks his questions in writing."
+msgstr "Attendez là, messager. Un marchand honnête pose ses questions par écrit."
+
+#: assets/data/post.json
+msgid "Wait there, courier. The answer's short."
+msgstr "Attendez là, messager. La réponse sera courte."
+
+#: assets/data/post.json
+msgid "Wait there, courier. This one gets an answer."
+msgstr "Attendez là, messager. Celui-là mérite une réponse."
+
+#: assets/data/post.json
 msgid "Wait there, courier. This wants an answer, and the canary wants a say."
 msgstr "Attendez là, messager. Ça mérite une réponse, et le canari veut donner son avis."
+
+#: assets/data/post.json
+msgid "Wait there. She'll want it written down properly."
+msgstr "Attendez là. Elle voudra que ce soit écrit proprement."
 
 #: assets/data/post.json
 msgid "We didn't join anything. ...Is that smoked?"
@@ -9945,8 +10881,40 @@ msgid "Wenna and Pell"
 msgstr "Wenna et Pell"
 
 #: assets/data/post.json
+msgid "Wenna. Fifty years I've wanted to write to you, and now I can't think of a thing to say. How is the weather? - Maren"
+msgstr "Wenna. Cinquante ans que je voulais vous écrire, et maintenant je ne trouve rien à dire. Quel temps fait-il ? - Maren"
+
+#: assets/data/post.json
+msgid "Wenna. His joke about the weather: \"It isn't raining. The sea's just visiting.\" He told it every time. Every single time. - M."
+msgstr "Wenna. Sa blague sur le temps : « Il ne pleut pas. C'est la mer qui passe dire bonjour. » Il la racontait à chaque fois. À chaque fois. - M."
+
+#: assets/data/post.json
+msgid "Wenna. Now you're across the square, I've nothing left to write. Come and argue about salt instead. - M."
+msgstr "Wenna. Maintenant que vous êtes de l'autre côté de la place, je n'ai plus rien à écrire. Venez plutôt vous disputer avec moi sur le sel. - M."
+
+#: assets/data/post.json
+msgid "What rhymes with cheese... Knees. Trees. Please."
+msgstr "Qu'est-ce qui rime avec fromage... Plage. Nuage. Voyage."
+
+#: assets/data/post.json
 msgid "Word has reached Pixelheim: its courier delivers anything, even fifty years late. A post box goes up on the square, beside the bounty board."
 msgstr "La nouvelle a fait le tour : le messager de Pixelheim livre tout, même avec cinquante ans de retard. Une boîte aux lettres se dresse sur la place, à côté du tableau des primes."
+
+#: assets/data/post.json
+msgid "Wren's horses"
+msgstr "Les chevaux de Wren"
+
+#: assets/data/post.json
+msgid "Wren. Eight shoes for eight apples. An apple a shoe. The horses can pay. - Hilda"
+msgstr "Wren. Huit fers pour huit pommes. Une pomme par fer. Les chevaux peuvent payer. - Hilda"
+
+#: assets/data/post.json
+msgid "Wren. The quiet ones came. One of them ate a yeti's mitten. The yeti is upset. The horse is not. - G."
+msgstr "Wren. Les silencieux sont arrivés. L'un d'eux a mangé la moufle d'un yéti. Le yéti est vexé. Le cheval, pas du tout. - G."
+
+#: assets/data/post.json
+msgid "Yetis, wolves, avalanches and Bergit. I dare."
+msgstr "Les yétis, les loups, les avalanches et Bergit. J'ose."
 
 #: assets/data/progression.json
 msgid "\"A thing chained a hundred years will burn anything. Don't seal him. Free him. The collar answers to our five marks.\""
@@ -13985,6 +14953,10 @@ msgid "A courier never reads the post."
 msgstr "Un messager ne lit jamais le courrier."
 
 #: scripts/journal_screen.gd
+msgid "A page per place, stamped the day its first piece of post arrives. Stamped: %d of %d."
+msgstr "Une page par lieu, tamponnée le jour où y arrive son premier pli. Tamponnées : %d sur %d."
+
+#: scripts/journal_screen.gd
 msgid "As it was handed over:"
 msgstr "À la remise :"
 
@@ -13997,8 +14969,8 @@ msgid "Brings home: %s"
 msgstr "Rapporte : %s"
 
 #: scripts/journal_screen.gd
-msgid "DELIVERED"
-msgstr "REMISE"
+msgid "Delivered here: %d"
+msgstr "Remis ici : %d"
 
 #: scripts/journal_screen.gd
 msgid "Delivered: %d"
@@ -14017,12 +14989,28 @@ msgid "FOLLOWING"
 msgstr "SUIVIE"
 
 #: scripts/journal_screen.gd
+msgid "Fafnyr, care of Hilda"
+msgstr "Fafnyr, aux bons soins de Hilda"
+
+#: scripts/journal_screen.gd
 msgid "Feats"
 msgstr "Hauts faits"
 
 #: scripts/journal_screen.gd
+msgid "First stamped on day %d."
+msgstr "Premier tampon le jour %d."
+
+#: scripts/journal_screen.gd
+msgid "Hilda's forge, Smithing %d"
+msgstr "forge de Hilda, Forge %d"
+
+#: scripts/journal_screen.gd
 msgid "In your satchel"
 msgstr "Dans votre sacoche"
+
+#: scripts/journal_screen.gd
+msgid "Kept from here:"
+msgstr "Gardé d'ici :"
 
 #: scripts/journal_screen.gd
 msgid "Letters"
@@ -14045,8 +15033,16 @@ msgid "No notices on the bounty board yet. The first goes up when %s."
 msgstr "Aucun avis au tableau des primes pour l'instant. Le premier s'affiche quand %s."
 
 #: scripts/journal_screen.gd
+msgid "No pages yet. Deliver a piece of post and its place gets a page."
+msgstr "Pas encore de page. Remettez un pli, et son lieu aura sa page."
+
+#: scripts/journal_screen.gd
 msgid "No quests taken yet. Someone with a ! over their head has one for you."
 msgstr "Aucune quête en cours. Ceux qui ont un « ! » au-dessus de la tête en ont une pour vous."
+
+#: scripts/journal_screen.gd
+msgid "Not stamped yet: no post delivered here."
+msgstr "Pas encore de tampon : aucun pli remis ici."
 
 #: scripts/journal_screen.gd
 msgid "Nothing in the post box today. Fresh post comes in the morning."
@@ -14065,6 +15061,14 @@ msgid "Post"
 msgstr "Courrier"
 
 #: scripts/journal_screen.gd
+msgid "Post for: %s"
+msgstr "Courrier pour : %s"
+
+#: scripts/journal_screen.gd
+msgid "Postmarks"
+msgstr "Cachets"
+
+#: scripts/journal_screen.gd
 msgid "Quest you follow"
 msgstr "Quête suivie"
 
@@ -14077,12 +15081,16 @@ msgid "READY"
 msgstr "PRÊTE"
 
 #: scripts/journal_screen.gd
-msgid "SEALED"
-msgstr "SCELLÉE"
+msgid "Recipe: %s, from %s (%s)"
+msgstr "Recette : %s, avec %s (%s)"
 
 #: scripts/journal_screen.gd
 msgid "The Pixelheim Post"
 msgstr "La Poste de Pixelheim"
+
+#: scripts/journal_screen.gd
+msgid "The courier's book"
+msgstr "Le carnet du messager"
 
 #: scripts/journal_screen.gd
 msgid "The courier's satchel"
@@ -14101,8 +15109,16 @@ msgid "The story is told"
 msgstr "L'histoire est contée"
 
 #: scripts/journal_screen.gd
+msgid "Vex's cauldron, Alchemy %d"
+msgstr "chaudron de Vex, Alchimie %d"
+
+#: scripts/journal_screen.gd
 msgid "You've taken today's post. The box fills again in the morning."
 msgstr "Vous avez pris le courrier du jour. La boîte se remplit de nouveau le matin."
+
+#: scripts/journal_screen.gd
+msgid "and %d more"
+msgstr "et %d de plus"
 
 #: scripts/journal_screen.gd
 msgid "follow"
@@ -15329,6 +16345,10 @@ msgid "Maren"
 msgstr "Maren"
 
 #: scripts/state/posting.gd
+msgid "A new postmark in your courier's book: %s."
+msgstr "Un nouveau cachet dans votre carnet de messager : %s."
+
+#: scripts/state/posting.gd
 msgid "A reply to carry back: %s."
 msgstr "Une réponse à rapporter : %s."
 
@@ -15351,6 +16371,10 @@ msgstr "Vous prenez le courrier du jour : %d plis. Leurs destinataires sont da
 #: scripts/state/posting.gd
 msgid "You take the day's post: one piece, for %s."
 msgstr "Vous prenez le courrier du jour : un pli, pour %s."
+
+#: scripts/state/posting.gd
+msgid "a recipe in your book: %s"
+msgstr "une recette dans votre carnet : %s"
 
 #: scripts/state/questing.gd
 msgid "%s: %d/%d %s."

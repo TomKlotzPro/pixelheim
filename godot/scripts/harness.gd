@@ -120,7 +120,9 @@ func _word_with(villager: Node) -> void:
 ## The Pixelheim Post's step (PIX-320; world.gd opened the Post before the
 ## first map was drawn): `box` faces the post box on the square and presses
 ## E; `read` takes the day's post and hands the first piece over by the
-## rules (the journal's Post tab then has both kinds to show); a piece's id
+## rules (the journal's Post tab then has both kinds to show); `book` takes
+## it and delivers it all, replies too, stamping the courier's book
+## (PIX-321); a piece's id
 ## delivers every piece before it in its thread by the rules, puts it in
 ## the satchel and has a word with its addressee where they stand on this
 ## map (`--keys` close it, and it's handed over).
@@ -138,6 +140,17 @@ func _post(step: String) -> void:
 			Post.take(post, GameState.posting.in_box(), GameState.posting.today())
 			if not post.bag.is_empty():
 				Post.hand_over(post, post.bag[0])
+		"book":
+			# PIX-321: the day's post taken and every piece handed over as a
+			# word with its addressee would (Posting.deliver: tips, things
+			# kept, the courier's book stamped), each reply carried back too.
+			Post.take(post, GameState.posting.in_box(), GameState.posting.today())
+			var handed := true
+			while handed:
+				handed = false
+				for id: String in post.bag.duplicate():
+					if GameState.posting.deliver(Post.addressee(Post.piece(id))) != "":
+						handed = true
 		_:
 			var entry := Post.piece(step)
 			if entry.is_empty():

@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.249.0",
+      "date": "2026-10-16",
+      "codename": "Twelve Threads",
+      "notes": [
+        "The Post now carries twelve stories across the whole Reach: Maren writing to Wenna after fifty years, Mirelle's gentle reminders about interest, Wren's horse that eats mittens, Fenwick in charge of Greyhold, and Morvax and Maren still arguing over forty lamps or forty-one",
+        "The courier's book: a postmark for every place your post reaches, with who got letters there and what you were given",
+        "The post box holds three pieces a day from the start, and some parcels leave you something to keep: a recipe, a banner, a candelabra"
+      ]
+    },
+    {
       "version": "0.248.0",
       "date": "2026-10-16",
       "codename": "The Quill",

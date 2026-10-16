@@ -143,13 +143,16 @@ func _ready() -> void:
 			GameState.progression.hunted.append(named_id)
 	# `--post` (PIX-320): the Pixelheim Post open before the first map is
 	# drawn, so its box stands on the square: Maren's tin found, her first
-	# letter in Wenna's hands, and Saltmere walked, where it went.
+	# letter in Wenna's hands, and Saltmere walked, where it went, and the
+	# Reach on the way (PIX-321: Mirelle and Wren write from its road).
 	if flags.has("--post"):
 		var first: Dictionary = Letters.all()[0]
 		GameState.mark_seen(Letters.scene_id())
 		GameState.progression.quests[first["id"]] = {"progress": 1, "done": true}
 		var wenna := Npcs.by_id(String(first["objective"]["to"]), GameState.settlement.settlers)
 		Discovery.discover_around(GameState.world.discovered, MapData.load_by_id(String(wenna["mapId"])), Vector2i(int(wenna["x"]), int(wenna["y"])))
+		var reach := MapData.load_by_id("overworld")
+		Discovery.discover_around(GameState.world.discovered, reach, reach.spawn)
 	# `--bells N` (PIX-253 step 9): the story at the Night of Bells - the tin
 	# found, the four keepsakes and their families home, Maren heard out,
 	# the fifth letter delivered - in a Village building its Town (unless

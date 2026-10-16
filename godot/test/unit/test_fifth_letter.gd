@@ -96,7 +96,6 @@ func test_maren_tells_it_all_once_the_keepsakes_are_home() -> void:
 	assert_eq(MainQuest.next_step(state.progression, state.settlement)["chapter"], "The Fifth Letter")
 	assert_eq(MainQuest.card_due(state.progression, state.settlement), 6, "the chapter's card")
 	assert_true(Letters.fifth_due(state.progression, state.settlement))
-	assert_true(Letters.fifth_due(state.progression, state.settlement), "her whole story, at the shrine")
 	var lead := Bearing.active(state.progression, state.settlement, state.pack.items)
 	assert_eq([lead["who"], lead["map_id"]], ["elder", "town"])
 	assert_false(Relics.gate_open(state.progression), "the gate waits on her promise")
