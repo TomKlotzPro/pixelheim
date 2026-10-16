@@ -3373,6 +3373,10 @@ msgid "HP and MP still grow by role; the build is yours to shape"
 msgstr "Les PV et les PM progressent toujours selon le rôle ; à vous de façonner votre personnage"
 
 #: assets/data/changelog.json
+msgid "Hand a piece over by talking to whoever it's for: a few words, a small tip, sometimes a reply to carry back; your journal keeps them under Post, and the map marks who they're for"
+msgstr "Remettez un pli en parlant à son destinataire : quelques mots, un petit pourboire, parfois une réponse à rapporter ; votre journal les garde sous Courrier, et la carte marque à qui ils sont destinés"
+
+#: assets/data/changelog.json
 msgid "Hard Earned"
 msgstr "Durement gagné"
 
@@ -4367,6 +4371,10 @@ msgstr "Finitions et réglages"
 #: assets/data/changelog.json
 msgid "Polished Voxels"
 msgstr "Voxels lustrés"
+
+#: assets/data/changelog.json
+msgid "Post Day"
+msgstr "Jour de courrier"
 
 #: assets/data/changelog.json
 msgid "Press Start 2P headlines the title and panel headers (bundled, no CDN)"
@@ -5409,6 +5417,10 @@ msgid "The Patron"
 msgstr "Le Mécène"
 
 #: assets/data/changelog.json
+msgid "The Pixelheim Post opens: once Maren's first letter reaches Saltmere, a post box goes up on the square, and each morning it holds a few letters and parcels to carry on your way"
+msgstr "La Poste de Pixelheim ouvre : dès que la première lettre de Maren arrive à Saltmere, une boîte aux lettres se dresse sur la place, et chaque matin elle contient quelques lettres et colis à porter en chemin"
+
+#: assets/data/changelog.json
 msgid "The Satchel"
 msgstr "La sacoche"
 
@@ -5943,6 +5955,10 @@ msgstr "Trois morceaux chiptune : le thème de l'écran titre, la carte du mon
 #: assets/data/changelog.json
 msgid "Three new classes! The RANGER (death at a distance, poison arrows, unmatched escapes), the PALADIN (armor outside, faith inside - hits, heals and never flinches), and the NECROMANCER (everything they touch keeps dying)"
 msgstr "Trois nouvelles classes ! Le RÔDEUR (la mort à distance, des flèches empoisonnées, des fuites sans égales), le PALADIN (l'armure dehors, la foi dedans - il frappe, soigne et ne bronche jamais) et le NÉCROMANCIEN (tout ce qu'il touche n'en finit pas de mourir)"
+
+#: assets/data/changelog.json
+msgid "Three stories to follow, letter by letter: Bram's Cheese Club, Wenna and Pell's canary, and Pip writing to the dragon. Nothing expires, so the post waits as long as you like"
+msgstr "Trois histoires à suivre, lettre après lettre : le Club du fromage de Bram, le canari de Wenna et Pell, et Pip qui écrit au dragon. Rien n'expire : le courrier attend autant que vous voulez"
 
 #: assets/data/changelog.json
 msgid "Thumb-Sized"

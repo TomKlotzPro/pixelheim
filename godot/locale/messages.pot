@@ -3373,6 +3373,10 @@ msgid "HP and MP still grow by role; the build is yours to shape"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Hand a piece over by talking to whoever it's for: a few words, a small tip, sometimes a reply to carry back; your journal keeps them under Post, and the map marks who they're for"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Hard Earned"
 msgstr ""
 
@@ -4366,6 +4370,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Polished Voxels"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Post Day"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5409,6 +5417,10 @@ msgid "The Patron"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Pixelheim Post opens: once Maren's first letter reaches Saltmere, a post box goes up on the square, and each morning it holds a few letters and parcels to carry on your way"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Satchel"
 msgstr ""
 
@@ -5942,6 +5954,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Three new classes! The RANGER (death at a distance, poison arrows, unmatched escapes), the PALADIN (armor outside, faith inside - hits, heals and never flinches), and the NECROMANCER (everything they touch keeps dying)"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Three stories to follow, letter by letter: Bram's Cheese Club, Wenna and Pell's canary, and Pip writing to the dragon. Nothing expires, so the post waits as long as you like"
 msgstr ""
 
 #: assets/data/changelog.json
