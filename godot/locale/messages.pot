@@ -2849,6 +2849,10 @@ msgid "Each region's road now waits for its chapter: a rockfall on the cliff roa
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Each village has its own look: Saltmere's whitewashed cottages with boats, nets, a fish stall and washing on the line, Greyhold's stone and vegetable beds, Blackiron's plank huts with ore heaps and lanterns"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Early Stakes"
 msgstr ""
 
@@ -2978,6 +2982,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Every role verified to be able to finish the game"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Every roof has a chimney that smokes, the Frostgate's roofs are under snow, and barrels and crates outdoors are back to a sensible size"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3370,6 +3378,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Health comes back slowly while you're out of a fight"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Hearth and Home"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3814,6 +3826,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Morvax reads the letter; fifty years of tally marks count the village's lamps on his wall; then the mountain shakes"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Morvax's forge glows at its mouth and under its door, the Kings' Vault has a black iron double door under the crown, and torches burn on the mountain gate at night"
 msgstr ""
 
 #: assets/data/changelog.json

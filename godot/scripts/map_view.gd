@@ -127,6 +127,11 @@ var gate_hides := {}
 ## EntranceArt.plan): its look, pieces and the open cells they block; their
 ## cells' own objects (the plain mouth, the castle gate) go in gate_hides.
 var entrances: Array[Dictionary] = []
+## A settlement's own grammar (Hamlet, PIX-313): its houses' style
+## (PunyTown.plan) and its set dressing as planned (Hamlet.plan); empty
+## elsewhere.
+var house_style := {}
+var hamlet := {"look": "", "pieces": [], "blocks": []}
 ## A dungeon floor's torches on the wall (PIX-291), by cell.
 var wall_torches: Array[Vector2i] = []
 ## How a dungeon floor is dressed as its place (DungeonLook.plan, PIX-310);
@@ -203,6 +208,21 @@ const LAMP_HALO := 11
 const LAMP_HALO_PEAK := 0.32
 const LAMP_POOL := Vector2(8, 12)
 const LAMP_REACH := 72.0
+## Chimney smoke (PIX-313): a cottage's grey, a forge's dark, each thinning
+## to nothing; out of the mouth of Shade's chimney, from its cell's top
+## left.
+const SMOKE := Color(0.55, 0.53, 0.53, 0.7)
+const SMOKE_FORGE := Color(0.22, 0.2, 0.21, 0.85)
+const CHIMNEY_MOUTH := Vector2(8, 2)
+## A settlement's standing dressing's foot in its cell (Hamlet, PIX-313):
+## the middle of the bottom of the cell, as every prop's.
+const HAMLET_FOOT := Rect2(2, 5, 12, 11)
+## How far a miner's lantern and the fire under Morvax's door light the
+## ground at night.
+const LANTERN_REACH := 44.0
+const FORGE_REACH := 52.0
+## How far a torch on the mountain's gatehouse lights the road (PIX-312).
+const GATE_TORCH_REACH := 64.0
 ## A lit window's light thrown on the ground below it, and the day through a
 ## room's window on its floor (Lights.spill, Lights.shaft), this far.
 const WINDOW_SPILL := 48.0
@@ -310,6 +330,7 @@ func planning(arrival_at: Vector2i, slices: Slicer) -> void:
 	slices.add("plan_room", _plan_room)
 	slices.add("plan_props", _plan_props)
 	slices.add("plan_gates", _plan_gates)
+	slices.add("plan_hamlet", _plan_hamlet)
 	slices.add("plan_scatter", _plan_scatter)
 
 
@@ -322,7 +343,9 @@ func _plan_houses() -> void:
 	patch_decks = KeptGround.decks(data)
 	# Far off (the overworld) the town's block of roofs is the village, small.
 	var near := data.id not in PunyTerrain.SKYLINE_MAPS
-	buildings = PunyTown.compose(data.grid) if near else {"pieces": {}, "decor": {}, "freed": []}
+	# Beyond Pixelheim each settlement builds in its own grammar (PIX-313).
+	house_style = Hamlet.house_style(data.id) if near else {}
+	buildings = PunyTown.compose(data.grid, house_style) if near else {"pieces": {}, "decor": {}, "freed": []}
 	# What a house covers is house: its corners stop the hero and villagers
 	# too; the roof cells it leaves open are ground.
 	for cell: Vector2i in buildings["pieces"]:
@@ -434,6 +457,20 @@ func _plan_gates() -> void:
 	patches = {}
 	patch_day = -1
 	deal_patches(Gathering.day_of(GameState.world.steps))
+
+
+## A settlement's set dressing (Hamlet, PIX-313): what stands blocks the
+## open ground it takes, never where the hero arrives, a villager stands or
+## any day's patches may grow.
+func _plan_hamlet() -> void:
+	hamlet = {"look": "", "pieces": [], "blocks": []}
+	if Hamlet.look_of(data.id) == "":
+		return
+	var kept := Hamlet.kept_on(data, patch_decks)
+	kept[arrival] = true
+	hamlet = Hamlet.plan(data, kept)
+	for cell: Vector2i in hamlet["blocks"]:
+		data.covered[cell] = true
 
 
 ## Where the hero arrives (the spawn when the arrival is covered now), the
@@ -738,11 +775,20 @@ func _ground_layers() -> Node2D:
 		flowers.material = flowers_sway
 		root.add_child(flowers)
 		layers["flowers"] = flowers
-	# The houses, then what stands on their roofs (chimneys).
-	for part: String in ["pieces", "decor"]:
-		if buildings[part].is_empty():
+	# The houses, their roofs under the snow where a settlement's lie under it
+	# (PIX-313: the Frostgate's, shaders/snowed_roof.gdshader), then what stands on
+	# their roofs (chimneys).
+	for part: String in ["pieces", "snowed", "decor"]:
+		if part == "snowed":
+			if not house_style.get("snow", false) or buildings["pieces"].is_empty():
+				continue
+		elif buildings[part].is_empty():
 			continue
 		var houses := tile_layer_of(PunyTown.tileset())
+		if part == "snowed":
+			var snowed := ShaderMaterial.new()
+			snowed.shader = preload("res://shaders/snowed_roof.gdshader")
+			houses.material = snowed
 		root.add_child(houses)
 		layers[part] = houses
 	return root
@@ -879,7 +925,11 @@ func _ground_pieces() -> void:
 	for part: String in ["pieces", "decor"]:
 		if layers.has(part):
 			for cell: Vector2i in buildings[part]:
-				PunyTown.place(layers[part], cell, buildings[part][cell])
+				var tile: int = buildings[part][cell]
+				var layer: TileMapLayer = layers[part]
+				if part == "pieces" and layers.has("snowed") and not PunyTown.is_wall(tile):
+					layer = layers["snowed"]
+				PunyTown.place(layer, cell, tile)
 	if sliced:
 		for layer: Node in ground.get_children():
 			if layer is TileMapLayer and layer not in [ground_layer, rim_layer, crown_layer]:
@@ -1368,6 +1418,7 @@ func _decor_units(slices: Slicer) -> void:
 			_add_gate(gate)
 		for entrance: Dictionary in entrances:
 			_add_entrance(entrance))
+	slices.add("decor_hamlet", _decor_hamlet)
 	slices.add_each("decor_field", ceili(data.size.y / float(DECOR_ROWS)), _field_rows)
 
 
@@ -1576,6 +1627,8 @@ func _bare_cells() -> Dictionary:
 			cells.append(piece["cell"])
 	for chest: Dictionary in Interactables.chests_on(data.id):
 		cells.append(Vector2i(int(chest["x"]), int(chest["y"])))
+	for piece: Dictionary in hamlet["pieces"]:
+		cells.append_array(piece["cells"])
 	for npc: Dictionary in Npcs.on_map(data.id, GameState.settlement.town_tier, GameState.settlement.settlers, Town.done_projects(GameState.settlement), Relics.gate_open(GameState.progression), Letters.tin_waits(GameState.progression)):
 		cells.append(Vector2i(int(npc["x"]), int(npc["y"])))
 	for cell: Vector2i in cells:
@@ -1892,13 +1945,35 @@ func set_night(night: bool) -> void:
 			pane.visible = not night
 
 
-## A thread of smoke from a house's chimney: up from its door to the roof's
-## top, a little to the side.
+## A thread of smoke from a house's chimney (PIX-313: out of the chimney's
+## own mouth, where the house has one); without one, up from its door to
+## the roof's top, a little to the side. A house whose settlement raised a
+## stack of its own (Morvax's forge) smokes from that (_decor_hamlet).
 func _add_chimney_smoke(door: Vector2i) -> void:
+	for piece: Dictionary in hamlet["pieces"]:
+		if piece["kind"] == "roof" and absi(piece["cell"].x - door.x) <= 4 and piece["cell"].y < door.y:
+			return
+	var chimney := chimney_of(door, buildings["decor"])
+	if chimney.x >= 0:
+		_add_smoke_thread(Vector2(chimney * TILE) + CHIMNEY_MOUTH)
+		return
 	var top := door
 	while buildings["pieces"].has(top + Vector2i.UP):
 		top += Vector2i.UP
 	_add_smoke_thread(Vector2(top * TILE) + Vector2(TILE * 1.5, 2))
+
+
+## The chimney on the house whose door is `door`, among a drawing's `decor`
+## (PunyTown's chimneys): the nearest above the door within a house's
+## reach of it, or (-1, -1).
+static func chimney_of(door: Vector2i, decor: Dictionary) -> Vector2i:
+	var best := Vector2i(-1, -1)
+	for cell: Vector2i in decor:
+		if decor[cell] != PunyTown.CHIMNEY[1] or cell.y >= door.y or door.y - cell.y > 8 or absi(cell.x - door.x) > 6:
+			continue
+		if best.x < 0 or absi(cell.x - door.x) + door.y - cell.y < absi(best.x - door.x) + door.y - best.y:
+			best = cell
+	return best
 
 
 ## The village far off (PIX-248): smoke from every roof (the houses are the
@@ -1925,28 +2000,154 @@ func _add_village_life() -> void:
 		halo.set_meta("light", light)
 
 
-## A thread of chimney smoke rising from `at`. Still with Reduce motion.
-func _add_smoke_thread(at: Vector2) -> void:
+## A thread of chimney smoke rising from `at`, grey enough to read on a
+## bright day (PIX-313: a cottage's was a few pale specks), thinning to
+## nothing as the wind takes it; a forge's (`forge`) thick and dark. Still
+## with Reduce motion.
+func _add_smoke_thread(at: Vector2, forge := false) -> void:
 	if GameState.settings.reduce_motion:
 		return
 	var motes := _still(CPUParticles2D.new())
 	motes.position = at
-	motes.amount = 5
-	motes.lifetime = 3.5
+	motes.amount = 10 if forge else 7
+	motes.lifetime = 4.5 if forge else 4.0
+	# Already rising when the map comes into view.
+	motes.preprocess = motes.lifetime
 	motes.direction = Vector2.UP
-	motes.spread = 12.0
-	motes.gravity = Vector2(3, -3)
-	motes.initial_velocity_min = 4.0
-	motes.initial_velocity_max = 8.0
-	motes.scale_amount_min = 2.0
-	motes.scale_amount_max = 3.0
+	motes.spread = 10.0
+	motes.gravity = Vector2(4, -3)
+	motes.initial_velocity_min = 5.0
+	motes.initial_velocity_max = 9.0
+	motes.scale_amount_min = 3.0 if forge else 2.0
+	motes.scale_amount_max = 4.0 if forge else 3.0
 	var fade := Gradient.new()
-	fade.set_color(0, Color(0.82, 0.8, 0.78, 0.5))
-	fade.set_color(1, Color(0.85, 0.84, 0.82, 0.0))
+	var first: Color = SMOKE_FORGE if forge else SMOKE
+	fade.set_color(0, first)
+	fade.set_color(1, Color(first.lightened(0.35), 0.0))
+	fade.add_point(0.35, Color(first.lightened(0.15), first.a * 0.8))
 	motes.color_ramp = fade
 	motes.z_index = 6
 	motes.add_to_group("decor")
 	props.add_child(motes)
+
+
+## A settlement's set dressing (Hamlet, PIX-313): what stands sorted among
+## the actors on its foot with a box on each cell it blocks, what lies flat
+## on the ground, boats afloat on the swell, lanterns on the walls lit at
+## night, a washing line between two walls, Morvax's forge stack smoking and
+## his fire's light under the door.
+func _decor_hamlet() -> void:
+	for piece: Dictionary in hamlet["pieces"]:
+		var cell: Vector2i = piece["cell"]
+		match String(piece["kind"]):
+			"line":
+				var line := Sprite2D.new()
+				line.texture = HamletArt.washing(int(piece["line"]))
+				line.centered = false
+				_stand_on(line, cell, Vector2.ZERO)
+			"glow":
+				_add_door_glow(cell)
+			"flat":
+				var flat := Sprite2D.new()
+				flat.texture = HamletArt.texture(piece["art"])
+				flat.centered = false
+				flat.position = Vector2(cell * TILE) + Vector2(0, TILE - HamletArt.size(piece["art"]).y)
+				flat.add_to_group("decor")
+				ground.add_child(flat)
+			"moored":
+				var boat := AnimatedSprite2D.new()
+				boat.sprite_frames = HamletArt.afloat(piece["art"])
+				boat.centered = false
+				boat.frame = absi(hash(cell)) % 2
+				boat.play()
+				_stand_on(boat, cell, Vector2(-HamletArt.AFLOAT_PAD, TILE - boat.sprite_frames.get_frame_texture("default", 0).get_height() + HamletArt.AFLOAT_SINK))
+			_:
+				var art: String = piece["art"]
+				var still := Sprite2D.new()
+				still.texture = HamletArt.texture(art)
+				still.centered = false
+				var root := _stand_on(still, cell, Vector2(0, TILE - HamletArt.size(art).y))
+				if piece["kind"] == "stand":
+					for taken: Vector2i in piece["cells"]:
+						_block(taken)
+				elif art == "lantern":
+					_add_lantern_light(root, cell)
+				elif art == "forge_stack":
+					# The fire's glow in its mouth, untouched by the dark.
+					var fire := Sprite2D.new()
+					fire.texture = HamletArt.texture("forge_mouth")
+					fire.centered = false
+					fire.material = Lights.unshaded()
+					fire.position = still.position
+					root.add_child(fire)
+					var mouth := Vector2(cell * TILE) + HamletArt.STACK_MOUTH
+					_add_smoke_thread(mouth, true)
+					if not GameState.settings.reduce_motion:
+						var embers := _still(Motes.make_embers(3))
+						embers.position = mouth
+						embers.z_index = 6
+						props.add_child(embers)
+
+
+## `sprite` standing among the actors on the foot of `cell` (sorted on the
+## bottom of its row), drawn `at` from the cell's top-left: its root.
+func _stand_on(sprite: Node2D, cell: Vector2i, at: Vector2) -> Node2D:
+	var root := Node2D.new()
+	root.position = Vector2(cell * TILE) + Vector2(0, TILE)
+	root.add_to_group("decor")
+	sprite.position = at - Vector2(0, TILE)
+	root.add_child(sprite)
+	actors.add_child(root)
+	return root
+
+
+## A box on `cell` (PIX-313's dressing): covering the middle of the bottom
+## of the cell, as every prop's foot does.
+func _block(cell: Vector2i) -> void:
+	var body := StaticBody2D.new()
+	var shape := CollisionShape2D.new()
+	var rect := RectangleShape2D.new()
+	rect.size = HAMLET_FOOT.size
+	shape.shape = rect
+	body.add_child(shape)
+	body.position = Vector2(cell * TILE) + HAMLET_FOOT.get_center()
+	body.add_to_group("decor")
+	actors.add_child(body)
+
+
+## A miner's lantern by a door lit at night (PIX-313): its glass (the dark
+## doesn't touch it), a soft halo and its light on the ground below.
+func _add_lantern_light(root: Node2D, cell: Vector2i) -> void:
+	var lit := Sprite2D.new()
+	lit.texture = HamletArt.texture("lantern_lit")
+	lit.centered = false
+	lit.material = Lights.unshaded()
+	lit.position = Vector2(0, -TILE)
+	lit.visible = false
+	root.add_child(lit)
+	night_glows.append(lit)
+	var at := Vector2(cell * TILE) + HamletArt.LANTERN_GLASS
+	var halo := _add_halo(at, LAMP_HALO - 3, LAMP_HALO_PEAK)
+	var light := Lights.make(at + Vector2(0, TILE * 0.75), LANTERN_REACH, Lights.LAMP, Lights.LAMP_ENERGY, true)
+	props.add_child(light)
+	halo.set_meta("light", light)
+
+
+## The fire's light under Morvax's door (PIX-312): the gap under it, its
+## keyhole and a warm wash on the step, flickering by day and night (added
+## onto what's under it, never darkened), and at night its light on the
+## ground before the door.
+func _add_door_glow(door: Vector2i) -> void:
+	var glow := AnimatedSprite2D.new()
+	glow.sprite_frames = HamletArt.door_glow()
+	glow.centered = false
+	glow.material = Lights.glow()
+	glow.position = Vector2(door * TILE)
+	glow.frame = absi(hash(door)) % glow.sprite_frames.get_frame_count("default")
+	glow.play()
+	glow.add_to_group("decor")
+	props.add_child(glow)
+	props.add_child(Lights.make(Vector2(door * TILE) + Vector2(TILE / 2.0, TILE + 6), FORGE_REACH, Lights.FIRE, Lights.FIRE_ENERGY, true))
 
 
 ## A patch on the ground: its material, hidden while it grows back.
@@ -2211,12 +2412,33 @@ func _add_gate_piece(piece: Dictionary) -> void:
 		post.add_child(guard)
 		actors.add_child(post)
 		return
+	if piece["sheet"] == "glint":
+		# The hoard's gold glinting through the Vault's open door (PIX-312):
+		# over the door, untouched by the dark.
+		var glint := AnimatedSprite2D.new()
+		glint.sprite_frames = HamletArt.glint()
+		glint.centered = false
+		glint.material = Lights.unshaded()
+		glint.position = at - Vector2(0, TILE)
+		glint.play()
+		var over := Node2D.new()
+		# Sorted a pixel past the door's own foot, so it shows on it.
+		over.position = Vector2(cell * TILE) + Vector2(0, TILE + 1)
+		over.add_to_group("decor")
+		over.add_child(glint)
+		actors.add_child(over)
+		return
+	if piece["sheet"] == "torch":
+		_add_gate_torch(cell, at)
+		return
 	var sprite := Sprite2D.new()
 	match String(piece["sheet"]):
 		"dungeon":
 			sprite.texture = PunyDungeon.sheet().tile_texture(piece["tile"])
 		"props":
 			sprite.texture = PunyProps.texture(piece["tile"])
+		"hamlet":
+			sprite.texture = HamletArt.texture(piece["sprite"])
 		_:
 			sprite.texture = PunyTerrain.sheet().tile_texture(piece["tile"])
 	sprite.centered = false
@@ -2238,6 +2460,29 @@ func _add_gate_piece(piece: Dictionary) -> void:
 	sprite.position = Vector2(at.x, -TILE)
 	root.add_child(sprite)
 	actors.add_child(root)
+
+
+## A torch on a tower of the mountain's gatehouse (PIX-312): Shade's CC0
+## flame on the tower's face, `at` from its cell, among the actors over the
+## tower; at night a halo round it and its light on the road below.
+func _add_gate_torch(cell: Vector2i, at: Vector2) -> void:
+	var flame := AnimatedSprite2D.new()
+	flame.sprite_frames = _camp_torch_frames()
+	flame.centered = false
+	flame.frame = absi(hash(cell)) % flame.sprite_frames.get_frame_count("default")
+	flame.play()
+	flame.position = at - Vector2(0, TILE)
+	var root := Node2D.new()
+	# Sorted a pixel past the tower's own foot, so it shows on its face.
+	root.position = Vector2(cell * TILE) + Vector2(0, TILE + 1)
+	root.add_to_group("decor")
+	root.add_child(flame)
+	actors.add_child(root)
+	var middle := Vector2(cell * TILE) + at + Vector2(TILE / 2.0, TILE / 2.0 - 2)
+	var halo := _add_halo(middle, LAMP_HALO, LAMP_HALO_PEAK)
+	var light := Lights.make(middle + Vector2(0, TILE), GATE_TORCH_REACH, Lights.FIRE, Lights.TORCH_ENERGY, true)
+	props.add_child(light)
+	halo.set_meta("light", light)
 
 
 static var _snow_tone: ShaderMaterial
@@ -2286,6 +2531,16 @@ func _add_puny_prop(prop: Dictionary) -> Node2D:
 		root.add_child(jet)
 	elif prop["kind"] == "lamp":
 		_add_lamp_post(root, prop["cell"], sort_y)
+	elif prop["kind"] in ["barrel", "crate"]:
+		# At the Puny folk's scale (PIX-313: Shade's stood as tall as the
+		# villager beside it), as the settlement keeps them (Hamlet.store);
+		# its foot, and what it blocks, as before.
+		var art := Hamlet.store(data.id, prop["kind"], prop["cell"])
+		var still := Sprite2D.new()
+		still.texture = HamletArt.texture(art)
+		still.centered = false
+		still.position = Vector2(0, TILE - HamletArt.size(art).y) - Vector2(0, sort_y)
+		root.add_child(still)
 	else:
 		for piece: Array in prop["tiles"]:
 			var still := Sprite2D.new()

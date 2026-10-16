@@ -289,6 +289,15 @@ mouth-shafts | --map blackiron --at 26,6 | map=blackiron entrance=mine | travel
 mouth-seacave | --map saltmere --at 6,25 | map=saltmere entrance=sea_cave | travel
 mouth-gate | --map overworld --at 48,9 | map=overworld entrance=mountain_gate | travel story
 mouth-road | --map mountain_road --at 13,5 | map=mountain_road entrance=mountain_gate,vault_door | travel story
+# Each settlement beyond Pixelheim dressed as its own (PIX-313) and Morvax's
+# smithy (PIX-312): Saltmere's boats, nets, creels, stall and washing line,
+# Greyhold's beds, Blackiron's ore, coal, cart and lanterns, the forge's
+# stack and the fire under its door.
+hamlet-coast | --map saltmere --at 31,15 | map=saltmere hamlet=fishing:line1,moored2,stand4,wall3 | travel field
+hamlet-fort | --map greyhold --at 14,25 | map=greyhold hamlet=fort:flat3 | travel field
+hamlet-mines | --map blackiron --at 25,18 | map=blackiron hamlet=mine:stand4,wall2 | travel field
+hamlet-frost | --map frostgate --at 14,39 | map=frostgate hamlet=frost: | travel field
+hamlet-smithy | --map mountain_road --at 17,7 | map=mountain_road hamlet=smithy:glow1,roof1 | travel field story
 mouth-ice | --map observatory --at 12,8 | map=observatory entrance=ice_stair | rooms
 # The roads beyond the village (PIX-307): the Reach's road south of the
 # river rutted, Greyhold's courtyard flagged and its paths cobbled, and the
