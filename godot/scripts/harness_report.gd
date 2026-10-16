@@ -84,6 +84,7 @@ const TABLE := [
 	{"field": "patches", "says": "with --day: the patches still to pick, by cell (PIX-250)"},
 	{"field": "read", "says": "on the journal's Letters page: the letters it reads (PIX-253)"},
 	{"field": "rise", "says": "with --rise: how far the building on the tour has risen: ruin, rising, built (PIX-264)"},
+	{"field": "rooms", "says": "with rooms: what the rooms are drawn from (paid, free or none), how many of them have walls and a floor, and those with a stair down: free walled 9/9 stairs keep,observatory (PIX-318)"},
 	{"field": "rose", "says": "a chapter card's title, how far it rose coming in (PIX-253)"},
 	{"field": "saves", "says": "with seamless: the saves crossing lines made (once for crossing back and forth, PIX-269)"},
 	{"field": "scene", "says": "the story scene playing over the world, by id: bells_dawn (PIX-253 step 9), vault_door (PIX-257)"},
@@ -577,6 +578,10 @@ func field_rise() -> String:
 		return ""
 	var rise: RebuildRise = harness._rise()
 	return rise.phase if rise != null else ("built" if harness._rise_phase != "none" else "none")
+
+
+func field_rooms() -> String:
+	return noted("rooms")
 
 
 func field_rose() -> String:

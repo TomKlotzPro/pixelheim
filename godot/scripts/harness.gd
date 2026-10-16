@@ -311,6 +311,38 @@ func _reentry() -> void:
 	await _beside()
 
 
+## `rooms` (PIX-318): every room entered in turn as a door enters it, the
+## room the run began in last (its shot), and counted as drawn: a ROOM line
+## each, with what it's drawn from (MapView.room_drawn: paid, free or none)
+## and its walls, floor and stairs down; the report's rooms= sums them up:
+## free walled 9/9 stairs keep,observatory.
+func _rooms(report: HarnessReport) -> void:
+	var start: String = world.map.id
+	var order: Array = PunyInterior.ROOMS.filter(func(id: String) -> bool: return id != start)
+	if start in PunyInterior.ROOMS:
+		order.append(start)
+	var arts := {}
+	var walled := 0
+	var stairs: Array[String] = []
+	for id: String in order:
+		world.map = world.load_map(id)
+		world.enter_map(world.map, world.map.spawn)
+		# The room before's nodes go at the end of the frame.
+		await get_tree().process_frame
+		await get_tree().process_frame
+		var drawn: Dictionary = world.view.room_drawn()
+		print("ROOM %-14s %-4s walls %3d floor %3d stairs %d" % [id, drawn["art"], drawn["walls"], drawn["floor"], drawn["stairs"]])
+		arts[drawn["art"]] = true
+		if int(drawn["walls"]) > 0 and int(drawn["floor"]) > 0:
+			walled += 1
+		if int(drawn["stairs"]) > 0:
+			stairs.append(id)
+	stairs.sort()
+	var kinds: Array = arts.keys()
+	kinds.sort()
+	report.note("rooms", "%s walled %d/%d stairs %s" % [",".join(kinds), walled, order.size(), ",".join(stairs) if not stairs.is_empty() else "none"])
+
+
 ## What drawing each map beside the one the hero stands on takes, its ground
 ## kept from the rounds before (One Reach, PIX-269, step 8): what the step
 ## that streams the neighbour in has to cut into slices a frame. Drawn
@@ -485,6 +517,9 @@ func _run_test_harness() -> void:
 	# The report line's fields (HarnessReport.TABLE); a value known only
 	# part-way through is noted as it's known.
 	var report := HarnessReport.new(self, flags)
+	# `rooms` (PIX-318): every room entered and counted as drawn.
+	if flags.has("rooms"):
+		await _rooms(report)
 	# Terrain review: `--at x,y` stands the hero on a cell (before `--walk`,
 	# so a walk can test what stops them), `--zoom Z` changes the camera
 	# (`--zoom play`: the play zoom, CameraRig.ZOOM, which a headless run's

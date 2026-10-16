@@ -59,10 +59,13 @@ const DOOR := 4095
 
 static var _tileset: TileSet
 static var _source: TileSetAtlasSource
+## The pack held back though it's here (the harness's `cc0`, PIX-318): the
+## run draws what a build without the private art draws.
+static var withheld := false
 
 
 static func available() -> bool:
-	return ResourceLoader.exists(SHEET)
+	return not withheld and ResourceLoader.exists(SHEET)
 
 
 ## Every building on a map: {"pieces": {cell: tile}, "decor": {cell: tile},

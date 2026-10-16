@@ -62,10 +62,14 @@ craft | --map town_alchemist shop --tab 2 | map=town_alchemist | rooms trade scr
 # A night at the inn: paid for, and woken at six (PIX-246).
 sleep | --map town_inn night sleep | map=town_inn gold=20 clock=06:00 | rooms night
 # The inn by day and at night (PIX-311): the day through its windows on the
-# floor, gone at night when its candles burn (a room without the paid pack
-# has neither).
+# floor, gone at night when its candles burn (without the paid pack, its
+# recessed windows and its sconce, PIX-318).
 inn-day | --map town_inn | lamplight=posts 0/0 panes 0 flames 0 beams \d+ | rooms
 inn-night | --map town_inn night | lamplight=posts 0/0 panes 0 flames \d+ beams 0 | rooms night
+# Every room entered without the paid pack (PIX-318): each drawn from
+# Shade's CC0 sheets, walls and a floor, the stair down in the keep and the
+# observatory (they stood on grass).
+free-rooms | --map observatory cc0 rooms | map=observatory rooms=free walled 9/9 stairs keep,observatory | rooms
 # E at a cauldron or a forge opens its counter on the craft tab (PIX-234).
 station | --map town_alchemist station | open=shop_screen tab=Craft | rooms trade screen
 forge | --map town_smith station | open=shop_screen tab=Craft | rooms trade screen

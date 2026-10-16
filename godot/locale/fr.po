@@ -3237,6 +3237,10 @@ msgid "Forty Lamps"
 msgstr "Quarante lanternes"
 
 #: assets/data/changelog.json
+msgid "Four Walls"
+msgstr "Quatre murs"
+
+#: assets/data/changelog.json
 msgid "Four roles: Warrior, Mage, Rogue, Cleric"
 msgstr "Quatre rôles : Guerrier, Mage, Voleur, Clerc"
 
@@ -6207,6 +6211,10 @@ msgstr "Avec les quatre souvenirs rapportés, Maren dit tout au sanctuaire et vo
 #: assets/data/changelog.json
 msgid "With two keepsakes home and a settler, the board offers Pixelheim's way to a Village"
 msgstr "Avec deux souvenirs rapportés et un nouvel habitant, le tableau d'avis propose à Pixelheim de devenir un village"
+
+#: assets/data/changelog.json
+msgid "Without the paid art pack, rooms are built from the free art: walls, floors, doors, windows with the sky in them, stairs, rugs, hearths and lanterns, instead of a hero standing on grass"
+msgstr "Sans le pack graphique payant, les pièces sont bâties avec l'art libre : murs, sols, portes, fenêtres où l'on voit le ciel, escaliers, tapis, âtres et lanternes, au lieu d'un héros planté dans l'herbe"
 
 #: assets/data/changelog.json
 msgid "Wolves, spiders, cats, the mammoths and many villagers no longer walk backwards when they go left or right"

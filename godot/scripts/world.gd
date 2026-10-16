@@ -79,6 +79,9 @@ func _ready() -> void:
 	# `touch`) the canvas fills the screen's own shape instead of
 	# letterboxing it.
 	Touch.forced = flags.has("touch")
+	# `cc0` (harness): the paid pack held back, as a build without the
+	# private art draws (PIX-318).
+	PunyTown.withheld = flags.has("cc0")
 	if Touch.enabled():
 		get_tree().root.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_EXPAND
 	if harness:
