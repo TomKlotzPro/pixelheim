@@ -93,6 +93,36 @@ const DRAWINGS := {
 		".DLDLD.",
 		"..DGD..",
 	],
+	# The Ash's (PIX-308): grass burnt to black stubble, its tips gone to
+	# ash; charcoal; pale stones of ash; and cinders, a dark crust round a
+	# glowing heart (on MapView's ember layer, which makes them glow).
+	"burnt_tuft": [
+		"..A..A..",
+		"A.NA.NA.",
+		"ANANANAA",
+		"KNXKNXKN",
+		".KNKKNK.",
+	],
+	"charcoal": [
+		"..KK....",
+		".KNXK.K.",
+		"..KKKNXK",
+		"......K.",
+	],
+	"ash_stones": [
+		"..AA...",
+		".AUUQ..",
+		".QAQ.A.",
+		"..Q.AUQ",
+		".....Q.",
+	],
+	"cinders": [
+		".KK..",
+		"KHEK.",
+		"KEFHK",
+		".KHK.",
+		"..K..",
+	],
 }
 ## The colours, Shade's: his grass's light, dark and mid tufts, the Medieval
 ## Age's deeper greens, a bright tip; petals white, yellow, rose and
@@ -104,6 +134,10 @@ const INKS := {
 	"R": Color("b46150"), "v": Color("9a98e4"), "V": Color("8774b7"),
 	"s": Color("b2ba82"), "S": Color("787f4f"), "z": Color("4b4f2b"),
 	"t": Color("d4a753"), "T": Color("67463d"), "c": Color("603616"),
+	# Burnt (PIX-308): char, charred wood, its ash; a cinder's crust and its
+	# glow, deep red to bright.
+	"K": Color("2e2a2c"), "N": Color("4a403c"), "X": Color("6a5a50"), "A": Color("a29a92"),
+	"Q": Color("7d7670"), "U": Color("c4beb6"), "H": Color("8c2f22"), "E": Color("e0743a"), "F": Color("ffd27a"),
 }
 ## Where in its cell a drawing's top-left stands, by variant (in pixels);
 ## the odd variants are mirrored.
@@ -157,6 +191,12 @@ static func _draw(image: Image, drawing: Array, at: Vector2i, mirrored: bool) ->
 			var ink := line[line.length() - 1 - x] if mirrored else line[x]
 			if INKS.has(ink):
 				image.set_pixel(at.x + x, at.y + y, INKS[ink])
+
+
+## Whether a detail's tile glows (the Ash's cinders, PIX-308): MapView lays
+## it on its ember layer, lit by nothing but itself.
+static func glows(tile: Vector2i) -> bool:
+	return tile.y == kinds().find("cinders")
 
 
 ## Lays `cell`'s detail (`tile`: Scatter.detail_tile's) on `layer`.

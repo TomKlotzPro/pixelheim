@@ -53,6 +53,9 @@ var _shaded := 0
 ## snow (OpenGround.plan: cell -> its tile), PIX-305.
 var details := {}
 var patches := {}
+## The rock by the ash that burns (AshLand.burnt, PIX-308): cell -> true.
+## No pines crown it; dead trees stand on it (MapView).
+var burnt := {}
 ## The layers as the first visit filled them (TileMapLayer.tile_map_data).
 var ground_cells := PackedByteArray()
 var rim_cells := PackedByteArray()
@@ -153,12 +156,20 @@ static func working(data: MapData, look: Dictionary, pad: int, slices: Slicer) -
 	kept._above.resize(data.size.x)
 	var cell_slices := ceili(data.size.y / float(ROWS_A_SLICE))
 	var ring_slices := ceili(ring_rows / float(ROWS_A_SLICE))
+	# The rock that burns, before the crowns and the tint read it (PIX-308):
+	# its edge a few rows a slice, then spread through the rock a few
+	# hundred cells a slice (at most every cell of the map's, often fewer).
+	var burning := AshLand.Burning.new(look, data.size, data.regions)
+	slices.add_each("kept_burnt", cell_slices, func(i: int) -> void: burning.rows(i * ROWS_A_SLICE, (i + 1) * ROWS_A_SLICE))
+	slices.add_each("kept_burnt_spread", ceili(data.size.x * data.size.y / float(AshLand.SPREAD_A_SLICE)), func(_i: int) -> void:
+		burning.spread(AshLand.SPREAD_A_SLICE)
+		kept.burnt = burning.out)
 	slices.add_each("kept_terrain", cell_slices, func(i: int) -> void: kept._terrain_rows(i * ROWS_A_SLICE))
 	slices.add_each("kept_ring", ring_slices, func(i: int) -> void: kept._ring_rows(i * ROWS_A_SLICE - kept._ring))
 	slices.add_each("kept_crowned", ring_slices, func(i: int) -> void: kept._crowned_rows(i * ROWS_A_SLICE - kept._ring))
 	slices.add_each("kept_corners", ceili(corner_rows / float(ROWS_A_SLICE)), func(i: int) -> void: kept._corner_rows(i * ROWS_A_SLICE - pad))
 	slices.add_each("kept_tint", cell_slices, func(i: int) -> void:
-		PunyTerrain.tint_rows(kept.tint_image, look, data.regions, i * ROWS_A_SLICE, mini((i + 1) * ROWS_A_SLICE, data.size.y)))
+		PunyTerrain.tint_rows(kept.tint_image, look, data.regions, i * ROWS_A_SLICE, mini((i + 1) * ROWS_A_SLICE, data.size.y), kept.burnt))
 	slices.add_each("kept_tint_fringe", cell_slices, func(i: int) -> void:
 		PunyTerrain.tint_fringe_rows(kept.tint_image, look, i * ROWS_A_SLICE, mini((i + 1) * ROWS_A_SLICE, data.size.y)))
 	slices.add_each("kept_tint_spill", 2, func(_ring: int) -> void: PunyTerrain.tint_spill(kept.tint_image, look))
@@ -248,7 +259,7 @@ func _ring_rows(from: int) -> void:
 
 
 ## Whether the forest crowns each cell (PunyTerrain.forest_tiles: rock
-## walled in by rock on all four sides), rows [from, from + ROWS_A_SLICE)
+## walled in by rock on all four sides, and not burnt), rows [from, from + ROWS_A_SLICE)
 ## (from -_ring). On the plane the cells past the edge are what lies there;
 ## off it the map's edge repeats, and a cell of the ring is crowned as the
 ## edge cell nearest it is.
@@ -259,7 +270,10 @@ func _crowned_rows(from: int) -> void:
 			var cell := Vector2i(x, y)
 			var own := x >= 0 and y >= 0 and x < size.x and y < size.y
 			var looked := cell if own or _plane else _clamped(cell)
-			_crowned[_index(cell)] = 1 if _walled_in(looked) and _crown_kept(looked) else 0
+			# Burnt rock grows no pines (PIX-308); past the edge, as the
+			# edge's cell nearest it.
+			var burns := burnt.has(_clamped(cell))
+			_crowned[_index(cell)] = 1 if _walled_in(looked) and _crown_kept(looked) and not burns else 0
 
 
 ## Whether the forest keeps its crown on walled-in rock `cell` (PunyTerrain

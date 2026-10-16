@@ -104,6 +104,11 @@ const SHOTS := {
 	"meadow": {"area": "reach", "map": "overworld", "cell": Vector2i(70, 40), "time": DAY},
 	"meadow_night": {"area": "reach", "map": "overworld", "cell": Vector2i(70, 40), "time": NIGHT},
 	"ash_road": {"area": "reach", "map": "overworld", "cell": Vector2i(30, 15), "time": DAY},
+	# The Ash scorched (PIX-308): its ground in patches of char and pale ash,
+	# cracked, burnt tufts and cinders, its outcrops burnt rock with dead
+	# trees on them, ash drifting; by day, and at night its cinders glowing.
+	"ash_scorched": {"area": "reach", "map": "overworld", "cell": Vector2i(18, 22), "time": DAY},
+	"ash_scorched_night": {"area": "reach", "map": "overworld", "cell": Vector2i(18, 22), "time": NIGHT},
 	"overworld_night": {"area": "reach", "map": "overworld", "at": "forest_2", "time": NIGHT},
 	# The ridge round the Reach (PIX-309): its rim and crown broken, pines
 	# and rocks stepping out of it, by day and at night; and the pass up to
@@ -178,6 +183,14 @@ const SHOTS := {
 	# The mountain road (PIX-253 step 8): its switchbacks up the ash to the
 	# forge in the rock, and the lamp by its door.
 	"mountain_road": {"area": "regions", "map": "mountain_road", "cell": Vector2i(17, 8), "time": DAY},
+	# Blackiron a mining country (PIX-308): its outcrops worked, timber at
+	# their faces, a winch and carts, rails run between them over the
+	# scorched ground, spoil heaped by them; by day and at night; and the
+	# mountain road's flats scorched at night, their cinders glowing.
+	"blackiron_mines": {"area": "regions", "map": "blackiron", "cell": Vector2i(20, 14), "time": DAY},
+	"blackiron_mines_night": {"area": "regions", "map": "blackiron", "cell": Vector2i(20, 14), "time": NIGHT},
+	"blackiron_rails": {"area": "regions", "map": "blackiron", "cell": Vector2i(38, 25), "time": DAY},
+	"mountain_road_night": {"area": "regions", "map": "mountain_road", "cell": Vector2i(17, 8), "time": NIGHT},
 	# Paving beyond the village (PIX-307): Greyhold's courtyard flagged, its
 	# paths cobbled, by day and at night; the Frostgate's observatory in its
 	# flagged yard at the end of a cobbled road.

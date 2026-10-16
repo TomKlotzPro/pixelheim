@@ -63,6 +63,34 @@ const float RIPPLE_SPEED = 1.8;
 const float RIPPLE_CREST = 0.6;
 const float GUST_FROM = 0.15;
 
+// The Ash (PIX-308): its dirt, and the grassy top of the rock that burns
+// beside it, scorched - slow patches of pale ash and of char, dithered at
+// their edges in whole art pixels as the grass's are, the char cracked, and
+// in the deepest char dull red cinders, a few of which flare and fade now
+// and then as the sea's glints do. Read from the tint: the ash's tone, or
+// burnt rock's (PunyTerrain.TINTS).
+const vec3 ASH_TINT = vec3(0.47, 0.45, 0.43);
+const vec3 BURNT_ROCK = vec3(0.43, 0.4, 0.38);
+const float SCORCH_PALE_BELOW = 0.36;
+const float SCORCH_ABOVE = 0.6;
+const float CHAR_ABOVE = 0.7;
+const vec3 PALE_ASH = vec3(1.09, 1.09, 1.11);
+const vec3 SCORCHED = vec3(0.84, 0.82, 0.8);
+const vec3 CHARRED = vec3(0.64, 0.61, 0.6);
+// Cracks: the lines where a slow noise crosses its middle, CRACK_CELLS
+// apart, broken where a second noise is low, this much darker.
+const float CRACK_CELLS = 1.4;
+const float CRACK_BROKEN = 0.42;
+const float CRACK_SHADE = 0.6;
+const mat2 CRACKS_TURN = mat2(vec2(0.6967067, 0.7173561), vec2(-0.7173561, 0.6967067));
+// Cinders in the char: 2px specks, CINDER_SHARE of them dull red, and a few
+// flaring for a moment, a slot of FLARE_BEAT seconds each.
+const vec3 CINDER = vec3(0.5, 0.19, 0.12);
+const vec3 FLARE = vec3(1.0, 0.56, 0.22);
+const float CINDER_SHARE = 0.01;
+const float FLARE_SHARE = 0.006;
+const float FLARE_BEAT = 1.6;
+
 // What the tint mask's alpha asks for (PunyTerrain.KIND_*, read halfway
 // between them): nothing, the dirt of a cell beside ash only (the fringe),
 // the mire, a region's tone.
@@ -245,4 +273,73 @@ vec3 puddle_color(vec2 px) {
 		return PUDDLE_GLEAM;
 	}
 	return PUDDLE;
+}
+
+// Whether the tint read is `of` (the mask's eight bits a channel).
+bool tinted(vec3 tint, vec3 of) {
+	return distance(tint, of) < 0.025;
+}
+
+// The scorch's noise at an art pixel (on the plane): broad burns and the
+// patches along them, turned off the grid.
+float scorch_noise(vec2 px) {
+	vec2 cells = px / CELL;
+	return 0.6 * ground_noise(CLUMPS_TURN * (cells / 5.0) + 53.1)
+		+ 0.4 * ground_noise(SWELLS_TURN * (cells / 1.6) + 11.9);
+}
+
+// The scorch's level at an art pixel: -1 pale ash, 0 as toned, 1 scorched,
+// 2 charred; each edge dithered over a pixel or two, as patch_level's.
+int scorch_level(vec2 px) {
+	float n = scorch_noise(px);
+	float slope = max(length(vec2(scorch_noise(px + vec2(1.0, 0.0)), scorch_noise(px + vec2(0.0, 1.0))) - n), 0.0005);
+	n += (art_dither(px) - 0.5) * 2.0 * PATCH_SEAM * slope;
+	if (n < SCORCH_PALE_BELOW) {
+		return -1;
+	}
+	if (n > CHAR_ABOVE) {
+		return 2;
+	}
+	return n > SCORCH_ABOVE ? 1 : 0;
+}
+
+// Whether a crack runs through an art pixel: the crack noise crosses its
+// middle between it and the pixel right of it or below it.
+bool cracked(vec2 px) {
+	vec2 at = CRACKS_TURN * (px / (CELL * CRACK_CELLS));
+	float step_px = 1.0 / (CELL * CRACK_CELLS);
+	float c = ground_noise(at + 71.3) - 0.5;
+	float right = ground_noise(at + CRACKS_TURN * vec2(step_px, 0.0) + 71.3) - 0.5;
+	float below = ground_noise(at + CRACKS_TURN * vec2(0.0, step_px) + 71.3) - 0.5;
+	if (c * right > 0.0 && c * below > 0.0) {
+		return false;
+	}
+	return ground_noise(px / (CELL * 2.3) + 19.4) > CRACK_BROKEN;
+}
+
+// Scorched ground at an art pixel, already toned.
+vec3 scorched_ground(vec3 c, vec2 px) {
+	int level = scorch_level(px);
+	if (level < 0) {
+		return min(c * PALE_ASH, vec3(1.0));
+	}
+	if (level == 0) {
+		return c;
+	}
+	c *= level == 2 ? CHARRED : SCORCHED;
+	if (cracked(px)) {
+		c *= CRACK_SHADE;
+	}
+	if (level == 2) {
+		vec2 speck = floor(px / 2.0);
+		float h = ground_hash(speck + 91.7);
+		if (h < CINDER_SHARE) {
+			c = mix(c, CINDER, 0.7);
+		}
+		float t = world_time / FLARE_BEAT + h * 9.0;
+		if (ground_hash(speck + floor(t) * 17.3) < FLARE_SHARE) {
+			c = mix(c, FLARE, 0.9 * sin(3.14159 * fract(t)));
+		}
+	}
+	return c;
 }

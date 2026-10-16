@@ -192,13 +192,21 @@ decor-line | --map overworld --at 93,33 seamless --walk r,r,r fades | map=deepwo
 # toned over its dirt alone, the mire's murk and puddles, the Frostgate's
 # snow; and the small things of the Deepwood drawn beside the Reach, a few
 # rows a frame, then walked into over the line.
-ground-meadow | --map overworld --at 70,40 | map=overworld detail=2[0-9]{2} tone=none | field
+ground-meadow | --map overworld --at 70,40 | map=overworld detail=3[0-9]{2} tone=none | field
 ground-ash | --map overworld --at 30,15 | map=overworld cell=\(30, 15\) tone=tone | field
 ground-road | --map overworld --at 30,11 | map=overworld cell=\(30, 11\) tone=none | field
 ground-fringe | --map overworld --at 69,9 | map=overworld cell=\(69, 9\) tone=fringe | field
 ground-mire | --map mirefen --at 30,20 | map=mirefen detail=2[0-9]{2} tone=mire | field
 ground-snow | --map frostgate --at 14,40 | map=frostgate detail=1[0-9]{2} tone=tone | field
 ground-line | --map overworld --at 93,33 seamless --walk r,r,r fades | map=deepwood change=seamless detail=[4-9][0-9] | field travel
+# Burnt land (PIX-308, scorch=): the Ash's outcrops and the ridge along it
+# burnt rock with dead trees on it and cinders in the ash, the mountain
+# road's grey ridges left their own and its flats scorched, and Blackiron
+# worked - every rail of its lines laid, spoil, and shoring, carts, winches
+# and ore standing at its faces.
+ground-scorched | --map overworld --at 18,22 | map=overworld scorch=burnt9[0-9]{2},snags[2-4][0-9]{2},cinders[1-9][0-9]+,rails0,spoil0,standing0 | field
+ground-road-ash | --map mountain_road --at 17,8 | map=mountain_road scorch=burnt0,snags0,cinders[1-9][0-9]*,rails0,spoil0,standing0 tone=tone | field
+mines-worked | --map blackiron --at 20,16 | map=blackiron scorch=burnt565,snags1[0-9]{2},cinders[1-9][0-9]+,rails53,spoil[1-9][0-9]*,standing21 | field
 # Night falling while the hero watches the goblins' camp: nothing changes
 # on the screen - the goblins stay up, the wolves whose home is in view
 # wait - and the dead come out off it. From a few steps west of the camp

@@ -16,7 +16,7 @@ var weights := {}
 var rain := 0.0
 var air := ""
 var _map_of: MapData
-## What falls or drifts, by name: "drops", "splashes", "snow", "embers",
+## What falls or drifts, by name: "drops", "splashes", "snow", "embers", "ash",
 ## "spray", "fireflies", "leaves", "room_dust".
 var particles := {}
 ## The bursts, a few of each kind taken in turn, so a quick second one
@@ -136,7 +136,7 @@ func _fall(arrived: bool) -> void:
 	var map: MapData = world.map
 	var amounts := {
 		"drops": rain, "splashes": rain, "snow": weights["frost"],
-		"embers": weights["ash"], "spray": weights["coast"],
+		"embers": weights["ash"], "ash": weights["ash"], "spray": weights["coast"],
 		"fireflies": Motes.fireflies(map, air, world.lights.dark, rain),
 		"leaves": weights["woods"] * (1.0 - 0.5 * rain),
 		# Fainter at night, when it shows only in the candles' light.
@@ -144,6 +144,16 @@ func _fall(arrived: bool) -> void:
 	}
 	if arrived:
 		_room = Motes.room_rect(map) if amounts["room_dust"] > 0.0 else Rect2()
+	# The Ash's ash (PIX-308) made the first time it's breathed: a particle
+	# system draws from the game's dice as it's made, and one made up front
+	# shifted every seeded harness fight after it.
+	if amounts["ash"] > 0.05 and not particles.has("ash"):
+		var ash := _ash()
+		ash.emitting = false
+		ash.z_index = Z
+		world.add_child(ash)
+		particles["ash"] = ash
+		arrived = true
 	for name: String in particles:
 		var node: CPUParticles2D = particles[name]
 		var amount: float = amounts[name]
@@ -255,6 +265,24 @@ static func _embers() -> CPUParticles2D:
 	node.scale_amount_min = 1.0
 	node.scale_amount_max = 2.0
 	node.material = Lights.unshaded()
+	return node
+
+
+## The Ash's ash (PIX-308): grey flakes drifting down on the wind from the
+## west, turning as they go, in the scene's light.
+static func _ash() -> CPUParticles2D:
+	var node := Motes.over_view(110, 7.0, Vector2(1.0, 0.45), 20.0, Vector2(8, 18), Vector2(2, 3))
+	node.texture = picture(["xx", "x."])
+	node.angle_min = 0.0
+	node.angle_max = 360.0
+	node.angular_velocity_min = -60.0
+	node.angular_velocity_max = 60.0
+	var drift := Gradient.new()
+	drift.set_color(0, Color(0.82, 0.8, 0.78, 0.0))
+	drift.set_color(1, Color(0.6, 0.58, 0.56, 0.0))
+	drift.add_point(0.2, Color(0.82, 0.8, 0.78, 0.75))
+	drift.add_point(0.8, Color(0.66, 0.64, 0.62, 0.6))
+	node.color_ramp = drift
 	return node
 
 
