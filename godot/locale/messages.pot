@@ -3501,6 +3501,10 @@ msgid "Intelligence finally feeds the mana pool: casters gain +2 max MP per INT 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Into the Woods"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "It grows as you rebuild it, from the Town Hall alone among the ashes to the city's lamps and fountain"
 msgstr ""
 
@@ -4461,6 +4465,10 @@ msgid "Rent and the bank's interest still come by the day, so with longer days t
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Ridges no longer look like straight planters: their crowns are ragged, with pines and rocks stepping out along the rim"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Rivers, ponds and the Deepwood's lake have depth now: darker down the middle, lighter at the banks, with foam where they lap the shore and streaks drifting downstream"
 msgstr ""
 
@@ -4610,6 +4618,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Saltmere's sea cave now goes three floors down: the smugglers' caves, the drowned galleries where the wreck of Tam's boat lies, and the Tidecaller's grotto"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Saltmere's sea runs on past the edge of the map instead of stopping at a hedge, and the pines whiten along a ragged snowline toward the Frostgate"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5254,6 +5266,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The Deepwood and the Mirefen are twice as deep - forests you can actually get lost in, marshes worth a map"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The Deepwood is a real forest: thickets and glades, trees of mixed sizes with overlapping crowns, undergrowth, shade under the canopy and sun shafts in the clearings"
 msgstr ""
 
 #: assets/data/changelog.json

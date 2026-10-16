@@ -43,8 +43,9 @@ func test_the_kept_ground_is_the_ground_tile_for_tile() -> void:
 
 ## A map under the Reach's sky draws past its edges what lies there in the
 ## plane (One Reach, PIX-269): past Saltmere's north edge the Reach's
-## fields over its cliffs, past its east edge the ridge's rock, its cliff
-## standing in the sea. Inside, its ground is its own, tile for tile.
+## fields over its cliffs, past its east and south edges its open sea, past
+## its west cliffs the ridge's rock. Inside, its ground is its own, tile for
+## tile.
 func test_past_a_reach_maps_edges_lies_what_lies_there() -> void:
 	var map := MapData.load_by_id("saltmere")
 	var kept := KeptGround.of(map, map.grid, MapView.EDGE_PAD)
@@ -58,12 +59,22 @@ func test_past_a_reach_maps_edges_lies_what_lies_there() -> void:
 	assert_eq(map.tile_at(Vector2i(13, 0)), "mountain")
 	assert_eq(kept.ground_at(Vector2i(13, -2)), PunyTerrain.corner_tile(["grass", "grass", "cliff", "cliff"], hash(Vector2i(13, -2))),
 		"past its north edge the Reach's grass, over the Reach's cliffs, not its own rock carried on")
-	var cliff: Array = PunyTerrain._combos()["cliff,cliff,cliff,cliff"]
+	# Past its east and south edges the sea runs on (PIX-309: it ended there
+	# in a hedge of the ridge's pines): no cliff, no rock.
+	var deep: Array = PunyTerrain._combos()["seawater-deep,seawater-deep,seawater-deep,seawater-deep"]
 	for y in range(5, 30):
 		assert_eq(map.tile_at(Vector2i(59, y)), "deep_sea")
-		assert_true(kept.ground_at(Vector2i(62, y)) in cliff, "past the east edge, the ridge's rock (row %d)" % y)
-		assert_gte(kept.rim_at(Vector2i(60, y)), 0, "its cliff standing in the sea (row %d)" % y)
-		assert_eq(kept.ground_at(Vector2i(60, y)), PunyTerrain.corner_tile(["seawater-deep", "seawater-deep", "seawater-deep", "seawater-deep"], hash(Vector2i(60, y))), "the sea running on under it (row %d)" % y)
+		assert_true(kept.ground_at(Vector2i(62, y)) in deep, "past the east edge, the open sea (row %d)" % y)
+		assert_eq(kept.rim_at(Vector2i(60, y)), -1, "no cliff standing in it (row %d)" % y)
+	for x in range(20, 28):
+		assert_eq(map.tile_at(Vector2i(x, 33)), "deep_sea")
+		for y in range(35, 34 + MapView.EDGE_PAD):
+			assert_true(kept.ground_at(Vector2i(x, y)) in deep, "past the south edge, the open sea at %s" % Vector2i(x, y))
+			assert_eq(kept.crown_at(Vector2i(x, y)), -1, "no pines on it at %s" % Vector2i(x, y))
+	# Its west cliffs still meet the ridge's rock past the edge.
+	var cliff: Array = PunyTerrain._combos()["cliff,cliff,cliff,cliff"]
+	assert_eq(map.tile_at(Vector2i(0, 20)), "mountain")
+	assert_true(kept.ground_at(Vector2i(-2, 20)) in cliff, "past its rock, the ridge's rock")
 
 
 func test_coming_back_takes_it_from_what_was_kept() -> void:

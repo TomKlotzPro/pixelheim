@@ -82,10 +82,45 @@ static func at(cell: Vector2i) -> Dictionary:
 
 
 ## The tile at plane cell `cell`: the map's there, as its file has it, or
-## the ridge's rock.
+## where no map lies the ridge's rock - but off a map's sea, the sea running
+## on (open_sea).
 static func tile(cell: Vector2i) -> String:
 	var there := at(cell)
+	if there.is_empty():
+		there = open_sea(cell)
 	return RIDGE if there.is_empty() else MapData.tile_by_id(there["map"], there["cell"])
+
+
+## The sea's tiles, which run on past a map's edge where no map lies (PIX-309:
+## Saltmere's sea ended at the map's south edge in a hedge of the ridge's
+## pines), and how far, in cells.
+const OPEN_SEA := ["shore", "sea", "deep_sea"]
+const SEA_REACH := 24
+
+
+## Where no map lies, the sea's cell that runs on to plane cell `cell`:
+## {"map", "cell"} of the edge cell nearest it on the map nearest it, when
+## that map alone is nearest (within SEA_REACH) and its edge there is sea;
+## {} for the ridge. A corner of the ridge between two maps stays rock.
+static func open_sea(cell: Vector2i) -> Dictionary:
+	at(cell)
+	var best := -1
+	var nearest := SEA_REACH + 1
+	var tied := false
+	for i in _rects.size():
+		var rect := _rects[i]
+		var away := maxi(maxi(rect.position.x - cell.x, cell.x - rect.end.x + 1), maxi(rect.position.y - cell.y, cell.y - rect.end.y + 1))
+		if away < nearest:
+			nearest = away
+			best = i
+			tied = false
+		elif away == nearest:
+			tied = true
+	if best < 0 or tied:
+		return {}
+	var rect := _rects[best]
+	var edge := Vector2i(clampi(cell.x, rect.position.x, rect.end.x - 1), clampi(cell.y, rect.position.y, rect.end.y - 1)) - rect.position
+	return {"map": _maps[best], "cell": edge} if MapData.tile_by_id(_maps[best], edge) in OPEN_SEA else {}
 
 
 ## What lies one `step` from `cell` of `map_id`: a cell of the same map, of

@@ -110,6 +110,8 @@ var ground_tint: ShaderMaterial
 ## sheaf leaning on its own beat (decor_sway), the forest's crowns as one
 ## sheet (canopy), the town's flowers (flowers_sway).
 var decor_sway: ShaderMaterial
+## The same, but in their own colours: the Medieval Age's trees (PIX-309).
+var woods_sway: ShaderMaterial
 var canopy: ShaderMaterial
 var flowers_sway: ShaderMaterial
 var tile_layer: TileMapLayer
@@ -157,6 +159,8 @@ var day_glows: Array[Node2D] = []
 var panes: Array[Node2D] = []
 var flames: Array[Node2D] = []
 var beams: Array[PointLight2D] = []
+## The sun's shafts into the Deepwood's glades by day (PIX-309).
+var shafts: Array[PointLight2D] = []
 ## The ruins burning on the Night of Ash (PIX-197): [{rect, nodes}], in
 ## Town.ruins' order, so the dawn can put them out one by one.
 var fires: Array[Dictionary] = []
@@ -280,8 +284,12 @@ const BLOCK := 16
 ## The field's decor two rows a unit (PIX-304): four rows of the Deepwood's
 ## forest are some two hundred trees, about a millisecond on the desktop and
 ## a few times that in the browser, past a frame's budget (Slicer); two rows
-## fit it.
-const DECOR_ROWS := 2
+## fit it. Since its woods grow in thickets with undergrowth (PIX-309) a row
+## of them is about what two were: one row a unit.
+const DECOR_ROWS := 1
+## The tiles whose decor is the woods' (Woods.pieces): a forest's trees, the
+## ridge's pines and rocks on its rim.
+const WOODED := ["forest", "mountain"]
 const PROPS_A_UNIT := 16
 ## Each tile layer's rendering quadrant, this many cells a side (PIX-285).
 ## A rendering quadrant is one canvas item, and Godot lights a canvas item
@@ -725,6 +733,9 @@ func _ground_layers() -> Node2D:
 	glowing.shader = preload("res://shaders/embers.gdshader")
 	ember_layer.material = glowing
 	root.add_child(ember_layer)
+	# The ground darker under the forest (PIX-309).
+	if kept.shade_map != null:
+		root.add_child(_canopy_shade())
 	# Shade's cliffs standing in the water, the sand and the roads
 	# (PunyTerrain.rimmed), toned as the ground is, but still: the water
 	# under them swells.
@@ -737,17 +748,22 @@ func _ground_layers() -> Node2D:
 	rim_layer.light_mask |= Lights.FLOOR
 	root.add_child(rim_layer)
 	decor_sway = _swaying(TREE_SWAY, true)
+	woods_sway = _swaying(TREE_SWAY, true)
+	woods_sway.set_shader_parameter("strength", 0.0)
 	flowers_sway = _swaying(FLOWER_SWAY, false)
 	flowers_sway.set_shader_parameter("strength", 0.0)
 	canopy = _toning()
 	canopy.set_shader_parameter("canopy", CANOPY_SWAY)
 	crown_layer = tile_layer_of(PunyTerrain.tileset())
 	crown_layer.position = ground_layer.position
-	# Under snow the pines on the ridges whiten with the ground (PIX-169);
-	# elsewhere they keep their green (but along a line with a snowy map
-	# beside, where they whiten as its own do: set_masks).
-	if not kept.crowns_toned:
+	# Under snow the pines on the ridges whiten with the ground (PIX-169),
+	# and a few cells past a snowfield's edge (PIX-309, KeptGround
+	# .crown_map); elsewhere they keep their green (but along a line with a
+	# snowy map beside, where they whiten as its own do: set_masks).
+	if kept.crown_map == null:
 		canopy.set_shader_parameter("strength", 0.0)
+	else:
+		canopy.set_shader_parameter("tint_map", kept.crown_map)
 	crown_layer.material = canopy
 	root.add_child(crown_layer)
 	# Bridges, cave mouths and ramparts stand on that ground as Puny objects;
@@ -964,7 +980,7 @@ func set_masks(tint: Texture2D, water: Texture2D, origin: Vector2, pixels: Vecto
 ## This map's own masks again.
 func own_masks() -> void:
 	if kept != null and not _toned.is_empty():
-		set_masks(kept.tint_map, kept.water_map, Vector2.ZERO, Vector2(data.size * TILE), kept.tint_map if kept.crowns_toned else null)
+		set_masks(kept.tint_map, kept.water_map, Vector2.ZERO, Vector2(data.size * TILE), kept.crown_map)
 
 
 ## Sets dual cell `cell`'s ground, cliff and crown (-1 none) as a map beside
@@ -1416,6 +1432,7 @@ func _decor_units(slices: Slicer) -> void:
 		for cell: Vector2i in patches:
 			_add_patch_sprite(cell))
 	slices.add("decor_lights", _decor_lights)
+	slices.add("decor_shafts", _decor_shafts)
 	slices.add("decor_chests", _decor_chests)
 	var standing: Array = outdoor_props["props"]
 	slices.add_each("decor_props", ceili(standing.size() / float(PROPS_A_UNIT)), func(i: int) -> void:
@@ -1580,9 +1597,53 @@ func _add_field_decor(cell: Vector2i) -> void:
 		_add_solid_decor(choice, cell)
 	elif _is_flat_decor(cell, choice):
 		ground.add_child(_flat_decor(cell, choice))
+	elif data.grid[cell] in WOODED:
+		# The woods in clumps, and the ridge's rim (Woods, PIX-309).
+		for piece: Dictionary in Woods.pieces(data.grid[cell], cell, choice, Woods.look_at(data, cell), PunyTown.available()):
+			_add_wood(piece, cell)
 	else:
 		_add_decor_sprite(PunyTerrain.SHEET, PunyTerrain.region(choice), cell, absi(hash(cell)))
 		actors.get_child(-1).material = decor_sway if choice in Scatter.SWAYS else ground_tint
+
+
+## A tree, a bush or a rock of the woods (Woods.pieces), its foot where the
+## piece says in `cell`, among the actors: leaning in the wind on its own
+## beat, in its own colours when it's the Medieval Age's (the region's tone
+## would grey its greens and whiten its snow's blue away).
+func _add_wood(piece: Dictionary, cell: Vector2i) -> void:
+	var rect: Rect2 = piece["rect"]
+	var sprite := Sprite2D.new()
+	sprite.texture = _cut(piece["sheet"], rect)
+	sprite.position = Vector2(cell * TILE) + piece["foot"]
+	sprite.offset = Vector2(0, -rect.size.y / 2.0)
+	sprite.material = woods_sway if piece["own"] else decor_sway
+	sprite.add_to_group("decor")
+	actors.add_child(sprite)
+
+
+## The ground darker under the forest's canopy (PIX-309): the kept mask, a
+## cell a texel, filtered between cells and drawn over the ground in two
+## dithered steps (shaders/canopy_shade.gdshader).
+func _canopy_shade() -> Sprite2D:
+	var shade := Sprite2D.new()
+	shade.texture = kept.shade_map
+	shade.centered = false
+	shade.scale = Vector2(TILE, TILE)
+	shade.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	var material := ShaderMaterial.new()
+	material.shader = preload("res://shaders/canopy_shade.gdshader")
+	shade.material = material
+	return shade
+
+
+## The sun through the canopy's edge into the Deepwood's glades by day
+## (PIX-309, Woods.shafts), gone at night with the day.
+func _decor_shafts() -> void:
+	shafts = []
+	for cell: Vector2i in Woods.shafts(data):
+		var shaft := Lights.daylight(Vector2(cell * TILE) + Vector2(TILE / 4.0, 0), Woods.SHAFT_REACH, Lights.SUN, Woods.SHAFT_ENERGY, Lights.shaft())
+		props.add_child(shaft)
+		shafts.append(shaft)
 
 
 ## A drawing's motes rise in its own space (One Reach, PIX-269): handed

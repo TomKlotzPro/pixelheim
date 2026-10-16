@@ -238,17 +238,39 @@ static func ground_tiles(grid: Dictionary, size: Vector2i, pad := 0) -> Dictiona
 	return _dual_tiles(size, func(cell: Vector2i) -> String: return ground_at(grid, cell), pad)
 
 
+## The forest crowning a ridge keeps a ragged edge (PIX-309: every border
+## was a straight planter, its rim then rows of pines): of the rock walled in
+## on all four sides, this share (%) of the cells just behind the rim is left
+## bare, and of the cells deeper in a few, rocky glades in the pines. Picked
+## by the cell (in the Reach's plane, so two maps along a line agree).
+const CROWN_GAPS := 35
+const CROWN_GLADES := 3
+
+
+## Whether the forest crowns rock `cell` walled in on all four sides, `deep`
+## when its four neighbours are walled in too (CROWN_GAPS, CROWN_GLADES).
+static func crown_kept(cell: Vector2i, deep: bool) -> bool:
+	return absi(hash(Vector3i(cell.x, cell.y, 1309))) % 100 >= (CROWN_GLADES if deep else CROWN_GAPS)
+
+
 ## The pine forest crowning the mountains, on the same dual grid: it covers
 ## mountain cells walled in by mountains on all four sides, so the cliff rim
-## at a range's edge stays in view. Bare corners ("air") are left out; `pad`
-## as for the ground.
+## at a range's edge stays in view, its edge ragged (crown_kept). Bare
+## corners ("air") are left out; `pad` as for the ground.
 static func forest_tiles(grid: Dictionary, size: Vector2i, pad := 0) -> Dictionary:
-	var crowned := func(cell: Vector2i) -> String:
+	var walled := func(cell: Vector2i) -> bool:
 		for step: Vector2i in [Vector2i.ZERO, Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]:
 			var near := Vector2i(clampi(cell.x + step.x, 0, size.x - 1), clampi(cell.y + step.y, 0, size.y - 1))
 			if grid.get(near, "") != "mountain":
-				return "air"
-		return "trees"
+				return false
+		return true
+	var crowned := func(cell: Vector2i) -> String:
+		if not walled.call(cell):
+			return "air"
+		var deep := true
+		for step: Vector2i in [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]:
+			deep = deep and walled.call(Vector2i(clampi(cell.x + step.x, 0, size.x - 1), clampi(cell.y + step.y, 0, size.y - 1)))
+		return "trees" if crown_kept(cell, deep) else "air"
 	var tiles := _dual_tiles(size, crowned, pad)
 	for cell: Vector2i in tiles.keys():
 		if tiles[cell] == corner_tile(["air", "air", "air", "air"], 0):
@@ -552,6 +574,66 @@ static func tint_spill(image: Image, grid: Dictionary) -> void:
 				break
 	for cell: Vector2i in spilled:
 		image.set_pixelv(cell, spilled[cell])
+
+
+## Maps whose snow whitens the pines a few cells past their edges (PIX-309:
+## where the Reach's ridge met the Frostgate's at its pass, green pines stood
+## right up against the white). Past a snowfield's edge the snow reaches
+## SNOW_SURE cells out for certain, and further along a ragged line, as far
+## as SNOW_REACH: how far it comes wanders slowly along the edge (every
+## SNOW_BENDS cells), so the white ends in drifts, not dots.
+const SNOWFIELDS := ["frostgate"]
+const SNOW_SURE := 2
+const SNOW_REACH := 5
+const SNOW_BENDS := 3.0
+
+
+## Whether the snow off a snowfield whitens the pines on `cell` of `map_id`
+## (a map of the Reach's plane, not a snowfield itself).
+static func snows_on(map_id: String, cell: Vector2i) -> bool:
+	if map_id in SNOWFIELDS or not ReachPlane.holds(map_id):
+		return false
+	var plane := ReachPlane.origin(map_id) + cell
+	for field: String in SNOWFIELDS:
+		var rect := ReachPlane.rect_of(field)
+		var away := maxi(maxi(rect.position.x - plane.x, plane.x - rect.end.x + 1), maxi(rect.position.y - plane.y, plane.y - rect.end.y + 1))
+		if away < 1 or away > SNOW_REACH:
+			continue
+		# Along the edge it faces: across a snowfield's north or south edge,
+		# down its east or west.
+		var along := float(plane.x if plane.x >= rect.position.x and plane.x < rect.end.x else plane.y) / SNOW_BENDS
+		var at := floori(along)
+		var t := along - at
+		t = t * t * (3.0 - 2.0 * t)
+		var bend := lerpf(_unit(at), _unit(at + 1), t)
+		if away <= SNOW_SURE + floori(bend * (SNOW_REACH - SNOW_SURE + 1)):
+			return true
+	return false
+
+
+static func _unit(at: int) -> float:
+	return float(absi(hash(Vector2i(at, 169))) % 1000) / 1000.0
+
+
+## The snow's tone on the pines of `map_id` near a snowfield (snows_on), a
+## cell a texel as tint_map lays a region's: null when none lie near one.
+static func snow_image(map_id: String, size: Vector2i) -> Image:
+	if map_id in SNOWFIELDS or not ReachPlane.holds(map_id):
+		return null
+	var own := ReachPlane.rect_of(map_id)
+	var image: Image = null
+	for field: String in SNOWFIELDS:
+		var near := ReachPlane.rect_of(field).grow(SNOW_REACH).intersection(own)
+		for y in range(near.position.y, near.end.y):
+			for x in range(near.position.x, near.end.x):
+				var cell := Vector2i(x, y) - own.position
+				if not snows_on(map_id, cell):
+					continue
+				if image == null:
+					image = Image.create(size.x, size.y, false, Image.FORMAT_RGBA8)
+					image.fill(Color(0, 0, 0, 0))
+				image.set_pixelv(cell, Color(TINTS["snow"], KIND_TONE))
+	return image
 
 
 ## Whether a region of the map tones every cell, the mountains' pines too.
