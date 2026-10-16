@@ -209,16 +209,16 @@ func _duplicate() -> void:
 	if state.is_empty():
 		_no_one()
 		return
-	var name: String = _slots[selected]["name"]
+	var hero_name: String = _slots[selected]["name"]
 	var room := _room()
 	if room == 0:
-		_say("full", Text.t("Sorry, there's no empty slot for a copy of %s. Delete a hero to make room.") % name)
+		_say("full", Text.t("Sorry, there's no empty slot for a copy of %s. Delete a hero to make room.") % hero_name)
 		return
 	if not GameState.slots.write(room, state):
 		_say("", Text.t("The save couldn't be written, so slot %d is as it was.") % room)
 		return
 	_refresh()
-	_say("copied", Text.t("A copy of %s is in slot %d now.") % [name, room])
+	_say("copied", Text.t("A copy of %s is in slot %d now.") % [hero_name, room])
 
 
 ## The first empty slot, one keeping no deleted hero first; 0 when none is.
@@ -262,8 +262,8 @@ func _delete() -> void:
 
 
 ## "You deleted Hrafna. R brings them back, until another hero takes this slot."
-static func _deleted_line(name: String) -> String:
-	return Text.t("You deleted %s. R brings them back, until another hero takes this slot.") % name
+static func _deleted_line(hero_name: String) -> String:
+	return Text.t("You deleted %s. R brings them back, until another hero takes this slot.") % hero_name
 
 
 ## A save this version can't read asks twice before it goes (PIX-303): a
