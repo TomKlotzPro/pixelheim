@@ -6,7 +6,7 @@
 
 <p align="center">
   <b>A retro pixel-art open-world RPG in Godot 4.7: a village the dragon burned, the courier who stayed, the Reach's regions and the relics they keep - and the mountain last.</b><br />
-  The village burned. You stayed. Currently v0.244 - 1.0 has to be earned.
+  The village burned. You stayed. Currently v0.245 - 1.0 has to be earned.
 </p>
 
 ---
@@ -36,7 +36,7 @@ A dragon burned Pixelheim in one night, and you - the courier who came up the ro
 - **The Pixelheim Post**: once Maren's first letter reaches Saltmere a post box goes up on the square, and each morning it holds a few letters and parcels between the Reach's people - Bram's Cheese Club, Wenna and Pell arguing over the stew's salt, Pip writing to the dragon - for you to carry on your way, read in your journal once delivered, and sometimes a reply to bring back; nothing in it ever spoils
 - **Crafting** at the forge, the cauldron and your own workbench; foraging in the wilds
 - **Music, stingers and weather** for every place, rendered from the game's own chiptune synth
-- **Saves that never break**: three slots, autosave, a backup of the save before, and save codes that carry a hero to another computer or browser; every save ever written still loads, and one the game can't read is kept, never written over
+- **Saves that never break**: three slots, autosave, a backup of the save before, and save codes that carry a hero to another computer or browser (a code cut short is caught, not loaded); one the game can't read is kept, never written over. Until the beta the save format may change without carrying old heroes over: a save from before a change shows as an older version's, kept until you clear it
 - **A story told in moments**: New Game opens on the village, the mountain waking and the five who climbed it fifty years ago; each boss rises with its name before you fight it, each letter is answered, and the ending rolls credits starring every creature you fought - all skippable
 - **A title to arrive at**: Pixelheim's street at night under the Ashen Mountain, lit windows and chimney smoke below, the dragon's fire smouldering in the crater above, and your hero in the street looking up at it
 - **A UI like a village ledger**: one clear pixel type throughout, parchment pages in carved wooden frames, a wooden dock along the bottom with your bars, skills and gold, and screens that ease in with the sound of turning paper
@@ -97,7 +97,7 @@ docs/                  screenshots, and the reports behind two big changes (Soli
 
 - **Rules are pure.** Game rules live in static GDScript classes with no nodes, so they test fast; scenes draw, move and route input. Everything that persists changes only through `GameState`.
 - **The data is edited where it lives.** Maps (`godot/assets/maps/`, or a sketch in `godot/maps-src/` run through `mapgen.py`) and data tables (`godot/assets/data/`) are the source; the unit tests check every map file (known tiles, the spawn and every way's landing on open ground, the packs in their regions) and every chest (its own id, known loot, clear of the packs).
-- **Old saves keep loading.** The save format (schema v4) is kept byte for byte, and migrations replay older saves forward; a late-game save from the first edition is frozen in the tests.
+- **Our own save format.** Saves are Pixelheim's own (v5): a section for each part of the game, a card the Saves screen reads alone, the fog of war packed a bit per cell (a fully explored hero's save is 9 KB, written in about a millisecond), and every write read back before it replaces the last. Until the beta a change that old saves can't take bumps the version, with no migration; compatibility comes back at the beta.
 - **The look lives in one place.** `ui_style.gd` draws every window and picks every font size; pixel fonts render at whole sizes only.
 - **Verified by playing.** Besides the unit tests, `godot/tools/flows.sh` walks the release flows (spawn, doors, chests, shops, crafting, quests, rank-ups, fights, death, saves, conversations, smooth walking) through a real window and checks each one, several at a time, each the same run every time (stepped on the game's own clock, with the same dice, and hunted for flakes every night); every pull request runs them headless, and boots every map by day and at night, after the unit tests, and runs them again in a virtual window beside that, leaving every flow's picture and the look book on the pull request (on Shade's free art only).
 

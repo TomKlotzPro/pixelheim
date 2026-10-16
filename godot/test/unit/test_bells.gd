@@ -63,7 +63,7 @@ func _home_from_the_forge() -> void:
 func _reloaded(hero: Node = null) -> Node:
 	var who: Node = hero if hero != null else state
 	var back: Node = autofree(GameStateScript.new())
-	back.apply(SaveCodec.parse_json(SaveCodec.serialize(who.to_dict()))["state"])
+	back.apply(SaveCodec.reread(who.to_dict()))
 	return back
 
 
@@ -379,18 +379,14 @@ func test_a_dragon_slayer_never_sees_the_night() -> void:
 
 
 ## A save made in the night (it autosaves as a hero walks) keeps nothing of
-## it but what the save always kept: on load the night begins again from
-## the bell, and the format has no new field.
+## its beat yet (PIX-302's later step resumes it): on load the night begins
+## again from the bell.
 func test_a_save_made_in_the_night_plays_it_again_from_the_start() -> void:
 	_home_from_the_forge()
-	var before: Array = state.to_dict().keys()
 	state.questing.bells_begin()
 	for i in 2:
 		state.questing.bells_on()
 	assert_eq(state.progression.bells, Bells.HOLD)
-	var saved: Dictionary = state.to_dict()
-	assert_false(saved.has("bells"), "no new field")
-	assert_eq(saved.keys(), before, "nothing the save didn't hold")
 	var back := _reloaded()
 	assert_eq(back.progression.bells, Bells.NONE)
 	assert_eq(_next(back), "run_home")
@@ -411,7 +407,7 @@ func test_a_save_in_town_on_the_run_home_begins_the_night() -> void:
 
 
 func test_the_late_web_hero_keeps_their_story_told() -> void:
-	var late := SaveCodec.decode_code(FileAccess.get_file_as_string("res://test/fixtures/web_save_late.txt"))
+	var late := SaveCodec.parse_any(FileAccess.get_file_as_string("res://test/fixtures/web_save_late.json"))
 	state.apply(late.duplicate(true))
 	assert_false(Bells.due(state.progression, state.settlement), "no night for the hero who cast Morvax down")
 	assert_eq(_next(), "", "their story is told")

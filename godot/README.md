@@ -46,14 +46,20 @@ slot starts a new hero in the village square. State lives in the `GameState`
 autoload (`scripts/state/`) and autosaves within 3 s of any change, at once on
 map changes and loot, and when the window closes or loses focus.
 
-Slot files (`user://saves/slot_<n>.json`; IndexedDB on the web export) use
-the save format of the game's first edition, schema v4, byte for byte —
-envelope, migrations and `PXH1.` save codes in `save_codec.gd` — so every save
-ever written still loads (`test_save_codec.gd` keeps a frozen late-game save
-and its re-encode). Device settings live apart in `user://settings.cfg`.
+Slot files (`user://saves/slot_<n>.save`; IndexedDB on the web export) are
+Pixelheim's own save format, v5 (`save_codec.gd`): the format's version and
+the game's, when it was saved and the time played, a card the Saves screen
+reads alone (name, class, look, level, place, chapter, time played), then a
+section for each part of the game (hero, pack, home, town, story, quests,
+world, buffs, and legacy for what only old saves still read), the fog of war
+a bitmap per map. A fully explored hero's save is 9 KB (298 KB in the first
+edition's format). Until the beta a change old saves can't take bumps the
+version with no migration: a slot holding a save from before v5 (the first
+edition's `slot_<n>.json`) shows as an older version's, never free and never
+written. Device settings live apart in `user://settings.cfg`.
 
 No hero is lost to a file (`save_slots.gd`): a save is written to a temp
-file, read back and decoded, then the slot's file becomes `slot_<n>.json.bak`
+file, read back and decoded, then the slot's file becomes `slot_<n>.save.bak`
 (the save before) and the temp file takes its place. When a slot's file
 can't be read, the game plays the save before and says so (a line on the
 card, a word on the title or the plate). A file it can't read at all, or one
@@ -65,7 +71,9 @@ The saves screen plays or clears slots (`scripts/saves_screen.gd`); a new
 hero starts from the title's New Game alone, in the first free slot, and
 with none free New Game says so rather than writing over anyone. It also
 carries a hero to another computer or browser: `C` copies the hero's save
-code, and a code pasted into Save code (raw save JSON works too) loads into
+code (`PXH2.`: the save deflated behind a checksum, so a code cut short or
+changed is caught), and a code pasted into Save code (raw save JSON works
+too; an older version's says so) loads into
 the chosen slot.
 
 ## Data
@@ -344,7 +352,7 @@ the browser's:
   the HUD included, came out lifted, and lamplit rooms washed out.
 
 Saves are the browser's format: the app keeps its slots in
-`user://saves/slot_<n>.json` under the pinned user dir
+`user://saves/slot_<n>.save` under the pinned user dir
 (`~/Library/Application Support/pixelheim/`, `%APPDATA%\pixelheim\`), the
 same files every desktop run uses; save codes carry a hero between the app
 and the browser. Screenshots of a linear canvas go through

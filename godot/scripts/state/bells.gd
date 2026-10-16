@@ -8,7 +8,7 @@ class_name Bells
 ## tent, Loras's song, Bram's cheese down Upper Street. At dawn he stands
 ## down, the collar comes off and he leaves a scale in the fountain.
 ##
-## Old saves, no new field: the beat lives only while the night runs
+## The beat lives only while the night runs
 ## (ProgressionState.bells, never written), so a save made in the night plays
 ## it again from its start; the night's end is the collar's scene in the
 ## story ledger. A hero who slew Fafnyr on the old mountain skips the

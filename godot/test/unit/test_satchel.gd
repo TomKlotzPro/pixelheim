@@ -5,7 +5,7 @@ extends GutTest
 ## its recipient (PIX-289); the arrow at the view's edge is gold only while
 ## it leads the main story; the map keeps the main story's next place as a
 ## hollow gold diamond while something else leads; and each chapter opens on
-## a card, shown once, kept in the story ledger - no new field in the save.
+## a card, shown once, kept in the story ledger.
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
 const MapScreen := preload("res://scripts/map_screen.gd")
@@ -264,7 +264,7 @@ func test_a_hero_who_ran_ahead_sees_only_the_chapter_they_are_in() -> void:
 	for named: String in ["tidecaller", "seam_warden", "hollow_captain"]:
 		state.progression.hunted.append(named)
 	assert_eq(MainQuest.card_due(state.progression, state.settlement), 5, "the Frostgate's, not the three before it")
-	var told := SaveCodec.decode_code(FileAccess.get_file_as_string("res://test/fixtures/web_save_late.txt"))
+	var told := SaveCodec.parse_any(FileAccess.get_file_as_string("res://test/fixtures/web_save_late.json"))
 	state.apply(told)
 	assert_eq(MainQuest.card_due(state.progression, state.settlement), 0, "a story told has no card left")
 
@@ -319,18 +319,15 @@ func test_every_chapter_title_fits_the_card() -> void:
 
 # ---- The save -----------------------------------------------------------------------
 
-func test_the_satchel_and_the_cards_add_no_field_to_the_save() -> void:
-	var before: Array = state.to_dict().keys()
+func test_the_satchel_and_the_cards_come_back_with_the_save() -> void:
 	state.questing.finish_dialogue("elder")
 	state.questing.finish_dialogue("saltmere_wenna")
 	state.mark_seen(MainQuest.card_id(1))
 	state.progression.quests["cheese_run"] = {"progress": 0, "done": false}
 	Journal.follow(state.progression, "cheese_run")
 	var after: Dictionary = state.to_dict()
-	for key: String in after:
-		assert_true(key in before or key in ["storySeen", "tracked"], "%s was already a field of the save" % key)
 	assert_has(after["storySeen"], "chapter_1", "a card shown is a story moment seen")
 	var reloaded: Node = autofree(GameStateScript.new())
-	reloaded.apply(SaveCodec.parse_json(SaveCodec.serialize(after))["state"])
+	reloaded.apply(SaveCodec.reread(after))
 	assert_eq(MainQuest.card_due(reloaded.progression, reloaded.settlement), MainQuest.card_due(state.progression, state.settlement), "and it comes back the same")
 	assert_eq(Letters.satchel(reloaded.progression).map(func(carried: Dictionary) -> bool: return carried["delivered"]), [true, false, false, false])

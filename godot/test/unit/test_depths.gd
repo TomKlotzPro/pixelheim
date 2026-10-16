@@ -218,16 +218,14 @@ func test_a_save_anywhere_in_the_sea_cave_wakes_at_its_entrance() -> void:
 	assert_true(Ways.open_ground(MapData.load_by_id("seacave"), Vector2i(5, 25)))
 
 
-func test_a_save_from_inside_the_cave_round_trips_without_a_new_field() -> void:
-	var before: Array = state.to_dict().keys()
+func test_a_save_from_inside_the_cave_round_trips() -> void:
 	state.world.map_id = "seacave_galleries"
 	state.world.cell = Vector2i(10, 8)
 	Discovery.discover_around(state.world.discovered, MapData.load_by_id("seacave_galleries"), Vector2i(10, 8))
 	state.world.opened_chests.append("seacave_wreck")
 	var saved: Dictionary = state.to_dict()
-	assert_eq(saved.keys(), before, "no new field")
 	var reloaded: Node = autofree(GameStateScript.new())
-	reloaded.apply(SaveCodec.parse_json(SaveCodec.serialize(saved))["state"])
+	reloaded.apply(SaveCodec.reread(saved))
 	assert_true(Discovery.is_discovered(reloaded.world.discovered, "seacave_galleries", Vector2i(10, 8)), "each floor keeps its own fog")
 	assert_true(reloaded.spoils.is_opened(_chest("seacave_wreck")), "the wreck's crate stays opened, by its id")
 
@@ -236,7 +234,7 @@ func test_a_hero_who_won_the_ladle_is_not_asked_to_fight_again() -> void:
 	state.progression.hunted.append("tidecaller")
 	state.pack.add_item("tams_ladle")
 	var reloaded: Node = autofree(GameStateScript.new())
-	reloaded.apply(SaveCodec.parse_json(SaveCodec.serialize(state.to_dict()))["state"])
+	reloaded.apply(SaveCodec.reread(state.to_dict()))
 	assert_eq(Hunts.living_on("seacave_grotto", [], reloaded.progression.hunted).size(), 0, "no Tidecaller in the grotto")
 	assert_eq(int(reloaded.pack.items.get("tams_ladle", 0)), 1, "the ladle kept")
 	assert_true(Depths.shortcut_open("seacave_grotto", reloaded.progression.hunted), "the tide door open")
@@ -245,14 +243,13 @@ func test_a_hero_who_won_the_ladle_is_not_asked_to_fight_again() -> void:
 
 
 func test_the_late_web_save_loads_and_plays() -> void:
-	var late := SaveCodec.decode_code(FileAccess.get_file_as_string("res://test/fixtures/web_save_late.txt"))
+	var late := SaveCodec.parse_any(FileAccess.get_file_as_string("res://test/fixtures/web_save_late.json"))
 	state.apply(late.duplicate(true))
 	assert_eq(state.hero.hero_name, "Hrafna")
 	var woke := Depths.waking(state.world.map_id, state.world.cell)
 	assert_true(MapData.load_by_id(woke["mapId"]).is_walkable(woke["cell"]), "it wakes on open ground")
 	for map_id: String in FLOORS:
 		assert_gt(MapData.load_by_id(map_id).size.x, 0, "%s loads for it" % map_id)
-	assert_eq(state.to_dict().keys(), late.keys(), "its fields, no more")
 
 
 # ---- Old Wenna comes home -------------------------------------------------------------
@@ -308,12 +305,10 @@ func test_tams_stew_makes_a_night_at_the_inn_last_longer() -> void:
 	assert_has(Town.settler_perks(state.settlement.settlers, state.progression.quests), Town.recruit("saltmere_wenna")["perk"], "the hall lists it")
 
 
-func test_wennas_homecoming_adds_no_field_to_the_save() -> void:
+func test_wennas_homecoming_settles_them_in_the_save() -> void:
 	state.progression.hunted.append("tidecaller")
-	var before: Array = state.to_dict().keys()
 	state.holdings.come_home()
 	var after: Dictionary = state.to_dict()
-	assert_eq(after.keys(), before)
 	assert_has(after["settlers"], "saltmere_wenna", "a settler, as the others are")
 
 

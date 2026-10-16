@@ -34,6 +34,12 @@ func to_dict() -> Dictionary:
 	return {"bag": bag.duplicate(), "threads": threads.duplicate(), "delivered": delivered.duplicate(), "taken": taken}
 
 
+## Whether nothing has happened yet: no piece taken or delivered, the box
+## never emptied (the save leaves the section out).
+func is_empty() -> bool:
+	return bag.is_empty() and threads.is_empty() and delivered.is_empty() and taken < 0
+
+
 ## How far thread `thread_id` has come: its pieces delivered.
 func step(thread_id: String) -> int:
 	return int(threads.get(thread_id, 0))

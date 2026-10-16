@@ -3257,6 +3257,10 @@ msgid "Fresh Plaster"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Fresh Start"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "From the Ashes"
 msgstr ""
 
@@ -3402,6 +3406,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Hero creation reads clearly: the first night is a setting of its own (The first night (tutorial): Play / Skip, with a line on what each means), and Begin the adventure is the start, alone at the bottom; Tab, a click or the pad's Y flips the night, and a pad can now reach every control"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Heroes saved before this update don't load any more (the game isn't in beta yet); their slot says so and can be cleared"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4637,7 +4645,15 @@ msgid "Save codes and delete-save moved into Options"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Save codes are tiny now and check themselves, so a code cut short when you paste it is caught"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Save codes: copy your save as a PXH1. code and load it anywhere"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Saves have their own new format: a hero who has explored everything now saves in 9 KB instead of 300, and each save takes a millisecond instead of thirty"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -14661,6 +14677,10 @@ msgid "A newer Pixelheim wrote it: update the game to play this hero. It's kept 
 msgstr ""
 
 #: scripts/saves_screen.gd
+msgid "An older Pixelheim wrote it, before saves changed, and this version can't play it. It's kept as it is. X clears it, if you mean to."
+msgstr ""
+
+#: scripts/saves_screen.gd
 msgid "Clear %s from slot %d for good?"
 msgstr ""
 
@@ -14678,6 +14698,10 @@ msgstr ""
 
 #: scripts/saves_screen.gd
 msgid "Clear slot %d's save from a newer version for good?"
+msgstr ""
+
+#: scripts/saves_screen.gd
+msgid "Clear slot %d's save from an older version for good?"
 msgstr ""
 
 #: scripts/saves_screen.gd
@@ -14737,6 +14761,10 @@ msgid "Saved by a newer version"
 msgstr ""
 
 #: scripts/saves_screen.gd
+msgid "Saved by an older version"
+msgstr ""
+
+#: scripts/saves_screen.gd
 msgid "Slot %d"
 msgstr ""
 
@@ -14757,7 +14785,23 @@ msgid "Slot %d was saved by a newer version. Update Pixelheim to play this hero.
 msgstr ""
 
 #: scripts/saves_screen.gd
+msgid "Slot %d was saved by an older version of Pixelheim, so there's no one to play. It's kept as it is."
+msgstr ""
+
+#: scripts/saves_screen.gd
 msgid "Slot %d's save can't be read, so there's no one to play. It's kept as it is."
+msgstr ""
+
+#: scripts/saves_screen.gd
+msgid "That code is cut short or changed. On the other machine, use Copy mine again and paste all of it here."
+msgstr ""
+
+#: scripts/saves_screen.gd
+msgid "That code is from a newer version of Pixelheim. Update the game to bring this hero in."
+msgstr ""
+
+#: scripts/saves_screen.gd
+msgid "That code is from an older version of Pixelheim: heroes from before this update can't be brought in."
 msgstr ""
 
 #: scripts/saves_screen.gd
@@ -15358,6 +15402,10 @@ msgstr ""
 
 #: scripts/state/game_state.gd
 msgid "Slot %d was saved by a newer version of Pixelheim. It's kept as it is, in Saves."
+msgstr ""
+
+#: scripts/state/game_state.gd
+msgid "Slot %d was saved by an older version of Pixelheim. It's kept as it is, in Saves."
 msgstr ""
 
 #: scripts/state/game_state.gd

@@ -9,7 +9,7 @@ extends GutTest
 ## worked out from what the save holds.
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
-const LATE := "res://test/fixtures/web_save_late.txt"
+const LATE := "res://test/fixtures/web_save_late.json"
 const ORDER := ["cliff", "bridge", "barricade", "avalanche"]
 ## The region each gate stands before, and the maps past it.
 const REGIONS := {"cliff": "saltmere", "bridge": "blackiron", "barricade": "greyhold", "avalanche": "frostgate"}
@@ -40,7 +40,7 @@ func _walked(map_id: String, cell: Vector2i) -> void:
 ## The hero as their save has them: written out (web v4) and read back.
 func _reloaded() -> Node:
 	var copy: Node = autofree(GameStateScript.new())
-	copy.apply(SaveCodec.migrate(SaveCodec.parse_json(SaveCodec.serialize(state.to_dict()))))
+	copy.apply(SaveCodec.reread(state.to_dict()))
 	return copy
 
 
@@ -188,7 +188,7 @@ func test_an_old_save_at_each_stage_finds_what_it_earned_open() -> void:
 	state.progression.hunted.append("hollow_captain")
 	assert_eq(_open(_reloaded()), ORDER, "after the shield")
 	var late: Node = autofree(GameStateScript.new())
-	late.apply(SaveCodec.decode_code(FileAccess.get_file_as_string(LATE)))
+	late.apply(SaveCodec.parse_any(FileAccess.get_file_as_string(LATE)))
 	assert_false(late.world.discovered.is_empty(), "the late web hero has walked")
 	assert_eq(_open(late), ORDER, "the late web hero who beat Morvax: every way in open")
 

@@ -10,7 +10,7 @@ class_name Homecoming
 ## Hilda's forge (Fafnyr warming his belly on her roof, or Hilda alone for
 ## a hero who slew him) and at Maren, then roll the credits.
 ##
-## Old saves, no new field: the answer is its ending's scene in the story
+## The answer is its ending's scene in the story
 ## ledger (story.json's moments `ending:home` and `ending:stay`). A hero who
 ## saw the old game's ending (Morvax destroyed or laid to rest at his
 ## throne), or the late web hero who cast him down, has the step met and

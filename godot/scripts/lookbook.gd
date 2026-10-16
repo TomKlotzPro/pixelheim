@@ -441,10 +441,13 @@ func run() -> void:
 		elif with_motion:
 			await _film(shot["name"], shot.get("strike", false))
 		_unstage(shot)
-		# A screen a shot opened goes, so the next finds the world its own.
+		# A screen a shot opened goes, so the next finds the world its own:
+		# gone from the tree before the next is staged, or the HUD it hid
+		# came back over the next shot's journal or map (PIX-320).
 		for node in world.get_children():
 			if node is Screen:
 				(node as Screen).close()
+		await get_tree().process_frame
 	for look: String in folders:
 		sheet(images[look]).save_png("%s/sheet.png" % folders[look])
 		FileAccess.open("%s/shots.txt" % folders[look], FileAccess.WRITE).store_string("\n".join(shot_names) + "\n")

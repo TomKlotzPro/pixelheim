@@ -125,7 +125,7 @@ func test_the_slain_are_kept_in_the_save_and_only_once_there_are_any() -> void:
 	var progress := ProgressionState.new()
 	var bare := {}
 	progress.write_into(bare)
-	assert_false(bare.has("hunted"), "saves from before stay byte for byte")
+	assert_false(bare.has("hunted"), "none written while there is none")
 	progress.hunted.append("cinderjaw")
 	var written := {}
 	progress.write_into(written)

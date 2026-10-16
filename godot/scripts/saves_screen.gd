@@ -5,8 +5,9 @@ extends Screen
 ## Keyboard first (letters drive every action, the same key twice confirms
 ## anything destructive), every action also clickable. Pauses the world while
 ## open; switching heroes reloads the world scene. A save the game can't read
-## (damaged, or a newer version's) has its own card and takes nothing
-## written over it; clearing it asks twice (PIX-303).
+## (damaged, a newer version's, or one from before this version's format,
+## PIX-302) has its own card and takes nothing written over it; clearing it
+## asks twice (PIX-303).
 
 const PORTRAIT := Rect2(8, 6, 16, 20)  # hero body within a 32px Puny idle frame
 ## The window, set and never grown (PIX-230): the canvas less the 56 px
@@ -183,6 +184,9 @@ func _play() -> void:
 	if kind == SaveSlots.NEWER:
 		_say(Text.t("Slot %d was saved by a newer version. Update Pixelheim to play this hero.") % _target())
 		return
+	if kind == SaveSlots.OLDER:
+		_say(Text.t("Slot %d was saved by an older version of Pixelheim, so there's no one to play. It's kept as it is.") % _target())
+		return
 	if _target() == GameState.slot:
 		close()
 		if on_play_current.is_valid():
@@ -194,12 +198,12 @@ func _play() -> void:
 ## A slot holding a save this version can't read takes nothing written over
 ## it (PIX-303): no code pasted in. Says so; true when it does.
 func _unread(summary: Dictionary) -> bool:
-	if summary["kind"] in [SaveSlots.DAMAGED, SaveSlots.NEWER]:
+	if summary["kind"] in [SaveSlots.DAMAGED, SaveSlots.NEWER, SaveSlots.OLDER]:
 		_say(Text.t("Slot %d holds a save this version can't read, so nothing is written there. X clears it, if you mean to.") % _target())
 		return true
 	return false
 
-## What the chosen slot holds (SaveSlots: empty, hero, damaged, newer).
+## What the chosen slot holds (SaveSlots: empty, hero, damaged, newer, older).
 func _kind() -> String:
 	return GameState.slots.look(_target())["kind"]
 
@@ -231,12 +235,26 @@ func _clear_unread(kind: String) -> void:
 		pending = "clear-sure"
 		status.text = Text.t("Once cleared, it's gone for good: nothing brings it back. Press X once more to clear slot %d.") % _target()
 	else:
-		var question := Text.t("Clear slot %d's damaged save for good?") if kind == SaveSlots.DAMAGED \
-			else Text.t("Clear slot %d's save from a newer version for good?")
+		var question := Text.t("Clear slot %d's save from a newer version for good?")
+		if kind == SaveSlots.DAMAGED:
+			question = Text.t("Clear slot %d's damaged save for good?")
+		elif kind == SaveSlots.OLDER:
+			question = Text.t("Clear slot %d's save from an older version for good?")
 		_confirm("clear-unread", question % _target(), "X")
 
 func _load_code() -> void:
-	var state := SaveCodec.parse_any(code_field.text)
+	var read := SaveCodec.pasted(code_field.text)
+	var state: Dictionary = read["state"]
+	match read["problem"]:
+		SaveCodec.OLDER:
+			_say("That code is from an older version of Pixelheim: heroes from before this update can't be brought in.")
+			return
+		SaveCodec.NEWER:
+			_say("That code is from a newer version of Pixelheim. Update the game to bring this hero in.")
+			return
+		SaveCodec.DAMAGED:
+			_say("That code is cut short or changed. On the other machine, use Copy mine again and paste all of it here.")
+			return
 	if state.is_empty():
 		_say("That is not a save code. On the other machine, open Saves and use Copy mine, then paste it here.")
 		return
@@ -355,6 +373,10 @@ func _fill_card(card: PanelContainer, index: int) -> void:
 			lines.add_child(Layout.wrapped(UiStyle.label(
 				"A newer Pixelheim wrote it: update the game to play this hero. It's kept as it is.", 14, UiStyle.FADED
 			), CARD_TEXT))
+		SaveSlots.OLDER:
+			lines.add_child(Layout.wrapped(UiStyle.label(
+				"An older Pixelheim wrote it, before saves changed, and this version can't play it. It's kept as it is. X clears it, if you mean to.", 14, UiStyle.FADED
+			), CARD_TEXT))
 		_:
 			var role: String = Catalog.role(summary["roleId"]).get("name", "").to_lower()
 			lines.add_child(Layout.wrapped(UiStyle.label(
@@ -378,6 +400,8 @@ static func _card_name(summary: Dictionary) -> String:
 			return "Damaged save"
 		SaveSlots.NEWER:
 			return "Saved by a newer version"
+		SaveSlots.OLDER:
+			return "Saved by an older version"
 	return summary["name"]
 
 static func _ago(saved_at: int) -> String:

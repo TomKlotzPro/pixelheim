@@ -1,28 +1,45 @@
 {
-  "version": 4,
-  "state": {
-    "screen": "world",
-    "hero": {
-      "name": "Torvi",
-      "roleId": "warrior",
-      "look": 0,
-      "level": 17,
-      "xp": 190,
-      "xpToNext": 344,
-      "hp": 191,
-      "mp": 25,
-      "stats": {
-        "maxHp": 191,
-        "maxMp": 25,
-        "strength": 77,
-        "intelligence": 3,
-        "dexterity": 5,
-        "defense": 22,
-        "endurance": 8
-      },
-      "statPoints": 0,
-      "skillPoints": 9,
-      "skillNodes": [
+  "pixelheim": 5,
+  "game": "0.242.0",
+  "savedAt": 0,
+  "playSeconds": 0,
+  "card": {
+    "name": "Torvi",
+    "role": "warrior",
+    "look": 0,
+    "worn": {
+      "weapon": "obsidian_blade",
+      "body": "runic_armor",
+      "offhand": "steel_shield",
+      "head": "wyrm_visor"
+    },
+    "level": 17,
+    "place": "overworld",
+    "chapter": 6,
+    "playSeconds": 0
+  },
+  "hero": {
+    "name": "Torvi",
+    "role": "warrior",
+    "look": 0,
+    "level": 17,
+    "xp": 190,
+    "xpToNext": 344,
+    "hp": 191,
+    "mp": 25,
+    "stats": {
+      "maxHp": 191,
+      "maxMp": 25,
+      "strength": 77,
+      "intelligence": 3,
+      "dexterity": 5,
+      "defense": 22,
+      "endurance": 8
+    },
+    "statPoints": 0,
+    "skillPoints": 9,
+    "skills": {
+      "nodes": [
         "warrior_power_strike",
         "warrior_power_strike_2",
         "warrior_executioner",
@@ -36,36 +53,38 @@
         "warrior_mountainheart",
         "warrior_warpath"
       ],
-      "jobs": {
-        "smithing": {
-          "level": 1,
-          "xp": 0
-        },
-        "alchemy": {
-          "level": 1,
-          "xp": 0
-        },
-        "foraging": {
-          "level": 1,
-          "xp": 0
-        }
-      },
+      "path": [
+        "juggernaut",
+        "bastion",
+        "unbroken"
+      ],
+      "spec": "juggernaut",
       "mastery": {
         "beasts": 7,
         "greenskins": 9,
         "undead": 13,
         "constructs": 6,
         "fireborn": 8
-      },
-      "path": [
-        "juggernaut",
-        "bastion",
-        "unbroken"
-      ],
-      "spec": "juggernaut"
+      }
     },
+    "jobs": {
+      "smithing": {
+        "level": 1,
+        "xp": 0
+      },
+      "alchemy": {
+        "level": 1,
+        "xp": 0
+      },
+      "foraging": {
+        "level": 1,
+        "xp": 0
+      }
+    }
+  },
+  "pack": {
     "gold": 2234,
-    "inventory": {
+    "items": {
       "potion_hp": 8,
       "greater_potion": 3,
       "imp_horn": 1
@@ -96,12 +115,51 @@
         "bonus": 0
       }
     ],
-    "equipped": {
+    "worn": {
       "weapon": "gmux7nza415zvd6",
       "body": "gmux7nza5171wb5",
       "offhand": "gmux7nz9z51e72",
       "head": "gmux7nza314v7ng"
+    }
+  },
+  "home": {
+    "owned": true,
+    "storage": {
+      "potion_hp": 1
+    }
+  },
+  "town": {
+    "age": 2,
+    "settlers": [],
+    "properties": [
+      "town_shop"
+    ],
+    "bank": {
+      "principal": 200,
+      "at": 0
     },
+    "expansions": []
+  },
+  "story": {},
+  "quests": {
+    "ledger": {}
+  },
+  "world": {
+    "at": {
+      "map": "overworld",
+      "x": 25,
+      "y": 10,
+      "facing": "left"
+    },
+    "steps": 0,
+    "fog": {},
+    "chests": [],
+    "slain": []
+  },
+  "buffs": {
+    "song": false
+  },
+  "legacy": {
     "unlockedLevel": 13,
     "clearedLevels": [
       1,
@@ -116,44 +174,6 @@
       10,
       11,
       12
-    ],
-    "battle": null,
-    "openPanel": null,
-    "house": {
-      "owned": true,
-      "storage": {
-        "potion_hp": 1
-      }
-    },
-    "properties": [
-      "town_shop"
-    ],
-    "townTier": 2,
-    "settlers": [],
-    "quests": {},
-    "world": {
-      "position": {
-        "mapId": "overworld",
-        "x": 25,
-        "y": 10,
-        "facing": "left"
-      },
-      "discovered": {},
-      "openedChests": [],
-      "slain": []
-    },
-    "dungeonSelect": null,
-    "introSeen": false,
-    "worldMessage": null,
-    "worldSteps": 0,
-    "dialogue": null,
-    "bardSong": false,
-    "investments": {
-      "expansions": [],
-      "savings": {
-        "principal": 200,
-        "at": 0
-      }
-    }
+    ]
   }
 }

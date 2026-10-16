@@ -467,7 +467,7 @@ tally | --map morvax_forge --at 12,2 --walk u --keys e --wait 0.3 | map=morvax_f
 morvax | --map morvax_forge --ready letter_morvax --talk-to mountain_morvax --keys e,e,e --wait 1.6 | map=morvax_forge open=dialogue_box delivered=1 next=run_home | story quest rooms
 oldsave-floor7 | --load res://test/fixtures/old_floor7.json --wait 0.3 | map=overworld cell=\(48, 7\) next=confession | save story travel
 oldsave-cave | --load res://test/fixtures/old_cave.json --wait 0.3 | map=town | save travel
-late-web | --load res://test/fixtures/web_save_late.txt --wait 0.3 | map=town | save story
+late-web | --load res://test/fixtures/web_save_late.json --wait 0.3 | map=town | save story
 # The Night of Bells (PIX-253 step 9): home from the forge through the
 # town's gate, the bell rings and the night begins; a lantern lit with E,
 # then all five and every other lamp out; the embers on the square and
@@ -613,6 +613,16 @@ fit-saves-backup | --map town saves --slots res://test/fixtures/slots_backup ove
 # A launch on it plays Brann from the save before (his 4321 gold), and the
 # title says so.
 launch-backup | title --slots res://test/fixtures/slots_backup launch overflow --lang fr | open=title_screen overflow=0 gold=4321 titleline=slot free=3 | screen lang title save
+# A save from before our own format (PIX-302, no migration until the
+# beta): slot 1 holds only the first edition's slot_1.json, and its card
+# says an older version wrote it, never an empty slot; slot 2 is a hero,
+# slot 3 empty. In both languages; a launch on it stands in, says so under
+# the menu, and New Game passes it by.
+saves-older | --map town saves --slots res://test/fixtures/slots_older | open=saves_screen cards=older,hero,empty | screen save
+fit-saves-older | --map town saves --slots res://test/fixtures/slots_older overflow --lang fr | open=saves_screen overflow=0 cards=older,hero,empty | screen lang save
+fit-saves-older-en | --map town saves --slots res://test/fixtures/slots_older overflow --lang en | open=saves_screen overflow=0 cards=older,hero,empty | screen lang save
+fit-launch-older | title --slots res://test/fixtures/slots_older launch overflow --lang fr | open=title_screen overflow=0 titleline=slot free=3 | screen lang title save
+fit-launch-older-en | title --slots res://test/fixtures/slots_older launch overflow --lang en | open=title_screen overflow=0 titleline=slot free=3 | screen lang title save
 fit-pause | --map town --keys esc overflow --lang fr | open=pause_screen overflow=0 | screen lang
 fit-options | --map town --keys esc,s,s,e overflow --lang fr | overflow=0 | screen lang
 fit-map | --map town waypoints worldmap overflow --lang fr | open=map_screen overflow=0 | screen lang travel

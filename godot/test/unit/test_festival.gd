@@ -88,7 +88,7 @@ func test_the_festival_is_saved_only_while_there_is_one() -> void:
 	var town := SettlementState.new()
 	var bare := {}
 	town.write_into(bare)
-	assert_false(bare.has("festival"), "saves from before stay byte for byte")
+	assert_false(bare.has("festival"), "none written while there is none")
 	town.festival = {"until": 900, "age": 2, "won": false}
 	var written := {}
 	town.write_into(written)

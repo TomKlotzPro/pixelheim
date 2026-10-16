@@ -1,14 +1,16 @@
 extends GutTest
-## Whatever a player pastes into the saves screen's Save code should land: a
-## PXH1 code, the raw JSON of a save, or a pre-envelope save from the oldest
-## versions.
+## Whatever a player pastes into the saves screen's Save code: a PXH2 code
+## lands, the raw JSON of a save too; a code or a save from before v5 says
+## it's from an older version (PIX-302: no migration until the beta), and
+## anything else is refused.
 
-const FIXTURE := "res://test/fixtures/web_save_v4.txt"
+const FIXTURE := "res://test/fixtures/web_save_v4.json"
+const OLDER := "res://test/fixtures/slots_older/slot_1.json"
 const SavesScreen := preload("res://scripts/saves_screen.gd")
 
 
 func _code() -> String:
-	return FileAccess.get_file_as_string(FIXTURE)
+	return SaveCodec.encode_code(SaveCodec.parse_any(FileAccess.get_file_as_string(FIXTURE)))
 
 
 func test_a_save_code_parses() -> void:
@@ -21,21 +23,16 @@ func test_surrounding_whitespace_is_forgiven() -> void:
 
 
 func test_the_raw_json_of_a_save_parses() -> void:
-	# The envelope, uncoded: what a slot file holds.
-	var raw := Marshalls.base64_to_utf8(_code().strip_edges().substr(SaveCodec.CODE_PREFIX.length()))
+	# What a slot file holds, uncoded.
+	var raw := FileAccess.get_file_as_string(FIXTURE)
 	assert_true(raw.begins_with("{"))
 	assert_eq(SaveCodec.parse_any(raw), SaveCodec.parse_any(_code()))
 
 
-func test_a_pre_envelope_save_still_parses() -> void:
-	var bare := JSON.stringify({
-		"hero": {
-			"name": "OldTimer", "roleId": "warrior", "level": 3, "xp": 10, "xpToNext": 74,
-			"hp": 40, "mp": 5, "stats": {"maxHp": 56, "maxMp": 10, "strength": 15},
-		},
-		"gold": 123, "inventory": {}, "equipped": {}, "unlockedLevel": 1, "clearedLevels": [],
-	})
-	assert_eq(SaveCodec.parse_any(bare)["gold"], 123)
+func test_an_older_versions_save_or_code_is_said_older() -> void:
+	var raw := FileAccess.get_file_as_string(OLDER)
+	assert_eq(SaveCodec.pasted(raw), {"state": {}, "problem": SaveCodec.OLDER}, "its JSON")
+	assert_eq(SaveCodec.pasted("PXH1." + Marshalls.utf8_to_base64(raw))["problem"], SaveCodec.OLDER, "its code")
 
 
 func test_anything_else_is_refused() -> void:

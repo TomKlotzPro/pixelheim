@@ -327,30 +327,24 @@ func test_an_old_save_past_the_prologue_gets_the_letters_from_maren() -> void:
 
 ## The web hero who beat Morvax before the relics or the letters existed:
 ## their story stays told, and Maren's letters are news from the Reach to
-## carry if they like, never a way back. Their save keeps its shape.
-func test_the_late_web_save_keeps_its_story_and_its_shape() -> void:
-	var saved := SaveCodec.decode_code(FileAccess.get_file_as_string("res://test/fixtures/web_save_late.txt"))
+## carry if they like, never a way back.
+func test_the_late_web_save_keeps_its_story() -> void:
+	var saved := SaveCodec.parse_any(FileAccess.get_file_as_string("res://test/fixtures/web_save_late.json"))
 	state.apply(saved)
 	assert_eq(_next(), "", "their story is told")
-	var before: Array = state.to_dict().keys()
 	state.questing.finish_dialogue("elder")
 	assert_eq(_letters_carried().size(), 4, "no keepsake of theirs came home: four letters")
 	assert_eq(_next(), "", "and it stays told")
-	for key: String in state.to_dict():
-		assert_true(key in before or key == "storySeen", "%s was already a field of the save" % key)
 	assert_has(state.to_dict()["storySeen"], Letters.scene_id(), "the tin in the story ledger")
 
 
-func test_a_new_heros_save_holds_no_new_field() -> void:
-	var before: Array = state.to_dict().keys()
+func test_a_letter_delivered_comes_back_with_the_save() -> void:
 	state.questing.finish_dialogue("elder")
 	state.questing.finish_dialogue("saltmere_wenna")
 	var after: Dictionary = state.to_dict()
-	for key: String in after:
-		assert_true(key in before or key == "storySeen", "%s was already a field of the save" % key)
 	assert_eq(after["quests"]["letter_wenna"], {"progress": 1, "done": true}, "progress lives with the quests")
 	var reloaded: Node = autofree(GameStateScript.new())
-	reloaded.apply(SaveCodec.parse_json(SaveCodec.serialize(after))["state"])
+	reloaded.apply(SaveCodec.reread(after))
 	assert_true(MainQuest.is_met(_step("letter_wenna"), reloaded.progression, reloaded.settlement))
 	assert_false(Letters.tin_waits(reloaded.progression))
 

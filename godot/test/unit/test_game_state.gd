@@ -31,7 +31,6 @@ func test_new_game_matches_the_web_create_hero() -> void:
 	assert_eq(state.pack.gear.size(), 1)
 	assert_eq(state.pack.gear[0]["itemId"], "rusty_sword")
 	assert_eq(state.pack.equipped["weapon"], state.pack.gear[0]["uid"])
-	assert_false(state.progression.intro_seen)
 	# wakes in the village square, its surroundings already seen
 	assert_eq(state.world.map_id, "town")
 	assert_eq(state.world.cell, Vector2i(40, 30))
@@ -44,15 +43,14 @@ func test_rangers_string_a_bow() -> void:
 	assert_eq(state.pack.gear[0]["itemId"], "hunting_bow")
 
 
-func test_state_round_trips_through_the_web_shape() -> void:
+func test_state_round_trips_through_a_save() -> void:
 	var before: Dictionary = state.to_dict()
-	state.apply(SaveCodec.migrate({"version": 4, "state": before}))
+	state.apply(SaveCodec.reread(before))
 	assert_eq(state.to_dict(), before)
 
 
 func test_fields_godot_does_not_play_yet_survive_untouched() -> void:
-	var code := FileAccess.get_file_as_string("res://test/fixtures/web_save_v4.txt")
-	var imported := SaveCodec.decode_code(code)
+	var imported := SaveCodec.parse_any(FileAccess.get_file_as_string("res://test/fixtures/web_save_v4.json"))
 	state.apply(imported)
 	assert_eq(state.to_dict(), imported)
 
@@ -161,6 +159,6 @@ func test_owned_house_sign_reads_home() -> void:
 
 
 func test_a_late_game_web_save_survives_godot_untouched() -> void:
-	var imported := SaveCodec.decode_code(FileAccess.get_file_as_string("res://test/fixtures/web_save_late.txt"))
+	var imported := SaveCodec.parse_any(FileAccess.get_file_as_string("res://test/fixtures/web_save_late.json"))
 	state.apply(imported)
 	assert_eq(state.to_dict(), imported)

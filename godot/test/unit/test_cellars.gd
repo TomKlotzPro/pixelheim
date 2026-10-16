@@ -272,19 +272,16 @@ func test_a_save_anywhere_in_the_cellars_wakes_at_their_entrance() -> void:
 		assert_eq(Depths.waking(map_id, Vector2i(40, 7)), {"mapId": "cellars", "cell": ENTRANCE}, map_id)
 
 
-func test_a_save_from_inside_the_cellars_round_trips_without_a_new_field() -> void:
-	# A hero past the tin: the story ledger is in the save already.
+func test_a_save_from_inside_the_cellars_round_trips() -> void:
 	state.questing.finish_dialogue("elder")
-	var before: Array = state.to_dict().keys()
 	state.world.map_id = "cellars_crypt"
 	state.world.cell = Vector2i(10, 8)
 	Discovery.discover_around(state.world.discovered, MapData.load_by_id("cellars_crypt"), Vector2i(10, 8))
 	state.world.opened_chests.append("cellars_badge")
 	state.mark_seen("hale_order_book")
 	var saved: Dictionary = state.to_dict()
-	assert_eq(saved.keys(), before, "no new field")
 	var reloaded: Node = autofree(GameStateScript.new())
-	reloaded.apply(SaveCodec.parse_json(SaveCodec.serialize(saved))["state"])
+	reloaded.apply(SaveCodec.reread(saved))
 	assert_true(Discovery.is_discovered(reloaded.world.discovered, "cellars_crypt", Vector2i(10, 8)), "each floor keeps its own fog")
 	assert_true(reloaded.spoils.is_opened(_chest("cellars_badge")), "the badge's box stays opened, by its id")
 	assert_has(reloaded.progression.story_seen, "hale_order_book", "the book read, in the story ledger")
@@ -294,7 +291,7 @@ func test_a_hero_who_delivered_the_letter_is_sent_to_the_book() -> void:
 	_to_chapter_four()
 	state.questing.deliver("greyhold_ulla")
 	var reloaded: Node = autofree(GameStateScript.new())
-	reloaded.apply(SaveCodec.parse_json(SaveCodec.serialize(state.to_dict()))["state"])
+	reloaded.apply(SaveCodec.reread(state.to_dict()))
 	assert_eq(MainQuest.next_step(reloaded.progression, reloaded.settlement)["id"], "order_book")
 	assert_false(reloaded.holdings.is_settled("greyhold_ulla"), "Ulla waits at her camp")
 
@@ -303,7 +300,7 @@ func test_a_hero_who_won_the_shield_is_not_asked_to_fight_again() -> void:
 	state.progression.hunted.append("hollow_captain")
 	state.pack.add_item("oskars_shield")
 	var reloaded: Node = autofree(GameStateScript.new())
-	reloaded.apply(SaveCodec.parse_json(SaveCodec.serialize(state.to_dict()))["state"])
+	reloaded.apply(SaveCodec.reread(state.to_dict()))
 	assert_eq(Hunts.living_on("cellars_hall", [], reloaded.progression.hunted).size(), 0, "no Hollow Captain in his hall")
 	assert_eq(Hunts.living_on("cellars", [], reloaded.progression.hunted).size(), 0)
 	assert_eq(int(reloaded.pack.items.get("oskars_shield", 0)), 1, "the shield kept")
@@ -317,14 +314,13 @@ func test_a_hero_who_won_the_shield_is_not_asked_to_fight_again() -> void:
 
 
 func test_the_late_web_save_loads_and_plays() -> void:
-	var late := SaveCodec.decode_code(FileAccess.get_file_as_string("res://test/fixtures/web_save_late.txt"))
+	var late := SaveCodec.parse_any(FileAccess.get_file_as_string("res://test/fixtures/web_save_late.json"))
 	state.apply(late.duplicate(true))
 	var woke := Depths.waking(state.world.map_id, state.world.cell)
 	assert_true(MapData.load_by_id(woke["mapId"]).is_walkable(woke["cell"]), "it wakes on open ground")
 	for map_id: String in FLOORS:
 		assert_gt(MapData.load_by_id(map_id).size.x, 0, "%s loads for it" % map_id)
 	assert_true(Gates.is_open(Gates.by_id("avalanche"), state.progression, state.settlement, state.world.discovered))
-	assert_eq(state.to_dict().keys(), late.keys(), "its fields, no more")
 
 
 # ---- Ulla and Teo come home ---------------------------------------------------------
@@ -376,12 +372,10 @@ func test_ulla_stands_inside_the_gate_at_every_age() -> void:
 		assert_false(grown.portals.has(cell))
 
 
-func test_the_homecoming_adds_no_field_to_the_save() -> void:
+func test_the_homecoming_settles_them_in_the_save() -> void:
 	state.progression.hunted.append("hollow_captain")
-	var before: Array = state.to_dict().keys()
 	state.holdings.come_home()
 	var after: Dictionary = state.to_dict()
-	assert_eq(after.keys(), before)
 	assert_has(after["settlers"], "greyhold_ulla", "settlers, as the others are")
 	assert_has(after["settlers"], "greyhold_teo")
 	assert_has(Town.settler_perks(state.settlement.settlers, state.progression.quests), Town.recruit("greyhold_teo")["perk"], "the hall lists them")

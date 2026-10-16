@@ -283,3 +283,20 @@ func test_only_what_the_hero_did_is_kept_and_it_comes_back_whole() -> void:
 	var back := PostState.from_dict(SaveCodec.parse_json(text))
 	assert_eq(JSON.stringify(back.to_dict(), "", false), text, "read back, the same")
 	assert_eq(JSON.stringify(PostState.from_dict({}).to_dict(), "", false), '{"bag":[],"threads":{},"delivered":[],"taken":-1}', "a hero with no post yet")
+
+
+func test_the_post_is_its_own_section_of_the_save_and_comes_back_whole() -> void:
+	assert_false(SaveCodec.to_file(state.to_dict()).has("post"), "a hero with no post yet writes no section")
+	assert_true(SaveCodec.reread(state.to_dict()).has("hero"))
+	_chapter_two()
+	state.posting.take_bag()
+	state.questing.finish_dialogue("saltmere_ola")
+	var file := SaveCodec.to_file(state.to_dict())
+	assert_eq(JSON.stringify(file["post"], "", false), JSON.stringify(state.post.to_dict(), "", false), "the post's own section")
+	var keys: Array = file.keys()
+	assert_eq(keys.find("post"), keys.find("world") + 1, "beside the world's")
+	var other: Node = autofree(GameStateScript.new())
+	other.apply(SaveCodec.reread(state.to_dict()))
+	assert_eq(JSON.stringify(other.post.to_dict(), "", false), JSON.stringify(state.post.to_dict(), "", false), "saved and loaded, the same")
+	assert_eq(Post.in_box(other.post, 0, other.progression, other.settlement, other.world.discovered), [] as Array[String], "the box still emptied today")
+	assert_eq(other.posting.carried_for("villager_bram").get("id", ""), "club_ola_reply", "Ola's reply still for Bram")
