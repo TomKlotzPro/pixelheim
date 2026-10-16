@@ -61,6 +61,9 @@ var arrow: Arrow
 var clock_plate: PanelContainer
 var _clock_text: Label
 var _clock_dial: Dial
+## The quill beside the clock (PIX-302 step 4): it writes as a moment is
+## saved.
+var quill: Quill
 const ARROW_INSET := 26.0
 
 
@@ -114,6 +117,8 @@ func build() -> void:
 	# Centred over the dock whatever the step's length.
 	objective_box.resized.connect(func() -> void: objective_box.position.x = roundf((1280 - objective_box.size.x) / 2.0))
 	hud.add_child(objective_box)
+	quill = Quill.new()
+	hud.add_child(quill)
 	root = hud
 	place()
 	get_tree().root.size_changed.connect(place)
@@ -363,6 +368,16 @@ func update_clock() -> void:
 	_clock_dial.queue_redraw()
 	clock_plate.reset_size()
 	clock_plate.position = Vector2(1280 - 24 - clock_plate.size.x, 16)
+	# The quill just left of it, on its middle.
+	quill.position = Vector2(clock_plate.position.x - 4 - quill.size.x, 16 + roundf((clock_plate.size.y - quill.size.y) / 4.0) * 2.0)
+
+
+## A save made (GameState.saved, PIX-302 step 4): a moment's has the quill
+## write, a night's sleep's with "Saved" under it; the quiet ones, every
+## few seconds as the hero walks, show nothing, or it would never stop.
+func on_saved(how: int) -> void:
+	if how != GameState.QUIET and quill != null:
+		quill.write(how == GameState.SLEPT)
 
 
 ## The arrow at the view's edge (PIX-240): toward the bearing's spot on this
@@ -515,3 +530,101 @@ class Dial extends Control:
 			draw_line(middle, middle + ray * 0.85, Color("f2c14e"), 1.0)
 		draw_circle(middle, 4.5, UiStyle.NIGHT)
 		draw_circle(middle, 3.5, Color("f2c14e"))
+
+
+## The quill by the clock (PIX-302 step 4): after a save that keeps a
+## moment (a door, a chest, a step of a quest, buying, a screen left after
+## a change) it writes a short line for about a second, cream ringed in the
+## night like the marks (Marks.QUILL), then fades; after a night's sleep,
+## "Saved" on a plate under it. With Reduce motion it simply appears, line
+## written, and goes. It keeps the world's time: under a screen it waits,
+## and writes as the screen lets the world go.
+class Quill extends Control:
+	## How long it writes, then how long it stays (fading) after.
+	const WRITES := 0.9
+	const STAYS := 0.4
+	## How long it stays after a night's sleep, the word under it.
+	const STAYS_SLEPT := 1.6
+	## The line it writes, a pixel a step at 1x from where it begins: a
+	## small wave, the nib on each in turn.
+	const LINE := [
+		Vector2i(0, 0), Vector2i(1, -1), Vector2i(2, -1), Vector2i(3, 0), Vector2i(4, 1),
+		Vector2i(5, 1), Vector2i(6, 0), Vector2i(7, -1), Vector2i(8, -1), Vector2i(9, 0),
+	]
+	## Where the line begins at 1x: room for the quill above it and its ring.
+	const START := Vector2i(1, 14)
+	## Times it has written this session, and whether the last said "Saved"
+	## (the harness's report).
+	var writes := 0
+	var slept := false
+	## Seconds since it began writing; -1 while it's away.
+	var age := -1.0
+	var _still := false
+	var _step := -1
+	var _word: PanelContainer
+
+	func _init() -> void:
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+		size = Vector2(24, 17) * UiStyle.UI_SCALE
+		visible = false
+		_word = PanelContainer.new()
+		_word.add_theme_stylebox_override("panel", UiStyle.plate(8))
+		_word.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_word.add_child(UiStyle.strong("Saved", 16, UiStyle.CREAM))
+		_word.visible = false
+		add_child(_word)
+
+	## A moment saved: write (again, from the start); `with_word` for a
+	## night's sleep.
+	func write(with_word: bool) -> void:
+		writes += 1
+		slept = with_word
+		age = 0.0
+		_step = -1
+		_still = GameState.settings.reduce_motion
+		_word.visible = with_word
+		if with_word:
+			_word.reset_size()
+			# Under the quill as it stands when the line is written, kept
+			# on the screen.
+			var middle := float(START.x + LINE[-1].x - Marks.QUILL_NIB.x) * UiStyle.UI_SCALE + Marks.quill().get_width() / 2.0
+			var x := roundf(middle - _word.size.x / 2.0)
+			_word.position = Vector2(minf(x, 1280.0 - 24.0 - position.x - _word.size.x), size.y + 2.0)
+		visible = true
+		modulate.a = 1.0
+		_process(0.0)
+
+	## Whether it's showing now.
+	func writing() -> bool:
+		return age >= 0.0
+
+	func _process(delta: float) -> void:
+		if age < 0.0:
+			return
+		age += delta
+		var stays := STAYS_SLEPT if slept else STAYS
+		if age >= WRITES + stays:
+			age = -1.0
+			visible = false
+			return
+		# Fading once the line is written; with Reduce motion it simply goes.
+		modulate.a = 1.0 if _still or age <= WRITES else clampf((WRITES + stays - age) / stays, 0.0, 1.0)
+		var step := LINE.size() - 1 if _still else mini(int(age / WRITES * LINE.size()), LINE.size() - 1)
+		if step != _step:
+			_step = step
+			queue_redraw()
+
+	func _draw() -> void:
+		if _step < 0:
+			return
+		var unit := float(UiStyle.UI_SCALE)
+		var pixel := Vector2.ONE * unit
+		# The line so far, ringed in the night, then the cream over it.
+		for i in _step + 1:
+			var at := Vector2(START + LINE[i])
+			for side: Vector2 in [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN]:
+				draw_rect(Rect2((at + side) * unit, pixel), UiStyle.NIGHT)
+		for i in _step + 1:
+			draw_rect(Rect2(Vector2(START + LINE[i]) * unit, pixel), UiStyle.CREAM)
+		# The quill with its nib on the line's end.
+		draw_texture(Marks.quill(), Vector2(START + LINE[_step] - Marks.QUILL_NIB) * unit)

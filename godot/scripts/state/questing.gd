@@ -563,22 +563,32 @@ func finish_prologue() -> void:
 ## Home after the run: the night begins. Its first beat, the clock to the
 ## middle of the night (it holds there: no time passes walking tonight),
 ## and Bram's imps asked of the hero if they weren't yet - the embers are
-## imps, so the night finishes his errand. Nothing of the night itself is
-## saved (ProgressionState.bells): a save made tonight plays it again from
-## here.
+## imps, so the night finishes his errand. The night is saved as it goes
+## (ProgressionState.bells, PIX-302 step 4): a save made tonight resumes at
+## its beat, each beat a step of the story kept at once.
 func bells_begin() -> void:
-	owner.progression.bells = Bells.LANTERNS
+	var progress := owner.progression
+	progress.bells = Bells.LANTERNS
+	progress.bells_lit.clear()
+	progress.bells_doused.clear()
+	progress.bells_embers = 0
 	owner.world.steps = Bells.night_start(owner.world.steps)
 	var imps := String(Bells.embers().get("quest", ""))
-	if imps != "" and not owner.progression.quests.has(imps):
-		owner.progression.quests[imps] = {"progress": 0, "done": false}
+	if imps != "" and not progress.quests.has(imps):
+		progress.quests[imps] = {"progress": 0, "done": false}
 	owner.mark_dirty()
+	owner.save_now()
 
 
 ## The night's next beat: the lanterns lit, the embers and fires out.
 func bells_on() -> void:
 	if owner.progression.bells in [Bells.LANTERNS, Bells.EMBERS, Bells.HOLD]:
 		owner.progression.bells += 1
+		# The embers come over the roofs with their beat, all of them.
+		if owner.progression.bells == Bells.EMBERS:
+			owner.progression.bells_embers = Bells.ember_cells().size()
+		owner.mark_dirty()
+		owner.save_now()
 
 
 ## A word with someone out on the Night of Bells: the inn's shelter and
@@ -613,6 +623,9 @@ func bells_dawn() -> String:
 ## dawn, the song done, the levels the night earned. Returns what's said.
 func bells_day() -> String:
 	owner.progression.bells = Bells.NONE
+	owner.progression.bells_lit.clear()
+	owner.progression.bells_doused.clear()
+	owner.progression.bells_embers = 0
 	owner.world.steps = Bells.morning(owner.world.steps)
 	owner.settlement.bard_song = false
 	var line := Text.t("Pixelheim held: +%d XP.") % int(Bells.fafnyr_spec()["xp"])

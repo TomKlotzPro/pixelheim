@@ -7,11 +7,12 @@ class_name Depths
 ## every visit. Between each floor and the next a stair down and a stair up;
 ## each floor's foes stand a little higher than the floor above's; the
 ## bottom one keeps the dungeon's boss, and once it has fallen a shortcut
-## opens straight out to the way in. Nothing of it is saved: a floor reached
-## is its fog of war (Discovery, by map id), a find its chest opened, the
-## shortcut its boss among the named hunts, and a hero saved on any floor
-## wakes at the dungeon's entrance. Pure: MapData lays and dresses the
-## floors, the world draws and walks them.
+## opens straight out to the way in. Nothing of it is saved but where the
+## hero stands: a floor reached is its fog of war (Discovery, by map id), a
+## find its chest opened, the shortcut its boss among the named hunts, and
+## a hero saved on a floor wakes at the top of that floor (PIX-302 step 4:
+## its stair up, the dungeon's way in on the first). Pure: MapData lays and
+## dresses the floors, the world draws and walks them.
 
 const NOWHERE := Vector2i(-1, -1)
 ## How far from its door a boss may fall and the door still be its way out,
@@ -342,23 +343,33 @@ static func way_out_toward(map: MapData, to_map: String, from: Vector2i) -> Vect
 	return best
 
 
-## Where a hero saved at `cell` of `map_id` wakes: at the entrance of the
-## dungeon's first floor when the save stands on any of its floors (old
-## saves inside the sea cave too, its grotto now two floors down); in town
-## when it stands by a way that's shut now (`shut`, PIX-257: the
-## Undermountain's cave, filled in); anywhere else, where it stood (by the
-## mountain's gate, for a save made on its old floors: the save kept the
-## gate). {mapId, cell}.
+## Where a hero saved at `cell` of `map_id` wakes: at the top of the floor
+## the save stands on (PIX-302 step 4: `top`, its stair up, no longer the
+## dungeon's way in from every floor); in town when it stands by a way
+## that's shut now (`shut`, PIX-257: the Undermountain's cave, filled in);
+## anywhere else, where it stood (by the mountain's gate, for a save made
+## on its old floors: the save kept the gate). {mapId, cell}.
 static func waking(map_id: String, cell: Vector2i) -> Dictionary:
 	for way: Dictionary in _data().get("shut", []):
 		var rect: Array = way["rect"]
 		if String(way["mapId"]) == map_id and Rect2i(int(rect[0]), int(rect[1]), int(rect[2]), int(rect[3])).has_point(cell):
 			var home: Dictionary = Catalog._data()["townSpawn"]
 			return {"mapId": String(home["mapId"]), "cell": Vector2i(int(home["x"]), int(home["y"]))}
+	if floor_of(map_id).is_empty():
+		return {"mapId": map_id, "cell": cell}
+	return {"mapId": map_id, "cell": top(map_id)}
+
+
+## The top of a floor, where a hero coming down its stair from the floor
+## above lands; on a dungeon's first floor, where its way in sets them
+## down (the dungeon's `entrance`). NOWHERE for a map that is no floor.
+static func top(map_id: String) -> Vector2i:
 	var entry := floor_of(map_id)
 	if entry.is_empty():
-		return {"mapId": map_id, "cell": cell}
-	return {"mapId": String(floors(entry["dungeon"])[0]["mapId"]), "cell": _cell(dungeon(entry["dungeon"])["entrance"])}
+		return NOWHERE
+	if int(entry["number"]) == 1:
+		return _cell(dungeon(entry["dungeon"])["entrance"])
+	return stairs(map_id)["up"]["arrive"]
 
 
 ## The battle log's word on arriving on a floor: "The Sea Cave, floor 2

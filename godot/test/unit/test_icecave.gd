@@ -258,13 +258,16 @@ func test_askes_answer_opens_lianes_door() -> void:
 
 # ---- Old saves ----------------------------------------------------------------------
 
-func test_a_save_anywhere_in_the_ice_cave_wakes_at_its_entrance() -> void:
+## A save wakes at the top of the floor it was made on (PIX-302 step 4:
+## test_depths walks every floor's).
+func test_a_save_in_the_ice_cave_wakes_at_the_top_of_its_floor() -> void:
 	assert_eq(Depths.waking("frostgate", Vector2i(20, 20)), {"mapId": "frostgate", "cell": Vector2i(20, 20)})
 	assert_eq(Depths.waking("observatory", Vector2i(8, 8)), {"mapId": "observatory", "cell": Vector2i(8, 8)}, "Liane's room is no floor")
-	# Where Rimefang used to sleep in the old one-floor cave, or on any floor.
-	for map_id: String in FLOORS:
-		assert_eq(Depths.waking(map_id, Vector2i(38, 7)), {"mapId": "icecave", "cell": ENTRANCE}, map_id)
+	# Where Rimefang used to sleep in the old one-floor cave: the way in.
+	assert_eq(Depths.waking("icecave", Vector2i(38, 7)), {"mapId": "icecave", "cell": ENTRANCE})
 	assert_true(Ways.open_ground(MapData.load_by_id("icecave"), ENTRANCE))
+	for map_id: String in FLOORS.slice(1):
+		assert_eq(Depths.waking(map_id, Vector2i(38, 7))["mapId"], map_id, "%s: on its own floor" % map_id)
 
 
 func test_a_save_from_inside_the_ice_cave_round_trips() -> void:

@@ -82,7 +82,9 @@ const TABLE := [
 	{"field": "packs", "says": "on a wild map: the packs standing in the hero's region, :asleep by their fire (PIX-252)"},
 	{"field": "page", "says": "the map's page, while the map is open (PIX-266)"},
 	{"field": "patches", "says": "with --day: the patches still to pick, by cell (PIX-250)"},
+	{"field": "pauseline", "says": "the pause menu's line under its title while it's open: when the game last saved, Saved 12 s ago (PIX-302 step 4)"},
 	{"field": "post", "says": "once the Pixelheim Post is open: standing when its box is drawn on this map, then the pieces in the box this morning, in the satchel and delivered, and while the map is open the addressees it marks on its page: standing,box:0,bag:2,sent:1,marked:1 (PIX-320)"},
+	{"field": "quill", "says": "the quill by the clock: the times it wrote of the saves made this session (moments write, the quiet autosaves don't), and slept when the last was a night's sleep, Saved under it: 1/3 slept (PIX-302 step 4)"},
 	{"field": "read", "says": "on the journal's Letters page: the letters it reads (PIX-253)"},
 	{"field": "rise", "says": "with --rise: how far the building on the tour has risen: ruin, rising, built (PIX-264)"},
 	{"field": "rooms", "says": "with rooms: what the rooms are drawn from (paid, free or none), how many of them have walls and a floor, and those with a stair down: free walled 9/9 stairs keep,observatory (PIX-318)"},
@@ -568,6 +570,13 @@ func field_patches() -> String:
 	return ";".join(cells.map(func(cell: Vector2i) -> String: return "%d,%d" % [cell.x, cell.y])) if not cells.is_empty() else "none"
 
 
+func field_pauseline() -> String:
+	for node in world.get_children():
+		if node is Screen and node.get("saved_line") is Label and node.saved_line.visible:
+			return node.saved_line.text
+	return ""
+
+
 func field_post() -> String:
 	if not GameState.posting.is_open():
 		return ""
@@ -576,6 +585,11 @@ func field_post() -> String:
 	if screen != null:
 		counts += ",marked:%d" % screen.painting.post_cells().size()
 	return ("standing," + counts) if world.view.post_box != null and is_instance_valid(world.view.post_box) else counts
+
+
+func field_quill() -> String:
+	var quill: Hud.Quill = world.hud.quill
+	return "%d/%d%s" % [quill.writes, GameState.saves_made, " slept" if quill.slept else ""]
 
 
 func field_read() -> String:

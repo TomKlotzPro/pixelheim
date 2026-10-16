@@ -209,13 +209,38 @@ func test_the_next_line_leads_down_the_floors_through_chapter_two() -> void:
 
 # ---- Old saves ----------------------------------------------------------------------
 
-func test_a_save_anywhere_in_the_sea_cave_wakes_at_its_entrance() -> void:
+func test_a_save_in_the_sea_cave_wakes_at_the_top_of_its_floor() -> void:
 	# Before the cave: where it stood.
 	assert_eq(Depths.waking("saltmere", Vector2i(20, 20)), {"mapId": "saltmere", "cell": Vector2i(20, 20)})
-	# Inside the old one-floor cave, where the Tidecaller used to sit, or on any floor.
-	for map_id: String in FLOORS:
-		assert_eq(Depths.waking(map_id, Vector2i(35, 8)), {"mapId": "seacave", "cell": Vector2i(5, 25)}, map_id)
+	# Inside the old one-floor cave, where the Tidecaller used to sit: the way in.
+	assert_eq(Depths.waking("seacave", Vector2i(35, 8)), {"mapId": "seacave", "cell": Vector2i(5, 25)})
 	assert_true(Ways.open_ground(MapData.load_by_id("seacave"), Vector2i(5, 25)))
+	# Down the galleries, by their stair up (PIX-302 step 4).
+	assert_eq(Depths.waking("seacave_galleries", Vector2i(35, 8)), {"mapId": "seacave_galleries", "cell": Depths.stairs("seacave_galleries")["up"]["arrive"]})
+
+
+## Every floor of every dungeon wakes a save made on it at its top (PIX-302
+## step 4, Tom: yes, at the top of the floor the save was made on): the
+## first where its way in sets a hero down, any other where the stair down
+## from the floor above lands, by its stair up - open ground, a step from
+## the way back up.
+func test_a_save_on_any_floor_wakes_at_the_top_of_that_floor() -> void:
+	for dungeon_id: String in Depths.dungeons():
+		var listed := Depths.floors(dungeon_id)
+		for i in listed.size():
+			var map_id := String(listed[i]["mapId"])
+			var woke := Depths.waking(map_id, Vector2i(30, 10))
+			assert_eq(woke["mapId"], map_id, "%s: on the floor it was saved on" % map_id)
+			var map := MapData.load_by_id(map_id)
+			assert_true(Ways.open_ground(map, woke["cell"]), "%s: on open ground at %s" % [map_id, woke["cell"]])
+			if i == 0:
+				assert_eq(woke["cell"], Depths._cell(Depths.dungeon(dungeon_id)["entrance"]), "%s: where its way in sets a hero down" % map_id)
+				continue
+			var above := MapData.load_by_id(String(listed[i - 1]["mapId"]))
+			var down: Vector2i = Depths.stairs(above.id)["down"]["cell"]
+			assert_eq(woke["cell"], Vector2i(int(above.portals[down]["x"]), int(above.portals[down]["y"])), "%s: where the stair down from above lands" % map_id)
+			var up: Vector2i = Depths.stairs(map_id)["up"]["cell"]
+			assert_lt(Vector2(woke["cell"]).distance_to(Vector2(up)), 3.0, "%s: by its stair up" % map_id)
 
 
 func test_a_save_from_inside_the_cave_round_trips() -> void:

@@ -105,6 +105,8 @@ func buy_item(item_id: String) -> bool:
 	else:
 		owner.pack.add_item(item_id)
 	owner.pack_changed()
+	# Gold spent is kept at once (PIX-302 step 4: buying is a moment).
+	owner.save_now()
 	return true
 
 

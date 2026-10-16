@@ -8,10 +8,10 @@ class_name Bells
 ## tent, Loras's song, Bram's cheese down Upper Street. At dawn he stands
 ## down, the collar comes off and he leaves a scale in the fountain.
 ##
-## The beat lives only while the night runs
-## (ProgressionState.bells, never written), so a save made in the night plays
-## it again from its start; the night's end is the collar's scene in the
-## story ledger. A hero who slew Fafnyr on the old mountain skips the
+## The beat lives while the night runs (ProgressionState.bells, saved with
+## the lanterns lit, the roofs doused and the embers left: PIX-302 step 4),
+## so a save made in the night resumes at its beat; the night's end is the
+## collar's scene in the story ledger. A hero who slew Fafnyr on the old mountain skips the
 ## chapter (MainQuest's skipIf) and never sees it. Pure, over
 ## progression.json's "bells"; GameState and the world's Night act on it.
 

@@ -4,7 +4,8 @@ extends Node
 ## go through methods that keep the save's invariants; signals tell the world
 ## and the screens. Persistence is write-behind: changes mark the state
 ## dirty, the autosave flushes it within AUTOSAVE_SECONDS, and moments that
-## matter (map change, loot) save at once.
+## matter (map change, loot) save at once, which the HUD's quill shows
+## (`saved`, PIX-302 step 4).
 ## The methods live in eight modules, one per part of the game (PIX-261):
 ## `trade`, `holdings`, `household`, `questing`, `spoils`, `upkeep`,
 ## `training` and `posting`, and callers reach them there (`GameState.questing.choose()`,
@@ -31,6 +32,11 @@ signal healed
 signal monster_slain(monster_id: String)
 ## The hero's HP changed (hits, rests, level-ups).
 signal hp_changed(hp: int, max_hp: int)
+## A save was made (PIX-302 step 4), and how it shows: QUIET (the
+## autosave's, every few seconds after a change; those on leaving), MOMENT
+## (something worth keeping happened: the HUD's quill writes) or SLEPT (a
+## night's sleep: the quill with "Saved" under it).
+signal saved(how: int)
 ## The hero crossed into a new rank (useRankUp): the ascension scene plays.
 signal ranked_up(title: String)
 ## Levels were gained (the level-up fanfare).
@@ -44,6 +50,10 @@ const NO_SLOT := 0
 ## The dice a harness run throws (PIX-276): any number, the same every run.
 const HARNESS_SEED := 276
 const AUTOSAVE_SECONDS := 3.0
+## How a save shows (`saved`, PIX-302 step 4).
+const QUIET := 0
+const MOMENT := 1
+const SLEPT := 2
 ## Until character creation lands (PIX-127), new games start this hero.
 const DEFAULT_HERO_NAME := "Wanderer"
 const DEFAULT_ROLE := "warrior"
@@ -68,6 +78,15 @@ var slots := SaveSlots.new()
 var settings := GameSettings.new()
 var slot := NO_SLOT
 var dirty := false
+## Changes marked this session (mark_dirty counts them): a screen let go
+## after one saves, even when the autosave kept it while it was open, so
+## leaving it shows the quill (Screen, PIX-302 step 4).
+var changes := 0
+## The saves made this session, and when the last was, by the game's clock
+## (GameClock.seconds(); -1 before the first): the pause menu's "Saved 12 s
+## ago" and the harness's report.
+var saves_made := 0
+var saved_clock := -1.0
 ## Seconds played with this hero (PIX-302): counted past the title, saved
 ## whole; heroes from before v5 had none to count.
 var play_seconds := 0.0
@@ -147,7 +166,7 @@ func _watch_the_page() -> void:
 		return
 	_page_hidden = JavaScriptBridge.create_callback(func(_args: Array) -> void:
 		if dirty:
-			save_now())
+			save_now(QUIET))
 	JavaScriptBridge.get_interface("document").addEventListener("visibilitychange", _page_hidden)
 	JavaScriptBridge.get_interface("window").addEventListener("pagehide", _page_hidden)
 
@@ -400,15 +419,24 @@ func to_dict() -> Dictionary:
 
 func mark_dirty() -> void:
 	dirty = true
+	changes += 1
 
 
-func save_now() -> void:
+## Writes the hero to their slot now. `how` says how it shows (`saved`):
+## a moment by default, as every save the game makes on purpose is (a door,
+## a chest, a step of a quest, buying, funding, a skill learned, a screen
+## left after a change, the title, the language); the autosave and the
+## saves on leaving are QUIET, a night's sleep SLEPT.
+func save_now(how := MOMENT) -> void:
 	dirty = false
 	_unsaved_seconds = 0.0
 	_saved_play = play_seconds
 	# The title's stand-in hero is never written; a made or brought hero is.
 	if slot != NO_SLOT and not standing_in:
 		slots.write(slot, to_dict())
+	saves_made += 1
+	saved_clock = GameClock.seconds()
+	saved.emit(how)
 
 
 func _process(delta: float) -> void:
@@ -419,7 +447,7 @@ func _process(delta: float) -> void:
 		return
 	_unsaved_seconds += delta
 	if _unsaved_seconds >= AUTOSAVE_SECONDS:
-		save_now()
+		save_now(QUIET)
 
 
 func _notification(what: int) -> void:
@@ -433,7 +461,7 @@ func _notification(what: int) -> void:
 	# Time played since the last save is kept too (it marks nothing dirty:
 	# a hero standing still isn't saved every few seconds for it).
 	if leaving and (dirty or play_seconds - _saved_play >= 1.0):
-		save_now()
+		save_now(QUIET)
 
 
 ## The hero stands on a new cell: remember it, see around it. The slain

@@ -99,6 +99,10 @@ func test_every_field_a_hero_can_have_finds_its_place_and_comes_back() -> void:
 	game.progression.met = {"wolf": 3}
 	game.progression.crafted = {"potion_hp": 2}
 	game.progression.tracked = "cheese_run"
+	game.progression.bells = Bells.EMBERS
+	game.progression.bells_lit.assign([0, 1, 2, 3, 4])
+	game.progression.bells_doused.assign([2])
+	game.progression.bells_embers = 3
 	game.progression.cleared_levels.assign([1, 2])
 	game.progression.unlocked_level = 3
 	game.world.slain_at = {"ash_1": 12}
@@ -112,6 +116,7 @@ func test_every_field_a_hero_can_have_finds_its_place_and_comes_back() -> void:
 	assert_eq(doc["town"]["tills"], {"town_shop": {"gold": 1, "earned": 2, "at": 3}})
 	assert_eq(doc["town"]["invested"], {"keepsake": 9}, "the rest of the purse rides along")
 	assert_eq(doc["story"]["seen"], ["chapter_1"])
+	assert_eq(doc["story"]["night"], {"beat": Bells.EMBERS, "lit": [0, 1, 2, 3, 4], "doused": [2], "embers": 3}, "the Night of Bells as it stands (PIX-302 step 4)")
 	assert_eq(doc["legacy"]["endings"], ["ending"], "the old throne's ending is legacy's")
 	assert_eq(doc["legacy"]["deepHunt"], 4)
 	assert_eq(doc["quests"]["named"], ["cinderjaw"])
@@ -124,6 +129,7 @@ func test_what_a_hero_never_had_stays_out_of_the_file() -> void:
 	assert_false(doc["town"].has("bank"), "no purse yet")
 	assert_false(doc["town"].has("invested"))
 	assert_false(doc["story"].has("seen"))
+	assert_false(doc["story"].has("night"), "no Night of Bells running")
 	assert_false(doc["legacy"].has("deepHunt"))
 	assert_false(doc["buffs"].has("rested"))
 	var back := SaveCodec.reread(_game().to_dict())
