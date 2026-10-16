@@ -23,13 +23,21 @@ extends Screen
 ## pages from the mountain (the page they had before). Once the Post is
 ## open (PIX-320) a Post page joins them: what the box on the square holds
 ## this morning, the pieces in the satchel, sealed, and those delivered, to
-## read. Q or Esc closes it.
+## read; and beside it the courier's book (PIX-321, Postmarks): a page per
+## place, its postmark stamped the day the first piece reached it, who had
+## post there and what the courier kept from it (W/S choose the page).
+## Q or Esc closes it.
 ## The world holds still while it is open.
 
 const BountyScreen := preload("res://scripts/bounty_screen.gd")
-## The Post's tab (PIX-320) shows once the Post is open (`_tabs`).
-const TABS := ["quests", "letters", "post", "feats"]
-const TAB_NAMES := {"quests": "Quests", "letters": "Letters", "post": "Post", "feats": "Feats"}
+## The Post's tab (PIX-320) and the courier's book's (PIX-321) show once
+## the Post is open (`_tabs`).
+const TABS := ["quests", "letters", "post", "book", "feats"]
+const TAB_NAMES := {"quests": "Quests", "letters": "Letters", "post": "Post", "book": "Postmarks", "feats": "Feats"}
+## The courier's book's index, beside its page: how wide.
+const BOOK_INDEX := 360.0
+## How many of a page's pieces it lists, newest first.
+const BOOK_LINES := 6
 ## The chapters the journal had before (PIX-171), and Liane's pages (until
 ## PIX-253 step 2), as the harness's --tab still names them.
 const OLD_TABS := {"main": "quests", "side": "quests", "bounties": "quests", "story": "letters", "pages": "letters", "deeds": "feats"}
@@ -69,6 +77,11 @@ var detail: Label
 ## pages - and the first one in view.
 var from := 0
 var pages: Array[Control] = []
+## The courier's book (PIX-321): its pages shown (places, Post.pages), the
+## one open, and the index's rows.
+var places: Array[String] = []
+var place_at := 0
+var place_rows: Array[PanelContainer] = []
 
 
 func _open() -> void:
@@ -109,6 +122,8 @@ func _command(event: InputEvent) -> Callable:
 			return _follow.bind(selected)
 	if tab in ["letters", "post"] and by != 0 and not pages.is_empty():
 		return _turn.bind(by)
+	if tab == "book" and by != 0 and places.size() > 1:
+		return _open_place.bind(wrapi(place_at + by, 0, places.size()))
 	return Callable()
 
 
@@ -117,9 +132,10 @@ func _switch(by: int) -> void:
 	_switch_to(shown[wrapi(shown.find(tab) + by, 0, shown.size())])
 
 
-## The tabs this hero has: the Post's once it's open (PIX-320).
+## The tabs this hero has: the Post's and the courier's book's once it's
+## open (PIX-320, PIX-321).
 func _tabs() -> Array:
-	return TABS.filter(func(id: String) -> bool: return id != "post" or GameState.posting.is_open())
+	return TABS.filter(func(id: String) -> bool: return id not in ["post", "book"] or GameState.posting.is_open())
 
 
 func _switch_to(id: String) -> void:
@@ -157,6 +173,8 @@ func _show() -> void:
 			_letters()
 		"post":
 			_post()
+		"book":
+			_book()
 		"feats":
 			_feats()
 	_set_footer()
@@ -171,6 +189,8 @@ func _set_footer() -> void:
 			footer = UiStyle.screen_footer("{key:move_up}/{key:move_down}  choose      {key:interact}  follow      {key:move_left}/{key:move_right}  tabs      {key:journal} / Esc  close")
 		"letters", "post":
 			footer = UiStyle.screen_footer("{key:move_up}/{key:move_down}  turn      {key:move_left}/{key:move_right}  tabs      {key:journal} / Esc  close")
+		"book":
+			footer = UiStyle.screen_footer("{key:move_up}/{key:move_down}  choose      {key:move_left}/{key:move_right}  tabs      {key:journal} / Esc  close")
 		_:
 			footer = UiStyle.screen_footer("{key:move_left}/{key:move_right}  tabs      {key:journal} / Esc  close")
 	add_child(footer)
@@ -576,9 +596,11 @@ func _post() -> void:
 		_post_card(list, Post.piece(post.delivered[post.delivered.size() - 1 - at]), true)
 
 
-## One piece of the post on its page, a card: its address, then its thread
-## and where it goes; sealed, what its outside says; delivered, its words
-## and what was said as it was handed over.
+## One piece of the post on its page, a card: its address and its tag (by
+## what it is: a letter sealed, a parcel wrapped; Post.tags), then its
+## thread and where it goes (where it went, once delivered); sealed, what
+## its outside says; delivered, its words and what was said as it was
+## handed over.
 func _post_card(list: VBoxContainer, entry: Dictionary, delivered: bool) -> void:
 	if entry.is_empty():
 		return
@@ -592,12 +614,15 @@ func _post_card(list: VBoxContainer, entry: Dictionary, delivered: bool) -> void
 	var name := Layout.wrapped(UiStyle.strong(String(entry["addressed"]), 18, UiStyle.INK), ROW_TEXT - 180)
 	name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top.add_child(name)
-	var sealed := UiStyle.strong(Text.t("DELIVERED") if delivered else Text.t("SEALED"), 18, UiStyle.LAMP if delivered else UiStyle.FADED)
+	var sealed := UiStyle.strong(Post.tags(entry)[1 if delivered else 0], 18, UiStyle.LAMP if delivered else UiStyle.FADED)
 	sealed.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	top.add_child(sealed)
 	words.add_child(top)
 	var title := String(Post.thread(Post.thread_of(String(entry["id"]))).get("title", ""))
-	var where := Post.where(entry, GameState.settlement)
+	var where := Post.where(entry, GameState.progression, GameState.settlement)
+	var went := String(GameState.post.places.get(entry["id"], ""))
+	if delivered and went != "":
+		where = Catalog.place_name(went)
 	words.add_child(Layout.wrapped(UiStyle.label(Text.t("%s - %s") % [title, where] if where != "" else title, 14, UiStyle.FADED), ROW_TEXT))
 	if not delivered:
 		words.add_child(Layout.wrapped(UiStyle.label(String(entry["note"]), 14, UiStyle.FADED), ROW_TEXT))
@@ -613,6 +638,147 @@ func _post_card(list: VBoxContainer, entry: Dictionary, delivered: bool) -> void
 			words.add_child(Layout.wrapped(UiStyle.label(line, 14, UiStyle.INK), ROW_TEXT))
 	pages.append(card)
 	list.add_child(card)
+
+
+## The courier's book (PIX-321): on the left its index, a row a page (the
+## places stamped and those the hero has been to, in the book's order: a
+## small postmark, the place, how many pieces it had), the page open lit;
+## on the right that page: its postmark and the post office's cancellation,
+## the place and the day it was first stamped, who had post there, and what
+## the courier kept from it (a gift, a recipe written in). W/S turn the
+## pages.
+func _book() -> void:
+	var post := GameState.post
+	places = Post.pages(post, GameState.world.discovered)
+	place_at = clampi(place_at, 0, maxi(places.size() - 1, 0))
+	var sheet := _sheet()
+	var stamped := post.stamps.size()
+	sheet.add_child(UiStyle.strong("The courier's book", 18, UiStyle.LAMP))
+	var count := Text.t("A page per place, stamped the day its first piece of post arrives. Stamped: %d of %d.") % [stamped, Post.book().size()]
+	sheet.add_child(Layout.wrapped(UiStyle.label(count, 14, UiStyle.FADED), TEXT_WIDTH))
+	var spread := HBoxContainer.new()
+	spread.add_theme_constant_override("separation", 18)
+	spread.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	sheet.add_child(spread)
+	var index := VBoxContainer.new()
+	index.add_theme_constant_override("separation", 4)
+	index.custom_minimum_size = Vector2(BOOK_INDEX, 0)
+	spread.add_child(index)
+	place_rows.clear()
+	for place: String in places:
+		place_rows.append(_place_row(index, place))
+	var gutter := ColorRect.new()
+	gutter.color = Color(UiStyle.RIM, 0.6)
+	gutter.custom_minimum_size = Vector2(2, 0)
+	gutter.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	spread.add_child(gutter)
+	var leaf := VBoxContainer.new()
+	leaf.name = "book_page"
+	leaf.add_theme_constant_override("separation", 6)
+	leaf.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	spread.add_child(leaf)
+	_open_place(place_at)
+
+
+## A row in the book's index: the page's small postmark, its place and how
+## many pieces it had.
+func _place_row(index: VBoxContainer, place: String) -> PanelContainer:
+	var post := GameState.post
+	var row := PanelContainer.new()
+	var line := HBoxContainer.new()
+	line.add_theme_constant_override("separation", 10)
+	row.add_child(line)
+	line.add_child(Postmark.view(Post.page(place), false, post.stamps.has(place)))
+	var called := Layout.ellipsis(UiStyle.label(Catalog.place_name(place), 14, UiStyle.INK))
+	called.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	line.add_child(called)
+	var count := Post.delivered_at(post, place).size()
+	line.add_child(UiStyle.label(str(count) if count > 0 else "-", 14, UiStyle.FADED))
+	row.gui_input.connect(func(event: InputEvent) -> void:
+		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+			get_viewport().set_input_as_handled()
+			_open_place(places.find(place)))
+	index.add_child(row)
+	return row
+
+
+## The book open at page `at`: its row lit, its page written out.
+func _open_place(at: int) -> void:
+	place_at = at
+	for i in place_rows.size():
+		place_rows[i].add_theme_stylebox_override("panel", UiStyle.box(Color(UiStyle.CARD, 0.5), UiStyle.LAMP if i == at else Color(0, 0, 0, 0), 6))
+	var leaf: VBoxContainer = content.find_child("book_page", true, false)
+	if leaf == null:
+		return
+	Layout.clear(leaf)
+	if places.is_empty():
+		leaf.add_child(Layout.wrapped(UiStyle.label("No pages yet. Deliver a piece of post and its place gets a page.", 14, UiStyle.FADED), TEXT_WIDTH - BOOK_INDEX - 40))
+		return
+	var place := places[at]
+	var post := GameState.post
+	var stamped := post.stamps.has(place)
+	var width := TEXT_WIDTH - BOOK_INDEX - 40
+	var head := HBoxContainer.new()
+	head.add_theme_constant_override("separation", 14)
+	leaf.add_child(head)
+	head.add_child(Postmark.view(Post.page(place), true, stamped))
+	if stamped:
+		head.add_child(Postmark.waves_view(Post.page(place)))
+	var titles := VBoxContainer.new()
+	titles.add_theme_constant_override("separation", 4)
+	titles.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	head.add_child(titles)
+	titles.add_child(Layout.wrapped(UiStyle.heading(Catalog.place_name(place), 18, UiStyle.INK), width - 280))
+	var dated := Text.t("First stamped on day %d.") % (int(post.stamps[place]) + 1) if stamped else Text.t("Not stamped yet: no post delivered here.")
+	titles.add_child(Layout.wrapped(UiStyle.label(dated, 14, UiStyle.FADED), width - 280))
+	var ids := Post.delivered_at(post, place)
+	if ids.is_empty():
+		return
+	var who: Array[String] = []
+	var kept: Array[String] = []
+	for id: String in ids:
+		var entry := Post.piece(id)
+		var person := String(Npcs.by_id(Post.addressee(entry), []).get("name", ""))
+		if String(entry.get("to", "")) == "fafnyr":
+			person = Text.t("Fafnyr, care of Hilda")
+		# Inside the sentence: « le maire Aldric », not « Le maire ».
+		person = Text.mid(person)
+		if person != "" and person not in who:
+			who.append(person)
+		var things := Post.kept(entry)
+		if things["gift"] != "":
+			kept.append(Catalog.item_name(things["gift"]))
+		if things["recipe"] != "":
+			kept.append(_recipe_line(things["recipe"]))
+	leaf.add_child(Layout.wrapped(UiStyle.label(Text.t("Post for: %s") % ", ".join(who), 14, UiStyle.INK), width))
+	if not kept.is_empty():
+		leaf.add_child(Layout.wrapped(UiStyle.strong("Kept from here:", 14, UiStyle.LAMP), width))
+		for line: String in kept:
+			leaf.add_child(Layout.wrapped(UiStyle.label(line, 14, UiStyle.INK), width))
+	# The page's ledger: what was delivered here, newest first, the oldest
+	# beyond BOOK_LINES counted.
+	leaf.add_child(Layout.wrapped(UiStyle.strong(Text.t("Delivered here: %d") % ids.size(), 14, UiStyle.LAMP), width))
+	for back in mini(ids.size(), BOOK_LINES):
+		var entry := Post.piece(ids[ids.size() - 1 - back])
+		var title := String(Post.thread(Post.thread_of(String(entry["id"]))).get("title", ""))
+		leaf.add_child(Layout.ellipsis(UiStyle.label(Text.t("%s - %s") % [entry["addressed"], title], 14, UiStyle.FADED)))
+	if ids.size() > BOOK_LINES:
+		leaf.add_child(UiStyle.label(Text.t("and %d more") % (ids.size() - BOOK_LINES), 14, UiStyle.FADED))
+
+
+## A recipe the post wrote into the book: what it makes, from what, where
+## and at what trade's level.
+func _recipe_line(recipe_id: String) -> String:
+	var recipe := Economy.recipe(recipe_id)
+	if recipe.is_empty():
+		return ""
+	var needs: Array[String] = []
+	var wants: Dictionary = recipe["needs"]
+	for item_id: String in wants:
+		needs.append("%d %s" % [int(wants[item_id]), Catalog.item_name(item_id)])
+	var job: Dictionary = recipe["job"]
+	var station := Text.t("Vex's cauldron, Alchemy %d") if job["id"] == "alchemy" else Text.t("Hilda's forge, Smithing %d")
+	return Text.t("Recipe: %s, from %s (%s)") % [Catalog.item_name(String(recipe["itemId"])), ", ".join(needs), station % int(job["level"])]
 
 
 ## Turns the Letters page: the next or the last letter (or page) at the top,

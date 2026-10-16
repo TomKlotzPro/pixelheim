@@ -101,7 +101,7 @@ story town: scripts/state/homecoming.gd
 story quest rank: assets/data/progression.json
 story quest: scripts/state/main_quest.gd scripts/state/quests.gd scripts/state/questing.gd
 town story quest save: scripts/state/post.gd scripts/state/post_state.gd scripts/state/posting.gd assets/data/post.json
-quest: scripts/journal_screen.gd scripts/bounty_screen.gd scripts/state/journal.gd scripts/state/bearing.gd
+quest: scripts/journal_screen.gd scripts/bounty_screen.gd scripts/state/journal.gd scripts/state/bearing.gd scripts/postmark.gd
 quest combat: scripts/state/hunts.gd
 quest screen: scripts/state/deeds.gd
 quest dungeon save: scripts/state/progression_state.gd

@@ -94,6 +94,7 @@ const TABLE := [
 	{"field": "scorch", "says": "on a map with burnt land: its burnt rock's cells, the dead trees on it, the cinders glowing, and a mining country's rails, spoil and pieces standing at its workings: burnt120,snags40,cinders30,rails50,spoil9,standing14 (PIX-308)"},
 	{"field": "shortcut", "says": "on a dungeon floor with a shortcut out to its way in: open or shut (PIX-255)"},
 	{"field": "speaker", "says": "who the open conversation is with, by id: innkeeper (PIX-283)"},
+	{"field": "stamps", "says": "once the courier's book has a page stamped: its places stamped, in the book's order: town,saltmere (PIX-321)"},
 	{"field": "stood", "says": "named foes that stood down rather than fell, when one did (PIX-255)"},
 	{"field": "story", "says": "the main story's hollow diamond on the map's page, while something else is followed (PIX-253)"},
 	{"field": "street", "says": "the street under the hero: the paving its age lays (gravel, cobbles, sandstone, bricks, flags; drawn with the paid art, bare dirt without), or worn on a rutted road (PIX-307)"},
@@ -655,6 +656,16 @@ func field_speaker() -> String:
 		if node.has_method("_advance"):
 			return String(node.npc.get("id", ""))
 	return ""
+
+
+func field_stamps() -> String:
+	if not GameState.posting.is_open() or GameState.post.stamps.is_empty():
+		return ""
+	var out: Array[String] = []
+	for page: Dictionary in Post.book():
+		if GameState.post.stamps.has(page["place"]):
+			out.append(String(page["place"]))
+	return ",".join(out)
 
 
 func field_stood() -> String:

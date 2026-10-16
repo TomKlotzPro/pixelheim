@@ -6,7 +6,7 @@
 
 <p align="center">
   <b>A retro pixel-art open-world RPG in Godot 4.7: a village the dragon burned, the courier who stayed, the Reach's regions and the relics they keep - and the mountain last.</b><br />
-  The village burned. You stayed. Currently v0.248 - 1.0 has to be earned.
+  The village burned. You stayed. Currently v0.249 - 1.0 has to be earned.
 </p>
 
 ---
@@ -33,7 +33,7 @@ A dragon burned Pixelheim in one night, and you - the courier who came up the ro
 - **One land**: the Ashenreach and its six regions lie side by side; near a road out the land past it is drawn beside you, and you walk on into it with no fade - the village's gate, houses and caves stay short changes of scene
 - **Roads the story opens**: each region's way in from the Reach - a rockfall on the cliff road, the river bridge burnt on the Night of Ash, Ulla's barricade, an avalanche on the Frostgate road - stays shut until the story reaches it, says what opens it, and the arrow leads there
 - **A town that grows**: buy the house and furnish it, buy the shops and collect rent, fund the village into a city (its rutted dirt streets gravelled, then cobbled, the square flagged round its fountain), bank and send caravans, recruit settlers from the wilds
-- **The Pixelheim Post**: once Maren's first letter reaches Saltmere a post box goes up on the square, and each morning it holds a few letters and parcels between the Reach's people - Bram's Cheese Club, Wenna and Pell arguing over the stew's salt, Pip writing to the dragon - for you to carry on your way, read in your journal once delivered, and sometimes a reply to bring back; nothing in it ever spoils
+- **The Pixelheim Post**: once Maren's first letter reaches Saltmere a post box goes up on the square, and each morning it holds three letters and parcels between the Reach's people - twelve threads, from Bram's Cheese Club and Pip writing to the dragon to Mirelle's gentle reminders about interest and, after the story, Maren and Morvax counting the lamps - for you to carry on your way, read in your journal once delivered, and sometimes a reply to bring back; some leave you a recipe, a piece of furniture or a trophy, and every delivery stamps that place's page in your courier's book; nothing in it ever spoils
 - **Crafting** at the forge, the cauldron and your own workbench; foraging in the wilds
 - **Music, stingers and weather** for every place, rendered from the game's own chiptune synth
 - **Saves that never break**: three slots, autosave (a small quill by the clock writes when a moment is kept: a door, a chest, a quest's step, a night's sleep; the pause menu says how long ago), a backup of the save before, and save codes that carry a hero to another computer or browser (a code cut short is caught, not loaded); one the game can't read is kept, never written over. The Saves screen shows each hero as they left, with the chapter and the hours played; a hero can be duplicated, and a deleted one brought back until another hero takes the slot. A save made on the Night of Bells resumes at its beat, and one made down a dungeon wakes at the top of that floor. Until the beta the save format may change without carrying old heroes over: a save from before a change shows as an older version's, kept until you clear it

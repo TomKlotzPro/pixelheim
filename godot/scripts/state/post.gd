@@ -3,21 +3,27 @@ class_name Post
 ## once Maren's first letter reaches Saltmere, the Reach finds out it has a
 ## courier again, and a post box goes up on Pixelheim's square. Each game
 ## morning it holds a small bag of letters and parcels between the Reach's
-## people, from threads that run on for days: Bram's Cheese Club, Wenna and
-## Pell (the canary and the salty stew), Pip and the dragon. E at the box
-## takes them into the satchel; E beside a piece's addressee hands it over,
-## for a line, a small tip and sometimes a reply to carry back. The calm
-## rules hold throughout: nothing expires, there is no timer, and a day
-## skipped costs nothing.
+## people, from threads that run on for days (twelve since PIX-321, every
+## place in at least two: Bram's Cheese Club, Wenna and Pell, Pip and the
+## dragon, Maren and Wenna's everything else, Rook's wet rope, Mirelle's
+## gentle reminders, Vex's reagents, Wren's horses, Dagny's ore for Hilda,
+## Fenwick in charge of Greyhold, the Cheese Club's song, and Maren and
+## Morvax counting the lamps). E at the box takes them into the satchel; E
+## beside a piece's addressee hands it over, for a line, a small tip,
+## sometimes a thing to keep and sometimes a reply to carry back, and
+## stamps the courier's book: a page per place, its postmark inked the day
+## the first piece reached it. The calm rules hold throughout: nothing
+## expires, there is no timer, and a day skipped costs nothing.
 ## Which pieces the box holds is worked out from the day (DayNight's, as
 ## the patches are dealt), the data's seed and the threads: each thread
-## offers its next piece once the one before it is delivered, never a piece
-## already in the satchel, and only for someone who stands where the hero
-## has been, past no gate still shut (Gates), its sender at home and what
-## it waits on in the story met. So only what the hero did is saved
-## (PostState). Pure, over assets/data/post.json; GameState's `posting`
-## takes and hands over, MapView draws the box, the journal's Post tab and
-## the map read it.
+## offers its next piece once the one before it is delivered (and, for one
+## that says `after`, another thread's piece too), never a piece already
+## in the satchel, and only between people who stand where the hero has
+## been, past no gate still shut (Gates), with what it waits on in the
+## story met. So only what the hero did is saved (PostState). Pure, over
+## assets/data/post.json; GameState's `posting` takes and hands over,
+## MapView draws the box, the journal's Post and Postmarks tabs and the map
+## read it.
 
 static var _doc := {}
 ## Piece id -> {piece, thread (its id), index (its place in the thread)}.
@@ -116,16 +122,23 @@ static func next_of(thread_id: String, post: PostState) -> Dictionary:
 
 
 ## Where a villager stands now (`mapId`, `x`, `y`), the projects built
-## deciding where a keeper trades: {} for no one.
-static func spot(npc_id: String, settlement: SettlementState) -> Dictionary:
+## deciding where a keeper trades, and Coming Home where Morvax is (his
+## forge, or his bench by the fountain: Homecoming.place): {} for no one.
+static func spot(npc_id: String, progression: ProgressionState, settlement: SettlementState) -> Dictionary:
+	if npc_id == Homecoming.MORVAX:
+		var at := Homecoming.place(progression)
+		return {"id": npc_id, "mapId": at["mapId"], "x": at["x"], "y": at["y"]}
 	return Npcs.by_id(npc_id, settlement.settlers, Town.done_projects(settlement))
 
 
 ## Whether a villager is where they live now, to post a letter or take one:
 ## on their map as the town's age and the settlers have it (Pip moves into
 ## the Village; a settler home in town, or still where they were found).
-static func present(npc_id: String, settlement: SettlementState) -> bool:
-	var at := spot(npc_id, settlement)
+## Morvax is always somewhere (Homecoming.place).
+static func present(npc_id: String, progression: ProgressionState, settlement: SettlementState) -> bool:
+	if npc_id == Homecoming.MORVAX:
+		return true
+	var at := spot(npc_id, progression, settlement)
 	if at.is_empty():
 		return false
 	for npc: Dictionary in Npcs.on_map(String(at["mapId"]), settlement.town_tier, settlement.settlers, Town.done_projects(settlement)):
@@ -151,9 +164,9 @@ static func reached(map_id: String, discovered: Dictionary) -> bool:
 ## somewhere the hero has been, and no gate the story keeps shut stands
 ## between the Reach and them.
 static func reachable(npc_id: String, progression: ProgressionState, settlement: SettlementState, discovered: Dictionary) -> bool:
-	if not present(npc_id, settlement):
+	if not present(npc_id, progression, settlement):
 		return false
-	var at := spot(npc_id, settlement)
+	var at := spot(npc_id, progression, settlement)
 	var map_id := String(at["mapId"])
 	if not reached(map_id, discovered):
 		return false
@@ -171,13 +184,18 @@ static func waits_over(entry: Dictionary, progression: ProgressionState, settlem
 
 ## Whether the box may hold `entry` this morning: posted (not a reply,
 ## which comes back in the satchel as the piece before it is handed over),
-## its sender at home, its addressee reachable, and what it waits on met.
-static func ready(entry: Dictionary, progression: ProgressionState, settlement: SettlementState, discovered: Dictionary) -> bool:
+## the piece it comes `after` delivered, what it waits on in the story met,
+## and both ends reachable: the courier carries post between people where
+## they have been (PIX-321: the Frostgate's caravan writes once the hero
+## has walked the pass, never from behind the avalanche).
+static func ready(entry: Dictionary, post: PostState, progression: ProgressionState, settlement: SettlementState, discovered: Dictionary) -> bool:
 	if entry.is_empty() or entry.get("reply", false):
 		return false
-	if not waits_over(entry, progression, settlement) or not present(sender(entry), settlement):
+	if entry.has("after") and String(entry["after"]) not in post.delivered:
 		return false
-	return reachable(addressee(entry), progression, settlement, discovered)
+	if not waits_over(entry, progression, settlement):
+		return false
+	return reachable(sender(entry), progression, settlement, discovered) and reachable(addressee(entry), progression, settlement, discovered)
 
 
 ## The pieces the threads offer now, in the threads' order: each thread's
@@ -186,7 +204,7 @@ static func offered(post: PostState, progression: ProgressionState, settlement: 
 	var out: Array[String] = []
 	for entry: Dictionary in threads():
 		var next := next_of(String(entry["id"]), post)
-		if not next.is_empty() and String(next["id"]) not in post.bag and ready(next, progression, settlement, discovered):
+		if not next.is_empty() and String(next["id"]) not in post.bag and ready(next, post, progression, settlement, discovered):
 			out.append(String(next["id"]))
 	return out
 
@@ -257,8 +275,8 @@ static func hand_over(post: PostState, piece_id: String) -> Dictionary:
 
 
 ## Where a piece goes now: the place its addressee stands in ("" for none).
-static func where(entry: Dictionary, settlement: SettlementState) -> String:
-	var at := spot(addressee(entry), settlement)
+static func where(entry: Dictionary, progression: ProgressionState, settlement: SettlementState) -> String:
+	var at := spot(addressee(entry), progression, settlement)
 	return Catalog.place_name(String(at["mapId"])) if not at.is_empty() else ""
 
 
@@ -271,3 +289,84 @@ static func addressees(post: PostState) -> Array[String]:
 		if npc_id != "" and npc_id not in out:
 			out.append(npc_id)
 	return out
+
+
+## The tags a piece wears on its card by what it is (PIX-321, post.json's
+## `kinds`): [sealed, delivered]. A parcel is wrapped, not sealed, and in
+## French a parcel's and a note's tags agree with them (EMBALLÉ, REMIS), a
+## letter's with « lettre » (SCELLÉE, REMISE).
+static func tags(entry: Dictionary) -> Array[String]:
+	var kinds: Dictionary = _data()["kinds"]
+	var kind: Dictionary = kinds.get(String(entry.get("kind", "letter")), kinds["letter"])
+	return [String(kind["sealed"]), String(kind["delivered"])]
+
+
+# ---- The courier's book (PIX-321) --------------------------------------------------
+
+## The book's pages, in its order: {place (a map id), ink, emblem}.
+static func book() -> Array:
+	return _data()["book"]
+
+
+## A page by its place, {} for none.
+static func page(place: String) -> Dictionary:
+	for entry: Dictionary in book():
+		if entry["place"] == place:
+			return entry
+	return {}
+
+
+## The page a map's post is stamped on: the map's own when the book has
+## one, else the page of the place it's in (a room of Pixelheim stamps
+## Pixelheim's), else the map itself (a page the book doesn't have).
+static func place_of(map_id: String) -> String:
+	if not page(map_id).is_empty():
+		return map_id
+	var name := Catalog.place_name(map_id)
+	for entry: Dictionary in book():
+		if Catalog.place_name(String(entry["place"])) == name:
+			return String(entry["place"])
+	return map_id
+
+
+## The page a piece for `npc_id` is stamped on now: where they stand.
+static func place_for(npc_id: String, progression: ProgressionState, settlement: SettlementState) -> String:
+	var at := spot(npc_id, progression, settlement)
+	return place_of(String(at["mapId"])) if not at.is_empty() else ""
+
+
+## A piece delivered at `place` on day `day`: kept on that page, and the
+## page stamped with the day the first time.
+static func stamp(post: PostState, piece_id: String, place: String, day: int) -> void:
+	if place == "":
+		return
+	post.places[piece_id] = place
+	if not post.stamps.has(place):
+		post.stamps[place] = day
+
+
+## The pieces delivered at `place`, oldest first.
+static func delivered_at(post: PostState, place: String) -> Array[String]:
+	var out: Array[String] = []
+	for id: String in post.delivered:
+		if String(post.places.get(id, "")) == place:
+			out.append(id)
+	return out
+
+
+## The pages the book shows this hero, in its order: every place stamped,
+## and every one they have been to (its page waits for its first piece).
+static func pages(post: PostState, discovered: Dictionary) -> Array[String]:
+	var out: Array[String] = []
+	for entry: Dictionary in book():
+		var place := String(entry["place"])
+		if post.stamps.has(place) or reached(place, discovered):
+			out.append(place)
+	return out
+
+
+## What a delivered piece left the courier: the item to keep (`gift`: a
+## trophy for the shelf, a piece of furniture, a wheel of cheese) and the
+## recipe it wrote into the book (`recipe`, economy.json's), "" for none.
+static func kept(entry: Dictionary) -> Dictionary:
+	return {"gift": String(entry.get("gift", "")), "recipe": String(entry.get("recipe", ""))}

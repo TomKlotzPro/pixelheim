@@ -36,7 +36,9 @@ const AREAS := ["town", "rooms", "reach", "regions", "ways", "dungeon", "combat"
 ## hero (`notice`, PIX-289). A `letter` of Maren's is carried for that shot
 ## alone (its recipient's mark), and the town stands at age `tier` for it
 ## alone (PIX-307; every age built otherwise), and `post` opens the
-## Pixelheim Post for it (PIX-320: its `box` faced, or its `tab` read).
+## Pixelheim Post for it (PIX-320: its `box` faced, or its `tab` read;
+## PIX-321: some weeks of it delivered, the courier's `book` or the
+## Post page's newest `letters` read).
 ## Only a shot with `card` keeps
 ## the title card naming the place it enters (PIX-269). A new shot goes
 ## with its area's.
@@ -315,7 +317,21 @@ const SHOTS := {
 	# square by day and at night.
 	"post_tab": {"area": "screens", "map": "town", "cell": Vector2i(44, 23), "time": DAY, "post": "tab"},
 	"post_tab_night": {"area": "screens", "map": "town", "cell": Vector2i(44, 23), "time": NIGHT, "post": "tab"},
+	# The courier's book (PIX-321) after some weeks of post across the
+	# Reach (POST_ROUND), open at Pixelheim's page; and the Post page's
+	# newest letters from the new threads.
+	"post_book": {"area": "screens", "map": "town", "cell": Vector2i(44, 23), "time": DAY, "post": "book"},
+	"post_letters": {"area": "screens", "map": "town", "cell": Vector2i(44, 23), "time": DAY, "post": "letters"},
 }
+## The post the book's shots deliver (PIX-321), in order, each thread's
+## pieces in turn: from Pixelheim to Saltmere, the Reach's road, the
+## Mirefen, Blackiron and Greyhold.
+const POST_ROUND: Array[String] = [
+	"club_ola", "club_ola_reply", "stew_salt", "rope_ask", "rope_ask_reply", "interest_mayor",
+	"reagents_salt", "reagents_salt_reply", "shoes_ask", "shoes_ask_reply", "club_garrick", "smile_ore",
+	"smile_ore_reply", "reagents_reeds", "reagents_reeds_reply", "club_mabel", "club_mabel_reply",
+	"else_weather", "else_weather_reply", "else_joke",
+]
 ## Filming the walk: slowed to a quarter, a picture every WALK_STEP of the
 ## game's time (thirty a second: two or three of each frame of the walk),
 ## cropped round the hero this far (art px) each way; the legs of the clip
@@ -534,6 +550,20 @@ func _stage(shot: Dictionary) -> void:
 		Post.hand_over(GameState.post, GameState.post.bag[0])
 		var journal := preload("res://scripts/journal_screen.gd").new()
 		journal.tab = "post"
+		world.add_child(journal)
+	if shot.get("post", "") in ["book", "letters"]:
+		# Some weeks of post delivered across the Reach (PIX-321), each piece
+		# stamped where its addressee lives, then the journal at the
+		# courier's book or at the Post page's newest letters.
+		for step in POST_ROUND.size():
+			var id: String = POST_ROUND[step]
+			if id not in GameState.post.bag:
+				GameState.post.bag.append(id)
+			Post.hand_over(GameState.post, id)
+			var to := Npcs.by_id(Post.addressee(Post.piece(id)), [])
+			Post.stamp(GameState.post, id, Post.place_of(String(to.get("mapId", ""))), floori(step / 3.0))
+		var journal := preload("res://scripts/journal_screen.gd").new()
+		journal.tab = "book" if shot["post"] == "book" else "post"
 		world.add_child(journal)
 	if shot.has("chart"):
 		# The map over a hero who has walked it all, a waypoint chosen.
