@@ -2113,6 +2113,10 @@ msgid "A new Feats chapter in the journal: long goals - ten and thirty depths, e
 msgstr "Un nouveau chapitre Hauts faits dans le journal : des buts au long cours - dix et trente profondeurs, toutes les primes, toutes les maîtrises, un ensemble complet porté, tout le bestiaire - chacun rapportant une médaille pour l'étagère à trophées"
 
 #: assets/data/changelog.json
+msgid "A new Saves screen: each hero's card shows them as they left, with their class and level, where they are, the chapter, the hours played and when they last saved"
+msgstr "Un nouvel écran Sauvegardes : la fiche de chaque héros le montre tel qu'il est parti, avec sa classe et son niveau, l'endroit où il se trouve, le chapitre, les heures de jeu et sa dernière sauvegarde"
+
+#: assets/data/changelog.json
 msgid "A new beginning: Maren's five letters, written fifty years ago and never sent, wait in a tin under her hearthstone. You carry letters for a living, so you deliver them"
 msgstr "Un nouveau départ : les cinq lettres de Maren, écrites il y a cinquante ans et jamais envoyées, attendent dans une boîte sous la pierre de son foyer. Porter des lettres, c'est votre métier, alors vous les remettez"
 
@@ -2681,6 +2685,10 @@ msgid "Deep Water"
 msgstr "Eaux profondes"
 
 #: assets/data/changelog.json
+msgid "Delete asks first and can be undone with R until another hero takes the slot, and Copy and Paste carry a hero to another computer as a code"
+msgstr "Supprimer demande d'abord confirmation et s'annule avec R tant qu'un autre héros n'a pas pris la place, et Copier et Coller emmènent un héros sur un autre ordinateur sous forme de code"
+
+#: assets/data/changelog.json
 msgid "Doors got a carpenter: beam posts and lintel, a plank door with a brass knob, a little shingled awning, a stone doorstep"
 msgstr "Les portes ont eu leur menuisier : poteaux et linteau, une porte en planches avec un bouton en laiton, un petit auvent en bardeaux, un seuil en pierre"
 
@@ -2735,6 +2743,10 @@ msgstr "Les donjons et les grottes sont sombres et éclairés à la torche, et l
 #: assets/data/changelog.json
 msgid "Dungeons live in the world now: walk to the mountain gate to climb"
 msgstr "Les donjons font désormais partie du monde : marchez jusqu'à la porte de la montagne pour grimper"
+
+#: assets/data/changelog.json
+msgid "Duplicate a hero into an empty slot, for instance to see both of Morvax's endings"
+msgstr "Dupliquez un héros dans un emplacement vide, par exemple pour voir les deux fins de Morvax"
 
 #: assets/data/changelog.json
 msgid "Dust drifts in the torchlight, and no two floors open in the same room any more"
@@ -3407,6 +3419,10 @@ msgstr "Son escalier devient froid et bleu et sa lumière porte un peu plus loin
 #: assets/data/changelog.json
 msgid "Herbs, ore and pouches on the ground are half the size, sitting on a small shadow and bobbing gently, so they no longer look as big as you"
 msgstr "Les herbes, le minerai et les bourses au sol sont deux fois plus petits, posés sur une petite ombre et flottant doucement : ils ne paraissent plus aussi grands que vous"
+
+#: assets/data/changelog.json
+msgid "Hero Cards"
+msgstr "Fiches de héros"
 
 #: assets/data/changelog.json
 msgid "Hero creation reads clearly: the first night is a setting of its own (The first night (tutorial): Play / Skip, with a line on what each means), and Begin the adventure is the start, alone at the bottom; Tab, a click or the pad's Y flips the night, and a pad can now reach every control"
@@ -13689,8 +13705,8 @@ msgid "Enter"
 msgstr "Enter"
 
 #: scripts/create_screen.gd
-msgid "Every slot holds a hero. Clear one in Saves first."
-msgstr "Chaque emplacement a déjà son héros. Libérez-en un dans Sauvegardes d'abord."
+msgid "Every slot holds a hero. Delete one in Saves first."
+msgstr "Chaque emplacement a déjà son héros. Supprimez-en un dans Sauvegardes d'abord."
 
 #: scripts/create_screen.gd
 msgid "Name"
@@ -14657,36 +14673,24 @@ msgid "throw"
 msgstr "lancer"
 
 #: scripts/saves_screen.gd
-msgid "%d days ago"
-msgstr "il y a %d jours"
+msgid "%s is back."
+msgstr "%s est de retour."
 
 #: scripts/saves_screen.gd
-msgid "%d gold, saved %s"
-msgstr "%d or, sauvegardé %s"
+msgid "%s is in slot %d now."
+msgstr "%s est maintenant dans l'emplacement %d."
 
 #: scripts/saves_screen.gd
-msgid "%d hours ago"
-msgstr "il y a %d heures"
-
-#: scripts/saves_screen.gd
-msgid "%d min ago"
-msgstr "il y a %d min"
-
-#: scripts/saves_screen.gd
-msgid "%s Press %s again to confirm."
-msgstr "%s Appuyez de nouveau sur %s pour confirmer."
+msgid "%s's save code is copied. On the other machine, choose a slot in Saves and press V."
+msgstr "Le code de sauvegarde de %s est copié. Sur l'autre machine, choisissez un emplacement dans Sauvegardes et appuyez sur V."
 
 #: scripts/saves_screen.gd
 msgid "%s, level %d %s"
 msgstr "%s, niveau %d, %s"
 
 #: scripts/saves_screen.gd
-msgid "1 hour ago"
-msgstr "il y a 1 heure"
-
-#: scripts/saves_screen.gd
-msgid "A hero to another computer or browser: copy their code here, paste it there."
-msgstr "Un héros vers un autre ordinateur ou navigateur : copiez son code ici, collez-le là-bas."
+msgid "A copy of %s is in slot %d now."
+msgstr "Une copie de %s est maintenant dans l'emplacement %d."
 
 #: scripts/saves_screen.gd
 msgid "A newer Pixelheim wrote it: update the game to play this hero. It's kept as it is."
@@ -14697,16 +14701,8 @@ msgid "An older Pixelheim wrote it, before saves changed, and this version can't
 msgstr "Une version plus ancienne de Pixelheim l'a écrite, avant que les sauvegardes ne changent, et cette version ne peut pas la jouer. Elle est gardée telle quelle. X l'efface, si vous le voulez vraiment."
 
 #: scripts/saves_screen.gd
-msgid "Clear %s from slot %d for good?"
-msgstr "Effacer %s de l'emplacement %d pour de bon ?"
-
-#: scripts/saves_screen.gd
-msgid "Clear %s, the hero in hand, for good? You'll go back to the title."
-msgstr "Effacer %s, le héros en cours, pour de bon ? Vous reviendrez à l'écran titre."
-
-#: scripts/saves_screen.gd
-msgid "Clear slot"
-msgstr "Vider l'emplacement"
+msgid "Bring back"
+msgstr "Ramener"
 
 #: scripts/saves_screen.gd
 msgid "Clear slot %d's damaged save for good?"
@@ -14721,12 +14717,24 @@ msgid "Clear slot %d's save from an older version for good?"
 msgstr "Effacer pour de bon la sauvegarde de l'emplacement %d, venue d'une version plus ancienne ?"
 
 #: scripts/saves_screen.gd
-msgid "Copy mine"
-msgstr "Copier le mien"
+msgid "Continue"
+msgstr "Continuer"
+
+#: scripts/saves_screen.gd
+msgid "Copy"
+msgstr "Copier"
 
 #: scripts/saves_screen.gd
 msgid "Damaged save"
 msgstr "Sauvegarde endommagée"
+
+#: scripts/saves_screen.gd
+msgid "Delete"
+msgstr "Supprimer"
+
+#: scripts/saves_screen.gd
+msgid "Duplicate"
+msgstr "Dupliquer"
 
 #: scripts/saves_screen.gd
 msgid "Empty slot"
@@ -14737,14 +14745,6 @@ msgid "Its last save couldn't be read: this is the one before it."
 msgstr "Sa dernière sauvegarde était illisible : voici la précédente."
 
 #: scripts/saves_screen.gd
-msgid "Level %d %s in %s"
-msgstr "Niveau %d, %s - %s"
-
-#: scripts/saves_screen.gd
-msgid "Load into slot %d"
-msgstr "Charger dans l'emplacement %d"
-
-#: scripts/saves_screen.gd
 msgid "New Game, on the title screen, starts a hero."
 msgstr "Nouvelle partie, sur l'écran titre, crée un héros."
 
@@ -14753,24 +14753,24 @@ msgid "Once cleared, it's gone for good: nothing brings it back. Press X once mo
 msgstr "Une fois effacée, elle est perdue pour de bon : rien ne la ramène. Appuyez encore une fois sur X pour vider l'emplacement %d."
 
 #: scripts/saves_screen.gd
-msgid "Paste a save code"
-msgstr "Collez un code de sauvegarde"
+msgid "Paste"
+msgstr "Coller"
 
 #: scripts/saves_screen.gd
 msgid "Playing"
 msgstr "En jeu"
 
 #: scripts/saves_screen.gd
+msgid "Press %s again to confirm. Esc: keep."
+msgstr "Appuyez de nouveau sur %s pour confirmer. Échap : garder."
+
+#: scripts/saves_screen.gd
+msgid "Press X again to delete. Esc: keep."
+msgstr "Appuyez de nouveau sur X pour supprimer. Échap : garder."
+
+#: scripts/saves_screen.gd
 msgid "Replace %s in slot %d with %s %s? Their progress here would be lost."
 msgstr "Remplacer %s (emplacement %d) par %s %s ? Sa progression ici serait perdue."
-
-#: scripts/saves_screen.gd
-msgid "Save code"
-msgstr "Code de sauvegarde"
-
-#: scripts/saves_screen.gd
-msgid "Save code copied. On the other machine, paste it under Save code in Saves."
-msgstr "Code de sauvegarde copié. Sur l'autre machine, collez-le dans Code de sauvegarde, sous Sauvegardes."
 
 #: scripts/saves_screen.gd
 msgid "Saved by a newer version"
@@ -14789,12 +14789,20 @@ msgid "Slot %d holds a save this version can't read, so nothing is written there
 msgstr "L'emplacement %d contient une sauvegarde que cette version ne sait pas lire : rien n'y est écrit. X l'efface, si vous le voulez vraiment."
 
 #: scripts/saves_screen.gd
+msgid "Slot %d holds no hero this version can play, so there's no one to copy."
+msgstr "L'emplacement %d ne contient aucun héros que cette version peut jouer : il n'y a personne à copier."
+
+#: scripts/saves_screen.gd
 msgid "Slot %d is already empty."
 msgstr "L'emplacement %d est déjà vide."
 
 #: scripts/saves_screen.gd
 msgid "Slot %d is empty now."
 msgstr "L'emplacement %d est maintenant vide."
+
+#: scripts/saves_screen.gd
+msgid "Slot %d is empty: there's no one to copy."
+msgstr "L'emplacement %d est vide : il n'y a personne à copier."
 
 #: scripts/saves_screen.gd
 msgid "Slot %d was saved by a newer version. Update Pixelheim to play this hero."
@@ -14809,8 +14817,12 @@ msgid "Slot %d's save can't be read, so there's no one to play. It's kept as it 
 msgstr "La sauvegarde de l'emplacement %d est illisible : il n'y a personne à jouer. Elle est gardée telle quelle."
 
 #: scripts/saves_screen.gd
-msgid "That code is cut short or changed. On the other machine, use Copy mine again and paste all of it here."
-msgstr "Ce code est incomplet ou a été modifié. Sur l'autre machine, utilisez de nouveau Copier le mien, puis collez-le ici en entier."
+msgid "Sorry, there's no empty slot for a copy of %s. Delete a hero to make room."
+msgstr "Hélas, aucun emplacement n'est libre pour une copie de %s. Supprimez un héros pour faire de la place."
+
+#: scripts/saves_screen.gd
+msgid "That code is cut short or changed. Copy it again on the other machine (C in Saves), then press V here."
+msgstr "Ce code est incomplet ou a été modifié. Copiez-le de nouveau sur l'autre machine (C dans Sauvegardes), puis appuyez sur V ici."
 
 #: scripts/saves_screen.gd
 msgid "That code is from a newer version of Pixelheim. Update the game to bring this hero in."
@@ -14821,40 +14833,52 @@ msgid "That code is from an older version of Pixelheim: heroes from before this 
 msgstr "Ce code vient d'une version plus ancienne de Pixelheim : les héros d'avant cette mise à jour ne peuvent pas être repris."
 
 #: scripts/saves_screen.gd
-msgid "That is not a save code. On the other machine, open Saves and use Copy mine, then paste it here."
-msgstr "Ce n'est pas un code de sauvegarde. Sur l'autre machine, ouvrez Sauvegardes et utilisez Copier le mien, puis collez-le ici."
-
-#: scripts/saves_screen.gd
 msgid "The game can't read this save, so it's kept as it is. X clears it, if you mean to."
 msgstr "Le jeu ne peut pas lire cette sauvegarde : elle est gardée telle quelle. X l'efface, si vous le voulez vraiment."
 
 #: scripts/saves_screen.gd
-msgid "clear"
-msgstr "effacer"
+msgid "The save couldn't be written, so slot %d is as it was."
+msgstr "La sauvegarde n'a pas pu être écrite : l'emplacement %d reste tel quel."
+
+#: scripts/saves_screen.gd
+msgid "There's no deleted hero in slot %d to bring back."
+msgstr "L'emplacement %d n'a aucun héros supprimé à ramener."
+
+#: scripts/saves_screen.gd
+msgid "There's no save code to paste. On the other machine, choose the hero in Saves and press C, then press V here."
+msgstr "Il n'y a pas de code de sauvegarde à coller. Sur l'autre machine, choisissez le héros dans Sauvegardes et appuyez sur C, puis appuyez sur V ici."
+
+#: scripts/saves_screen.gd
+msgid "You deleted %s. R brings them back, until another hero takes this slot."
+msgstr "Vous avez supprimé %s. R annule la suppression, tant qu'aucun autre héros ne prend cet emplacement."
+
+#: scripts/saves_screen.gd
+msgid "You'll go back to the title."
+msgstr "Vous reviendrez à l'écran titre."
+
+#: scripts/saves_screen.gd
+msgid "continue"
+msgstr "continuer"
 
 #: scripts/saves_screen.gd
 msgid "copy"
 msgstr "copier"
 
 #: scripts/saves_screen.gd
+msgid "delete"
+msgstr "supprimer"
+
+#: scripts/saves_screen.gd
+msgid "duplicate"
+msgstr "dupliquer"
+
+#: scripts/saves_screen.gd
 msgid "from the code"
 msgstr "du code"
 
 #: scripts/saves_screen.gd
-msgid "just now"
-msgstr "à l'instant"
-
-#: scripts/saves_screen.gd
 msgid "paste"
 msgstr "coller"
-
-#: scripts/saves_screen.gd
-msgid "play"
-msgstr "jouer"
-
-#: scripts/saves_screen.gd
-msgid "yesterday"
-msgstr "hier"
 
 #: scripts/shop_screen.gd
 msgid "\nThe forge's own, since Pixelheim became a %s."
@@ -15736,6 +15760,70 @@ msgstr "puissance %d"
 msgid "turns aside %d%% of a level-%d hit"
 msgstr "détourne %d%% d'un coup de niveau %d"
 
+#: scripts/state/slot_card.gd
+msgid "%d days ago"
+msgstr "il y a %d jours"
+
+#: scripts/state/slot_card.gd
+msgid "%d h"
+msgstr "%d h"
+
+#: scripts/state/slot_card.gd
+msgid "%d h %d min"
+msgstr "%d h %d min"
+
+#: scripts/state/slot_card.gd
+msgid "%d hours ago"
+msgstr "il y a %d heures"
+
+#: scripts/state/slot_card.gd
+msgid "%d min"
+msgstr "%d min"
+
+#: scripts/state/slot_card.gd
+msgid "%d min ago"
+msgstr "il y a %d min"
+
+#: scripts/state/slot_card.gd
+msgid "%s played"
+msgstr "%s de jeu"
+
+#: scripts/state/slot_card.gd
+msgid "%s, level %d"
+msgstr "%s, niveau %d"
+
+#: scripts/state/slot_card.gd
+msgid "1 hour ago"
+msgstr "il y a 1 heure"
+
+#: scripts/state/slot_card.gd
+msgid "After the story"
+msgstr "Après l'histoire"
+
+#: scripts/state/slot_card.gd
+msgid "Delete %s, the hero you're playing?"
+msgstr "Supprimer %s, le héros en cours ?"
+
+#: scripts/state/slot_card.gd
+msgid "Delete %s?"
+msgstr "Supprimer %s ?"
+
+#: scripts/state/slot_card.gd
+msgid "Just begun"
+msgstr "Tout juste commencé"
+
+#: scripts/state/slot_card.gd
+msgid "just now"
+msgstr "à l'instant"
+
+#: scripts/state/slot_card.gd
+msgid "saved %s"
+msgstr "sauvegardé %s"
+
+#: scripts/state/slot_card.gd
+msgid "yesterday"
+msgstr "hier"
+
 #: scripts/state/spoils.gd
 msgid "%s leaves you %s!"
 msgstr "%s vous laisse %s !"
@@ -15933,8 +16021,8 @@ msgid "Continue  %s, Lv %d"
 msgstr "Continuer  %s, Niv. %d"
 
 #: scripts/title_screen.gd
-msgid "Every slot holds a save. Clear one in Saves to start a new hero."
-msgstr "Chaque emplacement contient une sauvegarde. Videz-en un dans Sauvegardes pour créer un nouveau héros."
+msgid "Every slot holds a save. Delete one in Saves to start a new hero."
+msgstr "Chaque emplacement contient une sauvegarde. Supprimez-en un dans Sauvegardes pour créer un nouveau héros."
 
 #: scripts/title_screen.gd
 msgid "NEW"

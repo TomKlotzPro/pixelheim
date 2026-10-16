@@ -64,17 +64,23 @@ file, read back and decoded, then the slot's file becomes `slot_<n>.save.bak`
 can't be read, the game plays the save before and says so (a line on the
 card, a word on the title or the plate). A file it can't read at all, or one
 a newer version wrote, is never an empty slot: it gets its own card, New
-Game and New hero pass it by, nothing is written over it, and clearing it
-asks twice.
+Game, Duplicate and Paste pass it by, nothing is written over it, and
+clearing it asks twice.
 
-The saves screen plays or clears slots (`scripts/saves_screen.gd`); a new
-hero starts from the title's New Game alone, in the first free slot, and
-with none free New Game says so rather than writing over anyone. It also
-carries a hero to another computer or browser: `C` copies the hero's save
-code (`PXH2.`: the save deflated behind a checksum, so a code cut short or
-changed is caught), and a code pasted into Save code (raw save JSON works
-too; an older version's says so) loads into
-the chosen slot.
+The Saves screen (`scripts/saves_screen.gd`, its cards' lines in
+`scripts/state/slot_card.gd`) is one column of the three slots: each hero's
+card shows them as they left, dressed, with their class and level, where
+they are and the chapter, how long they've played and when they were last
+saved. On the chosen slot `E` continues the hero, `D` copies them into the
+first empty slot, `X` asks with their name, level and hours and a second
+`X` deletes them (their file waits beside the empty slot,
+`slot_<n>.save.deleted`, and `R` brings them back until another hero takes
+the slot), `C` copies their save code (`PXH2.`: the save deflated behind a
+checksum, so a code cut short or changed is caught) and `V` pastes one from
+the clipboard (raw save JSON works too; an older version's says so), asking
+first before it replaces a hero. A new hero starts from the title's New
+Game alone, in the first free slot, and with none free New Game says so
+rather than writing over anyone.
 
 ## Data
 

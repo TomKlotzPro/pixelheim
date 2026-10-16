@@ -578,10 +578,29 @@ fit-create | create overflow --lang fr | open=create_screen overflow=0 | screen 
 # in the other words.
 fit-create-en | create overflow --lang en | open=create_screen overflow=0 | screen lang title
 fit-whatsnew | title whatsnew overflow --lang fr | overflow=0 | screen lang title
-fit-saves | --map town --keys esc,s,e overflow --lang fr | open=saves_screen overflow=0 | screen lang save
+# The Saves screen (PIX-302 step 3), reached by Esc and Saves: one column,
+# each hero's card with the place, the chapter and the hours played; two
+# heroes and room for one more, in both languages.
+fit-saves | --map town --slots res://test/fixtures/slots_room --keys esc,s,e overflow --lang fr | open=saves_screen overflow=0 cards=hero,hero,empty | screen lang save
+fit-saves-en | --map town --slots res://test/fixtures/slots_room --keys esc,s,e overflow --lang en | open=saves_screen overflow=0 cards=hero,hero,empty | screen lang save
+# Duplicate (D) copies the chosen hero into the first empty slot: Wolfram
+# into slot 3 (nothing written to the fixtures: a run's changes stay in
+# memory).
+saves-duplicate | --map town saves --slots res://test/fixtures/slots_room --keys d | open=saves_screen cards=hero,hero,hero | screen save
+# Delete (X) asks first, naming the hero, their class and level and their
+# hours; Esc keeps them...
+saves-keep | --map town saves --slots res://test/fixtures/slots --keys s,x,esc | open=saves_screen cards=hero,hero,hero | screen save
+fit-saves-ask | --map town saves --slots res://test/fixtures/slots --keys s,x overflow --lang fr | open=saves_screen overflow=0 cards=hero,hero,hero | screen lang save
+# ...X again deletes them, their card empty with a word that R brings them
+# back...
+saves-delete | --map town saves --slots res://test/fixtures/slots --keys s,x,x | open=saves_screen cards=hero,empty,hero | screen save
+fit-saves-delete | --map town saves --slots res://test/fixtures/slots --keys s,x,x overflow --lang fr | open=saves_screen overflow=0 cards=hero,empty,hero | screen lang save
+# ...and R does.
+saves-undo | --map town saves --slots res://test/fixtures/slots --keys s,x,x,r | open=saves_screen cards=hero,hero,hero | screen save
 # Every slot full (PIX-230): a full slot's line widened the window off
 # the right of the screen in French, which empty slots never showed; in
-# both languages.
+# both languages, the heroes on chapter 5, after the story and on the
+# Night of Ash, 31 h, 4 h 12 min and 12 min in (PIX-302).
 fit-saves-full | --map town saves --slots res://test/fixtures/slots overflow --lang fr | open=saves_screen overflow=0 | screen lang save
 fit-saves-full-en | --map town saves --slots res://test/fixtures/slots overflow --lang en | open=saves_screen overflow=0 | screen lang save
 # A save the game can't read is never an empty slot (PIX-303): slot 1's
