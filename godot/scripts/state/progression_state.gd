@@ -17,10 +17,17 @@ var prologue := 0
 ## The burning homes put out with the well's water on that night (their
 ## ruin indices, PIX-197); saved only while there are some and it runs.
 var prologue_doused: Array[int] = []
-## The Night of Bells' beat while it runs (Bells, PIX-253 step 9): never
-## written to the save yet, so a save made in the night plays it again from
-## its start (PIX-302's later step keeps it); 0 when it isn't running.
+## The Night of Bells' beat while it runs (Bells, PIX-253 step 9); 0 when
+## it isn't running. Saved with the night's progress below (the save's
+## story.night, PIX-302 step 4), so a save made in the night resumes at
+## its beat, as a fall tonight does; never past the hold (the dawn's
+## scenes save the night's end, Bells.over).
 var bells := 0
+## Tonight, while it runs: the lanterns lit and the roofs doused (their
+## indices), and the embers still standing once they've come.
+var bells_lit: Array[int] = []
+var bells_doused: Array[int] = []
+var bells_embers := 0
 ## The named monsters killed (Hunts, PIX-156): they stay dead. Saved only
 ## once there is one.
 var hunted: Array[String] = []
@@ -61,6 +68,12 @@ static func from_dict(data: Dictionary) -> ProgressionState:
 	progress.met = data.get("met", {}).duplicate()
 	progress.crafted = data.get("crafted", {}).duplicate()
 	progress.tracked = String(data.get("tracked", ""))
+	var night: Dictionary = data["bells"] if data.get("bells") is Dictionary else {}
+	if not night.is_empty() and not Bells.over(progress):
+		progress.bells = clampi(int(night.get("beat", Bells.NONE)), Bells.NONE, Bells.HOLD)
+		progress.bells_lit.assign(night.get("lit", []))
+		progress.bells_doused.assign(night.get("doused", []))
+		progress.bells_embers = int(night.get("embers", 0))
 	return progress
 
 
@@ -88,3 +101,11 @@ func write_into(state: Dictionary) -> void:
 		state["deepHunt"] = deepest
 	if not deeds.is_empty():
 		state["deeds"] = deeds.duplicate()
+	if night_running():
+		state["bells"] = {"beat": bells, "lit": bells_lit.duplicate(), "doused": bells_doused.duplicate(), "embers": bells_embers}
+
+
+## Whether the Night of Bells is under way, short of its dawn: what a save
+## keeps of it.
+func night_running() -> bool:
+	return bells in [Bells.LANTERNS, Bells.EMBERS, Bells.HOLD] and not Bells.over(self)

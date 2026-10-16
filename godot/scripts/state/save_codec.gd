@@ -159,6 +159,9 @@ static func to_file(state: Dictionary, saved_at := 0) -> Dictionary:
 			legacy["endings"] = endings
 	_put(story, "prologue", state.get("prologue"))
 	_put(story, "doused", state.get("prologueDoused"))
+	# The Night of Bells while it runs (PIX-302 step 4): its beat, the
+	# lanterns lit, the roofs doused, the embers left.
+	_put(story, "night", state.get("bells"))
 
 	var quests := {"ledger": state["quests"]}
 	for key: String in RECORDS:
@@ -280,6 +283,7 @@ static func from_file(raw: Variant) -> Dictionary:
 		state["storySeen"] = seen
 	_put(state, "prologue", story.get("prologue"))
 	_put(state, "prologueDoused", story.get("doused"))
+	_put(state, "bells", story.get("night") if story.get("night") is Dictionary else null)
 	state["unlockedLevel"] = legacy.get("unlockedLevel", 1)
 	state["clearedLevels"] = legacy.get("clearedLevels", [])
 	_put(state, "deepHunt", legacy.get("deepHunt"))

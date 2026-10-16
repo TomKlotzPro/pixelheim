@@ -1,0 +1,155 @@
+{
+  "pixelheim": 5,
+  "game": "0.242.0",
+  "savedAt": 0,
+  "playSeconds": 0,
+  "card": {
+    "name": "Bryn",
+    "role": "ranger",
+    "look": 0,
+    "worn": {
+      "weapon": "hunting_bow"
+    },
+    "level": 13,
+    "place": "seacave_galleries",
+    "chapter": 7,
+    "playSeconds": 0
+  },
+  "hero": {
+    "name": "Bryn",
+    "role": "ranger",
+    "look": 0,
+    "level": 13,
+    "xp": 120,
+    "xpToNext": 862,
+    "hp": 108,
+    "mp": 22,
+    "stats": {
+      "maxHp": 108,
+      "maxMp": 22,
+      "strength": 5,
+      "intelligence": 4,
+      "dexterity": 9,
+      "defense": 3,
+      "endurance": 7
+    },
+    "statPoints": 36,
+    "skillPoints": 14,
+    "skills": {
+      "nodes": [
+        "ranger_aimed_shot"
+      ]
+    },
+    "jobs": {
+      "smithing": {
+        "level": 1,
+        "xp": 0
+      },
+      "alchemy": {
+        "level": 1,
+        "xp": 0
+      },
+      "foraging": {
+        "level": 1,
+        "xp": 0
+      }
+    }
+  },
+  "pack": {
+    "gold": 1480,
+    "items": {
+      "potion_hp": 2,
+      "bread": 2,
+      "cheese_wheel": 1
+    },
+    "gear": [
+      {
+        "uid": "gmv31hpxw1471x5qb",
+        "itemId": "hunting_bow",
+        "rarity": "common",
+        "bonus": 0
+      }
+    ],
+    "worn": {
+      "weapon": "gmv31hpxw1471x5qb"
+    }
+  },
+  "home": {
+    "owned": false,
+    "storage": {}
+  },
+  "town": {
+    "age": 2,
+    "settlers": [
+      "saltmere_wenna",
+      "mines_pell",
+      "greyhold_ulla",
+      "greyhold_teo",
+      "frost_aske"
+    ],
+    "properties": [],
+    "projects": [
+      "odos_store",
+      "hildas_forge",
+      "vexs_brewery",
+      "the_inn",
+      "street_lamps",
+      "market_stalls",
+      "thatch_cottage"
+    ]
+  },
+  "story": {
+    "seen": [
+      "maren_tin",
+      "chapter_7",
+      "maren_confession"
+    ]
+  },
+  "quests": {
+    "ledger": {
+      "maren_relics": {
+        "progress": 4,
+        "done": true
+      },
+      "letter_morvax": {
+        "progress": 1,
+        "done": true
+      },
+      "bram_imps": {
+        "progress": 0,
+        "done": false
+      }
+    },
+    "named": [
+      "tidecaller",
+      "seam_warden",
+      "hollow_captain",
+      "rimefang"
+    ]
+  },
+  "world": {
+    "at": {
+      "map": "seacave_galleries",
+      "x": 20,
+      "y": 14,
+      "facing": "down"
+    },
+    "steps": 1036,
+    "fog": {
+      "town": {
+        "x": 38,
+        "y": 28,
+        "w": 5,
+        "h": 5,
+        "bits": "////AQ=="
+      }
+    },
+    "chests": [],
+    "slain": []
+  },
+  "buffs": {},
+  "legacy": {
+    "unlockedLevel": 1,
+    "clearedLevels": []
+  }
+}

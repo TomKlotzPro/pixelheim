@@ -7,6 +7,10 @@ var world: Node
 var options: Array[Dictionary] = []
 var selected := 0
 var menu: VBoxContainer
+## The line under the title (PIX-302 step 4): when the game last saved,
+## "Saved 12 s ago", kept to the second while the menu is open (the
+## autosave runs under it).
+var saved_line: Label
 
 
 func _open() -> void:
@@ -25,6 +29,10 @@ func _open() -> void:
 	var title := UiStyle.heading("Paused", 20, UiStyle.INK)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	column.add_child(title)
+	saved_line = UiStyle.label("", 13, UiStyle.FADED)
+	saved_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	column.add_child(saved_line)
+	_process(0.0)
 	menu = VBoxContainer.new()
 	menu.add_theme_constant_override("separation", 8)
 	column.add_child(menu)
@@ -50,6 +58,15 @@ func _draw() -> void:
 		button.add_theme_font_size_override("font_size", 17)
 		UiStyle.focus(button, index == selected)
 		menu.add_child(button)
+
+
+func _process(_delta: float) -> void:
+	if saved_line == null:
+		return
+	saved_line.visible = GameState.saved_clock >= 0.0
+	var text := SlotCard.saved_ago(int(GameClock.seconds() - GameState.saved_clock))
+	if saved_line.text != text:
+		saved_line.text = text
 
 
 func _command(event: InputEvent) -> Callable:

@@ -61,6 +61,17 @@ shop | --map town_shop shop | map=town_shop | rooms trade screen
 craft | --map town_alchemist shop --tab 2 | map=town_alchemist | rooms trade screen
 # A night at the inn: paid for, and woken at six (PIX-246).
 sleep | --map town_inn night sleep | map=town_inn gold=20 clock=06:00 | rooms night
+# The quill by the clock (PIX-302 step 4): it writes as a moment is saved
+# (the nook chest opened), never for the quiet saves (the boot's, the
+# autosave's a few seconds after the hero walks: saves made, no quill),
+# and says "Saved" under it after a night at the inn.
+saved-quill | --map town chest | quill=1/[0-9]+ | town save screen
+saved-quiet | --map town --walk d,d,d --wait 3.5 | quill=0/[3-9] | town save screen
+saved-sleep | --map town_inn night sleep | quill=1/[0-9]+ slept | rooms night save screen
+# The pause menu says under its title when the game last saved (PIX-302
+# step 4), the seconds running on while it's open, in English and French.
+pause-saved | --map town pause --wait 3 --lang en | open=pause_screen pauseline=Saved [0-9]+ s ago | screen save
+pause-saved-fr | --map town pause --wait 3 --lang fr | open=pause_screen pauseline=Sauvegardé il y a [0-9]+ s | screen save lang
 # The inn by day and at night (PIX-311): the day through its windows on the
 # floor, gone at night when its candles burn (without the paid pack, its
 # recessed windows and its sconce, PIX-318).
@@ -285,6 +296,9 @@ cave-deeper | --map seacave_galleries --at 64,6 --walk r,r --keys s,e --wait 0.4
 cave-up | --map seacave_grotto --at 4,18 --walk l fades --wait 0.4 | map=seacave_galleries cell=\(6[45], 6\) change=dissolve dark=0 | dungeon travel
 tidecaller | --map seacave_grotto fight slay --foe tidecaller --wait 0.3 | map=seacave_grotto fell=1 shortcut=open | dungeon combat
 tidedoor | --map seacave_grotto --hunted tidecaller --at 30,5 --walk u --wait 0.4 | map=saltmere cell=\(8, 2[45]\) | dungeon travel
+# A save made down the sea cave's galleries wakes at their top, where the
+# stair down lands, not back at the cave's mouth (PIX-302 step 4).
+floor-resume | --load res://test/fixtures/floor_resume.json --wait 0.3 | map=seacave_galleries cell=\(3, 9\) floor=2/3 | save dungeon travel
 wenna | --map town_inn --hunted tidecaller --talk-to saltmere_wenna --keys e,e,e | map=town_inn open=none home=wenna | town story
 homecoming | --map town --hunted tidecaller reveal | open=reveal_screen home=wenna | town story
 # The Tidecaller's end (Tom's second playtest): worn down first, so a
@@ -483,7 +497,9 @@ late-web | --load res://test/fixtures/web_save_late.json --wait 0.3 | map=town |
 # dawn over the square, the collar, and the morning, home still to write;
 # the town's gate shut that night; a hero who falls wakes in the inn's
 # doorway with Fafnyr there again; a dragon slayer never sees the night;
-# and a save made in the night plays it again from the bell.
+# a save that kept nothing of the night begins it at the bell, and one
+# made in it resumes at its beat (PIX-302 step 4: on the embers, the
+# lanterns lit, a roof doused, three embers left).
 bells-home | --map overworld --bells 1 --at 48,39 --walk d,d,d --wait 0.6 | map=town bells=lanterns lit=0 next=lanterns | story town travel night
 # A hero already in town on the run home begins the night where they stand
 # (PIX-297: Tom stood in Pixelheim with "Run home" on the Next line and
@@ -504,6 +520,7 @@ bells-gate | --map town --bells 1 --at 40,4 --walk u,u --wait 0.4 | map=town bel
 bells-fall | --map town --bells 3 hurt die | map=town cell=\(50, 12\) bells=hold mobs=1 | story night combat
 bells-slayer | --map town --bells 1 --cleared 10 | map=town mobs=0 next=morvax_choice | story town save
 bells-midnight | --load res://test/fixtures/bells_night.json --wait 0.3 | map=town bells=lanterns lit=0 next=lanterns | save story night
+bells-resume | --load res://test/fixtures/bells_resume.json --wait 0.3 | map=town bells=embers lit=5 burning=2 mobs=3 next=embers | save story night
 # The Kings' Vault after the story (PIX-257, PIX-253 step 11): its door of
 # black iron under the summit holds a new hero back until the dragon is
 # freed; a hero who slew Fafnyr on the old mountain finds it open, the
