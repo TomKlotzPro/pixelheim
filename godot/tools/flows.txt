@@ -116,6 +116,17 @@ chapter | --map town chapter | open=chapter_screen chapter=1 rose=12 | story scr
 chapter-still | --map town chapter still | open=chapter_screen chapter=1 rose=0 | story screen
 chapter-two | --map saltmere --ready letter_wenna --talk-to saltmere_wenna --keys e,e,e chapter | open=chapter_screen chapter=2 rose=12 | story quest screen
 storymap | --map town journal charted --keys s,s,s,s,s,s,s,e,esc,m,a | open=map_screen page=overworld story=[0-9]+,[0-9]+ tracked=slime_trouble | travel quest screen
+# The Pixelheim Post (PIX-320): once Maren's first letter reaches Saltmere
+# its box stands on the square past the bounty board, and E there takes the
+# day's post (Bram's first wheel and Sela's question, both for Saltmere);
+# the wheel handed to Ola on her jetty, her reply in the satchel to carry
+# back; and Bram reading it in town. On the map, faintly, who the satchel's
+# post is for: Bram on the village's page, Wenna on the Reach's.
+post-box | --map town --post box | post=standing,box:0,bag:2,sent:0 open=none | town story quest
+post-deliver | --map saltmere --post club_ola --keys e,e | post=box:1,bag:1,sent:1 open=none | story quest
+post-reply | --map town --post club_ola_reply --keys e,e | post=standing,box:1,bag:0,sent:2 open=none | town story quest
+post-map | --map town --post read worldmap | open=map_screen post=standing,box:0,bag:2,sent:1,marked:1 | town quest travel screen
+post-map-reach | --map saltmere --post read worldmap | open=map_screen page=overworld post=box:0,bag:2,sent:1,marked:1 | quest travel screen
 # The mire's mimic chest shudders, then ambushes (PIX-129).
 mimic | --map mirefen mimic --wait 0.75 | map=mirefen cell=\(42, 13\) hp=42 | combat field
 # The mayor's word opens the town ledger; the board on the square opens it too (PIX-147).
@@ -620,6 +631,9 @@ fit-satchel | --map town journal overflow --lang fr | open=journal_screen overfl
 fit-journal-letters | --map town journal --tab letters --cleared 15 overflow --lang fr | open=journal_screen overflow=0 read=2 older=10 | screen lang quest story
 fit-chapter | --map town --hunted tidecaller,seam_warden,hollow_captain chapter overflow --lang fr | open=chapter_screen overflow=0 chapter=5 | screen lang story
 fit-journal-feats | --map town journal --tab feats overflow --lang fr | open=journal_screen overflow=0 | screen lang quest
+# The journal's Post page (PIX-320): the day's post taken, one piece read
+# and its reply carried, in French.
+fit-journal-post | --map town --post read journal --tab post overflow --lang fr | open=journal_screen overflow=0 post=standing,box:0,bag:2,sent:1 | screen lang quest
 fit-skills | --map town --keys k overflow --lang fr | open=skills_screen overflow=0 | screen lang rank
 fit-stats | --map town --keys c overflow --lang fr | open=stats_screen overflow=0 | screen lang
 fit-codex | --map town --keys b overflow --lang fr | open=codex_screen overflow=0 | screen lang

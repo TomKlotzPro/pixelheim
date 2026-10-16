@@ -117,6 +117,48 @@ func _word_with(villager: Node) -> void:
 		await _tap(KEY_E)
 
 
+## The Pixelheim Post's step (PIX-320; world.gd opened the Post before the
+## first map was drawn): `box` faces the post box on the square and presses
+## E; `read` takes the day's post and hands the first piece over by the
+## rules (the journal's Post tab then has both kinds to show); a piece's id
+## delivers every piece before it in its thread by the rules, puts it in
+## the satchel and has a word with its addressee where they stand on this
+## map (`--keys` close it, and it's handed over).
+func _post(step: String) -> void:
+	var post := GameState.post
+	match step:
+		"box":
+			var cell := Post.box_cell() + Vector2i.DOWN
+			world.player.position = MapView.center(cell)
+			world.camera_rig.cut()
+			world.player_cell = cell
+			world.player.face(Vector2.UP)
+			world.interaction.interact()
+		"read":
+			Post.take(post, GameState.posting.in_box(), GameState.posting.today())
+			if not post.bag.is_empty():
+				Post.hand_over(post, post.bag[0])
+		_:
+			var entry := Post.piece(step)
+			if entry.is_empty():
+				push_error("--post: no piece of the post is called %s (assets/data/post.json)" % step)
+				return
+			for before: Dictionary in Post.thread(Post.thread_of(step))["pieces"]:
+				if before["id"] == step:
+					break
+				if String(before["id"]) not in post.bag:
+					post.bag.append(String(before["id"]))
+				Post.hand_over(post, String(before["id"]))
+			if step not in post.bag:
+				post.bag.append(step)
+			var villager := _villager(Post.addressee(entry))
+			if villager != null:
+				_face(villager)
+				world.interaction.interact()
+	world.view.show_post_box()
+	await get_tree().create_timer(0.3).timeout
+
+
 ## The turning walk's legs (PIX-293), as a player holds the keys: a way and
 ## how long, two keys at once being a diagonal; a leg with a second way
 ## swaps between the two every tick (a stick wobbling either side of the
@@ -791,6 +833,8 @@ func _run_test_harness() -> void:
 			await _word_with(vex)
 			await _word_with(vex)
 		await get_tree().create_timer(0.3).timeout
+	if flags.has("--post"):
+		await _post(flags.value("--post"))
 	if flags.has("journal"):
 		# A few promises in hand: slimes half done, the cheese ready, the troll
 		# kept; Maren's relics asked for, the ladle won, the iron still out

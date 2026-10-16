@@ -376,6 +376,9 @@ func _fill_legend(home: bool) -> void:
 		marks.append([Painting.LAIR, "Lair"])
 	if home and not Painting.givers(world).is_empty():
 		marks.append([Painting.QUEST, "Quest"])
+	# Whom the satchel's post is for (PIX-320), faint.
+	if not painting.post_cells().is_empty():
+		marks.append([Painting.POST, "Post", Swatch.POST])
 	# The goal and the main story behind it as the page draws them, diamonds
 	# (PIX-253 step 2).
 	if painting.goal_cell() != Bearing.NOWHERE:
@@ -432,6 +435,8 @@ func _set_footer() -> void:
 class Swatch extends Control:
 	const FILLED := "filled"
 	const HOLLOW := "hollow"
+	## The post's faint one (PIX-320).
+	const POST := "post"
 	var shape := FILLED
 
 	func _init(kind := FILLED) -> void:
@@ -441,6 +446,10 @@ class Swatch extends Control:
 
 	func _draw() -> void:
 		var at := (size / 2.0).floor()
+		if shape == POST:
+			draw_colored_polygon(Painting._points(at, 7.0), Color(UiStyle.NIGHT, 0.55))
+			draw_colored_polygon(Painting._points(at, 5.0), Painting.POST)
+			return
 		draw_colored_polygon(Painting._points(at, 8.0), UiStyle.NIGHT)
 		draw_colored_polygon(Painting._points(at, 6.0), Painting.GOAL)
 		if shape == HOLLOW:
@@ -457,6 +466,8 @@ class Painting extends Control:
 	const STORY_GROW := 10.0
 	## A waypoint not open yet (PIX-266): not found, or no one keeps it.
 	const CLOSED := Color("8e8880")
+	## Whom the satchel's post is for (PIX-320): the page's cream, half seen.
+	const POST := Color(0.953, 0.902, 0.769, 0.6)
 	## A gate the story keeps shut (PIX-254): the alarm's red.
 	const SHUT := Color("d8433f")
 	## The gates shut on this page whose ground was seen (PIX-254): [{gate,
@@ -712,6 +723,10 @@ class Painting extends Control:
 		# The lairs of the named monsters the board has posted (PIX-156).
 		for lair: Vector2i in lairs():
 			_marker(_center(lair), mark, LAIR)
+		# Who the satchel's post is for (PIX-320), faintly: under every
+		# other mark, and never as loud as the story's gold.
+		for cell: Vector2i in post_cells():
+			_post_mark(_center(cell), mark)
 		# The gates the story keeps shut (PIX-254), a red cross named beside it.
 		for gate: Dictionary in _gates:
 			_cross(_center(gate["cell"]), mark)
@@ -812,6 +827,44 @@ class Painting extends Control:
 	## A diamond's four points, `reach` px from `at`: top, right, bottom, left.
 	static func _points(at: Vector2, reach: float) -> PackedVector2Array:
 		return PackedVector2Array([at + Vector2(0, -reach), at + Vector2(reach, 0), at + Vector2(0, reach), at + Vector2(-reach, 0)])
+
+	## Where the satchel's post goes on this page (PIX-320): each piece's
+	## addressee where they stand now - on the hero's map where the hero
+	## sees them, else where they live on a map drawn here - or, for one
+	## in a room of a place on this page (Wenna at the inn), the door into
+	## it. Each cell once.
+	func post_cells() -> Array[Vector2i]:
+		var out: Array[Vector2i] = []
+		for npc_id: String in Post.addressees(GameState.post):
+			var cell := _person_cell(npc_id)
+			if cell != Bearing.NOWHERE and cell not in out:
+				out.append(cell)
+		return out
+
+	func _person_cell(npc_id: String) -> Vector2i:
+		if home:
+			for villager in world.get_tree().get_nodes_in_group("npcs"):
+				if not villager.away and String(villager.data.get("id", "")) == npc_id:
+					return Vector2i((villager.position / 16.0).floor()) + at_of(world.map.id)
+		var at := Post.spot(npc_id, GameState.settlement)
+		if at.is_empty():
+			return Bearing.NOWHERE
+		var to := String(at["mapId"])
+		if holds(to):
+			return Vector2i(int(at["x"]), int(at["y"])) + at_of(to)
+		var ids: Array = _on_page().map(func(sheet: Dictionary) -> String: return sheet["id"])
+		if not ids.any(func(id: String) -> bool: return Catalog.place_name(id) == Catalog.place_name(to)):
+			return Bearing.NOWHERE
+		var exit := Atlas.way_off(ids, world.map.id if home and holds(world.map.id) else String(ids[0]), to)
+		return exit["cell"] + at_of(exit["map"]) if not exit.is_empty() else Bearing.NOWHERE
+
+	## A faint diamond (PIX-320): the page's parchment ringed in a soft dark,
+	## `size` px across, its points on the screen's pixels.
+	func _post_mark(center: Vector2, size: float) -> void:
+		var at := Waypoints.snap_point(center, _shown)
+		var half := Waypoints.snap_length(floorf(size / 2.0), _shown)
+		draw_colored_polygon(_points(at, half + 2.0), Color(UiStyle.NIGHT, 0.55))
+		draw_colored_polygon(_points(at, half), POST)
 
 	## A shut gate's mark (PIX-254): a red cross in a dark rim, `size` px
 	## across, its ends on the screen's pixels - no waypoint's square.

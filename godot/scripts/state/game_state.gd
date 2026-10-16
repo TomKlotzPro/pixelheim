@@ -5,9 +5,9 @@ extends Node
 ## and the screens. Persistence is write-behind: changes mark the state
 ## dirty, the autosave flushes it within AUTOSAVE_SECONDS, and moments that
 ## matter (map change, loot) save at once.
-## The methods live in seven modules, one per part of the game (PIX-261):
-## `trade`, `holdings`, `household`, `questing`, `spoils`, `upkeep` and
-## `training`, and callers reach them there (`GameState.questing.choose()`,
+## The methods live in eight modules, one per part of the game (PIX-261):
+## `trade`, `holdings`, `household`, `questing`, `spoils`, `upkeep`,
+## `training` and `posting`, and callers reach them there (`GameState.questing.choose()`,
 ## or `state.spoils.open_chest()` in a test). This core keeps the sections,
 ## the signals, the saves and the slots; the modules reach them through
 ## their `owner`, never the autoload.
@@ -61,6 +61,9 @@ var pack: InventoryState
 var settlement: SettlementState
 var progression: ProgressionState
 var world: WorldState
+## The Pixelheim Post as this hero keeps it (PIX-320): the satchel's
+## pieces, each thread's step, what's delivered.
+var post: PostState
 var slots := SaveSlots.new()
 var settings := GameSettings.new()
 var slot := NO_SLOT
@@ -85,8 +88,9 @@ var last_deed := {}
 ## cleared. Not saved: a reload simply skips the tour.
 var reveals: Array[String] = []
 
-## The methods, by part of the game (PIX-261). Built in _init before the
-## first new_game(): apply() already has Questing measure the deliveries.
+## The methods, by part of the game (PIX-261; the Post, PIX-320). Built in
+## _init before the first new_game(): apply() already has Questing measure
+## the deliveries.
 var trade: Trade
 var holdings: Holdings
 var household: Household
@@ -94,6 +98,7 @@ var questing: Questing
 var spoils: Spoils
 var upkeep: Upkeep
 var training: Training
+var posting: Posting
 
 var _booted := false
 var _unsaved_seconds := 0.0
@@ -107,6 +112,7 @@ func _init() -> void:
 	spoils = Spoils.new(self)
 	upkeep = Upkeep.new(self)
 	training = Training.new(self)
+	posting = Posting.new(self)
 	new_game()
 	dirty = false
 
@@ -355,6 +361,7 @@ func apply(state: Dictionary) -> void:
 	settlement = SettlementState.from_dict(state)
 	progression = ProgressionState.from_dict(state)
 	world = WorldState.from_dict(state)
+	post = PostState.from_dict(state.get("post", {}))
 	mark_dirty()
 	questing.forget_deliveries()
 	questing.note_deliveries(false)

@@ -165,6 +165,9 @@ var shafts: Array[PointLight2D] = []
 ## Town.ruins' order, so the dawn can put them out one by one.
 var fires: Array[Dictionary] = []
 var _night := -1
+## The post box on the square (PIX-320), once the Post is open; null
+## elsewhere.
+var post_box: Sprite2D
 ## Gathering patches (PIX-143): cell -> {"id", "item"}, and each one's sprite.
 var patches := {}
 var patch_sprites := {}
@@ -434,6 +437,10 @@ func _plan_props() -> void:
 		var tent := Town.ashes_tent(Town.done_projects(GameState.settlement))
 		if tent.x >= 0:
 			camps[tent] = {"kind": "tent", "tile": TENTS["marsh"]}
+	# The post box past the bounty board, once Maren's first letter reaches
+	# Saltmere (PIX-320).
+	if data.id == Post.box_map() and GameState.posting.is_open():
+		camps[Post.box_cell()] = {"kind": "post"}
 	for cell: Vector2i in camps:
 		data.covered[cell] = true
 
@@ -2288,6 +2295,16 @@ func refresh_patches() -> void:
 		patch_sprites[spot_id].visible = Gathering.is_ready(GameState.world, spot_id)
 
 
+## The post box drawn as it stands (PIX-320): full, its pennant up and a
+## letter in its slot, while it holds the day's post; empty once it's taken
+## (or while the threads wait). Looked at again each second and as E takes
+## the post. Nothing on a map without the box.
+func show_post_box() -> void:
+	if post_box == null or not is_instance_valid(post_box):
+		return
+	post_box.texture = HamletArt.texture("post_box_full" if not GameState.posting.in_box().is_empty() else "post_box")
+
+
 ## A tent pitched on the map as it stands (PIX-253 step 9: Iva's on the
 ## square's edge, the Night of Bells): drawn among the actors, its cell
 ## blocked, gone with the visit.
@@ -2301,7 +2318,7 @@ func pitch_tent(cell: Vector2i) -> void:
 
 ## A camp's tent or torch: sorted among the actors at its foot, which blocks.
 func _add_camp_piece(cell: Vector2i, piece: Dictionary) -> void:
-	var foot: Rect2 = {"tent": TENT_FOOT, "board": BOARD_FOOT}.get(piece["kind"], TORCH_FOOT)
+	var foot: Rect2 = {"tent": TENT_FOOT, "board": BOARD_FOOT, "post": HAMLET_FOOT}.get(piece["kind"], TORCH_FOOT)
 	var root := Node2D.new()
 	root.position = Vector2(cell * TILE) + Vector2(0, foot.end.y)
 	root.add_to_group("decor")
@@ -2327,12 +2344,20 @@ func _add_camp_piece(cell: Vector2i, piece: Dictionary) -> void:
 		stake.centered = false
 		stake.position = Vector2(0, -foot.end.y)
 		root.add_child(stake)
+	elif piece["kind"] == "post":
+		# The post box (PIX-320), its pennant up while it holds the day's
+		# post (show_post_box), standing on the bottom of its cell.
+		post_box = Sprite2D.new()
+		sprite = post_box
+		show_post_box()
 	else:
 		var tent := Sprite2D.new()
 		tent.texture = PunyTerrain.sheet().tile_texture(piece["tile"])
 		sprite = tent
 	sprite.set("centered", false)
 	sprite.position = Vector2(0, -foot.end.y - (LampArt.STAKE_LIFT if piece["kind"] == "torch" else 0))
+	if piece["kind"] == "post":
+		sprite.position.y = TILE - HamletArt.size("post_box").y - foot.end.y
 	root.add_child(sprite)
 	if piece.get("wanted", false):
 		var poster := Sprite2D.new()
