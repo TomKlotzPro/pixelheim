@@ -846,7 +846,7 @@ class Painting extends Control:
 			for villager in world.get_tree().get_nodes_in_group("npcs"):
 				if not villager.away and String(villager.data.get("id", "")) == npc_id:
 					return Vector2i((villager.position / 16.0).floor()) + at_of(world.map.id)
-		var at := Post.spot(npc_id, GameState.settlement)
+		var at := Post.spot(npc_id, GameState.progression, GameState.settlement)
 		if at.is_empty():
 			return Bearing.NOWHERE
 		var to := String(at["mapId"])

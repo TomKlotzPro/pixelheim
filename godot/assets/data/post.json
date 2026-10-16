@@ -1,10 +1,15 @@
 {
-  "about": "PIX-320, the Pixelheim Post's first step (Something to Come Back To, direction A): once Maren's first letter reaches Saltmere (`opens`, a main quest step's kind of condition), word goes round that Pixelheim has a courier who delivers anything, and a post box goes up on the square (`box`, beside the bounty board; `opened` is the line the log says as it does). Each game morning (DayNight's day, the one a night's sleep ends) the box holds up to `bag` pieces, worked out from the day, `seed` and the threads (Post.in_box): each thread offers its next piece once the one before it is delivered, a piece for someone where the hero has been, never past a shut gate (Gates), its sender home and its `when` met (a main quest step's kinds of condition, all of them). E at the box takes them into the satchel; walking up to a piece's addressee and pressing E hands it over: they say `said`, the courier is paid `tip` (and `gift`, an item, now and then), and a `reply` that follows it comes straight back into the satchel to carry home. A delivered piece's `words` read in the journal's Post tab, as Maren's letters do; `note` is what its outside says while it's sealed. `correspondents` are the people who write and are written to: the villager it's handed to (`npc`), and for one with no door of their own (Fafnyr, on Hilda's chimney) the villager who takes it for them. Nothing expires: a piece waits in the box or the satchel as long as it likes, and a day skipped costs nothing. Only what the hero did is saved (Post's own section of the save: the satchel, each thread's step, the pieces delivered and the day the box was last emptied).",
+  "about": "PIX-320, the Pixelheim Post's first step (Something to Come Back To, direction A): once Maren's first letter reaches Saltmere (`opens`, a main quest step's kind of condition), word goes round that Pixelheim has a courier who delivers anything, and a post box goes up on the square (`box`, beside the bounty board; `opened` is the line the log says as it does). Each game morning (DayNight's day, the one a night's sleep ends) the box holds up to `bag` pieces, worked out from the day, `seed` and the threads (Post.in_box): each thread offers its next piece once the one before it is delivered, a piece for someone where the hero has been, never past a shut gate (Gates), its sender home and its `when` met (a main quest step's kinds of condition, all of them). E at the box takes them into the satchel; walking up to a piece's addressee and pressing E hands it over: they say `said`, the courier is paid `tip` (and `gift`, an item, now and then), and a `reply` that follows it comes straight back into the satchel to carry home. A delivered piece's `words` read in the journal's Post tab, as Maren's letters do; `note` is what its outside says while it's sealed. `correspondents` are the people who write and are written to: the villager it's handed to (`npc`), and for one with no door of their own (Fafnyr, on Hilda's chimney) the villager who takes it for them. Nothing expires: a piece waits in the box or the satchel as long as it likes, and a day skipped costs nothing. Only what the hero did is saved (Post's own section of the save: the satchel, each thread's step, the pieces delivered and the day the box was last emptied). Step 2 (PIX-321): twelve threads in all, every hub in at least two. A piece may wait on another delivered first (`after`, a piece id), its sender must stand where the hero has been too, and Morvax's post goes where Coming Home has him (Homecoming.place). `kinds` are the tags a piece wears in the satchel by what it is (a parcel is wrapped, not sealed; in French a parcel's and a note's tags are masculine). A delivered piece stamps the courier's book (`book`): a page per place, in its order, each with its postmark's ink (a UiStyle colour by name) and emblem (Postmark's drawings); the save keeps the day each place was first stamped and where each piece was delivered. `gift` is an item the courier keeps (furniture, a trophy for the shelf), `recipe` an economy.json recipe written into the book.",
   "opens": {"kind": "delivered", "questId": "letter_wenna"},
   "opened": "Word has reached Pixelheim: its courier delivers anything, even fifty years late. A post box goes up on the square, beside the bounty board.",
   "box": {"mapId": "town", "x": 44, "y": 21},
   "bag": 3,
   "seed": 320,
+  "kinds": {
+    "letter": {"sealed": "SEALED", "delivered": "DELIVERED"},
+    "note": {"sealed": "FOLDED", "delivered": "HANDED OVER"},
+    "parcel": {"sealed": "WRAPPED", "delivered": "HANDED OVER"}
+  },
   "correspondents": {
     "bram": {"npc": "villager_bram"},
     "ola": {"npc": "saltmere_ola"},
@@ -14,8 +19,38 @@
     "wenna": {"npc": "saltmere_wenna"},
     "pell": {"npc": "mines_pell"},
     "pip": {"npc": "kid_pip"},
-    "fafnyr": {"npc": "smith"}
+    "fafnyr": {"npc": "smith"},
+    "maren": {"npc": "elder"},
+    "aldric": {"npc": "mayor"},
+    "odo": {"npc": "shopkeeper"},
+    "hilda": {"npc": "smith"},
+    "vex": {"npc": "alchemist_vex"},
+    "rook": {"npc": "saltmere_rook"},
+    "marta": {"npc": "saltmere_marta"},
+    "dagny": {"npc": "mines_dagny"},
+    "brann": {"npc": "mines_brann"},
+    "fenwick": {"npc": "greyhold_fenwick"},
+    "ulla": {"npc": "greyhold_ulla"},
+    "teo": {"npc": "greyhold_teo"},
+    "gunnar": {"npc": "frost_gunnar"},
+    "linnea": {"npc": "frost_linnea"},
+    "iva": {"npc": "settler_iva"},
+    "loras": {"npc": "settler_loras"},
+    "wren": {"npc": "settler_wren"},
+    "mirelle": {"npc": "settler_mirelle"},
+    "morvax": {"npc": "mountain_morvax"}
   },
+  "book": [
+    {"place": "town", "ink": "lamp", "emblem": "house"},
+    {"place": "saltmere", "ink": "fine", "emblem": "fish"},
+    {"place": "overworld", "ink": "brass", "emblem": "road"},
+    {"place": "mirefen", "ink": "epic", "emblem": "reed"},
+    {"place": "deepwood", "ink": "wood", "emblem": "tree"},
+    {"place": "blackiron", "ink": "ink", "emblem": "pick"},
+    {"place": "greyhold", "ink": "faded", "emblem": "tower"},
+    {"place": "frostgate", "ink": "fine", "emblem": "flake"},
+    {"place": "morvax_forge", "ink": "lamp", "emblem": "anvil"}
+  ],
   "threads": [
     {
       "id": "cheese_club",
@@ -93,6 +128,21 @@
             "A song. The club needs a song.",
             "Give me a week. Give me two. Here, courier, for your trouble: a wheel of your own. You're a member."
           ]
+        },
+        {
+          "id": "club_morvax",
+          "kind": "parcel",
+          "from": "bram",
+          "to": "morvax",
+          "tip": 8,
+          "when": [{"kind": "chosen"}],
+          "addressed": "Parcel for Morvax",
+          "note": "A wheel of cheese with a ribbon round it. Bram has written FOR TAM on the rind.",
+          "words": ["Dear Mister Morvax. I hear Tam liked cheese. The club sends a wheel, for him and for you. Membership is free. No refunds. - Bram"],
+          "said": [
+            "(He holds the wheel for a long moment.) Tam would have joined twice.",
+            "Tell Bram thank you. And the rind's for the crows. Tam always gave the crows the rind."
+          ]
         }
       ]
     },
@@ -144,7 +194,7 @@
         },
         {
           "id": "canary_song",
-          "kind": "letter",
+          "kind": "note",
           "from": "wenna",
           "to": "pell",
           "tip": 3,
@@ -280,6 +330,747 @@
           "words": ["Small human. The cat sleeps on my tail. It is warm. I have decided to allow it. Do not tell the cat. - F."],
           "said": [
             "I won't tell. ...The cat knows."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "everything_else",
+      "title": "Everything else",
+      "pieces": [
+        {
+          "id": "else_weather",
+          "kind": "letter",
+          "from": "maren",
+          "to": "wenna",
+          "tip": 5,
+          "addressed": "Letter for Old Wenna",
+          "note": "From Elder Maren. The ink has been gone over twice.",
+          "words": ["Wenna. Fifty years I've wanted to write to you, and now I can't think of a thing to say. How is the weather? - Maren"],
+          "said": [
+            "The weather! Fifty years, and she asks about the weather.",
+            "(She laughs, and wipes her eyes, and laughs again.) Wait. I'll tell her about the weather."
+          ]
+        },
+        {
+          "id": "else_weather_reply",
+          "kind": "letter",
+          "reply": true,
+          "from": "wenna",
+          "to": "maren",
+          "tip": 3,
+          "addressed": "Reply for Elder Maren",
+          "note": "From Old Wenna. It smells of the sea.",
+          "words": ["Maren. The weather here is wet. It has been wet for fifty years. Tam would have made a joke about it. I can't think of one either. - Wenna"],
+          "said": [
+            "No joke. Tam always had one.",
+            "...I'll find one. I'll find one of his."
+          ]
+        },
+        {
+          "id": "else_joke",
+          "kind": "letter",
+          "from": "maren",
+          "to": "wenna",
+          "tip": 5,
+          "addressed": "Letter for Old Wenna",
+          "note": "From Elder Maren. Written fast, the letters leaning forward.",
+          "words": ["Wenna. His joke about the weather: \"It isn't raining. The sea's just visiting.\" He told it every time. Every single time. - M."],
+          "said": [
+            "\"The sea's just visiting.\" (She laughs out loud.) Every single time!",
+            "How could I forget that one? Hold on, courier. I've one for her."
+          ]
+        },
+        {
+          "id": "else_joke_reply",
+          "kind": "letter",
+          "reply": true,
+          "from": "wenna",
+          "to": "maren",
+          "tip": 3,
+          "addressed": "Reply for Elder Maren",
+          "note": "From Old Wenna. There's a tear stain on it, or a splash of stew.",
+          "words": ["Maren. Another of his: \"Why did the cheese climb the mountain? Because Maren said not to.\" He wrote me that one. It isn't funny. I laughed for a week. - W."],
+          "said": [
+            "(Her shoulders shake.) It isn't funny at all.",
+            "It was his joke about me. He had a hundred of them."
+          ]
+        },
+        {
+          "id": "else_salt",
+          "kind": "note",
+          "from": "maren",
+          "to": "wenna",
+          "tip": 3,
+          "when": [{"kind": "settler", "settlerId": "saltmere_wenna"}],
+          "addressed": "Note for Old Wenna",
+          "note": "From Elder Maren, across the square.",
+          "words": ["Wenna. Now you're across the square, I've nothing left to write. Come and argue about salt instead. - M."],
+          "said": [
+            "Across the square, and she still writes.",
+            "Tell her I'll argue about salt any day she likes. I'm right about salt."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rope",
+      "title": "Rope, a little wet",
+      "pieces": [
+        {
+          "id": "rope_ask",
+          "kind": "letter",
+          "from": "rook",
+          "to": "odo",
+          "tip": 5,
+          "addressed": "Letter for Merchant Odo",
+          "note": "From Saltmere. Sealed with tar, and someone has tried to scrape a skull off the wax.",
+          "words": ["Merchant. I have forty barrels of something. You have a shop. Let's talk. - A friend"],
+          "said": [
+            "Forty barrels of WHAT?",
+            "Wait there, courier. An honest merchant asks his questions in writing."
+          ]
+        },
+        {
+          "id": "rope_ask_reply",
+          "kind": "letter",
+          "reply": true,
+          "from": "odo",
+          "to": "rook",
+          "tip": 3,
+          "addressed": "Reply for Rook",
+          "note": "From Merchant Odo. The question is underlined twice.",
+          "words": ["Dear Friend. Forty barrels of what? - Odo, merchant (honest)"],
+          "said": [
+            "\"Of what?\" Ha! He's interested.",
+            "Never answer the first question, courier. Make them ask two."
+          ]
+        },
+        {
+          "id": "rope_wet",
+          "kind": "letter",
+          "from": "rook",
+          "to": "odo",
+          "tip": 5,
+          "addressed": "Letter for Merchant Odo",
+          "note": "From Saltmere again. The tar is still a little sticky.",
+          "words": ["Merchant. Rope. Very good rope, a little wet. It fell off a boat. - Your friend in Saltmere"],
+          "said": [
+            "It FELL off a boat.",
+            "...Rope's the thing this year, with all this building. Wait there."
+          ]
+        },
+        {
+          "id": "rope_wet_reply",
+          "kind": "letter",
+          "reply": true,
+          "from": "odo",
+          "to": "rook",
+          "tip": 3,
+          "addressed": "Reply for Rook",
+          "note": "From Merchant Odo. Neatly written, with prices.",
+          "words": ["Friend. Rope does not fall off boats. Rope is what keeps things ON boats. Ten coils. Dry ones. - Odo"],
+          "said": [
+            "Dry! He wants them dry.",
+            "MARTA! Have we got any dry rope?"
+          ]
+        },
+        {
+          "id": "rope_coils",
+          "kind": "parcel",
+          "from": "rook",
+          "to": "odo",
+          "tip": 7,
+          "addressed": "Parcel for Merchant Odo",
+          "note": "Ten coils of rope, mostly dry, and a small cask nobody ordered.",
+          "words": ["Merchant. Ten coils, dry-ish. The cask is a present. Don't open it near a candle. Pleasure doing honest business. - Rook"],
+          "said": [
+            "(He sniffs the cask, and his eyes water.) Smugglers' rum.",
+            "...Top shelf. For emergencies. Very small emergencies."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "interest",
+      "title": "A gentle reminder",
+      "pieces": [
+        {
+          "id": "interest_mayor",
+          "kind": "letter",
+          "from": "mirelle",
+          "to": "aldric",
+          "tip": 4,
+          "addressed": "Letter for Mayor Aldric",
+          "note": "From Mirelle the Banker. The envelope is very crisp.",
+          "words": ["Mayor Aldric. A gentle reminder: interest. - Mirelle"],
+          "said": [
+            "Interest? We don't owe her anything.",
+            "(He checks the ledger. Twice.) We don't. She means we could be earning it. ...Hm."
+          ]
+        },
+        {
+          "id": "interest_rook",
+          "kind": "letter",
+          "from": "mirelle",
+          "to": "rook",
+          "tip": 5,
+          "addressed": "Letter for Rook",
+          "note": "From Mirelle the Banker. Crisp, and a little perfumed.",
+          "words": ["Master Rook. Gold in a cave earns nothing. Gold in my vault earns interest. No questions asked. Some questions asked. A gentle reminder: interest. - M."],
+          "said": [
+            "\"No questions. Some questions.\" Make up your mind, banker.",
+            "I like her. Don't tell her I like her."
+          ]
+        },
+        {
+          "id": "interest_odo",
+          "kind": "letter",
+          "from": "mirelle",
+          "to": "odo",
+          "tip": 4,
+          "addressed": "Letter for Merchant Odo",
+          "note": "From Mirelle the Banker. Crisp, and underlined in red.",
+          "words": ["Merchant Odo. Your strongbox is under the counter, behind the third barrel. Everyone knows. A gentle reminder: interest. - M."],
+          "said": [
+            "Everyone KNOWS?",
+            "(He moves the strongbox. Then he moves it back.)"
+          ]
+        },
+        {
+          "id": "interest_brann",
+          "kind": "letter",
+          "from": "mirelle",
+          "to": "brann",
+          "tip": 7,
+          "addressed": "Letter for Quartermaster Brann",
+          "note": "From Mirelle the Banker. Not a crease on it.",
+          "words": ["Quartermaster. You pay in iron. Iron rusts. Gold grows. A gentle reminder: interest. - M."],
+          "said": [
+            "The mine pays in iron. I sell in iron. I'll save in iron.",
+            "...Does iron earn interest? Ask her that. No, don't."
+          ]
+        },
+        {
+          "id": "interest_gunnar",
+          "kind": "letter",
+          "from": "mirelle",
+          "to": "gunnar",
+          "tip": 9,
+          "addressed": "Letter for Gunnar",
+          "note": "From Mirelle the Banker. Crisp, even up here.",
+          "words": ["Master Gunnar. Three wagons up, one wagon down. Have you thought about insurance? A gentle reminder: interest. - M."],
+          "said": [
+            "Insurance. Against yetis.",
+            "...How much? Wait. I'll ask her myself."
+          ]
+        },
+        {
+          "id": "interest_gunnar_reply",
+          "kind": "letter",
+          "reply": true,
+          "from": "gunnar",
+          "to": "mirelle",
+          "tip": 4,
+          "gift": "gem",
+          "addressed": "Reply for Mirelle the Banker",
+          "note": "From Gunnar's caravan. It smells of wet fur.",
+          "words": ["Banker. Insure me a wagon against yetis, wolves, avalanches and Bergit stopping dead. If you dare. - Gunnar"],
+          "said": [
+            "Yetis, wolves, avalanches and Bergit. I dare.",
+            "Here, courier: interest, on all that walking. My bank pays its couriers."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reagents",
+      "title": "Vex's reagents",
+      "pieces": [
+        {
+          "id": "reagents_salt",
+          "kind": "letter",
+          "from": "vex",
+          "to": "marta",
+          "tip": 5,
+          "addressed": "Letter for Marta the Chandler",
+          "note": "From Alchemist Vex. It smells of something that fizzed.",
+          "words": ["Chandler. One jar of seawater, please. The saltiest you have. - Vex"],
+          "said": [
+            "The saltiest. It's the sea. It's all the same salt.",
+            "(She fills a jar off the jetty anyway, and waits for a good wave.) Hold on, I'll write the label."
+          ]
+        },
+        {
+          "id": "reagents_salt_reply",
+          "kind": "parcel",
+          "reply": true,
+          "from": "marta",
+          "to": "vex",
+          "tip": 3,
+          "addressed": "Parcel for Alchemist Vex",
+          "note": "A jar of seawater, corked, labelled in Marta's hand.",
+          "words": ["Alchemist. One jar, the saltiest. It's the same as the rest, but I picked the wave myself. Two coppers. - Marta"],
+          "said": [
+            "(She tastes it.) Oh, that IS the saltiest.",
+            "Marta has a gift. Don't tell her."
+          ]
+        },
+        {
+          "id": "reagents_reeds",
+          "kind": "letter",
+          "from": "vex",
+          "to": "iva",
+          "tip": 6,
+          "addressed": "Letter for Iva the Healer",
+          "note": "From Alchemist Vex. A pressed reed is stuck inside.",
+          "words": ["Healer. They say the fen grows reeds as thick as your arm. I pay full price. - Vex"],
+          "said": [
+            "Full price! For reeds!",
+            "I bind wounds with them, and she brews them. We should talk. Hold on."
+          ]
+        },
+        {
+          "id": "reagents_reeds_reply",
+          "kind": "letter",
+          "reply": true,
+          "from": "iva",
+          "to": "vex",
+          "tip": 3,
+          "addressed": "Reply for Alchemist Vex",
+          "note": "From Iva the Healer. It smells of the fen, and of mint.",
+          "words": ["Alchemist. Reeds, yes, as many as the fen will spare. In return: what do you put in a fever draught? Mine taste of boots. - Iva"],
+          "said": [
+            "Boots! Ha. Everyone's tastes of boots.",
+            "Honey. Tell her honey. Don't tell anyone else."
+          ]
+        },
+        {
+          "id": "reagents_lilies",
+          "kind": "letter",
+          "from": "vex",
+          "to": "linnea",
+          "tip": 9,
+          "addressed": "Letter for Linnea",
+          "note": "From Alchemist Vex. Written small, to fit a lot of questions.",
+          "words": ["Herbalist. Your frost lilies keep a spell cold. Mine wilt before they reach the gate. How? Why? What am I doing wrong? - Vex"],
+          "said": [
+            "Snow. You keep them in snow. Up here that's the answer to everything.",
+            "Wait there. She'll want it written down properly."
+          ]
+        },
+        {
+          "id": "reagents_lilies_reply",
+          "kind": "letter",
+          "reply": true,
+          "from": "linnea",
+          "to": "vex",
+          "tip": 4,
+          "gift": "frost_lily",
+          "recipe": "craft_frost_mitts",
+          "addressed": "Reply for Alchemist Vex",
+          "note": "From Linnea. A pressed lily, still cold, and a recipe.",
+          "words": ["Alchemist. Snow, mostly. And mittens: a yeti fur and a frost lily, worked at a cauldron. Warm hands don't crush petals. Recipe enclosed. - Linnea"],
+          "said": [
+            "Mittens. She's sent me a mitten recipe.",
+            "...They're very good mittens. Here, courier: copy it into your book, and take the lily. Your hands are colder than mine."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "horseshoes",
+      "title": "Wren's horses",
+      "pieces": [
+        {
+          "id": "shoes_ask",
+          "kind": "letter",
+          "from": "wren",
+          "to": "hilda",
+          "tip": 4,
+          "addressed": "Letter for Smith Hilda",
+          "note": "From Wren the Stablemaster. There's straw in the fold.",
+          "words": ["Smith. Eight horseshoes, please. On account. - Wren"],
+          "said": [
+            "On account. Everybody wants on account.",
+            "Eight shoes for two horses. Tell her I'll take apples. Wait there."
+          ]
+        },
+        {
+          "id": "shoes_ask_reply",
+          "kind": "letter",
+          "reply": true,
+          "from": "hilda",
+          "to": "wren",
+          "tip": 3,
+          "addressed": "Reply for Wren the Stablemaster",
+          "note": "From Smith Hilda. Short and sooty.",
+          "words": ["Wren. Eight shoes for eight apples. An apple a shoe. The horses can pay. - Hilda"],
+          "said": [
+            "Apples! She'll take apples.",
+            "The horses will be thrilled. I'm thrilled. Odo won't be: I still owe him for the last lot."
+          ]
+        },
+        {
+          "id": "shoes_snow",
+          "kind": "letter",
+          "from": "gunnar",
+          "to": "wren",
+          "tip": 9,
+          "addressed": "Letter for Wren the Stablemaster",
+          "note": "From Gunnar's caravan, up on the Frostgate. Frost on the seal.",
+          "words": ["To the stablemaster. I need a horse that likes snow. - Gunnar"],
+          "said": [
+            "A horse that likes snow.",
+            "(She laughs until she has to sit down on a bucket.) Wait. I'll answer him properly."
+          ]
+        },
+        {
+          "id": "shoes_snow_reply",
+          "kind": "letter",
+          "reply": true,
+          "from": "wren",
+          "to": "gunnar",
+          "tip": 4,
+          "addressed": "Reply for Gunnar",
+          "note": "From Wren the Stablemaster. It smells of hay and apples.",
+          "words": ["Gunnar. There's no horse that likes snow. There are horses that hate it quietly. I'm sending you two. - Wren"],
+          "said": [
+            "Hate it quietly. That's all I ask of anyone up here.",
+            "Bergit hates it loudly. She'll be glad of the company."
+          ]
+        },
+        {
+          "id": "shoes_turnip",
+          "kind": "letter",
+          "from": "gunnar",
+          "to": "wren",
+          "tip": 9,
+          "addressed": "Letter for Wren the Stablemaster",
+          "note": "From Gunnar's caravan. There's a mitten in it, chewed.",
+          "words": ["Wren. The quiet ones came. One of them ate a yeti's mitten. The yeti is upset. The horse is not. - G."],
+          "said": [
+            "That's Turnip. Turnip eats everything.",
+            "Tell him Turnip's on loan. Turnip is always on loan. Nobody keeps Turnip."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "smile",
+      "title": "Once a year, she smiles",
+      "pieces": [
+        {
+          "id": "smile_ore",
+          "kind": "parcel",
+          "from": "dagny",
+          "to": "hilda",
+          "tip": 7,
+          "addressed": "Parcel for Smith Hilda",
+          "note": "Heavy for its size. Something wrapped in an old sock.",
+          "words": ["Smith. That's Blackiron ore, the real thing. Smile if you like it. Nobody's looking. - Dagny"],
+          "said": [
+            "(She weighs it in her palm. Something happens to her face.)",
+            "That was not a smile. Tell her it was not a smile. Wait there."
+          ]
+        },
+        {
+          "id": "smile_ore_reply",
+          "kind": "letter",
+          "reply": true,
+          "from": "hilda",
+          "to": "dagny",
+          "tip": 3,
+          "addressed": "Reply for Dagny",
+          "note": "From Smith Hilda. Short, with a sooty thumbprint.",
+          "words": ["Dagny. It was not a smile. Send ten more. - Hilda"],
+          "said": [
+            "Ten more! She smiled. I knew she'd smile.",
+            "Garrick! The smith in Pixelheim wants ten!"
+          ]
+        },
+        {
+          "id": "smile_sack",
+          "kind": "parcel",
+          "from": "dagny",
+          "to": "hilda",
+          "tip": 8,
+          "addressed": "Parcel for Smith Hilda",
+          "note": "A sack of ore with a note pinned to it. It clanks.",
+          "words": ["Smith. Ten lumps. Garrick says that's a cartload, and a cartload costs. I told him you smile once a year. He said worth it. - D."],
+          "said": [
+            "...Who told her once a year?",
+            "Bram. It's always Bram."
+          ]
+        },
+        {
+          "id": "smile_bellows",
+          "kind": "letter",
+          "from": "hilda",
+          "to": "dagny",
+          "tip": 7,
+          "when": [{"kind": "settler", "settlerId": "mines_pell"}],
+          "addressed": "Letter for Dagny",
+          "note": "From Smith Hilda. Longer than anything she has ever written.",
+          "words": ["Dagny. I've a new man on the bellows, an old one: your Pell. The canary sends her regards, loudly. Come and see the forge. - H."],
+          "said": [
+            "Pell's at her forge? With the bird?",
+            "I'm going. Not for Hilda. For the bird. ...Wait, I'll tell her when."
+          ]
+        },
+        {
+          "id": "smile_bellows_reply",
+          "kind": "letter",
+          "reply": true,
+          "from": "dagny",
+          "to": "hilda",
+          "tip": 3,
+          "addressed": "Reply for Smith Hilda",
+          "note": "From Dagny. It smells of the shafts.",
+          "words": ["Smith. Festival day. Have the forge hot and your face ready. - D."],
+          "said": [
+            "My face is always ready.",
+            "(It isn't. She practises at the anvil when she thinks nobody's looking.)"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "in_charge",
+      "title": "Fenwick in charge",
+      "pieces": [
+        {
+          "id": "charge_orders",
+          "kind": "letter",
+          "from": "ulla",
+          "to": "fenwick",
+          "tip": 8,
+          "when": [{"kind": "settler", "settlerId": "greyhold_ulla"}],
+          "addressed": "Letter for Fenwick",
+          "note": "From Sergeant Ulla, in Pixelheim. Folded into a perfect square.",
+          "words": ["Fenwick. Greyhold is yours to keep now. Don't let it go to your head. - Sergeant Ulla"],
+          "said": [
+            "Mine? Greyhold? To keep?",
+            "(He stands up very straight.) The water, at least. I was already in charge of the water. Wait, she'll want a report."
+          ]
+        },
+        {
+          "id": "charge_report",
+          "kind": "note",
+          "reply": true,
+          "from": "fenwick",
+          "to": "ulla",
+          "tip": 3,
+          "addressed": "Report for Sergeant Ulla",
+          "note": "From Fenwick, at Greyhold. Every line starts with a capital.",
+          "words": ["Sergeant. Report, day one. Water: fetched. Mabel: selling. Turncoats: gone. Morale: good. Me: in charge. - Fenwick (in charge)"],
+          "said": [
+            "\"In charge\", twice. He'll be fine.",
+            "\"Morale: good.\" Thirty years, and I never once wrote that."
+          ]
+        },
+        {
+          "id": "charge_bell",
+          "kind": "letter",
+          "from": "teo",
+          "to": "fenwick",
+          "tip": 8,
+          "when": [{"kind": "settler", "settlerId": "greyhold_teo"}],
+          "addressed": "Letter for Fenwick",
+          "note": "From Brother Teo. It smells of candle wax.",
+          "words": ["Fenwick. The bell hangs in Pixelheim's hall now, and the mayor jumps every time I ring it. I tell him it's practice. Ring something for me at Greyhold. - Brother Teo"],
+          "said": [
+            "Ring something? There's nothing left to ring.",
+            "(He finds an old helmet and a spoon.) There. That'll ring. Not well, but it'll ring."
+          ]
+        },
+        {
+          "id": "charge_recruit",
+          "kind": "note",
+          "from": "fenwick",
+          "to": "ulla",
+          "tip": 7,
+          "addressed": "Report for Sergeant Ulla",
+          "note": "From Fenwick. A report, with a drawing of a helmet.",
+          "words": ["Sergeant. Report, day forty. Water: fetched. Helmet: rung. A lad from the valley asked to join the garrison. I said yes. Was that allowed? - Fenwick (in charge, with one soldier)"],
+          "said": [
+            "One soldier. He's raising a garrison one lad at a time.",
+            "Wait there, courier. This one gets an answer."
+          ]
+        },
+        {
+          "id": "charge_recruit_reply",
+          "kind": "letter",
+          "reply": true,
+          "from": "ulla",
+          "to": "fenwick",
+          "tip": 3,
+          "addressed": "Reply for Fenwick",
+          "note": "From Sergeant Ulla. Short, and stamped with her seal.",
+          "words": ["Fenwick. Yes. It was always allowed. Carry on. - U."],
+          "said": [
+            "\"Carry on.\"",
+            "(He reads it again, and again.) Nobody's said that to me since the red cloak."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "club_song",
+      "title": "The Cheese Club's song",
+      "pieces": [
+        {
+          "id": "song_ask",
+          "kind": "letter",
+          "from": "bram",
+          "to": "loras",
+          "tip": 6,
+          "after": "club_mabel_reply",
+          "addressed": "Letter for Loras the Bard",
+          "note": "From Bram. There's a cheese drawn on it, wearing a crown.",
+          "words": ["Dear Mister Bard. The Cheese Club needs a song. The garrison at Greyhold asked. Can you do cheese? - Bram"],
+          "said": [
+            "Can I do cheese? Friend, I can do anything.",
+            "Cheese is merely... difficult. Let me write back."
+          ]
+        },
+        {
+          "id": "song_ask_reply",
+          "kind": "letter",
+          "reply": true,
+          "from": "loras",
+          "to": "bram",
+          "tip": 3,
+          "addressed": "Reply for Bram",
+          "note": "From Loras the Bard. Several words are crossed out.",
+          "words": ["Dear Bram. What rhymes with cheese? I have tried everything. Please write back. - Loras, a bard in some distress"],
+          "said": [
+            "What rhymes with cheese... Knees. Trees. Please.",
+            "Sneeze! Hold on, courier, I'm making a list."
+          ]
+        },
+        {
+          "id": "song_rhymes",
+          "kind": "letter",
+          "from": "bram",
+          "to": "loras",
+          "tip": 6,
+          "addressed": "Letter for Loras the Bard",
+          "note": "From Bram. It's mostly a list.",
+          "words": ["Dear Loras. Knees. Trees. Please. Breeze. Sneeze. Also Greyhold, which doesn't rhyme, but they asked first. - Bram"],
+          "said": [
+            "Sneeze! Of course. A sneeze is a cheese's applause.",
+            "Nothing rhymes with Greyhold. I'll make something. Wait there."
+          ]
+        },
+        {
+          "id": "song_verse",
+          "kind": "letter",
+          "reply": true,
+          "from": "loras",
+          "to": "bram",
+          "tip": 4,
+          "addressed": "Song for Bram",
+          "note": "From Loras the Bard. Written out fair, with the tune in the margin.",
+          "words": ["\"The Ballad of the Cheese Club\", verse one. A wheel came down the cliff road / on a fair and salty breeze, / and the gulls cried out in Saltmere: / It is cheese! It's cheese! It's cheese! - L."],
+          "said": [
+            "(He sings it. All of it. Twice.)",
+            "Courier, you're in the chorus. Everybody's in the chorus. That's how a club works."
+          ]
+        },
+        {
+          "id": "song_garrison",
+          "kind": "letter",
+          "from": "bram",
+          "to": "mabel",
+          "tip": 9,
+          "gift": "furn_banner",
+          "addressed": "Letter for Mabel the Sutler",
+          "note": "From Bram. A song sheet is folded inside, and there's cheese on it.",
+          "words": ["Dear Mabel and the lads. The club has a song. Verse one is enclosed. There are nine more. Loras is working on the tenth. - Bram"],
+          "said": [
+            "Ten verses. About cheese.",
+            "The lads had it by heart by supper. Here, courier: they stitched you a banner for carrying it. Your colours, more or less."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "forty_one",
+      "title": "Forty-one",
+      "pieces": [
+        {
+          "id": "count_lamps",
+          "kind": "letter",
+          "from": "morvax",
+          "to": "maren",
+          "tip": 6,
+          "when": [{"kind": "chosen"}],
+          "addressed": "Letter for Elder Maren",
+          "note": "From Morvax. One word, and it's a number.",
+          "words": ["Forty-one. - M."],
+          "said": [
+            "(She barely unfolds it.) Forty-one. Of course.",
+            "Wait there, courier. The answer's short."
+          ]
+        },
+        {
+          "id": "count_lamps_reply",
+          "kind": "letter",
+          "reply": true,
+          "from": "maren",
+          "to": "morvax",
+          "tip": 3,
+          "addressed": "Reply for Morvax",
+          "note": "From Elder Maren. Folded once, hard.",
+          "words": ["Forty. It's the moon, you old goat. - M."],
+          "said": [
+            "The moon. She always says the moon.",
+            "...It's a very bright lamp, the moon."
+          ]
+        },
+        {
+          "id": "count_bridge",
+          "kind": "letter",
+          "from": "morvax",
+          "to": "maren",
+          "tip": 6,
+          "addressed": "Letter for Elder Maren",
+          "note": "From Morvax. Longer this time: two lines.",
+          "words": ["Forty-one. I went and looked. It isn't the moon. There's a new lamp by the bridge. Ask your lamplighter. - Morvax"],
+          "said": [
+            "A new lamp by the bridge?",
+            "(She shades her eyes and counts under her breath.) ...Don't tell him he's right. Wait there."
+          ]
+        },
+        {
+          "id": "count_bridge_reply",
+          "kind": "letter",
+          "reply": true,
+          "from": "maren",
+          "to": "morvax",
+          "tip": 3,
+          "addressed": "Reply for Morvax",
+          "note": "From Elder Maren. There's a smudge where something was crossed out.",
+          "words": ["Forty-one, then. Forty-two with the moon. And you still owe me a game of cards. - M."],
+          "said": [
+            "I owe her? She keeps the queen up her sleeve.",
+            "(He laughs, a big rusty laugh that turns into a cough, then back into a laugh.)"
+          ]
+        },
+        {
+          "id": "count_moon",
+          "kind": "letter",
+          "from": "morvax",
+          "to": "maren",
+          "tip": 6,
+          "gift": "furn_candles",
+          "addressed": "Letter for Elder Maren",
+          "note": "From Morvax. The ink is fresh, and so is the number.",
+          "words": ["Forty-two, with the moon. Bring the cards. - M."],
+          "said": [
+            "(She folds it very small and keeps it.) Fifty years of letters I never sent, and he writes me numbers.",
+            "...I'll take the numbers. Here, courier: three more lights, for your own count."
           ]
         }
       ]
