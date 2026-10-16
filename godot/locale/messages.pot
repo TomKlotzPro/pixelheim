@@ -5449,6 +5449,10 @@ msgid "The Pixelheim Post opens: once Maren's first letter reaches Saltmere, a p
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Post now carries twelve stories across the whole Reach: Maren writing to Wenna after fifty years, Mirelle's gentle reminders about interest, Wren's horse that eats mittens, Fenwick in charge of Greyhold, and Morvax and Maren still arguing over forty lamps or forty-one"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Quill"
 msgstr ""
 
@@ -5574,6 +5578,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The corner buttons speak pixel now: a proper gold speaker and gear instead of emoji"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The courier's book: a postmark for every place your post reaches, with who got letters there and what you were given"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5774,6 +5782,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The passes are fast-travel waypoints the moment you lay eyes on them"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The post box holds three pieces a day from the start, and some parcels leave you something to keep: a recipe, a banner, a candelabra"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -6050,6 +6062,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Turning down your old web hero takes you to the title to make a new one - no more playing a stand-in that's never saved"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Twelve Threads"
 msgstr ""
 
 #: assets/data/changelog.json
