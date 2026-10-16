@@ -72,11 +72,15 @@ static func _maps(outdoor: bool) -> Array[MapData]:
 	return out
 
 
-## What Scatter grows on `data`: cell -> tile.
-static func _picked(data: MapData) -> Dictionary:
+## What Scatter grows on `data`: cell -> tile; on the rock that burns
+## (`burnt`, PIX-308) its boulders alone, dead trees standing in place of
+## the pines (MapView.snags).
+static func _picked(data: MapData, burnt := {}) -> Dictionary:
 	var out := {}
 	for cell: Vector2i in data.grid:
 		var choice := Scatter.choice(data.grid, cell)
+		if burnt.has(cell) and choice != AshLand.BOULDER:
+			continue
 		if choice >= 0:
 			out[cell] = choice
 	return out
@@ -107,13 +111,15 @@ static func _taken(view: MapView) -> Dictionary:
 		out[Vector2i(int(chest["x"]), int(chest["y"]))] = "a chest" if chest["look"] == "chest" else "a pickup"
 	for npc: Dictionary in Npcs.on_map(data.id, GameState.settlement.town_tier, GameState.settlement.settlers, Town.done_projects(GameState.settlement), Relics.gate_open(GameState.progression), Letters.tin_waits(GameState.progression)):
 		out[Vector2i(int(npc["x"]), int(npc["y"]))] = "a villager's home"
+	for cell: Vector2i in view.worked:
+		out[cell] = "a working (PIX-308)"
 	return out
 
 
 func test_a_map_in_the_open_air_grows_its_decor_at_once_or_in_slices() -> void:
 	for map_id: String in ReachPlane.maps() + ["town"]:
 		var whole := _draw(MapData.load_by_id(map_id), false)
-		var picked := _picked(whole.data)
+		var picked := _picked(whole.data, whole.kept.burnt)
 		assert_gt(whole.field.size(), picked.size() * 0.95, "%s grows its field's decor (%d of %d)" % [map_id, whole.field.size(), picked.size()])
 		for cell: Vector2i in whole.field:
 			assert_eq(whole.field[cell], picked.get(cell, -1), "%s: %s grows what Scatter picks" % [map_id, cell])
@@ -128,7 +134,7 @@ func test_nothing_grows_where_something_stands_or_a_way_leads() -> void:
 	var spared := 0
 	for data: MapData in _maps(true):
 		var view := _draw(data, false)
-		var picked := _picked(data)
+		var picked := _picked(data, view.kept.burnt)
 		var taken := _taken(view)
 		for cell: Vector2i in taken:
 			assert_false(view.field.has(cell), "%s: nothing grows on %s at %s" % [data.id, taken[cell], cell])

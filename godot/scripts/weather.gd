@@ -10,7 +10,12 @@ class_name Weather
 
 ## A region's air: region -> air. The woods have theirs too (PIX-225: the
 ## leaves falling, a deeper green).
-const AIRS := {"ash": "ash", "frost": "frost", "mire": "mire", "marsh": "mire", "coast": "coast", "forest": "woods", "deepwood": "woods"}
+## Blackiron's mines and the mountain road breathe the Ash's air too, its
+## embers and its ash drifting (PIX-308).
+const AIRS := {
+	"ash": "ash", "mines": "ash", "road": "ash", "frost": "frost", "mire": "mire", "marsh": "mire", "coast": "coast",
+	"forest": "woods", "deepwood": "woods",
+}
 ## Every air; the first four are the ones the air's pass draws.
 const KINDS := ["ash", "frost", "mire", "coast", "woods"]
 const DRAWN := ["ash", "frost", "mire", "coast"]

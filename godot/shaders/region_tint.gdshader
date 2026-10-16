@@ -9,7 +9,8 @@ shader_type canvas_item;
 // cell and a half and dithered in 2px blocks left bands across the ash
 // wherever a road thinned it). Water keeps its own colours, so the mire and
 // the ash stop at the shore. On the ground layer (`ground_life`) the open
-// ground has its patches, drifts, murk and puddles (open_ground.gdshaderinc).
+// ground has its patches, drifts, murk and puddles, and the Ash its char,
+// pale ash, cracks and cinders (open_ground.gdshaderinc).
 //
 // And what moves in the open air (PIX-223): `sway` leans the top of each quad
 // it draws (a tree, a wheat sheaf, a flower) while its foot stays put - one
@@ -43,6 +44,9 @@ uniform bool sway_alone = false;
 uniform float canopy = 0.0;
 uniform bool water_life = false;
 uniform bool ground_life = false;
+// The cliffs standing in the ash (the rim layer) scorched on their tops as
+// the ground's are, and nothing else of the ground's life (PIX-308).
+uniform bool scorch_life = false;
 uniform sampler2D water_map : filter_linear, repeat_disable;
 // Bridges' planks (PIX-306): Shade drew his river showing between them,
 // which takes the water's own look under them.
@@ -158,8 +162,12 @@ void fragment() {
 	}
 	bool water = inland == INLAND_WATER || (inland == INLAND_NONE && base.b > base.g);
 	int kind = tone_kind(tint.a);
+	// The Ash's ground and burnt rock's grassy top, scorched once toned
+	// (PIX-308).
+	bool ashen = (ground_life || scorch_life) && !water && kind == KIND_TONE && (is_grass(base.rgb) || is_dirt(base.rgb))
+		&& (tinted(tint.rgb, ASH_TINT) || (tinted(tint.rgb, BURNT_ROCK) && is_grass(base.rgb)));
 	// Open ground (PIX-305): the grass's patches, before the tone takes it.
-	bool grass = ground_life && !water && is_grass(base.rgb);
+	bool grass = ground_life && !water && !ashen && is_grass(base.rgb);
 	int level = grass ? patch_level(floor(world_pos)) : 0;
 	bool puddle = grass && kind == KIND_MIRE && puddled(floor(world_pos));
 	if (grass) {
@@ -175,6 +183,8 @@ void fragment() {
 	} else if (grass) {
 		bool snow = toned && dot(tint.rgb, vec3(0.299, 0.587, 0.114)) > 0.7;
 		base.rgb = ground_after(base.rgb, floor(world_pos), level, snow, kind == KIND_MIRE);
+	} else if (ashen) {
+		base.rgb = scorched_ground(base.rgb, floor(world_pos));
 	}
 	if (water_life && inland == INLAND_NONE && is_water(base.rgb)) {
 		vec2 px = floor(world_pos);

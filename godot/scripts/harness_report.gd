@@ -87,6 +87,7 @@ const TABLE := [
 	{"field": "rose", "says": "a chapter card's title, how far it rose coming in (PIX-253)"},
 	{"field": "saves", "says": "with seamless: the saves crossing lines made (once for crossing back and forth, PIX-269)"},
 	{"field": "scene", "says": "the story scene playing over the world, by id: bells_dawn (PIX-253 step 9), vault_door (PIX-257)"},
+	{"field": "scorch", "says": "on a map with burnt land: its burnt rock's cells, the dead trees on it, the cinders glowing, and a mining country's rails, spoil and pieces standing at its workings: burnt120,snags40,cinders30,rails50,spoil9,standing14 (PIX-308)"},
 	{"field": "shortcut", "says": "on a dungeon floor with a shortcut out to its way in: open or shut (PIX-255)"},
 	{"field": "speaker", "says": "who the open conversation is with, by id: innkeeper (PIX-283)"},
 	{"field": "stood", "says": "named foes that stood down rather than fell, when one did (PIX-255)"},
@@ -592,6 +593,22 @@ func field_scene() -> String:
 		if node is Cutscene and not node.finished:
 			return node.scene_id
 	return ""
+
+
+func field_scorch() -> String:
+	var view: MapView = world.view
+	if view == null or view.kept == null or not view.has_ground_layers():
+		return ""
+	var counts := {
+		"burnt": view.kept.burnt.size(), "snags": view.snags.size(), "cinders": view.ember_layer.get_used_cells().size(),
+		"rails": int(view.workings.get("rails", 0)), "spoil": int(view.workings.get("spoil", 0)), "standing": int(view.workings.get("standing", 0)),
+	}
+	if counts.values().all(func(n: int) -> bool: return n == 0):
+		return ""
+	var parts: PackedStringArray = []
+	for kind: String in ["burnt", "snags", "cinders", "rails", "spoil", "standing"]:
+		parts.append("%s%d" % [kind, counts[kind]])
+	return ",".join(parts)
 
 
 func field_shortcut() -> String:

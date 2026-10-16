@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.243.0",
+      "date": "2026-10-16",
+      "codename": "Cinders",
+      "notes": [
+        "The ash fields look burnt: pale ash and char, cracks, and cinders that glow and flare now and then, brightest at night",
+        "Their rocks and ridges are scorched with dead trees instead of green mesas with pines, and grey ash drifts on the wind over the Ash, the mines and the mountain road",
+        "Blackiron is mining country: rock faces shored with timber, ore carts, winches, spoil heaps and rails laid between the workings"
+      ]
+    },
+    {
       "version": "0.242.0",
       "date": "2026-10-16",
       "codename": "Into the Woods",

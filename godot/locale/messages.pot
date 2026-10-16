@@ -2401,6 +2401,10 @@ msgid "Black Iron"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Blackiron is mining country: rock faces shored with timber, ore carts, winches, spoil heaps and rails laid between the workings"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Blows land with weight: the one struck flashes pure white, an arc in your weapon's colour trails every swing, and the camera punches on crits and killing blows"
 msgstr ""
 
@@ -5461,6 +5465,10 @@ msgid "The arrow toward your goal keeps clear of the line over the dock"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The ash fields look burnt: pale ash and char, cracks, and cinders that glow and flare now and then, brightest at night"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The balance sim now walks every legal path chain through the whole game, so no identity is a trap"
 msgstr ""
 
@@ -5894,6 +5902,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The wyverns keep to the far end of the Ash Fields, the journal only points at floors once the mountain's gate is open, and a scattered pack tells you when another comes"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Their rocks and ridges are scorched with dead trees instead of green mesas with pines, and grey ash drifts on the wind over the Ash, the mines and the mountain road"
 msgstr ""
 
 #: assets/data/changelog.json
