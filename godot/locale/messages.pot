@@ -2113,6 +2113,10 @@ msgid "A new Feats chapter in the journal: long goals - ten and thirty depths, e
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A new Saves screen: each hero's card shows them as they left, with their class and level, where they are, the chapter, the hours played and when they last saved"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A new beginning: Maren's five letters, written fifty years ago and never sent, wait in a tin under her hearthstone. You carry letters for a living, so you deliver them"
 msgstr ""
 
@@ -2681,6 +2685,10 @@ msgid "Deep Water"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Delete asks first and can be undone with R until another hero takes the slot, and Copy and Paste carry a hero to another computer as a code"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Doors got a carpenter: beam posts and lintel, a plank door with a brass knob, a little shingled awning, a stone doorstep"
 msgstr ""
 
@@ -2734,6 +2742,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Dungeons live in the world now: walk to the mountain gate to climb"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Duplicate a hero into an empty slot, for instance to see both of Morvax's endings"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3406,6 +3418,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Herbs, ore and pouches on the ground are half the size, sitting on a small shadow and bobbing gently, so they no longer look as big as you"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Hero Cards"
 msgstr ""
 
 #: assets/data/changelog.json

@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.247.0",
+      "date": "2026-10-16",
+      "codename": "Hero Cards",
+      "notes": [
+        "A new Saves screen: each hero's card shows them as they left, with their class and level, where they are, the chapter, the hours played and when they last saved",
+        "Duplicate a hero into an empty slot, for instance to see both of Morvax's endings",
+        "Delete asks first and can be undone with R until another hero takes the slot, and Copy and Paste carry a hero to another computer as a code"
+      ]
+    },
+    {
       "version": "0.246.0",
       "date": "2026-10-16",
       "codename": "Post Day",

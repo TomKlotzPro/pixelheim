@@ -2113,6 +2113,10 @@ msgid "A new Feats chapter in the journal: long goals - ten and thirty depths, e
 msgstr "Un nouveau chapitre Hauts faits dans le journal : des buts au long cours - dix et trente profondeurs, toutes les primes, toutes les maîtrises, un ensemble complet porté, tout le bestiaire - chacun rapportant une médaille pour l'étagère à trophées"
 
 #: assets/data/changelog.json
+msgid "A new Saves screen: each hero's card shows them as they left, with their class and level, where they are, the chapter, the hours played and when they last saved"
+msgstr "Un nouvel écran Sauvegardes : la fiche de chaque héros le montre tel qu'il est parti, avec sa classe et son niveau, l'endroit où il se trouve, le chapitre, les heures de jeu et sa dernière sauvegarde"
+
+#: assets/data/changelog.json
 msgid "A new beginning: Maren's five letters, written fifty years ago and never sent, wait in a tin under her hearthstone. You carry letters for a living, so you deliver them"
 msgstr "Un nouveau départ : les cinq lettres de Maren, écrites il y a cinquante ans et jamais envoyées, attendent dans une boîte sous la pierre de son foyer. Porter des lettres, c'est votre métier, alors vous les remettez"
 
@@ -2681,6 +2685,10 @@ msgid "Deep Water"
 msgstr "Eaux profondes"
 
 #: assets/data/changelog.json
+msgid "Delete asks first and can be undone with R until another hero takes the slot, and Copy and Paste carry a hero to another computer as a code"
+msgstr "Supprimer demande d'abord confirmation et s'annule avec R tant qu'un autre héros n'a pas pris la place, et Copier et Coller emmènent un héros sur un autre ordinateur sous forme de code"
+
+#: assets/data/changelog.json
 msgid "Doors got a carpenter: beam posts and lintel, a plank door with a brass knob, a little shingled awning, a stone doorstep"
 msgstr "Les portes ont eu leur menuisier : poteaux et linteau, une porte en planches avec un bouton en laiton, un petit auvent en bardeaux, un seuil en pierre"
 
@@ -2735,6 +2743,10 @@ msgstr "Les donjons et les grottes sont sombres et éclairés à la torche, et l
 #: assets/data/changelog.json
 msgid "Dungeons live in the world now: walk to the mountain gate to climb"
 msgstr "Les donjons font désormais partie du monde : marchez jusqu'à la porte de la montagne pour grimper"
+
+#: assets/data/changelog.json
+msgid "Duplicate a hero into an empty slot, for instance to see both of Morvax's endings"
+msgstr "Dupliquez un héros dans un emplacement vide, par exemple pour voir les deux fins de Morvax"
 
 #: assets/data/changelog.json
 msgid "Dust drifts in the torchlight, and no two floors open in the same room any more"
@@ -3407,6 +3419,10 @@ msgstr "Son escalier devient froid et bleu et sa lumière porte un peu plus loin
 #: assets/data/changelog.json
 msgid "Herbs, ore and pouches on the ground are half the size, sitting on a small shadow and bobbing gently, so they no longer look as big as you"
 msgstr "Les herbes, le minerai et les bourses au sol sont deux fois plus petits, posés sur une petite ombre et flottant doucement : ils ne paraissent plus aussi grands que vous"
+
+#: assets/data/changelog.json
+msgid "Hero Cards"
+msgstr "Fiches de héros"
 
 #: assets/data/changelog.json
 msgid "Hero creation reads clearly: the first night is a setting of its own (The first night (tutorial): Play / Skip, with a line on what each means), and Begin the adventure is the start, alone at the bottom; Tab, a click or the pad's Y flips the night, and a pad can now reach every control"
