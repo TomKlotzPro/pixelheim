@@ -105,6 +105,12 @@ const SHOTS := {
 	"meadow_night": {"area": "reach", "map": "overworld", "cell": Vector2i(70, 40), "time": NIGHT},
 	"ash_road": {"area": "reach", "map": "overworld", "cell": Vector2i(30, 15), "time": DAY},
 	"overworld_night": {"area": "reach", "map": "overworld", "at": "forest_2", "time": NIGHT},
+	# The ridge round the Reach (PIX-309): its rim and crown broken, pines
+	# and rocks stepping out of it, by day and at night; and the pass up to
+	# the Frostgate, its pines whitening toward the snow.
+	"ridge": {"area": "reach", "map": "overworld", "cell": Vector2i(30, 58), "time": DAY},
+	"ridge_night": {"area": "reach", "map": "overworld", "cell": Vector2i(30, 58), "time": NIGHT},
+	"frost_pass": {"area": "reach", "map": "overworld", "cell": Vector2i(68, 3), "time": DAY},
 	"rain": {"area": "reach", "map": "overworld", "at": "forest_1", "rain": true},
 	# The village seen from outside (PIX-248): up the road to its gate by day
 	# and at night, and its lit windows from the road along its west wall.
@@ -153,6 +159,15 @@ const SHOTS := {
 	# The Deepwood's forest, its pines and round trees (PIX-304: from One
 	# Land, v0.219, no map grew any).
 	"deepwood_trees": {"area": "regions", "map": "deepwood", "cell": Vector2i(44, 10), "time": DAY},
+	# The Deepwood as a forest (PIX-309): clumps of trees with their crowns
+	# overlapping, undergrowth, the ground dark under the canopy, the light
+	# through it by day and fireflies at night; from the glade at its heart.
+	"deepwood_forest": {"area": "regions", "map": "deepwood", "cell": Vector2i(30, 20), "time": DAY},
+	"deepwood_forest_night": {"area": "regions", "map": "deepwood", "cell": Vector2i(30, 20), "time": NIGHT},
+	# Saltmere's sea running on off the map's south edge (PIX-309), from the
+	# end of its pier, by day and at night.
+	"saltmere_south": {"area": "regions", "map": "saltmere", "cell": Vector2i(31, 29), "time": DAY},
+	"saltmere_south_night": {"area": "regions", "map": "saltmere", "cell": Vector2i(31, 29), "time": NIGHT},
 	# Still water inland (PIX-306): the Deepwood's dark lake, and the
 	# Mirefen's murky pools by a bridge, their lily pads and reeds; by day
 	# and at night.

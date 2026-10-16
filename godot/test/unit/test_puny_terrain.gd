@@ -63,9 +63,40 @@ func test_water_ripples_in_frames_four_rows_apart() -> void:
 func test_pines_crown_only_mountains_walled_in_on_all_sides() -> void:
 	var grid := _grid(["^^^^^", "^^^^^", "^^^^^", ".....", "....."])
 	var crowns := PunyTerrain.forest_tiles(grid, Vector2i(5, 5))
-	assert_true(crowns.has(Vector2i(2, 1)), "deep in the range")
+	assert_true(crowns.size() > 0, "the range is crowned")
 	assert_false(crowns.has(Vector2i(2, 4)), "no trees down on the grass")
-	assert_eq(crowns[Vector2i(2, 1)], PunyTerrain.corner_tile(["trees", "trees", "trees", "trees"], 0))
+	assert_false(crowns.has(Vector2i(2, 3)), "nor on the rim")
+
+
+## The forest crowning a ridge keeps a ragged edge (PIX-309: every border was
+## a straight planter, its rim lined with rows of pines): the rim stays bare,
+## a share of the row behind it is left bare too, at random but the same
+## every time, and deep in the rock the pines stand but for a rare glade.
+func test_a_ridges_crown_has_a_ragged_edge() -> void:
+	var rows: Array = []
+	for y in 8:
+		rows.append("^".repeat(60))
+	rows.append(".".repeat(60))
+	rows.append(".".repeat(60))
+	var grid := _grid(rows)
+	var crowns := PunyTerrain.forest_tiles(grid, Vector2i(60, 10))
+	var behind := 0
+	var deep := 0
+	for x in 60:
+		if not PunyTerrain.crown_kept(Vector2i(x, 6), false):
+			behind += 1
+		for y in 6:
+			if not PunyTerrain.crown_kept(Vector2i(x, y), true):
+				deep += 1
+		assert_false(crowns.has(Vector2i(x, 8)), "the rim's own corners bare at %d" % x)
+	assert_between(behind, 12, 30, "a share of the row behind the rim bare, %d of 60" % behind)
+	assert_lt(deep, 20, "deep in the rock a rare glade, %d of 360" % deep)
+	var line := 0
+	for x in range(1, 60):
+		if crowns.has(Vector2i(x, 7)):
+			line += 1
+	assert_between(line, 20, 55, "the crown's edge comes and goes along the rim (%d of 59)" % line)
+	assert_eq(PunyTerrain.crown_kept(Vector2i(7, 6), false), PunyTerrain.crown_kept(Vector2i(7, 6), false), "the same every time")
 
 
 func test_bridges_follow_their_span() -> void:

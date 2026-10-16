@@ -120,13 +120,15 @@ func test_a_line_is_drawn_the_same_from_both_sides() -> void:
 ## map beside it, or the ridge), never its own edge carried on into the
 ## ridge, and it ends the way the world does inside a map, at the cliff's
 ## rim - where the sea or a beach meets the rock the cliff stands in it, no
-## straight-edged block of water or grass at its foot.
+## straight-edged block of water or grass at its foot; but off a map's sea
+## the sea runs on (PIX-309), open water, no cliff and no pines.
 func test_the_ground_past_every_edge_meets_the_ridge_at_its_rim() -> void:
 	var terrains_of := {}
 	for key: String in PunyTerrain._combos():
 		for tile: int in PunyTerrain._combos()[key]:
 			terrains_of[tile] = key.split(",")
 	var rimmed := 0
+	var open := 0
 	for map_id: String in ReachPlane.maps():
 		var map := _map(map_id)
 		var kept := KeptGround.of(map, map.grid, MapView.EDGE_PAD)
@@ -141,7 +143,12 @@ func test_the_ground_past_every_edge_meets_the_ridge_at_its_rim() -> void:
 				var lie: Array = four.map(func(cell: Vector2i) -> String: return PunyTerrain.ground_of(ReachPlane.tile(origin + cell)))
 				var drawn: Array = terrains_of[kept.ground_at(corner)]
 				var said := "%s's corner %s by the ridge, %s" % [map_id, corner, lie]
-				if lie.any(func(terrain: String) -> bool: return terrain in PunyTerrain.RIM_GROUNDS):
+				if "cliff" not in lie:
+					# Off a map's sea, the sea runs on (PIX-309).
+					open += 1
+					assert_eq(kept.rim_at(corner), -1, said + ": the open sea, no cliff")
+					assert_false("cliff" in drawn or "grass" in drawn, said + ": the sea as it lies")
+				elif lie.any(func(terrain: String) -> bool: return terrain in PunyTerrain.RIM_GROUNDS):
 					rimmed += 1
 					assert_gte(kept.rim_at(corner), 0, said + ": the cliff stands in it")
 					assert_false("grass" in drawn and "grass" not in lie, said + ": no grass at its foot")
@@ -149,7 +156,8 @@ func test_the_ground_past_every_edge_meets_the_ridge_at_its_rim() -> void:
 				else:
 					assert_true("cliff" in drawn, said + ": the cliff's own rim")
 					assert_eq(kept.rim_at(corner), -1, said)
-	assert_gt(rimmed, 100, "Saltmere's sea meets the ridge on three sides")
+	assert_gt(rimmed, 20, "Saltmere's sea and beach meet the ridge's rock at its corners (%d)" % rimmed)
+	assert_gt(open, 100, "and past its edges its sea runs on (%d)" % open)
 
 
 func test_a_maps_masks_are_laid_out_with_its_neighbours() -> void:

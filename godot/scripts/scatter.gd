@@ -3,11 +3,12 @@ class_name Scatter
 ## in the way (PIX-137). Pure: world.gd draws what these pick.
 
 ## Picked by cell hash: tile id -> [density %, [Puny World tile ids]].
-## Forests grow pines and round trees, the blocked highlands carry pines and
-## boulders, fields the odd stone or stump, and crops stand in rows of wheat.
+## Forests grow pines and round trees (in clumps: their density is Woods'),
+## the ridges' rims carry pines and boulders (RIM), fields the odd stone or
+## stump, and crops stand in rows of wheat.
 const SCATTER := {
-	"forest": [85, [197, 224, 251, 206, 233, 260, 705, 729, 732, 783, 810]],
-	"mountain": [30, [197, 224, 251, 783, 810, 702]],
+	"forest": [0, [197, 224, 251, 206, 233, 260, 705, 729, 732, 783, 810]],
+	"mountain": [0, [197, 224, 251, 783, 810, 702]],
 	"grass": [3, [702, 703, 730, 784]],
 	"ash": [6, [702, 703, 784, 811, 838]],
 	"marsh": [10, [703, 732, 838]],
@@ -38,16 +39,47 @@ const DETAIL := {
 }
 
 
-## The Puny World decor a cell grows, or -1.
+## The ridges' decor stands on their rim (PIX-309): this share (%) of the
+## rock's cells facing open ground, and of those a row behind them, grow a
+## pine or a boulder stepping out of the forest's crown; deeper in, the crown
+## covers the rock and nothing stands over it.
+const RIM := 45
+const BEHIND_RIM := 18
+
+
+## The Puny World decor a cell grows, or -1. A forest grows in clumps, glades
+## and thickets (Woods.forest_choice, PIX-309); a ridge on its rim.
 static func choice(grid: Dictionary, cell: Vector2i) -> int:
 	var tile: String = grid.get(cell, "")
 	if not SCATTER.has(tile):
 		return -1
+	if tile == "forest":
+		return Woods.forest_choice(cell, SCATTER[tile][1])
 	var h := absi(hash(cell))
+	if tile == "mountain":
+		var share := _rim_share(grid, cell)
+		if h % 100 >= share:
+			return -1
+		var picks: Array = SCATTER[tile][1]
+		return picks[(h >> 7) % picks.size()]
 	if h % 100 >= SCATTER[tile][0]:
 		return -1
 	var choices: Array = SCATTER[tile][1]
 	return choices[(h >> 7) % choices.size()]
+
+
+## The share (%) of a ridge's cell that grows a pine or a rock: RIM on its
+## rim (a neighbour is open ground), BEHIND_RIM a row behind, none deeper.
+## Past the map's edges the rock goes on.
+static func _rim_share(grid: Dictionary, cell: Vector2i) -> int:
+	var behind := false
+	for step: Vector2i in [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]:
+		if grid.get(cell + step, "mountain") != "mountain":
+			return RIM
+		for second: Vector2i in [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]:
+			if second != -step and grid.get(cell + step + second, "mountain") != "mountain":
+				behind = true
+	return BEHIND_RIM if behind else 0
 
 
 ## The small detail a cell grows ("" for none): one of DETAIL's kinds for

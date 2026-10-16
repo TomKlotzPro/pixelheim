@@ -352,7 +352,7 @@ func _lay(view: MapView, views: Array[MapView]) -> void:
 	for other: MapView in views:
 		if other == view or not _touch(view.data.id, other.data.id):
 			continue
-		masks[other.data.id] = [other.kept.tint_image, other.kept.water_image, other.kept.tint_image if other.kept.crowns_toned else null]
+		masks[other.data.id] = [other.kept.tint_image, other.kept.water_image, other.kept.crown_image]
 		var changes := _line(view, other)
 		for cell: Vector2i in changes:
 			# Where two lines meet, a corner gone stays gone.
@@ -376,9 +376,8 @@ func _lay(view: MapView, views: Array[MapView]) -> void:
 	# alike: a map whose own keep their green reads its snowy neighbour's.
 	var snowy := _images(masks, 2)
 	var crowns: ImageTexture = null
-	if view.kept.crowns_toned or not snowy.is_empty():
-		var own: Image = view.kept.tint_image if view.kept.crowns_toned else null
-		crowns = ImageTexture.create_from_image(Seam.masks_beside(view.data.id, own, snowy, view.data.size))
+	if view.kept.crown_image != null or not snowy.is_empty():
+		crowns = ImageTexture.create_from_image(Seam.masks_beside(view.data.id, view.kept.crown_image, snowy, view.data.size))
 	var margin := Vector2.ONE * Seam.MASK_MARGIN * MapView.TILE
 	view.set_masks(ImageTexture.create_from_image(tint), ImageTexture.create_from_image(water), -margin, Vector2(tint.get_size() * MapView.TILE), crowns)
 

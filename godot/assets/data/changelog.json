@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.242.0",
+      "date": "2026-10-16",
+      "codename": "Into the Woods",
+      "notes": [
+        "The Deepwood is a real forest: thickets and glades, trees of mixed sizes with overlapping crowns, undergrowth, shade under the canopy and sun shafts in the clearings",
+        "Ridges no longer look like straight planters: their crowns are ragged, with pines and rocks stepping out along the rim",
+        "Saltmere's sea runs on past the edge of the map instead of stopping at a hedge, and the pines whiten along a ragged snowline toward the Frostgate"
+      ]
+    },
+    {
       "version": "0.241.0",
       "date": "2026-10-14",
       "codename": "Hearth and Home",
