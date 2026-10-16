@@ -188,15 +188,17 @@ func rest_at_inn() -> String:
 		var rested := String(stew["line"]) if String(stew["line"]) != "" else Text.t("Well rested, too: more XP for your next %d fights.")
 		line += " " + rested % fights
 	owner.pack_changed()
+	# Saved as they wake, rested too: the quill and "Saved" (PIX-302 step 4).
+	owner.save_now(owner.SLEPT)
 	return sela + " " + line if sela != "" else line
 
 
-## A night's sleep (PIX-246): the clock runs on to the next morning, and
-## the game is saved where the hero woke.
+## A night's sleep (PIX-246): the clock runs on to the next morning. The
+## bed saves once the night has done all it does (`save_now(SLEPT)`: the
+## quill with "Saved" under it, PIX-302 step 4).
 func sleep_till_morning() -> void:
 	owner.world.steps = DayNight.next_morning(owner.world.steps)
 	owner.mark_dirty()
-	owner.save_now()
 
 
 ## Defeat is forgiving (RETURN_TO_WORLD after a loss): wake at the village

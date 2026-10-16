@@ -75,6 +75,19 @@ static func ago(saved_at: int, now: int) -> String:
 	return Text.t("yesterday") if days == 1 else Text.t("%d days ago") % days
 
 
+## The pause menu's line under its title (PIX-302 step 4): the last save,
+## `seconds` ago by the game's clock. "Saved just now", "Saved 12 s ago",
+## "Saved 3 min ago", "Saved 2 h ago".
+static func saved_ago(seconds: int) -> String:
+	if seconds < 2:
+		return Text.t("Saved just now")
+	if seconds < 60:
+		return Text.t("Saved %d s ago") % seconds
+	if seconds < 3600:
+		return Text.t("Saved %d min ago") % (seconds / 60)
+	return Text.t("Saved %d h ago") % (seconds / 3600)
+
+
 ## What Delete asks first (PIX-302): the hero by name, class and level and
 ## their hours, so a slip of the finger is caught.
 ## "Delete Hrafna? Warrior, level 18. 31 h played."

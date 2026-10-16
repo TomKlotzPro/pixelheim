@@ -4,8 +4,9 @@ extends GutTest
 ## roofs, Fafnyr held on the square until the sky turns - with each of the
 ## townsfolk at a job only where that one lives in Pixelheim; at dawn, or
 ## worn down to his share, he stands down, the collar comes off, his scale
-## builds the fountain and the day begins. Nothing of the night is saved but
-## its end; a hero who slew Fafnyr on the old mountain never sees it.
+## builds the fountain and the day begins. The night is saved as it goes
+## and a save made in it resumes at its beat (PIX-302 step 4); a hero who
+## slew Fafnyr on the old mountain never sees it.
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
 const NightLight := preload("res://test/unit/test_night_light.gd")
@@ -378,20 +379,61 @@ func test_a_dragon_slayer_never_sees_the_night() -> void:
 	assert_true(Town.project("fountain")["cost"]["items"].has("dragon_scale"), "the board still asks the scale they won")
 
 
-## A save made in the night (it autosaves as a hero walks) keeps nothing of
-## its beat yet (PIX-302's later step resumes it): on load the night begins
-## again from the bell.
-func test_a_save_made_in_the_night_plays_it_again_from_the_start() -> void:
+## A save made in the night (it autosaves as a hero walks, and each beat is
+## kept at once) resumes at its beat (PIX-302 step 4, Tom: yes, at the beat
+## the hero was on): the lanterns lit, the roofs doused and the embers left
+## as they were, and no bell again.
+func test_a_save_made_in_the_night_resumes_at_its_beat() -> void:
+	_home_from_the_forge()
+	state.questing.bells_begin()
+	state.progression.bells_lit.assign([0, 1, 2, 3, 4])
+	state.questing.bells_on()
+	assert_eq(state.progression.bells_embers, Bells.ember_cells().size(), "the embers come with their beat")
+	state.progression.bells_embers = 2
+	state.progression.bells_doused.assign([1])
+	var back := _reloaded()
+	assert_eq(back.progression.bells, Bells.EMBERS)
+	assert_eq(back.progression.bells_lit, [0, 1, 2, 3, 4] as Array[int])
+	assert_eq(back.progression.bells_doused, [1] as Array[int])
+	assert_eq(back.progression.bells_embers, 2)
+	assert_eq(_next(back), "embers", "the story where the night stood")
+	assert_false(Bells.due(back.progression, back.settlement), "no bell again: the night runs")
+	assert_true(back.progression.quests.has("bram_imps"), "what the save kept, it keeps")
+	# On the hold too: the dragon again, his clock from the start, as a fall's.
+	state.progression.bells_embers = 0
+	state.progression.bells_doused.assign(range(Bells.roofs().size()))
+	state.questing.bells_on()
+	assert_eq(_reloaded().progression.bells, Bells.HOLD)
+
+
+## Each beat is a step of the story, kept at once; what's done within one
+## (a lantern lit, a roof doused, an ember down) is kept within seconds.
+func test_the_night_saves_as_it_goes() -> void:
+	_home_from_the_forge()
+	var shown: Array[int] = []
+	state.saved.connect(func(how: int) -> void: shown.append(how))
+	state.questing.bells_begin()
+	assert_eq(shown, [GameStateScript.MOMENT] as Array[int], "the bell")
+	state.questing.bells_on()
+	assert_eq(shown.size(), 2, "the lanterns lit")
+	assert_false(state.dirty)
+
+
+## The night's end isn't saved as a night: past the dawn a save wakes to
+## the morning after (Bells.over), never in a night that can't end.
+func test_a_save_from_the_dawn_on_wakes_to_the_morning() -> void:
 	_home_from_the_forge()
 	state.questing.bells_begin()
 	for i in 2:
 		state.questing.bells_on()
-	assert_eq(state.progression.bells, Bells.HOLD)
+	state.questing.bells_dawn()
+	assert_eq(state.progression.bells, Bells.DAWN)
+	var doc := SaveCodec.to_file(state.to_dict())
+	assert_false(doc["story"].has("night"), "the dawn's scenes save the night's end")
 	var back := _reloaded()
 	assert_eq(back.progression.bells, Bells.NONE)
-	assert_eq(_next(back), "run_home")
-	assert_true(Bells.due(back.progression, back.settlement), "home again, the bell rings again")
-	assert_true(back.progression.quests.has("bram_imps"), "what the save kept, it keeps")
+	assert_true(Bells.over(back.progression))
+	assert_false(Bells.due(back.progression, back.settlement))
 
 
 ## PIX-297: a save made in town on the run home (the build before the

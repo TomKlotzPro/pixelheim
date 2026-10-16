@@ -265,11 +265,14 @@ func test_the_next_line_reads_through_chapter_four() -> void:
 
 # ---- Old saves ----------------------------------------------------------------------
 
-func test_a_save_anywhere_in_the_cellars_wakes_at_their_entrance() -> void:
+## A save wakes at the top of the floor it was made on (PIX-302 step 4:
+## test_depths walks every floor's).
+func test_a_save_in_the_cellars_wakes_at_the_top_of_its_floor() -> void:
 	assert_eq(Depths.waking("keep", Vector2i(8, 8)), {"mapId": "keep", "cell": Vector2i(8, 8)}, "in the hall: where it stood")
-	# Where the Hollow Captain kept his watch in the old one-floor cellars, or any floor.
-	for map_id: String in FLOORS:
-		assert_eq(Depths.waking(map_id, Vector2i(40, 7)), {"mapId": "cellars", "cell": ENTRANCE}, map_id)
+	# Where the Hollow Captain kept his watch in the old one-floor cellars: the way in.
+	assert_eq(Depths.waking("cellars", Vector2i(40, 7)), {"mapId": "cellars", "cell": ENTRANCE})
+	for map_id: String in FLOORS.slice(1):
+		assert_eq(Depths.waking(map_id, Vector2i(40, 7))["mapId"], map_id, "%s: on its own floor" % map_id)
 
 
 func test_a_save_from_inside_the_cellars_round_trips() -> void:

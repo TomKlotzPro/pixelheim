@@ -15813,6 +15813,22 @@ msgid "Just begun"
 msgstr "Tout juste commencé"
 
 #: scripts/state/slot_card.gd
+msgid "Saved %d h ago"
+msgstr "Sauvegardé il y a %d h"
+
+#: scripts/state/slot_card.gd
+msgid "Saved %d min ago"
+msgstr "Sauvegardé il y a %d min"
+
+#: scripts/state/slot_card.gd
+msgid "Saved %d s ago"
+msgstr "Sauvegardé il y a %d s"
+
+#: scripts/state/slot_card.gd
+msgid "Saved just now"
+msgstr "Sauvegardé à l'instant"
+
+#: scripts/state/slot_card.gd
 msgid "just now"
 msgstr "à l'instant"
 
@@ -16171,6 +16187,10 @@ msgstr "NIVEAU SUPÉRIEUR"
 #: scripts/world_hud.gd
 msgid "Boss slayer +%d%%  %d:%02d"
 msgstr "Tueur de boss +%d %%  %d:%02d"
+
+#: scripts/world_hud.gd
+msgid "Saved"
+msgstr "Sauvegardé"
 
 #: scripts/world_interaction.gd
 msgid "A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it."

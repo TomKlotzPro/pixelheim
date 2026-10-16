@@ -12,6 +12,8 @@ class_name Marks
 ## - The arrow at the view's edge toward where the hero is headed (Hud): a
 ##   bevelled arrow, gold for the main story, cream for anything else
 ##   followed, drawn for each of eight ways so its pixels stay square.
+## - The quill by the clock (Hud.Quill, PIX-302 step 4): a cream feather
+##   that writes a line as the game saves a moment.
 ## Told apart by their shapes (round bubble, spiky burst, arrow) and colours;
 ## each is ringed in the night, lit from the top left, so it reads on grass,
 ## sand, snow and in the dark of a cave. The world's marks are at the world's
@@ -117,6 +119,33 @@ const ARROW_TONES := {
 	"gold": {"L": UiStyle.BRASS_LIGHT, "F": UiStyle.GOLD, "S": UiStyle.BRASS, "D": UiStyle.BRASS_DARK},
 	"cream": {"L": UiStyle.KEY_LIGHT, "F": UiStyle.CREAM, "S": UiStyle.DUSK, "D": UiStyle.RIM},
 }
+## The quill by the clock (PIX-302 step 4), the HUD's word that the game
+## has saved: a feather leaning up to the right, lit along its top, its
+## shaft down the middle and a brass nib at the bottom left (`QUILL_NIB`),
+## where it writes. o the dark line, L the lit edge, F the fill, S the
+## shade, R the shaft, b the nib and d its point.
+const QUILL := [
+	"............ooo",
+	"..........ooLFo",
+	".........oLFFRo",
+	"........oLFFRSo",
+	".......oLFFRSSo",
+	"......oLFFRSSo.",
+	"......oLFRSSo..",
+	".....oLFRSo....",
+	"....oLFRSSo....",
+	"....oFRSoo.....",
+	"...oLRoo.......",
+	"..obo..........",
+	".obo...........",
+	"odo............",
+	"oo.............",
+]
+const QUILL_NIB := Vector2i(1, 13)
+const QUILL_INKS := {
+	"o": UiStyle.NIGHT, "L": UiStyle.KEY_LIGHT, "F": UiStyle.CREAM, "S": UiStyle.DUSK, "R": UiStyle.RIM,
+	"b": UiStyle.BRASS, "d": UiStyle.BRASS_DARK,
+}
 ## Where the light comes from: above, a little from the left (no way of the
 ## eight lies along it, so one half of the arrow is always the lit one).
 const LIGHT := Vector2(-0.45, -0.89)
@@ -154,6 +183,15 @@ static func arrow(way: int, main: bool) -> Texture2D:
 		art.resize(art.get_width() * UiStyle.UI_SCALE, art.get_height() * UiStyle.UI_SCALE, Image.INTERPOLATE_NEAREST)
 		_drawn[key] = ImageTexture.create_from_image(art)
 	return _drawn[key]
+
+
+## The quill (QUILL), at the UI's scale.
+static func quill() -> Texture2D:
+	if not _drawn.has("quill"):
+		var art := lettered(QUILL, QUILL_INKS)
+		art.resize(art.get_width() * UiStyle.UI_SCALE, art.get_height() * UiStyle.UI_SCALE, Image.INTERPOLATE_NEAREST)
+		_drawn["quill"] = ImageTexture.create_from_image(art)
+	return _drawn["quill"]
 
 
 ## Where the arrow's own middle is in its picture, at the UI's scale: past

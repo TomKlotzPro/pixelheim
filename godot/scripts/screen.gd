@@ -17,6 +17,9 @@ extends CanvasLayer
 
 ## Screens holding the world still right now.
 static var _holds := 0
+## GameState's changes as the first of them took hold: anything changed
+## since is saved as the last lets go (PIX-302 step 4).
+static var _changes_at := 0
 ## The screens open now, in the order they opened: the keys go to the top
 ## one only (PIX-199) - the highest layer, the latest among equals - so a
 ## screen hidden under another (the throne under a rank-up) never takes them.
@@ -183,6 +186,8 @@ func _hold() -> void:
 	if _holding:
 		return
 	_holding = true
+	if _holds == 0:
+		_changes_at = GameState.changes
 	_holds += 1
 	get_tree().paused = true
 
@@ -194,8 +199,10 @@ func _let_go() -> void:
 	_holds = maxi(0, _holds - 1)
 	if _holds == 0:
 		get_tree().paused = false
-		# What was done in the screens is kept now (PIX-200).
-		if GameState.dirty:
+		# What was done in the screens is kept now (PIX-200), a moment the
+		# quill shows (PIX-302 step 4): saved again even when the autosave
+		# kept it while they were open, so leaving after a change shows it.
+		if GameState.dirty or GameState.changes != _changes_at:
 			GameState.save_now()
 
 

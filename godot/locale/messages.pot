@@ -15813,6 +15813,22 @@ msgid "Just begun"
 msgstr ""
 
 #: scripts/state/slot_card.gd
+msgid "Saved %d h ago"
+msgstr ""
+
+#: scripts/state/slot_card.gd
+msgid "Saved %d min ago"
+msgstr ""
+
+#: scripts/state/slot_card.gd
+msgid "Saved %d s ago"
+msgstr ""
+
+#: scripts/state/slot_card.gd
+msgid "Saved just now"
+msgstr ""
+
+#: scripts/state/slot_card.gd
 msgid "just now"
 msgstr ""
 
@@ -16170,6 +16186,10 @@ msgstr ""
 
 #: scripts/world_hud.gd
 msgid "Boss slayer +%d%%  %d:%02d"
+msgstr ""
+
+#: scripts/world_hud.gd
+msgid "Saved"
 msgstr ""
 
 #: scripts/world_interaction.gd

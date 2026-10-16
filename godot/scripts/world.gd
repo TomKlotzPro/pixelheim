@@ -181,7 +181,8 @@ func _ready() -> void:
 		GameState.holdings.come_home(true)
 	# Resume where the save stands; `--map <id>` (harness) boots at that map's spawn.
 	var override := flags.has("--map")
-	# A save on a floor of a region's dungeon wakes at its entrance (PIX-255).
+	# A save on a floor of a region's dungeon wakes at the top of that
+	# floor (PIX-255, PIX-302 step 4).
 	var woke := Depths.waking(GameState.world.map_id, GameState.world.cell)
 	map = load_map(flags.value("--map", woke["mapId"]))
 	# A save standing in a doorway (the old doors into the caves, PIX-256)
@@ -475,9 +476,11 @@ func enter_map(next: MapData, arrival: Vector2i) -> void:
 	player.ailments.clear()
 	last_player_position = player.position
 	player_cell = arrival
-	# Crossing into a map is a moment worth keeping: save at once.
+	# Crossing into a map is a moment worth keeping: save at once, and the
+	# quill says so (PIX-302 step 4); the map the game opens on is saved
+	# quietly, nothing having happened yet.
 	GameState.move_to(next, arrival, player.facing)
-	GameState.save_now()
+	GameState.save_now(GameState.MOMENT if changing else GameState.QUIET)
 	# The place's name once the hero is there, not on a post by the way out
 	# (PIX-269); the map the game opens on is only noted.
 	hud.name_place(next, arrival, not changing)
@@ -817,6 +820,8 @@ func _build_hud() -> void:
 		if size.y > size.x:
 			hud.hint.call_deferred("turn")
 	GameState.settlers_changed.connect(folk.respawn)
+	# The quill by the clock writes as a moment is saved (PIX-302 step 4).
+	GameState.saved.connect(hud.on_saved)
 
 ## The keys, as the player bound them (Controls, GameSettings).
 func _setup_input() -> void:

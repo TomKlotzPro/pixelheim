@@ -18,18 +18,31 @@ extends Node
 ## Then the dawn and the collar play over the square (Cutscene, story.json)
 ## and the day begins with Fafnyr's scale in the fountain. A hero who falls
 ## tonight wakes in the inn's doorway and the beat begins again. Every way
-## out of town is shut till dawn. Nothing of the night is saved but its
-## end: a save made tonight plays it again from the bell.
+## out of town is shut till dawn. The night is saved as it goes (PIX-302
+## step 4): a save made tonight resumes at its beat, set out as a fall's
+## waking sets it, the lanterns lit and the roofs doused still so and the
+## embers left still standing (Fafnyr anew on the hold, its clock from the
+## start).
 
 ## How far a lit lantern's light reaches, in pixels.
 const LANTERN_REACH := 64.0
 
 var world: Node
 ## Tonight, while it runs: the lanterns lit and the roofs doused (their
-## indices), the embers still standing, the bucket in hand.
-var lit: Array[int] = []
-var doused: Array[int] = []
-var embers_left := 0
+## indices), the embers still standing - GameState's, so a save keeps them
+## (ProgressionState) - and the bucket in hand.
+var lit: Array[int]:
+	get:
+		return GameState.progression.bells_lit
+var doused: Array[int]:
+	get:
+		return GameState.progression.bells_doused
+var embers_left: int:
+	get:
+		return GameState.progression.bells_embers
+	set(value):
+		GameState.progression.bells_embers = value
+		GameState.mark_dirty()
 var bucket := false
 ## Fafnyr on the square, the dawn clock, and where the sky stood as the
 ## hold began.
@@ -80,12 +93,10 @@ func arrive(next: MapData) -> void:
 func begin() -> void:
 	if world.map == null or world.map.id != "town" or running():
 		return
-	lit.clear()
-	doused.clear()
-	embers_left = 0
 	bucket = false
 	acted.clear()
 	_said.clear()
+	# The beat, and nothing lit or doused yet (GameState's).
 	GameState.questing.bells_begin()
 	world.folk.respawn()
 	world.folk.keep_hours(true)
@@ -183,6 +194,7 @@ func _lantern(faced: Vector2i) -> bool:
 		world.messages.flash(String(Bells.data()["lanterns"]["again"]))
 		return true
 	lit.append(index)
+	GameState.mark_dirty()
 	if index < _lanterns.size() and is_instance_valid(_lanterns[index]):
 		light(_lanterns[index], index)
 	Sound.play_ui("confirm")
@@ -260,6 +272,7 @@ func _water(faced: Vector2i) -> bool:
 
 func _douse(roof: int) -> void:
 	doused.append(roof)
+	GameState.mark_dirty()
 	if _fires.has(roof):
 		world.view.douse(int(_fires[roof]))
 	Sound.play("heal")
