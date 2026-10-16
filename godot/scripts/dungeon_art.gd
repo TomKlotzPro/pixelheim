@@ -47,7 +47,11 @@ const PIECES := [
 	"timber_beam", "timber_post", "web_l", "web_r", "niche_skull",
 	"niche_urn", "banner_red", "banner_blue", "weed_a", "weed_b", "bones_a", "bones_b",
 	"rug_0", "rug_1", "rug_2", "rug_3", "rug_4", "rug_5", "rug_6", "rug_7", "rug_8",
+	"window",
 ]
+## A room's window without the paid pack (PIX-318): the crypt's niche with
+## nothing on its sill, an arched recess the day fills (LampArt.recess_panes).
+const NICHE_EMPTY := {"b": "n", "B": "n", "k": "n", "x": "n"}
 ## A rail's piece by the ways it runs (N, E, S, W).
 const RAIL_BY_WAYS := {
 	E | W: "rail_h", N | S: "rail_v", N | E: "rail_ne", E | S: "rail_es", S | W: "rail_sw", W | N: "rail_wn",
@@ -239,6 +243,8 @@ static func draw(name: String) -> Image:
 				_rows(image, NICHE_SKULL)
 			"niche_urn":
 				_rows(image, NICHE_URN)
+			"window":
+				_rows(image, NICHE_SKULL, NICHE_EMPTY)
 			"banner_red":
 				_rows(image, BANNER, BANNER_CLOTH["red"])
 			"banner_blue":

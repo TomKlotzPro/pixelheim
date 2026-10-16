@@ -84,6 +84,66 @@ const RUNS := {
 }
 
 
+## Without the paid pack (PIX-318: a fork, a build without the private art)
+## a room is drawn from Shade's CC0 sheets in the repository instead of
+## standing on grass, by the same rules: his Puny Dungeon's walls by its own
+## grammar round the room (the dark beyond), floors of his Puny World's pier
+## boards (his dungeon stone in the stone rooms), his dungeon's doorway, its
+## stair down in a ring of rug, and the furniture that has a CC0 likeness. A
+## piece is named "<sheet>:<tile>": "d" his Puny Dungeon, "w" his Puny World
+## (tile ids), and the pieces drawn in code in his palette, "a" DungeonArt's,
+## "h" HamletArt's and "r" RoomArt's (by name). What has no likeness (a bed,
+## an anvil, a shelf of trophies) isn't drawn and still stands in the way.
+const FREE_PLANKS := "w:752"
+const FREE_DOOR := "d:434"
+const FREE_DOOR_SHUT := "d:461"
+const FREE_STAIRWELL := "d:462"
+## The window: an arched recess in the back wall's face, the day in it
+## (LampArt.recess_panes) until night.
+const FREE_WINDOW := "a:window"
+## Furniture by web tile; barrels roll one of the dungeon's two.
+const FREE_FURNITURE := {
+	"hearth": "h:forge_stack", "forge": "h:forge_stack", "cauldron": "d:517", "crate": "h:box",
+	"counter": "w:844", "shelf": "w:846", "garden": "h:garden",
+}
+const FREE_BARRELS := ["d:515", "d:516"]
+## The pieces a fire burns in (the hearth's warmth and embers, PIX-221), and
+## where each light's flame burns in its cell: a torch's on the wall, a
+## lantern's glass (the candles' rule, PIX-311).
+const FREE_FIRES := ["h:forge_stack"]
+const FREE_FLAMES := {"d:16": Vector2(8, 5), "h:lantern": Vector2(8, 9)}
+## The furnished corners (interiors.json's vignettes) that have a likeness,
+## as the vignettes are written: rows above `floorRow` hang on the back
+## wall. Shade's dungeon torch for a wall lamp, a lantern for the candles,
+## his barrels, chests, pots, stone knight and winch wheel, banners, crates,
+## coal, a tub and creels drawn in code; Liane's stars as they are (a
+## RoomArt piece takes as many cells as it is big, named at its top left).
+const FREE_VIGNETTES := {
+	"wall_lamp": {"floorRow": 1, "objects": [[0, 0, "d:16"]]},
+	"candles": {"floorRow": 0, "objects": [[0, 0, "h:lantern"]]},
+	"side_lamp": {"floorRow": 0, "objects": [[0, 0, "h:lantern"]]},
+	"candelabra": {"floorRow": 0, "objects": [[0, 0, "h:lantern"]]},
+	"banner": {"floorRow": 1, "objects": [[0, 0, "a:banner_red"]]},
+	"barrels": {"floorRow": 0, "objects": [[0, 0, "d:515"], [1, 0, "d:516"], [1, 1, "d:515"]]},
+	"barrels_tall": {"floorRow": 0, "objects": [[0, 0, "d:516"], [0, 1, "d:515"], [0, 2, "d:516"]]},
+	"chest": {"floorRow": 0, "objects": [[0, 0, "d:489"]]},
+	"treasure": {"floorRow": 0, "objects": [[0, 0, "d:489"], [1, 0, "d:458"], [2, 0, "d:489"]]},
+	"crates": {"floorRow": 0, "objects": [[0, 0, "h:box"], [1, 0, "h:box"]]},
+	"crate_stack": {"floorRow": 0, "objects": [[0, 0, "h:box"], [0, 1, "h:box"]]},
+	"veg_crates": {"floorRow": 0, "objects": [[0, 0, "h:box"], [1, 0, "h:box"]]},
+	"pots": {"floorRow": 0, "objects": [[0, 0, "d:517"], [1, 0, "d:517"]]},
+	"coal_bins": {"floorRow": 0, "objects": [[0, 0, "h:coal"], [1, 0, "h:coal"]]},
+	"bucket": {"floorRow": 0, "objects": [[0, 0, "h:tub"]]},
+	"baskets": {"floorRow": 0, "objects": [[0, 0, "h:creels"], [1, 0, "h:creels"]]},
+	"grindstone": {"floorRow": 0, "objects": [[0, 0, "d:466"]]},
+	"knight_armor": {"floorRow": 0, "objects": [[0, 0, "d:491"]]},
+	"armor_stand": {"floorRow": 0, "objects": [[0, 0, "d:491"]]},
+	"telescope": {"floorRow": 0, "objects": [[0, 0, "r:telescope"]]},
+	"star_chart": {"floorRow": 1, "objects": [[0, 0, "r:star_chart"]]},
+	"star_globe": {"floorRow": 0, "objects": [[0, 0, "r:star_globe"]]},
+}
+
+
 static func is_room(map_id: String) -> bool:
 	return map_id in ROOMS
 
@@ -310,3 +370,158 @@ static func plan(map_id: String, grid: Dictionary) -> Dictionary:
 			tile = WINDOW
 		walls[cell] = tile
 	return {"floor": floor, "walls": walls, "pieces": pieces, "void": beyond, "blocked": blocked, "over": over}
+
+
+# ---- without the paid pack (PIX-318) -----------------------------------------
+
+## A room from Shade's CC0 sheets, as `plan` lays it with the pack: {"free":
+## true, "floor", "walls", "rug", "pieces": {cell: piece} (FREE_ names),
+## "windows": [cells] (their recess is drawn over the wall), "fires":
+## [cells], "void": [cells], "blocked": [] (every piece keeps to its own
+## cell), "over": {}}. The walls are the same cells as `plan`'s (those
+## touching the room, the windows along the back wall's straight runs where
+## nothing hangs), drawn by his dungeon's wall grammar (PunyDungeon): a wall
+## with the room south of it shows its face, any other its top, its ends
+## facing a door's gap.
+static func plan_free(map_id: String, grid: Dictionary) -> Dictionary:
+	var floor := {}
+	var walls := {}
+	var pieces := {}
+	var rug := {}
+	var beyond: Array[Vector2i] = []
+	var windows: Array[Vector2i] = []
+	var fires: Array[Vector2i] = []
+	var stone: bool = map_id in STONE_ROOMS
+	var inside := func(cell: Vector2i) -> bool:
+		return grid.has(cell) and grid[cell] != "wall" and not String(grid[cell]).begins_with("door")
+	for cell: Vector2i in grid:
+		var tile: String = grid[cell]
+		if inside.call(cell) or tile.begins_with("door"):
+			floor[cell] = "d:%d" % PunyDungeon.floor_tile(cell) if stone else FREE_PLANKS
+		match tile:
+			"door":
+				pieces[cell] = FREE_DOOR
+			"door_shut":
+				pieces[cell] = FREE_DOOR_SHUT
+			"barrel":
+				pieces[cell] = FREE_BARRELS[absi(hash(cell)) % FREE_BARRELS.size()]
+			"stairwell":
+				# The way down (PIX-256): the stair on stone, a rug round it.
+				floor[cell] = "d:%d" % PunyDungeon.FLOOR
+				pieces[cell] = FREE_STAIRWELL
+				for step: Vector2i in STAIRWELL_RING:
+					if grid.get(cell + step, "") == "floor":
+						rug[cell + step] = "a:rug_%d" % ((step.y + 1) * 3 + step.x + 1)
+			_:
+				if FREE_FURNITURE.has(tile):
+					pieces[cell] = FREE_FURNITURE[tile]
+					if FREE_FURNITURE[tile] in FREE_FIRES:
+						fires.append(cell)
+	# A wall the story has written on keeps it whole (Letters.drawn_on).
+	var leaning := {}
+	for piece: Dictionary in Letters.drawn_on(map_id):
+		var rect: Rect2i = piece["rect"]
+		for x in range(rect.position.x, rect.end.x):
+			for y in range(rect.position.y, rect.end.y):
+				leaning[Vector2i(x, y)] = true
+	var ring := {}
+	for cell: Vector2i in grid:
+		if grid[cell] != "wall":
+			continue
+		var touches := false
+		for dy in [-1, 0, 1]:
+			for dx in [-1, 0, 1]:
+				if inside.call(cell + Vector2i(dx, dy)):
+					touches = true
+		if touches:
+			ring[cell] = true
+		else:
+			beyond.append(cell)
+	var top := 1 << 20
+	for cell: Vector2i in ring:
+		top = mini(top, cell.y)
+	for cell: Vector2i in ring:
+		var east: bool = ring.has(cell + Vector2i.RIGHT)
+		var west: bool = ring.has(cell + Vector2i.LEFT)
+		var north: bool = ring.has(cell + Vector2i.UP)
+		var column := (1 if east and not west else 0) + (2 if east and west else 0) + (3 if west and not east else 0)
+		var tile: int
+		if grid.get(cell + Vector2i.DOWN, "wall") != "wall":
+			tile = PunyDungeon.COLUMN_FOOT if north and column == 0 else PunyDungeon.FACE[column]
+		else:
+			tile = PunyDungeon.TOP_RUN[column] if north else PunyDungeon.TOP_END[column]
+		walls[cell] = "d:%d" % tile
+		# The back wall's straight runs, as `plan` sets its windows.
+		if cell.y == top and east and west and not north and not ring.has(cell + Vector2i.DOWN) \
+				and cell.x % 4 == 1 and not leaning.has(cell):
+			windows.append(cell)
+	return {
+		"free": true, "floor": floor, "walls": walls, "rug": rug, "pieces": pieces, "windows": windows,
+		"fires": fires, "void": beyond, "blocked": [] as Array[Vector2i], "over": {},
+	}
+
+
+## A room dressed from the CC0 sheets (PIX-318), as `furnish` dresses it:
+## its rugs in DungeonArt's rug, and each vignette of its layout that has a
+## likeness (FREE_VIGNETTES), whole or not at all, by the same rules. {"rug",
+## "objects": {cell: piece}, "flames": [where each burns, in pixels],
+## "blocked": [cells], "skipped": [names]}.
+static func furnish_free(room_key: String, grid: Dictionary, reserved: Dictionary) -> Dictionary:
+	var out := {"rug": {}, "objects": {}, "flames": [], "blocked": [], "skipped": []}
+	var layout: Dictionary = interiors()["rooms"].get(room_key, {})
+	for rug: Array in layout.get("rugs", []):
+		var w := int(rug[3])
+		var h := int(rug[4])
+		for dy in h:
+			for dx in w:
+				var cell := Vector2i(int(rug[1]) + dx, int(rug[2]) + dy)
+				if grid.get(cell, "") != "floor":
+					continue
+				var col := 0 if dx == 0 else (2 if dx == w - 1 else 1)
+				var row := 0 if dy == 0 else (2 if dy == h - 1 else 1)
+				out["rug"][cell] = "a:rug_%d" % (row * 3 + col)
+	var taken := {}
+	for placement: Array in layout.get("pieces", []):
+		if not FREE_VIGNETTES.has(placement[0]):
+			out["skipped"].append(placement[0])
+			continue
+		var piece: Dictionary = FREE_VIGNETTES[placement[0]]
+		var origin := Vector2i(int(placement[1]), int(placement[2]) - int(piece["floorRow"]))
+		# Every cell each part takes, and whether it hangs on the wall.
+		var cells := {}
+		var fits := true
+		for part: Array in piece["objects"]:
+			var name := String(part[2])
+			var big := RoomArt.cells(name.trim_prefix("r:")) if name.begins_with("r:") else Vector2i.ONE
+			for dy in big.y:
+				for dx in big.x:
+					var row := int(part[1]) + dy
+					var cell := origin + Vector2i(int(part[0]) + dx, row)
+					var on_wall: bool = row < int(piece["floorRow"])
+					var tile: String = grid.get(cell, "")
+					if on_wall:
+						fits = fits and tile == "wall" and grid.get(cell + Vector2i.DOWN, "") != "wall"
+					else:
+						fits = fits and tile == "floor" and not reserved.has(cell) and not taken.has(cell)
+					cells[cell] = on_wall
+		if not fits:
+			out["skipped"].append(placement[0])
+			continue
+		for part: Array in piece["objects"]:
+			var cell := origin + Vector2i(int(part[0]), int(part[1]))
+			out["objects"][cell] = String(part[2])
+			if FREE_FLAMES.has(part[2]):
+				out["flames"].append(Vector2(cell * 16) + FREE_FLAMES[part[2]])
+		for cell: Vector2i in cells:
+			taken[cell] = true
+			if not cells[cell]:
+				out["blocked"].append(cell)
+	return out
+
+
+## Where a CC0 room's piece is drawn from: [its sheet's letter, its tile id
+## (Shade's sheets) or name (the pieces drawn in code)].
+static func free_piece(piece: String) -> Array:
+	var sheet := piece.get_slice(":", 0)
+	var tile := piece.get_slice(":", 1)
+	return [sheet, int(tile) if sheet in ["d", "w"] else tile]

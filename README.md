@@ -6,7 +6,7 @@
 
 <p align="center">
   <b>A retro pixel-art open-world RPG in Godot 4.7: a village the dragon burned, the courier who stayed, the Reach's regions and the relics they keep - and the mountain last.</b><br />
-  The village burned. You stayed. Currently v0.243 - 1.0 has to be earned.
+  The village burned. You stayed. Currently v0.244 - 1.0 has to be earned.
 </p>
 
 ---
@@ -71,7 +71,7 @@ python3 godot/tools/vignettes.py <pixelheim-assets checkout>  # re-lift Shade's 
 python3 godot/tools/mapgen.py                                 # maps from their sketches in godot/maps-src/
 ```
 
-**Paid art.** The town's houses, props and rooms use Shade's paid _Puny World Medieval Age_ pack, and the item, skill and ailment icons come from his paid icon packs (with his free CC0 ones). None of the paid art may be redistributed, so it lives in the private `TomKlotzPro/pixelheim-assets` repository (`retro-rpg/shade/`). `scripts/fetch-private-art.sh` installs it with your GitHub login, and the deploy fetches it with a read-only deploy key. Without it the game still runs on Shade's free art alone: the town's houses, props and paid icons are missing (its street lamps, drawn in his palette in code, still stand).
+**Paid art.** The town's houses, props and rooms use Shade's paid _Puny World Medieval Age_ pack, and the item, skill and ailment icons come from his paid icon packs (with his free CC0 ones). None of the paid art may be redistributed, so it lives in the private `TomKlotzPro/pixelheim-assets` repository (`retro-rpg/shade/`). `scripts/fetch-private-art.sh` installs it with your GitHub login, and the deploy fetches it with a read-only deploy key. Without it the game still runs on Shade's free art alone: the town's houses, props and paid icons are missing (its street lamps, drawn in his palette in code, still stand), and the rooms are built from his free dungeon and world sheets, their walls, floors, doors, windows, stairs and the furniture that has a free likeness (a harness run's `cc0` holds the pack back to check it).
 
 More on the Godot project - the save format, the screenshot harness, the release flows, web export - in [`godot/README.md`](godot/README.md).
 

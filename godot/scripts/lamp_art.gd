@@ -96,6 +96,8 @@ const PANE_BARS := Color("c9772e")
 const SKY_TOP := Color("e3f1f6")
 const SKY_LOW := Color("b9d6e4")
 const SKY_BARS := Color("8fb3c8")
+## Where the glazing bars cross in a recess's window (PIX-318), in its pixels.
+const RECESS_BARS := Vector2i(7, 6)
 
 
 ## `rows` drawn in PALETTE (a "." is clear), as an image.
@@ -115,6 +117,7 @@ static var _glass: SpriteFrames
 static var _stake: ImageTexture
 static var _panes: ImageTexture
 static var _day_panes: ImageTexture
+static var _recess_panes: ImageTexture
 
 
 ## The street lamp, cold (its post and lantern, by day and night alike).
@@ -162,6 +165,22 @@ static func day_panes() -> ImageTexture:
 	if _day_panes == null:
 		_day_panes = _glazed(SKY_TOP, SKY_LOW, SKY_BARS)
 	return _day_panes
+
+
+## A room's window without the paid pack (PIX-318), by day: the sky in the
+## arched recess DungeonArt cuts in a wall's face (its `window`), glazed
+## as the pack's window is, a bar down its middle and one across.
+static func recess_panes() -> ImageTexture:
+	if _recess_panes == null:
+		var recess := DungeonArt.draw("window")
+		var dark: Color = DungeonArt.INKS["n"]
+		var image := Image.create(16, 16, false, Image.FORMAT_RGBA8)
+		for y in 16:
+			for x in 16:
+				if recess.get_pixel(x, y).is_equal_approx(dark):
+					image.set_pixel(x, y, SKY_BARS if x == RECESS_BARS.x or y == RECESS_BARS.y else (SKY_TOP if y < RECESS_BARS.y else SKY_LOW))
+		_recess_panes = ImageTexture.create_from_image(image)
+	return _recess_panes
 
 
 ## The window tile (the paid pack's) with only its glass left, `top` above

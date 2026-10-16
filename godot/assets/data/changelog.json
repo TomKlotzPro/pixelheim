@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.244.0",
+      "date": "2026-10-16",
+      "codename": "Four Walls",
+      "notes": [
+        "Without the paid art pack, rooms are built from the free art: walls, floors, doors, windows with the sky in them, stairs, rugs, hearths and lanterns, instead of a hero standing on grass"
+      ]
+    },
+    {
       "version": "0.243.0",
       "date": "2026-10-16",
       "codename": "Cinders",
