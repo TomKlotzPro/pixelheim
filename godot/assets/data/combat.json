@@ -222,24 +222,6 @@
         "power": 9
       }
     },
-    "lich": {
-      "id": "lich",
-      "name": "Morvax the Deathless",
-      "sprite": "lich",
-      "maxHp": 1500,
-      "attack": 52,
-      "defense": 12,
-      "xp": 350,
-      "gold": 700,
-      "level": 15,
-      "inflicts": {
-        "kind": "poison",
-        "chance": 0.45,
-        "turns": 3,
-        "power": 10
-      },
-      "retired": true
-    },
     "crab": {
       "id": "crab",
       "name": "Giant Crab",
@@ -1479,8 +1461,7 @@
     }
   },
   "bossIds": [
-    "dragon",
-    "lich"
+    "dragon"
   ],
   "bossPatterns": {
     "dragon": {
@@ -1506,32 +1487,6 @@
       "roars": [
         "Fafnyr rears up - the air shimmers with heat!",
         "Fafnyr's scales split with fire - the cave is burning!"
-      ]
-    },
-    "lich": {
-      "every": [
-        4.0,
-        3.2,
-        2.6
-      ],
-      "phases": [
-        [
-          "ring"
-        ],
-        [
-          "ring",
-          "summon"
-        ],
-        [
-          "summon",
-          "ring",
-          "ring"
-        ]
-      ],
-      "summon": "skeleton",
-      "roars": [
-        "Morvax raises a bony hand - the dead answer!",
-        "Morvax laughs, and the floor goes cold beneath you!"
       ]
     }
   },
@@ -1823,7 +1778,6 @@
     "ghost": "undead",
     "shade": "undead",
     "boneknight": "undead",
-    "lich": "undead",
     "golem": "constructs",
     "mimic": "constructs",
     "imp": "fireborn",

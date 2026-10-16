@@ -51,12 +51,14 @@ Pixelheim's own save format, v5 (`save_codec.gd`): the format's version and
 the game's, when it was saved and the time played, a card the Saves screen
 reads alone (name, class, look, level, place, chapter, time played), then a
 section for each part of the game (hero, pack, home, town, story, quests,
-world, buffs, and legacy for what only old saves still read), the fog of war
-a bitmap per map. A fully explored hero's save is 9 KB (298 KB in the first
-edition's format). Until the beta a change old saves can't take bumps the
-version with no migration: a slot holding a save from before v5 (the first
-edition's `slot_<n>.json`) shows as an older version's, never free and never
-written. Device settings live apart in `user://settings.cfg`.
+world, the Post, buffs), the fog of war a bitmap per map. A fully explored
+hero's save is 9 KB (298 KB in the first edition's format). Until the beta
+there is no backward compatibility: nothing reads what only an old save
+held (the old mountain's floors, the Deep Hunt, the old throne's endings),
+and a change old saves can't take bumps the version with no migration: a
+slot holding a save from before v5 (the first edition's `slot_<n>.json`)
+shows as an older version's, never free and never written. Device settings
+live apart in `user://settings.cfg`.
 
 No hero is lost to a file (`save_slots.gd`): a save is written to a temp
 file, read back and decoded, then the slot's file becomes `slot_<n>.save.bak`

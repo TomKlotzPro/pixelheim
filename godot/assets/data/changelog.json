@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.250.0",
+      "date": "2026-10-16",
+      "codename": "Housekeeping",
+      "notes": [
+        "Behind the scenes: everything the game kept only so very old saves would still load is gone, leaving it lighter and simpler (the game isn't in beta yet)",
+        "A hero saved out on the open ash near the old mountain cave now wakes where they stood, instead of back in town"
+      ]
+    },
+    {
       "version": "0.249.0",
       "date": "2026-10-16",
       "codename": "Twelve Threads",

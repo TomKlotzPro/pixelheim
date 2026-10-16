@@ -98,19 +98,15 @@ static func age_blockers(tier_number: int, progression: ProgressionState, settle
 	for need: Dictionary in age(tier_number).get("requires", []):
 		var met := true
 		match String(need["kind"]):
-			"cleared":
-				met = int(need["level"]) in progression.cleared_levels
 			"settlers":
 				met = settlement.settlers.size() >= int(need["count"])
 			"relics":
-				# The ages come from the Reach's chapters too (PIX-170); a
-				# hero who climbed first still has the floor that did it.
-				met = Relics.found(progression) >= int(need["count"]) or int(need.get("orCleared", 0)) in progression.cleared_levels
+				# The ages come from the Reach's chapters (PIX-170).
+				met = Relics.found(progression) >= int(need["count"])
 			"freed":
 				# The age after the Night of Bells (PIX-253 step 10): the
-				# dragon freed at dawn, or slain on the old mountain by a
-				# hero who never had the night, or the old floor 15.
-				met = Homecoming.dragon_done(progression, settlement) or int(need.get("orCleared", 0)) in progression.cleared_levels
+				# dragon freed at dawn.
+				met = Homecoming.dragon_done(progression)
 		if not met:
 			out.append(need["line"])
 	return out
@@ -603,9 +599,6 @@ static func next_house_tier(owned: bool, tier: int) -> Dictionary:
 
 ## Stats a trophy lends while it stands on the shelf (trophyStatDelta).
 static func trophy_stat_delta(item_id: String) -> Dictionary:
-	# The Deep Hunt's crystals (PIX-216) say theirs in town.json.
-	if trophy_buffs().get(item_id, {}).has("stats"):
-		return trophy_buffs()[item_id]["stats"]
 	match item_id:
 		"dragon_scale":
 			return {"defense": 2}

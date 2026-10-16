@@ -52,8 +52,8 @@ func test_a_new_hero_has_the_main_story_alone_and_follows_it() -> void:
 
 func test_threads_are_grouped_story_town_bounties_and_the_kept_are_gone() -> void:
 	_stage()
-	# Floor 2 cleared: Old Greymaw's notice goes up.
-	state.progression.cleared_levels.append(2)
+	# The ladle won: Old Greymaw's notice goes up (PIX-170).
+	state.progression.hunted.append("tidecaller")
 	var rows := _rows()
 	var groups := rows.map(func(row: Dictionary) -> String: return row["group"])
 	assert_eq(groups, ["story", "story", "story", "people", "people", "people", "bounties"], "in the page's order")
@@ -98,7 +98,7 @@ func test_following_a_quest_and_the_story_again() -> void:
 
 
 func test_a_bounty_followed_leads_to_its_lair() -> void:
-	state.progression.cleared_levels.append(2)
+	state.progression.hunted.append("tidecaller")
 	Journal.follow(state.progression, "greymaw")
 	var lead := Bearing.active(state.progression, state.settlement, state.pack.items)
 	assert_false(lead["main"])
@@ -126,7 +126,7 @@ func test_a_quest_handed_in_is_let_go() -> void:
 
 
 func test_a_bounty_slain_is_let_go() -> void:
-	state.progression.cleared_levels.append(2)
+	state.progression.hunted.append("tidecaller")
 	Journal.follow(state.progression, "greymaw")
 	state.spoils.hunted("greymaw")
 	assert_eq(state.progression.tracked, "", "its quarry is dead")

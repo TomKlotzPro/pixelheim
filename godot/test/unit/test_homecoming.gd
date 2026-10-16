@@ -1,15 +1,13 @@
 extends GutTest
 ## Coming Home (PIX-253 step 10, chapter 8): once the collar is off Morvax
-## waits by the fountain with one question - at his forge for a hero who
-## slew Fafnyr on the old mountain - and the courier's answer is the story's
-## last word. "Come home." and he sits on the bench by the fountain,
+## waits by the fountain with one question, and the courier's answer is the
+## story's last word. "Come home." and he sits on the bench by the fountain,
 ## arguing with Maren a different way each day; "Stay with them." and he is
 ## up at his forge but for festival days. Both endings tour Hilda's forge
-## (Fafnyr on her roof, or Hilda alone for a slayer) and Maren. The City is
-## the age after the Night of Bells. Old saves keep their ending and City.
+## (Fafnyr on her roof) and Maren. The City is the age after the Night of
+## Bells.
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
-const LATE := "res://test/fixtures/web_save_late.json"
 ## Morvax's forge, where step 8 put him.
 const FORGE := Vector2i(8, 4)
 
@@ -152,7 +150,7 @@ func test_stay_with_them_and_he_comes_down_on_festival_days() -> void:
 
 func test_the_endings_stop_at_hildas_forge_and_at_maren() -> void:
 	_after_the_night()
-	var forge := Homecoming.forge_words(state.progression, state.settlement)
+	var forge := Homecoming.forge_words()
 	assert_string_contains(forge["line"], "Fafnyr warms his belly on Hilda's new forge")
 	assert_eq(forge["detail"], "Hilda pays him a cheese wheel a day. Bram calls it the cheese's finest hour.")
 	var ruin: Array = Town.project("hildas_forge")["ruins"][0]["rect"]
@@ -162,10 +160,6 @@ func test_the_endings_stop_at_hildas_forge_and_at_maren() -> void:
 	assert_string_contains(Homecoming.reply(Homecoming.HOME), "stew")
 	assert_eq(Homecoming.reply_at(Homecoming.HOME), Homecoming.bench(), "at his bench, coming home")
 	assert_eq(Homecoming.reply_at(Homecoming.STAY), Vector2i(40, 4), "at the town's gate, going back up")
-	# Maren's own last words are for the old throne's endings: his choice
-	# leaves her the day's argument.
-	for entry: Dictionary in Story._data()["elderLines"]:
-		assert_false(String(entry.get("ending", "")) in [Homecoming.HOME, Homecoming.STAY], "%s: not for his choice" % entry["id"])
 
 
 # ---- The City -----------------------------------------------------------------
@@ -190,67 +184,7 @@ func test_the_city_is_the_age_after_the_night_of_bells() -> void:
 	assert_eq(Town.project_blocker("grand_avenue", state.progression, state.settlement, 99999, {"ember_shard": 99}), "")
 
 
-func test_a_dragon_slayer_and_an_old_save_have_their_city() -> void:
-	state.progression.cleared_levels.assign(range(1, 11))
-	assert_false(_city_blocked(), "Fafnyr slain on the old mountain: no night to wait for")
-	var old: Node = autofree(GameStateScript.new())
-	old.new_game("Ada", "mage")
-	old.progression.cleared_levels.assign(range(1, 16))
-	assert_false(_city_blocked(old), "Morvax cast down: the old floor 15")
-
-
-# ---- Old saves ----------------------------------------------------------------
-
-## A hero who saw the old game's ending keeps it: his choice met, nobody
-## asks, Morvax where step 8 left him, Maren her old last words.
-func test_an_old_ending_is_kept() -> void:
-	state.progression.cleared_levels.assign(range(1, 16))
-	state.mark_seen("ending")
-	assert_eq(_next(), "")
-	assert_eq(Story.ending_of(state.progression.story_seen), "destroy")
-	assert_eq(Homecoming.chosen(state.progression), "", "not one of his two")
-	assert_false(Homecoming.choice_due(state.progression, state.settlement))
-	assert_true(_morvax_on("town").is_empty())
-	assert_eq(Homecoming.maren_word(state.progression, 0), "")
-	assert_false(_city_blocked())
-
-
-## The late web hero who cast Morvax down on the old mountain: the story
-## told, the City theirs to build, nobody asking.
-func test_the_late_web_hero_is_never_asked() -> void:
-	var late := SaveCodec.parse_any(FileAccess.get_file_as_string(LATE))
-	state.apply(late.duplicate(true))
-	assert_eq(_next(), "", "their story is told")
-	assert_false(Homecoming.choice_due(state.progression, state.settlement))
-	assert_eq(Homecoming.chosen(state.progression), "")
-	assert_false(_city_blocked(), "the City asks nothing more of them")
-	assert_eq(state.settlement.town_tier, int(late["townTier"]), "their town as it was")
-
-
-## A hero who slew Fafnyr on the old mountain never had the night: the
-## letter read to a quiet mountain, Morvax asks at his forge, and Hilda
-## lights her forge alone.
-func test_a_dragon_slayer_is_asked_at_morvaxs_forge() -> void:
-	state.progression.cleared_levels.assign(range(1, 11))
-	state.mark_seen(Letters.scene_id())
-	state.questing.finish_dialogue("elder")
-	state.questing.finish_dialogue("mountain_morvax")
-	assert_eq(_next(), "morvax_choice")
-	assert_true(Homecoming.choice_due(state.progression, state.settlement))
-	assert_false(Bells.over(state.progression), "no night, no collar")
-	var morvax := _morvax_on("morvax_forge")
-	assert_eq([int(morvax["x"]), int(morvax["y"])], [FORGE.x, FORGE.y], "asked where he is")
-	assert_eq(morvax["lines"], Homecoming.data()["ask"])
-	assert_true(_morvax_on("town").is_empty())
-	var lead := Bearing.active(state.progression, state.settlement, state.pack.items)
-	assert_eq([lead["map_id"], lead["cell"]], ["morvax_forge", FORGE])
-	var forge := Homecoming.forge_words(state.progression, state.settlement)
-	assert_false("Fafnyr" in String(forge["line"]) + String(forge["detail"]), "no Fafnyr on Hilda's forge for them")
-	assert_string_contains(forge["line"], "Hilda lights her new forge herself")
-	state.mark_seen(Story.ending_scene(Homecoming.HOME))
-	assert_eq(_next(), "")
-	assert_false(_morvax_on("town").is_empty(), "and home he comes")
-
+# ---- His face -----------------------------------------------------------------
 
 ## Morvax has a face of his own beside Maren: Shade drew one old man.
 func test_morvax_has_a_face_of_his_own_beside_maren() -> void:

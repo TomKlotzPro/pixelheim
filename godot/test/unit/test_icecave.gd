@@ -307,19 +307,6 @@ func test_a_save_with_askes_letter_still_to_deliver_brings_him_home_on_delivery(
 	assert_true(reloaded.holdings.is_settled("frost_aske"))
 
 
-func test_the_late_web_save_loads_and_plays() -> void:
-	var late := SaveCodec.parse_any(FileAccess.get_file_as_string("res://test/fixtures/web_save_late.json"))
-	state.apply(late.duplicate(true))
-	assert_eq(state.hero.hero_name, "Hrafna")
-	var woke := Depths.waking(state.world.map_id, state.world.cell)
-	assert_true(MapData.load_by_id(woke["mapId"]).is_walkable(woke["cell"]), "it wakes on open ground")
-	for map_id: String in FLOORS:
-		assert_gt(MapData.load_by_id(map_id).size.x, 0, "%s loads for it" % map_id)
-	if "rimefang" in state.progression.hunted:
-		assert_true(state.holdings.is_settled("frost_aske"), "the lantern won: Aske is home")
-	assert_eq(state.town_tier(), int(late["townTier"]), "and its town keeps its age")
-
-
 # ---- Aske comes home ----------------------------------------------------------------
 
 func test_aske_comes_home_once_his_letter_is_delivered_and_the_lantern_won() -> void:
@@ -426,11 +413,10 @@ func test_an_older_towns_age_is_kept() -> void:
 
 func test_the_third_dream_comes_the_first_night_after_aske_is_home() -> void:
 	var seen := ["dream_courier", "dream_lamps"]
-	assert_eq(Story.next_dream([], seen, ["mines_pell"]), "", "nothing yet")
-	assert_eq(Story.next_dream([], seen, ["mines_pell", "frost_aske"]), "dream_corners", "very large, very old")
-	assert_eq(Story.next_dream([], ["dream_courier"], ["mines_pell", "frost_aske"]), "dream_lamps", "the old man counting lamps first")
-	assert_eq(Story.next_dream([1, 2, 3], seen, ["mines_pell", "frost_aske"]), "dream_corners", "before the old climb's")
-	assert_eq(Story.next_dream([], seen + ["dream_corners"], ["mines_pell", "frost_aske"]), "", "once")
+	assert_eq(Story.next_dream(seen, ["mines_pell"]), "", "nothing yet")
+	assert_eq(Story.next_dream(seen, ["mines_pell", "frost_aske"]), "dream_corners", "very large, very old")
+	assert_eq(Story.next_dream(["dream_courier"], ["mines_pell", "frost_aske"]), "dream_lamps", "the old man counting lamps first")
+	assert_eq(Story.next_dream(seen + ["dream_corners"], ["mines_pell", "frost_aske"]), "", "once")
 	var said := []
 	for step: Dictionary in Cutscene.scenes()["dream_corners"]:
 		if step["kind"] == "caption":

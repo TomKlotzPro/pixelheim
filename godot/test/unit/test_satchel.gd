@@ -161,7 +161,8 @@ func test_the_arrow_is_gold_only_while_it_leads_the_main_story() -> void:
 	Journal.follow(state.progression, "cheese_run")
 	arrow.main = Bearing.tells_story(_lead())
 	assert_eq(arrow.ink(), UiStyle.CREAM, "a side quest followed")
-	state.progression.cleared_levels.append(2)
+	# The ladle won posts Greymaw's notice (PIX-170).
+	state.progression.hunted.append("tidecaller")
 	Journal.follow(state.progression, "greymaw")
 	assert_false(Bearing.tells_story(_lead()), "and a bounty")
 	Journal.follow(state.progression, "letter_pell")
@@ -194,9 +195,12 @@ func test_the_main_story_waits_behind_a_side_quest() -> void:
 	assert_true(behind["main"], "behind the cheese, the story")
 	assert_eq(behind, Bearing.main(state.progression, state.settlement, state.pack.items))
 	assert_eq(behind["who"], "innkeeper", "its next step: Sela's work")
-	state.progression.cleared_levels.append(2)
+	# The ladle won posts Greymaw's notice (PIX-170).
+	state.progression.hunted.append("tidecaller")
 	Journal.follow(state.progression, "greymaw")
-	assert_eq(Bearing.behind(_lead(), state.progression, state.settlement, state.pack.items)["who"], "elder", "and behind a bounty: a floor of the old mountain cleared is past its gate, Maren's story next (PIX-257)")
+	behind = Bearing.behind(_lead(), state.progression, state.settlement, state.pack.items)
+	assert_true(behind["main"], "and behind a bounty, the story")
+	assert_eq(behind, Bearing.main(state.progression, state.settlement, state.pack.items))
 
 
 func test_the_map_keeps_the_main_story_as_a_hollow_diamond() -> void:
@@ -264,8 +268,7 @@ func test_a_hero_who_ran_ahead_sees_only_the_chapter_they_are_in() -> void:
 	for named: String in ["tidecaller", "seam_warden", "hollow_captain"]:
 		state.progression.hunted.append(named)
 	assert_eq(MainQuest.card_due(state.progression, state.settlement), 5, "the Frostgate's, not the three before it")
-	var told := SaveCodec.parse_any(FileAccess.get_file_as_string("res://test/fixtures/web_save_late.json"))
-	state.apply(told)
+	state.mark_seen(Story.ending_scene(Homecoming.HOME))
 	assert_eq(MainQuest.card_due(state.progression, state.settlement), 0, "a story told has no card left")
 
 

@@ -345,16 +345,9 @@ static func way_out_toward(map: MapData, to_map: String, from: Vector2i) -> Vect
 
 ## Where a hero saved at `cell` of `map_id` wakes: at the top of the floor
 ## the save stands on (PIX-302 step 4: `top`, its stair up, no longer the
-## dungeon's way in from every floor); in town when it stands by a way
-## that's shut now (`shut`, PIX-257: the Undermountain's cave, filled in);
-## anywhere else, where it stood (by the mountain's gate, for a save made
-## on its old floors: the save kept the gate). {mapId, cell}.
+## dungeon's way in from every floor); anywhere else, where it stood.
+## {mapId, cell}.
 static func waking(map_id: String, cell: Vector2i) -> Dictionary:
-	for way: Dictionary in _data().get("shut", []):
-		var rect: Array = way["rect"]
-		if String(way["mapId"]) == map_id and Rect2i(int(rect[0]), int(rect[1]), int(rect[2]), int(rect[3])).has_point(cell):
-			var home: Dictionary = Catalog._data()["townSpawn"]
-			return {"mapId": String(home["mapId"]), "cell": Vector2i(int(home["x"]), int(home["y"]))}
 	if floor_of(map_id).is_empty():
 		return {"mapId": map_id, "cell": cell}
 	return {"mapId": map_id, "cell": top(map_id)}

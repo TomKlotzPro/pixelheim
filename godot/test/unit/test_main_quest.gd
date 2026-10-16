@@ -17,30 +17,18 @@ func _next() -> String:
 	return MainQuest.next_step(state.progression, state.settlement).get("id", "")
 
 
-## An old save's floor of the old mountain, cleared before the floors left
-## play (PIX-257): the save keeps it, nothing clears one now.
-func _old_floor(level: int) -> void:
-	if level not in state.progression.cleared_levels:
-		state.progression.cleared_levels.append(level)
-
-
-func test_every_step_names_a_real_quest_or_floor() -> void:
+func test_every_step_names_something_real() -> void:
 	var ids := {}
 	for step: Dictionary in MainQuest.steps():
 		assert_false(ids.has(step["id"]), "%s once" % step["id"])
 		ids[step["id"]] = true
 		_names_something_real(step)
-		# An old save's other way to meet it (PIX-257): the old mountain's
-		# floors, cleared before they left play.
-		var other: Dictionary = step["when"].get("or", {})
-		if not other.is_empty():
-			assert_has(["cleared", "climbed"], other["kind"], "%s: its `or` is an old save's floors" % step["id"])
-			if other["kind"] == "cleared":
-				assert_between(int(other["level"]), 1, Catalog.level_count())
 		assert_ne(step["hint"], "")
-	# The old mountain's floors left play (PIX-257): no step asks for one.
-	for step: Dictionary in MainQuest.steps():
-		assert_ne(step["when"]["kind"], "cleared", "%s asks for a floor that left play" % step["id"])
+		# The old mountain's floors left play (PIX-257) and the old saves
+		# that cleared them (PIX-319): no step asks for one, or is met by one.
+		assert_false(step["when"].has("or"), "%s is met one way" % step["id"])
+	for chapter: Dictionary in MainQuest.chapters():
+		assert_false(chapter.has("skipIf"), "%s: every hero plays it" % chapter["title"])
 
 
 func _names_something_real(step: Dictionary) -> void:
@@ -104,27 +92,21 @@ func test_the_story_starts_with_marens_tin_and_follows_the_real_rules() -> void:
 	assert_eq(_next(), "letter_wenna", "Maren asked for the relics with the tin: the first letter")
 
 
-## The old mountain's floors left play (PIX-257): a save that cleared any
-## of them is past its gate, and the story asks for Maren's confession next
-## (PIX-253 step 8), never for the letters or the floors behind it.
+## A hero with the four keepsakes home is asked for Maren's confession next
+## (PIX-253 step 8), never for the letters or the errands behind it.
 func test_running_ahead_never_sends_the_hero_back() -> void:
-	state.progression.unlocked_level = 3
-	_old_floor(3)
-	assert_eq(_next(), "confession", "past the mountain's gate: the brew, the inn and the letters are behind now")
+	state.progression.quests[Relics.quest_id()] = {"progress": 4, "done": true}
+	assert_eq(_next(), "confession", "the keepsakes home: the brew, the inn and the letters are behind now")
 	state.mark_seen("maren_confession")
 	assert_eq(_next(), "letter_morvax")
-	state.progression.unlocked_level = 10
-	_old_floor(10)
 	state.progression.quests["letter_morvax"] = {"progress": 1, "done": true}
-	assert_eq(_next(), "morvax_choice", "Fafnyr slain on the old mountain: no Night of Bells, and Morvax's choice")
-	assert_eq(MainQuest.continued(state.progression, state.settlement), "", "the story is written to its end")
+	assert_eq(_next(), "run_home", "the letter delivered: the Night of Bells")
 
 
 func test_a_grown_town_never_skips_the_mountain() -> void:
 	state.settlement.town_tier = 4
 	assert_eq(_next(), "tin", "the projects are done, the story isn't")
-	state.progression.unlocked_level = 9
-	_old_floor(9)
+	state.progression.quests[Relics.quest_id()] = {"progress": 4, "done": true}
 	assert_eq(_next(), "confession")
 
 
@@ -156,8 +138,7 @@ func test_the_night_of_bells_follows_the_night() -> void:
 
 
 func test_the_end_is_quiet() -> void:
-	state.progression.unlocked_level = 15
-	_old_floor(15)
+	state.mark_seen(Story.ending_scene(Homecoming.HOME))
 	assert_eq(_next(), "")
 	assert_eq(MainQuest.objective(state.progression, state.settlement), "", "no line once it's done")
 	assert_string_contains(MainQuest.hint(state.progression, state.settlement), "Pixelheim is safe")

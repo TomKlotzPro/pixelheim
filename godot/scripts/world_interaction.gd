@@ -351,7 +351,7 @@ func talk(npc: Dictionary) -> void:
 	# (Questing.hear_out).
 	if npc["id"] == "elder" and Letters.fifth_due(GameState.progression, GameState.settlement):
 		npc = npc.duplicate()
-		npc["lines"] = Letters.fifth_lines(GameState.progression, GameState.settlement)
+		npc["lines"] = Letters.confession_lines()
 		box.npc = npc
 		world.add_child(box)
 		return
@@ -360,8 +360,8 @@ func talk(npc: Dictionary) -> void:
 	var letter := GameState.questing.letter_for(npc["id"])
 	if not letter.is_empty():
 		npc = npc.duplicate()
-		npc["lines"] = Letters.answer(letter, GameState.progression, GameState.settlement)
-		var then := Letters.then_lines(letter, GameState.progression, GameState.settlement)
+		npc["lines"] = Letters.answer(letter)
+		var then := Letters.then_lines(letter)
 		if not then.is_empty():
 			var who: Dictionary = npc
 			GameState.dialogue_closed.connect(func(_who: String) -> void: world.stage.mountain_shakes(who, then), CONNECT_ONE_SHOT)
@@ -392,7 +392,7 @@ func talk(npc: Dictionary) -> void:
 			world.add_child(box)
 			return
 	# What they say once a letter carried to them is answered (Morvax).
-	var after := Letters.after_lines(npc["id"], GameState.progression, GameState.settlement)
+	var after := Letters.after_lines(npc["id"], GameState.progression)
 	if not after.is_empty():
 		npc = npc.duplicate()
 		npc["lines"] = after
@@ -403,9 +403,10 @@ func talk(npc: Dictionary) -> void:
 		if word != "":
 			npc = npc.duplicate()
 			npc["lines"] = [word] + Array(npc["lines"])
-	# Maren tells what the hero's floors have earned, once each (PIX-153).
+	# Maren tells each relic's story once its boss is down, once each
+	# (PIX-153, PIX-170).
 	if npc["id"] == "elder":
-		var told := Story.elder_story(GameState.progression.cleared_levels, GameState.progression.story_seen, GameState.progression.hunted)
+		var told := Story.elder_story(GameState.progression.story_seen, GameState.progression.hunted)
 		if not told.is_empty():
 			npc = npc.duplicate()
 			npc["lines"] = told["lines"]

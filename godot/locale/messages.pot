@@ -385,39 +385,11 @@ msgid "Crimson wool from the western looms. Ties the room together. Placed at ho
 msgstr ""
 
 #: assets/data/catalog.json
-msgid "Crystal of the Fifteenth Depth"
-msgstr ""
-
-#: assets/data/catalog.json
-msgid "Crystal of the Fifth Depth"
-msgstr ""
-
-#: assets/data/catalog.json
-msgid "Crystal of the Fiftieth Depth"
-msgstr ""
-
-#: assets/data/catalog.json
-msgid "Crystal of the Tenth Depth"
-msgstr ""
-
-#: assets/data/catalog.json
-msgid "Crystal of the Thirtieth Depth"
-msgstr ""
-
-#: assets/data/catalog.json
-msgid "Crystal of the Twentieth Depth"
-msgstr ""
-
-#: assets/data/catalog.json
 msgid "Cures burning and restores 5 HP. Apply liberally, scream less."
 msgstr ""
 
 #: assets/data/catalog.json
 msgid "Cures poison and restores 5 HP. Tastes like swamp, works like magic."
-msgstr ""
-
-#: assets/data/catalog.json
-msgid "Cut from the warden's lair. It hums when you hold it near the stair."
 msgstr ""
 
 #: assets/data/catalog.json
@@ -430,10 +402,6 @@ msgstr ""
 
 #: assets/data/catalog.json
 msgid "Deep Root"
-msgstr ""
-
-#: assets/data/catalog.json
-msgid "Deeper than the mountain is tall. It glows in the dark of the shelf."
 msgstr ""
 
 #: assets/data/catalog.json
@@ -613,10 +581,6 @@ msgid "Fresh Fish"
 msgstr ""
 
 #: assets/data/catalog.json
-msgid "From further down than anyone has a word for."
-msgstr ""
-
-#: assets/data/catalog.json
 msgid "Frontline bruiser. High health and defense, hits hard with steel."
 msgstr ""
 
@@ -750,10 +714,6 @@ msgstr ""
 
 #: assets/data/catalog.json
 msgid "Heavy enough to anchor a boat. Warm, somehow, even in snow. Crafted, never sold."
-msgstr ""
-
-#: assets/data/catalog.json
-msgid "Heavy for its size, and colder than snow."
 msgstr ""
 
 #: assets/data/catalog.json
@@ -1002,14 +962,6 @@ msgstr ""
 
 #: assets/data/catalog.json
 msgid "Medal of Every Bounty"
-msgstr ""
-
-#: assets/data/catalog.json
-msgid "Medal of Ten Below"
-msgstr ""
-
-#: assets/data/catalog.json
-msgid "Medal of Thirty Below"
 msgstr ""
 
 #: assets/data/catalog.json
@@ -1473,10 +1425,6 @@ msgid "Strikes a vital spot for heavy dexterity damage."
 msgstr ""
 
 #: assets/data/catalog.json
-msgid "Struck for whoever comes back from the tenth depth. So far, that's you."
-msgstr ""
-
-#: assets/data/catalog.json
 msgid "Strung with something that isn't gut. The arrows arrive before the sound."
 msgstr ""
 
@@ -1550,10 +1498,6 @@ msgstr ""
 
 #: assets/data/catalog.json
 msgid "The Greyhold Cellars"
-msgstr ""
-
-#: assets/data/catalog.json
-msgid "The Hollow King wore a shard of it. Now it's yours."
 msgstr ""
 
 #: assets/data/catalog.json
@@ -1638,10 +1582,6 @@ msgstr ""
 
 #: assets/data/catalog.json
 msgid "The sky darkens. Everything under it regrets something."
-msgstr ""
-
-#: assets/data/catalog.json
-msgid "The smith who struck it had to ask how to spell 'thirty'."
 msgstr ""
 
 #: assets/data/catalog.json
@@ -1730,10 +1670,6 @@ msgstr ""
 
 #: assets/data/catalog.json
 msgid "Warden's Longsword"
-msgstr ""
-
-#: assets/data/catalog.json
-msgid "Warm to the touch, like something alive gave it up."
 msgstr ""
 
 #: assets/data/catalog.json
@@ -2065,6 +2001,10 @@ msgid "A hero from before keeps everything: whoever has cleared a floor finds th
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A hero saved out on the open ash near the old mountain cave now wakes where they stood, instead of back in town"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A keeper stands in their building the day it is rebuilt: Sela in her inn, Vex at her brews, whatever the village's age"
 msgstr ""
 
@@ -2390,6 +2330,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Begin"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Behind the scenes: everything the game kept only so very old saves would still load is gone, leaving it lighter and simpler (the game isn't in beta yet)"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3486,6 +3430,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Honest version numbers: we are not 1.0 yet, so the old 1.x releases are now 0.11 through 0.18"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Housekeeping"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -7493,18 +7441,6 @@ msgid "Morning, weaponized. +4 DEF, +8% crit."
 msgstr ""
 
 #: assets/data/combat.json
-msgid "Morvax laughs, and the floor goes cold beneath you!"
-msgstr ""
-
-#: assets/data/combat.json
-msgid "Morvax raises a bony hand - the dead answer!"
-msgstr ""
-
-#: assets/data/combat.json
-msgid "Morvax the Deathless"
-msgstr ""
-
-#: assets/data/combat.json
 msgid "Mossback"
 msgstr ""
 
@@ -11005,10 +10941,6 @@ msgid "\"Do they want me back?\""
 msgstr ""
 
 #: assets/data/progression.json
-msgid "\"Dragons,\" she says. \"Who needs them.\""
-msgstr ""
-
-#: assets/data/progression.json
 msgid "\"Sorry about the cage.\" Ha! She sat on my canary's cage, fifty years ago. Flat as a griddle. The bird never forgave her."
 msgstr ""
 
@@ -11033,10 +10965,6 @@ msgid "(He knows the hand before he breaks the seal, and reads it aloud, slowly,
 msgstr ""
 
 #: assets/data/progression.json
-msgid "(He looks up at the rock over his head.) Fifty years I mended his seal and listened to him snore. You went up there and stopped it. I can't decide if I'm grateful."
-msgstr ""
-
-#: assets/data/progression.json
 msgid "(He shifts along the bench to make room.) Sit, courier. The fountain's too loud, but the company's improving."
 msgstr ""
 
@@ -11050,10 +10978,6 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "(Maren turns a tin box over in her hands, black with soot.) I dug this out of my hearth. Five letters I wrote fifty years ago, and never sent."
-msgstr ""
-
-#: assets/data/progression.json
-msgid "(Maren turns the fifth letter over in her hands.) You've heard the story already, courier. You heard it the hard way."
 msgstr ""
 
 #: assets/data/progression.json
@@ -11357,14 +11281,6 @@ msgid "Cheese wheels delivered"
 msgstr ""
 
 #: assets/data/progression.json
-msgid "Clear depth 10 of the Deep Hunt."
-msgstr ""
-
-#: assets/data/progression.json
-msgid "Clear depth 30 of the Deep Hunt."
-msgstr ""
-
-#: assets/data/progression.json
 msgid "Cliff road to Saltmere's clear, courier. Took the whole crew all morning. I lifted one rock. Supervised the rest."
 msgstr ""
 
@@ -11554,10 +11470,6 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Every morning Fafnyr warms his belly on Hilda's new forge."
-msgstr ""
-
-#: assets/data/progression.json
-msgid "Every morning Hilda lights her new forge herself, the way she always has."
 msgstr ""
 
 #: assets/data/progression.json
@@ -12725,10 +12637,6 @@ msgid "Take the cliff road to Saltmere with Maren's first letter: south past the
 msgstr ""
 
 #: assets/data/progression.json
-msgid "Take this up the road to him, with my promise. It has an address now."
-msgstr ""
-
-#: assets/data/progression.json
 msgid "Tam would've been out there with a ladle. I'll do the ladling in here."
 msgstr ""
 
@@ -12753,15 +12661,7 @@ msgid "Tell Ulla"
 msgstr ""
 
 #: assets/data/progression.json
-msgid "Tell her I read it. Twice."
-msgstr ""
-
-#: assets/data/progression.json
 msgid "Tell her this back. Morvax came down this road. Forty years ago, again ten years ago, and last spring. Thin as a rake, asking for iron. I sold him all we had."
-msgstr ""
-
-#: assets/data/progression.json
-msgid "Ten Below"
 msgstr ""
 
 #: assets/data/progression.json
@@ -13153,10 +13053,6 @@ msgid "They're out - dusty, hungry, alive. And they say the deep seam is open ag
 msgstr ""
 
 #: assets/data/progression.json
-msgid "Thirty Below"
-msgstr ""
-
-#: assets/data/progression.json
 msgid "Three clumps of grave moss. It grows where the fen is quietest. Too quiet, if you ask me."
 msgstr ""
 
@@ -13457,10 +13353,6 @@ msgid "\"Take it. It's all corners.\""
 msgstr ""
 
 #: assets/data/story.json
-msgid "\"Tell Maren... she was right to run.\" Then he is only dust, and the dead around the throne lie down."
-msgstr ""
-
-#: assets/data/story.json
 msgid "\"Thirty-one. They've a new one by the bridge. Crooked.\""
 msgstr ""
 
@@ -13525,15 +13417,7 @@ msgid "Fafnyr lies along the summit in the sun, free, and opens one eye at you."
 msgstr ""
 
 #: assets/data/story.json
-msgid "Fafnyr sleeps. It took all five of us to lift the seal onto the chain. Then Morvax found a stair behind the hoard, going down."
-msgstr ""
-
-#: assets/data/story.json
 msgid "Fafnyr: \"A hundred years on a pile of gold. Do you know what gold is like to sleep on? Corners. All corners.\""
-msgstr ""
-
-#: assets/data/story.json
-msgid "Fifty years I hated him, courier. I thought I'd feel lighter when he was dust. ...Maybe tomorrow."
 msgstr ""
 
 #: assets/data/story.json
@@ -13542,18 +13426,6 @@ msgstr ""
 
 #: assets/data/story.json
 msgid "Fifty years of tally marks, a stroke for every lamp lit in the valley. The newest row says forty."
-msgstr ""
-
-#: assets/data/story.json
-msgid "Five lanterns burn on the square tonight. The tavern is loud, and the cheese has never tasted better."
-msgstr ""
-
-#: assets/data/story.json
-msgid "Frosthowl. Oskar carried me the last mile and complained the whole way. Maren laughed for the first time since we left. I'm writing that down so I remember it."
-msgstr ""
-
-#: assets/data/story.json
-msgid "Go on, the festival is for you. I'll sit by the fire a while."
 msgstr ""
 
 #: assets/data/story.json
@@ -13577,15 +13449,7 @@ msgid "He made the seal on that collar, and mended it every spring since. He kno
 msgstr ""
 
 #: assets/data/story.json
-msgid "He said I was right to run? ...Then maybe I can stop running."
-msgstr ""
-
-#: assets/data/story.json
 msgid "He said a hero who eats well fights well. He was the first to laugh and the first to stand when it went wrong."
-msgstr ""
-
-#: assets/data/story.json
-msgid "He says the deep holds a power to rebuild the old kingdom. Oskar told him kingdoms are built of people, not gold. They haven't spoken since."
 msgstr ""
 
 #: assets/data/story.json
@@ -13594,14 +13458,6 @@ msgstr ""
 
 #: assets/data/story.json
 msgid "I was so proud of that mark. Look at it. Still there."
-msgstr ""
-
-#: assets/data/story.json
-msgid "I'm writing in the dark. Tam fell holding the stair. Oskar is still fighting. I told Maren to run, and she ran. Good. Morvax didn't even look back."
-msgstr ""
-
-#: assets/data/story.json
-msgid "If anyone finds this: Maren got out. Tell her it wasn't her fault. Tell her to seal the stair. - Liane"
 msgstr ""
 
 #: assets/data/story.json
@@ -13618,6 +13474,10 @@ msgstr ""
 
 #: assets/data/story.json
 msgid "Morvax takes a room at the inn and a bench by the fountain, and argues with Maren every day."
+msgstr ""
+
+#: assets/data/story.json
+msgid "Morvax the Deathless"
 msgstr ""
 
 #: assets/data/story.json
@@ -13641,46 +13501,6 @@ msgid "PIXELHEIM"
 msgstr ""
 
 #: assets/data/story.json
-msgid "Page I"
-msgstr ""
-
-#: assets/data/story.json
-msgid "Page II"
-msgstr ""
-
-#: assets/data/story.json
-msgid "Page III"
-msgstr ""
-
-#: assets/data/story.json
-msgid "Page IV"
-msgstr ""
-
-#: assets/data/story.json
-msgid "Page IX"
-msgstr ""
-
-#: assets/data/story.json
-msgid "Page V"
-msgstr ""
-
-#: assets/data/story.json
-msgid "Page VI"
-msgstr ""
-
-#: assets/data/story.json
-msgid "Page VII"
-msgstr ""
-
-#: assets/data/story.json
-msgid "Page VIII"
-msgstr ""
-
-#: assets/data/story.json
-msgid "Page X"
-msgstr ""
-
-#: assets/data/story.json
 msgid "Pixelheim. A village under a mountain, and glad of it."
 msgstr ""
 
@@ -13689,15 +13509,7 @@ msgid "She wrote everything down, you know. Every day of it."
 msgstr ""
 
 #: assets/data/story.json
-msgid "Sit with me a while. The fire's warm, and for once the mountain is quiet."
-msgstr ""
-
-#: assets/data/story.json
 msgid "Sit. No, sit. I've been fifty years getting this wrong in my head, and now I'll get it wrong out loud."
-msgstr ""
-
-#: assets/data/story.json
-msgid "So he's gone. Truly gone."
 msgstr ""
 
 #: assets/data/story.json
@@ -13737,23 +13549,7 @@ msgid "The cat looks at the dragon, then at you, then away. The verdict is in."
 msgstr ""
 
 #: assets/data/story.json
-msgid "The crypt is older than the village. I read the walls: kings were buried here before the mountain had a name. Morvax lingered by the gold. He always lingers by the gold."
-msgstr ""
-
-#: assets/data/story.json
-msgid "The hoard is nobody's now. It might as well be yours."
-msgstr ""
-
-#: assets/data/story.json
-msgid "The mountain is quiet at last, the tavern is loud, and the cheese has never tasted better."
-msgstr ""
-
-#: assets/data/story.json
 msgid "The mountain is quiet, the tavern isn't, and the cheese has never tasted better."
-msgstr ""
-
-#: assets/data/story.json
-msgid "The old seal is cracking. It sits on Fafnyr's chain, a disc of black iron, warm like something asleep. We have to forge a new one in the Sunken Forge and carry it up."
 msgstr ""
 
 #: assets/data/story.json
@@ -13777,27 +13573,7 @@ msgid "Under the summit, the old kings' hoard."
 msgstr ""
 
 #: assets/data/story.json
-msgid "Under the summit, where the dragon lay, the old kings' door stands open on its hinges."
-msgstr ""
-
-#: assets/data/story.json
-msgid "We cast the new seal from the old one's mould. Morvax watched the fire for a long time and said: 'Imagine what else could be forged down here.' Nobody answered him."
-msgstr ""
-
-#: assets/data/story.json
-msgid "We followed him down. I wish we hadn't. The dead don't stay dead here. They wait, and they listen to him."
-msgstr ""
-
-#: assets/data/story.json
-msgid "We set out at first light, five of us, to renew the Ember Seal. Morvax says it will hold another hundred years once it's done. Tam brought cheese. Of course Tam brought cheese."
-msgstr ""
-
-#: assets/data/story.json
 msgid "Wenna's brother. I should have gone down to Saltmere years ago and told her. I'll go. When this is done, I'll go."
-msgstr ""
-
-#: assets/data/story.json
-msgid "You bring the blade down. Morvax the Deathless breaks like old glass, and the dark takes what is left of him."
 msgstr ""
 
 #: assets/data/story.json
@@ -13810,10 +13586,6 @@ msgstr ""
 
 #: assets/data/story.json
 msgid "You dream you are very large, very old, and lying on something with too many corners."
-msgstr ""
-
-#: assets/data/story.json
-msgid "You read him Liane's last page. When you say their names - Tam, Oskar, Liane, Maren - Morvax lowers his hands."
 msgstr ""
 
 #: assets/data/story.json
@@ -13840,14 +13612,6 @@ msgstr ""
 msgid "{hero} came to Pixelheim with a letter that said no help was coming, and stayed."
 msgstr ""
 
-#: assets/data/story.json
-msgid "{hero} slew Fafnyr the Ashen above and destroyed Morvax the Deathless below."
-msgstr ""
-
-#: assets/data/story.json
-msgid "{hero} slew Fafnyr the Ashen above and laid Morvax, once a hero of Pixelheim, to rest below."
-msgstr ""
-
 #: assets/data/town.json
 msgid "+10% shop sell price while displayed"
 msgstr ""
@@ -13857,27 +13621,7 @@ msgid "+2 DEF while displayed"
 msgstr ""
 
 #: assets/data/town.json
-msgid "+2 DEX while displayed"
-msgstr ""
-
-#: assets/data/town.json
-msgid "+2 END while displayed"
-msgstr ""
-
-#: assets/data/town.json
-msgid "+2 INT while displayed"
-msgstr ""
-
-#: assets/data/town.json
-msgid "+2 STR while displayed"
-msgstr ""
-
-#: assets/data/town.json
 msgid "+2 to every stat while displayed"
-msgstr ""
-
-#: assets/data/town.json
-msgid "+3 DEF while displayed"
 msgstr ""
 
 #: assets/data/town.json
@@ -15322,14 +15066,6 @@ msgstr ""
 
 #: scripts/journal_screen.gd
 msgid "Nothing to deliver just now."
-msgstr ""
-
-#: scripts/journal_screen.gd
-msgid "Older papers"
-msgstr ""
-
-#: scripts/journal_screen.gd
-msgid "Pages of Liane's journal, found on the mountain: %d of %d."
 msgstr ""
 
 #: scripts/journal_screen.gd

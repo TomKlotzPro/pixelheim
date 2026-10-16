@@ -244,7 +244,6 @@ const MONSTERS := {
 	"wolf": {"sheet": "beasts/Gray-Wolf-32x32.png", "family": "beast"},
 	"skeleton": {"sheet": "mini/Skeleton-Soldier.png", "family": "mini"},
 	"boneknight": {"sheet": "mini/Skeleton-Soldier.png", "family": "mini", "tint": Color(0.7, 0.72, 0.85)},
-	"lich": {"sheet": "mini/Necromancer.png", "family": "mini"},
 	"ghost": {"sheet": "mini/Yeti.png", "family": "mini", "tint": Color(0.75, 0.9, 1.0, 0.72)},
 	"shade": {"sheet": "mini/Wendigo.png", "family": "mini", "tint": Color(0.45, 0.38, 0.6)},
 	"golem": {"sheet": "mini/Mammoth.png", "family": "mini", "tint": Color(0.75, 0.75, 0.72)},

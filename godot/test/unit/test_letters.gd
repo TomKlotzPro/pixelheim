@@ -307,8 +307,8 @@ func test_an_old_save_with_relics_won_counts_their_letters_delivered() -> void:
 		assert_true(Letters.delivered(quest, state.progression), "every relic home: %s" % quest["id"])
 
 
-func test_an_old_save_past_the_prologue_gets_the_letters_from_maren() -> void:
-	# A hero from before the letters: their town rebuilt, Sela's work done,
+func test_a_hero_who_comes_to_maren_late_gets_the_letters_from_her() -> void:
+	# A hero who calls on Maren late: their town rebuilt, Sela's work done,
 	# Maren's relics asked for, nothing found yet.
 	state.settlement.town_tier = 1
 	state.progression.quests["slime_trouble"] = {"progress": 3, "done": true}
@@ -323,19 +323,6 @@ func test_an_old_save_past_the_prologue_gets_the_letters_from_maren() -> void:
 	state.questing.finish_dialogue("elder")
 	assert_eq(_letters_carried().size(), 4, "the first word with Maren gives them")
 	assert_eq(Bearing.active(state.progression, state.settlement, state.pack.items)["who"], "saltmere_wenna")
-
-
-## The web hero who beat Morvax before the relics or the letters existed:
-## their story stays told, and Maren's letters are news from the Reach to
-## carry if they like, never a way back.
-func test_the_late_web_save_keeps_its_story() -> void:
-	var saved := SaveCodec.parse_any(FileAccess.get_file_as_string("res://test/fixtures/web_save_late.json"))
-	state.apply(saved)
-	assert_eq(_next(), "", "their story is told")
-	state.questing.finish_dialogue("elder")
-	assert_eq(_letters_carried().size(), 4, "no keepsake of theirs came home: four letters")
-	assert_eq(_next(), "", "and it stays told")
-	assert_has(state.to_dict()["storySeen"], Letters.scene_id(), "the tin in the story ledger")
 
 
 func test_a_letter_delivered_comes_back_with_the_save() -> void:

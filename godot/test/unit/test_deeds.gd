@@ -1,7 +1,7 @@
 extends GutTest
 ## Deeds (PIX-219): long goals read off the save, each done for good with a
 ## medal for the shelf, and listed in the journal; since PIX-257 Every
-## Letter Delivered and A Full House, and the depth feats retired.
+## Letter Delivered and A Full House, and since PIX-319 no depth feats.
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
 
@@ -68,26 +68,6 @@ func test_every_medal_is_a_trophy_with_an_icon() -> void:
 		assert_true(icons.has(deed["itemId"]), "%s has Shade's art" % deed["itemId"])
 
 
-## Ten Below and Thirty Below retired with the Deep Hunt (PIX-257): never
-## earned now, but a hero who earned one keeps it in the journal, medal and
-## all.
-func test_the_depth_feats_retire_but_stay_with_who_earned_them() -> void:
-	var shown := func() -> Array: return Deeds.shown(state.progression).map(func(deed: Dictionary) -> String: return deed["id"])
-	assert_does_not_have(shown.call(), "deep_10", "not to a new hero")
-	assert_does_not_have(Deeds.in_play().map(func(deed: Dictionary) -> String: return deed["id"]), "deep_30")
-	# An old save deep in the Hunt: no new medal comes of it.
-	state.progression.deepest = 40
-	state.pack_changed()
-	assert_does_not_have(state.progression.deeds, "deep_10", "the depths earn nothing now")
-	assert_eq(int(state.pack.items.get("medal_ten_below", 0)), 0)
-	# One who earned it before keeps it.
-	state.progression.deeds.append("deep_10")
-	assert_has(shown.call(), "deep_10")
-	assert_does_not_have(shown.call(), "deep_30", "only what they earned")
-	assert_eq(Deeds.count(_deed("deep_10"), state.hero, state.pack, state.progression), [1, 1], "and it reads done")
-	assert_true(Town.trophy_buffs().has("medal_ten_below"), "its medal still stands on the shelf")
-
-
 ## Every Letter Delivered (PIX-257): Maren's five, the fifth to Morvax.
 func test_every_letter_delivered() -> void:
 	var deed := _deed("all_letters")
@@ -100,15 +80,6 @@ func test_every_letter_delivered() -> void:
 	state.pack_changed()
 	assert_has(state.progression.deeds, "all_letters")
 	assert_eq(int(state.pack.items.get("medal_letters", 0)), 1)
-
-
-## The late web hero beat Morvax before the letters were written: their
-## story is told, and their satchel counts as delivered.
-func test_an_old_hero_who_went_all_the_way_has_delivered_them_all() -> void:
-	for relic: Dictionary in Relics.all():
-		state.progression.hunted.append(relic["named"])
-	state.progression.cleared_levels.append(15)
-	assert_true(Deeds.met(_deed("all_letters"), state.hero, state.pack, state.progression, state.settlement))
 
 
 ## A Full House (PIX-257): every settler home, the Reach's four and the
@@ -126,17 +97,13 @@ func test_a_full_house() -> void:
 	assert_eq(int(state.pack.items.get("medal_full_house", 0)), 1)
 
 
-## Seen Them All counts what can still be met: Morvax is no foe now (PIX-253
-## step 8), so his kind counts only for a hero who fought him.
+## Seen Them All counts every kind there is to meet: Morvax is no foe now
+## (PIX-253 step 8), and his old kind left with the old saves (PIX-319).
 func test_the_bestiary_counts_what_can_be_met() -> void:
 	var deed := _deed("bestiary")
+	assert_false(Bestiary._data()["monsters"].has("lich"), "no Morvax the Deathless to meet")
 	for kind: String in Bestiary._data()["monsters"]:
-		if kind != "lich":
-			state.progression.met[kind] = 1
+		state.progression.met[kind] = 1
 	assert_true(Deeds.met(deed, state.hero, state.pack, state.progression), "every kind there is to meet")
 	state.progression.met.erase("boneknight")
 	assert_false(Deeds.met(deed, state.hero, state.pack, state.progression), "the Vault's bone knights still to meet")
-	state.progression.met["boneknight"] = 1
-	state.progression.met["lich"] = 15
-	var counted := Deeds.count(deed, state.hero, state.pack, state.progression)
-	assert_eq(counted[0], counted[1], "one who met Morvax counts him too")

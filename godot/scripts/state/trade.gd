@@ -36,9 +36,9 @@ func at_station(job: String) -> bool:
 	return stall_shop != "" and stall_shop == Economy.station_shop(job)
 
 
-## The shops' stage (PIX-176): floors climbed or relics won.
+## The shops' stage (PIX-176): the relics won.
 func stock_stage() -> int:
-	return Economy.stock_stage(owner.progression.unlocked_level, Relics.found(owner.progression))
+	return Economy.stock_stage(Relics.found(owner.progression))
 
 
 ## What an item costs here: an owner pays a tenth less in their own shop.

@@ -4,7 +4,7 @@ extends GutTest
 ## it's from an older version (PIX-302: no migration until the beta), and
 ## anything else is refused.
 
-const FIXTURE := "res://test/fixtures/web_save_v4.json"
+const FIXTURE := "res://test/fixtures/slots/slot_3.save"
 const OLDER := "res://test/fixtures/slots_older/slot_1.json"
 const SavesScreen := preload("res://scripts/saves_screen.gd")
 
@@ -43,4 +43,4 @@ func test_anything_else_is_refused() -> void:
 
 
 func test_describe_names_hero_level_and_role() -> void:
-	assert_eq(SavesScreen.describe(SaveCodec.parse_any(_code())), "Brann, level 1 ranger")
+	assert_eq(SavesScreen.describe(SaveCodec.parse_any(_code())), "Brann, level 7 ranger")

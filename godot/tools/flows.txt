@@ -126,7 +126,7 @@ letter | --map saltmere --ready letter_wenna --talk-to saltmere_wenna --keys e,e
 # day begins, its title rising in, and still with Reduce motion; the
 # second chapter's once Wenna has her letter; and on the map, the main
 # story's hollow diamond kept while the slimes are followed.
-letters | --map town journal --tab letters | open=journal_screen read=2 older=0 | quest story screen
+letters | --map town journal --tab letters | open=journal_screen read=2 | quest story screen
 chapter | --map town chapter | open=chapter_screen chapter=1 rose=12 | story screen
 chapter-still | --map town chapter still | open=chapter_screen chapter=1 rose=0 | story screen
 chapter-two | --map saltmere --ready letter_wenna --talk-to saltmere_wenna --keys e,e,e chapter | open=chapter_screen chapter=2 rose=12 | story quest screen
@@ -249,7 +249,7 @@ water-town | --map town --at 72,8 | map=town water=clear south | field town
 water-wood | --map deepwood --at 18,9 | map=deepwood water=deep still | field
 water-mire | --map mirefen --at 21,25 | map=mirefen water=mire still | field
 # A named monster's bounty on the board (PIX-156).
-bounty | --map town --at 43,22 --cleared 4 --keys w,e | open=bounty_screen | town quest screen
+bounty | --map town --at 43,22 --hunted tidecaller,seam_warden --keys w,e | open=bounty_screen | town quest screen
 # Morvax's choice asked outright (PIX-253 step 10; the old throne's,
 # PIX-157): "Stay with them." chosen, and the lanterns ending's tour.
 choice | --map town choice --keys s,e --wait 0.5 | open=reveal_screen ending=stay | story screen
@@ -259,8 +259,7 @@ choice | --map town choice --keys s,e --wait 0.5 | open=reveal_screen ending=sta
 # by the fountain at its first stop; "Stay with them." and the lanterns
 # ending; the credits' last line; a hero home sees him on his bench by
 # the fountain, one he left up the mountain finds him at his forge, and
-# on festival days on his bench; and a hero who slew Fafnyr on the old
-# mountain, who never had the night, is asked at Morvax's forge.
+# on festival days on his bench.
 home-waits | --map town --bells 3 daybreak --keys esc,esc --wait 0.5 | map=town bells=done morvax=\(43, 24\) next=morvax_choice | story town
 home-ask | --map town --seen bells_collar --talk-to mountain_morvax --keys e,e,e,e | map=town open=throne_screen next=morvax_choice | story town screen
 come-home | --map town --seen bells_collar --talk-to mountain_morvax --keys e,e,e,e,e --wait 0.5 | open=reveal_screen ending=home morvax=\(43, 24\) bench | story town screen
@@ -269,7 +268,6 @@ credits | --map town --story ending_home credits --wait 1 --lang en | scene=endi
 morvax-bench | --map town --seen ending_home --wait 0.3 | map=town ending=home morvax=\(43, 24\) bench | story town
 morvax-forge | --map morvax_forge --seen ending_stay --wait 0.3 | map=morvax_forge ending=stay morvax=\(8, 4\) | story rooms
 morvax-festival | --map town --seen ending_stay festival --wait 0.3 | map=town ending=stay morvax=\(43, 24\) bench | story town
-slayer-ask | --map morvax_forge --cleared 10 --seen maren_confession --delivered letter_morvax --talk-to mountain_morvax --keys e,e,e,e | map=morvax_forge open=throne_screen next=morvax_choice | story rooms screen
 # A festival's ring toss (PIX-159).
 festival | --map town --town-tier 2 --at 43,27 festival --keys w,e,e,e | open=ring_toss_screen | town screen
 # The gates (PIX-254): each region's way in shut, the hero stopped before
@@ -475,18 +473,13 @@ gate | --map overworld --at 48,8 --walk u,u --wait 0.3 | map=overworld cell=\(48
 # Morvax's forge (its packs out), and back down through it; his tally marks
 # read on the forge's wall; the letter handed to Morvax, and as he says he
 # won't come, the mountain shakes; home, and the Night of Bells begins
-# (step 9, below); and old saves: one saved on the old floors
-# wakes by the gate with Maren's story next, one by the Undermountain's
-# filled-in cave wakes in town, and the late web hero plays on.
+# (step 9, below).
 confession | --map town --seen maren_tin --delivered maren_relics --talk-to elder --keys e,e,e,e,e --wait 0.3 | map=town open=none letters=1 next=letter_morvax | story quest town
 mountain-gate | --map overworld --seen maren_confession --at 48,8 --walk u,u --wait 0.4 | map=mountain_road cell=\(17, 28\) | travel story
 mountain-road | --map mountain_road --wait 0.3 | map=mountain_road mobs=[5-8] | field travel
 road-down | --map mountain_road --at 17,29 --walk d --wait 0.4 | map=overworld cell=\(48, 8\) | travel
 tally | --map morvax_forge --at 12,2 --walk u --keys e --wait 0.3 | map=morvax_forge open=dialogue_box | rooms story
 morvax | --map morvax_forge --ready letter_morvax --talk-to mountain_morvax --keys e,e,e --wait 1.6 | map=morvax_forge open=dialogue_box delivered=1 next=run_home | story quest rooms
-oldsave-floor7 | --load res://test/fixtures/old_floor7.json --wait 0.3 | map=overworld cell=\(48, 7\) next=confession | save story travel
-oldsave-cave | --load res://test/fixtures/old_cave.json --wait 0.3 | map=town | save travel
-late-web | --load res://test/fixtures/web_save_late.json --wait 0.3 | map=town | save story
 # The Night of Bells (PIX-253 step 9): home from the forge through the
 # town's gate, the bell rings and the night begins; a lantern lit with E,
 # then all five and every other lamp out; the embers on the square and
@@ -496,10 +489,10 @@ late-web | --load res://test/fixtures/web_save_late.json --wait 0.3 | map=town |
 # worn down to his share he stands down, or the dawn comes first: the
 # dawn over the square, the collar, and the morning, home still to write;
 # the town's gate shut that night; a hero who falls wakes in the inn's
-# doorway with Fafnyr there again; a dragon slayer never sees the night;
-# a save that kept nothing of the night begins it at the bell, and one
-# made in it resumes at its beat (PIX-302 step 4: on the embers, the
-# lanterns lit, a roof doused, three embers left).
+# doorway with Fafnyr there again; a save that kept nothing of the night
+# begins it at the bell, and one made in it resumes at its beat (PIX-302
+# step 4: on the embers, the lanterns lit, a roof doused, three embers
+# left).
 bells-home | --map overworld --bells 1 --at 48,39 --walk d,d,d --wait 0.6 | map=town bells=lanterns lit=0 next=lanterns | story town travel night
 # A hero already in town on the run home begins the night where they stand
 # (PIX-297: Tom stood in Pixelheim with "Run home" on the Next line and
@@ -518,18 +511,16 @@ bells-collar | --map town --bells 3 daybreak --keys esc --wait 0.5 | scene=bells
 bells-day | --map town --bells 3 daybreak --keys esc,esc --wait 0.5 | map=town cell=\(40, 28\) bells=done mobs=0 next=morvax_choice | story town night
 bells-gate | --map town --bells 1 --at 40,4 --walk u,u --wait 0.4 | map=town bells=lanterns | story town travel night
 bells-fall | --map town --bells 3 hurt die | map=town cell=\(50, 12\) bells=hold mobs=1 | story night combat
-bells-slayer | --map town --bells 1 --cleared 10 | map=town mobs=0 next=morvax_choice | story town save
 bells-midnight | --load res://test/fixtures/bells_night.json --wait 0.3 | map=town bells=lanterns lit=0 next=lanterns | save story night
 bells-resume | --load res://test/fixtures/bells_resume.json --wait 0.3 | map=town bells=embers lit=5 burning=2 mobs=3 next=embers | save story night
 # The Kings' Vault after the story (PIX-257, PIX-253 step 11): its door of
 # black iron under the summit holds a new hero back until the dragon is
-# freed; a hero who slew Fafnyr on the old mountain finds it open, the
-# quiet word playing as it first opens; Fafnyr's own word, the scene; down
-# a floor of the Vault; its last floor cleared, the Hollow King down, the
-# kings' stair out and a way out where he fell; and a hero saved in the old
-# Deep Hunt waking in town with the medal it earned, in the journal's Feats.
+# freed; the collar off, it stands open, Fafnyr's word playing as it first
+# opens; his word, the scene; down a floor of the Vault; its last floor
+# cleared, the Hollow King down, the kings' stair out and a way out where
+# he fell.
 vault-shut | --map mountain_road --at 12,4 --walk u,u --wait 0.3 | map=mountain_road cell=\(12, 3\) barred=vault | travel story dungeon
-vault-open | --map mountain_road --cleared 10 --at 12,4 --walk u,u --wait 0.6 | map=mountain_road scene=vault_door_quiet | travel story dungeon
+vault-open | --map mountain_road --seen bells_collar --at 12,4 --walk u,u --wait 0.6 | map=mountain_road scene=vault_door | travel story dungeon
 vault-word | --map mountain_road --story vault_door --wait 1.5 | map=mountain_road scene=vault_door | story
 vault-down | --map vault_1 --at 61,9 --walk r --keys s,e --wait 0.4 | map=vault_2 cell=\(3, 9\) floor=2/5 | dungeon travel
 vault-hoard | --map vault_5 clear --wait 0.6 | map=vault_5 floor=5/5 fell=1 shortcut=open wayout=\(46, 7\) | dungeon combat
@@ -549,8 +540,6 @@ look-shafts | --map shafts_gallery | map=shafts_gallery dressed=mine:.*props\d+,
 look-cellars | --map cellars_crypt | map=cellars_crypt dressed=crypt:bones\d+,.*niches\d+,webs\d+ | dungeon
 look-icecave | --map icecave | map=icecave dressed=ice | dungeon
 look-vault | --map vault_3 | map=vault_3 dressed=vault:banners\d+,rugs\d+ | dungeon
-oldsave-deep | --load res://test/fixtures/old_deep.json --wait 0.3 | map=town feats=deep_10 | save story travel
-feats-old | --load res://test/fixtures/old_deep.json journal --tab feats --wait 0.3 | open=journal_screen feats=deep_10 | screen quest save
 # What grows on the ground moves with the days (PIX-250): two days, two
 # sets of cells, and one of the first day's picked as the hero steps on it.
 # (The roads to the ways on, PIX-269, took some of the ash's and the
@@ -677,13 +666,13 @@ fit-reach | --map saltmere charted worldmap overflow --lang fr | open=map_screen
 fit-pack | --map town --keys i overflow --lang fr | open=inventory_screen overflow=0 | screen lang
 fit-journal | --map town --keys q overflow --lang fr | open=journal_screen overflow=0 | screen lang quest
 # A hero mid-game (PIX-239): every group, a bounty followed at the bottom
-# of the list; its English twin; Liane's ten pages; the feats.
-fit-journal-full | --map town journal --cleared 4 --keys w,e overflow --lang fr | open=journal_screen overflow=0 tracked=drowned_knight | screen lang quest
-fit-journal-en | --map town journal --cleared 4 --keys w,e overflow --lang en | open=journal_screen overflow=0 tracked=drowned_knight | screen lang quest
-# The satchel at the top of the quests; the Letters page with Liane's ten
-# pages under it (PIX-253 step 2); the longest chapter card.
+# of the list (a second relic posts it); its English twin; the feats.
+fit-journal-full | --map town journal --hunted seam_warden --keys w,e overflow --lang fr | open=journal_screen overflow=0 tracked=drowned_knight | screen lang quest
+fit-journal-en | --map town journal --hunted seam_warden --keys w,e overflow --lang en | open=journal_screen overflow=0 tracked=drowned_knight | screen lang quest
+# The satchel at the top of the quests; the Letters page (PIX-253 step 2);
+# the longest chapter card.
 fit-satchel | --map town journal overflow --lang fr | open=journal_screen overflow=0 | screen lang quest story
-fit-journal-letters | --map town journal --tab letters --cleared 15 overflow --lang fr | open=journal_screen overflow=0 read=2 older=10 | screen lang quest story
+fit-journal-letters | --map town journal --tab letters overflow --lang fr | open=journal_screen overflow=0 read=2 | screen lang quest story
 fit-chapter | --map town --hunted tidecaller,seam_warden,hollow_captain chapter overflow --lang fr | open=chapter_screen overflow=0 chapter=5 | screen lang story
 fit-journal-feats | --map town journal --tab feats overflow --lang fr | open=journal_screen overflow=0 | screen lang quest
 # The journal's Post page (PIX-320): the day's post taken, one piece read
@@ -699,7 +688,7 @@ fit-craft | --map town_alchemist shop --tab 2 overflow --lang fr | open=shop_scr
 fit-refusal | --map town_alchemist station --keys e overflow --lang fr | open=shop_screen tab=Craft overflow=0 | screen lang trade
 fit-rankup | --map town rankup --rank-beat unlocks overflow --lang fr | open=rankup_screen overflow=0 | screen lang rank
 fit-hall | --map town_hall talk --keys e,e,e overflow --lang fr | open=town_hall_screen overflow=0 | screen lang town
-fit-bounty | --map town --at 43,22 --cleared 4 --keys w,e overflow --lang fr | open=bounty_screen overflow=0 | screen lang quest
+fit-bounty | --map town --at 43,22 --hunted tidecaller,seam_warden --keys w,e overflow --lang fr | open=bounty_screen overflow=0 | screen lang quest
 # Tom's level-15 mage in Frostweave with the longest names a piece carries
 # worn (PIX-298): the pack's rows ran past its page, "E retirer" under the
 # scrollbar; its weapons tab with a deep-forged greataxe worn; English;

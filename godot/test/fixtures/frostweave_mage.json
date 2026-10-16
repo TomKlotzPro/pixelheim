@@ -206,9 +206,5 @@
   },
   "buffs": {
     "song": false
-  },
-  "legacy": {
-    "unlockedLevel": 1,
-    "clearedLevels": []
   }
 }

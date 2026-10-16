@@ -81,25 +81,6 @@ func test_a_foe_of_a_level_hits_like_the_kinds_brought_to_it() -> void:
 	assert_eq([Bestiary.matched_attack(5), Bestiary.matched_attack(12), Bestiary.matched_attack(19)], [15.0, 32.5, 50.0])
 
 
-func test_casters_and_rogues_who_levelled_before_catch_up() -> void:
-	var mage := HeroState.create("Old", "mage")
-	mage.level = 12
-	mage.stats["maxHp"] = 28 + 4 * 11
-	mage.hp = 50
-	var state := SaveCodec.initial_state()
-	state["hero"] = mage.to_dict()
-	var hero: Dictionary = SaveCodec.normalize(state)["hero"]
-	assert_eq(hero["stats"]["maxHp"], 28 + 6 * 11, "a mage grows 6 a level now")
-	assert_eq(hero["hp"], 50 + 22, "and the difference is healed in")
-	state["hero"] = hero
-	assert_eq(SaveCodec.normalize(state)["hero"]["stats"]["maxHp"], 28 + 6 * 11, "once")
-	var warrior := HeroState.create("Old", "warrior")
-	warrior.level = 12
-	warrior.stats["maxHp"] = 200
-	state["hero"] = warrior.to_dict()
-	assert_eq(SaveCodec.normalize(state)["hero"]["stats"]["maxHp"], 200, "never lowered")
-
-
 ## A hero of the role at `level`, grown, their points spent, their defensive
 ## passives learned, in their kind's kit for that mark.
 func _kitted(role: String, level: int) -> Array:

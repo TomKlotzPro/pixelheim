@@ -41,8 +41,6 @@ func quest_on_offer(giver_id: String) -> Dictionary:
 		var entry: Dictionary = owner.progression.quests.get(quest["id"], {})
 		if entry.get("done", false):
 			continue
-		if entry.is_empty() and quest.get("unlessGateOpen", false) and Relics.gate_open(owner.progression):
-			continue
 		return quest if entry.is_empty() and quest_open(quest) else {}
 	return {}
 
@@ -54,12 +52,8 @@ func first_skill_heals() -> bool:
 	return not skills.is_empty() and skills[0]["kind"] == "heal"
 
 
-## Whether a quest may be offered yet (PIX-171): its "opensAfter" is met,
-## and Maren's relics aren't asked of a hero who climbed before the gate
-## was barred.
+## Whether a quest may be offered yet (PIX-171): its "opensAfter" is met.
 func quest_open(quest: Dictionary) -> bool:
-	if quest.get("unlessGateOpen", false) and Relics.gate_open(owner.progression) and not owner.progression.quests.has(quest["id"]):
-		return false
 	return Quests.is_open(quest, owner.progression, owner.settlement)
 
 
@@ -73,10 +67,10 @@ func givers_waiting(npcs: Array) -> Array[Dictionary]:
 	return out
 
 
-## The floors the bounty board counts (PIX-170): an old save's own, and the
-## notices the relics won, or the town's age, have earned (PIX-257).
+## The floors the bounty board counts (PIX-170): the notices the relics
+## won, or the town's age, have earned (PIX-257).
 func board_floors() -> Array:
-	return Hunts.board_floors(owner.progression.cleared_levels, Relics.found(owner.progression), owner.settlement.town_tier)
+	return Hunts.board_floors(Relics.found(owner.progression), owner.settlement.town_tier)
 
 
 ## A conversation closed: recruits answer (resolveSettler), then the quest
@@ -132,10 +126,6 @@ func resolve_quests(giver_id: String) -> String:
 	for quest: Dictionary in Quests.for_giver(giver_id):
 		var entry: Dictionary = entries.get(quest["id"], {})
 		if entry.get("done", false):
-			continue
-		# Maren's relics are no errand for a hero who climbed before the gate
-		# was barred (PIX-170): she goes on to her next ask.
-		if entry.is_empty() and quest.get("unlessGateOpen", false) and Relics.gate_open(owner.progression):
 			continue
 		# A side quest waits for the story to reach it (PIX-171).
 		if entry.is_empty() and not quest_open(quest):
@@ -198,9 +188,9 @@ func resolve_quests(giver_id: String) -> String:
 ## Maren's tin is opened (PIX-253): the letters still to deliver go in the
 ## satchel (the pack), their quests taken; those whose keepsake is already won stay with
 ## her, answered. Her own ask comes with them - the relics home, the five's
-## errands in the Reach open - unless the gate stood open before it was
-## barred. The tin is kept in the story ledger. Returns what the pack holds
-## now, "" when the tin was found already (or the night isn't over).
+## errands in the Reach open. The tin is kept in the story ledger. Returns
+## what the pack holds now, "" when the tin was found already (or the night
+## isn't over).
 func open_tin() -> String:
 	if not Letters.tin_waits(owner.progression):
 		return ""
@@ -223,16 +213,14 @@ func open_tin() -> String:
 
 
 ## Maren has told it all (PIX-253 step 8): her confession, at the shrine,
-## the four keepsakes home - or, for a hero who heard her old one, a word.
-## The fifth letter goes in the satchel, its quest taken, with her promise
-## (once: an old save may hold it from the relics' turn-in), and the
-## mountain's gate opens (Relics.gate_open). Returns what the pack holds
-## now, "" when she had nothing to give.
+## the four keepsakes home. The fifth letter goes in the satchel, its quest
+## taken, with her promise (once), and the mountain's gate opens
+## (Relics.gate_open). Returns what the pack holds now, "" when she had
+## nothing to give.
 func hear_out() -> String:
 	if not Letters.fifth_due(owner.progression, owner.settlement):
 		return ""
-	if Letters.confession_due(owner.progression, owner.settlement):
-		owner.mark_seen(Letters.confession_id())
+	owner.mark_seen(Letters.confession_id())
 	var quest := Letters.fifth_quest()
 	owner.progression.quests[quest["id"]] = {"progress": 0, "done": false}
 	owner.pack.add_item(quest["objective"]["itemId"])
@@ -468,7 +456,7 @@ func ask_before_dip(what: String, costs: Dictionary) -> String:
 ## A deed newly done (PIX-219): kept, its medal in the pack, the log told.
 func note_deeds() -> void:
 	var lines: Array[String] = []
-	for deed: Dictionary in Deeds.in_play():
+	for deed: Dictionary in Deeds.all():
 		if deed["id"] in owner.progression.deeds or not Deeds.met(deed, owner.hero, owner.pack, owner.progression, owner.settlement):
 			continue
 		owner.progression.deeds.append(deed["id"])

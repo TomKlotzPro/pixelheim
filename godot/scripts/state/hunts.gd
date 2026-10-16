@@ -1,8 +1,8 @@
 class_name Hunts
 ## The named monsters (PIX-156): one notorious creature per wild region, each
 ## bigger and meaner than its kind, with a lair it keeps to and one move of
-## its own. The bounty board on the square posts each once the hero has
-## cleared the floor its notice waits for, or won enough relics (PIX-170); the bounty is paid where it falls,
+## its own. The bounty board on the square posts each once the hero has won
+## enough relics, or the town has grown (PIX-170); the bounty is paid where it falls,
 ## with a drop nothing else gives, and Pixelheim talks about it. A named
 ## monster killed stays dead (ProgressionState.hunted). The Kings' Vault
 ## keeps its own (PIX-257: the Deep Hunt's four, and the Hollow King),
@@ -36,13 +36,13 @@ static func is_posted(entry: Dictionary, cleared: Array) -> bool:
 	return int(entry["postedAfter"]) == 0 or int(entry["postedAfter"]) in cleared
 
 
-## The floors the board counts as cleared (PIX-170): an old save's own (the
-## old mountain's, which posted notices before they left play, PIX-257),
-## and a notice's floor once enough relics are won ("postedRelics") or the
-## town has grown to its age ("postedTier": Grandmother Gulp at the Town),
-## so a hero out in the Reach gets the bounties.
-static func board_floors(cleared: Array, relics: int, town_tier := 0) -> Array:
-	var out := cleared.duplicate()
+## The floors the board counts as cleared (PIX-170: a notice still names
+## the old mountain's floor it was posted after, `postedAfter`): a notice's
+## floor once enough relics are won ("postedRelics") or the town has grown
+## to its age ("postedTier": Grandmother Gulp at the Town), so a hero out in
+## the Reach gets the bounties.
+static func board_floors(relics: int, town_tier := 0) -> Array:
+	var out := []
 	for entry in all():
 		var relics_say := entry.has("postedRelics") and relics >= int(entry["postedRelics"])
 		var town_says := entry.has("postedTier") and town_tier >= int(entry["postedTier"])

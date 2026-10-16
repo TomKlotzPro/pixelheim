@@ -53,7 +53,7 @@ const TABLE := [
 	{"field": "dest", "says": "the waypoint the map's list has chosen, while the map is open (PIX-241)"},
 	{"field": "detail", "says": "on a map in the open air: how many small things its open ground grew, tufts, clover, flowers, pebbles, twigs, reeds and sedge (PIX-305)"},
 	{"field": "dressed", "says": "on a dungeon floor: its look and what it is dressed in, counted by kind: mine:ore3,props6,rail68 (PIX-310)"},
-	{"field": "ending", "says":"the ending this hero chose for Morvax once it has played: home or stay (an old save's throne: destroy or rest) (PIX-253 step 10)"},
+	{"field": "ending", "says":"the ending this hero chose for Morvax once it has played: home or stay (PIX-253 step 10)"},
 	{"field": "entrance", "says": "the ways in drawn as entrances in their setting on this map, by look: mine, sea_cave, mountain_gate, vault_door, ice_stair (PIX-290)"},
 	{"field": "feats", "says": "the feats done, by id, once any is (PIX-257)"},
 	{"field": "fell", "says": "bosses fallen, when one fell (PIX-232)"},
@@ -77,7 +77,6 @@ const TABLE := [
 	{"field": "motes", "says": "with rankup: the ascension's motes and sparks flying (PIX-244)"},
 	{"field": "music", "says": "with fled: the track playing (PIX-251)"},
 	{"field": "next", "says": "the main quest's next step, by id, once the Night of Ash is over: shield (PIX-255)"},
-	{"field": "older", "says": "on the journal's Letters page: the older papers under the letters (PIX-253)"},
 	{"field": "overflow", "says": "with overflow: pieces of an open screen running off the canvas (Solid Ground)"},
 	{"field": "packs", "says": "on a wild map: the packs standing in the hero's region, :asleep by their fire (PIX-252)"},
 	{"field": "page", "says": "the map's page, while the map is open (PIX-266)"},
@@ -540,10 +539,6 @@ func field_next() -> String:
 	if GameState.progression.prologue != Prologue.DONE:
 		return ""
 	return String(MainQuest.next_step(GameState.progression, GameState.settlement).get("id", ""))
-
-
-func field_older() -> String:
-	return str(Story.found_pages(GameState.progression.cleared_levels).size()) if _letters_page() != null else ""
 
 
 func field_overflow() -> String:

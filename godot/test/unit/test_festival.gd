@@ -60,7 +60,7 @@ func test_a_signature_is_sold_only_from_its_age() -> void:
 
 func test_an_age_completed_brings_a_festival_day() -> void:
 	state.settlement.town_tier = 1
-	state.progression.cleared_levels.append(5)
+	state.progression.hunted.append_array(["tidecaller", "seam_warden"])
 	state.settlement.settlers.append("settler_iva")
 	state.pack.gold = 5000
 	state.pack.items.merge({"marsh_reed": 8, "wolf_pelt": 2})

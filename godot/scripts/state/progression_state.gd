@@ -1,11 +1,8 @@
 class_name ProgressionState
 extends Resource
 ## The quest ledger, the story's, the hunts and deeds (the save's story and
-## quests sections), and the old mountain's floors (its legacy: unlockedLevel,
-## clearedLevels, deepHunt, read only as an old save's signs until PIX-319).
+## quests sections).
 
-var unlocked_level := 1
-var cleared_levels: Array[int] = []
 ## quest id -> {progress, done}
 var quests := {}
 ## Story moments already played for this hero (PIX-32: boss intros once).
@@ -31,11 +28,6 @@ var bells_embers := 0
 ## The named monsters killed (Hunts, PIX-156): they stay dead. Saved only
 ## once there is one.
 var hunted: Array[String] = []
-## The deepest depth of the Deep Hunt cleared (PIX-161); saved only once
-## there is one. The Deep Hunt left play with PIX-257: the field is kept so
-## an old save round-trips, and read only as a sign the hero is past every
-## gate (Gates.is_open) and for the medals it earned.
-var deepest := 0
 ## The deeds done (PIX-219); saved only once there is one.
 var deeds: Array[String] = []
 ## Once-per-hero drops already taken (PIX-180: Fafnyr's first scale); saved
@@ -55,14 +47,11 @@ var tracked := ""
 
 static func from_dict(data: Dictionary) -> ProgressionState:
 	var progress := ProgressionState.new()
-	progress.unlocked_level = data["unlockedLevel"]
-	progress.cleared_levels.assign(data["clearedLevels"])
 	progress.quests = data["quests"].duplicate(true)
 	progress.story_seen.assign(data.get("storySeen", []))
 	progress.prologue = int(data.get("prologue", 0))
 	progress.prologue_doused.assign(data.get("prologueDoused", []))
 	progress.hunted.assign(data.get("hunted", []))
-	progress.deepest = int(data.get("deepHunt", 0))
 	progress.deeds.assign(data.get("deeds", []))
 	progress.firsts.assign(data.get("firsts", []))
 	progress.met = data.get("met", {}).duplicate()
@@ -78,8 +67,6 @@ static func from_dict(data: Dictionary) -> ProgressionState:
 
 
 func write_into(state: Dictionary) -> void:
-	state["unlockedLevel"] = unlocked_level
-	state["clearedLevels"] = cleared_levels.duplicate()
 	state["quests"] = quests.duplicate(true)
 	if not story_seen.is_empty():
 		state["storySeen"] = story_seen.duplicate()
@@ -97,8 +84,6 @@ func write_into(state: Dictionary) -> void:
 		state["crafted"] = crafted.duplicate()
 	if tracked != "":
 		state["tracked"] = tracked
-	if deepest > 0:
-		state["deepHunt"] = deepest
 	if not deeds.is_empty():
 		state["deeds"] = deeds.duplicate()
 	if night_running():

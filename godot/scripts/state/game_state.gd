@@ -228,7 +228,7 @@ func boot(flags: HarnessFlags) -> void:
 	var saved: Dictionary = seen["state"] if seen["kind"] == SaveSlots.HERO else {}
 	# `--load <file>` (harness): a save played as it loads from a slot (a
 	# code or a v5 file: the fixtures in test/fixtures), nothing written back
-	# (PIX-257: a hero saved on the old mountain's floors wakes by its gate).
+	# (PIX-302: where a save wakes).
 	if slot == NO_SLOT and flags.has("--load"):
 		saved = SaveCodec.parse_any(FileAccess.get_file_as_string(flags.value("--load")))
 	if saved.is_empty():
@@ -357,7 +357,6 @@ func _use_slot(target: int) -> void:
 ## (PIX-152); the stand-ins (no save yet, tests, harness runs) start in town.
 func new_game(name := DEFAULT_HERO_NAME, role_id := DEFAULT_ROLE, look := 0, prologue := false) -> void:
 	var state := SaveCodec.initial_state()
-	state.merge(SaveCodec.RESUME_INTO, true)
 	var weapon := InventoryState.create_gear(STARTER_WEAPONS.get(role_id, "rusty_sword"))
 	state["hero"] = HeroState.create(name, role_id, look).to_dict()
 	state["gold"] = STARTER_GOLD
@@ -404,7 +403,6 @@ func apply(state: Dictionary) -> void:
 ## The whole state as a save holds it: what a slot file or a save code carries.
 func to_dict() -> Dictionary:
 	var state := SaveCodec.initial_state()
-	state.merge(SaveCodec.RESUME_INTO, true)
 	state["hero"] = hero.to_dict()
 	pack.write_into(state)
 	settlement.write_into(state)

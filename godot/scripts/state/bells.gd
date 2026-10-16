@@ -11,9 +11,8 @@ class_name Bells
 ## The beat lives while the night runs (ProgressionState.bells, saved with
 ## the lanterns lit, the roofs doused and the embers left: PIX-302 step 4),
 ## so a save made in the night resumes at its beat; the night's end is the
-## collar's scene in the story ledger. A hero who slew Fafnyr on the old mountain skips the
-## chapter (MainQuest's skipIf) and never sees it. Pure, over
-## progression.json's "bells"; GameState and the world's Night act on it.
+## collar's scene in the story ledger. Pure, over progression.json's
+## "bells"; GameState and the world's Night act on it.
 
 const NONE := 0
 const LANTERNS := 1
@@ -47,7 +46,7 @@ static func over(progression: ProgressionState) -> bool:
 
 
 ## Whether arriving home starts the night: its first step is the story's
-## next (the fifth letter delivered, the chapter not skipped) and it isn't
+## next (the fifth letter delivered) and it isn't
 ## running already.
 static func due(progression: ProgressionState, settlement: SettlementState) -> bool:
 	if progression.bells != NONE or over(progression):

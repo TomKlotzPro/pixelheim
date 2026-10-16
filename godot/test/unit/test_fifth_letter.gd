@@ -7,7 +7,8 @@ extends GutTest
 ## which the Night of Bells (step 9) writes - until then an honest card. The
 ## Ashen Mountain's floors, the Undermountain's, its cave and its waypoint
 ## leave play: nothing in the world, the map, the journal, Bearing or the
-## hints points at them, and old saves keep what they earned.
+## hints points at them (and with PIX-319 nothing an old save held of them
+## is read).
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
 const STEPS: Array[Vector2i] = [Vector2i.UP, Vector2i.RIGHT, Vector2i.DOWN, Vector2i.LEFT]
@@ -16,7 +17,6 @@ const GATE := Vector2i(48, 6)
 const BEFORE_GATE := Vector2i(48, 7)
 ## Where the Undermountain's cave was.
 const OLD_CAVE := Vector2i(24, 10)
-const LATE := "res://test/fixtures/web_save_late.json"
 ## The old mountain's fifteen floors by name: their data left with them
 ## (PIX-257 step 11), so a word naming one is caught by this list.
 const OLD_FLOORS := [
@@ -44,20 +44,12 @@ func _keepsakes_home() -> void:
 	state.progression.quests[Relics.quest_id()] = {"progress": 4, "done": true}
 
 
-## The hero as their save has them: written out (web v4) and read back.
+## The hero as their save has them: written out and read back.
 func _reloaded(hero: Node = null) -> Node:
 	var who: Node = hero if hero != null else state
 	var back: Node = autofree(GameStateScript.new())
 	back.apply(SaveCodec.reread(who.to_dict()))
 	return back
-
-
-## Where a save stood when it was written, and where it wakes now (as the
-## world wakes it: Depths.waking, then onto open ground).
-func _wakes(map_id: String, cell: Vector2i) -> Dictionary:
-	var woke := Depths.waking(map_id, cell)
-	var map := MapData.load_by_id(woke["mapId"])
-	return {"mapId": woke["mapId"], "cell": Ways.standing(map, woke["cell"])}
 
 
 func _walked(map: MapData, from: Vector2i) -> Dictionary:
@@ -104,7 +96,6 @@ func test_maren_tells_it_all_once_the_keepsakes_are_home() -> void:
 	assert_eq(MainQuest.next_step(state.progression, state.settlement)["chapter"], "The Fifth Letter")
 	assert_eq(MainQuest.card_due(state.progression, state.settlement), 6, "the chapter's card")
 	assert_true(Letters.fifth_due(state.progression, state.settlement))
-	assert_eq(Letters.fifth_lines(state.progression, state.settlement), Letters.confession_lines(), "her whole story, at the shrine")
 	var lead := Bearing.active(state.progression, state.settlement, state.pack.items)
 	assert_eq([lead["who"], lead["map_id"]], ["elder", "town"])
 	assert_false(Relics.gate_open(state.progression), "the gate waits on her promise")
@@ -129,14 +120,14 @@ func test_morvax_reads_it_and_the_mountain_shakes() -> void:
 	state.questing.finish_dialogue("elder")
 	var quest := Letters.fifth_quest()
 	assert_eq(state.questing.letter_for("mountain_morvax"), quest)
-	assert_eq(Letters.answer(quest, state.progression, state.settlement), quest["answer"])
-	assert_eq(Letters.then_lines(quest, state.progression, state.settlement), quest["quake"], "the mountain shakes")
-	assert_eq(Letters.after_lines("mountain_morvax", state.progression, state.settlement), [], "nothing after until it's read")
+	assert_eq(Letters.answer(quest), quest["answer"])
+	assert_eq(Letters.then_lines(quest), quest["quake"], "the mountain shakes")
+	assert_eq(Letters.after_lines("mountain_morvax", state.progression), [], "nothing after until it's read")
 	var gold: int = state.pack.gold
 	assert_string_contains(state.questing.deliver("mountain_morvax"), "Delivered: The Fifth Letter")
 	assert_eq(state.pack.gold, gold + int(quest["reward"]["gold"]), "he pays the postage")
 	assert_eq(int(state.pack.items.get("letter_morvax", 0)), 0)
-	assert_eq(Letters.after_lines("mountain_morvax", state.progression, state.settlement), quest["after"])
+	assert_eq(Letters.after_lines("mountain_morvax", state.progression), quest["after"])
 	assert_eq(_next(), "run_home")
 	assert_eq(MainQuest.card_due(state.progression, state.settlement), 7, "the Night of Bells' card")
 	var lead := Bearing.active(state.progression, state.settlement, state.pack.items)
@@ -242,103 +233,14 @@ func test_the_forge_holds_morvax_his_cot_his_anvil_and_his_tally_marks() -> void
 # ---- The first dream ---------------------------------------------------------------
 
 func test_the_first_dream_speaks_with_morvaxs_voice() -> void:
-	var dream: Array = Cutscene.scenes()[Story.next_dream([], [])]
+	var dream: Array = Cutscene.scenes()[Story.next_dream([])]
 	assert_false(dream.any(func(step: Dictionary) -> bool: return step["kind"] == "eyes"), "no purple eyes")
 	var said := dream.filter(func(step: Dictionary) -> bool: return step["kind"] == "caption").map(func(step: Dictionary) -> String: return step["text"])
 	assert_true(said.any(func(line: String) -> bool: return line.contains("You're late, courier. Fifty years late.")), "his line, as he says it at the forge")
 	assert_string_contains(" ".join(Letters.fifth_quest()["answer"]), "You're late, courier. Fifty years late.")
 
 
-# ---- Old saves ---------------------------------------------------------------------
-
-## A hero saved on the old mountain's floors: the save kept the gate (the
-## floors were never saved), so it wakes there, its floors and gear as they
-## were, and Maren's story is next.
-func test_a_save_from_the_old_floors_wakes_by_the_gate() -> void:
-	state.hero.level = 14
-	for level in range(1, 7):
-		state.progression.cleared_levels.append(level)
-	state.progression.unlocked_level = 7
-	state.world.map_id = "overworld"
-	state.world.cell = BEFORE_GATE
-	var back := _reloaded()
-	assert_eq(_wakes(back.world.map_id, back.world.cell), {"mapId": "overworld", "cell": BEFORE_GATE}, "by the mountain's gate")
-	assert_eq(back.hero.level, 14, "levels kept")
-	assert_eq(Array(back.progression.cleared_levels), [1, 2, 3, 4, 5, 6], "its floors stay in the save")
-	assert_true(Relics.gate_open(back.progression), "the gate open: it went up before")
-	assert_eq(_next(back), "confession", "past the old gate, before the confession: Maren's story next")
-	assert_true(Letters.fifth_due(back.progression, back.settlement))
-
-
-## The flows' old saves (test/fixtures, `--load`): one saved on the old
-## seventh floor, one by the Undermountain's cave.
-func test_the_old_save_fixtures_wake_where_they_should() -> void:
-	state.apply(SaveCodec.parse_any(FileAccess.get_file_as_string("res://test/fixtures/old_floor7.json")))
-	assert_eq(_wakes(state.world.map_id, state.world.cell), {"mapId": "overworld", "cell": BEFORE_GATE})
-	assert_eq(state.hero.level, 13)
-	assert_eq(_next(), "confession")
-	state.apply(SaveCodec.parse_any(FileAccess.get_file_as_string("res://test/fixtures/old_cave.json")))
-	assert_eq(_wakes(state.world.map_id, state.world.cell)["mapId"], "town")
-	assert_eq(state.hero.level, 17, "levels kept")
-	assert_true(state.pack.equipped.has("weapon"), "gear kept")
-
-
-func test_a_save_by_the_old_cave_wakes_in_town() -> void:
-	var town: Dictionary = Catalog._data()["townSpawn"]
-	for cell: Vector2i in [Vector2i(25, 10), Vector2i(24, 11), Vector2i(26, 10)]:
-		assert_eq(_wakes("overworld", cell)["mapId"], "town", "%s: by the cave that's rock now" % cell)
-		assert_eq(Depths.waking("overworld", cell)["cell"], Vector2i(int(town["x"]), int(town["y"])))
-	assert_eq(_wakes("overworld", Vector2i(30, 10))["mapId"], "overworld", "anywhere else on the Ash, where it stood")
-	assert_eq(MapData.load_by_id("overworld").tile_at(OLD_CAVE), "mountain", "the cave is filled with rock")
-
-
-func test_a_hero_who_heard_the_old_confession_gets_the_letter_at_the_next_word() -> void:
-	state.progression.cleared_levels.assign(range(1, 11))
-	state.mark_seen(Letters.scene_id())
-	state.mark_seen(Letters.confession_id())
-	assert_eq(_next(), "letter_morvax", "the confession heard, the old way")
-	assert_true(Letters.fifth_due(state.progression, state.settlement))
-	assert_eq(Letters.fifth_lines(state.progression, state.settlement), Letters.fifth()["late"], "a word, not the whole story again")
-	state.questing.finish_dialogue("elder")
-	assert_eq(int(state.pack.items.get("letter_morvax", 0)), 1)
-	assert_eq(_next(), "letter_morvax", "now up the road")
-
-
-## A hero who slew Fafnyr on the old mountain keeps him slain: Morvax reads
-## the letter to a quiet mountain, the Night of Bells is skipped, and home
-## (step 10) is next: Morvax's choice, asked at his forge.
-func test_a_dragon_slayer_skips_the_night_of_bells() -> void:
-	state.progression.cleared_levels.assign(range(1, 11))
-	state.mark_seen(Letters.scene_id())
-	assert_eq(_next(), "confession")
-	state.questing.finish_dialogue("elder")
-	assert_eq(_next(), "letter_morvax")
-	var quest := Letters.fifth_quest()
-	assert_eq(Letters.answer(quest, state.progression, state.settlement), quest["slain"]["answer"], "the mountain stays quiet")
-	assert_eq(Letters.then_lines(quest, state.progression, state.settlement), [], "nothing wakes")
-	state.questing.finish_dialogue("mountain_morvax")
-	assert_eq(Letters.after_lines("mountain_morvax", state.progression, state.settlement), quest["slain"]["after"])
-	assert_true(MainQuest.skips(7, state.progression, state.settlement))
-	assert_eq(_next(), "morvax_choice", "no run home, no Night of Bells: home, and Morvax's choice")
-	assert_false(Bells.due(state.progression, state.settlement), "no night for a dragon slayer")
-	assert_eq(MainQuest.card_due(state.progression, state.settlement), 8, "the card of home's chapter")
-	assert_eq(MainQuest.continued(state.progression, state.settlement), "", "the story is written to its end: no card")
-
-
-## The late web hero who beat Morvax on the old mountain: their story stays
-## told, nothing is given them, nothing points at the floors.
-func test_the_late_web_save_loads_and_plays() -> void:
-	var late := SaveCodec.parse_any(FileAccess.get_file_as_string(LATE))
-	state.apply(late.duplicate(true))
-	assert_eq(state.hero.hero_name, "Hrafna")
-	var woke := _wakes(state.world.map_id, state.world.cell)
-	assert_true(MapData.load_by_id(woke["mapId"]).is_walkable(woke["cell"]), "it wakes on open ground")
-	assert_eq(_next(), "", "their story is told")
-	assert_false(Letters.fifth_due(state.progression, state.settlement), "no fifth letter for them")
-	assert_eq(MainQuest.continued(state.progression, state.settlement), "", "no card")
-	assert_true(Relics.gate_open(state.progression), "the road is open to them")
-	assert_eq(Array(state.progression.cleared_levels), Array(late["clearedLevels"]), "its floors kept, unread")
-
+# ---- Saved and loaded --------------------------------------------------------------
 
 func test_a_save_after_the_letter_holds_its_place() -> void:
 	_keepsakes_home()
@@ -386,7 +288,7 @@ func test_nothing_in_the_world_leads_to_the_old_floors() -> void:
 		if npc["id"] == "elder":
 			for line: String in npc["lines"]:
 				assert_false(line.contains("floors") or line.contains("below him"), line)
-	assert_eq(Story.elder_story(range(1, 11), []), {}, "no story of a floor")
+	assert_eq(Story.elder_story([]), {}, "no story of a floor")
 
 
 ## Whether `text` names one of the old mountain's floors: by number ("floor

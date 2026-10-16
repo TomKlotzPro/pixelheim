@@ -240,8 +240,7 @@
         "xp": 300
       },
       "accepted": "The gate's barred, courier. The old wardens sealed it when one of the five came home alone, and only what the five left behind will open it: Tam's ladle in Saltmere, the black iron at Blackiron, Oskar's shield at Greyhold and Liane's lantern on the Frostgate. Bring them home to me.",
-      "completed": "Tam, the iron, Oskar, Liane. All four, home. ...Sit with me a while, courier. You've carried everyone's words but mine.",
-      "unlessGateOpen": true
+      "completed": "Tam, the iron, Oskar, Liane. All four, home. ...Sit with me a while, courier. You've carried everyone's words but mine."
     },
     {
       "id": "letter_morvax",
@@ -272,19 +271,6 @@
         "Still here? He goes for the lights, courier, and Pixelheim's are the nearest. Run.",
         "(He touches the last of the tally marks.) Forty lamps, last night. She built herself a town after all."
       ],
-      "slain": {
-        "about": "PIX-253 step 8: a hero who slew Fafnyr on the old mountain keeps him slain (they skip chapter 7, mainQuest's skipIf): Morvax reads the letter to a quiet mountain, and nothing wakes.",
-        "answer": [
-          "You're late, courier. Fifty years late.",
-          "(He knows the hand before he breaks the seal, and reads it aloud, slowly, as if it might change.) \"Come home, you proud old goat. Nobody's angry. I'm angry, but come home anyway. The stew's on. - M.\"",
-          "...Not like this. I left to bring her a city. I can't come back with a cough.",
-          "(He looks up at the rock over his head.) Fifty years I mended his seal and listened to him snore. You went up there and stopped it. I can't decide if I'm grateful."
-        ],
-        "after": [
-          "Tell her I read it. Twice.",
-          "(He touches the last of the tally marks.) Forty lamps, last night. She built herself a town after all."
-        ]
-      },
       "addressed": "Letter to Morvax, the mountain",
       "letter": [
         "Come home, you proud old goat. Nobody's angry. I'm angry, but come home anyway. The stew's on. - M."
@@ -1549,10 +1535,7 @@
             "id": "gate",
             "when": {
               "kind": "questDone",
-              "questId": "maren_relics",
-              "or": {
-                "kind": "climbed"
-              }
+              "questId": "maren_relics"
             },
             "text": "Bring the four keepsakes home to Maren",
             "hint": "Maren waits for all four keepsakes: Tam's ladle, the last ingot, Oskar's shield and Liane's lantern. She'll open the gate with the last of them: her promise.",
@@ -1562,7 +1545,7 @@
       },
       {
         "title": "The Fifth Letter",
-        "about": "PIX-253 step 8: Maren tells it all at the shrine once the four keepsakes are home (story.json's maren_confession) and gives the courier her fifth letter and her promise, which opens the mountain's gate; the road climbs past it to Morvax's forge. A hero who heard her old confession gets the letter at the next word with her (Letters.fifth_due), and one who cast down Morvax on the old mountain (floor 15 cleared) has heard this story told another way: the letter's step is met for them (its `or`).",
+        "about": "PIX-253 step 8: Maren tells it all at the shrine once the four keepsakes are home (story.json's maren_confession) and gives the courier her fifth letter and her promise, which opens the mountain's gate; the road climbs past it to Morvax's forge.",
         "steps": [
           {
             "id": "confession",
@@ -1578,11 +1561,7 @@
             "id": "letter_morvax",
             "when": {
               "kind": "delivered",
-              "questId": "letter_morvax",
-              "or": {
-                "kind": "cleared",
-                "level": 15
-              }
+              "questId": "letter_morvax"
             },
             "text": "Climb the mountain road and deliver the fifth letter",
             "hint": "The mountain's gate stands open. Past it the old road climbs to a forge built into the rock, where a lamp burns at night. Maren's fifth letter has an address now.",
@@ -1592,15 +1571,7 @@
       },
       {
         "title": "The Night of Bells",
-        "about": "PIX-253 step 9: the dragon comes back to the square and the village holds (progression.json's `bells`, played by the world's Night). Its steps are the night's beats (`bells`): met while the night runs past them (ProgressionState.bells, never saved: a save made in the night plays it again from the start) or once it's over (the collar's scene in the story ledger). A hero who slew Fafnyr on the old mountain keeps him slain and skips this chapter (`skipIf`): no Night of Bells for them, and the ending's forge is Hilda's alone (step 10).",
-        "skipIf": {
-          "kind": "cleared",
-          "level": 10,
-          "or": {
-            "kind": "cleared",
-            "level": 15
-          }
-        },
+        "about": "PIX-253 step 9: the dragon comes back to the square and the village holds (progression.json's `bells`, played by the world's Night). Its steps are the night's beats (`bells`): met while the night runs past them (ProgressionState.bells, saved with the night's progress: PIX-302 step 4) or once it's over (the collar's scene in the story ledger).",
         "steps": [
           {
             "id": "run_home",
@@ -1650,16 +1621,12 @@
       },
       {
         "title": "Coming Home",
-        "about": "PIX-253 step 10: Morvax's choice and the endings (progression.json's `home`, rules in Homecoming). After the collar Morvax waits by the fountain (at his forge for a hero who slew Fafnyr on the old mountain, who never had the night) with one question, and the courier's answer is the story's last word (`chosen`: an ending in the story ledger). \"Come home.\" plays the festival ending and he takes the bench by the fountain; \"Stay with them.\" plays the lanterns ending and he goes back up to the three, coming down on festival days. A hero who saw the old game's ending, or the late web hero who cast Morvax down, has it met by its `or`, ending and City kept.",
+        "about": "PIX-253 step 10: Morvax's choice and the endings (progression.json's `home`, rules in Homecoming). After the collar Morvax waits by the fountain with one question, and the courier's answer is the story's last word (`chosen`: an ending in the story ledger). \"Come home.\" plays the festival ending and he takes the bench by the fountain; \"Stay with them.\" plays the lanterns ending and he goes back up to the three, coming down on festival days.",
         "steps": [
           {
             "id": "morvax_choice",
             "when": {
-              "kind": "chosen",
-              "or": {
-                "kind": "cleared",
-                "level": 15
-              }
+              "kind": "chosen"
             },
             "text": "Morvax's choice: does Pixelheim want him back?",
             "hint": "Morvax has a question for Pixelheim, fifty years in the asking: does it want him back? He'd rather hear it from the courier.",
@@ -1995,7 +1962,7 @@
     "won": "The sky turns grey behind the mountain, and Fafnyr folds onto the square. Pixelheim held."
   },
   "home": {
-    "about": "PIX-253 step 10, chapter 8: Morvax's choice and the endings, played by Homecoming and the world's Stage. Once the collar is off Morvax waits by the fountain (`waits`; at his forge for a hero who slew Fafnyr on the old mountain and never had the night) with his question (`ask`); closing his words opens the choice (throne_screen.gd, re-aimed): each of `choices` is an ending, its scene in story.json's moments (`ending:home`, `ending:stay`), kept in the story ledger (no new save field). The ending tours the town: Morvax's `reply` (at his bench, or at the town's gate for one going back up), each age's landmark, the square, Hilda's forge (`forge`: Fafnyr on her roof warming his belly, or Hilda alone for a hero who slew him) and Maren (`maren`), then the scene and the credits. After it: home, he sits on the bench by the fountain (`waits`) with his `bench` lines and the day's `argument` (a pair a day: his side, and Maren's at her shrine); staying, he is at his forge (`peace`) and comes down to his bench on festival days (`festival`), and Maren says `marenStay`. The fifth letter's row in the satchel says how it came out (`answered`, by the answer).",
+    "about": "PIX-253 step 10, chapter 8: Morvax's choice and the endings, played by Homecoming and the world's Stage. Once the collar is off Morvax waits by the fountain (`waits`) with his question (`ask`); closing his words opens the choice (throne_screen.gd, re-aimed): each of `choices` is an ending, its scene in story.json's moments (`ending:home`, `ending:stay`), kept in the story ledger (no new save field). The ending tours the town: Morvax's `reply` (at his bench, or at the town's gate for one going back up), each age's landmark, the square, Hilda's forge (`forge`: Fafnyr on her roof warming his belly) and Maren (`maren`), then the scene and the credits. After it: home, he sits on the bench by the fountain (`waits`) with his `bench` lines and the day's `argument` (a pair a day: his side, and Maren's at her shrine); staying, he is at his forge (`peace`) and comes down to his bench on festival days (`festival`), and Maren says `marenStay`. The fifth letter's row in the satchel says how it came out (`answered`, by the answer).",
     "waits": [43, 24],
     "ask": [
       "(Morvax turns Maren's letter over in his hands. It has gone soft at the folds.)",
@@ -2023,9 +1990,7 @@
     "forge": {
       "dragon": [57, 14],
       "line": "Every morning Fafnyr warms his belly on Hilda's new forge.",
-      "detail": "Hilda pays him a cheese wheel a day. Bram calls it the cheese's finest hour.",
-      "alone": "Every morning Hilda lights her new forge herself, the way she always has.",
-      "aloneDetail": "\"Dragons,\" she says. \"Who needs them.\""
+      "detail": "Hilda pays him a cheese wheel a day. Bram calls it the cheese's finest hour."
     },
     "maren": "Maren: \"And you, courier... no. You're one of ours now.\"",
     "bench": [
@@ -2104,15 +2069,11 @@
       "letter_aske"
     ],
     "fifth": {
-      "about": "PIX-253 step 8: the fifth letter is Maren's to give once she has told it all (story.json's maren_confession, at the shrine, the four keepsakes home): its quest (`questId`, a deliverTo to Morvax at his forge), and her promise with it, which opens the mountain's gate (Relics.gate_open). `given` is the line as the confession closes; `late` what she says to a hero who heard her old confession and has no letter yet.",
+      "about": "PIX-253 step 8: the fifth letter is Maren's to give once she has told it all (story.json's maren_confession, at the shrine, the four keepsakes home): its quest (`questId`, a deliverTo to Morvax at his forge), and her promise with it, which opens the mountain's gate (Relics.gate_open). `given` is the line as the confession closes.",
       "questId": "letter_morvax",
       "addressed": "Letter to Morvax",
       "note": "Maren keeps this one. It has no address.",
-      "given": "The fifth letter and Maren's promise are in your satchel. The mountain's gate is open.",
-      "late": [
-        "(Maren turns the fifth letter over in her hands.) You've heard the story already, courier. You heard it the hard way.",
-        "Take this up the road to him, with my promise. It has an address now."
-      ]
+      "given": "The fifth letter and Maren's promise are in your satchel. The mountain's gate is open."
     },
     "dig": {
       "x": 21,
@@ -2139,24 +2100,6 @@
     "room": "Sela takes your coin. \"You're paying now, you know. Heroes pay double. ...Fine. Half.\""
   },
   "deeds": [
-    {
-      "id": "deep_10",
-      "name": "Ten Below",
-      "line": "Clear depth 10 of the Deep Hunt.",
-      "kind": "deepest",
-      "count": 10,
-      "itemId": "medal_ten_below",
-      "retired": true
-    },
-    {
-      "id": "deep_30",
-      "name": "Thirty Below",
-      "line": "Clear depth 30 of the Deep Hunt.",
-      "kind": "deepest",
-      "count": 30,
-      "itemId": "medal_thirty_below",
-      "retired": true
-    },
     {
       "id": "all_hunts",
       "name": "Every Bounty Paid",

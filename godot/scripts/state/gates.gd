@@ -13,11 +13,10 @@ class_name Gates
 ## while it's shut - walking up to it, in the journal, and as the arrow's
 ## words, the arrow leading to what opens it instead of to the closed road
 ## (detour). A hero already past a gate is never shut out of what they've
-## earned: an old save finds it open when the ground past it was seen, a
-## letter delivered or a keepsake won past it, a named monster slain there,
-## or the hero is past a later gate or the mountain's own (its floors
-## cleared) - all read from what the save already holds (web v4, no field
-## added). Pure.
+## earned: it stands open when the ground past it was seen, a letter
+## delivered or a keepsake won past it, a named monster slain there, or the
+## hero is past a later gate or the mountain's own - all read from what the
+## save already holds. Pure.
 
 const NOWHERE := Vector2i(-1, -1)
 const STEPS: Array[Vector2i] = [Vector2i.UP, Vector2i.RIGHT, Vector2i.DOWN, Vector2i.LEFT]
@@ -65,11 +64,9 @@ static func cells_of(gate: Dictionary) -> Array[Vector2i]:
 ## Whether a gate stands open for this hero: what opens it is done, or the
 ## hero is already past it. The gates follow the story, so a hero past a
 ## later one is past this one too - and past them all once past the
-## mountain's own gate (Relics.gate_open: its relics home, or any of its
-## floors cleared, as the late web hero who beat Morvax has) or into the
-## old Deep Hunt (an old save's, PIX-257).
+## mountain's own gate (Relics.gate_open: its relics home).
 static func is_open(gate: Dictionary, progression: ProgressionState, settlement: SettlementState, discovered: Dictionary) -> bool:
-	if Relics.gate_open(progression) or progression.deepest > 0:
+	if Relics.gate_open(progression):
 		return true
 	var later := false
 	for each: Dictionary in all():
@@ -135,10 +132,10 @@ static func _as_step(need: Dictionary) -> Dictionary:
 	return {"id": "", "text": String(need["line"]), "when": need["when"], "chapter": ""}
 
 
-## Whether the hero is already past a gate, by what the save holds (old
-## saves, from before the gates): any of the maps past it set foot on, the
-## ground past it seen (not merely glimpsed from the near side), a letter
-## delivered or its keepsake won there, or a named monster slain there.
+## Whether the hero is already past a gate, by what the save holds: any of
+## the maps past it set foot on, the ground past it seen (not merely
+## glimpsed from the near side), a letter delivered or its keepsake won
+## there, or a named monster slain there.
 static func passed(gate: Dictionary, progression: ProgressionState, discovered: Dictionary) -> bool:
 	var past := beyond(gate)
 	for map_id: String in past["maps"]:

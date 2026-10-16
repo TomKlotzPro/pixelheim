@@ -203,7 +203,7 @@ func test_an_empty_slot_is_no_hero_to_play() -> void:
 func test_importing_writes_the_slot_and_plays_it() -> void:
 	var state := _fresh_state()
 	state.boot(HarnessFlags.new(PackedStringArray(["--slot", "1"])))
-	var imported := SaveCodec.parse_any(FileAccess.get_file_as_string("res://test/fixtures/web_save_v4.json"))
+	var imported := SaveCodec.parse_any(FileAccess.get_file_as_string("res://test/fixtures/slots/slot_3.save"))
 	state.import_into(2, imported)
 	assert_eq(state.slot, 2)
 	assert_eq(state.hero.hero_name, "Brann")

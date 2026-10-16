@@ -391,6 +391,8 @@ var _foe: Node
 var _lined_up: Array[Node] = []
 ## The slots a shot with `slots` stood in for, given back after it.
 var _slots_kept: SaveSlots
+## The story ledger's entries a shot added for itself alone (`open`).
+var _opened: Array[String] = []
 const BOSS_STEP := Vector2(60, 76)
 const BOSS_ROW := 9
 ## Filming a strike: the frames the hero swings on (the second a crit, the
@@ -493,10 +495,13 @@ func _stage(shot: Dictionary) -> void:
 	world.messages.clear()
 	world.hud.forget_places()
 	if shot.get("open", false):
-		# The story's ways open, for this shot alone (_unstage): an old
-		# save's deepest floor cleared opens the mountain's gate and the
-		# Vault's door both (Relics.gate_open, Vault.door_open).
-		GameState.progression.cleared_levels.assign([15])
+		# The story's ways open, for this shot alone (_unstage): Maren
+		# heard out opens the mountain's gate (Relics.gate_open), the
+		# dragon freed the Vault's door (Vault.door_open).
+		for story_id: String in [Letters.confession_id(), Bells.collar_id()]:
+			if story_id not in GameState.progression.story_seen:
+				GameState.progression.story_seen.append(story_id)
+				_opened.append(story_id)
 	if shot.has("tier"):
 		# The town at an earlier age, for this shot alone (_unstage).
 		GameState.settlement.town_tier = int(shot["tier"])
@@ -582,8 +587,9 @@ func _stage(shot: Dictionary) -> void:
 ## What a shot set up for itself alone taken back, so the shots after it
 ## find the hero as they were: its letter, the town's age.
 func _unstage(shot: Dictionary) -> void:
-	if shot.get("open", false):
-		GameState.progression.cleared_levels.clear()
+	for story_id: String in _opened:
+		GameState.progression.story_seen.erase(story_id)
+	_opened.clear()
 	if shot.has("tier"):
 		GameState.settlement.town_tier = Town.MAX_TIER
 		GameState.settlement.projects.assign(Town.projects_through(Town.MAX_TIER))

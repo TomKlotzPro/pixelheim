@@ -27,10 +27,8 @@ func test_a_whole_trees_spare_points_buy_ranks_beyond_it() -> void:
 	assert_true(state.training.buy_beyond("power"))
 	assert_almost_eq(float(HeroRules.passives(hero)["skillPower"]), before + float(power["skillPower"]), 0.0001)
 	var hp: int = hero.stats["maxHp"]
-	var grown := HeroRules.grown_hp(hero.to_dict())
 	assert_true(state.training.buy_beyond("vigor"))
 	assert_eq(int(hero.stats["maxHp"]), hp + 8)
-	assert_eq(HeroRules.grown_hp(hero.to_dict()), grown + 8, "a save's catch-up counts the ranks")
 	assert_eq(HeroState.from_dict(hero.to_dict()).beyond, hero.beyond, "the ranks are saved")
 	hero.beyond["power"] = int(power["cap"])
 	assert_false(Skills.can_buy_beyond(hero, power), "capped")
