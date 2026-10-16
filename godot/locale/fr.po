@@ -2849,6 +2849,10 @@ msgid "Each region's road now waits for its chapter: a rockfall on the cliff roa
 msgstr "La route de chaque région attend désormais son chapitre : un éboulement sur la route des falaises vers Saltmere, le pont brûlé sur la rivière au nord du village, la barricade d'Ulla devant Greyhold et une avalanche sur la route de la Porte-Givre"
 
 #: assets/data/changelog.json
+msgid "Each village has its own look: Saltmere's whitewashed cottages with boats, nets, a fish stall and washing on the line, Greyhold's stone and vegetable beds, Blackiron's plank huts with ore heaps and lanterns"
+msgstr "Chaque village a son visage : les maisons blanchies de Saltmere avec barques, filets, étal de poisson et linge qui sèche, la pierre et les potagers de Greyhold, les cabanes en planches de Fernoir avec tas de minerai et lanternes"
+
+#: assets/data/changelog.json
 msgid "Early Stakes"
 msgstr "Les premiers enjeux"
 
@@ -2979,6 +2983,10 @@ msgstr "Chaque rôle apprend trois compétences, débloquées aux niveaux 1, 3 e
 #: assets/data/changelog.json
 msgid "Every role verified to be able to finish the game"
 msgstr "Vérifié : chaque rôle peut terminer le jeu"
+
+#: assets/data/changelog.json
+msgid "Every roof has a chimney that smokes, the Frostgate's roofs are under snow, and barrels and crates outdoors are back to a sensible size"
+msgstr "Chaque toit a sa cheminée qui fume, les toits de la Porte-Givre sont sous la neige, et les tonneaux et caisses dehors retrouvent une taille raisonnable"
 
 #: assets/data/changelog.json
 msgid "Every save is checked before it replaces the last one, which is kept as a backup; if a save is ever damaged, your hero comes back from it and the game tells you"
@@ -3371,6 +3379,10 @@ msgstr "Les barres de vie, les noms et les niveaux se placent juste au-dessus de
 #: assets/data/changelog.json
 msgid "Health comes back slowly while you're out of a fight"
 msgstr "La santé revient lentement hors des combats"
+
+#: assets/data/changelog.json
+msgid "Hearth and Home"
+msgstr "Feu et foyer"
 
 #: assets/data/changelog.json
 msgid "Her stair goes cold and blue and its light reaches a little further, so the way down to the ice cave still shows by candlelight"
@@ -3815,6 +3827,10 @@ msgstr "Les monstres ont leurs heures : à la nuit tombée, des meutes nocturn
 #: assets/data/changelog.json
 msgid "Morvax reads the letter; fifty years of tally marks count the village's lamps on his wall; then the mountain shakes"
 msgstr "Morvax lit la lettre ; sur son mur, cinquante ans de traits comptent les lanternes du village ; puis la montagne tremble"
+
+#: assets/data/changelog.json
+msgid "Morvax's forge glows at its mouth and under its door, the Kings' Vault has a black iron double door under the crown, and torches burn on the mountain gate at night"
+msgstr "La forge de Morvax rougeoie à sa gueule et sous sa porte, le Caveau des rois a une double porte de fer noir sous la couronne, et des torches brûlent la nuit sur la porte de la montagne"
 
 #: assets/data/changelog.json
 msgid "Most depths now have a twist, shown at the gate: swift foes, warded skills, venomous bites or proud elites, with richer drops and a richer hoard"

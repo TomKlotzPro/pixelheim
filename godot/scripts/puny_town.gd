@@ -68,24 +68,39 @@ static func available() -> bool:
 ## Every building on a map: {"pieces": {cell: tile}, "decor": {cell: tile},
 ## "freed": [cells]}. `freed` are roof cells the new houses leave open (above
 ## a low lean-to): they become ground. Empty when the pack is missing.
-static func compose(grid: Dictionary) -> Dictionary:
+## `style`: a settlement's own grammar (Hamlet.house_style, PIX-313).
+static func compose(grid: Dictionary, style := {}) -> Dictionary:
 	if not available():
 		return {"pieces": {}, "decor": {}, "freed": []}
-	return plan(grid)
+	return plan(grid, style)
 
 
 ## The houses as tile ids, whether or not the pack is here to draw them
-## (what the tests check).
-static func plan(grid: Dictionary) -> Dictionary:
+## (what the tests check). A `style` (Hamlet.house_style, PIX-313) builds
+## them in a settlement's own grammar: its `walls` ([left end, middle,
+## right end] for Shade's timber frame's), a `chimney` on every roof (but
+## where a `stack` of the settlement's own stands for it).
+static func plan(grid: Dictionary, style := {}) -> Dictionary:
 	var pieces := {}
 	var decor := {}
 	var freed: Array[Vector2i] = []
 	for blob: Array in _blobs(grid):
-		_building(blob, grid, pieces, decor)
+		_building(blob, grid, pieces, decor, style.get("chimney", false) and not style.has("stack"))
 		for cell: Vector2i in blob:
 			if not pieces.has(cell):
 				freed.append(cell)
+	var walls: Array = style.get("walls", [])
+	if not walls.is_empty():
+		var swap := {WALL_LEFT: walls[0], WALL: walls[1], WALL_RIGHT: walls[2]}
+		for cell: Vector2i in pieces:
+			pieces[cell] = swap.get(pieces[cell], pieces[cell])
 	return {"pieces": pieces, "decor": decor, "freed": freed}
+
+
+## Whether `tile` is a house's wall (its timber, a settlement's own, a
+## window or the door) rather than its roof: what a snowed roof leaves bare.
+static func is_wall(tile: int) -> bool:
+	return tile in [WALL_LEFT, WALL, WALL_RIGHT, WINDOW, DOOR] or tile in Hamlet.pieces()
 
 
 ## The cells that make houses: roofs, and the doors and signs set in them.
@@ -155,7 +170,7 @@ static func wing_house(rect: Rect2i, door_x: int, kind: String) -> Dictionary:
 	return pieces
 
 
-static func _building(blob: Array, grid: Dictionary, pieces: Dictionary, decor: Dictionary) -> void:
+static func _building(blob: Array, grid: Dictionary, pieces: Dictionary, decor: Dictionary, chimney := false) -> void:
 	var bottom := -1
 	var top_of := {}
 	var bottom_of := {}
@@ -203,6 +218,22 @@ static func _building(blob: Array, grid: Dictionary, pieces: Dictionary, decor: 
 		if a == b:
 			top = maxi(top, low - 2)
 		_wing(a, b, top, low, -1, attached, shift, pieces)
+	# A settlement's chimney on every roof (PIX-313), where Shade's gable
+	# put none: on the main house's ridge, a column in from its east end.
+	if chimney and not _chimneyed(decor, main_left, main_right, bottom):
+		var roof_top := _top(top_of, main_left, main_right)
+		if bottom - roof_top + 1 >= 2:
+			var ridge := roof_top + (1 if bottom - roof_top + 1 >= 4 else 0)
+			decor[Vector2i(maxi(main_left, main_right - 1), ridge)] = CHIMNEY[1]
+
+
+## Whether a chimney already stands on the house over columns a..b whose
+## wall is row `bottom`.
+static func _chimneyed(decor: Dictionary, a: int, b: int, bottom: int) -> bool:
+	for cell: Vector2i in decor:
+		if decor[cell] == CHIMNEY[1] and cell.x >= a and cell.x <= b and cell.y < bottom:
+			return true
+	return false
 
 
 static func _top(top_of: Dictionary, a: int, b: int) -> int:
@@ -310,8 +341,8 @@ static func tileset() -> TileSet:
 
 ## Every tile a house may be built of, in each roof colour, the flowers
 ## (PunyProps.FLOWERS), Pixelheim's rampart and gatehouse (Rampart) and the
-## streets' paving (Streets) and the open ground's patches of green and snow
-## (OpenGround, PIX-305).
+## streets' paving (Streets), the open ground's patches of green and snow
+## (OpenGround, PIX-305) and the settlements' own walls (Hamlet, PIX-313).
 static func pieces() -> Array[int]:
 	var base: Array = GABLE_TOP + GABLE_FOOT + GABLE_EAVE + GABLE_WALL + CHIMNEY + WING_TOP + WING_UPPER + WING_RIDGE \
 		+ WING_LOWER + WING_EAVE + UPPER_FILL + LOWER_FILL + [WALL_LEFT, WALL, WALL_RIGHT, WINDOW, DOOR]
@@ -326,7 +357,7 @@ static func pieces() -> Array[int]:
 			if tinted not in out:
 				out.append(tinted)
 	var more: Array = PunyProps.FLOWERS + Rampart.WALL.values() + [Rampart.GATE, Rampart.ROOF_BURNT] + Rampart.TOWER + Rampart.ROOF \
-		+ Streets.pieces() + OpenGround.pieces()
+		+ Streets.pieces() + OpenGround.pieces() + Hamlet.pieces()
 	for tile: int in more:
 		if tile not in out:
 			out.append(tile)
