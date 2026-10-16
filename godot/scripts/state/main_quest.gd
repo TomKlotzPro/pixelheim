@@ -175,8 +175,7 @@ static func continued_word() -> String:
 ## The chapter whose card is due (PIX-253 step 2: a card like the dawn's
 ## "Day one" as a chapter opens): the one the next step is in, once the
 ## Night of Ash is over, until its card has been shown; 0 when none is. Each
-## is shown once, and the story ledger keeps it ("chapter_3"): no new field
-## in the save. A hero who runs ahead past a chapter, or loads a save from
+## is shown once, and the story ledger keeps it ("chapter_3"). A hero who runs ahead past a chapter, or loads a save from
 ## before the cards, sees only the card of the chapter they're in.
 static func card_due(progression: ProgressionState, settlement: SettlementState) -> int:
 	if progression.prologue != Prologue.DONE:

@@ -267,16 +267,14 @@ func test_a_save_anywhere_in_the_ice_cave_wakes_at_its_entrance() -> void:
 	assert_true(Ways.open_ground(MapData.load_by_id("icecave"), ENTRANCE))
 
 
-func test_a_save_from_inside_the_ice_cave_round_trips_without_a_new_field() -> void:
-	var before: Array = state.to_dict().keys()
+func test_a_save_from_inside_the_ice_cave_round_trips() -> void:
 	state.world.map_id = "icecave_lake"
 	state.world.cell = Vector2i(30, 14)
 	Discovery.discover_around(state.world.discovered, MapData.load_by_id("icecave_lake"), Vector2i(30, 14))
 	state.world.opened_chests.append("icecave_boots")
 	var saved: Dictionary = state.to_dict()
-	assert_eq(saved.keys(), before, "no new field")
 	var reloaded: Node = autofree(GameStateScript.new())
-	reloaded.apply(SaveCodec.parse_json(SaveCodec.serialize(saved))["state"])
+	reloaded.apply(SaveCodec.reread(saved))
 	assert_true(Discovery.is_discovered(reloaded.world.discovered, "icecave_lake", Vector2i(30, 14)), "each floor keeps its own fog")
 	assert_true(reloaded.spoils.is_opened(_chest("icecave_boots")), "the boots stay found, by their chest's id")
 
@@ -286,7 +284,7 @@ func test_a_hero_who_won_the_lantern_is_not_asked_to_fight_again() -> void:
 	state.progression.hunted.append("rimefang")
 	state.pack.add_item("lianes_lantern")
 	var reloaded: Node = autofree(GameStateScript.new())
-	reloaded.apply(SaveCodec.parse_json(SaveCodec.serialize(state.to_dict()))["state"])
+	reloaded.apply(SaveCodec.reread(state.to_dict()))
 	assert_eq(Hunts.living_on("icecave_glass", [], reloaded.progression.hunted).size(), 0, "no Rimefang in the glass hall")
 	assert_eq(int(reloaded.pack.items.get("lianes_lantern", 0)), 1, "the lantern kept")
 	assert_true(Depths.shortcut_open("icecave_glass", reloaded.progression.hunted), "the ice slide open")
@@ -299,7 +297,7 @@ func test_a_save_with_askes_letter_still_to_deliver_brings_him_home_on_delivery(
 	state.questing.finish_dialogue("elder")
 	state.progression.hunted.append("rimefang")
 	var reloaded: Node = autofree(GameStateScript.new())
-	reloaded.apply(SaveCodec.parse_json(SaveCodec.serialize(state.to_dict()))["state"])
+	reloaded.apply(SaveCodec.reread(state.to_dict()))
 	assert_false(reloaded.holdings.is_settled("frost_aske"), "he waits for his letter")
 	assert_eq(Npcs.by_id("frost_aske", reloaded.settlement.settlers)["mapId"], "frostgate")
 	assert_string_contains(reloaded.questing.deliver("frost_aske"), "Pixelheim")
@@ -307,7 +305,7 @@ func test_a_save_with_askes_letter_still_to_deliver_brings_him_home_on_delivery(
 
 
 func test_the_late_web_save_loads_and_plays() -> void:
-	var late := SaveCodec.decode_code(FileAccess.get_file_as_string("res://test/fixtures/web_save_late.txt"))
+	var late := SaveCodec.parse_any(FileAccess.get_file_as_string("res://test/fixtures/web_save_late.json"))
 	state.apply(late.duplicate(true))
 	assert_eq(state.hero.hero_name, "Hrafna")
 	var woke := Depths.waking(state.world.map_id, state.world.cell)
@@ -317,7 +315,6 @@ func test_the_late_web_save_loads_and_plays() -> void:
 	if "rimefang" in state.progression.hunted:
 		assert_true(state.holdings.is_settled("frost_aske"), "the lantern won: Aske is home")
 	assert_eq(state.town_tier(), int(late["townTier"]), "and its town keeps its age")
-	assert_eq(state.to_dict().keys(), late.keys(), "its fields, no more")
 
 
 # ---- Aske comes home ----------------------------------------------------------------
@@ -362,12 +359,10 @@ func test_aske_keeps_the_couriers_lantern_trimmed() -> void:
 	assert_eq(state.holdings.settler_share("forge"), 0.0, "and nothing at Hilda's")
 
 
-func test_askes_homecoming_adds_no_field_to_the_save() -> void:
+func test_askes_homecoming_settles_them_in_the_save() -> void:
 	state.progression.hunted.append("rimefang")
-	var before: Array = state.to_dict().keys()
 	state.holdings.come_home()
 	var after: Dictionary = state.to_dict()
-	assert_eq(after.keys(), before)
 	assert_has(after["settlers"], "frost_aske", "a settler, as the others are")
 
 
@@ -419,7 +414,7 @@ func test_an_older_towns_age_is_kept() -> void:
 	state.settlement.town_tier = 3
 	state.progression.hunted.append_array(["tidecaller", "seam_warden", "hollow_captain", "rimefang"])
 	var reloaded: Node = autofree(GameStateScript.new())
-	reloaded.apply(SaveCodec.parse_json(SaveCodec.serialize(state.to_dict()))["state"])
+	reloaded.apply(SaveCodec.reread(state.to_dict()))
 	assert_eq(reloaded.town_tier(), 3)
 	assert_true(reloaded.holdings.is_settled("frost_aske"))
 	assert_false(reloaded.reveals.has("opens:3"), "no beat for a Town already built")

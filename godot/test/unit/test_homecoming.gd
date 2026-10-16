@@ -6,11 +6,10 @@ extends GutTest
 ## arguing with Maren a different way each day; "Stay with them." and he is
 ## up at his forge but for festival days. Both endings tour Hilda's forge
 ## (Fafnyr on her roof, or Hilda alone for a slayer) and Maren. The City is
-## the age after the Night of Bells. Old saves keep their ending and City,
-## and the save has no new field.
+## the age after the Night of Bells. Old saves keep their ending and City.
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
-const LATE := "res://test/fixtures/web_save_late.txt"
+const LATE := "res://test/fixtures/web_save_late.json"
 ## Morvax's forge, where step 8 put him.
 const FORGE := Vector2i(8, 4)
 
@@ -30,7 +29,7 @@ func _next(hero: Node = null) -> String:
 func _reloaded(hero: Node = null) -> Node:
 	var who: Node = hero if hero != null else state
 	var back: Node = autofree(GameStateScript.new())
-	back.apply(SaveCodec.parse_json(SaveCodec.serialize(who.to_dict()))["state"])
+	back.apply(SaveCodec.reread(who.to_dict()))
 	return back
 
 
@@ -106,7 +105,6 @@ func test_the_choice_is_the_couriers_last_word() -> void:
 
 func test_come_home_and_he_sits_on_his_bench_by_the_fountain() -> void:
 	_after_the_night()
-	var fields: Array = state.to_dict().keys()
 	var fifth := Letters.fifth_quest()
 	assert_eq(Homecoming.answered(fifth, state.progression), fifth["answered"], "the satchel: he stayed on his mountain, so far")
 	state.mark_seen(Story.ending_scene(Homecoming.HOME))
@@ -130,7 +128,6 @@ func test_come_home_and_he_sits_on_his_bench_by_the_fountain() -> void:
 	assert_eq(Homecoming.argument(pairs.size()), Homecoming.argument(0), "then round again")
 	var back := _reloaded()
 	assert_eq(Homecoming.chosen(back.progression), Homecoming.HOME, "the story ledger keeps it")
-	assert_eq(back.to_dict().keys(), fields, "no new save field")
 
 
 # ---- Stay with them -----------------------------------------------------------
@@ -221,14 +218,13 @@ func test_an_old_ending_is_kept() -> void:
 ## The late web hero who cast Morvax down on the old mountain: the story
 ## told, the City theirs to build, nobody asking.
 func test_the_late_web_hero_is_never_asked() -> void:
-	var late := SaveCodec.decode_code(FileAccess.get_file_as_string(LATE))
+	var late := SaveCodec.parse_any(FileAccess.get_file_as_string(LATE))
 	state.apply(late.duplicate(true))
 	assert_eq(_next(), "", "their story is told")
 	assert_false(Homecoming.choice_due(state.progression, state.settlement))
 	assert_eq(Homecoming.chosen(state.progression), "")
 	assert_false(_city_blocked(), "the City asks nothing more of them")
 	assert_eq(state.settlement.town_tier, int(late["townTier"]), "their town as it was")
-	assert_eq(state.to_dict().keys(), late.keys(), "its fields, no more")
 
 
 ## A hero who slew Fafnyr on the old mountain never had the night: the

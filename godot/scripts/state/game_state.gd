@@ -65,6 +65,9 @@ var slots := SaveSlots.new()
 var settings := GameSettings.new()
 var slot := NO_SLOT
 var dirty := false
+## Seconds played with this hero (PIX-302): counted past the title, saved
+## whole; heroes from before v5 had none to count.
+var play_seconds := 0.0
 ## Dice for chance rolls (double brews); tests swap in a loaded die.
 var roll: Callable = func() -> float: return randf()
 ## The title has been passed this session (it greets the first load only).
@@ -97,6 +100,8 @@ var training: Training
 
 var _booted := false
 var _unsaved_seconds := 0.0
+## The play time the last save wrote: leaving writes the time since too.
+var _saved_play := 0.0
 
 
 func _init() -> void:
@@ -196,8 +201,8 @@ func boot(flags: HarnessFlags) -> void:
 		slot = clampi(settings.last_slot, 1, SaveSlots.SLOT_COUNT)
 	var seen := slots.look(slot) if slot != NO_SLOT else {"kind": SaveSlots.EMPTY}
 	var saved: Dictionary = seen["state"] if seen["kind"] == SaveSlots.HERO else {}
-	# `--load <file>` (harness): an old save played as it loads from a slot
-	# (a code or JSON: the fixtures in test/fixtures), nothing written back
+	# `--load <file>` (harness): a save played as it loads from a slot (a
+	# code or a v5 file: the fixtures in test/fixtures), nothing written back
 	# (PIX-257: a hero saved on the old mountain's floors wakes by its gate).
 	if slot == NO_SLOT and flags.has("--load"):
 		saved = SaveCodec.parse_any(FileAccess.get_file_as_string(flags.value("--load")))
@@ -247,6 +252,8 @@ static func unread_note(target: int, kind: String) -> String:
 			return Text.t("Slot %d's save can't be read. It's kept as it is, in Saves.") % target
 		SaveSlots.NEWER:
 			return Text.t("Slot %d was saved by a newer version of Pixelheim. It's kept as it is, in Saves.") % target
+		SaveSlots.OLDER:
+			return Text.t("Slot %d was saved by an older version of Pixelheim. It's kept as it is, in Saves.") % target
 	return ""
 
 
@@ -284,7 +291,7 @@ func room_for_hero() -> bool:
 	return free_slot() != NO_SLOT or (standing_in and slot == NO_SLOT)
 
 
-## Brings a migrated save (a pasted code) into a slot and plays it.
+## Brings a save (a pasted code) into a slot and plays it.
 func import_into(target: int, state: Dictionary) -> void:
 	save_now()
 	_use_slot(target)
@@ -307,7 +314,7 @@ func clear_slot(target: int) -> bool:
 	return true
 
 
-## This hero as a PXH1 code: pasted into another copy's Saves, it loads there.
+## This hero as a PXH2 code: pasted into another copy's Saves, it loads there.
 func save_code() -> String:
 	return SaveCodec.encode_code(to_dict())
 
@@ -332,7 +339,6 @@ func new_game(name := DEFAULT_HERO_NAME, role_id := DEFAULT_ROLE, look := 0, pro
 	state["inventory"] = STARTER_ITEMS.duplicate()
 	state["gear"] = [weapon]
 	state["equipped"] = {"weapon": weapon["uid"]}
-	state["introSeen"] = false
 	state["world"] = SaveCodec.fresh_world()
 	# A new hero finds Pixelheim in ashes (PIX-146); heroes from before keep
 	# the town they had.
@@ -355,6 +361,7 @@ func apply(state: Dictionary) -> void:
 	settlement = SettlementState.from_dict(state)
 	progression = ProgressionState.from_dict(state)
 	world = WorldState.from_dict(state)
+	play_seconds = float(state.get("playSeconds", 0))
 	mark_dirty()
 	questing.forget_deliveries()
 	questing.note_deliveries(false)
@@ -377,6 +384,7 @@ func to_dict() -> Dictionary:
 	settlement.write_into(state)
 	progression.write_into(state)
 	world.write_into(state)
+	state["playSeconds"] = int(play_seconds)
 	return state
 
 
@@ -387,12 +395,16 @@ func mark_dirty() -> void:
 func save_now() -> void:
 	dirty = false
 	_unsaved_seconds = 0.0
+	_saved_play = play_seconds
 	# The title's stand-in hero is never written; a made or brought hero is.
 	if slot != NO_SLOT and not standing_in:
 		slots.write(slot, to_dict())
 
 
 func _process(delta: float) -> void:
+	# Time played is the hero's in hand past the title, never a stand-in's.
+	if title_seen and not standing_in:
+		play_seconds += delta
 	if not dirty:
 		return
 	_unsaved_seconds += delta
@@ -408,7 +420,9 @@ func _notification(what: int) -> void:
 		or what == NOTIFICATION_APPLICATION_PAUSED
 		or what == NOTIFICATION_EXIT_TREE
 	)
-	if leaving and dirty:
+	# Time played since the last save is kept too (it marks nothing dirty:
+	# a hero standing still isn't saved every few seconds for it).
+	if leaving and (dirty or play_seconds - _saved_play >= 1.0):
 		save_now()
 
 

@@ -1,10 +1,9 @@
 class_name SaveSlots
-## Save slots on disk: <dir>/slot_<n>.json, each file the save envelope
-## (version + state, SaveCodec) plus savedAt. On the web export user://
-## lives in IndexedDB.
+## Save slots on disk: <dir>/slot_<n>.save, each a v5 save file (SaveCodec,
+## PIX-302). On the web export user:// lives in IndexedDB.
 ##
 ## No hero is lost to a file (PIX-303). A write goes to a temp file, is read
-## back and decoded, then the slot's file becomes `slot_<n>.json.bak` (the
+## back and decoded, then the slot's file becomes `slot_<n>.save.bak` (the
 ## save before) and the temp file takes its place: a crash mid-write, or a
 ## bug that writes a broken state, never eats the last good save. Reading
 ## falls back to the temp file (a write cut off between its two renames)
@@ -12,14 +11,20 @@ class_name SaveSlots
 ## A file that can't be read at all, or that a newer version wrote, is
 ## never an empty slot: nothing is written over it, and a write that finds
 ## one there keeps its bytes (`.damaged`) or refuses (newer).
+##
+## The saves before v5 (`slot_<n>.json`, the first edition's format) don't
+## load until the beta (Tom, 2026-10-16): a slot holding one and no v5 save
+## is OLDER, never free, kept as it is until it's cleared. Nothing writes
+## the old file.
 
 const SLOT_COUNT := 3
 ## What a slot holds (`look`): nothing, a hero this version plays, a file it
-## can't read, or a save a newer version wrote.
+## can't read, a save a newer version wrote, or one from before v5.
 const EMPTY := "empty"
 const HERO := "hero"
 const DAMAGED := "damaged"
 const NEWER := "newer"
+const OLDER := "older"
 
 var dir := "user://saves"
 ## Read, never written or erased: harness runs over a folder of slots
@@ -37,7 +42,7 @@ func _init(directory := "user://saves", reading_only := false) -> void:
 
 
 func path_for(slot: int) -> String:
-	return "%s/slot_%d.json" % [dir, slot]
+	return "%s/slot_%d.save" % [dir, slot]
 
 
 ## The save before the slot's file, kept by every write.
@@ -56,18 +61,20 @@ func aside_for(slot: int) -> String:
 	return path_for(slot) + ".damaged"
 
 
+## The slot's files from before v5: the first edition's save and what its
+## safe writes left beside it (read never, cleared with the slot).
+func older_for(slot: int) -> Array[String]:
+	var old := "%s/slot_%d.json" % [dir, slot]
+	return [old, old + ".bak", old + ".tmp", old + ".damaged"]
+
+
 ## Writes the state as the slot's save; false when nothing changed on disk
 ## (read-only, a temp file that didn't read back, a newer save in the slot).
 func write(slot: int, state: Dictionary) -> bool:
 	if read_only:
 		return false
 	DirAccess.make_dir_recursive_absolute(dir)
-	var envelope := {
-		"version": SaveCodec.SAVE_VERSION,
-		"state": state,
-		"savedAt": int(Time.get_unix_time_from_system()),
-	}
-	var text := JSON.stringify(envelope)
+	var text := SaveCodec.serialize(SaveCodec.to_file(state, int(Time.get_unix_time_from_system())))
 	var temp := temp_for(slot)
 	var file := FileAccess.open(temp, FileAccess.WRITE)
 	if file == null:
@@ -101,11 +108,13 @@ func write(slot: int, state: Dictionary) -> bool:
 
 
 ## What the slot holds, as playing it would read it: `{kind}` and, for a
-## HERO, its migrated `state`, `savedAt`, and `backup` true when it came
-## from the save before (the slot's file unreadable). A newer save is NEWER
-## even with an older backup beside it: falling back would lose its
-## progress. Anything on disk that reads as no hero is DAMAGED, never EMPTY,
-## but for a temp file alone (a first write cut off: never a save).
+## HERO, its `state`, its `card` (SaveCodec.card), `savedAt`, `game` (the
+## version that wrote it) and `backup` true when it came from the save
+## before (the slot's file unreadable). A newer save is NEWER even with an
+## older backup beside it: falling back would lose its progress. Anything on
+## disk that reads as no hero is DAMAGED, never EMPTY, but for a temp file
+## alone (a first write cut off: never a save); a slot with no v5 save but
+## a file from before is OLDER.
 func look(slot: int) -> Dictionary:
 	var main := _file(path_for(slot))
 	if main["kind"] == HERO:
@@ -125,6 +134,8 @@ func look(slot: int) -> Dictionary:
 		return backup
 	if main["kind"] == DAMAGED or backup["kind"] == DAMAGED:
 		return {"kind": DAMAGED}
+	if older_for(slot).any(func(path: String) -> bool: return FileAccess.file_exists(path)):
+		return {"kind": OLDER}
 	return {"kind": EMPTY}
 
 
@@ -133,57 +144,65 @@ func is_free(slot: int) -> bool:
 	return look(slot)["kind"] == EMPTY
 
 
-## The slot's state, migrated and normalized; {} when there's no hero to play.
+## The slot's state, ready to play; {} when there's no hero to play.
 func read(slot: int) -> Dictionary:
 	var seen := look(slot)
 	return seen["state"] if seen["kind"] == HERO else {}
 
 
-## What a slot picker shows: `{kind}`, and for a HERO its card (name, role,
-## look, worn, level, gold, map, savedAt, backup).
+## What a slot picker shows: `{kind}`, and for a HERO its card (name,
+## roleId, look, worn, level, mapId, chapter, playSeconds), its gold,
+## savedAt, the version that wrote it and `backup`.
 func summary(slot: int) -> Dictionary:
 	var seen := look(slot)
 	if seen["kind"] != HERO:
 		return {"kind": seen["kind"]}
-	var state: Dictionary = seen["state"]
+	var card: Dictionary = seen["card"]
 	return {
 		"kind": HERO,
-		"name": state["hero"]["name"],
-		"roleId": state["hero"]["roleId"],
-		"look": state["hero"].get("look", 0),
+		"name": card["name"],
+		"roleId": card["role"],
+		"look": card.get("look", 0),
 		# What the hero wears, so the slot shows them as they left (PIX-175).
-		"worn": InventoryState.from_dict(state).worn_items(),
-		"level": state["hero"]["level"],
-		"gold": state["gold"],
-		"mapId": state["world"]["position"]["mapId"],
+		"worn": card.get("worn", {}),
+		"level": card["level"],
+		"mapId": card["place"],
+		"chapter": int(card.get("chapter", 0)),
+		"playSeconds": int(card.get("playSeconds", 0)),
+		"gold": seen["state"]["gold"],
 		"savedAt": seen["savedAt"],
+		"game": seen["game"],
 		"backup": seen.get("backup", false),
 	}
 
 
-## Empties a slot: its file, the save before, a write left over and any
-## bytes moved aside.
+## Empties a slot: its file, the save before, a write left over, any bytes
+## moved aside, and a save from before v5.
 func erase(slot: int) -> void:
 	if read_only:
 		return
-	for path in [path_for(slot), temp_for(slot), backup_for(slot), aside_for(slot)]:
+	for path in [path_for(slot), temp_for(slot), backup_for(slot), aside_for(slot)] + older_for(slot):
 		if FileAccess.file_exists(path):
 			DirAccess.remove_absolute(path)
 	_known.erase(slot)
 
 
-## One file's kind (and for a HERO its state, savedAt and the text's hash).
+## One file's kind (and for a HERO its state, card, savedAt, game and the
+## text's hash).
 func _file(path: String) -> Dictionary:
 	if not FileAccess.file_exists(path):
 		return {"kind": EMPTY}
 	var text := FileAccess.get_file_as_string(path)
 	var raw: Variant = SaveCodec.parse_json(text)
-	if SaveCodec.from_newer(raw):
+	if SaveCodec.age(raw) == SaveCodec.NEWER:
 		return {"kind": NEWER}
-	var state := SaveCodec.migrate(raw)
-	if state.is_empty():
+	var state := SaveCodec.from_file(raw)
+	if state.is_empty() or not raw.get("card") is Dictionary:
 		return {"kind": DAMAGED}
-	return {"kind": HERO, "state": state, "savedAt": int(raw.get("savedAt", 0)), "hash": text.hash()}
+	return {
+		"kind": HERO, "state": state, "card": raw["card"], "savedAt": int(raw.get("savedAt", 0)),
+		"game": String(raw.get("game", "")), "hash": text.hash(),
+	}
 
 
 ## The slot file's kind before a write replaces it: what this session read

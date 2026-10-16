@@ -141,8 +141,8 @@ func test_the_saves_screen_fits_with_every_slot_full() -> void:
 
 func test_the_saves_screen_fits_with_saves_it_cant_read() -> void:
 	# PIX-303: a damaged and a newer version's card, then a hero from the
-	# save before, its line said on the card.
-	for folder in ["res://test/fixtures/slots_unread", "res://test/fixtures/slots_backup"]:
+	# save before, its line said on the card; PIX-302: an older version's.
+	for folder in ["res://test/fixtures/slots_unread", "res://test/fixtures/slots_backup", "res://test/fixtures/slots_older"]:
 		GameState.slots = SaveSlots.new(folder, true)
 		var out := await _fits(["saves"])
 		assert_eq(out.size(), 0, "%s\n%s" % [folder, "\n".join(out)])
@@ -183,7 +183,7 @@ func test_every_screen_fits_every_view() -> void:
 ## language. The pack's rows ran 75 px past its page in French, "E retirer"
 ## under the scrollbar, the Forge's 200 px.
 func test_long_names_keep_to_their_lists() -> void:
-	var saved: Dictionary = SaveCodec.parse_json(FileAccess.get_file_as_string("res://test/fixtures/frostweave_mage.json"))["state"]
+	var saved := SaveCodec.parse_any(FileAccess.get_file_as_string("res://test/fixtures/frostweave_mage.json"))
 	GameState.pack.gear.assign(saved["gear"])
 	GameState.pack.equipped = saved["equipped"].duplicate()
 	GameState.pack.items.merge(saved["inventory"])

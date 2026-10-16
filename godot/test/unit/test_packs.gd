@@ -76,7 +76,7 @@ func test_a_door_keeps_the_ledger_and_only_a_night_at_the_inn_clears_it() -> voi
 func test_the_ledger_keeps_its_steps_in_the_save() -> void:
 	var bare := {}
 	state.world.write_into(bare)
-	assert_false(bare["world"].has("slainAt"), "saves without it stay byte for byte")
+	assert_false(bare["world"].has("slainAt"), "none written while there is none")
 	state.world.steps = 42.0
 	state.spoils.clear_pack("marsh_2")
 	var saved := {}

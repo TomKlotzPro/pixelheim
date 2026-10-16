@@ -44,12 +44,15 @@ func test_a_written_slot_reads_back_the_same_state() -> void:
 	assert_eq(slots.read(1), state.to_dict())
 
 
-func test_a_slot_file_is_the_save_envelope() -> void:
+func test_a_slot_file_is_a_v5_save() -> void:
 	slots.write(2, _fresh_state().to_dict())
+	assert_eq(slots.path_for(2).get_file(), "slot_2.save")
 	var raw: Dictionary = SaveCodec.parse_json(FileAccess.get_file_as_string(slots.path_for(2)))
-	assert_eq(raw["version"], 4)
-	assert_true(raw.has("state"))
+	assert_eq(raw["pixelheim"], 5)
+	assert_eq(raw["game"], SaveCodec.game_version(), "the version that wrote it")
 	assert_typeof(raw["savedAt"], TYPE_INT)
+	assert_gt(raw["savedAt"], 0)
+	assert_eq(raw["card"]["name"], "Wanderer")
 	assert_false(FileAccess.file_exists(slots.path_for(2) + ".tmp"), "temp file renamed away")
 
 
@@ -72,6 +75,9 @@ func test_summary_names_the_hero_and_place() -> void:
 	assert_eq(summary["level"], 1)
 	assert_eq(summary["gold"], 30)
 	assert_eq(summary["mapId"], "town")
+	assert_eq(summary["chapter"], 1)
+	assert_eq(summary["playSeconds"], 0)
+	assert_eq(summary["game"], SaveCodec.game_version())
 	assert_gt(summary["savedAt"], 0)
 
 
@@ -197,7 +203,7 @@ func test_an_empty_slot_is_no_hero_to_play() -> void:
 func test_importing_writes_the_slot_and_plays_it() -> void:
 	var state := _fresh_state()
 	state.boot(HarnessFlags.new(PackedStringArray(["--slot", "1"])))
-	var imported := SaveCodec.parse_any(FileAccess.get_file_as_string("res://test/fixtures/web_save_v4.txt"))
+	var imported := SaveCodec.parse_any(FileAccess.get_file_as_string("res://test/fixtures/web_save_v4.json"))
 	state.import_into(2, imported)
 	assert_eq(state.slot, 2)
 	assert_eq(state.hero.hero_name, "Brann")
@@ -238,7 +244,7 @@ func test_any_slot_clears_and_the_hero_in_hand_becomes_a_stand_in() -> void:
 func test_save_code_carries_the_hero_whole() -> void:
 	var state := _fresh_state()
 	state.pack.gold = 321
-	var decoded := SaveCodec.decode_code(state.save_code())
+	var decoded := SaveCodec.parse_any(state.save_code())
 	assert_eq(decoded, state.to_dict())
 
 
@@ -278,9 +284,16 @@ func _state(gold: int) -> Dictionary:
 	return state.to_dict()
 
 
-## A save a later version wrote: this one's envelope, version 5.
+## A save a later version wrote: this one's file, the version after.
 func _newer_text() -> String:
-	return JSON.stringify({"version": SaveCodec.SAVE_VERSION + 1, "state": _state(64), "savedAt": 1})
+	var doc := SaveCodec.to_file(_state(64), 1)
+	doc["pixelheim"] = SaveCodec.VERSION + 1
+	return SaveCodec.serialize(doc)
+
+
+## The state a file on disk holds.
+func _read(path: String) -> Dictionary:
+	return SaveCodec.from_file(SaveCodec.parse_json(_text(path)))
 
 
 func test_each_write_keeps_the_save_before() -> void:
@@ -288,9 +301,9 @@ func test_each_write_keeps_the_save_before() -> void:
 	assert_false(FileAccess.file_exists(slots.backup_for(1)), "a first save has none before it")
 	assert_true(slots.write(1, _state(200)))
 	assert_eq(slots.read(1)["gold"], 200)
-	assert_eq(SaveCodec.migrate(SaveCodec.parse_json(_text(slots.backup_for(1))))["gold"], 100, "the save before")
+	assert_eq(_read(slots.backup_for(1))["gold"], 100, "the save before")
 	assert_true(slots.write(1, _state(300)))
-	assert_eq(SaveCodec.migrate(SaveCodec.parse_json(_text(slots.backup_for(1))))["gold"], 200)
+	assert_eq(_read(slots.backup_for(1))["gold"], 200)
 	assert_false(FileAccess.file_exists(slots.temp_for(1)))
 
 
@@ -385,7 +398,7 @@ func test_a_good_save_with_a_bad_backup_plays_and_mends_it() -> void:
 	assert_eq(slots.read(1)["gold"], 100)
 	assert_false(slots.summary(1)["backup"])
 	assert_true(slots.write(1, _state(200)))
-	assert_eq(SaveCodec.migrate(SaveCodec.parse_json(_text(slots.backup_for(1))))["gold"], 100, "a good backup again")
+	assert_eq(_read(slots.backup_for(1))["gold"], 100, "a good backup again")
 
 
 func test_a_bad_save_with_a_good_backup_plays_the_backup_and_keeps_both() -> void:
@@ -400,7 +413,7 @@ func test_a_bad_save_with_a_good_backup_plays_the_backup_and_keeps_both() -> voi
 	assert_true(slots.write(1, _state(150)))
 	assert_eq(slots.read(1)["gold"], 150)
 	assert_false(slots.summary(1)["backup"])
-	assert_eq(SaveCodec.migrate(SaveCodec.parse_json(_text(slots.backup_for(1))))["gold"], 100)
+	assert_eq(_read(slots.backup_for(1))["gold"], 100)
 	assert_eq(_text(slots.aside_for(1)), "{ broken")
 
 
@@ -411,7 +424,7 @@ func test_a_save_spoiled_since_it_was_written_never_becomes_the_backup() -> void
 	DirAccess.remove_absolute(slots.path_for(1))
 	_put(slots.path_for(1), "{ spoiled")
 	assert_true(slots.write(1, _state(300)))
-	assert_eq(SaveCodec.migrate(SaveCodec.parse_json(_text(slots.backup_for(1))))["gold"], 100, "the good one kept")
+	assert_eq(_read(slots.backup_for(1))["gold"], 100, "the good one kept")
 	assert_eq(_text(slots.aside_for(1)), "{ spoiled")
 
 
@@ -605,3 +618,125 @@ func test_a_harness_run_reads_the_players_slots_and_never_writes_them() -> void:
 	assert_false(FileAccess.file_exists(slots.path_for(2)), "creation's Begin writes nothing")
 	state.clear_slot(1)
 	assert_eq(slots.read(1)["gold"], 100, "nor does clearing one")
+
+
+# PIX-302: our own format, v5. A save from before it (the first edition's
+# slot_<n>.json) loads nowhere until the beta: its slot says so, is never
+# free, and clears like a save the game can't read.
+
+const OLDER_FILE := "res://test/fixtures/slots_older/slot_1.json"
+
+
+## The slot's file from before v5, as the update found it.
+func _put_older(slot: int) -> String:
+	var text := FileAccess.get_file_as_string(OLDER_FILE)
+	_put(slots.older_for(slot)[0], text)
+	return text
+
+
+func test_a_slot_with_only_an_older_save_is_older_never_empty() -> void:
+	var old := _put_older(1)
+	assert_eq(slots.summary(1), {"kind": SaveSlots.OLDER})
+	assert_false(slots.is_free(1))
+	assert_eq(slots.read(1), {}, "no hero to play")
+	# Its leftovers alone (the first edition's backup) count the same.
+	_put(slots.older_for(2)[1], old)
+	assert_eq(slots.look(2)["kind"], SaveSlots.OLDER)
+	assert_eq(_text(slots.older_for(1)[0]), old, "reading changes nothing")
+
+
+func test_a_v5_save_beside_an_older_one_plays() -> void:
+	_put_older(1)
+	slots.write(1, _state(100))
+	assert_eq(slots.read(1)["gold"], 100)
+	assert_true(FileAccess.file_exists(slots.older_for(1)[0]), "the old file never written")
+
+
+func test_a_launch_on_an_older_slot_stands_in_and_says_so() -> void:
+	var old := _put_older(1)
+	var state := _fresh_state()
+	state.boot(HarnessFlags.new())
+	assert_eq(state.slot, 1)
+	assert_true(state.standing_in, "no one to continue")
+	assert_string_contains(state.slot_note, "1")
+	state.mark_dirty()
+	state.save_now()
+	assert_false(FileAccess.file_exists(slots.path_for(1)), "the stand-in isn't written there")
+	assert_eq(state.free_slot(), 2, "New Game passes it by")
+	state.new_hero_in(state.free_slot(), "Robin", "rogue")
+	assert_eq(_text(slots.older_for(1)[0]), old, "the old save as it was, byte for byte")
+
+
+func test_an_older_slot_plays_no_one_and_clears_with_all_its_files() -> void:
+	_put_older(2)
+	_put(slots.older_for(2)[1], "the save before it")
+	var state := _fresh_state()
+	state.boot(HarnessFlags.new(PackedStringArray(["--slot", "1"])))
+	assert_false(state.play_slot(2))
+	assert_eq(state.slot, 1)
+	assert_true(state.clear_slot(2), "cleared, once the screen has asked twice")
+	for path in slots.older_for(2):
+		assert_false(FileAccess.file_exists(path), path)
+	assert_true(slots.is_free(2))
+
+
+func test_the_saves_screen_writes_no_code_over_an_older_slot_and_clears_it_on_a_third_x() -> void:
+	var old := _put_older(1)
+	var kept: SaveSlots = GameState.slots
+	GameState.slots = slots
+	var screen: Screen = preload("res://scripts/saves_screen.gd").new()
+	add_child(screen)
+	await wait_process_frames(2)
+	screen._select(0)
+	screen._play()
+	assert_string_contains(screen.status.text, "older")
+	screen.code_field.text = SaveCodec.encode_code(_state(9))
+	screen._load_code()
+	assert_eq(_text(slots.older_for(1)[0]), old)
+	assert_false(FileAccess.file_exists(slots.path_for(1)), "no code written over it")
+	screen._clear()
+	screen._clear()
+	assert_true(FileAccess.file_exists(slots.older_for(1)[0]), "asked twice")
+	screen._clear()
+	assert_true(slots.is_free(1), "then cleared")
+	screen.close()
+	GameState.slots = kept
+	await get_tree().process_frame
+	get_tree().paused = false
+
+
+func test_a_pasted_older_code_says_so_and_loads_nothing() -> void:
+	var kept: SaveSlots = GameState.slots
+	GameState.slots = slots
+	var screen: Screen = preload("res://scripts/saves_screen.gd").new()
+	add_child(screen)
+	await wait_process_frames(2)
+	screen._select(2)
+	screen.code_field.text = "PXH1." + Marshalls.utf8_to_base64(FileAccess.get_file_as_string(OLDER_FILE))
+	screen._load_code()
+	assert_string_contains(screen.status.text, "older version")
+	var cut := SaveCodec.encode_code(_state(9))
+	screen.code_field.text = cut.left(cut.length() - 8)
+	screen._load_code()
+	assert_string_contains(screen.status.text, "cut short")
+	assert_false(FileAccess.file_exists(slots.path_for(3)), "nothing written")
+	screen.close()
+	GameState.slots = kept
+	await get_tree().process_frame
+	get_tree().paused = false
+
+
+func test_the_fixture_slots_hold_an_older_save_a_hero_and_room() -> void:
+	var fixtures := SaveSlots.new("res://test/fixtures/slots_older", true)
+	assert_eq([fixtures.look(1)["kind"], fixtures.look(2)["kind"], fixtures.look(3)["kind"]], [SaveSlots.OLDER, SaveSlots.HERO, SaveSlots.EMPTY])
+
+
+func test_play_time_is_saved_on_leaving_even_with_nothing_else_changed() -> void:
+	var state := _fresh_state()
+	state.boot(HarnessFlags.new(PackedStringArray(["--slot", "1"])))
+	state.title_seen = true
+	state.save_now()
+	state._process(30.0)
+	assert_false(state.dirty, "time alone saves nothing every few seconds")
+	state._notification(Node.NOTIFICATION_WM_CLOSE_REQUEST)
+	assert_eq(slots.summary(1)["playSeconds"], 30, "but leaving keeps it")

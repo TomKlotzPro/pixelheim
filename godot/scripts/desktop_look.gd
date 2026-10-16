@@ -13,7 +13,7 @@ class_name DesktopLook
 ## (The renderer's own glow, a WorldEnvironment, was tried and dropped: on
 ## 4.7 everything drawn after its pass, the HUD included, came out lifted,
 ## and lamplit rooms washed out.) The app keeps the browser's saves: the same
-## slot files (user://saves/slot_<n>.json under the pinned user dir), the
+## slot files (user://saves/slot_<n>.save under the pinned user dir), the
 ## same format.
 ##
 ## A look is how the app wears these, by name (LOOKS). LightRig wears one;

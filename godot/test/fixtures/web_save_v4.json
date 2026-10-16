@@ -1,0 +1,144 @@
+{
+  "pixelheim": 5,
+  "game": "0.242.0",
+  "savedAt": 0,
+  "playSeconds": 0,
+  "card": {
+    "name": "Brann",
+    "role": "ranger",
+    "look": 2,
+    "worn": {
+      "weapon": "hunting_bow"
+    },
+    "level": 1,
+    "place": "town",
+    "chapter": 1,
+    "playSeconds": 0
+  },
+  "hero": {
+    "name": "Brann",
+    "role": "ranger",
+    "look": 2,
+    "level": 1,
+    "xp": 0,
+    "xpToNext": 38,
+    "hp": 36,
+    "mp": 10,
+    "stats": {
+      "maxHp": 36,
+      "maxMp": 10,
+      "strength": 5,
+      "intelligence": 4,
+      "dexterity": 9,
+      "defense": 3,
+      "endurance": 7
+    },
+    "statPoints": 0,
+    "skillPoints": 0,
+    "skills": {
+      "nodes": [
+        "ranger_aimed_shot"
+      ],
+      "path": [
+        "beastmaster"
+      ],
+      "spec": "beastmaster",
+      "mastery": {
+        "beast": 12
+      }
+    },
+    "jobs": {
+      "smithing": {
+        "level": 1,
+        "xp": 0
+      },
+      "alchemy": {
+        "level": 1,
+        "xp": 0
+      },
+      "foraging": {
+        "level": 1,
+        "xp": 0
+      }
+    }
+  },
+  "pack": {
+    "gold": 4321,
+    "items": {
+      "potion_hp": 2,
+      "bread": 2,
+      "cheese_wheel": 1
+    },
+    "gear": [
+      {
+        "uid": "gmuwzcbp8140qh",
+        "itemId": "hunting_bow",
+        "rarity": "common",
+        "bonus": 0
+      }
+    ],
+    "worn": {
+      "weapon": "gmuwzcbp8140qh"
+    }
+  },
+  "home": {
+    "owned": true,
+    "storage": {},
+    "tier": 2,
+    "trophies": [
+      "wolf_pelt"
+    ]
+  },
+  "town": {
+    "age": 3,
+    "settlers": [
+      "settler_mirelle"
+    ],
+    "properties": [
+      "town_shop"
+    ],
+    "bank": {
+      "principal": 500,
+      "at": 12
+    },
+    "expansions": [
+      "town_shop"
+    ]
+  },
+  "story": {},
+  "quests": {
+    "ledger": {
+      "q_wolves": {
+        "progress": 2,
+        "done": false
+      }
+    }
+  },
+  "world": {
+    "at": {
+      "map": "town",
+      "x": 27,
+      "y": 28,
+      "facing": "left"
+    },
+    "steps": 777,
+    "fog": {
+      "town": {
+        "x": 25,
+        "y": 26,
+        "w": 6,
+        "h": 7,
+        "bits": "////v+8D"
+      }
+    },
+    "chests": [],
+    "slain": []
+  },
+  "buffs": {
+    "song": true
+  },
+  "legacy": {
+    "unlockedLevel": 1,
+    "clearedLevels": []
+  }
+}
