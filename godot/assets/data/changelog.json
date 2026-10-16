@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.241.0",
+      "date": "2026-10-14",
+      "codename": "Hearth and Home",
+      "notes": [
+        "Each village has its own look: Saltmere's whitewashed cottages with boats, nets, a fish stall and washing on the line, Greyhold's stone and vegetable beds, Blackiron's plank huts with ore heaps and lanterns",
+        "Every roof has a chimney that smokes, the Frostgate's roofs are under snow, and barrels and crates outdoors are back to a sensible size",
+        "Morvax's forge glows at its mouth and under its door, the Kings' Vault has a black iron double door under the crown, and torches burn on the mountain gate at night"
+      ]
+    },
+    {
       "version": "0.240.0",
       "date": "2026-10-11",
       "codename": "Hoarfrost",

@@ -64,6 +64,7 @@ const TABLE := [
 	{"field": "frames", "says": "with crossing: the walk's frames, the most work and the 99th percentile in ms: 240 max 3.1 p99 2.4 (PIX-269)"},
 	{"field": "free", "says": "with launch: the slot New Game makes its hero in, 0 when none is free (PIX-303: never one holding a save the game can't read)"},
 	{"field": "gate", "says": "the gate the story keeps shut that said its line on this run (PIX-254)"},
+	{"field": "hamlet", "says": "on a settlement beyond Pixelheim: its look and its dressing counted by how each piece stands: fishing:line1,moored2,stand4,wall3 (PIX-313)"},
 	{"field": "home", "says": "who the story brought home to live in town, by first name: wenna (PIX-255)"},
 	{"field": "jobs", "says": "on the Night of Bells: the townsfolk's jobs that have acted, by kind: arrows,bell,cheese (PIX-253 step 9)"},
 	{"field": "jumps", "says": "with turning: the hero's drawn way changing more than an eighth of a turn at once, a snap round a corner (PIX-293)"},
@@ -440,6 +441,17 @@ func field_free() -> String:
 
 func field_gate() -> String:
 	return world.interaction.gate_said
+
+
+func field_hamlet() -> String:
+	if world.view == null or String(world.view.hamlet.get("look", "")) == "":
+		return ""
+	var kinds := {}
+	for piece: Dictionary in world.view.hamlet["pieces"]:
+		kinds[piece["kind"]] = int(kinds.get(piece["kind"], 0)) + 1
+	var names: Array = kinds.keys()
+	names.sort()
+	return "%s:%s" % [world.view.hamlet["look"], ",".join(names.map(func(kind: String) -> String: return "%s%d" % [kind, kinds[kind]]))]
 
 
 func field_home() -> String:

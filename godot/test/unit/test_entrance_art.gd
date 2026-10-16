@@ -14,8 +14,9 @@ const MOUTHS := {
 	"overworld": {Vector2i(48, 6): "mountain_gate"},
 	"mountain_road": {Vector2i(17, 30): "mountain_gate", Vector2i(12, 2): "vault_door"},
 }
-## The sheets free to show anyone (Shade's CC0 overworld and dungeon).
-const CC0 := ["world", "dungeon"]
+## The sheets free to show anyone (Shade's CC0 overworld and dungeon, and
+## our own drawn in code: HamletArt's pieces, its glint, Shade's CC0 torch).
+const CC0 := ["world", "dungeon", "hamlet", "glint", "torch"]
 
 
 ## The ways in `map_id` draws as entrances, as a visit plans them: cell ->
@@ -101,14 +102,25 @@ func test_a_barred_gate_shows_its_portcullis_down_and_the_vault_its_iron() -> vo
 	assert_has(_tiles(road, gate, true), EntranceArt.GATE_BARRED, "barred: the portcullis down")
 	assert_has(_tiles(road, gate, false), EntranceArt.GATE_OPEN, "open: raised")
 	assert_has(_tiles(road, gate, true), Rampart.TOWER[0], "a tower either side")
+	assert_has(_sprites(road, gate, true), "torch", "a torch on each tower (PIX-312)")
 	var vault := _way_at(road, Vector2i(12, 2))
-	assert_has(_tiles(road, vault, true), PunyDungeon.GRILLE, "black iron bars while the Vault is shut")
-	assert_does_not_have(_tiles(road, vault, false), PunyDungeon.GRILLE, "a dark doorway once it opens")
+	# PIX-312: a door of black iron in an arch under a carved crown, not a
+	# pale grille tile; open, the dark and the hoard's glint in it.
+	assert_has(_sprites(road, vault, true), "vault_door", "black iron while the Vault is shut")
+	assert_has(_sprites(road, vault, true), "vault_lintel", "the old kings' crown over it")
+	assert_does_not_have(_sprites(road, vault, true), "glint", "nothing glints behind a shut door")
+	assert_has(_sprites(road, vault, false), "vault_door_open", "its leaves swung in once it opens")
+	assert_has(_sprites(road, vault, false), "glint", "the hoard's gold glinting in it")
+	assert_does_not_have(_tiles(road, vault, true), PunyDungeon.GRILLE, "no grille tile")
 	assert_has(_tiles(road, vault, false), PunyDungeon.STATUE, "a stone king keeping it")
 
 
 func _tiles(map: MapData, way: Dictionary, barred: bool) -> Array:
 	return EntranceArt.plan(map, way, barred, true)["pieces"].map(func(piece: Dictionary) -> int: return piece["tile"])
+
+
+func _sprites(map: MapData, way: Dictionary, barred: bool) -> Array:
+	return EntranceArt.plan(map, way, barred, true)["pieces"].map(func(piece: Dictionary) -> String: return piece["sprite"])
 
 
 func test_only_dungeon_mouths_and_gates_in_the_rock_are_dressed() -> void:

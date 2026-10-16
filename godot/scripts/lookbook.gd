@@ -179,6 +179,23 @@ const SHOTS := {
 	# Paving beyond the village (PIX-307): Greyhold's courtyard flagged, its
 	# paths cobbled, by day and at night; the Frostgate's observatory in its
 	# flagged yard at the end of a cobbled road.
+	# Each settlement beyond Pixelheim its own (PIX-313): Saltmere's
+	# fishing hamlet (gables, nets drying, a boat drawn up, the fish stall),
+	# Greyhold's cottage in its yard below the keep, the Frostgate's hut
+	# snowed in by its woodpile, Blackiron's miners' huts with their lamp,
+	# and Morvax's smithy at the top of the mountain road (PIX-312): its
+	# chimney smoking, its door aglow; by day and at night.
+	"saltmere_hamlet": {"area": "regions", "map": "saltmere", "cell": Vector2i(31, 15), "time": DAY},
+	"saltmere_hamlet_night": {"area": "regions", "map": "saltmere", "cell": Vector2i(31, 15), "time": NIGHT},
+	"greyhold_cottage": {"area": "regions", "map": "greyhold", "cell": Vector2i(14, 25), "time": DAY},
+	"greyhold_cottage_night": {"area": "regions", "map": "greyhold", "cell": Vector2i(14, 25), "time": NIGHT},
+	"frost_camp": {"area": "regions", "map": "frostgate", "cell": Vector2i(14, 39), "time": DAY},
+	"frost_camp_night": {"area": "regions", "map": "frostgate", "cell": Vector2i(14, 39), "time": NIGHT},
+	"frost_caravan": {"area": "regions", "map": "frostgate", "cell": Vector2i(39, 39), "time": DAY},
+	"blackiron_camp": {"area": "regions", "map": "blackiron", "cell": Vector2i(25, 18), "time": DAY},
+	"blackiron_camp_night": {"area": "regions", "map": "blackiron", "cell": Vector2i(25, 18), "time": NIGHT},
+	"morvax_smithy": {"area": "regions", "map": "mountain_road", "cell": Vector2i(17, 7), "time": DAY},
+	"morvax_smithy_night": {"area": "regions", "map": "mountain_road", "cell": Vector2i(17, 7), "time": NIGHT},
 	"courtyard": {"area": "regions", "map": "greyhold", "cell": Vector2i(36, 20), "time": DAY},
 	"courtyard_night": {"area": "regions", "map": "greyhold", "cell": Vector2i(36, 20), "time": NIGHT},
 	"frost_road": {"area": "regions", "map": "frostgate", "cell": Vector2i(28, 13), "time": DAY},
@@ -210,6 +227,15 @@ const SHOTS := {
 	"sea_cave_mouth": {"area": "ways", "map": "saltmere", "cell": Vector2i(7, 26), "time": DAY},
 	"mountain_gate": {"area": "ways", "map": "overworld", "cell": Vector2i(48, 10), "time": DAY},
 	"vault_door": {"area": "ways", "map": "mountain_road", "cell": Vector2i(12, 5), "time": DAY},
+	# The story's last set pieces (PIX-312), at night, and open (`open`: the
+	# gate's promise kept and the dragon freed, for that shot alone): the
+	# mountain's gatehouse, its gate up, from the Reach and from the road
+	# inside; the Vault's door swung back, glinting.
+	"mountain_gate_night": {"area": "ways", "map": "overworld", "cell": Vector2i(48, 10), "time": NIGHT},
+	"mountain_gate_open": {"area": "ways", "map": "overworld", "cell": Vector2i(48, 10), "time": DAY, "open": true},
+	"mountain_gate_inside": {"area": "ways", "map": "mountain_road", "cell": Vector2i(17, 26), "time": DAY, "open": true},
+	"vault_door_night": {"area": "ways", "map": "mountain_road", "cell": Vector2i(12, 5), "time": NIGHT},
+	"vault_door_open": {"area": "ways", "map": "mountain_road", "cell": Vector2i(12, 5), "time": DAY, "open": true},
 	# The Kings' Vault (PIX-257): its first floor, laid from a seed in the
 	# vault's gilded stone, and its last, the Hollow King's hoard.
 	"vault": {"area": "dungeon", "map": "vault_1", "time": DAY},
@@ -414,6 +440,11 @@ static func ordered() -> PackedStringArray:
 func _stage(shot: Dictionary) -> void:
 	world.messages.clear()
 	world.hud.forget_places()
+	if shot.get("open", false):
+		# The story's ways open, for this shot alone (_unstage): an old
+		# save's deepest floor cleared opens the mountain's gate and the
+		# Vault's door both (Relics.gate_open, Vault.door_open).
+		GameState.progression.cleared_levels.assign([15])
 	if shot.has("tier"):
 		# The town at an earlier age, for this shot alone (_unstage).
 		GameState.settlement.town_tier = int(shot["tier"])
@@ -468,6 +499,8 @@ func _stage(shot: Dictionary) -> void:
 ## What a shot set up for itself alone taken back, so the shots after it
 ## find the hero as they were: its letter, the town's age.
 func _unstage(shot: Dictionary) -> void:
+	if shot.get("open", false):
+		GameState.progression.cleared_levels.clear()
 	if shot.has("tier"):
 		GameState.settlement.town_tier = Town.MAX_TIER
 		GameState.settlement.projects.assign(Town.projects_through(Town.MAX_TIER))
