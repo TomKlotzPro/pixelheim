@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.248.0",
+      "date": "2026-10-16",
+      "codename": "The Quill",
+      "notes": [
+        "A small quill writes by the clock whenever the game saves at a moment that matters, and the pause menu says how long ago it last saved",
+        "Quit in the middle of the Night of Bells and you come back at the same beat, with the lanterns you lit and the roofs you doused",
+        "A save on a dungeon floor wakes you at the top of that floor instead of back at the entrance, and sleeping saves with your well-rested bonus kept"
+      ]
+    },
+    {
       "version": "0.247.0",
       "date": "2026-10-16",
       "codename": "Hero Cards",

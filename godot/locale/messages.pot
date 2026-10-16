@@ -2153,11 +2153,19 @@ msgid "A real sun wheels over the world: dawn light, long dusk shadows, and true
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A save on a dungeon floor wakes you at the top of that floor instead of back at the entrance, and sleeping saves with your well-rested bonus kept"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A save the game can't read is never shown as an empty slot or written over: it gets its own card and is kept as it is"
 msgstr ""
 
 #: assets/data/changelog.json
 msgid "A settler with something to ask still heals you or plays first, then asks"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "A small quill writes by the clock whenever the game saves at a moment that matters, and the pause menu says how long ago it last saved"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4421,6 +4429,10 @@ msgid "Quick wins stack: a pack's kills rise as one float that counts up, not a 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Quit in the middle of the Night of Bells and you come back at the same beat, with the lanterns you lit and the roofs you doused"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "READABLE DANGER: a foe shows its level as you come near, on a small plate over its head - grey well below you, cream a match, orange a step above, red far above - so you can choose your fights before the charge"
 msgstr ""
 
@@ -5434,6 +5446,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The Pixelheim Post opens: once Maren's first letter reaches Saltmere, a post box goes up on the square, and each morning it holds a few letters and parcels to carry on your way"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The Quill"
 msgstr ""
 
 #: assets/data/changelog.json

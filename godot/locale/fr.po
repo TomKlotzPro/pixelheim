@@ -2153,12 +2153,20 @@ msgid "A real sun wheels over the world: dawn light, long dusk shadows, and true
 msgstr "Un vrai soleil tourne au-dessus du monde : lumière de l'aube, longues ombres du crépuscule, et une vraie nuit à laquelle répondent lampes, lueurs des portes et feux de l'âtre"
 
 #: assets/data/changelog.json
+msgid "A save on a dungeon floor wakes you at the top of that floor instead of back at the entrance, and sleeping saves with your well-rested bonus kept"
+msgstr "Une sauvegarde à un étage de donjon vous réveille en haut de cet étage au lieu de l'entrée, et dormir sauvegarde en gardant votre bonus de repos"
+
+#: assets/data/changelog.json
 msgid "A save the game can't read is never shown as an empty slot or written over: it gets its own card and is kept as it is"
 msgstr "Une sauvegarde que le jeu ne sait pas lire n'est plus jamais affichée comme un emplacement vide ni écrasée : elle a sa propre carte et reste telle quelle"
 
 #: assets/data/changelog.json
 msgid "A settler with something to ask still heals you or plays first, then asks"
 msgstr "Un nouvel habitant qui a quelque chose à demander vous soigne ou joue toujours d'abord, puis demande"
+
+#: assets/data/changelog.json
+msgid "A small quill writes by the clock whenever the game saves at a moment that matters, and the pause menu says how long ago it last saved"
+msgstr "Une petite plume écrit près de l'horloge chaque fois que le jeu sauvegarde à un moment qui compte, et le menu pause indique depuis quand il a sauvegardé"
 
 #: assets/data/changelog.json
 msgid "A small-screen pass: panels fit, the HUD compacts, and nothing overlaps at any width"
@@ -4421,6 +4429,10 @@ msgid "Quick wins stack: a pack's kills rise as one float that counts up, not a 
 msgstr "Les gains rapprochés s'additionnent : les victimes d'une meute montent en un seul nombre qui grimpe, pas en une pile de lignes"
 
 #: assets/data/changelog.json
+msgid "Quit in the middle of the Night of Bells and you come back at the same beat, with the lanterns you lit and the roofs you doused"
+msgstr "Quittez au milieu de la Nuit des Cloches et vous revenez au même moment, avec les lanternes allumées et les toits éteints"
+
+#: assets/data/changelog.json
 msgid "READABLE DANGER: a foe shows its level as you come near, on a small plate over its head - grey well below you, cream a match, orange a step above, red far above - so you can choose your fights before the charge"
 msgstr "UN DANGER LISIBLE : un ennemi affiche son niveau quand vous approchez, sur une petite plaque au-dessus de sa tête - gris s'il est bien plus faible que vous, crème s'il est de votre niveau, orange s'il est un cran au-dessus, rouge s'il est bien plus fort - pour que vous choisissiez vos combats avant la charge"
 
@@ -5435,6 +5447,10 @@ msgstr "Le Mécène"
 #: assets/data/changelog.json
 msgid "The Pixelheim Post opens: once Maren's first letter reaches Saltmere, a post box goes up on the square, and each morning it holds a few letters and parcels to carry on your way"
 msgstr "La Poste de Pixelheim ouvre : dès que la première lettre de Maren arrive à Saltmere, une boîte aux lettres se dresse sur la place, et chaque matin elle contient quelques lettres et colis à porter en chemin"
+
+#: assets/data/changelog.json
+msgid "The Quill"
+msgstr "La plume"
 
 #: assets/data/changelog.json
 msgid "The Satchel"
