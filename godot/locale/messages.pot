@@ -2001,6 +2001,10 @@ msgid "A hero from before keeps everything: whoever has cleared a floor finds th
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A hero saved out on the open ash near the old mountain cave now wakes where they stood, instead of back in town"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A keeper stands in their building the day it is rebuilt: Sela in her inn, Vex at her brews, whatever the village's age"
 msgstr ""
 
@@ -2326,6 +2330,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Begin"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Behind the scenes: everything the game kept only so very old saves would still load is gone, leaving it lighter and simpler (the game isn't in beta yet)"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3422,6 +3430,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Honest version numbers: we are not 1.0 yet, so the old 1.x releases are now 0.11 through 0.18"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Housekeeping"
 msgstr ""
 
 #: assets/data/changelog.json

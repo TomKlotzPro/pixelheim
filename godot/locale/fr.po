@@ -2001,6 +2001,10 @@ msgid "A hero from before keeps everything: whoever has cleared a floor finds th
 msgstr "Un ancien héros conserve tout : qui a déjà nettoyé un étage trouve la porte ouverte, et Maren passe directement à sa demande suivante"
 
 #: assets/data/changelog.json
+msgid "A hero saved out on the open ash near the old mountain cave now wakes where they stood, instead of back in town"
+msgstr "Un héros sauvegardé en pleine cendre près de l'ancienne grotte de la montagne se réveille désormais là où il était, au lieu de revenir au village"
+
+#: assets/data/changelog.json
 msgid "A keeper stands in their building the day it is rebuilt: Sela in her inn, Vex at her brews, whatever the village's age"
 msgstr "Un commerçant s'installe dans son bâtiment le jour où il est reconstruit : Sela dans son auberge, Vex à ses breuvages, quel que soit l'âge du village"
 
@@ -2327,6 +2331,10 @@ msgstr "Garder le lit"
 #: assets/data/changelog.json
 msgid "Begin"
 msgstr "Commencer"
+
+#: assets/data/changelog.json
+msgid "Behind the scenes: everything the game kept only so very old saves would still load is gone, leaving it lighter and simpler (the game isn't in beta yet)"
+msgstr "En coulisses : tout ce que le jeu gardait seulement pour charger les très vieilles sauvegardes est parti, ce qui le rend plus léger et plus simple (le jeu n'est pas encore en bêta)"
 
 #: assets/data/changelog.json
 msgid "Behind the scenes: new ground for the regions to come (Shade's sea in three depths, docks, snow, ice and cobbled stone) and a tool that turns a drawn sketch into a map"
@@ -3423,6 +3431,10 @@ msgstr "Travail honnête"
 #: assets/data/changelog.json
 msgid "Honest version numbers: we are not 1.0 yet, so the old 1.x releases are now 0.11 through 0.18"
 msgstr "Des numéros de version honnêtes : nous ne sommes pas encore en 1.0, donc les anciennes versions 1.x deviennent 0.11 à 0.18"
+
+#: assets/data/changelog.json
+msgid "Housekeeping"
+msgstr "Grand ménage"
 
 #: assets/data/changelog.json
 msgid "How It Ends"
