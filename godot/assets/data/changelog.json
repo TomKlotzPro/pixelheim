@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.245.0",
+      "date": "2026-10-16",
+      "codename": "Fresh Start",
+      "notes": [
+        "Saves have their own new format: a hero who has explored everything now saves in 9 KB instead of 300, and each save takes a millisecond instead of thirty",
+        "Heroes saved before this update don't load any more (the game isn't in beta yet); their slot says so and can be cleared",
+        "Save codes are tiny now and check themselves, so a code cut short when you paste it is caught"
+      ]
+    },
+    {
       "version": "0.244.0",
       "date": "2026-10-16",
       "codename": "Four Walls",

@@ -3257,6 +3257,10 @@ msgid "Fresh Plaster"
 msgstr "Plâtre frais"
 
 #: assets/data/changelog.json
+msgid "Fresh Start"
+msgstr "Page blanche"
+
+#: assets/data/changelog.json
 msgid "From the Ashes"
 msgstr "Des cendres"
 
@@ -3403,6 +3407,10 @@ msgstr "Les herbes, le minerai et les bourses au sol sont deux fois plus petits,
 #: assets/data/changelog.json
 msgid "Hero creation reads clearly: the first night is a setting of its own (The first night (tutorial): Play / Skip, with a line on what each means), and Begin the adventure is the start, alone at the bottom; Tab, a click or the pad's Y flips the night, and a pad can now reach every control"
 msgstr "La création du héros se lit clairement : la première nuit est un réglage à part (La première nuit (tutoriel) : Jouer / Passer, avec une ligne sur ce que chacun veut dire), et Commencer l'aventure est le départ, seul en bas ; Tab, un clic ou le Y de la manette change la nuit, et une manette atteint désormais chaque commande"
+
+#: assets/data/changelog.json
+msgid "Heroes saved before this update don't load any more (the game isn't in beta yet); their slot says so and can be cleared"
+msgstr "Les héros sauvegardés avant cette mise à jour ne se chargent plus (le jeu n'est pas encore en bêta) ; leur emplacement l'indique et peut être vidé"
 
 #: assets/data/changelog.json
 msgid "Higher charters ask more than gold: the Town wants its patron to own a home; the City wants all three businesses under your name"
@@ -4637,8 +4645,16 @@ msgid "Save codes and delete-save moved into Options"
 msgstr "Les codes de sauvegarde et la suppression de sauvegarde passent dans les Options"
 
 #: assets/data/changelog.json
+msgid "Save codes are tiny now and check themselves, so a code cut short when you paste it is caught"
+msgstr "Les codes de sauvegarde sont minuscules et se vérifient eux-mêmes : un code coupé au collage est détecté"
+
+#: assets/data/changelog.json
 msgid "Save codes: copy your save as a PXH1. code and load it anywhere"
 msgstr "Codes de sauvegarde : copiez votre sauvegarde sous forme de code PXH1. et chargez-la n'importe où"
+
+#: assets/data/changelog.json
+msgid "Saves have their own new format: a hero who has explored everything now saves in 9 KB instead of 300, and each save takes a millisecond instead of thirty"
+msgstr "Les sauvegardes ont leur nouveau format : un héros qui a tout exploré tient en 9 Ko au lieu de 300, et chaque sauvegarde prend une milliseconde au lieu de trente"
 
 #: assets/data/changelog.json
 msgid "Second Thoughts"

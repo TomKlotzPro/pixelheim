@@ -3257,6 +3257,10 @@ msgid "Fresh Plaster"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Fresh Start"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "From the Ashes"
 msgstr ""
 
@@ -3402,6 +3406,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Hero creation reads clearly: the first night is a setting of its own (The first night (tutorial): Play / Skip, with a line on what each means), and Begin the adventure is the start, alone at the bottom; Tab, a click or the pad's Y flips the night, and a pad can now reach every control"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Heroes saved before this update don't load any more (the game isn't in beta yet); their slot says so and can be cleared"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4637,7 +4645,15 @@ msgid "Save codes and delete-save moved into Options"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Save codes are tiny now and check themselves, so a code cut short when you paste it is caught"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Save codes: copy your save as a PXH1. code and load it anywhere"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Saves have their own new format: a hero who has explored everything now saves in 9 KB instead of 300, and each save takes a millisecond instead of thirty"
 msgstr ""
 
 #: assets/data/changelog.json
