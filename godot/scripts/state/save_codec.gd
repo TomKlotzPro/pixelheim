@@ -1,7 +1,8 @@
 class_name SaveCodec
 ## Pixelheim's own save format, v5 (PIX-302): one JSON file a slot, a
 ## section for each part of the game - `hero`, `pack`, `home`, `town`,
-## `story`, `quests`, `world`, `buffs`, and `legacy` for what only old
+## `story`, `quests`, `world`, `post` (the Pixelheim Post's, PIX-320, once
+## it holds anything), `buffs`, and `legacy` for what only old
 ## saves still read (the old mountain's floors, the Deep Hunt, the throne's
 ## endings; PIX-319 takes them out) - under a `card` the Saves screen reads
 ## without the rest, the play time and the game's version. The fog of war is
@@ -175,7 +176,7 @@ static func to_file(state: Dictionary, saved_at := 0) -> Dictionary:
 	_put(world_out, "slainAt", world.get("slainAt"))
 	_put(world_out, "gatheredAt", world.get("gatheredAt"))
 
-	return {
+	var doc := {
 		"pixelheim": VERSION,
 		"game": game_version(),
 		"savedAt": saved_at,
@@ -188,9 +189,14 @@ static func to_file(state: Dictionary, saved_at := 0) -> Dictionary:
 		"story": story,
 		"quests": quests,
 		"world": world_out,
-		"buffs": buffs,
-		"legacy": legacy,
 	}
+	# The Pixelheim Post's own section (PIX-320: the satchel, each thread's
+	# step, what's delivered, the day the box was emptied), once it holds
+	# anything.
+	_put(doc, "post", state.get("post"))
+	doc["buffs"] = buffs
+	doc["legacy"] = legacy
+	return doc
 
 
 ## What the Saves screen shows of a hero, rewritten with every save so it
@@ -297,6 +303,8 @@ static func from_file(raw: Variant) -> Dictionary:
 		}
 		_put(state["world"], "slainAt", world.get("slainAt"))
 		_put(state["world"], "gatheredAt", world.get("gatheredAt"))
+	# The Post (PIX-320): a file without the section has none yet.
+	_put(state, "post", doc.get("post") if doc.get("post") is Dictionary else null)
 	return normalize(state)
 
 

@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.246.0",
+      "date": "2026-10-16",
+      "codename": "Post Day",
+      "notes": [
+        "The Pixelheim Post opens: once Maren's first letter reaches Saltmere, a post box goes up on the square, and each morning it holds a few letters and parcels to carry on your way",
+        "Hand a piece over by talking to whoever it's for: a few words, a small tip, sometimes a reply to carry back; your journal keeps them under Post, and the map marks who they're for",
+        "Three stories to follow, letter by letter: Bram's Cheese Club, Wenna and Pell's canary, and Pip writing to the dragon. Nothing expires, so the post waits as long as you like"
+      ]
+    },
+    {
       "version": "0.245.0",
       "date": "2026-10-16",
       "codename": "Fresh Start",

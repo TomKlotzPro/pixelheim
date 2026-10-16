@@ -27,6 +27,10 @@
     "title": "The bounty board",
     "text": "Named monsters, where they lair (marked on your map) and what they pay. Kill one and the bounty is yours on the spot."
   },
+  "post": {
+    "title": "The post box",
+    "text": "Face it and press {key:interact} for the day's post. Who each piece is for is in the journal's Post tab, and faintly on your map. Nothing in it ever spoils, so take your time."
+  },
   "turn": {
     "title": "Turn sideways",
     "text": "Pixelheim plays best in landscape: turn your phone sideways for bigger text and more room to fight."

@@ -6,7 +6,8 @@ class_name HamletArt
 ## boats, drying nets, creels and fish rack, a washing line, a vegetable
 ## bed, a miner's lantern by a door, Morvax's forge stack and the light
 ## under his door, and the Kings' Vault's black iron door in its carved
-## surround, shut and open. Drawn here in code in Shade's palette (his
+## surround, shut and open; and Pixelheim's post box (PIX-320), empty or
+## with the day's post in it. Drawn here in code in Shade's palette (his
 ## outline, his woods, irons and greys), at 1x on his 16 px grid, so they
 ## sit beside his art as his. Our own, so CC0 like the rest of the
 ## repository: they draw the same with or without the paid pack. Pictures
@@ -498,6 +499,67 @@ const PIECES := {
 		".......oo.......",
 		"................",
 		"................",
+	],
+	## Pixelheim's post box on the square (PIX-320): a slate-roofed box on a
+	## post, its slot under the eave and an envelope's back on its front.
+	## 16x26, foot on the bottom row.
+	"post_box": [
+		"................",
+		"................",
+		"................",
+		"................",
+		"................",
+		"......oooo......",
+		"....ooGGGGoo....",
+		"..ooGGGGGGGgoo..",
+		".oGGGGGGGGggggo.",
+		".oooooooooooooo.",
+		"..o5444444443o..",
+		"..o4kkkkkkkk3o..",
+		"..o4knnnnnnk3o..",
+		"..o4kkkkkkkk3o..",
+		"..o44bBBBBb43o..",
+		"..o44BbBBbB43o..",
+		"..o44BBbbBB43o..",
+		"..o44BbBBbB43o..",
+		"..o44bBBBBb43o..",
+		"..o3333333332o..",
+		"..oooooooooooo..",
+		"......o42o......",
+		"......o32o......",
+		".....oo32oo.....",
+		"....o233332o....",
+		"....oooooooo....",
+	],
+	## The same with the day's post in it: a letter sealed in red poking out
+	## of the slot, and the red pennant up on the roof.
+	"post_box_full": [
+		"........o.......",
+		"........kooo....",
+		"........kRRRo...",
+		"........kRReo...",
+		"........kooo....",
+		"......ookoo.....",
+		"....ooGGkGoo....",
+		"..ooGGGGGGGgoo..",
+		".oGGGGGGGGggggo.",
+		".oooooooooooooo.",
+		"..o5444444443o..",
+		"..o4kkBBkkkk3o..",
+		"..o4knBBBRnk3o..",
+		"..o4kkkkkkkk3o..",
+		"..o44bBBBBb43o..",
+		"..o44BbBBbB43o..",
+		"..o44BBbbBB43o..",
+		"..o44BbBBbB43o..",
+		"..o44bBBBBb43o..",
+		"..o3333333332o..",
+		"..oooooooooooo..",
+		"......o42o......",
+		"......o32o......",
+		".....oo32oo.....",
+		"....o233332o....",
+		"....oooooooo....",
 	],
 }
 

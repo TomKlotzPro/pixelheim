@@ -20,12 +20,16 @@ extends Screen
 ## the quests (A/D), where the five chapters were before. The Letters page
 ## reads Maren's letters once delivered - a courier never reads the post -
 ## with their answers, and under them, for a hero who found any, Liane's
-## pages from the mountain (the page they had before). Q or Esc closes it.
+## pages from the mountain (the page they had before). Once the Post is
+## open (PIX-320) a Post page joins them: what the box on the square holds
+## this morning, the pieces in the satchel, sealed, and those delivered, to
+## read. Q or Esc closes it.
 ## The world holds still while it is open.
 
 const BountyScreen := preload("res://scripts/bounty_screen.gd")
-const TABS := ["quests", "letters", "feats"]
-const TAB_NAMES := {"quests": "Quests", "letters": "Letters", "feats": "Feats"}
+## The Post's tab (PIX-320) shows once the Post is open (`_tabs`).
+const TABS := ["quests", "letters", "post", "feats"]
+const TAB_NAMES := {"quests": "Quests", "letters": "Letters", "post": "Post", "feats": "Feats"}
 ## The chapters the journal had before (PIX-171), and Liane's pages (until
 ## PIX-253 step 2), as the harness's --tab still names them.
 const OLD_TABS := {"main": "quests", "side": "quests", "bounties": "quests", "story": "letters", "pages": "letters", "deeds": "feats"}
@@ -89,7 +93,7 @@ func _open() -> void:
 	content.add_theme_constant_override("separation", 10)
 	add_child(content)
 	tab = OLD_TABS.get(tab, tab)
-	if tab not in TABS:
+	if tab not in _tabs():
 		tab = TABS[0]
 	_show()
 
@@ -103,13 +107,19 @@ func _command(event: InputEvent) -> Callable:
 			return _choose.bind(wrapi(selected + by, 0, rows.size()))
 		if event.is_action_pressed("interact"):
 			return _follow.bind(selected)
-	if tab == "letters" and by != 0 and not pages.is_empty():
+	if tab in ["letters", "post"] and by != 0 and not pages.is_empty():
 		return _turn.bind(by)
 	return Callable()
 
 
 func _switch(by: int) -> void:
-	_switch_to(TABS[wrapi(TABS.find(tab) + by, 0, TABS.size())])
+	var shown := _tabs()
+	_switch_to(shown[wrapi(shown.find(tab) + by, 0, shown.size())])
+
+
+## The tabs this hero has: the Post's once it's open (PIX-320).
+func _tabs() -> Array:
+	return TABS.filter(func(id: String) -> bool: return id != "post" or GameState.posting.is_open())
 
 
 func _switch_to(id: String) -> void:
@@ -128,7 +138,7 @@ func _on_tab_input(event: InputEvent, id: String) -> void:
 ## The tabs, the page shown and its keys.
 func _show() -> void:
 	Layout.clear(tabs_row)
-	for id: String in TABS:
+	for id: String in _tabs():
 		var chip := PanelContainer.new()
 		chip.add_theme_stylebox_override("panel", UiStyle.plank(id == tab, 6))
 		chip.add_child(UiStyle.label(TAB_NAMES[id], 16, UiStyle.GOLD if id == tab else UiStyle.CREAM))
@@ -145,6 +155,8 @@ func _show() -> void:
 			_quests()
 		"letters":
 			_letters()
+		"post":
+			_post()
 		"feats":
 			_feats()
 	_set_footer()
@@ -157,7 +169,7 @@ func _set_footer() -> void:
 	match tab:
 		"quests":
 			footer = UiStyle.screen_footer("{key:move_up}/{key:move_down}  choose      {key:interact}  follow      {key:move_left}/{key:move_right}  tabs      {key:journal} / Esc  close")
-		"letters":
+		"letters", "post":
 			footer = UiStyle.screen_footer("{key:move_up}/{key:move_down}  turn      {key:move_left}/{key:move_right}  tabs      {key:journal} / Esc  close")
 		_:
 			footer = UiStyle.screen_footer("{key:move_left}/{key:move_right}  tabs      {key:journal} / Esc  close")
@@ -519,6 +531,85 @@ func _letter_card(list: VBoxContainer, quest: Dictionary, delivered: bool) -> vo
 		words.add_child(gap)
 		words.add_child(Layout.wrapped(UiStyle.strong(Homecoming.answered(quest, GameState.progression), 14, UiStyle.LAMP), ROW_TEXT))
 		for line: String in Letters.answer(quest, GameState.progression, GameState.settlement):
+			words.add_child(Layout.wrapped(UiStyle.label(line, 14, UiStyle.INK), ROW_TEXT))
+	pages.append(card)
+	list.add_child(card)
+
+
+## The Post's page (PIX-320): what the box on the square holds this
+## morning, then the pieces in the satchel, sealed (a courier never reads
+## the post: where each goes, its thread and what its outside says), then
+## the ones delivered, newest first, read as Maren's letters are: their
+## words, and what was said as they were handed over. W/S turn from one to
+## the next.
+func _post() -> void:
+	var sheet := _sheet()
+	scroll = ScrollContainer.new()
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	sheet.add_child(scroll)
+	var list := VBoxContainer.new()
+	list.add_theme_constant_override("separation", 10)
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(list)
+	var post := GameState.post
+	var waiting := GameState.posting.in_box().size()
+	var box_line := Text.t("Nothing in the post box today. Fresh post comes in the morning.")
+	if waiting == 1:
+		box_line = Text.t("The post box on the square holds one piece this morning.")
+	elif waiting > 1:
+		box_line = Text.t("The post box on the square holds %d pieces this morning.") % waiting
+	elif post.taken >= GameState.posting.today():
+		box_line = Text.t("You've taken today's post. The box fills again in the morning.")
+	list.add_child(UiStyle.strong("The Pixelheim Post", 18, UiStyle.LAMP))
+	list.add_child(Layout.wrapped(UiStyle.label(box_line, 14, UiStyle.FADED), TEXT_WIDTH))
+	list.add_child(UiStyle.strong("In your satchel", 18, UiStyle.LAMP))
+	if post.bag.is_empty():
+		list.add_child(Layout.wrapped(UiStyle.label("Nothing to deliver just now.", 14, UiStyle.FADED), TEXT_WIDTH))
+	for id: String in post.bag:
+		_post_card(list, Post.piece(id), false)
+	if post.delivered.is_empty():
+		return
+	list.add_child(UiStyle.strong(Text.t("Delivered: %d") % post.delivered.size(), 18, UiStyle.LAMP))
+	for at in range(post.delivered.size()):
+		_post_card(list, Post.piece(post.delivered[post.delivered.size() - 1 - at]), true)
+
+
+## One piece of the post on its page, a card: its address, then its thread
+## and where it goes; sealed, what its outside says; delivered, its words
+## and what was said as it was handed over.
+func _post_card(list: VBoxContainer, entry: Dictionary, delivered: bool) -> void:
+	if entry.is_empty():
+		return
+	var card := PanelContainer.new()
+	card.add_theme_stylebox_override("panel", UiStyle.box(Color(UiStyle.CARD, 0.5), UiStyle.RIM, 8))
+	var words := VBoxContainer.new()
+	words.add_theme_constant_override("separation", 4)
+	card.add_child(words)
+	var top := HBoxContainer.new()
+	top.add_theme_constant_override("separation", 16)
+	var name := Layout.wrapped(UiStyle.strong(String(entry["addressed"]), 18, UiStyle.INK), ROW_TEXT - 180)
+	name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	top.add_child(name)
+	var sealed := UiStyle.strong(Text.t("DELIVERED") if delivered else Text.t("SEALED"), 18, UiStyle.LAMP if delivered else UiStyle.FADED)
+	sealed.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	top.add_child(sealed)
+	words.add_child(top)
+	var title := String(Post.thread(Post.thread_of(String(entry["id"]))).get("title", ""))
+	var where := Post.where(entry, GameState.settlement)
+	words.add_child(Layout.wrapped(UiStyle.label(Text.t("%s - %s") % [title, where] if where != "" else title, 14, UiStyle.FADED), ROW_TEXT))
+	if not delivered:
+		words.add_child(Layout.wrapped(UiStyle.label(String(entry["note"]), 14, UiStyle.FADED), ROW_TEXT))
+	else:
+		for line: String in entry["words"]:
+			words.add_child(Layout.wrapped(UiStyle.label(line, 14, UiStyle.INK), ROW_TEXT))
+		# A breath between the letter and what was said to it.
+		var gap := Control.new()
+		gap.custom_minimum_size = Vector2(0, 6)
+		words.add_child(gap)
+		words.add_child(Layout.wrapped(UiStyle.strong("As it was handed over:", 14, UiStyle.LAMP), ROW_TEXT))
+		for line: String in entry["said"]:
 			words.add_child(Layout.wrapped(UiStyle.label(line, 14, UiStyle.INK), ROW_TEXT))
 	pages.append(card)
 	list.add_child(card)

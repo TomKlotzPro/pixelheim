@@ -119,6 +119,7 @@ static func forget() -> void:
 	Depths._doc = {}
 	Ranks._doc = {}
 	Gates._doc = {}
+	Post._doc = {}
 	Bestiary._found = {}
 	Bestiary._found_at_night = {}
 	generation += 1
