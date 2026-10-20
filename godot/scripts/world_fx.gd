@@ -51,9 +51,6 @@ const GAIN_ICON := 2.0 / CameraRig.ZOOM
 var _rising: Array[Dictionary] = []
 ## Everything floated on this visit, merged (the harness reports it).
 var floated := Gains.none()
-## What a fight has won so far, held until it's over (PIX-334): {gains, at
-## (where the last of it was won), view (the map it was won on)}, or {}.
-var _held := {}
 ## Blows on one foe this close together add up into one number (PIX-334),
 ## and the number each foe (and colour) shows now: key -> {word, value,
 ## crit, at}.
@@ -66,10 +63,10 @@ const MOST_LIFT := 36.0
 
 
 ## A word that rises and fades over where it happened (PIX-155: "dodged",
-## "blocked"). A `big` one (a bell's "Dong!"; LEVEL UP was one until it
-## went to the plate, PIX-340; a fine or epic drop's name rises with the
-## rest of a win, show_gains) bursts in at twice its size unless motion is reduced, then settles at the
-## pixel face's own (anything larger dwarfs the fighters), and stays longer.
+## "blocked"). A `big` one (PIX-211: LEVEL UP, a bell's "Dong!"; a fine or
+## epic drop's name now rises with the rest of a win, show_gains) bursts in
+## at twice its size unless motion is reduced, then settles at the pixel
+## face's own (anything larger dwarfs the fighters), and stays longer.
 func float_text(text: String, at: Vector2, color: Color, big := false) -> void:
 	var label := _floating(text, color)
 	label.position = Vector2(Ink.centred(_ink(label), at.x), roundf(at.y))
@@ -114,18 +111,17 @@ func _stand(label: Label) -> void:
 ## (TextBudget.rise) of `reserved` (the level tags shown, Foes' pass), of the
 ## wins rising and of the words before it - never back down, so it doesn't
 ## jump about as the foes move. Words rising together at one pace stay clear.
+## The wins step up clear of the tags first, each whole (PIX-343: they rise
+## at each kill again, among the pack's tags).
 func keep_clear(reserved: Array[Rect2]) -> void:
 	var taken: Array[Rect2] = reserved.duplicate()
 	for win: Dictionary in _rising:
 		if is_instance_valid(win["box"]):
-			for line: Node in (win["box"] as Node).get_children():
-				for part: String in ["text", "then"]:
-					if line.has_node(part):
-						taken.append(_drawn(line.get_node(part)))
+			taken.append_array(_lift_win(win, reserved))
 	for stand: Node in get_children():
-		var word: Variant = stand.get_meta("word", null)
-		if word == null or not is_instance_valid(word) or stand.is_queued_for_deletion():
+		if not stand.has_meta("word") or stand.is_queued_for_deletion() or not is_instance_valid(stand.get_meta("word")):
 			continue
+		var word: Label = stand.get_meta("word")
 		var lifted := -(stand as Node2D).position.y
 		# Where it would be drawn unlifted.
 		var rect := _drawn(word)
@@ -134,6 +130,38 @@ func keep_clear(reserved: Array[Rect2]) -> void:
 		(stand as Node2D).position.y = -lifted
 		rect.position.y -= lifted
 		taken.append(rect)
+
+
+## How many wins are rising over the world now (the harness's rising=).
+func rising_now() -> int:
+	return _rising.filter(func(win: Dictionary) -> bool: return is_instance_valid(win["box"]) and not (win["box"] as Node).is_queued_for_deletion()).size()
+
+
+## A win's rows lifted together just clear of `reserved`, never back down
+## (its lift kept on the win, for _lay_out); where its words are drawn now.
+func _lift_win(win: Dictionary, reserved: Array[Rect2]) -> Array[Rect2]:
+	var lines: Array = (win["box"] as Node).get_children().filter(func(line: Node) -> bool: return not line.is_queued_for_deletion())
+	var rects: Array[Rect2] = []
+	for line: Node in lines:
+		for part: String in ["text", "then"]:
+			if line.has_node(part):
+				rects.append(_drawn(line.get_node(part)))
+	if rects.is_empty():
+		return rects
+	var lifted: float = win.get("lift", 0.0)
+	var whole := rects[0]
+	for rect in rects:
+		whole = whole.merge(rect)
+	# Where it would be drawn unlifted.
+	whole.position.y += lifted
+	var step := TextBudget.rise(reserved, whole, SLOT_MARGIN, lifted, MOST_LIFT) - lifted
+	if step > 0.0:
+		win["lift"] = lifted + step
+		for line: Node2D in lines:
+			line.position.y -= step
+		for i in rects.size():
+			rects[i].position.y -= step
+	return rects
 
 
 ## Where a floating label's words are drawn in the world.
@@ -221,15 +249,16 @@ func skill_flash(at: Vector2, color: Color) -> void:
 	bloom.chain().tween_callback(burst.queue_free)
 
 
-## A level gained (PIX-211): a gold burst on the hero and the experience
-## line flashing; its words go on the plate (Messages), after the fight
-## (PIX-340: LEVEL UP over the hero's head ran across the foes beside them,
-## over their tags and numbers, and said what the plate says).
+## A level gained (PIX-211): a gold burst on the hero, LEVEL UP over their
+## head (back in PIX-343, Tom: it was cool to see; it steps up clear of the
+## tags, keep_clear) and the experience line flashing; its words go on the
+## plate (Messages), after the fight.
 func level_up_burst() -> void:
 	if world.player == null:
 		return
 	skill_flash(world.player.global_position, UiStyle.GOLD)
 	skill_flash(world.player.global_position + Vector2(0, -8), UiStyle.BRASS_LIGHT)
+	float_text(Text.t("LEVEL UP"), world.player.global_position + Vector2(0, -40), UiStyle.GOLD, true)
 	world.hud.dock.flash_xp()
 
 
@@ -239,36 +268,13 @@ func level_up_burst() -> void:
 ## another nearby joins it (Gains.joins): its rows count up in place, so a
 ## pack felled in a few blows reads "+36 XP" once. With motion reduced
 ## nothing rises or bursts: the rows fade in where they stand (a little
-## higher, GAIN_STILL_LIFT), then out.
-## In a fight a win waits for its end (PIX-334: gold and XP popped over
-## each kill of a pack, among the blows): the fight's wins, merged, rise as
-## one from where the last was won.
+## higher, GAIN_STILL_LIFT), then out. A kill's win rises as it falls, in a
+## fight too (PIX-343: Tom liked seeing the gold come; v0.256 held it to the
+## fight's end), stepped up clear of the pack's tags (keep_clear).
 func show_gains(gains: Dictionary, at: Vector2) -> void:
 	if Gains.is_empty(gains):
 		return
 	Gains.merge(floated, gains)
-	if world != null and world.get("foes") != null and world.foes.in_fight(Foes.CALM_S):
-		if _held.is_empty():
-			_held = {"gains": Gains.none()}
-		Gains.merge(_held["gains"], gains)
-		_held["at"] = at
-		_held["view"] = world.view
-		return
-	_rise(gains, at)
-
-
-## The fight's wins rise once it's over: where the last was won, or over the
-## hero when that was on a map left behind.
-func _process(_delta: float) -> void:
-	if _held.is_empty() or world.foes.in_fight(Foes.CALM_S):
-		return
-	var held := _held
-	_held = {}
-	var at: Vector2 = held["at"] if held["view"] == world.view else world.player.global_position + OVER_HERO
-	_rise(held["gains"], at)
-
-
-func _rise(gains: Dictionary, at: Vector2) -> void:
 	var now := GameClock.seconds()
 	for i in range(_rising.size() - 1, -1, -1):
 		var gone: Variant = _rising[i]["box"]
@@ -323,7 +329,7 @@ func _lay_out(win: Dictionary) -> void:
 				(line.get_node("then") as Label).text = "· " + row["then"]
 			_fit_row(line)
 			_bump(line)
-		line.position = Vector2(0, -lift)
+		line.position = Vector2(0, -lift - float(win.get("lift", 0.0)))
 		lift += GAIN_ROW
 	win["fresh"] = false
 
@@ -405,7 +411,7 @@ func _come_in(line: Node2D, delay: float, big: bool) -> void:
 ## A row counted up by a win that joined: it swells a moment and settles
 ## (not with motion reduced), shown at once if it was still coming in.
 func _bump(line: Node2D) -> void:
-	var coming: Variant = line.get_meta("tween", null)
+	var coming: Variant = line.get_meta("tween") if line.has_meta("tween") else null
 	if coming != null and (coming as Tween).is_valid():
 		(coming as Tween).kill()
 	line.modulate.a = 1.0

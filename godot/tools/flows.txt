@@ -116,9 +116,14 @@ fight | fight kill | map=town | combat
 # says nothing of them (PIX-245): floats= is what rose, logged= the lines.
 spoils | fight kill | floats=\+[0-9]+ [a-z]+ . \+[0-9]+ XP.* logged=0 | combat
 # A pack of three felled (PIX-340): while the fight is on the pack shows
-# one level tag, however many of it stand, and its gold and XP rise as one
-# line once it's over (PIX-334).
-pack-tags | fight kill pack --foe slime --wait 0.8 | tags=1 mobs=0 floats=\+[0-9]+ [a-z]+ . \+[0-9]+ XP.* | combat
+# one level tag, however many of it stand, and each kill's gold and XP rise
+# where it fell, on one line, while the rest still stand (PIX-343: v0.256
+# held them to the fight's end).
+pack-tags | fight kill pack --foe slime --wait 0.8 | tags=1 mobs=0 rising=[1-9] floats=\+[0-9]+ [a-z]+ . \+[0-9]+ XP.* | combat
+# A feat done mid-walk, in French (PIX-343: two lines of it stood over the
+# screen, the quest arrow on them): one box, one line, on the screen, clear
+# of the objective's line and the dock, over the arrow, no plate beside it.
+feat-toast | --map town --wear oilskin_hood,oilskin_coat,oilskin_gloves,oilskin_boots,saltwood_buckler --walk r,r --lang fr | feats=full_set toast=1 box, 1 line, fits | combat story quest lang
 # Death, and waking at the inn (PIX-129).
 die | die | map=town_inn cell=\(2, 3\) | combat rooms
 # The saves screen (PIX-129).

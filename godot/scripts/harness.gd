@@ -1236,6 +1236,10 @@ func _run_test_harness() -> void:
 				await get_tree().create_timer(0.45).timeout
 			if world.foes.kills - kills_before >= pack.size():
 				break
+			# The wins rising while some of the pack still stand (PIX-343:
+			# at each kill, not held to the fight's end).
+			if world.foes.kills > kills_before and report.noted("rising") == "":
+				report.note("rising", str(world.fx.rising_now()))
 		await get_tree().create_timer(0.4 if flags.has("kill") else 0.1).timeout
 		if flags.has("die"):
 			await _die()

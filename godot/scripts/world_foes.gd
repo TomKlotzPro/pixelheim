@@ -477,7 +477,7 @@ func on_enemy_died(enemy: Node) -> void:
 	if GameState.pack.gear.size() > gear_before:
 		Sound.play("drop")
 	if cleared != "":
-		world.messages.log_lines([Text.t("The pack is scattered. Another comes once you've walked a good way, or after a night's rest.")], true)
+		world.messages.log_lines([Text.t("Pack scattered: another comes after a long walk or a night's rest.")], true)
 
 
 ## A named foe stands down rather than falls (PIX-255: the Hollow Captain,

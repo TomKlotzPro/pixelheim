@@ -221,6 +221,33 @@ func test_a_number_rises_clear_of_a_tag() -> void:
 	assert_eq(stand.position.y, lifted, "and never back down")
 
 
+## A kill's win rises in the fight again (PIX-343), among the pack's tags:
+## it steps up whole, just clear of a tag on its words, and stays there.
+func test_a_win_rises_clear_of_a_tag() -> void:
+	var fx: WorldFx = add_child_autofree(WorldFx.new())
+	var win := Gains.none()
+	win["xp"] = 7
+	win["gold"] = 36
+	Gains.add_item(win, "wolf_pelt")
+	fx.show_gains(win, Vector2(100, 50))
+	var rows: Array = fx.get_child(0).get_children()
+	var words := func() -> Array[Rect2]:
+		var out: Array[Rect2] = []
+		for row: Node in rows:
+			var label: Label = row.get_node("text")
+			out.append(Rect2(label.global_position + Ink.of_text(label.text, _face(), UiStyle.BODY_PX).position, Ink.of_text(label.text, _face(), UiStyle.BODY_PX).size))
+		return out
+	var gap: float = words.call()[0].position.y - words.call()[1].position.y
+	var tag: Rect2 = words.call()[0].grow(2.0)
+	fx.keep_clear([tag] as Array[Rect2])
+	for rect: Rect2 in words.call():
+		assert_false(rect.intersects(tag), "clear of the tag")
+	assert_eq(words.call()[0].position.y - words.call()[1].position.y, gap, "its rows together")
+	var lifted: float = words.call()[0].position.y
+	fx.keep_clear([] as Array[Rect2])
+	assert_eq(words.call()[0].position.y, lifted, "and never back down")
+
+
 func test_a_wins_row_is_centred_by_its_ink() -> void:
 	var fx: WorldFx = add_child_autofree(WorldFx.new())
 	var win := Gains.none()

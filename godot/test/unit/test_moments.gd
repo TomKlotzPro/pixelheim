@@ -38,3 +38,24 @@ func test_fine_and_epic_drops_rise_in_their_colour() -> void:
 	assert_ne(WorldFx.GAIN_TONES["fine"], WorldFx.GAIN_TONES["common"])
 	assert_ne(WorldFx.GAIN_TONES["epic"], WorldFx.GAIN_TONES["fine"])
 	assert_eq(WorldFx.GAIN_TONES["common"], UiStyle.CREAM, "on the dark, as words over the world are")
+
+
+## One box of words at a time (PIX-343, Tom: « y'a trop d'infos qui pop
+## d'un coup »): the log shows a line at a time, the rest in turn; the
+## plate goes first, the log's line stepping aside and coming back in full
+## once the plate has faded, counted once.
+func test_one_box_of_words_at_a_time() -> void:
+	var hud: CanvasLayer = add_child_autofree(CanvasLayer.new())
+	var messages: Messages = add_child_autofree(Messages.new())
+	messages.build_log(hud)
+	messages.build_plate(hud)
+	var chips := func() -> Array:
+		return messages.log_box.get_children().filter(func(chip: Node) -> bool: return not chip.is_queued_for_deletion()).map(
+			func(chip: Node) -> String: return (chip.get_child(0) as Label).text)
+	messages.log_lines(["A wolf howls.", "Greymaw has seen you."])
+	assert_eq(chips.call(), ["A wolf howls."], "one line at a time")
+	messages.flash("The gate is barred.")
+	assert_eq(chips.call(), [], "the plate's turn: the log's line steps aside")
+	messages.message_fade.custom_step(30.0)
+	assert_eq(chips.call(), ["A wolf howls."], "back once the plate has gone, in full")
+	assert_eq(messages.logged, 1, "counted once")

@@ -2801,6 +2801,10 @@ msgid "Each floor down is a little harder, with something to find on each"
 msgstr "Chaque étage plus bas est un peu plus rude, avec quelque chose à trouver sur chacun"
 
 #: assets/data/changelog.json
+msgid "Each kill's gold, XP and loot rise where the foe fell again, mid-fight too, and LEVEL UP rises over the hero once more (Tom's playtest: it was fun to see)"
+msgstr "L'or, l'XP et le butin de chaque ennemi vaincu remontent de nouveau là où il est tombé, même en plein combat, et NIVEAU SUPÉRIEUR s'élève à nouveau au-dessus du héros (playtest de Tom : c'était chouette à voir)"
+
+#: assets/data/changelog.json
 msgid "Each letter is a chapter: Old Wenna in Saltmere, Old Pell in the Blackiron valley, Captain Hale's old guard at Greyhold and Aske on the Frostgate pass each answer with something Maren never knew"
 msgstr "Chaque lettre est un chapitre : la vieille Wenna à Saltmere, le vieux Pell dans la vallée de Fernoir, la vieille garde du capitaine Hale à Greyhold et Aske au col de la Porte-Givre répondent chacun par quelque chose que Maren n'a jamais su"
 
@@ -3283,6 +3287,10 @@ msgstr "Des buts à poursuivre"
 #: assets/data/changelog.json
 msgid "Going underground still goes dark for a moment, and coming back up melts into the daylight"
 msgstr "Descendre sous terre plonge toujours un instant dans le noir, et remonter se fond dans la lumière du jour"
+
+#: assets/data/changelog.json
+msgid "Gold Again"
+msgstr "L'or revient"
 
 #: assets/data/changelog.json
 msgid "Gold With a Purpose"
@@ -5743,6 +5751,10 @@ msgstr "Le menu s'affiche par-dessus la ligne À suivre au lieu de passer dessou
 #: assets/data/changelog.json
 msgid "The merchant opens shop: buy gear and potions, sell your loot"
 msgstr "Le marchand ouvre boutique : achetez équipement et potions, vendez votre butin"
+
+#: assets/data/changelog.json
+msgid "The message box above the tracker shows one short line at a time and leaves time to read it: a feat reads Feat: Dressed for It, a new postmark or signpost one line; it never sits beside the plate, and the quest arrow no longer draws over its text"
+msgstr "La boîte de message au-dessus du suivi n'affiche plus qu'une courte ligne à la fois, le temps de la lire : un haut fait se lit Haut fait : Tiré à quatre épingles, un nouveau cachet ou un poteau indicateur tient en une ligne ; elle ne s'affiche jamais à côté de l'annonce, et la flèche de quête ne passe plus sur son texte"
 
 #: assets/data/changelog.json
 msgid "The mini-map learned the landmarks: gold dots mark the forge and the cauldron, green marks your house"
@@ -16601,10 +16613,6 @@ msgid "Town and people"
 msgstr "Le bourg et ses gens"
 
 #: scripts/state/posting.gd
-msgid "A new postmark in your courier's book: %s."
-msgstr "Un nouveau cachet dans votre carnet de messager : %s."
-
-#: scripts/state/posting.gd
 msgid "A reply to carry back: %s."
 msgstr "Une réponse à rapporter : %s."
 
@@ -16615,6 +16623,10 @@ msgstr "Remise : %s."
 #: scripts/state/posting.gd
 msgid "Delivered: %s. %s."
 msgstr "Remise : %s. %s."
+
+#: scripts/state/posting.gd
+msgid "New postmark: %s."
+msgstr "Nouveau cachet : %s."
 
 #: scripts/state/posting.gd
 msgid "The post box is empty. Fresh post comes in the morning."
@@ -16645,8 +16657,8 @@ msgid "%s: they wait on your answer."
 msgstr "%s : on attend votre réponse."
 
 #: scripts/state/questing.gd
-msgid "A feat done: %s. The %s is yours, for the shelf at home."
-msgstr "Un haut fait accompli : %s. La %s est à vous, pour l'étagère de la maison."
+msgid "Feat: %s"
+msgstr "Haut fait : %s"
 
 #: scripts/state/questing.gd
 msgid "It's in your journal ({key:journal})."
@@ -16709,8 +16721,12 @@ msgid "%d post roads meet here"
 msgstr "%d routes du courrier se croisent ici"
 
 #: scripts/state/routes.gd
-msgid "Signposts go up at the forks of your post roads: %s."
-msgstr "Des poteaux indicateurs se dressent aux fourches de vos routes du courrier : %s."
+msgid "A waystation for the road to %s is on the board."
+msgstr "Une halte pour la route vers %s est au tableau d'avis."
+
+#: scripts/state/routes.gd
+msgid "Signposts up: %s."
+msgstr "Poteaux indicateurs plantés : %s."
 
 #: scripts/state/routes.gd
 msgid "The post road to %s"
@@ -16719,10 +16735,6 @@ msgstr "La route du courrier vers %s"
 #: scripts/state/routes.gd
 msgid "The post roads to %s and %s"
 msgstr "Les routes du courrier vers %s et %s"
-
-#: scripts/state/routes.gd
-msgid "The road to %s has carried enough post for a waystation: the board on the square has it."
-msgstr "La route vers %s a porté assez de courrier pour une halte : le tableau d'avis de la place la propose."
 
 #: scripts/state/skills.gd
 msgid "%s needs level %d."
@@ -17217,12 +17229,16 @@ msgid "Boss slayer: +%d%% damage for %d minutes."
 msgstr "Tueur de boss : +%d %% de dégâts pendant %d minutes."
 
 #: scripts/world_foes.gd
-msgid "The pack is scattered. Another comes once you've walked a good way, or after a night's rest."
-msgstr "La meute est dispersée. Une autre reviendra quand vous aurez bien marché, ou après une nuit de repos."
+msgid "Pack scattered: another comes after a long walk or a night's rest."
+msgstr "Meute dispersée : une autre reviendra après une marche ou une nuit."
 
 #: scripts/world_foes.gd
 msgid "Victory"
 msgstr "Victoire"
+
+#: scripts/world_fx.gd
+msgid "LEVEL UP"
+msgstr "NIVEAU SUPÉRIEUR"
 
 #: scripts/world_hud.gd
 msgid "Boss slayer +%d%%  %d:%02d"

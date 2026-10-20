@@ -135,10 +135,10 @@ static func carry(post: PostState, entry: Dictionary, progression: ProgressionSt
 		var names: Array[String] = []
 		for fork_id: String in raised:
 			names.append(fork_name(fork_id, post))
-		notes.append(Text.t("Signposts go up at the forks of your post roads: %s.") % ", ".join(names))
+		notes.append(Text.t("Signposts up: %s.") % ", ".join(names))
 	for place: String in places():
 		if station_offered(post, place) and not offered_before[place] and not built(settlement).has(place):
-			notes.append(Text.t("The road to %s has carried enough post for a waystation: the board on the square has it.") % Text.mid(Catalog.place_name(place)))
+			notes.append(Text.t("A waystation for the road to %s is on the board.") % Text.mid(Catalog.place_name(place)))
 	return notes
 
 

@@ -88,7 +88,7 @@ func deliver(npc_id: String) -> String:
 	owner.save_now()
 	var notes: Array[String] = []
 	if new_page:
-		notes.append(Text.t("A new postmark in your courier's book: %s.") % Text.mid(Catalog.place_name(place)))
+		notes.append(Text.t("New postmark: %s.") % Text.mid(Catalog.place_name(place)))
 	if not reply.is_empty():
 		notes.append(Text.t("A reply to carry back: %s.") % reply["addressed"])
 	notes.append_array(Routes.carry(owner.post, entry, owner.progression, owner.settlement))
