@@ -335,11 +335,23 @@ func _ready() -> void:
 	add_child(level_tag)
 
 
+## The level its tag reads (PIX-340: in a fight a pack's one tag reads the
+## pack's highest), coloured by the gap to the hero's.
+func show_level(level: int) -> void:
+	var words: Label = level_tag.get_child(0)
+	var text := Text.t("Lv %d") % level
+	if words.text != text:
+		words.text = text
+		words.add_theme_color_override("font_color", Bestiary.gap_color(level, GameState.hero.level))
+
+
 func _physics_process(delta: float) -> void:
+	# A falling foe's tag goes with it (PIX-340: it stayed up over the body,
+	# and as the nearest kept the pack's living tags hidden).
+	if level_tag != null:
+		level_tag.visible = not dying and (hunting or health_bar.visible or Packs.within_notice(global_position, world.player.global_position))
 	if dying:
 		return
-	if level_tag != null:
-		level_tag.visible = hunting or health_bar.visible or Packs.within_notice(global_position, world.player.global_position)
 	for tick in ailments.tick(delta):
 		_lose(tick["damage"], Color(0.75, 0.5, 1))
 		if dying:
@@ -1161,7 +1173,7 @@ func chip(damage: int, color: Color) -> void:
 
 func _lose(damage: int, color: Color, crit := false) -> void:
 	fighter["hp"] = maxi(0, int(fighter["hp"]) - damage)
-	world.fx.float_number(damage, global_position + Vector2(0, -18), color, crit)
+	world.fx.float_number(damage, global_position + Vector2(0, -18), color, crit, self)
 	# One that yields at a share of its health (PIX-255: the Hollow Captain)
 	# stands down there, even under a blow that would have felled it.
 	if Hunts.yields(fighter):

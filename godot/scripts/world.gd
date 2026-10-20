@@ -495,6 +495,11 @@ func enter_map(next: MapData, arrival: Vector2i) -> void:
 	# The place's name once the hero is there, not on a post by the way out
 	# (PIX-269); the map the game opens on is only noted.
 	hud.name_place(next, arrival, not changing)
+	# The dodge taught on the way out to where packs roam, after the first
+	# night, so no boss is the first to charge (PIX-341: L'Appelle-Marée
+	# was); it waits for the place's card.
+	if changing and GameState.progression.prologue == Prologue.DONE and not Bestiary.spawns_on(next.id).is_empty():
+		hud.hint("dodge")
 	stage.arrive(next)
 	# Home after the run, the Night of Bells (PIX-253 step 9).
 	night.arrive(next)
@@ -815,7 +820,8 @@ func _build_hud() -> void:
 	GameState.inventory_changed.connect(hud.dock.refresh)
 	GameState.healed.connect(hud.dock.refresh)
 	GameState.message.connect(messages.flash)
-	GameState.noted.connect(messages.log_lines)
+	# A quest's count, the Post's words: they wait out a fight (PIX-334).
+	GameState.noted.connect(messages.log_lines.bind(true))
 	GameState.healed.connect(func() -> void: player.heal())
 	GameState.ranked_up.connect(stage.ascend)
 	GameState.prologue_dawn.connect(stage.play_dawn)

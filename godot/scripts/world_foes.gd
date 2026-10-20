@@ -16,6 +16,14 @@ var world: Node
 const PACK_SIZE := 3
 ## Fight music holds this long after the last hunter gives up.
 const COMBAT_LINGER_S := 3.0
+## What can wait out a fight (PIX-334: a kill's gold and XP, a quest's
+## count, a level's words, the Post) waits this long after the last hunter,
+## not the music's three seconds.
+const CALM_S := 0.6
+## In a fight a pack shows one level tag (PIX-340): foes this close to one
+## another (a chain of them) are one pack, and tags stand this far apart.
+const PACK_REACH := 3.0 * MapView.TILE
+const TAG_MARGIN := 4.0
 ## A boss's fall (PIX-210): how long the music keeps quiet, and how slow the
 ## world runs as it falls.
 const BOSS_HUSH_S := 3.5
@@ -34,6 +42,12 @@ var arrived_at := -100.0
 var hunted_at := -100.0
 var hunted_by_boss := false
 var noticed_at := -100.0
+## When a boss or a named monster last saw the hero: its entrance holds the
+## first-time hints a while (PIX-341, Hud.hint).
+var boss_noticed_at := -100.0
+## The most level tags shown at once while fighting on this visit (the
+## harness reports it, PIX-340).
+var most_tags := 0
 ## Bosses and named monsters felled on this visit (the harness reports it).
 var bosses_fallen := 0
 ## Named foes that stood down rather than fell (PIX-255; the harness
@@ -159,9 +173,15 @@ func come_in() -> void:
 	_coming = true
 
 
-## Level tags kept apart (Tom's playtest: two foes side by side read
-## "Ni Niv. 7"): each frame, after the foes have said whether their tags show,
-## the one nearest the hero keeps its tag and any tag it would overlap hides.
+## The words over the foes, one pass a frame (Tom's playtest: two foes side
+## by side read "Ni Niv. 7"; PIX-340: as a pack's third fell, three tags,
+## the gold, a blow's number and LEVEL UP stood on one spot). After the foes
+## have said whether their tags show (their physics tick, before this), in
+## a fight each pack keeps one tag, its nearest foe's, reading the pack's
+## highest level; then the nearest tags keep theirs and any that would come
+## within TAG_MARGIN of one kept hides; and the words rising over the world
+## step up clear of the tags kept (WorldFx.keep_clear). Out of a fight
+## each foe's tag reads its own level again.
 ## And the packs of a map walked into over a line come, a pack a frame.
 func _process(_delta: float) -> void:
 	if world == null or world.player == null:
@@ -170,36 +190,70 @@ func _process(_delta: float) -> void:
 		_coming = world.map != null and keep_hours(false, 1) > 0
 	var shown: Array = []
 	for enemy in get_tree().get_nodes_in_group("mobs"):
-		if enemy.level_tag != null and enemy.level_tag.visible:
+		if enemy.level_tag != null and enemy.level_tag.visible and not enemy.dying:
 			shown.append(enemy)
-	if shown.size() < 2:
-		return
 	var hero: Vector2 = world.player.global_position
 	shown.sort_custom(func(a: Node2D, b: Node2D) -> bool:
 		return a.global_position.distance_squared_to(hero) < b.global_position.distance_squared_to(hero))
-	var rects: Array[Rect2] = []
+	var fighting := in_fight()
+	var points: Array[Vector2] = []
 	for enemy in shown:
-		rects.append((enemy.level_tag as Control).get_global_rect())
-	var keep := Foes.apart(rects)
+		# A boss is in no pack (nowhere near one): its own tag, over it.
+		points.append(Vector2.INF if fights_like_boss(enemy) else enemy.global_position)
+	var leads: Array = Foes.packs(points, PACK_REACH) if fighting else range(shown.size())
+	var top := {}
 	for index in shown.size():
-		if not keep[index]:
+		top[leads[index]] = maxi(int(top.get(leads[index], 0)), Bestiary.level_of(shown[index].fighter))
+	var kept: Array = []
+	var rects: Array[Rect2] = []
+	for index in shown.size():
+		if leads[index] != index:
 			shown[index].level_tag.visible = false
+			continue
+		shown[index].show_level(top[index])
+		kept.append(shown[index])
+		rects.append((shown[index].level_tag as Control).get_global_rect())
+	var keep := Foes.apart(rects, TAG_MARGIN)
+	var reserved: Array[Rect2] = []
+	for index in kept.size():
+		if keep[index]:
+			reserved.append(rects[index])
+		else:
+			kept[index].level_tag.visible = false
+	if fighting:
+		most_tags = maxi(most_tags, reserved.size())
+	world.fx.keep_clear(reserved)
 
 
-## Which of `rects`, nearest first, may show: each one that overlaps none
-## already kept.
-static func apart(rects: Array[Rect2]) -> Array[bool]:
+## Which of `rects`, nearest first, may show: each one that comes within
+## `margin` of none already kept (PIX-340: tags stacked two pixels apart
+## don't intersect, and read as one block).
+static func apart(rects: Array[Rect2], margin := 0.0) -> Array[bool]:
 	var kept: Array[Rect2] = []
 	var out: Array[bool] = []
 	for rect in rects:
 		var clear := true
 		for other in kept:
-			if rect.intersects(other):
+			if rect.grow(margin).intersects(other):
 				clear = false
 				break
 		out.append(clear)
 		if clear:
 			kept.append(rect)
+	return out
+
+
+## Which pack each of `points` (nearest the hero first) fights in: the index
+## of its pack's first, the nearest of it. A point within `reach` of an
+## earlier one is in that one's pack, so a chain of them is one pack.
+static func packs(points: Array[Vector2], reach: float) -> Array[int]:
+	var out: Array[int] = []
+	for i in points.size():
+		out.append(i)
+		for j in i:
+			if points[i].distance_to(points[j]) <= reach:
+				out[i] = out[j]
+				break
 	return out
 
 
@@ -337,6 +391,9 @@ func can_notice(enemy: Node) -> bool:
 ## Something has seen the hero: a growl (SFX.bump), not more than once a beat.
 func on_enemy_noticed(enemy: Node) -> void:
 	var now := GameClock.seconds()
+	if fights_like_boss(enemy):
+		boss_noticed_at = now
+	# Held while a boss makes its entrance (PIX-341: Hud.hint).
 	world.hud.hint("dodge")
 	# A named monster or a boss roars (PIX-158, PIX-210); anything else bumps.
 	if fights_like_boss(enemy):
@@ -377,9 +434,10 @@ func boss_hunting() -> Node:
 	return null
 
 
-## A fight is on: something has hunted the hero in the last few seconds.
-func in_fight() -> bool:
-	return GameClock.seconds() - hunted_at < COMBAT_LINGER_S
+## A fight is on: something has hunted the hero in the last few seconds
+## (`linger`: the music's, or CALM_S for what waits out a fight).
+func in_fight(linger := COMBAT_LINGER_S) -> bool:
+	return GameClock.seconds() - hunted_at < linger
 
 
 ## A monster fell: the web's victory pays out, and the last of a spawn's pack
@@ -397,7 +455,8 @@ func on_enemy_died(enemy: Node) -> void:
 	# keeps only what the world doesn't show. The Kings' Vault forges its
 	# gear deep, a tier a floor or two (PIX-257).
 	var won := GameState.spoils.defeat_monster(enemy.fighter, enemy.region, cleared, floor_level, Depths.forged(world.map.id))
-	world.messages.log_lines(won["lines"])
+	# Its count, a level, a bounty: they wait out the fight (PIX-334).
+	world.messages.log_lines(won["lines"], true)
 	world.fx.show_gains(won["gains"], enemy.global_position + WorldFx.OVER_FOE)
 	if enemy.has_meta("prologue"):
 		world.messages.flash(GameState.questing.prologue_pouch())
@@ -418,7 +477,7 @@ func on_enemy_died(enemy: Node) -> void:
 	if GameState.pack.gear.size() > gear_before:
 		Sound.play("drop")
 	if cleared != "":
-		world.messages.log_lines([Text.t("The pack is scattered. Another comes once you've walked a good way, or after a night's rest.")])
+		world.messages.log_lines([Text.t("The pack is scattered. Another comes once you've walked a good way, or after a night's rest.")], true)
 
 
 ## A named foe stands down rather than falls (PIX-255: the Hollow Captain,
@@ -468,7 +527,7 @@ func boss_fell(boss: Node) -> void:
 	bosses_fallen += 1
 	GameState.spoils.slay_boss()
 	world.hud.title_card(Text.t("Victory"), Text.t("%s is no more.") % boss.fighter["name"])
-	world.messages.log_lines([Text.t("Boss slayer: +%d%% damage for %d minutes.") % [roundi(Spoils.SLAYER_DAMAGE * 100), roundi(Spoils.SLAYER_SECONDS / 60.0)]])
+	world.messages.log_lines([Text.t("Boss slayer: +%d%% damage for %d minutes.") % [roundi(Spoils.SLAYER_DAMAGE * 100), roundi(Spoils.SLAYER_SECONDS / 60.0)]], true)
 	Sound.stop_music()
 	world.soundscape.hush(BOSS_HUSH_S)
 	hunted_by_boss = false

@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.256.0",
+      "date": "2026-10-20",
+      "codename": "Quiet Fights",
+      "notes": [
+        "Less text at once in a fight: the battle log shows a few lines at a time and folds repeats (+3 gold four times reads +12 gold), a fight's gold, XP and loot rise once when it's over, on one line, blows on one foe add up into one number, and the log no longer repeats what the screen already shows (Tom's playtest)",
+        "A pack shows one level tag in a fight, its highest, and the words over the world step clear of the tags instead of piling up at the kill",
+        "Hints wait their turn: never over a boss's entrance or a title card, one at a time, and the dodge is taught on the first road out to where packs roam, before any boss"
+      ]
+    },
+    {
       "version": "0.255.0",
       "date": "2026-10-20",
       "codename": "Clear Way",
