@@ -12,16 +12,17 @@ share a pose.
 
 Then the looks: every helm and body the hero can wear gets a colourway of
 its own, none the same as another piece's and none the same as a hero's own
-sheet, so whatever goes on shows.
+sheet, so whatever goes on shows. Each is the colour of its item's icon
+(PIX-335: test_worn_colours holds the hues together).
 - Archer-Leather: the green archer in leather browns (Leather Cap, Leather Armor).
-- Archer-Oilskin: Saltmere's tarred sea-green oilcloth (the Oilskin hood and coat).
+- Archer-Oilskin: Saltmere's navy oilcloth (the Oilskin hood and coat).
 - Archer-Greymaw: a wolf-grey hood (Greymaw's Hood).
-- Archer-Traveler: a dusty blue travelling cloak (Traveler's Cloak).
+- Archer-Traveler: a road-dust amber travelling cloak (Traveler's Cloak).
 - Archer-Shadow: charcoal and violet (Shadow Cloak).
-- Warrior-Wyrm: the horned warrior's helm blackened, horns gilded (Wyrm Visor).
+- Warrior-Wyrm: the horned warrior's helm in green dragon scale, horns gilded (Wyrm Visor).
 - Warrior-Blackiron: soot-black iron, ember-hot trim (the Blackiron helm and plate).
 - Warrior-Gilded: gold plate on royal blue (City Plate).
-- Warrior-Scaled: copper scales on dragon green (Scaled Mail).
+- Warrior-Scaled: green dragon scale, copper trim (Scaled Mail).
 - Mage-Frost: ice white and pale blue (the Frostweave hood and robe).
 - Mage-Midnight: a midnight-blue robe (Mage Robe).
 - Soldier-Iron: plain steel (Iron Armor).
@@ -51,6 +52,9 @@ ARCHER_GREEN = ["303600", "455000", "627105", "8b9e0f"]
 MAGE_TEAL = ["002e27", "004f43", "007966", "00b49d"]
 SOLDIER_BLUE = ["00332f", "005355", "007d89"]
 GUARD_TEAL = ["002e27", "004f43", "00b49d"]
+# The Wyrm Visor's and Scaled Mail's icons' four greens, and one between the
+# two lightest (PIX-335).
+DRAGON_SCALE = ["093200", "0f5b14", "129045", "09c17b", "00f2b2"]
 
 
 def ramp(source, target):
@@ -59,12 +63,12 @@ def ramp(source, target):
 
 LOOKS = {
     "Archer-Leather": ("Archer-Green", ramp(ARCHER_GREEN, ["3b2212", "5c371b", "7d4f27", "a36d38"])),
-    "Archer-Oilskin": ("Archer-Green", ramp(ARCHER_GREEN, ["1c2a26", "2b4038", "3f5b4f", "5b7d6c"])),
+    "Archer-Oilskin": ("Archer-Green", ramp(ARCHER_GREEN, ["082127", "1d386f", "3f578c", "2c74a7"])),
     "Archer-Greymaw": ("Archer-Green", ramp(ARCHER_GREEN, ["2a2a2e", "45454b", "66666d", "8e8e96"])),
-    "Archer-Traveler": ("Archer-Green", ramp(ARCHER_GREEN, ["1d2633", "2f3b4d", "48586e", "6b7d96"])),
+    "Archer-Traveler": ("Archer-Green", ramp(ARCHER_GREEN, ["5b371d", "7e4e26", "c07f3a", "fbbd5d"])),
     "Archer-Shadow": ("Archer-Green", ramp(ARCHER_GREEN, ["17141f", "25202f", "383047", "524662"])),
     "Warrior-Wyrm": ("Warrior-Red", {
-        **ramp(STEEL, ["1c212c", "2b3242", "455168", "66748c", "8796ae"]),
+        **ramp(STEEL, DRAGON_SCALE),
         **ramp(WARRIOR_RED, ["3d2604", "7a4f0e", "c9952f", "f6dc8a"]),
     }),
     "Warrior-Blackiron": ("Warrior-Red", {
@@ -76,8 +80,8 @@ LOOKS = {
         **ramp(WARRIOR_RED, ["0a1030", "15225e", "2a44a8", "4a6ef0"]),
     }),
     "Warrior-Scaled": ("Warrior-Red", {
-        **ramp(STEEL, ["3a2410", "5a3a1c", "8a5e32", "b07a45", "d3a06a"]),
-        **ramp(WARRIOR_RED, ["06200f", "0f3d1c", "1d6b33", "2fa24d"]),
+        **ramp(STEEL, DRAGON_SCALE),
+        **ramp(WARRIOR_RED, ["3a2410", "5a3a1c", "b07a45", "d3a06a"]),
     }),
     "Mage-Frost": ("Mage-Cyan", ramp(MAGE_TEAL, ["4b5f78", "7f97b3", "b3cbe0", "e6f2ff"])),
     "Mage-Midnight": ("Mage-Cyan", ramp(MAGE_TEAL, ["0d1433", "182557", "2a3d8c", "4766c7"])),

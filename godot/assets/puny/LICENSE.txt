@@ -17,8 +17,8 @@ generative AI was used.
 Files are unmodified copies, the Tiled tilesets (.tsx) included, except
 two looks made from his sheets by swapping colours (godot/tools/outfits.py,
 for worn gear): characters/Archer-Leather.png (the green archer in leather
-browns) and characters/Warrior-Wyrm.png (the warrior's helm blackened and
-gilded). Unmodified otherwise (their image
+browns) and characters/Warrior-Wyrm.png (the warrior's helm in green dragon
+scale, gilded). Unmodified otherwise (their image
 paths point one folder up, as in Shade's zips; Pixelheim reads only the wang
 and animation data). Pixelheim picks which sheet plays which role in
 scripts/puny_art.gd and lays the tilesets over its maps in
