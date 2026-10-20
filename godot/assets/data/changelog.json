@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.253.0",
+      "date": "2026-10-20",
+      "codename": "Home Already",
+      "notes": [
+        "While Pixelheim still lies in ashes, the other villages' people are home: Saltmere, Blackiron, Greyhold and the Frostgate no longer wait for Pixelheim to become a hamlet, so you can talk to them, take their quests and carry their post from the start"
+      ]
+    },
+    {
       "version": "0.252.0",
       "date": "2026-10-20",
       "codename": "Real Flames",

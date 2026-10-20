@@ -3413,6 +3413,10 @@ msgid "Home & Hearth"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Home Already"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Home Industry"
 msgstr ""
 
@@ -6210,6 +6214,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Where regions meet, the ground no longer changes along straight lines and square corners: the edge bends and wanders, still dithered pixel by pixel, and the land's tone runs right to the shore"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "While Pixelheim still lies in ashes, the other villages' people are home: Saltmere, Blackiron, Greyhold and the Frostgate no longer wait for Pixelheim to become a hamlet, so you can talk to them, take their quests and carry their post from the start"
 msgstr ""
 
 #: assets/data/changelog.json
