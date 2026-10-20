@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.258.0",
+      "date": "2026-10-20",
+      "codename": "Open Gate",
+      "notes": [
+        "Greyhold's south gate reads as a gate at last: two towers with the gate open between them, the road running through it and on up the courtyard to the keep's door, and the lamps standing before the towers to light both sides at night (Tom's playtest)"
+      ]
+    },
+    {
       "version": "0.257.0",
       "date": "2026-10-20",
       "codename": "True Colours",

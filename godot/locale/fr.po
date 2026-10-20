@@ -3313,6 +3313,10 @@ msgid "Greyhold's courtyard is flagged and its paths cobbled, and the Frostgate'
 msgstr "La cour de Greyhold est dallée et ses allées pavées, et la route de la Porte-Givre est pavée jusqu'à une cour dallée devant l'observatoire"
 
 #: assets/data/changelog.json
+msgid "Greyhold's south gate reads as a gate at last: two towers with the gate open between them, the road running through it and on up the courtyard to the keep's door, and the lamps standing before the towers to light both sides at night (Tom's playtest)"
+msgstr "La porte sud de Greyhold ressemble enfin à une porte : deux tours avec la porte ouverte entre elles, la route qui la traverse et remonte la cour jusqu'à la porte du donjon, et les lanternes devant les tours pour éclairer les deux côtés la nuit (playtest de Tom)"
+
+#: assets/data/changelog.json
 msgid "Ground treasure is taken in stride: walk over a glint or herb patch and it is yours"
 msgstr "Les trésors au sol se ramassent en passant : marchez sur un éclat ou un point de récolte d'herbes et il est à vous"
 
@@ -4187,6 +4191,10 @@ msgstr "Livre ouvert"
 #: assets/data/changelog.json
 msgid "Open Country"
 msgstr "Rase campagne"
+
+#: assets/data/changelog.json
+msgid "Open Gate"
+msgstr "Porte ouverte"
 
 #: assets/data/changelog.json
 msgid "Open Roads"
