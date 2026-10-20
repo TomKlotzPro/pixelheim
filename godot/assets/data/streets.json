@@ -8,7 +8,7 @@
   ],
   "greyhold": [
     {"name": "the courtyard", "rect": [24, 4, 27, 23], "ground": ["stone", "shrine", "well", "lamp"], "from": {"0": "flags"}},
-    {"name": "the courtyard's paths", "rect": [24, 4, 27, 23], "ground": ["path"], "from": {"0": "cobbles"}}
+    {"name": "the courtyard's paths", "rect": [24, 4, 27, 23], "ground": ["path"], "from": {"0": "sandstone"}}
   ],
   "frostgate": [
     {"name": "the road to the observatory", "ground": ["path"], "from": {"0": "cobbles"}},

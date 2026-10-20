@@ -22,6 +22,11 @@ class_name Rampart
 ## The maps whose walls are Pixelheim's rampart (the Reach's ring round the
 ## village far off is Skyline's).
 const MAPS := ["town"]
+## Maps whose wall stays Shade's castle run but whose gate is this gatehouse
+## (PIX-337, Tom: « revamp l'entrée ici »): Greyhold's fort, whose way in
+## was one block of wall with a dark notch at its foot, two lamps behind it
+## on the bare yard. Its lamps stand before its towers, as the town's do.
+const GATEHOUSES := ["greyhold"]
 
 ## Shade's stone wall by which neighbours are wall too (N=1, E=2, S=4, W=8):
 ## a lone block, the ends and middles of a run across or down, the corners
@@ -48,10 +53,15 @@ const STEPS := {1: Vector2i.UP, 2: Vector2i.RIGHT, 4: Vector2i.DOWN, 8: Vector2i
 ## the fire darkened), "fallback": {cell: Shade's CC0 overworld tile},
 ## "covers": [cells past the wall the gatehouse stands on], "gates": [{"cells":
 ## the gate's, "towers": [west, east], "tops": [west, east]}]}. `ashen`: the
-## town still lies in its ruins (Town.ruins).
-static func plan(grid: Dictionary, ashen := false) -> Dictionary:
+## town still lies in its ruins (Town.ruins). `gatehouses_only`: the gates
+## and their towers alone, the wall left to the map (GATEHOUSES).
+static func plan(grid: Dictionary, ashen := false, gatehouses_only := false) -> Dictionary:
 	var out := {"pieces": {}, "scorched": {}, "fallback": {}, "covers": [], "gates": []}
 	var cells: Array = grid.keys()
+	if gatehouses_only:
+		cells = []
+		for gate: Dictionary in gates(grid):
+			cells.append_array(gate["cells"])
 	cells.sort()
 	for cell: Vector2i in cells:
 		if not _rampart(grid, cell):
@@ -59,7 +69,9 @@ static func plan(grid: Dictionary, ashen := false) -> Dictionary:
 		var tile: String = grid[cell]
 		out["pieces"][cell] = GATE if tile.begins_with("door") else WALL[mask(grid, cell)]
 		var piece := PunyTerrain.wall_piece(grid, cell)
-		if piece >= 0:
+		# A one-wide gate in Shade's castle piece was a block of wall with a
+		# notch at its foot: between the towers it is left open.
+		if piece >= 0 and not gatehouses_only:
 			out["fallback"][cell] = piece
 	for gate: Dictionary in gates(grid):
 		out["gates"].append(gate)
