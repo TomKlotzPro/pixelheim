@@ -562,6 +562,11 @@ firstnight | create --keys tab | open=create_screen firstnight=skip | title stor
 # The Night of Ash's hounds and embers (PIX-129).
 hounds | --map town --prologue 6 | night=6 mobs=2 | story night combat
 embers | --map town --prologue 9 | night=9 mobs=3 | story night combat
+# The Night of Ash's fires (PIX-327): every ruin burning with our own flames
+# on its beams, posts, rubble and fallen floor, its smoke, sparks and coals;
+# with Reduce motion the sparks stay down.
+ash-fires | --map town --prologue 8 --at 26,12 | night=8 fires=houses 9 flames [1-9][0-9]{2} smoke 9 sparks 9 coals 9 | story town night
+ash-fires-still | --map town --prologue 8 --at 26,12 still | fires=houses 9 flames [1-9][0-9]{2} smoke 9 sparks 0 coals 9 | story town night
 # The waypoint chosen on the map is the one shown, and E goes there (PIX-241).
 waypoint | --map town waypoints --keys m,s,s | open=map_screen dest=mountain_gate | travel screen
 travel | --map town waypoints --keys m,s,e | map=overworld cell=\(48, 40\) open=none | travel screen
