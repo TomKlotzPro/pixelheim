@@ -2117,6 +2117,10 @@ msgid "A stairwell in each room goes down to the cave, and going into the dark i
 msgstr "Un escalier dans chaque pièce descend vers la grotte, et descendre dans le noir est un choix : l'escalier vous le demande d'abord"
 
 #: assets/data/changelog.json
+msgid "A stun in the middle of a swing no longer freezes the hero: when it wears off you can attack, dodge, cast and walk again (Tom's playtest: with many foes around, the hero sometimes could do nothing at all)"
+msgstr "Un étourdissement en plein coup ne fige plus le héros : une fois dissipé, vous pouvez de nouveau attaquer, esquiver, lancer vos sorts et marcher (playtest de Tom : entouré d'ennemis, le héros ne pouvait parfois plus rien faire)"
+
+#: assets/data/changelog.json
 msgid "A third dream under Sela's roof, the first night after Aske comes home"
 msgstr "Un troisième rêve sous le toit de Sela, la première nuit après le retour d'Aske"
 
@@ -4775,6 +4779,10 @@ msgstr "Effets d'état : le poison et la brûlure frappent à chaque tour, l'�
 #: assets/data/changelog.json
 msgid "Steady Camera"
 msgstr "Caméra stable"
+
+#: assets/data/changelog.json
+msgid "Steady Hands"
+msgstr "Mains sûres"
 
 #: assets/data/changelog.json
 msgid "Steady Steps"
