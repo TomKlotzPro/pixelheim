@@ -3413,6 +3413,10 @@ msgid "Home & Hearth"
 msgstr "Toit et foyer"
 
 #: assets/data/changelog.json
+msgid "Home Already"
+msgstr "Déjà chez eux"
+
+#: assets/data/changelog.json
 msgid "Home Industry"
 msgstr "Fait maison"
 
@@ -6211,6 +6215,10 @@ msgstr "Là où un monstre ne se trouve qu'après la tombée de la nuit, les lie
 #: assets/data/changelog.json
 msgid "Where regions meet, the ground no longer changes along straight lines and square corners: the edge bends and wanders, still dithered pixel by pixel, and the land's tone runs right to the shore"
 msgstr "Là où les régions se rejoignent, le sol ne change plus le long de lignes droites et d'angles carrés : la limite ondule et serpente, toujours tramée pixel par pixel, et la teinte de la terre va jusqu'au rivage"
+
+#: assets/data/changelog.json
+msgid "While Pixelheim still lies in ashes, the other villages' people are home: Saltmere, Blackiron, Greyhold and the Frostgate no longer wait for Pixelheim to become a hamlet, so you can talk to them, take their quests and carry their post from the start"
+msgstr "Tant que Pixelheim est encore en cendres, les habitants des autres villages sont chez eux : Saltmere, Fernoir, Greyhold et la Porte-Givre n'attendent plus que Pixelheim devienne un hameau, alors vous pouvez leur parler, prendre leurs quêtes et leur porter le courrier dès le début"
 
 #: assets/data/changelog.json
 msgid "Who Has Work"
