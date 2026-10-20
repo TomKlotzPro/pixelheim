@@ -23,7 +23,8 @@ class_name Post
 ## story met. So only what the hero did is saved (PostState). Pure, over
 ## assets/data/post.json; GameState's `posting` takes and hands over,
 ## MapView draws the box, the journal's Post and Postmarks tabs and the map
-## read it.
+## read it. The roads it's carried along grow signposts and waystations
+## (PIX-322): Routes.
 
 static var _doc := {}
 ## Piece id -> {piece, thread (its id), index (its place in the thread)}.
@@ -101,6 +102,12 @@ static func day_of(steps: float) -> int:
 ## whose chimney he warms himself).
 static func npc_of(correspondent_id: String) -> String:
 	return String(_data()["correspondents"].get(correspondent_id, {}).get("npc", ""))
+
+
+## What a correspondent is called among friends ("Bram", "Fafnyr"): what a
+## signpost on a post road is named after (PIX-322, Routes).
+static func name_of(correspondent_id: String) -> String:
+	return String(_data()["correspondents"].get(correspondent_id, {}).get("name", ""))
 
 
 ## Who a piece is handed to, by villager id.

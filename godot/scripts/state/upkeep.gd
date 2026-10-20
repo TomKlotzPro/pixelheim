@@ -193,6 +193,14 @@ func rest_at_inn() -> String:
 	return sela + " " + line if sela != "" else line
 
 
+## A moment on a waystation's bench by its ember lamp (PIX-322): whole
+## again, health and mana or stamina both, for nothing and no time; the
+## line to show.
+func rest_on_bench() -> String:
+	owner.make_whole()
+	return Text.t("You sit a while on the bench by the ember lamp. Its warmth mends you.")
+
+
 ## A night's sleep (PIX-246): the clock runs on to the next morning. The
 ## bed saves once the night has done all it does (`save_now(SLEPT)`: the
 ## quill with "Saved" under it, PIX-302 step 4).

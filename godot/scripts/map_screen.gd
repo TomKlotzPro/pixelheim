@@ -22,6 +22,9 @@ extends Screen
 ## ridge the hero has seen between them, every mark at its map's offset, and
 ## each region named over its ground; the village, the rooms and the caves
 ## keep their own pages (Atlas.sheets).
+## The Post's roads (PIX-322, Routes) run over the Reach's page in gold once
+## they have carried anything, and the waystations built are waypoints in
+## the list, marked like the rest.
 
 const MAP_BOX := Vector2(760, 540)
 ## The list's window inside the side panel: the panel ends with the map's
@@ -133,7 +136,7 @@ func _open() -> void:
 	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(list)
 	var group := ""
-	for waypoint: Dictionary in Atlas.listed(Interactables.waypoints()):
+	for waypoint: Dictionary in Atlas.listed(Routes.every_waypoint(GameState.settlement)):
 		var place_heading: Label = null
 		if waypoint["mapId"] != group:
 			group = waypoint["mapId"]
@@ -182,6 +185,9 @@ func _note(waypoint: Dictionary, open: bool) -> String:
 		return Text.t("Not found yet")
 	if not open:
 		return Text.t("Unstaffed: no one keeps this post yet")
+	# A waystation on a post road (PIX-322) says where its road goes.
+	if waypoint.has("route"):
+		return Text.t("Halfway to %s") % Text.mid(Catalog.place_name(String(waypoint["route"])))
 	return Waypoints.region_name(waypoint, _map(waypoint["mapId"]))
 
 
@@ -374,6 +380,9 @@ func _fill_legend(home: bool) -> void:
 		marks.append([Painting.CLOSED, "Not yet open"])
 	if not painting.lairs().is_empty():
 		marks.append([Painting.LAIR, "Lair"])
+	# The post roads carried along (PIX-322), in gold.
+	if not painting.mapped().is_empty():
+		marks.append([UiStyle.GOLD, "Post roads", Swatch.ROAD])
 	if home and not Painting.givers(world).is_empty():
 		marks.append([Painting.QUEST, "Quest"])
 	# Whom the satchel's post is for (PIX-320), faint.
@@ -437,6 +446,8 @@ class Swatch extends Control:
 	const HOLLOW := "hollow"
 	## The post's faint one (PIX-320).
 	const POST := "post"
+	## A post road's gold (PIX-322): a short run of it.
+	const ROAD := "road"
 	var shape := FILLED
 
 	func _init(kind := FILLED) -> void:
@@ -446,6 +457,10 @@ class Swatch extends Control:
 
 	func _draw() -> void:
 		var at := (size / 2.0).floor()
+		if shape == ROAD:
+			draw_line(at + Vector2(-7, 0), at + Vector2(7, 0), UiStyle.NIGHT, 6.0)
+			draw_line(at + Vector2(-6, 0), at + Vector2(6, 0), UiStyle.GOLD, 2.0)
+			return
 		if shape == POST:
 			draw_colored_polygon(Painting._points(at, 7.0), Color(UiStyle.NIGHT, 0.55))
 			draw_colored_polygon(Painting._points(at, 5.0), Painting.POST)
@@ -570,7 +585,7 @@ class Painting extends Control:
 	## [{waypoint, cell}].
 	func _waypoints() -> Array[Dictionary]:
 		var out: Array[Dictionary] = []
-		for waypoint: Dictionary in Interactables.waypoints():
+		for waypoint: Dictionary in Routes.every_waypoint(GameState.settlement):
 			if holds(waypoint["mapId"]):
 				out.append({"waypoint": waypoint, "cell": Waypoints.cell(waypoint) + at_of(waypoint["mapId"])})
 		return out
@@ -715,6 +730,7 @@ class Painting extends Control:
 		draw_rect(Rect2(Vector2.ZERO, Vector2(cells * tile_px)), UiStyle.NIGHT)
 		for cell: Vector2i in _ground:
 			draw_rect(Rect2(Vector2(cell * tile_px), Vector2(tile_px, tile_px)), _ground[cell])
+		_draw_roads()
 		_draw_labels()
 		var mark := _mark()
 		# Every waypoint where it stands, greyed until it's open.
@@ -749,6 +765,38 @@ class Painting extends Control:
 			_diamond(_center(goal), mark + 6.0)
 		if home:
 			_marker(_center(hero_cell()), mark, Color.WHITE)
+
+	## The post roads drawn on this page (PIX-322): the routes that have
+	## carried anything, where the Ashenreach is drawn, by place.
+	func mapped() -> Array[String]:
+		if not holds(Routes.MAP):
+			var none: Array[String] = []
+			return none
+		return Routes.carried(GameState.post)
+
+	## Each post road in gold along its road (Routes.path_cells), over the
+	## ground the hero has seen and nowhere else: a dark line under, the gold
+	## over, every road's dark first so where two run together the gold is
+	## unbroken.
+	func _draw_roads() -> void:
+		var roads := mapped()
+		if roads.is_empty():
+			return
+		var seen: Dictionary = GameState.world.discovered.get(Routes.MAP, {})
+		var at := at_of(Routes.MAP)
+		var gold := maxf(2.0, roundf(tile_px * 0.5))
+		var runs: Array = []
+		for place: String in roads:
+			var path := Routes.path_cells(place)
+			for i in range(1, path.size()):
+				if seen.has(path[i - 1]) and seen.has(path[i]):
+					runs.append([_center(path[i - 1] + at), _center(path[i] + at)])
+		for stroke: Array in [[UiStyle.NIGHT, gold + 2.0], [UiStyle.GOLD, gold]]:
+			for run: Array in runs:
+				draw_line(run[0], run[1], stroke[0], stroke[1])
+			# Each corner squared off, so a turn isn't notched.
+			for run: Array in runs:
+				draw_rect(Rect2(run[1] - Vector2.ONE * stroke[1] / 2.0, Vector2.ONE * stroke[1]), stroke[0])
 
 	## The page's names in the type of the screen, in cream as on the dark
 	## round windows, with a dark line round them on a shade of the night:

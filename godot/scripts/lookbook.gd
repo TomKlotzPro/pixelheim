@@ -140,6 +140,13 @@ const SHOTS := {
 	# piles; by day and at night.
 	"reach_river": {"area": "reach", "map": "overworld", "cell": Vector2i(48, 32), "time": DAY},
 	"reach_river_night": {"area": "reach", "map": "overworld", "cell": Vector2i(48, 32), "time": NIGHT},
+	# The Post's roads (PIX-322), every one carried as far as its waystation:
+	# the signposts at the gate's corner, Bram's, and the Saltmere
+	# waystation halfway down its road, its hut, bench, post box and ember
+	# lamp, by day and lit at night.
+	"post_signpost": {"area": "reach", "map": "overworld", "cell": Vector2i(45, 36), "time": DAY, "routes": true},
+	"waystation": {"area": "reach", "map": "overworld", "cell": Vector2i(19, 44), "time": DAY, "routes": true},
+	"waystation_night": {"area": "reach", "map": "overworld", "cell": Vector2i(19, 44), "time": NIGHT, "routes": true},
 	# Things lying on the ground beside the hero (PIX-286): the pouch on the
 	# road west of the village where it lies, and a patch of each kind laid
 	# round it, half a cell each.
@@ -322,6 +329,9 @@ const SHOTS := {
 	# newest letters from the new threads.
 	"post_book": {"area": "screens", "map": "town", "cell": Vector2i(44, 23), "time": DAY, "post": "book"},
 	"post_letters": {"area": "screens", "map": "town", "cell": Vector2i(44, 23), "time": DAY, "post": "letters"},
+	# The Post's roads in gold on the Reach's page (PIX-322), the Saltmere
+	# waystation chosen in the list.
+	"post_roads": {"area": "screens", "map": "overworld", "cell": Vector2i(19, 44), "time": DAY, "routes": true, "chart": "waystation_saltmere"},
 }
 ## The post the book's shots deliver (PIX-321), in order, each thread's
 ## pieces in turn: from Pixelheim to Saltmere, the Reach's road, the
@@ -509,6 +519,8 @@ func _stage(shot: Dictionary) -> void:
 	GameState.world.steps = shower_by_day() if shot.get("rain", false) else float(shot["time"]) * DayNight.DAY_CYCLE_STEPS
 	if shot.has("post"):
 		_open_post()
+	if shot.get("routes", false):
+		_open_routes()
 	world.map = world.load_map(shot["map"])
 	var at: Vector2i = nearest_walkable(world.map, shot["cell"]) if shot.has("cell") else _cell(world.map, String(shot.get("at", "")))
 	world.enter_map(world.map, at)
@@ -598,6 +610,8 @@ func _unstage(shot: Dictionary) -> void:
 		GameState.progression.quests.erase(shot["letter"])
 	if shot.has("post"):
 		_close_post()
+	if shot.get("routes", false):
+		_close_routes()
 	if shot.has("zoom"):
 		world.camera_rig.camera.zoom = Vector2.ONE * CameraRig.ZOOM
 	if shot.has("slots"):
@@ -641,6 +655,36 @@ func _close_post() -> void:
 	if not _before_post.get("walked", true):
 		GameState.world.discovered.erase(String(Npcs.by_id(String(first["objective"]["to"]), GameState.settlement.settlers)["mapId"]))
 	GameState.post = PostState.new()
+
+
+## Who the look book's roads are named after (PIX-322): each route's own
+## writer, so the signposts read as a hero's would.
+const ROUTE_WRITERS := {
+	"saltmere": "bram", "blackiron": "dagny", "greyhold": "fenwick", "frostgate": "gunnar",
+	"mirefen": "vex", "deepwood": "loras", "morvax_forge": "maren",
+}
+
+
+## Every one of the Post's roads carried as far as its waystation, each
+## built, for a shot alone (PIX-322): its signposts up before the Reach is
+## drawn.
+func _open_routes() -> void:
+	for place: String in Routes.places():
+		var far := Routes.station_at(place) if not Routes.station(place).is_empty() else Routes.signs_at(place)
+		Routes.tally(GameState.post, place, ROUTE_WRITERS.get(place, "bram"), far)
+		var work := String(Routes.station(place).get("work", ""))
+		if work != "" and work not in GameState.settlement.projects:
+			GameState.settlement.projects.append(work)
+	Routes.raise_signs(GameState.post)
+
+
+## The roads as they were before their shot: nothing carried, no
+## waystation standing.
+func _close_routes() -> void:
+	GameState.post.routes = {}
+	GameState.post.signs = {}
+	for place: String in Routes.places():
+		GameState.settlement.projects.erase(String(Routes.station(place).get("work", "")))
 
 
 ## A named monster held still at `at` (PIX-314): the one in its lair on this

@@ -143,7 +143,8 @@ static func project_blocker(project_id: String, progression: ProgressionState, s
 
 ## Works out on the Reach's roads (PIX-254): on the board beside the age's
 ## projects once the story offers them, and part of no age; built, each
-## opens a gate (Gates: the river bridge north of town). town.json "works".
+## opens a gate (Gates: the river bridge north of town), or stands halfway
+## along a post road (PIX-322: a waystation, Routes). town.json "works".
 static func works() -> Array:
 	return _data()["works"]["list"]
 
@@ -155,18 +156,23 @@ static func work(work_id: String) -> Dictionary:
 	return {}
 
 
-## Whether the story offers a work yet: its `needs` (a main quest step) met.
-static func work_offered(work_id: String, progression: ProgressionState, settlement: SettlementState) -> bool:
-	var needs := String(work(work_id).get("needs", ""))
+## Whether a work is offered yet: its `needs` (a main quest step) met, and
+## a waystation's `route` (PIX-322) having carried enough of the Post's
+## post (`post`, the hero's; none: not yet).
+static func work_offered(work_id: String, progression: ProgressionState, settlement: SettlementState, post: PostState = null) -> bool:
+	var entry := work(work_id)
+	if entry.has("route"):
+		return post != null and Routes.station_offered(post, String(entry["route"]))
+	var needs := String(entry.get("needs", ""))
 	return needs == "" or MainQuest.is_met(MainQuest.step(needs), progression, settlement)
 
 
 ## Why a work can't be funded now, or "".
-static func work_blocker(work_id: String, progression: ProgressionState, settlement: SettlementState, gold: int, items: Dictionary) -> String:
+static func work_blocker(work_id: String, progression: ProgressionState, settlement: SettlementState, gold: int, items: Dictionary, post: PostState = null) -> String:
 	var entry := work(work_id)
 	if work_id in done_projects(settlement):
 		return Text.t("Already built.")
-	if not work_offered(work_id, progression, settlement):
+	if not work_offered(work_id, progression, settlement, post):
 		return String(entry["line"]) + "."
 	if gold < int(entry["cost"]["gold"]):
 		return Text.t("The treasury asks %d gold.") % entry["cost"]["gold"]

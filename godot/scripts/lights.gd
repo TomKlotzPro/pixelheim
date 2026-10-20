@@ -32,6 +32,9 @@ const FIRE := Color(1.0, 0.62, 0.3)
 const LAMP := Color(1.0, 0.76, 0.45)
 const WINDOW := Color(1.0, 0.8, 0.5)
 const LANTERN := Color(1.0, 0.82, 0.58)
+## A waystation's ember lamp (PIX-322): the mountain's warmth, redder than a
+## street lamp's flame.
+const EMBER := Color(1.0, 0.6, 0.34)
 ## A candle or a sconce in a room (PIX-311), and the day through a room's
 ## window.
 const CANDLE := Color(1.0, 0.7, 0.38)
@@ -52,6 +55,7 @@ const BLAZE_ENERGY := 0.8
 const TORCH_ENERGY := 0.7
 const WINDOW_ENERGY := 0.36
 const LANTERN_ENERGY := 0.3
+const EMBER_ENERGY := 0.5
 const CANDLE_ENERGY := 0.55
 ## The sun through a window at noon: added to a room a little dim by day.
 const SUN_ENERGY := 0.85

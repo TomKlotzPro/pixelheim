@@ -7,7 +7,8 @@ extends Node
 ## station (a
 ## forge, an anvil, a cauldron: PIX-234), the stairs down to a cellar
 ## (PIX-256), a fishing spot, the square's boards and its post box
-## (PIX-320), then the villager beside the hero (a keeper's counter, a
+## (PIX-320), a waystation's bench, its post box and a signpost on a post
+## road (PIX-322), then the villager beside the hero (a keeper's counter, a
 ## stall, the bank, or a talk; a piece of the post for them first). What the
 ## hero steps on is picked up (ground treasure, patches), and the prompt
 ## floats over whatever E would meet. The screens it opens, and the prompt,
@@ -127,6 +128,19 @@ func interact() -> void:
 	# (PIX-320): E takes the day's post.
 	if world.map.id == Post.box_map() and faced == Post.box_cell() and GameState.posting.is_open():
 		take_post()
+		return
+	# On a post road (PIX-322): a waystation's post box holds the same day's
+	# post, its bench mends, and a signpost says its name.
+	if Routes.station_with("box", world.map.id, faced, GameState.settlement) != "" and GameState.posting.is_open():
+		take_post()
+		return
+	if Routes.station_with("bench", world.map.id, faced, GameState.settlement) != "":
+		Sound.play_ui("open")
+		world.messages.flash(GameState.upkeep.rest_on_bench())
+		return
+	var signpost := Routes.signpost_at(world.map.id, faced, GameState.post)
+	if signpost != "":
+		world.messages.flash("%s. %s." % [Routes.fork_name(signpost, GameState.post), Routes.fork_about(signpost, GameState.post)])
 		return
 	# A gate the story keeps shut says again what opens it (PIX-254).
 	var gate := _gate_at(faced)
@@ -585,8 +599,9 @@ func _collect_ground_treasure(cell: Vector2i) -> void:
 
 ## The one interaction-prompt rule (interactionPrompt.ts): a villager beside
 ## the hero wins, then a faced unopened chest, a station (PIX-234), the
-## water from a fishing spot, a bed or the stairs down (PIX-256); the "!"
-## floats over their head.
+## water from a fishing spot, a bed or the stairs down (PIX-256), a
+## waystation's bench or post box (PIX-322); the "!" floats over their
+## head.
 func update_prompt() -> void:
 	var beside: Dictionary = world.folk.beside()
 	if not beside.is_empty():
@@ -597,7 +612,9 @@ func update_prompt() -> void:
 	var show: bool = (
 		not chest.is_empty() and chest["look"] == "chest" and not GameState.spoils.is_opened(chest)
 	) or _fishing_here() or _station_at(facing_cell()) != "" or _bed_at(facing_cell()) or Ways.goes_down(map, facing_cell()) or map.notes.has(facing_cell()) \
-			or not Letters.reading_at(map.id, facing_cell()).is_empty()
+			or not Letters.reading_at(map.id, facing_cell()).is_empty() \
+			or Routes.station_with("bench", map.id, facing_cell(), GameState.settlement) != "" \
+			or Routes.station_with("box", map.id, facing_cell(), GameState.settlement) != ""
 	if show:
 		_show_prompt(facing_cell(), -12)
 	else:

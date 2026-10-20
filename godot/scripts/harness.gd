@@ -118,7 +118,8 @@ func _word_with(villager: Node) -> void:
 
 
 ## The Pixelheim Post's step (PIX-320; world.gd opened the Post before the
-## first map was drawn): `box` faces the post box on the square and presses
+## first map was drawn): `open` does nothing more (PIX-322: the run walks
+## up to a waystation's box itself); `box` faces the post box on the square and presses
 ## E; `read` takes the day's post and hands the first piece over by the
 ## rules (the journal's Post tab then has both kinds to show); `book` takes
 ## it and delivers it all, replies too, stamping the courier's book
@@ -129,6 +130,8 @@ func _word_with(villager: Node) -> void:
 func _post(step: String) -> void:
 	var post := GameState.post
 	match step:
+		"open":
+			pass
 		"box":
 			var cell := Post.box_cell() + Vector2i.DOWN
 			world.player.position = MapView.center(cell)
@@ -588,6 +591,10 @@ func _run_test_harness() -> void:
 			var piece := InventoryState.create_gear(item_id)
 			GameState.pack.gear.append(piece)
 			GameState.upkeep.equip(piece["uid"])
+	# `wounded` (PIX-322): a quarter of the hero's health left, for a bench
+	# to mend.
+	if flags.has("wounded"):
+		GameState.upkeep.hurt(int(GameState.hero.stats["maxHp"]) - maxi(1, int(GameState.hero.stats["maxHp"]) / 4))
 	if flags.has("--at"):
 		var at := flags.list("--at")
 		world.player_cell = Vector2i(int(at[0]), int(at[1]))
@@ -739,7 +746,8 @@ func _run_test_harness() -> void:
 		await get_tree().create_timer(0.3).timeout
 	if flags.has("waypoints"):
 		# Every waypoint found (Solid Ground): the map's list at its longest.
-		for waypoint: Dictionary in Interactables.waypoints():
+		# The waystations built too (PIX-322).
+		for waypoint: Dictionary in Routes.every_waypoint(GameState.settlement):
 			var at := Vector2i(int(waypoint["at"]["x"]), int(waypoint["at"]["y"]))
 			Discovery.discover_around(GameState.world.discovered, MapData.load_by_id(waypoint["mapId"]), at)
 	if flags.has("charted"):
@@ -752,6 +760,11 @@ func _run_test_harness() -> void:
 		screen.world = world
 		world.add_child(screen)
 		await get_tree().create_timer(0.3).timeout
+		# `--choose waystation_saltmere` (PIX-322): that waypoint chosen, as
+		# pointing at its card would.
+		if flags.has("--choose"):
+			screen.show_waypoint(flags.value("--choose"))
+			await get_tree().create_timer(0.3).timeout
 	if flags.has("rankup"):
 		# Enough XP to cross into the next rank: the ascension plays.
 		var hero := GameState.hero

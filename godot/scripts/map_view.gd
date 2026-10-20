@@ -140,6 +140,10 @@ var entrances: Array[Dictionary] = []
 ## elsewhere.
 var house_style := {}
 var hamlet := {"look": "", "pieces": [], "blocks": []}
+## What the Post's routes put up on the Ashenreach (PIX-322, Routes.plan):
+## the signposts at their forks and the waystations built, and the cells
+## they block; empty elsewhere.
+var routes := {"pieces": [], "blocks": [], "open": []}
 ## A dungeon floor's torches on the wall (PIX-291), by cell.
 var wall_torches: Array[Vector2i] = []
 ## How a dungeon floor is dressed as its place (DungeonLook.plan, PIX-310);
@@ -168,6 +172,13 @@ var _night := -1
 ## The post box on the square (PIX-320), once the Post is open; null
 ## elsewhere.
 var post_box: Sprite2D
+## The post boxes at the waystations on this map (PIX-322): each holds the
+## day's post as the square's does.
+var post_boxes: Array[Sprite2D] = []
+## The waystations drawn on this map, by their route's place, and each one's
+## ember lamp's shard alight at night (PIX-322): the harness reports them.
+var waystations: Array[String] = []
+var ember_lamps := {}
 ## Gathering patches (PIX-143): cell -> {"id", "item"}, and each one's sprite.
 var patches := {}
 var patch_sprites := {}
@@ -228,6 +239,13 @@ const CHIMNEY_MOUTH := Vector2(8, 2)
 ## A settlement's standing dressing's foot in its cell (Hamlet, PIX-313):
 ## the middle of the bottom of the cell, as every prop's.
 const HAMLET_FOOT := Rect2(2, 5, 12, 11)
+## A waystation's ember lamp at night (PIX-322): the halo round its shard
+## and its warmth pooled on the ground about its foot (from its cell's top
+## left), reaching this far.
+const EMBER_HALO := 12
+const EMBER_HALO_PEAK := 0.36
+const EMBER_POOL := Vector2(8, 12)
+const EMBER_REACH := 80.0
 ## How far a miner's lantern and the fire under Morvax's door light the
 ## ground at night.
 const LANTERN_REACH := 44.0
@@ -342,6 +360,7 @@ func planning(arrival_at: Vector2i, slices: Slicer) -> void:
 	slices.add("plan_props", _plan_props)
 	slices.add("plan_gates", _plan_gates)
 	slices.add("plan_hamlet", _plan_hamlet)
+	slices.add("plan_routes", _plan_routes)
 	slices.add("plan_scatter", _plan_scatter)
 
 
@@ -517,6 +536,23 @@ func _plan_hamlet() -> void:
 	hamlet = Hamlet.plan(data, kept)
 	for cell: Vector2i in hamlet["blocks"]:
 		data.covered[cell] = true
+
+
+## What the Post's routes put up on the Ashenreach (PIX-322): the signposts
+## at the forks of the roads that have carried enough, and the waystations
+## built, beside the road on open ground (Routes.plan: never a road, a way
+## in, a gate, a pack's home or where the hero arrives). What they stand on
+## blocks, and grows no patch: a day's patch dealt under one is left out.
+func _plan_routes() -> void:
+	routes = {"pieces": [], "blocks": [], "open": []}
+	if data.id != Routes.MAP:
+		return
+	var kept := Hamlet.kept_on(data, {})
+	kept[arrival] = true
+	routes = Routes.plan(data, GameState.post, GameState.settlement, kept)
+	for cell: Vector2i in routes["blocks"]:
+		data.covered[cell] = true
+		patches.erase(cell)
 
 
 ## Where the hero arrives (the spawn when the arrival is covered now), the
@@ -1568,6 +1604,7 @@ func _decor_units(slices: Slicer) -> void:
 		for piece: Dictionary in workings.get("pieces", []):
 			_add_gate_piece(piece))
 	slices.add("decor_hamlet", _decor_hamlet)
+	slices.add("decor_routes", _decor_routes)
 	slices.add_each("decor_field", ceili(data.size.y / float(DECOR_ROWS)), _field_rows)
 
 
@@ -1819,7 +1856,8 @@ static func _still(motes: CPUParticles2D) -> CPUParticles2D:
 ## The cells that grow no field decor (`bare`): what the props stand on,
 ## the camps, each shut gate's cells and pieces, each entrance's pieces and
 ## the cells it blocks or hides, the chests and pickups, the villagers' homes
-## and the ways on.
+## and the ways on; and what the Post's roads put up, and where a waystation
+## sets the hero down (PIX-322).
 func _bare_cells() -> Dictionary:
 	var out: Dictionary = (outdoor_props["drawn"] as Dictionary).duplicate()
 	var cells: Array = camps.keys() + data.portals.keys() + gate_hides.keys()
@@ -1835,6 +1873,7 @@ func _bare_cells() -> Dictionary:
 		cells.append(Vector2i(int(chest["x"]), int(chest["y"])))
 	for piece: Dictionary in hamlet["pieces"]:
 		cells.append_array(piece["cells"])
+	cells.append_array(routes["blocks"] + routes["open"])
 	for npc: Dictionary in Npcs.on_map(data.id, GameState.settlement.town_tier, GameState.settlement.settlers, Town.done_projects(GameState.settlement), Relics.gate_open(GameState.progression), Letters.tin_waits(GameState.progression)):
 		cells.append(Vector2i(int(npc["x"]), int(npc["y"])))
 	for cell: Vector2i in cells:
@@ -2295,6 +2334,86 @@ func _decor_hamlet() -> void:
 						props.add_child(embers)
 
 
+## What the Post's routes put up (PIX-322, Routes.plan), standing among the
+## actors on their cells, each blocking them: a fingerpost at each fork
+## signed, its name on a plate as the hero comes near ("Bram's Corner", the
+## post roads it points down); and each waystation built, its hut (its
+## window lit at night, its name on a plate), its post box (full while the
+## day's post waits, as the square's), its bench and its ember lamp.
+func _decor_routes() -> void:
+	waystations = []
+	ember_lamps = {}
+	post_boxes = []
+	for piece: Dictionary in routes["pieces"]:
+		var cell: Vector2i = piece["cell"]
+		var kind := String(piece["kind"])
+		var art: String = {"signpost": "signpost", "hut": "hut", "bench": "bench", "lamp": "ember_lamp"}.get(kind, "")
+		var sprite := Sprite2D.new()
+		sprite.centered = false
+		if kind == "box":
+			sprite.texture = HamletArt.texture("post_box")
+			post_boxes.append(sprite)
+			_stand_on(sprite, cell, Vector2(0, TILE - HamletArt.size("post_box").y))
+		else:
+			sprite.texture = RouteArt.texture(art)
+			var root := _stand_on(sprite, cell, Vector2(0, TILE - RouteArt.size(art).y))
+			if kind == "lamp":
+				_add_ember_lamp(root, cell, String(piece["place"]))
+			elif kind == "hut":
+				_add_hut_window(root)
+				waystations.append(String(piece["place"]))
+		for taken: Vector2i in piece["cells"]:
+			_block(taken)
+		if kind == "signpost":
+			door_signs.append({
+				"door": cell, "name": Routes.fork_name(piece["fork"], GameState.post),
+				"about": Routes.fork_about(piece["fork"], GameState.post), "node": null, "over": RouteArt.size("signpost").y - TILE + 4,
+			})
+		elif kind == "hut":
+			door_signs.append({
+				"door": cell, "name": String(Routes.station(piece["place"])["name"]),
+				"about": Text.t("Halfway to %s") % Text.mid(Catalog.place_name(piece["place"])), "node": null, "over": RouteArt.size("hut").y - TILE + 4,
+			})
+	show_post_box()
+
+
+## A waystation's ember lamp (PIX-322): a shard of the mountain's warmth in
+## its cage, dull by day; at night alight (the dark doesn't touch it), a
+## soft halo round it and its warmth on the ground about its foot. One
+## light: test_night_light's budget holds with every waystation built.
+func _add_ember_lamp(root: Node2D, cell: Vector2i, place: String) -> void:
+	var lit := AnimatedSprite2D.new()
+	lit.sprite_frames = RouteArt.ember()
+	lit.material = Lights.unshaded()
+	lit.centered = false
+	lit.position = Vector2(0, -RouteArt.size("ember_lamp").y)
+	lit.frame = absi(hash(cell)) % lit.sprite_frames.get_frame_count("default")
+	lit.play()
+	lit.visible = false
+	root.add_child(lit)
+	night_glows.append(lit)
+	ember_lamps[place] = lit
+	var top := Vector2(cell * TILE) + Vector2(0, TILE - RouteArt.size("ember_lamp").y)
+	var halo := _add_halo(top + RouteArt.HALO_AT, EMBER_HALO, EMBER_HALO_PEAK)
+	var light := Lights.make(Vector2(cell * TILE) + EMBER_POOL, EMBER_REACH, Lights.EMBER, Lights.EMBER_ENERGY, true)
+	props.add_child(light)
+	halo.tree_exiting.connect(light.queue_free)
+	halo.set_meta("light", light)
+
+
+## A waystation's window lit at night (PIX-322): its glass alone, the dark
+## not touching it; no light of its own, so the lamp keeps the budget.
+func _add_hut_window(root: Node2D) -> void:
+	var pane := Sprite2D.new()
+	pane.texture = RouteArt.lit_window()
+	pane.centered = false
+	pane.material = Lights.unshaded()
+	pane.position = Vector2(0, -RouteArt.size("hut").y)
+	pane.visible = false
+	root.add_child(pane)
+	night_glows.append(pane)
+
+
 ## `sprite` standing among the actors on the foot of `cell` (sorted on the
 ## bottom of its row), drawn `at` from the cell's top-left: its root.
 func _stand_on(sprite: Node2D, cell: Vector2i, at: Vector2) -> Node2D:
@@ -2434,6 +2553,9 @@ func deal_patches(day: int) -> bool:
 		return false
 	patch_day = day
 	patches = Gathering.patches_on(patch_decks, day)
+	# Nothing grows under what the Post's routes put up (PIX-322).
+	for cell: Vector2i in routes["blocks"]:
+		patches.erase(cell)
 	return true
 
 
@@ -2453,11 +2575,15 @@ func refresh_patches() -> void:
 ## The post box drawn as it stands (PIX-320): full, its pennant up and a
 ## letter in its slot, while it holds the day's post; empty once it's taken
 ## (or while the threads wait). Looked at again each second and as E takes
-## the post. Nothing on a map without the box.
+## the post. The waystations' boxes too (PIX-322), the same day's post in
+## each. Nothing on a map without a box.
 func show_post_box() -> void:
-	if post_box == null or not is_instance_valid(post_box):
-		return
-	post_box.texture = HamletArt.texture("post_box_full" if not GameState.posting.in_box().is_empty() else "post_box")
+	var boxes: Array[Sprite2D] = post_boxes.duplicate()
+	boxes.append(post_box)
+	var full := not GameState.posting.in_box().is_empty()
+	for box: Sprite2D in boxes:
+		if box != null and is_instance_valid(box):
+			box.texture = HamletArt.texture("post_box_full" if full else "post_box")
 
 
 ## A tent pitched on the map as it stands (PIX-253 step 9: Iva's on the

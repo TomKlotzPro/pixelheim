@@ -72,6 +72,7 @@ const TABLE := [
 	{"field": "letters", "says": "Maren's letters in the pack, once any is out (PIX-253)"},
 	{"field": "lit", "says": "on the Night of Bells: the lanterns on the square lit (PIX-253 step 9)"},
 	{"field": "logged", "says": "with floats: the lines the battle log showed (PIX-245)"},
+	{"field": "mapped", "says": "the Post's roads drawn in gold on the map's page while the map is open, by place: saltmere,blackiron (PIX-322)"},
 	{"field": "maps", "says": "the maps drawn on the map's page, while the map is open: 7 on the Reach's with every region found (PIX-269)"},
 	{"field": "morvax", "says": "Morvax on the hero's map: his cell, and bench when he sits on his bench by the fountain (PIX-253 step 10)"},
 	{"field": "motes", "says": "with rankup: the ascension's motes and sparks flying (PIX-244)"},
@@ -88,10 +89,12 @@ const TABLE := [
 	{"field": "rise", "says": "with --rise: how far the building on the tour has risen: ruin, rising, built (PIX-264)"},
 	{"field": "rooms", "says": "with rooms: what the rooms are drawn from (paid, free or none), how many of them have walls and a floor, and those with a stair down: free walled 9/9 stairs keep,observatory (PIX-318)"},
 	{"field": "rose", "says": "a chapter card's title, how far it rose coming in (PIX-253)"},
+	{"field": "routes", "says": "once the Post has carried anything along a road: each route by place, the pieces it has carried, and signs once its signposts stand, offered while its waystation is on the board, built once it stands: saltmere:6:signs:offered,blackiron:2 (PIX-322)"},
 	{"field": "saves", "says": "with seamless: the saves crossing lines made (once for crossing back and forth, PIX-269)"},
 	{"field": "scene", "says": "the story scene playing over the world, by id: bells_dawn (PIX-253 step 9), vault_door (PIX-257)"},
 	{"field": "scorch", "says": "on a map with burnt land: its burnt rock's cells, the dead trees on it, the cinders glowing, and a mining country's rails, spoil and pieces standing at its workings: burnt120,snags40,cinders30,rails50,spoil9,standing14 (PIX-308)"},
 	{"field": "shortcut", "says": "on a dungeon floor with a shortcut out to its way in: open or shut (PIX-255)"},
+	{"field": "signposts", "says": "the signposts standing at the forks of the Post's roads on this map, by fork: gate,saltmere_fork (PIX-322)"},
 	{"field": "speaker", "says": "who the open conversation is with, by id: innkeeper (PIX-283)"},
 	{"field": "stamps", "says": "once the courier's book has a page stamped: its places stamped, in the book's order: town,saltmere (PIX-321)"},
 	{"field": "stood", "says": "named foes that stood down rather than fell, when one did (PIX-255)"},
@@ -106,6 +109,8 @@ const TABLE := [
 	{"field": "turns", "says": "with turning: the most times the way the hero is drawn changed in any one second, a flicker showing as many (PIX-293)"},
 	{"field": "water", "says": "the inland water nearest the hero, within six cells: its tone and the way it runs, as the map's water mask has them: clear west, mire still (PIX-306)"},
 	{"field": "wayout", "says": "on a dungeon's bottom floor: its ways straight out to its way in, by cell, as they opened - the door, then one where its boss fell - or none (PIX-292)"},
+	{"field": "waystations", "says": "the waystations standing on this map, by their road's place, each lit when its ember lamp burns (at night) or cold: saltmere:lit (PIX-322)"},
+	{"field": "works", "says": "while the town's ledger is open: the works out on the roads it offers, by id: waystation_saltmere (PIX-322)"},
 ]
 ## How many of TABLE's first rows are the head every run shows.
 const HEAD := 10
@@ -507,6 +512,14 @@ func field_logged() -> String:
 	return str(world.messages.logged) if not Gains.is_empty(world.fx.floated) else ""
 
 
+func field_mapped() -> String:
+	var screen := _map_screen()
+	if screen == null:
+		return ""
+	var roads: Array[String] = screen.painting.mapped()
+	return ",".join(roads) if not roads.is_empty() else "none"
+
+
 func field_maps() -> String:
 	var screen := _map_screen()
 	return str(screen.painting.sheets.size()) if screen != null else ""
@@ -610,6 +623,21 @@ func field_rose() -> String:
 	return str(roundi(card.rose)) if card != null else ""
 
 
+func field_routes() -> String:
+	var parts: PackedStringArray = []
+	var built := Routes.built(GameState.settlement)
+	for place: String in Routes.carried(GameState.post):
+		var part := "%s:%d" % [place, Routes.count(GameState.post, place)]
+		if Routes.signed(GameState.post, place):
+			part += ":signs"
+		if place in built:
+			part += ":built"
+		elif Routes.station_offered(GameState.post, place):
+			part += ":offered"
+		parts.append(part)
+	return ",".join(parts)
+
+
 func field_saves() -> String:
 	return str(world.neighbours.saves) if flags.has("seamless") else ""
 
@@ -644,6 +672,14 @@ func field_shortcut() -> String:
 	if door.is_empty():
 		return ""
 	return "open" if world.map.portals.has(door["cell"]) else "shut"
+
+
+func field_signposts() -> String:
+	var forks: PackedStringArray = []
+	for piece: Dictionary in world.view.routes["pieces"]:
+		if piece["kind"] == "signpost":
+			forks.append(String(piece["fork"]))
+	return ",".join(forks)
 
 
 func field_speaker() -> String:
@@ -757,3 +793,24 @@ func field_wayout() -> String:
 	for cell: Vector2i in Depths.exits(world.map):
 		cells.append(str(cell))
 	return ";".join(cells) if not cells.is_empty() else "none"
+
+
+func field_waystations() -> String:
+	var view: MapView = world.view
+	var parts: PackedStringArray = []
+	for place: String in view.waystations:
+		var ember: Variant = view.ember_lamps.get(place)
+		var lit: bool = ember != null and is_instance_valid(ember) and (ember as Node2D).visible
+		parts.append("%s:%s" % [place, "lit" if lit else "cold"])
+	return ",".join(parts)
+
+
+func field_works() -> String:
+	for node in world.get_children():
+		if node is Screen and node.get_script() != null and String(node.get_script().resource_path).ends_with("town_hall_screen.gd"):
+			var offered: PackedStringArray = []
+			for row: Dictionary in node.rows:
+				if not Town.work(String(row.get("project", ""))).is_empty():
+					offered.append(String(row["project"]))
+			return ",".join(offered) if not offered.is_empty() else "none"
+	return ""

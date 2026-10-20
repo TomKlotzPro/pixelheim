@@ -1137,7 +1137,7 @@
     }
   },
   "works": {
-    "about": "PIX-254: works out on the Reach's roads, on the board beside the age's projects once the story offers them (`needs`, a main quest step, with `line` said until then), and not part of any age: built, they open their `gate` (Gates), and while that gate stands open anyway (a hero already past it) they aren't offered. The river bridge burned on the Night of Ash; Old Wenna sends Brin's best rope with her answer.",
+    "about": "PIX-254: works out on the Reach's roads, on the board beside the age's projects once the story offers them (`needs`, a main quest step, with `line` said until then), and not part of any age: built, they open their `gate` (Gates), and while that gate stands open anyway (a hero already past it) they aren't offered. The river bridge burned on the Night of Ash; Old Wenna sends Brin's best rope with her answer. A waystation (PIX-322) names its post `route` instead (post.json's routes): offered once that route has carried enough post (`line` said until then), built it stands halfway along the route, its ember lamp lit.",
     "list": [
       {
         "id": "river_bridge",
@@ -1151,6 +1151,54 @@
         "needs": "letter_wenna",
         "line": "It wants rope, and the best rope is in Saltmere",
         "built": "The river bridge is mended. Brin's rope holds, and Bram says he supervised."
+      },
+      {
+        "id": "waystation_saltmere",
+        "route": "saltmere",
+        "name": "Raise the Saltmere waystation",
+        "blurb": "Halfway down the road to Saltmere: a hut, a bench that mends you, a post box and an ember lamp, a shard of the mountain's warmth that never goes out. A stage to travel to.",
+        "cost": {
+          "gold": 150,
+          "items": {"sea_glass": 3, "ember_shard": 1}
+        },
+        "line": "The Saltmere road wants more post carried first",
+        "built": "The Saltmere waystation stands halfway down the road, its ember lamp lit. Bram says he chose the bench."
+      },
+      {
+        "id": "waystation_blackiron",
+        "route": "blackiron",
+        "name": "Raise the Blackiron waystation",
+        "blurb": "Halfway out to the miners, by the rock on the west road: a hut, a bench that mends you, a post box and an ember lamp. A stage to travel to.",
+        "cost": {
+          "gold": 250,
+          "items": {"blackiron_ore": 2, "ember_shard": 2}
+        },
+        "line": "The Blackiron road wants more post carried first",
+        "built": "The Blackiron waystation stands on the west road, its ember lamp lit. The miners say it's the warmest hut in the Reach."
+      },
+      {
+        "id": "waystation_greyhold",
+        "route": "greyhold",
+        "name": "Raise the Greyhold waystation",
+        "blurb": "Halfway along the east road to the old fort: a hut, a bench that mends you, a post box and an ember lamp. A stage to travel to.",
+        "cost": {
+          "gold": 350,
+          "items": {"old_steel": 2, "ember_shard": 2}
+        },
+        "line": "The Greyhold road wants more post carried first",
+        "built": "The Greyhold waystation stands on the east road, its ember lamp lit. Fenwick has put himself in charge of it."
+      },
+      {
+        "id": "waystation_frostgate",
+        "route": "frostgate",
+        "name": "Raise the Frostgate waystation",
+        "blurb": "Under the mountain on the road to the pass: a hut, a bench that mends you, a post box and an ember lamp, warm against the snow. A stage to travel to.",
+        "cost": {
+          "gold": 450,
+          "items": {"frost_lily": 2, "ember_shard": 2}
+        },
+        "line": "The Frostgate road wants more post carried first",
+        "built": "The Frostgate waystation stands under the mountain, its ember lamp lit. Gunnar says the horses won't leave it."
       }
     ]
   },

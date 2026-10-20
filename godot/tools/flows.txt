@@ -147,6 +147,20 @@ post-map-reach | --map saltmere --post read worldmap | open=map_screen page=over
 # and the journal open at its Postmarks: Pixelheim's, Saltmere's and the
 # Reach's pages stamped.
 post-book | --map town --post book journal --tab book | open=journal_screen post=standing,box:0,bag:0,sent:5 stamps=town,saltmere,overworld | town quest screen
+# The Post's roads (PIX-322): three pieces carried down the Saltmere road
+# and signposts stand at its forks, Bram's Corner by the gate and Bram's
+# Fork; six, and its waystation is on the town's board; built, it stands
+# halfway down the road, its ember lamp cold by day and lit at night, its
+# bench mending a wounded hero, its post box holding the day's post, and
+# it's a stage the map travels to; the map draws the roads carried in gold.
+route-signs | --map overworld --routes saltmere:3 --at 46,36 | map=overworld routes=saltmere:3:signs signposts=gate,saltmere_fork | travel field quest
+waystation-board | --map town --routes saltmere:6 hall | open=town_hall_screen works=waystation_saltmere routes=saltmere:6:signs:offered | town quest screen
+waystation-day | --map overworld --routes saltmere:6 --built waystation_saltmere --at 19,51 | routes=saltmere:6:signs:built waystations=saltmere:cold signposts=gate,saltmere_fork | travel field quest
+waystation-night | --map overworld --routes saltmere:6 --built waystation_saltmere --at 19,51 night | waystations=saltmere:lit | travel field night
+waystation-bench | --map overworld --routes saltmere:6 --built waystation_saltmere wounded --at 20,49 --walk r --keys e | map=overworld cell=\(20, 49\) hp=BENCH_HP | travel field quest
+waystation-box | --map overworld --post open --routes saltmere:6 --built waystation_saltmere --at 18,50 --walk l --keys e | map=overworld post=box:0,bag:3,sent:0 | travel quest
+waystation-travel | --map town --routes saltmere:6 --built waystation_saltmere waypoints worldmap --choose waystation_saltmere --keys e --wait 0.6 | map=overworld cell=\(19, 49\) open=none | travel
+route-map | --map overworld --routes saltmere:6,blackiron:3 --built waystation_saltmere charted worldmap | open=map_screen page=overworld mapped=saltmere,blackiron | travel screen
 # The mire's mimic chest shudders, then ambushes (PIX-129).
 mimic | --map mirefen mimic --wait 0.75 | map=mirefen cell=\(42, 13\) hp=42 | combat field
 # The mayor's word opens the town ledger; the board on the square opens it too (PIX-147).
@@ -656,6 +670,8 @@ fit-launch-older-en | title --slots res://test/fixtures/slots_older launch overf
 fit-pause | --map town --keys esc overflow --lang fr | open=pause_screen overflow=0 | screen lang
 fit-options | --map town --keys esc,s,s,e overflow --lang fr | overflow=0 | screen lang
 fit-map | --map town waypoints worldmap overflow --lang fr | open=map_screen overflow=0 | screen lang travel
+# The map's list with every waystation built, in French (PIX-322).
+fit-map-roads | --map town --routes all --built waystation_saltmere,waystation_blackiron,waystation_greyhold,waystation_frostgate waypoints worldmap overflow --lang fr | open=map_screen overflow=0 | screen lang travel
 fit-travel | --map town waypoints --keys m,s,s,s,s overflow --lang fr | open=map_screen overflow=0 dest=mirefen_pass | screen lang travel
 # The list scrolled to its last waypoint (PIX-266), in Greyhold on the
 # Reach's one page (PIX-269 step 7).
@@ -688,6 +704,8 @@ fit-craft | --map town_alchemist shop --tab 2 overflow --lang fr | open=shop_scr
 fit-refusal | --map town_alchemist station --keys e overflow --lang fr | open=shop_screen tab=Craft overflow=0 | screen lang trade
 fit-rankup | --map town rankup --rank-beat unlocks overflow --lang fr | open=rankup_screen overflow=0 | screen lang rank
 fit-hall | --map town_hall talk --keys e,e,e overflow --lang fr | open=town_hall_screen overflow=0 | screen lang town
+# The board with every waystation offered, in French (PIX-322).
+fit-hall-roads | --map town --routes all hall overflow --lang fr | open=town_hall_screen overflow=0 works=waystation_saltmere,waystation_blackiron,waystation_greyhold,waystation_frostgate | screen lang town
 fit-bounty | --map town --at 43,22 --hunted tidecaller,seam_warden --keys w,e overflow --lang fr | open=bounty_screen overflow=0 | screen lang quest
 # Tom's level-15 mage in Frostweave with the longest names a piece carries
 # worn (PIX-298): the pack's rows ran past its page, "E retirer" under the
