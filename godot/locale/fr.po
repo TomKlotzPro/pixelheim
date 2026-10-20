@@ -4453,6 +4453,10 @@ msgid "Readable Danger"
 msgstr "Le danger se lit"
 
 #: assets/data/changelog.json
+msgid "Real Flames"
+msgstr "Vraies flammes"
+
+#: assets/data/changelog.json
 msgid "Recipes now demand skill: Smithing forges gear, Alchemy brews, and locked recipes show what level they ask"
 msgstr "Les recettes exigent désormais du savoir-faire : la Forge façonne l'équipement, l'Alchimie prépare les potions, et les recettes verrouillées indiquent le niveau requis"
 
@@ -5379,6 +5383,10 @@ msgstr "Les mares des Marais de Fange sont d'une eau olive trouble avec nénupha
 #: assets/data/changelog.json
 msgid "The Night of Ash"
 msgstr "La Nuit des Cendres"
+
+#: assets/data/changelog.json
+msgid "The Night of Ash finally looks like a fire: flames climb the burnt frames and corner posts and lick the rubble, a blaze roars where each house fell in, smoke drifts downwind and sparks fly over glowing coals; on the Night of Bells, flames run along the roof and out of the windows; Reduce motion keeps it all calm"
+msgstr "La Nuit des Cendres ressemble enfin à un incendie : les flammes grimpent le long des charpentes brûlées et des poteaux, lèchent les décombres, un brasier gronde là où chaque maison s'est effondrée, la fumée part avec le vent et les étincelles volent au-dessus des braises ; pendant la Nuit des Cloches, les flammes courent sur le toit et sortent des fenêtres ; « Réduire les animations » garde tout calme"
 
 #: assets/data/changelog.json
 msgid "The Open World"
