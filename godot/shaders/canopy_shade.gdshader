@@ -1,5 +1,5 @@
 shader_type canvas_item;
-render_mode blend_mul;
+render_mode blend_mul, unshaded;
 // The ground darker under a forest's canopy (PIX-309: the Deepwood's trees
 // stood on the same bright lawn as its glades). Drawn over the ground as one
 // sprite of the forest's mask (Woods.shade_rows: a cell a texel, scaled to
@@ -10,6 +10,11 @@ render_mode blend_mul;
 // under it by a shade picked in the screen's colours, so the ground darkens
 // alike on the browser's canvas and the app's linear one (an alpha blend
 // toward black there lost most of its darkening).
+// Unshaded (PIX-330): the ground under it is lit and darkened by the night
+// already, so the night's dark (the CanvasModulate) and the lights stay off
+// the shade itself. Shaded, it took the dark a second time over the whole
+// map, and at a line between two maps the strip of ground one map draws
+// past its sprite's edge stood out across the screen, lighter.
 
 #include "res://shaders/linear.gdshaderinc"
 

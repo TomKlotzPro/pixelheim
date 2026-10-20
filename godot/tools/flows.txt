@@ -258,7 +258,7 @@ ground-line | --map overworld --at 93,33 seamless --walk r,r,r fades | map=deepw
 # and ore standing at its faces.
 ground-scorched | --map overworld --at 18,22 | map=overworld scorch=burnt9[0-9]{2},snags[2-4][0-9]{2},cinders[1-9][0-9]+,rails0,spoil0,standing0 | field
 ground-road-ash | --map mountain_road --at 17,8 | map=mountain_road scorch=burnt0,snags0,cinders[1-9][0-9]*,rails0,spoil0,standing0 tone=tone | field
-mines-worked | --map blackiron --at 20,16 | map=blackiron scorch=burnt565,snags1[0-9]{2},cinders[1-9][0-9]+,rails53,spoil[1-9][0-9]*,standing21 | field
+mines-worked | --map blackiron --at 20,16 | map=blackiron scorch=burnt563,snags1[0-9]{2},cinders[1-9][0-9]+,rails53,spoil[1-9][0-9]*,standing21 | field
 # Night falling while the hero watches the goblins' camp: nothing changes
 # on the screen - the goblins stay up, the wolves whose home is in view
 # wait - and the dead come out off it. From a few steps west of the camp
@@ -430,6 +430,10 @@ line-door | --map overworld --at 2,32 unstreamed --walk l,l,l fades --wait 0.4 |
 line-gate | --map overworld --at 16,58 seamless --walk d,d,d,d --wait 0.3 | map=overworld cell=\(16, 61\) gate=cliff beside=.*saltmere.* | travel story
 line-twice | --map overworld --seen maren_tin --at 16,61 seamless --walk d,d,d,u,u,u,d,d,d fades | map=saltmere change=seamless saves=1 | travel story save
 line-motion | --map overworld --at 94,33 seamless motion --fps 144 | map=deepwood backsteps=[01] | motion
+# Out of Blackiron along the north lane of its road, where a rock stood in
+# the way and only the road's middle went through (PIX-332): the hero walks
+# on over the line into the Ash Fields.
+line-mines-lane | --map blackiron --at 48,29 seamless --walk r,r,r,r,r,r,r,r fades | map=overworld change=seamless | travel
 # A house opens onto a room, and the cave is down its stair (PIX-256): the
 # keep's door into Captain Hale's hall; the stair asks, and the hero waits
 # at the top; going down takes them to the cellars, staying keeps them in
