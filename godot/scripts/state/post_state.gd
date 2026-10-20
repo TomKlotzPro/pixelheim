@@ -9,7 +9,9 @@ extends Resource
 ## the box was last emptied (it fills again the morning after), and the
 ## courier's book (PIX-321): the day each place's page was first stamped,
 ## and the place each piece was delivered at (a settler's old letters stay
-## on the page of where they lived then).
+## on the page of where they lived then); and the routes (PIX-322): what
+## each has carried, by who wrote it, and whom each fork's signpost is
+## named after (named the day it went up, it keeps its name).
 
 ## The pieces in the satchel, by id, in the order they came.
 var bag: Array[String] = []
@@ -24,6 +26,11 @@ var taken := -1
 var stamps := {}
 ## A delivered piece -> the page it was stamped on.
 var places := {}
+## A route (Routes, by its place) -> correspondent -> the pieces they wrote
+## that it carried.
+var routes := {}
+## A fork whose signpost stands -> the correspondent it's named after.
+var signs := {}
 
 
 static func from_dict(data: Dictionary) -> PostState:
@@ -40,6 +47,15 @@ static func from_dict(data: Dictionary) -> PostState:
 	var at: Dictionary = data.get("places", {})
 	for piece_id: String in at:
 		post.places[piece_id] = String(at[piece_id])
+	var carried: Dictionary = data.get("routes", {})
+	for place: String in carried:
+		var by := {}
+		for who: String in carried[place]:
+			by[who] = int(carried[place][who])
+		post.routes[place] = by
+	var named: Dictionary = data.get("signs", {})
+	for fork_id: String in named:
+		post.signs[fork_id] = String(named[fork_id])
 	return post
 
 
@@ -47,14 +63,14 @@ static func from_dict(data: Dictionary) -> PostState:
 func to_dict() -> Dictionary:
 	return {
 		"bag": bag.duplicate(), "threads": threads.duplicate(), "delivered": delivered.duplicate(), "taken": taken,
-		"stamps": stamps.duplicate(), "places": places.duplicate(),
+		"stamps": stamps.duplicate(), "places": places.duplicate(), "routes": routes.duplicate(true), "signs": signs.duplicate(),
 	}
 
 
 ## Whether nothing has happened yet: no piece taken or delivered, the box
 ## never emptied (the save leaves the section out).
 func is_empty() -> bool:
-	return bag.is_empty() and threads.is_empty() and delivered.is_empty() and taken < 0 and stamps.is_empty()
+	return bag.is_empty() and threads.is_empty() and delivered.is_empty() and taken < 0 and stamps.is_empty() and routes.is_empty() and signs.is_empty()
 
 
 ## How far thread `thread_id` has come: its pieces delivered.

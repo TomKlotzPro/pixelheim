@@ -153,6 +153,19 @@ func _ready() -> void:
 		Discovery.discover_around(GameState.world.discovered, MapData.load_by_id(String(wenna["mapId"])), Vector2i(int(wenna["x"]), int(wenna["y"])))
 		var reach := MapData.load_by_id("overworld")
 		Discovery.discover_around(GameState.world.discovered, reach, reach.spawn)
+	# `--routes saltmere:6,blackiron:3:dagny` or `all` (PIX-322): the Post's
+	# roads carried along before the first map is drawn, so the signposts
+	# their forks earn stand on it (a waystation with `--built`).
+	if flags.has("--routes"):
+		var specs := flags.list("--routes")
+		if flags.value("--routes") == "all":
+			specs = PackedStringArray()
+			for place: String in Routes.places():
+				specs.append("%s:%d" % [place, Routes.station_at(place) if not Routes.station(place).is_empty() else Routes.signs_at(place)])
+		for spec: String in specs:
+			var parts := spec.split(":")
+			Routes.tally(GameState.post, parts[0], parts[2] if parts.size() > 2 else "bram", int(parts[1]))
+		Routes.raise_signs(GameState.post)
 	# `--bells N` (PIX-253 step 9): the story at the Night of Bells - the tin
 	# found, the four keepsakes and their families home, Maren heard out,
 	# the fifth letter delivered - in a Village building its Town (unless

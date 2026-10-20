@@ -91,9 +91,10 @@ func _raise(project_id: String) -> String:
 
 ## Funds a work out on the Reach's roads (PIX-254, Town.works): paid as a
 ## project is, part of no age; built, it opens its gate the next time the
-## Reach is drawn. Returns the ledger's line, "" if it can't.
+## Reach is drawn, or a waystation stands halfway along its post road
+## (PIX-322). Returns the ledger's line, "" if it can't.
 func fund_work(work_id: String) -> String:
-	if Town.work_blocker(work_id, owner.progression, owner.settlement, owner.pack.gold, owner.pack.items) != "":
+	if Town.work_blocker(work_id, owner.progression, owner.settlement, owner.pack.gold, owner.pack.items, owner.post) != "":
 		return ""
 	var entry := Town.work(work_id)
 	owner.pack.gold -= int(entry["cost"]["gold"])

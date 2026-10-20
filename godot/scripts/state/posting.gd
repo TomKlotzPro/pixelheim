@@ -61,8 +61,10 @@ func carried_for(npc_id: String) -> Dictionary:
 ## tip (and now and then a thing to keep, or a recipe for the book), the
 ## thread on a step, the courier's book stamped where they stand (PIX-321),
 ## and its reply, if one follows, in the satchel to carry back (said in the
-## log, with a page stamped for the first time). Returns the line to show,
-## "" when they're owed none.
+## log, with a page stamped for the first time); and counted toward the
+## routes it travelled (PIX-322: signposts going up, a waystation offered on
+## the board, said in the log too). Returns the line to show, "" when
+## they're owed none.
 func deliver(npc_id: String) -> String:
 	var entry := carried_for(npc_id)
 	if entry.is_empty():
@@ -89,6 +91,7 @@ func deliver(npc_id: String) -> String:
 		notes.append(Text.t("A new postmark in your courier's book: %s.") % Text.mid(Catalog.place_name(place)))
 	if not reply.is_empty():
 		notes.append(Text.t("A reply to carry back: %s.") % reply["addressed"])
+	notes.append_array(Routes.carry(owner.post, entry, owner.progression, owner.settlement))
 	if not notes.is_empty():
 		owner.noted.emit(notes)
 	if paid.is_empty():

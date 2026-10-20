@@ -11,34 +11,34 @@
     "parcel": {"sealed": "WRAPPED", "delivered": "HANDED OVER"}
   },
   "correspondents": {
-    "bram": {"npc": "villager_bram"},
-    "ola": {"npc": "saltmere_ola"},
-    "garrick": {"npc": "mines_garrick"},
-    "mabel": {"npc": "greyhold_mabel"},
-    "sela": {"npc": "innkeeper"},
-    "wenna": {"npc": "saltmere_wenna"},
-    "pell": {"npc": "mines_pell"},
-    "pip": {"npc": "kid_pip"},
-    "fafnyr": {"npc": "smith"},
-    "maren": {"npc": "elder"},
-    "aldric": {"npc": "mayor"},
-    "odo": {"npc": "shopkeeper"},
-    "hilda": {"npc": "smith"},
-    "vex": {"npc": "alchemist_vex"},
-    "rook": {"npc": "saltmere_rook"},
-    "marta": {"npc": "saltmere_marta"},
-    "dagny": {"npc": "mines_dagny"},
-    "brann": {"npc": "mines_brann"},
-    "fenwick": {"npc": "greyhold_fenwick"},
-    "ulla": {"npc": "greyhold_ulla"},
-    "teo": {"npc": "greyhold_teo"},
-    "gunnar": {"npc": "frost_gunnar"},
-    "linnea": {"npc": "frost_linnea"},
-    "iva": {"npc": "settler_iva"},
-    "loras": {"npc": "settler_loras"},
-    "wren": {"npc": "settler_wren"},
-    "mirelle": {"npc": "settler_mirelle"},
-    "morvax": {"npc": "mountain_morvax"}
+    "bram": {"npc": "villager_bram", "name": "Bram"},
+    "ola": {"npc": "saltmere_ola", "name": "Ola"},
+    "garrick": {"npc": "mines_garrick", "name": "Garrick"},
+    "mabel": {"npc": "greyhold_mabel", "name": "Mabel"},
+    "sela": {"npc": "innkeeper", "name": "Sela"},
+    "wenna": {"npc": "saltmere_wenna", "name": "Wenna"},
+    "pell": {"npc": "mines_pell", "name": "Pell"},
+    "pip": {"npc": "kid_pip", "name": "Pip"},
+    "fafnyr": {"npc": "smith", "name": "Fafnyr"},
+    "maren": {"npc": "elder", "name": "Maren"},
+    "aldric": {"npc": "mayor", "name": "Aldric"},
+    "odo": {"npc": "shopkeeper", "name": "Odo"},
+    "hilda": {"npc": "smith", "name": "Hilda"},
+    "vex": {"npc": "alchemist_vex", "name": "Vex"},
+    "rook": {"npc": "saltmere_rook", "name": "Rook"},
+    "marta": {"npc": "saltmere_marta", "name": "Marta"},
+    "dagny": {"npc": "mines_dagny", "name": "Dagny"},
+    "brann": {"npc": "mines_brann", "name": "Brann"},
+    "fenwick": {"npc": "greyhold_fenwick", "name": "Fenwick"},
+    "ulla": {"npc": "greyhold_ulla", "name": "Ulla"},
+    "teo": {"npc": "greyhold_teo", "name": "Teo"},
+    "gunnar": {"npc": "frost_gunnar", "name": "Gunnar"},
+    "linnea": {"npc": "frost_linnea", "name": "Linnea"},
+    "iva": {"npc": "settler_iva", "name": "Iva"},
+    "loras": {"npc": "settler_loras", "name": "Loras"},
+    "wren": {"npc": "settler_wren", "name": "Wren"},
+    "mirelle": {"npc": "settler_mirelle", "name": "Mirelle"},
+    "morvax": {"npc": "mountain_morvax", "name": "Morvax"}
   },
   "book": [
     {"place": "town", "ink": "lamp", "emblem": "house"},
@@ -51,6 +51,67 @@
     {"place": "frostgate", "ink": "fine", "emblem": "flake"},
     {"place": "morvax_forge", "ink": "lamp", "emblem": "anvil"}
   ],
+  "routes": {
+    "about": "PIX-322, the Post's step 3: the roads it is carried along. Each piece handed over counts toward the route from Pixelheim to the place at each of its ends (the sender's and the addressee's, where they stand as it's delivered: the village is no route, nor the Reach's own road), by who wrote it. Once a route has carried `signsAt` pieces a signpost goes up at each of its `forks` not signed yet, named after whoever wrote most along it (the fork's `name` with theirs: Bram's Corner). Once it has carried `stationAt`, its waystation (`station`) is offered on the town's board (town.json's works entry `work`), and built it stands halfway along the route on the Ashenreach: a hut (`hut` its left cell, two wide), a bench that mends you, a post box and an ember lamp, each on a cell of its own beside the road, the hero set down at `arrival`; it's a waypoint by `name`. A route with no station has a waypoint standing halfway already (the passes to the Mirefen and the Deepwood, the mountain's gate). `path` runs along the road from the gate's landing, corner to corner, to where the route leaves the Ashenreach: the map draws it in gold once the route has carried anything. `hub` is the cell on the place's own map it ends at. Saved: each route's pieces by who wrote them, and whom each fork's signpost is named after.",
+    "signsAt": 3,
+    "stationAt": 6,
+    "forks": [
+      {"id": "gate", "name": "%s's Corner", "at": [46, 34]},
+      {"id": "saltmere_fork", "name": "%s's Fork", "at": [17, 34]},
+      {"id": "river_fork", "name": "%s's Crossing", "at": [47, 21]},
+      {"id": "greyhold_fork", "name": "%s's Turning", "at": [50, 16]},
+      {"id": "mountain_fork", "name": "%s's Milestone", "at": [50, 9]}
+    ],
+    "list": [
+      {
+        "place": "saltmere",
+        "path": [[48, 41], [48, 33], [16, 33], [16, 62]],
+        "forks": ["gate", "saltmere_fork"],
+        "hub": [30, 14],
+        "station": {"work": "waystation_saltmere", "name": "The Saltmere Waystation", "hut": [19, 48], "lamp": [17, 48], "box": [17, 50], "bench": [21, 49], "arrival": [19, 49]}
+      },
+      {
+        "place": "blackiron",
+        "path": [[48, 41], [48, 20], [1, 20]],
+        "forks": ["gate", "river_fork"],
+        "hub": [35, 20],
+        "station": {"work": "waystation_blackiron", "name": "The Blackiron Waystation", "hut": [24, 18], "lamp": [23, 19], "box": [28, 19], "bench": [26, 19], "arrival": [24, 19]}
+      },
+      {
+        "place": "greyhold",
+        "path": [[48, 41], [48, 15], [94, 15]],
+        "forks": ["gate", "river_fork", "greyhold_fork"],
+        "hub": [12, 27],
+        "station": {"work": "waystation_greyhold", "name": "The Greyhold Waystation", "hut": [65, 13], "lamp": [64, 14], "box": [69, 14], "bench": [67, 14], "arrival": [65, 14]}
+      },
+      {
+        "place": "frostgate",
+        "path": [[48, 41], [48, 10], [68, 10], [68, 1]],
+        "forks": ["gate", "river_fork", "greyhold_fork", "mountain_fork"],
+        "hub": [33, 40],
+        "stationAt": 5,
+        "station": {"work": "waystation_frostgate", "name": "The Frostgate Waystation", "hut": [57, 8], "lamp": [56, 9], "box": [61, 9], "bench": [59, 9], "arrival": [57, 9]}
+      },
+      {
+        "place": "mirefen",
+        "path": [[48, 41], [48, 33], [1, 33]],
+        "forks": ["gate", "saltmere_fork"],
+        "signsAt": 2
+      },
+      {
+        "place": "deepwood",
+        "path": [[48, 41], [48, 33], [94, 33]],
+        "forks": ["gate"],
+        "signsAt": 2
+      },
+      {
+        "place": "morvax_forge",
+        "path": [[48, 41], [48, 7]],
+        "forks": ["gate", "river_fork", "greyhold_fork", "mountain_fork"],
+        "signsAt": 2
+      }
+    ]
+  },
   "threads": [
     {
       "id": "cheese_club",

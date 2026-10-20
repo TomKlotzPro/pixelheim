@@ -98,19 +98,20 @@ func _rows() -> Array[Dictionary]:
 
 
 ## The works out on the Reach's roads the story offers and nobody has
-## built yet (PIX-254: the river bridge), first on the board, whatever age
-## the town is building; not while their gate stands open anyway (a hero
-## already past it, from before the gates).
+## built yet (PIX-254: the river bridge; PIX-322: a waystation once its
+## post road has carried enough), first on the board, whatever age the town
+## is building; not while their gate stands open anyway (a hero already
+## past it, from before the gates).
 func _works() -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	var done := Town.done_projects(GameState.settlement)
 	for entry: Dictionary in Town.works():
 		var work_id: String = entry["id"]
-		if work_id in done or not Town.work_offered(work_id, GameState.progression, GameState.settlement):
+		if work_id in done or not Town.work_offered(work_id, GameState.progression, GameState.settlement, GameState.post):
 			continue
-		if Gates.is_open(Gates.by_id(String(entry["gate"])), GameState.progression, GameState.settlement, GameState.world.discovered):
+		if entry.has("gate") and Gates.is_open(Gates.by_id(String(entry["gate"])), GameState.progression, GameState.settlement, GameState.world.discovered):
 			continue
-		var blocker := Town.work_blocker(work_id, GameState.progression, GameState.settlement, GameState.pack.gold, GameState.pack.items)
+		var blocker := Town.work_blocker(work_id, GameState.progression, GameState.settlement, GameState.pack.gold, GameState.pack.items, GameState.post)
 		out.append({
 			"project": work_id, "label": entry["name"], "note": Town.cost_line(work_id),
 			"enabled": blocker == "", "why": blocker,

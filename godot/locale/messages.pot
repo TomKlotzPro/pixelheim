@@ -4357,6 +4357,10 @@ msgid "Post Day"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Post Roads"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Press Start 2P headlines the title and panel headers (bundled, no CDN)"
 msgstr ""
 
@@ -5754,6 +5758,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The post box holds three pieces a day from the start, and some parcels leave you something to keep: a recipe, a banner, a candelabra"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The post wears roads into the Reach: carry enough letters along a route and a signpost goes up at its forks, named after whoever wrote most along it (Bram's Corner); carry more and the town's board offers a waystation halfway to Saltmere, Blackiron, Greyhold or the Frostgate, with a bench that mends you, a post box, a lamp lit at night and a waypoint to travel to; routes that have carried post show in gold on the map"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -9713,6 +9721,26 @@ msgid "\"Unless you must.\" Your Bram knows soldiers."
 msgstr ""
 
 #: assets/data/post.json
+msgid "%s's Corner"
+msgstr ""
+
+#: assets/data/post.json
+msgid "%s's Crossing"
+msgstr ""
+
+#: assets/data/post.json
+msgid "%s's Fork"
+msgstr ""
+
+#: assets/data/post.json
+msgid "%s's Milestone"
+msgstr ""
+
+#: assets/data/post.json
+msgid "%s's Turning"
+msgstr ""
+
+#: assets/data/post.json
 msgid "(Another rumble on the roof, a long one. A letter flutters down, smoking a little.)"
 msgstr ""
 
@@ -9913,6 +9941,10 @@ msgid "Alchemist. Snow, mostly. And mittens: a yeti fur and a frost lily, worked
 msgstr ""
 
 #: assets/data/post.json
+msgid "Aldric"
+msgstr ""
+
+#: assets/data/post.json
 msgid "Apples! She'll take apples."
 msgstr ""
 
@@ -9946,6 +9978,10 @@ msgstr ""
 
 #: assets/data/post.json
 msgid "Bram. It's always Bram."
+msgstr ""
+
+#: assets/data/post.json
+msgid "Brann"
 msgstr ""
 
 #: assets/data/post.json
@@ -10042,6 +10078,10 @@ msgstr ""
 
 #: assets/data/post.json
 msgid "FOLDED"
+msgstr ""
+
+#: assets/data/post.json
+msgid "Fafnyr"
 msgstr ""
 
 #: assets/data/post.json
@@ -10313,6 +10353,10 @@ msgid "Full price! For reeds!"
 msgstr ""
 
 #: assets/data/post.json
+msgid "Garrick"
+msgstr ""
+
+#: assets/data/post.json
 msgid "Garrick! The smith in Pixelheim wants ten!"
 msgstr ""
 
@@ -10358,6 +10402,10 @@ msgstr ""
 
 #: assets/data/post.json
 msgid "Here, courier: interest, on all that walking. My bank pays its couriers."
+msgstr ""
+
+#: assets/data/post.json
+msgid "Hilda"
 msgstr ""
 
 #: assets/data/post.json
@@ -10410,6 +10458,10 @@ msgstr ""
 
 #: assets/data/post.json
 msgid "It was his joke about me. He had a hundred of them."
+msgstr ""
+
+#: assets/data/post.json
+msgid "Iva"
 msgstr ""
 
 #: assets/data/post.json
@@ -10489,7 +10541,19 @@ msgid "Letter for Wren the Stablemaster"
 msgstr ""
 
 #: assets/data/post.json
+msgid "Loras"
+msgstr ""
+
+#: assets/data/post.json
 msgid "MARTA! Have we got any dry rope?"
+msgstr ""
+
+#: assets/data/post.json
+msgid "Mabel"
+msgstr ""
+
+#: assets/data/post.json
+msgid "Maren"
 msgstr ""
 
 #: assets/data/post.json
@@ -10498,6 +10562,10 @@ msgstr ""
 
 #: assets/data/post.json
 msgid "Maren. The weather here is wet. It has been wet for fifty years. Tam would have made a joke about it. I can't think of one either. - Wenna"
+msgstr ""
+
+#: assets/data/post.json
+msgid "Marta"
 msgstr ""
 
 #: assets/data/post.json
@@ -10534,6 +10602,10 @@ msgstr ""
 
 #: assets/data/post.json
 msgid "Mine? Greyhold? To keep?"
+msgstr ""
+
+#: assets/data/post.json
+msgid "Mirelle"
 msgstr ""
 
 #: assets/data/post.json
@@ -10585,6 +10657,14 @@ msgid "Nothing rhymes with Greyhold. I'll make something. Wait there."
 msgstr ""
 
 #: assets/data/post.json
+msgid "Odo"
+msgstr ""
+
+#: assets/data/post.json
+msgid "Ola"
+msgstr ""
+
+#: assets/data/post.json
 msgid "On account. Everybody wants on account."
 msgstr ""
 
@@ -10622,6 +10702,10 @@ msgstr ""
 
 #: assets/data/post.json
 msgid "Parcel for Smith Hilda"
+msgstr ""
+
+#: assets/data/post.json
+msgid "Pell"
 msgstr ""
 
 #: assets/data/post.json
@@ -10717,6 +10801,10 @@ msgid "Scorched round the edges. Still warm."
 msgstr ""
 
 #: assets/data/post.json
+msgid "Sela"
+msgstr ""
+
+#: assets/data/post.json
 msgid "Sergeant. Report, day forty. Water: fetched. Helmet: rung. A lad from the valley asked to join the garrison. I said yes. Was that allowed? - Fenwick (in charge, with one soldier)"
 msgstr ""
 
@@ -10809,6 +10897,10 @@ msgid "Ten verses. About cheese."
 msgstr ""
 
 #: assets/data/post.json
+msgid "Teo"
+msgstr ""
+
+#: assets/data/post.json
 msgid "That was not a smile. Tell her it was not a smile. Wait there."
 msgstr ""
 
@@ -10821,7 +10913,23 @@ msgid "That's her welcome song. She likes Wenna."
 msgstr ""
 
 #: assets/data/post.json
+msgid "The Blackiron Waystation"
+msgstr ""
+
+#: assets/data/post.json
 msgid "The Cheese Club's song"
+msgstr ""
+
+#: assets/data/post.json
+msgid "The Frostgate Waystation"
+msgstr ""
+
+#: assets/data/post.json
+msgid "The Greyhold Waystation"
+msgstr ""
+
+#: assets/data/post.json
+msgid "The Saltmere Waystation"
 msgstr ""
 
 #: assets/data/post.json
@@ -10877,6 +10985,14 @@ msgid "Too salty. TOO SALTY."
 msgstr ""
 
 #: assets/data/post.json
+msgid "Ulla"
+msgstr ""
+
+#: assets/data/post.json
+msgid "Vex"
+msgstr ""
+
+#: assets/data/post.json
 msgid "Vex's reagents"
 msgstr ""
 
@@ -10913,6 +11029,10 @@ msgid "Well, a question deserves an answer. Take this back to the child."
 msgstr ""
 
 #: assets/data/post.json
+msgid "Wenna"
+msgstr ""
+
+#: assets/data/post.json
 msgid "Wenna and Pell"
 msgstr ""
 
@@ -10934,6 +11054,10 @@ msgstr ""
 
 #: assets/data/post.json
 msgid "Word has reached Pixelheim: its courier delivers anything, even fifty years late. A post box goes up on the square, beside the bounty board."
+msgstr ""
+
+#: assets/data/post.json
+msgid "Wren"
 msgstr ""
 
 #: assets/data/post.json
@@ -13741,6 +13865,18 @@ msgid "Four walls around the cauldron, and the smell kept mostly inside."
 msgstr ""
 
 #: assets/data/town.json
+msgid "Halfway along the east road to the old fort: a hut, a bench that mends you, a post box and an ember lamp. A stage to travel to."
+msgstr ""
+
+#: assets/data/town.json
+msgid "Halfway down the road to Saltmere: a hut, a bench that mends you, a post box and an ember lamp, a shard of the mountain's warmth that never goes out. A stage to travel to."
+msgstr ""
+
+#: assets/data/town.json
+msgid "Halfway out to the miners, by the rock on the west road: a hut, a bench that mends you, a post box and an ember lamp. A stage to travel to."
+msgstr ""
+
+#: assets/data/town.json
 msgid "Hamlet"
 msgstr ""
 
@@ -13841,6 +13977,22 @@ msgid "Odo's store"
 msgstr ""
 
 #: assets/data/town.json
+msgid "Raise the Blackiron waystation"
+msgstr ""
+
+#: assets/data/town.json
+msgid "Raise the Frostgate waystation"
+msgstr ""
+
+#: assets/data/town.json
+msgid "Raise the Greyhold waystation"
+msgstr ""
+
+#: assets/data/town.json
+msgid "Raise the Saltmere waystation"
+msgstr ""
+
+#: assets/data/town.json
 msgid "Rebuilt from the ashes, roof by stubborn roof. Now it can grow."
 msgstr ""
 
@@ -13865,11 +14017,43 @@ msgid "Street lamps, market stalls and a cottage for newcomers wait on the board
 msgstr ""
 
 #: assets/data/town.json
+msgid "The Blackiron road wants more post carried first"
+msgstr ""
+
+#: assets/data/town.json
+msgid "The Blackiron waystation stands on the west road, its ember lamp lit. The miners say it's the warmest hut in the Reach."
+msgstr ""
+
+#: assets/data/town.json
+msgid "The Frostgate road wants more post carried first"
+msgstr ""
+
+#: assets/data/town.json
+msgid "The Frostgate waystation stands under the mountain, its ember lamp lit. Gunnar says the horses won't leave it."
+msgstr ""
+
+#: assets/data/town.json
+msgid "The Greyhold road wants more post carried first"
+msgstr ""
+
+#: assets/data/town.json
+msgid "The Greyhold waystation stands on the east road, its ember lamp lit. Fenwick has put himself in charge of it."
+msgstr ""
+
+#: assets/data/town.json
 msgid "The Healers' Hall"
 msgstr ""
 
 #: assets/data/town.json
 msgid "The Lantern Walk"
+msgstr ""
+
+#: assets/data/town.json
+msgid "The Saltmere road wants more post carried first"
+msgstr ""
+
+#: assets/data/town.json
+msgid "The Saltmere waystation stands halfway down the road, its ember lamp lit. Bram says he chose the bench."
 msgstr ""
 
 #: assets/data/town.json
@@ -13942,6 +14126,10 @@ msgstr ""
 
 #: assets/data/town.json
 msgid "Two stalls on the square, and somewhere to haggle."
+msgstr ""
+
+#: assets/data/town.json
+msgid "Under the mountain on the road to the pass: a hut, a bench that mends you, a post box and an ember lamp, warm against the snow. A stage to travel to."
 msgstr ""
 
 #: assets/data/town.json
@@ -15201,6 +15389,10 @@ msgid "Goal"
 msgstr ""
 
 #: scripts/map_screen.gd
+msgid "Halfway to %s"
+msgstr ""
+
+#: scripts/map_screen.gd
 msgid "Lair"
 msgstr ""
 
@@ -15210,6 +15402,10 @@ msgstr ""
 
 #: scripts/map_screen.gd
 msgid "Not yet open"
+msgstr ""
+
+#: scripts/map_screen.gd
+msgid "Post roads"
 msgstr ""
 
 #: scripts/map_screen.gd
@@ -16376,10 +16572,6 @@ msgstr ""
 msgid "Town and people"
 msgstr ""
 
-#: scripts/state/main_quest.gd
-msgid "Maren"
-msgstr ""
-
 #: scripts/state/posting.gd
 msgid "A new postmark in your courier's book: %s."
 msgstr ""
@@ -16482,6 +16674,26 @@ msgstr ""
 
 #: scripts/state/quests.gd
 msgid "the wilds"
+msgstr ""
+
+#: scripts/state/routes.gd
+msgid "%d post roads meet here"
+msgstr ""
+
+#: scripts/state/routes.gd
+msgid "Signposts go up at the forks of your post roads: %s."
+msgstr ""
+
+#: scripts/state/routes.gd
+msgid "The post road to %s"
+msgstr ""
+
+#: scripts/state/routes.gd
+msgid "The post roads to %s and %s"
+msgstr ""
+
+#: scripts/state/routes.gd
+msgid "The road to %s has carried enough post for a waystation: the board on the square has it."
 msgstr ""
 
 #: scripts/state/skills.gd
@@ -16754,6 +16966,10 @@ msgstr ""
 
 #: scripts/state/upkeep.gd
 msgid "Well rested, too: more XP for your next %d fights."
+msgstr ""
+
+#: scripts/state/upkeep.gd
+msgid "You sit a while on the bench by the ember lamp. Its warmth mends you."
 msgstr ""
 
 #: scripts/state/upkeep.gd

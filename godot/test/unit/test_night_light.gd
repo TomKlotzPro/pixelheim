@@ -145,6 +145,26 @@ func test_the_village_far_off_at_every_age() -> void:
 		_check("the Reach with the village at age %d" % tier, _drawn(MapData.load_by_id("overworld")))
 
 
+## The Post's roads with every waystation built (PIX-322): each ember lamp
+## one light, and the Reach still within the budget, alone and drawn as one
+## land with the regions round it.
+func test_the_reach_with_every_waystation_lit() -> void:
+	GameState.progression.prologue = Prologue.DONE
+	var kept_post := GameState.post
+	GameState.post = PostState.new()
+	var done := Town.done_projects(GameState.settlement)
+	for place: String in Routes.places():
+		Routes.tally(GameState.post, place, "bram", Routes.station_at(place) if not Routes.station(place).is_empty() else Routes.signs_at(place))
+		if not Routes.station(place).is_empty():
+			done.append(String(Routes.station(place)["work"]))
+	Routes.raise_signs(GameState.post)
+	GameState.settlement.projects.assign(done)
+	assert_eq(Routes.lamps(GameState.settlement).size(), 4, "an ember lamp at each waystation")
+	_check("the Reach with every waystation lit", _drawn(MapData.load_by_id(Routes.MAP)))
+	_check("the Reach as one land with every waystation lit", _one_land(), _moving_on(ReachPlane.maps()))
+	GameState.post = kept_post
+
+
 func test_every_map_at_night() -> void:
 	GameState.progression.prologue = Prologue.DONE
 	var maps := DirAccess.get_files_at("res://assets/maps")
@@ -176,6 +196,13 @@ func test_every_dungeon_floor() -> void:
 ## past the line too.
 func test_the_reach_drawn_as_one_land() -> void:
 	GameState.progression.prologue = Prologue.DONE
+	assert_gt(ReachPlane.maps().size(), 5, "the Reach and its regions")
+	_check("the Reach as one land", _one_land(), _moving_on(ReachPlane.maps()))
+
+
+## The Reach and the regions round it drawn as one land, as Neighbours
+## draws each map beside the hero.
+func _one_land() -> Node2D:
 	var root := Node2D.new()
 	add_child_autofree(root)
 	var standing := Node2D.new()
@@ -192,8 +219,7 @@ func test_the_reach_drawn_as_one_land() -> void:
 			view.kept = KeptGround.working(data, view.look(), MapView.EDGE_PAD, slices)
 			slices.add("plan_draw", func() -> void: view.building(root, slices)))
 		slices.finish()
-	assert_gt(ReachPlane.maps().size(), 5, "the Reach and its regions")
-	_check("the Reach as one land", root, _moving_on(ReachPlane.maps()))
+	return root
 
 
 ## A unit of drawing lays whole light blocks, so each is drawn once.
