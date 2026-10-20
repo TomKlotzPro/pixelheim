@@ -5762,7 +5762,7 @@ msgstr "La boîte aux lettres contient trois plis par jour dès le début, et ce
 
 #: assets/data/changelog.json
 msgid "The post wears roads into the Reach: carry enough letters along a route and a signpost goes up at its forks, named after whoever wrote most along it (Bram's Corner); carry more and the town's board offers a waystation halfway to Saltmere, Blackiron, Greyhold or the Frostgate, with a bench that mends you, a post box, a lamp lit at night and a waypoint to travel to; routes that have carried post show in gold on the map"
-msgstr "Le courrier trace des routes dans le Reach : portez assez de lettres sur une route et un panneau se dresse à ses croisements, au nom de celui qui y a le plus écrit (Le Coin de Bram) ; portez-en davantage et le tableau de la ville propose une halte à mi-chemin de Saltmere, Fernoir, Greyhold ou la Porte-Givre, avec un banc qui vous soigne, une boîte aux lettres, une lanterne allumée la nuit et un relais où voyager ; les routes qui ont porté du courrier s'affichent en or sur la carte"
+msgstr "Le courrier trace des routes dans la Marche : portez assez de lettres sur une route et un panneau se dresse à ses croisements, au nom de celui qui y a le plus écrit (Le Coin de Bram) ; portez-en davantage et le tableau de la ville propose une halte à mi-chemin de Saltmere, Fernoir, Greyhold ou la Porte-Givre, avec un banc qui vous soigne, une boîte aux lettres, une lanterne allumée la nuit et un relais où voyager ; les routes qui ont porté du courrier s'affichent en or sur la carte"
 
 #: assets/data/changelog.json
 msgid "The quest is now Relics of the Five - four to find, the five's to bring home - and the town's goals and the bounty board no longer offer floors behind a barred gate"
