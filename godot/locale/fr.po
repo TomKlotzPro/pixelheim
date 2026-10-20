@@ -16601,10 +16601,6 @@ msgid "Town and people"
 msgstr "Le bourg et ses gens"
 
 #: scripts/state/posting.gd
-msgid "A new postmark in your courier's book: %s."
-msgstr "Un nouveau cachet dans votre carnet de messager : %s."
-
-#: scripts/state/posting.gd
 msgid "A reply to carry back: %s."
 msgstr "Une réponse à rapporter : %s."
 
@@ -16615,6 +16611,10 @@ msgstr "Remise : %s."
 #: scripts/state/posting.gd
 msgid "Delivered: %s. %s."
 msgstr "Remise : %s. %s."
+
+#: scripts/state/posting.gd
+msgid "New postmark: %s."
+msgstr "Nouveau cachet : %s."
 
 #: scripts/state/posting.gd
 msgid "The post box is empty. Fresh post comes in the morning."
@@ -16645,8 +16645,8 @@ msgid "%s: they wait on your answer."
 msgstr "%s : on attend votre réponse."
 
 #: scripts/state/questing.gd
-msgid "A feat done: %s. The %s is yours, for the shelf at home."
-msgstr "Un haut fait accompli : %s. La %s est à vous, pour l'étagère de la maison."
+msgid "Feat: %s"
+msgstr "Haut fait : %s"
 
 #: scripts/state/questing.gd
 msgid "It's in your journal ({key:journal})."
@@ -16709,8 +16709,12 @@ msgid "%d post roads meet here"
 msgstr "%d routes du courrier se croisent ici"
 
 #: scripts/state/routes.gd
-msgid "Signposts go up at the forks of your post roads: %s."
-msgstr "Des poteaux indicateurs se dressent aux fourches de vos routes du courrier : %s."
+msgid "A waystation for the road to %s is on the board."
+msgstr "Une halte pour la route vers %s est au tableau d'avis."
+
+#: scripts/state/routes.gd
+msgid "Signposts up: %s."
+msgstr "Poteaux indicateurs plantés : %s."
 
 #: scripts/state/routes.gd
 msgid "The post road to %s"
@@ -16719,10 +16723,6 @@ msgstr "La route du courrier vers %s"
 #: scripts/state/routes.gd
 msgid "The post roads to %s and %s"
 msgstr "Les routes du courrier vers %s et %s"
-
-#: scripts/state/routes.gd
-msgid "The road to %s has carried enough post for a waystation: the board on the square has it."
-msgstr "La route vers %s a porté assez de courrier pour une halte : le tableau d'avis de la place la propose."
 
 #: scripts/state/skills.gd
 msgid "%s needs level %d."
@@ -17217,12 +17217,16 @@ msgid "Boss slayer: +%d%% damage for %d minutes."
 msgstr "Tueur de boss : +%d %% de dégâts pendant %d minutes."
 
 #: scripts/world_foes.gd
-msgid "The pack is scattered. Another comes once you've walked a good way, or after a night's rest."
-msgstr "La meute est dispersée. Une autre reviendra quand vous aurez bien marché, ou après une nuit de repos."
+msgid "Pack scattered: another comes after a long walk or a night's rest."
+msgstr "Meute dispersée : une autre reviendra après une marche ou une nuit."
 
 #: scripts/world_foes.gd
 msgid "Victory"
 msgstr "Victoire"
+
+#: scripts/world_fx.gd
+msgid "LEVEL UP"
+msgstr "NIVEAU SUPÉRIEUR"
 
 #: scripts/world_hud.gd
 msgid "Boss slayer +%d%%  %d:%02d"

@@ -453,7 +453,9 @@ func ask_before_dip(what: String, costs: Dictionary) -> String:
 	return Text.t("That uses what %s needs (%s). Do it again to go ahead.") % [dip["quest"], dip["item"]]
 
 
-## A deed newly done (PIX-219): kept, its medal in the pack, the log told.
+## A deed newly done (PIX-219): kept, its medal in the pack, the log told in
+## one line (PIX-343: two lines of it stood over the screen; the medal is on
+## the journal's Feats page).
 func note_deeds() -> void:
 	var lines: Array[String] = []
 	for deed: Dictionary in Deeds.all():
@@ -461,7 +463,7 @@ func note_deeds() -> void:
 			continue
 		owner.progression.deeds.append(deed["id"])
 		owner.pack.add_item(deed["itemId"])
-		lines.append(Text.t("A feat done: %s. The %s is yours, for the shelf at home.") % [Text.t(deed["name"]), Catalog.item_name(deed["itemId"])])
+		lines.append(Text.t("Feat: %s") % Text.t(deed["name"]))
 	if not lines.is_empty():
 		owner.mark_dirty()
 		Sound.play("learn")

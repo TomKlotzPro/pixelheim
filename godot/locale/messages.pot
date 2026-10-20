@@ -16601,10 +16601,6 @@ msgid "Town and people"
 msgstr ""
 
 #: scripts/state/posting.gd
-msgid "A new postmark in your courier's book: %s."
-msgstr ""
-
-#: scripts/state/posting.gd
 msgid "A reply to carry back: %s."
 msgstr ""
 
@@ -16614,6 +16610,10 @@ msgstr ""
 
 #: scripts/state/posting.gd
 msgid "Delivered: %s. %s."
+msgstr ""
+
+#: scripts/state/posting.gd
+msgid "New postmark: %s."
 msgstr ""
 
 #: scripts/state/posting.gd
@@ -16645,7 +16645,7 @@ msgid "%s: they wait on your answer."
 msgstr ""
 
 #: scripts/state/questing.gd
-msgid "A feat done: %s. The %s is yours, for the shelf at home."
+msgid "Feat: %s"
 msgstr ""
 
 #: scripts/state/questing.gd
@@ -16709,7 +16709,11 @@ msgid "%d post roads meet here"
 msgstr ""
 
 #: scripts/state/routes.gd
-msgid "Signposts go up at the forks of your post roads: %s."
+msgid "A waystation for the road to %s is on the board."
+msgstr ""
+
+#: scripts/state/routes.gd
+msgid "Signposts up: %s."
 msgstr ""
 
 #: scripts/state/routes.gd
@@ -16718,10 +16722,6 @@ msgstr ""
 
 #: scripts/state/routes.gd
 msgid "The post roads to %s and %s"
-msgstr ""
-
-#: scripts/state/routes.gd
-msgid "The road to %s has carried enough post for a waystation: the board on the square has it."
 msgstr ""
 
 #: scripts/state/skills.gd
@@ -17217,11 +17217,15 @@ msgid "Boss slayer: +%d%% damage for %d minutes."
 msgstr ""
 
 #: scripts/world_foes.gd
-msgid "The pack is scattered. Another comes once you've walked a good way, or after a night's rest."
+msgid "Pack scattered: another comes after a long walk or a night's rest."
 msgstr ""
 
 #: scripts/world_foes.gd
 msgid "Victory"
+msgstr ""
+
+#: scripts/world_fx.gd
+msgid "LEVEL UP"
 msgstr ""
 
 #: scripts/world_hud.gd

@@ -439,6 +439,9 @@ func update_arrow() -> void:
 	if arrow == null:
 		arrow = Arrow.new()
 		root.add_child(arrow)
+		# Under the HUD's words, just over the sky's tint (PIX-343: it stood
+		# on the battle log's line).
+		root.move_child(arrow, sky_overlay.get_index() + 1)
 	arrow.main = leads_story
 	var target := _bearing_point()
 	# Above the line over the dock too (the objective's plate stands there),

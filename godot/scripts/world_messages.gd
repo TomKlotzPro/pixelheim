@@ -3,8 +3,8 @@ extends Node
 ## What the world tells the hero in words (Solid Ground, PIX-260: moved out
 ## of world.gd as it was): the message plate over the objective, where a
 ## quest taken or done, a level gained and the like wait their turn and hold
-## long enough to read (PIX-194, PIX-211); and the battle log, recent lines
-## stacking bottom-left and fading. The HUD calls build_log and build_plate
+## long enough to read (PIX-194, PIX-211); and the battle log, a line at a
+## time bottom-left, fading (PIX-343). The HUD calls build_log and build_plate
 ## where these always stood among its pieces; world.gd calls update() each
 ## frame.
 
@@ -16,11 +16,12 @@ var message_box: PanelContainer
 var message_tag: Label
 var message_label: Label
 var message_fade: Tween
-## How many lines the battle log shows at once (PIX-334: the rest wait
-## their turn, TextBudget), how long each stays, and the widest one runs
-## before it wraps (French runs longer: a boss's words went off the screen).
-const LOG_LINES := 4
-const LOG_SECONDS := 4.0
+## How many lines the battle log shows at once (PIX-343: one, the rest wait
+## their turn, TextBudget; four at once read as a wall of text), and the
+## widest one runs before it wraps (French runs longer: a boss's words went
+## off the screen). Each stays as long as it takes to read
+## (UiStyle.reading_seconds).
+const LOG_LINES := 1
 const LOG_WIDTH := 700.0
 ## Tags a message may open with, set in gold on its plate.
 const MESSAGE_TAGS := ["Quest accepted", "Quest complete", "Level up", "Mastery"]
@@ -33,7 +34,7 @@ const MESSAGE_WIDTH := 860.0
 ## kill's XP and gold float over the foe and add none, PIX-245).
 var logged := 0
 ## The log's lines and the plate's messages, showing and waiting their turn
-## (PIX-334): the log a few at a time, the plate one.
+## (PIX-334): the log one at a time (PIX-343), the plate one.
 var _log := TextBudget.new(LOG_LINES)
 var _plate := TextBudget.new(1)
 
@@ -84,10 +85,10 @@ func clear() -> void:
 func log_line(line: String) -> void:
 	log_lines([line])
 
-## The battle log: recent lines stack bottom-left and fade. Only what the
+## The battle log: a line at a time, bottom-left, fading. Only what the
 ## world doesn't show comes here (PIX-245): story beats, quests, levels, the
 ## boss slayer's edge, a pack scattered; what's won floats up where it was
-## won (WorldFx.show_gains). A few at a time, the rest in their turn, the
+## won (WorldFx.show_gains). One at a time, the rest in their turn, the
 ## same line again folded into one (PIX-334: TextBudget); `later` lines (a
 ## kill's count, the Post) wait out a fight.
 func log_lines(lines: Array, later := false) -> void:
@@ -104,11 +105,15 @@ func log_lines(lines: Array, later := false) -> void:
 
 
 ## A line of the log on its own small plate, like the objective's (PIX-194),
-## up for LOG_SECONDS; said again (folded), its words and its time anew.
+## up as long as it takes to read; said again (folded), its words and its
+## time anew.
 func _say(entry: Dictionary) -> void:
 	var chip: PanelContainer = entry.get("chip")
 	if chip == null:
-		logged += 1
+		# Counted once, though it may show again after the plate (_step_aside).
+		if not entry.has("logged"):
+			logged += 1
+			entry["logged"] = true
 		chip = PanelContainer.new()
 		chip.add_theme_stylebox_override("panel", UiStyle.plate(8))
 		chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -127,11 +132,10 @@ func _say(entry: Dictionary) -> void:
 	var wide := UiStyle.body_font().get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, words.get_theme_font_size("font_size")).x
 	words.custom_minimum_size.x = minf(ceilf(wide) + 2, LOG_WIDTH)
 	chip.modulate.a = 1.0
-	var was: Variant = chip.get_meta("fade", null)
-	if was != null and (was as Tween).is_valid():
-		(was as Tween).kill()
+	if chip.has_meta("fade") and (chip.get_meta("fade") as Tween).is_valid():
+		(chip.get_meta("fade") as Tween).kill()
 	var fade := chip.create_tween()
-	fade.tween_interval(LOG_SECONDS)
+	fade.tween_interval(UiStyle.reading_seconds(text))
 	fade.tween_property(chip, "modulate:a", 0.0, 0.6)
 	fade.tween_callback(func() -> void:
 		_log.gone(entry)
@@ -208,21 +212,37 @@ static func tag_of(text: String, tags: Array) -> String:
 
 ## The next message, once the one showing is done with: a tagged one when
 ## it has faded, a plain one after PLAIN_MESSAGE_S; and the log's lines
-## waiting their turn.
+## waiting their turn. One box at a time (PIX-343, Tom's « trop d'infos
+## qui pop d'un coup »): the plate goes first, the log's line stepping
+## aside for it, and the log's next waits until the plate has faded.
 func update() -> void:
 	var fighting := _fighting()
-	var line := _log.next(fighting)
-	while not line.is_empty():
-		_say(line)
-		line = _log.next(fighting)
 	if _message_now != "" and not _message_tagged and GameClock.seconds() - _message_since >= PLAIN_MESSAGE_S:
 		# A plain message gives way to whatever comes next.
 		_plate.gone(_shown)
 	var entry := _plate.next(fighting)
-	if entry.is_empty():
+	if not entry.is_empty():
+		_step_aside()
+		_shown = entry
+		_show_message(entry["text"])
+	if _message_now != "":
 		return
-	_shown = entry
-	_show_message(entry["text"])
+	var line := _log.next(fighting)
+	while not line.is_empty():
+		_say(line)
+		line = _log.next(fighting)
+
+
+## The log's line showing goes back to the head of the queue, to show again
+## in full once the plate is done.
+func _step_aside() -> void:
+	for entry: Dictionary in _log.showing.duplicate():
+		var chip: Node = entry.get("chip")
+		entry.erase("chip")
+		if is_instance_valid(chip):
+			chip.queue_free()
+		_log.gone(entry)
+		_log.waiting.push_front(entry)
 
 
 ## On the objective's plate (PIX-194): a known tag before its first colon

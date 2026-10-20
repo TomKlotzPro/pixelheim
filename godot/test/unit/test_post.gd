@@ -424,7 +424,7 @@ func test_a_word_with_the_addressee_hands_it_over_for_a_tip() -> void:
 	assert_eq(said.size(), 1)
 	assert_string_contains(String(said[0]), String(Post.piece("club_ola")["addressed"]))
 	assert_has(logged, Text.t("A reply to carry back: %s.") % Post.piece("club_ola_reply")["addressed"])
-	assert_has(logged, Text.t("A new postmark in your courier's book: %s.") % Catalog.place_name("saltmere"), "Saltmere's page stamped")
+	assert_has(logged, Text.t("New postmark: %s.") % Catalog.place_name("saltmere"), "Saltmere's page stamped")
 	assert_eq(state.post.delivered, ["club_ola"] as Array[String])
 	var cheese := int(state.pack.items.get("cheese_wheel", 0))
 	state.post.bag.erase("club_ola_reply")

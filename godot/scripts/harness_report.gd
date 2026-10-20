@@ -89,6 +89,7 @@ const TABLE := [
 	{"field": "quill", "says": "the quill by the clock: the times it wrote of the saves made this session (moments write, the quiet autosaves don't), and slept when the last was a night's sleep, Saved under it: 1/3 slept (PIX-302 step 4)"},
 	{"field": "read", "says": "on the journal's Letters page: the letters it reads (PIX-253)"},
 	{"field": "rise", "says": "with --rise: how far the building on the tour has risen: ruin, rising, built (PIX-264)"},
+	{"field": "rising", "says": "with fight kill pack: the wins rising over the world once the first of the pack fell, the rest still standing (PIX-343: at each kill, not held to the fight's end)"},
 	{"field": "rooms", "says": "with rooms: what the rooms are drawn from (paid, free or none), how many of them have walls and a floor, and those with a stair down: free walled 9/9 stairs keep,observatory (PIX-318)"},
 	{"field": "rose", "says": "a chapter card's title, how far it rose coming in (PIX-253)"},
 	{"field": "routes", "says": "once the Post has carried anything along a road: each route by place, the pieces it has carried, and signs once its signposts stand, offered while its waystation is on the board, built once it stands: saltmere:6:signs:offered,blackiron:2 (PIX-322)"},
@@ -105,6 +106,7 @@ const TABLE := [
 	{"field": "tab", "says": "with station: the tab the counter opened on (PIX-234)"},
 	{"field": "tags", "says": "after a fight on this visit: the most foes' level tags shown at once while it was on (PIX-340: one a pack)"},
 	{"field": "titleline", "says": "the title's line under its menu, by what it's about: slot (the slot in hand: unreadable, or its hero the save before, PIX-303) or full (New Game with no slot free, PIX-316)"},
+	{"field": "toast", "says": "the battle log's line on the screen (PIX-343): its boxes, their lines, and fits, or what's wrong: off (the screen), tracker (on the objective's line), dock, plate (the message plate up too), arrow (the quest arrow drawn over it): 1 box, 1 line, fits"},
 	{"field": "tone", "says": "on a map in the open air: how the region's tone takes the hero's cell: whole (tone), the mire's with its murk and puddles (mire), its dirt only beside the ash (fringe), or none (PIX-305)"},
 	{"field": "top", "says": "the screen drawn on top when one is opened over another (the title's Options); two sharing the top layer read a=b"},
 	{"field": "torches", "says": "on a dungeon floor: its torches on the walls, and N loose for any not hung on a wall's face (PIX-291)"},
@@ -642,6 +644,10 @@ func field_rise() -> String:
 	return rise.phase if rise != null else ("built" if harness._rise_phase != "none" else "none")
 
 
+func field_rising() -> String:
+	return noted("rising")
+
+
 func field_rooms() -> String:
 	return noted("rooms")
 
@@ -762,6 +768,30 @@ func field_titleline() -> String:
 		if child.get_script() != null and String(child.get_script().resource_path).ends_with("title_screen.gd"):
 			return child.said
 	return ""
+
+
+func field_toast() -> String:
+	var messages: Messages = world.messages
+	var hud: Hud = world.hud
+	var chips: Array = messages.log_box.get_children().filter(func(chip: Node) -> bool: return not chip.is_queued_for_deletion())
+	if chips.is_empty():
+		return ""
+	var wrong: PackedStringArray = []
+	var lines := 0
+	for chip: Control in chips:
+		var rect := chip.get_global_rect()
+		lines += (chip.get_child(0) as Label).get_line_count()
+		if not Rect2(0, 0, 1280, 720).encloses(rect):
+			wrong.append("off")
+		if hud.objective_box.modulate.a > 0.0 and rect.intersects(hud.objective_box.get_global_rect()):
+			wrong.append("tracker")
+		if rect.end.y > hud.dock.top():
+			wrong.append("dock")
+	if messages.message_box.modulate.a > 0.0:
+		wrong.append("plate")
+	if hud.arrow != null and hud.arrow.get_index() > messages.log_box.get_index():
+		wrong.append("arrow")
+	return "%d box, %d line, %s" % [chips.size(), lines, "fits" if wrong.is_empty() else ",".join(wrong)]
 
 
 func field_tone() -> String:
