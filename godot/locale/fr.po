@@ -2801,6 +2801,10 @@ msgid "Each floor down is a little harder, with something to find on each"
 msgstr "Chaque étage plus bas est un peu plus rude, avec quelque chose à trouver sur chacun"
 
 #: assets/data/changelog.json
+msgid "Each kill's gold, XP and loot rise where the foe fell again, mid-fight too, and LEVEL UP rises over the hero once more (Tom's playtest: it was fun to see)"
+msgstr "L'or, l'XP et le butin de chaque ennemi vaincu remontent de nouveau là où il est tombé, même en plein combat, et NIVEAU SUPÉRIEUR s'élève à nouveau au-dessus du héros (playtest de Tom : c'était chouette à voir)"
+
+#: assets/data/changelog.json
 msgid "Each letter is a chapter: Old Wenna in Saltmere, Old Pell in the Blackiron valley, Captain Hale's old guard at Greyhold and Aske on the Frostgate pass each answer with something Maren never knew"
 msgstr "Chaque lettre est un chapitre : la vieille Wenna à Saltmere, le vieux Pell dans la vallée de Fernoir, la vieille garde du capitaine Hale à Greyhold et Aske au col de la Porte-Givre répondent chacun par quelque chose que Maren n'a jamais su"
 
@@ -3283,6 +3287,10 @@ msgstr "Des buts à poursuivre"
 #: assets/data/changelog.json
 msgid "Going underground still goes dark for a moment, and coming back up melts into the daylight"
 msgstr "Descendre sous terre plonge toujours un instant dans le noir, et remonter se fond dans la lumière du jour"
+
+#: assets/data/changelog.json
+msgid "Gold Again"
+msgstr "L'or revient"
 
 #: assets/data/changelog.json
 msgid "Gold With a Purpose"
@@ -5743,6 +5751,10 @@ msgstr "Le menu s'affiche par-dessus la ligne À suivre au lieu de passer dessou
 #: assets/data/changelog.json
 msgid "The merchant opens shop: buy gear and potions, sell your loot"
 msgstr "Le marchand ouvre boutique : achetez équipement et potions, vendez votre butin"
+
+#: assets/data/changelog.json
+msgid "The message box above the tracker shows one short line at a time and leaves time to read it: a feat reads Feat: Dressed for It, a new postmark or signpost one line; it never sits beside the plate, and the quest arrow no longer draws over its text"
+msgstr "La boîte de message au-dessus du suivi n'affiche plus qu'une courte ligne à la fois, le temps de la lire : un haut fait se lit Haut fait : Tiré à quatre épingles, un nouveau cachet ou un poteau indicateur tient en une ligne ; elle ne s'affiche jamais à côté de l'annonce, et la flèche de quête ne passe plus sur son texte"
 
 #: assets/data/changelog.json
 msgid "The mini-map learned the landmarks: gold dots mark the forge and the cauldron, green marks your house"

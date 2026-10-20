@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.259.0",
+      "date": "2026-10-20",
+      "codename": "Gold Again",
+      "notes": [
+        "Each kill's gold, XP and loot rise where the foe fell again, mid-fight too, and LEVEL UP rises over the hero once more (Tom's playtest: it was fun to see)",
+        "The message box above the tracker shows one short line at a time and leaves time to read it: a feat reads Feat: Dressed for It, a new postmark or signpost one line; it never sits beside the plate, and the quest arrow no longer draws over its text"
+      ]
+    },
+    {
       "version": "0.258.0",
       "date": "2026-10-20",
       "codename": "Open Gate",
