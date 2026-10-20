@@ -111,6 +111,11 @@ func test_the_ground_lies_darker_under_the_canopy_and_the_sun_comes_into_the_gla
 		for j in i:
 			assert_gte(maxi(absi(shafts[j].x - cell.x), absi(shafts[j].y - cell.y)), Woods.SHAFT_APART, "spread out")
 	assert_eq(Woods.shafts(MapData.load_by_id("overworld")).size(), 0, "the Deepwood's alone")
+	# The shade multiplies the ground by its own shade alone (PIX-330): the
+	# night's dark and the lights on it too darkened the ground twice at
+	# night, and lit a strip along every line between two maps.
+	var shade := FileAccess.get_file_as_string("res://shaders/canopy_shade.gdshader")
+	assert_string_contains(shade, "render_mode blend_mul, unshaded;", "the shade takes no light of its own")
 
 
 func test_saltmeres_sea_runs_on_past_its_edges() -> void:
