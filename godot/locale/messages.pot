@@ -3413,6 +3413,10 @@ msgid "Home & Hearth"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Home Already"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Home Industry"
 msgstr ""
 
@@ -4453,6 +4457,10 @@ msgid "Readable Danger"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Real Flames"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Recipes now demand skill: Smithing forges gear, Alchemy brews, and locked recipes show what level they ask"
 msgstr ""
 
@@ -5381,6 +5389,10 @@ msgid "The Night of Ash"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Night of Ash finally looks like a fire: flames climb the burnt frames and corner posts and lick the rubble, a blaze roars where each house fell in, smoke drifts downwind and sparks fly over glowing coals; on the Night of Bells, flames run along the roof and out of the windows; Reduce motion keeps it all calm"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Open World"
 msgstr ""
 
@@ -6202,6 +6214,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Where regions meet, the ground no longer changes along straight lines and square corners: the edge bends and wanders, still dithered pixel by pixel, and the land's tone runs right to the shore"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "While Pixelheim still lies in ashes, the other villages' people are home: Saltmere, Blackiron, Greyhold and the Frostgate no longer wait for Pixelheim to become a hamlet, so you can talk to them, take their quests and carry their post from the start"
 msgstr ""
 
 #: assets/data/changelog.json

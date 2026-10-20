@@ -244,8 +244,7 @@ func _process(delta: float) -> void:
 			lamp.color = DesktopLook.canvas_color(lamp.get_meta("tint"), DesktopLook.linear)
 		var energy := float(lamp.get_meta("energy", 1.0)) * (day if lamp.get_meta("by_day", false) else dark)
 		if lamp.get_meta("flicker", false) and not still:
-			var phase := float(lamp.get_meta("phase", 0.0))
-			energy *= 1.0 + 0.07 * sin(t * 8.3 + phase) + 0.04 * sin(t * 21.7 + phase * 1.9)
+			energy *= Lights.flicker(t, float(lamp.get_meta("phase", 0.0)), lamp.get_meta("blaze", false))
 		# A way out breathes (PIX-292), held still with reduced motion.
 		if lamp.get_meta("pulse", false) and not still:
 			energy *= 1.0 + Lights.PULSE_DEPTH * sin(t * Lights.PULSE_SPEED)

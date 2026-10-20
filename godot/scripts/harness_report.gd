@@ -57,6 +57,7 @@ const TABLE := [
 	{"field": "entrance", "says": "the ways in drawn as entrances in their setting on this map, by look: mine, sea_cave, mountain_gate, vault_door, ice_stair (PIX-290)"},
 	{"field": "feats", "says": "the feats done, by id, once any is (PIX-257)"},
 	{"field": "fell", "says": "bosses fallen, when one fell (PIX-232)"},
+	{"field": "fires", "says": "on a night with houses burning: how many, and what draws their fires: flames standing on what burns, smoke, sparks (none with Reduce motion) and coals (PIX-327)"},
 	{"field": "firstnight", "says": "hero creation's first night: play or skip (PIX-228)"},
 	{"field": "fled", "says": "monsters that ran from a hero far above them, when any did (PIX-251)"},
 	{"field": "floats", "says": "what floated up from where it was won, merged, when anything did (PIX-245)"},
@@ -416,6 +417,23 @@ func field_feats() -> String:
 
 func field_fell() -> String:
 	return str(world.foes.bosses_fallen) if world.foes.bosses_fallen > 0 else ""
+
+
+func field_fires() -> String:
+	if world.view == null:
+		return ""
+	var houses := 0
+	var drawn := {"flames": 0, "smoke": 0, "sparks": 0, "coals": 0}
+	for fire: Dictionary in world.view.fires:
+		if fire.get("out", false):
+			continue
+		houses += 1
+		for node: Node in fire["nodes"]:
+			if is_instance_valid(node) and node.has_meta("fire"):
+				drawn[node.get_meta("fire")] += 1
+	if houses == 0:
+		return ""
+	return "houses %d flames %d smoke %d sparks %d coals %d" % [houses, drawn["flames"], drawn["smoke"], drawn["sparks"], drawn["coals"]]
 
 
 func field_firstnight() -> String:

@@ -35,7 +35,8 @@ const AREAS := ["town", "rooms", "reach", "regions", "ways", "dungeon", "combat"
 ## filmed (`strike`), the third blow felling it, or caught as it notices the
 ## hero (`notice`, PIX-289). A `letter` of Maren's is carried for that shot
 ## alone (its recipient's mark), and the town stands at age `tier` for it
-## alone (PIX-307; every age built otherwise), and `post` opens the
+## alone (PIX-307; every age built otherwise), the Night of Ash burns for
+## it alone with `ash` (PIX-327), and `post` opens the
 ## Pixelheim Post for it (PIX-320: its `box` faced, or its `tab` read;
 ## PIX-321: some weeks of it delivered, the courier's `book` or the
 ## Post page's newest `letters` read).
@@ -66,6 +67,10 @@ const SHOTS := {
 	"turn": {"area": "town", "map": "town", "cell": Vector2i(38, 13), "time": DAY, "walk": true, "legs": "turn"},
 	# Odo's store rising out of its ruin on the town's tour (PIX-264).
 	"rise": {"area": "town", "map": "town", "at": "street", "time": DAY, "rise": "odos_store"},
+	# The Night of Ash (PIX-327, `ash`: the night at its fires for the shot
+	# alone): the village's ruins burning, the flames up their beams and
+	# posts, a blaze where each fell in, smoke and sparks rising off them.
+	"ash_fires": {"area": "town", "map": "town", "cell": Vector2i(26, 12), "time": NIGHT, "tier": 0, "ash": true},
 	# The streets by the town's age (PIX-307, `tier`): Upper Street trodden
 	# and rutted in the Ashes, the square in gravel in the Village, Upper
 	# Street cobbled in the Town, and the City's square in sandstone, brick
@@ -516,6 +521,10 @@ func _stage(shot: Dictionary) -> void:
 		# The town at an earlier age, for this shot alone (_unstage).
 		GameState.settlement.town_tier = int(shot["tier"])
 		GameState.settlement.projects.assign(Town.projects_through(int(shot["tier"])))
+	if shot.get("ash", false):
+		# The Night of Ash at its fires, none put out yet (_unstage).
+		GameState.progression.prologue = Prologue.FIRES
+		GameState.progression.prologue_doused.clear()
 	GameState.world.steps = shower_by_day() if shot.get("rain", false) else float(shot["time"]) * DayNight.DAY_CYCLE_STEPS
 	if shot.has("post"):
 		_open_post()
@@ -605,6 +614,8 @@ func _unstage(shot: Dictionary) -> void:
 	if shot.has("tier"):
 		GameState.settlement.town_tier = Town.MAX_TIER
 		GameState.settlement.projects.assign(Town.projects_through(Town.MAX_TIER))
+	if shot.get("ash", false):
+		GameState.progression.prologue = Prologue.DONE
 	if shot.has("letter"):
 		GameState.pack.remove_item(shot["letter"])
 		GameState.progression.quests.erase(shot["letter"])

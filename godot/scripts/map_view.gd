@@ -1616,14 +1616,16 @@ func _field_rows(i: int) -> void:
 
 
 ## The town's ruins smoking, and on the night of the fire still burning
-## (PIX-151), but for the ones the hero put out (PIX-197).
+## (PIX-151), but for the ones the hero put out (PIX-197): those smoulder,
+## as the ruins do the days after.
 func _decor_ruins() -> void:
 	var burning := GameState.progression.prologue != Prologue.DONE
 	var ruins := Town.ruins(Town.done_projects(GameState.settlement))
 	for i in ruins.size():
-		_add_smoke(ruins[i]["rect"])
 		if burning and i not in GameState.progression.prologue_doused:
 			fires.append({"rect": ruins[i]["rect"], "nodes": _add_fire(ruins[i]["rect"]), "ruin": i})
+		else:
+			_add_smoke(ruins[i]["rect"])
 
 
 ## Lit windows at night, smoke from every finished house (PIX-149). A
@@ -1928,63 +1930,91 @@ static func plan_camps(map: MapData) -> Dictionary:
 	return out
 
 
-## Flames on a house that's still burning (the Night of Ash): Shade's looped
-## flame on a handful of its cells and his embers drifting over it; without
-## the paid pack, an orange flicker of motes instead. Its light falls in a
-## few soft pools (fire_pools), not one to a flame.
+## A house on fire (the Night of Ash's ruins, the Night of Bells' roofs;
+## PIX-327, FireArt): our own flames standing on what burns, y-sorted with
+## the actors, each playing at its own pace (calmer with Reduce motion);
+## coals alight on a fallen floor, smoke rising off the house and sparks
+## flying from it (shaders/fire_*.gdshader; no sparks with Reduce motion).
+## Its light falls in a few soft pools (fire_pools), not one to a flame,
+## and flickers as a blaze does (Lights.blaze). No glow round each flame:
+## the flames are bright enough to bloom.
 func _add_fire(rect: Rect2i) -> Array[Node2D]:
 	var nodes: Array[Node2D] = []
 	for pool: Dictionary in fire_pools(rect):
-		var light := Lights.make(pool["at"], pool["radius"], Lights.FIRE, Lights.BLAZE_ENERGY, true)
+		var light := Lights.blaze(pool["at"], pool["radius"])
 		props.add_child(light)
 		nodes.append(light)
-	var flame := ItemIcons.effect("flame", 10.0)
-	var embers := ItemIcons.effect("embers", 8.0)
+	var still := GameState.settings.reduce_motion
+	for flame: Dictionary in FireArt.plan(rect, _burning(rect)):
+		var size: Vector2i = FireArt.KINDS[flame["kind"]]
+		var foot: Vector2 = flame["at"]
+		var sprite := AnimatedSprite2D.new()
+		sprite.sprite_frames = FireArt.frames(flame["kind"], flame["variant"])
+		sprite.centered = false
+		# Drawn in front of what stands above its sort line, its foot where
+		# it burns from.
+		sprite.position = Vector2(foot.x, flame["sort"])
+		sprite.offset = Vector2(-(size.x / 2), foot.y - float(flame["sort"]) - size.y)
+		sprite.frame = flame["frame"]
+		sprite.speed_scale = FireArt.pace(flame, still)
+		sprite.material = Lights.unshaded()
+		sprite.set_meta("fire", "flames")
+		sprite.add_to_group("decor")
+		actors.add_child(sprite)
+		sprite.play()
+		nodes.append(sprite)
+	var air := FireArt.air(rect)
+	var seed := float(absi(rect.position.x * 31 + rect.position.y * 17) % 97) / 9.7
+	nodes.append(_fire_air("coals", air["coals"], preload("res://shaders/fire_coals.gdshader"), 0, {"seed": seed}))
+	nodes.append(_fire_air("smoke", air["smoke"], preload("res://shaders/fire_smoke.gdshader"), 5, {
+		"source": air["source"], "spread": rect.size.x * TILE / 2.0, "seed": seed,
+	}))
+	if not still:
+		nodes.append(_fire_air("sparks", air["sparks"], preload("res://shaders/fire_sparks.gdshader"), 6, {"born": air["born"], "seed": seed}))
+	return nodes
+
+
+## What burns over `rect` (cells), for FireArt.plan: the grid's tiles (a
+## ruin's frame, rubble and ash; a standing house's roof), and a house's
+## windows where its front has them.
+func _burning(rect: Rect2i) -> Dictionary:
+	var tiles := {}
+	var pieces: Dictionary = buildings.get("pieces", {})
 	for y in range(rect.position.y, rect.end.y):
 		for x in range(rect.position.x, rect.end.x):
-			if (x * 5 + y * 11) % 6 != 0:
-				continue
-			var at := center(Vector2i(x, y))
-			if flame != null:
-				var fire := AnimatedSprite2D.new()
-				fire.sprite_frames = flame
-				fire.position = at + Vector2(0, -4)
-				fire.frame = absi(x * 3 + y) % flame.get_frame_count("default")
-				fire.play()
-				fire.material = Lights.unshaded()
-				fire.z_index = 4
-				fire.add_to_group("decor")
-				props.add_child(fire)
-				nodes.append(fire)
-				nodes.append(_add_glow(at, 14, 0.4))
-			if embers != null and (x + y) % 3 == 0:
-				var drift := AnimatedSprite2D.new()
-				drift.sprite_frames = embers
-				drift.position = at + Vector2(0, -14)
-				drift.play()
-				drift.z_index = 6
-				drift.add_to_group("decor")
-				props.add_child(drift)
-				nodes.append(drift)
-	if flame == null:
-		var motes := _still(CPUParticles2D.new())
-		motes.position = Vector2(rect.position * TILE) + Vector2(rect.size * TILE) / 2.0
-		motes.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
-		motes.emission_rect_extents = Vector2(rect.size * TILE) / 2.0
-		motes.amount = 16
-		motes.lifetime = 0.9
-		motes.direction = Vector2.UP
-		motes.gravity = Vector2(0, -20)
-		motes.initial_velocity_min = 8.0
-		motes.initial_velocity_max = 16.0
-		motes.scale_amount_min = 2.0
-		motes.scale_amount_max = 3.0
-		motes.color = Color(1.0, 0.5, 0.12, 0.9)
-		motes.z_index = 6
-		motes.add_to_group("decor")
-		props.add_child(motes)
-		nodes.append(motes)
-	return nodes
+			var cell := Vector2i(x, y)
+			tiles[cell] = "window" if pieces.get(cell, -1) == PunyTown.WINDOW else String(data.grid.get(cell, ""))
+	return tiles
+
+
+static var _blank: ImageTexture
+
+
+## A burning house's coals, smoke or sparks (`part`): a quad over `rect`
+## (map pixels, whole) drawn by `shader`, `z` over the actors. It fades
+## rather than shrinks as the fire goes out (douse).
+func _fire_air(part: String, rect: Rect2, shader: Shader, z: int, params: Dictionary) -> Sprite2D:
+	if _blank == null:
+		var white := Image.create(1, 1, false, Image.FORMAT_RGBA8)
+		white.fill(Color.WHITE)
+		_blank = ImageTexture.create_from_image(white)
+	var quad := Sprite2D.new()
+	quad.texture = _blank
+	quad.centered = false
+	quad.position = rect.position.floor()
+	quad.scale = rect.size.floor()
+	var material := ShaderMaterial.new()
+	material.shader = shader
+	material.set_shader_parameter("size", rect.size.floor())
+	for key: String in params:
+		material.set_shader_parameter(key, params[key])
+	quad.material = material
+	quad.z_index = z
+	quad.set_meta("fire", part)
+	quad.set_meta("fades", true)
+	quad.add_to_group("decor")
+	props.add_child(quad)
+	return quad
 
 
 ## Where a burning house's light falls (PIX-285): [{at, radius}], a pool in
@@ -2039,8 +2069,9 @@ func douse_ruin(ruin: int, seconds := 1.2) -> void:
 
 
 ## The fire on one burning ruin (the Night of Ash's dawn, PIX-197) gutters
-## out: its flames shrink and fade over `seconds`, its light dims, a last
-## breath of smoke goes up, and they're gone.
+## out: its flames shrink and fade over `seconds`, its smoke thins and its
+## sparks and coals die, its light dims, a last breath of smoke goes up, and
+## they're gone (a ruin smouldering on).
 func douse(index: int, seconds := 1.2) -> void:
 	if index < 0 or index >= fires.size():
 		return
@@ -2056,6 +2087,9 @@ func douse(index: int, seconds := 1.2) -> void:
 		if node is PointLight2D:
 			# The LightRig brings a light up to its "energy" every frame.
 			out.tween_method(func(energy: float) -> void: node.set_meta("energy", energy), float(node.get_meta("energy", 0.0)), 0.0, seconds)
+		elif node.has_meta("fades"):
+			# The smoke thins and the sparks and coals die (PIX-327).
+			out.tween_property(node, "modulate:a", 0.0, seconds)
 		else:
 			out.tween_property(node, "scale", node.scale * Vector2(0.2, 0.05), seconds).set_ease(Tween.EASE_IN)
 			out.tween_property(node, "modulate:a", 0.0, seconds)
@@ -2085,6 +2119,9 @@ func douse(index: int, seconds := 1.2) -> void:
 	props.add_child(puff)
 	puff.finished.connect(puff.queue_free)
 	puff.emitting = true
+	# A ruin put out smoulders on, as the ruins do the days after.
+	if fire.has("ruin"):
+		_add_smoke(rect)
 
 
 ## Smoke and embers over a burnt house (PIX-146): pixel motes drifting up

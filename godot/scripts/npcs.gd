@@ -18,8 +18,10 @@ static func _data() -> Dictionary:
 	return _doc
 
 
-## Who is on a map right now (npcsOn): townsfolk the town has grown enough
-## for, and recruits where they wait — or at home in town once settled.
+## Who is on a map right now (npcsOn): Pixelheim's townsfolk the town has
+## grown enough for, the other places' people (PIX-328: the town's age is
+## Pixelheim's alone), and recruits where they wait — or at home in town
+## once settled.
 ## While a keeper's building is still rubble (PIX-146, `done` the projects
 ## built; null skips it), they trade from a stall on the town square, and
 ## once it stands they are in it, whatever the town's age (PIX-283: Sela's
@@ -88,14 +90,17 @@ static func keeper_of(map_id: String) -> Dictionary:
 	return {}
 
 
-## The town's age a townsperson waits for (minTownTier, 1 when unsaid). A
-## keeper with a stall waits for their building, not the age (PIX-283): the
-## Hamlet's four can be rebuilt one at a time in the Ashes. Without `done`
-## (callers that skip the buildings), the age as before.
+## The town's age a townsperson waits for (minTownTier; when unsaid, 1 for
+## Pixelheim's own people and 0 for anyone else's: the other villages never
+## burned, so Saltmere's folk are home while Pixelheim is still ash, PIX-328).
+## A keeper with a stall waits for their building, not the age (PIX-283):
+## the Hamlet's four can be rebuilt one at a time in the Ashes. Without
+## `done` (callers that skip the buildings), the age as before.
 static func _age_needed(npc: Dictionary, done: Variant) -> int:
 	if done != null and npc.has("stall"):
 		return 0
-	return int(npc.get("minTownTier", 1))
+	var pixelheims := Catalog.place_name(npc["mapId"]) == Catalog.place_name("town")
+	return int(npc.get("minTownTier", 1 if pixelheims else 0))
 
 
 ## The townsfolk who move in as the town reaches `town_tier` (PIX-264), by

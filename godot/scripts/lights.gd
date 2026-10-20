@@ -151,6 +151,24 @@ static func make(at: Vector2, radius: float, color: Color, energy: float, flicke
 	return light
 
 
+## A burning house's light (PIX-327): a pool of fire light that flickers as
+## a blaze does (`flicker`), harder than a lamp's.
+static func blaze(at: Vector2, radius: float) -> PointLight2D:
+	var light := make(at, radius, FIRE, BLAZE_ENERGY, true)
+	light.set_meta("blaze", true)
+	return light
+
+
+## How a flickering light's energy swings at `t` seconds (a share of it, about
+## 1): a lamp's or a torch's a little, a burning house's (`blaze`) hard and
+## unevenly, its three beats never quite coming round together. The LightRig
+## holds it at 1 with Reduce motion.
+static func flicker(t: float, phase: float, blaze := false) -> float:
+	if blaze:
+		return 1.0 + 0.13 * sin(t * 6.1 + phase) + 0.08 * sin(t * 15.7 + phase * 1.9) + 0.05 * sin(t * 31.3 + phase * 0.7)
+	return 1.0 + 0.07 * sin(t * 8.3 + phase) + 0.04 * sin(t * 21.7 + phase * 1.9)
+
+
 ## The day through a window (PIX-311): up with the sky, gone with the dusk
 ## (the LightRig reads `by_day`), whatever the room's own dark.
 static func daylight(at: Vector2, radius: float, color: Color, energy: float, shape: Texture2D) -> PointLight2D:

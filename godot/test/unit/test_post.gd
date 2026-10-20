@@ -245,10 +245,13 @@ func test_the_first_chapters_bring_three_pieces_a_day() -> void:
 	assert_eq(_a_day(7), 3, "chapter 5: three pieces")
 
 
+## Saltmere's people are home while Pixelheim is still ash (PIX-328), so
+## the Ashes' first bag reaches Ola too.
 func test_a_town_still_in_its_ashes_has_three_pieces_too() -> void:
 	state.settlement.town_tier = 0
 	_chapter_two()
-	assert_eq(_a_day(0), 3, "Wenna's letters, Mirelle's reminder and Wren's horseshoes")
+	assert_has(_offered(), "club_ola", "Bram's wheel for Ola, home in Saltmere")
+	assert_eq(_a_day(0), 3, "Bram's wheel for Ola, Sela's stew for Wenna and Wren's horseshoes")
 
 
 func test_nothing_goes_where_the_hero_has_not_been() -> void:

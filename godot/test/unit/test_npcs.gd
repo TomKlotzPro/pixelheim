@@ -27,6 +27,25 @@ func test_recruits_wait_in_the_wilds_until_they_settle() -> void:
 	assert_has(_ids(Npcs.on_map("town", 1, ["settler_loras"])), "settler_loras")
 
 
+## The town's age is Pixelheim's alone (PIX-328): the other villages never
+## burned, so their people (the four hubs', the mountain's) and the
+## recruits waiting in the wilds stand on their maps at every age, the
+## Ashes too, with or without the buildings; Pixelheim's own still wait.
+func test_the_other_places_people_are_home_at_every_age() -> void:
+	var maps := {}
+	for tier in range(0, Town.MAX_TIER + 1):
+		for done: Variant in [null, Town.projects_through(tier)]:
+			for npc: Dictionary in Npcs._data()["npcs"]:
+				if Catalog.place_name(npc["mapId"]) != Catalog.place_name("town"):
+					maps[npc["mapId"]] = true
+					assert_has(_ids(Npcs.on_map(npc["mapId"], tier, [], done)), npc["id"], "%s on %s at age %d" % [npc["id"], npc["mapId"], tier])
+			for recruit: Dictionary in Npcs._data()["recruits"]:
+				assert_has(_ids(Npcs.on_map(recruit["found"]["mapId"], tier, [], done)), recruit["id"], "%s waits at age %d" % [recruit["id"], tier])
+	for hub: String in ["saltmere", "blackiron", "greyhold", "frostgate", "morvax_forge"]:
+		assert_true(maps.has(hub), "%s has people of its own" % hub)
+	assert_does_not_have(_ids(Npcs.on_map("town", 0, [], [])), "villager_ana", "Pixelheim's own wait for its age")
+
+
 func test_a_settled_recruit_speaks_their_town_lines() -> void:
 	var met := Npcs.by_id("settler_loras", [])
 	var settled := Npcs.by_id("settler_loras", ["settler_loras"])

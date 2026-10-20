@@ -96,6 +96,7 @@ trade: scripts/shop_screen.gd scripts/state/economy.gd scripts/state/trade.gd as
 trade screen: scripts/item_icons.gd scripts/state/inventory_state.gd assets/puny/icons.json assets/puny/icons/*
 story: scripts/cutscene.gd scripts/dawn_screen.gd scripts/chapter_screen.gd scripts/throne_screen.gd scripts/state/story.gd scripts/state/letters.gd scripts/state/relics.gd assets/data/story.json
 story night: scripts/state/prologue.gd
+story town night: scripts/fire_art.gd shaders/fire_* assets/fire/*
 story night combat town: scripts/world_bells.gd scripts/state/bells.gd
 story town: scripts/state/homecoming.gd
 story quest rank: assets/data/progression.json
