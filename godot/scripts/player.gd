@@ -123,9 +123,7 @@ func _physics_process(delta: float) -> void:
 	if dead:
 		return
 	_regen(delta)
-	if ailments.is_stunned():
-		velocity = Vector2.ZERO
-		_play("idle")
+	if _held_by_stun():
 		return
 	if dodging:
 		velocity = dodge_dir * float(Bestiary._data()["dodge"]["speed"])
@@ -474,22 +472,37 @@ func respawn(at: Vector2) -> void:
 	hp = GameState.hero.hp
 	dead = false
 	sprite.modulate = Color.WHITE
+	_end_swing()
 	face(Vector2.DOWN)
 	_play("idle")
 
 func _die() -> void:
 	dead = true
 	Sound.play("defeat")
-	attacking = false
-	hitbox.monitoring = false
+	_end_swing()
 	_play("death")
 	world.on_player_died()
 
+## A stun holds the hero still and cuts a swing or a cast short: under the
+## stun's idle the swing's animation never finishes, and a swing left open
+## locked out every attack, dodge, cast and step for good (PIX-333).
+func _held_by_stun() -> bool:
+	if not ailments.is_stunned():
+		return false
+	_end_swing()
+	velocity = Vector2.ZERO
+	_play("idle")
+	return true
+
+## A swing or a cast over: the blade stops biting and the hero is free.
+func _end_swing() -> void:
+	attacking = false
+	casting = false
+	hitbox.monitoring = false
+
 func _on_animation_finished() -> void:
 	if attacking:
-		attacking = false
-		casting = false
-		hitbox.monitoring = false
+		_end_swing()
 		_play("idle")
 	elif not dead and sprite.animation.begins_with("hurt"):
 		_play("idle")

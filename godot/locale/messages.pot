@@ -2117,6 +2117,10 @@ msgid "A stairwell in each room goes down to the cave, and going into the dark i
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A stun in the middle of a swing no longer freezes the hero: when it wears off you can attack, dodge, cast and walk again (Tom's playtest: with many foes around, the hero sometimes could do nothing at all)"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A third dream under Sela's roof, the first night after Aske comes home"
 msgstr ""
 
@@ -4774,6 +4778,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Steady Camera"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Steady Hands"
 msgstr ""
 
 #: assets/data/changelog.json
