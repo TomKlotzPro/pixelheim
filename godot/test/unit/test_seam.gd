@@ -207,6 +207,89 @@ func test_a_regions_tone_reads_the_same_across_a_line() -> void:
 	assert_eq(from_reach.get_pixel(m + 30, m - 1).a, 0.0, "west of Frostgate the ridge, untoned")
 
 
+## Along every line (PIX-330) each map's masks laid out with its
+## neighbours' hold every map's own mask where that map lies, cell for cell,
+## and the ridge's nothing: no row or column of a region's tone dropped,
+## shifted or left out at any line.
+func test_every_maps_masks_are_laid_whole_along_its_lines() -> void:
+	var kept := {}
+	for map_id: String in ReachPlane.maps():
+		kept[map_id] = KeptGround.of(_map(map_id), _map(map_id).grid, MapView.EDGE_PAD)
+	var m := Seam.MASK_MARGIN
+	var lines := 0
+	for map_id: String in ReachPlane.maps():
+		var beside := {}
+		for other: String in ReachPlane.maps():
+			if other != map_id and ReachPlane.rect_of(map_id).grow(m).intersects(ReachPlane.rect_of(other)):
+				beside[other] = (kept[other] as KeptGround).tint_image
+		lines += beside.size()
+		var laid := Seam.masks_beside(map_id, (kept[map_id] as KeptGround).tint_image, beside)
+		var first := ReachPlane.origin(map_id) - Vector2i(m, m)
+		var wrong: Array[Vector2i] = []
+		for y in laid.get_height():
+			for x in laid.get_width():
+				var there := ReachPlane.at(first + Vector2i(x, y))
+				var want := Color(0, 0, 0, 0) if there.is_empty() else (kept[there["map"]] as KeptGround).tint_image.get_pixelv(there["cell"])
+				if laid.get_pixel(x, y) != want:
+					wrong.append(first + Vector2i(x, y))
+		assert_eq(wrong.slice(0, 5), [], "%s: its masks laid as each map has them (%d plane cells off)" % [map_id, wrong.size()])
+	assert_eq(lines, 20, "the Reach beside its six regions both ways, and the regions that lie near one another")
+
+
+## Burnt rock grows no pines (PIX-308), along a line too (PIX-332: where
+## Blackiron's road meets the Ash Fields', the line's corners were crowned
+## with green pines over the burnt rock either side).
+func test_burnt_rock_grows_no_pines_along_a_line() -> void:
+	var grids := {"overworld": _map("overworld").grid, "blackiron": _map("blackiron").grid}
+	var burnt := {}
+	var kept := {}
+	for map_id: String in grids:
+		kept[map_id] = KeptGround.of(_map(map_id), _map(map_id).grid, MapView.EDGE_PAD)
+		burnt[map_id] = (kept[map_id] as KeptGround).burnt
+	for line: Array in [["overworld", "blackiron"], ["blackiron", "overworld"]]:
+		var map_id: String = line[0]
+		var origin := ReachPlane.origin(map_id)
+		var in_burnt := func(changes: Dictionary) -> int:
+			var count := 0
+			for corner: Vector2i in changes:
+				if changes[corner][1] < 0:
+					continue
+				var four: Array[Vector2i] = [corner + Vector2i(-1, -1), corner + Vector2i(0, -1), corner, corner + Vector2i(-1, 0)]
+				if four.all(func(cell: Vector2i) -> bool: return Seam._burns(origin + cell, map_id, burnt)):
+					count += 1
+			return count
+		var unburnt := Seam.stitch(map_id, line[1], grids, kept[map_id], MapView.EDGE_PAD)
+		assert_gt(in_burnt.call(unburnt), 0, "%s: the rock burns along the line, walled in" % map_id)
+		assert_eq(in_burnt.call(Seam.stitch(map_id, line[1], grids, kept[map_id], MapView.EDGE_PAD, burnt)), 0, "%s: and grows no pines there" % map_id)
+
+
+## Every road out of a map is a way through (PIX-332, Tom: "difficile de
+## passer ici"): from the line OPENING cells in, at least two lanes side by
+## side are open ground, nothing standing in them (decor, a camp, a rock),
+## the map planned as the world enters it and the story's gates open.
+func test_every_road_out_is_a_way_two_cells_wide() -> void:
+	const OPENING := 6
+	var roads := 0
+	for map_id: String in ReachPlane.maps():
+		var data := MapData.load_by_id(map_id)
+		MapView.new(data, null).plan(data.spawn)
+		var gated := {}
+		for gate: Dictionary in Gates.on(map_id):
+			for cell: Vector2i in Gates.cells_of(gate):
+				gated[cell] = true
+		var open := func(cell: Vector2i) -> bool:
+			return WorldTiles.is_walkable(data.tile_at(cell)) and (not data.covered.has(cell) or gated.has(cell))
+		for road: Dictionary in Seam.roads_out(data):
+			roads += 1
+			var way: Dictionary = road["way"]
+			var out: Vector2i = way["out"]
+			var lanes: Array = (way["cells"] as Array).filter(func(at: Vector2i) -> bool:
+				return range(OPENING).all(func(k: int) -> bool: return open.call(at - out * k)))
+			var side_by_side := lanes.any(func(at: Vector2i) -> bool: return lanes.has(at + Vector2i(absi(out.y), absi(out.x))))
+			assert_true(side_by_side, "%s's road to %s: two lanes open %d cells in (%s)" % [map_id, road["to"], OPENING, lanes])
+	assert_eq(roads, 12)
+
+
 func test_the_ridge_is_rock_under_forest() -> void:
 	var ridge := Seam.ridge_texture()
 	assert_eq(ridge.get_size(), Vector2(64, 64), "four cells square, tiled")

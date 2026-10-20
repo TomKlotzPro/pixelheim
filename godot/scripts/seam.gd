@@ -98,8 +98,11 @@ static func tile_at(cell: Vector2i, grids: Dictionary) -> String:
 ## inside the other map go; a corner inside the map near the line keeps its
 ## ground and has its crown worked out across the line. `grids`: map id ->
 ## its grid, for every map the line's corners touch (the ridge elsewhere);
-## `kept`: `map_id`'s KeptGround. Only what differs from the kept ground.
-static func stitch(map_id: String, other_id: String, grids: Dictionary, kept: KeptGround, pad: int) -> Dictionary:
+## `kept`: `map_id`'s KeptGround; `burnt`: map id -> its burnt rock
+## (KeptGround.burnt), which grows no pines on either side of the line
+## (PIX-308; PIX-332 found green pines along the Ash's lines). Only what
+## differs from the kept ground.
+static func stitch(map_id: String, other_id: String, grids: Dictionary, kept: KeptGround, pad: int, burnt := {}) -> Dictionary:
 	var out := {}
 	var origin := ReachPlane.origin(map_id)
 	var size := ReachPlane.size_of(map_id)
@@ -139,7 +142,7 @@ static func stitch(map_id: String, other_id: String, grids: Dictionary, kept: Ke
 		var deep := true
 		for step: Vector2i in [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]:
 			deep = deep and walled.get(cell + step, true)
-		crowned[cell] = "trees" if walled[cell] and PunyTerrain.crown_kept(cell, deep) else "air"
+		crowned[cell] = "trees" if walled[cell] and PunyTerrain.crown_kept(cell, deep) and not _burns(cell, map_id, burnt) else "air"
 	var air := PunyTerrain.corner_tile(["air", "air", "air", "air"], 0)
 	for y in range(zone.position.y, zone.end.y):
 		for x in range(zone.position.x, zone.end.x):
@@ -160,6 +163,17 @@ static func stitch(map_id: String, other_id: String, grids: Dictionary, kept: Ke
 			if corner_tiles != [kept.ground_at(cell), kept.crown_at(cell), kept.rim_at(cell)]:
 				out[cell] = corner_tiles
 	return out
+
+
+## Whether the rock at plane cell `cell` burns: as the map holding it has it
+## (`burnt`, map id -> its burnt rock); the ridge as `map_id`'s edge nearest
+## it, the way its own pad is crowned (KeptGround).
+static func _burns(cell: Vector2i, map_id: String, burnt: Dictionary) -> bool:
+	var at := ReachPlane.at(cell)
+	if at.is_empty():
+		var last := ReachPlane.size_of(map_id) - Vector2i.ONE
+		at = {"map": map_id, "cell": (cell - ReachPlane.origin(map_id)).clamp(Vector2i.ZERO, last)}
+	return (burnt.get(at["map"], {}) as Dictionary).has(at["cell"])
 
 
 ## What `cells` holds at the four cells round plane corner `corner`, top

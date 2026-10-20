@@ -324,7 +324,8 @@ func _line(view: MapView, other: MapView) -> Dictionary:
 	var key := view.data.id + " to " + other.data.id
 	if not _stitches.has(key) or _stitches[key]["kept"] != view.kept:
 		var grids := {view.data.id: view.data.grid, other.data.id: other.data.grid}
-		_stitches[key] = {"kept": view.kept, "changes": Seam.stitch(view.data.id, other.data.id, grids, view.kept, MapView.EDGE_PAD)}
+		var burnt := {view.data.id: view.kept.burnt, other.data.id: other.kept.burnt}
+		_stitches[key] = {"kept": view.kept, "changes": Seam.stitch(view.data.id, other.data.id, grids, view.kept, MapView.EDGE_PAD, burnt)}
 	return _stitches[key]["changes"]
 
 

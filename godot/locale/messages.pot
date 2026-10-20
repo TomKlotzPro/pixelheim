@@ -2365,6 +2365,10 @@ msgid "Blackiron is mining country: rock faces shored with timber, ore carts, wi
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Blackiron's road east to the Ash Fields is a clear way again: the two rocks that left one cell to squeeze through are gone, and no green pines grow on the burnt rock along the line (Tom's playtest)"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Blows land with weight: the one struck flashes pure white, an arc in your weapon's colour trails every swing, and the camera punches on crits and killing blows"
 msgstr ""
 
@@ -2542,6 +2546,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Clear Waters"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Clear Way"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3970,6 +3978,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "No more half bridge south of the village"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "No more lighter band across the ground at night along a map line: the woods' shade no longer takes the night's dark a second time, so wooded ground at night is as bright as its trees (Tom's playtest)"
 msgstr ""
 
 #: assets/data/changelog.json
