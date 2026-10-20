@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.254.0",
+      "date": "2026-10-20",
+      "codename": "Post Roads",
+      "notes": [
+        "The post wears roads into the Reach: carry enough letters along a route and a signpost goes up at its forks, named after whoever wrote most along it (Bram's Corner); carry more and the town's board offers a waystation halfway to Saltmere, Blackiron, Greyhold or the Frostgate, with a bench that mends you, a post box, a lamp lit at night and a waypoint to travel to; routes that have carried post show in gold on the map"
+      ]
+    },
+    {
       "version": "0.253.0",
       "date": "2026-10-20",
       "codename": "Home Already",
