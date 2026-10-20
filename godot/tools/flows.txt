@@ -97,6 +97,9 @@ brew-ashes | --map town_alchemist --town-tier 0 --built vexs_brewery brew | map=
 # in her inn rebuilt first, still the Ashes, and in the Hamlet.
 sela-ashes | --map town_inn --town-tier 0 --built the_inn talk | map=town_inn open=dialogue_box speaker=innkeeper | rooms quest
 sela-hamlet | --map town_inn --town-tier 1 talk | map=town_inn open=dialogue_box speaker=innkeeper | rooms quest
+# Saltmere's people at home while Pixelheim is still ash (PIX-328): the
+# town's age was every map's, and the Ashes left only Wenna on the quay.
+saltmere-ashes | --map saltmere --town-tier 0 talk | map=saltmere open=dialogue_box speaker=saltmere_brin | story quest
 # The ascension (PIX-244): held as the light flares, its motes and sparks
 # flying; with Reduce motion, held on the name with nothing flying; and
 # the fifth rank's, landed.
