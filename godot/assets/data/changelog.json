@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.257.0",
+      "date": "2026-10-20",
+      "codename": "True Colours",
+      "notes": [
+        "What you wear now looks like its icon: the Wyrm Visor is dragon-scale green on the hero too, horns still gold (Tom's playtest), and so are the Scaled Mail and Greaves; the Fountain Guard is the town's teal, the Wool Gloves violet, the Traveler's Cloak amber and the oilskins navy"
+      ]
+    },
+    {
       "version": "0.256.0",
       "date": "2026-10-20",
       "codename": "Quiet Fights",

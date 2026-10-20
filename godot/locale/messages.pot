@@ -6049,6 +6049,10 @@ msgid "Trophies like wolf pelts and imp horns to sell at the shop"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "True Colours"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "True Keys"
 msgstr ""
 
@@ -6226,6 +6230,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "What grows on the ground moves from day to day: each morning a region grows its few patches in new spots, on bare ground away from villages, camps and roads"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "What you wear now looks like its icon: the Wyrm Visor is dragon-scale green on the hero too, horns still gold (Tom's playtest), and so are the Scaled Mail and Greaves; the Fountain Guard is the town's teal, the Wool Gloves violet, the Traveler's Cloak amber and the oilskins navy"
 msgstr ""
 
 #: assets/data/changelog.json
