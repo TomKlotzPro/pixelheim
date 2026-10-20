@@ -172,7 +172,7 @@ func test_a_monsters_marks_are_centred_on_its_head() -> void:
 func test_words_over_the_world_are_centred_by_their_ink() -> void:
 	var fx: WorldFx = add_child_autofree(WorldFx.new())
 	fx.float_text("dodged", Vector2(100, 50.4), UiStyle.CREAM)
-	var word: Label = fx.get_child(0)
+	var word: Label = fx.get_child(0).get_child(0)
 	assert_eq(word.position, word.position.round(), "on whole pixels")
 	assert_almost_eq(word.position.x + Ink.of_text("dodged", _face(), UiStyle.BODY_PX).get_center().x, 100.0, 0.5)
 
@@ -182,12 +182,43 @@ func test_damage_numbers_land_about_the_foe_not_left_of_it() -> void:
 	var off := 0.0
 	for i in 40:
 		fx.float_number(12, Vector2(100, 50), Color.WHITE)
-		var number: Label = fx.get_child(-1)
+		var number: Label = fx.get_child(-1).get_child(0)
 		var middle := number.position.x + Ink.of_text("12", _face(), UiStyle.BODY_PX).get_center().x
 		assert_eq(number.position, number.position.round(), "on whole pixels")
 		assert_almost_eq(middle, 100.0, 4.5, "a few pixels either way")
 		off += middle - 100.0
 	assert_almost_eq(off / 40.0, 0.0, 1.5, "about the foe on average (it sat five pixels left)")
+
+
+## Blows on one foe close together add up into one number (PIX-334: a
+## pack's flurry read as a heap of numbers); another foe's is its own.
+func test_blows_on_one_foe_close_together_add_up() -> void:
+	var fx: WorldFx = add_child_autofree(WorldFx.new())
+	var foe: Node = autofree(Node.new())
+	fx.float_number(12, Vector2(100, 50), Color.WHITE, false, foe)
+	fx.float_number(13, Vector2(100, 50), Color.WHITE, false, foe)
+	fx.float_number(4, Vector2(140, 50), Color.WHITE, false, autofree(Node.new()))
+	await wait_frames(2)
+	var shown: Array = fx.get_children().filter(func(stand: Node) -> bool: return not stand.is_queued_for_deletion())
+	assert_eq(shown.map(func(stand: Node) -> String: return (stand.get_child(0) as Label).text), ["25", "4"])
+
+
+## A number stepping up clear of a level tag (PIX-340: they stacked onto
+## the pack's tags): the pass a frame lifts its stand over the tag.
+func test_a_number_rises_clear_of_a_tag() -> void:
+	var fx: WorldFx = add_child_autofree(WorldFx.new())
+	fx.float_number(12, Vector2(100, 50), Color.WHITE)
+	var stand: Node2D = fx.get_child(0)
+	var number: Label = stand.get_child(0)
+	var ink := Ink.of_text("12", _face(), UiStyle.BODY_PX)
+	var tag := Rect2(number.global_position + ink.position, ink.size).grow(2.0)
+	fx.keep_clear([tag] as Array[Rect2])
+	assert_lt(stand.position.y, 0.0, "lifted")
+	assert_eq(stand.position.y, roundf(stand.position.y), "on whole pixels")
+	assert_false(Rect2(number.global_position + ink.position, ink.size).intersects(tag), "clear of the tag")
+	var lifted := stand.position.y
+	fx.keep_clear([] as Array[Rect2])
+	assert_eq(stand.position.y, lifted, "and never back down")
 
 
 func test_a_wins_row_is_centred_by_its_ink() -> void:

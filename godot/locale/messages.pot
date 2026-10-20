@@ -2069,6 +2069,10 @@ msgid "A new hero starts only from New Game on the title screen; with every slot
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A pack shows one level tag in a fight, its highest, and the words over the world step clear of the tags instead of piling up at the kill"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A path is a permanent identity: an always-on passive theme and a SIGNATURE SKILL no tree can teach"
 msgstr ""
 
@@ -3405,6 +3409,10 @@ msgid "Hilda quenches deep pieces: gold and a gem for +1 to their strongest stat
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Hints wait their turn: never over a boss's entrance or a title card, one at a time, and the dodge is taught on the first road out to where packs roam, before any boss"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Hit Feel"
 msgstr ""
 
@@ -3618,6 +3626,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Leaves drift down through the forests, dust floats in the light of every room, and embers rise from forges, hearths and camp fires"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Less text at once in a fight: the battle log shows a few lines at a time and folds repeats (+3 gold four times reads +12 gold), a fight's gold, XP and loot rise once when it's over, on one line, blows on one foe add up into one number, and the log no longer repeats what the screen already shows (Tom's playtest)"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -4398,6 +4410,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Quick wins stack: a pack's kills rise as one float that counts up, not a pile of lines"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Quiet Fights"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -8817,6 +8833,10 @@ msgid "Monsters far below your level run when they see you. Corner one or strike
 msgstr ""
 
 #: assets/data/hints.json
+msgid "Monsters will charge at you. Press {key:dodge} to roll out of the way - for a blink nothing can touch you, and a patch of ground marked for a blow is always worth leaving."
+msgstr ""
+
+#: assets/data/hints.json
 msgid "Named monsters, where they lair (marked on your map) and what they pay. Kill one and the bounty is yours on the spot."
 msgstr ""
 
@@ -8826,10 +8846,6 @@ msgstr ""
 
 #: assets/data/hints.json
 msgid "Savings earn a little each day, up to a tenth of the pot - and a hero who falls loses a tenth of the gold they carry, never what's banked. A caravan is a gamble that usually pays. Expansions make your businesses' rent richer."
-msgstr ""
-
-#: assets/data/hints.json
-msgid "Something's coming for you. Press {key:dodge} to roll out of the way - for a blink nothing can touch you, and a patch of ground marked for a blow is always worth leaving."
 msgstr ""
 
 #: assets/data/hints.json
@@ -15581,18 +15597,6 @@ msgid "Saves"
 msgstr ""
 
 #: scripts/player.gd
-msgid "%s hits %d foes for %d damage!"
-msgstr ""
-
-#: scripts/player.gd
-msgid "%s hits %s for %d damage!"
-msgstr ""
-
-#: scripts/player.gd
-msgid "%s restores %d HP."
-msgstr ""
-
-#: scripts/player.gd
 msgid "All ailments are purged!"
 msgstr ""
 
@@ -15602,10 +15606,6 @@ msgstr ""
 
 #: scripts/player.gd
 msgid "No skill on that key yet. Learn more, or set the keys, in Skills."
-msgstr ""
-
-#: scripts/player.gd
-msgid "You are afflicted by %s!"
 msgstr ""
 
 #: scripts/player.gd
@@ -17206,10 +17206,6 @@ msgstr ""
 
 #: scripts/world_foes.gd
 msgid "Victory"
-msgstr ""
-
-#: scripts/world_fx.gd
-msgid "LEVEL UP"
 msgstr ""
 
 #: scripts/world_hud.gd

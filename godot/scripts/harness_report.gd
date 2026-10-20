@@ -66,6 +66,7 @@ const TABLE := [
 	{"field": "free", "says": "with launch: the slot New Game makes its hero in, 0 when none is free (PIX-303: never one holding a save the game can't read)"},
 	{"field": "gate", "says": "the gate the story keeps shut that said its line on this run (PIX-254)"},
 	{"field": "hamlet", "says": "on a settlement beyond Pixelheim: its look and its dressing counted by how each piece stands: fishing:line1,moored2,stand4,wall3 (PIX-313)"},
+	{"field": "hint", "says": "the first-time hint on the screen, by the id it's seen by, or held:<id> while one waits its turn (PIX-341: never over a boss's entrance)"},
 	{"field": "home", "says": "who the story brought home to live in town, by first name: wenna (PIX-255)"},
 	{"field": "jobs", "says": "on the Night of Bells: the townsfolk's jobs that have acted, by kind: arrows,bell,cheese (PIX-253 step 9)"},
 	{"field": "jumps", "says": "with turning: the hero's drawn way changing more than an eighth of a turn at once, a snap round a corner (PIX-293)"},
@@ -102,6 +103,7 @@ const TABLE := [
 	{"field": "story", "says": "the main story's hollow diamond on the map's page, while something else is followed (PIX-253)"},
 	{"field": "street", "says": "the street under the hero: the paving its age lays (gravel, cobbles, sandstone, bricks, flags; drawn with the paid art, bare dirt without), or worn on a rutted road (PIX-307)"},
 	{"field": "tab", "says": "with station: the tab the counter opened on (PIX-234)"},
+	{"field": "tags", "says": "after a fight on this visit: the most foes' level tags shown at once while it was on (PIX-340: one a pack)"},
 	{"field": "titleline", "says": "the title's line under its menu, by what it's about: slot (the slot in hand: unreadable, or its hero the save before, PIX-303) or full (New Game with no slot free, PIX-316)"},
 	{"field": "tone", "says": "on a map in the open air: how the region's tone takes the hero's cell: whole (tone), the mire's with its murk and puddles (mire), its dirt only beside the ash (fringe), or none (PIX-305)"},
 	{"field": "top", "says": "the screen drawn on top when one is opened over another (the title's Options); two sharing the top layer read a=b"},
@@ -481,6 +483,14 @@ func field_hamlet() -> String:
 	return "%s:%s" % [world.view.hamlet["look"], ",".join(names.map(func(kind: String) -> String: return "%s%d" % [kind, kinds[kind]]))]
 
 
+func field_hint() -> String:
+	var hud: Hud = world.hud
+	if is_instance_valid(hud.hint_card) and not hud.hint_card.is_queued_for_deletion():
+		return String(hud.hint_card.get_meta("id", ""))
+	var held := hud.hint_held()
+	return "held:" + held if held != "" else ""
+
+
 func field_home() -> String:
 	var homecomers: Array = Npcs._data()["recruits"].filter(func(recruit: Dictionary) -> bool:
 		return recruit.has("comesHome") and GameState.holdings.is_settled(recruit["id"]))
@@ -741,6 +751,10 @@ func field_street() -> String:
 
 func field_tab() -> String:
 	return noted("tab")
+
+
+func field_tags() -> String:
+	return str(world.foes.most_tags) if world.foes.kills > 0 else ""
 
 
 func field_titleline() -> String:

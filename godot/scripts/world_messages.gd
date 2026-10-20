@@ -16,9 +16,12 @@ var message_box: PanelContainer
 var message_tag: Label
 var message_label: Label
 var message_fade: Tween
-## How many lines the battle log keeps, and how long each stays.
-const LOG_LINES := 6
+## How many lines the battle log shows at once (PIX-334: the rest wait
+## their turn, TextBudget), how long each stays, and the widest one runs
+## before it wraps (French runs longer: a boss's words went off the screen).
+const LOG_LINES := 4
 const LOG_SECONDS := 4.0
+const LOG_WIDTH := 700.0
 ## Tags a message may open with, set in gold on its plate.
 const MESSAGE_TAGS := ["Quest accepted", "Quest complete", "Level up", "Mastery"]
 ## A plain message gives way to the next after this long; a tagged one
@@ -29,6 +32,10 @@ const MESSAGE_WIDTH := 860.0
 ## Lines the battle log has shown on this visit (the harness reports it: a
 ## kill's XP and gold float over the foe and add none, PIX-245).
 var logged := 0
+## The log's lines and the plate's messages, showing and waiting their turn
+## (PIX-334): the log a few at a time, the plate one.
+var _log := TextBudget.new(LOG_LINES)
+var _plate := TextBudget.new(1)
 
 
 ## The battle log, among the HUD's pieces where it always stood.
@@ -65,7 +72,9 @@ func build_plate(hud: CanvasLayer) -> void:
 ## Words and plates cleared away at once (the look book, between shots).
 func clear() -> void:
 	Layout.clear(log_box)
-	_messages.clear()
+	_log = TextBudget.new(LOG_LINES)
+	_plate = TextBudget.new(1)
+	_shown = {}
 	_message_now = ""
 	if message_fade != null:
 		message_fade.kill()
@@ -78,29 +87,64 @@ func log_line(line: String) -> void:
 ## The battle log: recent lines stack bottom-left and fade. Only what the
 ## world doesn't show comes here (PIX-245): story beats, quests, levels, the
 ## boss slayer's edge, a pack scattered; what's won floats up where it was
-## won (WorldFx.show_gains).
-func log_lines(lines: Array) -> void:
+## won (WorldFx.show_gains). A few at a time, the rest in their turn, the
+## same line again folded into one (PIX-334: TextBudget); `later` lines (a
+## kill's count, the Post) wait out a fight.
+func log_lines(lines: Array, later := false) -> void:
 	for line: String in lines:
 		# A level gained goes on the plate, not among the kills (PIX-211).
 		if tag_of(line, [Text.t("Level up")]) != "":
 			flash(line)
 			continue
+		var entry := _log.add(line, later)
+		# Folded into one already up: its new words, and its time again.
+		if entry.has("chip"):
+			_say(entry)
+	update()
+
+
+## A line of the log on its own small plate, like the objective's (PIX-194),
+## up for LOG_SECONDS; said again (folded), its words and its time anew.
+func _say(entry: Dictionary) -> void:
+	var chip: PanelContainer = entry.get("chip")
+	if chip == null:
 		logged += 1
-		# Each line on its own small plate, like the objective's (PIX-194).
-		var chip := PanelContainer.new()
+		chip = PanelContainer.new()
 		chip.add_theme_stylebox_override("panel", UiStyle.plate(8))
 		chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		chip.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-		chip.add_child(UiStyle.label(line, UiStyle.reading(12), UiStyle.CREAM))
+		var words := UiStyle.label("", UiStyle.reading(12), UiStyle.CREAM)
+		words.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		chip.add_child(words)
 		log_box.add_child(chip)
-		var tween := chip.create_tween()
-		tween.tween_interval(LOG_SECONDS)
-		tween.tween_property(chip, "modulate:a", 0.0, 0.6)
-		tween.tween_callback(chip.queue_free)
-	while log_box.get_child_count() > LOG_LINES:
-		var oldest := log_box.get_child(0)
-		log_box.remove_child(oldest)
-		oldest.queue_free()
+		entry["chip"] = chip
+	var words: Label = chip.get_child(0)
+	var text: String = entry["text"]
+	if int(entry["count"]) > 1:
+		text = Text.t("%s x%d") % [text, int(entry["count"])]
+	words.text = text
+	# Wraps at LOG_WIDTH, never wider than it needs.
+	var wide := UiStyle.body_font().get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, words.get_theme_font_size("font_size")).x
+	words.custom_minimum_size.x = minf(ceilf(wide) + 2, LOG_WIDTH)
+	chip.modulate.a = 1.0
+	var was: Variant = chip.get_meta("fade", null)
+	if was != null and (was as Tween).is_valid():
+		(was as Tween).kill()
+	var fade := chip.create_tween()
+	fade.tween_interval(LOG_SECONDS)
+	fade.tween_property(chip, "modulate:a", 0.0, 0.6)
+	fade.tween_callback(func() -> void:
+		_log.gone(entry)
+		chip.queue_free()
+		update()
+	)
+	chip.set_meta("fade", fade)
+
+
+## Whether the words that can wait still do: a fight on, or only just over
+## (Foes.CALM_S). No world (a test's): never.
+func _fighting() -> bool:
+	return world != null and world.get("foes") != null and world.foes.in_fight(Foes.CALM_S)
 
 
 ## The message's plate, shrunk round its words (a container only grows).
@@ -109,9 +153,10 @@ func fit() -> void:
 	message_box.reset_size()
 
 
-## Messages waiting their turn on the plate (PIX-211), the one showing,
-## whether it carries a tag, and since when it shows.
-var _messages: Array[String] = []
+## The message showing on the plate (its entry in _plate, PIX-334; the
+## rest wait their turn there, PIX-211), its words, whether it carries a
+## tag, and since when it shows.
+var _shown := {}
 var _message_now := ""
 var _message_tagged := false
 var _message_since := 0.0
@@ -119,14 +164,19 @@ var _message_since := 0.0
 
 ## A message for the objective's plate (PIX-211): it waits behind the one
 ## showing instead of cutting it off. A quest's end and the level it brings
-## go up one after the other; the same words twice are said once. No words
-## is no message (a chest whose loot floats up says nothing, PIX-245).
+## go up one after the other; the same words twice are said once (two
+## levels in one fight, once, at the higher: TextBudget.fold). A tagged one
+## (a level, a quest) waits out a fight (PIX-334: the plate over the fight
+## read « NIVEAU SUPÉRIEUR » as the pack's last fell). No words is no
+## message (a chest whose loot floats up says nothing, PIX-245).
 func flash(text: String) -> void:
 	if text == "":
 		return
 	for part: String in split_messages(text, _tags()):
-		if part != _message_now and part not in _messages:
-			_messages.append(part)
+		var entry := _plate.add(part, tag_of(part, _tags()) != "")
+		# Folded into the one showing: its new words.
+		if is_same(entry, _shown) and entry["text"] != _message_now:
+			_show_message(entry["text"])
 	update()
 
 
@@ -157,13 +207,22 @@ static func tag_of(text: String, tags: Array) -> String:
 
 
 ## The next message, once the one showing is done with: a tagged one when
-## it has faded, a plain one after PLAIN_MESSAGE_S.
+## it has faded, a plain one after PLAIN_MESSAGE_S; and the log's lines
+## waiting their turn.
 func update() -> void:
-	if _messages.is_empty():
+	var fighting := _fighting()
+	var line := _log.next(fighting)
+	while not line.is_empty():
+		_say(line)
+		line = _log.next(fighting)
+	if _message_now != "" and not _message_tagged and GameClock.seconds() - _message_since >= PLAIN_MESSAGE_S:
+		# A plain message gives way to whatever comes next.
+		_plate.gone(_shown)
+	var entry := _plate.next(fighting)
+	if entry.is_empty():
 		return
-	if _message_now != "" and (_message_tagged or GameClock.seconds() - _message_since < PLAIN_MESSAGE_S):
-		return
-	_show_message(_messages.pop_front())
+	_shown = entry
+	_show_message(entry["text"])
 
 
 ## On the objective's plate (PIX-194): a known tag before its first colon
@@ -204,7 +263,9 @@ func _show_message(text: String) -> void:
 	message_fade.tween_property(message_box, "modulate:a", 1.0, 0.15)
 	message_fade.tween_interval(UiStyle.reading_seconds(text))
 	message_fade.tween_property(message_box, "modulate:a", 0.0, 0.4)
+	var shown := _shown
 	message_fade.tween_callback(func() -> void:
+		_plate.gone(shown)
 		_message_now = ""
 		update()
 	)

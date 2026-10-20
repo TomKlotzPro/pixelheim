@@ -284,12 +284,12 @@ func take_hit(damage: int, from: Vector2, infliction: Variant = null) -> void:
 	GameState.upkeep.hurt(damage)
 	hp = GameState.hero.hp
 	Juice.flash(sprite)
-	world.fx.float_number(damage, global_position + Vector2(0, -22), Color(1, 0.35, 0.35))
+	world.fx.float_number(damage, global_position + Vector2(0, -22), Color(1, 0.35, 0.35), false, self)
 	world.camera_rig.shake(3.0, 0.2)
 	world.camera_rig.hit_stop(0.05)
 	if hp > 0 and ailments.inflict(infliction, GameState.roll, HeroRules.passives(GameState.hero)):
 		Sound.play_ui("ail")
-		world.messages.log_line(Text.t("You are afflicted by %s!") % Ailments.label(infliction["kind"]))
+		# Its icon over the hero says it; the log doesn't again (PIX-334).
 		_show_ailment()
 	velocity = (global_position - from).normalized() * 180
 	move_and_slide()
@@ -366,8 +366,7 @@ func cast(index: int) -> void:
 			_show_ailment()
 			world.messages.log_line("All ailments are purged!")
 		world.fx.skill_flash(global_position, Color(0.5, 1.0, 0.6))
-		world.fx.float_number(restored, global_position + Vector2(0, -22), Color(0.5, 1, 0.6))
-		world.messages.log_line(Text.t("%s restores %d HP.") % [skill["name"], restored])
+		world.fx.float_number(restored, global_position + Vector2(0, -22), Color(0.5, 1, 0.6), false, self)
 		return
 	# An area skill (PIX-190) strikes every foe in reach, not just the nearest.
 	var targets: Array = _foes_in_reach() if skill.get("area", false) else [target]
@@ -377,15 +376,13 @@ func cast(index: int) -> void:
 		world.fx.skill_flash(foe.global_position, color)
 		foe.take_hit(damage, global_position, skill.get("inflicts"))
 		dealt += damage
-	if targets.size() > 1:
-		world.messages.log_line(Text.t("%s hits %d foes for %d damage!") % [skill["name"], targets.size(), dealt])
-	else:
-		world.messages.log_line(Text.t("%s hits %s for %d damage!") % [skill["name"], target.fighter["name"], dealt])
+	# What it dealt (or a heal restored) is the numbers over the heads: the
+	# log doesn't say it again (PIX-334).
 	# A draining skill gives back a share of what it took (Drain Life).
 	var drained := roundi(dealt * float(skill.get("drain", 0.0)))
 	if drained > 0:
 		var restored := GameState.upkeep.heal_hero(drained)
-		world.fx.float_number(restored, global_position + Vector2(0, -22), Color(0.5, 1, 0.6))
+		world.fx.float_number(restored, global_position + Vector2(0, -22), Color(0.5, 1, 0.6), false, self)
 	_steal_life(dealt)
 
 
@@ -396,7 +393,7 @@ func _steal_life(damage: int) -> void:
 		return
 	var restored := GameState.upkeep.heal_hero(maxi(1, roundi(damage * share)))
 	if restored > 0:
-		world.fx.float_number(restored, global_position + Vector2(0, -22), Color(0.5, 1, 0.6))
+		world.fx.float_number(restored, global_position + Vector2(0, -22), Color(0.5, 1, 0.6), false, self)
 
 
 ## Every living foe within a skill's reach.
@@ -451,7 +448,7 @@ func _tick_ailments(delta: float) -> void:
 	for tick in ailments.tick(delta):
 		GameState.upkeep.hurt(tick["damage"])
 		hp = GameState.hero.hp
-		world.fx.float_number(tick["damage"], global_position + Vector2(0, -22), Color(0.75, 0.5, 1))
+		world.fx.float_number(tick["damage"], global_position + Vector2(0, -22), Color(0.75, 0.5, 1), false, self)
 		if hp == 0:
 			ailments.clear()
 			_die()

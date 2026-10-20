@@ -65,17 +65,25 @@ static func is_empty(gains: Dictionary) -> bool:
 	return int(gains.get("xp", 0)) <= 0 and int(gains.get("gold", 0)) <= 0 and gains.get("items", []).is_empty()
 
 
-## The rows a win floats as, from the bottom up: XP, gold, then each item.
+## The rows a win floats as, from the bottom up: the purse, then each item.
 ## Each is {"key" (what a merged win updates in place), "text", "tone" (xp,
 ## gold, or the item's rarity: common, fine, epic) and "item" (the item's
-## id, for its icon; "" for XP and gold)}. Nothing won is no row: never "+0
-## gold".
+## id, for its icon; "" for the purse)}; the purse's gold carries its XP as
+## "then" ("+36 gold · +7 XP"), XP alone is a row of its own. Nothing won is
+## no row: never "+0 gold".
 static func rows(gains: Dictionary) -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
-	if int(gains["xp"]) > 0:
-		out.append({"key": "xp", "text": Text.t("+%d XP") % int(gains["xp"]), "tone": "xp", "item": ""})
+	# The purse is one line (PIX-340: a kill's gold and XP stood one over the
+	# other among the tags): its gold, its XP after it ("then").
+	var xp := Text.t("+%d XP") % int(gains["xp"]) if int(gains["xp"]) > 0 else ""
 	if int(gains["gold"]) > 0:
-		out.append({"key": "gold", "text": Text.t("+%d gold") % int(gains["gold"]), "tone": "gold", "item": ""})
+		var purse := {"key": "gold", "text": Text.t("+%d gold") % int(gains["gold"]), "tone": "gold", "item": ""}
+		if xp != "":
+			purse["key"] = "gold+xp"
+			purse["then"] = xp
+		out.append(purse)
+	elif xp != "":
+		out.append({"key": "xp", "text": xp, "tone": "xp", "item": ""})
 	for item: Dictionary in gains["items"]:
 		var count := int(item["count"])
 		out.append({
@@ -95,4 +103,9 @@ static func joins(rising_at: Vector2, joined: float, at: Vector2, now: float) ->
 
 ## The rows' words, joined by ";": what the harness reports (floats=).
 static func summary(gains: Dictionary) -> String:
-	return ";".join(rows(gains).map(func(row: Dictionary) -> String: return row["text"]))
+	return ";".join(rows(gains).map(func(row: Dictionary) -> String: return line(row)))
+
+
+## A row's words as they read: the purse's gold, a dot, its XP.
+static func line(row: Dictionary) -> String:
+	return "%s · %s" % [row["text"], row["then"]] if row.has("then") else String(row["text"])

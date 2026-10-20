@@ -24,15 +24,20 @@ func _texts(gains: Dictionary) -> Array:
 	return Gains.rows(gains).map(func(row: Dictionary) -> String: return row["text"])
 
 
-func test_a_win_reads_xp_then_gold_then_each_item() -> void:
+## The purse is one line (PIX-340: a kill's gold and XP stood one over the
+## other among the pack's tags): "+5 gold · +12 XP", then each item.
+func test_a_win_reads_its_purse_on_one_line_then_each_item() -> void:
 	var win := Gains.none()
 	win["xp"] = 12
 	win["gold"] = 5
 	Gains.add_item(win, "wolf_pelt")
-	assert_eq(_texts(win), ["+12 XP", "+5 gold", "Wolf Pelt"])
-	assert_eq(Gains.rows(win).map(func(row: Dictionary) -> String: return row["tone"]), ["xp", "gold", "common"])
-	assert_eq(Gains.rows(win)[2]["item"], "wolf_pelt", "an item's row carries its icon's id")
-	assert_eq(Gains.summary(win), "+12 XP;+5 gold;Wolf Pelt", "the harness's floats=")
+	assert_eq(_texts(win), ["+5 gold", "Wolf Pelt"])
+	assert_eq(Gains.rows(win)[0]["then"], "+12 XP", "the XP after the gold, on its line")
+	assert_eq(Gains.rows(win).map(func(row: Dictionary) -> String: return row["tone"]), ["gold", "common"])
+	assert_eq(Gains.rows(win)[1]["item"], "wolf_pelt", "an item's row carries its icon's id")
+	assert_eq(Gains.summary(win), "+5 gold · +12 XP;Wolf Pelt", "the harness's floats=")
+	win["gold"] = 0
+	assert_eq([_texts(win)[0], Gains.rows(win)[0]["tone"]], ["+12 XP", "xp"], "XP alone is a line of its own")
 
 
 func test_nothing_won_is_no_row() -> void:
@@ -68,7 +73,7 @@ func test_merging_adds_up_and_never_shares_a_row() -> void:
 	Gains.add_item(second, "wolf_pelt")
 	var total := Gains.merge(Gains.none(), first)
 	Gains.merge(total, second)
-	assert_eq(_texts(total), ["+24 XP", "+4 gold", "Wolf Pelt x2"])
+	assert_eq(Gains.summary(total), "+4 gold · +24 XP;Wolf Pelt x2")
 	assert_eq(int(first["items"][0]["count"]), 1, "what was merged in is left as it was")
 	assert_eq(int(second["items"][0]["count"]), 1)
 
@@ -88,9 +93,9 @@ func test_gains_speak_french() -> void:
 	win["gold"] = 5
 	Gains.add_item(win, "wolf_pelt", 2)
 	var texts := _texts(win)
-	assert_eq(texts.slice(0, 2), ["+12 XP", "+5 or"])
-	assert_string_ends_with(texts[2], " x2")
-	assert_ne(texts[2], "Wolf Pelt x2", "the item's name in French")
+	assert_eq(Gains.line(Gains.rows(win)[0]), "+5 or · +12 XP", "Tom's « +36 or · +7 XP »")
+	assert_string_ends_with(texts[1], " x2")
+	assert_ne(texts[1], "Wolf Pelt x2", "the item's name in French")
 
 
 ## A kill: what it won is a win, not lines; the log keeps a tier crossed.
@@ -174,10 +179,25 @@ func test_kills_close_together_rise_as_one_float() -> void:
 		fx.show_gains(win, Vector2(100 + i * 16, 50))
 	assert_eq(fx.get_child_count(), 1, "one float for the three")
 	var rows: Array = fx.get_child(0).get_children()
-	assert_eq(rows.map(func(row: Node) -> String: return (row.get_node("text") as Label).text), ["+36 XP", "+15 gold"])
+	assert_eq(rows.map(func(row: Node) -> String: return (row.get_node("text") as Label).text + " " + (row.get_node("then") as Label).text), ["+15 gold · +36 XP"], "one line")
 	fx.show_gains(win, Vector2(400, 50))
 	assert_eq(fx.get_child_count(), 2, "a kill far off rises on its own")
-	assert_eq(Gains.summary(fx.floated), "+48 XP;+20 gold", "the harness's record of it all")
+	assert_eq(Gains.summary(fx.floated), "+20 gold · +48 XP", "the harness's record of it all")
+
+
+## XP first, then gold beside it: the XP's line gives way to the purse's.
+func test_xp_then_gold_comes_together_on_one_line() -> void:
+	var fx: WorldFx = add_child_autofree(WorldFx.new())
+	var xp := Gains.none()
+	xp["xp"] = 7
+	fx.show_gains(xp, Vector2(100, 50))
+	var gold := Gains.none()
+	gold["gold"] = 36
+	fx.show_gains(gold, Vector2(100, 50))
+	await wait_frames(1)
+	var rows: Array = fx.get_child(0).get_children().filter(func(row: Node) -> bool: return not row.is_queued_for_deletion())
+	assert_eq(rows.size(), 1, "one line, not two")
+	assert_eq((rows[0].get_node("then") as Label).text, "· +7 XP")
 
 
 func test_a_win_rises_and_a_fine_piece_bursts_in() -> void:

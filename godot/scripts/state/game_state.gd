@@ -211,6 +211,10 @@ func boot(flags: HarnessFlags) -> void:
 		# `still`: the run with Reduce motion on, as a player can set it.
 		if flags.has("still"):
 			settings.reduce_motion = true
+		# `hints`: a new player's first-time hints, none seen (PIX-341).
+		if flags.has("hints"):
+			settings.hints = true
+			settings.hints_seen.clear()
 		# `--slots <dir>`: the slots read from a folder of fixtures, never
 		# written (PIX-230); `launch` opens its first slot as a plain launch
 		# opens the last one played (PIX-303: one it can't read).

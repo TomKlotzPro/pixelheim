@@ -1187,6 +1187,13 @@ func _run_test_harness() -> void:
 		else:
 			opponent = world.foes.spawn_enemy(foe, at, "ash", "", flags.has("elite"))
 		world.player.face(Vector2.RIGHT)
+		# `pack` (PIX-340): the rest of its pack round it, all on the hunt.
+		var pack: Array[Node] = [opponent]
+		if flags.has("pack"):
+			for i in Foes.PACK_SIZE - 1:
+				pack.append(world.foes.spawn_enemy(foe, at + [Vector2i.DOWN, Vector2i.UP][i % 2], "ash"))
+			for member in pack:
+				member.notice()
 		# `--foe-left S` (PIX-288): the fight already on, the foe hunting the
 		# hero with its bar up, then a blow down to that share of its health,
 		# its ghost still easing as the swings that follow land.
@@ -1215,13 +1222,19 @@ func _run_test_harness() -> void:
 				waited += 0.1
 		# `kill` swings until the foe drops (or 12 swings); plain `fight`
 		# captures mid-swing.
-		var swings := 12 if flags.has("kill") else 1
+		var swings := (12 if flags.has("kill") else 1) * pack.size()
 		var kills_before: int = world.foes.kills
 		for i in swings:
+			# A pack's: at the nearest of it still standing.
+			var standing := pack.filter(func(member: Node) -> bool: return is_instance_valid(member) and not member.dying)
+			if flags.has("pack") and not standing.is_empty():
+				var hero: Vector2 = world.player.global_position
+				standing.sort_custom(func(a: Node2D, b: Node2D) -> bool: return a.global_position.distance_to(hero) < b.global_position.distance_to(hero))
+				world.player.face(standing[0].global_position - hero)
 			world.player.attack()
 			if i < swings - 1:
 				await get_tree().create_timer(0.45).timeout
-			if world.foes.kills > kills_before:
+			if world.foes.kills - kills_before >= pack.size():
 				break
 		await get_tree().create_timer(0.4 if flags.has("kill") else 0.1).timeout
 		if flags.has("die"):

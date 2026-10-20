@@ -2069,6 +2069,10 @@ msgid "A new hero starts only from New Game on the title screen; with every slot
 msgstr "Un nouveau héros ne commence que depuis Nouvelle partie, sur l'écran titre ; si tous les emplacements sont pris, le jeu le dit au lieu d'écraser qui que ce soit"
 
 #: assets/data/changelog.json
+msgid "A pack shows one level tag in a fight, its highest, and the words over the world step clear of the tags instead of piling up at the kill"
+msgstr "Un groupe d'ennemis n'affiche qu'une étiquette de niveau en combat, la plus haute, et les textes au-dessus du monde s'écartent des étiquettes au lieu de s'empiler sur le coup final"
+
+#: assets/data/changelog.json
 msgid "A path is a permanent identity: an always-on passive theme and a SIGNATURE SKILL no tree can teach"
 msgstr "Une voie est une identité permanente : un thème passif toujours actif et une COMPÉTENCE SIGNATURE qu'aucun arbre ne peut enseigner"
 
@@ -3405,6 +3409,10 @@ msgid "Hilda quenches deep pieces: gold and a gem for +1 to their strongest stat
 msgstr "Hilda trempe les pièces des profondeurs : de l'or et une gemme pour +1 à leur meilleure caractéristique, moitié plus cher à chaque fois"
 
 #: assets/data/changelog.json
+msgid "Hints wait their turn: never over a boss's entrance or a title card, one at a time, and the dodge is taught on the first road out to where packs roam, before any boss"
+msgstr "Les conseils attendent leur tour : jamais par-dessus l'entrée d'un boss ou un titre, un à la fois, et la roulade s'apprend sur la première route vers les groupes d'ennemis, avant tout boss"
+
+#: assets/data/changelog.json
 msgid "Hit Feel"
 msgstr "Des coups qui portent"
 
@@ -3619,6 +3627,10 @@ msgstr "Apprenez de nouvelles compétences, améliorez les anciennes ou prenez d
 #: assets/data/changelog.json
 msgid "Leaves drift down through the forests, dust floats in the light of every room, and embers rise from forges, hearths and camp fires"
 msgstr "Des feuilles tombent en virevoltant dans les forêts, la poussière flotte dans la lumière de chaque pièce, et des braises s'élèvent des forges, des âtres et des feux de camp"
+
+#: assets/data/changelog.json
+msgid "Less text at once in a fight: the battle log shows a few lines at a time and folds repeats (+3 gold four times reads +12 gold), a fight's gold, XP and loot rise once when it's over, on one line, blows on one foe add up into one number, and the log no longer repeats what the screen already shows (Tom's playtest)"
+msgstr "Moins de texte d'un coup en combat : le journal affiche quelques lignes à la fois et regroupe les répétitions (quatre fois +3 or deviennent +12 or), l'or, l'XP et le butin d'un combat montent une seule fois à la fin, sur une ligne, les coups sur un même ennemi s'additionnent en un seul nombre, et le journal ne répète plus ce que l'écran montre déjà (playtest de Tom)"
 
 #: assets/data/changelog.json
 msgid "Let Me Go"
@@ -4399,6 +4411,10 @@ msgstr "DES QUÊTES ! Cinq promesses dans le village : des gelées pour Sela
 #: assets/data/changelog.json
 msgid "Quick wins stack: a pack's kills rise as one float that counts up, not a pile of lines"
 msgstr "Les gains rapprochés s'additionnent : les victimes d'une meute montent en un seul nombre qui grimpe, pas en une pile de lignes"
+
+#: assets/data/changelog.json
+msgid "Quiet Fights"
+msgstr "Combats posés"
 
 #: assets/data/changelog.json
 msgid "Quit in the middle of the Night of Bells and you come back at the same beat, with the lanterns you lit and the roofs you doused"
@@ -8817,6 +8833,10 @@ msgid "Monsters far below your level run when they see you. Corner one or strike
 msgstr "Les monstres bien en dessous de votre niveau fuient en vous voyant. Acculez-en un ou frappez-le et il se défend - les boss et les monstres nommés ne fuient jamais."
 
 #: assets/data/hints.json
+msgid "Monsters will charge at you. Press {key:dodge} to roll out of the way - for a blink nothing can touch you, and a patch of ground marked for a blow is always worth leaving."
+msgstr "Des monstres vont vous foncer dessus. Appuyez sur {key:dodge} pour rouler hors de portée - un instant, rien ne peut vous toucher, et il vaut toujours mieux quitter une zone marquée pour un coup."
+
+#: assets/data/hints.json
 msgid "Named monsters, where they lair (marked on your map) and what they pay. Kill one and the bounty is yours on the spot."
 msgstr "Les monstres nommés, leur repaire (marqué sur votre carte) et ce qu'ils rapportent. Tuez-en un et la prime est à vous sur-le-champ."
 
@@ -8827,10 +8847,6 @@ msgstr "Pixelheim se joue mieux en paysage : tournez votre téléphone pour un
 #: assets/data/hints.json
 msgid "Savings earn a little each day, up to a tenth of the pot - and a hero who falls loses a tenth of the gold they carry, never what's banked. A caravan is a gamble that usually pays. Expansions make your businesses' rent richer."
 msgstr "L'épargne rapporte un peu chaque jour, jusqu'à un dixième de la cagnotte - et un héros qui tombe perd un dixième de l'or qu'il porte, jamais ce qui est à la banque. Une caravane est un pari qui paie souvent. Les agrandissements font grossir les loyers de vos commerces."
-
-#: assets/data/hints.json
-msgid "Something's coming for you. Press {key:dodge} to roll out of the way - for a blink nothing can touch you, and a patch of ground marked for a blow is always worth leaving."
-msgstr "Quelque chose fonce sur vous. Appuyez sur {key:dodge} pour rouler hors de portée - un instant, rien ne peut vous toucher, et il vaut toujours mieux quitter une zone marquée pour un coup."
 
 #: assets/data/hints.json
 msgid "The bounty board"
@@ -15581,18 +15597,6 @@ msgid "Saves"
 msgstr "Sauvegardes"
 
 #: scripts/player.gd
-msgid "%s hits %d foes for %d damage!"
-msgstr "%s touche %d ennemis : %d dégâts !"
-
-#: scripts/player.gd
-msgid "%s hits %s for %d damage!"
-msgstr "%s touche %s : %d dégâts !"
-
-#: scripts/player.gd
-msgid "%s restores %d HP."
-msgstr "%s rend %d PV."
-
-#: scripts/player.gd
 msgid "All ailments are purged!"
 msgstr "Tous les maux sont purgés !"
 
@@ -15603,10 +15607,6 @@ msgstr "Aucun ennemi à portée pour %s."
 #: scripts/player.gd
 msgid "No skill on that key yet. Learn more, or set the keys, in Skills."
 msgstr "Aucune compétence sur cette touche. Apprenez-en d'autres, ou réglez les touches, dans Compétences."
-
-#: scripts/player.gd
-msgid "You are afflicted by %s!"
-msgstr "Vous voilà atteint : %s !"
 
 #: scripts/player.gd
 msgid "dodged"
@@ -17207,10 +17207,6 @@ msgstr "La meute est dispersée. Une autre reviendra quand vous aurez bien march
 #: scripts/world_foes.gd
 msgid "Victory"
 msgstr "Victoire"
-
-#: scripts/world_fx.gd
-msgid "LEVEL UP"
-msgstr "NIVEAU SUPÉRIEUR"
 
 #: scripts/world_hud.gd
 msgid "Boss slayer +%d%%  %d:%02d"
