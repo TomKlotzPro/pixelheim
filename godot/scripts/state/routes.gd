@@ -198,12 +198,21 @@ static func fork_ways(fork_id: String, post: PostState) -> Array[String]:
 	return out
 
 
-## What a signpost says under its name: the post roads it points down.
+## What a signpost says under its name, on one line: the post roads it
+## points down, or how many meet at it past two (the gate's corner takes
+## all seven).
 static func fork_about(fork_id: String, post: PostState) -> String:
 	var names: Array[String] = []
 	for place: String in fork_ways(fork_id, post):
 		names.append(Text.mid(Catalog.place_name(place)))
-	return Text.t("The post road to %s") % ", ".join(names) if not names.is_empty() else ""
+	match names.size():
+		0:
+			return ""
+		1:
+			return Text.t("The post road to %s") % names[0]
+		2:
+			return Text.t("The post roads to %s and %s") % [names[0], names[1]]
+	return Text.t("%d post roads meet here") % names.size()
 
 
 # ---- Waystations ---------------------------------------------------------------------

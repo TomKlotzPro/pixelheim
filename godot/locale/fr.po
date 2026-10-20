@@ -16645,12 +16645,20 @@ msgid "the wilds"
 msgstr "les terres sauvages"
 
 #: scripts/state/routes.gd
+msgid "%d post roads meet here"
+msgstr "%d routes du courrier se croisent ici"
+
+#: scripts/state/routes.gd
 msgid "Signposts go up at the forks of your post roads: %s."
 msgstr "Des poteaux indicateurs se dressent aux fourches de vos routes du courrier : %s."
 
 #: scripts/state/routes.gd
 msgid "The post road to %s"
 msgstr "La route du courrier vers %s"
+
+#: scripts/state/routes.gd
+msgid "The post roads to %s and %s"
+msgstr "Les routes du courrier vers %s et %s"
 
 #: scripts/state/routes.gd
 msgid "The road to %s has carried enough post for a waystation: the board on the square has it."

@@ -157,7 +157,7 @@ route-signs | --map overworld --routes saltmere:3 --at 46,36 | map=overworld rou
 waystation-board | --map town --routes saltmere:6 hall | open=town_hall_screen works=waystation_saltmere routes=saltmere:6:signs:offered | town quest screen
 waystation-day | --map overworld --routes saltmere:6 --built waystation_saltmere --at 19,51 | routes=saltmere:6:signs:built waystations=saltmere:cold signposts=gate,saltmere_fork | travel field quest
 waystation-night | --map overworld --routes saltmere:6 --built waystation_saltmere --at 19,51 night | waystations=saltmere:lit | travel field night
-waystation-bench | --map overworld --routes saltmere:6 --built waystation_saltmere wounded --at 20,49 --walk r --keys e | map=overworld cell=\(20, 49\) hp=BENCH_HP | travel field quest
+waystation-bench | --map overworld --routes saltmere:6 --built waystation_saltmere wounded --at 20,49 --walk r --keys e | map=overworld cell=\(20, 49\) hp=42 | travel field quest
 waystation-box | --map overworld --post open --routes saltmere:6 --built waystation_saltmere --at 18,50 --walk l --keys e | map=overworld post=box:0,bag:3,sent:0 | travel quest
 waystation-travel | --map town --routes saltmere:6 --built waystation_saltmere waypoints worldmap --choose waystation_saltmere --keys e --wait 0.6 | map=overworld cell=\(19, 49\) open=none | travel
 route-map | --map overworld --routes saltmere:6,blackiron:3 --built waystation_saltmere charted worldmap | open=map_screen page=overworld mapped=saltmere,blackiron | travel screen

@@ -595,6 +595,7 @@ func _run_test_harness() -> void:
 	# to mend.
 	if flags.has("wounded"):
 		GameState.upkeep.hurt(int(GameState.hero.stats["maxHp"]) - maxi(1, int(GameState.hero.stats["maxHp"]) / 4))
+		world.player.heal()
 	if flags.has("--at"):
 		var at := flags.list("--at")
 		world.player_cell = Vector2i(int(at[0]), int(at[1]))

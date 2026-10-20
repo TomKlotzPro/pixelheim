@@ -214,7 +214,7 @@ func test_a_few_pieces_put_signposts_up_at_the_roads_forks_named_after_its_write
 	Routes.tally(state.post, "mirefen", "vex", Routes.signs_at("mirefen"))
 	Routes.raise_signs(state.post)
 	assert_eq(Routes.fork_name("gate", state.post), "Bram's Corner", "named the day it went up")
-	assert_eq(Routes.fork_about("saltmere_fork", state.post), "The post road to Saltmere, the Mirefen")
+	assert_eq(Routes.fork_about("saltmere_fork", state.post), "The post roads to Saltmere and the Mirefen")
 	Routes.tally(state.post, "blackiron", "dagny", Routes.signs_at("blackiron"))
 	assert_eq(Routes.raise_signs(state.post), ["river_fork"] as Array[String], "a new road's own forks")
 	assert_eq(Routes.fork_name("river_fork", state.post), "Dagny's Crossing")

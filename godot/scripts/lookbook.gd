@@ -145,8 +145,8 @@ const SHOTS := {
 	# waystation halfway down its road, its hut, bench, post box and ember
 	# lamp, by day and lit at night.
 	"post_signpost": {"area": "reach", "map": "overworld", "cell": Vector2i(45, 36), "time": DAY, "routes": true},
-	"waystation": {"area": "reach", "map": "overworld", "cell": Vector2i(19, 44), "time": DAY, "routes": true},
-	"waystation_night": {"area": "reach", "map": "overworld", "cell": Vector2i(19, 44), "time": NIGHT, "routes": true},
+	"waystation": {"area": "reach", "map": "overworld", "cell": Vector2i(23, 50), "time": DAY, "routes": true},
+	"waystation_night": {"area": "reach", "map": "overworld", "cell": Vector2i(23, 50), "time": NIGHT, "routes": true},
 	# Things lying on the ground beside the hero (PIX-286): the pouch on the
 	# road west of the village where it lies, and a patch of each kind laid
 	# round it, half a cell each.
