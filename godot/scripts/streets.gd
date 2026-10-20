@@ -8,8 +8,9 @@ class_name Streets
 ## and the gate road cobbled in the Town, and in the City every street
 ## cobbled, the square and the avenue to the gate in sandstone flags, a
 ## ring of brick round the fountain. Greyhold's courtyard is flagged, its
-## paths cobbled; the Frostgate's observatory stands in a flagged yard at
-## the end of a cobbled road.
+## paths in sandstone, the road from its gate to the keep (PIX-337: cobbles
+## on its grey flags didn't show, by night least); the Frostgate's
+## observatory stands in a flagged yard at the end of a cobbled road.
 ## Which cells take which look is data (assets/data/streets.json: a map's
 ## areas, each a rectangle of the grounds it paves and its look by the
 ## town's age, later areas over earlier ones); the look's pieces are the

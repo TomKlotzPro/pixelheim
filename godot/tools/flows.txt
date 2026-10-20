@@ -371,13 +371,17 @@ hamlet-frost | --map frostgate --at 14,39 | map=frostgate hamlet=frost: | travel
 hamlet-smithy | --map mountain_road --at 17,7 | map=mountain_road hamlet=smithy:glow1,roof1 | travel field story
 mouth-ice | --map observatory --at 12,8 | map=observatory entrance=ice_stair | rooms
 # The roads beyond the village (PIX-307): the Reach's road south of the
-# river rutted, Greyhold's courtyard flagged and its paths cobbled, and the
-# Frostgate's road cobbled up to the observatory's flagged yard.
+# river rutted, Greyhold's courtyard flagged and its paths in sandstone
+# (PIX-337), and the Frostgate's road cobbled up to the observatory's
+# flagged yard.
 road-worn | --map overworld --at 48,36 | map=overworld street=worn | travel
 courtyard | --map greyhold --at 33,20 | map=greyhold street=flags | travel
-courtyard-path | --map greyhold --at 37,20 | map=greyhold street=cobbles | travel
+courtyard-path | --map greyhold --at 37,20 | map=greyhold street=sandstone | travel
 frost-road | --map frostgate --at 27,14 | map=frostgate street=cobbles | travel
 frost-yard | --map frostgate --at 25,9 | map=frostgate street=flags | travel
+# Greyhold's way in (PIX-337): up the road from the south, through the
+# gatehouse between its towers and on up the yard toward the keep.
+fort-gate | --map greyhold --at 37,28 --walk u,u,u,u,u | map=greyhold cell=\(37, 2[0-4]\) | travel
 # The Blackiron shafts in three floors (PIX-255, PIX-253 step 5): down the
 # upper shafts' stair (it asks; going down keeps the dark) to the west
 # gallery, down past Pell's canary to the Black Seam, and back up (it

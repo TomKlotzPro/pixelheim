@@ -398,6 +398,8 @@ func _plan_houses() -> void:
 	rampart = {}
 	if data.id in Rampart.MAPS:
 		rampart = Rampart.plan(data.grid, Rampart.ashen(Town.done_projects(GameState.settlement)))
+	elif data.id in Rampart.GATEHOUSES:
+		rampart = Rampart.plan(data.grid, false, true)
 	elif not skyline.is_empty():
 		rampart = skyline["rampart"]
 

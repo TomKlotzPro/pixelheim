@@ -3313,6 +3313,10 @@ msgid "Greyhold's courtyard is flagged and its paths cobbled, and the Frostgate'
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Greyhold's south gate reads as a gate at last: two towers with the gate open between them, the road running through it and on up the courtyard to the keep's door, and the lamps standing before the towers to light both sides at night (Tom's playtest)"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Ground treasure is taken in stride: walk over a glint or herb patch and it is yours"
 msgstr ""
 
@@ -4186,6 +4190,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Open Country"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Open Gate"
 msgstr ""
 
 #: assets/data/changelog.json

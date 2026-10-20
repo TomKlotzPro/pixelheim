@@ -62,7 +62,7 @@ func test_greyhold_and_the_frostgate_are_paved_at_any_age() -> void:
 	for tier in [0, Town.MAX_TIER]:
 		var yard := Streets.plan("greyhold", fort, tier)
 		assert_eq(yard.get(Vector2i(33, 20)), "flags", "the courtyard flagged")
-		assert_eq(yard.get(Vector2i(37, 20)), "cobbles", "its paths cobbled")
+		assert_eq(yard.get(Vector2i(37, 20)), "sandstone", "its paths in sandstone, the road through the gate showing on the flags")
 		assert_false(yard.has(Vector2i(12, 26)), "the road outside the walls stays dirt")
 		var frost := Streets.plan("frostgate", pass_, tier)
 		assert_eq(frost.get(Vector2i(27, 14)), "cobbles", "the road to the observatory cobbled")
