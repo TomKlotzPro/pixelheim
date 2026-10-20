@@ -8805,6 +8805,10 @@ msgid "Monsters far below your level run when they see you. Corner one or strike
 msgstr "Les monstres bien en dessous de votre niveau fuient en vous voyant. Acculez-en un ou frappez-le et il se défend - les boss et les monstres nommés ne fuient jamais."
 
 #: assets/data/hints.json
+msgid "Monsters will charge at you. Press {key:dodge} to roll out of the way - for a blink nothing can touch you, and a patch of ground marked for a blow is always worth leaving."
+msgstr "Des monstres vont vous foncer dessus. Appuyez sur {key:dodge} pour rouler hors de portée - un instant, rien ne peut vous toucher, et il vaut toujours mieux quitter une zone marquée pour un coup."
+
+#: assets/data/hints.json
 msgid "Named monsters, where they lair (marked on your map) and what they pay. Kill one and the bounty is yours on the spot."
 msgstr "Les monstres nommés, leur repaire (marqué sur votre carte) et ce qu'ils rapportent. Tuez-en un et la prime est à vous sur-le-champ."
 
@@ -8815,10 +8819,6 @@ msgstr "Pixelheim se joue mieux en paysage : tournez votre téléphone pour un
 #: assets/data/hints.json
 msgid "Savings earn a little each day, up to a tenth of the pot - and a hero who falls loses a tenth of the gold they carry, never what's banked. A caravan is a gamble that usually pays. Expansions make your businesses' rent richer."
 msgstr "L'épargne rapporte un peu chaque jour, jusqu'à un dixième de la cagnotte - et un héros qui tombe perd un dixième de l'or qu'il porte, jamais ce qui est à la banque. Une caravane est un pari qui paie souvent. Les agrandissements font grossir les loyers de vos commerces."
-
-#: assets/data/hints.json
-msgid "Something's coming for you. Press {key:dodge} to roll out of the way - for a blink nothing can touch you, and a patch of ground marked for a blow is always worth leaving."
-msgstr "Quelque chose fonce sur vous. Appuyez sur {key:dodge} pour rouler hors de portée - un instant, rien ne peut vous toucher, et il vaut toujours mieux quitter une zone marquée pour un coup."
 
 #: assets/data/hints.json
 msgid "The bounty board"
@@ -15569,18 +15569,6 @@ msgid "Saves"
 msgstr "Sauvegardes"
 
 #: scripts/player.gd
-msgid "%s hits %d foes for %d damage!"
-msgstr "%s touche %d ennemis : %d dégâts !"
-
-#: scripts/player.gd
-msgid "%s hits %s for %d damage!"
-msgstr "%s touche %s : %d dégâts !"
-
-#: scripts/player.gd
-msgid "%s restores %d HP."
-msgstr "%s rend %d PV."
-
-#: scripts/player.gd
 msgid "All ailments are purged!"
 msgstr "Tous les maux sont purgés !"
 
@@ -15591,10 +15579,6 @@ msgstr "Aucun ennemi à portée pour %s."
 #: scripts/player.gd
 msgid "No skill on that key yet. Learn more, or set the keys, in Skills."
 msgstr "Aucune compétence sur cette touche. Apprenez-en d'autres, ou réglez les touches, dans Compétences."
-
-#: scripts/player.gd
-msgid "You are afflicted by %s!"
-msgstr "Vous voilà atteint : %s !"
 
 #: scripts/player.gd
 msgid "dodged"
@@ -17195,10 +17179,6 @@ msgstr "La meute est dispersée. Une autre reviendra quand vous aurez bien march
 #: scripts/world_foes.gd
 msgid "Victory"
 msgstr "Victoire"
-
-#: scripts/world_fx.gd
-msgid "LEVEL UP"
-msgstr "NIVEAU SUPÉRIEUR"
 
 #: scripts/world_hud.gd
 msgid "Boss slayer +%d%%  %d:%02d"

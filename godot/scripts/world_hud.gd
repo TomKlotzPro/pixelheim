@@ -16,10 +16,17 @@ var sky_overlay: ColorRect
 ## The hero panel: health, resource, xp, gold, the screens (HudPanel).
 var dock: Control
 var boss_bar: Control
-## The first-time hint on it now (PIX-160).
+## The first-time hint on it now (PIX-160), and those waiting their turn
+## ([id, values, the id it's seen by], PIX-341: hints_wait).
 var hint_card: PanelContainer
+var _held_hints: Array[Array] = []
 static var _hint_doc := {}
 static var _hint_generation := 0
+## A boss's entrance holds the hints this long after it sees the hero
+## (PIX-341): its rise, its bar, its words, the fight's first blows.
+const BOSS_HINT_S := 6.0
+## The title card up last (title_card): a hint waits for it.
+var _card: PanelContainer
 ## The main quest's next step, quietly above the dock (PIX-144): a dark
 ## pill holding "Next" and the step.
 var objective_box: PanelContainer
@@ -138,11 +145,17 @@ func place() -> void:
 ## A first-time hint (PIX-160): a card under the top of the screen that
 ## says what something is, once per player (GameSettings.hints_seen, `key`
 ## when one hint has many, a skill each) and never with hints off. It doesn't
-## stop the game, and fades by itself.
+## stop the game, and fades by itself. One at a time, and never over a
+## boss's entrance or a title card: it waits its turn (hints_wait).
 func hint(id: String, values := {}, key := "") -> void:
 	var settings := GameState.settings
 	var seen_id := key if key != "" else id
 	if not settings.hints or seen_id in settings.hints_seen or root == null:
+		return
+	if _held_hints.any(func(held: Array) -> bool: return held[2] == seen_id):
+		return
+	if hints_wait():
+		_held_hints.append([id, values, seen_id])
 		return
 	settings.hints_seen.append(seen_id)
 	settings.save_file()
@@ -154,11 +167,10 @@ func hint(id: String, values := {}, key := "") -> void:
 	for name: String in values:
 		title = title.replace("{%s}" % name, str(values[name]))
 		text = text.replace("{%s}" % name, str(values[name]))
-	if hint_card != null:
-		hint_card.queue_free()
 	hint_card = PanelContainer.new()
+	hint_card.set_meta("id", seen_id)
 	hint_card.add_theme_stylebox_override("panel", UiStyle.window(12))
-	hint_card.position = Vector2(340, boss_bar.bottom() + 6 if boss_bar.following() else 18.0)
+	hint_card.position = Vector2(340, _hint_top())
 	hint_card.custom_minimum_size = Vector2(600, 0)
 	hint_card.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var lines := VBoxContainer.new()
@@ -178,10 +190,44 @@ func hint(id: String, values := {}, key := "") -> void:
 	show.tween_callback(hint_card.queue_free)
 
 
-## A first-time hint stands under the boss bar while one is up (PIX-210).
+## A first-time hint stands under the boss bar while one is up (PIX-210),
+## and under a title card that came after it; one waiting its turn shows
+## once nothing holds it.
 func keep_hint_clear() -> void:
+	if not _held_hints.is_empty() and not hints_wait():
+		var held: Array = _held_hints.pop_front()
+		hint(held[0], held[1], held[2])
 	if hint_card != null and is_instance_valid(hint_card):
-		hint_card.position.y = boss_bar.bottom() + 6 if boss_bar.following() else 18.0
+		hint_card.position.y = _hint_top()
+
+
+## Whether a first-time hint waits its turn (PIX-341: the dodge's card
+## opened over L'Appelle-Marée's bar, his name and his first words): while
+## another is up or a title card is (a place's name, a boss's fall), and
+## while a boss makes its entrance - the BOSS_HINT_S after it sees the hero,
+## as long as it hunts them. Once it falls, the hero gets away or the fight
+## has gone on a while, the hint shows.
+func hints_wait() -> bool:
+	if is_instance_valid(hint_card) and not hint_card.is_queued_for_deletion():
+		return true
+	if is_instance_valid(_card) and not _card.is_queued_for_deletion():
+		return true
+	return world.foes.boss_hunting() != null and GameClock.seconds() - world.foes.boss_noticed_at < BOSS_HINT_S
+
+
+## The hint waiting its turn, by the id it's seen by, or "" (the harness's
+## `hint`).
+func hint_held() -> String:
+	return String(_held_hints[0][2]) if not _held_hints.is_empty() else ""
+
+
+## Where a hint's card stands: under the boss bar while it's up, and under a
+## title card.
+func _hint_top() -> float:
+	var top: float = boss_bar.bottom() + 6 if boss_bar.following() else 18.0
+	if is_instance_valid(_card) and not _card.is_queued_for_deletion():
+		top = maxf(top, _card.position.y + _card.size.y + 6)
+	return top
 
 
 ## A title over the world for a moment (PIX-232: a boss's fall): the big
@@ -206,6 +252,7 @@ func title_card(title: String, line: String) -> PanelContainer:
 	small.visible = line != ""
 	lines.add_child(small)
 	root.add_child(card)
+	_card = card
 	card.reset_size()
 	card.position = Vector2(roundf((1280 - card.size.x) / 2.0), 140)
 	card.modulate.a = 0.0

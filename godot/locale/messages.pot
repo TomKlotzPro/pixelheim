@@ -8805,6 +8805,10 @@ msgid "Monsters far below your level run when they see you. Corner one or strike
 msgstr ""
 
 #: assets/data/hints.json
+msgid "Monsters will charge at you. Press {key:dodge} to roll out of the way - for a blink nothing can touch you, and a patch of ground marked for a blow is always worth leaving."
+msgstr ""
+
+#: assets/data/hints.json
 msgid "Named monsters, where they lair (marked on your map) and what they pay. Kill one and the bounty is yours on the spot."
 msgstr ""
 
@@ -8814,10 +8818,6 @@ msgstr ""
 
 #: assets/data/hints.json
 msgid "Savings earn a little each day, up to a tenth of the pot - and a hero who falls loses a tenth of the gold they carry, never what's banked. A caravan is a gamble that usually pays. Expansions make your businesses' rent richer."
-msgstr ""
-
-#: assets/data/hints.json
-msgid "Something's coming for you. Press {key:dodge} to roll out of the way - for a blink nothing can touch you, and a patch of ground marked for a blow is always worth leaving."
 msgstr ""
 
 #: assets/data/hints.json
@@ -15569,18 +15569,6 @@ msgid "Saves"
 msgstr ""
 
 #: scripts/player.gd
-msgid "%s hits %d foes for %d damage!"
-msgstr ""
-
-#: scripts/player.gd
-msgid "%s hits %s for %d damage!"
-msgstr ""
-
-#: scripts/player.gd
-msgid "%s restores %d HP."
-msgstr ""
-
-#: scripts/player.gd
 msgid "All ailments are purged!"
 msgstr ""
 
@@ -15590,10 +15578,6 @@ msgstr ""
 
 #: scripts/player.gd
 msgid "No skill on that key yet. Learn more, or set the keys, in Skills."
-msgstr ""
-
-#: scripts/player.gd
-msgid "You are afflicted by %s!"
 msgstr ""
 
 #: scripts/player.gd
@@ -17194,10 +17178,6 @@ msgstr ""
 
 #: scripts/world_foes.gd
 msgid "Victory"
-msgstr ""
-
-#: scripts/world_fx.gd
-msgid "LEVEL UP"
 msgstr ""
 
 #: scripts/world_hud.gd

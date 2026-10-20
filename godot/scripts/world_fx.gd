@@ -51,18 +51,30 @@ const GAIN_ICON := 2.0 / CameraRig.ZOOM
 var _rising: Array[Dictionary] = []
 ## Everything floated on this visit, merged (the harness reports it).
 var floated := Gains.none()
+## What a fight has won so far, held until it's over (PIX-334): {gains, at
+## (where the last of it was won), view (the map it was won on)}, or {}.
+var _held := {}
+## Blows on one foe this close together add up into one number (PIX-334),
+## and the number each foe (and colour) shows now: key -> {word, value,
+## crit, at}.
+const NUMBER_JOIN_S := 0.3
+var _numbers := {}
+## A word over the world steps up clear of a level tag or a word already
+## there (PIX-340, keep_clear), this far apart, at most this far.
+const SLOT_MARGIN := 1.0
+const MOST_LIFT := 36.0
 
 
 ## A word that rises and fades over where it happened (PIX-155: "dodged",
-## "blocked"). A `big` one (PIX-211: LEVEL UP; a fine or epic drop's name
-## now rises with the rest of a win, show_gains)
-## bursts in at twice its size unless motion is reduced, then settles at the
+## "blocked"). A `big` one (a bell's "Dong!"; LEVEL UP was one until it
+## went to the plate, PIX-340; a fine or epic drop's name rises with the
+## rest of a win, show_gains) bursts in at twice its size unless motion is reduced, then settles at the
 ## pixel face's own (anything larger dwarfs the fighters), and stays longer.
 func float_text(text: String, at: Vector2, color: Color, big := false) -> void:
 	var label := _floating(text, color)
 	label.position = Vector2(Ink.centred(_ink(label), at.x), roundf(at.y))
 	label.z_index = 11 if big else 10
-	add_child(label)
+	_stand(label)
 	var life := 1.8 if big else 0.6
 	var tween := label.create_tween().set_parallel()
 	if big:
@@ -87,12 +99,58 @@ func _floating(text: String, color: Color) -> Label:
 	return label
 
 
+## A word over the world on its own stand (PIX-340): the label rises and
+## fades on its own tween, the stand lifts it clear of what was there first
+## (keep_clear). Gone with its word.
+func _stand(label: Label) -> void:
+	var stand := Node2D.new()
+	stand.set_meta("word", label)
+	label.tree_exited.connect(stand.queue_free)
+	stand.add_child(label)
+	add_child(stand)
+
+
+## Each word over the world, oldest first, stepped up just clear
+## (TextBudget.rise) of `reserved` (the level tags shown, Foes' pass), of the
+## wins rising and of the words before it - never back down, so it doesn't
+## jump about as the foes move. Words rising together at one pace stay clear.
+func keep_clear(reserved: Array[Rect2]) -> void:
+	var taken: Array[Rect2] = reserved.duplicate()
+	for win: Dictionary in _rising:
+		if is_instance_valid(win["box"]):
+			for line: Node in (win["box"] as Node).get_children():
+				for part: String in ["text", "then"]:
+					if line.has_node(part):
+						taken.append(_drawn(line.get_node(part)))
+	for stand: Node in get_children():
+		var word: Variant = stand.get_meta("word", null)
+		if word == null or not is_instance_valid(word) or stand.is_queued_for_deletion():
+			continue
+		var lifted := -(stand as Node2D).position.y
+		# Where it would be drawn unlifted.
+		var rect := _drawn(word)
+		rect.position.y += lifted
+		lifted = TextBudget.rise(taken, rect, SLOT_MARGIN, lifted, MOST_LIFT)
+		(stand as Node2D).position.y = -lifted
+		rect.position.y -= lifted
+		taken.append(rect)
+
+
+## Where a floating label's words are drawn in the world.
+static func _drawn(label: Label) -> Rect2:
+	return Rect2(label.global_position + _ink(label).position, _ink(label).size)
+
+
 ## The pixels a floating label's words draw, from its top left (PIX-268).
 ## Its box is no measure: taken before the label is in the tree, it is the
 ## fallback font's at twice the size, and a number centred on it sat five
 ## pixels or so left of its foe.
 static func _ink(label: Label) -> Rect2:
-	return Ink.of_text(label.text, UiStyle.bold_font(), UiStyle.BODY_PX)
+	# Measured once a text: the pass that keeps words clear asks every frame.
+	if label.get_meta("inked", "") != label.text:
+		label.set_meta("ink", Ink.of_text(label.text, UiStyle.bold_font(), UiStyle.BODY_PX))
+		label.set_meta("inked", label.text)
+	return label.get_meta("ink")
 
 
 ## A label bursting in at twice its size (PIX-209, PIX-211), not when motion
@@ -108,13 +166,29 @@ func _pop(label: Label, tween: Tween) -> void:
 ## A number over a head. Each lands a few pixels off the last (PIX-209), so
 ## a flurry reads as blows, not one smudge; a crit comes in gold with a "!"
 ## and a spark, bursting in at twice its size unless motion is reduced.
-func float_number(value: int, at: Vector2, color: Color, crit := false) -> void:
+## Blows on one `who` in one colour within NUMBER_JOIN_S add up into one
+## number (PIX-334: a pack's flurry read as a heap of numbers).
+func float_number(value: int, at: Vector2, color: Color, crit := false, who: Object = null) -> void:
+	var key := "%d:%s" % [who.get_instance_id(), color.to_html()] if who != null else ""
+	var now := GameClock.seconds()
+	var last: Dictionary = _numbers.get(key, {})
+	if not last.is_empty() and now - float(last["at"]) <= NUMBER_JOIN_S and is_instance_valid(last["word"]):
+		(last["word"] as Node).queue_free()
+		value += int(last["value"])
+		crit = crit or bool(last["crit"])
 	var label := _floating(str(value) + ("!" if crit else ""), UiStyle.BRASS_LIGHT if crit else color)
 	label.position = Vector2(Ink.centred(_ink(label), at.x + randf_range(-4.0, 4.0)), roundf(at.y - (4 if crit else 0)))
 	label.z_index = 11 if crit else 10
-	add_child(label)
+	_stand(label)
+	if key != "":
+		_numbers[key] = {"word": label, "value": value, "crit": crit, "at": now}
+	# The foes gone by leave their keys: let them go now and then.
+	if _numbers.size() > 64:
+		for stale: String in _numbers.keys():
+			if now - float(_numbers[stale]["at"]) > NUMBER_JOIN_S:
+				_numbers.erase(stale)
 	var life := 0.8 if crit else 0.6
-	var tween := create_tween().set_parallel()
+	var tween := label.create_tween().set_parallel()
 	if crit:
 		_pop(label, tween)
 		skill_flash(at + Vector2(0, 10), UiStyle.BRASS_LIGHT)
@@ -147,14 +221,15 @@ func skill_flash(at: Vector2, color: Color) -> void:
 	bloom.chain().tween_callback(burst.queue_free)
 
 
-## A level gained (PIX-211): a gold burst on the hero, LEVEL UP over their
-## head and the experience line flashing; its words go on the plate (_log).
+## A level gained (PIX-211): a gold burst on the hero and the experience
+## line flashing; its words go on the plate (Messages), after the fight
+## (PIX-340: LEVEL UP over the hero's head ran across the foes beside them,
+## over their tags and numbers, and said what the plate says).
 func level_up_burst() -> void:
 	if world.player == null:
 		return
 	skill_flash(world.player.global_position, UiStyle.GOLD)
 	skill_flash(world.player.global_position + Vector2(0, -8), UiStyle.BRASS_LIGHT)
-	float_text(Text.t("LEVEL UP"), world.player.global_position + Vector2(0, -40), UiStyle.GOLD, true)
 	world.hud.dock.flash_xp()
 
 
@@ -165,10 +240,35 @@ func level_up_burst() -> void:
 ## pack felled in a few blows reads "+36 XP" once. With motion reduced
 ## nothing rises or bursts: the rows fade in where they stand (a little
 ## higher, GAIN_STILL_LIFT), then out.
+## In a fight a win waits for its end (PIX-334: gold and XP popped over
+## each kill of a pack, among the blows): the fight's wins, merged, rise as
+## one from where the last was won.
 func show_gains(gains: Dictionary, at: Vector2) -> void:
 	if Gains.is_empty(gains):
 		return
 	Gains.merge(floated, gains)
+	if world != null and world.get("foes") != null and world.foes.in_fight(Foes.CALM_S):
+		if _held.is_empty():
+			_held = {"gains": Gains.none()}
+		Gains.merge(_held["gains"], gains)
+		_held["at"] = at
+		_held["view"] = world.view
+		return
+	_rise(gains, at)
+
+
+## The fight's wins rise once it's over: where the last was won, or over the
+## hero when that was on a map left behind.
+func _process(_delta: float) -> void:
+	if _held.is_empty() or world.foes.in_fight(Foes.CALM_S):
+		return
+	var held := _held
+	_held = {}
+	var at: Vector2 = held["at"] if held["view"] == world.view else world.player.global_position + OVER_HERO
+	_rise(held["gains"], at)
+
+
+func _rise(gains: Dictionary, at: Vector2) -> void:
 	var now := GameClock.seconds()
 	for i in range(_rising.size() - 1, -1, -1):
 		var gone: Variant = _rising[i]["box"]
@@ -201,7 +301,14 @@ func _lay_out(win: Dictionary) -> void:
 	var still: bool = GameState.settings.reduce_motion
 	var delay := GAIN_FIRST if win["fresh"] else 0.0
 	var lift := 0.0
-	for row: Dictionary in Gains.rows(win["gains"]):
+	var rows := Gains.rows(win["gains"])
+	# A row whose key went (XP alone, then gold beside it: one purse row,
+	# Gains.rows) gives way.
+	for key: String in shown.keys():
+		if not rows.any(func(row: Dictionary) -> bool: return row["key"] == key):
+			(shown[key] as Node).queue_free()
+			shown.erase(key)
+	for row: Dictionary in rows:
 		var line: Node2D = shown.get(row["key"])
 		if line == null:
 			line = _gain_row(row)
@@ -210,8 +317,10 @@ func _lay_out(win: Dictionary) -> void:
 			_come_in(line, delay, row["tone"] in ["fine", "epic"])
 			if not still:
 				delay += GAIN_STAGGER
-		elif (line.get_node("text") as Label).text != row["text"]:
+		elif (line.get_node("text") as Label).text != row["text"] or _then(line) != row.get("then", ""):
 			(line.get_node("text") as Label).text = row["text"]
+			if line.has_node("then"):
+				(line.get_node("then") as Label).text = "· " + row["then"]
 			_fit_row(line)
 			_bump(line)
 		line.position = Vector2(0, -lift)
@@ -221,16 +330,21 @@ func _lay_out(win: Dictionary) -> void:
 
 ## One row of a win: its mark (an item's icon when there's art for it, the
 ## purse's coin for gold) and its words in the row's colour, about the row's
-## foot so it bursts about its middle.
+## foot so it bursts about its middle; the purse's XP after its gold in the
+## XP's own colour (PIX-340: "+36 gold · +7 XP", one line).
 func _gain_row(row: Dictionary) -> Node2D:
 	var line := Node2D.new()
 	var label := _floating(row["text"], GAIN_TONES.get(row["tone"], UiStyle.CREAM))
 	label.name = "text"
 	line.add_child(label)
+	if row.has("then"):
+		var then := _floating("· " + row["then"], GAIN_TONES["xp"])
+		then.name = "then"
+		line.add_child(then)
 	var art: Texture2D = null
 	if row["item"] != "":
 		art = ItemIcons.texture(row["item"])
-	elif row["key"] == "gold":
+	elif row["tone"] == "gold":
 		art = UiStyle.coin()
 	if art != null:
 		var icon := Sprite2D.new()
@@ -255,13 +369,25 @@ func _fit_row(line: Node2D) -> void:
 	label.size = label.get_minimum_size()
 	var words := UiStyle.bold_font().get_string_size(label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, UiStyle.BODY_PX)
 	var ink := _ink(label)
+	var then: Label = line.get_node_or_null("then")
+	# The XP after the gold, a space's width on (the face's own).
+	var gap := UiStyle.bold_font().get_string_size(" ", HORIZONTAL_ALIGNMENT_LEFT, -1, UiStyle.BODY_PX).x
+	var after := gap + _ink(then).size.x if then != null else 0.0
 	var icon: Sprite2D = line.get_node_or_null("icon")
 	var side := icon.texture.get_size().x * icon.scale.x if icon != null else 0.0
 	var indent := side + 2.0 if icon != null else 0.0
-	var left := Ink.centred(Rect2(0, 0, indent + ink.size.x, 0), 0.0)
+	var left := Ink.centred(Rect2(0, 0, indent + ink.size.x + after, 0), 0.0)
 	if icon != null:
 		icon.position = Vector2(left, -roundf((words.y + side) / 2.0))
 	label.position = Vector2(left + indent - ink.position.x, -words.y)
+	if then != null:
+		then.size = then.get_minimum_size()
+		then.position = Vector2(left + indent + ink.size.x + gap - _ink(then).position.x, -words.y)
+
+
+## A row's XP after its gold, or "".
+static func _then(line: Node) -> String:
+	return (line.get_node("then") as Label).text.trim_prefix("· ") if line.has_node("then") else ""
 
 
 ## A row fading in after `delay`; a fine or epic piece bursts in at twice

@@ -1,7 +1,7 @@
 {
   "dodge": {
     "title": "Dodge",
-    "text": "Something's coming for you. Press {key:dodge} to roll out of the way - for a blink nothing can touch you, and a patch of ground marked for a blow is always worth leaving."
+    "text": "Monsters will charge at you. Press {key:dodge} to roll out of the way - for a blink nothing can touch you, and a patch of ground marked for a blow is always worth leaving."
   },
   "fright": {
     "title": "Too strong for them",

@@ -60,7 +60,7 @@ none: README.md .gitignore .gutconfig.json export_presets.cfg addons/* test/unit
 travel combat: scripts/world_camera.gd
 combat field night: scripts/world_foes.gd
 combat town: scripts/world_fx.gd scripts/state/gains.gd
-combat story: scripts/world_messages.gd
+combat story: scripts/world_messages.gd scripts/state/text_budget.gd
 town rooms trade story quest: scripts/world_interaction.gd
 town field: scripts/world_soundscape.gd scripts/sound.gd scripts/desktop_look.gd assets/audio/* assets/data/audio.json assets/data/hints.json
 story travel: scripts/world_stage.gd
