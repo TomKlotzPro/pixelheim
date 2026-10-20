@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.252.0",
+      "date": "2026-10-20",
+      "codename": "Real Flames",
+      "notes": [
+        "The Night of Ash finally looks like a fire: flames climb the burnt frames and corner posts and lick the rubble, a blaze roars where each house fell in, smoke drifts downwind and sparks fly over glowing coals; on the Night of Bells, flames run along the roof and out of the windows; Reduce motion keeps it all calm"
+      ]
+    },
+    {
       "version": "0.251.0",
       "date": "2026-10-20",
       "codename": "Steady Hands",

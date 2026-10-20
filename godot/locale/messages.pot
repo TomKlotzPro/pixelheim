@@ -4453,6 +4453,10 @@ msgid "Readable Danger"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Real Flames"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Recipes now demand skill: Smithing forges gear, Alchemy brews, and locked recipes show what level they ask"
 msgstr ""
 
@@ -5378,6 +5382,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The Night of Ash"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The Night of Ash finally looks like a fire: flames climb the burnt frames and corner posts and lick the rubble, a blaze roars where each house fell in, smoke drifts downwind and sparks fly over glowing coals; on the Night of Bells, flames run along the roof and out of the windows; Reduce motion keeps it all calm"
 msgstr ""
 
 #: assets/data/changelog.json
