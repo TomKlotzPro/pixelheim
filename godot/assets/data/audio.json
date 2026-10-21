@@ -136,50 +136,6 @@
     "rain"
   ],
   "themes": {
-    "fafnyr": {
-      "bpm": 92,
-      "voices": [
-        {
-          "wave": "square",
-          "duty": 0.25,
-          "vol": 0.45,
-          "notes": "D4:1 -:0.5 D4:0.5 F4:1 A4:1 G#4:2 A4:2 D5:1 C5:1 A4:1 F4:1 E4:2 D4:2"
-        },
-        {
-          "wave": "triangle",
-          "vol": 0.8,
-          "notes": "D2:2 D2:2 D2:2 C#2:2 A#1:2 A#1:2 A1:2 D2:2"
-        },
-        {
-          "wave": "noise",
-          "vol": 0.5,
-          "notes": "x:1 -:1 x:0.5 x:0.5 -:1 x:1 -:1 x:0.5 x:0.5 -:1 x:1 -:1 x:0.5 x:0.5 -:1 x:1 -:1 x:0.5 x:0.5 -:1"
-        }
-      ]
-    },
-    "morvax": {
-      "bpm": 72,
-      "voices": [
-        {
-          "wave": "triangle",
-          "vol": 0.6,
-          "vibrato": 0.012,
-          "notes": "E4:1.5 G4:0.5 F#4:1 A#4:1 B4:2 -:1 E5:1 D5:1.5 A#4:0.5 G4:1 F#4:1 E4:3 -:1"
-        },
-        {
-          "wave": "square",
-          "duty": 0.125,
-          "vol": 0.18,
-          "release": 0.6,
-          "notes": "E3:4 A#2:4 C3:4 E3:4"
-        },
-        {
-          "wave": "triangle",
-          "vol": 0.7,
-          "notes": "E2:4 A#1:4 C2:4 E2:4"
-        }
-      ]
-    },
     "dawn": {
       "bpm": 84,
       "voices": [

@@ -21,11 +21,6 @@ static func tier(number: int) -> Dictionary:
 	return _data()["tiers"][clampi(number, 0, MAX_TIER)]
 
 
-## The tier the ledger offers next; {} at the cap.
-static func next_tier(current: int) -> Dictionary:
-	return {} if current >= MAX_TIER else tier(current + 1)
-
-
 # ---- village projects (PIX-145) ------------------------------------------------
 # Each age past the Hamlet is a handful of projects, each paid in gold and a
 # region's material, each changing the town the moment it's funded; the last

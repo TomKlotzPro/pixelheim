@@ -788,10 +788,9 @@ static func flees_from(fighter: Dictionary, hero_level: int, held := false) -> b
 
 ## Bound to its fight whatever the levels (PIX-251): sent at the escort's
 ## wagon, one of the Night of Ash's foes (the scavenger at its meal, the
-## waves in the village), a mimic just burst from its chest, or the dead a
-## boss raised at its side.
+## waves in the village), or a mimic just burst from its chest.
 func held_to_fight() -> bool:
-	return _hunts_wagon() or has_meta("prologue") or has_meta("prologue_wave") or has_meta("bells_wave") or woken or is_in_group("summoned")
+	return _hunts_wagon() or has_meta("prologue") or has_meta("prologue_wave") or has_meta("bells_wave") or woken
 
 
 ## At the hero (straight, or a boss by its way round: _heading); in reach,

@@ -63,6 +63,8 @@ static func ending_scene(choice: String) -> String:
 	return _moment("ending:" + choice)
 
 
-## The scene a moment of play calls for (Cutscene.moment's, read once).
+## The scene a moment of play calls for ("ending:home", "ending:stay"), or
+## "" (PIX-32; the old floors' own moments left play with them, PIX-257,
+## and the old throne's with the old saves, PIX-319).
 static func _moment(key: String) -> String:
 	return String(_data()["moments"].get(key, ""))

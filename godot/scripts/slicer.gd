@@ -117,8 +117,3 @@ func _run_next() -> void:
 	# All done: the units go (see cancel).
 	if _next >= _units.size():
 		cancel()
-
-
-## The longest a unit of `kind` has taken so far, ms (0 when not yet seen).
-func longest(kind: String) -> float:
-	return float(_longest.get(kind, 0.0))

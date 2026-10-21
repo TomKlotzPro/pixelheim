@@ -143,10 +143,10 @@ func test_the_faced_villager_wins_then_any_neighbor() -> void:
 func test_the_town_talks_about_the_last_deed() -> void:
 	var bram := Npcs.by_id("villager_bram", [])
 	assert_eq(Npcs.reaction(bram, {}), "")
-	var line := Npcs.reaction(bram, {"kind": "cleared", "floor": "the Mossy Cellar"})
-	assert_string_contains(line, "the Mossy Cellar")
-	assert_eq(Npcs.reaction(Npcs.by_id("elder", []), {"kind": "boss", "boss": "Fafnyr the Ashen"}), "")
-	assert_eq(Npcs.reaction(Npcs.by_id("town_cat", []), {"kind": "boss", "boss": "Fafnyr the Ashen"}), "", "the cat doesn't care")
+	var line := Npcs.reaction(bram, {"kind": "project", "project": "well"})
+	assert_string_contains(line, "well")
+	assert_eq(Npcs.reaction(Npcs.by_id("elder", []), {"kind": "hunt", "beast": "Old Greymaw"}), "")
+	assert_eq(Npcs.reaction(Npcs.by_id("town_cat", []), {"kind": "hunt", "beast": "Old Greymaw"}), "", "the cat doesn't care")
 
 
 func test_the_hours_turn_from_day_to_night() -> void:

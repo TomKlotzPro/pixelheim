@@ -9357,10 +9357,6 @@ msgid "Innkeeper Sela"
 msgstr "Sela l'aubergiste"
 
 #: assets/data/npcs.json
-msgid "Is it true about {boss}? You look... normal. I expected taller."
-msgstr "C'est vrai, pour {boss} ? Vous avez l'air si... ordinaire. Je m'attendais à quelqu'un de plus grand."
-
-#: assets/data/npcs.json
 msgid "It was the stew or the poultice. Probably the stew."
 msgstr "C'était le ragoût ou le cataplasme. Sans doute le ragoût."
 
@@ -9765,10 +9761,6 @@ msgid "The stone golems have taken to the cart hall. Rails don't run themselves.
 msgstr "Les golems de pierre ont élu domicile dans la halle des wagonnets. Les rails ne s'entretiennent pas tout seuls."
 
 #: assets/data/npcs.json
-msgid "The whole town heard about {boss}. Bram's telling it like he was there."
-msgstr "Tout Pixelheim est au courant, pour {boss}. Bram le raconte comme s'il y était."
-
-#: assets/data/npcs.json
 msgid "The yetis took the strongbox and left the furs. Even they know what's worth stealing."
 msgstr "Les yétis ont pris le coffre et laissé les fourrures. Même eux savent ce qui vaut la peine d'être volé."
 
@@ -9853,20 +9845,12 @@ msgid "Wren's post: travel to the town gate lands you on the square, and you wal
 msgstr "Relais de Wren : voyager jusqu'à la porte de la ville vous dépose sur la place, et vous marchez un dixième plus vite en surface"
 
 #: assets/data/npcs.json
-msgid "You came back from {floor}? Everyone said nobody comes back from there."
-msgstr "{floor}, et vous en revenez ? Tout le monde disait qu'on n'en revenait jamais."
-
-#: assets/data/npcs.json
 msgid "You came up the road as the fire came down the mountain. Who are you?"
 msgstr "Vous montiez par la route quand le feu descendait de la montagne. Qui êtes-vous ?"
 
 #: assets/data/npcs.json
 msgid "{beast}, gone! My mother won't believe it. I barely believe it."
 msgstr "Fini, {beast} ! Ma mère ne va jamais me croire. Moi-même, j'y crois à peine."
-
-#: assets/data/npcs.json
-msgid "{floor}, was it? My uncle went down there once. Once."
-msgstr "{floor}, c'est ça ? Mon oncle y est descendu une fois. Une seule."
 
 #: assets/data/npcs.json
 msgid "{settler} moved in! Pixelheim is filling up again."
@@ -14409,10 +14393,6 @@ msgid "\"Courier. You'll want the kings' gold, then. A hundred years I lay on it
 msgstr "« Messager. Vous voulez l'or des rois, j'imagine. Cent ans que je suis couché dessus. »"
 
 #: assets/data/story.json
-msgid "\"I carried a letter,\" you say. \"You broke a seal.\""
-msgstr "« J'ai porté une lettre, dites-vous. Vous avez brisé un sceau. »"
-
-#: assets/data/story.json
 msgid "\"Take it. It's all corners.\""
 msgstr "« Prenez-le. Ce ne sont que des coins. »"
 
@@ -14465,10 +14445,6 @@ msgid "Art by Shade (merchant-shade.itch.io)"
 msgstr "Graphismes de Shade (merchant-shade.itch.io)"
 
 #: assets/data/story.json
-msgid "Below the hoard, the dead keep their own court."
-msgstr "Sous le trésor, les morts tiennent leur propre cour."
-
-#: assets/data/story.json
 msgid "Beside it an old man sits up, as if he'd heard you coming."
 msgstr "À côté, un vieil homme se redresse, comme s'il avait entendu vos pas."
 
@@ -14499,10 +14475,6 @@ msgstr "Cinquante ans de bâtons, un trait pour chaque lampe allumée dans la va
 #: assets/data/story.json
 msgid "He carried Liane the last mile up and complained the whole way. And Hale kept it fifty years?"
 msgstr "Il a porté Liane sur la dernière lieue de la montée en râlant tout du long. Et Hale l'a gardé cinquante ans ?"
-
-#: assets/data/story.json
-msgid "He is awake, and back on his hoard."
-msgstr "Il est éveillé, et de retour sur son trésor."
 
 #: assets/data/story.json
 msgid "He isn't working. He is looking down at the valley, counting lamps."
@@ -14545,16 +14517,8 @@ msgid "Morvax takes a room at the inn and a bench by the fountain, and argues wi
 msgstr "Morvax prend une chambre à l'auberge et un banc près de la fontaine, et se dispute avec Maren tous les jours."
 
 #: assets/data/story.json
-msgid "Morvax the Deathless"
-msgstr "Morvax le Sans-Mort"
-
-#: assets/data/story.json
 msgid "On top of the mountain a dragon sleeps on a chain. Everyone agrees this is the best place for him."
 msgstr "Au sommet de la montagne, un dragon dort au bout d'une chaîne. Tout le monde s'accorde à dire que c'est très bien ainsi."
-
-#: assets/data/story.json
-msgid "Once a hero of Pixelheim. Now its oldest debt."
-msgstr "Jadis un héros de Pixelheim. Aujourd'hui, sa plus vieille dette."
 
 #: assets/data/story.json
 msgid "Oskar swung the pick, Liane did the sums, Tam fed the miners and Morvax paid. I set my mark last."
@@ -14623,10 +14587,6 @@ msgstr "La montagne est calme, la taverne beaucoup moins, et le fromage n'a jama
 #: assets/data/story.json
 msgid "The sky turns grey behind the mountain. Fafnyr sinks onto the square, spent, and the collar drags at him: north, always north."
 msgstr "Le ciel grisaille derrière la montagne. Fafnyr s'affaisse sur la place, à bout de forces, et le collier le tire : vers le nord, toujours vers le nord."
-
-#: assets/data/story.json
-msgid "The summit is his. So is everything the heroes carried up."
-msgstr "Le sommet est à lui. Comme tout ce que les héros y ont monté."
 
 #: assets/data/story.json
 msgid "The tally marks"

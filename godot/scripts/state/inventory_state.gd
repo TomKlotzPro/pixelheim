@@ -57,9 +57,9 @@ static func _add_affix(piece: Dictionary, rarity: String, roll: Callable) -> voi
 	piece["affixes"] = affixes
 
 
-## A piece from the Deep Hunt (PIX-191), forged deeper with each tier: more
-## bonus, a point more on every affix, and one more affix. The deep's bonus
-## is kept apart from the forge's (PIX-218: in `bonus` it locked the forge
+## A piece forged in the deep (PIX-191; the Kings' Vault's floors since
+## PIX-257), deeper with each tier: more bonus, a point more on every
+## affix, and one more affix. The deep's bonus is kept apart from the forge's (PIX-218: in `bonus` it locked the forge
 ## and masterwork out).
 static func deepen(piece: Dictionary, tier: int, roll: Callable = Callable()) -> Dictionary:
 	if tier <= 0:

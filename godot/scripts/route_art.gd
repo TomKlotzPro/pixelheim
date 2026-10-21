@@ -206,11 +206,6 @@ static func size(name: String) -> Vector2i:
 	return Vector2i(String(rows[0]).length(), rows.size())
 
 
-## How many cells across piece `name` stands.
-static func cells_wide(name: String) -> int:
-	return ceili(size(name).x / float(HamletArt.TILE))
-
-
 ## A lamp of `kind` by day (PIX-324): the ember lamp, its cage's inks
 ## swapped for its kind's.
 static func lamp(kind: String) -> Texture2D:

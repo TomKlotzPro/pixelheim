@@ -523,12 +523,6 @@ func _run_test_harness() -> void:
 	if flags.has("--dissolve-at"):
 		Dissolve.held_at = float(flags.value("--dissolve-at"))
 	await get_tree().create_timer(0.4).timeout
-	# `--set large_text,clear_warnings`: those settings on for this run only
-	# (the harness never writes the player's settings).
-	if flags.has("--set"):
-		for setting: String in flags.list("--set"):
-			GameState.settings.set(setting, true)
-		world.apply_video()
 	if flags.has("reentry"):
 		await _reentry()
 	# `--story <id>`: a story scene from assets/data/story.json, over the world.
@@ -582,9 +576,6 @@ func _run_test_harness() -> void:
 	# so a walk can test what stops them), `--zoom Z` changes the camera
 	# (`--zoom play`: the play zoom, CameraRig.ZOOM, which a headless run's
 	# window doesn't fit); `overview` (below) frames the whole map.
-	# `--role necromancer`: the hero's role, for how a role wears gear (PIX-175).
-	if flags.has("--role"):
-		GameState.hero.role_id = flags.value("--role")
 	# `--wear iron_helm,iron_armor`: gear put on the hero (drawn on them, PIX-129).
 	if flags.has("--wear"):
 		for item_id: String in flags.list("--wear"):
@@ -738,9 +729,6 @@ func _run_test_harness() -> void:
 		# Evening (PIX-159): the town's folk on the square.
 		GameState.world.steps = (Gathering.day_of(GameState.world.steps) + 0.5) * DayNight.DAY_CYCLE_STEPS
 		world.folk.keep_hours(true)
-	if flags.has("ringtoss"):
-		world.add_child(preload("res://scripts/ring_toss_screen.gd").new())
-		await get_tree().create_timer(0.3).timeout
 	if flags.has("waypoints"):
 		# Every waypoint found (Solid Ground): the map's list at its longest.
 		# The waystations built too (PIX-322).
@@ -777,28 +765,10 @@ func _run_test_harness() -> void:
 		if flags.has("walk-path"):
 			world.get_children().filter(func(node: Node) -> bool: return node.has_method("_walk"))[0]._walk()
 			await get_tree().create_timer(0.3).timeout
-	if flags.has("levelup"):
-		# A breath short of the next level (PIX-211): the first kill lifts it.
-		GameState.hero.xp = GameState.hero.xp_to_next - 1
-	if flags.has("--nodes"):
-		# Skills already learned (PIX-190): `--nodes a,b,c`, then onto the dock.
-		for node_id in flags.list("--nodes"):
-			GameState.hero.skill_nodes.append(node_id)
-			Skills.place_on_dock(GameState.hero, node_id)
 	if flags.has("--path"):
 		# A path already walked: `--path juggernaut,bastion`.
 		GameState.hero.path = Array(flags.list("--path"))
 		Skills.place_on_dock(GameState.hero, "path")
-	if flags.has("--cast"):
-		# A dock key pressed (PIX-190): `--cast 5`, with energy to spare.
-		var key := int(flags.value("--cast"))
-		await get_tree().create_timer(0.4).timeout
-		GameState.hero.mp = maxi(99, int(GameState.hero.stats["maxMp"]))
-		var hurt_before: Array = get_tree().get_nodes_in_group("mobs").map(func(mob: Node) -> int: return int(mob.fighter["hp"]))
-		world.player.cast(key - 1)
-		await get_tree().create_timer(0.6).timeout
-		var hurt_after: Array = get_tree().get_nodes_in_group("mobs").map(func(mob: Node) -> int: return int(mob.fighter["hp"]))
-		print("cast %s: foes' hp %s -> %s, %s %d" % [Skills.docked(GameState.hero)[key - 1].get("name", "-"), hurt_before, hurt_after, Skills.resource_label(GameState.hero.role_id), GameState.hero.mp])
 	if flags.has("stats") or flags.has("skills"):
 		# Points to spend: a few of each.
 		GameState.hero.stat_points = 5
@@ -966,21 +936,10 @@ func _run_test_harness() -> void:
 		# letters for its recipient (PIX-253).
 		if objective["kind"] in ["deliver", "deliverTo"]:
 			GameState.pack.add_item(objective["itemId"], int(objective["count"]))
-	if flags.has("--take"):
-		# A quest taken, nothing done yet: `--take gunnar_wagon`.
-		GameState.progression.quests[flags.value("--take")] = {"progress": 0, "done": false}
 	if flags.has("--delivered"):
 		# One of Maren's letters handed over and answered (PIX-255):
 		# `--delivered letter_hale`, and Hale's order book is there to read.
 		GameState.progression.quests[flags.value("--delivered")] = {"progress": 1, "done": true}
-	if flags.has("--follow-wagon"):
-		# The hero walks beside the escort's wagon for that many seconds (PIX-192).
-		var until := GameClock.seconds() + float(flags.value("--follow-wagon"))
-		while GameClock.seconds() < until:
-			await get_tree().physics_frame
-			if world.stage.escort != null and is_instance_valid(world.stage.escort):
-				world.player.position = world.stage.escort.position + Vector2(20, 0)
-		print("escort: waypoint %d, hp %d" % [world.stage.escort.index, world.stage.escort.hp] if world.stage.escort != null and is_instance_valid(world.stage.escort) else "escort: none")
 	if flags.has("--talk-to"):
 		# A conversation with one villager by id, wherever they stand.
 		world.interaction.talk(Npcs.by_id(flags.value("--talk-to"), GameState.settlement.settlers))
