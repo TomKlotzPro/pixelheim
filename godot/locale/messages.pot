@@ -2089,6 +2089,10 @@ msgid "A question in a conversation is answered with 1 or 2, or a click on the a
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A question's answers stack in a column so long French answers fit, and Ola and five other villagers no longer pace into the sea, a roof or a fence"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A real gate in and out: three wide, a gatehouse with two towers and its portcullis raised, torches lit at night, and the road running through it"
 msgstr ""
 
@@ -4082,6 +4086,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Old Greymaw, Mossback and the other named beasts no longer get stuck on a riverbank or inside their ruins, and walk round what blocks them"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Old Hessa keeps the shrine in Pixelheim: talk to her to forget your skills or, new, your training, with every stat point back; the first time of each is free, then skills cost 20 gold each and training your level in gold per point (Tom's playtest)"
 msgstr ""
 
 #: assets/data/changelog.json

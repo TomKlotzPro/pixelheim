@@ -2089,6 +2089,10 @@ msgid "A question in a conversation is answered with 1 or 2, or a click on the a
 msgstr "On répond à une question en conversation avec 1 ou 2, ou d'un clic sur la réponse ; Esc la remet à plus tard"
 
 #: assets/data/changelog.json
+msgid "A question's answers stack in a column so long French answers fit, and Ola and five other villagers no longer pace into the sea, a roof or a fence"
+msgstr "Les réponses à une question s'empilent en colonne pour que les longues réponses en français tiennent, et Ola et cinq autres villageois ne marchent plus dans la mer, un toit ou une clôture"
+
+#: assets/data/changelog.json
 msgid "A real gate in and out: three wide, a gatehouse with two towers and its portcullis raised, torches lit at night, and the road running through it"
 msgstr "Une vraie porte pour entrer et sortir : trois cases de large, une porterie flanquée de deux tours, la herse levée, des torches allumées la nuit, et la route qui la traverse"
 
@@ -4083,6 +4087,10 @@ msgstr "Ciré"
 #: assets/data/changelog.json
 msgid "Old Greymaw, Mossback and the other named beasts no longer get stuck on a riverbank or inside their ruins, and walk round what blocks them"
 msgstr "Vieille-Gueule-Grise, Dos-de-Mousse et les autres bêtes nommées ne restent plus coincés au bord d'une rivière ou dans leurs ruines, et contournent ce qui leur barre la route"
+
+#: assets/data/changelog.json
+msgid "Old Hessa keeps the shrine in Pixelheim: talk to her to forget your skills or, new, your training, with every stat point back; the first time of each is free, then skills cost 20 gold each and training your level in gold per point (Tom's playtest)"
+msgstr "La vieille Hessa garde le sanctuaire de Pixelheim : parlez-lui pour oublier vos compétences ou, nouveau, votre entraînement, avec tous vos points de caractéristique rendus ; la première fois de chaque est gratuite, ensuite les compétences coûtent 20 or chacune et l'entraînement votre niveau en or par point (playtest de Tom)"
 
 #: assets/data/changelog.json
 msgid "Old Pell comes home with his canary and takes the room above Hilda's forge; her upgrades cost a little less"
