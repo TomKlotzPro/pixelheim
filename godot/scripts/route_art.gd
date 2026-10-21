@@ -187,11 +187,6 @@ static func size(name: String) -> Vector2i:
 	return Vector2i(String(rows[0]).length(), rows.size())
 
 
-## How many cells across piece `name` stands.
-static func cells_wide(name: String) -> int:
-	return ceili(size(name).x / float(HamletArt.TILE))
-
-
 ## The shard alight over the lamp at night: clear but for the shard,
 ## EMBER_LIT's beats played in a loop, slow as a coal breathes.
 static func ember() -> SpriteFrames:

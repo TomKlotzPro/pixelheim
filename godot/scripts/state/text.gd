@@ -21,7 +21,7 @@ const NOT_WORDS := [
 	"pieces", "slot", "stat", "requires", "map", "giver", "from", "roleId", "branch", "species", "to", "look",
 	"scaling", "sells", "set", "stage", "wave", "move", "shape", "color", "named", "phases", "opensAfter", "drop",
 	"family", "anim", "dir", "questId", "who", "icon", "facing", "then", "ending", "sceneId", "region", "shop",
-	"projectId", "settles", "upgrades", "hunted", "items", "summon", "prizeItem", "requiresSettler", "about",
+	"projectId", "settles", "upgrades", "hunted", "items", "prizeItem", "requiresSettler", "about",
 	"rewardItemIds", "gearIds", "stackIds", "foes", "catches", "cures", "beds", "stingers",
 	"bossIds", "resource", "rugs", "tile", "unlock", "inflicts", "effect",
 ]

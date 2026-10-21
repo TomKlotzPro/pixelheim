@@ -13,7 +13,7 @@ func _press(action: StringName) -> InputEventAction:
 func test_every_step_is_a_kind_the_player_knows_with_what_it_needs() -> void:
 	var needs := {
 		"stage": ["stage"], "fade": ["to"], "caption": ["text"], "tint": ["color"],
-		"actor": ["sheet", "family"], "eyes": ["at"], "card": ["text"], "credits": ["seconds"],
+		"actor": ["sheet", "family"], "card": ["text"], "credits": ["seconds"],
 	}
 	for scene_id: String in Cutscene.scenes():
 		var steps: Array = Cutscene.scenes()[scene_id]
@@ -69,18 +69,6 @@ func test_e_moves_on_without_ending() -> void:
 	next.call()
 	assert_true(scene.advance)
 	assert_false(scene.finished)
-
-
-## The story's big moments (PIX-32): each names a scene that exists. The
-## old floors' own (a boss's intro, a floor's first clear) left play with
-## them (PIX-257), and the old throne's endings with the old saves (PIX-319).
-func test_every_moment_plays_a_scene_that_exists() -> void:
-	for key: String in ["ending:home", "ending:stay"]:
-		var scene_id := Cutscene.moment(key)
-		assert_ne(scene_id, "", "%s has a moment" % key)
-		assert_true(Cutscene.scenes().has(scene_id), "%s plays %s" % [key, scene_id])
-	for key: String in ["boss:dragon", "boss:lich", "cleared:3", "cleared:7", "cleared:10", "victory", "victory:rest"]:
-		assert_eq(Cutscene.moment(key), "", "%s left play" % key)
 
 
 func test_a_seen_moment_is_kept_in_the_save_and_only_once() -> void:

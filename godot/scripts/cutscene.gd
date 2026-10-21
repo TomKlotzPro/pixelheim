@@ -14,7 +14,7 @@ const BAR := 76
 ## Seconds per letter as a caption types itself out.
 const TYPE_S := 0.035
 ## What a step can be.
-const KINDS := ["stage", "fade", "caption", "card", "tint", "ash", "shake", "actor", "eyes", "logo", "credits", "wait", "theme"]
+const KINDS := ["stage", "fade", "caption", "card", "tint", "ash", "shake", "actor", "logo", "credits", "wait", "theme"]
 ## The stages a scene can set: a painted backdrop, or the world itself
 ## (PIX-253 step 9: the square at dawn after the Night of Bells, held still
 ## under the letterbox), where an actor stands on a cell (`cell`) and
@@ -50,13 +50,6 @@ var roll_end := ""
 ## Every scene, by id: its steps (see KINDS).
 static func scenes() -> Dictionary:
 	return _story()["scenes"]
-
-
-## The scene a moment of play calls for ("ending:home", "ending:stay"), or
-## "" (PIX-32; the old floors' own moments left play with them, PIX-257,
-## and the old throne's with the old saves, PIX-319).
-static func moment(key: String) -> String:
-	return String(_story()["moments"].get(key, ""))
 
 
 ## The story's words in the player's language (PIX-208): translated as they
@@ -178,8 +171,6 @@ func _run(step: Dictionary) -> void:
 			_shake(float(step.get("strength", 5)), float(step.get("seconds", 1.0)))
 		"actor":
 			_actor(step)
-		"eyes":
-			_eyes(step)
 		"logo":
 			await _logo(float(step.get("hold", 2.0)))
 		"wait":
@@ -527,29 +518,6 @@ func _on_screen(sprite: AnimatedSprite2D, at: Array) -> Vector2:
 	var feet := MapView.center(Vector2i(int(at[0]), int(at[1])))
 	feet.y += PunyArt.lift(sprite.get_meta("spec")) * float(sprite.get_meta("art_scale"))
 	return get_viewport().get_canvas_transform() * feet
-
-
-## Two eyes in the dark, breathing light.
-func _eyes(step: Dictionary) -> void:
-	var at: Array = step["at"]
-	var color := Color(step.get("color", "#b46cff"))
-	var haze := Sprite2D.new()
-	haze.texture = TitleScene.glow_texture(110, color, 0.12, 5)
-	haze.material = TitleScene.additive()
-	haze.position = Vector2(at[0], at[1])
-	actors.add_child(haze)
-	for side in [-1, 1]:
-		var eye := Sprite2D.new()
-		eye.texture = TitleScene.glow_texture(14, color, 1.0, 4)
-		eye.material = TitleScene.additive()
-		eye.position = Vector2(at[0] + side * 22, at[1])
-		actors.add_child(eye)
-		if not still:
-			# Bound to the eye: a looping tween that outlives what it animates
-			# spins forever in a release build (the web froze here).
-			var breathe := eye.create_tween().set_loops()
-			breathe.tween_property(eye, "modulate:a", 0.35, 1.2).from(1.0)
-			breathe.tween_property(eye, "modulate:a", 1.0, 1.2)
 
 
 func _shake(strength: float, seconds: float) -> void:

@@ -356,23 +356,3 @@ func _walked(map: MapData, from: Vector2i) -> Dictionary:
 				seen[next] = true
 				queue.append(next)
 	return seen
-
-
-## Everything a plan holds, as one hash.
-static func _fingerprint(plan: Dictionary) -> String:
-	var map: MapData = plan["map"]
-	var cells: Array = map.grid.keys()
-	cells.sort()
-	var parts: PackedStringArray = []
-	parts.append("%s %s %s" % [map.id, map.size, map.spawn])
-	for cell: Vector2i in cells:
-		parts.append("%d,%d=%s" % [cell.x, cell.y, map.grid[cell]])
-	for cell: Vector2i in map.portals:
-		parts.append("p%s=%s" % [cell, map.portals[cell]])
-	# A foe's words (a warden's name) are the language's, not the plan's.
-	for foe: Dictionary in plan["foes"]:
-		parts.append("%s %s %s %d" % [foe["id"], foe["elite"], foe["cell"], foe["lift"]])
-	parts.append(str(plan["rooms"]))
-	parts.append(str(plan["stairs"]))
-	parts.append(str(plan["patch_ground"]))
-	return "|".join(parts).md5_text()

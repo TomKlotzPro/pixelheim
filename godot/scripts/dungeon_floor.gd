@@ -53,8 +53,7 @@ const ENTRANCE_SALT := 52
 ## dungeon's way in; Depths.dress wires a lower floor's to the floor above).
 ## With a `region` it is that region's cave (_regional): its plan adds
 ## {spawns, down, find, piece_cells}. Returns {map, foes: [{id, elite,
-## cell, lift}], rooms: [Rect2i], stairs: Vector2i, patch_ground:
-## [Vector2i] (where a gathering patch could grow, PIX-143)}.
+## cell, lift}], rooms: [Rect2i], stairs: Vector2i}.
 static func lay(spec: Dictionary) -> Dictionary:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = int(spec["seed"])
@@ -106,18 +105,7 @@ static func lay(spec: Dictionary) -> Dictionary:
 			"cell": room.position + room.size / 2,
 			"lift": int(spec.get("lift", 0)),
 		})
-	# A patch of something worth picking in the first hall, clear of its foe:
-	# where it may grow (each day picks one, PIX-250).
-	var hall := rooms[1]
-	var open: Array[Vector2i] = []
-	for cy in range(hall.position.y + 1, hall.end.y - 1):
-		for cx in range(hall.position.x + 1, hall.end.x - 1):
-			var cell := Vector2i(cx, cy)
-			if map.grid[cell] == "floor" and cell.distance_to(foes[0]["cell"]) >= 2.5:
-				open.append(cell)
-	if open.is_empty():
-		open.append(map.spawn)
-	var laid := {"map": map, "foes": foes, "rooms": rooms, "stairs": stairs, "patch_ground": open}
+	var laid := {"map": map, "foes": foes, "rooms": rooms, "stairs": stairs}
 	if spec.has("region"):
 		_regional(laid, spec)
 	return laid

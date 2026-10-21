@@ -1,8 +1,7 @@
 class_name Gathering
 ## Gathering spots (PIX-143): patches of each wild region's material that
-## the hero picks by walking over, and one patch on every dungeon floor, of
-## a material that deepens with the floors. Pure, over combat.json's
-## "gathering"; GameState picks, MapView draws.
+## the hero picks by walking over. Pure, over combat.json's "gathering";
+## GameState picks, MapView draws.
 ##
 ## What grows moves with the days (PIX-250). Patches used to stand on fixed
 ## cells and come back every 300 steps, several times a day, so the same
@@ -186,29 +185,6 @@ static func _card_apart(deck: Array, at: int, dealt: Dictionary) -> Vector2i:
 		if clear:
 			return cell
 	return deck[posmod(at, deck.size())]
-
-
-## What a dungeon floor's patch grows: deeper floors, rarer finds.
-static func floor_material(level: int) -> String:
-	var found := ""
-	for step: Array in rules()["floorMaterials"]:
-		if level >= int(step[0]):
-			found = step[1]
-	return found
-
-
-## A floor's patch has its own id, so it regrows like any other.
-static func floor_spot_id(level: int) -> String:
-	return "floor_%d_patch" % level
-
-
-## Where a floor's patch grows on day `day` (PIX-250): one of the open cells
-## of its first hall (DungeonFloor's patch_ground), dealt as the wild ones
-## are, a different one each day.
-static func floor_patch(ground: Array, level: int, day: int) -> Vector2i:
-	var deck := ground.duplicate()
-	_shuffle(deck, "%d:floor:%d" % [SEED, level])
-	return deck[posmod(day, deck.size())]
 
 
 ## Ready to pick: never picked, or picked on an earlier day (PIX-250: it

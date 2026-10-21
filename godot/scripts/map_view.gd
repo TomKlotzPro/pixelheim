@@ -2201,30 +2201,6 @@ func _add_smoke(rect: Rect2i, share := 1.0) -> void:
 static var _glow_textures := {}
 
 
-## A warm, stepped glow (the title's lamplight), shown only at night, and
-## with `light_radius` a real light beside it that lights what's around
-## (PIX-221), gone with it.
-func _add_glow(at: Vector2, radius: int, peak: float, light_radius := 0.0, light_color := Lights.LAMP, flicker := false, energy := 1.0) -> Sprite2D:
-	var key := "%d:%f" % [radius, peak]
-	if not _glow_textures.has(key):
-		_glow_textures[key] = TitleScene.glow_texture(radius, Color(1.0, 0.72, 0.38), peak, 4)
-	var glow := Sprite2D.new()
-	glow.texture = _glow_textures[key]
-	# Added onto the night, never darkened by it.
-	glow.material = Lights.glow()
-	if light_radius > 0.0:
-		var lamp := Lights.make(at, light_radius, light_color, energy, flicker)
-		props.add_child(lamp)
-		glow.tree_exiting.connect(lamp.queue_free)
-		glow.set_meta("light", lamp)
-	glow.position = at
-	glow.z_index = 5
-	glow.add_to_group("decor")
-	props.add_child(glow)
-	night_glows.append(glow)
-	return glow
-
-
 static var _halo_textures := {}
 
 
