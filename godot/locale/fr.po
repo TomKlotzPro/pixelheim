@@ -3645,6 +3645,10 @@ msgid "Leaves drift down through the forests, dust floats in the light of every 
 msgstr "Des feuilles tombent en virevoltant dans les forêts, la poussière flotte dans la lumière de chaque pièce, et des braises s'élèvent des forges, des âtres et des feux de camp"
 
 #: assets/data/changelog.json
+msgid "Ledgers look like ledgers: Captain Hale's order book is an open book with ruled pages, a ribbon, a quill and inkwell, his map and a dagger beside it; the town hall gets its ledger desk, Mirelle a counting table with coins and a strongbox, and the bounty board a clawed notice (Tom's playtest)"
+msgstr "Les registres ressemblent à des registres : celui du capitaine Hale est un livre ouvert aux pages réglées, avec un signet, une plume et un encrier, sa carte et une dague à côté ; la mairie a son bureau du registre, Mirelle une table de comptes avec ses pièces et son coffre, et le tableau des primes un avis griffé (playtest de Tom)"
+
+#: assets/data/changelog.json
 msgid "Less text at once in a fight: the battle log shows a few lines at a time and folds repeats (+3 gold four times reads +12 gold), a fight's gold, XP and loot rise once when it's over, on one line, blows on one foe add up into one number, and the log no longer repeats what the screen already shows (Tom's playtest)"
 msgstr "Moins de texte d'un coup en combat : le journal affiche quelques lignes à la fois et regroupe les répétitions (quatre fois +3 or deviennent +12 or), l'or, l'XP et le butin d'un combat montent une seule fois à la fin, sur une ligne, les coups sur un même ennemi s'additionnent en un seul nombre, et le journal ne répète plus ce que l'écran montre déjà (playtest de Tom)"
 
@@ -5351,6 +5355,10 @@ msgstr "Les Bois-Profonds et les Marais de Fange sont deux fois plus profonds - 
 #: assets/data/changelog.json
 msgid "The Deepwood is a real forest: thickets and glades, trees of mixed sizes with overlapping crowns, undergrowth, shade under the canopy and sun shafts in the clearings"
 msgstr "Les Bois-Profonds sont une vraie forêt : fourrés et clairières, arbres de toutes tailles aux cimes qui se mêlent, sous-bois, ombre sous la canopée et rais de soleil dans les clairières"
+
+#: assets/data/changelog.json
+msgid "The E prompt sits just above what it opens and never hides it"
+msgstr "Le E s'affiche juste au-dessus de ce qu'il ouvre et ne le cache plus"
 
 #: assets/data/changelog.json
 msgid "The Ember Seal"

@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.261.0",
+      "date": "2026-10-21",
+      "codename": "Open Book",
+      "notes": [
+        "Ledgers look like ledgers: Captain Hale's order book is an open book with ruled pages, a ribbon, a quill and inkwell, his map and a dagger beside it; the town hall gets its ledger desk, Mirelle a counting table with coins and a strongbox, and the bounty board a clawed notice (Tom's playtest)",
+        "The E prompt sits just above what it opens and never hides it"
+      ]
+    },
+    {
       "version": "0.260.0",
       "date": "2026-10-21",
       "codename": "Clean Slate",
