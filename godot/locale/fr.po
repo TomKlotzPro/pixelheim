@@ -4769,6 +4769,10 @@ msgid "Saves have their own new format: a hero who has explored everything now s
 msgstr "Les sauvegardes ont leur nouveau format : un héros qui a tout exploré tient en 9 Ko au lieu de 300, et chaque sauvegarde prend une milliseconde au lieu de trente"
 
 #: assets/data/changelog.json
+msgid "Screens no longer draw over the HUD: a screen that dims the world puts the dock, the clock and the quill away while it's open, and at dawn the clock moves with the sky"
+msgstr "Les écrans ne passent plus par-dessus l'interface : un écran qui assombrit le monde range la barre, l'horloge et la plume tant qu'il est ouvert, et à l'aube l'horloge avance avec le ciel"
+
+#: assets/data/changelog.json
 msgid "Second Thoughts"
 msgstr "Réflexion faite"
 
@@ -4843,6 +4847,10 @@ msgstr "Petites attentions"
 #: assets/data/changelog.json
 msgid "Small Things"
 msgstr "Petites choses"
+
+#: assets/data/changelog.json
+msgid "Small fixes: a villager you talk to from below is no longer hidden by the hero; Hale's order book stays shut until his letter comes; dropping something you wear is refused at once; a potion states its heal once, the computed one; a fall at the Ashes wakes you by Sela's tent, not the inn; « 0,5 % » with a comma in French; counts read « 3 × Roseau des marais »; the hero's default name is the same everywhere"
+msgstr "Petites corrections : un villageois à qui l'on parle par en dessous n'est plus caché par le héros ; le registre de Hale reste fermé jusqu'à l'arrivée de sa lettre ; jeter un objet porté est refusé tout de suite ; une potion n'annonce qu'une fois son soin, le vrai ; une chute aux Cendres vous réveille près de la tente de Sela, pas à l'auberge ; « 0,5 % » avec une virgule en français ; les quantités s'écrivent « 3 × Roseau des marais » ; le nom par défaut du héros est le même partout"
 
 #: assets/data/changelog.json
 msgid "Small things put right: hero creation answers its keys again (role, look, the first night), the hero swings whatever weapon is in hand, Hilda's craft list moves without a stutter, and the Lich Crown's every stat includes endurance"
@@ -5517,6 +5525,10 @@ msgid "The Night of Ash"
 msgstr "La Nuit des Cendres"
 
 #: assets/data/changelog.json
+msgid "The Night of Ash can no longer stall: Sela's cap can't be dropped or sold while the night runs, and she gives another if it's lost (Claude's playtest)"
+msgstr "La Nuit des Cendres ne peut plus se bloquer : le casque de Sela ne peut être ni jeté ni vendu tant que la nuit dure, et elle en redonne un s'il est perdu (playtest de Claude)"
+
+#: assets/data/changelog.json
 msgid "The Night of Ash finally looks like a fire: flames climb the burnt frames and corner posts and lick the rubble, a blaze roars where each house fell in, smoke drifts downwind and sparks fly over glowing coals; on the Night of Bells, flames run along the roof and out of the windows; Reduce motion keeps it all calm"
 msgstr "La Nuit des Cendres ressemble enfin à un incendie : les flammes grimpent le long des charpentes brûlées et des poteaux, lèchent les décombres, un brasier gronde là où chaque maison s'est effondrée, la fumée part avec le vent et les étincelles volent au-dessus des braises ; pendant la Nuit des Cloches, les flammes courent sur le toit et sortent des fenêtres ; « Réduire les animations » garde tout calme"
 
@@ -6131,6 +6143,10 @@ msgstr "Trois histoires à suivre, lettre après lettre : le Club du fromage d
 #: assets/data/changelog.json
 msgid "Thumb-Sized"
 msgstr "À portée de pouce"
+
+#: assets/data/changelog.json
+msgid "Tidy Up"
+msgstr "Grand ménage"
 
 #: assets/data/changelog.json
 msgid "Tiers past Eldritch count on in numerals, and deep gear's worth grows more gently with each tier"

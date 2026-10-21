@@ -4769,6 +4769,10 @@ msgid "Saves have their own new format: a hero who has explored everything now s
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Screens no longer draw over the HUD: a screen that dims the world puts the dock, the clock and the quill away while it's open, and at dawn the clock moves with the sky"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Second Thoughts"
 msgstr ""
 
@@ -4842,6 +4846,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Small Things"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Small fixes: a villager you talk to from below is no longer hidden by the hero; Hale's order book stays shut until his letter comes; dropping something you wear is refused at once; a potion states its heal once, the computed one; a fall at the Ashes wakes you by Sela's tent, not the inn; « 0,5 % » with a comma in French; counts read « 3 × Roseau des marais »; the hero's default name is the same everywhere"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5517,6 +5525,10 @@ msgid "The Night of Ash"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Night of Ash can no longer stall: Sela's cap can't be dropped or sold while the night runs, and she gives another if it's lost (Claude's playtest)"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Night of Ash finally looks like a fire: flames climb the burnt frames and corner posts and lick the rubble, a blaze roars where each house fell in, smoke drifts downwind and sparks fly over glowing coals; on the Night of Bells, flames run along the roof and out of the windows; Reduce motion keeps it all calm"
 msgstr ""
 
@@ -6130,6 +6142,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Thumb-Sized"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Tidy Up"
 msgstr ""
 
 #: assets/data/changelog.json
