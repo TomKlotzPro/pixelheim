@@ -3709,6 +3709,10 @@ msgid "Light the five lanterns on the square, drive off the embers and douse the
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Lighter Load"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Lights Along the Roads"
 msgstr ""
 
@@ -6006,6 +6010,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The ways between maps are natural passes now: the cliffs part and the road runs through, with no signposts, no name boxes and no framed caves or torches"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The web game no longer carries its test suite: about 1.4 MB less to download before you play"
 msgstr ""
 
 #: assets/data/changelog.json
