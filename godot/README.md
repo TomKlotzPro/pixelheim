@@ -257,10 +257,11 @@ between two maps calls for `godot/tools/flows.sh motion line-motion`.
 What needs a window runs in CI too (PIX-275), beside the checks: a virtual
 display (xvfb) with Mesa's software rendering (the flows on the desktop
 renderer as on the Mac, Forward+ on lavapipe; the look book on the
-browser's, as `lookbook.sh` shoots it), the release flows windowed in two
-shares side by side (the `windowed` jobs, `flows.sh --shard`, the look book
-with the second), and the `pictures` job, which puts every flow's picture on
-one contact sheet (`tools/flows_sheet.py`) and passes when both shares did.
+browser's, as `lookbook.sh` shoots it), the release flows windowed in four
+shares side by side (the `windowed` jobs, `flows.sh --shard`, PIX-350) and
+the look book on a fifth, and the `pictures` job, which puts every flow's
+picture on one contact sheet (`tools/flows_sheet.py`) and passes when every
+share did.
 Stepped, a window drawn by software at a few frames a second lives the same
 seconds as a headless run, so each windowed report must show what its flow
 expects too, the motion flow's steps back among them: that is the motion
