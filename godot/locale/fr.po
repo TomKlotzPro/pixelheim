@@ -5973,6 +5973,10 @@ msgid "The water cleared: translucent shallows over the riverbed, and a lip of f
 msgstr "L'eau s'est éclaircie : des hauts-fonds translucides au-dessus du lit de la rivière, et un liseré d'écume le long de chaque rive, là où l'eau rencontre la terre"
 
 #: assets/data/changelog.json
+msgid "The way out after a boss no longer just pops up: once the body and the loot have gone, the floor cracks where the boss fell, the ground shakes, dust rises and a stair forms out of daylight with a rumble, a crack of stone and a gust of air; Reduce motion keeps it to a fade (Tom's playtest)"
+msgstr "La sortie après un boss n'apparaît plus d'un coup : une fois le corps et le butin partis, le sol se fend là où le boss est tombé, la terre tremble, la poussière se lève et un escalier se forme dans la lumière du jour, avec un grondement, un craquement de pierre et un souffle d'air ; « Réduire les animations » s'en tient à un fondu (playtest de Tom)"
+
+#: assets/data/changelog.json
 msgid "The waypoint list shows every waypoint under its place, greys the ones not found yet, and names the region where you land"
 msgstr "La liste des relais les montre tous sous leur lieu, grise ceux qui ne sont pas encore trouvés et nomme la région où vous arrivez"
 
@@ -6255,6 +6259,10 @@ msgstr "Avis de recherche"
 #: assets/data/changelog.json
 msgid "Water comes alive: it swells with light, glints here and there, foam laps along every shore, and what stands on a bank is mirrored in it"
 msgstr "L'eau prend vie : elle ondule de lumière, scintille çà et là, l'écume vient lécher chaque rive, et ce qui se dresse sur la berge s'y reflète"
+
+#: assets/data/changelog.json
+msgid "Way Up"
+msgstr "Vers le jour"
 
 #: assets/data/changelog.json
 msgid "Ways In"
