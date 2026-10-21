@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.262.0",
+      "date": "2026-10-21",
+      "codename": "Green Rings",
+      "notes": [
+        "The land heals round the lamps: each morning a lit waystation lamp's ring reaches one cell further into the ash, from bare earth at its edge to grass, flowers and saplings by the lamp, up to five cells; no night pack rises inside a ring, and the Ash's heat and embers fade over healed ground"
+      ]
+    },
+    {
       "version": "0.261.0",
       "date": "2026-10-21",
       "codename": "Open Book",

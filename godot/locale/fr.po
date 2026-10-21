@@ -3317,6 +3317,10 @@ msgid "Green Fields"
 msgstr "Prés verts"
 
 #: assets/data/changelog.json
+msgid "Green Rings"
+msgstr "Cercles verts"
+
+#: assets/data/changelog.json
 msgid "Green Thumbs"
 msgstr "La main verte"
 
@@ -5723,6 +5727,10 @@ msgstr "Le coup fatal frappe plus fort : un éclair blanc, une pause plus long
 #: assets/data/changelog.json
 msgid "The land got lived-in: a fenced sheep pen, flower meadows, kitchen gardens behind the cottages, and a walled orchard behind the player's house"
 msgstr "La campagne paraît habitée : un enclos à moutons, des prés fleuris, des potagers derrière les maisonnettes et un verger clos de murs derrière la maison du joueur"
+
+#: assets/data/changelog.json
+msgid "The land heals round the lamps: each morning a lit waystation lamp's ring reaches one cell further into the ash, from bare earth at its edge to grass, flowers and saplings by the lamp, up to five cells; no night pack rises inside a ring, and the Ash's heat and embers fade over healed ground"
+msgstr "La terre guérit autour des lanternes : chaque matin, le cercle d'une lanterne de halte allumée gagne une case sur la cendre, de la terre nue au bord jusqu'à l'herbe, aux fleurs et aux jeunes arbres près de la lanterne, jusqu'à cinq cases ; aucune meute de nuit ne surgit dans un cercle, et la chaleur et les braises des Cendres s'effacent sur la terre guérie"
 
 #: assets/data/changelog.json
 msgid "The line above the dock says where: the next step, the place it's in and how far along you are"
