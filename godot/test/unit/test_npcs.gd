@@ -98,6 +98,33 @@ func test_every_villager_stands_on_walkable_ground_with_a_sprite() -> void:
 		assert_gt(npc["lines"].size(), 0, "%s has nothing to say" % npc["id"])
 
 
+## Dry feet (PIX-342: Ola stood and paced half in the water at Saltmere):
+## on every map, and on the village at every age, everyone who stands there
+## - at home, at a stall, waiting in the wilds or settled - stands on open
+## ground, and a wanderer's whole pacing square is open too, so no step is
+## skipped and none cuts a corner over the sea or through a wall.
+func test_every_villager_stands_and_paces_on_dry_ground() -> void:
+	var settled: Array = Npcs._data()["recruits"].map(func(recruit: Dictionary) -> String: return recruit["id"])
+	var maps := {"town": true}
+	for npc: Dictionary in Npcs._data()["npcs"]:
+		maps[npc["mapId"]] = true
+	for recruit: Dictionary in Npcs._data()["recruits"]:
+		maps[recruit["found"]["mapId"]] = true
+		maps[String(recruit["home"].get("mapId", "town"))] = true
+	for map_id: String in maps:
+		for tier in range(0, Town.MAX_TIER + 1) if map_id == "town" else [1]:
+			var done := Town.projects_through(tier)
+			var map := MapData.load_tiered(map_id, done, 1)
+			for npc: Dictionary in Npcs.on_map(map_id, tier, [], done) + Npcs.on_map(map_id, tier, settled, done):
+				var home := Vector2i(npc["x"], npc["y"])
+				for offset: Vector2i in Npcs.LOOP if npc["wander"] else [Vector2i.ZERO]:
+					var cell := home + offset
+					var where := "%s at %s on %s (age %d)" % [npc["id"], cell, map_id, tier]
+					assert_true(map.is_walkable(cell), "%s: %s, not open ground" % [where, map.tile_at(cell)])
+					assert_does_not_have(PunyTerrain.WATERS, map.tile_at(cell), "%s stands in the water" % where)
+					assert_false(npc["wander"] and map.portals.has(cell), "%s paces onto a doorway" % where)
+
+
 func test_the_faced_villager_wins_then_any_neighbor() -> void:
 	var occupied := {Vector2i(5, 4): {"id": "north"}, Vector2i(6, 5): {"id": "east"}}
 	var hero := Vector2i(5, 5)
