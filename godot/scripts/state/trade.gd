@@ -7,6 +7,13 @@ extends RefCounted
 ## never saved; the rest is GameState's sections, reached through `owner`.
 
 const GameStateScript := preload("res://scripts/state/game_state.gd")
+## The numbers the counter sets a piece against what's worn by (PIX-336),
+## in the order its card lists them.
+const COMPARED := ["damage", "armor", "strength", "intelligence", "dexterity", "defense", "endurance"]
+## Junk is cheap (PIX-336): a material worth this much or less, never more.
+const JUNK_VALUE := 25
+## Junk is what's past this many crafts' worth of the most a recipe takes.
+const JUNK_KEEP_CRAFTS := 3
 
 ## The GameState this works on, never the `GameState` autoload: tests build
 ## their own (GameStateScript.new()), and a module reaching the autoload
@@ -17,6 +24,11 @@ var owner: GameStateScript
 ## The shop of the stall the hero is trading at on the burnt square (PIX-146),
 ## while its keeper's building is rubble; "" anywhere else. Not saved.
 var stall_shop := ""
+
+## This visit's sales at the counter (PIX-336), to buy back at what they
+## fetched: {item_id, count, each}, and the piece itself for gear. Emptied
+## as the counter closes; never saved.
+var sold_here: Array[Dictionary] = []
 
 
 func _init(state: GameStateScript) -> void:
@@ -110,6 +122,19 @@ func buy_item(item_id: String) -> bool:
 	return true
 
 
+## What one of a stack fetches here: the shop's rate, the city's, the
+## trophy's and Odo's store's (PIX-206).
+func item_pays(item_id: String) -> int:
+	var shop_id := active_shop()
+	return floori(Economy.sell_price_at(shop_id, item_id, owner.town_tier()) * sale_multiplier(shop_id))
+
+
+## What a gear piece fetches here, its rarity priced in.
+func gear_pays(instance: Dictionary) -> int:
+	var shop_id := active_shop()
+	return floori(Economy.gear_sell_price_at(shop_id, instance, owner.town_tier()) * sale_multiplier(shop_id))
+
+
 ## SELL_ITEM: `count` of a stack (one by default; the web sold one at a time),
 ## at this shop's rate. Returns the gold earned (0 = refused).
 func sell_item(item_id: String, count := 1) -> int:
@@ -119,9 +144,16 @@ func sell_item(item_id: String, count := 1) -> int:
 	if shop_id == "" or have <= 0 or Catalog.item(item_id).get("quest", false):
 		return 0
 	var sold := mini(count, have)
-	var price := floori(Economy.sell_price_at(shop_id, item_id, owner.town_tier()) * sale_multiplier(shop_id))
+	var price := item_pays(item_id)
 	owner.pack.gold += price * sold
 	owner.pack.remove_item(item_id, sold)
+	# On the buyback shelf, with what else of it went at that price.
+	var shelved := sold_here.filter(func(entry: Dictionary) -> bool:
+		return not entry.has("piece") and entry["item_id"] == item_id and entry["each"] == price)
+	if shelved.is_empty():
+		sold_here.append({"item_id": item_id, "count": sold, "each": price})
+	else:
+		shelved[0]["count"] += sold
 	owner.pack_changed()
 	return price * sold
 
@@ -132,13 +164,142 @@ func sell_gear(uid: String) -> int:
 	var instance := owner.pack.gear_by_uid(uid)
 	if shop_id == "" or instance.is_empty() or owner.pack.is_equipped(uid):
 		return 0
-	var price := floori(
-		Economy.gear_sell_price_at(shop_id, instance, owner.town_tier()) * sale_multiplier(shop_id)
-	)
+	var price := gear_pays(instance)
 	owner.pack.gold += price
 	owner.pack.gear.erase(instance)
+	sold_here.append({"item_id": instance["itemId"], "count": 1, "each": price, "piece": instance})
 	owner.pack_changed()
 	return price
+
+
+## Buys back one of this visit's sales (PIX-336), all of it at what it
+## fetched, the very piece for gear. false when the gold falls short.
+func buy_back(index: int) -> bool:
+	if index < 0 or index >= sold_here.size():
+		return false
+	var entry := sold_here[index]
+	var price := int(entry["each"]) * int(entry["count"])
+	if owner.pack.gold < price:
+		return false
+	owner.pack.gold -= price
+	if entry.has("piece"):
+		owner.pack.gear.append(entry["piece"])
+	else:
+		owner.pack.add_item(entry["item_id"], int(entry["count"]))
+	sold_here.remove_at(index)
+	owner.pack_changed()
+	owner.save_now()
+	return true
+
+
+## How many of a stack the counter asks to sell (PIX-336): one at least,
+## never more than is carried.
+static func stack_amount(asked: int, have: int) -> int:
+	return clampi(asked, 1, maxi(1, have))
+
+
+## How much of a stack is junk (PIX-336): only a cheap material (misc,
+## worth JUNK_VALUE or less; never a quest's, never a trophy for the
+## shelf), and of that what's past JUNK_KEEP_CRAFTS crafts' worth of the
+## most one recipe takes; all of one no recipe takes (an old boot).
+static func junk_count(item_id: String, have: int) -> int:
+	var item := Catalog.item(item_id)
+	if item.get("category", "") != "misc" or item.get("quest", false) or int(item.get("value", 0)) > JUNK_VALUE or Town.trophy_buffs().has(item_id):
+		return 0
+	var most := 0
+	for entry: Dictionary in Economy.recipes():
+		most = maxi(most, int(entry["needs"].get(item_id, 0)))
+	return maxi(0, have - JUNK_KEEP_CRAFTS * most)
+
+
+## A piece's numbers as the counter compares them (PIX-336): its damage
+## and armour with the forge's and the deep's bonus, and what it adds to
+## each stat. {} for nothing.
+static func numbers(piece: Dictionary) -> Dictionary:
+	if piece.is_empty():
+		return {}
+	var item := Catalog.item(piece["itemId"])
+	var out := {}
+	if item.has("damage"):
+		out["damage"] = HeroRules.gear_damage(piece)
+	if item.has("armor"):
+		out["armor"] = HeroRules.gear_armor(piece)
+	var adds: Dictionary = item.get("grants", {}).duplicate()
+	var extra := InventoryState.shown_affixes(piece)
+	for stat: String in extra:
+		adds[stat] = int(adds.get(stat, 0)) + int(extra[stat])
+	for stat: String in adds:
+		out[stat] = int(adds[stat])
+	return out
+
+
+## Each of `piece`'s numbers against `worn`'s, in COMPARED's order: how far
+## up (more than zero) or down. Nothing worn is all up.
+static func compare(piece: Dictionary, worn: Dictionary) -> Dictionary:
+	var mine := numbers(piece)
+	var theirs := numbers(worn)
+	var out := {}
+	for key: String in COMPARED:
+		if mine.has(key) or theirs.has(key):
+			out[key] = int(mine.get(key, 0)) - int(theirs.get(key, 0))
+	return out
+
+
+## Worse than `worn`: nothing up and something down. Never worse than nothing.
+static func worse(piece: Dictionary, worn: Dictionary) -> bool:
+	if worn.is_empty():
+		return false
+	var steps := compare(piece, worn).values()
+	return steps.all(func(step: int) -> bool: return step <= 0) and steps.any(func(step: int) -> bool: return step < 0)
+
+
+## What wearing `item_id` would take off (PIX-336): what fills its slot,
+## and for a ring the first ring once both fingers are full (as equip
+## does), nothing while one is free. {} when nothing.
+func worn_against(item_id: String) -> Dictionary:
+	var slot: String = Catalog.item(item_id).get("slot", "")
+	if slot == "ring":
+		if not owner.pack.equipped.has("ring1") or not owner.pack.equipped.has("ring2"):
+			return {}
+		slot = "ring1"
+	return owner.pack.gear_by_uid(owner.pack.equipped.get(slot, ""))
+
+
+## A piece the counter calls junk (PIX-336): not worn, no set's, and worse
+## than what's worn in its slot (than both rings, for a ring).
+func junk_piece(instance: Dictionary) -> bool:
+	var item := Catalog.item(instance["itemId"])
+	if owner.pack.is_equipped(instance["uid"]) or item.has("set") or item.get("quest", false):
+		return false
+	var slots: Array = ["ring1", "ring2"] if item.get("slot", "") == "ring" else [item.get("slot", "")]
+	return slots.all(func(slot: String) -> bool: return worse(instance, owner.pack.gear_by_uid(owner.pack.equipped.get(slot, ""))))
+
+
+## Everything "Sell all junk" sells here (PIX-336): {items: {id: count},
+## gear: [uid], gold}. Never what a taken delivery needs.
+func junk() -> Dictionary:
+	var out := {"items": {}, "gear": [], "gold": 0}
+	for item_id: String in owner.pack.items:
+		var count := junk_count(item_id, int(owner.pack.items[item_id]))
+		if count > 0 and owner.questing.delivery_dip({item_id: count}).is_empty():
+			out["items"][item_id] = count
+			out["gold"] += count * item_pays(item_id)
+	for instance in owner.pack.gear:
+		if junk_piece(instance):
+			out["gear"].append(instance["uid"])
+			out["gold"] += gear_pays(instance)
+	return out
+
+
+## Sells all the junk (PIX-336), each onto the buyback shelf. The gold earned.
+func sell_junk() -> int:
+	var lot := junk()
+	var gold := 0
+	for item_id: String in lot["items"]:
+		gold += sell_item(item_id, int(lot["items"][item_id]))
+	for uid: String in lot["gear"]:
+		gold += sell_gear(uid)
+	return gold
 
 
 ## Breaks a piece down at Hilda's (PIX-182): half of what it's made of back,

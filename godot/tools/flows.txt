@@ -63,6 +63,14 @@ chest | --map town chest | map=town cell=\(79, 4\) gold=90 floats=\+60 [a-z]+ lo
 # A keeper's counter, and the alchemist's craft tab (PIX-129).
 shop | --map town_shop shop | map=town_shop | rooms trade screen
 craft | --map town_alchemist shop --tab 2 | map=town_alchemist | rooms trade screen
+# The counter's goods beside the pack (PIX-336): bread bought past the deed;
+# three pelts sold, the counter asking how many; all the junk sold at once
+# (herbs past what crafting keeps, the old boots, the rusty sword under an
+# iron one); three pelts sold whole (Z) and bought back at what they fetched.
+shop-buy | --map town_shop shop --keys s,e | map=town_shop open=shop_screen gold=496 | rooms trade screen
+shop-sell-stack | --map town_shop shop --tab 1 --keys s,s,s,s,e,d,d,e | map=town_shop open=shop_screen gold=566 | rooms trade screen
+shop-sell-junk | --map town_shop --wear iron_sword shop --tab 1 --keys e,e | map=town_shop open=shop_screen gold=521 | rooms trade screen
+shop-buy-back | --map town_shop shop --tab 1 --keys s,s,s,s,z,e,a,e | map=town_shop open=shop_screen gold=500 | rooms trade screen
 # A night at the inn: paid for, and woken at six (PIX-246).
 sleep | --map town_inn night sleep | map=town_inn gold=20 clock=06:00 | rooms night
 # The quill by the clock (PIX-302 step 4): it writes as a moment is saved

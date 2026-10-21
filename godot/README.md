@@ -143,7 +143,7 @@ godot --path godot -- --screenshot fight kill         # swing until it dies (its
 godot --path godot -- --screenshot fight kill hurt --foe wyvern   # another foe, and let it bite back
 godot --path godot -- --screenshot talk --map town_shop   # talk to the map's first villager
 godot --path godot -- --screenshot near --map town_hall   # stand beside them (the "!" prompt)
-godot --path godot -- --screenshot shop --map town_smith --tab 2   # a keeper's counter (500g), tab by index
+godot --path godot -- --screenshot shop --map town_smith --tab 2   # a keeper's counter (500g, a pack to sell), tab by index
 godot --path godot -- --screenshot station --map town_alchemist   # E at the room's first cauldron or forge (report: tab=Craft)
 godot --path godot -- --screenshot hall --map town_hall   # the town ledger (20000g); `bank` for Mirelle's
 godot --path godot -- --screenshot --map town --town-tier 4  # preview the village at another age
@@ -441,7 +441,7 @@ fr.po, and no msgstr has a plain or no-break space where U+202F belongs.
 - `scripts/state/` — the `GameState` autoload and its typed sections (hero, pack, settlement, progression, world), the save codec, slots and settings
 - `scripts/player.gd` / `scripts/enemy.gd` — live combat actors
 - `scripts/npcs.gd` / `scripts/npc.gd` / `scripts/dialogue_box.gd` — villagers: who lives where, their pacing, and conversations
-- `scripts/state/economy.gd` + `scripts/shop_screen.gd` — shops, forge and crafting rules and the keeper's counter
+- `scripts/state/economy.gd` + `scripts/state/trade.gd` + `scripts/shop_screen.gd` — shops, forge and crafting rules (junk, buyback, gear set against what's worn) and the keeper's counter
 - `scripts/state/town.gd` + `scripts/{town_hall,bank}_screen.gd` (on `ledger_screen.gd`) — town tiers, deeds, the bank, recruits, the inn
 - `scripts/state/quests.gd` + `scripts/journal_screen.gd` — the villagers' quests: a giver's first word accepts, kills tick bounties, deliveries leave the pack on turn-in (`GameState.questing.resolve_quests`); Q opens the journal
 - `scripts/state/post.gd` + `assets/data/post.json` — the Pixelheim Post (PIX-320): from chapter 2 a post box on the square holds a few pieces each game morning, worked out from the day, a seed and the threads (`Post.in_box`: someone where the hero has been, past no shut gate, the sender at home); E takes them (`GameState.posting.take_bag`), a word with the addressee hands one over for a tip and sometimes a reply (`posting.deliver`), the journal's Post tab reads them, and the map marks addressees faintly. Twelve threads since PIX-321, every place in two at least, some waiting on the story (a gate, a settler home, the Night of Bells, Coming Home's answer: Morvax's post goes where `Homecoming.place` has him) or on another thread's piece (`after`); a delivery stamps the courier's book (the journal's Postmarks tab, `Postmark` drawing each place's stamp), and some pieces leave a gift or a recipe. Only what the hero did is kept (`PostState`, with the book's stamps and where each piece went)

@@ -52,6 +52,8 @@ const ARROWS := {"Up": "↑", "Down": "↓", "Left": "←", "Right": "→"}
 ## Rarity, inked: fine pieces in blue, epic in purple.
 const FINE := Color("1f5a9a")
 const EPIC := Color("6e2d8c")
+## A number up on what's worn, inked green (PIX-336); down is LAMP.
+const GAIN := Color("2f6b22")
 ## Grain flecks in the parchment.
 const GRAIN := Color("e0c995")
 
@@ -358,8 +360,9 @@ static func screen_footer(line: String) -> HBoxContainer:
 	return footer(line, Vector2(0, FOOTER_Y), true)
 
 
-## The hero's gold, the one way it's shown (PIX-213): the coin and the sum.
-static func purse(amount: int, font_size := 16) -> HBoxContainer:
+## The hero's gold, the one way it's shown (PIX-213): the coin and the sum;
+## every price at the counter too, in ink on the page (PIX-336).
+static func purse(amount: int, font_size := 16, color := GOLD) -> HBoxContainer:
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 4)
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -368,7 +371,7 @@ static func purse(amount: int, font_size := 16) -> HBoxContainer:
 	mark.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	mark.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_child(mark)
-	var sum := strong(str(amount), font_size, GOLD)
+	var sum := strong(str(amount), font_size, color)
 	sum.name = "sum"
 	row.add_child(sum)
 	return row
@@ -596,6 +599,24 @@ static func arrow() -> TextureRect:
 		_frames["arrow"] = _texture(art)
 	var node := TextureRect.new()
 	node.texture = _frames["arrow"]
+	node.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	node.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	return node
+
+
+## A number's way against what's worn (PIX-336): a small arrow, up in
+## GAIN's green, down in LAMP's red, outlined like the page's arrow.
+static func trend(up: bool) -> TextureRect:
+	var key := "trend_up" if up else "trend_down"
+	if not _frames.has(key):
+		var art := Image.create(7, 5, false, Image.FORMAT_RGBA8)
+		art.fill(Color(0, 0, 0, 0))
+		for row in 4:
+			for x in range(row, 7 - row):
+				art.set_pixel(x, 4 - row if up else row, (GAIN if up else LAMP) if row < 3 and x > row and x < 6 - row else NIGHT)
+		_frames[key] = _texture(art)
+	var node := TextureRect.new()
+	node.texture = _frames[key]
 	node.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	node.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	return node
