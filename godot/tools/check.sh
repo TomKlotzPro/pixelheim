@@ -15,8 +15,8 @@
 #
 # quick looks at the branch's diff against origin/main: its commits since the
 # two parted, what isn't committed yet and new files. It runs
-# - the release and catalogue checks (python, a second; the tools' own tests
-#   too when godot/tools/*.py or the export presets changed);
+# - the release, catalogue and README layout checks (python, a second; the
+#   tools' own tests too when godot/tools/*.py or the export presets changed);
 # - the import, only when the diff touches art, sound, fonts, scripts,
 #   shaders, scenes or tests (the data's JSON is read as it is), or a pull
 #   or a rebase changed some since check.sh last imported;
@@ -43,8 +43,8 @@
 # flows.sh motion line-motion watches them here.
 #
 # full runs what CI runs: the release script's tests and its check, the
-# catalogue check, the import, the web export, then GUT beside every map
-# booted and every flow.
+# catalogue and layout checks, the import, the web export, then GUT beside
+# every map booted and every flow.
 #
 # Everything runs headless with the audio off (--audio-driver Dummy): no
 # window opens, nothing plays. Each step's output stays in godot/flows/check/.
@@ -203,6 +203,7 @@ if [[ $mode == full ]]; then
 	step pytests "^Ran " python3 -m unittest discover -s tools -p 'test_*.py'
 	step release "release check" python3 tools/release.py --check
 	step i18n "current" python3 tools/i18n.py --check
+	step layout "current" python3 tools/layout.py --check
 	import_now
 	# The export after the import and before the rest: it rewrites Godot's
 	# class and uid caches, which every run beside it would read.
@@ -462,6 +463,7 @@ if [[ $python_tests == 1 ]]; then
 fi
 step release "release check" python3 tools/release.py --check
 step i18n "current" python3 tools/i18n.py --check
+step layout "current" python3 tools/layout.py --check
 if [[ -n $import ]]; then
 	import_now
 fi
