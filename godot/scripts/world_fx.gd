@@ -60,6 +60,9 @@ var _numbers := {}
 ## there (PIX-340, keep_clear), this far apart, at most this far.
 const SLOT_MARGIN := 1.0
 const MOST_LIFT := 36.0
+## The most anything over the world goes up from where it is: a big word's
+## rise and the most it steps up (reach).
+const REACH := 16.0 + MOST_LIFT
 
 
 ## A word that rises and fades over where it happened (PIX-155: "dodged",
@@ -112,12 +115,15 @@ func _stand(label: Label) -> void:
 ## wins rising and of the words before it - never back down, so it doesn't
 ## jump about as the foes move. Words rising together at one pace stay clear.
 ## The wins step up clear of the tags first, each whole (PIX-343: they rise
-## at each kill again, among the pack's tags).
-func keep_clear(reserved: Array[Rect2]) -> void:
+## at each kill again, among the pack's tags). None rises into the HUD's
+## plates at the top, `over` (where they stand over the world: the boss bar,
+## a title card, a hint): it stays under them (TextBudget.room_under,
+## PIX-345: LEVEL UP was cut by the boss bar).
+func keep_clear(reserved: Array[Rect2], over: Array[Rect2] = []) -> void:
 	var taken: Array[Rect2] = reserved.duplicate()
 	for win: Dictionary in _rising:
 		if is_instance_valid(win["box"]):
-			taken.append_array(_lift_win(win, reserved))
+			taken.append_array(_lift_win(win, reserved, over))
 	for stand: Node in get_children():
 		if not stand.has_meta("word") or stand.is_queued_for_deletion() or not is_instance_valid(stand.get_meta("word")):
 			continue
@@ -126,10 +132,40 @@ func keep_clear(reserved: Array[Rect2]) -> void:
 		# Where it would be drawn unlifted.
 		var rect := _drawn(word)
 		rect.position.y += lifted
-		lifted = TextBudget.rise(taken, rect, SLOT_MARGIN, lifted, MOST_LIFT)
+		lifted = minf(TextBudget.rise(taken, rect, SLOT_MARGIN, lifted, MOST_LIFT), TextBudget.room_under(over, rect, SLOT_MARGIN))
 		(stand as Node2D).position.y = -lifted
 		rect.position.y -= lifted
 		taken.append(rect)
+
+
+## What rises over the world now, where it's drawn: each win whole, then
+## each word (the harness's hudclash=).
+func shown() -> Array[Rect2]:
+	var out: Array[Rect2] = []
+	for win: Dictionary in _rising:
+		if not is_instance_valid(win["box"]) or (win["box"] as Node).is_queued_for_deletion():
+			continue
+		var rects: Array[Rect2] = []
+		for line: Node in (win["box"] as Node).get_children():
+			for part: String in ["text", "then"]:
+				if line.has_node(part) and not line.is_queued_for_deletion():
+					rects.append(_drawn(line.get_node(part)))
+		if not rects.is_empty():
+			out.append(rects.reduce(func(whole: Rect2, rect: Rect2) -> Rect2: return whole.merge(rect), rects[0]))
+	for stand: Node in get_children():
+		if stand.has_meta("word") and not stand.is_queued_for_deletion() and is_instance_valid(stand.get_meta("word")):
+			out.append(_drawn(stand.get_meta("word")))
+	return out
+
+
+## Where what rises over the world may still go (PIX-345: the Victory card
+## stood on a boss's win; Hud.title_card stands clear of it): each of shown
+## up as far as it may yet rise and step up.
+func reach() -> Array[Rect2]:
+	var out: Array[Rect2] = []
+	for rect in shown():
+		out.append(rect.grow_individual(0.0, REACH, 0.0, 0.0))
+	return out
 
 
 ## How many wins are rising over the world now (the harness's rising=).
@@ -137,9 +173,10 @@ func rising_now() -> int:
 	return _rising.filter(func(win: Dictionary) -> bool: return is_instance_valid(win["box"]) and not (win["box"] as Node).is_queued_for_deletion()).size()
 
 
-## A win's rows lifted together just clear of `reserved`, never back down
-## (its lift kept on the win, for _lay_out); where its words are drawn now.
-func _lift_win(win: Dictionary, reserved: Array[Rect2]) -> Array[Rect2]:
+## A win's rows lifted together just clear of `reserved`, never back down,
+## and under `over` (its lift kept on the win, for _lay_out); where its
+## words are drawn now.
+func _lift_win(win: Dictionary, reserved: Array[Rect2], over: Array[Rect2]) -> Array[Rect2]:
 	var lines: Array = (win["box"] as Node).get_children().filter(func(line: Node) -> bool: return not line.is_queued_for_deletion())
 	var rects: Array[Rect2] = []
 	for line: Node in lines:
@@ -154,8 +191,8 @@ func _lift_win(win: Dictionary, reserved: Array[Rect2]) -> Array[Rect2]:
 		whole = whole.merge(rect)
 	# Where it would be drawn unlifted.
 	whole.position.y += lifted
-	var step := TextBudget.rise(reserved, whole, SLOT_MARGIN, lifted, MOST_LIFT) - lifted
-	if step > 0.0:
+	var step := minf(TextBudget.rise(reserved, whole, SLOT_MARGIN, lifted, MOST_LIFT), TextBudget.room_under(over, whole, SLOT_MARGIN)) - lifted
+	if step != 0.0:
 		win["lift"] = lifted + step
 		for line: Node2D in lines:
 			line.position.y -= step

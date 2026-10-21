@@ -73,3 +73,32 @@ func test_a_word_rises_just_clear_of_a_tag() -> void:
 	assert_eq(TextBudget.rise([] as Array[Rect2], number, 1.0, 4.0), 4.0, "never back down")
 	var wall := Rect2(0, -100, 30, 120)
 	assert_eq(TextBudget.rise([wall] as Array[Rect2], number, 1.0, 0.0, 36.0), 36.0, "no room: as high as it may, still shown")
+
+
+## PIX-345: LEVEL UP rose into the boss bar and was cut. A word stays under
+## the HUD's plates over it: up only so far, down under one it's already in.
+func test_a_word_stays_under_the_plates_over_it() -> void:
+	var bar := Rect2(0, 0, 100, 20)
+	assert_eq(TextBudget.room_under([bar] as Array[Rect2], Rect2(10, 30, 20, 8), 1.0), 9.0, "up until its top is a pixel under the bar")
+	assert_eq(TextBudget.room_under([bar] as Array[Rect2], Rect2(10, 15, 20, 8), 1.0), -6.0, "in it: down under it")
+	assert_eq(TextBudget.room_under([bar] as Array[Rect2], Rect2(200, 30, 20, 8), 1.0), INF, "beside it: nothing over it")
+	var card := Rect2(0, 100, 100, 40)
+	assert_eq(TextBudget.room_under([card] as Array[Rect2], Rect2(10, 30, 20, 8), 1.0), INF, "a plate under it isn't over it")
+	assert_eq(TextBudget.room_under([bar, card] as Array[Rect2], Rect2(10, 160, 20, 8), 1.0), 19.0, "under two, the lower")
+
+
+## PIX-345: the Victory card stood on what the boss's fall won, rising. A
+## title card stands where it does when that's clear, else at the nearest
+## height clear of what's there, inside its bounds; with nowhere clear, at
+## its own.
+func test_a_card_stands_at_the_nearest_clear_height() -> void:
+	var card := Rect2(500, 140, 280, 60)
+	assert_eq(TextBudget.spot([] as Array[Rect2], card, 14.0, 534.0, 6.0), 140.0, "nothing there: where it stands")
+	var win := Rect2(560, 100, 160, 80)
+	assert_eq(TextBudget.spot([win] as Array[Rect2], card, 14.0, 534.0, 6.0), 186.0, "just under the win, nearer than over it")
+	var hero := Rect2(616, 200, 48, 66)
+	assert_eq(TextBudget.spot([win, hero] as Array[Rect2], card, 14.0, 534.0, 6.0), 34.0, "the hero under it: over the win")
+	assert_eq(TextBudget.spot([win, hero] as Array[Rect2], card, 40.0, 534.0, 6.0), 272.0, "no room over it: under the hero")
+	assert_eq(TextBudget.spot([win, hero] as Array[Rect2], card, 40.0, 300.0, 6.0), 140.0, "nowhere clear: where it stands")
+	var aside := Rect2(0, 120, 100, 80)
+	assert_eq(TextBudget.spot([aside] as Array[Rect2], card, 14.0, 534.0, 6.0), 140.0, "beside it: nothing in its way")

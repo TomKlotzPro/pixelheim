@@ -70,6 +70,7 @@ const TABLE := [
 	{"field": "healed", "says": "on a map where the ash heals round a lamp: its cells at each stage past the ash, as each is drawn (Lamps.LOOKS): earth9,grass8,meadow12,grove13 (PIX-323)"},
 	{"field": "hint", "says": "the first-time hint on the screen, by the id it's seen by, or held:<id> while one waits its turn (PIX-341: never over a boss's entrance)"},
 	{"field": "home", "says": "who the story brought home to live in town, by first name: wenna (PIX-255)"},
+	{"field": "hudclash", "says": "while a title card, a hint, the battle log, the arrow or anything rising over the world shows: the words on the screen that overlap, as pairs (card, hint, float, log, arrow, bar, next, plate, and the hero under a plate), or none (PIX-345: the Victory card on a boss's win, a hint pushed over the hero, the arrow on a floor's name): none"},
 	{"field": "jobs", "says": "on the Night of Bells: the townsfolk's jobs that have acted, by kind: arrows,bell,cheese (PIX-253 step 9)"},
 	{"field": "jumps", "says": "with turning: the hero's drawn way changing more than an eighth of a turn at once, a snap round a corner (PIX-293)"},
 	{"field": "lamplight", "says": "on a map with lamps or lit windows, and in every room: its street lamps lit of all, its windows' lit glass, a room's candles burning and the day through its windows: posts 6/6 panes 12 flames 0 beams 0 (PIX-311)"},
@@ -509,7 +510,8 @@ func field_healed() -> String:
 func field_hint() -> String:
 	var hud: Hud = world.hud
 	if is_instance_valid(hud.hint_card) and not hud.hint_card.is_queued_for_deletion():
-		return String(hud.hint_card.get_meta("id", ""))
+		# Held unseen under a title card (PIX-345).
+		return ("" if hud.hint_card.visible else "held:") + String(hud.hint_card.get_meta("id", ""))
 	var held := hud.hint_held()
 	return "held:" + held if held != "" else ""
 
@@ -520,6 +522,47 @@ func field_home() -> String:
 	if homecomers.is_empty():
 		return ""
 	return ",".join(homecomers.map(func(recruit: Dictionary) -> String: return String(recruit["id"]).get_slice("_", 1)))
+
+
+func field_hudclash() -> String:
+	var hud: Hud = world.hud
+	var messages: Messages = world.messages
+	var shown: Array = []
+	if hud._card_up():
+		shown.append(["card", hud._card.get_global_rect()])
+	if is_instance_valid(hud.hint_card) and hud.hint_card.visible and not hud.hint_card.is_queued_for_deletion():
+		shown.append(["hint", hud.hint_card.get_global_rect()])
+	for rect: Rect2 in world.fx.shown():
+		shown.append(["float", hud.to_screen(rect)])
+	for chip: Control in messages.log_box.get_children():
+		shown.append(["log", chip.get_global_rect()])
+	if hud.arrow != null and hud.arrow.visible:
+		var art: Texture2D = Marks.arrow(hud.arrow.way, hud.arrow.main)
+		shown.append(["arrow", Rect2(hud.arrow.position - Marks.arrow_middle(), art.get_size())])
+	if shown.is_empty():
+		return ""
+	if hud.boss_bar.showing():
+		shown.append(["bar", hud.boss_bar.plate.get_global_rect()])
+	# The objective's line gives way to a message where it stands.
+	if messages.message_box.modulate.a > 0.0:
+		shown.append(["plate", messages.message_box.get_global_rect()])
+	elif hud.objective_box.modulate.a > 0.0:
+		shown.append(["next", hud.objective_box.get_global_rect()])
+	shown.append(["hero", hud.hero_on_screen()])
+	var clashes: PackedStringArray = []
+	for i in shown.size():
+		for j in range(i + 1, shown.size()):
+			var pair: Array = [shown[i][0], shown[j][0]]
+			# The hero counts under a card or a hint, the plates the HUD
+			# places: the rest stands where it stands, the hero wherever the
+			# camera has them at a map's edge.
+			if pair.has("hero") and not (pair.has("card") or pair.has("hint")):
+				continue
+			pair.sort()
+			var said := "%s/%s" % pair
+			if (shown[i][1] as Rect2).intersects(shown[j][1]) and not clashes.has(said):
+				clashes.append(said)
+	return ",".join(clashes) if not clashes.is_empty() else "none"
 
 
 func field_jobs() -> String:
