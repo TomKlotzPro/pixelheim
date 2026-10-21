@@ -3637,6 +3637,10 @@ msgid "Lamps and fires everywhere light the ground without hard edges, in town, 
 msgstr "Partout, lanternes et feux éclairent le sol sans bords nets, au village, dans la Marche et sous terre"
 
 #: assets/data/changelog.json
+msgid "Lamps take their region's colour and a gift: sea glass reaches further on the coast, frost lily heals faster on the pass, and a new grave moss lamp at the Mirefen Pass thins the fog; Aske widens every ring, and healed lamps bring a find some mornings and now and then a visitor"
+msgstr "Les lanternes prennent la couleur de leur région et un don : le verre de mer porte plus loin sur la côte, le lys de givre guérit plus vite au col, et une nouvelle lanterne de mousse des tombes au passage des Marais dissipe le brouillard ; Aske élargit chaque cercle, et les lanternes guéries offrent certains matins une trouvaille et parfois un visiteur"
+
+#: assets/data/changelog.json
 msgid "Late-game hunting grounds: trolls and golems under the trees, ghosts and mimics in the bog - elites roam thick"
 msgstr "Terrains de chasse de fin de partie : trolls et golems sous les arbres, fantômes et mimiques dans la tourbière - les élites y pullulent"
 
@@ -3703,6 +3707,10 @@ msgstr "Le pied léger"
 #: assets/data/changelog.json
 msgid "Light the five lanterns on the square, drive off the embers and douse the burning roofs from the well"
 msgstr "Allumez les cinq lanternes de la place, chassez les braises et éteignez les toits en feu avec l'eau du puits"
+
+#: assets/data/changelog.json
+msgid "Lights Along the Roads"
+msgstr "Lumières sur les routes"
 
 #: assets/data/changelog.json
 msgid "Lights Up"
@@ -5839,6 +5847,10 @@ msgstr "Le mannequin et le portrait de la barre le portent aussi"
 #: assets/data/changelog.json
 msgid "The passes are fast-travel waypoints the moment you lay eyes on them"
 msgstr "Les cols deviennent des relais de voyage rapide dès que vous les apercevez"
+
+#: assets/data/changelog.json
+msgid "The places you carry post to grow in three steps as their road fills, each shown with a little tour of its own: Saltmere's lighthouse mended, glazed in sea glass, then lit; a stall at the miners' camp; Mabel's tent at Greyhold become a market; a lodge with its fire lit at Gunnar's camp"
+msgstr "Les lieux où vous portez le courrier grandissent en trois étapes à mesure que leur route se remplit, chacune montrée par une petite visite : le phare de Saltmere réparé, vitré de verre de mer, puis allumé ; un étal au camp des mineurs ; la tente de Mabel à Greyhold devenue un marché ; un refuge au feu allumé au camp de Gunnar"
 
 #: assets/data/changelog.json
 msgid "The post box holds three pieces a day from the start, and some parcels leave you something to keep: a recipe, a banner, a candelabra"
@@ -9089,8 +9101,8 @@ msgid "Aske is packing for Pixelheim: fifty years is long enough to keep one doo
 msgstr "Aske fait ses bagages pour Pixelheim : cinquante ans, c'est bien assez pour garder une seule porte, et il paraît que votre village manque d'un allumeur de réverbères."
 
 #: assets/data/npcs.json
-msgid "Aske keeps your lantern trimmed: it lights the dark a third further"
-msgstr "Aske entretient la mèche de votre lanterne : elle perce l'obscurité un tiers plus loin"
+msgid "Aske keeps your lantern and the Reach's ember lamps trimmed: they light the dark a third further"
+msgstr "Aske entretient la mèche de votre lanterne et des lampes de braise de la Marche : elles percent l'obscurité un tiers plus loin"
 
 #: assets/data/npcs.json
 msgid "Aske the Hermit"
@@ -9813,6 +9825,10 @@ msgid "{settler} moved in! Pixelheim is filling up again."
 msgstr "{settler} vient d'emménager ! Pixelheim se remplit de nouveau."
 
 #: assets/data/post.json
+msgid "\"An army marches on its stomach. Mine marches on my tent.\""
+msgstr "« Une armée marche au ventre. La mienne marche à ma tente. »"
+
+#: assets/data/post.json
 msgid "\"Ask your cat.\" I did. The cat said yes."
 msgstr "« Demande à ton chat. » Je lui ai demandé. Le chat a dit oui."
 
@@ -10061,6 +10077,22 @@ msgid "A song. The club needs a song."
 msgstr "Une chanson. Il faut une chanson au club."
 
 #: assets/data/post.json
+msgid "A stall at the miners' camp, under an awning of its own."
+msgstr "Un étal au camp des mineurs, sous un auvent bien à lui."
+
+#: assets/data/post.json
+msgid "A stall beside Mabel's tent at Greyhold."
+msgstr "Un étal à côté de la tente de Mabel, à Greyhold."
+
+#: assets/data/post.json
+msgid "A tent, two stalls and Mabel calling the prices. Greyhold calls it the Sutler's Row."
+msgstr "Une tente, deux étals et Mabel qui crie les prix. Greyhold appelle ça l'allée de la Cantinière."
+
+#: assets/data/post.json
+msgid "A trestle at the miners' camp, ore laid out on it."
+msgstr "Des tréteaux au camp des mineurs, du minerai étalé dessus."
+
+#: assets/data/post.json
 msgid "A wheel of cheese in a sack. The label is in Bram's hand."
 msgstr "Une meule de fromage dans un sac. L'étiquette est de la main de Bram."
 
@@ -10141,6 +10173,14 @@ msgid "Brann"
 msgstr "Brann"
 
 #: assets/data/post.json
+msgid "Brann calls it a shop. Dagny calls it a table."
+msgstr "Brann appelle ça une boutique. Dagny appelle ça une table."
+
+#: assets/data/post.json
+msgid "Brin says it's only a tower until it's lit. He says it every morning."
+msgstr "Brin dit que ce n'est qu'une tour tant qu'il n'est pas allumé. Il le dit tous les matins."
+
+#: assets/data/post.json
 msgid "Can I do cheese? Friend, I can do anything."
 msgstr "Si je sais faire le fromage ? Mon ami, je sais tout faire."
 
@@ -10159,6 +10199,10 @@ msgstr "Du fromage ? Pour moi ? D'habitude, on ne m'envoie que du mauvais te
 #: assets/data/post.json
 msgid "Courier, you're in the chorus. Everybody's in the chorus. That's how a club works."
 msgstr "Messager, vous êtes dans le chœur. Tout le monde est dans le chœur. C'est ça, un club."
+
+#: assets/data/post.json
+msgid "Crates come down the road to the miners' camp at Blackiron."
+msgstr "Des caisses descendent la route jusqu'au camp des mineurs de Fernoir."
 
 #: assets/data/post.json
 msgid "DELIVERED"
@@ -10237,6 +10281,14 @@ msgid "Eight shoes for two horses. Tell her I'll take apples. Wait there."
 msgstr "Huit fers pour deux chevaux. Dites-lui que je prendrai des pommes. Attendez là."
 
 #: assets/data/post.json
+msgid "Every boat in the bay saw it. So did Bram, from Pixelheim, he says."
+msgstr "Tous les bateaux de la baie l'ont vu. Bram aussi, depuis Pixelheim, à ce qu'il dit."
+
+#: assets/data/post.json
+msgid "Every pane picked off the beach by Pip, who wants it known."
+msgstr "Chaque vitre ramassée sur la plage par Pip, qui tient à ce qu'on le sache."
+
+#: assets/data/post.json
 msgid "Everyone KNOWS?"
 msgstr "Tout le monde le SAIT ?"
 
@@ -10251,6 +10303,10 @@ msgstr "PLIÉ"
 #: assets/data/post.json
 msgid "Fafnyr"
 msgstr "Fafnyr"
+
+#: assets/data/post.json
+msgid "Fenwick has put himself in charge of the awning."
+msgstr "Fenwick s'est nommé responsable de l'auvent."
 
 #: assets/data/post.json
 msgid "Fenwick in charge"
@@ -10541,6 +10597,10 @@ msgid "Garrick"
 msgstr "Garrick"
 
 #: assets/data/post.json
+msgid "Garrick counts them twice. The post brought more than letters."
+msgstr "Garrick les compte deux fois. Le courrier a apporté plus que des lettres."
+
+#: assets/data/post.json
 msgid "Garrick! The smith in Pixelheim wants ten!"
 msgstr "Garrick ! La forgeronne de Pixelheim en veut dix !"
 
@@ -10551,6 +10611,14 @@ msgstr "Donnez-moi une semaine. Deux. Tenez, messager, pour votre peine : une 
 #: assets/data/post.json
 msgid "Gods help her. Hold on, courier. The canary has something to add."
 msgstr "Que les dieux la protègent. Attendez, messager. Le canari a quelque chose à ajouter."
+
+#: assets/data/post.json
+msgid "Gunnar says the horses chose the spot."
+msgstr "Gunnar dit que ce sont les chevaux qui ont choisi l'endroit."
+
+#: assets/data/post.json
+msgid "Gunnar's lodge is open, a fire in it."
+msgstr "Le refuge de Gunnar est ouvert, un feu dedans."
 
 #: assets/data/post.json
 msgid "Gunnar. There's no horse that likes snow. There are horses that hate it quietly. I'm sending you two. - Wren"
@@ -10613,6 +10681,10 @@ msgid "I bind wounds with them, and she brews them. We should talk. Hold on."
 msgstr "Moi, j'en fais des bandages, elle, des potions. Il faut qu'on parle. Attendez."
 
 #: assets/data/post.json
+msgid "I came out to see the light. Or to find something I put down. One of the two."
+msgstr "Je suis venue voir la lumière. Ou retrouver quelque chose que j'ai posé. L'un des deux."
+
+#: assets/data/post.json
 msgid "I like her. Don't tell her I like her."
 msgstr "Elle me plaît. Ne lui dites pas qu'elle me plaît."
 
@@ -10623,6 +10695,10 @@ msgstr "Moi, je lui dois ? C'est elle qui cache la dame dans sa manche."
 #: assets/data/post.json
 msgid "I won't tell. ...The cat knows."
 msgstr "Je ne dirai rien. ... Le chat le sait déjà."
+
+#: assets/data/post.json
+msgid "I'm counting the lamps. This one's mine. I counted it first."
+msgstr "Je compte les lampes. Celle-là, c'est la mienne. Je l'ai comptée en premier."
 
 #: assets/data/post.json
 msgid "I'm going. Not for Hilda. For the bird. ...Wait, I'll tell her when."
@@ -10733,6 +10809,14 @@ msgid "Letter for Wren the Stablemaster"
 msgstr "Lettre pour Wren la palefrenière"
 
 #: assets/data/post.json
+msgid "Linnea swears the stew is hers. Gunnar swears a lot."
+msgstr "Linnea jure que le ragoût est le sien. Gunnar, lui, jure tout court."
+
+#: assets/data/post.json
+msgid "Logs from the pass, and snow on the roof by nightfall."
+msgstr "Des rondins du col, et de la neige sur le toit avant la nuit."
+
+#: assets/data/post.json
 msgid "Loras"
 msgstr "Loras"
 
@@ -10743,6 +10827,14 @@ msgstr "MARTA ! On a de la corde sèche ?"
 #: assets/data/post.json
 msgid "Mabel"
 msgstr "Mabel"
+
+#: assets/data/post.json
+msgid "Mabel's tent is a market now."
+msgstr "La tente de Mabel est devenue un marché."
+
+#: assets/data/post.json
+msgid "Mabel's tent is pitched at Greyhold."
+msgstr "La tente de Mabel est plantée à Greyhold."
 
 #: assets/data/post.json
 msgid "Maren"
@@ -10829,6 +10921,10 @@ msgid "My face is always ready."
 msgstr "Mon visage est toujours prêt."
 
 #: assets/data/post.json
+msgid "My mother said the Reach was green once. I never believed her. I'll have to tell her."
+msgstr "Ma mère disait que la Marche avait été verte, autrefois. Je ne l'ai jamais crue. Il va falloir que je le lui dise."
+
+#: assets/data/post.json
 msgid "Never answer the first question, courier. Make them ask two."
 msgstr "Ne répondez jamais à la première question, messager. Faites-en poser deux."
 
@@ -10867,6 +10963,10 @@ msgstr "Une fois par an, elle sourit"
 #: assets/data/post.json
 msgid "One soldier. He's raising a garrison one lad at a time."
 msgstr "Un soldat. Il refait une garnison, un gars à la fois."
+
+#: assets/data/post.json
+msgid "Ore, ingots and coal for whoever walks in, lit till the last shift comes up."
+msgstr "Minerai, lingots et charbon pour qui passe, éclairé jusqu'à la remontée de la dernière équipe."
 
 #: assets/data/post.json
 msgid "Parcel for Alchemist Vex"
@@ -10993,12 +11093,24 @@ msgid "SEALED"
 msgstr "SCELLÉE"
 
 #: assets/data/post.json
+msgid "Saltmere's lighthouse is lit again."
+msgstr "Le phare de Saltmere brille de nouveau."
+
+#: assets/data/post.json
+msgid "Saltmere's lighthouse is mended, new stones on the point."
+msgstr "Le phare de Saltmere est réparé, des pierres neuves sur la pointe."
+
+#: assets/data/post.json
 msgid "Scorched round the edges. A cat's hair is stuck in the wax."
 msgstr "Roussie sur les bords. Un poil de chat est collé dans la cire."
 
 #: assets/data/post.json
 msgid "Scorched round the edges. Still warm."
 msgstr "Roussie sur les bords. Encore tiède."
+
+#: assets/data/post.json
+msgid "Sea glass in the lantern of Saltmere's lighthouse."
+msgstr "Du verre de mer dans la lanterne du phare de Saltmere."
 
 #: assets/data/post.json
 msgid "Sela"
@@ -11145,6 +11257,10 @@ msgid "The club has its first member, courier. Two, with me. Three, if you count
 msgstr "Le club a son premier membre, messager. Deux, avec moi. Trois, si on compte les mouettes."
 
 #: assets/data/post.json
+msgid "The dog has found the warm side of the lamp's post, and will not be moved."
+msgstr "Le chien a trouvé le côté chaud du poteau de la lampe et ne bougera plus."
+
+#: assets/data/post.json
 msgid "The garrison's reply for Bram"
 msgstr "Réponse de la garnison pour Bram"
 
@@ -11161,6 +11277,10 @@ msgid "The lads will want to thank him properly. Hold on, courier. Somebody find
 msgstr "Les gars voudront le remercier comme il faut. Attendez, messager. Que quelqu'un trouve une plume qui ne soit pas une lance."
 
 #: assets/data/post.json
+msgid "The lodge's walls are up at Gunnar's camp."
+msgstr "Les murs du refuge sont montés au camp de Gunnar."
+
+#: assets/data/post.json
 msgid "The mine pays in iron. I sell in iron. I'll save in iron."
 msgstr "La mine paie en fer. Je vends en fer. J'épargnerai en fer."
 
@@ -11175,6 +11295,10 @@ msgstr "La plus salée. C'est la mer. C'est partout le même sel."
 #: assets/data/post.json
 msgid "The weather! Fifty years, and she asks about the weather."
 msgstr "Le temps ! Cinquante ans, et elle me demande le temps qu'il fait."
+
+#: assets/data/post.json
+msgid "Timber for a lodge at Gunnar's camp on the Frostgate."
+msgstr "Du bois pour un refuge au camp de Gunnar, sur la Porte-Givre."
 
 #: assets/data/post.json
 msgid "To Old Pell, who had the canary. Maren's courier says you're still alive, and so is the bird. Tam wrote me once that she bit Morvax. Is it true? - Wenna, Tam's sister"
@@ -11223,6 +11347,10 @@ msgstr "Attendez là, messager. Ça mérite une réponse, et le canari veut donn
 #: assets/data/post.json
 msgid "Wait there. She'll want it written down properly."
 msgstr "Attendez là. Elle voudra que ce soit écrit proprement."
+
+#: assets/data/post.json
+msgid "Walked all the way out to see it. I'd have supervised the building, if anyone had asked."
+msgstr "J'ai marché jusqu'ici pour la voir. J'aurais supervisé les travaux, si on me l'avait demandé."
 
 #: assets/data/post.json
 msgid "We didn't join anything. ...Is that smoked?"
@@ -11967,6 +12095,10 @@ msgstr "Quarante-cinq. Une lumière sur chaque route qui sort du village. Cinqua
 #: assets/data/progression.json
 msgid "Forty-four. I've had to start a new row. Fifty years, and I never once started a new row in the middle of a year."
 msgstr "Quarante-quatre. J'ai dû commencer une nouvelle rangée. Cinquante ans, et jamais je n'avais commencé une rangée en plein milieu d'une année."
+
+#: assets/data/progression.json
+msgid "Forty-six. Five of yours now. There's one I can't even see from here, and I counted it anyway. That's how much I trust you."
+msgstr "Quarante-six. Cinq à vous, maintenant. Il y en a une que je ne vois même pas d'ici, et je l'ai comptée quand même. C'est dire si je vous fais confiance."
 
 #: assets/data/progression.json
 msgid "Forty-three. Two out on the roads now, both crooked. I'd know your lamps anywhere."
@@ -14057,6 +14189,14 @@ msgid "All four keepsakes home, and half the Reach in your streets: Pixelheim ca
 msgstr "Les quatre souvenirs rentrés au pays, et la moitié de la Marche des Cendres dans vos rues : Pixelheim peut devenir un bourg."
 
 #: assets/data/town.json
+msgid "An ember lamp burns at the Mirefen Pass, grave moss in its cage: the fog thins round it."
+msgstr "Une lampe de braise brûle au passage des Marais de Fange, de la mousse des tombes dans sa cage : le brouillard se dissipe autour."
+
+#: assets/data/town.json
+msgid "An ember lamp where the Mirefen road leaves the Reach, its cage stuffed with grave moss. The fog keeps back from it."
+msgstr "Une lampe de braise là où la route des Marais de Fange quitte la Marche, sa cage bourrée de mousse des tombes. Le brouillard s'en tient à l'écart."
+
+#: assets/data/town.json
 msgid "Ashes"
 msgstr "Cendres"
 
@@ -14105,8 +14245,8 @@ msgid "Halfway along the east road to the old fort: a hut, a bench that mends yo
 msgstr "À mi-chemin sur la route de l'est vers le vieux fort : une cabane, un banc qui vous remet d'aplomb, une boîte aux lettres et une lampe de braise. Une étape où voyager."
 
 #: assets/data/town.json
-msgid "Halfway down the road to Saltmere: a hut, a bench that mends you, a post box and an ember lamp, a shard of the mountain's warmth that never goes out. A stage to travel to."
-msgstr "À mi-chemin de la route de Saltmere : une cabane, un banc qui vous remet d'aplomb, une boîte aux lettres et une lampe de braise, un éclat de la chaleur de la montagne qui ne s'éteint jamais. Une étape où voyager."
+msgid "Halfway down the road to Saltmere: a hut, a bench that mends you, a post box and an ember lamp, a shard of the mountain's warmth that never goes out, glazed in sea glass. A stage to travel to."
+msgstr "À mi-chemin de la route de Saltmere : une cabane, un banc qui vous remet d'aplomb, une boîte aux lettres et une lampe de braise, un éclat de la chaleur de la montagne qui ne s'éteint jamais, sertie de verre de mer. Une étape où voyager."
 
 #: assets/data/town.json
 msgid "Halfway out to the miners, by the rock on the west road: a hut, a bench that mends you, a post box and an ember lamp. A stage to travel to."
@@ -14155,6 +14295,10 @@ msgstr "Des réverbères dans la rue, des étals sur la place, et un nouveau vis
 #: assets/data/town.json
 msgid "Lanterns all the way up the mountain road. Merchants follow the light: +10% gold from every kill."
 msgstr "Des lanternes tout le long de la route de la montagne. Les marchands suivent la lumière : +10 % d'or par ennemi vaincu."
+
+#: assets/data/town.json
+msgid "Light a lamp at the Mirefen Pass"
+msgstr "Allumer une lampe au passage des Marais de Fange"
 
 #: assets/data/town.json
 msgid "Manor"
@@ -14265,8 +14409,8 @@ msgid "The Frostgate road wants more post carried first"
 msgstr "La route de la Porte-Givre attend encore du courrier"
 
 #: assets/data/town.json
-msgid "The Frostgate waystation stands under the mountain, its ember lamp lit. Gunnar says the horses won't leave it."
-msgstr "La halte de la Porte-Givre se dresse sous la montagne, sa lampe de braise allumée. Gunnar dit que les chevaux ne veulent plus la quitter."
+msgid "The Frostgate waystation stands under the mountain, a frost lily in its ember lamp: the land round it heals twice as fast. Gunnar says the horses won't leave it."
+msgstr "La halte de la Porte-Givre se dresse sous la montagne, un lys de givre dans sa lampe de braise : la terre guérit deux fois plus vite autour. Gunnar dit que les chevaux ne veulent plus la quitter."
 
 #: assets/data/town.json
 msgid "The Greyhold road wants more post carried first"
@@ -14289,12 +14433,16 @@ msgid "The Post wants a waystation on its roads first"
 msgstr "La Poste attend d'abord une halte sur ses routes"
 
 #: assets/data/town.json
+msgid "The Saltmere road wants its waystation first"
+msgstr "La route de Saltmere attend d'abord sa halte"
+
+#: assets/data/town.json
 msgid "The Saltmere road wants more post carried first"
 msgstr "La route de Saltmere attend encore du courrier"
 
 #: assets/data/town.json
-msgid "The Saltmere waystation stands halfway down the road, its ember lamp lit. Bram says he chose the bench."
-msgstr "La halte de Saltmere se dresse à mi-chemin de la route, sa lampe de braise allumée. Bram dit que c'est lui qui a choisi le banc."
+msgid "The Saltmere waystation stands halfway down the road, its ember lamp glazed in sea glass: its light carries a cell further. Bram says he chose the bench."
+msgstr "La halte de Saltmere se dresse à mi-chemin de la route, sa lampe de braise sertie de verre de mer : sa lumière porte une case plus loin. Bram dit que c'est lui qui a choisi le banc."
 
 #: assets/data/town.json
 msgid "The Statue of the Five"
@@ -14373,8 +14521,8 @@ msgid "Two stalls on the square, and somewhere to haggle."
 msgstr "Deux étals sur la place, et de quoi marchander."
 
 #: assets/data/town.json
-msgid "Under the mountain on the road to the pass: a hut, a bench that mends you, a post box and an ember lamp, warm against the snow. A stage to travel to."
-msgstr "Sous la montagne, sur la route du col : une cabane, un banc qui vous remet d'aplomb, une boîte aux lettres et une lampe de braise, bien chaude contre la neige. Une étape où voyager."
+msgid "Under the mountain on the road to the pass: a hut, a bench that mends you, a post box and an ember lamp with a frost lily in its cage, warm against the snow. A stage to travel to."
+msgstr "Sous la montagne, sur la route du col : une cabane, un banc qui vous remet d'aplomb, une boîte aux lettres et une lampe de braise avec un lys de givre dans sa cage, bien chaude contre la neige. Une étape où voyager."
 
 #: assets/data/town.json
 msgid "Vex's Workshop"

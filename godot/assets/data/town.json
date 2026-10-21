@@ -1142,7 +1142,7 @@
     }
   },
   "works": {
-    "about": "PIX-254: works out on the Reach's roads, on the board beside the age's projects once the story offers them (`needs`, a main quest step, with `line` said until then), and not part of any age: built, they open their `gate` (Gates), and while that gate stands open anyway (a hero already past it) they aren't offered. The river bridge burned on the Night of Ash; Old Wenna sends Brin's best rope with her answer. A waystation (PIX-322) names its post `route` instead (post.json's routes): offered once that route has carried enough post (`line` said until then), built it stands halfway along the route, its ember lamp lit. The post house (PIX-325) asks `stations` waystations built first; built, it stands on the square behind the post box, and the box holds post.json's `house.bag` pieces a morning.",
+    "about": "PIX-254: works out on the Reach's roads, on the board beside the age's projects once the story offers them (`needs`, a main quest step, with `line` said until then), and not part of any age: built, they open their `gate` (Gates), and while that gate stands open anyway (a hero already past it) they aren't offered. The river bridge burned on the Night of Ash; Old Wenna sends Brin's best rope with her answer. A waystation (PIX-322) names its post `route` instead (post.json's routes): offered once that route has carried enough post (`line` said until then), built it stands halfway along the route, its ember lamp lit. PIX-324: a work may come `after` another is built (the Mirefen Pass's lamp, once the Saltmere waystation stands); a lamp's work stands its lamp where post.json's routes put it (`lamp`), of its kind. The post house (PIX-325) asks `stations` waystations built first; built, it stands on the square behind the post box, and the box holds post.json's `house.bag` pieces a morning.",
     "list": [
       {
         "id": "river_bridge",
@@ -1161,13 +1161,13 @@
         "id": "waystation_saltmere",
         "route": "saltmere",
         "name": "Raise the Saltmere waystation",
-        "blurb": "Halfway down the road to Saltmere: a hut, a bench that mends you, a post box and an ember lamp, a shard of the mountain's warmth that never goes out. A stage to travel to.",
+        "blurb": "Halfway down the road to Saltmere: a hut, a bench that mends you, a post box and an ember lamp, a shard of the mountain's warmth that never goes out, glazed in sea glass. A stage to travel to.",
         "cost": {
           "gold": 150,
           "items": {"sea_glass": 3, "ember_shard": 1}
         },
         "line": "The Saltmere road wants more post carried first",
-        "built": "The Saltmere waystation stands halfway down the road, its ember lamp lit. Bram says he chose the bench."
+        "built": "The Saltmere waystation stands halfway down the road, its ember lamp glazed in sea glass: its light carries a cell further. Bram says he chose the bench."
       },
       {
         "id": "waystation_blackiron",
@@ -1197,13 +1197,25 @@
         "id": "waystation_frostgate",
         "route": "frostgate",
         "name": "Raise the Frostgate waystation",
-        "blurb": "Under the mountain on the road to the pass: a hut, a bench that mends you, a post box and an ember lamp, warm against the snow. A stage to travel to.",
+        "blurb": "Under the mountain on the road to the pass: a hut, a bench that mends you, a post box and an ember lamp with a frost lily in its cage, warm against the snow. A stage to travel to.",
         "cost": {
           "gold": 450,
           "items": {"frost_lily": 2, "ember_shard": 2}
         },
         "line": "The Frostgate road wants more post carried first",
-        "built": "The Frostgate waystation stands under the mountain, its ember lamp lit. Gunnar says the horses won't leave it."
+        "built": "The Frostgate waystation stands under the mountain, a frost lily in its ember lamp: the land round it heals twice as fast. Gunnar says the horses won't leave it."
+      },
+      {
+        "id": "lamp_mirefen",
+        "after": "waystation_saltmere",
+        "name": "Light a lamp at the Mirefen Pass",
+        "blurb": "An ember lamp where the Mirefen road leaves the Reach, its cage stuffed with grave moss. The fog keeps back from it.",
+        "cost": {
+          "gold": 180,
+          "items": {"grave_moss": 3, "ember_shard": 1}
+        },
+        "line": "The Saltmere road wants its waystation first",
+        "built": "An ember lamp burns at the Mirefen Pass, grave moss in its cage: the fog thins round it."
       },
       {
         "id": "post_house",

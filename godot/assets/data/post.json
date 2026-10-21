@@ -53,9 +53,17 @@
     {"place": "morvax_forge", "ink": "lamp", "emblem": "anvil"}
   ],
   "routes": {
-    "about": "PIX-322, the Post's step 3: the roads it is carried along. Each piece handed over counts toward the route from Pixelheim to the place at each of its ends (the sender's and the addressee's, where they stand as it's delivered: the village is no route, nor the Reach's own road), by who wrote it. Once a route has carried `signsAt` pieces a signpost goes up at each of its `forks` not signed yet, named after whoever wrote most along it (the fork's `name` with theirs: Bram's Corner). Once it has carried `stationAt`, its waystation (`station`) is offered on the town's board (town.json's works entry `work`), and built it stands halfway along the route on the Ashenreach: a hut (`hut` its left cell, two wide), a bench that mends you, a post box and an ember lamp, each on a cell of its own beside the road, the hero set down at `arrival`; it's a waypoint by `name`. A route with no station has a waypoint standing halfway already (the passes to the Mirefen and the Deepwood, the mountain's gate). `path` runs along the road from the gate's landing, corner to corner, to where the route leaves the Ashenreach: the map draws it in gold once the route has carried anything. `hub` is the cell on the place's own map it ends at. Saved: each route's pieces by who wrote them, and whom each fork's signpost is named after.",
+    "about": "PIX-322, the Post's step 3: the roads it is carried along. Each piece handed over counts toward the route from Pixelheim to the place at each of its ends (the sender's and the addressee's, where they stand as it's delivered: the village is no route, nor the Reach's own road), by who wrote it. Once a route has carried `signsAt` pieces a signpost goes up at each of its `forks` not signed yet, named after whoever wrote most along it (the fork's `name` with theirs: Bram's Corner). Once it has carried `stationAt`, its waystation (`station`) is offered on the town's board (town.json's works entry `work`), and built it stands halfway along the route on the Ashenreach: a hut (`hut` its left cell, two wide), a bench that mends you, a post box and an ember lamp, each on a cell of its own beside the road, the hero set down at `arrival`; it's a waypoint by `name`. A route with no station has a waypoint standing halfway already (the passes to the Mirefen and the Deepwood, the mountain's gate). `path` runs along the road from the gate's landing, corner to corner, to where the route leaves the Ashenreach: the map draws it in gold once the route has carried anything. `hub` is the cell on the place's own map it ends at. Saved: each route's pieces by who wrote them, and whom each fork's signpost is named after. PIX-324, step 5: a station's lamp is of the `kind` (Lamps.KINDS) of the region's material its work is paid in, ember when unsaid; a route with no station may have a `lamp` of its own (a work on the board, standing `at` that cell beside the road where it leaves the Ashenreach: the Mirefen Pass's, of grave moss). Once a lamp's ring is whole, some mornings a find lies at its `find` cell and now and then someone from the village (`visitors`, with what they say) stands at its `visit` cell (Lamps.finds, Lamps.visitors). And the hub at a road's end grows (`grows`, Hubs) as the road carries the post, a step at each of `growsAt`: each says its `news` (the log, and its tour's caption) and its `line` (under it on the tour), and puts up its `pieces` on the place's own map (HamletArt's or HubArt's `art` at `cell`, its left foot; `lit`: its light at night; `smoke`: its chimney's mouth, in its pixels), a later step's piece on a cell standing in for the one before.",
     "signsAt": 3,
     "stationAt": 6,
+    "growsAt": [3, 5, 7],
+    "visitors": [
+      {"npc": "villager_bram", "lines": ["Walked all the way out to see it. I'd have supervised the building, if anyone had asked."]},
+      {"npc": "villager_ana", "lines": ["My mother said the Reach was green once. I never believed her. I'll have to tell her."]},
+      {"npc": "kid_pip", "lines": ["I'm counting the lamps. This one's mine. I counted it first."]},
+      {"npc": "shrine_keeper", "lines": ["I came out to see the light. Or to find something I put down. One of the two."]},
+      {"npc": "town_dog", "lines": ["The dog has found the warm side of the lamp's post, and will not be moved."]}
+    ],
     "forks": [
       {"id": "gate", "name": "%s's Corner", "at": [46, 34]},
       {"id": "saltmere_fork", "name": "%s's Fork", "at": [17, 34]},
@@ -69,21 +77,36 @@
         "path": [[48, 41], [48, 33], [16, 33], [16, 62]],
         "forks": ["gate", "saltmere_fork"],
         "hub": [30, 14],
-        "station": {"work": "waystation_saltmere", "name": "The Saltmere Waystation", "hut": [19, 48], "lamp": [17, 48], "box": [17, 50], "bench": [21, 49], "arrival": [19, 49]}
+        "station": {"work": "waystation_saltmere", "name": "The Saltmere Waystation", "hut": [19, 48], "lamp": [17, 48], "box": [17, 50], "bench": [21, 49], "arrival": [19, 49], "kind": "sea_glass", "find": [18, 49], "visit": [22, 49]},
+        "grows": [
+          {"news": "Saltmere's lighthouse is mended, new stones on the point.", "line": "Brin says it's only a tower until it's lit. He says it every morning.", "pieces": [{"art": "lighthouse_dark", "cell": [35, 29]}]},
+          {"news": "Sea glass in the lantern of Saltmere's lighthouse.", "line": "Every pane picked off the beach by Pip, who wants it known.", "pieces": [{"art": "lighthouse_glass", "cell": [35, 29]}]},
+          {"news": "Saltmere's lighthouse is lit again.", "line": "Every boat in the bay saw it. So did Bram, from Pixelheim, he says.", "pieces": [{"art": "lighthouse", "cell": [35, 29], "lit": true}]}
+        ]
       },
       {
         "place": "blackiron",
         "path": [[48, 41], [48, 20], [1, 20]],
         "forks": ["gate", "river_fork"],
         "hub": [35, 20],
-        "station": {"work": "waystation_blackiron", "name": "The Blackiron Waystation", "hut": [24, 18], "lamp": [23, 19], "box": [28, 19], "bench": [26, 19], "arrival": [24, 19]}
+        "station": {"work": "waystation_blackiron", "name": "The Blackiron Waystation", "hut": [24, 18], "lamp": [23, 19], "box": [28, 19], "bench": [26, 19], "arrival": [24, 19], "find": [22, 19], "visit": [27, 19]},
+        "grows": [
+          {"news": "Crates come down the road to the miners' camp at Blackiron.", "line": "Garrick counts them twice. The post brought more than letters.", "pieces": [{"art": "keg", "cell": [37, 22]}, {"art": "box", "cell": [41, 22]}]},
+          {"news": "A trestle at the miners' camp, ore laid out on it.", "line": "Brann calls it a shop. Dagny calls it a table.", "pieces": [{"art": "ore_trestle", "cell": [38, 22]}]},
+          {"news": "A stall at the miners' camp, under an awning of its own.", "line": "Ore, ingots and coal for whoever walks in, lit till the last shift comes up.", "pieces": [{"art": "ore_stall", "cell": [38, 22], "lit": true}]}
+        ]
       },
       {
         "place": "greyhold",
         "path": [[48, 41], [48, 15], [94, 15]],
         "forks": ["gate", "river_fork", "greyhold_fork"],
         "hub": [12, 27],
-        "station": {"work": "waystation_greyhold", "name": "The Greyhold Waystation", "hut": [65, 13], "lamp": [64, 14], "box": [69, 14], "bench": [67, 14], "arrival": [65, 14]}
+        "station": {"work": "waystation_greyhold", "name": "The Greyhold Waystation", "hut": [65, 13], "lamp": [64, 14], "box": [69, 14], "bench": [67, 14], "arrival": [65, 14], "find": [63, 14], "visit": [68, 14]},
+        "grows": [
+          {"news": "Mabel's tent is pitched at Greyhold.", "line": "\"An army marches on its stomach. Mine marches on my tent.\"", "pieces": [{"art": "sutler_tent", "cell": [15, 27]}]},
+          {"news": "A stall beside Mabel's tent at Greyhold.", "line": "Fenwick has put himself in charge of the awning.", "pieces": [{"art": "market_stall", "cell": [18, 27]}]},
+          {"news": "Mabel's tent is a market now.", "line": "A tent, two stalls and Mabel calling the prices. Greyhold calls it the Sutler's Row.", "pieces": [{"art": "market_stall_blue", "cell": [21, 27]}]}
+        ]
       },
       {
         "place": "frostgate",
@@ -91,13 +114,19 @@
         "forks": ["gate", "river_fork", "greyhold_fork", "mountain_fork"],
         "hub": [33, 40],
         "stationAt": 5,
-        "station": {"work": "waystation_frostgate", "name": "The Frostgate Waystation", "hut": [57, 8], "lamp": [56, 9], "box": [61, 9], "bench": [59, 9], "arrival": [57, 9]}
+        "station": {"work": "waystation_frostgate", "name": "The Frostgate Waystation", "hut": [57, 8], "lamp": [56, 9], "box": [61, 9], "bench": [59, 9], "arrival": [57, 9], "kind": "frost_lily", "find": [55, 9], "visit": [60, 9]},
+        "grows": [
+          {"news": "Timber for a lodge at Gunnar's camp on the Frostgate.", "line": "Gunnar says the horses chose the spot.", "pieces": [{"art": "lodge_frame", "cell": [37, 38]}]},
+          {"news": "The lodge's walls are up at Gunnar's camp.", "line": "Logs from the pass, and snow on the roof by nightfall.", "pieces": [{"art": "lodge_walls", "cell": [37, 38]}]},
+          {"news": "Gunnar's lodge is open, a fire in it.", "line": "Linnea swears the stew is hers. Gunnar swears a lot.", "pieces": [{"art": "lodge", "cell": [37, 38], "lit": true, "smoke": [35, 2]}]}
+        ]
       },
       {
         "place": "mirefen",
         "path": [[48, 41], [48, 33], [1, 33]],
         "forks": ["gate", "saltmere_fork"],
-        "signsAt": 2
+        "signsAt": 2,
+        "lamp": {"work": "lamp_mirefen", "at": [5, 34], "kind": "grave_moss", "find": [6, 35], "visit": [4, 35]}
       },
       {
         "place": "deepwood",

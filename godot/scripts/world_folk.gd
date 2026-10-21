@@ -28,6 +28,8 @@ func spawn_for(data: MapData) -> void:
 		var barker: Dictionary = Npcs._data()["festivalBarker"].duplicate()
 		barker.merge({"x": int(Town.festival("barker")["x"]), "y": int(Town.festival("barker")["y"])})
 		folk.append(barker)
+	# Someone out from the village to see a healed lamp (PIX-324).
+	folk.append_array(Lamps.visitors(Lamps.now(data.id), Gathering.day_of(GameState.world.steps)))
 	for npc: Dictionary in folk:
 		var villager := preload("res://scripts/npc.gd").new()
 		villager.world = world

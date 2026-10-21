@@ -580,7 +580,8 @@ func _plan_hamlet() -> void:
 		return
 	var kept := Hamlet.kept_on(data, patch_decks)
 	kept[arrival] = true
-	hamlet = Hamlet.plan(data, kept)
+	# What its hub has grown as its post road filled (PIX-324).
+	hamlet = Hamlet.plan(data, kept, Hubs.dressing(data.id, GameState.post))
 	for cell: Vector2i in hamlet["blocks"]:
 		data.covered[cell] = true
 
@@ -2239,13 +2240,15 @@ func _add_glow(at: Vector2, radius: int, peak: float, light_radius := 0.0, light
 
 
 static var _halo_textures := {}
+## A halo's warmth; a lamp of another kind's colour tints its own (PIX-324).
+const HALO_TINT := Color(1.0, 0.72, 0.38)
 
 
 ## A soft halo round a small flame (PIX-311): smooth to nothing at its rim,
 ## not a disc of steps, added onto the night and shown only then; the glow
 ## pass blooms the flame itself.
-func _add_halo(at: Vector2, radius: int, peak: float) -> Sprite2D:
-	var key := "%d:%f" % [radius, peak]
+func _add_halo(at: Vector2, radius: int, peak: float, tint := HALO_TINT) -> Sprite2D:
+	var key := "%d:%f:%s" % [radius, peak, tint.to_html()]
 	if not _halo_textures.has(key):
 		var size := radius * 2
 		var image := Image.create(size, size, false, Image.FORMAT_RGBA8)
@@ -2253,7 +2256,7 @@ func _add_halo(at: Vector2, radius: int, peak: float) -> Sprite2D:
 			for x in size:
 				var d := Vector2(x + 0.5 - radius, y + 0.5 - radius).length() / radius
 				if d < 1.0:
-					image.set_pixel(x, y, Color(1.0, 0.72, 0.38, peak * pow(1.0 - d, 2.2)))
+					image.set_pixel(x, y, Color(tint, peak * pow(1.0 - d, 2.2)))
 		_halo_textures[key] = ImageTexture.create_from_image(image)
 	var halo := Sprite2D.new()
 	halo.texture = _halo_textures[key]
@@ -2408,6 +2411,11 @@ func _decor_hamlet() -> void:
 				if piece["kind"] == "stand":
 					for taken: Vector2i in piece["cells"]:
 						_block(taken)
+					if piece.get("lit", false):
+						_add_shine(root, cell, art)
+					if piece.has("smoke"):
+						# Its chimney's mouth, in its pixels (Gunnar's lodge, PIX-324).
+						_add_smoke_thread(Vector2(cell * TILE) + Vector2(piece["smoke"][0], TILE - HamletArt.size(art).y + int(piece["smoke"][1])))
 				elif art == "lantern":
 					_add_lantern_light(root, cell)
 				elif art == "forge_stack":
@@ -2454,10 +2462,11 @@ func _decor_routes() -> void:
 			post_boxes.append(sprite)
 			_stand_on(sprite, cell, Vector2(0, TILE - HamletArt.size("post_box").y))
 		else:
-			sprite.texture = RouteArt.texture(art)
+			# Each lamp in its kind's look (PIX-324).
+			sprite.texture = RouteArt.lamp(String(piece.get("lamp", "ember"))) if kind == "lamp" else RouteArt.texture(art)
 			var root := _stand_on(sprite, cell, Vector2(0, TILE - RouteArt.size(art).y))
 			if kind == "lamp":
-				_add_ember_lamp(root, cell, String(piece["place"]), cell in own_light)
+				_add_ember_lamp(root, cell, String(piece["place"]), cell in own_light, String(piece.get("lamp", "ember")))
 			elif kind == "hut":
 				_add_hut_window(root)
 				waystations.append(String(piece["place"]))
@@ -2481,10 +2490,11 @@ func _decor_routes() -> void:
 ## soft halo round it and its warmth on the ground about its foot. One
 ## light: test_night_light's budget holds with every waystation built; a
 ## lamp close by one that has it (`own_light` false) keeps its halo alone,
-## a cheaper light, so dozens of lamps hold it too (PIX-323).
-func _add_ember_lamp(root: Node2D, cell: Vector2i, place: String, own_light := true) -> void:
+## a cheaper light, so dozens of lamps hold it too (PIX-323). It burns in
+## its `kind`'s colour (PIX-324: sea glass, frost lily, grave moss).
+func _add_ember_lamp(root: Node2D, cell: Vector2i, place: String, own_light := true, kind := "ember") -> void:
 	var lit := AnimatedSprite2D.new()
-	lit.sprite_frames = RouteArt.ember()
+	lit.sprite_frames = RouteArt.ember(kind)
 	lit.material = Lights.unshaded()
 	lit.centered = false
 	lit.position = Vector2(0, -RouteArt.size("ember_lamp").y)
@@ -2495,10 +2505,10 @@ func _add_ember_lamp(root: Node2D, cell: Vector2i, place: String, own_light := t
 	night_glows.append(lit)
 	ember_lamps[place] = lit
 	var top := Vector2(cell * TILE) + Vector2(0, TILE - RouteArt.size("ember_lamp").y)
-	var halo := _add_halo(top + RouteArt.HALO_AT, EMBER_HALO, EMBER_HALO_PEAK)
+	var halo := _add_halo(top + RouteArt.HALO_AT, EMBER_HALO, EMBER_HALO_PEAK, RouteArt.light_of(kind) if RouteArt.KIND_LOOKS.has(kind) else HALO_TINT)
 	if not own_light:
 		return
-	var light := Lights.make(Vector2(cell * TILE) + EMBER_POOL, EMBER_REACH, Lights.EMBER, Lights.EMBER_ENERGY, true)
+	var light := Lights.make(Vector2(cell * TILE) + EMBER_POOL, EMBER_REACH, RouteArt.light_of(kind), Lights.EMBER_ENERGY, true)
 	props.add_child(light)
 	halo.tree_exiting.connect(light.queue_free)
 	halo.set_meta("light", light)
@@ -2557,6 +2567,25 @@ func _add_lantern_light(root: Node2D, cell: Vector2i) -> void:
 	var at := Vector2(cell * TILE) + HamletArt.LANTERN_GLASS
 	var halo := _add_halo(at, LAMP_HALO - 3, LAMP_HALO_PEAK)
 	var light := Lights.make(at + Vector2(0, TILE * 0.75), LANTERN_REACH, Lights.LAMP, Lights.LAMP_ENERGY, true)
+	props.add_child(light)
+	halo.set_meta("light", light)
+
+
+## A hub's lit piece at night (PIX-324: the lighthouse's lantern, the
+## lodge's windows, the stall's lantern): what burns in it (the dark doesn't
+## touch it), a halo and its light on the ground about it.
+func _add_shine(root: Node2D, cell: Vector2i, art: String) -> void:
+	var lit := Sprite2D.new()
+	lit.texture = HamletArt.shine(art)
+	lit.centered = false
+	lit.material = Lights.unshaded()
+	lit.position = Vector2(0, -HamletArt.size(art).y)
+	lit.visible = false
+	root.add_child(lit)
+	night_glows.append(lit)
+	var at := Vector2(cell * TILE) + Vector2(0, TILE - HamletArt.size(art).y) + HamletArt.shine_at(art)
+	var halo := _add_halo(at, LAMP_HALO, LAMP_HALO_PEAK)
+	var light := Lights.make(at + Vector2(0, TILE * 0.5), LAMP_REACH, Lights.LAMP, Lights.LAMP_ENERGY, true)
 	props.add_child(light)
 	halo.set_meta("light", light)
 
@@ -2659,6 +2688,8 @@ func deal_patches(day: int) -> bool:
 	# Nothing grows under what the Post's routes put up (PIX-322).
 	for cell: Vector2i in routes["blocks"]:
 		patches.erase(cell)
+	# A healed lamp's morning find, picked as a patch is (PIX-324).
+	patches.merge(Lamps.finds(Lamps.now(data.id), day), true)
 	return true
 
 

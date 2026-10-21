@@ -143,6 +143,7 @@ func test_morvax_counts_the_couriers_lamps_line_by_line() -> void:
 	assert_string_starts_with(lines[1], "Forty-three.")
 	assert_string_starts_with(lines[2], "Forty-four.")
 	assert_string_starts_with(lines[3], "Forty-five.", "a lamp at every waystation")
+	assert_string_starts_with(lines[4], "Forty-six.", "and the Mirefen Pass's (PIX-324)")
 	for lamps in range(1, said.size()):
 		assert_ne(lines[lamps - 1], lines[lamps], "a new line for each lamp more")
 	assert_eq(lines[said.size() - 1], lines[-1], "more than he has wall for: the last line")

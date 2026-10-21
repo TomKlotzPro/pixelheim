@@ -19,7 +19,8 @@ const TILE := 16
 ## light (1-6); irons and greys (k i l h j); snow (y s S); a net's tarred
 ## twine (t T); cork and cloth (r R e, u U, b B); the dark of a doorway
 ## (n N); leaves (f F v) and carrots (c C); coal (z Z); flame and gold
-## (a Y q Q); slate (g G) and water (w W).
+## (a Y q Q); slate (g G) and water (w W); sea glass (m M, PIX-324: the
+## coast's shallows' greens).
 const INKS := {
 	"o": Color("2e2036"), "1": Color("4a3132"), "2": Color("644227"), "3": Color("79542d"), "4": Color("a1753f"),
 	"5": Color("c18f4f"), "6": Color("d6a555"), "k": Color("2d2d2d"), "i": Color("484849"), "l": Color("6f6f70"),
@@ -29,7 +30,7 @@ const INKS := {
 	"B": Color("e8e2cc"), "f": Color("2f5a3a"), "F": Color("4c8a4e"), "v": Color("7bb35a"), "c": Color("8a4a32"),
 	"C": Color("e0884a"), "z": Color("1d1b22"), "Z": Color("3b3944"), "a": Color("f8ac34"), "Y": Color("fbe08a"),
 	"q": Color("fff4c0"), "Q": Color("e8b84a"), "g": Color("4d587a"), "G": Color("5e769e"), "w": Color("596b7a"),
-	"W": Color("8ea6b8"),
+	"W": Color("8ea6b8"), "m": Color("3e9e94"), "M": Color("8fd8c8"),
 }
 ## A glint's beats over the Vault's gold once its door stands open: most
 ## beats dark, then a star that opens and closes.
@@ -622,9 +623,14 @@ static var _glint: SpriteFrames
 static var _door_glow: SpriteFrames
 
 
+## Piece `name`'s rows: ours, or what the hubs grow (HubArt, PIX-324).
+static func rows_of(name: String) -> Array:
+	return PIECES[name] if PIECES.has(name) else HubArt.PIECES[name]
+
+
 ## Piece `name` drawn (a "." clear), as an image.
 static func picture(name: String) -> Image:
-	var rows: Array = PIECES[name]
+	var rows := rows_of(name)
 	var image := Image.create(String(rows[0]).length(), rows.size(), false, Image.FORMAT_RGBA8)
 	for y in rows.size():
 		var row := String(rows[y])
@@ -643,13 +649,40 @@ static func texture(name: String) -> Texture2D:
 
 ## How big piece `name` is, in pixels.
 static func size(name: String) -> Vector2i:
-	var rows: Array = PIECES[name]
+	var rows := rows_of(name)
 	return Vector2i(String(rows[0]).length(), rows.size())
 
 
 ## How many cells across piece `name` stands.
 static func cells_wide(name: String) -> int:
 	return ceili(size(name).x / float(TILE))
+
+
+## What burns in a lit piece at night (PIX-324: the lighthouse's lantern,
+## the lodge's windows, the stall's lantern): its flame's and its sea
+## glass's pixels alone, a step brighter, drawn over it unshaded.
+const SHINE := {"a": "Y", "Y": "q", "q": "q", "m": "a", "M": "Y"}
+
+
+static func shine(name: String) -> Texture2D:
+	var key := "shine:" + name
+	if not _textures.has(key):
+		var rows := rows_of(name)
+		var image := Image.create(String(rows[0]).length(), rows.size(), false, Image.FORMAT_RGBA8)
+		for y in rows.size():
+			var row := String(rows[y])
+			for x in row.length():
+				if SHINE.has(row[x]):
+					image.set_pixel(x, y, INKS[SHINE[row[x]]])
+		_textures[key] = ImageTexture.create_from_image(image)
+	return _textures[key]
+
+
+## Where a lit piece's light stands, in its pixels: the middle of what
+## burns in it.
+static func shine_at(name: String) -> Vector2:
+	var image := (shine(name) as ImageTexture).get_image()
+	return Rect2(image.get_used_rect()).get_center()
 
 
 ## A washing line strung `cells` cells across (between two walls, PIX-313):
