@@ -1,4 +1,5 @@
 class_name Telegraph
+## areas: combat dungeon
 ## A danger marked on the ground before it lands (PIX-150, shared by the
 ## bosses and, PIX-155, the elites): a red shape with a bright edge (hazard
 ## stripes with a dark outline under clear warnings, PIX-160) that pulses

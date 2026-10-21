@@ -1,4 +1,5 @@
 class_name Hubs
+## areas: town travel field +blackiron* +saltmere* +greyhold* +frostgate* +mountain_road*
 ## The hubs grow (PIX-324, Something to Come Back To's step 5): the place
 ## at the end of each post road with a waystation grows in three small
 ## steps as its road carries the post, counted as Routes counts it, at the

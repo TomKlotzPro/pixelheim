@@ -2377,6 +2377,10 @@ msgid "Begin"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Behind the scenes: each script now names the checks it needs, the project's notes are slimmer and up to date, and every change is timed on the overworld at night, in the Deepwood and across a road out, so a slowdown is caught before it reaches you"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Behind the scenes: everything the game kept only so very old saves would still load is gone, leaving it lighter and simpler (the game isn't in beta yet)"
 msgstr ""
 
@@ -6258,6 +6262,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Under the Ashen Mountain"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Under the Hood"
 msgstr ""
 
 #: assets/data/changelog.json

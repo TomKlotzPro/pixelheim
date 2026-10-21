@@ -1,5 +1,6 @@
 class_name ProgressionState
 extends Resource
+## areas: quest dungeon save
 ## The quest ledger, the story's, the hunts and deeds (the save's story and
 ## quests sections).
 

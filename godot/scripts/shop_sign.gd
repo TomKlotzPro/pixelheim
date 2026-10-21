@@ -1,4 +1,5 @@
 class_name ShopSign
+## areas: town +town-age*
 ## The town's shop signs (PIX-134): a wooden board with a carved rim hanging
 ## by two chains from an iron bar over each door, painted with its trade in
 ## Shade's own icons (cheese for the general store, a tankard for the inn, the

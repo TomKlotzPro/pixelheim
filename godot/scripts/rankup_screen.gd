@@ -1,4 +1,5 @@
 extends Screen
+## areas: rank
 ## The ascension (RankUpOverlay.tsx, useRankUp; PIX-244 made it a moment).
 ## Tom asked for « une meilleure animation quand on passe d'une classe
 ## au-dessus ». The hero looks the same at every rank (Tom found the rank's

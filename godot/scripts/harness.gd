@@ -1,4 +1,5 @@
 extends Node
+## areas: all
 ## The agent verification harness, loaded only for `--screenshot` runs
 ## (world.gd adds it; it never ships in play): headless Godot cannot render,
 ## so it drives a real window briefly - warps, keys, screens, fights - saves

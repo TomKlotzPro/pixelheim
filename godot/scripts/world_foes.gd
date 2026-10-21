@@ -1,5 +1,6 @@
 class_name Foes
 extends Node
+## areas: combat field night
 ## The world's foes (Solid Ground, PIX-260: moved out of world.gd as they
 ## were): packs at their homes and back when their time is up, each out at
 ## its hours (PIX-252: the night's after dark, the day's by day, some asleep

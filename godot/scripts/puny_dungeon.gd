@@ -1,4 +1,5 @@
 class_name PunyDungeon
+## areas: dungeon +vault*
 ## Shade's Puny Dungeon (assets/puny/dungeon, CC0, PIX-130): stone floors,
 ## one-tile walls and the dark beyond them, and the barrels, pots, torches,
 ## chests and stairs that furnish a floor. Also paves ruins under the open sky.

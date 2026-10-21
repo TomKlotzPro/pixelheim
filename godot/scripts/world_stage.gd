@@ -1,5 +1,6 @@
 class_name Stage
 extends Node
+## areas: story travel
 ## The story played over the world (Solid Ground, PIX-260: moved out of
 ## world.gd as it was): story moments and dreams, the ascension, the Night
 ## of Ash's beats and its dawn, the ending with its festival or lanterns,

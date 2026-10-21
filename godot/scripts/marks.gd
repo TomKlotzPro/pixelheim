@@ -1,4 +1,5 @@
 class_name Marks
+## areas: town combat screen quest
 ## The marks over the world (PIX-284, PIX-289), one family in the UI's
 ## palette: pixel art drawn here a pixel per letter, as UiStyle draws its
 ## frames, never shapes smoothed or turned. Tom found the old ones ugly: the

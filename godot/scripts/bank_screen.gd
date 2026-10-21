@@ -1,4 +1,5 @@
 extends "res://scripts/ledger_screen.gd"
+## areas: town
 ## Mirelle's bank (Bank.tsx), open once she has settled in town: a savings
 ## pot that grows by the day-wheel, one caravan at a time, and expansions on
 ## owned businesses. Everything resolves from world steps, like the web.

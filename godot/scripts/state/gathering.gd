@@ -1,4 +1,5 @@
 class_name Gathering
+## areas: gathering
 ## Gathering spots (PIX-143): patches of each wild region's material that
 ## the hero picks by walking over. Pure, over combat.json's "gathering";
 ## GameState picks, MapView draws.

@@ -1,5 +1,6 @@
 class_name Delve
 extends Node
+## areas: dungeon +vault*
 ## The dungeons' floors as the hero walks them (Solid Ground, PIX-260: moved
 ## out of world.gd as they were): which floor of how many they've come to,
 ## and a boss's ways out opening where they can see them. The old

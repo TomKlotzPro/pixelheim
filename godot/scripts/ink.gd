@@ -1,4 +1,5 @@
 class_name Ink
+## areas: screen lang
 ## Where the pixels are (PIX-268): the ink a word draws in a pixel font and
 ## the head a figure's frame draws, measured on the pixels themselves, so a
 ## mark over a head is centred on the one by the other. A Label's box can't

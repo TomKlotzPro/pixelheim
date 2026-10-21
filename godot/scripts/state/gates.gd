@@ -1,4 +1,5 @@
 class_name Gates
+## areas: travel story +overworld*
 ## The gates (PIX-254, the main story v2's step 3; Tom: « bloquer des
 ## passages dans une autre zone tant qu'on n'a pas fait certaines choses »).
 ## Each region's way in from the Reach stays shut until the story reaches

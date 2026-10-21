@@ -1,5 +1,6 @@
 class_name Trade
 extends RefCounted
+## areas: trade
 ## The hero at the counter (PIX-261, out of game_state.gd): which shop they
 ## stand in and what it sells at what price, buying and selling there,
 ## Hilda's forge (salvage, reforge, quench, a +1) and crafting at a trade's

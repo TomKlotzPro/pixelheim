@@ -1,4 +1,5 @@
 extends "res://scripts/ledger_screen.gd"
+## areas: rooms +town_house*
 ## The house's fixtures, one screen per `mode` (HouseStorage, Trophies, Nook
 ## and the pack's Craft/Place in the web game): the storage barrel, the
 ## fitted workbench (both trades), the trophy shelf, the manor's alchemy

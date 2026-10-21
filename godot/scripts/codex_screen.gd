@@ -1,4 +1,5 @@
 extends Screen
+## areas: screen
 ## The codex (Codex.tsx): the trophy case. Masteries shows each monster
 ## family's kills, the Slayer tier earned and what the next teaches; the
 ## Bestiary shows every monster whose family the hero has met, and keeps the

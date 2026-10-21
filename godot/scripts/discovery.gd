@@ -1,4 +1,5 @@
 class_name Discovery
+## areas: town rooms travel +town-age*
 ## Fog-of-war bookkeeping, ported from src/world/discover.ts: the hero sees
 ## SIGHT_RADIUS tiles around themselves (Chebyshev), and what was seen stays
 ## seen. `discovered` is map_id -> Dictionary(Vector2i -> true), session-only

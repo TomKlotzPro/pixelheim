@@ -1,5 +1,6 @@
 class_name SettlementState
 extends Resource
+## areas: town rooms +town-age* +town_house*
 ## The hero's stake in Pixelheim village (web GameState: house, properties,
 ## townTier, settlers, bardSong, investments). Town systems arrive with
 ## PIX-124; until then these records ride along untouched, so an imported

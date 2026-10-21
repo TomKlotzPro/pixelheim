@@ -1,4 +1,5 @@
 extends Screen
+## areas: town story
 ## The town risen (PIX-147): after a project is funded, the camera walks the
 ## town to what was built - "Street lamps: built." under each - and when an
 ## age is complete it says what Pixelheim is now; a homecoming after a boss

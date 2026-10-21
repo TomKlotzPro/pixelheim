@@ -1,5 +1,6 @@
 class_name Slicer
 extends RefCounted
+## areas: travel
 ## Work cut into slices a frame (One Reach, PIX-269, step 5): drawing the map
 ## beside the hero, taking it down again, working the Reach's ground out
 ## ahead, each a list of small units run in order, as many a frame as fit a

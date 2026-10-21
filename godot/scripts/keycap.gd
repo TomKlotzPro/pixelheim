@@ -1,5 +1,6 @@
 class_name Keycap
 extends PanelContainer
+## areas: screen
 ## A key the player can press, drawn as one (PIX-193): a raised key in the
 ## page's parchment - a lit top edge, a darker lip under the face, a dark
 ## outline with rounded corners - its label on the face. Pressing its key

@@ -1,5 +1,6 @@
 class_name PostState
 extends Resource
+## areas: town story quest save
 ## The Pixelheim Post as the hero has kept it (PIX-320): only what they did.
 ## Which pieces wait in the post box each morning is worked out from the
 ## day, the seed and the threads (Post.in_box), so it's never saved; what's

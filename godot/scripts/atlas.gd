@@ -1,4 +1,5 @@
 class_name Atlas
+## areas: travel
 ## The map screen's pages (PIX-266: "the map grew a lot"). The screen showed
 ## the map the hero stood on and, for a waypoint chosen there, that one's
 ## map; the Reach has since grown six regions and their caves off the

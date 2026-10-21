@@ -1,5 +1,6 @@
 class_name Holdings
 extends RefCounted
+## areas: town rooms +town-age* +town_house*
 ## The hero's stake in Pixelheim (PIX-261, out of game_state.gd): village
 ## projects and commissions, the businesses they own and their tills, the
 ## bank's savings and the caravan venture, the settlers and the perks their

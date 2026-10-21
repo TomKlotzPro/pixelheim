@@ -1,4 +1,5 @@
 class_name Skills
+## areas: rank screen
 ## The skill trees (hero/skillTree.ts) and the stat sheet (hero/statInfo.ts,
 ## applyStatPoint): what a point buys, which nodes can be learned, and the
 ## live numbers each stat drives, read through the real combat formulas so

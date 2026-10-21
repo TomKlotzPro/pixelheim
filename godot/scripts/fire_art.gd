@@ -1,4 +1,5 @@
 class_name FireArt
+## areas: story town night
 ## The fires of a burning house (PIX-327): the Night of Ash's ruins and the
 ## Night of Bells' roofs. They were Shade's status flame, a 16 px icon, a
 ## handful to a house in a grid on the ash, each in a round glow with his

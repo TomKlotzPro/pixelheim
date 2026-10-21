@@ -1,4 +1,5 @@
 class_name Bestiary
+## areas: combat
 ## The monsters and what fighting them pays, ported from src/game/combat
 ## (monsters, encounters, drops, combat formulas) and hero/mastery.ts. Pure
 ## functions over combat.json; every chance arrives as a `roll` callable

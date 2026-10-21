@@ -1,4 +1,5 @@
 class_name Ranks
+## areas: rank
 ## Rank evolution (src/game/hero/ranks.ts): every 5 levels the hero ascends
 ## to a new title and banks a bonus skill point (HeroRules.apply_level_ups).
 ## A rank no longer shows on the hero in the world (the web's aura and its

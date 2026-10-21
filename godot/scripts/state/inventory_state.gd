@@ -1,5 +1,6 @@
 class_name InventoryState
 extends Resource
+## areas: trade screen
 ## Gold and everything carried (web GameState: gold, inventory, gear,
 ## equipped). Stackables are item id -> count; weapons and apparel are gear
 ## instances ({uid, itemId, rarity, bonus}) so each piece keeps its rarity roll,

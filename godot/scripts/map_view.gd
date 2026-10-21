@@ -1,5 +1,6 @@
 class_name MapView
 extends RefCounted
+## areas: town rooms travel +town-age*
 ## One visit to a map, as drawn (PIX-136): Shade's ground, houses, rooms and
 ## dungeons, the props, field scatter, chests and door signs, the house's
 ## placed furniture, and the invisible boxes on what the hero can't walk

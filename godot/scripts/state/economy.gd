@@ -1,4 +1,5 @@
 class_name Economy
+## areas: trade
 ## The town economy's rules, ported from src/game/economy/{shop,jobs,recipes,
 ## rarity}.ts: what each shop stocks, what things cost and fetch, the forge,
 ## crafting and the trades' levels. Pure functions over the exported data

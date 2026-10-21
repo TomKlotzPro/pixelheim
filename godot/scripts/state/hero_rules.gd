@@ -1,4 +1,5 @@
 class_name HeroRules
+## areas: rank combat
 ## What the hero's numbers add up to, ported from src/game/hero/{character,
 ## skillTree,paths,ranks}.ts: stats with gear, armor, the passives of owned
 ## skills and the walked path, level-ups. Pure functions over HeroState +

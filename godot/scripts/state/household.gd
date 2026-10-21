@@ -1,5 +1,6 @@
 class_name Household
 extends RefCounted
+## areas: town rooms +town-age* +town_house*
 ## The hero's house (PIX-261, out of game_state.gd): the deed and its
 ## upgrades, the storage barrel, the trophy shelf, the furniture and what it
 ## adds, the manor's nook, and what E does to each fixture. It holds nothing

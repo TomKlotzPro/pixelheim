@@ -1,5 +1,6 @@
 class_name PunySheet
 extends RefCounted
+## areas: town rooms travel +town-age*
 ## One of Shade's 16px tilesets with its Tiled tileset (.tsx): the animation
 ## and corner-wang tables read from the .tsx, and a TileSet over the sheet
 ## whose tiles are created on first use. PunyTerrain (Puny World) and

@@ -1,4 +1,5 @@
 extends Control
+## areas: screen
 ## The hero's dock along the bottom of the screen (PIX-138): one wooden plate
 ## in the windows' carved frame, centred, so the rest of the screen is world.
 ## Experience runs as a thin line along its top; the hero's portrait, name,

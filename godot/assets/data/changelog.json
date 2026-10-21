@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.270.0",
+      "date": "2026-10-21",
+      "codename": "Under the Hood",
+      "notes": [
+        "Behind the scenes: each script now names the checks it needs, the project's notes are slimmer and up to date, and every change is timed on the overworld at night, in the Deepwood and across a road out, so a slowdown is caught before it reaches you"
+      ]
+    },
+    {
       "version": "0.269.0",
       "date": "2026-10-21",
       "codename": "The Post House",

@@ -1,4 +1,5 @@
 class_name DungeonArt
+## areas: dungeon +seacave* +shafts* +cellars* +icecave* +vault*
 ## The small things a dungeon is dressed in that Shade's sheets don't draw
 ## (PIX-310): mine rails, timber props, crypt niches and cobwebs, banners,
 ## seaweed, bones and a rug's border, drawn here in code in his dungeon

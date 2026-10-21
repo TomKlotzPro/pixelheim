@@ -1,4 +1,5 @@
 class_name Ways
+## areas: travel
 ## The ways between maps (PIX-269: "it isn't clear where to walk to go on").
 ## Every portal that takes the hero to another map or a dungeon, read as one
 ## way on: an opening at the map's edge (its portal cells side by side), a

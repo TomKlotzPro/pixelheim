@@ -1,5 +1,6 @@
 class_name Bearing
 extends RefCounted
+## areas: quest
 ## Where the hero is headed, their bearing (PIX-239, PIX-240): the active quest - a side
 ## quest or a bounty the hero chose to follow in the journal
 ## (ProgressionState.tracked), or else the main story's next step - as a

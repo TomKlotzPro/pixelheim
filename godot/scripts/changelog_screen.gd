@@ -1,4 +1,5 @@
 extends Screen
+## areas: title
 ## What's new (the web's Changelog page): every release, newest first, its
 ## version, codename and date over its notes, in one scrolling window. Opened
 ## from the version line on the title. W/S or the wheel scroll; Esc closes.

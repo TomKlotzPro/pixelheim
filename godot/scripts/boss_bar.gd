@@ -1,4 +1,5 @@
 extends Control
+## areas: combat dungeon
 ## The boss bar (PIX-210): across the top of the screen while a boss - or a
 ## named monster - hunts the hero. Its name over a long health bar; what a
 ## blow takes stays a moment as a pale ghost before it drains, so a big hit

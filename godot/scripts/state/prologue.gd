@@ -1,4 +1,5 @@
 class_name Prologue
+## areas: story night
 ## The Night of Ash (PIX-152): the courier's first night, played. A new hero
 ## starts on the road with the Chancellor's letter; drives off a scavenger at
 ## the gate; walks into the burning village; frees Bram, is bandaged by Sela,

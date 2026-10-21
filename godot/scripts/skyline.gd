@@ -1,4 +1,5 @@
 class_name Skyline
+## areas: travel field
 ## The village seen from outside (PIX-248). The overworld holds Pixelheim as
 ## one block of roof inside a rampart, and it used to be drawn as a keep
 ## among Shade's one-tile house icons, on every other cell, in teal and red

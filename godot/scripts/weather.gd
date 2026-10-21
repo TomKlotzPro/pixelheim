@@ -1,4 +1,5 @@
 class_name Weather
+## areas: field
 ## Each region's air and the sky's weather (PIX-224). The Ash shimmers with
 ## heat and drifting embers, the Frostgate snows and frosts the edges of the
 ## view, the Mire and the marshes roll with low fog, salt spray blows off

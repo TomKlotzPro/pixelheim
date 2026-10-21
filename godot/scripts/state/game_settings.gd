@@ -1,4 +1,5 @@
 class_name GameSettings
+## areas: screen
 ## Device preferences (src/app/settings.ts), deliberately NOT part of the save
 ## so they never travel inside a save code: volumes (applied once audio lands,
 ## PIX-128), the CRT scanlines, fullscreen, reduced motion and key bindings.

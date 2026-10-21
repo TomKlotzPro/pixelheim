@@ -1,5 +1,6 @@
 class_name WorldFx
 extends Node2D
+## areas: combat town
 ## What flashes and floats over the world (Solid Ground, PIX-260: moved out
 ## of world.gd as it was): damage numbers and words rising over heads, a
 ## skill's light where it lands, the level-up burst, what's won rising from

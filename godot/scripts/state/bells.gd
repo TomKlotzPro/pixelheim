@@ -1,4 +1,5 @@
 class_name Bells
+## areas: story night combat town
 ## The Night of Bells (PIX-253 step 9, chapter 7): the dragon comes back to
 ## the square, and this time the village is ready. It plays the Night of
 ## Ash's own beats again on the town map - the lanterns lit, the embers

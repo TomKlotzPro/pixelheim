@@ -1,4 +1,5 @@
 extends Node
+## areas: combat field
 ## An elite's one trick (PIX-155), by its family, told before it lands: beasts
 ## lunge down a marked line, greenskins cleave the ground before them,
 ## constructs stamp a ring around themselves, fireborn spit a firebolt, the

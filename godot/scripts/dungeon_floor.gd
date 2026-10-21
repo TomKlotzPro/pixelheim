@@ -1,4 +1,5 @@
 class_name DungeonFloor
+## areas: dungeon +vault*
 ## A dungeon floor laid out from a seed (PIX-126, PIX-255): a winding chain
 ## of rooms and halls from the stairs back up, a pack waiting in each room
 ## after the entrance and the last pack in the last and largest, the same

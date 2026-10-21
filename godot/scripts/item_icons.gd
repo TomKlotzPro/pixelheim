@@ -1,4 +1,5 @@
 class_name ItemIcons
+## areas: trade screen
 ## Every item's icon and the ailment marks, all Shade's (PIX-138), as mapped
 ## in assets/puny/icons.json:
 ## - "free/<sheet>@c,r": a cell of his CC0 icon sheets in assets/puny/icons/;

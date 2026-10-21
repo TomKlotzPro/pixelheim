@@ -1,4 +1,5 @@
 class_name Hamlet
+## areas: town travel field +blackiron* +saltmere* +greyhold* +frostgate* +mountain_road*
 ## Each settlement beyond Pixelheim its own (PIX-313, the audit's « bare and
 ## all alike »: Saltmere's long thatch slabs on an empty lawn, the same
 ## slate cottage at Greyhold, the Frostgate, Blackiron and the mountain, no

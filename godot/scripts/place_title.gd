@@ -1,4 +1,5 @@
 class_name PlaceTitle
+## areas: travel
 ## The card that names where the hero has come to (PIX-269, after Tom's "I
 ## still don't like the door between maps"). No signpost or nameplate stands
 ## by a way out any more: the cliffs part and the road runs on, and the

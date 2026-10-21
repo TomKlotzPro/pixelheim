@@ -1,4 +1,5 @@
 extends Screen
+## areas: screen
 ## The Escape menu (PauseMenu.tsx): resume, the saves (slots and codes),
 ## options, or back to the title. Progress saves itself. W/S choose, E or
 ## Enter takes it, Esc resumes. The world holds still.

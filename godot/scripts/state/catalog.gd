@@ -1,4 +1,5 @@
 class_name Catalog
+## areas: all
 ## Game data (assets/data/catalog.json, edited by hand): items, their slots
 ## and weights, armour sets, role base stats, skill-tree roots, place names,
 ## the town's spawn and the inn's bed. Read-only at runtime.

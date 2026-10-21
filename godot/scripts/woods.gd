@@ -1,4 +1,5 @@
 class_name Woods
+## areas: travel field
 ## The woods as they stand (PIX-309). Tom's audit found the Deepwood an
 ## orchard - a single tree in each forest cell, evenly spaced, all of a size
 ## - and every ridge a straight planter, its rim lined with identical pines.

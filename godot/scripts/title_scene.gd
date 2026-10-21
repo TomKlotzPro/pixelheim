@@ -1,5 +1,6 @@
 class_name TitleScene
 extends Node2D
+## areas: title
 ## The title's backdrop (PIX-139): Pixelheim's street at night under the
 ## Ashen Mountain, in Shade's art, drawn in art pixels at 2x. Far to near: a
 ## dithered sky, stars, the moon behind drifting cloud, the far ranges, the

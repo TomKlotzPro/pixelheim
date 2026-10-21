@@ -1,4 +1,5 @@
 extends Screen
+## areas: rank screen
 ## The skill tree (SkillTree.tsx): once the hero has ranked, the Path Graph on
 ## top (six identities, walked edges lit, a pending step to claim), then the
 ## role's three branches of six tiers (PIX-190 added the last two, open at

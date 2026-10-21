@@ -1,5 +1,6 @@
 class_name Interaction
 extends Node
+## areas: town rooms trade story quest
 ## What E does in the world (Solid Ground, PIX-260: moved out of world.gd as
 ## it was), in the web's INTERACT order: the well's water on the Night of
 ## Ash, a faced chest, a letter's answer waiting to be read and a dungeon's

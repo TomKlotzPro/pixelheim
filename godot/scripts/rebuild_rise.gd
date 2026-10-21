@@ -1,5 +1,6 @@
 class_name RebuildRise
 extends Node2D
+## areas: town story
 ## A building rising on the town's tour (PIX-264). Tom found the tour after
 ## the board "an empty screen": the camera stopped on a finished house with
 ## a line under it. Now a project's stop shows the town as it stood a moment

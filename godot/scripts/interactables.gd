@@ -1,4 +1,5 @@
 class_name Interactables
+## areas: town rooms travel +town-age*
 ## Treasure chests, door signs and waypoints (assets/maps/interactables.json,
 ## edited by hand). test_interactables checks every chest: its own id, known
 ## loot, open ground off any way out, clear of the packs.

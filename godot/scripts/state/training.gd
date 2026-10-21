@@ -1,5 +1,6 @@
 class_name Training
 extends RefCounted
+## areas: rank screen
 ## The hero's skills and stats (PIX-261, out of game_state.gd): a skill's
 ## price paid, stat points spent, skill nodes and ranks beyond the tree
 ## bought or forgotten in the village, steps on the Path Graph, and the skill

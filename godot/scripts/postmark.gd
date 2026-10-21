@@ -1,4 +1,5 @@
 class_name Postmark
+## areas: quest
 ## The courier's book's postmarks (PIX-321): a round date stamp per place,
 ## pixel art in the page's inks drawn at 1x and shown at UiStyle.UI_SCALE,
 ## like the frames and the marks over the world. A double ring round the

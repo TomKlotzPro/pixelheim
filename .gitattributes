@@ -3,3 +3,6 @@
 # both sides changed comes out twice, and tools/flows.py refuses a name
 # given twice, so nothing passes unseen.
 godot/tools/flows.txt merge=union
+# The areas of the files that aren't scripts (PIX-353), a line each, merged
+# the same way: tools/test_areas.py refuses a glob named twice.
+godot/tools/areas.txt merge=union
