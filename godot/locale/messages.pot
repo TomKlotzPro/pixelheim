@@ -2061,6 +2061,10 @@ msgid "A new beginning: Maren's five letters, written fifty years ago and never 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "A new counter at every shop: the goods on the left, your pack on the right, and between them a card showing the hero wearing the piece, each number with a green or red arrow against what you wear, and your gold after; a price you can't afford shows the gold you're missing (Tom's playtest)"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "A new dream under Sela's roof, the first night after Pell comes home"
 msgstr ""
 
@@ -3945,6 +3949,10 @@ msgid "New Blood"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "New Counter"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "New Faces"
 msgstr ""
 
@@ -4718,6 +4726,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Second Thoughts"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Sell all your junk in one go, choose how many of a stack to sell, and buy back what you just sold at the price you got, until you leave the counter"
 msgstr ""
 
 #: assets/data/changelog.json

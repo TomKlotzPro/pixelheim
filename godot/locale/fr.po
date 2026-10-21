@@ -2061,6 +2061,10 @@ msgid "A new beginning: Maren's five letters, written fifty years ago and never 
 msgstr "Un nouveau départ : les cinq lettres de Maren, écrites il y a cinquante ans et jamais envoyées, attendent dans une boîte sous la pierre de son foyer. Porter des lettres, c'est votre métier, alors vous les remettez"
 
 #: assets/data/changelog.json
+msgid "A new counter at every shop: the goods on the left, your pack on the right, and between them a card showing the hero wearing the piece, each number with a green or red arrow against what you wear, and your gold after; a price you can't afford shows the gold you're missing (Tom's playtest)"
+msgstr "Un nouveau comptoir dans chaque boutique : la marchandise à gauche, votre sac à droite, et entre les deux une fiche qui montre le héros portant la pièce, chaque chiffre avec une flèche verte ou rouge par rapport à ce que vous portez, et votre or après ; un prix hors de portée indique l'or qui manque (playtest de Tom)"
+
+#: assets/data/changelog.json
 msgid "A new dream under Sela's roof, the first night after Pell comes home"
 msgstr "Un nouveau rêve sous le toit de Sela, la première nuit après le retour de Pell"
 
@@ -3945,6 +3949,10 @@ msgid "New Blood"
 msgstr "Sang neuf"
 
 #: assets/data/changelog.json
+msgid "New Counter"
+msgstr "Nouveau comptoir"
+
+#: assets/data/changelog.json
 msgid "New Faces"
 msgstr "Nouveaux visages"
 
@@ -4719,6 +4727,10 @@ msgstr "Les sauvegardes ont leur nouveau format : un héros qui a tout explor�
 #: assets/data/changelog.json
 msgid "Second Thoughts"
 msgstr "Réflexion faite"
+
+#: assets/data/changelog.json
+msgid "Sell all your junk in one go, choose how many of a stack to sell, and buy back what you just sold at the price you got, until you leave the counter"
+msgstr "Vendez toute votre camelote d'un coup, choisissez combien d'une pile vendre, et rachetez ce que vous venez de vendre au prix obtenu, jusqu'à ce que vous quittiez le comptoir"
 
 #: assets/data/changelog.json
 msgid "Settlers move in as the town rises: Mira the Weaver, Old Tomas, Serra and Fenn each arrive with their tier - and their own things to say about you"
