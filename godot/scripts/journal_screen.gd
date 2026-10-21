@@ -119,7 +119,7 @@ func _command(event: InputEvent) -> Callable:
 			return _choose.bind(wrapi(selected + by, 0, rows.size()))
 		if event.is_action_pressed("interact"):
 			return _follow.bind(selected)
-	if tab in ["letters", "post"] and by != 0 and not pages.is_empty():
+	if tab in ["letters", "post", "feats"] and by != 0 and not pages.is_empty():
 		return _turn.bind(by)
 	if tab == "book" and by != 0 and places.size() > 1:
 		return _open_place.bind(wrapi(place_at + by, 0, places.size()))
@@ -186,8 +186,8 @@ func _set_footer() -> void:
 	match tab:
 		"quests":
 			footer = UiStyle.screen_footer("{key:move_up}/{key:move_down}  choose      {key:interact}  follow      {key:move_left}/{key:move_right}  tabs      {key:journal} / Esc  close")
-		"letters", "post":
-			footer = UiStyle.screen_footer("{key:move_up}/{key:move_down}  turn      {key:move_left}/{key:move_right}  tabs      {key:journal} / Esc  close")
+		"letters", "post", "feats":
+			footer = UiStyle.screen_footer("{key:move_up}/{key:move_down}  turn     {key:move_left}/{key:move_right}  tabs      {key:journal} / Esc  close")
 		"book":
 			footer = UiStyle.screen_footer("{key:move_up}/{key:move_down}  choose      {key:move_left}/{key:move_right}  tabs      {key:journal} / Esc  close")
 		_:
@@ -780,13 +780,26 @@ func _turn(by: int) -> void:
 
 
 ## Feats (PIX-219: Deeds in the code; the word was the shops' deeds'):
-## every long goal, done or how far along, and its medal.
+## every long goal, done or how far along, and its medal. W/S turn from one
+## to the next (PIX-326: the Post's three ran off the page).
 func _feats() -> void:
-	var sheet := _sheet()
+	scroll = ScrollContainer.new()
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_sheet().add_child(scroll)
+	var list := VBoxContainer.new()
+	list.add_theme_constant_override("separation", 8)
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(list)
 	var state := GameState
 	for deed: Dictionary in Deeds.all():
+		var sheet := VBoxContainer.new()
+		sheet.add_theme_constant_override("separation", 8)
+		list.add_child(sheet)
+		pages.append(sheet)
 		var done: bool = deed["id"] in state.progression.deeds
-		var counted := Deeds.count(deed, state.hero, state.pack, state.progression, state.settlement)
+		var counted := Deeds.count(deed, state.hero, state.pack, state.progression, state.settlement, state.post)
 		var line := HBoxContainer.new()
 		line.add_theme_constant_override("separation", 12)
 		# Columns that hold in French: a long name wraps rather than pushing

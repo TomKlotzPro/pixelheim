@@ -2141,6 +2141,28 @@
       "line": "Bring every settler home to Pixelheim.",
       "kind": "settlers",
       "itemId": "medal_full_house"
+    },
+    {
+      "id": "every_thread",
+      "name": "Every Thread Tied",
+      "line": "Carry every thread of the Post to its last piece.",
+      "kind": "threads",
+      "itemId": "medal_threads"
+    },
+    {
+      "id": "postmaster",
+      "name": "Postmaster of the Reach",
+      "line": "Deliver fifty pieces of post.",
+      "kind": "post",
+      "count": 50,
+      "itemId": "medal_postmaster"
+    },
+    {
+      "id": "reach_lit",
+      "name": "The Reach Lit",
+      "line": "Build every post road's waystation and light its lamp.",
+      "kind": "lamps",
+      "itemId": "medal_reach_lit"
     }
   ]
 }

@@ -163,6 +163,12 @@ post-map-reach | --map saltmere --post read worldmap | open=map_screen page=over
 # and the journal open at its Postmarks: Pixelheim's, Saltmere's and the
 # Reach's pages stamped.
 post-book | --map town --post book journal --tab book | open=journal_screen post=standing,box:0,bag:0,sent:5 stamps=town,saltmere,overworld | town quest screen
+# After the story (PIX-326): the Dragon Post, Fafnyr flying the day's
+# furthest piece as E empties the box, Saltmere's page stamped with the
+# hero still on the square; and an heirloom from the Kings' Vault going
+# home, Ola's cup handed over on her jetty once the stair's guardian fell.
+post-dragon | --map town --post box --seen ending_home | post=standing,box:0,bag:\d,sent:1 stamps=saltmere open=none | town story quest
+post-heirloom | --map saltmere --post heir_cup --hunted hollowmother --seen ending_home --keys e,e | post=box:\d,bag:0,sent:1 stamps=saltmere open=none | story quest
 # The Post's roads (PIX-322): three pieces carried down the Saltmere road
 # and signposts stand at its forks, Bram's Corner by the gate and Bram's
 # Fork; six, and its waystation is on the town's board; built, it stands
