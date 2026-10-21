@@ -3637,6 +3637,10 @@ msgid "Lamps and fires everywhere light the ground without hard edges, in town, 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Lamps take their region's colour and a gift: sea glass reaches further on the coast, frost lily heals faster on the pass, and a new grave moss lamp at the Mirefen Pass thins the fog; Aske widens every ring, and healed lamps bring a find some mornings and now and then a visitor"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Late-game hunting grounds: trolls and golems under the trees, ghosts and mimics in the bog - elites roam thick"
 msgstr ""
 
@@ -3702,6 +3706,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Light the five lanterns on the square, drive off the embers and douse the burning roofs from the well"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Lights Along the Roads"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5838,6 +5846,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The passes are fast-travel waypoints the moment you lay eyes on them"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The places you carry post to grow in three steps as their road fills, each shown with a little tour of its own: Saltmere's lighthouse mended, glazed in sea glass, then lit; a stall at the miners' camp; Mabel's tent at Greyhold become a market; a lodge with its fire lit at Gunnar's camp"
 msgstr ""
 
 #: assets/data/changelog.json

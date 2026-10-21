@@ -3637,6 +3637,10 @@ msgid "Lamps and fires everywhere light the ground without hard edges, in town, 
 msgstr "Partout, lanternes et feux éclairent le sol sans bords nets, au village, dans la Marche et sous terre"
 
 #: assets/data/changelog.json
+msgid "Lamps take their region's colour and a gift: sea glass reaches further on the coast, frost lily heals faster on the pass, and a new grave moss lamp at the Mirefen Pass thins the fog; Aske widens every ring, and healed lamps bring a find some mornings and now and then a visitor"
+msgstr "Les lanternes prennent la couleur de leur région et un don : le verre de mer porte plus loin sur la côte, le lys de givre guérit plus vite au col, et une nouvelle lanterne de mousse des tombes au passage des Marais dissipe le brouillard ; Aske élargit chaque cercle, et les lanternes guéries offrent certains matins une trouvaille et parfois un visiteur"
+
+#: assets/data/changelog.json
 msgid "Late-game hunting grounds: trolls and golems under the trees, ghosts and mimics in the bog - elites roam thick"
 msgstr "Terrains de chasse de fin de partie : trolls et golems sous les arbres, fantômes et mimiques dans la tourbière - les élites y pullulent"
 
@@ -3703,6 +3707,10 @@ msgstr "Le pied léger"
 #: assets/data/changelog.json
 msgid "Light the five lanterns on the square, drive off the embers and douse the burning roofs from the well"
 msgstr "Allumez les cinq lanternes de la place, chassez les braises et éteignez les toits en feu avec l'eau du puits"
+
+#: assets/data/changelog.json
+msgid "Lights Along the Roads"
+msgstr "Lumières sur les routes"
 
 #: assets/data/changelog.json
 msgid "Lights Up"
@@ -5839,6 +5847,10 @@ msgstr "Le mannequin et le portrait de la barre le portent aussi"
 #: assets/data/changelog.json
 msgid "The passes are fast-travel waypoints the moment you lay eyes on them"
 msgstr "Les cols deviennent des relais de voyage rapide dès que vous les apercevez"
+
+#: assets/data/changelog.json
+msgid "The places you carry post to grow in three steps as their road fills, each shown with a little tour of its own: Saltmere's lighthouse mended, glazed in sea glass, then lit; a stall at the miners' camp; Mabel's tent at Greyhold become a market; a lodge with its fire lit at Gunnar's camp"
+msgstr "Les lieux où vous portez le courrier grandissent en trois étapes à mesure que leur route se remplit, chacune montrée par une petite visite : le phare de Saltmere réparé, vitré de verre de mer, puis allumé ; un étal au camp des mineurs ; la tente de Mabel à Greyhold devenue un marché ; un refuge au feu allumé au camp de Gunnar"
 
 #: assets/data/changelog.json
 msgid "The post box holds three pieces a day from the start, and some parcels leave you something to keep: a recipe, a banner, a candelabra"
