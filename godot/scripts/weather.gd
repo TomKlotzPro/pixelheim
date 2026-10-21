@@ -42,11 +42,16 @@ const SHOWER_RAMP := DayNight.DAY_CYCLE_STEPS / 48.0
 const RAIN_LIGHT := Color(0.72, 0.76, 0.85)
 
 
-## The air of the region `cell` lies in ("" for the open land).
+## The air at `cell`: its region's ("" for the open land), read cell by
+## cell, for inside a lit lamp's ring the Ash's heat and embers fade over
+## the healed ground (PIX-323, Lamps).
 static func air_at(map: MapData, cell: Vector2i) -> String:
 	if map == null or not Lights.under_sky(map):
 		return ""
-	return AIRS.get(map.regions.get(cell, ""), "")
+	var air: String = AIRS.get(map.regions.get(cell, ""), "")
+	if air == "ash" and Lamps.shelters(cell, Lamps.now(map.id)):
+		return ""
+	return air
 
 
 ## How hard it rains at `steps`, 0..1: a shower on some days, coming and

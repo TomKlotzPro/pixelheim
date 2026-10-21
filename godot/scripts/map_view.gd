@@ -144,6 +144,10 @@ var hamlet := {"look": "", "pieces": [], "blocks": []}
 ## the signposts at their forks and the waystations built, and the cells
 ## they block; empty elsewhere.
 var routes := {"pieces": [], "blocks": [], "open": []}
+## The ash healed round the lit ember lamps (PIX-323, Lamps.healed): cell ->
+## what it's drawn as (bare earth, grass, a meadow, a grove), laid over the
+## ground as drawn (look); empty elsewhere.
+var healed := {}
 ## A dungeon floor's torches on the wall (PIX-291), by cell.
 var wall_torches: Array[Vector2i] = []
 ## How a dungeon floor is dressed as its place (DungeonLook.plan, PIX-310);
@@ -361,6 +365,7 @@ func planning(arrival_at: Vector2i, slices: Slicer) -> void:
 	slices.add("plan_gates", _plan_gates)
 	slices.add("plan_hamlet", _plan_hamlet)
 	slices.add("plan_routes", _plan_routes)
+	slices.add("plan_healed", func() -> void: healed = Lamps.healed(data.grid, Lamps.now(data.id)))
 	slices.add("plan_scatter", _plan_scatter)
 
 
@@ -894,9 +899,11 @@ func _ground_layers() -> Node2D:
 
 
 ## The ground as drawn: the map's, but for the village far off (PIX-248),
-## whose streets, river and ash lie where its block's cells are.
+## whose streets, river and ash lie where its block's cells are, and the
+## ash healed round the lamps (PIX-323).
 func look() -> Dictionary:
-	return data.grid.merged(skyline["ground"], true) if not skyline.is_empty() else data.grid
+	var drawn: Dictionary = data.grid.merged(skyline["ground"], true) if not skyline.is_empty() else data.grid
+	return drawn.merged(healed, true) if not healed.is_empty() else drawn
 
 
 ## Bridges, cave mouths and ramparts on cell rows [i * BLOCK, (i + 1) *
@@ -2383,6 +2390,12 @@ func _decor_routes() -> void:
 	waystations = []
 	ember_lamps = {}
 	post_boxes = []
+	# Lamps close together share a light (PIX-323, Lamps.lit_among).
+	var lamp_cells: Array[Vector2i] = []
+	for piece: Dictionary in routes["pieces"]:
+		if piece["kind"] == "lamp":
+			lamp_cells.append(piece["cell"])
+	var own_light := Lamps.lit_among(lamp_cells)
 	for piece: Dictionary in routes["pieces"]:
 		var cell: Vector2i = piece["cell"]
 		var kind := String(piece["kind"])
@@ -2397,7 +2410,7 @@ func _decor_routes() -> void:
 			sprite.texture = RouteArt.texture(art)
 			var root := _stand_on(sprite, cell, Vector2(0, TILE - RouteArt.size(art).y))
 			if kind == "lamp":
-				_add_ember_lamp(root, cell, String(piece["place"]))
+				_add_ember_lamp(root, cell, String(piece["place"]), cell in own_light)
 			elif kind == "hut":
 				_add_hut_window(root)
 				waystations.append(String(piece["place"]))
@@ -2419,8 +2432,10 @@ func _decor_routes() -> void:
 ## A waystation's ember lamp (PIX-322): a shard of the mountain's warmth in
 ## its cage, dull by day; at night alight (the dark doesn't touch it), a
 ## soft halo round it and its warmth on the ground about its foot. One
-## light: test_night_light's budget holds with every waystation built.
-func _add_ember_lamp(root: Node2D, cell: Vector2i, place: String) -> void:
+## light: test_night_light's budget holds with every waystation built; a
+## lamp close by one that has it (`own_light` false) keeps its halo alone,
+## a cheaper light, so dozens of lamps hold it too (PIX-323).
+func _add_ember_lamp(root: Node2D, cell: Vector2i, place: String, own_light := true) -> void:
 	var lit := AnimatedSprite2D.new()
 	lit.sprite_frames = RouteArt.ember()
 	lit.material = Lights.unshaded()
@@ -2434,6 +2449,8 @@ func _add_ember_lamp(root: Node2D, cell: Vector2i, place: String) -> void:
 	ember_lamps[place] = lit
 	var top := Vector2(cell * TILE) + Vector2(0, TILE - RouteArt.size("ember_lamp").y)
 	var halo := _add_halo(top + RouteArt.HALO_AT, EMBER_HALO, EMBER_HALO_PEAK)
+	if not own_light:
+		return
 	var light := Lights.make(Vector2(cell * TILE) + EMBER_POOL, EMBER_REACH, Lights.EMBER, Lights.EMBER_ENERGY, true)
 	props.add_child(light)
 	halo.tree_exiting.connect(light.queue_free)

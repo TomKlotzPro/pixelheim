@@ -27,6 +27,9 @@ const GROUND := {
 	# over it, its dark mouth at the cliff's foot, not a notch of grass cut
 	# in the ridge with a mound standing in it.
 	"cave": "cliff",
+	# The ash healed round a lamp to bare earth (PIX-323, Lamps): Shade's
+	# dirt, toned as earth, not ash.
+	"earth": "dirt",
 }
 ## Shade pairs every terrain with grass only. Where two others meet at one
 ## corner, the first of these keeps its corners and the rest fall back to
@@ -46,6 +49,9 @@ const TINTS := {
 	# Rock by the ash, burnt (PIX-308, AshLand.burnt): a sooty grey-brown,
 	# its grassy top scorched (open_ground.gdshaderinc).
 	"burnt_rock": Color(0.43, 0.4, 0.38),
+	# The ash healed to bare earth round a lamp (PIX-323): dark, fresh soil,
+	# neither the ash nor the road's dirt; never scorched.
+	"earth": Color(0.5, 0.4, 0.31),
 }
 ## What each cell of the tint mask asks of region_tint.gdshader, in its
 ## alpha (PIX-305): the region's tone over all its ground; the mire's, which

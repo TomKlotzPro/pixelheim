@@ -103,6 +103,7 @@ story quest rank: assets/data/progression.json
 story quest: scripts/state/main_quest.gd scripts/state/quests.gd scripts/state/questing.gd
 town story quest save: scripts/state/post.gd scripts/state/post_state.gd scripts/state/posting.gd assets/data/post.json
 town travel field night quest +overworld*: scripts/state/routes.gd scripts/route_art.gd
+travel field night +overworld*: scripts/state/lamps.gd
 quest: scripts/journal_screen.gd scripts/bounty_screen.gd scripts/state/journal.gd scripts/state/bearing.gd scripts/postmark.gd
 quest combat: scripts/state/hunts.gd
 quest screen: scripts/state/deeds.gd

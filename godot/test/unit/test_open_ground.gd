@@ -105,7 +105,10 @@ func test_small_things_grow_by_region_where_no_decor_does() -> void:
 				assert_eq(Scatter.detail(grid, cell), kind, "the same every time")
 		var share := grown * 100.0 / open
 		assert_almost_eq(share, float(Scatter.DETAIL[tile][0]), 1.5, "%s grows small things in about %d%% of its open cells" % [tile, Scatter.DETAIL[tile][0]])
-		assert_between(share, 6.0, 14.0, "denser than the field's old 3%%, never a carpet")
+		# The meadow and the grove round a lamp (PIX-323) are a few cells
+		# each, in flower on purpose.
+		if tile not in ["meadow", "grove"]:
+			assert_between(share, 6.0, 14.0, "denser than the field's old 3%%, never a carpet")
 	assert_eq(Scatter.detail({Vector2i.ZERO: "path"}, Vector2i.ZERO), "", "nothing on a road")
 	assert_eq(Scatter.detail({Vector2i.ZERO: "forest"}, Vector2i.ZERO), "", "nor under the trees")
 
