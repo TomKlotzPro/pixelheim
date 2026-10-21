@@ -62,7 +62,8 @@ func test_the_reach_and_blackiron_burn_and_the_mountain_road_keeps_its_ridges() 
 
 func test_burnt_rock_is_toned_and_crowned_by_no_pines() -> void:
 	var data := MapData.load_by_id("blackiron")
-	var kept := KeptGround.of(data, data.grid, 2)
+	# Worked out once for the file: the blackiron drawn below finds it kept.
+	var kept := KeptGround.of(data, data.grid, MapView.EDGE_PAD)
 	assert_false(kept.burnt.is_empty())
 	for cell: Vector2i in kept.burnt:
 		var tone := kept.tint_image.get_pixelv(cell)
@@ -72,7 +73,7 @@ func test_burnt_rock_is_toned_and_crowned_by_no_pines() -> void:
 		for corner: Vector2i in [cell, cell + Vector2i(1, 0), cell + Vector2i(0, 1), cell + Vector2i(1, 1)]:
 			assert_eq(kept.crown_at(corner), -1, "no pine over burnt rock at %s" % corner)
 	var reach := MapData.load_by_id("overworld")
-	var green := KeptGround.of(reach, reach.grid, 2)
+	var green := KeptGround.of(reach, reach.grid, MapView.EDGE_PAD)
 	assert_true(range(green.crowns.size()).any(func(i: int) -> bool: return green.crowns[i] >= 0), "the green ridges keep their pines")
 
 

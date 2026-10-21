@@ -107,3 +107,55 @@ func test_the_bestiary_counts_what_can_be_met() -> void:
 	assert_true(Deeds.met(deed, state.hero, state.pack, state.progression), "every kind there is to meet")
 	state.progression.met.erase("boneknight")
 	assert_false(Deeds.met(deed, state.hero, state.pack, state.progression), "the Vault's bone knights still to meet")
+
+
+## The Post's feats (PIX-326): Every Thread Tied counts the threads this
+## hero's story has (Morvax writes from one place, his bench or his forge).
+func test_every_thread_tied() -> void:
+	var deed := _deed("every_thread")
+	var untied := Post.threads().filter(func(thread: Dictionary) -> bool: return not thread.has("ending")).size()
+	assert_eq(Deeds.count(deed, state.hero, state.pack, state.progression, state.settlement, state.post), [0, untied], "before Morvax's answer, the threads without one")
+	state.mark_seen(Story.ending_scene(Homecoming.HOME))
+	assert_eq(Deeds.count(deed, state.hero, state.pack, state.progression, state.settlement, state.post), [0, untied + 1], "home: his bench's letters, not his forge's")
+	for thread: Dictionary in Post.threads():
+		if thread["id"] != "heirlooms":
+			state.post.threads[thread["id"]] = (thread["pieces"] as Array).size()
+	assert_false(Deeds.met(deed, state.hero, state.pack, state.progression, state.settlement, state.post), "the hoard's heirlooms still to go home")
+	state.post.threads["heirlooms"] = (Post.thread("heirlooms")["pieces"] as Array).size()
+	state.pack_changed()
+	assert_has(state.progression.deeds, "every_thread")
+	assert_eq(int(state.pack.items.get("medal_threads", 0)), 1)
+
+
+## Postmaster of the Reach (PIX-326): fifty pieces delivered, of more than
+## fifty the Post has for any hero.
+func test_postmaster_of_the_reach() -> void:
+	var deed := _deed("postmaster")
+	assert_eq(Deeds.count(deed, state.hero, state.pack, state.progression, state.settlement, state.post), [0, 50])
+	for n in 49:
+		state.post.delivered.append("piece_%d" % n)
+	state.pack_changed()
+	assert_does_not_have(state.progression.deeds, "postmaster", "one short")
+	state.post.delivered.append("piece_49")
+	state.pack_changed()
+	assert_has(state.progression.deeds, "postmaster")
+	assert_eq(int(state.pack.items.get("medal_postmaster", 0)), 1)
+	var pieces := 0
+	for thread: Dictionary in Post.threads():
+		if Post.for_hero(thread, state.progression):
+			pieces += (thread["pieces"] as Array).size()
+	assert_gte(pieces, 50, "the Post has fifty pieces to carry")
+
+
+## The Reach Lit (PIX-326): every post road's waystation built, its lamp lit.
+func test_the_reach_lit() -> void:
+	var deed := _deed("reach_lit")
+	var roads := Routes.places().filter(func(place: String) -> bool: return not Routes.station(place).is_empty())
+	assert_eq(Deeds.count(deed, state.hero, state.pack, state.progression, state.settlement), [0, roads.size()])
+	for place: String in roads.slice(1):
+		state.settlement.projects.append(Routes.station(place)["work"])
+	assert_false(Deeds.met(deed, state.hero, state.pack, state.progression, state.settlement), "one road still dark")
+	state.settlement.projects.append(Routes.station(roads[0])["work"])
+	state.pack_changed()
+	assert_has(state.progression.deeds, "reach_lit")
+	assert_eq(int(state.pack.items.get("medal_reach_lit", 0)), 1)

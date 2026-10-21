@@ -46,9 +46,24 @@ func take_bag() -> String:
 	Post.take(owner.post, ids, today())
 	owner.mark_dirty()
 	owner.save_now()
+	fly(ids)
 	if ids.size() == 1:
 		return Text.t("You take the day's post: one piece, for %s.") % Post.where(Post.piece(ids[0]), owner.progression, owner.settlement)
 	return Text.t("You take the day's post: %d pieces. Who each is for is in the journal's Post tab.") % ids.size()
+
+
+## The Dragon Post (PIX-326): after the story, Fafnyr flies the piece of
+## the day's post (`ids`) going furthest straight to its addressee as it's
+## taken, delivered as a word with them would (Post.dragon_pick), and the
+## log says so.
+func fly(ids: Array[String]) -> void:
+	if not Post.dragon_open(owner.progression, owner.settlement):
+		return
+	var npc_id := Post.dragon_pick(ids, owner.progression, owner.settlement)
+	if npc_id == "":
+		return
+	owner.noted.emit(Post.flown_lines(Text.mid(Post.where(carried_for(npc_id), owner.progression, owner.settlement)), today()))
+	owner.noted.emit([deliver(npc_id)])
 
 
 ## The piece in the satchel for `npc_id` ({} for none): handed over at the
