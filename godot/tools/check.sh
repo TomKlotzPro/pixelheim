@@ -15,8 +15,8 @@
 #
 # quick looks at the branch's diff against origin/main: its commits since the
 # two parted, what isn't committed yet and new files. It runs
-# - the release and catalogue checks (python, a second; the release script's
-#   own tests too when godot/tools/*.py changed);
+# - the release and catalogue checks (python, a second; the tools' own tests
+#   too when godot/tools/*.py or the export presets changed);
 # - the import, only when the diff touches art, sound, fonts, scripts,
 #   shaders, scenes or tests (the data's JSON is read as it is), or a pull
 #   or a rebase changed some since check.sh last imported;
@@ -374,7 +374,7 @@ pick() {
 		assets/*.json | assets/*.txt | assets/*.tsx) ;;
 		assets/* | scripts/* | shaders/* | scenes/* | addons/* | test/* | project.godot) import="the diff touches what Godot imports" ;;
 	esac
-	[[ $file == tools/*.py ]] && python_tests=1
+	[[ $file == tools/*.py || $file == export_presets.cfg ]] && python_tests=1
 	[[ $MOTION == *" $file "* ]] && motion+="${file#scripts/} "
 
 	case $file in

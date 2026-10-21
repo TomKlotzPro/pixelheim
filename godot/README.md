@@ -320,10 +320,12 @@ python3 -m http.server -d godot/export/web            # play in a browser
 ```
 
 Single-threaded preset (`export_presets.cfg`): no cross-origin-isolation
-headers needed, so any static host works — GitHub Pages included (~9.6 MB
-gzipped over the wire). The deploy puts it at the root of the Pages site, and
-nothing else: the web edition's old `/classic/`, `/godot/` and pull request
-preview pages are gone (PIX-301).
+headers needed, so any static host works — GitHub Pages included (~17.3 MB
+gzipped over the wire: the engine's wasm 10.3 MB, the game's pack 7 MB).
+Every preset's `exclude_filter` leaves `test/` and `addons/gut` out of the
+game (PIX-351, `tools/test_export.py`). The deploy puts it at the root of
+the Pages site, and nothing else: the web edition's old `/classic/`,
+`/godot/` and pull request preview pages are gone (PIX-301).
 
 ## Desktop app
 
