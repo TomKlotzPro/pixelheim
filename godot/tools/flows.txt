@@ -339,6 +339,14 @@ tidecaller-bar | --map seacave_grotto --at 23,12 fight kill --foe tidecaller --f
 tidecaller-tick | --map seacave_grotto --at 23,12 fight --foe tidecaller --foe-left 0.2 --foe-ail poison --wait 3 | map=seacave_grotto fell=1 bossbar=none | dungeon combat
 tidecaller-felled | --map seacave_grotto --at 23,12 fight hurt --foe tidecaller --foe-left 0.5 die --wait 0.5 | map=town_inn bossbar=none | dungeon combat
 tidecaller-out | --map seacave_grotto --at 23,12 fight kill --foe tidecaller --foe-left 0.05 --then-walk r,r --wait 0.4 | map=saltmere cell=\([89], 2[45]\) bossbar=none | dungeon travel combat
+# The way out where the Tidecaller fell rises out of the floor (PIX-339,
+# Tom: « ça fait bizarre de tuer un boss et qu'un escalier pop »): it waits
+# out his fall and his spoils, then the floor cracks and the stair forms
+# out of the daylight, no way out yet while it rises, and opens as it ends
+# (with Reduce motion too); tidecaller-out walks out by it once open.
+tidecaller-stair-waits | --map seacave_grotto --at 23,12 fight kill --foe tidecaller --foe-left 0.05 --wait 0.6 | map=seacave_grotto stair=waiting wayout=\(30, 4\) | dungeon combat
+tidecaller-stair-rises | --map seacave_grotto --at 23,12 fight kill --foe tidecaller --foe-left 0.05 --wait 1.6 | map=seacave_grotto stair=sinking wayout=\(30, 4\) | dungeon combat
+tidecaller-stair-still | --map seacave_grotto --at 23,12 still fight kill --foe tidecaller --foe-left 0.05 --wait 2.5 | map=seacave_grotto stair=open wayout=\(30, 4\);\(2[45], 12\) | dungeon combat
 # A new player whose first charge is L'Appelle-Marée's (PIX-341: the
 # dodge's card opened over his bar, his name and his first words): the
 # hint waits out his entrance, and shows once he has fallen and his
@@ -475,7 +483,7 @@ gatehome | --map town --hunted hollow_captain reveal | open=reveal_screen home=u
 # his bar is gone once he has had his say (PIX-288); far from the north
 # stair a way out opens where he lay down, by it the stair alone, and
 # straight up by either (PIX-292).
-captain-bar | --map cellars_hall --at 28,8 fight kill --foe hollow_captain --foe-left 0.35 --keys e,e,e,e --wait 2.5 | map=cellars_hall open=none stood=1 bossbar=none shortcut=open wayout=\(30, 3\);\(29, 8\) | dungeon combat story
+captain-bar | --map cellars_hall --at 28,8 fight kill --foe hollow_captain --foe-left 0.35 --keys e,e,e,e --wait 3.5 | map=cellars_hall open=none stood=1 bossbar=none shortcut=open wayout=\(30, 3\);\(29, 8\) | dungeon combat story
 captain-out | --map cellars_hall --at 28,8 fight kill --foe hollow_captain --foe-left 0.35 --keys e,e,e,e --then-walk r --wait 0.4 | map=cellars cell=\([45], 2[67]\) bossbar=none | dungeon travel combat
 captain-near | --map cellars_hall --at 30,6 fight kill --foe hollow_captain --foe-left 0.35 --keys e,e,e,e --wait 0.5 | map=cellars_hall stood=1 wayout=\(30, 3\) | dungeon combat
 captain-door | --map cellars_hall --at 30,6 fight kill --foe hollow_captain --foe-left 0.35 --keys e,e,e,e --then-walk u,u,u --wait 0.4 | map=cellars cell=\(4, 2[67]\) | dungeon travel combat

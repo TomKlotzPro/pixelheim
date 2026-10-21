@@ -99,6 +99,7 @@ const TABLE := [
 	{"field": "shortcut", "says": "on a dungeon floor with a shortcut out to its way in: open or shut (PIX-255)"},
 	{"field": "signposts", "says": "the signposts standing at the forks of the Post's roads on this map, by fork: gate,saltmere_fork (PIX-322)"},
 	{"field": "speaker", "says": "who the open conversation is with, by id: innkeeper (PIX-283)"},
+	{"field": "stair", "says": "on a dungeon's bottom floor, the way out where its boss fell: waiting (for its fall and its spoils), cracking, sinking, then open (PIX-339)"},
 	{"field": "stamps", "says": "once the courier's book has a page stamped: its places stamped, in the book's order: town,saltmere (PIX-321)"},
 	{"field": "stood", "says": "named foes that stood down rather than fell, when one did (PIX-255)"},
 	{"field": "story", "says": "the main story's hollow diamond on the map's page, while something else is followed (PIX-253)"},
@@ -721,6 +722,10 @@ func field_speaker() -> String:
 		if node.has_method("_advance"):
 			return String(node.npc.get("id", ""))
 	return ""
+
+
+func field_stair() -> String:
+	return world.delve.stair()
 
 
 func field_stamps() -> String:

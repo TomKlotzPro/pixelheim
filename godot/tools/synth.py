@@ -2,7 +2,8 @@
 # of the rest: square, triangle and stepped noise, each note shaped and the
 # whole normalised to the levels the older sounds sit at. Writes WAVs the
 # game plays as they are (Godot compresses them on import):
-# - sfx/: the dodge, a named monster's roar, a bounty claimed, Teo's bell;
+# - sfx/: the dodge, a named monster's roar, a bounty claimed, Teo's bell,
+#   a boss's way out opening where it fell (PIX-339);
 # - ambience/: one-shots for birds, crickets, town chatter and fire, a few
 #   variants each, the looping wind beds of the mountain's floors and the
 #   rain's (PIX-224);
@@ -150,6 +151,24 @@ def bell():
     nominal = tone(length * 0.4, "triangle", hz("D6"), hz("D6"), 0.3, FX_RATE, attack=0.002)
     out = mix(int(length * FX_RATE), (0, strike, FX_RATE), (0, hum, FX_RATE), (0, prime, FX_RATE), (0, tierce, FX_RATE), (0, nominal, FX_RATE))
     return [s * (0.85 + 0.15 * math.cos(2 * math.pi * 3.2 * i / FX_RATE)) for i, s in enumerate(out)]
+
+
+def stair_rise():
+    """A way out opening where a boss fell (PIX-339), timed to StairRise: a
+    rumble as the floor cracks, stone grinding as the slabs sink into steps
+    (three of them settling, at 0.3 s), then a gust of air down the stair as
+    it opens (1.1 s)."""
+    rng = random.Random(41)
+    length = 1.6
+    rumble = tone(0.8, "noise", 90, 55, 0.8, FX_RATE, attack=0.08, release=0.5, rng=rng)
+    under = tone(0.8, "square", 48, 40, 0.25, FX_RATE, duty=0.25, attack=0.08, release=0.5)
+    grind = tone(0.45, "noise", 420, 180, 0.45, FX_RATE, attack=0.03, release=0.6, rng=rng)
+    parts = [(0, rumble, FX_RATE), (0, under, FX_RATE), (0.3, grind, FX_RATE)]
+    for i, at in enumerate([0.32, 0.55, 0.78]):
+        parts.append((at, tone(0.06, "square", 140 - i * 15, 60, 0.5, FX_RATE, attack=0.002), FX_RATE))
+    gust = tone(0.5, "noise", 2600, 900, 0.35, FX_RATE, attack=0.15, release=0.7, rng=rng)
+    parts.append((1.1, gust, FX_RATE))
+    return mix(int(length * FX_RATE), *parts)
 
 
 # ---- ambience one-shots ----------------------------------------------------
@@ -305,6 +324,7 @@ def main():
     write(os.path.join(AUDIO, "sfx", "roar.wav"), roar(), FX_RATE, 2600)
     write(os.path.join(AUDIO, "sfx", "bounty.wav"), bounty(), FX_RATE, 2300)
     write(os.path.join(AUDIO, "sfx", "bell.wav"), bell(), FX_RATE, 2400)
+    write(os.path.join(AUDIO, "sfx", "stairRise.wav"), stair_rise(), FX_RATE, 2400)
     makers = {"birds": (birds, 650), "crickets": (crickets, 420), "chatter": (chatter, 520), "fire": (fire, 760)}
     for name, extra in doc["ambienceExtras"].items():
         make, peak = makers[name]
