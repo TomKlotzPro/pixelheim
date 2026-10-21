@@ -428,6 +428,10 @@ func talk(npc: Dictionary) -> void:
 			box.npc = npc
 			world.add_child(box)
 			return
+	# The shrine's keeper (PIX-331): what to forget, asked as a question.
+	if npc["id"] == Skills.FORGETTER:
+		_ask_forgetting(npc, box)
+		return
 	# A quest that ends in a choice asks it now (PIX-192): its question, an
 	# answer for each key; leaving without one keeps it waiting.
 	var asking := Quests.pending_choice(npc["id"], GameState.progression.quests, GameState.pack.items)
@@ -476,6 +480,56 @@ func talk(npc: Dictionary) -> void:
 		npc["lines"] = npc["lines"] + [offer["accepted"]]
 	box.npc = npc
 	world.add_child(box)
+
+
+## The shrine's keeper's question (PIX-331): her skills or her training, each
+## answer saying what comes back and what it costs (free the first time),
+## or not today.
+func _ask_forgetting(npc: Dictionary, box: Node) -> void:
+	var hero := GameState.hero
+	var skills := Skills.forgettable(hero).size()
+	var spent := Skills.spent_stats(hero, GameState.household.trophies())
+	var price := func(cost: int) -> String: return Text.coins(cost) if cost > 0 else Text.t("free")
+	var forget_skills := Text.t("Forget my skills: none learned yet")
+	if skills > 0:
+		var learned := Text.t("1 skill") if skills == 1 else Text.t("%d skills") % skills
+		forget_skills = Text.t("Forget my skills: %s, %s, %s") % [learned, _points(Skills.forgotten_points(hero)), price.call(Skills.forget_cost(hero))]
+	var forget_training := Text.t("Forget my training: no points spent yet")
+	if not spent.is_empty():
+		forget_training = Text.t("Forget my training: %s, %s") % [_points(Skills.spent_points(spent)), price.call(Skills.forget_training_cost(hero, spent))]
+	var forgetting: Dictionary = npc["forgetting"]
+	npc = npc.duplicate()
+	var paid := Skills.FORGOT_SKILLS in hero.forgot and Skills.FORGOT_TRAINING in hero.forgot
+	npc["lines"] = npc["lines"] + [forgetting["ask"] if paid else forgetting["askFree"]]
+	box.npc = npc
+	box.choices = [forget_skills, forget_training, Text.t("Not today")]
+	box.on_choice = func(index: int) -> void:
+		if index < 2:
+			world.messages.flash(_forget(index == 0))
+	world.add_child(box)
+
+
+## The keeper's answer done (PIX-331), or why it can't be: nothing to forget,
+## or not the gold.
+func _forget(skills: bool) -> String:
+	var hero := GameState.hero
+	var spent := Skills.spent_stats(hero, GameState.household.trophies())
+	var points := Skills.forgotten_points(hero) if skills else Skills.spent_points(spent)
+	var cost := Skills.forget_cost(hero) if skills else Skills.forget_training_cost(hero, spent)
+	if (Skills.forgettable(hero).is_empty() if skills else spent.is_empty()):
+		return Text.t("Nothing learned to forget yet.") if skills else Text.t("No stat points spent to forget yet.")
+	if GameState.pack.gold < cost:
+		return Text.t("Forgetting that costs %s. You have %s.") % [Text.coins(cost), Text.coins(GameState.pack.gold)]
+	if not (GameState.training.forget_skills() if skills else GameState.training.forget_training()):
+		return ""
+	Sound.play("learn")
+	if skills:
+		return Text.t("Forgotten: %d skill point%s to spend again.") % [points, "" if points == 1 else "s"]
+	return Text.t("Forgotten: %d stat point%s to spend again.") % [points, "" if points == 1 else "s"]
+
+
+func _points(count: int) -> String:
+	return Text.t("1 point") if count == 1 else Text.t("%d points") % count
 
 
 func _open_chest(chest: Dictionary) -> void:

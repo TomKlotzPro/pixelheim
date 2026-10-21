@@ -8869,11 +8869,19 @@ msgid "Named monsters, where they lair (marked on your map) and what they pay. K
 msgstr ""
 
 #: assets/data/hints.json
+msgid "Old Hessa keeps the shrine in Pixelheim. She can make you forget your skills or your training, every point back to spend again - the first time is free."
+msgstr ""
+
+#: assets/data/hints.json
 msgid "Pixelheim plays best in landscape: turn your phone sideways for bigger text and more room to fight."
 msgstr ""
 
 #: assets/data/hints.json
 msgid "Savings earn a little each day, up to a tenth of the pot - and a hero who falls loses a tenth of the gold they carry, never what's banked. A caravan is a gamble that usually pays. Expansions make your businesses' rent richer."
+msgstr ""
+
+#: assets/data/hints.json
+msgid "Second thoughts?"
 msgstr ""
 
 #: assets/data/hints.json
@@ -9153,6 +9161,10 @@ msgid "Greyhold's mended bell in the town hall: Pixelheim has a bell to ring aga
 msgstr ""
 
 #: assets/data/npcs.json
+msgid "Grudges, debts, the wrong way to hold a sword. The quiet takes them off you. I'd tell you where it keeps them, but I've forgotten."
+msgstr ""
+
+#: assets/data/npcs.json
 msgid "Gunnar"
 msgstr ""
 
@@ -9190,6 +9202,10 @@ msgstr ""
 
 #: assets/data/npcs.json
 msgid "I count coins for caravans that never stop anywhere worth banking in."
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "I keep the shrine. Or it keeps me. I sweep, it hums, and folk come up here to put things down."
 msgstr ""
 
 #: assets/data/npcs.json
@@ -9362,6 +9378,10 @@ msgstr ""
 
 #: assets/data/npcs.json
 msgid "Ola the Fisher"
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "Old Hessa"
 msgstr ""
 
 #: assets/data/npcs.json
@@ -9694,6 +9714,14 @@ msgstr ""
 
 #: assets/data/npcs.json
 msgid "Well rested, too, after a bowl of Tam's stew: more XP for your next %d fights."
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "What would you put down, courier?"
+msgstr ""
+
+#: assets/data/npcs.json
+msgid "What would you put down, courier? The first time is on the shrine."
 msgstr ""
 
 #: assets/data/npcs.json
@@ -15441,6 +15469,10 @@ msgid "{key:move_up}/{key:move_down}  choose      {key:interact}  %s      Esc  c
 msgstr ""
 
 #: scripts/map_screen.gd
+msgid "Forgetting"
+msgstr ""
+
+#: scripts/map_screen.gd
 msgid "Goal"
 msgstr ""
 
@@ -16133,15 +16165,7 @@ msgid " + %d HP"
 msgstr ""
 
 #: scripts/skills_screen.gd
-msgid "%d points"
-msgstr ""
-
-#: scripts/skills_screen.gd
 msgid "%d skill point%s"
-msgstr ""
-
-#: scripts/skills_screen.gd
-msgid "%d skills"
 msgstr ""
 
 #: scripts/skills_screen.gd
@@ -16157,15 +16181,7 @@ msgid "%sx %s %s · %s"
 msgstr ""
 
 #: scripts/skills_screen.gd
-msgid "1 point"
-msgstr ""
-
-#: scripts/skills_screen.gd
 msgid "1 pt"
-msgstr ""
-
-#: scripts/skills_screen.gd
-msgid "1 skill"
 msgstr ""
 
 #: scripts/skills_screen.gd
@@ -16189,22 +16205,6 @@ msgid "Forget"
 msgstr ""
 
 #: scripts/skills_screen.gd
-msgid "Forget %s for %dg and get the points back? F again to agree."
-msgstr ""
-
-#: scripts/skills_screen.gd
-msgid "Forgetting %s costs %dg."
-msgstr ""
-
-#: scripts/skills_screen.gd
-msgid "Forgetting takes the village's quiet. Come back to Pixelheim."
-msgstr ""
-
-#: scripts/skills_screen.gd
-msgid "Forgotten. %s to spend again."
-msgstr ""
-
-#: scripts/skills_screen.gd
 msgid "Learn it for 1 point."
 msgstr ""
 
@@ -16222,10 +16222,6 @@ msgstr ""
 
 #: scripts/skills_screen.gd
 msgid "Not on the dock - press 1-6 to put it on that key."
-msgstr ""
-
-#: scripts/skills_screen.gd
-msgid "Nothing learned to forget yet."
 msgstr ""
 
 #: scripts/skills_screen.gd
@@ -16266,6 +16262,10 @@ msgstr ""
 
 #: scripts/skills_screen.gd
 msgid "The tree is whole: spend them beyond it, in Stats."
+msgstr ""
+
+#: scripts/skills_screen.gd
+msgid "To forget, see %s at Pixelheim's shrine."
 msgstr ""
 
 #: scripts/skills_screen.gd
@@ -17029,7 +17029,7 @@ msgid "You wake at the inn. The innkeeper says nothing. Kind of her."
 msgstr ""
 
 #: scripts/stats_screen.gd
-msgid "%d stat point%s to spend. Spending is permanent."
+msgid "%d stat point%s to spend. %s at the shrine can undo it, for a price."
 msgstr ""
 
 #: scripts/stats_screen.gd
@@ -17249,7 +17249,63 @@ msgid "Saved"
 msgstr ""
 
 #: scripts/world_interaction.gd
+msgid "%d points"
+msgstr ""
+
+#: scripts/world_interaction.gd
+msgid "%d skills"
+msgstr ""
+
+#: scripts/world_interaction.gd
+msgid "1 point"
+msgstr ""
+
+#: scripts/world_interaction.gd
+msgid "1 skill"
+msgstr ""
+
+#: scripts/world_interaction.gd
 msgid "A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it."
+msgstr ""
+
+#: scripts/world_interaction.gd
+msgid "Forget my skills: %s, %s, %s"
+msgstr ""
+
+#: scripts/world_interaction.gd
+msgid "Forget my skills: none learned yet"
+msgstr ""
+
+#: scripts/world_interaction.gd
+msgid "Forget my training: %s, %s"
+msgstr ""
+
+#: scripts/world_interaction.gd
+msgid "Forget my training: no points spent yet"
+msgstr ""
+
+#: scripts/world_interaction.gd
+msgid "Forgetting that costs %s. You have %s."
+msgstr ""
+
+#: scripts/world_interaction.gd
+msgid "Forgotten: %d skill point%s to spend again."
+msgstr ""
+
+#: scripts/world_interaction.gd
+msgid "Forgotten: %d stat point%s to spend again."
+msgstr ""
+
+#: scripts/world_interaction.gd
+msgid "No stat points spent to forget yet."
+msgstr ""
+
+#: scripts/world_interaction.gd
+msgid "Not today"
+msgstr ""
+
+#: scripts/world_interaction.gd
+msgid "Nothing learned to forget yet."
 msgstr ""
 
 #: scripts/world_interaction.gd
@@ -17262,6 +17318,10 @@ msgstr ""
 
 #: scripts/world_interaction.gd
 msgid "The deed costs %d gold. {key:interact} again to sign it."
+msgstr ""
+
+#: scripts/world_interaction.gd
+msgid "free"
 msgstr ""
 
 #: scripts/world_messages.gd

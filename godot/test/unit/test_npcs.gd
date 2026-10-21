@@ -9,11 +9,11 @@ func _ids(npcs: Array[Dictionary]) -> Array:
 
 
 func test_town_folk_follow_the_town_tier() -> void:
-	assert_eq(_ids(Npcs.on_map("town", 1, [])), ["elder", "villager_ana", "villager_bram", "town_cat", "town_dog"])
+	assert_eq(_ids(Npcs.on_map("town", 1, [])), ["elder", "shrine_keeper", "villager_ana", "villager_bram", "town_cat", "town_dog"])
 	assert_eq(
 		_ids(Npcs.on_map("town", 4, [])),
 		[
-			"elder", "villager_ana", "villager_bram", "settler_mira", "settler_tomas",
+			"elder", "shrine_keeper", "villager_ana", "villager_bram", "settler_mira", "settler_tomas",
 			"settler_serra", "settler_fenn", "town_cat", "town_dog", "kid_pip", "kid_nell",
 		]
 	)

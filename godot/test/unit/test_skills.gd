@@ -171,47 +171,137 @@ func test_casting_pays_heals_cap_and_stamina_returns_in_fights() -> void:
 	assert_eq(mage.upkeep.regen_stamina(), 0, "mana does not")
 
 
-## Forgetting (PIX-86): bought skills for their points back, in the village,
-## for 20 gold a skill; the skill a hero starts with stays.
+## Forgetting (PIX-86; the shrine's keeper's since PIX-331): bought skills
+## for their points back, the skill a hero starts with kept; the first time
+## is free, then 20 gold a skill.
 func test_forgetting_gives_the_points_back_and_keeps_the_born_skill() -> void:
-	state.world.map_id = "town_inn"
 	var born: String = Catalog.skill_roots("warrior")[0]
 	state.hero.level = 3
 	state.hero.skill_points = 2
 	assert_true(state.training.buy_skill_node("warrior_power_strike_2"))
 	assert_true(state.training.buy_skill_node("warrior_shield_slam"))
 	state.pack.gold = 100
-	assert_eq(Skills.forget_cost(state.hero), 40)
+	assert_eq(Skills.forget_cost(state.hero), 0, "the first time is on the shrine")
 	assert_true(state.training.forget_skills())
 	assert_eq(state.hero.skill_nodes, [born] as Array[String])
 	assert_eq(state.hero.skill_points, 2)
-	assert_eq(state.pack.gold, 60)
+	assert_eq(state.pack.gold, 100)
+	assert_eq(state.hero.forgot, [Skills.FORGOT_SKILLS] as Array[String])
 	assert_false(state.training.forget_skills(), "nothing bought is left to forget")
+	assert_true(state.training.buy_skill_node("warrior_power_strike_2"))
+	assert_true(state.training.buy_skill_node("warrior_shield_slam"))
+	assert_eq(Skills.forget_cost(state.hero), 40, "then 20g a skill")
+	assert_true(state.training.forget_skills())
+	assert_eq(state.hero.skill_points, 2)
+	assert_eq(state.pack.gold, 60)
 
 
 func test_forgetting_shrinks_what_a_skill_grew() -> void:
-	state.world.map_id = "town"
-	var before := int(state.hero.stats["maxHp"])
+	var before: int = int(state.hero.stats["maxHp"])
 	state.hero.skill_nodes.append_array(["warrior_shield_slam", "warrior_iron_skin", "warrior_unshakeable"])
 	state.hero.level = 10
 	state.hero.skill_points = 1
 	assert_true(state.training.buy_skill_node("warrior_mountainheart"))
 	assert_eq(int(state.hero.stats["maxHp"]), before + 30)
-	state.pack.gold = 1000
+	assert_eq(state.hero.hp, before + 30)
 	assert_true(state.training.forget_skills())
 	assert_eq(int(state.hero.stats["maxHp"]), before)
-	assert_true(state.hero.hp <= before)
+	assert_eq(state.hero.hp, before, "a full hero stays full, at the lower top")
 
 
-func test_forgetting_takes_the_village_and_the_gold() -> void:
+func test_forgetting_without_the_gold_changes_nothing() -> void:
+	state.hero.forgot.assign([Skills.FORGOT_SKILLS])
 	state.hero.level = 3
 	state.hero.skill_points = 1
 	assert_true(state.training.buy_skill_node("warrior_power_strike_2"))
-	state.pack.gold = 100
-	state.world.map_id = "overworld"
-	assert_false(state.training.forget_skills(), "not out in the wilds")
-	state.world.map_id = "town"
 	state.pack.gold = 19
+	var before: Dictionary = state.hero.to_dict()
 	assert_false(state.training.forget_skills(), "20g a skill")
-	assert_eq(state.hero.skill_points, 0)
+	assert_eq_deep(state.hero.to_dict(), before)
+	assert_eq(state.pack.gold, 19)
+
+
+## Forgetting the training (PIX-331): every stat point spent comes back, and
+## what the points grew (a fighter's END: max HP, and their stamina) with
+## it; health and energy are kept up to the new tops. Free the first time,
+## then the hero's level in gold a point.
+func test_forgetting_the_training_gives_every_point_back() -> void:
+	var hero: HeroState = state.hero
+	var base: Dictionary = hero.stats.duplicate()
+	hero.level = 4
+	hero.stat_points = 9
+	for stat: String in ["endurance", "endurance", "endurance", "strength", "strength"]:
+		assert_true(state.training.spend_stat_point(stat))
+	assert_eq(int(hero.stats["maxHp"]), int(base["maxHp"]) + 3)
+	assert_eq(int(hero.stats["maxMp"]), int(base["maxMp"]) + 6, "a fighter's stamina grows with END")
+	assert_eq(Skills.spent_stats(hero, []), {"strength": 2, "endurance": 3})
+	state.pack.gold = 50
+	assert_eq(Skills.forget_training_cost(hero, Skills.spent_stats(hero, [])), 0, "the first time is on the shrine")
+	assert_true(state.training.forget_training())
+	assert_eq_deep(hero.stats, base)
+	assert_eq(hero.stat_points, 9)
+	assert_eq(hero.hp, int(base["maxHp"]), "full health, at the lower top")
+	assert_eq(hero.mp, int(base["maxMp"]))
+	assert_eq(state.pack.gold, 50)
+	assert_eq(hero.forgot, [Skills.FORGOT_TRAINING] as Array[String])
+	assert_false(state.training.forget_training(), "nothing spent is left to forget")
+	# The second time: 4 points at level 4, 4g a point.
+	for stat: String in ["dexterity", "defense", "defense", "intelligence"]:
+		assert_true(state.training.spend_stat_point(stat))
+	assert_eq(Skills.forget_training_cost(hero, Skills.spent_stats(hero, [])), 16)
+	assert_true(state.training.forget_training())
+	assert_eq_deep(hero.stats, base)
+	assert_eq(hero.stat_points, 9)
+	assert_eq(state.pack.gold, 34)
+
+
+## A caster's INT grew their mana; a hurt hero isn't healed by forgetting,
+## nor hurt by it.
+func test_forgetting_a_casters_training_keeps_what_they_had() -> void:
+	var mage: Node = autofree(GameStateScript.new())
+	mage.new_game("Ilse", "mage")
+	var hero: HeroState = mage.hero
+	var base: Dictionary = hero.stats.duplicate()
+	hero.stat_points = 3
+	for i in 3:
+		assert_true(mage.training.spend_stat_point("intelligence"))
+	assert_eq(int(hero.stats["maxMp"]), int(base["maxMp"]) + 6)
+	hero.hp = 5
+	hero.mp = 4
+	assert_true(mage.training.forget_training())
+	assert_eq_deep(hero.stats, base)
+	assert_eq(hero.hp, 5)
+	assert_eq(hero.mp, 4)
+
+
+## What a trophy on the house's shelf lends a stat isn't the hero's to
+## forget: it stays while the trophy does.
+func test_a_trophys_stats_are_not_forgotten() -> void:
+	var hero: HeroState = state.hero
+	hero.stat_points = 1
+	assert_true(state.training.spend_stat_point("defense"))
+	state.pack.add_item("lich_crown")
+	assert_true(state.household.display_trophy("lich_crown"))
+	assert_eq(Skills.spent_stats(hero, state.household.trophies()), {"defense": 1})
+	var defense := int(hero.stats["defense"])
+	assert_true(state.training.forget_training())
+	assert_eq(int(hero.stats["defense"]), defense - 1, "the crown's +2 stays on the shelf's account")
+	assert_eq(hero.stat_points, 1)
+
+
+func test_forgetting_the_training_without_the_gold_changes_nothing() -> void:
+	var hero: HeroState = state.hero
+	hero.forgot.assign([Skills.FORGOT_TRAINING])
+	hero.level = 5
+	hero.stat_points = 2
+	assert_true(state.training.spend_stat_point("strength"))
+	assert_true(state.training.spend_stat_point("endurance"))
+	state.pack.gold = 9
+	var before: Dictionary = hero.to_dict()
+	assert_false(state.training.forget_training(), "2 points at level 5: 10g")
+	assert_eq_deep(hero.to_dict(), before)
+	assert_eq(state.pack.gold, 9)
+	state.pack.gold = 10
+	assert_true(state.training.forget_training())
+	assert_eq(state.pack.gold, 0)
 
