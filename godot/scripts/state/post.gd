@@ -24,7 +24,12 @@ class_name Post
 ## assets/data/post.json; GameState's `posting` takes and hands over,
 ## MapView draws the box, the journal's Post and Postmarks tabs and the map
 ## read it. The roads it's carried along grow signposts and waystations
-## (PIX-322): Routes.
+## (PIX-322): Routes. After the story (PIX-326) the Reach keeps writing:
+## Maren to the families once a week, Morvax from his bench or his forge
+## (a thread for each answer: `ending`), Fafnyr on cheese, and the Kings'
+## Vault's heirlooms going home to the families whose marks they carry;
+## and Fafnyr flies the furthest piece of each day's post himself (the
+## Dragon Post).
 
 static var _doc := {}
 ## Piece id -> {piece, thread (its id), index (its place in the thread)}.
@@ -206,14 +211,30 @@ static func ready(entry: Dictionary, post: PostState, progression: ProgressionSt
 
 
 ## The pieces the threads offer now, in the threads' order: each thread's
-## next, when it's ready and not already in the satchel.
-static func offered(post: PostState, progression: ProgressionState, settlement: SettlementState, discovered: Dictionary) -> Array[String]:
+## next, when it's ready and not already in the satchel, from the threads
+## this hero's story has (`for_hero`). Given a day, a thread that posts
+## once a week (`every`, PIX-326: Maren's) offers only on its mornings.
+static func offered(post: PostState, progression: ProgressionState, settlement: SettlementState, discovered: Dictionary, day := -1) -> Array[String]:
 	var out: Array[String] = []
 	for entry: Dictionary in threads():
+		if not for_hero(entry, progression) or (day >= 0 and posmod(day, int(entry.get("every", 1))) != 0):
+			continue
 		var next := next_of(String(entry["id"]), post)
 		if not next.is_empty() and String(next["id"]) not in post.bag and ready(next, post, progression, settlement, discovered):
 			out.append(String(next["id"]))
 	return out
+
+
+## Whether a thread is in this hero's story (PIX-326): one that says an
+## `ending` is told only after that answer to Morvax (his letters from the
+## bench by the fountain, or from his forge).
+static func for_hero(entry: Dictionary, progression: ProgressionState) -> bool:
+	return String(entry.get("ending", "")) in ["", Homecoming.chosen(progression)]
+
+
+## Whether every piece of a thread is delivered.
+static func told(thread_id: String, post: PostState) -> bool:
+	return post.step(thread_id) >= (thread(thread_id).get("pieces", []) as Array).size()
 
 
 ## Up to `count` of `ids` for day `day`: the same day always draws the same,
@@ -241,7 +262,7 @@ static func pick(ids: Array[String], day: int, count: int) -> Array[String]:
 static func in_box(post: PostState, day: int, progression: ProgressionState, settlement: SettlementState, discovered: Dictionary) -> Array[String]:
 	if not open(progression, settlement) or post.taken >= day:
 		return []
-	return pick(offered(post, progression, settlement, discovered), day, bag_size())
+	return pick(offered(post, progression, settlement, discovered, day), day, bag_size())
 
 
 ## The day's post taken from the box into the satchel (`ids`, what it
@@ -251,6 +272,47 @@ static func take(post: PostState, ids: Array[String], day: int) -> void:
 		if id not in post.bag:
 			post.bag.append(id)
 	post.taken = day
+
+
+# ---- The Dragon Post (PIX-326) -----------------------------------------------------
+
+## Whether Fafnyr carries post for this hero: the story over (post.json's
+## dragon `opens`, Morvax's answer given).
+static func dragon_open(progression: ProgressionState, settlement: SettlementState) -> bool:
+	return MainQuest.holds(_data()["dragon"]["opens"], progression, settlement)
+
+
+## Whom Fafnyr flies a piece of the day's post (`ids`) to, by villager id:
+## the one going furthest, the latest page of the courier's book where
+## they stand; never anyone in the village (it's a walk), "" for none.
+static func dragon_pick(ids: Array[String], progression: ProgressionState, settlement: SettlementState) -> String:
+	var places := book().map(func(entry: Dictionary) -> String: return entry["place"])
+	var best := ""
+	var furthest := 0
+	for id: String in ids:
+		var npc_id := addressee(piece(id))
+		var at := places.find(place_for(npc_id, progression, settlement))
+		if at > furthest:
+			best = npc_id
+			furthest = at
+	return best
+
+
+## Whether the day's dragon-borne piece arrives a little on fire: one day in
+## three, the same day always the same.
+static func on_fire(day: int) -> bool:
+	return posmod(hash("%d:fire:%d" % [int(_data()["seed"]), day]), 3) == 0
+
+
+## What the log says as Fafnyr takes a piece to `place` (a place's name),
+## and on a day it's on fire, how it arrives.
+static func flown_lines(place: String, day: int) -> Array[String]:
+	var dragon: Dictionary = _data()["dragon"]
+	var out: Array[String] = [String(dragon["flown"]) % place]
+	if on_fire(day):
+		var fire: Array = dragon["fire"]
+		out.append(String(fire[posmod(day, fire.size())]))
+	return out
 
 
 ## The piece in the satchel for `npc_id`, {} for none: the first taken

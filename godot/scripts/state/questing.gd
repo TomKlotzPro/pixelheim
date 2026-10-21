@@ -459,7 +459,7 @@ func ask_before_dip(what: String, costs: Dictionary) -> String:
 func note_deeds() -> void:
 	var lines: Array[String] = []
 	for deed: Dictionary in Deeds.all():
-		if deed["id"] in owner.progression.deeds or not Deeds.met(deed, owner.hero, owner.pack, owner.progression, owner.settlement):
+		if deed["id"] in owner.progression.deeds or not Deeds.met(deed, owner.hero, owner.pack, owner.progression, owner.settlement, owner.post):
 			continue
 		owner.progression.deeds.append(deed["id"])
 		owner.pack.add_item(deed["itemId"])

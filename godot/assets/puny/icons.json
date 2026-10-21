@@ -171,7 +171,10 @@
     "medal_dressed": "jewelry-rpg-icons/Brooches/Brooch-70.png",
     "medal_seen_all": "jewelry-rpg-icons/Brooches/Brooch-60.png",
     "medal_letters": "jewelry-rpg-icons/Brooches/Brooch-07.png",
-    "medal_full_house": "jewelry-rpg-icons/Brooches/Brooch-03.png"
+    "medal_full_house": "jewelry-rpg-icons/Brooches/Brooch-03.png",
+    "medal_threads": "jewelry-rpg-icons/Brooches/Brooch-20.png",
+    "medal_postmaster": "jewelry-rpg-icons/Brooches/Brooch-600.png",
+    "medal_reach_lit": "jewelry-rpg-icons/Brooches/Brooch-65.png"
   },
   "ailments": {
     "poison": "puny-skills/Indicators/Symbol Indicator/Poisoned-Indicator.png",

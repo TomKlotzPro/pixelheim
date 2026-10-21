@@ -189,6 +189,10 @@ msgid "Aimed Shot"
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "An ember lamp on every post road. On a clear night you can see them all from the mountain road."
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "An ingot from the seam the Ember Seal was cast from, stamped with five marks. The five took a cartload; this one waited. One of the relics the five left behind."
 msgstr ""
 
@@ -489,6 +493,10 @@ msgid "Every fisher catches one. Nobody knows whose they were."
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "Every letter answered, every parcel home, every thread tied off in a bow. Bram wants to know where you got the bow."
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "Every page of the codex, filled."
 msgstr ""
 
@@ -522,6 +530,10 @@ msgstr ""
 
 #: assets/data/catalog.json
 msgid "Festival Pie"
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "Fifty pieces of post delivered, hardly any of them on fire."
 msgstr ""
 
 #: assets/data/catalog.json
@@ -977,7 +989,15 @@ msgid "Medal of the Full House"
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "Medal of the Lit Reach"
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "Medal of the Matched Set"
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "Medal of the Tied Thread"
 msgstr ""
 
 #: assets/data/catalog.json
@@ -1526,6 +1546,10 @@ msgstr ""
 
 #: assets/data/catalog.json
 msgid "The Old Kings' Hoard"
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "The Postmaster's Medal"
 msgstr ""
 
 #: assets/data/catalog.json
@@ -2201,6 +2225,10 @@ msgid "After the fire the gatehouse is scorched and a tower has lost its roof; t
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "After the story the post keeps coming: Maren writes to the families every week, Morvax from his bench or his forge, and Fafnyr has opinions about cheese; the Kings' Vault's heirlooms go home to the families whose marks they carry"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Afterwards Morvax sits on his bench by the fountain and argues with Maren every day, or keeps his forge and comes down on festival days"
 msgstr ""
 
@@ -2682,6 +2710,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Doors, cave mouths and shop signs now press flush against the walls behind them, like they were built there"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Dragon Post"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -3706,6 +3738,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Light the five lanterns on the square, drive off the embers and douse the burning roofs from the well"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Lighter Load"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5381,6 +5417,10 @@ msgid "The Deepwood is a real forest: thickets and glades, trees of mixed sizes 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Dragon Post: once the story is done, Fafnyr flies the furthest piece of each day's post himself - fast, warm, occasionally on fire"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The E prompt sits just above what it opens and never hides it"
 msgstr ""
 
@@ -6009,6 +6049,10 @@ msgid "The ways between maps are natural passes now: the cliffs part and the roa
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The web game no longer carries its test suite: about 1.4 MB less to download before you play"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The wind moves the world: trees, wheat and flowers sway, their tops more than their feet, as gusts roll across the land"
 msgstr ""
 
@@ -6074,6 +6118,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Three new classes! The RANGER (death at a distance, poison arrows, unmatched escapes), the PALADIN (armor outside, faith inside - hits, heals and never flinches), and the NECROMANCER (everything they touch keeps dying)"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Three new feats: Every Thread Tied, Postmaster of the Reach and The Reach Lit; the Feats page now scrolls"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -9837,6 +9885,10 @@ msgid "\"In charge\", twice. He'll be fine."
 msgstr ""
 
 #: assets/data/post.json
+msgid "\"In very good order.\" That's Father all over."
+msgstr ""
+
+#: assets/data/post.json
 msgid "\"It runs in the family.\" Ha! So does salt, in mine."
 msgstr ""
 
@@ -9889,11 +9941,31 @@ msgid "(Another rumble on the roof, a long one. A letter flutters down, smoking 
 msgstr ""
 
 #: assets/data/post.json
+msgid "(Bram goes very pale, then very determined.) Wait there, courier. The Cheese Club has an answer for that."
+msgstr ""
+
+#: assets/data/post.json
+msgid "(Bram writes TAM in the club's book, in his biggest letters.) Tell Morvax membership is free. No refunds. Not even for him."
+msgstr ""
+
+#: assets/data/post.json
 msgid "(He checks the ledger. Twice.) We don't. She means we could be earning it. ...Hm."
 msgstr ""
 
 #: assets/data/post.json
+msgid "(He counts them twice.) That's interest owing, that is. Wait, courier. He's getting a bill."
+msgstr ""
+
+#: assets/data/post.json
 msgid "(He finds an old helmet and a spoon.) There. That'll ring. Not well, but it'll ring."
+msgstr ""
+
+#: assets/data/post.json
+msgid "(He hefts it and laughs.) Too heavy to carry and too pretty to melt. It'll hang over the shaft head, and the lads can polish it on feast days."
+msgstr ""
+
+#: assets/data/post.json
+msgid "(He holds it up to the light, finds the two spots, and decides not to ask.) It goes over the gate. Morale: excellent."
 msgstr ""
 
 #: assets/data/post.json
@@ -9905,7 +9977,15 @@ msgid "(He laughs, a big rusty laugh that turns into a cough, then back into a l
 msgstr ""
 
 #: assets/data/post.json
+msgid "(He looks up at the mountain, then down the road.) ...Maren says I need the walk."
+msgstr ""
+
+#: assets/data/post.json
 msgid "(He moves the strongbox. Then he moves it back.)"
+msgstr ""
+
+#: assets/data/post.json
+msgid "(He polishes the shade with his sleeve, very slowly.) It goes back on the gate tonight. Where it belongs."
 msgstr ""
 
 #: assets/data/post.json
@@ -9913,7 +9993,15 @@ msgid "(He reads it again, and again.) Nobody's said that to me since the red cl
 msgstr ""
 
 #: assets/data/post.json
+msgid "(He reads it at the cold forge. Then he lights it.)"
+msgstr ""
+
+#: assets/data/post.json
 msgid "(He reads it twice.) Tam's sister. Tam's sister!"
+msgstr ""
+
+#: assets/data/post.json
+msgid "(He shakes it. It rings high and clear, and outside Bergit stops dead.) ...She remembers it. She can't. She's a mammoth. She remembers it."
 msgstr ""
 
 #: assets/data/post.json
@@ -9925,11 +10013,23 @@ msgid "(He sniffs the cask, and his eyes water.) Smugglers' rum."
 msgstr ""
 
 #: assets/data/post.json
+msgid "(He stands a little straighter, and then a little straighter again.) I'll keep asking. I'll ask louder."
+msgstr ""
+
+#: assets/data/post.json
 msgid "(He stands up very straight.) The water, at least. I was already in charge of the water. Wait, she'll want a report."
 msgstr ""
 
 #: assets/data/post.json
+msgid "(He tastes it first. Then he salts it.)"
+msgstr ""
+
+#: assets/data/post.json
 msgid "(Her shoulders shake.) It isn't funny at all."
+msgstr ""
+
+#: assets/data/post.json
+msgid "(Hilda climbs the ladder with the wheel. A long silence on the roof, then a crunch they hear across the square.)"
 msgstr ""
 
 #: assets/data/post.json
@@ -9938,6 +10038,10 @@ msgstr ""
 
 #: assets/data/post.json
 msgid "(It isn't. She practises at the anvil when she thinks nobody's looking.)"
+msgstr ""
+
+#: assets/data/post.json
+msgid "(Pip thinks about it very hard.) I'll write bigger. So they can hear."
 msgstr ""
 
 #: assets/data/post.json
@@ -9950,6 +10054,14 @@ msgstr ""
 
 #: assets/data/post.json
 msgid "(She folds it very small and keeps it.) Fifty years of letters I never sent, and he writes me numbers."
+msgstr ""
+
+#: assets/data/post.json
+msgid "(She is already putting her shawl on.) Mind the stew while I'm out, courier. Don't salt it. Don't touch it. Don't look at it."
+msgstr ""
+
+#: assets/data/post.json
+msgid "(She ladles out a bowl and salts it like the sea.) Wait there, courier. He's having it with a note."
 msgstr ""
 
 #: assets/data/post.json
@@ -9973,11 +10085,35 @@ msgid "(She tastes it.) Oh, that IS the saltiest."
 msgstr ""
 
 #: assets/data/post.json
+msgid "(She tucks the letter into her oilskin, carefully.) Gran was right. Gran was always right. It was unbearable."
+msgstr ""
+
+#: assets/data/post.json
+msgid "(She turns it over and finds the dent.) We'll drink from it on festival days. Mind the dent."
+msgstr ""
+
+#: assets/data/post.json
 msgid "(She weighs it in her palm. Something happens to her face.)"
 msgstr ""
 
 #: assets/data/post.json
+msgid "(Somewhere down the shaft, a cheer, and a pick dropped on a foot.)"
+msgstr ""
+
+#: assets/data/post.json
+msgid "...And a brass star. And her socks. She packed a great many socks."
+msgstr ""
+
+#: assets/data/post.json
+msgid "...Behind a cheese that doesn't exist yet. I can work with that. Courier, the club needs more wheels."
+msgstr ""
+
+#: assets/data/post.json
 msgid "...Does iron earn interest? Ask her that. No, don't."
+msgstr ""
+
+#: assets/data/post.json
+msgid "...Don't tell her. She'll know. She always knows."
 msgstr ""
 
 #: assets/data/post.json
@@ -10017,6 +10153,18 @@ msgid "...Who told her once a year?"
 msgstr ""
 
 #: assets/data/post.json
+msgid "A banner folded small, moth-eaten at the edges. A grey tower on it, still bright."
+msgstr ""
+
+#: assets/data/post.json
+msgid "A bowl of Tam's stew under a cloth, a note pinned to the cloth. Still hot."
+msgstr ""
+
+#: assets/data/post.json
+msgid "A crust you can HEAR?"
+msgstr ""
+
+#: assets/data/post.json
 msgid "A dragon. Of course it is."
 msgstr ""
 
@@ -10037,6 +10185,10 @@ msgid "A jar of seawater, corked, labelled in Marta's hand."
 msgstr ""
 
 #: assets/data/post.json
+msgid "A lamp of old brass, the kind that hung over a village gate. A little house is stamped on its shade."
+msgstr ""
+
+#: assets/data/post.json
 msgid "A letter for the big lump on my chimney? I'll read it to him with his cheese."
 msgstr ""
 
@@ -10045,11 +10197,23 @@ msgid "A lid! Why didn't I think of a lid?"
 msgstr ""
 
 #: assets/data/post.json
+msgid "A miner's lamp of solid gold, far too heavy to take down a shaft. A pick is stamped on its foot."
+msgstr ""
+
+#: assets/data/post.json
 msgid "A new lamp by the bridge?"
 msgstr ""
 
 #: assets/data/post.json
 msgid "A sack of ore with a note pinned to it. It clanks."
+msgstr ""
+
+#: assets/data/post.json
+msgid "A silver cup, black with age, a fish worked into its handle. There's a dent in it the shape of a dragon."
+msgstr ""
+
+#: assets/data/post.json
+msgid "A silver sled bell on a rotted strap. A snowflake is cut right through it."
 msgstr ""
 
 #: assets/data/post.json
@@ -10070,6 +10234,10 @@ msgstr ""
 
 #: assets/data/post.json
 msgid "A trestle at the miners' camp, ore laid out on it."
+msgstr ""
+
+#: assets/data/post.json
+msgid "A wheel of cheese aged a year down the Blackiron shafts. It creaks."
 msgstr ""
 
 #: assets/data/post.json
@@ -10105,7 +10273,15 @@ msgid "Aldric"
 msgstr ""
 
 #: assets/data/post.json
+msgid "Allowed? He's a FOUNDING member."
+msgstr ""
+
+#: assets/data/post.json
 msgid "Apples! She'll take apples."
+msgstr ""
+
+#: assets/data/post.json
+msgid "Aske"
 msgstr ""
 
 #: assets/data/post.json
@@ -10114,6 +10290,10 @@ msgstr ""
 
 #: assets/data/post.json
 msgid "Bergit hates it loudly. She'll be glad of the company."
+msgstr ""
+
+#: assets/data/post.json
+msgid "Blackiron's pick! The kings taxed us in lamps?"
 msgstr ""
 
 #: assets/data/post.json
@@ -10141,6 +10321,10 @@ msgid "Bram. It's always Bram."
 msgstr ""
 
 #: assets/data/post.json
+msgid "Bram. The three asked about the cheese again. I told them the club has a song now. Tam would like to be a member. Is that allowed, after fifty years? - Morvax"
+msgstr ""
+
+#: assets/data/post.json
 msgid "Brann"
 msgstr ""
 
@@ -10162,6 +10346,14 @@ msgstr ""
 
 #: assets/data/post.json
 msgid "Cheese is merely... difficult. Let me write back."
+msgstr ""
+
+#: assets/data/post.json
+msgid "Cheese man. I have ranked every cheese in the Reach. Yours is second. First is the one I have not eaten yet. - F."
+msgstr ""
+
+#: assets/data/post.json
+msgid "Cheese man. The wheel Hilda gives me is good. It is not great. A great cheese has a crust you can hear. - F."
 msgstr ""
 
 #: assets/data/post.json
@@ -10225,11 +10417,19 @@ msgid "Dear Mister Dragon. I did not send the cat. The cat went by itself. Sorry
 msgstr ""
 
 #: assets/data/post.json
+msgid "Dear Mister Fafnyr. Enclosed: one wheel, aged a year in Blackiron's deepest shaft. Hold it to your ear. - Bram, Cheese Club (founder)"
+msgstr ""
+
+#: assets/data/post.json
 msgid "Dear Mister Morvax. I hear Tam liked cheese. The club sends a wheel, for him and for you. Membership is free. No refunds. - Bram"
 msgstr ""
 
 #: assets/data/post.json
 msgid "Dear Old Wenna. You come from the sea, so you know about fish. Does a dragon like fish? I am asking for a friend. The friend is a dragon. From Pip."
+msgstr ""
+
+#: assets/data/post.json
+msgid "Dragon Post: Fafnyr takes the post for %s in his teeth and is gone over the roofs."
 msgstr ""
 
 #: assets/data/post.json
@@ -10265,6 +10465,10 @@ msgid "Fafnyr"
 msgstr ""
 
 #: assets/data/post.json
+msgid "Fafnyr on cheese"
+msgstr ""
+
+#: assets/data/post.json
 msgid "Fenwick has put himself in charge of the awning."
 msgstr ""
 
@@ -10277,11 +10481,43 @@ msgid "Fenwick. Greyhold is yours to keep now. Don't let it go to your head. - S
 msgstr ""
 
 #: assets/data/post.json
+msgid "Fenwick. Oskar wore the red cloak before you did, and he asked where the pay went too. They never threw him in the cells: he was too big to fit. Keep asking. - Maren"
+msgstr ""
+
+#: assets/data/post.json
 msgid "Fenwick. The bell hangs in Pixelheim's hall now, and the mayor jumps every time I ring it. I tell him it's practice. Ring something for me at Greyhold. - Brother Teo"
 msgstr ""
 
 #: assets/data/post.json
 msgid "Fenwick. Yes. It was always allowed. Carry on. - U."
+msgstr ""
+
+#: assets/data/post.json
+msgid "Fifty years and a thank-you. Lads! We've been thanked!"
+msgstr ""
+
+#: assets/data/post.json
+msgid "Fifty years of letters to catch up on, and this is the first. One a week, I've decided. - Maren"
+msgstr ""
+
+#: assets/data/post.json
+msgid "Fifty years to catch up on"
+msgstr ""
+
+#: assets/data/post.json
+msgid "Fish woman. Bram says your gulls eat the rind. The rind is the best part. Your gulls are right. Tell them. - F."
+msgstr ""
+
+#: assets/data/post.json
+msgid "Fish woman. This cup has a fish on it. The kings took it from your village when the sea was young. I sat on it for a hundred years. It is yours. Sorry about the dent. - F."
+msgstr ""
+
+#: assets/data/post.json
+msgid "Foreman. Fifty years I came down your road for iron and paid in coppers and grumbling. The grumbling wasn't about you. The coppers were nine short. Enclosed: nine coppers. - Morvax, on a bench"
+msgstr ""
+
+#: assets/data/post.json
+msgid "Foreman. Your shafts dug the iron that held the dragon for fifty years, and nobody ever thanked Blackiron. Thank you. Week two of fifty years. - Maren"
 msgstr ""
 
 #: assets/data/post.json
@@ -10353,6 +10589,10 @@ msgid "From Elder Maren, across the square."
 msgstr ""
 
 #: assets/data/post.json
+msgid "From Elder Maren. \"Week two\", it says at the top."
+msgstr ""
+
+#: assets/data/post.json
 msgid "From Elder Maren. Folded once, hard."
 msgstr ""
 
@@ -10365,7 +10605,23 @@ msgid "From Elder Maren. There's a smudge where something was crossed out."
 msgstr ""
 
 #: assets/data/post.json
+msgid "From Elder Maren. Week five, and a P.S. longer than the letter."
+msgstr ""
+
+#: assets/data/post.json
+msgid "From Elder Maren. Week four. There's a drawing of a mammoth, not a good one."
+msgstr ""
+
+#: assets/data/post.json
+msgid "From Elder Maren. Week three. The seal is pressed very hard."
+msgstr ""
+
+#: assets/data/post.json
 msgid "From Elder Maren. Written fast, the letters leaning forward."
+msgstr ""
+
+#: assets/data/post.json
+msgid "From Elder Maren. Written on both sides, then up the margin."
 msgstr ""
 
 #: assets/data/post.json
@@ -10377,7 +10633,15 @@ msgid "From Fenwick. A report, with a drawing of a helmet."
 msgstr ""
 
 #: assets/data/post.json
+msgid "From Foreman Garrick. Written on the back of an ore ledger."
+msgstr ""
+
+#: assets/data/post.json
 msgid "From Gunnar's caravan, up on the Frostgate. Frost on the seal."
+msgstr ""
+
+#: assets/data/post.json
+msgid "From Gunnar's caravan. It smells of wet fur and woodsmoke."
 msgstr ""
 
 #: assets/data/post.json
@@ -10430,6 +10694,26 @@ msgstr ""
 
 #: assets/data/post.json
 msgid "From Mirelle the Banker. The envelope is very crisp."
+msgstr ""
+
+#: assets/data/post.json
+msgid "From Morvax, on the bench by the fountain. There are splashes on it: the fountain."
+msgstr ""
+
+#: assets/data/post.json
+msgid "From Morvax, twelve steps from the inn's door. He has counted them."
+msgstr ""
+
+#: assets/data/post.json
+msgid "From Morvax, up at his forge. A strip of rind is tied round it, for the crows."
+msgstr ""
+
+#: assets/data/post.json
+msgid "From Morvax, up at his forge. It smells of cold iron."
+msgstr ""
+
+#: assets/data/post.json
+msgid "From Morvax, up at his forge. Written in very large letters, the way Pip writes."
 msgstr ""
 
 #: assets/data/post.json
@@ -10509,6 +10793,10 @@ msgid "From Smith Hilda. Short and sooty."
 msgstr ""
 
 #: assets/data/post.json
+msgid "From Smith Hilda. Short, sooty, and underlined."
+msgstr ""
+
+#: assets/data/post.json
 msgid "From Smith Hilda. Short, with a sooty thumbprint."
 msgstr ""
 
@@ -10526,6 +10814,14 @@ msgstr ""
 
 #: assets/data/post.json
 msgid "From Wren the Stablemaster. There's straw in the fold."
+msgstr ""
+
+#: assets/data/post.json
+msgid "From the bench by the fountain"
+msgstr ""
+
+#: assets/data/post.json
+msgid "From the forge on the mountain"
 msgstr ""
 
 #: assets/data/post.json
@@ -10557,11 +10853,27 @@ msgid "Gods help her. Hold on, courier. The canary has something to add."
 msgstr ""
 
 #: assets/data/post.json
+msgid "Gran always said she sold a hero his supper. Nobody believed her."
+msgstr ""
+
+#: assets/data/post.json
+msgid "Gran's cup. Gran's gran's cup. That fish on the handle is ours."
+msgstr ""
+
+#: assets/data/post.json
+msgid "Greyhold's own banner. From before the red cloaks."
+msgstr ""
+
+#: assets/data/post.json
 msgid "Gunnar says the horses chose the spot."
 msgstr ""
 
 #: assets/data/post.json
 msgid "Gunnar's lodge is open, a fire in it."
+msgstr ""
+
+#: assets/data/post.json
+msgid "Gunnar. Liane crossed your pass with a brass star and a bag of sums, and your father carried the bag and complained all the way up. She wrote it all down. He complained in very good order. - Maren"
 msgstr ""
 
 #: assets/data/post.json
@@ -10574,6 +10886,14 @@ msgstr ""
 
 #: assets/data/post.json
 msgid "Hate it quietly. That's all I ask of anyone up here."
+msgstr ""
+
+#: assets/data/post.json
+msgid "He says it sings. ...He's purring. The whole roof is purring."
+msgstr ""
+
+#: assets/data/post.json
+msgid "He told that story every winter, and we never believed the bag. Wait. I want to ask her something."
 msgstr ""
 
 #: assets/data/post.json
@@ -10602,6 +10922,10 @@ msgstr ""
 
 #: assets/data/post.json
 msgid "Hilda"
+msgstr ""
+
+#: assets/data/post.json
+msgid "Home from the hoard"
 msgstr ""
 
 #: assets/data/post.json
@@ -10661,6 +10985,18 @@ msgid "It FELL off a boat."
 msgstr ""
 
 #: assets/data/post.json
+msgid "It arrives a little on fire. Nobody minds much."
+msgstr ""
+
+#: assets/data/post.json
+msgid "It arrives on fire. Only the envelope. Mostly the envelope."
+msgstr ""
+
+#: assets/data/post.json
+msgid "It arrives smoking gently: the warmest letter anyone there has ever had."
+msgstr ""
+
+#: assets/data/post.json
 msgid "It was his joke about me. He had a hundred of them."
 msgstr ""
 
@@ -10673,6 +11009,18 @@ msgid "Lads! Down tools! Cheese!"
 msgstr ""
 
 #: assets/data/post.json
+msgid "Lamp man. The kings took the first lamp off Pixelheim's gate. It has a house on it. It was the only light in the hoard. I looked at it a great deal. It is yours. Light it. - F."
+msgstr ""
+
+#: assets/data/post.json
+msgid "Letter for Bram"
+msgstr ""
+
+#: assets/data/post.json
+msgid "Letter for Bram, from the dragon"
+msgstr ""
+
+#: assets/data/post.json
 msgid "Letter for Dagny"
 msgstr ""
 
@@ -10682,6 +11030,10 @@ msgstr ""
 
 #: assets/data/post.json
 msgid "Letter for Fenwick"
+msgstr ""
+
+#: assets/data/post.json
+msgid "Letter for Foreman Garrick"
 msgstr ""
 
 #: assets/data/post.json
@@ -10705,6 +11057,10 @@ msgid "Letter for Mabel the Sutler"
 msgstr ""
 
 #: assets/data/post.json
+msgid "Letter for Mabel the Sutler, from the dragon"
+msgstr ""
+
+#: assets/data/post.json
 msgid "Letter for Marta the Chandler"
 msgstr ""
 
@@ -10721,11 +11077,23 @@ msgid "Letter for Mister Dragon, care of Hilda's chimney"
 msgstr ""
 
 #: assets/data/post.json
+msgid "Letter for Ola the Fisher"
+msgstr ""
+
+#: assets/data/post.json
+msgid "Letter for Ola the Fisher, from the dragon"
+msgstr ""
+
+#: assets/data/post.json
 msgid "Letter for Old Pell"
 msgstr ""
 
 #: assets/data/post.json
 msgid "Letter for Old Wenna"
+msgstr ""
+
+#: assets/data/post.json
+msgid "Letter for Pip"
 msgstr ""
 
 #: assets/data/post.json
@@ -10781,6 +11149,10 @@ msgid "Maren. Another of his: \"Why did the cheese climb the mountain? Because M
 msgstr ""
 
 #: assets/data/post.json
+msgid "Maren. Father swore that bag was heavier than Bergit. Was it sums or stones? - Gunnar"
+msgstr ""
+
+#: assets/data/post.json
 msgid "Maren. The weather here is wet. It has been wet for fifty years. Tam would have made a joke about it. I can't think of one either. - Wenna"
 msgstr ""
 
@@ -10825,6 +11197,10 @@ msgid "Mine? Greyhold? To keep?"
 msgstr ""
 
 #: assets/data/post.json
+msgid "Miner man. A lamp with a pick on it. Gold is a stupid metal for a lamp. Kings are stupid. It is yours. - F."
+msgstr ""
+
+#: assets/data/post.json
 msgid "Mirelle"
 msgstr ""
 
@@ -10853,6 +11229,18 @@ msgid "Mittens. She's sent me a mitten recipe."
 msgstr ""
 
 #: assets/data/post.json
+msgid "Morvax. Coal, a good draught, and a cheese wheel a day for the lump on my roof. Light yours. Bring a horseshoe down on festival day and we'll see whose forge is hotter. - Hilda"
+msgstr ""
+
+#: assets/data/post.json
+msgid "Morvax. Nine coppers received. Fifty years of interest owing: one visit, and you stand the first round. - Garrick"
+msgstr ""
+
+#: assets/data/post.json
+msgid "Morvax. Tam's stew, the way he made it. If you salt it before you taste it, I will hear about it. - Wenna"
+msgstr ""
+
+#: assets/data/post.json
 msgid "My face is always ready."
 msgstr ""
 
@@ -10862,6 +11250,10 @@ msgstr ""
 
 #: assets/data/post.json
 msgid "Never answer the first question, courier. Make them ask two."
+msgstr ""
+
+#: assets/data/post.json
+msgid "Nine coppers! Fifty years late!"
 msgstr ""
 
 #: assets/data/post.json
@@ -10889,6 +11281,10 @@ msgid "Ola"
 msgstr ""
 
 #: assets/data/post.json
+msgid "Ola. Your grandmother sold Tam his last fish before the climb, and he said it was the best he ever ate. He ate a great many fish. I meant to tell her. I'm telling you."
+msgstr ""
+
+#: assets/data/post.json
 msgid "On account. Everybody wants on account."
 msgstr ""
 
@@ -10901,7 +11297,19 @@ msgid "One soldier. He's raising a garrison one lad at a time."
 msgstr ""
 
 #: assets/data/post.json
+msgid "One visit. And the first round."
+msgstr ""
+
+#: assets/data/post.json
 msgid "Ore, ingots and coal for whoever walks in, lit till the last shift comes up."
+msgstr ""
+
+#: assets/data/post.json
+msgid "Oskar wore it? The same cloak?"
+msgstr ""
+
+#: assets/data/post.json
+msgid "P.S. Bring the stew. Don't salt it. I'm joking. Salt it."
 msgstr ""
 
 #: assets/data/post.json
@@ -10909,7 +11317,27 @@ msgid "Parcel for Alchemist Vex"
 msgstr ""
 
 #: assets/data/post.json
+msgid "Parcel for Aske, from the hoard"
+msgstr ""
+
+#: assets/data/post.json
+msgid "Parcel for Fafnyr, care of Hilda's chimney"
+msgstr ""
+
+#: assets/data/post.json
+msgid "Parcel for Fenwick, from the hoard"
+msgstr ""
+
+#: assets/data/post.json
 msgid "Parcel for Foreman Garrick"
+msgstr ""
+
+#: assets/data/post.json
+msgid "Parcel for Foreman Garrick, from the hoard"
+msgstr ""
+
+#: assets/data/post.json
+msgid "Parcel for Gunnar, from the hoard"
 msgstr ""
 
 #: assets/data/post.json
@@ -10929,6 +11357,10 @@ msgid "Parcel for Ola the Fisher"
 msgstr ""
 
 #: assets/data/post.json
+msgid "Parcel for Ola the Fisher, from the hoard"
+msgstr ""
+
+#: assets/data/post.json
 msgid "Parcel for Smith Hilda"
 msgstr ""
 
@@ -10942,6 +11374,10 @@ msgstr ""
 
 #: assets/data/post.json
 msgid "Pip and the dragon"
+msgstr ""
+
+#: assets/data/post.json
+msgid "Pixelheim's first lamp. Fifty years I kept one door and one lamp, and this one was the first of all."
 msgstr ""
 
 #: assets/data/post.json
@@ -11029,7 +11465,23 @@ msgid "Saltmere's lighthouse is mended, new stones on the point."
 msgstr ""
 
 #: assets/data/post.json
+msgid "Scorched round the edges, and warm all through."
+msgstr ""
+
+#: assets/data/post.json
 msgid "Scorched round the edges. A cat's hair is stuck in the wax."
+msgstr ""
+
+#: assets/data/post.json
+msgid "Scorched round the edges. A gull has already had a go at it."
+msgstr ""
+
+#: assets/data/post.json
+msgid "Scorched round the edges. A list, numbered, in claw."
+msgstr ""
+
+#: assets/data/post.json
+msgid "Scorched round the edges. It smells of toasted cheese."
 msgstr ""
 
 #: assets/data/post.json
@@ -11038,6 +11490,10 @@ msgstr ""
 
 #: assets/data/post.json
 msgid "Sea glass in the lantern of Saltmere's lighthouse."
+msgstr ""
+
+#: assets/data/post.json
+msgid "Second! Second in the whole Reach!"
 msgstr ""
 
 #: assets/data/post.json
@@ -11065,6 +11521,10 @@ msgid "Small human. The cat sleeps on my tail. It is warm. I have decided to all
 msgstr ""
 
 #: assets/data/post.json
+msgid "Small one. Fafnyr says you write to him. When he flies up here he tells the three what you wrote. Tam laughs at the cat every time. - Morvax"
+msgstr ""
+
+#: assets/data/post.json
 msgid "Smith. Eight horseshoes, please. On account. - Wren"
 msgstr ""
 
@@ -11081,11 +11541,19 @@ msgid "Smith. That's Blackiron ore, the real thing. Smile if you like it. Nobody
 msgstr ""
 
 #: assets/data/post.json
+msgid "Smith. They say your forge is the warmest in the Reach. Mine has been cold for fifty years. What do you burn? - Morvax, the old forge"
+msgstr ""
+
+#: assets/data/post.json
 msgid "Sneeze! Hold on, courier, I'm making a list."
 msgstr ""
 
 #: assets/data/post.json
 msgid "Sneeze! Of course. A sneeze is a cheese's applause."
+msgstr ""
+
+#: assets/data/post.json
+msgid "Snow man. A bell with a snowflake on it. It rang every time I turned over, for a hundred years. I do not want it. You want it. - F."
 msgstr ""
 
 #: assets/data/post.json
@@ -11097,7 +11565,19 @@ msgid "So that's what's been on my chimney all morning."
 msgstr ""
 
 #: assets/data/post.json
+msgid "Soldier woman. Hard cheese is not for throwing. It is for keeping under a wing until it is warm. Then it is perfect. - F."
+msgstr ""
+
+#: assets/data/post.json
 msgid "Song for Bram"
+msgstr ""
+
+#: assets/data/post.json
+msgid "Stew for Morvax"
+msgstr ""
+
+#: assets/data/post.json
+msgid "Sums. Liane's sums weighed more than stones."
 msgstr ""
 
 #: assets/data/post.json
@@ -11173,6 +11653,10 @@ msgid "The Saltmere Waystation"
 msgstr ""
 
 #: assets/data/post.json
+msgid "The caravan's first bell! Grandfather said the kings took it for a toll."
+msgstr ""
+
+#: assets/data/post.json
 msgid "The cat says yes to everybody's fish. That's not science."
 msgstr ""
 
@@ -11185,7 +11669,19 @@ msgid "The dog has found the warm side of the lamp's post, and will not be moved
 msgstr ""
 
 #: assets/data/post.json
+msgid "The dragon agrees with my gulls."
+msgstr ""
+
+#: assets/data/post.json
+msgid "The dragon tells my letters to the three? Who are the three?"
+msgstr ""
+
+#: assets/data/post.json
 msgid "The garrison's reply for Bram"
+msgstr ""
+
+#: assets/data/post.json
+msgid "The goat! I'd forgotten the goat."
 msgstr ""
 
 #: assets/data/post.json
@@ -11194,6 +11690,10 @@ msgstr ""
 
 #: assets/data/post.json
 msgid "The lads had it by heart by supper. Here, courier: they stitched you a banner for carrying it. Your colours, more or less."
+msgstr ""
+
+#: assets/data/post.json
+msgid "The lads want to try it. Nobody has wings. Fenwick has offered his armpit. Nobody wants Fenwick's cheese."
 msgstr ""
 
 #: assets/data/post.json
@@ -11221,6 +11721,10 @@ msgid "The weather! Fifty years, and she asks about the weather."
 msgstr ""
 
 #: assets/data/post.json
+msgid "They're going to be unbearable about this."
+msgstr ""
+
+#: assets/data/post.json
 msgid "Timber for a lodge at Gunnar's camp on the Frostgate."
 msgstr ""
 
@@ -11237,7 +11741,15 @@ msgid "Too salty. TOO SALTY."
 msgstr ""
 
 #: assets/data/post.json
+msgid "Twelve steps, and he writes."
+msgstr ""
+
+#: assets/data/post.json
 msgid "Ulla"
+msgstr ""
+
+#: assets/data/post.json
+msgid "Under a wing until it's warm."
 msgstr ""
 
 #: assets/data/post.json
@@ -11273,7 +11785,15 @@ msgid "Wait there. She'll want it written down properly."
 msgstr ""
 
 #: assets/data/post.json
+msgid "Wait there. Smiths don't write much, but when they do they write it right."
+msgstr ""
+
+#: assets/data/post.json
 msgid "Walked all the way out to see it. I'd have supervised the building, if anyone had asked."
+msgstr ""
+
+#: assets/data/post.json
+msgid "Water man. A flag with a tower on it. I did not sit on this one. It was too thin. I used it to wipe my nose. Only twice. It is yours. - F."
 msgstr ""
 
 #: assets/data/post.json
@@ -11305,7 +11825,23 @@ msgid "Wenna. Now you're across the square, I've nothing left to write. Come and
 msgstr ""
 
 #: assets/data/post.json
+msgid "Wenna. Tam told me your stew could raise the dead. I was too proud to come down and try it. I'm on the bench by the fountain now. Twelve steps from your door. I counted. - Morvax"
+msgstr ""
+
+#: assets/data/post.json
+msgid "Wenna. That's the Reach caught up, nearly. Fifty years, a letter a week, and I still haven't told anyone what Tam did with the goat. Come over and I'll tell you. - M."
+msgstr ""
+
+#: assets/data/post.json
+msgid "What do I burn? Coal. And a dragon, every morning."
+msgstr ""
+
+#: assets/data/post.json
 msgid "What rhymes with cheese... Knees. Trees. Please."
+msgstr ""
+
+#: assets/data/post.json
+msgid "Whose forge is hotter. Ha! She's never seen this one lit."
 msgstr ""
 
 #: assets/data/post.json
@@ -11629,6 +12165,10 @@ msgid "Brother Teo wants old steel to mend the chapel bell."
 msgstr ""
 
 #: assets/data/progression.json
+msgid "Build every post road's waystation and light its lamp."
+msgstr ""
+
+#: assets/data/progression.json
 msgid "Business is good. Don't ask which business."
 msgstr ""
 
@@ -11666,6 +12206,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Caravan Guard"
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Carry every thread of the Post to its last piece."
 msgstr ""
 
 #: assets/data/progression.json
@@ -11785,6 +12329,10 @@ msgid "Deliver all five of Maren's letters."
 msgstr ""
 
 #: assets/data/progression.json
+msgid "Deliver fifty pieces of post."
+msgstr ""
+
+#: assets/data/progression.json
 msgid "Dire wolves driven off"
 msgstr ""
 
@@ -11862,6 +12410,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Every Letter Delivered"
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Every Thread Tied"
 msgstr ""
 
 #: assets/data/progression.json
@@ -12745,6 +13297,10 @@ msgid "Pixelheim is safe. The mountain is quiet, and the tavern isn't."
 msgstr ""
 
 #: assets/data/progression.json
+msgid "Postmaster of the Reach"
+msgstr ""
+
+#: assets/data/progression.json
 msgid "Prelate"
 msgstr ""
 
@@ -13206,6 +13762,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "The North Road"
+msgstr ""
+
+#: assets/data/progression.json
+msgid "The Reach Lit"
 msgstr ""
 
 #: assets/data/progression.json

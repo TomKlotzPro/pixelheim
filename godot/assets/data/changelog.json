@@ -1,6 +1,24 @@
 {
   "releases": [
     {
+      "version": "0.267.0",
+      "date": "2026-10-21",
+      "codename": "Dragon Post",
+      "notes": [
+        "After the story the post keeps coming: Maren writes to the families every week, Morvax from his bench or his forge, and Fafnyr has opinions about cheese; the Kings' Vault's heirlooms go home to the families whose marks they carry",
+        "The Dragon Post: once the story is done, Fafnyr flies the furthest piece of each day's post himself - fast, warm, occasionally on fire",
+        "Three new feats: Every Thread Tied, Postmaster of the Reach and The Reach Lit; the Feats page now scrolls"
+      ]
+    },
+    {
+      "version": "0.266.0",
+      "date": "2026-10-21",
+      "codename": "Lighter Load",
+      "notes": [
+        "The web game no longer carries its test suite: about 1.4 MB less to download before you play"
+      ]
+    },
+    {
       "version": "0.265.0",
       "date": "2026-10-21",
       "codename": "Lights Along the Roads",
