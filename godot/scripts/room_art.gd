@@ -123,6 +123,44 @@ const PIECES := {
 		"................................",
 		"................................",
 	],
+	# The same ledger shut (PIX-348: Hale's book lay open while its line
+	# said shut): a brown leather cover, its spine darker, a written label
+	# and a brass clasp, the pages' edge below, the ribbon out of the
+	# bottom; the quill in its inkwell as when it's open.
+	"shut_book": [
+		"................................",
+		"................................",
+		"................................",
+		"................................",
+		"................................",
+		"................................",
+		"................................",
+		"................................",
+		"................................",
+		"................................",
+		"..............................o.",
+		".............................oy.",
+		"............................oyo.",
+		".....ooooooooooooooo........yho.",
+		".....odmmmmmmmmmmmeo.......oyho.",
+		".....odwwwwwwwwwwwwo.......yho..",
+		".....odwwwwwwwwwwwwo......oyho..",
+		".....odwwoooooooowwo......yho...",
+		".....odwwoBBBBBBoweo......oDo...",
+		".....odwwoBqqqqBoweo.....okDko..",
+		".....odwwoBBBBBBoweo.....oihiko.",
+		".....odwwoooooooowwo.....oiiiko.",
+		".....odwwwwwwwwwwwwo.....oikkko.",
+		".....oddddddddddddeo......ooooo.",
+		".....oBDBDBDBDBDBDBo............",
+		".....owwwwwwRwwwwwwo............",
+		"......ooooooRoooooo.............",
+		"............R...................",
+		"...........R.R..................",
+		"................................",
+		"................................",
+		"................................",
+	],
 	# Captain Hale's map of the mountain road under his dagger, beside his
 	# order book (PIX-338).
 	"map_dagger": [
@@ -284,6 +322,16 @@ static func has(name: String) -> bool:
 static func cells(name: String) -> Vector2i:
 	var rows: Array = PIECES[name.get_slice("+", 0)]
 	return Vector2i(String(rows[0]).length() / 16, rows.size() / 16)
+
+
+## A letter's answer lies shut on its table until the letter is delivered
+## (PIX-348): in `pieces` (cell -> name, "r:" before a table drawn here
+## without the pack), each open book over one of `shut`'s cells is shut.
+static func shut_books(pieces: Dictionary, shut: Array[Rect2i]) -> void:
+	for cell: Vector2i in pieces:
+		var name: Variant = pieces[cell]
+		if name is String and "open_book" in name and shut.any(func(rect: Rect2i) -> bool: return Rect2i(cell, cells(String(name).trim_prefix("r:"))).intersects(rect)):
+			pieces[cell] = String(name).replace("open_book", "shut_book")
 
 
 ## `name` drawn, once a session; "a+b" is b drawn over a.

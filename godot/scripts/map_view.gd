@@ -432,6 +432,7 @@ func _plan_room() -> void:
 		"pieces": room["pieces"], "decor": {}, "freed": [], "floor": room["floor"], "walls": room["walls"], "void": room["void"], "over": room["over"],
 		"rug": dressed["rug"], "objects": dressed["objects"], "tops": dressed["tops"], "lifted": dressed["lifted"], "art": dressed["art"],
 	}
+	RoomArt.shut_books(buildings["art"], Letters.shut_on(data.id, GameState.progression))
 	for cell: Vector2i in room["blocked"] + dressed["blocked"]:
 		data.grid[cell] = "wall"
 
@@ -446,6 +447,7 @@ func _plan_free_room() -> void:
 	var dressed := PunyInterior.furnish_free(data.id + data.variant, data.grid, PunyInterior.reserved(data, placed))
 	buildings = room.merged({"decor": {}, "freed": [], "objects": dressed["objects"], "flames": dressed["flames"]})
 	buildings["rug"] = (dressed["rug"] as Dictionary).merged(room["rug"], true)
+	RoomArt.shut_books(buildings["objects"], Letters.shut_on(data.id, GameState.progression))
 	for cell: Vector2i in dressed["blocked"]:
 		data.grid[cell] = "wall"
 

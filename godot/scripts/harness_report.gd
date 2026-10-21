@@ -37,6 +37,7 @@ const TABLE := [
 	{"field": "barred", "says": "the way the story keeps shut that stopped the hero on this run: mountain or vault (PIX-257)"},
 	{"field": "bells", "says": "the Night of Bells' beat while it runs (lanterns, embers, hold, dawn), done once Fafnyr is freed (PIX-253 step 9)"},
 	{"field": "beside", "says": "with seamless: the maps drawn beside the hero's, by id, or none (PIX-269)"},
+	{"field": "book", "says": "in a room with a book drawn on a table: shut while its letter's answer waits, else open (PIX-348)"},
 	{"field": "boss", "says": "the bosses and named monsters standing on the map, each as id:what it does (alert, chase, cast, homeward, idle):its share of health, when there are any (PIX-288)"},
 	{"field": "bossbar", "says": "the boss bar across the top: its foe's share of health while it shows, or none once it has gone; on a fight or a boss's floor (PIX-288)"},
 	{"field": "burning", "says": "on the Night of Bells' embers: the roofs still burning (PIX-253 step 9)"},
@@ -293,6 +294,14 @@ func field_beside() -> String:
 	var ids: Array = world.neighbours.drawn.keys()
 	ids.sort()
 	return ",".join(ids) if not ids.is_empty() else "none"
+
+
+func field_book() -> String:
+	var pieces: Array = world.view.buildings.get("art", {}).values() + world.view.buildings.get("objects", {}).values()
+	var books := pieces.filter(func(name: Variant) -> bool: return name is String and "_book" in name)
+	if books.is_empty():
+		return ""
+	return "shut" if books.any(func(name: String) -> bool: return "shut_book" in name) else "open"
 
 
 func field_boss() -> String:

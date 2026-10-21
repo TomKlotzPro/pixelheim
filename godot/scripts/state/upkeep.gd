@@ -127,9 +127,11 @@ func drop_item(item_id: String, count := 1) -> bool:
 	return true
 
 
-## Leaves a gear piece behind (DROP_GEAR); never one being worn.
+## Leaves a gear piece behind (DROP_GEAR); never one being worn, nor
+## Sela's cap on the Night of Ash (PIX-344).
 func drop_gear(uid: String) -> bool:
-	if owner.pack.is_equipped(uid) or owner.pack.gear_by_uid(uid).is_empty():
+	var piece := owner.pack.gear_by_uid(uid)
+	if owner.pack.is_equipped(uid) or piece.is_empty() or Prologue.keeps(owner.progression.prologue, piece["itemId"]):
 		return false
 	owner.pack.gear.assign(owner.pack.gear.filter(func(piece: Dictionary) -> bool: return piece["uid"] != uid))
 	owner.pack_changed()

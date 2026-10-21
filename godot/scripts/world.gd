@@ -147,6 +147,11 @@ func _ready() -> void:
 	for named_id: String in flags.list("--hunted"):
 		if named_id not in GameState.progression.hunted:
 			GameState.progression.hunted.append(named_id)
+	# `--delivered letter_hale`: one of Maren's letters handed over and
+	# answered (PIX-255), before the first map is drawn, so Hale's order
+	# book lies open on his table (PIX-348).
+	if flags.has("--delivered"):
+		GameState.progression.quests[flags.value("--delivered")] = {"progress": 1, "done": true}
 	# `--post` (PIX-320): the Pixelheim Post open before the first map is
 	# drawn, so its box stands on the square: Maren's tin found, her first
 	# letter in Wenna's hands, and Saltmere walked, where it went, and the

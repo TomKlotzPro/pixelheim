@@ -484,6 +484,10 @@ keep-up | --map cellars --at 4,28 --walk l --wait 0.4 | map=keep | travel rooms
 # Captain Hale's order book on his table, read once Maren's letter is
 # delivered: the Next line moves on to the Hollow Captain (PIX-255).
 order-book | --map keep --delivered letter_hale --at 8,6 --walk l --keys e,e,e --wait 0.3 | map=keep open=none next=shield | rooms story quest
+# The order book drawn shut on Hale's table while its line says it's shut,
+# and open once the letter is delivered (PIX-348).
+order-book-shut | --map keep --at 8,6 --walk l --keys e --wait 0.3 | map=keep book=shut | rooms story
+order-book-open | --map keep --delivered letter_hale --at 8,6 --walk l | map=keep book=open | rooms story
 # The Greyhold cellars in three floors (PIX-255): down the cells' stair
 # where the Hollow Captain used to stand (it asks; going down keeps the
 # dark) to the garrison's crypt, down past its stone knights to the
@@ -635,6 +639,10 @@ firstnight | create --keys tab | open=create_screen firstnight=skip | title stor
 # The Night of Ash's hounds and embers (PIX-129).
 hounds | --map town --prologue 6 | night=6 mobs=2 | story night combat
 embers | --map town --prologue 9 | night=9 mobs=3 | story night combat
+# Sela's cap stays in the pack on the Night of Ash (PIX-344: dropped, the
+# night waited on it for good): X twice on it says to hold on to it, E puts
+# it on, and the night goes on to the fires.
+cap-kept | --map town --prologue 4 --talk-to innkeeper --keys e,e,e,e,i,x,x,e,esc --wait 0.5 | map=town night=8 open=none | story night
 # The Night of Ash's fires (PIX-327): every ruin burning with our own flames
 # on its beams, posts, rubble and fallen floor, its smoke, sparks and coals;
 # with Reduce motion the sparks stay down.

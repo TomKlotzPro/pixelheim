@@ -969,10 +969,6 @@ func _run_test_harness() -> void:
 	if flags.has("--take"):
 		# A quest taken, nothing done yet: `--take gunnar_wagon`.
 		GameState.progression.quests[flags.value("--take")] = {"progress": 0, "done": false}
-	if flags.has("--delivered"):
-		# One of Maren's letters handed over and answered (PIX-255):
-		# `--delivered letter_hale`, and Hale's order book is there to read.
-		GameState.progression.quests[flags.value("--delivered")] = {"progress": 1, "done": true}
 	if flags.has("--follow-wagon"):
 		# The hero walks beside the escort's wagon for that many seconds (PIX-192).
 		var until := GameClock.seconds() + float(flags.value("--follow-wagon"))

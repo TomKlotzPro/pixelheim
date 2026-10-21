@@ -474,22 +474,31 @@ func note_deeds() -> void:
 ## Bram freed, Sela's bandages (she heals), the letter in Maren's hands, and
 ## then the dawn (the world plays it, then calls finish_prologue).
 func _prologue_talk(npc_id: String) -> void:
+	# A hero waiting to wear a cap they no longer have (PIX-344: one let go
+	# before it was kept) gets another from Sela.
+	if owner.progression.prologue == Prologue.CAP and Prologue.step_of(npc_id) == Prologue.SELA \
+			and not owner.pack.gear.any(func(piece: Dictionary) -> bool: return Catalog.item(piece["itemId"]).get("slot", "") == "head"):
+		_give_cap()
+		return
 	if Prologue.step_of(npc_id) != owner.progression.prologue:
 		return
 	match owner.progression.prologue:
 		Prologue.SELA:
 			owner.make_whole()
 			# And a cap to wear (PIX-197: the pack and worn gear, taught).
-			var cap := InventoryState.create_gear(String(Prologue.data()["cap"]["itemId"]))
-			owner.pack.gear.append(cap)
-			owner.pack_changed()
-			owner.message.emit(String(Prologue.data()["cap"]["given"]))
+			_give_cap()
 		Prologue.MAREN:
 			owner.pack.remove_item("chancellors_letter")
 			owner.pack_changed()
 			owner.prologue_dawn.emit()
 			return
 	prologue_on()
+
+
+func _give_cap() -> void:
+	owner.pack.gear.append(InventoryState.create_gear(String(Prologue.data()["cap"]["itemId"])))
+	owner.pack_changed()
+	owner.message.emit(String(Prologue.data()["cap"]["given"]))
 
 
 ## The scavenger at the gate fell: its pouch, and on to the village.

@@ -677,8 +677,13 @@ func _drop(whole_stack: bool) -> void:
 	var row: Dictionary = rows[selected]
 	if row["kind"] in ["guide", "recipe"]:
 		return
+	# What can't go says so on the first key, never after asking (PIX-348).
+	var kept := keeps(row, GameState.pack, GameState.progression)
+	if kept != "":
+		status.text = kept
+		return
 	var lasting: bool = row["kind"] == "gear" or (whole_stack and int(row.get("count", 1)) > 1)
-	if lasting and not Catalog.item(row.get("item_id", "")).get("quest", false):
+	if lasting:
 		var which := "%s|%s|%s" % [row["kind"], row.get("item_id", ""), String(row.get("piece", {}).get("uid", ""))]
 		var now := GameClock.seconds()
 		if _drop_armed != which or now - _drop_armed_at > DROP_CONFIRM_SECONDS:
@@ -690,14 +695,21 @@ func _drop(whole_stack: bool) -> void:
 		_drop_armed = ""
 	if row["kind"] == "gear":
 		var piece: Dictionary = row["piece"]
-		if GameState.upkeep.drop_gear(piece["uid"]):
-			status.text = Text.t("You leave %s behind.") % InventoryState.gear_name(piece)
-		else:
-			status.text = "Take it off before you drop it."
-	elif Catalog.item(row["item_id"]).get("quest", false):
-		status.text = "You'd better hold on to that."
+		GameState.upkeep.drop_gear(piece["uid"])
+		status.text = Text.t("You leave %s behind.") % InventoryState.gear_name(piece)
 	else:
 		var count: int = row["count"] if whole_stack else 1
 		GameState.upkeep.drop_item(row["item_id"], count)
 		status.text = Text.t("You drop %dx %s.") % [count, Catalog.item_name(row["item_id"])]
 	_refresh()
+
+
+## Why a row can't be dropped, "" when it can: worn, a quest's, or Sela's
+## cap while the Night of Ash waits on it (PIX-344).
+static func keeps(row: Dictionary, pack: InventoryState, progression: ProgressionState) -> String:
+	if row["kind"] == "gear" and pack.is_equipped(row["piece"]["uid"]):
+		return "Take it off before you drop it."
+	var item_id: String = row["piece"]["itemId"] if row["kind"] == "gear" else row["item_id"]
+	if Catalog.item(item_id).get("quest", false) or Prologue.keeps(progression.prologue, item_id):
+		return "You'd better hold on to that."
+	return ""
