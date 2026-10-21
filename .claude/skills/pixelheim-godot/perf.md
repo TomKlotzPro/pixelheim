@@ -10,7 +10,7 @@ Read before a change that adds work per frame, nodes to a map, lights, or time t
 | `--screenshot crossing` | a walk's frames over a line between maps | **yes**: headless it reports `frames 0` |
 | `motion`, `line-motion` | steps back in the hero's walk, by pixels | **yes** (CI's windowed jobs walk them) |
 | `lookbook.sh --perf`, `lookbook`, `film` | the GPU side: draws, shaders, lights | **yes** |
-| `cpu=` (PIX-355) | each frame timed to the next once the Reach is worked out ahead, ms median/95th percentile; the `cpu-*` flows hold it to budgets with room for CI's runners | no |
+| `cpu=` (PIX-355) | each frame timed to the next once the Reach is worked out ahead, ms median/95th percentile; the `cpu-*` flows hold it to budgets with room for CI's runners, headless only and each alone after the rest (`flows.sh`: beside other runs, or a window's software drawing, a CI frame read 4-7x its cost) | no, and never beside other runs |
 | `--screenshot reentry` | entering each outdoor map, first and again; BESIDE lines part by part | no |
 | `godot --headless --fixed-fps 60 --print-fps -- --screenshot --map X --wait 240` | CPU per frame (frames run back to back) | no |
 | `turning`, `overflow`, `--benchmark` | the turning walk, words off the canvas, boot phases | no |
