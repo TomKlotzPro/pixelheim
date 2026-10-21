@@ -520,6 +520,8 @@ func enter_map(next: MapData, arrival: Vector2i) -> void:
 	if next.id == "town" and GameState.holdings.festival_on():
 		stage.festival()
 	stage.play_reveals.call_deferred()
+	# A hub grown since the hero was last there has its tour (PIX-324).
+	stage.play_hub_tour.call_deferred()
 	folk.keep_hours(true)
 	# Under the sky the camera may look past the south edge, under the dock.
 	camera_rig.set_limits(Vector2(next.size * TILE), next.style != "cave" and PunyTerrain.is_outdoor(next.grid))

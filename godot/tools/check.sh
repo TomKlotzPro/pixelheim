@@ -81,7 +81,7 @@ town travel +town-age* +overworld*: scripts/rampart.gd
 travel: scripts/seam.gd scripts/slicer.gd scripts/world_neighbours.gd scripts/reach_plane.gd scripts/ways.gd scripts/waypoints.gd scripts/atlas.gd scripts/dissolve.gd scripts/place_title.gd scripts/map_screen.gd scripts/state/world_state.gd assets/data/plane.json
 travel story +overworld*: scripts/state/gates.gd scripts/gate_art.gd assets/data/gates.json
 travel story rooms +blackiron* +saltmere* +overworld* +mountain_road* +observatory*: scripts/entrance_art.gd
-town travel field +blackiron* +saltmere* +greyhold* +frostgate* +mountain_road*: scripts/hamlet.gd scripts/hamlet_art.gd shaders/snowed_roof.*
+town travel field +blackiron* +saltmere* +greyhold* +frostgate* +mountain_road*: scripts/hamlet.gd scripts/hamlet_art.gd shaders/snowed_roof.* scripts/hub_art.gd scripts/state/hubs.gd
 quest travel: scripts/escort.gd
 dungeon travel +seacave* +shafts* +cellars* +icecave* +vault*: scripts/state/depths.gd assets/data/depths.json
 dungeon story travel +vault* +mountain_road*: scripts/state/vault.gd

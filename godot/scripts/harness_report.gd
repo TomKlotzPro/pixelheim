@@ -58,6 +58,7 @@ const TABLE := [
 	{"field": "entrance", "says": "the ways in drawn as entrances in their setting on this map, by look: mine, sea_cave, mountain_gate, vault_door, ice_stair (PIX-290)"},
 	{"field": "feats", "says": "the feats done, by id, once any is (PIX-257)"},
 	{"field": "fell", "says": "bosses fallen, when one fell (PIX-232)"},
+	{"field": "finds", "says": "on the Reach: the morning's finds lying by the healed lamps, still to pick, by road: saltmere:sea_glass (PIX-324)"},
 	{"field": "fires", "says": "on a night with houses burning: how many, and what draws their fires: flames standing on what burns, smoke, sparks (none with Reduce motion) and coals (PIX-327)"},
 	{"field": "firstnight", "says": "hero creation's first night: play or skip (PIX-228)"},
 	{"field": "fled", "says": "monsters that ran from a hero far above them, when any did (PIX-251)"},
@@ -71,9 +72,11 @@ const TABLE := [
 	{"field": "hint", "says": "the first-time hint on the screen, by the id it's seen by, or held:<id> while one waits its turn (PIX-341: never over a boss's entrance)"},
 	{"field": "home", "says": "who the story brought home to live in town, by first name: wenna (PIX-255)"},
 	{"field": "hour", "says": "at the Night of Ash's dawn: the HUD's clock as it reads, its dial a sun or a moon: 04:48 sun (PIX-346)"},
+	{"field": "hub", "says": "on a hub's map: its place, the step it has grown to and what of it stands, drawn: saltmere:3:lighthouse (PIX-324)"},
 	{"field": "jobs", "says": "on the Night of Bells: the townsfolk's jobs that have acted, by kind: arrows,bell,cheese (PIX-253 step 9)"},
 	{"field": "jumps", "says": "with turning: the hero's drawn way changing more than an eighth of a turn at once, a snap round a corner (PIX-293)"},
 	{"field": "lamplight", "says": "on a map with lamps or lit windows, and in every room: its street lamps lit of all, its windows' lit glass, a room's candles burning and the day through its windows: posts 6/6 panes 12 flames 0 beams 0 (PIX-311)"},
+	{"field": "lamps", "says": "on the Reach: each lit lamp by road, its kind, how far its ring reaches once whole and whether it burns now: saltmere:sea_glass:6:lit (PIX-324)"},
 	{"field": "letters", "says": "Maren's letters in the pack, once any is out (PIX-253)"},
 	{"field": "lit", "says": "on the Night of Bells: the lanterns on the square lit (PIX-253 step 9)"},
 	{"field": "logged", "says": "with floats: the lines the battle log showed (PIX-245)"},
@@ -114,8 +117,10 @@ const TABLE := [
 	{"field": "tone", "says": "on a map in the open air: how the region's tone takes the hero's cell: whole (tone), the mire's with its murk and puddles (mire), its dirt only beside the ash (fringe), or none (PIX-305)"},
 	{"field": "top", "says": "the screen drawn on top when one is opened over another (the title's Options); two sharing the top layer read a=b"},
 	{"field": "torches", "says": "on a dungeon floor: its torches on the walls, and N loose for any not hung on a wall's face (PIX-291)"},
+	{"field": "tour", "says": "while a tour shows the town or a hub what's new: the caption at its stop (PIX-324)"},
 	{"field": "tracked", "says": "the quest or bounty followed, while the journal is open or one is (PIX-239)"},
 	{"field": "turns", "says": "with turning: the most times the way the hero is drawn changed in any one second, a flicker showing as many (PIX-293)"},
+	{"field": "visitors", "says": "on the Reach: who has come out from the village to a healed lamp, by name: Bram (PIX-324)"},
 	{"field": "water", "says": "the inland water nearest the hero, within six cells: its tone and the way it runs, as the map's water mask has them: clear west, mire still (PIX-306)"},
 	{"field": "wayout", "says": "on a dungeon's bottom floor: its ways straight out to its way in, by cell, as they opened - the door, then one where its boss fell - or none (PIX-292)"},
 	{"field": "waystations", "says": "the waystations standing on this map, by their road's place, each lit when its ember lamp burns (at night) or cold: saltmere:lit (PIX-322)"},
@@ -434,6 +439,18 @@ func field_fell() -> String:
 	return str(world.foes.bosses_fallen) if world.foes.bosses_fallen > 0 else ""
 
 
+func field_finds() -> String:
+	if world.view == null:
+		return ""
+	var out: PackedStringArray = []
+	for cell: Vector2i in world.view.patches:
+		var patch: Dictionary = world.view.patches[cell]
+		if String(patch["id"]).begins_with("lamp_find_") and Gathering.is_ready(GameState.world, patch["id"]):
+			out.append("%s:%s" % [String(patch["id"]).trim_prefix("lamp_find_"), patch["item"]])
+	out.sort()
+	return ",".join(out)
+
+
 func field_fires() -> String:
 	if world.view == null:
 		return ""
@@ -530,6 +547,18 @@ func field_hour() -> String:
 	return "%s %s" % [hud._clock_text.text, "moon" if hud._clock_dial.night else "sun"]
 
 
+func field_hub() -> String:
+	if world.map == null or world.view == null or Hubs.steps(world.map.id).is_empty():
+		return ""
+	var grown: Array = Hubs.dressing(world.map.id, GameState.post).map(func(entry: Dictionary) -> Vector2i: return entry["cell"])
+	var standing: PackedStringArray = []
+	for piece: Dictionary in world.view.hamlet["pieces"]:
+		if piece["cell"] in grown:
+			standing.append(String(piece["art"]))
+	var step := Hubs.step(GameState.post, world.map.id)
+	return "%s:%d:%s" % [world.map.id, step, "+".join(standing)] if not standing.is_empty() else "%s:%d" % [world.map.id, step]
+
+
 func field_jobs() -> String:
 	if GameState.progression.bells == Bells.NONE:
 		return ""
@@ -554,6 +583,17 @@ func field_lamplight() -> String:
 	var shown := func(nodes: Array) -> int:
 		return nodes.filter(func(node: Node) -> bool: return is_instance_valid(node) and (node as CanvasItem).visible).size()
 	return "posts %d/%d panes %d flames %d beams %d" % [lit, view.lamps.size(), shown.call(view.panes), shown.call(view.flames), shown.call(view.beams)]
+
+
+func field_lamps() -> String:
+	if world.map == null or world.view == null:
+		return ""
+	var out: PackedStringArray = []
+	for ring: Dictionary in Lamps.now(world.map.id):
+		var ember: Variant = world.view.ember_lamps.get(ring["place"])
+		var lit: bool = ember != null and is_instance_valid(ember) and (ember as Node2D).visible
+		out.append("%s:%s:%d:%s" % [ring["place"], ring["kind"], ring["reach"], "lit" if lit else "cold"])
+	return ",".join(out)
 
 
 func field_letters() -> String:
@@ -864,6 +904,13 @@ func field_torches() -> String:
 	return str(torches.size()) + (" %d loose" % loose if loose > 0 else "")
 
 
+func field_tour() -> String:
+	for node in world.get_children():
+		if node is Screen and node.get_script() != null and String(node.get_script().resource_path).ends_with("reveal_screen.gd"):
+			return node.caption.text
+	return ""
+
+
 func field_tracked() -> String:
 	var tracked := GameState.progression.tracked
 	if not screens().has("journal_screen") and tracked == "":
@@ -873,6 +920,15 @@ func field_tracked() -> String:
 
 func field_turns() -> String:
 	return noted("turns")
+
+
+func field_visitors() -> String:
+	var names: PackedStringArray = []
+	for npc: Node in world.get_tree().get_nodes_in_group("npcs"):
+		if String(npc.data.get("id", "")).begins_with("lamp_visitor_"):
+			names.append(String(npc.data["name"]))
+	names.sort()
+	return ",".join(names)
 
 
 func field_water() -> String:

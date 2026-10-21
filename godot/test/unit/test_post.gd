@@ -548,11 +548,11 @@ func test_only_what_the_hero_did_is_kept_and_it_comes_back_whole() -> void:
 	state.questing.finish_dialogue("saltmere_ola")
 	var kept: Dictionary = state.post.to_dict()
 	var text := JSON.stringify(kept, "", false)
-	assert_eq(text, '{"bag":["stew_salt","club_ola_reply"],"threads":{"cheese_club":1},"delivered":["club_ola"],"taken":0,"stamps":{"saltmere":0},"places":{"club_ola":"saltmere"},"routes":{"saltmere":{"bram":1}},"signs":{},"lit":{}}',
+	assert_eq(text, '{"bag":["stew_salt","club_ola_reply"],"threads":{"cheese_club":1},"delivered":["club_ola"],"taken":0,"stamps":{"saltmere":0},"places":{"club_ola":"saltmere"},"routes":{"saltmere":{"bram":1}},"signs":{},"lit":{},"hubs":{}}',
 		"the satchel, the threads' steps, what's delivered, the day the box was emptied, the courier's book, and the roads it went along (PIX-322)")
 	var back := PostState.from_dict(SaveCodec.parse_json(text))
 	assert_eq(JSON.stringify(back.to_dict(), "", false), text, "read back, the same")
-	assert_eq(JSON.stringify(PostState.from_dict({}).to_dict(), "", false), '{"bag":[],"threads":{},"delivered":[],"taken":-1,"stamps":{},"places":{},"routes":{},"signs":{},"lit":{}}', "a hero with no post yet")
+	assert_eq(JSON.stringify(PostState.from_dict({}).to_dict(), "", false), '{"bag":[],"threads":{},"delivered":[],"taken":-1,"stamps":{},"places":{},"routes":{},"signs":{},"lit":{},"hubs":{}}', "a hero with no post yet")
 
 
 func test_the_post_is_its_own_section_of_the_save_and_comes_back_whole() -> void:
