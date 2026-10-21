@@ -1056,6 +1056,11 @@
     "tent": {
       "x": 45,
       "y": 27
+    },
+    "wake": {
+      "x": 44,
+      "y": 27,
+      "facing": "down"
     }
   },
   "homecomings": {

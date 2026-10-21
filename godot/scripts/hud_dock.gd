@@ -127,6 +127,8 @@ func _hero() -> Control:
 	name_label.custom_minimum_size = Vector2(128, 0)
 	name_label.clip_text = true
 	name_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	# A name is the player's, never translated (PIX-347).
+	name_label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	who.add_child(name_label)
 	rank_label = UiStyle.label("", 12, UiStyle.DUSK)
 	who.add_child(rank_label)

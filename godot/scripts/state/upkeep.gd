@@ -212,15 +212,11 @@ func sleep_till_morning() -> void:
 	owner.mark_dirty()
 
 
-## Defeat is forgiving (RETURN_TO_WORLD after a loss): wake at the village
-## inn, healed, purse intact. Returns where to wake.
+## Defeat is forgiving (RETURN_TO_WORLD after a loss): wake healed, purse
+## intact but for the toll. Returns where to wake (`waking`).
 func wake_at_inn() -> Dictionary:
 	owner.settlement.bard_song = false
-	var inn: Dictionary = Catalog._data()["innRest"]
-	# With the inn still rubble, Sela's tent on the square takes them in.
-	var tent := Town.ashes_tent(Town.done_projects(owner.settlement))
-	if tent.x >= 0:
-		inn = {"mapId": "town", "x": tent.x, "y": tent.y + 1, "facing": "down"}
+	var inn := waking(owner.progression.prologue, Town.done_projects(owner.settlement))
 	owner.make_whole()
 	# A fall doesn't wake the wilds (PIX-206): what was cleared stays cleared,
 	# and what was not is still out there. A night's rest wakes them.
@@ -230,8 +226,31 @@ func wake_at_inn() -> Dictionary:
 	owner.pack.gold -= lost
 	owner.pack_changed()
 	owner.save_now()
-	if lost > 0:
-		owner.message.emit(Text.t("You wake at the inn, %d gold lighter. What isn't banked is a fallen hero's to lose.") % lost)
-	else:
-		owner.message.emit(Text.t("You wake at the inn. The innkeeper says nothing. Kind of her."))
+	owner.message.emit(wake_line(inn["woke"], lost))
 	return inn
+
+
+## Where a fall wakes (PIX-347): {mapId, x, y, facing, woke}. On the Night
+## of Ash before the gate, on the road where the night began (the courier
+## hasn't come in yet); while the inn is rubble, beside Sela's tent on the
+## square, not on it; else the inn.
+static func waking(prologue: int, done: Array) -> Dictionary:
+	if prologue == Prologue.SCAVENGER or prologue == Prologue.GATE:
+		return Prologue.start().merged({"woke": "road"})
+	if Town.ashes_tent(done).x >= 0:
+		return Town.ashes_wake().merged({"mapId": "town", "woke": "tent"})
+	return Catalog._data()["innRest"].merged({"woke": "inn"})
+
+
+## What waking says, by where (`waking`) and the gold the fall cost.
+static func wake_line(woke: String, lost: int) -> String:
+	match woke:
+		"road":
+			return Text.t("You come to on the road. Pixelheim is still burning ahead.")
+		"tent":
+			if lost > 0:
+				return Text.t("You wake beside Sela's tent, %d gold lighter. What isn't banked is a fallen hero's to lose.") % lost
+			return Text.t("You wake beside Sela's tent, your cuts bound. She has patched up worse.")
+	if lost > 0:
+		return Text.t("You wake at the inn, %d gold lighter. What isn't banked is a fallen hero's to lose.") % lost
+	return Text.t("You wake at the inn. The innkeeper says nothing. Kind of her.")

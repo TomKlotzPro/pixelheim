@@ -314,7 +314,7 @@ func salvage_gear(uid: String) -> String:
 	var parts: Array[String] = []
 	for item_id: String in back:
 		owner.pack.add_item(item_id, int(back[item_id]))
-		parts.append("%d %s" % [int(back[item_id]), Catalog.item_name(item_id)])
+		parts.append(Text.count(int(back[item_id]), Catalog.item_name(item_id)))
 	owner.pack.gear.erase(instance)
 	Economy.grant_job_xp(owner.hero.jobs, "smithing", int(Economy._data()["salvage"]["xp"]))
 	owner.pack_changed()

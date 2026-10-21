@@ -756,7 +756,7 @@ func _recipe_line(recipe_id: String) -> String:
 	var needs: Array[String] = []
 	var wants: Dictionary = recipe["needs"]
 	for item_id: String in wants:
-		needs.append("%d %s" % [int(wants[item_id]), Catalog.item_name(item_id)])
+		needs.append(Text.count(int(wants[item_id]), Catalog.item_name(item_id)))
 	var job: Dictionary = recipe["job"]
 	var station := Text.t("Vex's cauldron, Alchemy %d") if job["id"] == "alchemy" else Text.t("Hilda's forge, Smithing %d")
 	return Text.t("Recipe: %s, from %s (%s)") % [Catalog.item_name(String(recipe["itemId"])), ", ".join(needs), station % int(job["level"])]

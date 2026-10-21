@@ -84,7 +84,7 @@ func defeat_monster(fighter: Dictionary, region_id: String, spawn_id: String, fl
 			owner.settlement.house["gardenHarvests"] = harvests + 1
 			var grown := int(Town._data()["gardenCount"])
 			owner.pack.add_item(crop, grown)
-			log.append(Text.t("Your garden ripens: +%d %s.") % [grown, Catalog.item_name(crop)])
+			log.append(Text.t("Your garden ripens: %s.") % Text.count(grown, Catalog.item_name(crop)))
 	var passives := HeroRules.passives(owner.hero)
 	var gold := roundi(fighter["gold"] * (1 + passives["goldBonus"] + owner.holdings.commission_buff("gold") + owner.household.home_buff("gold")))
 	# A night in your own bed (PIX-179): more XP for a while.

@@ -184,6 +184,6 @@ static func where(quest: Dictionary, done: Variant = null) -> String:
 				if entry["itemId"] == objective["itemId"]:
 					var needs: Array[String] = []
 					for need: String in entry["needs"]:
-						needs.append("%d %s" % [entry["needs"][need], Catalog.item_name(need)])
+						needs.append(Text.count(int(entry["needs"][need]), Catalog.item_name(need)))
 					return Text.t("%s, from %s.") % [Economy.station_hint(entry["job"]["id"], done), ", ".join(needs)]
 	return ""
