@@ -116,7 +116,7 @@ func test_a_project_waits_for_its_age_then_for_its_price() -> void:
 	state.pack.gold = 100
 	assert_eq(blocker.call(), "The treasury asks 150 gold.")
 	state.pack.gold = 1000
-	assert_eq(blocker.call(), "It takes 3 Marsh Reed.")
+	assert_eq(blocker.call(), "It takes 3 × Marsh Reed.")
 	state.pack.items["marsh_reed"] = 3
 	assert_eq(blocker.call(), "")
 	assert_string_contains(Town.project_blocker("fountain", state.progression, state.settlement, 99999, {"dragon_scale": 9}), "Finish the Village")

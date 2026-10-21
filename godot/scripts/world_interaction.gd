@@ -48,6 +48,11 @@ func build_prompt() -> void:
 	# Words in the world stay readable at night (PIX-221).
 	Lights.unshade(prompt_label)
 	world.add_child(prompt_label)
+	# Gone while a conversation or screen holds the world (PIX-348: it hung
+	# over the speaker all through the talk); the world shows it again after.
+	world.child_entered_tree.connect(func(node: Node) -> void:
+		if node is Screen:
+			prompt_label.visible = false)
 
 
 func _chest_at(cell: Vector2i) -> Dictionary:

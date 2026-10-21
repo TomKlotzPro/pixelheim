@@ -73,7 +73,9 @@ func _ready() -> void:
 	# whose box is only their feet, stops a step away instead of standing half
 	# inside them (from the south the hero's sprite covered the villager's).
 	# It ends 6 px into the cell below: the hero, standing there to talk or
-	# walking past along that row, clears it by a pixel.
+	# walking past along that row, clears it by a pixel. From there the
+	# hero's head still hid a villager's feet (a Mini World one's whole
+	# lower half): they're drawn over the hero instead (stands_over).
 	var shape := CollisionShape2D.new()
 	var rect := RectangleShape2D.new()
 	rect.size = Vector2(12, 17)
@@ -115,6 +117,14 @@ var _mark_shown := ""
 var _mark_left := 0.0
 
 
+## Whether a villager at `at` is drawn over the hero at `hero` (PIX-348):
+## the hero right below them, where the hero's head hid Maren, Hessa and
+## Bram as they spoke.
+static func stands_over(at: Vector2, hero: Vector2) -> bool:
+	var below := hero - at
+	return absf(below.x) < TILE and below.y > 0.0 and below.y <= TILE * 1.5
+
+
 ## Gone for the night, or back: back means at home, wherever the evening
 ## left them.
 func set_away(gone: bool) -> void:
@@ -137,6 +147,8 @@ func place_at(at: Vector2i) -> void:
 func _process(delta: float) -> void:
 	if away:
 		return
+	if world.player != null:
+		z_index = 1 if stands_over(position, world.player.position) else 0
 	_mark_left -= delta
 	if _mark_left <= 0.0:
 		_mark_left = MARK_SECONDS

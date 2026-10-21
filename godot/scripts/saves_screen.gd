@@ -470,6 +470,8 @@ func _fill_card(card: PanelContainer, index: int) -> void:
 	top.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	lines.add_child(top)
 	var name_line := UiStyle.strong(_card_name(slot), 20, UiStyle.FADED if empty else UiStyle.INK)
+	# A hero's name is the player's, never translated (PIX-347).
+	name_line.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	name_line.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top.add_child(name_line)
 	# The hero in hand plays here; a stand-in (no hero yet, or the slot a
@@ -530,13 +532,13 @@ static func _portrait(summary: Dictionary, alpha: float) -> TextureRect:
 static func _card_name(summary: Dictionary) -> String:
 	match summary["kind"]:
 		SaveSlots.EMPTY:
-			return "Empty slot"
+			return Text.t("Empty slot")
 		SaveSlots.DAMAGED:
-			return "Damaged save"
+			return Text.t("Damaged save")
 		SaveSlots.NEWER:
-			return "Saved by a newer version"
+			return Text.t("Saved by a newer version")
 		SaveSlots.OLDER:
-			return "Saved by an older version"
+			return Text.t("Saved by an older version")
 	return summary["name"]
 
 

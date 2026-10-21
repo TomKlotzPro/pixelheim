@@ -256,3 +256,15 @@ func test_a_wins_row_is_centred_by_its_ink() -> void:
 	var row: Node2D = fx.get_child(0).get_child(0)
 	var words: Label = row.get_node("text")
 	assert_almost_eq(words.position.x + Ink.of_text(words.text, _face(), UiStyle.BODY_PX).get_center().x, 0.0, 0.5)
+
+
+## PIX-348: talking from the cell below, the hero's head hid the villager's
+## feet (a Mini World villager's whole lower half: Maren, Bram); they're
+## drawn over the hero there, and only there.
+func test_a_villager_is_drawn_over_the_hero_right_below() -> void:
+	var at := Vector2(40, 40)
+	assert_true(Npc.stands_over(at, at + Vector2(0, 15)), "stopped by their body, below")
+	assert_true(Npc.stands_over(at, at + Vector2(6, 16)), "a little to the side")
+	assert_false(Npc.stands_over(at, at + Vector2(0, -15)), "above")
+	assert_false(Npc.stands_over(at, at + Vector2(16, 0)), "beside")
+	assert_false(Npc.stands_over(at, at + Vector2(0, 32)), "two cells down")

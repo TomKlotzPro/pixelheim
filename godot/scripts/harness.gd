@@ -969,10 +969,6 @@ func _run_test_harness() -> void:
 	if flags.has("--take"):
 		# A quest taken, nothing done yet: `--take gunnar_wagon`.
 		GameState.progression.quests[flags.value("--take")] = {"progress": 0, "done": false}
-	if flags.has("--delivered"):
-		# One of Maren's letters handed over and answered (PIX-255):
-		# `--delivered letter_hale`, and Hale's order book is there to read.
-		GameState.progression.quests[flags.value("--delivered")] = {"progress": 1, "done": true}
 	if flags.has("--follow-wagon"):
 		# The hero walks beside the escort's wagon for that many seconds (PIX-192).
 		var until := GameClock.seconds() + float(flags.value("--follow-wagon"))
@@ -1303,10 +1299,12 @@ func _run_test_harness() -> void:
 		await get_tree().create_timer(float(flags.value("--wait"))).timeout
 	# `overflow` (Solid Ground): every visible piece of an open screen that
 	# runs past the canvas, as OVERFLOW lines; text that grows (French is
-	# longer) mustn't push a panel off the screen. Works headless.
+	# longer) mustn't push a panel off the screen; and every word of one on
+	# the HUD's dock, clock or quill left showing (PIX-346). Works headless.
 	if flags.has("overflow"):
 		await get_tree().process_frame
 		var overflows := Layout.overflows(get_tree().root, Touch.view_size(world))
+		overflows.append_array(Layout.over(get_tree().root, world.hud.shown()))
 		for line in overflows:
 			print("%s %s" % ["OVERFLOW", line])
 		report.note("overflow", str(overflows.size()))

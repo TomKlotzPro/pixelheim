@@ -59,6 +59,24 @@ func test_dropping_never_takes_what_is_worn() -> void:
 	assert_false(state.upkeep.drop_item("wolf_pelt"))
 
 
+## PIX-348: what can't be dropped says so on the first key, before a drop
+## asks to be sure (the worn sword asked, then refused): worn, a quest's,
+## and Sela's cap while the Night of Ash waits on it (PIX-344).
+func test_what_cant_be_dropped_is_refused_before_asking() -> void:
+	var keeps := func(row: Dictionary) -> String: return InventoryScreen.keeps(row, state.pack, state.progression)
+	var worn: Dictionary = state.pack.gear_by_uid(state.pack.equipped["weapon"])
+	assert_eq(keeps.call({"kind": "gear", "piece": worn, "item_id": worn["itemId"]}), "Take it off before you drop it.")
+	var spare := _piece("iron_sword")
+	assert_eq(keeps.call({"kind": "gear", "piece": spare, "item_id": "iron_sword"}), "")
+	assert_eq(keeps.call({"kind": "stack", "item_id": "chancellors_letter", "count": 1}), "You'd better hold on to that.")
+	assert_eq(keeps.call({"kind": "stack", "item_id": "bread", "count": 3}), "")
+	var cap := _piece("leather_cap")
+	var row := {"kind": "gear", "piece": cap, "item_id": "leather_cap"}
+	assert_eq(keeps.call(row), "", "by day, a cap like any other")
+	state.progression.prologue = Prologue.CAP
+	assert_eq(keeps.call(row), "You'd better hold on to that.", "on the night, Sela's")
+
+
 func test_potions_heal_up_to_the_cap() -> void:
 	state.pack.items["potion_hp"] = 1
 	state.hero.hp = int(state.hero.stats["maxHp"]) - 10

@@ -37,6 +37,7 @@ const TABLE := [
 	{"field": "barred", "says": "the way the story keeps shut that stopped the hero on this run: mountain or vault (PIX-257)"},
 	{"field": "bells", "says": "the Night of Bells' beat while it runs (lanterns, embers, hold, dawn), done once Fafnyr is freed (PIX-253 step 9)"},
 	{"field": "beside", "says": "with seamless: the maps drawn beside the hero's, by id, or none (PIX-269)"},
+	{"field": "book", "says": "in a room with a book drawn on a table: shut while its letter's answer waits, else open (PIX-348)"},
 	{"field": "boss", "says": "the bosses and named monsters standing on the map, each as id:what it does (alert, chase, cast, homeward, idle):its share of health, when there are any (PIX-288)"},
 	{"field": "bossbar", "says": "the boss bar across the top: its foe's share of health while it shows, or none once it has gone; on a fight or a boss's floor (PIX-288)"},
 	{"field": "burning", "says": "on the Night of Bells' embers: the roofs still burning (PIX-253 step 9)"},
@@ -71,6 +72,7 @@ const TABLE := [
 	{"field": "healed", "says": "on a map where the ash heals round a lamp: its cells at each stage past the ash, as each is drawn (Lamps.LOOKS): earth9,grass8,meadow12,grove13 (PIX-323)"},
 	{"field": "hint", "says": "the first-time hint on the screen, by the id it's seen by, or held:<id> while one waits its turn (PIX-341: never over a boss's entrance)"},
 	{"field": "home", "says": "who the story brought home to live in town, by first name: wenna (PIX-255)"},
+	{"field": "hour", "says": "at the Night of Ash's dawn: the HUD's clock as it reads, its dial a sun or a moon: 04:48 sun (PIX-346)"},
 	{"field": "hub", "says": "on a hub's map: its place, the step it has grown to and what of it stands, drawn: saltmere:3:lighthouse (PIX-324)"},
 	{"field": "jobs", "says": "on the Night of Bells: the townsfolk's jobs that have acted, by kind: arrows,bell,cheese (PIX-253 step 9)"},
 	{"field": "jumps", "says": "with turning: the hero's drawn way changing more than an eighth of a turn at once, a snap round a corner (PIX-293)"},
@@ -85,7 +87,7 @@ const TABLE := [
 	{"field": "motes", "says": "with rankup: the ascension's motes and sparks flying (PIX-244)"},
 	{"field": "music", "says": "with fled: the track playing (PIX-251)"},
 	{"field": "next", "says": "the main quest's next step, by id, once the Night of Ash is over: shield (PIX-255)"},
-	{"field": "overflow", "says": "with overflow: pieces of an open screen running off the canvas (Solid Ground)"},
+	{"field": "overflow", "says": "with overflow: pieces of an open screen running off the canvas (Solid Ground), or its words on the HUD's dock, clock or quill (PIX-346)"},
 	{"field": "packs", "says": "on a wild map: the packs standing in the hero's region, :asleep by their fire (PIX-252)"},
 	{"field": "page", "says": "the map's page, while the map is open (PIX-266)"},
 	{"field": "patches", "says": "with --day: the patches still to pick, by cell (PIX-250)"},
@@ -298,6 +300,14 @@ func field_beside() -> String:
 	var ids: Array = world.neighbours.drawn.keys()
 	ids.sort()
 	return ",".join(ids) if not ids.is_empty() else "none"
+
+
+func field_book() -> String:
+	var pieces: Array = world.view.buildings.get("art", {}).values() + world.view.buildings.get("objects", {}).values()
+	var books := pieces.filter(func(name: Variant) -> bool: return name is String and "_book" in name)
+	if books.is_empty():
+		return ""
+	return "shut" if books.any(func(name: String) -> bool: return "shut_book" in name) else "open"
 
 
 func field_boss() -> String:
@@ -537,6 +547,13 @@ func field_home() -> String:
 	if homecomers.is_empty():
 		return ""
 	return ",".join(homecomers.map(func(recruit: Dictionary) -> String: return String(recruit["id"]).get_slice("_", 1)))
+
+
+func field_hour() -> String:
+	var hud: Hud = world.hud
+	if hud.clock_plate == null or not world.get_children().any(func(node: Node) -> bool: return node.get_script() == preload("res://scripts/dawn_screen.gd")):
+		return ""
+	return "%s %s" % [hud._clock_text.text, "moon" if hud._clock_dial.night else "sun"]
 
 
 func field_hub() -> String:

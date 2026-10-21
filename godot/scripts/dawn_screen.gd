@@ -89,7 +89,9 @@ func _build() -> void:
 	lines.add_child(_bubble_text)
 	_bubble.visible = false
 	add_child(_bubble)
-	add_child(UiStyle.footer("{key:interact}  next      Esc  skip", Vector2(1010, 40)))
+	# The dawn keeps the HUD (its sky is the HUD's): the keys stand under the
+	# clock and the quill, not on them (PIX-346).
+	add_child(UiStyle.footer("{key:interact}  next      Esc  skip", Vector2(1010, 60)))
 
 
 ## 1. The camera drifts from the shrine across the town; the fires go out in
@@ -124,6 +126,10 @@ func _fires() -> void:
 			.set_delay(0.4 + (FIRES_SECONDS - 1.2) * n / maxf(1.0, order.size() - 1))
 	var sky: ColorRect = world.hud.sky_overlay
 	_flow.tween_property(sky, "color", DAWN_GREY, FIRES_SECONDS)
+	# The clock reads the dawn as the sky greys (PIX-346), on to the morning
+	# the day begins at.
+	var now: float = GameState.world.steps
+	_flow.tween_method(world.hud.update_clock, now, now + fposmod(Prologue.dawn_steps() - now, DayNight.DAY_CYCLE_STEPS), FIRES_SECONDS)
 	_flow.chain().tween_interval(0.6)
 	_flow.chain().tween_callback(_gather)
 
@@ -171,6 +177,7 @@ func _place_everyone() -> void:
 	world.player.face(Vector2.UP)
 	world.camera_rig.camera.global_position = MapView.center(Town.square())
 	world.hud.sky_overlay.color = DAWN_GREY
+	world.hud.update_clock(Prologue.dawn_steps())
 
 
 func _stand(villager: Node2D, cell: Vector2i) -> void:

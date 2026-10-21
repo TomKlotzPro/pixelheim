@@ -158,11 +158,12 @@ func sell_item(item_id: String, count := 1) -> int:
 	return price * sold
 
 
-## SELL_GEAR: never what the hero is wearing. Returns the gold earned (0 = refused).
+## SELL_GEAR: never what the hero is wearing, nor Sela's cap on the Night
+## of Ash (PIX-344). Returns the gold earned (0 = refused).
 func sell_gear(uid: String) -> int:
 	var shop_id := active_shop()
 	var instance := owner.pack.gear_by_uid(uid)
-	if shop_id == "" or instance.is_empty() or owner.pack.is_equipped(uid):
+	if shop_id == "" or instance.is_empty() or owner.pack.is_equipped(uid) or Prologue.keeps(owner.progression.prologue, instance["itemId"]):
 		return 0
 	var price := gear_pays(instance)
 	owner.pack.gold += price
@@ -313,7 +314,7 @@ func salvage_gear(uid: String) -> String:
 	var parts: Array[String] = []
 	for item_id: String in back:
 		owner.pack.add_item(item_id, int(back[item_id]))
-		parts.append("%d %s" % [int(back[item_id]), Catalog.item_name(item_id)])
+		parts.append(Text.count(int(back[item_id]), Catalog.item_name(item_id)))
 	owner.pack.gear.erase(instance)
 	Economy.grant_job_xp(owner.hero.jobs, "smithing", int(Economy._data()["salvage"]["xp"]))
 	owner.pack_changed()
