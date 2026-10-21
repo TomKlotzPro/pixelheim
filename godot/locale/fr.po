@@ -2377,6 +2377,10 @@ msgid "Begin"
 msgstr "Commencer"
 
 #: assets/data/changelog.json
+msgid "Behind the scenes: each script now names the checks it needs, the project's notes are slimmer and up to date, and every change is timed on the overworld at night, in the Deepwood and across a road out, so a slowdown is caught before it reaches you"
+msgstr "En coulisses : chaque script indique les vérifications qui le concernent, les notes du projet sont allégées et à jour, et chaque changement est chronométré sur la Marche la nuit, dans les Bois-Profonds et au passage d'une route, pour attraper un ralentissement avant qu'il ne vous atteigne"
+
+#: assets/data/changelog.json
 msgid "Behind the scenes: everything the game kept only so very old saves would still load is gone, leaving it lighter and simpler (the game isn't in beta yet)"
 msgstr "En coulisses : tout ce que le jeu gardait seulement pour charger les très vieilles sauvegardes est parti, ce qui le rend plus léger et plus simple (le jeu n'est pas encore en bêta)"
 
@@ -6259,6 +6263,10 @@ msgstr "Sous son nom, ce qu'il apporte : qui reprend le travail, le nouvel ava
 #: assets/data/changelog.json
 msgid "Under the Ashen Mountain"
 msgstr "Sous la Montagne des Cendres"
+
+#: assets/data/changelog.json
+msgid "Under the Hood"
+msgstr "Sous le capot"
 
 #: assets/data/changelog.json
 msgid "Under the hood, a test keeps the French whole: a new line can't ship in English only"
