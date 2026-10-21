@@ -600,6 +600,13 @@ func _run_test_harness() -> void:
 		# The maps beside the hero drawn and stitched first (One Reach,
 		# PIX-269), so a road out is walked over, not a door.
 		await _settled()
+	var cpu := {}
+	if flags.has("cpu"):
+		# Once the Reach is worked out ahead, early in a session: its bursts
+		# aren't what a frame costs (PIX-355).
+		while not world.neighbours.warmed():
+			await get_tree().process_frame
+		cpu = PerfProbe.clock(get_tree())
 	# After `--at` (and `seamless`), so the walk can be measured anywhere:
 	# over a line between two maps too (PIX-269).
 	if flags.has("motion"):
@@ -1272,6 +1279,8 @@ func _run_test_harness() -> void:
 	# a windowed run read it after its picture, which takes frames of its
 	# own, so its report was a few steps later than a quiet run's.
 	await get_tree().process_frame
+	if not cpu.is_empty():
+		report.note("cpu", PerfProbe.cpu(get_tree(), cpu))
 	var line := report.line()
 	# A quiet run (--headless: no window, nothing drawn) has no picture.
 	if DisplayServer.get_name() != "headless":

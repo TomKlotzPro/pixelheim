@@ -55,6 +55,12 @@ class TallyTest(unittest.TestCase):
         self.assertIn("all steady", summary)
         self.assertNotIn("| dodge |", summary, "draws= is the renderer's: a window's count isn't a change")
 
+    def test_the_machines_time_is_no_change(self):
+        timed = REPORT % 0 + " cpu=%s"
+        summary, passed = flakes.tally([run("cpu-night", report=timed % "0.91/1.17"), run("cpu-night", report=timed % "1.54/3.33")], strict=True)
+        self.assertTrue(passed)
+        self.assertNotIn("| cpu-night |", summary, "cpu= is the machine's time (PIX-355): never the same twice")
+
     def test_a_flow_that_failed_once_fails_the_hunt(self):
         summary, passed = flakes.tally([run("board"), run("board", "FAIL", why="expected open=town_hall_screen"), run("dodge")])
         self.assertFalse(passed)

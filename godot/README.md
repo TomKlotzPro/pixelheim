@@ -224,7 +224,8 @@ arrival, the place's card, a message, a second press to confirm), never the
 machine's clock, which only measuring the machine reads (`test_game_clock`
 keeps it so); and a harness run throws the same dice
 (`GameState.HARNESS_SEED`: the same loot, crits and wanderings). So a report
-is the same on every run, window or not (but `draws=`), and no flow gets a
+is the same on every run, window or not (but `draws=`, and `cpu=`, the
+machine's time), and no flow gets a
 second try: the motion flow and the festival's and the board's had one, and
 it only hid what made the first fail. A flow can ask for another pace with
 `--fps N` (the motion flow walks at 144, a fast screen's frames between the
