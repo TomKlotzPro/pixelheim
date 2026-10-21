@@ -2225,6 +2225,10 @@ msgid "After the fire the gatehouse is scorched and a tower has lost its roof; t
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "After the story the post keeps coming: Maren writes to the families every week, Morvax from his bench or his forge, and Fafnyr has opinions about cheese; the Kings' Vault's heirlooms go home to the families whose marks they carry"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Afterwards Morvax sits on his bench by the fountain and argues with Maren every day, or keeps his forge and comes down on festival days"
 msgstr ""
 
@@ -2706,6 +2710,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Doors, cave mouths and shop signs now press flush against the walls behind them, like they were built there"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Dragon Post"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5409,6 +5417,10 @@ msgid "The Deepwood is a real forest: thickets and glades, trees of mixed sizes 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Dragon Post: once the story is done, Fafnyr flies the furthest piece of each day's post himself - fast, warm, occasionally on fire"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The E prompt sits just above what it opens and never hides it"
 msgstr ""
 
@@ -6106,6 +6118,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Three new classes! The RANGER (death at a distance, poison arrows, unmatched escapes), the PALADIN (armor outside, faith inside - hits, heals and never flinches), and the NECROMANCER (everything they touch keeps dying)"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Three new feats: Every Thread Tied, Postmaster of the Reach and The Reach Lit; the Feats page now scrolls"
 msgstr ""
 
 #: assets/data/changelog.json

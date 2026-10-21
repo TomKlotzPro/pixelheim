@@ -2225,6 +2225,10 @@ msgid "After the fire the gatehouse is scorched and a tower has lost its roof; t
 msgstr "Après l'incendie, la porterie est noircie et une tour a perdu son toit ; le hameau la répare"
 
 #: assets/data/changelog.json
+msgid "After the story the post keeps coming: Maren writes to the families every week, Morvax from his bench or his forge, and Fafnyr has opinions about cheese; the Kings' Vault's heirlooms go home to the families whose marks they carry"
+msgstr "Après l'histoire, le courrier continue : Maren écrit aux familles chaque semaine, Morvax depuis son banc ou sa forge, et Fafnyr a des avis sur le fromage ; les héritages du Caveau des Rois rentrent chez les familles dont ils portent la marque"
+
+#: assets/data/changelog.json
 msgid "Afterwards Morvax sits on his bench by the fountain and argues with Maren every day, or keeps his forge and comes down on festival days"
 msgstr "Ensuite, Morvax s'assoit sur son banc près de la fontaine et se dispute chaque jour avec Maren, ou garde sa forge et descend les jours de fête"
 
@@ -2707,6 +2711,10 @@ msgstr "Les portes restent des portes : la porte du village, les maisons, les 
 #: assets/data/changelog.json
 msgid "Doors, cave mouths and shop signs now press flush against the walls behind them, like they were built there"
 msgstr "Les portes, les entrées de grottes et les enseignes sont désormais plaquées contre les murs derrière elles, comme si elles y avaient été bâties"
+
+#: assets/data/changelog.json
+msgid "Dragon Post"
+msgstr "Poste-Dragon"
 
 #: assets/data/changelog.json
 msgid "Dressed"
@@ -5409,6 +5417,10 @@ msgid "The Deepwood is a real forest: thickets and glades, trees of mixed sizes 
 msgstr "Les Bois-Profonds sont une vraie forêt : fourrés et clairières, arbres de toutes tailles aux cimes qui se mêlent, sous-bois, ombre sous la canopée et rais de soleil dans les clairières"
 
 #: assets/data/changelog.json
+msgid "The Dragon Post: once the story is done, Fafnyr flies the furthest piece of each day's post himself - fast, warm, occasionally on fire"
+msgstr "La Poste-Dragon : une fois l'histoire finie, Fafnyr porte lui-même la pièce la plus lointaine du courrier du jour - rapide, chaude, parfois en feu"
+
+#: assets/data/changelog.json
 msgid "The E prompt sits just above what it opens and never hides it"
 msgstr "Le E s'affiche juste au-dessus de ce qu'il ouvre et ne le cache plus"
 
@@ -6107,6 +6119,10 @@ msgstr "Trois morceaux chiptune : le thème de l'écran titre, la carte du mon
 #: assets/data/changelog.json
 msgid "Three new classes! The RANGER (death at a distance, poison arrows, unmatched escapes), the PALADIN (armor outside, faith inside - hits, heals and never flinches), and the NECROMANCER (everything they touch keeps dying)"
 msgstr "Trois nouvelles classes ! Le RÔDEUR (la mort à distance, des flèches empoisonnées, des fuites sans égales), le PALADIN (l'armure dehors, la foi dedans - il frappe, soigne et ne bronche jamais) et le NÉCROMANCIEN (tout ce qu'il touche n'en finit pas de mourir)"
+
+#: assets/data/changelog.json
+msgid "Three new feats: Every Thread Tied, Postmaster of the Reach and The Reach Lit; the Feats page now scrolls"
+msgstr "Trois nouveaux hauts faits : Tous les fils noués, Maître de poste de la Marche et La Marche éclairée ; la page des hauts faits défile désormais"
 
 #: assets/data/changelog.json
 msgid "Three stories to follow, letter by letter: Bram's Cheese Club, Wenna and Pell's canary, and Pip writing to the dragon. Nothing expires, so the post waits as long as you like"
