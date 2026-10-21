@@ -403,6 +403,8 @@ func talk(npc: Dictionary) -> void:
 	if not piece.is_empty():
 		npc = npc.duplicate()
 		npc["lines"] = piece["said"]
+		# Handed over at a hub it makes grow, the place shows it (PIX-324).
+		GameState.dialogue_closed.connect(func(_who: String) -> void: world.stage.after_post.call_deferred(), CONNECT_ONE_SHOT)
 		box.npc = npc
 		world.add_child(box)
 		return

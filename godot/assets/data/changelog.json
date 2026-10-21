@@ -1,6 +1,23 @@
 {
   "releases": [
     {
+      "version": "0.266.0",
+      "date": "2026-10-21",
+      "codename": "Lighter Load",
+      "notes": [
+        "The web game no longer carries its test suite: about 1.4 MB less to download before you play"
+      ]
+    },
+    {
+      "version": "0.265.0",
+      "date": "2026-10-21",
+      "codename": "Lights Along the Roads",
+      "notes": [
+        "The places you carry post to grow in three steps as their road fills, each shown with a little tour of its own: Saltmere's lighthouse mended, glazed in sea glass, then lit; a stall at the miners' camp; Mabel's tent at Greyhold become a market; a lodge with its fire lit at Gunnar's camp",
+        "Lamps take their region's colour and a gift: sea glass reaches further on the coast, frost lily heals faster on the pass, and a new grave moss lamp at the Mirefen Pass thins the fog; Aske widens every ring, and healed lamps bring a find some mornings and now and then a visitor"
+      ]
+    },
+    {
       "version": "0.264.0",
       "date": "2026-10-21",
       "codename": "New Counter",

@@ -120,12 +120,13 @@ static func ends(entry: Dictionary, progression: ProgressionState, settlement: S
 
 
 ## A piece handed over (Posting.deliver): counted toward each route it
-## travels, by who wrote it; then the signposts that go up and a waystation
-## newly offered, as lines for the log.
+## travels, by who wrote it; then the signposts that go up, a waystation
+## newly offered and a hub's new step (PIX-324, Hubs), as lines for the log.
 static func carry(post: PostState, entry: Dictionary, progression: ProgressionState, settlement: SettlementState) -> Array[String]:
 	var offered_before := {}
 	for place: String in places():
 		offered_before[place] = station_offered(post, place)
+	var grown_before := Hubs.now(post)
 	var who := String(entry.get("from", ""))
 	for place: String in ends(entry, progression, settlement):
 		tally(post, place, who, 1)
@@ -139,6 +140,7 @@ static func carry(post: PostState, entry: Dictionary, progression: ProgressionSt
 	for place: String in places():
 		if station_offered(post, place) and not offered_before[place] and not built(settlement).has(place):
 			notes.append(Text.t("A waystation for the road to %s is on the board.") % Text.mid(Catalog.place_name(place)))
+	notes.append_array(Hubs.grown_since(grown_before, post))
 	return notes
 
 
@@ -222,12 +224,29 @@ static func station_offered(post: PostState, place: String) -> bool:
 	return not station(place).is_empty() and count(post, place) >= station_at(place)
 
 
-## The route a waystation's work stands on, "" for a work that isn't one.
+## The route a waystation's work (or a lamp's of its own) stands on, "" for
+## a work that isn't one.
 static func route_of_work(work_id: String) -> String:
 	for place: String in places():
-		if String(station(place).get("work", "")) == work_id:
+		if String(lamp_of(place).get("work", "")) == work_id:
 			return place
 	return ""
+
+
+## A route's ember lamp (PIX-324): its waystation's, or one standing on its
+## own where the road leaves the Ashenreach (`lamp`: the Mirefen Pass's),
+## {work, cell, kind (Lamps.KINDS: its station's `kind`, ember when unsaid),
+## find (where a morning's find lies), visit (where a visitor stands)};
+## {} for a route with none.
+static func lamp_of(place: String) -> Dictionary:
+	var stop := station(place)
+	var lamp: Dictionary = stop if not stop.is_empty() else route(place).get("lamp", {})
+	if lamp.is_empty():
+		return {}
+	return {
+		"work": String(lamp["work"]), "cell": cell_of(lamp["lamp"] if not stop.is_empty() else lamp["at"]),
+		"kind": String(lamp.get("kind", "ember")), "find": cell_of(lamp["find"]), "visit": cell_of(lamp["visit"]),
+	}
 
 
 ## The places whose waystations stand: their works built.
@@ -272,11 +291,15 @@ static func every_waypoint(settlement: SettlementState) -> Array:
 
 
 ## Where the ember lamps burn (PIX-323 heals the land round them): each
-## built waystation's lamp, {place, mapId, cell}.
+## built waystation's lamp and each lamp of its own funded, {place, mapId,
+## cell, kind}, in the routes' order.
 static func lamps(settlement: SettlementState) -> Array[Dictionary]:
+	var done := Town.done_projects(settlement)
 	var out: Array[Dictionary] = []
-	for place: String in built(settlement):
-		out.append({"place": place, "mapId": MAP, "cell": spot(place, "lamp")})
+	for place: String in places():
+		var lamp := lamp_of(place)
+		if not lamp.is_empty() and lamp["work"] in done:
+			out.append({"place": place, "mapId": MAP, "cell": lamp["cell"], "kind": lamp["kind"]})
 	return out
 
 
@@ -304,9 +327,10 @@ static func signpost_at(map_id: String, cell: Vector2i, post: PostState) -> Stri
 # ---- What stands, and the map's gold -----------------------------------------------
 
 ## What stands for the routes on `map`: the signposts up and the waystations
-## built, each a piece on a cell of its own beside the road, and the cells
-## they block. A piece is {kind (signpost, hut, lamp, box, bench), cell,
-## cells, and its fork or place}; one that doesn't fit where the data puts
+## built (and a lamp of its own, PIX-324), each a piece on a cell of its own
+## beside the road, and the cells they block. A piece is {kind (signpost,
+## hut, lamp, box, bench), cell, cells, and its fork or place; a lamp its
+## `lamp`, Lamps.KINDS}; one that doesn't fit where the data puts
 ## it (Hamlet.fits: open ground off the roads, not `kept`, never closing a
 ## way) is left out. `open`: the cells where the hero is set down at each
 ## waystation, kept clear (nothing grows on them). Nothing anywhere but the
@@ -322,11 +346,19 @@ static func plan(map: MapData, post: PostState, settlement: SettlementState, kep
 	for fork_id: String in signposts(post):
 		var at := cell_of(fork(fork_id)["at"])
 		wanted.append({"kind": "signpost", "cell": at, "cells": [at], "fork": fork_id})
-	for place: String in built(settlement):
+	var stations := built(settlement)
+	for place: String in stations:
 		var hut := spot(place, "hut")
 		wanted.append({"kind": "hut", "cell": hut, "cells": [hut, hut + Vector2i.RIGHT], "place": place})
 		for part: String in ["lamp", "box", "bench"]:
 			wanted.append({"kind": part, "cell": spot(place, part), "cells": [spot(place, part)], "place": place})
+	# Each lamp of its kind (PIX-324), a lamp of its own among them.
+	for lamp: Dictionary in lamps(settlement):
+		if lamp["place"] not in stations:
+			wanted.append({"kind": "lamp", "cell": lamp["cell"], "cells": [lamp["cell"]], "place": lamp["place"]})
+	for piece: Dictionary in wanted:
+		if piece["kind"] == "lamp":
+			piece["lamp"] = lamp_of(piece["place"])["kind"]
 	var keep := kept.duplicate()
 	for place: String in built(settlement):
 		keep[spot(place, "arrival")] = true
