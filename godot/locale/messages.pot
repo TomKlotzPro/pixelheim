@@ -9069,7 +9069,7 @@ msgid "Aske is packing for Pixelheim: fifty years is long enough to keep one doo
 msgstr ""
 
 #: assets/data/npcs.json
-msgid "Aske keeps your lantern trimmed: it lights the dark a third further"
+msgid "Aske keeps your lantern and the Reach's ember lamps trimmed: they light the dark a third further"
 msgstr ""
 
 #: assets/data/npcs.json
@@ -9793,6 +9793,10 @@ msgid "{settler} moved in! Pixelheim is filling up again."
 msgstr ""
 
 #: assets/data/post.json
+msgid "\"An army marches on its stomach. Mine marches on my tent.\""
+msgstr ""
+
+#: assets/data/post.json
 msgid "\"Ask your cat.\" I did. The cat said yes."
 msgstr ""
 
@@ -10029,6 +10033,22 @@ msgid "A song. The club needs a song."
 msgstr ""
 
 #: assets/data/post.json
+msgid "A stall at the miners' camp, under an awning of its own."
+msgstr ""
+
+#: assets/data/post.json
+msgid "A stall beside Mabel's tent at Greyhold."
+msgstr ""
+
+#: assets/data/post.json
+msgid "A tent, two stalls and Mabel calling the prices. Greyhold calls it the Sutler's Row."
+msgstr ""
+
+#: assets/data/post.json
+msgid "A trestle at the miners' camp, ore laid out on it."
+msgstr ""
+
+#: assets/data/post.json
 msgid "A wheel of cheese in a sack. The label is in Bram's hand."
 msgstr ""
 
@@ -10101,6 +10121,14 @@ msgid "Brann"
 msgstr ""
 
 #: assets/data/post.json
+msgid "Brann calls it a shop. Dagny calls it a table."
+msgstr ""
+
+#: assets/data/post.json
+msgid "Brin says it's only a tower until it's lit. He says it every morning."
+msgstr ""
+
+#: assets/data/post.json
 msgid "Can I do cheese? Friend, I can do anything."
 msgstr ""
 
@@ -10118,6 +10146,10 @@ msgstr ""
 
 #: assets/data/post.json
 msgid "Courier, you're in the chorus. Everybody's in the chorus. That's how a club works."
+msgstr ""
+
+#: assets/data/post.json
+msgid "Crates come down the road to the miners' camp at Blackiron."
 msgstr ""
 
 #: assets/data/post.json
@@ -10185,6 +10217,14 @@ msgid "Eight shoes for two horses. Tell her I'll take apples. Wait there."
 msgstr ""
 
 #: assets/data/post.json
+msgid "Every boat in the bay saw it. So did Bram, from Pixelheim, he says."
+msgstr ""
+
+#: assets/data/post.json
+msgid "Every pane picked off the beach by Pip, who wants it known."
+msgstr ""
+
+#: assets/data/post.json
 msgid "Everyone KNOWS?"
 msgstr ""
 
@@ -10198,6 +10238,10 @@ msgstr ""
 
 #: assets/data/post.json
 msgid "Fafnyr"
+msgstr ""
+
+#: assets/data/post.json
+msgid "Fenwick has put himself in charge of the awning."
 msgstr ""
 
 #: assets/data/post.json
@@ -10473,6 +10517,10 @@ msgid "Garrick"
 msgstr ""
 
 #: assets/data/post.json
+msgid "Garrick counts them twice. The post brought more than letters."
+msgstr ""
+
+#: assets/data/post.json
 msgid "Garrick! The smith in Pixelheim wants ten!"
 msgstr ""
 
@@ -10482,6 +10530,14 @@ msgstr ""
 
 #: assets/data/post.json
 msgid "Gods help her. Hold on, courier. The canary has something to add."
+msgstr ""
+
+#: assets/data/post.json
+msgid "Gunnar says the horses chose the spot."
+msgstr ""
+
+#: assets/data/post.json
+msgid "Gunnar's lodge is open, a fire in it."
 msgstr ""
 
 #: assets/data/post.json
@@ -10541,6 +10597,10 @@ msgid "I bind wounds with them, and she brews them. We should talk. Hold on."
 msgstr ""
 
 #: assets/data/post.json
+msgid "I came out to see the light. Or to find something I put down. One of the two."
+msgstr ""
+
+#: assets/data/post.json
 msgid "I like her. Don't tell her I like her."
 msgstr ""
 
@@ -10550,6 +10610,10 @@ msgstr ""
 
 #: assets/data/post.json
 msgid "I won't tell. ...The cat knows."
+msgstr ""
+
+#: assets/data/post.json
+msgid "I'm counting the lamps. This one's mine. I counted it first."
 msgstr ""
 
 #: assets/data/post.json
@@ -10657,6 +10721,14 @@ msgid "Letter for Wren the Stablemaster"
 msgstr ""
 
 #: assets/data/post.json
+msgid "Linnea swears the stew is hers. Gunnar swears a lot."
+msgstr ""
+
+#: assets/data/post.json
+msgid "Logs from the pass, and snow on the roof by nightfall."
+msgstr ""
+
+#: assets/data/post.json
 msgid "Loras"
 msgstr ""
 
@@ -10666,6 +10738,14 @@ msgstr ""
 
 #: assets/data/post.json
 msgid "Mabel"
+msgstr ""
+
+#: assets/data/post.json
+msgid "Mabel's tent is a market now."
+msgstr ""
+
+#: assets/data/post.json
+msgid "Mabel's tent is pitched at Greyhold."
 msgstr ""
 
 #: assets/data/post.json
@@ -10753,6 +10833,10 @@ msgid "My face is always ready."
 msgstr ""
 
 #: assets/data/post.json
+msgid "My mother said the Reach was green once. I never believed her. I'll have to tell her."
+msgstr ""
+
+#: assets/data/post.json
 msgid "Never answer the first question, courier. Make them ask two."
 msgstr ""
 
@@ -10790,6 +10874,10 @@ msgstr ""
 
 #: assets/data/post.json
 msgid "One soldier. He's raising a garrison one lad at a time."
+msgstr ""
+
+#: assets/data/post.json
+msgid "Ore, ingots and coal for whoever walks in, lit till the last shift comes up."
 msgstr ""
 
 #: assets/data/post.json
@@ -10909,11 +10997,23 @@ msgid "SEALED"
 msgstr ""
 
 #: assets/data/post.json
+msgid "Saltmere's lighthouse is lit again."
+msgstr ""
+
+#: assets/data/post.json
+msgid "Saltmere's lighthouse is mended, new stones on the point."
+msgstr ""
+
+#: assets/data/post.json
 msgid "Scorched round the edges. A cat's hair is stuck in the wax."
 msgstr ""
 
 #: assets/data/post.json
 msgid "Scorched round the edges. Still warm."
+msgstr ""
+
+#: assets/data/post.json
+msgid "Sea glass in the lantern of Saltmere's lighthouse."
 msgstr ""
 
 #: assets/data/post.json
@@ -11057,6 +11157,10 @@ msgid "The club has its first member, courier. Two, with me. Three, if you count
 msgstr ""
 
 #: assets/data/post.json
+msgid "The dog has found the warm side of the lamp's post, and will not be moved."
+msgstr ""
+
+#: assets/data/post.json
 msgid "The garrison's reply for Bram"
 msgstr ""
 
@@ -11073,6 +11177,10 @@ msgid "The lads will want to thank him properly. Hold on, courier. Somebody find
 msgstr ""
 
 #: assets/data/post.json
+msgid "The lodge's walls are up at Gunnar's camp."
+msgstr ""
+
+#: assets/data/post.json
 msgid "The mine pays in iron. I sell in iron. I'll save in iron."
 msgstr ""
 
@@ -11086,6 +11194,10 @@ msgstr ""
 
 #: assets/data/post.json
 msgid "The weather! Fifty years, and she asks about the weather."
+msgstr ""
+
+#: assets/data/post.json
+msgid "Timber for a lodge at Gunnar's camp on the Frostgate."
 msgstr ""
 
 #: assets/data/post.json
@@ -11134,6 +11246,10 @@ msgstr ""
 
 #: assets/data/post.json
 msgid "Wait there. She'll want it written down properly."
+msgstr ""
+
+#: assets/data/post.json
+msgid "Walked all the way out to see it. I'd have supervised the building, if anyone had asked."
 msgstr ""
 
 #: assets/data/post.json
@@ -13941,6 +14057,14 @@ msgid "All four keepsakes home, and half the Reach in your streets: Pixelheim ca
 msgstr ""
 
 #: assets/data/town.json
+msgid "An ember lamp burns at the Mirefen Pass, grave moss in its cage: the fog thins round it."
+msgstr ""
+
+#: assets/data/town.json
+msgid "An ember lamp where the Mirefen road leaves the Reach, its cage stuffed with grave moss. The fog keeps back from it."
+msgstr ""
+
+#: assets/data/town.json
 msgid "Ashes"
 msgstr ""
 
@@ -13985,7 +14109,7 @@ msgid "Halfway along the east road to the old fort: a hut, a bench that mends yo
 msgstr ""
 
 #: assets/data/town.json
-msgid "Halfway down the road to Saltmere: a hut, a bench that mends you, a post box and an ember lamp, a shard of the mountain's warmth that never goes out. A stage to travel to."
+msgid "Halfway down the road to Saltmere: a hut, a bench that mends you, a post box and an ember lamp, a shard of the mountain's warmth that never goes out, glazed in sea glass. A stage to travel to."
 msgstr ""
 
 #: assets/data/town.json
@@ -14034,6 +14158,10 @@ msgstr ""
 
 #: assets/data/town.json
 msgid "Lanterns all the way up the mountain road. Merchants follow the light: +10% gold from every kill."
+msgstr ""
+
+#: assets/data/town.json
+msgid "Light a lamp at the Mirefen Pass"
 msgstr ""
 
 #: assets/data/town.json
@@ -14145,7 +14273,7 @@ msgid "The Frostgate road wants more post carried first"
 msgstr ""
 
 #: assets/data/town.json
-msgid "The Frostgate waystation stands under the mountain, its ember lamp lit. Gunnar says the horses won't leave it."
+msgid "The Frostgate waystation stands under the mountain, a frost lily in its ember lamp: the land round it heals twice as fast. Gunnar says the horses won't leave it."
 msgstr ""
 
 #: assets/data/town.json
@@ -14165,11 +14293,15 @@ msgid "The Lantern Walk"
 msgstr ""
 
 #: assets/data/town.json
+msgid "The Saltmere road wants its waystation first"
+msgstr ""
+
+#: assets/data/town.json
 msgid "The Saltmere road wants more post carried first"
 msgstr ""
 
 #: assets/data/town.json
-msgid "The Saltmere waystation stands halfway down the road, its ember lamp lit. Bram says he chose the bench."
+msgid "The Saltmere waystation stands halfway down the road, its ember lamp glazed in sea glass: its light carries a cell further. Bram says he chose the bench."
 msgstr ""
 
 #: assets/data/town.json
@@ -14245,7 +14377,7 @@ msgid "Two stalls on the square, and somewhere to haggle."
 msgstr ""
 
 #: assets/data/town.json
-msgid "Under the mountain on the road to the pass: a hut, a bench that mends you, a post box and an ember lamp, warm against the snow. A stage to travel to."
+msgid "Under the mountain on the road to the pass: a hut, a bench that mends you, a post box and an ember lamp with a frost lily in its cage, warm against the snow. A stage to travel to."
 msgstr ""
 
 #: assets/data/town.json
