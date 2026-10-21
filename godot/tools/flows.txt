@@ -182,6 +182,11 @@ mimic | --map mirefen mimic --wait 0.75 | map=mirefen cell=\(42, 13\) hp=42 | co
 # The mayor's word opens the town ledger; the board on the square opens it too (PIX-147).
 mayor | --map town_hall talk --keys e,e,e | open=town_hall_screen | town rooms screen
 board | --map town --at 37,22 --keys w,e | open=town_hall_screen | town quest screen
+# The ledgers open on their tables (PIX-338): the village's on the hall's
+# table opens as the mayor's word does, Mirelle's on her counting table by
+# the hall her bank.
+ledger-desk | --map town_hall --at 12,5 --keys w,e | map=town_hall open=town_hall_screen | town rooms screen
+bank-desk | --map town --settlers mirelle --at 47,15 --keys a,e | map=town open=bank_screen | town trade screen
 # A market stall in the Ashes (PIX-129).
 stall | --map town --town-tier 0 --at 35,25 --keys a,e | open=shop_screen | town trade screen
 # The prologue's road out of the village (PIX-164).

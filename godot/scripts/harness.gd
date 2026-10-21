@@ -727,10 +727,6 @@ func _run_test_harness() -> void:
 		world.camera_rig.camera.global_position = Vector2(world.map.size * world.TILE) / 2.0
 		world.camera_rig.camera.reset_smoothing()
 		await get_tree().create_timer(0.2).timeout
-	if flags.has("--settlers"):
-		# `--settlers iva,wren`: recruits already living in town.
-		for short: String in flags.list("--settlers"):
-			GameState.settlement.settlers.append("settler_" + short)
 	if flags.has("festival"):
 		# A festival day (PIX-159): the town comes back with its stalls, its
 		# barker and confetti, everyone on the square.

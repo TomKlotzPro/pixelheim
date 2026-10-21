@@ -114,7 +114,7 @@ func test_every_piece_is_shades_free_art_or_drawn_in_code() -> void:
 				"h":
 					assert_true(HamletArt.PIECES.has(where[1]), "%s: %s is HamletArt's" % [key, piece])
 				"r":
-					assert_true(RoomArt.PIECES.has(where[1]), "%s: %s is RoomArt's" % [key, piece])
+					assert_true(RoomArt.has(where[1]), "%s: %s is RoomArt's" % [key, piece])
 				_:
 					fail_test("%s: %s is on no free sheet" % [key, piece])
 	for name: String in PunyInterior.FREE_VIGNETTES:

@@ -111,7 +111,7 @@ const FREE_BARRELS := ["d:515", "d:516"]
 ## where each light's flame burns in its cell: a torch's on the wall, a
 ## lantern's glass (the candles' rule, PIX-311).
 const FREE_FIRES := ["h:forge_stack"]
-const FREE_FLAMES := {"d:16": Vector2(8, 5), "h:lantern": Vector2(8, 9)}
+const FREE_FLAMES := {"d:16": Vector2(8, 5), "h:lantern": Vector2(8, 9), "r:desk": Vector2(23.5, 2.5)}
 ## The furnished corners (interiors.json's vignettes) that have a likeness,
 ## as the vignettes are written: rows above `floorRow` hang on the back
 ## wall. Shade's dungeon torch for a wall lamp, a lantern for the candles,
@@ -141,6 +141,10 @@ const FREE_VIGNETTES := {
 	"telescope": {"floorRow": 0, "objects": [[0, 0, "r:telescope"]]},
 	"star_chart": {"floorRow": 1, "objects": [[0, 0, "r:star_chart"]]},
 	"star_globe": {"floorRow": 0, "objects": [[0, 0, "r:star_globe"]]},
+	# The ledgers on their tables (PIX-338): Hale's order book under the
+	# candle (his chair and stools have no likeness), the village's in the hall.
+	"captain_table": {"floorRow": 0, "objects": [[0, 1, "r:desk+open_book+map_dagger"]]},
+	"ledger_desk": {"floorRow": 0, "objects": [[0, 0, "r:desk+open_book+plans"]]},
 }
 
 
@@ -260,6 +264,17 @@ static func furnish(room_key: String, grid: Dictionary, reserved: Dictionary) ->
 		if out["objects"].has(cell) or out["tops"].has(cell) or art_floor.has(cell):
 			out["blocked"].append(cell)
 	return out
+
+
+## The cells the layout of `room_key` gives the vignette `name` (PIX-338:
+## the village's ledger on its table in the hall, E reads it there), with or
+## without the pack; empty when the room has none.
+static func placed(room_key: String, name: String) -> Rect2i:
+	for placement: Array in interiors()["rooms"].get(room_key, {}).get("pieces", []):
+		if placement[0] == name:
+			var piece: Dictionary = interiors()["vignettes"][name]
+			return Rect2i(int(placement[1]), int(placement[2]) - int(piece["floorRow"]), int(piece["size"][0]), int(piece["size"][1]))
+	return Rect2i()
 
 
 ## {"floor": {cell: tile}, "walls": {cell: tile} (the room's walls and
@@ -510,8 +525,10 @@ static func furnish_free(room_key: String, grid: Dictionary, reserved: Dictionar
 		for part: Array in piece["objects"]:
 			var cell := origin + Vector2i(int(part[0]), int(part[1]))
 			out["objects"][cell] = String(part[2])
-			if FREE_FLAMES.has(part[2]):
-				out["flames"].append(Vector2(cell * 16) + FREE_FLAMES[part[2]])
+			# A piece laid over a table burns where the table's candle does.
+			var lit := String(part[2]).get_slice("+", 0)
+			if FREE_FLAMES.has(lit):
+				out["flames"].append(Vector2(cell * 16) + FREE_FLAMES[lit])
 		for cell: Vector2i in cells:
 			taken[cell] = true
 			if not cells[cell]:

@@ -3645,6 +3645,10 @@ msgid "Leaves drift down through the forests, dust floats in the light of every 
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Ledgers look like ledgers: Captain Hale's order book is an open book with ruled pages, a ribbon, a quill and inkwell, his map and a dagger beside it; the town hall gets its ledger desk, Mirelle a counting table with coins and a strongbox, and the bounty board a clawed notice (Tom's playtest)"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Less text at once in a fight: the battle log shows a few lines at a time and folds repeats (+3 gold four times reads +12 gold), a fight's gold, XP and loot rise once when it's over, on one line, blows on one foe add up into one number, and the log no longer repeats what the screen already shows (Tom's playtest)"
 msgstr ""
 
@@ -5350,6 +5354,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The Deepwood is a real forest: thickets and glades, trees of mixed sizes with overlapping crowns, undergrowth, shade under the canopy and sun shafts in the clearings"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The E prompt sits just above what it opens and never hides it"
 msgstr ""
 
 #: assets/data/changelog.json

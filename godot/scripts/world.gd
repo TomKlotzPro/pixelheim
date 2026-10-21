@@ -110,6 +110,12 @@ func _ready() -> void:
 			if project_id not in done:
 				done.append(project_id)
 		GameState.settlement.projects.assign(done)
+	# `--settlers iva,wren`: recruits already living in town, before the
+	# first map is drawn (PIX-338: Mirelle's table stands by the hall).
+	for short: String in flags.list("--settlers"):
+		var id := "settler_" + short
+		if id not in GameState.settlement.settlers:
+			GameState.settlement.settlers.append(id)
 	# Harness runs skip the Night of Ash (their flows were written for the
 	# town by day) unless `--prologue N` puts them at its step N.
 	if harness:

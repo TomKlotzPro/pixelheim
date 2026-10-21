@@ -503,6 +503,13 @@ static func bank(key: String) -> Variant:
 	return _data()["bank"][key]
 
 
+## Mirelle's counting table by the hall (PIX-338): its cells, a cell wide
+## and two long, her ledger open at its head.
+static func bank_desk() -> Rect2i:
+	var at: Dictionary = bank("desk")
+	return Rect2i(int(at["x"]), int(at["y"]), 1, 2)
+
+
 ## The day's rate: Mirelle's savings pay more once her arc is done (PIX-157).
 static func savings_rate(upgraded := false) -> float:
 	return float(arc("mirelleRate")) if upgraded else float(bank("savingsRate"))
