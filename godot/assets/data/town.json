@@ -908,12 +908,12 @@
             ],
             [
               46,
-              15,
+              17,
               "flowers"
             ],
             [
               46,
-              16,
+              18,
               "flowers"
             ],
             [
@@ -1036,7 +1036,12 @@
     "expansionCost": 1000,
     "expansionRent": 2,
     "savingsCapShare": 0.1,
-    "about": "PIX-177: savings earn simple interest on what's in the pot, by whole days of the day-wheel, kept apart (it never earns interest itself) and capped at savingsCapShare of the pot; a top-up neither resets the clock nor folds the interest in."
+    "about": "PIX-177: savings earn simple interest on what's in the pot, by whole days of the day-wheel, kept apart (it never earns interest itself) and capped at savingsCapShare of the pot; a top-up neither resets the clock nor folds the interest in.",
+    "desk": {
+      "x": 46,
+      "y": 15,
+      "about": "PIX-338: Mirelle's counting table, its head here and a cell long below it, just below where she stands once settled (npcs.json's home): her ledger open on it, E there opens her bank. The City's flower beds on that side start below it."
+    }
   },
   "ashesCamp": {
     "tent": {

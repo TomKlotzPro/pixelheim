@@ -17,6 +17,8 @@ const PALETTE := {
 	"g": "4d587a", "G": "5e769e", "n": "c5ab63", "u": "4f6d96", "s": "201d2f", "t": "1f3d46",
 	"p": "c5ab63", "P": "96793f", "q": "6e5139",
 	"y": "ffffff", "Y": "fbf014", "a": "f8ac34", "r": "d5773b",
+	# A ledger's page, its ruled lines and its red ribbon (PIX-338).
+	"B": "e8e2cc", "D": "b3aa8f", "R": "c0463b",
 }
 ## The street lamp, foot on the bottom row: a stone foot, a wooden post, an
 ## iron collar, and the lantern under its little roof, its glass cold (a

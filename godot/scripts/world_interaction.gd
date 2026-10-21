@@ -6,13 +6,18 @@ extends Node
 ## set piece's words (PIX-255), the house's door and fixtures, a trade's
 ## station (a
 ## forge, an anvil, a cauldron: PIX-234), the stairs down to a cellar
-## (PIX-256), a fishing spot, the square's boards and its post box
-## (PIX-320), a waystation's bench, its post box and a signpost on a post
+## (PIX-256), a fishing spot, the square's boards, the ledgers open on
+## their desks (PIX-338) and the square's post box (PIX-320), a
+## waystation's bench, its post box and a signpost on a post
 ## road (PIX-322), then the villager beside the hero (a keeper's counter, a
 ## stall, the bank, or a talk; a piece of the post for them first). What the
 ## hero steps on is picked up (ground treasure, patches), and the prompt
 ## floats over whatever E would meet. The screens it opens, and the prompt,
 ## stand on the world as before.
+
+## How far the prompt's foot stands over what it's for (PIX-338): the bob
+## takes a pixel of it at most, so it never touches.
+const PROMPT_CLEAR := 2.0
 
 var world: Node
 ## A bucket of the well's water in hand, on the Night of Ash (PIX-197).
@@ -124,6 +129,16 @@ func interact() -> void:
 	if world.map.id == "town" and faced == Town.bounty_board():
 		world.add_child(preload("res://scripts/bounty_screen.gd").new())
 		return
+	# The ledgers lying open on their tables (PIX-338): the village's in the
+	# hall opens as the mayor's word does, Mirelle's her bank.
+	match _ledger_at(faced):
+		"hall":
+			world.add_child(preload("res://scripts/town_hall_screen.gd").new())
+			return
+		"bank":
+			world.add_child(preload("res://scripts/bank_screen.gd").new())
+			world.hud.hint("bank")
+			return
 	# And past that, once Maren's first letter is delivered, the post box
 	# (PIX-320): E takes the day's post.
 	if world.map.id == Post.box_map() and faced == Post.box_cell() and GameState.posting.is_open():
@@ -600,37 +615,99 @@ func _collect_ground_treasure(cell: Vector2i) -> void:
 ## The one interaction-prompt rule (interactionPrompt.ts): a villager beside
 ## the hero wins, then a faced unopened chest, a station (PIX-234), the
 ## water from a fishing spot, a bed or the stairs down (PIX-256), a
-## waystation's bench or post box (PIX-322); the "!" floats over their
-## head.
+## letter's answer on its table, a ledger on its desk (PIX-338), a
+## waystation's bench or post box (PIX-322); the prompt floats over them.
 func update_prompt() -> void:
 	var beside: Dictionary = world.folk.beside()
 	if not beside.is_empty():
-		_show_prompt(world.player_cell + Vector2i(beside["side"]), -18)
+		var at: Vector2i = world.player_cell + Vector2i(beside["side"])
+		_show_prompt(Rect2(Vector2(at * MapView.TILE), Vector2.ONE * MapView.TILE), at)
 		return
-	var chest := _chest_at(facing_cell())
-	var map: MapData = world.map
-	var show: bool = (
-		not chest.is_empty() and chest["look"] == "chest" and not GameState.spoils.is_opened(chest)
-	) or _fishing_here() or _station_at(facing_cell()) != "" or _bed_at(facing_cell()) or Ways.goes_down(map, facing_cell()) or map.notes.has(facing_cell()) \
-			or not Letters.reading_at(map.id, facing_cell()).is_empty() \
-			or Routes.station_with("bench", map.id, facing_cell(), GameState.settlement) != "" \
-			or Routes.station_with("box", map.id, facing_cell(), GameState.settlement) != ""
-	if show:
-		_show_prompt(facing_cell(), -12)
+	var target := _prompt_target(facing_cell())
+	if target.has_area():
+		_show_prompt(target, facing_cell())
 	else:
 		prompt_label.visible = false
 
 
-## The prompt over `cell`, its bottom `rise` pixels above the cell's top,
-## bobbing a pixel; the key read fresh (it may have been rebound).
-func _show_prompt(cell: Vector2i, rise: int) -> void:
+## What E meets facing `cell`, as the pixels it's drawn in, for the prompt
+## to stand over (PIX-338: it sat on Hale's order book); an empty rect for
+## nothing. A letter's answer is the book drawn on its table (else all it's
+## read from: a wall's tally marks), a ledger its desk (and Mirelle at the
+## head of hers: the prompt over her, as when she's spoken to); anything
+## else its cell, with the furniture over the cells above it (a forge's
+## chimney, a bed's head) and what's drawn taller than its cell (a
+## waystation's post box, its bench).
+func _prompt_target(cell: Vector2i) -> Rect2:
+	var map: MapData = world.map
+	var reading := Letters.reading_at(map.id, cell)
+	if not reading.is_empty():
+		var book: Rect2 = world.view.drawn_in(Letters.reading_rect(reading))
+		return book if book.has_area() else _pixels(Letters.reading_rect(reading))
+	var ledger := _ledger_at(cell)
+	if ledger != "":
+		var desk: Rect2i = _ledgers()[ledger]
+		return _pixels(desk.grow_side(SIDE_TOP, 1) if ledger == "bank" else desk)
+	var chest := _chest_at(cell)
+	var box := Routes.station_with("box", map.id, cell, GameState.settlement) != ""
+	var bench := Routes.station_with("bench", map.id, cell, GameState.settlement) != ""
+	var show: bool = (not chest.is_empty() and chest["look"] == "chest" and not GameState.spoils.is_opened(chest)) \
+			or _fishing_here() or _station_at(cell) != "" or _bed_at(cell) or Ways.goes_down(map, cell) or map.notes.has(cell) or box or bench
+	if not show:
+		return Rect2()
+	var top := cell
+	var over: Dictionary = world.view.buildings.get("over", {})
+	while (over.has(top) or over.has(top + Vector2i.UP)) and _tile_in_hand(top + Vector2i.UP) == _tile_in_hand(cell):
+		top += Vector2i.UP
+	var rise := 0.0
+	if box:
+		rise = HamletArt.size("post_box_full").y - MapView.TILE
+	elif bench:
+		rise = RouteArt.size("bench").y - MapView.TILE
+	var rect := _pixels(Rect2i(top, Vector2i(1, cell.y - top.y + 1)))
+	return rect.grow_side(SIDE_TOP, maxf(rise, 0.0))
+
+
+## Where the prompt `size` big stands so it never hides what it's for
+## (PIX-338): over the faced `cell`'s column, its foot PROMPT_CLEAR pixels
+## above the top of `target`, the pixels what E meets is drawn in.
+static func prompt_spot(target: Rect2, cell: Vector2i, size: Vector2) -> Vector2:
+	return Vector2(cell.x * MapView.TILE + roundf((MapView.TILE - size.x) / 2.0), target.position.y - PROMPT_CLEAR - size.y)
+
+
+static func _pixels(cells: Rect2i) -> Rect2:
+	return Rect2(Vector2(cells.position * MapView.TILE), Vector2(cells.size * MapView.TILE))
+
+
+## The prompt over `target` (prompt_spot), bobbing a pixel; the key read
+## fresh (it may have been rebound).
+func _show_prompt(target: Rect2, cell: Vector2i) -> void:
 	if prompt_label is Keycap and not prompt_label.visible:
 		(prompt_label as Keycap).show_key(_interact_key())
 		prompt_label.reset_size()
 	prompt_label.visible = true
 	var bob := roundf(sin(GameClock.msec() / 260.0)) if not GameState.settings.reduce_motion else 0.0
-	var size := prompt_label.size
-	prompt_label.position = Vector2(cell * MapView.TILE) + Vector2(roundf((MapView.TILE - size.x) / 2.0), rise - size.y + 16 + bob)
+	prompt_label.position = prompt_spot(target, cell, prompt_label.size) + Vector2(0, bob)
+
+
+## The ledgers lying open on a desk (PIX-338), by what E opens there: the
+## village's on its table in the hall ("hall"), and Mirelle's on her
+## counting table by it once she's settled ("bank"); their cells.
+func _ledgers() -> Dictionary:
+	if world.map.id == "town_hall":
+		return {"hall": PunyInterior.placed(world.map.id + world.map.variant, "ledger_desk")}
+	if world.map.id == "town" and GameState.holdings.is_settled("settler_mirelle"):
+		return {"bank": Town.bank_desk()}
+	return {}
+
+
+## Which ledger E meets facing `cell`, "" for none.
+func _ledger_at(cell: Vector2i) -> String:
+	var ledgers := _ledgers()
+	for kind: String in ledgers:
+		if (ledgers[kind] as Rect2i).has_point(cell):
+			return kind
+	return ""
 
 
 func _interact_key() -> String:

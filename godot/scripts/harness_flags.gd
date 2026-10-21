@@ -65,7 +65,7 @@ const TABLE := [
 	{"flag": "night", "takes": "", "does": "the hour at night, the night's packs out (PIX-252: on a wild map the report's packs= lists them)"},
 	{"flag": "nightfall", "takes": "", "does": "night falls while the hero looks on: only the packs whose homes are off the screen change (PIX-252)"},
 	{"flag": "overview", "takes": "", "does": "the camera frames the whole map"},
-	{"flag": "--settlers", "takes": "<ids>", "does": "recruits already living in town (iva,wren)"},
+	{"flag": "--settlers", "takes": "<ids>", "does": "recruits already living in town before the first map is drawn (iva,wren; PIX-338: mirelle and her counting table)"},
 	{"flag": "festival", "takes": "", "does": "a festival day: stalls, barker, confetti, everyone on the square (PIX-159)"},
 	{"flag": "dusk", "takes": "", "does": "evening: the town's folk on the square (PIX-159)"},
 	{"flag": "ringtoss", "takes": "", "does": "the festival's ring toss"},
