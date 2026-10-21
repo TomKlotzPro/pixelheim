@@ -93,6 +93,18 @@ const DRAWINGS := {
 		".DLDLD.",
 		"..DGD..",
 	],
+	# A sapling where the ash healed round a lamp (PIX-323): a young crown lit
+	# from the top left on a thin stem, grass at its foot.
+	"sapling": [
+		"..BL...",
+		".LBLM..",
+		"LMLGLM.",
+		".GMGMg.",
+		"..gTg..",
+		"...T...",
+		"..DTL..",
+		".D.D.D.",
+	],
 	# The Ash's (PIX-308): grass burnt to black stubble, its tips gone to
 	# ash; charcoal; pale stones of ash; and cinders, a dark crust round a
 	# glowing heart (on MapView's ember layer, which makes them glow).

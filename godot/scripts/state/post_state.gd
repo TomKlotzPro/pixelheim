@@ -11,7 +11,9 @@ extends Resource
 ## and the place each piece was delivered at (a settler's old letters stay
 ## on the page of where they lived then); and the routes (PIX-322): what
 ## each has carried, by who wrote it, and whom each fork's signpost is
-## named after (named the day it went up, it keeps its name).
+## named after (named the day it went up, it keeps its name); and the day
+## each waystation's ember lamp was lit (PIX-323: the land heals round it
+## from the mornings since).
 
 ## The pieces in the satchel, by id, in the order they came.
 var bag: Array[String] = []
@@ -31,6 +33,9 @@ var places := {}
 var routes := {}
 ## A fork whose signpost stands -> the correspondent it's named after.
 var signs := {}
+## A waystation's route (by its place) -> the day its ember lamp was lit
+## (Gathering.day_of).
+var lit := {}
 
 
 static func from_dict(data: Dictionary) -> PostState:
@@ -56,6 +61,9 @@ static func from_dict(data: Dictionary) -> PostState:
 	var named: Dictionary = data.get("signs", {})
 	for fork_id: String in named:
 		post.signs[fork_id] = String(named[fork_id])
+	var lamps: Dictionary = data.get("lit", {})
+	for place: String in lamps:
+		post.lit[place] = int(lamps[place])
 	return post
 
 
@@ -64,13 +72,14 @@ func to_dict() -> Dictionary:
 	return {
 		"bag": bag.duplicate(), "threads": threads.duplicate(), "delivered": delivered.duplicate(), "taken": taken,
 		"stamps": stamps.duplicate(), "places": places.duplicate(), "routes": routes.duplicate(true), "signs": signs.duplicate(),
+		"lit": lit.duplicate(),
 	}
 
 
 ## Whether nothing has happened yet: no piece taken or delivered, the box
 ## never emptied (the save leaves the section out).
 func is_empty() -> bool:
-	return bag.is_empty() and threads.is_empty() and delivered.is_empty() and taken < 0 and stamps.is_empty() and routes.is_empty() and signs.is_empty()
+	return bag.is_empty() and threads.is_empty() and delivered.is_empty() and taken < 0 and stamps.is_empty() and routes.is_empty() and signs.is_empty() and lit.is_empty()
 
 
 ## How far thread `thread_id` has come: its pieces delivered.

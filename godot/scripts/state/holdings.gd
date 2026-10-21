@@ -103,6 +103,11 @@ func fund_work(work_id: String) -> String:
 	# Kept with the projects, so a save from before them keeps the ages its
 	# tier had reached (done_projects).
 	owner.settlement.projects.assign(Town.done_projects(owner.settlement) + [work_id])
+	# A waystation's ember lamp is lit today: the land heals round it from
+	# tomorrow morning (PIX-323, Lamps).
+	var place := Routes.route_of_work(work_id)
+	if place != "":
+		owner.post.lit[place] = Gathering.day_of(owner.world.steps)
 	owner.pack_changed()
 	owner.settlers_changed.emit()
 	owner.save_now()

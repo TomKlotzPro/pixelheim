@@ -39,6 +39,12 @@ const DETAIL := {
 	# The Ash (PIX-308): burnt tufts, charcoal, pale stones of ash, and
 	# cinders that glow (MapView lays them on a layer of their own).
 	"ash": [11, ["burnt_tuft", "burnt_tuft", "charcoal", "ash_stones", "cinders", "cinders"]],
+	# The ash healed round a lamp (PIX-323, Lamps.LOOKS): the bare earth's
+	# first shoots; then, denser than any field on purpose, a few cells of
+	# meadow in flower and a grove of saplings by the lamp.
+	"earth": [12, ["tuft_small", "tuft_small", "pebbles", "twig"]],
+	"meadow": [40, ["flowers_white", "flowers_yellow", "flowers_red", "flowers_blue", "clover", "tuft"]],
+	"grove": [70, ["sapling", "sapling", "sapling", "sapling", "flowers_yellow", "flowers_white", "tuft"]],
 }
 
 

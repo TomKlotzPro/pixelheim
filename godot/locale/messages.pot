@@ -3317,6 +3317,10 @@ msgid "Green Fields"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Green Rings"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Green Thumbs"
 msgstr ""
 
@@ -5722,6 +5726,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The land got lived-in: a fenced sheep pen, flower meadows, kitchen gardens behind the cottages, and a walled orchard behind the player's house"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The land heals round the lamps: each morning a lit waystation lamp's ring reaches one cell further into the ash, from bare earth at its edge to grass, flowers and saplings by the lamp, up to five cells; no night pack rises inside a ring, and the Ash's heat and embers fade over healed ground"
 msgstr ""
 
 #: assets/data/changelog.json
