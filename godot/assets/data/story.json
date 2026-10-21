@@ -999,7 +999,7 @@
   ],
   "readings": [
     {
-      "about": "PIX-253 step 8: Morvax's forge. Fifty years of tally marks on the back wall (`rect`, the wall cells E reads them from; `look`, MapView draws them), a stroke for every lamp he counted in the valley below. Read once into the story ledger (`sceneId`), `again` after.",
+      "about": "PIX-253 step 8: Morvax's forge. Fifty years of tally marks on the back wall (`rect`, the wall cells E reads them from; `look`, MapView draws them), a stroke for every lamp he counted in the valley below. Read once into the story ledger (`sceneId`), `again` after; once the courier has lit an ember lamp, `counted` instead, with Morvax's count of them (PIX-325, progression.json's home.count).",
       "sceneId": "morvax_tally",
       "mapId": "morvax_forge",
       "rect": [
@@ -1015,7 +1015,8 @@
         "(Twelve lamps, the first year. Thirty-one, in a good one. The newest row, still being added to, says forty.)",
         "(Beside the last mark, smaller: \"New one by the bridge. Crooked. Tell her.\")"
       ],
-      "again": "Fifty years of tally marks, a stroke for every lamp lit in the valley. The newest row says forty."
+      "again": "Fifty years of tally marks, a stroke for every lamp lit in the valley. The newest row says forty.",
+      "counted": "(Fresh red strokes after the newest row, and under them, in his cramped hand: \"%s\")"
     }
   ]
 }

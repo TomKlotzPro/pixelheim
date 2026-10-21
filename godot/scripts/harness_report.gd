@@ -88,6 +88,7 @@ const TABLE := [
 	{"field": "patches", "says": "with --day: the patches still to pick, by cell (PIX-250)"},
 	{"field": "pauseline", "says": "the pause menu's line under its title while it's open: when the game last saved, Saved 12 s ago (PIX-302 step 4)"},
 	{"field": "post", "says": "once the Pixelheim Post is open: standing when its box is drawn on this map, then the pieces in the box this morning, in the satchel and delivered, and while the map is open the addressees it marks on its page: standing,box:0,bag:2,sent:1,marked:1 (PIX-320)"},
+	{"field": "posthouse", "says": "on the square once the post house is built: standing when it's drawn behind the box (PIX-325)"},
 	{"field": "quill", "says": "the quill by the clock: the times it wrote of the saves made this session (moments write, the quiet autosaves don't), and slept when the last was a night's sleep, Saved under it: 1/3 slept (PIX-302 step 4)"},
 	{"field": "read", "says": "on the journal's Letters page: the letters it reads (PIX-253)"},
 	{"field": "rise", "says": "with --rise: how far the building on the tour has risen: ruin, rising, built (PIX-264)"},
@@ -108,6 +109,7 @@ const TABLE := [
 	{"field": "street", "says": "the street under the hero: the paving its age lays (gravel, cobbles, sandstone, bricks, flags; drawn with the paid art, bare dirt without), or worn on a rutted road (PIX-307)"},
 	{"field": "tab", "says": "with station: the tab the counter opened on (PIX-234)"},
 	{"field": "tags", "says": "after a fight on this visit: the most foes' level tags shown at once while it was on (PIX-340: one a pack)"},
+	{"field": "tally", "says": "on Morvax's forge: the red strokes after his wall's newest row, one for each of the courier's ember lamps: fresh:4 (PIX-325)"},
 	{"field": "titleline", "says": "the title's line under its menu, by what it's about: slot (the slot in hand: unreadable, or its hero the save before, PIX-303) or full (New Game with no slot free, PIX-316)"},
 	{"field": "toast", "says": "the battle log's line on the screen (PIX-343): its boxes, their lines, and fits, or what's wrong: off (the screen), tracker (on the objective's line), dock, plate (the message plate up too), arrow (the quest arrow drawn over it): 1 box, 1 line, fits"},
 	{"field": "tone", "says": "on a map in the open air: how the region's tone takes the hero's cell: whole (tone), the mire's with its murk and puddles (mire), its dirt only beside the ash (fringe), or none (PIX-305)"},
@@ -647,6 +649,10 @@ func field_post() -> String:
 	return ("standing," + counts) if world.view.post_box != null and is_instance_valid(world.view.post_box) else counts
 
 
+func field_posthouse() -> String:
+	return "standing" if world.view.post_house != null and is_instance_valid(world.view.post_house) else ""
+
+
 func field_quill() -> String:
 	var quill: Hud.Quill = world.hud.quill
 	return "%d/%d%s" % [quill.writes, GameState.saves_made, " slept" if quill.slept else ""]
@@ -786,6 +792,11 @@ func field_tab() -> String:
 
 func field_tags() -> String:
 	return str(world.foes.most_tags) if world.foes.kills > 0 else ""
+
+
+func field_tally() -> String:
+	var marks: Variant = world.view.tally_marks
+	return "fresh:%d" % marks.fresh if marks != null and is_instance_valid(marks) else ""
 
 
 func field_titleline() -> String:

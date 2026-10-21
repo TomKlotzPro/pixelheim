@@ -90,7 +90,7 @@ static func region_name(waypoint: Dictionary, map: MapData) -> String:
 	var region := region_of(waypoint, map)
 	if region == "" or not Atlas.names_regions(map):
 		return ""
-	return Atlas.region_title(region)
+	return Atlas.region_title(region, map)
 
 
 ## How many pixels the ring has grown `elapsed` ms after its waypoint was

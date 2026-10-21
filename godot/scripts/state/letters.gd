@@ -277,11 +277,16 @@ static func reads_now(entry: Dictionary, progression: ProgressionState) -> bool:
 
 
 ## What it says: shut until its letter is delivered, its lines the first
-## time it's read, a short word after.
-static func reading_lines(entry: Dictionary, progression: ProgressionState) -> Array:
+## time it's read, a short word after: on Morvax's wall, once the courier
+## has `lamps` ember lamps lit, his count of them (PIX-325).
+static func reading_lines(entry: Dictionary, progression: ProgressionState, lamps := 0) -> Array:
 	if not _open(entry, progression):
 		return [String(entry["shut"])]
-	return entry["lines"] if reads_now(entry, progression) else [String(entry["again"])]
+	if reads_now(entry, progression):
+		return entry["lines"]
+	if lamps > 0 and entry.has("counted"):
+		return [String(entry["counted"]) % Homecoming.count_line(lamps)]
+	return [String(entry["again"])]
 
 
 static func _open(entry: Dictionary, progression: ProgressionState) -> bool:

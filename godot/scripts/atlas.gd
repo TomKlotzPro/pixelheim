@@ -211,9 +211,11 @@ static func names_regions(map: MapData) -> bool:
 
 
 ## A region's name as a line of its own ("The Ash Fields", « Les Champs de
-## Cendres »: the data writes them for mid-sentence), or "".
-static func region_title(region: String) -> String:
-	var name := String(Bestiary.region(region).get("name", ""))
+## Cendres »: the data writes them for mid-sentence), or "". On `map`, the
+## name it has come to as its ash heals round the lamps (PIX-325: the
+## Greening, the Lantern Meadows).
+static func region_title(region: String, map: MapData = null) -> String:
+	var name := Lamps.region_name(Bestiary.region(region), Lamps.healed_on(map) if map != null else 0)
 	return name.left(1).to_upper() + name.substr(1)
 
 
@@ -289,7 +291,7 @@ static func labels(map: MapData, seen: Dictionary, drawn: Array = []) -> Array[D
 	regions.sort()
 	for region: String in regions:
 		if int(counts[region]) >= REGION_SEEN:
-			out.append({"text": region_title(region), "at": sums[region] / counts[region] + Vector2(0.5, 0.5), "way": false})
+			out.append({"text": region_title(region, map), "at": sums[region] / counts[region] + Vector2(0.5, 0.5), "way": false})
 	return out
 
 

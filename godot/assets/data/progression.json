@@ -2027,6 +2027,16 @@
       "I'll tell the three all about it tonight. Tam always asks about the cheese."
     ],
     "marenStay": "He comes down on festival days. I save him a slice of pie and a fresh argument.",
+    "count": {
+      "about": "PIX-325: Morvax keeps count of the courier's lamps every night on his forge wall, on top of the village's forty and the crooked one by the bridge: `lines` by how many ember lamps the courier has lit (Routes.lamps), the first for one, the last for that many and more. The wall says it under its newest row (story.json's tally reading, `counted`), and after the story he says it where he stands: after the day's argument on his bench, or at his forge in place of the forty-one he stopped at.",
+      "lines": [
+        "Forty-two. Forty-one, and a new one out on the road. Crooked. That's yours, isn't it.",
+        "Forty-three. Two out on the roads now, both crooked. I'd know your lamps anywhere.",
+        "Forty-four. I've had to start a new row. Fifty years, and I never once started a new row in the middle of a year.",
+        "Forty-five. A light on every road out of the village. Fifty years I watched them go out, one by one. ...Don't tell Maren I said anything.",
+        "More than I've got wall for. I've started on the door. All crooked, and all yours, aren't they."
+      ]
+    },
     "answered": {
       "home": "Morvax read it twice, and came home.",
       "stay": "Morvax read it, and keeps the three company now, at peace. He comes down on festival days."

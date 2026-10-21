@@ -158,11 +158,14 @@ static func work(work_id: String) -> Dictionary:
 
 ## Whether a work is offered yet: its `needs` (a main quest step) met, and
 ## a waystation's `route` (PIX-322) having carried enough of the Post's
-## post (`post`, the hero's; none: not yet).
+## post (`post`, the hero's; none: not yet), and the post house's
+## `stations` (PIX-325) built along the roads.
 static func work_offered(work_id: String, progression: ProgressionState, settlement: SettlementState, post: PostState = null) -> bool:
 	var entry := work(work_id)
 	if entry.has("route"):
 		return post != null and Routes.station_offered(post, String(entry["route"]))
+	if entry.has("stations"):
+		return Routes.built(settlement).size() >= int(entry["stations"])
 	var needs := String(entry.get("needs", ""))
 	return needs == "" or MainQuest.is_met(MainQuest.step(needs), progression, settlement)
 

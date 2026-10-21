@@ -108,6 +108,33 @@ static func healed(grid: Dictionary, rings: Array[Dictionary]) -> Dictionary:
 	return out
 
 
+## What the map calls a wild region as the land round the lamps heals
+## (PIX-325): the last of its `renamed` names (combat.json's regions) whose
+## `healed` cells have healed, its own name before any: the Ash Fields,
+## then the Greening, then the Lantern Meadows.
+static func region_name(region: Dictionary, healed_cells: int) -> String:
+	var name := String(region.get("name", ""))
+	for entry: Dictionary in region.get("renamed", []):
+		if healed_cells >= int(entry["healed"]):
+			name = String(entry["name"])
+	return name
+
+
+## The last count of healed cells, by the map and its rings today.
+static var _counted := {}
+
+
+## How many of `map`'s ash cells have healed round its lamps today: worked
+## out again only when the day or the lamps change, not each time a name is
+## asked (the place's card asks as the hero walks).
+static func healed_on(map: MapData) -> int:
+	var rings := now(map.id)
+	var key := str([map.id, rings])
+	if not _counted.has(key):
+		_counted = {key: healed(map.grid, rings).size()}
+	return int(_counted[key])
+
+
 ## The lamps among `cells` that carry a light of their own, in order: each
 ## at least LIGHT_APART cells from every one lit before it.
 static func lit_among(cells: Array[Vector2i]) -> Array[Vector2i]:

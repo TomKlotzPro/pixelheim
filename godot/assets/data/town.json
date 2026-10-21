@@ -1142,7 +1142,7 @@
     }
   },
   "works": {
-    "about": "PIX-254: works out on the Reach's roads, on the board beside the age's projects once the story offers them (`needs`, a main quest step, with `line` said until then), and not part of any age: built, they open their `gate` (Gates), and while that gate stands open anyway (a hero already past it) they aren't offered. The river bridge burned on the Night of Ash; Old Wenna sends Brin's best rope with her answer. A waystation (PIX-322) names its post `route` instead (post.json's routes): offered once that route has carried enough post (`line` said until then), built it stands halfway along the route, its ember lamp lit.",
+    "about": "PIX-254: works out on the Reach's roads, on the board beside the age's projects once the story offers them (`needs`, a main quest step, with `line` said until then), and not part of any age: built, they open their `gate` (Gates), and while that gate stands open anyway (a hero already past it) they aren't offered. The river bridge burned on the Night of Ash; Old Wenna sends Brin's best rope with her answer. A waystation (PIX-322) names its post `route` instead (post.json's routes): offered once that route has carried enough post (`line` said until then), built it stands halfway along the route, its ember lamp lit. The post house (PIX-325) asks `stations` waystations built first; built, it stands on the square behind the post box, and the box holds post.json's `house.bag` pieces a morning.",
     "list": [
       {
         "id": "river_bridge",
@@ -1204,6 +1204,18 @@
         },
         "line": "The Frostgate road wants more post carried first",
         "built": "The Frostgate waystation stands under the mountain, its ember lamp lit. Gunnar says the horses won't leave it."
+      },
+      {
+        "id": "post_house",
+        "stations": 1,
+        "name": "Build the post house",
+        "blurb": "A post house on the square, behind the box: Wren's riders bring the Reach's post in at dawn, five pieces a morning, and Pip keeps a loft of doves under its roof.",
+        "cost": {
+          "gold": 400,
+          "items": {"marsh_reed": 3, "wolf_pelt": 2}
+        },
+        "line": "The Post wants a waystation on its roads first",
+        "built": "The post house stands on the square. Wren's riders bring five pieces in each dawn, and Pip is in charge of the doves. The doves have not been told."
       }
     ]
   },
