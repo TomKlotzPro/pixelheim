@@ -1266,8 +1266,10 @@ func _run_test_harness() -> void:
 	if not flags.has("talk") and not flags.has("--talk-to") and not flags.has("title"):
 		await _keys(flags)
 	# `--then-walk r,u`: steps taken once all that is done (PIX-292: a boss
-	# down, straight out by its way out).
+	# down, straight out by its way out, once it has risen: PIX-339).
 	if flags.has("--then-walk"):
+		while world.delve.stair() in ["waiting", "cracking", "sinking"]:
+			await get_tree().create_timer(0.1).timeout
 		await _walk(flags.list("--then-walk"))
 	# `--dawn-beat N`: the Night of Ash's dawn (PIX-197) jumped to beat N.
 	if flags.has("--dawn-beat"):

@@ -5973,6 +5973,10 @@ msgid "The water cleared: translucent shallows over the riverbed, and a lip of f
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The way out after a boss no longer just pops up: once the body and the loot have gone, the floor cracks where the boss fell, the ground shakes, dust rises and a stair forms out of daylight with a rumble, a crack of stone and a gust of air; Reduce motion keeps it to a fade (Tom's playtest)"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The waypoint list shows every waypoint under its place, greys the ones not found yet, and names the region where you land"
 msgstr ""
 
@@ -6254,6 +6258,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Water comes alive: it swells with light, glints here and there, foam laps along every shore, and what stands on a bank is mirrored in it"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Way Up"
 msgstr ""
 
 #: assets/data/changelog.json

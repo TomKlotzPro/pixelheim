@@ -1607,7 +1607,14 @@ func light_way_out(cell: Vector2i) -> void:
 	var lamp := Lights.make(center(cell) + spill, WAY_OUT_GLOW, Lights.WAY_OUT, Lights.WAY_OUT_ENERGY)
 	lamp.set_meta("pulse", true)
 	props.add_child(lamp)
-	door_signs.append({"door": cell, "name": Text.t("Way out"), "about": String(door.get("sign", "")), "node": null, "over": WAY_OUT_PLATE})
+	sign_way_out(cell)
+
+
+## A way out's plate as the hero comes near (PIX-292): "Way out", and where
+## it leads; a stair rising where a boss fell (StairRise) gets it once open.
+func sign_way_out(cell: Vector2i) -> void:
+	var about := String(Depths.shortcut_on(data.id).get("sign", ""))
+	door_signs.append({"door": cell, "name": Text.t("Way out"), "about": about, "node": null, "over": WAY_OUT_PLATE})
 
 
 ## Chests and terrain decor live in the y-sorted actors layer: units of the

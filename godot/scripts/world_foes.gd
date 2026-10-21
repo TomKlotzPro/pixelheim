@@ -474,8 +474,9 @@ func on_enemy_died(enemy: Node) -> void:
 	if enemy.fighter.has("named"):
 		Sound.play("bounty")
 		# A region dungeon's boss down: its shortcut out opens (PIX-255), and
-		# a way out where it fell when that's far from it (PIX-292).
-		world.delve.open_shortcut(Vector2i((enemy.position / MapView.TILE).floor()))
+		# a way out where it fell when that's far from it (PIX-292), once it
+		# has finished falling (PIX-339).
+		world.delve.open_shortcut(Vector2i((enemy.position / MapView.TILE).floor()), enemy)
 	if GameState.pack.gear.size() > gear_before:
 		Sound.play("drop")
 	if cleared != "":

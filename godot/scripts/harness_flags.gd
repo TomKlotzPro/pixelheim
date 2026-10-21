@@ -61,7 +61,7 @@ const TABLE := [
 	{"flag": "turning", "takes": "", "does": "the turning walk (PIX-293): keys held through turns - down then right holding both a moment, up then left, down then right with no overlap, a diagonal let go of one key, a stick wobbling near a diagonal's edge - the way the hero is drawn read every tick; the report adds turns= and jumps= (no window needed)"},
 	{"flag": "--walk", "takes": "<l,d,r,u>", "does": "scripted steps, a fifth of a second each"},
 	{"flag": "crossing", "takes": "", "does": "with --walk: each frame of the walk timed, its work (physics to drawing) and its length; a CROSSING line with the most and the 99th percentile, the report adds frames= (PIX-269)"},
-	{"flag": "--then-walk", "takes": "<l,d,r,u>", "does": "scripted steps as --walk's, once the fight and --keys are done (PIX-292: a boss down, straight out by its way out)"},
+	{"flag": "--then-walk", "takes": "<l,d,r,u>", "does": "scripted steps as --walk's, once the fight and --keys are done and a way out rising where a boss fell has opened (PIX-292: a boss down, straight out by its way out; PIX-339)"},
 	{"flag": "night", "takes": "", "does": "the hour at night, the night's packs out (PIX-252: on a wild map the report's packs= lists them)"},
 	{"flag": "nightfall", "takes": "", "does": "night falls while the hero looks on: only the packs whose homes are off the screen change (PIX-252)"},
 	{"flag": "overview", "takes": "", "does": "the camera frames the whole map"},

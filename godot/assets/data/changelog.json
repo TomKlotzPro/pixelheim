@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.263.0",
+      "date": "2026-10-21",
+      "codename": "Way Up",
+      "notes": [
+        "The way out after a boss no longer just pops up: once the body and the loot have gone, the floor cracks where the boss fell, the ground shakes, dust rises and a stair forms out of daylight with a rumble, a crack of stone and a gust of air; Reduce motion keeps it to a fade (Tom's playtest)"
+      ]
+    },
+    {
       "version": "0.262.0",
       "date": "2026-10-21",
       "codename": "Green Rings",

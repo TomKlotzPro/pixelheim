@@ -18,7 +18,7 @@ func test_every_rendered_sound_is_shipped() -> void:
 		for index in doc["ambience"][place].size():
 			for variant in int(doc["ambience"][place][index]["variants"]):
 				assert_true(ResourceLoader.exists("res://assets/audio/ambience/%s_%d_%d.wav" % [place, index, variant]))
-	assert_eq(doc["stingers"].size(), 21, "the web's 17 SFX, then the dodge, the roar and the bounty (PIX-158), and Teo's bell (PIX-253 step 9)")
+	assert_eq(doc["stingers"].size(), 22, "the web's 17 SFX, then the dodge, the roar and the bounty (PIX-158), Teo's bell (PIX-253 step 9), and a way out rising where a boss fell (PIX-339)")
 	assert_eq(doc["tracks"].size(), 10)
 
 

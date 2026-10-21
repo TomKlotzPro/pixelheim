@@ -7,9 +7,13 @@ extends GutTest
 ## takes it down at once. PIX-292: « Porte de sortie direct après un boss » -
 ## a boss that falls more than a few steps from its door opens a way out
 ## right where it fell, straight out to the dungeon's way in, and the arrow
-## points out by the nearest way out, not back up the stairs.
+## points out by the nearest way out, not back up the stairs. PIX-339:
+## « ça fait bizarre de tuer un boss et qu'un escalier pop » - that way out
+## rises out of the floor once the boss has finished falling (StairRise),
+## its cracks on the floor round it, and opens only as it ends.
 
 const BossBarScript := preload("res://scripts/boss_bar.gd")
+const GameStateScript := preload("res://scripts/state/game_state.gd")
 ## Each region dungeon's bottom floor and its boss.
 const BOTTOMS := {
 	"seacave_grotto": "tidecaller", "shafts_blackseam": "seam_warden",
@@ -183,3 +187,90 @@ func test_the_arrow_points_out_by_the_nearest_way_out() -> void:
 	assert_eq(Depths.way_out_toward(map, "", hero), Depths.NOWHERE, "nowhere to go")
 	var cellars := _opened("cellars_hall")
 	assert_eq(Depths.way_out_toward(cellars, "cellars", Vector2i(28, 8)), Vector2i(30, 3), "the cellars' first floor is where the north stair leads")
+
+
+## Where each bottom floor's boss fell in its lair: its way out's cell.
+func _lair_way_out(map: MapData, map_id: String) -> Vector2i:
+	var lair: Dictionary = Hunts.named(BOTTOMS[map_id])["lair"]
+	return Depths.way_out_cell(map, Vector2i(int(lair["x"]), int(lair["y"])))
+
+
+func _rising(map: MapData, cell: Vector2i) -> StairRise:
+	var rise := StairRise.new()
+	rise.map = map
+	rise.cell = cell
+	rise.still = false
+	add_child_autofree(rise)
+	return rise
+
+
+func test_the_way_out_rises_and_opens_only_as_it_ends() -> void:
+	for map_id: String in BOTTOMS:
+		var map := _opened(map_id)
+		var door := Depths.shortcut_on(map_id)
+		var cell := _lair_way_out(map, map_id)
+		var rise := _rising(map, cell)
+		watch_signals(rise)
+		rise._process(StairRise.CRACK_S / 2.0)
+		assert_eq(rise.phase(), "cracking", map_id + ": the floor cracks first")
+		rise._process(StairRise.CRACK_S)
+		assert_eq(rise.phase(), "sinking", map_id + ": then the slabs give")
+		assert_signal_emit_count(rise, "sinking", 1, map_id)
+		assert_false(map.portals.has(cell), map_id + ": no way yet while it rises")
+		assert_eq(Depths.exits(map), [door["cell"]] as Array[Vector2i], map_id + ": the door alone")
+		rise._process(StairRise.SINK_S)
+		assert_eq(rise.phase(), "open", map_id)
+		assert_eq(map.portals.get(cell), door["to"], map_id + ": straight out to the way in once risen")
+		assert_eq(map.pieces[cell], PunyDungeon.STAIRS, map_id + ": a stair up")
+		assert_eq(Depths.exits(map), [door["cell"], cell] as Array[Vector2i], map_id + ": the door, then the way out")
+		rise._process(1.0)
+		assert_signal_emit_count(rise, "risen", 1, map_id + ": opened once")
+
+
+func test_with_reduce_motion_its_cracks_are_there_at_once() -> void:
+	var map := _opened("seacave_grotto")
+	var rise := _rising(map, _lair_way_out(map, "seacave_grotto"))
+	rise.still = true
+	rise._process(0.01)
+	assert_eq(rise._shown, rise._cracks.size())
+
+
+func test_its_cracks_run_out_over_the_floor_round_it_never_the_rock() -> void:
+	for map_id: String in BOTTOMS:
+		var map := _opened(map_id)
+		var cell := _lair_way_out(map, map_id)
+		var cracks := StairRise.cracks(map, cell)
+		assert_eq(StairRise.cracks(map, cell), cracks, map_id + ": the same each time")
+		var middle := Vector2(MapView.TILE, MapView.TILE) / 2.0
+		var beyond := 0
+		for i in cracks.size():
+			var on := cell + Vector2i((Vector2(cracks[i]) / MapView.TILE).floor())
+			if on != cell:
+				beyond += 1
+				assert_true(map.is_walkable(on) and not map.portals.has(on), "%s: %s is open floor" % [map_id, on])
+			if i > 0:
+				assert_true(Vector2(cracks[i - 1]).distance_to(middle) <= Vector2(cracks[i]).distance_to(middle), map_id + ": they run outward")
+		assert_gt(beyond, 8, map_id + ": out round the stair, as broken slabs")
+
+
+## A save made while it rises wakes with the way straight out open: the
+## fall wrote the boss's hunt before the stair began, and the floor, laid
+## afresh, opens its door in the rock from it.
+func test_a_save_made_while_it_rises_wakes_with_the_way_out_open() -> void:
+	var state: Node = autofree(GameStateScript.new())
+	state.new_game("Robin", "warrior")
+	state.spoils.hunted("tidecaller")
+	var map := MapData.load_by_id("seacave_grotto")
+	Depths.open_shortcut(map, state.progression.hunted)
+	var rise := _rising(map, _lair_way_out(map, "seacave_grotto"))
+	rise._process(StairRise.CRACK_S + StairRise.SINK_S / 2.0)
+	assert_eq(rise.phase(), "sinking")
+	state.world.map_id = "seacave_grotto"
+	state.world.cell = Vector2i(24, 12)
+	var reloaded: Node = autofree(GameStateScript.new())
+	reloaded.apply(SaveCodec.reread(state.to_dict()))
+	var woke := Depths.waking(reloaded.world.map_id, reloaded.world.cell)
+	assert_eq(woke["mapId"], "seacave_grotto", "on the floor it was saved on")
+	var again := MapData.load_by_id(woke["mapId"])
+	assert_true(Depths.open_shortcut(again, reloaded.progression.hunted), "its door in the rock open")
+	assert_eq(Depths.way_out_toward(again, "saltmere", woke["cell"]), Vector2i(30, 4), "and the arrow out by it")
