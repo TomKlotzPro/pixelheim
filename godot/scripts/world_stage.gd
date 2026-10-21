@@ -339,6 +339,42 @@ func after_board() -> void:
 	world.enter_map(world.map, world.player_cell)
 
 
+## A piece of post handed over at a hub that it made grow (PIX-324): the
+## place redraws around the hero, then has its tour.
+func after_post() -> void:
+	if world.map == null or Hubs.news(GameState.post, world.map.id).is_empty():
+		return
+	world.map = world.load_map(world.map.id)
+	world.enter_map(world.map, world.player_cell)
+
+
+## A hub's tour of its own (PIX-324, Hubs): the first time the hero is at a
+## place whose hub has grown since its last tour, the camera walks to what
+## stood up (Hubs.stops), dust rising round it, what's new and what's said
+## under it, then hands back. Harness runs skip it unless `hubtour`.
+func play_hub_tour() -> void:
+	if world.map == null or not world.is_inside_tree():
+		return
+	var place: String = world.map.id
+	var news := Hubs.stops(GameState.post, place)
+	if news.is_empty() or (world.harness and not HarnessFlags.given().has("hubtour")):
+		return
+	Hubs.toured(GameState.post, place)
+	GameState.mark_dirty()
+	var stops: Array[Dictionary] = []
+	for grown: Dictionary in news:
+		# The middle of what stood up, which rises from its foot.
+		var size := HamletArt.size(grown["art"])
+		stops.append({
+			"at": MapView.center(grown["cell"]) + Vector2(size.x / 2.0 - MapView.TILE / 2.0, (MapView.TILE - size.y) / 2.0),
+			"line": grown["news"], "detail": grown["line"], "dust": true,
+		})
+	var tour := preload("res://scripts/reveal_screen.gd").new()
+	tour.world = world
+	tour.stops = stops
+	world.add_child(tour)
+
+
 ## The town risen (PIX-147): what was built since the hero last saw the town,
 ## the age it reached, a homecoming - the camera tours them, then hands back.
 ## A project's stop raises it out of its ruin (PIX-264) and says what it

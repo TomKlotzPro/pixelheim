@@ -271,7 +271,7 @@ func test_funding_a_waystation_builds_it_halfway_along_its_road() -> void:
 	assert_eq(int(state.pack.items.get("ember_shard", 0)), 0, "and the lamp's shard")
 	assert_eq(Routes.built(state.settlement), ["saltmere"] as Array[String])
 	assert_eq(state.holdings.fund_work("waystation_saltmere"), "", "built once")
-	assert_eq(Routes.lamps(state.settlement), [{"place": "saltmere", "mapId": Routes.MAP, "cell": Routes.spot("saltmere", "lamp")}] as Array[Dictionary],
+	assert_eq(Routes.lamps(state.settlement), [{"place": "saltmere", "mapId": Routes.MAP, "cell": Routes.spot("saltmere", "lamp"), "kind": "sea_glass"}] as Array[Dictionary],
 		"its ember lamp where PIX-323 heals the land round it")
 
 
