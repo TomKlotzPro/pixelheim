@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.271.0",
+      "date": "2026-10-21",
+      "codename": "On Its Base",
+      "notes": [
+        "The village fountain sits square on its plaza again: the gravel now runs under it from the Village on, so no grey edge peeks out at its top left"
+      ]
+    },
+    {
       "version": "0.270.0",
       "date": "2026-10-21",
       "codename": "Under the Hood",
