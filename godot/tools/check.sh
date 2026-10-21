@@ -15,8 +15,8 @@
 #
 # quick looks at the branch's diff against origin/main: its commits since the
 # two parted, what isn't committed yet and new files. It runs
-# - the release and catalogue checks (python, a second; the release script's
-#   own tests too when godot/tools/*.py changed);
+# - the release and catalogue checks (python, a second; the tools' own tests
+#   too when godot/tools/*.py or the export presets changed);
 # - the import, only when the diff touches art, sound, fonts, scripts,
 #   shaders, scenes or tests (the data's JSON is read as it is), or a pull
 #   or a rebase changed some since check.sh last imported;
@@ -31,6 +31,8 @@
 #   report shows open=<x>, and a changed flows.txt the flows it adds or changes.
 #   A file no line of AREAS names, or whose areas no flow covers, runs every
 #   flow, and quick says so; a flow without a tag AREAS knows runs every time.
+# It warns when the main checkout's skill (.claude/skills/pixelheim-godot/
+# SKILL.md, the one agents load) isn't origin/main's (PIX-349).
 # The windowed motion flows never run here: quick says when the diff calls
 # for them (player.gd, gait.gd, juice.gd, puny_art.gd, world_camera.gd,
 # world_neighbours.gd), and CI's windowed jobs walk them in a window on
@@ -372,7 +374,7 @@ pick() {
 		assets/*.json | assets/*.txt | assets/*.tsx) ;;
 		assets/* | scripts/* | shaders/* | scenes/* | addons/* | test/* | project.godot) import="the diff touches what Godot imports" ;;
 	esac
-	[[ $file == tools/*.py ]] && python_tests=1
+	[[ $file == tools/*.py || $file == export_presets.cfg ]] && python_tests=1
 	[[ $MOTION == *" $file "* ]] && motion+="${file#scripts/} "
 
 	case $file in
@@ -515,6 +517,13 @@ if [[ -n $untagged ]]; then
 fi
 if [[ -n $motion ]]; then
 	echo "motion:  the diff touches ${motion% }: CI's windowed jobs walk it in a window on the PR (or watch it here: godot/tools/flows.sh motion line-motion)"
+fi
+# Agents load the skill from the main checkout (the first worktree), not from
+# their own: a checkout left behind main teaches them removed rules (PIX-349).
+skill=.claude/skills/pixelheim-godot/SKILL.md
+main_tree=$(git -C "$root" worktree list --porcelain | sed -n '1s/^worktree //p')
+if current=$(git -C "$root" show "origin/main:$skill" 2>/dev/null) && [[ $current != "$(cat "$main_tree/$skill" 2>/dev/null)" ]]; then
+	echo "warning: the skill agents load ($main_tree/$skill) isn't origin/main's: pull main there, and read this worktree's own $skill meanwhile"
 fi
 [[ $plan == 1 ]] && exit 0
 echo

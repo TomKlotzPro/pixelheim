@@ -185,16 +185,18 @@ jobs:
   # key, and not the godot job's import either: its paid art's imports
   # would draw it). A fresh import of the free art takes seconds.
   #
-  # The flows in two shares side by side (PIX-276; flows.sh --shard), each
-  # its own runner, the look book with the second; the pictures job below
-  # puts their pictures on one sheet and links them in one comment.
+  # The flows in four shares side by side (PIX-276, PIX-350; flows.sh
+  # --shard), each its own runner, and the look book on a fifth: the run
+  # waits on its slowest share, so none carries the look book too. The
+  # pictures job below puts their pictures on one sheet and links them in
+  # one comment.
   windowed:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     strategy:
       fail-fast: false
       matrix:
-        share: [1, 2]
+        share: [1, 2, 3, 4, look]
     env:
       SCREEN: "-screen 0 2560x1440x24"
       # Software rendering on a slow runner: the watchdog, a backstop for a
@@ -245,13 +247,14 @@ jobs:
       # every report must show what its flow expects here too: a flow that
       # differs in a window fails the job, the motion flow's steps back too.
       - name: Release flows, windowed
+        if: matrix.share != 'look'
         run: |
           set +e
-          GITHUB_ACTIONS= GITHUB_STEP_SUMMARY= xvfb-run -a -s "$SCREEN" bash godot/tools/flows.sh --shard "$SHARE/2" -j "$(nproc)" > "windowed-$SHARE.txt" 2>&1
+          GITHUB_ACTIONS= GITHUB_STEP_SUMMARY= xvfb-run -a -s "$SCREEN" bash godot/tools/flows.sh --shard "$SHARE/4" -j "$(nproc)" > "windowed-$SHARE.txt" 2>&1
           status=$?
           cat "windowed-$SHARE.txt"
           ran=$(grep -E "^Release flows:" "windowed-$SHARE.txt" | sed -E 's/^Release flows: //')
-          echo "**Release flows, windowed, share $SHARE of 2:** ${ran:-no result}" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Release flows, windowed, share $SHARE of 4:** ${ran:-no result}" >> "$GITHUB_STEP_SUMMARY"
           grep -E "^FAIL " "windowed-$SHARE.txt" | while read -r _ name _ why; do
             echo "::error title=flow $name failed in a window::$why"
             echo "- **$name** failed: $why" >> "$GITHUB_STEP_SUMMARY"
@@ -259,7 +262,7 @@ jobs:
           exit $status
 
       - name: Look book
-        if: matrix.share == 2 && (success() || failure())
+        if: matrix.share == 'look'
         run: xvfb-run -a -s "$SCREEN" bash godot/tools/lookbook.sh
 
       # Every picture, each run's result and output, for the pictures job.
@@ -277,9 +280,9 @@ jobs:
             godot/lookbook/
           retention-days: 7
 
-  # The two shares' pictures on one contact sheet, the look book's beside
-  # it, linked from the run's summary and one comment on the pull request;
-  # passes when both shares did.
+  # Every share's pictures on one contact sheet, the look book's beside it,
+  # linked from the run's summary and one comment on the pull request;
+  # passes when every share did.
   pictures:
     needs: windowed
     if: success() || failure()
@@ -387,7 +390,7 @@ jobs:
             gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" -F body=@comment.md >/dev/null
           fi
 
-      - name: Both shares passed
+      - name: Every share passed
         if: needs.windowed.result != 'success'
         run: |
           echo "::error::a windowed share failed (${{ needs.windowed.result }}): see its job"

@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "version": "0.266.0",
+      "date": "2026-10-21",
+      "codename": "Lighter Load",
+      "notes": [
+        "The web game no longer carries its test suite: about 1.4 MB less to download before you play"
+      ]
+    },
+    {
       "version": "0.265.0",
       "date": "2026-10-21",
       "codename": "Lights Along the Roads",
