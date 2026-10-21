@@ -1009,6 +1009,15 @@
     },
     "medal_full_house": {
       "label": "A feat, displayed with pride"
+    },
+    "medal_threads": {
+      "label": "A feat, displayed with pride"
+    },
+    "medal_postmaster": {
+      "label": "A feat, displayed with pride"
+    },
+    "medal_reach_lit": {
+      "label": "A feat, displayed with pride"
     }
   },
   "nookCombines": [

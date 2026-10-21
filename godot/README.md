@@ -257,10 +257,11 @@ between two maps calls for `godot/tools/flows.sh motion line-motion`.
 What needs a window runs in CI too (PIX-275), beside the checks: a virtual
 display (xvfb) with Mesa's software rendering (the flows on the desktop
 renderer as on the Mac, Forward+ on lavapipe; the look book on the
-browser's, as `lookbook.sh` shoots it), the release flows windowed in two
-shares side by side (the `windowed` jobs, `flows.sh --shard`, the look book
-with the second), and the `pictures` job, which puts every flow's picture on
-one contact sheet (`tools/flows_sheet.py`) and passes when both shares did.
+browser's, as `lookbook.sh` shoots it), the release flows windowed in four
+shares side by side (the `windowed` jobs, `flows.sh --shard`, PIX-350) and
+the look book on a fifth, and the `pictures` job, which puts every flow's
+picture on one contact sheet (`tools/flows_sheet.py`) and passes when every
+share did.
 Stepped, a window drawn by software at a few frames a second lives the same
 seconds as a headless run, so each windowed report must show what its flow
 expects too, the motion flow's steps back among them: that is the motion
@@ -320,10 +321,12 @@ python3 -m http.server -d godot/export/web            # play in a browser
 ```
 
 Single-threaded preset (`export_presets.cfg`): no cross-origin-isolation
-headers needed, so any static host works — GitHub Pages included (~9.6 MB
-gzipped over the wire). The deploy puts it at the root of the Pages site, and
-nothing else: the web edition's old `/classic/`, `/godot/` and pull request
-preview pages are gone (PIX-301).
+headers needed, so any static host works — GitHub Pages included (~17.3 MB
+gzipped over the wire: the engine's wasm 10.3 MB, the game's pack 7 MB).
+Every preset's `exclude_filter` leaves `test/` and `addons/gut` out of the
+game (PIX-351, `tools/test_export.py`). The deploy puts it at the root of
+the Pages site, and nothing else: the web edition's old `/classic/`,
+`/godot/` and pull request preview pages are gone (PIX-301).
 
 ## Desktop app
 

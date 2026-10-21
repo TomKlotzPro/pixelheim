@@ -2087,6 +2087,30 @@
       "weight": 0,
       "value": 10,
       "description": "Every bed in Pixelheim slept in. Sela has started turning people away, and loves it."
+    },
+    "medal_threads": {
+      "name": "Medal of the Tied Thread",
+      "category": "misc",
+      "sprite": "gem",
+      "weight": 0,
+      "value": 10,
+      "description": "Every letter answered, every parcel home, every thread tied off in a bow. Bram wants to know where you got the bow."
+    },
+    "medal_postmaster": {
+      "name": "The Postmaster's Medal",
+      "category": "misc",
+      "sprite": "gem",
+      "weight": 0,
+      "value": 10,
+      "description": "Fifty pieces of post delivered, hardly any of them on fire."
+    },
+    "medal_reach_lit": {
+      "name": "Medal of the Lit Reach",
+      "category": "misc",
+      "sprite": "gem",
+      "weight": 0,
+      "value": 10,
+      "description": "An ember lamp on every post road. On a clear night you can see them all from the mountain road."
     }
   },
   "roles": {

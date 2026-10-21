@@ -84,8 +84,8 @@ func _home_of(entry: Dictionary) -> String:
 
 # ---- The data ---------------------------------------------------------------------
 
-func test_thirteen_threads_of_four_to_six_pieces_each_name_who_writes_and_who_reads() -> void:
-	assert_eq(Post.threads().size(), 13, "thirteen threads: the three of step 1, nine more, and Pip's loft once the post house stands (PIX-325)")
+func test_the_threads_run_four_to_six_pieces_each_name_who_writes_and_who_reads() -> void:
+	assert_eq(Post.threads().size(), 18, "eighteen threads: the three of step 1 and nine more, Pip's loft once the post house stands (PIX-325), and five after the story (PIX-326)")
 	var ids := {}
 	for thread: Dictionary in Post.threads():
 		var pieces: Array = thread["pieces"]
@@ -537,6 +537,117 @@ func test_the_box_says_what_it_holds() -> void:
 	_chapter_two()
 	assert_string_contains(state.posting.take_bag(), "3")
 	assert_eq(state.posting.take_bag(), Text.t("The post box is empty. Fresh post comes in the morning."))
+
+
+# ---- After the story (PIX-326) -----------------------------------------------------
+
+## The Reach as the story leaves it: every hub walked, its gates open.
+func _after_the_story(ending: String) -> void:
+	_chapter_two()
+	state.settlement.town_tier = 2
+	for map_id: String in ["blackiron", "greyhold", "frostgate", "morvax_forge"]:
+		_walk(map_id)
+	state.settlement.projects.append("river_bridge")
+	state.progression.hunted.append_array(["seam_warden", "hollow_captain", "rimefang"])
+	state.settlement.settlers.append_array(["saltmere_wenna", "mines_pell", "greyhold_ulla", "greyhold_teo", "frost_aske"])
+	if ending != "":
+		state.mark_seen(Story.ending_scene(ending))
+
+
+func test_after_the_story_the_reach_keeps_writing() -> void:
+	_after_the_story("")
+	for id: String in ["catch_ola", "cheese_crust", "bench_coppers", "forge_pip"]:
+		assert_does_not_have(_offered(), id, "%s waits for the story's end" % id)
+	state.mark_seen(Story.ending_scene(Homecoming.HOME))
+	assert_has(_offered(), "cheese_crust", "Fafnyr has opinions about cheese")
+	assert_has(_offered(), "bench_coppers", "home, Morvax writes from his bench")
+	assert_does_not_have(_offered(), "forge_pip", "and never from the forge he left")
+	var stay: Node = autofree(GameStateScript.new())
+	stay.new_game("Robin", "warrior")
+	state = stay
+	_after_the_story(Homecoming.STAY)
+	assert_has(_offered(), "forge_pip", "staying, he writes from his forge")
+	assert_does_not_have(_offered(), "bench_coppers", "and never from a bench he never sat on")
+
+
+func test_maren_writes_to_the_families_once_a_week() -> void:
+	_after_the_story(Homecoming.HOME)
+	var mornings: Array[int] = []
+	for day in 15:
+		if "catch_ola" in Post.offered(state.post, state.progression, state.settlement, state.world.discovered, day):
+			mornings.append(day)
+	assert_eq(mornings, [0, 7, 14] as Array[int], "her letter waits for the week's morning")
+	assert_has(_offered(), "catch_ola", "a day not given: whatever the threads offer")
+	state.post.threads["catching_up"] = 4
+	state.post.bag.append("catch_gunnar_reply")
+	assert_does_not_have(Post.offered(state.post, state.progression, state.settlement, state.world.discovered, 7), "catch_wenna", "the reply goes home first")
+	Post.hand_over(state.post, "catch_gunnar_reply")
+	assert_has(Post.offered(state.post, state.progression, state.settlement, state.world.discovered, 21), "catch_wenna", "then the next week's")
+
+
+func test_the_dragon_post_flies_the_furthest_piece_of_the_day() -> void:
+	_after_the_story("")
+	var town := ["cheese_crust"] as Array[String]
+	var both := ["cheese_crust", "catch_ola"] as Array[String]
+	var further := ["catch_ola", "catch_gunnar", "cheese_crust"] as Array[String]
+	assert_false(Post.dragon_open(state.progression, state.settlement), "not while the story runs")
+	state.mark_seen(Story.ending_scene(Homecoming.HOME))
+	assert_true(Post.dragon_open(state.progression, state.settlement))
+	assert_eq(Post.dragon_pick(town, state.progression, state.settlement), "", "the village's post is a walk")
+	assert_eq(Post.dragon_pick(both, state.progression, state.settlement), "saltmere_ola")
+	assert_eq(Post.dragon_pick(further, state.progression, state.settlement), "frost_gunnar", "the Frostgate is further than Saltmere")
+	var fires := 0
+	for day in 30:
+		assert_eq(Post.on_fire(day), Post.on_fire(day), "day %d is on fire or not, every time" % day)
+		assert_eq(Post.flown_lines("Saltmere", day).size(), 2 if Post.on_fire(day) else 1)
+		fires += 1 if Post.on_fire(day) else 0
+	assert_between(fires, 3, 20, "occasionally on fire")
+
+
+func test_taking_the_days_post_after_the_story_sends_one_piece_by_dragon() -> void:
+	_after_the_story("")
+	var heard: Array = []
+	state.noted.connect(func(lines: Array) -> void: heard.append_array(lines))
+	Post.take(state.post, ["catch_ola", "cheese_crust"] as Array[String], 0)
+	state.posting.fly(["catch_ola", "cheese_crust"] as Array[String])
+	assert_eq(state.post.delivered.size(), 0, "no dragon before the story's end")
+	state.mark_seen(Story.ending_scene(Homecoming.HOME))
+	var gold: int = state.pack.gold
+	state.posting.fly(["catch_ola", "cheese_crust"] as Array[String])
+	assert_eq(state.post.delivered, ["catch_ola"] as Array[String], "Ola's letter flown to Saltmere")
+	assert_eq(state.post.bag, ["cheese_crust"] as Array[String], "Bram's is a walk across the square")
+	assert_eq(state.post.places["catch_ola"], "saltmere", "stamped on Saltmere's page")
+	assert_eq(state.pack.gold, gold + int(Post.piece("catch_ola")["tip"]), "and Ola's tip paid")
+	assert_eq(heard[0], Post.flown_lines(Text.mid(Catalog.place_name("saltmere")), 0)[0], "the log says the dragon took it")
+	var day := 7
+	state.world.steps = float(day) * DayNight.DAY_CYCLE_STEPS
+	var box: Array[String] = state.posting.in_box()
+	var flies := Post.dragon_pick(box, state.progression, state.settlement)
+	var sent: int = state.post.delivered.size()
+	state.posting.take_bag()
+	assert_eq(state.post.delivered.size(), sent + (0 if flies == "" else 1), "taking the box sends the day's furthest piece")
+	state.posting.take_bag()
+	assert_eq(state.post.delivered.size(), sent + (0 if flies == "" else 1), "once a day: the box is empty till morning")
+
+
+func test_heirlooms_go_home_to_the_families_whose_marks_they_carry() -> void:
+	_after_the_story(Homecoming.HOME)
+	var guardians: Array[String] = []
+	var floors: Array = Depths.floors(Vault.DUNGEON).map(func(entry: Dictionary) -> String: return entry["mapId"])
+	for entry: Dictionary in Post.thread("heirlooms")["pieces"]:
+		var named := String(entry["when"][0]["named"])
+		assert_has(floors, String(Hunts.named(named)["mapId"]), "%s comes home as a Vault floor's guardian falls" % entry["id"])
+		guardians.append(named)
+		var home := Post.place_for(Post.addressee(entry), state.progression, state.settlement)
+		assert_eq(Post.page(home).get("emblem", ""), entry["mark"], "%s carries %s's mark home" % [entry["id"], home])
+	assert_eq(guardians.size(), floors.size(), "a piece from every floor")
+	assert_does_not_have(_offered(), "heir_cup", "the hoard keeps it while its floor is held")
+	state.progression.hunted.append(guardians[0])
+	assert_has(_offered(), "heir_cup", "the stair's guardian down: Ola's cup goes home")
+	state.post.threads["heirlooms"] = 1
+	assert_does_not_have(_offered(), "heir_pick", "the strongroom's still held")
+	state.progression.hunted.append(guardians[1])
+	assert_has(_offered(), "heir_pick")
 
 
 # ---- What is kept ------------------------------------------------------------------
