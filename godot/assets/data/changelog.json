@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.260.0",
+      "date": "2026-10-21",
+      "codename": "Clean Slate",
+      "notes": [
+        "Old Hessa keeps the shrine in Pixelheim: talk to her to forget your skills or, new, your training, with every stat point back; the first time of each is free, then skills cost 20 gold each and training your level in gold per point (Tom's playtest)",
+        "A question's answers stack in a column so long French answers fit, and Ola and five other villagers no longer pace into the sea, a roof or a fence"
+      ]
+    },
+    {
       "version": "0.259.0",
       "date": "2026-10-20",
       "codename": "Gold Again",

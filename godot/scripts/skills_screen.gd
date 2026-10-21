@@ -19,8 +19,6 @@ var selected := Vector2i(0, 2)
 var view: Control
 var details: Label
 var status: Label
-## F asked once: a second F forgets (any other key thinks better of it).
-var forget_armed := false
 
 
 func _open() -> void:
@@ -42,8 +40,9 @@ func _open() -> void:
 	details.custom_minimum_size = Vector2(1120, 0)
 	details.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(details)
-	status = UiStyle.label("", 14, UiStyle.GOLD, Vector2(260, 30))
-	status.custom_minimum_size = Vector2(720, 0)
+	# Clear of the title's end in French (« Compétences »).
+	status = UiStyle.label("", 14, UiStyle.GOLD, Vector2(330, 30))
+	status.custom_minimum_size = Vector2(650, 0)
 	add_child(status)
 	add_child(UiStyle.screen_footer("Arrows  choose      {key:interact}  learn / walk      1-6  put on a key      F  forget      {key:skills} / Esc  close"))
 	var rule := UiStyle.label("A point each level, one more each rank.", 13, UiStyle.DUSK, Vector2(800, 6))
@@ -279,32 +278,13 @@ func _command(event: InputEvent) -> Callable:
 		for index in Skills.DOCK_SIZE:
 			if event.is_action_pressed("skill_%d" % (index + 1)):
 				command = _bind.bind(index)
-	if command.is_valid() and command != _forget:
-		forget_armed = false
 	return command
 
 
-## F: forget every bought skill for its point back (PIX-86), in the village and
-## for gold; it asks first, and a second F agrees.
+## F: forgetting (PIX-86) is the shrine's keeper's to do since PIX-331, one
+## way to do it: F says who and where.
 func _forget() -> void:
-	var hero := GameState.hero
-	var count := Skills.forgettable(hero).size()
-	var cost := Skills.forget_cost(hero)
-	var armed := false
-	if count == 0:
-		status.text = "Nothing learned to forget yet."
-	elif not Skills.can_forget_at(GameState.world.map_id):
-		status.text = "Forgetting takes the village's quiet. Come back to Pixelheim."
-	elif GameState.pack.gold < cost:
-		status.text = Text.t("Forgetting %s costs %dg.") % [_skills(count), cost]
-	elif not forget_armed:
-		armed = true
-		status.text = Text.t("Forget %s for %dg and get the points back? F again to agree.") % [_skills(count), cost]
-	elif GameState.training.forget_skills():
-		Sound.play("learn")
-		status.text = Text.t("Forgotten. %s to spend again.") % (Text.t("1 point") if count == 1 else Text.t("%d points") % count)
-		_layout()
-	forget_armed = armed
+	status.text = Text.t("To forget, see %s at Pixelheim's shrine.") % Text.mid(Npcs.by_id(Skills.FORGETTER, [])["name"])
 
 
 ## On a phone, the tap bar's own buttons (PIX-214): the next key for the
@@ -344,10 +324,6 @@ func _bind(index: int) -> void:
 	_layout()
 
 
-func _skills(count: int) -> String:
-	return Text.t("1 skill") if count == 1 else Text.t("%d skills") % count
-
-
 ## To the next card that way: same column first, else the nearest one.
 func _move(step: Vector2i) -> void:
 	var probe := selected + step
@@ -384,6 +360,10 @@ func _act() -> void:
 	elif GameState.training.buy_skill_node(entry["id"]):
 		Sound.play("learn")
 		status.text = Text.t("Learned: %s.") % entry["name"]
+		# The first skill bought names who can make the hero forget it (PIX-331).
+		var hud: Variant = get_tree().current_scene.get("hud")
+		if hud != null:
+			hud.hint("forget")
 	elif entry["id"] in GameState.hero.skill_nodes:
 		status.text = "Already learned."
 	else:

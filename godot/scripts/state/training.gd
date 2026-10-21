@@ -58,13 +58,16 @@ func buy_beyond(track_id: String) -> bool:
 	return false
 
 
-## Every bought skill forgotten for its point back (PIX-86): in the village,
-## for Skills.forget_cost gold. What a skill grew (max HP or MP) shrinks back.
+## Every bought skill forgotten for its point back (PIX-86), at the shrine's
+## keeper (PIX-331), for Skills.forget_cost gold: free the first time. What
+## a skill grew (max HP or MP) shrinks back.
 func forget_skills() -> bool:
 	var forgotten := Skills.forgettable(owner.hero)
 	var cost := Skills.forget_cost(owner.hero)
-	if forgotten.is_empty() or not Skills.can_forget_at(owner.world.map_id) or owner.pack.gold < cost:
+	if forgotten.is_empty() or owner.pack.gold < cost:
 		return false
+	if Skills.FORGOT_SKILLS not in owner.hero.forgot:
+		owner.hero.forgot.append(Skills.FORGOT_SKILLS)
 	for node_id: String in forgotten:
 		var grants: Dictionary = Skills.node(owner.hero.role_id, node_id).get("grantStats", {})
 		for stat: String in ["maxHp", "maxMp"]:
@@ -83,6 +86,31 @@ func forget_skills() -> bool:
 	owner.hero.hp = mini(owner.hero.hp, int(owner.hero.stats["maxHp"]))
 	owner.hero.mp = mini(owner.hero.mp, int(owner.hero.stats["maxMp"]))
 	owner.hero.skill_points += forgotten.size() + ranks
+	owner.pack.gold -= cost
+	owner.pack_changed()
+	owner.hp_changed.emit(owner.hero.hp, int(owner.hero.stats["maxHp"]))
+	owner.save_now()
+	return true
+
+
+## Every stat point spent, back to spend again (PIX-331), at the shrine's
+## keeper for Skills.forget_training_cost gold: free the first time. What
+## the points grew (max HP and MP) shrinks back; health and energy are kept
+## up to the new tops.
+func forget_training() -> bool:
+	var spent := Skills.spent_stats(owner.hero, owner.household.trophies())
+	var cost := Skills.forget_training_cost(owner.hero, spent)
+	if spent.is_empty() or owner.pack.gold < cost:
+		return false
+	if Skills.FORGOT_TRAINING not in owner.hero.forgot:
+		owner.hero.forgot.append(Skills.FORGOT_TRAINING)
+	var hp := owner.hero.hp
+	var mp := owner.hero.mp
+	for stat: String in spent:
+		Skills.apply_stat_point(owner.hero, stat, -int(spent[stat]))
+	owner.hero.hp = mini(hp, int(owner.hero.stats["maxHp"]))
+	owner.hero.mp = mini(mp, int(owner.hero.stats["maxMp"]))
+	owner.hero.stat_points += Skills.spent_points(spent)
 	owner.pack.gold -= cost
 	owner.pack_changed()
 	owner.hp_changed.emit(owner.hero.hp, int(owner.hero.stats["maxHp"]))
