@@ -133,12 +133,14 @@ func keep_hours(arriving := false, at_most := -1) -> int:
 	var minute := DayNight.minute_of(GameState.world.steps)
 	var night := DayNight.night_at(minute)
 	var standing := _standing()
+	# No night pack rises inside a lit lamp's ring (PIX-323).
+	var rings := Lamps.now(world.map.id)
 	for spawn: Dictionary in Bestiary.spawns_on(world.map.id):
 		var id: String = spawn["id"]
 		var home := MapView.center(Vector2i(spawn["x"], spawn["y"]))
 		var members: Array = standing.get(id, [])
 		var hidden := arriving or _unseen(home, members)
-		if not Packs.is_out(spawn, night):
+		if not Packs.is_out(spawn, night) or Lamps.keeps_off(spawn, rings):
 			if not members.is_empty() and hidden:
 				for member: Node in members:
 					member.queue_free()

@@ -23,6 +23,9 @@ var skill_nodes: Array[String] = []
 var skill_dock: Array[String] = []
 ## Ranks bought beyond a finished tree (PIX-217): track id -> rank.
 var beyond := {}
+## What the shrine's keeper has made this hero forget (PIX-331: Skills'
+## FORGOT_SKILLS, FORGOT_TRAINING): the first time of each is free.
+var forgot: Array[String] = []
 ## job id -> {level, xp}
 var jobs := {}
 ## Additive web fields: null means absent, and absent stays absent on save.
@@ -76,6 +79,7 @@ static func from_dict(data: Dictionary) -> HeroState:
 	hero.skill_nodes.assign(data["skillNodes"])
 	hero.skill_dock.assign(data.get("skillDock", []))
 	hero.beyond = data.get("beyond", {}).duplicate()
+	hero.forgot.assign(data.get("forgot", []))
 	hero.jobs = data["jobs"].duplicate(true)
 	hero.look = data.get("look")
 	hero.spec = data.get("spec")
@@ -111,5 +115,7 @@ func to_dict() -> Dictionary:
 		out["skillDock"] = skill_dock.duplicate()
 	if not beyond.is_empty():
 		out["beyond"] = beyond.duplicate()
+	if not forgot.is_empty():
+		out["forgot"] = forgot.duplicate()
 	return out
 

@@ -31,6 +31,7 @@ const TABLE := [
 	{"field": "open", "says": "the screens and conversations open over the world, by script name, or none"},
 	{"field": "night", "says": "the Night of Ash's step"},
 	{"field": "mobs", "says": "monsters standing (not dying)"},
+	{"field": "air", "says": "on a map where an ember lamp burns: the air the hero breathes, ash, or open inside a lamp's ring, where the Ash's heat and embers fade (PIX-323)"},
 	{"field": "ascension", "says": "with rankup: the ascension's beat, closed once it's gone (PIX-244)"},
 	{"field": "backsteps", "says": "with motion: frames the hero stepped back on screen while walking forward, lost if found in too few to judge (PIX-135, PIX-275)"},
 	{"field": "barred", "says": "the way the story keeps shut that stopped the hero on this run: mountain or vault (PIX-257)"},
@@ -66,6 +67,7 @@ const TABLE := [
 	{"field": "free", "says": "with launch: the slot New Game makes its hero in, 0 when none is free (PIX-303: never one holding a save the game can't read)"},
 	{"field": "gate", "says": "the gate the story keeps shut that said its line on this run (PIX-254)"},
 	{"field": "hamlet", "says": "on a settlement beyond Pixelheim: its look and its dressing counted by how each piece stands: fishing:line1,moored2,stand4,wall3 (PIX-313)"},
+	{"field": "healed", "says": "on a map where the ash heals round a lamp: its cells at each stage past the ash, as each is drawn (Lamps.LOOKS): earth9,grass8,meadow12,grove13 (PIX-323)"},
 	{"field": "hint", "says": "the first-time hint on the screen, by the id it's seen by, or held:<id> while one waits its turn (PIX-341: never over a boss's entrance)"},
 	{"field": "home", "says": "who the story brought home to live in town, by first name: wenna (PIX-255)"},
 	{"field": "jobs", "says": "on the Night of Bells: the townsfolk's jobs that have acted, by kind: arrows,bell,cheese (PIX-253 step 9)"},
@@ -256,6 +258,13 @@ func field_mobs() -> String:
 
 
 # --- The rest, by name -------------------------------------------------------
+
+func field_air() -> String:
+	if world.map == null or Lamps.now(world.map.id).is_empty():
+		return ""
+	var air: String = world.atmosphere.air
+	return air if air != "" else "open"
+
 
 func field_ascension() -> String:
 	if not flags.has("rankup"):
@@ -484,6 +493,17 @@ func field_hamlet() -> String:
 	var names: Array = kinds.keys()
 	names.sort()
 	return "%s:%s" % [world.view.hamlet["look"], ",".join(names.map(func(kind: String) -> String: return "%s%d" % [kind, kinds[kind]]))]
+
+
+func field_healed() -> String:
+	if world.view == null or world.view.healed.is_empty():
+		return ""
+	var parts: PackedStringArray = []
+	for stage in range(Lamps.EARTH, Lamps.SAPLINGS + 1):
+		var look: String = Lamps.LOOKS[stage]
+		var count: int = world.view.healed.values().count(look)
+		parts.append("%s%d" % [look, count])
+	return ",".join(parts)
 
 
 func field_hint() -> String:

@@ -27,9 +27,16 @@ static func node(role_id: String, node_id: String) -> Dictionary:
 
 
 ## Forgetting (PIX-86): every bought skill, for its point back, at 20 gold a
-## skill; the one a hero starts with stays. Only in the village, whose quiet
-## lets a fighter unlearn (any of its maps, inside or out).
+## skill; the one a hero starts with stays. Since PIX-331 it's the shrine's
+## keeper's to do (FORGETTER, by the shrine in Pixelheim: the village's
+## quiet), and she forgets the training too: every stat point spent, back,
+## for the hero's level in gold a point (a point dearer the further the
+## hero has come, so changing one's mind back and forth isn't free). The
+## first time of each (FORGOT_SKILLS, FORGOT_TRAINING) is on the shrine.
 const FORGET_GOLD_PER_SKILL := 20
+const FORGETTER := "shrine_keeper"
+const FORGOT_SKILLS := "skills"
+const FORGOT_TRAINING := "training"
 
 
 static func forgettable(hero: HeroState) -> Array[String]:
@@ -41,12 +48,45 @@ static func forgettable(hero: HeroState) -> Array[String]:
 	return out
 
 
+## The skill points forgetting gives back: a point a bought skill, and every
+## rank bought beyond a whole tree (PIX-217).
+static func forgotten_points(hero: HeroState) -> int:
+	var ranks := 0
+	for rank: Variant in hero.beyond.values():
+		ranks += int(rank)
+	return forgettable(hero).size() + ranks
+
+
 static func forget_cost(hero: HeroState) -> int:
-	return FORGET_GOLD_PER_SKILL * forgettable(hero).size()
+	return FORGET_GOLD_PER_SKILL * forgettable(hero).size() if FORGOT_SKILLS in hero.forgot else 0
 
 
-static func can_forget_at(map_id: String) -> bool:
-	return map_id.begins_with("town")
+## The stat points spent, by stat: what a stat holds past the role's start,
+## less what the trophies on the house's shelf lend it (Town.trophy_stat_delta).
+static func spent_stats(hero: HeroState, trophies: Array) -> Dictionary:
+	var base: Dictionary = Catalog.role(hero.role_id)["baseStats"]
+	var lent := {}
+	for item_id: String in trophies:
+		var delta := Town.trophy_stat_delta(item_id)
+		for stat: String in delta:
+			lent[stat] = int(lent.get(stat, 0)) + int(delta[stat])
+	var out := {}
+	for stat: String in STATS:
+		var spent := int(hero.stats[stat]) - int(base[stat]) - int(lent.get(stat, 0))
+		if spent > 0:
+			out[stat] = spent
+	return out
+
+
+static func spent_points(spent: Dictionary) -> int:
+	var total := 0
+	for points: Variant in spent.values():
+		total += int(points)
+	return total
+
+
+static func forget_training_cost(hero: HeroState, spent: Dictionary) -> int:
+	return spent_points(spent) * hero.level if FORGOT_TRAINING in hero.forgot else 0
 
 
 ## A point to spend, not yet owned, its parent owned (canBuyNode), and the
@@ -127,20 +167,22 @@ static func resource_label(role_id: String) -> String:
 	return Text.t("MP") if Catalog.role(role_id)["resource"] == "mana" else Text.t("EN")
 
 
-## One stat point, spent (applyStatPoint): INT grows a caster's mana, END
-## everyone's health and a fighter's stamina.
-static func apply_stat_point(hero: HeroState, stat: String) -> void:
-	hero.stats[stat] = int(hero.stats[stat]) + 1
+## A stat point, spent (applyStatPoint): INT grows a caster's mana, END
+## everyone's health and a fighter's stamina. `points` spends several, and a
+## negative count takes them back (forgetting the training, PIX-331: the
+## caller keeps HP and MP within the new tops).
+static func apply_stat_point(hero: HeroState, stat: String, points := 1) -> void:
+	hero.stats[stat] = int(hero.stats[stat]) + points
 	var resource: String = Catalog.role(hero.role_id)["resource"]
 	if stat == "intelligence" and resource == "mana":
-		hero.stats["maxMp"] = int(hero.stats["maxMp"]) + 2
-		hero.mp += 2
+		hero.stats["maxMp"] = int(hero.stats["maxMp"]) + 2 * points
+		hero.mp += 2 * points
 	if stat == "endurance":
-		hero.stats["maxHp"] = int(hero.stats["maxHp"]) + 1
-		hero.hp += 1
+		hero.stats["maxHp"] = int(hero.stats["maxHp"]) + points
+		hero.hp += points
 		if resource == "endurance":
-			hero.stats["maxMp"] = int(hero.stats["maxMp"]) + 2
-			hero.mp += 2
+			hero.stats["maxMp"] = int(hero.stats["maxMp"]) + 2 * points
+			hero.mp += 2 * points
 
 
 static func stamina_regen(hero: HeroState) -> int:

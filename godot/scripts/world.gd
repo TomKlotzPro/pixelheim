@@ -110,6 +110,12 @@ func _ready() -> void:
 			if project_id not in done:
 				done.append(project_id)
 		GameState.settlement.projects.assign(done)
+	# `--settlers iva,wren`: recruits already living in town, before the
+	# first map is drawn (PIX-338: Mirelle's table stands by the hall).
+	for short: String in flags.list("--settlers"):
+		var id := "settler_" + short
+		if id not in GameState.settlement.settlers:
+			GameState.settlement.settlers.append(id)
 	# Harness runs skip the Night of Ash (their flows were written for the
 	# town by day) unless `--prologue N` puts them at its step N.
 	if harness:
@@ -166,6 +172,11 @@ func _ready() -> void:
 			var parts := spec.split(":")
 			Routes.tally(GameState.post, parts[0], parts[2] if parts.size() > 2 else "bram", int(parts[1]))
 		Routes.raise_signs(GameState.post)
+	# `--lit blackiron:3` (PIX-323): that waystation's ember lamp lit three
+	# mornings ago (built with `--built`), its ring of healed land as far.
+	for spec: String in flags.list("--lit"):
+		var lit := spec.split(":")
+		GameState.post.lit[lit[0]] = Gathering.day_of(GameState.world.steps) - int(lit[1])
 	# `--bells N` (PIX-253 step 9): the story at the Night of Bells - the tin
 	# found, the four keepsakes and their families home, Maren heard out,
 	# the fifth letter delivered - in a Village building its Town (unless

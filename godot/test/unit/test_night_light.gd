@@ -165,6 +165,30 @@ func test_the_reach_with_every_waystation_lit() -> void:
 	GameState.post = kept_post
 
 
+## Dozens of ember lamps (PIX-323): a road of the Reach lined with them, a
+## lamp to a cell. Those close to one already lit keep their halo alone, a
+## cheaper light, and the Reach holds the budget.
+func test_the_reach_with_dozens_of_lamps() -> void:
+	GameState.progression.prologue = Prologue.DONE
+	var map := MapData.load_by_id(Routes.MAP)
+	var root := Node2D.new()
+	add_child_autofree(root)
+	var actors := Node2D.new()
+	root.add_child(actors)
+	var view := MapView.new(map, actors)
+	view.plan(map.spawn)
+	var cells: Array[Vector2i] = []
+	for x in range(4, 44):
+		cells.append(Vector2i(x, 21))
+		view.routes["pieces"].append({"kind": "lamp", "cell": cells[-1], "cells": [cells[-1]], "place": "lamp_%d" % x})
+	view.build(root)
+	var embers := root.find_children("*", "PointLight2D", true, false).filter(func(light: Node) -> bool:
+		return light.get_meta("tint") == Lights.EMBER)
+	assert_eq(embers.size(), Lamps.lit_among(cells).size(), "a light to each few lamps")
+	assert_lt(embers.size(), cells.size() / 3, "not one to each")
+	_check("the Reach with dozens of lamps", root)
+
+
 func test_every_map_at_night() -> void:
 	GameState.progression.prologue = Prologue.DONE
 	var maps := DirAccess.get_files_at("res://assets/maps")

@@ -82,6 +82,7 @@ func test_every_field_a_hero_can_have_finds_its_place_and_comes_back() -> void:
 	var game := _game()
 	game.hero.skill_dock.assign(["warrior_power_strike"])
 	game.hero.beyond = {"blade": 2}
+	game.hero.forgot.assign([Skills.FORGOT_SKILLS, Skills.FORGOT_TRAINING])
 	game.hero.path = ["juggernaut"]
 	game.hero.spec = "juggernaut"
 	game.hero.mastery = {"beasts": 3}
@@ -119,12 +120,14 @@ func test_every_field_a_hero_can_have_finds_its_place_and_comes_back() -> void:
 	assert_eq(doc["quests"]["named"], ["cinderjaw"])
 	assert_eq(doc["quests"]["deeds"], ["full_set"])
 	assert_eq(doc["playSeconds"], 4321)
+	assert_eq(doc["hero"]["skills"]["forgot"], ["skills", "training"], "what the shrine's keeper made the hero forget (PIX-331)")
 	assert_eq_deep(SaveCodec.from_file(SaveCodec.parse_json(SaveCodec.serialize(doc))), state)
 
 
 func test_what_a_hero_never_had_stays_out_of_the_file() -> void:
 	var doc := SaveCodec.to_file(_game().to_dict())
 	assert_false(doc["town"].has("bank"), "no purse yet")
+	assert_false(doc["hero"]["skills"].has("forgot"), "nothing forgotten yet")
 	assert_false(doc["town"].has("invested"))
 	assert_false(doc["story"].has("seen"))
 	assert_false(doc["story"].has("night"), "no Night of Bells running")

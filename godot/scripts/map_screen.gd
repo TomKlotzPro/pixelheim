@@ -388,6 +388,8 @@ func _fill_legend(home: bool) -> void:
 	# Whom the satchel's post is for (PIX-320), faint.
 	if not painting.post_cells().is_empty():
 		marks.append([Painting.POST, "Post", Swatch.POST])
+	if painting.forgetter_cell() != Bearing.NOWHERE:
+		marks.append([Painting.FORGETTER, "Forgetting"])
 	# The goal and the main story behind it as the page draws them, diamonds
 	# (PIX-253 step 2).
 	if painting.goal_cell() != Bearing.NOWHERE:
@@ -485,6 +487,8 @@ class Painting extends Control:
 	const POST := Color(0.953, 0.902, 0.769, 0.6)
 	## A gate the story keeps shut (PIX-254): the alarm's red.
 	const SHUT := Color("d8433f")
+	## The shrine's keeper, who makes a hero forget (PIX-331): her robe's lilac.
+	const FORGETTER := Color("b4b8f0")
 	## The gates shut on this page whose ground was seen (PIX-254): [{gate,
 	## cell}], `cell` its middle on the page.
 	var _gates: Array[Dictionary] = []
@@ -743,6 +747,9 @@ class Painting extends Control:
 		# other mark, and never as loud as the story's gold.
 		for cell: Vector2i in post_cells():
 			_post_mark(_center(cell), mark)
+		var keeper := forgetter_cell()
+		if keeper != Bearing.NOWHERE:
+			_marker(_center(keeper), mark, FORGETTER)
 		# The gates the story keeps shut (PIX-254), a red cross named beside it.
 		for gate: Dictionary in _gates:
 			_cross(_center(gate["cell"]), mark)
@@ -888,6 +895,14 @@ class Painting extends Control:
 			if cell != Bearing.NOWHERE and cell not in out:
 				out.append(cell)
 		return out
+
+	## Where the shrine's keeper stands (PIX-331), on the village's page;
+	## NOWHERE on the others.
+	func forgetter_cell() -> Vector2i:
+		if not holds("town"):
+			return Bearing.NOWHERE
+		var keeper := Npcs.by_id(Skills.FORGETTER, [])
+		return Vector2i(keeper["x"], keeper["y"]) + at_of("town")
 
 	func _person_cell(npc_id: String) -> Vector2i:
 		if home:

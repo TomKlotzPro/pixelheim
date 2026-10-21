@@ -17,6 +17,9 @@ var page := 0
 var text: Label
 var counter: Label
 var hints: HBoxContainer
+## The answers to a question, one under another (PIX-331: the shrine's
+## keeper's three, each saying what it costs, ran off a row in French).
+var answers: VBoxContainer
 var more: TextureRect
 var panel: PanelContainer
 var tab: PanelContainer
@@ -48,6 +51,9 @@ func _open() -> void:
 	text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	text.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	column.add_child(text)
+	answers = VBoxContainer.new()
+	answers.add_theme_constant_override("separation", 6)
+	column.add_child(answers)
 	var footer := HBoxContainer.new()
 	footer.add_theme_constant_override("separation", 14)
 	column.add_child(footer)
@@ -169,12 +175,14 @@ func _show() -> void:
 		child.queue_free()
 	if _asking():
 		# The answers, a key and a click each, and leaving without one.
+		Layout.clear(answers)
 		choice_buttons.clear()
 		for index in choices.size():
 			var answer := UiStyle.button(Text.t("%d  %s") % [index + 1, choices[index]], _pick.bind(index))
+			answer.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 			UiStyle.focus(answer, index == choice_focus)
 			choice_buttons.append(answer)
-			hints.add_child(answer)
+			answers.add_child(answer)
 		hints.add_child(UiStyle.hints(["Esc", "not yet"]))
 	else:
 		# Each list in its own call, so the catalogue finds every word (the

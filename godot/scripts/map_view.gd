@@ -144,6 +144,10 @@ var hamlet := {"look": "", "pieces": [], "blocks": []}
 ## the signposts at their forks and the waystations built, and the cells
 ## they block; empty elsewhere.
 var routes := {"pieces": [], "blocks": [], "open": []}
+## The ash healed round the lit ember lamps (PIX-323, Lamps.healed): cell ->
+## what it's drawn as (bare earth, grass, a meadow, a grove), laid over the
+## ground as drawn (look); empty elsewhere.
+var healed := {}
 ## A dungeon floor's torches on the wall (PIX-291), by cell.
 var wall_torches: Array[Vector2i] = []
 ## How a dungeon floor is dressed as its place (DungeonLook.plan, PIX-310);
@@ -214,6 +218,10 @@ const CANOPY_SWAY := 0.4
 ## The projects board on the square (PIX-145): a Puny World notice board.
 const PROJECT_BOARD := 846
 const BOARD_FOOT := Rect2(1, 8, 14, 8)
+## Mirelle's counting table (PIX-338): both its cells, its foot the length
+## of it, and where its candle burns (RoomArt's bank_desk).
+const DESK_FOOT := Rect2(1, 2, 14, 30)
+const DESK_FLAME := Vector2(7.5, 14)
 ## Puny World tents by region: green in the woods, straw in the wetlands,
 ## red on the ash.
 const TENTS := {"forest": 895, "deepwood": 895, "marsh": 706, "mire": 706, "ash": 905}
@@ -361,6 +369,7 @@ func planning(arrival_at: Vector2i, slices: Slicer) -> void:
 	slices.add("plan_gates", _plan_gates)
 	slices.add("plan_hamlet", _plan_hamlet)
 	slices.add("plan_routes", _plan_routes)
+	slices.add("plan_healed", func() -> void: healed = Lamps.healed(data.grid, Lamps.now(data.id)))
 	slices.add("plan_scatter", _plan_scatter)
 
 
@@ -441,6 +450,22 @@ func _plan_free_room() -> void:
 		data.grid[cell] = "wall"
 
 
+## The pixels a piece drawn in code (RoomArt) covers among `cells` of this
+## room, with the pack or without (PIX-338: a ledger lying open on its
+## table, what its prompt stands over); an empty rect for none.
+func drawn_in(cells: Rect2i) -> Rect2:
+	var pieces: Dictionary = buildings.get("art", {}).duplicate()
+	var objects: Dictionary = buildings.get("objects", {})
+	for cell: Vector2i in objects:
+		if objects[cell] is String and String(objects[cell]).begins_with("r:"):
+			pieces[cell] = String(objects[cell]).trim_prefix("r:")
+	for cell: Vector2i in pieces:
+		var rect := Rect2i(cell, RoomArt.cells(pieces[cell]))
+		if rect.intersects(cells):
+			return Rect2(Vector2(rect.position * TILE), Vector2(rect.size * TILE))
+	return Rect2()
+
+
 ## How a room is drawn, for the harness (PIX-318): from the paid pack, from
 ## the CC0 sheets (free), or not at all (none); its walls, floor and
 ## stairs down, counted.
@@ -489,6 +514,13 @@ func _plan_props() -> void:
 		var tent := Town.ashes_tent(Town.done_projects(GameState.settlement))
 		if tent.x >= 0:
 			camps[tent] = {"kind": "tent", "tile": TENTS["marsh"]}
+		# Mirelle's counting table by the hall once she's settled, her
+		# ledger open on it (PIX-338).
+		var desk := Town.bank_desk().position
+		if GameState.holdings.is_settled("settler_mirelle") and data.is_walkable(desk) and data.is_walkable(desk + Vector2i.DOWN) \
+				and not camps.has(desk) and not camps.has(desk + Vector2i.DOWN):
+			camps[desk] = {"kind": "desk", "art": "bank_desk"}
+			data.covered[desk + Vector2i.DOWN] = true
 	# The post box past the bounty board, once Maren's first letter reaches
 	# Saltmere (PIX-320).
 	if data.id == Post.box_map() and GameState.posting.is_open():
@@ -894,9 +926,11 @@ func _ground_layers() -> Node2D:
 
 
 ## The ground as drawn: the map's, but for the village far off (PIX-248),
-## whose streets, river and ash lie where its block's cells are.
+## whose streets, river and ash lie where its block's cells are, and the
+## ash healed round the lamps (PIX-323).
 func look() -> Dictionary:
-	return data.grid.merged(skyline["ground"], true) if not skyline.is_empty() else data.grid
+	var drawn: Dictionary = data.grid.merged(skyline["ground"], true) if not skyline.is_empty() else data.grid
+	return drawn.merged(healed, true) if not healed.is_empty() else drawn
 
 
 ## Bridges, cave mouths and ramparts on cell rows [i * BLOCK, (i + 1) *
@@ -2390,6 +2424,12 @@ func _decor_routes() -> void:
 	waystations = []
 	ember_lamps = {}
 	post_boxes = []
+	# Lamps close together share a light (PIX-323, Lamps.lit_among).
+	var lamp_cells: Array[Vector2i] = []
+	for piece: Dictionary in routes["pieces"]:
+		if piece["kind"] == "lamp":
+			lamp_cells.append(piece["cell"])
+	var own_light := Lamps.lit_among(lamp_cells)
 	for piece: Dictionary in routes["pieces"]:
 		var cell: Vector2i = piece["cell"]
 		var kind := String(piece["kind"])
@@ -2404,7 +2444,7 @@ func _decor_routes() -> void:
 			sprite.texture = RouteArt.texture(art)
 			var root := _stand_on(sprite, cell, Vector2(0, TILE - RouteArt.size(art).y))
 			if kind == "lamp":
-				_add_ember_lamp(root, cell, String(piece["place"]))
+				_add_ember_lamp(root, cell, String(piece["place"]), cell in own_light)
 			elif kind == "hut":
 				_add_hut_window(root)
 				waystations.append(String(piece["place"]))
@@ -2426,8 +2466,10 @@ func _decor_routes() -> void:
 ## A waystation's ember lamp (PIX-322): a shard of the mountain's warmth in
 ## its cage, dull by day; at night alight (the dark doesn't touch it), a
 ## soft halo round it and its warmth on the ground about its foot. One
-## light: test_night_light's budget holds with every waystation built.
-func _add_ember_lamp(root: Node2D, cell: Vector2i, place: String) -> void:
+## light: test_night_light's budget holds with every waystation built; a
+## lamp close by one that has it (`own_light` false) keeps its halo alone,
+## a cheaper light, so dozens of lamps hold it too (PIX-323).
+func _add_ember_lamp(root: Node2D, cell: Vector2i, place: String, own_light := true) -> void:
 	var lit := AnimatedSprite2D.new()
 	lit.sprite_frames = RouteArt.ember()
 	lit.material = Lights.unshaded()
@@ -2441,6 +2483,8 @@ func _add_ember_lamp(root: Node2D, cell: Vector2i, place: String) -> void:
 	ember_lamps[place] = lit
 	var top := Vector2(cell * TILE) + Vector2(0, TILE - RouteArt.size("ember_lamp").y)
 	var halo := _add_halo(top + RouteArt.HALO_AT, EMBER_HALO, EMBER_HALO_PEAK)
+	if not own_light:
+		return
 	var light := Lights.make(Vector2(cell * TILE) + EMBER_POOL, EMBER_REACH, Lights.EMBER, Lights.EMBER_ENERGY, true)
 	props.add_child(light)
 	halo.tree_exiting.connect(light.queue_free)
@@ -2645,7 +2689,7 @@ func pitch_tent(cell: Vector2i) -> void:
 
 ## A camp's tent or torch: sorted among the actors at its foot, which blocks.
 func _add_camp_piece(cell: Vector2i, piece: Dictionary) -> void:
-	var foot: Rect2 = {"tent": TENT_FOOT, "board": BOARD_FOOT, "post": HAMLET_FOOT}.get(piece["kind"], TORCH_FOOT)
+	var foot: Rect2 = {"tent": TENT_FOOT, "board": BOARD_FOOT, "post": HAMLET_FOOT, "desk": DESK_FOOT}.get(piece["kind"], TORCH_FOOT)
 	var root := Node2D.new()
 	root.position = Vector2(cell * TILE) + Vector2(0, foot.end.y)
 	root.add_to_group("decor")
@@ -2679,8 +2723,11 @@ func _add_camp_piece(cell: Vector2i, piece: Dictionary) -> void:
 		show_post_box()
 	else:
 		var tent := Sprite2D.new()
-		tent.texture = PunyTerrain.sheet().tile_texture(piece["tile"])
+		tent.texture = RoomArt.texture(piece["art"]) if piece.has("art") else PunyTerrain.sheet().tile_texture(piece["tile"])
 		sprite = tent
+		# Her ledger read by its candle at night.
+		if piece["kind"] == "desk":
+			_add_candle(Vector2(cell * TILE) + DESK_FLAME)
 	sprite.set("centered", false)
 	sprite.position = Vector2(0, -foot.end.y - (LampArt.STAKE_LIFT if piece["kind"] == "torch" else 0))
 	if piece["kind"] == "post":
@@ -2690,7 +2737,7 @@ func _add_camp_piece(cell: Vector2i, piece: Dictionary) -> void:
 		var poster := Sprite2D.new()
 		poster.texture = _wanted_poster()
 		poster.centered = false
-		poster.position = Vector2(5, 5)
+		poster.position = Vector2(4, 3)
 		sprite.add_child(poster)
 	var body := StaticBody2D.new()
 	var shape := CollisionShape2D.new()
@@ -2707,19 +2754,29 @@ static var _torch_frames: SpriteFrames
 static var _poster: ImageTexture
 
 
-## A wanted poster pinned over the board's notes: a red header, a dark face.
+## The Slayer's Ledger's bounty pinned over the board's notes (PIX-338): a
+## red pin, the beast's claw raked across it, the reward's line under.
+const POSTER := [
+	"....r....",
+	"ffffrffff",
+	"ffkffkffk",
+	"ffkffkffk",
+	"fkffkffkf",
+	"fkffkffkf",
+	"fffffffff",
+	"fsssssssf",
+	"sssssssss",
+]
+const POSTER_INKS := {"f": "f1e3c0", "s": "c9b48a", "r": "b33a2c", "k": "8a2a20"}
+
+
 static func _wanted_poster() -> ImageTexture:
 	if _poster == null:
-		var art := Image.create(6, 7, false, Image.FORMAT_RGBA8)
-		art.fill(Color("f1e3c0"))
-		for x in range(1, 5):
-			art.set_pixel(x, 1, Color("b33a2c"))
-		for cell: Vector2i in [Vector2i(2, 3), Vector2i(3, 3), Vector2i(2, 4), Vector2i(3, 4), Vector2i(1, 4), Vector2i(4, 4)]:
-			art.set_pixel(cell.x, cell.y, Color("4a3426"))
-		for x in 6:
-			art.set_pixel(x, 6, Color("c9b48a"))
-		art.set_pixel(0, 0, Color("8a2a20"))
-		art.set_pixel(5, 0, Color("8a2a20"))
+		var art := Image.create(POSTER[0].length(), POSTER.size(), false, Image.FORMAT_RGBA8)
+		for y in POSTER.size():
+			for x in POSTER[y].length():
+				if POSTER[y][x] != ".":
+					art.set_pixel(x, y, Color(POSTER_INKS[POSTER[y][x]]))
 		_poster = ImageTexture.create_from_image(art)
 	return _poster
 
