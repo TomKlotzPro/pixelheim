@@ -3921,6 +3921,10 @@ msgid "Monsters keep hours: after dark, night packs come out in every region und
 msgstr "Les monstres ont leurs heures : à la nuit tombée, des meutes nocturnes sortent dans chaque région à ciel ouvert, loups et squelettes dans la forêt, fantômes sur le marais, spectres dans les Bois-Profonds, wendigos au col de la Porte-Givre, un peu plus forts et plus riches que le jour"
 
 #: assets/data/changelog.json
+msgid "Morvax keeps count of your lamps on his forge wall, a red stroke each, and tells you what he makes of them; as the ash heals, the map renames the Ash Fields the Greening, then the Lantern Meadows"
+msgstr "Morvax compte vos lanternes sur le mur de sa forge, un trait rouge pour chacune, et vous dit ce qu'il en pense ; à mesure que la cendre guérit, la carte renomme les Champs de Cendres la Reverdie, puis les Prés-aux-Lanternes"
+
+#: assets/data/changelog.json
 msgid "Morvax reads the letter; fifty years of tally marks count the village's lamps on his wall; then the mountain shakes"
 msgstr "Morvax lit la lettre ; sur son mur, cinquante ans de traits comptent les lanternes du village ; puis la montagne tremble"
 
@@ -4215,6 +4219,10 @@ msgstr "Il était une montagne"
 #: assets/data/changelog.json
 msgid "Once a boss lets go the roads out open again, and it keeps its wounds: the bar comes back where it was when the fight starts again"
 msgstr "Dès qu'un boss lâche, les routes s'ouvrent à nouveau, et il garde ses blessures : sa barre revient là où elle en était quand le combat reprend"
+
+#: assets/data/changelog.json
+msgid "Once a waystation stands, the town's board offers the post house: built behind the box, Wren's riders bring five pieces a morning, and Pip takes charge of the doves in its loft (they are all called Steve)"
+msgstr "Dès qu'une halte est debout, le tableau de la ville propose la maison de la Poste : bâtie derrière la boîte, les cavaliers de Wren apportent cinq pièces chaque matin, et Pip prend en charge les colombes du grenier (elles s'appellent toutes Steve)"
 
 #: assets/data/changelog.json
 msgid "Once he stands down, the north stair takes you back up to the cellars' door"
@@ -5557,6 +5565,10 @@ msgid "The Pixelheim Post opens: once Maren's first letter reaches Saltmere, a p
 msgstr "La Poste de Pixelheim ouvre : dès que la première lettre de Maren arrive à Saltmere, une boîte aux lettres se dresse sur la place, et chaque matin elle contient quelques lettres et colis à porter en chemin"
 
 #: assets/data/changelog.json
+msgid "The Post House"
+msgstr "La maison de la Poste"
+
+#: assets/data/changelog.json
 msgid "The Post now carries twelve stories across the whole Reach: Maren writing to Wenna after fifty years, Mirelle's gentle reminders about interest, Wren's horse that eats mittens, Fenwick in charge of Greyhold, and Morvax and Maren still arguing over forty lamps or forty-one"
 msgstr "La Poste porte maintenant douze histoires dans toute la Reach : Maren qui écrit à Wenna après cinquante ans, les doux rappels de Mirelle sur les intérêts, le cheval de Wren qui mange les moufles, Fenwick seul maître de Greyhold, et Morvax et Maren qui se disputent toujours : quarante lampes ou quarante et une"
 
@@ -6383,6 +6395,10 @@ msgstr "« Quoi de neuf » est désormais dans le menu titre, au clavier com
 #: assets/data/changelog.json
 msgid "When a boss falls far from its door, a way out opens right where it fell, lit and easy to spot, and the arrow points to it"
 msgstr "Quand un boss tombe loin de sa porte, une sortie s'ouvre juste là où il est tombé, éclairée et facile à repérer, et la flèche la montre"
+
+#: assets/data/changelog.json
+msgid "When a boss falls, the Victory card stands clear of the loot and LEVEL UP, the boss bar fades at once, a place card holds a hint instead of pushing it over the hero, and the guide arrow keeps off the words at the bottom (Claude's playtest)"
+msgstr "Quand un boss tombe, la carte Victoire reste à l'écart du butin et de NIVEAU SUPÉRIEUR, la barre du boss s'efface aussitôt, une carte de lieu met un conseil en attente au lieu de le pousser sur le héros, et la flèche de guidage évite les textes du bas (playtest de Claude)"
 
 #: assets/data/changelog.json
 msgid "When every voice is busy, the sounds that matter (a hurt, a level, a victory) still get through"
@@ -8629,12 +8645,20 @@ msgid "the Deepwood"
 msgstr "les Bois-Profonds"
 
 #: assets/data/combat.json
+msgid "the Greening"
+msgstr "la Reverdie"
+
+#: assets/data/combat.json
 msgid "the Greyhold cellars"
 msgstr "les caves de Greyhold"
 
 #: assets/data/combat.json
 msgid "the Kings' Vault"
 msgstr "le Caveau des rois"
+
+#: assets/data/combat.json
+msgid "the Lantern Meadows"
+msgstr "les Prés-aux-Lanternes"
 
 #: assets/data/combat.json
 msgid "the Mirefen"
@@ -9365,10 +9389,6 @@ msgid "Innkeeper Sela"
 msgstr "Sela l'aubergiste"
 
 #: assets/data/npcs.json
-msgid "Is it true about {boss}? You look... normal. I expected taller."
-msgstr "C'est vrai, pour {boss} ? Vous avez l'air si... ordinaire. Je m'attendais à quelqu'un de plus grand."
-
-#: assets/data/npcs.json
 msgid "It was the stew or the poultice. Probably the stew."
 msgstr "C'était le ragoût ou le cataplasme. Sans doute le ragoût."
 
@@ -9773,10 +9793,6 @@ msgid "The stone golems have taken to the cart hall. Rails don't run themselves.
 msgstr "Les golems de pierre ont élu domicile dans la halle des wagonnets. Les rails ne s'entretiennent pas tout seuls."
 
 #: assets/data/npcs.json
-msgid "The whole town heard about {boss}. Bram's telling it like he was there."
-msgstr "Tout Pixelheim est au courant, pour {boss}. Bram le raconte comme s'il y était."
-
-#: assets/data/npcs.json
 msgid "The yetis took the strongbox and left the furs. Even they know what's worth stealing."
 msgstr "Les yétis ont pris le coffre et laissé les fourrures. Même eux savent ce qui vaut la peine d'être volé."
 
@@ -9861,20 +9877,12 @@ msgid "Wren's post: travel to the town gate lands you on the square, and you wal
 msgstr "Relais de Wren : voyager jusqu'à la porte de la ville vous dépose sur la place, et vous marchez un dixième plus vite en surface"
 
 #: assets/data/npcs.json
-msgid "You came back from {floor}? Everyone said nobody comes back from there."
-msgstr "{floor}, et vous en revenez ? Tout le monde disait qu'on n'en revenait jamais."
-
-#: assets/data/npcs.json
 msgid "You came up the road as the fire came down the mountain. Who are you?"
 msgstr "Vous montiez par la route quand le feu descendait de la montagne. Qui êtes-vous ?"
 
 #: assets/data/npcs.json
 msgid "{beast}, gone! My mother won't believe it. I barely believe it."
 msgstr "Fini, {beast} ! Ma mère ne va jamais me croire. Moi-même, j'y crois à peine."
-
-#: assets/data/npcs.json
-msgid "{floor}, was it? My uncle went down there once. Once."
-msgstr "{floor}, c'est ça ? Mon oncle y est descendu une fois. Une seule."
 
 #: assets/data/npcs.json
 msgid "{settler} moved in! Pixelheim is filling up again."
@@ -9915,6 +9923,10 @@ msgstr "« Moral : bon. » Trente ans, et je ne l'ai jamais écrit une seu
 #: assets/data/post.json
 msgid "\"No questions. Some questions.\" Make up your mind, banker."
 msgstr "« Sans questions. Quelques questions. » Faudrait savoir, la banquière."
+
+#: assets/data/post.json
+msgid "\"Not to eat them.\" They only ate one."
+msgstr "« Pas à les manger. » Elles n'en ont mangé qu'une."
 
 #: assets/data/post.json
 msgid "\"Of what?\" Ha! He's interested."
@@ -10087,6 +10099,14 @@ msgstr "(Elle rit tellement qu'elle doit s'asseoir sur un seau.) Attendez. Je va
 #: assets/data/post.json
 msgid "(She laughs, and wipes her eyes, and laughs again.) Wait. I'll tell her about the weather."
 msgstr "(Elle rit, s'essuie les yeux, et rit encore.) Attendez. Je vais lui parler du temps."
+
+#: assets/data/post.json
+msgid "(She laughs.) Well, it saves shouting. Wait there: the riders want to write back."
+msgstr "(Elle rit.) Bon, ça évite de crier. Attendez là : les cavaliers veulent répondre."
+
+#: assets/data/post.json
+msgid "(She reads it twice.) In charge of the doves."
+msgstr "(Elle la lit deux fois.) Responsable des colombes."
 
 #: assets/data/post.json
 msgid "(She shades her eyes and counts under her breath.) ...Don't tell him he's right. Wait there."
@@ -10289,6 +10309,14 @@ msgid "Aldric"
 msgstr "Aldric"
 
 #: assets/data/post.json
+msgid "All of them Steve."
+msgstr "Toutes des Steve."
+
+#: assets/data/post.json
+msgid "All the way to Saltmere! On Turnip!"
+msgstr "Jusqu'à Saltmere ! Sur Navet !"
+
+#: assets/data/post.json
 msgid "Allowed? He's a FOUNDING member."
 msgstr "Permis ? C'est un membre FONDATEUR."
 
@@ -10405,6 +10433,10 @@ msgid "Dear Bram. What rhymes with cheese? I have tried everything. Please write
 msgstr "Cher Bram. Qu'est-ce qui rime avec fromage ? J'ai tout essayé. Répondez-moi, je vous en prie. - Loras, un barde en détresse"
 
 #: assets/data/post.json
+msgid "Dear Elder Maren. The post house has a loft and the loft has doves and I am in charge of the doves. The doves have not been told. From Pip."
+msgstr "Chère Ancienne Maren. Le relais de poste a un pigeonnier et le pigeonnier a des colombes et c'est moi le responsable des colombes. Les colombes ne sont pas encore au courant. De la part de Pip."
+
+#: assets/data/post.json
 msgid "Dear Friend. Forty barrels of what? - Odo, merchant (honest)"
 msgstr "Cher ami. Quarante tonneaux de quoi ? - Odo, marchand (honnête)"
 
@@ -10443,6 +10475,14 @@ msgstr "Cher monsieur Morvax. On m'a dit que Tam aimait le fromage. Le club vous
 #: assets/data/post.json
 msgid "Dear Old Wenna. You come from the sea, so you know about fish. Does a dragon like fish? I am asking for a friend. The friend is a dragon. From Pip."
 msgstr "Chère madame Wenna. Vous venez de la mer, alors vous vous y connaissez en poissons. Est-ce qu'un dragon aime le poisson ? Je demande pour un ami. L'ami est un dragon. De la part de Pip."
+
+#: assets/data/post.json
+msgid "Dear Pip. Every post house needs someone in charge of the doves. Teach them to carry the letters, not to eat them. - Elder Maren"
+msgstr "Cher Pip. Tout relais de poste a besoin d'un responsable des colombes. Apprends-leur à porter les lettres, pas à les manger. - L'Ancienne Maren"
+
+#: assets/data/post.json
+msgid "Dear Wren. Your riders bring the post in at dawn and my doves sit on their hats. That is teamwork. I have named the doves. They are all called Steve. From Pip."
+msgstr "Chère Wren. Tes cavaliers apportent le courrier à l'aube et mes colombes s'assoient sur leurs chapeaux. C'est du travail d'équipe. J'ai donné un nom aux colombes. Elles s'appellent toutes Steve. De la part de Pip."
 
 #: assets/data/post.json
 msgid "Dragon Post: Fafnyr takes the post for %s in his teeth and is gone over the roofs."
@@ -10609,6 +10649,10 @@ msgid "From Elder Maren. \"Week two\", it says at the top."
 msgstr "De l'Ancienne Maren. « Semaine deux », dit le haut de la page."
 
 #: assets/data/post.json
+msgid "From Elder Maren. Folded into a very official square."
+msgstr "De l'Ancienne Maren. Pliée en un carré très officiel."
+
+#: assets/data/post.json
 msgid "From Elder Maren. Folded once, hard."
 msgstr "De l'Ancienne Maren. Pliée une fois, sèchement."
 
@@ -10769,12 +10813,20 @@ msgid "From Pell. Smudged with coal, with a small peck through one corner."
 msgstr "De Pell. Tachée de charbon, avec un petit coup de bec dans un coin."
 
 #: assets/data/post.json
+msgid "From Pip. A list, numbered, with a blot at number nine."
+msgstr "De Pip. Une liste, numérotée, avec une tache d'encre au numéro neuf."
+
+#: assets/data/post.json
 msgid "From Pip. Addressed in very large letters, so a dragon can read it."
 msgstr "De Pip. L'adresse est écrite en très grosses lettres, pour qu'un dragon puisse la lire."
 
 #: assets/data/post.json
 msgid "From Pip. There are paw prints on it."
 msgstr "De Pip. Il y a des traces de pattes dessus."
+
+#: assets/data/post.json
+msgid "From Pip. There's a feather tucked in the fold, for proof."
+msgstr "De Pip. Une plume est glissée dans le pli, comme preuve."
 
 #: assets/data/post.json
 msgid "From Pip. There's a fish drawn on the envelope. Or a boot."
@@ -10823,6 +10875,10 @@ msgstr "De Wenna. Pliée en quatre, très soigneusement."
 #: assets/data/post.json
 msgid "From Wenna. Tam's sister's hand, firm and round."
 msgstr "De Wenna. L'écriture de la sœur de Tam, ferme et ronde."
+
+#: assets/data/post.json
+msgid "From Wren the Stablemaster. A grey feather is stuck in the wax."
+msgstr "De Wren la palefrenière. Une plume grise est collée dans la cire."
 
 #: assets/data/post.json
 msgid "From Wren the Stablemaster. It smells of hay and apples."
@@ -10921,6 +10977,10 @@ msgid "Healer. They say the fen grows reeds as thick as your arm. I pay full pri
 msgstr "Guérisseuse. On dit que le marais fait pousser des roseaux gros comme le bras. Je paie le prix fort. - Vex"
 
 #: assets/data/post.json
+msgid "Heaven help the doves. Wait there, courier: someone in charge deserves a proper answer."
+msgstr "Que le ciel vienne en aide aux colombes. Attendez là, messager : un responsable mérite une vraie réponse."
+
+#: assets/data/post.json
 msgid "Heavy for its size. Something wrapped in an old sock."
 msgstr "Lourd pour sa taille. Quelque chose d'enveloppé dans une vieille chaussette."
 
@@ -11011,6 +11071,10 @@ msgstr "Il arrive en feu. Juste l'enveloppe. Surtout l'enveloppe."
 #: assets/data/post.json
 msgid "It arrives smoking gently: the warmest letter anyone there has ever had."
 msgstr "Il arrive en fumant doucement : le courrier le plus chaleureux qu'on y ait jamais reçu."
+
+#: assets/data/post.json
+msgid "It was a short one. It was from Bram."
+msgstr "Une toute petite. Elle était de Bram."
 
 #: assets/data/post.json
 msgid "It was his joke about me. He had a hundred of them."
@@ -11393,6 +11457,14 @@ msgid "Pip and the dragon"
 msgstr "Pip et le dragon"
 
 #: assets/data/post.json
+msgid "Pip's loft"
+msgstr "Le pigeonnier de Pip"
+
+#: assets/data/post.json
+msgid "Pip. My riders thank you for the doves on their hats. They don't, but they would if they were nicer. One Steve rode all the way to Saltmere on Turnip's head. - Wren"
+msgstr "Pip. Mes cavaliers te remercient pour les colombes sur leurs chapeaux. Ce n'est pas vrai, mais ils le feraient s'ils étaient plus aimables. Une des Steve est allée jusqu'à Saltmere sur la tête de Navet. - Wren"
+
+#: assets/data/post.json
 msgid "Pixelheim's first lamp. Fifty years I kept one door and one lamp, and this one was the first of all."
 msgstr "La première lampe de Pixelheim. Cinquante ans, j'ai gardé une porte et une lampe, et celle-ci était la toute première."
 
@@ -11647,6 +11719,10 @@ msgstr "C'est Navet. Navet mange tout."
 #: assets/data/post.json
 msgid "That's her welcome song. She likes Wenna."
 msgstr "C'est sa chanson de bienvenue. Il aime bien Wenna."
+
+#: assets/data/post.json
+msgid "That's the bravest Steve. ...They're all the bravest Steve."
+msgstr "C'est la plus courageuse des Steve. ... Elles sont toutes la plus courageuse des Steve."
 
 #: assets/data/post.json
 msgid "The Blackiron Waystation"
@@ -12581,6 +12657,26 @@ msgid "Forty lamps, not forty-one. He counts the moon. He always counted the moo
 msgstr "Quarante lampes, pas quarante et une. Il compte la lune. Il a toujours compté la lune."
 
 #: assets/data/progression.json
+msgid "Forty-five. A light on every road out of the village. Fifty years I watched them go out, one by one. ...Don't tell Maren I said anything."
+msgstr "Quarante-cinq. Une lumière sur chaque route qui sort du village. Cinquante ans que je les regardais s'éteindre, une à une. ... N'allez pas répéter ça à Maren."
+
+#: assets/data/progression.json
+msgid "Forty-four. I've had to start a new row. Fifty years, and I never once started a new row in the middle of a year."
+msgstr "Quarante-quatre. J'ai dû commencer une nouvelle rangée. Cinquante ans, et jamais je n'avais commencé une rangée en plein milieu d'une année."
+
+#: assets/data/progression.json
+msgid "Forty-six. Five of yours now. There's one I can't even see from here, and I counted it anyway. That's how much I trust you."
+msgstr "Quarante-six. Cinq à vous, maintenant. Il y en a une que je ne vois même pas d'ici, et je l'ai comptée quand même. C'est dire si je vous fais confiance."
+
+#: assets/data/progression.json
+msgid "Forty-three. Two out on the roads now, both crooked. I'd know your lamps anywhere."
+msgstr "Quarante-trois. Deux sur les routes, maintenant, de travers toutes les deux. Je reconnaîtrais vos lampes entre mille."
+
+#: assets/data/progression.json
+msgid "Forty-two. Forty-one, and a new one out on the road. Crooked. That's yours, isn't it."
+msgstr "Quarante-deux. Quarante et une, plus une nouvelle là-bas sur la route. De travers. C'est la vôtre, hein."
+
+#: assets/data/progression.json
 msgid "Four forest herbs, fresh, from the patches in the Whispering Forest. The shrine's beds are never empty for long."
 msgstr "Quatre herbes des bois, fraîches, cueillies aux points de récolte de la Forêt murmurante. Les lits du sanctuaire ne restent jamais vides bien longtemps."
 
@@ -13111,6 +13207,10 @@ msgstr "Mirelle ouvrira une banque à Pixelheim - dès que sa chambre forte cont
 #: assets/data/progression.json
 msgid "Mirelle's bank notes need an ink no forger can match."
 msgstr "Les billets de la banque de Mirelle demandent une encre qu'aucun faussaire ne puisse imiter."
+
+#: assets/data/progression.json
+msgid "More than I've got wall for. I've started on the door. All crooked, and all yours, aren't they."
+msgstr "Plus que je n'ai de mur. J'ai commencé sur la porte. Toutes de travers, et toutes à vous, hein."
 
 #: assets/data/progression.json
 msgid "Morvax has a question for Pixelheim, fifty years in the asking: does it want him back? He'd rather hear it from the courier."
@@ -14325,10 +14425,6 @@ msgid "\"Courier. You'll want the kings' gold, then. A hundred years I lay on it
 msgstr "« Messager. Vous voulez l'or des rois, j'imagine. Cent ans que je suis couché dessus. »"
 
 #: assets/data/story.json
-msgid "\"I carried a letter,\" you say. \"You broke a seal.\""
-msgstr "« J'ai porté une lettre, dites-vous. Vous avez brisé un sceau. »"
-
-#: assets/data/story.json
 msgid "\"Take it. It's all corners.\""
 msgstr "« Prenez-le. Ce ne sont que des coins. »"
 
@@ -14343,6 +14439,10 @@ msgstr "« Vous êtes en retard, messager. Cinquante ans de retard. »"
 #: assets/data/story.json
 msgid "(Beside the last mark, smaller: \"New one by the bridge. Crooked. Tell her.\")"
 msgstr "(À côté du dernier bâton, plus petit : « Une nouvelle près du pont. De travers. Lui dire. »)"
+
+#: assets/data/story.json
+msgid "(Fresh red strokes after the newest row, and under them, in his cramped hand: \"%s\")"
+msgstr "(De nouveaux traits rouges après la dernière rangée et, dessous, de son écriture serrée : « %s »)"
 
 #: assets/data/story.json
 msgid "(She takes a letter from her sleeve, and the brooch with five marks on it, hers the last.) My promise, courier: the fifth mark. And this. It has an address now."
@@ -14377,10 +14477,6 @@ msgid "Art by Shade (merchant-shade.itch.io)"
 msgstr "Graphismes de Shade (merchant-shade.itch.io)"
 
 #: assets/data/story.json
-msgid "Below the hoard, the dead keep their own court."
-msgstr "Sous le trésor, les morts tiennent leur propre cour."
-
-#: assets/data/story.json
 msgid "Beside it an old man sits up, as if he'd heard you coming."
 msgstr "À côté, un vieil homme se redresse, comme s'il avait entendu vos pas."
 
@@ -14411,10 +14507,6 @@ msgstr "Cinquante ans de bâtons, un trait pour chaque lampe allumée dans la va
 #: assets/data/story.json
 msgid "He carried Liane the last mile up and complained the whole way. And Hale kept it fifty years?"
 msgstr "Il a porté Liane sur la dernière lieue de la montée en râlant tout du long. Et Hale l'a gardé cinquante ans ?"
-
-#: assets/data/story.json
-msgid "He is awake, and back on his hoard."
-msgstr "Il est éveillé, et de retour sur son trésor."
 
 #: assets/data/story.json
 msgid "He isn't working. He is looking down at the valley, counting lamps."
@@ -14457,16 +14549,8 @@ msgid "Morvax takes a room at the inn and a bench by the fountain, and argues wi
 msgstr "Morvax prend une chambre à l'auberge et un banc près de la fontaine, et se dispute avec Maren tous les jours."
 
 #: assets/data/story.json
-msgid "Morvax the Deathless"
-msgstr "Morvax le Sans-Mort"
-
-#: assets/data/story.json
 msgid "On top of the mountain a dragon sleeps on a chain. Everyone agrees this is the best place for him."
 msgstr "Au sommet de la montagne, un dragon dort au bout d'une chaîne. Tout le monde s'accorde à dire que c'est très bien ainsi."
-
-#: assets/data/story.json
-msgid "Once a hero of Pixelheim. Now its oldest debt."
-msgstr "Jadis un héros de Pixelheim. Aujourd'hui, sa plus vieille dette."
 
 #: assets/data/story.json
 msgid "Oskar swung the pick, Liane did the sums, Tam fed the miners and Morvax paid. I set my mark last."
@@ -14535,10 +14619,6 @@ msgstr "La montagne est calme, la taverne beaucoup moins, et le fromage n'a jama
 #: assets/data/story.json
 msgid "The sky turns grey behind the mountain. Fafnyr sinks onto the square, spent, and the collar drags at him: north, always north."
 msgstr "Le ciel grisaille derrière la montagne. Fafnyr s'affaisse sur la place, à bout de forces, et le collier le tire : vers le nord, toujours vers le nord."
-
-#: assets/data/story.json
-msgid "The summit is his. So is everything the heroes carried up."
-msgstr "Le sommet est à lui. Comme tout ce que les héros y ont monté."
 
 #: assets/data/story.json
 msgid "The tally marks"
@@ -14641,6 +14721,10 @@ msgid "A night at the inn leaves you rested for a while"
 msgstr "Une nuit à l'auberge vous offre un vrai repos pendant un temps"
 
 #: assets/data/town.json
+msgid "A post house on the square, behind the box: Wren's riders bring the Reach's post in at dawn, five pieces a morning, and Pip keeps a loft of doves under its roof."
+msgstr "Un relais de poste sur la place, derrière la boîte : les cavaliers de Wren apportent le courrier de la Marche à l'aube, cinq plis par matin, et Pip tient un pigeonnier de colombes sous son toit."
+
+#: assets/data/town.json
 msgid "A roof over the anvil again. Hilda says the steel sings better indoors."
 msgstr "De nouveau un toit au-dessus de l'enclume. Hilda dit que l'acier chante mieux à l'abri."
 
@@ -14667,6 +14751,10 @@ msgstr "Une lampe de braise là où la route des Marais de Fange quitte la March
 #: assets/data/town.json
 msgid "Ashes"
 msgstr "Cendres"
+
+#: assets/data/town.json
+msgid "Build the post house"
+msgstr "Bâtir le relais de poste"
 
 #: assets/data/town.json
 msgid "Builder Ilka"
@@ -14893,6 +14981,10 @@ msgid "The Lantern Walk"
 msgstr "L'Allée des lanternes"
 
 #: assets/data/town.json
+msgid "The Post wants a waystation on its roads first"
+msgstr "La Poste attend d'abord une halte sur ses routes"
+
+#: assets/data/town.json
 msgid "The Saltmere road wants its waystation first"
 msgstr "La route de Saltmere attend d'abord sa halte"
 
@@ -14947,6 +15039,10 @@ msgstr "L'auberge honore son mécène : repos à moitié prix"
 #: assets/data/town.json
 msgid "The mountain is quiet, and the whole Reach has heard of Pixelheim: it can grow into a City."
 msgstr "La montagne est calme, et toute la Marche des Cendres a entendu parler de Pixelheim : le voilà prêt à devenir une cité."
+
+#: assets/data/town.json
+msgid "The post house stands on the square. Wren's riders bring five pieces in each dawn, and Pip is in charge of the doves. The doves have not been told."
+msgstr "Le relais de poste se dresse sur la place. Les cavaliers de Wren apportent cinq plis à chaque aube, et Pip est responsable des colombes. Les colombes ne sont pas encore au courant."
 
 #: assets/data/town.json
 msgid "The river bridge is mended. Brin's rope holds, and Bram says he supervised."

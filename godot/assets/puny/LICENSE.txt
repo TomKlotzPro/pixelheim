@@ -11,8 +11,8 @@ generative AI was used.
 - icons/       "Free 16x16 Weapon RPG Icons"         https://merchant-shade.itch.io/free-16x16-weapon-rpg-icons
                (iron-, steel-, bronze-, gold-weapons.png) and
                "Free 16x16 Assorted RPG Icons"       https://merchant-shade.itch.io/16x16-mixed-rpg-icons
-               (armours, potions, consumables, books, chests; its weapons.png
-               renamed assorted-weapons.png)
+               (armours, chests; its weapons.png renamed
+               assorted-weapons.png)
 
 Files are unmodified copies, the Tiled tilesets (.tsx) included, except
 two looks made from his sheets by swapping colours (godot/tools/outfits.py,

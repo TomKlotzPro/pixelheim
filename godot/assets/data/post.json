@@ -4,6 +4,7 @@
   "opened": "Word has reached Pixelheim: its courier delivers anything, even fifty years late. A post box goes up on the square, beside the bounty board.",
   "box": {"mapId": "town", "x": 44, "y": 21},
   "bag": 3,
+  "house": {"about": "PIX-325: the post house, a work on the town's board (town.json's works entry `work`): built, Wren's riders bring the post in at dawn and the box holds `bag` pieces a morning, and Pip's loft opens a thread of its own (the_loft).", "work": "post_house", "bag": 5},
   "seed": 320,
   "kinds": {
     "letter": {"sealed": "SEALED", "delivered": "DELIVERED"},
@@ -1172,6 +1173,71 @@
           "said": [
             "(She folds it very small and keeps it.) Fifty years of letters I never sent, and he writes me numbers.",
             "...I'll take the numbers. Here, courier: three more lights, for your own count."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "the_loft",
+      "title": "Pip's loft",
+      "pieces": [
+        {
+          "id": "loft_doves",
+          "kind": "letter",
+          "from": "pip",
+          "to": "maren",
+          "tip": 4,
+          "when": [{"kind": "project", "projectId": "post_house"}],
+          "addressed": "Letter for Elder Maren",
+          "note": "From Pip. There's a feather tucked in the fold, for proof.",
+          "words": ["Dear Elder Maren. The post house has a loft and the loft has doves and I am in charge of the doves. The doves have not been told. From Pip."],
+          "said": [
+            "(She reads it twice.) In charge of the doves.",
+            "Heaven help the doves. Wait there, courier: someone in charge deserves a proper answer."
+          ]
+        },
+        {
+          "id": "loft_doves_reply",
+          "kind": "letter",
+          "reply": true,
+          "from": "maren",
+          "to": "pip",
+          "tip": 3,
+          "addressed": "Reply for Pip",
+          "note": "From Elder Maren. Folded into a very official square.",
+          "words": ["Dear Pip. Every post house needs someone in charge of the doves. Teach them to carry the letters, not to eat them. - Elder Maren"],
+          "said": [
+            "\"Not to eat them.\" They only ate one.",
+            "It was a short one. It was from Bram."
+          ]
+        },
+        {
+          "id": "loft_steve",
+          "kind": "letter",
+          "from": "pip",
+          "to": "wren",
+          "tip": 4,
+          "addressed": "Letter for Wren the Stablemaster",
+          "note": "From Pip. A list, numbered, with a blot at number nine.",
+          "words": ["Dear Wren. Your riders bring the post in at dawn and my doves sit on their hats. That is teamwork. I have named the doves. They are all called Steve. From Pip."],
+          "said": [
+            "All of them Steve.",
+            "(She laughs.) Well, it saves shouting. Wait there: the riders want to write back."
+          ]
+        },
+        {
+          "id": "loft_steve_reply",
+          "kind": "letter",
+          "reply": true,
+          "from": "wren",
+          "to": "pip",
+          "tip": 3,
+          "addressed": "Reply for Pip",
+          "note": "From Wren the Stablemaster. A grey feather is stuck in the wax.",
+          "words": ["Pip. My riders thank you for the doves on their hats. They don't, but they would if they were nicer. One Steve rode all the way to Saltmere on Turnip's head. - Wren"],
+          "said": [
+            "All the way to Saltmere! On Turnip!",
+            "That's the bravest Steve. ...They're all the bravest Steve."
           ]
         }
       ]

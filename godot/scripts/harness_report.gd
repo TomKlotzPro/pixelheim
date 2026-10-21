@@ -74,6 +74,7 @@ const TABLE := [
 	{"field": "home", "says": "who the story brought home to live in town, by first name: wenna (PIX-255)"},
 	{"field": "hour", "says": "at the Night of Ash's dawn: the HUD's clock as it reads, its dial a sun or a moon: 04:48 sun (PIX-346)"},
 	{"field": "hub", "says": "on a hub's map: its place, the step it has grown to and what of it stands, drawn: saltmere:3:lighthouse (PIX-324)"},
+	{"field": "hudclash", "says": "while a title card, a hint, the battle log, the arrow or anything rising over the world shows: the words on the screen that overlap, as pairs (card, hint, float, log, arrow, bar, next, plate, and the hero under a plate), or none (PIX-345: the Victory card on a boss's win, a hint pushed over the hero, the arrow on a floor's name): none"},
 	{"field": "jobs", "says": "on the Night of Bells: the townsfolk's jobs that have acted, by kind: arrows,bell,cheese (PIX-253 step 9)"},
 	{"field": "jumps", "says": "with turning: the hero's drawn way changing more than an eighth of a turn at once, a snap round a corner (PIX-293)"},
 	{"field": "lamplight", "says": "on a map with lamps or lit windows, and in every room: its street lamps lit of all, its windows' lit glass, a room's candles burning and the day through its windows: posts 6/6 panes 12 flames 0 beams 0 (PIX-311)"},
@@ -93,6 +94,7 @@ const TABLE := [
 	{"field": "patches", "says": "with --day: the patches still to pick, by cell (PIX-250)"},
 	{"field": "pauseline", "says": "the pause menu's line under its title while it's open: when the game last saved, Saved 12 s ago (PIX-302 step 4)"},
 	{"field": "post", "says": "once the Pixelheim Post is open: standing when its box is drawn on this map, then the pieces in the box this morning, in the satchel and delivered, and while the map is open the addressees it marks on its page: standing,box:0,bag:2,sent:1,marked:1 (PIX-320)"},
+	{"field": "posthouse", "says": "on the square once the post house is built: standing when it's drawn behind the box (PIX-325)"},
 	{"field": "quill", "says": "the quill by the clock: the times it wrote of the saves made this session (moments write, the quiet autosaves don't), and slept when the last was a night's sleep, Saved under it: 1/3 slept (PIX-302 step 4)"},
 	{"field": "read", "says": "on the journal's Letters page: the letters it reads (PIX-253)"},
 	{"field": "rise", "says": "with --rise: how far the building on the tour has risen: ruin, rising, built (PIX-264)"},
@@ -113,6 +115,7 @@ const TABLE := [
 	{"field": "street", "says": "the street under the hero: the paving its age lays (gravel, cobbles, sandstone, bricks, flags; drawn with the paid art, bare dirt without), or worn on a rutted road (PIX-307)"},
 	{"field": "tab", "says": "with station: the tab the counter opened on (PIX-234)"},
 	{"field": "tags", "says": "after a fight on this visit: the most foes' level tags shown at once while it was on (PIX-340: one a pack)"},
+	{"field": "tally", "says": "on Morvax's forge: the red strokes after his wall's newest row, one for each of the courier's ember lamps: fresh:4 (PIX-325)"},
 	{"field": "titleline", "says": "the title's line under its menu, by what it's about: slot (the slot in hand: unreadable, or its hero the save before, PIX-303) or full (New Game with no slot free, PIX-316)"},
 	{"field": "toast", "says": "the battle log's line on the screen (PIX-343): its boxes, their lines, and fits, or what's wrong: off (the screen), tracker (on the objective's line), dock, plate (the message plate up too), arrow (the quest arrow drawn over it): 1 box, 1 line, fits"},
 	{"field": "tone", "says": "on a map in the open air: how the region's tone takes the hero's cell: whole (tone), the mire's with its murk and puddles (mire), its dirt only beside the ash (fringe), or none (PIX-305)"},
@@ -536,7 +539,8 @@ func field_healed() -> String:
 func field_hint() -> String:
 	var hud: Hud = world.hud
 	if is_instance_valid(hud.hint_card) and not hud.hint_card.is_queued_for_deletion():
-		return String(hud.hint_card.get_meta("id", ""))
+		# Held unseen under a title card (PIX-345).
+		return ("" if hud.hint_card.visible else "held:") + String(hud.hint_card.get_meta("id", ""))
 	var held := hud.hint_held()
 	return "held:" + held if held != "" else ""
 
@@ -566,6 +570,47 @@ func field_hub() -> String:
 			standing.append(String(piece["art"]))
 	var step := Hubs.step(GameState.post, world.map.id)
 	return "%s:%d:%s" % [world.map.id, step, "+".join(standing)] if not standing.is_empty() else "%s:%d" % [world.map.id, step]
+
+
+func field_hudclash() -> String:
+	var hud: Hud = world.hud
+	var messages: Messages = world.messages
+	var shown: Array = []
+	if hud._card_up():
+		shown.append(["card", hud._card.get_global_rect()])
+	if is_instance_valid(hud.hint_card) and hud.hint_card.visible and not hud.hint_card.is_queued_for_deletion():
+		shown.append(["hint", hud.hint_card.get_global_rect()])
+	for rect: Rect2 in world.fx.shown():
+		shown.append(["float", hud.to_screen(rect)])
+	for chip: Control in messages.log_box.get_children():
+		shown.append(["log", chip.get_global_rect()])
+	if hud.arrow != null and hud.arrow.visible:
+		var art: Texture2D = Marks.arrow(hud.arrow.way, hud.arrow.main)
+		shown.append(["arrow", Rect2(hud.arrow.position - Marks.arrow_middle(), art.get_size())])
+	if shown.is_empty():
+		return ""
+	if hud.boss_bar.showing():
+		shown.append(["bar", hud.boss_bar.plate.get_global_rect()])
+	# The objective's line gives way to a message where it stands.
+	if messages.message_box.modulate.a > 0.0:
+		shown.append(["plate", messages.message_box.get_global_rect()])
+	elif hud.objective_box.modulate.a > 0.0:
+		shown.append(["next", hud.objective_box.get_global_rect()])
+	shown.append(["hero", hud.hero_on_screen()])
+	var clashes: PackedStringArray = []
+	for i in shown.size():
+		for j in range(i + 1, shown.size()):
+			var pair: Array = [shown[i][0], shown[j][0]]
+			# The hero counts under a card or a hint, the plates the HUD
+			# places: the rest stands where it stands, the hero wherever the
+			# camera has them at a map's edge.
+			if pair.has("hero") and not (pair.has("card") or pair.has("hint")):
+				continue
+			pair.sort()
+			var said := "%s/%s" % pair
+			if (shown[i][1] as Rect2).intersects(shown[j][1]) and not clashes.has(said):
+				clashes.append(said)
+	return ",".join(clashes) if not clashes.is_empty() else "none"
 
 
 func field_jobs() -> String:
@@ -702,6 +747,10 @@ func field_post() -> String:
 	if screen != null:
 		counts += ",marked:%d" % screen.painting.post_cells().size()
 	return ("standing," + counts) if world.view.post_box != null and is_instance_valid(world.view.post_box) else counts
+
+
+func field_posthouse() -> String:
+	return "standing" if world.view.post_house != null and is_instance_valid(world.view.post_house) else ""
 
 
 func field_quill() -> String:
@@ -843,6 +892,11 @@ func field_tab() -> String:
 
 func field_tags() -> String:
 	return str(world.foes.most_tags) if world.foes.kills > 0 else ""
+
+
+func field_tally() -> String:
+	var marks: Variant = world.view.tally_marks
+	return "fresh:%d" % marks.fresh if marks != null and is_instance_valid(marks) else ""
 
 
 func field_titleline() -> String:

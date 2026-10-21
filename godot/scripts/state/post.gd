@@ -24,7 +24,9 @@ class_name Post
 ## assets/data/post.json; GameState's `posting` takes and hands over,
 ## MapView draws the box, the journal's Post and Postmarks tabs and the map
 ## read it. The roads it's carried along grow signposts and waystations
-## (PIX-322): Routes. After the story (PIX-326) the Reach keeps writing:
+## (PIX-322): Routes. Once one has a waystation the board offers the post
+## house (PIX-325): built, the box holds a bigger bag, and Pip's loft
+## writes a thread of its own. After the story (PIX-326) the Reach keeps writing:
 ## Maren to the families once a week, Morvax from his bench or his forge
 ## (a thread for each answer: `ending`), Fafnyr on cheese, and the Kings'
 ## Vault's heirlooms going home to the families whose marks they carry;
@@ -92,9 +94,23 @@ static func box_cell() -> Vector2i:
 	return Vector2i(int(at["x"]), int(at["y"]))
 
 
-## How many pieces the box holds at most of a morning.
-static func bag_size() -> int:
-	return int(_data()["bag"])
+## Where the post house stands once built (PIX-325): the two cells behind
+## the box, the box before its left half.
+static func house_cells() -> Array[Vector2i]:
+	var at := box_cell() + Vector2i.UP
+	return [at, at + Vector2i.RIGHT]
+
+
+## How many pieces the box holds at most of a morning: more once the post
+## house stands (PIX-325: Wren's riders bring the post in at dawn).
+static func bag_size(settlement: SettlementState) -> int:
+	var house: Dictionary = _data()["house"]
+	return int(house["bag"] if house_built(settlement) else _data()["bag"])
+
+
+## Whether the post house stands on the square (PIX-325): its work built.
+static func house_built(settlement: SettlementState) -> bool:
+	return String(_data()["house"]["work"]) in Town.done_projects(settlement)
 
 
 ## The day `steps` falls on (DayNight's, a night's sleep ending it): the
@@ -262,7 +278,7 @@ static func pick(ids: Array[String], day: int, count: int) -> Array[String]:
 static func in_box(post: PostState, day: int, progression: ProgressionState, settlement: SettlementState, discovered: Dictionary) -> Array[String]:
 	if not open(progression, settlement) or post.taken >= day:
 		return []
-	return pick(offered(post, progression, settlement, discovered, day), day, bag_size())
+	return pick(offered(post, progression, settlement, discovered, day), day, bag_size(settlement))
 
 
 ## The day's post taken from the box into the satchel (`ids`, what it

@@ -176,6 +176,11 @@ var _night := -1
 ## The post box on the square (PIX-320), once the Post is open; null
 ## elsewhere.
 var post_box: Sprite2D
+## The post house behind it once built (PIX-325); null elsewhere.
+var post_house: Sprite2D
+## Morvax's tally marks on his forge's wall (PIX-253 step 8; PIX-325 adds
+## the courier's lamps); null elsewhere.
+var tally_marks: TallyMarks
 ## The post boxes at the waystations on this map (PIX-322): each holds the
 ## day's post as the square's does.
 var post_boxes: Array[Sprite2D] = []
@@ -247,6 +252,9 @@ const CHIMNEY_MOUTH := Vector2(8, 2)
 ## A settlement's standing dressing's foot in its cell (Hamlet, PIX-313):
 ## the middle of the bottom of the cell, as every prop's.
 const HAMLET_FOOT := Rect2(2, 5, 12, 11)
+## The post house's foot (PIX-325): across its two cells, each blocked over
+## x 4..12, y 7..15 as every blocker must be.
+const POST_HOUSE_FOOT := Rect2(2, 5, 28, 11)
 ## A waystation's ember lamp at night (PIX-322): the halo round its shard
 ## and its warmth pooled on the ground about its foot (from its cell's top
 ## left), reaching this far.
@@ -527,6 +535,11 @@ func _plan_props() -> void:
 	# Saltmere (PIX-320).
 	if data.id == Post.box_map() and GameState.posting.is_open():
 		camps[Post.box_cell()] = {"kind": "post"}
+		# The post house behind it once built (PIX-325).
+		var house := Post.house_cells()
+		if Post.house_built(GameState.settlement) and house.all(func(cell: Vector2i) -> bool: return data.is_walkable(cell) and not camps.has(cell)):
+			camps[house[0]] = {"kind": "post_house"}
+			data.covered[house[1]] = true
 	for cell: Vector2i in camps:
 		data.covered[cell] = true
 
@@ -2204,30 +2217,6 @@ func _add_smoke(rect: Rect2i, share := 1.0) -> void:
 static var _glow_textures := {}
 
 
-## A warm, stepped glow (the title's lamplight), shown only at night, and
-## with `light_radius` a real light beside it that lights what's around
-## (PIX-221), gone with it.
-func _add_glow(at: Vector2, radius: int, peak: float, light_radius := 0.0, light_color := Lights.LAMP, flicker := false, energy := 1.0) -> Sprite2D:
-	var key := "%d:%f" % [radius, peak]
-	if not _glow_textures.has(key):
-		_glow_textures[key] = TitleScene.glow_texture(radius, Color(1.0, 0.72, 0.38), peak, 4)
-	var glow := Sprite2D.new()
-	glow.texture = _glow_textures[key]
-	# Added onto the night, never darkened by it.
-	glow.material = Lights.glow()
-	if light_radius > 0.0:
-		var lamp := Lights.make(at, light_radius, light_color, energy, flicker)
-		props.add_child(lamp)
-		glow.tree_exiting.connect(lamp.queue_free)
-		glow.set_meta("light", lamp)
-	glow.position = at
-	glow.z_index = 5
-	glow.add_to_group("decor")
-	props.add_child(glow)
-	night_glows.append(glow)
-	return glow
-
-
 static var _halo_textures := {}
 ## A halo's warmth; a lamp of another kind's colour tints its own (PIX-324).
 const HALO_TINT := Color(1.0, 0.72, 0.38)
@@ -2722,7 +2711,7 @@ func pitch_tent(cell: Vector2i) -> void:
 
 ## A camp's tent or torch: sorted among the actors at its foot, which blocks.
 func _add_camp_piece(cell: Vector2i, piece: Dictionary) -> void:
-	var foot: Rect2 = {"tent": TENT_FOOT, "board": BOARD_FOOT, "post": HAMLET_FOOT, "desk": DESK_FOOT}.get(piece["kind"], TORCH_FOOT)
+	var foot: Rect2 = {"tent": TENT_FOOT, "board": BOARD_FOOT, "post": HAMLET_FOOT, "post_house": POST_HOUSE_FOOT, "desk": DESK_FOOT}.get(piece["kind"], TORCH_FOOT)
 	var root := Node2D.new()
 	root.position = Vector2(cell * TILE) + Vector2(0, foot.end.y)
 	root.add_to_group("decor")
@@ -2754,6 +2743,10 @@ func _add_camp_piece(cell: Vector2i, piece: Dictionary) -> void:
 		post_box = Sprite2D.new()
 		sprite = post_box
 		show_post_box()
+	elif piece["kind"] == "post_house":
+		post_house = Sprite2D.new()
+		post_house.texture = HamletArt.texture("post_house")
+		sprite = post_house
 	else:
 		var tent := Sprite2D.new()
 		tent.texture = RoomArt.texture(piece["art"]) if piece.has("art") else PunyTerrain.sheet().tile_texture(piece["tile"])
@@ -2763,8 +2756,8 @@ func _add_camp_piece(cell: Vector2i, piece: Dictionary) -> void:
 			_add_candle(Vector2(cell * TILE) + DESK_FLAME)
 	sprite.set("centered", false)
 	sprite.position = Vector2(0, -foot.end.y - (LampArt.STAKE_LIFT if piece["kind"] == "torch" else 0))
-	if piece["kind"] == "post":
-		sprite.position.y = TILE - HamletArt.size("post_box").y - foot.end.y
+	if piece["kind"] in ["post", "post_house"]:
+		sprite.position.y = TILE - HamletArt.size("post_box" if piece["kind"] == "post" else "post_house").y - foot.end.y
 	root.add_child(sprite)
 	if piece.get("wanted", false):
 		var poster := Sprite2D.new()
@@ -3259,17 +3252,22 @@ static func _blockers() -> TileSet:
 func _add_set_pieces(data: MapData) -> void:
 	for piece: Dictionary in Letters.drawn_on(data.id):
 		if piece["look"] == "tally":
-			var marks := TallyMarks.new()
-			marks.rect = piece["rect"]
-			ground.add_child(marks)
+			tally_marks = TallyMarks.new()
+			tally_marks.rect = piece["rect"]
+			# A red stroke for each of the courier's ember lamps (PIX-325).
+			tally_marks.fresh = Routes.lamps(GameState.settlement).size()
+			ground.add_child(tally_marks)
 
 
 ## Fifty years of tally marks scratched into a wall (PIX-253 step 8): rows of
 ## fives across `rect` (cells), four strokes and the fifth across them, in
 ## whole art pixels, dark on the plaster; the newest row runs out part-way
-## (the counting isn't done).
+## (the counting isn't done), then a red stroke for each of the courier's
+## lamps (`fresh`, PIX-325), in fives too.
 class TallyMarks extends Node2D:
 	const INK := Color(0.29, 0.2, 0.14, 0.9)
+	const FRESH := Color(0.75, 0.27, 0.23, 0.95)
+	var fresh := 0
 	## A stroke's height, and the room a five takes with the gap after it.
 	const STROKE := 4
 	const GROUP := 9
@@ -3288,13 +3286,19 @@ class TallyMarks extends Node2D:
 			var last := row == ROWS.size() - 1
 			var count := LAST_ROW_GROUPS if last else groups
 			for group in count:
-				var x := left + group * GROUP
-				for stroke in 4:
-					draw_rect(Rect2(x + stroke * 2, top, 1, STROKE), INK)
-				# The fifth, across the four, a pixel a step.
-				for step in 8:
-					draw_rect(Rect2(x - 1 + step, top + STROKE - 1 - int(step * STROKE / 8.0), 1, 1), INK)
+				_five(left + group * GROUP, top, 5, INK)
 			if last:
 				# Two strokes of the next five: still counting.
-				for stroke in 2:
-					draw_rect(Rect2(left + count * GROUP + stroke * 2, top, 1, STROKE), INK)
+				_five(left + count * GROUP, top, 2, INK)
+				# As many as the wall has room for: "I've started on the door."
+				for group in mini(ceili(fresh / 5.0), groups - count - 1):
+					_five(left + (count + 1 + group) * GROUP, top, mini(fresh - group * 5, 5), FRESH)
+
+	## `strokes` of a five at `x`: up to four upright, the fifth across them,
+	## a pixel a step.
+	func _five(x: int, top: int, strokes: int, ink: Color) -> void:
+		for stroke in mini(strokes, 4):
+			draw_rect(Rect2(x + stroke * 2, top, 1, STROKE), ink)
+		if strokes == 5:
+			for step in 8:
+				draw_rect(Rect2(x - 1 + step, top + STROKE - 1 - int(step * STROKE / 8.0), 1, 1), ink)

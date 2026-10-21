@@ -32,7 +32,7 @@ func test_the_newer_sounds_are_shipped() -> void:
 		assert_true(ResourceLoader.exists("res://assets/audio/ambience/bed_%s.wav" % name), name)
 	for name: String in doc["themes"]:
 		assert_true(ResourceLoader.exists("res://assets/audio/music/theme_%s.wav" % name), name)
-	for scene_id: String in ["fafnyr", "morvax", "ending_home", "ending_stay"]:
+	for scene_id: String in ["ending_home", "ending_stay"]:
 		var themes: Array = Cutscene.scenes()[scene_id].filter(func(step: Dictionary) -> bool: return step["kind"] == "theme")
 		assert_eq(themes.size(), 1, "%s opens with its theme" % scene_id)
 		assert_true(doc["themes"].has(themes[0]["name"]))
@@ -45,7 +45,7 @@ func test_a_theme_plays_once_then_hands_over() -> void:
 	assert_eq(stream.loop_mode, AudioStreamWAV.LOOP_DISABLED)
 	Sound._theme_over(Sound._music)
 	assert_eq(Sound.track, "victory", "then what it named")
-	Sound.play_theme("fafnyr")
+	Sound.play_theme("ending")
 	Sound._theme_over(Sound._music)
 	assert_eq(Sound.track, "", "or nothing, for the world to choose")
 	Sound.stop_music()

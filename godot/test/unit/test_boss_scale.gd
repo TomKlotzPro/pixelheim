@@ -81,7 +81,7 @@ func test_the_storys_monsters_are_drawn_whole() -> void:
 				actors += 1
 				var scale := float(step.get("scale", 1.0))
 				assert_true(_whole(scale), "%s's %s at %s: a whole size" % [scene_id, sheets[step["sheet"]], scale])
-	assert_gt(actors, 5, "the story's monsters were looked at")
+	assert_gt(actors, 4, "the story's monsters were looked at")
 	assert_true(_whole(float(preload("res://scripts/world_stage.gd").FORGE_DRAGON_SCALE)), "Fafnyr on the forge at a whole size")
 
 

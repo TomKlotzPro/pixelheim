@@ -85,7 +85,7 @@ func _home_of(entry: Dictionary) -> String:
 # ---- The data ---------------------------------------------------------------------
 
 func test_the_threads_run_four_to_six_pieces_each_name_who_writes_and_who_reads() -> void:
-	assert_eq(Post.threads().size(), 17, "twelve threads: the three of step 1 and nine more; and five after the story (PIX-326)")
+	assert_eq(Post.threads().size(), 18, "eighteen threads: the three of step 1 and nine more, Pip's loft once the post house stands (PIX-325), and five after the story (PIX-326)")
 	var ids := {}
 	for thread: Dictionary in Post.threads():
 		var pieces: Array = thread["pieces"]
@@ -209,7 +209,7 @@ func test_the_first_bag_holds_three_pieces_between_places_the_hero_has_been() ->
 	for tier in [0, 1]:
 		state.settlement.town_tier = tier
 		var box := _box()
-		assert_eq(box.size(), Post.bag_size(), "three pieces in the Ashes and in the Hamlet")
+		assert_eq(box.size(), Post.bag_size(state.settlement), "three pieces in the Ashes and in the Hamlet")
 		for id: String in box:
 			var entry := Post.piece(id)
 			for who: String in [Post.sender(entry), Post.addressee(entry)]:
@@ -520,7 +520,7 @@ func test_nothing_expires_and_a_day_skipped_costs_nothing() -> void:
 	var offered := _offered()
 	state.world.steps = 30.0 * DayNight.DAY_CYCLE_STEPS
 	assert_eq(_offered(), offered, "a month later the threads still offer what they did: nothing went off")
-	assert_eq(_box(30).size(), Post.bag_size(), "and the box is as full")
+	assert_eq(_box(30).size(), Post.bag_size(state.settlement), "and the box is as full")
 	state.world.steps = 0.0
 	state.posting.take_bag()
 	var first := _carried().duplicate()

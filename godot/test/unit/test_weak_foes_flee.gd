@@ -1,9 +1,9 @@
 extends GutTest
 ## Weak monsters flee a much stronger hero (PIX-251): six levels below the
 ## hero (an elite counting two higher) a monster runs instead of charging -
-## never a boss, a Deep Hunt warden or a named monster, nor one held to its
-## fight (an escort's attackers, the Night of Ash's foes, a mimic just woken,
-## a boss's raised dead). It runs away over open ground in its region, never
+## never a boss or a named monster (the Vault's guardians among them), nor
+## one held to its fight (an escort's attackers, the Night of Ash's foes, a
+## mimic just woken). It runs away over open ground in its region, never
 ## through a doorway, turns to fight only when cornered, and calms down once
 ## far enough away.
 
@@ -65,9 +65,6 @@ func test_what_holds_a_foe_to_its_fight() -> void:
 	var mimic := _foe()
 	mimic.woken = true
 	assert_true(mimic.held_to_fight(), "a mimic just burst from its chest")
-	var raised := _foe()
-	raised.add_to_group("summoned")
-	assert_true(raised.held_to_fight(), "the dead a boss raised")
 	var ambusher := _foe()
 	var wagon: Escort = autofree(Escort.new())
 	ambusher.quarry = wagon

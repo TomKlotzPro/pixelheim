@@ -87,17 +87,31 @@ static func place(progression: ProgressionState, festival := false) -> Dictionar
 
 ## What Morvax says where he stands, or [] to say as he always did (step
 ## 8's words, and his letter's after it): his question while the choice
-## waits; home, the day's side of his argument with Maren, then his bench;
-## staying, his peace at the forge, or his festival word in town.
+## waits; home, the day's side of his argument with Maren, his count of the
+## courier's lamps (PIX-325), then his bench; staying, his peace at the
+## forge (his count in place of the forty-one he stopped at), or his
+## festival word in town.
 static func lines(progression: ProgressionState, settlement: SettlementState, festival: bool, day: int) -> Array:
 	if choice_due(progression, settlement):
 		return data()["ask"]
+	var count := count_line(Routes.lamps(settlement).size())
+	var counted: Array = [count] if count != "" else []
 	match chosen(progression):
 		HOME:
-			return [String(argument(day)[0])] + Array(data()["bench"])
+			return [String(argument(day)[0])] + counted + Array(data()["bench"])
 		STAY:
-			return data()["festival"] if festival else data()["peace"]
+			if festival:
+				return data()["festival"]
+			return (counted + Array(data()["peace"]).slice(1)) if count != "" else data()["peace"]
 	return []
+
+
+## Morvax's count of the courier's lamps (PIX-325), kept every night on his
+## forge wall on top of the village's forty-one: his line for `lamps` ember
+## lamps lit, the last line for that many and more; "" for none.
+static func count_line(lamps: int) -> String:
+	var said: Array = data()["count"]["lines"]
+	return String(said[mini(lamps, said.size()) - 1]) if lamps > 0 else ""
 
 
 ## The day's argument, a pair: Morvax's side, and Maren's. One a day, in

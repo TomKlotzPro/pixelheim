@@ -865,14 +865,6 @@
     }
   ],
   "reactions": {
-    "cleared": [
-      "You came back from {floor}? Everyone said nobody comes back from there.",
-      "{floor}, was it? My uncle went down there once. Once."
-    ],
-    "boss": [
-      "The whole town heard about {boss}. Bram's telling it like he was there.",
-      "Is it true about {boss}? You look... normal. I expected taller."
-    ],
     "project": [
       "Have you seen the {project}? Of course you have - you paid for it.",
       "The {project}! I walked past it three times this morning."

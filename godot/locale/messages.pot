@@ -3921,6 +3921,10 @@ msgid "Monsters keep hours: after dark, night packs come out in every region und
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Morvax keeps count of your lamps on his forge wall, a red stroke each, and tells you what he makes of them; as the ash heals, the map renames the Ash Fields the Greening, then the Lantern Meadows"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Morvax reads the letter; fifty years of tally marks count the village's lamps on his wall; then the mountain shakes"
 msgstr ""
 
@@ -4214,6 +4218,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Once a boss lets go the roads out open again, and it keeps its wounds: the bar comes back where it was when the fight starts again"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Once a waystation stands, the town's board offers the post house: built behind the box, Wren's riders bring five pieces a morning, and Pip takes charge of the doves in its loft (they are all called Steve)"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5557,6 +5565,10 @@ msgid "The Pixelheim Post opens: once Maren's first letter reaches Saltmere, a p
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Post House"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Post now carries twelve stories across the whole Reach: Maren writing to Wenna after fifty years, Mirelle's gentle reminders about interest, Wren's horse that eats mittens, Fenwick in charge of Greyhold, and Morvax and Maren still arguing over forty lamps or forty-one"
 msgstr ""
 
@@ -6382,6 +6394,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "When a boss falls far from its door, a way out opens right where it fell, lit and easy to spot, and the arrow points to it"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "When a boss falls, the Victory card stands clear of the loot and LEVEL UP, the boss bar fades at once, a place card holds a hint instead of pushing it over the hero, and the guide arrow keeps off the words at the bottom (Claude's playtest)"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -8629,11 +8645,19 @@ msgid "the Deepwood"
 msgstr ""
 
 #: assets/data/combat.json
+msgid "the Greening"
+msgstr ""
+
+#: assets/data/combat.json
 msgid "the Greyhold cellars"
 msgstr ""
 
 #: assets/data/combat.json
 msgid "the Kings' Vault"
+msgstr ""
+
+#: assets/data/combat.json
+msgid "the Lantern Meadows"
 msgstr ""
 
 #: assets/data/combat.json
@@ -9365,10 +9389,6 @@ msgid "Innkeeper Sela"
 msgstr ""
 
 #: assets/data/npcs.json
-msgid "Is it true about {boss}? You look... normal. I expected taller."
-msgstr ""
-
-#: assets/data/npcs.json
 msgid "It was the stew or the poultice. Probably the stew."
 msgstr ""
 
@@ -9773,10 +9793,6 @@ msgid "The stone golems have taken to the cart hall. Rails don't run themselves.
 msgstr ""
 
 #: assets/data/npcs.json
-msgid "The whole town heard about {boss}. Bram's telling it like he was there."
-msgstr ""
-
-#: assets/data/npcs.json
 msgid "The yetis took the strongbox and left the furs. Even they know what's worth stealing."
 msgstr ""
 
@@ -9861,19 +9877,11 @@ msgid "Wren's post: travel to the town gate lands you on the square, and you wal
 msgstr ""
 
 #: assets/data/npcs.json
-msgid "You came back from {floor}? Everyone said nobody comes back from there."
-msgstr ""
-
-#: assets/data/npcs.json
 msgid "You came up the road as the fire came down the mountain. Who are you?"
 msgstr ""
 
 #: assets/data/npcs.json
 msgid "{beast}, gone! My mother won't believe it. I barely believe it."
-msgstr ""
-
-#: assets/data/npcs.json
-msgid "{floor}, was it? My uncle went down there once. Once."
 msgstr ""
 
 #: assets/data/npcs.json
@@ -9914,6 +9922,10 @@ msgstr ""
 
 #: assets/data/post.json
 msgid "\"No questions. Some questions.\" Make up your mind, banker."
+msgstr ""
+
+#: assets/data/post.json
+msgid "\"Not to eat them.\" They only ate one."
 msgstr ""
 
 #: assets/data/post.json
@@ -10086,6 +10098,14 @@ msgstr ""
 
 #: assets/data/post.json
 msgid "(She laughs, and wipes her eyes, and laughs again.) Wait. I'll tell her about the weather."
+msgstr ""
+
+#: assets/data/post.json
+msgid "(She laughs.) Well, it saves shouting. Wait there: the riders want to write back."
+msgstr ""
+
+#: assets/data/post.json
+msgid "(She reads it twice.) In charge of the doves."
 msgstr ""
 
 #: assets/data/post.json
@@ -10289,6 +10309,14 @@ msgid "Aldric"
 msgstr ""
 
 #: assets/data/post.json
+msgid "All of them Steve."
+msgstr ""
+
+#: assets/data/post.json
+msgid "All the way to Saltmere! On Turnip!"
+msgstr ""
+
+#: assets/data/post.json
 msgid "Allowed? He's a FOUNDING member."
 msgstr ""
 
@@ -10405,6 +10433,10 @@ msgid "Dear Bram. What rhymes with cheese? I have tried everything. Please write
 msgstr ""
 
 #: assets/data/post.json
+msgid "Dear Elder Maren. The post house has a loft and the loft has doves and I am in charge of the doves. The doves have not been told. From Pip."
+msgstr ""
+
+#: assets/data/post.json
 msgid "Dear Friend. Forty barrels of what? - Odo, merchant (honest)"
 msgstr ""
 
@@ -10442,6 +10474,14 @@ msgstr ""
 
 #: assets/data/post.json
 msgid "Dear Old Wenna. You come from the sea, so you know about fish. Does a dragon like fish? I am asking for a friend. The friend is a dragon. From Pip."
+msgstr ""
+
+#: assets/data/post.json
+msgid "Dear Pip. Every post house needs someone in charge of the doves. Teach them to carry the letters, not to eat them. - Elder Maren"
+msgstr ""
+
+#: assets/data/post.json
+msgid "Dear Wren. Your riders bring the post in at dawn and my doves sit on their hats. That is teamwork. I have named the doves. They are all called Steve. From Pip."
 msgstr ""
 
 #: assets/data/post.json
@@ -10609,6 +10649,10 @@ msgid "From Elder Maren. \"Week two\", it says at the top."
 msgstr ""
 
 #: assets/data/post.json
+msgid "From Elder Maren. Folded into a very official square."
+msgstr ""
+
+#: assets/data/post.json
 msgid "From Elder Maren. Folded once, hard."
 msgstr ""
 
@@ -10769,11 +10813,19 @@ msgid "From Pell. Smudged with coal, with a small peck through one corner."
 msgstr ""
 
 #: assets/data/post.json
+msgid "From Pip. A list, numbered, with a blot at number nine."
+msgstr ""
+
+#: assets/data/post.json
 msgid "From Pip. Addressed in very large letters, so a dragon can read it."
 msgstr ""
 
 #: assets/data/post.json
 msgid "From Pip. There are paw prints on it."
+msgstr ""
+
+#: assets/data/post.json
+msgid "From Pip. There's a feather tucked in the fold, for proof."
 msgstr ""
 
 #: assets/data/post.json
@@ -10822,6 +10874,10 @@ msgstr ""
 
 #: assets/data/post.json
 msgid "From Wenna. Tam's sister's hand, firm and round."
+msgstr ""
+
+#: assets/data/post.json
+msgid "From Wren the Stablemaster. A grey feather is stuck in the wax."
 msgstr ""
 
 #: assets/data/post.json
@@ -10921,6 +10977,10 @@ msgid "Healer. They say the fen grows reeds as thick as your arm. I pay full pri
 msgstr ""
 
 #: assets/data/post.json
+msgid "Heaven help the doves. Wait there, courier: someone in charge deserves a proper answer."
+msgstr ""
+
+#: assets/data/post.json
 msgid "Heavy for its size. Something wrapped in an old sock."
 msgstr ""
 
@@ -11010,6 +11070,10 @@ msgstr ""
 
 #: assets/data/post.json
 msgid "It arrives smoking gently: the warmest letter anyone there has ever had."
+msgstr ""
+
+#: assets/data/post.json
+msgid "It was a short one. It was from Bram."
 msgstr ""
 
 #: assets/data/post.json
@@ -11393,6 +11457,14 @@ msgid "Pip and the dragon"
 msgstr ""
 
 #: assets/data/post.json
+msgid "Pip's loft"
+msgstr ""
+
+#: assets/data/post.json
+msgid "Pip. My riders thank you for the doves on their hats. They don't, but they would if they were nicer. One Steve rode all the way to Saltmere on Turnip's head. - Wren"
+msgstr ""
+
+#: assets/data/post.json
 msgid "Pixelheim's first lamp. Fifty years I kept one door and one lamp, and this one was the first of all."
 msgstr ""
 
@@ -11646,6 +11718,10 @@ msgstr ""
 
 #: assets/data/post.json
 msgid "That's her welcome song. She likes Wenna."
+msgstr ""
+
+#: assets/data/post.json
+msgid "That's the bravest Steve. ...They're all the bravest Steve."
 msgstr ""
 
 #: assets/data/post.json
@@ -12581,6 +12657,26 @@ msgid "Forty lamps, not forty-one. He counts the moon. He always counted the moo
 msgstr ""
 
 #: assets/data/progression.json
+msgid "Forty-five. A light on every road out of the village. Fifty years I watched them go out, one by one. ...Don't tell Maren I said anything."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Forty-four. I've had to start a new row. Fifty years, and I never once started a new row in the middle of a year."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Forty-six. Five of yours now. There's one I can't even see from here, and I counted it anyway. That's how much I trust you."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Forty-three. Two out on the roads now, both crooked. I'd know your lamps anywhere."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "Forty-two. Forty-one, and a new one out on the road. Crooked. That's yours, isn't it."
+msgstr ""
+
+#: assets/data/progression.json
 msgid "Four forest herbs, fresh, from the patches in the Whispering Forest. The shrine's beds are never empty for long."
 msgstr ""
 
@@ -13110,6 +13206,10 @@ msgstr ""
 
 #: assets/data/progression.json
 msgid "Mirelle's bank notes need an ink no forger can match."
+msgstr ""
+
+#: assets/data/progression.json
+msgid "More than I've got wall for. I've started on the door. All crooked, and all yours, aren't they."
 msgstr ""
 
 #: assets/data/progression.json
@@ -14325,10 +14425,6 @@ msgid "\"Courier. You'll want the kings' gold, then. A hundred years I lay on it
 msgstr ""
 
 #: assets/data/story.json
-msgid "\"I carried a letter,\" you say. \"You broke a seal.\""
-msgstr ""
-
-#: assets/data/story.json
 msgid "\"Take it. It's all corners.\""
 msgstr ""
 
@@ -14342,6 +14438,10 @@ msgstr ""
 
 #: assets/data/story.json
 msgid "(Beside the last mark, smaller: \"New one by the bridge. Crooked. Tell her.\")"
+msgstr ""
+
+#: assets/data/story.json
+msgid "(Fresh red strokes after the newest row, and under them, in his cramped hand: \"%s\")"
 msgstr ""
 
 #: assets/data/story.json
@@ -14377,10 +14477,6 @@ msgid "Art by Shade (merchant-shade.itch.io)"
 msgstr ""
 
 #: assets/data/story.json
-msgid "Below the hoard, the dead keep their own court."
-msgstr ""
-
-#: assets/data/story.json
 msgid "Beside it an old man sits up, as if he'd heard you coming."
 msgstr ""
 
@@ -14410,10 +14506,6 @@ msgstr ""
 
 #: assets/data/story.json
 msgid "He carried Liane the last mile up and complained the whole way. And Hale kept it fifty years?"
-msgstr ""
-
-#: assets/data/story.json
-msgid "He is awake, and back on his hoard."
 msgstr ""
 
 #: assets/data/story.json
@@ -14457,15 +14549,7 @@ msgid "Morvax takes a room at the inn and a bench by the fountain, and argues wi
 msgstr ""
 
 #: assets/data/story.json
-msgid "Morvax the Deathless"
-msgstr ""
-
-#: assets/data/story.json
 msgid "On top of the mountain a dragon sleeps on a chain. Everyone agrees this is the best place for him."
-msgstr ""
-
-#: assets/data/story.json
-msgid "Once a hero of Pixelheim. Now its oldest debt."
 msgstr ""
 
 #: assets/data/story.json
@@ -14534,10 +14618,6 @@ msgstr ""
 
 #: assets/data/story.json
 msgid "The sky turns grey behind the mountain. Fafnyr sinks onto the square, spent, and the collar drags at him: north, always north."
-msgstr ""
-
-#: assets/data/story.json
-msgid "The summit is his. So is everything the heroes carried up."
 msgstr ""
 
 #: assets/data/story.json
@@ -14641,6 +14721,10 @@ msgid "A night at the inn leaves you rested for a while"
 msgstr ""
 
 #: assets/data/town.json
+msgid "A post house on the square, behind the box: Wren's riders bring the Reach's post in at dawn, five pieces a morning, and Pip keeps a loft of doves under its roof."
+msgstr ""
+
+#: assets/data/town.json
 msgid "A roof over the anvil again. Hilda says the steel sings better indoors."
 msgstr ""
 
@@ -14666,6 +14750,10 @@ msgstr ""
 
 #: assets/data/town.json
 msgid "Ashes"
+msgstr ""
+
+#: assets/data/town.json
+msgid "Build the post house"
 msgstr ""
 
 #: assets/data/town.json
@@ -14893,6 +14981,10 @@ msgid "The Lantern Walk"
 msgstr ""
 
 #: assets/data/town.json
+msgid "The Post wants a waystation on its roads first"
+msgstr ""
+
+#: assets/data/town.json
 msgid "The Saltmere road wants its waystation first"
 msgstr ""
 
@@ -14946,6 +15038,10 @@ msgstr ""
 
 #: assets/data/town.json
 msgid "The mountain is quiet, and the whole Reach has heard of Pixelheim: it can grow into a City."
+msgstr ""
+
+#: assets/data/town.json
+msgid "The post house stands on the square. Wren's riders bring five pieces in each dawn, and Pip is in charge of the doves. The doves have not been told."
 msgstr ""
 
 #: assets/data/town.json

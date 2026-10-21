@@ -20,11 +20,6 @@ static func dungeon() -> Dictionary:
 	return Depths.dungeon(DUNGEON)
 
 
-## The Vault's first floor, where its door leads.
-static func first_floor() -> String:
-	return String(Depths.floors(DUNGEON)[0]["mapId"])
-
-
 ## Whether the door under the summit stands open for this hero: the dragon
 ## freed (depths.json `opens`, as MainQuest reads a step: the Night of
 ## Bells' chapter done).

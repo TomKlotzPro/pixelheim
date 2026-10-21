@@ -68,3 +68,15 @@ func test_the_first_dream_is_morvaxs_voice() -> void:
 	assert_eq(actors[0]["sheet"], lamps[0]["sheet"], "the old man at the forge")
 	assert_true(steps.any(func(step: Dictionary) -> bool: return String(step.get("text", "")).contains("You're late, courier. Fifty years late.")))
 	assert_false(JSON.stringify(steps).contains("down and down"), "no stair going down")
+
+
+## The story's big moments (PIX-32): each names a scene that exists. The
+## old floors' own (a boss's intro, a floor's first clear) left play with
+## them (PIX-257), and the old throne's endings with the old saves (PIX-319).
+func test_every_moment_plays_a_scene_that_exists() -> void:
+	for key: String in ["ending:home", "ending:stay"]:
+		var scene_id := Story._moment(key)
+		assert_ne(scene_id, "", "%s has a moment" % key)
+		assert_true(Cutscene.scenes().has(scene_id), "%s plays %s" % [key, scene_id])
+	for key: String in ["boss:dragon", "boss:lich", "cleared:3", "cleared:7", "cleared:10", "victory", "victory:rest"]:
+		assert_eq(Story._moment(key), "", "%s left play" % key)

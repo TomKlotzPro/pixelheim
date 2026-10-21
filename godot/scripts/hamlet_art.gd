@@ -7,7 +7,7 @@ class_name HamletArt
 ## bed, a miner's lantern by a door, Morvax's forge stack and the light
 ## under his door, and the Kings' Vault's black iron door in its carved
 ## surround, shut and open; and Pixelheim's post box (PIX-320), empty or
-## with the day's post in it. Drawn here in code in Shade's palette (his
+## with the day's post in it, and the post house behind it (PIX-325). Drawn here in code in Shade's palette (his
 ## outline, his woods, irons and greys), at 1x on his 16 px grid, so they
 ## sit beside his art as his. Our own, so CC0 like the rest of the
 ## repository: they draw the same with or without the paid pack. Pictures
@@ -561,6 +561,57 @@ const PIECES := {
 		".....oo32oo.....",
 		"....o233332o....",
 		"....oooooooo....",
+	],
+	## The post house behind the box (PIX-325): a slate-roofed timber house
+	## two cells wide, Pip's loft on its ridge (two holes, a dove at one,
+	## another on the perch and one on the ridge: the rest are off seeing
+	## the Reach), a window, the door under Wren's horseshoe, an envelope
+	## sign on its bracket. 32x44, foot on the bottom row.
+	"post_house": [
+		"................................",
+		"...............oo...............",
+		"..............oGGo..............",
+		".............oGGGgo.............",
+		"............oGGGGggo............",
+		"...........oGGGGGgggo...........",
+		"..........oooooooooooo..........",
+		"........oo.o54444443o...........",
+		".......oyyoo4nn44yn3o...........",
+		"......oyyyoo4nn44nn3o..oo.......",
+		".....a22222o44444443o.oyyo......",
+		"...........oooooooooo.oyyyo.....",
+		"...oooooooooooooooooooooooooo...",
+		"..oGGGGGGGGGGGGGGGGGGGGGGGGGGo..",
+		"..oGGGGGGGGGGGGGGGGGGGGGGGGGGo..",
+		".oggggggggggggggggggggggggggggo.",
+		".oGGGGGGGGGGGGGGGGGGGGGGGGGGGGo.",
+		".oGGGGGGGGGGGGGGGGGGGGGGGGGGGGo.",
+		"oggggggggggggggggggggggggggggggo",
+		"oGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGo",
+		"oGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGo",
+		"oggggggggggggggggggggggggggggggo",
+		"oooooooooooooooooooooooooooooooo",
+		".o2222222222222222222222222222o.",
+		".o4bbbbbbbbbbbbbbbbbbbbbbbbbb3o.",
+		".o4BBBBBBBBBBBBBBBBBBBBkkkkkk3o.",
+		".o4BBoooooBBBBBBBBBBBBBBkBBkB3o.",
+		".o4BBouUuoBBBBBBBhBBhBBoooooo3o.",
+		".o4BBoUuuoBBBBBBBhBBhBBobBBbo3o.",
+		".o4BBouUuoBBBBBBBBhhBBBoBbbBo3o.",
+		".o4BBoooooBBBBBBooooooBoBRBBo3o.",
+		".o4BB33333BBBBBBo3443oBoooooo3o.",
+		".o4BBBBBBBBBBBBBo3443oBBBBBBB3o.",
+		".o4BBBBBBBBBBBBBo3443oBBBBBBB3o.",
+		".o42222222222222o3443o22222223o.",
+		".o4BBBBBBBBBBBBBo344QoBBBBBBB3o.",
+		".o4BBBBBBBBBBBBBo3443oBBBBBBB3o.",
+		".o4BBBBBBBBBBBBBo3443oBBBBBBB3o.",
+		".o4BBBBBBBBBBBBBo3443oBBBBBBB3o.",
+		".o4BBBBBBBBBBBBBo3443oBBBBBBB3o.",
+		".o4BBBBBBBBBBBBBo3443oBBBBBBB3o.",
+		".ollllllllllllllo3443ollllllllo.",
+		".oiiiiiiiiiiiiiio3443oiiiiiiiio.",
+		".oooooooooooooooooooooooooooooo.",
 	],
 }
 

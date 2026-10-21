@@ -136,11 +136,9 @@ def read_flows(path=FLOWS):
 def boot_flows():
     """Every map the game can stand in (--boot), from the game's own data, so
     a new map is checked without a line in flows.txt: each map file (a house
-    tier is its map's @n variant), the village at each age, a region
-    dungeon's planned floors (PIX-255), the Undermountain's floors, and the
-    Deep Hunt's depths down to its first warden (its twists, its elites, the
-    warden). Each one by day and at night; the report must name the map it
-    booted on."""
+    tier is its map's @n variant), the village at each age and every
+    dungeon's planned floors (PIX-255; the Kings' Vault's, PIX-257). Each one
+    by day and at night; the report must name the map it booted on."""
     out = []
 
     def boot(name, args, map_id):

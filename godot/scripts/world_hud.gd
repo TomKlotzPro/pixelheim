@@ -27,6 +27,11 @@ static var _hint_generation := 0
 const BOSS_HINT_S := 6.0
 ## The title card up last (title_card): a hint waits for it.
 var _card: PanelContainer
+## Where a title card stands when nothing's in its way (title_card).
+const CARD_TOP := 140.0
+## The hero's figure about their feet, in the world's pixels: what a title
+## card never stands on.
+const HERO_BODY := Rect2(-8, -16, 16, 22)
 ## The main quest's next step, quietly above the dock (PIX-144): a dark
 ## pill holding "Next" and the step.
 var objective_box: PanelContainer
@@ -188,17 +193,28 @@ func hint(id: String, values := {}, key := "") -> void:
 	show.tween_interval(10.0 if settings.large_text else 7.0)
 	show.tween_property(hint_card, "modulate:a", 0.0, 0.6)
 	show.tween_callback(hint_card.queue_free)
+	hint_card.set_meta("show", show)
 
 
-## A first-time hint stands under the boss bar while one is up (PIX-210),
-## and under a title card that came after it; one waiting its turn shows
-## once nothing holds it.
+## A first-time hint stands under the boss bar while one is up (PIX-210);
+## a title card that comes after it holds it, unseen and its time stopped,
+## until the card has gone (PIX-345: pushed under a place's name, it stood
+## over the hero for seconds). One waiting its turn shows once nothing
+## holds it.
 func keep_hint_clear() -> void:
 	if not _held_hints.is_empty() and not hints_wait():
 		var held: Array = _held_hints.pop_front()
 		hint(held[0], held[1], held[2])
-	if hint_card != null and is_instance_valid(hint_card):
+	if is_instance_valid(hint_card) and not hint_card.is_queued_for_deletion():
 		hint_card.position.y = _hint_top()
+		var hold := _card_up()
+		if hint_card.visible == hold:
+			hint_card.visible = not hold
+			var show: Tween = hint_card.get_meta("show")
+			if hold:
+				show.pause()
+			else:
+				show.play()
 
 
 ## Whether a first-time hint waits its turn (PIX-341: the dodge's card
@@ -210,9 +226,14 @@ func keep_hint_clear() -> void:
 func hints_wait() -> bool:
 	if is_instance_valid(hint_card) and not hint_card.is_queued_for_deletion():
 		return true
-	if is_instance_valid(_card) and not _card.is_queued_for_deletion():
+	if _card_up():
 		return true
 	return world.foes.boss_hunting() != null and GameClock.seconds() - world.foes.boss_noticed_at < BOSS_HINT_S
+
+
+## Whether a title card is up (title_card).
+func _card_up() -> bool:
+	return is_instance_valid(_card) and not _card.is_queued_for_deletion()
 
 
 ## The hint waiting its turn, by the id it's seen by, or "" (the harness's
@@ -221,19 +242,19 @@ func hint_held() -> String:
 	return String(_held_hints[0][2]) if not _held_hints.is_empty() else ""
 
 
-## Where a hint's card stands: under the boss bar while it's up, and under a
-## title card.
+## Where a hint's card stands: under the boss bar while it's up.
 func _hint_top() -> float:
-	var top: float = boss_bar.bottom() + 6 if boss_bar.following() else 18.0
-	if is_instance_valid(_card) and not _card.is_queued_for_deletion():
-		top = maxf(top, _card.position.y + _card.size.y + 6)
-	return top
+	return boss_bar.bottom() + 6 if boss_bar.following() else 18.0
 
 
 ## A title over the world for a moment (PIX-232: a boss's fall): the big
 ## word and a line under it on a dark plate, held a beat, then faded. It runs
 ## on the real clock, so the boss's slow motion doesn't hold it. An empty
-## line leaves the title alone on its plate.
+## line leaves the title alone on its plate. It stands at CARD_TOP, or as
+## near as it can clear of what rises over the world, of the hero and of the
+## boss bar (PIX-345: the Victory card stood on what the boss's fall won,
+## its gold, its drops and LEVEL UP rising through its plate): under the
+## hero, mostly, at a boss's fall.
 func title_card(title: String, line: String) -> PanelContainer:
 	if root == null:
 		return null
@@ -254,7 +275,8 @@ func title_card(title: String, line: String) -> PanelContainer:
 	root.add_child(card)
 	_card = card
 	card.reset_size()
-	card.position = Vector2(roundf((1280 - card.size.x) / 2.0), 140)
+	var at := Rect2(Vector2(roundf((1280 - card.size.x) / 2.0), CARD_TOP), card.size)
+	card.position = Vector2(at.position.x, TextBudget.spot(_card_clear_of(), at, 14.0, _words_top() - 6.0, 6.0))
 	card.modulate.a = 0.0
 	var show := card.create_tween().set_ignore_time_scale(true)
 	show.tween_property(card, "modulate:a", 1.0, 0.3)
@@ -262,6 +284,67 @@ func title_card(title: String, line: String) -> PanelContainer:
 	show.tween_property(card, "modulate:a", 0.0, 0.6)
 	show.tween_callback(card.queue_free)
 	return card
+
+
+## What a title card stands clear of, on the screen: the boss bar while it
+## shows, how far what rises over the world may yet go (WorldFx.reach) and
+## the hero.
+func _card_clear_of() -> Array[Rect2]:
+	var taken: Array[Rect2] = []
+	if boss_bar.following():
+		taken.append(boss_bar.plate.get_global_rect())
+	if world.get("fx") != null:
+		for rect: Rect2 in world.fx.reach():
+			taken.append(to_screen(rect))
+	if world.get("player") != null:
+		taken.append(hero_on_screen())
+	return taken
+
+
+## The HUD's plates at the top where they stand over the world, for what
+## rises there to stay under (WorldFx.keep_clear, PIX-345): the boss bar
+## while it shows, a title card, a hint.
+func plates_over() -> Array[Rect2]:
+	var plates: Array[Rect2] = []
+	if root == null:
+		return plates
+	if boss_bar.following():
+		plates.append(to_world(boss_bar.plate.get_global_rect()))
+	if _card_up():
+		plates.append(to_world(_card.get_global_rect()))
+	if is_instance_valid(hint_card) and hint_card.visible and not hint_card.is_queued_for_deletion():
+		plates.append(to_world(hint_card.get_global_rect()))
+	return plates
+
+
+## A rect in the world where it shows on the HUD's layer, and back.
+func to_screen(rect: Rect2) -> Rect2:
+	var shown := get_viewport().get_canvas_transform() * rect
+	return Rect2(shown.position - root.offset, shown.size)
+
+
+func to_world(rect: Rect2) -> Rect2:
+	return get_viewport().get_canvas_transform().affine_inverse() * Rect2(rect.position + root.offset, rect.size)
+
+
+## The hero's figure on the HUD's layer (HERO_BODY about their feet).
+func hero_on_screen() -> Rect2:
+	return to_screen(Rect2(world.player.global_position + HERO_BODY.position, HERO_BODY.size))
+
+
+## The top of the HUD's words over the dock (PIX-345): the objective's
+## line, a message's plate while it shows, the battle log while it holds a
+## line (the floor's name on entering it, which the arrow stood on).
+func _words_top() -> float:
+	var top: float = world.camera_rig.dock_top() if world.get("camera_rig") != null else 720.0
+	if objective_box != null:
+		top = minf(top, objective_box.position.y)
+	var messages: Messages = world.get("messages")
+	if messages != null and messages.message_box.modulate.a > 0.0:
+		top = minf(top, messages.message_box.position.y)
+	if messages != null and messages.log_box.size.y > 0.0:
+		top = minf(top, messages.log_box.position.y)
+	return top
 
 
 ## Names where the hero has come to (PIX-269: the way between maps is the
@@ -460,9 +543,10 @@ func update_arrow() -> void:
 		root.move_child(arrow, sky_overlay.get_index() + 1)
 	arrow.main = leads_story
 	var target := _bearing_point()
-	# Above the line over the dock too (the objective's plate stands there),
-	# never on its words.
-	var bottom: float = minf(world.camera_rig.dock_top(), objective_box.position.y - 4.0) if objective_box != null else world.camera_rig.dock_top()
+	# Above the words over the dock too (the objective's plate, a message,
+	# the battle log's line: PIX-345, it stood on a dungeon floor's name),
+	# never on them.
+	var bottom := _words_top() - 4.0
 	var area := Rect2(Vector2(ARROW_INSET, ARROW_INSET), Vector2(1280.0 - 2.0 * ARROW_INSET, bottom - 2.0 * ARROW_INSET))
 	var on_screen := Vector2.ZERO
 	if target != Vector2.INF:

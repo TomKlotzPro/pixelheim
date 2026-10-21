@@ -182,7 +182,8 @@ func come_in() -> void:
 ## a fight each pack keeps one tag, its nearest foe's, reading the pack's
 ## highest level; then the nearest tags keep theirs and any that would come
 ## within TAG_MARGIN of one kept hides; and the words rising over the world
-## step up clear of the tags kept (WorldFx.keep_clear). Out of a fight
+## step up clear of the tags kept, under the HUD's plates at the top
+## (WorldFx.keep_clear, PIX-345). Out of a fight
 ## each foe's tag reads its own level again.
 ## And the packs of a map walked into over a line come, a pack a frame.
 func _process(_delta: float) -> void:
@@ -224,7 +225,7 @@ func _process(_delta: float) -> void:
 			kept[index].level_tag.visible = false
 	if fighting:
 		most_tags = maxi(most_tags, reserved.size())
-	world.fx.keep_clear(reserved)
+	world.fx.keep_clear(reserved, world.hud.plates_over())
 
 
 ## Which of `rects`, nearest first, may show: each one that comes within

@@ -1,7 +1,7 @@
 extends GutTest
 ## Bosses that fight back (PIX-150): every boss pattern names attacks that
-## exist, three phases that quicken, a roar for each new phase, and a summon
-## of a real monster; and the ending's tour has a stop for each age built.
+## exist, three phases that quicken and a roar for each new phase; and the
+## ending's tour has a stop for each age built.
 
 
 func test_every_boss_pattern_is_whole() -> void:
@@ -17,8 +17,6 @@ func test_every_boss_pattern_is_whole() -> void:
 		for phase: Array in pattern["phases"]:
 			for move: String in phase:
 				assert_true(attacks.has(move), "%s: %s" % [boss_id, move])
-				if move == "summon":
-					assert_false(Bestiary.monster(pattern["summon"]).is_empty(), "%s summons a real monster" % boss_id)
 
 
 func test_every_attack_is_told_before_it_lands() -> void:

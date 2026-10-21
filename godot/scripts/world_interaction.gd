@@ -285,7 +285,7 @@ func _station(cell: Vector2i) -> bool:
 ## delivered; the first time, its page in a conversation, kept in the story
 ## ledger as it closes (a main quest step); a short word after.
 func read(reading: Dictionary) -> void:
-	var lines := Letters.reading_lines(reading, GameState.progression)
+	var lines := Letters.reading_lines(reading, GameState.progression, Routes.lamps(GameState.settlement).size())
 	if not Letters.reads_now(reading, GameState.progression):
 		world.messages.flash(String(lines[0]))
 		return

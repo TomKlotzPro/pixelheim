@@ -21,11 +21,6 @@ static func tier(number: int) -> Dictionary:
 	return _data()["tiers"][clampi(number, 0, MAX_TIER)]
 
 
-## The tier the ledger offers next; {} at the cap.
-static func next_tier(current: int) -> Dictionary:
-	return {} if current >= MAX_TIER else tier(current + 1)
-
-
 # ---- village projects (PIX-145) ------------------------------------------------
 # Each age past the Hamlet is a handful of projects, each paid in gold and a
 # region's material, each changing the town the moment it's funded; the last
@@ -158,15 +153,18 @@ static func work(work_id: String) -> Dictionary:
 
 ## Whether a work is offered yet: its `needs` (a main quest step) met, and
 ## a waystation's `route` (PIX-322) having carried enough of the Post's
-## post (`post`, the hero's; none: not yet), and the work it comes `after`
+## post (`post`, the hero's; none: not yet), the work it comes `after`
 ## built (PIX-324: the Mirefen Pass's lamp, once the Saltmere road's
-## waystation stands).
+## waystation stands), and the post house's `stations` (PIX-325) built
+## along the roads.
 static func work_offered(work_id: String, progression: ProgressionState, settlement: SettlementState, post: PostState = null) -> bool:
 	var entry := work(work_id)
 	if entry.has("after") and String(entry["after"]) not in done_projects(settlement):
 		return false
 	if entry.has("route"):
 		return post != null and Routes.station_offered(post, String(entry["route"]))
+	if entry.has("stations"):
+		return Routes.built(settlement).size() >= int(entry["stations"])
 	var needs := String(entry.get("needs", ""))
 	return needs == "" or MainQuest.is_met(MainQuest.step(needs), progression, settlement)
 

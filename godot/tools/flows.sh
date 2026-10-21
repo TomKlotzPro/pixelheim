@@ -58,8 +58,8 @@
 #
 # --boot boots every map the game can stand in (PIX-270): each map in
 # assets/maps, the village at each of its ages, the house at each of its
-# tiers, every floor of the dungeons and the Deep Hunt's first depths down
-# to its first warden, each by day and at night, headless. GUT never loads
+# tiers and every dungeon's planned floors (the Kings' Vault's among them),
+# each by day and at night, headless. GUT never loads
 # the world's scripts, so a script that breaks only there fails here. Any
 # run fails on a SCRIPT ERROR, a Parse Error or a SHADER ERROR in its output
 # (headless Godot still compiles every shader it loads).

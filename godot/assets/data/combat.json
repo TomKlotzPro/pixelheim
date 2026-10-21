@@ -511,6 +511,10 @@
     },
     "ash": {
       "name": "the Ash Fields",
+      "renamed": [
+        {"healed": 50, "name": "the Greening"},
+        {"healed": 180, "name": "the Lantern Meadows"}
+      ],
       "dropFloor": 7,
       "eliteChance": 0.15,
       "monsters": [
@@ -1506,19 +1510,6 @@
       "spread": 3.0,
       "tell": 1.1,
       "power": 0.9
-    },
-    "ring": {
-      "shape": "circle",
-      "radius": 3.2,
-      "tell": 1.0,
-      "power": 1.3,
-      "inflicts": true
-    },
-    "summon": {
-      "shape": "summon",
-      "count": 2,
-      "max": 4,
-      "tell": 0.6
     }
   },
   "dodge": {

@@ -25,7 +25,7 @@ static func at(map: MapData, cell: Vector2i, regions: bool) -> Dictionary:
 	if Ways.indoors(map):
 		return {}
 	var region := map.region_at(cell) if regions else ""
-	return {"place": Catalog.place_name(map.id), "region": Atlas.region_title(region) if region != "" else ""}
+	return {"place": Catalog.place_name(map.id), "region": Atlas.region_title(region, map) if region != "" else ""}
 
 
 ## The card as the hero stands `here` (at()), after `was` (the place and
