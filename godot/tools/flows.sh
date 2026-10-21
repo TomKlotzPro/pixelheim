@@ -23,7 +23,8 @@
 # --quiet runs every flow headless with the audio off: nothing opens on the
 # screen or plays out loud, the report lines are still checked. The motion
 # flow measures pixels, so it needs a window and is skipped. A windowed run
-# is muted too: its window shows, nothing plays.
+# is muted too: its window shows, nothing plays. The flows that time the
+# CPU (the harness's cpu) run headless only, each alone after the rest.
 #
 # The flows run side by side (PIX-270), -j at a time (the machine's cores
 # less two by default); each prints, in the flows' order, as the ones before
@@ -335,6 +336,20 @@ for ((k = 0; k < count; k++)); do
 			printf "skip|%s|0|needs a window\n" "$name" >"$runs/$name/result"
 		else
 			later+=("$k")
+		fi
+		continue
+	fi
+	# A flow timing the CPU (the harness's cpu) runs headless, alone after
+	# the rest: beside other runs the machine's time is theirs too (on a
+	# loaded CI runner a frame read four to seven times its cost), and in a
+	# window the drawing's, software rendering (CI's windows) most of it.
+	args=${FLOWS[${picked[k]}]#*|}
+	if [[ " ${args%%|*} " == *" cpu "* ]]; then
+		if [[ $quiet == 1 ]]; then
+			later+=("$k")
+		else
+			mkdir -p "$runs/$name"
+			printf "skip|%s|0|times the CPU headless\n" "$name" >"$runs/$name/result"
 		fi
 		continue
 	fi

@@ -200,7 +200,9 @@ by default; `-j 1` runs them one after another). Each run keeps its picture
 (`--shot`), output and log in its own folder under `godot/flows/runs/`, and
 the lines still come out in the flows' order, each with its time, the five
 slowest at the end. `--quiet` runs them headless with nothing on the screen
-(the motion flow, which needs a window, is skipped); a windowed run draws
+(the motion flow, which needs a window, is skipped), the `cpu-*` flows
+each alone after the rest, and a windowed run skips those (they time the
+CPU, which other runs and a window's drawing would share, PIX-355); it draws
 a frame a second of the game's time and the frames of its picture
 (`--draw-every 60`: stepped, the game is the same drawn or not) and walks
 the motion flow alone after the rest, every frame of its walk drawn. `--shard K/N` runs every Nth flow from the Kth. `godot/tools/flows.sh --boot` boots every
