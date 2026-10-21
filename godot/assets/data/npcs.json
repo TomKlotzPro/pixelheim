@@ -825,7 +825,7 @@
     },
     {
       "id": "frost_aske",
-      "about": "PIX-255 (story chapter 5): Liane paid him to keep her lamp oil dry and her door shut, and he has, for fifty years, standing by the observatory's door at the head of the Frostgate pass. Once Maren's letter is delivered (`comesHome.letter`) and Liane's lantern is up from the glass hall (`comesHome.named`), he comes down to be Pixelheim's lamplighter (`home`, by the square), and keeps the courier's lantern trimmed: it lights the dark a third further (`perkValues.lantern`, LightRig). The town's tour stops on the square for his homecoming (`homecoming`).",
+      "about": "PIX-255 (story chapter 5): Liane paid him to keep her lamp oil dry and her door shut, and he has, for fifty years, standing by the observatory's door at the head of the Frostgate pass. Once Maren's letter is delivered (`comesHome.letter`) and Liane's lantern is up from the glass hall (`comesHome.named`), he comes down to be Pixelheim's lamplighter (`home`, by the square), and keeps the courier's lantern trimmed: it lights the dark a third further (`perkValues.lantern`, LightRig), and the Reach's ember lamps too (PIX-324: each lamp's ring a third wider, Lamps.now). The town's tour stops on the square for his homecoming (`homecoming`).",
       "name": "Aske the Hermit",
       "sprite": "hermit",
       "found": {
@@ -852,7 +852,7 @@
         "One lamp, fifty years. Forty lamps can't be harder.",
         "Dusk, I light them. Dawn, I put them out. In between, Maren and I sit on the square and talk about Liane. Fifty years nobody said her name to me."
       ],
-      "perk": "Aske keeps your lantern trimmed: it lights the dark a third further",
+      "perk": "Aske keeps your lantern and the Reach's ember lamps trimmed: they light the dark a third further",
       "perkValues": {
         "lantern": 0.33
       },
