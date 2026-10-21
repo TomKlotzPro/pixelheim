@@ -6,7 +6,8 @@ extends CanvasLayer
 ##   it is open. Holds are counted, so the world runs again only when the
 ##   last screen lets go: options over the pause menu or the title, a rank-up
 ##   over a conversation, a shop opening as a conversation closes;
-## - may dim the world behind it (`dim`);
+## - may dim the world behind it (`dim`), and then has the whole canvas: the
+##   HUD steps aside while it's open (PIX-346);
 ## - takes its keys one way: `_command` turns an event into what to do, the
 ##   event is marked handled, then it runs. Handled first, because an action
 ##   that reloads the scene frees the screen, and a key must never reach a
@@ -24,11 +25,17 @@ static var _changes_at := 0
 ## one only (PIX-199) - the highest layer, the latest among equals - so a
 ## screen hidden under another (the throne under a rank-up) never takes them.
 static var _shown: Array[Screen] = []
+## Screens that dimmed the world, the HUD's layer they put aside, and
+## whether it showed before the first of them (PIX-346).
+static var _asides := 0
+static var _hud_layer: CanvasLayer
+static var _hud_showed := true
 
 ## Actions besides Esc and the menu key that close this screen (its own key:
 ## I closes the pack).
 var closing_actions: Array[StringName] = []
 var _holding := false
+var _aside := false
 
 
 func _ready() -> void:
@@ -94,7 +101,38 @@ func dim(alpha := UiStyle.BACKDROP.a) -> ColorRect:
 	backdrop.position = -offset
 	backdrop.size = Touch.view_size(self)
 	add_child(backdrop)
+	# A card fading its own dark in from nothing (the chapter's) keeps the
+	# HUD until the world comes back.
+	if alpha > 0.0:
+		_put_hud_aside()
 	return backdrop
+
+
+## A screen that dims the world has the whole canvas (PIX-346): the HUD - the
+## dock, the clock, the quill and every line over the world - steps aside
+## while it's open, as it did for the journal and the map (PIX-265), so no
+## title, key or caption stands on them. Counted like the holds: it comes
+## back, as it was, when the last of them goes.
+func _put_hud_aside() -> void:
+	var scene := get_tree().current_scene
+	var hud: Variant = scene.get("hud") if scene != null else null
+	if _aside or not hud is Hud or (hud as Hud).root == null:
+		return
+	_aside = true
+	if _asides == 0:
+		_hud_layer = (hud as Hud).root
+		_hud_showed = _hud_layer.visible
+	_asides += 1
+	_hud_layer.visible = false
+
+
+func _bring_hud_back() -> void:
+	if not _aside:
+		return
+	_aside = false
+	_asides = maxi(0, _asides - 1)
+	if _asides == 0 and is_instance_valid(_hud_layer):
+		_hud_layer.visible = _hud_showed
 
 
 ## The screen's own commands for the tap bar (PIX-214), [{label, call}]:
@@ -209,6 +247,7 @@ func _let_go() -> void:
 ## Freed without closing (the scene reloading under it): its hold goes too.
 func _exit_tree() -> void:
 	_shown.erase(self)
+	_bring_hud_back()
 	_let_go()
 
 

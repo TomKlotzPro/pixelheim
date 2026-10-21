@@ -87,12 +87,6 @@ func _open() -> void:
 	closing_actions = [&"journal"]
 	layer = 5
 	dim()
-	# The HUD steps aside while the journal is open, as for the map (PIX-265):
-	# its dock read through the dim under the keys.
-	var hud: Variant = _hud()
-	if hud != null and hud.root != null:
-		hud.root.visible = false
-		tree_exiting.connect(func() -> void: hud.root.visible = true)
 	add_child(UiStyle.title("Journal"))
 	tabs_row = HBoxContainer.new()
 	tabs_row.position = Vector2(300, 26)

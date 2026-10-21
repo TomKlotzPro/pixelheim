@@ -422,7 +422,10 @@ func _beat(beat: String) -> void:
 ## The world falls dark and the bars close in; the hero on their pool, and
 ## the rays, come up out of the dark (the world's own hero goes under it).
 func _hush() -> void:
+	# The moment has the whole canvas: behind the bars the HUD steps aside
+	# (PIX-346), once they stand.
 	if still:
+		_put_hud_aside()
 		return
 	var dark := create_tween().set_parallel()
 	dark.tween_property(shade, "color:a", _hush_alpha(), 0.35)
@@ -432,6 +435,7 @@ func _hush() -> void:
 	for bar in _bars:
 		slide.tween_property(bar, "size:y", BAR, 0.5)
 	slide.tween_property(_bars[1], "position:y", 720 - BAR, 0.5)
+	slide.chain().tween_callback(_put_hud_aside)
 
 
 ## The world's dark behind the moment, as dark on the desktop app's linear
