@@ -39,7 +39,7 @@ const MAX_CODE_BYTES := 8 * 1024 * 1024
 ## The hero's numbers, the same name in the state and the file.
 const HERO_NUMBERS := ["level", "xp", "xpToNext", "hp", "mp", "stats", "statPoints", "skillPoints"]
 ## The hero's skills: the state's key -> the file's (hero.skills).
-const SKILLS := {"skillDock": "dock", "beyond": "beyond", "path": "path", "spec": "spec", "mastery": "mastery"}
+const SKILLS := {"skillDock": "dock", "beyond": "beyond", "forgot": "forgot", "path": "path", "spec": "spec", "mastery": "mastery"}
 ## The town's purse (the state's `investments`): its key -> the file's
 ## (town); anything else in it rides along in town.invested.
 const INVESTED := {"savings": "bank", "tills": "tills", "expansions": "expansions", "venture": "venture"}

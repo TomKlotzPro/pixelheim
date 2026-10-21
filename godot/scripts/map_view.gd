@@ -218,6 +218,10 @@ const CANOPY_SWAY := 0.4
 ## The projects board on the square (PIX-145): a Puny World notice board.
 const PROJECT_BOARD := 846
 const BOARD_FOOT := Rect2(1, 8, 14, 8)
+## Mirelle's counting table (PIX-338): both its cells, its foot the length
+## of it, and where its candle burns (RoomArt's bank_desk).
+const DESK_FOOT := Rect2(1, 2, 14, 30)
+const DESK_FLAME := Vector2(7.5, 14)
 ## Puny World tents by region: green in the woods, straw in the wetlands,
 ## red on the ash.
 const TENTS := {"forest": 895, "deepwood": 895, "marsh": 706, "mire": 706, "ash": 905}
@@ -446,6 +450,22 @@ func _plan_free_room() -> void:
 		data.grid[cell] = "wall"
 
 
+## The pixels a piece drawn in code (RoomArt) covers among `cells` of this
+## room, with the pack or without (PIX-338: a ledger lying open on its
+## table, what its prompt stands over); an empty rect for none.
+func drawn_in(cells: Rect2i) -> Rect2:
+	var pieces: Dictionary = buildings.get("art", {}).duplicate()
+	var objects: Dictionary = buildings.get("objects", {})
+	for cell: Vector2i in objects:
+		if objects[cell] is String and String(objects[cell]).begins_with("r:"):
+			pieces[cell] = String(objects[cell]).trim_prefix("r:")
+	for cell: Vector2i in pieces:
+		var rect := Rect2i(cell, RoomArt.cells(pieces[cell]))
+		if rect.intersects(cells):
+			return Rect2(Vector2(rect.position * TILE), Vector2(rect.size * TILE))
+	return Rect2()
+
+
 ## How a room is drawn, for the harness (PIX-318): from the paid pack, from
 ## the CC0 sheets (free), or not at all (none); its walls, floor and
 ## stairs down, counted.
@@ -494,6 +514,13 @@ func _plan_props() -> void:
 		var tent := Town.ashes_tent(Town.done_projects(GameState.settlement))
 		if tent.x >= 0:
 			camps[tent] = {"kind": "tent", "tile": TENTS["marsh"]}
+		# Mirelle's counting table by the hall once she's settled, her
+		# ledger open on it (PIX-338).
+		var desk := Town.bank_desk().position
+		if GameState.holdings.is_settled("settler_mirelle") and data.is_walkable(desk) and data.is_walkable(desk + Vector2i.DOWN) \
+				and not camps.has(desk) and not camps.has(desk + Vector2i.DOWN):
+			camps[desk] = {"kind": "desk", "art": "bank_desk"}
+			data.covered[desk + Vector2i.DOWN] = true
 	# The post box past the bounty board, once Maren's first letter reaches
 	# Saltmere (PIX-320).
 	if data.id == Post.box_map() and GameState.posting.is_open():
@@ -2655,7 +2682,7 @@ func pitch_tent(cell: Vector2i) -> void:
 
 ## A camp's tent or torch: sorted among the actors at its foot, which blocks.
 func _add_camp_piece(cell: Vector2i, piece: Dictionary) -> void:
-	var foot: Rect2 = {"tent": TENT_FOOT, "board": BOARD_FOOT, "post": HAMLET_FOOT}.get(piece["kind"], TORCH_FOOT)
+	var foot: Rect2 = {"tent": TENT_FOOT, "board": BOARD_FOOT, "post": HAMLET_FOOT, "desk": DESK_FOOT}.get(piece["kind"], TORCH_FOOT)
 	var root := Node2D.new()
 	root.position = Vector2(cell * TILE) + Vector2(0, foot.end.y)
 	root.add_to_group("decor")
@@ -2689,8 +2716,11 @@ func _add_camp_piece(cell: Vector2i, piece: Dictionary) -> void:
 		show_post_box()
 	else:
 		var tent := Sprite2D.new()
-		tent.texture = PunyTerrain.sheet().tile_texture(piece["tile"])
+		tent.texture = RoomArt.texture(piece["art"]) if piece.has("art") else PunyTerrain.sheet().tile_texture(piece["tile"])
 		sprite = tent
+		# Her ledger read by its candle at night.
+		if piece["kind"] == "desk":
+			_add_candle(Vector2(cell * TILE) + DESK_FLAME)
 	sprite.set("centered", false)
 	sprite.position = Vector2(0, -foot.end.y - (LampArt.STAKE_LIFT if piece["kind"] == "torch" else 0))
 	if piece["kind"] == "post":
@@ -2700,7 +2730,7 @@ func _add_camp_piece(cell: Vector2i, piece: Dictionary) -> void:
 		var poster := Sprite2D.new()
 		poster.texture = _wanted_poster()
 		poster.centered = false
-		poster.position = Vector2(5, 5)
+		poster.position = Vector2(4, 3)
 		sprite.add_child(poster)
 	var body := StaticBody2D.new()
 	var shape := CollisionShape2D.new()
@@ -2717,19 +2747,29 @@ static var _torch_frames: SpriteFrames
 static var _poster: ImageTexture
 
 
-## A wanted poster pinned over the board's notes: a red header, a dark face.
+## The Slayer's Ledger's bounty pinned over the board's notes (PIX-338): a
+## red pin, the beast's claw raked across it, the reward's line under.
+const POSTER := [
+	"....r....",
+	"ffffrffff",
+	"ffkffkffk",
+	"ffkffkffk",
+	"fkffkffkf",
+	"fkffkffkf",
+	"fffffffff",
+	"fsssssssf",
+	"sssssssss",
+]
+const POSTER_INKS := {"f": "f1e3c0", "s": "c9b48a", "r": "b33a2c", "k": "8a2a20"}
+
+
 static func _wanted_poster() -> ImageTexture:
 	if _poster == null:
-		var art := Image.create(6, 7, false, Image.FORMAT_RGBA8)
-		art.fill(Color("f1e3c0"))
-		for x in range(1, 5):
-			art.set_pixel(x, 1, Color("b33a2c"))
-		for cell: Vector2i in [Vector2i(2, 3), Vector2i(3, 3), Vector2i(2, 4), Vector2i(3, 4), Vector2i(1, 4), Vector2i(4, 4)]:
-			art.set_pixel(cell.x, cell.y, Color("4a3426"))
-		for x in 6:
-			art.set_pixel(x, 6, Color("c9b48a"))
-		art.set_pixel(0, 0, Color("8a2a20"))
-		art.set_pixel(5, 0, Color("8a2a20"))
+		var art := Image.create(POSTER[0].length(), POSTER.size(), false, Image.FORMAT_RGBA8)
+		for y in POSTER.size():
+			for x in POSTER[y].length():
+				if POSTER[y][x] != ".":
+					art.set_pixel(x, y, Color(POSTER_INKS[POSTER[y][x]]))
 		_poster = ImageTexture.create_from_image(art)
 	return _poster
 

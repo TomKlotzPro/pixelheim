@@ -2089,6 +2089,10 @@ msgid "A question in a conversation is answered with 1 or 2, or a click on the a
 msgstr "On répond à une question en conversation avec 1 ou 2, ou d'un clic sur la réponse ; Esc la remet à plus tard"
 
 #: assets/data/changelog.json
+msgid "A question's answers stack in a column so long French answers fit, and Ola and five other villagers no longer pace into the sea, a roof or a fence"
+msgstr "Les réponses à une question s'empilent en colonne pour que les longues réponses en français tiennent, et Ola et cinq autres villageois ne marchent plus dans la mer, un toit ou une clôture"
+
+#: assets/data/changelog.json
 msgid "A real gate in and out: three wide, a gatehouse with two towers and its portcullis raised, torches lit at night, and the road running through it"
 msgstr "Une vraie porte pour entrer et sortir : trois cases de large, une porterie flanquée de deux tours, la herse levée, des torches allumées la nuit, et la route qui la traverse"
 
@@ -3641,6 +3645,10 @@ msgid "Leaves drift down through the forests, dust floats in the light of every 
 msgstr "Des feuilles tombent en virevoltant dans les forêts, la poussière flotte dans la lumière de chaque pièce, et des braises s'élèvent des forges, des âtres et des feux de camp"
 
 #: assets/data/changelog.json
+msgid "Ledgers look like ledgers: Captain Hale's order book is an open book with ruled pages, a ribbon, a quill and inkwell, his map and a dagger beside it; the town hall gets its ledger desk, Mirelle a counting table with coins and a strongbox, and the bounty board a clawed notice (Tom's playtest)"
+msgstr "Les registres ressemblent à des registres : celui du capitaine Hale est un livre ouvert aux pages réglées, avec un signet, une plume et un encrier, sa carte et une dague à côté ; la mairie a son bureau du registre, Mirelle une table de comptes avec ses pièces et son coffre, et le tableau des primes un avis griffé (playtest de Tom)"
+
+#: assets/data/changelog.json
 msgid "Less text at once in a fight: the battle log shows a few lines at a time and folds repeats (+3 gold four times reads +12 gold), a fight's gold, XP and loot rise once when it's over, on one line, blows on one foe add up into one number, and the log no longer repeats what the screen already shows (Tom's playtest)"
 msgstr "Moins de texte d'un coup en combat : le journal affiche quelques lignes à la fois et regroupe les répétitions (quatre fois +3 or deviennent +12 or), l'or, l'XP et le butin d'un combat montent une seule fois à la fin, sur une ligne, les coups sur un même ennemi s'additionnent en un seul nombre, et le journal ne répète plus ce que l'écran montre déjà (playtest de Tom)"
 
@@ -4083,6 +4091,10 @@ msgstr "Ciré"
 #: assets/data/changelog.json
 msgid "Old Greymaw, Mossback and the other named beasts no longer get stuck on a riverbank or inside their ruins, and walk round what blocks them"
 msgstr "Vieille-Gueule-Grise, Dos-de-Mousse et les autres bêtes nommées ne restent plus coincés au bord d'une rivière ou dans leurs ruines, et contournent ce qui leur barre la route"
+
+#: assets/data/changelog.json
+msgid "Old Hessa keeps the shrine in Pixelheim: talk to her to forget your skills or, new, your training, with every stat point back; the first time of each is free, then skills cost 20 gold each and training your level in gold per point (Tom's playtest)"
+msgstr "La vieille Hessa garde le sanctuaire de Pixelheim : parlez-lui pour oublier vos compétences ou, nouveau, votre entraînement, avec tous vos points de caractéristique rendus ; la première fois de chaque est gratuite, ensuite les compétences coûtent 20 or chacune et l'entraînement votre niveau en or par point (playtest de Tom)"
 
 #: assets/data/changelog.json
 msgid "Old Pell comes home with his canary and takes the room above Hilda's forge; her upgrades cost a little less"
@@ -5343,6 +5355,10 @@ msgstr "Les Bois-Profonds et les Marais de Fange sont deux fois plus profonds - 
 #: assets/data/changelog.json
 msgid "The Deepwood is a real forest: thickets and glades, trees of mixed sizes with overlapping crowns, undergrowth, shade under the canopy and sun shafts in the clearings"
 msgstr "Les Bois-Profonds sont une vraie forêt : fourrés et clairières, arbres de toutes tailles aux cimes qui se mêlent, sous-bois, ombre sous la canopée et rais de soleil dans les clairières"
+
+#: assets/data/changelog.json
+msgid "The E prompt sits just above what it opens and never hides it"
+msgstr "Le E s'affiche juste au-dessus de ce qu'il ouvre et ne le cache plus"
 
 #: assets/data/changelog.json
 msgid "The Ember Seal"
@@ -8869,12 +8885,20 @@ msgid "Named monsters, where they lair (marked on your map) and what they pay. K
 msgstr "Les monstres nommés, leur repaire (marqué sur votre carte) et ce qu'ils rapportent. Tuez-en un et la prime est à vous sur-le-champ."
 
 #: assets/data/hints.json
+msgid "Old Hessa keeps the shrine in Pixelheim. She can make you forget your skills or your training, every point back to spend again - the first time is free."
+msgstr "La vieille Hessa tient le sanctuaire de Pixelheim. Elle peut vous faire oublier vos compétences ou votre entraînement, chaque point rendu à dépenser de nouveau - la première fois est gratuite."
+
+#: assets/data/hints.json
 msgid "Pixelheim plays best in landscape: turn your phone sideways for bigger text and more room to fight."
 msgstr "Pixelheim se joue mieux en paysage : tournez votre téléphone pour un texte plus grand et plus de place pour combattre."
 
 #: assets/data/hints.json
 msgid "Savings earn a little each day, up to a tenth of the pot - and a hero who falls loses a tenth of the gold they carry, never what's banked. A caravan is a gamble that usually pays. Expansions make your businesses' rent richer."
 msgstr "L'épargne rapporte un peu chaque jour, jusqu'à un dixième de la cagnotte - et un héros qui tombe perd un dixième de l'or qu'il porte, jamais ce qui est à la banque. Une caravane est un pari qui paie souvent. Les agrandissements font grossir les loyers de vos commerces."
+
+#: assets/data/hints.json
+msgid "Second thoughts?"
+msgstr "Des regrets ?"
 
 #: assets/data/hints.json
 msgid "The bounty board"
@@ -9153,6 +9177,10 @@ msgid "Greyhold's mended bell in the town hall: Pixelheim has a bell to ring aga
 msgstr "La cloche réparée de Greyhold à la mairie : Pixelheim a de nouveau une cloche à sonner"
 
 #: assets/data/npcs.json
+msgid "Grudges, debts, the wrong way to hold a sword. The quiet takes them off you. I'd tell you where it keeps them, but I've forgotten."
+msgstr "Les rancunes, les dettes, la mauvaise façon de tenir une épée. Le calme vous en débarrasse. Je vous dirais bien où il les range, mais j'ai oublié."
+
+#: assets/data/npcs.json
 msgid "Gunnar"
 msgstr "Gunnar"
 
@@ -9191,6 +9219,10 @@ msgstr "Je suis venue pour les étals du marché. Je suis restée pour les lante
 #: assets/data/npcs.json
 msgid "I count coins for caravans that never stop anywhere worth banking in."
 msgstr "Je compte les pièces de caravanes qui ne s'arrêtent jamais là où une banque vaudrait la peine."
+
+#: assets/data/npcs.json
+msgid "I keep the shrine. Or it keeps me. I sweep, it hums, and folk come up here to put things down."
+msgstr "Je garde le sanctuaire. Ou c'est lui qui me garde. Je balaie, il fredonne, et les gens montent jusqu'ici déposer ce qui leur pèse."
 
 #: assets/data/npcs.json
 msgid "I saw a wolf take a whole cheese wheel off a traveler once. Rolled it away and everything."
@@ -9363,6 +9395,10 @@ msgstr "Odo, Hilda et Vex commercent sur la place en attendant d'avoir de nouvea
 #: assets/data/npcs.json
 msgid "Ola the Fisher"
 msgstr "Ola la pêcheuse"
+
+#: assets/data/npcs.json
+msgid "Old Hessa"
+msgstr "La vieille Hessa"
 
 #: assets/data/npcs.json
 msgid "Old Pell"
@@ -9695,6 +9731,14 @@ msgstr "Bienvenue, bienvenue ! Les meilleures marchandises de ce côté-ci de 
 #: assets/data/npcs.json
 msgid "Well rested, too, after a bowl of Tam's stew: more XP for your next %d fights."
 msgstr "Et un vrai repos, après un bol du ragoût de Tam : plus d'XP pour vos %d prochains combats."
+
+#: assets/data/npcs.json
+msgid "What would you put down, courier?"
+msgstr "Que voulez-vous déposer, messager ?"
+
+#: assets/data/npcs.json
+msgid "What would you put down, courier? The first time is on the shrine."
+msgstr "Que voulez-vous déposer, messager ? La première fois, c'est le sanctuaire qui offre."
 
 #: assets/data/npcs.json
 msgid "When the bell rings, everyone comes. That's what a bell is for. Remember that, if the mountain ever wakes."
@@ -15441,6 +15485,10 @@ msgid "{key:move_up}/{key:move_down}  choose      {key:interact}  %s      Esc  c
 msgstr "{key:move_up}/{key:move_down}  choisir      {key:interact}  %s      Esc  fermer"
 
 #: scripts/map_screen.gd
+msgid "Forgetting"
+msgstr "Oubli"
+
+#: scripts/map_screen.gd
 msgid "Goal"
 msgstr "Objectif"
 
@@ -16133,16 +16181,8 @@ msgid " + %d HP"
 msgstr " + %d PV"
 
 #: scripts/skills_screen.gd
-msgid "%d points"
-msgstr "%d points"
-
-#: scripts/skills_screen.gd
 msgid "%d skill point%s"
 msgstr "%d point%s de compétence"
-
-#: scripts/skills_screen.gd
-msgid "%d skills"
-msgstr "%d compétences"
 
 #: scripts/skills_screen.gd
 msgid "%s is on key %d."
@@ -16157,16 +16197,8 @@ msgid "%sx %s %s · %s"
 msgstr "%sx %s en %s · %s"
 
 #: scripts/skills_screen.gd
-msgid "1 point"
-msgstr "1 point"
-
-#: scripts/skills_screen.gd
 msgid "1 pt"
 msgstr "1 pt"
-
-#: scripts/skills_screen.gd
-msgid "1 skill"
-msgstr "1 compétence"
 
 #: scripts/skills_screen.gd
 msgid "A point each level, one more each rank."
@@ -16189,22 +16221,6 @@ msgid "Forget"
 msgstr "Oublier"
 
 #: scripts/skills_screen.gd
-msgid "Forget %s for %dg and get the points back? F again to agree."
-msgstr "Oublier %s pour %d o et récupérer les points ? F de nouveau pour confirmer."
-
-#: scripts/skills_screen.gd
-msgid "Forgetting %s costs %dg."
-msgstr "Oublier %s coûte %d o."
-
-#: scripts/skills_screen.gd
-msgid "Forgetting takes the village's quiet. Come back to Pixelheim."
-msgstr "Pour oublier, il faut le calme du village. Revenez à Pixelheim."
-
-#: scripts/skills_screen.gd
-msgid "Forgotten. %s to spend again."
-msgstr "C'est oublié. %s à dépenser de nouveau."
-
-#: scripts/skills_screen.gd
 msgid "Learn it for 1 point."
 msgstr "L'apprendre pour 1 point."
 
@@ -16223,10 +16239,6 @@ msgstr "Aucun point de compétence à dépenser"
 #: scripts/skills_screen.gd
 msgid "Not on the dock - press 1-6 to put it on that key."
 msgstr "Pas sur la barre - appuyez sur 1-6 pour la placer sur cette touche."
-
-#: scripts/skills_screen.gd
-msgid "Nothing learned to forget yet."
-msgstr "Rien d'appris à oublier pour l'instant."
 
 #: scripts/skills_screen.gd
 msgid "On key %d - press 1-6 to move it."
@@ -16267,6 +16279,10 @@ msgstr "Cette voie n'est pas la vôtre pour l'instant."
 #: scripts/skills_screen.gd
 msgid "The tree is whole: spend them beyond it, in Stats."
 msgstr "L'arbre est complet : dépensez-les au-delà, dans Stats."
+
+#: scripts/skills_screen.gd
+msgid "To forget, see %s at Pixelheim's shrine."
+msgstr "Pour oublier : %s, au sanctuaire de Pixelheim."
 
 #: scripts/skills_screen.gd
 msgid "UPGRADE"
@@ -17029,8 +17045,8 @@ msgid "You wake at the inn. The innkeeper says nothing. Kind of her."
 msgstr "Vous vous réveillez à l'auberge. L'aubergiste ne dit rien. C'est gentil de sa part."
 
 #: scripts/stats_screen.gd
-msgid "%d stat point%s to spend. Spending is permanent."
-msgstr "%d point%s de caractéristique à dépenser. Toute dépense est définitive."
+msgid "%d stat point%s to spend. %s at the shrine can undo it, for a price."
+msgstr "%d point%s de caractéristique à dépenser. %s, au sanctuaire, peut tout défaire, contre paiement."
 
 #: scripts/stats_screen.gd
 msgid "%s %d: %s"
@@ -17249,8 +17265,64 @@ msgid "Saved"
 msgstr "Sauvegardé"
 
 #: scripts/world_interaction.gd
+msgid "%d points"
+msgstr "%d points"
+
+#: scripts/world_interaction.gd
+msgid "%d skills"
+msgstr "%d compétences"
+
+#: scripts/world_interaction.gd
+msgid "1 point"
+msgstr "1 point"
+
+#: scripts/world_interaction.gd
+msgid "1 skill"
+msgstr "1 compétence"
+
+#: scripts/world_interaction.gd
 msgid "A workbench for this shelf: %d gold. It counts as a trade level more when you craft at home. {key:interact} again to buy it."
 msgstr "Un établi pour cette étagère : %d or. Il compte comme un niveau de métier en plus quand vous fabriquez chez vous. {key:interact} à nouveau pour l'acheter."
+
+#: scripts/world_interaction.gd
+msgid "Forget my skills: %s, %s, %s"
+msgstr "Oublier mes compétences : %s, %s, %s"
+
+#: scripts/world_interaction.gd
+msgid "Forget my skills: none learned yet"
+msgstr "Oublier mes compétences : aucune apprise pour l'instant"
+
+#: scripts/world_interaction.gd
+msgid "Forget my training: %s, %s"
+msgstr "Oublier mon entraînement : %s, %s"
+
+#: scripts/world_interaction.gd
+msgid "Forget my training: no points spent yet"
+msgstr "Oublier mon entraînement : aucun point dépensé pour l'instant"
+
+#: scripts/world_interaction.gd
+msgid "Forgetting that costs %s. You have %s."
+msgstr "Oublier cela coûte %s. Vous avez %s."
+
+#: scripts/world_interaction.gd
+msgid "Forgotten: %d skill point%s to spend again."
+msgstr "C'est oublié : %d point%s de compétence à dépenser de nouveau."
+
+#: scripts/world_interaction.gd
+msgid "Forgotten: %d stat point%s to spend again."
+msgstr "C'est oublié : %d point%s de caractéristique à dépenser de nouveau."
+
+#: scripts/world_interaction.gd
+msgid "No stat points spent to forget yet."
+msgstr "Aucun point de caractéristique dépensé à oublier pour l'instant."
+
+#: scripts/world_interaction.gd
+msgid "Not today"
+msgstr "Pas aujourd'hui"
+
+#: scripts/world_interaction.gd
+msgid "Nothing learned to forget yet."
+msgstr "Rien d'appris à oublier pour l'instant."
 
 #: scripts/world_interaction.gd
 msgid "Only cinders where the house stood. The board on the square can change that."
@@ -17263,6 +17335,10 @@ msgstr "Le ragoût de Sela mijote sur le feu. Le Ragoût du chasseur se prépare
 #: scripts/world_interaction.gd
 msgid "The deed costs %d gold. {key:interact} again to sign it."
 msgstr "Le titre de propriété coûte %d or. {key:interact} à nouveau pour le signer."
+
+#: scripts/world_interaction.gd
+msgid "free"
+msgstr "gratuit"
 
 #: scripts/world_messages.gd
 msgid "Level up"

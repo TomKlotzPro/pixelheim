@@ -15,6 +15,10 @@
     "title": "Your journal",
     "text": "Every quest you take is written down: {key:journal} opens the journal, with where to go and what's still to do."
   },
+  "forget": {
+    "title": "Second thoughts?",
+    "text": "Old Hessa keeps the shrine in Pixelheim. She can make you forget your skills or your training, every point back to spend again - the first time is free."
+  },
   "skill_full": {
     "title": "{skill}",
     "text": "{what} All six keys are taken: in Skills ({key:skills}), choose it and press a number to put it on that key."

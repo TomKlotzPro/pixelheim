@@ -36,6 +36,25 @@
       ]
     },
     {
+      "id": "shrine_keeper",
+      "about": "PIX-331: the shrine's keeper, who makes a hero forget (Skills.FORGETTER): the skills bought, for their points back (PIX-86's rule and price), or the training, every stat point spent, for the hero's level in gold a point; the first time of each is on the shrine. Talking to her ends on the question (`forgetting`: `ask`, or `askFree` while a first time is left).",
+      "mapId": "town",
+      "x": 8,
+      "y": 6,
+      "sprite": "keeper",
+      "name": "Old Hessa",
+      "wander": false,
+      "minTownTier": 0,
+      "lines": [
+        "I keep the shrine. Or it keeps me. I sweep, it hums, and folk come up here to put things down.",
+        "Grudges, debts, the wrong way to hold a sword. The quiet takes them off you. I'd tell you where it keeps them, but I've forgotten."
+      ],
+      "forgetting": {
+        "ask": "What would you put down, courier?",
+        "askFree": "What would you put down, courier? The first time is on the shrine."
+      }
+    },
+    {
       "id": "villager_ana",
       "mapId": "town",
       "x": 16,
@@ -175,7 +194,7 @@
       "id": "settler_mira",
       "mapId": "town",
       "x": 10,
-      "y": 20,
+      "y": 19,
       "sprite": "villager_woman",
       "name": "Mira the Weaver",
       "wander": true,
@@ -199,7 +218,7 @@
       "id": "settler_tomas",
       "mapId": "town",
       "x": 36,
-      "y": 13,
+      "y": 11,
       "sprite": "villager",
       "name": "Old Tomas",
       "wander": true,
@@ -247,7 +266,7 @@
       "id": "town_cat",
       "mapId": "town",
       "x": 58,
-      "y": 12,
+      "y": 11,
       "sprite": "cat",
       "name": "The cat",
       "wander": true,
@@ -311,8 +330,8 @@
     {
       "id": "saltmere_ola",
       "mapId": "saltmere",
-      "x": 28,
-      "y": 20,
+      "x": 30,
+      "y": 19,
       "sprite": "fisher",
       "name": "Ola the Fisher",
       "wander": true,
@@ -351,7 +370,7 @@
       "id": "mines_dagny",
       "mapId": "blackiron",
       "x": 33,
-      "y": 20,
+      "y": 19,
       "sprite": "worker",
       "name": "Dagny",
       "wander": true,
@@ -516,7 +535,7 @@
       },
       "home": {
         "x": 52,
-        "y": 12,
+        "y": 11,
         "wander": true
       },
       "minTownTier": 2,
