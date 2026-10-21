@@ -1,5 +1,6 @@
 class_name HarnessReport
 extends RefCounted
+## areas: all
 ## The screenshot harness's report line (PIX-273): `screenshot saved;
 ## map=town cell=(40, 33) hp=... gate=bridge`, every field declared once in
 ## TABLE and written by its own function below. Each branch used to add its

@@ -1,4 +1,5 @@
 class_name HubArt
+## areas: town travel field +blackiron* +saltmere* +greyhold* +frostgate* +mountain_road*
 ## What the hubs grow as their post roads fill (PIX-324, Hubs): Saltmere's
 ## lighthouse on the point, mended, glazed in sea glass and lit; the trestle
 ## and then the stall at Blackiron's camp; Mabel's tent at Greyhold and the

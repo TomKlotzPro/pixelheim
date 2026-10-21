@@ -1,5 +1,6 @@
 class_name Dissolve
 extends TextureRect
+## areas: travel
 ## A door's dissolve (One Reach, PIX-269; Tom: "crossing is a cut"). The
 ## screen as it stood the moment the hero went through is held over the new
 ## map and fades out of it in a quarter of a second: the old place melts

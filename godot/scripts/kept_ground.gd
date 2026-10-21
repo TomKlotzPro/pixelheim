@@ -1,5 +1,6 @@
 class_name KeptGround
 extends RefCounted
+## areas: town rooms travel +town-age*
 ## A map's ground as its first visit this session worked it out (One Reach,
 ## PIX-269, step 4): Shade's corner tiles on the dual grid, the forest's
 ## crowns on the ridges, the region tint and the water masks the shaders

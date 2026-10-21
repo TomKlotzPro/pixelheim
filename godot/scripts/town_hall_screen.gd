@@ -1,4 +1,5 @@
 extends "res://scripts/ledger_screen.gd"
+## areas: town
 ## The village's projects (PIX-145), across the mayor's counter or at the
 ## board on the square: where Pixelheim stands, what the age it is building
 ## asks, and each of that age's projects to fund - gold and a region's

@@ -1,4 +1,5 @@
 class_name Packs
+## areas: combat field
 ## Wild packs with homes (PIX-142): each pack lives at its spawn's home,
 ## wanders a few tiles from it, notices a hero it can see, gives up a chase
 ## that strays too far and walks home healed; one far below the hero runs

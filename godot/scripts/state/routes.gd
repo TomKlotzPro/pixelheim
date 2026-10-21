@@ -1,4 +1,5 @@
 class_name Routes
+## areas: town travel field night quest +overworld*
 ## The Post's routes (PIX-322, Something to Come Back To's step 3): the
 ## roads the courier carries the post along, and what they grow. Every
 ## piece handed over counts toward the route from Pixelheim to the place at

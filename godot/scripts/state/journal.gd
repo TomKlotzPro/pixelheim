@@ -1,4 +1,5 @@
 class_name Journal
+## areas: quest
 ## The journal's quest page as rows (PIX-239, after Tom's playtest: "le
 ## journal c'est pas clair"): every open thread in one list, grouped - the
 ## main story (its chapter and next step, then the quests that carry it),

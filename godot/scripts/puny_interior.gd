@@ -1,4 +1,5 @@
 class_name PunyInterior
+## areas: rooms +town_house*
 ## The rooms behind the town's doors in Shade's Puny World Medieval Age
 ## (PIX-133), the way his sample cottages and smithy are furnished: plank
 ## floors (stone in the smithy), his cream walls one tile thick

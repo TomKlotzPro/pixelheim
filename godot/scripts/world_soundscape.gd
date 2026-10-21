@@ -1,5 +1,6 @@
 class_name Soundscape
 extends Node
+## areas: town field
 ## What the hero hears (Solid Ground, PIX-260: moved out of world.gd as it
 ## was): the place's theme, the fight's or the boss's while something hunts
 ## the hero, a fallen boss's silence; the place's ambience, birds or

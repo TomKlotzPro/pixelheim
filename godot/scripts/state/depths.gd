@@ -1,4 +1,5 @@
 class_name Depths
+## areas: dungeon travel +seacave* +shafts* +cellars* +icecave* +vault*
 ## A region's dungeon in floors (PIX-255, after Tom: « Les donjons, ça serait
 ## bien sur plusieurs étages, c'est un peu simple »). Each region's dungeon
 ## is a list of floors (assets/data/depths.json), top to bottom, each a map

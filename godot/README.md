@@ -247,9 +247,10 @@ screen: the release and catalogue checks, the import when art or scripts
 changed, GUT beside a boot of the town and of the maps the diff touches, and
 the flows tagged with the areas it touches. Each flow ends on its tags in
 `flows.txt` (town, rooms, travel, field, combat, dungeon, trade, story, quest,
-screen, lang, save, gathering, title, rank, night), and `AREAS` in
-`check.sh` says which areas each file touches; a file it doesn't know runs
-every flow. `--plan` shows what it would run and why. `check.sh full` runs
+screen, lang, save, gathering, title, rank, night). A script says which areas
+it touches on an `## areas:` line under its `class_name`/`extends`, and
+`tools/areas.txt` says it for every other file (PIX-353); a file neither
+names runs every flow. `--plan` shows what it would run and why. `check.sh full` runs
 everything CI runs. Neither opens the motion flows' window: `quick` says when
 a change to the hero's sprite, walk, the camera or the hand-over at a line
 between two maps calls for `godot/tools/flows.sh motion line-motion`.

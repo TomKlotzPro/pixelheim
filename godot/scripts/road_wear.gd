@@ -1,4 +1,5 @@
 class_name RoadWear
+## areas: town travel +town-age* +greyhold* +frostgate* +overworld*
 ## The wear of wheels and feet on the dirt roads (PIX-307). The audit found
 ## every road in the Reach one flat band of Shade's dirt with a dithered
 ## edge, and Pixelheim's streets the same from the Ashes to the City. Now a

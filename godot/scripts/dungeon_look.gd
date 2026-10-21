@@ -1,4 +1,5 @@
 class_name DungeonLook
+## areas: dungeon +seacave* +shafts* +cellars* +icecave* +vault*
 ## Each dungeon dressed as its place (PIX-310, the audit's "five dungeons,
 ## one brick look": the sea cave, the shafts, the cellars, the ice cave and
 ## the Kings' Vault were the same cut-brick halls in a different tint, on

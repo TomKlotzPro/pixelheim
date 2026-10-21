@@ -1,5 +1,6 @@
 class_name Neighbours
 extends Node
+## areas: travel
 ## The maps drawn beside the hero's (One Reach, PIX-269, steps 5 and 6). Tom
 ## found crossing between the Reach's maps a cut; now, near a road out of a
 ## map under the Reach's sky, the map past it is drawn beside it where the

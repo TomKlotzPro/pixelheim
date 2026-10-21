@@ -1,5 +1,6 @@
 class_name CameraRig
 extends Node
+## areas: travel combat
 ## The world's camera (Solid Ground, PIX-260: moved out of world.gd as it
 ## was). It rides the hero where they are drawn this frame, between physics
 ## ticks, and stands on a whole screen pixel so the world scrolls crisp; it

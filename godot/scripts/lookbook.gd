@@ -1,4 +1,5 @@
 extends Node
+## areas: none
 ## The look book (PIX-220): the same scenes, staged the same way every time -
 ## the town by day, at dusk and at night, the forest, the Ash, the Mire, the
 ## Frostgate, the Kings' Vault, a fight, the overworld at night, the

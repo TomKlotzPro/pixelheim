@@ -1,5 +1,6 @@
 class_name Messages
 extends Node
+## areas: combat story
 ## What the world tells the hero in words (Solid Ground, PIX-260: moved out
 ## of world.gd as it was): the message plate over the objective, where a
 ## quest taken or done, a level gained and the like wait their turn and hold

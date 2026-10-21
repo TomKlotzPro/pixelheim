@@ -1,4 +1,5 @@
 extends Screen
+## areas: quest
 ## The journal (Journal.tsx; PIX-171, redone for PIX-239 after Tom's
 ## playtest: « le journal c'est pas clair »). One page says what you're
 ## doing and lets you choose:

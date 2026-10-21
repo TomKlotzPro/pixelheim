@@ -1,4 +1,5 @@
 class_name SlotCard
+## areas: save
 ## What a hero's card on the Saves screen says (PIX-302), from the slot's
 ## summary (`SaveSlots.summary`, read off the save's card): who they are,
 ## where they stand and how far into the story, how long they've played and

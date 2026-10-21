@@ -1,4 +1,5 @@
 class_name GroundDetail
+## areas: town travel field
 ## The small things in the grass (PIX-305): tufts, clover, flowers, pebbles,
 ## twigs, and the mire's reeds and sedge, which Scatter.detail picks a cell
 ## at a time. Drawn here a pixel per letter in Shade's own Puny World and

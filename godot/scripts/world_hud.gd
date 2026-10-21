@@ -1,5 +1,6 @@
 class_name Hud
 extends Node
+## areas: screen
 ## The HUD over the world (Solid Ground, PIX-260: moved out of world.gd as
 ## it was): its layer and widgets - the sky's tint, the hero's dock, the
 ## boss bar, the nameplate over a signed door, the main quest's next step,

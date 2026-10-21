@@ -26,11 +26,13 @@
 #   the diff touches (GUT never loads world.gd nor its world_*.gd pieces, so
 #   a script that breaks only there fails here), then the flows tagged with
 #   the areas the diff touches: each flow's tags end its line in flows.txt,
-#   and AREAS below says which areas each file touches. A changed map also
-#   runs the flows that name it, a changed scripts/<x>.gd the flows whose
-#   report shows open=<x>, and a changed flows.txt the flows it adds or changes.
-#   A file no line of AREAS names, or whose areas no flow covers, runs every
-#   flow, and quick says so; a flow without a tag AREAS knows runs every time.
+#   a script's "## areas:" line under its class_name/extends says which areas
+#   it touches, and tools/areas.txt says it for every other file (PIX-353). A
+#   changed map also runs the flows that name it, a changed scripts/<x>.gd
+#   the flows whose report shows open=<x>, and a changed flows.txt the flows
+#   it adds or changes. A file neither names, or whose areas no flow covers,
+#   runs every flow, and quick says so; a flow without a tag either knows
+#   runs every time.
 # It warns when the main checkout's skill (.claude/skills/pixelheim-godot/
 # SKILL.md, the one agents load) isn't origin/main's (PIX-349).
 # The windowed motion flows never run here: quick says when the diff calls
@@ -50,85 +52,6 @@ set -uo pipefail
 
 cd "$(dirname "$0")/.."
 
-# Which areas each file touches. A line is the areas, a colon, then the files
-# (globs from godot/); a changed file takes the areas of the first line that
-# names it. "all" runs every flow, "none" no flow (the checks, GUT and the
-# town's boot still run). +name adds boots (a name from flows.sh --boot
-# --list, or a glob of them) to the town's. all comes first: tools/flows.py
-# is a tools/*.py, and it checks every flow.
-AREAS='
-all: project.godot scenes/* tools/flows.sh tools/flows.py scripts/world.gd scripts/game_clock.gd scripts/harness.gd scripts/harness_flags.gd scripts/harness_report.gd scripts/state/game_state.gd scripts/state/catalog.gd assets/data/catalog.json
-none: README.md .gitignore .gutconfig.json export_presets.cfg addons/* test/unit/* test/hooks/* tools/*.py tools/check.sh tools/lookbook.sh scripts/lookbook.gd scripts/perf_probe.gd assets/puny/LICENSE.txt assets/fonts/*.txt
-travel combat: scripts/world_camera.gd
-combat field night: scripts/world_foes.gd
-combat town: scripts/world_fx.gd scripts/state/gains.gd
-combat story: scripts/world_messages.gd scripts/state/text_budget.gd
-town rooms trade story quest: scripts/world_interaction.gd
-town field: scripts/world_soundscape.gd scripts/sound.gd scripts/desktop_look.gd assets/audio/* assets/data/audio.json assets/data/hints.json
-story travel: scripts/world_stage.gd
-town story: scripts/world_folk.gd scripts/npc.gd scripts/npcs.gd scripts/dialogue_box.gd scripts/reveal_screen.gd scripts/rebuild_rise.gd assets/data/npcs.json
-town rooms travel +town-age*: scripts/world_tiles.gd scripts/map_view.gd scripts/map_data.gd scripts/kept_ground.gd scripts/puny_sheet.gd scripts/discovery.gd scripts/interactables.gd assets/maps/interactables.json
-town +town-age*: scripts/puny_town.gd scripts/puny_props.gd scripts/shop_sign.gd scripts/state/town.gd
-town rooms field night title +town-age*: scripts/lamp_art.gd
-town travel +town-age* +greyhold* +frostgate* +overworld*: scripts/streets.gd scripts/road_wear.gd assets/data/streets.json
-town rooms +town-age* +town_house*: assets/data/town.json scripts/state/settlement_state.gd scripts/state/holdings.gd scripts/state/household.gd
-town: scripts/town_hall_screen.gd scripts/ledger_screen.gd scripts/bank_screen.gd scripts/ring_toss_screen.gd
-rooms +town_house*: scripts/puny_interior.gd scripts/home_screen.gd assets/data/interiors.json
-rooms +observatory*: scripts/room_art.gd
-travel field: scripts/puny_terrain.gd scripts/scatter.gd scripts/skyline.gd assets/puny/world/*
-travel field: scripts/woods.gd shaders/canopy_shade.*
-town travel field: scripts/open_ground.gd scripts/ground_detail.gd
-travel field +blackiron* +overworld* +mountain_road*: scripts/ash_land.gd scripts/ash_art.gd
-town travel +town-age* +overworld*: scripts/rampart.gd
-travel: scripts/seam.gd scripts/slicer.gd scripts/world_neighbours.gd scripts/reach_plane.gd scripts/ways.gd scripts/waypoints.gd scripts/atlas.gd scripts/dissolve.gd scripts/place_title.gd scripts/map_screen.gd scripts/state/world_state.gd assets/data/plane.json
-travel story +overworld*: scripts/state/gates.gd scripts/gate_art.gd assets/data/gates.json
-travel story rooms +blackiron* +saltmere* +overworld* +mountain_road* +observatory*: scripts/entrance_art.gd
-town travel field +blackiron* +saltmere* +greyhold* +frostgate* +mountain_road*: scripts/hamlet.gd scripts/hamlet_art.gd shaders/snowed_roof.* scripts/hub_art.gd scripts/state/hubs.gd
-quest travel: scripts/escort.gd
-dungeon travel +seacave* +shafts* +cellars* +icecave* +vault*: scripts/state/depths.gd assets/data/depths.json
-dungeon story travel +vault* +mountain_road*: scripts/state/vault.gd
-dungeon +vault*: scripts/world_delve.gd scripts/stair_rise.gd scripts/puny_dungeon.gd scripts/dungeon_floor.gd assets/puny/dungeon/*
-combat dungeon: scripts/boss_brain.gd scripts/telegraph.gd scripts/boss_bar.gd
-combat field dungeon gathering +vault*: assets/data/combat.json
-combat field: scripts/enemy.gd scripts/elite_brain.gd scripts/firebolt.gd scripts/state/packs.gd
-combat town title: scripts/player.gd scripts/gait.gd scripts/puny_art.gd assets/puny/characters/* assets/puny/beasts/* assets/puny/mini/*
-combat screen: scripts/state/upkeep.gd
-combat: scripts/juice.gd scripts/state/bestiary.gd scripts/state/spoils.gd scripts/state/ailments.gd
-trade: scripts/shop_screen.gd scripts/state/economy.gd scripts/state/trade.gd assets/data/economy.json
-trade screen: scripts/item_icons.gd scripts/state/inventory_state.gd assets/puny/icons.json assets/puny/icons/*
-story: scripts/cutscene.gd scripts/dawn_screen.gd scripts/chapter_screen.gd scripts/throne_screen.gd scripts/state/story.gd scripts/state/letters.gd scripts/state/relics.gd assets/data/story.json
-story night: scripts/state/prologue.gd
-story town night: scripts/fire_art.gd shaders/fire_* assets/fire/*
-story night combat town: scripts/world_bells.gd scripts/state/bells.gd
-story town: scripts/state/homecoming.gd
-story quest rank: assets/data/progression.json
-story quest: scripts/state/main_quest.gd scripts/state/quests.gd scripts/state/questing.gd
-town story quest save: scripts/state/post.gd scripts/state/post_state.gd scripts/state/posting.gd assets/data/post.json
-town travel field night quest +overworld*: scripts/state/routes.gd scripts/route_art.gd
-travel field night +overworld*: scripts/state/lamps.gd
-quest: scripts/journal_screen.gd scripts/bounty_screen.gd scripts/state/journal.gd scripts/state/bearing.gd scripts/postmark.gd
-quest combat: scripts/state/hunts.gd
-quest screen: scripts/state/deeds.gd
-quest dungeon save: scripts/state/progression_state.gd
-rank: scripts/rankup_screen.gd scripts/state/ranks.gd
-rank screen: scripts/skills_screen.gd scripts/state/skills.gd scripts/state/training.gd
-rank combat: scripts/state/hero_rules.gd
-field night: scripts/day_night.gd scripts/lights.gd scripts/light_rig.gd
-field: scripts/weather.gd scripts/atmosphere.gd
-field rank: scripts/motes.gd
-dungeon +icecave*: shaders/frozen.*
-dungeon +seacave* +shafts* +cellars* +icecave* +vault*: scripts/dungeon_look.gd scripts/dungeon_art.gd shaders/dungeon.* shaders/torch_motes.*
-rooms +observatory*: shaders/stair_frost.*
-town field title: shaders/*
-gathering: scripts/state/gathering.gd
-save: test/fixtures/* scripts/saves_screen.gd scripts/state/slot_card.gd scripts/state/save_codec.gd scripts/state/save_slots.gd scripts/state/hero_state.gd
-title: scripts/title_scene.gd scripts/title_screen.gd scripts/create_screen.gd scripts/changelog_screen.gd assets/data/changelog.json assets/*.png
-title: web/*
-screen: scripts/world_hud.gd scripts/hud_dock.gd scripts/screen.gd scripts/ui_style.gd scripts/keycap.gd scripts/controls.gd scripts/touch.gd scripts/touch_controls.gd scripts/inventory_screen.gd scripts/stats_screen.gd scripts/codex_screen.gd scripts/options_screen.gd scripts/pause_screen.gd scripts/state/game_settings.gd
-screen lang: assets/fonts/* scripts/ink.gd scripts/layout.gd
-town combat screen quest: scripts/marks.gd
-lang: locale/* scripts/state/text.gd
-'
 # The motion flows measure the walk in a window (line-motion over a line
 # between two maps, PIX-269): quick never runs them, and asks for them
 # after a change to these.
@@ -302,8 +225,11 @@ fi
 
 # --- quick: what the diff could break ----------------------------------------
 
-# No glob below expands: AREAS' patterns are matched, never listed.
+# Which areas each file touches: a script's "## areas:" line, else the first
+# line of tools/areas.txt that names it (its head says how a line reads). No
+# glob below expands: the patterns are matched, never listed.
 set -f
+AREAS=$(grep -v '^#' tools/areas.txt)
 started=$(now)
 base=${CHECK_BASE:-origin/main}
 if [[ -n ${CHECK_FILES:-} ]]; then
@@ -331,15 +257,17 @@ while IFS="|" read -r name args expect tagged; do
 done < <(bash tools/flows.sh --list)
 boot_names=$(bash tools/flows.sh --boot --list | cut -d"|" -f1 | tr '\n' ' ')
 
-# The areas AREAS names: a flow tagged with none of them could never be
-# picked, so it runs every time.
+# The areas the scripts and areas.txt name: a flow tagged with none of them
+# could never be picked, so it runs every time.
 known=" "
 while IFS= read -r line; do
-	[[ $line == *:* ]] || continue
-	for word in ${line%%:*}; do
+	for word in $line; do
 		[[ $word == +* || $known == *" $word "* ]] || known+="$word "
 	done
-done <<<"$AREAS"
+done < <(
+	cut -d: -f1 <<<"$AREAS"
+	grep -rh -m1 '^## areas:' scripts --include='*.gd' | cut -d: -f2
+)
 
 picked=" "
 everything=0
@@ -407,7 +335,8 @@ pick() {
 		found="(--map |map=)$id([^a-z0-9_]|$)"
 		label="map $id"
 	else
-		while IFS= read -r line; do
+		[[ $file == scripts/*.gd ]] && areas=$(grep -m1 '^## areas:' "$file" 2>/dev/null | sed 's/^## areas: *//')
+		[[ -n $areas ]] || while IFS= read -r line; do
 			[[ $line == *:* ]] || continue
 			for pattern in ${line#*:}; do
 				# shellcheck disable=SC2053 # the pattern is a glob
@@ -431,7 +360,7 @@ pick() {
 			return
 		elif [[ -z $areas ]]; then
 			everything=1
-			why="no line of AREAS names it: every flow (give it its areas in check.sh)"
+			why="nothing names its areas: every flow (a script's ## areas: line, or tools/areas.txt)"
 			return
 		fi
 		# A script's own screen: the flows whose report shows it open.
@@ -513,7 +442,7 @@ else
 	echo "flows:   $(wc -w <<<"$flows" | tr -d ' ') of $total: ${flows:-none}"
 fi
 if [[ -n $untagged ]]; then
-	echo "note:    no tag AREAS knows on ${untagged% }, so they run every time (tag them in flows.txt)"
+	echo "note:    no tag the areas name on ${untagged% }, so they run every time (tag them in flows.txt)"
 fi
 if [[ -n $motion ]]; then
 	echo "motion:  the diff touches ${motion% }: CI's windowed jobs walk it in a window on the PR (or watch it here: godot/tools/flows.sh motion line-motion)"

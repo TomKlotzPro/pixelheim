@@ -1,5 +1,6 @@
 class_name StairRise
 extends Node2D
+## areas: dungeon +vault*
 ## A way out opening where a dungeon's boss fell (PIX-339, Tom: « ça fait
 ## bizarre de tuer un boss et qu'un escalier pop »). PIX-292 stamped its
 ## stair on the floor the moment the boss fell; now the fall opens it. Once

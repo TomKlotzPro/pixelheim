@@ -1,4 +1,5 @@
 class_name Vault
+## areas: dungeon story travel +vault* +mountain_road*
 ## The Kings' Vault (PIX-257, the main story's step 11): what comes after
 ## the story. The old kings chained Fafnyr to the summit to sit on their
 ## gold; once he's freed he shows the courier the hoard he hated ("Take it.

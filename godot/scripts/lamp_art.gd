@@ -1,4 +1,5 @@
 class_name LampArt
+## areas: town rooms field night title +town-age*
 ## Lamps and lit windows (PIX-311). By day a street lamp was Shade's wall
 ## torch, cold: a dark speck on the road that read as a bug, and at night
 ## every lit window a round orb on the wall. Now a lamp is a post with a

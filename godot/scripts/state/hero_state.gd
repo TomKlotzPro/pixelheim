@@ -1,5 +1,6 @@
 class_name HeroState
 extends Resource
+## areas: save
 ## The hero record, field for field the web `Hero` (src/game/types.ts). The
 ## real-time combat keeps its own action-scale HP until combat v2 maps these
 ## stats onto it (PIX-126), so hp/mp/stats travel through Godot untouched.

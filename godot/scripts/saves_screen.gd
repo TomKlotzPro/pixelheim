@@ -1,4 +1,5 @@
 extends Screen
+## areas: save
 ## The saves screen (Esc, and Saves on the title): the heroes you have, in
 ## three slots, one column that gets the whole window (PIX-302). Each card
 ## shows the hero as they left, dressed, with their class and level, where

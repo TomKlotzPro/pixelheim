@@ -1,4 +1,5 @@
 class_name WorldTiles
+## areas: town rooms travel +town-age*
 ## Tile tables: the tile ids a map file may use (test_map_files refuses any
 ## other), which the hero walks on, and their colours on the map screen. Map
 ## files hold tile ids, never characters (the sketches' keys name them).

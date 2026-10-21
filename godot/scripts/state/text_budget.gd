@@ -1,5 +1,6 @@
 class_name TextBudget
 extends RefCounted
+## areas: combat story
 ## One rule for the words on the screen (PIX-334: Tom, after a fight with a
 ## pack, « y'a aussi trop d'infos qui pop d'un coup sur l'écran en texte »).
 ## An area of the screen (the battle log, the message's plate) shows at most

@@ -1,4 +1,5 @@
 class_name GateArt
+## areas: travel story +overworld*
 ## What a shut gate looks like (PIX-254, Gates), in art already in the game:
 ## the road still there and the land past it in sight, something drawn across
 ## it that blocks like any prop. The cliff road's rockfall is boulders off

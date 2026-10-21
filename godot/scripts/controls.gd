@@ -1,4 +1,5 @@
 class_name Controls
+## areas: screen
 ## The keys (src/app/settings.ts bindings, grown for real-time play): every
 ## action has one primary key the options screen can rebind, plus fixed
 ## alternates that always work (arrows, Enter, Space, Tab) and gamepad

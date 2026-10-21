@@ -1,4 +1,5 @@
 extends Screen
+## areas: title
 ## Hero creation (CharacterCreation.tsx): seven roles with their pitch, the
 ## chosen one walking in their colours, the stats against the whole roster,
 ## the skills they start toward, a name, and how the game opens: with the

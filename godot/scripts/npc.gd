@@ -1,4 +1,5 @@
 extends AnimatableBody2D
+## areas: town story
 ## A villager: their Puny sheet (PunyArt, PIX-130), a body the hero bumps
 ## into, and — for wanderers — an amble around the pacing loop, walking the
 ## way they step. Who they are and where they may step comes from Npcs; the

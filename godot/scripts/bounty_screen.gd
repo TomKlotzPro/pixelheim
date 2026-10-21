@@ -1,4 +1,5 @@
 extends "res://scripts/ledger_screen.gd"
+## areas: quest
 ## The bounty board on the square (PIX-156): the named monsters posted so far,
 ## the wanted first, then the slain. The card tells the chosen one's tale,
 ## where its lair is and what it pays; the lairs of the wanted are marked on

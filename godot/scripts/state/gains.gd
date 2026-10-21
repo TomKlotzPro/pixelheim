@@ -1,5 +1,6 @@
 class_name Gains
 extends RefCounted
+## areas: combat town
 ## What the hero wins, as things the world shows rather than words in the
 ## log (PIX-245: Tom found it "beaucoup d'écrit"): the XP, the gold and the
 ## items a kill, a chest, a patch picked or a fish caught brings float up

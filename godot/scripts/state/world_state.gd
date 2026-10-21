@@ -1,5 +1,6 @@
 class_name WorldState
 extends Resource
+## areas: travel
 ## Where the hero stands and what they have explored (web WorldState plus the
 ## top-level worldSteps). Discovery is kept as map_id -> {Vector2i: true} for
 ## fast lookups, and packed a bit per cell for the save (PIX-302).

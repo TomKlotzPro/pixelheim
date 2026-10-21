@@ -1,4 +1,5 @@
 class_name Layout
+## areas: screen lang
 ## Where a screen's pieces may go (Solid Ground, PIX-229/230): inside the
 ## canvas the player sees. Text grows (French runs a third longer than
 ## English), and a label that won't wrap widens its panel until the panel

@@ -1,4 +1,5 @@
 extends CharacterBody2D
+## areas: combat field
 ## A monster in the field: wanders near its home, notices a hero it can see
 ## (a "!" and a hop first), chases, bites after a tell, and gives up a chase
 ## that strays too far, walking home to heal (PIX-142). One far below the

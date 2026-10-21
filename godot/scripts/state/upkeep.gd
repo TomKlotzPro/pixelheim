@@ -1,5 +1,6 @@
 class_name Upkeep
 extends RefCounted
+## areas: combat screen
 ## The hero's body and kit (PIX-261, out of game_state.gd): hits, heals and
 ## what comes back at rest, what the pack can carry, what is worn and how the
 ## hero is drawn in it, dropping and using items, and the inn's bed, paid for

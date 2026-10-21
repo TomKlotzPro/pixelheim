@@ -1,4 +1,5 @@
 class_name Story
+## areas: story
 ## The Ember Seal told through play (PIX-153): what Maren has to say as the
 ## hero learns more - each relic's story - and how the hero chose to end it:
 ## Morvax's choice (PIX-253 step 10, Homecoming). Her stories of the old

@@ -1,4 +1,5 @@
 extends Screen
+## areas: trade
 ## A keeper's counter (talk to anyone in a shop): Buy, Sell, the Forge at the
 ## smithy, and Craft at the forge and the cauldron. Crafting lives in the web
 ## game's pack screen; until the UI suite brings that screen (PIX-127) the

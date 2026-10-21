@@ -1,5 +1,6 @@
 class_name BossBrain
 extends Node
+## areas: combat dungeon
 ## A boss that fights back (PIX-150): between bites, Fafnyr casts his own
 ## attacks, each told first by a red mark on the ground so a hero who reads
 ## it can step out - a breath down a line, embers raining in circles.

@@ -1,4 +1,5 @@
 class_name Text
+## areas: lang
 ## The game in more than one language (PIX-195). English is the source and
 ## its own key (gettext's msgid): godot/locale/<lang>.po maps each English
 ## string to the language's, and tools/i18n.py keeps locale/messages.pot -

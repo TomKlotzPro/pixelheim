@@ -1,4 +1,5 @@
 class_name GameClock
+## areas: all
 ## The game's own clock (PIX-276): the time the world has lived, counted in
 ## its physics ticks, sixty a second. Every "how long since" in play reads it
 ## (a foe's grace on arrival, a message's time up, the place's card, a

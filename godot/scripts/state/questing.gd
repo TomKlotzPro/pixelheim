@@ -1,5 +1,6 @@
 class_name Questing
 extends RefCounted
+## areas: story quest
 ## Quests, conversations and the Night of Ash (PIX-261, out of
 ## game_state.gd): what a giver offers and what closing a conversation
 ## resolves, choices, escorts and timed runs, deliveries' progress and the ask

@@ -1,4 +1,5 @@
 class_name HamletArt
+## areas: town travel field +blackiron* +saltmere* +greyhold* +frostgate* +mountain_road*
 ## What the settlements beyond Pixelheim are dressed in that Shade's sheets
 ## don't draw (PIX-313), and the story's last set pieces (PIX-312): kegs and
 ## crates at the Puny folk's scale (Shade's barrel stood as tall as the

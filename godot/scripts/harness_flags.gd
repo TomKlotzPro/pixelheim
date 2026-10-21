@@ -1,4 +1,5 @@
 class_name HarnessFlags
+## areas: all
 ## The screenshot harness's flags (PIX-262), every one in a single table:
 ## its name, what it takes and what it does. Two features once read the same
 ## word (`motion` was both the walking check and the look book's filming,

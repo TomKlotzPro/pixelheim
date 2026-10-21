@@ -1,4 +1,5 @@
 extends "res://scripts/ledger_screen.gd"
+## areas: screen
 ## The stat sheet (WorldHud's sheet + statInfo): who the hero is, the pools
 ## and defenses, and the five stats with what each point would buy, spent
 ## here with E. C or Esc closes it.

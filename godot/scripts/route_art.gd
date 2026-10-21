@@ -1,4 +1,5 @@
 class_name RouteArt
+## areas: town travel field night quest +overworld*
 ## What the Post's routes put up beside the road (PIX-322): a fingerpost at
 ## a fork, and a waystation's hut, bench and ember lamp (its post box is
 ## HamletArt's, the square's own). Drawn here in code in Shade's palette

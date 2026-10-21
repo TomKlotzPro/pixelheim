@@ -1,4 +1,5 @@
 extends CanvasLayer
+## areas: screen
 ## On-screen controls for a phone (PIX-162): a thumbstick under the left
 ## thumb and the hero's buttons under the right - attack, dodge roll, use,
 ## and the first three skills. They speak the game's own actions (the stick

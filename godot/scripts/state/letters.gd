@@ -1,4 +1,5 @@
 class_name Letters
+## areas: story
 ## Maren's five letters (PIX-253, the main story's new beginning). Fifty
 ## years ago she wrote one to each family of the five who climbed, and never
 ## sent them. The morning after the Night of Ash the courier helps her dig

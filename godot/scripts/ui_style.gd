@@ -1,4 +1,5 @@
 class_name UiStyle
+## areas: screen
 ## The game's one look (PIX-138): pages of a village ledger. Parchment in a
 ## carved wooden frame with brass studs at the corners, in the wood of the
 ## shop signs; rows and slots inked onto the page; brown-black ink for text

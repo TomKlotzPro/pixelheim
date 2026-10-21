@@ -1,4 +1,5 @@
 class_name PunyTown
+## areas: town +town-age*
 ## The town's buildings from Shade's Puny World Medieval Age (PIX-133): every
 ## house the web map draws as a cluster of roof cells (door and signs on its
 ## bottom row) is rebuilt from the pack's pieces, the way Shade's sample

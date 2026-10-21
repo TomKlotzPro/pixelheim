@@ -1,4 +1,5 @@
 extends CharacterBody2D
+## areas: combat town title
 ## The action hero, drawn from Shade's Puny sheet for the hero's role
 ## (PunyArt, PIX-130): idle/walk/hurt/death in four directions, and the attack
 ## of the weapon in hand (sword, staff or bow, PIX-172; the role's own when

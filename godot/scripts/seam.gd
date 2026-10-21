@@ -1,4 +1,5 @@
 class_name Seam
+## areas: travel
 ## The lines between the Reach's maps (One Reach, PIX-269, steps 5 and 6).
 ## Tom found crossing a cut; the plane (ReachPlane) puts each map where its
 ## roads meet its neighbour's, and here is what joins two of them on screen:

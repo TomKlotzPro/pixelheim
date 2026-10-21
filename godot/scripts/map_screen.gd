@@ -1,4 +1,5 @@
 extends Screen
+## areas: travel
 ## The map screen (M/Tab): a map in a window, painted with the tiles' map
 ## colours where the hero has been and night where they haven't
 ## (mapColors.ts port), the hero, the waypoints and the lairs the bounty

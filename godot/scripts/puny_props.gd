@@ -1,4 +1,5 @@
 class_name PunyProps
+## areas: town +town-age*
 ## What stands on the outdoor ground, in Shade's Puny World Medieval Age
 ## (PIX-137): the roofed well, the square's fountain, torches for the web's
 ## lamps, a stone knight for the shrine, barrels, crates, market crates for

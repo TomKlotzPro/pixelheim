@@ -1,4 +1,5 @@
 class_name PerfProbe
+## areas: none
 ## The perf guard (PIX-220): how long each stage of a frame takes, from the
 ## engine's own signals - physics (first physics_frame to process_frame),
 ## process (process_frame to frame_pre_draw) and render (frame_pre_draw to

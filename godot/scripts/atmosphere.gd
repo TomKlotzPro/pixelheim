@@ -1,4 +1,5 @@
 extends Node
+## areas: field
 ## Each region's air and the weather, frame by frame (PIX-224): the air the
 ## hero stands in (Weather.air_at), eased in as they cross into a region and
 ## out as they leave it (all at once on a new map); the rain as a shower

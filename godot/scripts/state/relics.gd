@@ -1,4 +1,5 @@
 class_name Relics
+## areas: story
 ## The five relics (PIX-170): what the five climbers left in the Reach - Tam's
 ## ladle at Saltmere, the Black Ingot at Blackiron, Oskar's shield at
 ## Greyhold, Liane's lantern on the Frostgate - each won from its chapter's

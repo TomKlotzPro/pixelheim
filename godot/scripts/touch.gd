@@ -1,4 +1,5 @@
 class_name Touch
+## areas: screen
 ## The phone version (PIX-162): whether to play by touch, and how the game's
 ## 1280x720 canvas sits on a screen of another shape. On a touch device the
 ## canvas grows to fill the screen (portrait or landscape) instead of

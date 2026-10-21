@@ -1,4 +1,5 @@
 class_name Npcs
+## areas: town story
 ## Villagers (assets/data/npcs.json): the fixed townsfolk, tier-gated
 ## settlers included, and the recruits who wait in the wilds until they move
 ## to town. Pure rules - who stands on which map, where a wanderer paces, who
