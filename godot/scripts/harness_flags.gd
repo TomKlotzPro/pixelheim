@@ -99,7 +99,7 @@ const TABLE := [
 	{"flag": "journal", "takes": "", "does": "the journal, a few quests in hand (PIX-171) and Maren's letters in the satchel, two delivered (PIX-253 step 2); the report adds tracked= (PIX-239)"},
 	{"flag": "dockmenu", "takes": "", "does": "the dock's menu of screens, open"},
 	{"flag": "lineup", "takes": "", "does": "every hero role, villager and monster sheet, walking down then right"},
-	{"flag": "shop", "takes": "", "does": "the keeper's counter, 500g in hand (with --map town_shop, town_smith or town_alchemist)"},
+	{"flag": "shop", "takes": "", "does": "the keeper's counter, 500g in hand and a pack to sell: 3 pelts, 10 herbs and 2 old boots (with --map town_shop, town_smith or town_alchemist; PIX-336)"},
 	{"flag": "home", "takes": "", "does": "the house's fixtures (with --map town_house)"},
 	{"flag": "--mode", "takes": "<mode>", "does": "with home: storage, workbench, trophies, nook or furniture"},
 	{"flag": "hall", "takes": "", "does": "the town ledger, 20000g in hand"},
