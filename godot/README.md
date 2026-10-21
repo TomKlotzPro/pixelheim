@@ -243,7 +243,7 @@ it fails on either.
 
 On the laptop, `godot/tools/check.sh quick` runs only what a branch's diff
 against `origin/main` could break, in under a minute and with nothing on the
-screen: the release and catalogue checks, the import when art or scripts
+screen: the release, catalogue and layout checks, the import when art or scripts
 changed, GUT beside a boot of the town and of the maps the diff touches, and
 the flows tagged with the areas it touches. Each flow ends on its tags in
 `flows.txt` (town, rooms, travel, field, combat, dungeon, trade, story, quest,
@@ -435,35 +435,6 @@ fr.po, and no msgstr has a plain or no-break space where U+202F belongs.
 ## Layout
 
 - `scenes/main.tscn` — entry scene; all other nodes are built in code
-- `scripts/world_tiles.gd` — what each tile lets the hero do (walkability) and its colour on the map
-- `scripts/map_data.gd` — loads the JSON maps in `assets/maps/` (pure data, unit-tested)
-- `scripts/world.gd` — the play: entering maps, the hero, villagers and monsters, the HUD, interaction, combat, music
-- `scripts/map_view.gd` — one visit to a map as drawn (PIX-136): Shade's ground, houses, rooms and dungeons, props, field scatter, chests, door signs, the house's furniture and the invisible blockers; `plan` marks what all that covers on the map before anything is drawn, `build` draws it behind the world's y-sorted actors
-- `scripts/world_neighbours.gd` + `scripts/seam.gd` + `scripts/slicer.gd` — one land (PIX-269): near a road out of a map under the Reach's sky, the map past it drawn beside it where `assets/data/plane.json` puts it, a few units a frame within 3 ms (`Slicer`), stitched along the line (`Seam`), let go again further off; walking over the line hands the hero over to it with no fade (`world.hand_over`); every map of the Reach worked out ahead early in a session (`KeptGround`)
-- `scripts/harness.gd` — the screenshot harness below, added only for `--screenshot` runs
-- `scripts/state/` — the `GameState` autoload and its typed sections (hero, pack, settlement, progression, world), the save codec, slots and settings
-- `scripts/player.gd` / `scripts/enemy.gd` — live combat actors
-- `scripts/npcs.gd` / `scripts/npc.gd` / `scripts/dialogue_box.gd` — villagers: who lives where, their pacing, and conversations
-- `scripts/state/economy.gd` + `scripts/state/trade.gd` + `scripts/shop_screen.gd` — shops, forge and crafting rules (junk, buyback, gear set against what's worn) and the keeper's counter
-- `scripts/state/town.gd` + `scripts/{town_hall,bank}_screen.gd` (on `ledger_screen.gd`) — town tiers, deeds, the bank, recruits, the inn
-- `scripts/state/quests.gd` + `scripts/journal_screen.gd` — the villagers' quests: a giver's first word accepts, kills tick bounties, deliveries leave the pack on turn-in (`GameState.questing.resolve_quests`); Q opens the journal
-- `scripts/state/post.gd` + `assets/data/post.json` — the Pixelheim Post (PIX-320): from chapter 2 a post box on the square holds a few pieces each game morning, worked out from the day, a seed and the threads (`Post.in_box`: someone where the hero has been, past no shut gate, the sender at home); E takes them (`GameState.posting.take_bag`), a word with the addressee hands one over for a tip and sometimes a reply (`posting.deliver`), the journal's Post tab reads them, and the map marks addressees faintly. Twelve threads since PIX-321, every place in two at least, some waiting on the story (a gate, a settler home, the Night of Bells, Coming Home's answer: Morvax's post goes where `Homecoming.place` has him) or on another thread's piece (`after`); a delivery stamps the courier's book (the journal's Postmarks tab, `Postmark` drawing each place's stamp), and some pieces leave a gift or a recipe. Only what the hero did is kept (`PostState`, with the book's stamps and where each piece went)
-- `scripts/state/ranks.gd` + `scripts/rankup_screen.gd` — rank titles every five levels (the hero looks the same at every rank), the Path Graph's choices (`GameState.training.choose_path`), and the ascension scene that plays when a rank is crossed, holding at a fork for the path cards
-- `scripts/state/skills.gd` + `scripts/stats_screen.gd` + `scripts/skills_screen.gd` — the stat sheet on C and the skill tree with the Path Graph on K; points are spent through `GameState.training.spend_stat_point` / `buy_skill_node`, and given back by Old Hessa, the shrine's keeper (`Skills.FORGETTER`: `forget_skills` / `forget_training`, PIX-331)
-- `scripts/title_screen.gd` + `scripts/title_scene.gd` + `scripts/create_screen.gd` — the title (PIX-139: Pixelheim's street at night under the smoking Ashen Mountain, built from Shade's art at 2x, with lit windows, torches, the watchman's round, the hero in the street and the dragon crossing the moon; the gold logo; Continue / New Game / Saves / Options / What's new) and hero creation (role, look among Shade's colourways, name). A plain launch with no hero keeps an unsaved stand-in behind the title (`GameState.standing_in`) until one is made
-- `scripts/cutscene.gd` + `assets/data/story.json` — story moments (PIX-31): a scene is data, ordered steps (stage, fade, caption, card, tint, ash, shake, actor, logo, credits, wait, theme) the Cutscene screen plays over a letterboxed stage; E moves on, Esc skips to what comes next, Reduce motion keeps the words and drops the movement. The opening plays on New Game, before hero creation; `moments` in story.json map play to scenes (the two endings), each played once per hero (`storySeen` in the save, written only once there is one)
-- `scripts/screen.gd` — what every menu, page and conversation shares (PIX-136): built in `_open`, `dim()` behind, keys through `_command` (handled before they run), Esc / the menu key / its own key close it, and it holds the world still, counted, so the world runs again only when the last screen closes
-- `scripts/pause_screen.gd` + `scripts/options_screen.gd` + `scripts/controls.gd` — Esc's pause menu (Resume, Saves, Options, Quit to title) and the options (volumes, CRT scanlines, fullscreen, reduced motion, key rebinding); `Controls` rebuilds the InputMap from `GameSettings.bindings` (one rebindable primary per action plus fixed alternates and the pad)
-- `scripts/inventory_screen.gd` — the pack and paperdoll on I: nine slots around the hero and the numbers gear makes, everything carried by category; equip, take off, drink, place furniture, drop (`GameState.upkeep.equip` / `unequip` / `use_item` / `drop_item` / `drop_gear`). item icons are Shade's (`scripts/item_icons.gd`, `assets/puny/icons.json`), and a Craft tab guides crafting
-- `scripts/codex_screen.gd` — the codex on B: family masteries with their Slayer tiers, and the bestiary of every monster whose family the hero has met
-- `scripts/state/depths.gd` + `scripts/dungeon_floor.gd` + `scripts/state/vault.gd` — every dungeon as a list of floors (`assets/data/depths.json`), handcrafted or laid from a seed (a pack a room, the last and largest for the last), their stairs both ways, the boss's shortcut out; the Kings' Vault after the story, behind a door that opens once the dragon is freed (the old mountain's fifteen numbered floors and the Deep Hunt left play with PIX-257)
-- `scripts/puny_sheet.gd` / `scripts/puny_dungeon.gd` — one Shade tileset with its `.tsx` (animations, wang corners, a lazily built TileSet), and Puny Dungeon's wall grammar, stone, torches, barrels and stairs
-- `scripts/dungeon_look.gd` + `scripts/dungeon_art.gd` + `shaders/dungeon.gdshader` — each dungeon dressed as its place (PIX-310): the sea cave's wet rock and pools of the sea, the shafts' rail line, timber props, carts and ore, the cellars' niches, cobwebs and bones, the ice cave's frost and icicles, the Kings' Vault's rugs, banners and gilded walls; each look's floor in the Medieval Age's ground with the pack (Shade's CC0 stone and our own pieces without it), worn and cracked by the shader, dust drifting in every torch's light (`shaders/torch_motes.gdshader`). The plan only reads the map: nothing it draws blocks or moves
-- `scripts/home_screen.gd` — the house's barrel, workbench, trophy shelf, nook and furniture placement (house rules live in `state/town.gd`)
-- `scripts/ui_style.gd` — the one look (PIX-138): parchment pages in carved wooden frames, ink on the page and cream on the dark, pixel fonts at whole scales, Press Start 2P headings
-- `scripts/marks.gd` — the marks over the world in that look (PIX-284, PIX-289), pixel art drawn from the UI's palette: the talk mark over someone with a quest ("!" to give, "?" to hand in; parchment, gold for the main story), the red burst over a foe that notices the hero, and the bevelled arrow at the view's edge toward where the hero is headed, drawn for eight ways rather than turned
-- `scripts/hud_dock.gd` — the hero's dock centred along the bottom: experience along its top, portrait, rank, health and energy, the six skill slots by their number keys (a click casts too), gold and a menu of every screen with its key and waiting points
-- `scripts/sound.gd` (autoload `Sound`) + `assets/audio/` — 17 stingers, a seamless loop per theme and ambient one-shots with variants (`assets/data/audio.json`), rendered once from the old web game's synth, plus the pages' UI sounds synthesized at start. Music crossfades per place, battle/boss while something hunts the hero; Music/SFX/Ambience buses follow the options
 - `assets/fonts/` — Pixeloid (OFL) for all text, Press Start 2P (OFL) for the logo (`FONTS.txt`)
 - `assets/puny/` — art by Shade, CC0 (`LICENSE.txt`): characters (hero, villagers, bestiary) from [Puny Characters + PunyMonsters](https://merchant-shade.itch.io/16x16-puny-characters) and [Mini World Sprites](https://merchant-shade.itch.io/16x16-mini-world-sprites), the overworld from [Puny World](https://merchant-shade.itch.io/16x16-puny-world) and stone from [Puny Dungeon](https://merchant-shade.itch.io/16x16-puny-dungeon). `scripts/puny_art.gd` assigns who wears which sheet; `scripts/puny_terrain.gd` lays Puny World over the maps (wang corners on the dual grid, read from Shade's Tiled `.tsx`), raises ramparts and bridges, `scripts/skyline.gd` draws the village small in its block on the overworld, as the town stands (PIX-248), `scripts/rampart.gd` raises Pixelheim's own rampart, one wall in the Medieval Age's stone with its gatehouse where the road runs through (three wide between two towers, scorched until the Hamlet is built; Shade's CC0 castle pieces without the paid pack), in town and on the village far off alike, and `shaders/region_tint.gdshader` tones ash and mire
 - `assets/maps/*.json` — all world maps (grid one row per line, spawn, portals), and `interactables.json` (chests, signs, waypoints); edit them directly
@@ -472,3 +443,186 @@ fr.po, and no msgstr has a plain or no-break space where U+202F belongs.
 - `assets/data/changelog.json` — every release, newest first: What's new, and the game's version
 - `assets/data/economy.json` — shops and their stock per unlocked floor, recipes, stations, rarities
 - `assets/data/town.json` — town tiers, deeds, rest and bank tuning; `assets/maps/town@N.json` / `town_house@N.json` are the tier redraws
+
+Every script, with the first sentence of its own `##` doc comment. The list
+is written by `tools/layout.py` from the scripts themselves: change a
+script's doc there, then run `python3 godot/tools/layout.py`; CI and
+`check.sh` fail on a stale list (`layout.py --check`).
+
+<!-- layout.py: from here -->
+- `scripts/ash_art.gd` — What burnt land and a mine stand in that Shade's sheets don't draw (PIX-308)
+- `scripts/ash_land.gd` — The Ash and Blackiron as burnt land (PIX-308, the audit's "flat and empty": the whole north of the Reach, all of Blackiron and the mountain road's flats were Shade's dirt toned one grey-brown, their outcrops green grass mesas with green pines, and Blackiron a mining country with no mining in it).
+- `scripts/atlas.gd` — The map screen's pages (PIX-266: "the map grew a lot").
+- `scripts/atmosphere.gd` — Each region's air and the weather, frame by frame (PIX-224)
+- `scripts/bank_screen.gd` — Mirelle's bank (Bank.tsx), open once she has settled in town
+- `scripts/boss_bar.gd` — The boss bar (PIX-210): across the top of the screen while a boss - or a named monster - hunts the hero.
+- `scripts/boss_brain.gd` — A boss that fights back (PIX-150): between bites, Fafnyr casts his own attacks, each told first by a red mark on the ground so a hero who reads it can step out
+- `scripts/bounty_screen.gd` — The bounty board on the square (PIX-156): the named monsters posted so far, the wanted first, then the slain.
+- `scripts/changelog_screen.gd` — What's new (the web's Changelog page): every release, newest first, its version, codename and date over its notes, in one scrolling window.
+- `scripts/chapter_screen.gd` — A chapter card (PIX-253 step 2, v2 §5: "Main quests stand out")
+- `scripts/codex_screen.gd` — The codex (Codex.tsx): the trophy case.
+- `scripts/controls.gd` — The keys (src/app/settings.ts bindings, grown for real-time play)
+- `scripts/create_screen.gd` — Hero creation (CharacterCreation.tsx): seven roles with their pitch, the chosen one walking in their colours, the stats against the whole roster, the skills they start toward, a name, and how the game opens
+- `scripts/cutscene.gd` — A story moment (PIX-31): a scene from assets/data/story.json played as ordered steps over a letterboxed stage, so writing one is editing data.
+- `scripts/dawn_screen.gd` — The dawn after the Night of Ash (PIX-197), played on the town itself rather than told over it.
+- `scripts/day_night.gd` — The day/night wheel, ported verbatim from src/render/dayNight.ts: one deterministic clock turned by steps walked, interpolating sky-tint stops.
+- `scripts/desktop_look.gd` — The desktop app's extras (PIX-227).
+- `scripts/dialogue_box.gd` — A conversation: the speaker in a portrait slot and a gold name tab on the window's edge, one line at a time in the body type, and the keys that move it on (ADVANCE_DIALOGUE).
+- `scripts/discovery.gd` — Fog-of-war bookkeeping, ported from src/world/discover.ts: the hero sees SIGHT_RADIUS tiles around themselves (Chebyshev), and what was seen stays seen.
+- `scripts/dissolve.gd` — A door's dissolve (One Reach, PIX-269; Tom: "crossing is a cut").
+- `scripts/dungeon_art.gd` — The small things a dungeon is dressed in that Shade's sheets don't draw (PIX-310)
+- `scripts/dungeon_floor.gd` — A dungeon floor laid out from a seed (PIX-126, PIX-255)
+- `scripts/dungeon_look.gd` — Each dungeon dressed as its place (PIX-310, the audit's "five dungeons, one brick look": the sea cave, the shafts, the cellars, the ice cave and the Kings' Vault were the same cut-brick halls in a different tint, on one floor tile).
+- `scripts/elite_brain.gd` — An elite's one trick (PIX-155), by its family, told before it lands
+- `scripts/enemy.gd` — A monster in the field: wanders near its home, notices a hero it can see (a "!" and a hop first), chases, bites after a tell, and gives up a chase that strays too far, walking home to heal (PIX-142).
+- `scripts/entrance_art.gd` — What a dungeon's way in looks like (PIX-290, Tom: « Pas super beau les entrées de donjon, porte du Fernoir et le premier »).
+- `scripts/escort.gd` — An escort (PIX-192): Gunnar's last wagon down the Frostgate - an old mammoth hauling the pass's last crates.
+- `scripts/fire_art.gd` — The fires of a burning house (PIX-327): the Night of Ash's ruins and the Night of Bells' roofs.
+- `scripts/firebolt.gd` — A fireborn elite's firebolt (PIX-155): flies straight, burns the hero it meets, and gutters out against a wall or after eight tiles.
+- `scripts/gait.gd` — How the cast walks (PIX-243): the hero, the villagers, the monsters and the wagon all step through their sheet's walk (PunyArt.WALKS) by the ground they cover, not by the clock, so their feet keep pace with the ground at any speed
+- `scripts/game_clock.gd` — The game's own clock (PIX-276): the time the world has lived, counted in its physics ticks, sixty a second.
+- `scripts/gate_art.gd` — What a shut gate looks like (PIX-254, Gates), in art already in the game
+- `scripts/ground_detail.gd` — The small things in the grass (PIX-305): tufts, clover, flowers, pebbles, twigs, and the mire's reeds and sedge, which Scatter.detail picks a cell at a time.
+- `scripts/hamlet.gd` — Each settlement beyond Pixelheim its own (PIX-313, the audit's « bare and all alike »: Saltmere's long thatch slabs on an empty lawn, the same slate cottage at Greyhold, the Frostgate, Blackiron and the mountain, no fence, garden, net or boat, no smoke by day, and barrels as tall as the villagers beside them), and Morvax's smithy at the top of the mountain road (PIX-312: the stock cottage, no chimney, no fire).
+- `scripts/hamlet_art.gd` — What the settlements beyond Pixelheim are dressed in that Shade's sheets don't draw (PIX-313), and the story's last set pieces (PIX-312)
+- `scripts/harness.gd` — The agent verification harness, loaded only for `--screenshot` runs (world.gd adds it; it never ships in play)
+- `scripts/harness_flags.gd` — The screenshot harness's flags (PIX-262), every one in a single table: its name, what it takes and what it does.
+- `scripts/harness_report.gd` — The screenshot harness's report line (PIX-273)
+- `scripts/home_screen.gd` — The house's fixtures, one screen per `mode` (HouseStorage, Trophies, Nook and the pack's Craft/Place in the web game)
+- `scripts/hub_art.gd` — What the hubs grow as their post roads fill (PIX-324, Hubs)
+- `scripts/hud_dock.gd` — The hero's dock along the bottom of the screen (PIX-138): one wooden plate in the windows' carved frame, centred, so the rest of the screen is world.
+- `scripts/ink.gd` — Where the pixels are (PIX-268): the ink a word draws in a pixel font and the head a figure's frame draws, measured on the pixels themselves, so a mark over a head is centred on the one by the other.
+- `scripts/interactables.gd` — Treasure chests, door signs and waypoints (assets/maps/interactables.json, edited by hand).
+- `scripts/inventory_screen.gd` — The pack and the paperdoll (Inventory.tsx)
+- `scripts/item_icons.gd` — Every item's icon and the ailment marks, all Shade's (PIX-138), as mapped in assets/puny/icons.json
+- `scripts/journal_screen.gd` — The journal (Journal.tsx; PIX-171, redone for PIX-239 after Tom's playtest: « le journal c'est pas clair »).
+- `scripts/juice.gd` — How a fight feels (PIX-226): a pure-white flash when a blow lands, a death that dissolves pixel by pixel into embers, a squash and stretch on the hero, and a slash's arc trailing every swing in the weapon's colour.
+- `scripts/kept_ground.gd` — A map's ground as its first visit this session worked it out (One Reach, PIX-269, step 4)
+- `scripts/keycap.gd` — A key the player can press, drawn as one (PIX-193)
+- `scripts/lamp_art.gd` — Lamps and lit windows (PIX-311).
+- `scripts/layout.gd` — Where a screen's pieces may go (Solid Ground, PIX-229/230): inside the canvas the player sees.
+- `scripts/ledger_screen.gd` — Shared frame for the town's ledgers (town hall, bank)
+- `scripts/light_rig.gd` — The world's light, frame by frame (PIX-221)
+- `scripts/lights.gd` — Light and darkness (PIX-221).
+- `scripts/lookbook.gd` — The look book (PIX-220): the same scenes, staged the same way every time
+- `scripts/map_data.gd` — A world map loaded from its JSON (assets/maps/<id>.json, edited by hand or drawn as a sketch in maps-src and run through tools/mapgen.py)
+- `scripts/map_screen.gd` — The map screen (M/Tab): a map in a window, painted with the tiles' map colours where the hero has been and night where they haven't (mapColors.ts port), the hero, the waypoints and the lairs the bounty board has posted (PIX-156) marked
+- `scripts/map_view.gd` — One visit to a map, as drawn (PIX-136): Shade's ground, houses, rooms and dungeons, the props, field scatter, chests and door signs, the house's placed furniture, and the invisible boxes on what the hero can't walk into.
+- `scripts/marks.gd` — The marks over the world (PIX-284, PIX-289), one family in the UI's palette
+- `scripts/motes.gd` — The small life of the world (PIX-225): fireflies at dusk and night over the grass and in the woods, leaves falling in the forests, dust floating in a room's light, embers off forges, hearths and camp fires, dust and splashes under the hero's feet, sparks where steel meets armour.
+- `scripts/npc.gd` — A villager: their Puny sheet (PunyArt, PIX-130), a body the hero bumps into, and — for wanderers — an amble around the pacing loop, walking the way they step.
+- `scripts/npcs.gd` — Villagers (assets/data/npcs.json): the fixed townsfolk, tier-gated settlers included, and the recruits who wait in the wilds until they move to town.
+- `scripts/open_ground.gd` — The Medieval Age's greens and snow laid as patches over Shade's grass (PIX-305), so a meadow's hollows and the snow's drifts have edges of their own, tufted the way the pack's sample maps lay them
+- `scripts/options_screen.gd` — Options (Options.tsx): sound, the CRT scanlines, fullscreen, reduced motion, and the keys.
+- `scripts/pause_screen.gd` — The Escape menu (PauseMenu.tsx): resume, the saves (slots and codes), options, or back to the title.
+- `scripts/perf_probe.gd` — The perf guard (PIX-220): how long each stage of a frame takes, from the engine's own signals
+- `scripts/place_title.gd` — The card that names where the hero has come to (PIX-269, after Tom's "I still don't like the door between maps").
+- `scripts/player.gd` — The action hero, drawn from Shade's Puny sheet for the hero's role (PunyArt, PIX-130)
+- `scripts/postmark.gd` — The courier's book's postmarks (PIX-321)
+- `scripts/puny_art.gd` — Who wears which of Shade's CC0 sheets (assets/puny, PIX-130), and how each sheet family is laid out.
+- `scripts/puny_dungeon.gd` — Shade's Puny Dungeon (assets/puny/dungeon, CC0, PIX-130)
+- `scripts/puny_interior.gd` — The rooms behind the town's doors in Shade's Puny World Medieval Age (PIX-133), the way his sample cottages and smithy are furnished
+- `scripts/puny_props.gd` — What stands on the outdoor ground, in Shade's Puny World Medieval Age (PIX-137)
+- `scripts/puny_sheet.gd` — One of Shade's 16px tilesets with its Tiled tileset (.tsx)
+- `scripts/puny_terrain.gd` — Shade's Puny World overworld (assets/puny/world, CC0, PIX-130) drawn over the web game's maps.
+- `scripts/puny_town.gd` — The town's buildings from Shade's Puny World Medieval Age (PIX-133)
+- `scripts/rampart.gd` — Pixelheim's rampart and its gate (PIX-248, Tom: "double rempart ça fait bizarre à l'intérieur du village et l'entrée est pas claire ni la sortie").
+- `scripts/rankup_screen.gd` — The ascension (RankUpOverlay.tsx, useRankUp; PIX-244 made it a moment).
+- `scripts/reach_plane.gd` — The Reach as one plane (One Reach, PIX-269, step 3).
+- `scripts/rebuild_rise.gd` — A building rising on the town's tour (PIX-264).
+- `scripts/reveal_screen.gd` — The town risen (PIX-147): after a project is funded, the camera walks the town to what was built
+- `scripts/ring_toss_screen.gd` — The festival's ring toss (PIX-159): a ring slides along the rail, back and forth, quicker each throw; E throws it, and it lands if it's over the peg.
+- `scripts/road_wear.gd` — The wear of wheels and feet on the dirt roads (PIX-307).
+- `scripts/room_art.gd` — A keeper's room its own (PIX-315): Liane keeps the stars in her observatory, and nothing in Shade's packs is a telescope, a star chart or a globe of the sky.
+- `scripts/route_art.gd` — What the Post's routes put up beside the road (PIX-322)
+- `scripts/saves_screen.gd` — The saves screen (Esc, and Saves on the title): the heroes you have, in three slots, one column that gets the whole window (PIX-302).
+- `scripts/scatter.gd` — Puny World objects scattered on terrain (PIX-130), and which of them stand in the way (PIX-137).
+- `scripts/screen.gd` — What every screen shares (PIX-136): the menus, pages and conversations that open over the world.
+- `scripts/seam.gd` — The lines between the Reach's maps (One Reach, PIX-269, steps 5 and 6).
+- `scripts/shop_screen.gd` — A keeper's counter (talk to anyone in a shop): Buy, Sell, the Forge at the smithy, and Craft at the forge and the cauldron.
+- `scripts/shop_sign.gd` — The town's shop signs (PIX-134): a wooden board with a carved rim hanging by two chains from an iron bar over each door, painted with its trade in Shade's own icons (cheese for the general store, a tankard for the inn, the anvil, the brewing pot, the hall's ledger, a key for the house).
+- `scripts/skills_screen.gd` — The skill tree (SkillTree.tsx): once the hero has ranked, the Path Graph on top (six identities, walked edges lit, a pending step to claim), then the role's three branches of six tiers (PIX-190 added the last two, open at 11 and 14 since PIX-233), one line a node, the selected one in full below.
+- `scripts/skyline.gd` — The village seen from outside (PIX-248).
+- `scripts/slicer.gd` — Work cut into slices a frame (One Reach, PIX-269, step 5)
+- `scripts/sound.gd` — The game's ears (PIX-128).
+- `scripts/stair_rise.gd` — A way out opening where a dungeon's boss fell (PIX-339, Tom: « ça fait bizarre de tuer un boss et qu'un escalier pop »).
+- `scripts/state/ailments.gd` — Status effects on one combatant (combat.ts), in real time: a web turn lasts TURN_SECONDS.
+- `scripts/state/bearing.gd` — Where the hero is headed, their bearing (PIX-239, PIX-240)
+- `scripts/state/bells.gd` — The Night of Bells (PIX-253 step 9, chapter 7): the dragon comes back to the square, and this time the village is ready.
+- `scripts/state/bestiary.gd` — The monsters and what fighting them pays, ported from src/game/combat (monsters, encounters, drops, combat formulas) and hero/mastery.ts.
+- `scripts/state/catalog.gd` — Game data (assets/data/catalog.json, edited by hand)
+- `scripts/state/deeds.gd` — Deeds (PIX-219): long goals for a hero who has done the rest, read off what the save already knows
+- `scripts/state/depths.gd` — A region's dungeon in floors (PIX-255, after Tom: « Les donjons, ça serait bien sur plusieurs étages, c'est un peu simple »).
+- `scripts/state/economy.gd` — The town economy's rules, ported from src/game/economy/{shop,jobs,recipes, rarity}.ts
+- `scripts/state/gains.gd` — What the hero wins, as things the world shows rather than words in the log (PIX-245: Tom found it "beaucoup d'écrit")
+- `scripts/state/game_settings.gd` — Device preferences (src/app/settings.ts), deliberately NOT part of the save so they never travel inside a save code
+- `scripts/state/game_state.gd` — The one game state (autoload `GameState`): typed sections for the hero, the pack, the settlement, progression and the explored world.
+- `scripts/state/gates.gd` — The gates (PIX-254, the main story v2's step 3; Tom: « bloquer des passages dans une autre zone tant qu'on n'a pas fait certaines choses »).
+- `scripts/state/gathering.gd` — Gathering spots (PIX-143): patches of each wild region's material that the hero picks by walking over.
+- `scripts/state/hero_rules.gd` — What the hero's numbers add up to, ported from src/game/hero/{character, skillTree,paths,ranks}.ts
+- `scripts/state/hero_state.gd` — The hero record, field for field the web `Hero` (src/game/types.ts).
+- `scripts/state/holdings.gd` — The hero's stake in Pixelheim (PIX-261, out of game_state.gd)
+- `scripts/state/homecoming.gd` — Coming Home (PIX-253 step 10, chapter 8): Morvax's choice and the endings.
+- `scripts/state/household.gd` — The hero's house (PIX-261, out of game_state.gd)
+- `scripts/state/hubs.gd` — The hubs grow (PIX-324, Something to Come Back To's step 5)
+- `scripts/state/hunts.gd` — The named monsters (PIX-156): one notorious creature per wild region, each bigger and meaner than its kind, with a lair it keeps to and one move of its own.
+- `scripts/state/inventory_state.gd` — Gold and everything carried (web GameState: gold, inventory, gear, equipped).
+- `scripts/state/journal.gd` — The journal's quest page as rows (PIX-239, after Tom's playtest: "le journal c'est pas clair")
+- `scripts/state/lamps.gd` — The land heals round the lamps (PIX-323, Something to Come Back To's step 4)
+- `scripts/state/letters.gd` — Maren's five letters (PIX-253, the main story's new beginning).
+- `scripts/state/main_quest.gd` — The main quest (PIX-144): chapters of steps read from the save, so the game can always say what comes next
+- `scripts/state/packs.gd` — Wild packs with homes (PIX-142): each pack lives at its spawn's home, wanders a few tiles from it, notices a hero it can see, gives up a chase that strays too far and walks home healed
+- `scripts/state/post.gd` — The Pixelheim Post (PIX-320, Something to Come Back To's first step)
+- `scripts/state/post_state.gd` — The Pixelheim Post as the hero has kept it (PIX-320): only what they did.
+- `scripts/state/posting.gd` — The Pixelheim Post in play (PIX-320): the day's post taken from the box on the square, a piece handed over to its addressee (their line, the tip, a reply to carry back).
+- `scripts/state/progression_state.gd` — The quest ledger, the story's, the hunts and deeds (the save's story and quests sections).
+- `scripts/state/prologue.gd` — The Night of Ash (PIX-152): the courier's first night, played.
+- `scripts/state/questing.gd` — Quests, conversations and the Night of Ash (PIX-261, out of game_state.gd)
+- `scripts/state/quests.gd` — The villagers' quests (src/game/quests.ts): talking to a giver accepts their quest, talking again with the objective met turns it in.
+- `scripts/state/ranks.gd` — Rank evolution (src/game/hero/ranks.ts): every 5 levels the hero ascends to a new title and banks a bonus skill point (HeroRules.apply_level_ups).
+- `scripts/state/relics.gd` — The five relics (PIX-170): what the five climbers left in the Reach
+- `scripts/state/routes.gd` — The Post's routes (PIX-322, Something to Come Back To's step 3): the roads the courier carries the post along, and what they grow.
+- `scripts/state/save_codec.gd` — Pixelheim's own save format, v5 (PIX-302)
+- `scripts/state/save_slots.gd` — Save slots on disk: <dir>/slot_<n>.save, each a v5 save file (SaveCodec, PIX-302).
+- `scripts/state/settlement_state.gd` — The hero's stake in Pixelheim village (web GameState: house, properties, townTier, settlers, bardSong, investments).
+- `scripts/state/skills.gd` — The skill trees (hero/skillTree.ts) and the stat sheet (hero/statInfo.ts, applyStatPoint)
+- `scripts/state/slot_card.gd` — What a hero's card on the Saves screen says (PIX-302), from the slot's summary (`SaveSlots.summary`, read off the save's card)
+- `scripts/state/spoils.gd` — What the hero wins (PIX-261, out of game_state.gd)
+- `scripts/state/story.gd` — The Ember Seal told through play (PIX-153)
+- `scripts/state/text.gd` — The game in more than one language (PIX-195).
+- `scripts/state/text_budget.gd` — One rule for the words on the screen (PIX-334: Tom, after a fight with a pack, « y'a aussi trop d'infos qui pop d'un coup sur l'écran en texte »).
+- `scripts/state/town.gd` — Pixelheim's growth and money that works, ported from src/game/economy/ {town,bank}.ts and settlers.ts
+- `scripts/state/trade.gd` — The hero at the counter (PIX-261, out of game_state.gd)
+- `scripts/state/training.gd` — The hero's skills and stats (PIX-261, out of game_state.gd)
+- `scripts/state/upkeep.gd` — The hero's body and kit (PIX-261, out of game_state.gd)
+- `scripts/state/vault.gd` — The Kings' Vault (PIX-257, the main story's step 11): what comes after the story.
+- `scripts/state/world_state.gd` — Where the hero stands and what they have explored (web WorldState plus the top-level worldSteps).
+- `scripts/stats_screen.gd` — The stat sheet (WorldHud's sheet + statInfo): who the hero is, the pools and defenses, and the five stats with what each point would buy, spent here with E.
+- `scripts/streets.gd` — Paving in the Medieval Age's stone (PIX-307).
+- `scripts/telegraph.gd` — A danger marked on the ground before it lands (PIX-150, shared by the bosses and, PIX-155, the elites)
+- `scripts/throne_screen.gd` — Morvax's choice (PIX-253 step 10; the old throne's choice, PIX-157, re-aimed): the courier's last word.
+- `scripts/title_scene.gd` — The title's backdrop (PIX-139): Pixelheim's street at night under the Ashen Mountain, in Shade's art, drawn in art pixels at 2x.
+- `scripts/title_screen.gd` — The title (PIX-139): Pixelheim's street at night under the Ashen Mountain (TitleScene, alive under a drifting camera since PIX-249), PIXELHEIM cut in gold above it, and the menu
+- `scripts/touch.gd` — The phone version (PIX-162): whether to play by touch, and how the game's 1280x720 canvas sits on a screen of another shape.
+- `scripts/touch_controls.gd` — On-screen controls for a phone (PIX-162)
+- `scripts/town_hall_screen.gd` — The village's projects (PIX-145), across the mayor's counter or at the board on the square
+- `scripts/ui_style.gd` — The game's one look (PIX-138): pages of a village ledger.
+- `scripts/waypoints.gd` — Fast travel's choice on the map screen (PIX-241: "on a waypoint, show where it takes you")
+- `scripts/ways.gd` — The ways between maps (PIX-269: "it isn't clear where to walk to go on").
+- `scripts/weather.gd` — Each region's air and the sky's weather (PIX-224).
+- `scripts/woods.gd` — The woods as they stand (PIX-309).
+- `scripts/world.gd` — World orchestration: loads the maps (assets/maps), builds their TileMapLayer, moves the hero through portals and doors, and runs the frame.
+- `scripts/world_bells.gd` — The Night of Bells on the town map (PIX-253 step 9): Bells holds its rules, this plays them.
+- `scripts/world_camera.gd` — The world's camera (Solid Ground, PIX-260: moved out of world.gd as it was).
+- `scripts/world_delve.gd` — The dungeons' floors as the hero walks them (Solid Ground, PIX-260: moved out of world.gd as they were)
+- `scripts/world_foes.gd` — The world's foes (Solid Ground, PIX-260: moved out of world.gd as they were)
+- `scripts/world_folk.gd` — The villagers (Solid Ground, PIX-260: moved out of world.gd as it was)
+- `scripts/world_fx.gd` — What flashes and floats over the world (Solid Ground, PIX-260: moved out of world.gd as it was)
+- `scripts/world_hud.gd` — The HUD over the world (Solid Ground, PIX-260: moved out of world.gd as it was)
+- `scripts/world_interaction.gd` — What E does in the world (Solid Ground, PIX-260: moved out of world.gd as it was), in the web's INTERACT order
+- `scripts/world_messages.gd` — What the world tells the hero in words (Solid Ground, PIX-260: moved out of world.gd as it was)
+- `scripts/world_neighbours.gd` — The maps drawn beside the hero's (One Reach, PIX-269, steps 5 and 6).
+- `scripts/world_soundscape.gd` — What the hero hears (Solid Ground, PIX-260: moved out of world.gd as it was)
+- `scripts/world_stage.gd` — The story played over the world (Solid Ground, PIX-260: moved out of world.gd as it was)
+- `scripts/world_tiles.gd` — Tile tables: the tile ids a map file may use (test_map_files refuses any other), which the hero walks on, and their colours on the map screen.
+<!-- layout.py: to here -->

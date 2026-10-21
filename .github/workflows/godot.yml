@@ -35,6 +35,11 @@ jobs:
       - name: Release is whole
         run: python3 godot/tools/release.py --check
 
+      # godot/README.md's Layout is written from the scripts' own docs
+      # (PIX-358): a new script, or a doc changed, runs layout.py.
+      - name: Layout is current
+        run: python3 godot/tools/layout.py --check
+
       - name: Cache Godot binary and export templates
         uses: actions/cache@v4
         with:
