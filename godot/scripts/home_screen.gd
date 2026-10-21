@@ -71,7 +71,7 @@ func _rows() -> Array[Dictionary]:
 						if ask != "":
 							return ask
 						var result := GameState.trade.craft(recipe_id)
-						return "" if not result["made"] else Text.t("Made %dx %s.") % [result["count"], Catalog.item_name(entry["itemId"])],
+						return "" if not result["made"] else Text.t("Made %s.") % Text.count(int(result["count"]), Catalog.item_name(entry["itemId"])),
 					"Missing materials or skill.",
 				))
 		"trophies":

@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.268.0",
+      "date": "2026-10-21",
+      "codename": "Tidy Up",
+      "notes": [
+        "The Night of Ash can no longer stall: Sela's cap can't be dropped or sold while the night runs, and she gives another if it's lost (Claude's playtest)",
+        "Screens no longer draw over the HUD: a screen that dims the world puts the dock, the clock and the quill away while it's open, and at dawn the clock moves with the sky",
+        "Small fixes: a villager you talk to from below is no longer hidden by the hero; Hale's order book stays shut until his letter comes; dropping something you wear is refused at once; a potion states its heal once, the computed one; a fall at the Ashes wakes you by Sela's tent, not the inn; « 0,5 % » with a comma in French; counts read « 3 × Roseau des marais »; the hero's default name is the same everywhere"
+      ]
+    },
+    {
       "version": "0.267.0",
       "date": "2026-10-21",
       "codename": "Dragon Post",

@@ -39,6 +39,13 @@ static func data() -> Dictionary:
 	return Quests._data()["prologue"]
 
 
+## Sela's cap stays in the pack while the night runs (PIX-344): its beat
+## waits for head gear, and the night is saved waiting, so a cap dropped or
+## sold left the night stuck for good.
+static func keeps(step: int, item_id: String) -> bool:
+	return step != DONE and item_id == String(data()["cap"]["itemId"])
+
+
 ## What the line above the dock says at a step, "" outside the prologue;
 ## `doused`: the fires out so far (the carrying beat counts them).
 static func objective(step: int, doused := 0, heals_first := false) -> String:

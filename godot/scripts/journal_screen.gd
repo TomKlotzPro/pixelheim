@@ -87,12 +87,6 @@ func _open() -> void:
 	closing_actions = [&"journal"]
 	layer = 5
 	dim()
-	# The HUD steps aside while the journal is open, as for the map (PIX-265):
-	# its dock read through the dim under the keys.
-	var hud: Variant = _hud()
-	if hud != null and hud.root != null:
-		hud.root.visible = false
-		tree_exiting.connect(func() -> void: hud.root.visible = true)
 	add_child(UiStyle.title("Journal"))
 	tabs_row = HBoxContainer.new()
 	tabs_row.position = Vector2(300, 26)
@@ -762,7 +756,7 @@ func _recipe_line(recipe_id: String) -> String:
 	var needs: Array[String] = []
 	var wants: Dictionary = recipe["needs"]
 	for item_id: String in wants:
-		needs.append("%d %s" % [int(wants[item_id]), Catalog.item_name(item_id)])
+		needs.append(Text.count(int(wants[item_id]), Catalog.item_name(item_id)))
 	var job: Dictionary = recipe["job"]
 	var station := Text.t("Vex's cauldron, Alchemy %d") if job["id"] == "alchemy" else Text.t("Hilda's forge, Smithing %d")
 	return Text.t("Recipe: %s, from %s (%s)") % [Catalog.item_name(String(recipe["itemId"])), ", ".join(needs), station % int(job["level"])]

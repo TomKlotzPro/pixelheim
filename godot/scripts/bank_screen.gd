@@ -22,7 +22,7 @@ func _info() -> String:
 	var rate := Town.savings_rate(GameState.holdings.perk_grown("settler_mirelle")) * 100.0
 	if savings.is_empty():
 		lines.append(Text.t("Nothing deposited. %s%% a day on what's in, up to %d%% in all.") % [
-			String.num(rate, 2), roundi(float(Town.bank("savingsCapShare")) * 100),
+			Text.decimal(rate), roundi(float(Town.bank("savingsCapShare")) * 100),
 		])
 	else:
 		# What the pot has earned so far, and the most it can (PIX-177).

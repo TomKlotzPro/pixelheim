@@ -134,6 +134,12 @@ pack-tags | fight kill pack --foe slime --wait 0.8 | tags=1 mobs=0 rising=[1-9] 
 feat-toast | --map town --wear oilskin_hood,oilskin_coat,oilskin_gloves,oilskin_boots,saltwood_buckler --walk r,r --lang fr | feats=full_set toast=1 box, 1 line, fits | combat story quest lang
 # Death, and waking at the inn (PIX-129).
 die | die | map=town_inn cell=\(2, 3\) | combat rooms
+# A fall that isn't at the inn (PIX-347): on the Night of Ash before the
+# gate, on the road where the night began; in the village that night and at
+# the Ashes after, beside Sela's tent, not on it.
+die-road | --prologue 1 die --wait 1.5 | map=overworld cell=\(48, 34\) night=1 | combat story night
+die-tent-night | --prologue 6 die --wait 1.5 | map=town cell=\(44, 27\) night=6 | combat story night
+die-tent | --map town --town-tier 0 die --wait 1.5 | map=town cell=\(44, 27\) night=0 | combat town
 # The saves screen (PIX-129).
 saves | saves | open=saves_screen | save screen
 # A hero's first word with Maren after the night is her tin (PIX-253):
@@ -533,6 +539,10 @@ keep-up | --map cellars --at 4,28 --walk l --wait 0.4 | map=keep | travel rooms
 # Captain Hale's order book on his table, read once Maren's letter is
 # delivered: the Next line moves on to the Hollow Captain (PIX-255).
 order-book | --map keep --delivered letter_hale --at 8,6 --walk l --keys e,e,e --wait 0.3 | map=keep open=none next=shield | rooms story quest
+# The order book drawn shut on Hale's table while its line says it's shut,
+# and open once the letter is delivered (PIX-348).
+order-book-shut | --map keep --at 8,6 --walk l --keys e --wait 0.3 | map=keep book=shut | rooms story
+order-book-open | --map keep --delivered letter_hale --at 8,6 --walk l | map=keep book=open | rooms story
 # The Greyhold cellars in three floors (PIX-255): down the cells' stair
 # where the Hollow Captain used to stand (it asks; going down keeps the
 # dark) to the garrison's crypt, down past its stone knights to the
@@ -689,6 +699,10 @@ firstnight | create --keys tab | open=create_screen firstnight=skip | title stor
 # The Night of Ash's hounds and embers (PIX-129).
 hounds | --map town --prologue 6 | night=6 mobs=2 | story night combat
 embers | --map town --prologue 9 | night=9 mobs=3 | story night combat
+# Sela's cap stays in the pack on the Night of Ash (PIX-344: dropped, the
+# night waited on it for good): X twice on it says to hold on to it, E puts
+# it on, and the night goes on to the fires.
+cap-kept | --map town --prologue 4 --talk-to innkeeper --keys e,e,e,e,i,x,x,e,esc --wait 0.5 | map=town night=8 open=none | story night
 # The Night of Ash's fires (PIX-327): every ruin burning with our own flames
 # on its beams, posts, rubble and fallen floor, its smoke, sparks and coals;
 # with Reduce motion the sparks stay down.
@@ -825,6 +839,25 @@ fit-hall | --map town_hall talk --keys e,e,e overflow --lang fr | open=town_hall
 # The board with every waystation offered, in French (PIX-322).
 fit-hall-roads | --map town --routes all hall overflow --lang fr | open=town_hall_screen overflow=0 works=waystation_saltmere,waystation_blackiron,waystation_greyhold,waystation_frostgate | screen lang town
 fit-bounty | --map town --at 43,22 --hunted tidecaller,seam_warden --keys w,e overflow --lang fr | open=bounty_screen overflow=0 | screen lang quest
+# A full screen puts the HUD aside, so none of its words stands on the dock,
+# the clock or the quill (PIX-346: overflow counts them too): the screens
+# the playtest caught on them, in English too, and the bank. The dawn keeps
+# the HUD: its keys stand under the clock and the quill, and the clock reads
+# the morning once everyone stands on the square (a moon and 23:53 before);
+# it turns as the sky greys, which a window draws too slowly in the burning
+# town to wait for here (150 s and more).
+fit-skills-en | --map town --keys k overflow --lang en | open=skills_screen overflow=0 | screen lang rank
+fit-skills-l20 | --map town skills --level 20 overflow --lang fr | open=skills_screen overflow=0 | screen lang rank
+fit-stats-en | --map town --keys c overflow --lang en | open=stats_screen overflow=0 | screen lang
+fit-bestiary | --map town codex bestiary overflow --lang fr | open=codex_screen overflow=0 | screen lang
+fit-bestiary-en | --map town codex bestiary overflow --lang en | open=codex_screen overflow=0 | screen lang
+fit-shop-en | --map town_shop shop overflow --lang en | open=shop_screen overflow=0 | screen lang trade
+fit-hall-en | --map town_hall hall overflow --lang en | open=town_hall_screen overflow=0 | screen lang town
+fit-bank | --map town bank overflow --lang fr | open=bank_screen overflow=0 | screen lang town
+fit-bank-en | --map town bank overflow --lang en | open=bank_screen overflow=0 | screen lang town
+fit-workbench-en | --map town_house home --mode workbench overflow --lang en | open=home_screen overflow=0 | screen lang rooms
+fit-dawn | --map town --prologue 5 --at 11,8 --keys w,e,esc --dawn-beat 2 overflow --lang fr | open=dawn_screen overflow=0 hour=04:48 sun | story screen lang
+fit-dawn-en | --map town --prologue 5 --at 11,8 --keys w,e,esc --dawn-beat 2 overflow --lang en | open=dawn_screen overflow=0 hour=04:48 sun | story screen lang
 # Tom's level-15 mage in Frostweave with the longest names a piece carries
 # worn (PIX-298): the pack's rows ran past its page, "E retirer" under the
 # scrollbar; its weapons tab with a deep-forged greataxe worn; English;

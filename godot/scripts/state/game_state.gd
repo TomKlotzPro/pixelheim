@@ -54,7 +54,9 @@ const AUTOSAVE_SECONDS := 3.0
 const QUIET := 0
 const MOMENT := 1
 const SLEPT := 2
-## Until character creation lands (PIX-127), new games start this hero.
+## The hero nobody named (the stand-ins: the title's, tests, harness runs),
+## in the language they were made in, once (PIX-347): a name is never
+## translated after, so the dock and the stats sheet say the same.
 const DEFAULT_HERO_NAME := "Wanderer"
 const DEFAULT_ROLE := "warrior"
 ## Starting kits (CREATE_HERO in reducers/meta.ts): rangers string a bow,
@@ -288,7 +290,7 @@ static func unread_note(target: int, kind: String) -> String:
 
 ## Writes a brand-new hero into a slot (replacing whatever was there) and plays it.
 ## `night`: begin with the Night of Ash (a returning player may skip it).
-func new_hero_in(target: int, name := DEFAULT_HERO_NAME, role_id := DEFAULT_ROLE, look := 0, night := true) -> void:
+func new_hero_in(target: int, name := "", role_id := DEFAULT_ROLE, look := 0, night := true) -> void:
 	save_now()
 	_use_slot(target)
 	slot_note = ""
@@ -359,10 +361,10 @@ func _use_slot(target: int) -> void:
 ## A fresh level-1 hero waking in the village (CREATE_HERO).
 ## `prologue`: a hero made at the title begins with the Night of Ash
 ## (PIX-152); the stand-ins (no save yet, tests, harness runs) start in town.
-func new_game(name := DEFAULT_HERO_NAME, role_id := DEFAULT_ROLE, look := 0, prologue := false) -> void:
+func new_game(name := "", role_id := DEFAULT_ROLE, look := 0, prologue := false) -> void:
 	var state := SaveCodec.initial_state()
 	var weapon := InventoryState.create_gear(STARTER_WEAPONS.get(role_id, "rusty_sword"))
-	state["hero"] = HeroState.create(name, role_id, look).to_dict()
+	state["hero"] = HeroState.create(name if name != "" else Text.t(DEFAULT_HERO_NAME), role_id, look).to_dict()
 	state["gold"] = STARTER_GOLD
 	state["inventory"] = STARTER_ITEMS.duplicate()
 	state["gear"] = [weapon]

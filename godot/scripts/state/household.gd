@@ -129,7 +129,7 @@ func combine_potions(item_id: String) -> String:
 			owner.pack.remove_item(item_id, 2)
 			owner.pack.add_item(combine["to"])
 			owner.pack_changed()
-			return Text.t("The nook bubbles: 2x %s became %s.") % [Catalog.item_name(item_id), Catalog.item_name(combine["to"])]
+			return Text.t("The nook bubbles: %s became %s.") % [Text.count(2, Catalog.item_name(item_id)), Catalog.item_name(combine["to"])]
 	return ""
 
 

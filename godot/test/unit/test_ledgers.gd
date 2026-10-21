@@ -48,6 +48,31 @@ func test_each_ledger_lies_open_on_its_table_with_or_without_the_pack() -> void:
 	assert_false(keep["tops"].any(func(top: Array) -> bool: return int(top[2]) == 2340), "the jugs that stood for the book are gone")
 
 
+## PIX-348: Hale's order book lay open while its line said « shut on his
+## table »: it's drawn shut until Maren's letter is delivered, with the pack
+## and without it, and the hall's ledger (no letter's) is always open.
+func test_hales_book_lies_shut_until_the_letter_is_delivered() -> void:
+	var progression := ProgressionState.new()
+	var shut := Letters.shut_on("keep", progression)
+	assert_eq(shut.size(), 1, "his table")
+	assert_eq(Letters.shut_on("town_hall", progression), [] as Array[Rect2i], "the village's ledger is open to read")
+	var map := MapData.load_tiered("keep", [], 1)
+	var reserved := PunyInterior.reserved(map, [])
+	var paid := PunyInterior.furnish("keep", map.grid, reserved)
+	var free := PunyInterior.furnish_free("keep", map.grid, reserved)
+	RoomArt.shut_books(paid["art"], shut)
+	RoomArt.shut_books(free["objects"], shut)
+	assert_has(paid["art"].values(), "shut_book+map_dagger")
+	assert_has(free["objects"].values(), "r:desk+shut_book+map_dagger")
+	assert_true(RoomArt.has("desk+shut_book+map_dagger"))
+	assert_eq(RoomArt.cells("shut_book"), RoomArt.cells("open_book"), "the same table's top")
+	progression.quests["letter_hale"] = {"progress": 1, "done": true}
+	assert_eq(Letters.shut_on("keep", progression), [] as Array[Rect2i], "delivered: open")
+	var pieces := {Vector2i(0, 0): "open_book+plans", Vector2i(4, 4): 1003}
+	RoomArt.shut_books(pieces, [Rect2i(4, 4, 2, 2)] as Array[Rect2i])
+	assert_eq(pieces, {Vector2i(0, 0): "open_book+plans", Vector2i(4, 4): 1003}, "a book over another table lies as it was")
+
+
 func test_the_ledger_is_a_book_open_at_two_ruled_pages() -> void:
 	var book: Array = RoomArt.PIECES["open_book"]
 	var pages := 0

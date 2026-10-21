@@ -117,6 +117,10 @@ msgid "A measured arrow to a weak point for heavy dexterity damage."
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "A pale fish from under the Frostgate ice. Sweet, and cold to the bone."
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "A pale flower that only opens in the snow. Vex says it keeps a spell cold."
 msgstr ""
 
@@ -181,6 +185,10 @@ msgid "A white staff tipped with frost lily ice. It hums when it's cold, which i
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "A whole bird, roasted the way the town did on the day the fountain first ran."
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "Aegis of the Ash"
 msgstr ""
 
@@ -234,6 +242,10 @@ msgstr ""
 
 #: assets/data/catalog.json
 msgid "Backstab"
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "Baked for the festival, won at the ring toss, eaten far too fast."
 msgstr ""
 
 #: assets/data/catalog.json
@@ -329,6 +341,10 @@ msgid "Brewed round a dragon's scale. One swallow and every wound and every spen
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "Brewed strong for those who go below."
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "Briar grown round a crystal and left a year to set. Prickly about who holds it."
 msgstr ""
 
@@ -349,11 +365,19 @@ msgid "Captain Hale's Hall"
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "Caught off Saltmere this morning, or near enough."
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "Channels light to restore health."
 msgstr ""
 
 #: assets/data/catalog.json
 msgid "Cheese Wheel"
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "Chewy. Extremely chewy."
 msgstr ""
 
 #: assets/data/catalog.json
@@ -389,11 +413,11 @@ msgid "Crimson wool from the western looms. Ties the room together. Placed at ho
 msgstr ""
 
 #: assets/data/catalog.json
-msgid "Cures burning and restores 5 HP. Apply liberally, scream less."
+msgid "Cures burning. Apply liberally, scream less."
 msgstr ""
 
 #: assets/data/catalog.json
-msgid "Cures poison and restores 5 HP. Tastes like swamp, works like magic."
+msgid "Cures poison. Tastes like swamp, works like magic."
 msgstr ""
 
 #: assets/data/catalog.json
@@ -430,6 +454,10 @@ msgstr ""
 
 #: assets/data/catalog.json
 msgid "Dragonscale over boiled hide. Crafted, never sold."
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "Drawn from the new fountain and brewed twice."
 msgstr ""
 
 #: assets/data/catalog.json
@@ -550,6 +578,10 @@ msgstr ""
 
 #: assets/data/catalog.json
 msgid "Five letters, fifty years late, every one delivered. A courier's medal."
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "Fizzy."
 msgstr ""
 
 #: assets/data/catalog.json
@@ -817,6 +849,10 @@ msgid "Iron ring, iron will."
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "It glows faintly in the bottle, which Vex insists is normal."
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "It has seen better centuries."
 msgstr ""
 
@@ -826,6 +862,10 @@ msgstr ""
 
 #: assets/data/catalog.json
 msgid "Judgement"
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "Keeps the cleric away."
 msgstr ""
 
 #: assets/data/catalog.json
@@ -1041,6 +1081,10 @@ msgid "Obsidian Blade"
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "Odo cooks them on the lamps' first night, and every night since."
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "Oiled leather the colours of a wet wood. Hard to see, easy to move in."
 msgstr ""
 
@@ -1185,75 +1229,7 @@ msgid "Reforged from the garrison's broken blades. It remembers what it was for.
 msgstr ""
 
 #: assets/data/catalog.json
-msgid "Regrows what you were sure was gone. Restores 80 HP."
-msgstr ""
-
-#: assets/data/catalog.json
-msgid "Restores 100 HP and 30 MP. The city eats well, and Odo makes sure of it."
-msgstr ""
-
-#: assets/data/catalog.json
-msgid "Restores 120 HP. Vex won't say what's in it, only that it was hard to catch."
-msgstr ""
-
-#: assets/data/catalog.json
-msgid "Restores 14 HP. Chewy. Extremely chewy."
-msgstr ""
-
-#: assets/data/catalog.json
-msgid "Restores 15 HP. Rolls beautifully downhill."
-msgstr ""
-
-#: assets/data/catalog.json
-msgid "Restores 15 MP. Fizzy."
-msgstr ""
-
-#: assets/data/catalog.json
-msgid "Restores 20 HP. Caught off Saltmere this morning, or near enough."
-msgstr ""
-
-#: assets/data/catalog.json
-msgid "Restores 25 HP. Tastes like cherries and regret."
-msgstr ""
-
-#: assets/data/catalog.json
-msgid "Restores 30 HP and 20 MP. The merchant swears by it."
-msgstr ""
-
-#: assets/data/catalog.json
-msgid "Restores 35 HP. A pale fish from under the Frostgate ice. Sweet, and cold to the bone."
-msgstr ""
-
-#: assets/data/catalog.json
-msgid "Restores 40 HP. Odo cooks them on the lamps' first night, and every night since."
-msgstr ""
-
-#: assets/data/catalog.json
-msgid "Restores 40 MP. It glows faintly in the bottle, which Vex insists is normal."
-msgstr ""
-
-#: assets/data/catalog.json
-msgid "Restores 50 HP and 20 MP. Drawn from the new fountain and brewed twice."
-msgstr ""
-
-#: assets/data/catalog.json
-msgid "Restores 50 HP. Baked for the festival, won at the ring toss, eaten far too fast."
-msgstr ""
-
-#: assets/data/catalog.json
-msgid "Restores 6 HP. Keeps the cleric away."
-msgstr ""
-
-#: assets/data/catalog.json
-msgid "Restores 60 HP and 10 MP. A whole bird, roasted the way the town did on the day the fountain first ran."
-msgstr ""
-
-#: assets/data/catalog.json
-msgid "Restores 60 HP. Brewed strong for those who go below."
-msgstr ""
-
-#: assets/data/catalog.json
-msgid "Restores 8 HP. Slightly stale, fully edible."
+msgid "Regrows what you were sure was gone."
 msgstr ""
 
 #: assets/data/catalog.json
@@ -1274,6 +1250,10 @@ msgstr ""
 
 #: assets/data/catalog.json
 msgid "Rogue"
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "Rolls beautifully downhill."
 msgstr ""
 
 #: assets/data/catalog.json
@@ -1369,6 +1349,10 @@ msgid "Silkweave Robe"
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "Slightly stale, fully edible."
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "Smells like adventure. And cow."
 msgstr ""
 
@@ -1458,6 +1442,10 @@ msgstr ""
 
 #: assets/data/catalog.json
 msgid "Tam's Ladle"
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "Tastes like cherries and regret."
 msgstr ""
 
 #: assets/data/catalog.json
@@ -1585,11 +1573,19 @@ msgid "The board is empty because of you."
 msgstr ""
 
 #: assets/data/catalog.json
+msgid "The city eats well, and Odo makes sure of it."
+msgstr ""
+
+#: assets/data/catalog.json
 msgid "The cold of the tomb: damage, and the enemy may freeze in fear."
 msgstr ""
 
 #: assets/data/catalog.json
 msgid "The fifth of Maren's letters, the one she kept. Fifty years it said only \"Morvax\". Now it has an address: the forge at the top of the mountain road. A courier never reads the post."
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "The merchant swears by it."
 msgstr ""
 
 #: assets/data/catalog.json
@@ -1658,6 +1654,10 @@ msgstr ""
 
 #: assets/data/catalog.json
 msgid "Vanish and reappear behind the enemy for a devastating strike."
+msgstr ""
+
+#: assets/data/catalog.json
+msgid "Vex won't say what's in it, only that it was hard to catch."
 msgstr ""
 
 #: assets/data/catalog.json
@@ -4769,6 +4769,10 @@ msgid "Saves have their own new format: a hero who has explored everything now s
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "Screens no longer draw over the HUD: a screen that dims the world puts the dock, the clock and the quill away while it's open, and at dawn the clock moves with the sky"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "Second Thoughts"
 msgstr ""
 
@@ -4842,6 +4846,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Small Things"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Small fixes: a villager you talk to from below is no longer hidden by the hero; Hale's order book stays shut until his letter comes; dropping something you wear is refused at once; a potion states its heal once, the computed one; a fall at the Ashes wakes you by Sela's tent, not the inn; « 0,5 % » with a comma in French; counts read « 3 × Roseau des marais »; the hero's default name is the same everywhere"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -5517,6 +5525,10 @@ msgid "The Night of Ash"
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "The Night of Ash can no longer stall: Sela's cap can't be dropped or sold while the night runs, and she gives another if it's lost (Claude's playtest)"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "The Night of Ash finally looks like a fire: flames climb the burnt frames and corner posts and lick the rubble, a blaze roars where each house fell in, smoke drifts downwind and sparks fly over glowing coals; on the Night of Bells, flames run along the roof and out of the windows; Reduce motion keeps it all calm"
 msgstr ""
 
@@ -6130,6 +6142,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "Thumb-Sized"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "Tidy Up"
 msgstr ""
 
 #: assets/data/changelog.json
@@ -15681,7 +15697,7 @@ msgid "It takes two."
 msgstr ""
 
 #: scripts/home_screen.gd
-msgid "Made %dx %s."
+msgid "Made %s."
 msgstr ""
 
 #: scripts/home_screen.gd
@@ -15814,10 +15830,6 @@ msgstr ""
 
 #: scripts/inventory_screen.gd
 msgid "%d wt"
-msgstr ""
-
-#: scripts/inventory_screen.gd
-msgid "%dx %s"
 msgstr ""
 
 #: scripts/inventory_screen.gd
@@ -15985,7 +15997,7 @@ msgid "You craft %s%s. %s"
 msgstr ""
 
 #: scripts/inventory_screen.gd
-msgid "You drop %dx %s."
+msgid "You drop %s."
 msgstr ""
 
 #: scripts/inventory_screen.gd
@@ -16781,7 +16793,7 @@ msgid "\nThe workshop's own, since Pixelheim became a %s."
 msgstr ""
 
 #: scripts/shop_screen.gd
-msgid "  %d x %s  (have %d)"
+msgid "  %s  (have %d)"
 msgstr ""
 
 #: scripts/shop_screen.gd
@@ -16985,7 +16997,7 @@ msgid "Sign the deed"
 msgstr ""
 
 #: scripts/shop_screen.gd
-msgid "Sold %d %s for %dg."
+msgid "Sold %s for %dg."
 msgstr ""
 
 #: scripts/shop_screen.gd
@@ -17421,7 +17433,7 @@ msgid "Loras plays you a marching song%s. Your next hunt strikes truer. (+%d%% c
 msgstr ""
 
 #: scripts/state/holdings.gd
-msgid "The prize is yours: +%d gold and %d %ss!"
+msgid "The prize is yours: +%d gold and %s!"
 msgstr ""
 
 #: scripts/state/holdings.gd
@@ -17485,7 +17497,7 @@ msgid "The hearth roars beside your workbench. Home industry."
 msgstr ""
 
 #: scripts/state/household.gd
-msgid "The nook bubbles: 2x %s became %s."
+msgid "The nook bubbles: %s became %s."
 msgstr ""
 
 #: scripts/state/household.gd
@@ -17833,7 +17845,7 @@ msgid "Too heavy to carry. Lighten the pack and come back."
 msgstr ""
 
 #: scripts/state/spoils.gd
-msgid "Your garden ripens: +%d %s."
+msgid "Your garden ripens: %s."
 msgstr ""
 
 #: scripts/state/text.gd
@@ -17877,7 +17889,7 @@ msgid "Finish the %s first."
 msgstr ""
 
 #: scripts/state/town.gd
-msgid "It takes %d %s."
+msgid "It takes %s."
 msgstr ""
 
 #: scripts/state/town.gd
@@ -17917,6 +17929,10 @@ msgid "Well rested, too: more XP for your next %d fights."
 msgstr ""
 
 #: scripts/state/upkeep.gd
+msgid "You come to on the road. Pixelheim is still burning ahead."
+msgstr ""
+
+#: scripts/state/upkeep.gd
 msgid "You sit a while on the bench by the ember lamp. Its warmth mends you."
 msgstr ""
 
@@ -17934,6 +17950,14 @@ msgstr ""
 
 #: scripts/state/upkeep.gd
 msgid "You wake at the inn. The innkeeper says nothing. Kind of her."
+msgstr ""
+
+#: scripts/state/upkeep.gd
+msgid "You wake beside Sela's tent, %d gold lighter. What isn't banked is a fallen hero's to lose."
+msgstr ""
+
+#: scripts/state/upkeep.gd
+msgid "You wake beside Sela's tent, your cuts bound. She has patched up worse."
 msgstr ""
 
 #: scripts/stats_screen.gd

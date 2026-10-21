@@ -276,6 +276,16 @@ static func reads_now(entry: Dictionary, progression: ProgressionState) -> bool:
 	return _open(entry, progression) and String(entry["sceneId"]) not in progression.story_seen
 
 
+## The tables on `map_id` whose reading is still shut (PIX-348): their
+## book is drawn shut, as the line says.
+static func shut_on(map_id: String, progression: ProgressionState) -> Array[Rect2i]:
+	var out: Array[Rect2i] = []
+	for entry: Dictionary in readings():
+		if String(entry["mapId"]) == map_id and not _open(entry, progression):
+			out.append(reading_rect(entry))
+	return out
+
+
 ## What it says: shut until its letter is delivered, its lines the first
 ## time it's read, a short word after: on Morvax's wall, once the courier
 ## has `lamps` ember lamps lit, his count of them (PIX-325).

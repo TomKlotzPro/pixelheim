@@ -472,10 +472,13 @@ func look_again() -> void:
 	leads_story = Bearing.tells_story(bearing)
 
 
-## The clock as the steps stand (PIX-246); redrawn only when the minute turns.
-func update_clock() -> void:
+## The clock as the steps stand (PIX-246), or at `steps` (the dawn's, PIX-346);
+## redrawn only when the minute turns.
+func update_clock(steps := -1.0) -> void:
 	if root == null:
 		return
+	if steps < 0.0:
+		steps = GameState.world.steps
 	if clock_plate == null:
 		clock_plate = PanelContainer.new()
 		clock_plate.add_theme_stylebox_override("panel", UiStyle.plate(10))
@@ -489,17 +492,30 @@ func update_clock() -> void:
 		row.add_child(_clock_text)
 		clock_plate.add_child(row)
 		root.add_child(clock_plate)
-	var time := DayNight.clock(GameState.world.steps)
+	var time := DayNight.clock(steps)
 	var text := "%02d:%02d" % [time.x, time.y]
 	if _clock_text.text == text:
 		return
 	_clock_text.text = text
-	_clock_dial.night = DayNight.is_night(GameState.world.steps)
+	_clock_dial.night = DayNight.is_night(steps)
 	_clock_dial.queue_redraw()
 	clock_plate.reset_size()
 	clock_plate.position = Vector2(1280 - 24 - clock_plate.size.x, 16)
 	# The quill just left of it, on its middle.
 	quill.position = Vector2(clock_plate.position.x - 4 - quill.size.x, 16 + roundf((clock_plate.size.y - quill.size.y) / 4.0) * 2.0)
+
+
+## Where the dock, the clock and the quill stand while the HUD shows
+## (PIX-346): what a screen's words keep off (Layout.over). The quill's
+## place counts while it waits, since any moment's save writes there.
+func shown() -> Array[Rect2]:
+	var out: Array[Rect2] = []
+	if root == null or not root.visible:
+		return out
+	for piece: Control in [dock.plate, clock_plate, quill]:
+		if piece != null and (piece == quill or piece.is_visible_in_tree()):
+			out.append(Rect2(piece.get_global_rect().position + root.offset, piece.size))
+	return out
 
 
 ## A save made (GameState.saved, PIX-302 step 4): a moment's has the quill

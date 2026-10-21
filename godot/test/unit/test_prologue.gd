@@ -58,6 +58,49 @@ func test_the_night_moves_only_through_its_steps() -> void:
 	assert_false(DayNight.is_night(state.world.steps), "morning")
 
 
+## PIX-344: beat 7 waits for head gear and is saved waiting, so Sela's cap
+## dropped or sold left the night stuck for good. It stays while the night
+## runs; a hero who lost it before gets another from her; the night still
+## runs to its dawn, and after it the cap is a cap like any other.
+func test_selas_cap_stays_until_the_night_is_over() -> void:
+	state.progression.prologue = Prologue.SELA
+	state.questing.finish_dialogue("innkeeper")
+	assert_eq(state.progression.prologue, Prologue.CAP)
+	var cap := _cap()
+	assert_false(state.upkeep.drop_gear(cap["uid"]), "never dropped")
+	state.world.map_id = "town_smith"
+	assert_eq(state.trade.sell_gear(cap["uid"]), 0, "nor sold")
+	assert_eq(_caps(), 1)
+	# A save from before: the cap gone at beat 7.
+	state.pack.gear.erase(cap)
+	state.questing.finish_dialogue("villager_bram")
+	assert_eq(_caps(), 0, "Bram has none to give")
+	state.questing.finish_dialogue("innkeeper")
+	assert_eq(state.progression.prologue, Prologue.CAP, "her word doesn't move the night on")
+	assert_eq(_caps(), 1, "Sela finds another")
+	state.questing.finish_dialogue("innkeeper")
+	assert_eq(_caps(), 1, "one is enough")
+	state.upkeep.equip(_cap()["uid"])
+	assert_eq(state.progression.prologue, Prologue.FIRES, "worn: on to the fires")
+	for ruin in Prologue.fires_needed():
+		state.questing.prologue_douse(ruin)
+	state.questing.prologue_wave_cleared()
+	state.questing.finish_dialogue("elder")
+	state.questing.finish_prologue()
+	assert_eq(state.progression.prologue, Prologue.DONE, "the night finishes")
+	state.upkeep.unequip("head")
+	assert_true(state.upkeep.drop_gear(_cap()["uid"]), "a cap like any other by day")
+
+
+func _cap() -> Dictionary:
+	var caps: Array = state.pack.gear.filter(func(piece: Dictionary) -> bool: return piece["itemId"] == "leather_cap")
+	return caps[0] if not caps.is_empty() else {}
+
+
+func _caps() -> int:
+	return state.pack.gear.filter(func(piece: Dictionary) -> bool: return piece["itemId"] == "leather_cap").size()
+
+
 func test_the_night_is_saved_only_while_it_runs() -> void:
 	var saved := {}
 	state.progression.write_into(saved)
