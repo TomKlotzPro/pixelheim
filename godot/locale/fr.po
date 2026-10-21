@@ -4193,6 +4193,10 @@ msgid "Old saves lose nothing: the fork simply waits in Skills for any hero past
 msgstr "Les anciennes sauvegardes ne perdent rien : la bifurcation attend simplement dans Compétences tout héros au-delà du niveau 5"
 
 #: assets/data/changelog.json
+msgid "On Its Base"
+msgstr "Sur son socle"
+
+#: assets/data/changelog.json
 msgid "On a computer nothing changes"
 msgstr "Sur ordinateur, rien ne change"
 
@@ -6051,6 +6055,10 @@ msgstr "Les légendes de la visite de la ville restent désormais toujours au-de
 #: assets/data/changelog.json
 msgid "The viewport grew from 15x11 to 21x13 tiles: you see MORE world at once, and the finer scale reads as sharper, denser pixel art"
 msgstr "La vue passe de 15x11 à 21x13 tuiles : vous voyez PLUS du monde à la fois, et l'échelle plus fine donne un pixel art plus net et plus dense"
+
+#: assets/data/changelog.json
+msgid "The village fountain sits square on its plaza again: the gravel now runs under it from the Village on, so no grey edge peeks out at its top left"
+msgstr "La fontaine du village repose de nouveau bien au milieu de sa place : le gravier passe sous elle dès le Village, et plus aucun bord gris ne dépasse en haut à gauche"
 
 #: assets/data/changelog.json
 msgid "The village seen from outside is the village you walk in: its own houses and roofs, the river with its bridge, its fields and woods, inside one ring of its rampart, the road running in through the gate"

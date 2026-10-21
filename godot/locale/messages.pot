@@ -4193,6 +4193,10 @@ msgid "Old saves lose nothing: the fork simply waits in Skills for any hero past
 msgstr ""
 
 #: assets/data/changelog.json
+msgid "On Its Base"
+msgstr ""
+
+#: assets/data/changelog.json
 msgid "On a computer nothing changes"
 msgstr ""
 
@@ -6050,6 +6054,10 @@ msgstr ""
 
 #: assets/data/changelog.json
 msgid "The viewport grew from 15x11 to 21x13 tiles: you see MORE world at once, and the finer scale reads as sharper, denser pixel art"
+msgstr ""
+
+#: assets/data/changelog.json
+msgid "The village fountain sits square on its plaza again: the gravel now runs under it from the Village on, so no grey edge peeks out at its top left"
 msgstr ""
 
 #: assets/data/changelog.json
