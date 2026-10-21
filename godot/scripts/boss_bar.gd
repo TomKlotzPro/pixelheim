@@ -152,11 +152,14 @@ func _process(delta: float) -> void:
 	fill.size.x = _width(share)
 	shine.size.x = fill.size.x
 	ghost.size.x = _width(ghost_share)
-	# In while it hunts; once it falls, out after its ghost has drained.
-	var wanted := 1.0 if _live() or ghost_share > share else 0.0
+	# In while it hunts; once it falls, out at once, its ghost draining as it
+	# goes (PIX-345: held up for the ghost, it stood a second over the boss's
+	# fall, and LEVEL UP and the win rose into it).
+	var wanted := 1.0 if _live() else 0.0
 	modulate.a = move_toward(modulate.a, wanted, delta * 3.0)
 	if modulate.a == 0.0 and not _live():
 		target = null
+		ghost_share = share
 
 
 ## The ghost after `delta`: it holds, then drains toward the health shown,

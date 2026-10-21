@@ -248,6 +248,40 @@ func test_a_win_rises_clear_of_a_tag() -> void:
 	assert_eq(words.call()[0].position.y, lifted, "and never back down")
 
 
+## PIX-345: at a boss's fall LEVEL UP rose into the boss bar and was cut.
+## A word stays under the HUD's plates over it - stepping down under one
+## it stands in, never lifted into one by a tag - and a win too, whole.
+func test_what_rises_stays_under_a_plate_over_it() -> void:
+	var fx: WorldFx = add_child_autofree(WorldFx.new())
+	fx.float_text("LEVEL UP", Vector2(100, 50), Color.WHITE, true)
+	var word: Label = fx.get_child(0).get_child(0)
+	var ink := Ink.of_text("LEVEL UP", _face(), UiStyle.BODY_PX)
+	var drawn := func() -> Rect2: return Rect2(word.global_position + ink.position, ink.size)
+	var bar := Rect2(0, drawn.call().position.y - 20, 300, 24)
+	fx.keep_clear([] as Array[Rect2], [bar] as Array[Rect2])
+	assert_false(drawn.call().intersects(bar), "stepped down under the bar")
+	var tag: Rect2 = drawn.call()
+	fx.keep_clear([tag] as Array[Rect2], [bar] as Array[Rect2])
+	assert_false(drawn.call().intersects(bar), "a tag under it doesn't lift it into the bar")
+	var win := Gains.none()
+	win["xp"] = 100
+	Gains.add_item(win, "wolf_pelt")
+	fx.show_gains(win, Vector2(400, 50))
+	var rows: Array = fx.get_child(1).get_children()
+	var words := func() -> Array[Rect2]:
+		var out: Array[Rect2] = []
+		for row: Node in rows:
+			var label: Label = row.get_node("text")
+			out.append(Rect2(label.global_position + Ink.of_text(label.text, _face(), UiStyle.BODY_PX).position, Ink.of_text(label.text, _face(), UiStyle.BODY_PX).size))
+		return out
+	var gap: float = words.call()[0].position.y - words.call()[1].position.y
+	var card := Rect2(300, words.call()[1].position.y - 10, 300, 20)
+	fx.keep_clear([] as Array[Rect2], [card] as Array[Rect2])
+	for rect: Rect2 in words.call():
+		assert_false(rect.intersects(card), "the win under the card")
+	assert_eq(words.call()[0].position.y - words.call()[1].position.y, gap, "its rows together")
+
+
 func test_a_wins_row_is_centred_by_its_ink() -> void:
 	var fx: WorldFx = add_child_autofree(WorldFx.new())
 	var win := Gains.none()

@@ -89,6 +89,26 @@ func test_a_lethal_blow_while_the_bar_eases_still_lets_go() -> void:
 	assert_false(bar.showing())
 
 
+## PIX-345: held up while the last blows' ghost drained, the bar stood a
+## second over the boss's fall, and LEVEL UP and the win rose into it. It
+## goes as its boss falls, the ghost draining as it fades.
+func test_the_bar_goes_as_its_boss_falls() -> void:
+	var bar := _bar()
+	var foe: Foe = autofree(Foe.new())
+	bar.follow(foe)
+	bar._process(0.5)
+	foe.fighter["hp"] = 11
+	bar._process(0.05)
+	foe.fighter["hp"] = 0
+	foe.dying = true
+	bar._process(0.2)
+	assert_gt(bar.ghost_share, 0.0, "the last blows' ghost draining")
+	assert_true(bar.showing(), "as the bar fades")
+	bar._process(0.2)
+	assert_false(bar.showing(), "gone in a third of a second")
+	assert_eq(bar.reading(), "fading 0%", "its ghost with it")
+
+
 func test_a_new_map_takes_the_bar_down_at_once() -> void:
 	var bar := _bar()
 	var foe: Foe = autofree(Foe.new())

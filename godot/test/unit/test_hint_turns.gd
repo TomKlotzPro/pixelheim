@@ -3,7 +3,9 @@ extends GutTest
 ## his bar, his name and his first words. A first-time hint waits while a
 ## boss makes its entrance, and shows once it falls (or the hero gets away,
 ## or the fight has gone on a while); and one hint at a time, the next in
-## its turn, nothing lost.
+## its turn, nothing lost. PIX-345: a title card over a hint already up held
+## it pushed down over the hero; now it holds it unseen until it goes, and a
+## title card stands clear of what rises over the world.
 
 
 ## Foes as the HUD asks them: the boss hunting the hero, and since when.
@@ -15,8 +17,17 @@ class FakeFoes extends RefCounted:
 		return boss
 
 
+## What rises over the world, as far as it may yet go (WorldFx.reach).
+class FakeFx extends RefCounted:
+	var rising: Array[Rect2] = []
+
+	func reach() -> Array[Rect2]:
+		return rising
+
+
 class FakeWorld extends Node:
 	var foes := FakeFoes.new()
+	var fx := FakeFx.new()
 
 
 var world: FakeWorld
@@ -85,3 +96,37 @@ func test_a_hint_waits_for_a_title_card() -> void:
 	card.free()
 	hud.keep_hint_clear()
 	assert_eq(_up(), "dodge")
+
+
+## PIX-345: walking out of the sea cave, Saltmere's name came over the dodge
+## already up and pushed it down over the hero for seconds. The card holds
+## it unseen, its time stopped; it comes back where it stood as the card
+## goes.
+func test_a_title_card_holds_a_hint_already_up() -> void:
+	hud.hint("dodge")
+	var top := hud.hint_card.position.y
+	var show: Tween = hud.hint_card.get_meta("show")
+	var card := hud.title_card("Saltmere", "")
+	hud.keep_hint_clear()
+	assert_false(hud.hint_card.visible, "held under the card")
+	assert_false(show.is_running(), "its time stopped")
+	assert_eq(hud.hint_card.position.y, top, "never pushed down")
+	card.free()
+	hud.keep_hint_clear()
+	assert_true(hud.hint_card.visible, "back as the card goes")
+	assert_true(show.is_running(), "its time running again")
+	assert_eq(hud.hint_card.position.y, top, "where it stood")
+
+
+## PIX-345: at a boss's fall the Victory card stood where its gold, its
+## drops and LEVEL UP rose. A title card stands at its height with nothing
+## in the way, and clear of what rises otherwise.
+func test_a_title_card_stands_clear_of_what_rises() -> void:
+	var alone := hud.title_card("Victoire", "L'Appelle-Marée n'est plus.")
+	assert_eq(alone.position.y, Hud.CARD_TOP, "nothing in the way: where it stands")
+	alone.free()
+	var win := Rect2(500, 20, 280, 180)
+	world.fx.rising = [win] as Array[Rect2]
+	var card := hud.title_card("Victoire", "L'Appelle-Marée n'est plus.")
+	assert_false(card.get_rect().intersects(win), "clear of the win and LEVEL UP")
+	assert_gt(card.position.y, win.end.y, "under them")

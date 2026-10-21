@@ -16,7 +16,9 @@ extends RefCounted
 ## it (Messages, the chip it shows on).
 ##
 ## The field has its rule here too (rise): a word over the world steps up
-## just clear of a level tag or a word already there (PIX-340).
+## just clear of a level tag or a word already there (PIX-340), under the
+## HUD's plates at the top (room_under); and a title card stands clear of
+## what rises (spot, PIX-345).
 
 ## How many show at once.
 var room := 1
@@ -128,3 +130,36 @@ static func rise(taken: Array[Rect2], rect: Rect2, margin: float, lifted := 0.0,
 		if lift >= most:
 			return maxf(lifted, most)
 	return maxf(lifted, minf(lift, most))
+
+
+## How far up a word over the world at `rect` (where it stands unlifted) may
+## stand and stay under each of `over` it would meet, `margin` apart
+## (PIX-345: LEVEL UP rose into the boss bar and was cut): the HUD's plates
+## at the top, the boss bar, a title card, a hint. A plate is over the word
+## when the plate's foot is above the word's and they share a column; below
+## zero, the word steps down under it. INF with none over it.
+static func room_under(over: Array[Rect2], rect: Rect2, margin: float) -> float:
+	var room := INF
+	for plate in over:
+		if plate.end.y < rect.end.y and plate.position.x < rect.end.x and rect.position.x < plate.end.x:
+			room = minf(room, floorf(rect.position.y - plate.end.y - margin))
+	return room
+
+
+## Where a plate over the screen stands (PIX-345: the Victory card stood on
+## what a boss's fall won, rising): at `rect`'s own height when it's clear of
+## each of `taken`, `margin` apart, else at the nearest height that is, its
+## top no higher than `top` and its foot no lower than `bottom`; nowhere
+## clear, at its own.
+static func spot(taken: Array[Rect2], rect: Rect2, top: float, bottom: float, margin: float) -> float:
+	var tries: Array[float] = [clampf(rect.position.y, top, bottom - rect.size.y)]
+	for other in taken:
+		tries.append(ceilf(other.end.y + margin))
+		tries.append(floorf(other.position.y - margin - rect.size.y))
+	var inside := tries.filter(func(y: float) -> bool: return y >= top and y + rect.size.y <= bottom)
+	inside.sort_custom(func(a: float, b: float) -> bool: return absf(a - rect.position.y) < absf(b - rect.position.y))
+	for y: float in inside:
+		var there := Rect2(rect.position.x, y, rect.size.x, rect.size.y).grow(margin)
+		if not taken.any(func(other: Rect2) -> bool: return other.intersects(there)):
+			return y
+	return rect.position.y
