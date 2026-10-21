@@ -396,13 +396,13 @@ static func _monster_stage(monster_id: String) -> float:
 	return nearest
 
 
-## The materials a recipe still lacks, as "2 Marsh Reed".
+## The materials a recipe still lacks, as "2 × Marsh Reed".
 static func missing_names(entry: Dictionary, items: Dictionary) -> Array[String]:
 	var out: Array[String] = []
 	for need: String in entry["needs"]:
 		var short := int(entry["needs"][need]) - int(items.get(need, 0))
 		if short > 0:
-			out.append("%d %s" % [short, Catalog.item_name(need)])
+			out.append(Text.count(short, Catalog.item_name(need)))
 	return out
 
 

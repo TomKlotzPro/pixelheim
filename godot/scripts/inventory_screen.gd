@@ -684,7 +684,7 @@ func _drop(whole_stack: bool) -> void:
 		if _drop_armed != which or now - _drop_armed_at > DROP_CONFIRM_SECONDS:
 			_drop_armed = which
 			_drop_armed_at = now
-			var what: String = InventoryState.gear_name(row["piece"]) if row["kind"] == "gear" else Text.t("%dx %s") % [row["count"], Catalog.item_name(row["item_id"])]
+			var what: String = InventoryState.gear_name(row["piece"]) if row["kind"] == "gear" else Text.count(int(row["count"]), Catalog.item_name(row["item_id"]))
 			status.text = Text.t("Drop %s for good? Press %s again.") % [what, Controls.shown("Z" if whole_stack else "X")]
 			return
 		_drop_armed = ""
@@ -699,5 +699,5 @@ func _drop(whole_stack: bool) -> void:
 	else:
 		var count: int = row["count"] if whole_stack else 1
 		GameState.upkeep.drop_item(row["item_id"], count)
-		status.text = Text.t("You drop %dx %s.") % [count, Catalog.item_name(row["item_id"])]
+		status.text = Text.t("You drop %s.") % Text.count(count, Catalog.item_name(row["item_id"]))
 	_refresh()

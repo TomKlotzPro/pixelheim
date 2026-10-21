@@ -137,7 +137,9 @@ func arrive(next: MapData) -> void:
 				# It keeps to its meal until the hero walks up or strikes:
 				# the night's first fight is the hero's to start.
 				scavenger.feeding = true
-				world.messages.flash.call_deferred(String(Prologue.data()["arrival"]))
+				# The night's first words, once: not again over waking from a fall (PIX-347).
+				if not world.player.dead:
+					world.messages.flash.call_deferred(String(Prologue.data()["arrival"]))
 		Prologue.GATE:
 			if next.id == "town":
 				GameState.questing.prologue_reached_town()

@@ -471,7 +471,7 @@ func _rows_for(tab_name: String) -> Array[Dictionary]:
 				var back := Economy.salvage_yield(instance)
 				var parts: Array[String] = []
 				for item_id: String in back:
-					parts.append("%d %s" % [int(back[item_id]), Catalog.item_name(item_id)])
+					parts.append(Text.count(int(back[item_id]), Catalog.item_name(item_id)))
 				out.append({
 					"label": _gear_label(instance), "icon": instance["itemId"], "price": ", ".join(parts),
 					"detail": _describe(instance["itemId"], instance), "verb": "Salvage", "enabled": true,
@@ -773,11 +773,11 @@ func _numbers(item_id: String, piece: Dictionary) -> String:
 	return "\n".join(lines)
 
 
-## What all the junk is, in a line: "12 Forest Herb, Rusty Sword".
+## What all the junk is, in a line: "12 × Forest Herb, Rusty Sword".
 static func _lot_line(lot: Dictionary) -> String:
 	var parts: Array[String] = []
 	for item_id: String in lot["items"]:
-		parts.append("%d %s" % [int(lot["items"][item_id]), Catalog.item_name(item_id)])
+		parts.append(Text.count(int(lot["items"][item_id]), Catalog.item_name(item_id)))
 	for uid: String in lot["gear"]:
 		parts.append(_gear_label(GameState.pack.gear_by_uid(uid)))
 	return ", ".join(parts)
@@ -814,7 +814,7 @@ func _act() -> void:
 		var sold := amount
 		amount = 0
 		var gold := GameState.trade.sell_item(item_id, sold)
-		status.text = Text.t("Sold %d %s for %dg.") % [sold, Catalog.item_name(item_id), gold] if gold > 0 else "Not for sale."
+		status.text = Text.t("Sold %s for %dg.") % [Text.count(sold, Catalog.item_name(item_id)), gold] if gold > 0 else "Not for sale."
 		Sound.play("coin")
 		_refresh()
 		return
@@ -931,7 +931,7 @@ static func _describe_recipe(entry: Dictionary) -> String:
 	var lines: Array[String] = [_describe(entry["itemId"]), "", Text.t("Needs:")]
 	for need: String in entry["needs"]:
 		var have: int = GameState.pack.items.get(need, 0)
-		lines.append(Text.t("  %d x %s  (have %d)") % [entry["needs"][need], Catalog.item_name(need), have])
+		lines.append(Text.t("  %s  (have %d)") % [Text.count(int(entry["needs"][need]), Catalog.item_name(need)), have])
 		# Where a missing one comes from (PIX-143).
 		if have < int(entry["needs"][need]):
 			var sources := Economy.material_sources(need, GameState.town_tier(), GameState.trade.stock_stage())

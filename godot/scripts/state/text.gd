@@ -54,6 +54,20 @@ static func coins(amount: int) -> String:
 	return t("%dg") % amount
 
 
+## A number with decimals as the player's language writes it (PIX-347):
+## "0.5", « 0,5 »; a whole number without its point.
+static func decimal(value: float, decimals := 2) -> String:
+	var said := String.num(value, decimals).trim_suffix(".0")
+	return said.replace(".", ",") if TranslationServer.get_locale().begins_with("fr") else said
+
+
+## So many of a thing (PIX-347): "3 × Marsh Reed", « 3 × Roseau des
+## marais ». The count stands apart from the name, so no plural has to
+## agree, in either language.
+static func count(amount: int, name: String) -> String:
+	return "%d × %s" % [amount, name]
+
+
 ## Whether a data string is words a player reads: it has a capital or a
 ## space (ids are lower_snake), and its key isn't one that holds ids.
 static func is_words(key: String, value: String) -> bool:

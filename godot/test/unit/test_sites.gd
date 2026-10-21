@@ -25,7 +25,7 @@ func test_the_villages_plots_are_staked_with_a_builder_each() -> void:
 	var workers := Town.site_workers(done)
 	assert_eq(workers.size(), 1)
 	assert_eq(workers[0]["name"], "Builder Joss")
-	assert_string_contains(workers[0]["lines"][1], "400g, 5 Marsh Reed")
+	assert_string_contains(workers[0]["lines"][1], "400g, 5 × Marsh Reed")
 	assert_has(Npcs.on_map("town", 1, [], done).map(func(npc: Dictionary) -> String: return npc["id"]), "worker_thatch_cottage")
 
 

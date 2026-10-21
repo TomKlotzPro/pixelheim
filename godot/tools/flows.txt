@@ -134,6 +134,12 @@ pack-tags | fight kill pack --foe slime --wait 0.8 | tags=1 mobs=0 rising=[1-9] 
 feat-toast | --map town --wear oilskin_hood,oilskin_coat,oilskin_gloves,oilskin_boots,saltwood_buckler --walk r,r --lang fr | feats=full_set toast=1 box, 1 line, fits | combat story quest lang
 # Death, and waking at the inn (PIX-129).
 die | die | map=town_inn cell=\(2, 3\) | combat rooms
+# A fall that isn't at the inn (PIX-347): on the Night of Ash before the
+# gate, on the road where the night began; in the village that night and at
+# the Ashes after, beside Sela's tent, not on it.
+die-road | --prologue 1 die --wait 1.5 | map=overworld cell=\(48, 34\) night=1 | combat story night
+die-tent-night | --prologue 6 die --wait 1.5 | map=town cell=\(44, 27\) night=6 | combat story night
+die-tent | --map town --town-tier 0 die --wait 1.5 | map=town cell=\(44, 27\) night=0 | combat town
 # The saves screen (PIX-129).
 saves | saves | open=saves_screen | save screen
 # A hero's first word with Maren after the night is her tin (PIX-253):

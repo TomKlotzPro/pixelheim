@@ -404,4 +404,4 @@ func win_ring_toss() -> String:
 	owner.pack.add_item(Town.festival("prizeItem"), pies)
 	owner.pack_changed()
 	owner.save_now()
-	return Text.t("The prize is yours: +%d gold and %d %ss!") % [gold, pies, Catalog.item_name(Town.festival("prizeItem"))]
+	return Text.t("The prize is yours: +%d gold and %s!") % [gold, Text.count(pies, Catalog.item_name(Town.festival("prizeItem")))]

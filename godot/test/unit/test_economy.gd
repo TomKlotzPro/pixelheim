@@ -294,9 +294,9 @@ func test_a_refused_craft_says_what_it_lacks() -> void:
 	var skilled := {"smithing": {"level": 1, "xp": 0}, "alchemy": {"level": 3, "xp": 0}}
 	var green := {"smithing": {"level": 1, "xp": 0}, "alchemy": {"level": 1, "xp": 0}}
 	var stocked := {"fresh_fish": 1, "forest_herb": 2}
-	assert_eq(Economy.craft_refusal(stew, {"forest_herb": 1}, skilled), "Still missing: 1 Fresh Fish, 1 Forest Herb.")
+	assert_eq(Economy.craft_refusal(stew, {"forest_herb": 1}, skilled), "Still missing: 1 × Fresh Fish, 1 × Forest Herb.")
 	assert_eq(Economy.craft_refusal(stew, stocked, green), "That takes Alchemy 3.")
-	assert_eq(Economy.craft_refusal(stew, {"fresh_fish": 1}, green), "That takes Alchemy 3. Still missing: 2 Forest Herb.")
+	assert_eq(Economy.craft_refusal(stew, {"fresh_fish": 1}, green), "That takes Alchemy 3. Still missing: 2 × Forest Herb.")
 	assert_eq(Economy.craft_refusal(stew, stocked, skilled), "", "it can be made")
 	assert_eq(Economy.craft_refusal(stew, stocked, skilled, false, ["vexs_brewery"]), "Craft at Vex's cauldron - the BREWS door in town.")
 	assert_eq(Economy.craft_refusal(stew, stocked, skilled, false, []), "Craft at Vex's stall on the square.", "in the Ashes")

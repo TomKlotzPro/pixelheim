@@ -137,7 +137,7 @@ static func project_blocker(project_id: String, progression: ProgressionState, s
 		return Text.t("The treasury asks %d gold.") % entry["cost"]["gold"]
 	for item_id: String in entry["cost"]["items"]:
 		if int(items.get(item_id, 0)) < int(entry["cost"]["items"][item_id]):
-			return Text.t("It takes %d %s.") % [entry["cost"]["items"][item_id], Catalog.item_name(item_id)]
+			return Text.t("It takes %s.") % Text.count(int(entry["cost"]["items"][item_id]), Catalog.item_name(item_id))
 	return ""
 
 
@@ -178,17 +178,17 @@ static func work_blocker(work_id: String, progression: ProgressionState, settlem
 		return Text.t("The treasury asks %d gold.") % entry["cost"]["gold"]
 	for item_id: String in entry["cost"]["items"]:
 		if int(items.get(item_id, 0)) < int(entry["cost"]["items"][item_id]):
-			return Text.t("It takes %d %s.") % [entry["cost"]["items"][item_id], Catalog.item_name(item_id)]
+			return Text.t("It takes %s.") % Text.count(int(entry["cost"]["items"][item_id]), Catalog.item_name(item_id))
 	return ""
 
 
-## A project's (or a work's) price as one line: "250g, 2 Wolf Pelt".
+## A project's (or a work's) price as one line: "250g, 2 × Wolf Pelt".
 static func cost_line(project_id: String) -> String:
 	var priced := project(project_id)
 	var cost: Dictionary = (priced if not priced.is_empty() else work(project_id))["cost"]
 	var parts: Array[String] = [Text.coins(int(cost["gold"]))]
 	for item_id: String in cost["items"]:
-		parts.append("%d %s" % [cost["items"][item_id], Catalog.item_name(item_id)])
+		parts.append(Text.count(int(cost["items"][item_id]), Catalog.item_name(item_id)))
 	return ", ".join(parts)
 
 
@@ -309,6 +309,12 @@ static func ashes_tent(done: Array) -> Vector2i:
 		return Vector2i(-1, -1)
 	var tent: Dictionary = _data()["ashesCamp"]["tent"]
 	return Vector2i(int(tent["x"]), int(tent["y"]))
+
+
+## Where a fall wakes while the tent stands (PIX-347): beside it, not on
+## it. {x, y, facing}.
+static func ashes_wake() -> Dictionary:
+	return _data()["ashesCamp"]["wake"]
 
 
 ## The age the town is building given what's built (current_age's rule).

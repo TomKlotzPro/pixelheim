@@ -77,7 +77,7 @@ func test_trophies_buff_while_displayed_and_give_it_back() -> void:
 
 func test_the_nook_distills_two_brews_into_a_better_one() -> void:
 	state.pack.items = {"potion_hp": 3}
-	assert_eq(state.household.combine_potions("potion_hp"), "The nook bubbles: 2x Health Potion became Greater Health Potion.")
+	assert_eq(state.household.combine_potions("potion_hp"), "The nook bubbles: 2 × Health Potion became Greater Health Potion.")
 	assert_eq(state.pack.items, {"potion_hp": 1, "greater_potion": 1})
 	assert_eq(state.household.combine_potions("potion_hp"), "", "it takes two")
 

@@ -339,7 +339,7 @@
       "sprite": "potion_hp",
       "weight": 1,
       "value": 25,
-      "description": "Restores 25 HP. Tastes like cherries and regret.",
+      "description": "Tastes like cherries and regret.",
       "restoreHp": 25
     },
     "potion_mp": {
@@ -348,7 +348,7 @@
       "sprite": "potion_mp",
       "weight": 1,
       "value": 25,
-      "description": "Restores 15 MP. Fizzy.",
+      "description": "Fizzy.",
       "restoreMp": 15
     },
     "greater_potion": {
@@ -357,7 +357,7 @@
       "sprite": "potion_hp",
       "weight": 1,
       "value": 70,
-      "description": "Restores 60 HP. Brewed strong for those who go below.",
+      "description": "Brewed strong for those who go below.",
       "restoreHp": 60,
       "restoreHpShare": 0.3
     },
@@ -367,7 +367,7 @@
       "sprite": "elixir",
       "weight": 1,
       "value": 60,
-      "description": "Restores 30 HP and 20 MP. The merchant swears by it.",
+      "description": "The merchant swears by it.",
       "restoreHp": 30,
       "restoreMp": 20,
       "restoreHpShare": 0.2
@@ -378,7 +378,7 @@
       "sprite": "potion_green",
       "weight": 1,
       "value": 30,
-      "description": "Cures poison and restores 5 HP. Tastes like swamp, works like magic.",
+      "description": "Cures poison. Tastes like swamp, works like magic.",
       "restoreHp": 5,
       "cures": "poison"
     },
@@ -388,7 +388,7 @@
       "sprite": "salve",
       "weight": 1,
       "value": 30,
-      "description": "Cures burning and restores 5 HP. Apply liberally, scream less.",
+      "description": "Cures burning. Apply liberally, scream less.",
       "restoreHp": 5,
       "cures": "burn"
     },
@@ -398,7 +398,7 @@
       "sprite": "bread",
       "weight": 1,
       "value": 4,
-      "description": "Restores 8 HP. Slightly stale, fully edible.",
+      "description": "Slightly stale, fully edible.",
       "restoreHp": 8
     },
     "cheese_wheel": {
@@ -407,7 +407,7 @@
       "sprite": "cheese",
       "weight": 5,
       "value": 12,
-      "description": "Restores 15 HP. Rolls beautifully downhill.",
+      "description": "Rolls beautifully downhill.",
       "restoreHp": 15
     },
     "apple": {
@@ -416,7 +416,7 @@
       "sprite": "apple",
       "weight": 1,
       "value": 3,
-      "description": "Restores 6 HP. Keeps the cleric away.",
+      "description": "Keeps the cleric away.",
       "restoreHp": 6
     },
     "dried_meat": {
@@ -425,7 +425,7 @@
       "sprite": "meat",
       "weight": 1,
       "value": 8,
-      "description": "Restores 14 HP. Chewy. Extremely chewy.",
+      "description": "Chewy. Extremely chewy.",
       "restoreHp": 14
     },
     "forest_herb": {
@@ -624,7 +624,7 @@
       "sprite": "salve",
       "weight": 1,
       "value": 90,
-      "description": "Regrows what you were sure was gone. Restores 80 HP.",
+      "description": "Regrows what you were sure was gone.",
       "restoreHp": 80
     },
     "deeproot_bow": {
@@ -1064,7 +1064,7 @@
       "weight": 1,
       "value": 28,
       "signature": true,
-      "description": "Restores 40 HP. Odo cooks them on the lamps' first night, and every night since.",
+      "description": "Odo cooks them on the lamps' first night, and every night since.",
       "restoreHp": 40
     },
     "fountain_roast": {
@@ -1074,7 +1074,7 @@
       "weight": 2,
       "value": 45,
       "signature": true,
-      "description": "Restores 60 HP and 10 MP. A whole bird, roasted the way the town did on the day the fountain first ran.",
+      "description": "A whole bird, roasted the way the town did on the day the fountain first ran.",
       "restoreHp": 60,
       "restoreMp": 10
     },
@@ -1085,7 +1085,7 @@
       "weight": 2,
       "value": 90,
       "signature": true,
-      "description": "Restores 100 HP and 30 MP. The city eats well, and Odo makes sure of it.",
+      "description": "The city eats well, and Odo makes sure of it.",
       "restoreHp": 100,
       "restoreMp": 30
     },
@@ -1141,7 +1141,7 @@
       "weight": 1,
       "value": 55,
       "signature": true,
-      "description": "Restores 40 MP. It glows faintly in the bottle, which Vex insists is normal.",
+      "description": "It glows faintly in the bottle, which Vex insists is normal.",
       "restoreMp": 40
     },
     "fountain_tonic": {
@@ -1151,7 +1151,7 @@
       "weight": 1,
       "value": 70,
       "signature": true,
-      "description": "Restores 50 HP and 20 MP. Drawn from the new fountain and brewed twice.",
+      "description": "Drawn from the new fountain and brewed twice.",
       "restoreHp": 50,
       "restoreMp": 20
     },
@@ -1162,7 +1162,7 @@
       "weight": 1,
       "value": 150,
       "signature": true,
-      "description": "Restores 120 HP. Vex won't say what's in it, only that it was hard to catch.",
+      "description": "Vex won't say what's in it, only that it was hard to catch.",
       "restoreHp": 120,
       "restoreHpShare": 0.5
     },
@@ -1172,7 +1172,7 @@
       "sprite": "pie",
       "weight": 1,
       "value": 20,
-      "description": "Restores 50 HP. Baked for the festival, won at the ring toss, eaten far too fast.",
+      "description": "Baked for the festival, won at the ring toss, eaten far too fast.",
       "restoreHp": 50
     },
     "sea_glass": {
@@ -1189,7 +1189,7 @@
       "sprite": "fish",
       "weight": 1,
       "value": 10,
-      "description": "Restores 20 HP. Caught off Saltmere this morning, or near enough.",
+      "description": "Caught off Saltmere this morning, or near enough.",
       "restoreHp": 20
     },
     "pearl": {
@@ -1580,7 +1580,7 @@
       "weight": 1,
       "value": 18,
       "restoreHp": 35,
-      "description": "Restores 35 HP. A pale fish from under the Frostgate ice. Sweet, and cold to the bone."
+      "description": "A pale fish from under the Frostgate ice. Sweet, and cold to the bone."
     },
     "caravan_strongbox": {
       "name": "Gunnar's Strongbox",
