@@ -228,6 +228,8 @@ const VILLAGERS := {
 	"monk": {"sheet": "mini/MagePurple.png", "family": "mini"},
 	# The Frostgate's hermit, in his big hat (PIX-169).
 	"hermit": {"sheet": "mini/Gangblanc.png", "family": "mini"},
+	# Old Hessa, the shrine's keeper, in a silk-grey robe (PIX-331).
+	"keeper": {"sheet": "characters/Mage-Silk.png", "family": "puny"},
 }
 
 ## The bestiary by monster id: the closest creature Shade drew, tinted where
