@@ -44,6 +44,39 @@ static func _scan(node: Node, layer: CanvasLayer, bounds: Rect2, out: Array[Stri
 		_scan(child, layer, bounds, out)
 
 
+## Every visible label under the open screens of `root` standing on one of
+## `rects` on the dark (PIX-346: the HUD's dock, clock and quill, when a
+## screen leaves them showing, read through round the words): "screen path
+## rect ^ rect" lines. Words on a panel of their own screen that covers the
+## spot (a conversation's window over the dock) stand on the panel.
+static func over(root: Node, rects: Array[Rect2]) -> Array[String]:
+	var out: Array[String] = []
+	for layer in root.find_children("*", "", true, false):
+		if not (layer is Screen and (layer as Screen).visible):
+			continue
+		var screen := layer as Screen
+		for node in screen.find_children("*", "", true, false):
+			var label := node as Label
+			if label == null or not label.is_visible_in_tree() or label.text.strip_edges() == "":
+				continue
+			var rect := Rect2(label.get_global_rect().position + screen.offset, label.get_global_rect().size)
+			for hud in rects:
+				if rect.intersects(hud) and not _on_a_panel(label, screen, rect.intersection(hud)):
+					out.append("%s %s %s ^ %s" % [screen.get_script().resource_path.get_file(), screen.get_path_to(label), rect, hud])
+	return out
+
+
+static func _on_a_panel(label: Label, screen: Screen, spot: Rect2) -> bool:
+	var node := label.get_parent()
+	while node is Control:
+		if node is PanelContainer or node is Panel:
+			var panel := (node as Control).get_global_rect()
+			if Rect2(panel.position + screen.offset, panel.size).encloses(spot):
+				return true
+		node = node.get_parent()
+	return false
+
+
 ## Why `control` runs wider than its page, or "" (PIX-298): a scrolling
 ## window, or a list standing free on the screen, laid out at a width (its
 ## minimum's) that its rows pushed wider, or a scrolling window whose rows

@@ -54,6 +54,8 @@ func _open() -> void:
 	scene = TitleScene.new()
 	add_child(scene)
 	_rest_world(true)
+	# A full screen: the HUD steps aside under it (PIX-346).
+	_put_hud_aside()
 	_vignette()
 	_logo()
 	_card()

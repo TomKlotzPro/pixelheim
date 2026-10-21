@@ -75,12 +75,6 @@ func _open() -> void:
 	closing_actions = [&"map"]
 	layer = 5
 	dim()
-	# The HUD steps aside while the map is open (PIX-265): its dock read
-	# through the dim under the legend and the keys.
-	var hud: Variant = world.get("hud") if world != null else null
-	if hud != null and hud.root != null:
-		hud.root.visible = false
-		tree_exiting.connect(func() -> void: hud.root.visible = true)
 	var heading := HBoxContainer.new()
 	heading.position = Vector2(64, UiStyle.TITLE_AT.y)
 	heading.add_theme_constant_override("separation", 20)

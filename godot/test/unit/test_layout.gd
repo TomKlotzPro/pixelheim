@@ -49,6 +49,29 @@ func test_what_scrolls_or_sweeps_in_is_not_an_overflow() -> void:
 	assert_eq(Layout.overflows(get_tree().root, VIEW).size(), 0)
 
 
+func test_words_on_the_dark_over_the_hud_are_found() -> void:
+	# PIX-346: a footer's words over the dock, where the dock reads through
+	# round them, are found; the same words on a window covering the spot (a
+	# conversation over the dock) or clear of it are not.
+	var layer := _screen()
+	var dock: Array[Rect2] = [Rect2(252, 602, 776, 110)]
+	var words := Label.new()
+	words.text = "fermer"
+	words.position = Vector2(400, 672)
+	words.size = Vector2(80, 22)
+	layer.add_child(words)
+	assert_eq(Layout.over(get_tree().root, dock).size(), 1, "on the dark over the dock")
+	var window := PanelContainer.new()
+	window.position = Vector2(150, 520)
+	window.size = Vector2(980, 180)
+	layer.add_child(window)
+	words.reparent(window, true)
+	assert_eq(Layout.over(get_tree().root, dock).size(), 0, "on a window covering the spot")
+	words.reparent(layer, true)
+	words.position = Vector2(400, 300)
+	assert_eq(Layout.over(get_tree().root, dock).size(), 0, "clear of the dock")
+
+
 func test_a_redraw_empties_at_once() -> void:
 	var box: VBoxContainer = autofree(VBoxContainer.new())
 	for i in 3:

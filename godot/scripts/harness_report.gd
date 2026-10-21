@@ -72,6 +72,7 @@ const TABLE := [
 	{"field": "healed", "says": "on a map where the ash heals round a lamp: its cells at each stage past the ash, as each is drawn (Lamps.LOOKS): earth9,grass8,meadow12,grove13 (PIX-323)"},
 	{"field": "hint", "says": "the first-time hint on the screen, by the id it's seen by, or held:<id> while one waits its turn (PIX-341: never over a boss's entrance)"},
 	{"field": "home", "says": "who the story brought home to live in town, by first name: wenna (PIX-255)"},
+	{"field": "hour", "says": "at the Night of Ash's dawn: the HUD's clock as it reads, its dial a sun or a moon: 04:48 sun (PIX-346)"},
 	{"field": "hub", "says": "on a hub's map: its place, the step it has grown to and what of it stands, drawn: saltmere:3:lighthouse (PIX-324)"},
 	{"field": "jobs", "says": "on the Night of Bells: the townsfolk's jobs that have acted, by kind: arrows,bell,cheese (PIX-253 step 9)"},
 	{"field": "jumps", "says": "with turning: the hero's drawn way changing more than an eighth of a turn at once, a snap round a corner (PIX-293)"},
@@ -86,7 +87,7 @@ const TABLE := [
 	{"field": "motes", "says": "with rankup: the ascension's motes and sparks flying (PIX-244)"},
 	{"field": "music", "says": "with fled: the track playing (PIX-251)"},
 	{"field": "next", "says": "the main quest's next step, by id, once the Night of Ash is over: shield (PIX-255)"},
-	{"field": "overflow", "says": "with overflow: pieces of an open screen running off the canvas (Solid Ground)"},
+	{"field": "overflow", "says": "with overflow: pieces of an open screen running off the canvas (Solid Ground), or its words on the HUD's dock, clock or quill (PIX-346)"},
 	{"field": "packs", "says": "on a wild map: the packs standing in the hero's region, :asleep by their fire (PIX-252)"},
 	{"field": "page", "says": "the map's page, while the map is open (PIX-266)"},
 	{"field": "patches", "says": "with --day: the patches still to pick, by cell (PIX-250)"},
@@ -546,6 +547,13 @@ func field_home() -> String:
 	if homecomers.is_empty():
 		return ""
 	return ",".join(homecomers.map(func(recruit: Dictionary) -> String: return String(recruit["id"]).get_slice("_", 1)))
+
+
+func field_hour() -> String:
+	var hud: Hud = world.hud
+	if hud.clock_plate == null or not world.get_children().any(func(node: Node) -> bool: return node.get_script() == preload("res://scripts/dawn_screen.gd")):
+		return ""
+	return "%s %s" % [hud._clock_text.text, "moon" if hud._clock_dial.night else "sun"]
 
 
 func field_hub() -> String:
