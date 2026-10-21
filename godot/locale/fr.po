@@ -2061,6 +2061,10 @@ msgid "A new beginning: Maren's five letters, written fifty years ago and never 
 msgstr "Un nouveau départ : les cinq lettres de Maren, écrites il y a cinquante ans et jamais envoyées, attendent dans une boîte sous la pierre de son foyer. Porter des lettres, c'est votre métier, alors vous les remettez"
 
 #: assets/data/changelog.json
+msgid "A new counter at every shop: the goods on the left, your pack on the right, and between them a card showing the hero wearing the piece, each number with a green or red arrow against what you wear, and your gold after; a price you can't afford shows the gold you're missing (Tom's playtest)"
+msgstr "Un nouveau comptoir dans chaque boutique : la marchandise à gauche, votre sac à droite, et entre les deux une fiche qui montre le héros portant la pièce, chaque chiffre avec une flèche verte ou rouge par rapport à ce que vous portez, et votre or après ; un prix hors de portée indique l'or qui manque (playtest de Tom)"
+
+#: assets/data/changelog.json
 msgid "A new dream under Sela's roof, the first night after Pell comes home"
 msgstr "Un nouveau rêve sous le toit de Sela, la première nuit après le retour de Pell"
 
@@ -3945,6 +3949,10 @@ msgid "New Blood"
 msgstr "Sang neuf"
 
 #: assets/data/changelog.json
+msgid "New Counter"
+msgstr "Nouveau comptoir"
+
+#: assets/data/changelog.json
 msgid "New Faces"
 msgstr "Nouveaux visages"
 
@@ -4719,6 +4727,10 @@ msgstr "Les sauvegardes ont leur nouveau format : un héros qui a tout explor�
 #: assets/data/changelog.json
 msgid "Second Thoughts"
 msgstr "Réflexion faite"
+
+#: assets/data/changelog.json
+msgid "Sell all your junk in one go, choose how many of a stack to sell, and buy back what you just sold at the price you got, until you leave the counter"
+msgstr "Vendez toute votre camelote d'un coup, choisissez combien d'une pile vendre, et rachetez ce que vous venez de vendre au prix obtenu, jusqu'à ce que vous quittiez le comptoir"
 
 #: assets/data/changelog.json
 msgid "Settlers move in as the town rises: Mira the Weaver, Old Tomas, Serra and Fenn each arrive with their tier - and their own things to say about you"
@@ -16109,10 +16121,6 @@ msgid "  (worn)"
 msgstr "  (porté)"
 
 #: scripts/shop_screen.gd
-msgid "%dg + gem"
-msgstr "%d o + gemme"
-
-#: scripts/shop_screen.gd
 msgid "%s\nA bigger house: its new rooms wait the next time you walk in."
 msgstr "%s\nUne maison plus grande : ses nouvelles pièces vous attendent à votre prochaine visite."
 
@@ -16129,6 +16137,10 @@ msgid "%s level %d - you are %s"
 msgstr "%s niveau %d - vous : %s"
 
 #: scripts/shop_screen.gd
+msgid "+ gem"
+msgstr "+ gemme"
+
+#: scripts/shop_screen.gd
 msgid "A lucky brew: 2x %s! %s"
 msgstr "Coup de chance au chaudron : 2x %s ! %s"
 
@@ -16141,12 +16153,20 @@ msgid "Bought %s."
 msgstr "Achat : %s."
 
 #: scripts/shop_screen.gd
+msgid "Bought back %s."
+msgstr "Rachat : %s."
+
+#: scripts/shop_screen.gd
 msgid "Bring me steel to work with."
 msgstr "Apportez-moi de l'acier à travailler."
 
 #: scripts/shop_screen.gd
 msgid "Buy"
 msgstr "Acheter"
+
+#: scripts/shop_screen.gd
+msgid "Buy back"
+msgstr "Racheter"
 
 #: scripts/shop_screen.gd
 msgid "Buy the deed"
@@ -16161,12 +16181,36 @@ msgid "Deed: %s"
 msgstr "Titre : %s"
 
 #: scripts/shop_screen.gd
+msgid "For sale"
+msgstr "À vendre"
+
+#: scripts/shop_screen.gd
 msgid "Forge"
 msgstr "Forge"
 
 #: scripts/shop_screen.gd
+msgid "Gold after"
+msgstr "Bourse après"
+
+#: scripts/shop_screen.gd
 msgid "Hilda tempers it: +1."
 msgstr "Hilda y met un coup de marteau : +1."
+
+#: scripts/shop_screen.gd
+msgid "Junk: %d past what crafting keeps."
+msgstr "Camelote : %d de plus que ce que garde l'artisanat."
+
+#: scripts/shop_screen.gd
+msgid "Junk: nothing needs it."
+msgstr "Camelote : rien ne s'en sert."
+
+#: scripts/shop_screen.gd
+msgid "Junk: worse than what you wear."
+msgstr "Camelote : moins bien que ce que vous portez."
+
+#: scripts/shop_screen.gd
+msgid "Keep"
+msgstr "Garder"
 
 #: scripts/shop_screen.gd
 msgid "Made %s. %s"
@@ -16201,8 +16245,20 @@ msgid "Owner's pick"
 msgstr "Choix du patron"
 
 #: scripts/shop_screen.gd
+msgid "Pays"
+msgstr "Rapporte"
+
+#: scripts/shop_screen.gd
+msgid "Pays each"
+msgstr "L'unité rapporte"
+
+#: scripts/shop_screen.gd
 msgid "Pixelheim's own"
 msgstr "Fait à Pixelheim"
+
+#: scripts/shop_screen.gd
+msgid "Price"
+msgstr "Prix"
 
 #: scripts/shop_screen.gd
 msgid "Quench"
@@ -16237,12 +16293,24 @@ msgid "Sell"
 msgstr "Vendre"
 
 #: scripts/shop_screen.gd
+msgid "Sell %d"
+msgstr "Vendre %d"
+
+#: scripts/shop_screen.gd
 msgid "Sell all %d"
 msgstr "Tout vendre (%d)"
 
 #: scripts/shop_screen.gd
-msgid "Sell one"
-msgstr "Vendre 1"
+msgid "Sell all junk"
+msgstr "Vendre la camelote"
+
+#: scripts/shop_screen.gd
+msgid "Sell all of it?"
+msgstr "Tout vendre ?"
+
+#: scripts/shop_screen.gd
+msgid "Short by"
+msgstr "Il manque"
 
 #: scripts/shop_screen.gd
 msgid "Sign the deed"
@@ -16255,6 +16323,10 @@ msgstr "Vendu : %d %s pour %d o."
 #: scripts/shop_screen.gd
 msgid "Sold for %dg."
 msgstr "Vente : %d o."
+
+#: scripts/shop_screen.gd
+msgid "Sold the junk for %dg."
+msgstr "Camelote vendue : %d o."
 
 #: scripts/shop_screen.gd
 msgid "Temper +1"
@@ -16273,6 +16345,26 @@ msgid "Weight %d"
 msgstr "Poids %d"
 
 #: scripts/shop_screen.gd
+msgid "Worn: %s"
+msgstr "Porté : %s"
+
+#: scripts/shop_screen.gd
+msgid "Worn: nothing there"
+msgstr "Porté : rien"
+
+#: scripts/shop_screen.gd
+msgid "Yes"
+msgstr "Oui"
+
+#: scripts/shop_screen.gd
+msgid "Your pack"
+msgstr "Votre sac"
+
+#: scripts/shop_screen.gd
+msgid "junk"
+msgstr "camelote"
+
+#: scripts/shop_screen.gd
 msgid "max"
 msgstr "max"
 
@@ -16281,16 +16373,16 @@ msgid "owned"
 msgstr "acquis"
 
 #: scripts/shop_screen.gd
+msgid "sold"
+msgstr "vendu"
+
+#: scripts/shop_screen.gd
 msgid "{key:move_left}/{key:move_right}  tab      {key:move_up}/{key:move_down}  choose      {key:interact}  %s      Z  sell a stack      Esc  close"
 msgstr "{key:move_left}/{key:move_right}  onglet      {key:move_up}/{key:move_down}  choisir      {key:interact}  %s      Z  vendre le lot      Esc  fermer"
 
 #: scripts/shop_sign.gd
 msgid "A house: %dg, at the door"
 msgstr "Une maison : %d o, à signer à la porte"
-
-#: scripts/shop_sign.gd
-msgid "For sale"
-msgstr "À vendre"
 
 #: scripts/shop_sign.gd
 msgid "The Inn"

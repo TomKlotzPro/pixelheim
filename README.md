@@ -6,7 +6,7 @@
 
 <p align="center">
   <b>A retro pixel-art open-world RPG in Godot 4.7: a village the dragon burned, the courier who stayed, the Reach's regions and the relics they keep - and the mountain last.</b><br />
-  The village burned. You stayed. Currently v0.263 - 1.0 has to be earned.
+  The village burned. You stayed. Currently v0.264 - 1.0 has to be earned.
 </p>
 
 ---
@@ -29,6 +29,7 @@ A dragon burned Pixelheim in one night, and you - the courier who came up the ro
 - **Real-time fights**: monsters prowl in packs and hunt you (the weak ones run from a hero far above them), other packs by night than by day (wolves, the dead and worse come out after dark, a little stronger and richer, while some day packs sleep by their camp fires); swing, cast your skills on the number keys, and watch the ailments land - on the same numbers the game has always used
 - **7 classes that ascend**: every 5 levels a rank, its title and its moment in the light, and from the first rank a path that forks into 14 identities, each with a signature skill
 - **Skill trees, stats and gear**: three named paths per class, stat points that explain themselves (and Old Hessa at the village's shrine to make you forget skills or training, the first time free), loot with rarities on a nine-slot paper doll, and helmets and armour you can see on your hero
+- **A counter worth browsing**: at a keeper's counter the shop's goods and your pack lie open side by side, and the card between them shows the chosen piece on your hero, its numbers against what you wear there (green up, red down), the price and your gold after (what you can't afford greyed, with what you're short); junk is marked and sold in one go, a stack asks how many, and what you sold this visit waits on a buyback shelf at what it fetched
 - **Quests and the journal**, the **codex** of every beast you have fought, and mastery bonuses for the families you hunt
 - **One land**: the Ashenreach and its six regions lie side by side; near a road out the land past it is drawn beside you, and you walk on into it with no fade - the village's gate, houses and caves stay short changes of scene
 - **Roads the story opens**: each region's way in from the Reach - a rockfall on the cliff road, the river bridge burnt on the Night of Ash, Ulla's barricade, an avalanche on the Frostgate road - stays shut until the story reaches it, says what opens it, and the arrow leads there
