@@ -1,7 +1,8 @@
 extends GutTest
 ## The look book and the perf guard (PIX-220): every shot stands somewhere
 ## the hero can, goes by its name and its area (PIX-273), the sheet lays them
-## out in order, and the probe's summary reads average and 95th percentile.
+## out in order, and the probe's summary reads average and 95th percentile;
+## its CPU clock times frames headless too (PIX-355).
 
 const Lookbook := preload("res://scripts/lookbook.gd")
 
@@ -59,3 +60,16 @@ func test_the_probe_summarises_average_and_worst() -> void:
 	for i in 100:
 		values.append(1.0 if i < 95 else 10.0)
 	assert_eq(PerfProbe.summary(values), "1.45/10.00")
+
+
+func test_the_cpu_clock_times_frames_headless() -> void:
+	assert_eq(PerfProbe.spread([]), "-")
+	var values: Array = []
+	for i in 100:
+		values.append(10.0 if i % 10 == 0 else 1.0)
+	assert_eq(PerfProbe.spread(values), "1.00/10.00", "the median, which frames the machine took elsewhere don't move, and the 95th percentile")
+	var clock := PerfProbe.clock(get_tree())
+	await wait_process_frames(5)
+	var read := PerfProbe.cpu(get_tree(), clock)
+	assert_not_null(RegEx.create_from_string("^\\d+\\.\\d\\d/\\d+\\.\\d\\d$").search(read), "frames timed with no renderer: %s" % read)
+	assert_false(get_tree().process_frame.is_connected(clock["on_frame"]), "read, the clock stops")

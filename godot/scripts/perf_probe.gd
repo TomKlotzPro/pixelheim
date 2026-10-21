@@ -55,6 +55,27 @@ static func sample(node: Node, frames := 300, warmup := 30) -> String:
 	return " | ".join(parts)
 
 
+## The CPU clock (PIX-355), which needs no renderer: each frame's time from
+## one process_frame to the next. Stepped (--fixed-fps) and headless, the
+## frames run back to back, so that is what a frame costs on one core:
+## physics, process, the scripts. Read it with `cpu`.
+static func clock(tree: SceneTree) -> Dictionary:
+	var ticks: Array[int] = []
+	var on_frame := func() -> void: ticks.append(Time.get_ticks_usec())
+	tree.process_frame.connect(on_frame)
+	return {"ticks": ticks, "on_frame": on_frame}
+
+
+## The clock stopped: "median/95th percentile" ms of its frames.
+static func cpu(tree: SceneTree, clock: Dictionary) -> String:
+	tree.process_frame.disconnect(clock["on_frame"])
+	var ticks: Array[int] = clock["ticks"]
+	var spans: Array = []
+	for i in range(1, ticks.size()):
+		spans.append((ticks[i] - ticks[i - 1]) / 1000.0)
+	return spread(spans)
+
+
 ## How many particles the emitting systems under `node` hold.
 static func particles(node: Node) -> int:
 	var count := 0
@@ -75,3 +96,13 @@ static func summary(values: Array) -> String:
 	for value in sorted:
 		total += float(value)
 	return "%.2f/%.2f" % [total / sorted.size(), float(sorted[mini(sorted.size() - 1, int(sorted.size() * 0.95))])]
+
+
+## "median/95th percentile" of a list of milliseconds, "-" for none: the
+## median, which a frame the machine took for something else doesn't move.
+static func spread(values: Array) -> String:
+	if values.is_empty():
+		return "-"
+	var sorted := values.duplicate()
+	sorted.sort()
+	return "%.2f/%.2f" % [float(sorted[sorted.size() / 2]), float(sorted[mini(sorted.size() - 1, int(sorted.size() * 0.95))])]

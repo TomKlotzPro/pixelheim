@@ -48,6 +48,7 @@ const TABLE := [
 	{"field": "chapter", "says": "a chapter card's chapter, while it's up (PIX-253)"},
 	{"field": "clock", "says": "with sleep: the clock the hero woke at (PIX-246)"},
 	{"field": "continued", "says": "the honest card where the story runs out, while it's up: the chapter it waits on (PIX-253 step 8)"},
+	{"field": "cpu", "says": "with cpu: what a frame cost the CPU from the map settled to the report, ms median/95th percentile, headless too: 0.90/1.20 (PIX-355)"},
 	{"field": "credits", "says": "the credits' last line while they roll (PIX-253 step 10)"},
 	{"field": "dark", "says": "with fades: what's left of a fade from the dark (PIX-238)"},
 	{"field": "day", "says": "with --day: the day (PIX-250)"},
@@ -370,6 +371,10 @@ func field_clock() -> String:
 func field_continued() -> String:
 	var card := _chapter_card()
 	return str(card.number) if card != null and card.continued else ""
+
+
+func field_cpu() -> String:
+	return noted("cpu")
 
 
 func field_credits() -> String:

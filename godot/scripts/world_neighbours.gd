@@ -529,6 +529,12 @@ func settled() -> bool:
 	return drawn.values().all(func(beside: Dictionary) -> bool: return beside["state"] == "ready")
 
 
+## Whether nothing of the Reach is left to work out ahead: every map is, or
+## none will be here (the harness's `cpu` times frames only after, PIX-355).
+func warmed() -> bool:
+	return unstreamed or not _on_plane(world.map) or (_warming.is_empty() and _next_to_warm() == "")
+
+
 ## Each map of the Reach worked out ahead, the hero's neighbours first: its
 ## plan (what of it is kept, KeptGround), its kept ground and its music,
 ## with what the frame has `left` once the maps beside the hero have had
