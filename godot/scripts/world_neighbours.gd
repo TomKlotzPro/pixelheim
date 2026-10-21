@@ -1,5 +1,6 @@
 class_name Neighbours
 extends Node
+## areas: travel
 ## The maps drawn beside the hero's (One Reach, PIX-269, steps 5 and 6). Tom
 ## found crossing between the Reach's maps a cut; now, near a road out of a
 ## map under the Reach's sky, the map past it is drawn beside it where the
@@ -526,6 +527,12 @@ func saves_now() -> bool:
 ## harness waits for it before walking over a line, `seamless`).
 func settled() -> bool:
 	return drawn.values().all(func(beside: Dictionary) -> bool: return beside["state"] == "ready")
+
+
+## Whether nothing of the Reach is left to work out ahead: every map is, or
+## none will be here (the harness's `cpu` times frames only after, PIX-355).
+func warmed() -> bool:
+	return unstreamed or not _on_plane(world.map) or (_warming.is_empty() and _next_to_warm() == "")
 
 
 ## Each map of the Reach worked out ahead, the hero's neighbours first: its

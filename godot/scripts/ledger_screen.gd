@@ -1,4 +1,5 @@
 extends Screen
+## areas: town
 ## Shared frame for the town's ledgers (town hall, bank): a title, a column of
 ## info text, and a list of actions to choose with W/S and take with E — every
 ## row clickable too. Subclasses fill `_title`, `_intro` and `_rows`. Pauses

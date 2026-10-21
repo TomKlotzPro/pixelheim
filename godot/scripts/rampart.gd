@@ -1,4 +1,5 @@
 class_name Rampart
+## areas: town travel +town-age* +overworld*
 ## Pixelheim's rampart and its gate (PIX-248, Tom: "double rempart ça fait
 ## bizarre à l'intérieur du village et l'entrée est pas claire ni la
 ## sortie"). The village's wall was two bands of Shade's overworld castle

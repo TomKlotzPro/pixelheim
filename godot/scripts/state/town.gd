@@ -1,4 +1,5 @@
 class_name Town
+## areas: town +town-age*
 ## Pixelheim's growth and money that works, ported from src/game/economy/
 ## {town,bank}.ts and settlers.ts: town tiers and what they require, rent and
 ## rest perks, the bank's savings and caravans, and what recruits ask. Pure

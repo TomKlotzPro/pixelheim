@@ -1,4 +1,5 @@
 extends Screen
+## areas: screen
 ## Options (Options.tsx): sound, the CRT scanlines, fullscreen, reduced
 ## motion, and the keys. W/S choose a row, A/D move a slider or flip a
 ## switch, E rebinds a key (the next key pressed takes it; Esc cancels).

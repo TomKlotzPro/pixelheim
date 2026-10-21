@@ -1,4 +1,5 @@
 class_name Homecoming
+## areas: story town
 ## Coming Home (PIX-253 step 10, chapter 8): Morvax's choice and the
 ## endings. Once the collar is off he waits by the fountain with one
 ## question: "Do they want me back?" The courier's answer is the story's

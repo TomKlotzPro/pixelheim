@@ -1,5 +1,6 @@
 class_name Screen
 extends CanvasLayer
+## areas: screen
 ## What every screen shares (PIX-136): the menus, pages and conversations
 ## that open over the world. A screen
 ## - keeps running while the world is paused, and holds the world still while

@@ -1,5 +1,6 @@
 class_name Folk
 extends Node
+## areas: town story
 ## The villagers (Solid Ground, PIX-260: moved out of world.gd as it was):
 ## who stands on a map, drawn again when a recruit settles or the town
 ## grows; who stands beside the hero; and the village's hours (PIX-149).

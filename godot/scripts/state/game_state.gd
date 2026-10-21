@@ -1,4 +1,5 @@
 extends Node
+## areas: all
 ## The one game state (autoload `GameState`): typed sections for the hero,
 ## the pack, the settlement, progression and the explored world. Mutations
 ## go through methods that keep the save's invariants; signals tell the world

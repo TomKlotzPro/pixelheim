@@ -1,4 +1,5 @@
 class_name AshArt
+## areas: travel field +blackiron* +overworld* +mountain_road*
 ## What burnt land and a mine stand in that Shade's sheets don't draw
 ## (PIX-308): dead trees, black and bare, on the burnt rock where his pines
 ## stood; the timber shoring at a working's face, boarded across; spoil

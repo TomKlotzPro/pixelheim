@@ -1,5 +1,6 @@
 class_name Night
 extends Node
+## areas: story night combat town
 ## The Night of Bells on the town map (PIX-253 step 9): Bells holds its
 ## rules, this plays them. Home with the run home next, the bell rings and
 ## the night begins; everyone the story brought home is out at their place.

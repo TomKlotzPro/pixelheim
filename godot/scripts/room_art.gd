@@ -1,4 +1,5 @@
 class_name RoomArt
+## areas: rooms +observatory*
 ## A keeper's room its own (PIX-315): Liane keeps the stars in her
 ## observatory, and nothing in Shade's packs is a telescope, a star chart or
 ## a globe of the sky. So these are drawn here, a pixel a character in his

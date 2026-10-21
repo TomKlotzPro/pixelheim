@@ -1,4 +1,5 @@
 extends Screen
+## areas: town story
 ## A conversation: the speaker in a portrait slot and a gold name tab on the
 ## window's edge, one line at a time in the body type, and the keys that
 ## move it on (ADVANCE_DIALOGUE). The world holds still while it is open, like

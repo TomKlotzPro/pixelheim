@@ -1,4 +1,5 @@
 class_name MainQuest
+## areas: story quest
 ## The main quest (PIX-144): chapters of steps read from the save, so the
 ## game can always say what comes next - on the line above the dock, in the
 ## journal, from the elder and the mayor. Since PIX-253 it is the story of

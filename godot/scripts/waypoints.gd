@@ -1,4 +1,5 @@
 class_name Waypoints
+## areas: travel
 ## Fast travel's choice on the map screen (PIX-241: "on a waypoint, show
 ## where it takes you"): which waypoint the list starts on, how the choice
 ## moves, and what the map shows of the one chosen - a ring round its

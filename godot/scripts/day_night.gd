@@ -1,4 +1,5 @@
 class_name DayNight
+## areas: field night
 ## The day/night wheel, ported verbatim from src/render/dayNight.ts:
 ## one deterministic clock turned by steps walked, interpolating sky-tint
 ## stops. Applied as a full-screen overlay color.

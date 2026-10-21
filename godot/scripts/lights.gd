@@ -1,4 +1,5 @@
 class_name Lights
+## areas: field night
 ## Light and darkness (PIX-221). The world itself darkens with the hour (a
 ## CanvasModulate the LightRig sets) instead of a dark veil laid over it, and
 ## real lights - lamps, windows, fires, torches, spells, the hero's lantern -

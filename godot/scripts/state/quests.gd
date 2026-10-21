@@ -1,4 +1,5 @@
 class_name Quests
+## areas: story quest
 ## The villagers' quests (src/game/quests.ts): talking to a giver accepts
 ## their quest, talking again with the objective met turns it in. Bounties
 ## count kills; deliveries count what the pack holds and hand it over on

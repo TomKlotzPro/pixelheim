@@ -1,4 +1,5 @@
 class_name OpenGround
+## areas: town travel field
 ## The Medieval Age's greens and snow laid as patches over Shade's grass
 ## (PIX-305), so a meadow's hollows and the snow's drifts have edges of their
 ## own, tufted the way the pack's sample maps lay them; the ground's shader

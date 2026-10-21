@@ -1,4 +1,5 @@
 class_name DesktopLook
+## areas: town field
 ## The desktop app's extras (PIX-227). The browser build stays the main one.
 ## Its renderer (Compatibility, WebGL2) draws the canvas eight bits a channel
 ## in the screen's own sRGB, so there the light and the glow are LightRig's

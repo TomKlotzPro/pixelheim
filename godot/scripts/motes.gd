@@ -1,4 +1,5 @@
 class_name Motes
+## areas: field rank
 ## The small life of the world (PIX-225): fireflies at dusk and night over
 ## the grass and in the woods, leaves falling in the forests, dust floating
 ## in a room's light, embers off forges, hearths and camp fires, dust and

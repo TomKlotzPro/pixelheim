@@ -1,4 +1,5 @@
 class_name PunyArt
+## areas: combat town title
 ## Who wears which of Shade's CC0 sheets (assets/puny, PIX-130), and how each
 ## sheet family is laid out. Everyone is drawn at 1x on the 16px grid, so the
 ## hero, the villagers and the bestiary finally share one style.

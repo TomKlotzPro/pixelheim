@@ -1,4 +1,5 @@
 extends "res://scripts/ledger_screen.gd"
+## areas: story
 ## Morvax's choice (PIX-253 step 10; the old throne's choice, PIX-157,
 ## re-aimed): the courier's last word. He has asked "Do they want me back?"
 ## and the answer is an ending (Homecoming.choices): "Come home." or "Stay

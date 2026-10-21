@@ -1,4 +1,5 @@
 class_name SaveCodec
+## areas: save
 ## Pixelheim's own save format, v5 (PIX-302): one JSON file a slot, a
 ## section for each part of the game - `hero`, `pack`, `home`, `town`,
 ## `story`, `quests`, `world`, `post` (the Pixelheim Post's, PIX-320, once

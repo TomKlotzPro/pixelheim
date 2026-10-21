@@ -1,5 +1,6 @@
 class_name Ailments
 extends RefCounted
+## areas: combat
 ## Status effects on one combatant (combat.ts), in real time: a web turn lasts
 ## TURN_SECONDS. Poison and burn deal their power every turn; stun holds the
 ## combatant for its turns. A re-roll of the same kind refreshes it to the

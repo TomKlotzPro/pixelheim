@@ -1,4 +1,5 @@
 extends Node2D
+## areas: all
 ## World orchestration: loads the maps (assets/maps), builds their
 ## TileMapLayer, moves the hero through portals and doors, and runs the
 ## frame. Its pieces do the rest (Solid Ground, PIX-260, world_*.gd): the

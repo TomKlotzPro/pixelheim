@@ -1,4 +1,5 @@
 class_name Scatter
+## areas: travel field
 ## Puny World objects scattered on terrain (PIX-130), and which of them stand
 ## in the way (PIX-137). Pure: world.gd draws what these pick.
 

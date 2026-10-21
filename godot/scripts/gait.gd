@@ -1,5 +1,6 @@
 class_name Gait
 extends RefCounted
+## areas: combat town title
 ## How the cast walks (PIX-243): the hero, the villagers, the monsters and the
 ## wagon all step through their sheet's walk (PunyArt.WALKS) by the ground they
 ## cover, not by the clock, so their feet keep pace with the ground at any

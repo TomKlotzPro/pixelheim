@@ -1,4 +1,5 @@
 class_name Deeds
+## areas: quest screen
 ## Deeds (PIX-219): long goals for a hero who has done the rest, read off
 ## what the save already knows - every bounty, every family's mastery, a
 ## whole set worn, the whole bestiary met, every letter delivered, every

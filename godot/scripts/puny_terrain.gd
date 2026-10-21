@@ -1,4 +1,5 @@
 class_name PunyTerrain
+## areas: travel field
 ## Shade's Puny World overworld (assets/puny/world, CC0, PIX-130) drawn over
 ## the web game's maps. The tile grid stays the truth for walking; Puny's
 ## corner wang tiles go on the dual grid: one tile on every cell corner, whose

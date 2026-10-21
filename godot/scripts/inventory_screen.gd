@@ -1,4 +1,5 @@
 extends Screen
+## areas: screen
 ## The pack and the paperdoll (Inventory.tsx): the hero dressed in what they
 ## wear, nine slots around them and the numbers that gear makes; beside it
 ## everything carried, by category. E equips, takes off, drinks or places;

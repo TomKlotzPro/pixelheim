@@ -1,4 +1,5 @@
 extends Node
+## areas: town field
 ## The game's ears (PIX-128). The stingers, each place's chiptune loop and
 ## the ambient one-shots are WAVs in assets/audio/, rendered once from the
 ## classic edition's synth (assets/data/audio.json lists them); the newer

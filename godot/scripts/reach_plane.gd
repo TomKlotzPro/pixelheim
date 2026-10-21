@@ -1,4 +1,5 @@
 class_name ReachPlane
+## areas: travel
 ## The Reach as one plane (One Reach, PIX-269, step 3). Tom found the doors
 ## between maps wrong: crossing was a cut, the openings looked stuck on,
 ## there were too many small maps. The map files stay as they are; each map

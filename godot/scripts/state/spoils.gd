@@ -1,5 +1,6 @@
 class_name Spoils
 extends RefCounted
+## areas: combat
 ## What the hero wins (PIX-261, out of game_state.gd): a monster's fall
 ## (mastery, bounties, the garden, gold, drops, foraging), XP and the levels
 ## it makes, named hunts, cleared packs and the wilds waking, chests, gathering and fishing, what a fall costs, and the

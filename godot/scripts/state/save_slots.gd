@@ -1,4 +1,5 @@
 class_name SaveSlots
+## areas: save
 ## Save slots on disk: <dir>/slot_<n>.save, each a v5 save file (SaveCodec,
 ## PIX-302). On the web export user:// lives in IndexedDB.
 ##

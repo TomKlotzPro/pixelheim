@@ -1,5 +1,6 @@
 class_name Cutscene
 extends Screen
+## areas: story
 ## A story moment (PIX-31): a scene from assets/data/story.json played as
 ## ordered steps over a letterboxed stage, so writing one is editing data.
 ## Steps that hold the scene (a caption, a fade, the logo, a wait) play in

@@ -1,4 +1,5 @@
 class_name Juice
+## areas: combat
 ## How a fight feels (PIX-226): a pure-white flash when a blow lands, a
 ## death that dissolves pixel by pixel into embers, a squash and stretch on
 ## the hero, and a slash's arc trailing every swing in the weapon's colour.

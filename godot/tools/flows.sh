@@ -45,7 +45,7 @@
 # slow software-rendered window, or beside twenty others; the game reads
 # that time (GameClock, never the machine's clock) and the harness throws
 # the same dice every run (GameState.HARNESS_SEED). A flow is the same run
-# every time, and its report the same, window or not (but draws=). A flow
+# every time, and its report the same, window or not (but draws= and cpu=). A flow
 # may ask for another pace with the harness's --fps N (the motion flow: a
 # fast screen's frames between the physics ticks). A window draws a frame a
 # second of the game's time (--draw-every 60) and every frame the run reads

@@ -1,4 +1,5 @@
 class_name AshLand
+## areas: travel field +blackiron* +overworld* +mountain_road*
 ## The Ash and Blackiron as burnt land (PIX-308, the audit's "flat and
 ## empty": the whole north of the Reach, all of Blackiron and the mountain
 ## road's flats were Shade's dirt toned one grey-brown, their outcrops green

@@ -1,4 +1,5 @@
 extends Node2D
+## areas: quest travel
 ## An escort (PIX-192): Gunnar's last wagon down the Frostgate - an old
 ## mammoth hauling the pass's last crates. It walks the route's waypoints
 ## while the hero keeps close and no foe is at it, so a fight is the hero's

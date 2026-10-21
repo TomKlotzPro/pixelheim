@@ -1,4 +1,5 @@
 extends Screen
+## areas: title
 ## The title (PIX-139): Pixelheim's street at night under the Ashen Mountain
 ## (TitleScene, alive under a drifting camera since PIX-249), PIXELHEIM cut
 ## in gold above it, and the menu: Continue, New Game (hero creation), the

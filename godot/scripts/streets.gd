@@ -1,4 +1,5 @@
 class_name Streets
+## areas: town travel +town-age* +greyhold* +frostgate* +overworld*
 ## Paving in the Medieval Age's stone (PIX-307). The audit found
 ## Pixelheim's street and square flat yellow dirt from the Ashes to the City
 ## (its "lamplit avenues" dirt with a tiny fountain), Greyhold's courtyard

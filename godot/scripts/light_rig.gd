@@ -1,4 +1,5 @@
 extends Node
+## areas: field night
 ## The world's light, frame by frame (PIX-221): the darkness for the place
 ## and the hour (Lights' colours) on a CanvasModulate, and every light in the
 ## "lights" group brought up as it gets dark - fires flickering, the hero's

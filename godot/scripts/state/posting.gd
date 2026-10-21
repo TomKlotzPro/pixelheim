@@ -1,5 +1,6 @@
 class_name Posting
 extends RefCounted
+## areas: town story quest save
 ## The Pixelheim Post in play (PIX-320): the day's post taken from the box
 ## on the square, a piece handed over to its addressee (their line, the
 ## tip, a reply to carry back). The rules are Post's; what the hero did is

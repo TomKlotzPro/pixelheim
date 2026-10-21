@@ -1,4 +1,5 @@
 class_name Lamps
+## areas: travel field night +overworld*
 ## The land heals round the lamps (PIX-323, Something to Come Back To's step
 ## 4): each waystation's ember lamp (Routes.lamps), lit the day it was built,
 ## pushes a ring of green one cell further into the ash each morning, up to

@@ -10,7 +10,8 @@ several runners, headless and in a window, collects each round here, and
 tallies them all in its summary: every flow that failed even once, why, and
 the end of its output, and every flow whose report changed between runs of
 a kind, headless or in a window (every field but draws=, which only a window
-counts), which is how a flake starts before any flow fails on it.
+counts, and cpu=, the machine's time), which is how a flake starts before
+any flow fails on it.
 
     python3 godot/tools/flakes.py collect TAG [RUNS]   # a round's results, as JSON lines
     python3 godot/tools/flakes.py tally FILE...        # the summary (markdown); exit 1 on a failure
@@ -29,8 +30,8 @@ from flows import REPORT_HEAD, report_fields
 TOOLS = os.path.dirname(os.path.abspath(__file__))
 RUNS = os.path.join(os.path.dirname(TOOLS), "flows", "runs")
 # The fields a run may differ in without being unsteady: draw calls are the
-# renderer's (0 headless).
-IGNORED = {"draws"}
+# renderer's (0 headless), and cpu= the machine's time (PIX-355).
+IGNORED = {"draws", "cpu"}
 # How much of a failed run's output the summary keeps.
 TAIL = 30
 ANSI = re.compile(r"\x1b\[[0-9;]*m")

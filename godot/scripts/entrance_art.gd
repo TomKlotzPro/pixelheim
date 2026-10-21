@@ -1,4 +1,5 @@
 class_name EntranceArt
+## areas: travel story rooms +blackiron* +saltmere* +overworld* +mountain_road* +observatory*
 ## What a dungeon's way in looks like (PIX-290, Tom: « Pas super beau les
 ## entrées de donjon, porte du Fernoir et le premier »). The Blackiron
 ## shafts' mouth was Shade's little mound with a dark hole on a lone block

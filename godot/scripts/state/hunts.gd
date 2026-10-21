@@ -1,4 +1,5 @@
 class_name Hunts
+## areas: quest combat
 ## The named monsters (PIX-156): one notorious creature per wild region, each
 ## bigger and meaner than its kind, with a lair it keeps to and one move of
 ## its own. The bounty board on the square posts each once the hero has won

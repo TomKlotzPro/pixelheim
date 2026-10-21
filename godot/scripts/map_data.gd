@@ -1,4 +1,5 @@
 class_name MapData
+## areas: town rooms travel +town-age*
 ## A world map loaded from its JSON (assets/maps/<id>.json, edited by hand or
 ## drawn as a sketch in maps-src and run through tools/mapgen.py): tile ids
 ## row by row, regions, spawn and portals. test_map_files keeps every file

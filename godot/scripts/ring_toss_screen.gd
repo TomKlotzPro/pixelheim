@@ -1,4 +1,5 @@
 extends Screen
+## areas: town
 ## The festival's ring toss (PIX-159): a ring slides along the rail, back and
 ## forth, quicker each throw; E throws it, and it lands if it's over the
 ## peg. Three throws, two on the peg wins the festival's prize (once per

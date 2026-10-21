@@ -1,4 +1,5 @@
 extends Screen
+## areas: story
 ## The dawn after the Night of Ash (PIX-197), played on the town itself
 ## rather than told over it. The world holds still (the hero can't wander
 ## off), but the town keeps living below:

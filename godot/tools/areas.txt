@@ -1,0 +1,41 @@
+# Which areas each file that isn't a script touches, for check.sh quick
+# (PIX-353): a script names its own on an "## areas:" line under its
+# class_name/extends. A line is the areas, a colon, then the files (globs from
+# godot/); a changed file takes the areas of the first line that names it.
+# "all" runs every flow, "none" no flow (the checks, GUT and the town's boot
+# still run). +name adds boots (a name from flows.sh --boot --list, or a glob
+# of them). all comes first: tools/flows.py is a tools/*.py, and it checks
+# every flow. Two branches adding lines keep both on a merge (merge=union in
+# .gitattributes); tools/test_areas.py refuses a glob named twice.
+all: project.godot scenes/* tools/flows.sh tools/flows.py assets/data/catalog.json
+none: README.md .gitignore .gutconfig.json export_presets.cfg addons/* test/unit/* test/hooks/* tools/*.py tools/check.sh tools/areas.txt tools/lookbook.sh assets/puny/LICENSE.txt assets/fonts/*.txt
+town field: assets/audio/* assets/data/audio.json assets/data/hints.json
+town story: assets/data/npcs.json
+town rooms travel +town-age*: assets/maps/interactables.json
+town travel +town-age* +greyhold* +frostgate* +overworld*: assets/data/streets.json
+town rooms +town-age* +town_house*: assets/data/town.json
+rooms +town_house*: assets/data/interiors.json
+travel field: assets/puny/world/*
+travel field: shaders/canopy_shade.*
+travel: assets/data/plane.json
+travel story +overworld*: assets/data/gates.json
+town travel field +blackiron* +saltmere* +greyhold* +frostgate* +mountain_road*: shaders/snowed_roof.*
+dungeon travel +seacave* +shafts* +cellars* +icecave* +vault*: assets/data/depths.json
+dungeon +vault*: assets/puny/dungeon/*
+combat field dungeon gathering +vault*: assets/data/combat.json
+combat town title: assets/puny/characters/* assets/puny/beasts/* assets/puny/mini/*
+trade: assets/data/economy.json
+trade screen: assets/puny/icons.json assets/puny/icons/*
+story: assets/data/story.json
+story town night: shaders/fire_* assets/fire/*
+story quest rank: assets/data/progression.json
+town story quest save: assets/data/post.json
+dungeon +icecave*: shaders/frozen.*
+dungeon +seacave* +shafts* +cellars* +icecave* +vault*: shaders/dungeon.* shaders/torch_motes.*
+rooms +observatory*: shaders/stair_frost.*
+town field title: shaders/*
+save: test/fixtures/*
+title: assets/data/changelog.json assets/*.png
+title: web/*
+screen lang: assets/fonts/*
+lang: locale/*

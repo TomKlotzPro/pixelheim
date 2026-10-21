@@ -1,4 +1,5 @@
 extends Node2D
+## areas: combat field
 ## A fireborn elite's firebolt (PIX-155): flies straight, burns the hero it
 ## meets, and gutters out against a wall or after eight tiles.
 

@@ -1,4 +1,5 @@
 class_name Post
+## areas: town story quest save
 ## The Pixelheim Post (PIX-320, Something to Come Back To's first step):
 ## once Maren's first letter reaches Saltmere, the Reach finds out it has a
 ## courier again, and a post box goes up on Pixelheim's square. Each game

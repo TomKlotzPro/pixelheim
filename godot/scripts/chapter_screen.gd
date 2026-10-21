@@ -1,4 +1,5 @@
 extends Screen
+## areas: story
 ## A chapter card (PIX-253 step 2, v2 §5: "Main quests stand out"): when a
 ## chapter of the main story opens, its number and title over the world in
 ## the style of the dawn's "Day one" - "Chapter 3" in gold, "The Letter to
