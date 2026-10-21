@@ -84,24 +84,32 @@ func after_each() -> void:
 	get_tree().paused = false
 
 
-## `kind` opened in a `size` view; what runs past it, as Layout.overflows
-## lines, each led by the view and the language.
-func _overflows(kind: String, size: Vector2i, language: String) -> Array[String]:
+## `kind` opened in a view of each of VIEWS' sizes, side by side; what runs
+## past each, as Layout.overflows lines, each led by the view and the
+## language. One screen built in each view (a screen lays itself out for
+## its view as it opens), all of them settling in the same frames: one wait
+## for the five, not five (PIX-354).
+func _overflows(kind: String, language: String) -> Array[String]:
 	Text.apply(language)
-	var view := SubViewport.new()
-	view.size = size
-	view.disable_3d = true
-	add_child(view)
-	var screen := _make(kind, view)
-	if screen.get_parent() == null:
-		view.add_child(screen)
+	var opened: Array[Array] = []
+	for size in VIEWS:
+		var view := SubViewport.new()
+		view.size = size
+		view.disable_3d = true
+		add_child(view)
+		var screen := _make(kind, view)
+		if screen.get_parent() == null:
+			view.add_child(screen)
+		opened.append([view, screen])
 	# Lines wrap once they know their width, panels settle round them.
 	await wait_process_frames(3)
 	var out: Array[String] = []
-	for line in Layout.overflows(view, Vector2(size)):
-		out.append("%s %dx%d %s: %s" % [kind, size.x, size.y, language, line])
-	screen.close()
-	view.queue_free()
+	for pair: Array in opened:
+		var view: SubViewport = pair[0]
+		for line in Layout.overflows(view, Vector2(view.size)):
+			out.append("%s %dx%d %s: %s" % [kind, view.size.x, view.size.y, language, line])
+		pair[1].close()
+		view.queue_free()
 	await get_tree().process_frame
 	return out
 
@@ -129,8 +137,7 @@ func _fits(kinds: Array[String]) -> Array[String]:
 	var out: Array[String] = []
 	for kind in kinds:
 		for language in LANGUAGES:
-			for size in VIEWS:
-				out.append_array(await _overflows(kind, size, language))
+			out.append_array(await _overflows(kind, language))
 	return out
 
 
