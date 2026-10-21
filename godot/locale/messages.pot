@@ -15993,10 +15993,6 @@ msgid "  (worn)"
 msgstr ""
 
 #: scripts/shop_screen.gd
-msgid "%dg + gem"
-msgstr ""
-
-#: scripts/shop_screen.gd
 msgid "%s\nA bigger house: its new rooms wait the next time you walk in."
 msgstr ""
 
@@ -16013,6 +16009,10 @@ msgid "%s level %d - you are %s"
 msgstr ""
 
 #: scripts/shop_screen.gd
+msgid "+ gem"
+msgstr ""
+
+#: scripts/shop_screen.gd
 msgid "A lucky brew: 2x %s! %s"
 msgstr ""
 
@@ -16025,11 +16025,19 @@ msgid "Bought %s."
 msgstr ""
 
 #: scripts/shop_screen.gd
+msgid "Bought back %s."
+msgstr ""
+
+#: scripts/shop_screen.gd
 msgid "Bring me steel to work with."
 msgstr ""
 
 #: scripts/shop_screen.gd
 msgid "Buy"
+msgstr ""
+
+#: scripts/shop_screen.gd
+msgid "Buy back"
 msgstr ""
 
 #: scripts/shop_screen.gd
@@ -16045,11 +16053,35 @@ msgid "Deed: %s"
 msgstr ""
 
 #: scripts/shop_screen.gd
+msgid "For sale"
+msgstr ""
+
+#: scripts/shop_screen.gd
 msgid "Forge"
 msgstr ""
 
 #: scripts/shop_screen.gd
+msgid "Gold after"
+msgstr ""
+
+#: scripts/shop_screen.gd
 msgid "Hilda tempers it: +1."
+msgstr ""
+
+#: scripts/shop_screen.gd
+msgid "Junk: %d past what crafting keeps."
+msgstr ""
+
+#: scripts/shop_screen.gd
+msgid "Junk: nothing needs it."
+msgstr ""
+
+#: scripts/shop_screen.gd
+msgid "Junk: worse than what you wear."
+msgstr ""
+
+#: scripts/shop_screen.gd
+msgid "Keep"
 msgstr ""
 
 #: scripts/shop_screen.gd
@@ -16085,7 +16117,19 @@ msgid "Owner's pick"
 msgstr ""
 
 #: scripts/shop_screen.gd
+msgid "Pays"
+msgstr ""
+
+#: scripts/shop_screen.gd
+msgid "Pays each"
+msgstr ""
+
+#: scripts/shop_screen.gd
 msgid "Pixelheim's own"
+msgstr ""
+
+#: scripts/shop_screen.gd
+msgid "Price"
 msgstr ""
 
 #: scripts/shop_screen.gd
@@ -16121,11 +16165,23 @@ msgid "Sell"
 msgstr ""
 
 #: scripts/shop_screen.gd
+msgid "Sell %d"
+msgstr ""
+
+#: scripts/shop_screen.gd
 msgid "Sell all %d"
 msgstr ""
 
 #: scripts/shop_screen.gd
-msgid "Sell one"
+msgid "Sell all junk"
+msgstr ""
+
+#: scripts/shop_screen.gd
+msgid "Sell all of it?"
+msgstr ""
+
+#: scripts/shop_screen.gd
+msgid "Short by"
 msgstr ""
 
 #: scripts/shop_screen.gd
@@ -16138,6 +16194,10 @@ msgstr ""
 
 #: scripts/shop_screen.gd
 msgid "Sold for %dg."
+msgstr ""
+
+#: scripts/shop_screen.gd
+msgid "Sold the junk for %dg."
 msgstr ""
 
 #: scripts/shop_screen.gd
@@ -16157,6 +16217,26 @@ msgid "Weight %d"
 msgstr ""
 
 #: scripts/shop_screen.gd
+msgid "Worn: %s"
+msgstr ""
+
+#: scripts/shop_screen.gd
+msgid "Worn: nothing there"
+msgstr ""
+
+#: scripts/shop_screen.gd
+msgid "Yes"
+msgstr ""
+
+#: scripts/shop_screen.gd
+msgid "Your pack"
+msgstr ""
+
+#: scripts/shop_screen.gd
+msgid "junk"
+msgstr ""
+
+#: scripts/shop_screen.gd
 msgid "max"
 msgstr ""
 
@@ -16165,15 +16245,15 @@ msgid "owned"
 msgstr ""
 
 #: scripts/shop_screen.gd
+msgid "sold"
+msgstr ""
+
+#: scripts/shop_screen.gd
 msgid "{key:move_left}/{key:move_right}  tab      {key:move_up}/{key:move_down}  choose      {key:interact}  %s      Z  sell a stack      Esc  close"
 msgstr ""
 
 #: scripts/shop_sign.gd
 msgid "A house: %dg, at the door"
-msgstr ""
-
-#: scripts/shop_sign.gd
-msgid "For sale"
 msgstr ""
 
 #: scripts/shop_sign.gd

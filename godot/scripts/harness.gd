@@ -922,7 +922,10 @@ func _run_test_harness() -> void:
 		await get_tree().create_timer(0.5).timeout
 	if flags.has("shop"):
 		# Pair with `--map town_shop|town_smith|town_alchemist`; `--tab N` picks a tab.
+		# A pack to sell (PIX-336): pelts, and junk - herbs past what crafting
+		# keeps, old boots (`--wear iron_sword` leaves the rusty one as junk).
 		GameState.pack.gold = 500
+		GameState.pack.items.merge({"wolf_pelt": 3, "forest_herb": 10, "old_boot": 2})
 		var screen: Node = preload("res://scripts/shop_screen.gd").new()
 		world.add_child(screen)
 		if flags.has("--tab"):
