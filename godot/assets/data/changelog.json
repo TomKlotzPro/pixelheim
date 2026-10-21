@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "0.269.0",
+      "date": "2026-10-21",
+      "codename": "The Post House",
+      "notes": [
+        "Once a waystation stands, the town's board offers the post house: built behind the box, Wren's riders bring five pieces a morning, and Pip takes charge of the doves in its loft (they are all called Steve)",
+        "Morvax keeps count of your lamps on his forge wall, a red stroke each, and tells you what he makes of them; as the ash heals, the map renames the Ash Fields the Greening, then the Lantern Meadows",
+        "When a boss falls, the Victory card stands clear of the loot and LEVEL UP, the boss bar fades at once, a place card holds a hint instead of pushing it over the hero, and the guide arrow keeps off the words at the bottom (Claude's playtest)"
+      ]
+    },
+    {
       "version": "0.268.0",
       "date": "2026-10-21",
       "codename": "Tidy Up",

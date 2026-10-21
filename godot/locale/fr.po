@@ -3921,6 +3921,10 @@ msgid "Monsters keep hours: after dark, night packs come out in every region und
 msgstr "Les monstres ont leurs heures : à la nuit tombée, des meutes nocturnes sortent dans chaque région à ciel ouvert, loups et squelettes dans la forêt, fantômes sur le marais, spectres dans les Bois-Profonds, wendigos au col de la Porte-Givre, un peu plus forts et plus riches que le jour"
 
 #: assets/data/changelog.json
+msgid "Morvax keeps count of your lamps on his forge wall, a red stroke each, and tells you what he makes of them; as the ash heals, the map renames the Ash Fields the Greening, then the Lantern Meadows"
+msgstr "Morvax compte vos lanternes sur le mur de sa forge, un trait rouge pour chacune, et vous dit ce qu'il en pense ; à mesure que la cendre guérit, la carte renomme les Champs de Cendres la Reverdie, puis les Prés-aux-Lanternes"
+
+#: assets/data/changelog.json
 msgid "Morvax reads the letter; fifty years of tally marks count the village's lamps on his wall; then the mountain shakes"
 msgstr "Morvax lit la lettre ; sur son mur, cinquante ans de traits comptent les lanternes du village ; puis la montagne tremble"
 
@@ -4215,6 +4219,10 @@ msgstr "Il était une montagne"
 #: assets/data/changelog.json
 msgid "Once a boss lets go the roads out open again, and it keeps its wounds: the bar comes back where it was when the fight starts again"
 msgstr "Dès qu'un boss lâche, les routes s'ouvrent à nouveau, et il garde ses blessures : sa barre revient là où elle en était quand le combat reprend"
+
+#: assets/data/changelog.json
+msgid "Once a waystation stands, the town's board offers the post house: built behind the box, Wren's riders bring five pieces a morning, and Pip takes charge of the doves in its loft (they are all called Steve)"
+msgstr "Dès qu'une halte est debout, le tableau de la ville propose la maison de la Poste : bâtie derrière la boîte, les cavaliers de Wren apportent cinq pièces chaque matin, et Pip prend en charge les colombes du grenier (elles s'appellent toutes Steve)"
 
 #: assets/data/changelog.json
 msgid "Once he stands down, the north stair takes you back up to the cellars' door"
@@ -5557,6 +5565,10 @@ msgid "The Pixelheim Post opens: once Maren's first letter reaches Saltmere, a p
 msgstr "La Poste de Pixelheim ouvre : dès que la première lettre de Maren arrive à Saltmere, une boîte aux lettres se dresse sur la place, et chaque matin elle contient quelques lettres et colis à porter en chemin"
 
 #: assets/data/changelog.json
+msgid "The Post House"
+msgstr "La maison de la Poste"
+
+#: assets/data/changelog.json
 msgid "The Post now carries twelve stories across the whole Reach: Maren writing to Wenna after fifty years, Mirelle's gentle reminders about interest, Wren's horse that eats mittens, Fenwick in charge of Greyhold, and Morvax and Maren still arguing over forty lamps or forty-one"
 msgstr "La Poste porte maintenant douze histoires dans toute la Reach : Maren qui écrit à Wenna après cinquante ans, les doux rappels de Mirelle sur les intérêts, le cheval de Wren qui mange les moufles, Fenwick seul maître de Greyhold, et Morvax et Maren qui se disputent toujours : quarante lampes ou quarante et une"
 
@@ -6383,6 +6395,10 @@ msgstr "« Quoi de neuf » est désormais dans le menu titre, au clavier com
 #: assets/data/changelog.json
 msgid "When a boss falls far from its door, a way out opens right where it fell, lit and easy to spot, and the arrow points to it"
 msgstr "Quand un boss tombe loin de sa porte, une sortie s'ouvre juste là où il est tombé, éclairée et facile à repérer, et la flèche la montre"
+
+#: assets/data/changelog.json
+msgid "When a boss falls, the Victory card stands clear of the loot and LEVEL UP, the boss bar fades at once, a place card holds a hint instead of pushing it over the hero, and the guide arrow keeps off the words at the bottom (Claude's playtest)"
+msgstr "Quand un boss tombe, la carte Victoire reste à l'écart du butin et de NIVEAU SUPÉRIEUR, la barre du boss s'efface aussitôt, une carte de lieu met un conseil en attente au lieu de le pousser sur le héros, et la flèche de guidage évite les textes du bas (playtest de Claude)"
 
 #: assets/data/changelog.json
 msgid "When every voice is busy, the sounds that matter (a hurt, a level, a victory) still get through"
