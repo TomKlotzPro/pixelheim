@@ -163,14 +163,12 @@ func test_with_reduce_motion_it_holds_still() -> void:
 	GameState.settings.reduce_motion = true
 	GameState.hero.path = ["juggernaut", "bastion", "unbroken"]
 	_open(20)
-	# The screen holds the world still; GUT's waits need it running.
-	get_tree().paused = false
 	assert_eq(_particles(screen).size(), 0, "no motes, no sparks")
 	assert_false(screen.hero_sprite.is_playing(), "the hero holds still")
 	var feet: float = screen.figure.position.y
 	screen._timeline.custom_step(RankupScreen.beat_at("flare", true) + 0.01)
 	assert_eq(screen.phase, "flare")
-	await wait_seconds(RankupScreen.FADE_SECONDS + 0.15)
+	_run_on(RankupScreen.FADE_SECONDS + 0.15)
 	assert_almost_eq(screen.beam.modulate.a, RankupScreen.BEAM_ALPHA, 0.01, "the light brightened")
 	assert_almost_eq(screen.pool.modulate.a, RankupScreen.POOL_LIT, 0.01, "the pool in the class's light")
 	# Never set is the shader's own 0.
@@ -180,8 +178,17 @@ func test_with_reduce_motion_it_holds_still() -> void:
 	screen._timeline.custom_step(RankupScreen.beat_at("settled", true))
 	assert_eq(screen.phase, "settled")
 	assert_eq(screen.cards.get_child_count(), 0, "the path is walked: no fork")
-	await wait_seconds(RankupScreen.HOLD_AFTER + 0.3)
+	_run_on(RankupScreen.HOLD_AFTER + 0.3)
 	assert_true(not is_instance_valid(screen) or screen.closing, "the moment passes")
+
+
+## The screen's clock run on `seconds` at once: every tween it plays (its
+## timeline, the light brightening, the pause before it passes) stepped,
+## where waiting them out took four seconds of the suite (PIX-354).
+func _run_on(seconds: float) -> void:
+	for tween in get_tree().get_processed_tweens():
+		if tween.is_valid():
+			tween.custom_step(seconds)
 
 
 ## E during the show skips to what the rank brings.
