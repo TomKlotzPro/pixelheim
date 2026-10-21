@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "version": "0.264.0",
+      "date": "2026-10-21",
+      "codename": "New Counter",
+      "notes": [
+        "A new counter at every shop: the goods on the left, your pack on the right, and between them a card showing the hero wearing the piece, each number with a green or red arrow against what you wear, and your gold after; a price you can't afford shows the gold you're missing (Tom's playtest)",
+        "Sell all your junk in one go, choose how many of a stack to sell, and buy back what you just sold at the price you got, until you leave the counter"
+      ]
+    },
+    {
       "version": "0.263.0",
       "date": "2026-10-21",
       "codename": "Way Up",
